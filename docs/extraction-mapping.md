@@ -1,6 +1,6 @@
 # 抽出対応表（フェーズ 1 進行記録）
 
-最終更新：2026-05-22（セッション 19 で雛形作成・実施履歴欄追加・全 7 機能の requirements.md 抽出完了：foundation／runtime／evaluation／analysis／workflow-management／self-improvement／conformance-evaluation）
+最終更新：2026-05-23（セッション 19 で全 7 機能の requirements.md 抽出完了 ＋ 要件 review-wave／alignment-gate を実施、機能横断波及所見 6 件すべて消化）
 
 本文書は計画書 `docs/plan/reconstruction-plan-2026-05-21.md` §5.20 を出発点として、フェーズ 1 抽出作業の進行記録を残すための作業文書である。計画書 §5.20 は正本、本文書は進行中の作業記録（§5.20.5）。
 

@@ -31,6 +31,7 @@
   - `foundation`／`runtime`／`evaluation`／`analysis`／`self-improvement`／`conformance-evaluation` は本仕様の完了規則に従う
   - `foundation` の状態軸語彙（`run_status`／`validator_status`／`human_signoff_status`／`evidence_class`）を再定義せず参照する
   - `evaluation` から本仕様の所定手続き実行結果に対する評価要求を受ける
+  - `self-improvement` からの規律変更提案（5 種類：new_discipline／update／status_change／archive／consolidation、`self-improvement` Requirement 3 由来）を所定手続き（drafting → review → approval）の入力として受け取り、承認後に規律ファイル（`docs/disciplines/discipline_*.md`）の実体変更を本機能が実施する。本機能は規律変更を不可逆操作（Requirement 4 受入 1）の対象として扱い、`self-improvement` が直接ファイル書き換えを行うことはない（案 2、2026-05-23 利用者承認、A-007 由来）
 
 ## Requirements
 
