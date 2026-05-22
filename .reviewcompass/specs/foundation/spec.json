@@ -1,0 +1,67 @@
+{
+  "feature_name": "foundation",
+  "created_at": "2026-05-23T00:00:00+09:00",
+  "updated_at": "2026-05-23T00:00:00+09:00",
+  "language": "ja",
+  "phase": "requirements-completed",
+  "approvals": {
+    "requirements": {
+      "generated": true,
+      "approved": false
+    },
+    "design": {
+      "generated": false,
+      "approved": false
+    },
+    "tasks": {
+      "generated": false,
+      "approved": false
+    }
+  },
+  "ready_for_implementation": false,
+  "custom": {
+    "reopened": {
+      "requirements": false,
+      "design": false,
+      "tasks": false
+    },
+    "alignment": {
+      "requirements": {
+        "required": true,
+        "status": "completed",
+        "last_checked": "2026-05-23",
+        "note": "セッション 19 末尾で要件 drafting／review-wave／alignment-gate を実施。機能横断波及所見 6 件（A-001／A-003／A-004／A-005／A-007／A-008）すべて消化済。サブエージェント方式（mode=subagent_mediated、計画書 §5.23.12）で 3 役レビューを実施。証跡＝.reviewcompass/specs/foundation/reviews/2026-05-22-requirements.md、.reviewcompass/pending-cross-feature-findings.md。利用者明示承認は未取得（approvals.requirements.approved=false）"
+      },
+      "design": {
+        "required": true,
+        "status": "not_started",
+        "last_checked": null,
+        "note": "design フェーズの drafting 段は未着手。計画書 §5.18 全体（特に §5.18.3 4 段論理契約、§5.18.4 3 役抽象名、§5.18.5 5 スキーマ集合、§5.18.6 20 必須メタデータ項目、§5.18.7 4 状態軸、§5.18.8 必須／先送り符号化規約、§5.18.9 2 検証スキーマ、§5.18.10 設計判断 5 つ）を反映予定"
+      },
+      "tasks": {
+        "required": true,
+        "status": "not_started",
+        "last_checked": null,
+        "note": "design 完了後に着手"
+      }
+    },
+    "recheck": {
+      "upstream_change_pending": false,
+      "impacted_downstream_phases": []
+    },
+    "traceability": {
+      "intent_requirements_matrix_required": true,
+      "intent_requirements_matrix_status": "pending",
+      "intent_requirements_matrix_last_checked": null,
+      "intent_requirements_matrix_update_required": true
+    },
+    "pending_findings": {
+      "F-004": {
+        "severity": "WARN",
+        "judgment": "should-fix",
+        "target_location": "requirements.md §Requirement 3 受入 9",
+        "summary": "Req 3 受入 9 と計画書 §5.18.8 を「フェーズ 3 完了時の最小動作可能状態」表記に全面置換（2026-05-23 実施）。本対処の完全性確認（フィールド集合の必須／先送り符号化の具体）はフェーズ 2 着手時にディレクトリ配置と合わせて再検討予定。"
+      }
+    }
+  }
+}
