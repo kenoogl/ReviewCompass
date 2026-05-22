@@ -2332,6 +2332,8 @@ foundation 仕様の要件 6 受入 6 は「レビューモード語彙が最低
 
 §5.17.10 にこの連動関係を併記する（§5.18 から §5.17.10 への波及、両節とも 2026-05-21 に存続方針確定）。
 
+**2026-05-22 追加確定（セッション 19、§5.23.12）**：サブエージェント方式（Claude Code 内部のサブエージェント機構を用いた 3 役レビュー）を正式採用する。よって foundation の `metadata_contract.yaml` のレビューモード語彙に `subagent_mediated` を正式値として追加する。3 値体制（`manual_dogfooding`／`runtime_mediated`／`subagent_mediated`）に拡張。詳細は §5.23.12 を参照。要件 6 受入 6 の最低限要求は引き続き `manual_dogfooding` と `runtime_mediated` の区別を満たし、`subagent_mediated` は追加値として位置付け（最低限要求の拡張ではなく語彙の拡張）。
+
 #### 5.18.14 来歴項目と §5.17.5 の連動
 
 foundation 仕様の要件 6 受入 7 は「来歴項目が最低限 `source_repository_id`（採取元リポジトリ識別子）と `source_revision`（採取時の改訂版識別子）を区別できる」ことを必須化している。これは他環境からの取り込みのための起点。
@@ -2387,16 +2389,17 @@ foundation 仕様の `config.yaml.template` はアプリ側の設定雛形、計
 | 対象利用者の特定：個人利用者／開発チーム／企業のどこを想定するか | README.md の方針、デプロイモデルの設計 | §4／§7 フェーズ 2 | **2026-05-22 確定：個人利用者** |
 | §5.10.5 の `analysis: review` 削除提案（循環依存解消） | conformance-evaluation の依存マップ | §5.17.13 | **2026-05-22 確定：削除実施済み**（精査の上、根拠なきと判定） |
 
-#### 5.19.2 フェーズ 1 抽出作業中に確定する判断（4 件）
+#### 5.19.2 フェーズ 1 抽出作業中に確定する判断（5 件、1 件確定済み）
 
 フェーズ 1 抽出作業を進めながら確定する：
 
-| 判断事項 | 影響範囲 | 連動節 |
-|---|---|---|
-| 機能依存マップの一元化（§5.5・§5.10.5・§5.14.8 の 3 箇所統合） | feature-dependency.yaml の正本確定 | §5.5／§5.10.5／§5.14.8 |
-| §5.3 実装順序と §5.9.9 の 3 サイクル方式の整合（並行関係の整理） | フェーズ 4 実機能開発の作業順序 | §5.3／§5.9.9 |
-| 探索的（exploratory）区分のフィールド整合：§5.9 の所見メタデータに探索的フラグが必要か | レビュー記録のスキーマ | §5.17.12 |
-| 必須／先送り（mandatory／deferred）の符号化規約の継承可否 | foundation 5 スキーマ＋ 2 検証スキーマの形式 | §5.18.8 |
+| 判断事項 | 影響範囲 | 連動節 | 状態 |
+|---|---|---|---|
+| 機能依存マップの一元化（§5.5・§5.10.5・§5.14.8 の 3 箇所統合） | feature-dependency.yaml の正本確定 | §5.5／§5.10.5／§5.14.8 | 未確定 |
+| §5.3 実装順序と §5.9.9 の 3 サイクル方式の整合（並行関係の整理） | フェーズ 4 実機能開発の作業順序 | §5.3／§5.9.9 | 未確定 |
+| 探索的（exploratory）区分のフィールド整合：§5.9 の所見メタデータに探索的フラグが必要か | レビュー記録のスキーマ | §5.17.12 | 未確定 |
+| 必須／先送り（mandatory／deferred）の符号化規約の継承可否 | foundation 5 スキーマ＋ 2 検証スキーマの形式 | §5.18.8 | 未確定 |
+| 抽出物の配置構造：解釈 α（運用文書のみ）／解釈 う（運用文書 ＋ 仕様文書）／混在のいずれか | フェーズ 1 抽出物の出力先パス、フェーズ 4 自己適用との接続 | §3.1（機能分離済み 7 機能体制）／§4（アプリ側ディレクトリ規約）／§5.20.2／§5.23.7／§7 フェーズ 1 | **2026-05-22 確定：解釈 う**（運用文書 `docs/operations/<機能>.md` ＋ 仕様文書 `.reviewcompass/specs/<機能>/requirements.md`・`design.md` を並行作成。機能分離は §3.1 で確定済みの 7 機能体制を継承するため requirements 段から並行作成可能。`.reviewcompass/specs/<機能>/` は §4 で対象アプリ側のディレクトリ規約として確定済みのパスであり、ReviewCompass 自身を最初の対象アプリと見なす §5.23.7 の方針と整合する） |
 
 #### 5.19.3 フェーズ 2〜3 着手時に判断（3 件）
 
@@ -2446,12 +2449,14 @@ ReviewCompass リポジトリへの移管時に判断：
 
 #### 5.20.2 機能別対応表（初版骨子）
 
+**解釈 う による抽出先の二重出力（2026-05-22 確定、§5.19.2 第 5 項目）**：requirements.md／design.md は運用文書（`docs/operations/<機能>.md`）と仕様文書（`.reviewcompass/specs/<機能>/requirements.md`・`design.md`）の両方に出力する。schema／prompt／config 等の実成果物は仕様文書側には複製せず、`schemas/`／`templates/` 配下にのみ配置する。`.reviewcompass/specs/<機能>/` は §4 で対象アプリ側のディレクトリ規約として確定済みのパスであり、§5.23.7 に従い ReviewCompass 自身を最初の対象アプリと見なして本リポジトリ内にも作成する。
+
 ##### foundation（基盤機能）
 
 | 抽出元 | 抽出先 | クリーニング |
 |---|---|---|
-| `.kiro/specs/dual-reviewer-foundation/requirements.md` | `docs/operations/FOUNDATION.md`（§5.18.16） | 機能名 dual-reviewer-* → ReviewCompass の機能名、自己適用表現の除去 |
-| `.kiro/specs/dual-reviewer-foundation/design.md` | 同上（§5.18 の継承方針に従い再編） | 同上 |
+| `.kiro/specs/dual-reviewer-foundation/requirements.md` | `docs/operations/FOUNDATION.md`（§5.18.16）＋ `.reviewcompass/specs/foundation/requirements.md`（解釈 う） | 機能名 dual-reviewer-* → ReviewCompass の機能名、自己適用表現の除去 |
+| `.kiro/specs/dual-reviewer-foundation/design.md` | `docs/operations/FOUNDATION.md`（§5.18 の継承方針に従い再編）＋ `.reviewcompass/specs/foundation/design.md`（解釈 う） | 同上 |
 | `runtime/foundation/layer1_framework.yaml` | `schemas/foundation/layer1_framework.yaml` | パス相対化 |
 | `runtime/foundation/metadata_contract.yaml` | `schemas/foundation/metadata_contract.yaml` | パス相対化 |
 | `runtime/schemas/review_case.schema.json` | `schemas/domain/review_case.schema.json` | パス相対化 |
@@ -2471,47 +2476,47 @@ ReviewCompass リポジトリへの移管時に判断：
 
 | 抽出元 | 抽出先 | クリーニング |
 |---|---|---|
-| `.kiro/specs/dual-reviewer-runtime/requirements.md` | `docs/operations/RUNTIME.md`（§5.15.8） | 自己適用表現の除去、実行方式名の置換（§5.15.6） |
-| `.kiro/specs/dual-reviewer-runtime/design.md` | 同上 | 同上、ファイル名置換（v2/ → internal/、review_artifact.json → review_taxonomy.json 等） |
+| `.kiro/specs/dual-reviewer-runtime/requirements.md` | `docs/operations/RUNTIME.md`（§5.15.8）＋ `.reviewcompass/specs/runtime/requirements.md`（解釈 う） | 自己適用表現の除去、実行方式名の置換（§5.15.6） |
+| `.kiro/specs/dual-reviewer-runtime/design.md` | `docs/operations/RUNTIME.md` ＋ `.reviewcompass/specs/runtime/design.md`（解釈 う） | 同上、ファイル名置換（v2/ → internal/、review_artifact.json → review_taxonomy.json 等） |
 | `scripts/run_review_session.rb` 等の実行スクリプト | （実装は移植しない、§2.2 クリーンスレート） | 思想のみ継承 |
 
 ##### evaluation（評価機能）
 
 | 抽出元 | 抽出先 | クリーニング |
 |---|---|---|
-| `.kiro/specs/dual-reviewer-evaluation/requirements.md` | `docs/operations/EVALUATION.md`（§5.17.14） | 機能名置換、実行方式名置換（single/dual/dual+judgment → primary/adversarial/judgment、§5.17.8）、自己適用表現の除去 |
-| `.kiro/specs/dual-reviewer-evaluation/design.md` | 同上 | 同上、固定パス（experiments/analysis/／experiments/runs/）の抽象化 |
+| `.kiro/specs/dual-reviewer-evaluation/requirements.md` | `docs/operations/EVALUATION.md`（§5.17.14）＋ `.reviewcompass/specs/evaluation/requirements.md`（解釈 う） | 機能名置換、実行方式名置換（single/dual/dual+judgment → primary/adversarial/judgment、§5.17.8）、自己適用表現の除去 |
+| `.kiro/specs/dual-reviewer-evaluation/design.md` | `docs/operations/EVALUATION.md` ＋ `.reviewcompass/specs/evaluation/design.md`（解釈 う） | 同上、固定パス（experiments/analysis/／experiments/runs/）の抽象化 |
 | `scripts/evaluation/*.rb`（実装 18 ファイル） | （実装は移植しない、§2.2 クリーンスレート） | 思想・構造のみ継承（5 段パイプライン、4 状態区分、3 階層 2 層指標等） |
 
 ##### analysis（分析機能、旧 paper-interface）
 
 | 抽出元 | 抽出先 | クリーニング |
 |---|---|---|
-| `.kiro/specs/dual-reviewer-paper-interface/requirements.md` | `docs/operations/ANALYSIS.md`（§5.14.7） | 機能名 paper-interface → analysis（§5.15.6）、自己適用表現の除去 |
-| `.kiro/specs/dual-reviewer-paper-interface/design.md` | 同上 | 同上、§5.14 の役割拡張（論文用以外に運用ダッシュボード・週次・監査）を反映 |
+| `.kiro/specs/dual-reviewer-paper-interface/requirements.md` | `docs/operations/ANALYSIS.md`（§5.14.7）＋ `.reviewcompass/specs/analysis/requirements.md`（解釈 う） | 機能名 paper-interface → analysis（§5.15.6）、自己適用表現の除去 |
+| `.kiro/specs/dual-reviewer-paper-interface/design.md` | `docs/operations/ANALYSIS.md` ＋ `.reviewcompass/specs/analysis/design.md`（解釈 う） | 同上、§5.14 の役割拡張（論文用以外に運用ダッシュボード・週次・監査）を反映 |
 | `scripts/paper_interface/*.rb` | （実装は移植しない） | 思想のみ継承 |
 
 ##### workflow-management（旧 implementation-governance）
 
 | 抽出元 | 抽出先 | クリーニング |
 |---|---|---|
-| `.kiro/specs/dual-reviewer-implementation-governance/requirements.md` | `docs/operations/WORKFLOW_MANAGEMENT.md` | 機能名 implementation-governance → workflow-management（§5.15.6）、§5.4 軽量化方針に従い大部分を削減 |
-| `.kiro/specs/dual-reviewer-implementation-governance/design.md` | 同上 | 同上 |
+| `.kiro/specs/dual-reviewer-implementation-governance/requirements.md` | `docs/operations/WORKFLOW_MANAGEMENT.md` ＋ `.reviewcompass/specs/workflow-management/requirements.md`（解釈 う） | 機能名 implementation-governance → workflow-management（§5.15.6）、§5.4 軽量化方針に従い大部分を削減 |
+| `.kiro/specs/dual-reviewer-implementation-governance/design.md` | `docs/operations/WORKFLOW_MANAGEMENT.md` ＋ `.reviewcompass/specs/workflow-management/design.md`（解釈 う） | 同上 |
 | `scripts/governance/*.rb` | （実装は移植しない、軽量版を新規実装） | §5.4 の軽量化方針に従い静的 YAML 検査に置換 |
 
 ##### self-improvement（改善機能、workflow 層のみ）
 
 | 抽出元 | 抽出先 | クリーニング |
 |---|---|---|
-| `.kiro/specs/dual-reviewer-self-improvement/requirements.md` | `docs/operations/SELF_IMPROVEMENT.md`（§5.16.12） | 旧 8 要件のうち workflow 層改善向け部分のみ継承、§5.16 の 8 構成で再設計 |
-| `.kiro/specs/dual-reviewer-self-improvement/design.md` | 同上 | 同上 |
+| `.kiro/specs/dual-reviewer-self-improvement/requirements.md` | `docs/operations/SELF_IMPROVEMENT.md`（§5.16.12）＋ `.reviewcompass/specs/self-improvement/requirements.md`（解釈 う） | 旧 8 要件のうち workflow 層改善向け部分のみ継承、§5.16 の 8 構成で再設計 |
+| `.kiro/specs/dual-reviewer-self-improvement/design.md` | `docs/operations/SELF_IMPROVEMENT.md` ＋ `.reviewcompass/specs/self-improvement/design.md`（解釈 う） | 同上 |
 | `scripts/self_improvement/*.rb`（旧 8 モジュール） | （継承 4 モジュール、新規実装 4 モジュール、§5.16.11） | 継承可能：decision_adoption_model／rollback_model／pipeline_driver／learning_layout。新規：input_model／proposal_model／replay_backtest_model 相当／signal_extraction |
 
 ##### conformance-evaluation（新規 7 番目機能）
 
 | 抽出元 | 抽出先 | クリーニング |
 |---|---|---|
-| `.kiro/methodology/dual-reviewer-spec-driven-paper/v3-plan.md` | `docs/operations/CONFORMANCE_EVALUATION.md`（§5.10.7） | future feature 記述を実機能仕様として書き起こし、12 criteria 構造（§5.10.2）を明示 |
+| `.kiro/methodology/dual-reviewer-spec-driven-paper/v3-plan.md` | `docs/operations/CONFORMANCE_EVALUATION.md`（§5.10.7）＋ `.reviewcompass/specs/conformance-evaluation/requirements.md`（解釈 う、design.md は v3-plan に明示なきため後続セッションで起こす） | future feature 記述を実機能仕様として書き起こし、12 criteria 構造（§5.10.2）を明示 |
 
 #### 5.20.3 正本文書の対応表
 
@@ -2978,6 +2983,67 @@ ReviewCompass/                           # フェーズ 2 で新設
 - §5.14.3 10 メトリクスカテゴリ
 - §5.15.5 強制的差異化（forced-divergence）
 - §4 アプリ側ディレクトリ規約
+
+#### 5.23.12 サブエージェント方式（中間経路、2026-05-22 確定）
+
+本節はセッション 19 で実証採用が確定したサブエージェント方式（Claude Code 内部のサブエージェント機構を用いた 3 役レビュー）の運用条件を定義する。手動 dogfooding と実 LLM 経路（runtime-mediated）の中間に位置する経路として恒久運用する。
+
+##### 5.23.12.1 位置付け
+
+- **手動 dogfooding**：人間が 3 役を兼ねるか別の人間が役を担う。フェーズ 1 から実施可能。独立性確保が課題（§5.23.4）
+- **サブエージェント方式**：メインセッション LLM がオーケストレーター（主役を兼ねる、または別サブエージェントに委ねる）となり、敵対役と判定役を Claude Code 内部のサブエージェント機構で別 session として実行。**フェーズ 1 から実施可能**
+- **runtime-mediated**：フェーズ 4 で実装する API／CLI 経路の本実装による 3 役レビュー
+
+##### 5.23.12.2 採用根拠（セッション 19 実証）
+
+セッション 19 の foundation requirements.md 抽出の dogfeeding で実証採用し、効果を確認：
+
+- 3 役を異なるモデルファミリーに割り当て可能（Opus 4.7／Sonnet 4.6／Haiku 4.5、モデル多様化規律 §5.9.1 を達成）
+- 各役が独立 session で動作し、メインセッションの作業文脈を直接共有しない（独立性確保）
+- 敵対役が独立な所見を発見（手動模倣では困難な「同一人間による独立発見」を回避）
+- 1 セッション内で 3 役完結（手動模倣のように複数回のセッションを跨ぐ必要なし）
+
+##### 5.23.12.3 実施条件
+
+- 主役：メインセッションが担うか、別サブエージェントを呼び出すかを選択可能。前者の場合は「メイン LLM は 3 役のいずれにもならない」規律（§5.9.1）から逸脱するが、本方式の暫定許容として明示
+- 敵対役・判定役：別サブエージェントとして呼び出す（Claude Code の Agent ツール経由）
+- モデル多様化：3 役で異なるモデルファミリーまたはバージョンを使う（§5.9.1 規律と同じ）
+- プロンプト雛形：フェーズ 4 で `templates/prompts/<段の用途>/<役>.prompt.md` を整備するまでは、Agent 呼び出し時のメッセージで暫定指示する
+- ファイル遮断：サブエージェントには読み取り権限のみ与え、書き込み権限を遮断する（または最小権限の `general-purpose` 等を使う）
+- 計画書引用や事実主張は、メインセッションで事後検証する（サブエージェントの引用精度は完全ではない）
+
+##### 5.23.12.4 記録フォーマット
+
+§5.23.5 のスキーマに準拠し、`mode` 値を `subagent_mediated` とする。各役の `provider` フィールドは次の値を使う：
+
+- メインセッションが主役を担う場合：`claude_code_main_session`
+- サブエージェントが担う場合：`claude_code_subagent`
+
+`model_full_id` には実際に使用したモデルの完全版識別子を記録する。
+
+##### 5.23.12.5 mode 値の foundation 語彙への追加
+
+foundation の `metadata_contract.yaml` のレビューモード語彙に `subagent_mediated` を正式値として追加する（§5.18.13 で 3 値体制への拡張を反映）。要件 6 受入 6 の最低限要求（`manual_dogfooding` と `runtime_mediated` の区別）は維持し、`subagent_mediated` は追加値として位置付ける。
+
+##### 5.23.12.6 自動化と段階的移行
+
+- **フェーズ 1〜2**：サブエージェント方式と手動 dogfooding を並行運用可能
+- **フェーズ 3（スタブ実装）**：サブエージェント方式のレビュー記録形式とスタブの出力形式の互換性を検証
+- **フェーズ 4（実 LLM 実装）**：runtime-mediated 経路が動くようになったら、3 方式比較データの母集団に `manual_dogfooding`／`subagent_mediated`／`runtime_mediated` を別軸として記録（§5.9.6 への組み込み、§5.14.3 カテゴリ 2 への追加軸）
+- **フェーズ 4 完了後**：3 経路を恒久運用。経路ごとの特性差を `analysis` 機能で観察し、`self-improvement` の提案根拠とする
+
+##### 5.23.12.7 限界
+
+- メインセッションが主役を担う場合、§5.9.1 の「メイン LLM は 3 役のいずれにもならない」規律から逸脱する。完全分離のためには別サブエージェントを主役として呼び出す必要があるが、コスト・複雑性とのトレードオフ
+- サブエージェントの計画書引用は完全ではない（セッション 19 実証：§番号の誤りが発生）。事実主張はメインセッションで事後検証する運用が必要
+- プロンプト雛形が整備されるまでは、各役のプロンプト設計の品質がレビュー結果に強く影響する
+
+##### 5.23.12.8 関連参照
+
+- §5.18.13 レビューモード語彙の 3 値体制
+- §5.9.1 3 役レビューの基本構造（モデル多様化規律）
+- §5.9.6 3 方式比較データ
+- §5.14.3 メトリクスカテゴリ 2
 
 ## 6. 統合する課題と機能採用判断（本セッション発見の 5 つ ＋ 機能採用 1 件）
 
