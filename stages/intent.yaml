@@ -1,0 +1,37 @@
+# stages/intent.yaml
+# intent 段の段定義（計画書 §5.5 に従う）
+
+stage_id: intent
+description: ReviewCompass プロジェクトの意図文書（INTENT／DESIGN_PRINCIPLES／NON_GOALS／TRACEABILITY）を起草・レビュー・承認する段。機能横断段（全機能で同じ値）。
+phase: intent
+
+stages:
+  - name: drafting
+    actor: human
+    description: 意図文書の起草。人間担当。LLM は起草しない（§5.5 intent 層の設計補足）。
+    expected_artifacts:
+      - intent/INTENT.md
+      - intent/DESIGN_PRINCIPLES.md
+      - intent/NON_GOALS.md
+      - intent/TRACEABILITY.md
+    completion_criteria: 4 文書すべて配置済み、各文書に必須節「1. この文書の役割」を含むこと
+
+  - name: review
+    actor: llm
+    description: 意図文書の LLM レビュー（単発、波なし、§5.5 intent 層の設計補足）。
+    expected_artifacts:
+      - docs/reviews/intent-review-<日付>.md
+    completion_criteria: レビュー証跡が存在し、判定（必要な修正の有無）が記載されていること
+
+  - name: approval
+    actor: human
+    description: 人間による承認 gate。LLM レビューが承認 gate を兼ねない（自走防止、§5.5 intent 層の設計補足）。
+    expected_artifacts:
+      - 利用者承認の明示記録（spec.json または別ファイル）
+    completion_criteria: 利用者の明示承認発言の出典が記録されていること
+
+source_note: |
+  本 intent 段の文書は 2026-05-21 セッション 17 で素材リポジトリ
+  （Rwiki-v2-code-mod/.kiro/methodology/reviewcompass/intent/）で起草された。
+  2026-05-24 セッション 22 で ReviewCompass リポジトリの intent/ にコピー配置。
+  dogfeeding（自己適用検証）の文脈で、前システムからのリバイス（改訂版作成）として保持。
