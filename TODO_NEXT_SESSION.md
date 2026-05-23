@@ -93,10 +93,12 @@ A の requirements approval が全 7 機能で完了したら、design フェー
 
 design.md の素材：`/Users/Daily/Development/Rwiki-v2-code-mod/dual-reviewer-rebuild/.kiro/specs/<機能名>/design.md`（読み取り専用）
 
-## 4. 直近の確定事項（2026-05-24 セッション 22）
+## 4. 直近の確定事項（2026-05-24 セッション 22〜23）
 
 利用者明示承認のあった項目を新しい順に記録：
 
+- foundation requirements approval 取得（2026-05-24 セッション 23、利用者発言「確認した。承認」、依存マップ順 1/7 機能目）
+- 旧 paper-interface 由来の用語不整合 A-009 の対処：foundation 1 箇所＋analysis 6 箇所で「論文」→「報告書」統一、行 5 の歴史的経緯記述（`paper-interface`（論文向け）の旧名）は保持。利用者発言「(ア) 、論文ではなく報告書とする」（2026-05-24 セッション 23）
 - TODO 縮約：履歴系を `docs/archive/todo/TODO_NEXT_SESSION-2026-05-24-snapshot.md` に退避、本体約 100 行に削減
 - TODO 雛形 `templates/todo/TODO_NEXT_SESSION.template.md` 新設、本 TODO も雛形構造に整合
 - intent 4 文書を素材リポから `intent/` にコピー、`stages/intent.yaml` と `stages/feature-partitioning/2026-05-24-proposal.md` 新設、7 機能の spec.json reference を実在パスに更新
