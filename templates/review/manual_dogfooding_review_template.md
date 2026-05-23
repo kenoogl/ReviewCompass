@@ -1,5 +1,5 @@
 ---
-type: requirements_local_review  # 計画書 §5.9.3 の type 値（種別に応じて変更：requirements_local_review／design_local_review／tasks_local_review／implementation_conformance_review）
+type: requirements_triad_review  # 計画書 §5.9.3 の type 値（種別に応じて変更：requirements_triad_review／design_triad_review／tasks_triad_review／implementation_conformance_review）
 target: <抽出先パス>              # 例：.reviewcompass/specs/foundation/requirements.md
 target_commit: <commit_hash>     # 抽出先ファイルが含まれるコミットの sha
 target_content_hash: <sha256>    # 抽出先ファイル内容の sha256
