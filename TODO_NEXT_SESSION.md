@@ -1,6 +1,6 @@
 # 次セッション継続用メモ
 
-最終更新：2026-05-23（セッション 21 中盤、論点 1 の 6 階層復元・用語訂正・段集合の 5 段化を反映）
+最終更新：2026-05-24（セッション 22、論点 1 と論点 6 の整合解決 ＋ active 必読層棚卸し候補 1 実施）
 作業ディレクトリ：`/Users/Daily/Development/ReviewCompass/`（本リポジトリ）
 リポジトリ：`git@github.com:kenoogl/ReviewCompass.git`（main ブランチ）
 
@@ -88,7 +88,7 @@
 - `docs/design/spec-json-schema-design.md` を新設（313 行）
 - セッション 20 中盤の dogfeeding 発見（雛形なし、phase 値正本未定義、stages/ 未配置）と、計画書 §5.4〜§5.9 の二重構造の確認結果を凍結
 - 確定した 7 論点（セッション 21 修正後）：
-  - 論点 1：機能単位 spec.json は **6 階層保持**（intent／feature-partitioning／requirements／design／tasks／implementation、利用者明示承認 2026-05-22 セッション 20 line 979）。論点 6 との整合性問題は未解決として保留
+  - 論点 1：機能単位 spec.json は **6 階層保持**（intent／feature-partitioning／requirements／design／tasks／implementation、利用者明示承認 2026-05-22 セッション 20 line 979）。論点 6 との「整合性問題」はセッション 22（2026-05-24）で解決：問題はステージ集合ではなく表現方法のみで、計画書 §5.5 で intent（3 段）／feature-partitioning（2 段）のステージ構造が確定済み。機能横断段は全機能で同じ値を持ち、reference フィールドで artifact へのリンクを張る運用で論点 1・6・§4.2 の三者に整合（利用者明示承認 2026-05-24）
   - 論点 2：phases に統合（approvals 廃止）→ 後に `workflow_state` に改名
   - 論点 3：**5 段（drafting／local-review／review-wave／alignment／approval、名詞統一）** × 各フェーズ = 20 値の `current_phase`（責務分離による 5 段化、利用者明示承認 2026-05-23）
   - 論点 4：dogfooding_mode を spec.json から削除
@@ -188,13 +188,13 @@
   - **current_phase の再確定**：旧確定（current_phase を書く ＋ 運用規律で同期、セッション 20 line 2110〜2165）から、`current_phase` を書かず `workflow_state` から計算で求める方針に変更（2026-05-23 セッション 21 利用者明示承認、再オープン手順を踏んで実施）。嘘の近道（古い current_phase を信じる失敗モード）を構造的に消すため。補助規律 1 件（workflow_state を唯一の真実源、読む側／書く側を一体規律化）を memory に追加
   - **段ラベルの名詞統一**：旧表記「aligned」「approved」（過去分詞）を「alignment」「approval」（名詞、活動名）に統一（2026-05-23 セッション 21 利用者明示承認）。計画書 §5.5 の既存の名詞型表記（drafting／review／approval／candidate-proposal／local-review／review-wave）と整合、全段名が活動名で揃い揺らぎが消える
 
-## 4.5 ペンディング論点（2026-05-23 セッション 21 で議論凍結）
+## 4.5 ペンディング論点の処理状況
 
-次の論点は議論が複雑で認知負荷が高いため、別セッションで改めて取り上げる：
+セッション 21 で議論凍結された 2 件は、セッション 22（2026-05-24）で次のとおり処理：
 
-- **設計メモ §4.5 構造例の 6 階層拡張**：intent と feature-partitioning を機能単位 spec.json の構造例に追加する作業。論点 1（6 階層保持）と論点 6（artifacts として残す）の整合は確定済みのため、構造例への反映を残すのみ（次セッションの作業候補）
-- **処理表面積の抑制方針による既存 memory の再構築**：計画書 §5.8 第 5 層に従い、active 必読層 18 件の中で統廃合可能な規律がないか棚卸しする。本日新規追加した 6 件（再発防止策 5 件 ＋ workflow_state 統合規律 1 件）と既存規律の重複・隣接関係を見直し、件数を減らす方向で再構築（2026-05-23 セッション 21 で memo）
-- 過去議論の参照：セッション 20 ログ line 1004〜1049（論点 2＝phases 構造）、line 1696〜1764（論点 6＝artifacts として残す）、セッション 21 ログ（最小単純優先の議論、current_phase 再確定）
+- **設計メモ §4.5 構造例の 6 階層拡張**：✅ 解決済み（2026-05-24）。「整合性問題」はステージ集合ではなく表現方法のみで、計画書 §5.5 のステージ構造を反映した構造例を設計メモ §4.5 に追加。利用者明示承認取得済
+- **処理表面積の抑制方針による既存 memory の再構築**：部分対応済み（2026-05-24）。候補 1（グループ F の 2 件統合：multi-file-dependency-precheck に pre-action-checklist を吸収）を実施し active 必読層 18 件 → 17 件に縮減。候補 2（グループ B の 5 件 → 3 件統合）は運用実績が浅いため見送り（次セッション以降で実運用してから判断）。利用者明示承認取得済
+- 過去議論の参照：セッション 20 ログ line 1004〜1049（論点 2＝phases 構造）、line 1696〜1764（論点 6＝artifacts として残す）、セッション 21 ログ（最小単純優先の議論、current_phase 再確定）、セッション 22（論点 1 と論点 6 の整合解決、棚卸し候補 1 実施）
 
 ## 5. 自動記録スクリプトの使い方
 
