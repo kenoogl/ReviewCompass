@@ -1,6 +1,6 @@
 # 次セッション継続用メモ
 
-最終更新：2026-05-24（セッション 22 末、計画書改定の第 2 段階完了、設計メモを archive 退避、第 3 段階を次セッションへ）
+最終更新：2026-05-24（セッション 22 末、計画書改定の第 2 段階＋雛形配置の第 3 段階すべて完了、次は design フェーズ drafting 段）
 作業ディレクトリ：`/Users/Daily/Development/ReviewCompass/`（本リポジトリ）
 リポジトリ：`git@github.com:kenoogl/ReviewCompass.git`（main ブランチ）
 
@@ -118,23 +118,14 @@
 
 - **フェーズ 1（抽出作業）進行中**
 - **requirements フェーズ**：全 7 機能の drafting／triad-review／review-wave／alignment 完了、approval（利用者承認）は未取得、機能横断波及所見 6 件すべて消化
-- **dogfeeding 派生作業（spec.json 整備）**：第 1 段階（設計メモ）完了、**第 2 段階（計画書改定）完了 2026-05-24**、第 3 段階（雛形配置 ＋ 7 機能配置）が次の作業
-- **design フェーズ**：未着手（spec.json 整備の第 3 段階の後に進む）
+- **dogfeeding 派生作業（spec.json 整備）**：第 1 段階（設計メモ）／第 2 段階（計画書改定）／**第 3 段階（雛形配置 ＋ 7 機能配置）すべて完了 2026-05-24**
+- **design フェーズ**：未着手（spec.json 整備完了により次の作業候補）
 
 ### 3.2 次の作業候補（優先順位順）
 
-#### A. spec.json 雛形配置と 7 機能配置（spec.json 整備の第 3 段階）
+#### A. 設計フェーズの drafting 段着手
 
-計画書 §5.24 を正本として：
-
-- spec.json 雛形を `templates/specs/spec.json.template` に配置（§5.24.6 構造例に従う）
-- foundation/spec.json を雛形に合わせて改訂（旧 approvals → workflow_state へ変換、最小単純優先に従い current_phase フィールド削除、pending_findings／traceability 削除、intent／feature-partitioning の reference フィールド追加）
-- 他 6 機能（runtime／evaluation／analysis／workflow-management／self-improvement／conformance-evaluation）に spec.json を配置
-- 各機能の現状を反映（requirements の drafting／triad-review／review-wave／alignment が true、approval が false）
-
-#### B. 設計フェーズの drafting 段着手（第 3 段階完了後）
-
-第 3 段階完了後、本来の design フェーズ drafting 段に進む。依存マップ順に：
+spec.json 整備（第 1〜3 段階）完了により、次は本来の design フェーズ drafting 段。依存マップ順に：
 
 1. foundation design.md（585 行、最大、§5.18 全体）
 2. runtime design.md（809 行、最大、§5.15 全体）
@@ -148,10 +139,10 @@
 
 ### 3.3 次セッションでの注意点
 
-- 着手前に計画書 §5.4〜§5.8 と §5.24（新設、spec.json 正本スキーマ）を必ず確認
-- 第 3 段階（雛形配置）は §5.24 を正本として、設計メモは参照しない（archive 退避済み）
-- foundation/spec.json の改訂は破壊的変更を含む（旧 approvals → workflow_state、current_phase 削除等）。改訂前に Read で現状を確認、必要なら git で旧版を保全
-- 他 6 機能への配置は依存マップ順（foundation → runtime → evaluation → analysis → workflow-management → self-improvement → conformance-evaluation）に従う
+- 着手前に計画書 §5.4〜§5.8 と §5.24（spec.json 正本スキーマ）を必ず確認
+- design.md 抽出は素材リポジトリ（`/Users/Daily/Development/Rwiki-v2-code-mod/dual-reviewer-rebuild/`）から読み取り専用で実施、ReviewCompass 内に解釈 う（運用文書 ＋ 仕様文書の二重出力）で配置
+- foundation design.md は 585 行と大型。サブエージェント方式で 3 役レビューを実施し、機能横断波及所見が出れば `pending-cross-feature-findings.md` に追記
+- 各 design.md 抽出後、spec.json の `workflow_state.design.drafting` を true に更新
 - レビュー記録の front-matter には author と reviewer フィールドを必ず明記（§5.4 起草者と判定者の分離規律）
 - mode 値は `subagent_mediated` で確定（計画書 §5.23.12）
 
@@ -187,6 +178,7 @@
   - 設計メモ `docs/design/spec-json-schema-design.md` を archive 退避：`docs/archive/design/2026-05-24-spec-json-schema-design.md`。正本は計画書 §5.24
   - active 必読層の規律統廃合：候補 1（pre-action-checklist を multi-file-dependency-precheck に統合）実施で 18 件 → 17 件、その後 AskUserQuestion 多用回避規律を追加し 18 件に戻る（利用者明示承認 2026-05-24）
   - 候補 2（グループ B の 5 件 → 3 件統合）は運用実績が浅いため見送り（次セッション以降で実運用してから判断、利用者明示承認 2026-05-24）
+  - **spec.json 整備の第 3 段階完了（2026-05-24）**：`templates/specs/spec.json.template` 新設、foundation/spec.json を §5.24 構造に改訂（旧 phase／approvals／custom 削除）、他 6 機能（runtime／evaluation／analysis／workflow-management／self-improvement／conformance-evaluation）に spec.json 新規配置、全 7 機能の JSON 構文検証 OK。利用者明示承認 2026-05-24
 
 ## 4.5 ペンディング論点の処理状況
 

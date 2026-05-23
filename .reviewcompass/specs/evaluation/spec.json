@@ -1,7 +1,7 @@
 {
-  "feature_name": "foundation",
+  "feature_name": "evaluation",
   "language": "ja",
-  "created_at": "2026-05-23T00:00:00+09:00",
+  "created_at": "2026-05-24T00:00:00+09:00",
   "updated_at": "2026-05-24T00:00:00+09:00",
   "workflow_state": {
     "intent": {
