@@ -1,6 +1,6 @@
 # SESSION_WORKFLOW_GUIDE：セッション運営ガイドライン
 
-最終更新：2026-05-23（セッション 19 の経験を踏まえて新設）
+最終更新：2026-05-23（セッション 21：用語「遡及／波及」の二軸的定義への訂正、段集合の責務分離による 5 段化を反映）
 
 本文書は ReviewCompass の開発セッションを確実に回すための運用ガイドラインである。セッション 19 で発覚した「ワークフロー把握不足のまま着手」「用語混同（遡及／波及）」等の失態と検討不足を踏まえ、次セッション以降が同じ失敗を繰り返さないよう手順と判断指針を明示する。
 
@@ -20,7 +20,7 @@
 
 2. **計画書 §5.4〜§5.7**（ワークフロー手続き）
    - §5.4：軽量化方針（思想は継承、実装は 1／10）
-   - §5.5：9 ファイル体制と段階層構造（drafting → review-wave → alignment-gate）
+   - §5.5：9 ファイル体制と段階層構造（drafting → local-review → review-wave → aligned → approved の 5 段、責務分離による 5 段化が確定済み 2026-05-23。計画書改定は第 2 段階で実施）
    - §5.6：reopen 手続きの機械強制（手戻り種別の二次元表記）
    - §5.7：session 跨ぎ時の状態管理（`stages/in-progress/`）
 
@@ -44,70 +44,164 @@
 ### 1.3 ワークフロー上の現在位置の確認
 
 - 現在どのフェーズか（intent ／ requirements ／ design ／ tasks ／ implementation）
-- 現在どの段か（drafting ／ review-wave ／ alignment-gate）
+- 現在どの段か（drafting ／ local-review ／ review-wave ／ aligned ／ approved の 5 段）
 - 残機能と消化予定所見
 
 ## 2. ワークフロー段の役割と順序
 
-### 2.1 全体構造（計画書 §5.5 由来）
+### 2.1 全体構造（責務分離による 5 段化、2026-05-23 利用者明示承認）
 
 ```
 intent 層（人間担当）
   ↓
 機能分離（§3.1 で 7 機能体制を確定済み）
   ↓
-requirements 段：drafting → review-wave → alignment-gate
+requirements 段：drafting → local-review → review-wave → aligned → approved
   ↓
-design 段：drafting → review-wave → alignment-gate
+design 段：drafting → local-review → review-wave → aligned → approved
   ↓
-tasks 段：drafting → review-wave → alignment-gate
+tasks 段：drafting → local-review → review-wave → aligned → approved
   ↓
-implementation 段：drafting → review-wave → alignment-gate
+implementation 段：drafting → local-review → review-wave → aligned → approved
 ```
 
-### 2.2 各段の役割
+旧記述（drafting → review-wave → alignment-gate の 3 段）は次の 2 段階の改定により旧式化：
 
-- **drafting**：各機能の草案作成。1 機能ずつ独立に進める。内部 local review（手動 dogfooding または subagent_mediated）で品質確保
+- alignment-gate を aligned（LLM 自動判定）と approved（人間または別モデル承認）の 2 段に分割
+- drafting と local-review を別段に分離（責務分離）
+
+合計で 5 段化（drafting／local-review／review-wave／aligned／approved）。計画書 §5.5 の改定は第 2 段階で実施し、それまでは本ガイドラインの 5 段記述が運用上の正本。
+
+### 2.2 各段の役割（責務分離後）
+
+- **drafting**：各機能の草案作成のみ。1 機能ずつ独立に進める。actor=llm（または human）
+- **local-review**：機能内の 3 役レビュー（主役・敵対役・判定役）と機能内対処の実施。手動 dogfooding または subagent_mediated（サブエージェント仲介方式）で実施。actor=llm
 - **review-wave**：複数機能を横断する複数ラウンドレビュー。機能横断波及所見の集約・対処
-- **alignment-gate**：フェーズ終端の機能横断整合確認。全機能の整合性検査と利用者承認
+- **aligned**：LLM 自動判定による整合確認段（旧 alignment-gate を分割した前半、actor=llm）
+- **approved**：人間または別モデル（§5.12 人間代役機構）による承認段（旧 alignment-gate を分割した後半、actor=human または proxy_model）
+
+drafting と local-review を別段にする理由：誰が何をしたかを段単位で明確に記録するため。草案作成者と判定者を分ける規律（§5.4）が段の構造上で機械検査可能になる。
 
 ### 2.3 段の進め方の規律
 
-- **drafting 段を全機能で完了**してから review-wave に進む（部分的に review-wave を始めない）
-- **review-wave の所見を消化**してから alignment-gate に進む
-- **alignment-gate で利用者承認**を得てから次フェーズに進む
+- **drafting 段の草案完成** → 当該機能の local-review 段に進む（機能単位で逐次進行）
+- **local-review 段で 3 役レビューと機能内対処** を完了 → 当該機能の drafting／local-review がそろう
+- **全機能で drafting ＋ local-review を完了** してから review-wave に進む（部分的に review-wave を始めない）
+- **review-wave の所見を消化** してから aligned に進む
+- **aligned で LLM 自動判定** を通過してから approved に進む
+- **approved で利用者または別モデル承認** を得てから次フェーズに進む
 
 ### 2.4 「次の機能の drafting に進むべき」状況の判断
 
-drafting 段でレビューを行った所見が **機能横断の波及所見**だった場合、当該機能の drafting で対処せず、`pending-cross-feature-findings.md` に持ち越して **次の機能の drafting に進む**。これがセッション 19 の中盤で確立された運用パターン。
+local-review 段で 3 役レビューを行った所見が **機能横断の波及所見**だった場合、当該機能の local-review で対処せず、`pending-cross-feature-findings.md` に持ち越して **次の機能の drafting に進む**。これがセッション 19 の中盤で確立された運用パターン。
 
-## 3. 機能内対処と機能横断波及所見の区別
+## 3. 修正案件の波及種別と処理段
 
-### 3.1 用語の使い分け
+### 3.1 用語の使い分け（二軸的定義、2026-05-23 訂正）
 
-- **遡及（そきゅう）修正**：過去の失敗の修正（避けるべき表現）
-- **波及（はきゅう）**：機能を増やすほど明らかになる **通常現象**（推奨表現）
+両用語は **対象方向が異なる正当な技術用語** であり、優劣はない：
 
-セッション 19 中盤で、私（メインセッション）が「foundation の遡及修正」と表現したことを利用者が「波及であり alignment wave の範囲」と訂正した。この訂正を反映し、本ガイドラインでは **「波及」のみを使う**。
+- **遡及（そきゅう）**：**上流フェーズへの影響**。下流段の作業で発見された問題が、上流段（過去フェーズ）の修正を要するもの。例：実装段で発見した不整合が要件段の書き直しを要する
+- **波及（はきゅう）**：**同フェーズ内の他機能（フィーチャー）への影響**。ある機能のレビューが別機能との不整合を露出させるもの。例：foundation 要件の修正が runtime／evaluation 要件にも影響する
 
-### 3.2 判別基準
+セッション 19 中盤で、私（メインセッション）が「foundation の遡及修正」と表現したことを利用者が「波及であり alignment wave の範囲」と訂正した。これは A-001 が **同フェーズ内（要件段）の他機能（foundation／runtime）への影響** であって、上流フェーズへの修正ではない、という意味だった。私はこれを「遡及は悪、波及は善」と誤一般化していたが、後のセッションで利用者から再訂正があり、本ガイドラインを二軸的定義に書き直した（2026-05-23）。
 
-ある所見が機能横断かどうかは次で判別：
+### 3.2 修正案件の 4 種別（＋ 2 補助種別）
 
-- **機能内**：当該機能の仕様文書または運用文書のみの修正で完結する
-- **機能横断**：複数機能の仕様文書または計画書の修正が必要、または機能間の整合性に関する所見
+レビューで露出する所見は次の種別に分類する：
 
-### 3.3 対処の振り分け
+| 種別 | 内容 | 例 |
+|---|---|---|
+| **機能内対処** | 当該機能の仕様修正のみで完結 | 表現修正、機能内の語彙不統一訂正 |
+| **波及（同フェーズ・横方向）** | 同フェーズ内の他機能の仕様修正も必要 | A-001：foundation 要件と runtime 要件の `not_run` 欠落 |
+| **遡及（上流フェーズ・縦方向）** | 上流フェーズの仕様修正が必要 | 設計段で「要件段の Req 6 受入 8 に矛盾あり」と発見 |
+| **遡及 ＋ 波及（縦 ＋ 横）** | 上流フェーズの複数機能に影響 | 設計段で発見した要件段の不整合が複数機能の要件文書に波及 |
 
-- **機能内**：当該機能の drafting 段で対処、レビュー記録の §4 統合節に「対処済み」と記録
-- **機能横断波及**：`pending-cross-feature-findings.md` に集約、要件 review-wave／alignment-gate で対処
-- **leave-as-is**：判定役が「修正不要」と判断したもの、対処せず記録のみ
+補助種別：
 
-### 3.4 機能横断波及所見の管理ルール
+- **leave-as-is（修正不要）**：判定役が「修正不要」と判断したもの、対処せず記録のみ
+- **延期**：「将来フェーズで対処」と判定役が明示したもの（例：F-004 の配置時対処）
 
-- 各機能の drafting 段の local review で発見されたら、即時 `pending-cross-feature-findings.md` に追記
+### 3.3 種別ごとの処理段と方法
+
+#### (a) 機能内対処
+
+- **発見されるタイミング**：drafting 段（起草者の自己発見）／ local-review 段（3 役レビュー）
+- **処理する段**：当該機能の **local-review 段** で対処（drafting に戻して草案修正、または local-review 段内で直接修正）
+- **方法**：当該機能の仕様文書を直接修正
+- **次段への進行**：当該機能の local-review 段が `completed` 状態になってから次機能へ
+- **記録先**：レビュー記録（`.reviewcompass/specs/<機能>/reviews/<日付>-<種別>.md`）の §4 統合節に「対処済み」と記録
+
+#### (b) 波及（同フェーズ・他機能への影響）
+
+- **発見されるタイミング**：local-review 段（3 役が他機能との不整合に気づく）／ review-wave 段（機能横断レビュー）
+- **処理する段**：**review-wave 段**（フェーズ終端の機能横断段、全機能の drafting ＋ local-review 完了後に開始）
+- **方法**：
+  1. local-review 段で波及と判定されたら **当該機能では対処せず**、`.reviewcompass/pending-cross-feature-findings.md` に追記
+  2. 「次の機能の drafting」に進む（個別機能の段では対処しない）
+  3. 全機能の drafting ＋ local-review が完了したら、review-wave 段で集約消化
+  4. 影響を受ける全機能の仕様文書を一括修正（依存順を守る、例：foundation を先に修正してから runtime）
+- **記録先**：`pending-cross-feature-findings.md` の各所見項目、消化後は「✅ 対処済み（日付）」追記
+
+#### (c) 遡及（上流フェーズへの影響）
+
+- **発見されるタイミング**：任意の下流段（local-review／review-wave／aligned／approved のいずれか）
+- **処理方法**：**reopen 手続き（10 ステップ、§5.6）** を起動。当該段の作業を停止し、上流フェーズに戻る
+- **手戻り種別判定**：N（intent）／R（requirements）／D（design）／A（tasks）／I（implementation）× 深さ 0〜4 の二次元表記で判定
+- **再実施対象決定**：第 7 ステップで `stages/reopen-procedure.yaml` の trigger_map（再実施対象段の決定表）を参照して機械決定。actor=human の段（approved 等）に来たら作業を止めて承認待ち
+- **記録先**：種別判定の根拠を `docs/reviews/reopen-classification-<日付>.md` に残す、機能単位 spec.json の `reopened` 履歴と `recheck` フラグを更新
+
+#### (d) 遡及 ＋ 波及の組合せ
+
+- **発見されるタイミング**：任意の下流段
+- **処理方法**：reopen で上流フェーズに戻り、上流フェーズの review-wave 段で波及所見として集約消化、その後下流に伝播
+  1. **第 1 段階**：reopen 手続きで上流フェーズに戻り、影響範囲を特定（trigger_map）
+  2. **第 2 段階**：上流フェーズで `pending-cross-feature-findings.md` に波及所見として追記し、当該フェーズの review-wave 段で消化
+  3. **第 3 段階**：上流フェーズの aligned ＋ approved を再実施
+  4. **第 4 段階**：下流フェーズの aligned ＋ approved を再実施（trigger_map で連鎖再実施対象として決定）
+- **記録先**：reopen 記録 ＋ `pending-cross-feature-findings.md` の両方
+
+#### (e) leave-as-is と延期
+
+- **leave-as-is**：判定役が「修正不要」と判断したもの。対処せず、レビュー記録に判定根拠を残すのみ
+- **延期**：将来のフェーズで対処する判定。レビュー記録に延期理由と対処予定フェーズを残し、当該フェーズ着手時のチェックリストに追記
+
+### 3.4 振り分け判断のフロー（local-review 段で実施）
+
+local-review 段の判定役は、各所見について次の振り分けを行う：
+
+```
+所見発見
+  ↓
+当該機能の仕様修正のみで完結するか？
+  ├── YES → 機能内対処（local-review 段内で対処）
+  └── NO
+      ↓
+  他機能の仕様修正も必要か？
+  ├── YES（同フェーズ内のみ） → pending-cross-feature-findings.md に追記、review-wave 段で処理
+  ├── YES（上流フェーズに戻る必要あり、単機能） → reopen 手続きを起動
+  └── YES（上流フェーズに戻る必要あり、複数機能） → reopen ＋ 上流の review-wave で集約処理
+  
+別判定：
+  ├── 修正不要 → leave-as-is（記録のみ）
+  └── 将来フェーズで対処 → 延期（チェックリスト追記）
+```
+
+### 3.5 段ごとの露出と処理段の対応表
+
+| 段 | 主に露出する所見 | 当該段内で処理する所見 | 次段に持ち越す所見 |
+|---|---|---|---|
+| drafting | 起草中の自己発見 | 機能内（草案に直接反映） | なし |
+| local-review | 機能内 ／ 波及 ／ 遡及 | **機能内** のみ | 波及 → review-wave、遡及 → reopen |
+| review-wave | 波及（横断ラウンド中の追加発見も） | **波及** | 遡及あり → reopen |
+| aligned | 自動判定の不整合検出 | （自動判定が通過するまで前段に戻す） | 遡及あり → reopen |
+| approved | 重大見落とし、利用者または別モデルによる指摘 | （承認しない） | reopen で上流戻し |
+
+### 3.6 機能横断波及所見の管理ルール
+
+- 各機能の local-review 段で発見されたら、即時 `pending-cross-feature-findings.md` に追記
 - 追記項目：所見 ID（A-XXX 形式）、検出セッション、波及範囲（影響を受ける機能と仕様箇所）、対処方針、依存関係
-- review-wave／alignment-gate 着手時、全件を消化対象とする
+- review-wave／aligned／approved の機能横断段着手時、全件を消化対象とする
 - 消化後、各所見に「✅ 対処済み（YYYY-MM-DD、要件 review-wave）」ラベルを追加
 
 ## 4. サブエージェント方式の運用条件
@@ -187,7 +281,7 @@ reviewer:
 
 - **計画書更新 ＋ 基盤整備**：1〜2 コミット（セッション冒頭の方針確定、運用ファイル整備）
 - **機能ごとに 1 コミット**：仕様文書 ＋ 運用文書 ＋ レビュー記録の 3 ファイル（または schema/template 等の関連ファイル）
-- **機能横断レビュー（review-wave／alignment-gate）**：1 コミット（複数機能の小修正をまとめる）
+- **機能横断段（review-wave／aligned／approved）**：1 コミット（複数機能の小修正をまとめる）
 
 ### 6.2 コミット順序
 
@@ -220,10 +314,14 @@ push は **利用者明示承認**を仰いでから実行。LLM が自律的に
 
 ## 7. 用語ガイド
 
-### 7.1 「遡及」と「波及」
+### 7.1 「遡及」と「波及」（二軸的定義、2026-05-23 訂正）
 
-- ❌ 遡及修正（過去の失敗）
-- ✅ 波及所見（機能を増やすほど明らかになる通常現象）
+両用語は対象方向で使い分ける：
+
+- **遡及（そきゅう）**：上流フェーズへの影響（時間軸＝過去方向）
+- **波及（はきゅう）**：同フェーズ内の他機能への影響（横方向＝機能間）
+
+両方とも正当な技術用語で、避けるべき／推奨という関係ではない。所見の性格を正確に表すために使い分ける。
 
 ### 7.2 判定値の使い分け
 
@@ -234,7 +332,7 @@ push は **利用者明示承認**を仰いでから実行。LLM が自律的に
 ### 7.3 機能内と機能横断
 
 - **機能内対処**：当該機能の drafting 段で本セッション内に修正
-- **機能横断持ち越し**：`pending-cross-feature-findings.md` に集約、review-wave／alignment-gate で対処
+- **機能横断持ち越し**：`pending-cross-feature-findings.md` に集約、review-wave／aligned／approved の機能横断段で対処
 
 ### 7.4 サブエージェント関連
 
