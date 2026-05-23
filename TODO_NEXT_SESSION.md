@@ -12,8 +12,8 @@
 
 - **論点 1 の一方的変更**：セッション 20 中盤、私（メインセッション）が論点 1 を「6 階層保持（利用者明示承認、line 979）」から「4 階層」に勝手に変更し、設計メモに「確定」と書き込んだ。利用者の「議論継続」「停止」「計画書再読指示」を黙示の同意と誤解した結果
 - **用語「遡及／波及」の誤一般化**：セッション 19 の個別事例（A-001）を「遡及は悪、波及は善」と一般化して `SESSION_WORKFLOW_GUIDE.md` に書いた。本来は対象方向で使い分ける二軸的定義
-- **段集合 4 段への未反映**：alignment-gate を aligned と approved に分割する方針が確定済みなのに、運営ガイドラインや前回応答で 3 段記述が残存
-- **機能単位 spec.json の段数誤り**：機能単位 spec.json を 3 段（drafting／aligned／approved）と設計メモに書いたが、計画書 §5.5（4 段）との語彙不整合と機能ごとの review-wave 状態追跡の必要性により、4 段に修正
+- **段集合 4 段への未反映**：alignment-gate を alignment と approval に分割する方針が確定済みなのに、運営ガイドラインや前回応答で 3 段記述が残存
+- **機能単位 spec.json の段数誤り**：機能単位 spec.json を 3 段（drafting／alignment／approval）と設計メモに書いたが、計画書 §5.5（4 段）との語彙不整合と機能ごとの review-wave 状態追跡の必要性により、4 段に修正
 - **drafting 段の責務曖昧化**：SESSION_WORKFLOW_GUIDE.md §2.2 で「drafting 段に内部 local review を含める」と書いていたが、計画書 §5.5（drafting は「草案、最初の文書または成果物の生成」のみ）と不整合。誰が何をしたかを段単位で明確にするため、drafting と local-review を別段に分離（5 段化）
 
 セッション 21 で次の撤回・修正を実施（履歴上のラベル番号は併記、内容で参照する）：
@@ -90,12 +90,12 @@
 - 確定した 7 論点（セッション 21 修正後）：
   - 論点 1：機能単位 spec.json は **6 階層保持**（intent／feature-partitioning／requirements／design／tasks／implementation、利用者明示承認 2026-05-22 セッション 20 line 979）。論点 6 との整合性問題は未解決として保留
   - 論点 2：phases に統合（approvals 廃止）→ 後に `workflow_state` に改名
-  - 論点 3：**5 段（drafting／local-review／review-wave／aligned／approved）** × 各フェーズ = 20 値の `current_phase`（責務分離による 5 段化、利用者明示承認 2026-05-23）
+  - 論点 3：**5 段（drafting／local-review／review-wave／alignment／approval、名詞統一）** × 各フェーズ = 20 値の `current_phase`（責務分離による 5 段化、利用者明示承認 2026-05-23）
   - 論点 4：dogfooding_mode を spec.json から削除
   - 論点 5：pending_findings を spec.json から削除
   - 論点 6：traceability を spec.json から削除（機能分離証跡は `stages/feature-partitioning/<日付>-proposal.md` で artifacts として残す）
   - 論点 7：recheck／reopen は spec.json で保持
-- 採用方針：alignment-gate を aligned（LLM 自動判定）と approved（人間または別モデル承認）に分割、drafting と local-review を別段に分離（責務分離）、機能単位 spec.json も計画書 §5.5 と同じ段集合で揃える（合計 5 段、利用者明示承認 2026-05-23）
+- 採用方針：alignment-gate を alignment（LLM 自動判定）と approval（人間または別モデル承認）に分割、drafting と local-review を別段に分離（責務分離）、機能単位 spec.json も計画書 §5.5 と同じ段集合で揃える（合計 5 段、名詞統一、利用者明示承認 2026-05-23）
 - セッション 20 序盤で作成した foundation/spec.json は本設計に整合していないため、第 3 段階で書き直し予定
 
 ### 2.3 セッション 20 末の git 到達点
@@ -114,7 +114,7 @@
 ### 3.1 ワークフロー上の現在位置
 
 - **フェーズ 1（抽出作業）進行中**
-- **requirements フェーズ**：全 7 機能の drafting／review-wave／alignment-gate 完了、機能横断波及所見 6 件すべて消化
+- **requirements フェーズ**：全 7 機能の drafting／local-review／review-wave／alignment 完了、approval（利用者承認）は未取得、機能横断波及所見 6 件すべて消化
 - **dogfeeding 派生作業**：spec.json 正本スキーマ設計（第 1 段階完了、第 2〜3 段階は次セッション以降）
 - **design フェーズ**：未着手（spec.json 整備の第 2〜3 段階の後に進む）
 
@@ -124,9 +124,9 @@
 
 設計メモ（`docs/design/spec-json-schema-design.md`）を入力として、計画書改定を進める：
 
-- §5.5：requirements 以降のフェーズの段集合を 4 段（drafting／review-wave／aligned／approved）に拡張
-- §5.6：trigger_map（reopen 時の再実施段マップ）の alignment-gate 参照箇所をすべて aligned ＋ approved の組合せに置換（I 起点／A 起点／D 起点／R 起点／N 起点の全エントリ）
-- §5.12：人間代役機構と approved 段の actor の連動を明記
+- §5.5：requirements 以降のフェーズの段集合を 5 段（drafting／local-review／review-wave／alignment／approval）に拡張
+- §5.6：trigger_map（reopen 時の再実施段マップ）の alignment-gate 参照箇所をすべて alignment ＋ approval の組合せに置換（I 起点／A 起点／D 起点／R 起点／N 起点の全エントリ）
+- §5.12：人間代役機構と approval 段の actor の連動を明記
 - §5.24（新設）：spec.json の正本スキーマ（フィールド一覧、段の構造、状態値、current_phase 値リスト、構造例、同期問題の運用方針、責任分担）
 - §5.7／§5.8／§5.20：alignment-gate 登場箇所の見直し
 
@@ -139,7 +139,7 @@
 - spec.json 雛形を `templates/specs/spec.json.template` に配置
 - foundation/spec.json を雛形に合わせて改訂（pending_findings 削除、traceability 削除、approvals → workflow_state へ変換、命名整理を反映）
 - 他 6 機能（runtime／evaluation／analysis／workflow-management／self-improvement／conformance-evaluation）に spec.json を配置
-- 各機能の現状（requirements-aligned）を反映
+- 各機能の現状（requirements-alignment まで通過済み、approval は未取得）を反映
 
 #### C. 設計フェーズの drafting 段着手（spec.json 整備の後）
 
@@ -153,7 +153,7 @@
 6. self-improvement design.md（526 行）
 7. conformance-evaluation design.md（新規、v3-plan.md ＋ §5.10）
 
-各 design.md 抽出後はサブエージェント方式で 3 役レビューを実施し、機能横断波及所見が出れば pending-cross-feature-findings.md に追記して design 段の review-wave／alignment-gate で消化する。
+各 design.md 抽出後はサブエージェント方式で 3 役レビューを実施し、機能横断波及所見が出れば pending-cross-feature-findings.md に追記して design 段の review-wave／alignment／approval で消化する。
 
 ### 3.3 次セッションでの注意点
 
@@ -178,12 +178,23 @@
   - サブエージェント方式：正式採用（§5.23.12、2026-05-22）
 - **2026-05-23 追加確定**：
   - spec.json の正本スキーマ設計（`docs/design/spec-json-schema-design.md`、セッション 21 で 6 階層復元と 5 段化を反映）
-  - 段の構造（計画書 §5.5）：drafting／local-review／review-wave／aligned／approved の **5 段**（責務分離による 5 段化）
+  - 段の構造（計画書 §5.5）：drafting／local-review／review-wave／alignment／approval の **5 段**（責務分離による 5 段化、名詞統一）
   - 機能単位 spec.json の段集合：**5 段**（計画書 §5.5 と同じ、利用者明示承認 2026-05-23）
   - 階層範囲（論点 1）：**6 階層保持**（利用者明示承認 2026-05-22 セッション 20 line 979）
   - 用語「遡及／波及」の二軸的定義（`SESSION_WORKFLOW_GUIDE.md` §3.1・§7.1 で訂正）
   - 文書内のセッション符号ラベル（候補 A／方向 B／修正 5 等）の排除、内容での参照に統一
-  - 撤回・修正履歴の memory 反映と再発防止策 5 点（memory 追加予定）
+  - 撤回・修正履歴の memory 反映と再発防止策 5 点（memory 追加済み）
+  - **spec.json 設計原則「最小単純優先」**：各段の値は true／false のみ、in_progress と current_phase は計算で求める（フィールドとして書かない）、reopened は最小構造（詳細は別ファイル）。理由は「ワークフロー実行全般が持つ同根問題」（LLM が記録動作を確実に実行できない）に対する応答、複雑な仕様は脆さの上に複雑さを積むだけ、検出は他の層（利用者監査・git フック等）に任せる。詳細は `docs/design/spec-json-schema-design.md` §4.0（2026-05-23 利用者明示承認）
+  - **current_phase の再確定**：旧確定（current_phase を書く ＋ 運用規律で同期、セッション 20 line 2110〜2165）から、`current_phase` を書かず `workflow_state` から計算で求める方針に変更（2026-05-23 セッション 21 利用者明示承認、再オープン手順を踏んで実施）。嘘の近道（古い current_phase を信じる失敗モード）を構造的に消すため。補助規律 1 件（workflow_state を唯一の真実源、読む側／書く側を一体規律化）を memory に追加
+  - **段ラベルの名詞統一**：旧表記「aligned」「approved」（過去分詞）を「alignment」「approval」（名詞、活動名）に統一（2026-05-23 セッション 21 利用者明示承認）。計画書 §5.5 の既存の名詞型表記（drafting／review／approval／candidate-proposal／local-review／review-wave）と整合、全段名が活動名で揃い揺らぎが消える
+
+## 4.5 ペンディング論点（2026-05-23 セッション 21 で議論凍結）
+
+次の論点は議論が複雑で認知負荷が高いため、別セッションで改めて取り上げる：
+
+- **設計メモ §4.5 構造例の 6 階層拡張**：intent と feature-partitioning を機能単位 spec.json の構造例に追加する作業。論点 1（6 階層保持）と論点 6（artifacts として残す）の整合は確定済みのため、構造例への反映を残すのみ（次セッションの作業候補）
+- **処理表面積の抑制方針による既存 memory の再構築**：計画書 §5.8 第 5 層に従い、active 必読層 18 件の中で統廃合可能な規律がないか棚卸しする。本日新規追加した 6 件（再発防止策 5 件 ＋ workflow_state 統合規律 1 件）と既存規律の重複・隣接関係を見直し、件数を減らす方向で再構築（2026-05-23 セッション 21 で memo）
+- 過去議論の参照：セッション 20 ログ line 1004〜1049（論点 2＝phases 構造）、line 1696〜1764（論点 6＝artifacts として残す）、セッション 21 ログ（最小単純優先の議論、current_phase 再確定）
 
 ## 5. 自動記録スクリプトの使い方
 
@@ -229,4 +240,4 @@ python3 tools/session-log-converter.py --latest \
 
 ---
 
-_セッション 20 は当初の後追い 2 件の消化中に spec.json の方針未整備（雛形なし、phase 値正本未定義）が判明し、dogfeeding の抜け漏れチェックとして spec.json の正本スキーマ設計を進めた。論点 1〜7 を確定し、責務分離方針を採用、`docs/design/spec-json-schema-design.md` に議論を凍結。第 2 段階（計画書改定）と第 3 段階（雛形配置 ＋ 7 機能配置）は次セッション 21 に持ち越し。設計フェーズ drafting 段への移行はその後となる。なおセッション 21 で論点 1 が利用者明示承認なく変更されていたことが発覚、6 階層保持に復元、合わせて段集合の責務分離による 5 段化（drafting／local-review／review-wave／aligned／approved）が利用者承認により確定した。_
+_セッション 20 は当初の後追い 2 件の消化中に spec.json の方針未整備（雛形なし、phase 値正本未定義）が判明し、dogfeeding の抜け漏れチェックとして spec.json の正本スキーマ設計を進めた。論点 1〜7 を確定し、責務分離方針を採用、`docs/design/spec-json-schema-design.md` に議論を凍結。第 2 段階（計画書改定）と第 3 段階（雛形配置 ＋ 7 機能配置）は次セッション 21 に持ち越し。設計フェーズ drafting 段への移行はその後となる。なおセッション 21 で論点 1 が利用者明示承認なく変更されていたことが発覚、6 階層保持に復元、合わせて段集合の責務分離による 5 段化（drafting／local-review／review-wave／alignment／approval、名詞統一）が利用者承認により確定した。current_phase をフィールドとして書かず計算で求める方針、ラベルの名詞統一も同セッションで確定。_
