@@ -117,11 +117,12 @@ def judge_spec_set(spec_data, phase, stage, new_value):
 
 
 def format_current_state_text(feature, phase, phase_state):
-  """現状を人間可読のテキストとして整形する"""
+  """現状を人間可読のテキストとして整形する（仕様 §7.2 サンプル準拠で小文字真偽値）"""
   lines = [f"{feature}.{phase}:"]
   for s in PHASE_STAGES[phase]:
     value = phase_state.get(s, False)
-    lines.append(f"  {s}: {value}")
+    value_str = "true" if value else "false"
+    lines.append(f"  {s}: {value_str}")
   return "\n".join(lines)
 
 
