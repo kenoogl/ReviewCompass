@@ -87,23 +87,26 @@ ReviewCompass の運営ガイドラインの必読フローに従う：
 - 明示承認（規律 §0.2）
 - spec.json の `workflow_state.requirements.approval` を true に更新、承認発言の出典（発言の正確な引用・日付）を併記
 
-### C. conformance-evaluation 論点 A・B 対処（design 着手前必須、2026-05-24 セッション 23 末で記録）
+### C. conformance-evaluation 論点 A・B 対処 ✅ 完了済み（2026-05-24 セッション 23 末で対処完了）
 
-セッション 23 末に conformance-evaluation requirements approval 取得直前の利用者考察で浮上した構造的論点 2 件。本セッションでは案 1（現状維持）で approval を取得し、論点 A・B は別 session で計画書改訂として扱うことを利用者明示承認（「(ア) 案 1 で進めよう。既にここで議論したことが、ひな形になるので、メモを記録して、approval 後に対応」）。
+セッション 23 末に conformance-evaluation requirements approval 取得直前の利用者考察で浮上した構造的論点 2 件。当初は別 session での対処を予定していたが、利用者明示承認（「(ア)、一気にやってしまう」）により **本セッション内で軽量 reopen として対処完了**。
 
-- **論点 A**：実装コードから上流文書を推定する際の機能分離のタイミング。現要件文書はパターン A1（直接推定）の暗黙前提だが、組み合わせ最適化的に困難。利用者ご提案のパターン A2（実装コード → 全体 intent → 機能分離 → 各機能の requirements／design／tasks）が現実的、計画書 §5.5 階層構造とも整合
-- **論点 B**：照合チェックモードでの既存文書バイアス防止。現要件文書は推定時に既存文書を読むかが曖昧、二段階方式（推定時遮断 → 完了後比較、計画書 §5.9.1 ファイル遮断規律と同精神）の明示が必要
+採用方針（最終、案 Y）：
 
-詳細・改訂イメージ・後続セッションへの引継ぎ手順は別文書を参照：
+- **本筋／傍流の区別**：本筋＝照合チェック（仕様駆動開発のコードの要件充足判断）、傍流＝文書生成（リバースエンジニアリング、人協働）
+- **評価軸を 2 軸 6 criteria に絞る**（requirements ／ design × 3 criteria）。intent は参考情報、feature-partitioning と tasks は照合対象外
+- **モード別の既存文書扱いルール**：本筋では既存 feature-partitioning だけは推定時の入力として尊重（照合成立性のため）、他は遮断（バイアス防止）。傍流は人協働、遮断問題は発生しない
+- **推定段階の triad-review 適用**：推定段階と照合段階の両方に 3 役レビュー機構を適用、軽量／本格の使い分けを定義
 
-- [docs/notes/2026-05-24-conformance-evaluation-論点-a-b.md](docs/notes/2026-05-24-conformance-evaluation-論点-a-b.md)
+対処範囲（実施済み）：
 
-対処方針：
+- 計画書 §5.10 改訂（§5.10.1／5.10.2／5.10.3／5.10.6／5.10.7 改訂、§5.10.9／5.10.10 新設）
+- conformance-evaluation/requirements.md 改訂（Boundary Context、Requirement 1〜5、Change Intent）
+- pending-cross-feature-findings.md に A-010 として記録
+- spec.json：alignment と approval を一度 false に戻し、改訂完了後に再度 true に
+- 議論メモ [docs/notes/2026-05-24-conformance-evaluation-論点-a-b.md](docs/notes/2026-05-24-conformance-evaluation-論点-a-b.md) に最終結論を追記
 
-1. 計画書 §5.10 改訂案の作成（規律 §0.2 不可逆操作「計画書方針変更」、利用者明示承認必須）
-2. conformance-evaluation reopen 手続き（R-0）の起動（規律 §5.6）
-3. requirements.md 改訂、alignment 再実施、approval 再取得
-4. 完了後に B（design 着手）へ進む
+これで design 段着手の前提条件は揃った。次セッションは B（design 着手）に進む。
 
 ### B. 設計フェーズの drafting 段着手（A ＋ C 完了後）
 
@@ -115,6 +118,7 @@ design.md の素材：`/Users/Daily/Development/Rwiki-v2-code-mod/dual-reviewer-
 
 利用者明示承認のあった項目を新しい順に記録：
 
+- **conformance-evaluation 論点 A・B 対処（軽量 reopen、design 段着手の前提条件確立）**：計画書 §5.10 改訂（§5.10.1／5.10.2／5.10.3／5.10.6／5.10.7 改訂、§5.10.9／5.10.10 新設）と conformance-evaluation/requirements.md 改訂（Boundary Context、Requirement 1〜5、Change Intent）。案 Y（2 軸 6 criteria、本筋／傍流の区別、モード別既存文書扱いルール、推定段階の triad-review 適用）を採用。A-010 として pending-cross-feature-findings.md に記録（利用者明示承認「(ア)、一気にやってしまう」「(イ) 案 Y」「(ア)」2026-05-24 セッション 23）
 - conformance-evaluation requirements approval 取得（2026-05-24 セッション 23、利用者発言「ア」、依存マップ順 7/7 機能目、最終）。**全 7 機能の requirements approval 取得が完了**
 - conformance-evaluation 論点 A・B（機能分離タイミング・既存文書バイアス）を別文書 [docs/notes/2026-05-24-conformance-evaluation-論点-a-b.md](docs/notes/2026-05-24-conformance-evaluation-論点-a-b.md) に記録、TODO §3 セクション C として design 着手前必須事項に登録（利用者発言「(ア) 案 1 で進めよう。既にここで議論したことが、ひな形になるので、メモを記録して、approval 後に対応」）
 - self-improvement requirements approval 取得（2026-05-24 セッション 23、利用者発言「ア」、依存マップ順 6/7 機能目）

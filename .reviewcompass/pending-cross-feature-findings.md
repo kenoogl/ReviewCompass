@@ -131,6 +131,37 @@
 - **依存関係**：4 機能の修正は独立、すべて本セッション内で完了
 - **波及範囲完了性の確認**：第 2 波の全件 grep（2026-05-24 セッション 23）により、本所見の波及範囲は完了。残存「論文」3 箇所はすべて歴史的経緯として明示的に保持判断済み
 
+### A-010：conformance-evaluation の推定プロセス論点 A・B 対処（軽量 reopen） ✅ 対処済み（2026-05-24、セッション 23 末）
+
+- **対処内容**：conformance-evaluation の推定プロセスについて、利用者考察により浮上した構造的論点 2 件を対処：
+  - **論点 A（機能分離のタイミング）**：本筋（照合チェック）では既存 feature-partitioning を所与として扱い、独立の推定・照合対象から外す。傍流（文書生成、リバースエンジニアリング）は人協働を前提とした推定支援機能と位置付け、完全自動推定は目指さない
+  - **論点 B（既存文書バイアス防止）**：照合チェックモードで二段階方式（推定 → 比較）を採用、既存 feature-partitioning だけは推定時の入力として尊重（照合成立性のため）、他の既存上流文書（intent ／ requirements ／ design）は推定時に技術的に遮断（バイアス防止）
+  - **評価軸の絞り込み（案 Y）**：4 軸 12 criteria → **2 軸 6 criteria**（requirements ／ design × 3 criteria）に絞る。intent は参考情報、feature-partitioning と tasks は照合対象外
+  - **推定段階の triad-review 適用**：推定段階と照合段階の両方に 3 役レビュー機構を適用、軽量／本格の使い分けを定義
+- **対処範囲**：
+  - **計画書 §5.10 改訂**：§5.10.1（主要用途を本筋／傍流で整理）、§5.10.2（2 軸 6 criteria に絞る）、§5.10.3（推定段階にも triad-review 適用）、§5.10.6（v3-plan §3.3 の扱いを本筋／傍流で整理）、§5.10.7（criteria 数の更新）、§5.10.9 新設（モード別の既存文書扱いルール）、§5.10.10 新設（推定段階の triad-review 適用方針）
+  - **conformance-evaluation/requirements.md 改訂**：Boundary Context、Requirement 1〜5、Change Intent
+  - **議論メモ**：[docs/notes/2026-05-24-conformance-evaluation-論点-a-b.md](docs/notes/2026-05-24-conformance-evaluation-論点-a-b.md) に経緯・改訂イメージ・最終結論を記録
+- **検出経緯**：セッション 23 末、conformance-evaluation requirements approval 取得直前の要件文書要約提示の中で利用者が考察・指摘
+- **利用者指摘の出典（主要なもの）**：
+  - 「論文化という言葉があるが、元々paper-interfaceという機能の名残。現在はanalysisで報告書を対象とする」（A-009 の指摘、論点 A の起点）
+  - 「目的が照合であるのなら、intentから機能分割をせず、design > requirementsまでできたところで、既存の機能分割を与えるべきか？そうしないと照合できない」（論点 B と照合成立性の両立に関する指摘）
+  - 「上流文書がない場合は、リバースエンジニアリング。この場合には人と協働で分析を進めることが効率的。これは傍流。一方、仕様駆動開発を使って構築したコードの要件充足判断が本筋」（本筋／傍流の整理）
+  - 「これは議論の点がおかしい。どうして機能分割を対象とするのか？」（評価軸の絞り込みの示唆）
+  - 「実装からの上流文書推定は、構造的側面からの記述でよいと思う。意図は参考情報としての位置づけ。さらに、タスク分解は不要」（評価軸の絞り込み方針）
+  - 「(イ) 案 Y」（2 軸 6 criteria 採用）
+  - 「(ア)、一気にやってしまう。上記の骨子に加え、上流文書生成の過程に triad-review の必要性を検討」（推定段階の triad-review 適用）
+- **重大度**：WARN（要件文書の構造的整合性に関わる）
+- **判定**：must-fix（approval 前に対処、案 Y 採用）
+- **波及範囲（最終）**：
+  - **conformance-evaluation**：`.reviewcompass/specs/conformance-evaluation/requirements.md` の Boundary Context、Requirement 1〜5、Change Intent（複数受入の追加・改訂）
+  - **計画書**：`docs/plan/reconstruction-plan-2026-05-21.md` §5.10.1／§5.10.2／§5.10.3／§5.10.6／§5.10.7 改訂、§5.10.9／§5.10.10 新設
+- **処理段**：conformance-evaluation の requirements 段で発見。既に approval 取得済み（commit 8edefbf）状態だったため、approval を一度取り消し（false に戻し）、軽量 reopen として処理。実装基盤未整備（stages/reopen-procedure.yaml 未作成、計画書 §5.6 の 10 ステップ完全列挙未確定）により形式的 reopen 手続きの正式起動は実施せず、利用者明示承認に基づく軽量対処
+- **対処方針の選択肢と利用者判断**：
+  - (ア) 形式的 reopen 手続きの基盤整備を先に実施
+  - (イ) 軽量に進める（approval 前の最終調整と同じ精神）→ **採用**（利用者明示承認 2026-05-24 セッション 23）
+- **依存関係**：計画書改訂と requirements.md 改訂は本セッション内で完了、design 段着手前の必須対処事項として TODO §3 セクション C に登録、本対処完了により C は「完了済み」に更新
+
 ## 4. 対処済みの所見
 
 （本セッションでの新規作成時、未消化のみ）
