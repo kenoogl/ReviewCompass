@@ -2,7 +2,23 @@
   "$schema": "https://json.schemastore.org/claude-code-settings.json",
   "permissions": {
     "allow": [
-      "Bash(python3 -m unittest tests.tools.*)"
+      "Bash(python3 -m unittest tests.tools.*)",
+      "Bash(python3 -m unittest tests.hooks.*)",
+      "Bash(python3 -m unittest discover -s tests*)"
+    ]
+  },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/pre-bash-precheck.sh",
+            "timeout": 30
+          }
+        ]
+      }
     ]
   }
 }

@@ -26,6 +26,10 @@ def run_hook(tool_input_dict, cwd):
 
   tool_input_dict: PreToolUse の tool_input 部分（例：{"command": "git commit"}）
   cwd: 実行ディレクトリ（temp git repo 等）
+
+  errors="replace" は git／locale 依存の stderr に非 UTF-8 バイトが含まれる
+  可能性に対応する（macOS 等の環境差を吸収するための setup 設定、
+  assertion は不変）。
   """
   payload = {"tool_name": "Bash", "tool_input": tool_input_dict}
   return subprocess.run(
@@ -34,6 +38,7 @@ def run_hook(tool_input_dict, cwd):
     cwd=str(cwd),
     capture_output=True,
     text=True,
+    errors="replace",
     timeout=15,
   )
 
@@ -78,10 +83,18 @@ def _setup_git_repo_with_script(tmpdir):
     cwd=str(tmpdir), check=True, capture_output=True,
   )
   # 段階 2 スクリプトを tools/ にコピー（フックが python3 tools/check-workflow-action.py
-  # を相対パスで呼ぶため）
+  # を相対パスで呼ぶため）。コピー後にコミットして作業ツリーを clean に保つ。
   tools_dir = Path(tmpdir) / "tools"
   tools_dir.mkdir()
   shutil.copy(REPO_ROOT / "tools" / "check-workflow-action.py", tools_dir)
+  subprocess.run(
+    ["git", "add", "tools/check-workflow-action.py"],
+    cwd=str(tmpdir), check=True, capture_output=True,
+  )
+  subprocess.run(
+    ["git", "commit", "-qm", "add stage-2 script"],
+    cwd=str(tmpdir), check=True, capture_output=True,
+  )
   return pending_file
 
 
