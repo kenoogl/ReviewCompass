@@ -108,16 +108,42 @@ ReviewCompass の運営ガイドラインの必読フローに従う：
 
 これで design 段着手の前提条件は揃った。次セッションは B（design 着手）に進む。
 
-### B. 設計フェーズの drafting 段着手（A ＋ C 完了後）
+### D. ワークフロー事前検査機構と規律統廃合の検討（次セッション以降、2026-05-25 セッション 23 末で記録）
+
+セッション 23 末の利用者ご提案により、ワークフロー手順の逸脱防止の新しい仕組み案が浮上。本セッションでは整理のみ記録、次セッションで集中検討する。詳細は別文書を参照：
+
+- [docs/notes/2026-05-25-workflow-pre-check-and-discipline-consolidation.md](docs/notes/2026-05-25-workflow-pre-check-and-discipline-consolidation.md)
+
+主な論点：
+
+- 処理開始時の事前検査機構（計画書 §5.8 多層防御に **補助層 C** として追加）
+- 段階的導入（段階 1 軽量／段階 2 外部スクリプト／段階 3 Claude Code フック）
+- 規律統廃合の可能性（active 規律 18 件 → 10〜12 件への圧縮）
+- 効果測定指標との接続
+
+対処方針（次セッション以降）：
+
+1. 計画書 §5.8 改訂案の作成（補助層 C 新設、§0.2 不可逆操作「計画書方針変更」、利用者明示承認必須）
+2. 段階 1 の規律化（処理前自己検査チェックリストを CLAUDE.md または規律ファイルに追加）
+3. 規律統廃合の本格議論（active 規律 18 件 → 10〜12 件、利用者明示承認）
+4. 段階 2 の外部スクリプト設計（stages/ 整備と並行）
+5. 段階 3 の Claude Code フック導入（フェーズ 4 以降）
+
+D は本セッションでは整理のみ。本格検討は別 session で実施することを利用者明示承認（「(イ)として、次セッションで議論する」2026-05-25 セッション 23）。
+
+### B. 設計フェーズの drafting 段着手（A ＋ C 完了後、ただし D の段階 1 を先に実施することを検討）
 
 A の requirements approval が全 7 機能で完了し、C の論点 A・B が解決された後に、design フェーズの drafting 段に進む。依存マップ順に foundation design.md（585 行、§5.18）から開始。各機能 drafting 後に triad-review、機能横断所見があれば pending-cross-feature-findings.md に追記。
 
 design.md の素材：`/Users/Daily/Development/Rwiki-v2-code-mod/dual-reviewer-rebuild/.kiro/specs/<機能名>/design.md`（読み取り専用）
 
+注意：D（事前検査機構）の段階 1 を先に実施すれば、design 着手時から逸脱防止の仕組みが効く可能性がある。順序は次セッションで再検討。
+
 ## 4. 直近の確定事項（2026-05-24 セッション 22〜23）
 
 利用者明示承認のあった項目を新しい順に記録：
 
+- **ワークフロー事前検査機構と規律統廃合の検討事項を記録**：利用者ご提案による逸脱防止案（処理開始時の事前検査、計画書 §5.8 補助層 C として位置付け）と、段階 2 導入による規律統廃合の可能性（active 規律 18 件 → 10〜12 件）を [docs/notes/2026-05-25-workflow-pre-check-and-discipline-consolidation.md](docs/notes/2026-05-25-workflow-pre-check-and-discipline-consolidation.md) に整理、TODO §3 セクション D として次セッション以降の検討項目に登録（利用者明示承認「(イ)として、次セッションで議論する」2026-05-25 セッション 23）
 - **conformance-evaluation 論点 A・B 対処（軽量 reopen、design 段着手の前提条件確立）**：計画書 §5.10 改訂（§5.10.1／5.10.2／5.10.3／5.10.6／5.10.7 改訂、§5.10.9／5.10.10 新設）と conformance-evaluation/requirements.md 改訂（Boundary Context、Requirement 1〜5、Change Intent）。案 Y（2 軸 6 criteria、本筋／傍流の区別、モード別既存文書扱いルール、推定段階の triad-review 適用）を採用。A-010 として pending-cross-feature-findings.md に記録（利用者明示承認「(ア)、一気にやってしまう」「(イ) 案 Y」「(ア)」2026-05-24 セッション 23）
 - conformance-evaluation requirements approval 取得（2026-05-24 セッション 23、利用者発言「ア」、依存マップ順 7/7 機能目、最終）。**全 7 機能の requirements approval 取得が完了**
 - conformance-evaluation 論点 A・B（機能分離タイミング・既存文書バイアス）を別文書 [docs/notes/2026-05-24-conformance-evaluation-論点-a-b.md](docs/notes/2026-05-24-conformance-evaluation-論点-a-b.md) に記録、TODO §3 セクション C として design 着手前必須事項に登録（利用者発言「(ア) 案 1 で進めよう。既にここで議論したことが、ひな形になるので、メモを記録して、approval 後に対応」）
