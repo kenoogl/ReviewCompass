@@ -157,6 +157,7 @@ ReviewCompass 固有の追加：
 - 旧 Req 8（reference-free case bootstrap）：ReviewCompass の対象アプリ配置（§5.23.7）に統合、本機能から外す
 - 旧 Req 9（実行台帳と強制機構）：本仕様 Requirement 1〜4 の軽量版に置き換え。大規模機構は §5.4 で削除確定
 
-機能横断レビューに持ち越す所見：
+機能横断レビューで対処された所見：
 
-- 既存の機能横断波及所見は [.reviewcompass/pending-cross-feature-findings.md](../../pending-cross-feature-findings.md) を参照（A-001／A-003／A-004）
+- 本機能に関連する所見：A-005（feature-dependency 依存記述の連想配列構造、Requirement 8 受入 2 で対処済み、2026-05-23）、A-007（self-improvement との権限分散調停、Boundary Context 隣接期待で対処済み、案 2 採用、2026-05-23 利用者承認）
+- 参考：他機能の所見（A-001／A-003／A-004 とも 2026-05-23 対処済み）の対処履歴は [.reviewcompass/pending-cross-feature-findings.md](../../pending-cross-feature-findings.md) を参照
