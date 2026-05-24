@@ -21,6 +21,7 @@
 
 import argparse
 import json
+import subprocess
 import sys
 from datetime import datetime, timezone, timedelta
 from pathlib import Path
@@ -259,6 +260,204 @@ def cmd_spec_set(args):
   return exit_code
 
 
+def count_unresolved_findings(pending_path):
+  """機能横断持ち越し所見ファイルから未消化件数を数える（仕様 §6.2）
+
+  「### A-」で始まり「✅」を含まない行を未消化扱いとする。
+  ファイルが存在しない場合は 0 を返す。
+  """
+  if not Path(pending_path).exists():
+    return 0
+  count = 0
+  for line in Path(pending_path).read_text(encoding="utf-8").splitlines():
+    if line.startswith("### A-") and "✅" not in line:
+      count += 1
+  return count
+
+
+def classify_staged_file(filepath):
+  """staged ファイルを 3 群に分類する（仕様 §6.2）
+
+  戻り値："dangerous" / "caution" / "normal"
+  """
+  f_lower = filepath.lower()
+  if filepath.startswith(".git/") or "secret" in f_lower or "credential" in f_lower:
+    return "dangerous"
+  if filepath.endswith("spec.json") or filepath.startswith("docs/plan/"):
+    return "caution"
+  return "normal"
+
+
+def cmd_commit(args):
+  """commit サブコマンドのエントリポイント（仕様 §6.2）"""
+  cwd = Path.cwd()
+  rationale = args.rationale
+
+  # git リポジトリ内かの確認
+  if not (cwd / ".git").exists():
+    print("error: git リポジトリではありません", file=sys.stderr)
+    return 2
+
+  # 未消化所見の確認
+  pending_path = cwd / ".reviewcompass" / "pending-cross-feature-findings.md"
+  unresolved_count = count_unresolved_findings(pending_path)
+
+  # staged ファイルの取得と分類
+  result = subprocess.run(
+    ["git", "diff", "--cached", "--name-only"],
+    cwd=str(cwd),
+    capture_output=True,
+    text=True,
+  )
+  if result.returncode != 0:
+    print(f"error: git diff 失敗: {result.stderr}", file=sys.stderr)
+    return 2
+
+  staged_files = [f for f in result.stdout.strip().splitlines() if f]
+  dangerous = [f for f in staged_files if classify_staged_file(f) == "dangerous"]
+  caution = [f for f in staged_files if classify_staged_file(f) == "caution"]
+  normal = [f for f in staged_files if classify_staged_file(f) == "normal"]
+
+  # 判定（仕様 §6.2）
+  reasons = []
+  if dangerous:
+    for f in dangerous:
+      reasons.append(f"危険変更: {f}（commit を遮断推奨）")
+    verdict, exit_code = "DEVIATION", 2
+  elif unresolved_count > 0 or caution:
+    if unresolved_count > 0:
+      reasons.append(
+        f"未消化所見が {unresolved_count} 件あります"
+        f"（.reviewcompass/pending-cross-feature-findings.md）"
+      )
+    for f in caution:
+      reasons.append(f"要注意変更: {f}（変更根拠を確認してください）")
+    verdict, exit_code = "WARN", 1
+  else:
+    verdict, exit_code = "OK", 0
+
+  # 出力の組み立て
+  current_state_text = (
+    f"未消化所見: {unresolved_count} 件\n"
+    f"staged ファイル数: {len(staged_files)} 件\n"
+    f"  危険変更: {len(dangerous)} 件\n"
+    f"  要注意変更: {len(caution)} 件\n"
+    f"  通常変更: {len(normal)} 件"
+  )
+  current_state_dict = {
+    "pending_unresolved_count": unresolved_count,
+    "staged_files": {
+      "dangerous": dangerous,
+      "caution": caution,
+      "normal": normal,
+    },
+  }
+  action_str = f"commit (rationale='{rationale}')"
+  action_dict = {
+    "subcommand": "commit",
+    "args": {"rationale": rationale},
+  }
+
+  if args.json:
+    print(format_json_output(verdict, exit_code, action_dict, reasons, current_state_dict))
+  else:
+    print(format_human_output(verdict, exit_code, action_str, reasons, current_state_text))
+
+  # ログ記録
+  log_path = args.log_path if args.log_path else DEFAULT_LOG_PATH
+  try:
+    append_log(log_path, action_dict, verdict, exit_code, reasons, current_state_dict)
+  except OSError as e:
+    print(f"warning: ログ書き込みに失敗しました（処理は続行）: {e}", file=sys.stderr)
+
+  return exit_code
+
+
+def cmd_push(args):
+  """push サブコマンドのエントリポイント（仕様 §6.3）"""
+  cwd = Path.cwd()
+  rationale = args.rationale
+
+  # git リポジトリ内かの確認
+  if not (cwd / ".git").exists():
+    print("error: git リポジトリではありません", file=sys.stderr)
+    return 2
+
+  # 作業ツリーの clean 性
+  status_result = subprocess.run(
+    ["git", "status", "--porcelain"],
+    cwd=str(cwd),
+    capture_output=True,
+    text=True,
+  )
+  if status_result.returncode != 0:
+    print(f"error: git status 失敗: {status_result.stderr}", file=sys.stderr)
+    return 2
+
+  is_dirty = bool(status_result.stdout.strip())
+
+  # 直近 5 コミット
+  log_result = subprocess.run(
+    ["git", "log", "--oneline", "-5"],
+    cwd=str(cwd),
+    capture_output=True,
+    text=True,
+  )
+  recent_commits = log_result.stdout.strip() if log_result.returncode == 0 else "(取得失敗)"
+
+  # ローカル先行コミット数（origin/main がない場合は情報なし）
+  ahead_result = subprocess.run(
+    ["git", "rev-list", "--count", "origin/main..HEAD"],
+    cwd=str(cwd),
+    capture_output=True,
+    text=True,
+  )
+  ahead_info = (
+    ahead_result.stdout.strip()
+    if ahead_result.returncode == 0
+    else "(リモート origin/main が未設定または取得失敗)"
+  )
+
+  # 判定（仕様 §6.3）
+  reasons = []
+  if is_dirty:
+    reasons.append("作業ツリーに未コミット変更があります（push 前に commit が必要）")
+    verdict, exit_code = "DEVIATION", 2
+  else:
+    verdict, exit_code = "OK", 0
+
+  # 出力の組み立て
+  current_state_text = (
+    f"作業ツリー: {'dirty' if is_dirty else 'clean'}\n"
+    f"origin/main からの先行コミット数: {ahead_info}\n"
+    f"直近 5 コミット:\n{recent_commits}"
+  )
+  current_state_dict = {
+    "is_dirty": is_dirty,
+    "ahead_count": ahead_info,
+    "recent_commits": recent_commits.splitlines() if recent_commits else [],
+  }
+  action_str = f"push (rationale='{rationale}')"
+  action_dict = {
+    "subcommand": "push",
+    "args": {"rationale": rationale},
+  }
+
+  if args.json:
+    print(format_json_output(verdict, exit_code, action_dict, reasons, current_state_dict))
+  else:
+    print(format_human_output(verdict, exit_code, action_str, reasons, current_state_text))
+
+  # ログ記録
+  log_path = args.log_path if args.log_path else DEFAULT_LOG_PATH
+  try:
+    append_log(log_path, action_dict, verdict, exit_code, reasons, current_state_dict)
+  except OSError as e:
+    print(f"warning: ログ書き込みに失敗しました（処理は続行）: {e}", file=sys.stderr)
+
+  return exit_code
+
+
 def main():
   # 共通オプション（サブコマンドの前後どちらでも受け取れるよう親パーサに集約、仕様 §4 共通オプション）
   common_parser = argparse.ArgumentParser(add_help=False)
@@ -299,10 +498,38 @@ def main():
     help="この変更を行う理由（任意、ログ記録用、仕様 §5.1）",
   )
 
+  # commit サブコマンド（仕様 §5.2）
+  cs = sub.add_parser(
+    "commit",
+    help="git commit の事前検査を行う",
+    parents=[common_parser],
+  )
+  cs.add_argument(
+    "--rationale",
+    required=True,
+    help="このコミットを行う理由（必須、利用者承認の出典を含めることを推奨、仕様 §5.2）",
+  )
+
+  # push サブコマンド（仕様 §5.3）
+  ps = sub.add_parser(
+    "push",
+    help="git push の事前検査を行う",
+    parents=[common_parser],
+  )
+  ps.add_argument(
+    "--rationale",
+    required=True,
+    help="この push を行う理由（必須、利用者承認の出典を含めることを推奨、仕様 §5.3）",
+  )
+
   args = parser.parse_args()
 
   if args.subcommand == "spec-set":
     sys.exit(cmd_spec_set(args))
+  elif args.subcommand == "commit":
+    sys.exit(cmd_commit(args))
+  elif args.subcommand == "push":
+    sys.exit(cmd_push(args))
   else:
     parser.print_help(sys.stderr)
     sys.exit(2)

@@ -371,6 +371,15 @@ def _init_git_repo(tmpdir):
   pending_dir.mkdir()
   pending_file = pending_dir / "pending-cross-feature-findings.md"
   pending_file.write_text("# 機能横断レビューで扱う所見の集約\n")
+  # pending ファイルもコミットして作業ツリーを clean な初期状態にする
+  subprocess.run(
+    ["git", "add", ".reviewcompass/pending-cross-feature-findings.md"],
+    cwd=str(tmpdir), check=True, capture_output=True,
+  )
+  subprocess.run(
+    ["git", "commit", "-qm", "add pending file"],
+    cwd=str(tmpdir), check=True, capture_output=True,
+  )
   return pending_file
 
 
