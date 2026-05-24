@@ -149,6 +149,6 @@ ReviewCompass 固有の追加：
 - Requirement 2 受入 6 を陳腐化伝播の連動として `foundation` Req 6 受入 9 ＋ `evaluation` Req 5 受入 6 へ参照（A-001／A-003 の機能横断整合と関連）
 - Requirement 5 受入 6 で `foundation` Req 6 受入 8 への連動を明示（`evidence_class` 語彙正本の参照）
 
-機能横断レビューに持ち越す所見（要件 review-wave／alignment-gate で対処）：
+機能横断レビューで対処された所見：
 
-- 既存の機能横断波及所見は [.reviewcompass/pending-cross-feature-findings.md](../../pending-cross-feature-findings.md) を参照（A-001 `not_run` 欠落、A-003 `analysis_blocked` 欠落）
+- 機能横断波及所見の対処履歴は [.reviewcompass/pending-cross-feature-findings.md](../../pending-cross-feature-findings.md) を参照（A-001 `not_run` 欠落 → 2026-05-23 対処済み、A-003 `analysis_blocked` 欠落 → 2026-05-23 対処済み）

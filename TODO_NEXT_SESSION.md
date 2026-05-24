@@ -97,6 +97,8 @@ design.md の素材：`/Users/Daily/Development/Rwiki-v2-code-mod/dual-reviewer-
 
 利用者明示承認のあった項目を新しい順に記録：
 
+- analysis requirements approval 取得（2026-05-24 セッション 23、利用者発言「ア」、依存マップ順 4/7 機能目）
+- analysis requirements.md 行 152〜154 で機能横断所見セクションを未来形（持ち越し）から過去形（対処された所見、A-001／A-003 とも 2026-05-23 対処済み）に書き換え
 - evaluation requirements approval 取得（2026-05-24 セッション 23、利用者発言「ア」、依存マップ順 3/7 機能目）
 - A-009 第 2 波の対処：evaluation 3 箇所（行 7／23／176）＋conformance-evaluation 1 箇所（行 32）で「論文」→「報告書」統一、evaluation 行 176 を未来形（持ち越し）から過去形（対処された所見）に書き換え。pending-cross-feature-findings.md の A-009 エントリを 2 段階対処（第 1 波／第 2 波）として詳細化、保持対象 3 箇所（analysis 行 5、self-improvement 行 24・164）を利用者明示判断「案 β 保持」として確定
 - runtime requirements approval 取得（2026-05-24 セッション 23、利用者発言「承認」、依存マップ順 2/7 機能目）
