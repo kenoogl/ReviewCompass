@@ -33,6 +33,22 @@ def run_script(args, cwd):
   )
 
 
+def _assert_script_invoked(testcase, result):
+  """スクリプトが実際に起動したことを確認する厳密性確保のヘルパー
+
+  Python はスクリプトファイルが存在しないとき exit 2 を返す。これは仕様 §7.1 の
+  逸脱判定 exit 2 と一致するため、判定だけでは「スクリプト未実装」と
+  「正当な逸脱検出」を区別できない。本ヘルパーは stderr にファイルなし
+  エラーが含まれないことを確認することで両者を区別し、実装前の偶然通過を
+  防ぐ。実装完了後は無効化されない（実害なく動作し続ける）。
+  """
+  for marker in ("No such file or directory", "can't open file"):
+    testcase.assertNotIn(
+      marker, result.stderr,
+      f"スクリプトが起動できていない（実装前の状態か）。stderr: {result.stderr}",
+    )
+
+
 class SpecSetExitCodeTests(unittest.TestCase):
   """spec-set サブコマンドの終了コード判定
 
@@ -76,10 +92,15 @@ class SpecSetExitCodeTests(unittest.TestCase):
       ["spec-set", "foundation", "requirements", "approval", "true"],
       cwd=cwd,
     )
+    _assert_script_invoked(self, result)
     self.assertEqual(
       result.returncode, 2,
       f"alignment=false なので approval=true は逸脱すべき。\n"
       f"stdout: {result.stdout}\nstderr: {result.stderr}",
+    )
+    self.assertIn(
+      "DEVIATION", result.stdout,
+      f"逸脱判定の場合は stdout に DEVIATION が含まれるべき。stdout: {result.stdout}",
     )
 
   def test_design_drafting_with_requirements_approved_returns_zero(self):
@@ -108,10 +129,15 @@ class SpecSetExitCodeTests(unittest.TestCase):
       ["spec-set", "foundation", "design", "drafting", "true"],
       cwd=cwd,
     )
+    _assert_script_invoked(self, result)
     self.assertEqual(
       result.returncode, 2,
       f"requirements.approval=false なので design.drafting=true は逸脱すべき。\n"
       f"stdout: {result.stdout}\nstderr: {result.stderr}",
+    )
+    self.assertIn(
+      "DEVIATION", result.stdout,
+      f"逸脱判定の場合は stdout に DEVIATION が含まれるべき。stdout: {result.stdout}",
     )
 
   def test_setting_true_stage_to_false_returns_one(self):
@@ -286,6 +312,7 @@ class SpecSetArgumentValidationTests(unittest.TestCase):
       ["spec-set", "nonexistent-feature", "requirements", "approval", "true"],
       cwd=cwd,
     )
+    _assert_script_invoked(self, result)
     self.assertNotEqual(
       result.returncode, 0,
       "存在しない feature は判定不能で非 0 終了すべき",
@@ -298,6 +325,7 @@ class SpecSetArgumentValidationTests(unittest.TestCase):
       ["spec-set", "foundation", "nonexistent-phase", "approval", "true"],
       cwd=cwd,
     )
+    _assert_script_invoked(self, result)
     self.assertNotEqual(
       result.returncode, 0,
       "存在しないフェーズは判定不能で非 0 終了すべき",
@@ -310,6 +338,7 @@ class SpecSetArgumentValidationTests(unittest.TestCase):
       ["spec-set", "foundation", "requirements", "approval", "maybe"],
       cwd=cwd,
     )
+    _assert_script_invoked(self, result)
     self.assertNotEqual(
       result.returncode, 0,
       "true／false 以外の値は引数エラーで非 0 終了すべき",
