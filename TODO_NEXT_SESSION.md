@@ -114,12 +114,13 @@ ReviewCompass の運営ガイドラインの必読フローに従う：
 
 これで design 段着手の前提条件は揃った。次セッションは B（design 着手）に進む。
 
-### D. ワークフロー事前検査機構（補助層 C、共存モデル、セッション 24 採用承認、残作業は段階 2 仕様策定から）
+### D. ワークフロー事前検査機構（補助層 C、共存モデル、セッション 24 で項目 1〜5 完了、項目 6 のみ未着手）
 
-セッション 23 末に利用者ご提案で浮上、セッション 24 で共存モデルを起草・採用承認。詳細は別文書を参照：
+セッション 23 末に利用者ご提案で浮上、セッション 24 で共存モデルを起草・採用承認、その後の同セッション内で項目 1〜5 を完了。詳細は別文書を参照：
 
 - [docs/notes/2026-05-25-workflow-pre-check-and-discipline-consolidation.md](docs/notes/2026-05-25-workflow-pre-check-and-discipline-consolidation.md)（セッション 24 で議論結果反映済み）
-- 計画書 §5.8 補助層 C（セッション 24 で新設、本セッションで反映済み）
+- 計画書 §5.8 補助層 C（セッション 24 で新設）
+- [docs/operations/WORKFLOW_PRECHECK.md](docs/operations/WORKFLOW_PRECHECK.md)（段階 2 仕様の正本、§13 に実測結果を併記）
 
 採用済み方針（共存モデル）：
 
@@ -134,14 +135,17 @@ ReviewCompass の運営ガイドラインの必読フローに従う：
 - 「共存モデルの採用」（2026-05-25 セッション 24、計画書方針変更に該当する規律 §0.2 不可逆操作の明示承認）
 - 「A から順に進める」（2026-05-25 セッション 24、文書反映の着手順序指示）
 
-残作業（次セッション以降、各ステップは利用者明示承認必須）：
+セッション 24 内で完了済みの項目：
 
-1. 段階 2 の外部スクリプト仕様策定（引数体系・出力形式・判定ロジック範囲・配置場所）
-2. 段階 2 のスクリプト実装
-3. 段階 1 の規律化（段階 2 実装後、CLAUDE.md または規律ファイルに薄く追加）
-4. 段階 2 の小規模運用による実測（コスト・効果の数値検証）
-5. 規律統廃合の本格議論（実測データを踏まえて、active 規律 18 件 → 12 件程度への圧縮）
-6. 段階 3 のフック導入（仕様調査、対象ツールの絞り込み、フェーズ 4 以降）
+1. ✅ 段階 2 の外部スクリプト仕様策定（[docs/operations/WORKFLOW_PRECHECK.md](docs/operations/WORKFLOW_PRECHECK.md) 新設、コミット `2f1b59a`）
+2. ✅ 段階 2 のスクリプト実装（[tools/check-workflow-action.py](tools/check-workflow-action.py)、25 テスト全件通過、コミット `6b1b058`／`1bf3cc2`／`dbc4cd2`／`e76746a`／`a6c8f0c`／`662bffb`）
+3. ✅ 段階 2 の小規模運用による実測（14 シナリオすべて想定どおり、[docs/operations/WORKFLOW_PRECHECK.md](docs/operations/WORKFLOW_PRECHECK.md) §13 に記録、コミット `12aa862`）
+4. ✅ 段階 1 の規律化（memory `feedback_workflow_precheck_invocation.md` 新設、初運用で push 検査 OK）
+5. ✅ 規律統廃合の本格議論（active 必読 20 件 → 11 件、5 統合＋1 撤去＋1 TODO 移動、コミット `c719651`）
+
+残作業（次セッション以降、利用者明示承認必須）：
+
+6. 段階 3 のフック導入（仕様調査、対象ツールの絞り込み、フェーズ 4 以降扱いだが前倒し検討も可）
 
 ### B. 設計フェーズの drafting 段着手（A ＋ C 完了後、ただし D の段階 1 を先に実施することを検討）
 
@@ -151,10 +155,14 @@ design.md の素材：`/Users/Daily/Development/Rwiki-v2-code-mod/dual-reviewer-
 
 注意：D（事前検査機構）の段階 1 を先に実施すれば、design 着手時から逸脱防止の仕組みが効く可能性がある。順序は次セッションで再検討。
 
-## 4. 直近の確定事項（2026-05-24 セッション 22〜23）
+## 4. 直近の確定事項（2026-05-24 セッション 22〜23、2026-05-25 セッション 24）
 
 利用者明示承認のあった項目を新しい順に記録：
 
+- **規律統廃合（active 必読 20 件 → 11 件、セッション 24）**：5 統合（承認の運用／事実と解釈の分離／事前検査チェックリスト／workflow_state 真実源 ＋ session 引継ぎ／勝手に走らない（approach／session 含む））、1 撤去（reactive 書き直し）、1 TODO 移動（AskUserQuestion を多用しない → TODO §0.4）。memory 直下の旧 14 ファイルは `archive/2026-05-25-consolidation/` に退避。TODO §0.4 を雛形にも反映。テスト 25 件すべて引き続き通過。コミット `c719651`／push `12aa862..c719651`（利用者明示承認「アでよいが、AskUserQuestion を多用しないについては、TODOの冒頭に移すと規律が減る」「ア」2026-05-25 セッション 24）
+- **段階 1 規律化と初運用成功（補助層 C、セッション 24）**：memory `feedback_workflow_precheck_invocation.md` 新設（active 必読層に追加）、不可逆操作（spec.json 変更／git commit／git push）の直前に `tools/check-workflow-action.py` を呼び verdict と reasons を応答に明示する規律を確立。初運用で push 直前検査を実施、OK 判定後に push 成功（`a6c8f0c..12aa862`）。CLAUDE.md または規律ファイルへの追加は memory 配置で実現、論点 a＝memory／b＝即時／c＝すべての commit／push に適用 を承認（利用者明示承認「ア」起草案そのままで承認、2026-05-25 セッション 24）
+- **段階 2 小規模運用実測完了（補助層 C、セッション 24）**：spec-set／commit／push の 3 サブコマンドで 14 シナリオ実行、すべて想定どおりの判定（OK／WARN／DEVIATION）。発見した 2 件の小さな問題（真偽値の大文字表記、ログファイルの .gitignore 未追加）を是正、コミット `662bffb`。仕様 [docs/operations/WORKFLOW_PRECHECK.md](docs/operations/WORKFLOW_PRECHECK.md) §13 に実測結果を併記（コミット `12aa862`、§13.1〜§13.6 で範囲・シナリオ表・仕様準拠確認・是正・観察事項・結論を記録）。push 済（`8b33e74..2f1b59a` ＋ `2f1b59a..a6c8f0c` ＋ `a6c8f0c..12aa862`）（利用者明示承認「範囲案 2」「論点 A は実装テスト段階でも効果測定やデバッグで必要になるのではないか？」「論点 B は渡す」「論点 C は別文書」「ア」「イ」「ウ」「ア」2026-05-25 セッション 24）
+- **段階 2 スクリプト仕様確定と実装（補助層 C、セッション 24）**：仕様 [docs/operations/WORKFLOW_PRECHECK.md](docs/operations/WORKFLOW_PRECHECK.md) を 15 節構成で新設（コミット `2f1b59a`）。範囲案 2（spec.json／commit／push）、論点 A（ログ MVP 必須）／B（`--rationale` 採用、spec-set 任意・commit／push 必須）／C（別文書）を確定。TDD 第 1 ラウンド（テスト 14 件＋fixture 4 ケース、コミット `6b1b058`／強化 `1bf3cc2`）、第 2 ラウンド（spec-set 実装、コミット `dbc4cd2`）、第 3 ラウンド（commit／push テスト 11 件、コミット `e76746a`）、第 4 ラウンド（commit／push 実装、コミット `a6c8f0c`、25 テスト全件通過）を完遂。`.claude/settings.json` を新設してテスト実行の許可ルール 1 件追加（コミット `662bffb`）（利用者明示承認「(ア)」「次に進む」「範囲案 2」「ア」複数、2026-05-25 セッション 24）
 - **共存モデル採用（補助層 C、セッション 24）**：ワークフロー事前検査機構の 3 段階を段階的導入計画でなく最終形態として共存する役割分担として位置付ける。段階 1（LLM 規律、恒久層）／段階 2（外部スクリプト）／段階 3（Claude Code フック）。段階 1 は段階 3 が効かない領域（応答テキストのみの判断）を恒久的に担う。計画書 §5.8 補助層 C として記録、議論メモに反映、TODO §3 D を採用済み方針に書き換え。残作業は段階 2 仕様策定 → 実装 → 段階 1 規律化 → 実測 → 規律統廃合 → 段階 3 フック導入の順（各ステップは利用者明示承認必須）（利用者明示承認「共存モデルの採用」「A から順に進める」2026-05-25 セッション 24）
 - **ワークフロー事前検査機構と規律統廃合の検討事項を記録**：利用者ご提案による逸脱防止案（処理開始時の事前検査、計画書 §5.8 補助層 C として位置付け）と、段階 2 導入による規律統廃合の可能性（active 規律 18 件 → 10〜12 件）を [docs/notes/2026-05-25-workflow-pre-check-and-discipline-consolidation.md](docs/notes/2026-05-25-workflow-pre-check-and-discipline-consolidation.md) に整理、TODO §3 セクション D として次セッション以降の検討項目に登録（利用者明示承認「(イ)として、次セッションで議論する」2026-05-25 セッション 23）
 - **conformance-evaluation 論点 A・B 対処（軽量 reopen、design 段着手の前提条件確立）**：計画書 §5.10 改訂（§5.10.1／5.10.2／5.10.3／5.10.6／5.10.7 改訂、§5.10.9／5.10.10 新設）と conformance-evaluation/requirements.md 改訂（Boundary Context、Requirement 1〜5、Change Intent）。案 Y（2 軸 6 criteria、本筋／傍流の区別、モード別既存文書扱いルール、推定段階の triad-review 適用）を採用。A-010 として pending-cross-feature-findings.md に記録（利用者明示承認「(ア)、一気にやってしまう」「(イ) 案 Y」「(ア)」2026-05-24 セッション 23）
