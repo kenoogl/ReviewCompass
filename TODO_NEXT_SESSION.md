@@ -79,15 +79,13 @@ ReviewCompass の運営ガイドラインの必読フローに従う：
 
 ## 3. 次の作業候補（優先順位順）
 
-### A. requirements 段の approval 取得（design 着手の前提）
+**現在の主要作業：B. 設計フェーズの drafting 段着手**（A／C／D はすべて完了済み、§3 末尾に集約）
 
-全 7 機能の spec.json で `workflow_state.requirements.approval` が false。運営ガイド §2.3 第 6 項「approval で利用者または別モデル承認を得てから次フェーズに進む」に従い、design 段着手の前に requirements の approval を取得する必要がある。
+### A. requirements 段の approval 取得 ✅ 全 7 機能完了済み（2026-05-24 セッション 23 末）
 
-依存マップ順に 1 機能ずつ承認を取る（方式 B、2026-05-24 利用者明示承認）：
+全 7 機能で `workflow_state.requirements.approval` を true に取得済み。依存マップ順（foundation／runtime／evaluation／analysis／workflow-management／self-improvement／conformance-evaluation）で 1 機能ずつ承認、最後に conformance-evaluation を取得（セッション 23 末で完了）。
 
-1. foundation → 2. runtime → 3. evaluation → 4. analysis → 5. workflow-management → 6. self-improvement → 7. conformance-evaluation
-
-各機能の手順：
+詳細手順（参考）：
 
 - 利用者が `.reviewcompass/specs/<機能>/requirements.md` をレビュー
 - 明示承認（規律 §0.2）
@@ -150,13 +148,27 @@ ReviewCompass の運営ガイドラインの必読フローに従う：
 
 計画書整合確認も併せて実施（§5.12.8／§5.13.8／§5.16 で補助層 A・B・C 表記を明示化、コミット `c57b837`）。
 
-### B. 設計フェーズの drafting 段着手（A ＋ C 完了後、ただし D の段階 1 を先に実施することを検討）
+### B. 設計フェーズの drafting 段着手（前提条件すべて満たした、次の主要作業）
 
-A の requirements approval が全 7 機能で完了し、C の論点 A・B が解決された後に、design フェーズの drafting 段に進む。依存マップ順に foundation design.md（585 行、§5.18）から開始。各機能 drafting 後に triad-review、機能横断所見があれば pending-cross-feature-findings.md に追記。
+A（全 7 機能 requirements approval）、C（conformance-evaluation 論点 A・B 対処）、D（補助層 C 共存モデル）がすべて完了し、design 段着手の前提条件は揃った。
 
-design.md の素材：`/Users/Daily/Development/Rwiki-v2-code-mod/dual-reviewer-rebuild/.kiro/specs/<機能名>/design.md`（読み取り専用）
+design.md の素材：`/Users/Daily/Development/Rwiki-v2-code-mod/dual-reviewer-rebuild/.kiro/specs/<機能名>/design.md`（読み取り専用、計画書 §5.18 で foundation 585 行）
 
-注意：D（事前検査機構）の段階 1 を先に実施すれば、design 着手時から逸脱防止の仕組みが効く可能性がある。順序は次セッションで再検討。
+依存マップ順（計画書 §3.1 phase_order）：
+
+1. foundation → 2. runtime → 3. evaluation → 4. analysis → 5. workflow-management → 6. self-improvement → 7. conformance-evaluation
+
+各機能の手順（運営ガイド §2.3 の責務分離 5 段化）：
+
+1. drafting（草案）
+2. triad-review（3 役レビュー、機能内対処、subagent_mediated 方式）
+3. （全機能 drafting＋triad-review 完了後に）review-wave（機能横断レビュー波）
+4. alignment（LLM 自動判定）
+5. approval（利用者明示承認）
+
+機能横断所見は `.reviewcompass/pending-cross-feature-findings.md` に追記し review-wave で集約消化（運営ガイド §3.6）。
+
+着手時の段階 2 スクリプト連動：design drafting に着手する際は `spec-set <feature> design drafting true --rationale "..."` を呼び、依存検査を通過してから Edit／Write を行う（規律 [[workflow-precheck-invocation]]）。
 
 ## 4. 直近の確定事項（2026-05-24 セッション 22〜23、2026-05-25 セッション 24）
 
