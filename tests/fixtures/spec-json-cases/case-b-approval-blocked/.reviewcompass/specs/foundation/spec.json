@@ -1,0 +1,57 @@
+{
+  "feature_name": "foundation",
+  "language": "ja",
+  "created_at": "2026-05-23T00:00:00+09:00",
+  "updated_at": "2026-05-25T00:00:00+09:00",
+  "workflow_state": {
+    "intent": {
+      "drafting": true,
+      "review": true,
+      "approval": true,
+      "reference": "stages/intent.yaml"
+    },
+    "feature-partitioning": {
+      "candidate-proposal": true,
+      "approval": true,
+      "reference": "stages/feature-partitioning/2026-05-24-proposal.md"
+    },
+    "requirements": {
+      "drafting": true,
+      "triad-review": true,
+      "review-wave": true,
+      "alignment": false,
+      "approval": false
+    },
+    "design": {
+      "drafting": false,
+      "triad-review": false,
+      "review-wave": false,
+      "alignment": false,
+      "approval": false
+    },
+    "tasks": {
+      "drafting": false,
+      "triad-review": false,
+      "review-wave": false,
+      "alignment": false,
+      "approval": false
+    },
+    "implementation": {
+      "drafting": false,
+      "triad-review": false,
+      "review-wave": false,
+      "alignment": false,
+      "approval": false
+    }
+  },
+  "reopened": {
+    "requirements": false,
+    "design": false,
+    "tasks": false,
+    "implementation": false
+  },
+  "recheck": {
+    "upstream_change_pending": false,
+    "impacted_downstream_phases": []
+  }
+}
