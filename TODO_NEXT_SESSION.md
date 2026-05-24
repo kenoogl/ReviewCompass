@@ -97,6 +97,8 @@ design.md の素材：`/Users/Daily/Development/Rwiki-v2-code-mod/dual-reviewer-
 
 利用者明示承認のあった項目を新しい順に記録：
 
+- self-improvement requirements approval 取得（2026-05-24 セッション 23、利用者発言「ア」、依存マップ順 6/7 機能目）
+- self-improvement requirements.md 行 173〜175 で機能横断所見セクションを未来形（持ち越し）から過去形（対処された所見）に書き換え、本機能関連の A-007／A-008 を明示し A-001／A-003／A-004／A-005 を参考扱いに整理（修正案 B）
 - workflow-management requirements approval 取得（2026-05-24 セッション 23、利用者発言「ア」、依存マップ順 5/7 機能目）
 - workflow-management requirements.md 行 160〜162 で機能横断所見セクションを未来形（持ち越し）から過去形（対処された所見）に書き換え、本機能関連の A-005／A-007 を明示し A-001／A-003／A-004 を参考扱いに整理（修正案 B）
 - analysis requirements approval 取得（2026-05-24 セッション 23、利用者発言「ア」、依存マップ順 4/7 機能目）

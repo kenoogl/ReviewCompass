@@ -170,6 +170,9 @@ ReviewCompass 固有の追加・変更：
 - 継承可能 4 モジュール：`decision_adoption_model`（規律状態管理）／`rollback_model`（git 連携）／`pipeline_driver`（パイプライン制御）／`learning_layout`（成果物配置）
 - 新規実装 4 モジュール：`input_model`（規律違反検出と実体パターン抽出）／`proposal_model`（5 種類の提案種別）／`replay_backtest_model` 相当（過去遡及シミュレーション・パイロット運用・影響範囲分析）／`signal_extraction`（規律遵守検査結果を入力）
 
-機能横断レビューに持ち越す所見：
+機能横断レビューで対処された所見：
 
-- 既存の機能横断波及所見は [.reviewcompass/pending-cross-feature-findings.md](../../pending-cross-feature-findings.md) を参照（A-001／A-003／A-004／A-005）
+- 本機能に関連する所見：
+  - A-007（self-improvement と workflow-management の権限分散調停、Requirement 1 受入 4 で対処済み、案 2 採用、2026-05-23 利用者承認）
+  - A-008（conformance-evaluation から self-improvement への出力方向、conformance-evaluation 側 Boundary Context 修正で対処済み、2026-05-23、本機能側は変更不要だが整合確認済み）
+- 参考：他機能の所見（A-001／A-003／A-004／A-005 とも 2026-05-23 対処済み）の対処履歴は [.reviewcompass/pending-cross-feature-findings.md](../../pending-cross-feature-findings.md) を参照
