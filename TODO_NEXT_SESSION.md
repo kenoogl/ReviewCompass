@@ -87,9 +87,27 @@ ReviewCompass の運営ガイドラインの必読フローに従う：
 - 明示承認（規律 §0.2）
 - spec.json の `workflow_state.requirements.approval` を true に更新、承認発言の出典（発言の正確な引用・日付）を併記
 
-### B. 設計フェーズの drafting 段着手（A 完了後）
+### C. conformance-evaluation 論点 A・B 対処（design 着手前必須、2026-05-24 セッション 23 末で記録）
 
-A の requirements approval が全 7 機能で完了したら、design フェーズの drafting 段に進む。依存マップ順に foundation design.md（585 行、§5.18）から開始。各機能 drafting 後に triad-review、機能横断所見があれば pending-cross-feature-findings.md に追記。
+セッション 23 末に conformance-evaluation requirements approval 取得直前の利用者考察で浮上した構造的論点 2 件。本セッションでは案 1（現状維持）で approval を取得し、論点 A・B は別 session で計画書改訂として扱うことを利用者明示承認（「(ア) 案 1 で進めよう。既にここで議論したことが、ひな形になるので、メモを記録して、approval 後に対応」）。
+
+- **論点 A**：実装コードから上流文書を推定する際の機能分離のタイミング。現要件文書はパターン A1（直接推定）の暗黙前提だが、組み合わせ最適化的に困難。利用者ご提案のパターン A2（実装コード → 全体 intent → 機能分離 → 各機能の requirements／design／tasks）が現実的、計画書 §5.5 階層構造とも整合
+- **論点 B**：照合チェックモードでの既存文書バイアス防止。現要件文書は推定時に既存文書を読むかが曖昧、二段階方式（推定時遮断 → 完了後比較、計画書 §5.9.1 ファイル遮断規律と同精神）の明示が必要
+
+詳細・改訂イメージ・後続セッションへの引継ぎ手順は別文書を参照：
+
+- [docs/notes/2026-05-24-conformance-evaluation-論点-a-b.md](docs/notes/2026-05-24-conformance-evaluation-論点-a-b.md)
+
+対処方針：
+
+1. 計画書 §5.10 改訂案の作成（規律 §0.2 不可逆操作「計画書方針変更」、利用者明示承認必須）
+2. conformance-evaluation reopen 手続き（R-0）の起動（規律 §5.6）
+3. requirements.md 改訂、alignment 再実施、approval 再取得
+4. 完了後に B（design 着手）へ進む
+
+### B. 設計フェーズの drafting 段着手（A ＋ C 完了後）
+
+A の requirements approval が全 7 機能で完了し、C の論点 A・B が解決された後に、design フェーズの drafting 段に進む。依存マップ順に foundation design.md（585 行、§5.18）から開始。各機能 drafting 後に triad-review、機能横断所見があれば pending-cross-feature-findings.md に追記。
 
 design.md の素材：`/Users/Daily/Development/Rwiki-v2-code-mod/dual-reviewer-rebuild/.kiro/specs/<機能名>/design.md`（読み取り専用）
 
@@ -97,6 +115,8 @@ design.md の素材：`/Users/Daily/Development/Rwiki-v2-code-mod/dual-reviewer-
 
 利用者明示承認のあった項目を新しい順に記録：
 
+- conformance-evaluation requirements approval 取得（2026-05-24 セッション 23、利用者発言「ア」、依存マップ順 7/7 機能目、最終）。**全 7 機能の requirements approval 取得が完了**
+- conformance-evaluation 論点 A・B（機能分離タイミング・既存文書バイアス）を別文書 [docs/notes/2026-05-24-conformance-evaluation-論点-a-b.md](docs/notes/2026-05-24-conformance-evaluation-論点-a-b.md) に記録、TODO §3 セクション C として design 着手前必須事項に登録（利用者発言「(ア) 案 1 で進めよう。既にここで議論したことが、ひな形になるので、メモを記録して、approval 後に対応」）
 - self-improvement requirements approval 取得（2026-05-24 セッション 23、利用者発言「ア」、依存マップ順 6/7 機能目）
 - self-improvement requirements.md 行 173〜175 で機能横断所見セクションを未来形（持ち越し）から過去形（対処された所見）に書き換え、本機能関連の A-007／A-008 を明示し A-001／A-003／A-004／A-005 を参考扱いに整理（修正案 B）
 - workflow-management requirements approval 取得（2026-05-24 セッション 23、利用者発言「ア」、依存マップ順 5/7 機能目）
