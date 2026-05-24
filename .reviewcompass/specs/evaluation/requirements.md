@@ -4,7 +4,7 @@
 
 `evaluation` は `runtime` が出力した証拠を有効・無効に切り分け、比較可能なメトリクスと分析成果物に変換する機能である。本仕様の目的は、レビュー実行の質を測るための規約対応の評価契約を定義することにある。
 
-本仕様は `runtime` を動かす責務を持たず、`runtime` が出した証拠を受け取って扱う。読み手向けの分析成果物（運用ダッシュボード、週次、監査、論文等）は `analysis` が担う。
+本仕様は `runtime` を動かす責務を持たず、`runtime` が出した証拠を受け取って扱う。読み手向けの分析成果物（運用ダッシュボード、週次、監査、報告書等）は `analysis` が担う。
 
 ## Boundary Context
 
@@ -20,7 +20,7 @@
   - レビュー実行制御
   - プロンプト設計
   - 改善提案の採用判断
-  - `analysis` 向けの読み物（運用ダッシュボード／週次／監査／論文）生成
+  - `analysis` 向けの読み物（運用ダッシュボード／週次／監査／報告書）生成
   - 上流文書との適合性評価（`conformance-evaluation` の責務）
 
 - **隣接仕様の期待**
@@ -173,6 +173,6 @@ ReviewCompass 固有の追加：
 - `foundation` の正本語彙を再定義せず参照することを各受入で明示（Requirement 1 受入 1／受入 6、Requirement 9 受入 1／受入 6、Requirement 10 受入 2）
 - Boundary Context Out of scope に「上流文書との適合性評価（`conformance-evaluation` の責務）」を追加（計画書 §5.10 由来、新規 7 番目機能との分担）
 
-機能横断レビューに持ち越す所見（要件 review-wave／alignment-gate で対処）：
+機能横断レビューで対処された所見：
 
-- 既存の機能横断波及所見は [.reviewcompass/pending-cross-feature-findings.md](../../pending-cross-feature-findings.md) を参照
+- 機能横断波及所見の対処履歴は [.reviewcompass/pending-cross-feature-findings.md](../../pending-cross-feature-findings.md) を参照

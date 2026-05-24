@@ -101,20 +101,35 @@
 - **対処方針**：conformance-evaluation の隣接期待記述を「`self-improvement`：本機能の 12 criteria 検査結果を規律改善の入力として提供する（self-improvement が本機能の出力を読む、依存方向は外部化）」等の表現に修正し、方向を一致させる。feature-dependency.yaml に self-improvement を含まないことは現状のままで整合（依存なし、出力先として参照されるのみ）
 - **依存関係**：conformance-evaluation 側の記述修正のみで成立。self-improvement 側は変更不要
 
-### A-009：旧 paper-interface 由来の「論文」表現が foundation と analysis の文言で残存 ✅ 対処済み（2026-05-24、セッション 23 approval 前最終調整）
+### A-009：旧 paper-interface 由来の「論文」表現が foundation／evaluation／analysis／conformance-evaluation の文言で残存 ✅ 対処済み（2026-05-24、セッション 23 approval 前最終調整、第 1 波＋第 2 波の 2 段階対処）
 
-- **対処内容**：foundation Req Boundary Context Out of scope の「`analysis` の論文用記述生成」を「`analysis` の報告書記述生成」に修正（行 39）。analysis Req の Boundary Context In scope（行 18）／Out of scope（行 23）／Requirement 8 受入 1（行 128）／受入 1 太字見出し（行 132）／受入 5（行 136）／Change Intent（行 145）の計 6 箇所で「論文」を「報告書」に統一。行 5 の歴史的経緯記述（「先行プロジェクトでは `paper-interface`（論文向け）と呼ばれていた」）は経緯説明のため保持
-- **検出**：セッション 23（2026-05-24）、foundation の requirements.approval 取得直前の要件文書要約提示の中で利用者が指摘
-- **利用者指摘の出典**：「論文化という言葉があるが、元々paper-interfaceという機能の名残。現在はanalysisで報告書を対象とする」「(ア) 、論文ではなく報告書とする」（2026-05-24 セッション 23）
+- **対処内容（第 1 波、foundation／analysis、2026-05-24 セッション 23）**：
+  - foundation Req Boundary Context Out of scope の「`analysis` の論文用記述生成」を「`analysis` の報告書記述生成」に修正（行 39）
+  - analysis Req の Boundary Context In scope（行 18）／Out of scope（行 23）／Requirement 8 受入 1（行 128）／受入 1 太字見出し（行 132）／受入 5（行 136）／Change Intent（行 145）の計 6 箇所で「論文」を「報告書」に統一
+  - 行 5 の歴史的経緯記述（「先行プロジェクトでは `paper-interface`（論文向け）と呼ばれていた」）は経緯説明のため保持
+- **対処内容（第 2 波、evaluation／conformance-evaluation、2026-05-24 セッション 23）**：
+  - evaluation Req Introduction（行 7）の「（運用ダッシュボード、週次、監査、論文等）は `analysis` が担う」を「報告書等」に修正
+  - evaluation Req Boundary Context Out of scope（行 23）の「`analysis` 向けの読み物（運用ダッシュボード／週次／監査／論文）生成」を「報告書」に修正
+  - conformance-evaluation Req Boundary Context 隣接仕様（行 32）の「論文向け原データ」を「報告書向け原データ」に修正
+- **保持対象（先行プロジェクトでの呼称として歴史的経緯を残す）**：
+  - analysis 行 5：`paper-interface`（論文向け）の歴史的経緯記述
+  - self-improvement 行 24・164：「論文化からの分離」「旧 R6 の論文化からの分離」（先行プロジェクト旧 Requirement 6 の呼称、利用者明示判断 2026-05-24 セッション 23 案 β「保持」採用）
+- **検出経緯**：
+  - 第 1 波：foundation の requirements.approval 取得直前の要件文書要約提示の中で利用者が指摘（「論文化という言葉があるが、元々 paper-interface という機能の名残。現在は analysis で報告書を対象とする」）
+  - 第 2 波：evaluation の requirements.approval 取得直前に「波及範囲の完了性確認」のため全 7 機能 requirements.md を grep で全件確認、追加 3 箇所を発見
+- **利用者指摘の出典**：「論文化という言葉があるが、元々 paper-interface という機能の名残。現在は analysis で報告書を対象とする」「(ア)、論文ではなく報告書とする」（第 1 波、2026-05-24 セッション 23）／「推奨案」「ア」（第 2 波の全件確認と修正対象 4 箇所、2026-05-24 セッション 23）
 - **重大度**：INFO
 - **判定**：must-fix（用語整合）
-- **波及範囲**：
+- **波及範囲（最終）**：
   - **foundation**：`.reviewcompass/specs/foundation/requirements.md` 行 39（Boundary Context Out of scope）の 1 箇所
   - **analysis**：`.reviewcompass/specs/analysis/requirements.md` 行 18／23／128／132／136／145 の 6 箇所
+  - **evaluation**：`.reviewcompass/specs/evaluation/requirements.md` 行 7（Introduction）／行 23（Boundary Context Out of scope）の 2 箇所
+  - **conformance-evaluation**：`.reviewcompass/specs/conformance-evaluation/requirements.md` 行 32（Boundary Context 隣接仕様）の 1 箇所
 - **正本との不整合**：計画書 §5.14 行 1566「論文化に限らず運用ダッシュボード・週次レポート・監査レポート・収束過程の可視化まで含めて担当」、および analysis Req 8 で確定済みの 4 出力先体制との文言食い違い
-- **対処方針**：「論文」表現を「報告書」に統一。foundation と analysis を同一セッション内で並行修正。歴史的経緯（paper-interface の旧名）は行 5 の 1 箇所に限定して保持
-- **処理段**：両機能とも requirements の drafting／triad-review／review-wave／alignment が true、approval が false の状態で発見。reopen 手続きを起動せず approval 前の最終調整として処理（規律 §0.2 不可逆操作には未到達）
-- **依存関係**：foundation と analysis の修正は独立、両方とも本セッション内で完了
+- **対処方針**：「論文」表現を「報告書」に統一。歴史的経緯（paper-interface の旧名、旧 Requirement 6 の呼称）は明示的に保持
+- **処理段**：4 機能とも requirements の drafting／triad-review／review-wave／alignment が true、approval が false の状態で発見。reopen 手続きを起動せず approval 前の最終調整として処理（規律 §0.2 不可逆操作には未到達）
+- **依存関係**：4 機能の修正は独立、すべて本セッション内で完了
+- **波及範囲完了性の確認**：第 2 波の全件 grep（2026-05-24 セッション 23）により、本所見の波及範囲は完了。残存「論文」3 箇所はすべて歴史的経緯として明示的に保持判断済み
 
 ## 4. 対処済みの所見
 
