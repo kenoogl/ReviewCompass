@@ -176,6 +176,6 @@ ReviewCompass 固有の追加：
 - 無効実行トリアージ成果物の foundation スキーマ参照を明示（Requirement 6 受入 7、§5.18.9 由来）
 - Requirement 3（プロンプト一意解決）と Requirement 8 受入 6（複数候補時の選択方針）の対象シナリオ差を明示（Requirement 8 受入 6 への一文追加、両者の連動を実装側で保証）
 
-機能横断レビューに持ち越す所見（要件 review-wave／alignment-gate で対処）：
+機能横断レビューで対処された所見：
 
-- `validator_status` 語彙の正本 4 値（`not_run`／`passed`／`failed`／`blocked`、計画書 §5.18.7 行 2239 由来）のうち `not_run` が本実行時 Requirement 6 受入 2 と `foundation` 仕様 Requirement 6 受入 10 の両方で欠落。詳細は [.reviewcompass/pending-cross-feature-findings.md](../../pending-cross-feature-findings.md) §A-001 を参照
+- A-001：`validator_status` 語彙の正本 4 値（`not_run`／`passed`／`failed`／`blocked`、計画書 §5.18.7 行 2239 由来）のうち `not_run` が本実行時 Requirement 6 受入 2 と `foundation` 仕様 Requirement 6 受入 10 の両方で欠落していたが、2026-05-23 の要件 review-wave で 4 値に拡張済み。詳細は [.reviewcompass/pending-cross-feature-findings.md](../../pending-cross-feature-findings.md) §A-001 を参照

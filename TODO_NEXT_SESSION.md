@@ -97,6 +97,8 @@ design.md の素材：`/Users/Daily/Development/Rwiki-v2-code-mod/dual-reviewer-
 
 利用者明示承認のあった項目を新しい順に記録：
 
+- runtime requirements approval 取得（2026-05-24 セッション 23、利用者発言「承認」、依存マップ順 2/7 機能目）
+- 文言と事実の食い違いの是正：runtime requirements.md 行 179・181 で A-001 を未来形（持ち越し）から過去形（2026-05-23 対処済み）に書き換え。要件本文の 4 値参照は既に正しい状態のため文言の事実整合のみ
 - foundation requirements approval 取得（2026-05-24 セッション 23、利用者発言「確認した。承認」、依存マップ順 1/7 機能目）
 - 旧 paper-interface 由来の用語不整合 A-009 の対処：foundation 1 箇所＋analysis 6 箇所で「論文」→「報告書」統一、行 5 の歴史的経緯記述（`paper-interface`（論文向け）の旧名）は保持。利用者発言「(ア) 、論文ではなく報告書とする」（2026-05-24 セッション 23）
 - TODO 縮約：履歴系を `docs/archive/todo/TODO_NEXT_SESSION-2026-05-24-snapshot.md` に退避、本体約 100 行に削減
