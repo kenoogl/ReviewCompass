@@ -114,7 +114,7 @@ ReviewCompass の運営ガイドラインの必読フローに従う：
 
 これで design 段着手の前提条件は揃った。次セッションは B（design 着手）に進む。
 
-### D. ワークフロー事前検査機構（補助層 C、共存モデル、セッション 24 で項目 1〜5 完了、項目 6 のみ未着手）
+### D. ワークフロー事前検査機構（補助層 C、共存モデル、セッション 24 で全項目完了）
 
 セッション 23 末に利用者ご提案で浮上、セッション 24 で共存モデルを起草・採用承認、その後の同セッション内で項目 1〜5 を完了。詳細は別文書を参照：
 
@@ -135,17 +135,20 @@ ReviewCompass の運営ガイドラインの必読フローに従う：
 - 「共存モデルの採用」（2026-05-25 セッション 24、計画書方針変更に該当する規律 §0.2 不可逆操作の明示承認）
 - 「A から順に進める」（2026-05-25 セッション 24、文書反映の着手順序指示）
 
-セッション 24 内で完了済みの項目：
+セッション 24 内で完了済みの全項目：
 
 1. ✅ 段階 2 の外部スクリプト仕様策定（[docs/operations/WORKFLOW_PRECHECK.md](docs/operations/WORKFLOW_PRECHECK.md) 新設、コミット `2f1b59a`）
 2. ✅ 段階 2 のスクリプト実装（[tools/check-workflow-action.py](tools/check-workflow-action.py)、25 テスト全件通過、コミット `6b1b058`／`1bf3cc2`／`dbc4cd2`／`e76746a`／`a6c8f0c`／`662bffb`）
 3. ✅ 段階 2 の小規模運用による実測（14 シナリオすべて想定どおり、[docs/operations/WORKFLOW_PRECHECK.md](docs/operations/WORKFLOW_PRECHECK.md) §13 に記録、コミット `12aa862`）
 4. ✅ 段階 1 の規律化（memory `feedback_workflow_precheck_invocation.md` 新設、初運用で push 検査 OK）
 5. ✅ 規律統廃合の本格議論（active 必読 20 件 → 11 件、5 統合＋1 撤去＋1 TODO 移動、コミット `c719651`）
+6. ✅ 段階 3 のフック導入（前倒し実施、[.claude/hooks/pre-bash-precheck.sh](.claude/hooks/pre-bash-precheck.sh) 新設、.claude/settings.json に PreToolUse 登録、7 テスト全件通過、コミット `2520bef`／`9456085`）
 
-残作業（次セッション以降、利用者明示承認必須）：
+補助層 C 共存モデルの 3 段階すべてが本セッション内で完成。
 
-6. 段階 3 のフック導入（仕様調査、対象ツールの絞り込み、フェーズ 4 以降扱いだが前倒し検討も可）
+派生効果測定メモ：[docs/notes/2026-05-25-discipline-consolidation-effect-measurement.md](docs/notes/2026-05-25-discipline-consolidation-effect-measurement.md)（規律統廃合の効果を 48.7% 削減と実測、コミット `e99d4e7`）。
+
+計画書整合確認も併せて実施（§5.12.8／§5.13.8／§5.16 で補助層 A・B・C 表記を明示化、コミット `c57b837`）。
 
 ### B. 設計フェーズの drafting 段着手（A ＋ C 完了後、ただし D の段階 1 を先に実施することを検討）
 
@@ -159,6 +162,9 @@ design.md の素材：`/Users/Daily/Development/Rwiki-v2-code-mod/dual-reviewer-
 
 利用者明示承認のあった項目を新しい順に記録：
 
+- **段階 3 フック導入と補助層 C 完成（セッション 24、前倒し実施）**：補助層 C 共存モデルの段階 3（Claude Code フック機構）を前倒しで導入完了。[.claude/hooks/pre-bash-precheck.sh](.claude/hooks/pre-bash-precheck.sh)（bash + jq、73 行）が Bash の git commit／push を PreToolUse hook で検出し、段階 2 スクリプトを `--rationale "[stage-3 hook auto-invocation] ..."` 付きで自動発動、exit 2（DEVIATION）のときに `permissionDecision = "deny"` を返す。.claude/settings.json に PreToolUse 登録、tests.hooks.* と discover の許可ルールも追加。TDD 第 1 ラウンド（テスト 7 件先行、コミット `2520bef`）と第 2 ラウンド（実装、全 32 テスト通過、コミット `9456085`）の 2 段階。フック手動実行で 4 シナリオ確認、本セッション内のフック自動発動は Claude Code の設定再読み込みタイミングに依存。これにより補助層 C 共存モデルの 3 段階すべて完成（利用者明示承認「イは前倒しだが、取り組む」「ア」推奨セット採用「ア」コミット承認 ×2、2026-05-25 セッション 24）
+- **計画書整合確認（§5.12.8／§5.13.8／§5.16、セッション 24）**：補助層 C 新設に伴い、§5.12.8 と §5.13.8 の「新しい補助層」「補助層」抽象表記を補助層 A・B・C 体系に明示化、§5.16 第 2 サイクルの「補助層の基本実装」を「補助層 A・B の基本実装」に明示化。実質方針変更でなく表記統一。コミット `c57b837`。段階 2 スクリプトの commit 検査で要注意変更（docs/plan/ 配下）警告を初観察、再承認で続行（利用者明示承認「ア」修正案 A・B・C 一括「ア」WARN 後の続行、2026-05-25 セッション 24）
+- **規律統廃合効果測定（48.7% 削減を実測、セッション 24）**：[docs/notes/2026-05-25-discipline-consolidation-effect-measurement.md](docs/notes/2026-05-25-discipline-consolidation-effect-measurement.md) 新設。旧 20 件と新 11 件の active 必読層を静的測定し、ファイル数 45.0% 減、行数 41.6% 減、バイト数 48.7% 減、推定トークン数 48.7% 減を確認。目的 β（削減効果の数値化）に対応。コミット `e99d4e7`（利用者明示承認「キについて」議論着手「推奨案で。このメモを記録しておく」「ア」コミット承認、2026-05-25 セッション 24）
 - **規律統廃合（active 必読 20 件 → 11 件、セッション 24）**：5 統合（承認の運用／事実と解釈の分離／事前検査チェックリスト／workflow_state 真実源 ＋ session 引継ぎ／勝手に走らない（approach／session 含む））、1 撤去（reactive 書き直し）、1 TODO 移動（AskUserQuestion を多用しない → TODO §0.4）。memory 直下の旧 14 ファイルは `archive/2026-05-25-consolidation/` に退避。TODO §0.4 を雛形にも反映。テスト 25 件すべて引き続き通過。コミット `c719651`／push `12aa862..c719651`（利用者明示承認「アでよいが、AskUserQuestion を多用しないについては、TODOの冒頭に移すと規律が減る」「ア」2026-05-25 セッション 24）
 - **段階 1 規律化と初運用成功（補助層 C、セッション 24）**：memory `feedback_workflow_precheck_invocation.md` 新設（active 必読層に追加）、不可逆操作（spec.json 変更／git commit／git push）の直前に `tools/check-workflow-action.py` を呼び verdict と reasons を応答に明示する規律を確立。初運用で push 直前検査を実施、OK 判定後に push 成功（`a6c8f0c..12aa862`）。CLAUDE.md または規律ファイルへの追加は memory 配置で実現、論点 a＝memory／b＝即時／c＝すべての commit／push に適用 を承認（利用者明示承認「ア」起草案そのままで承認、2026-05-25 セッション 24）
 - **段階 2 小規模運用実測完了（補助層 C、セッション 24）**：spec-set／commit／push の 3 サブコマンドで 14 シナリオ実行、すべて想定どおりの判定（OK／WARN／DEVIATION）。発見した 2 件の小さな問題（真偽値の大文字表記、ログファイルの .gitignore 未追加）を是正、コミット `662bffb`。仕様 [docs/operations/WORKFLOW_PRECHECK.md](docs/operations/WORKFLOW_PRECHECK.md) §13 に実測結果を併記（コミット `12aa862`、§13.1〜§13.6 で範囲・シナリオ表・仕様準拠確認・是正・観察事項・結論を記録）。push 済（`8b33e74..2f1b59a` ＋ `2f1b59a..a6c8f0c` ＋ `a6c8f0c..12aa862`）（利用者明示承認「範囲案 2」「論点 A は実装テスト段階でも効果測定やデバッグで必要になるのではないか？」「論点 B は渡す」「論点 C は別文書」「ア」「イ」「ウ」「ア」2026-05-25 セッション 24）
