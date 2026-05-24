@@ -345,5 +345,265 @@ class SpecSetArgumentValidationTests(unittest.TestCase):
     )
 
 
+def _init_git_repo(tmpdir):
+  """temp dir に git リポジトリを初期化し、初回コミットと .reviewcompass 構造を準備する
+
+  commit／push サブコマンドのテスト用ヘルパー。
+  """
+  for cmd in [
+    ["git", "init", "-q", "-b", "main"],
+    ["git", "config", "user.email", "test@example.com"],
+    ["git", "config", "user.name", "Test User"],
+    ["git", "config", "commit.gpgsign", "false"],
+  ]:
+    subprocess.run(cmd, cwd=str(tmpdir), check=True, capture_output=True)
+  # 初回コミット（空でないリポジトリにする）
+  (Path(tmpdir) / ".gitignore").write_text("")
+  subprocess.run(
+    ["git", "add", ".gitignore"], cwd=str(tmpdir), check=True, capture_output=True
+  )
+  subprocess.run(
+    ["git", "commit", "-qm", "initial"],
+    cwd=str(tmpdir), check=True, capture_output=True,
+  )
+  # .reviewcompass 構造を準備（pending ファイルの土台）
+  pending_dir = Path(tmpdir) / ".reviewcompass"
+  pending_dir.mkdir()
+  pending_file = pending_dir / "pending-cross-feature-findings.md"
+  pending_file.write_text("# 機能横断レビューで扱う所見の集約\n")
+  return pending_file
+
+
+def _set_pending_findings(pending_file, unresolved_count=0, resolved_count=0):
+  """pending ファイルに未消化／対処済み所見を設定する"""
+  lines = ["# 機能横断レビューで扱う所見の集約\n"]
+  for i in range(unresolved_count):
+    lines.append(f"\n### A-{i+1:03d}：テスト用未消化所見\n")
+    lines.append("詳細内容...\n")
+  for i in range(resolved_count):
+    n = unresolved_count + i + 1
+    lines.append(f"\n### A-{n:03d}：テスト用対処済み所見 ✅ 対処済み（2026-05-25）\n")
+    lines.append("詳細内容...\n")
+  pending_file.write_text("".join(lines))
+
+
+def _stage_file(tmpdir, relpath, content):
+  """ファイルを作成して git add 状態にする"""
+  full = Path(tmpdir) / relpath
+  full.parent.mkdir(parents=True, exist_ok=True)
+  full.write_text(content)
+  subprocess.run(
+    ["git", "add", relpath], cwd=str(tmpdir), check=True, capture_output=True
+  )
+
+
+class CommitExitCodeTests(unittest.TestCase):
+  """commit サブコマンドの終了コード判定（仕様 §6.2）"""
+
+  def setUp(self):
+    self.tmpdir = tempfile.mkdtemp()
+    self.addCleanup(shutil.rmtree, self.tmpdir)
+    self.pending_file = _init_git_repo(self.tmpdir)
+
+  def test_commit_with_no_pending_and_normal_changes_returns_zero(self):
+    """未消化所見 0 件 + 通常変更のみ → exit 0"""
+    _set_pending_findings(self.pending_file, unresolved_count=0, resolved_count=2)
+    _stage_file(self.tmpdir, "notes.md", "# テスト用ノート")
+    result = run_script(
+      ["commit", "--rationale", "テスト用 commit、利用者承認の出典あり"],
+      cwd=self.tmpdir,
+    )
+    _assert_script_invoked(self, result)
+    self.assertEqual(
+      result.returncode, 0,
+      f"未消化所見なし＋通常変更のみは通過すべき。\n"
+      f"stdout: {result.stdout}\nstderr: {result.stderr}",
+    )
+
+  def test_commit_with_pending_findings_returns_one(self):
+    """未消化所見 1 件以上 → exit 1（警告）"""
+    _set_pending_findings(self.pending_file, unresolved_count=1)
+    _stage_file(self.tmpdir, "notes.md", "# テスト用ノート")
+    result = run_script(
+      ["commit", "--rationale", "未消化所見ありの場面のテスト"],
+      cwd=self.tmpdir,
+    )
+    _assert_script_invoked(self, result)
+    self.assertEqual(
+      result.returncode, 1,
+      f"未消化所見ありは警告で exit 1。\n"
+      f"stdout: {result.stdout}\nstderr: {result.stderr}",
+    )
+    self.assertIn(
+      "WARN", result.stdout,
+      f"警告判定の出力に WARN が含まれるべき。stdout: {result.stdout}",
+    )
+
+  def test_commit_with_spec_json_change_returns_one(self):
+    """spec.json の変更含む → exit 1（要注意変更の警告）"""
+    _set_pending_findings(self.pending_file, unresolved_count=0)
+    _stage_file(
+      self.tmpdir,
+      ".reviewcompass/specs/foundation/spec.json",
+      '{"feature_name":"foundation"}',
+    )
+    result = run_script(
+      ["commit", "--rationale", "spec.json 更新のテスト"],
+      cwd=self.tmpdir,
+    )
+    _assert_script_invoked(self, result)
+    self.assertEqual(
+      result.returncode, 1,
+      f"spec.json 変更は要注意変更として警告 exit 1。\n"
+      f"stdout: {result.stdout}\nstderr: {result.stderr}",
+    )
+
+  def test_commit_with_plan_doc_change_returns_one(self):
+    """計画書（docs/plan/ 配下）の変更含む → exit 1"""
+    _set_pending_findings(self.pending_file, unresolved_count=0)
+    _stage_file(self.tmpdir, "docs/plan/test-plan.md", "# テスト計画")
+    result = run_script(
+      ["commit", "--rationale", "計画書追加のテスト"],
+      cwd=self.tmpdir,
+    )
+    _assert_script_invoked(self, result)
+    self.assertEqual(
+      result.returncode, 1,
+      f"docs/plan/ 配下の変更は要注意で警告 exit 1。\n"
+      f"stdout: {result.stdout}\nstderr: {result.stderr}",
+    )
+
+  def test_commit_with_credential_file_returns_two(self):
+    """ファイル名に credentials を含む変更 → exit 2（危険変更）"""
+    _set_pending_findings(self.pending_file, unresolved_count=0)
+    _stage_file(self.tmpdir, "credentials.json", '{"key":"dummy"}')
+    result = run_script(
+      ["commit", "--rationale", "credentials を含むファイルのテスト"],
+      cwd=self.tmpdir,
+    )
+    _assert_script_invoked(self, result)
+    self.assertEqual(
+      result.returncode, 2,
+      f"credentials を含むファイル名は危険変更として逸脱 exit 2。\n"
+      f"stdout: {result.stdout}\nstderr: {result.stderr}",
+    )
+    self.assertIn(
+      "DEVIATION", result.stdout,
+      f"逸脱判定の出力に DEVIATION が含まれるべき。stdout: {result.stdout}",
+    )
+
+  def test_commit_rationale_is_required(self):
+    """commit に --rationale なし → 非 0 終了（仕様 §5.2 必須）"""
+    _stage_file(self.tmpdir, "notes.md", "test")
+    result = run_script(["commit"], cwd=self.tmpdir)
+    self.assertNotEqual(
+      result.returncode, 0,
+      f"--rationale は必須のため非 0 終了すべき。\n"
+      f"stdout: {result.stdout}\nstderr: {result.stderr}",
+    )
+    # 厳密化：実装前は「サブコマンド不明」で非 0 になるが、
+    # 実装後は --rationale 不足で非 0 になることを区別する
+    self.assertIn(
+      "rationale", result.stderr.lower(),
+      f"--rationale 不足のエラーメッセージは stderr に 'rationale' を含むべき。\n"
+      f"stderr: {result.stderr}",
+    )
+
+
+class PushExitCodeTests(unittest.TestCase):
+  """push サブコマンドの終了コード判定（仕様 §6.3）"""
+
+  def setUp(self):
+    self.tmpdir = tempfile.mkdtemp()
+    self.addCleanup(shutil.rmtree, self.tmpdir)
+    self.pending_file = _init_git_repo(self.tmpdir)
+
+  def test_push_with_clean_tree_returns_zero(self):
+    """作業ツリーが clean → exit 0"""
+    result = run_script(
+      ["push", "--rationale", "clean な状態のテスト"],
+      cwd=self.tmpdir,
+    )
+    _assert_script_invoked(self, result)
+    self.assertEqual(
+      result.returncode, 0,
+      f"作業ツリー clean は通過すべき。\n"
+      f"stdout: {result.stdout}\nstderr: {result.stderr}",
+    )
+
+  def test_push_with_dirty_tree_returns_two(self):
+    """作業ツリーが dirty（未追跡ファイルあり）→ exit 2"""
+    (Path(self.tmpdir) / "untracked.md").write_text("# 未追跡")
+    result = run_script(
+      ["push", "--rationale", "dirty な状態のテスト"],
+      cwd=self.tmpdir,
+    )
+    _assert_script_invoked(self, result)
+    self.assertEqual(
+      result.returncode, 2,
+      f"作業ツリー dirty は逸脱 exit 2。\n"
+      f"stdout: {result.stdout}\nstderr: {result.stderr}",
+    )
+    self.assertIn(
+      "DEVIATION", result.stdout,
+      f"逸脱判定の出力に DEVIATION が含まれるべき。stdout: {result.stdout}",
+    )
+
+  def test_push_rationale_is_required(self):
+    """push に --rationale なし → 非 0 終了（仕様 §5.3 必須）"""
+    result = run_script(["push"], cwd=self.tmpdir)
+    self.assertNotEqual(
+      result.returncode, 0,
+      f"--rationale は必須のため非 0 終了すべき。\n"
+      f"stdout: {result.stdout}\nstderr: {result.stderr}",
+    )
+    # 厳密化：実装前は「サブコマンド不明」で非 0 になるが、
+    # 実装後は --rationale 不足で非 0 になることを区別する
+    self.assertIn(
+      "rationale", result.stderr.lower(),
+      f"--rationale 不足のエラーメッセージは stderr に 'rationale' を含むべき。\n"
+      f"stderr: {result.stderr}",
+    )
+
+
+class CommitPushOutputTests(unittest.TestCase):
+  """commit／push の JSON 出力検査（仕様 §7.3）"""
+
+  def setUp(self):
+    self.tmpdir = tempfile.mkdtemp()
+    self.addCleanup(shutil.rmtree, self.tmpdir)
+    self.pending_file = _init_git_repo(self.tmpdir)
+
+  def test_commit_json_output(self):
+    """commit に --json で JSON 出力に切り替わる"""
+    result = run_script(
+      ["commit", "--rationale", "JSON 出力のテスト", "--json"],
+      cwd=self.tmpdir,
+    )
+    _assert_script_invoked(self, result)
+    data = json.loads(result.stdout)
+    self.assertIn("verdict", data)
+    self.assertIn("action", data)
+    self.assertEqual(
+      data["action"]["subcommand"], "commit",
+      "JSON 出力の action.subcommand は 'commit' であるべき",
+    )
+
+  def test_push_json_output(self):
+    """push に --json で JSON 出力に切り替わる"""
+    result = run_script(
+      ["push", "--rationale", "JSON 出力のテスト", "--json"],
+      cwd=self.tmpdir,
+    )
+    _assert_script_invoked(self, result)
+    data = json.loads(result.stdout)
+    self.assertIn("verdict", data)
+    self.assertIn("action", data)
+    self.assertEqual(
+      data["action"]["subcommand"], "push",
+      "JSON 出力の action.subcommand は 'push' であるべき",
+    )
+
+
 if __name__ == "__main__":
   unittest.main()
