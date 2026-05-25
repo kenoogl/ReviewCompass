@@ -2783,6 +2783,7 @@ ReviewCompass リポジトリへの移管時に判断：
 - §5.16 self-improvement の workflow 改善仕様（運用機構）
 - §5.20.4 規律ファイルの対応表（抽出元 → 抽出先のパス対応）
 - **実施履歴**：2026-05-25 セッション 26 で軽量手続き（明示承認＋ archive 退避）により規律ファイルを `docs/disciplines/` に配置。シンボリックリンク経由で起動時に規律本体まで自動で読み込ませる方法はセッション 27 で検証失敗、毎セッション §1 起動手順で Read する fallback 案を採用。配置内訳・件数の最新値は [docs/disciplines/README.md](../disciplines/README.md)、運用経緯は [TODO_NEXT_SESSION.md](../../TODO_NEXT_SESSION.md) §1.5 を参照
+- **実施履歴（追加）**：2026-05-26 セッション 27 で軽量手続きにより旧 dominant-dominated-options ／ choice-presentation を統合し `discipline_options_presentation.md` を新設（active 必読昇格＋事前検査宣言義務新設）、旧 2 件は `docs/disciplines/archive/2026-05-26-consolidation/` へ退避。効果測定ログ [docs/discipline-compliance-reports/options-precheck-log.md](../discipline-compliance-reports/options-precheck-log.md) を併設（計画書 §5.9.5 効果測定 3 指標と同型）
 
 ### 5.22 正本文書の ReviewCompass 方針への取り入れ手順（2026-05-21 確定）
 

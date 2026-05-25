@@ -1,8 +1,10 @@
 # 規律ファイル（disciplines）
 
-最終更新：2026-05-25（セッション 27：シンボリックリンク検証失敗・fallback 案イ採用、利用者明示承認「推奨案」。auto memory 機構の起動時 load 対象は MEMORY.md の索引（1 文要約）までで、シンボリックリンク経由でも規律本体は load されないことが判明。リンク 16 件は単一正本（repo）維持のため残置、毎セッション開始時に TODO §1 起動手順で active 必読 11 件を Read で読む運用に切り替え）
+最終更新：2026-05-26（セッション 27：旧 dominant-dominated-options ／ choice-presentation を統合し `discipline_options_presentation.md` を新設、active 必読昇格＋事前検査宣言義務を新設、旧 2 件は `archive/2026-05-26-consolidation/` へ退避。利用者明示承認「OK」「承認」）
 
-過去履歴：セッション 26（2026-05-25）：active 必読 12 件 ＋ 参照層 5 件＝合計 17 件を memory から軽量移送 → `no-unilateral-action` 撤去で合計 16 件 → memory 側 `feedback_*.md` 16 件をシンボリックリンクに変更（repo 本体を指す構成、当初は auto memory 機構が起動時に本体を load する想定だったが、セッション 27 検証で否定された）。
+過去履歴：
+- セッション 27（2026-05-26）前半：シンボリックリンク検証失敗・fallback 案イ採用、毎セッション開始時に TODO §1 起動手順で active 必読を Read で読む運用に切り替え（auto memory 機構の起動時 load 対象は MEMORY.md の索引までで、シンボリックリンク経由でも規律本体は load されないことが判明）
+- セッション 26（2026-05-25）：active 必読 12 件 ＋ 参照層 5 件＝合計 17 件を memory から軽量移送 → `no-unilateral-action` 撤去で 16 件 → memory 側 `feedback_*.md` をシンボリックリンクに変更
 
 ## 配置と所有
 
@@ -20,9 +22,11 @@
 
 本記法は Markdown viewer によっては自動でクリック可能リンクとして解決されないが、内部参照の意図を明示する目的で維持する。Markdown リンク形式への一括変換は別途検討（フェーズ 2 以降の宿題）。
 
-## 規律ファイル一覧（17 件）
+## 規律ファイル一覧
 
-### active 必読（11 件、セッション開始時に TODO §1 起動手順で Read 対象）
+最新の件数は本一覧の各表（active 必読／参照層／archive）で確認すること。件数は本見出しには固定しない（増減の都度に編集箇所が分散するのを避けるため）。
+
+### active 必読（セッション開始時に TODO §1 起動手順で Read 対象）
 
 | ファイル | 概要 |
 |---|---|
@@ -37,16 +41,21 @@
 | [discipline_concise_complete_report.md](discipline_concise_complete_report.md) | 作業後は応答末尾で実施内容を箇条書きで全件列挙、ファイルパス・変更内容を必ず含める |
 | [discipline_reopen_procedure_for_settled_topics.md](discipline_reopen_procedure_for_settled_topics.md) | 確定済み論点を変更する場合は 5 ステップ（宣言・理由・新案・明示承認・履歴記録） |
 | [discipline_plain_japanese.md](discipline_plain_japanese.md) | 英語技術用語を多用しない、完全な日本語の文で書く、応答送信前に自己検査 |
+| [discipline_options_presentation.md](discipline_options_presentation.md) | 複数案提示時、dominated 案は提示しない、提示前に検査結果を応答内で明示宣言、3 選択肢以内で大局→細部の階層性を守る（旧 dominant-dominated-options ／ choice-presentation を統合＋事前検査宣言義務を新設） |
 
-### 参照層（5 件、必要時に grep／Read で参照、起動時 load なし）
+### 参照層（3 件、必要時に grep／Read で参照、起動時 load なし）
 
 | ファイル | 概要 |
 |---|---|
-| [discipline_dominant_dominated_options.md](discipline_dominant_dominated_options.md) | レビュー／設計議論で複数案提示時、dominated 案は提示しない、ただし厳密化規律を必須適用 |
-| [discipline_choice_presentation.md](discipline_choice_presentation.md) | 利用者に判断を仰ぐ際の選択肢提示ルール（ラベル＋大局→細部＋3 選択肢以内） |
 | [discipline_no_redundant_workflow_questions.md](discipline_no_redundant_workflow_questions.md) | 正本ワークフローが順序・方式を既定する局面で機能ごとに止めて尋ねない |
 | [discipline_plain_explanation_each_step.md](discipline_plain_explanation_each_step.md) | 1 件ずつ承認の各ステップで承認前に平易な日本語説明を先に添える |
 | [discipline_implementation_autonomy.md](discipline_implementation_autonomy.md) | 実装フェーズはタスクごとに止めず自律進行、コミット／プッシュ／spec.json／フェーズ移行のみ明示承認 |
+
+### archive（統廃合元・撤廃済みの本体保全、起動時 load なし）
+
+| ディレクトリ | 内容 |
+|---|---|
+| [archive/2026-05-26-consolidation/](archive/2026-05-26-consolidation/) | セッション 27（2026-05-26）の統廃合元 2 件（旧 dominant-dominated-options ／ choice-presentation）。統合先は active 必読の `discipline_options_presentation.md` |
 
 ## 関連参照
 

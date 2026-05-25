@@ -66,7 +66,7 @@ ReviewCompass の運営ガイドラインの必読フローに従う：
 
 1. ターミナルで `cd /Users/Daily/Development/ReviewCompass`
 2. 本 `TODO_NEXT_SESSION.md` を読む（§0 重要規律を必ず確認）
-3. **規律本体 active 必読 11 件を Read で読む**（`docs/disciplines/README.md` の「active 必読」表参照。auto memory は索引のみ load し本体は load されないため毎セッション必要）
+3. **規律本体 active 必読を Read で読む**（最新の件数と一覧は `docs/disciplines/README.md` の「active 必読」表で確認。auto memory は索引のみ load し本体は load されないため毎セッション必要）
 4. `docs/operations/SESSION_WORKFLOW_GUIDE.md` を読む（必読フロー・ワークフロー段の役割・サブエージェント方式の運用条件）
 5. 計画書 `docs/plan/reconstruction-plan-2026-05-21.md` §5.4〜§5.8 を読む（ワークフロー手続き、reopen、session 跨ぎ、多層防御）
 6. 計画書 §5.24 を読む（spec.json の正本スキーマ、2026-05-24 セッション 22 で新設）
@@ -80,7 +80,7 @@ ReviewCompass の運営ガイドラインの必読フローに従う：
 
 ### 1.5 シンボリックリンク検証結果（2026-05-25 セッション 27、fallback 案イ採用）
 
-検証失敗：auto memory の起動時 load は MEMORY.md 索引（1 文要約）までで、シンボリックリンク経由でも規律本体はたどられない。**対処**：active 必読 11 件は §1 起動手順で毎セッション Read（参照層 5 件は必要時参照のまま）、シンボリックリンク 16 件は単一正本（repo）維持の補助として残置。詳細は本セッション 27 のコミットメッセージ参照。
+検証失敗：auto memory の起動時 load は MEMORY.md 索引（1 文要約）までで、シンボリックリンク経由でも規律本体はたどられない。**対処**：active 必読は §1 起動手順で毎セッション Read（参照層は必要時参照のまま）、シンボリックリンクは単一正本（repo）維持の補助として残置。最新の件数・分類は `docs/disciplines/README.md` 参照。詳細は本セッション 27 のコミットメッセージ参照。
 
 ## 2. ワークフロー上の現在位置（2026-05-25 セッション 26 末時点）
 
@@ -135,9 +135,11 @@ triad-review 段の 3 役配置（実験(エ)継続予定、本セッション 2
 
 
 
-## 4. 直近の確定事項（2026-05-24 セッション 22〜23、2026-05-25 セッション 24〜26）
+## 4. 直近の確定事項（2026-05-24 セッション 22〜23、2026-05-25 セッション 24〜26、2026-05-26 セッション 27）
 
 利用者明示承認のあった項目を新しい順に記録：
+
+- **複数案提示規律の統廃合＋事前検査宣言義務新設（セッション 27、2026-05-26）**：旧 dominant-dominated-options ／ choice-presentation（ともに参照層）を統合し `docs/disciplines/discipline_options_presentation.md` を新設（active 必読に昇格）。新規節として事前検査宣言義務（応答内で内部判定の (a) 候補総数 ／ (b) 3 規律適用結果 ／ (c) dominated 除外 ／ (d) 残合理案を明示宣言）を追加。効果測定ログ `docs/discipline-compliance-reports/options-precheck-log.md` を初版作成。旧 2 件は `docs/disciplines/archive/2026-05-26-consolidation/` へ退避。経緯：本セッション 27 で利用者から「規律が効いていない」と構造的欠陥を指摘され、active 必読昇格＋事前宣言義務の併設で対処。利用者明示承認「読み取りは正しい。軽量手続きでよい。効果を測る必要がある」「OK」（短縮版承認）「承認」（実装承認）
 
 - **memory 側をシンボリックリンクに変更（セッション 26 末、コミット `9b9e827`）**：memory 配下の `feedback_*.md` 16 件を repo の `docs/disciplines/discipline_*.md` を指すシンボリックリンクに変更。auto memory 機構の起動時 load を維持しつつ、単一の正本（repo）と git 追跡の両立を実現。次セッション 27 開始時に検証予定（§1.5 検証手順）。検証失敗時の fallback：TODO §1 起動手順に「`docs/disciplines/` 16 件すべてを Read」を追加する案イに切り替え。利用者明示承認「試してみる」→「コミット」（2026-05-25 セッション 26）
 
