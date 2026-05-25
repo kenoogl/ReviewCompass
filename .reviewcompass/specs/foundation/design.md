@@ -329,15 +329,14 @@ graph LR
 
 - `run_id`：実行の安定識別子（§3 実行メタデータ契約と一致）
 - `target_id`：レビュー対象識別子（§3 と一致）
-- `run_metadata_ref`：§3 で定義された実行メタデータ集合への参照（または埋め込み object）。実装は埋め込み object として表現することを既定とし、別ファイルへの分割は `runtime` 設計の判断に委ねる
-- `step_records`：段別記録の配列。各要素は §5 段別再演モデルの段別識別子（`step_id`／`step_name`／`step_status`／`step_prompt_artifact_id`／`step_started_at`／`step_closed_at`）を保持する。配列内包形式で `review_case` 直下に置く
-- `findings`：`finding` の配列。各要素は §4 `finding` スキーマに準拠する。`finding.step_id` を介して `step_records` と紐付く
+- `run_metadata_ref`：§3 で定義された実行メタデータ集合への参照。本機能は契約として「`review_case` から §3 の全メタデータ項目にアクセスできる」ことのみを固定し、具体的な保持方法（埋め込み object か別ファイル参照か）は `runtime` 設計の判断に委ねる
+- `step_records`：段別記録の集合。各要素は §5 段別再演モデルの段別識別子（`step_id`／`step_name`／`step_status`／`step_prompt_artifact_id`／`step_started_at`／`step_closed_at`）を保持する。本機能は契約として「`review_case` から全段の段別記録にアクセスできる」ことのみを固定し、具体的な保持方法（埋め込み配列か別ファイル参照か）は `runtime` 設計の判断に委ねる
+- `findings`：`finding` の集合。各要素は §4 `finding` スキーマに準拠する。`finding.step_id` を介して `step_records` と紐付く（双方向参照や入れ子構造を本機能は強制しない）。具体的な保持方法（埋め込み配列か別ファイル参照か）は `runtime` 設計の判断に委ねる
 - `validator_result_refs`：本実行に対する検証器結果（`validator_result.schema.json`）への参照の配列。複数回検証実行に対応する
 - `invalidation_marker_refs`：本実行に対する無効化標識（`invalidation_marker.schema.json`）への参照の配列。空配列は無効化なしを意味する
-- `failure_observations`：`failure_observation` の配列（任意、空配列可）。本実行から導出された失敗観測を保持する。`self-improvement` が後追で追加する場合も想定する
 - `integration_summary`：Step D が生成する統合レビュー記録の本体（フリーテキスト形式、各 Step 出力の論理結合結果）。追加 LLM 呼び出しを伴わず、Step A／B／C の出力を機械的に統合する
 
-`review_case` は生証拠を破壊せずに再利用できるよう、派生メトリクスは持たない。
+`review_case` は生証拠を破壊せずに再利用できるよう、派生メトリクスは持たない。`failure_observation` は `review_case` の内部に埋め込まず、独立成果物として管理する（後述の `failure_observation` 節を参照）。これにより `review_case` の不変性を保つ。
 
 #### `finding`
 
@@ -365,7 +364,7 @@ graph LR
 
 空の `counter_evidence_refs` だけでは区別できない「不在の意図的記録」を `counter_status` で担保する。
 
-**`severity` の語彙正本所有方針**：`finding.severity` の値語彙は本機能が所有する正本として、初版 4 値を確定列挙する。計画書 §5.9.2 由来。下流の `runtime`／`evaluation`／`analysis`／`self-improvement`／`workflow-management`／`conformance-evaluation` は本語彙を参照し、再定義してはならない。
+**`severity` の語彙正本所有方針**：`finding.severity` の値語彙は本機能が所有する正本として、初版 4 値を確定列挙する。計画書 §5.9.2 由来。下流の `runtime`／`evaluation`／`analysis`／`self-improvement`／`conformance-evaluation` は本語彙を参照し、再定義してはならない（`workflow-management` は所見の重大度を直接扱わないため参照禁止対象に含めない）。
 
 - `CRITICAL`：致命的、必ず修正
 - `ERROR`：重要、修正推奨
@@ -399,6 +398,8 @@ graph LR
 - `detected_at_step`：検出された段
 
 `failure_type` の詳細分類体系やメトリクス導出方法は deferred とし、`self-improvement`／`evaluation` に委ねる。
+
+**配置方針**：`failure_observation` の実体は独立成果物として管理し、`review_case` の内部に埋め込まない。これにより `review_case` の不変性（生証拠は不変、要件 6 受入 3 由来）を保つ。観察記録は後から `self-improvement` が追加することがあり、`review_case` を書き換えずに新規 `failure_observation` ファイルを作成する形で追記する。`review_case` ↔ `failure_observation` の関連は `failure_observation.run_ref` で `review_case.run_id` を一方向参照する形で表現し、`review_case` 側に逆参照配列を持たない。
 
 #### `necessity_judgment`
 
@@ -577,7 +578,16 @@ Step C の出力単位。必要性 5 項目と最終ラベルを表す（要件 
 
 ### 判断 7：複数の語彙正本を本機能が所有し、下流は参照のみ
 
-`counter_status`（3 値）／`validator_status`（4 値）／`evidence_class`（4 値）／`review_mode`（最小 3 値）／`severity`（4 値、`finding` 用）／`final_label`（3 値、`necessity_judgment` 用）の 6 語彙正本を本機能が所有する。下流仕様は参照のみで再定義しない（要件 1 受入 4、要件 6 受入 6・8・10、計画書 §5.9.2・§5.9.3 由来）。
+本機能が所有する語彙正本（参照禁止対象は語彙ごとに異なる、詳細は §3 と §4 の各節を参照）：
+
+- `counter_status`（3 値、`finding` 用、要件 1 受入 4 由来）
+- `validator_status`（4 値、メタデータ用、要件 6 受入 10 由来）
+- `evidence_class`（4 値、メタデータ用、要件 6 受入 8 由来）
+- `review_mode`（最小 3 値、メタデータ用、要件 6 受入 6 由来）
+- `severity`（4 値、`finding` 用、計画書 §5.9.2 由来）
+- `final_label`（3 値、`necessity_judgment` 用、計画書 §5.9.3 由来）
+
+下流仕様はこれらを参照のみで再定義しない。本リストは設計の現時点での集合であり、将来 foundation が新規スキーマ・新規メタデータを追加する際はこのリストに追記する。
 
 ## 要件と設計の対応（Requirements Traceability）
 
@@ -634,7 +644,7 @@ Step C の出力単位。必要性 5 項目と最終ラベルを表す（要件 
 - メタデータ項目の責務分離（`run_status`／`validator_status`／`human_signoff_status`／`evidence_class`）が §3 で宣言されている
 - 無効化と検証が生証拠を汚さない成果物分離が §8 で定義されている
 - 6 つの下流仕様が取り込む成果物が §下流仕様への影響で追跡できる
-- 6 つの語彙正本（`counter_status`／`validator_status`／`evidence_class`／`review_mode`／`severity`／`final_label`）の所有関係が §3 と §4 で宣言され、再定義禁止対象が明示されている
+- §判断 7 に列挙された語彙正本のすべてについて、所有関係が §3 と §4 で宣言され、参照禁止対象が個別に明示されている
 
 ## 変更意図（Change Intent）
 
