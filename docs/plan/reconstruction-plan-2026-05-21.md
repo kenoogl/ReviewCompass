@@ -2782,6 +2782,7 @@ ReviewCompass リポジトリへの移管時に判断：
 - §5.9.5 workflow 層 self-improvement（ステータス管理と昇格機構）
 - §5.16 self-improvement の workflow 改善仕様（運用機構）
 - §5.20.4 規律ファイルの対応表（抽出元 → 抽出先のパス対応）
+- **実施履歴**：2026-05-25 セッション 26 で軽量手続き（明示承認＋ archive 退避）により規律ファイルを `docs/disciplines/` に配置。シンボリックリンク経由で起動時に規律本体まで自動で読み込ませる方法はセッション 27 で検証失敗、毎セッション §1 起動手順で Read する fallback 案を採用。配置内訳・件数の最新値は [docs/disciplines/README.md](../disciplines/README.md)、運用経緯は [TODO_NEXT_SESSION.md](../../TODO_NEXT_SESSION.md) §1.5 を参照
 
 ### 5.22 正本文書の ReviewCompass 方針への取り入れ手順（2026-05-21 確定）
 
