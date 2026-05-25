@@ -79,7 +79,56 @@ ReviewCompass の運営ガイドラインの必読フローに従う：
 
 ## 3. 次の作業候補（優先順位順）
 
-**現在の主要作業：B. 設計フェーズの drafting 段着手**（A／C／D はすべて完了済み、§3 末尾に集約）
+**現在の主要作業：E. 計画書 §5.9.1 モデル多様化規律の再検討 ＋ B. 設計フェーズ継続（foundation の triad-review approval 取得後、runtime 以降の drafting）**
+
+### E. 計画書 §5.9.1（モデル多様化規律）の再検討（セッション 25 末で次セッション議題として確定）
+
+セッション 25 で実施した foundation／design.md の triad-review で、3 つの 3 役配置を比較実験。最終的に実験(エ)（主役 Sonnet 4.6 ／ 敵対役 Opus 4.7 ／ 判定役 Opus 4.7）を採用し、§5.9.1 の多様化規律から逸脱した試行が最も整合的かつ深い判定を示すことを観察。
+
+判定材料：
+
+- 実験記録：[docs/notes/2026-05-25-triad-review-model-allocation-experiment.md](docs/notes/2026-05-25-triad-review-model-allocation-experiment.md)
+- レビュー記録：[.reviewcompass/specs/foundation/reviews/2026-05-25-design-triad-review.md](.reviewcompass/specs/foundation/reviews/2026-05-25-design-triad-review.md)
+
+主要観察：
+
+- Haiku 4.5 敵対役は主役 24 件すべてに同意（反証 0 件）。利用者の経験パターン「敵対役からの反意で主役の重大指摘を取り下げる」が機能しなかった
+- Opus 4.7 敵対役は反証 11 件＋中核的独立発見（A-001：Step D 統合出力配置未定義、要件 1 受入 7 への直接的応答欠落）を検出
+- Haiku 4.5 判定役は波及 9 件と認定、Opus 4.7 判定役は同じ入力で波及 0 件と判定（責務境界判断の能力差）
+
+暫定推奨（次セッションで利用者と協議）：
+
+- 敵対役と判定役の両方に Opus 級モデルを当てる
+- 主役は中能力モデル（Sonnet 級）で十分
+- Haiku 級モデルは補助役（記録整理、形式検査）に限定
+- モデル多様化のバイアス低減目的は別系統モデル（将来別ベンダー）で担保する選択肢を検討
+
+次セッションの作業：
+
+1. 実験記録文書を利用者と確認
+2. §5.9.1 改訂可否を協議（暫定推奨を正式化するか、追加検証データを取得するか）
+3. 改訂する場合は計画書 §5.9.1 を編集し、本機能 design 段の triad-review 完了基準として実験(エ)配置を遡及的に正式化
+
+### B. 設計フェーズ継続（foundation triad-review approval 後、runtime 以降の drafting）
+
+セッション 25 で foundation／design.md の drafting と triad-review（機能内対処 7 件）が完了。残りの段：
+
+1. **foundation／design.review-wave**：本機能の triad-review で波及所見は 0 件のため、形式的通過予定（他機能 drafting＋triad-review 完了後）
+2. **foundation／design.alignment**：LLM 自動判定（要件文書と design.md の機械的整合）
+3. **foundation／design.approval**：利用者明示承認待ち（次セッションで実施可能）
+
+その後の依存マップ順（計画書 §3.1 phase_order）：
+
+1. ✅ foundation（drafting 完了、triad-review 完了予定、approval 待ち）
+2. runtime → 3. evaluation → 4. analysis → 5. workflow-management → 6. self-improvement → 7. conformance-evaluation
+
+各機能の手順（運営ガイド §2.3）：drafting → triad-review → review-wave → alignment → approval
+
+着手時の段階 2 スクリプト連動：design drafting に着手する際は `spec-set <feature> design drafting true --rationale "..."` を呼び、依存検査を通過してから Edit／Write を行う（規律 [[workflow-precheck-invocation]]）。
+
+---
+
+**過去の作業実績（A／C／D／B 一部はすべて完了済み、§3 末尾に集約）**
 
 ### A. requirements 段の approval 取得 ✅ 全 7 機能完了済み（2026-05-24 セッション 23 末）
 
@@ -170,10 +219,12 @@ design.md の素材：`/Users/Daily/Development/Rwiki-v2-code-mod/dual-reviewer-
 
 着手時の段階 2 スクリプト連動：design drafting に着手する際は `spec-set <feature> design drafting true --rationale "..."` を呼び、依存検査を通過してから Edit／Write を行う（規律 [[workflow-precheck-invocation]]）。
 
-## 4. 直近の確定事項（2026-05-24 セッション 22〜23、2026-05-25 セッション 24）
+## 4. 直近の確定事項（2026-05-24 セッション 22〜23、2026-05-25 セッション 24〜25）
 
 利用者明示承認のあった項目を新しい順に記録：
 
+- **foundation／design 段の drafting と triad-review 実施（セッション 25）**：論点 X／Y で「私が起草・要件適合優先で再構成」を選択し、利用者承認後に design.md（628 行）を新規起草。3 役 triad-review をサブエージェント方式（計画書 §5.23.12）で実施し、通常運用（主役 Sonnet ／ 敵対役 Haiku ／ 判定役 Opus）と実験運用（敵対役と判定役の入れ替え）を比較、最終的に実験(エ)（主役 Sonnet ／ 敵対役 Opus ／ 判定役 Opus）を正式判定として採用。must-fix 7 件（F-001／F-002／F-007／F-008／F-011／F-020／A-001）を機能内対処で design.md に反映完了（628 → 659 行）。波及・遡及は発生せず、pending-cross-feature-findings.md への追記なし。レビュー記録 [.reviewcompass/specs/foundation/reviews/2026-05-25-design-triad-review.md](.reviewcompass/specs/foundation/reviews/2026-05-25-design-triad-review.md) 新設。実験記録 [docs/notes/2026-05-25-triad-review-model-allocation-experiment.md](docs/notes/2026-05-25-triad-review-model-allocation-experiment.md) 新設（利用者明示承認「ｘア、Yア」「承認」「triad-review 段への移行」「全てア」（論点 1〜3）「(エ)を実施して、実験結果をまとめて」「全てア」（論点 X／Y／Z）、2026-05-25 セッション 25）
+- **計画書 §5.9.1（モデル多様化規律）の再検討を次セッション議題に追加（セッション 25）**：本セッションの実験で「Haiku 級モデルを敵対役・判定役に置くと反証生成と責務境界判断が十分に機能しない」ことを観察。暫定推奨「敵対役と判定役の両方を Opus 級にする」を次セッションで利用者と協議し、§5.9.1 の改訂可否を判断。判定材料は実験記録文書に保存済み（利用者明示承認「全てア」論点 Z、2026-05-25 セッション 25）
 - **memory リンク是正と段階 3 フック実運用観察（セッション 24 末）**：規律 4「workflow precheck を必ず呼ぶ」に段階 1／段階 3 の責務分担を追記、規律 5「承認の運用」に「機械検査は承認の代替ではない」を追記。派生対処として旧リンク 8 か所（旧 reactive 規律言及、統廃合前の規律名）を新規律名に修正。段階 3 フックの実運用観察で、本セッション内のフックが期待外に自動発動していたことを発見（ログ `docs/logs/workflow-precheck.log` に 8 件の `[stage-3 hook auto-invocation]` エントリ、すべて verdict=OK）。`docs/notes/2026-05-25-memory-link-fixes-and-stage-3-observation.md` 新設で詳細記録（利用者明示承認「ア」（推奨セット a=(あ)／b=(あ)／c=(い)／d=(あ)）、2026-05-25 セッション 24）
 - **セッション 24 メンテナンス（振り返りメモと README 群、セッション 24 末）**：(a) docs/notes/2026-05-25-session-24-retrospective.md 新設（規律違反履歴・全 16 コミットの時系列・学んだこと）、(b) memory archive ディレクトリの README（リポジトリ外）、(c) .claude/hooks/README.md 新設、(d) TODO §3 整理（B 主要作業強調、A 完了マーク、A／C／D 完了反映）、(e) docs/notes/README.md 新設（インデックス・命名規則・主題グルーピング）。コミット `f3b6918`（利用者明示承認「イ」「a-e を順次」「ア」、2026-05-25 セッション 24）
 - **段階 3 フック導入と補助層 C 完成（セッション 24、前倒し実施）**：補助層 C 共存モデルの段階 3（Claude Code フック機構）を前倒しで導入完了。[.claude/hooks/pre-bash-precheck.sh](.claude/hooks/pre-bash-precheck.sh)（bash + jq、73 行）が Bash の git commit／push を PreToolUse hook で検出し、段階 2 スクリプトを `--rationale "[stage-3 hook auto-invocation] ..."` 付きで自動発動、exit 2（DEVIATION）のときに `permissionDecision = "deny"` を返す。.claude/settings.json に PreToolUse 登録、tests.hooks.* と discover の許可ルールも追加。TDD 第 1 ラウンド（テスト 7 件先行、コミット `2520bef`）と第 2 ラウンド（実装、全 32 テスト通過、コミット `9456085`）の 2 段階。フック手動実行で 4 シナリオ確認、本セッション内のフック自動発動は Claude Code の設定再読み込みタイミングに依存。これにより補助層 C 共存モデルの 3 段階すべて完成（利用者明示承認「イは前倒しだが、取り組む」「ア」推奨セット採用「ア」コミット承認 ×2、2026-05-25 セッション 24）
