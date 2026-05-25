@@ -55,7 +55,7 @@ ReviewCompass の運営ガイドラインの必読フローに従う：
 
 1. ターミナルで `cd /Users/Daily/Development/ReviewCompass`
 2. 本 `TODO_NEXT_SESSION.md` を読む（§0 重要規律を必ず確認）
-3. **【セッション 27 開始時のみ】シンボリックリンク検証**（後述 §1.5 を実施、auto memory が memory／feedback_*.md のシンボリックリンクをたどって docs/disciplines/discipline_*.md の本体を起動時 load しているかを確認）
+3. **規律本体 active 必読 11 件を Read で読む**（`docs/disciplines/README.md` の「active 必読」表参照。auto memory は索引のみ load し本体は load されないため毎セッション必要）
 4. `docs/operations/SESSION_WORKFLOW_GUIDE.md` を読む（必読フロー・ワークフロー段の役割・サブエージェント方式の運用条件）
 5. 計画書 `docs/plan/reconstruction-plan-2026-05-21.md` §5.4〜§5.8 を読む（ワークフロー手続き、reopen、session 跨ぎ、多層防御）
 6. 計画書 §5.24 を読む（spec.json の正本スキーマ、2026-05-24 セッション 22 で新設）
@@ -67,22 +67,9 @@ ReviewCompass の運営ガイドラインの必読フローに従う：
 
 過去の経緯（セッション 19〜22 の詳細履歴、規律違反履歴、撤回履歴、過去の確定事項一覧等）は `docs/archive/todo/TODO_NEXT_SESSION-2026-05-24-snapshot.md` を参照。
 
-### 1.5 シンボリックリンク検証（セッション 26 末で採用、未検証）
+### 1.5 シンボリックリンク検証結果（2026-05-25 セッション 27、fallback 案イ採用）
 
-セッション 26 末の対処：規律ファイル本体は repo の `docs/disciplines/discipline_*.md`（16 件＋README.md）に置き、memory 側の `~/.claude/projects/-Users-Daily-Development-ReviewCompass/memory/feedback_*.md` 16 件はシンボリックリンクで repo 本体を指す構成に変更（コミット `9b9e827`）。
-
-セッション 27 開始直後、auto memory（自動記憶）機構がシンボリックリンクをたどって規律本体を load しているかを次の方法で検証：
-
-- **検証 a**：「規律 must-fix-discussion-obligation の How to apply の 6 項目を列挙して」と自問。6 項目（運営ガイド参照／1 件ずつ取り上げ／後段影響の深掘り 5 観点／現状維持の弱点／一括処理回避／複数案提示）が答えられれば **本体 load 成功**。description（1 文要約）のみで答えられないなら **検証失敗**
-- **検証 b**：シンボリックリンクの実体確認：`ls -la ~/.claude/projects/-Users-Daily-Development-ReviewCompass/memory/feedback_*.md | grep '@'` で 16 件のリンクが残っているか確認
-
-**検証成功時**：本構成（シンボリックリンク）を正式採用、本 §1.5 を「採用済み・検証完了」に更新
-
-**検証失敗時（fallback 案 イ）**：
-1. シンボリックリンク 16 件を削除
-2. 短い索引 16 件を memory に再作成（移送前のセッション 26 中間状態と同じ）
-3. 本 §1 起動手順の冒頭に「`docs/disciplines/discipline_*.md` 16 件すべてを Read で読む」のステップを追加
-4. design.md／README.md にも fallback 採用を反映してコミット
+検証失敗：auto memory の起動時 load は MEMORY.md 索引（1 文要約）までで、シンボリックリンク経由でも規律本体はたどられない。**対処**：active 必読 11 件は §1 起動手順で毎セッション Read（参照層 5 件は必要時参照のまま）、シンボリックリンク 16 件は単一正本（repo）維持の補助として残置。詳細は本セッション 27 のコミットメッセージ参照。
 
 ## 2. ワークフロー上の現在位置（2026-05-25 セッション 26 末時点）
 
@@ -121,15 +108,7 @@ ReviewCompass の運営ガイドラインの必読フローに従う：
 
 各機能の手順（運営ガイド §2.3）：drafting → triad-review → review-wave → alignment → approval
 
-依存マップ順（計画書 §3.1 phase_order）：
-
-1. ✅ foundation（drafting＋triad-review 完了、セッション 25）
-2. ✅ runtime（drafting＋triad-review 完了、セッション 25）
-3. ✅ evaluation（drafting＋triad-review 完了、セッション 25）
-4. ✅ analysis（drafting＋triad-review 完了、セッション 25 末、コミット `7b57072`）
-5. ✅ workflow-management（drafting＋triad-review 完了、セッション 26 末、コミット `881761d`／`ffd8adc`）
-6. **self-improvement（次セッションの着手対象）**
-7. conformance-evaluation
+依存マップ順（計画書 §3.1 phase_order）：1〜5 完了（foundation／runtime／evaluation／analysis／workflow-management、drafting＋triad-review、セッション 25〜26）、**6 self-improvement（次着手）**、7 conformance-evaluation。完了 5 件の詳細コミットは git log 参照。
 
 着手時の段階 2 スクリプト連動：design drafting に着手する際は `tools/check-workflow-action.py spec-set <feature> design drafting true --rationale "..."` を呼び、依存検査を通過してから Edit／Write を行う（規律 [[workflow-precheck-invocation]]）。
 
