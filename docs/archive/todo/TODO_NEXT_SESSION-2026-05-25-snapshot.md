@@ -65,3 +65,33 @@
 - 退避タイミング：利用者の明示承認に基づく（「TODOが肥大している」の指摘を受けて）
 - 退避対象：3 セッション以上前の長文エントリ（要約は本体に残す）
 - 復帰：退避エントリを参照する必要が生じた場合、本ファイルから検索可能
+
+---
+
+## 追加退避（2026-05-25 セッション 25 末でのさらなる縮約、利用者明示承認「(ウ)」）
+
+利用者ご指摘「TODOは短くなっていない」を受け、§3 の完了済み項目と §4 のセッション 25 内エントリ（analysis／design 完了以外）を追加退避。詳細は各参照先（レビュー記録／議論メモ／コミットメッセージ）に既に格納されているため、本セクションは標題と参照先のみを保持する。
+
+### §3 完了済み項目（5 セクション）
+
+| セクション | 結論 | 参照先 |
+|---|---|---|
+| E. 計画書 §5.9.1 再検討（セッション 25 内決着） | §5.9.1 改訂不要、規律違反対策なし、次回再発時報告運用 | [docs/notes/2026-05-25-triad-review-model-allocation-experiment.md](../../docs/notes/2026-05-25-triad-review-model-allocation-experiment.md)、foundation／reviews／2026-05-25-design-triad-review.md |
+| A. requirements approval 取得（2026-05-24 セッション 23 末） | 全 7 機能で取得完了 | コミット履歴（2026-05-24）／各機能 spec.json |
+| C. conformance-evaluation 論点 A・B 対処（2026-05-24 セッション 23 末） | 案 Y 採用、計画書 §5.10 改訂、A-010 として記録 | [docs/notes/2026-05-24-conformance-evaluation-論点-a-b.md](../../docs/notes/2026-05-24-conformance-evaluation-論点-a-b.md) |
+| D. ワークフロー事前検査機構（補助層 C、セッション 24 で全項目完了） | 3 段階共存モデル完成 | [docs/notes/2026-05-25-workflow-pre-check-and-discipline-consolidation.md](../../docs/notes/2026-05-25-workflow-pre-check-and-discipline-consolidation.md)、計画書 §5.8、[docs/operations/WORKFLOW_PRECHECK.md](../../docs/operations/WORKFLOW_PRECHECK.md) |
+| B. 設計フェーズ着手前提（A／C／D 完了で前提条件達成） | 本セッション 25 で 4 機能着手・完了済み | 本セッションのコミット履歴 |
+
+### §4 セッション 25 内エントリ（9 件、analysis／design 完了以外、新しい順）
+
+| エントリ | 主要成果 | 参照先 |
+|---|---|---|
+| foundation／design 段の drafting と triad-review 実施 | design.md 628→659 行、must-fix 7 件機能内対処 | コミット `9d00d7f`、foundation／reviews／2026-05-25-design-triad-review.md |
+| 計画書 §5.9.1 再検討議題追加（セッション 25） | 暫定推奨「敵対役と判定役を Opus 級に」を次セッションで協議 | [docs/notes/2026-05-25-triad-review-model-allocation-experiment.md](../../docs/notes/2026-05-25-triad-review-model-allocation-experiment.md) |
+| evaluation／design 段完了（依存マップ順 3/7） | design.md 686→749 行、must-fix 9 件機能内対処、counter_status 中核メトリクス化 | コミット `ef9dcf6`、evaluation／reviews／2026-05-25-design-triad-review.md |
+| runtime／design 段完了（依存マップ順 2/7） | design.md 704→725 行、must-fix 3 件機能内対処、step_outcome 3 値正本確定 | コミット `7ee63e0`＋`6ebf9e8`、runtime／reviews／2026-05-25-design-triad-review.md |
+| 計画書 §5.9.1 包括改訂（コミット 0e85087） | 旧規律「同モデル使用禁止」撤回、「モデル能力配分規律」に改訂 | コミット `0e85087` |
+| foundation／design must-fix の手順違反記録 | 「(ア-1)」議論義務化規律へ展開 | コミット `bdca440`、foundation／reviews／2026-05-25-design-triad-review.md §4.1.1 |
+| must-fix 議論セット 1〜3 の決着と原則確立 | 設計原則 2 つ確立：(1) review_case の不変性、(2) foundation は契約のみ固定 | foundation／reviews／2026-05-25-design-triad-review.md §4.1.1 |
+| must-fix 対処の議論義務化規律の制定 | 運営ガイド §3.3 (a-1) 新設、memory 規律新設 | [docs/operations/SESSION_WORKFLOW_GUIDE.md](../../docs/operations/SESSION_WORKFLOW_GUIDE.md) §3.3 (a-1)、memory／feedback_must_fix_discussion_obligation.md |
+| §5.9.1 再検討の決着（§5.9.1 改訂不要） | §5.9.1 既定（主役 Opus 4.7 ／ 敵対役 Sonnet 4.6 ／ 判定役 Opus 4.7）を維持 | コミット `f17a14e`（TODO 更新）、TODO §3 E（本退避前） |
