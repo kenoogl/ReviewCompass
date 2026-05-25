@@ -122,7 +122,7 @@ workflow 改善は、**規律と実体の乖離を観察し、規律を実体に
    - `learning/workflow/rejected-updates/<日付>-<id>.yaml`：却下済み
    - `learning/workflow/rollback/<日付>-<id>.yaml`：ロールバック履歴
    - `docs/discipline-compliance-reports/<日付>.yaml`：遵守検査の時系列（§5.9.5 既存）
-   - `docs/archive/disciplines/<日付>/README.md`：撤廃の経緯
+   - `docs/disciplines/archive/<日付>-<id>/README.md`：撤廃の経緯（軽量 reopen 手続き、2026-05-26 セッション 27 利用者明示承認「候補 1」、実体配置と design.md §10.3／§11.1 に整合）
 2. 本機能は次のロールバック方法を支える：archive から復活（撤廃された規律を `docs/disciplines/` に戻す）／ステータス変更を戻す（enforced → aspirational に格下げ）／規律の更新を取り消す（過去版に戻す、git 履歴を活用）。
 3. 本機能はロールバック理由を `learning/workflow/rollback/<日付>-<id>.yaml` に保存する。
 4. 本機能は履歴の連結を保持し、提案 → 承認 → ロールバックの追跡を可能にする。

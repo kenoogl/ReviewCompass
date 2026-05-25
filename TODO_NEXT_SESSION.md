@@ -82,7 +82,7 @@ ReviewCompass の運営ガイドラインの必読フローに従う：
 
 検証失敗：auto memory の起動時 load は MEMORY.md 索引（1 文要約）までで、シンボリックリンク経由でも規律本体はたどられない。**対処**：active 必読は §1 起動手順で毎セッション Read（参照層は必要時参照のまま）、シンボリックリンクは単一正本（repo）維持の補助として残置。最新の件数・分類は `docs/disciplines/README.md` 参照。詳細は本セッション 27 のコミットメッセージ参照。
 
-## 2. ワークフロー上の現在位置（2026-05-25 セッション 26 末時点）
+## 2. ワークフロー上の現在位置（2026-05-26 セッション 27 末時点）
 
 実態は **spec.json の workflow_state から確認**（§0.1 規律）：
 
@@ -94,28 +94,28 @@ ReviewCompass の運営ガイドラインの必読フローに従う：
   - runtime（2/7）：同上（セッション 25）
   - evaluation（3/7）：同上（セッション 25）
   - analysis（4/7）：同上（セッション 25 末、コミット `7b57072`）
-  - workflow-management（5/7）：drafting／triad-review が true、review-wave／alignment／approval は false（**本セッション 26 末**、コミット `881761d`／`ffd8adc`）
-  - self-improvement（6/7）：すべて false（未着手）
+  - workflow-management（5/7）：drafting／triad-review が true、review-wave／alignment／approval は false（セッション 26、コミット `881761d`／`ffd8adc`）
+  - self-improvement（6/7）：drafting／triad-review が true、review-wave／alignment／approval は false（**本セッション 27**、コミット `dd8eba9`＋本セッション末コミット）
   - conformance-evaluation（7/7）：すべて false（未着手）
 - **tasks／implementation 段**：すべて false
 
-機能横断波及所見：A-001〜A-010 の 10 件は対処済み、**A-011 が未消化**（2026-05-25 セッション 25 末に analysis／design.triad-review で追記、`role_diff.json` 出典問題と `counter_status` 集計欠落の波及対処、design レビュー波段で消化予定）。詳細は `.reviewcompass/pending-cross-feature-findings.md` を参照。
+機能横断波及所見：A-001〜A-010 の 10 件は対処済み、**A-011／A-012 が未消化**（A-011：analysis／evaluation 接合面の `roles/role_diff_report.json` 新設、design レビュー波段で消化予定。A-012：self-improvement と workflow-management の時系列契約・完了通知形式、本セッション 27 で追記、design レビュー波段で workflow-management 設計改訂と合わせて消化予定）。詳細は `.reviewcompass/pending-cross-feature-findings.md` を参照。
 
-規律ファイルの現状（セッション 26 末、コミット `b830785`／`b529c8e`／`9b9e827`）：active 必読 11 件＋参照層 5 件＝合計 **16 件** の本体は repo の `docs/disciplines/discipline_*.md` に配置、memory 側 `feedback_*.md` 16 件はシンボリックリンクで repo 本体を指す。archive 14 件は memory 側に残存（過去履歴の保全）。
+規律ファイルの現状：本体は repo の `docs/disciplines/discipline_*.md` に配置、memory 側 `feedback_*.md` はシンボリックリンクで repo 本体を指す。最新の件数・分類は `docs/disciplines/README.md` の規律ファイル一覧表を参照。本セッション 27 で options-presentation 統合規律と effekt 測定ログ（options-precheck-log.md）を新設。
 
 ## 3. 次の作業候補（優先順位順）
 
-**現在の主要作業：B. 設計フェーズ継続（依存マップ順 6/7 self-improvement／design.drafting 着手、その後 7/7 conformance-evaluation。全 7 機能の design 段完了後に review-wave／alignment／approval へ）**
+**現在の主要作業：B. 設計フェーズ継続（依存マップ順 7/7 conformance-evaluation／design.drafting 着手。全 7 機能の design 段完了後に review-wave／alignment／approval へ）**
 
 
-### B. 設計フェーズ継続（self-improvement／design.drafting 着手、その後 conformance-evaluation）
+### B. 設計フェーズ継続（conformance-evaluation／design.drafting 着手、その後 review-wave）
 
-セッション 26 末時点で foundation／runtime／evaluation／analysis／workflow-management の 5 機能で design.drafting＋triad-review が完了。残り 2 機能：
+セッション 27 末時点で foundation／runtime／evaluation／analysis／workflow-management／self-improvement の 6 機能で design.drafting＋triad-review が完了。残り 1 機能：
 
-1. **self-improvement（6/7）／design.drafting → triad-review**：次セッション開始時の主要作業
-2. **conformance-evaluation（7/7）／design.drafting → triad-review**：6/7 完了後
-3. **全 7 機能の design 段 review-wave**：2 機能の drafting＋triad-review 完了後に開始（A-011 を含む波及所見の集約消化）
-4. **design.alignment**（LLM 自動判定）→ **design.approval**（利用者明示承認）
+1. **conformance-evaluation（7/7）／design.drafting → triad-review**：次セッション開始時の主要作業
+2. **全 7 機能の design 段 review-wave**：7/7 の drafting＋triad-review 完了後に開始（A-011／A-012 を含む波及所見の集約消化）
+3. **design.alignment**（LLM 自動判定）→ **design.approval**（利用者明示承認）
+4. **章番号体系の整合確認**：他機能（foundation／runtime／evaluation／analysis／workflow-management）の design.md でも本セッション 27 と同様の章番号体系の不整合が存在する可能性があり、design.alignment 段で確認が必要（利用者明示承認「他機能でも生じていたはずなので後ほど対処」2026-05-26 セッション 27）
 
 各機能の手順（運営ガイド §2.3）：drafting → triad-review → review-wave → alignment → approval
 
@@ -138,6 +138,8 @@ triad-review 段の 3 役配置（実験(エ)継続予定、本セッション 2
 ## 4. 直近の確定事項（2026-05-24 セッション 22〜23、2026-05-25 セッション 24〜26、2026-05-26 セッション 27）
 
 利用者明示承認のあった項目を新しい順に記録：
+
+- **self-improvement／design 段完了（セッション 27、2026-05-26、依存マップ順 6/7、コミット `dd8eba9`＋本セッション末コミット）**：design.drafting 起草 643 行＋ triad-review 完了で 942 行（17 章 → 20 章拡張）。3 役配置は実験(エ)。所見 32 件（主役 19＋敵対役独立 13）、must-fix 13 件を 8 グループに分けて深掘り議論し機能内対処 10 件＋遡及 1 件（A-001、requirements.md 軽量 reopen）＋波及 2 件（A-003／F-008、pending-cross-feature-findings.md に A-012 として追記）を反映。主要な対処：新章 §7 signal_extraction／§17 機械検査の具体手段（MV-1〜MV-4）／§18 テスト戦略を新設、§8.4 YAML スキーマに source_discipline_paths 等を追加、§9.3 パイロット運用閾値を 90% に確定、§13.5 workflow-management との時系列契約を詳細記述、§14 要件追跡表を受入基準単位に詳細化。利用者明示承認多数（「案 1」「OK」「承認」「案 2」「候補 1」×8／「候補 1、90%」「案 A」、2026-05-26 セッション 27）
 
 - **複数案提示規律の統廃合＋事前検査宣言義務新設（セッション 27、2026-05-26）**：旧 dominant-dominated-options ／ choice-presentation（ともに参照層）を統合し `docs/disciplines/discipline_options_presentation.md` を新設（active 必読に昇格）。新規節として事前検査宣言義務（応答内で内部判定の (a) 候補総数 ／ (b) 3 規律適用結果 ／ (c) dominated 除外 ／ (d) 残合理案を明示宣言）を追加。効果測定ログ `docs/discipline-compliance-reports/options-precheck-log.md` を初版作成。旧 2 件は `docs/disciplines/archive/2026-05-26-consolidation/` へ退避。経緯：本セッション 27 で利用者から「規律が効いていない」と構造的欠陥を指摘され、active 必読昇格＋事前宣言義務の併設で対処。利用者明示承認「読み取りは正しい。軽量手続きでよい。効果を測る必要がある」「OK」（短縮版承認）「承認」（実装承認）
 

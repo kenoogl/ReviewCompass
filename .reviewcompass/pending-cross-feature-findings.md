@@ -185,6 +185,23 @@
 - **依存関係**：`evaluation` 設計を先に改訂し、`analysis` 設計を後で修正する依存順
 - **連動所見**：本所見と関連して、A-003（counter_status 集計の追加）も `role_diff_report.json` の構造に含めるべき内容（`findings_summary.by_counter_status`）であり、設計改訂時に同時に反映する
 
+### A-012：self-improvement と workflow-management の時系列契約・完了通知形式（design レビュー波段で消化予定）
+
+- **検出**：セッション 27、self-improvement／design.triad-review（2026-05-26）。主役（Sonnet 4.6）F-008 と敵対役（Opus 4.7）A-003 の連動所見、判定役（Opus 4.7）が must-fix／波及と判定
+- **記録**：[.reviewcompass/specs/self-improvement/reviews/2026-05-26-design-triad-review.md](specs/self-improvement/reviews/2026-05-26-design-triad-review.md)
+- **重大度**：F-008 WARN／A-003 ERROR（敵対役独立発見）
+- **判定**：must-fix（判定役 Opus 4.7 が認定）、両所見とも波及（workflow-management 機能設計改訂を要する）
+- **波及範囲**：
+  - **self-improvement**：`.reviewcompass/specs/self-improvement/design.md` §13.5 で時系列契約と完了通知形式を「提案」として詳細記述済み（本セッション 27 で対処、利用者明示承認「候補 1」2026-05-26）。本機能側の合意点は確定
+  - **workflow-management**：`.reviewcompass/specs/workflow-management/design.md` 側で本機能の提案する時系列契約・完了通知形式を受け入れる設計改訂が必要（design レビュー波段で実施予定）
+- **対処方針**：
+  - 時系列契約：`approved`＝本機能の提案レビュー承認時点、`materialized_at`＝workflow-management の手続き完了時点（本機能の status は変えず補助フィールドとして追記）
+  - 渡し方：承認済み提案 YAML を `git mv` で `learning/workflow/approved-updates/` に配置、workflow-management が手続き入力として読む
+  - 完了通知形式：workflow-management が手続き完了時に `approved-updates/<日付>-<id>.yaml` に `materialized_at`（ISO 8601）と `materialization_commit_hash` を追記
+  - ロールバック責務：`approved` だが未 `materialized` の状態でロールバックが必要になった場合、本機能が `superseded` に遷移させ workflow-management に通知
+  - 整合性検査タイミング：`materialized_at` 記録後に遵守検査再実行
+- **依存関係**：self-improvement 設計（本セッション 27 で対処済み）の §13.5 を正本提案とし、workflow-management 側がこれを受け入れる形で改訂
+
 ## 4. 対処済みの所見
 
 （本セッションでの新規作成時、未消化のみ）
