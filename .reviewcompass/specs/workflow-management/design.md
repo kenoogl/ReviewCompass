@@ -76,12 +76,12 @@ graph TD
     Script --> Verdict{"verdict 判定"}
     Verdict -->|OK| Pass["不可逆操作の実行を許可"]
     Verdict -->|WARN| Warn["警告して継続"]
-    Verdict -->|BLOCK| Block["fail-closed で遮断<br>（Req 4 受入 3）"]
+    Verdict -->|DEVIATION| Block["fail-closed で遮断<br>（Req 4 受入 3）"]
     Pass --> Log["docs/logs/workflow-precheck.log<br>に検査結果を追記"]
     Block --> Log
 ```
 
-検査スクリプトは段集合 YAML、進行中状態ファイル、spec.json、未消化所見の 4 つを入力として読み、verdict（判定結果）を返す。verdict には OK／WARN／BLOCK の 3 値を使う（actor=human の段で承認待ちのときは BLOCK で止め、警告のみで継続できる軽微な未整合は WARN とする）。
+検査スクリプトは段集合 YAML、進行中状態ファイル、spec.json、未消化所見の 4 つを入力として読み、verdict（判定結果）を返す。verdict には OK／WARN／DEVIATION の 3 値を使う（actor=human の段で承認待ちのときは DEVIATION で止め、警告のみで継続できる軽微な未整合は WARN とする）。語彙の正本は補助層 C 段階 2 仕様 `docs/operations/WORKFLOW_PRECHECK.md` §7.1〜§7.2 と検査スクリプト本体 `tools/check-workflow-action.py` の実装で、本設計は実装に合わせる方向で語彙を確定する（F-003 対処、2026-05-25 セッション 26 利用者明示承認）。
 
 ### 責務境界の明確化（Boundary Clarification）
 
@@ -97,8 +97,17 @@ graph TD
 | レビュー記録（`.reviewcompass/specs/<機能>/reviews/*.md`） | 各機能 | 本機能は front-matter の構造のみ検査（Req 3 受入 4） |
 | レビュー所見の妥当性 | `evaluation`／利用者監査の第 3 層 | 本機能の検査範囲外（Req 2 受入 3、Req 7 受入 1） |
 | 状態軸の語彙（`run_status`／`validator_status` 等） | `foundation` | 本機能は参照のみ、再定義しない（要件 Boundary Context 隣接期待） |
-| 規律ファイル本体（`docs/disciplines/discipline_*.md`） | **workflow-management**（実体書き換え、A-007 案 2） | `self-improvement` から変更提案を受け取り、所定手続き経由で実体変更 |
+| 規律ファイル本体（`docs/disciplines/discipline_*.md`、12 件配置済み） | **workflow-management**（実体書き換え、A-007 案 2） | `self-improvement` から変更提案を受け取り、所定手続き経由で実体変更。本機能の検査スクリプトと段階 3 フックの対象に含まれる |
 | 規律ファイルの提案権 | `self-improvement` | 本機能は提案を所定手続きの入力として受け取る |
+| 規律ファイルの memory 側索引（`~/.claude/projects/.../memory/feedback_*.md`、12 件） | Claude Code auto memory 機構（製品機能） | 本機能の管理対象外。短い参照索引のみ保持し、本体は `docs/disciplines/` を Read で参照する設計（A-007 対処、2026-05-25 セッション 26 移管） |
+
+**規律ファイルの所有先確定の経緯（A-007 対処、2026-05-25 セッション 26 利用者明示承認）**：本機能の所定手続きが規律変更を扱うには、規律ファイル本体がリポジトリ内（git 追跡対象）に存在する必要がある。素材設計時点では本体が memory（リポジトリ外、Claude Code auto memory 機構の領域）に置かれていたため、本機能の機械検査が効かない構造的問題があった。本セッション 26 で **軽量手続き** により次を実施し本問題を解消：
+
+- active 必読 12 件（feedback_must_fix_discussion_obligation／intent_conformance_is_the_acceptance_gate／standing_directives_are_hard_constraints／no_unilateral_action／workflow_precheck_invocation／approval_operation／facts_vs_interpretation／pre_action_precheck／workflow_state_truth_source／concise_complete_report／reopen_procedure_for_settled_topics／plain_japanese）と参照層 5 件（feedback_dominant_dominated_options／feedback_choice_presentation／feedback_no_redundant_workflow_questions／feedback_plain_explanation_each_step／feedback_implementation_autonomy）の合計 **17 件** の本体を `docs/disciplines/discipline_*.md` にフラット配置で移管
+- memory 側は短い参照索引（移管先パスと改廃ルールへのリンクのみ）に置換、`MEMORY.md` 索引ファイルにも移管反映
+- archive 14 件（`memory/archive/2026-05-25-consolidation/`）のみ memory 側に残存（過去履歴の保全）
+- 移管後の整理として、front-matter の memory 機構固有メタ（`node_type: memory`／`originSessionId`）を全 17 件から削除、`plain_japanese` ／参照層 5 件の旧形式を統一形式に正規化、旧名リンク（`[[feedback-implementation-autonomy]]` 等）を新名に修正、`docs/disciplines/README.md` を新設して内部リンク `[[link-name]]` の解決規則と全 17 件のインデックスを明記
+- 計画書 §5.21（規律ファイルの ReviewCompass 方針への取り入れ手順）を前倒し実施した位置付け
 
 `self-improvement` との権限分散（A-007 案 2、2026-05-23 利用者承認）：規律ファイルの **提案権** は `self-improvement` が持ち、**実体変更権** は本機能が所定手続き（drafting → review → approval）経由で実施する。本機能は規律変更を Req 4 受入 1 の不可逆操作の対象として扱い、`self-improvement` が直接ファイル書き換えを行うことはない。
 
@@ -183,7 +192,17 @@ stages:
     description: 不可逆操作（フェーズ移行）の直前ゲート、本人または proxy_model による明示承認
 ```
 
-`{feature}` と `{phase}` は段集合 YAML のテンプレート変数。検査スクリプトは `feature_order` から機能名を順に展開して段の完了を判定する。
+### テンプレート変数の展開規則（F-006 対処、2026-05-25 セッション 26 利用者明示承認）
+
+段集合 YAML の `artifact_paths` フィールドに登場する 3 種のテンプレート変数（プレースホルダ）の展開元と解決規則を次のとおり確定する：
+
+- **`{feature}`**：機能横断段（`feature_order` を持つ段）では `feature-dependency.yaml#phase_order` から機能名を順に展開する。機能単位段（`feature_order` を持たない段）では当該機能名で固定する
+- **`{phase}`**：当該 YAML の `process_id` フィールドから取得する（例：`requirements.yaml` の `process_id: requirements` なら `{phase}` は `requirements` に展開）。`process_id` と YAML ファイル名は段集合 YAML 配置時に同期させる前提とし、両者がずれた場合は `process_id` を正本として優先する
+- **`{日付}`**：ファイル名のワイルドカード（`*`）として許容する。検査スクリプトは `glob` で `artifact_paths` パターンに一致する全ファイルを取得し、ファイル名に含まれる日付部分（`YYYY-MM-DD` 形式と仮定）の **辞書順最大** を最新と判定する
+
+ワイルドカード解決時の優先順位を「辞書順最大」（mtime 基準ではなく）にする理由：ファイル名の日付は人手で命名されるため意図が明示される一方、ファイルの更新時刻（mtime）は `git clone` ／ `git checkout` で書き換わるため再現性に劣る。`YYYY-MM-DD` 以外の日付形式が混入した場合、検査スクリプトは結論不能（fail-closed）として DEVIATION を返す。
+
+複数ファイルが存在しても重複定義の禁止ではなく、reopen による複数回生成（同じ段の証跡が日付違いで複数並存）を自然に扱うための設計。
 
 ### 3. 機能横断段と機能単位段の区別
 
@@ -216,19 +235,21 @@ stages:
 
 ### 2. サブコマンド構成（補助層 C 段階 2 由来、`docs/operations/WORKFLOW_PRECHECK.md` 参照）
 
-| サブコマンド | 入力 | 用途 |
+| サブコマンド | 入力（必須引数） | 用途 |
 |---|---|---|
-| `spec-set <feature> <phase> <stage> <new_value>` | 機能名・フェーズ・段・新しい真偽値 | `spec.json` の `workflow_state` 変更前の依存検査 |
-| `commit` | （引数なし） | `git commit` 直前の検査（spec.json 整合、規律遵守、未消化所見の有無） |
-| `push` | （引数なし） | `git push` 直前の検査（コミット履歴整合、リモート状態） |
+| `spec-set <feature> <phase> <stage> <new_value>` | 機能名・フェーズ・段・新しい真偽値、`--rationale "<理由>"`（任意、ログ記録用） | `spec.json` の `workflow_state` 変更前の依存検査 |
+| `commit` | `--rationale "<理由>"`（**必須**） | `git commit` 直前の検査（spec.json 整合、規律遵守、未消化所見の有無） |
+| `push` | `--rationale "<理由>"`（**必須**） | `git push` 直前の検査（コミット履歴整合、リモート状態） |
+
+引数仕様の正本は `docs/operations/WORKFLOW_PRECHECK.md` §5.1〜§5.3 と検査スクリプト本体 `tools/check-workflow-action.py` の argparse 定義。`commit` と `push` の `--rationale` 必須化の理由：両者は不可逆操作で、利用者承認発言の出典をログに残す必要があるため（F-009 対処、2026-05-25 セッション 26 利用者明示承認）。
 
 各サブコマンドの戻り値（exit code）：
 
 - `0`：OK（不可逆操作を許可）
 - `1`：WARN（警告を出すが継続可、利用者判断で進める）
-- `2`：BLOCK（fail-closed で遮断、不可逆操作を許可しない）
+- `2`：DEVIATION（fail-closed で遮断、不可逆操作を許可しない）
 
-出力形式は人間可読の既定形式（VERDICT／ACTION／REASON／CURRENT STATE）と、`--json` 指定時の JSON 形式の 2 種類（補助層 C 段階 2 仕様 §7.3）。判定結果はログ（`docs/logs/workflow-precheck.log`、上書き可能）に追記する（同 §8.2）。
+出力形式は人間可読の既定形式と、`--json` 指定時の JSON 形式の 2 種類。人間可読既定は補助層 C 段階 2 仕様 `docs/operations/WORKFLOW_PRECHECK.md` §7.2、JSON 出力は同 §7.3 を正本参照する。人間可読既定の書式は `[VERDICT] OK ／ WARN ／ DEVIATION（exit N）` のように **大括弧付きラベル形式** で、`[VERDICT]`／`[ACTION]`／`[REASON]`／`[CURRENT STATE]` の 4 ブロックを順に出力する（F-010 対処、2026-05-25 セッション 26 利用者明示承認）。判定結果はログ（`docs/logs/workflow-precheck.log`、上書き可能）に追記する（同 §8.2）。
 
 ### 3. 完了判定の述語集合（completion_predicate 値域）
 
@@ -242,6 +263,7 @@ stages:
 | `all_features_drafting_and_triad_review_completed` | `feature_order` の全機能で drafting＋triad-review が true |
 | `cross_spec_alignment_passed` | 機能横断整合の判定が pass、未消化所見が 0 件 |
 | `explicit_human_approval_recorded` | 利用者または proxy_model の明示承認が記録されている |
+| `depends_on_resolves_correctly` | `feature-dependency.yaml` の各機能の `depends_on` が単純リスト構造または連想配列構造として解析可能、連想配列構造の場合は値が `hard` または `review` のいずれかであること（A-004 対処、2026-05-25 セッション 26 利用者明示承認） |
 
 述語集合の追加・削除は本機能の責務。新しい述語を導入する場合は、本節と検査スクリプト実装の両方を同時に更新する。
 
@@ -336,7 +358,7 @@ reviewer:
 | `spec.json` の `approval` 段書き込み | 当該機能の前段（alignment）が true、未消化所見が 0 件 | spec.json 書き込みを許可しない |
 | `git commit` | 検査スクリプトが pass、`stages/in-progress/` が空 | commit を許可しない |
 | `git push` | 直前のコミットが上記検査を通過済み、リモート状態と整合 | push を許可しない |
-| フェーズ移行（次フェーズの drafting 段 true 化） | 当該フェーズの approval 段が全 7 機能で true | フェーズ移行を許可しない |
+| フェーズ移行（次フェーズの drafting 段 true 化） | 当該フェーズの approval 段が `feature-dependency.yaml#phase_order` の全機能で true（本設計時点 7 機能、§機能依存マップモデル §2 の A-001 注記参照） | フェーズ移行を許可しない |
 
 それ以外（spec.json の drafting／triad-review 段の書き込み、中間段の遷移など）には機械ゲートを置かない（最小集合方針、Req 4 受入 4）。これは検査スクリプトを呼ぶ頻度を下げ、検査自体の存在感を高めるため。
 
@@ -398,15 +420,24 @@ reviewer:
 
 ```yaml
 - name: 該当ゲートの再実施
-  actor: llm                            # 段の進行は LLM、ただし actor=human の段に到達したら停止
+  actor: llm                            # 第 7 段自体の実行主体は LLM（trigger_map を解決して順次進行する）
+  actor_resolution: per_target_stage    # 各 trigger_map エントリの参照先段の `actor` を段定義から動的解決
   trigger_map:
     D-1:
-      - stages/requirements.yaml#alignment
-      - stages/requirements.yaml#approval
+      - stages/requirements.yaml#alignment    # 参照先段の actor は当該段定義から取得（actor=llm 等）
+      - stages/requirements.yaml#approval     # 同上（actor=human または proxy_model）
       - stages/design.yaml#alignment
       - stages/design.yaml#approval
-    # 他種別の trigger_map は計画書 §5.6 を参照
+    # 他種別（N-0／R-0〜1／D-0／D-2／A-0〜3／I-0〜4）の trigger_map は計画書 §5.6 行 457〜565 を正本参照
 ```
+
+**第 7 段の actor 解決規則（A-002 対処、2026-05-25 セッション 26 利用者明示承認）**：第 7 段の進行ロジックは LLM が担うが、各 trigger_map エントリの参照先段（`<YAML ファイル>#<段名>` 形式）の実 actor は **当該段定義（`stages/<YAML>.yaml` の `stages` 配列のうち該当段の `actor` フィールド）から動的に解決** する。段定義の `actor` フィールドが単一正本で、trigger_map 側には actor を二重記述しない（Req 1 受入 5 の「YAML 1 箇所修正で完結」の趣旨と整合）。動的解決の挙動：
+
+- 参照先段の actor が `llm`：第 7 段の進行ロジックが当該段の完了判定を実施
+- 参照先段の actor が `human`：作業を停止し、`stages/in-progress/` ファイルに「人間承認待ち」を記録して待機（Req 5 受入 3〜4）
+- 参照先段の actor が `proxy_model`：`reviewcompass.yaml#human_proxy.proxy_allowed` の許可条件を満たす場合のみ proxy_model が代行（§段集合の静的列挙モデル §2 の approval 段の記述と整合）
+
+これにより Req 5 受入 3〜4 の機械強制が段定義 `actor` フィールドという単一正本に基づき動作する。
 
 連鎖再実施対象は「根本原因フェーズの整合ゲート」から「起点フェーズの整合ゲート」まで、上流から下流へ順に並べる。起点フェーズまで再実施することで、上流変更が下流に正しく伝播したかを機械判定できる（計画書 §5.6 連鎖再実施の対象範囲）。
 
@@ -522,7 +553,7 @@ session 開始時、次を順に行う：
 - **第 4 層：定期事後監査**：一定 session 数または期間ごとに独立 LLM で過去証跡全件を監査
 - **第 5 層：処理表面積の抑制方針**：「新規規律を追加するときは既存規律 1 つ以上を統廃合する」等の縮減義務
 
-本機能は第 2〜5 層の具体実装を持たないが、設計時に **将来導入する余地を残す** ことを明示する。例：段集合 YAML の `completion_predicate` 述語集合は第 2 層の git フックから直接呼び出せる構造とする（CLI からも fook からも同じスクリプトを呼ぶ）。
+本機能は第 2〜5 層の具体実装を持たないが、設計時に **将来導入する余地を残す** ことを明示する。例：段集合 YAML の `completion_predicate` 述語集合は第 2 層の git フックから直接呼び出せる構造とする（CLI からもフックからも同じスクリプトを呼ぶ）。
 
 ### 3. 補助層 A／B／C の位置付け（計画書 §5.8、§5.12、§5.13）
 
@@ -591,6 +622,15 @@ phase_order:
   - conformance-evaluation
 ```
 
+**`phase_order` 7 機能採用の根拠（A-001 対処、2026-05-25 セッション 26 利用者明示承認）**：計画書 §5.5 の `phase_order` 構造例（行 376〜383）には self-improvement が記載漏れで 6 機能のみ列挙されている。本設計は次の確定事項に基づき `phase_order` に self-improvement を含めて **7 機能** を採用する：
+
+- 計画書 §3.1（self-improvement の workflow 層改善を第 1 期に含める確定）
+- 計画書 §5.16（self-improvement の全面書き直し方針）
+- A-007 案 2（2026-05-23 利用者承認による本機能と self-improvement の権限分散調停、規律ファイルの提案権と実体変更権の分離）
+- 全 7 機能の requirements 段 approval 完了（2026-05-24 セッション 23 末）
+
+計画書 §5.5 の構造例の補正は計画書全体管理の責務範囲で、本機能の責務範囲外。本セッション末尾の TODO_NEXT_SESSION.md に「計画書 §5.5 phase_order の self-improvement 追記」を補正課題として記録する。
+
 `depends_on` は次の 2 形式を許容する（Req 8 受入 2 後段）：
 
 - **単純リスト構造**：`[foundation, runtime]` のように依存先を列挙するだけ
@@ -612,6 +652,29 @@ phase_order:
 ### 5. 所有者の明示（Req 8 受入 5）
 
 機能間依存マップの所有者は本機能（`workflow-management`）であり、`runtime`／`evaluation` 等の他機能は再定義せず参照のみとする。他機能の design.md／tasks.md で「依存関係を独自に定義する」記述があれば、本機能の `feature-dependency.yaml` を正本として参照する形に統一する。
+
+### 6. パース仕様と依存種別の機械処理上の意味（A-004 対処、2026-05-25 セッション 26 利用者明示承認）
+
+検査スクリプトが `feature-dependency.yaml` を解析する際の規則と、依存種別（`hard` ／ `review`）の機械処理上の意味を次のとおり確定する。
+
+**パース仕様**：
+
+- `depends_on` の値が YAML パーサで配列（`list`）として解釈できる場合は **単純リスト構造**（例：`[foundation, runtime]`）と判定する
+- `depends_on` の値が YAML パーサで辞書（`dict` ／ `mapping`）として解釈できる場合は **連想配列構造**（例：`foundation: hard, runtime: review`）と判定する
+- 上記以外の型（文字列、整数、null、ネスト構造等）は結論不能とし、検査スクリプトは DEVIATION（exit 2）を返す（fail-closed、Req 2 受入 4 と整合）
+
+**連想配列構造の値域**：
+
+- 値は `hard` または `review` の 2 値のみ許容する
+- それ以外の値（例：`weak`、`strong`、空文字、null）は結論不能とし、DEVIATION を返す
+- 将来の依存種別追加（例：`weak`）は、本設計の本節と検査スクリプト実装の両方を同時に更新する
+
+**依存種別の機械処理上の意味**：
+
+- **`hard`（強依存）**：当該依存先の仕様が変更された場合、本機能の `spec.json` の `recheck.upstream_change_pending` を `true` に設定し、`recheck.impacted_downstream_phases` に本機能の下流フェーズ（design／tasks／implementation）を追記する。これにより本機能の下流フェーズの再検査が要求される（reopen 手続きの軽量版として動作）
+- **`review`（レビュー対象）**：当該依存先は本機能のレビュー対象として参照されるのみで、依存先の変更は本機能の `recheck` を自動発火しない。レビュー記録の作成時に依存先の最新状態を読むが、依存先の変更が本機能の再検査を必須化しない
+
+**判定述語との関係**：`depends_on_resolves_correctly` 述語は値域チェックのみを担い、依存先の変更検知と `recheck` の更新発火は別の機構（tasks 段で実装、本設計時点ではフェーズ 2 以降の宿題）が担う。本設計では「述語が値域を判定できる」「機械処理上の意味が確定している」までを設計範囲とし、変更検知ロジックの実装は先送り論点として §先送り論点に追加する。
 
 ## 主要な設計判断（Interface Decisions）
 
@@ -710,6 +773,8 @@ phase_order:
 5. **段階 3 の Claude Code フック実装**：補助層 C 段階 3 はフェーズ 2 以降の宿題、本機能の検査スクリプトとの結合方式を別途設計
 6. **規律変更の所定手続きの段集合**：規律変更を `drafting → review → approval` の 3 段で扱うか、`triad-review` を含めるかを A-007 案 2 対応の細部として後続セッションで確定
 7. **`stages/cross-spec-alignment.yaml` の段集合**：機能横断整合手続きの段集合は別途確定、本設計では枠のみ確保
+8. **規律変更の所定手続きの実装と参照層 5 件の扱い**：A-007 対処で active 必読 12 件は `docs/disciplines/` に移管済み（2026-05-25 セッション 26）。本機能の所定手続きが `docs/disciplines/` 内の規律変更を扱う実装はフェーズ 2 以降。参照層 5 件（feedback_dominant_dominated_options 等）の memory → repo 移管要否は別途判断
+9. **運営ガイド等の現行規律本体の改廃手続き**：`docs/operations/SESSION_WORKFLOW_GUIDE.md` 等の運営文書を本機能の所定手続きの対象に含めるかは別論点。フェーズ 2 で `docs/disciplines/` 配置構造との整合とともに整理
 
 ## テスト戦略（Test Strategy）
 
@@ -790,14 +855,28 @@ phase_order:
 - サブエージェント方式（`mode: subagent_mediated`）への対応を §起草者と判定者の分離モデル §2 に明示（計画書 §5.23.12 由来）
 - 規律変更の提案権と実体変更権の分離を §責務境界の明確化と §主要な設計判断 判断 7 に明示（A-007 案 2、2026-05-23 利用者承認）
 - 機能依存マップの依存種別（`hard`／`review`）の連想配列構造を §機能依存マップモデル §2 に明示（A-005 対処由来、計画書 §5.5 行 368〜373）
-- 検査スクリプトの 3 サブコマンド構成（`spec-set`／`commit`／`push`）と verdict 3 値（OK／WARN／BLOCK）を §軽量版検査スクリプトモデル §2 に明示（補助層 C 段階 2 仕様 `docs/operations/WORKFLOW_PRECHECK.md` 由来）
+- 検査スクリプトの 3 サブコマンド構成（`spec-set`／`commit`／`push`）と verdict 3 値（OK／WARN／DEVIATION）を §軽量版検査スクリプトモデル §2 に明示（補助層 C 段階 2 仕様 `docs/operations/WORKFLOW_PRECHECK.md` 由来）
 - 人間代役機構（proxy_model）による approval 段の代行条件を §段集合の静的列挙モデル §2 に明示（計画書 §5.12.4 由来）
+- 規律ファイル本体を `~/.claude/projects/.../memory/feedback_*.md`（Claude Code auto memory 機構の領域）から `docs/disciplines/discipline_*.md`（リポジトリ内 git 追跡対象）へ軽量手続きで移管、12 件（active 必読相当）を移管、memory 側は短い参照索引に置換（2026-05-25 セッション 26、計画書 §5.21 前倒し実施、利用者明示承認）
 
 ### 機能横断レビューで対処された所見の反映状況
 
 - **A-005**（feature-dependency 依存記述の連想配列構造）：§機能依存マップモデル §2 で対処済み
-- **A-007**（self-improvement との権限分散調停、案 2 採用）：§責務境界の明確化と §主要な設計判断 判断 7 で対処済み
+- **A-007**（self-improvement との権限分散調停、案 2 採用＋規律ファイルの配置先移管）：§責務境界の明確化、§主要な設計判断 判断 7、ReviewCompass 固有の追加で対処済み。本セッション 26 で軽量手続きにより `docs/disciplines/` への移管も完了（精査により memory ファイルが規律本体であることが判明、技術機構（Claude Code）と内容（ReviewCompass 規律）の二重性を移管で解消）
 - **A-011**（analysis／design の 3 役差分集約ファイル、未消化）：本機能の責務範囲外、`analysis`／`evaluation` の design レビュー波段で消化予定（本設計の対処事項に含めない）
+
+### must-fix 所見の対処状況（本セッション 26 triad-review）
+
+主役 19 件＋敵対役独立発見 12 件＝計 31 件の所見のうち、判定役が must-fix と判定した 10 件への対処：
+
+- **F-003**（verdict 語彙 BLOCK → DEVIATION 統一）：機能内対処済み、§全体構造／§軽量版検査スクリプトモデル §2／§変更意図 の 4 箇所
+- **F-006**（テンプレート変数の展開規則明示）：機能内対処済み、§段集合の静的列挙モデル §2 末尾に新節追加
+- **F-009 ＋ F-010**（commit／push の `--rationale` 必須引数と参照節番号修正）：機能内対処済み、§軽量版検査スクリプトモデル §2 の表と出力形式説明
+- **F-016**（「fook」→「フック」タイポ修正）：機能内対処済み、§多層防御の位置付けモデル §3
+- **A-001 ＋ A-009**（`phase_order` 7 機能採用の根拠注記、「全 N 機能」を `feature-dependency.yaml#phase_order` 参照に変更）：機能内対処済み、§機能依存マップモデル §2 と §不可逆操作の直前ゲートモデル §1
+- **A-002**（trigger_map の `actor` 値域を動的解決に修正）：機能内対処済み、§reopen 機械強制モデル §2
+- **A-004**（`depends_on` の連想配列構造のパース仕様と判定述語追加）：機能内対処済み、§軽量版検査スクリプトモデル §3 の述語集合と §機能依存マップモデル §6 新節
+- **A-007**（規律ファイル所有先パスと実体配置の不一致）：軽量手続き経由で `docs/disciplines/` への移管実施により解消（本節と §責務境界の明確化に反映）
 
 ### triad-review 段への引き継ぎ事項
 
