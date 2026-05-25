@@ -30,7 +30,7 @@
 | Requirement 1 | 機能の方向性と前提 | 下流 → 上流、上流文書なくてもよい、2 モード |
 | Requirement 2 | 文書生成モード（オンボーディング） | 既存コードから上流文書を推定生成、推定根拠保持 |
 | Requirement 3 | 照合チェックモード | 既存上流文書と推定上流文書の比較、食い違い列挙 |
-| Requirement 4 | 12 criteria の検査構造 | 4 上流フェーズ × 3 criteria（intent／requirements／design／tasks 各 3） |
+| Requirement 4 | 6 criteria の検査構造 | 2 上流フェーズ × 3 criteria（requirements／design 各 3、intent は参考情報、feature-partitioning と tasks は対象外、2026-05-24 セッション 23 改訂） |
 | Requirement 5 | 3 役レビュー機構の流用 | 主役 → 敵対役 → 判定役、§5.9 規律全般を適用 |
 | Requirement 6 | 評価記録の type 値と配置 | `conformance_evaluation` type、`conformance/` ディレクトリ |
 | Requirement 7 | 依存関係の連想配列構造 | `hard`／`review` の依存種別、phase_order の最後 |
@@ -38,14 +38,10 @@
 
 各要件の受入基準の詳細は [.reviewcompass/specs/conformance-evaluation/requirements.md](../../.reviewcompass/specs/conformance-evaluation/requirements.md) を参照。
 
-## 4. 12 criteria の検査構造（Requirement 4）
+## 4. 6 criteria の検査構造（Requirement 4、2026-05-24 セッション 23 改訂）
 
-4 上流フェーズ × 3 criteria の総計 12 件：
+2 上流フェーズ × 3 criteria の総計 **6 件**：
 
-- **intent conformance（3 criteria）**：
-  - 目的が実装で保たれているか
-  - 制約が実装で守られているか
-  - 優先順位が実装で反映されているか
 - **requirements conformance（3 criteria）**：
   - 受け入れ基準と実装の対応
   - API・データ契約と実装の対応
@@ -54,10 +50,12 @@
   - モジュール構成・データモデルと実装の対応
   - 接合面（API シグネチャ・エラーモデル）と実装の対応
   - アルゴリズム・性能達成手段と実装の対応
-- **tasks conformance（3 criteria）**：
-  - タスク完了基準と実装の対応
-  - 依存と順序の遵守状況
-  - 横断タスクの実施状況
+
+照合対象から除外する階層（2026-05-24 セッション 23 改訂、案 Y）：
+
+- **feature-partitioning**：照合チェックモード（本筋）では既存を所与の入力として尊重、独立の照合対象外
+- **intent**：構造的側面からの推定が困難、参考情報として推察（独立の照合対象外）
+- **tasks**：タスク分解過程は実装コードから推定困難、対象外
 
 実装適合（5 番目の評価軸）は §5.9 の実装適合レビューに残し、本機能では扱わない。
 
@@ -138,7 +136,7 @@ phase_order の最後に位置付ける。
 - **`runtime`**：実装コードのレビュー実行記録を入力源として活用（依存：review）
 - **`evaluation`**：評価結果との突き合わせ（依存：review）
 - **`workflow-management`**：所定手続きの実行履歴と上流文書の整合確認（依存：review）
-- **`analysis`**：本機能の 12 criteria の検査結果を受け取り、4 出力先に取り込む（`analysis` Requirement 8 受入 5 由来）
+- **`analysis`**：本機能の 6 criteria の検査結果を受け取り、4 出力先に取り込む（`analysis` Requirement 8 受入 5 由来）
 - **`self-improvement`**：規律レベル戻しを受け取り、規律改善の入力とする
 
 ## 11. 後続セッションでの追加予定
@@ -146,7 +144,7 @@ phase_order の最後に位置付ける。
 本文書は requirements 部分のみの骨子。次のセッション以降で次を追加：
 
 - design.md 抽出に基づく設計の説明（計画書 §5.10 全体 ＋ v3-plan.md からの追加抽出）
-- 12 criteria の検査仕様（`schemas/review-criteria/conformance_evaluation.yaml`、フェーズ 2 で配置）
+- 6 criteria の検査仕様（`schemas/review-criteria/conformance_evaluation.yaml`、フェーズ 2 で配置）
 - 文書生成モードと照合チェックモードのコマンド設計（フェーズ 3 スタブ）
 - フェーズ 4 第 3 サイクルでの実装計画（§5.10.7）
 

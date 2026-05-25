@@ -1,6 +1,6 @@
 # Design Document：conformance-evaluation
 
-最終更新：2026-05-26（セッション 27：design.drafting 起草、要件 8 件に対応、artifact-to-spec conformance evaluation の本筋／傍流分離設計）
+最終更新：2026-05-26（セッション 27：design.drafting 起草と triad-review の must-fix 12 件対処、artifact-to-spec conformance evaluation の本筋／傍流分離設計）
 
 ## 概要（Overview）
 
@@ -41,7 +41,7 @@
 - 本機能は **下流 → 上流（逆方向）** の性格を持ち、実装適合レビュー（順方向）とは方向が異なるため分離する（§5.10.1）
 - **バイアス防止が中核設計課題**：既存上流文書を推定時に読むと推定結果が既存文書に引きずられる。照合チェックモードでは二段階方式（既存遮断 → 推定 → 比較）で対処（Req 3、§5.10.9）
 - **照合成立性のため feature-partitioning だけは例外**：機能名・境界が違うと「同じ機能の design ／ requirements を比較」が成立しないため、既存 feature-partitioning は推定時の入力として尊重する（Req 3 受入 1、2026-05-24 セッション 23 利用者指摘）
-- **解釈余地の差で軽量／本格を使い分ける**：feature-partitioning 推定・requirements 推定・照合段階は解釈余地が大きく本格適用、design 推定・intent 推察は実装からの導出が比較的直接的で軽量適用（Req 5 受入 2、§5.10.10）
+- **解釈余地の差で軽量／本格を使い分ける**：feature-partitioning 推定・requirements 推定・照合段階は解釈余地が大きく本格適用、design 推定は実装コードから比較的直接読み取れるため軽量適用、intent 推察は参考情報として多角的に保持するため軽量適用（Req 5 受入 2、§5.10.10、§11.2 と整合）
 - **2 軸 6 criteria への絞り込み**：feature-partitioning は所与・intent は参考・tasks は推定困難という理由で照合対象から除外し、requirements ／ design の 2 軸に絞ることで検査の単純性と意味的整合を両立（§5.10.2、2026-05-24 セッション 23 案 Y）
 - 本機能と `workflow-management` の依存関係スキーマ拡張は連動：本機能の連想配列構造は `workflow-management` Requirement 8 受入 2 のスキーマ拡張に依存（Req 7 受入 4、A-005 連動）
 
@@ -59,7 +59,7 @@
        ↓
 [第 1 段階：推定（既存上流文書遮断、§9）]
   ├── feature-partitioning は既存を入力として尊重
-  ├── 主役（primary）：実装コードから design ／ requirements を推定
+  ├── 主役（primary）：実装コードから design を **先行推定**、続いて design からの逆算で requirements を推定（順序依存）
   ├── 敵対役（adversarial）：別解釈を提示
   └── 判定役（judgment）：実装との整合で判定
        ↓
@@ -94,8 +94,8 @@
   ├── 構造から intent を推察（参考情報として提示）
   └── 人間が意図を補完
        ↓
-[requirements ／ design の自動推定（3 役レビュー機構を適用）]
-  ├── 主役：実装コードから生成
+[requirements ／ design の自動推定（3 役レビュー機構を適用、design 先行→ requirements 逆算）]
+  ├── 主役：実装コードから design を先行生成、続いて design から requirements を逆算
   ├── 敵対役：別解釈を提示（軽量／本格の使い分け、§11）
   └── 判定役：採否判断
        ↓
@@ -122,7 +122,7 @@
 
 ### 3. モード切替モデル
 
-本機能は 2 モード（照合チェック／文書生成）を **明示的なモード指定** で切り替える。実装段の CLI 想定：`reviewcompass conformance check <feature>` と `reviewcompass conformance generate`。
+本機能は 2 モード（照合チェック／文書生成）を **明示的なモード指定** で切り替える。実装段の CLI 想定：`reviewcompass conformance check <feature>` と `reviewcompass conformance generate`（計画書 §5.10.7 の旧命名 `generate-spec` ／ `conformance-check` は本設計の階層型命名に統一する方針、計画書側を改訂、G6 利用者明示承認）。
 
 | モード | 入力条件 | 推定対象 | 既存文書扱い |
 |---|---|---|---|
@@ -149,8 +149,8 @@ requirements.md Req 2 受入 1 に対応する 4 階層の扱い：
 |---|---|---|
 | **feature-partitioning** | **人協働候補提示**（機械的に候補、人間が境界決定） | 組み合わせ最適化的に困難、完全自動化は目指さない |
 | **intent** | **参考情報として推察**（人間が意図補完） | 構造から推察、ただし最終的な意図は人間が決定 |
-| **requirements** | **自動推定**（人間が修正・補完） | 受入基準・API・例外系などコードから比較的直接導出可能 |
-| **design** | **自動推定**（人間が修正・補完） | モジュール構成・接合面・アルゴリズムなどコードから直接読み取れる |
+| **requirements** | **自動推定（design からの逆算で実施、design 先行）**（人間が修正・補完） | 受入基準・API・例外系などコードから比較的直接導出可能、ただし design 推定の後に逆算する順序関係を持つ |
+| **design** | **自動推定（先行実施）**（人間が修正・補完） | モジュール構成・接合面・アルゴリズムなどコードから直接読み取れる、requirements 推定より先行 |
 | **tasks** | **対象外** | 完成コードしか見えず分解過程は残らない |
 
 ### 6.3 出力先のパス規則
@@ -162,8 +162,8 @@ requirements.md Req 2 受入 2 に対応するパス規則：
 ├── feature-partitioning-candidates.md     # 機械的候補、人間が編集
 ├── intent-reference.md                    # 参考情報、人間が編集
 └── specs/<feature>/
-    ├── requirements.md                    # 自動推定、人間が編集
-    └── design.md                          # 自動推定、人間が編集
+    ├── requirements.md                    # 自動推定（design からの逆算）、人間が編集
+    └── design.md                          # 自動推定（先行）、人間が編集
 ```
 
 各推定文書は最低限、Introduction／Boundary Context／Requirements（または相当節）の 3 節を含み、実装コードへの参照を最低 1 件含む（Req 2 受入 3）。詳細な節構成と参照粒度は実装段で確定する。
@@ -208,7 +208,7 @@ requirements.md Req 3 受入 1 に対応する二段階方式：
 第 1 段階：推定（既存上流文書遮断、§9）
    ├── 既存 feature-partitioning：入力として尊重
    ├── 既存 intent ／ requirements ／ design：技術的に遮断
-   └── 推定結果：design ／ requirements の各機能版
+   └── 推定結果：各機能の design（先行）／ requirements（design からの逆算）
 
 第 2 段階：比較（既存上流文書を読み込む、§10）
    ├── 既存 intent ／ requirements ／ design を読み込み
@@ -224,15 +224,22 @@ requirements.md Req 3 受入 1 に対応する二段階方式：
 
 ### 7.3 既存上流文書の遮断手法
 
-requirements.md Req 3 受入 1 の遮断は **技術的手段** で実装する。具体的な遮断手法（実装段で確定）：
+requirements.md Req 3 受入 1 の遮断は **技術的手段** で実装する。第 1 期では **サブエージェント方式での遮断（プロンプト制御＋ファイル遮断）** を採用する。フェーズ 4 第 2 サイクル以降で chroot 環境での厳格遮断を検討する。
 
-| 手法 | 説明 |
-|---|---|
-| **ファイル読み取り権限の制限** | 推定役プロセスを `chroot` や読み取り権限制限環境で実行、既存上流文書のファイルへのアクセスを物理的に阻止 |
-| **推定役プロセスの隔離** | サブエージェント方式の場合、Agent ツールのプロンプトに既存上流文書のパスを含めない、ファイル遮断規律（§5.9.1）を適用 |
-| **入力の事前検査** | 推定役へのプロンプトを事前検査し、既存上流文書の内容が混入していないかを grep で確認 |
+技術的手段の選択肢：
 
-第 1 期では **サブエージェント方式での遮断（プロンプト制御＋ファイル遮断）** を採用、フェーズ 4 第 2 サイクル以降で chroot 環境での厳格遮断を検討する。
+- **ファイル読み取り権限の制限**：推定役プロセスを `chroot` や読み取り権限制限環境で実行、既存上流文書のファイルへのアクセスを物理的に阻止
+- **推定役プロセスの隔離**：サブエージェント方式の場合、Agent ツールのプロンプトに既存上流文書のパスを含めない、ファイル遮断規律（§5.9.1）を適用
+- **入力の事前検査**：推定役へのプロンプトを事前検査し、既存上流文書の内容が混入していないかを grep で確認
+
+第 1 期では「推定役プロセスの隔離」と「入力の事前検査」を併用する：
+
+1. サブエージェントへのプロンプトに既存上流文書のパスを含めない
+2. サブエージェントのツール権限を最小化（Read 等の汎用ツールへ既存上流文書配置先を渡さない）
+3. プロンプトログを保管し、機械検査 MV-6 で事前混入を grep 検知
+4. **自律ファイル探索の禁止**：サブエージェントが `glob` ／ `find` ／ `Read` 等で既存上流文書を能動的に探索することを明示的に禁止、推定役プロンプトに「対象アプリの実装コードのみを読み、上流文書は読まないこと」と明記
+
+`chroot` 環境での厳格遮断（物理的アクセス遮断）はフェーズ 4 第 2 サイクル以降で検討する。
 
 ### 7.4 食い違い検出の対応関係
 
@@ -240,11 +247,11 @@ requirements.md Req 3 受入 2 に対応。
 
 6 criteria（Requirement 4 受入 1 由来、2 上流フェーズ × 3 criteria）の各 criterion に基づき、次の **3 対応関係** を比較する：
 
-| 対応関係 | 内容 |
-|---|---|
-| **節の有無** | 既存文書に対応する節があるか／推定文書に対応する節があるか |
-| **節内の主張・受入基準の対応** | 既存文書の主張・受入基準と推定文書の主張・受入基準が意味的に一致するか |
-| **実装コードへの言及齟齬** | 既存文書が言及する実装コード箇所と推定文書が言及する実装コード箇所が一致するか |
+| 対応関係 | 内容 | YAML フィールド名 |
+|---|---|---|
+| **節の有無** | 既存文書に対応する節があるか／推定文書に対応する節があるか | `section_existence` |
+| **節内の主張・受入基準の対応** | 既存文書の主張・受入基準と推定文書の主張・受入基準が意味的に一致するか | `claim_correspondence` |
+| **実装コードへの言及齟齬** | 既存文書が言及する実装コード箇所と推定文書が言及する実装コード箇所が一致するか | `code_reference_alignment` |
 
 「食い違い」とはこれら 3 対応関係のいずれかに不整合があることを指す。詳細な判定アルゴリズムは実装段で確定する（§10 で設計レベルの記述）。
 
@@ -297,21 +304,21 @@ requirements.md Req 3 受入 8 に対応。
 
 requirements.md Req 4 受入 1 と計画書 §5.10.2 に対応する 6 criteria：
 
-#### requirements conformance（3 criteria）
+#### requirements conformance（軸：`requirements`、3 criteria）
 
-| Criterion | 内容 |
+| Criterion ID | 内容 |
 |---|---|
-| **Criterion 1** | 受け入れ基準と実装の対応 |
-| **Criterion 2** | API ・データ契約と実装の対応 |
-| **Criterion 3** | 例外系・境界条件と実装の対応 |
+| **criterion-1** | 受け入れ基準と実装の対応（`receive_criteria`） |
+| **criterion-2** | API ・データ契約と実装の対応（`api_data_contract`） |
+| **criterion-3** | 例外系・境界条件と実装の対応（`boundary_condition`） |
 
-#### design conformance（3 criteria）
+#### design conformance（軸：`design`、3 criteria）
 
-| Criterion | 内容 |
+| Criterion ID | 内容 |
 |---|---|
-| **Criterion 4** | モジュール構成・データモデルと実装の対応 |
-| **Criterion 5** | 接合面（API シグネチャ・エラーモデル）と実装の対応 |
-| **Criterion 6** | アルゴリズム・性能達成手段と実装の対応 |
+| **criterion-4** | モジュール構成・データモデルと実装の対応（`module_data_model`） |
+| **criterion-5** | 接合面（API シグネチャ・エラーモデル）と実装の対応（`interface_signature`） |
+| **criterion-6** | アルゴリズム・性能達成手段と実装の対応（`algorithm_performance`） |
 
 ### 8.2 照合対象から除外する階層
 
@@ -349,7 +356,8 @@ requirements.md Req 4 受入 5 に対応。
   ```yaml
   criteria:
     - id: criterion-1
-      axis: requirements
+      axis: requirements                    # 軸：requirements または design の 2 値
+      criterion_short_name: receive_criteria
       name: 受け入れ基準と実装の対応
       sub_structure: [要点, 詳細抽出, 深掘り, 該当なし]
     # 以下 criterion-2 〜 criterion-6
@@ -365,39 +373,44 @@ requirements.md Req 4 受入 5 に対応。
 - **入力**：実装コード、既存 feature-partitioning（照合チェックモードのみ）、3 役レビュー機構（§11）
 - **出力**：推定された requirements ／ design 文書、推定根拠（コード参照）
 
-### 9.2 推定アルゴリズム（概要）
+### 9.2 推定アルゴリズム（design 先行→ requirements 逆算の順序依存）
 
-第 1 期では **半自動** で実施（自動部分は LLM 呼び出し、判断部分は人間または LLM）：
+第 1 期では **半自動** で実施（自動部分は LLM 呼び出し、判断部分は人間または LLM）。計画書 §5.10.9(a)（行 1176「requirements は design からの逆算で推定」）と §5.10.10（行 1216〜1217「第 2 段階 design 推定 → 第 3 段階 requirements 推定」）の順序関係を必須とする。
+
+ステップ順序：
 
 1. **実装コードの読み込み**：対象機能のコードベースを読む
 2. **構造抽出**：モジュール構成、API シグネチャ、データモデル、例外処理を機械的に抽出
-3. **受入基準の推定**：抽出した構造から「実装が満たしている受入基準」を LLM で推定
-4. **design 要素の推定**：抽出した構造から「実装が前提とする design 要素（アルゴリズム・性能達成手段）」を LLM で推定
-5. **3 役レビュー機構による検証**：主役の推定 → 敵対役の別解釈 → 判定役の整合判定（§11）
-6. **推定文書の生成**：YAML/Markdown 形式で出力、推定根拠（コード参照）を併記
+3. **design 要素の先行推定**（軽量 triad-review 適用）：抽出した構造から「実装が前提とする design 要素（モジュール構成・接合面・アルゴリズム・性能達成手段）」を LLM で推定。design は実装コードから直接読み取れる性格のため軽量適用
+4. **requirements 受入基準の逆算推定**（本格 triad-review 適用）：先行推定した design 要素から「実装が満たしている受入基準・API 契約・例外系」を逆算して LLM で推定。requirements は解釈余地が大きい性格のため本格適用
+5. **intent の参考情報推察**（軽量 triad-review 適用）：design ／ requirements の構造から intent を参考情報として推察。must-fix 対象外
+6. **3 役レビュー機構による検証**：主役の推定 → 敵対役の別解釈 → 判定役の整合判定（§11）
+7. **推定文書の生成**：YAML/Markdown 形式で出力、推定根拠（コード参照）を併記
 
 実装段の詳細化（フェーズ 4 第 2 サイクル）：
+
 - LLM プロンプト設計（プロンプト雛形 `templates/prompts/conformance_evaluation/`）
 - 構造抽出ツールの実装言語非依存設計
 - 推定品質の段階的改善
 
 ### 9.3 推定対象の階層別扱い
 
-| 階層 | 照合チェックモード | 文書生成モード |
-|---|---|---|
-| **feature-partitioning** | 既存を入力として尊重（推定しない） | 機械的候補を提示、人間が境界決定 |
-| **intent** | 参考情報として推察（独立推定しない） | 構造から推察、人間が補完 |
-| **requirements** | 自動推定（実装コードから） | 自動推定（人間が修正・補完） |
-| **design** | 自動推定（実装コードから） | 自動推定（人間が修正・補完） |
-| **tasks** | 対象外 | 対象外 |
+| 階層 | 照合チェックモード | 文書生成モード | 順序 |
+|---|---|---|---|
+| **feature-partitioning** | 既存を入力として尊重（推定しない） | 機械的候補を提示、人間が境界決定 | 推定パイプライン外 |
+| **design** | 自動推定（実装コードから、**先行**） | 自動推定（人間が修正・補完） | **ステップ 3（先行）** |
+| **requirements** | 自動推定（**design からの逆算**） | 自動推定（人間が修正・補完） | **ステップ 4（逆算）** |
+| **intent** | 参考情報として推察（独立推定しない） | 構造から推察、人間が補完 | ステップ 5 |
+| **tasks** | 対象外 | 対象外 | 対象外 |
 
 ### 9.4 推定根拠の保持
 
-各推定要素に対して、実装コードの参照を最低 1 件付与する：
+各推定要素に対して、実装コードの参照を最低 1 件付与する。YAML サンプル（axis は requirements ／ design の 2 値、criterion_id で specific な criterion を識別）：
 
 ```yaml
 estimated_requirement:
-  axis: receive_criteria                # 受入基準
+  axis: requirements                            # axis は requirements または design の 2 値
+  criterion_id: criterion-1                     # 6 criteria のいずれか
   description: |
     実装が「ユーザー登録時にメールアドレスの形式を検証する」要件を満たしている
   rationale_code_refs:
@@ -408,13 +421,34 @@ estimated_requirement:
             raise InvalidEmailError(...)
 ```
 
+design 推定要素のサンプル：
+
+```yaml
+estimated_design_element:
+  axis: design                                  # axis は requirements または design の 2 値
+  criterion_id: criterion-4                     # モジュール構成・データモデル
+  description: |
+    user_registration モジュールは email 検証・パスワードハッシュ化・DB 永続化の 3 責務を持つ
+  rationale_code_refs:
+    - path: src/user_registration.py
+      lines: 12-90
+```
+
 ### 9.5 推定の信頼度
 
-推定結果に **信頼度ラベル**（high／medium／low）を付与する。信頼度は推定根拠（コード参照件数、明示性）から自動判定（実装段で確定）：
+推定結果に **信頼度ラベル** を付与する。信頼度は推定根拠（コード参照件数、明示性）から自動判定（実装段で確定）。
 
-- **high**：複数のコード参照、関数名／コメント／例外メッセージから明示的
-- **medium**：1〜2 のコード参照、間接的な導出
-- **low**：構造からの推察のみ、人間判断が強く必要
+**信頼度語彙の所有関係（G4 利用者明示承認、波及対処）**：
+
+信頼度ラベルは foundation の語彙体系（validator_status／evidence_class／adversarial_outcome 等の語彙正本）と同じ性格を持つ。本設計では foundation の語彙体系に信頼度ラベル（high／medium／low の 3 値）を追加する設計改訂を要請する。波及所見として `pending-cross-feature-findings.md` に登録（design レビュー波段で foundation 設計改訂と合わせて消化）。
+
+暫定的に本機能 design.md 内で 3 値の定義を保持（foundation 改訂後に foundation 参照に書き換え）：
+
+| 値 | 判定基準 |
+|---|---|
+| **high** | 複数のコード参照、関数名／コメント／例外メッセージから明示的 |
+| **medium** | 1〜2 のコード参照、間接的な導出 |
+| **low** | 構造からの推察のみ、人間判断が強く必要 |
 
 信頼度は文書生成モードの「人間判断の必要性」（§6.5）と整合させる。
 
@@ -433,7 +467,7 @@ estimated_requirement:
 requirements.md Req 3 受入 2 に対応。
 
 - 比較対象粒度：**2 上流フェーズ × 3 criteria** = 6 criteria
-- 各 criterion で次の 3 対応関係を比較：節の有無 ／ 節内の主張・受入基準の対応 ／ 実装コードへの言及齟齬（§7.4）
+- 各 criterion で次の 3 対応関係を比較：節の有無（`section_existence`）／ 節内の主張・受入基準の対応（`claim_correspondence`）／ 実装コードへの言及齟齬（`code_reference_alignment`）（§7.4）
 - 「食い違い」とはこれら 3 対応関係のいずれかに不整合があることを指す
 
 ### 10.3 比較アルゴリズム（概要）
@@ -450,10 +484,11 @@ requirements.md Req 3 受入 2 に対応。
 ### 10.4 食い違いの記録形式
 
 ```yaml
-finding_id: CF-001                       # Conformance Finding の通し番号
-finding_type: discrepancy                # discrepancy / missing_section / extra_section
-criterion: criterion-1                   # 6 criteria のいずれか
-correspondence_type: receive_criteria_alignment   # 3 対応関係のいずれか
+finding_id: CF-001                         # Conformance Finding の通し番号（§10.7 で発番ルール）
+finding_type: discrepancy                   # discrepancy / missing_section / extra_section
+axis: requirements                          # axis は requirements または design の 2 値
+criterion_id: criterion-1                   # 6 criteria のいずれか
+correspondence_type: section_existence      # section_existence / claim_correspondence / code_reference_alignment の 3 値
 severity: ERROR
 existing_text: |
   既存 requirements の該当箇所の引用
@@ -461,10 +496,10 @@ estimated_text: |
   推定 requirements の該当箇所の引用
 discrepancy_description: |
   食い違いの内容（30 文字以上）
-implementation_code_refs:                # 食い違いに関連する実装コード参照
+implementation_code_refs:                   # 食い違いに関連する実装コード参照
   - path: src/...
     lines: 45-67
-judgment_id: JD-001                      # 3 役レビュー後の判定 ID（§11）
+judgment_id: JD-001                         # 3 役レビュー後の判定 ID（§10.7）
 ```
 
 ### 10.5 intent の差異記録
@@ -472,7 +507,7 @@ judgment_id: JD-001                      # 3 役レビュー後の判定 ID（§
 requirements.md Req 3 受入 3 に対応。
 
 - intent の差異は所見メタとして記録、ただし must-fix 判定の対象外
-- 記録形式：上記 `finding_id` の `criterion` に `intent-reference`（独立 criterion ではなく参考情報）を設定
+- 記録形式：`finding_id` の `axis` を `intent`（独立軸として例外的に追加、参考情報専用）、`criterion_id` は `intent-reference` に設定
 
 ### 10.6 比較結果の出力
 
@@ -481,6 +516,19 @@ requirements.md Req 3 受入 3 に対応。
 - 食い違いごとの YAML エントリ
 - 6 criteria 別の集計（食い違い件数、severity 別の内訳）
 - 推定根拠と既存文書の出典
+
+### 10.7 finding_id ／ judgment_id 発番ルール（G3 利用者明示承認）
+
+self-improvement の Decision 9（proposal_id 発番ルール）と同型のパターン：
+
+- **採番権者**：**conformance-evaluation**（本機能が採番）
+- **名前空間**：接頭辞で分離
+  - `CF-NNN`：Conformance Finding（食い違い所見）
+  - `JD-NNN`：Judgment（判定役の判定結果）
+  - 将来の拡張で `IF-NNN`（Inferred、推定要素）等を追加可能
+- **通番リセット**：**なし**（時系列で通番増加、git 履歴で時系列が追える）
+- **通番桁数**：3 桁から開始、999 件を超えたら自動で 4 桁に拡張
+- **採番手順**：新規所見作成時に `<対象アプリ>/.reviewcompass/specs/<feature>/conformance/` 配下の最大番号＋ 1 を採用
 
 ## 11. 3 役レビュー機構の適用（Triad Review Application）
 
@@ -492,8 +540,8 @@ requirements.md Req 5 受入 1 に対応。
 
 | 段階 | 主役 | 敵対役 | 判定役 |
 |---|---|---|---|
-| **推定段階（照合チェック・文書生成共通）** | 実装コードから推定 | 別解釈を提示 | 実装との整合で判定 |
-| **文書生成タスク（傍流）** | コードから生成 | 生成文書の誤推定を独立指摘 | 採否判断 |
+| **推定段階（照合チェック・文書生成共通）** | 実装コードから推定（design 先行→ requirements 逆算） | 別解釈を提示 | 実装との整合で判定 |
+| **文書生成タスク（傍流）** | コードから生成（design 先行→ requirements 逆算） | 生成文書の誤推定を独立指摘 | 採否判断 |
 | **照合チェック（本筋）** | 食い違いを列挙 | 妥当性検証 | must-fix／should-fix／leave-as-is |
 
 ### 11.2 軽量／本格の使い分け
@@ -502,13 +550,14 @@ requirements.md Req 5 受入 2 と計画書 §5.10.10 に対応：
 
 | 適用方式 | 内容 | 適用対象 |
 |---|---|---|
-| **本格適用** | 3 役それぞれが独立して推定・判定（β 逐次方式、§5.9.1） | feature-partitioning 推定（傍流）／ requirements 推定 ／ 照合段階 |
-| **軽量適用** | 主役推定の検証として、敵対役が別解釈を 1 つ提示、判定役が比較判定 | design 推定 ／ intent 推察 |
+| **本格適用** | 3 役それぞれが独立して推定・判定（β 逐次方式、§5.9.1） | feature-partitioning 推定（傍流）／ requirements 推定（design からの逆算）／ 照合段階 |
+| **軽量適用** | 主役推定の検証として、敵対役が別解釈を 1 つ提示、判定役が比較判定 | design 推定（実装コードから直接読み取れる）／ intent 推察（参考情報として多角的に保持） |
 
-軽量と本格の判断基準：解釈余地の大きさ。
+軽量と本格の判断基準：解釈余地の大きさと推定の直接性。
 
 - 解釈余地が大きい（feature-partitioning、requirements、照合食い違い判定）→ 本格適用
-- 解釈余地が比較的小さい（design はコードから直接読み取れる、intent は参考情報）→ 軽量適用
+- 実装からの導出が比較的直接的（design）→ 軽量適用
+- 参考情報扱いで多角的に保持（intent）→ 軽量適用
 
 ### 11.3 §5.9 規律の流用
 
@@ -520,7 +569,7 @@ requirements.md Req 5 受入 3〜8 に対応する流用項目：
 | 重大度語彙 4 段（CRITICAL／ERROR／WARN／INFO） | §5.9.2 |
 | 所見メタデータ必須化（severity／judgment／depth／evidence_type／verifying_commands） | §5.9.3 |
 | 3 方式比較データ取得（`findings_by_method`） | §5.9.6 |
-| レビューモード語彙（`manual_dogfooding`／`runtime_mediated`／`subagent_mediated`） | foundation Req 6 受入 6 |
+| レビューモード語彙（`manual_dogfooding`／`runtime_mediated`／`subagent_mediated`） | foundation Req 6 受入 6（参照、機械検査 MV-7 で照合） |
 | API 経路と障害対応（タイムアウト・リトライ・部分失敗の検知と扱い） | §5.9.7 |
 
 ### 11.4 API 経路の障害対応
@@ -551,7 +600,7 @@ requirements.md Req 6 受入 2 に対応。
 - `<mode>` は `check`（照合チェック）または `generation`（文書生成）
 - `reviews/` ディレクトリ（実装適合レビュー用）とは別ディレクトリ
 
-### 12.3 front-matter の構造
+### 12.3 front-matter の構造（target_commit と materialization_commit_hash の整合ルール、G10 対処）
 
 requirements.md Req 6 受入 3〜5 に対応。
 
@@ -560,30 +609,41 @@ requirements.md Req 6 受入 3〜5 に対応。
 type: conformance_evaluation
 target_app: <対象アプリのパス>
 target_feature: <feature>
-target_commit: <実装コードの commit hash>
+target_commit: <実装コードの commit hash>   # 実装コードのコミット（本機能の出典）、G10 で整合ルール明示
 date: 2026-06-01
 mode_internal: check                     # check / generation（Req 6 受入 3）
 author:                                  # §5.4 規律（Req 6 受入 4）
   identity: claude_code_main_session     # または claude_code_subagent
-  model: claude-opus-4-7
+  model_full_id: claude-opus-4-7-20260201    # 日付スタンプ付き完全版識別子、§5.9.3 由来
+  prompt_artifact_hash: sha256:abc123    # プロンプト本体のコンテンツハッシュ、§5.9.3 由来
   role: drafter
 reviewer:                                # §5.4 規律（Req 6 受入 4）
   identity: claude_code_subagent
-  model: claude-haiku-4-5
+  model_full_id: claude-haiku-4-5-20251001
+  prompt_artifact_hash: sha256:def456
   role: final_judgment
   separation_from_author: true
 related_artifacts:                       # Req 6 受入 5
   runtime: <runtime の関連実行記録パス>
   evaluation: <evaluation の関連記録パス>
   workflow_management: <workflow-management の関連手続き記録パス>
+  self_improvement: <self-improvement の関連提案／実体変更記録パス（任意、規律改訂の影響を伴う conformance check 時のみ）>
 ---
 ```
+
+**target_commit と self-improvement の materialization_commit_hash の整合ルール**（A-011 対処）：
+
+- **target_commit**：本機能の評価対象である実装コードの commit hash。本機能が記録する出典
+- **materialization_commit_hash**：self-improvement の規律変更が workflow-management の手続きで実体変更された時点のコミットハッシュ（self-improvement design §13.5 由来）
+- **両者は独立**：target_commit は実装コードのコミット、materialization_commit_hash は規律変更のコミット
+- **同一文書で両 commit を扱う場面**：規律改訂の影響を伴う conformance check 時、本機能の評価記録に self-improvement の `materialization_commit_hash` を `related_artifacts.self_improvement` フィールドで参照可能
+- **本機能が self-improvement に出力される際**：self-improvement の motivating_evidence として参照される場合、`target_commit` を本機能の出典として記録、`materialization_commit_hash` は self-improvement 側が記録（責務分担）
 
 ### 12.4 関連実行記録への参照
 
 requirements.md Req 6 受入 5 に対応。
 
-- 評価記録から `runtime`／`evaluation`／`workflow-management` の関連実行記録への参照を保持
+- 評価記録から `runtime`／`evaluation`／`workflow-management`／`self-improvement`（任意）の関連実行記録への参照を保持
 - 参照形式：相対パスまたは絶対パス
 
 ## 13. 依存関係の連想配列構造（Associative Dependency Structure）
@@ -627,13 +687,15 @@ requirements.md Req 7 受入 4 に対応。
 
 - 本機能の連想配列構造は `workflow-management` Requirement 8 受入 2 のスキーマ拡張（連想配列構造の許容）に依存
 - スキーマ拡張の所有者は `workflow-management`、本機能は仕様への適合者
+- 相互参照証跡：workflow-management/design.md の該当節（依存関係 model）と本機能 design.md §13.3／§13.4 で双方向参照（次セッション以降の design レビュー波段で確定）
 
 ### 13.5 phase_order の最後
 
 requirements.md Req 7 受入 5 に対応。
 
 - 本機能は `phase_order` の最後に位置付ける（依存先がすべて先に完了する前提）
-- 計画書 §5.5 の phase_order：foundation → runtime → evaluation → analysis → workflow-management → self-improvement → conformance-evaluation
+- 計画書 §5.5 ／ §5.10.5 の正本 phase_order は self-improvement を含まない 6 機能体制だが、workflow-management/design.md（利用者明示承認 2026-05-25 セッション 26、7 機能採用）と整合する 7 機能 phase_order：`foundation → runtime → evaluation → analysis → workflow-management → self-improvement → conformance-evaluation`
+- 計画書 §5.5 構造例の self-improvement 記載漏れは workflow-management 側 TODO で別途追跡
 
 ## 14. 他機能との接合面（Interfaces with Other Features）
 
@@ -641,8 +703,9 @@ requirements.md Req 7 受入 5 に対応。
 
 | 方向 | 内容 |
 |---|---|
-| 入力（conformance-evaluation が読む） | スキーマとメタデータ契約、検証器状態語彙、レビューモード語彙、証拠区分語彙、`adversarial_outcome` 語彙、必須メタデータ（severity／target_location／description／rationale） |
+| 入力（conformance-evaluation が読む） | スキーマとメタデータ契約、検証器状態語彙、レビューモード語彙、証拠区分語彙、`adversarial_outcome` 語彙、必須メタデータ（severity／target_location／description／rationale）、**信頼度ラベル（high／medium／low、G4 対処で追加要請、波及登録）** |
 | 再定義しない原則 | foundation を正本所有者として参照し、本機能内で再定義しない（Boundary Context 隣接期待） |
+| 機械検査 | foundation 受入番号の参照を本機能の機械検査 MV-7 で照合（G9 対処） |
 
 ### 14.2 runtime との接合面（依存：review）
 
@@ -652,13 +715,15 @@ requirements.md Req 7 受入 5 に対応。
 | 形式 | `<対象アプリ>/.reviewcompass/specs/<feature>/runtime/<日付>-execution.md` 等の実行記録 |
 | 活用 | 推定段階での実装コード理解、照合段階での実装コード言及齟齬の判定材料 |
 
-### 14.3 evaluation との接合面（依存：review）
+### 14.3 evaluation との接合面（依存：review、G10 対処：突き合わせ詳細）
 
 | 方向 | 内容 |
 |---|---|
 | 入力（conformance-evaluation が読む） | 評価結果との突き合わせ |
-| 形式 | `evaluation` 機能の出力（評価結果集約 YAML／JSON） |
-| 活用 | 食い違いの妥当性検証、評価結果との整合確認 |
+| 形式 | `evaluation` 機能の出力（評価結果集約 YAML／JSON）：経路別差分（3 役差分／モード別差分）／severity 集計／`role_diff_report.json`（A-011 対処で evaluation 設計に追加予定） |
+| 突き合わせ手順 | 1. 本機能の推定 design ／ requirements を確定（§9.2 step 3〜4）／ 2. 既存上流文書との比較で食い違いを列挙（§10）／ 3. evaluation の経路別差分と突き合わせ、severity 集計の整合を確認 |
+| 活用 | 推定段階での妥当性検証（evaluation の集計結果と食い違いの傾向が一致するか）、照合段階での実装コード言及齟齬の追加判定材料 |
+| 波及 | 本接合面の詳細確定は design レビュー波段で evaluation 設計改訂と合わせて実施、`pending-cross-feature-findings.md` に追記 |
 
 ### 14.4 workflow-management との接合面（依存：review）
 
@@ -668,30 +733,37 @@ requirements.md Req 7 受入 5 に対応。
 | スキーマ依存 | 依存関係の連想配列構造（Req 7 受入 4） |
 | 活用 | 既存上流文書の最新性確認（古い文書を引きずらない）、手続き完了状態の確認 |
 
-### 14.5 analysis との接合面
+### 14.5 analysis との接合面（G10 対処：機械可読出力スキーマ）
 
 | 方向 | 内容 |
 |---|---|
 | 出力（conformance-evaluation が書く） | 6 criteria の検査結果、食い違い列挙、推定根拠 |
-| 形式 | 評価記録の YAML 構造（`analysis` が機械可読に取り込む） |
+| 形式 | 評価記録の YAML 構造（`analysis` が機械可読に取り込む）、§10.4 のスキーマに準拠 |
+| 必須フィールド | `feature`／`axis`（requirements ／ design ／ intent の 3 値）／`criterion_id`（criterion-1〜6）／`severity`（4 段）／`finding_id`（CF-NNN）／`correspondence_type`（3 対応関係）／`discrepancy_description`／`implementation_code_refs`／`judgment_id`（JD-NNN） |
+| 任意フィールド | `target_commit`／`materialization_commit_hash`（規律改訂の影響を伴う場合、§12.3 由来） |
 | 活用先 | `analysis` の 4 出力先（特に監査用報告と報告書向け原データ、`analysis` Requirement 8 受入 5 由来） |
+| 波及 | 本接合面の最終確定は design レビュー波段で analysis 設計と合わせて実施、`pending-cross-feature-findings.md` に追記 |
 
-### 14.6 self-improvement との接合面
+### 14.6 self-improvement との接合面（G10 対処：commit hash 整合）
 
 | 方向 | 内容 |
 |---|---|
 | 出力（conformance-evaluation が書く） | 6 criteria の検査結果（規律改善の入力として活用される） |
-| 依存方向 | conformance-evaluation → self-improvement（self-improvement が conformance-evaluation の出力を読む、A-008 で確定済み 2026-05-23） |
+| 依存方向 | conformance-evaluation → self-improvement（self-improvement が conformance-evaluation の出典を読む、A-008 で確定済み 2026-05-23） |
+| 整合ルール | §12.3 の target_commit／materialization_commit_hash の整合ルールに従う |
 | 注記 | `self-improvement` は本機能の `depends_on` には含まれず、出力先として参照される関係 |
+| 波及 | 本接合面の最終確定は design レビュー波段で self-improvement 設計と合わせて実施、`pending-cross-feature-findings.md` に追記 |
 
 ## 15. 要件追跡表（Requirements Traceability、受入基準単位）
 
+参照は章タイトル参照（番号なし 5 章「概要」「目標」「範囲外」「設計の前提」「アーキテクチャ」は章番号なし、F-003 対処、G7 利用者明示承認）。
+
 | Requirement | 受入基準 | 対応章節 |
 |---|---|---|
-| Req 1 機能の方向性と前提 | 受入 1（下流→上流、4 階層対象） | §1 概要／§6.2／§7／§8.1 |
-| Req 1 | 受入 2（上流文書なくてもよい） | §1 概要／§6.1 |
-| Req 1 | 受入 3（実装適合レビュー非吸収） | §3 範囲外／§17（Boundary Context Out of scope） |
-| Req 1 | 受入 4（2 モード） | §5.3 モード切替モデル／§6／§7 |
+| Req 1 機能の方向性と前提 | 受入 1（下流→上流、4 階層対象） | 「概要」章／「範囲外」章／§6.2／§7／§8.1 |
+| Req 1 | 受入 2（上流文書なくてもよい） | 「概要」章／§6.1 |
+| Req 1 | 受入 3（実装適合レビュー非吸収） | 「範囲外」章／§17（Boundary Context Out of scope） |
+| Req 1 | 受入 4（2 モード） | アーキテクチャ §3 モード切替モデル／§6／§7 |
 | Req 1 | 受入 5（同一 6 criteria） | §8.1 |
 | Req 2 文書生成モード | 受入 1（4 階層扱い分け） | §6.2 |
 | Req 2 | 受入 2（出力先パス規則） | §6.3 |
@@ -725,7 +797,10 @@ requirements.md Req 7 受入 5 に対応。
 | Req 7 | 受入 3（依存記述確定値） | §13.3 |
 | Req 7 | 受入 4（workflow-management スキーマ整合） | §13.4 |
 | Req 7 | 受入 5（phase_order 最後） | §13.5 |
-| Req 8 実装適合分離 | 受入 1〜4（性格分離、ディレクトリ分離） | §3 範囲外／§12.2 |
+| Req 8 実装適合分離 | 受入 1（実装適合レビュー責務を持たない） | 「範囲外」章 |
+| Req 8 | 受入 2（実装適合レビューは §5.9／runtime に残る） | 「範囲外」章／§14.2 |
+| Req 8 | 受入 3（方向・前提・実施時期の 3 軸性格差） | 「概要」章／「設計の前提」章 |
+| Req 8 | 受入 4（評価記録のディレクトリ分離） | §12.2 |
 
 ## 16. 設計決定（Key Decisions）
 
@@ -777,6 +852,30 @@ requirements.md Req 7 受入 5 に対応。
 
 **根拠**：本機能（逆方向）と実装適合レビュー（順方向）の混在を防ぐ、機械検査可能な分離（Req 8）。
 
+### Decision 9：finding_id ／ judgment_id 発番ルール（G3 利用者明示承認、本セッション 27 確定）
+
+採番権者は conformance-evaluation、接頭辞で名前空間分離（`CF-NNN`：Conformance Finding、`JD-NNN`：Judgment）、通番リセットなし、3 桁から開始し 999 件を超えたら自動で 4 桁に拡張。詳細は §10.7。
+
+**根拠**：self-improvement Decision 9（proposal_id 発番ルール）と同型のパターン、機能横断的に一貫した運用。
+
+### Decision 10：推定アルゴリズムの順序依存（G2 利用者明示承認、本セッション 27 確定）
+
+推定アルゴリズム（§9.2）は **design 先行→ requirements 逆算** の順序を必須とする。design は実装コードから直接読み取れるため軽量適用、requirements は design からの逆算で本格適用。詳細は §9.2 ／ §11.2。
+
+**根拠**：計画書 §5.10.9(a)（行 1176「requirements は design からの逆算」）と §5.10.10（行 1216〜1217「第 2 段階 design 推定→ 第 3 段階 requirements 推定」）の順序確定と整合。
+
+### Decision 11：信頼度ラベルを foundation 語彙体系に追加要請（G4 利用者明示承認、本セッション 27 確定、波及）
+
+推定の信頼度ラベル（high／medium／low の 3 値）は本機能で独自定義せず、foundation の語彙体系（validator_status／evidence_class／adversarial_outcome 等）に追加する設計改訂を要請する。本機能 §9.5 は暫定的に独自定義を保持しつつ、foundation 改訂後に foundation 参照に書き換え。波及登録（`pending-cross-feature-findings.md` で design レビュー波段に消化）。
+
+**根拠**：foundation 語彙正本原則（Req 5 受入 7「レビューモード語彙を再定義せず参照」）と一貫した運用、self-improvement Decision 1 と同型の責務分離パターン。
+
+### Decision 12：規律 options-presentation の対象範囲明確化（G8 利用者明示承認、本セッション 27 確定、規律本体改訂）
+
+本セッション 27 で新設した規律 [options-presentation](../../../docs/disciplines/discipline_options_presentation.md) の対象範囲を「利用者に判断を仰ぐ複数案提示の応答」に限定し、設計文書内の比較記述（例：§7.3 遮断 3 手法）は対象外と明確化する。規律本体に小改訂（軽量手続き）。
+
+**根拠**：規律の本来目的（利用者の判断負荷を減らす、dominated 案を提示しない）と整合、設計文書内の経緯記録の自由度を保つ。本セッション 27 で本機能 design 起草中に規律違反指摘を受けて議論、規律本体の射程縮小で対処。
+
 ## 17. Boundary Context との整合確認（Boundary Context Compliance）
 
 requirements.md の Boundary Context との整合：
@@ -789,7 +888,7 @@ requirements.md の Boundary Context との整合：
 | 主要用途 2（傍流）：文書生成 | §6 文書生成モード／Decision 1 |
 | 6 criteria の検査構造 | §8 6 criteria 検査構造／Decision 4 |
 | 推定段階と照合段階の両方への 3 役レビュー機構適用 | §11 3 役レビュー機構の適用／Decision 5 |
-| モード別の既存文書扱いルール | §5.3 モード切替モデル／§7.3／Decision 3 |
+| モード別の既存文書扱いルール | アーキテクチャ §3 モード切替モデル／§7.3／Decision 3 |
 | 評価記録の出力（`<対象アプリ>/.reviewcompass/specs/<feature>/conformance/`） | §12 評価記録の type 値と配置 |
 | v3-plan §3.3 のうち「文書レベルの戻し」 | §6／§7／§8 |
 
@@ -797,10 +896,10 @@ requirements.md の Boundary Context との整合：
 
 | Boundary Context の記述 | 本設計での対応 |
 |---|---|
-| 実装適合レビュー | §3 範囲外／Decision 8 |
-| v3-plan §3.3 の規律レベル戻し（self-improvement の責務） | §3 範囲外 |
-| schema／prompt／code レベルの戻し | §3 範囲外 |
-| 5 評価軸のうち実装適合 | §3 範囲外／§8.4 |
+| 実装適合レビュー | 「範囲外」章／Decision 8 |
+| v3-plan §3.3 の規律レベル戻し（self-improvement の責務） | 「範囲外」章 |
+| schema／prompt／code レベルの戻し | 「範囲外」章 |
+| 5 評価軸のうち実装適合 | 「範囲外」章／§8.4 |
 
 ### 隣接仕様の期待との整合
 
@@ -808,12 +907,12 @@ requirements.md の Boundary Context との整合：
 |---|---|---|
 | foundation（hard） | スキーマとメタデータ契約等を再定義せず参照 | §14.1 |
 | runtime（review） | 実装コードのレビュー実行記録を入力源として活用 | §14.2 |
-| evaluation（review） | 評価結果との突き合わせ | §14.3 |
+| evaluation（review） | 評価結果との突き合わせ | §14.3（G10 で詳細記述） |
 | workflow-management（review） | 所定手続きの実行履歴と上流文書の整合確認 | §14.4 |
-| analysis | 6 criteria の検査結果を 4 出力先に取り込む | §14.5 |
-| self-improvement | 6 criteria 検査結果を規律改善の入力として提供 | §14.6 |
+| analysis | 6 criteria の検査結果を 4 出力先に取り込む | §14.5（G10 で機械可読スキーマ詳細記述） |
+| self-improvement | 6 criteria 検査結果を規律改善の入力として提供 | §14.6（G10 で commit hash 整合ルール） |
 
-## 18. 機械検査の具体手段（Machine Verification、self-improvement 設計の MV-X と同型）
+## 18. 機械検査の具体手段（Machine Verification、self-improvement 設計の MV-X と同型、MV-7 追加）
 
 本章は本機能の動作に関する機械検査ポイントを定義（self-improvement design の §17 と同型の構造）。
 
@@ -826,24 +925,29 @@ requirements.md の Boundary Context との整合：
 | **MV-3** | ディレクトリ分離 | 評価記録は `conformance/` ディレクトリ、実装適合レビューは `reviews/` ディレクトリに配置されている（混在なし） | find ＋ディレクトリ照合 |
 | **MV-4** | 推定文書の必須 3 節 | `<対象アプリ>/.reviewcompass/conformance/inferred/<日付>/specs/<feature>/` 配下の推定文書が Introduction／Boundary Context／Requirements の 3 節を含む | grep で見出し存在を確認 |
 | **MV-5** | 推定根拠の実装コード参照 | 推定文書の各推定要素に実装コードへの参照（`<ファイルパス>:<行範囲>`）が最低 1 件含まれる | grep ＋形式照合 |
-| **MV-6** | 既存上流文書遮断の事前検査 | 推定役プロンプトに既存上流文書のパスが含まれていない（照合チェックモード） | grep ＋プロンプトログ確認 |
+| **MV-6** | 既存上流文書遮断の事前検査 | 推定役プロンプトに既存上流文書のパスが含まれていない、自律ファイル探索の禁止条項がプロンプトに明記されている（照合チェックモード） | grep ＋プロンプトログ確認 |
+| **MV-7** | **foundation 受入番号照合**（G9 対処、本セッション 27 新設） | 本機能 design.md ／ requirements.md 内の `foundation Requirement N 受入 M` 記述が foundation requirements.md の最新受入番号と一致 | grep で抽出した参照を foundation requirements.md と機械的に照合 |
 
 ### 18.2 検査スクリプトの所在と責務
 
 - 第 1 期（フェーズ 1〜3）：手動 grep／find による検査、本機能の責務として運用
 - フェーズ 4 第 2 サイクル以降：検査スクリプトを `tools/conformance-evaluation-check.py`（仮称、本機能の所有物）として実装
-- `workflow-management` の `tools/check-workflow-action.py`（補助層 C 段階 2）とは責務が異なる
+- `workflow-management` の `tools/check-workflow-action.py`（補助層 C 段階 2）とは責務が異なる（不可逆操作の事前検査）
 
-### 18.3 検査の出力先
+### 18.3 検査の出力先と fail-closed の粒度（F-009 部分対処）
 
 - 検査結果は評価記録の本文に「機械検査結果」節として記録
-- 検査失敗時は遮断（fail-closed）：本機能の処理が継続できない状態とし、利用者監査に上げる
+- **fail-closed の適用粒度（MV ID 別）**：
+  - **遮断必須**（即時停止）：MV-6（推定役プロンプトへの既存上流文書混入検知）
+  - **遮断推奨**（処理停止）：MV-1／MV-2／MV-3（評価記録の構造的検査）
+  - **警告として続行可能**（後続処理を許容）：MV-4／MV-5／MV-7（推定文書品質と参照整合）
+- 第 1 期は手動検査で粒度を確認、自動化時に MV ID 別の fail-closed 設定を CLI 引数または設定ファイルで提供
 
 ### 18.4 機械検査の段階的導入
 
-- フェーズ 1〜3：MV-1／MV-2／MV-3 は手動 grep、MV-4／MV-5 は文書作成時に人間が確認、MV-6 は推定役プロンプトの手動レビュー
-- フェーズ 4 第 1 サイクル：MV-1〜MV-3 を自動化
-- フェーズ 4 第 2 サイクル：MV-4〜MV-6 を自動化、推定役プロセスの隔離（§7.3）と連携
+- フェーズ 1〜3：MV-1／MV-2／MV-3／MV-7 は手動 grep、MV-4／MV-5 は文書作成時に人間が確認、MV-6 は推定役プロンプトの手動レビュー
+- フェーズ 4 第 1 サイクル：MV-1〜MV-3、MV-7 を自動化
+- フェーズ 4 第 2 サイクル：MV-4〜MV-6 を自動化、推定役プロセスの隔離（§7.3）と連携、chroot 環境での厳格遮断検討
 
 ## 19. テスト戦略（Test Strategy）
 
@@ -853,12 +957,13 @@ requirements.md の Boundary Context との整合：
 
 | モデル | 単体テスト | 結合テスト | 受入テスト |
 |---|---|---|---|
-| **推定モデル（§9）** | 4 階層の推定アルゴリズム、信頼度判定 | 3 役レビュー機構と推定の連結 | 実装コード規模 1000 行程度のサンプルアプリで推定実施 |
-| **比較モデル（§10）** | 3 対応関係（節有無／主張対応／コード言及齟齬）の判定 | 推定結果と既存文書の比較 | 既存上流文書ありのサンプルアプリで照合実施 |
-| **モード切替（§5.3）** | check／generation のモード判定、明示指定の処理 | 各モードの実行パイプライン | 両モードの End-to-End 実行 |
+| **推定モデル（§9）** | 4 階層の推定アルゴリズム、信頼度判定、design 先行→ requirements 逆算の順序検査 | 3 役レビュー機構と推定の連結 | 実装コード規模 1000 行程度のサンプルアプリで推定実施 |
+| **比較モデル（§10）** | 3 対応関係（節有無／主張対応／コード言及齟齬）の判定、CF-NNN／JD-NNN 発番ルール | 推定結果と既存文書の比較 | 既存上流文書ありのサンプルアプリで照合実施 |
+| **モード切替（アーキテクチャ §3）** | check／generation のモード判定、明示指定の処理 | 各モードの実行パイプライン | 両モードの End-to-End 実行 |
 | **3 役レビュー機構（§11）** | 軽量／本格の使い分け判定 | 推定段階／照合段階での 3 役連携 | 全 6 criteria の triad-review |
-| **評価記録（§12）** | type 値・mode_internal の正しさ、front-matter スキーマ | 評価記録の生成と保管 | 評価記録の機械可読性検証 |
+| **評価記録（§12）** | type 値・mode_internal の正しさ、front-matter スキーマ、target_commit／materialization_commit_hash の整合 | 評価記録の生成と保管 | 評価記録の機械可読性検証 |
 | **依存関係（§13）** | 連想配列構造の解釈、hard／review の区別 | feature-dependency.yaml の読み込み | feature-dependency.yaml の整合確認 |
+| **機械検査（§18）** | MV-1〜MV-7 の検査ロジック | 検査スクリプトと評価記録の連携 | 全 MV の網羅実行 |
 
 ### 19.2 テスト戦略の重点ポイント
 
@@ -866,6 +971,8 @@ requirements.md の Boundary Context との整合：
 - **feature-partitioning の例外扱い**：照合チェックモードで既存 feature-partitioning だけは入力として尊重、他は遮断されていることをテストデータで確認
 - **推定の信頼度**：high／medium／low の判定基準が一貫しているかをサンプルデータで確認
 - **6 criteria の網羅**：すべての criterion でテストケースが用意されているか、`schemas/review-criteria/conformance_evaluation.yaml` と整合
+- **推定順序**：design 先行→ requirements 逆算の順序が実装されているかを単体テストで確認
+- **foundation 受入番号照合**：MV-7 で foundation 改訂への追従性を確認
 
 ### 19.3 テスト実施タイミング
 
@@ -883,48 +990,52 @@ requirements.md の Boundary Context との整合：
 
 ### 20.1 未解決論点
 
-本セッション 27 末時点で本機能の design.drafting 段で未解決の論点：
+本セッション 27 末時点で本機能の design.drafting＋triad-review 段で未解決の論点：
 
-- **章番号体系の整合確認**：本機能 design.md は self-improvement 設計と同じく 20 章構成（番号なし 5 章＋番号付き §6〜§20 の 15 章）を採用。他機能（foundation／runtime／evaluation／analysis／workflow-management）の design.md でも章番号体系の不整合が存在する可能性があり、design.alignment 段で全機能横断の章構造整合確認が必要（self-improvement 設計の reviews 記録 §4.6 と連動、利用者明示承認「他機能でも生じていたはずなので後ほど対処」2026-05-26 セッション 27）
-- **A-005／A-008／A-009／A-010**：既に対処済み（要件段で対処、design 段では追加対処なし）
-- **本機能の triad-review 段**：次セッション 28 以降で実施予定、現時点では未着手
+#### 遡及（要 上流文書修正）
+
+- **A-001（G5 利用者明示承認、本セッション 27 で対処）**：12 criteria（旧表現）→ 6 criteria（現行）への現役記述修正。requirements.md 行 33-34（2 件）／CONFORMANCE_EVALUATION.md（4 件）／計画書（6 件以上）を軽量 reopen 手続きで修正
+- **F-015（G6 利用者明示承認、本セッション 27 で対処）**：CLI 命名を本機能 design.md の階層型（`conformance check` ／ `conformance generate`）に統一する方向で計画書 §5.10.7 を改訂、軽量 reopen 手続き
+
+#### 波及（要 他機能設計改訂）
+
+- **A-003（G4 利用者明示承認、本セッション 27 で対処）**：信頼度ラベル（high／medium／low）を foundation 語彙体系に追加要請、`pending-cross-feature-findings.md` に追記、design レビュー波段で foundation 設計改訂と合わせて消化
+- **F-006 ／ A-008 ／ A-011（G10 利用者明示承認、本セッション 27 で対処）**：evaluation 接合面の突き合わせ詳細／analysis 接合面の機械可読出力スキーマ／self-improvement との commit hash 整合ルール。本機能 design.md §14.3 ／ §14.5 ／ §14.6 ／ §12.3 に詳細記述、`pending-cross-feature-findings.md` に追記、design レビュー波段で各機能側設計と合わせて消化
+
+#### 他機能横断の未消化所見
+
+- **A-011（既存、design レビュー波段で消化予定）**：analysis／evaluation 接合面の `roles/role_diff_report.json` 新設。本機能の §14.3 ／ §14.5 で参照しているため、A-011 消化が本機能の design.alignment の前提
+- **A-012（既存、design レビュー波段で消化予定）**：self-improvement と workflow-management の時系列契約・完了通知形式
+
+#### 章番号体系の整合確認（持ち越し）
+
+本機能 design.md は self-improvement 設計と同じく 20 章構成（番号なし 5 章＋番号付き §6〜§20 の 15 章）を採用。他機能（foundation／runtime／evaluation／analysis／workflow-management）の design.md でも章番号体系の不整合が存在する可能性があり、design.alignment 段で全機能横断の章構造整合確認が必要（利用者明示承認「他機能でも生じていたはずなので後ほど対処」2026-05-26 セッション 27）。
 
 ### 20.2 機能横断レビューで対処済みの所見
 
-- **A-005（既存）**：依存関係の連想配列構造 → Requirement 7／§13／Decision 6 で反映済み
+- **A-005（既存）**：依存関係の連想配列構造 → Requirement 7 ／ §13 ／ Decision 6 で反映済み
 - **A-008（既存）**：conformance-evaluation から self-improvement への出力方向 → §14.6 で「conformance-evaluation → self-improvement の方向」として明示
 - **A-009 第 2 波（既存）**：旧 paper-interface 由来の用語不整合 → Boundary Context 隣接仕様の analysis 記述で対処済み
 - **A-010（既存）**：推定プロセスの整理と 2 軸 6 criteria 化 → Requirement 1〜5 ＋計画書 §5.10 改訂で対処済み、本設計で全面反映
 
 ### 20.3 起草完了基準
 
-本設計が design.drafting 段の完了とみなされる条件：
+本設計が design.drafting＋triad-review 段の完了とみなされる条件：
 
 - [x] 全 20 章（番号なし 5 章＋番号付き §6〜§20 の 15 章）が記述されている
-- [x] requirements.md の全 8 件の Requirement と受入基準が §15 要件追跡表で章節と対応している（受入基準単位の追跡）
+- [x] requirements.md の全 8 件の Requirement と受入基準が §15 要件追跡表で章節と対応している（受入基準単位の追跡、F-001 部分対処：Req 8 を受入単位で展開）
 - [x] 計画書 §5.10 の 10 小節（§5.10.1〜§5.10.10）の方針が反映されている
 - [x] 他機能との接合面が §14 で全 6 機能分（foundation／runtime／evaluation／analysis／workflow-management／self-improvement）明示されている
 - [x] Boundary Context との整合が §17 で確認されている
 - [x] 機能横断所見（A-005／A-008／A-009／A-010）の対処が §20.2 で明示されている
-- [x] 主要な設計決定（8 件）が §16 で明示されている
-- [x] **機械検査の具体手段（§18）が定義されている**（self-improvement 設計の §17 と同型）
-- [x] **テスト戦略（§19）が定義されている**（self-improvement 設計の §18 と同型）
+- [x] 主要な設計決定（12 件、Decision 9 ／ 10 ／ 11 ／ 12 含む）が §16 で明示されている
+- [x] **機械検査の具体手段（§18）が定義されている**（MV-1〜MV-7 の 7 検査ポイント、MV-7 は本セッション 27 で新設）
+- [x] **テスト戦略（§19）が定義されている**
 - [x] 文書生成モード（§6）と照合チェックモード（§7）が明示的に分離されている
-- [x] 6 criteria 検査構造（§8）が定義されている
-- [x] 推定モデル（§9）と比較モデル（§10）が定義されている
+- [x] 6 criteria 検査構造（§8）が定義されている（axis：requirements ／ design の 2 値、criterion-1〜6 の ID、F-004 対処）
+- [x] 推定モデル（§9）と比較モデル（§10）が定義されている（推定順序：design 先行→ requirements 逆算、F-008 対処）
+- [x] **finding_id ／ judgment_id 発番ルール（§10.7）が定義されている**（CF-NNN ／ JD-NNN、A-002 対処）
 - [x] 3 役レビュー機構の軽量／本格使い分け（§11.2）が明示されている
-- [x] 評価記録の type 値と配置（§12）が確定している
+- [x] 評価記録の type 値と配置（§12）が確定している（target_commit ／ materialization_commit_hash の整合ルール、A-011 対処）
 - [x] 依存関係の連想配列構造（§13）と確定値が明示されている
-
-本設計の triad-review 段（次セッション 28 以降で実施予定）で扱う観点（Design 観点 10 件、計画書 §5.9.2 由来）：
-
-1. 設計と要件の対応 → §15 要件追跡表
-2. 設計の内部整合 → §5 アーキテクチャ／§14 他機能との接合面
-3. 設計の他機能との整合 → §14 他機能との接合面
-4. 設計の正本との整合 → §17 Boundary Context との整合確認
-5. 検証可能性 → §18 機械検査の具体手段／§19 テスト戦略
-6. 実装可能性 → §16 設計決定／§9 推定モデル／§10 比較モデル
-7. 段階的導入の妥当性 → §18.4 機械検査の段階的導入／§19.3 テスト実施タイミング
-8. 拡張余地と将来宿題 → §3 範囲外／§20.1 未解決論点
-9. テスト戦略 → §19 テスト戦略
-10. リスクと残余課題 → §20.1 未解決論点
+- [x] **遡及／波及所見が §20.1 で明示され、`pending-cross-feature-findings.md` に追記済み**

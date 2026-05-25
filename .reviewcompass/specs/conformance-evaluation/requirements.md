@@ -30,8 +30,8 @@
   - `runtime`：実装コードのレビュー実行記録を入力源として活用（依存：review、§5.10.5。本機能が runtime の出力を読む）
   - `evaluation`：評価結果との突き合わせ（依存：review、§5.10.5）
   - `workflow-management`：所定手続きの実行履歴と上流文書の整合確認（依存：review、§5.10.5）
-  - `analysis`：本機能の 12 criteria の検査結果を受け取り、4 出力先（特に監査用報告と報告書向け原データ）に取り込む（`analysis` Requirement 8 受入 5 由来）
-  - `self-improvement`：本機能の 12 criteria 検査結果を規律改善の入力として提供する（`self-improvement` が本機能の出力を読む方向。`self-improvement` は本機能の `depends_on` には含まれず、出力先として参照される関係。`self-improvement` requirements.md の Boundary Context 隣接期待行と整合）
+  - `analysis`：本機能の 6 criteria の検査結果を受け取り、4 出力先（特に監査用報告と報告書向け原データ）に取り込む（`analysis` Requirement 8 受入 5 由来）
+  - `self-improvement`：本機能の 6 criteria 検査結果を規律改善の入力として提供する（`self-improvement` が本機能の出力を読む方向。`self-improvement` は本機能の `depends_on` には含まれず、出力先として参照される関係。`self-improvement` requirements.md の Boundary Context 隣接期待行と整合）
 
 依存関係の特殊構造（`stages/feature-dependency.yaml`）：他機能は単純リスト構造（`depends_on: [list]`）だが、本機能は依存種別を区別する連想配列構造（`hard`／`review`）を持つ。`workflow-management` Requirement 8 受入 2 のスキーマ拡張で扱う。
 

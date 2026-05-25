@@ -202,6 +202,54 @@
   - 整合性検査タイミング：`materialized_at` 記録後に遵守検査再実行
 - **依存関係**：self-improvement 設計（本セッション 27 で対処済み）の §13.5 を正本提案とし、workflow-management 側がこれを受け入れる形で改訂
 
+### A-013：信頼度ラベル 3 値を foundation 語彙体系に追加要請（conformance-evaluation／design.triad-review、design レビュー波段で消化予定）
+
+- **検出**：セッション 27、conformance-evaluation／design.triad-review（2026-05-26）。敵対役（Opus 4.7）A-003 独立発見、判定役（Opus 4.7）が must-fix／波及と判定
+- **記録**：[.reviewcompass/specs/conformance-evaluation/reviews/2026-05-26-design-triad-review.md](specs/conformance-evaluation/reviews/2026-05-26-design-triad-review.md)
+- **重大度**：ERROR
+- **判定**：must-fix（判定役 Opus 4.7 が認定、波及）
+- **波及範囲**：
+  - **conformance-evaluation**：`.reviewcompass/specs/conformance-evaluation/design.md` §9.5 で信頼度ラベル 3 値（high／medium／low）を独自定義。foundation 改訂後に foundation 参照に書き換え（本セッション 27 で対処済み、Decision 11）
+  - **foundation**：`.reviewcompass/specs/foundation/requirements.md` Requirement 6 系（validator_status／evidence_class／adversarial_outcome 等の語彙正本管理）に「信頼度語彙（high／medium／low）」を追加する設計改訂が必要
+- **対処方針**：foundation Requirement 6 に新規受入として「信頼度語彙：high／medium／low の 3 値、推定タスク用」を追加する設計改訂。本機能側は foundation 改訂後に design.md §9.5 を foundation 参照に書き換え
+- **依存関係**：foundation 設計改訂を先、本機能側修正を後
+
+### A-014：evaluation との接合面で「評価結果との突き合わせ」の具体内容詳細（conformance-evaluation／design.triad-review、design レビュー波段で消化予定）
+
+- **検出**：セッション 27、conformance-evaluation／design.triad-review（2026-05-26）。主役（Sonnet 4.6）F-006、判定役が must-fix／波及と判定
+- **記録**：[.reviewcompass/specs/conformance-evaluation/reviews/2026-05-26-design-triad-review.md](specs/conformance-evaluation/reviews/2026-05-26-design-triad-review.md)
+- **重大度**：WARN
+- **判定**：must-fix（判定役 Opus 4.7 が認定、波及）
+- **波及範囲**：
+  - **conformance-evaluation**：`.reviewcompass/specs/conformance-evaluation/design.md` §14.3 で突き合わせ詳細を記述（本セッション 27 で対処済み）：突き合わせ対象＝経路別差分／severity 集計／`role_diff_report.json`（A-011 連動）、突き合わせ手順 3 ステップ
+  - **evaluation**：`.reviewcompass/specs/evaluation/design.md` 側に conformance-evaluation 向けの出力経路（経路別差分／severity 集計）の整合確認が必要
+- **対処方針**：本機能 §14.3 の詳細記述を本機能側合意点として、evaluation 設計改訂で受け入れる形に整合
+- **依存関係**：A-011（既存、evaluation の `roles/role_diff_report.json` 新設）と連動
+
+### A-015：analysis との接合面の機械可読出力スキーマ（conformance-evaluation／design.triad-review、design レビュー波段で消化予定）
+
+- **検出**：セッション 27、conformance-evaluation／design.triad-review（2026-05-26）。敵対役（Opus 4.7）A-008 独立発見、判定役が must-fix／波及と判定
+- **記録**：[.reviewcompass/specs/conformance-evaluation/reviews/2026-05-26-design-triad-review.md](specs/conformance-evaluation/reviews/2026-05-26-design-triad-review.md)
+- **重大度**：WARN
+- **判定**：must-fix（判定役 Opus 4.7 が認定、波及）
+- **波及範囲**：
+  - **conformance-evaluation**：`.reviewcompass/specs/conformance-evaluation/design.md` §14.5 で機械可読出力スキーマを詳細記述（本セッション 27 で対処済み）：必須フィールド 9 件（feature／axis／criterion_id／severity／finding_id／correspondence_type／discrepancy_description／implementation_code_refs／judgment_id）、任意フィールド 2 件（target_commit／materialization_commit_hash）
+  - **analysis**：`.reviewcompass/specs/analysis/design.md` 側で conformance-evaluation の評価記録スキーマを読む経路（接合面 §下流機能との接合面）の整合確認が必要
+- **対処方針**：本機能 §14.5 のスキーマ詳細を本機能側合意点として、analysis 設計改訂で受け入れる形に整合
+- **依存関係**：A-011（既存、analysis 側の `role_diff_report.json` 読み取り経路）と連動
+
+### A-016：target_commit と self-improvement の materialization_commit_hash の整合ルール（conformance-evaluation／design.triad-review、design レビュー波段で消化予定）
+
+- **検出**：セッション 27、conformance-evaluation／design.triad-review（2026-05-26）。敵対役（Opus 4.7）A-011 独立発見、判定役が must-fix／波及と判定
+- **記録**：[.reviewcompass/specs/conformance-evaluation/reviews/2026-05-26-design-triad-review.md](specs/conformance-evaluation/reviews/2026-05-26-design-triad-review.md)
+- **重大度**：WARN
+- **判定**：must-fix（判定役 Opus 4.7 が認定、波及）
+- **波及範囲**：
+  - **conformance-evaluation**：`.reviewcompass/specs/conformance-evaluation/design.md` §12.3 で整合ルールを詳細記述（本セッション 27 で対処済み）：target_commit ＝実装コードのコミット、materialization_commit_hash ＝規律変更のコミット、両者は独立、規律改訂の影響を伴う conformance check 時のみ `related_artifacts.self_improvement` フィールドで参照
+  - **self-improvement**：`.reviewcompass/specs/self-improvement/design.md` §13.5 と整合（self-improvement 側の materialization_commit_hash 定義と本機能の target_commit 定義が独立であることを相互参照で確認）
+- **対処方針**：本機能 §12.3 の整合ルールを本機能側合意点として、self-improvement 設計改訂で受け入れる形に整合
+- **依存関係**：A-012（既存、self-improvement と workflow-management の時系列契約）と連動
+
 ## 4. 対処済みの所見
 
 （本セッションでの新規作成時、未消化のみ）
