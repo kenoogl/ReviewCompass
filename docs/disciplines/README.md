@@ -1,6 +1,6 @@
 # 規律ファイル（disciplines）
 
-最終更新：2026-05-25（セッション 26 軽量移送：active 必読 12 件 ＋ 参照層 5 件、合計 17 件を memory から移管。その後 `no-unilateral-action` 規律 1 件を撤去し、合計 16 件＝active 必読 11 件＋参照層 5 件）
+最終更新：2026-05-25（セッション 26：active 必読 12 件 ＋ 参照層 5 件＝合計 17 件を memory から軽量移送 → `no-unilateral-action` 撤去で合計 16 件 → memory 側 `feedback_*.md` 16 件をシンボリックリンクに変更（repo 本体を指す構成、auto memory 機構が起動時に本体を load する設計、利用者明示承認「試してみる」）。次セッション開始時に検証）
 
 ## 配置と所有
 
