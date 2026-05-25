@@ -105,11 +105,14 @@ analysis/
 │   ├── claim_map.json              # 主張から証拠への対応図（共通）
 │   ├── evidence_register.json      # 証拠台帳と来歴情報（共通）
 │   ├── caveat_register.json        # 注意点と限界の台帳（共通）
+│   ├── conformance/
+│   │   └── conformance_intake.json # conformance-evaluation 取り込み正本（Req 8 受入 5、A-010 対処）
 │   ├── convergence/
 │   │   ├── role_diff.json          # 3 役の所見差分（Req 7 受入 2）
 │   │   └── mode_diff.json          # 3 経路の所見差分（Req 7 受入 3）
 │   └── manifests/
 │       ├── analysis_manifest.yaml  # 本機能の論理版と入力被覆
+│       ├── intake_failure_report.json # 取り込み失敗の構造化報告（要件 1 受入 4、F-009 対処）
 │       └── staleness_register.json # 陳腐化登録
 ├── destinations/
 │   ├── dashboard/
@@ -122,13 +125,13 @@ analysis/
 │   │   ├── invalidation_index.json # 無効化マーカー一覧
 │   │   ├── validator_failure_trace.json # 検証器失敗の追跡
 │   │   ├── discipline_violation_index.json # 規律違反件数集計
-│   │   ├── conformance_intake.json # conformance-evaluation 取り込み（Req 8 受入 5）
+│   │   ├── conformance_violations_detail.json # 取り込み正本の加工版（違反所見の詳細表示、A-010 対処）
 │   │   └── manifest.yaml
 │   └── reports/
 │       ├── claim_evidence_trace.json # 主張から証拠への完全な追跡表
 │       ├── treatment_comparison_report.json # 3 方式比較データ
 │       ├── mode_comparison_report.json # 3 経路比較データ
-│       ├── conformance_intake.json # conformance-evaluation 取り込み（Req 8 受入 5）
+│       ├── conformance_compliance_trend.json # 取り込み正本の加工版（規律遵守率の時系列、A-010 対処）
 │       └── manifest.yaml
 └── figures_tables/
     ├── table_source_bundles/
@@ -172,6 +175,12 @@ analysis/
 - `stale`：陳腐化標識（真偽、後述 §陳腐化伝播の継承）
 - `stale_reason`：陳腐化の理由（任意）
 - `stale_source_ref`：陳腐化の起点となった上流標識への参照（任意）
+
+**必須／任意の区分（A-006＋F-003 対処、2026-05-25 セッション 25）**：
+
+- 必須：`claim_id`、`claim_text`、`supporting_artifact_refs`、`maturity_label`、`stale`
+- 任意：`provenance_refs`（無ければ空配列）、`caveat_refs`（無ければ空配列）、`stale_reason`、`stale_source_ref`
+- 条件付き必須：`stale_reason` と `stale_source_ref` は `stale=true` のとき必須
 
 ### 2. 根拠成果物の入力源（Supporting Artifact Sources）
 
@@ -221,6 +230,15 @@ analysis/
 | `valid` かつ安定比較集合に属する | `mature` |
 | `valid` かつ安定比較集合に属さない | `preliminary` |
 
+**「安定比較集合」の判定基準**：`evaluation` 設計 §分類モデル §6 の `admission_register.json` における `eligible_for_standard_comparison`（標準比較対象として許容済み）フィールドが真の証拠を指す（F-005 対処、`evaluation` 側の正本フィールドを暗黙参照ではなく明示参照とする）。
+
+**自動付与規律（A-007 対処、2026-05-25 セッション 25）**：
+
+- `evidence_class=exploratory` の証拠は、`caveat_refs` に「予備的証拠」を示す注意点エントリへの参照を最低 1 件含める（自動付与）。要件 3 受入 5「予備または探索的な証拠を成熟証拠と同列に扱わない」を機械検証する根拠となる
+- `evidence_class=analysis_blocked` の証拠は標準母集団に入らない（除外報告に出すのみ）。`caveat_refs` 付与は任意
+- `evidence_class=invalid` の証拠は報告対象外（評価段で除外報告に出され、本機能は取り込まない）
+- `evidence_class=valid` の証拠は注意点を持つことも持たないことも許容（`caveat_refs` は任意）
+
 ### 2. 来歴情報フィールド（Provenance Fields）
 
 `shared/evidence_register.json` の各エントリは少なくとも次の項目を持つ。
@@ -238,6 +256,12 @@ analysis/
 - `stale`／`stale_reason`／`stale_source_ref`：陳腐化標識
 - `generated_at`：生成時刻
 
+**必須／任意の区分**：
+
+- 必須：`evidence_id`、`artifact_ref`、`source_analysis_manifest_ref`、`input_run_set_ref`、`evidence_class`、`review_mode`、`maturity_label`、`stale`、`generated_at`
+- 任意：`caveat_refs`（無ければ空配列、ただし `evidence_class=exploratory` のときは §1 自動付与規律により最低 1 件必須）、`supersedes`（無ければ空配列）、`superseded_by`（無ければ空配列）、`stale_reason`、`stale_source_ref`
+- 条件付き必須：`stale_reason` と `stale_source_ref` は `stale=true` のとき必須
+
 これにより、どの分析論理版とどの実行集合から報告断片が作られたかを追跡でき、`preliminary` から `mature` への遷移や、手動経路から実行時経路への置換系譜も辿れる（要件 5 受入 5、要件 6 受入 5）。
 
 ### 3. レビューモードの保持（Review-Mode in Reporting）
@@ -248,6 +272,10 @@ analysis/
 - 手動由来証拠と実行時由来証拠とサブエージェント由来証拠は分離して報告でき、混在を強制しない（受入 2）
 - 手動レビュー記録を、明示ラベルなしに実行時由来証拠として提示しない。サブエージェント由来も同様（受入 3）
 - 同一の報告集合に複数のレビューモードが混在する場合、機械的に検知して注意点を自動付与する（受入 4）。検知条件：当該報告集合が参照する `evidence_register` エントリの `review_mode` が 2 値以上
+  - **検知主体**：本機能の派生段（destination deriver）が報告集合（destinations/<出力先>/ 配下の成果物）の組み立て時に検知する
+  - **付与先**：`shared/caveat_register.json` に `limitation_type=mixed_review_mode` のエントリを自動追加（`narrative_note` は機械生成、例：「報告集合 X に手動由来 12 件、実行時由来 8 件、サブエージェント由来 3 件が混在」）
+  - **evaluation 側との粒度分担**：`evaluation` 側は実行レベルの混在を検知して注意点を付与、本機能は報告集合レベル（destination 単位）の混在を検知して注意点を付与する（粒度が異なるため両者を保持、要件 6 受入 4 と整合）
+  - **過渡的対処の位置付け**：本機構は過渡期・移行時・配置先テストケースで発生する混在状態への対処であり、恒久運用の中核仕様ではない（詳細は §注意点と限界のモデル §`mixed_review_mode` の位置付けを参照）
 - 初期の手動証拠を後の実行時由来証拠で置換した系譜を保持する（受入 5）。置換リンクは §2 で定義した `supersedes`／`superseded_by` を用いる
 
 ## 注意点と限界のモデル（Caveat and Limitation Model）
@@ -263,11 +291,26 @@ analysis/
 - `limitation_type`：限界の種別（後述）
 - `narrative_note`：注意点の構造化メモ（本文ではなく、執筆者が限界を取り落とさないための覚書）
 
-`limitation_type` の初版列挙は要件 3 受入 2 の 3 分類を正本値とする。
+**必須／任意の区分**：
+
+- 必須：`caveat_id`、`limitation_type`、`narrative_note`
+- 任意：`source_caveat_ref`（上流由来の場合のみ持つ、自動付与の `mixed_review_mode` は持たない）、`applies_to_claim_refs`（無ければ空配列）、`applies_to_artifact_refs`（無ければ空配列）
+- 条件付き必須：`applies_to_claim_refs` と `applies_to_artifact_refs` の少なくとも一方は非空（適用先のない注意点は許容しない）
+
+`limitation_type` の初版列挙は要件 3 受入 2 の 3 分類と、要件 6 受入 4 由来の自動検知種別 1 値を合わせた **4 値正本** とする（2026-05-25 セッション 25 で `mixed_review_mode` を追加、F-012＋A-009 対処）。
 
 - `invalid_data_exclusion`：無効データ除外に起因する限界
 - `partial_evidence`：部分的証拠に起因する限界
 - `methodological_limitation`：方法論上の限界
+- `mixed_review_mode`：混在レビューモード状態（過渡的対処、要件 6 受入 4 の自動検知由来）
+
+**`mixed_review_mode` の位置付け（過渡的対処）**：本値は「同一の報告集合に複数のレビューモードが混在する状態」を機械検知して注意点として自動付与するための種別である。混在は主に次の 3 つの場面で発生する：
+
+- 過渡期（フェーズ 1〜3）：実 LLM 経路（`runtime_mediated`）が未実装のため、手動 dogfooding とサブエージェント経由が混在
+- 段階的移行時：手動由来の証拠を後追でサブエージェント経由や実行時経由に置き換える期間（要件 6 受入 5 の置換系譜と連動）
+- 配置先テストケースとして手動 dogfooding を継続するとき：本番運用（`runtime_mediated`）と並べて集計する場合
+
+恒久運用の日常業務（フェーズ 4 完了後）では、報告集合内の証拠は基本的に単一のレビューモードで揃うため、`mixed_review_mode` の出現は稀となる見通し。本値の運用必要性はフェーズ 4 完了後に再評価する（§先送り論点に登録）。
 
 将来拡張は本節に追記する形で行う（語彙拡張時の改訂は本機能の `analysis_logic_version` の更新を伴う）。
 
@@ -286,6 +329,8 @@ analysis/
 - `caveat_refs`：適用される注意点への参照
 - `applicable_destinations`：本表が利用される出力先の集合（例：`[weekly, reports]`）
 
+**必須／任意の区分**：必須：`table_id`、`source_artifact_refs`、`field_projection`、`maturity_label`、`applicable_destinations`。任意：`caveat_refs`（無ければ空配列）
+
 ### 2. 図原データ束（Figure Source Bundle）
 
 `figures_tables/figure_source_bundles/<figure_id>.json` は少なくとも次の項目を持つ。
@@ -297,6 +342,8 @@ analysis/
 - `caveat_refs`：適用される注意点への参照
 - `applicable_destinations`：本図が利用される出力先の集合
 
+**必須／任意の区分**：必須：`figure_id`、`source_artifact_refs`、`plot_contract`、`maturity_label`、`applicable_destinations`。任意：`caveat_refs`（無ければ空配列）
+
 `plot_contract` は描画そのものではなく、どの切片・メトリクス・集約軸を用いるかの分析側定義とする。実際の描画工程は本機能の責務外（執筆者または可視化ツールが担う）。
 
 ## 報告断片モデル（Reporting Fragment Model）
@@ -306,12 +353,14 @@ analysis/
 各報告断片は少なくとも次の項目を持つ。
 
 - `fragment_id`：断片の安定識別子
-- `fragment_type`：断片の種別（例：`claim_summary`／`method_note`／`limitation_note`／`comparison_summary`／`trend_summary`）
+- `fragment_type`：断片の種別（初版 5 値正本：`claim_summary`（主張要約）／`method_note`（方法論ノート）／`limitation_note`（限界ノート）／`comparison_summary`（比較要約）／`trend_summary`（時系列要約）、将来拡張は本機能設計の改訂で対応、F-004 対処 2026-05-25 セッション 25）
 - `source_artifact_refs`：原成果物への参照
 - `maturity_label`：成熟度ラベル
 - `caveat_refs`：適用される注意点への参照
 - `text_stub`：構造化された断片本体（短文）
 - `applicable_destinations`：本断片が利用される出力先の集合
+
+**必須／任意の区分**：必須：`fragment_id`、`fragment_type`、`source_artifact_refs`、`maturity_label`、`text_stub`、`applicable_destinations`。任意：`caveat_refs`（無ければ空配列）
 
 複数の出典を束ねる断片（例：`comparison_summary`）の成熟度集約規則：
 
@@ -333,9 +382,18 @@ analysis/
 - `role`：役名（`primary`／`adversarial`／`judgment` のいずれか）
 - `findings_summary`：所見集計
   - `by_severity`：重大度別の件数（foundation 4 値）
-  - `by_final_label`：対応分布（foundation 3 値、`judgment` 役のみ）
+  - `by_final_label`：対応分布（foundation 3 値、`judgment` 役のとき必須、他役は不在または空）
+  - `by_counter_status`：反証状態 3 値の件数（foundation 正本、`adversarial` 役のとき必須、他役は不在または空）。A-003 対処として追加（2026-05-25 セッション 25）、敵対役の有効性測定（要件 2 受入 2、ReviewCompass の中核価値命題）の可視化根拠
 - `target`：対象識別子（レビュー対象成果物の識別子）
 - `evidence_refs`：根拠とした証拠台帳エントリへの参照
+
+**注記（A-011 関連、波及対処）**：`role_diff.json` の出典は、本セッションの起草時点では「計画書 §5.9.6 の `findings_by_method` 由来」と書かれていたが、A-001／F-001 で `evaluation` 設計の `analysis` 向け接合面に該当する集約成果物が存在しない波及問題が指摘された。design レビュー波段で `evaluation` 設計に 3 役差分集約成果物（仮称：`experiments/analysis/roles/role_diff_report.json`）を新設し、本機能の出典記述を当該ファイルへの参照に書き換える（A-011 として `pending-cross-feature-findings.md` に記録、本セッション内では本書 §可視化モデルの出典記述は暫定）。
+
+**必須／任意の区分**：
+
+- 必須：`feature`、`role`、`findings_summary.by_severity`、`target`
+- 条件付き必須：`findings_summary.by_final_label` は `role=judgment` のとき必須、`findings_summary.by_counter_status` は `role=adversarial` のとき必須
+- 任意：`evidence_refs`（無ければ空配列）
 
 ### 2. 3 経路の所見差分（Mode Diff）
 
@@ -348,6 +406,8 @@ analysis/
 - `findings_summary`：所見集計（重大度別件数）
 - `target`：対象識別子
 - `evidence_refs`：根拠とした証拠台帳エントリへの参照
+
+**必須／任意の区分**：必須：`feature`、`review_mode`、`findings_summary`、`target`。任意：`evidence_refs`（無ければ空配列）
 
 ### 3. 派生成果物としての位置付け
 
@@ -368,6 +428,9 @@ analysis/
 - `included_caveat_refs`：派生に用いた注意点台帳エントリへの参照
 - `granularity_profile`：情報粒度の指定（例：`run_level`／`finding_level`／`aggregate_only` 等の組み合わせ）
 - `summary_level`：要約レベル（例：`raw`／`weekly_rollup`／`audit_index`／`full_traceability`）
+- `review_mode_mixed`：当該出力先内のレビューモード混在の真偽（混在検知時は真、§証拠台帳モデル §3 受入 4 由来）
+
+**必須／任意の区分**：必須：上記すべて。任意項目はなし。
 
 派生方針が変わった場合は `derivation_contract_version` を更新し、過去の派生成果物は `superseded` として保持する。
 
@@ -395,7 +458,7 @@ analysis/
 - `invalidation_index.json`：無効化マーカー一覧（`evaluation` の `caveats/caveat_register.json` および foundation 由来の無効化標識を集約）
 - `validator_failure_trace.json`：検証器失敗の追跡（`evaluation` の `validator_status=failed` 集計）
 - `discipline_violation_index.json`：規律違反件数集計（`conformance-evaluation` の検査結果由来、要件 8 受入 5）
-- `conformance_intake.json`：`conformance-evaluation` 取り込み成果物（後述 §`conformance-evaluation` メトリクス取り込みモデル）
+- `conformance_violations_detail.json`：`shared/conformance/conformance_intake.json`（正本）の加工版（違反所見の詳細表示、A-010 対処、後述 §`conformance-evaluation` メトリクス取り込みモデル §3）
 
 ### 5. 報告書向け原データ（reports）
 
@@ -404,7 +467,7 @@ analysis/
 - `claim_evidence_trace.json`：主張から証拠への完全な追跡表（`shared/claim_map.json` を出力先向けに加工）
 - `treatment_comparison_report.json`：3 方式比較データ（`evaluation` の `comparisons/treatment_comparisons.json` を加工）
 - `mode_comparison_report.json`：3 経路比較データ（`evaluation` の `modes/mode_diff_report.json` を加工）
-- `conformance_intake.json`：`conformance-evaluation` 取り込み成果物
+- `conformance_compliance_trend.json`：`shared/conformance/conformance_intake.json`（正本）の加工版（規律遵守率の時系列、A-010 対処）
 
 ## `conformance-evaluation` メトリクス取り込みモデル（Conformance Intake Model）
 
@@ -418,9 +481,11 @@ analysis/
 - 本機能は判定基準を変更しない、判定結果に上書きを加えない
 - 取り込みは `analysis ← conformance-evaluation`（読み）の一方向
 
-### 2. 取り込み成果物の構造
+### 2. 取り込み成果物の構造（正本配置と加工版、A-010 対処 2026-05-25 セッション 25）
 
-`destinations/audit/conformance_intake.json` および `destinations/reports/conformance_intake.json` は少なくとも次の項目を持つ。
+取り込みの正本配置は `shared/conformance/conformance_intake.json` の **単一ファイル** とする。`destinations/<出力先>/` 配下には正本の加工版を別名で配置する（判断 5 共通／派生 2 層構造との整合）。
+
+正本：`shared/conformance/conformance_intake.json` は少なくとも次の項目を持つ。
 
 - `conformance_run_ref`：`conformance-evaluation` の検査実行への参照
 - `assessment_summary`：基準別（12 基準）の合否集計
@@ -429,10 +494,14 @@ analysis/
 - `included_disciplines`：取り込み対象とした規律ファイルの集合
 - `intake_at`：取り込み時刻
 
-### 3. 出力先ごとの加工差
+**必須／任意の区分**：必須：上記すべて。任意項目はなし。
 
-- **監査用報告**：違反所見と無効化標識を集約し、監査担当者が個別の違反を追跡できる粒度で保持
-- **報告書向け原データ**：規律遵守率の時系列と基準別合否を保持し、報告書執筆時に集計値として利用できる粒度で保持
+### 3. 出力先ごとの加工版（別名で配置、A-010 対処）
+
+- **監査用報告**：`destinations/audit/conformance_violations_detail.json`。正本の `violation_findings` を中心に、無効化標識との関連付けを含めて監査担当者が個別の違反を追跡できる粒度で保持
+- **報告書向け原データ**：`destinations/reports/conformance_compliance_trend.json`。正本の `compliance_rate` と `assessment_summary` を中心に、時系列推移と基準別合否を報告書執筆時に集計値として利用できる粒度で保持
+
+両加工版は正本の `conformance_run_ref` を参照することで、同一の取り込み結果から派生したことを機械的に確認できる。これにより、両加工版の整合保証（同じ取り込み結果に基づく）が成立する。
 
 ## 分離規則（Separation Rules）
 
@@ -459,6 +528,41 @@ analysis/
 ### 5. 報告の都合の従属（Reporting Subordinate to Reproducibility、要件 4 受入 4）
 
 報告の都合（書式・図表配置・要約粒度）は、再現性と有効性に従属する。書式上の都合のみで `foundation` または `runtime` のスキーマ変更を強制しない（要件 2 受入 5 と整合）。
+
+## 取り込み失敗のモデル（Intake Failure Model）
+
+要件 1 受入 4 は「`evaluation` 出力が存在しない場合は生のログにフォールバックせず、`evaluation` 処理の実行を要求する」と求める。本機能は取り込み段（intake reader）で `evaluation` 成果物および `conformance-evaluation` 成果物の欠落・読み込み失敗・陳腐化を検知し、構造化報告として `shared/manifests/intake_failure_report.json` に記録する。本機構は `evaluation` 設計の `classifications/insufficient_metadata_report.json` と対称形の役割を持つ（F-009 対処、2026-05-25 セッション 25）。
+
+### 1. 取り込み失敗報告の構造
+
+`shared/manifests/intake_failure_report.json` の各エントリは少なくとも次の項目を持つ。
+
+- `failure_id`：失敗事象の安定識別子
+- `run_id`：失敗の対象となった `evaluation` 実行の識別子
+- `missing_artifact_refs`：欠落していた成果物への参照の配列（後述 §1.3 で定義する 4 値の失敗理由種別と紐付く）
+- `intake_failure_reason`：失敗理由の列挙値
+  - `upstream_evaluation_missing`：上流の `evaluation` 成果物が存在しない
+  - `upstream_evaluation_unreadable`：上流成果物が形式不適合で読めない
+  - `upstream_evaluation_stale`：上流成果物が陳腐化している
+  - `conformance_evaluation_missing`：`conformance-evaluation` 成果物が存在しない
+- `affected_destinations`：影響を受ける派生出力先の集合（`dashboard`／`weekly`／`audit`／`reports` の部分集合）
+- `detected_at`：検出時刻
+- `recommended_action`：推奨対応（自由テキスト、例：「evaluation 処理の実行を要求」）
+
+**必須／任意の区分**：必須：`failure_id`、`intake_failure_reason`、`affected_destinations`、`detected_at`。任意：`run_id`（取り込み対象実行が特定できる場合に持つ、`upstream_evaluation_missing` のときは不在もありうる）、`missing_artifact_refs`（無ければ空配列）、`recommended_action`
+
+### 2. 派生段との連動
+
+派生段は `intake_failure_report.json` を読み、`affected_destinations` に含まれる出力先について次のいずれかを判断する。
+
+- 派生を遅らせる（再取り込みを待つ）
+- 欠落マーク付きで派生する（部分的成果物として生成、利用者に明示）
+
+具体的な判断ロジックは実装に委ねる（本設計は信号の表現契約のみを固定）。
+
+### 3. 通知と再実行
+
+失敗事象の利用者通知は補助層 B（人間への通知機構、計画書 §5.13）に委ねる。自動再実行は本機能の責務外。
 
 ## 陳腐化伝播の継承（Staleness Propagation Inheritance）
 
@@ -489,9 +593,16 @@ analysis/
 - `derived_artifact_ref`：再生成対象の派生成果物への参照
 - `stale_source_ref`：起点となった上流標識への参照
 - `detected_at`：陳腐化検出時刻
-- `regeneration_status`：再生成状態（`pending`／`in_progress`／`completed`）
+- `regeneration_status`：再生成状態の 4 値（`pending`／`in_progress`／`completed`／`failed`、F-010 対処）
+  - `pending`：再生成待機
+  - `in_progress`：再生成処理が進行中
+  - `completed`：再生成完了
+  - `failed`：再生成処理を開始したがエラーで中断（永遠の `in_progress` 滞留を防ぐため 2026-05-25 セッション 25 で追加）
+- `regeneration_failure_reason`：再生成失敗の理由（`regeneration_status=failed` のとき任意、自由テキスト）
 
-再生成の自動起動の主体・時機は実装に委ねる（本設計は信号の表現契約のみを固定する）。
+**必須／任意の区分**：必須：`derived_artifact_ref`、`stale_source_ref`、`detected_at`、`regeneration_status`。任意：`regeneration_failure_reason`（`regeneration_status=failed` のとき任意、付与推奨）
+
+再生成の自動起動の主体・時機は実装に委ねる（本設計は信号の表現契約のみを固定する）。`failed` からの遷移（再実行の選択など）も実装に委ねる。
 
 ## 上流機能との接合面（Interfaces to Upstream Features）
 
@@ -513,9 +624,13 @@ analysis/
 
 `conformance-evaluation` の検査結果を取り込む（一方向、Req 8 受入 5）。本機能は判定そのものを行わず、検査結果のみを読む。具体の取り込み成果物パスは `conformance-evaluation` の設計確定後に確定する（暫定：`experiments/conformance/<検査結果>.json`）。
 
+**上流側設計への期待**：本機能が読む検査結果は `conformance_run_ref`／`assessment_summary`／`violation_findings`／`compliance_rate` の項目を最低限備えることを期待する。具体の成果物パスと項目は `conformance-evaluation` 設計で確定する。
+
 ### `workflow-management` との接合面
 
 `workflow-management` から所定手続きの実行履歴に対する可視化要求を受ける（要件 introduction 隣接期待）。本機能は所定手続きの状態を運用ダッシュボードに反映するため、`workflow-management` が公開する所定手続きの実行履歴を読む。
+
+**上流側設計への期待**：`workflow-management` は所定手続きの実行履歴を本機能に公開する義務を持つ（運用ダッシュボード派生のため、要件 8 受入 1）。具体の公開先パスと項目は `workflow-management` 設計で確定する。
 
 ### `runtime` との接合面
 
@@ -583,9 +698,9 @@ analysis/
 
 ## 下流仕様への影響（Impact on Downstream Specs）
 
-- `workflow-management`：所定手続きの実行履歴を本機能に公開する義務を持つ（運用ダッシュボード派生のため）。具体は `workflow-management` 設計で確定する
-- `conformance-evaluation`：本機能が読む検査結果の成果物パスと構造を `conformance-evaluation` 設計で確定する必要がある。本機能は `conformance_run_ref`／`assessment_summary`／`violation_findings`／`compliance_rate` の項目を最低限期待する
-- `self-improvement`：本機能の証拠台帳エントリの `supersedes`／`superseded_by` を改善提案の追跡に利用できる
+- `self-improvement`：本機能の証拠台帳エントリの `supersedes`／`superseded_by` を改善提案の追跡に利用できる。本機能の派生成果物（特に運用ダッシュボード・週次レポート）を改善提案の根拠として参照できる
+
+なお、`workflow-management` および `conformance-evaluation` への期待事項は、本機能が読み手として上流側に求める内容であるため §上流機能との接合面に統合した（節構造整理、A-011 対処、2026-05-25 セッション 25）。
 
 ## テスト戦略（Test Strategy）
 
@@ -621,7 +736,7 @@ analysis/
 
 ### 5. `conformance-evaluation` 取り込みの整合（要件 8 受入 5）
 
-`destinations/audit/conformance_intake.json` および `destinations/reports/conformance_intake.json` が `conformance_run_ref`／`assessment_summary`／`violation_findings`／`compliance_rate` を備え、本機能側で判定基準を変更していないことを検証する。
+`shared/conformance/conformance_intake.json`（正本）が `conformance_run_ref`／`assessment_summary`／`violation_findings`／`compliance_rate` を備え、本機能側で判定基準を変更していないことを検証する。出力先別加工版（`destinations/audit/conformance_violations_detail.json`、`destinations/reports/conformance_compliance_trend.json`）はそれぞれ正本の `conformance_run_ref` を参照し、両加工版が同一の取り込み結果から派生したことを機械的に確認する（A-010 対処）。
 
 ## 先送り論点（Open Issues for Design Alignment Gate）
 
@@ -631,8 +746,10 @@ analysis/
 - 図表束のフィールド命名を `evaluation` の比較成果物とどこまで揃えるか
 - 採用済み改善履歴を方法論ノートに含める範囲（`self-improvement` 設計との連動）
 - `conformance-evaluation` の成果物パスと項目の最終確定（`conformance-evaluation` 設計確定後）
+- `workflow-management` の所定手続き実行履歴の取り込み元パスと項目の最終確定（`workflow-management` 設計確定後、A-002 対処 2026-05-25 セッション 25）
 - 運用ダッシュボード派生の更新頻度と再生成方針（実装段で確定）
 - 規律遵守率の集計粒度（基準別・全体・時系列）
+- `limitation_type=mixed_review_mode`（過渡的対処）の運用必要性の再評価（フェーズ 4 完了後、3 経路の恒久運用が定着した時点で、本値が日常業務で出現しない場合は廃止または条件付き運用への変更を検討、F-012＋A-009 対処 2026-05-25 セッション 25）
 
 ## 完成判定基準（Completion Criteria）
 

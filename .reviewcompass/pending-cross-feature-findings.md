@@ -162,6 +162,29 @@
   - (イ) 軽量に進める（approval 前の最終調整と同じ精神）→ **採用**（利用者明示承認 2026-05-24 セッション 23）
 - **依存関係**：計画書改訂と requirements.md 改訂は本セッション内で完了、design 段着手前の必須対処事項として TODO §3 セクション C に登録、本対処完了により C は「完了済み」に更新
 
+### A-011：analysis／design の 3 役差分集約ファイルが evaluation 接合面に存在しない
+
+- **検出**：セッション 25、analysis／design.triad-review（2026-05-25）。主役（Sonnet 4.6）F-001 と敵対役（Opus 4.7）A-001 の連動所見、判定役（Opus 4.7）が must-fix／波及と判定
+- **記録**：[.reviewcompass/specs/analysis/reviews/2026-05-25-design-triad-review.md](specs/analysis/reviews/2026-05-25-design-triad-review.md)（本セッション後段で新設予定）
+- **重大度**：ERROR（敵対役独立発見 A-001 と判定役判定）
+- **判定**：must-fix（判定役 Opus 4.7 が認定）
+- **波及範囲**：
+  - **analysis**：`.reviewcompass/specs/analysis/design.md` §レビュー収束過程の可視化モデル §1（行 326〜338）の `role_diff.json` の出典記述「計画書 §5.9.6 の `findings_by_method` 由来」が、`evaluation` の analysis 向け接合面 5 ファイル（`comparisons/treatment_comparisons.json`／`phase_comparisons.json`／`classifications/exclusion_report.json`／`caveats/caveat_register.json`／`modes/mode_diff_report.json`）に該当するファイルを持たない
+  - **evaluation**：`.reviewcompass/specs/evaluation/design.md` §`analysis` への接合面（行 597〜607）に 3 役（主役・敵対役・判定役）の差分集約成果物が未明示。§分析成果物配置（行 97〜134）にも該当ディレクトリ・ファイルが未配置
+- **不整合内容**：analysis 設計の判断 7（`evaluation` 派生）と分離規則 1（逆流禁止）に従えば、3 役差分は `evaluation` を経由して読むべきだが、対応する `evaluation` 成果物が存在せず、レビュー記録フロントマターからの直接読み込みになる経路が暗黙に発生する
+- **対処方針**：候補案 A（利用者明示承認 2026-05-25 セッション 25、「(ア)」）。`evaluation` 設計に 3 役差分の集約成果物を新設する：
+  - **evaluation 設計改訂**：
+    - §分析成果物配置に `roles/` ディレクトリと `roles/role_diff_report.json` を追加（`modes/mode_diff_report.json` と対称配置）
+    - §`analysis` への接合面に `roles/role_diff_report.json` を追加（既存 5 ファイル → 6 ファイル）
+    - §レビューモード差分報告と同様の形式で「3 役所見差分報告」節を新設、最低限の構造化形式項目（`feature`／`role`／`findings_summary`（`by_severity` ＋ `by_final_label` ＋ `by_counter_status`、ただし役による条件付き必須）／`target`）を定義
+    - §要件追跡表または §下流仕様への影響を更新
+  - **analysis 設計改訂**：
+    - §レビュー収束過程の可視化モデル §1 の出典記述を「`experiments/analysis/roles/role_diff_report.json` 由来」に書き換え
+    - §上流機能との接合面（`evaluation` との接合面）の読み取りファイル一覧に `roles/role_diff_report.json` を追加
+- **処理段**：design レビュー波段（残り 3 機能（workflow-management／self-improvement／conformance-evaluation）の drafting＋triad-review 完了後）で消化。本セッション内では追記のみで、analysis／design.md 本体は修正せず
+- **依存関係**：`evaluation` 設計を先に改訂し、`analysis` 設計を後で修正する依存順
+- **連動所見**：本所見と関連して、A-003（counter_status 集計の追加）も `role_diff_report.json` の構造に含めるべき内容（`findings_summary.by_counter_status`）であり、設計改訂時に同時に反映する
+
 ## 4. 対処済みの所見
 
 （本セッションでの新規作成時、未消化のみ）
