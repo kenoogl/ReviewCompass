@@ -18,4 +18,4 @@ triad-review 段で判定役が must-fix と判定した所見の対処は、起
 - 一括処理（複数論点を一気に決着）を避け、各論点を個別に深掘りする
 - 候補案は必ず複数提示、代替案との比較を欠かない
 
-関連：[[no-unilateral-action]]（勝手に走らない）、[[plain-japanese]]（平易な日本語）、[[concise-complete-report]]（簡潔・もれなく報告）
+関連：[[plain-japanese]]（平易な日本語）、[[concise-complete-report]]（簡潔・もれなく報告）

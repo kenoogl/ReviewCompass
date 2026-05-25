@@ -1,6 +1,6 @@
 # 規律ファイル（disciplines）
 
-最終更新：2026-05-25（セッション 26 軽量移送：active 必読 12 件 ＋ 参照層 5 件、合計 17 件を memory から移管）
+最終更新：2026-05-25（セッション 26 軽量移送：active 必読 12 件 ＋ 参照層 5 件、合計 17 件を memory から移管。その後 `no-unilateral-action` 規律 1 件を撤去し、合計 16 件＝active 必読 11 件＋参照層 5 件）
 
 ## 配置と所有
 
@@ -10,7 +10,7 @@
 
 ## 内部リンク記法
 
-各規律ファイル本文に `[[link-name]]` 形式の内部参照（例：`[[approval-operation]]`、`[[no-unilateral-action]]`）が登場する。これは memory 機構の慣習を引き継いだ記法で、本ディレクトリ内では次の規則で解決する：
+各規律ファイル本文に `[[link-name]]` 形式の内部参照（例：`[[approval-operation]]`、`[[workflow-precheck-invocation]]`）が登場する。これは memory 機構の慣習を引き継いだ記法で、本ディレクトリ内では次の規則で解決する：
 
 - **`[[name]]`** → `docs/disciplines/discipline_<name>.md`（同ディレクトリ内のファイル）
 - 例：`[[approval-operation]]` → `discipline_approval_operation.md`
@@ -20,14 +20,13 @@
 
 ## 規律ファイル一覧（17 件）
 
-### active 必読（12 件、セッション開始時 load 対象）
+### active 必読（11 件、セッション開始時 load 対象）
 
 | ファイル | 概要 |
 |---|---|
 | [discipline_must_fix_discussion_obligation.md](discipline_must_fix_discussion_obligation.md) | triad-review の must-fix 所見は利用者と必ず議論、独自判断で仕様修正禁止 |
 | [discipline_intent_conformance_is_the_acceptance_gate.md](discipline_intent_conformance_is_the_acceptance_gate.md) | 受け入れ基準は「実装が意図どおり機能＝承認仕様に適合」か（フルスクラッチは手法でゲートでない） |
 | [discipline_standing_directives_are_hard_constraints.md](discipline_standing_directives_are_hard_constraints.md) | フルスクラッチ等の恒常指示は既定でなく硬い制約、approach 変更は自律確定せずエスカレーション |
-| [discipline_no_unilateral_action.md](discipline_no_unilateral_action.md) | approach 選択・session 継続終結・不可逆操作・大きな自律実行の前は止めて確認 |
 | [discipline_workflow_precheck_invocation.md](discipline_workflow_precheck_invocation.md) | 不可逆操作の直前に tools/check-workflow-action.py を呼び verdict／reasons を応答に明示 |
 | [discipline_approval_operation.md](discipline_approval_operation.md) | 不可逆操作は利用者明示承認必須、明示的肯定発言のみ承認、確定記述には承認出典を併記 |
 | [discipline_facts_vs_interpretation.md](discipline_facts_vs_interpretation.md) | 達成基準を事前宣言、編集後は機械的照合、事実と解釈を別個に示し出典に辿れる形に |

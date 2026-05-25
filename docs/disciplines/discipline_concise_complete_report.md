@@ -47,6 +47,5 @@ metadata:
 ## 既存規律との関係
 
 - [[facts-vs-interpretation]] と相互補完：事前に達成基準を宣言し、編集後に grep／Read で照合し、その結果を本規律に従って報告する（事実と解釈を分けて報告）
-- [[no-unilateral-action]] と相互補完：approach 変更時は事前確認（前者）、変更後の実施内容は本規律で報告
 
-関連：[[facts-vs-interpretation]]（達成基準の事前宣言と機械的照合 ＋ 事実と解釈の分離）、[[no-unilateral-action]]（approach 変更の事前確認）
+関連：[[facts-vs-interpretation]]（達成基準の事前宣言と機械的照合 ＋ 事実と解釈の分離）
