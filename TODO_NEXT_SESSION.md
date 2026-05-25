@@ -95,8 +95,8 @@ ReviewCompass の運営ガイドラインの必読フローに従う：
   - evaluation（3/7）：同上（セッション 25）
   - analysis（4/7）：同上（セッション 25 末、コミット `7b57072`）
   - workflow-management（5/7）：drafting／triad-review が true、review-wave／alignment／approval は false（セッション 26、コミット `881761d`／`ffd8adc`）
-  - self-improvement（6/7）：drafting／triad-review が true、review-wave／alignment／approval は false（**本セッション 27**、コミット `dd8eba9`＋本セッション末コミット）
-  - conformance-evaluation（7/7）：すべて false（未着手）
+  - self-improvement（6/7）：drafting／triad-review が true、review-wave／alignment／approval は false（セッション 27、コミット `dd8eba9`／`2177118`）
+  - conformance-evaluation（7/7）：drafting が true、triad-review／review-wave／alignment／approval は false（**本セッション 27 末**、本セッション末コミット）
 - **tasks／implementation 段**：すべて false
 
 機能横断波及所見：A-001〜A-010 の 10 件は対処済み、**A-011／A-012 が未消化**（A-011：analysis／evaluation 接合面の `roles/role_diff_report.json` 新設、design レビュー波段で消化予定。A-012：self-improvement と workflow-management の時系列契約・完了通知形式、本セッション 27 で追記、design レビュー波段で workflow-management 設計改訂と合わせて消化予定）。詳細は `.reviewcompass/pending-cross-feature-findings.md` を参照。
@@ -105,15 +105,15 @@ ReviewCompass の運営ガイドラインの必読フローに従う：
 
 ## 3. 次の作業候補（優先順位順）
 
-**現在の主要作業：B. 設計フェーズ継続（依存マップ順 7/7 conformance-evaluation／design.drafting 着手。全 7 機能の design 段完了後に review-wave／alignment／approval へ）**
+**現在の主要作業：B. 設計フェーズ継続（self-improvement／conformance-evaluation の triad-review、その後 design.review-wave）**
 
 
-### B. 設計フェーズ継続（conformance-evaluation／design.drafting 着手、その後 review-wave）
+### B. 設計フェーズ継続（triad-review 残 2 機能、その後 review-wave）
 
-セッション 27 末時点で foundation／runtime／evaluation／analysis／workflow-management／self-improvement の 6 機能で design.drafting＋triad-review が完了。残り 1 機能：
+セッション 27 末時点で全 7 機能で design.drafting が完了：foundation／runtime／evaluation／analysis／workflow-management／self-improvement／conformance-evaluation。triad-review 完了は 6/7（self-improvement まで）、残り 1 機能：
 
-1. **conformance-evaluation（7/7）／design.drafting → triad-review**：次セッション開始時の主要作業
-2. **全 7 機能の design 段 review-wave**：7/7 の drafting＋triad-review 完了後に開始（A-011／A-012 を含む波及所見の集約消化）
+1. **conformance-evaluation（7/7）／design.triad-review**：次セッション開始時の主要作業（subagent_mediated 方式、3 役配置は実験(エ)）
+2. **全 7 機能の design 段 review-wave**：7/7 の triad-review 完了後に開始（A-011／A-012 を含む波及所見の集約消化）
 3. **design.alignment**（LLM 自動判定）→ **design.approval**（利用者明示承認）
 4. **章番号体系の整合確認**：他機能（foundation／runtime／evaluation／analysis／workflow-management）の design.md でも本セッション 27 と同様の章番号体系の不整合が存在する可能性があり、design.alignment 段で確認が必要（利用者明示承認「他機能でも生じていたはずなので後ほど対処」2026-05-26 セッション 27）
 
@@ -138,6 +138,8 @@ triad-review 段の 3 役配置（実験(エ)継続予定、本セッション 2
 ## 4. 直近の確定事項（2026-05-24 セッション 22〜23、2026-05-25 セッション 24〜26、2026-05-26 セッション 27）
 
 利用者明示承認のあった項目を新しい順に記録：
+
+- **conformance-evaluation／design.drafting 完了（セッション 27 末、2026-05-26、依存マップ順 7/7、本セッション末コミット）**：design.md 起草 930 行、全 20 章、Req 1〜8 全対応。計画書 §5.10（artifact-to-spec conformance evaluation、2026-05-24 セッション 23 改訂後）を実装可能な形に落とし込み、本筋（照合チェックモード）と傍流（文書生成モード、人協働）を明示的に分離、6 criteria（requirements 3 ＋ design 3）の検査構造を確定。主要な設計決定 8 件（本筋／傍流分離／二段階方式／feature-partitioning 例外／2 軸 6 criteria／3 役レビュー両段階適用／連想配列構造／モード切替明示／conformance ディレクトリ分離）。機能横断所見 A-005／A-008／A-009／A-010 はすべて要件段で対処済み。triad-review は次セッション 28 以降で実施予定。**全 7 機能の design.drafting 完了**。利用者明示承認「次へ」「はい」「はい」（2026-05-26 セッション 27）
 
 - **self-improvement／design 段完了（セッション 27、2026-05-26、依存マップ順 6/7、コミット `dd8eba9`＋本セッション末コミット）**：design.drafting 起草 643 行＋ triad-review 完了で 942 行（17 章 → 20 章拡張）。3 役配置は実験(エ)。所見 32 件（主役 19＋敵対役独立 13）、must-fix 13 件を 8 グループに分けて深掘り議論し機能内対処 10 件＋遡及 1 件（A-001、requirements.md 軽量 reopen）＋波及 2 件（A-003／F-008、pending-cross-feature-findings.md に A-012 として追記）を反映。主要な対処：新章 §7 signal_extraction／§17 機械検査の具体手段（MV-1〜MV-4）／§18 テスト戦略を新設、§8.4 YAML スキーマに source_discipline_paths 等を追加、§9.3 パイロット運用閾値を 90% に確定、§13.5 workflow-management との時系列契約を詳細記述、§14 要件追跡表を受入基準単位に詳細化。利用者明示承認多数（「案 1」「OK」「承認」「案 2」「候補 1」×8／「候補 1、90%」「案 A」、2026-05-26 セッション 27）
 
