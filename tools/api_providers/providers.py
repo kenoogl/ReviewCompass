@@ -141,9 +141,38 @@ class OpenAIProvider(ProviderBase):
     return response_json["choices"][0]["message"]["content"]
 
 
+class GeminiProvider(ProviderBase):
+  """Google Gemini API プロバイダー（POST /v1beta/models/{model}:generateContent）。
+
+  エンドポイントは model 名を URL パスに含む形式（Anthropic／OpenAI と異なる）。
+  認証は x-goog-api-key ヘッダーを使う。
+  セッション 31（2026-05-27）の計画変更「7 モデル比較実験への拡大」で追加。
+  """
+
+  ENV_VAR_NAME = "GEMINI_API_KEY"
+  URL_TEMPLATE = "https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent"
+
+  def _build_request(self, prompt: str) -> Tuple[str, dict, dict]:
+    url = self.URL_TEMPLATE.format(model=self.model)
+    headers = {
+      "x-goog-api-key": self.api_key,
+      "content-type": "application/json",
+    }
+    body = {
+      "contents": [
+        {"parts": [{"text": prompt}]}
+      ]
+    }
+    return url, headers, body
+
+  def _extract_text(self, response_json: dict) -> str:
+    return response_json["candidates"][0]["content"]["parts"][0]["text"]
+
+
 _PROVIDER_REGISTRY = {
   "anthropic-api": AnthropicProvider,
   "openai-api": OpenAIProvider,
+  "gemini-api": GeminiProvider,
 }
 
 
