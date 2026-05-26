@@ -121,6 +121,8 @@ ReviewCompass の運営ガイドラインの必読フローに従う：
 
 - **API 設定ファイルの再オープン（セッション 29、2026-05-26）**：旧確定「複数 experiments 方式（3 パターン：baseline_claude／claude_vs_openai_adversarial／all_openai）」を撤回し、新確定として **`config/api-settings.yaml` を新設**（`reviewcompass.yaml` から参照、恒久の API 設定ファイル）。default 1 設定を本体とし、パイロット段階のみ `variants` 節で複数バリエーションを併設、起動時に `--variant <名前>` で切替。デプロイ時は variants 節を削るだけで運用設定に移行できる。再オープン理由：利用者指摘「yaml ファイルは API の設定を保存するところ。今回は実験だが、デプロイしたときには実験か？」（experiments の恒久名称が運用後に意味と合わない）。維持部分：オーケストレーター方式、役単位の経路選択、Python スクリプト、プロバイダー抽象層（モデル名は文字列指定）、モデル能力配分規律。利用者明示承認「(I) 再オープン可、別ファイル」「いずれも OK」（セッション 29）。計画書 §5.9.7.1 末尾に正本記述を追記
 
+- **Python スクリプト `tools/api-providers/run_role.py` の入出力契約確定（セッション 29、2026-05-26）**：1 役 1 回実行、標準出力に YAML、書き込みは私（ファイル遮断規律 §5.9.1）。引数は長オプション 6 種（--role primary／adversarial／judgment、--variant、--target、--phase、--criteria、--prior-finding 複数可）。出力のキー名・enum 値は英語、自由記述は対象文書の言語、コメントは日本語可。タイムアウト・リトライは `config/api-settings.yaml` の defaults で既定、variants で上書き可。エラー時は標準エラーに理由を出して非ゼロ終了、私が判断。利用者明示承認「基本提案でよいが、タイムアウトとリトライ数は設定可能なように、出力はコメント以外は英語」「はい」（セッション 29）。計画書 §5.9.7.1 末尾に正本記述を追記
+
 - **design 段完全終了（セッション 28、2026-05-26、コミット 8cbb5b9／7cb8d6d／6b95a10）**：全 7 機能で drafting／triad-review／review-wave／alignment／approval すべて true。design.review-wave 全 16 件対処済み、章番号体系は機能内整合 OK／機能横断統一は案 C で許容、接合面整合 A-011〜A-016 全 6 件 OK、軽量一括承認（案 b）で approval 完了。利用者明示承認「案 X」「案 C」「案 b」「はい」x 多数（2026-05-26 セッション 28）。**次フェーズは tasks 段**
 
 - **design.review-wave 全 16 件対処完了（セッション 28、2026-05-26、コミット e24d86e／c15ef5b／a2a65c0／04ab855／79ec3d9／92ff60a）**：3 グループ段階消化（① A-013：foundation 信頼度ラベル／② A-011／A-014／A-015：evaluation／analysis 接合面／③ A-012／A-016：self-improvement／workflow-management／conformance-evaluation 相互参照）。軽量再オープン手続き 2 件（A-013／A-011）を含む。詳細は pending-cross-feature-findings.md とコミットメッセージ参照

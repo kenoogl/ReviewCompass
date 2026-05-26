@@ -996,6 +996,55 @@ review:
 - 維持部分：オーケストレーター方式、役単位の経路選択（path: cli / api）、Python スクリプト `tools/api-providers/run_role.py`、プロバイダー抽象層（モデル名は文字列指定）、モデル能力配分規律
 - 利用者明示承認「(I) 再オープン可、別ファイル」「(は) ＋ config/api-settings.yaml」「いずれも OK」（2026-05-26 セッション 29）
 
+**Python スクリプト `tools/api-providers/run_role.py` の入出力契約（2026-05-26 セッション 29 確定）**：
+
+1 役を 1 回実行し、結果を標準出力に YAML で返す。私（オーケストレーター）が標準出力を受け取りレビュー記録に組み立てる。スクリプト自身は書き込み権限を持たない（ファイル遮断規律 §5.9.1）。
+
+引数（すべて長オプション）：
+
+```
+python3 tools/api-providers/run_role.py \
+  --role <primary|adversarial|judgment> \
+  --variant <名前> \
+  --target <対象ファイルパス> \
+  --phase <段名、例：requirements_triad_review> \
+  --criteria <観点識別子、例：観点-1> \
+  [--prior-finding <前段役の所見ファイル>] \
+  [--prior-finding ...]
+```
+
+- `--prior-finding` は複数指定可（β 逐次方式：adversarial は primary の所見を、judgment は primary と adversarial の所見を読む）
+- API キーは環境変数 `ANTHROPIC_API_KEY` ／ `OPENAI_API_KEY`
+
+出力形式（標準出力、§5.9.3 規律準拠、キー名・enum 値は英語、自由記述は対象文書の言語に従う）：
+
+```yaml
+role: adversarial
+provider: openai-api
+model: gpt-5.5
+attempts: 1
+duration_seconds: 12.3
+findings:
+  - severity: WARN
+    target_location: ...
+    description: ...
+    rationale: ...
+    evidence_type: fact
+    verifying_commands: [...]
+```
+
+タイムアウトとリトライ回数は `config/api-settings.yaml` の `defaults` で既定値を持ち、variants 配下で個別に上書き可能：
+
+```yaml
+defaults:
+  timeout_seconds: 60
+  max_retries: 1
+```
+
+エラー時：標準エラー出力に理由を出して非ゼロで終了。私が結果を判断（自律続行しない）。
+
+利用者明示承認「基本提案でよいが、タイムアウトとリトライ数は設定可能なように、出力はコメント以外は英語」「はい」（2026-05-26 セッション 29）。
+
 #### 5.9.8 コスト最適化と運用
 
 採用する最適化策：
