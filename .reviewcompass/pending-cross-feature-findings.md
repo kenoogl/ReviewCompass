@@ -186,8 +186,9 @@
 - **依存関係**：`evaluation` 設計を先に改訂し、`analysis` 設計を後で修正する依存順
 - **連動所見**：本所見と関連して、A-003（counter_status 集計の追加）も `role_diff_report.json` の構造に含めるべき内容（`findings_summary.by_counter_status`）であり、設計改訂時に同時に反映する
 
-### A-012：self-improvement と workflow-management の時系列契約・完了通知形式（design レビュー波段で消化予定）
+### A-012：self-improvement と workflow-management の時系列契約・完了通知形式 ✅ 対処済み（2026-05-26、セッション 28）
 
+- **対処内容**：workflow-management 設計書 判断 7 を「A-012 対処で時系列契約・完了通知形式を詳細化」に拡張、self-improvement design §13.5 の合意点を受け入れる詳細（時系列契約／入力経路／完了通知形式／ロールバック責務／整合性検査タイミング）を追記。§下流仕様への影響の self-improvement 行を相互参照に更新。要件レベルでは既存記述（workflow-management 要件書 行 34 Boundary Context）で足り、軽量再オープン手続きは不要と判断。利用者明示承認「はい」（2026-05-26 セッション 28）
 - **検出**：セッション 27、self-improvement／design.triad-review（2026-05-26）。主役（Sonnet 4.6）F-008 と敵対役（Opus 4.7）A-003 の連動所見、判定役（Opus 4.7）が must-fix／波及と判定
 - **記録**：[.reviewcompass/specs/self-improvement/reviews/2026-05-26-design-triad-review.md](specs/self-improvement/reviews/2026-05-26-design-triad-review.md)
 - **重大度**：F-008 WARN／A-003 ERROR（敵対役独立発見）
@@ -242,8 +243,9 @@
 - **対処方針**：本機能 §14.5 のスキーマ詳細を本機能側合意点として、analysis 設計改訂で受け入れる形に整合
 - **依存関係**：A-011（既存、analysis 側の `role_diff_report.json` 読み取り経路）と連動
 
-### A-016：target_commit と self-improvement の materialization_commit_hash の整合ルール（conformance-evaluation／design.triad-review、design レビュー波段で消化予定）
+### A-016：target_commit と self-improvement の materialization_commit_hash の整合ルール ✅ 対処済み（2026-05-26、セッション 28）
 
+- **対処内容**：self-improvement 設計書 §13.6 表に「commit hash 整合ルール（A-016 対処）」行を追加、表の直後にサブセクション「target_commit と materialization_commit_hash の独立性」を新設、conformance-evaluation §12.3 の合意点を受け入れる相互参照を記述（両 commit の所有関係／同一文書で両 commit を扱う場面／本機能が conformance-evaluation 結果を取り込む場面）。要件レベルでは既存記述（self-improvement 要件書 行 33 Boundary Context）で足り、軽量再オープン手続きは不要と判断。利用者明示承認「はい」（2026-05-26 セッション 28）
 - **検出**：セッション 27、conformance-evaluation／design.triad-review（2026-05-26）。敵対役（Opus 4.7）A-011 独立発見、判定役が must-fix／波及と判定
 - **記録**：[.reviewcompass/specs/conformance-evaluation/reviews/2026-05-26-design-triad-review.md](specs/conformance-evaluation/reviews/2026-05-26-design-triad-review.md)
 - **重大度**：WARN
