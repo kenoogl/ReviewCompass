@@ -143,7 +143,7 @@ triad-review 段の 3 役配置（実験(エ)継続予定、本セッション 2
 
 利用者明示承認のあった項目を新しい順に記録：
 
-- **A-013（信頼度ラベルを foundation 語彙体系に追加）対処完了（セッション 28、2026-05-26）**：foundation 要件 6 受入 11 ＋設計 §3.5 で信頼度語彙（`confidence_label`：high／medium／low）を正本化、conformance-evaluation 設計 §9.5 ／ §14.1 ／ Decision 11 を foundation 参照に書き換え、計画書 §5.18.7 に補注追記。foundation／spec.json の requirements.approval を false に戻し軽量再オープン手続き（A-010 と同型）。foundation 要件の再 review-wave → alignment → approval は別工程として継続。利用者明示承認「やり方 α」「はい」（2026-05-26 セッション 28）
+- **A-013（信頼度ラベルを foundation 語彙体系に追加）対処完了（セッション 28、2026-05-26）**：foundation 要件 6 受入 11 ＋設計 §3.5 で信頼度語彙（`confidence_label`：high／medium／low）を正本化、conformance-evaluation 設計 §9.5 ／ §14.1 ／ Decision 11 を foundation 参照に書き換え、計画書 §5.18.7 に補注追記。foundation／spec.json の requirements.approval を false に戻し軽量再オープン手続き（A-010 と同型）。利用者明示承認「やり方 α」「はい」（2026-05-26 セッション 28）。foundation 要件の再 review-wave／alignment／approval も完了（他 6 機能への波及なし、利用者明示承認「はい」2026-05-26 セッション 28）
 
 - **conformance-evaluation／design 段完了（セッション 27 末、2026-05-26、依存マップ順 7/7、drafting＋triad-review、本セッション末コミット）**：triad-review 完了。design.md は 930 → 約 1150 行（20 章維持）。所見 28 件（主役 15＋敵対役独立 13）、must-fix 12 件を 10 グループに分けて深掘り議論し機能内対処 8 件＋遡及 1 件（A-001、12→6 criteria 軽量 reopen）＋波及 5 件（A-003／F-006／A-008／A-011／F-015）を反映。主要な対処：新規 Decision 9〜12（finding_id 発番／推定順序／信頼度 foundation 追加／規律対象範囲）、機械検査 MV-7（foundation 受入番号照合）追加、章番号体系の整合確認は alignment 段で持ち越し。利用者明示承認多数（「はい」×3／「候補 1」×7／「候補 2」×2／「候補 3」×1、2026-05-26 セッション 27）。**全 7 機能の design.drafting＋triad-review 完了**
 

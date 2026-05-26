@@ -204,7 +204,7 @@
 
 ### A-013：信頼度ラベル 3 値を foundation 語彙体系に追加要請 ✅ 対処済み（2026-05-26、セッション 28）
 
-- **対処内容**：foundation 要件 6 受入 11 として信頼度語彙（`confidence_label`：high／medium／low の 3 値）を追加、foundation 設計 §3.5 を新設して値域・意味・参照禁止対象を定義。判断 7 の所有語彙一覧、要件と設計の対応表、下流仕様への影響にも反映。計画書 §5.18.7 の表直後に補注追記。conformance-evaluation 設計 §9.5 ／ §14.1 ／ Decision 11 ／ 所見対処一覧を foundation 参照に書き換え。foundation／spec.json の requirements.approval を false に戻し軽量再オープン手続きで処理（A-010 と同型）。foundation 要件の再 review-wave → alignment → approval は別工程として継続。利用者明示承認「やり方 α」「はい」（2026-05-26 セッション 28）
+- **対処内容**：foundation 要件 6 受入 11 として信頼度語彙（`confidence_label`：high／medium／low の 3 値）を追加、foundation 設計 §3.5 を新設して値域・意味・参照禁止対象を定義。判断 7 の所有語彙一覧、要件と設計の対応表、下流仕様への影響にも反映。計画書 §5.18.7 の表直後に補注追記。conformance-evaluation 設計 §9.5 ／ §14.1 ／ Decision 11 ／ 所見対処一覧を foundation 参照に書き換え。foundation／spec.json の requirements.approval を false に戻し軽量再オープン手続きで処理（A-010 と同型）。利用者明示承認「やり方 α」「はい」（2026-05-26 セッション 28）。foundation 要件の再 review-wave（他 6 機能への波及なしを grep で確認）／alignment（文書整合確認）／approval（利用者明示承認、spec.json requirements.approval を true に書き戻し）も完了（2026-05-26 セッション 28、別コミット）
 - **検出**：セッション 27、conformance-evaluation／design.triad-review（2026-05-26）。敵対役（Opus 4.7）A-003 独立発見、判定役（Opus 4.7）が must-fix／波及と判定
 - **記録**：[.reviewcompass/specs/conformance-evaluation/reviews/2026-05-26-design-triad-review.md](specs/conformance-evaluation/reviews/2026-05-26-design-triad-review.md)
 - **重大度**：ERROR
