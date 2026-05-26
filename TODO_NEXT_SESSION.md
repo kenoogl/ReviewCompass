@@ -1,6 +1,6 @@
 # 次セッション継続用メモ
 
-最終更新：2026-05-25（セッション 26 末、workflow-management／design 段の drafting＋triad-review 完了、依存マップ順 5/7。規律ファイル軽量移送（memory → docs/disciplines/、17 件→16 件）と memory 側のシンボリックリンク化を実施。次は self-improvement／design.drafting から再開）
+最終更新：2026-05-26（セッション 28 末、design.review-wave グループ ① A-013 対処完了。foundation 語彙体系に信頼度ラベル（confidence_label 3 値）を追加、軽量再オープン手続き＋閉ループ実施。次はグループ ② A-011／A-014／A-015（evaluation／analysis 接合面）から再開）
 作業ディレクトリ：`/Users/Daily/Development/ReviewCompass/`（本リポジトリ）
 リポジトリ：`git@github.com:kenoogl/ReviewCompass.git`（main ブランチ）
 
@@ -60,7 +60,7 @@ drafting 段は actor=human または llm（草案作成のみ）、triad-review
 
 ---
 
-## 1. 起動手順（セッション 27 開始時）
+## 1. 起動手順（セッション 29 開始時）
 
 ReviewCompass の運営ガイドラインの必読フローに従う：
 
@@ -110,9 +110,9 @@ ReviewCompass の運営ガイドラインの必読フローに従う：
 
 ### B. 設計フェーズ継続（review-wave、その後 alignment／approval）
 
-セッション 27 末時点で全 7 機能の design.drafting＋triad-review が完了：foundation／runtime／evaluation／analysis／workflow-management／self-improvement／conformance-evaluation。次の作業：
+セッション 28 末時点で全 7 機能の design.drafting＋triad-review 完了、design.review-wave グループ ① A-013 対処完了。残りの作業：
 
-1. **全 7 機能の design 段 review-wave**：機能横断波及所見 A-011〜A-016 の 6 件を集約消化
+1. **design.review-wave 残り**：機能横断波及所見 A-011／A-012／A-014／A-015／A-016 の 5 件を集約消化（グループ ② A-011／A-014／A-015 → グループ ③ A-012／A-016 の順を推奨）
    - A-011：analysis／evaluation 接合面の `roles/role_diff_report.json` 新設
    - A-012：self-improvement と workflow-management の時系列契約・完了通知形式
    - A-014：evaluation との接合面の突き合わせ詳細
