@@ -99,7 +99,7 @@ ReviewCompass の運営ガイドラインの必読フローに従う：
   - conformance-evaluation（7/7）：drafting／triad-review が true、review-wave／alignment／approval は false（**本セッション 27 末**、本セッション末コミット）
 - **tasks／implementation 段**：すべて false
 
-機能横断波及所見：A-001〜A-010 の 10 件と A-013 の合計 11 件は対処済み、**A-011／A-012／A-014／A-015／A-016 の 5 件が未消化**（A-011：analysis／evaluation 接合面 `roles/role_diff_report.json`、A-012：self-improvement と workflow-management の時系列契約、A-014：evaluation 突き合わせ詳細、A-015：analysis 機械可読出力スキーマ、A-016：target_commit と materialization_commit_hash 整合）。すべて design レビュー波段で消化予定。詳細は `.reviewcompass/pending-cross-feature-findings.md` を参照。
+機能横断波及所見：A-001〜A-010 ／ A-013 ／ A-011 ／ A-014 ／ A-015 の合計 14 件は対処済み、**A-012 ／ A-016 の 2 件が未消化**（A-012：self-improvement と workflow-management の時系列契約、A-016：target_commit と materialization_commit_hash 整合）。すべて design レビュー波段で消化予定。詳細は `.reviewcompass/pending-cross-feature-findings.md` を参照。
 
 規律ファイルの現状：本体は repo の `docs/disciplines/discipline_*.md` に配置、memory 側 `feedback_*.md` はシンボリックリンクで repo 本体を指す。最新の件数・分類は `docs/disciplines/README.md` の規律ファイル一覧表を参照。本セッション 27 で options-presentation 統合規律と effekt 測定ログ（options-precheck-log.md）を新設。
 
@@ -112,11 +112,8 @@ ReviewCompass の運営ガイドラインの必読フローに従う：
 
 セッション 28 末時点で全 7 機能の design.drafting＋triad-review 完了、design.review-wave グループ ① A-013 対処完了。残りの作業：
 
-1. **design.review-wave 残り**：機能横断波及所見 A-011／A-012／A-014／A-015／A-016 の 5 件を集約消化（グループ ② A-011／A-014／A-015 → グループ ③ A-012／A-016 の順を推奨）
-   - A-011：analysis／evaluation 接合面の `roles/role_diff_report.json` 新設
+1. **design.review-wave 残り**：機能横断波及所見 A-012 ／ A-016 の 2 件を集約消化（グループ ③ A-012／A-016）
    - A-012：self-improvement と workflow-management の時系列契約・完了通知形式
-   - A-014：evaluation との接合面の突き合わせ詳細
-   - A-015：analysis との接合面の機械可読出力スキーマ
    - A-016：target_commit と self-improvement の materialization_commit_hash の整合ルール
 2. **design.alignment**（LLM 自動判定）→ **design.approval**（利用者明示承認）
 3. **章番号体系の整合確認**：他機能（foundation／runtime／evaluation／analysis／workflow-management）の design.md でも本セッション 27 と同様の章番号体系の不整合が存在する可能性があり、design.alignment 段で確認が必要（利用者明示承認「他機能でも生じていたはずなので後ほど対処」2026-05-26 セッション 27）
@@ -142,6 +139,8 @@ triad-review 段の 3 役配置（実験(エ)継続予定、本セッション 2
 ## 4. 直近の確定事項（2026-05-24 セッション 22〜23、2026-05-25 セッション 24〜26、2026-05-26 セッション 27）
 
 利用者明示承認のあった項目を新しい順に記録：
+
+- **A-011／A-014／A-015（グループ ②）対処完了（セッション 28、2026-05-26）**：A-011：evaluation 要件 9 受入 8 を新設＋設計 §3 役所見差分報告節新設、analysis 設計 §レビュー収束過程の可視化モデル §1 ／ §上流機能との接合面（evaluation）を evaluation 参照に更新。A-014：evaluation 設計 §conformance-evaluation への接合面に経路別差分／3 役差分を追加。A-015：analysis 設計 §conformance-evaluation との接合面を §14.5 スキーマに準拠する記述に更新。evaluation/spec.json の requirements.approval を false に戻し軽量再オープン手続き（A-013 と同型、2 件目）。利用者明示承認「案 3」「候補案 A」「案 α」「承認」「はい」x 複数（2026-05-26 セッション 28）
 
 - **A-013（信頼度ラベルを foundation 語彙体系に追加）対処完了（セッション 28、2026-05-26）**：foundation 要件 6 受入 11 ＋設計 §3.5 で信頼度語彙（`confidence_label`：high／medium／low）を正本化、conformance-evaluation 設計 §9.5 ／ §14.1 ／ Decision 11 を foundation 参照に書き換え、計画書 §5.18.7 に補注追記。foundation／spec.json の requirements.approval を false に戻し軽量再オープン手続き（A-010 と同型）。利用者明示承認「やり方 α」「はい」（2026-05-26 セッション 28）。foundation 要件の再 review-wave／alignment／approval も完了（他 6 機能への波及なし、利用者明示承認「はい」2026-05-26 セッション 28）
 

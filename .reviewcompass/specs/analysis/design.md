@@ -374,7 +374,7 @@ analysis/
 
 ### 1. 3 役の所見差分（Role Diff）
 
-`shared/convergence/role_diff.json` は 3 役（`primary_reviewer`／`adversarial_reviewer`／`judgment_reviewer`）の所見出力の差分を保持する。出典は計画書 §5.9.6 の `findings_by_method` 由来。
+`shared/convergence/role_diff.json` は 3 役（`primary_reviewer`／`adversarial_reviewer`／`judgment_reviewer`）の所見出力の差分を保持する。出典は `evaluation` の `experiments/analysis/roles/role_diff_report.json`（evaluation 要件 9 受入 8、A-011 対処、2026-05-26 セッション 28 確定）。本機能は当該成果物を読み込んで内部表現に変換し、`shared/convergence/role_diff.json` として可視化向けに保持する。
 
 各エントリは要件 7 受入 2 が定める最低限の 4 要素を含む。
 
@@ -387,7 +387,7 @@ analysis/
 - `target`：対象識別子（レビュー対象成果物の識別子）
 - `evidence_refs`：根拠とした証拠台帳エントリへの参照
 
-**注記（A-011 関連、波及対処）**：`role_diff.json` の出典は、本セッションの起草時点では「計画書 §5.9.6 の `findings_by_method` 由来」と書かれていたが、A-001／F-001 で `evaluation` 設計の `analysis` 向け接合面に該当する集約成果物が存在しない波及問題が指摘された。design レビュー波段で `evaluation` 設計に 3 役差分集約成果物（仮称：`experiments/analysis/roles/role_diff_report.json`）を新設し、本機能の出典記述を当該ファイルへの参照に書き換える（A-011 として `pending-cross-feature-findings.md` に記録、本セッション内では本書 §可視化モデルの出典記述は暫定）。
+**A-011 対処完了（2026-05-26 セッション 28）**：`evaluation` 設計に 3 役差分集約成果物 `experiments/analysis/roles/role_diff_report.json` が新設され、要件 9 受入 8 として正式定義された。本機能の出典記述を当該ファイルへの参照に書き換え（本セッション 28 で完了）。
 
 **必須／任意の区分**：
 
@@ -615,6 +615,7 @@ analysis/
 - `experiments/analysis/classifications/exclusion_report.json`
 - `experiments/analysis/caveats/caveat_register.json`
 - `experiments/analysis/modes/mode_diff_report.json`
+- `experiments/analysis/roles/role_diff_report.json`（3 役別の所見差分、A-011 対処、evaluation 要件 9 受入 8）
 
 加えて、被覆状況の確認のために `experiments/analysis/manifests/analysis_run_manifest.yaml` を読む。陳腐化検査のために `experiments/analysis/manifests/staleness_register.json` を読む。
 
@@ -622,9 +623,14 @@ analysis/
 
 ### `conformance-evaluation` との接合面
 
-`conformance-evaluation` の検査結果を取り込む（一方向、Req 8 受入 5）。本機能は判定そのものを行わず、検査結果のみを読む。具体の取り込み成果物パスは `conformance-evaluation` の設計確定後に確定する（暫定：`experiments/conformance/<検査結果>.json`）。
+`conformance-evaluation` の検査結果を取り込む（一方向、Req 8 受入 5）。本機能は判定そのものを行わず、検査結果のみを読む。`conformance-evaluation` 設計 §14.5（A-015 対処、機械可読出力スキーマ）で確定したスキーマに従う（2026-05-26 セッション 28 確定）。
 
-**上流側設計への期待**：本機能が読む検査結果は `conformance_run_ref`／`assessment_summary`／`violation_findings`／`compliance_rate` の項目を最低限備えることを期待する。具体の成果物パスと項目は `conformance-evaluation` 設計で確定する。
+**取り込むスキーマ（conformance-evaluation §14.5 由来、A-015 連動対処）**：
+
+- **必須フィールド 9 件**：`feature`／`axis`（requirements ／ design ／ intent の 3 値）／`criterion_id`（criterion-1〜6）／`severity`（4 段）／`finding_id`（CF-NNN）／`correspondence_type`（3 対応関係）／`discrepancy_description`／`implementation_code_refs`／`judgment_id`（JD-NNN）
+- **任意フィールド 2 件**：`target_commit`／`materialization_commit_hash`（規律改訂の影響を伴う場合、conformance-evaluation §12.3 由来）
+- **活用先**：本機能の 4 出力先（特に監査用報告と報告書向け原データ、本機能 Requirement 8 受入 5 由来）
+- **取り込み形式**：評価記録の YAML 構造（`conformance-evaluation` §10.4 のスキーマに準拠）
 
 ### `workflow-management` との接合面
 

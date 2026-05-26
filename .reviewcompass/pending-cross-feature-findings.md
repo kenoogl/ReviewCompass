@@ -162,8 +162,9 @@
   - (イ) 軽量に進める（approval 前の最終調整と同じ精神）→ **採用**（利用者明示承認 2026-05-24 セッション 23）
 - **依存関係**：計画書改訂と requirements.md 改訂は本セッション内で完了、design 段着手前の必須対処事項として TODO §3 セクション C に登録、本対処完了により C は「完了済み」に更新
 
-### A-011：analysis／design の 3 役差分集約ファイルが evaluation 接合面に存在しない
+### A-011：analysis／design の 3 役差分集約ファイルが evaluation 接合面に存在しない ✅ 対処済み（2026-05-26、セッション 28）
 
+- **対処内容**：evaluation 要件 9 受入 8 として「3 役別の所見差分を analysis 機能向け出力として提供」を新設、設計書に `roles/role_diff_report.json` 新設と「§3 役所見差分報告」節新設、§配置の根拠 ／ §analysis への接合面 ／ §要件追跡表 を更新。analysis 設計書の §レビュー収束過程の可視化モデル §1 出典記述と注記を更新、§上流機能との接合面（evaluation）に追加。evaluation/spec.json の requirements.approval を false に戻し軽量再オープン手続きで処理（A-013 と同型、2 件目）。利用者明示承認「案 3」「候補案 A」「案 α」「承認」「はい」x 複数（2026-05-26 セッション 28）
 - **検出**：セッション 25、analysis／design.triad-review（2026-05-25）。主役（Sonnet 4.6）F-001 と敵対役（Opus 4.7）A-001 の連動所見、判定役（Opus 4.7）が must-fix／波及と判定
 - **記録**：[.reviewcompass/specs/analysis/reviews/2026-05-25-design-triad-review.md](specs/analysis/reviews/2026-05-25-design-triad-review.md)（本セッション後段で新設予定）
 - **重大度**：ERROR（敵対役独立発見 A-001 と判定役判定）
@@ -215,8 +216,9 @@
 - **対処方針**：foundation Requirement 6 に新規受入として「信頼度語彙：high／medium／low の 3 値、推定タスク用」を追加する設計改訂。本機能側は foundation 改訂後に design.md §9.5 を foundation 参照に書き換え
 - **依存関係**：foundation 設計改訂を先、本機能側修正を後
 
-### A-014：evaluation との接合面で「評価結果との突き合わせ」の具体内容詳細（conformance-evaluation／design.triad-review、design レビュー波段で消化予定）
+### A-014：evaluation との接合面で「評価結果との突き合わせ」の具体内容詳細 ✅ 対処済み（2026-05-26、セッション 28）
 
+- **対処内容**：evaluation 設計書 §conformance-evaluation への接合面に `mode_diff_report.json`（経路別差分）と `roles/role_diff_report.json`（3 役差分、A-011 連動）を追加、突き合わせ詳細を明示。conformance-evaluation 設計 §14.3 の合意点と整合。利用者明示承認「はい」（2026-05-26 セッション 28）
 - **検出**：セッション 27、conformance-evaluation／design.triad-review（2026-05-26）。主役（Sonnet 4.6）F-006、判定役が must-fix／波及と判定
 - **記録**：[.reviewcompass/specs/conformance-evaluation/reviews/2026-05-26-design-triad-review.md](specs/conformance-evaluation/reviews/2026-05-26-design-triad-review.md)
 - **重大度**：WARN
@@ -227,8 +229,9 @@
 - **対処方針**：本機能 §14.3 の詳細記述を本機能側合意点として、evaluation 設計改訂で受け入れる形に整合
 - **依存関係**：A-011（既存、evaluation の `roles/role_diff_report.json` 新設）と連動
 
-### A-015：analysis との接合面の機械可読出力スキーマ（conformance-evaluation／design.triad-review、design レビュー波段で消化予定）
+### A-015：analysis との接合面の機械可読出力スキーマ ✅ 対処済み（2026-05-26、セッション 28）
 
+- **対処内容**：analysis 設計書 §conformance-evaluation との接合面を conformance-evaluation §14.5 のスキーマ（必須フィールド 9 件＋任意フィールド 2 件）に準拠する記述に更新、旧暫定項目（conformance_run_ref／assessment_summary 等の取り込みスキーマ記述）を削除。conformance-evaluation 設計 §14.5 の合意点と整合。利用者明示承認「はい」（2026-05-26 セッション 28）
 - **検出**：セッション 27、conformance-evaluation／design.triad-review（2026-05-26）。敵対役（Opus 4.7）A-008 独立発見、判定役が must-fix／波及と判定
 - **記録**：[.reviewcompass/specs/conformance-evaluation/reviews/2026-05-26-design-triad-review.md](specs/conformance-evaluation/reviews/2026-05-26-design-triad-review.md)
 - **重大度**：WARN

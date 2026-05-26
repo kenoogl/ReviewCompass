@@ -129,8 +129,10 @@ experiments/analysis/
 │   └── phase_comparisons.json
 ├── caveats/
 │   └── caveat_register.json
-└── modes/
-    └── mode_diff_report.json
+├── modes/
+│   └── mode_diff_report.json
+└── roles/
+    └── role_diff_report.json
 ```
 
 ### 配置の根拠（Placement Rationale）
@@ -142,6 +144,7 @@ experiments/analysis/
 - `comparisons/`：treatment／フェーズごとの集計を分離
 - `caveats/`：注意点登録を保持（`analysis` と `self-improvement` が継承）
 - `modes/`：3 経路（`manual_dogfooding`／`subagent_mediated`／`runtime_mediated`）別の所見差分（要件 9 受入 7 由来）
+- `roles/`：3 役（主役・敵対役・判定役）別の所見差分（要件 9 受入 8 由来、A-011 対処）
 
 ### 分析対象母集団の選定（Analysis Population Selection）
 
@@ -463,6 +466,22 @@ phase 対応比較は次を標準 slice とする（要件 7 受入 3）。
 
 本成果物は `analysis` 仕様 Requirement 7 受入 3「レビュー収束過程の可視化」の入力として機能する。
 
+## 3 役所見差分報告（Role Diff Report）
+
+`roles/role_diff_report.json` は 3 役（主役・敵対役・判定役）別の所見差分を `analysis` 機能向けに提供する（要件 9 受入 8、A-011 対処、2026-05-26 セッション 28 確定）。
+
+最低限の構造化形式項目：
+
+- `feature`：機能名（例：`foundation`／`runtime` 等）
+- `role`：`foundation` の役分担（`main`／`adversarial`／`judgment`）
+- `findings_summary`：所見集計
+  - `by_severity`：`foundation` `severity` 4 値別の件数
+  - `by_final_label`：`foundation` `final_label` 3 値別の件数（判定役の出力に限り必須）
+  - `by_counter_status`：`foundation` `counter_status` 3 値別の件数（敵対役の出力に限り必須）
+- `target`：対象識別子
+
+本成果物は `analysis` 仕様 Requirement 7 受入 3「レビュー収束過程の可視化」の入力として機能する。
+
 ## 取り込み証拠の取り込み成果物（Imported Evidence Intake Artifacts）
 
 ### 1. 取り込み登録（Ingestion Register）
@@ -603,6 +622,7 @@ phase 対応比較は次を標準 slice とする（要件 7 受入 3）。
 - `classifications/exclusion_report.json`
 - `caveats/caveat_register.json`
 - `modes/mode_diff_report.json`
+- `roles/role_diff_report.json`（3 役別の所見差分、A-011 対処、要件 9 受入 8）
 
 `analysis` は生実行ディレクトリを一次入力にしない。
 
@@ -615,13 +635,15 @@ phase 対応比較は次を標準 slice とする（要件 7 受入 3）。
 
 ### `conformance-evaluation` への接合面
 
-`conformance-evaluation` は検証器メタデータと評価成果物の同一性情報を必要とする（要件 introduction 隣接期待）。少なくとも次を読む：
+`conformance-evaluation` は検証器メタデータと評価成果物の同一性情報、および本機能の評価結果（経路別差分／severity 集計／3 役差分）との突き合わせを必要とする（要件 introduction 隣接期待、A-014 対処で突き合わせ詳細を明示）。少なくとも次を読む：
 
 - `manifests/analysis_run_manifest.yaml`
-- `metrics/finding_metrics.json`（適合性判定の入力）
+- `metrics/finding_metrics.json`（適合性判定の入力、severity 集計を含む）
 - `caveats/caveat_register.json`
+- `modes/mode_diff_report.json`（経路別差分、A-014 対処、conformance-evaluation §14.3 突き合わせ手順 3 由来）
+- `roles/role_diff_report.json`（3 役差分、A-011／A-014 連動対処、conformance-evaluation §14.3 突き合わせ手順 3 由来）
 
-`conformance-evaluation` は本機能の比較メトリクスを「適合性判定の根拠」として扱うが、適合判定そのものは `conformance-evaluation` が行う。
+`conformance-evaluation` は本機能の比較メトリクスを「適合性判定の根拠」として扱うが、適合判定そのものは `conformance-evaluation` が行う。本機能は適合判定そのものを行わず、出力経路を経路別／3 役別／severity 集計の単位で提供する（A-014 対処、conformance-evaluation §14.3 と整合）。
 
 ## 主要な設計判断（Key Decisions）
 
@@ -669,7 +691,7 @@ foundation で「伝播義務の存在」が固定され、本機能で「具体
 | 要件 6：評価準備メタデータの完全性 | 必須メタデータ検査と `analysis_blocked` 分類を定義 |
 | 要件 7：フェーズ対応の評価 | フェーズ対応比較 slice を定義 |
 | 要件 8：フェーズ特異な有効性メトリクス | 中核メトリクス層と phase 重ね合わせ層の 2 層構造を定義 |
-| 要件 9：レビューモードの区別 | 3 経路集団規則と `modes/mode_diff_report.json` を定義 |
+| 要件 9：レビューモードの区別と 3 役所見差分 | 3 経路集団規則と `modes/mode_diff_report.json`（受入 7）、3 役所見差分の `roles/role_diff_report.json`（受入 8、A-011 対処）を定義 |
 | 要件 10：外部証拠束の取り込みと許容判定 | 取り込みモデルと許容判定 3 値（`admitted_standard`／`admitted_exploratory`／`rejected`）を定義 |
 
 ## 下流仕様への影響（Impact on Downstream Specs）
