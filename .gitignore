@@ -1,6 +1,9 @@
 .DS_Store
 __pycache__/
 *.pyc
+.venv/
+.pytest_cache/
+*.egg-info/
 
 # 補助層 C 段階 2 スクリプトの判定ログ（実行ごとに増えるため、リポジトリでは管理しない）
 # 仕様：docs/operations/WORKFLOW_PRECHECK.md §8
