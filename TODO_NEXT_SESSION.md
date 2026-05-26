@@ -1,6 +1,6 @@
 # 次セッション継続用メモ
 
-最終更新：2026-05-26（セッション 28 末、design.review-wave グループ ① A-013 対処完了。foundation 語彙体系に信頼度ラベル（confidence_label 3 値）を追加、軽量再オープン手続き＋閉ループ実施。次はグループ ② A-011／A-014／A-015（evaluation／analysis 接合面）から再開）
+最終更新：2026-05-26（セッション 28 末、design.review-wave 全 16 件対処完了。グループ ①（A-013）／②（A-011／A-014／A-015）／③（A-012／A-016）の 3 グループ段階消化、軽量再オープン手続き 2 件（A-013 ／ A-011）を含む。次は design.alignment（LLM 自動判定）→ design.approval（利用者明示承認）から再開）
 作業ディレクトリ：`/Users/Daily/Development/ReviewCompass/`（本リポジトリ）
 リポジトリ：`git@github.com:kenoogl/ReviewCompass.git`（main ブランチ）
 
