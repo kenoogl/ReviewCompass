@@ -289,6 +289,17 @@ Step D（`integration`）は Step A・B・C の出力を 1 つのレビュー結
 
 これにより「どのリポのどの改訂版で、どの対象をレビューした証拠か」を本機能のメタデータだけで最低限追跡できる。
 
+### 3.5 推定タスク用語彙（Inference Task Vocabulary）
+
+実行メタデータとは別に、推定タスク（コードからの上流文書推定など）で用いる語彙を本機能の正本として所有する（要件 6 受入 11、A-013 対処、2026-05-26 セッション 28 確定）。
+
+- `confidence_label`（3 値、要件 6 受入 11、推定タスク用、`conformance-evaluation` は再定義禁止）
+  - `high`：根拠が強い（コード参照件数が多い、明示性が高い）
+  - `medium`：中程度（一部に根拠あり、補強で確からしさが上がる）
+  - `low`：根拠が弱い（推定根拠が薄い、人間判断が必要）
+
+本語彙は推定タスクを行う将来の他機能も参照できる。再定義は禁止。
+
 ### 4. 共有スキーマの関係（Shared Schema Relationships）
 
 本機能が固定する各スキーマは、項目ごとに「フェーズ 3 必須（mandatory-B1.0）」か「意図的に先送りする拡張点（deferred）」かを明示する（要件 3 受入 9）。下記の項目一覧は特記なき限りすべて mandatory-B1.0 とし、deferred の拡張点は該当スキーマ節に明記する。
@@ -586,6 +597,7 @@ Step C の出力単位。必要性 5 項目と最終ラベルを表す（要件 
 - `review_mode`（最小 3 値、メタデータ用、要件 6 受入 6 由来）
 - `severity`（4 値、`finding` 用、計画書 §5.9.2 由来）
 - `final_label`（3 値、`necessity_judgment` 用、計画書 §5.9.3 由来）
+- `confidence_label`（3 値、推定タスク用、要件 6 受入 11 由来）
 
 下流仕様はこれらを参照のみで再定義しない。本リストは設計の現時点での集合であり、将来 foundation が新規スキーマ・新規メタデータを追加する際はこのリストに追記する。
 
@@ -598,7 +610,7 @@ Step C の出力単位。必要性 5 項目と最終ラベルを表す（要件 
 | 要件 3：共通スキーマ集合 | `runtime/schemas/` に 5 スキーマを集約（§4）、`required` 配列と `x-deferred` で mandatory／deferred を符号化 |
 | 要件 4：プロンプトの正本配置 | `runtime/prompts/<段目的>/<役>.prompt.md` を正本化（§配置決定 3、§6） |
 | 要件 5：パターン定義依存の除外 | 配置規約を定義せず、動的判定を位置付け（§7） |
-| 要件 6：検証器向けメタデータ契約 | `metadata_contract.yaml` と検証器側 2 契約を定義（§3、§8）、語彙 4 件の参照禁止対象を明文化 |
+| 要件 6：検証器向けメタデータ契約 | `metadata_contract.yaml` と検証器側 2 契約を定義（§3、§8）、語彙の参照禁止対象を明文化（実行メタデータ用 validator_status／evidence_class／review_mode に加え、§3.5 で推定タスク用 confidence_label を追加） |
 | 要件 7：リポジトリ内資産の規則 | 全成果物をリポジトリ配下に固定し、リポジトリ外記憶への依存を排除（§配置、§10） |
 
 ## 下流仕様への影響（Impact on Downstream Specs）
@@ -608,7 +620,7 @@ Step C の出力単位。必要性 5 項目と最終ラベルを表す（要件 
 - **`analysis`**：報告書生成の入力として `evaluation` 由来成果物を使う。`evidence_class` 4 値を参照のみで使用
 - **`self-improvement`**：段別再演と `failure_observation` を入力に使う
 - **`workflow-management`**：本機能の状態機械契約と版管理規約に依存する（要件 introduction、Boundary Context）
-- **`conformance-evaluation`**：本機能の検証器向けメタデータ契約に依存する。`validator_status` 4 値と `evidence_class` 4 値を参照のみで使用
+- **`conformance-evaluation`**：本機能の検証器向けメタデータ契約に依存する。`validator_status` 4 値、`evidence_class` 4 値、`confidence_label` 3 値（§3.5、要件 6 受入 11）を参照のみで使用
 
 ## 先送り論点（Open Issues Deferred to Later Specs）
 

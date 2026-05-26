@@ -438,17 +438,15 @@ estimated_design_element:
 
 推定結果に **信頼度ラベル** を付与する。信頼度は推定根拠（コード参照件数、明示性）から自動判定（実装段で確定）。
 
-**信頼度語彙の所有関係（G4 利用者明示承認、波及対処）**：
+**信頼度語彙の所有関係**：
 
-信頼度ラベルは foundation の語彙体系（validator_status／evidence_class／adversarial_outcome 等の語彙正本）と同じ性格を持つ。本設計では foundation の語彙体系に信頼度ラベル（high／medium／low の 3 値）を追加する設計改訂を要請する。波及所見として `pending-cross-feature-findings.md` に登録（design レビュー波段で foundation 設計改訂と合わせて消化）。
+信頼度ラベルは foundation の語彙正本として定義されている `confidence_label`（3 値：high／medium／low、foundation 要件 6 受入 11 ＋設計 §3.5）を参照する。本機能では再定義せず、foundation 参照のみで使用（A-013 対処完了、2026-05-26 セッション 28、Decision 11 と整合）。
 
-暫定的に本機能 design.md 内で 3 値の定義を保持（foundation 改訂後に foundation 参照に書き換え）：
-
-| 値 | 判定基準 |
+| 値 | 本機能での判定基準（推定タスク） |
 |---|---|
-| **high** | 複数のコード参照、関数名／コメント／例外メッセージから明示的 |
-| **medium** | 1〜2 のコード参照、間接的な導出 |
-| **low** | 構造からの推察のみ、人間判断が強く必要 |
+| **high** | 複数のコード参照、関数名／コメント／例外メッセージから明示的（foundation の「根拠が強い」と整合） |
+| **medium** | 1〜2 のコード参照、間接的な導出（foundation の「中程度」と整合） |
+| **low** | 構造からの推察のみ、人間判断が強く必要（foundation の「根拠が弱い」と整合） |
 
 信頼度は文書生成モードの「人間判断の必要性」（§6.5）と整合させる。
 
@@ -703,7 +701,7 @@ requirements.md Req 7 受入 5 に対応。
 
 | 方向 | 内容 |
 |---|---|
-| 入力（conformance-evaluation が読む） | スキーマとメタデータ契約、検証器状態語彙、レビューモード語彙、証拠区分語彙、`adversarial_outcome` 語彙、必須メタデータ（severity／target_location／description／rationale）、**信頼度ラベル（high／medium／low、G4 対処で追加要請、波及登録）** |
+| 入力（conformance-evaluation が読む） | スキーマとメタデータ契約、検証器状態語彙、レビューモード語彙、証拠区分語彙、`adversarial_outcome` 語彙、必須メタデータ（severity／target_location／description／rationale）、**信頼度ラベル（`confidence_label` 3 値：high／medium／low、foundation 要件 6 受入 11 ＋設計 §3.5）** |
 | 再定義しない原則 | foundation を正本所有者として参照し、本機能内で再定義しない（Boundary Context 隣接期待） |
 | 機械検査 | foundation 受入番号の参照を本機能の機械検査 MV-7 で照合（G9 対処） |
 
@@ -864,9 +862,9 @@ requirements.md Req 7 受入 5 に対応。
 
 **根拠**：計画書 §5.10.9(a)（行 1176「requirements は design からの逆算」）と §5.10.10（行 1216〜1217「第 2 段階 design 推定→ 第 3 段階 requirements 推定」）の順序確定と整合。
 
-### Decision 11：信頼度ラベルを foundation 語彙体系に追加要請（G4 利用者明示承認、本セッション 27 確定、波及）
+### Decision 11：信頼度ラベルを foundation 語彙体系に追加（G4 利用者明示承認、本セッション 27 確定、A-013 対処完了 2026-05-26 セッション 28）
 
-推定の信頼度ラベル（high／medium／low の 3 値）は本機能で独自定義せず、foundation の語彙体系（validator_status／evidence_class／adversarial_outcome 等）に追加する設計改訂を要請する。本機能 §9.5 は暫定的に独自定義を保持しつつ、foundation 改訂後に foundation 参照に書き換え。波及登録（`pending-cross-feature-findings.md` で design レビュー波段に消化）。
+推定の信頼度ラベル（high／medium／low の 3 値）は foundation の語彙正本として定義（foundation 要件 6 受入 11 ＋設計 §3.5、`confidence_label` 3 値）。本機能 §9.5 は foundation 参照に書き換え（A-013 対処完了、2026-05-26 セッション 28）。
 
 **根拠**：foundation 語彙正本原則（Req 5 受入 7「レビューモード語彙を再定義せず参照」）と一貫した運用、self-improvement Decision 1 と同型の責務分離パターン。
 
@@ -999,7 +997,7 @@ requirements.md の Boundary Context との整合：
 
 #### 波及（要 他機能設計改訂）
 
-- **A-003（G4 利用者明示承認、本セッション 27 で対処）**：信頼度ラベル（high／medium／low）を foundation 語彙体系に追加要請、`pending-cross-feature-findings.md` に追記、design レビュー波段で foundation 設計改訂と合わせて消化
+- **A-003（G4 利用者明示承認、本セッション 27 で対処、A-013 として持ち越し → 2026-05-26 セッション 28 で完了）**：信頼度ラベル（high／medium／low）を foundation 語彙体系に追加（foundation 要件 6 受入 11 ＋設計 §3.5）。本機能 §9.5 ／ §14.1 ／ Decision 11 を foundation 参照に書き換え（セッション 28、A-013 対処完了）
 - **F-006 ／ A-008 ／ A-011（G10 利用者明示承認、本セッション 27 で対処）**：evaluation 接合面の突き合わせ詳細／analysis 接合面の機械可読出力スキーマ／self-improvement との commit hash 整合ルール。本機能 design.md §14.3 ／ §14.5 ／ §14.6 ／ §12.3 に詳細記述、`pending-cross-feature-findings.md` に追記、design レビュー波段で各機能側設計と合わせて消化
 
 #### 他機能横断の未消化所見
