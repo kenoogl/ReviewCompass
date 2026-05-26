@@ -1033,10 +1033,10 @@ findings:
     verifying_commands: [...]
 ```
 
-タイムアウトとリトライ回数は `config/api-settings.yaml` の `defaults` で既定値を持ち、variants 配下で個別に上書き可能：
+タイムアウトとリトライ回数は `config/api-settings.yaml` の `connection` で既定値を持ち、役レベルでフラット直書きすることで上書き可能：
 
 ```yaml
-defaults:
+connection:
   timeout_seconds: 60
   max_retries: 1
 ```
@@ -1044,6 +1044,20 @@ defaults:
 エラー時：標準エラー出力に理由を出して非ゼロで終了。私が結果を判断（自律続行しない）。
 
 利用者明示承認「基本提案でよいが、タイムアウトとリトライ数は設定可能なように、出力はコメント以外は英語」「はい」（2026-05-26 セッション 29）。
+
+**yaml の階層命名規約と本体ファイル（2026-05-26 セッション 29 確定）**：
+
+トップ階層キーは 3 つ：
+
+- `connection`：共通既定値（接続パラメータ：`timeout_seconds`、`max_retries`）
+- `default`：本番運用想定の単一設定セット（`--variant` 未指定時の既定）
+- `variants`：パイロット時のみ、名前付き複数設定の集合
+
+役レベルのキーは `primary` ／ `adversarial` ／ `judgment` の 3 つ。各役に `path`（`cli` または `api`）、`provider`（`claude-code-cli` ／ `anthropic-api` ／ `openai-api` の 3 値）、`model`（文字列指定）を持つ。役レベルで `timeout_seconds` ／ `max_retries` をフラット直書きすることで `connection` の既定を上書きできる。
+
+本体ファイル：[config/api-settings.yaml](../../config/api-settings.yaml)（本セッションで新規作成）。4 variant（`baseline_claude_cli` ／ `claude_with_openai_adversarial` ／ `all_openai_api` ／ `all_anthropic_api`）を含む。OpenAI モデル名は `gpt-PLACEHOLDER` で仮置き、実装後に利用者が yaml で書き換え（コミット 2380879 承認方針と整合）。
+
+利用者明示承認「connection, default, variants はどうか」「δ-1 OK／δ-2 指定する／δ-3 OK」「b（フラット直書き）」「Y（yaml 本体作成）」（2026-05-26 セッション 29）。
 
 #### 5.9.8 コスト最適化と運用
 

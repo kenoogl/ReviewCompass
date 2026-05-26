@@ -1,0 +1,84 @@
+# config/api-settings.yaml
+# ReviewCompass の API 設定ファイル。
+# 役単位の経路（cli / api）、プロバイダー、モデルを指定する。
+# デプロイ時は default のみ使用、パイロット段階は variants で複数バリエーションを切替。
+# 起動時に --variant <名前> で variants から選択、既定は default。
+#
+# 出典：計画書 §5.9.7.1（API 経路先取り実装、2026-05-26 セッション 29 確定）。
+# モデル名は実装後に利用者が yaml で書き換える前提（コミット 2380879 承認）。
+
+connection:                          # 共通既定値（接続パラメータ）
+  timeout_seconds: 60
+  max_retries: 1
+
+default:                             # 本番運用想定の単一設定
+  primary:
+    path: cli
+    provider: claude-code-cli
+    model: claude-opus-4-7
+  adversarial:
+    path: cli
+    provider: claude-code-cli
+    model: claude-sonnet-4-6
+  judgment:
+    path: cli
+    provider: claude-code-cli
+    model: claude-opus-4-7
+
+variants:                            # パイロット時のみ、名前付き複数設定
+  baseline_claude_cli:               # 3 役すべて CLI Claude（既存方式）
+    primary:
+      path: cli
+      provider: claude-code-cli
+      model: claude-opus-4-7
+    adversarial:
+      path: cli
+      provider: claude-code-cli
+      model: claude-sonnet-4-6
+    judgment:
+      path: cli
+      provider: claude-code-cli
+      model: claude-opus-4-7
+
+  claude_with_openai_adversarial:    # 敵対役だけ OpenAI API
+    primary:
+      path: cli
+      provider: claude-code-cli
+      model: claude-sonnet-4-6
+    adversarial:
+      path: api
+      provider: openai-api
+      model: gpt-PLACEHOLDER         # gpt-5.5 等の候補から利用者が後で書き換え
+      timeout_seconds: 90            # 役レベルで connection 既定をフラット上書き
+    judgment:
+      path: cli
+      provider: claude-code-cli
+      model: claude-opus-4-7
+
+  all_openai_api:                    # 3 役すべて OpenAI API
+    primary:
+      path: api
+      provider: openai-api
+      model: gpt-PLACEHOLDER
+    adversarial:
+      path: api
+      provider: openai-api
+      model: gpt-PLACEHOLDER         # primary と異なるモデル名を指定（モデル能力配分規律）
+    judgment:
+      path: api
+      provider: openai-api
+      model: gpt-PLACEHOLDER
+
+  all_anthropic_api:                 # 3 役すべて Anthropic API
+    primary:
+      path: api
+      provider: anthropic-api
+      model: claude-opus-4-7
+    adversarial:
+      path: api
+      provider: anthropic-api
+      model: claude-sonnet-4-6
+    judgment:
+      path: api
+      provider: anthropic-api
+      model: claude-opus-4-7
