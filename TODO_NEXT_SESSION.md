@@ -1,6 +1,6 @@
 # 次セッション継続用メモ
 
-最終更新：2026-05-26（セッション 28 末、design 段完全終了。全 7 機能で drafting／triad-review／review-wave／alignment／approval すべて true。design.review-wave で機能横断波及所見 16 件すべて対処、軽量再オープン手続き 2 件（A-013／A-011）を含む。次フェーズは tasks 段（drafting → triad-review → review-wave → alignment → approval）から再開）
+最終更新：2026-05-26（セッション 29 末、API 経路先取り実装の論点 α〜δ 確定と TDD サイクル 1〜3 完了。累積 30 件のテスト全通過。次セッション以降は サイクル 4（リトライ／yaml 出力整形／run_role.py エントリポイント）を進めてから tasks 段に着手）
 作業ディレクトリ：`/Users/Daily/Development/ReviewCompass/`（本リポジトリ）
 リポジトリ：`git@github.com:kenoogl/ReviewCompass.git`（main ブランチ）
 
@@ -60,7 +60,7 @@ drafting 段は actor=human または llm（草案作成のみ）、triad-review
 
 ---
 
-## 1. 起動手順（セッション 29 開始時）
+## 1. 起動手順（セッション 30 開始時）
 
 ReviewCompass の運営ガイドラインの必読フローに従う：
 
@@ -82,7 +82,7 @@ ReviewCompass の運営ガイドラインの必読フローに従う：
 
 検証失敗：auto memory の起動時 load は MEMORY.md 索引（1 文要約）までで、シンボリックリンク経由でも規律本体はたどられない。**対処**：active 必読は §1 起動手順で毎セッション Read（参照層は必要時参照のまま）、シンボリックリンクは単一正本（repo）維持の補助として残置。最新の件数・分類は `docs/disciplines/README.md` 参照。詳細は本セッション 27 のコミットメッセージ参照。
 
-## 2. ワークフロー上の現在位置（2026-05-26 セッション 28 末時点）
+## 2. ワークフロー上の現在位置（2026-05-26 セッション 29 末時点）
 
 実態は **spec.json の workflow_state から確認**（§0.1 規律）：
 
@@ -91,6 +91,7 @@ ReviewCompass の運営ガイドラインの必読フローに従う：
 - **requirements 段**：全 7 機能で drafting／triad-review／review-wave／alignment／approval すべて true
 - **design 段**：全 7 機能で drafting／triad-review／review-wave／alignment／approval すべて true（セッション 28 末で完全終了）
 - **tasks／implementation 段**：すべて false
+- **API 経路先取り実装（フェーズ 3 への前倒し、§5.9.7.1）**：TDD サイクル 1〜3 完了（累積 30 件 pass）。サイクル 4 残（リトライ機構、yaml 出力整形、run_role.py エントリポイント）
 
 機能横断波及所見：A-001〜A-016 の **16 件すべて対処済み**（design.review-wave 完了、セッション 28 末）。詳細は `.reviewcompass/pending-cross-feature-findings.md` を参照。
 
@@ -98,12 +99,19 @@ ReviewCompass の運営ガイドラインの必読フローに従う：
 
 ## 3. 次の作業候補（優先順位順）
 
-**現在の主要作業：tasks 段着手（drafting → triad-review → review-wave → alignment → approval）**
+**現在の主要作業：API 経路先取り実装 サイクル 4 → tasks 段着手**
 
-セッション 28 末で全 7 機能の design 段が完全終了。次フェーズは tasks 段：
+セッション 29 末で TDD サイクル 1〜3 完了（累積 30 件 pass）。次セッションの優先順位：
 
-1. **tasks 段 drafting**：依存マップ順（foundation → runtime → evaluation → analysis → workflow-management → self-improvement → conformance-evaluation）で順次起草
-2. **tasks 段 triad-review／review-wave／alignment／approval**：drafting 完了後、運営ガイド §2.3 の段順に従って進める
+1. **API 経路先取り実装 TDD サイクル 4**（最優先）：
+   - リトライ機構（指数バックオフ、connection.max_retries を使用）
+   - レスポンス整形（標準出力の YAML 形式、§5.9.3 規律準拠）
+   - `tools/api_providers/run_role.py` エントリポイント（引数解析、yaml 読み込み、プロバイダー呼び出し、結果出力の一連の流れ）
+   - 必要に応じてサイクル 5 以降に分割（リトライ／整形／エントリポイントを別サイクルでも可）
+
+2. **tasks 段 drafting**（サイクル 4 完了後）：依存マップ順（foundation → runtime → evaluation → analysis → workflow-management → self-improvement → conformance-evaluation）で順次起草
+
+3. **tasks 段 triad-review／review-wave／alignment／approval**：drafting 完了後、運営ガイド §2.3 の段順に従って進める
 
 着手時の段階 2 スクリプト連動：`tools/check-workflow-action.py spec-set <feature> tasks drafting true` を呼んで依存検査を通過してから Edit／Write を行う（規律 [[workflow-precheck-invocation]]）。
 
@@ -119,13 +127,7 @@ ReviewCompass の運営ガイドラインの必読フローに従う：
 
 - **API 経路先取り実装の計画変更（軽量手続き、セッション 28、2026-05-26）**：本来フェーズ 4 第 2 サイクルで実装予定の API 経路を、tasks 段着手前に先取りで最小実装。3 者評価比較（Claude／API 経由他モデル：Anthropic ＋ OpenAI／人間）をパイロット → 段階的拡張で実施。計画書 §5.9.7.1 新設、§5.11 フェーズ 3 ／ フェーズ 4 第 2 サイクル改訂。設計済み 7 機能への遡及不要（実装方針の前倒しのみ）。利用者明示承認「API 実装を先取りで実装」「論点 2 ＝案 B」「論点 3 ＝案 b」「論点 4 ＝提示案どおり」「論点 5 ＝案 Z」「承認」（セッション 28）。設計案 P：オーケストレーター方式（Claude Code 内で私が呼び出しと結果統合）、役単位で path: cli / api を選択、API 経路は Python スクリプト `tools/api_providers/run_role.py`（1 役を 1 回実行、私が Bash で起動）、結果統合は私が手動（フェーズ 4 以降に自動化検討）。プロバイダー抽象層でモデル名は文字列指定、候補は Anthropic（claude-sonnet-4-6／claude-opus-4-7）と OpenAI（gpt-5.5／gpt-5.4／gpt-5.3-codex 等、セッション 29 で利用者更新）。論点 γ の進め方は (2)「yaml 構造設計を先行、モデル名はプレースホルダー、実装後に利用者が yaml で書き換え」を採用。利用者明示承認「提案どおりでよい」「提案で OK．実装後に yaml で書き換え」（セッション 28）「(2)。openai の場合、gpt-5.5, gpt-5.4, gpt-5.3-codex が候補」（セッション 29）
 
-- **API 設定ファイルの再オープン（セッション 29、2026-05-26）**：旧確定「複数 experiments 方式（3 パターン：baseline_claude／claude_vs_openai_adversarial／all_openai）」を撤回し、新確定として **`config/api-settings.yaml` を新設**（`reviewcompass.yaml` から参照、恒久の API 設定ファイル）。default 1 設定を本体とし、パイロット段階のみ `variants` 節で複数バリエーションを併設、起動時に `--variant <名前>` で切替。デプロイ時は variants 節を削るだけで運用設定に移行できる。再オープン理由：利用者指摘「yaml ファイルは API の設定を保存するところ。今回は実験だが、デプロイしたときには実験か？」（experiments の恒久名称が運用後に意味と合わない）。維持部分：オーケストレーター方式、役単位の経路選択、Python スクリプト、プロバイダー抽象層（モデル名は文字列指定）、モデル能力配分規律。利用者明示承認「(I) 再オープン可、別ファイル」「いずれも OK」（セッション 29）。計画書 §5.9.7.1 末尾に正本記述を追記
-
-- **Python スクリプト `tools/api_providers/run_role.py` の入出力契約確定（セッション 29、2026-05-26）**：1 役 1 回実行、標準出力に YAML、書き込みは私（ファイル遮断規律 §5.9.1）。引数は長オプション 6 種（--role primary／adversarial／judgment、--variant、--target、--phase、--criteria、--prior-finding 複数可）。出力のキー名・enum 値は英語、自由記述は対象文書の言語、コメントは日本語可。タイムアウト・リトライは `config/api-settings.yaml` の connection で既定、役レベルのフラット直書きで上書き可。エラー時は標準エラーに理由を出して非ゼロ終了、私が判断。利用者明示承認「基本提案でよいが、タイムアウトとリトライ数は設定可能なように、出力はコメント以外は英語」「はい」（セッション 29）。計画書 §5.9.7.1 末尾に正本記述を追記
-
-- **ディレクトリ名の整合修正（セッション 29、2026-05-26）**：`tools/api-providers/` → `tools/api_providers/` に書き換え。根拠は計画書 §4 行 209 の既定規則「Python の慣習に合わせ、ディレクトリ名はアンダースコア区切り（パッケージとして読み込み可能にするため）」。本ディレクトリは Python サブパッケージとして import される（テスト側からの読み込み）ため規則対象。書き換え 5 か所（TODO 2 件、計画書 3 件）。利用者明示承認「全体の整合性を考えると P-2、ディレクトリ命名規則はなかったか？」（セッション 29）
-
-- **`config/api-settings.yaml` 本体作成と yaml 命名規約確定（セッション 29、2026-05-26）**：トップ階層キー 3 つ（`connection`／`default`／`variants`）確定、役レベルキー 3 つ（`primary`／`adversarial`／`judgment`、各 `path`／`provider`／`model`）確定、役レベルの上書きはフラット直書き。`config/api-settings.yaml` を新規作成、4 variant（`baseline_claude_cli`／`claude_with_openai_adversarial`／`all_openai_api`／`all_anthropic_api`）を含む。OpenAI モデル名は `gpt-PLACEHOLDER` 仮置き（実装後に利用者が書き換え）。計画書 §5.9.7.1 末尾に命名規約と本体ファイル参照を追記。利用者明示承認「connection, default, variants はどうか」「δ-1 OK／δ-2 指定する／δ-3 OK」「b」「Y」（セッション 29）
+- **API 経路先取り実装：論点 α〜δ 確定と TDD サイクル 1〜3 完了（セッション 29、2026-05-26）**：論点 α（yaml 保存場所＝ `config/api-settings.yaml`、5961d1b）／論点 β（`run_role.py` 入出力契約、長オプション 6 種、標準出力 YAML、ac6eb63）／論点 γ（OpenAI 候補名 gpt-5.5／gpt-5.4／gpt-5.3-codex、進め方 (2) プレースホルダー方式、755fd6d）／論点 δ（yaml 命名規約 `connection`／`default`／`variants`、本体作成、19b1eeb）を確定。ディレクトリ命名整合修正（`tools/api-providers/` → `tools/api_providers/`、計画書 §4 行 209 規則準拠、8ddc674）。Python 環境整備（`pyproject.toml` 新規、`.venv` 隔離、`.gitignore` 更新、c2815db）。TDD サイクル 1（config_loader.py、c2815db／c57c5ae）／サイクル 2（providers.py プロバイダー抽象層、1ea0380／b1cb58c）／サイクル 3（providers.py の send_request、httpx／respx 依存、5eb051b／7778b80）累積 30 件全通過、回帰なし。利用者明示承認多数（コミットメッセージに記載、再オープン手続き 1 件含む：experiments 方式 → connection／default／variants）。次工程：サイクル 4（リトライ機構、yaml 出力整形、`run_role.py` エントリポイント）
 
 - **design 段完全終了（セッション 28、2026-05-26、コミット 8cbb5b9／7cb8d6d／6b95a10）**：全 7 機能で drafting／triad-review／review-wave／alignment／approval すべて true。design.review-wave 全 16 件対処済み、章番号体系は機能内整合 OK／機能横断統一は案 C で許容、接合面整合 A-011〜A-016 全 6 件 OK、軽量一括承認（案 b）で approval 完了。利用者明示承認「案 X」「案 C」「案 b」「はい」x 多数（2026-05-26 セッション 28）。**次フェーズは tasks 段**
 
