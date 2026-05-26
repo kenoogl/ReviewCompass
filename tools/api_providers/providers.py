@@ -7,6 +7,7 @@ API 経路のプロバイダー抽象層。
 Agent ツールで処理するため、本スクリプトの対象外（claude-code-cli を渡すと ValueError）。
 """
 import os
+import time
 from abc import ABC, abstractmethod
 from typing import Tuple, Type
 
@@ -17,16 +18,23 @@ class ProviderBase(ABC):
   """プロバイダー抽象基底クラス。
 
   各サブクラスは ENV_VAR_NAME（環境変数名）を上書きし、_build_request と _extract_text を実装する。
-  send_request は本基底クラスで共通実装（HTTP POST ＋ 失敗時例外 ＋ 文字列抽出）。
+  send_request は本基底クラスで共通実装（HTTP POST ＋ リトライ機構 ＋ 失敗時例外 ＋ 文字列抽出）。
   abstractmethod があるため直接インスタンス化は TypeError で防止される。
   """
 
   ENV_VAR_NAME: str = ""
 
-  def __init__(self, model: str, timeout_seconds: int = 60, max_retries: int = 1):
+  def __init__(
+    self,
+    model: str,
+    timeout_seconds: int = 60,
+    max_retries: int = 1,
+    initial_retry_delay_seconds: float = 5.0,
+  ):
     self.model = model
     self.timeout_seconds = timeout_seconds
     self.max_retries = max_retries
+    self.initial_retry_delay_seconds = initial_retry_delay_seconds
     self.api_key = self._read_api_key()
 
   def _read_api_key(self) -> str:
@@ -50,18 +58,41 @@ class ProviderBase(ABC):
     """各プロバイダーのレスポンス JSON から文字列を取り出す。"""
     ...
 
+  def _is_retryable_error(self, exc: Exception) -> bool:
+    """リトライ対象の例外かを判定する。
+
+    - httpx.TimeoutException：常にリトライ対象
+    - httpx.HTTPStatusError：HTTP 5xx（サーバ側エラー）と 429（過負荷／レート制限）のみリトライ
+    - その他：リトライ対象外
+    """
+    if isinstance(exc, httpx.TimeoutException):
+      return True
+    if isinstance(exc, httpx.HTTPStatusError):
+      status = exc.response.status_code
+      return status >= 500 or status == 429
+    return False
+
   def send_request(self, prompt: str) -> str:
     """HTTP POST でリクエストを送り、レスポンスから文字列を返す。
 
-    HTTP 4xx／5xx は httpx.HTTPStatusError を投げる。
-    タイムアウトは self.timeout_seconds、リトライは本サイクルでは未実装
-    （max_retries 属性は次サイクルで使用予定）。
+    リトライ対象例外（HTTP 5xx／429、タイムアウト）は指数バックオフで再送する。
+    リトライ回数は self.max_retries まで（既定 1 回）。
+    リトライ対象外の例外（4xx の 429 以外など）は即座に投げる（fail-fast）。
     """
     url, headers, body = self._build_request(prompt)
     with httpx.Client(timeout=self.timeout_seconds) as client:
-      response = client.post(url, headers=headers, json=body)
-      response.raise_for_status()
-      return self._extract_text(response.json())
+      for attempt in range(self.max_retries + 1):
+        try:
+          response = client.post(url, headers=headers, json=body)
+          response.raise_for_status()
+          return self._extract_text(response.json())
+        except (httpx.HTTPStatusError, httpx.TimeoutException) as exc:
+          if not self._is_retryable_error(exc):
+            raise
+          if attempt >= self.max_retries:
+            raise
+          delay = self.initial_retry_delay_seconds * (2 ** attempt)
+          time.sleep(delay)
 
 
 class AnthropicProvider(ProviderBase):
