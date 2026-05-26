@@ -1,0 +1,36 @@
+provider: claude-code-cli
+model: claude-sonnet-4-6
+turn_number: 1
+duration_seconds: 14.784
+sent_messages_count: 1
+note: |
+  Claude Code 内の Agent ツール経由（subagent_type: general-purpose、model: sonnet）で呼び出した結果。
+  API 経路ではないため、_experiment_n_model.py を使わず、私（メインセッション）が
+  Agent ツールで呼び出して応答を受け取った。所要時間は Agent ツールの duration_ms から換算。
+response_text: |
+  ```yaml
+  decision: "採用：案 1"
+  rationale: |
+    事実として提示された 3 点が一致して「8 項目」を指している。
+    (1) design.md を機械的に数えた結果が 8 個。
+    (2) design.triad-review.md の行 235 に「9 → 8 項目（failure_observations を削除）」という確定経緯が明示されている。
+    (3) したがって tasks.md T-004 の「必須 9 項目」は、設計変更が下流文書に伝播しなかった単純な転記ミスである。
+    design.md 側を直す理由はなく、案 2 を選ぶ根拠はない。
+    案 1 の修正範囲（tasks.md の数字 1 か所＋テスト要件の件数 1 か所）は最小限で、後段への悪影響もない。
+    以上より、案 1 を採用する。
+  alternative_proposal: |
+  confidence: 0.95
+  turns_used: 1
+  uncertainty_factors:
+    - design.md の実ファイルを直接読んでいないため、機械的カウント「8 個」の正確性はプロンプト記載の事実に依存している
+    - tasks.md に「9 項目」と書かれた経緯（単純転記ミスか意図的な追加か）は確認していないが、design.triad-review.md の確定経緯が明確なため影響は小さい
+  assumed_context:
+    - プロンプトに示された事実（design.md の 8 項目カウント、design.triad-review.md の確定経緯）は正確である
+    - テスト要件の「必須項目数テスト」は tasks.md T-004 に紐づいており、数字を 8 に直すだけで対処が完結する
+  case_scores:
+    case_1: 9
+    case_2: 1
+  comment_to_human:
+    - design.triad-review.md に確定経緯が残っている点が決め手です。上流文書に「9 → 8」の変更を承認した記録があるため、tasks.md 側を直すのが自然な流れです。
+    - 修正箇所は tasks.md T-004 の数字（9 → 8）とテスト要件の件数（9 → 8）の 2 か所のみです。実装フェーズに入る前に直しておくことで、テスト実装時の混乱を防げます。
+  ```

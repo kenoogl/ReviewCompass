@@ -1,0 +1,25 @@
+provider: human
+model: user
+turn_number: 1
+duration_seconds: 0
+sent_messages_count: 0
+note: |
+  利用者本人の判定。判定者ではなく「答え合わせのための基準」として扱う。
+  推奨案（レビュー記録 §4.1 議論論点 1 の判定役推奨）を見たうえでの判定（公平性
+  確保のため、人だけが推奨を見る方針、セッション 31 中盤の利用者明示承認）。
+  対話前に F-001 の平易な説明を求め、説明後に判定を返した（1 ターンの平易説明
+  対話あり、ただし判定そのものは事実情報のみで決定）。
+response_text: |
+  decision: "採用：案 1"
+  rationale: |
+    修正ミスがのこっているだけ。
+  alternative_proposal: |
+  confidence: 1.0
+  turns_used: 1
+  uncertainty_factors:
+  assumed_context:
+  case_scores:
+    case_1: 10
+    case_2: 1
+  comment_to_human:
+    - design.md は既に複数回確認されていて、確度の高い情報を根拠にしている
