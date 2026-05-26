@@ -1,6 +1,6 @@
 # 次セッション継続用メモ
 
-最終更新：2026-05-26（セッション 28 末、design.review-wave 全 16 件対処完了。グループ ①（A-013）／②（A-011／A-014／A-015）／③（A-012／A-016）の 3 グループ段階消化、軽量再オープン手続き 2 件（A-013 ／ A-011）を含む。次は design.alignment（LLM 自動判定）→ design.approval（利用者明示承認）から再開）
+最終更新：2026-05-26（セッション 28 末、design 段完全終了。全 7 機能で drafting／triad-review／review-wave／alignment／approval すべて true。design.review-wave で機能横断波及所見 16 件すべて対処、軽量再オープン手続き 2 件（A-013／A-011）を含む。次フェーズは tasks 段（drafting → triad-review → review-wave → alignment → approval）から再開）
 作業ディレクトリ：`/Users/Daily/Development/ReviewCompass/`（本リポジトリ）
 リポジトリ：`git@github.com:kenoogl/ReviewCompass.git`（main ブランチ）
 
@@ -89,7 +89,7 @@ ReviewCompass の運営ガイドラインの必読フローに従う：
 - **intent 層**：drafting／review／approval すべて true
 - **feature-partitioning 層**：candidate-proposal／approval すべて true
 - **requirements 段**：全 7 機能で drafting／triad-review／review-wave／alignment／approval すべて true
-- **design 段**：全 7 機能で drafting／triad-review／review-wave 完了（review-wave 完了はセッション 28、所見 16 件対処）、alignment／approval は未着手
+- **design 段**：全 7 機能で drafting／triad-review／review-wave／alignment／approval すべて true（セッション 28 末で完全終了）
 - **tasks／implementation 段**：すべて false
 
 機能横断波及所見：A-001〜A-016 の **16 件すべて対処済み**（design.review-wave 完了、セッション 28 末）。詳細は `.reviewcompass/pending-cross-feature-findings.md` を参照。
@@ -98,19 +98,16 @@ ReviewCompass の運営ガイドラインの必読フローに従う：
 
 ## 3. 次の作業候補（優先順位順）
 
-**現在の主要作業：design.alignment（LLM 自動判定）→ design.approval（利用者明示承認）**
+**現在の主要作業：tasks 段着手（drafting → triad-review → review-wave → alignment → approval）**
 
-design.review-wave 全 16 件対処済み（セッション 28 末）。残りの作業：
+セッション 28 末で全 7 機能の design 段が完全終了。次フェーズは tasks 段：
 
-1. **design.alignment**（LLM 自動判定）：全 7 機能の設計書の整合確認。章番号体系の整合確認（セッション 27 で持ち越し、利用者明示承認「他機能でも生じていたはずなので後ほど対処」）も本段で実施
-2. **design.approval**（利用者明示承認）：全 7 機能の design 段最終承認、spec.json approval を true に
-3. **tasks 段着手**：design.approval 完了後、tasks の drafting 段から再開
+1. **tasks 段 drafting**：依存マップ順（foundation → runtime → evaluation → analysis → workflow-management → self-improvement → conformance-evaluation）で順次起草
+2. **tasks 段 triad-review／review-wave／alignment／approval**：drafting 完了後、運営ガイド §2.3 の段順に従って進める
 
-各機能の手順（運営ガイド §2.3）：drafting → triad-review → review-wave → alignment → approval
+着手時の段階 2 スクリプト連動：`tools/check-workflow-action.py spec-set <feature> tasks drafting true` を呼んで依存検査を通過してから Edit／Write を行う（規律 [[workflow-precheck-invocation]]）。
 
-着手時の段階 2 スクリプト連動：不可逆操作（spec.json 変更／commit／push）の直前に `tools/check-workflow-action.py` を呼ぶ（規律 [[workflow-precheck-invocation]]）。
-
-triad-review 段の 3 役配置（実験(エ)継続予定）：主役 Sonnet 4.6 ／ 敵対役 Opus 4.7 ／ 判定役 Opus 4.7（計画書 §5.9.1 改訂後既定整合）。tasks 段着手時に再確認。
+3 役配置（実験(エ)継続予定）：主役 Sonnet 4.6 ／ 敵対役 Opus 4.7 ／ 判定役 Opus 4.7（tasks 段着手時に再確認）。
 
 計画書 §5.5 phase_order の補正課題（セッション 26 で A-001 として認識）：計画書 §5.5 行 376〜383 の phase_order 構造例には self-improvement が記載漏れで 6 機能のみ列挙されているが、§3.1／§5.16／A-007 案 2 に基づき本設計では 7 機能を採用済み。計画書側の補正は別途追跡。
 
@@ -119,6 +116,8 @@ triad-review 段の 3 役配置（実験(エ)継続予定）：主役 Sonnet 4.6
 ## 4. 直近の確定事項
 
 利用者明示承認のあった項目を新しい順に記録（詳細は pending-cross-feature-findings.md ／ docs/disciplines/README.md ／ git log で追える）：
+
+- **design 段完全終了（セッション 28、2026-05-26、コミット 8cbb5b9／7cb8d6d／6b95a10）**：全 7 機能で drafting／triad-review／review-wave／alignment／approval すべて true。design.review-wave 全 16 件対処済み、章番号体系は機能内整合 OK／機能横断統一は案 C で許容、接合面整合 A-011〜A-016 全 6 件 OK、軽量一括承認（案 b）で approval 完了。利用者明示承認「案 X」「案 C」「案 b」「はい」x 多数（2026-05-26 セッション 28）。**次フェーズは tasks 段**
 
 - **design.review-wave 全 16 件対処完了（セッション 28、2026-05-26、コミット e24d86e／c15ef5b／a2a65c0／04ab855／79ec3d9／92ff60a）**：3 グループ段階消化（① A-013：foundation 信頼度ラベル／② A-011／A-014／A-015：evaluation／analysis 接合面／③ A-012／A-016：self-improvement／workflow-management／conformance-evaluation 相互参照）。軽量再オープン手続き 2 件（A-013／A-011）を含む。詳細は pending-cross-feature-findings.md とコミットメッセージ参照
 
