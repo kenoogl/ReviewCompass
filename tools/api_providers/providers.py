@@ -9,7 +9,7 @@ Agent ツールで処理するため、本スクリプトの対象外（claude-c
 import os
 import time
 from abc import ABC, abstractmethod
-from typing import Tuple, Type
+from typing import Dict, List, Tuple, Type
 
 import httpx
 
@@ -17,9 +17,14 @@ import httpx
 class ProviderBase(ABC):
   """プロバイダー抽象基底クラス。
 
-  各サブクラスは ENV_VAR_NAME（環境変数名）を上書きし、_build_request と _extract_text を実装する。
-  send_request は本基底クラスで共通実装（HTTP POST ＋ リトライ機構 ＋ 失敗時例外 ＋ 文字列抽出）。
+  各サブクラスは ENV_VAR_NAME（環境変数名）を上書きし、_build_request_from_messages と
+  _extract_text を実装する。send_messages はマルチターン対話に対応（user/assistant 交互の
+  messages 配列を受け取る）。send_request は単発プロンプト用の薄いラッパー（後方互換性）。
+  リトライ機構は send_messages 内で共通実装。
   abstractmethod があるため直接インスタンス化は TypeError で防止される。
+
+  セッション 31（2026-05-27）：マルチターン対話対応のため send_messages を新規追加、
+  既存の _build_request を _build_request_from_messages に置き換え（利用者明示承認「Y」）。
   """
 
   ENV_VAR_NAME: str = ""
@@ -49,8 +54,15 @@ class ProviderBase(ABC):
     return api_key
 
   @abstractmethod
-  def _build_request(self, prompt: str) -> Tuple[str, dict, dict]:
-    """各プロバイダー固有のリクエスト構造（URL、ヘッダ、JSON ボディ）を返す。"""
+  def _build_request_from_messages(
+    self, messages: List[Dict[str, str]]
+  ) -> Tuple[str, dict, dict]:
+    """messages 配列から各プロバイダー固有のリクエスト構造を組み立てる。
+
+    messages は統一形式（[{"role": "user" or "assistant", "content": "..."}]）。
+    各サブクラスは固有形式（Anthropic／OpenAI の messages 配列、Gemini の contents.parts 形式）に
+    変換して返す。
+    """
     ...
 
   @abstractmethod
@@ -72,14 +84,18 @@ class ProviderBase(ABC):
       return status >= 500 or status == 429
     return False
 
-  def send_request(self, prompt: str) -> str:
-    """HTTP POST でリクエストを送り、レスポンスから文字列を返す。
+  def send_messages(self, messages: List[Dict[str, str]]) -> str:
+    """messages 配列を送信し、レスポンスから文字列を返す（マルチターン対応）。
 
+    引数：messages の統一形式（[{"role": "user" or "assistant", "content": "..."}]）。
     リトライ対象例外（HTTP 5xx／429、タイムアウト）は指数バックオフで再送する。
     リトライ回数は self.max_retries まで（既定 1 回）。
     リトライ対象外の例外（4xx の 429 以外など）は即座に投げる（fail-fast）。
+    空 messages リストは ValueError。
     """
-    url, headers, body = self._build_request(prompt)
+    if not messages:
+      raise ValueError("messages は空にできません")
+    url, headers, body = self._build_request_from_messages(messages)
     with httpx.Client(timeout=self.timeout_seconds) as client:
       for attempt in range(self.max_retries + 1):
         try:
@@ -94,16 +110,29 @@ class ProviderBase(ABC):
           delay = self.initial_retry_delay_seconds * (2 ** attempt)
           time.sleep(delay)
 
+  def send_request(self, prompt: str) -> str:
+    """単発プロンプト送信（後方互換、send_messages の薄いラッパー）。
+
+    内部で send_messages([{"role": "user", "content": prompt}]) を呼ぶ。
+    既存の呼び出し元（run_role.py など）は本メソッドを使い続けて問題ない。
+    """
+    return self.send_messages([{"role": "user", "content": prompt}])
+
 
 class AnthropicProvider(ProviderBase):
-  """Anthropic API プロバイダー（POST /v1/messages）。"""
+  """Anthropic API プロバイダー（POST /v1/messages）。
+
+  Anthropic の messages 配列は統一形式とそのまま互換（role: user／assistant、content: 文字列）。
+  """
 
   ENV_VAR_NAME = "ANTHROPIC_API_KEY"
   URL = "https://api.anthropic.com/v1/messages"
   ANTHROPIC_VERSION = "2023-06-01"
   DEFAULT_MAX_TOKENS = 4096
 
-  def _build_request(self, prompt: str) -> Tuple[str, dict, dict]:
+  def _build_request_from_messages(
+    self, messages: List[Dict[str, str]]
+  ) -> Tuple[str, dict, dict]:
     headers = {
       "x-api-key": self.api_key,
       "anthropic-version": self.ANTHROPIC_VERSION,
@@ -111,7 +140,7 @@ class AnthropicProvider(ProviderBase):
     }
     body = {
       "model": self.model,
-      "messages": [{"role": "user", "content": prompt}],
+      "messages": messages,
       "max_tokens": self.DEFAULT_MAX_TOKENS,
     }
     return self.URL, headers, body
@@ -121,19 +150,24 @@ class AnthropicProvider(ProviderBase):
 
 
 class OpenAIProvider(ProviderBase):
-  """OpenAI API プロバイダー（POST /v1/chat/completions）。"""
+  """OpenAI API プロバイダー（POST /v1/chat/completions）。
+
+  OpenAI の messages 配列は統一形式とそのまま互換（role: user／assistant／system、content: 文字列）。
+  """
 
   ENV_VAR_NAME = "OPENAI_API_KEY"
   URL = "https://api.openai.com/v1/chat/completions"
 
-  def _build_request(self, prompt: str) -> Tuple[str, dict, dict]:
+  def _build_request_from_messages(
+    self, messages: List[Dict[str, str]]
+  ) -> Tuple[str, dict, dict]:
     headers = {
       "authorization": f"Bearer {self.api_key}",
       "content-type": "application/json",
     }
     body = {
       "model": self.model,
-      "messages": [{"role": "user", "content": prompt}],
+      "messages": messages,
     }
     return self.URL, headers, body
 
@@ -146,23 +180,30 @@ class GeminiProvider(ProviderBase):
 
   エンドポイントは model 名を URL パスに含む形式（Anthropic／OpenAI と異なる）。
   認証は x-goog-api-key ヘッダーを使う。
-  セッション 31（2026-05-27）の計画変更「7 モデル比較実験への拡大」で追加。
+  messages 統一形式から固有形式（contents 配列、parts.text）への変換：
+  - role: assistant → model（Gemini の規約）、user はそのまま
+  - content（文字列）→ parts: [{"text": 文字列}] 形式
+  セッション 31（2026-05-27）の計画変更「7 モデル比較実験への拡大」で追加、
+  セッション 31 末でマルチターン対応（_build_request_from_messages 化）。
   """
 
   ENV_VAR_NAME = "GEMINI_API_KEY"
   URL_TEMPLATE = "https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent"
 
-  def _build_request(self, prompt: str) -> Tuple[str, dict, dict]:
+  def _build_request_from_messages(
+    self, messages: List[Dict[str, str]]
+  ) -> Tuple[str, dict, dict]:
     url = self.URL_TEMPLATE.format(model=self.model)
     headers = {
       "x-goog-api-key": self.api_key,
       "content-type": "application/json",
     }
-    body = {
-      "contents": [
-        {"parts": [{"text": prompt}]}
-      ]
-    }
+    # 統一形式 → Gemini 固有形式への変換
+    contents = []
+    for msg in messages:
+      role = "model" if msg["role"] == "assistant" else msg["role"]
+      contents.append({"role": role, "parts": [{"text": msg["content"]}]})
+    body = {"contents": contents}
     return url, headers, body
 
   def _extract_text(self, response_json: dict) -> str:
