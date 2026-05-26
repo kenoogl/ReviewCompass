@@ -29,6 +29,7 @@ packages = []
 [tool.pytest.ini_options]
 testpaths = [
   "tools/api_providers/tests",
+  "tools/experiments/tests",
 ]
 python_files = ["test_*.py"]
 python_classes = ["Test*"]
