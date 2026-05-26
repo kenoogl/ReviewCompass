@@ -8,20 +8,25 @@ Agent ツールで処理するため、本スクリプトの対象外（claude-c
 """
 import os
 from abc import ABC, abstractmethod
-from typing import Type
+from typing import Tuple, Type
+
+import httpx
 
 
 class ProviderBase(ABC):
   """プロバイダー抽象基底クラス。
 
-  各サブクラスは ENV_VAR_NAME（環境変数名）を上書きし、send_request() を実装する。
-  直接インスタンス化は abstractmethod で防止される。
+  各サブクラスは ENV_VAR_NAME（環境変数名）を上書きし、_build_request と _extract_text を実装する。
+  send_request は本基底クラスで共通実装（HTTP POST ＋ 失敗時例外 ＋ 文字列抽出）。
+  abstractmethod があるため直接インスタンス化は TypeError で防止される。
   """
 
   ENV_VAR_NAME: str = ""
 
-  def __init__(self, model: str):
+  def __init__(self, model: str, timeout_seconds: int = 60, max_retries: int = 1):
     self.model = model
+    self.timeout_seconds = timeout_seconds
+    self.max_retries = max_retries
     self.api_key = self._read_api_key()
 
   def _read_api_key(self) -> str:
@@ -36,27 +41,73 @@ class ProviderBase(ABC):
     return api_key
 
   @abstractmethod
-  def send_request(self, prompt: str) -> str:
-    """各プロバイダーが実装するリクエスト送信。本サイクルでは未実装（次サイクル予定）。"""
+  def _build_request(self, prompt: str) -> Tuple[str, dict, dict]:
+    """各プロバイダー固有のリクエスト構造（URL、ヘッダ、JSON ボディ）を返す。"""
     ...
+
+  @abstractmethod
+  def _extract_text(self, response_json: dict) -> str:
+    """各プロバイダーのレスポンス JSON から文字列を取り出す。"""
+    ...
+
+  def send_request(self, prompt: str) -> str:
+    """HTTP POST でリクエストを送り、レスポンスから文字列を返す。
+
+    HTTP 4xx／5xx は httpx.HTTPStatusError を投げる。
+    タイムアウトは self.timeout_seconds、リトライは本サイクルでは未実装
+    （max_retries 属性は次サイクルで使用予定）。
+    """
+    url, headers, body = self._build_request(prompt)
+    with httpx.Client(timeout=self.timeout_seconds) as client:
+      response = client.post(url, headers=headers, json=body)
+      response.raise_for_status()
+      return self._extract_text(response.json())
 
 
 class AnthropicProvider(ProviderBase):
-  """Anthropic API プロバイダー。"""
+  """Anthropic API プロバイダー（POST /v1/messages）。"""
 
   ENV_VAR_NAME = "ANTHROPIC_API_KEY"
+  URL = "https://api.anthropic.com/v1/messages"
+  ANTHROPIC_VERSION = "2023-06-01"
+  DEFAULT_MAX_TOKENS = 4096
 
-  def send_request(self, prompt: str) -> str:
-    raise NotImplementedError("次サイクルで実装予定")
+  def _build_request(self, prompt: str) -> Tuple[str, dict, dict]:
+    headers = {
+      "x-api-key": self.api_key,
+      "anthropic-version": self.ANTHROPIC_VERSION,
+      "content-type": "application/json",
+    }
+    body = {
+      "model": self.model,
+      "messages": [{"role": "user", "content": prompt}],
+      "max_tokens": self.DEFAULT_MAX_TOKENS,
+    }
+    return self.URL, headers, body
+
+  def _extract_text(self, response_json: dict) -> str:
+    return response_json["content"][0]["text"]
 
 
 class OpenAIProvider(ProviderBase):
-  """OpenAI API プロバイダー。"""
+  """OpenAI API プロバイダー（POST /v1/chat/completions）。"""
 
   ENV_VAR_NAME = "OPENAI_API_KEY"
+  URL = "https://api.openai.com/v1/chat/completions"
 
-  def send_request(self, prompt: str) -> str:
-    raise NotImplementedError("次サイクルで実装予定")
+  def _build_request(self, prompt: str) -> Tuple[str, dict, dict]:
+    headers = {
+      "authorization": f"Bearer {self.api_key}",
+      "content-type": "application/json",
+    }
+    body = {
+      "model": self.model,
+      "messages": [{"role": "user", "content": prompt}],
+    }
+    return self.URL, headers, body
+
+  def _extract_text(self, response_json: dict) -> str:
+    return response_json["choices"][0]["message"]["content"]
 
 
 _PROVIDER_REGISTRY = {
