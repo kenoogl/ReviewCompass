@@ -993,17 +993,17 @@ review:
 
 - 起動時に `--variant <名前>` で variants から選択（既定は default 設定）
 - 旧確定「複数 experiments 方式（3 パターン）」は撤回（`experiments` の恒久名称が運用後に意味と合わなくなるため）
-- 維持部分：オーケストレーター方式、役単位の経路選択（path: cli / api）、Python スクリプト `tools/api-providers/run_role.py`、プロバイダー抽象層（モデル名は文字列指定）、モデル能力配分規律
+- 維持部分：オーケストレーター方式、役単位の経路選択（path: cli / api）、Python スクリプト `tools/api_providers/run_role.py`、プロバイダー抽象層（モデル名は文字列指定）、モデル能力配分規律
 - 利用者明示承認「(I) 再オープン可、別ファイル」「(は) ＋ config/api-settings.yaml」「いずれも OK」（2026-05-26 セッション 29）
 
-**Python スクリプト `tools/api-providers/run_role.py` の入出力契約（2026-05-26 セッション 29 確定）**：
+**Python スクリプト `tools/api_providers/run_role.py` の入出力契約（2026-05-26 セッション 29 確定）**：
 
 1 役を 1 回実行し、結果を標準出力に YAML で返す。私（オーケストレーター）が標準出力を受け取りレビュー記録に組み立てる。スクリプト自身は書き込み権限を持たない（ファイル遮断規律 §5.9.1）。
 
 引数（すべて長オプション）：
 
 ```
-python3 tools/api-providers/run_role.py \
+python3 tools/api_providers/run_role.py \
   --role <primary|adversarial|judgment> \
   --variant <名前> \
   --target <対象ファイルパス> \
@@ -1058,6 +1058,10 @@ connection:
 本体ファイル：[config/api-settings.yaml](../../config/api-settings.yaml)（本セッションで新規作成）。4 variant（`baseline_claude_cli` ／ `claude_with_openai_adversarial` ／ `all_openai_api` ／ `all_anthropic_api`）を含む。OpenAI モデル名は `gpt-PLACEHOLDER` で仮置き、実装後に利用者が yaml で書き換え（コミット 2380879 承認方針と整合）。
 
 利用者明示承認「connection, default, variants はどうか」「δ-1 OK／δ-2 指定する／δ-3 OK」「b（フラット直書き）」「Y（yaml 本体作成）」（2026-05-26 セッション 29）。
+
+**ディレクトリ命名の整合修正（2026-05-26 セッション 29）**：
+
+旧確定「`tools/api-providers/`」（コミット 064b161 ／ 2380879）を「`tools/api_providers/`」に整合修正。根拠は §4 行 209 の既定規則「Python の慣習に合わせ、ディレクトリ名はハイフン区切りからアンダースコア区切りに改めた（パッケージとして読み込み可能にするため）」。本ディレクトリは Python サブパッケージとして import される（テスト側からの読み込みが必要）ため、規則対象に該当。利用者明示承認「全体の整合性を考えると P-2、ディレクトリ命名規則はなかったか？」（2026-05-26 セッション 29）。
 
 #### 5.9.8 コスト最適化と運用
 
