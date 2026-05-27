@@ -39,23 +39,6 @@ drafting 段は actor=human または llm（草案作成のみ）、triad-review
 
 レビュー記録の front-matter には `author.identity` と `reviewer.identity` を異名で必須記載し、機械検査の対象とする。
 
-### 0.4 AskUserQuestion を多用しない
-
-確認は普通の文章で簡潔に。AskUserQuestion ツールは **4 つ以上の選択肢や視覚比較が必要な局面に限定** し、2〜3 個の選択や Yes／No には使わない。
-
-経緯：2026-05-24 セッション 22 で利用者指摘により制定、2026-05-25 セッション 24 で規律統廃合の一環として memory から TODO §0.4 に移動（active 必読層の縮減）。
-
-### 0.5 TODO 更新時は常にデータ削減を考える
-
-本 TODO に追記・更新する際は、**常にデータ削減を検討する**。具体的には：
-
-- 既存節への新規追記は最小限の行数で行う（パス列挙や詳細手順は別文書（README／git log／archive snapshot）に外部参照させる）
-- 完了済み履歴は archive snapshot または git log への参照に置き換え、本 TODO には残さない
-- 詳細説明は本 TODO 外（コミットメッセージ／design.md／README）に書き、本 TODO は要点のみ
-- 更新後は総行数を測定し、肥大化していれば既存節の縮小余地も同時に検討する
-
-経緯：2026-05-25 セッション 27 で利用者指摘「TODO が肥大化しているので、対応」「TODO 更新時は常にデータ削減を考える」により制定、利用者明示承認「案 A」。
-
 <!-- TEMPLATE_HEADER_END -->
 
 ---
