@@ -1,6 +1,6 @@
 # 次セッション継続用メモ
 
-最終更新：2026-05-28（セッション 34 末。本セッションでの主な達成：(1) アドホック変更整合性確保レビュー（重要 8 件反映、残り 23 件は §5.12 改訂時統合の予約）。(2) 計画書 §5.23.13 軽量手続き許容節を新設。(3) TODO スリム化（198 → 約 90 行、§0.4 ／ §0.5 ／ §1.5 撤廃）。(4) 同根問題のワークフロー修正（(Q2)/(ニ) 採用）を計画書 ／ 運営ガイド ／ workflow-management 要件 ／ 設計の 4 文書に段階反映完了。コミット 14 件全 push 済み。次セッション 35 は analysis tasks 段着手から再開。詳細は git log）
+最終更新：2026-05-28（セッション 35 末。本セッションでの主な達成：(1) 縦整合チェック実施（全 7 機能の要件 → 設計（→ タスク）、軽微な不整合 4 件発見、§5.12 改訂時に統合的に対処、多重リマインダ 23→27 件同期更新、コミット 0cc2aa4）。(2) analysis tasks.drafting 完了（T-001〜T-011 の 11 タスク 257 行、DVT 2 件登録、コミット c742eac）。(3) analysis tasks の 3 役 triad-review 完了（主役 Sonnet 4.6 16 件＋敵対役 Opus 4.7 独立 12 件＋判定役 Opus 4.7 統合判定、must-fix 13／should-fix 12／leave-as-is 3、波及 2 件は機能横断段持ち越し）。(4) 7 モデル評価を 2 回方式に再オープン訂正（4 文書 6 箇所同期、コミット d259f3a）：1 回目＝機能ごとの triad-review 段で機能内対処、2 回目＝機能横断段で同根問題集約。コミット 3 件全 push 済み。次セッション 36 は analysis triad-review の 7 モデル評価（1 回目）と機能内対処から再開。詳細は git log）
 作業ディレクトリ：`/Users/Daily/Development/ReviewCompass/`、リポジトリ：`git@github.com:kenoogl/ReviewCompass.git`（main ブランチ）
 
 ---
@@ -37,7 +37,7 @@ drafting 段は actor=human または llm（草案作成のみ）、triad-review
 
 ---
 
-## 1. 起動手順（セッション 35 開始時）
+## 1. 起動手順（セッション 36 開始時）
 
 1. `cd /Users/Daily/Development/ReviewCompass`
 2. 本 `TODO_NEXT_SESSION.md` を読む（§0 規律確認）
@@ -48,21 +48,30 @@ drafting 段は actor=human または llm（草案作成のみ）、triad-review
 7. `docs/extraction-mapping.md`
 8. `git log --oneline -10`／`git status` で到達点確認
 
-## 2. ワークフロー上の現在位置（セッション 34 末）
+## 2. ワークフロー上の現在位置（セッション 35 末）
 
 実態は **spec.json の workflow_state から確認**（§0.1）：
 
 - intent 層／feature-partitioning 層／requirements 段／design 段：全 7 機能で全段 true
-- **tasks 段**：foundation／runtime／evaluation は drafting＋triad-review=true（機能内対処完了）、残 4 機能（analysis／workflow-management／self-improvement／conformance-evaluation）は全 false
+- **tasks 段**：
+  - foundation／runtime／evaluation：drafting＋triad-review=true（機能内対処完了）
+  - **analysis：drafting=true（セッション 35 で起草完了 c742eac）、triad-review=false（3 役レビュー完了済みだが機能内対処未完了、7 モデル評価 1 回目から再開）**
+  - 残 3 機能（workflow-management／self-improvement／conformance-evaluation）：全 false
 - implementation 段：全段 false
 
 ## 3. 次の作業候補
 
-セッション 33 末で foundation／runtime／evaluation の tasks 段機能内対処完了、セッション 34 でアドホック変更整合性確保レビュー＋同根問題のワークフロー修正 (Q2)/(ニ) 反映完了（4 文書、コミット 14 件）。次セッション 35 は依存マップ順 4/7 の analysis 機能から再開：
+セッション 35 末で analysis tasks.drafting 完了（c742eac）と 3 役 triad-review 完了（未コミット）。次セッション 36 は **analysis triad-review の続き（7 モデル評価 1 回目 → 機能内対処）から再開**：
 
-1. **analysis の tasks 段着手**（依存マップ順 4/7）：foundation／runtime／evaluation の方針（一気通貫粒度、責務領域単位、要件追跡表、テスト戦略継承、DVT 等）を踏襲、tasks.drafting → triad-review → 機能内対処。**7 モデル評価は機能横断段で一括実施**（セッション 34 で (Q2) 採用、計画書 §5.5 ／ §5.9.6 反映済み）。同根問題対処は機能横断段の作業内容に組み込み済み（(ニ) 採用、コミット `a022d3a`〜`1c18634` の 4 段反映完了）
-2. **残 3 機能の tasks 段**（5/7〜7/7）：workflow-management → self-improvement → conformance-evaluation。各機能で tasks.drafting → triad-review → 機能内対処（7 モデル評価は機能横断段で一括）
-3. **全機能 tasks 段完了後**：機能横断段（tasks review-wave）で 7 モデル評価一括実施 ／同根問題集約 ／ A-017 一括対処 ／DVT 解除（evaluation DVT-001）／design 軽量再オープン（F-001、F-015 関連）／§5.12 改訂（§5.12.11 アサイン権限新設、case B 路線）
+1. **analysis triad-review の機能内対処**（最優先、本セッション 35 で 3 役レビュー完了済み）：
+   - **統合レビュー記録の起草**：`.reviewcompass/specs/analysis/reviews/2026-05-28-tasks-triad-review.md` に front-matter ＋ 主役 16 件 ＋ 敵対役 12 件 ＋ counter_status ＋ 判定役判定を統合（過去 foundation/runtime/evaluation の tasks-triad-review レビュー記録と同型）
+   - **7 モデル評価の 1 回目実施**（セッション 35 で確定した 2 回方式、コミット d259f3a）：機能内 must-fix 13 件＋should-fix 12 件＝25 topic を 7 モデル評価（5 API モデル＋Sonnet 4.6 CLI＋Opus 4.7 既出推奨流用＝175 件）。実験ノート `docs/experiments/n-model-comparison.md` §2 共通フレームワーク／§4 のパターン踏襲
+   - **利用者議論と機能内対処**：規律 [must-fix-discussion-obligation] に従い 1 件ずつ平易な日本語で対処方針提案、合意後に tasks.md 修正
+   - **機能横断波及（F-013 ／ A-005）を pending に持ち越し**：foundation 語彙正本件数の同根問題、機能横断段で 2 回目評価
+   - **DVT 2 件登録済み**：DVT-A001（workflow-management 接合面）／DVT-A002（mixed_review_mode 過渡的対処）、T-011 完了条件でゲート化
+   - spec.json の `tasks.triad-review=true` 更新（利用者明示承認必要）→ コミット → push
+2. **残 3 機能の tasks 段**（5/7〜7/7）：workflow-management → self-improvement → conformance-evaluation。各機能で tasks.drafting → triad-review → 7 モデル評価 1 回目 → 機能内対処（**2 回方式** の 1 回目を機能ごとに実施、コミット d259f3a で確定）
+3. **全機能 tasks 段完了後**：機能横断段（tasks review-wave）で **7 モデル評価 2 回目**（同根問題と機能横断波及）／同根問題集約／A-017／F-013／A-005 一括対処／DVT 解除（evaluation DVT-001／analysis DVT-A001／DVT-A002）／design 軽量再オープン（F-001、F-015 関連）／§5.12 改訂（§5.12.11 アサイン権限新設、case B 路線）
 
 **§5.12 改訂時の必須参照**：§5.12.11 起草時に計画書 §5.23.13.3 末尾「セッション 34 整合性確保レビューの結果」の **残り 27 件**（セッション 34 のアドホック変更レビュー由来 23 件 ＋ セッション 35 縦整合チェック追加発見 4 件、影響度低の未反映 ／ 部分反映項目 ／ 軽量再オープン下流波及漏れ）もあわせて統合的に取り込む（多重リマインダ：§5.23.13.3 末尾／§5.12.10 末尾／本 TODO §3）。利用者明示承認「案 W」（セッション 34）／「案 ア、ただし、コミットまで。その後、案イへ」「多重リマインダ 3 箇所すべて同期更新」（セッション 35）
 
@@ -70,6 +79,12 @@ drafting 段は actor=human または llm（草案作成のみ）、triad-review
 
 ## 4. 直近の確定事項
 
+- **セッション 35（2026-05-28）の総括**：
+  - (1) 縦整合チェック実施（全 7 機能の要件 → 設計（→ タスク）、軽微な不整合 4 件発見＝workflow-management Req 1 受入 6 が対応表に欠落 ／ analysis に旧表現「12 criteria／12 基準」残存 3 件、§5.12 改訂時統合と判断、多重リマインダ 23→27 件同期更新、コミット `0cc2aa4`）
+  - (2) analysis tasks.drafting 完了（T-001〜T-011 の 11 タスク 257 行、要件追跡表 Req 1〜8 並列対応、DVT 2 件登録 DVT-A001／DVT-A002、コミット `c742eac`）
+  - (3) analysis tasks の 3 役 triad-review 完了（主役 Sonnet 4.6 16 件 ＋ 敵対役 Opus 4.7 独立 12 件 ＋ 判定役 Opus 4.7 統合判定、合計 28 件、must-fix 13／should-fix 12／leave-as-is 3、機能横断波及 2 件＝F-013／A-005 は同根問題として機能横断段持ち越し）。**統合レビュー記録の起草と機能内対処は次セッション 36 へ持ち越し**
+  - (4) 7 モデル評価を **2 回方式** に再オープン訂正（4 文書 6 箇所同期、コミット `d259f3a`）：1 回目＝機能ごとの triad-review 段で機能内対処、2 回目＝機能横断段で同根問題集約。セッション 34 (Q2) 採用反映が狭すぎた点を訂正
+  - コミット 3 件（`0cc2aa4` ／ `c742eac` ／ `d259f3a`）すべて push 済み
 - **セッション 34（2026-05-27〜28）の総括**：(1) アドホック変更整合性確保レビュー（47 項目調査、重要 8 件反映、残り 23 件は §5.12 改訂時統合と判断、3 重リマインダで予約）。(2) 計画書 §5.23.13 軽量手続き許容節を新設（6 サブ節、本 dogfooding をトライアル位置付け）。(3) TODO スリム化（198 → 約 90 行、§0.4 ／ §0.5 ／ §1.5 撤廃）。(4) 同根問題のワークフロー修正（(Q2)/(ニ) 採用）を 4 段階で反映：計画書 §5.5 ／ §5.9.6 ／ §5.9.7.1 ／ 運営ガイド §2.2 ／ workflow-management 要件 Req 1 受入 6 ／ 同設計 §3。コミット範囲 `24e9fb8`〜`1c18634` の 14 件、すべて push 済み
 - セッション 25〜33 の確定事項は [docs/archive/todo/TODO_NEXT_SESSION-2026-05-27-snapshot.md](docs/archive/todo/TODO_NEXT_SESSION-2026-05-27-snapshot.md) に退避
 - セッション 22〜24 以前：[docs/archive/todo/](docs/archive/todo/) 配下の 2026-05-24 ／ 2026-05-25 snapshot
