@@ -76,7 +76,7 @@ implementation 段：drafting → triad-review → review-wave → alignment →
 
 - **drafting**：各機能の草案作成のみ。1 機能ずつ独立に進める。actor=llm（または human）
 - **triad-review**：機能内の 3 役レビュー（主役・敵対役・判定役）と機能内対処の実施。手動 dogfooding または subagent_mediated（サブエージェント仲介方式）で実施。actor=llm
-- **review-wave**：複数機能を横断する複数ラウンドレビュー。機能横断波及所見の集約・対処
+- **review-wave**：複数機能を横断する複数ラウンドレビュー。機能横断波及所見の集約・対処、および **7 モデル比較実験の一括実施と同根問題集約**（2026-05-27 セッション 34 追記、(ニ) (Q2) 採用）。具体的には、全機能の triad-review 完了後に 7 モデル評価を本段で一括実施し、同根所見（異なる機能で同じ性格の所見が独立に発見された組）を集約・分析、一貫した対処方針で全該当機能の仕様文書に反映する。詳細は計画書 §5.5 機能横断段の作業内容 ／ §5.9.6 N モデル比較実験の実施タイミングを参照
 - **alignment**：LLM 自動判定による整合確認段（旧 alignment-gate を分割した前半、actor=llm）
 - **approval**：人間または別モデル（§5.12 人間代役機構）による承認段（旧 alignment-gate を分割した後半、actor=human または proxy_model）
 
