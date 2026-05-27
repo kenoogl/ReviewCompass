@@ -1,0 +1,48 @@
+provider: claude-code-cli
+model: claude-sonnet-4-6
+turn_number: 1
+duration_seconds: 20.198
+sent_messages_count: 1
+note: |
+  Claude Code 内の Agent ツール経由（subagent_type: general-purpose、model: sonnet）で呼び出した結果。
+  API 経路ではないため、_experiment_n_model.py を使わず、私（メインセッション）が
+  Agent ツールで呼び出して応答を受け取った。所要時間は Agent ツールの duration_ms から換算。
+response_text: |
+  ```yaml
+  decision: "採用：案 2"
+  rationale: |
+    T-001 の完了条件が対象とする成果物（配置規約・命名規約等）は、
+    その適切さを「節の存在」や「サブセクションの有無」では十分に評価できない性質を持つ。
+    規約の中身が実際のコードベースや運用に適合しているかどうかは、
+    人間が読んで判断する以外に評価手段がなく、機械判定への適性が低い。
+    案 1 が要求する「必須サブセクション（適用範囲／責務／例示）」の設計は
+    tasks 段ではなく design 段または運用文書側（FOUNDATION.md 等）の責務であり、
+    tasks 段の完了条件に組み込むと段階の責務が乱れる。
+    判定役が「should-fix」（必須でない）と判定した根拠も同旨であり、
+    「人間レビューで代替可能」という評価は妥当と判断する。
+    したがって現状維持（案 2）を採用し、規約の中身の評価は
+    README および FOUNDATION.md のレビュープロセスに委ねる。
+  alternative_proposal: |
+  confidence: 0.82
+  turns_used: 1
+  uncertainty_factors:
+    - 「規約が記述されている」という完了条件が、空の規約節でも通過できる余地を
+      どの程度許容するかは、プロジェクトの運用習慣に依存しており、
+      現在の運用の厳格さが不明なまま判断している
+    - README／FOUNDATION.md のレビューが実際にどの頻度・深度で実施されるかが
+      明示されていないため、「人間レビューで代替可能」という前提の確かさに不確実性が残る
+  assumed_context:
+    - README および FOUNDATION.md のレビュープロセスが定期的かつ実質的に機能しており、
+      規約の中身が空のまま見過ごされるリスクは低いと仮定している
+    - tasks 段の完了条件は「成果物の存在確認」にとどめ、内容の質評価は
+      上位文書または専用レビューに委ねるという設計方針が本プロジェクトに存在すると仮定している
+  case_scores:
+    case_1: 4
+    case_2: 7
+  comment_to_human:
+    - 案 2 を採用しても、完全に問題を消したわけではない。規約の中身が空で通過する
+      リスクを最小化したいなら、FOUNDATION.md のレビュー手順に
+      「規約の充足性を確認する観点」を明示的に追加することを別途検討してほしい。
+    - 案 1 の「必須サブセクション設計」自体は有益なアイデアであるため、
+      tasks 段ではなく design 段または運用文書の改訂候補として記録しておくことを勧める。
+  ```

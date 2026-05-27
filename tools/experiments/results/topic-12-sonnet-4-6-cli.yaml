@@ -1,0 +1,38 @@
+provider: claude-code-cli
+model: claude-sonnet-4-6
+turn_number: 1
+duration_seconds: 15.086
+sent_messages_count: 1
+note: |
+  Claude Code 内の Agent ツール経由（subagent_type: general-purpose、model: sonnet）で呼び出した結果。
+  API 経路ではないため、_experiment_n_model.py を使わず、私（メインセッション）が
+  Agent ツールで呼び出して応答を受け取った。所要時間は Agent ツールの duration_ms から換算。
+response_text: |
+  ```yaml
+  decision: "採用：案 1"
+  rationale: |
+    T-004 は step_records を扱う実装タスクであり、実装者が正しく再演意図を
+    理解するには design.md §5「段別再演モデル」の構造を把握している必要がある。
+    §4 review_case 節からたどれるとはいえ、対応設計節のリストに明示されていなければ
+    実装者が §5 を読む動線が保証されない。再演意図と齟齬する実装が後で発覚した場合の
+    手戻りコストは、参照節リストが 1 件増える煩雑さより大きい。
+    判定役が「must-fix ではない」とした根拠は「完了条件（テスト要件）への影響なし」だが、
+    テスト要件に影響しなくても実装品質に影響する参照の抜けは埋めておくべきである。
+    対応設計節は「実装者が必ず読むべき節」として定義されているはずであり、
+    §5 がその基準を満たすと判断できるため、案 1 を採用する。
+  alternative_proposal: |
+    （該当なし）
+  confidence: 0.78
+  turns_used: 1
+  uncertainty_factors:
+    - 対応設計節リストの「参照すべき節」と「参照不要の節」を実装者がどの基準で判別しているか不明
+    - §4 review_case 節から §5 へのたどりやすさ（内部リンクや注記の有無）が確認できていない
+  assumed_context:
+    - 対応設計節リストは「実装者が必ず目を通すべき設計節」を列挙する欄であるという前提
+    - T-004 の実装者は tasks.md の対応設計節以外を積極的に読み回る習慣がないという前提
+  case_scores:
+    case_1: 7
+    case_2: 4
+  comment_to_human:
+    - 案 1 採用後、対応設計節リストが長くなった場合は「必読」と「参考」を視覚的に分ける工夫（例：必読節を先頭にまとめる）を検討すると実装者の負担を抑えられます。
+  ```

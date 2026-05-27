@@ -1,0 +1,22 @@
+provider: human
+model: user
+turn_number: 1
+duration_seconds: 0
+sent_messages_count: 0
+note: |
+  利用者本人の判定（topic-12、F-007、T-004 対応設計節への §5 追加）。
+  メインセッションが平易な日本語で説明した後、対話形式で 1 ターン目に判定を受領
+  （2026-05-27 セッション 32）。
+response_text: |
+  decision: "採用：案 1"
+  rationale: |
+    対応設計節リストに design.md §5（段別再演モデル）を追加する。
+  alternative_proposal: |
+  confidence: 1.0
+  turns_used: 1
+  uncertainty_factors:
+  assumed_context:
+  case_scores:
+    case_1: 8
+    case_2: 3
+  comment_to_human:

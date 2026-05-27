@@ -1,0 +1,44 @@
+provider: claude-code-cli
+model: claude-sonnet-4-6
+turn_number: 1
+duration_seconds: 18.705
+sent_messages_count: 1
+note: |
+  Claude Code 内の Agent ツール経由(subagent_type: general-purpose、model: sonnet)で呼び出した結果。
+  API 経路ではないため、_experiment_n_model.py を使わず、私(メインセッション)が
+  Agent ツールで呼び出して応答を受け取った。所要時間は Agent ツールの duration_ms から換算。
+response_text: |
+  ```yaml
+  decision: "採用：案 1"
+  rationale: |
+    step 値は primary_detection／adversarial_review／judgment の 3 値に限定される列挙型であり、
+    その制約は「frontmatter スキーマ整合」という表現だけでは実装者に伝わりにくい。
+    「スキーマ整合」という語は型・必須キーの存在確認として読まれることが多く、
+    値が特定の集合に限定されるという enum 制約まで自明に含むとは言えない。
+    step 値の整合を独立した項目として明示することで、実装者の解釈の揺れをなくし、
+    enum 検証されない実装になる余地を確実に排除できる。
+    テスト項目が +1 件増える点は軽微なコストであり、テストの精度向上という利益が上回る。
+    判定役が「直した方がよい」と判断した根拠（明示が望ましい）とも合致する。
+  alternative_proposal: |
+    （該当なし）
+  confidence: 0.82
+  turns_used: 1
+  uncertainty_factors:
+    - 既存の「frontmatter スキーマ整合」完了条件の正確な定義文が手元にないため、
+      そこに enum 制約が既に書かれている可能性をゼロとは断言できない
+    - T-006 のテスト件数の累積管理に既定の上限があるかどうか不明であり、
+      +1 件が実際に問題になるケースを排除できない
+  assumed_context:
+    - 「frontmatter スキーマ整合」は型・必須キーの存在を確認する汎用的な表現であり、
+      値の enum 制約を個別に列挙していないと仮定している
+    - design.md §4 の review_mode 語彙と step キーは同じ 3 値を共有しており、
+      tasks.md と design.md が矛盾なく整合していると仮定している
+  case_scores:
+    case_1: 8
+    case_2: 4
+  comment_to_human:
+    - 案 1 の追記は 1 行程度の小さな変更で済むはずです。
+      実装担当者が T-006 を見たときに enum チェックを書き忘れないよう、
+      具体的な 3 値(primary_detection／adversarial_review／judgment)を
+      テスト要件の中に直接列挙する形にすると最も明確になります。
+  ```

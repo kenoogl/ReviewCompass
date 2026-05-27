@@ -658,6 +658,62 @@ Step C の出力単位。必要性 5 項目と最終ラベルを表す（要件 
 - 6 つの下流仕様が取り込む成果物が §下流仕様への影響で追跡できる
 - §判断 7 に列挙された語彙正本のすべてについて、所有関係が §3 と §4 で宣言され、参照禁止対象が個別に明示されている
 
+### 完成判定レポートの YAML スキーマ（topic-10 A-005 別案採用、軽量再オープン手続きで追加）
+
+T-010 の統合検証スクリプト（`tools/foundation_validators/check_completion.py`）が出力する YAML レポートは、次のスキーマに準拠する。本スキーマ定義は 7 モデル比較実験（2026-05-27 セッション 32）の topic-10 A-005 議論で、利用者本人が別案を採用して追加された。元々は機能内対処（tasks.md T-010 完了条件の補強）として判定されていたが、上流仕様（本 design.md）にスキーマを定義する遡及修正に変更。軽量再オープン手続きで処理（spec.json は本セッション中の更新対象外）。
+
+```yaml
+# レポートのトップレベル構造
+type: object
+required: [overall_pass, target_commit, timestamp, criteria_results]
+properties:
+  overall_pass:
+    type: boolean
+    description: 6 項目すべてが pass のときに true
+  target_commit:
+    type: string
+    description: 判定対象の Git コミットハッシュ
+  timestamp:
+    type: string
+    format: date-time
+    description: 判定実行時刻（ISO 8601）
+  criteria_results:
+    type: array
+    minItems: 6
+    maxItems: 6
+    items:
+      type: object
+      required: [criterion_id, name, status, details]
+      properties:
+        criterion_id:
+          type: integer
+          minimum: 1
+          maximum: 6
+          description: 完成判定基準の項目番号（1〜6）
+        name:
+          type: string
+          description: 項目の短い名前（例：「テスト戦略全項目通過」）
+        status:
+          type: string
+          enum: [pass, fail, error]
+          description: 判定結果（error はスクリプト実行時の例外）
+        details:
+          type: string
+          description: 判定の根拠または失敗時の詳細
+```
+
+スキーマ要件：
+
+- レポートは必ず 6 項目分の `criteria_results` を含む（`minItems=maxItems=6`）
+- 各項目の `criterion_id` は 1〜6 の一意な整数
+- 上記 6 項目の自然言語宣言と `criterion_id` の対応：
+  - 1：テスト戦略の全項目通過
+  - 2：本機能資産の配置先が §共有資産配置で一意に解決
+  - 3：メタデータ項目の責務分離が §3 で宣言
+  - 4：無効化と検証が生証拠を汚さない成果物分離が §8 で定義
+  - 5：6 つの下流仕様が取り込む成果物が §下流仕様への影響で追跡可能
+  - 6：§判断 7 語彙正本すべての所有関係が §3 と §4 で宣言、参照禁止対象が明示
+
 ## 変更意図（Change Intent）
 
 本設計は先行プロジェクトの土台設計を簡略化して捨てたのではなく、再構築の初期段階で必要な契約に絞り込み、運用依存だった部分をリポジトリ内・検証器対応・追跡可能な形に引き直すことを目的とする。

@@ -125,11 +125,10 @@ ReviewCompass の運営ガイドラインの必読フローに従う：
    - spec.json の foundation/tasks.triad-review を true に更新
    - 規律 [[workflow-precheck-invocation]] で `tools/check-workflow-action.py spec-set foundation tasks triad-review true` 経由
 
-5. **計画書 §5.12 改訂手続き**（本実験完了後、利用者明示承認 §0.2 必須、軽量手続き）：
-   - §5.12.4 の権限範囲に「アサイン可能カテゴリ」を追加（3 分類化）
-   - §5.12.5 記録上の区別の拡張（actor_chain フィールド）
-   - §5.12.7 エスカレーション条件の見直し
-   - §5.12.11 新節としてアサイン権限の具体設計を起草
+5. **計画書 §5.12 改訂検討と機能実装**（**全機能 tasks 段完了後**、利用者明示承認 §0.2 必須、案 B 路線＝§5.12.11 新節新設、ReviewCompass 自身の implementation 段で dogfooding テスト、進行順序の確定経緯：2026-05-27 セッション 32 利用者発言「現時点では、レビューを優先。この議論はtask段終了後に検討・機能実装。ReviewCompassの実装段でテスト」）：
+   - §5.12.11 新節としてアサイン機構の具体設計を起草（発火条件／アサイン先選定／集約方法／エディタ責務）
+   - §5.12.4 ／ §5.12.5 ／ §5.12.7 は参照のみの軽微更新
+   - 実装は ReviewCompass の implementation 段に組み込み、dogfooding で動作確認
 
 6. **機能横断波及（F-011）**：pending-cross-feature-findings.md に A-017 として追記（tasks 段 review-wave で全機能の tasks.md に対して一括対処）
 

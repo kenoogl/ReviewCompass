@@ -1,0 +1,34 @@
+provider: human
+model: user
+turn_number: 1
+duration_seconds: 0
+sent_messages_count: 0
+note: |
+  利用者本人の判定（topic-16、A-006、T-006 frontmatter step 値整合テスト）。
+  6 経路の判定（案 1 が 3、別案が 3）の二分 → 別案 3 経路の中身を一覧で開示
+  → 3 経路とも同じ方向（既存テスト要件に注記追加、件数据え置き）の折衷案を提示
+  → 利用者が別案を採用、という対話形式で確定（2026-05-27 セッション 32）。
+  利用者発言「先の問題もそうだったが、別案が提出された場合には、検討する価値があることが多い」
+  （2026-05-27 セッション 32）は §6.9 への追記対象（一般化された運用知見）。
+response_text: |
+  decision: "別案を提示"
+  rationale: |
+    既存の「frontmatter スキーマ整合」テスト要件の記述の中に、
+    step キーの enum 検証（3 値：primary_detection ／ adversarial_review ／ judgment）を
+    含む旨を補足注記として明記する。独立テスト項目として追加せず、テスト件数据え置き。
+    案 1 の利点（明示性）と案 2 の利点（件数据え置き）の両方を取った折衷案。
+  alternative_proposal: |
+    T-006 のテスト要件の「frontmatter スキーマ整合」項目に次の補足注記を追加する：
+    「※step キーの値が primary_detection ／ adversarial_review ／ judgment の
+    3 値のいずれかであることの enum 検証を含む」
+    独立テスト項目は追加せず、既存テスト要件の検査内容を詳細化する形で対処。
+  confidence: 1.0
+  turns_used: 2
+  uncertainty_factors:
+  assumed_context:
+  case_scores:
+    case_1: 5
+    case_2: 3
+  comment_to_human:
+    - 3 経路の別案が完全に同じ方向（既存テスト要件に注記追加）で収束した点が判断の決め手
+    - 一般化された観察：別案が提出された場合は検討する価値があることが多い（§6.9 追記対象）

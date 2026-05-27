@@ -1,0 +1,36 @@
+provider: human
+model: user
+turn_number: 1
+duration_seconds: 0
+sent_messages_count: 0
+note: |
+  利用者本人の判定（topic-11、F-005、T-001 完了条件の機械判定基準）。
+  判定支援資料の表現が分かりにくいとの指摘を受け、メインセッションが平易な
+  日本語で 1 件ずつ説明し直す対話形式で進行（2026-05-27 セッション 32）。
+  topic-11 については、別案を提示した 5 経路の中身を要請に応じて開示し、
+  「最小タイプ」「中間タイプ」「接続強化タイプ」の 3 分類で比較してから判定を受けた。
+response_text: |
+  decision: "別案を提示"
+  rationale: |
+    完了条件を「記述 ＋ レビュー承認」に変更する（最小タイプ）。
+    5 経路の別案（Sonnet 4.6 API ／ GPT-5.5 ／ GPT-5.4 ／ Gemini-flash ／ Gemini-pro）が
+    独立に同じ方向に収束した点と、Sonnet CLI（案 2 を選択）も
+    別途「FOUNDATION.md レビュー観点追加」を推奨していた点から、
+    「案 2 そのままは弱すぎる、人間レビュー承認を完了条件に組み込む」という
+    方向性に強い合意がある。最小タイプは tasks 段で確認観点まで固定しない点で
+    過剰設計を避けつつ、空の記述を完了扱いにする弱点も塞げる。
+  alternative_proposal: |
+    T-001 の完了条件を次のように変更する：
+    「配置規約・命名規約等の規約が記述された上で、人間レビュー
+    （README または FOUNDATION.md のレビュープロセス）で承認されていること」
+    確認観点や対象範囲の明示までは tasks 段で固定しない。
+  confidence: 1.0
+  turns_used: 1
+  uncertainty_factors:
+  assumed_context:
+  case_scores:
+    case_1: 3
+    case_2: 4
+  comment_to_human:
+    - 5 経路の別案がほぼ同じ方向（レビュー承認の組み込み）に収束したことが判断の決め手
+    - 確認観点（対象範囲・代表例・要件番号）は design 段または運用文書側の責務として保持

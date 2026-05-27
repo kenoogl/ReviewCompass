@@ -1,0 +1,36 @@
+provider: claude-code-cli
+model: claude-sonnet-4-6
+turn_number: 1
+duration_seconds: 15.720
+sent_messages_count: 1
+note: |
+  Claude Code 内の Agent ツール経由(subagent_type: general-purpose、model: sonnet)で呼び出した結果。
+  API 経路ではないため、_experiment_n_model.py を使わず、私(メインセッション)が
+  Agent ツールで呼び出して応答を受け取った。所要時間は Agent ツールの duration_ms から換算。
+response_text: |
+  ```yaml
+  decision: "採用：案 1"
+  rationale: |
+    A-002 で実際に Requirement 5 の追跡不整合が発覚したという具体的な事例がある。
+    この事実は、手動レビューだけでは片方向漏れを防ぎきれないことを示している。
+    双方向整合チェックをテスト要件に 1 件追加するコストは小さく、
+    将来の同種の不整合を機械的に防ぐ恒久対策として費用対効果が高い。
+    INFO 相当であっても、再発可能な既知パターンを放置する理由にはならない。
+    テスト件数が 1 件増える弱点は軽微であり、責務の明確化にもつながる。
+    他機能への波及については、同種の問題が横展開できる標準手順を早期に確立できる利点がある。
+  alternative_proposal: |
+  confidence: 0.82
+  turns_used: 1
+  uncertainty_factors:
+    - T-009 と T-010 のどちらに追加するかが未確定であり、各タスクの責務範囲次第でどちらが適切か変わる
+    - 他機能の tasks.md への波及を今回のスコープに含めるかどうかが明確でない
+  assumed_context:
+    - 各タスク本文に「対応要件欄(タスク → Requirement)」が既に存在し、機械検証の対象データが揃っている
+    - T-009 または T-010 はテスト関連のタスクであり、検証手順の追記が責務と合致する
+  case_scores:
+    case_1: 8
+    case_2: 4
+  comment_to_human:
+    - T-009 と T-010 のどちらに追加するかは、両タスクの現在の責務記述を確認したうえで決めることを勧める
+    - 今回の追加を「双方向整合チェックの標準パターン」として記録しておくと、他機能への横展開が容易になる
+  ```

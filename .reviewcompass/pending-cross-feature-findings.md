@@ -256,6 +256,20 @@
 - **対処方針**：本機能 §12.3 の整合ルールを本機能側合意点として、self-improvement 設計改訂で受け入れる形に整合
 - **依存関係**：A-012（既存、self-improvement と workflow-management の時系列契約）と連動
 
+### A-017：機能横断波及の確認手順が tasks.md に明示されていない
+
+- **検出**：セッション 30、foundation tasks 段の triad-review（2026-05-26）の主役所見 F-011
+- **記録**：[.reviewcompass/specs/foundation/reviews/2026-05-26-tasks-triad-review.md](specs/foundation/reviews/2026-05-26-tasks-triad-review.md) §1 主役所見 F-011、§3.1 判定（波及種別）
+- **重大度**：INFO
+- **判定**：should-fix（判定役 Opus 4.7 が認定、波及種別「波及」）
+- **利用者判定**：採用：案 1（pending-cross-feature-findings.md に A-017 として登録、機能横断段で全機能 tasks.md に一括対処）、2026-05-27 セッション 32 確定。7 モデル比較実験第 2 段階 topic-13 で 6 経路完全一致（全 API 経路 ＋ Sonnet CLI ＋ Opus 4.7 暗示推奨）＋利用者本人も案 1 を支持
+- **波及範囲**：
+  - **foundation**：`.reviewcompass/specs/foundation/tasks.md` 全体に機能横断波及の確認手順への明示的言及がない（読者が pending-cross-feature-findings.md への参照経路を持たない）
+  - **runtime ／ evaluation ／ analysis ／ workflow-management ／ self-improvement ／ conformance-evaluation**：各機能の tasks.md 作成時に foundation と同様の構造を踏襲する見込みのため、本問題が再現する可能性
+- **対処方針**：tasks 段の機能横断段（review-wave）で全 7 機能の tasks.md に対して「機能横断波及の確認手順」節を一括で追加する。foundation 単体での先行対処は行わない（topic-13 議論で採用された方針：機能横断段で統一形式の一括対処が記述形式の不一致リスクを避けられる）
+- **依存関係**：他の 6 機能の tasks.drafting と triad-review 完了後に、機能横断段で一括対処
+- **状態**：登録済み、機能横断段（tasks review-wave）で消化予定（現時点では tasks 段は foundation の triad-review レビュー完了のみ、残 6 機能の tasks.drafting と triad-review が未着手）
+
 ## 4. 対処済みの所見
 
 （本セッションでの新規作成時、未消化のみ）

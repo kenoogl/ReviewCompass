@@ -1,0 +1,38 @@
+provider: claude-code-cli
+model: claude-sonnet-4-6
+turn_number: 1
+duration_seconds: 25.066
+sent_messages_count: 1
+note: |
+  Claude Code 内の Agent ツール経由(subagent_type: general-purpose、model: sonnet)で呼び出した結果。
+  API 経路ではないため、_experiment_n_model.py を使わず、私(メインセッション)が
+  Agent ツールで呼び出して応答を受け取った。所要時間は Agent ツールの duration_ms から換算。
+response_text: |
+  ```yaml
+  decision: "採用：案 1"
+  rationale: |
+    T-007 の記述は「／」を項目区切りとして用いているため、「既定の phase」と「profile」が別項目に見える。
+    実装担当者が design.md §10 を参照せずに T-007 だけを読んだ場合、6 項目と誤解してテストを 1 件余分に書く
+    可能性がある。後段の項目数テストへの波及リスクが具体的に存在するため、「機械判定への直接影響は小さい」
+    という判定役の評価に同意しながらも、誤読防止の費用対効果は十分に高いと判断する。
+    修正自体は T-007 の 1 行を変えるだけで済み、design.md の変更は不要。
+    記号の使い分け規約が tasks.md 全体で揃っていない懸念については、今回「・」を内部区切りとして局所的に
+    使用するに留めれば、tasks.md 全体の規約を変更する必要はなく、影響は最小限に抑えられる。
+    以上から、費用が低く効果が確実な案 1 を採用する。
+  alternative_proposal: |
+    （不要）
+  confidence: 0.82
+  turns_used: 1
+  uncertainty_factors:
+    - tasks.md 全体での記号使い分け規約（「／」と「・」の混在が既に存在するか否か）が不明
+    - T-007 以外に同様の表記パターンが存在する場合、一貫性の観点から別の対処が必要になる可能性
+  assumed_context:
+    - tasks.md の他の箇所では「・」を内部区切りに使っていない、または少なくとも混乱を招くほどには使っていない
+    - T-007 の修正は 1 行変更に留まり、design.md や他の文書の修正を伴わない
+  case_scores:
+    case_1: 8
+    case_2: 4
+  comment_to_human:
+    - 案 1 採用の場合、修正後に tasks.md 全体を通読して「・」の内部区切り使用箇所が T-007 だけか確認することを推奨します。
+    - 他に同様の「A ／ B」（実は 1 項目）パターンがあれば、T-007 と同時に揃えて修正すると後の混乱を防げます。
+  ```
