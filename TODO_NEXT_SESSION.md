@@ -1,6 +1,6 @@
 # 次セッション継続用メモ
 
-最終更新：2026-05-26（セッション 30 末、API 経路先取り実装サイクル 4（4-A／4-B／4-C）完成（累積 60 件 pass、push 済み）と foundation／tasks.drafting 着手、foundation／tasks.triad-review レビュー実施（must-fix 10 件、5 者比較実験準備中）。次セッション以降は API キー設定（OPENAI_API_KEY ／ ANTHROPIC_API_KEY）後に 5 者比較実験から再開）
+最終更新：2026-05-27（セッション 31 末、7 モデル比較実験の **第 1 段階（must-fix 9 件）完了**。Gemini プロバイダー追加（TDD 5-A）、マルチターン対応 send_messages 追加（TDD 5-B）、実験用スクリプト _experiment_n_model.py 作成（TDD 5-C）、累積テスト 100 件 pass。実験ノート [docs/experiments/n-model-comparison.md](docs/experiments/n-model-comparison.md) で §2.6 12 評価観点を事前定義、§5.1 予備実験／§5.3.1 第 1 段階の結果を記録。**重要な発見**：判定モデル間で意見分岐するケースで proxy 役にアサイン権限を与える運用（論文査読システム類似）が有効、§5.12 改訂の論点として §6.9 に追跡記録。次セッションは **第 2 段階（should-fix 7 件、topic-11〜17）** から再開）
 作業ディレクトリ：`/Users/Daily/Development/ReviewCompass/`（本リポジトリ）
 リポジトリ：`git@github.com:kenoogl/ReviewCompass.git`（main ブランチ）
 
@@ -60,7 +60,7 @@ drafting 段は actor=human または llm（草案作成のみ）、triad-review
 
 ---
 
-## 1. 起動手順（セッション 31 開始時）
+## 1. 起動手順（セッション 32 開始時）
 
 ReviewCompass の運営ガイドラインの必読フローに従う：
 
@@ -82,48 +82,63 @@ ReviewCompass の運営ガイドラインの必読フローに従う：
 
 検証失敗：auto memory の起動時 load は MEMORY.md 索引（1 文要約）までで、シンボリックリンク経由でも規律本体はたどられない。**対処**：active 必読は §1 起動手順で毎セッション Read（参照層は必要時参照のまま）、シンボリックリンクは単一正本（repo）維持の補助として残置。最新の件数・分類は `docs/disciplines/README.md` 参照。詳細は本セッション 27 のコミットメッセージ参照。
 
-## 2. ワークフロー上の現在位置（2026-05-26 セッション 30 末時点）
+## 2. ワークフロー上の現在位置（2026-05-27 セッション 31 末時点）
 
 実態は **spec.json の workflow_state から確認**（§0.1 規律）：
 
-- **intent 層**：drafting／review／approval すべて true
-- **feature-partitioning 層**：candidate-proposal／approval すべて true
-- **requirements 段**：全 7 機能で drafting／triad-review／review-wave／alignment／approval すべて true
-- **design 段**：全 7 機能で drafting／triad-review／review-wave／alignment／approval すべて true（セッション 28 末で完全終了）
-- **tasks 段**：foundation で drafting=true（コミット 9f1f472）、triad-review 実施中（コミット 576513b にレビュー記録、機能内対処（must-fix 10 件反映）未完）。残 6 機能（runtime ／ evaluation ／ analysis ／ workflow-management ／ self-improvement ／ conformance-evaluation）は全段 false
-- **implementation 段**：全 7 機能で全段 false
-- **API 経路先取り実装（フェーズ 3 への前倒し、§5.9.7.1）**：TDD サイクル 4 完成（4-A リトライ機構 ／ 4-B レスポンス整形 ／ 4-C run_role.py エントリポイント、累積 60 件 pass、push 済み）
+- **intent 層／feature-partitioning 層**：すべて true
+- **requirements 段**：全 7 機能で全段 true
+- **design 段**：全 7 機能で全段 true（セッション 28 末）
+- **tasks 段**：foundation で drafting=true（コミット 9f1f472）、triad-review レビュー記録あり（コミット 576513b、must-fix 10 件・should-fix 7 件・leave-as-is 4 件の判定）、**機能内対処は本実験完了後に実施**（実験結果と人本人判定を踏まえる）。残 6 機能は全段 false
+- **implementation 段**：全段 false
+- **API 経路先取り実装（§5.9.7.1）**：TDD サイクル 4 完成＋セッション 31 で 5-A（Gemini）／5-B（マルチターン）／5-C（実験スクリプト）追加、累積 100 件 pass
+- **7 モデル比較実験（人間代役機構 §5.12 検証、`docs/experiments/n-model-comparison.md`）**：予備実験 1 件＋第 1 段階 9 件（must-fix）完了、**第 2 段階 7 件（should-fix）が次セッション以降**
 
-機能横断波及所見：A-001〜A-016 の **16 件すべて対処済み**（design.review-wave 完了、セッション 28 末）。詳細は `.reviewcompass/pending-cross-feature-findings.md` を参照。
+機能横断波及所見：A-001〜A-016 の **16 件すべて対処済み**。詳細は `.reviewcompass/pending-cross-feature-findings.md`。
 
-規律ファイルの現状：本体は repo の `docs/disciplines/discipline_*.md` に配置、memory 側 `feedback_*.md` はシンボリックリンクで repo 本体を指す。最新の件数・分類は `docs/disciplines/README.md` の規律ファイル一覧表を参照。
+規律ファイル：本体は repo の `docs/disciplines/discipline_*.md` に配置、最新の件数・分類は `docs/disciplines/README.md`。
 
 ## 3. 次の作業候補（優先順位順）
 
-**現在の主要作業：foundation／tasks／triad-review の 5 者比較実験 → 機能内対処 → 次機能（runtime）の tasks.drafting**
+**現在の主要作業：7 モデル比較実験 第 2 段階（should-fix 7 件）→ 機能内対処 → 計画書 §5.12 改訂 → 次機能（runtime）の tasks.drafting**
 
-セッション 30 末で foundation／tasks.triad-review の 3 役レビューと判定（must-fix 10 件）まで完了（コミット 576513b）。次セッションは API キー設定後に 5 者比較実験から再開：
+セッション 31 末で第 1 段階（must-fix 9 件 × 8 者 = 72 判定）完了。次セッションは第 2 段階から再開：
 
-1. **API キー確認と config 更新**（最優先、再起動後の最初）：
-   - 環境変数 OPENAI_API_KEY と ANTHROPIC_API_KEY の存在確認（[ -n "$VAR" ] で値は見ない）
-   - config/api-settings.yaml の OpenAI モデル名確定（gpt-PLACEHOLDER → gpt-5.5 と gpt-5.4）、明示承認後にコミット
+1. **第 2 段階の準備**（最優先）：
+   - レビュー記録 §3.1 の should-fix 7 件（F-005／F-007／F-011／A-003／A-004／A-006／A-007）について、元の主役・反論役の所見から「事実／候補案／深掘り」を新規整形（must-fix と違い §4.1 に整形済みデータがない）
+   - プロンプトファイル 7 件作成（tools/experiments/prompts/topic-11〜17.txt）
+   - F-011 は波及（pending-cross-feature-findings.md 対象）で対処方針が固定的、含めるが解説に注記
 
-2. **5 者比較実験**（人間代役機構の検証、計画書 §5.12 由来）：
-   - 比較対象：Opus 4.7（私、推奨案既出）／Sonnet 4.6 CLI（Agent ツール経由）／Sonnet 4.6 API（providers.py 経由）／GPT-5.5（OpenAI API）／GPT-5.4（OpenAI API）／人（利用者本人）
-   - 判断対象：foundation／tasks.triad-review の must-fix 10 件の対処方針（採用／別案／深掘り）。詳細は [.reviewcompass/specs/foundation/reviews/2026-05-26-tasks-triad-review.md](.reviewcompass/specs/foundation/reviews/2026-05-26-tasks-triad-review.md) §4.1
-   - 副次的観察：Sonnet CLI vs API で経路差による判断変化があるか
-   - 実験用 Python スクリプトを一時作成（providers.py 直接利用、後で削除または run_role.py 拡張に統合）
-   - 結果を 5 者比較表として整理、レビュー記録 §4.2 に追記（計画書 §5.12.5 の記録形式）
+2. **第 2 段階の実行**：
+   - 5 経路 × 7 件 = 35 回の API 呼び出し（zsh -c 経由、settings.local.json で許可済み）
+   - Sonnet 4.6 CLI 7 件（Agent ツール経由）
+   - 利用者本人の判定 7 件（判定支援資料 tools/experiments/judgment-aid-for-human.md を 7 件分追記して提示）
+   - 質問発火時のマルチターン対話継続（案 b' 事実応答型代役）
 
-3. **機能内対処の実施**：利用者本人の判断確定後、tasks.md を修正（must-fix 10 件と必要な should-fix）、spec.json の tasks.triad-review=true に更新、コミット
+3. **第 2 段階の集計と分析**：
+   - 実験ノート §5.3.2 に結果追記
+   - §6.1〜§6.12 の 12 観点で総合分析（特に観点 6 重大度別の傾向：must-fix vs should-fix の差）
+   - §6.9 のアサイン権限の運用パターンを should-fix で再検証
 
-4. **機能横断波及（F-011）**：pending-cross-feature-findings.md に A-017 として追記（他機能の tasks.md にも同様の構造を踏襲する必要があり、tasks 段 review-wave で全機能の tasks.md に対して一括対処する見込み）
+4. **機能内対処の実施**（本実験完了後）：
+   - 利用者本人の判定が確定した方針で tasks.md を修正（must-fix 10 件＋必要な should-fix）
+   - spec.json の foundation/tasks.triad-review を true に更新
+   - 規律 [[workflow-precheck-invocation]] で `tools/check-workflow-action.py spec-set foundation tasks triad-review true` 経由
 
-5. **次機能（runtime）の tasks.drafting**：依存マップ順 2/7、foundation の一気通貫粒度方針（責務領域単位、8〜12 タスク／機能）を踏襲
+5. **計画書 §5.12 改訂手続き**（本実験完了後、利用者明示承認 §0.2 必須、軽量手続き）：
+   - §5.12.4 の権限範囲に「アサイン可能カテゴリ」を追加（3 分類化）
+   - §5.12.5 記録上の区別の拡張（actor_chain フィールド）
+   - §5.12.7 エスカレーション条件の見直し
+   - §5.12.11 新節としてアサイン権限の具体設計を起草
 
-着手時の段階 2 スクリプト連動：`tools/check-workflow-action.py spec-set <feature> <phase> <stage> <true/false>` を呼んで依存検査を通過してから Edit／Write を行う（規律 [[workflow-precheck-invocation]]）。
+6. **機能横断波及（F-011）**：pending-cross-feature-findings.md に A-017 として追記（tasks 段 review-wave で全機能の tasks.md に対して一括対処）
 
-3 役配置（実験(エ)継続）：主役 Sonnet 4.6 ／ 敵対役 Opus 4.7 ／ 判定役 Opus 4.7。tasks 観点 7 つは本セッション限りの仮設定（計画書 §5.9.2 で「タスク 7」と言及のみで本体未整備、利用者承認「はい」2026-05-26 セッション 30）。
+7. **次機能（runtime）の tasks.drafting**：依存マップ順 2/7、foundation の一気通貫粒度方針を踏襲
+
+7 モデル比較実験の構造（参考）：
+- 比較対象：Opus 4.7（既出推奨）／Sonnet 4.6 CLI／Sonnet 4.6 API／GPT-5.5／GPT-5.4／Gemini-3.5-flash／Gemini-3.1-pro-preview／人本人 の **8 者**
+- 12 評価観点を事前定義（§2.6）：判断収束性／信頼度妥当性／質問能力／経路差／モデル間差／重大度別／出力形式／case_scores 表現力／§5.12 示唆／rationale 質的分析／assumed_context 差異／comment_to_human 質
+- 案 b'（事実応答型代役）でマルチターン対話、推奨案は人本人のみ閲覧（判定者には非開示）
 
 計画書 §5.5 phase_order の補正課題（セッション 26 で認識）：行 376〜383 の phase_order 構造例には self-improvement が記載漏れで 6 機能のみ列挙されているが、§3.1／§5.16 に基づき本設計では 7 機能を採用済み。計画書側の補正は別途追跡。
 
@@ -133,7 +148,9 @@ ReviewCompass の運営ガイドラインの必読フローに従う：
 
 利用者明示承認のあった項目を新しい順に記録（詳細は pending-cross-feature-findings.md ／ docs/disciplines/README.md ／ git log で追える）：
 
-- **セッション 30（2026-05-26）の総括**：(1) API 経路先取り実装サイクル 4 完成（4-A リトライ機構 ／ 4-B レスポンス整形 ／ 4-C run_role.py エントリポイント、累積 60 件 pass、push 済み、コミット ce02bc1 ／ 22721b4 ／ 3f95012 ／ f1813f0 ／ 133c45b ／ 3325b3d）。HTTP 5xx／429／タイムアウトを指数バックオフでリトライ、4xx は fail-fast、レスポンスは標準出力 YAML、run_role.py は長オプション 6 種＋ --config。(2) foundation／tasks.drafting 着手（依存マップ順 1/7、コミット 9f1f472）、tasks.md 193 行 10 タスク T-001〜T-010、粒度方針は「一気通貫＝1 タスクを起草・実装・テスト・コミットまで止めず進められる責務領域単位」（利用者明示承認「タスクは基本的に一気通貫で進める」「人の関与を最小化するように進める」2026-05-26 セッション 30）。(3) foundation／tasks.triad-review レビュー実施（コミット 576513b）、3 役配置「主役 Sonnet 4.6 ／ 敵対役 Opus 4.7 ／ 判定役 Opus 4.7」（実験(エ) 継続）、主役 12 件・敵対役独立 9 件、判定役 must-fix 10／should-fix 7／leave-as-is 4、機能内対処は次セッションに持ち越し。tasks 観点 7 つは本セッション限りの仮設定（計画書 §5.9.2 で「タスク 7」と言及のみで本体未整備、利用者承認「はい」2026-05-26 セッション 30）。(4) 5 者比較実験の方針確定（次セッション以降に実施）：人間代役機構（計画書 §5.12、補助層 A）の検証実験として、Opus 4.7／Sonnet CLI／Sonnet API／GPT-5.5／GPT-5.4／人の 6 者で must-fix 10 件の判断を比較。Sonnet の CLI vs API 経路差も観察。OpenAI モデル名は gpt-5.5 と gpt-5.4 に確定（利用者明示承認「Opus-4.7の提案、Sonnet-4.6, GPT-5.5, GPT-5.4, 人を比較したい。OpenAIの設定をして実行する」2026-05-26 セッション 30）
+- **セッション 31（2026-05-27）の総括**：(1) 7 モデル比較実験（人間代役機構 §5.12 検証）の基盤整備＋第 1 段階完了。コミット cfb5db9（実験ノート初版）／5084746＋1e21138（TDD 5-A：GeminiProvider）／197940b＋60f9de4（TDD 5-B：マルチターン send_messages）／e34c4f5＋ad93688（TDD 5-C：_experiment_n_model.py）／a858432（予備実験完了、8 者全員「採用：案 1」）／f01597a（§2.6 12 評価観点の事前定義）／0e57bdb（第 1 段階完了、83 ファイル 2646 行追加）。(2) Gemini API 追加（gemini-3.5-flash／gemini-3.1-pro-preview、GEMINI_API_KEY は zsh 経由）、累積テスト 100 件 pass。(3) 5 者→ **7 モデル**比較実験に拡大（利用者明示承認「対象モデルを拡大し、google gemini API を追加する」セッション 31）。(4) 第 1 段階（must-fix 9 件 × 8 者）完了：完全一致 4 件／準一致 3 件／分岐 2 件、Sonnet 4.6 の CLI／API 経路差を観察、Gemini 系で質問発火 3 件（マルチターン 2 ターン目に進入）。(5) **重要発見**：分岐論点では proxy 役にアサイン権限（論文査読システム類似）を与える運用が有効、§5.12 改訂の論点として §6.9 に記録（利用者明示承認「d」セッション 31）。(6) settings.local.json に zsh -c 等の許可ルール追加（案 3：deny ルールで安全策）。(7) 判定支援資料 tools/experiments/judgment-aid-for-human.md 作成。(8) F-006（topic-05）と A-005（topic-10）は人本人が「平易な説明が必要」と要求、観点 3（質問能力）の人本人発火例
+
+- **セッション 30（2026-05-26）の総括**：API 経路先取り実装サイクル 4 完成（4-A／4-B／4-C、累積 60 件 pass）、foundation／tasks.drafting＋triad-review レビュー実施（must-fix 10 件・should-fix 7 件・leave-as-is 4 件）、5 者比較実験の方針確定。詳細は git log（コミット ce02bc1／22721b4／3f95012／f1813f0／133c45b／3325b3d／9f1f472／576513b）参照
 
 - **API 経路先取り実装の計画変更（軽量手続き、セッション 28、2026-05-26）**：本来フェーズ 4 第 2 サイクルで実装予定の API 経路を、tasks 段着手前に先取りで最小実装。3 者評価比較（Claude／API 経由他モデル：Anthropic ＋ OpenAI／人間）をパイロット → 段階的拡張で実施。計画書 §5.9.7.1 新設、§5.11 フェーズ 3 ／ フェーズ 4 第 2 サイクル改訂。設計済み 7 機能への遡及不要（実装方針の前倒しのみ）。利用者明示承認「API 実装を先取りで実装」「論点 2 ＝案 B」「論点 3 ＝案 b」「論点 4 ＝提示案どおり」「論点 5 ＝案 Z」「承認」（セッション 28）。設計案 P：オーケストレーター方式（Claude Code 内で私が呼び出しと結果統合）、役単位で path: cli / api を選択、API 経路は Python スクリプト `tools/api_providers/run_role.py`（1 役を 1 回実行、私が Bash で起動）、結果統合は私が手動（フェーズ 4 以降に自動化検討）。プロバイダー抽象層でモデル名は文字列指定、候補は Anthropic（claude-sonnet-4-6／claude-opus-4-7）と OpenAI（gpt-5.5／gpt-5.4／gpt-5.3-codex 等、セッション 29 で利用者更新）。論点 γ の進め方は (2)「yaml 構造設計を先行、モデル名はプレースホルダー、実装後に利用者が yaml で書き換え」を採用。利用者明示承認「提案どおりでよい」「提案で OK．実装後に yaml で書き換え」（セッション 28）「(2)。openai の場合、gpt-5.5, gpt-5.4, gpt-5.3-codex が候補」（セッション 29）
 
