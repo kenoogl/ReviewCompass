@@ -8,3 +8,7 @@ __pycache__/
 # 補助層 C 段階 2 スクリプトの判定ログ（実行ごとに増えるため、リポジトリでは管理しない）
 # 仕様：docs/operations/WORKFLOW_PRECHECK.md §8
 docs/logs/workflow-precheck.log
+
+# 7 モデル比較実験の一時エラーログ（実験スクリプト実行時のエラー記録、
+# 実行ごとに生成される空ファイル群、リポジトリでは管理しない、2026-05-27 セッション 32）
+tools/experiments/logs/
