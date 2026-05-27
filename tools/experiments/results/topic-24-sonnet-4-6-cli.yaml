@@ -1,0 +1,23 @@
+provider: claude-code-cli
+model: claude-sonnet-4-6
+turn_number: 1
+duration_seconds: 14.57
+sent_messages_count: 1
+note: 'Claude Code 内の Agent ツール経由（subagent_type: general-purpose、model: sonnet）で呼び出した結果。
+
+  API 経路ではないため、_experiment_n_model.py を使わず、私（メインセッション）が
+
+  Agent ツールで呼び出して応答を受け取った。所要時間は Agent ツールの duration_ms から換算。
+
+  '
+response_text: "```yaml\ndecision: \"採用：案 1\"\nrationale: |\n  判定役の推奨（案 1）と所見の性質が一致しており、採用が妥当と判断する。\n\
+  \  foundation T-004 では design.md の節番号が完了条件に明示されており、\n  runtime T-004 だけその水準を下回るのは一貫性の欠如にあたる。\n\
+  \  参照節を明示することで、実装段の担当者がどこを読めばよいか迷わず、\n  テスト記述の精度も向上する。\n  記述が若干長くなる弱点はあるが、複雑化するほどの追加量ではなく、\n\
+  \  読みやすさへの悪影響は軽微である。\n  案 2 を採用すると、実装段で参照節を独自に特定する手間が残り、\n  誤参照のリスクが相対的に高まるため、今直しておく方が後段のコストが低い。\n\
+  confidence: 0.88\nturns_used: 1\nuncertainty_factors:\n  - design.md §Step C 行 305\
+  \ が正しい参照先かどうか、実際の design.md の内容を確認していない\n  - T-004 完了条件の現行記述の全文を読んでいないため、補記後の文面が過度に冗長にならないか確認できていない\n\
+  assumed_context:\n  - foundation T-004 の記述スタイルが runtime T-004 でも適用すべき水準として受け入れられている\n\
+  \  - design.md §判断 7 に相当する節が runtime の design.md にも存在する\ncase_scores:\n  case_1:\
+  \ 8\n  case_2: 3\ncomment_to_human:\n  - 補記する節番号（§判断 7 ＋ §Step C 行 305 など）は、実際の\
+  \ design.md の節番号と照合してから tasks.md を編集してください\n  - 補記後の完了条件が長くなりすぎる場合は、脚注形式や別表への分離も選択肢として検討できます\n\
+  ```"

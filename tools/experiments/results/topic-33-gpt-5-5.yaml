@@ -1,0 +1,15 @@
+provider: openai-api
+model: gpt-5.5
+turn_number: 1
+duration_seconds: 10.903
+sent_messages_count: 1
+response_text: "decision: \"採用：案 1\"\nrationale: |\n  foundation の語彙正本を runtime が参照のみで使用する、という原則は\
+  \ T-011 の完了条件に既に含まれているため、\n  語彙正本改訂時の検出・再検証手順を T-011 に明示するのが最も自然です。\n  案 2 の手動レビュー依存では、foundation\
+  \ 改訂時に runtime 側の波及確認漏れが起きるリスクが残ります。\n  本件は「直した方がよい」分類ですが、F-012 や foundation 側 A-017\
+  \ と同型であり、同じ仕組みに寄せることで運用の一貫性も高まります。\n  ただし、T-011 の範囲が過度に広がらないよう、実装作業としては「語彙正本の識別子・ハッシュ照合」と「参照のみ使用検証」の最小セットに限定するのがよいです。\n\
+  confidence: 0.86\nturns_used: 1\nuncertainty_factors:\n  - foundation 側で語彙正本ハッシュまたはバージョン識別子をどの形式で提供するかが未確定である可能性\n\
+  \  - T-011 の既存テスト基盤でハッシュ照合や差分検出をどこまで容易に追加できるかが不明\nassumed_context:\n  - foundation\
+  \ 語彙正本 6 件には、機械的に参照可能な正本ファイルまたは識別可能な生成物が存在する\n  - F-012 と同一または近接する作業で、runtime 側の検証手順を追加しても大きな重複作業にはならない\n\
+  case_scores:\n  case_1: 8\n  case_2: 3\ncomment_to_human:\n  - T-011 には「foundation\
+  \ 語彙正本の現行版を特定する方法」と「改訂検出時に runtime T-003/T-004/T-011 を再確認する条件」を明記してください。\n  - ハッシュ管理が重い場合でも、最低限バージョン\
+  \ ID または正本ファイルのチェックサム照合は入れるべきです。"

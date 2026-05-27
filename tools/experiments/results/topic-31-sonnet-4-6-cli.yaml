@@ -1,0 +1,24 @@
+provider: claude-code-cli
+model: claude-sonnet-4-6
+turn_number: 1
+duration_seconds: 16.565
+sent_messages_count: 1
+note: 'Claude Code 内の Agent ツール経由（subagent_type: general-purpose、model: sonnet）で呼び出した結果。
+
+  API 経路ではないため、_experiment_n_model.py を使わず、私（メインセッション）が
+
+  Agent ツールで呼び出して応答を受け取った。所要時間は Agent ツールの duration_ms から換算。
+
+  '
+response_text: "```yaml\ndecision: \"採用：案 1\"\nrationale: |\n  完了条件は「実装者が合格を判定する基準」として機能するため、抽象的な表現だけでは\n\
+  \  機械判定が困難になる。テスト要件側に操作的定義があっても、完了条件とテスト要件の\n  整合性を第三者が確認するには、完了条件側にも同じ基準が明記されている方が検証しやすい。\n\
+  \  案 1 で具体的なハッシュ照合・フィールド一致の方法を補記すれば、T-010 実装時に\n  テスト記述の精度が上がり、レビューアが「完了か否か」を独立に判断できるようになる。\n\
+  \  記述が長くなる弱点はあるが、操作的定義を持つことの利益が上回ると判断する。\n  案 2 のままでは完了条件とテスト要件の整合確認が暗黙の知識に依存する形になり、\n\
+  \  tasks.md の自己完結性が下がるため採用しない。\nalternative_proposal: |\nconfidence: 0.85\nturns_used:\
+  \ 1\nuncertainty_factors:\n  - bundle_manifest.yaml と run_manifest.yaml で照合すべきフィールドの正確な一覧がこの所見情報だけでは確定できない（source_repository_id／source_revision／review_mode\
+  \ 以外にも照合対象があるかもしれない）\n  - ディレクトリツリーのハッシュ対象範囲（タイムスタンプを含むか否か等）が未定義\nassumed_context:\n\
+  \  - bundle_manifest.yaml と run_manifest.yaml の両ファイルは T-010 実装時点で必ず生成されるものとして設計が確定している\n\
+  \  - 完了条件の記述は機械判定可能な形式が望ましいという方針がプロジェクト全体で共有されている\ncase_scores:\n  case_1: 8\n \
+  \ case_2: 3\ncomment_to_human:\n  - 案 1 を採用する際は、補記する照合フィールドの一覧を設計文書（design 段）と突き合わせて確定させてから\
+  \ tasks.md を更新することを推奨する\n  - ハッシュ対象範囲（タイムスタンプ除外の有無など）についても完了条件内に一言補足しておくとより機械判定性が高まる\n\
+  ```"

@@ -1,0 +1,19 @@
+provider: human
+model: user
+turn_number: 1
+duration_seconds: 0
+sent_messages_count: 0
+note: '利用者本人の判定（topic-24、F-002、T-004 完了条件で final_label foundation 3 値正本の参照節未明示）。
+
+  完全一致 10 件の一括採用で確定（2026-05-27 セッション 32、利用者明示承認「(イ)」）。
+
+  全 6 経路（API 5 経路＋ Sonnet CLI）が「案 1」で完全一致、判定役の暗示推奨と整合。
+
+  runtime tasks の機能内対処方針は次セッションで tasks.md に反映予定。
+
+  '
+response_text: "decision: \"採用：案 1\"\nrationale: |\n  T-004 完了条件・テスト要件に foundation\
+  \ §節番号（§判断 7 ＋ §Step C 行 305）を補記。foundation T-004 と同水準の参照明示性を確保。\nalternative_proposal:\
+  \ |\nconfidence: 1.0\nturns_used: 0\nuncertainty_factors:\nassumed_context:\ncase_scores:\n\
+  \  case_1: 8\n  case_2: 3\ncomment_to_human:\n  - 完全一致 10 件の一括採用（一括判定方針 (B)）の 1\
+  \ 件として、議論なしで案 1 採用\n  - 全 6 経路（API 5 経路＋ Sonnet CLI）が独立に同じ判定に到達\n"

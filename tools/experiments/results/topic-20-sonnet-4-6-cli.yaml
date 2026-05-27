@@ -1,0 +1,25 @@
+provider: claude-code-cli
+model: claude-sonnet-4-6
+turn_number: 1
+duration_seconds: 17.26
+sent_messages_count: 1
+note: 'Claude Code 内の Agent ツール経由（subagent_type: general-purpose、model: sonnet）で呼び出した結果。
+
+  API 経路ではないため、_experiment_n_model.py を使わず、私（メインセッション）が
+
+  Agent ツールで呼び出して応答を受け取った。所要時間は Agent ツールの duration_ms から換算。
+
+  '
+response_text: "```yaml\ndecision: \"採用：案 1\"\nrationale: |\n  完成判定基準節（行 205）が「T-003／T-004／T-006\
+  \ の成果物で runtime 所有 3 語彙の正本確定」を要求しているのに、\n  T-011 完了条件（行 171）にその確認が含まれていない。これは完成判定基準とタスク完了条件の間に機械的に検出可能な\n\
+  \  整合の穴が生じている状態であり、must-fix の判定は妥当。\n  案 2（完成判定基準節の該当行を削除）は、runtime 所有語彙の正本確定を機械検証から外すことになり、\n\
+  \  改訂時の波及検証手段が失われる。語彙正本確定の機械検証は foundation tasks T-009 で実績ある有効な手法であり、\n  runtime\
+  \ でも同水準を維持することが自然。テスト件数の増加（案 1 の弱点）は許容範囲内で、\n  網羅性の低下（案 2 の弱点）のほうが長期的なリスクとして大きい。\n\
+  \  したがって案 1 を採用し、T-011 完了条件に runtime 所有 3 語彙の正本確定機械検証を追加する。\nalternative_proposal:\
+  \ |\n  （該当なし）\nconfidence: 0.87\nturns_used: 1\nuncertainty_factors:\n  - T-003／T-004／T-006\
+  \ の成果物が既に正本確定済みか、それとも T-011 実行時点で未確定の可能性があるか確認できていない\n  - 案 1 の追加テストが既存の T-011 実装スコープと工数的に整合するか、詳細な見積もりを持っていない\n\
+  assumed_context:\n  - foundation tasks T-009 と同水準の機械検証を runtime でも維持する方針が合意済みであると仮定\n\
+  \  - T-003／T-004／T-006 は runtime tasks の一部であり、T-011 実行前に完了している前提\ncase_scores:\n\
+  \  case_1: 8\n  case_2: 3\ncomment_to_human:\n  - 案 1 追加後、T-011 の完了条件に具体的な検証コマンドまたは検証スクリプトの参照を明記すると、機械判定の曖昧さがさらに減ります。\n\
+  \  - T-003／T-004／T-006 の成果物形式（どこに正本値が記録されるか）が tasks.md に明示されていない場合、検証スクリプト実装時に再度設計が必要になる点を留意してください。\n\
+  ```"

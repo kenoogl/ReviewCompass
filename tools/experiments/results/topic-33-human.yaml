@@ -1,0 +1,25 @@
+provider: human
+model: user
+turn_number: 1
+duration_seconds: 0
+sent_messages_count: 0
+note: '利用者本人の判定（topic-33、A-007、foundation 語彙正本改訂時の波及プロトコル未定義）。
+
+  不一致 6 件のうち 6 件目（最後）、平易説明後に確定（2026-05-27 セッション 32、利用者明示承認「(ニ) F-012 と同じ」）。
+
+  6 経路判定：5 経路案 1（Sonnet CLI／GPT-5.5／GPT-5.4／Gemini-flash／Gemini-pro）、Sonnet API のみ別案（波及手順ノート追記）。
+
+  利用者判定の決め手：F-012（topic-28）で「統一性重視」として案 2（機能横断段で対処）を採用した方針と整合させ、A-007 も同じ扱い。
+
+  A-007 は上流（foundation）からの波及で、F-012（同フェーズ内の波及）と性質は異なるが、いずれも「機能間整合」の問題のため統一的に機能横断段または別運用ルールで対処、tasks.md
+  は変更しない。
+
+  '
+response_text: "decision: \"採用：案 2\"\nrationale: |\n  F-012（topic-28）で採用した「統一性重視」の方針（foundation\
+  \ A-017 と同型として機能横断段で\n  一括対処、tasks.md 変更なし）を A-007 にも適用。foundation 語彙正本改訂時の波及確認は、\n\
+  \  機能横断段または上流改訂時の運用ルールで対処する。tasks.md は変更しない。\n  Sonnet API の別案（波及手順ノートを独立節として追記）は採用せず（F-012\
+  \ との扱いの\n  非対称を避けるため）。\nalternative_proposal: |\nconfidence: 1.0\nturns_used: 1\n\
+  uncertainty_factors:\n  - 上流（foundation）改訂時の運用ルールは未確定、機能横断段とは異なる場面の対処方針も含めて将来検討\n\
+  assumed_context:\n  - F-012 で採用した「統一性重視」の方針を A-007 にも適用、tasks.md は変更しない\ncase_scores:\n\
+  \  case_1: 2\n  case_2: 7\ncomment_to_human:\n  - F-012 と同じ扱いで統一性を保つ\n  - 上流改訂時の運用ルール（A-007\
+  \ の本質的解決）は将来の機能横断段または別途検討事項として保留\n"

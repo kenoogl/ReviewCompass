@@ -1,0 +1,23 @@
+provider: claude-code-cli
+model: claude-sonnet-4-6
+turn_number: 1
+duration_seconds: 15.652
+sent_messages_count: 1
+note: 'Claude Code 内の Agent ツール経由（subagent_type: general-purpose、model: sonnet）で呼び出した結果。
+
+  API 経路ではないため、_experiment_n_model.py を使わず、私（メインセッション）が
+
+  Agent ツールで呼び出して応答を受け取った。所要時間は Agent ツールの duration_ms から換算。
+
+  '
+response_text: "```yaml\ndecision: \"採用：案 1\"\nrationale: |\n  T-006 の成果物（override_paths.yaml）はフェーズ別の上書きパスを含み、\n\
+  \  フェーズの語彙正本は T-003 の成果物（phase_profile_vocab.yaml）が確定する。\n  T-004 経由の間接依存で「実質的に順序は保たれる」という議論はあるが、\n\
+  \  実装者がタスク一覧を見たとき、T-006 の前提タスクに T-003 が明記されていなければ\n  T-003 完了前に T-006 に着手する判断ミスが起きうる。\n\
+  \  前提リストが 1 件増えるコストは軽微であり、依存順反転リスクを仕様レベルで封じる利点がそれを上回る。\n  判定役の暗示推奨も案 1 であり、機能内対処で完結するため採用に障害はない。\n\
+  alternative_proposal: |\nconfidence: 0.88\nturns_used: 1\nuncertainty_factors:\n\
+  \  - T-004 と T-003 の間に別の順序制約が存在する場合、T-004 経由の間接依存が実際にどの程度確実か検証していない\n  - tasks.md\
+  \ の他のタスクで同種の間接依存省略が採用されているかどうか未確認（一貫性の観点）\nassumed_context:\n  - tasks.md において前提タスクの明示は実装着手順の唯一の根拠として機能する（他に依存順を保証するメカニズムがない）\n\
+  \  - T-003 と T-004 は並列着手可能ではなく、T-003 → T-004 の順序が既に確定している\ncase_scores:\n  case_1:\
+  \ 8\n  case_2: 4\ncomment_to_human:\n  - 変更は tasks.md の T-006 前提タスク行（行 107）に「T-003」を追記するだけで完結します。diff\
+  \ が小さく影響範囲も機能内に収まるため、すぐ実施できます。\n  - 他のタスクで類似の間接依存省略がないか一度 grep で確認しておくと、同種の漏れを一括で直せます。\n\
+  ```"

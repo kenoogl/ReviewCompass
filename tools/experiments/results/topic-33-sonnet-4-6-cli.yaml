@@ -1,0 +1,25 @@
+provider: claude-code-cli
+model: claude-sonnet-4-6
+turn_number: 1
+duration_seconds: 16.264
+sent_messages_count: 1
+note: 'Claude Code 内の Agent ツール経由（subagent_type: general-purpose、model: sonnet）で呼び出した結果。
+
+  API 経路ではないため、_experiment_n_model.py を使わず、私（メインセッション）が
+
+  Agent ツールで呼び出して応答を受け取った。所要時間は Agent ツールの duration_ms から換算。
+
+  '
+response_text: "```yaml\ndecision: \"採用：案 1\"\nrationale: |\n  foundation 語彙正本は runtime\
+  \ が依存する契約の基盤であり、その改訂が\n  runtime タスクへ波及するリスクは実装フェーズで顕在化する。手動レビュー\n  に頼る案 2 は、改訂頻度が低くても一度の見落としが\
+  \ T-003／T-004 等の\n  複数タスクに連鎖する可能性があり、リスク対比でコストが高い。\n  案 1 は F-012 と同一作業で対処できると明示されており、追加の開発コスト\n\
+  \  は限定的である。ハッシュ管理の負担は生じるが、foundation 側で管理されれば\n  runtime 側の増分作業は小さい。判定役が「暗示推奨：案\
+  \ 1」としている点、\n  foundation tasks A-017 と同型であるという類似性からも、方針の一貫性を\n  保つ意味で案 1 が適切と判断した。\n\
+  alternative_proposal: |\nconfidence: 0.78\nturns_used: 1\nuncertainty_factors:\n\
+  \  - foundation 側でのハッシュ管理実装がどの時点で確定するか不明であり、runtime T-011 との作業順序依存が生じる可能性がある\n \
+  \ - F-012 との「同一作業」の範囲が厳密に定義されていないため、実際の対処工数が想定より増える可能性がある\nassumed_context:\n  -\
+  \ foundation T-008 のスキーマ確定と語彙正本ハッシュ管理は foundation 側タスクで完結し、runtime 側は参照のみで済む実装になるという前提\n\
+  \  - F-012 での対処が runtime T-011 の完了条件記述に直接流用できる程度に粒度が一致しているという前提\ncase_scores:\n\
+  \  case_1: 8\n  case_2: 3\ncomment_to_human:\n  - F-012 と T-011 の「同一作業」の境界を実装前に明確化しておくと、作業重複や漏れを防ぎやすくなります。\n\
+  \  - foundation 語彙正本のハッシュ管理を foundation 側タスクの完了条件に既に含めているかどうかを確認しておくことを推奨します。\n\
+  ```"

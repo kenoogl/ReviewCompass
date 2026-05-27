@@ -1,0 +1,14 @@
+provider: openai-api
+model: gpt-5.4
+turn_number: 1
+duration_seconds: 8.752
+sent_messages_count: 1
+response_text: "decision: \"採用：案 1\"\nrationale: |\n  本件は must-fix ではないものの、tasks 段の完了条件として参照正本の所在を明示しておく価値が高いです。\n\
+  \  特に判定役が述べている通り、参照節があることで機械判定可能性と実装時の追跡性が上がります。\n  また、foundation 側 T-004 では同種の参照が明示されており、水準を揃える意味でも案\
+  \ 1 が自然です。\n  案 2 は修正量が少ない一方で、「実装段で独自に特定する」あいまいさを残し、後続の解釈ぶれを防げません。\n  記述がやや長くなる弱点はありますが、完了条件・テスト要件は短さよりも検証可能性を優先すべきです。\n\
+  \  よって、T-004 の完了条件と必要ならテスト要件にも、foundation 3 値正本の参照節を明示する方針を採用します。\nconfidence: 0.93\n\
+  turns_used: 1\nuncertainty_factors:\n  - 実際に補記すべき design.md の正式な節番号・見出し名が提示文中では一部省略されている\n\
+  \  - tasks.md 内で参照節の記法をどこまで統一しているかは未確認\nassumed_context:\n  - 当該 tasks.md では完了条件に参照元仕様の節番号を記す運用が許容されている\n\
+  \  - foundation 3 値正本の定義箇所は現時点で安定しており、参照追加による保守負荷は限定的である\ncase_scores:\n  case_1:\
+  \ 9\n  case_2: 4\ncomment_to_human:\n  - 補記時は自由文で長く書くより、「参照: design.md §X, §Y」のように定型化すると可読性低下を抑えられます。\n\
+  \  - foundation 側 T-004 と記法を揃えると、今後の横断レビューや自動チェックのルール化がしやすくなります。"

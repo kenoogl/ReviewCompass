@@ -1,0 +1,22 @@
+provider: human
+model: user
+turn_number: 1
+duration_seconds: 0
+sent_messages_count: 0
+note: '利用者本人の判定（topic-31、A-005、T-010 完了条件「不変・同一性」の操作的定義欠落）。
+
+  不一致 6 件のうち 4 件目、平易説明後に確定（2026-05-27 セッション 32、利用者明示承認「(イ) 案 1」）。
+
+  6 経路判定：5 経路が案 1（Sonnet CLI／GPT-5.5／GPT-5.4／Gemini-flash／Gemini-pro）、Sonnet API のみ別案（クロスリファレンス方式）。
+
+  利用者は多数派の案 1 を採用：完了条件にハッシュ照合・フィールド一致等の判定方法を補記。
+
+  Sonnet API の別案（完了条件は抽象表現＋テスト要件への参照句）は採用せず。
+
+  '
+response_text: "decision: \"採用：案 1\"\nrationale: |\n  T-010 完了条件にハッシュ照合・フィールド一致等の判定方法を補記する。\n\
+  \  完了条件側に判定基準があると、レビュアーが独立に合否を判断できる。\n  例：「ディレクトリツリーの SHA-256 ハッシュが輸出前後で一致、bundle_manifest.yaml\
+  \ の\n  source_repository_id／source_revision／review_mode が run_manifest.yaml と一致」。\n\
+  alternative_proposal: |\nconfidence: 1.0\nturns_used: 1\nuncertainty_factors:\n\
+  assumed_context:\ncase_scores:\n  case_1: 8\n  case_2: 3\ncomment_to_human:\n  -\
+  \ 多数派 5 経路を支持、Sonnet API のクロスリファレンス方式は採用せず\n  - 完了条件側に判定基準を明示することで、レビュアーの独立判定が可能に\n"

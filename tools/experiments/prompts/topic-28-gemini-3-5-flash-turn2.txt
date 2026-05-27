@@ -1,0 +1,28 @@
+ご質問に対する事実応答をお伝えします。これらの情報を踏まえて、最終判定を YAML 形式でお出しください。
+
+# 質問 1：foundation の同型問題に対する一貫性の観点
+
+- **foundation F-011（A-017）の処理方針**：foundation の機能横断波及項目として pending-cross-feature-findings.md に A-017 として登録済み（2026-05-27 セッション 32）。機能横断段（tasks review-wave）で全 7 機能 tasks.md に対して一括対処する見込み
+- **foundation F-011 の 6 経路判定**：6 経路完全一致で「採用：案 1（pending-cross-feature-findings.md に登録）」を支持
+- **runtime F-012 で判定役があえて「案 1（T-011 に機械検証追加）」を暗示推奨した背景**：
+  - 判定役は「foundation の機能内対処方針踏襲なら T-011 に明記すべき」と判定理由に記述
+  - つまり「foundation で案 1（pending に登録、機能横断段で対処）と判定したのと整合する形」というニュアンス。runtime tasks 単独で先行検証することを必ずしも意味しない
+  - foundation が「機能内対処」と分類しつつ実体は pending 登録 = 機能横断段で対処、という二段階構造を踏襲
+
+# 質問 2：下流機能の進捗状況と機械検証の実現性
+
+- **残 5 下流機能の tasks 段状態**：すべて未着手（drafting／triad-review／review-wave／alignment／approval ＝ 全 false）
+  - evaluation：tasks 全 false
+  - analysis：tasks 全 false
+  - workflow-management：tasks 全 false
+  - self-improvement：tasks 全 false
+  - conformance-evaluation：tasks 全 false
+- **機能横断段の実施タイミング**：全 7 機能の tasks.drafting → triad-review が完了してから機能横断段（review-wave）に進む規律（運営ガイド §2.3）
+- **現時点での実現性**：
+  - 案 1（T-011 完了条件に「5 下流機能との接合面の機械検証」を追加）は、下流 5 機能の tasks 段未着手のため、T-011 実装着手時点では下流接合面が確定していない可能性が高い
+  - 機能横断段で確定した下流仕様に対して機械検証を実施するなら、機能横断段を待つ案 2 路線（pending に統合波及項目として登録、機能横断段で一括対処）が自然
+  - foundation 同型問題（A-017）が機能横断段で対処予定であることと整合する
+
+# 判定要請
+
+以上の事実情報を踏まえて、所見番号 F-012 の対処方針を最終判定してください。判定は元のプロンプトで指定された 4 つの選択肢（採用：案 1 ／ 採用：案 2 ／ 別案を提示 ／ 深掘り要求）から 1 つ選び、YAML 形式で出力してください。

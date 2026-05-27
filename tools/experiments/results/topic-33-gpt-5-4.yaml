@@ -1,0 +1,17 @@
+provider: openai-api
+model: gpt-5.4
+turn_number: 1
+duration_seconds: 10.148
+sent_messages_count: 1
+response_text: "decision: \"採用：案 1\"\nrationale: |\n  この所見は「must-fix」ではないものの、foundation\
+  \ 語彙正本の改訂時に runtime tasks 側の再検証漏れを防ぐ仕組みがない点が本質であり、手動レビュー依存のままにする案 2 は弱いです。\n  tasks.md\
+  \ では「参照のみ使用を機械検証する」と既に T-011 に置いているため、そこへ語彙正本の版差分検知（ハッシュ照合等）を追加するのが最も自然で、既存タスクの責務とも整合します。\n\
+  \  判定役も F-012 と同一作業での対処、および foundation 側 A-017 と同型と見ており、横並びの運用統一という観点でも案 1 が妥当です。\n\
+  \  テスト範囲拡大やハッシュ管理の負担はありますが、語彙正本を「再定義・縮約せず参照のみで使う」原則を担保する対価としては許容範囲です。\n  したがって、T-011\
+  \ 完了条件に「foundation 語彙正本の識別子/ハッシュ照合」と「不一致時に runtime 依存タスクの再検証を要求する」手順を明示する方針を採ります。\n\
+  alternative_proposal: |\n  \nconfidence: 0.89\nturns_used: 1\nuncertainty_factors:\n\
+  \  - foundation 側で実際にハッシュ・版識別子をどの粒度で管理しているかが明示されていない\n  - T-011 に追加する機械検証が CI/CD\
+  \ や既存検証基盤にどこまで容易に載せられるか未確認\nassumed_context:\n  - foundation 語彙正本には機械可読な識別子または内容ハッシュを付与できる\n\
+  \  - runtime T-003/T-004 など依存タスクは foundation 語彙改訂時に再検証対象として扱う運用にできる\ncase_scores:\n\
+  \  case_1: 8\n  case_2: 3\ncomment_to_human:\n  - T-011 の追記は「参照のみ使用の検証」と「参照先版の変化検知」を分けて書くと、責務が明確になって実装しやすいです。\n\
+  \  - foundation 側 A-017/F-012 と同じ表現・同じ検証語彙に揃えると、段をまたいだ運用差分を減らせます。"

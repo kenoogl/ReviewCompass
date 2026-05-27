@@ -1,0 +1,30 @@
+ご質問に対する事実応答をお伝えします。これらの情報を踏まえて、最終判定を YAML 形式でお出しください。
+
+# 質問 1：F-003（topic-18）の具体的な内容と判定状況
+
+- **F-003 の指摘内容**：tasks.md T-008 対応要件欄（行 128）に「Requirement 4 受入 4、Requirement 6 受入 3、Requirement 7 受入 5」のみ列挙、Requirement 4 受入 7（failure_observation スキーマ準拠の記録出力）が欠落
+- **判定役の判定**：must-fix、機能内対処、暗示推奨は案 1（対応要件欄に Req 4 受入 7 を追加 ＋ 要件追跡表の連動更新）
+- **F-003 の 6 経路判定状況**：Sonnet API ／ Sonnet CLI ／ GPT-5.5 ／ GPT-5.4 ／ Gemini-flash の 5 経路が「案 1」、Gemini-pro のみ「別案」。多数派が案 1 を支持
+- **F-003 と A-001 の連動性**：F-003 が「対応要件欄の欠落」を指摘し、A-001 が同じ責務領域の「成果物欄の欠落（failure_observation_writer.py が含まれない）」を独立発見した連動関係
+
+# 質問 2：writer.py と failure_observation_writer.py の責務の重み・規模感
+
+- **writer.py の責務**（design.md §証拠出力モデル §主要な投影対応の 7 項目）：
+  - steps/*.json の step_outcome → review_case.step_records[].step_status の投影
+  - 段別識別子（step_id ／ step_name ／ step_prompt_artifact_id ／ step_started_at ／ step_closed_at）→ review_case.step_records[] の投影
+  - 各段の所見 → review_case.findings[] の投影
+  - decisions/decision_units.json への参照 → review_case.findings[].decision_unit_id の投影
+  - validation/validator_result.json への参照 → review_case.validator_result_refs[] の投影
+  - validation/invalidation_markers.json への参照 → review_case.invalidation_marker_refs[] の投影
+  - Step D の統合本体 → review_case.integration_summary の投影
+- **failure_observation_writer.py の責務**（design.md §証拠出力モデル 行 454）：
+  - レビュー実行が失敗状態（review miss ／ disagreement 等）に陥った場合、foundation の failure_observation スキーマに準拠した記録を `failures/failure_observations/<observation_id>.json` に独立書き出し
+  - `failure_observation.run_ref` で `review_case` への一方向参照を保つ（review_case の内部に埋め込まない、不変性の担保）
+- **規模感の比較**：
+  - writer.py は 7 投影規約を扱う中核責務、行数規模は中〜大（推定 100〜200 行、テストも複雑）
+  - failure_observation_writer.py は失敗観察 1 種類の書き出し、行数規模は小〜中（推定 30〜80 行、テストはシンプル）
+  - 両者は責務領域として独立（通常レビュー証拠 vs 失敗観察）し、テスト容易性のため独立ファイルが自然
+
+# 判定要請
+
+以上の事実情報を踏まえて、所見番号 A-001 の対処方針を最終判定してください。判定は元のプロンプトで指定された 4 つの選択肢（採用：案 1 ／ 採用：案 2 ／ 別案を提示 ／ 深掘り要求）から 1 つ選び、YAML 形式で出力してください。

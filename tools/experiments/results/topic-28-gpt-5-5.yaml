@@ -1,0 +1,17 @@
+provider: openai-api
+model: gpt-5.5
+turn_number: 1
+duration_seconds: 21.13
+sent_messages_count: 1
+response_text: "decision: \"採用：案 1\"\nrationale: |\n  判定役が「機能内対処」としており、runtime tasks.md\
+  \ 側に明示を足すのが妥当です。\n  T-011 が接続部の機械検証を担うなら、foundation 6 語彙正本との整合だけでなく、design.md で列挙済みの\
+  \ 5 下流機能との接合面確認も完了条件に含めるべきです。\n  案 2 のように機能横断段へ送るだけだと、runtime tasks 単独では何を確認すべきかが不明なまま残ります。\n\
+  \  ただし、T-011 の範囲は「下流機能全体の統合テスト」ではなく、「runtime が提供・消費する接合面の契約、語彙、入出力形式、機械検証可能な整合確認」に限定するのがよいです。\n\
+  \  機能横断段では、その結果を前提に全体整合を再確認する位置づけにすれば、重複は許容可能です。\nalternative_proposal: \"\"\nconfidence:\
+  \ 0.84\nturns_used: 1\nuncertainty_factors:\n  - T-011 の現在の記述範囲が不明であり、追加後の作業量がどの程度増えるかは未確定です。\n\
+  \  - 5 下流機能側の design/tasks がどこまで確定しているかにより、機械検証できる粒度が変わります。\nassumed_context:\n\
+  \  - runtime design.md には 5 下流機能との接合面が既に列挙されており、tasks.md へ落とし込める状態にあると仮定しました。\n\
+  \  - T-011 は runtime 内の接合面検証タスクであり、完了条件の追加によって責務を明確化できると仮定しました。\ncase_scores:\n\
+  \  case_1: 8\n  case_2: 5\ncomment_to_human:\n  - T-011 には「下流機能の全実装を検証する」のではなく、「runtime\
+  \ 側の公開契約・語彙・入出力仕様が下流機能の接合面と矛盾しないことを機械的に確認する」と明記すると過剰拡大を避けられます。\n  - pending-cross-feature-findings.md\
+  \ 側の登録は残してよいですが、runtime tasks.md 側にも最低限の確認タスクを置くべきです。"
