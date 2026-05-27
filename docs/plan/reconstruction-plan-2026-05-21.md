@@ -1071,6 +1071,19 @@ connection:
 
 旧確定「`tools/api-providers/`」（コミット 064b161 ／ 2380879）を「`tools/api_providers/`」に整合修正。根拠は §4 行 209 の既定規則「Python の慣習に合わせ、ディレクトリ名はハイフン区切りからアンダースコア区切りに改めた（パッケージとして読み込み可能にするため）」。本ディレクトリは Python サブパッケージとして import される（テスト側からの読み込みが必要）ため、規則対象に該当。利用者明示承認「全体の整合性を考えると P-2、ディレクトリ命名規則はなかったか？」（2026-05-26 セッション 29）。
 
+**実施実績（2026-05-27 セッション 34 追記）**：
+
+セッション 28〜33 を通じてフェーズ 3 内に API 経路先取り実装を完了。実態：
+
+- `tools/api_providers/` 配下に 5 モジュール（`config_loader.py` ／ `providers.py` ／ `response_formatter.py` ／ `run_role.py` ／ `__init__.py`）と 8 テストファイル（累積 100 件 pass）
+- `config/api-settings.yaml` に 4 variant（`baseline_claude_cli` ／ `claude_with_openai_adversarial` ／ `all_openai_api` ／ `all_anthropic_api`）を配置済み
+- セッション 31 で Gemini プロバイダー追加（当初 2 プロバイダー → 3 プロバイダーへ拡張、5 モデル → 7 モデル比較体制へ拡大）
+- セッション 31〜33 で foundation／runtime／evaluation の合計 51 件で 7 モデル比較実験を実施（実験ノート `tools/experiments/n-model-comparison.md`）
+
+Gemini プロバイダー追加と 7 モデル比較実験の正本化（プロトコル、評価観点、統計データ集計）は **セッション 34 の要確認 8「7 モデル比較実験プロトコル正本化」** で別途扱う。本サブ節は実態の存在記録のみで、プロトコル詳細と評価観点は別論点。
+
+利用者明示承認の出典：「ｂ。以降推奨案で自律的に進める」（要確認 2 の処理方針として案 b ＝ §7 と §5.9.7.1 のフェーズ位置関連のみ反映、Gemini ／ 7 モデル比較は要確認 8 で扱う、2026-05-27 セッション 34）。
+
 #### 5.9.8 コスト最適化と運用
 
 採用する最適化策：
@@ -3592,6 +3605,7 @@ review-wave／alignment／approval は機能横断段だが、機能単位と機
 - スタブレビュー：`reviewcompass review <feature>` で、対象アプリ側 `<feature>/reviews/` にタイムスタンプ付きのスタブレビュー記録が新規作成される
 - 承認関門のモック：`reviewcompass approve <feature> <phase>` で、対象アプリ側 spec.json の該当フェーズ承認フラグが更新される
 - エンドツーエンド動作：上記 4 コマンドを順に実行する統合テスト（integration test）が 1 本通る
+- API 経路先取り実装の最小構成完了確認（§5.9.7.1 由来、2026-05-26 セッション 28〜29 追加、2026-05-27 セッション 34 で §7 に明示）：`tools/api_providers/` 配下にプロバイダー抽象層と Python スクリプト `run_role.py`、`config/api-settings.yaml` の `connection` ／ `default` ／ `variants` 構造が配置済みで、最低限のテストが pass している
 
 ### フェーズ 4：スタブの上で実機能開発
 
@@ -3599,7 +3613,7 @@ review-wave／alignment／approval は機能横断段だが、機能単位と機
 
 - ReviewCompass 自身を ReviewCompass で開発する（デプロイ前提の自己適用）
 - 第 1 サイクル：3 役完成（Claude CLI 経路、§5.9.1）
-- 第 2 サイクル：API 対応と 3 方式比較データ取得、API 障害対応（§5.9.6・§5.9.7）
+- 第 2 サイクル：API 経路の本格実装（§5.9.7.1 のフェーズ 3 先取り実装を本格化、§5.9.9 行 1142 と整合）と 3 方式比較データ取得、API 障害対応（§5.9.6・§5.9.7）
 - 第 3 サイクル：workflow 層 self-improvement と最適化、conformance-evaluation の本格実装（§5.9.5・§5.9.8・§5.10）
 
 完了条件（すべて満たす）：
