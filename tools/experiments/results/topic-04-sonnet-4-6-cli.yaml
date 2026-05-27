@@ -1,0 +1,49 @@
+provider: claude-code-cli
+model: claude-sonnet-4-6
+turn_number: 1
+duration_seconds: 18.389
+sent_messages_count: 1
+note: |
+  Claude Code 内の Agent ツール経由（subagent_type: general-purpose、model: sonnet）で
+  呼び出した結果。Agent ツールの duration_ms から所要時間を換算。
+response_text: |
+  ```yaml
+  decision: "採用：案 1"
+  rationale: |
+    設計文書（design.md §判断 7）が「語彙正本整合」を
+    foundation 所有正本として 7 語彙まとめて宣言しており、
+    tasks.md の T-009 もその意図を引き継ぐ「テスト戦略継承」
+    項目として設けられている。
+    設計の意図が「語彙正本整合を 1 つの検査項目として束ねる」
+    であれば、T-009 が 7 語彙すべてを網羅するのが自然な整合で
+    ある。
+    案 2 は責務分散として合理的に見えるが、各タスク（T-003 ／
+    T-004）が設計文書の §テスト戦略と同じ「語彙正本整合」の文
+    脈でカバーしていることを保証する記述が現状存在しないため、
+    管理が曖昧になるリスクがある。
+    追加件数も 3 件と小さく、T-009 の累積件数への負荷は許容範
+    囲内と判断する。
+  alternative_proposal: |
+  confidence: 0.78
+  turns_used: 1
+  uncertainty_factors:
+    - T-003 および T-004 が現時点で severity／final_label／confidence_label を
+      実際にどこまで検証しているかが不明であり、案 2 採用の場合の
+      「重複カバー」か「抜け」かを確認できていない
+    - T-009 の 60 件＋foundation テスト 40〜60 件の内訳が不明なため、
+      追加 3 件が本当に小さい影響かどうかの定量的な裏付けが弱い
+  assumed_context:
+    - design.md §テスト戦略の「語彙正本整合を 1 つの検査項目として束ねる」
+      という意図が現在も有効な設計方針であること
+    - T-009 は語彙正本整合専用のテストタスクとして位置づけられており、
+      他タスクとの重複カバー方式は設計方針と整合しないこと
+  case_scores:
+    case_1: 8
+    case_2: 5
+  comment_to_human:
+    - 案 2 を採用するならば、T-003 と T-004 の既存テスト要件に
+      「語彙正本整合の一部としてカバーしている」旨を明示する
+      注記を追加し、T-009 からはその旨を参照するだけにする
+      構成にすることを推奨します。そうしないと後続の保守者が
+      どこで何をカバーしているか把握できなくなります。
+  ```

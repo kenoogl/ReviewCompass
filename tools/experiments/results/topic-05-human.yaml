@@ -1,0 +1,11 @@
+provider: human
+model: user
+turn_number: 2
+duration_seconds: 0
+sent_messages_count: 0
+note: 利用者本人の判定（topic-05 = F-006）。判定者ではなく『答え合わせのための基準』として扱う。推奨案を見た上での判定（公平性確保のため人だけが推奨を見る方針、セッション
+  31 中盤の利用者明示承認）。
+response_text: "decision: \"採用：案 2\"\nrationale: |\n  F-006 の論点を平易説明後に判定。判定役の推奨も案\
+  \ 2、両参照（所有関係＋ enum 値）の明示が設計の意図を反映するため。\nalternative_proposal: |\nconfidence: 0.9\n\
+  turns_used: 2\nuncertainty_factors:\nassumed_context:\ncase_scores:\n  case_1: 6\n\
+  \  case_2: 9\ncomment_to_human:\n  - 判定前に平易な説明を要求した（観点 3 質問能力の発火、案 b' の本旨）\n"

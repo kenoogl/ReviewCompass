@@ -1,0 +1,35 @@
+provider: claude-code-cli
+model: claude-sonnet-4-6
+turn_number: 1
+duration_seconds: 15.211
+sent_messages_count: 1
+note: |
+  Claude Code 内の Agent ツール経由（subagent_type: general-purpose、model: sonnet）で
+  呼び出した結果。Agent ツールの duration_ms から所要時間を換算。
+response_text: |
+  ```yaml
+  decision: "採用：案 1"
+  rationale: |
+    design.md §3 と §3.5 で foundation 所有の語彙正本は 6 種（run_status／validator_status／
+    human_signoff_status／evidence_class／review_mode／confidence_label）と明示されている。
+    tasks.md T-003 行 65 の「5 種の語彙」は単純な数値の誤記であり、
+    正しい数に訂正するだけで設計との整合が回復する。
+    案 2 は confidence_label を別タスクに切り出す案だが、
+    T-003 は既に 6 語彙をまとめて扱う前提で粒度設計されており、
+    再分割すると粒度が悪化し後続のテスト要件（語彙正本値テスト）の追跡が困難になる。
+    変更規模は最小（1 文字の数値訂正）で、後段への意図しない影響が最も少ない。
+  confidence: 0.92
+  turns_used: 1
+  uncertainty_factors:
+    - T-003 本文の列挙がすでに 6 語彙を正しく並べているかどうかを直接確認していない
+    - tasks.md 以外の文書（implementation 段など）で「5 種」と記述している箇所が他にないか未確認
+  assumed_context:
+    - design.md §3 の 6 語彙定義が既に利用者に承認された確定仕様である
+    - T-003 の完了条件の語彙列挙を「6 種」に訂正するだけで整合が取れ、他タスク行の変更は不要
+  case_scores:
+    case_1: 9
+    case_2: 3
+  comment_to_human:
+    - 訂正箇所は tasks.md T-003 行 65 の「5 種の語彙」→「6 種の語彙」の 1 箇所のみです。
+    - 念のため T-003 本文の語彙列挙（行 62 付近）が 6 語彙すべてを含んでいることを目視確認してから編集することを推奨します。
+  ```

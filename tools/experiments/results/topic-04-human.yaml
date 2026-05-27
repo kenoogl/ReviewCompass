@@ -1,0 +1,11 @@
+provider: human
+model: user
+turn_number: 1
+duration_seconds: 0
+sent_messages_count: 0
+note: 利用者本人の判定（topic-04 = F-004）。判定者ではなく『答え合わせのための基準』として扱う。推奨案を見た上での判定（公平性確保のため人だけが推奨を見る方針、セッション
+  31 中盤の利用者明示承認）。
+response_text: "decision: \"採用：案 1\"\nrationale: |\n  5 経路と判定役推奨に同意。Sonnet API のみ案\
+  \ 2 だったが、案 1 を選択。\nalternative_proposal: |\nconfidence: 0.9\nturns_used: 1\nuncertainty_factors:\n\
+  assumed_context:\ncase_scores:\n  case_1: 9\n  case_2: 5\ncomment_to_human:\n  -\
+  \ （簡潔形式での判定、詳細議論なし）\n"

@@ -1,0 +1,17 @@
+provider: openai-api
+model: gpt-5.5
+turn_number: 1
+duration_seconds: 14.615
+sent_messages_count: 1
+response_text: "decision: \"採用：案 1\"\nrationale: |\n  design.md §判断 7 で 7 語彙が foundation\
+  \ 所有正本として宣言されている以上、tasks.md の「語彙正本整合」も 7 語彙すべてを明示的に受けるべきです。\n  design.md §テスト戦略の意図が「語彙正本整合」を\
+  \ 1 つの検査項目として束ねる方向であるため、T-009 に集約する案 1 の方が上流設計との追跡性が高いです。\n  案 2 は自然な責務分散ではありますが、T-009\
+  \ だけを見ると 3 語彙が漏れているように見え、将来の保守時にカバレッジ誤認が起きやすいです。\n  追加は 3 件程度であり、T-009 の既存テスト規模に対して許容範囲です。\n\
+  \  ただし、T-003／T-004 側の enum 値テストと重複する場合は、T-009 側では「foundation 正本との整合確認」に目的を限定して記述するのがよいです。\n\
+  alternative_proposal: |\n  \"\"\nconfidence: 0.88\nturns_used: 1\nuncertainty_factors:\n\
+  \  - T-003／T-004 に既にどの粒度の enum 値テストが定義されているかは本文全体を確認できていない\n  - T-009 の実行時間や保守負荷に厳しい上限があるかは明示されていない\n\
+  assumed_context:\n  - tasks.md は design.md のテスト戦略を実装作業へ漏れなく継承する必要がある\n  - 語彙正本整合テストは、各\
+  \ enum の業務意味テストではなく、foundation 正本との差分検出を主目的とする\ncase_scores:\n  case_1: 9\n  case_2:\
+  \ 6\ncomment_to_human:\n  - T-009 には counter_status／validator_status／evidence_class／review_mode\
+  \ に加えて severity／final_label／confidence_label を明記してください。\n  - 重複を避けたい場合でも、T-009 から\
+  \ T-003／T-004 への単なる参照だけで済ませず、7 語彙を対象とすること自体は T-009 に明示するのが望ましいです。"

@@ -1,0 +1,41 @@
+provider: claude-code-cli
+model: claude-sonnet-4-6
+turn_number: 1
+duration_seconds: 16.269
+sent_messages_count: 1
+note: |
+  Claude Code 内の Agent ツール経由（subagent_type: general-purpose、model: sonnet）で
+  呼び出した結果。Agent ツールの duration_ms から所要時間を換算。
+response_text: |
+  ```yaml
+  decision: "採用：案 1"
+  rationale: |
+    design.md §3 では run_status（4 値）と human_signoff_status（4 値）がともに
+    foundation の語彙正本として明示的に宣言されている。正本として宣言された語彙は
+    tasks 段のテスト要件でカバーされるべきであり、現状 4 語彙だけに留まるのは
+    設計書との不整合になる。
+    案 2 の「フェーズ 3 必須項目で初版語彙固定」という根拠は、テストを省略する
+    正当理由にはならない。語彙値が固定されているからこそ、正本値を正確に確認する
+    テストが意義を持つ。
+    T-003 に 2 語彙を追加する工数は軽微であり、後段の回帰検出力も向上する。
+    設計の意図・整合性・将来の維持コストの三点すべてで案 1 が優位であるため採用する。
+  alternative_proposal: |
+  confidence: 0.87
+  turns_used: 1
+  uncertainty_factors:
+    - run_status と human_signoff_status が tasks.md T-003 以外の別タスクで
+      すでにカバーされている可能性が文書から確認できていない
+    - 「フェーズ 3 必須項目」の詳細な定義と、値テストの位置づけが
+      implementation 段でも重複して求められるかどうかが不明
+  assumed_context:
+    - tasks.md の T-003 がこれら 6 語彙の値テストを集約すべき唯一のタスクである
+    - design.md §3 に記載された 4 値が現時点で最終正本として扱われる
+  case_scores:
+    case_1: 9
+    case_2: 3
+  comment_to_human:
+    - 確認推奨：tasks.md の他タスク（T-001、T-002 等）で run_status ／
+      human_signoff_status の値テストがすでに割り当てられていないかを念のため
+      チェックしてください。重複があれば T-003 への追加は不要になります。
+    - それ以外の場合は案 1 採用でそのまま進めて問題ありません。
+  ```
