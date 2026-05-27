@@ -1,0 +1,17 @@
+provider: openai-api
+model: gpt-5.5
+turn_number: 1
+duration_seconds: 10.538
+sent_messages_count: 1
+response_text: "decision: \"採用：案 1\"\nrationale: |\n  design.md の §取り込み登録が正本として必須\
+  \ 8 項目を定義しており、tasks.md はそれに従うべきです。\n  現状の T-002 は必須項目が 4 項目不足しており、Req 10 受入 1 の「中央側取り込み契約」を満たせません。\n\
+  \  `source_runtime_version` は design.md・要件・必須メタデータ検査のいずれにも根拠がなく、tasks 段で独自に追加すべきではありません。\n\
+  \  runtime バージョン管理は将来拡張としてはあり得ますが、今回の must-fix 所見への対処として design 段を再オープンする必要性は低いです。\n\
+  \  よって、T-002 の責務欄、完了条件、関連テスト、`bundle_intake.py` の出力スキーマを design.md の 8 項目に揃える方針とします。\n\
+  confidence: 0.93\nturns_used: 1\nuncertainty_factors:\n  - 将来的に runtime バージョンを取り込み履歴として保存したい要求が別途存在する可能性\n\
+  \  - tasks.md 内の完了条件・テスト記述に、どの程度 `source_runtime_version` が波及しているかの詳細\nassumed_context:\n\
+  \  - design.md は承認済みの正本であり、tasks 段では原則として design.md に整合させる\n  - `source_runtime_version`\
+  \ は現時点の要件・設計に根拠を持たない追加フィールドである\ncase_scores:\n  case_1: 10\n  case_2: 3\ncomment_to_human:\n\
+  \  - T-002 は `bundle_id`、`run_id`、`source_repository_id`、`source_revision`、`review_mode`、`ingested_at`、`ingestion_status`、`missing_fields`\
+  \ の 8 項目を記録対象として明記してください。\n  - `source_runtime_version` は削除し、将来必要になった場合は別所見または拡張要求として\
+  \ design 段から扱うのが安全です。"

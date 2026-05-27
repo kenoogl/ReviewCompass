@@ -1,0 +1,13 @@
+provider: human
+model: user
+turn_number: 1
+duration_seconds: 0
+sent_messages_count: 0
+note: 利用者本人の判定（topic-43、F-008）。本セッション 33（2026-05-27）の対話形式判定。分岐 6 件のうち 3 件目、案 1（4 経路）と別案（2
+  経路、Sonnet API ／ GPT-5.4）の対立、案 1 採用（一貫性重視）
+response_text: "decision: \"採用：案 1\"\nrationale: |\n  案 1（注記そのまま）を採用。runtime F-008\
+  \ ／ topic-26 の判定（別案＝案 2 ＋ 注記）と同様の枠組みで、foundation／runtime／evaluation の 3 機能で同じ運用に従う構造を維持。完了条件は「承認の記録方法は\
+  \ foundation tasks T-001 と同じ運用に従う」のままで、foundation の運用が将来確定時に追随。利用者発言（topic-26）「完了条件というのは機械が判断するものか？」の方針継承。\n\
+  alternative_proposal: |\nconfidence: 1.0\nturns_used: 1\nuncertainty_factors:\n\
+  assumed_context:\ncase_scores:\n  case_1: 7\n  case_2: 5\ncomment_to_human:\n  -\
+  \ 分岐 6 件のうち 3 件目、案 1（4 経路）と別案（2 経路、Sonnet API ／ GPT-5.4）の対立、案 1 採用（一貫性重視）\n"

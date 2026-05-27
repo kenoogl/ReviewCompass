@@ -1,0 +1,11 @@
+provider: human
+model: user
+turn_number: 1
+duration_seconds: 0
+sent_messages_count: 0
+note: 利用者本人の判定（topic-49、A-004）。本セッション 33（2026-05-27）の対話形式判定。完全一致 13 件の一括採用、runtime
+  A-005 同型
+response_text: "decision: \"採用：案 1\"\nrationale: |\n  完全一致 13 件の一括採用、議論なしで案 1 採用。T-002\
+  \ 完了条件に対称性検証の操作的判定方法（パス構造ハッシュ照合等）を補記（runtime A-005 同型処理）。\nalternative_proposal:\
+  \ |\nconfidence: 1.0\nturns_used: 1\nuncertainty_factors:\nassumed_context:\ncase_scores:\n\
+  \  case_1: 8\n  case_2: 3\ncomment_to_human:\n  - 完全一致 13 件の一括採用、runtime A-005 同型\n"

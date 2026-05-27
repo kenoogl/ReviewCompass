@@ -1,0 +1,16 @@
+provider: openai-api
+model: gpt-5.5
+turn_number: 1
+duration_seconds: 11.155
+sent_messages_count: 1
+response_text: "decision: \"採用：案 1\"\nrationale: |\n  F-011 は「必ず直す」であり、§完成判定基準に対する機械的な担保が\
+  \ T-011 に欠けていることが問題です。\n  design.md で 4 下流機能との接合面を明示している以上、tasks 段の完了条件にもその検証作業を含めるべきです。\n\
+  \  案 2 のように機能横断段へ送ると、evaluation 単独では完成判定基準を満たしたか確認できず、完了判定が外部依存になります。\n  テスト件数は増えますが、追加対象は接合面の整合確認であり、T-011\
+  \ の責務から外れるほど過大ではありません。\n  よって、T-011 完了条件に 4 下流接合面の機械検証を追加し、対応するテスト成果物も明記する方針が妥当です。\n\
+  confidence: 0.9\nturns_used: 1\nuncertainty_factors:\n  - \"test_downstream_interface.py\
+  \ の具体的な実装粒度や既存テスト基盤との統合方法は未確認\"\n  - \"機能横断段 review-wave 側にも同種の検証を置く場合の重複排除ルールは別途整理が必要\"\
+  \nassumed_context:\n  - \"T-011 は evaluation の完成判定に必要な機械検証を集約するタスクである\"\n  - \"\
+  design.md の§下流機能との接合面と§完成判定基準は、tasks.md で実行可能な作業・検証条件に落とし込む必要がある\"\ncase_scores:\n\
+  \  case_1: 9\n  case_2: 3\ncomment_to_human:\n  - \"T-011 には、要件追跡表の双方向整合、語彙正本参照のみの使用、成果物配置適合の\
+  \ 3 点を明示的に完了条件として追加してください。\"\n  - \"機能横断段での検証は補助的・全体整合確認として残してもよいですが、evaluation\
+  \ 側の完了条件からは外さない方がよいです。\""

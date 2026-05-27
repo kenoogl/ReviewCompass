@@ -1,0 +1,16 @@
+provider: openai-api
+model: gpt-5.5
+turn_number: 1
+duration_seconds: 19.482
+sent_messages_count: 1
+response_text: "decision: \"採用：案 1\"\nrationale: |\n  この所見は should-fix であり、完了条件に混在している人間レビュー承認を、機械判定可能な完了条件から切り分けるのが主目的です。\n\
+  \  案 1 は runtime F-008 / topic-26 と同じ整理になり、foundation / runtime / evaluation の T-001\
+  \ 運用を揃えられます。\n  人間レビュー承認は完全に機械判定可能にする必要まではなく、運用上の承認ゲートとして扱えば十分です。\n  案 2 は明確ですが、人間判断を\
+  \ YAML・ファイル存在・コミット ID などに過度に還元し、レビュー承認の柔軟性を損ないます。\n  ただし、foundation tasks T-001\
+  \ の運用が未確定である点は残るため、参照先が確定したらリンクまたは記録形式を追記する前提で案 1 を採用します。\nconfidence: 0.82\nturns_used:\
+  \ 1\nuncertainty_factors:\n  - \"foundation tasks T-001 の承認記録運用が、現時点で具体的に文書化されているか不明\"\
+  \n  - \"tasks.md の完了条件に人間判定をどこまで含めてよいかという全体方針が明文化されているか不明\"\nassumed_context:\n\
+  \  - \"人間レビュー承認は自動テストのような機械判定条件ではなく、運用上の承認ゲートとして扱ってよい\"\n  - \"foundation / runtime\
+  \ / evaluation の T-001 は同じ承認記録運用に揃える方針である\"\ncase_scores:\n  case_1: 8\n  case_2:\
+  \ 5\ncomment_to_human:\n  - \"T-001 完了条件 2 は完了条件本体から外し、注記として「承認の記録方法は foundation\
+  \ tasks T-001 と同じ運用に従う」と整理してください。\"\n  - \"foundation 側の運用が確定したら、参照先のファイル名・節名・記録例を追記すると、将来の読み手にとってより安全です。\""

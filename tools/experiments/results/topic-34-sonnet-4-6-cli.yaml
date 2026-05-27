@@ -1,0 +1,13 @@
+provider: claude-code-cli
+model: claude-sonnet-4-6
+turn_number: 1
+duration_seconds: 15
+sent_messages_count: 1
+note: 'Claude Code 内の Agent ツール経由（subagent_type: general-purpose、model: sonnet）で呼び出した結果。
+
+  API 経路ではないため、_experiment_n_model.py を使わず、私（メインセッション）が
+
+  Agent ツールで呼び出して応答を受け取った。所要時間は Agent ツールの duration_ms から換算。
+
+  '
+response_text: "```yaml\ndecision: \"採用：案 1\"\nrationale: |\n  tasks.md の T-002 責務欄は、design.md §取り込み登録が定める 8 項目の必須フィールドを\n  実装の根拠として参照する立場にある。現状では 4 項目しか記載されておらず、設計文書との\n  不整合が残る。さらに `source_runtime_version` は design.md にも要件にも存在しない不明\n  フィールドであり、根拠がない項目を tasks.md に含めることは実装の誤誘導につながる。\n  案 1 は機能内対処で完結し、design.md を正本として tasks.md を整合させる最小限の修正\n  であるため採用が妥当。案 2 は既に承認済みの design.md を再オープンする必要があり、\n  `source_runtime_version` が設計要求として正式に認められた根拠もない現時点では、\n  コストに見合う利点がない。したがって案 1 を採用する。\nalternative_proposal: |\n  （該当なし）\nconfidence: 0.92\nturns_used: 1\nuncertainty_factors:\n  - `source_runtime_version` が将来の要件として検討中である可能性（プロジェクト内部の\n    議論状況が不明）\n  - T-002 の完了条件・テスト記述に与える修正範囲が想定より広い可能性\nassumed_context:\n  - design.md §取り込み登録の 8 項目は現時点で承認済みの正本であり変更不要と仮定\n  - `source_runtime_version` はチームの合意なく tasks.md に混入した誤記であると仮定\ncase_scores:\n  case_1: 9\n  case_2: 3\ncomment_to_human:\n  - 案 1 採用後、T-002 の責務欄だけでなく完了条件とテスト記述も design.md の 8 項目\n    に合わせて確認・修正することを推奨します。\n  - `source_runtime_version` を将来的に追加したい業務要件があれば、tasks 段ではなく\n    requirements／design の再検討として正式に起票する流れが適切です。\n```"

@@ -1,6 +1,6 @@
 # 次セッション継続用メモ
 
-最終更新：2026-05-27（セッション 32 末、本セッションでの達成：(1) 第 2 段階完了（should-fix 7 件）、(2) foundation tasks の機能内対処完了（must-fix 10＋should-fix 6＋ A-017、spec.json foundation/tasks.triad-review=true）、(3) runtime tasks の起草・triad-review・7 モデル比較実験（must-fix 6＋should-fix 10＝16 件）完了。実験ノート §5.3.3／§5.3.4／§6.13 で foundation＋runtime 合計 32 件の統計データを初期集計、案 1 採用率 71.9%。コミット c044ff6／6b34a22／dff3525／e7d5bac を push 済。次セッションは **runtime の機能内対処** から再開）
+最終更新：2026-05-27（セッション 33 末、本セッションでの達成：(1) **runtime tasks 機能内対処完了**（コミット 4372b0a を push 済）。利用者判定 16 件（topic-18〜33）を runtime/tasks.md に反映、spec.json runtime/tasks.triad-review=true。(2) **evaluation tasks 段の起草・triad-review・7 モデル比較実験・利用者判定・機能内対処完了**。tasks.md 11 タスク起草（T-001〜T-011）、サブエージェント方式 triad-review レビュー（所見 23 件、must-fix 8 ／ should-fix 11 ／ leave-as-is 4）、API 経路 95 件＋turn-2 3 件＋Sonnet CLI 19 件＝合計 117 件の判定経路、利用者本人判定 19 件（topic-34〜52、案 1: 14／別案: 4／案 2: 0）、機能内対処 18 箇所＋遅延確認事項テーブル（DVT）新設、spec.json evaluation/tasks.triad-review=true。(3) 利用者提起：**同根問題のワークフロー修正の議論**は次セッション以降に持ち越し。次セッションは **analysis 機能の tasks 段着手**（依存マップ順 4/7）＋ワークフロー修正議論から再開）
 作業ディレクトリ：`/Users/Daily/Development/ReviewCompass/`（本リポジトリ）
 リポジトリ：`git@github.com:kenoogl/ReviewCompass.git`（main ブランチ）
 
@@ -60,7 +60,7 @@ drafting 段は actor=human または llm（草案作成のみ）、triad-review
 
 ---
 
-## 1. 起動手順（セッション 33 開始時）
+## 1. 起動手順（セッション 34 開始時）
 
 ReviewCompass の運営ガイドラインの必読フローに従う：
 
@@ -82,7 +82,7 @@ ReviewCompass の運営ガイドラインの必読フローに従う：
 
 検証失敗：auto memory の起動時 load は MEMORY.md 索引（1 文要約）までで、シンボリックリンク経由でも規律本体はたどられない。**対処**：active 必読は §1 起動手順で毎セッション Read（参照層は必要時参照のまま）、シンボリックリンクは単一正本（repo）維持の補助として残置。最新の件数・分類は `docs/disciplines/README.md` 参照。詳細は本セッション 27 のコミットメッセージ参照。
 
-## 2. ワークフロー上の現在位置（2026-05-27 セッション 32 末時点）
+## 2. ワークフロー上の現在位置（2026-05-27 セッション 33 末時点）
 
 実態は **spec.json の workflow_state から確認**（§0.1 規律）：
 
@@ -90,11 +90,12 @@ ReviewCompass の運営ガイドラインの必読フローに従う：
 - **requirements 段**：全 7 機能で全段 true
 - **design 段**：全 7 機能で全段 true（セッション 28 末）
 - **tasks 段**：
-  - **foundation**：drafting=true、triad-review=true（セッション 32 で機能内対処完了、コミット c044ff6）、以降 false
-  - **runtime**：drafting=true（セッション 32 起草、コミット dff3525）、triad-review レビュー実施済（subagent_mediated、22 件＝must-fix 6／should-fix 10／leave-as-is 6）、7 モデル比較実験完了（コミット e7d5bac、16 件、利用者判定 案 1: 13／案 2: 2／別案: 1）。**機能内対処は次セッションで実施**
-  - 残 5 機能（evaluation／analysis／workflow-management／self-improvement／conformance-evaluation）：tasks 段全 false
+  - **foundation**：drafting=true、triad-review=true（セッション 32）、以降 false
+  - **runtime**：drafting=true、triad-review=true（セッション 33 で機能内対処完了、コミット 4372b0a）、以降 false
+  - **evaluation**：drafting=true、triad-review=true（セッション 33 で機能内対処完了、本セッションコミット）、以降 false
+  - 残 4 機能（analysis／workflow-management／self-improvement／conformance-evaluation）：tasks 段全 false
 - **implementation 段**：全段 false
-- **7 モデル比較実験**：foundation 16 件（第 1〜2 段階）＋ runtime 16 件（第 3〜4 段階）＝ **合計 32 件完了**、実験ノート §5.3.1〜§5.3.4／§6.13 に集計
+- **7 モデル比較実験**：foundation 16 件＋ runtime 16 件＋ evaluation 19 件＝ **合計 51 件完了**、実験ノート §5.3.1〜§5.3.4／§6.13 に集計
 
 機能横断波及所見：A-001〜A-016 の 16 件対処済み、A-017（foundation F-011 由来）が機能横断段で対処予定（runtime F-012／A-007 は A-017 と同型扱いで重複登録なし）。詳細は `.reviewcompass/pending-cross-feature-findings.md`。
 
@@ -102,30 +103,27 @@ ReviewCompass の運営ガイドラインの必読フローに従う：
 
 ## 3. 次の作業候補（優先順位順）
 
-**現在の主要作業：runtime の機能内対処 → 次機能 evaluation の tasks.drafting → 全機能 tasks 段完了 → §5.12 改訂検討**
+**現在の主要作業：analysis の tasks 段着手 → 残 3 機能の tasks 段完了 → 機能横断段（tasks review-wave）→ §5.12 改訂検討 ＋ 同根問題のワークフロー修正議論**
 
-セッション 32 末で runtime tasks の 7 モデル比較実験まで完了。次セッションは runtime の機能内対処から再開：
+セッション 33 末で foundation／runtime／evaluation の 3 機能 tasks 段の機能内対処まで完了。次セッションは依存マップ順 4/7 の analysis 機能から再開：
 
-1. **runtime tasks の機能内対処**（最優先）：
-   - 利用者判定 16 件の方針を runtime/tasks.md に反映（詳細は各 topic の `tools/experiments/results/topic-NN-human.yaml` 参照）：
-     - **案 1 採用 13 件**（topic-18, 19, 20, 21, 22, 23, 24, 25, 27, 29, 30, 31, 32）：tasks.md 修正あり
-     - **案 2 採用 2 件**（topic-28 F-012、topic-33 A-007）：統一性重視で機能横断段に委ね、tasks.md 変更なし
-     - **別案採用 1 件**（topic-26 F-008）：案 2 ＋ 注記「foundation T-001 と同じ運用に従う」
-   - leave-as-is 6 件（F-001, F-004, F-007, F-011, F-014, A-008）は tasks.md 修正なし、レビュー記録に判定のみ
-   - spec.json の runtime/tasks.triad-review を true に更新（workflow-precheck 経由）
-   - レビュー記録 [2026-05-27-tasks-triad-review.md](.reviewcompass/specs/runtime/reviews/2026-05-27-tasks-triad-review.md) §4.2 ／ §4.3 に利用者判定履歴と反映箇所を記録
-   - 訂正必要：判定役 summary の誤集計（must-fix 5 → 正しくは 6、should-fix 11 → 正しくは 10）を §3.2 集計で修正
+1. **同根問題のワークフロー修正議論**（最優先で先に検討）：
+   - 本セッション 33 で利用者提起：「全フィーチャーの triad-review を行い、それを 7 つのモデルで評価させたところで、同根の問題をまとめて考えるという必要性がでてきた」
+   - 観察された同根の実例：F-008（人間レビュー承認、3 機能で同じ）、F-003（識別子連結保持、runtime A-002 と evaluation F-003）、F-006（陳腐化伝播の前提タスク不足、runtime A-004 と evaluation F-006）等
+   - 候補方向：(α) triad-review 判定役に同根所見検出を必須化、(β) 7 モデル評価プロンプトに過去同根判定を注入、(γ) 全機能 triad-review 完了後に 7 モデル一括、(δ) 機能横断段に同根問題集約を明示
+   - 利用者の構造的解決の苦悩：「ワークフロー遵守させるためのコストが大きい。なんとかならないものかね」「(A)＋(C) は過去にも実行しましたが、効果はありませんでした」 → (A)＋(C)（規律ファイル新設 ＋ memory 蓄積）は効果なしと判明、(B) フック機構が本質的解決だがコスト高、別の構造的解決を模索中
 
-2. **次機能 evaluation の tasks.drafting → triad-review → 7 モデル比較実験**（依存マップ順 3/7）：
-   - foundation／runtime の方針（一気通貫粒度、責務領域単位、要件追跡表、テスト戦略継承、完成判定基準、変更意図）を踏襲
-   - tasks.drafting → サブエージェント方式で triad-review レビュー（主役 Sonnet 4.6／敵対役 Opus 4.7／判定役 Opus 4.7）
-   - 利用者方針「7 モデル比較実験を全機能に適用、統計データ採取」（2026-05-27 セッション 32）に従い、must-fix と should-fix を 16 件程度の 7 モデル比較実験で処理
-   - 利用者判定は対話形式（1 件ずつ平易説明、判定支援資料は事前作成しない、完全一致は要約一括判定）
+2. **analysis の tasks 段着手**（依存マップ順 4/7）：
+   - foundation／runtime／evaluation の方針（一気通貫粒度、責務領域単位、要件追跡表、テスト戦略継承、完成判定基準、変更意図、DVT 等）を踏襲
+   - tasks.drafting → サブエージェント方式で triad-review → 7 モデル比較実験 → 利用者判定（対話形式、完全一致は一括判定）→ 機能内対処
+   - **同根問題への配慮**：先に上記 1 のワークフロー修正方針を確定してから着手するか、暫定対応として「triad-review 判定役に foundation／runtime／evaluation の過去判定を grep して同根識別」を加えるかを利用者と相談
 
-3. **残 4 機能の tasks 段**（依存マップ順 4/7 〜 7/7）：analysis → workflow-management → self-improvement → conformance-evaluation。各機能で：tasks.drafting → triad-review → 7 モデル比較実験 → 機能内対処 → コミット → 次機能
+3. **残 3 機能の tasks 段**（依存マップ順 5/7 〜 7/7）：workflow-management → self-improvement → conformance-evaluation。各機能で：tasks.drafting → triad-review → 7 モデル比較実験 → 機能内対処 → コミット → 次機能
 
 4. **全機能 tasks 段完了後の作業**：
    - **機能横断段（tasks review-wave）**：A-017（foundation F-011 由来）と類似の波及項目（runtime F-012、A-007 含む）を全機能の tasks.md に対して一括対処
+   - **DVT 解除**：evaluation DVT-001（T-009 の analysis 仕様起草後の下流接合面再評価）は analysis tasks 段完了時に解除トリガー発火
+   - **design 軽量再オープン**：F-001（runtime T-002 ingestion_register 8 項目正本化）、F-015 関連（evaluation T-009 命名統一）等で発生する可能性
    - **計画書 §5.12 改訂検討と機能実装**（案 B 路線＝§5.12.11 新節新設、ReviewCompass 自身の implementation 段で dogfooding テスト、進行順序確定：2026-05-27 セッション 32）
 
 7 モデル比較実験の構造（参考、本セッション 32 で確立した運用方式）：
@@ -145,6 +143,10 @@ ReviewCompass の運営ガイドラインの必読フローに従う：
 ## 4. 直近の確定事項
 
 利用者明示承認のあった項目を新しい順に記録（詳細は pending-cross-feature-findings.md ／ docs/disciplines/README.md ／ git log で追える）：
+
+- **セッション 33 後半（2026-05-27）の追加総括**：evaluation tasks 段全体（起草・triad-review・7 モデル比較実験・利用者判定・機能内対処）完了。(1) tasks.md 11 タスク起草（T-001〜T-011、約 230 行）。(2) サブエージェント方式 triad-review レビュー実施（主役 Sonnet 4.6 ／ 敵対役 Opus 4.7 ／ 判定役 Opus 4.7、所見 23 件：主役 16 件 ／ 敵対役独立発見 7 件、判定役判定 must-fix 8 ／ should-fix 11 ／ leave-as-is 4）。(3) 7 モデル比較実験：API 経路 5 モデル × 19 件 = 95 件、Gemini-flash 深掘り 3 件の turn-2、Sonnet 4.6 CLI Agent 並列 19 件、合計 117 件の判定経路。一致度：完全一致 13 件 ／ 分岐 6 件。(4) 利用者本人判定 19 件（topic-34〜52）：案 1 採用 14 件 ／ 別案採用 4 件（F-003 ／ F-012 改良版 A ／ A-006 ／ A-007 別案 A）／ 案 2 採用 0 件。(5) tasks.md 機能内対処 18 箇所 ＋ 遅延確認事項テーブル（DVT）セクション新設、レビュー記録新設、spec.json evaluation/tasks.triad-review=true。(6) 利用者重要発言：「同根の問題をまとめて考える必要性」「(A)＋(C) は過去にも実行しましたが、効果はありませんでした」「ワークフロー遵守させるためのコストが大きい。なんとかならないものかね」 → 構造的解決はフック機構（補助層 C 段階 3、計画書 §5.8）の前倒し検討が必要、本セッションでは結論先送り、次セッションで議論。(7) 表層的失敗の振り返り：実験ノート §3.1 を読まずに `zsh -c` で実験起動失敗、モデル名のドット表記／ハイフン表記の確認漏れ、(A)＋(C) を過去効果なしと知らず再提案、等。利用者明示承認の出典：「(イ)」「はい」「採用：別案」「採用：案 1」「採用：改良版 A」「採用：別案 A」「OK」「q」「採用：案 1」「採用：別案」（topic 個別判定）
+
+- **セッション 33 前半（2026-05-27）の総括**：runtime tasks の機能内対処完了。(1) レビュー記録 §3.2 集計訂正 8 箇所（判定表からの再集計：must-fix 5 → 6、should-fix 11 → 10、leave-as-is 6 で計 22 件）。(2) tasks.md 14 箇所編集：議論論点 1（F-003 ／ A-001 連動、T-008 関連 3 箇所）、議論論点 2（F-005 ／ A-006 連動、T-005 ／ T-007 責務分離 4 箇所）、議論論点 3（A-002、Req 6 受入 6 責務整理 3 箇所）、議論論点 4（A-004、T-010 前提タスクに T-002 追加）、議論論点 5（F-010、T-011 完了条件に runtime 所有 3 語彙の正本確定機械検証）、should-fix 7 件（F-002 ／ F-006 ／ F-008 別案 ／ F-009 ／ F-013 ／ A-003 ／ A-005）。(3) 案 2 採用 2 件（F-012 ／ A-007）は tasks.md 変更なし、機能横断段に委ねる。leave-as-is 6 件は判定のみ記録。(4) レビュー記録 §4.1 見出し訂正、§4.2 利用者判定履歴新設（16 件を topic-NN-human.yaml への出典付き表で記録）、§4.3 反映箇所新設（14 件の編集箇所を行番号付き表で記録）、§4.4 処理結果に更新。(5) spec.json の runtime/tasks.triad-review を true に更新（事前検査 OK）。コミット 4372b0a を push 済。(6) 利用者フィードバック：「やたらと承認をもとめてくるなあ」 → 大きな枠の承認（例：(イ)）後は判定反映を止めず自律進行、不可逆操作（spec.json ／ commit ／ push ／ フェーズ移行）のみ承認を取る運用に切り替える。利用者明示承認の出典：「(イ)」（実験段階の判定を合意済みとみなす運用、本セッション開始時）／「はい」x 5 件（議論論点 1〜5 反映）／「承認」（should-fix 7 件一括）／「承認」（spec.json 更新）／「a」（commit WARN 承知）／「a のあと、b」（push → TODO 更新）
 
 - **セッション 32（2026-05-27）の総括**：(1) 第 2 段階完了（should-fix 7 件、topic-11〜17）、利用者判定 案 1: 3／別案: 4／案 2: 0、別案集約・再議論パターンの実例化（§6.9.7）。(2) foundation tasks の機能内対処完了（must-fix 10＋should-fix 6＋A-017 機能横断波及追加、spec.json foundation/tasks.triad-review=true）、コミット c044ff6＋6b34a22。(3) runtime tasks の起草（11 タスク T-001〜T-011、author: claude-opus-4-7）→ triad-review レビュー実施（subagent_mediated、22 件 must-fix 6／should-fix 10／leave-as-is 6）→ コミット dff3525。(4) runtime 7 モデル比較実験完了（16 件、API 80＋CLI 16＋人本人 16、所要 API 21 分／実時間並列で約 8 分）→ 利用者判定 案 1: 13／案 2: 2／別案: 1、コミット e7d5bac（138 ファイル、+3802 行）。(5) 実験ノート §5.3.3／§5.3.4／§6.13 を新設、foundation＋runtime 合計 32 件の統計データ初期集計、モデル安定性序列を確定（GPT-5.4 最高 87.5%、Sonnet API 最低 71.9%）。(6) 重要な利用者発言：「完了条件というのは機械が判断するものか？」（機械判定が完了条件の必須条件ではないという認識、topic-26 議論の転換点）、「統一性重視」（topic-28／33、foundation 既存判定との一貫性優先）、「判定支援資料はほぼ意味をなさない、逐次平易説明で判定」（対話形式に切り替え、本セッション以降の標準運用）。(7) 進行順序確定：§5.12 改訂は全機能 tasks 段完了後、案 B 路線（§5.12.11 新節新設）、ReviewCompass implementation 段で dogfooding テスト。(8) 規律違反 1 件の自己振り返り：.gitignore コミット時に workflow-precheck commit を呼び忘れ（前段の DEVIATION 解決で意識から抜けた）
 

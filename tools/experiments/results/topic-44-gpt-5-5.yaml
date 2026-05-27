@@ -1,0 +1,16 @@
+provider: openai-api
+model: gpt-5.5
+turn_number: 1
+duration_seconds: 11.695
+sent_messages_count: 1
+response_text: "decision: \"採用：案 1\"\nrationale: |\n  「黙示的に混入しない」は否定命題のため、tasks 段の完了条件としては機械的に確認できる形に落とす必要があります。\n\
+  \  design.md で「valid 母集団のみで計算」と定めている以上、T-007 の完了条件にも invalid／analysis_blocked が比較集計に含まれないことを検査可能に明記するのが妥当です。\n\
+  \  案 2 のように実装段へ委ねると、included_runs[] の扱いや除外タイミングの解釈が分かれ、テスト設計にもぶれが出ます。\n  完了条件が多少長くなる弱点はありますが、検査基準を箇条書きで補記すれば可読性への影響は小さいです。\n\
+  \  判定役の should-fix／機能内対処という判定とも整合します。\nconfidence: 0.9\nturns_used: 1\nuncertainty_factors:\n\
+  \  - \"treatment_comparisons.json の正確なスキーマや included_runs[] の最終フィールド名は未確認\"\n  -\
+  \ \"invalid／analysis_blocked 以外の evidence_class 値が存在する場合の扱いは別途明文化が必要な可能性がある\"\n\
+  assumed_context:\n  - \"T-007 は比較集計生成または比較モデル適用に関するタスクであり、完了条件にテスト可能な基準を書く粒度が許容されている\"\
+  \n  - \"design.md の valid 母集団のみで計算する方針は確定済みで、tasks 段で変更しない\"\ncase_scores:\n  case_1:\
+  \ 9\n  case_2: 3\ncomment_to_human:\n  - \"補記する文言は、例として「treatment_comparisons.json\
+  \ の included_runs[] に含まれる実行は evidence_class == valid のみであり、比較集計後に invalid／analysis_blocked\
+  \ の件数が 0 件であることをテストで確認する」とすると実装・テストに落とし込みやすいです。\""

@@ -1,0 +1,15 @@
+provider: human
+model: user
+turn_number: 1
+duration_seconds: 0
+sent_messages_count: 0
+note: 利用者本人の判定（topic-51、A-006）。本セッション 33（2026-05-27）の対話形式判定。分岐 6 件のうち 5 件目、案 1（2 経路）と別案（4
+  経路）の対立、別案採用（明示性重視）
+response_text: "decision: \"別案\"\nrationale: |\n  別案（前提追加 ＋ 責務欄／インライン注釈で入力源と判定境界の対応関係を明示）を採用。F-006\
+  \ の対処（T-010 前提に T-006 ／ T-007 ／ T-009 追加）に加えて、T-010 責務欄に「選択ロジック判定境界の入力源は T-007 の\
+  \ treatment_comparisons.json、T-009 の exploratory 集計、必要に応じて T-006 の被覆率を入力として判定」と\
+  \ 1 文補記、または前提欄に注釈を加える。実装段への橋渡しを重視。\nalternative_proposal: |\n  別案（4 経路一致：Sonnet\
+  \ API ／ GPT-5.5 ／ Gemini-flash ／ Gemini-pro、いずれも「前提追加 ＋ 責務欄／インライン注釈で入力源と判定境界の対応関係を明示」を提案）\n\
+  confidence: 1.0\nturns_used: 1\nuncertainty_factors:\nassumed_context:\ncase_scores:\n\
+  \  case_1: 5\n  case_2: 7\ncomment_to_human:\n  - 分岐 6 件のうち 5 件目、案 1（2 経路）と別案（4\
+  \ 経路）の対立、別案採用（明示性重視）\n"
