@@ -2922,6 +2922,14 @@ ReviewCompass リポジトリへの移管時に判断：
 - §5.20.4 規律ファイルの対応表（抽出元 → 抽出先のパス対応）
 - **実施履歴**：2026-05-25 セッション 26 で軽量手続き（明示承認＋ archive 退避）により規律ファイルを `docs/disciplines/` に配置。シンボリックリンク経由で起動時に規律本体まで自動で読み込ませる方法はセッション 27 で検証失敗、毎セッション §1 起動手順で Read する fallback 案を採用。配置内訳・件数の最新値は [docs/disciplines/README.md](../disciplines/README.md)、運用経緯は [TODO_NEXT_SESSION.md](../../TODO_NEXT_SESSION.md) §1.5 を参照
 - **実施履歴（追加）**：2026-05-26 セッション 27 で軽量手続きにより旧 dominant-dominated-options ／ choice-presentation を統合し `discipline_options_presentation.md` を新設（active 必読昇格＋事前検査宣言義務新設）、旧 2 件は `docs/disciplines/archive/2026-05-26-consolidation/` へ退避。効果測定ログ [docs/discipline-compliance-reports/options-precheck-log.md](../discipline-compliance-reports/options-precheck-log.md) を併設（計画書 §5.9.5 効果測定 3 指標と同型）
+- **軽量移送の手続き（2026-05-25〜26 の実施事例から抽出、2026-05-27 セッション 34 追記）**：今後、規律ファイルを memory 側から `docs/disciplines/` 側に移送、または `docs/disciplines/` 内で統廃合・撤廃・新設する際の手順は次のとおり：
+  1. 利用者明示承認を取得（対象規律・移送元と移送先・統廃合の場合は統合先と退避先・変更理由を平易な日本語で提示）
+  2. 統廃合元のファイルを `docs/disciplines/archive/<日付>-<種別>/` に退避（削除せず証跡保全、新設の場合は当該手順スキップ）
+  3. memory 側索引（`feedback_*.md`）と `docs/disciplines/README.md` の active 必読 ／ 参照層 ／ archive 一覧表を同期更新
+  4. active 必読は §1 起動手順（[TODO_NEXT_SESSION.md](../../TODO_NEXT_SESSION.md) §1）で毎セッション Read 対象に追加、参照層は必要時 grep ／ Read 参照
+  5. 統廃合事例ごとに効果測定ログ（[docs/discipline-compliance-reports/](../discipline-compliance-reports/)）を必要に応じて併設（§5.9.5 効果測定 3 指標と同型）
+  - 本手続きは正規実装が未整備のため §5.4 軽量化方針／§5.23.13 軽量手続き許容に基づく軽量運用。self-improvement 機能（§5.16）の正規実装後は本機能の所定手続き経由（drafting → review → approval）に移行予定（§5.16 と workflow-management 機能の責務分担、pending A-007 で確定）
+  - 利用者明示承認の出典：「ｂ。以降推奨案で自律的に進める」（要確認 6 の処理方針として案 c ＝ §5.21.8 末尾に軽量移送の手続きを 1 段落で追記、2026-05-27 セッション 34）
 
 ### 5.22 正本文書の ReviewCompass 方針への取り入れ手順（2026-05-21 確定）
 
