@@ -1,6 +1,6 @@
 # 次セッション継続用メモ
 
-最終更新：2026-05-27（セッション 31 末、7 モデル比較実験の **第 1 段階（must-fix 9 件）完了**。Gemini プロバイダー追加（TDD 5-A）、マルチターン対応 send_messages 追加（TDD 5-B）、実験用スクリプト _experiment_n_model.py 作成（TDD 5-C）、累積テスト 100 件 pass。実験ノート [docs/experiments/n-model-comparison.md](docs/experiments/n-model-comparison.md) で §2.6 12 評価観点を事前定義、§5.1 予備実験／§5.3.1 第 1 段階の結果を記録。**重要な発見**：判定モデル間で意見分岐するケースで proxy 役にアサイン権限を与える運用（論文査読システム類似）が有効、§5.12 改訂の論点として §6.9 に追跡記録。次セッションは **第 2 段階（should-fix 7 件、topic-11〜17）** から再開）
+最終更新：2026-05-27（セッション 32 末、本セッションでの達成：(1) 第 2 段階完了（should-fix 7 件）、(2) foundation tasks の機能内対処完了（must-fix 10＋should-fix 6＋ A-017、spec.json foundation/tasks.triad-review=true）、(3) runtime tasks の起草・triad-review・7 モデル比較実験（must-fix 6＋should-fix 10＝16 件）完了。実験ノート §5.3.3／§5.3.4／§6.13 で foundation＋runtime 合計 32 件の統計データを初期集計、案 1 採用率 71.9%。コミット c044ff6／6b34a22／dff3525／e7d5bac を push 済。次セッションは **runtime の機能内対処** から再開）
 作業ディレクトリ：`/Users/Daily/Development/ReviewCompass/`（本リポジトリ）
 リポジトリ：`git@github.com:kenoogl/ReviewCompass.git`（main ブランチ）
 
@@ -60,7 +60,7 @@ drafting 段は actor=human または llm（草案作成のみ）、triad-review
 
 ---
 
-## 1. 起動手順（セッション 32 開始時）
+## 1. 起動手順（セッション 33 開始時）
 
 ReviewCompass の運営ガイドラインの必読フローに従う：
 
@@ -82,62 +82,61 @@ ReviewCompass の運営ガイドラインの必読フローに従う：
 
 検証失敗：auto memory の起動時 load は MEMORY.md 索引（1 文要約）までで、シンボリックリンク経由でも規律本体はたどられない。**対処**：active 必読は §1 起動手順で毎セッション Read（参照層は必要時参照のまま）、シンボリックリンクは単一正本（repo）維持の補助として残置。最新の件数・分類は `docs/disciplines/README.md` 参照。詳細は本セッション 27 のコミットメッセージ参照。
 
-## 2. ワークフロー上の現在位置（2026-05-27 セッション 31 末時点）
+## 2. ワークフロー上の現在位置（2026-05-27 セッション 32 末時点）
 
 実態は **spec.json の workflow_state から確認**（§0.1 規律）：
 
 - **intent 層／feature-partitioning 層**：すべて true
 - **requirements 段**：全 7 機能で全段 true
 - **design 段**：全 7 機能で全段 true（セッション 28 末）
-- **tasks 段**：foundation で drafting=true（コミット 9f1f472）、triad-review レビュー記録あり（コミット 576513b、must-fix 10 件・should-fix 7 件・leave-as-is 4 件の判定）、**機能内対処は本実験完了後に実施**（実験結果と人本人判定を踏まえる）。残 6 機能は全段 false
+- **tasks 段**：
+  - **foundation**：drafting=true、triad-review=true（セッション 32 で機能内対処完了、コミット c044ff6）、以降 false
+  - **runtime**：drafting=true（セッション 32 起草、コミット dff3525）、triad-review レビュー実施済（subagent_mediated、22 件＝must-fix 6／should-fix 10／leave-as-is 6）、7 モデル比較実験完了（コミット e7d5bac、16 件、利用者判定 案 1: 13／案 2: 2／別案: 1）。**機能内対処は次セッションで実施**
+  - 残 5 機能（evaluation／analysis／workflow-management／self-improvement／conformance-evaluation）：tasks 段全 false
 - **implementation 段**：全段 false
-- **API 経路先取り実装（§5.9.7.1）**：TDD サイクル 4 完成＋セッション 31 で 5-A（Gemini）／5-B（マルチターン）／5-C（実験スクリプト）追加、累積 100 件 pass
-- **7 モデル比較実験（人間代役機構 §5.12 検証、`docs/experiments/n-model-comparison.md`）**：予備実験 1 件＋第 1 段階 9 件（must-fix）完了、**第 2 段階 7 件（should-fix）が次セッション以降**
+- **7 モデル比較実験**：foundation 16 件（第 1〜2 段階）＋ runtime 16 件（第 3〜4 段階）＝ **合計 32 件完了**、実験ノート §5.3.1〜§5.3.4／§6.13 に集計
 
-機能横断波及所見：A-001〜A-016 の **16 件すべて対処済み**。詳細は `.reviewcompass/pending-cross-feature-findings.md`。
+機能横断波及所見：A-001〜A-016 の 16 件対処済み、A-017（foundation F-011 由来）が機能横断段で対処予定（runtime F-012／A-007 は A-017 と同型扱いで重複登録なし）。詳細は `.reviewcompass/pending-cross-feature-findings.md`。
 
 規律ファイル：本体は repo の `docs/disciplines/discipline_*.md` に配置、最新の件数・分類は `docs/disciplines/README.md`。
 
 ## 3. 次の作業候補（優先順位順）
 
-**現在の主要作業：7 モデル比較実験 第 2 段階（should-fix 7 件）→ 機能内対処 → 計画書 §5.12 改訂 → 次機能（runtime）の tasks.drafting**
+**現在の主要作業：runtime の機能内対処 → 次機能 evaluation の tasks.drafting → 全機能 tasks 段完了 → §5.12 改訂検討**
 
-セッション 31 末で第 1 段階（must-fix 9 件 × 8 者 = 72 判定）完了。次セッションは第 2 段階から再開：
+セッション 32 末で runtime tasks の 7 モデル比較実験まで完了。次セッションは runtime の機能内対処から再開：
 
-1. **第 2 段階の準備**（最優先）：
-   - レビュー記録 §3.1 の should-fix 7 件（F-005／F-007／F-011／A-003／A-004／A-006／A-007）について、元の主役・反論役の所見から「事実／候補案／深掘り」を新規整形（must-fix と違い §4.1 に整形済みデータがない）
-   - プロンプトファイル 7 件作成（tools/experiments/prompts/topic-11〜17.txt）
-   - F-011 は波及（pending-cross-feature-findings.md 対象）で対処方針が固定的、含めるが解説に注記
+1. **runtime tasks の機能内対処**（最優先）：
+   - 利用者判定 16 件の方針を runtime/tasks.md に反映（詳細は各 topic の `tools/experiments/results/topic-NN-human.yaml` 参照）：
+     - **案 1 採用 13 件**（topic-18, 19, 20, 21, 22, 23, 24, 25, 27, 29, 30, 31, 32）：tasks.md 修正あり
+     - **案 2 採用 2 件**（topic-28 F-012、topic-33 A-007）：統一性重視で機能横断段に委ね、tasks.md 変更なし
+     - **別案採用 1 件**（topic-26 F-008）：案 2 ＋ 注記「foundation T-001 と同じ運用に従う」
+   - leave-as-is 6 件（F-001, F-004, F-007, F-011, F-014, A-008）は tasks.md 修正なし、レビュー記録に判定のみ
+   - spec.json の runtime/tasks.triad-review を true に更新（workflow-precheck 経由）
+   - レビュー記録 [2026-05-27-tasks-triad-review.md](.reviewcompass/specs/runtime/reviews/2026-05-27-tasks-triad-review.md) §4.2 ／ §4.3 に利用者判定履歴と反映箇所を記録
+   - 訂正必要：判定役 summary の誤集計（must-fix 5 → 正しくは 6、should-fix 11 → 正しくは 10）を §3.2 集計で修正
 
-2. **第 2 段階の実行**：
-   - 5 経路 × 7 件 = 35 回の API 呼び出し（zsh -c 経由、settings.local.json で許可済み）
-   - Sonnet 4.6 CLI 7 件（Agent ツール経由）
-   - 利用者本人の判定 7 件（判定支援資料 tools/experiments/judgment-aid-for-human.md を 7 件分追記して提示）
-   - 質問発火時のマルチターン対話継続（案 b' 事実応答型代役）
+2. **次機能 evaluation の tasks.drafting → triad-review → 7 モデル比較実験**（依存マップ順 3/7）：
+   - foundation／runtime の方針（一気通貫粒度、責務領域単位、要件追跡表、テスト戦略継承、完成判定基準、変更意図）を踏襲
+   - tasks.drafting → サブエージェント方式で triad-review レビュー（主役 Sonnet 4.6／敵対役 Opus 4.7／判定役 Opus 4.7）
+   - 利用者方針「7 モデル比較実験を全機能に適用、統計データ採取」（2026-05-27 セッション 32）に従い、must-fix と should-fix を 16 件程度の 7 モデル比較実験で処理
+   - 利用者判定は対話形式（1 件ずつ平易説明、判定支援資料は事前作成しない、完全一致は要約一括判定）
 
-3. **第 2 段階の集計と分析**：
-   - 実験ノート §5.3.2 に結果追記
-   - §6.1〜§6.12 の 12 観点で総合分析（特に観点 6 重大度別の傾向：must-fix vs should-fix の差）
-   - §6.9 のアサイン権限の運用パターンを should-fix で再検証
+3. **残 4 機能の tasks 段**（依存マップ順 4/7 〜 7/7）：analysis → workflow-management → self-improvement → conformance-evaluation。各機能で：tasks.drafting → triad-review → 7 モデル比較実験 → 機能内対処 → コミット → 次機能
 
-4. **機能内対処の実施**（本実験完了後）：
-   - 利用者本人の判定が確定した方針で tasks.md を修正（must-fix 10 件＋必要な should-fix）
-   - spec.json の foundation/tasks.triad-review を true に更新
-   - 規律 [[workflow-precheck-invocation]] で `tools/check-workflow-action.py spec-set foundation tasks triad-review true` 経由
+4. **全機能 tasks 段完了後の作業**：
+   - **機能横断段（tasks review-wave）**：A-017（foundation F-011 由来）と類似の波及項目（runtime F-012、A-007 含む）を全機能の tasks.md に対して一括対処
+   - **計画書 §5.12 改訂検討と機能実装**（案 B 路線＝§5.12.11 新節新設、ReviewCompass 自身の implementation 段で dogfooding テスト、進行順序確定：2026-05-27 セッション 32）
 
-5. **計画書 §5.12 改訂検討と機能実装**（**全機能 tasks 段完了後**、利用者明示承認 §0.2 必須、案 B 路線＝§5.12.11 新節新設、ReviewCompass 自身の implementation 段で dogfooding テスト、進行順序の確定経緯：2026-05-27 セッション 32 利用者発言「現時点では、レビューを優先。この議論はtask段終了後に検討・機能実装。ReviewCompassの実装段でテスト」）：
-   - §5.12.11 新節としてアサイン機構の具体設計を起草（発火条件／アサイン先選定／集約方法／エディタ責務）
-   - §5.12.4 ／ §5.12.5 ／ §5.12.7 は参照のみの軽微更新
-   - 実装は ReviewCompass の implementation 段に組み込み、dogfooding で動作確認
+7 モデル比較実験の構造（参考、本セッション 32 で確立した運用方式）：
+- 比較対象 8 者：Opus 4.7（既出推奨）／Sonnet 4.6 CLI／Sonnet 4.6 API／GPT-5.5／GPT-5.4／Gemini-3.5-flash／Gemini-3.1-pro-preview／人本人
+- 各機能で must-fix ＋ should-fix を対象（leave-as-is は除外）、合計 16 件程度
+- 完全一致は要約一括判定、不一致は 1 件ずつ平易説明＋利用者判定の対話形式（判定支援資料は事前作成しない）
 
-6. **機能横断波及（F-011）**：pending-cross-feature-findings.md に A-017 として追記（tasks 段 review-wave で全機能の tasks.md に対して一括対処）
-
-7. **次機能（runtime）の tasks.drafting**：依存マップ順 2/7、foundation の一気通貫粒度方針を踏襲
-
-7 モデル比較実験の構造（参考）：
-- 比較対象：Opus 4.7（既出推奨）／Sonnet 4.6 CLI／Sonnet 4.6 API／GPT-5.5／GPT-5.4／Gemini-3.5-flash／Gemini-3.1-pro-preview／人本人 の **8 者**
-- 12 評価観点を事前定義（§2.6）：判断収束性／信頼度妥当性／質問能力／経路差／モデル間差／重大度別／出力形式／case_scores 表現力／§5.12 示唆／rationale 質的分析／assumed_context 差異／comment_to_human 質
-- 案 b'（事実応答型代役）でマルチターン対話、推奨案は人本人のみ閲覧（判定者には非開示）
+統計データ初期集計（実験ノート §6.13、2026-05-27 セッション 32）：
+- 合計 32 件（foundation 16 ＋ runtime 16）で案 1 採用率 71.9%、別案 15.6%、案 2 12.5%
+- モデル安定性序列：GPT-5.4（87.5%）> GPT-5.5 ≒ Gemini-flash（84.4%）> Opus 4.7 ≒ Sonnet CLI ≒ Gemini-pro（75〜76.7%）> Sonnet API（71.9%）
+- 残 5 機能完了時点で合計約 112 件のデータ蓄積見込み、計画書 §5.12.11 新節の確定根拠とする
 
 計画書 §5.5 phase_order の補正課題（セッション 26 で認識）：行 376〜383 の phase_order 構造例には self-improvement が記載漏れで 6 機能のみ列挙されているが、§3.1／§5.16 に基づき本設計では 7 機能を採用済み。計画書側の補正は別途追跡。
 
@@ -146,6 +145,8 @@ ReviewCompass の運営ガイドラインの必読フローに従う：
 ## 4. 直近の確定事項
 
 利用者明示承認のあった項目を新しい順に記録（詳細は pending-cross-feature-findings.md ／ docs/disciplines/README.md ／ git log で追える）：
+
+- **セッション 32（2026-05-27）の総括**：(1) 第 2 段階完了（should-fix 7 件、topic-11〜17）、利用者判定 案 1: 3／別案: 4／案 2: 0、別案集約・再議論パターンの実例化（§6.9.7）。(2) foundation tasks の機能内対処完了（must-fix 10＋should-fix 6＋A-017 機能横断波及追加、spec.json foundation/tasks.triad-review=true）、コミット c044ff6＋6b34a22。(3) runtime tasks の起草（11 タスク T-001〜T-011、author: claude-opus-4-7）→ triad-review レビュー実施（subagent_mediated、22 件 must-fix 6／should-fix 10／leave-as-is 6）→ コミット dff3525。(4) runtime 7 モデル比較実験完了（16 件、API 80＋CLI 16＋人本人 16、所要 API 21 分／実時間並列で約 8 分）→ 利用者判定 案 1: 13／案 2: 2／別案: 1、コミット e7d5bac（138 ファイル、+3802 行）。(5) 実験ノート §5.3.3／§5.3.4／§6.13 を新設、foundation＋runtime 合計 32 件の統計データ初期集計、モデル安定性序列を確定（GPT-5.4 最高 87.5%、Sonnet API 最低 71.9%）。(6) 重要な利用者発言：「完了条件というのは機械が判断するものか？」（機械判定が完了条件の必須条件ではないという認識、topic-26 議論の転換点）、「統一性重視」（topic-28／33、foundation 既存判定との一貫性優先）、「判定支援資料はほぼ意味をなさない、逐次平易説明で判定」（対話形式に切り替え、本セッション以降の標準運用）。(7) 進行順序確定：§5.12 改訂は全機能 tasks 段完了後、案 B 路線（§5.12.11 新節新設）、ReviewCompass implementation 段で dogfooding テスト。(8) 規律違反 1 件の自己振り返り：.gitignore コミット時に workflow-precheck commit を呼び忘れ（前段の DEVIATION 解決で意識から抜けた）
 
 - **セッション 31（2026-05-27）の総括**：(1) 7 モデル比較実験（人間代役機構 §5.12 検証）の基盤整備＋第 1 段階完了。コミット cfb5db9（実験ノート初版）／5084746＋1e21138（TDD 5-A：GeminiProvider）／197940b＋60f9de4（TDD 5-B：マルチターン send_messages）／e34c4f5＋ad93688（TDD 5-C：_experiment_n_model.py）／a858432（予備実験完了、8 者全員「採用：案 1」）／f01597a（§2.6 12 評価観点の事前定義）／0e57bdb（第 1 段階完了、83 ファイル 2646 行追加）。(2) Gemini API 追加（gemini-3.5-flash／gemini-3.1-pro-preview、GEMINI_API_KEY は zsh 経由）、累積テスト 100 件 pass。(3) 5 者→ **7 モデル**比較実験に拡大（利用者明示承認「対象モデルを拡大し、google gemini API を追加する」セッション 31）。(4) 第 1 段階（must-fix 9 件 × 8 者）完了：完全一致 4 件／準一致 3 件／分岐 2 件、Sonnet 4.6 の CLI／API 経路差を観察、Gemini 系で質問発火 3 件（マルチターン 2 ターン目に進入）。(5) **重要発見**：分岐論点では proxy 役にアサイン権限（論文査読システム類似）を与える運用が有効、§5.12 改訂の論点として §6.9 に記録（利用者明示承認「d」セッション 31）。(6) settings.local.json に zsh -c 等の許可ルール追加（案 3：deny ルールで安全策）。(7) 判定支援資料 tools/experiments/judgment-aid-for-human.md 作成。(8) F-006（topic-05）と A-005（topic-10）は人本人が「平易な説明が必要」と要求、観点 3（質問能力）の人本人発火例
 
