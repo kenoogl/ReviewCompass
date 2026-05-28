@@ -271,6 +271,25 @@
 - **状態**：登録済み、機能横断段（tasks review-wave）で消化予定（現時点では tasks 段は foundation の triad-review レビュー完了のみ、残 6 機能の tasks.drafting と triad-review が未着手）
 - **組み込み判断（2026-05-27 セッション 34）**：運営ガイド §3.6 や計画書 §5.5 への組み込みは**現時点で不要**。理由：A-017 は個別所見であり、機能横断段で実施されれば消化される性質。汎用パターン化（運営ガイド ／ 計画書本体への手順追加）は、機能横断段の実施結果を見てから再評価する方が安全。**再評価のタイミング**：tasks 段の機能横断段（review-wave）で A-017 を消化した後、対処の効果と類似所見の再発有無を確認したうえで、汎用パターン化の要否を別途判断する。**利用者明示承認の出典**：「ｂ。以降推奨案で自律的に進める」（要確認 3 の処理方針として案 d ＝ pending に組み込み判断を追記、運営ガイド ／ 計画書本体は触らない、2026-05-27 セッション 34）。
 
+### A-018：foundation 語彙正本の所有件数の食い違い（F-013 ／ A-005 同根問題）
+
+- **検出**：セッション 35〜36、analysis tasks 段の triad-review（2026-05-28）の主役所見 F-013（Sonnet 4.6）と敵対役独立発見 A-005（Opus 4.7）の同根所見
+- **記録**：[.reviewcompass/specs/analysis/reviews/2026-05-28-tasks-triad-review.md](specs/analysis/reviews/2026-05-28-tasks-triad-review.md) §1 主役所見 F-013、§2.2 独立発見 A-005、§3.1 判定（must-fix／波及）
+- **重大度**：F-013 ERROR ／ A-005 ERROR（判定役の総合 severity 評価は ERROR と WARN の両論あり、敵対役反証で「上流不確定性が真因」のため WARN 寄りの解釈もありうる）
+- **判定**：must-fix（判定役 Opus 4.7 が認定、波及種別「波及」）
+- **波及範囲**：
+  - **foundation**：`.reviewcompass/specs/foundation/design.md` で語彙正本の所有件数が複数箇所で食い違う：行 644（§完成判定基準で 4 件のみ列挙：`counter_status`／`validator_status`／`evidence_class`／`review_mode`）、行 736（6 件と記載）、§判断 7（§3／§4 委譲で曖昧）、§3.5（`confidence_label` 独立節として追加、A-013 由来）
+  - **analysis**：`.reviewcompass/specs/analysis/tasks.md` 行 27 ／ 行 213-215 で foundation 語彙正本を「7 件」と数える（`counter_status`／`validator_status`／`evidence_class`／`review_mode`／`severity`／`final_label`／`confidence_label`）
+  - **evaluation**：`.reviewcompass/specs/evaluation/tasks.md` 行 219 で foundation 語彙正本を「6 件」と数える（`confidence_label` を含まず）
+- **不整合内容**：foundation 自身が所有する語彙正本の所有件数が foundation/design.md 内で複数箇所で食い違う（4 件 ／ 6 件 ／ 「§判断 7 で §3／§4 委譲」の 3 通り表記）。下流の analysis tasks（7 件）と evaluation tasks（6 件）は foundation 正本の数え方に依存するため、上流 foundation の確定なしには下流の整合が取れない。
+- **対処方針**：
+  - **第 1 段階（上流確定）**：foundation 側で語彙正本の所有件数を正式確定する。候補数値：4 件（行 644 ベース）／ 6 件（行 736 ベース、A-013 信頼度ラベル `confidence_label` を含む）／ 7 件（analysis の数え方、`severity` ／ `final_label` を含む）。foundation/design.md §判断 7 を改訂して所有件数と各語彙の所有者を明示確定
+  - **第 2 段階（下流整合）**：foundation 確定後、analysis tasks 完成判定基準（行 213-215）と evaluation tasks 完成判定基準（行 219）の数字を確定値に書き換え。tasks.md 内の各タスク完了条件・テスト要件に登場する「foundation N 語彙の参照のみ使用」も同期更新
+  - **第 3 段階（軽量再オープン）**：foundation requirements ／ design ／ tasks の該当箇所と analysis ／ evaluation の tasks 該当箇所を §5.23.13 軽量手続きで再オープンして同期更新
+- **依存関係**：foundation 側の正式確定が先。analysis ／ evaluation 側の修正は foundation 確定後に同期更新
+- **状態**：登録済み、機能横断段（tasks review-wave）で消化予定。**7 モデル比較実験の 2 回目**（機能横断段の 7 モデル評価、2026-05-28 セッション 35 で確定した 2 回方式）の評価対象としても扱う
+- **検出経緯の注記**：本所見は本セッション 35 の縦整合チェック（依存マップ順）で発見されず、その後の analysis tasks の triad-review で主役 Sonnet 4.6 と敵対役 Opus 4.7 が独立に検出。敵対役は「foundation 側の確定が不在のまま analysis が 7 件と数えるのは越権参照」と severity 評価を補強。本所見は §5.23.13.3 末尾「セッション 34 整合性確保レビューの結果」の **残り 27 件**とは別系統の新規発見（縦整合チェックの範囲が下流 analysis／evaluation の数値表記までは及ばなかったことが露呈）
+
 ## 4. 対処済みの所見
 
 （本セッションでの新規作成時、未消化のみ）
