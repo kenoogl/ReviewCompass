@@ -4,8 +4,8 @@ started_at: 2026-05-29T07:39:08+09:00
 trigger: A-2（tasks 段で確定した requirements／design への遡及修正 8 件を統合。利用者案ア）
 classification_basis: docs/reviews/reopen-classification-2026-05-29.md
 # 4 過程構成（計画書 §5.6.1）での進行状況。過程番号で記録。
-completed_steps: []
-next_step: 第1過程：判定とフラグ差し戻し（停止点＝フラグ差し戻し内容の利用者承認待ち）
+completed_steps: [第1過程：判定とフラグ差し戻し, 第2過程：正本修正, 第3過程：連鎖再実施, 第4過程：完了]
+next_step: （完了。再オープン手続き終了）
 pending_gates:
   - stages/requirements.yaml#alignment
   - stages/requirements.yaml#approval
@@ -13,4 +13,4 @@ pending_gates:
   - stages/design.yaml#approval
   - stages/tasks.yaml#alignment
   - stages/tasks.yaml#approval
-current_blocker: 第1過程の停止点。spec.json フラグ差し戻し（reopened.requirements／design=true、recheck 設定）の利用者承認待ち
+current_blocker: null  # 全過程完了。requirements／design 再承認済み（2026-05-29、利用者一括承認）、recheck クリア済み。reopened.requirements／design は履歴として true 維持。tasks は triad-review 継続中（本反映が機能内対処、別途 triad-review=true 化）
