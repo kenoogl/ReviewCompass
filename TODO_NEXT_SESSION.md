@@ -48,6 +48,14 @@ drafting 段は actor=human または llm（草案作成のみ）、triad-review
 
 ---
 
+## 最重要案件（毎セッション必読、ブートストラップ完了後に対応）
+
+**ワークフロー手続きのナビゲーション問題** — LLM がワークフロー処理手続きを正しく把握しないまま提案する失敗が繰り返されている。根本解は「手続きを問い合わせ可能な機械的ナビゲータに集約し、規律を N→1 のメタ規律に畳む」＝ workflow-management の実装そのもの。現状はブートストラップ期の症状。当面は利用者がガイドする（2026-05-29 セッション 39 利用者決定）。
+
+本体（背景・真因・根本解・着手トリガー）：[docs/notes/2026-05-29-workflow-navigation-bootstrap-issue.md](docs/notes/2026-05-29-workflow-navigation-bootstrap-issue.md)
+
+---
+
 ## 1. 起動手順（次セッション開始時）
 
 1. `cd /Users/Daily/Development/ReviewCompass`

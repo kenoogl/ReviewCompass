@@ -1,0 +1,26 @@
+provider: human
+model: user
+turn_number: 1
+duration_seconds: 0
+sent_messages_count: 0
+note: |
+  利用者本人の判定（topic-110、G-004 MV-3 の空値の扱い）。セッション 39（2026-05-29）の対話形式判定。
+  7 モデル全一致（全 7 案 1）の論点。利用者は案 1（空値はスキップ、値があるときだけ検査）を採用。
+response_text: |
+  decision: "採用：案 1"
+  rationale: |
+    7 モデル全一致の案 1 を採用。MV-3 に「materialization_commit_hash が空（未実体化）の場合は正常として
+    スキップし、値があるときだけ実在検査する」と明記。tasks T-009 と設計 §17.1 に追記。空を「結論不能」として
+    fail-closed で遮断すると過剰遮断になる。空＝「承認済みだが未実体化の正常状態」として扱う。
+    案 2（MV-3 を第 1 期スコープ外）より、null 時の扱いを定義して第 1 期でも部分的に機能する案 1 が勝る。
+  alternative_proposal: |
+  confidence: 1.0
+  turns_used: 1
+  uncertainty_factors:
+  assumed_context:
+    - materialization_commit_hash の書き込み主体は workflow-management、第 1 期は未実装で常に空
+  case_scores:
+    case_1: 8
+    case_2: 5
+  comment_to_human:
+    - 7 モデル全一致。fail-closed 原則と空値正常扱いの整合を取る

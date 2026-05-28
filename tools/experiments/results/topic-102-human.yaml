@@ -1,0 +1,34 @@
+provider: human
+model: user
+turn_number: 1
+duration_seconds: 0
+sent_messages_count: 0
+note: |
+  利用者本人の判定（topic-102、F-003）。セッション 39（2026-05-29）の対話形式判定。
+  枠組み伝染バイアスの検出事例：起草者（私 Opus）がプロンプトの「事実／深掘り」に
+  「§12.5 が孤立した誤記、§12.1 に合わせて直す」という枠組みを書いたため、6 モデル
+  （起草者含む／Sonnet CLI／Sonnet API／GPT-5.5／GPT-5.4／Gemini-3.1-pro）が案 1 に
+  誘導された。Gemini-3.5-flash だけが枠組みを破り「分子 approved のみ・分母に superseded を
+  含めると、改善（上書き）のたびに却下なしで採用率が下がる不条理（悪いインセンティブ）」を提起。
+  利用者は「他はどうなのか」と問い返したうえで、少数派（Gemini-3.5-flash）の論点を採用。
+response_text: |
+  decision: "採用：案 2"
+  rationale: |
+    枠組み伝染バイアスの補正：起草者の問題文が「§12.5 が誤記」という枠組みを与え 6 モデルを案 1 に
+    誘導したが、Gemini-3.5-flash のみが式の意味を問い直し、改善のたびに採用率が下がる不条理を指摘。
+    superseded（上書き済み）の提案は却下されたのではなく一度は採用されたものなので、分子・分母の
+    両方に含めるのが意味的に正しい。採用率 ＝（approved ＋ superseded）÷（approved ＋ rejected ＋ superseded）に統一する。
+    self-improvement の目的は規律の継続的改善であり、改善を罰する成績指標は目的と矛盾する。
+  alternative_proposal: |
+  confidence: 1.0
+  turns_used: 1
+  uncertainty_factors:
+    - §12.1（承認済み設計）の遡及修正となるため、再オープン手続きの要否を確認する必要がある
+  assumed_context:
+    - superseded は「一度採用され後の改善提案で置き換えられた」状態であり、却下とは異なる
+  case_scores:
+    case_1: 3
+    case_2: 9
+  comment_to_human:
+    - 枠組み伝染バイアス事例。起草者のプロンプト枠組みが 6 モデルを案 1 に誘導、少数派 1 モデルが正論点を提起。
+      多数決なら案 1（不条理な式）が通っていた。利用者の問い返しと少数異論が補正した

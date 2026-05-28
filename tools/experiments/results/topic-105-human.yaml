@@ -1,0 +1,26 @@
+provider: human
+model: user
+turn_number: 1
+duration_seconds: 0
+sent_messages_count: 0
+note: |
+  利用者本人の判定（topic-105、F-006 命名混在）。セッション 39（2026-05-29）の対話形式判定。
+  7 モデル全一致（全 7 案 1）の論点。利用者は案 1（命名ルールを一文明記）を採用。
+response_text: |
+  decision: "採用：案 1"
+  rationale: |
+    7 モデル全一致の案 1 を採用。tasks に命名ルールを一文明記する：「import 対象の Python パッケージ／
+    モジュールはアンダースコア区切り（tools/self_improvement/）、import されない単独実行 CLI スクリプトは
+    ハイフン区切り（tools/self-improvement-check.py）」。Python 慣行に沿い、既存の workflow-management
+    （check-workflow-action.py）とも一貫する。命名混在は故障でなく「部品か単独ツールか」の意図的な区別。
+  alternative_proposal: |
+  confidence: 1.0
+  turns_used: 1
+  uncertainty_factors:
+  assumed_context:
+    - 既存の補助ツールがハイフン区切り CLI で統一されている
+  case_scores:
+    case_1: 8
+    case_2: 5
+  comment_to_human:
+    - 7 モデル全一致。文書化不足の解消が主眼で機能的破綻はない

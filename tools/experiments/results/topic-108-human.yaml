@@ -1,0 +1,29 @@
+provider: human
+model: user
+turn_number: 1
+duration_seconds: 0
+sent_messages_count: 0
+note: |
+  利用者本人の判定（topic-108、F-012 テストの抜け）。セッション 39（2026-05-29）の対話形式判定。
+  7 モデル中案 1×6／別案×1（Sonnet API）。別案は「案 1＋new_discipline の関係明示を機械検証可能な
+  形に定義してからテスト化」。起草者の §4.1 深掘り（関係明示が grep 可能か実装時に詰める）と同趣旨。
+  利用者は案 1 に別案の条件を付けて採用。
+response_text: |
+  decision: "採用：案 1"
+  rationale: |
+    案 1（design §8.8 の全 5 種別を網羅し、抜けている update＝変更箇所の diff／対照表、new_discipline＝
+    ドラフト＋関係明示の種別固有テストを追加）を採用。さらに別案（Sonnet API）の条件を付す：
+    new_discipline の「関係の明示」が機械検証可能な形（grep 可能なキーワード等）に定義されているかを
+    まず確認し、定義してからテスト化する。曖昧なテスト基準で追記しないようにする。
+  alternative_proposal: |
+  confidence: 1.0
+  turns_used: 1
+  uncertainty_factors:
+    - new_discipline の「関係明示」の検証可能形の具体（依存先キーの定義）は実装時に詰める
+  assumed_context:
+    - design §8.8 が 5 種別すべてに追加要件を定めている
+  case_scores:
+    case_1: 9
+    case_2: 0
+  comment_to_human:
+    - 案 1 に Sonnet API の別案条件（検証可能形を先に定義）を付加。起草者 §4.1 深掘りと同趣旨

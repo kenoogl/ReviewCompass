@@ -1,0 +1,25 @@
+decision: "採用：案 1"
+rationale: |
+  案 1（「import 対象はアンダースコア、import されない CLI スクリプトはハイフン」と明記）は、
+  既存の命名実態（tools/self_improvement/ はアンダースコア、tools/self-improvement-check.py はハイフン）と
+  他機能の慣行（workflow-management の check-workflow-action.py もハイフン）の両方に一致している。
+  Python の慣行（パッケージ名はアンダースコア、スクリプトファイルはハイフン可）にも沿っており、
+  既存コードを変更せずにルールを明文化するだけで解消できる。
+  案 2（すべてアンダースコアに統一）は既存補助ツールとの不整合を生み、
+  ファイル名のリネームが必要になって影響範囲が不必要に広がる。
+  should-fix の分類どおり、tasks への一文明記は最小かつ適切な対処である。
+confidence: 0.87
+turns_used: 1
+uncertainty_factors:
+  - 既存の workflow-management を含む他機能で同種の命名ルールが既に文書化されているかどうか
+  - 将来的にシェルスクリプトや他言語のスクリプトが追加された場合の命名ルールの拡張性
+assumed_context:
+  - tools/self_improvement/ 配下のファイルは Python パッケージとして import される
+  - tools/self-improvement-check.py は CLI として直接実行され、他モジュールから import されない
+case_scores:
+  case_1: 8
+  case_2: 5
+comment_to_human:
+  - 命名ルールを tasks に追記する際は、既存の別機能（workflow-management など）にも同ルールが適用されることを
+    注記しておくと、将来の一貫性が保たれやすくなります
+  - プロジェクト全体のコーディング規約ドキュメントがあれば、そちらへの記載も検討してください

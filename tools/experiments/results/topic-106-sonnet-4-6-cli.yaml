@@ -1,0 +1,29 @@
+decision: "採用：案 2"
+rationale: |
+  案 2（すべてのスキーマを tools/self_improvement/schemas/ に集約）を選ぶ。
+  スキーマファイルは「データの形式を定める設計図」であり、アプリケーションコード（ツール）が読んで
+  データを検証するものである。スキーマを利用するコードは tools/self_improvement/ に集中しており、
+  スキーマも同じ場所にあることが参照の局所性を高め、管理の一元化につながる。
+  案 1（「ツール内部スキーマは tools/、永続データ正本スキーマは learning/」）は
+  分類の観点が「スキーマの種類」に基づくが、「永続データの近く」にスキーマを置くことの実際の利便性は低い。
+  データは YAML ファイルで格納されており、スキーマは JSON 形式が多い。物理的な近接よりも
+  コードの近接（スキーマを使うコードと同じ場所）が保守性を高める。
+  F-015（誤参照リスク）についても、learning/workflow/ 直下にスキーマがないほうがシンプルに解消できる。
+  ただし案 2 は既存の proposal.schema.json などの移動を伴い、設計書の配置図更新も必要になる。
+confidence: 0.72
+turns_used: 1
+uncertainty_factors:
+  - proposal.schema.json を tools/ に移動した場合に、workflow-management が学習データを処理する際に
+    スキーマパスを参照しているかどうかが不明（他機能への影響がある可能性）
+  - 「永続データの正本スキーマは永続データの近くに置く」という設計思想が組織・チームで共有されているか
+assumed_context:
+  - スキーマを使う（検証する）のは tools/self_improvement/ 配下のコードが主体である
+  - learning/workflow/ は実行時データの永続ストアであり、スキーマは実行時に外部から参照されない
+case_scores:
+  case_1: 6
+  case_2: 7
+comment_to_human:
+  - 案 2 を採用する場合は、workflow-management など他機能が learning/workflow/ 配下の
+    スキーマファイルを直接参照しているかどうかを事前に grep で確認してください
+  - learning/workflow/ へのスキーマ配置は「データとスキーマの物理的近接」よりも
+    「コードとスキーマの近接」を優先する判断ですが、チームの設計思想と合っているか確認してください

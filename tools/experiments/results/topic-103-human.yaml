@@ -1,0 +1,30 @@
+provider: human
+model: user
+turn_number: 1
+duration_seconds: 0
+sent_messages_count: 0
+note: |
+  利用者本人の判定（topic-103、G-001 設計書の陳腐化）。セッション 39（2026-05-29）の対話形式判定。
+  7 モデル中案 1×4／深掘×1／質問×1／別案×1。非決定・別案いずれも「案 1（設計 §13.3・§19.3 を
+  対処済みに更新）＋承認済み設計の再オープン手続き＋同種陳腐化の全体点検」で実質案 1。
+  topic-101 と同型（承認済み設計の遡及修正）。利用者は案 1 にこの 2 条件を付けて採用。
+response_text: |
+  decision: "採用：案 1"
+  rationale: |
+    案 1（設計 §13.3 行611・§19.3 行923 の A-011／A-016 を「対処済み」に更新し、正本に揃える）を採用。
+    tasks は正しく「対処済み」と書いており、陳腐化しているのは設計本文。tasks 完了基準（§20 整合検査）の
+    充足には設計本文の整合が必要。ただし topic-101 と同じ 2 条件を付す：
+    (1) 承認済み設計の遡及修正のため再オープン手続き（軽量、§5.23.13）を正式に踏む、
+    (2) §13.3・§19.3 以外に同種の陳腐化記述（他の横断所見の古い状態への言及）がないか全体点検し一括更新。
+  alternative_proposal: |
+  confidence: 1.0
+  turns_used: 1
+  uncertainty_factors:
+    - 再オープン手続きの軽量版適用可否（誤記訂正レベルなら即時修正可能か）
+  assumed_context:
+    - A-011／A-016 は正本（pending-cross-feature-findings.md 166/247 行）で対処済み（セッション 28）
+  case_scores:
+    case_1: 9
+    case_2: 0
+  comment_to_human:
+    - 主役の CRITICAL「偽完了宣言」は前提誤り（A-011 は対処済み）で leave-as-is、真の問題は設計本文の陳腐化

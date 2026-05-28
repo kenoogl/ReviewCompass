@@ -1,0 +1,15 @@
+provider: openai-api
+model: gpt-5.5
+turn_number: 1
+duration_seconds: 11.194
+sent_messages_count: 1
+response_text: "decision: \"採用：案 1\"\nrationale: |\n  superseded は「後続提案で上書きされ、無効化された過去の承認」であり、現在有効な採用として数えるのは意味的に不自然です。\n\
+  \  §12.1 と §8.6 は、採用率を approved ÷（approved ＋ rejected ＋ superseded）として扱う意図で一貫しています。\n\
+  \  tasks T-008 完了条件 2 も分母のみを approved ＋ rejected ＋ superseded としており、分子に superseded\
+  \ を含める立場ではありません。\n  したがって、§12.5 手順 3 だけが孤立した誤記と判断するのが最も妥当です。\n  §12.5 手順 3 を approved\
+  \ ÷（approved ＋ rejected ＋ superseded）に修正し、T-008 完了条件 5 が誤った式を継承しないよう明示確認する方針とします。\n\
+  confidence: 0.95\nturns_used: 1\nuncertainty_factors:\n  - 確定済み設計を再オープンする正式手続きの要否は、プロジェクト運用規定に依存する。\n\
+  \  - superseded を履歴上の「過去には採用された実績」として別指標に含めたい要求が存在する可能性は残る。\nassumed_context:\n\
+  \  - ここでの採用率は、現在有効な提案の採用状況を評価するための指標である。\n  - superseded は承認履歴ではなく、採用率の分子に含めるべき有効採用状態ではない。\n\
+  case_scores:\n  case_1: 10\n  case_2: 2\ncomment_to_human:\n  - 設計 §12.5 手順 3 を修正する遡及対応として扱ってください。\n\
+  \  - T-008 完了条件 5 では、§12.5 の手順を再現する際に修正後の式を参照することを明記すると安全です。\n  - superseded を「過去に採用されたが後に無効化された件数」として分析したい場合は、採用率とは別の履歴指標として定義するのがよいです。"

@@ -1,0 +1,30 @@
+provider: human
+model: user
+turn_number: 1
+duration_seconds: 0
+sent_messages_count: 0
+note: |
+  利用者本人の判定（topic-106、F-007 スキーマ配置）。セッション 39（2026-05-29）の対話形式判定。
+  判定分布は案 1×5／案 2×1（Sonnet CLI）／別案×1（Gemini-3.1-pro）だが、中身は多数派が同方向に収束。
+  5 モデルが「正本性で分離（案 1）」を支持、うち Gemini-3.5-flash（案 1 内）と Gemini-3.1-pro（別案）が
+  「直下でなく schemas/ 専用サブフォルダに置く」精緻化を明記。利用者は精緻化版を採用。
+response_text: |
+  decision: "採用：案 1"
+  rationale: |
+    案 1（正本性で分離：ツール内部の中間スキーマ provenance／signal は tools/self_improvement/ 配下、
+    永続データの正本スキーマ proposal／rollback／metrics は learning/workflow/ 配下）を採用。
+    ただし F-015（スキーマとデータの混在・誤参照リスク）を根本排除するため、Gemini 2 モデルの精緻化を取り入れ、
+    スキーマは各領域の直下でなく schemas/ 専用サブフォルダに置く（tools/self_improvement/schemas/ ／
+    learning/workflow/schemas/）。データ（各サブディレクトリ）とスキーマ（schemas/）の階層を明確に分ける。
+    孤立は Sonnet CLI の案 2（全スキーマを tools 側に集約）1 件のみで、正本スキーマがツール側に寄りすぎる難点。
+  alternative_proposal: |
+  confidence: 1.0
+  turns_used: 1
+  uncertainty_factors:
+  assumed_context:
+    - 永続データの正本スキーマは workflow-management 等の他機能からも参照されうるインターフェース
+  case_scores:
+    case_1: 8
+    case_2: 4
+  comment_to_human:
+    - 判定は 3 分散に見えるが中身は schemas/ サブフォルダ精緻化に多数収束。利用者はその精緻化版を採用

@@ -1,0 +1,27 @@
+provider: human
+model: user
+turn_number: 1
+duration_seconds: 0
+sent_messages_count: 0
+note: |
+  利用者本人の判定（topic-100、G-003 依存逆転）。セッション 39（2026-05-29）の対話形式判定。
+  7 モデル全一致（全 7 案 1）の論点。起草者（Opus）は当初「must-fix は過大評価の疑い」と見ていたが、
+  全モデルが案 2（依存逆転）を採らず案 1（責務境界の一文明記、実装順は維持）に収束。利用者も案 1 を採用。
+response_text: |
+  decision: "採用：案 1"
+  rationale: |
+    7 モデル全一致の案 1 を採用。実装順は現状維持（T-004→T-005）とし、tasks に「T-004 は
+    statistical_evidence の存在確認のみ、中身の生成は T-005 の責務」と責務境界を一文明記する。
+    コードを組む順序と実行時のデータの流れは別物で、現行のデータの流れ（提案→検証）どおりで破綻しない。
+    案 2（依存逆転）はデータの流れの基本原則を崩し、提案モデルが検証モデルに依存する不自然な構造になる。
+  alternative_proposal: |
+  confidence: 1.0
+  turns_used: 1
+  uncertainty_factors:
+  assumed_context:
+    - status_change は 5 種別中 1 つで、他 4 種別は statistical_evidence 必須でない
+  case_scores:
+    case_1: 8
+    case_2: 3
+  comment_to_human:
+    - 起草者の「must-fix 過大評価の疑い」に対し全モデルが案 1（軽い責務境界明記）を選択し、案 2 は誰も採らなかった

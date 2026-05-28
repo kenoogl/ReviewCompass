@@ -1,0 +1,30 @@
+decision: "採用：案 2"
+rationale: |
+  案 2（T-004 完了条件に「スキーマの pattern 制約で target_discipline_path を検証」と明記）を選ぶ。
+  案 1 と案 2 は排他ではないが、案 2 はスキーマレベルでの自動制約であり、
+  完了条件の明記（案 1）と比べてより堅牢な担保になる。
+  pattern 制約をスキーマに定義すれば、すべての提案が自動的にパス検証を通過し、
+  手動 grep よりも確実性が高い。また pattern 制約は proposal.schema.json という永続的な設計資産に残るため、
+  将来の保守コストも低い。
+  案 1（完了条件への明記のみ）は grep による手動確認を想定しており、
+  実装者が忘れる・省略するリスクがある。案 2 はスキーマ定義という機械的な強制力を持つ。
+  MV-1（規律ファイルへの直接書き込み検出）と組み合わせることで二重のゲートが実現でき、
+  提案対象限定の要件（Req 3 受入 2）をより確実に担保できる。
+  なお「案 2 を採用する」とは「proposal.schema.json に pattern 制約を追加し、
+  T-004 完了条件にその検証を明記する」という意味で、案 1 の内容（完了条件への記載）も実質的に含む。
+confidence: 0.78
+turns_used: 1
+uncertainty_factors:
+  - proposal.schema.json のスキーマ検証ライブラリが pattern 制約に対応しているかどうか（JSON Schema Draft の版など）
+  - docs/disciplines/ 以外の正当なパスが将来生じた場合に pattern を変更する必要がある（柔軟性のトレードオフ）
+assumed_context:
+  - プロジェクトが使う YAML/JSON 検証ライブラリは JSON Schema の pattern 制約をサポートしている
+  - docs/disciplines/discipline_*.md というパス構造は第 1 期の間は変更されない
+case_scores:
+  case_1: 7
+  case_2: 8
+comment_to_human:
+  - pattern 制約の正規表現（例：^docs/disciplines/discipline_.*\.md$）が正しいかどうかを
+    実際のファイルパスでテストしてから schema.json に追加してください
+  - 案 2 採用でも T-004 完了条件に「pattern 制約が proposal.schema.json に定義されていることを確認する」
+    という一文を追加することで、案 1 の意図（完了条件への明示）も併せて実現できます
