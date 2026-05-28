@@ -1,0 +1,30 @@
+provider: human
+model: 利用者本人
+turn_number: 1
+duration_seconds: —
+sent_messages_count: 1
+note: |
+  analysis tasks A-007（T-006 で図表束と報告断片の 2 責務を 1 タスクに統合、報告断片の必須項目欠落）の
+  対処方針判断。2026-05-28 セッション 36、メインセッション（claude-opus-4-7）の
+  平易説明（経緯／2 候補案／7 モデル判断結果／少数派論拠／多数派論拠／後段影響の
+  深掘り）を受けて利用者が判断。
+  議論履歴は .reviewcompass/specs/analysis/reviews/2026-05-28-tasks-triad-review.md
+  §4.2 を参照。
+response_text: |
+  decision: "採用：案 1"
+  rationale: |
+    平易説明後の利用者判断。多数派（7 モデル中 5 モデル）が推奨する案 1
+    （T-006 責務文に報告断片の必須 6 項目すべて、特に text_stub と
+    applicable_destinations を明示追加）を採用。利用者発言「案 ア」
+    （多数派採用、2026-05-28 セッション 36）。
+  alternative_proposal: |
+  confidence: 1.0
+  turns_used: 1
+  uncertainty_factors:
+    - 少数派 2 モデル（Gemini-3.5-flash ／ Gemini-3.1-pro）は「1 タスク ＝ 1 責務領域」原則を根拠に案 2（T-006a／T-006b に分割）を主張、これは将来の見落とし再発を構造的に防ぐ案
+    - 他機能（foundation 等）でも密接責務を 1 タスク統合する例（foundation T-004 で 5 スキーマ統合）があり、案 1 が他機能との整合性高い
+  case_scores:
+    case_1: 利用者本人による点数付与なし
+    case_2: 利用者本人による点数付与なし
+  comment_to_human:
+    - 平易説明を経て案 1 を採用。should-fix の変更コスト最小と他機能との整合性を支持。

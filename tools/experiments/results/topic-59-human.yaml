@@ -1,0 +1,32 @@
+provider: human
+model: 利用者本人
+turn_number: 1
+duration_seconds: —
+sent_messages_count: 1
+note: |
+  analysis tasks A-002（T-007 完了条件「メトリクス契約を上書きしない」の機械検証手順未定義）の
+  対処方針判断。2026-05-28 セッション 36、メインセッション（claude-opus-4-7）の
+  平易説明（経緯／2 候補案／7 モデル判断結果／少数派論拠／多数派論拠／後段影響の
+  深掘り）を受けて利用者が判断。
+  議論履歴は .reviewcompass/specs/analysis/reviews/2026-05-28-tasks-triad-review.md
+  §4.2 を参照。
+response_text: |
+  decision: "別案を提示"
+  rationale: |
+    平易説明後の利用者判断。多数派（7 モデル中 6 モデル）が推奨する別案
+    （パス検査 ＋ スキーマ重複検査の二段検査 ＋ T-011 との責務境界明記）を採用。
+    利用者発言「topic-59 については案 アの推奨案を採択」（2026-05-28 セッション 36）。
+  alternative_proposal: |
+    T-007 の完了条件を次の 3 点に具体化：
+    (1) 書き込み先パス制約：本機能が出力するすべてのファイルが analysis/destinations/ 配下のみであることを CI で grep または静的解析で機械検証
+    (2) スキーマ非重複制約：role_diff.json ／ mode_diff.json のトップレベルフィールド名・型定義が evaluation のメトリクス契約と重複しないことをスキーマ差分スクリプトで機械検証（evaluation 側スキーマ実体化次第追加）
+    (3) T-011 との責務境界明記：(1)(2) は静的・単体レベルの構造保証、実行時の入出力整合は T-011 の責務とする旨を完了条件に注記
+  confidence: 1.0
+  turns_used: 1
+  uncertainty_factors:
+    - 7 モデル比較で 1 モデル（Gemini-3.5-flash）が案 1 を選んだが、論拠（evaluation メトリクス契約の物理実体未確定）は別案でも段階的に吸収可能
+  case_scores:
+    case_1: 利用者本人による点数付与なし
+    case_2: 利用者本人による点数付与なし
+  comment_to_human:
+    - 平易説明を経て別案（二段検査）を採用。T-007 と T-011 の責務境界明示が後続実装段の判断を支援する点を評価。

@@ -1,0 +1,34 @@
+provider: human
+model: 利用者本人
+turn_number: 1
+duration_seconds: —
+sent_messages_count: 1
+note: |
+  analysis tasks A-008（T-008 完了条件「必須 6 項目」と design.md §14.5「必須 9 件」の関係未明示）の
+  対処方針判断。2026-05-28 セッション 36、メインセッション（claude-opus-4-7）の
+  平易説明（経緯／4 候補案：案 1 ／ 案 2 ／ 別案 ／ 深掘り要求／7 モデル判断結果／少数派論拠／多数派論拠／後段影響の
+  深掘り）を受けて利用者が判断。
+  議論履歴は .reviewcompass/specs/analysis/reviews/2026-05-28-tasks-triad-review.md
+  §4.2 を参照。
+response_text: |
+  decision: "別案を提示"
+  rationale: |
+    平易説明後の利用者判断。多数派（7 モデル中 6 モデル）が推奨する別案
+    （両文書への TBD 付き仮記述、確定後に埋める 2 段階方式）を採用。
+    利用者発言「案 ア」（多数派採用、2026-05-28 セッション 36）。
+  alternative_proposal: |
+    (1) tasks.md T-008 完了条件付近に注記を追加：
+        「conformance_intake.json の必須 6 項目は、上流 conformance-evaluation §14.5 の必須 9 件を本機能の取り込みスキーマに再編成したもの。9 件から 6 項目への対応マッピングは design.md §14.5 参照節を参照のこと（詳細は設計確認後に確定）」
+    (2) design.md §14.5 参照節に注記を追加：
+        「取り込み元 9 件 ↔ 本機能取り込みスキーマ 6 項目の対応マッピングは別途確定（TBD）。確定後ここに対応表を追記」
+    (3) DVT（遅延確認事項テーブル）に DVT-A003 として登録：
+        「conformance-evaluation §14.5 の正本実体化後、9 件→6 項目の対応マッピングを design.md と tasks.md の両文書に反映」
+  confidence: 1.0
+  turns_used: 1
+  uncertainty_factors:
+    - 多数派と少数派（GPT-5.4 の深掘り要求）は本質的に同じ方向（マッピング確定）を指しており、違いはタイミング（将来 vs 先に）のみ。本セッション内で conformance-evaluation 正本の実体化は不可能なため、別案が現実的
+  case_scores:
+    case_1: 利用者本人による点数付与なし
+    case_2: 利用者本人による点数付与なし
+  comment_to_human:
+    - 平易説明を経て別案を採用。TBD ＋ DVT 登録の 2 段階方式を支持。
