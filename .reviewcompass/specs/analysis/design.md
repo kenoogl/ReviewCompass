@@ -133,11 +133,13 @@ analysis/
 │       ├── mode_comparison_report.json # 3 経路比較データ
 │       ├── conformance_compliance_trend.json # 取り込み正本の加工版（規律遵守率の時系列、A-010 対処）
 │       └── manifest.yaml
-└── figures_tables/
-    ├── table_source_bundles/
-    │   └── <table_id>.json
-    └── figure_source_bundles/
-        └── <figure_id>.json
+├── figures_tables/
+│   ├── table_source_bundles/
+│   │   └── <table_id>.json
+│   └── figure_source_bundles/
+│       └── <figure_id>.json
+└── fragments/                          # 報告断片（fragment_type 5 値正本、F-016 対処 2026-05-28 セッション 36）
+    └── <fragment_id>.json
 ```
 
 ### 配置の根拠（Placement Rationale）
@@ -145,7 +147,25 @@ analysis/
 - **`shared/`**：4 出力先で共通に参照される台帳群を集約する。主張対応図・証拠台帳・注意点台帳・収束差分は 4 出力先のすべてが追跡可能性の根拠として参照するため、複製ではなく単一配置とする（要件 8 受入 3：追跡可能性を共通保持）
 - **`destinations/<出力先>/`**：4 出力先ごとに必要な情報粒度と要約レベルを別の成果物として持つ（要件 8 受入 2）。各出力先の `manifest.yaml` はその出力先固有の加工方針と版を記録する（要件 8 受入 4）
 - **`figures_tables/`**：図表の原データ束は出力先によらず再利用可能であるため、`shared/` でも `destinations/` でもなく独立した配置とする
+- **`fragments/`**（F-016 対処 2026-05-28 セッション 36）：報告断片（`claim_summary` ／ `method_note` ／ `limitation_note` ／ `comparison_summary` ／ `trend_summary` の 5 値 `fragment_type` 正本）は図表束（`figures_tables/`）と兄弟関係であり、出力先によらず再利用可能（複数出力先が異なる組み合わせで参照する）であるため独立配置とする
 - **共通／派生の分離理由**：要件 8 受入 3 が「すべての出力先で `evaluation` 経由の証拠への追跡可能性を保持する」と求める。共通台帳を 1 か所に置くことで、出力先ごとに台帳を複製しない（追跡情報の散逸防止）
+
+### 本機能が所有する語彙正本と下流参照禁止（Owned Vocabularies and Downstream Reference Rule、A-010 対処 2026-05-28 セッション 36）
+
+本機能は次の 4 語彙を正本として所有し、下流機能（`self-improvement` 等）は **再定義禁止で参照のみで使用** する。本規律は foundation の語彙正本所有規律（`evidence_class` ／ `review_mode` ／ `counter_status` 等の正本所有と下流参照禁止）と同型である。
+
+| 語彙 | 値域 | 確定タスク | 用途 |
+|---|---|---|---|
+| `maturity_label` | 3 値（`mature` ／ `preliminary` ／ `exploratory`） | T-004 | 証拠の成熟度ラベル（`evidence_class` 由来の派生分類） |
+| `limitation_type` | 4 値（`invalid_data_exclusion` ／ `partial_evidence` ／ `methodological_limitation` ／ `mixed_review_mode`） | T-005 | 注意点・限界の種別 |
+| `fragment_type` | 5 値（`claim_summary` ／ `method_note` ／ `limitation_note` ／ `comparison_summary` ／ `trend_summary`） | T-006 | 報告断片の種別 |
+| `regeneration_status` | 4 値（`pending` ／ `in_progress` ／ `completed` ／ `failed`） | T-010 | 再生成タスクの状態 |
+
+**下流参照禁止規律**：
+
+- `self-improvement` ／ 他下流機能は上記 4 正本を **再定義してはならない**。本機能の確定値を **参照のみで使用** する
+- 値域の拡張・変更が必要になった場合は、本機能設計の改訂で対応（下流での再定義は禁止）
+- 本規律は T-011 完了条件の機械検証対象に含める：下流機能の仕様文書・実装コードで本機能 4 正本の re-definition が無いことを grep または静的解析で確認
 
 ### 出力先ごとの最低限必須成果物（Required Artifacts per Destination）
 
@@ -495,6 +515,8 @@ analysis/
 - `intake_at`：取り込み時刻
 
 **必須／任意の区分**：必須：上記すべて。任意項目はなし。
+
+**注（A-008 対処 2026-05-28 セッション 36）**：本機能の正本 `conformance_intake.json` の必須 6 項目は、上流 `conformance-evaluation` 設計 §14.5 の機械可読出力スキーマ（必須 9 件 ＋ 任意 2 件）を本機能の取り込みスキーマに再編成したもの。9 件から 6 項目への対応マッピング（集約・除外・統合の規則）は別途確定（TBD）、確定後ここに対応表を追記する。本確認事項は tasks.md DVT-A003 として登録、解除トリガー：`conformance-evaluation` の正本スキーマ実体化時。
 
 ### 3. 出力先ごとの加工版（別名で配置、A-010 対処）
 
