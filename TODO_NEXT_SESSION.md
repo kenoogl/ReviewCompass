@@ -1,6 +1,6 @@
 # 次セッション継続用メモ
 
-最終更新：2026-05-28（セッション 37 末。本セッションの主な達成：(1) workflow-management tasks.drafting 完了（T-001〜T-011 の 11 タスク起草、コミット `626c4e2`）。(2) workflow-management tasks の 3 役 triad-review 実施（主役 Sonnet 4.6 が 20 件、敵対役 Opus 4.7 が独立発見 10 件、判定役 Opus 4.7 が must-fix 9 件／should-fix 17 件／leave-as-is 4 件と判定。must-fix のうち A-001／A-003 は遡及、A-002 は波及）。(3) 遡及所見 A-001（再オープン手続きが design 未定義）への対処の前提として、**再オープン手続きを定義・正式記録**（4 まとまり構成＝判定とフラグ差し戻し／正本修正／連鎖再実施／完了、暫定版。計画書 §5.6.1 新設／§5.24.6 構造例の reopened を 6 フェーズに／§5.24.8.1 新設、docs/operations/REOPEN_PROCEDURE.md 新設、workflow-management design.md §reopen 機械強制モデル §5、7 機能 spec.json の reopened を 6 フェーズ化、抽出対応表更新、コミット `9ffe221`）。素材 docs/coordination/workflow-repair-procedure.md の 10 ステップを現在の 5 段ワークフローに再構成。記録漏れの発見＝過去ログ調査で「素材に手続き定義があるのに ReviewCompass 正本に断片しか転記されていない」ことを確認。(4) 許可設定改善（settings.local.json に Task／Agent 起動を許可追加＋`defaultMode: auto` 設定）。(5) A-017／A-018 の WARN（コミット時の未消化所見警告）は機能横断段で消化予定の既知事項として**承知の上で続行する方針を確定**（pending-cross-feature-findings.md §2 に注記）。コミット 2 件は **push 未実施**（origin より 2 コミット先行）。次セッション 38 は **workflow-management tasks の triad-review 続き：確定した 4 まとまり手続きで A-001／A-003 を再オープン処理** から再開。詳細は git log）
+最終更新：2026-05-28（セッション 38 末。主な達成：(1) 確定済みの再オープン手続き（種別 A-2）を **初運用** して遡及所見 A-001／A-003 を処理、手続き単位の語彙を「まとまり」→「過程」に統一（コミット `2f5ee06`）。(2) 波及所見 A-002 を `pending-cross-feature-findings.md` に A-019 として登録（`a7e0496`）。(3) workflow-management tasks の **7 モデル比較実験** を実施、機能内 must-fix 6 件＋should-fix 17 件＝23 topic を評価、人評価 23 件を記録（`baf2c66`、229 ファイル）。**確定：案 1 が 14 件／案 2 が 6 件／別案が 3 件**。**起草者バイアスを構造的に検出**（私 Opus は全 23 件で案 1 を出したが、7 件で他モデル・利用者が「徹底修正側」を採用し覆った）。次セッション 39 は **workflow-management tasks の仕上げ：(a) reopen ファイル修正コミット → (b) 統合レビュー記録作成 → (c) 確定 23 件を tasks.md／design.md 反映 → (d) spec.json の tasks.triad-review=true → (e) push** から。push 未実施（origin より複数コミット先行）。詳細は git log と §3.0／§4）
 
 作業ディレクトリ：`/Users/Daily/Development/ReviewCompass/`、リポジトリ：`git@github.com:kenoogl/ReviewCompass.git`（main ブランチ）
 
@@ -48,7 +48,7 @@ drafting 段は actor=human または llm（草案作成のみ）、triad-review
 
 ---
 
-## 1. 起動手順（セッション 37 開始時）
+## 1. 起動手順（次セッション開始時）
 
 1. `cd /Users/Daily/Development/ReviewCompass`
 2. 本 `TODO_NEXT_SESSION.md` を読む（§0 規律確認）
@@ -56,7 +56,7 @@ drafting 段は actor=human または llm（草案作成のみ）、triad-review
 4. `docs/operations/SESSION_WORKFLOW_GUIDE.md`
 5. 計画書 `docs/plan/reconstruction-plan-2026-05-21.md` §5.4〜§5.8 ／ §5.9.6（マルチターンプロトコル相互参照含む、セッション 36 追記）／ §5.12 ／ §5.23 ／ §5.23.12 ／ §5.23.13 ／ §5.24
 6. **実験ノート `docs/experiments/n-model-comparison.md` §3.4**（マルチターンプロトコルとプロンプト設計の規律、セッション 36 確立）
-7. `.reviewcompass/pending-cross-feature-findings.md`（A-017 ／ A-018 の 2 件未消化、機能横断段で消化予定）
+7. `.reviewcompass/pending-cross-feature-findings.md`（A-017 ／ A-018 ／ A-019 の 3 件未消化、機能横断段で消化予定）
 8. `docs/extraction-mapping.md`
 9. `git log --oneline -10`／`git status` で到達点確認
 
@@ -70,39 +70,44 @@ zsh -c 'source ~/.zshrc && /Users/Daily/Development/ReviewCompass/.venv/bin/pyth
 
 **避けるべき形**：`python3 <script.py>`（環境変数干渉あり、PyYAML なし）／ `zsh -c 'source ~/.zshrc && python3 <script.py>'`（API キーは取れるが PyYAML なし）。理由：`subprocess.run([sys.executable, ...])` が venv 内パッケージを参照するには、起動時の Python が venv のものでなければならない。
 
-## 2. ワークフロー上の現在位置（セッション 37 末）
+## 2. ワークフロー上の現在位置（セッション 38 末）
 
 実態は **spec.json の workflow_state から確認**（§0.1）：
 
 - intent 層／feature-partitioning 層／requirements 段／design 段：全 7 機能で全段 true
 - **tasks 段**：
   - foundation／runtime／evaluation／analysis：drafting＋triad-review=true（機能内対処完了）
-  - **workflow-management**：drafting=true、triad-review=**false**（3 役レビューは実施済みだが、must-fix 対処と triad-review=true 更新は次セッション 38）
+  - **workflow-management**：drafting=true、triad-review=**false**。3 役レビュー・7 モデル実験・人評価まで完了し、対処方針 23 件が確定済み。あとは tasks.md／design.md 反映と triad-review=true 更新のみ（§3.0 参照）
   - **残 2 機能（self-improvement／conformance-evaluation）：全 false**
 - implementation 段：全段 false
-- **注**：全 7 機能の spec.json で `reopened` を 6 フェーズ（intent／feature-partitioning を追加）に拡張済み（セッション 37、再オープン手続き定義に伴う）
+- **注**：全 7 機能の spec.json で `reopened` を 6 フェーズに拡張済み（セッション 37）。workflow-management の requirements／design は A-2 再オープンで再承認済み、recheck クリア済み（セッション 38）
 
 ## 3. 次の作業候補
 
-セッション 37 末で workflow-management tasks.drafting 完了、3 役 triad-review 実施、A-001 対処の前提として再オープン手続きを定義・記録。次セッション 38 は **workflow-management tasks の triad-review の続き** から再開。
+workflow-management tasks は 3 役レビュー・7 モデル実験・人評価まで完了し、**対処方針 23 件が確定済み**（一覧は §3.0.1）。次セッション 39 は **その反映と仕上げ** から。
 
-### 3.0 セッション 38 起点の具体作業（workflow-management tasks の triad-review 続き）
+### 3.0 セッション 39 起点の具体作業（workflow-management tasks の仕上げ）
 
-3 役レビューの結果（次の §4 に詳細）を踏まえ、次の順で進める：
+次の順で進める：
 
-1. **A-001／A-003 の再オープン処理**（確定した 4 まとまり手続き＝計画書 §5.6.1 ／ REOPEN_PROCEDURE.md を**実地で初めて使う**）：
-   - A-001（遡及）：tasks.md T-003／T-007 の「reopen-procedure.yaml の 10 ステップ静的列挙」という記述を「4 まとまり構成の段集合」に修正（design.md は §reopen 機械強制モデル §5 で対処済み）
-   - A-003（遡及、A-018 同根）：requirements.md 行 32 の旧 foundation 語彙 4 件（run_status／validator_status／human_signoff_status／evidence_class）を現行 foundation 正本に修正し、tasks.md 行 27 の 7 件記述と整合
-   - **注意**：これは再オープン手続きの初運用。4 まとまりの停止点（まとまり 1 のフラグ差し戻し承認、各コミット、各 approval）を実地で試す。運用してみて手続きに不具合があれば §5.6.1 を見直す（暫定版のため）
-2. **残りの must-fix 7 件の対処**（F-006／F-008／F-009／F-012／F-015＝機能内対処、A-002＝波及、A-004＝機能内対処）：規律 must-fix-discussion-obligation に従い 1 件ずつ利用者と議論
-3. **7 モデル比較実験 1 回目**（§3.1 の標準手順、must-fix＋should-fix を topic に。事前に API キー確認＋ Opus 4.7 起草者判断の一括生成、§0.4 実験意識）
-4. **統合レビュー記録の作成**：`.reviewcompass/specs/workflow-management/reviews/2026-05-NN-tasks-triad-review.md`（セッション 37 の 3 役レビュー結果を記録。生ログは `~/.claude/projects/.../<セッション 37 の ID>/subagents/` に残存、復元可能）
-5. **A-002（波及）を pending-cross-feature-findings.md に追記**
-6. **tasks.md／design.md 反映**、grep で機械的照合
-7. **spec.json の tasks.triad-review=true 更新**（明示承認＋ workflow-precheck）
-8. **コミット → push**（明示承認）
+1. **reopen ファイル修正コミット**：`stages/completed/reopen-procedure-2026-05-28.yaml` が前回コミット（2f5ee06）に古い中間状態を含む。作業ツリー側（過程語彙＋全 4 過程完了）が正なので修正コミット（利用者明示承認待ち）
+2. **統合レビュー記録の作成**：`.reviewcompass/specs/workflow-management/reviews/2026-05-28-tasks-triad-review.md`（front-matter ＋ 主役 20 件 ＋ 敵対役 10 件＋ counter_status ＋ 判定役判定 ＋ §4.1 対処方針 ＋ §4.2 議論履歴。生ログはセッション 37 ID `3e297d96` の `subagents/` に残存。3 報告は本セッションで /tmp に抽出済みだが要再取得）。**実装時の調停事項**：topic-89（F-016 案 3＝依存マップ自己適用で §13.5 変更を自動検知）と topic-95（A-006 案 1＝変更検知はフェーズ 2 の宿題）が緊張。§13.5 変更検知だけ先行実装し汎用はフェーズ 2、という線引きで調停する旨を明記
+3. **確定 23 件を tasks.md／design.md に反映**（§3.0.1 の一覧、grep で機械照合）。重い反映に注意：
+   - **81 A-004（別案）**：actor 値域に proxy_model 追加 ＋ proxy_allowed 解決ロジック ＋ approval 段の proxy_model 承認判定仕様を tasks に明示（proxy 機構の実装範囲は要確定）
+   - **89 F-016（案 3）**：T-010 完了条件 4 を依存マップ駆動の自動 reopen に改訂（上記調停事項つき）
+   - **92 F-019（案 2）**：design 配置ツリーに WORKFLOW_MANAGEMENT.md／WORKFLOW_PRECHECK.md を追記＝**design 軽量再オープンが必要**
+   - **79 F-012（別案）**：consumer テストは T-010、境界契約は T-011、共有フィクスチャは A-019 解消後に確定
+4. **spec.json の tasks.triad-review=true 更新**（利用者明示承認＋ workflow-precheck spec-set）
+5. **コミット → push**（利用者明示承認）
 
-その後、依存マップ順で **self-improvement → conformance-evaluation の tasks 段**。
+その後、依存マップ順で **self-improvement → conformance-evaluation の tasks 段**（§3.1 の標準手順）。
+
+### 3.0.1 確定した対処方針 23 件（人評価、topic-NN-human.yaml が正本）
+
+- **案 1（最小修正、14 件）**：76 F-006／77 F-008／78 F-009／80 F-015／82 F-001／83 F-003／88 F-013／90 F-017／91 F-018／93 F-020／94 A-005／95 A-006／96 A-007／97 A-008
+- **案 2（徹底修正、6 件）**：84 F-004（運用文書を T-009 一本化）／85 F-007（T-008 独立、reopen 解釈は T-007）／86 F-010（展開規則を構造化フィールド化）／87 F-011（grep 検査削除）／92 F-019（design 配置ツリー追記）／98 A-010（二重列挙解消）
+- **別案（3 件）**：79 F-012（テスト分担＋A-019 後確定）／81 A-004（値域＋判定手順）／89 F-016（依存マップ自己適用、案 3）
+- **起草者バイアス記録**：私 Opus は全 23 件で案 1 を出したが、79／81／84／85／86／87／92／98／89 のうち私が案 1 だった 7 件で他モデル・利用者が徹底修正側を採用。私の「軽量に倒す」癖が一貫して補正された
 
 ### 3.1 各機能の標準進め方（analysis tasks で確立した手順、踏襲）
 
@@ -132,9 +137,9 @@ zsh -c 'source ~/.zshrc && /Users/Daily/Development/ReviewCompass/.venv/bin/pyth
 
 ### 3.2 残作業の補完項目（次セッション以降の任意）
 
-- **analysis 完全一致 15 件の人本人判定の遡及保存**：`tools/experiments/results/topic-{54〜75}-human.yaml` のうち、セッション 36 で未保存の 15 件分（topic-54 F-015、topic-55 F-008、topic-56 A-006、topic-60 A-003、topic-62 F-011、topic-63 A-004、topic-64 F-001、topic-65 F-003、topic-66 F-005、topic-68 F-010、topic-69 F-012、topic-70 F-016、topic-72 A-009、topic-73 A-010、topic-74 A-011）
-- **集計表の更新と実験ノート §5 への追記**：両軸 2 表構成を実験ノート §5 第 3 回ケース（analysis tasks）として追記、§6 観点別考察に起草者バイアス検出の重要観察を追加
-- **§5.12 改訂の準備**：全機能 tasks 段完了後の機能横断段で §5.12.11 アサイン権限の具体設計と §5.23.13.3 末尾「残り 27 件」（セッション 34 のアドホック変更 23 件 ＋ セッション 35 縦整合チェック 4 件）の統合的取り込み
+- **analysis 完全一致 15 件の人本人判定の遡及保存**：`topic-{54〜75}-human.yaml` のうちセッション 36 で未保存の 15 件分（詳細は git log のセッション 36 記録）
+- **実験ノート §5／§6 への追記**：両軸 2 表構成を §5 のケースとして追記、§6 観点別考察に起草者バイアス検出の観察を追加（analysis tasks ＋ workflow-management tasks の 2 ケース分）
+- **§5.12 改訂の準備**：全機能 tasks 段完了後の機能横断段で §5.12.11 アサイン権限の具体設計と §5.23.13.3 末尾「残り 27 件」の統合的取り込み
 
 ### 3.3 全機能 tasks 段完了後の機能横断段（review-wave）
 
@@ -146,17 +151,16 @@ zsh -c 'source ~/.zshrc && /Users/Daily/Development/ReviewCompass/.venv/bin/pyth
 
 ## 4. 直近の確定事項
 
-- **セッション 37（2026-05-28）の総括と 3 役レビュー結果**：(1) workflow-management tasks.drafting 完了（T-001〜T-011、コミット `626c4e2`）。(2) workflow-management tasks の 3 役 triad-review 実施（配置：主役 Sonnet 4.6 ／ 敵対役 Opus 4.7 ／ 判定役 Opus 4.7）。**3 役レビュー結果**：主役 20 件（CRITICAL 1／ERROR 6／WARN 13）、敵対役独立発見 10 件（CRITICAL 1／ERROR 3／WARN 4／INFO 2）、判定役 must-fix 9 件・should-fix 17 件・leave-as-is 4 件。**must-fix 9 件**＝F-006（T-007 前提に T-005 欠落、reopen 解決器が front-matter 検査を呼べない）／F-008（T-010 前提「T-003 または別途…」の曖昧表記）／F-009（T-005 完了条件 3 が人手判断で機械判定不可）／F-012（T-010 の git mv 外部依存テストが未記述）／F-015（T-003 の completion_predicate 値域 7 値検証が完了条件に未明示）／A-001（reopen 10 ステップが design 未定義、**遡及**）／A-002（T-010 の approved_update schema が self-improvement §8.4 正本と不一致、**波及**）／A-003（requirements 行 32 旧語彙 4 件 vs tasks 行 27 の 7 件、**遡及**、A-018 同根）／A-004（actor 値域に proxy_model 欠落、機能内）。波及種別：機能内対処 23／波及 1／遡及 2。(3) A-001 対処の前提として再オープン手続きを定義・正式記録（4 まとまり構成、暫定版、コミット `9ffe221`。詳細はヘッダ）。(4) 許可設定改善（settings.local.json に Task／Agent ＋ defaultMode auto）、A-017／A-018 の WARN 承知続行方針を確定。**3 役レビューの生ログは今セッション（ID `3e297d96`）の `subagents/` に残存、復元可能**。統合レビュー記録は次セッション 38 で作成予定。**push 未実施**（origin より 2 コミット先行）
-- **セッション 36（2026-05-28）の総括**：(1) analysis tasks の triad-review 機能内対処 23 件すべて完了（完全一致 15 件＋割れ 5 件＋分散 3 件、tasks.md 33 マーカー＋design.md 4 マーカー反映、コミット `e4b0258` ／ `5cc030d`）。(2) 7 モデル比較実験 1 回目（analysis）を実施、161 件 ＋ マルチターン続行 15 件 final ＋ 人本人判定 8 件保存（コミット `7b6aec8` ／ `170cc18` ／ `f726239` ／ `4cbd526`）。(3) マルチターン対話プロトコルとプロンプト設計の規律確立、実験ノート §3.4 新設＋計画書 §5.9.6 軽量相互参照（コミット `2c22155`）。(4) 規律 avoid-compound-bash 軽量移送（コミット `5a8308e`）。(5) セッション 35 ログ変換（コミット `de635fc`）。(6) `.codex/` を `.gitignore` に追加（コミット `a36f28c`）。(7) analysis 3 役 triad-review 統合レビュー記録起草＋ A-018 pending 追記（コミット `328491e`）。コミット 11 件すべて push 済み。**重要な観察**：F-007 ／ F-002 で起草者バイアスを構造的に検出（私 Opus 4.7 のみが孤立判断、他 6 モデルすべて／5 モデルが反対方向）、§6 観点別考察への重要観察
-- セッション 25〜35 の確定事項は [docs/archive/todo/TODO_NEXT_SESSION-2026-05-28-snapshot.md](docs/archive/todo/TODO_NEXT_SESSION-2026-05-28-snapshot.md) に退避
-- セッション 22〜24 以前：[docs/archive/todo/](docs/archive/todo/) 配下の過去 snapshot
+- **セッション 38（2026-05-28）の総括**：(1) 確定済み再オープン手続き（A-2）を初運用し A-001／A-003 を処理、語彙を「過程」に統一（コミット `2f5ee06`）。(2) A-002 を A-019 として pending に登録（`a7e0496`）。(3) workflow-management tasks の 7 モデル比較実験＋人評価 23 件（`baf2c66`）。確定：案 1 が 14／案 2 が 6／別案が 3（§3.0.1）。起草者バイアスを構造的に検出（私 Opus 全件案 1 → 7 件で覆る）。**未 push**（origin より複数コミット先行）。仕上げ（統合記録・反映・spec.json・push）は §3.0
+- **セッション 37（2026-05-28）の総括**：workflow-management tasks.drafting 完了（`626c4e2`）、3 役 triad-review 実施（主役 20／敵対役 10／判定役 must-fix 9・should-fix 17・leave 4）、再オープン手続きを定義・記録（`9ffe221`）。3 役レビューの所見詳細・判定は本セッション 38 で生ログから回収済み（統合レビュー記録に反映予定、§3.0 手順 2）。生ログはセッション 37 ID `3e297d96` の `subagents/`
+- セッション 36 以前の確定事項は git log および [docs/archive/todo/](docs/archive/todo/) 配下の snapshot を参照
 
 ## 5. 関連参照
 
 - 計画書：`docs/plan/reconstruction-plan-2026-05-21.md`（§5.9.6 マルチターンプロトコル相互参照はセッション 36 追記、§5.23.13 軽量手続き許容はセッション 34 新設）
 - 運営ガイド：`docs/operations/SESSION_WORKFLOW_GUIDE.md`
 - 雛形：`templates/`（todo、specs、review 配下）
-- 持ち越し所見：`.reviewcompass/pending-cross-feature-findings.md`（A-017 ／ A-018 の 2 件未消化、機能横断段で消化予定）
+- 持ち越し所見：`.reviewcompass/pending-cross-feature-findings.md`（A-017 ／ A-018 ／ A-019 の 3 件未消化、機能横断段で消化予定）
 - 抽出進捗：`docs/extraction-mapping.md`
 - 7 モデル比較実験ノート：`docs/experiments/n-model-comparison.md`（§2 共通フレームワーク、§3.4 マルチターンプロトコルとプロンプト設計の規律（セッション 36 新設）、§6 観点別考察）
 - 規律ファイル本体：`docs/disciplines/`（一覧は同ディレクトリ README.md、avoid-compound-bash は active 必読 13 件目）

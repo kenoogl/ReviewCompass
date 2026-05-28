@@ -3,9 +3,9 @@ feature: workflow-management
 started_at: 2026-05-28T14:12:58+09:00
 trigger: A-2（tasks 段で requirements／design との不整合を発見、A-001＋A-003 統合）
 classification_basis: docs/reviews/reopen-classification-2026-05-28.md
-# 4 まとまり構成（計画書 §5.6.1）での進行状況。素材由来の 10 ステップ語彙ではなくまとまり番号で記録（初運用メモ参照）。
-completed_steps: [まとまり1：判定とフラグ差し戻し, まとまり2：正本修正]
-next_step: まとまり3：連鎖再実施
+# 4 過程構成（計画書 §5.6.1）での進行状況。素材由来の 10 ステップ語彙ではなく過程番号で記録（初運用メモ参照）。
+completed_steps: [第1過程：判定とフラグ差し戻し, 第2過程：正本修正, 第3過程：連鎖再実施, 第4過程：完了]
+next_step: （完了。再オープン手続き終了）
 pending_gates:
   - stages/requirements.yaml#alignment
   - stages/requirements.yaml#approval
@@ -13,4 +13,4 @@ pending_gates:
   - stages/design.yaml#approval
   - stages/tasks.yaml#alignment
   - stages/tasks.yaml#approval
-current_blocker: null  # まとまり1・2完了（A-003／A-001 とも正本修正済み）。まとまり3（連鎖再実施）へ進行可
+current_blocker: null  # 全過程完了。requirements／design 再承認済み、recheck クリア済み（2026-05-28）。tasks は triad-review 継続中（通常フローで段通過）
