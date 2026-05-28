@@ -48,6 +48,27 @@ drafting 段は actor=human または llm（草案作成のみ）、triad-review
 7. `docs/extraction-mapping.md`
 8. `git log --oneline -10`／`git status` で到達点確認
 
+### 1.1 Python 実行時の必須事項（venv 経由起動、毎セッション要確認）
+
+ReviewCompass の Python スクリプト（特に `tools/api_providers/run_role.py` 経由の 7 モデル評価、`tools/experiments/_experiment_n_model.py` 等）を実行する際は **必ず venv の Python を直接指定** すること。理由：
+
+- `subprocess.run([sys.executable, ...])` が venv 内パッケージ（PyYAML 等）を参照するには、起動時の Python が `/Users/Daily/Development/ReviewCompass/.venv/bin/python3` でなければならない
+- `zsh -c 'source ~/.zshrc && python3 ...'` だけでは `python3` がシステム Python に解決され `ModuleNotFoundError: No module named 'yaml'` で全件 returncode=1 失敗となる（2026-05-28 セッション 36 で発生、115 件即時失敗）
+- API キー取得（`ANTHROPIC_API_KEY` ／ `GEMINI_API_KEY` の Claude Code 干渉回避）は別途必要（実験ノート §3.1 案 A）
+
+**正しい起動コマンド**：
+
+```
+zsh -c 'source ~/.zshrc && /Users/Daily/Development/ReviewCompass/.venv/bin/python3 <script.py>'
+```
+
+**避けるべき形**：
+
+- `python3 <script.py>`（環境変数干渉あり、PyYAML なし）
+- `zsh -c 'source ~/.zshrc && python3 <script.py>'`（API キーは取れるが PyYAML なし）
+
+**注記**：本項目は毎セッション同じミスを繰り返してきたため起動手順に明記。
+
 ## 2. ワークフロー上の現在位置（セッション 35 末）
 
 実態は **spec.json の workflow_state から確認**（§0.1）：

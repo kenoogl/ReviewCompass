@@ -42,6 +42,7 @@
 | [discipline_reopen_procedure_for_settled_topics.md](discipline_reopen_procedure_for_settled_topics.md) | 確定済み論点を変更する場合は 5 ステップ（宣言・理由・新案・明示承認・履歴記録） |
 | [discipline_plain_japanese.md](discipline_plain_japanese.md) | 英語技術用語を多用しない、完全な日本語の文で書く、応答送信前に自己検査 |
 | [discipline_options_presentation.md](discipline_options_presentation.md) | 複数案提示時、dominated 案は提示しない、提示前に検査結果を応答内で明示宣言、3 選択肢以内で大局→細部の階層性を守る（旧 dominant-dominated-options ／ choice-presentation を統合＋事前検査宣言義務を新設） |
+| [discipline_avoid_compound_bash.md](discipline_avoid_compound_bash.md) | 読み取り目的の複合 Bash コマンド（`;`／`&&`／`|`）を避ける、Read／Glob／Grep ツールで代替するか単一コマンドに留める、許可プロンプト多発の防止（2026-05-28 セッション 36 軽量移送で確立、利用者明示承認「案 イを処理」） |
 
 ### 参照層（3 件、必要時に grep／Read で参照、起動時 load なし）
 
