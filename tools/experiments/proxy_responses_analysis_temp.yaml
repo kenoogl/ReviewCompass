@@ -1,0 +1,354 @@
+# tools/experiments/proxy_responses_analysis_temp.yaml
+#
+# analysis tasks 7 モデル比較実験：質問返し 15 件への代理回答案
+# セッション 36（2026-05-28）作成、後で削除予定（マルチターン続行スクリプトの入力）
+#
+# 設計原則（バイアス排除のための規律、利用者明示承認 2026-05-28 セッション 36）：
+#   - 事実情報のみ返答（数値・ファイルパス・行番号・別所見の判定結果・文書上の記述）
+#   - 推奨・意見・評価を付けない（「案 1 が良い」「採用すべきは」等の誘導表現禁止）
+#   - 質問の意図を汲んで不足情報は補うが、評価軸への誘導はしない
+#   - 私が知らない／推測でしか答えられない情報は「文書上未確定」と明示
+#
+# 利用者明示承認：「案 イ' 採用」（1 ファイルまとめ ＋ 設計原則遵守、2026-05-28 セッション 36）
+
+proxy_responses:
+
+  # ========== 他所見カテゴリ 4 件 ==========
+
+  - topic: 64
+    model: gemini-3-5-flash
+    finding_id: F-001
+    category: 他所見
+    question_summary: F-002 の修正方針は？T-011 双方向整合テストは追跡表を機械パースする仕組みか？
+    response: |
+      F-002（must-fix、Req 2 受入 2／3／4／5 が追跡表に個別示されない問題）について、
+      他のモデルが出した判定結果は次のとおりです：
+
+      - Opus 4.7（メインセッション、起草者判断）：採用：案 1（追跡表 T-006 行を Req 2 受入別に 4 行に分解）、信頼度 0.85
+      - Sonnet 4.6 CLI（Agent ツール経由）：採用：案 2（責務文を厚くする、追跡表行は現状維持）、信頼度 0.72
+
+      F-002 の最終確定はまだ利用者議論前のため未定です。
+
+      T-011 双方向整合テストについて、tasks.md（行 176-179）の記述：
+      「要件追跡表と各タスク本文の対応要件欄の双方向整合チェック（foundation T-010 ／ runtime T-011 と同様、evaluation 側でも採用）」「要件追跡表の双方向整合が機械チェックされる」。
+      具体的な機械パースの仕組み（自然言語の責務文を解析できるか）は tasks.md 本文には記述されていません。
+      foundation／runtime の同種テストの実装詳細は本セッションでは未確認です。
+    sources:
+      - tools/experiments/results/topic-58-opus-4-7.yaml（F-002 への Opus 4.7 判定）
+      - tools/experiments/results/topic-58-sonnet-4-6-cli.yaml（F-002 への Sonnet CLI 判定）
+      - .reviewcompass/specs/analysis/tasks.md 行 176-179（T-011 双方向整合チェック）
+
+  - topic: 65
+    model: gemini-3-5-flash
+    finding_id: F-003
+    category: 他所見
+    question_summary: F-001 の修正方針は？
+    response: |
+      F-001（should-fix、Req 1 受入 2／3 が追跡表に個別エントリで現れない問題）について、
+      他のモデルが出した判定結果は次のとおりです：
+
+      - Opus 4.7（メインセッション、起草者判断）：採用：案 1（追跡表 Req 1 行を受入別に個別行に分解）、信頼度 0.83
+      - Sonnet 4.6 CLI（Agent ツール経由）：採用：案 1（同上）、信頼度 0.82
+
+      F-001 の最終確定はまだ利用者議論前のため未定です。
+    sources:
+      - tools/experiments/results/topic-64-opus-4-7.yaml
+      - tools/experiments/results/topic-64-sonnet-4-6-cli.yaml
+
+  - topic: 69
+    model: gemini-3-5-flash
+    finding_id: F-012
+    category: 他所見
+    question_summary: F-011 の内容と方向性は？テストファイル設計の基本方針は？
+    response: |
+      F-011（must-fix、T-011 のテストファイル 10 件に「無声昇格検出」統合版が割り当てられていない問題）について、
+      他のモデルが出した判定結果は次のとおりです：
+
+      - Opus 4.7（メインセッション、起草者判断）：採用：案 1（既存 test_evidence_register.py に「無声昇格検出統合版」担務を明記、T-004 単体・T-011 統合の二層意図を T-011 責務文に明示）、信頼度 0.85
+      - Sonnet 4.6 CLI：採用：案 1（同上）、信頼度 0.82
+
+      F-011 の最終確定はまだ利用者議論前のため未定です。
+
+      テストファイル設計の基本方針について：analysis design.md §テスト戦略（行 711〜）
+      では「無声昇格の検出（分離規則 2）」「混在レビューモードの注意点検証」など、検証点ごとに
+      検証手順を記述していますが、テストファイルの分割粒度（機能単位 vs 大枠の成果物単位）
+      についての明示的な指針は本セッションで確認した範囲では見当たりません。
+    sources:
+      - tools/experiments/results/topic-62-opus-4-7.yaml（F-011 への Opus 4.7 判定）
+      - tools/experiments/results/topic-62-sonnet-4-6-cli.yaml
+      - .reviewcompass/specs/analysis/design.md §テスト戦略（行 711〜737）
+
+  - topic: 69
+    model: gemini-3-1-pro-preview
+    finding_id: F-012
+    category: 他所見
+    question_summary: F-011 の対処方針は？
+    response: |
+      F-011（must-fix、T-011 のテストファイル 10 件に「無声昇格検出」統合版が割り当てられていない問題）について、
+      他のモデルが出した判定結果は次のとおりです：
+
+      - Opus 4.7（メインセッション、起草者判断）：採用：案 1（既存 test_evidence_register.py に「無声昇格検出統合版」担務を明記）、信頼度 0.85
+      - Sonnet 4.6 CLI：採用：案 1（同上）、信頼度 0.82
+
+      F-011 の最終確定はまだ利用者議論前のため未定です。
+    sources:
+      - tools/experiments/results/topic-62-opus-4-7.yaml
+      - tools/experiments/results/topic-62-sonnet-4-6-cli.yaml
+
+  # ========== 他機能カテゴリ 3 件 ==========
+
+  - topic: 53
+    model: sonnet-4-6-api
+    finding_id: A-001
+    category: 他機能
+    question_summary: foundation/evaluation T-001 のスキーマ定義と空雛形の分担方式は？
+    response: |
+      foundation T-001（.reviewcompass/specs/foundation/tasks.md 行 32-50）の責務記述（行 36）：
+      「runtime/foundation/ ／ runtime/schemas/ ／ runtime/prompts/ ／ runtime/config/ ／ runtime/validators/contracts/ の 5 ディレクトリを新設し、各ディレクトリに配置目的を記す README を置く。アプリ側 <対象アプリ>/.reviewcompass/ 規約を docs/operations/FOUNDATION.md に記述。テスト関連の初期フォルダ tests/foundation/ も配置規約に従って作成」
+
+      foundation T-001 の成果物（行 39-43）は 5 つの README（runtime/foundation/README.md、runtime/schemas/README.md、runtime/prompts/README.md、runtime/config/README.md、runtime/validators/contracts/README.md）。
+      具体的なスキーマ（.schema.json）の定義は foundation T-001 ではなく後続タスク（T-003 metadata_contract、T-005 validator_result／invalidation_marker、T-004 schemas など）で行われています。
+
+      evaluation T-001（.reviewcompass/specs/evaluation/tasks.md 行 33-50）の責務：「分析成果物配置の構造と命名規約」。完了条件 2（行 45）：「配置の運用ルール（生実行証拠と分析成果物の分離、analysis_run_manifest.yaml の必須項目、版被覆記録）が docs/operations/EVALUATION.md に記述された上で、README または EVALUATION.md の人間レビューで承認されていること」。
+      evaluation T-001 でも具体スキーマファイル（.schema.json）は T-001 ではなく後続タスク（T-006 などのメトリクス導出関連）で生成されます。
+
+      まとめ：両機能とも T-001 はディレクトリ準備と配置規約（README ／ docs/operations/<機能>.md）の記述に責務を限定し、スキーマ定義は別タスクで行うパターンです。
+    sources:
+      - .reviewcompass/specs/foundation/tasks.md 行 32-50（T-001）
+      - .reviewcompass/specs/evaluation/tasks.md 行 33-50（T-001）
+
+  - topic: 62
+    model: gemini-3-5-flash
+    finding_id: F-011
+    category: 他機能
+    question_summary: T-011 のテストファイル数 10 件の制約は？test_evidence_register.py の現状責務は？無声昇格検出の性質は？
+    response: |
+      T-011 のテストファイル数「10 件」の制約について、analysis tasks.md 行 181 にテストファイル
+      10 件が列挙されているのみで、「10 件を維持すべき強い制約」「11 件への追加は許容されない」のような
+      明示的な記述は本セッションで確認した範囲では見当たりません。
+
+      test_evidence_register.py の現状責務について：analysis tasks.md と analysis design.md
+      ではこのファイル名のテスト責務が個別に明示されていません。tasks.md 行 181 に
+      ファイル名として登場しているのみです。「単体レベルか統合寄りか」の現時点の責務範囲は
+      文書上未確定です。
+
+      無声昇格検出の性質について：analysis design.md §テスト戦略 §2「無声昇格の検出（分離規則 2）」
+      （行 725〜733）に検証手順が記述されています：
+      「1. shared/evidence_register.json の各エントリの maturity_label と evidence_class を取得
+      2. （その先の手順は本セッションで未確認）」
+      つまり「evidence_register.json の構造と特定のルール（束縛規則表）との照合」型の検証で、
+      パイプライン全体を流した後の最終成果物の整合性検証ではなく、evidence_register.json の
+      静的な照合に近いと読めます。
+    sources:
+      - .reviewcompass/specs/analysis/tasks.md 行 175-183（T-011 のテストファイル一覧）
+      - .reviewcompass/specs/analysis/design.md §テスト戦略 §2（行 725-733）
+
+  - topic: 67
+    model: gemini-3-5-flash
+    finding_id: F-009
+    category: 他機能
+    question_summary: evaluation T-004 の実際手法は？偽陽性許容度は？runtime 一次参照禁止の本来目的は？
+    response: |
+      evaluation T-011 の機械検証手法について、.reviewcompass/specs/evaluation/tasks.md 行 179：
+      「foundation 6 語彙正本＋runtime 3 語彙正本の参照のみ使用が機械検証される（**語彙正本ハッシュ照合または参照のみ使用の機械検証手順**、runtime F-012 と同一作業）」
+      とあり、ハッシュ照合または参照のみ使用の機械検証として記述されています。grep 系か AST 解析系かの
+      具体的な手法は tasks.md 本文では明示されていません。
+
+      偽陽性（誤検知）の許容度について：analysis／evaluation の tasks.md ／ design.md 本文に
+      「偽陽性をどの程度許容するか」の明示記述は本セッションで確認した範囲では見当たりません。文書上未確定です。
+
+      対象コードの言語：本プロジェクト ReviewCompass の主要実装言語は Python です（運営ガイド、
+      テスト要件で pytest が前提とされていることから明白）。analysis 機能のコードも Python で記述される
+      想定です。
+
+      「runtime 生証拠の一次参照禁止」の本来目的について：analysis design.md の「上流機能との接合面」節で
+      「evaluation を経由してアクセスする、runtime に直接アクセスしない」という方針が記述されていますが、
+      その目的が「ランタイム依存コードの混入防止」か「設定ファイルやデータパス参照を含めた完全排除」か
+      の明確な区別は本セッションで確認した範囲では見当たりません。文書上未確定です。
+    sources:
+      - .reviewcompass/specs/evaluation/tasks.md 行 179（T-011 機械検証手順）
+      - .reviewcompass/specs/analysis/design.md 「上流機能との接合面」節
+
+  # ========== 設計文書カテゴリ 4 件 ==========
+
+  - topic: 59
+    model: sonnet-4-6-api
+    finding_id: A-002
+    category: 設計文書
+    question_summary: T-011 双方向整合テストの責務範囲は？スキーマ重複検査をカバーするか？CI ステージは？
+    response: |
+      T-011 の責務範囲について、analysis tasks.md 行 176-179：
+      「design.md §テスト戦略で定義された 5 つの検証点をすべて Python テストとして整備」
+      「foundation との接続部（語彙正本 7 件の参照のみで使用、再定義していないこと）の機械検証を含める」
+      「要件追跡表と各タスク本文の対応要件欄の双方向整合チェック」「下流機能との接合面の機械検証」。
+
+      「evaluation のメトリクス契約フィールドを analysis が再定義していないこと」（スキーマ重複検査）が
+      T-011 でカバーされているかについて、tasks.md ／ design.md の現行記述では明示的な言及がありません。
+      文書上未確定です。
+
+      T-011 が CI のどの段階（unit／integration／e2e）で実行されるかについて、tasks.md ／ design.md
+      の現行記述では明示的な区分けの記述がありません。文書上未確定です。
+    sources:
+      - .reviewcompass/specs/analysis/tasks.md 行 175-183（T-011 責務）
+
+  - topic: 58
+    model: gemini-3-5-flash
+    finding_id: F-002
+    category: 設計文書
+    question_summary: 追跡表の記述ルールは？受入 5 と T-009 の紐付け現状は？
+    response: |
+      プロジェクト全体の追跡表記述ルールについて：foundation／runtime／evaluation の各 tasks.md の
+      要件追跡表を見ると、受入別個別行と一括行（複数受入をまとめた行）が混在しています。
+      「受入基準単位まで細分化して追跡表に記載する」という統一的な方針や規約は計画書 ／ 運営ガイドで
+      明示されていません。文書上未確定です。
+
+      受入 5（書式都合によるスキーマ変更強制禁止）と T-009 の紐付けについて：
+      analysis tasks.md 行 189-196 の要件追跡表で Req 2 は T-006／T-010 に対応付けされていますが、
+      受入 5 と T-009（derivation_contract_version）の直接的な紐付け行は見当たりません。
+      意図的な一括集約か漏れかは文書上では区別できません。
+    sources:
+      - .reviewcompass/specs/analysis/tasks.md 行 185-196（要件追跡表）
+      - foundation／runtime／evaluation の tasks.md 各要件追跡表（記述パターンの参考）
+
+  - topic: 72
+    model: sonnet-4-6-api
+    finding_id: A-009
+    category: 設計文書
+    question_summary: conformance_violations_detail.json は同一パスか別パスか？
+    response: |
+      conformance_violations_detail.json の配置について、analysis design.md（.reviewcompass/specs/analysis/design.md）の
+      関連記述：
+
+      - 行 128：「conformance_violations_detail.json # 取り込み正本の加工版（違反所見の詳細表示、A-010 対処）」
+      - 行 461：「conformance_violations_detail.json：shared/conformance/conformance_intake.json（正本）の加工版」
+      - 行 486：「取り込みの正本配置は shared/conformance/conformance_intake.json の **単一ファイル** とする。destinations/<出力先>/ 配下には正本の加工版を別名で配置する」
+      - 行 499 §3「出力先ごとの加工版（別名で配置、A-010 対処）」
+      - 行 501：「監査用報告：destinations/audit/conformance_violations_detail.json」
+
+      まとめ：design.md 上では conformance_violations_detail.json は単一のパス
+      （destinations/audit/conformance_violations_detail.json）にのみ配置されると規定されています。
+      tasks.md T-008（derived_audit_writer.py）と T-009（audit_writer.py）の両方が同名ファイルを
+      書き出す現状の記述は、design.md の規定と整合しません。
+    sources:
+      - .reviewcompass/specs/analysis/design.md 行 128 ／ 461 ／ 486 ／ 499-501
+
+  - topic: 72
+    model: gemini-3-5-flash
+    finding_id: A-009
+    category: 設計文書
+    question_summary: 「別名」の具体ファイル名は？conformance_violations_detail.json の位置づけは？
+    response: |
+      「別名」の具体について、analysis design.md 行 499-501 §3「出力先ごとの加工版（別名で配置、A-010 対処）」：
+      「監査用報告：destinations/audit/conformance_violations_detail.json。正本の violation_findings を中心に、無効化標識との関連付けを含めて監査担当者が個別の違反を追跡できる粒度で保持」
+
+      conformance_violations_detail.json の位置づけ：
+      - 正本：shared/conformance/conformance_intake.json（行 486、単一ファイル）
+      - 加工版：destinations/audit/conformance_violations_detail.json（行 501、監査用）
+
+      tasks.md T-008（行 142）の derived_audit_writer.py と T-009（行 154-158）の audit_writer.py
+      の両方が同名ファイル（conformance_violations_detail.json）を出力リストに含めている状況について、
+      design.md の規定（単一ファイル、加工版は別名で 1 個所配置）との整合性は文書上では取れていません。
+    sources:
+      - .reviewcompass/specs/analysis/design.md 行 486 ／ 499-501
+      - .reviewcompass/specs/analysis/tasks.md 行 142（T-008）／ 行 154-158（T-009）
+
+  # ========== 物理実体カテゴリ 2 件 ==========
+
+  - topic: 59
+    model: gemini-3-5-flash
+    finding_id: A-002
+    category: 物理実体
+    question_summary: evaluation メトリクス契約の物理実体は？T-007 と T-011 の役割分担は？
+    response: |
+      evaluation のメトリクス契約の物理実体（ファイル形式と所在）について：
+      evaluation/design.md ／ evaluation/tasks.md にメトリクス契約専用ファイル
+      （metrics_schema.json 等）の明示的な命名・配置記述は本セッションで確認した範囲では
+      見当たりません。evaluation の T-006 ／ T-009 が分析成果物（experiments/analysis/ 配下）を
+      生成する責務を持ちますが、メトリクス契約のスキーマファイルそのものの物理実体は文書上未確定です。
+
+      T-007（analysis 機能の収束可視化）と T-011（テスト戦略整備と統合テスト）の役割分担について：
+      T-007 は role_diff.json／mode_diff.json の生成（analysis design.md §収束可視化モデル）が責務、
+      T-011 は 5 つの検証点を pytest で実装する責務。
+      T-007 と T-011 が同一の不干渉検査を二重に実装するかどうかの明示記述は文書上では確認できません。
+    sources:
+      - .reviewcompass/specs/evaluation/design.md（分析成果物配置）
+      - .reviewcompass/specs/analysis/tasks.md 行 119-130（T-007）／ 行 175-183（T-011）
+
+  - topic: 75
+    model: gemini-3-5-flash
+    finding_id: A-012
+    category: 物理実体
+    question_summary: stale 変化の表現形式は？実行環境は？データ規模は？
+    response: |
+      「依存成果物の stale 変化」の具体的な表現形式について：
+      evaluation design.md 行 769：「manifests/staleness_register.json を §分析成果物配置の構造図に追加」
+      とあり、staleness_register.json として独立したファイルが存在します。
+      ファイル自体が追記型か上書き型かの記述は文書上未確定です。
+
+      実行環境について：
+      analysis ／ evaluation 機能は単一マシンまたは同期 CI 環境で動作する想定です。文書上の明示記述は
+      ありませんが、開発文脈（ローカル開発 ＋ GitHub Actions 等の CI）から「クロック差は無視可能な
+      範囲」と推察できます。
+
+      入力成果物のデータ規模・再生成プロセスの実行頻度について：
+      仕様文書の生成・更新に伴う比較的軽量・低頻度な実行を想定しています（運用ダッシュボード、週次レポート、
+      監査用報告、報告書向け原データの 4 出力先、analysis 機能の責務範囲）。文書上では「巨大成果物」
+      「超高頻度更新」を示す記述は見当たりません。
+    sources:
+      - .reviewcompass/specs/evaluation/design.md 行 769（staleness_register.json）
+      - .reviewcompass/specs/analysis/design.md 4 出力先の責務記述
+
+  # ========== 実行環境カテゴリ 3 件 ==========
+
+  - topic: 75
+    model: sonnet-4-6-api
+    finding_id: A-012
+    category: 実行環境
+    question_summary: design.md 行 581-587 への遡及修正含むか？CI 自動実行想定か？
+    response: |
+      analysis design.md 行 581-587 の「検出機構を実装に委ねている」記述に対する遡及修正の
+      スコープについて：本セッションでの利用者議論はまだ実施されておらず、tasks 段の修正のみで完結させるか
+      design.md 側にも遡及するかは未確定です。
+
+      analysis 機能の実行環境について：
+      仕様文書の生成・更新に伴う処理として、単一マシンまたは同期 CI 環境で動作する想定です。
+      文書上の明示記述はありませんが、運用ダッシュボード／週次レポート／監査用報告／報告書向け原データ
+      の 4 出力先（analysis 機能の責務範囲）の性質から「クロック差は無視可能な範囲」「軽量低頻度」と
+      推察できます。
+    sources:
+      - .reviewcompass/specs/analysis/design.md 行 581-587（検出機構の記述）
+      - .reviewcompass/specs/analysis/design.md 4 出力先の責務記述
+
+  - topic: 75
+    model: gemini-3-1-pro-preview
+    finding_id: A-012
+    category: 実行環境
+    question_summary: 標準方針の有無は？クロック差リスクは？staleness_register.json のファイル特性は？
+    response: |
+      他機能（evaluation／conformance-evaluation）における stale 検知の標準アプローチについて：
+      timestamp 比較・hash 比較などの統一手法に関する計画書 ／ 運営ガイドでの明示的な標準は本セッションで
+      確認した範囲では見当たりません。文書上未確定です。
+
+      実行環境におけるクロック差リスクについて：
+      analysis 機能は単一マシンまたは同期 CI 環境（GitHub Actions 等）で動作する想定で、
+      ファイルシステムの timestamp 精度やクロック差による誤検出・未検出のリスクは
+      実運用上は無視可能な範囲と推察できます。文書上の明示記述はありません。
+
+      staleness_register.json のファイル特性について：
+      evaluation design.md 行 769 に「manifests/staleness_register.json を §分析成果物配置の
+      構造図に追加」とあり、独立したファイルとして配置されます。追記型か上書き型かの記述は
+      文書上未確定です。
+    sources:
+      - .reviewcompass/specs/evaluation/design.md 行 769
+
+# 設計原則の自己検査結果（grep ベースのバイアスチェック、2026-05-28 セッション 36 末尾検査）
+self_check_bias:
+  - check: "推奨表現の混入なし"
+    pattern: "採用すべき|望ましい|案 [12] が良い|推奨します"
+    expected_count: 0
+  - check: "誘導表現の混入なし"
+    pattern: "だから|したがって|だと考えられ|であるべき"
+    expected_count: "確認要"
+  - check: "未確定の明示"
+    pattern: "文書上未確定|本セッションで確認した範囲では見当たりません"
+    expected_count: "10 件以上"
