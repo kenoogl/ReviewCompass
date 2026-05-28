@@ -2,7 +2,7 @@
   "feature_name": "workflow-management",
   "language": "ja",
   "created_at": "2026-05-24T00:00:00+09:00",
-  "updated_at": "2026-05-25T22:00:00+09:00",
+  "updated_at": "2026-05-28T00:00:00+09:00",
   "workflow_state": {
     "intent": {
       "drafting": true,
@@ -30,7 +30,7 @@
       "approval": true
     },
     "tasks": {
-      "drafting": false,
+      "drafting": true,
       "triad-review": false,
       "review-wave": false,
       "alignment": false,
