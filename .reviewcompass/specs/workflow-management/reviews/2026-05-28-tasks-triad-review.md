@@ -283,9 +283,35 @@ counter_evidence_raised（反証あり）は 5 件（F-002／F-003／F-005／F-0
 
 各 topic の人本人判定を `tools/experiments/results/topic-NN-human.yaml` に 23 件保存（実験データ、コミット `baf2c66`）。7 モデル比較表の人本人基準点。
 
-### 4.3 反映箇所
+### 4.3 反映箇所（2026-05-28 セッション 38 実施、grep 機械照合済み）
 
-（利用者議論を経て確定した 23 件の対処を tasks.md／design.md に反映後、grep／Read で機械的に照合した結果を本節に記録。**次セッション 39 で実施予定**。）
+確定 23 件を tasks.md／design.md に反映。各反映に「<所見 ID> 対処 2026-05-28」マーカーを付与し grep で照合した。
+
+| 所見 | 確定 | 反映箇所 |
+|---|---|---|
+| F-001 | 案 1 | tasks.md 要件追跡表 Req 1 受入 6 に DVT-W004 延期注記 |
+| F-003 | 案 1 | tasks.md 要件追跡表 Req 8 受入 4 から T-009 を除外 |
+| F-004 | 案 2 | tasks.md T-009 責務に規律変更ゲート説明追記責務を一本化 |
+| F-006 | 案 1 | tasks.md T-007 前提に T-005 追加 |
+| F-007 | 案 2 | tasks.md T-008 責務に「reopen 固有解釈は T-007」明記（前提は不変） |
+| F-008 | 案 1 | tasks.md T-010 前提を discipline-update.yaml 新設に一意化 |
+| F-009／A-007 | 案 1 | tasks.md T-005 完了条件 3 を機械検証＋判断分離（自己ロック回避） |
+| F-010 | 案 2 | tasks.md T-003 完了条件 5 を構造化フィールド化 |
+| F-011 | 案 2 | tasks.md T-009 テスト要件から grep 検査を削除 |
+| F-012 | 別案 | tasks.md T-010 テスト要件に consumer 統合テスト、T-011 に境界契約集約 |
+| F-013 | 案 1 | tasks.md T-004 完了条件 4／テスト要件に spec-set 省略時ログ記録テスト |
+| F-015／A-004 | 案 1／別案 | tasks.md T-003 完了条件 1 に値域 7 値＋actor 3 値、T-004 完了条件 6 に proxy_allowed／approval 述語、design 配置ツリー |
+| F-016 | 案 3 | tasks.md T-010 完了条件 4 を依存マップ駆動の自動 reopen に改訂、DVT-W007（A-006 調停）|
+| F-017 | 案 1 | tasks.md T-001 成果物に tools/README.md、完了条件 1 に確認 |
+| F-018 | 案 1 | tasks.md T-008 成果物・完了条件で in-progress.schema.json にハイフン統一、design 配置ツリーに追記 |
+| F-019 | 案 2 | design 配置ツリーに WORKFLOW_MANAGEMENT.md／WORKFLOW_PRECHECK.md 追記 |
+| F-020 | 案 1 | tasks.md T-010 成果物に learning/ の出典注記（self-improvement §13.5 正本） |
+| A-005 | 案 1 | tasks.md DVT に DVT-W005（論点 8）／DVT-W006（論点 9）追加 |
+| A-006 | 案 1 | tasks.md T-004 完了条件 6・テスト要件に depends 述語の境界、DVT-W007 登録 |
+| A-008 | 案 1 | tasks.md T-008 テスト要件に複数 in-progress 並存テスト |
+| A-010 | 案 2 | tasks.md T-001 成果物所有を単独化、T-007 完了条件 5 に内容確定を分離 |
+
+遡及 2 件（A-001／A-003）・波及 1 件（A-002）は §4.1.1 の通り別経路で処理済み。
 
 ### 4.4 should-fix 17 件と leave-as-is 4 件の扱い
 

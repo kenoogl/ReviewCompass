@@ -56,11 +56,14 @@
 │   ├── implementation.yaml              # 実装フェーズ（5 段、同上）
 │   ├── reopen-procedure.yaml            # reopen 手続き（4 過程構成、trigger_map 含む）
 │   ├── cross-spec-alignment.yaml        # 機能横断整合（段集合は別途確定）
+│   ├── in-progress.schema.json          # 進行中状態ファイルのスキーマ（T-008、命名を in-progress/ に統一、F-018 対処 2026-05-28）
 │   ├── in-progress/                     # 進行中状態ファイル（Req 6、session 跨ぎ用）
 │   └── completed/                       # 完了済み手続きの記録
 ├── tools/check-workflow-action.py       # 検査スクリプト本体（Req 2、補助層 C 段階 2）
 ├── docs/logs/workflow-precheck.log      # 検査結果のログ書き出し先（Req 2 受入 5 補強）
-└── docs/reviews/reopen-classification-<日付>.md  # reopen 種別判定の根拠（Req 5 受入 5）
+├── docs/reviews/reopen-classification-<日付>.md  # reopen 種別判定の根拠（Req 5 受入 5）
+├── docs/operations/WORKFLOW_MANAGEMENT.md        # アプリ側規約（T-001 で配置、F-019 対処 2026-05-28）
+└── docs/operations/WORKFLOW_PRECHECK.md          # 補助層 C 段階 2 正本仕様（T-004／T-005／T-008／T-009 が節を追記、F-019 対処 2026-05-28）
 ```
 
 実行時のデータの流れ：
