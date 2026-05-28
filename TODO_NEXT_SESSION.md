@@ -1,6 +1,6 @@
 # 次セッション継続用メモ
 
-最終更新：2026-05-29（セッション 38 末。主な達成：(1) 確定済みの再オープン手続き（種別 A-2）を **初運用** して遡及所見 A-001／A-003 を処理、手続き単位の語彙を「まとまり」→「過程」に統一（`2f5ee06`）。(2) 波及所見 A-002 を `pending-cross-feature-findings.md` に A-019 として登録（`a7e0496`）。(3) workflow-management tasks の **7 モデル比較実験** を実施、機能内 must-fix 6 件＋should-fix 17 件＝23 topic を評価、人評価 23 件を記録（`baf2c66`）。**起草者バイアスを構造的に検出**（私 Opus は全 23 件で案 1 を出したが、7 件で他モデル・利用者が「徹底修正側」を採用し覆った）。(4) 統合レビュー記録を作成（`2e46c98`）。(5) **確定 23 件を tasks.md／design.md に反映、workflow-management tasks の triad-review=true に更新**（`2fe42b2`）。**ここまで全て origin/main に push 済み**。**workflow-management tasks の triad-review 段が完了**。次セッション 39 は **依存マップ順で self-improvement tasks 段**（drafting → triad-review、§3.1 の標準手順）から。その後 conformance-evaluation tasks 段、全機能 tasks 完了後は機能横断段（§3.3）。詳細は git log と §3.0／§4）
+最終更新：2026-05-29（セッション 39 末。主な達成：**self-improvement tasks の triad-review 段を完了**。(1) tasks.drafting 完了（`9794942`）。(2) 3 役レビュー（主役 Sonnet 4.6／敵対役 Opus 4.7／判定役 Opus 4.7）＋7 モデル比較実験（topic-99〜110、12 件×7 モデル）＋利用者議論 12 件、人本人判定 12 件保存（`5de9bbf`）。**起草者バイアス補正 3 件を検出**（topic-107 起草者バイアス／topic-102 枠組み伝染バイアス＝起草者のプロンプト枠組みが 6 モデルを誘導、1 モデルが正論点／topic-104 少数派採用）。枠組み伝染バイアスの再発防止ガイドラインを実験ノート §3.4.2 に追記。(3) A-2 再オープン手続きで確定 12 件を上流順（要件→設計→tasks）に反映、第 1〜第 4 過程を完走（`5cac223`＋`490d1d7`）：requirements の source 値域 3→4 値、design の採番・採用率・配置・MV-3 等 8 項目、tasks 全件。要件・設計を再承認、recheck クリア。**ここまで全て origin/main に push 済み**。**重要**：冒頭の「最重要案件（ワークフロー・ナビゲーション問題）」を毎セッション必読。次セッション 40 は **依存マップ順で conformance-evaluation tasks 段**（drafting → triad-review、§3.1 の標準手順）から。全機能 tasks 完了後は機能横断段（§3.3）。詳細は git log と §3.0／§4）
 
 作業ディレクトリ：`/Users/Daily/Development/ReviewCompass/`、リポジトリ：`git@github.com:kenoogl/ReviewCompass.git`（main ブランチ）
 
@@ -78,34 +78,36 @@ zsh -c 'source ~/.zshrc && /Users/Daily/Development/ReviewCompass/.venv/bin/pyth
 
 **避けるべき形**：`python3 <script.py>`（環境変数干渉あり、PyYAML なし）／ `zsh -c 'source ~/.zshrc && python3 <script.py>'`（API キーは取れるが PyYAML なし）。理由：`subprocess.run([sys.executable, ...])` が venv 内パッケージを参照するには、起動時の Python が venv のものでなければならない。
 
-## 2. ワークフロー上の現在位置（セッション 38 末）
+## 2. ワークフロー上の現在位置（セッション 39 末）
 
 実態は **spec.json の workflow_state から確認**（§0.1）：
 
 - intent 層／feature-partitioning 層／requirements 段／design 段：全 7 機能で全段 true
 - **tasks 段**：
-  - foundation／runtime／evaluation／analysis／**workflow-management**：drafting＋triad-review=true（機能内対処完了。workflow-management はセッション 38 で確定 23 件反映＋triad-review=true 完了）
-  - **残 2 機能（self-improvement／conformance-evaluation）：全 false**（次は self-improvement の drafting から）
+  - foundation／runtime／evaluation／analysis／workflow-management／**self-improvement**：drafting＋triad-review=true（機能内対処完了。self-improvement はセッション 39 で確定 12 件反映＋triad-review=true 完了）
+  - **残 1 機能（conformance-evaluation）：全 false**（次は conformance-evaluation の drafting から）
 - implementation 段：全段 false
-- **注**：全 7 機能の spec.json で `reopened` を 6 フェーズに拡張済み（セッション 37）。workflow-management の requirements／design は A-2 再オープンで再承認済み、recheck クリア済み（セッション 38）
+- **注**：全 7 機能の spec.json で `reopened` を 6 フェーズに拡張済み（セッション 37）。workflow-management（セッション 38）と self-improvement（セッション 39）の requirements／design は A-2 再オープンで再承認済み、recheck クリア済み（`reopened.requirements／design=true` は履歴として保持）
 
 ## 3. 次の作業候補
 
-workflow-management tasks の triad-review 段がセッション 38 で完了（確定 23 件反映＋triad-review=true、push 済み）。次セッション 39 は **依存マップ順で self-improvement tasks 段** から。
+self-improvement tasks の triad-review 段がセッション 39 で完了（確定 12 件反映＋triad-review=true、push 済み）。次セッション 40 は **依存マップ順で conformance-evaluation tasks 段**（最後の 1 機能）から。
 
-### 3.0 セッション 39 起点の具体作業（self-improvement tasks 段）
+### 3.0 セッション 40 起点の具体作業（conformance-evaluation tasks 段）
 
-§3.1 の標準手順（analysis／workflow-management tasks で確立）に従う：
+§3.1 の標準手順（analysis／workflow-management／self-improvement tasks で確立）に従う：
 
-1. **self-improvement tasks.drafting**：設計書 §14 要件追跡表（Req 受入単位 × 担当タスク単位）を骨格として tasks.md を作成する、DVT 必要なら登録
+1. **conformance-evaluation tasks.drafting**：設計書 §14 要件追跡表（Req 受入単位 × 担当タスク単位）を骨格として tasks.md を作成する、DVT 必要なら登録
 2. **tasks.triad-review（3 役レビュー）**：主役 Sonnet 4.6 ／ 敵対役 Opus 4.7 ／ 判定役 Opus 4.7（サブエージェント方式）
-3. **統合レビュー記録の起草 → 7 モデル比較実験 → 利用者議論（人評価 topic-NN-human.yaml 保存）→ tasks.md／design.md 反映 → spec.json triad-review=true → コミット → push**（§3.1 の手順 3〜9）
+3. **統合レビュー記録の起草 → 7 モデル比較実験 → 利用者議論（人評価 topic-NN-human.yaml 保存）→ 確定の反映（遡及があれば A-2 等の再オープン手続きを上流順で実施）→ spec.json triad-review=true → コミット → push**（§3.1 の手順 3〜9）
 
-その後 conformance-evaluation tasks 段。全機能 tasks 完了後は機能横断段（§3.3）。
+全機能（7/7）の tasks が完了したら機能横断段（review-wave、§3.3）。
 
-**self-improvement の接合面に注意**：workflow-management T-010 の approved_update スキーマと self-improvement §8.4 の整合（持ち越し A-019）、および §13.5 の時系列契約（workflow-management F-016 案 3 で依存マップ駆動の自動 reopen を採用）。self-improvement 側の tasks レビューでこれらの接合面が再び論点になりうる。
+**接合面に注意**：conformance-evaluation は self-improvement・evaluation との接合面（A-008／A-016 は対処済み）。tasks レビューで接合面が論点になりうる。
 
-**workflow-management tasks の確定 23 件の反映実績**は統合レビュー記録 `.reviewcompass/specs/workflow-management/reviews/2026-05-28-tasks-triad-review.md` §4.3 が正本（案 1 が 14／案 2 が 6／別案が 3、起草者バイアス 7 件検出を §4.2 に記録）。
+**self-improvement tasks の確定 12 件の反映実績**は統合レビュー記録 `.reviewcompass/specs/self-improvement/reviews/2026-05-29-tasks-triad-review.md` §4.2／§4.3 が正本（完全一致 4／割れ 8、起草者バイアス補正 3 件を §4.2.2〜§4.2.4 に記録）。実験 topic は 99〜110。
+
+**7 モデル比較実験のプロンプト作成時は実験ノート §3.4.2「枠組み伝染バイアス」ガイドラインを必ず適用**（深掘り欄に自説の結論を書かない／両面に切れる事実を併記／前提を疑う別案を歓迎／自己検査 7〜9 項目）。セッション 39 で起草者の枠組みが 6 モデルを誤誘導した教訓。
 
 ### 3.1 各機能の標準進め方（analysis tasks で確立した手順、踏襲）
 
