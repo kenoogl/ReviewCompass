@@ -1,0 +1,14 @@
+provider: human
+model: user
+turn_number: 1
+duration_seconds: 0
+sent_messages_count: 0
+note: 利用者本人の判定（topic-79、F-012）。セッション 38（2026-05-28）の対話形式判定。起草者孤立 6 件の 1 件（私のみ案 1、多数派別案）。利用者は別案採用。A-019
+  解消待ちの段取りを含む
+response_text: "decision: \"別案を提示\"\nrationale: |\n  起草者バイアス補正：私のみ案 1、多数派が別案に収束。利用者は別案を採用。\n\
+  alternative_proposal: |\n  受け取り側（consumer）の統合テストは T-010 に持たせ、self-improvement の実\
+  \ git mv は呼ばずテスト内で approved-updates/ に YAML を配置して状態を擬似再現する。送り手と受け手の境界（producer/consumer）の契約確認は\
+  \ T-011 に集約。擬似 YAML は self-improvement §8.4 正本スキーマ準拠の共有フィクスチャとし、A-019 解消後に内容を確定する。\n\
+  confidence: 1.0\nturns_used: 1\nuncertainty_factors:\nassumed_context:\ncase_scores:\n\
+  \  case_1: 6\n  case_2: 7\ncomment_to_human:\n  - 起草者孤立 6 件の 1 件（私のみ案 1、多数派別案）。利用者は別案採用。A-019\
+  \ 解消待ちの段取りを含む\n"

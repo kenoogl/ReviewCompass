@@ -1,0 +1,12 @@
+provider: human
+model: user
+turn_number: 1
+duration_seconds: 0
+sent_messages_count: 0
+note: 利用者本人の判定（topic-87、F-011）。セッション 38（2026-05-28）の対話形式判定。起草者孤立 6 件の 1 件（私のみ案 1、他
+  6 案 2）。利用者は多数派案 2 を採用
+response_text: "decision: \"採用：案 2\"\nrationale: |\n  起草者バイアス補正：私のみ案 1、他 6 モデルが案 2\
+  \ に収束。利用者は案 2 を採用。T-009 自身の『機械検査対象外』という位置づけと矛盾する grep テスト要件を削除し、必須節の存在確認に絞る。\nalternative_proposal:\
+  \ |\nconfidence: 1.0\nturns_used: 1\nuncertainty_factors:\nassumed_context:\ncase_scores:\n\
+  \  case_1: 4\n  case_2: 8\ncomment_to_human:\n  - 起草者孤立 6 件の 1 件（私のみ案 1、他 6 案 2）。利用者は多数派案\
+  \ 2 を採用\n"

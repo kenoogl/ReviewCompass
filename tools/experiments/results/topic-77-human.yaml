@@ -1,0 +1,10 @@
+provider: human
+model: user
+turn_number: 1
+duration_seconds: 0
+sent_messages_count: 0
+note: 利用者本人の判定（topic-77、F-008）。セッション 38（2026-05-28）の対話形式判定。完全一致 6 件の一括採用、議論なしで案 1
+response_text: "decision: \"採用：案 1\"\nrationale: |\n  全 7 モデル完全一致（案 1、マルチターン後）。議論なしで案\
+  \ 1 採用。T-010 前提を discipline-update.yaml 新設に一意化。\nalternative_proposal: |\nconfidence:\
+  \ 1.0\nturns_used: 1\nuncertainty_factors:\nassumed_context:\ncase_scores:\n  case_1:\
+  \ 7\n  case_2: 5\ncomment_to_human:\n  - 完全一致 6 件の一括採用、議論なしで案 1\n"

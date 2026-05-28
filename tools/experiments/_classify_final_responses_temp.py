@@ -11,21 +11,19 @@ ROOT = Path(__file__).resolve().parent.parent.parent
 RESULTS_DIR = ROOT / "tools" / "experiments" / "results"
 
 TARGETS = [
-  (53, "sonnet-4-6-api", "Sonnet 4.6 API"),
-  (59, "sonnet-4-6-api", "Sonnet 4.6 API"),
-  (72, "sonnet-4-6-api", "Sonnet 4.6 API"),
-  (75, "sonnet-4-6-api", "Sonnet 4.6 API"),
-  (58, "gemini-3-5-flash", "Gemini-3.5-flash"),
-  (59, "gemini-3-5-flash", "Gemini-3.5-flash"),
-  (62, "gemini-3-5-flash", "Gemini-3.5-flash"),
-  (64, "gemini-3-5-flash", "Gemini-3.5-flash"),
-  (65, "gemini-3-5-flash", "Gemini-3.5-flash"),
-  (67, "gemini-3-5-flash", "Gemini-3.5-flash"),
-  (69, "gemini-3-5-flash", "Gemini-3.5-flash"),
-  (72, "gemini-3-5-flash", "Gemini-3.5-flash"),
-  (75, "gemini-3-5-flash", "Gemini-3.5-flash"),
-  (69, "gemini-3-1-pro-preview", "Gemini-3.1-pro"),
-  (75, "gemini-3-1-pro-preview", "Gemini-3.1-pro"),
+  (77, "sonnet-4-6-api", "Sonnet 4.6 API"),
+  (79, "sonnet-4-6-api", "Sonnet 4.6 API"),
+  (85, "sonnet-4-6-api", "Sonnet 4.6 API"),
+  (87, "sonnet-4-6-api", "Sonnet 4.6 API"),
+  (77, "gemini-3-5-flash", "Gemini-3.5-flash"),
+  (78, "gemini-3-5-flash", "Gemini-3.5-flash"),
+  (79, "gemini-3-5-flash", "Gemini-3.5-flash"),
+  (81, "gemini-3-5-flash", "Gemini-3.5-flash"),
+  (84, "gemini-3-5-flash", "Gemini-3.5-flash"),
+  (87, "gemini-3-5-flash", "Gemini-3.5-flash"),
+  (89, "gemini-3-5-flash", "Gemini-3.5-flash"),
+  (91, "gemini-3-5-flash", "Gemini-3.5-flash"),
+  (98, "gemini-3-5-flash", "Gemini-3.5-flash"),
 ]
 
 

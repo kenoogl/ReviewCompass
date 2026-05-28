@@ -1,0 +1,10 @@
+provider: human
+model: user
+turn_number: 1
+duration_seconds: 0
+sent_messages_count: 0
+note: 利用者本人の判定（topic-94、A-005）。セッション 38（2026-05-28）の対話形式判定。多数派採用（案 1 5 ／ 別案 2）
+response_text: "decision: \"採用：案 1\"\nrationale: |\n  多数派案 1（5／2）に沿って記録。DVT に先送り論点\
+  \ 8・9 を 2 件追加（DVT-W005／W006）。\nalternative_proposal: |\nconfidence: 1.0\nturns_used:\
+  \ 1\nuncertainty_factors:\nassumed_context:\ncase_scores:\n  case_1: 8\n  case_2:\
+  \ 4\ncomment_to_human:\n  - 多数派採用（案 1 5 ／ 別案 2）\n"

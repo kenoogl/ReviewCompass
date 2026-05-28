@@ -1,0 +1,199 @@
+# tools/experiments/proxy_responses_workflow_management_temp.yaml
+#
+# workflow-management tasks 7 モデル比較実験：質問返し 13 件への代理回答
+# セッション 38（2026-05-28）作成、後で削除予定（マルチターン続行スクリプトの入力）
+#
+# 設計原則（バイアス排除のための規律、実験ノート §3.4）：
+#   - 事実情報のみ返答（数値・ファイルパス・行番号・別所見の判定区分・文書上の記述）
+#   - 推奨・意見・評価を付けない（「案 1 が良い」「採用すべきは」等の誘導表現禁止）
+#   - 別所見の判定は「判定役の分類区分」と「候補案」のみ伝え、最終確定は利用者議論前のため未定と明示
+#   - 私が知らない／文書上未確定の情報は「文書上未確定」と明示
+
+proxy_responses:
+
+  - topic: 77
+    model: sonnet-4-6-api
+    finding_id: F-008
+    category: 接合面・状態確認
+    question_summary: A-019 の状態は？self-improvement 側のファイル種別は確定済みか？
+    response: |
+      ご質問の A-019 と self-improvement 側の状態について、事実をお伝えします。
+
+      - A-019（T-010 の approved_update スキーマが self-improvement §8.4 正本と不一致）は、本機能の持ち越し所見として `.reviewcompass/pending-cross-feature-findings.md` に登録済みです。処理予定は「機能横断段（tasks review-wave）で消化」とされており、現セッションでの解消は予定されていません（複数セッションにまたがって持ち越される位置づけ）。
+      - スキーマの正本所有は self-improvement 側（§8.4）です。self-improvement §8.4 には `target_discipline_path`（_path 付き）・`status`・`materialized_at` 等のフィールドが定義されています。`approved_at` というフィールドは self-improvement §8.4 には存在しません。つまり producer 側（self-improvement）のスキーマは定義済みで、consumer 側（本機能 tasks.md T-010、`approved_at`／`target_discipline` を必須化）が正本と食い違っている状態です。
+      - 「self-improvement が approved-updates を渡す際にどの YAML を参照するか」（規律変更用に専用ファイルを使うか、機能横断整合ファイルを使うか）は、本機能側の DVT-W003（規律変更の所定手続きの段集合）が未解除で、後続セッションで確定予定です。self-improvement 側がこの本機能内のファイル選択を設計に織り込んでいるかは文書上未確定です。
+    sources:
+      - .reviewcompass/pending-cross-feature-findings.md A-019
+      - .reviewcompass/specs/workflow-management/tasks.md T-010（L203-214）, DVT-W003（L317）
+
+  - topic: 77
+    model: gemini-3-5-flash
+    finding_id: F-008
+    category: 接合面・状態確認
+    question_summary: self-improvement の approved-updates が対象とするのは規律変更か横断整合か？ファイル増加のコストは？
+    response: |
+      ご質問の 2 点について、事実をお伝えします。
+
+      1. self-improvement の approved-updates 経路が対象とする範囲：本機能 tasks.md T-010 の責務記述では、approved-updates は「self-improvement から承認済み提案 YAML が git mv で配置され、本機能が規律ファイル（docs/disciplines/discipline_*.md）の実体変更を行う」経路と定義されています。つまり対象は「規律（レビューの規律ファイル）の変更」です。一方、機能横断整合（複数機能にまたがる仕様の整合）は別の手続きで、本機能では `stages/cross-spec-alignment.yaml`（DVT-W004、段集合は枠のみ）が担う想定です。両者は文書上は別の責務として記述されています。
+      2. ファイル増加のコスト：本機能の検査スクリプトは段集合 YAML を静的列挙して読む方式（tasks.md T-003／T-004）です。`stages/` 配下に YAML を 1 つ増やすことの具体的な開発・運用オーバーヘッドは tasks.md／design.md に定量的な記述がありません（文書上未確定）。なお現状 `stages/` 配下には複数の YAML（intent.yaml ／ feature-dependency.yaml ／ requirements.yaml 等 8〜9 ファイル）が静的列挙される設計です。
+    sources:
+      - .reviewcompass/specs/workflow-management/tasks.md T-010（L198-214）, T-003（L74-96）, DVT-W004（L318）
+
+  - topic: 78
+    model: gemini-3-5-flash
+    finding_id: F-009
+    category: 他所見・タイミング
+    question_summary: 関連所見 A-007 の詳細は？grandfathering 判断はタスク完了前に必要か？
+    response: |
+      ご質問の 2 点について、事実をお伝えします。
+
+      1. 関連所見 A-007 の詳細：A-007 は「起草者判定者分離の grandfathering 判断の責務帰属の曖昧さ」を扱う所見です。判定役の分類区分は should-fix・機能内対処で、F-009 と同根（T-005 完了条件 3 が「検査を走らせる」実装作業と「grandfathering を採るか」の判断を 1 つの完了条件に混在させている）とされています。候補案は、案 1（完了条件から判断部分を分離する）と案 2（既存 7 件に separation_from_author=true を後付けする移行スクリプトを T-005 成果物に追加する）です。A-007 の最終的な対処方針は利用者議論前のため未定です。
+      2. grandfathering 判断のタイミング：本機能 tasks.md の DVT-W002（既存レビュー記録の遡及検査）は「フェーズ 2 で検査スクリプト導入時に grandfathering 判断を確定、または利用者明示承認で遡及適用範囲を確定」を解除トリガーとし、状態は「未解除」です。DVT の運用ルール（tasks.md L320-322）は「未解除項目があるとき、関連タスクは完了判定可能だが、解除トリガー発火時に再評価が必須」と定めています。つまり文書上は、grandfathering 判断が未確定でも当該タスクは完了判定可能で、判断はフェーズ 2 に先送りできる構造です。design.md L792 も grandfathering をフェーズ 2 の検査スクリプト導入時に別途決定するとしています。
+    sources:
+      - .reviewcompass/specs/workflow-management/tasks.md DVT-W002（L316）, DVT 運用ルール（L320-322）, T-005 完了条件 3（L131）
+      - 判定役の A-007 分類（should-fix／機能内対処、F-009 同根）
+
+  - topic: 79
+    model: sonnet-4-6-api
+    finding_id: F-012
+    category: タスク構造確認
+    question_summary: T-011 は「テスト実行特化（A）」か「結合テスト環境構築・スタブ実装も含む（B）」か？
+    response: |
+      T-011 の位置づけについて、tasks.md の記述をお伝えします（A／B の二者択一に厳密には当てはまらない点も含みます）。
+
+      - T-011 の責務（L216-220）：「design.md §テスト戦略で定義された 4 検証類（単体テスト ／ 統合テスト ／ 異常系 fixture ／ 境界条件）をすべて Python テストとして整備。pytest で一括実行可能」「要件追跡表の双方向整合チェック」「DVT 内の未解除項目がないことを完了条件にゲート化」。
+      - T-011 の成果物（L222）：`tests/workflow-management/` 配下のテストファイル群 10 ファイル相当（`test_discipline_update.py` ／ `test_traceability.py` 等）。つまり T-011 はテストコードのファイル自体を成果物として持ちます。
+      - テスト戦略の継承（L274-277）：「統合テスト → T-006 ／ T-007 ／ T-010 個別 ＋ T-011 統合」「異常系 fixture → 各タスクで fail-closed テスト ＋ T-011 統合」。fixture は各タスクと T-011 の双方で扱う記述です。
+      - 「git mv 外部依存のモック／スタブ実装」を T-011 の成果物として明示的に列挙した記述は tasks.md にありません（文書上、モック実装の所有先は明示されていない）。
+    sources:
+      - .reviewcompass/specs/workflow-management/tasks.md T-011（L216-224）, テスト戦略の継承（L270-277）
+
+  - topic: 79
+    model: gemini-3-5-flash
+    finding_id: F-012
+    category: タスク構造・接合面確認
+    question_summary: T-011 の統合テストは E2E かモックか？git モックの障害は？A-019 のスキーマ整合を強制する計画は？
+    response: |
+      ご質問の 2 点について、事実をお伝えします。
+
+      1. T-011 の統合テストの性質：tasks.md T-011 責務（L216-220）は「4 検証類を Python テストとして整備、pytest で一括実行可能」とのみ記述し、E2E かモック／スタブ併用かの明示はありません（文書上未確定）。git mv 外部依存のモック化の技術的障害の有無も tasks.md／design.md に記述がありません（文書上未確定）。なお F-012 の所見自体が「git mv 連携のモック／スタブ化が成果物・テスト要件のどちらにも未記述」という指摘です。
+      2. self-improvement（送信側）と本機能（受信側）のスキーマ整合を自動／強制保証する計画：tasks.md T-010 完了条件 4 は「self-improvement design §13.5 との時系列契約の整合が機械検証される（DVT-W003）」と記述しますが、DVT-W003 は未解除（段集合の詳細確定後に最終確認）です。スキーマファイルの共有やスキーマ駆動コード生成といった具体的な強制保証の仕組みは tasks.md／design.md に記述がありません（文書上未確定）。スキーマ不一致そのもの（A-019）は持ち越し所見として機能横断段で消化予定です。
+    sources:
+      - .reviewcompass/specs/workflow-management/tasks.md T-011（L216-220）, T-010 完了条件 4（L213）, DVT-W003（L317）
+      - .reviewcompass/pending-cross-feature-findings.md A-019
+
+  - topic: 81
+    model: gemini-3-5-flash
+    finding_id: A-004
+    category: 他所見・進め方確認
+    question_summary: 関連所見 F-015 の内容と方針は？スキーマ定義のみ先行するハイブリッド案は許容されるか？
+    response: |
+      ご質問の 2 点について、事実をお伝えします。
+
+      1. 関連所見 F-015：F-015 は「T-003 の stage_schema.json 完了条件に completion_predicate（完了判定述語）の値域 7 値バリデーションが未明示で、T-004 実装漏れリスクを生む」という所見です。判定役の分類区分は must-fix・機能内対処です。候補案は、案 1（T-003 完了条件に stage_schema.json で completion_predicate を 7 値に値域制限する機械検証を追加＝スキーマ層で縛る）と案 2（値域チェックの責務を T-004 の実装に集約し、stage_schema.json は enum 列挙のみ）です。F-015 の最終的な対処方針は利用者議論前のため未定です。
+      2. 「スキーマ定義と値域バリデーションのみ先行し、proxy_allowed 解決ロジックの実装は次フェーズに延期する」というハイブリッド案：これを禁止する規則は tasks.md／design.md にありません。関連する事実として、本機能には未確定事項を DVT（遅延確認事項テーブル）に登録して「関連タスクは完了判定可能、解除トリガー発火時に再評価」とする運用ルール（tasks.md L320-322）があり、段階的延期は DVT で扱う前例（DVT-W001〜W004）があります。どの案を採るかの判断は、最終判断者であるあなたに委ねられています。
+    sources:
+      - .reviewcompass/specs/workflow-management/tasks.md DVT 運用ルール（L320-322）, T-003（L74-96）
+      - 判定役の F-015 分類（must-fix／機能内対処）
+
+  - topic: 84
+    model: gemini-3-5-flash
+    finding_id: F-004
+    category: タスク構造確認
+    question_summary: T-009 と T-010 の実行順序・タスク概要・運用文書の新規/差分は？
+    response: |
+      ご質問の 3 点について、tasks.md の記述をお伝えします。
+
+      1. 実行順序：T-009 の前提タスクは T-004／T-005／T-006／T-007／T-008（L188）、T-010 の前提タスクは T-003／T-004（L203）です。両者は互いを前提タスクに列挙していません。ただし変更意図の依存順（L297）では「…T-008 →（T-009 運用文書）→（T-010 規律変更接合面）→ T-011」と、T-009 の後に T-010 を置く順序が示されています。
+      2. タスク概要：T-009 は「多層防御の位置付けと運用文書」で、責務に「本タスクは実装ではなく運用文書の整備が主、機械検査の対象ではない」（L187）と明記されています。T-010 は「規律変更の所定手続き経由実体変更」で、実装を伴います（成果物に `discipline_update_processor.py`、L208）。
+      3. 運用文書の新規／差分：`WORKFLOW_MANAGEMENT.md` は T-001 が新設する成果物として列挙されています。`WORKFLOW_PRECHECK.md` は T-008（§session 跨ぎ状態管理節、L175）と T-009（§第 1 層の限界ほか、L190）が節を書き込む成果物として現れます。WORKFLOW_PRECHECK.md を単独で新規作成するタスクが明示的に特定されているかは tasks.md 上では明確でなく（複数タスクが節を追記する形）、この点が F-004 の指摘（責務境界の曖昧さ）と関連します。
+    sources:
+      - .reviewcompass/specs/workflow-management/tasks.md T-009（L183-196）, T-010（L198-214）, 変更意図 依存順（L297）
+
+  - topic: 85
+    model: sonnet-4-6-api
+    finding_id: F-007
+    category: タスク構造確認
+    question_summary: T-008 完了条件 4（current_blocker 読み取り）は主要条件か補足条件か？
+    response: |
+      T-008 完了条件 4 の文書上の記述をお伝えします。
+
+      - T-008 完了条件 4（L180）の文言：「進行中状態ファイル自体の更新（次ステップ進行 ／ 人間承認の記録）は遮断対象外であることが機械検証される」。これは T-008 の 4 つの完了条件（L177-180）の 1 つとして並列に記載されており、補足・例外という位置づけの注記ではありません。
+      - `current_blocker` というフィールドは、T-008 責務（L170）で「任意フィールド（classification_basis ／ current_blocker ／ escalation_status）を許容」と列挙されています。つまり T-008 は current_blocker を「許容する任意フィールド」として扱います。
+      - ただし完了条件 4 の文言自体は「current_blocker を読んで自己更新の許容を区別する」とは書いておらず、「進行中ファイル自体の更新は遮断対象外」という一般的な記述です。「current_blocker を読んで区別する」という処理は F-007 所見側の解釈（reopen 連動を T-008 が内包するという見方）であり、T-008 本文に明示された文言ではありません。
+      - 補足：reopen 待機ファイルに current_blocker（人間承認待ち）を書き込むのは T-007（reopen 機械強制）の責務です。
+    sources:
+      - .reviewcompass/specs/workflow-management/tasks.md T-008（L166-181、特に責務 L170・完了条件 4 L180）, T-007（L149-164）
+
+  - topic: 87
+    model: sonnet-4-6-api
+    finding_id: F-011
+    category: 他所見確認
+    question_summary: 関連所見 F-010 の判定区分・候補案・最終判断は？
+    response: |
+      関連所見 F-010 について、事実をお伝えします。
+
+      - F-010 の所見：「T-003 完了条件 5『テンプレート変数の展開規則が stage_schema.json のコメントまたは運用文書に明示される』が grep 対象キーワードを示しておらず機械判定困難」。
+      - 判定役の分類区分：should-fix・機能内対処。
+      - 候補案：案 1（T-003 完了条件 5 に grep 対象キーワード（「テンプレート変数」「{feature}」「{phase}」「{日付}」等）を明示する）と、案 2（展開規則を stage_schema.json の構造化フィールド（required_template_vars 等）に格納し、フィールドの存在を検証する形に変更する）。
+      - F-010 の最終的な対処方針は利用者議論前のため未定です（本実験も含め、各所見の最終確定は利用者議論を経て行われます）。
+    sources:
+      - 判定役の F-010 分類（should-fix／機能内対処）と候補案（topic-86 のプロンプト内容）
+
+  - topic: 87
+    model: gemini-3-5-flash
+    finding_id: F-011
+    category: 他所見・文書性質確認
+    question_summary: F-010 の概要・事実・候補案は？T-009 の運用文書とは何で、grep 検査の目的は？
+    response: |
+      ご質問の 2 点について、事実をお伝えします。
+
+      1. 関連所見 F-010：所見は「T-003 完了条件 5（テンプレート変数の展開規則が stage_schema.json のコメントまたは運用文書に明示される）が grep 対象キーワード未定義で機械判定困難」。判定役の分類区分は should-fix・機能内対処。候補案は、案 1（完了条件 5 に grep キーワードを明示）と案 2（展開規則を stage_schema.json の構造化フィールドに格納し存在検証）。最終確定は利用者議論前のため未定です。
+      2. T-009 の運用文書：T-009 が整備する運用文書は `docs/operations/WORKFLOW_PRECHECK.md` と `docs/operations/WORKFLOW_MANAGEMENT.md`（§多層防御位置付け節）で、開発者・運用者向けの設計運用文書です（ユーザー向けマニュアルではありません）。grep 検査の対象は、T-009 テスト要件（L196）によれば「第 1 層の限界 4 点」（中身の空疎 ／ 検査呼び出し依存 ／ in-progress 自己申告性 ／ 文脈圧力下での規律低下）、「第 2〜5 層」、「補助層 A／B／C」のキーワードです。担保したいのは、これらの位置づけが運用文書に記述として存在すること（T-009 完了条件 1〜3、L193-195）です。なお T-009 責務（L187）は「本タスクは実装ではなく運用文書の整備が主、機械検査の対象ではない」とも記述しており、この点が F-011 の指摘（grep テスト要件との内部不整合）と関連します。
+    sources:
+      - .reviewcompass/specs/workflow-management/tasks.md T-009（L183-196）
+      - 判定役の F-010 分類（should-fix／機能内対処）
+
+  - topic: 89
+    model: gemini-3-5-flash
+    finding_id: F-016
+    category: 仕組み・接合面確認
+    question_summary: DVT の検証方法は？依存マップの自動再評価マーキングはあるか？A-019 の接合面修正方針は？
+    response: |
+      ご質問の 3 点について、事実をお伝えします。
+
+      1. DVT の仕組み：DVT は「遅延確認事項テーブル（Deferred Verification Table）」で、tasks.md 内の Markdown 表（L313-318）です。未確定上流仕様や将来確定予定の事項を ID ／ 関連タスク ／ 遅延内容 ／ 解除トリガー ／ 状態の列で管理します。T-011 の完了条件で「DVT 内の未解除項目がない（または延期理由が明記されている）」をゲート化します。§13.5 との契約整合（DVT-W003）を具体的にどう機械検証するか（スキーマ比較等）の方法は、規律変更の所定手続きの段集合が未確定のため、文書上は確定していません（「段集合の詳細確定後に最終確認」）。
+      2. 依存マップの自動再評価マーキング：design.md §機能依存マップ §6（L694 付近）に「depends_on_resolves_correctly 述語は値域チェックのみを担い、依存先の変更検知と recheck の更新発火は別の機構（tasks 段で実装、本設計時点ではフェーズ 2 以降の宿題）が担う」と記述されています。つまり、ある機能の仕様更新を受けて依存先タスク／検証を自動で「要再評価」とマークするメタ機構は、現在の design／tasks には含まれておらず、フェーズ 2 以降の宿題です（この点は所見 A-006 が指摘）。
+      3. A-019 の接合面修正方針：A-019（approved_update スキーマの不一致）は持ち越し所見として機能横断段で消化予定です。共通スキーマへの切り出しや共有ライブラリ化といった具体的方向は、tasks.md／design.md／pending ファイルに記述がありません（文書上未確定）。pending の対処方針は「self-improvement design §8.4 の正本スキーマを確認し、本機能 tasks.md T-010 のスキーマ記述を同期更新する」とのみ記載されています。
+    sources:
+      - .reviewcompass/specs/workflow-management/tasks.md DVT（L309-322）, T-010 完了条件 4（L213）
+      - .reviewcompass/specs/workflow-management/design.md §機能依存マップ §6（L694 付近）
+      - .reviewcompass/pending-cross-feature-findings.md A-019
+
+  - topic: 91
+    model: gemini-3-5-flash
+    finding_id: F-018
+    category: 命名規則・範囲確認
+    question_summary: プロジェクトの命名標準はあるか？stage_schema.json も同時にリネームしてよいか？
+    response: |
+      ご質問の 2 点について、事実をお伝えします。
+
+      1. 命名標準：ReviewCompass プロジェクト全体または workflow-management 機能において、ファイル名の命名規則（ケバブケース／スネークケース）の公式標準やガイドラインを定めた文書は、本実験で参照した範囲（tasks.md／design.md）には見当たりません（文書上未確定）。現状は混在しています：`feature-dependency.schema.json`（ハイフン、T-002 成果物）、`stage_schema.json`（アンダースコア、T-003 成果物）、`in_progress.schema.json`（アンダースコア、T-008 成果物）。ディレクトリ名は `stages/in-progress/`（ハイフン、design.md）です。
+      2. stage_schema.json の同時リネームの可否：これを禁止する規則も必須とする規則も文書上にありません。F-018 所見自体の対象は `in_progress.schema.json` の命名と design 配置ツリー未記載です。stage_schema.json まで含めて命名規則を全体統一するかどうかは、所見 F-018 の範囲（in_progress.schema.json 単体）を超える判断になります。どこまでを修正範囲とするかの判断は、最終判断者であるあなたに委ねられています。
+    sources:
+      - .reviewcompass/specs/workflow-management/tasks.md T-002 成果物（L65 付近）, T-003 成果物（L89）, T-008 成果物（L174）
+      - .reviewcompass/specs/workflow-management/design.md §全体構造（L59）
+
+  - topic: 98
+    model: gemini-3-5-flash
+    finding_id: A-010
+    category: 仕組み確認
+    question_summary: 成果物リストは機械パースされるか？重複に例外処理が要るか？T-001 で実ファイル配置が必要か？
+    response: |
+      ご質問の 3 点について、事実をお伝えします。
+
+      1. 成果物リストの機械パース：T-011 の完了条件（L223・L287）に「各タスクの成果物配置が design.md §全体構造 と一致」「要件追跡表の双方向整合が機械チェックされる」とあります。つまり成果物配置と要件追跡表については機械チェックが想定されています。ただし、tasks.md の成果物リストそのものを構文解析してタスク間の依存・存在チェックに使う具体的なパーサ実装の詳細は文書上に明記されていません（チェックの存在は記述、実装方式は未詳細）。
+      2. 重複に対する機械検証の制約：同一ファイルパスが複数タスクの成果物に登録されている場合に検証スクリプト側でどのような例外処理が必要になるかは、tasks.md／design.md に記述がありません（文書上未確定）。A-010 所見自体が「同一パスの二重列挙が成果物配置の一意性の機械判定を曖昧にする」という指摘です。
+      3. T-001 での実ファイル配置の要否：T-001 は雛形（`templates/review/reopen_classification_template.md`）の配置を成果物とし、T-007 がその内容を確定する、という分担で記述されています（要件追跡表 L253「Requirement 5 受入 5：種別判定根拠の保存 → T-001（雛形配置）＋ T-007（読み込み機構）」）。T-001 の段階で空または仮のファイルを実在させるか、内容確定まで作成を遅延できるかについては、tasks.md に明示的な可否の記述がありません（文書上未確定）。この分担の重複列挙そのものが A-010 の対象です。
+    sources:
+      - .reviewcompass/specs/workflow-management/tasks.md T-011 完了条件（L223）, 完成判定基準（L287）, 要件追跡 L253, T-001／T-007 成果物（L48・L158）
