@@ -75,7 +75,7 @@ workflow 改善は、**規律と実体の乖離を観察し、規律を実体に
 #### 受入基準
 
 1. 本機能の提案は YAML 形式で記述し、最低限、`proposal_id`／`proposal_type`／`target_discipline_path`／`motivating_evidence`／`proposed_change`／`expected_effect`／`status` を含む。
-2. `motivating_evidence` は配列で、各要素は `source`（`review_record`／`compliance_report`／`user_audit` のいずれか）／`location`（証跡ファイルへの相対パス）／`observation`（30 文字以上の自由記述）の 3 フィールドを持つ。
+2. `motivating_evidence` は配列で、各要素は `source`（`review_record`／`compliance_report`／`user_audit`／`observation_pattern` のいずれか）／`location`（証跡ファイルへの相対パス）／`observation`（30 文字以上の自由記述）の 3 フィールドを持つ。`observation_pattern`（実体運用で新たに観察された運用パターン）は受入 1 の入力源 4（実体運用パターン）に対応する独立の出所種別（設計 §6.2 で確定、2026-05-29 セッション 39 利用者承認の遡及修正 topic-104）。
 3. `proposal_type` は Requirement 3 受入 1 の 5 種類のいずれかをとる。
 4. `status` は次の 4 値をとる。計画書 §5.16.6 の自然言語語彙との対応も明示する：
    - `pending`：提案レビュー前（計画書「提案レビュー」段に対応）

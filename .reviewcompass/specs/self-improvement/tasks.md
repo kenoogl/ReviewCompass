@@ -37,7 +37,7 @@ language: ja
 
 - **対応設計節**：design.md §5.1 データの流れ、§11.1 ディレクトリ配置
 - **対応要件**：Requirement 7 受入 1（履歴の 4 サブディレクトリ配置）
-- **責務**：リポジトリ内に学習データの物理配置を新設する。`learning/workflow/` 配下の 4 サブディレクトリ（`proposals/` ／ `approved-updates/` ／ `rejected-updates/` ／ `rollback/`）＋効果測定出力先 `metrics/`、第 1 期で空置きの 3 ディレクトリ（`learning/findings/` ／ `learning/backtests/` ／ `learning/templates/`、§5.16.10 由来、他 4 層改善で活用予定）、入力源・出力先の関連ディレクトリ（`docs/discipline-compliance-reports/` ／ `docs/disciplines/archive/`）、検査スクリプト配置先 `tools/`、テスト配置先 `tests/self-improvement/` を新設し、各ディレクトリに配置目的を記す README を置く。空ディレクトリは `.gitkeep` で Git 追跡可能にする（workflow-management T-001 の方針継承）
+- **責務**：リポジトリ内に学習データの物理配置を新設する。`learning/workflow/` 配下の 4 サブディレクトリ（`proposals/` ／ `approved-updates/` ／ `rejected-updates/` ／ `rollback/`）＋効果測定出力先 `metrics/`、第 1 期で空置きの 3 ディレクトリ（`learning/findings/` ／ `learning/backtests/` ／ `learning/templates/`、§5.16.10 由来、他 4 層改善で活用予定）、入力源・出力先の関連ディレクトリ（`docs/discipline-compliance-reports/` ／ `docs/disciplines/archive/`）、検査スクリプト配置先 `tools/`、テスト配置先 `tests/self-improvement/` を新設し、各ディレクトリに配置目的を記す README を置く。空ディレクトリは `.gitkeep` で Git 追跡可能にする（workflow-management T-001 の方針継承）。**スキーマ配置（topic-106／F-007、§11.1）**：永続データの正本スキーマは `learning/workflow/schemas/`、ツール内部の中間スキーマは `tools/self_improvement/schemas/` の専用サブフォルダに分離する（データと混在させない）。**命名規約（topic-105／F-006）**：import 対象の Python パッケージ／モジュールはアンダースコア区切り（`tools/self_improvement/`）、import されない単独実行 CLI スクリプトはハイフン区切り（`tools/self-improvement-check.py`）。この規約を `tools/README.md` に明記する
 - **前提タスク**：なし（起点）
 - **成果物**：
   - `learning/workflow/proposals/.gitkeep`
@@ -50,17 +50,20 @@ language: ja
   - `learning/workflow/rollback/README.md`（ロールバック履歴 YAML の配置説明）
   - `learning/workflow/metrics/.gitkeep`
   - `learning/workflow/metrics/README.md`（効果測定 7 指標の時系列保管先、§12.3）
+  - `learning/workflow/schemas/.gitkeep`、`learning/workflow/schemas/README.md`（永続データ正本スキーマ proposal／rollback／metrics の配置説明、topic-106／F-007）
+  - `tools/self_improvement/schemas/.gitkeep`（ツール内部スキーマ provenance／signal の配置、topic-106／F-007）
   - `learning/findings/.gitkeep`、`learning/backtests/.gitkeep`、`learning/templates/.gitkeep`（第 1 期空置き、各 README に「他 4 層改善で活用予定、所有権はフェーズ 4 完了後の別計画書で確定」を明記、A-012 注記）
   - `docs/discipline-compliance-reports/README.md`（遵守検査の時系列 YAML の配置説明、入力源 2／5、§5.9.5 既存との整合）
   - `docs/disciplines/archive/README.md`（撤廃 README ＋撤廃規律本体の配置説明。既存の `archive/2026-05-26-consolidation/` と整合）
-  - `tools/README.md` への追記（`self-improvement-check.py` の配置先説明、実体はフェーズ 4 第 1 サイクル以降、第 1 期は手動 grep）
+  - `tools/README.md` への追記（`self-improvement-check.py` の配置先説明、実体はフェーズ 4 第 1 サイクル以降、第 1 期は手動 grep。＋命名規約：パッケージ＝アンダースコア／単独 CLI スクリプト＝ハイフン、topic-105／F-006）
   - `tests/self-improvement/.gitkeep`
 - **完了条件**：
-  1. `learning/workflow/` 配下の 5 ディレクトリ（proposals／approved-updates／rejected-updates／rollback／metrics）と各 README が存在し、`.gitkeep` で Git 追跡可能である
+  1. `learning/workflow/` 配下の 6 ディレクトリ（proposals／approved-updates／rejected-updates／rollback／metrics／schemas）と各 README が存在し、`.gitkeep` で Git 追跡可能である。スキーマは `schemas/` 専用サブフォルダに分離されている（topic-106／F-007）
   2. 空置き 3 ディレクトリ（findings／backtests／templates）が存在し、各 README に「第 1 期空置き、所有権はフェーズ 4 完了後に確定」が明記されている（A-012 注記）
-  3. `docs/discipline-compliance-reports/` ／ `docs/disciplines/archive/` の README が存在し、design §11.1 の配置ツリーと一致する
+  3. `docs/discipline-compliance-reports/` ／ `docs/disciplines/archive/` の README が存在し、design §11.1 の配置ツリーと一致する（metrics／schemas を含む）
   4. `tests/self-improvement/.gitkeep` が Git 追跡可能である
-- **テスト要件**：ディレクトリ存在検査（5 ＋ 3 ＋ 2）、README 存在検査、`.gitkeep` 存在検査、空置き 3 ディレクトリの注記文言の grep 検査
+  5. `tools/self_improvement/schemas/` が存在し、`tools/README.md` に命名規約（パッケージ＝アンダースコア／単独 CLI スクリプト＝ハイフン、topic-105／F-006）が明記されている
+- **テスト要件**：ディレクトリ存在検査（learning/workflow/ 配下 6 ＋ 空置き 3 ＋ 関連 2 ＋ tools/self_improvement/schemas/）、README 存在検査、`.gitkeep` 存在検査、空置き 3 ディレクトリの注記文言の grep 検査、命名規約の grep 検査（tools/README.md、topic-105）
 
 ### T-002：入力モデル（Input Model）
 
@@ -70,7 +73,7 @@ language: ja
 - **前提タスク**：T-001
 - **成果物**：
   - `tools/self_improvement/input_model.py`（5 入力源の読み込み ＋ 来歴情報付与 ＋ 時系列保持。第 1 期は手動抽出を補助する半自動実装）
-  - `tools/self_improvement/provenance.schema.json`（来歴情報スキーマ：`source` enum 4 値 ／ `location`（相対パス）／ `observation`（30 文字以上の自由記述）。30 文字未満は結論不能で fail-closed）
+  - `tools/self_improvement/schemas/provenance.schema.json`（来歴情報スキーマ：`source` enum 4 値 ／ `location`（相対パス）／ `observation`（30 文字以上の自由記述）。30 文字未満は結論不能で fail-closed）
 - **完了条件**：
   1. 5 種類の入力源すべてに対し、来歴情報 3 要素が付与される
   2. `source` の値域が 4 値（review_record ／ compliance_report ／ user_audit ／ observation_pattern）に enum 制限され、未知の値が fail-closed になることが機械検証される
@@ -87,7 +90,7 @@ language: ja
 - **前提タスク**：T-002
 - **成果物**：
   - `tools/self_improvement/signal_extraction.py`（4 種乖離判定 ＋ grep ベース半自動抽出 ＋ 閾値設定）
-  - `tools/self_improvement/signal.schema.json`（signal 出力スキーマ：`signal_type` enum 4 値、`related_disciplines`（衝突型／形骸化型で必須）等）
+  - `tools/self_improvement/schemas/signal.schema.json`（signal 出力スキーマ：`signal_type` enum 4 値、`related_disciplines`（衝突型／形骸化型で必須）等）
 - **完了条件**：
   1. 4 種類の乖離判定（不在型 ／ 違反型 ／ 形骸化型 ／ 衝突型）がそれぞれ正しく分類される
   2. `signal_type` の値域が 4 値に enum 制限され、未知の値が fail-closed になることが機械検証される
@@ -100,26 +103,27 @@ language: ja
 
 - **対応設計節**：design.md §8.1〜§8.9
 - **対応要件**：Requirement 3 受入 1〜5、Requirement 4 受入 1〜5
-- **責務**：5 種類の提案単位（`new_discipline` ／ `update` ／ `status_change` ／ `archive` ／ `consolidation`、§8.1）を符号化し、signal_extraction（T-003）の出力から提案 YAML を生成。提案構造（§8.4）の必須フィールド（`proposal_id` ／ `proposal_type` ／ `target_discipline_path` ／ `motivating_evidence` ／ `proposed_change` ／ `expected_effect` ／ `status`）と任意フィールド（`source_discipline_paths`（consolidation で必須）／ `statistical_evidence` ／ `depends_on` ／ `superseded_by` ／ `superseded_at` ／ `reopen_reason` ／ `materialized_at` ／ `materialization_commit_hash`）を定義。proposal_id 発番ルール（§8.5、採番権者 self-improvement、接頭辞 `WP-NNN`／`RB-NNN`、通番リセットなし、3 桁開始 999 超で 4 桁拡張）。status 4 値（pending ／ approved ／ rejected ／ superseded、§8.6）。提案種別ごとの追加要件（§8.8：archive は撤廃 README 必須、consolidation は対応表必須、status_change は遵守率証拠等）
+- **責務**：5 種類の提案単位（`new_discipline` ／ `update` ／ `status_change` ／ `archive` ／ `consolidation`、§8.1）を符号化し、signal_extraction（T-003）の出力から提案 YAML を生成。提案構造（§8.4）の必須フィールド（`proposal_id` ／ `proposal_type` ／ `target_discipline_path` ／ `motivating_evidence` ／ `proposed_change` ／ `expected_effect` ／ `status`）と任意フィールド（`source_discipline_paths`（consolidation で必須）／ `statistical_evidence` ／ `depends_on` ／ `superseded_by` ／ `superseded_at` ／ `reopen_reason` ／ `materialized_at` ／ `materialization_commit_hash`）を定義。proposal_id 発番ルール（§8.5、採番権者 self-improvement、接頭辞 `WP-NNN`／`RB-NNN`、通番リセットなし、3 桁開始 999 超で 4 桁拡張）。status 4 値（pending ／ approved ／ rejected ／ superseded、§8.6）。提案種別ごとの追加要件（§8.8：archive は撤廃 README 必須、consolidation は対応表必須、status_change は遵守率証拠等）。**責務境界（topic-100／G-003、§8.9）**：本タスクは status_change の `statistical_evidence` の **存在検証のみ**を担い、その中身（違反検出率等）の生成は検証モデル T-005 の責務。依存順は T-004 → T-005（データの流れ §5.1）でよく依存逆転ではない
 - **前提タスク**：T-003
 - **成果物**：
   - `tools/self_improvement/proposal_model.py`（5 種別の提案生成 ＋ proposal_id 採番 ＋ status 管理）
-  - `learning/workflow/proposal.schema.json`（提案 YAML スキーマの正本。必須 7 フィールド ＋ 任意フィールド、`proposal_type` enum 5 値、`status` enum 4 値、`motivating_evidence` の 3 要素必須。**self-improvement design §8.4 が正本スキーマ**であり、workflow-management T-010 の `approved_update` スキーマは本ファイルに整合させる側（A-019、DVT-S001 で追跡））
+  - `learning/workflow/schemas/proposal.schema.json`（提案 YAML スキーマの正本。スキーマは `schemas/` 専用サブフォルダに配置（topic-106／F-007、§11.1）。必須 7 フィールド ＋ 任意フィールド、`proposal_type` enum 5 値、`status` enum 4 値、`motivating_evidence` の 3 要素必須、`target_discipline_path` に pattern 制約（topic-109）。**self-improvement design §8.4 が正本スキーマ**であり、workflow-management T-010 の `approved_update` スキーマは本ファイルに整合させる側（A-019、DVT-S001 で追跡））
   - `docs/operations/`（または design 参照先）への proposal_id 発番ルール記述
 - **完了条件**：
   1. 5 種類の `proposal_type` すべてで提案 YAML が生成され、`proposal_type` の値域が enum 5 値に制限される（未知値は fail-closed）
   2. 必須 7 フィールドの存在が機械検証され、欠落時は DEVIATION（fail-closed）
   3. `motivating_evidence` の各要素が 3 要素（source ／ location ／ observation）を持つことが機械検証される（T-002 の provenance スキーマと整合）
-  4. proposal_id 採番（接頭辞分離 ／ 通番リセットなし ／ 3 桁開始 999 超 4 桁拡張）が `learning/workflow/proposals/` の最大番号＋1 で正しく機能する
+  4. proposal_id 採番（接頭辞分離 ／ 通番リセットなし ／ 3 桁開始 999 超 4 桁拡張）が **全 4 ディレクトリ（`proposals/`／`approved-updates/`／`rejected-updates/`／`rollback/`）を走査した最大番号＋1**（topic-99／G-002、§8.5）で正しく機能し、git mv で移動済みの提案との採番衝突が起きない
   5. `consolidation` で `source_discipline_paths` が必須、`archive` で撤廃 README 参照が必須、`status_change`（aspirational → enforced）で `statistical_evidence` が必須であることが機械検証される（§8.8）
   6. `proposal.schema.json` が design §8.4 の正本記述と一致する（A-019 は workflow-management 側を本スキーマに整合させる方向、本機能側は §8.4 を維持）
-- **テスト要件**：5 種別の提案生成テスト、`proposal_type` 値域テスト、必須 7 フィールド欠落テスト、`motivating_evidence` 3 要素テスト、proposal_id 採番テスト（接頭辞 ／ 通番 ／ 999 超 4 桁拡張の境界）、種別別追加要件テスト（consolidation ／ archive ／ status_change）
+  7. `target_discipline_path` が規律フォルダ `docs/disciplines/` 配下を指すことが機械検証される（topic-109／F-014）：`proposal.schema.json` に正規表現 pattern 制約（例 `^docs/disciplines/discipline_.*\.md$`）を実現手段として定義し、かつ本完了条件にもその検証を明記する（案 1 と案 2 の統合）。MV-1 と併せ提案対象の限定を二重にゲートする
+- **テスト要件**：種別別追加要件テストは **全 5 種別**を網羅（consolidation ／ archive ／ status_change ／ **update（変更箇所の diff／対照表）／ new_discipline（ドラフト＋関係明示。ただし「関係明示」を機械検証可能な形＝grep 可能なキーワード等に定義してからテスト化する、topic-108／F-012）**）、`proposal_type` 値域テスト、必須 7 フィールド欠落テスト、`motivating_evidence` 3 要素テスト、proposal_id 採番テスト（接頭辞 ／ 通番 ／ 999 超 4 桁拡張の境界 ／ **全 4 ディレクトリ走査での移動済み提案との衝突回避、topic-99**）、`target_discipline_path` の pattern 制約テスト（topic-109／F-014）
 
 ### T-005：検証モデル（Verification Model）
 
 - **対応設計節**：design.md §9.1〜§9.5
 - **対応要件**：Requirement 5 受入 1〜4
-- **責務**：3 つの検証方法（過去データへの遡及シミュレーション §9.2 ／ パイロット運用 §9.3 ／ 影響範囲の事前分析 §9.4）を実装。遡及シミュレーションは対象データ範囲を提案ごとに明示し違反検出率を計算（第 1 期は手動、規律ドラフトを `.draft` 仮配置 → 過去レビュー記録に仮適用 → 集計）。パイロット運用は `status: aspirational` で一定期間運用し遵守率推移を保持、昇格判定閾値 **90%**（A-009、§9.3、利用者明示承認「90%」2026-05-26）。影響範囲の事前分析は既存規律との衝突（名称重複 ／ 内容重複 ／ 参照循環）を内部リンク `[[name]]` の grep で機械検査。replay／backtest は採用せず、3 手段が機能しない提案は利用者監査の明示判断で承認（§9.5、Req 5 受入 4）
+- **責務**：3 つの検証方法（過去データへの遡及シミュレーション §9.2 ／ パイロット運用 §9.3 ／ 影響範囲の事前分析 §9.4）を実装。遡及シミュレーションは対象データ範囲を提案ごとに明示し違反検出率を計算（第 1 期は手動、規律ドラフトを `.draft` 仮配置 → 過去レビュー記録に仮適用 → 集計）。パイロット運用は `status: aspirational` で一定期間運用し遵守率推移を保持、昇格判定閾値 **90%**（A-009、§9.3、利用者明示承認「90%」2026-05-26）。影響範囲の事前分析は既存規律との衝突（名称重複 ／ 内容重複 ／ 参照循環）を内部リンク `[[name]]` の grep で機械検査。replay／backtest は採用せず、3 手段が機能しない提案は利用者監査の明示判断で承認（§9.5、Req 5 受入 4）。**責務境界（topic-100／G-003、§9.2）**：`statistical_evidence` の中身（遡及シミュレーションの違反検出率等）の生成は本タスクの責務であり、T-004（提案モデル）は存在検証のみを担う。依存順 T-004 → T-005 は正しい（提案の型を先に定義し、その型に流す検証手段を後で作る）
 - **前提タスク**：T-004
 - **成果物**：
   - `tools/self_improvement/verification_model.py`（3 検証手段。第 1 期は手動補助、自動化はフェーズ 4 第 2 サイクル以降）
@@ -155,7 +159,7 @@ language: ja
 - **前提タスク**：T-001、T-006
 - **成果物**：
   - `tools/self_improvement/rollback_model.py`（3 ロールバック方法 ＋ RB 採番 ＋ 履歴連結 ＋ 整合性検査）
-  - `learning/workflow/rollback.schema.json`（ロールバック YAML スキーマ：必須フィールド ＋ `rollback_method` enum 3 値（archive_restoration ／ status_downgrade ／ git_revert））
+  - `learning/workflow/schemas/rollback.schema.json`（ロールバック YAML スキーマ：必須フィールド ＋ `rollback_method` enum 3 値（archive_restoration ／ status_downgrade ／ git_revert））
 - **完了条件**：
   1. 3 つのロールバック方法が機械検証される（archive 復活 ／ ステータス格下げ ／ git revert）
   2. ロールバック YAML が必須フィールドを持ち、`rollback_method` の値域 3 値が enum 制限される（未知値 fail-closed）
@@ -172,14 +176,14 @@ language: ja
 - **前提タスク**：T-004、T-006、T-007
 - **成果物**：
   - `tools/self_improvement/effect_measurement.py`（7 指標の集計 ＋ 採用率分母ロジック ＋ 時系列保持）
-  - `learning/workflow/metrics.schema.json`（7 指標の出力スキーマ）
+  - `learning/workflow/schemas/metrics.schema.json`（7 指標の出力スキーマ）
 - **完了条件**：
   1. 7 指標すべてが算出され、`learning/workflow/metrics/<日付>.yaml` に機械可読形式で出力される
-  2. 採用率の分母が `approved + rejected + superseded`（pending 除外）で計算されることが機械検証される（F-013 対処）
+  2. 採用率が `(approved + superseded) / (approved + rejected + superseded)`（**分子・分母の両方に superseded を含める**、topic-102／F-003、§12.1）で計算されることが機械検証される（pending 除外は F-013 対処）
   3. ロールバック率が `ロールバック件数 / approved 件数` で計算される
   4. 時系列推移が `learning/workflow/metrics/` 配下の日付付き YAML で保持される
   5. 手動集計手順（§12.5 の 4 ステップ：find｜wc / grep｜sort｜uniq / 採用率算出 / metrics 記録）が文書化され再現可能である
-- **テスト要件**：7 指標算出テスト、採用率分母テスト（pending 除外の検証）、ロールバック率テスト、時系列保持テスト、手動集計手順の再現性テスト
+- **テスト要件**：7 指標算出テスト、採用率テスト（分子・分母に superseded を含む式の検証＋改善のたびに採用率が下がらないことの確認、pending 除外、topic-102）、ロールバック率テスト、時系列保持テスト、手動集計手順の再現性テスト
 
 ### T-009：機械検査の具体手段（Machine Verification）
 
@@ -193,26 +197,29 @@ language: ja
 - **完了条件**：
   1. MV-1（直接書き込み検出）が git log の changed files grep で `docs/disciplines/discipline_*.md` の本機能コミットを検出し、検出時に DEVIATION を返す
   2. MV-2（必須フィールド存在）が提案 YAML の必須 7 フィールドを検査し、欠落時に DEVIATION を返す（T-004 連動）
-  3. MV-3（commit hash 実在）が `git cat-file -e` で `materialization_commit_hash` の実在を検査する
+  3. MV-3（commit hash 実在）が `git cat-file -e` で `materialization_commit_hash` の実在を検査する。**ただし値が空（null＝未実体化）の場合は正常としてスキップし、非 null のときだけ検査する**（topic-110／G-004、§17.1）。本フィールドは workflow-management が実体変更完了時に書き込むため、第 1 期（workflow-management 未実装）は常に空であり、空を fail-closed で遮断しない（空＝「承認済みだが未実体化」の正常状態）
   4. MV-4（superseded 3 フィールド）が grep で 3 フィールドの存在を検査する（T-006 連動）
   5. 検査失敗時に fail-closed で遮断し、結果が `learning/workflow/metrics/` に追記される
   6. workflow-management の `check-workflow-action.py` との責務分担（§17.2）が運用文書に明示される
-- **テスト要件**：MV-1〜MV-4 の各検査テスト（正常系 ／ 異常系）、fail-closed 遮断テスト、検査結果の metrics 追記テスト、責務分担の文書検査
+- **テスト要件**：MV-1〜MV-4 の各検査テスト（正常系 ／ 異常系。MV-3 は **null スキップ系と非 null 検査系の両方**を含む、topic-110）、fail-closed 遮断テスト、検査結果の metrics 追記テスト、責務分担の文書検査
 
 ### T-010：他機能との接合面（Interfaces with Other Features）
 
 - **対応設計節**：design.md §13.1〜§13.6
 - **対応要件**：Boundary Context 隣接期待（foundation ／ runtime ／ evaluation ／ analysis ／ workflow-management ／ conformance-evaluation の 6 機能）
 - **責務**：6 機能との接合面を consumer 側（読み手）／ producer 側（書き手）として整備。**foundation**（§13.1）：規律検査スキーマ・レビューモード語彙・状態軸語彙を再定義せず参照。**runtime**（§13.2）：規律遵守検査結果を入力消費。**evaluation**（§13.3）：規律違反データ集計・`roles/role_diff_report.json`（A-011 対処済み）を入力消費。**analysis**（§13.4）：効果測定 7 指標を `learning/workflow/metrics/` に出力。**workflow-management**（§13.5）：承認済み提案を `git mv` で `approved-updates/` に配置（手続き入力）、時系列契約（`approved`＝本機能承認時点 ／ `materialized_at`＝workflow-management 完了時点）、完了通知（workflow-management が `materialized_at` ／ `materialization_commit_hash` 追記）、ロールバック責務（未 materialized は本機能が superseded 遷移）。**conformance-evaluation**（§13.6）：適合性評価結果を入力消費、`target_commit`（conformance-evaluation 所有）と `materialization_commit_hash`（本機能所有）の独立性（A-016 対処済み）
-- **前提タスク**：T-004、T-006
+- **前提タスク（硬い依存と緩い依存を区別、topic-107／F-009）**：
+  - **硬い依存（着手前提＝完了してから着手）**：T-004、T-006
+  - **緩い依存（完了検証前提＝起草は先行可だが、完了条件のクローズ前に成果物が揃っている必要がある）**：T-008（完了条件 3 の metrics 出力検証に必要）、T-002（完了条件 2 の evaluation 入力読み取り検証に必要）
+  - ※案 1（T-008 を硬い前提に追加）は T-010 を過剰に直列化し、案 2（依存記述を外す）は完了条件と前提の不整合を温存するため、5 モデルが収束した本「硬軟区別」案を採用。起草者が当初見落とした T-002 も対称的に追加した（起草者バイアス補正、統合レビュー記録 §4.2.2）
 - **成果物**：
   - `tools/self_improvement/interfaces.py`（producer/consumer 接合面の入出力アダプタ。上流出力の read-only 消費と analysis 向け出力）
   - `learning/workflow/approved-updates/README.md` への workflow-management 手続き入力経路の記述（§13.5、T-001 で配置した README を本タスクで内容確定）
   - **A-019 注記**：workflow-management T-010 の `approved_update` スキーマが本機能 design §8.4 正本（`target_discipline_path` ／ `status`、`approved_at` なし）と不一致。本機能側は §8.4 を正本として維持し、整合は機能横断段（tasks review-wave）で workflow-management 側を §8.4 に合わせる方向で消化する（DVT-S001）
 - **完了条件**：
   1. foundation 語彙正本を再定義せず参照のみで使用していることが機械検証される（本機能内に語彙の独自定義がないことの grep 検査）
-  2. evaluation の `roles/role_diff_report.json`（A-011 対処済み）を入力経路として読めることが確認される
-  3. analysis 向け出力が `learning/workflow/metrics/<日付>.yaml` に機械可読形式で書かれる（T-008 連動）
+  2. evaluation の `roles/role_diff_report.json`（A-011 対処済み）を入力経路として読めることが確認される（T-002 連動、緩い依存）
+  3. analysis 向け出力が `learning/workflow/metrics/<日付>.yaml` に機械可読形式で書かれる（T-008 連動、緩い依存）。なお `approved-updates/` 等にはデータ YAML のみが置かれ、スキーマは `schemas/` 専用サブフォルダに分離されているため、workflow-management が `approved-updates/` を読む際の誤参照は起きない（topic-106／F-007・F-015、§11.1）
   4. workflow-management 接合面の時系列契約（`approved` ／ `materialized_at`）が design §13.5 と整合し、`approved-updates/` への `git mv` 配置経路が機械検証される
   5. conformance-evaluation との `target_commit` ／ `materialization_commit_hash` の独立性（A-016）が design §13.6 と整合する
   6. A-019（approved_update スキーマ不一致）が DVT-S001 として登録され、本機能側は §8.4 正本維持・workflow-management 側同期の方針が明示される
