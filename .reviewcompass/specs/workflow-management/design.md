@@ -504,6 +504,25 @@ trigger_source: design/triad-review で発見した要件段の不整合
 
 判定が後で誤りと分かった場合、reopen 自体をやり直す（`stages/in-progress/` ファイルを新しいものに置き換え、旧ファイルは削除せず証跡として保全）。
 
+### 5. 再オープン手続きの 4 まとまり構成（A-001 対処、2026-05-28 セッション 37）
+
+本機能が管理する再オープン手続きの全体構成を、現在の 5 段ワークフロー（drafting → triad-review → review-wave → alignment → approval）に合わせて 4 つのまとまりで定義する。正本は計画書 §5.6.1、運用手順は `docs/operations/REOPEN_PROCEDURE.md`。素材（先行プロジェクトの `workflow-repair-procedure.md`）の 10 ステップは旧ワークフロー前提だったため、現行構造に再構成した。各まとまりは「停止せず連続実行できる作業の単位」とし、人の承認点で締める。
+
+| まとまり | 作業 | 停止点 |
+|---|---|---|
+| 1：判定とフラグ差し戻し | 種別判定 → trigger_map で再実施対象決定 → 根拠記録 → 進行中ファイル発行 → spec.json のフラグ差し戻し（reopened／recheck、上流・下流の対象段を false に） | フラグ差し戻しを人が承認（コミットなし） |
+| 2：正本修正 | 上流フェーズの正本を修正 | コミット（まとまり 1＋2 をまとめて） |
+| 3：連鎖再実施 | 依存順に上流→下流で alignment（波及チェック）→ 波及あれば triad-review、なければ approval | 各 approval、全完了後にコミット |
+| 4：完了 | 整合性の最終確認 → recheck クリア → 進行中ファイルを completed へ | コミット |
+
+spec.json の `reopened`／`recheck` の更新の詳細は §機能依存マップモデルでなく計画書 §5.24.8.1 を正本参照する。`reopened` は 6 フェーズ（intent／feature-partitioning／requirements／design／tasks／implementation）を対象とする。
+
+**`reopen-procedure.yaml` への反映**：本 4 まとまり構成を `stages/reopen-procedure.yaml` の段集合として静的列挙する（tasks 段 T-003／T-007 の実装対象）。素材由来の「10 ステップ」という数え方ではなく、現行の 4 まとまり構成を正とする。trigger_map（§2）は本構成のまとまり 3（連鎖再実施）で参照される。
+
+**暫定版**：本構成は計画書 §5.6.1 と同じく暫定版で、dogfooding の運用で見直す。
+
+**A-001（再オープン手続きが design 未定義）の対処状況**：本節の追加により、tasks.md T-003／T-007 が参照する再オープン手続きの段集合が design.md に明示された。tasks.md 側の「10 ステップ静的列挙」という記述の整合は、確定した本手続きを用いた再オープン処理（A-001 の遡及対処）で行う。
+
 ## session 跨ぎ状態管理モデル（Session-Spanning State Model）— Req 6
 
 ### 1. 進行中状態ファイルの構造（Req 6 受入 1〜2）

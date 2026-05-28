@@ -45,6 +45,8 @@
     }
   },
   "reopened": {
+    "intent": false,
+    "feature-partitioning": false,
     "requirements": false,
     "design": false,
     "tasks": false,

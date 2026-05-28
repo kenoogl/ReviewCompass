@@ -589,6 +589,52 @@ trigger_map の構造例：
 
 ReviewCompass 自身の dogfooding 期間中は、本節の正規 10 ステップ手続きの一部を軽く省略する「軽量再オープン」の運用を §5.23.13 で許容している。本節と §5.23.13 の関係は、§5.23.13 が dogfooding 期間中の一時的緩和を扱い、本節は正規実装の正本であるという棲み分けである。
 
+#### 5.6.1 再オープン手続きの 4 まとまり構成（2026-05-28 セッション 37 暫定確定）
+
+**位置づけ**：本構成は **暫定版**である。ReviewCompass 自身の自己適用検証（dogfooding、§5.23.13 トライアル運用）の中で実際に運用し、必要が生じれば見直す。本構成は素材 `docs/coordination/workflow-repair-procedure.md` の 10 ステップを、現在の 5 段ワークフロー（drafting → triad-review → review-wave → alignment → approval）と「停止点で区切る」考え方に再構成したもの。素材の 10 ステップは旧ワークフロー（手戻り種別 A/B/C/D、各フェーズに単一の alignment gate）前提だったため、現行構造に合わせて作り直した。利用者明示承認の出典：「OK」（2026-05-28 セッション 37）。
+
+再オープン手続きを 4 つのまとまりで構成する。各まとまりは「停止せず連続実行できる作業の単位」とし、人の承認点（フラグ差し戻しの承認、またはコミット）で締める。
+
+**まとまり 1：判定とフラグ差し戻し**（actor=llm、自律で連続実行）
+
+- 遡及所見を発見し、下流の作業を停止する
+- 手戻り種別を判定する（N／R／D／A／I × 深さ）
+- `trigger_map` で再実施対象の段を決定する（依存順＝`feature-dependency.yaml#phase_order` に並べる）
+- 種別判定の根拠を `docs/reviews/reopen-classification-<日付>.md` に記録する
+- 進行中状態ファイル `stages/in-progress/reopen-procedure-<日付>.yaml` を発行する
+- `spec.json` のフラグを差し戻す：
+  - 上流フェーズ：`reopened.<上流> = true`、上流の修正対象段（alignment／approval）を `false` に
+  - 下流フェーズ：`recheck.upstream_change_pending = true`、`recheck.impacted_downstream_phases` に下流フェーズを列挙、下流の再実施対象段（alignment／approval）を `false` に
+- **停止点：フラグ差し戻しの内容（手戻り種別・再実施範囲・差し戻し）を人が承認する**（この時点ではコミットしない）
+
+**まとまり 2：正本修正**（actor=human または llm、連続実行）
+
+- 上流フェーズの正本（仕様文書の該当箇所）を修正する
+- **停止点：コミット**（まとまり 1 のフラグ差し戻しと本まとまりの正本修正をまとめて 1 コミット）
+
+**まとまり 3：連鎖再実施**（依存順、各 approval で停止）
+
+- 依存順に上流 → 下流の各フェーズで：
+  - alignment（整合チェック）を実施し、波及（同フェーズの他機能への影響）の有無を確認する
+  - 波及あり → triad-review に戻して対処（機能内対処または機能横断段へ）
+  - 波及なし → approval へ
+  - approval は人の承認（actor=human または proxy_model）
+- **停止点：各フェーズの approval（人の承認）。全フェーズ完了後にコミット**
+
+**まとまり 4：完了**（連続実行）
+
+- 整合性の最終確認（上流の変更が下流に正しく伝わったか）
+- 進行中状態ファイルを `stages/completed/` へ移動する
+- **停止点：コミット**
+
+**順序の要点**：
+
+- フラグを `false` に戻してから正本を修正する（修正中の状態と実態の食い違いを防ぐ）
+- 連鎖再実施は依存順を厳守する（無視すると整合が崩れる）
+- 波及の有無は事前に確定できないため、alignment で検出する
+
+**記録の確実性について**：本手続きの各ステップを LLM が忘れず実行する保証はない（セッション 21 で確認済みの、ワークフロー記録全般の脆さ）。これは最小単純優先（§5.24.2）と多層防御（§5.8）で対処する方針であり、本手続きでは特に、まとまり 1 の承認・各コミット・各 approval を停止点として人の確認を挟むことで、記録漏れを検出可能にする。
+
 ### 5.7 session 跨ぎ時の状態管理（選択肢 P：2026-05-21 確定、2026-05-24 改定：例示 YAML の pending_gates を alignment ＋ approval に分割）
 
 長期にわたる実行では session-cont（セッション継続）で session を跨ぐ。軽量版 YAML 検査は状態ベース（証跡ファイルの存在＋必須節充足のみ）なので、各 session で同じ検査を走らせれば結論は変わらず、session 跨ぎ自体に専用機構は不要。
@@ -3547,6 +3593,8 @@ workflow_state:                        # 各段は true（通過済み）／ fal
     alignment: false
     approval: false
 reopened:
+  intent: false                      # 機能横断段、全機能で同じ値
+  feature-partitioning: false        # 機能横断段、全機能で同じ値
   requirements: false
   design: false
   tasks: false
@@ -3572,6 +3620,29 @@ review-wave／alignment／approval は機能横断段だが、機能単位と機
 - **機能横断側**：波全体の進行、対象機能集合の到達状況 → `stages/<フェーズ>.yaml` で保持
 
 両者は同じ波の異なる側面を別場所で保持する。整合は人手または将来の `reviewcompass status` コマンドで取る。
+
+#### 5.24.8.1 再オープン時の recheck／reopened の更新手順（2026-05-28 セッション 37 追記）
+
+§5.6.1 の 4 まとまり構成のうち、まとまり 1（判定とフラグ差し戻し）とまとまり 4（完了）で、spec.json の `reopened`／`recheck` を次のように更新する。`reopened` は 6 フェーズ（intent／feature-partitioning／requirements／design／tasks／implementation）を対象とする。利用者明示承認の出典：「6 フェーズに拡張」「はい」（2026-05-28 セッション 37）。
+
+**まとまり 1（フラグ差し戻し）での更新**：
+
+- 上流フェーズ（再オープン対象。intent／feature-partitioning を含む 6 フェーズのいずれか）：
+  - `reopened.<上流フェーズ> = true`（履歴として残す。再承認後も true のまま）
+  - `workflow_state.<上流フェーズ>` の修正対象段を `false` に戻す
+- 下流フェーズ（影響を受ける）：
+  - `recheck.upstream_change_pending = true`
+  - `recheck.impacted_downstream_phases` に下流フェーズ名を列挙
+  - `workflow_state.<下流フェーズ>` の再実施対象段を `false` に戻す
+
+**まとまり 4（完了）での更新**：
+
+- 連鎖再実施が全フェーズで完了し整合性が確認できたら：`recheck.upstream_change_pending = false`、`recheck.impacted_downstream_phases = []` に戻す
+- `reopened.<上流フェーズ>` は `true` のまま残す（過去にやり直しが起きた履歴）
+
+**機能横断段の注記**：intent と feature-partitioning は機能横断段（全機能で同じ値）なので、これらの `reopened` も全機能で同じ値になる。intent が再オープンされると、原則として全機能の下流フェーズ（requirements 以降）が連鎖再実施の対象になる。
+
+**どの段を false に戻すかは trigger_map で決まる**：手戻り種別（N／R／D／A／I × 深さ）から trigger_map が再実施対象段を返す。その段（各フェーズの alignment／approval）を false に戻す。drafting／triad-review／review-wave は原則そのまま（正本修正は手で行い、整合確認と承認のみ再実施する）。
 
 #### 5.24.9 drafting 段と triad-review 段の責務分離
 
