@@ -291,6 +291,19 @@
 - **状態**：登録済み、機能横断段（tasks review-wave）で消化予定。**7 モデル比較実験の 2 回目**（機能横断段の 7 モデル評価、2026-05-28 セッション 35 で確定した 2 回方式）の評価対象としても扱う
 - **検出経緯の注記**：本所見は本セッション 35 の縦整合チェック（依存マップ順）で発見されず、その後の analysis tasks の triad-review で主役 Sonnet 4.6 と敵対役 Opus 4.7 が独立に検出。敵対役は「foundation 側の確定が不在のまま analysis が 7 件と数えるのは越権参照」と severity 評価を補強。本所見は §5.23.13.3 末尾「セッション 34 整合性確保レビューの結果」の **残り 27 件**とは別系統の新規発見（縦整合チェックの範囲が下流 analysis／evaluation の数値表記までは及ばなかったことが露呈）
 
+### A-019：workflow-management T-010 の approved_update スキーマが self-improvement §8.4 正本と不一致
+
+- **検出**：セッション 37（2026-05-28）、workflow-management tasks 段の triad-review（配置：主役 Sonnet 4.6 ／ 敵対役 Opus 4.7 ／ 判定役 Opus 4.7）の敵対役独立発見 A-002
+- **記録**：統合レビュー記録未作成（セッション 38 で作成予定）。元レビュー生ログはセッション 37（ID `3e297d96`）の `subagents/` に残存
+- **重大度**：must-fix（判定役 Opus 4.7 が認定、波及種別「波及」）
+- **波及範囲**：
+  - **workflow-management**：`.reviewcompass/specs/workflow-management/tasks.md` T-010 の `approved_update` 入力スキーマ定義
+  - **self-improvement**：`.reviewcompass/specs/self-improvement/design.md` §8.4 の `approved_update` スキーマ（正本所有者）
+- **不整合内容**：workflow-management T-010 が記述する `approved_update` の入力スキーマが、self-improvement §8.4 の正本スキーマと不一致。A-012（self-improvement と workflow-management の時系列契約・完了通知形式、2026-05-26 対処済み）で確定した `materialized_at`／`materialization_commit_hash` 追記の内容が T-010 に反映されていない可能性がある
+- **対処方針**：self-improvement design §8.4 の正本スキーマを確認し、workflow-management tasks.md T-010 の `approved_update` スキーマ記述を同期更新する。A-012 対処済み内容（design.md §判断 7 拡張）と整合する形で修正
+- **依存関係**：self-improvement design §8.4 の内容確認が先、workflow-management tasks.md T-010 の修正は後
+- **状態**：登録済み、workflow-management tasks 段の機能内対処または機能横断段（tasks review-wave）で消化予定
+
 ## 4. 対処済みの所見
 
 （本セッションでの新規作成時、未消化のみ）
