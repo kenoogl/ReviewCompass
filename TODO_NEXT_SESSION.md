@@ -89,7 +89,7 @@ workflow-management tasks の triad-review 段がセッション 38 で完了（
 
 §3.1 の標準手順（analysis／workflow-management tasks で確立）に従う：
 
-1. **self-improvement tasks.drafting**：foundation／runtime／evaluation／analysis／workflow-management の方針を継承、要件追跡表を Req 受入 × 担当タスクで構成、DVT 必要なら登録
+1. **self-improvement tasks.drafting**：設計書 §14 要件追跡表（Req 受入単位 × 担当タスク単位）を骨格として tasks.md を作成する、DVT 必要なら登録
 2. **tasks.triad-review（3 役レビュー）**：主役 Sonnet 4.6 ／ 敵対役 Opus 4.7 ／ 判定役 Opus 4.7（サブエージェント方式）
 3. **統合レビュー記録の起草 → 7 モデル比較実験 → 利用者議論（人評価 topic-NN-human.yaml 保存）→ tasks.md／design.md 反映 → spec.json triad-review=true → コミット → push**（§3.1 の手順 3〜9）
 
@@ -103,7 +103,7 @@ workflow-management tasks の triad-review 段がセッション 38 で完了（
 
 各機能で次の流れ：
 
-1. **tasks.drafting**：foundation／runtime／evaluation／analysis の方針を継承、要件追跡表を Req 受入単位 × 担当タスク単位で構成、DVT 必要なら登録
+1. **tasks.drafting**：対象機能の設計書 §14 要件追跡表（Req 受入単位 × 担当タスク単位）を骨格として tasks.md を作成する、DVT 必要なら登録
 2. **tasks.triad-review（3 役レビュー）**：サブエージェント方式（主役 Sonnet 4.6 ／ 敵対役 Opus 4.7 ／ 判定役 Opus 4.7）。サブエージェント生ログは `~/.claude/projects/-Users-Daily-Development-ReviewCompass/<session-id>/subagents/` に残るため、結果は後セッションでも復元可能
 3. **統合レビュー記録の起草**：`.reviewcompass/specs/<機能>/reviews/<日付>-tasks-triad-review.md` に front-matter ＋ 主役所見 ＋ 敵対役所見＋ counter_status ＋ 判定役判定 ＋ §4 統合節（must-fix 対処方針案、利用者議論履歴、反映箇所）
 4. **機能横断波及の pending 追記**：`.reviewcompass/pending-cross-feature-findings.md` に追加（機能横断段で消化）
