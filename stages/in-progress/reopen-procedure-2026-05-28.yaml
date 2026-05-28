@@ -1,0 +1,16 @@
+process_id: reopen-procedure
+feature: workflow-management
+started_at: 2026-05-28T14:12:58+09:00
+trigger: A-2（tasks 段で requirements／design との不整合を発見、A-001＋A-003 統合）
+classification_basis: docs/reviews/reopen-classification-2026-05-28.md
+# 4 まとまり構成（計画書 §5.6.1）での進行状況。素材由来の 10 ステップ語彙ではなくまとまり番号で記録（初運用メモ参照）。
+completed_steps: [まとまり1：判定とフラグ差し戻し]
+next_step: まとまり2：正本修正
+pending_gates:
+  - stages/requirements.yaml#alignment
+  - stages/requirements.yaml#approval
+  - stages/design.yaml#alignment
+  - stages/design.yaml#approval
+  - stages/tasks.yaml#alignment
+  - stages/tasks.yaml#approval
+current_blocker: null  # まとまり1のフラグ差し戻しは利用者承認済み。まとまり2（正本修正）へ進行可
