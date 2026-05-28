@@ -54,7 +54,7 @@
 │   ├── design.yaml                      # 設計フェーズ（5 段、同上）
 │   ├── tasks.yaml                       # タスクフェーズ（5 段、同上）
 │   ├── implementation.yaml              # 実装フェーズ（5 段、同上）
-│   ├── reopen-procedure.yaml            # reopen 手続き（4 まとまり構成、trigger_map 含む）
+│   ├── reopen-procedure.yaml            # reopen 手続き（4 過程構成、trigger_map 含む）
 │   ├── cross-spec-alignment.yaml        # 機能横断整合（段集合は別途確定）
 │   ├── in-progress/                     # 進行中状態ファイル（Req 6、session 跨ぎ用）
 │   └── completed/                       # 完了済み手続きの記録
@@ -126,7 +126,7 @@ graph TD
 | `stages/design.yaml` | 同上 | 同上 |
 | `stages/tasks.yaml` | 同上 | 同上 |
 | `stages/implementation.yaml` | 同上 | 同上 |
-| `stages/reopen-procedure.yaml` | 4 まとまり構成（§reopen 機械強制モデル §5）、まとまり 3 で trigger_map 参照 | llm／human 混合 |
+| `stages/reopen-procedure.yaml` | 4 過程構成（§reopen 機械強制モデル §5）、第3過程で trigger_map 参照 | llm／human 混合 |
 | `stages/cross-spec-alignment.yaml` | 段集合は別途確定（フェーズ 2 以降） | — |
 
 各 YAML 段は最低限、段名／`actor`／期待する証跡ファイルのパスパターン／必須節名のリスト／完了判定方式を含む（Req 1 受入 3）。
@@ -433,11 +433,11 @@ reviewer:
 
 ### 2. trigger_map による連鎖再実施対象の決定（Req 5 受入 2）
 
-`stages/reopen-procedure.yaml` に `trigger_map` を持たせ、まとまり 3（連鎖再実施）で参照する。種別から再実施対象を機械的に決定する：
+`stages/reopen-procedure.yaml` に `trigger_map` を持たせ、第3過程（連鎖再実施）で参照する。種別から再実施対象を機械的に決定する：
 
 ```yaml
 - name: 該当ゲートの再実施
-  actor: llm                            # まとまり 3 の実行主体は LLM（trigger_map を解決して順次進行する）
+  actor: llm                            # 第3過程の実行主体は LLM（trigger_map を解決して順次進行する）
   actor_resolution: per_target_stage    # 各 trigger_map エントリの参照先段の `actor` を段定義から動的解決
   trigger_map:
     D-1:
@@ -448,9 +448,9 @@ reviewer:
     # 他種別（N-0／R-0〜1／D-0／D-2／A-0〜3／I-0〜4）の trigger_map は計画書 §5.6 行 457〜565 を正本参照
 ```
 
-**まとまり 3 の actor 解決規則（A-002 対処、2026-05-25 セッション 26 利用者明示承認）**：まとまり 3 の進行ロジックは LLM が担うが、各 trigger_map エントリの参照先段（`<YAML ファイル>#<段名>` 形式）の実 actor は **当該段定義（`stages/<YAML>.yaml` の `stages` 配列のうち該当段の `actor` フィールド）から動的に解決** する。段定義の `actor` フィールドが単一正本で、trigger_map 側には actor を二重記述しない（Req 1 受入 5 の「YAML 1 箇所修正で完結」の趣旨と整合）。動的解決の挙動：
+**第3過程の actor 解決規則（A-002 対処、2026-05-25 セッション 26 利用者明示承認）**：第3過程の進行ロジックは LLM が担うが、各 trigger_map エントリの参照先段（`<YAML ファイル>#<段名>` 形式）の実 actor は **当該段定義（`stages/<YAML>.yaml` の `stages` 配列のうち該当段の `actor` フィールド）から動的に解決** する。段定義の `actor` フィールドが単一正本で、trigger_map 側には actor を二重記述しない（Req 1 受入 5 の「YAML 1 箇所修正で完結」の趣旨と整合）。動的解決の挙動：
 
-- 参照先段の actor が `llm`：まとまり 3 の進行ロジックが当該段の完了判定を実施
+- 参照先段の actor が `llm`：第3過程の進行ロジックが当該段の完了判定を実施
 - 参照先段の actor が `human`：作業を停止し、`stages/in-progress/` ファイルに「人間承認待ち」を記録して待機（Req 5 受入 3〜4）
 - 参照先段の actor が `proxy_model`：`reviewcompass.yaml#human_proxy.proxy_allowed` の許可条件を満たす場合のみ proxy_model が代行（§段集合の静的列挙モデル §2 の approval 段の記述と整合）
 
@@ -471,8 +471,8 @@ process_id: reopen-procedure
 started_at: 2026-05-25T14:00:00+09:00
 trigger: D-1（設計段で要件段の不整合発見）
 classification_basis: docs/reviews/reopen-classification-2026-05-25.md
-completed_steps: [まとまり1：判定とフラグ差し戻し, まとまり2：正本修正]
-next_step: まとまり3：連鎖再実施
+completed_steps: [第1過程：判定とフラグ差し戻し, 第2過程：正本修正]
+next_step: 第3過程：連鎖再実施
 pending_gates:
   - stages/requirements.yaml#alignment   # actor=llm、機械判定で進行
   - stages/requirements.yaml#approval    # actor=human、ここで停止
@@ -483,7 +483,7 @@ current_blocker: stages/requirements.yaml#approval（人間承認待ち）
 
 ### 4. 種別判定の根拠保存（Req 5 受入 5）
 
-reopen のまとまり 1 で、種別判定の根拠を `docs/reviews/reopen-classification-<日付>.md` として保存する。まとまり 3 はこの判定ファイルを読み込んで `trigger_map` から連鎖再実施対象を決定する。
+reopen の第1過程で、種別判定の根拠を `docs/reviews/reopen-classification-<日付>.md` として保存する。第3過程はこの判定ファイルを読み込んで `trigger_map` から連鎖再実施対象を決定する。
 
 種別判定根拠ファイルの最低限の構造：
 
@@ -504,24 +504,24 @@ trigger_source: design/triad-review で発見した要件段の不整合
 
 判定が後で誤りと分かった場合、reopen 自体をやり直す（`stages/in-progress/` ファイルを新しいものに置き換え、旧ファイルは削除せず証跡として保全）。
 
-### 5. 再オープン手続きの 4 まとまり構成（A-001 対処、2026-05-28 セッション 37）
+### 5. 再オープン手続きの 4 過程構成（A-001 対処、2026-05-28 セッション 37）
 
-本機能が管理する再オープン手続きの全体構成を、現在の 5 段ワークフロー（drafting → triad-review → review-wave → alignment → approval）に合わせて 4 つのまとまりで定義する。正本は計画書 §5.6.1、運用手順は `docs/operations/REOPEN_PROCEDURE.md`。素材（先行プロジェクトの `workflow-repair-procedure.md`）の 10 ステップは旧ワークフロー前提だったため、現行構造に再構成した。各まとまりは「停止せず連続実行できる作業の単位」とし、人の承認点で締める。
+本機能が管理する再オープン手続きの全体構成を、現在の 5 段ワークフロー（drafting → triad-review → review-wave → alignment → approval）に合わせて 4 つの過程で定義する。正本は計画書 §5.6.1、運用手順は `docs/operations/REOPEN_PROCEDURE.md`。素材（先行プロジェクトの `workflow-repair-procedure.md`）の 10 ステップは旧ワークフロー前提だったため、現行構造に再構成した。各過程は「停止せず連続実行できる作業の単位」とし、人の承認点で締める。
 
-| まとまり | 作業 | 停止点 |
+| 過程 | 作業 | 停止点 |
 |---|---|---|
 | 1：判定とフラグ差し戻し | 種別判定 → trigger_map で再実施対象決定 → 根拠記録 → 進行中ファイル発行 → spec.json のフラグ差し戻し（reopened／recheck、上流・下流の対象段を false に） | フラグ差し戻しを人が承認（コミットなし） |
-| 2：正本修正 | 上流フェーズの正本を修正 | コミット（まとまり 1＋2 をまとめて） |
+| 2：正本修正 | 上流フェーズの正本を修正 | コミット（第1過程＋第2過程をまとめて） |
 | 3：連鎖再実施 | 依存順に上流→下流で alignment（波及チェック）→ 波及あれば triad-review、なければ approval | 各 approval、全完了後にコミット |
 | 4：完了 | 整合性の最終確認 → recheck クリア → 進行中ファイルを completed へ | コミット |
 
 spec.json の `reopened`／`recheck` の更新の詳細は §機能依存マップモデルでなく計画書 §5.24.8.1 を正本参照する。`reopened` は 6 フェーズ（intent／feature-partitioning／requirements／design／tasks／implementation）を対象とする。
 
-**`reopen-procedure.yaml` への反映**：本 4 まとまり構成を `stages/reopen-procedure.yaml` の段集合として静的列挙する（tasks 段 T-003／T-007 の実装対象）。素材由来の「10 ステップ」という数え方ではなく、現行の 4 まとまり構成を正とする。trigger_map（§2）は本構成のまとまり 3（連鎖再実施）で参照される。
+**`reopen-procedure.yaml` への反映**：本 4 過程構成を `stages/reopen-procedure.yaml` の段集合として静的列挙する（tasks 段 T-003／T-007 の実装対象）。素材由来の「10 ステップ」という数え方ではなく、現行の 4 過程構成を正とする。trigger_map（§2）は本構成の第3過程（連鎖再実施）で参照される。
 
 **暫定版**：本構成は計画書 §5.6.1 と同じく暫定版で、dogfooding の運用で見直す。
 
-**A-001（再オープン手続きが design 未定義）の対処状況**：本節の追加により、tasks.md T-003／T-007 が参照する再オープン手続きの段集合が design.md に明示された。tasks.md 側の「10 ステップ静的列挙」という記述、および design.md 本文に残っていた「第 7 段／第 6 ステップ」等の旧表記は、本手続き（種別 A-2）を用いた再オープン処理で「4 まとまり構成」に統一済み（2026-05-28、まとまり 2）。
+**A-001（再オープン手続きが design 未定義）の対処状況**：本節の追加により、tasks.md T-003／T-007 が参照する再オープン手続きの段集合が design.md に明示された。tasks.md 側の「10 ステップ静的列挙」という記述、および design.md 本文に残っていた「第 7 段／第 6 ステップ」等の旧表記は、本手続き（種別 A-2）を用いた再オープン処理で「4 過程構成」に統一済み（2026-05-28、第2過程）。
 
 ## session 跨ぎ状態管理モデル（Session-Spanning State Model）— Req 6
 
