@@ -1,0 +1,15 @@
+provider: openai-api
+model: gpt-5.5
+turn_number: 1
+duration_seconds: 11.692
+sent_messages_count: 1
+response_text: "decision: \"採用：案 1\"\nrationale: |\n  案 1 を採用します。\n  混在レビューモード検知は\
+  \ T-009 単体でも検証されるため、専用ファイルを新設すると責務が重複しやすくなります。\n  T-011 は出力先向け成果物の一貫性を確認する統合タスクなので、統合テストの集約先を\
+  \ `test_destinations.py` と明示する方が自然です。\n  修正範囲も既存の T-011 責務文とテスト方針の明確化で済み、should-fix\
+  \ の対処として過剰ではありません。\n  ただし、T-009 側には「単体は caveat_register 付与ロジックを確認する」と責務分担を併記するのが望ましいです。\n\
+  confidence: 0.82\nturns_used: 1\nuncertainty_factors:\n  - F-011 の最終判断内容が提示されていないため、完全な整合確認はできていない\n\
+  \  - 既存の `test_destinations.py` の責務範囲や規模が不明で、将来的な肥大化リスクは残る\nassumed_context:\n \
+  \ - T-011 は 4 出力先向け成果物の統合的な一貫性確認を担うタスクである\n  - 混在レビューモード検知そのものの付与ロジックは T-009 側の単体テストで十分に検証できる\n\
+  case_scores:\n  case_1: 8\n  case_2: 5\ncomment_to_human:\n  - T-011 には「混在レビューモード検知の統合テストは\
+  \ `test_destinations.py` に置く」と明記してください。\n  - T-009 には「単体テストは `review_mode_mixed`\
+  \ 検知時の `caveat_register` 付与ロジックに限定する」と補足すると、重複が避けられます。"

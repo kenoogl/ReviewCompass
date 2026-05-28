@@ -1,0 +1,35 @@
+provider: claude-code-cli
+model: claude-sonnet-4-6
+turn_number: 1
+duration_seconds: 16.525
+sent_messages_count: 1
+note: |
+  Claude Code 内の Agent ツール経由（subagent_type: general-purpose、model: sonnet）で呼び出した結果。
+  agentId: a86ebab070404b598
+response_text: |
+  ```yaml
+  decision: "採用：案 1"
+  rationale: |
+    無声昇格検出の主な作業対象は `evidence_register.json` の `maturity_label` と `evidence_class` であり、
+    その検査を担う自然な置き場所は既存の `test_evidence_register.py` である。
+    新たなファイルを追加すると、同じデータ構造を扱うテストが分散し、責務の一貫性が下がる。
+    案 1 はテストファイル数を据え置いたまま、T-011 の責務文に「統合版の担務主体と二層意図」を明記するだけで
+    所見の核心（どのファイルが担うか不明確）を解消できる。
+    T-004 との二層検証の意図も同じ責務文の中に明示できるため、後続の実装者が読めば疑いなく判断できる。
+    案 2 の「可読性が高い」という利点は、責務文を丁寧に書くことで案 1 でも十分に補える。
+  alternative_proposal: |
+    （decision が「別案を提示」でないため省略）
+  confidence: 0.82
+  turns_used: 1
+  uncertainty_factors:
+    - T-011 の「テストファイル数 10 件」が設計方針として固定されているかが文書から確認できず、案 2 の採否に影響する可能性がある
+    - `test_evidence_register.py` の現在のテスト件数・粒度が不明なため、担務追加によるファイル肥大化リスクを評価できていない
+  assumed_context:
+    - T-011 のテストファイル数（10 件）は固定ではなく、必要に応じて変更可能な方針であるが、変更には相応の理由が要る
+    - design.md §テスト戦略 §2 の「無声昇格検出」は T-011 スコープ内であり、T-004 との二層分担が正規の設計意図である
+  case_scores:
+    case_1: 8
+    case_2: 5
+  comment_to_human:
+    - 案 1 採用を推奨するが、T-011 の責務文には「無声昇格検出統合版を test_evidence_register.py が担う」という文言と「T-004 単体・T-011 統合の二層構成」の説明を明示することが必須です。曖昧なまま「担務追加」と書くだけでは所見の解消にならない点にご注意ください。
+  ```

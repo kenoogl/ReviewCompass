@@ -1,0 +1,37 @@
+provider: claude-code-cli
+model: claude-sonnet-4-6
+turn_number: 1
+duration_seconds: 16.738
+sent_messages_count: 1
+note: |
+  Claude Code 内の Agent ツール経由（subagent_type: general-purpose、model: sonnet）で呼び出した結果。
+  agentId: abea49e6be431e34f
+response_text: |
+  ```yaml
+  decision: "採用：案 1"
+  rationale: |
+    `final_label` は foundation の語彙として「レビュー所見の最終判定値（must-fix / should-fix / leave-as-is の 3 値）」
+    を表すものであり、証拠台帳（evidence_register）が管理する「証拠エントリの属性」とは目的が根本的に異なる。
+    T-004 スキーマに `final_label` が登場しないのは設計上の矛盾ではなく、正しい責務分離の結果と解釈できる。
+    案 1 は完了条件の記述を実装の実態に合わせるだけの機能内対処であり、設計変更を伴わない。
+    案 2 は evidence_register に `final_label` を導入するという設計変更を要し、design.md の再オープン、
+    要件側との整合確認、さらに T-011 の双方向整合チェックへの影響も生じる。波及コストに見合う理由が現時点では
+    見当たらない。T-011 の機械検証が失敗しないようにするためにも、案 1 で完了条件を
+    「foundation 3 語彙（evidence_class / review_mode / counter_status）を再定義せず参照のみ」
+    と記述し直す方が最小変更かつ整合性が高い。
+  alternative_proposal: |
+  confidence: 0.92
+  turns_used: 1
+  uncertainty_factors:
+    - foundation 語彙として `final_label` が将来的に T-004 の責務範囲に取り込まれる可能性がゼロではない
+    - T-011 双方向整合チェックの実装仕様が確定していないため、案 1 後の整合検証ロジックへの影響が完全には見通せない
+  assumed_context:
+    - `final_label` は evidence_register の属性ではなく、判定役が所見に付ける最終判定値として設計されているという前提
+    - T-004 の責務は evidence_register エントリの構造管理であり、判定値の保持は別タスクが担うという前提
+  case_scores:
+    case_1: 9
+    case_2: 3
+  comment_to_human:
+    - 案 1 を採用し、T-004 完了条件の foundation 語彙リストを「evidence_class / review_mode / counter_status」の 3 語彙に修正することを推奨します。`final_label` を削除するだけの最小変更で矛盾が解消します。
+    - design.md 側での `final_label` の位置づけ（どのタスクが保持・管理するのか）を近いうちに明文化しておくと、T-011 実装時の混乱を防げます。
+  ```

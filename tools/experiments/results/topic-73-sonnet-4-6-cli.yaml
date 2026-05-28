@@ -1,0 +1,41 @@
+provider: claude-code-cli
+model: claude-sonnet-4-6
+turn_number: 1
+duration_seconds: 16.179
+sent_messages_count: 1
+note: |
+  Claude Code 内の Agent ツール経由（subagent_type: general-purpose、model: sonnet）で呼び出した結果。
+  agentId: a91a209109b37bb89
+response_text: |
+  ```yaml
+  decision: "採用：案 1"
+  rationale: |
+    設計文書（design.md）は「何を正本とするか、誰が所有するか」を確定する場所であり、
+    下流参照禁止の宣言もその場所に置くのが一貫している。
+    foundation の正本所有規律と同型の表現を維持することで、
+    プロジェクト全体の規律スタイルが統一され、後続フェーズで読んだ人が
+    迷わず判断できる。
+    案 2 は tasks 側の完了条件に記述するが、完了条件は「タスクが済んだかどうか」の
+    検査基準であり、設計上の原則を宣言する場所ではない。
+    tasks 側に書いても、設計文書を読んだ人には伝わらないため、
+    下流参照禁止の根拠が設計文書に存在しない状態が残る。
+    analysis は最下流に近いとはいえ、self-improvement など後続機能の参照禁止を
+    設計で明示しておくことは保守性の観点で望ましく、軽量な design.md 再オープンで
+    対処できる範囲であるため、案 1 が妥当と判断する。
+  alternative_proposal: |
+    （該当なし）
+  confidence: 0.82
+  turns_used: 1
+  uncertainty_factors:
+    - design.md の再オープンに伴うレビュープロセスの手間がどの程度かが不明
+    - self-improvement 以外に analysis の正本を参照する下流機能が存在するかどうかが不明
+  assumed_context:
+    - design.md の軽量再オープンは、大幅な再レビューを伴わず1節の追記程度で完結できる
+    - foundation の「下流参照禁止」明示がすでにモデル文として存在し、同型の表現を流用できる
+  case_scores:
+    case_1: 8
+    case_2: 5
+  comment_to_human:
+    - design.md に1節追記するだけで foundation との一貫性が保たれるため、案 1 を推奨します。
+    - tasks 側の完了条件は「設計原則の宣言」には向かないため、案 2 は補助的な参照にとどめることをお勧めします。
+  ```

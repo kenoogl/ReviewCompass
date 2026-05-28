@@ -1,0 +1,32 @@
+provider: claude-code-cli
+model: claude-sonnet-4-6
+turn_number: 1
+duration_seconds: 14.691
+sent_messages_count: 1
+note: |
+  Claude Code 内の Agent ツール経由（subagent_type: general-purpose、model: sonnet）で呼び出した結果。
+  agentId: a47a29bbbdb9f2832
+response_text: |
+  ```yaml
+  decision: "採用：案 1"
+  rationale: |
+    派生方針の変更頻度が低いという前提のもとでは、manifest.yaml の単一フィールドで管理する案 1 が構造的に単純であり、保守コストも低い。
+    案 2 は履歴専用ファイルを分離することで変更頻度が高い場面には向くが、ファイル間の参照整合を別途保証する仕組みが必要になり、タスク定義の複雑度が上がる。
+    T-009 の本来の目的は「完了条件を機械的に検証できること」であり、案 1 の「前版 ref を superseded_versions フィールドに記録＋版番号単調増加の機械検証」という記述で、その目的は十分に達成できる。
+    superseded の表現場所が T-009 成果物に含まれていないという指摘も、案 1 の採用により manifest.yaml の superseded_versions フィールドとして明示されることで解消される。
+    したがって、現時点の設計規模・変更頻度の前提に対して案 1 が最適な選択である。
+  alternative_proposal: |
+  confidence: 0.82
+  turns_used: 1
+  uncertainty_factors:
+    - 派生方針の実際の変更頻度が将来どの程度になるかは不明であり、頻度が高ければ案 2 が有利になる可能性がある
+    - manifest.yaml の superseded_versions フィールドのスキーマ定義が現設計に存在するかどうかを直接確認していない
+  assumed_context:
+    - 派生方針の変更は運用期間を通じてまれにしか発生しない（低頻度）という前提を置いた
+    - manifest.yaml はすでに analysis 機能の主要出力ファイルとして位置づけられており、フィールド追加の障壁は低いと想定した
+  case_scores:
+    case_1: 8
+    case_2: 5
+  comment_to_human:
+    - 案 1 を採用することで T-009 の完了条件に「superseded_versions フィールドへの前版 ref 記録」と「版番号の単調増加」という 2 つの機械検証基準が明示されます。将来的に変更頻度が高まった場合は、案 2 への移行を改めて検討することをお勧めします。
+  ```

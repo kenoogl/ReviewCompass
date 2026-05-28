@@ -1,0 +1,17 @@
+provider: openai-api
+model: gpt-5.5
+turn_number: 1
+duration_seconds: 15.07
+sent_messages_count: 1
+response_text: "decision: \"採用：案 1\"\nrationale: |\n  T-009 は tasks 段の完了条件を機械判定可能にすることが主目的であり、専用履歴ファイルを増やすほどの必要性は現時点では高くありません。\n\
+  \  design.md の記述は「派生方針変更時に version を更新し、過去成果物を superseded として保持する」という単純な整合要件なので、manifest.yaml\
+  \ 内で一元管理する方が実装・検証ともに明快です。\n  案 1 なら、どのファイル・どのフィールドを検査するかが明確になり、T-009 の完了条件を自動テストに落とし込めます。\n\
+  \  派生方針の変更頻度が低い想定であれば、履歴肥大化を理由に案 2 の 2 ファイル構成へ分離する利点は限定的です。\n  ただし採用時には、manifest.yaml\
+  \ の `superseded_versions` スキーマと検証ルールを T-009 の成果物に明示する必要があります。\nconfidence: 0.86\n\
+  turns_used: 1\nuncertainty_factors:\n  - 派生方針変更の実際の頻度や、長期運用時の履歴件数がまだ確定していないこと\n\
+  \  - 既存の manifest.yaml スキーマに `superseded_versions` を追加してよいかの上位方針が明示されていないこと\nassumed_context:\n\
+  \  - `manifest.yaml` は analysis の派生成果物メタデータを管理する中心的なファイルである\n  - `derivation_contract_version`\
+  \ の変更頻度は低く、履歴が短期的に大きく肥大化しない\ncase_scores:\n  case_1: 8\n  case_2: 5\ncomment_to_human:\n\
+  \  - T-009 には「前版 ref が `manifest.yaml.superseded_versions` に存在すること」「新旧 version が単調増加していること」「旧成果物の状態が\
+  \ `superseded` として表現されること」を完了条件として追記してください。\n  - あわせて `superseded_versions` の最小スキーマ例と、自動検証テストの観点を\
+  \ tasks.md に含めるとよいです。"

@@ -1,0 +1,33 @@
+provider: claude-code-cli
+model: claude-sonnet-4-6
+turn_number: 1
+duration_seconds: 17.854
+sent_messages_count: 1
+note: |
+  Claude Code 内の Agent ツール経由（subagent_type: general-purpose、model: sonnet）で呼び出した結果。
+  agentId: a1f56ade222465b71
+response_text: |
+  ```yaml
+  decision: "採用：案 2"
+  rationale: |
+    機械判定の厳格化（案 1）は「承認」という品質保証の意味を失わせる。文書が存在し必須節を含むだけで完了とみなせてしまうと、誰も実際に内容を確認しない状態で後続タスクが動き出すリスクがある。
+    一方、案 2 は foundation T-001 と同形式で整合性を確保しつつ、「機械検証は規約の存在と必須節の充足まで」「承認の最終確認は運用で担保」という責務分離を文書化する。これは既存の設計方針を踏襲するため変更コストが低く、後段への影響も最小限に抑えられる。
+    T-001 は共通レイアウト準備という基盤タスクであるため、完了条件の曖昧化は後続タスク全体の前提を不安定化させる。そのため、承認の実質を保ちながら機械判定との共存を明示する案 2 が最適と判断した。
+    また、foundation／runtime／evaluation T-001 との横一致が取れる点も、文書群の保守性を高めるうえで重要な加点要素である。
+  alternative_proposal: |
+    （該当なし）
+  confidence: 0.85
+  turns_used: 1
+  uncertainty_factors:
+    - foundation T-001 の注記が運用でどこまで機能しているか、実績データが手元にない
+    - 「必須 N 節」の定義がまだ確定していない場合、案 2 の機械検証部分が後で再設計を要する可能性がある
+  assumed_context:
+    - foundation T-001 の注記形式はすでに合意済みで有効に機能していると仮定した
+    - analysis T-001 も他機能の T-001 と同水準の完了条件の厳格さが求められていると仮定した
+  case_scores:
+    case_1: 5
+    case_2: 8
+  comment_to_human:
+    - 案 2 を採用する際は、foundation T-001 の注記文言を参照してほぼ同文で流用することを推奨する。差異が生じると後の整合チェックで再びコストが発生しやすい。
+    - 機械検証対象とする「必須 N 節」のリストを注記内に明示しておくと、将来の自動テスト実装時にドキュメントとコードの対応が取りやすくなる。
+  ```
