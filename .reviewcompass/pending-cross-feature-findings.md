@@ -272,7 +272,7 @@
 - **状態**：登録済み、機能横断段（tasks review-wave）で消化予定（現時点では tasks 段は foundation の triad-review レビュー完了のみ、残 6 機能の tasks.drafting と triad-review が未着手）
 - **組み込み判断（2026-05-27 セッション 34）**：運営ガイド §3.6 や計画書 §5.5 への組み込みは**現時点で不要**。理由：A-017 は個別所見であり、機能横断段で実施されれば消化される性質。汎用パターン化（運営ガイド ／ 計画書本体への手順追加）は、機能横断段の実施結果を見てから再評価する方が安全。**再評価のタイミング**：tasks 段の機能横断段（review-wave）で A-017 を消化した後、対処の効果と類似所見の再発有無を確認したうえで、汎用パターン化の要否を別途判断する。**利用者明示承認の出典**：「ｂ。以降推奨案で自律的に進める」（要確認 3 の処理方針として案 d ＝ pending に組み込み判断を追記、運営ガイド ／ 計画書本体は触らない、2026-05-27 セッション 34）。
 
-### A-018：foundation 語彙正本の所有件数の食い違い（F-013 ／ A-005 同根問題）
+### A-018：foundation 語彙正本の所有件数の食い違い（F-013 ／ A-005 同根問題） ✅ 対処済み（2026-05-29、セッション40、tasks review-wave、正規再オープン A-1、別案採用）
 
 - **検出**：セッション 35〜36、analysis tasks 段の triad-review（2026-05-28）の主役所見 F-013（Sonnet 4.6）と敵対役独立発見 A-005（Opus 4.7）の同根所見
 - **記録**：[.reviewcompass/specs/analysis/reviews/2026-05-28-tasks-triad-review.md](specs/analysis/reviews/2026-05-28-tasks-triad-review.md) §1 主役所見 F-013、§2.2 独立発見 A-005、§3.1 判定（must-fix／波及）
@@ -288,10 +288,10 @@
   - **第 2 段階（下流整合）**：foundation 確定後、analysis tasks 完成判定基準（行 213-215）と evaluation tasks 完成判定基準（行 219）の数字を確定値に書き換え。tasks.md 内の各タスク完了条件・テスト要件に登場する「foundation N 語彙の参照のみ使用」も同期更新
   - **第 3 段階（軽量再オープン）**：foundation requirements ／ design ／ tasks の該当箇所と analysis ／ evaluation の tasks 該当箇所を §5.23.13 軽量手続きで再オープンして同期更新
 - **依存関係**：foundation 側の正式確定が先。analysis ／ evaluation 側の修正は foundation 確定後に同期更新
-- **状態**：登録済み、機能横断段（tasks review-wave）で消化予定。**7 モデル比較実験の 2 回目**（機能横断段の 7 モデル評価、2026-05-28 セッション 35 で確定した 2 回方式）の評価対象としても扱う
+- **状態**：✅ 対処済み（2026-05-29 セッション40）。7 モデル比較実験 2 回目（topic-121）で案2=3／別案=3／案1=0 に割れ、利用者は**別案**を選択。実態は「foundation/design.md 内部のみの自己矛盾」で、下流の analysis 7 件／evaluation 6 件は各機能の正しい参照範囲（推定タスクを扱うか否かの差）であり矛盾ではないと確定。**正規再オープン（種別 A-1）**で foundation design を再オープンし、行644（§判断7 参照方式に整理＋二層構造明記）・行602（所有=全件／参照=部分集合を明記、固定値は埋め込まず）・行736 後（欠落していたセッション28 の confidence_label 追加記録を追記）を修正。evaluation/tasks.md 行219 に「confidence_label は推定タスク用で evaluation は参照範囲外」を明記。整合確認で confidence_label の置き場所を tasks T-003 と照合し metadata_contract.yaml と確定。記録：[reopen-classification-2026-05-29-foundation-a018.md](../../docs/reviews/reopen-classification-2026-05-29-foundation-a018.md)、コミット `361317d`／`e5f8167`
 - **検出経緯の注記**：本所見は本セッション 35 の縦整合チェック（依存マップ順）で発見されず、その後の analysis tasks の triad-review で主役 Sonnet 4.6 と敵対役 Opus 4.7 が独立に検出。敵対役は「foundation 側の確定が不在のまま analysis が 7 件と数えるのは越権参照」と severity 評価を補強。本所見は §5.23.13.3 末尾「セッション 34 整合性確保レビューの結果」の **残り 27 件**とは別系統の新規発見（縦整合チェックの範囲が下流 analysis／evaluation の数値表記までは及ばなかったことが露呈）
 
-### A-019：workflow-management T-010 の approved_update スキーマが self-improvement §8.4 正本と不一致
+### A-019：workflow-management T-010 の approved_update スキーマが self-improvement §8.4 正本と不一致 ✅ 対処済み（2026-05-29、セッション40、tasks review-wave、案1採用）
 
 - **検出**：セッション 37（2026-05-28）、workflow-management tasks 段の triad-review（配置：主役 Sonnet 4.6 ／ 敵対役 Opus 4.7 ／ 判定役 Opus 4.7）の敵対役独立発見 A-002
 - **記録**：統合レビュー記録未作成（セッション 38 で作成予定）。元レビュー生ログはセッション 37（ID `3e297d96`）の `subagents/` に残存
@@ -302,7 +302,7 @@
 - **不整合内容**：workflow-management T-010 が記述する `approved_update` の入力スキーマが、self-improvement §8.4 の正本スキーマと不一致。A-012（self-improvement と workflow-management の時系列契約・完了通知形式、2026-05-26 対処済み）で確定した `materialized_at`／`materialization_commit_hash` 追記の内容が T-010 に反映されていない可能性がある
 - **対処方針**：self-improvement design §8.4 の正本スキーマを確認し、workflow-management tasks.md T-010 の `approved_update` スキーマ記述を同期更新する。A-012 対処済み内容（design.md §判断 7 拡張）と整合する形で修正
 - **依存関係**：self-improvement design §8.4 の内容確認が先、workflow-management tasks.md T-010 の修正は後
-- **状態**：登録済み、workflow-management tasks 段の機能内対処または機能横断段（tasks review-wave）で消化予定
+- **状態**：✅ 対処済み（2026-05-29 セッション40）。7 モデル比較実験 2 回目（topic-122）で案1=5／別案=2／案2=0、利用者は**案1**を選択。両機能は同一リポジトリ内で参照障壁がないため、受け手 workflow-management は独自スキーマを持たず self-improvement §8.4 を唯一の定義元として参照する方針に確定。T-010（tasks 段、design 遡及不要）を修正：独自 `approved_update.schema.json` の新設と独自項目名 `approved_at`／`target_discipline` を廃止し §8.4（`status`／`target_discipline_path` 等）を参照（案1-(a)＝受け手は独自ファイルを持たない）。完了条件1・テスト要件も §8.4 参照に整合
 
 ## 4. 対処済みの所見
 
