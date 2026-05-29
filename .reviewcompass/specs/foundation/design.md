@@ -599,7 +599,7 @@ Step C の出力単位。必要性 5 項目と最終ラベルを表す（要件 
 - `final_label`（3 値、`necessity_judgment` 用、計画書 §5.9.3 由来）
 - `confidence_label`（3 値、推定タスク用、要件 6 受入 11 由来）
 
-下流仕様はこれらを参照のみで再定義しない。本リストは設計の現時点での集合であり、将来 foundation が新規スキーマ・新規メタデータを追加する際はこのリストに追記する。
+下流仕様はこれらを参照のみで再定義しない。本リストは foundation が所有する語彙正本の全件であり、各下流機能が実際に参照する範囲はこの全件の部分集合となる（参照範囲は各機能の tasks.md の完成判定基準を正本とする。たとえば推定タスクを扱う機能は `confidence_label` を参照範囲に含め、扱わない機能は含めない）。本リストは設計の現時点での集合であり、将来 foundation が新規スキーマ・新規メタデータを追加する際はこのリストに追記する。
 
 ## 要件と設計の対応（Requirements Traceability）
 
@@ -641,7 +641,7 @@ Step C の出力単位。必要性 5 項目と最終ラベルを表す（要件 
 - **符号化規約整合**：各スキーマが §4「mandatory／deferred の JSON Schema 符号化規約」に準拠する（mandatory=`required` 列挙、deferred=`x-deferred`（検証器側契約は専用注記キー可）＋`description`）ことをスキーマ単体検査で確認する
 - **枠組み整合**：`layer1_framework.yaml` が YAML として解析でき、必須最上位区画（`version`／`roles`／`step_pipeline`／`step_intents`／`required_metadata_refs`／`asset_locations`／`override_extension_point`）が存在する
 - **メタデータ整合**：`metadata_contract.yaml` が YAML として解析でき、§3 の必須項目一覧と各語彙が宣言されている
-- **語彙正本整合**：`counter_status`（3 値）／`validator_status`（4 値）／`evidence_class`（4 値）／`review_mode`（最小 3 値）の語彙が `metadata_contract.yaml` および対応スキーマに正しく列挙されている
+- **語彙正本整合**：§判断 7 が列挙する語彙正本のすべてが、それぞれの正本位置（実行メタデータ用の `validator_status`／`evidence_class`／`review_mode` は `metadata_contract.yaml`、`finding` 用の `counter_status`／`severity` と `necessity_judgment` 用の `final_label` は対応スキーマ、推定タスク用の `confidence_label` は §3.5）に正しく列挙されている。各下流機能が実際に参照する語彙の範囲は機能ごとに異なる（下流の完成判定基準は各機能の tasks.md を正本とする）
 - **プロンプト整合**：Step A／B／C の正本配置（§配置決定 3）にファイルが存在し、各フロントマターが解析可能で必須項目（`prompt_id`／`version`／`role`／`step`／`language`／`source_ref`）を持つ
 - **雛形整合**：`reviewcompass.yaml`／`config.yaml.template`／`terminology.yaml.template` が YAML として解析できる
 
@@ -735,3 +735,7 @@ triad-review 段（2026-05-25 セッション 25）由来の修正：
 - **`necessity_judgment` の英語フィールド名を確定**（§4 necessity_judgment、F-002 対処）：素材文書の日本語列挙から `final_label`／`recommended_action`／`override_reason` の英語名へ変換、要件 3 受入 10 違反を解消。`final_label` の 3 値（must-fix／should-fix／leave-as-is）を本機能所有正本として宣言
 - **語彙正本数を 4 から 6 に拡張**（§判断 7、§完成判定基準）：`severity`（4 値、`finding` 用）と `final_label`（3 値、`necessity_judgment` 用）を新規正本として追加、下流仕様への参照禁止対象を一括明示
 - **モデル配分実験**：本 triad-review は 3 役配置「主役 Sonnet 4.6 ／ 敵対役 Opus 4.7 ／ 判定役 Opus 4.7」を採用（実験的に計画書 §5.9.1 多様化規律から逸脱）。実験の経緯と観察は [docs/notes/2026-05-25-triad-review-model-allocation-experiment.md](../../../docs/notes/2026-05-25-triad-review-model-allocation-experiment.md)、レビュー記録は [reviews/2026-05-25-design-triad-review.md](reviews/2026-05-25-design-triad-review.md) を参照
+
+§3.5 推定タスク用語彙の追加（2026-05-26 セッション 28、A-013 対処）由来の修正：
+
+- **語彙正本数を 6 から 7 に拡張**（§判断 7、§3.5）：`confidence_label`（3 値、推定タスク用、要件 6 受入 11）を新規正本として追加。`conformance-evaluation` 等の推定タスクを行う機能が参照、再定義禁止。本追加は design 段の機能横断段（review-wave）で処理（依存マップ順 1/7、コミット `e24d86e`）

@@ -1,0 +1,14 @@
+process_id: reopen-procedure
+feature: foundation
+started_at: 2026-05-29T00:00:00+09:00
+trigger: A-1（tasks 段 review-wave で確定した design への遡及所見 A-018＝語彙正本件数の自己矛盾。利用者は別案・適用範囲ア・正規手続きを選択）
+classification_basis: docs/reviews/reopen-classification-2026-05-29-foundation-a018.md
+# 4 過程構成（計画書 §5.6.1）での進行状況。過程番号で記録。
+completed_steps: [第1過程：判定とフラグ差し戻し]
+next_step: 第2過程：正本修正（foundation/design.md 行602・644・736、evaluation/tasks.md に補足注記）→ コミット
+pending_gates:
+  - stages/design.yaml#alignment
+  - stages/design.yaml#approval
+  - stages/tasks.yaml#alignment
+  - stages/tasks.yaml#approval
+current_blocker: 第2過程の正本修正待ち。foundation/spec.json は差し戻し済み（reopened.design=true、design.alignment/approval=false、recheck.upstream_change_pending=true、impacted=[tasks]、利用者承認 2026-05-29 セッション40）。implementation は未着手（全 false）
