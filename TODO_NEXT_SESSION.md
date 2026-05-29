@@ -1,6 +1,6 @@
 # 次セッション継続用メモ
 
-最終更新：2026-05-29（セッション 39 末。主な達成：**self-improvement と conformance-evaluation の tasks triad-review 段を完了し、全 7 機能の tasks 段（drafting＋triad-review）が揃った**。(1) self-improvement：3 役レビュー＋7 モデル比較実験（topic-99〜110）＋利用者議論 12 件、A-2 再オープンで確定 12 件を反映（要件＋設計＋tasks）、triad-review=true（`5de9bbf`／`5cac223`／`490d1d7`）。起草者バイアス補正 3 件検出（topic-107／102／104）、枠組み伝染バイアスの再発防止ガイドラインを実験ノート §3.4.2 に追記。(2) conformance-evaluation：3 役レビュー＋7 モデル比較実験（topic-111〜120）＋利用者議論 10 件、A-1 再オープンで確定 10 件を反映（設計＋tasks、要件は触れず）、triad-review=true（`5c5b198`／`10506e2`／`55e24d5`）。must-fix は G-003（axis 値域矛盾）と design 陳腐化（self-improvement と同型）。ガイドライン適用により今回は起草者バイアス出ず（起草者判定が全 10 件で多数派一致）。**ここまで全て origin/main に push 済み**。**重要**：冒頭の「最重要案件（ワークフロー・ナビゲーション問題）」を毎セッション必読。**次セッション 40 は tasks フェーズの機能横断段（review-wave、§3.3）**：全 7 機能の tasks triad-review が完了したため、個別機能フェーズは終了。詳細は git log と §3.0／§4）
+最終更新：2026-05-29（セッション 40 末。主な達成：**tasks フェーズの機能横断段（review-wave）で機能横断所見 3 件をすべて消化＋DVT 2 件を解除**。(1) round-2 7 モデル比較実験（topic-121 A-018／topic-122 A-019、2 回方式の 2 回目）を実施・データ保存（`ad253fe`）。枠組み伝染バイアス対策を適用。(2) **A-018**（must-fix、foundation 語彙正本件数の自己矛盾）：7 モデルは案2×3／別案×3 に割れ、利用者は**別案**を採用。実態は foundation/design.md 内部のみの自己矛盾で下流 analysis 7／evaluation 6 は各機能の正しい参照範囲と確定。**正規再オープン（種別 A-1、REOPEN_PROCEDURE.md の 4 過程）**で foundation design を再オープン・修正・再承認（`361317d`／`e5f8167`）。整合確認で confidence_label の置き場所を metadata_contract.yaml と確定。(3) **A-019**（must-fix）：案1、workflow-management T-010 の独自スキーマ・独自項目名を廃止し self-improvement §8.4 を唯一の定義元として参照（`f17813c`）。(4) **A-017**（should-fix）：案1、節を持たない 3 機能（foundation／runtime／evaluation）の tasks.md に「機能横断段への持ち越し事項」節を追記し全 7 機能で統一（`3e8b8ba`）。(5) DVT-S001（A-019 連動）・DVT-C002（連想配列構造の仕様突き合わせ）を解除（`e2a7387`）。未消化所見 0 件。**本セッションのコミット 7 件（実験データ＋A-017／A-018×2／A-019＋DVT＋本 TODO 更新）は push 済み**。**重要**：冒頭の「最重要案件（ワークフロー・ナビゲーション問題）」を毎セッション必読。**次セッション 41 は (a) §5.12 改訂（専用作業、§3.3）と (b) tasks フェーズの残り段（alignment → approval）**。詳細は git log と §3.0／§4）
 
 作業ディレクトリ：`/Users/Daily/Development/ReviewCompass/`、リポジトリ：`git@github.com:kenoogl/ReviewCompass.git`（main ブランチ）
 
@@ -78,30 +78,35 @@ zsh -c 'source ~/.zshrc && /Users/Daily/Development/ReviewCompass/.venv/bin/pyth
 
 **避けるべき形**：`python3 <script.py>`（環境変数干渉あり、PyYAML なし）／ `zsh -c 'source ~/.zshrc && python3 <script.py>'`（API キーは取れるが PyYAML なし）。理由：`subprocess.run([sys.executable, ...])` が venv 内パッケージを参照するには、起動時の Python が venv のものでなければならない。
 
-## 2. ワークフロー上の現在位置（セッション 39 末）
+## 2. ワークフロー上の現在位置（セッション 40 末）
 
 実態は **spec.json の workflow_state から確認**（§0.1）：
 
 - intent 層／feature-partitioning 層／requirements 段／design 段：全 7 機能で全段 true
-- **tasks 段（drafting＋triad-review）：全 7 機能で完了**（foundation／runtime／evaluation／analysis／workflow-management／self-improvement／conformance-evaluation）。self-improvement と conformance-evaluation はセッション 39 で完了。**個別機能の tasks 段はこれで全て揃った**
-- **tasks 段の機能横断段（review-wave）以降：全機能で未着手**（次はここから）
+- **tasks 段（drafting＋triad-review）：全 7 機能で完了**
+- **tasks 段の機能横断段（review-wave）：機能横断所見 3 件（A-017／A-018／A-019）の消化と DVT 2 件の解除をセッション 40 で完了**（`pending-cross-feature-findings.md` は未消化 0 件）。ただし spec.json の各機能 tasks.review-wave フラグはまだ true 化していない（次段で締める）
+- **tasks 段の alignment → approval：全機能で未着手**（次はここから。review-wave の所見消化は済んだので、自動整合判定→承認で tasks フェーズを締める）
 - implementation 段：全段 false
-- **注**：全 7 機能の spec.json で `reopened` を 6 フェーズに拡張済み（セッション 37）。再オープンで再承認済み＝workflow-management の requirements／design（A-2、セッション 38）／self-improvement の requirements／design（A-2、セッション 39）／conformance-evaluation の design（A-1、セッション 39）。いずれも recheck クリア済み、`reopened.*=true` は履歴として保持
+- **注**：再オープンで再承認済み＝workflow-management の requirements／design（A-2、セッション 38）／self-improvement の requirements／design（A-2、セッション 39）／conformance-evaluation の design（A-1、セッション 39）／**foundation の design（A-1、A-018 対処、セッション 40）**。いずれも recheck クリア済み、`reopened.*=true` は履歴として保持
 
 ## 3. 次の作業候補
 
 全 7 機能の tasks 段（drafting＋triad-review）がセッション 39 で完了。次セッション 40 は **tasks フェーズの機能横断段（review-wave、§3.3）** から。個別機能を 1 つずつ進める段階は終わり、ここからは全機能を横断して扱う。
 
-### 3.0 セッション 40 起点の具体作業（tasks 機能横断段＝review-wave）
+### 3.0 セッション 41 起点の具体作業（§5.12 改訂＋tasks フェーズの締め）
 
-運営ガイド §2.2／§3.3 (b) と計画書 §5.5 ／ §5.9.6 に従う。詳細は本 §3.3 を参照。主な作業：
+**セッション 40 で完了した分（参考）**：
+1. ✅ 7 モデル比較実験 2 回目（topic-121 A-018／topic-122 A-019）実施・データ保存
+2. ✅ 機能横断波及所見 3 件の消化（A-017 案1／A-018 別案・正規再オープン A-1／A-019 案1）。未消化 0 件
+3. ✅ DVT 横断確認（DVT-S001／DVT-C002 を解除。その他は別トリガーで据え置き）
 
-1. **7 モデル比較実験 2 回目（同根問題評価）**：1 回目（各機能の triad-review 段、topic-1〜120）は機能内 must-fix／should-fix を評価して機能内対処を完了済み。2 回目は **機能横断波及所見と同根所見**（異なる機能で同じ性格の所見が独立に発見された組）を一括評価し、一貫した対処方針で全該当機能の仕様文書に反映（2 回方式、計画書 §5.5）。**プロンプト作成時は実験ノート §3.4.2「枠組み伝染バイアス」ガイドラインを必ず適用**（深掘り欄に自説の結論を書かない／両面に切れる事実を併記／前提を疑う別案を歓迎／自己検査 7〜9 項目。セッション 39 で起草者の枠組みが 6 モデルを誤誘導した教訓）
-2. **機能横断波及所見の消化**：`pending-cross-feature-findings.md` の未消化 3 件（A-017 機能横断波及の確認手順未明示／A-018 foundation 語彙正本の所有件数の食い違い＝F-013・A-005 同根／A-019 workflow-management T-010 の approved_update スキーマと self-improvement §8.4 正本の不一致）を消化。影響を受ける全機能の仕様文書を依存順で一括修正
-3. **DVT（遅延確認事項）の横断確認**：各機能の DVT を棚卸し。特に DVT-C002（conformance-evaluation の連想配列構造 consumer 側と workflow-management 側 producer の突き合わせ）は本段で消化。その他は evaluation DVT-001／analysis DVT-A001〜A003／self-improvement DVT-S001〜S005／conformance-evaluation DVT-C001〜C004
-4. **§5.12 改訂統合**（TODO §3.3 参照）：§5.12.11 アサイン権限新設、§5.9.6／§5.9.7／§5.12 への正本化、実験ノート §3.4 マルチターンプロトコルの統合
+**セッション 41 でやること**：
 
-その後、alignment（LLM 自動判定）→ approval（利用者または別モデル承認）と進み、tasks フェーズが完了したら implementation 段へ。
+1. **§5.12 改訂統合（専用作業）**（TODO §3.3 参照）：§5.12.11 アサイン権限新設、§5.9.6／§5.9.7／§5.12 への N モデル比較プロトコル正本化、実験ノート §3.4 マルチターンプロトコルの統合、§5.23.13.3 末尾「残り 27 件」の統合的取り込み。**計画書本体の改訂なので明示承認と腰を据えた作業が必要**。記録された進行順序は「全機能 tasks 段完了後」（計画書 §5.12.10 末尾／§5.12.11 予告、2026-05-27 セッション32 利用者判断）
+2. **tasks フェーズの残り段**：機能横断段（review-wave）の所見消化は完了済み。次は各機能 tasks の **alignment（LLM 自動整合判定）→ approval（利用者または別モデル承認）** で tasks フェーズを締める。spec.json の tasks.review-wave／alignment／approval フラグの true 化は利用者明示承認と workflow-precheck 経由で
+3. その後、tasks フェーズ完了 → implementation 段へ
+
+**注**：§5.12 改訂（1）と tasks 締め（2）の順序は利用者と相談して決める。§5.12.11 の進行順序制約（tasks 段完了後）を踏まえると、(2) を先に済ませてから (1) に入る方が記録された順序に整合する。
 
 ### 3.0.1 各機能 tasks triad-review の正本（統合レビュー記録）
 
