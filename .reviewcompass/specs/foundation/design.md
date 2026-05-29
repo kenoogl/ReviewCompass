@@ -641,7 +641,7 @@ Step C の出力単位。必要性 5 項目と最終ラベルを表す（要件 
 - **符号化規約整合**：各スキーマが §4「mandatory／deferred の JSON Schema 符号化規約」に準拠する（mandatory=`required` 列挙、deferred=`x-deferred`（検証器側契約は専用注記キー可）＋`description`）ことをスキーマ単体検査で確認する
 - **枠組み整合**：`layer1_framework.yaml` が YAML として解析でき、必須最上位区画（`version`／`roles`／`step_pipeline`／`step_intents`／`required_metadata_refs`／`asset_locations`／`override_extension_point`）が存在する
 - **メタデータ整合**：`metadata_contract.yaml` が YAML として解析でき、§3 の必須項目一覧と各語彙が宣言されている
-- **語彙正本整合**：§判断 7 が列挙する語彙正本のすべてが、それぞれの正本位置（実行メタデータ用の `validator_status`／`evidence_class`／`review_mode` は `metadata_contract.yaml`、`finding` 用の `counter_status`／`severity` と `necessity_judgment` 用の `final_label` は対応スキーマ、推定タスク用の `confidence_label` は §3.5）に正しく列挙されている。各下流機能が実際に参照する語彙の範囲は機能ごとに異なる（下流の完成判定基準は各機能の tasks.md を正本とする）
+- **語彙正本整合**：§判断 7 が列挙する語彙正本のすべてが、`metadata_contract.yaml`（`validator_status`／`evidence_class`／`review_mode`／`confidence_label`）および対応スキーマ（`finding` の `counter_status`／`severity`、`necessity_judgment` の `final_label`）に正しく列挙されている。各下流機能が実際に参照する語彙の範囲は機能ごとに異なる（下流の完成判定基準は各機能の tasks.md を正本とする）
 - **プロンプト整合**：Step A／B／C の正本配置（§配置決定 3）にファイルが存在し、各フロントマターが解析可能で必須項目（`prompt_id`／`version`／`role`／`step`／`language`／`source_ref`）を持つ
 - **雛形整合**：`reviewcompass.yaml`／`config.yaml.template`／`terminology.yaml.template` が YAML として解析できる
 

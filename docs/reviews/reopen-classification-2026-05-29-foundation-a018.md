@@ -48,7 +48,7 @@ foundation/spec.json：
 ## 正本修正の対象（第2過程で実施）
 
 **foundation/design.md（核心、必須）**：
-1. 行 644（実施済み）：語彙を 7 件再列挙するのではなく「§判断 7 が列挙する語彙正本のすべてが、それぞれの正本位置（実行メタデータ用は metadata_contract.yaml、finding／necessity_judgment 用は対応スキーマ、推定タスク用 confidence_label は §3.5）に正しく列挙されている」とし、§判断 7 を参照する方式に変更。あわせて二層構造の一文を追記。【厳密チェックでの是正】当初案の「4 語彙→7 語彙に再列挙」は、confidence_label が metadata_contract.yaml にも対応スキーマにも無い（§3.5 で「実行メタデータとは別に」所有）ため「metadata_contract.yaml に列挙」と書くと偽の主張になる。よって再列挙をやめ §判断 7 参照＋正本位置の明示に是正
+1. 行 644（実施済み）：「§判断 7 が列挙する語彙正本のすべてが、metadata_contract.yaml（validator_status／evidence_class／review_mode／confidence_label）および対応スキーマ（finding の counter_status／severity、necessity_judgment の final_label）に正しく列挙されている」とし、§判断 7 を参照する方式に変更。あわせて二層構造の一文を追記。【経緯】当初は 7 語彙を再列挙。厳密チェックで「confidence_label は §3.5（実行メタデータとは別）だから metadata_contract.yaml に無い」と誤判断し位置を「§3.5」に是正してコミット（361317d）。しかし第3・第4過程の整合確認で tasks T-003（成果物 metadata_contract.yaml、完了条件に confidence_label を含む 6 種を宣言）と照合した結果、confidence_label は metadata_contract.yaml に物理的に宣言されていることが判明。§3.5 の「実行メタデータとは別に」は概念上の区別でファイル分離ではなかった。よって confidence_label の置き場所を metadata_contract.yaml と正しく修正（利用者承認 2026-05-29 セッション40）
 2. 行 736（**要確認・後述**）：書き換えではなく追記方式。行 736（4→6、セッション 25 の正確な履歴）は残し、抜けているセッション 28（confidence_label 追加、6→7、A-013）の変更意図記録を追記する。「4→7 に書き換え」は履歴改ざんになるため不可
 3. 行 602（§判断 7 末尾、実施済み）：二層構造を追記。固定件数（analysis 7／evaluation 6）は埋め込まず「推定タスクを扱う機能は confidence_label を含め、扱わない機能は含めない」と仕組みで説明（A-018 が問題視する固定値散在を再生産しないため）
 

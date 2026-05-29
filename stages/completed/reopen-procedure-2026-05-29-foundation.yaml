@@ -1,0 +1,14 @@
+process_id: reopen-procedure
+feature: foundation
+started_at: 2026-05-29T00:00:00+09:00
+trigger: A-1（tasks 段 review-wave で確定した design への遡及所見 A-018＝語彙正本件数の自己矛盾。利用者は別案・適用範囲ア・正規手続きを選択）
+classification_basis: docs/reviews/reopen-classification-2026-05-29-foundation-a018.md
+# 4 過程構成（計画書 §5.6.1）での進行状況。過程番号で記録。
+completed_steps: [第1過程：判定とフラグ差し戻し, 第2過程：正本修正, 第3過程：連鎖再実施, 第4過程：完了]
+next_step: （完了。再オープン手続き終了）
+pending_gates:
+  - stages/design.yaml#alignment
+  - stages/design.yaml#approval
+  - stages/tasks.yaml#alignment
+  - stages/tasks.yaml#approval
+current_blocker: null  # 全過程完了。design 再承認済み（2026-05-29 セッション40、利用者承認）、recheck クリア済み。reopened.design は履歴として true 維持。第3・第4過程の整合確認で行644 の confidence_label 置き場所を tasks T-003 と照合し metadata_contract.yaml に修正。foundation の tasks は review-wave 継続中（A-018 は design 遡及対処として完結、tasks.md 側は既に 7 語彙整合済みで修正不要）。implementation は未着手
