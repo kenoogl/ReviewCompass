@@ -1,6 +1,6 @@
 # 次セッション継続用メモ
 
-最終更新：2026-05-29（セッション 40 末。主な達成：**tasks フェーズの機能横断段（review-wave）で機能横断所見 3 件をすべて消化＋DVT 2 件を解除**。(1) round-2 7 モデル比較実験（topic-121 A-018／topic-122 A-019）を実施・データ保存（`ad253fe`）。(2) **A-018**（must-fix、foundation 語彙正本件数の自己矛盾）：別案を採用。foundation/design.md 内部のみの自己矛盾で下流 analysis 7／evaluation 6 は各機能の正しい参照範囲と確定。**正規再オープン（種別 A-1、4 過程）**で foundation design を再オープン・修正・再承認（`361317d`／`e5f8167`）。(3) **A-019**（must-fix）：案1、workflow-management T-010 の独自スキーマ・項目名を廃止し self-improvement §8.4 を唯一の定義元として参照（`f17813c`）。(4) **A-017**（should-fix）：案1、節を持たない 3 機能の tasks.md に「機能横断段への持ち越し事項」節を追記し全 7 機能で統一（`3e8b8ba`）。(5) DVT-S001／DVT-C002 を解除（`e2a7387`）。未消化所見 0 件。**コミット 7 件は push 済み**。**次セッション 41 は (a) §5.12 改訂（専用作業）と (b) tasks フェーズの残り段（alignment → approval）**）
+最終更新：2026-05-29（セッション 40 末。主な達成：**tasks フェーズの機能横断段（review-wave）で機能横断所見 3 件をすべて消化＋DVT 2 件を解除**。(1) round-2 7 モデル比較実験（topic-121 A-018／topic-122 A-019）を実施・データ保存（`ad253fe`）。(2) **A-018**（must-fix、foundation 語彙正本件数の自己矛盾）：別案を採用。foundation/design.md 内部のみの自己矛盾で下流 analysis 7／evaluation 6 は各機能の正しい参照範囲と確定。**正規再オープン（種別 A-1、4 過程）**で foundation design を再オープン・修正・再承認（`361317d`／`e5f8167`）。(3) **A-019**（must-fix）：案1、workflow-management T-010 の独自スキーマ・項目名を廃止し self-improvement §8.4 を唯一の定義元として参照（`f17813c`）。(4) **A-017**（should-fix）：案1、節を持たない 3 機能の tasks.md に「機能横断段への持ち越し事項」節を追記し全 7 機能で統一（`3e8b8ba`）。(5) DVT-S001／DVT-C002 を解除（`e2a7387`）。未消化所見 0 件。**さらに同セッションで tasks フェーズを完了**：ワークフロー現在位置の確認を機に tasks 機能横断段（review-wave）を締め、**2軸整合性監査（縦軸＝各機能 intent→tasks の 7 並列検証＋横軸＝機能間）を新規実施**。検出した本物の断層を対処（evaluation design 再オープンで manifest 13項目統一＝#3／手戻り種別14→15＝#4／discipline-update 文言＝#5／design 先送り論点を DVT 転記＝T-1／編集起因の誤り2件＝B群、`622865c`／`8328873`／`de7ef8a`）。全7機能の tasks.review-wave／alignment／approval を承認（`b04ae8d`）＝**tasks フェーズ完了。仕様4段階（intent／requirements／design／tasks）すべてが全7機能で承認済み**。監査記録：docs/reviews/tasks-alignment-audit-2026-05-29.md。**次セッション 41 は (a) implementation（実装）フェーズ着手、または (b) §5.12 改訂（専用作業）**）
 
 作業ディレクトリ：`/Users/Daily/Development/ReviewCompass/`、リポジトリ：`git@github.com:kenoogl/ReviewCompass.git`（main ブランチ）
 
@@ -81,21 +81,21 @@ zsh -c 'source ~/.zshrc && /Users/Daily/Development/ReviewCompass/.venv/bin/pyth
 実態は **spec.json の workflow_state から確認**（§0.1）：
 
 - intent 層／feature-partitioning 層／requirements 段／design 段：全 7 機能で全段 true
-- **tasks 段（drafting＋triad-review）：全 7 機能で完了**
-- **tasks 段の機能横断段（review-wave）：機能横断所見 3 件（A-017／A-018／A-019）の消化と DVT 2 件の解除をセッション 40 で完了**（`pending-cross-feature-findings.md` は未消化 0 件）。ただし spec.json の各機能 tasks.review-wave フラグはまだ true 化していない（次段で締める）
-- **tasks 段の alignment → approval：全機能で未着手**（次はここから）
-- implementation 段：全段 false
-- **注（再オープン履歴）**：再承認済み＝workflow-management の requirements／design（A-2、セッション 38）／self-improvement の requirements／design（A-2、セッション 39）／conformance-evaluation の design（A-1、セッション 39）／**foundation の design（A-1、A-018 対処、セッション 40）**。いずれも recheck クリア済み、`reopened.*=true` は履歴として保持
+- **tasks 段：全 7 機能で完了（drafting／triad-review／review-wave／alignment／approval すべて true、セッション40）**。review-wave＝機能横断所見 A-017/18/19 消化＋DVT 解除、alignment＝2軸整合性監査、approval＝利用者承認。`pending-cross-feature-findings.md` 未消化 0 件
+- **implementation 段：全段 false（次はここから）**
+- → **仕様4段階（intent／requirements／design／tasks）が全7機能で承認済み。残るは implementation のみ**
+- **注（再オープン履歴）**：再承認済み＝workflow-management の requirements／design（A-2、セッション 38）／self-improvement の requirements／design（A-2、セッション 39）／conformance-evaluation の design（A-1、セッション 39）／**foundation の design（A-1、A-018 対処、セッション 40）／evaluation の design（A-1、#3 manifest 統一、セッション 40）**。いずれも recheck クリア済み、`reopened.*=true` は履歴として保持
 
 ## 3. 次の作業（セッション 41 起点）
 
 ### 3.1 やること
 
-1. **§5.12 改訂統合（専用作業、計画書本体の改訂）**：§5.12.11 アサイン権限新設、§5.9.6／§5.9.7／§5.12 への N モデル比較プロトコル正本化、実験ノート §3.4 マルチターンプロトコルの統合、§5.23.13.3 末尾「残り 27 件」の統合的取り込み。**明示承認と腰を据えた作業が必要**。記録された進行順序は「全機能 tasks 段完了後」（計画書 §5.12.10 末尾／§5.12.11 予告、2026-05-27 セッション32 利用者判断）
-2. **tasks フェーズの残り段**：機能横断段の所見消化は完了済み。次は各機能 tasks の **alignment（LLM 自動整合判定）→ approval（承認）** で tasks フェーズを締める。spec.json フラグの true 化は利用者明示承認と workflow-precheck 経由で
-3. その後、tasks フェーズ完了 → implementation 段へ
+tasks フェーズが完了したので、次の2系統が残る（順序は利用者と相談）：
 
-**順序の注記**：§5.12.11 の進行順序制約（tasks 段完了後）を踏まえると、(2) を先に済ませてから (1) に入る方が記録された順序に整合する。最終判断は利用者と相談。
+1. **implementation（実装）フェーズ**：仕様4段階が全7機能で承認済み。依存順（`feature-dependency.yaml#phase_order`）で実装に着手。各機能 implementation の drafting → triad-review → review-wave → alignment → approval を回す。**注**：ブートストラップ期の根本案件（ワークフロー・ナビゲーション問題）の根本解＝workflow-management の実装は、この implementation フェーズで対応する（最重要案件ノート §5）
+2. **§5.12 改訂統合（専用作業、計画書本体の改訂）**：§5.12.11 アサイン権限新設、§5.9.6／§5.9.7／§5.12 への N モデル比較プロトコル正本化、実験ノート §3.4 マルチターンプロトコルの統合、§5.23.13.3 末尾「残り 27 件」の統合的取り込み。**あわせて 2軸整合性監査の方法を alignment 段の正本手順として正本化**（監査記録 docs/reviews/tasks-alignment-audit-2026-05-29.md §6/§7 の教訓：alignment 段は「上流の先送り論点が解決済みか DVT 転記済みか」を確認すべき）。**明示承認と腰を据えた作業が必要**
+
+**順序の注記**：§5.12 は計画書改訂で重く、workflow-management の implementation と論点が重なる（cross-spec-alignment.yaml 段集合の正本化など）。implementation で workflow-management を作る前に §5.12 を片付けるか、実装と並行するかは利用者判断。
 
 ### 3.2 残作業の補完項目（任意・低優先）
 
@@ -108,7 +108,7 @@ zsh -c 'source ~/.zshrc && /Users/Daily/Development/ReviewCompass/.venv/bin/pyth
 
 ## 4. 直近の確定事項
 
-- セッション 40：機能横断所見 3 件消化＋DVT 2 件解除（冒頭サマリ参照）。foundation design の正規再オープン記録は [docs/reviews/reopen-classification-2026-05-29-foundation-a018.md](docs/reviews/reopen-classification-2026-05-29-foundation-a018.md)
+- セッション 40：機能横断所見 3 件消化＋DVT 2 件解除＋**2軸整合性監査＋tasks フェーズ完了**（冒頭サマリ参照）。再オープン記録は [foundation A-018](docs/reviews/reopen-classification-2026-05-29-foundation-a018.md)／[evaluation #3 manifest](docs/reviews/reopen-classification-2026-05-29-evaluation-manifest.md)、監査記録は [tasks-alignment-audit](docs/reviews/tasks-alignment-audit-2026-05-29.md)
 - セッション 36〜39 以前の確定事項は git log および [docs/archive/todo/](docs/archive/todo/) 配下の snapshot を参照
 
 ## 5. 関連参照
