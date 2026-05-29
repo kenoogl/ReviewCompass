@@ -100,11 +100,24 @@
 
 ---
 
-## 5. 評価対象の所見の出所（所見が正しく評価されたか検証する用）
+## 5. 評価対象の所見の出所＋三役レビュー自体の評価データ
 
-本実験（topic-1〜122）の所見は、各機能の **tasks 段 triad-review（三役レビュー）記録**に由来する。所見の原文・重大度・判定役の判断はここで確認できる。
+> **2 つの評価レイヤーがある**。本インデックスの主題（7 モデル比較）はレビューの「**裁定の質**」を測る。一方、下記の triad-review 記録は、レビューの「**生成の質**」（発見力・根拠性・敵対役の有効性）を評価するための独立したデータでもある。外部評価者は両レイヤーを別個に評価できる。
 
-**tasks 段 triad-review 記録（＝実験対象の所見の出所）**：
+### 5a. 三役レビュー自体の評価データ（レビュー生成の質）
+
+各機能の `reviews/<日付>-tasks-triad-review.md` は、所見の出所であると同時に、**三役レビュー（主役 Sonnet 4.6 ／ 敵対役 Opus 4.7 ／ 判定役 Opus 4.7）の質を評価する構造化データ**を含む：
+
+- **主役所見一覧**：ID・観点・severity（CRITICAL/ERROR/WARN/INFO）・target_location・description・**evidence_type（fact/inference/mixed）**
+- **敵対役**：主役所見ごとの **counter_status（同意／counter_evidence_raised＝反証）**＋独立発見一覧
+- **判定役**：judgment（must-fix/should-fix/leave-as-is）・波及種別（機能内対処/波及/遡及/延期）・根拠
+- **front-matter**：by_severity・by_judgment の集計
+
+これで評価できる軸：**発見力**（所見件数・severity 分布・敵対役の独立発見数）／**根拠性**（evidence_type 分布・target_location の具体性）／**敵対役の有効性**（反証率）／**判定役の分類傾向**。
+
+**限界**：これらは「記録」であり、**三役レビュー品質の機能横断集計（発見力・反証率の統計）は未作成**（7 モデル実験のような集計スクリプトはない）。外部評価者は reviews/ 記録から自分で集計する必要がある。また**効果（後続の手戻り低減）は未測定**。
+
+### 5b. tasks 段 triad-review 記録（＝7 モデル実験の所見の出所でもある）：
 
 - `.reviewcompass/specs/foundation/reviews/2026-05-26-tasks-triad-review.md`
 - `.reviewcompass/specs/runtime/reviews/2026-05-27-tasks-triad-review.md`
