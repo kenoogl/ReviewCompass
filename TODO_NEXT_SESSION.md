@@ -1,6 +1,6 @@
 # 次セッション継続用メモ
 
-最終更新：2026-05-29（セッション 39 末。主な達成：**self-improvement tasks の triad-review 段を完了**。(1) tasks.drafting 完了（`9794942`）。(2) 3 役レビュー（主役 Sonnet 4.6／敵対役 Opus 4.7／判定役 Opus 4.7）＋7 モデル比較実験（topic-99〜110、12 件×7 モデル）＋利用者議論 12 件、人本人判定 12 件保存（`5de9bbf`）。**起草者バイアス補正 3 件を検出**（topic-107 起草者バイアス／topic-102 枠組み伝染バイアス＝起草者のプロンプト枠組みが 6 モデルを誘導、1 モデルが正論点／topic-104 少数派採用）。枠組み伝染バイアスの再発防止ガイドラインを実験ノート §3.4.2 に追記。(3) A-2 再オープン手続きで確定 12 件を上流順（要件→設計→tasks）に反映、第 1〜第 4 過程を完走（`5cac223`＋`490d1d7`）：requirements の source 値域 3→4 値、design の採番・採用率・配置・MV-3 等 8 項目、tasks 全件。要件・設計を再承認、recheck クリア。**ここまで全て origin/main に push 済み**。**重要**：冒頭の「最重要案件（ワークフロー・ナビゲーション問題）」を毎セッション必読。次セッション 40 は **依存マップ順で conformance-evaluation tasks 段**（drafting → triad-review、§3.1 の標準手順）から。全機能 tasks 完了後は機能横断段（§3.3）。詳細は git log と §3.0／§4）
+最終更新：2026-05-29（セッション 39 末。主な達成：**self-improvement と conformance-evaluation の tasks triad-review 段を完了し、全 7 機能の tasks 段（drafting＋triad-review）が揃った**。(1) self-improvement：3 役レビュー＋7 モデル比較実験（topic-99〜110）＋利用者議論 12 件、A-2 再オープンで確定 12 件を反映（要件＋設計＋tasks）、triad-review=true（`5de9bbf`／`5cac223`／`490d1d7`）。起草者バイアス補正 3 件検出（topic-107／102／104）、枠組み伝染バイアスの再発防止ガイドラインを実験ノート §3.4.2 に追記。(2) conformance-evaluation：3 役レビュー＋7 モデル比較実験（topic-111〜120）＋利用者議論 10 件、A-1 再オープンで確定 10 件を反映（設計＋tasks、要件は触れず）、triad-review=true（`5c5b198`／`10506e2`／`55e24d5`）。must-fix は G-003（axis 値域矛盾）と design 陳腐化（self-improvement と同型）。ガイドライン適用により今回は起草者バイアス出ず（起草者判定が全 10 件で多数派一致）。**ここまで全て origin/main に push 済み**。**重要**：冒頭の「最重要案件（ワークフロー・ナビゲーション問題）」を毎セッション必読。**次セッション 40 は tasks フェーズの機能横断段（review-wave、§3.3）**：全 7 機能の tasks triad-review が完了したため、個別機能フェーズは終了。詳細は git log と §3.0／§4）
 
 作業ディレクトリ：`/Users/Daily/Development/ReviewCompass/`、リポジトリ：`git@github.com:kenoogl/ReviewCompass.git`（main ブランチ）
 
@@ -83,31 +83,34 @@ zsh -c 'source ~/.zshrc && /Users/Daily/Development/ReviewCompass/.venv/bin/pyth
 実態は **spec.json の workflow_state から確認**（§0.1）：
 
 - intent 層／feature-partitioning 層／requirements 段／design 段：全 7 機能で全段 true
-- **tasks 段**：
-  - foundation／runtime／evaluation／analysis／workflow-management／**self-improvement**：drafting＋triad-review=true（機能内対処完了。self-improvement はセッション 39 で確定 12 件反映＋triad-review=true 完了）
-  - **残 1 機能（conformance-evaluation）：全 false**（次は conformance-evaluation の drafting から）
+- **tasks 段（drafting＋triad-review）：全 7 機能で完了**（foundation／runtime／evaluation／analysis／workflow-management／self-improvement／conformance-evaluation）。self-improvement と conformance-evaluation はセッション 39 で完了。**個別機能の tasks 段はこれで全て揃った**
+- **tasks 段の機能横断段（review-wave）以降：全機能で未着手**（次はここから）
 - implementation 段：全段 false
-- **注**：全 7 機能の spec.json で `reopened` を 6 フェーズに拡張済み（セッション 37）。workflow-management（セッション 38）と self-improvement（セッション 39）の requirements／design は A-2 再オープンで再承認済み、recheck クリア済み（`reopened.requirements／design=true` は履歴として保持）
+- **注**：全 7 機能の spec.json で `reopened` を 6 フェーズに拡張済み（セッション 37）。再オープンで再承認済み＝workflow-management の requirements／design（A-2、セッション 38）／self-improvement の requirements／design（A-2、セッション 39）／conformance-evaluation の design（A-1、セッション 39）。いずれも recheck クリア済み、`reopened.*=true` は履歴として保持
 
 ## 3. 次の作業候補
 
-self-improvement tasks の triad-review 段がセッション 39 で完了（確定 12 件反映＋triad-review=true、push 済み）。次セッション 40 は **依存マップ順で conformance-evaluation tasks 段**（最後の 1 機能）から。
+全 7 機能の tasks 段（drafting＋triad-review）がセッション 39 で完了。次セッション 40 は **tasks フェーズの機能横断段（review-wave、§3.3）** から。個別機能を 1 つずつ進める段階は終わり、ここからは全機能を横断して扱う。
 
-### 3.0 セッション 40 起点の具体作業（conformance-evaluation tasks 段）
+### 3.0 セッション 40 起点の具体作業（tasks 機能横断段＝review-wave）
 
-§3.1 の標準手順（analysis／workflow-management／self-improvement tasks で確立）に従う：
+運営ガイド §2.2／§3.3 (b) と計画書 §5.5 ／ §5.9.6 に従う。詳細は本 §3.3 を参照。主な作業：
 
-1. **conformance-evaluation tasks.drafting**：設計書 §14 要件追跡表（Req 受入単位 × 担当タスク単位）を骨格として tasks.md を作成する、DVT 必要なら登録
-2. **tasks.triad-review（3 役レビュー）**：主役 Sonnet 4.6 ／ 敵対役 Opus 4.7 ／ 判定役 Opus 4.7（サブエージェント方式）
-3. **統合レビュー記録の起草 → 7 モデル比較実験 → 利用者議論（人評価 topic-NN-human.yaml 保存）→ 確定の反映（遡及があれば A-2 等の再オープン手続きを上流順で実施）→ spec.json triad-review=true → コミット → push**（§3.1 の手順 3〜9）
+1. **7 モデル比較実験 2 回目（同根問題評価）**：1 回目（各機能の triad-review 段、topic-1〜120）は機能内 must-fix／should-fix を評価して機能内対処を完了済み。2 回目は **機能横断波及所見と同根所見**（異なる機能で同じ性格の所見が独立に発見された組）を一括評価し、一貫した対処方針で全該当機能の仕様文書に反映（2 回方式、計画書 §5.5）。**プロンプト作成時は実験ノート §3.4.2「枠組み伝染バイアス」ガイドラインを必ず適用**（深掘り欄に自説の結論を書かない／両面に切れる事実を併記／前提を疑う別案を歓迎／自己検査 7〜9 項目。セッション 39 で起草者の枠組みが 6 モデルを誤誘導した教訓）
+2. **機能横断波及所見の消化**：`pending-cross-feature-findings.md` の未消化 3 件（A-017 機能横断波及の確認手順未明示／A-018 foundation 語彙正本の所有件数の食い違い＝F-013・A-005 同根／A-019 workflow-management T-010 の approved_update スキーマと self-improvement §8.4 正本の不一致）を消化。影響を受ける全機能の仕様文書を依存順で一括修正
+3. **DVT（遅延確認事項）の横断確認**：各機能の DVT を棚卸し。特に DVT-C002（conformance-evaluation の連想配列構造 consumer 側と workflow-management 側 producer の突き合わせ）は本段で消化。その他は evaluation DVT-001／analysis DVT-A001〜A003／self-improvement DVT-S001〜S005／conformance-evaluation DVT-C001〜C004
+4. **§5.12 改訂統合**（TODO §3.3 参照）：§5.12.11 アサイン権限新設、§5.9.6／§5.9.7／§5.12 への正本化、実験ノート §3.4 マルチターンプロトコルの統合
 
-全機能（7/7）の tasks が完了したら機能横断段（review-wave、§3.3）。
+その後、alignment（LLM 自動判定）→ approval（利用者または別モデル承認）と進み、tasks フェーズが完了したら implementation 段へ。
 
-**接合面に注意**：conformance-evaluation は self-improvement・evaluation との接合面（A-008／A-016 は対処済み）。tasks レビューで接合面が論点になりうる。
+### 3.0.1 各機能 tasks triad-review の正本（統合レビュー記録）
 
-**self-improvement tasks の確定 12 件の反映実績**は統合レビュー記録 `.reviewcompass/specs/self-improvement/reviews/2026-05-29-tasks-triad-review.md` §4.2／§4.3 が正本（完全一致 4／割れ 8、起草者バイアス補正 3 件を §4.2.2〜§4.2.4 に記録）。実験 topic は 99〜110。
+機能横断段で同根所見を集約する際の参照元：
 
-**7 モデル比較実験のプロンプト作成時は実験ノート §3.4.2「枠組み伝染バイアス」ガイドラインを必ず適用**（深掘り欄に自説の結論を書かない／両面に切れる事実を併記／前提を疑う別案を歓迎／自己検査 7〜9 項目）。セッション 39 で起草者の枠組みが 6 モデルを誤誘導した教訓。
+- foundation／runtime／evaluation／analysis：各 `reviews/` 配下（セッション 30〜37）
+- workflow-management：`.reviewcompass/specs/workflow-management/reviews/2026-05-28-tasks-triad-review.md`（確定 23 件、案 1 が 14／案 2 が 6／別案 3、起草者バイアス 7 件）
+- self-improvement：`.reviewcompass/specs/self-improvement/reviews/2026-05-29-tasks-triad-review.md`（確定 12 件、完全一致 4／割れ 8、起草者バイアス補正 3 件＝topic-107／102／104、実験 topic 99〜110）
+- conformance-evaluation：`.reviewcompass/specs/conformance-evaluation/reviews/2026-05-29-tasks-triad-review.md`（確定 10 件、完全一致 6／割れ 4、起草者バイアス出ず＝起草者判定が全 10 件で多数派一致、実験 topic 111〜120）
 
 ### 3.1 各機能の標準進め方（analysis tasks で確立した手順、踏襲）
 
