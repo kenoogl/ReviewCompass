@@ -257,7 +257,7 @@
 - **対処方針**：本機能 §12.3 の整合ルールを本機能側合意点として、self-improvement 設計改訂で受け入れる形に整合
 - **依存関係**：A-012（既存、self-improvement と workflow-management の時系列契約）と連動
 
-### A-017：機能横断波及の確認手順が tasks.md に明示されていない
+### A-017：機能横断波及の確認手順が tasks.md に明示されていない ✅ 対処済み（2026-05-29、セッション40、tasks review-wave、案1）
 
 - **検出**：セッション 30、foundation tasks 段の triad-review（2026-05-26）の主役所見 F-011
 - **記録**：[.reviewcompass/specs/foundation/reviews/2026-05-26-tasks-triad-review.md](specs/foundation/reviews/2026-05-26-tasks-triad-review.md) §1 主役所見 F-011、§3.1 判定（波及種別）
@@ -269,7 +269,7 @@
   - **runtime ／ evaluation ／ analysis ／ workflow-management ／ self-improvement ／ conformance-evaluation**：各機能の tasks.md 作成時に foundation と同様の構造を踏襲する見込みのため、本問題が再現する可能性
 - **対処方針**：tasks 段の機能横断段（review-wave）で全 7 機能の tasks.md に対して「機能横断波及の確認手順」節を一括で追加する。foundation 単体での先行対処は行わない（topic-13 議論で採用された方針：機能横断段で統一形式の一括対処が記述形式の不一致リスクを避けられる）
 - **依存関係**：他の 6 機能の tasks.drafting と triad-review 完了後に、機能横断段で一括対処
-- **状態**：登録済み、機能横断段（tasks review-wave）で消化予定（現時点では tasks 段は foundation の triad-review レビュー完了のみ、残 6 機能の tasks.drafting と triad-review が未着手）
+- **状態**：✅ 対処済み（2026-05-29 セッション40）。節を持たなかった foundation／runtime／evaluation の 3 機能の tasks.md に「## 機能横断段への持ち越し事項」節を追記し、全 7 機能で節が揃ったことを機械検証（grep で 7 件）。既に節を持つ 4 機能（analysis／conformance-evaluation／workflow-management／self-improvement）は機能固有の補足付きで役目を果たすため現状維持（利用者選択 案ア）。**汎用パターン化の再評価**（組み込み判断より）：今回の一括対処で記述形式の不一致は生じず、追記は定型節で完了。運営ガイド／計画書本体への組み込みは引き続き不要と判断（再発時に再評価）
 - **組み込み判断（2026-05-27 セッション 34）**：運営ガイド §3.6 や計画書 §5.5 への組み込みは**現時点で不要**。理由：A-017 は個別所見であり、機能横断段で実施されれば消化される性質。汎用パターン化（運営ガイド ／ 計画書本体への手順追加）は、機能横断段の実施結果を見てから再評価する方が安全。**再評価のタイミング**：tasks 段の機能横断段（review-wave）で A-017 を消化した後、対処の効果と類似所見の再発有無を確認したうえで、汎用パターン化の要否を別途判断する。**利用者明示承認の出典**：「ｂ。以降推奨案で自律的に進める」（要確認 3 の処理方針として案 d ＝ pending に組み込み判断を追記、運営ガイド ／ 計画書本体は触らない、2026-05-27 セッション 34）。
 
 ### A-018：foundation 語彙正本の所有件数の食い違い（F-013 ／ A-005 同根問題） ✅ 対処済み（2026-05-29、セッション40、tasks review-wave、正規再オープン A-1、別案採用）
