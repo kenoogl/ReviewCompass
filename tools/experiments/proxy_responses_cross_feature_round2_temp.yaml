@@ -1,0 +1,31 @@
+proxy_responses:
+  - topic: 121
+    model: sonnet-4-6-api
+    response: |
+      ご質問に対し、事実のみをお答えします（推奨・評価は含めません）。
+
+      【質問1：evaluation が confidence_label を参照しない根拠の確度】
+      - evaluation/design.md と evaluation/tasks.md を全文検索した結果、「推定タスクを扱わない」「confidence_label は参照しない」という明示記述は1件も存在しません（"confidence_label"・"推定タスク"・"推定" のいずれも0件）。
+      - evaluation/tasks.md 行219（完成判定基準）は foundation 語彙正本を6件（`counter_status`／`validator_status`／`evidence_class`／`review_mode`／`severity`／`final_label`）として名前で列挙しており、confidence_label はこの列挙に含まれていません。
+      - したがって「evaluation が confidence_label を参照しない」は、明示の宣言文ではなく、列挙対象に含まれていないという事実として表れています。
+
+      【質問2：行644 の「4件」はいつの時点の記述か】
+      - foundation/design.md §判断7（行594-600）は語彙正本を7件列挙しています（counter_status・validator_status・evidence_class・review_mode・severity・final_label・confidence_label）。
+      - 行644（テスト戦略・語彙正本整合）は4件のみ列挙しています（counter_status・validator_status・evidence_class・review_mode）。
+      - 行736（変更意図）は「語彙正本数を4から6に拡張」と記しています。
+      - 行644 が後続の拡張（severity・final_label の追加、および confidence_label の追加）を反映済みか、意図的に検証対象を4件に絞ったものかを判別できる注記・日付・但し書きは、文書内に存在しません。
+
+      【質問3：下流 tasks.md の「件数」は何の目的で書かれているか】
+      - analysis/tasks.md 行236 と evaluation/tasks.md 行219 は、いずれも「完成判定基準（Completion Criteria）」の項目です。
+      - 文面は「foundation の N 語彙正本（…名前を列挙…）を再定義せず参照のみで使用していることが、機械検証で確認できる」というアサーションです。
+      - 語彙は件数だけでなく名前でも列挙されています（analysis=7件・confidence_label を含む、evaluation=6件・confidence_label を含まない）。
+      - 単なる説明文ではなく、機械検証（自動チェック）の合否根拠として使われています。
+  - topic: 122
+    model: sonnet-4-6-api
+    response: |
+      ご質問に対し、事実のみをお答えします（推奨・評価は含めません）。
+
+      【質問：2機能の管理境界】
+      - workflow-management と self-improvement は、いずれも同一リポジトリ ReviewCompass の `.reviewcompass/specs/` 配下に置かれた機能です。
+      - 別リポジトリ・別サービス境界・別チーム分割といった分離はありません（単一リポジトリ内の機能群です）。
+      - したがって、受け手（workflow-management）が送り手（self-improvement）の設計文書 §8.4 やファイルを参照することに、リポジトリ境界やサービス境界に起因する制約はありません。

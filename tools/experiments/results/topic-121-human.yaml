@@ -1,0 +1,35 @@
+provider: human
+model: user
+turn_number: 1
+duration_seconds: 0
+sent_messages_count: 0
+note: |
+  利用者本人の判定（topic-121、A-018 foundation 語彙正本件数の自己矛盾）。セッション40（2026-05-29）の対話形式判定。
+  7 モデルは案2×3（GPT-5.5／GPT-5.4／Sonnet-CLI）／別案×3（Sonnet-API／Gemini-3.5-flash／Gemini-3.1-pro）／案1×0 に割れた。
+  利用者は別案を採用。決め手：下流の analysis 7 件／evaluation 6 件は矛盾ではなく各機能の正しい参照範囲
+  （推定タスクを扱うか否かの差）で、本物の不整合は foundation/design.md 内部のみ。よって案2 の全文書併記は
+  不要な複雑化で固定値散在を増やす。正規再オープン手続き（種別 A-1）で反映。
+  case_scores は利用者の明示スコアではなく、対話で示された選好（別案＞案1＞案2）を記録者が符号化したもの。
+response_text: |
+  decision: "別案を提示"
+  rationale: |
+    別案を採用。本物の不整合は foundation/design.md 内部のみ（§判断7=7件／行644=4件／行736=「4→6」の食い違い）。
+    下流の analysis 7 件・evaluation 6 件は各機能の参照範囲として正しく、矛盾ではない（confidence_label は
+    推定タスク用で、扱う analysis は参照し、扱わない evaluation は参照しない）。案2 の「全下流に所有数を併記」は
+    foundation の合計値を各下流に焼き込み、将来の語彙追加で一斉に陳腐化するため不要な複雑化。
+  alternative_proposal: |
+    (1) foundation/design.md 行644 を §判断7 参照方式に整理し正本位置を明示（confidence_label は metadata_contract.yaml）、
+    (2) 行602 に「所有=全件／各機能参照=部分集合」の二層構造を固定値なしで明記、
+    (3) 行736 は履歴として残し、欠落していたセッション28 の confidence_label 追加記録を追記、
+    (4) evaluation/tasks.md 行219 に「confidence_label は推定タスク用で参照範囲外」を明記。
+    下流の件数（analysis 7／evaluation 6）は各機能の参照範囲として現状維持。
+  confidence: 1.0
+  turns_used: 1
+  uncertainty_factors:
+  assumed_context:
+    - 承認済み foundation/design.md の修正は正規再オープン手続き（REOPEN_PROCEDURE.md）で行う
+  case_scores:
+    case_1: 6
+    case_2: 3
+  comment_to_human:
+    - 別案採用。Opus（起草者）と Gemini 2 モデル・Sonnet-API の別案系統と一致。下流は矛盾でないため触らない

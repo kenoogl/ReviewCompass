@@ -1,0 +1,28 @@
+provider: human
+model: user
+turn_number: 1
+duration_seconds: 0
+sent_messages_count: 0
+note: |
+  利用者本人の判定（topic-122、A-019 workflow-management T-010 の approved_update スキーマと self-improvement §8.4 の不一致）。
+  セッション40（2026-05-29）の対話形式判定。7 モデルは案1×5（GPT-5.5／GPT-5.4／Sonnet-API／Sonnet-CLI／Opus）／
+  別案×2（Gemini-3.5-flash／Gemini-3.1-pro）／案2×0。利用者は案1 を採用、さらに副選択 (a)＝受け手は独自ファイルを持たない。
+  決め手：両機能は同一リポジトリ内で参照障壁がなく、二重管理が今回の食い違いの原因。案1 が再発防止になる。
+response_text: |
+  decision: "採用：案 1"
+  rationale: |
+    案1 を採用（副選択 (a)：受け手は独自スキーマファイルを持たない）。両機能は同一リポジトリ内で、
+    受け手が送り手 §8.4 を参照するコストはほぼゼロ。案2 の独立スキーマファイルは同じ定義を 2 か所に並べ、
+    今回の食い違い（二重管理）を温存する。案1 は正本を §8.4 1 か所に集約し発生源を構造的に消す。
+    検証用の機械可読スキーマが要る場合も §8.4 由来の共有フィクスチャで足り、独自定義は不要。
+  alternative_proposal: |
+  confidence: 1.0
+  turns_used: 1
+  uncertainty_factors:
+  assumed_context:
+    - T-010 は tasks 段の記述で design 遡及は不要（T-010 既存方針）。同一リポジトリ前提は確認済み
+  case_scores:
+    case_1: 9
+    case_2: 4
+  comment_to_human:
+    - 案1。5 モデル＋起草者と一致。Gemini の別案（送り手がスキーマファイルを所有・提供）は案1 の枠内で吸収可能
