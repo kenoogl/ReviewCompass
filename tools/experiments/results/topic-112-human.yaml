@@ -1,0 +1,28 @@
+provider: human
+model: user
+turn_number: 1
+duration_seconds: 0
+sent_messages_count: 0
+note: |
+  利用者本人の判定（topic-112、F-015 design §20.1 陳腐化）。セッション 39（2026-05-29）の対話形式判定。
+  7 モデル全一致（全 7 案 1）の must-fix。self-improvement topic-103 と同型（設計が陳腐化、tasks が正しい）。
+  利用者は案 1（設計 §20.1 を対処済みに更新＋全体点検）を採用。
+response_text: |
+  decision: "採用：案 1"
+  rationale: |
+    7 モデル全一致の案 1 を採用。A-011/A-012 は正本（pending 166/190 行）で対処済み（セッション28）だが design §20.1
+    が「消化予定」と陳腐化。design §20.1 を「対処済み」に更新し、tasks 持ち越し事項の「triad-review で確認する」を
+    確定記述に改める。§14.3/§14.5 の A-011 参照も対処済み前提に整え、§20.1 以外に同種の陳腐化がないか全体点検。
+    承認済み設計の遡及修正のため再オープン手続き（topic-111 とまとめて 1 つの A-2 再オープン）の要否を確認。
+  alternative_proposal: |
+  confidence: 1.0
+  turns_used: 1
+  uncertainty_factors:
+    - 再オープン手続きの軽量版適用可否
+  assumed_context:
+    - A-011/A-012 は pending 166/190 行で対処済み（2026-05-26 セッション28）
+  case_scores:
+    case_1: 9
+    case_2: 0
+  comment_to_human:
+    - self-improvement topic-103 と完全同型。設計が陳腐化、tasks が正しい

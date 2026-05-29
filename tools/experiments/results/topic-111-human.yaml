@@ -1,0 +1,28 @@
+provider: human
+model: user
+turn_number: 1
+duration_seconds: 0
+sent_messages_count: 0
+note: |
+  利用者本人の判定（topic-111、G-003 axis 値域矛盾）。セッション 39（2026-05-29）の対話形式判定。
+  7 モデル全一致（全 7 案 1）の must-fix。利用者は案 1（axis 2 値固定・intent 別フィールド分離）を採用。
+response_text: |
+  decision: "採用：案 1"
+  rationale: |
+    7 モデル全一致の案 1 を採用。axis は照合対象の 2 値（requirements/design）に固定し、intent は別フィールド
+    （例 reference_axis）に分離する。設計 §10.5／§14.5 を「intent は axis でなく参考情報専用フィールド」に修正、
+    tasks T-005 の 2 値 fail-closed は維持。Decision 4「2 軸 6 criteria」の設計思想を保て、intent の参考情報性
+    （must-fix 対象外）を構造で表現できる。案 2（3 値拡張）は axis 値域（3 値）と criteria 軸（2 軸）が乖離し概念が複雑化。
+    承認済み設計の遡及修正のため再オープン手続きの要否を確認する。
+  alternative_proposal: |
+  confidence: 1.0
+  turns_used: 1
+  uncertainty_factors:
+    - 設計（承認済み）の遡及修正の再オープン手続きの軽量版適用可否
+  assumed_context:
+    - intent は照合対象でなく参考情報（§8.2、must-fix 対象外）
+  case_scores:
+    case_1: 8
+    case_2: 4
+  comment_to_human:
+    - 7 モデル全一致。axis に二義（照合軸 vs 記録軸）を持たせないことを優先

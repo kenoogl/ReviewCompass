@@ -1,0 +1,25 @@
+provider: human
+model: user
+turn_number: 1
+duration_seconds: 0
+sent_messages_count: 0
+note: |
+  利用者本人の判定（topic-117、F-008 テストの補強）。セッション 39（2026-05-29）の対話形式判定。
+  7 モデル全一致（全 7 案 1）。利用者は案 1（feature-partitioning の肯定確認テスト・候補提示形式テストを追加）を採用。
+response_text: |
+  decision: "採用：案 1"
+  rationale: |
+    7 モデル全一致の案 1 を採用。T-004 に「feature-partitioning が推定モジュールに渡される肯定確認テスト」、
+    T-003 に「機能分割候補の提示の出力形式テスト」を追加する。遮断（他の上流文書）と尊重（feature-partitioning）の
+    両方の境界が確認でき、TDD で実装前に明示する形になる。テスト網羅の補強で代替案は考えにくい。
+  alternative_proposal: |
+  confidence: 1.0
+  turns_used: 1
+  uncertainty_factors:
+  assumed_context:
+    - 照合チェックモードは feature-partitioning だけ推定時入力として尊重、他は遮断（§7.2）
+  case_scores:
+    case_1: 9
+    case_2: 0
+  comment_to_human:
+    - 7 モデル全一致。遮断テストはあるが尊重のポジティブ確認が欠けていた

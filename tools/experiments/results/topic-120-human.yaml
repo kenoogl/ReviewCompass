@@ -1,0 +1,25 @@
+provider: human
+model: user
+turn_number: 1
+duration_seconds: 0
+sent_messages_count: 0
+note: |
+  利用者本人の判定（topic-120、G-005 T-002↔T-003/T-004 の双方向依存）。セッション 39（2026-05-29）の対話形式判定。
+  7 モデル中案 1×6（起草者含む）／別案×1（GPT-5.5）。利用者は案 1（完了条件の言い換えで循環解消）を採用。
+response_text: |
+  decision: "採用：案 1"
+  rationale: |
+    案 1 を採用。T-002 完了条件を「振り分け先パイプラインへのディスパッチ機構（つなぎ口）の確立（実体の完成でなく
+    インタフェースの確立）」に言い換え、T-002↔T-003/T-004 の記述上の循環を解消する。最小修正で済む。
+    別案（GPT-5.5、T-002 を T-002a/T-002b に分割）はより明快だがタスク数が増える。完了条件の表現変更で十分と判断。
+  alternative_proposal: |
+  confidence: 1.0
+  turns_used: 1
+  uncertainty_factors:
+  assumed_context:
+    - 実装上は「つなぎ口を先に作り中身は後で入れる」段階分割で解ける
+  case_scores:
+    case_1: 7
+    case_2: 6
+  comment_to_human:
+    - 6 モデルが案 1。最小修正（完了条件の言い換え）で循環を解消
