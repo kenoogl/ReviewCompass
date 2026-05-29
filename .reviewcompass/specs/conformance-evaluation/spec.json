@@ -26,12 +26,12 @@
       "drafting": true,
       "triad-review": true,
       "review-wave": true,
-      "alignment": false,
-      "approval": false
+      "alignment": true,
+      "approval": true
     },
     "tasks": {
       "drafting": true,
-      "triad-review": false,
+      "triad-review": true,
       "review-wave": false,
       "alignment": false,
       "approval": false
@@ -53,7 +53,7 @@
     "implementation": false
   },
   "recheck": {
-    "upstream_change_pending": true,
-    "impacted_downstream_phases": ["tasks"]
+    "upstream_change_pending": false,
+    "impacted_downstream_phases": []
   }
 }
