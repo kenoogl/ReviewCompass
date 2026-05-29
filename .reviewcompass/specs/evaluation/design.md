@@ -525,6 +525,12 @@ phase 対応比較は次を標準 slice とする（要件 7 受入 3）。
 - `protocol_version_coverage`：含まれる実行の `protocol_version` 集合（foundation 必須メタデータ由来、要件 2 受入 6「規約版混在の比較セットの検出」の機械検証根拠）
 - `runtime_version_coverage`：含まれる実行の `runtime_version` 集合（同じく規約版混在検出のため）
 - `prompt_set_version_coverage`：含まれる実行の `prompt_set_version` 集合
+- `analysis_run_id`：本分析実行の安定識別子（要件 5 受入 2、派生出力から実行識別子への連結保持の起点。tasks 段の 2 軸整合性監査 #3 で追加、2026-05-29）
+- `analysis_started_at`：分析実行の開始時刻（ISO 8601）
+- `analysis_completed_at`：分析実行の終了時刻（ISO 8601）
+- `output_artifact_ids`：本分析実行が生成した成果物の識別子集合（要件 5 受入 2、派生出力と実行・対象識別子の連結保持）
+
+本マニフェストは上記 13 項目（版管理 6＋実行識別 4＋来歴被覆 3）を最低限記録する。版管理項目は要件 5 受入 5（評価ロジック変更時の版可視化）、実行識別項目は要件 5 受入 2（派生出力から実行・対象識別子への連結保持）、来歴被覆項目は要件 2 受入 6（規約版混在検出）の機械検証根拠を担う。
 
 同じ生実行集合でも分析論理が変われば別出力として扱う。
 

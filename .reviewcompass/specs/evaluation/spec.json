@@ -26,13 +26,13 @@
       "drafting": true,
       "triad-review": true,
       "review-wave": true,
-      "alignment": true,
-      "approval": true
+      "alignment": false,
+      "approval": false
     },
     "tasks": {
       "drafting": true,
       "triad-review": true,
-      "review-wave": false,
+      "review-wave": true,
       "alignment": false,
       "approval": false
     },
@@ -48,12 +48,12 @@
     "intent": false,
     "feature-partitioning": false,
     "requirements": false,
-    "design": false,
+    "design": true,
     "tasks": false,
     "implementation": false
   },
   "recheck": {
-    "upstream_change_pending": false,
-    "impacted_downstream_phases": []
+    "upstream_change_pending": true,
+    "impacted_downstream_phases": ["tasks"]
   }
 }

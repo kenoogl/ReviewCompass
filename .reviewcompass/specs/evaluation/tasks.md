@@ -24,7 +24,7 @@ language: ja
 - **依存順**：前提タスクが完了してから後続タスクに進む
 - **自律進行**：実装段で per-task 承認は取らず、コミット・プッシュ・spec.json 更新・フェーズ移行のみ明示承認（規律 [[implementation-autonomy]] 準拠）
 - **テスト要件**：実装機能は単体テスト（pytest）で検証可能とする。言語モデル呼び出しは含まないため、固定入力から決定的に再現可能であることを徹底する
-- **contract consumer 原則**：evaluation は foundation の語彙正本（6 件）と runtime の語彙正本（3 件）を再定義せず参照のみで使用する（design.md §判断 8 準拠）。本機能所有の正本（admission 3 値、陳腐化伝播履行手段の選択ロジック）は本機能で確定する
+- **contract consumer 原則**：evaluation は foundation の語彙正本（foundation 所有は §判断 7 の全 7 件。うち evaluation が参照するのは 6 件で、`confidence_label` は推定タスク用のため対象外）と runtime の語彙正本（3 件）を再定義せず参照のみで使用する（design.md §判断 8 準拠）。本機能所有の正本（admission 3 値、陳腐化伝播履行手段の選択ロジック）は本機能で確定する
 
 `evaluation` 全体で 11 タスク。
 
@@ -102,7 +102,7 @@ language: ja
 
 - **対応設計節**：design.md §メトリクスモデル §1 メトリクス階層、§2 中核層と phase 重ね合わせ層、§3 最小メトリクス集合、§4 派生規則、§5 派生メトリクスの導出経路保持、§6 再計算許容性
 - **対応要件**：Requirement 3 受入 1〜5（最小メトリクス集合、構造化証拠からの計算、導出経路保持、再計算許容性、レベル分離）、Requirement 8 受入 1〜5（フェーズ特異な有効性メトリクスの許容、中核層＋重ね合わせ層、phase 別等価性非仮定、phase 特異選択の明示、将来拡張互換性）、**Requirement 5 受入 2**（派生出力から実行識別子と対象識別子への連結保持、本タスクが識別子連結の機械検証機構の主担当、T-007 ／ T-009 は本タスクの機構を利用）、**Requirement 5 受入 4**（self-improvement と analysis 両者による下流消費を支える）、**Requirement 5 受入 5**（評価ロジック変更時の成果物版管理可視化、`analysis_run_manifest.yaml` の生成を担う）、**Requirement 2 受入 6**（規約版混在検出の機械検証根拠、`analysis_run_manifest.yaml` の `protocol_version_coverage` ／ `prompt_set_version_coverage` を出力）
-- **責務**：実行レベル／所見レベル／処理方式レベルのメトリクスを分離して抽出。中核メトリクス層（共有）と phase 重ね合わせ層（フェーズ特異）の二層構造を実装。foundation `counter_status` 3 値正本（`counter_evidence_raised` ／ `no_counter_evidence_after_challenge` ／ `not_assessed`）を再定義せず参照し、所見レベル中核メトリクスとして集計、処理方式レベルに反証発生率指標を生成。導出経路を成果物に保持。**識別子連結保持の機械検証機構の主担当**（Req 5 受入 2、T-007 ／ T-009 は本機構を前提として利用）。**`manifests/analysis_run_manifest.yaml` の生成**（design.md §分析成果物配置 行 117 ／ 行 517-527 で必須宣言、9 項目：`analysis_logic_version` ／ `protocol_version_coverage` ／ `runtime_version_coverage` ／ `prompt_set_version_coverage` ／ `analysis_run_id` ／ `input_run_set` ／ `analysis_started_at` ／ `analysis_completed_at` ／ `output_artifact_ids`、Req 5 受入 5 ／ Req 2 受入 6 の機械検証根拠）
+- **責務**：実行レベル／所見レベル／処理方式レベルのメトリクスを分離して抽出。中核メトリクス層（共有）と phase 重ね合わせ層（フェーズ特異）の二層構造を実装。foundation `counter_status` 3 値正本（`counter_evidence_raised` ／ `no_counter_evidence_after_challenge` ／ `not_assessed`）を再定義せず参照し、所見レベル中核メトリクスとして集計、処理方式レベルに反証発生率指標を生成。導出経路を成果物に保持。**識別子連結保持の機械検証機構の主担当**（Req 5 受入 2、T-007 ／ T-009 は本機構を前提として利用）。**`manifests/analysis_run_manifest.yaml` の生成**（design.md 行 517-527 で必須宣言の 13 項目：`analysis_logic_version` ／ `input_run_set` ／ `generated_at` ／ `metric_set_version` ／ `phase_metric_profile_version` ／ `comparison_contract_version` ／ `protocol_version_coverage` ／ `runtime_version_coverage` ／ `prompt_set_version_coverage` ／ `analysis_run_id` ／ `analysis_started_at` ／ `analysis_completed_at` ／ `output_artifact_ids`、Req 5 受入 2（実行識別子連結）／ Req 5 受入 5（版可視化）／ Req 2 受入 6（規約版混在検出）の機械検証根拠。tasks 段 2 軸整合性監査 #3 で design と統一、2026-05-29）
 - **前提タスク**：T-004（分類済み実行が前提）、T-005（メタデータ検査通過済み）
 - **成果物**：
   - `evaluation/metrics/run_metrics_extractor.py`（実行レベル）

@@ -1,0 +1,14 @@
+process_id: reopen-procedure
+feature: evaluation
+started_at: 2026-05-29T00:00:00+09:00
+trigger: A-1（tasks フェーズの 2 軸整合性監査で確定した design 遡及所見 #3＝analysis_run_manifest.yaml の必須項目が design↔tasks で不一致。利用者は案2＝design を 13 項目に統一を選択）
+classification_basis: docs/reviews/reopen-classification-2026-05-29-evaluation-manifest.md
+# 4 過程構成（計画書 §5.6.1）での進行状況。
+completed_steps: [第1過程：判定とフラグ差し戻し]
+next_step: 第2過程：正本修正（evaluation/design.md 行517-527 を 13 項目に統一＋tasks T-006 を揃える）→ コミット
+pending_gates:
+  - stages/design.yaml#alignment
+  - stages/design.yaml#approval
+  - stages/tasks.yaml#alignment
+  - stages/tasks.yaml#approval
+current_blocker: 第2過程の正本修正待ち。evaluation/spec.json は差し戻し済み（reopened.design=true、design.alignment/approval=false、recheck.upstream_change_pending=true、impacted=[tasks]、tasks.alignment=false、利用者承認 2026-05-29 セッション40）。tasks.review-wave は機能横断段消化済みで true 維持。implementation 未着手
