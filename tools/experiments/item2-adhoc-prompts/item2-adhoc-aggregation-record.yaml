@@ -1,0 +1,85 @@
+# 項目2（残り27件の統合取り込み）の proxy 標準裁定 集約記録
+# §5.12.11.8 actor_chain 形式。2026-05-31 セッション42。
+# 起草者（コンシェルジュ）：claude-opus-4-8（メインセッション）。判定者には入らない（§5.12.11.7）。
+# 標準裁定の独立3系統：claude-sonnet-4-6 / gpt-5.5 / gemini-3.1-pro-preview（実験ノート §2.1）
+
+meta:
+  session: 42
+  date: "2026-05-31"
+  scope: "セッション34アドホック47項目の整合性確保レビュー残務。事後検証で解消済み24件を除外、真にグレーな4件をproxy標準裁定"
+  excluded_as_resolved: "項目36（A-012/14/15/16）・項目48（A-017）は対処済み（design.md反映済み／A-017は計画書組み込み不要と明示判断済み）と確認し除外"
+
+decisions:
+  - decision_id: item2-14
+    topic: "規律違反2件（実体未確認で完了扱い・承認前の次工程起草提案）の教訓を計画書本体に反映するか"
+    actor: human_proxy
+    actor_chain:
+      - drafter: claude-opus-4-8
+      - standard_panel:
+          - { model: gemini-3.1-pro-preview, decision: "採用：案1", case_1: 9, case_2: 4, rationale: "多層防御が必要な設計根拠(Why)を補強する実例" }
+          - { model: gpt-5.5,                 decision: "採用：案1", case_1: 8, case_2: 5, rationale: "実証済み失敗モードとして§5.8/§5.24.2に短く最小限、TODOへ参照" }
+          - { model: claude-sonnet-4-6,        decision: "採用：案2", case_1: 3, case_2: 7, rationale: "インシデントログ化の懸念。ただしクロスリファレンス1行を示唆" }
+      - external_indicators: { split: 1, alt_proposal: 0, close_score: 0, question: 0, note: "割れ発火（案1×2/案2×1）。ただし案1派も最小限・案2派も参照1行示唆で実質近接" }
+      - aggregation: { result: "割れだが実質収束。案A=§5.8/§5.24.2に1〜数行（重大事例限定）＋TODO §0参照" }
+    escalated: true
+    escalation_reason: "計画書方針変更＝§5.12.4本人必須。割れも残るため人へ"
+    human_decision: "案A（最小取り込み）"
+    human_decision_source: "利用者明示承認「案 A」（2026-05-31 セッション42）"
+
+  - decision_id: item2-24
+    topic: "次セッション終結誘導違反の規律を計画書本体に反映するか"
+    actor: human_proxy
+    actor_chain:
+      - drafter: claude-opus-4-8
+      - standard_panel:
+          - { model: claude-sonnet-4-6,        decision: "採用：案2", case_1: 3, case_2: 7, rationale: "archive退避は規律管理の結論。計画書が上書きは秩序を乱す" }
+          - { model: gemini-3.1-pro-preview,   decision: "採用：案2", case_1: 2, case_2: 9, rationale: "現行規律でカバー。計画書肥大化を避ける" }
+          - { model: gpt-5.5,                 decision: "別案を提示", case_1: 4, case_2: 6, rationale: "計画書外。active規律または運営ガイドに一文統合" }
+      - external_indicators: { split: 0, alt_proposal: 1, close_score: 0, question: 0, note: "別案発火。ただし『計画書外』で3系統方向一致" }
+      - aggregation: { result: "計画書本体には入れない＋運営ガイド§3付近に一文＋archiveに統合済み追記" }
+    escalated: true
+    escalation_reason: "計画書方針変更＋規律/運営ガイド変更＝本人必須"
+    human_decision: "計画書外＋運営ガイドに一文＋archive追記（推奨どおり）"
+    human_decision_source: "利用者明示承認「すべて推奨どおり」（2026-05-31 セッション42）"
+
+  - decision_id: item2-27
+    topic: "must-fix議論義務化の規律本体を計画書にも置くか"
+    actor: human_proxy
+    actor_chain:
+      - drafter: claude-opus-4-8
+      - standard_panel:
+          - { model: claude-sonnet-4-6,        decision: "採用：案2", case_1: 3, case_2: 8, rationale: "運営ガイドが正本。3か所同期は二重管理。参照明示化を補強提案" }
+          - { model: gpt-5.5,                 decision: "採用：案2", case_1: 4, case_2: 8, rationale: "運営ガイドの性格に合う。発見性不安なら短い参照追加" }
+          - { model: gemini-3.1-pro-preview,   decision: "採用：案2", case_1: 2, case_2: 9, rationale: "SSOT原則。運営ガイドが正本で美しい状態" }
+      - external_indicators: { split: 0, alt_proposal: 0, close_score: 0, question: 0, note: "非発火（完全収束）" }
+      - aggregation: { result: "案2（計画書本体に規律本体を置かない）＋§5.12.11.9の参照を明示ポインタ化" }
+    escalated: true
+    escalation_reason: "収束だが計画書方針変更のため本人承認"
+    human_decision: "案2＋参照明示化（推奨どおり）"
+    human_decision_source: "利用者明示承認「すべて推奨どおり」（2026-05-31 セッション42）"
+
+  - decision_id: item2-31
+    topic: "規律no-unilateral-action撤去の経緯を計画書本体に記録するか"
+    actor: human_proxy
+    actor_chain:
+      - drafter: claude-opus-4-8
+      - standard_panel:
+          - { model: claude-sonnet-4-6,        decision: "別案を提示", case_1: 4, case_2: 3, rationale: "3015行のデッドリンク修正（独立）＋§5.16.7に実績1行" }
+          - { model: gpt-5.5,                 decision: "別案を提示", case_1: 5, case_2: 7, rationale: "経緯は書かない、3015行の撤去済み規律名参照を修正、archive所在を注記" }
+          - { model: gemini-3.1-pro-preview,   decision: "別案を提示", case_1: 4, case_2: 3, rationale: "経緯追記せず、3015行のデッドリンクをクリーンアップ" }
+      - external_indicators: { split: 0, alt_proposal: 1, close_score: 0, question: 0, note: "別案発火。ただし3系統が同じ別案に収束（デッドリンク修正が核心）" }
+      - aggregation: { result: "経緯は計画書本体に書かない＋3015行デッドリンク修正（必須整合修正）＋§5.16.7に実績1行" }
+    escalated: true
+    escalation_reason: "計画書方針変更＝本人必須"
+    human_decision: "経緯は書かない＋デッドリンク修正＋§5.16.7実績1行（推奨どおり）"
+    human_decision_source: "利用者明示承認「すべて推奨どおり」（2026-05-31 セッション42）"
+
+post_write_verification:
+  method: "補助層D（独立3系統、複数節改訂のため3体）。claude-sonnet-4-6／gpt-5.5／gemini-3.1-pro-preview"
+  rounds: 3
+  substantive_fixes_round1: "B=§5.9.3に規律本体が混入／D=§5.19.6に経緯叙述／A=§5.8に§5.12.11誤参照／E=運営ガイドに説明付加。いずれも合意範囲超えを修正（実質的逸脱の捕捉、本検証の主目的を達成）"
+  round2_3_fixes: "C簡潔化・D補足削減・E用語整合（逐語レベル）"
+  final_result: "3回目で gemini-3.1-pro-preview と gpt-5.5 が ALL_CLEAR。claude-sonnet-4-6 は逐語・検証可能性レベルの指摘を継続したが内容誤りはなし"
+  convergence_decision: "独立2系統ALL_CLEARを以て収束（post-write-verification発効条件＝OpenAI/Google ALL_CLEARと同基準）。Anthropic残検出は逐語厳格・内容誤りなしと記録"
+  convergence_source: "利用者明示選択「2系統ALL_CLEARで収束」（2026-05-31 セッション42、AskUserQuestion）"
+  observation: "本規律の実運用で初めて『1系統（Sonnet）が逐語厳格で収束しにくい』挙動を観察。実質的な誤りは1回目で捕捉済みで、2回目以降は逐語レベルに移行した"

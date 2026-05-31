@@ -1,0 +1,7 @@
+provider: openai-api
+model: gpt-5.5
+turn_number: 1
+duration_seconds: 55.53
+sent_messages_count: 1
+response_text: "verdict: \"ALL_CLEAR\"\nfindings: []\ncomment: |\n  6箇所の書き込みは、合意内容の4件を概ね正しく反映しています。\n\
+  \  計画書に置かないとされた規律本体は B に書かれておらず、D にも経緯の時系列叙述はなく、E も一文追加に収まっています。\n  節番号・規律名・日付・セッション番号・参照先についても、提示された参考事実との明確な齟齬は検出されませんでした。"

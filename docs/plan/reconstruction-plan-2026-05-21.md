@@ -708,6 +708,8 @@ session 開始時の標準フロー：
 - **in-progress ファイルの自己申告性**：「いま reopen 中」「次は第 7 ステップ」を書くのは LLM 自身。嘘・古い・欠落の余地が残る
 - **事前コンテキストへの引きずられ**：LLM が文脈圧力下で規律ファイルの優先度を下げる現象は、規律ファイルを増やすほど悪化しうる
 
+実証された違反例（多層防御の設計根拠を補強する重大事例に限り記録、詳細な対処規律は [TODO_NEXT_SESSION.md](../../TODO_NEXT_SESSION.md) §0 を参照）：(a) 成果物の実体を確認しないまま工程を完了（`true`）扱いにした、(b) 承認未取得のまま次工程の起草を提案した（2026-05-22 セッション 22）。いずれも上記の自己申告性・文脈圧力による破綻が実際に起きた例。ここに記録するのは設計根拠を補強する重大事例に限り、軽微な違反の網羅はしない（粒度の歯止め。2026-05-31 セッション 42 の整合性確保レビューで追記）。
+
 #### 第 2〜5 層（フェーズ 4 以降の宿題）
 
 スタブが動き、基本機能（7 機能のうち 1〜2 機能）が動くようになった後、次の層を順次導入する。
@@ -844,6 +846,8 @@ review:
 - severity（重大度軸）：CRITICAL ／ ERROR ／ WARN ／ INFO
 - judgment（対応優先度軸）：must-fix ／ should-fix ／ leave-as-is（判定役のみ）
 - depth（深さ軸）：N／R／D／A／I × 0〜4（reopen 時のみ）
+
+must-fix と判定された所見の対処は運営ガイド `SESSION_WORKFLOW_GUIDE.md` §3.3 a-1 に従う（規律本体は運営ガイドが正本、本計画書はこれを参照する。2026-05-31 セッション 42 追記）。
 
 所見項目名は実体に合わせる：severity ／ target_location ／ description ／ rationale。「修正後」項目は必須から外す。
 
@@ -2510,6 +2514,8 @@ workflow 改善の履歴保管：
 - `docs/discipline-compliance-reports/<日付>.yaml`：遵守検査の時系列（§5.9.5 既存）
 - `docs/archive/disciplines/<日付>/README.md`：撤廃の経緯（§5.9.5 既存）
 
+撤廃の実績事例：`no_unilateral_action` 規律を 2026-05-25〜26 に新設・撤去（§5.9.4 の形骸化取り下げに該当、退避先 `memory/archive/2026-05-25-consolidation/`。2026-05-31 セッション 42 追記）。
+
 ロールバック方法（旧 R5 を継承）：
 
 - archive から復活：撤廃された規律を `docs/disciplines/` に戻す
@@ -3012,7 +3018,7 @@ ReviewCompass リポジトリへの移管時に判断：
 
 #### 5.19.6 利用者判断の運用ルール
 
-- LLM は本一覧の判断を単独で確定しない（feedback_no_unilateral_approach_change 規律）
+- LLM は本一覧の判断を単独で確定しない（旧 `feedback_no_unilateral_approach_change` 規律は撤去済みのため規律名参照を更新。経緯は `memory/archive/2026-05-25-consolidation/` を参照。2026-05-31 セッション 42 整理）
 - 各判断は利用者明示承認が必須（feedback_approval_required 規律）
 - 判断結果は本計画書の該当節に記録し、決定日付を付す
 - 一度確定した判断は、新たな根拠が出るまで維持する

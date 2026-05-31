@@ -1,0 +1,9 @@
+provider: gemini-api
+model: gemini-3.1-pro-preview
+turn_number: 1
+duration_seconds: 98.491
+sent_messages_count: 1
+response_text: "```yaml\nverdict: \"ALL_CLEAR\"\nfindings: []\ncomment: |\n  合意された4件の決定事項が、指定された6箇所に漏れなく正確に反映されています。\n\
+  \  「規律本体を計画書に書かない（B）」「経緯の時系列叙述を §5.19.6 に書かない（D）」「§5.1 は一文のみで現行規律の説明は付けない（E）」といった除外制約もすべて遵守されています。また、計画書\
+  \ §5.8 の既存記述（自己申告性・文脈圧力）との接続（A）、アーカイブ内での統合元の趣旨（session終結 / approach変更）のカバー状況の言及（F）など、既存の記録や文脈との整合性も完璧に取れています。\n\
+  ```"

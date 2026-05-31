@@ -1,0 +1,7 @@
+provider: gemini-api
+model: gemini-3.1-pro-preview
+turn_number: 1
+duration_seconds: 28.968
+sent_messages_count: 1
+response_text: "```yaml\nverdict: \"ALL_CLEAR\"\nfindings: []\ncomment: |\n  合意内容が漏れなく的確に反映されています。「規律本体を計画書に書かない（B）」「経緯の時系列叙述を\
+  \ §5.19.6 に書かない（D）」「§5.1 は一文のみ（E）」の制約もすべて遵守されており、既存の事実・節番号・パス等の参照情報も正確です。\n```"
