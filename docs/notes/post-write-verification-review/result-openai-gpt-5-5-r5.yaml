@@ -1,0 +1,12 @@
+provider: openai-api
+model: gpt-5.5
+turn_number: 1
+duration_seconds: 81.387
+sent_messages_count: 1
+response_text: 'verifier_id: openai-chatgpt
+
+  findings: []
+
+  verdict: ALL_CLEAR
+
+  summary: "合意内容は 3 草案全体に反映されており、既存正本抜粋との明確な不整合、草案間の論理矛盾、引用符・参照表記の不一致は検出されませんでした。"'

@@ -1,0 +1,13 @@
+provider: openai-api
+model: gpt-5.5
+turn_number: 1
+duration_seconds: 121.535
+sent_messages_count: 1
+response_text: 'verifier_id: openai-gpt-5.5
+
+  findings: []
+
+  verdict: ALL_CLEAR
+
+  summary: "検査観点 4 項目について、提示された合意内容・書き込み結果・既存正本抜粋の範囲で明確な不整合は検出されませんでした。適用範囲、検証者構成、失敗時挙動、§5.8／§5.12.8／§5.9.6(d)
+  との接合、YAML 参照表記はいずれも整合しています。"'

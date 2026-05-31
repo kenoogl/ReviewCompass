@@ -1,0 +1,14 @@
+provider: gemini-api
+model: gemini-3.1-pro-preview
+turn_number: 1
+duration_seconds: 86.649
+sent_messages_count: 1
+response_text: '```yaml
+
+  verifier_id: claude-sonnet-4-6
+
+  verdict: ALL_CLEAR
+
+  summary: "合意内容と既存正本に照らして、3つの草案すべてにおいて正確な反映と構造的整合性が確認されました。論理矛盾や正本との齟齬は見当たらず、指摘事項はありません。"
+
+  ```'
