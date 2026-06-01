@@ -1,6 +1,6 @@
 # 次セッション継続用メモ
 
-最終更新：2026-06-01（セッション44）。**次の作業：§3.1 implementation（実装）フェーズへの着手**。
+最終更新：2026-06-01（セッション45）。**次の作業：§3.1 runtime 機能の implementation（drafting → triad-review）**。foundation の implementation は drafting・triad-review 完了（セッション45）。以降は機能ごとにセッションを分けて進める（案1、spec.json と本 TODO で状態引き継ぎ）。
 
 作業ディレクトリ：`/Users/Daily/Development/ReviewCompass/`、リポジトリ：`git@github.com:kenoogl/ReviewCompass.git`（main ブランチ）
 
@@ -90,33 +90,48 @@ zsh -c 'source ~/.zshrc && /Users/Daily/Development/ReviewCompass/.venv/bin/pyth
 
 **避けるべき形**：`python3 <script.py>`（環境変数干渉あり、PyYAML なし）／ `zsh -c 'source ~/.zshrc && python3 <script.py>'`（API キーは取れるが PyYAML なし）。理由：`subprocess.run([sys.executable, ...])` が venv 内パッケージを参照するには起動時の Python が venv のものでなければならない。
 
-## 2. ワークフロー上の現在位置（セッション 44 末）
+## 2. ワークフロー上の現在位置（セッション 45 末）
 
 実態は **spec.json の workflow_state から確認**（§0.1）：
 
-- intent 層／feature-partitioning 層／requirements 段／design 段：全 7 機能で全段 true
-- **tasks 段：全 7 機能で完了（drafting／triad-review／review-wave／alignment／approval すべて true、セッション40）**。review-wave＝機能横断所見 A-017/18/19 消化＋DVT 解除、alignment＝2軸整合性監査、approval＝利用者承認。`pending-cross-feature-findings.md` 未消化 0 件
-- **implementation 段：全段 false（次はここから）**
-- → **仕様4段階（intent／requirements／design／tasks）が全7機能で承認済み。残るは implementation のみ**
-- **注（再オープン履歴）**：再承認済み＝workflow-management の requirements／design（A-2、セッション 38）／self-improvement の requirements／design（A-2、セッション 39）／conformance-evaluation の design（A-1、セッション 39）／**foundation の design（A-1、A-018 対処、セッション 40）／evaluation の design（A-1、#3 manifest 統一、セッション 40）**。いずれも recheck クリア済み、`reopened.*=true` は履歴として保持
+- intent 層／feature-partitioning 層／requirements 段／design 段／tasks 段：全 7 機能で全段 true
+- **implementation 段（foundation）：drafting＝true／triad-review＝true（セッション45）／review-wave・alignment・approval＝false**。review-wave 以降は全機能の triad-review 完了後に機能横断で実施
+- **implementation 段（他 6 機能：runtime／evaluation／analysis／workflow-management／self-improvement／conformance-evaluation）：全段 false（次はここから、runtime が先頭）**
+- → **仕様4段階は全7機能で承認済み。implementation は foundation が drafting・triad-review まで完了、残り6機能が未着手**
+- **注（再オープン履歴）**：再承認済み＝workflow-management の requirements／design（A-2、セッション 38）／self-improvement の requirements／design（A-2、セッション 39）／conformance-evaluation の design（A-1、セッション 39）／foundation の design（A-1、A-018 対処、セッション 40）／evaluation の design（A-1、#3 manifest 統一、セッション 40）。いずれも recheck クリア済み、`reopened.*=true` は履歴として保持
 
-## 3. 次の作業（セッション 44 起点）
+## 3. 次の作業（セッション 45 起点）
 
-**次の作業：§3.1（implementation フェーズへの着手）**
+**次の作業：§3.1（runtime 機能の implementation：drafting → triad-review）**
 
-### 3.1 implementation フェーズへの着手
+### 3.1 runtime 機能の implementation 着手
 
-**§5.12 改訂の全項目が完了した（セッション 42）**。次は仕様 4 段階承認済みの全 7 機能で implementation フェーズに着手する。
+foundation の implementation が drafting・triad-review まで完了した（セッション45）。依存順（`feature-dependency.yaml#phase_order`）で次は **runtime**。各機能の implementation を drafting → triad-review まで進め、review-wave 以降は全機能の triad-review 完了後に機能横断で実施する（運営ガイド §2.3）。
 
-**着手方針**：依存順（`feature-dependency.yaml#phase_order`）で実装。各機能 implementation の drafting → triad-review → review-wave → alignment → approval を回す。
+**進め方（案1：機能ごとにセッション分割、セッション45利用者決定「区切る」）**：
 
-1. foundation → runtime → evaluation → analysis → workflow-management → self-improvement → conformance-evaluation の順
-2. **workflow-management** の実装は §5.12 改訂で確定した論点（cross-spec-alignment 段集合・§5.12.11 アサイン権限・DVT-W003 規律変更段集合）を実装する側のため、**§5.12 改訂完了（済み）後に着手可**
-3. 他 6 機能は §5.12 改訂とほぼ独立で並行可能
+1. 1 セッションで 1〜2 機能を「実装（drafting）→ 3 役レビュー（triad-review）→ 所見対処」まで進める
+2. 状態の真実源は spec.json の `workflow_state`。セッションをまたいでも spec.json を読めば再開できる（計画書 §5.7／§5.24）
+3. 残り順序：runtime → evaluation → analysis → workflow-management → self-improvement → conformance-evaluation
+4. **workflow-management** は §5.12 改訂で確定した論点（cross-spec-alignment 段集合・§5.12.11 アサイン権限・DVT-W003 規律変更段集合）を実装する側のため、他機能の後に着手するのが安全
 
-**ブートストラップ期の根本案件**（ワークフロー・ナビゲーション問題）の根本解＝workflow-management の実装はこの implementation フェーズで対応（最重要案件ノート §5）。**§5.12 改訂しても workflow-management 実装まで利用者の監視は必要**という認識を持って進める。
+**foundation 実装で確立した手順（runtime 以降も踏襲）**：
 
-### 3.2 完了済み（セッション 41〜44）
+- TDD（テスト先行で赤を確認 → 実装で緑）。コミットは依存グループ単位＋テスト/実装の 2 段（CLAUDE.md 優先）
+- 実装レビュー観点は 5 点（タスク文書整合・要件追跡・テスト網羅性・配置命名規約・機能横断波及）。暫定のため過不足が判明したら暫定改訂可。本体は [docs/notes/2026-06-01-implementation-phase-approach.md](docs/notes/2026-06-01-implementation-phase-approach.md)
+- triad-review はサブエージェント 3 役（主役 Sonnet／敵対役 Opus／判定役 Opus）。起草者（メイン）は 3 役に入らない
+- **必ず直す（must-fix）所見は利用者と必ず議論**（運営ガイド §3.3）。完全無人化はできない
+- **書き込み後検証**：docs/ 配下等の正本文書を更新したら独立系統（OpenAI／Google）で検証。Agent ツールは Claude のみのため **API スクリプト（`tools/api_providers/`）経由で実施**（セッション45 で同一系統検証の逸脱があり、API 経由で回復した教訓）
+- 各段完了で spec.json を true 化（不可逆操作・本人承認）。プロキシモードの承認判断は複数モデル集約だが引き金は本人
+
+### 3.2 foundation implementation の完了内容（セッション45）
+
+- drafting：全 10 タスク（T-001〜T-010）を TDD で実装。テスト緑 120 件、完成判定スクリプト 6 項目 pass
+- triad-review：3 役レビューで 12 所見（must-fix 1・should-fix 5・leave-as-is 6）を検出・対処。レビュー記録 `.reviewcompass/specs/foundation/reviews/2026-06-01-implementation-triad-review.md`
+- コミット 15 件（`3764055`〜`f9190bb`）＋セッション記録 `7c12a79`。セッション記録 [docs/sessions/session-45-2026-06-01.md](docs/sessions/session-45-2026-06-01.md)
+- 新規依存：`jsonschema`（meta-schema 検証用、pyproject.toml に追加）
+
+### 3.3 完了済み（セッション 41〜44）
 
 - セッション 41〜42 の完了済み項目（§5.12 改訂全7項目・規律新設等）：git 履歴（`fce0061`／`a66da5c`／`ce2ba60`／`7417585`／`7684402`／`fa089c0`）と `docs/archive/todo/` 参照
 - **書き込み後検証の収束基準を新設・動作仕様ファイルへ移設（セッション 43）**：コミット `59a0a6c`
@@ -144,4 +159,4 @@ zsh -c 'source ~/.zshrc && /Users/Daily/Development/ReviewCompass/.venv/bin/pyth
 - 規律ファイル本体：`docs/disciplines/`（一覧は同ディレクトリ README.md）
 - 過去 TODO snapshot：`docs/archive/todo/` 配下
 
-セッション終了時の自動記録：`python3 tools/session-log-converter.py --latest ~/.claude/projects/-Users-Daily-Development-ReviewCompass docs/sessions/session-45-<YYYY-MM-DD>.md`
+セッション終了時の自動記録：`python3 tools/session-log-converter.py --latest ~/.claude/projects/-Users-Daily-Development-ReviewCompass docs/sessions/session-46-<YYYY-MM-DD>.md`
