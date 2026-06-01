@@ -1,0 +1,20 @@
+process_id: reopen-procedure
+feature: [runtime, workflow-management]
+started_at: 2026-06-02T00:00:00+09:00
+trigger: reopen-procedure-2026-06-02-analysis-evaluation.yaml と同一の波及イベント（foundation review_mode への api_mediated 追加）。analysis／evaluation 対処後の alignment で runtime／workflow-management にも同型の固定列挙が残存と判明、案 A（全機能で直す）で対象拡大。利用者承認 2026-06-02
+classification_basis: docs/reviews/reopen-classification-2026-06-02-runtime-wm-review-mode.md
+# 4 過程構成（計画書 §5.6.1）での進行状況。
+completed_steps: []
+next_step: 第1過程：判定とフラグ差し戻し（spec.json 差し戻しまで）→ 第2過程：正本修正（実施済み）→ コミット
+pending_gates:
+  - runtime: stages/requirements.yaml#alignment
+  - runtime: stages/requirements.yaml#approval
+  - runtime: stages/design.yaml#alignment
+  - runtime: stages/design.yaml#approval
+  - runtime: stages/tasks.yaml#alignment
+  - runtime: stages/tasks.yaml#approval
+  - workflow-management: stages/design.yaml#alignment
+  - workflow-management: stages/design.yaml#approval
+  - workflow-management: stages/tasks.yaml#alignment
+  - workflow-management: stages/tasks.yaml#approval
+current_blocker: 第1過程進行中。reopen-classification 記録作成済み、本 in-progress ファイル発行済み、正本修正実施済み。次は spec.json フラグ差し戻し（利用者承認済み案 A 2026-06-02）→ 補助層 D 検証 → コミット

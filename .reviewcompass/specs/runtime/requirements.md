@@ -83,7 +83,7 @@
 3. 本実行時は反証や上書き関連のフィールドを必要に応じて出力する。本実行時は所見に `counter_status`（反証状態、`foundation` 仕様 Requirement 1 受入 4 由来）フィールドを必須として出力する。語彙は `foundation` が所有する正本（`counter_evidence_raised`／`no_counter_evidence_after_challenge`／`not_assessed`）を再定義せずに参照する。
 4. 本実行時は生の証拠と派生要約を分離して出力する。
 5. 本実行時は下流の再生（replay）と提案分析に十分な情報を保持する。
-6. 本実行時はレビューモード由来情報（`foundation` のメタデータ契約に準拠）を出力する。`foundation` の語彙正本（`manual_dogfooding`／`runtime_mediated`／`subagent_mediated`）を再定義せずに参照する。
+6. 本実行時はレビューモード由来情報（`foundation` のメタデータ契約に準拠）を出力する。`foundation` の語彙正本を再定義せずに参照する（値は `foundation` 正本が定める）。
 7. 本実行時はレビュー実行が失敗様式に遭遇した場合、`foundation` の `failure_observation` スキーマに準拠した記録を出力する。失敗分類データを取得し、未使用スキーマとして放置しない。
 
 ### Requirement 5：人間決定の組み込み
@@ -169,7 +169,7 @@ ReviewCompass 固有の追加：
 
 - 処理方式名を `primary`／`adversarial`／`judgment` に統一（Requirement 2 受入 2、計画書 §5.15.6 由来）
 - `counter_status` フィールドを所見出力に必須化（Requirement 4 受入 3、`foundation` 仕様 Requirement 1 受入 4 と連動）
-- レビューモード語彙に `subagent_mediated` を含む 3 値体制（Requirement 4 受入 6、`foundation` 仕様 Requirement 6 受入 6 と連動、計画書 §5.23.12 由来）
+- レビューモード語彙に `subagent_mediated` を含む 3 値体制（Requirement 4 受入 6、`foundation` 仕様 Requirement 6 受入 6 と連動、計画書 §5.23.12 由来）。その後 2026-06-02 に `api_mediated` を追加し 4 値体制へ拡張（`foundation` 正本を参照、本機能の受入記述は固定値を持たず参照方式に変更）
 - 隣接仕様として `workflow-management` と `conformance-evaluation` を追加（Boundary Context 隣接期待、計画書 §3.1 由来）
 - Requirement 10 を「削除済み」表記から「パターン定義依存の除外」の能動的要件に書き換え（先行プロジェクトの歴史的経緯を一般化、§5.18.2 行 2189 の「現行のみを記述」指示と整合）
 - `step_outcome` フィールドと語彙（`executed`／`skipped_by_treatment`／`failed`）を段結果出力に必須化（Requirement 1 受入 4、検証可能性の確保のため）

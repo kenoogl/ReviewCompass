@@ -311,7 +311,7 @@ target: <対象文書のパス>
 target_commit: <commit hash>
 target_content_hash: <sha256>
 date: 2026-05-25
-mode: subagent_mediated                  # manual_dogfooding／subagent_mediated／runtime_mediated
+mode: subagent_mediated                  # レビューモード。値は foundation 正本を参照（再定義しない）
 author:
   identity: claude_code_main_session     # 起草者の識別子
   model: claude-opus-4-7
