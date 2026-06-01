@@ -17,6 +17,7 @@
 - --prompt-file <パス>：必須（1 ターン目のプロンプト本文）
 - --history-file <パス>：省略可（前ターンまでの対話履歴 YAML）
 - --turn-number <整数>：省略可（既定 1、メタデータ用）
+- --timeout-seconds <整数>：省略可（既定 60。GPT-5.5 は 300 を指定すること）
 
 標準出力 YAML 形式：
 - provider / model / turn_number / duration_seconds / sent_messages_count / response_text
@@ -85,6 +86,12 @@ def _parse_argv(argv: Optional[List[str]]) -> argparse.Namespace:
     default=1,
     help="ターン番号（メタデータ用、既定 1）",
   )
+  parser.add_argument(
+    "--timeout-seconds",
+    type=int,
+    default=60,
+    help="API タイムアウト秒数（既定 60。GPT-5.5 は 300 を指定すること）",
+  )
   return parser.parse_args(argv)
 
 
@@ -97,7 +104,7 @@ def main(argv: Optional[List[str]] = None) -> int:
     messages = build_messages_from_history(prompt, args.history_file)
 
     provider_cls = get_provider(args.provider)
-    provider = provider_cls(model=args.model)
+    provider = provider_cls(model=args.model, timeout_seconds=args.timeout_seconds)
 
     start = time.monotonic()
     response_text = provider.send_messages(messages)
