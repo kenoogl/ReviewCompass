@@ -39,7 +39,7 @@ date: 2026-05-25
 - 注意点と限界を、要約や叙述の過程で取り落とさない
 - `evaluation` の成果物から再生成可能な分析向け成果物を作る
 - 4 種の利用先（運用ダッシュボード／週次／監査／報告書）に対し、共通の追跡可能性を保持しつつ利用先ごとの加工を許容する
-- レビュー収束過程（3 役および 3 経路の所見差分）を可視化に渡せる形で保持する
+- レビュー収束過程（3 役およびレビューモード別の所見差分）を可視化に渡せる形で保持する
 - `conformance-evaluation` の検査結果を取り込み、監査用報告と報告書向け原データに統合する
 
 ## 範囲外（Non-Goals）
@@ -67,7 +67,7 @@ date: 2026-05-25
 
 1. **取り込み段（intake）**：`evaluation` の成果物を読み、欠落・陳腐化を判定する
 2. **共通台帳生成段（shared registry generation）**：主張対応図・証拠台帳・注意点台帳を生成する
-3. **収束可視化生成段（convergence visualization）**：3 役および 3 経路の所見差分を構造化入力に変換する
+3. **収束可視化生成段（convergence visualization）**：3 役およびレビューモード別の所見差分を構造化入力に変換する
 4. **派生段（destination derivation）**：4 出力先ごとに必要な成果物を派生させる
 5. **陳腐化検査段（staleness check）**：上流陳腐化に伴う再生成対象を識別する
 
@@ -91,7 +91,7 @@ graph TD
 
 - `intake reader`：`evaluation` および `conformance-evaluation` の成果物を読み込み、必須入力の有無と陳腐化標識を確認する
 - `shared registry builder`：主張対応図・証拠台帳・注意点台帳の共通成果物を組み立てる
-- `convergence visualization builder`：3 役および 3 経路の所見差分から可視化向け構造化入力を組み立てる
+- `convergence visualization builder`：3 役およびレビューモード別の所見差分から可視化向け構造化入力を組み立てる
 - `destination deriver`：共通成果物と可視化入力から、4 出力先ごとの派生成果物を組み立てる
 - `staleness checker`：上流陳腐化標識を受け、本機能の派生成果物に再生成対象標識を付ける
 
@@ -109,7 +109,7 @@ analysis/
 │   │   └── conformance_intake.json # conformance-evaluation 取り込み正本（Req 8 受入 5、A-010 対処）
 │   ├── convergence/
 │   │   ├── role_diff.json          # 3 役の所見差分（Req 7 受入 2）
-│   │   └── mode_diff.json          # 3 経路の所見差分（Req 7 受入 3）
+│   │   └── mode_diff.json          # レビューモード別の所見差分（Req 7 受入 3）
 │   └── manifests/
 │       ├── analysis_manifest.yaml  # 本機能の論理版と入力被覆
 │       ├── intake_failure_report.json # 取り込み失敗の構造化報告（要件 1 受入 4、F-009 対処）
@@ -130,7 +130,7 @@ analysis/
 │   └── reports/
 │       ├── claim_evidence_trace.json # 主張から証拠への完全な追跡表
 │       ├── treatment_comparison_report.json # 3 方式比較データ
-│       ├── mode_comparison_report.json # 3 経路比較データ
+│       ├── mode_comparison_report.json # レビューモード別比較データ
 │       ├── conformance_compliance_trend.json # 取り込み正本の加工版（規律遵守率の時系列、A-010 対処）
 │       └── manifest.yaml
 ├── figures_tables/
@@ -176,7 +176,7 @@ analysis/
 | 運用ダッシュボード | 所見集計（重大度別・フェーズ別）、進行中の所定手続きの状態一覧 | 運用者 |
 | 週次レポート | 時系列推移（前週との差分）、注目所見の上位 N 件、規律遵守率の変化 | 運用者・分析者 |
 | 監査用報告 | 無効化マーカー一覧、検証器失敗の追跡、規律違反件数集計、`conformance-evaluation` 検査結果 | 監査担当者 |
-| 報告書向け原データ | 主張から証拠への完全な追跡表、3 方式比較データ、3 経路比較データ、`conformance-evaluation` 検査結果 | 研究者・分析者 |
+| 報告書向け原データ | 主張から証拠への完全な追跡表、3 方式比較データ、レビューモード別比較データ、`conformance-evaluation` 検査結果 | 研究者・分析者 |
 
 ## 主張対応モデル（Claim Mapping Model）
 
@@ -210,7 +210,7 @@ analysis/
 - `experiments/analysis/comparisons/phase_comparisons.json`（フェーズ別比較）
 - `experiments/analysis/classifications/exclusion_report.json`（除外報告）
 - `experiments/analysis/caveats/caveat_register.json`（注意点台帳、上流由来）
-- `experiments/analysis/modes/mode_diff_report.json`（3 経路差分）
+- `experiments/analysis/modes/mode_diff_report.json`（レビューモード別差分）
 - 必要に応じて `experiments/analysis/metrics/*.json`
 - `experiments/conformance/<検査結果>.json`（規律遵守検査結果、Req 8 受入 5）
 
@@ -268,7 +268,7 @@ analysis/
 - `source_analysis_manifest_ref`：`experiments/analysis/manifests/analysis_run_manifest.yaml` への参照
 - `input_run_set_ref`：根拠とした実行集合への参照
 - `evidence_class`：foundation 由来の証拠区分（再定義しない束縛フィールド）
-- `review_mode`：foundation 由来のレビューモード（3 値、再定義しない）
+- `review_mode`：foundation 由来のレビューモード（値は foundation 正本を参照、再定義しない）
 - `maturity_label`：`evidence_class` に束縛された派生分類
 - `caveat_refs`：適用される注意点への参照
 - `supersedes`：本エントリが置換した先行証拠への参照（無ければ空）
@@ -415,14 +415,14 @@ analysis/
 - 条件付き必須：`findings_summary.by_final_label` は `role=judgment` のとき必須、`findings_summary.by_counter_status` は `role=adversarial` のとき必須
 - 任意：`evidence_refs`（無ければ空配列）
 
-### 2. 3 経路の所見差分（Mode Diff）
+### 2. レビューモード別の所見差分（Mode Diff）
 
-`shared/convergence/mode_diff.json` は 3 経路（`manual_dogfooding`／`subagent_mediated`／`runtime_mediated`）の所見出力の差分を保持する。出典は `evaluation` の `modes/mode_diff_report.json`。
+`shared/convergence/mode_diff.json` は `foundation` の review_mode 正本が定める各レビューモード別の所見出力の差分を保持する。出典は `evaluation` の `modes/mode_diff_report.json`。
 
 各エントリは要件 7 受入 3 が定める最低限の 4 要素を含む。
 
 - `feature`：機能名
-- `review_mode`：foundation のレビューモード 3 値
+- `review_mode`：foundation のレビューモード正本値（再定義しない）
 - `findings_summary`：所見集計（重大度別件数）
 - `target`：対象識別子
 - `evidence_refs`：根拠とした証拠台帳エントリへの参照
@@ -486,7 +486,7 @@ analysis/
 
 - `claim_evidence_trace.json`：主張から証拠への完全な追跡表（`shared/claim_map.json` を出力先向けに加工）
 - `treatment_comparison_report.json`：3 方式比較データ（`evaluation` の `comparisons/treatment_comparisons.json` を加工）
-- `mode_comparison_report.json`：3 経路比較データ（`evaluation` の `modes/mode_diff_report.json` を加工）
+- `mode_comparison_report.json`：レビューモード別比較データ（`evaluation` の `modes/mode_diff_report.json` を加工）
 - `conformance_compliance_trend.json`：`shared/conformance/conformance_intake.json`（正本）の加工版（規律遵守率の時系列、A-010 対処）
 
 ## `conformance-evaluation` メトリクス取り込みモデル（Conformance Intake Model）
@@ -696,7 +696,7 @@ analysis/
 
 ### 判断 7：レビュー収束過程は `evaluation` 派生
 
-3 役および 3 経路の所見差分の可視化は、`evaluation` の標準集計と区別し、`evaluation` の成果物を加工した派生として位置付ける。本機能の可視化結果が `evaluation` のメトリクス契約を上書きすることはない。
+3 役およびレビューモード別の所見差分の可視化は、`evaluation` の標準集計と区別し、`evaluation` の成果物を加工した派生として位置付ける。本機能の可視化結果が `evaluation` のメトリクス契約を上書きすることはない。
 
 ### 判断 8：陳腐化伝播は最小契約のみ固定
 
@@ -719,7 +719,7 @@ analysis/
 | Req 6：レビューモード由来情報 | §証拠台帳モデル §3 |
 | Req 7：レビュー収束過程の可視化 | §レビュー収束過程の可視化モデル |
 | Req 7 受入 2：3 役の所見差分の最低限 4 要素 | §可視化モデル §1 |
-| Req 7 受入 3：3 経路の所見差分の最低限 4 要素 | §可視化モデル §2 |
+| Req 7 受入 3：レビューモード別の所見差分の最低限 4 要素 | §可視化モデル §2 |
 | Req 8：4 種の出力先への変換 | §出力先別の派生モデル |
 | Req 8 受入 1：4 出力先の最低限必須成果物 | §分析向け成果物配置・§出力先ごとの最低限必須成果物 |
 | Req 8 受入 5：`conformance-evaluation` 取り込み | §`conformance-evaluation` メトリクス取り込みモデル |
@@ -777,7 +777,7 @@ analysis/
 - `workflow-management` の所定手続き実行履歴の取り込み元パスと項目の最終確定（`workflow-management` 設計確定後、A-002 対処 2026-05-25 セッション 25）
 - 運用ダッシュボード派生の更新頻度と再生成方針（実装段で確定）
 - 規律遵守率の集計粒度（基準別・全体・時系列）
-- `limitation_type=mixed_review_mode`（過渡的対処）の運用必要性の再評価（フェーズ 4 完了後、3 経路の恒久運用が定着した時点で、本値が日常業務で出現しない場合は廃止または条件付き運用への変更を検討、F-012＋A-009 対処 2026-05-25 セッション 25）
+- `limitation_type=mixed_review_mode`（過渡的対処）の運用必要性の再評価（フェーズ 4 完了後、各レビューモードの恒久運用が定着した時点で、本値が日常業務で出現しない場合は廃止または条件付き運用への変更を検討、F-012＋A-009 対処 2026-05-25 セッション 25）
 
 ## 完成判定基準（Completion Criteria）
 
@@ -786,7 +786,7 @@ analysis/
 - 注意点と限界がどこに残るかを台帳構造で説明できる
 - 本機能が `runtime`／`evaluation` を支配しないことを分離規則で説明できる
 - 4 出力先のそれぞれが要件 8 受入 1 の最低限必須成果物を持つことを示せる
-- レビュー収束過程の 3 役および 3 経路差分が可視化向け構造化入力として保持されることを示せる
+- レビュー収束過程の 3 役およびレビューモード別差分が可視化向け構造化入力として保持されることを示せる
 - `conformance-evaluation` 検査結果が一方向取り込みで監査用報告と報告書向け原データに統合されることを示せる
 - 上流陳腐化に伴う再生成対象が登録される仕組みを示せる
 
@@ -795,10 +795,10 @@ analysis/
 本仕様は先行プロジェクトの `paper-interface` 設計を白紙から組み直し、ReviewCompass の要件文書（8 つの Requirement）に適合する形で起草したものである。先行設計から構造的に変えた点：
 
 - **機能名と出力先の拡張**：論文 1 系統前提から 4 出力先（運用ダッシュボード／週次／監査／報告書）への拡張に伴い、配置を `paper/` 単一から `shared/` ＋ `destinations/<出力先>/` の 2 層構造に変更
-- **レビュー収束過程の可視化（Req 7）**：先行設計に存在しない機能として新設。3 役の所見差分と 3 経路の所見差分を構造化入力として保持
+- **レビュー収束過程の可視化（Req 7）**：先行設計に存在しない機能として新設。3 役の所見差分とレビューモード別の所見差分を構造化入力として保持
 - **`conformance-evaluation` 検査結果の取り込み（Req 8 受入 5）**：先行設計に存在しない接合面として新設。一方向取り込みで監査用報告と報告書向け原データに統合
 - **`workflow-management` との接合**：所定手続きの実行履歴を運用ダッシュボード派生に取り込むため、新規の隣接機能として追加
-- **レビューモード 3 値体制**：先行設計の 2 値（手動／実行時）から 3 値（手動／実行時／サブエージェント経由）への拡張に伴い、関連箇所を更新
+- **レビューモード 3 値体制**：先行設計の 2 値（手動／実行時）から 3 値（手動／実行時／サブエージェント経由）への拡張に伴い、関連箇所を更新。その後 2026-06-02 に `api_mediated` を追加し 4 値へ拡張、本設計の機能記述は固定値を持たず `foundation` 正本を参照する方式に変更
 - **共通／派生の分離**：先行設計は論文向け 1 系統のみで共通／派生の分離が不要だったが、本機能は 4 出力先のため、共通台帳の単一配置と出力先別派生の分離を判断 5 として確立
 
 機能横断レビューで対処された所見は [.reviewcompass/pending-cross-feature-findings.md](../../pending-cross-feature-findings.md) を参照（要件段で対処済み）。本設計段で新たに検出された波及所見は本設計に対応する 3 役レビュー段で扱う。

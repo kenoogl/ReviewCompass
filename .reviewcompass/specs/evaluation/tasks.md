@@ -82,7 +82,7 @@ language: ja
   - `evaluation/classifier/run_classifier.py`（4 値分類本体）
   - `evaluation/classifier/step_omission_validator.py`（段省略整合チェック、design.md §4 の 5 ステップ手順を実装）
   - `evaluation/classifier/run_classification_writer.py`（`run_classification_index.json` 生成）
-- **完了条件**：固定入力に対し 4 値分類が決定的に出る、`evidence_class` 4 値の foundation 正本を再定義せず参照する、段省略と障害欠損の弁別が決定的、レビューモード分類（`manual_dogfooding` ／ `runtime_mediated` ／ `subagent_mediated`）と直交独立軸として扱われる
+- **完了条件**：固定入力に対し 4 値分類が決定的に出る、`evidence_class` 4 値の foundation 正本を再定義せず参照する、段省略と障害欠損の弁別が決定的、レビューモード分類（`foundation` 正本が定める）と直交独立軸として扱われる
 - **テスト要件**：4 値分類の境界テスト、段省略整合チェックの 5 ステップ手順テスト、レビューモードとの直交独立性テスト、foundation 4 値正本の参照のみ使用の機械検証
 
 ### T-005：評価準備メタデータ検査器と不十分性診断
@@ -118,8 +118,8 @@ language: ja
 ### T-007：比較器（comparison builder）
 
 - **対応設計節**：design.md §比較モデル §1 処理方式比較、§2 フェーズ対応比較、§3 有効母集団規則、§4 レビューモード母集団規則
-- **対応要件**：Requirement 2 受入 1〜6（処理方式比較契約、`primary`／`adversarial`／`judgment` 比較、段省略と実行時失敗の区別、処理方式同一性可視化、不整合検出、規約版・プロンプト版同一性）、Requirement 7 受入 1〜5（フェーズプロファイル同一性保持、フェーズ対応スライス、フェーズ横断比較、design ／ tasks 仮説検証、フェーズ別未分化潰し防止）、**Requirement 9 受入 6**（標準比較集団規則、3 集団扱い：`manual_dogfooding` 別集団、`subagent_mediated` 第三集団扱い）
-- **責務**：treatment 比較（`comparisons/treatment_comparisons.json`）と phase 対応比較（`comparisons/phase_comparisons.json`）を実装。有効母集団規則（valid のみ）とレビューモード母集団規則（`manual_dogfooding` 別集団、`subagent_mediated` 第三集団扱い）を適用。比較セット内の規約版・プロンプト版混在を検出
+- **対応要件**：Requirement 2 受入 1〜6（処理方式比較契約、`primary`／`adversarial`／`judgment` 比較、段省略と実行時失敗の区別、処理方式同一性可視化、不整合検出、規約版・プロンプト版同一性）、Requirement 7 受入 1〜5（フェーズプロファイル同一性保持、フェーズ対応スライス、フェーズ横断比較、design ／ tasks 仮説検証、フェーズ別未分化潰し防止）、**Requirement 9 受入 6**（標準比較集団規則：`runtime_mediated` を標準集団、それ以外のレビューモードはそれぞれ別集団）
+- **責務**：treatment 比較（`comparisons/treatment_comparisons.json`）と phase 対応比較（`comparisons/phase_comparisons.json`）を実装。有効母集団規則（valid のみ）とレビューモード母集団規則（`runtime_mediated` を標準集団、それ以外のレビューモードはそれぞれ別集団）を適用。比較セット内の規約版・プロンプト版混在を検出
 - **前提タスク**：T-006（メトリクス抽出済み。T-006 が提供する識別子連結保持機構を前提として利用、二重実装しない、Req 5 受入 2 関連）
 - **成果物**：
   - `evaluation/comparison/treatment_comparison_builder.py`
@@ -127,8 +127,8 @@ language: ja
   - `evaluation/comparison/valid_population_rule.py`（有効母集団規則）
   - `evaluation/comparison/mode_population_rule.py`（レビューモード母集団規則）
   - `evaluation/comparison/version_consistency_validator.py`（規約版・プロンプト版混在検出）
-- **完了条件**：treatment 比較と phase 比較が独立成果物として出力される、有効母集団規則が決定的に適用される（操作的判定：treatment_comparisons.json ／ phase_comparisons.json の `included_runs[]` から `evidence_class != valid`（invalid ／ analysis_blocked）の実行が 0 件であることを機械検査）、レビューモード 3 集団扱いが反映される、規約版・プロンプト版混在が検出される
-- **テスト要件**：treatment 比較テスト、phase 対応比較テスト、有効母集団規則テスト、レビューモード 3 集団扱いテスト、版混在検出テスト
+- **完了条件**：treatment 比較と phase 比較が独立成果物として出力される、有効母集団規則が決定的に適用される（操作的判定：treatment_comparisons.json ／ phase_comparisons.json の `included_runs[]` から `evidence_class != valid`（invalid ／ analysis_blocked）の実行が 0 件であることを機械検査）、レビューモード母集団規則（`runtime_mediated`＝標準、それ以外は別集団）が反映される、規約版・プロンプト版混在が検出される
+- **テスト要件**：treatment 比較テスト、phase 対応比較テスト、有効母集団規則テスト、レビューモード母集団規則テスト、版混在検出テスト
 
 ### T-008：除外と注意点の報告器（reporting）
 
@@ -146,8 +146,8 @@ language: ja
 ### T-009：レビューモード差分／3 役所見差分の出力（mode_diff／role_diff）
 
 - **対応設計節**：design.md §レビューモード差分報告、§3 役所見差分報告
-- **対応要件**：Requirement 9 受入 1〜8（`review_mode` 由来情報の保持、`runtime_mediated` 標準集合からの除外・別スライス、編集活動の有効性非扱い、混在レビューモードの保持、引き継ぎ境界の明示、3 集団規則、3 経路別差分の analysis 向け提供、3 役別差分の analysis 向け提供）
-- **責務**：3 経路別（`manual_dogfooding` ／ `subagent_mediated` ／ `runtime_mediated`）の所見差分を `modes/mode_diff_report.json` に出力（最低限 4 要素：`feature` ／ `review_mode` ／ `findings_by_severity`（重大度別件数、design.md §レビューモード差分報告 行 464 のスキーマ命名）／ `target`）。3 役別（main ／ adversarial ／ judgment）の所見差分を `roles/role_diff_report.json` に出力（最低限 4 要素：`feature` ／ `role` ／ `findings_summary`（重大度別・最終判定別・反証状態別の組合せ、役による条件付き必須、design.md §3 役所見差分報告 行 477 のスキーマ命名）／ `target`）。**内部関係**：2 出力器（`mode_diff_writer.py` ／ `role_diff_writer.py`）は共通スキーマ（`diff_report_schema.yaml` の `feature` ／ `target` を共有）を参照し、それぞれ独立の出力責務を持つ。foundation `review_mode` 正本 3 値および 3 役分担（Step A／B／C 由来）を参照のみで使用
+- **対応要件**：Requirement 9 受入 1〜8（`review_mode` 由来情報の保持、`runtime_mediated` 標準集合からの除外・別スライス、編集活動の有効性非扱い、混在レビューモードの保持、引き継ぎ境界の明示、レビューモード母集団規則、レビューモード別差分の analysis 向け提供、3 役別差分の analysis 向け提供）
+- **責務**：`foundation` の review_mode 正本が定める各レビューモード別の所見差分を `modes/mode_diff_report.json` に出力（最低限 4 要素：`feature` ／ `review_mode` ／ `findings_by_severity`（重大度別件数、design.md §レビューモード差分報告 行 464 のスキーマ命名）／ `target`）。3 役別（main ／ adversarial ／ judgment）の所見差分を `roles/role_diff_report.json` に出力（最低限 4 要素：`feature` ／ `role` ／ `findings_summary`（重大度別・最終判定別・反証状態別の組合せ、役による条件付き必須、design.md §3 役所見差分報告 行 477 のスキーマ命名）／ `target`）。**内部関係**：2 出力器（`mode_diff_writer.py` ／ `role_diff_writer.py`）は共通スキーマ（`diff_report_schema.yaml` の `feature` ／ `target` を共有）を参照し、それぞれ独立の出力責務を持つ。foundation `review_mode` 正本値および 3 役分担（Step A／B／C 由来）を参照のみで使用
 - **前提タスク**：T-006（メトリクス抽出済み、識別子連結保持機構を本タスクが利用する前提、二重実装しない、Req 5 受入 2 関連）、T-008（除外と注意点の報告完了済み、`modes/mode_diff_report.json` と `exclusion_report` が並列に下流から読まれる論理順）
 - **成果物**：
   - `evaluation/diff_reports/mode_diff_writer.py`（`mode_diff_report.json` 生成、要件 9 受入 7 由来）
@@ -193,7 +193,7 @@ language: ja
 | Requirement 6：評価準備メタデータの完全性 | T-005（メタデータ検査と不十分性診断） |
 | Requirement 7：フェーズ対応の評価 | T-006（phase 重ね合わせ層）、T-007（phase 対応比較） |
 | Requirement 8：フェーズ特異な有効性メトリクス | T-006（中核層＋重ね合わせ層） |
-| Requirement 9：レビューモードの区別 | T-007（受入 1〜5・6 ＝レビューモード母集団規則、3 集団扱い）、T-009（受入 7 ／ 8 ＝ mode_diff ／ role_diff の analysis 向け出力） |
+| Requirement 9：レビューモードの区別 | T-007（受入 1〜5・6 ＝レビューモード母集団規則）、T-009（受入 7 ／ 8 ＝ mode_diff ／ role_diff の analysis 向け出力） |
 | Requirement 10：外部証拠束の取り込みと許容判定 | T-002（取り込み）、T-003（許容判定） |
 
 ---

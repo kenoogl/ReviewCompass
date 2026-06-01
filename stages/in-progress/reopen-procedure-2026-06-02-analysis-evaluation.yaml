@@ -1,0 +1,22 @@
+process_id: reopen-procedure
+feature: [analysis, evaluation]
+started_at: 2026-06-02T00:00:00+09:00
+trigger: foundation review_mode 正本への api_mediated 追加（2026-06-01 セッション46）の第3過程 alignment で発見した analysis／evaluation への波及。固定値（3 値／3 経路）の散在を参照方式へ修正（やり方2）、集団規則は原則ベースへ（推奨案）。利用者承認 2026-06-02
+classification_basis: docs/reviews/reopen-classification-2026-06-02-analysis-evaluation-review-mode.md
+# 4 過程構成（計画書 §5.6.1）での進行状況。
+completed_steps: []
+next_step: 第1過程：判定とフラグ差し戻し（spec.json 差し戻しまで）→ 第2過程：正本修正
+pending_gates:
+  - analysis: stages/requirements.yaml#alignment
+  - analysis: stages/requirements.yaml#approval
+  - analysis: stages/design.yaml#alignment
+  - analysis: stages/design.yaml#approval
+  - analysis: stages/tasks.yaml#alignment
+  - analysis: stages/tasks.yaml#approval
+  - evaluation: stages/requirements.yaml#alignment
+  - evaluation: stages/requirements.yaml#approval
+  - evaluation: stages/design.yaml#alignment
+  - evaluation: stages/design.yaml#approval
+  - evaluation: stages/tasks.yaml#alignment
+  - evaluation: stages/tasks.yaml#approval
+current_blocker: 第1過程進行中。reopen-classification 記録作成済み、本 in-progress ファイル発行済み。次は spec.json フラグ差し戻し（利用者承認済み 2026-06-02）→ 正本修正

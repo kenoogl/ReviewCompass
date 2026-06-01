@@ -44,7 +44,7 @@
 3. 本評価機能は除外された実行の件数と理由を保持する。
 4. 本評価機能は「データ欠落」と「データ無効」を区別する。
 5. 本評価機能は実行の有効性を判定するために自由記述の人間記憶を要求しない。
-6. 本評価機能は実行有効性分類（valid／invalid／exploratory）とレビューモード分類（`manual_dogfooding`／`runtime_mediated`／`subagent_mediated`）を直交独立軸として扱い、内容上有効な手動 dogfooding 実行が無効と誤分類されないようにする。レビューモード語彙は `foundation` の正本（Requirement 6 受入 6）を参照する。
+6. 本評価機能は実行有効性分類（valid／invalid／exploratory）とレビューモード分類（`foundation` の正本が定める）を直交独立軸として扱い、内容上有効な実行が、レビューモードを理由に無効と誤分類されないようにする。レビューモード語彙は `foundation` の正本（Requirement 6 受入 6）を参照する。
 
 ### Requirement 2：処理方式の比較契約
 
@@ -136,17 +136,17 @@
 
 ### Requirement 9：レビューモードの区別
 
-**目的**：研究者が、手動 dogfooding 証拠、サブエージェント経由証拠、実行時経由証拠を区別可能にし、3 経路の証拠が黙示的に混ざらないようにする。
+**目的**：研究者が、各レビューモードの証拠（`foundation` の review_mode 正本が定める）を区別可能にし、レビューモードの異なる証拠が黙示的に混ざらないようにする。
 
 #### 受入基準
 
-1. 本評価機能は手動 dogfooding 実行、サブエージェント経由実行、実行時経由実行を区別するための `review_mode` 由来情報を保持する。語彙正本は `foundation` の Requirement 6 受入 6（`manual_dogfooding`／`runtime_mediated`／`subagent_mediated` の 3 値体制）を参照する。
-2. 本評価機能は標準の `runtime_mediated` 比較セットから、手動レビュー証拠とサブエージェント経由証拠を除外、または別スライスとして扱うことを支える。
+1. 本評価機能は各レビューモードの実行を区別するための `review_mode` 由来情報を保持する。語彙正本は `foundation` の Requirement 6 受入 6 を参照する（値は `foundation` 正本が定め、本機能は再定義しない）。
+2. 本評価機能は標準の `runtime_mediated` 比較セットから、`runtime_mediated` 以外のレビューモード（手動 dogfooding／サブエージェント経由／独立 API 経由等）の証拠を除外、または別スライスとして扱うことを支える。
 3. 本評価機能は通常の編集活動を、手動レビュー記録契約を通じて記録されない限り、有効なレビュー証拠として扱わない。
 4. 本評価機能は比較またはメトリクス出力が混在レビューモードを含む場合、その事実を保持する。
-5. 本評価機能は両者（または三者）が並存する場合、手動 dogfooding／サブエージェント経由／実行時経由の引き継ぎ境界を派生成果物で明示する。
-6. 本評価機能は標準比較集団規則を所有する：手動 dogfooding 証拠は別集団として扱い、標準の `runtime_mediated` 比較セットから除外、明示的に別スライスとして含める場合のみ加える。サブエージェント経由証拠は同様に独立した第三集団として扱う（計画書 §5.23.12.6 のフェーズ 4 段階移行と整合）。
-7. 本評価機能は 3 経路（`manual_dogfooding`／`subagent_mediated`／`runtime_mediated`）別の所見差分を `analysis` 機能向けの出力として提供する。出力は最低限、機能名（feature）、レビューモード（review_mode）、所見集計（重大度別件数）、対象識別子（target）の 4 要素を含む構造化形式で、`analysis` 仕様 Requirement 7 受入 3（レビュー収束過程の可視化）の入力として機能する。
+5. 本評価機能は複数のレビューモードが並存する場合、各レビューモードの引き継ぎ境界を派生成果物で明示する。
+6. 本評価機能は標準比較集団規則を所有する：`runtime_mediated` 証拠を標準集団とし、それ以外のレビューモード（手動 dogfooding／サブエージェント経由／独立 API 経由等）の証拠はそれぞれ独立した別集団として扱い、標準の `runtime_mediated` 比較セットから除外、明示的に別スライスとして含める場合のみ加える（計画書 §5.23.12.6 のフェーズ 4 段階移行と整合）。
+7. 本評価機能は `foundation` の review_mode 正本が定める各レビューモード別の所見差分を `analysis` 機能向けの出力として提供する。出力は最低限、機能名（feature）、レビューモード（review_mode）、所見集計（重大度別件数）、対象識別子（target）の 4 要素を含む構造化形式で、`analysis` 仕様 Requirement 7 受入 3（レビュー収束過程の可視化）の入力として機能する。
 8. 本評価機能は 3 役（主役（`main`）・敵対役（`adversarial`）・判定役（`judgment`））別の所見差分を `analysis` 機能向けの出力として提供する。出力は最低限、機能名（feature）、役（role）、所見集計（`findings_summary`：重大度別件数・最終判定別件数・反証状態別件数の組合せ、ただし役による条件付き必須）、対象識別子（target）を含む構造化形式で、`analysis` 仕様 Requirement 7 受入 3（レビュー収束過程の可視化）の入力として機能する。3 役は `foundation` の役分担（主役・敵対役・判定役、Step A／B／C）を継承する。
 
 ### Requirement 10：外部証拠束の取り込みと許容判定
@@ -168,9 +168,9 @@
 ReviewCompass 固有の追加：
 
 - 処理方式名を `primary`／`adversarial`／`judgment` に統一（Requirement 2 受入 2、計画書 §5.17.8 由来）
-- レビューモード語彙に `subagent_mediated` を含む 3 値体制を Requirement 1 受入 6 と Requirement 9 全体で反映（`foundation` Requirement 6 受入 6 と連動、計画書 §5.18.13／§5.23.12 由来）
+- レビューモード語彙に `subagent_mediated` を含む 3 値体制を Requirement 1 受入 6 と Requirement 9 全体で反映（`foundation` Requirement 6 受入 6 と連動、計画書 §5.18.13／§5.23.12 由来）。その後 2026-06-02 に `api_mediated` を追加し 4 値体制へ拡張（`foundation` 正本を参照、本機能の受入記述は固定値を持たず参照方式に変更）
 - 隣接仕様として `workflow-management` と `conformance-evaluation` を追加（Boundary Context 隣接期待、計画書 §3.1 由来）
-- Requirement 9 受入 6 から先行プロジェクト固有の「Phase 1 evidence」表記を除去し、ReviewCompass の §5.23 方針（手動 dogfooding は恒久運用、Phase 1 限定ではない）と整合させて 3 集団扱いに書き換え
+- Requirement 9 受入 6 から先行プロジェクト固有の「Phase 1 evidence」表記を除去し、ReviewCompass の §5.23 方針（手動 dogfooding は恒久運用、Phase 1 限定ではない）と整合させて 3 集団扱いに書き換え。その後 2026-06-02 に `api_mediated` を追加し、集団規則を「`runtime_mediated`＝標準、それ以外はすべて別集団」の原則ベースへ変更
 - `foundation` の正本語彙を再定義せず参照することを各受入で明示（Requirement 1 受入 1／受入 6、Requirement 9 受入 1／受入 6、Requirement 10 受入 2）
 - Boundary Context Out of scope に「上流文書との適合性評価（`conformance-evaluation` の責務）」を追加（計画書 §5.10 由来、新規 7 番目機能との分担）
 - 3 役（main／adversarial／judgment）別の所見差分を analysis 向け出力として提供する受入を追加（Requirement 9 受入 8、A-011 対処、2026-05-26 セッション 28 確定）
