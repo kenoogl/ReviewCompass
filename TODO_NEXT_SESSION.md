@@ -1,6 +1,6 @@
 # 次セッション継続用メモ
 
-最終更新：2026-06-02（セッション46）。**次の作業：再オープン第3過程（requirements→design→tasks→implementation の alignment/approval 連鎖再実施）→ 完了後に runtime 機能の implementation（drafting → triad-review）**。経緯は §3.2 参照。
+最終更新：2026-06-02（セッション47）。**次の作業：runtime 機能の implementation（drafting → triad-review）**。セッション47 で 2 つの再オープンを完了：(1) foundation の api_mediated 再オープン（セッション46起点）の第3・第4過程、(2) その第3過程の整合確認で発見した下流 6 機能への波及の再オープン（第1〜第4過程）。下流文書の review_mode 固定列挙を foundation 正本への参照方式に統一し、全 7 機能の requirements/design/tasks を再承認。foundation の implementation のみ review-wave 未了で recheck に残存。経緯は §3.2 参照。
 
 作業ディレクトリ：`/Users/Daily/Development/ReviewCompass/`、リポジトリ：`git@github.com:kenoogl/ReviewCompass.git`（main ブランチ）
 
@@ -83,33 +83,33 @@ zsh -c 'source ~/.zshrc && /Users/Daily/Development/ReviewCompass/.venv/bin/pyth
 
 **避けるべき形**：`python3 <script.py>`（環境変数干渉あり、PyYAML なし）／ `zsh -c 'source ~/.zshrc && python3 <script.py>'`（API キーは取れるが PyYAML なし）。理由：`subprocess.run([sys.executable, ...])` が venv 内パッケージを参照するには起動時の Python が venv のものでなければならない。
 
-## 2. ワークフロー上の現在位置（セッション 46 末）
+## 2. ワークフロー上の現在位置（セッション 47 末）
 
 実態は **spec.json の workflow_state から確認**（§0.1）：
 
 - intent 層／feature-partitioning 層：全 7 機能で全段 true
-- **requirements 段／design 段／tasks 段（foundation）：drafting・triad-review・review-wave＝true、alignment・approval＝false（reopen 中、api_mediated 追加の R 種別再オープン第3過程待ち）**
-- requirements 段／design 段／tasks 段（他 6 機能）：全段 true
-- **implementation 段（foundation）：drafting＝true／triad-review＝true／review-wave・alignment・approval＝false**
+- **requirements 段／design 段／tasks 段（全 7 機能）：全段 true（drafting・triad-review・review-wave・alignment・approval すべて true）**。セッション47 で api_mediated 波及の再オープンを全 6 下流機能＋foundation で実施し再承認済み
+- **implementation 段（foundation）：drafting＝true／triad-review＝true／review-wave・alignment・approval＝false**（review-wave は全機能 triad-review 完了後の機能横断段）
 - **implementation 段（他 6 機能）：全段 false（runtime が次）**
-- **recheck**：upstream_change_pending=true、impacted=["design","tasks","implementation"]（第3過程完了でクリア）
-- **注（再オープン履歴）**：再承認済み＝workflow-management requirements/design（A-2）／self-improvement requirements/design（A-2）／conformance-evaluation design（A-1）／foundation design（A-1、A-018）／evaluation design（A-1）。進行中＝foundation review_mode api_mediated 追加（R 種別、セッション46、第3過程残り）
+- **recheck**：下流 6 機能はクリア済み（upstream_change_pending=false、impacted=[]）。**foundation のみ upstream_change_pending=true、impacted=["implementation"]**（api_mediated 変更を foundation implementation が将来の通常フロー review-wave→alignment→approval で織り込む。第3・第4過程はセッション47で requirements/design/tasks まで完了、implementation は未到達のため残置）
+- **注（再オープン履歴、reopened フラグは §5.24.8.1 の履歴フラグ）**：全 7 機能で requirements/design/tasks の reopened=true（過去の各種再オープンと、セッション47 の api_mediated 波及）。詳細は docs/reviews/reopen-classification-2026-06-02-*.md（analysis-evaluation／runtime-wm／si-conformance）と 2026-06-01-foundation-review-mode
 
-## 3. 次の作業（セッション 46 起点）
+## 3. 次の作業（セッション 47 起点）
 
-**次の作業：§3.0 再オープン第3過程 → §3.1 runtime 機能 implementation**
+**次の作業：§3.1 runtime 機能 implementation**（§3.0 再オープン第3過程はセッション47で完了）
 
-### 3.0 再オープン第3過程（優先）
+### 3.0 再オープン手続き（セッション47完了）
 
-foundation の review_mode 語彙正本に api_mediated を追加した R 種別再オープンの第3過程が残っている。依存順（requirements → design → tasks → implementation）に alignment と approval を連鎖再実施する。各 approval は代役（複数モデル集約）に委ねる。引き金は本人（spec.json true 化）。
+セッション47 で 2 つの再オープンを実施・完了した：
 
-- 進行中状態：recheck.upstream_change_pending=true、impacted=["design","tasks","implementation"]
-- 完了条件：requirements/design/tasks/implementation の alignment・approval が true、recheck クリア（upstream_change_pending=false、impacted=[]）
-- 第3過程完了後にコミット（本人承認）
+1. **foundation の api_mediated 再オープン**（セッション46起点、R 種別）：第1・第2過程はセッション46（コミット `5378c6d`）、**第3・第4過程をセッション47で実施**。
+2. **下流 6 機能の波及再オープン**（セッション47に発見）：foundation の第3過程の整合確認（alignment）で、下流 6 機能（runtime/evaluation/analysis/workflow-management/self-improvement/conformance-evaluation）に同型の固定列挙の散在を発見。**第1〜第4過程を新規に実施**し、参照方式に統一して全機能を再承認。
+
+詳細は §3.2 セッション47 を参照。foundation の implementation のみ review-wave 未了で recheck に残存（将来の機能横断段で織り込む）。
 
 ### 3.1 runtime 機能の implementation 着手
 
-第3過程完了後、依存順で次は **runtime**。各機能の implementation を drafting → triad-review まで進め、review-wave 以降は全機能の triad-review 完了後に機能横断で実施する（運営ガイド §2.3）。
+依存順で次は **runtime**。各機能の implementation を drafting → triad-review まで進め、review-wave 以降は全機能の triad-review 完了後に機能横断で実施する（運営ガイド §2.3）。
 
 **進め方（案1：機能ごとにセッション分割、セッション45利用者決定「区切る」）**：
 
@@ -129,6 +129,7 @@ foundation の review_mode 語彙正本に api_mediated を追加した R 種別
 
 ### 3.2 過去セッションの完了経緯（参照のみ）
 
+- **セッション47**：api_mediated 追加の再オープン第1〜第4過程を全 6 下流機能で完了。下流文書の review_mode 固定列挙（3 値／3 経路／3 集団）を foundation 正本への参照方式に統一、evaluation の集団規則を「runtime_mediated＝標準、それ以外は別集団」の原則ベースに、workflow-management の複合役は subagent_mediated 特例と明示。全機能 requirements/design/tasks を再承認（approval は代役3系統諮問 approve1/conditional2/reject0 を経て本人承認）。各機能で補助層D独立検証（本質的指摘ゼロ）。再発防止として規律 pre-action-precheck に「波及調査は全対象×全表記で網羅 grep してから着手」を追記（調査が英語表記のみ・部分機能のみで再オープンを3回繰り返した失敗が出典）。TODO・雛形修正（§0.4削除・起動手順強制実行）。コミット6件（`e6a550a`／`eb3f691`／`0ee8530`／`731ae3b`／`54cada1`／`779b267`）。記録 [session-47](docs/sessions/session-47-2026-06-02.md)
 - **セッション46**：triad-review 3役を独立3社に変更確定（主役 Opus 4.8／敵対役 GPT-5.5／判定役 Gemini-3.1-pro）／実装自律の範囲確定（所見調停は LLM、上位判断は本人留保）／review_mode 語彙に api_mediated 追加（R 種別第1・第2過程、コミット `5378c6d`）／`_experiment_n_model.py` に `--timeout-seconds` 追加。記録 [session-46](docs/sessions/session-46-2026-06-02.md)
 - **セッション45（foundation implementation）**：drafting で全10タスク（T-001〜T-010）を TDD 実装（テスト緑120件）、triad-review で12所見を対処（コミット `3764055`〜`f9190bb`）、新規依存 `jsonschema`。記録 [session-45](docs/sessions/session-45-2026-06-01.md)
 - **セッション41〜44**：§5.12 改訂全7項目・規律新設（`fce0061`／`a66da5c`／`ce2ba60`／`7417585`／`7684402`／`fa089c0`）、書き込み後検証の収束基準（`59a0a6c`）、§3.6 規律デプロイ問題対処（`4c50e4b`）。詳細は git log と `docs/archive/todo/`
@@ -155,4 +156,4 @@ foundation の review_mode 語彙正本に api_mediated を追加した R 種別
 - 規律ファイル本体：`docs/disciplines/`（一覧は同ディレクトリ README.md）
 - 過去 TODO snapshot：`docs/archive/todo/` 配下
 
-セッション終了時の自動記録：`python3 tools/session-log-converter.py --latest ~/.claude/projects/-Users-Daily-Development-ReviewCompass docs/sessions/session-46-<YYYY-MM-DD>.md`
+セッション終了時の自動記録：`python3 tools/session-log-converter.py --latest ~/.claude/projects/-Users-Daily-Development-ReviewCompass docs/sessions/session-47-<YYYY-MM-DD>.md`
