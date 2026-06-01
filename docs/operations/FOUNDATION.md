@@ -42,9 +42,9 @@
 
 ReviewCompass では設定成果物を次の二層で扱う：
 
-- **ツール本体側**：`reviewcompass.yaml`（リポジトリ直下）に既定値を保持
+- **ツール本体側**：`runtime/config/reviewcompass.yaml` に既定値を保持
   - 既定モデル割り当て、API 既定接続情報、既定パス、通知既定、代役機構の既定方針など
-- **アプリ側**：`<対象アプリ>/.reviewcompass/config.yaml`（`templates/config/config.yaml.template` から実体化）
+- **アプリ側**：`<対象アプリ>/.reviewcompass/config.yaml`（`runtime/config/config.yaml.template` から実体化）
   - アプリ側で項目別に上書きしたい値だけを書く
 - **マージ規則**：アプリ側で明示された項目がツール既定より優先、明示されていない項目はツール既定を使う
 
@@ -71,14 +71,15 @@ foundation は次の値を正本として所有する：
 
 ## 7. 配置先（ディレクトリ構造）
 
-foundation 由来の成果物は次に配置される（計画書 §4 補強案、§5.18.12）：
+foundation 由来の成果物は次に配置される（design.md §共有資産配置を正本とする。要件段の旧配置 `schemas/`・`templates/` は design 段で `runtime/` 配下へ統合再編され、本節は 2026-06-01 セッション45 の実装段 T-001 で正本に追従更新した）：
 
-- `schemas/foundation/layer1_framework.yaml`：4 段正式名称と 3 役抽象名の正本
-- `schemas/foundation/metadata_contract.yaml`：20 必須メタデータ項目と 4 状態軸の値リスト
-- `schemas/domain/<5 ファイル>.schema.json`：5 共通スキーマ
-- `schemas/validators/<2 ファイル>.schema.json`：検証器用 2 スキーマ
-- `templates/prompts/<段の用途>/<役>.prompt.md`：3 役プロンプト雛形
-- `templates/config/<2 ファイル>.template`：アプリ側設定雛形
+- `runtime/foundation/layer1_framework.yaml`：4 段正式名称と 3 役抽象名の正本
+- `runtime/foundation/metadata_contract.yaml`：20 必須メタデータ項目と 4 状態軸の値リスト
+- `runtime/schemas/<5 ファイル>.schema.json`：5 共通スキーマ
+- `runtime/validators/contracts/<2 ファイル>.schema.json`：検証器用 2 スキーマ
+- `runtime/prompts/<段目的>/<役>.prompt.md`：3 役プロンプト雛形
+- `runtime/config/reviewcompass.yaml`：ツール本体既定値（2 層モデル下層）
+- `runtime/config/<2 ファイル>.template`：アプリ側設定雛形と用語集雛形
 
 ## 8. 他機能との関係
 
