@@ -90,7 +90,7 @@ zsh -c 'source ~/.zshrc && /Users/Daily/Development/ReviewCompass/.venv/bin/pyth
 
 **避けるべき形**：`python3 <script.py>`（環境変数干渉あり、PyYAML なし）／ `zsh -c 'source ~/.zshrc && python3 <script.py>'`（API キーは取れるが PyYAML なし）。理由：`subprocess.run([sys.executable, ...])` が venv 内パッケージを参照するには起動時の Python が venv のものでなければならない。
 
-## 2. ワークフロー上の現在位置（セッション 40 末）
+## 2. ワークフロー上の現在位置（セッション 44 末）
 
 実態は **spec.json の workflow_state から確認**（§0.1）：
 
@@ -100,11 +100,11 @@ zsh -c 'source ~/.zshrc && /Users/Daily/Development/ReviewCompass/.venv/bin/pyth
 - → **仕様4段階（intent／requirements／design／tasks）が全7機能で承認済み。残るは implementation のみ**
 - **注（再オープン履歴）**：再承認済み＝workflow-management の requirements／design（A-2、セッション 38）／self-improvement の requirements／design（A-2、セッション 39）／conformance-evaluation の design（A-1、セッション 39）／**foundation の design（A-1、A-018 対処、セッション 40）／evaluation の design（A-1、#3 manifest 統一、セッション 40）**。いずれも recheck クリア済み、`reopened.*=true` は履歴として保持
 
-## 3. 次の作業（セッション 43 起点）
+## 3. 次の作業（セッション 44 起点）
 
-**優先順位：§3.6（積み残し課題）→ §3.1（implementation フェーズ）**
+**次の作業：§3.1（implementation フェーズへの着手）**
 
-### 3.1 implementation フェーズへの着手（§3.6 対処後）
+### 3.1 implementation フェーズへの着手
 
 **§5.12 改訂の全項目が完了した（セッション 42）**。次は仕様 4 段階承認済みの全 7 機能で implementation フェーズに着手する。
 
@@ -116,7 +116,7 @@ zsh -c 'source ~/.zshrc && /Users/Daily/Development/ReviewCompass/.venv/bin/pyth
 
 **ブートストラップ期の根本案件**（ワークフロー・ナビゲーション問題）の根本解＝workflow-management の実装はこの implementation フェーズで対応（最重要案件ノート §5）。**§5.12 改訂しても workflow-management 実装まで利用者の監視は必要**という認識を持って進める。
 
-### 3.2 完了済み（セッション 41〜42）
+### 3.2 完了済み（セッション 41〜44）
 
 - **§5.12 改訂の項目 1＋6（§5.12.11 アサイン権限）**：コミット `fce0061`
 - **§5.12 改訂の項目 3＋4（プロトコル正本化）**：コミット `a66da5c`
@@ -125,8 +125,8 @@ zsh -c 'source ~/.zshrc && /Users/Daily/Development/ReviewCompass/.venv/bin/pyth
 - **§5.12 改訂の項目 2（アドホック残務 27 件の統合取り込み）**：proxy 裁定＋独立検証（コミット `7684402`）
 - **§5.6 に dogfooding 期間外の軽量再オープン禁止を明示**：コミット `fa089c0`（利用者決定 2026-05-31）
 - **proxy モード＋補助層 D の初本格運用の試行記録**：`docs/notes/2026-05-31-item2-proxy-and-postwrite-verification-trial.md`
-
-### 3.4 補完項目（任意・低優先）
+- **書き込み後検証の収束基準を新設・動作仕様ファイルへ移設（セッション 43）**：コミット `59a0a6c`
+- **§3.6 規律の計画書参照デプロイ問題を対処完了（セッション 44）**：コミット `4c50e4b`（§5.13・§5.6 参照を付け替え、§5.24 は経緯説明で対象外と確定）
 
 ### 3.4 残作業の補完項目（任意・低優先）
 
@@ -158,6 +158,8 @@ zsh -c 'source ~/.zshrc && /Users/Daily/Development/ReviewCompass/.venv/bin/pyth
 
 ## 4. 直近の確定事項
 
+- セッション 44：§3.6 規律の計画書参照デプロイ問題を対処完了（コミット `4c50e4b`）。`discipline_post_write_verification.md` 行22・行59 の計画書参照を削除し、デプロイ対象ファイルへ付け替え。`stages/reopen-procedure.yaml` はファイル名確定済み（計画書 §5.5 の 9 ファイル体制、workflow-management T-003/T-007 で実装予定）と確認
+- セッション 43：書き込み後検証の収束基準を新設・`post-write-verification-spec.yaml`（動作仕様ファイル）へ移設（コミット `59a0a6c`）。逐語的指摘は弾き、本質的指摘は人へ上げる 2 分類方式
 - セッション 40：機能横断所見 3 件消化＋DVT 2 件解除＋**2軸整合性監査＋tasks フェーズ完了**（冒頭サマリ参照）。再オープン記録は [foundation A-018](docs/reviews/reopen-classification-2026-05-29-foundation-a018.md)／[evaluation #3 manifest](docs/reviews/reopen-classification-2026-05-29-evaluation-manifest.md)、監査記録は [tasks-alignment-audit](docs/reviews/tasks-alignment-audit-2026-05-29.md)
 - セッション 36〜39 以前の確定事項は git log および [docs/archive/todo/](docs/archive/todo/) 配下の snapshot を参照
 
@@ -171,4 +173,4 @@ zsh -c 'source ~/.zshrc && /Users/Daily/Development/ReviewCompass/.venv/bin/pyth
 - 規律ファイル本体：`docs/disciplines/`（一覧は同ディレクトリ README.md）
 - 過去 TODO snapshot：`docs/archive/todo/` 配下
 
-セッション終了時の自動記録：`python3 tools/session-log-converter.py --latest ~/.claude/projects/-Users-Daily-Development-ReviewCompass docs/sessions/session-<NN>-<YYYY-MM-DD>.md`
+セッション終了時の自動記録：`python3 tools/session-log-converter.py --latest ~/.claude/projects/-Users-Daily-Development-ReviewCompass docs/sessions/session-45-<YYYY-MM-DD>.md`
