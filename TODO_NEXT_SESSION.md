@@ -1,6 +1,6 @@
 # 次セッション継続用メモ
 
-最終更新：2026-06-01（セッション44。主な達成：**§3.6 規律の計画書参照デプロイ問題を対処完了**＝規律ファイル全横断調査により真の該当は2箇所（§5.13・§5.6 参照）と確定、動作仕様ファイル新設ではなく参照先の付け替えで解決。§5.24 は経緯説明＝対象外（誤計上）と確定。§5.6 参照の付け替えにより `stages/reopen-procedure.yaml` がファイル名確定済みの予定ファイル（workflow-management T-003）であることも確認（セッション43の達成：書き込み後検証の収束基準を新設・動作仕様ファイルへ移設、コミット `59a0a6c`）。**次の作業は §3.1 implementation フェーズへの着手**。）
+最終更新：2026-06-01（セッション44）。**次の作業：§3.1 implementation（実装）フェーズへの着手**。
 
 作業ディレクトリ：`/Users/Daily/Development/ReviewCompass/`、リポジトリ：`git@github.com:kenoogl/ReviewCompass.git`（main ブランチ）
 
@@ -118,48 +118,19 @@ zsh -c 'source ~/.zshrc && /Users/Daily/Development/ReviewCompass/.venv/bin/pyth
 
 ### 3.2 完了済み（セッション 41〜44）
 
-- **§5.12 改訂の項目 1＋6（§5.12.11 アサイン権限）**：コミット `fce0061`
-- **§5.12 改訂の項目 3＋4（プロトコル正本化）**：コミット `a66da5c`
-- **§5.12 改訂の項目 5（alignment 段 2 軸整合性監査の正本化）**：コミット `ce2ba60`
-- **post-write-verification 規律の新設（メタ気づき発）**：コミット `7417585`
-- **§5.12 改訂の項目 2（アドホック残務 27 件の統合取り込み）**：proxy 裁定＋独立検証（コミット `7684402`）
-- **§5.6 に dogfooding 期間外の軽量再オープン禁止を明示**：コミット `fa089c0`（利用者決定 2026-05-31）
-- **proxy モード＋補助層 D の初本格運用の試行記録**：`docs/notes/2026-05-31-item2-proxy-and-postwrite-verification-trial.md`
+- セッション 41〜42 の完了済み項目（§5.12 改訂全7項目・規律新設等）：git 履歴（`fce0061`／`a66da5c`／`ce2ba60`／`7417585`／`7684402`／`fa089c0`）と `docs/archive/todo/` 参照
 - **書き込み後検証の収束基準を新設・動作仕様ファイルへ移設（セッション 43）**：コミット `59a0a6c`
-- **§3.6 規律の計画書参照デプロイ問題を対処完了（セッション 44）**：コミット `4c50e4b`（§5.13・§5.6 参照を付け替え、§5.24 は経緯説明で対象外と確定）
+- **§3.6 規律の計画書参照デプロイ問題を対処完了（セッション 44）**：コミット `4c50e4b`
 
 ### 3.4 残作業の補完項目（任意・低優先）
 
 - **analysis 完全一致 15 件の人本人判定の遡及保存**：`topic-{54〜75}-human.yaml` のうちセッション 36 で未保存の 15 件分（詳細は git log のセッション 36 記録）
 - **実験ノート §5／§6 への追記**：両軸 2 表構成を §5 のケースに、§6 観点別考察に起草者バイアス検出の観察を追加
 
-### 3.5 次セッション開始時に必読の資料
-
-- 本 TODO（§0 規律確認）
-- 規律本体 active 必読（一覧は `docs/disciplines/README.md`）
-- 計画書 §5.4〜§5.8／§5.5 alignment 段／§5.9.6／§5.12（§5.12.11 アサイン権限）／§5.23／§5.24
-- proxy モード試行記録：`docs/notes/2026-05-31-item2-proxy-and-postwrite-verification-trial.md`（収束基準の論点を含む）
-- 実験基盤：`tools/experiments/_experiment_n_model.py`（implementation フェーズの triad-review で継続使用）
-
-> 完了済みの作業手順の詳細（各機能 tasks の標準進め方、機能横断段 review-wave の参照元・todo、§5.12 改訂の論点議論）は本セッション 41 で役目を終えた。必要時は git 履歴（コミット `b6bd1e4`／`fce0061`／`a66da5c`／`ce2ba60`）と `docs/archive/todo/` の snapshot を参照。
-
-### 3.6【対処済み】積み残し課題：規律の計画書参照のデプロイ問題（2026-06-01 セッション 43 切り出し、セッション 44 対処完了）
-
-**対処完了（セッション 44）**：規律ファイル全体を横断調査した結果、「動作仕様としての参照」（デプロイ時に参照先が消えると動作に影響するもの）は2箇所のみ。§3.6 が挙げた workflow_state_truth_source §5.24 は経緯説明＝(あ)タイプで対象外（誤計上）と確定。対処は動作仕様ファイル新設ではなく参照先の付け替えで完了：
-
-- **§5.13 参照**（`discipline_post_write_verification.md` 行 22）：「計画書 §5.13 通知機構経由」→「起草者が処理を止め人へ報告。自動通知の手段は補助層 B 実装時に定義」に変更（規律本文に自己完結、計画書参照を除去）
-- **§5.6 参照**（同 行 59）：「計画書 §5.6」→「`docs/operations/REOPEN_PROCEDURE.md`（デプロイ対象）と将来の正本 `stages/reopen-procedure.yaml`（workflow-management 実装後）」に変更
-
-`stages/reopen-procedure.yaml` は計画書 §5.5 で確定した 9 ファイル体制の一員でファイル名確定済み、workflow-management の implementation フェーズで作成予定（T-003／T-007）。
-
-承認済み・実施済み。書き込み後検証（独立検証）の対象。
-
 ---
 
 ## 4. 直近の確定事項
 
-- セッション 44：§3.6 規律の計画書参照デプロイ問題を対処完了（コミット `4c50e4b`）。`discipline_post_write_verification.md` 行22・行59 の計画書参照を削除し、デプロイ対象ファイルへ付け替え。`stages/reopen-procedure.yaml` はファイル名確定済み（計画書 §5.5 の 9 ファイル体制、workflow-management T-003/T-007 で実装予定）と確認
-- セッション 43：書き込み後検証の収束基準を新設・`post-write-verification-spec.yaml`（動作仕様ファイル）へ移設（コミット `59a0a6c`）。逐語的指摘は弾き、本質的指摘は人へ上げる 2 分類方式
 - セッション 40：機能横断所見 3 件消化＋DVT 2 件解除＋**2軸整合性監査＋tasks フェーズ完了**（冒頭サマリ参照）。再オープン記録は [foundation A-018](docs/reviews/reopen-classification-2026-05-29-foundation-a018.md)／[evaluation #3 manifest](docs/reviews/reopen-classification-2026-05-29-evaluation-manifest.md)、監査記録は [tasks-alignment-audit](docs/reviews/tasks-alignment-audit-2026-05-29.md)
 - セッション 36〜39 以前の確定事項は git log および [docs/archive/todo/](docs/archive/todo/) 配下の snapshot を参照
 
