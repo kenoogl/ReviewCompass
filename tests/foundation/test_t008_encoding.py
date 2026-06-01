@@ -103,3 +103,62 @@ def test_main_returns_nonzero_for_noncompliant(tmp_path):
   bad = tmp_path / "bad.schema.json"
   bad.write_text(json.dumps({"properties": {"a": {}}}), encoding="utf-8")
   assert cec.main([str(bad)]) != 0
+
+
+# --- P-002 対処：入れ子 object・配列 items 内の required 検査（design.md §4 行311）---
+
+def test_nested_object_missing_required_fails():
+  """properties を持つ入れ子 object に required がなければ非準拠（入れ子の mandatory 未表現）。"""
+  schema = {
+    "required": ["a"],
+    "description": "x",
+    "properties": {
+      "a": {"type": "object", "properties": {"b": {"type": "string"}}},
+    },
+  }
+  errors = cec.check_schema_encoding(schema)
+  assert errors, "入れ子 object の required 欠落が検出されない"
+
+
+def test_nested_object_with_required_passes():
+  """properties を持つ入れ子 object が required を持てば準拠。"""
+  schema = {
+    "required": ["a"],
+    "description": "x",
+    "properties": {
+      "a": {
+        "type": "object",
+        "required": ["b"],
+        "properties": {"b": {"type": "string"}},
+      },
+    },
+  }
+  assert cec.check_schema_encoding(schema) == []
+
+
+def test_array_items_object_missing_required_fails():
+  """配列 items が properties を持つ object なのに required がなければ非準拠。"""
+  schema = {
+    "required": ["a"],
+    "description": "x",
+    "properties": {
+      "a": {
+        "type": "array",
+        "items": {"type": "object", "properties": {"b": {"type": "string"}}},
+      },
+    },
+  }
+  errors = cec.check_schema_encoding(schema)
+  assert errors, "配列 items 内 object の required 欠落が検出されない"
+
+
+def test_empty_object_items_passes():
+  """properties を持たない空 object（保持方法を runtime に委ねる items）は required 不要で準拠。"""
+  schema = {
+    "required": ["a"],
+    "description": "x",
+    "properties": {
+      "a": {"type": "array", "items": {"type": "object"}},
+    },
+  }
+  assert cec.check_schema_encoding(schema) == []
