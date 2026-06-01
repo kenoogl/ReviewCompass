@@ -21,11 +21,31 @@ import sys
 DEFERRED_ALIAS_KEYS = ["x-deferred", "x-staleness-propagation"]
 
 
+def _check_nested_required(node, path, errors):
+  """入れ子の object・配列 items を再帰し、properties を持つ object の各階層に required が
+  あるかを検査する（design.md §4 行311：最上位の required のみで入れ子内部を代表させない）。
+
+  properties を持たない object（保持方法を runtime に委ねる空 object 等）は mandatory 項目が
+  ないため required を要求しない。
+  """
+  if not isinstance(node, dict):
+    return
+  props = node.get("properties")
+  if isinstance(props, dict) and props:
+    if "required" not in node:
+      errors.append(f"{path}: properties を持つが required がない（入れ子階層の mandatory 未表現）")
+    for key, sub in props.items():
+      _check_nested_required(sub, f"{path}.{key}", errors)
+  items = node.get("items")
+  if isinstance(items, dict):
+    _check_nested_required(items, f"{path}[items]", errors)
+
+
 def check_schema_encoding(schema):
   """1 スキーマが符号化規約に準拠するか検査し、違反のエラーリストを返す（空なら準拠）。"""
   errors = []
 
-  # ルール 1：required 配列が存在する（mandatory を表現）
+  # ルール 1：最上位に required 配列が存在する（mandatory を表現）
   if "required" not in schema:
     errors.append("required 配列が存在しない（mandatory 項目を表現できない）")
   elif not isinstance(schema["required"], list):
@@ -41,6 +61,15 @@ def check_schema_encoding(schema):
     desc = schema.get("description")
     if not isinstance(desc, str) or not desc.strip():
       errors.append(f"{key} があるが description が欠落（deferred 旨の明記義務）")
+
+  # ルール 3：入れ子 object・配列 items 内の各階層でも required を表現する（P-002 対処、§4 行311）
+  props = schema.get("properties")
+  if isinstance(props, dict):
+    for key, sub in props.items():
+      _check_nested_required(sub, f"properties.{key}", errors)
+  items = schema.get("items")
+  if isinstance(items, dict):
+    _check_nested_required(items, "items", errors)
 
   return errors
 

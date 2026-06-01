@@ -1,6 +1,6 @@
 # FOUNDATION：土台機能の運用文書
 
-最終更新：2026-05-22（フェーズ 1 抽出、requirements 部分のみの骨子。design 部分は後続セッションで追加）
+最終更新：2026-06-01（セッション45、implementation 段の実装と triad-review を反映。配置先の正本追従、実装状況の追補）
 
 本文書は ReviewCompass の `foundation`（土台機能）の運用上の役割と契約を解説する。形式仕様は [.reviewcompass/specs/foundation/requirements.md](../../.reviewcompass/specs/foundation/requirements.md) を参照する。本文書は読み手向けの解説、仕様文書は機械検査と仕様駆動手続きの正本という関係。
 
@@ -74,7 +74,7 @@ foundation は次の値を正本として所有する：
 foundation 由来の成果物は次に配置される（design.md §共有資産配置を正本とする。要件段の旧配置 `schemas/`・`templates/` は design 段で `runtime/` 配下へ統合再編され、本節は 2026-06-01 セッション45 の実装段 T-001 で正本に追従更新した）：
 
 - `runtime/foundation/layer1_framework.yaml`：4 段正式名称と 3 役抽象名の正本
-- `runtime/foundation/metadata_contract.yaml`：20 必須メタデータ項目と 4 状態軸の値リスト
+- `runtime/foundation/metadata_contract.yaml`：20 必須メタデータ項目と 6 種の語彙（うち 4 種は責務分離される状態軸）
 - `runtime/schemas/<5 ファイル>.schema.json`：5 共通スキーマ
 - `runtime/validators/contracts/<2 ファイル>.schema.json`：検証器用 2 スキーマ
 - `runtime/prompts/<段目的>/<役>.prompt.md`：3 役プロンプト雛形
@@ -92,14 +92,14 @@ foundation はレビュー実行を持たず、他機能の土台になる：
 - `workflow-management` は本機能の状態機械契約と版管理規約に依存する
 - `conformance-evaluation` は本機能の検証器用メタデータ契約に依存する
 
-## 9. 後続セッションでの追加予定
+## 9. 実装状況と参照先
 
-本文書は requirements 部分のみの骨子。次のセッション以降で次を追加する：
+2026-06-01（セッション45）の implementation 段で、本機能の成果物（共有スキーマ・プロンプト雛形・設定・検証スクリプト）が `runtime/` 配下に実装され、triad-review（3 役レビュー）を経た。各成果物の詳細は次を参照する：
 
-- design.md 抽出に基づく設計の説明（§5.18 継承方針）
-- 各スキーマの具体的なフィールド構造の説明
-- プロンプト雛形の運用方針
-- 検証器の動作仕様
+- 設計の詳細：[design.md](../../.reviewcompass/specs/foundation/design.md)
+- 各スキーマのフィールド構造：`runtime/schemas/` ／ `runtime/validators/contracts/` の各 `*.schema.json`
+- プロンプト雛形の配置と識別規則：`runtime/prompts/`（本文の整備はフェーズ 4 対象、計画書 §5.23.12.3）
+- 検証器の動作：`tools/foundation_validators/`（符号化規約検証 `check_encoding_convention.py`・完成判定 `check_completion.py`）
 
 ## 10. 関連文書
 

@@ -107,6 +107,25 @@ def run_completion_check(repo_root):
   repo_root = Path(repo_root)
   design_text = (repo_root / DESIGN_REL).read_text(encoding="utf-8")
 
+  # 実体照合用にメタデータ契約とスキーマを読む（P-003 対処：文字列照合だけに頼らない）
+  def _safe_yaml(rel):
+    try:
+      with (repo_root / rel).open(encoding="utf-8") as f:
+        return yaml.safe_load(f)
+    except Exception:  # noqa: BLE001
+      return {}
+
+  def _safe_json(rel):
+    try:
+      with (repo_root / rel).open(encoding="utf-8") as f:
+        return json.load(f)
+    except Exception:  # noqa: BLE001
+      return {}
+
+  meta = _safe_yaml("runtime/foundation/metadata_contract.yaml")
+  finding_schema = _safe_json("runtime/schemas/finding.schema.json")
+  necessity_schema = _safe_json("runtime/schemas/necessity_judgment.schema.json")
+
   results = []
 
   # 項目 1：テスト戦略の全項目通過
@@ -121,12 +140,15 @@ def run_completion_check(repo_root):
     "全成果物が配置済み" if not missing else f"欠落：{missing}",
   ))
 
-  # 項目 3：メタデータ責務分離が §3 で宣言
+  # 項目 3：メタデータ責務分離が §3 で宣言され、metadata_contract に実在（P-003 強化）
   sep_terms = ["run_status", "validator_status", "human_signoff_status", "evidence_class"]
-  ok3 = all(t in design_text for t in sep_terms) and "責務分離" in design_text
+  sep_decl = meta.get("responsibility_separation", {}) if isinstance(meta, dict) else {}
+  ok3 = (all(t in design_text for t in sep_terms) and "責務分離" in design_text
+         and all(axis in sep_decl for axis in sep_terms))
   results.append(_criterion(
-    3, "メタデータ責務分離が §3 で宣言", ok3,
-    "4 状態軸と責務分離が design.md に記載" if ok3 else "責務分離の記載が不足",
+    3, "メタデータ責務分離が §3 宣言かつ実体に存在", ok3,
+    "4 状態軸の責務分離が design.md と metadata_contract.yaml の双方にある" if ok3
+    else "責務分離の宣言または実体（metadata_contract.responsibility_separation）が不足",
   ))
 
   # 項目 4：無効化と検証の成果物分離が §8 で定義
@@ -143,11 +165,26 @@ def run_completion_check(repo_root):
     "§下流仕様への影響が記載" if ok5 else "§下流仕様への影響の記載が不足",
   ))
 
-  # 項目 6：§判断 7 語彙正本の所有関係が §3 と §4 で宣言
-  ok6 = "判断 7" in design_text and "再定義" in design_text
+  # 項目 6：§判断 7 語彙正本が §3／§4 で宣言され、実体（metadata と enum）に存在（P-003 強化）
+  vocabs = meta.get("vocabularies", {}) if isinstance(meta, dict) else {}
+  meta_vocab_ok = all(
+    v in vocabs and vocabs[v]
+    for v in ["validator_status", "evidence_class", "review_mode", "confidence_label"]
+  )
+
+  def _enum(schema, prop):
+    return (schema.get("properties", {}).get(prop, {}) or {}).get("enum")
+
+  enum_ok = (
+    bool(_enum(finding_schema, "counter_status"))
+    and bool(_enum(finding_schema, "severity"))
+    and bool(_enum(necessity_schema, "final_label"))
+  )
+  ok6 = "判断 7" in design_text and "再定義" in design_text and meta_vocab_ok and enum_ok
   results.append(_criterion(
-    6, "語彙正本の所有関係と参照禁止が宣言", ok6,
-    "§判断 7 と参照禁止の記載あり" if ok6 else "語彙正本所有関係の記載が不足",
+    6, "語彙正本の所有関係宣言と 7 語彙の実体存在", ok6,
+    "§判断 7・参照禁止の記載と 7 語彙の実体（metadata 4 種＋スキーマ enum 3 種）を確認" if ok6
+    else "語彙正本の宣言または実体が不足",
   ))
 
   # target_commit を取得（失敗時は unknown）
