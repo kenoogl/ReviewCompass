@@ -1,0 +1,7 @@
+provider: gemini-api
+model: gemini-3.5-flash
+turn_number: 1
+duration_seconds: 9.184
+sent_messages_count: 1
+response_text: "```yaml\nverdict: \"ALL_CLEAR\"\nfindings: []\ncomment: |\n  すべての記述内容が、合意内容および参考事実（各種パス、コミットハッシュ、第1回・第2回検証結果の数値、セッション情報）と正確に一致していることを確認しました。論理的な矛盾や方針正本の逸脱も認められず、検証結果は問題なし（ALL_CLEAR）です。\n\
+  ```"

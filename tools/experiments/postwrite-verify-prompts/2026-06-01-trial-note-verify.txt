@@ -1,0 +1,44 @@
+あなたは、ある文書への書き込みが「合意内容を正しく反映し、誤りがないか」を独立に検証する検証者です。書き込んだ本人とは別の立場で、下記の 4 観点で点検してください。問題（検出）があれば具体的に指摘し、問題がなければ ALL_CLEAR と答えてください。判断理由の良し悪しではなく、書き込みの正確性のみを見てください。
+
+# 合意内容（決定事項のみ）
+
+セッション 43（2026-06-01）の観察記録として、書き込み後検証（post-write-verification）の収束基準確立と動作仕様ファイル移設の試行記録を docs/notes/ に作成することが確定しました。本文書は方針正本ではなく観察記録です。
+
+# 書き込み結果（主要な事実の箇所のみ抜粋）
+
+- コミットハッシュ：59a0a6c（収束基準の新設・移設）、0cb52f4（索引同期・TODO 更新）
+- 動作仕様ファイルパス：.reviewcompass/specs/workflow-management/post-write-verification-spec.yaml
+- 規律本体パス：docs/disciplines/discipline_post_write_verification.md
+- 第1回ドッグフーディングの検証結果：Anthropic Sonnet=ALL_CLEAR、OpenAI GPT-5.5=DETECTED(5件)、Google Gemini-3.1-pro-preview=DETECTED(5件)
+- 第2回ドッグフーディングの検証結果：OpenAI/Gemini=ALL_CLEAR、Anthropic Sonnet=DETECTED(1件)
+- 参照した実験ノートの節：§3.4.2（topic-102 の記述）
+- 積み残し課題の記録先：TODO §3.6
+
+# 参考（既存の事実、照合用）
+
+- 本日は 2026-06-01、セッション番号は 43。
+- コミット 59a0a6c と 0cb52f4 は実際に存在する（git log で確認可能）。
+- 動作仕様ファイルは .reviewcompass/specs/workflow-management/ に配置済み。
+- 規律本体は docs/disciplines/discipline_post_write_verification.md。
+- 第1回検証で Sonnet が ALL_CLEAR、OpenAI と Gemini が DETECTED（5 件ずつ）という結果は事実（集約記録 tools/experiments/postwrite-verify-prompts/2026-06-01-aggregation-record.yaml に記録済み）。
+- 第2回検証で OpenAI/Gemini が ALL_CLEAR、Sonnet が DETECTED（1 件）という結果は事実（results/ 配下に記録済み）。
+
+# 検査観点（4 項目）
+
+1. agreement_reflection：観察記録として事実を記録するという目的に合っているか。方針正本の内容（規律・計画書）を勝手に書き替えていないか。
+2. reference_accuracy：コミットハッシュ・ファイルパス・検証結果の数値・セッション番号・日付が正しいか。
+3. existing_record_consistency：既存の集約記録・検証結果との齟齬がないか。
+4. internal_logic：記述内に論理矛盾がないか。
+
+# 出力形式
+
+次の YAML 形式で答えてください：
+
+verdict: "ALL_CLEAR" | "DETECTED"
+findings:
+  - location: "<§番号または段落名>"
+    criterion: "agreement_reflection" | "reference_accuracy" | "existing_record_consistency" | "internal_logic"
+    severity: "高" | "中" | "低"
+    observation: "<検出した問題の具体的な内容>"
+comment: |
+  <総評（任意）>
