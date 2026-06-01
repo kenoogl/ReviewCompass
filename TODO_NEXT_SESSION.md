@@ -1,6 +1,6 @@
 # 次セッション継続用メモ
 
-最終更新：2026-06-01（セッション43。主な達成：**書き込み後検証（post-write-verification）の収束基準を新設**＝検出を逐語的指摘（弾く）と本質的指摘（人へ上げる）に分類、迷えば本質側に倒す。デプロイ問題（計画書はデプロイされない）を踏まえ、動作仕様を専用ファイル方式 `post-write-verification-spec.yaml`（`.reviewcompass/specs/workflow-management/`、デプロイ対象）へ移設し、計画書§5.8・規律本体は参照に改訂（コミット `59a0a6c`）。新収束基準のドッグフーディングを2回実施、いずれも逐語的指摘を弾き本質的指摘1件ずつを人裁定で収束（旧基準なら一律阻止・最大5回ループだった事案）。索引同期（README/TODO§3.6）も実施。**次セッション44の最重要案件＝implementation フェーズ着手（§3.1）**。積み残し：§3.6 規律の計画書参照のデプロイ問題。）
+最終更新：2026-06-01（セッション43。主な達成：**書き込み後検証（post-write-verification）の収束基準を新設**＝検出を逐語的指摘（弾く）と本質的指摘（人へ上げる）に分類、迷えば本質側に倒す。デプロイ問題（計画書はデプロイされない）を踏まえ、動作仕様を専用ファイル方式 `post-write-verification-spec.yaml`（`.reviewcompass/specs/workflow-management/`、デプロイ対象）へ移設し、計画書§5.8・規律本体は参照に改訂（コミット `59a0a6c`）。新収束基準のドッグフーディングを2回実施、いずれも逐語的指摘を弾き本質的指摘1件ずつを人裁定で収束（旧基準なら一律阻止・最大5回ループだった事案）。索引同期（README/TODO§3.6）も実施。**次セッション44の最優先案件＝§3.6 規律の計画書参照デプロイ問題を先に対処**、その後 implementation フェーズへの着手（§3.1）。）
 
 作業ディレクトリ：`/Users/Daily/Development/ReviewCompass/`、リポジトリ：`git@github.com:kenoogl/ReviewCompass.git`（main ブランチ）
 
@@ -60,9 +60,23 @@ drafting 段は actor=human または llm（草案作成のみ）、triad-review
 
 1. `cd /Users/Daily/Development/ReviewCompass`
 2. 本 `TODO_NEXT_SESSION.md` を読む（§0 規律確認）
-3. **規律本体 active 必読を Read**（一覧は `docs/disciplines/README.md`、auto memory は索引のみ load のため毎セッション必要）
+3. **規律本体 active 必読を Read**（auto memory は索引のみ load のため毎セッション必要。以下 14 件を個別に Read すること。README を読むだけでは不十分）
+   - `docs/disciplines/discipline_must_fix_discussion_obligation.md`
+   - `docs/disciplines/discipline_intent_conformance_is_the_acceptance_gate.md`
+   - `docs/disciplines/discipline_standing_directives_are_hard_constraints.md`
+   - `docs/disciplines/discipline_workflow_precheck_invocation.md`
+   - `docs/disciplines/discipline_approval_operation.md`
+   - `docs/disciplines/discipline_facts_vs_interpretation.md`
+   - `docs/disciplines/discipline_pre_action_precheck.md`
+   - `docs/disciplines/discipline_workflow_state_truth_source.md`
+   - `docs/disciplines/discipline_concise_complete_report.md`
+   - `docs/disciplines/discipline_reopen_procedure_for_settled_topics.md`
+   - `docs/disciplines/discipline_plain_japanese.md`
+   - `docs/disciplines/discipline_options_presentation.md`
+   - `docs/disciplines/discipline_avoid_compound_bash.md`
+   - `docs/disciplines/discipline_post_write_verification.md`
 4. `docs/operations/SESSION_WORKFLOW_GUIDE.md` と `docs/operations/REOPEN_PROCEDURE.md`（再オープン手続きの 4 過程）
-5. 計画書 `docs/plan/reconstruction-plan-2026-05-21.md` §5.4〜§5.8 ／ §5.9.6 ／ §5.12 ／ §5.23 ／ §5.23.12 ／ §5.23.13 ／ §5.24
+5. 計画書 `docs/plan/reconstruction-plan-2026-05-21.md`（全 4032 行）の以下の節（行番号は計画書編集で変わる可能性あり、参考値）：§5.4（273行〜）・§5.5（310行〜）・§5.6（455行〜）・§5.7（650行〜）・§5.8（698行〜）・§5.9.6（1009行〜）・§5.12（1622行〜）・§5.23（3370行〜）・§5.23.12（3587行〜）・§5.23.13（3648行〜）・§5.24（3718行〜）
 6. **実験ノート `docs/experiments/n-model-comparison.md` §3.4**（マルチターンプロトコルとプロンプト設計の規律）
 7. `git log --oneline -10`／`git status` で到達点確認
 
@@ -88,7 +102,9 @@ zsh -c 'source ~/.zshrc && /Users/Daily/Development/ReviewCompass/.venv/bin/pyth
 
 ## 3. 次の作業（セッション 43 起点）
 
-### 3.1 最重要案件：implementation フェーズへの着手
+**優先順位：§3.6（積み残し課題）→ §3.1（implementation フェーズ）**
+
+### 3.1 implementation フェーズへの着手（§3.6 対処後）
 
 **§5.12 改訂の全項目が完了した（セッション 42）**。次は仕様 4 段階承認済みの全 7 機能で implementation フェーズに着手する。
 
@@ -127,7 +143,7 @@ zsh -c 'source ~/.zshrc && /Users/Daily/Development/ReviewCompass/.venv/bin/pyth
 
 > 完了済みの作業手順の詳細（各機能 tasks の標準進め方、機能横断段 review-wave の参照元・todo、§5.12 改訂の論点議論）は本セッション 41 で役目を終えた。必要時は git 履歴（コミット `b6bd1e4`／`fce0061`／`a66da5c`／`ce2ba60`）と `docs/archive/todo/` の snapshot を参照。
 
-### 3.6 積み残し課題：規律の計画書参照のデプロイ問題（2026-06-01 セッション 43 切り出し）
+### 3.6【最優先】積み残し課題：規律の計画書参照のデプロイ問題（2026-06-01 セッション 43 切り出し）
 
 規律ファイル（デプロイ対象）が計画書（非デプロイの開発文書）を**動作仕様として**参照している箇所は、デプロイ時に参照先が消える。該当：post_write_verification の §5.13（通知機構）／§5.6（再オープン手続き）、workflow_state_truth_source の §5.24（spec.json スキーマ）。今回 post-write-verification の収束基準で確立した「**動作仕様ファイル方式**」（デプロイ対象の専用ファイルに動作仕様を置き、規律・計画書が参照）を、これらにも適用する検討が必要。説明・経緯としての参照（(あ) タイプ）は対象外。
 
