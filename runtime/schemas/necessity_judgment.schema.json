@@ -1,0 +1,48 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://reviewcompass/runtime/schemas/necessity_judgment.schema.json",
+  "title": "necessity_judgment",
+  "description": "Step C の出力単位。必要性 5 項目と最終ラベルを表す（要件 3 受入 6）。スキーマフィールドラベルは要件 3 受入 10 に従い英語で定義する。",
+  "type": "object",
+  "x-deferred": "recommended_action の値の列挙化（自由テキストからの構造化）は evaluation に委譲する。判定の質の評価や方針も runtime / evaluation に委ねる。",
+  "properties": {
+    "requirement_link": {
+      "description": "要件への結び付き（必要性 5 項目の 1）"
+    },
+    "ignored_impact": {
+      "description": "無視した場合の影響（必要性 5 項目の 2）"
+    },
+    "fix_cost": {
+      "description": "修正費用（必要性 5 項目の 3）"
+    },
+    "scope_expansion": {
+      "description": "範囲拡大（必要性 5 項目の 4）"
+    },
+    "uncertainty": {
+      "description": "不確実性（必要性 5 項目の 5）"
+    },
+    "final_label": {
+      "type": "string",
+      "description": "最終ラベル（計画書 §5.9.3 由来）。本機能が所有する正本語彙、下流は再定義禁止",
+      "enum": ["must-fix", "should-fix", "leave-as-is"]
+    },
+    "recommended_action": {
+      "type": "string",
+      "description": "推奨措置（自由テキスト、将来的な列挙化は evaluation に委譲、x-deferred 参照）"
+    },
+    "override_reason": {
+      "type": "string",
+      "description": "任意の上書き理由（任意項目、required には含めない）"
+    }
+  },
+  "required": [
+    "requirement_link",
+    "ignored_impact",
+    "fix_cost",
+    "scope_expansion",
+    "uncertainty",
+    "final_label",
+    "recommended_action"
+  ],
+  "additionalProperties": true
+}

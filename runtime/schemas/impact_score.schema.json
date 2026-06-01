@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://reviewcompass/runtime/schemas/impact_score.schema.json",
+  "title": "impact_score",
+  "description": "finding の影響度を構造化する補助スキーマ。要件 3 受入 7 が求める 3 軸を mandatory として固定する。各軸の値語彙・採点尺度・重み付けの意味論最適化は deferred。",
+  "type": "object",
+  "x-deferred": "severity_axis / fix_cost_axis / downstream_scope_axis の各値語彙・採点尺度・重み付けの意味論最適化は evaluation に委譲する（本機能は項目形状のみ固定）。",
+  "properties": {
+    "finding_ref": {
+      "type": "string",
+      "description": "対象 finding の識別子"
+    },
+    "severity_axis": {
+      "description": "指摘自体の重大度。値域 enum は書かず evaluation に委譲（x-deferred 参照）"
+    },
+    "fix_cost_axis": {
+      "description": "修正費用見積もり。値域 enum は書かず evaluation に委譲（x-deferred 参照）"
+    },
+    "downstream_scope_axis": {
+      "description": "下流影響範囲。値域 enum は書かず evaluation に委譲（x-deferred 参照）"
+    }
+  },
+  "required": [
+    "finding_ref",
+    "severity_axis",
+    "fix_cost_axis",
+    "downstream_scope_axis"
+  ],
+  "additionalProperties": true
+}
