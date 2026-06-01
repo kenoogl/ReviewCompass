@@ -567,7 +567,7 @@ requirements.md Req 5 受入 3〜8 に対応する流用項目：
 | 重大度語彙 4 段（CRITICAL／ERROR／WARN／INFO） | §5.9.2 |
 | 所見メタデータ必須化（severity／judgment／depth／evidence_type／verifying_commands） | §5.9.3 |
 | 3 方式比較データ取得（`findings_by_method`） | §5.9.6 |
-| レビューモード語彙（`manual_dogfooding`／`runtime_mediated`／`subagent_mediated`） | foundation Req 6 受入 6（参照、機械検査 MV-7 で照合） |
+| レビューモード語彙（値は foundation 正本を参照） | foundation Req 6 受入 6（参照、機械検査 MV-7 で照合） |
 | API 経路と障害対応（タイムアウト・リトライ・部分失敗の検知と扱い） | §5.9.7 |
 
 ### 11.4 API 経路の障害対応

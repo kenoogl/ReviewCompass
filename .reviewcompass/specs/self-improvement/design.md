@@ -602,7 +602,7 @@ requirements.md Req 8 受入 1 に対応する 7 指標：
 
 | 方向 | 内容 |
 |---|---|
-| 入力（self-improvement が読む） | 規律検査スキーマ、レビューモード語彙（`manual_dogfooding`／`subagent_mediated`／`runtime_mediated`）、状態軸語彙（`evidence_class`／`validator_status`）、必須メタデータ（severity／target_location／description／rationale） |
+| 入力（self-improvement が読む） | 規律検査スキーマ、レビューモード語彙（値は foundation 正本を参照、再定義しない）、状態軸語彙（`evidence_class`／`validator_status`）、必須メタデータ（severity／target_location／description／rationale） |
 | 再定義しない原則 | foundation を正本所有者として参照し、本機能内で再定義しない（Boundary Context 隣接期待） |
 
 ### 13.2 runtime との接合面

@@ -1,0 +1,20 @@
+process_id: reopen-procedure
+feature: [self-improvement, conformance-evaluation]
+started_at: 2026-06-02T00:00:00+09:00
+trigger: foundation review_mode への api_mediated 追加の波及イベントの最終範囲確定。日本語表記「レビューモード」も含めた全機能再調査で self-improvement／conformance-evaluation にも同型の固定列挙を発見、案 A の範囲に追加。利用者承認「対応」2026-06-02
+classification_basis: docs/reviews/reopen-classification-2026-06-02-si-conformance-review-mode.md
+# 4 過程構成（計画書 §5.6.1）での進行状況。
+completed_steps: []
+next_step: 第1過程：判定とフラグ差し戻し（spec.json 差し戻しまで）→ 第2過程：正本修正（実施済み）→ コミット
+pending_gates:
+  - self-improvement: stages/design.yaml#alignment
+  - self-improvement: stages/design.yaml#approval
+  - self-improvement: stages/tasks.yaml#alignment
+  - self-improvement: stages/tasks.yaml#approval
+  - conformance-evaluation: stages/requirements.yaml#alignment
+  - conformance-evaluation: stages/requirements.yaml#approval
+  - conformance-evaluation: stages/design.yaml#alignment
+  - conformance-evaluation: stages/design.yaml#approval
+  - conformance-evaluation: stages/tasks.yaml#alignment
+  - conformance-evaluation: stages/tasks.yaml#approval
+current_blocker: 第1過程進行中。reopen-classification 記録作成済み、本 in-progress ファイル発行済み、正本修正実施済み。次は spec.json フラグ差し戻し（利用者承認済み「対応」2026-06-02）→ 補助層 D 検証 → コミット

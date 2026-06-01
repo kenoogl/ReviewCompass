@@ -122,7 +122,7 @@
 4. 本機能は §5.9.2 の重大度語彙 4 段（CRITICAL／ERROR／WARN／INFO）を適用する。
 5. 本機能は §5.9.3 の所見メタデータ必須化（severity／judgment／depth／evidence_type／verifying_commands）を適用する。
 6. 本機能は §5.9.6 の 3 方式比較データ取得（`findings_by_method`）を適用する。
-7. 本機能はレビューモード語彙（`manual_dogfooding`／`runtime_mediated`／`subagent_mediated`、`foundation` Requirement 6 受入 6 由来）を再定義せず参照する。
+7. 本機能はレビューモード語彙（`foundation` Requirement 6 受入 6 由来）を再定義せず参照する（値は `foundation` 正本が定める）。
 8. 本機能は §5.9.7 の API 経路と障害対応（タイムアウト・リトライ・部分失敗の検知と扱い）を適用する。本機能は実装コードに対する複数の LLM 呼び出しを伴うため、障害対応戦略を §5.9.7 から流用する（計画書 §5.10.3 行 1051 由来）。
 
 ### Requirement 6：評価記録の type 値と配置
