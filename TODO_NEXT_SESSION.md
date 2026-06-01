@@ -1,6 +1,6 @@
 # 次セッション継続用メモ
 
-最終更新：2026-06-02（セッション46）。**次の作業：再オープン第3過程（requirements→design→tasks→implementation の alignment/approval 連鎖再実施）→ 完了後に runtime 機能の implementation（drafting → triad-review）**。セッション46 で triad-review 3役モデルを独立3社（Opus/GPT/Gemini）に変更確定し、review_mode 語彙正本に api_mediated を追加する R 種別再オープンの第1・第2過程を完了（コミット `5378c6d`）。第3過程が残っている。
+最終更新：2026-06-02（セッション46）。**次の作業：再オープン第3過程（requirements→design→tasks→implementation の alignment/approval 連鎖再実施）→ 完了後に runtime 機能の implementation（drafting → triad-review）**。経緯は §3.2 参照。
 
 作業ディレクトリ：`/Users/Daily/Development/ReviewCompass/`、リポジトリ：`git@github.com:kenoogl/ReviewCompass.git`（main ブランチ）
 
@@ -35,15 +35,6 @@
 
 drafting 段は actor=human または llm（草案作成のみ）、triad-review 段は actor=llm（主役・敵対役・判定役の 3 役、サブエージェント方式 §5.23.12）。**同一の actor が起草と判定を兼ねない**。レビュー記録 front-matter に `author.identity` と `reviewer.identity` を異名必須記載、機械検査対象。
 
-### 0.4 実験意識の保持（2026-05-28 セッション 36 規律）
-
-7 モデル比較実験の進行中は「修正議論」と並行して「**実験データ採取**」が動いていることを常に意識する：
-
-- 各議論ごとに `tools/experiments/results/topic-NN-human.yaml` を保存（人本人判定の実験データ）
-- 統合レビュー記録 §4.2 に議論履歴を記録
-- 説明姿勢は「両論を対称的に提示してバイアス最小化」、推奨を強く押し出さない
-- 私（起草者）が孤立判断を出した場合は **起草者バイアスの兆候** として認識
-
 <!-- TEMPLATE_HEADER_END -->
 
 ---
@@ -57,6 +48,8 @@ drafting 段は actor=human または llm（草案作成のみ）、triad-review
 ---
 
 ## 1. 起動手順（次セッション開始時）
+
+**この手順はセッション起動と同時に強制実行する。利用者の指示を待たず、「ご指示をいただけますか」と伺わない。**
 
 1. `cd /Users/Daily/Development/ReviewCompass`
 2. 本 `TODO_NEXT_SESSION.md` を読む（§0 規律確認）
@@ -134,31 +127,16 @@ foundation の review_mode 語彙正本に api_mediated を追加した R 種別
 - **書き込み後検証**：docs/ 配下等の正本文書を更新したら独立系統（OpenAI／Google）で検証。API スクリプト（`tools/api_providers/`）経由で実施
 - 各段完了で spec.json を true 化（不可逆操作・本人承認）
 
-### 3.2 セッション46 の完了内容
+### 3.2 過去セッションの完了経緯（参照のみ）
 
-- triad-review 3役モデルを独立3社へ変更確定（主役 Opus 4.8／敵対役 GPT-5.5／判定役 Gemini-3.1-pro、runtime 以降適用）
-- 実装自律の範囲確定（所見調停は LLM、上位判断は本人留保、チェックポイントは本人）
-- review_mode 語彙正本に api_mediated 追加（R 種別再オープン第1・第2過程完了、コミット `5378c6d`）
-- `_experiment_n_model.py` に `--timeout-seconds` 引数追加（GPT-5.5 タイムアウトの根本対処）
-- セッション記録 [docs/sessions/session-46-2026-06-02.md](docs/sessions/session-46-2026-06-02.md)
+- **セッション46**：triad-review 3役を独立3社に変更確定（主役 Opus 4.8／敵対役 GPT-5.5／判定役 Gemini-3.1-pro）／実装自律の範囲確定（所見調停は LLM、上位判断は本人留保）／review_mode 語彙に api_mediated 追加（R 種別第1・第2過程、コミット `5378c6d`）／`_experiment_n_model.py` に `--timeout-seconds` 追加。記録 [session-46](docs/sessions/session-46-2026-06-02.md)
+- **セッション45（foundation implementation）**：drafting で全10タスク（T-001〜T-010）を TDD 実装（テスト緑120件）、triad-review で12所見を対処（コミット `3764055`〜`f9190bb`）、新規依存 `jsonschema`。記録 [session-45](docs/sessions/session-45-2026-06-01.md)
+- **セッション41〜44**：§5.12 改訂全7項目・規律新設（`fce0061`／`a66da5c`／`ce2ba60`／`7417585`／`7684402`／`fa089c0`）、書き込み後検証の収束基準（`59a0a6c`）、§3.6 規律デプロイ問題対処（`4c50e4b`）。詳細は git log と `docs/archive/todo/`
 
-### 3.3 foundation implementation の完了内容（セッション45）
+### 3.3 残作業の補完項目（任意・低優先）
 
-- drafting：全 10 タスク（T-001〜T-010）を TDD で実装。テスト緑 120 件、完成判定スクリプト 6 項目 pass
-- triad-review：3 役レビューで 12 所見（must-fix 1・should-fix 5・leave-as-is 6）を検出・対処。レビュー記録 `.reviewcompass/specs/foundation/reviews/2026-06-01-implementation-triad-review.md`
-- コミット 15 件（`3764055`〜`f9190bb`）＋セッション記録 `7c12a79`。セッション記録 [docs/sessions/session-45-2026-06-01.md](docs/sessions/session-45-2026-06-01.md)
-- 新規依存：`jsonschema`（meta-schema 検証用、pyproject.toml に追加）
-
-### 3.3 完了済み（セッション 41〜44）
-
-- セッション 41〜42 の完了済み項目（§5.12 改訂全7項目・規律新設等）：git 履歴（`fce0061`／`a66da5c`／`ce2ba60`／`7417585`／`7684402`／`fa089c0`）と `docs/archive/todo/` 参照
-- **書き込み後検証の収束基準を新設・動作仕様ファイルへ移設（セッション 43）**：コミット `59a0a6c`
-- **§3.6 規律の計画書参照デプロイ問題を対処完了（セッション 44）**：コミット `4c50e4b`
-
-### 3.4 残作業の補完項目（任意・低優先）
-
-- **analysis 完全一致 15 件の人本人判定の遡及保存**：`topic-{54〜75}-human.yaml` のうちセッション 36 で未保存の 15 件分（詳細は git log のセッション 36 記録）
-- **実験ノート §5／§6 への追記**：両軸 2 表構成を §5 のケースに、§6 観点別考察に起草者バイアス検出の観察を追加
+- **analysis 完全一致 15 件の人本人判定の遡及保存**：`topic-{54〜75}-human.yaml` のうちセッション36で未保存の15件分（詳細は git log のセッション36記録）
+- **実験ノート §5／§6 への追記**：両軸2表構成を §5 のケースに、§6 観点別考察に起草者バイアス検出の観察を追加
 
 ---
 
