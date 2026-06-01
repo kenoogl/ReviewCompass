@@ -1,6 +1,6 @@
 # 次セッション継続用メモ
 
-最終更新：2026-05-31（セッション 42 末。主な達成：**§5.12 改訂の項目 2（残り 27 件）完了＝§5.12 改訂の全項目が完了**。§5.12.11 アサイン機構（proxy モード）と post-write-verification（補助層 D）の初の本格運用。(1) **項目 2（アドホック残務）**：47 項目を生ログから復元、事後検証で解消済み 23 件を除外、残る 4 件（項目 14/24/27/31）を独立 3 系統で proxy 標準裁定（12 回）＋書き込み後検証（3 回、2 系統 ALL_CLEAR で収束）、計画書・運営ガイド 6 箇所に反映（`7684402`）。(2) **§5.6 に軽量再オープン禁止を明示**：dogfooding 期間外での軽量再オープンは認めない、を §5.6 に追記（利用者決定、post-write-verification ALL_CLEAR、`fa089c0`）。**特筆**：proxy モードは判断の参考になり効率よく集約できた。1 系統（Sonnet）が逐語厳格で収束しにくい挙動を初観察→「本質的でない指摘の収束基準」が今後の論点。試行記録：`docs/notes/2026-05-31-item2-proxy-and-postwrite-verification-trial.md`。**次セッション 43 の最重要案件＝implementation フェーズへの着手**。仕様 4 段階（intent／requirements／design／tasks）は全 7 機能で承認済み）
+最終更新：2026-06-01（セッション43。主な達成：**書き込み後検証（post-write-verification）の収束基準を新設**＝検出を逐語的指摘（弾く）と本質的指摘（人へ上げる）に分類、迷えば本質側に倒す。デプロイ問題（計画書はデプロイされない）を踏まえ、動作仕様を専用ファイル方式 `post-write-verification-spec.yaml`（`.reviewcompass/specs/workflow-management/`、デプロイ対象）へ移設し、計画書§5.8・規律本体は参照に改訂（コミット `59a0a6c`）。新収束基準のドッグフーディングを2回実施、いずれも逐語的指摘を弾き本質的指摘1件ずつを人裁定で収束（旧基準なら一律阻止・最大5回ループだった事案）。索引同期（README/TODO§3.6）も実施。**次セッション44の最重要案件＝implementation フェーズ着手（§3.1）**。積み残し：§3.6 規律の計画書参照のデプロイ問題。）
 
 作業ディレクトリ：`/Users/Daily/Development/ReviewCompass/`、リポジトリ：`git@github.com:kenoogl/ReviewCompass.git`（main ブランチ）
 
@@ -126,6 +126,10 @@ zsh -c 'source ~/.zshrc && /Users/Daily/Development/ReviewCompass/.venv/bin/pyth
 - 実験基盤：`tools/experiments/_experiment_n_model.py`（implementation フェーズの triad-review で継続使用）
 
 > 完了済みの作業手順の詳細（各機能 tasks の標準進め方、機能横断段 review-wave の参照元・todo、§5.12 改訂の論点議論）は本セッション 41 で役目を終えた。必要時は git 履歴（コミット `b6bd1e4`／`fce0061`／`a66da5c`／`ce2ba60`）と `docs/archive/todo/` の snapshot を参照。
+
+### 3.6 積み残し課題：規律の計画書参照のデプロイ問題（2026-06-01 セッション 43 切り出し）
+
+規律ファイル（デプロイ対象）が計画書（非デプロイの開発文書）を**動作仕様として**参照している箇所は、デプロイ時に参照先が消える。該当：post_write_verification の §5.13（通知機構）／§5.6（再オープン手続き）、workflow_state_truth_source の §5.24（spec.json スキーマ）。今回 post-write-verification の収束基準で確立した「**動作仕様ファイル方式**」（デプロイ対象の専用ファイルに動作仕様を置き、規律・計画書が参照）を、これらにも適用する検討が必要。説明・経緯としての参照（(あ) タイプ）は対象外。
 
 ---
 

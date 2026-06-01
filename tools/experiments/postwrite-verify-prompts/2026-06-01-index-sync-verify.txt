@@ -1,0 +1,49 @@
+あなたは、ある文書への書き込みが「合意内容を正しく反映し、誤りがないか」を独立に検証する検証者です。書き込んだ本人とは別の立場で、下記の 4 観点で点検してください。問題（検出）があれば具体的に指摘し、問題がなければ ALL_CLEAR と答えてください。判断理由の良し悪しではなく、書き込みの正確性のみを見てください。
+
+# 合意内容（決定事項のみ）
+
+以下の 2 点が確定しました。
+
+1. docs/disciplines/README.md の discipline_post_write_verification.md の行（概要列）を、規律本体の description と同期し、「1 件でも検出で一律阻止」という旧基準の記述を新基準（逐語的指摘は弾く・本質的指摘は人へ上げる・収束基準は動作仕様ファイル post-write-verification-spec.yaml を参照）に更新する。
+2. TODO_NEXT_SESSION.md に §3.6 として、規律ファイル（デプロイ対象）が計画書（非デプロイの開発文書）を動作仕様として参照している箇所はデプロイ時に参照先が消えるため、今回の post-write-verification の収束基準で確立した動作仕様ファイル方式をこれらにも適用する検討が必要、という積み残し課題を追記する。
+
+# 書き込み結果（実際に書き込まれた内容）
+
+## A. docs/disciplines/README.md 46 行目（discipline_post_write_verification.md の概要列）
+
+「ワークフロー段の外側にある正本文書への書き込み後、起草者と異なるサブエージェント（既定 3 体、Anthropic ／ OpenAI ／ Google の独立系統）による独立検証を必須化。検出は逐語的指摘（弾く）と本質的指摘（人へ上げる）に分類して処理、収束基準は動作仕様ファイル post-write-verification-spec.yaml。small=1 体でも起草者系統と異なる独立系統必須（既定 Google `gemini-3.5-flash`）。2026-05-31 セッション 41 新設・2026-06-01 セッション 43 収束基準改訂」
+
+## B. TODO_NEXT_SESSION.md 130〜133 行（§3.6 として追記）
+
+見出し：「### 3.6 積み残し課題：規律の計画書参照のデプロイ問題（2026-06-01 セッション 43 切り出し）」
+
+本文：「規律ファイル（デプロイ対象）が計画書（非デプロイの開発文書）を**動作仕様として**参照している箇所は、デプロイ時に参照先が消える。該当：post_write_verification の §5.13（通知機構）／§5.6（再オープン手続き）、workflow_state_truth_source の §5.24（spec.json スキーマ）。今回 post-write-verification の収束基準で確立した「**動作仕様ファイル方式**」（デプロイ対象の専用ファイルに動作仕様を置き、規律・計画書が参照）を、これらにも適用する検討が必要。説明・経緯としての参照（(あ) タイプ）は対象外。」
+
+# 参考（既存の事実、照合用）
+
+- 本日は 2026-06-01、セッション 43。
+- 動作仕様ファイル `.reviewcompass/specs/workflow-management/post-write-verification-spec.yaml` は本セッション（43）で作成済み（デプロイ対象）。
+- 規律本体 discipline_post_write_verification.md の description は本セッション（43）で「逐語的指摘は弾く・本質的指摘は人へ上げる・収束基準は動作仕様ファイルを参照」に改訂済み（コミット 59a0a6c）。
+- 規律本体の description は README.md の概要列と同期する運用となっている。
+- README.md の概要列は規律の役割を簡潔に記載する箇所であり、詳細な失敗時挙動の全文を掲載する場所ではない。
+- §3.6 の「(あ) タイプ」は説明・経緯としての参照（動作仕様の参照ではないため対象外）を指す。
+
+# 検査観点（4 項目）
+
+1. agreement_reflection：合意内容（2 点）が A・B の書き込みに正しく反映されているか。特に README の旧基準表現が新基準に置き換わっているか、§3.6 の問題の所在（デプロイ問題）と対象範囲（動作仕様参照のみ、説明参照は対象外）が正しく記述されているか。
+2. reference_accuracy：ファイルパス・節番号・設定名・日付・セッション番号・コミットハッシュが正しいか。
+3. existing_record_consistency：既存事実（規律本体の description 改訂、動作仕様ファイルの作成、コミット 59a0a6c）との齟齬がないか。
+4. internal_logic：A・B 間および各記述内に論理矛盾がないか。
+
+# 出力形式
+
+次の YAML 形式で答えてください：
+
+verdict: "ALL_CLEAR" | "DETECTED"
+findings:
+  - location: "<A または B>"
+    criterion: "agreement_reflection" | "reference_accuracy" | "existing_record_consistency" | "internal_logic"
+    severity: "高" | "中" | "低"
+    observation: "<検出した問題の具体的な内容>"
+comment: |
+  <総評（任意）>

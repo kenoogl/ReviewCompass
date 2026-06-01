@@ -43,7 +43,7 @@
 | [discipline_plain_japanese.md](discipline_plain_japanese.md) | 英語技術用語を多用しない、完全な日本語の文で書く、応答送信前に自己検査 |
 | [discipline_options_presentation.md](discipline_options_presentation.md) | 複数案提示時、dominated 案は提示しない、提示前に検査結果を応答内で明示宣言、3 選択肢以内で大局→細部の階層性を守る（旧 dominant-dominated-options ／ choice-presentation を統合＋事前検査宣言義務を新設） |
 | [discipline_avoid_compound_bash.md](discipline_avoid_compound_bash.md) | 読み取り目的の複合 Bash コマンド（`;`／`&&`／`|`）を避ける、Read／Glob／Grep ツールで代替するか単一コマンドに留める、許可プロンプト多発の防止（2026-05-28 セッション 36 軽量移送で確立、利用者明示承認「案 イを処理」） |
-| [discipline_post_write_verification.md](discipline_post_write_verification.md) | ワークフロー段の外側にある正本文書への書き込み後、起草者と異なるサブエージェント（既定 3 体、Anthropic ／ OpenAI ／ Google の独立系統）による独立検証を必須化。1 件でも検出があれば一律阻止。small=1 体でも起草者系統と異なる独立系統必須（既定 Google `gemini-3.5-flash`）。本セッションの 5 回検証で実証（独立 3 系統で OpenAI／Google が ALL_CLEAR、利用者明示承認「OK」、2026-05-31 セッション 41 新設） |
+| [discipline_post_write_verification.md](discipline_post_write_verification.md) | ワークフロー段の外側にある正本文書への書き込み後、起草者と異なるサブエージェント（既定 3 体、Anthropic ／ OpenAI ／ Google の独立系統）による独立検証を必須化。検出は逐語的指摘（弾く）と本質的指摘（人へ上げる）に分類して処理、収束基準は動作仕様ファイル post-write-verification-spec.yaml。small=1 体でも起草者系統と異なる独立系統必須（既定 Google `gemini-3.5-flash`）。2026-05-31 セッション 41 新設・2026-06-01 セッション 43 収束基準改訂 |
 
 ### 参照層（3 件、必要時に grep／Read で参照、起動時 load なし）
 
