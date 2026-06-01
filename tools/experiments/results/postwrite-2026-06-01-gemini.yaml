@@ -1,0 +1,19 @@
+provider: gemini-api
+model: gemini-3.1-pro-preview
+turn_number: 1
+duration_seconds: 49.684
+sent_messages_count: 1
+response_text: "```yaml\nverdict: \"DETECTED\"\nfindings:\n  - location: \"検出時の収束基準（導入部分）\"\
+  \n    criterion: \"reference_accuracy\"\n    severity: \"中\"\n    observation: \"\
+  合意内容および参考情報に存在しない日付とセッション番号（「2026-06-01 セッション 43 確定」）が書き込まれています。\"\n  - location:\
+  \ \"逐語的指摘\"\n    criterion: \"reference_accuracy\"\n    severity: \"低\"\n    observation:\
+  \ \"合意内容にない具体例（文体・言い回しの好み等）や、確認時の補足事項（「新たな実質的食い違いの捕捉までは求めない」等）が書き込まれています。\"\n  -\
+  \ location: \"本質的指摘\"\n    criterion: \"reference_accuracy\"\n    severity: \"低\"\
+  \n    observation: \"合意内容にない理由や原則（「独自判断での仕様修正禁止と同原則」「安全側原則。本物の見落としのコストは〜」等）が書き込まれています。\"\
+  \n  - location: \"逐語パターンの管理\"\n    criterion: \"reference_accuracy\"\n    severity:\
+  \ \"中\"\n    observation: \"指定されたファイル名「reviewcompass.yaml」に対し、合意内容にないキーパス「#review.post_write_verification」が勝手に追加されています。また、「初期値は上記列挙とする」という合意にない仕様や、カッコ書きでの理由（恣意的な拡大の防止等）も紛れ込んでいます。\"\
+  \n  - location: \"適用範囲\"\n    criterion: \"reference_accuracy\"\n    severity: \"\
+  高\"\n    observation: \"ワークフロー段に関して、合意内容にない「5 段で検証」という具体的な仕様数値が紛れ込んでいます。また、「多層防御の役割分担」という理由も追加されています。\"\
+  \ncomment: |\n  「収束の定義」の段落は合意内容を正しく反映し、問題ありません。しかし、その他の段落において、書き込み側が独自に日付・セッション番号、具体例、設計の理由（なぜそう決めたか）、ファイル内のキーパス、および「5\
+  \ 段で検証」などの具体的な仕様を過剰に補ってしまっています。合意内容（決定事項のみ）の正確な反映を期すため、合意にない情報の追加（ハルシネーション）はすべて修正（削除）が必要です。\n\
+  ```"

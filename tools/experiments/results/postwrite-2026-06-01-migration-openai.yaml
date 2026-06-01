@@ -1,0 +1,7 @@
+provider: openai-api
+model: gpt-5.5
+turn_number: 1
+duration_seconds: 18.035
+sent_messages_count: 1
+response_text: "verdict: \"ALL_CLEAR\"\nfindings: []\ncomment: |\n  A〜E は合意内容と整合しており、動作仕様ファイルを正本として参照する構造、計画書側への移行経緯の集約、規律本体からの旧\
+  \ retry_policy.max_retries 経緯の除外、§5.9.7 の max_retries との切り分け、日付・セッション番号・ファイルパスの扱いに問題は検出されません。"

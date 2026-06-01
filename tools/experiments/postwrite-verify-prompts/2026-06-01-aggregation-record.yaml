@@ -1,0 +1,49 @@
+# 計画書 §5.8 収束基準追記の書き込み後検証 集約記録
+# 新収束基準（逐語は弾く・本質は人へ・迷えば本質側）の初の自己適用（dogfooding）
+# 起草者（コンシェルジュ）：claude-opus-4-8（メインセッション）。判定に入らず、逐語/本質の分類のみ行い記録（握りつぶし防止）。本質判定は利用者が裁定
+
+meta:
+  session: 43
+  date: "2026-06-01"
+  scope: "計画書 §5.8 補助層D への『検出時の収束基準』追記（773-782行）の書き込み後検証"
+  target_write: "docs/plan/reconstruction-plan-2026-05-21.md §5.8 補助層D 773-782行"
+
+post_write_verification:
+  method: "補助層D 独立3系統（大規模＝複数段落の新規追加）。claude-sonnet-4-6 / gpt-5.5 / gemini-3.1-pro-preview"
+  results:
+    - { model: claude-sonnet-4-6,        verdict: ALL_CLEAR, findings: 0 }
+    - { model: gpt-5.5,                  verdict: DETECTED,  findings: 5 }
+    - { model: gemini-3.1-pro-preview,   verdict: DETECTED,  findings: 5 }
+  detections_aggregated:
+    - id: "あ"
+      content: "日付・セッション番号『2026-06-01 セッション43』が合意文書にない"
+      raised_by: [gpt-5.5, gemini-3.1-pro-preview]
+      classification: "逐語"
+      rationale: "付帯情報。事実として正確（本日2026-06-01、セッション43はTODOと一致）。追記の慣行に沿う"
+    - id: "い"
+      content: "キーパス #review.post_write_verification が合意にない"
+      raised_by: [gpt-5.5, gemini-3.1-pro-preview]
+      classification: "逐語"
+      rationale: "既存の規律本体・計画書が同キーパスを既に使用（規律19/65行）。捏造でなく既存記述と整合"
+    - id: "う"
+      content: "『初期値は上記列挙とする』が合意にない"
+      raised_by: [gpt-5.5, gemini-3.1-pro-preview]
+      classification: "本質側（人へ）"
+      rationale: "逐語パターンの初期値確定が利用者明示合意の射程内か曖昧。迷うので本質側に倒した"
+      escalated: true
+      human_decision: "初期値として確定（書き込みのまま維持、修正なし）"
+      human_decision_source: "利用者明示承認『初期値として確定』（2026-06-01 セッション43）"
+    - id: "え"
+      content: "『5段で検証』が合意・参考事実にない（Geminiは深刻度『高』）"
+      raised_by: [gpt-5.5, gemini-3.1-pro-preview]
+      classification: "逐語"
+      rationale: "事実として正しい（ワークフロー段＝drafting等の5段）。合意の意味に影響しない補足"
+    - id: "お"
+      content: "理由・補足の混入（安全側原則、独自判断禁止と同原則、多層防御の役割分担 等）"
+      raised_by: [gpt-5.5, gemini-3.1-pro-preview]
+      classification: "逐語"
+      rationale: "本セッション議論で利用者と合意済みの趣旨。検証プロンプトに理由を渡さなかったための見かけの不一致"
+  convergence: "本質的指摘（う）を利用者が裁定し確定。未解決の本質的指摘ゼロ＝収束。逐語4種（あ・い・え・お）は弾き、書き込みは修正なしで確定"
+  convergence_basis: "新収束基準（計画書§5.8、本書き込みで新設）の初適用。逐語は収束を妨げない／本質は人へ／迷えば本質側"
+  prompt_design_lesson: "検出あ・い・え・おは、検証プロンプトの参考欄に『日付は本日の事実』『キーパスは既存規律で使用済み』『ワークフロー段は5段』を書かなかったため発生。情報最小化を厳しくしすぎた（実験ノート§3.4.2と同型の教訓）。次回は既存事実を参考欄に入れる"
+  observation: "前回セッション42とは逆パターン（今回はSonnetがALL_CLEAR、OpenAI/Googleが逐語的検出を出した）。新収束基準により、旧基準なら10件で差し戻し・5回ループだった事案が、逐語を弾き本質1件のみ人へ上げて収束した"

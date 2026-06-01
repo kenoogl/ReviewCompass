@@ -770,6 +770,8 @@ session 開始時の標準フロー：
 
 **書き込み規模制御**：書き込み規模に応じて検証者数を可変。**大規模＝ 3 体**（既定モデル識別子は実験ノート §2.1 由来：`claude-sonnet-4-6` ／ `gpt-5.5` ／ `gemini-3.1-pro-preview`）。**小規模＝ 1 体**、起草者系統と異なる独立系統を必須とし、既定は Google `gemini-3.5-flash`（起草者系統＝ Anthropic と原理的に独立、同モデル衝突を予防）。
 
+**検出時の収束基準**：検証で検出が出たときの処理（逐語的指摘は弾く／本質的指摘は人へ上げる／収束の定義／逐語パターン管理）は、動作仕様ファイル `.reviewcompass/specs/workflow-management/post-write-verification-spec.yaml`（デプロイ対象）を正本とする。本計画書は開発文書でデプロイされないため、動作仕様は同ファイルに置き、本節はそれを参照する（2026-06-01 セッション 43 確定。当初本節に直接記述したが、デプロイ時に動作定義が消える問題を避けるため動作仕様ファイルへ移設）。**移行措置**：旧 `retry_policy.max_retries`（人なしの自律的な差し戻しループ）は廃止。設定名 `max_retries` は §5.9.7 の API 通信リトライ専用に戻し、逐語修正後の 1 回確認は別概念 `post_fix_recheck`（回数でなく 1 回の機械的反映確認）とする。
+
 実装段階は補助層 C と同構造の 3 段（段階 1 ＝ LLM 自律、段階 2 ＝書き込み後フック、段階 3 ＝ Git/IDE フック）。現状は段階 1、段階 2 はフェーズ 4 第 2 サイクル以降の実装宿題。
 
 規律本体は規律ファイル [docs/disciplines/discipline_post_write_verification.md](../disciplines/discipline_post_write_verification.md)、yaml 設定は `reviewcompass.yaml#review.post_write_verification` を参照。
