@@ -1,0 +1,53 @@
+# layer1_framework.yaml
+# レイヤ1：レビュー段の論理契約（Layer 1 Review Contract）
+#
+# foundation 機能が所有する、すべての treatment／すべての phase で共有される
+# レビュー状態機械（state machine、状態遷移の決まり事）の正本。
+# runtime 実装の詳細（再試行・サブエージェント派遣・利用者対話の時機）は持たない。
+#
+# 対応設計節：design.md §1 レビュー段の論理契約、§2 役の抽象化
+# 対応要件：Requirement 1（レビュー状態機械の契約）、Requirement 2 受入 1（役の抽象名）
+
+version: "B1.0"
+
+# 役の抽象化（design.md §2）。抽象名のみを固定し、モデルベンダーや具体モデル名は
+# 設定（runtime/config/）に退避する。
+roles:
+  primary_reviewer:
+    intent: 主役。観点ごとに体系的に検査し、所見を網羅的に挙げる
+  adversarial_reviewer:
+    intent: 敵対役。主役結論への安易な同調でなく独立した反証を最低限の振る舞いとする。同意する場合も「反証なし」を意図的結果として記録する（要件 1 受入 4）
+  judgment_reviewer:
+    intent: 判定役。主役と敵対役の所見を一括で読み、採否と影響範囲を決める
+
+# Step A/B/C/D の正本名称のみを固定する（design.md §1）。順序を持つ。
+step_pipeline:
+  - primary_detection
+  - adversarial_review
+  - judgment
+  - integration
+
+# 各段の意図（design.md §1）
+step_intents:
+  primary_detection: 主役検出。観点ごとに所見を網羅的に挙げる（Step A）
+  adversarial_review: 敵対レビュー。独立な反証と追加所見を生成する（Step B）
+  judgment: 判定。must-fix／should-fix／leave-as-is を分類する（Step C）
+  integration: 統合。Step A/B/C の出力を 1 つのレビュー結果へ統合する。追加 LLM 呼び出しを要さず、実行終了時に消費される統合レビュー記録とする（Step D、要件 1 受入 7）
+
+# 実行メタデータ契約への参照（metadata_contract.yaml が正本）
+required_metadata_refs:
+  contract: runtime/foundation/metadata_contract.yaml
+
+# 共有資産の所在（design.md §共有資産配置）。runtime はこれらを取り込む。
+asset_locations:
+  schemas: runtime/schemas/
+  validator_contracts: runtime/validators/contracts/
+  prompts: runtime/prompts/
+  config: runtime/config/
+
+# プロンプト上書き拡張点（design.md §1）。
+# 本機能は「上書き拡張点が枠組みのどこに位置するか」のみを固定する。
+# 上書きの選択順序・優先規則・適用条件は runtime 責務であり、本機能は定義しない。
+override_extension_point:
+  location: runtime/prompts/
+  note: runtime がプロンプト上書き機構を接続するための所在のみを固定。選択順序・優先規則・適用条件は runtime 責務（本機能は定義しない）
