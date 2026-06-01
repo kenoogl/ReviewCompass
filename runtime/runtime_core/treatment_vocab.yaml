@@ -1,0 +1,32 @@
+# treatment_vocab.yaml
+# 処理方式（treatment）の 3 値正本（runtime tasks.md T-003）。
+#
+# treatment は「どの段を使うか」の実行形態を変える軸（design.md §セッションモデル §4）。
+# 値語彙は runtime 所有（foundation §3 により phase_profile／treatment は runtime 所有）。
+# 命名は計画書 §5.15.6 で確定（旧 single／dual／dual+judgment から変更）。
+#
+# 対応設計節：design.md §セッションモデル §4、§treatment × 段実行マトリクス
+# 対応要件：Requirement 2 受入 2
+
+version: "1.0"
+
+# 3 値正本。included_steps は当該 treatment で実行する段（残りは skipped_by_treatment）。
+treatments:
+  primary:
+    description: 主役のみ（旧命名 single）
+    included_steps:
+      - primary_detection
+      - integration
+  adversarial:
+    description: 主役 ＋ 敵対役（旧命名 dual）
+    included_steps:
+      - primary_detection
+      - adversarial_review
+      - integration
+  judgment:
+    description: 主役 ＋ 敵対役 ＋ 判定役（旧命名 dual+judgment）
+    included_steps:
+      - primary_detection
+      - adversarial_review
+      - judgment
+      - integration

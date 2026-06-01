@@ -1,0 +1,56 @@
+# layout_spec.yaml
+# runtime 実行ディレクトリ配置の機械可読正本（runtime tasks.md T-001）。
+#
+# 1 実行（review session）ごとに runtime が生成するディレクトリ構造を宣言する。
+# 物理ディレクトリの実体作成は実行時に session controller（T-002）が run_id ごとに行う。
+# 本ファイルは配置の仕様（どのディレクトリ・ファイルが正本か）のみを定義する。
+#
+# 対応設計節：design.md §実行成果物配置、§配置の根拠、§配置の運用ルール
+# 対応要件：Requirement 1 受入 6（実行ディレクトリ配置と段ファイル命名の所有）、
+#           Requirement 4 受入 1（foundation スキーマ準拠の実行レベル証拠出力）
+
+version: "1.0"
+
+# 実行ルートのパターン。<run_id> は実行ごとに session controller が固定する。
+run_root: "experiments/runs/<run_id>"
+
+# ルート直下のファイル（design.md §実行成果物配置）。
+root_files:
+  - run_manifest.yaml   # 実行メタデータの運用者可読な正本
+  - review_case.json    # foundation スキーマに従う機械可読な正本（唯一の横断正本）
+
+# 必須ディレクトリ 6 件（完了条件 1：5 サブディレクトリ ＋ ルート「.」）。
+# design.md §実行成果物配置のツリーと一致する。
+required_directories:
+  - path: "."
+    purpose: 実行ディレクトリのルート。run_manifest.yaml と review_case.json を直下に置く
+    files:
+      - run_manifest.yaml
+      - review_case.json
+  - path: "steps"
+    purpose: 段単位再演の最小単位。各段の生段証拠（raw step evidence）を保持し、実行終了後は不変
+    files:
+      - step_a_primary_detection.json
+      - step_b_adversarial_review.json
+      - step_c_judgment.json
+      - step_d_integration.json
+  - path: "decisions"
+    purpose: 人間決定連携を生証拠から切り離して保存
+    files:
+      - decision_units.json
+      - human_signoff.json
+  - path: "failures/failure_observations"
+    purpose: 失敗観察を独立成果物として保管（review_case に埋め込まず、review_case の不変性を保つ）
+    files:
+      - "<observation_id>.json"
+  - path: "validation"
+    purpose: 検証器結果と無効化標識を別配置。生証拠を改変しない
+    files:
+      - validator_result.json
+      - invalidation_markers.json
+  - path: "derived"
+    purpose: runtime 便宜成果物。evaluation の正本ではない（便宜成果物の利用は任意）
+    files:
+      - runtime_summary.json
+      - comparison_eligibility_note.json
+      - invalid_run_triage_note.json
