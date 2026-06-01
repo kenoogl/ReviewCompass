@@ -2,7 +2,7 @@
   "feature_name": "foundation",
   "language": "ja",
   "created_at": "2026-05-23T00:00:00+09:00",
-  "updated_at": "2026-06-01T00:00:00+09:00",
+  "updated_at": "2026-06-02T00:00:00+09:00",
   "workflow_state": {
     "intent": {
       "drafting": true,
@@ -19,22 +19,22 @@
       "drafting": true,
       "triad-review": true,
       "review-wave": true,
-      "alignment": false,
-      "approval": false
+      "alignment": true,
+      "approval": true
     },
     "design": {
       "drafting": true,
       "triad-review": true,
       "review-wave": true,
-      "alignment": false,
-      "approval": false
+      "alignment": true,
+      "approval": true
     },
     "tasks": {
       "drafting": true,
       "triad-review": true,
       "review-wave": true,
-      "alignment": false,
-      "approval": false
+      "alignment": true,
+      "approval": true
     },
     "implementation": {
       "drafting": true,
@@ -49,11 +49,11 @@
     "feature-partitioning": false,
     "requirements": true,
     "design": true,
-    "tasks": false,
+    "tasks": true,
     "implementation": false
   },
   "recheck": {
     "upstream_change_pending": true,
-    "impacted_downstream_phases": ["design", "tasks", "implementation"]
+    "impacted_downstream_phases": ["implementation"]
   }
 }
