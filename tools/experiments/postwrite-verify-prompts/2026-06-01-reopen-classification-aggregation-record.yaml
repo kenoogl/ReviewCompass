@@ -1,0 +1,49 @@
+# 再オープン分類記録（foundation review_mode に api_mediated 追加）の書き込み後検証 集約記録
+# 起草者（コンシェルジュ）：claude-opus-4-8（メインセッション）。判定に入らず逐語/本質の分類のみ行い記録（握りつぶし防止）。
+
+meta:
+  session: 46
+  date: "2026-06-01"
+  scope: "docs/reviews/reopen-classification-2026-06-01-foundation-review-mode.md（新規作成）の書き込み後検証"
+  target_write: "docs/reviews/reopen-classification-2026-06-01-foundation-review-mode.md"
+
+post_write_verification:
+  method: "独立 2 系統（起草者 Opus と真に独立な OpenAI／Google のみ。利用者の同社モデル危険性方針に沿い同社 Sonnet は不使用）。gpt-5.5 / gemini-3.1-pro-preview"
+  scale: "手続き記録（単一の分類記録）。large の 3 系統既定に対し、独立 2 系統で実施"
+  results:
+    - { model: gpt-5.5,                verdict: DETECTED, findings: 3, note: "初回は ReadTimeout、timeout 300 秒で再実行し成功（51.3 秒）" }
+    - { model: gemini-3.1-pro-preview, verdict: DETECTED, findings: 2 }
+  detections_aggregated:
+    - id: "G1"
+      raised_by: [gemini-3.1-pro-preview]
+      content: "spec.json 差し戻し一覧に implementation.alignment／approval の false 化が無く、impacted に implementation を含むのと不整合に見える（深刻度 高）"
+      classification: "逐語（記述明確化で対処）"
+      rationale: "実体は正しい。implementation の alignment／approval は既に false のため差し戻し操作は不要。記録の注記に既述だが差し戻し一覧に行が無いため誤読された。注記に『impacted に含むが既に false のため差し戻し不要・第3過程の通常フローで段通過』を追記して明確化"
+      fixed: true
+    - id: "G2"
+      raised_by: [gemini-3.1-pro-preview]
+      content: "metadata_contract.yaml のパスに runtime/ を含むのは誤りではないか（深刻度 低）"
+      classification: "逐語（却下、偽陽性）"
+      rationale: "実ファイルは runtime/foundation/metadata_contract.yaml に物理的に存在し、Read で確認済み。記録本体は問題の事実欄・正本修正欄とも同じフルパスで一貫。Gemini の不一致指摘は検証プロンプト要約で片方を短縮したことに起因し、記録の誤りではない"
+      fixed: false
+    - id: "O1"
+      raised_by: [gpt-5.5]
+      content: "合意決定 1（triad-review 新モデル割り当て Opus/GPT/Gemini）が書き込み結果に反映されていない（深刻度 中）"
+      classification: "逐語（却下、偽陽性）"
+      rationale: "記録本体の『分類根拠』に主役 claude-opus-4-8／敵対役 gpt-5.5／判定役 gemini-3.1-pro-preview を明記済み。検証プロンプトの『書き込み結果』要約に分類根拠本文を含めなかったための見かけの欠落"
+      fixed: false
+    - id: "O2"
+      raised_by: [gpt-5.5]
+      content: "合意決定 2（runtime 以降適用・foundation 据え置き）が明示されていない（深刻度 中）"
+      classification: "逐語（却下、偽陽性）"
+      rationale: "記録本体の『適用範囲の注記』に runtime 以降適用・foundation の既済 triad-review は subagent_mediated 据え置きを明記済み。プロンプト要約に当該本文を含めなかったための見かけの欠落"
+      fixed: false
+    - id: "O3"
+      raised_by: [gpt-5.5]
+      content: "『下流は語彙参照のみで機能横断波及なし』は合意外の追加判断（深刻度 低）"
+      classification: "逐語（却下、許容）"
+      rationale: "分類者が行う正当な波及範囲評価。事実として正しい（requirements.md が『下流は本語彙を参照し再定義してはならない』と明記）。分類記録は分類者の技術評価を含むのが正常"
+      fixed: false
+  convergence: "本質的指摘ゼロ＝収束。G1 を記述明確化で対処、他 4 件は逐語/偽陽性で却下。実体（手戻り種別 R・spec.json 差し戻し・正本修正 6 箇所）に誤りなし"
+  convergence_basis: "規律 post-write-verification の収束基準（逐語は弾く／本質は人へ／迷えば本質側）"
+  prompt_design_lesson: "検証プロンプトの『書き込み結果』要約に分類根拠・適用範囲の本文を含めなかったため、OpenAI が合意決定 1・2 を欠落と誤検出（O1・O2）。前回 §5.8 検証（2026-06-01 集約記録）と同型の教訓＝書き込み結果の要約を十分に渡す"

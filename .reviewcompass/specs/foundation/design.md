@@ -275,10 +275,11 @@ Step D（`integration`）は Step A・B・C の出力を 1 つのレビュー結
   - `invalid`：無効実行
   - `exploratory`：明示的探索実行
   - `analysis_blocked`：分析不能実行（必要入力の不足、または実行未終了、または検証が前提不足で結論不能な場合）
-- `review_mode`（最小 3 値、要件 6 受入 6、今後の経路追加に対応する拡張余地を持つ）
+- `review_mode`（4 値、要件 6 受入 6、今後の経路追加に対応する拡張余地を持つ）
   - `manual_dogfooding`：手動 dogfooding（自食、自分自身を試食すること）レビュー記録
   - `runtime_mediated`：実行時経由のレビュー記録
   - `subagent_mediated`：サブエージェント経由のレビュー記録（計画書 §5.18.13／§5.23.12 由来）
+  - `api_mediated`：独立 API 経由のレビュー記録（triad-review 独立 3 社化由来、2026-06-01 セッション 46）
 
 機能横断データ取り込みを見据えた来歴項目の役割分担（要件 6 受入 7）：
 

@@ -19,22 +19,22 @@
       "drafting": true,
       "triad-review": true,
       "review-wave": true,
-      "alignment": true,
-      "approval": true
+      "alignment": false,
+      "approval": false
     },
     "design": {
       "drafting": true,
       "triad-review": true,
       "review-wave": true,
-      "alignment": true,
-      "approval": true
+      "alignment": false,
+      "approval": false
     },
     "tasks": {
       "drafting": true,
       "triad-review": true,
       "review-wave": true,
-      "alignment": true,
-      "approval": true
+      "alignment": false,
+      "approval": false
     },
     "implementation": {
       "drafting": true,
@@ -47,13 +47,13 @@
   "reopened": {
     "intent": false,
     "feature-partitioning": false,
-    "requirements": false,
+    "requirements": true,
     "design": true,
     "tasks": false,
     "implementation": false
   },
   "recheck": {
-    "upstream_change_pending": false,
-    "impacted_downstream_phases": []
+    "upstream_change_pending": true,
+    "impacted_downstream_phases": ["design", "tasks", "implementation"]
   }
 }

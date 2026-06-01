@@ -1,0 +1,57 @@
+あなたは、ある文書への書き込みが「合意内容を正しく反映し、誤りがないか」を独立に検証する検証者です。書き込んだ本人とは別の立場で、下記の 4 観点で点検してください。問題（検出）があれば具体的に指摘し、問題がなければ ALL_CLEAR と答えてください。判断理由の良し悪しではなく、書き込みの正確性のみを見てください。
+
+# 合意内容（決定事項のみ）
+
+セッション 46（2026-06-01）で確定したこと：
+- foundation のレビューモード語彙正本に `api_mediated`（独立 API 経由＝複数プロバイダーの API を直接呼ぶ経路のレビュー記録）を第 4 の正規値として追加する。
+- これは triad-review の 3 役モデル割り当てを独立 3 社（Opus／GPT／Gemini）へ変更する方針に伴う拡張。
+- 追加は後方互換（既存 3 値は有効のまま第 4 値を追加）。
+- 変更は R 起点の正規再オープン手続きに従い実施。
+
+# 書き込み結果（変更した 5 箇所の内容）
+
+1. **runtime/foundation/metadata_contract.yaml（行 69-74）**
+   `review_mode` のコメントを「最小 3 値」→「4 値」に変更し、4 つ目の値として `api_mediated` を追加。コメント：「独立 API 経由のレビュー記録（triad-review 独立 3 社化由来、2026-06-01 セッション 46）」
+
+2. **requirements.md（Req 6 受入 6、行 131）**
+   `subagent_mediated` の記述に続けて「さらに、独立 API 経由（複数プロバイダーの API を直接呼ぶ経路）のレビュー記録を区別する `api_mediated` を追加値として正本に保持する（triad-review 独立 3 社化由来、2026-06-01 セッション 46 確定）」を追記。
+
+3. **requirements.md（Change Intent 節、行 157）**
+   「レビューモード語彙に独立 API 経由（`api_mediated`）を正式値として追加（Requirement 6 受入 6、triad-review 独立 3 社化由来、2026-06-01 セッション 46 確定）」を追記。
+
+4. **design.md（§3 行 278-282）**
+   `review_mode` のコメントを「最小 3 値」→「4 値」に変更し、4 つ目の値 `api_mediated` を追記。説明：「独立 API 経由のレビュー記録（triad-review 独立 3 社化由来、2026-06-01 セッション 46）」
+
+5. **tasks.md（T-003 完了条件・テスト要件、行 69-70）**
+   完了条件の `review_mode 3 値` を `4 値` に変更し、変更理由「api_mediated 追加で 3 値 → 4 値、2026-06-01 セッション 46」を追記。テスト要件の review_mode 列挙に `api_mediated` を追加。
+
+6. **tests/foundation/test_t003_metadata.py（行 50）**
+   期待値配列 `EXPECTED_VOCABULARIES["review_mode"]` に `"api_mediated"` を追加（4 要素に）。
+
+# 参考（既存の事実、照合用）
+
+- 変更前の review_mode は 3 値（manual_dogfooding／runtime_mediated／subagent_mediated）であったことは事実。
+- subagent_mediated は計画書 §5.18.13／§5.23.12 由来、2026-05-22 に追加された前例がある。
+- 変更後のテストは全 120 件が通過することを確認済み。
+- design.md の review_mode 節は行 278-282 付近にある。
+- tasks.md の T-003 記述は行 69-70 付近にある。
+
+# 検査観点（4 項目）
+
+1. agreement_reflection：合意の「api_mediated を第 4 の正規値として追加、後方互換、triad-review 独立 3 社化由来」が各書き込みに正しく反映されているか。
+2. reference_accuracy：セッション番号（46）・日付（2026-06-01）・ファイルパス・行番号・値名が正しいか。
+3. existing_record_consistency：既存 3 値（manual_dogfooding／runtime_mediated／subagent_mediated）が削除されていないか。subagent_mediated の由来（計画書 §5.18.13／§5.23.12）が消えていないか。
+4. internal_logic：「最小 3 値」→「4 値」への言い換え、完了条件の「3 値 → 4 値」の整合に矛盾がないか。
+
+# 出力形式
+
+次の YAML 形式で答えてください：
+
+verdict: "ALL_CLEAR" | "DETECTED"
+findings:
+  - location: "<箇所名または行番号>"
+    criterion: "agreement_reflection" | "reference_accuracy" | "existing_record_consistency" | "internal_logic"
+    severity: "高" | "中" | "低"
+    observation: "<検出した問題の具体的な内容>"
+comment: |
+  <総評（任意）>

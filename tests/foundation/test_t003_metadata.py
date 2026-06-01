@@ -47,7 +47,7 @@ EXPECTED_VOCABULARIES = {
   "validator_status": ["not_run", "passed", "failed", "blocked"],
   "human_signoff_status": ["pending", "approved", "rejected", "deferred"],
   "evidence_class": ["valid", "invalid", "exploratory", "analysis_blocked"],
-  "review_mode": ["manual_dogfooding", "runtime_mediated", "subagent_mediated"],
+  "review_mode": ["manual_dogfooding", "runtime_mediated", "subagent_mediated", "api_mediated"],
   "confidence_label": ["high", "medium", "low"],
 }
 

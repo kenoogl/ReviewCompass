@@ -66,8 +66,8 @@ language: ja
 - **責務**：実行メタデータの必須項目一覧（20 項目、topic-03 F-003 案 1 採用で「22 → 20」訂正）、4 種の状態語彙、来歴項目、推定タスク用語彙を YAML 成果物として固定。`run_status` ／ `validator_status` ／ `human_signoff_status` ／ `evidence_class` の責務分離を明示。語彙正本の所有関係も明示
 - **前提タスク**：T-002
 - **成果物**：`runtime/foundation/metadata_contract.yaml`
-- **完了条件**：必須項目 20 件が列挙され、6 種の語彙（`run_status` 4 値 ／ `validator_status` 4 値 ／ `human_signoff_status` 4 値 ／ `evidence_class` 4 値 ／ `review_mode` 3 値 ／ `confidence_label` 3 値）が宣言されている（topic-02 F-002 案 1 採用で「5 種 → 6 種」訂正、列挙数と一致）
-- **テスト要件**：YAML 解析テスト、必須項目数テスト、語彙正本値テスト（`run_status`＝`created`／`in_progress`／`closed`／`orchestration_failed`、`validator_status`＝`not_run`／`passed`／`failed`／`blocked`、`human_signoff_status`＝`pending`／`approved`／`rejected`／`deferred`、`evidence_class`＝`valid`／`invalid`／`exploratory`／`analysis_blocked`、`review_mode`＝`manual_dogfooding`／`runtime_mediated`／`subagent_mediated`、`confidence_label`＝`high`／`medium`／`low`）（topic-08 A-001 案 1 採用で `run_status` ／ `human_signoff_status` の値テストを追加）
+- **完了条件**：必須項目 20 件が列挙され、6 種の語彙（`run_status` 4 値 ／ `validator_status` 4 値 ／ `human_signoff_status` 4 値 ／ `evidence_class` 4 値 ／ `review_mode` 4 値 ／ `confidence_label` 3 値）が宣言されている（topic-02 F-002 案 1 採用で「5 種 → 6 種」訂正、`review_mode` は api_mediated 追加で 3 値 → 4 値、2026-06-01 セッション 46）
+- **テスト要件**：YAML 解析テスト、必須項目数テスト、語彙正本値テスト（`run_status`＝`created`／`in_progress`／`closed`／`orchestration_failed`、`validator_status`＝`not_run`／`passed`／`failed`／`blocked`、`human_signoff_status`＝`pending`／`approved`／`rejected`／`deferred`、`evidence_class`＝`valid`／`invalid`／`exploratory`／`analysis_blocked`、`review_mode`＝`manual_dogfooding`／`runtime_mediated`／`subagent_mediated`／`api_mediated`、`confidence_label`＝`high`／`medium`／`low`）（topic-08 A-001 案 1 採用で `run_status` ／ `human_signoff_status` の値テストを追加）
 
 ### T-004：共有スキーマ群（5 ファイル）
 

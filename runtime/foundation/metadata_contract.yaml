@@ -66,11 +66,12 @@ vocabularies:
     - invalid           # 無効実行
     - exploratory       # 明示的探索実行
     - analysis_blocked  # 分析不能実行（入力不足・実行未終了・前提不足で結論不能）
-  # review_mode（最小 3 値、要件 6 受入 6、今後の経路追加に対応する拡張余地を持つ）
+  # review_mode（4 値、要件 6 受入 6、今後の経路追加に対応する拡張余地を持つ）
   review_mode:
     - manual_dogfooding   # 手動 dogfooding レビュー記録
     - runtime_mediated    # 実行時経由のレビュー記録
     - subagent_mediated   # サブエージェント経由のレビュー記録（計画書 §5.18.13／§5.23.12 由来）
+    - api_mediated        # 独立 API 経由のレビュー記録（triad-review 独立 3 社化由来、2026-06-01 セッション 46）
   # confidence_label（3 値、要件 6 受入 11、推定タスク用、conformance-evaluation は再定義禁止）
   confidence_label:
     - high     # 根拠が強い
