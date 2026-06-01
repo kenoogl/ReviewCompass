@@ -36,7 +36,7 @@
 | [discipline_workflow_precheck_invocation.md](discipline_workflow_precheck_invocation.md) | 不可逆操作の直前に tools/check-workflow-action.py を呼び verdict／reasons を応答に明示 |
 | [discipline_approval_operation.md](discipline_approval_operation.md) | 不可逆操作は利用者明示承認必須、明示的肯定発言のみ承認、確定記述には承認出典を併記 |
 | [discipline_facts_vs_interpretation.md](discipline_facts_vs_interpretation.md) | 達成基準を事前宣言、編集後は機械的照合、事実と解釈を別個に示し出典に辿れる形に |
-| [discipline_pre_action_precheck.md](discipline_pre_action_precheck.md) | 集約・横断操作の前に 5 項目チェックリスト＋grep＋3 分類を応答内で明示 |
+| [discipline_pre_action_precheck.md](discipline_pre_action_precheck.md) | 集約・横断操作の前に 5 項目チェックリスト＋grep＋3 分類を応答内で明示。波及調査は全対象×全表記（機械可読の識別子と人間可読の和訳の両方）で網羅 grep してから着手（2026-06-02 セッション 47 追加） |
 | [discipline_workflow_state_truth_source.md](discipline_workflow_state_truth_source.md) | 状態判定は workflow_state を読み、過去確定事項は出典付きのみ信頼 |
 | [discipline_concise_complete_report.md](discipline_concise_complete_report.md) | 作業後は応答末尾で実施内容を箇条書きで全件列挙、ファイルパス・変更内容を必ず含める |
 | [discipline_reopen_procedure_for_settled_topics.md](discipline_reopen_procedure_for_settled_topics.md) | 確定済み論点を変更する場合は 5 ステップ（宣言・理由・新案・明示承認・履歴記録） |

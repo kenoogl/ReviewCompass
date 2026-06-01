@@ -21,7 +21,11 @@ metadata:
 - 3 分類で categorize（編集／追記／削除、または機能内対処／波及／遡及）
 - scope 独立検証（提案範囲が利用者意図と一致するか）
 
-**Why:** 旧 2 規律（aggregation-self-check／multi-file-dependency-precheck v2.1）を統合（2026-05-25 セッション 24）。事前検査は集約局面と多 file 操作の両方で必要、規律として一体で扱う方が自然。過去の経緯：aggregation-self-check はセッション 21 の表作成前自己検査として制定、multi-file-dependency-precheck v2.1 はセッション 22 で旧 pre-action-checklist を統合した経緯がある。
+**波及調査の網羅性（2026-06-02 セッション 47 追加）：**
+
+ある変更が他機能・他文書に波及するかを調べるときは、影響を受けうる **全対象**（全機能・全文書）を **全表記**（機械可読の識別子と人間可読の和訳の両方、例：`review_mode` と「レビューモード」）で網羅 grep し、波及の全範囲を確定してから対処に着手する。部分的な対象・単一表記での調査で着手すると、調査漏れにより同じ再オープン手続きを繰り返すことになる。
+
+**Why:** 旧 2 規律（aggregation-self-check／multi-file-dependency-precheck v2.1）を統合（2026-05-25 セッション 24）。事前検査は集約局面と多 file 操作の両方で必要、規律として一体で扱う方が自然。過去の経緯：aggregation-self-check はセッション 21 の表作成前自己検査として制定、multi-file-dependency-precheck v2.1 はセッション 22 で旧 pre-action-checklist を統合した経緯がある。波及調査の網羅性は 2026-06-02 セッション 47 で追加：foundation の `review_mode` 正本への `api_mediated` 追加の波及対処で、英語表記「review_mode」のみ・部分機能のみの調査で着手したため、日本語表記「レビューモード」の箇所や残りの機能を取りこぼし、再オープン手続きを 3 回繰り返した失敗が出典。
 
 **How to apply:**
 
