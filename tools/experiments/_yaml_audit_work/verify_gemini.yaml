@@ -1,0 +1,19 @@
+```yaml
+verdict: HAS_FINDINGS
+findings:
+  - point: 4
+    severity: high
+    location: 成果物2 (.reviewcompass/specs/workflow-management/yaml-audit-spec.yaml) の scope_of_application.evaluation_rule
+    description: 「include に一致するファイルを対象とし、そのうち exclude に一致するものを外す」という exclude 優先の操作を定義しながら、直後に「（include 優先）」「include 優先により対象に含める」と逆の指示をしており、内部論理が完全に破綻している。この記述のまま実装すると exclude 側の処理によって `runtime/config/**/*.yaml` が監査対象から漏れてしまう。
+    classification: substantive
+  - point: 4
+    severity: medium
+    location: 成果物1 (docs/disciplines/discipline_yaml_audit.md) の「段階づけ」および 成果物2 の implementation_stages.stage2
+    description: 合意事項4において「⑦⑧は機械検査スクリプトが利用可能になった時点で必須化」とされており、⑦⑧自体がA系統（機械検査）の観点であるにもかかわらず、段階2の記述が「A系統①〜⑥を機械検査スクリプト...化」と①〜⑥のみに限定されている。これでは⑦⑧がスクリプト化されないまま必須化されるように読め、論理が矛盾している。
+    classification: substantive
+  - point: 5
+    severity: low
+    location: 成果物2 (.reviewcompass/specs/workflow-management/yaml-audit-spec.yaml) の convergence_criterion.reuse_from
+    description: 値に `#` を含む文字列（`post-write-verification-spec.yaml#convergence_criterion`）がクォートされていない。YAML 1.1 など一部のパーサー環境では `#` 以降がインラインコメントとして解釈され、意図した参照パスが途切れる危険性があるため、クォートで囲むのが安全である。
+    classification: literal
+```

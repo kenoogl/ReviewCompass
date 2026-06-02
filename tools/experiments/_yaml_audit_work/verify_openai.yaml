@@ -1,0 +1,22 @@
+verdict: HAS_FINDINGS
+findings:
+  - point: 4
+    severity: high
+    location: ".reviewcompass/specs/workflow-management/yaml-audit-spec.yaml > scope_of_application.evaluation_rule"
+    description: "include 優先としながら「include に一致するファイルを対象とし、そのうち exclude に一致するものを外す」と書かれており、runtime/config/**/*.yaml の扱いが規則文として矛盾している。include 優先で対象に含める規則へ一本化が必要。"
+    classification: substantive
+  - point: 2
+    severity: medium
+    location: ".reviewcompass/specs/workflow-management/yaml-audit-spec.yaml > meta.related.config"
+    description: "設定値参照が reviewcompass.yaml#review.yaml_audit となっているが、対象範囲では reviewcompass.yaml は runtime/config/**/*.yaml 側の例として扱われているため、参照パスが整合していない可能性がある。"
+    classification: substantive
+  - point: 3
+    severity: medium
+    location: "docs/disciplines/discipline_yaml_audit.md > 過去成果物"
+    description: "初回検証の合意は「新たに監査対象へ組み入れる yaml は組み入れ時に全件を初回検証」だが、この節では「発効後に新規対象へ組み入れる yaml」に限定して読めるため、発効時に対象へ組み入れられる既存 yaml の全件初回検証が曖昧になる。"
+    classification: substantive
+  - point: 4
+    severity: medium
+    location: "docs/disciplines/discipline_yaml_audit.md > 段階づけ / .reviewcompass/specs/workflow-management/yaml-audit-spec.yaml > implementation_stages"
+    description: "段階2で⑦⑧を自動必須化するとしながら、機械検査スクリプト化の対象が A 系統①〜⑥に限定されており、必須化後の⑦⑧をどの機械検査で判定するかが不明確。"
+    classification: substantive

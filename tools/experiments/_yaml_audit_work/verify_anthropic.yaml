@@ -1,0 +1,81 @@
+```yaml
+verdict: HAS_FINDINGS
+findings:
+  - point: 2
+    severity: high
+    location: "成果物2 (.reviewcompass/specs/workflow-management/yaml-audit-spec.yaml) > scope_of_application > exclude"
+    description: |
+      exclude リストの "runtime/**/*.yaml" は runtime/config/**/*.yaml も形式上包含するため、
+      include 優先ルールを evaluation_rule に文章で記述して回避しているが、
+      yaml 処理系（例：glob ライブラリ）によっては include 優先が保証されない。
+      合意決定事項2では「除く＝runtime/（config 以外）」と明示されており、
+      exclude パターンを "runtime/**/*.yaml" ではなく include との重複を生じない
+      より限定的なパターン（例："runtime/[!c]*/**/*.yaml" や
+      "runtime/!(config)/**/*.yaml" など、config 以外を指すパターン）に変更するか、
+      少なくとも現行パターンの危険性を warn コメントで明記すべき。
+      evaluation_rule の文章説明だけでは機械判定の安全性が担保されない。
+    classification: substantive
+
+  - point: 1
+    severity: medium
+    location: "成果物1 (docs/disciplines/discipline_yaml_audit.md) > name フロントマター"
+    description: |
+      フロントマターの type フィールドが "feedback" となっている。
+      本ファイルは規律（discipline）文書であり、合意決定事項7の「規律本体（md）＋動作仕様（yaml）の2点構成」
+      に照らすと type は "discipline" または同等の値が適切と考えられる。
+      "feedback" は md 用書き込み後検証（post-write-verification）の type と同じ可能性があり、
+      分類の混同を招く。意図的であれば説明が必要。
+    classification: substantive
+
+  - point: 3
+    severity: medium
+    location: "成果物1 > 段階づけ > 段階2 および 成果物2 > implementation_stages > stage2"
+    description: |
+      成果物1の段階2の記述「A 系統①〜⑥を機械検査スクリプト＋自動テストに実装。⑦⑧がここで自動必須化」
+      と、成果物2 stage2 の記述「A系統①〜⑥を機械検査スクリプト（tools/）＋自動テスト（tests/）化。⑦⑧自動必須化」
+      は整合しているが、promotion 節の trigger 条件 "machine_check_script_available" と
+      stage2 の到達条件との関係が明示されていない。
+      「段階2に移行した時点」と「スクリプトが利用可能になった時点」が同義かどうかが
+      どちらの成果物にも明記されておらず、段階移行と ⑦⑧ 必須化のタイミングが
+      独立事象として解釈される余地がある。合意決定事項4・5の意図（段階2で⑦⑧が自動必須化）
+      を確実に表現するため、いずれかの文書に両者の同値性を補記することが望ましい。
+    classification: substantive
+
+  - point: 4
+    severity: medium
+    location: "成果物2 > convergence_criterion > reuse_from"
+    description: |
+      "reuse_from: post-write-verification-spec.yaml#convergence_criterion" と記述されているが、
+      reuse_from は本 yaml 内で定義・説明されていないカスタムキーであり、
+      機械処理でどのように解釈・適用されるかが不明。
+      参照先ファイルの convergence_criterion 節を実際に継承・マージする仕組みが
+      段階1では存在しない（別系統モデルが代行する段階）ため、
+      この記述が「将来の実装方針の注記」なのか「現時点で有効な参照」なのかが曖昧。
+      意図を明確にするコメントを付けるか、注記としての位置づけを明示すべき。
+    classification: substantive
+
+  - point: 3
+    severity: low
+    location: "成果物1 > 関連規律 および 成果物2 > meta > related > sibling"
+    description: |
+      成果物2の meta.related.sibling は
+      ".reviewcompass/specs/workflow-management/post-write-verification-spec.yaml" を指しているが、
+      成果物1の関連規律節には同ファイルへの直接参照がなく [[post-write-verification]] の
+      規律ファイルへの参照のみである。
+      成果物1から動作仕様レベルの姉妹ファイルへの参照は不要としても、
+      両成果物の related 情報の粒度が非対称であることは確認の上での設計か、
+      記載漏れかが判別できない。意図的であればコメントで補記が望ましい。
+    classification: literal
+
+  - point: 5
+    severity: low
+    location: "成果物2 > scope_of_application > exclude > tools/**/*.yaml コメント"
+    description: |
+      exclude の "tools/**/*.yaml" のインラインコメントが "# 実験データ" となっているが、
+      成果物1の対応箇所では "tools/・docs/ 配下＝実験データ・記録" と両者を併記している。
+      yaml 側コメントの "実験データ" は tools/ の説明としては不正確ではないが、
+      docs/**/*.yaml のコメント "# 記録" と合わせて読むと、
+      tools/ が「実験データのみ」という誤解を招く可能性がある。
+      成果物1との記述を揃えることが望ましい（軽微）。
+    classification: literal
+```

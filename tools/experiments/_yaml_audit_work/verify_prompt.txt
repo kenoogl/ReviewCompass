@@ -1,0 +1,294 @@
+あなたは独立した検証者です。ある開発プロジェクトで「yaml ファイルの監査の仕組み」を
+新しく定義する 2 つのファイルが起草されました。起草者とは別系統のあなたに、起草が正しく
+書けているかの点検を依頼します。判断理由は伏せ、合意された決定事項のみ示します。
+
+# 合意された決定事項（箇条書き）
+1. レビューの仕組みの根幹を決める設定・動作仕様 yaml を監査する規定を新設する。既存の md 文書用
+   「書き込み後検証（post-write-verification）」とは別立てとする。
+2. 対象は「ワークフロー 5 段の成果物ではなく、5 段の外側で直接編集される設定・動作仕様 yaml」。
+   場所パターンで判定する。含める=config/**/*.yaml, runtime/config/**/*.yaml,
+   stages/*.yaml（直下のみ）, .reviewcompass/specs/**/*.yaml。
+   除く=runtime/（config 以外）, tools/, docs/, stages/completed/, stages/in-progress/,
+   *.md, spec.json。
+3. 監査の観点は 11 項目。A 系統（機械検査）=①構文 ②構造・必須 ③値の語彙 ④参照の実在
+   ⑤規律・計画との節一致 ⑥単一正本・重複整合（①〜⑥は必須）、⑦下流コード・テスト波及
+   ⑧検証テスト存在（推奨）。B 系統（独立検証）=⑨合意反映 ⑩安全側既定・規律非矛盾
+   ⑪デプロイ／開発文書分離。
+4. ⑦⑧は機械検査スクリプトが利用可能になった時点で自動的に必須化する（3 点：状態への条件連動・
+   忘れの自動検出・3 か所への多重リマインダ）。
+5. 実行は段階 1（別系統モデルが点検、現状）／段階 2（機械検査スクリプト化、⑦⑧自動必須化）／
+   段階 3（commit・push 段で差し戻し）。
+6. 新たに監査対象へ組み入れる yaml は組み入れ時に全件を初回検証する（「過去への遡及」ではなく
+   初回適用。md 用の「遡及しない原則」とは別概念）。
+7. 配置は、規律本体（md）＋動作仕様（yaml）の 2 点構成とする。
+
+
+# 成果物 1：docs/disciplines/discipline_yaml_audit.md
+
+---
+name: yaml-audit
+description: レビューの仕組みの根幹を決める設定・動作仕様 yaml を書き込み後に監査する規律。md 用の書き込み後検証とは別立てで、yaml の性質に応じた観点（機械的整合を核に、意味判断を独立検証で補う）で点検する。新規に監査対象へ組み入れる yaml は組み入れ時に初回検証する（遡及とは別概念）。2026-06-02 セッション50 新設。
+metadata:
+  type: feedback
+---
+
+レビューの仕組みの根幹を決める設定・動作仕様 yaml（ワークフロー5段の成果物ではなく、5段の外側で直接編集されるもの）への書き込み後、書いた本人とは別系統の検証者による監査を必ず実施する。本規律は md（規律・仕様・計画）を対象とする書き込み後検証（[[post-write-verification]]）とは別立てで、yaml の性質に応じた観点で点検する。動作の詳細（対象範囲・観点・収束基準・初回検証・段階づけ）は動作仕様ファイル `.reviewcompass/specs/workflow-management/yaml-audit-spec.yaml` を正本とし、本規律はそれを参照する。
+
+**Why**：レビューの仕組みの根幹を決めるのは yaml（設定・動作仕様）だが、これまで yaml には監査の規定がなかった。md には書き込み後検証（[[post-write-verification]]）があるが、yaml は性質が異なる（人が読む文書ではなく機械が読む構造化データ）ため監査の観点も異なり、md 用の規律をそのまま当てられない。無監査の yaml が誤っていると、レビュー機構そのものが静かに壊れる（例：規律本体が「yaml にある」と参照する節が、実物の yaml に存在しない不整合が、md 用検証では捕まらない）。監査されていないこと自体が重大な悪影響を持つため、yaml 専用の監査を新設する。2026-06-02 セッション50 で利用者決定。
+
+**適用範囲（対象＝場所パターン方式）：**
+
+5段の外側で直接編集される設定・動作仕様 yaml を対象とする。明示列挙ではなく場所と拡張子で機械判定する（対象が増えても自動で拾うため）。
+
+- 対象に含める：
+  - `config/**/*.yaml`（API などの設定）
+  - `runtime/config/**/*.yaml`（reviewcompass.yaml などの設定）
+  - `stages/*.yaml`（直下のみ。ワークフロー段の定義）
+  - `.reviewcompass/specs/**/*.yaml`（各機能の動作仕様）
+- 対象から除く：
+  - `runtime/`（`config/` を除く）配下＝ runtime 実装の成果物（実装フェーズの3役レビューで検証）
+  - `tools/`・`docs/` 配下＝実験データ・記録
+  - `stages/completed/`・`stages/in-progress/` 配下＝実行時の状態ファイル
+  - `*.md`・`spec.json` ＝ 5段ワークフローの成果物（別経路で検証）
+- 補助ルール：
+  - specs 配下の yaml は動作仕様とみなす（5段成果物は md と spec.json。yaml を成果物にしない前提）
+  - 設定ファイルは `config/` か `runtime/config/` に置く規約とし、置き場所のばらつきによる漏れを防ぐ
+  - 判定に迷う新規ファイル・新規ディレクトリは対象側に倒す
+
+**監査の観点（11 項目、2 系統）：**
+
+A 系統（機械で静的に検査できる。必須①〜⑥／推奨⑦⑧）：
+
+1. 構文妥当性：yaml として壊れず読めるか
+2. 構造・必須項目：期待する節・キーがそろっているか
+3. 値の妥当性：列挙値が決められた語彙に収まるか
+4. 参照の実在：他ファイルを指す参照先が実在するか
+5. 規律・計画書との節一致：規律・計画書が「yaml にある」と書く節と実物が一致するか
+6. 単一正本・重複整合：同じ動作を複数ファイルに書いた場合に値が一致するか
+7. （推奨）下流コード・テストへの波及：節名・キー・値を変えたとき、読むコード（`tools/`）やテスト（`tests/`）が追従しているか
+8. （推奨）検証テストの存在：その yaml の構造・値を検査する自動テストがあるか
+
+B 系統（意味・原則の判断。独立検証で点検）：
+
+9. 合意反映：書かれた値が利用者と合意した内容どおりか
+10. 安全側既定・規律との非矛盾：既定値が安全側に倒れ、確定済み規律（検証者の独立性・起草者バイアス排除等）に反していないか
+11. デプロイ／開発文書の分離：製品に同梱される yaml に開発経緯を書きすぎていないか、動作定義が開発文書側に残っていないか
+
+**監査の方法：**
+
+- A 系統（機械検査）：機械的なスクリプトで検査する（段階2以降）。スクリプトが未整備の段階1では、起草者と異なる別系統モデルが A 系統の観点も点検する。
+- B 系統（独立検証）：md 用の書き込み後検証（[[post-write-verification]]）の検証者を流用し、別系統モデルが意味・原則を点検する。
+- 検証者の独立性：起草者が自分の書いた yaml を自己点検しない（起草者バイアスの回避）。検証は必ず起草者と別系統が行う。
+- フォールバック：必要な独立系統が揃わない場合は人へエスカレートする（[[post-write-verification]] のフォールバック節および各 yaml の応答可用性規定と同原則）。
+
+**⑦⑧の確実な必須化（3点セット）：**
+
+⑦⑧は当初「推奨」だが、人の記憶に頼らず確実に必須化するため次を据える：
+
+1. 状態への条件連動（中核）：⑦⑧は機械検査スクリプトが利用可能になった時点で自動的に「必須」へ切り替わる（人の作業を介さない）
+2. 忘れの自動検出（保険）：スクリプトが存在するのに⑦⑧が推奨のままという矛盾を、監査が警告（不合格）として検出する
+3. リマインダの多重化：「段階2で⑦⑧を必須化」を `TODO_NEXT_SESSION.md`／本規律の段階づけの節／動作仕様 yaml の3か所に記録する
+
+**初回検証（新規対象の組み入れ時。遡及とは別概念）：**
+
+新たに監査対象へ組み入れる yaml は、組み入れ時に全件を初回検証する。yaml はこれまで監査体制の外にあり一度も検証されていないため、これは「過去への遡及」ではなく「これまで無監査だったものを初めて監査する初回適用」である。md 用書き込み後検証の「遡及しない原則」は既存の監査体制に対する過去分の扱いであり、本規律の初回検証とは別物。ここで「遡及しない原則」を持ち出すのは筋違いであり、監査されていないこと自体の悪影響を優先して全件を初回検証する（2026-06-02 セッション50 利用者裁定）。
+
+**段階づけ（[[post-write-verification]] と同構造）：**
+
+- 段階1（現状）：書き込み完了を認識したら、別系統モデルが観点①〜⑪を点検。止めるかは起草者の自律判断
+- 段階2（将来）：A 系統①〜⑥を機械検査スクリプト（`tools/`）＋自動テスト（`tests/`）に実装。**⑦⑧がここで自動必須化**。書き込み完了時に書き込み後フックで検証を起動し差し戻す
+- 段階3（将来）：commit／push 段で Git／IDE フックにより未検査の書き込みを機械的に差し戻す（段階2の書き込み完了時フックに対し、本段は commit／push 時の最終関門）
+
+**収束基準：**
+
+検出時の処理（逐語的指摘は弾く／本質的指摘は人へ上げる／収束の定義）は、md 用書き込み後検証と同じ考え方を採り、動作仕様ファイル `yaml-audit-spec.yaml` の収束基準に従う。
+
+**How to apply：**
+
+- 対象 yaml の書き込み完了を起点に、別系統の検証者で観点①〜⑪を点検する（段階別に手段が異なる、上記段階づけ）
+- 検証者には合意内容（決定の箇条書きのみ）と書き込み結果のみ渡す（[[post-write-verification]] の情報最小化と同原則）
+- 検出は収束基準で分類処理（逐語は弾く、本質は人へ）
+- 新規対象の組み入れ時は全件を初回検証する
+
+**過去成果物：**
+
+- 本規律の発効後に新規対象へ組み入れる yaml は初回検証する（上記）。既存の監査対象 yaml の以後の誤りは、発見の都度、再オープン手続き（`docs/operations/REOPEN_PROCEDURE.md`）で修正する。
+
+**関連規律：**
+
+- [[post-write-verification]]（md 用の書き込み後検証。本規律は yaml を担当し責務を分担。検証者を流用）
+- 計画書 §5.8 補助層 E（多層防御における位置づけ）
+- [[facts-vs-interpretation]]（書き込み前の機械的照合と相補的）
+- [[workflow-precheck-invocation]]（spec.json 状態変更の事前検査と相補的）
+
+
+# 成果物 2：.reviewcompass/specs/workflow-management/yaml-audit-spec.yaml
+
+# yaml-audit 動作仕様
+# レビューの仕組みの根幹を決める設定・動作仕様 yaml の書き込み後監査を定義する正本。デプロイ対象。
+# 規律 docs/disciplines/discipline_yaml_audit.md と計画書 §5.8 補助層 E が本ファイルを参照する。
+
+meta:
+  name: yaml-audit-spec
+  scope: 設定・動作仕様 yaml の書き込み後監査（対象範囲・観点・収束基準・初回検証・段階づけ）
+  owner: workflow-management
+  related:
+    discipline: docs/disciplines/discipline_yaml_audit.md   # 行動規範
+    plan: "docs/plan/reconstruction-plan-2026-05-21.md §5.8 補助層 E"  # 経緯・位置づけ（開発文書）
+    sibling: .reviewcompass/specs/workflow-management/post-write-verification-spec.yaml  # md 用の姉妹監査
+    config: "reviewcompass.yaml#review.yaml_audit"           # 設定値（検証者モデル・逐語リスト）
+
+scope_of_application:                    # 対象範囲（場所パターン方式）
+  description: |
+    5段ワークフローの成果物ではなく、5段の外側で直接編集される設定・動作仕様 yaml を対象とする。
+    明示列挙ではなく場所と拡張子で機械判定する（対象が増えても自動で拾う）。
+    specs 配下の yaml は動作仕様とみなす（5段成果物は md と spec.json。yaml を成果物にしない前提）。
+    判定に迷う新規ファイル・新規ディレクトリは対象側に倒す。
+  include:
+    - "config/**/*.yaml"               # API などの設定
+    - "runtime/config/**/*.yaml"       # reviewcompass.yaml などの設定
+    - "stages/*.yaml"                  # 直下のみ。ワークフロー段の定義
+    - ".reviewcompass/specs/**/*.yaml" # 各機能の動作仕様
+  exclude:
+    - "runtime/**/*.yaml"              # runtime 実装の成果物（ただし runtime/config/** は include 優先で対象、evaluation_rule 参照）
+    - "tools/**/*.yaml"               # 実験データ
+    - "docs/**/*.yaml"                # 記録
+    - "stages/completed/**/*.yaml"    # 実行時の状態ファイル
+    - "stages/in-progress/**/*.yaml"  # 実行時の状態ファイル
+    - "**/*.md"                       # 5段成果物（別経路で検証）
+    - "**/spec.json"                  # spec.json は補助層 C で検証
+  evaluation_rule: |
+    include に一致するファイルを対象とし、そのうち exclude に一致するものを外す（include 優先）。
+    runtime/config/**/*.yaml は include に一致するため、exclude の runtime/**/*.yaml にも
+    形式上一致するが、include 優先により対象に含める（glob の評価順序に依存させない）。
+  placement_rule: 設定ファイルは config/ か runtime/config/ に置く（置き場所のばらつきによる漏れ防止）
+
+inspection_criteria:                    # 監査の観点（11 項目、2 系統）
+  # 主キーは id（数値。promotion.targets が id を参照）。key は機械処理用の英語識別子。
+  # A 系統：機械で静的に検査できる観点
+  - id: 1
+    key: syntax_validity
+    series: A
+    status: required
+    name: 構文妥当性（yaml として壊れず読めるか）
+  - id: 2
+    key: structure_required_keys
+    series: A
+    status: required
+    name: 構造・必須項目（期待する節・キーがそろっているか）
+  - id: 3
+    key: value_vocabulary
+    series: A
+    status: required
+    name: 値の妥当性（列挙値が決められた語彙に収まるか）
+  - id: 4
+    key: reference_existence
+    series: A
+    status: required
+    name: 参照の実在（他ファイルを指す参照先が実在するか）
+  - id: 5
+    key: discipline_plan_section_match
+    series: A
+    status: required
+    name: 規律・計画書との節一致（参照される節が実物の yaml に存在するか）
+  - id: 6
+    key: single_source_consistency
+    series: A
+    status: required
+    name: 単一正本・重複整合（同じ動作の重複値が一致するか）
+  - id: 7
+    key: downstream_code_test_impact
+    series: A
+    status: recommended            # 段階2で required に自動昇格（promotion 節）
+    promote_when: machine_check_script_available
+    name: 下流コード・テストへの波及（読むコード／テストが追従しているか）
+  - id: 8
+    key: verification_test_presence
+    series: A
+    status: recommended            # 段階2で required に自動昇格（promotion 節）
+    promote_when: machine_check_script_available
+    name: 検証テストの存在（構造・値を検査する自動テストがあるか）
+  # B 系統：意味・原則の判断（独立検証で点検）
+  - id: 9
+    key: agreement_reflection
+    series: B
+    status: required
+    name: 合意反映（値が利用者合意どおりか）
+  - id: 10
+    key: safe_default_discipline_consistency
+    series: B
+    status: required
+    name: 安全側既定・規律との非矛盾（既定が安全側か、確定規律に反しないか）
+  - id: 11
+    key: deploy_dev_separation
+    series: B
+    status: required
+    name: デプロイ／開発文書の分離（経緯の書きすぎ・動作定義の残置がないか）
+
+promotion:                              # ⑦⑧の確実な必須化（3点セット）
+  targets: [7, 8]
+  current_status: recommended
+  trigger: machine_check_script_available   # 機械検査スクリプトが利用可能になったとき
+  promoted_status: required
+  forgetting_detector: |
+    機械検査スクリプトが存在し、かつ id 7・8 が recommended のままの場合は、
+    監査を warning（不合格）とする。必須化の漏れを機械的に検出する保険。
+  reminders:                            # 同内容を 3 か所に多重記録
+    - TODO_NEXT_SESSION.md
+    - docs/disciplines/discipline_yaml_audit.md（段階づけの節）
+    - .reviewcompass/specs/workflow-management/yaml-audit-spec.yaml（本ファイルの promotion 節）
+
+verification:                           # 監査の方法
+  independence: 起草者と別系統の検証者が行う（起草者の自己点検を禁止、起草者バイアス回避）
+  method:
+    A:                                  # A 系統（機械検査）の手段は段階で変わる
+      stage1: independent_model_proxy   # 段階1：機械検査スクリプト未整備のため別系統モデルが代行
+      stage2_plus: machine_check        # 段階2以降：機械検査スクリプト
+    B: independent_review               # B 系統：post-write-verification の検証者を流用
+  information_policy: 検証者には合意内容（決定の箇条書きのみ）と書き込み結果のみ渡す（情報最小化）
+  on_incomplete_responses: escalate_to_human   # 必要な独立系統が揃わない場合は人へ
+  same_family_substitute: requires_explicit_approval  # 同一系統内代替は既定で不可、明示承認時のみ
+
+initial_verification:                   # 新規対象の組み入れ時（遡及とは別概念）
+  rule: 新たに監査対象へ組み入れる yaml は、組み入れ時に全件を初回検証する
+  rationale: |
+    yaml はこれまで監査体制の外にあり一度も検証されていない。これは「過去への遡及」ではなく
+    「これまで無監査だったものを初めて監査する初回適用」である。md 用書き込み後検証の
+    「遡及しない原則」は既存監査体制の過去分の扱いであり、本初回検証とは別概念。
+    ここで遡及しない原則を持ち出すのは筋違いで、監査されていないこと自体の悪影響を優先する。
+  not_to_be_confused_with: post-write-verification の遡及しない原則
+
+convergence_criterion:                  # 収束基準（md 用と同じ考え方）
+  reuse_from: post-write-verification-spec.yaml#convergence_criterion
+  classify:
+    - type: literal                     # 逐語的指摘
+      action: skip                      # 収束を妨げない
+    - type: substantive                 # 本質的指摘
+      action: escalate_to_human         # 起草者が独断で修正せず人へ上げる
+  tie_break: substantive                # 逐語か本質か迷えば本質側に倒す
+  convergence_definition: 未解決の本質的指摘がゼロになれば収束。逐語的指摘だけが残る状況は実質収束。
+  no_autonomous_loop: true              # 人なしの自律ループは設けない
+
+implementation_stages:                  # 段階づけ（post-write-verification と同構造）
+  stage1: 別系統モデルが観点①〜⑪を点検。阻止は起草者の自律判断（現状）
+  stage2: A系統①〜⑥を機械検査スクリプト（tools/）＋自動テスト（tests/）化。⑦⑧自動必須化。書き込み完了時に書き込み後フックで検証を起動し差し戻す（将来）
+  stage3: commit／push 段で Git／IDE フックにより未検査の書き込みを機械的に差し戻す（将来。段階2の書き込み完了時フックに対し、本段は commit／push 時の最終関門）
+
+
+# 点検の観点
+次の観点で、起草に問題がないかを点検してください。
+(1) 合意反映：上の決定事項 1〜7 が 2 つの成果物に正しく反映されているか
+(2) 参照正確性：ファイルパス・節名・固有名詞・数値が正確で、相互参照が整合しているか
+(3) 既存記述整合：2 つの成果物の間、および各記述内部で矛盾がないか
+(4) 内部論理：定義・条件・段階づけに論理矛盾や抜けがないか
+(5) yaml 構文・構造：成果物 2 が yaml として妥当な構文・構造か
+
+# 出力形式（厳守）
+次の YAML だけを返してください。指摘がなければ findings: [] とし verdict: ALL_CLEAR。
+verdict: ALL_CLEAR  # または HAS_FINDINGS
+findings:
+  - point: 1            # 観点番号 1-5
+    severity: high      # high / medium / low
+    location: ...       # 対象ファイルと箇所
+    description: ...    # 指摘内容
+    classification: substantive  # literal（字句レベル）/ substantive（合意の解釈・設計判断に触れる）
