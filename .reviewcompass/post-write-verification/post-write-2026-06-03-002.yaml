@@ -1,0 +1,93 @@
+status: pending_human
+target_files:
+  - TODO_NEXT_SESSION.md
+  - docs/notes/2026-06-02-workflow-navigation-implementation-plan.md
+  - docs/operations/WORKFLOW_NAVIGATION_FOR_CLAUDE.md
+target_sha256:
+  TODO_NEXT_SESSION.md: 30d755d10e1675ff8f497c4ea9fdb54a79422ebccb4540bb7e8269072705d512
+  docs/notes/2026-06-02-workflow-navigation-implementation-plan.md: 5f7fbbe1c6f77ea3a8fcc31edd4fc64946dff7b5a9637cfceffe099af259868a
+  docs/operations/WORKFLOW_NAVIGATION_FOR_CLAUDE.md: 935a3e4d4e154ab0304b4e0f6e5c8275c985d611e80bcc219f9540a9e4714239
+required_verifiers:
+  - google
+  - openai-55
+  - openai-54
+completed_verifiers:
+  - google
+  - openai-55
+  - openai-54
+unresolved_substantive_findings: 1
+findings:
+  - severity: medium
+    type: substantive
+    verifier: gpt-5.5
+    target_location: "TODO_NEXT_SESSION.md §1（起動手順）および §3（次の作業）"
+    description: >
+      §0.1 は「ナビゲータ問い合わせを起点とする」方式を規定しているが、
+      §1 の起動手順に `tools/check-workflow-action.py next --json` の実行が含まれていない。
+      §3 の「次の作業：evaluation 機能の implementation drafting」も navigator の返答を条件付けていない。
+      LLM がセッション開始時に §1→§3 の順で読んだ場合、navigator を実行せずに
+      evaluation の drafting を開始するリスクがある。
+    rationale: >
+      §0.1 を「提案前必須確認」として整備した変更目的（畳み込みA層）を弱めかねない。
+      §1 に navigator 実行を明示するか、§3 の次作業を
+      「navigator の next_action が stage を返した場合」と条件付けることで一貫する。
+    human_decision_required: true
+  - severity: info
+    type: verbal
+    verifier: gemini
+    target_location: >
+      docs/notes/2026-06-02-workflow-navigation-implementation-plan.md
+      および docs/operations/WORKFLOW_NAVIGATION_FOR_CLAUDE.md
+    description: >
+      `target_sha256` のキーから対象ファイル一覧が逆引きできるため、
+      `target_files` との情報重複になる。スキーマのシンプル化（`target_files` 省略可能化）を検討できる。
+    rationale: 設計改善の提案。現在の実装には影響しない。
+  - severity: medium
+    type: verbal
+    verifier: gpt-5.5
+    target_location: >
+      docs/notes/2026-06-02-workflow-navigation-implementation-plan.md §3.2
+      および docs/operations/WORKFLOW_NAVIGATION_FOR_CLAUDE.md §4
+    description: >
+      §3.2 の manifest フィールド列挙（各検証結果ファイル・統合結果・人間判断待ちの有無）と
+      運用ガイドの最小 YAML 例の間で、必須/任意/将来拡張の区別が明示されていない。
+    rationale: >
+      §3.2 後半の完了判定条件が最小例に対応しているため実装上は足りるが、
+      前半の列挙との関係が不明確。将来の整備課題。
+  - severity: low
+    type: verbal
+    verifier: gpt-5.5
+    target_location: >
+      docs/notes/2026-06-02-workflow-navigation-implementation-plan.md §3.2
+      および docs/operations/WORKFLOW_NAVIGATION_FOR_CLAUDE.md §4 target_sha256 説明
+    description: >
+      `target_files` の全要素に対応する sha256 が必須か、
+      キー集合の一致要件が明示されていない。
+    rationale: >
+      対象ファイルの一部だけにハッシュがある manifest や、対象外ファイルのハッシュを含む
+      manifest をどう扱うか解釈の余地がある。明記で実装・運用のぶれを防げる。
+  - severity: medium
+    type: verbal
+    verifier: gpt-5.4
+    target_location: "TODO_NEXT_SESSION.md §0.1"
+    description: >
+      §0.1 の第2項で `post_write_verification` 返却時に「通常ワークフローより優先」とあるが、
+      具体的にどの対象・どの検証状態を利用者へ伝えるべきかがやや曖昧。
+    rationale: >
+      docs/operations/WORKFLOW_NAVIGATION_FOR_CLAUDE.md §4 に詳細があるため補完済み。
+      §0.1 は要約として機能しており、実質的な矛盾はない。
+  - severity: low
+    type: verbal
+    verifier: gpt-5.4
+    target_location: "docs/notes/2026-06-02-workflow-navigation-implementation-plan.md §3.2"
+    description: >
+      `target_sha256` の説明で「ファイル内容のハッシュ」であることが一文で明記されていない。
+    rationale: >
+      ファイル3（運用ガイド §4）では「現在のファイル内容の sha256 と照合」と明記されており補完済み。
+  - severity: low
+    type: verbal
+    verifier: gpt-5.4
+    target_location: "docs/operations/WORKFLOW_NAVIGATION_FOR_CLAUDE.md §4 post-write-verification"
+    description: >
+      YAML 例で `target_files` と `target_sha256` のキー集合一致の要件が明示されていない。
+    rationale: gpt-5.5 の所見4と同テーマ。運用意図は推測可能だが明示で整合性が高まる。

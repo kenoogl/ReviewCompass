@@ -211,18 +211,73 @@ python3 tools/check-workflow-action.py next --json
 
 post-write-verification manifest は `.reviewcompass/post-write-verification/*.yaml` に置く。`next` は manifest を読み、完了済みなら通常ワークフローへ戻る。
 
-manifest は検証完了の自己申告ではなく、`next` が読む状態ファイルである。対象ファイル、必要検証者、完了検証者、未解決の本質的指摘数を正しく記録する。
+manifest は検証完了の自己申告ではなく、`next` が読む状態ファイルである。対象ファイル、対象ファイルの sha256、必要検証者、完了検証者、未解決の本質的指摘数を正しく記録する。
 
 manifest の `target_files` は、現在の `next_action.target_files` 全体を 1 つの manifest で覆う必要がある。複数の対象ファイルがある場合に、ファイルごとに別々の manifest を作っても完了扱いにはならない。
 
+manifest の `target_sha256` は、検証した時点の対象ファイル内容を表す。`next` は現在のファイル内容の sha256 と照合し、一致しない manifest は無視する。検証後に対象ファイルを書き換えた場合は、再度 post-write-verification を行い、新しい manifest を作る。
+
+独立多重チェックでは、各 verifier が `target_files` 全体を確認する必要がある。ファイルごとに verifier を分担する方式は、独立多重チェックではない。
+
+`verifications[]` フィールドは、各 verifier がどの対象ファイルを確認したかを機械判定するための coverage matrix である。`next` は `verifications[]` が存在する場合、以下の全条件を確認する。
+
+1. `status: completed` である。
+2. manifest の `target_files` が現在の `next_action.target_files` 全体を覆う。
+3. manifest の `target_sha256` が現在のファイル内容と一致する。
+4. `required_verifiers` が非空である。
+5. `required_verifiers` の各 verifier について、すべての `target_files` を覆い、かつ各ファイルの `target_sha256` がマスター値と一致する単一エントリが `verifications[]` に存在する（複数エントリの合算による被覆は不可）。
+6. `unresolved_substantive_findings: 0` である。
+
+`verifications[]` がない旧形式 manifest では、`completed_verifiers` によるフォールバック判定を行う。フォールバック完了条件：`status: completed`、`target_files` が全対象を覆う、`target_sha256` が現在内容と一致、`required_verifiers` が非空かつ各要素が `completed_verifiers` に含まれる、`unresolved_substantive_findings: 0`。
+
+未解決の本質的指摘がある場合（`unresolved_substantive_findings` が 1 以上）は、`verifications[]` の有無にかかわらず `post_write_human_decision_required` を返す。
+
 同じ対象ファイルを覆う manifest が複数ある場合、`next` はファイル名の辞書順で新しいものを優先する。命名は `post-write-YYYY-MM-DD-NNN.yaml` の形にする。
 
-最小フィールド：
+`verifications[]` を含む推奨形式：
 
 ```yaml
 status: completed
 target_files:
   - docs/operations/WORKFLOW_NAVIGATION_FOR_CLAUDE.md
+  - docs/notes/some-document.md
+target_sha256:
+  docs/operations/WORKFLOW_NAVIGATION_FOR_CLAUDE.md: "<sha256>"
+  docs/notes/some-document.md: "<sha256>"
+required_verifiers:
+  - google
+  - openai-55
+completed_verifiers:
+  - google
+  - openai-55
+unresolved_substantive_findings: 0
+verifications:
+  - verifier: google
+    target_files:
+      - docs/operations/WORKFLOW_NAVIGATION_FOR_CLAUDE.md
+      - docs/notes/some-document.md
+    target_sha256:
+      docs/operations/WORKFLOW_NAVIGATION_FOR_CLAUDE.md: "<sha256>"
+      docs/notes/some-document.md: "<sha256>"
+  - verifier: openai-55
+    target_files:
+      - docs/operations/WORKFLOW_NAVIGATION_FOR_CLAUDE.md
+      - docs/notes/some-document.md
+    target_sha256:
+      docs/operations/WORKFLOW_NAVIGATION_FOR_CLAUDE.md: "<sha256>"
+      docs/notes/some-document.md: "<sha256>"
+```
+
+`verifications[]` の各エントリには `verifier`、`target_files`、`target_sha256` の 3 フィールドが必須。`target_sha256` は manifest 最上位の `target_sha256` と一致する必要がある。
+
+`verifications[]` がない旧形式（後方互換）：
+
+```yaml
+status: completed
+target_files:
+  - docs/operations/WORKFLOW_NAVIGATION_FOR_CLAUDE.md
+target_sha256:
+  docs/operations/WORKFLOW_NAVIGATION_FOR_CLAUDE.md: "<sha256>"
 required_verifiers:
   - google
 completed_verifiers:
@@ -236,6 +291,8 @@ unresolved_substantive_findings: 0
 status: pending_human
 target_files:
   - docs/operations/WORKFLOW_NAVIGATION_FOR_CLAUDE.md
+target_sha256:
+  docs/operations/WORKFLOW_NAVIGATION_FOR_CLAUDE.md: "<sha256>"
 required_verifiers:
   - google
 completed_verifiers:
@@ -326,6 +383,8 @@ current_blocker: null
 post-write-verification については、manifest による完了認定に対応している。ただし、検証者の中身の妥当性そのものは機械判定しない。
 
 post-write-verification manifest は、現在の対象ファイル群を 1 つの manifest がまとめて覆う方式で判定する。複数 manifest の合算による完了認定には対応していない。
+
+現行実装は、各 verifier が全対象ファイルを確認したかを coverage matrix として機械判定していない。次期拡張では、manifest の `verifications[]` に verifier ごとの `target_files` と `target_sha256` を記録し、`required_verifiers` の各 verifier が全対象を同一内容で確認した場合だけ完了とみなす。
 
 reopen については、記録済みの手戻り種別から `reopen-start` で trigger_map を解決し、in-progress ファイルを生成できる。ただし、所見から手戻り種別を自動分類すること、spec.json のフラグ差し戻しを自動実行することは未実装である。
 

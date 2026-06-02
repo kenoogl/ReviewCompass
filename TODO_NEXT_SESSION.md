@@ -1,6 +1,6 @@
 # 次セッション継続用メモ
 
-最終更新：2026-06-02（セッション51）。**次の作業：evaluation 機能の implementation drafting（草案作成）**。セッション51 では Codex が実装した `check-workflow-action.py next` サブコマンド（ワークフローナビゲータ）のレビュー・修正・コミットを実施（コミット a02a714〜1c3bcdb、計 6 件）。実装進捗（spec.json）はセッション49末から変化なし。経緯は §3.2／session 記録参照。
+最終更新：2026-06-03（セッション52）。**次の作業：evaluation 機能の implementation drafting（草案作成）**。セッション52 では TODO §0.1 をナビゲータ起点方式に改訂し（畳み込みA層完了）、Gemini 検証インフラを整備した（コミット 7755ad9・ffff13a）。実装進捗（spec.json）はセッション49末から変化なし。経緯は §3.2／session 記録参照。
 
 作業ディレクトリ：`/Users/Daily/Development/ReviewCompass/`、リポジトリ：`git@github.com:kenoogl/ReviewCompass.git`（main ブランチ）
 
@@ -58,9 +58,11 @@ drafting 段は actor=human または llm（草案作成のみ）、triad-review
 
 ## 1. 起動手順（セッション起動と同時に強制実行。利用者の指示を待たず、「ご指示を」と伺わない）
 
-1. 本 `TODO_NEXT_SESSION.md` の §2（現在位置）と §3（次の作業）を確認
-2. `git log --oneline -5` / `git status` で到達点確認
-3. 作業開始前に対象機能の `.reviewcompass/specs/<機能>/spec.json` を Read
+1. navigator を実行し、`next_action` を確認する。
+   実行形は本 TODO 末尾の「プロジェクト固有の補足」を参照する。
+2. 本 `TODO_NEXT_SESSION.md` の §2（現在位置）と §3（次の作業候補）を確認
+3. `git log --oneline -5` / `git status` で到達点確認
+4. 作業開始前に対象機能の `.reviewcompass/specs/<機能>/spec.json` を Read
 
 規律 14 件は MEMORY.md 索引がセッション開始時に自動ロード済み。全件の本文読み込みは不要。操作の直前に下表の該当行を Read する。
 
@@ -75,14 +77,21 @@ drafting 段は actor=human または llm（草案作成のみ）、triad-review
 
 計画書・運営ガイドは当該操作に関わる節だけ、必要なときに Read する。
 
-## 2. ワークフロー上の現在位置（セッション 51 末、正本は spec.json）
+## 2. ワークフロー上の現在位置（セッション 52 末、正本は spec.json）
 
 - intent／feature-partitioning：全 7 機能 全段 true
 - requirements／design／tasks（全 7 機能）：全段 true（reopened は履歴 true。最新は §3.2／reopen-classification 記録）
 - implementation：foundation・runtime（2/7 機能）＝drafting・triad-review true（review-wave 以降 false）／他 5 機能（evaluation／analysis／workflow-management／self-improvement／conformance-evaluation）＝全段 false
 - recheck：runtime クリア。**foundation のみ upstream_change_pending=true・impacted=["implementation"]**（api_mediated 変更を将来の review-wave→alignment→approval で織り込む、implementation 未到達のため残置）
 
-## 3. 次の作業（セッション 51 起点）
+## 3. 次の作業候補（セッション 52 起点）
+
+この節は候補であり、現在の作業順序の正本ではない。
+作業開始前に §0.1 / §1 の navigator を実行し、`next_action` に従う。
+
+`next_action.kind == "stage"` かつ `feature == "evaluation"`、`phase == "implementation"`、`stage == "drafting"` の場合のみ、以下の作業に着手する。
+
+`post_write_verification`、`reopen_in_progress`、`resume_in_progress`、`unknown` が返った場合は、この節の作業へ進まない。
 
 **次の作業：evaluation 機能の implementation drafting（草案作成）**。runtime の triad-review は完了（spec.json で implementation.triad-review=true）。残り機能順序（§3.1）で次は evaluation。review-wave 以降は全機能の triad-review 完了後に機能横断で実施（運営ガイド §2.3、現在 2/7 機能完了）。
 
@@ -104,7 +113,8 @@ drafting 段は actor=human または llm（草案作成のみ）、triad-review
 
 ### 3.2 過去セッションの完了経緯
 
-- **セッション51**：ワークフローナビゲータ（Codex 実装）のレビュー・修正確認・コミット。`check-workflow-action.py next`・`reopen-start`・post-write-verification manifest 完了認定・recheck 補助情報を整備。Claude 向け手引き完成。コミット 6 件（`a02a714`〜`1c3bcdb`）push 待ち。
+- **セッション52**：ナビゲータ導入による規律の畳み込みを議論・着手。A層（§0.1 書き換え・no-redundant の趣旨吸収）を先行実施、B層（規律8・10・14・15 の手続き部分）と no-redundant 規律本体の参照化は workflow-management 正式手続きで実施（急がない）。Gemini 検証インフラ整備（api-settings.yaml に post_write_verification_google バリアント追加、settings.json に run_role.py 実行許可追加）。response_formatter のコードブロック対応バグを TDD で修正（テスト2件追加、全12件緑）。Gemini 書き込み後検証2ラウンドで ALL_CLEAR。コミット2件（`7755ad9`・`ffff13a`）push 待ち。
+- **セッション51**：ワークフローナビゲータ（Codex 実装）のレビュー・修正確認・コミット。`check-workflow-action.py next`・`reopen-start`・post-write-verification manifest 完了認定・recheck 補助情報を整備。Claude 向け手引き完成。コミット 6 件（`a02a714`〜`1c3bcdb`）push 済み（セッション52 時点）。
 - **セッション49**：runtime implementation triad-review を api_mediated（独立3社 API：主役 Opus 4.8／敵対役 GPT-5.5／判定役 Gemini 3.1 Pro）で実施・完了。所見 16 件（判定 must-fix9／should-fix5／leave-as-is2、全 in_feature）を TDD で対処、tests/runtime 全テスト緑 143。初回の対象漏れ（RUNTIME.md）による偽陽性を再レビューで解消。RUNTIME.md 更新は post-write-verification（Google）で ALL_CLEAR。spec.json implementation.triad-review=true。コミット 3 件（`99c0471`／`43846f8`／`81cfc90`）push 済み。記録 [reviews/2026-06-02-implementation-triad-review.md](.reviewcompass/specs/runtime/reviews/2026-06-02-implementation-triad-review.md)
 - **セッション48**：runtime implementation drafting（T-001〜T-011）を TDD 完了、テスト緑 351 件。foundation 6 語彙は `foundation_ref.py` 経由で参照のみ、runtime 所有 3 語彙確定。T-011 着手時に tasks 要件追跡の作業単位不整合（要件1・2・4・5・6・10）を発見し再オープン（4 過程、独立 1 体検証＋3 系統諮問）で解消。コミット 11 件（`02daa0a`〜`3810985`、push 済み）。記録 [session-48](docs/sessions/session-48-2026-06-02.md)
 - セッション 47 以前（40 含む）の経緯は各 [session 記録](docs/sessions/)・git log・[docs/archive/todo/](docs/archive/todo/) のスナップショット参照

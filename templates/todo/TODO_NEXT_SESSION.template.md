@@ -55,9 +55,11 @@ drafting 段は actor=human または llm（草案作成のみ）、triad-review
 
 **この手順はセッション起動と同時に強制実行する。利用者の指示を待たず、「ご指示をいただけますか」と伺わない。**
 
-1. 本 `TODO_NEXT_SESSION.md` の §2（現在位置）と §3（次の作業）を確認
-2. `git log --oneline -5` / `git status` で到達点確認
-3. 作業開始前に対象機能の `.reviewcompass/specs/<機能>/spec.json` を Read
+1. navigator を実行し、`next_action` を確認する。
+   実行形は本 TODO 末尾の「プロジェクト固有の補足」を参照する。
+2. 本 `TODO_NEXT_SESSION.md` の §2（現在位置）と §3（次の作業候補）を確認
+3. `git log --oneline -5` / `git status` で到達点確認
+4. 作業開始前に対象機能の `.reviewcompass/specs/<機能>/spec.json` を Read
 
 規律は MEMORY.md 索引がセッション開始時に自動ロード済み。全件の本文読み込みは不要。操作の直前に下表の該当行を Read する。
 
@@ -76,7 +78,14 @@ drafting 段は actor=human または llm（草案作成のみ）、triad-review
 
 （過去セッションの主要成果、規律違反履歴、教訓等を必要に応じて記載）
 
-## 3. 次の作業
+## 3. 次の作業候補
+
+この節は候補であり、現在の作業順序の正本ではない。
+作業開始前に §0.1 / §1 の navigator を実行し、`next_action` に従う。
+
+`next_action.kind == "stage"` の場合のみ、`feature`・`phase`・`stage` を確認して以下の作業に着手する。
+
+`post_write_verification`、`reopen_in_progress`、`resume_in_progress`、`unknown` が返った場合は、この節の作業へ進まない。
 
 ### 3.1 ワークフロー上の現在位置
 

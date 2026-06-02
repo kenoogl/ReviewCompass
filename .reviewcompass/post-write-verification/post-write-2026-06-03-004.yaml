@@ -1,0 +1,51 @@
+status: completed
+target_files:
+  - TODO_NEXT_SESSION.md
+  - docs/notes/2026-06-02-workflow-navigation-implementation-plan.md
+  - docs/operations/WORKFLOW_NAVIGATION_FOR_CLAUDE.md
+target_sha256:
+  TODO_NEXT_SESSION.md: 26d60f9f9f07204d7fdced42ec7569f515ec2ecfa048a192b9d8e254cc42522f
+  docs/notes/2026-06-02-workflow-navigation-implementation-plan.md: 9475fbf221eeca600c5e80062a5d3005702972d290fecff92c67587d31fa4d6f
+  docs/operations/WORKFLOW_NAVIGATION_FOR_CLAUDE.md: 85684c517565833e612064c175a5c235e34503a65851fe4896b4a9ac7fd0a2b7
+required_verifiers:
+  - google
+  - openai-55
+  - openai-54
+completed_verifiers:
+  - google
+  - openai-55
+  - openai-54
+unresolved_substantive_findings: 0
+verifications:
+  - verifier: google
+    target_files:
+      - TODO_NEXT_SESSION.md
+      - docs/notes/2026-06-02-workflow-navigation-implementation-plan.md
+      - docs/operations/WORKFLOW_NAVIGATION_FOR_CLAUDE.md
+    target_sha256:
+      TODO_NEXT_SESSION.md: 26d60f9f9f07204d7fdced42ec7569f515ec2ecfa048a192b9d8e254cc42522f
+      docs/notes/2026-06-02-workflow-navigation-implementation-plan.md: 9475fbf221eeca600c5e80062a5d3005702972d290fecff92c67587d31fa4d6f
+      docs/operations/WORKFLOW_NAVIGATION_FOR_CLAUDE.md: 85684c517565833e612064c175a5c235e34503a65851fe4896b4a9ac7fd0a2b7
+  - verifier: openai-55
+    target_files:
+      - TODO_NEXT_SESSION.md
+      - docs/notes/2026-06-02-workflow-navigation-implementation-plan.md
+      - docs/operations/WORKFLOW_NAVIGATION_FOR_CLAUDE.md
+    target_sha256:
+      TODO_NEXT_SESSION.md: 26d60f9f9f07204d7fdced42ec7569f515ec2ecfa048a192b9d8e254cc42522f
+      docs/notes/2026-06-02-workflow-navigation-implementation-plan.md: 9475fbf221eeca600c5e80062a5d3005702972d290fecff92c67587d31fa4d6f
+      docs/operations/WORKFLOW_NAVIGATION_FOR_CLAUDE.md: 85684c517565833e612064c175a5c235e34503a65851fe4896b4a9ac7fd0a2b7
+  - verifier: openai-54
+    target_files:
+      - TODO_NEXT_SESSION.md
+      - docs/notes/2026-06-02-workflow-navigation-implementation-plan.md
+      - docs/operations/WORKFLOW_NAVIGATION_FOR_CLAUDE.md
+    target_sha256:
+      TODO_NEXT_SESSION.md: 26d60f9f9f07204d7fdced42ec7569f515ec2ecfa048a192b9d8e254cc42522f
+      docs/notes/2026-06-02-workflow-navigation-implementation-plan.md: 9475fbf221eeca600c5e80062a5d3005702972d290fecff92c67587d31fa4d6f
+      docs/operations/WORKFLOW_NAVIGATION_FOR_CLAUDE.md: 85684c517565833e612064c175a5c235e34503a65851fe4896b4a9ac7fd0a2b7
+verification_rounds: 6
+note: >
+  6ラウンドの独立多重チェック（Gemini・GPT-5.5・GPT-5.4）で ALL_CLEAR 確認。
+  主な改訂：§1 navigator 起点・§3 候補条件付け・target_sha256 表記・coverage matrix 設計と実装。
+  coverage matrix（verifications[]）の per-entry sha256 厳密化、実装計画完了条件を 8 項目に整備。

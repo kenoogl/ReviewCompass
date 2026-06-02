@@ -1,0 +1,50 @@
+status: completed
+target_files:
+  - TODO_NEXT_SESSION.md
+  - templates/todo/TODO_NEXT_SESSION.template.md
+  - docs/notes/2026-06-02-workflow-navigation-implementation-plan.md
+  - docs/operations/WORKFLOW_NAVIGATION_FOR_CLAUDE.md
+target_sha256:
+  TODO_NEXT_SESSION.md: 26d60f9f9f07204d7fdced42ec7569f515ec2ecfa048a192b9d8e254cc42522f
+  templates/todo/TODO_NEXT_SESSION.template.md: d6dec43a74d22af0136443e46d164ba2a7dc2e9844dfa303263772c45a727aee
+  docs/notes/2026-06-02-workflow-navigation-implementation-plan.md: 5f7fbbe1c6f77ea3a8fcc31edd4fc64946dff7b5a9637cfceffe099af259868a
+  docs/operations/WORKFLOW_NAVIGATION_FOR_CLAUDE.md: 935a3e4d4e154ab0304b4e0f6e5c8275c985d611e80bcc219f9540a9e4714239
+required_verifiers:
+  - google
+  - openai-55
+  - openai-54
+completed_verifiers:
+  - google
+  - openai-55
+  - openai-54
+unresolved_substantive_findings: 0
+verification_rounds:
+  - round: 1
+    target: 3ファイル（TODO・実装計画・運用ガイド）
+    result: 本質的指摘1件（§0.1 と §1・§3 の整合性）＋逐語的指摘6件
+  - round: 2
+    target: 4ファイル（TODO・テンプレート・実装計画・運用ガイド、§1・§3 修正後）
+    result: 全3モデルが本質的整合性の解消を確認。逐語的指摘1件（§1 step2 の参照名不一致）を修正
+findings:
+  - severity: low
+    type: verbal
+    verifier: gemini
+    round: 2
+    target_location: "TODO_NEXT_SESSION.md §1 step2 / templates §1 step2"
+    description: >
+      §1 step2 で「§3（次の作業）を確認」と案内していたが、§3 見出し変更後も旧称のまま。
+    resolution: 「§3（次の作業候補）を確認」に修正（逐語的修正、両ファイル適用済み）
+  - severity: low
+    type: verbal
+    verifier: gpt-5.5
+    round: 2
+    target_location: "TODO_NEXT_SESSION.md §1 step2 / templates §1 step2"
+    description: §3 見出しと §1 参照ラベルの不一致（同上）
+    resolution: 修正済み（上記と同）
+  - severity: minor
+    type: verbal
+    verifier: gpt-5.4
+    round: 2
+    target_location: "TODO_NEXT_SESSION.md §1 step2 / templates §1 step2"
+    description: §3 見出しと §1 参照ラベルの不一致（同上）
+    resolution: 修正済み（上記と同）

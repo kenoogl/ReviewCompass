@@ -98,7 +98,9 @@ post-write-verification pending は、書き込み済み文書の検証に作業
 検証結果の完了認定を、LLM の自己申告ではなく manifest で表す。
 
 - 対象ファイル一覧
+- `target_sha256`（対象ファイルとハッシュのマップ）
 - 検証者一覧
+- 各検証者が確認した対象ファイル一覧と sha256
 - 各検証結果ファイル
 - 統合結果
 - 未解決の本質的指摘の有無
@@ -106,7 +108,64 @@ post-write-verification pending は、書き込み済み文書の検証に作業
 
 `next` は manifest を読み、未完了なら検証継続、収束済みなら通常ワークフローへ戻す。
 
-初期実装では `.reviewcompass/post-write-verification/*.yaml` を読む。対象ファイル群を 1 つで覆う manifest があり、`status: completed`、`required_verifiers` が空でなく `completed_verifiers` で満たされ、`unresolved_substantive_findings: 0` なら通常ワークフローへ戻る。未解決の本質的指摘が 1 件以上ある場合は `post_write_human_decision_required` を返す。複数 manifest の合算による完了認定は扱わない。
+現行実装では `.reviewcompass/post-write-verification/*.yaml` を読む。対象ファイル群を 1 つで覆う manifest があり、`target_sha256` が現在の対象ファイル内容と一致し、`status: completed`、`required_verifiers` が空でなく `completed_verifiers` で満たされ、`unresolved_substantive_findings: 0` なら通常ワークフローへ戻る。未解決の本質的指摘が 1 件以上ある場合は `post_write_human_decision_required` を返す。複数 manifest の合算による完了認定は扱わない。
+
+ただし、`completed_verifiers` だけでは「各検証者が全対象ファイルを同一内容で確認した」ことを表せない。ファイル A は verifier 1、ファイル B は verifier 2、ファイル C は verifier 3 という分業が、独立多重チェックとして誤って完了扱いされる危険がある。
+
+coverage matrix として `verifications[]` フィールドを実装した（`coverage_matrix_satisfied` 関数、2026-06-03）。`verifications[]` が存在する manifest では、`required_verifiers` の各 verifier について、現在の `target_files` 全体を覆い、かつ `target_sha256` がマスターと一致する `verifications[]` 要素が存在する場合だけ完了とみなす。`verifications[]` がない旧形式 manifest は `completed_verifiers` でフォールバック判定する。
+
+実装済み manifest 形式：
+
+```yaml
+status: completed
+target_files:
+  - TODO_NEXT_SESSION.md
+  - docs/notes/2026-06-02-workflow-navigation-implementation-plan.md
+target_sha256:
+  TODO_NEXT_SESSION.md: "<sha256>"
+  docs/notes/2026-06-02-workflow-navigation-implementation-plan.md: "<sha256>"
+required_verifiers:
+  - gemini
+  - gpt-5.5
+  - gpt-5.4
+verifications:
+  - verifier: gemini
+    target_files:
+      - TODO_NEXT_SESSION.md
+      - docs/notes/2026-06-02-workflow-navigation-implementation-plan.md
+    target_sha256:
+      TODO_NEXT_SESSION.md: "<sha256>"
+      docs/notes/2026-06-02-workflow-navigation-implementation-plan.md: "<sha256>"
+    result_file: docs/reviews/post-write-gemini-2026-06-03.md
+  - verifier: gpt-5.5
+    target_files:
+      - TODO_NEXT_SESSION.md
+      - docs/notes/2026-06-02-workflow-navigation-implementation-plan.md
+    target_sha256:
+      TODO_NEXT_SESSION.md: "<sha256>"
+      docs/notes/2026-06-02-workflow-navigation-implementation-plan.md: "<sha256>"
+    result_file: docs/reviews/post-write-gpt-5.5-2026-06-03.md
+  - verifier: gpt-5.4
+    target_files:
+      - TODO_NEXT_SESSION.md
+      - docs/notes/2026-06-02-workflow-navigation-implementation-plan.md
+    target_sha256:
+      TODO_NEXT_SESSION.md: "<sha256>"
+      docs/notes/2026-06-02-workflow-navigation-implementation-plan.md: "<sha256>"
+    result_file: docs/reviews/post-write-gpt-5.4-2026-06-03.md
+unresolved_substantive_findings: 0
+```
+
+完了条件（coverage matrix 実装済み）：
+
+1. `status: completed` である。
+2. manifest の `target_files` が現在の `next_action.target_files` 全体を覆う。
+3. manifest の `target_sha256` が現在の対象ファイル内容と一致する。
+4. `required_verifiers` が空でない。
+5. `required_verifiers` の各 verifier について、`verifications[]` に同名の要素がある。
+6. 各 verifier について、`verifications[]` の単一エントリが現在の `target_files` 全体を覆う（複数エントリの合算は不可）。
+7. 各 verifier の単一エントリの `target_sha256` がマスターの `target_sha256` と一致する。
+8. `unresolved_substantive_findings: 0` である。
 
 ### 3.3 post-write-verification 許可操作ポリシーの拡張
 
