@@ -4,6 +4,8 @@
 
 作業ディレクトリ：`/Users/Daily/Development/ReviewCompass/`、リポジトリ：`git@github.com:kenoogl/ReviewCompass.git`（main ブランチ）
 
+> **運用メモ（セッション48 利用者指摘）**：ツール呼び出しを送る直前に、タグが名前空間付きの定型になっているか自己点検する（Write／Edit や長文の直後で接頭辞が抜け「malformed」になる崩れが頻発するため）。
+
 ---
 
 <!-- TEMPLATE_HEADER_START：本ヘッダは templates/todo/TODO_NEXT_SESSION.template.md から派生。 -->
