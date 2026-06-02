@@ -1,0 +1,41 @@
+# 役割：書き込み後の独立検証者
+
+あなたは、運用文書 TODO_NEXT_SESSION.md への更新が合意内容を正しく反映しているかを点検する独立検証者です。起草者の判断理由は渡されません。下記の「合意内容」と「書き込み結果」だけを照合し、次の4観点で事実のみを報告してください。修正案や重大度の独自判断は不要です。
+
+## 検査観点
+1. agreement_reflection：合意内容が書き込みに反映されているか
+2. reference_accuracy：参照（セッション番号・機能名・段名・コミットハッシュ・件数）が正確で内部整合しているか
+3. existing_record_consistency：周辺の既存記述との齟齬がないか
+4. internal_logic：内部の論理矛盾がないか
+
+## 合意内容（決定事項のみ）
+- runtime の implementation triad-review が完了したことを TODO に反映する。
+- 冒頭：最終更新をセッション49 に、次の作業を「evaluation の implementation drafting（草案作成）」に変更。runtime は implementation.triad-review まで完了（foundation と並んで 2/7 機能）。本セッションの 3 コミットは push 済み。
+- §2 現在位置（見出しをセッション49 末に）：implementation 段で foundation・runtime が drafting・triad-review 完了（review-wave 以降は false）、他 5 機能（evaluation／analysis／workflow-management／self-improvement／conformance-evaluation）は全段 false。recheck は foundation のみ残置。
+- §3 次の作業（セッション49 起点）：evaluation の implementation drafting。runtime triad-review 完了。現在 2/7 機能完了。
+- §3.2 完了経緯：セッション49 行を先頭に追加（runtime implementation triad-review を api_mediated＝独立3社 API で実施・完了、所見16・判定 must-fix9／should-fix5／leave-as-is2・全 in_feature、TDD で tests/runtime 全テスト緑143、初回の RUNTIME.md 漏れによる偽陽性を再レビューで解消、RUNTIME.md 更新は post-write-verification で ALL_CLEAR、spec.json triad-review=true、コミット 3 件 push 済み）。セッション48 行のコミット状態を「未 push」から「push 済み」に訂正。
+
+## 書き込み結果（更新後テキスト）
+
+### 冒頭
+最終更新：2026-06-02（セッション49）。**次の作業：evaluation 機能の implementation drafting（草案作成）**。runtime は implementation.triad-review まで完了（foundation と並んで 2/7 機能が triad-review 済み）。本セッションの 3 コミット（runtime triad-review）は push 済み。経緯は §3.2／session 記録参照。
+
+### §2
+## 2. ワークフロー上の現在位置（セッション 49 末、正本は spec.json）
+
+- intent／feature-partitioning：全 7 機能 全段 true
+- requirements／design／tasks（全 7 機能）：全段 true（reopened は履歴 true。最新は §3.2／reopen-classification 記録）
+- implementation：foundation・runtime（2/7 機能）＝drafting・triad-review true（review-wave 以降 false）／他 5 機能（evaluation／analysis／workflow-management／self-improvement／conformance-evaluation）＝全段 false
+- recheck：runtime クリア。**foundation のみ upstream_change_pending=true・impacted=["implementation"]**（api_mediated 変更を将来の review-wave→alignment→approval で織り込む、implementation 未到達のため残置）
+
+### §3
+## 3. 次の作業（セッション 49 起点）
+
+**次の作業：evaluation 機能の implementation drafting（草案作成）**。runtime の triad-review は完了（spec.json で implementation.triad-review=true）。残り機能順序（§3.1）で次は evaluation。review-wave 以降は全機能の triad-review 完了後に機能横断で実施（運営ガイド §2.3、現在 2/7 機能完了）。
+
+### §3.2
+- **セッション49**：runtime implementation triad-review を api_mediated（独立3社 API：主役 Opus 4.8／敵対役 GPT-5.5／判定役 Gemini 3.1 Pro）で実施・完了。所見 16 件（判定 must-fix9／should-fix5／leave-as-is2、全 in_feature）を TDD で対処、tests/runtime 全テスト緑 143。初回の対象漏れ（RUNTIME.md）による偽陽性を再レビューで解消。RUNTIME.md 更新は post-write-verification（Google）で ALL_CLEAR。spec.json implementation.triad-review=true。コミット 3 件（99c0471／43846f8／81cfc90）push 済み。記録 reviews/2026-06-02-implementation-triad-review.md
+- **セッション48**：runtime implementation drafting（T-001〜T-011）を TDD 完了、テスト緑 351 件。…（中略）…コミット 11 件（02daa0a〜3810985、push 済み）。記録 session-48-2026-06-02.md
+
+## 出力形式
+YAML で返してください。問題がなければ `status: ALL_CLEAR` と `findings: []` を出力します。問題があれば findings の各要素に criterion（上記4観点のいずれか）／severity（high／medium／low）／description を含めてください。

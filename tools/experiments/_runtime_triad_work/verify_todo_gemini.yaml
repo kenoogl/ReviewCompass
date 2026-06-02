@@ -1,0 +1,12 @@
+provider: gemini-api
+model: gemini-3.1-pro-preview
+turn_number: 1
+duration_seconds: 13.706
+sent_messages_count: 1
+response_text: '```yaml
+
+  status: ALL_CLEAR
+
+  findings: []
+
+  ```'

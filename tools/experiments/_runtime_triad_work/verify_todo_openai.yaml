@@ -1,0 +1,8 @@
+provider: openai-api
+model: gpt-5.5
+turn_number: 1
+duration_seconds: 12.92
+sent_messages_count: 1
+response_text: 'status: ALL_CLEAR
+
+  findings: []'

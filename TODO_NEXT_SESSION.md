@@ -1,6 +1,6 @@
 # 次セッション継続用メモ
 
-最終更新：2026-06-02（セッション48）。**次の作業：runtime 機能の implementation triad-review（3 役レビュー）**。runtime は requirements/design/tasks 全段 true・implementation.drafting=true。**本セッションの全コミットは未 push**。経緯は §3.2／session 記録参照。
+最終更新：2026-06-02（セッション49）。**次の作業：evaluation 機能の implementation drafting（草案作成）**。runtime は implementation.triad-review まで完了（foundation と並んで 2/7 機能が triad-review 済み）。本セッションの 3 コミット（runtime triad-review）は push 済み。経緯は §3.2／session 記録参照。
 
 作業ディレクトリ：`/Users/Daily/Development/ReviewCompass/`、リポジトリ：`git@github.com:kenoogl/ReviewCompass.git`（main ブランチ）
 
@@ -66,16 +66,16 @@ drafting 段は actor=human または llm（草案作成のみ）、triad-review
 zsh -c 'source ~/.zshrc && /Users/Daily/Development/ReviewCompass/.venv/bin/python3 <script.py>'
 ```
 
-## 2. ワークフロー上の現在位置（セッション 48 末、正本は spec.json）
+## 2. ワークフロー上の現在位置（セッション 49 末、正本は spec.json）
 
 - intent／feature-partitioning：全 7 機能 全段 true
 - requirements／design／tasks（全 7 機能）：全段 true（reopened は履歴 true。最新は §3.2／reopen-classification 記録）
-- implementation：foundation＝drafting・triad-review true（review-wave 以降 false）／runtime＝drafting true（**次は triad-review**）／他 5 機能（evaluation 以降）＝全段 false
+- implementation：foundation・runtime（2/7 機能）＝drafting・triad-review true（review-wave 以降 false）／他 5 機能（evaluation／analysis／workflow-management／self-improvement／conformance-evaluation）＝全段 false
 - recheck：runtime クリア。**foundation のみ upstream_change_pending=true・impacted=["implementation"]**（api_mediated 変更を将来の review-wave→alignment→approval で織り込む、implementation 未到達のため残置）
 
-## 3. 次の作業（セッション 48 起点）
+## 3. 次の作業（セッション 49 起点）
 
-**次の作業：runtime 機能の implementation triad-review（3 役レビュー）**。drafting は完了（spec.json で implementation.drafting=true）。review-wave 以降は全機能の triad-review 完了後に機能横断で実施（運営ガイド §2.3）。
+**次の作業：evaluation 機能の implementation drafting（草案作成）**。runtime の triad-review は完了（spec.json で implementation.triad-review=true）。残り機能順序（§3.1）で次は evaluation。review-wave 以降は全機能の triad-review 完了後に機能横断で実施（運営ガイド §2.3、現在 2/7 機能完了）。
 
 ### 3.1 実装フェーズで確立した手順（runtime 以降も踏襲）
 
@@ -89,7 +89,8 @@ zsh -c 'source ~/.zshrc && /Users/Daily/Development/ReviewCompass/.venv/bin/pyth
 
 ### 3.2 過去セッションの完了経緯
 
-- **セッション48**：runtime implementation drafting（T-001〜T-011）を TDD 完了、テスト緑 351 件。foundation 6 語彙は `foundation_ref.py` 経由で参照のみ、runtime 所有 3 語彙確定。T-011 着手時に tasks 要件追跡の作業単位不整合（要件1・2・4・5・6・10）を発見し再オープン（4 過程、独立 1 体検証＋3 系統諮問）で解消。コミット 11 件（`02daa0a`〜`3810985`、未 push）。記録 [session-48](docs/sessions/session-48-2026-06-02.md)
+- **セッション49**：runtime implementation triad-review を api_mediated（独立3社 API：主役 Opus 4.8／敵対役 GPT-5.5／判定役 Gemini 3.1 Pro）で実施・完了。所見 16 件（判定 must-fix9／should-fix5／leave-as-is2、全 in_feature）を TDD で対処、tests/runtime 全テスト緑 143。初回の対象漏れ（RUNTIME.md）による偽陽性を再レビューで解消。RUNTIME.md 更新は post-write-verification（Google）で ALL_CLEAR。spec.json implementation.triad-review=true。コミット 3 件（`99c0471`／`43846f8`／`81cfc90`）push 済み。記録 [reviews/2026-06-02-implementation-triad-review.md](.reviewcompass/specs/runtime/reviews/2026-06-02-implementation-triad-review.md)
+- **セッション48**：runtime implementation drafting（T-001〜T-011）を TDD 完了、テスト緑 351 件。foundation 6 語彙は `foundation_ref.py` 経由で参照のみ、runtime 所有 3 語彙確定。T-011 着手時に tasks 要件追跡の作業単位不整合（要件1・2・4・5・6・10）を発見し再オープン（4 過程、独立 1 体検証＋3 系統諮問）で解消。コミット 11 件（`02daa0a`〜`3810985`、push 済み）。記録 [session-48](docs/sessions/session-48-2026-06-02.md)
 - セッション 47 以前（40 含む）の経緯は各 [session 記録](docs/sessions/)・git log・[docs/archive/todo/](docs/archive/todo/) のスナップショット参照
 
 ### 3.3 残作業の補完項目（任意・低優先）
