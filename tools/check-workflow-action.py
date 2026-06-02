@@ -773,17 +773,28 @@ def list_post_write_verification_targets(cwd):
   ]
 
 
-def is_forbidden_post_write_pending_change(path):
+def is_forbidden_post_write_pending_change(path, verification_targets):
   """post-write-verification pending 中に禁止する変更かを判定する"""
-  return path.startswith("tools/") and path.endswith(".py")
+  if path.startswith("tools/") and path.endswith(".py"):
+    return True
+  if path.startswith("templates/"):
+    return True
+  if path.startswith("docs/disciplines/"):
+    non_discipline_targets = [
+      target
+      for target in verification_targets
+      if not target.startswith("docs/disciplines/")
+    ]
+    return bool(non_discipline_targets)
+  return False
 
 
-def list_forbidden_post_write_pending_changes(cwd):
+def list_forbidden_post_write_pending_changes(cwd, verification_targets):
   """post-write-verification pending 中の禁止変更を返す"""
   return [
     path
-    for path in list_untracked_files(cwd)
-    if is_forbidden_post_write_pending_change(path)
+    for path in list_changed_files(cwd)
+    if is_forbidden_post_write_pending_change(path, verification_targets)
   ]
 
 
@@ -1093,7 +1104,7 @@ def cmd_next(args):
   else:
     verification_targets = list_post_write_verification_targets(cwd)
     if verification_targets:
-      forbidden_files = list_forbidden_post_write_pending_changes(cwd)
+      forbidden_files = list_forbidden_post_write_pending_changes(cwd, verification_targets)
       if forbidden_files:
         next_action = {
           "kind": "post_write_policy_violation",
@@ -1102,14 +1113,14 @@ def cmd_next(args):
           "feature": None,
           "phase": None,
           "stage": None,
-          "reason": "post-write-verification pending 中に禁止された新規 runner 作成があります",
+          "reason": "post-write-verification pending 中に禁止された変更があります",
         }
         current_state = {
           "post_write_verification_targets": verification_targets,
           "forbidden_files": forbidden_files,
         }
         reasons = [
-          f"{path} は post-write-verification pending 中に新規作成してはいけません"
+          f"{path} は post-write-verification pending 中に変更してはいけません"
           for path in forbidden_files
         ]
         verdict, exit_code = "DEVIATION", 2

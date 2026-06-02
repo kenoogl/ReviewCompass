@@ -655,7 +655,6 @@ class NextNavigationTests(unittest.TestCase):
     _write_specs_for_next(cwd, {})
     target_paths = [
       "TODO_NEXT_SESSION.md",
-      "docs/disciplines/foo.md",
       "docs/experiments/foo.md",
       "docs/notes/foo.md",
       "docs/operations/foo.md",
@@ -873,6 +872,72 @@ class NextNavigationTests(unittest.TestCase):
     self.assertEqual(
       data["next_action"]["forbidden_files"],
       ["tools/post_write_verify_new_policy.py"],
+    )
+
+  def test_next_deviation_when_template_changes_during_post_write_verification(self):
+    """post-write-verification pending 中の template 変更は逸脱"""
+    cwd = Path(self.tmpdir)
+    _init_git_repo(cwd)
+    _write_specs_for_next(cwd, {})
+    target = cwd / "docs" / "operations" / "workflow.md"
+    target.parent.mkdir(parents=True, exist_ok=True)
+    target.write_text("検証対象の運用文書\n", encoding="utf-8")
+    template = cwd / "templates" / "todo" / "TODO_NEXT_SESSION.template.md"
+    template.parent.mkdir(parents=True, exist_ok=True)
+    template.write_text("再発防止としてのテンプレート変更\n", encoding="utf-8")
+
+    result = run_script(["next", "--json"], cwd=cwd)
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 2, result.stderr)
+    data = json.loads(result.stdout)
+    self.assertEqual(data["next_action"]["kind"], "post_write_policy_violation")
+    self.assertEqual(
+      data["next_action"]["forbidden_files"],
+      ["templates/todo/TODO_NEXT_SESSION.template.md"],
+    )
+
+  def test_next_deviation_when_discipline_change_is_mixed_with_other_post_write_target(self):
+    """post-write-verification pending 中に規律変更が混ざる場合は逸脱"""
+    cwd = Path(self.tmpdir)
+    _init_git_repo(cwd)
+    _write_specs_for_next(cwd, {})
+    target = cwd / "docs" / "operations" / "workflow.md"
+    target.parent.mkdir(parents=True, exist_ok=True)
+    target.write_text("検証対象の運用文書\n", encoding="utf-8")
+    discipline = cwd / "docs" / "disciplines" / "discipline_approval_operation.md"
+    discipline.parent.mkdir(parents=True, exist_ok=True)
+    discipline.write_text("越境した規律変更\n", encoding="utf-8")
+
+    result = run_script(["next", "--json"], cwd=cwd)
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 2, result.stderr)
+    data = json.loads(result.stdout)
+    self.assertEqual(data["next_action"]["kind"], "post_write_policy_violation")
+    self.assertEqual(
+      data["next_action"]["forbidden_files"],
+      ["docs/disciplines/discipline_approval_operation.md"],
+    )
+
+  def test_next_allows_discipline_post_write_when_it_is_the_only_target(self):
+    """規律ファイル単独の変更は post-write-verification 対象として扱う"""
+    cwd = Path(self.tmpdir)
+    _init_git_repo(cwd)
+    _write_specs_for_next(cwd, {})
+    discipline = cwd / "docs" / "disciplines" / "discipline_approval_operation.md"
+    discipline.parent.mkdir(parents=True, exist_ok=True)
+    discipline.write_text("正式手続き後の規律変更\n", encoding="utf-8")
+
+    result = run_script(["next", "--json"], cwd=cwd)
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 0, result.stderr)
+    data = json.loads(result.stdout)
+    self.assertEqual(data["next_action"]["kind"], "post_write_verification")
+    self.assertEqual(
+      data["next_action"]["target_files"],
+      ["docs/disciplines/discipline_approval_operation.md"],
     )
 
   def test_next_ignores_workflow_stage_spec_changes_for_post_write_verification(self):
