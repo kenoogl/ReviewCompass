@@ -76,7 +76,7 @@ language: ja
 ### T-004：Step A／B／C 実行器（言語モデル呼び出しを含む 3 段）
 
 - **対応設計節**：design.md §ステップ実行モデル Step A／Step B／Step C、§プロンプト解決モデル（役と段の対応）
-- **対応要件**：Requirement 1 受入 1〜3（4 段パイプライン）、Requirement 4 受入 1〜6（構造化された証拠の出力）、Requirement 6 受入 6（`runtime_mediated` レビューモード付与）
+- **対応要件**：Requirement 1 受入 1〜3（4 段パイプライン）、Requirement 2 受入 3〜5（treatment 別の段実行・省略）、Requirement 4 受入 1〜6（構造化された証拠の出力）、Requirement 6 受入 6（`runtime_mediated` レビューモード付与）、Requirement 10 受入 2（固定パターン非依存の動的判定）
 - **責務**：Step A（primary detection、主役検出）／Step B（adversarial review、敵対レビュー）／Step C（judgment、判定）の 3 段実行器を実装。各段の入出力、言語モデル呼び出し境界、所見記録（`counter_status` 3 値正本の参照を含む）、段別メタデータ出力（`steps/step_a_primary_detection.json` ／ `step_b_adversarial_review.json` ／ `step_c_judgment.json`）を担う。`counter_status` の 3 値（`counter_evidence_raised`／`no_counter_evidence_after_challenge`／`not_assessed`）を Step B で必ず設定し、「反証なし」と「反証を試みていない」を曖昧にしない
 - **前提タスク**：T-002、T-003、T-006（プロンプト解決機構）
 - **成果物**：
@@ -139,7 +139,7 @@ language: ja
 ### T-009：validation bridge（検証器連携と実行終了境界）
 
 - **対応設計節**：design.md §全体構造（validation bridge 役）、§検証器連携 §実行終了境界、§無効化処理
-- **対応要件**：Requirement 6（検証器連携と実行終了、受入 1〜5、7〜9。受入 6 ＝ `review_mode` 付与は T-002 ／ T-004 が担う）
+- **対応要件**：Requirement 1 受入 5（実行終了境界の露出）、Requirement 6（検証器連携と実行終了、受入 1〜5、7〜9。受入 6 ＝ `review_mode` 付与は T-002 ／ T-004 が担う）
 - **責務**：実行終了境界の順序（Step D 完了 → 人間署名 → 凍結 → 検証器呼び出し → `validator_result.json` 保存）を強制。`validator_status` foundation 4 値正本（`not_run`／`passed`／`failed`／`blocked`）を再定義せず伝播。無効化標識を `validation/invalidation_markers.json` への追加で表現（生証拠を改変しない）。前提条件違反や多重起動を検知した場合、検証器を起動せず `run_status=orchestration_failed` として fail-closed。`derived/invalid_run_triage_note.json` を生成（無効実行時、`primary_failure_code` ／ `failed_validator_check_ids` ／ `invalidation_marker_linkage` ／ `operator_action_hint` を含む）。`evidence_class` foundation 4 値正本の確定遷移を design.md §セッションモデル §3 の 9 行マッピング表に従って実施
 - **前提タスク**：T-002（`run_status` 制御）、T-007（人間署名）、T-008（証拠凍結）
 - **成果物**（内部関係：`bridge.py` が他 3 ファイルを呼び出すオーケストレーション役、他 3 ファイルは個別責務の補助モジュール）：
@@ -165,7 +165,7 @@ language: ja
 ### T-011：テスト戦略整備と統合テスト
 
 - **対応設計節**：design.md §テスト戦略（5 項目の縫い目）
-- **対応要件**：Requirement 1 受入 1〜6 の網羅検証、各 Requirement の機械判定可能な完了条件の網羅
+- **対応要件**：Requirement 1 受入 1〜6 の網羅検証、各 Requirement の機械判定可能な完了条件の網羅、Requirement 10（参照規約なしの機械検証）
 - **責務**：design.md §テスト戦略で定義された 5 項目（言語モデル差し替え点 ／ 検証ブリッジ起動点 ／ 段入出力分離点 ／ 決定単位生成の検証方針 ／ 実行終了境界の順序検証）をすべて Python テストとして整備。pytest で一括実行可能。foundation との接続部（語彙正本 6 件の参照のみで使用、再定義していないこと）の機械検証も含める。要件追跡表と各タスク本文の対応要件欄の双方向整合チェック（foundation T-010 と同様、runtime 側でも採用）
 - **前提タスク**：T-001、T-002、T-003、T-004、T-005、T-006、T-007、T-008、T-009、T-010（全実装タスクが前提）
 - **成果物**：`tests/runtime/` 配下のテストファイル群（test_session_controller.py ／ test_step_executors.py ／ test_prompt_resolver.py ／ test_decision_units.py ／ test_evidence_writer.py ／ test_validation_bridge.py ／ test_bundle_exporter.py ／ test_integration_run_close_order.py の 8 ファイル相当、または機能別に分割）
@@ -176,12 +176,12 @@ language: ja
 
 | 要件 | 対応タスク |
 |------|-----------|
-| Requirement 1：レビュー実行制御 | T-002（session controller）、T-004（Step A／B／C）、T-005（Step D）、T-009（実行終了境界） |
+| Requirement 1：レビュー実行制御 | T-001（実行配置・命名の所有、受入 6）、T-002（session controller）、T-004（Step A／B／C）、T-005（Step D）、T-009（実行終了境界、受入 5）、T-011（受入 1〜6 網羅検証） |
 | Requirement 2：処理方式対応の実行 | T-003（treatment 軸）、T-004（treatment 別実行） |
 | Requirement 3：プロンプト解決と版追跡 | T-006（プロンプト解決機構） |
-| Requirement 4：構造化された証拠の出力 | T-004（段別証拠）、T-005（統合証拠）、T-008（evidence writer） |
-| Requirement 5：人間決定の組み込み | T-005（決定単位生成）、T-007（人間署名記録） |
-| Requirement 6：検証器連携と実行終了 | T-002（受入 6 ＝ `review_mode` 付与の起点）、T-004（受入 6 ＝ 各段出力への `review_mode` 付与）、T-009（受入 1〜5、7〜9 ＝ 検証器連携・実行終了境界） |
+| Requirement 4：構造化された証拠の出力 | T-001（実行レベル証拠出力の配置、受入 1）、T-004（段別証拠）、T-005（統合証拠）、T-008（evidence writer） |
+| Requirement 5：人間決定の組み込み | T-002（決定単位提示の起点、受入 1）、T-005（決定単位生成）、T-007（人間署名記録） |
+| Requirement 6：検証器連携と実行終了 | T-002（受入 6 ＝ `review_mode` 付与の起点）、T-004（受入 6 ＝ 各段出力への `review_mode` 付与）、T-007（受入 9 ＝ 署名は順序の起点）、T-008（受入 3 ＝ 無効化が生証拠を改変しない）、T-009（受入 1〜5、7〜9 ＝ 検証器連携・実行終了境界） |
 | Requirement 7：再生対応の実行時記録 | T-002（マニフェスト）、T-008（生段証拠保持） |
 | Requirement 8：フェーズ対応レビュープロファイル | T-003（phase/profile 軸）、T-006（プロンプト上書き選択） |
 | Requirement 9：可搬証拠束輸出 | T-010（bundle exporter） |

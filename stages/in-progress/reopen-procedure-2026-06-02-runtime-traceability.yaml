@@ -1,0 +1,12 @@
+process_id: reopen-procedure
+feature: [runtime]
+started_at: 2026-06-02T00:00:00+09:00
+trigger: runtime implementation T-011（テスト戦略整備）の要件追跡双方向整合の機械検証着手時に、tasks.md の要件追跡表と各タスク本文の対応要件欄が作業単位で 6 要件分食い違っていることを発見。利用者は厳密整合（案 ア）を選択。利用者承認「ア」「はい」2026-06-02
+classification_basis: docs/reviews/reopen-classification-2026-06-02-runtime-traceability.md
+# 4 過程構成（計画書 §5.6.1）での進行状況。
+completed_steps: ["第1過程：判定とフラグ差し戻し"]
+next_step: 第2過程：正本修正（tasks.md に 9 件の整合化）
+pending_gates:
+  - runtime: stages/tasks.yaml#alignment
+  - runtime: stages/tasks.yaml#approval
+current_blocker: 第1過程のフラグ差し戻し承認後、第2過程で tasks.md を修正しコミット（第1＋第2過程をまとめて 1 コミット）
