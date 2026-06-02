@@ -47,18 +47,22 @@ drafting 段は actor=human または llm（草案作成のみ）、triad-review
 
 **この手順はセッション起動と同時に強制実行する。利用者の指示を待たず、「ご指示をいただけますか」と伺わない。**
 
-ReviewCompass の運営ガイドラインの必読フローに従う：
+1. 本 `TODO_NEXT_SESSION.md` の §2（現在位置）と §3（次の作業）を確認
+2. `git log --oneline -5` / `git status` で到達点確認
+3. 作業開始前に対象機能の `.reviewcompass/specs/<機能>/spec.json` を Read
 
-1. ターミナルで `cd <作業ディレクトリ>`
-2. 本 `TODO_NEXT_SESSION.md` を読む（§0 重要規律を必ず確認）
-3. `docs/operations/SESSION_WORKFLOW_GUIDE.md` を読む（必読フロー・ワークフロー段の役割・サブエージェント方式の運用条件・利用者判断の見極め）
-4. 計画書 §5.4〜§5.8 を読む（ワークフロー手続き、reopen、session 跨ぎ、多層防御）
-5. 計画書 §5.24 を読む（spec.json の正本スキーマ）
-6. 計画書 §5.12 を読む（人間代役機構）
-7. 計画書 §5.23 と §5.23.12 を読む（dogfooding と subagent_mediated 方式）
-8. `.reviewcompass/pending-cross-feature-findings.md` を読む（持ち越し所見）
-9. `docs/extraction-mapping.md` を読む（進行記録、存在する場合）
-10. `git log --oneline -10`／`git status` で到達点確認
+規律は MEMORY.md 索引がセッション開始時に自動ロード済み。全件の本文読み込みは不要。操作の直前に下表の該当行を Read する。
+
+| 操作 | 直前に読む規律ファイル（`docs/disciplines/` 配下） |
+|------|------------------------------------------------|
+| コミット・プッシュ前 | `discipline_workflow_precheck_invocation.md`・`discipline_approval_operation.md` |
+| 規律を変更する前 | `discipline_reopen_procedure_for_settled_topics.md` |
+| triad-review 所見の対処前 | `discipline_must_fix_discussion_obligation.md` |
+| md 文書を書いた後 | `discipline_post_write_verification.md` |
+| yaml ファイルを書いた後 | `discipline_yaml_audit.md` |
+| 複数ファイルの横断操作前 | `discipline_pre_action_precheck.md` |
+
+計画書・運営ガイドは当該操作に関わる節だけ、必要なときに Read する。
 
 ## 2. 過去経緯と総括
 

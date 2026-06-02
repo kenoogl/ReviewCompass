@@ -50,13 +50,22 @@ drafting 段は actor=human または llm（草案作成のみ）、triad-review
 
 ## 1. 起動手順（セッション起動と同時に強制実行。利用者の指示を待たず、「ご指示を」と伺わない）
 
-1. `cd /Users/Daily/Development/ReviewCompass`
-2. 本 `TODO_NEXT_SESSION.md` を読む（§0 規律確認）
-3. **規律本体 active 必読を個別に Read**（auto memory は索引のみ load のため毎セッション必要。README を読むだけでは不十分、各ファイルを Read）。対象一覧は `docs/disciplines/README.md` の active 必読表（現在 14 件）
-4. `docs/operations/SESSION_WORKFLOW_GUIDE.md` と `docs/operations/REOPEN_PROCEDURE.md`（再オープン 4 過程）
-5. 計画書 `docs/plan/reconstruction-plan-2026-05-21.md` の §5.4〜§5.9.6・§5.12・§5.23〜§5.24（行番号は変動、参考値）
-6. 実験ノート `docs/experiments/n-model-comparison.md` §3.4（マルチターンプロトコル）
-7. `git log --oneline -10`／`git status` で到達点確認
+1. 本 `TODO_NEXT_SESSION.md` の §2（現在位置）と §3（次の作業）を確認
+2. `git log --oneline -5` / `git status` で到達点確認
+3. 作業開始前に対象機能の `.reviewcompass/specs/<機能>/spec.json` を Read
+
+規律 14 件は MEMORY.md 索引がセッション開始時に自動ロード済み。全件の本文読み込みは不要。操作の直前に下表の該当行を Read する。
+
+| 操作 | 直前に読む規律ファイル（`docs/disciplines/` 配下） |
+|------|------------------------------------------------|
+| コミット・プッシュ前 | `discipline_workflow_precheck_invocation.md`・`discipline_approval_operation.md` |
+| 規律を変更する前 | `discipline_reopen_procedure_for_settled_topics.md` |
+| triad-review 所見の対処前 | `discipline_must_fix_discussion_obligation.md` |
+| md 文書を書いた後 | `discipline_post_write_verification.md` |
+| yaml ファイルを書いた後 | `discipline_yaml_audit.md` |
+| 複数ファイルの横断操作前 | `discipline_pre_action_precheck.md` |
+
+計画書・運営ガイドは当該操作に関わる節だけ、必要なときに Read する。
 
 ### 1.1 Python 実行（venv 経由、毎セッション要確認）
 
