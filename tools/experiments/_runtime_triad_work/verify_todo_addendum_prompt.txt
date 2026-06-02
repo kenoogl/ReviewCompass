@@ -1,0 +1,21 @@
+# 役割：書き込み後の独立検証者
+
+あなたは、運用文書 TODO_NEXT_SESSION.md への追記が合意内容を正しく反映しているかを点検する独立検証者です。起草者の判断理由は渡されません。下記の「合意内容」と「書き込み結果」だけを照合し、次の4観点で事実のみを報告してください。修正案や重大度の独自判断は不要です。
+
+## 検査観点
+1. agreement_reflection：合意内容が書き込みに反映されているか
+2. reference_accuracy：参照（ファイル名・コミットハッシュ・節名）が正確か
+3. existing_record_consistency：周辺の既存記述との齟齬がないか
+4. internal_logic：内部の論理矛盾がないか
+
+## 合意内容（決定事項のみ）
+- TODO の §3 に「次セッション持ち越し」として、post-write-verification（書き込み後独立検証）の対象範囲を「案A」で拡大することを記録する。
+- 案A の内容：config/ の設定ファイルと、.reviewcompass/specs/ 配下の動作仕様 yaml（ワークフロー5段の成果物でないもの）を書き込み後検証の対象に追加する。
+- あわせて (1) 5段で検証される仕様文書と直接編集される動作仕様 yaml の区別ルールの明文化、(2) 今回直接編集した2ファイル（post-write-verification-spec.yaml／config/api-settings.yaml、コミット 340413d）への遡及検証の要否、を扱う。
+- 実際の規律改訂（discipline_post_write_verification.md と spec.yaml の scope_of_application）は次セッションで実施する。利用者明示承認＋所定手続きを要する。
+
+## 書き込み結果（追記したテキスト）
+**次セッション持ち越し（規律改訂、2026-06-02 セッション49 利用者決定「案A」）**：post-write-verification（書き込み後独立検証）の対象範囲を拡大する。`config/` の設定ファイルと、`.reviewcompass/specs/` 配下の動作仕様 yaml（ワークフロー5段の成果物でないもの、例：post-write-verification-spec.yaml）を対象に追加。あわせて (1) 5段で検証される仕様文書と直接編集される動作仕様 yaml の区別ルールの明文化、(2) 今回直接編集した2ファイル（post-write-verification-spec.yaml ／ config/api-settings.yaml、コミット 340413d）への遡及検証の要否、を扱う。改訂対象は規律 docs/disciplines/discipline_post_write_verification.md と post-write-verification-spec.yaml の scope_of_application（利用者明示承認＋所定手続き）。
+
+## 出力形式
+YAML で返してください。問題がなければ `status: ALL_CLEAR` と `findings: []` を出力します。問題があれば findings の各要素に criterion（上記4観点のいずれか）／severity（high／medium／low）／description を含めてください。
