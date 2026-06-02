@@ -192,3 +192,59 @@ def test_invalidation_marker_writer_appends(tmp_path):
   data = json.loads((run_dir / "validation" / "invalidation_markers.json").read_text(encoding="utf-8"))
   assert len(data["markers"]) == 1
   assert data["markers"][0]["scope"] == "run"
+
+
+# ---- triad-review 機能内対処（2026-06-02、論点A）----
+
+def test_close_run_updates_review_case(tmp_path):
+  """A-006：実行終了で review_case.json に終了メタデータを確定反映する。"""
+  run_dir = _setup_run(tmp_path, signoff_status="approved")
+  bridge = ValidationBridge(run_dir, validator_callable=_CountingValidator("passed"))
+  bridge.close_run()
+  rc_path = run_dir / "review_case.json"
+  assert rc_path.is_file(), "review_case.json が更新されていない"
+  rc = json.loads(rc_path.read_text(encoding="utf-8"))
+  assert rc["run_status"] == "closed"
+  assert rc["validator_status"] == "passed"
+  assert rc["evidence_class"] == "valid"
+
+
+def test_close_run_rejects_when_not_ready(tmp_path):
+  """P-002：Step D の run_close_ready が False なら実行終了を拒否する。"""
+  run_dir = _setup_run(tmp_path, signoff_status="approved")
+  step_d_path = run_dir / "steps" / "step_d_integration.json"
+  data = json.loads(step_d_path.read_text(encoding="utf-8"))
+  data["run_close_ready"] = False
+  step_d_path.write_text(json.dumps(data), encoding="utf-8")
+  bridge = ValidationBridge(run_dir, validator_callable=_CountingValidator("passed"))
+  with pytest.raises(RunCloseOrderError):
+    bridge.close_run()
+
+
+def test_fail_closed_sets_evidence_class_invalid(tmp_path):
+  """P-010：fail-closed 経路でも evidence_class を invalid に確定する。"""
+  run_dir = _setup_run(tmp_path, with_signoff=False)
+  bridge = ValidationBridge(run_dir, validator_callable=_CountingValidator("passed"))
+  with pytest.raises(RunCloseOrderError):
+    bridge.close_run()
+  assert _manifest(run_dir)["evidence_class"] == "invalid"
+
+
+def test_invalid_validator_status_fails_closed(tmp_path):
+  """A-002：検証器が 4 値外を返したら fail-closed（中間状態を残さない）。"""
+  run_dir = _setup_run(tmp_path, signoff_status="approved")
+  bridge = ValidationBridge(run_dir, validator_callable=_CountingValidator("bogus"))
+  with pytest.raises(RunCloseOrderError):
+    bridge.close_run()
+  m = _manifest(run_dir)
+  assert m["run_status"] == "orchestration_failed"
+  assert (run_dir / "validation" / "invalidation_markers.json").is_file()
+
+
+def test_validator_failure_generates_triage(tmp_path):
+  """A-003：検証器 failed のとき invalid 確定＋トリアージ記録を生成する。"""
+  run_dir = _setup_run(tmp_path, signoff_status="approved")
+  bridge = ValidationBridge(run_dir, validator_callable=_CountingValidator("failed"))
+  result = bridge.close_run()
+  assert result["evidence_class"] == "invalid"
+  assert (run_dir / "derived" / "invalid_run_triage_note.json").is_file()

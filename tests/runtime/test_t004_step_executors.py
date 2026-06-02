@@ -244,3 +244,67 @@ def test_steps_run_independently(tmp_path):
     treatment="adversarial", started_at="t0", closed_at="t1",
   )
   assert out_b["step_outcome"] == "executed"
+
+
+# ---- triad-review 機能内対処（2026-06-02、P-005／P-006）----
+
+class _RaisingBoundary(LLMInvocationBoundary):
+  """invoke で必ず例外を投げる（段実行失敗の注入）。"""
+
+  def invoke(self, *, role, prompt=None, target_artifact=None, context=None):
+    raise RuntimeError("LLM 呼び出しに失敗")
+
+
+def _run_dir_with_manifest(tmp_path):
+  d = _run_dir(tmp_path)
+  (d / "run_manifest.yaml").write_text(
+    yaml.safe_dump({"run_id": "run-1"}, allow_unicode=True), encoding="utf-8"
+  )
+  return d
+
+
+def test_step_a_failure_writes_failed_marker(tmp_path):
+  """P-005：段実行が失敗したら step_outcome=failed のマーカーを残す。"""
+  run_dir = _run_dir_with_manifest(tmp_path)
+  out = step_a.run(
+    run_dir=run_dir, prompt_identity=_prompt_identity("primary_reviewer"),
+    llm_boundary=_RaisingBoundary(), target_artifact="本文", treatment="judgment",
+    started_at="t0", closed_at="t1",
+  )
+  assert out["step_outcome"] == "failed"
+  data = json.loads((run_dir / "steps" / "step_a_primary_detection.json").read_text(encoding="utf-8"))
+  assert data["step_outcome"] == "failed"
+
+
+def test_step_a_failure_writes_failure_observation(tmp_path):
+  """P-006：段失敗時に failure_observation を独立成果物として書き出す。"""
+  run_dir = _run_dir_with_manifest(tmp_path)
+  step_a.run(
+    run_dir=run_dir, prompt_identity=_prompt_identity("primary_reviewer"),
+    llm_boundary=_RaisingBoundary(), target_artifact="本文", treatment="judgment",
+    started_at="t0", closed_at="t1",
+  )
+  fobs = list((run_dir / "failures" / "failure_observations").glob("*.json"))
+  assert fobs, "failure_observation が書き出されていない"
+
+
+def test_step_b_failure_writes_failed_marker(tmp_path):
+  """P-005：Step B も実行失敗で failed マーカーを残す。"""
+  run_dir = _run_dir_with_manifest(tmp_path)
+  out = step_b.run(
+    run_dir=run_dir, prompt_identity=_prompt_identity("adversarial_reviewer"),
+    llm_boundary=_RaisingBoundary(), target_artifact="本文", prior_findings=[],
+    treatment="adversarial", started_at="t0", closed_at="t1",
+  )
+  assert out["step_outcome"] == "failed"
+
+
+def test_step_c_failure_writes_failed_marker(tmp_path):
+  """P-005：Step C も実行失敗で failed マーカーを残す。"""
+  run_dir = _run_dir_with_manifest(tmp_path)
+  out = step_c.run(
+    run_dir=run_dir, prompt_identity=_prompt_identity("judgment_reviewer"),
+    llm_boundary=_RaisingBoundary(), prior_findings=[],
+    treatment="judgment", started_at="t0", closed_at="t1",
+  )
+  assert out["step_outcome"] == "failed"

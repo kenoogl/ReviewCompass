@@ -187,3 +187,13 @@ def test_reference_free_rejects_empty_input(tmp_path):
   controller = SessionController(run_root_base=tmp_path)
   with pytest.raises(ReferenceFreeEntryViolation):
     controller.start_session(session_inputs=inputs, run_id="run-x", started_at="2026-06-02T00:00:00+09:00")
+
+
+# ---- triad-review 機能内対処（2026-06-02、A-001）----
+
+def test_start_session_creates_required_subdirectories(tmp_path):
+  """セッション開始時に必須サブディレクトリを作成する（A-001、tasks T-001／T-002）。"""
+  _, run_dir = _start(tmp_path)
+  run_dir = Path(run_dir)
+  for sub in ("steps", "decisions", "failures/failure_observations", "validation", "derived"):
+    assert (run_dir / sub).is_dir(), f"必須サブディレクトリが未作成：{sub}"

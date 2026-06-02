@@ -181,3 +181,28 @@ def test_run_close_readiness_signal(tmp_path):
     step_c_output=_step_c_output(), treatment="judgment", started_at="t0", closed_at="t1",
   )
   assert out["run_close_ready"] is True
+
+
+# ---- triad-review 機能内対処（2026-06-02、A-004）----
+
+def test_readiness_false_when_skip_marker_missing(tmp_path):
+  """A-004：省略段のマーカーが欠落（事故的欠落）なら run_close_ready=False。"""
+  run_dir = _run_dir(tmp_path)
+  out = step_d.run(
+    run_dir=run_dir, step_a_output=_step_a_output(),
+    step_b_output=None, step_c_output=None,
+    treatment="primary", started_at="t0", closed_at="t1",
+  )
+  assert out["run_close_ready"] is False
+
+
+def test_readiness_true_when_skip_marker_present(tmp_path):
+  """A-004：省略段に skipped_by_treatment マーカーがあれば run_close_ready=True。"""
+  run_dir = _run_dir(tmp_path)
+  out = step_d.run(
+    run_dir=run_dir, step_a_output=_step_a_output(),
+    step_b_output=_skip_marker("step_b", "adversarial_review"),
+    step_c_output=_skip_marker("step_c", "judgment"),
+    treatment="primary", started_at="t0", closed_at="t1",
+  )
+  assert out["run_close_ready"] is True
