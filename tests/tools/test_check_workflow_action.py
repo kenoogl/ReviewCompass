@@ -468,6 +468,59 @@ class NextNavigationTests(unittest.TestCase):
     self.assertEqual(data["next_action"]["phase"], "implementation")
     self.assertEqual(data["next_action"]["stage"], "drafting")
 
+  def test_next_review_wave_reports_recheck_and_pending_findings(self):
+    """review-wave では recheck と pending-cross-feature-findings の確認情報を返す"""
+    cwd = Path(self.tmpdir)
+    implementation_ready = {
+      "drafting": True,
+      "triad-review": True,
+      "review-wave": False,
+      "alignment": False,
+      "approval": False,
+    }
+    _write_specs_for_next(
+      cwd,
+      {feature: dict(implementation_ready) for feature in FEATURE_ORDER},
+    )
+    foundation_spec_path = cwd / ".reviewcompass" / "specs" / "foundation" / "spec.json"
+    foundation_spec = json.loads(foundation_spec_path.read_text(encoding="utf-8"))
+    foundation_spec["recheck"] = {
+      "upstream_change_pending": True,
+      "impacted_downstream_phases": ["implementation"],
+    }
+    foundation_spec_path.write_text(
+      json.dumps(foundation_spec, ensure_ascii=False, indent=2),
+      encoding="utf-8",
+    )
+    pending_path = cwd / ".reviewcompass" / "pending-cross-feature-findings.md"
+    pending_path.write_text(
+      "# 機能横断レビューで扱う所見の集約\n\n"
+      "### A-001：未消化の波及所見\n",
+      encoding="utf-8",
+    )
+
+    result = run_script(["next", "--json"], cwd=cwd)
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 0, result.stderr)
+    data = json.loads(result.stdout)
+    self.assertEqual(data["next_action"]["kind"], "cross_feature_stage")
+    self.assertEqual(data["next_action"]["phase"], "implementation")
+    self.assertEqual(data["next_action"]["stage"], "review-wave")
+    self.assertEqual(
+      data["next_action"]["recheck_items"],
+      [
+        {
+          "feature": "foundation",
+          "impacted_downstream_phases": ["implementation"],
+        }
+      ],
+    )
+    self.assertEqual(
+      data["next_action"]["pending_cross_feature_findings"]["unresolved_count"],
+      1,
+    )
+
   def test_next_prioritizes_in_progress_file(self):
     """進行中ファイルがあれば新規作業ではなく resume を返す"""
     cwd = Path(self.tmpdir)
@@ -594,6 +647,40 @@ class NextNavigationTests(unittest.TestCase):
     self.assertEqual(data["next_action"]["kind"], "post_write_verification")
     self.assertEqual(data["next_action"]["target_files"], ["docs/notes/new-policy.md"])
 
+  def test_next_post_write_verification_target_matrix(self):
+    """規律で定義された post-write-verification 対象だけを検出する"""
+    cwd = Path(self.tmpdir)
+    _init_git_repo(cwd)
+    _write_specs_for_next(cwd, {})
+    target_paths = [
+      "TODO_NEXT_SESSION.md",
+      "docs/disciplines/foo.md",
+      "docs/experiments/foo.md",
+      "docs/notes/foo.md",
+      "docs/operations/foo.md",
+      "docs/plan/foo.md",
+      "docs/reviews/2026-06-02-audit-foo.md",
+      "docs/reviews/reopen-classification-2026-06-02.md",
+    ]
+    non_target_paths = [
+      ".reviewcompass/specs/foundation/spec.json",
+      "docs/archive/foo.md",
+      "docs/reviews/2026-06-02-impl-triad-review.md",
+      "docs/reviews/audit-summary.md",
+    ]
+    for path in target_paths + non_target_paths:
+      file_path = cwd / path
+      file_path.parent.mkdir(parents=True, exist_ok=True)
+      file_path.write_text(f"{path}\n", encoding="utf-8")
+
+    result = run_script(["next", "--json"], cwd=cwd)
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 0, result.stderr)
+    data = json.loads(result.stdout)
+    self.assertEqual(data["next_action"]["kind"], "post_write_verification")
+    self.assertEqual(data["next_action"]["target_files"], sorted(target_paths))
+
   def test_next_uses_completed_post_write_manifest_to_return_to_workflow(self):
     """完了 manifest が対象ファイルを覆う場合は通常 workflow に戻る"""
     cwd = Path(self.tmpdir)
@@ -622,6 +709,33 @@ class NextNavigationTests(unittest.TestCase):
     self.assertEqual(data["verdict"], "OK")
     self.assertEqual(data["next_action"]["kind"], "stage")
     self.assertEqual(data["next_action"]["feature"], "foundation")
+
+  def test_next_does_not_complete_manifest_with_empty_required_verifiers(self):
+    """required_verifiers が空の manifest は完了扱いしない"""
+    cwd = Path(self.tmpdir)
+    _init_git_repo(cwd)
+    _write_specs_for_next(cwd, {})
+    target = cwd / "docs" / "notes" / "new-policy.md"
+    target.parent.mkdir(parents=True, exist_ok=True)
+    target.write_text("検証者未指定の正本文書\n", encoding="utf-8")
+    _write_post_write_manifest(
+      cwd,
+      "post-write-2026-06-02-001.yaml",
+      {
+        "status": "completed",
+        "target_files": ["docs/notes/new-policy.md"],
+        "required_verifiers": [],
+        "completed_verifiers": [],
+        "unresolved_substantive_findings": 0,
+      },
+    )
+
+    result = run_script(["next", "--json"], cwd=cwd)
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 0, result.stderr)
+    data = json.loads(result.stdout)
+    self.assertEqual(data["next_action"]["kind"], "post_write_verification")
 
   def test_next_requires_human_decision_for_unresolved_substantive_findings(self):
     """manifest に未解決の本質的指摘があれば人間判断待ちを返す"""

@@ -808,6 +808,8 @@ def load_post_write_manifests(cwd):
 def verifier_requirements_satisfied(manifest):
   """required_verifiers が completed_verifiers で満たされているかを返す"""
   required = set(manifest.get("required_verifiers") or [])
+  if not required:
+    return False
   completed = set(manifest.get("completed_verifiers") or [])
   return required.issubset(completed)
 
@@ -896,6 +898,45 @@ def build_cross_stage_next_action(phase, stage, reason):
     "stage": stage,
     "reason": reason,
   }
+
+
+def collect_recheck_items(specs, phase):
+  """指定 phase に影響する upstream recheck 項目を集める"""
+  items = []
+  for feature in FEATURE_ORDER:
+    recheck = specs.get(feature, {}).get("recheck", {})
+    if not recheck.get("upstream_change_pending", False):
+      continue
+    impacted = recheck.get("impacted_downstream_phases", [])
+    if phase in impacted:
+      items.append({
+        "feature": feature,
+        "impacted_downstream_phases": impacted,
+      })
+  return items
+
+
+def augment_cross_feature_next_action(cwd, specs, next_action):
+  """機能横断段に必要な確認情報を付加する"""
+  if next_action.get("kind") != "cross_feature_stage":
+    return next_action
+
+  phase = next_action.get("phase")
+  stage = next_action.get("stage")
+  augmented = dict(next_action)
+
+  recheck_items = collect_recheck_items(specs, phase)
+  if recheck_items:
+    augmented["recheck_items"] = recheck_items
+
+  if stage == "review-wave":
+    pending_path = Path(cwd) / ".reviewcompass" / "pending-cross-feature-findings.md"
+    augmented["pending_cross_feature_findings"] = {
+      "file": ".reviewcompass/pending-cross-feature-findings.md",
+      "unresolved_count": count_unresolved_findings(pending_path),
+    }
+
+  return augmented
 
 
 def resolve_next_action(specs):
@@ -1033,7 +1074,11 @@ def cmd_next(args):
             reasons = [f"{feature} の spec.json が見つかりません" for feature in missing]
             verdict, exit_code = "DEVIATION", 2
           else:
-            next_action = resolve_next_action(specs)
+            next_action = augment_cross_feature_next_action(
+              cwd,
+              specs,
+              resolve_next_action(specs),
+            )
             current_state = {
               "feature_order": FEATURE_ORDER,
               "workflow_state": summarize_workflow_state(specs),
@@ -1067,7 +1112,11 @@ def cmd_next(args):
         reasons = [f"{feature} の spec.json が見つかりません" for feature in missing]
         verdict, exit_code = "DEVIATION", 2
       else:
-        next_action = resolve_next_action(specs)
+        next_action = augment_cross_feature_next_action(
+          cwd,
+          specs,
+          resolve_next_action(specs),
+        )
         current_state = {
           "feature_order": FEATURE_ORDER,
           "workflow_state": summarize_workflow_state(specs),
