@@ -21,6 +21,16 @@ REPO_ROOT = Path(__file__).resolve().parents[2]
 SCRIPT = REPO_ROOT / "tools" / "check-workflow-action.py"
 FIXTURE_BASE = REPO_ROOT / "tests" / "fixtures" / "spec-json-cases"
 
+FEATURE_ORDER = [
+  "foundation",
+  "runtime",
+  "evaluation",
+  "analysis",
+  "workflow-management",
+  "self-improvement",
+  "conformance-evaluation",
+]
+
 
 def run_script(args, cwd):
   """check-workflow-action.py をサブプロセスで実行して結果を返す"""
@@ -31,6 +41,65 @@ def run_script(args, cwd):
     text=True,
     timeout=10,
   )
+
+
+def _write_spec(cwd, feature, implementation_state):
+  """next サブコマンド用の最小 spec.json を作る"""
+  spec_dir = Path(cwd) / ".reviewcompass" / "specs" / feature
+  spec_dir.mkdir(parents=True, exist_ok=True)
+  complete_five_stage = {
+    "drafting": True,
+    "triad-review": True,
+    "review-wave": True,
+    "alignment": True,
+    "approval": True,
+  }
+  workflow_state = {
+    "intent": {
+      "drafting": True,
+      "review": True,
+      "approval": True,
+      "reference": "stages/intent.yaml",
+    },
+    "feature-partitioning": {
+      "candidate-proposal": True,
+      "approval": True,
+      "reference": "stages/feature-partitioning/2026-05-24-proposal.md",
+    },
+    "requirements": dict(complete_five_stage),
+    "design": dict(complete_five_stage),
+    "tasks": dict(complete_five_stage),
+    "implementation": dict(implementation_state),
+  }
+  spec = {
+    "feature_name": feature,
+    "language": "ja",
+    "created_at": "2026-06-02T00:00:00+09:00",
+    "updated_at": "2026-06-02T00:00:00+09:00",
+    "workflow_state": workflow_state,
+    "reopened": {},
+    "recheck": {
+      "upstream_change_pending": False,
+      "impacted_downstream_phases": [],
+    },
+  }
+  (spec_dir / "spec.json").write_text(
+    json.dumps(spec, ensure_ascii=False, indent=2),
+    encoding="utf-8",
+  )
+
+
+def _write_specs_for_next(cwd, states_by_feature):
+  """指定されない feature は implementation 未着手として spec.json を作る"""
+  untouched = {
+    "drafting": False,
+    "triad-review": False,
+    "review-wave": False,
+    "alignment": False,
+    "approval": False,
+  }
+  for feature in FEATURE_ORDER:
+    _write_spec(cwd, feature, states_by_feature.get(feature, untouched))
 
 
 def _assert_script_invoked(testcase, result):
@@ -343,6 +412,126 @@ class SpecSetArgumentValidationTests(unittest.TestCase):
       result.returncode, 0,
       "true／false 以外の値は引数エラーで非 0 終了すべき",
     )
+
+
+class NextNavigationTests(unittest.TestCase):
+  """next サブコマンドのワークフローナビゲーション判定"""
+
+  def setUp(self):
+    self.tmpdir = tempfile.mkdtemp()
+    self.addCleanup(shutil.rmtree, self.tmpdir)
+
+  def test_next_returns_evaluation_implementation_drafting_after_runtime_triad_review(self):
+    """runtime triad-review 完了後は evaluation implementation drafting を返す"""
+    cwd = Path(self.tmpdir)
+    runtime_done = {
+      "drafting": True,
+      "triad-review": True,
+      "review-wave": False,
+      "alignment": False,
+      "approval": False,
+    }
+    foundation_done = dict(runtime_done)
+    _write_specs_for_next(
+      cwd,
+      {
+        "foundation": foundation_done,
+        "runtime": runtime_done,
+      },
+    )
+
+    result = run_script(["next", "--json"], cwd=cwd)
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 0, result.stderr)
+    data = json.loads(result.stdout)
+    self.assertEqual(data["verdict"], "OK")
+    self.assertEqual(data["next_action"]["kind"], "stage")
+    self.assertEqual(data["next_action"]["feature"], "evaluation")
+    self.assertEqual(data["next_action"]["phase"], "implementation")
+    self.assertEqual(data["next_action"]["stage"], "drafting")
+
+  def test_next_prioritizes_in_progress_file(self):
+    """進行中ファイルがあれば新規作業ではなく resume を返す"""
+    cwd = Path(self.tmpdir)
+    _write_specs_for_next(cwd, {})
+    in_progress_dir = cwd / "stages" / "in-progress"
+    in_progress_dir.mkdir(parents=True)
+    (in_progress_dir / "reopen-procedure-2026-06-02.yaml").write_text(
+      "process_id: reopen-procedure\n"
+      "next_step: 第3過程：連鎖再実施\n",
+      encoding="utf-8",
+    )
+
+    result = run_script(["next", "--json"], cwd=cwd)
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 0, result.stderr)
+    data = json.loads(result.stdout)
+    self.assertEqual(data["verdict"], "OK")
+    self.assertEqual(data["next_action"]["kind"], "resume_in_progress")
+    self.assertEqual(
+      data["next_action"]["file"],
+      "stages/in-progress/reopen-procedure-2026-06-02.yaml",
+    )
+
+  def test_next_prioritizes_post_write_verification_for_target_doc_changes(self):
+    """対象 docs 文書の未コミット変更があれば post-write-verification を返す"""
+    cwd = Path(self.tmpdir)
+    _init_git_repo(cwd)
+    _write_specs_for_next(cwd, {})
+    target = cwd / "docs" / "notes" / "new-policy.md"
+    target.parent.mkdir(parents=True, exist_ok=True)
+    target.write_text("検証対象の正本文書\n", encoding="utf-8")
+
+    result = run_script(["next", "--json"], cwd=cwd)
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 0, result.stderr)
+    data = json.loads(result.stdout)
+    self.assertEqual(data["verdict"], "OK")
+    self.assertEqual(data["next_action"]["kind"], "post_write_verification")
+    self.assertEqual(data["next_action"]["target_files"], ["docs/notes/new-policy.md"])
+
+  def test_next_deviation_when_new_runner_created_during_post_write_verification(self):
+    """post-write-verification pending 中の新規 runner 作成は逸脱"""
+    cwd = Path(self.tmpdir)
+    _init_git_repo(cwd)
+    _write_specs_for_next(cwd, {})
+    target = cwd / "docs" / "notes" / "new-policy.md"
+    target.parent.mkdir(parents=True, exist_ok=True)
+    target.write_text("検証対象の正本文書\n", encoding="utf-8")
+    runner = cwd / "tools" / "post_write_verify_new_policy.py"
+    runner.parent.mkdir(parents=True, exist_ok=True)
+    runner.write_text("# 独自検証 runner\n", encoding="utf-8")
+
+    result = run_script(["next", "--json"], cwd=cwd)
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 2, result.stderr)
+    data = json.loads(result.stdout)
+    self.assertEqual(data["verdict"], "DEVIATION")
+    self.assertEqual(data["next_action"]["kind"], "post_write_policy_violation")
+    self.assertEqual(
+      data["next_action"]["forbidden_files"],
+      ["tools/post_write_verify_new_policy.py"],
+    )
+
+  def test_next_ignores_workflow_stage_spec_changes_for_post_write_verification(self):
+    """.reviewcompass/specs 配下は post-write-verification ではなく通常 workflow で扱う"""
+    cwd = Path(self.tmpdir)
+    _init_git_repo(cwd)
+    _write_specs_for_next(cwd, {})
+    spec_doc = cwd / ".reviewcompass" / "specs" / "foundation" / "requirements.md"
+    spec_doc.write_text("ワークフロー段で検証される文書\n", encoding="utf-8")
+
+    result = run_script(["next", "--json"], cwd=cwd)
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 0, result.stderr)
+    data = json.loads(result.stdout)
+    self.assertEqual(data["verdict"], "OK")
+    self.assertNotEqual(data["next_action"]["kind"], "post_write_verification")
 
 
 def _init_git_repo(tmpdir):

@@ -53,6 +53,25 @@ PHASE_ORDER = [
 # 機能横断段（全機能で同じ値を持つフェーズ、計画書 §5.24.4）
 CROSS_FEATURE_PHASES = ("intent", "feature-partitioning")
 
+# ReviewCompass 現行 dogfooding 用の機能順（stages/feature-partitioning/2026-05-24-proposal.md と整合）
+FEATURE_ORDER = [
+  "foundation",
+  "runtime",
+  "evaluation",
+  "analysis",
+  "workflow-management",
+  "self-improvement",
+  "conformance-evaluation",
+]
+
+POST_WRITE_VERIFICATION_DIR_PREFIXES = (
+  "docs/plan/",
+  "docs/disciplines/",
+  "docs/operations/",
+  "docs/notes/",
+  "docs/experiments/",
+)
+
 
 def load_spec_json(cwd, feature):
   """機能の spec.json を読み込んで dict として返す
@@ -151,6 +170,21 @@ def format_json_output(verdict, exit_code, action_dict, reasons, current_state_d
       "verdict": verdict,
       "exit_code": exit_code,
       "action": action_dict,
+      "reasons": reasons,
+      "current_state": current_state_dict,
+    },
+    ensure_ascii=False,
+    indent=2,
+  )
+
+
+def format_next_json_output(verdict, exit_code, next_action, reasons, current_state_dict):
+  """next サブコマンドの JSON 出力を整形する"""
+  return json.dumps(
+    {
+      "verdict": verdict,
+      "exit_code": exit_code,
+      "next_action": next_action,
       "reasons": reasons,
       "current_state": current_state_dict,
     },
@@ -459,6 +493,324 @@ def cmd_push(args):
   return exit_code
 
 
+def list_in_progress_files(cwd):
+  """stages/in-progress 配下の進行中ファイルを相対パス文字列で返す"""
+  in_progress_dir = Path(cwd) / "stages" / "in-progress"
+  if not in_progress_dir.exists():
+    return []
+  files = [p for p in in_progress_dir.iterdir() if p.is_file()]
+  return [str(p.relative_to(cwd)) for p in sorted(files)]
+
+
+def parse_git_status_path(line):
+  """git status --short の 1 行から変更後パスを取り出す"""
+  if len(line) < 4:
+    return None
+  path = line[3:]
+  if " -> " in path:
+    path = path.split(" -> ", 1)[1]
+  return path.strip()
+
+
+def list_changed_files(cwd):
+  """git status --short から未コミット変更ファイルを返す"""
+  if not (Path(cwd) / ".git").exists():
+    return []
+  result = subprocess.run(
+    ["git", "status", "--short", "--untracked-files=all"],
+    cwd=str(cwd),
+    capture_output=True,
+    text=True,
+  )
+  if result.returncode != 0:
+    return []
+  paths = []
+  for line in result.stdout.splitlines():
+    path = parse_git_status_path(line)
+    if path:
+      paths.append(path)
+  return sorted(set(paths))
+
+
+def list_untracked_files(cwd):
+  """git status --short から未追跡ファイルを返す"""
+  if not (Path(cwd) / ".git").exists():
+    return []
+  result = subprocess.run(
+    ["git", "status", "--short", "--untracked-files=all"],
+    cwd=str(cwd),
+    capture_output=True,
+    text=True,
+  )
+  if result.returncode != 0:
+    return []
+  paths = []
+  for line in result.stdout.splitlines():
+    if line.startswith("?? "):
+      path = parse_git_status_path(line)
+      if path:
+        paths.append(path)
+  return sorted(set(paths))
+
+
+def is_post_write_verification_target(path):
+  """post-write-verification 規律の対象ファイルかを判定する"""
+  if path.startswith("docs/archive/"):
+    return False
+  if path == "TODO_NEXT_SESSION.md":
+    return True
+  if any(path.startswith(prefix) for prefix in POST_WRITE_VERIFICATION_DIR_PREFIXES):
+    return True
+  if path.startswith("docs/reviews/"):
+    name = Path(path).name
+    return (
+      name.startswith("reopen-classification-")
+      or "-audit-" in name
+    ) and name.endswith(".md")
+  return False
+
+
+def list_post_write_verification_targets(cwd):
+  """未コミット変更のうち post-write-verification 対象を返す"""
+  return [
+    path
+    for path in list_changed_files(cwd)
+    if is_post_write_verification_target(path)
+  ]
+
+
+def is_forbidden_post_write_pending_change(path):
+  """post-write-verification pending 中に禁止する変更かを判定する"""
+  return path.startswith("tools/") and path.endswith(".py")
+
+
+def list_forbidden_post_write_pending_changes(cwd):
+  """post-write-verification pending 中の禁止変更を返す"""
+  return [
+    path
+    for path in list_untracked_files(cwd)
+    if is_forbidden_post_write_pending_change(path)
+  ]
+
+
+def load_all_feature_specs(cwd):
+  """ReviewCompass の全 feature spec.json を読み込む"""
+  specs = {}
+  missing = []
+  for feature in FEATURE_ORDER:
+    spec_data = load_spec_json(cwd, feature)
+    if spec_data is None:
+      missing.append(feature)
+    else:
+      specs[feature] = spec_data
+  return specs, missing
+
+
+def summarize_workflow_state(specs):
+  """next 出力用に workflow_state だけを抽出する"""
+  return {
+    feature: spec_data.get("workflow_state", {})
+    for feature, spec_data in specs.items()
+  }
+
+
+def phase_stage_value(specs, feature, phase, stage):
+  """workflow_state.<phase>.<stage> の真偽値を返す"""
+  return bool(
+    specs
+    .get(feature, {})
+    .get("workflow_state", {})
+    .get(phase, {})
+    .get(stage, False)
+  )
+
+
+def all_features_stage_true(specs, phase, stage):
+  """全 feature で指定 phase/stage が true かを返す"""
+  return all(phase_stage_value(specs, feature, phase, stage) for feature in FEATURE_ORDER)
+
+
+def build_stage_next_action(feature, phase, stage, reason):
+  """機能単位 stage の next_action を作る"""
+  return {
+    "kind": "stage",
+    "feature": feature,
+    "phase": phase,
+    "stage": stage,
+    "reason": reason,
+  }
+
+
+def build_cross_stage_next_action(phase, stage, reason):
+  """機能横断 stage の next_action を作る"""
+  return {
+    "kind": "cross_feature_stage",
+    "feature": "all_features",
+    "phase": phase,
+    "stage": stage,
+    "reason": reason,
+  }
+
+
+def resolve_next_action(specs):
+  """ReviewCompass 現行 workflow_state から次に許可される作業を決める"""
+  for phase in PHASE_ORDER:
+    stages = PHASE_STAGES[phase]
+
+    if phase in CROSS_FEATURE_PHASES:
+      for stage in stages:
+        if not all_features_stage_true(specs, phase, stage):
+          return build_cross_stage_next_action(
+            phase,
+            stage,
+            f"{phase}.{stage} が全 feature で完了していません",
+          )
+      continue
+
+    for feature in FEATURE_ORDER:
+      if not phase_stage_value(specs, feature, phase, "drafting"):
+        return build_stage_next_action(
+          feature,
+          phase,
+          "drafting",
+          f"{feature} の {phase}.drafting が未完了です",
+        )
+      if not phase_stage_value(specs, feature, phase, "triad-review"):
+        return build_stage_next_action(
+          feature,
+          phase,
+          "triad-review",
+          f"{feature} の {phase}.triad-review が未完了です",
+        )
+
+    for stage in ("review-wave", "alignment", "approval"):
+      if stage in stages and not all_features_stage_true(specs, phase, stage):
+        return build_cross_stage_next_action(
+          phase,
+          stage,
+          f"{phase}.{stage} が全 feature で完了していません",
+        )
+
+  return {
+    "kind": "completed",
+    "feature": None,
+    "phase": None,
+    "stage": None,
+    "reason": "すべての workflow_state が完了しています",
+  }
+
+
+def format_next_human_output(verdict, exit_code, next_action, reasons, current_state_dict):
+  """next サブコマンドの人間可読出力を整形する"""
+  lines = [
+    f"[VERDICT] {verdict}（exit {exit_code}）",
+    "[NEXT ACTION]",
+    f"  kind: {next_action.get('kind')}",
+    f"  feature: {next_action.get('feature')}",
+    f"  phase: {next_action.get('phase')}",
+    f"  stage: {next_action.get('stage')}",
+    f"  reason: {next_action.get('reason')}",
+    "[REASON]",
+  ]
+  if reasons:
+    for reason in reasons:
+      lines.append(f"  - {reason}")
+  else:
+    lines.append("  - 問題は検出されませんでした")
+  lines.append("[CURRENT STATE]")
+  lines.append(json.dumps(current_state_dict, ensure_ascii=False, indent=2))
+  return "\n".join(lines)
+
+
+def cmd_next(args):
+  """next サブコマンドのエントリポイント"""
+  cwd = Path.cwd()
+  in_progress_files = list_in_progress_files(cwd)
+
+  if in_progress_files:
+    next_action = {
+      "kind": "resume_in_progress",
+      "file": in_progress_files[0],
+      "feature": None,
+      "phase": None,
+      "stage": None,
+      "reason": "stages/in-progress に進行中ファイルがあるため、新規作業より優先します",
+    }
+    current_state = {"in_progress_files": in_progress_files}
+    reasons = []
+    verdict, exit_code = "OK", 0
+  else:
+    verification_targets = list_post_write_verification_targets(cwd)
+    if verification_targets:
+      forbidden_files = list_forbidden_post_write_pending_changes(cwd)
+      if forbidden_files:
+        next_action = {
+          "kind": "post_write_policy_violation",
+          "target_files": verification_targets,
+          "forbidden_files": forbidden_files,
+          "feature": None,
+          "phase": None,
+          "stage": None,
+          "reason": "post-write-verification pending 中に禁止された新規 runner 作成があります",
+        }
+        current_state = {
+          "post_write_verification_targets": verification_targets,
+          "forbidden_files": forbidden_files,
+        }
+        reasons = [
+          f"{path} は post-write-verification pending 中に新規作成してはいけません"
+          for path in forbidden_files
+        ]
+        verdict, exit_code = "DEVIATION", 2
+      else:
+        next_action = {
+          "kind": "post_write_verification",
+          "target_files": verification_targets,
+          "feature": None,
+          "phase": None,
+          "stage": None,
+          "reason": "post-write-verification 対象の未コミット変更があります",
+        }
+        current_state = {"post_write_verification_targets": verification_targets}
+        reasons = []
+        verdict, exit_code = "OK", 0
+    else:
+      specs, missing = load_all_feature_specs(cwd)
+      if missing:
+        next_action = {
+          "kind": "unknown",
+          "feature": None,
+          "phase": None,
+          "stage": None,
+          "reason": "必要な spec.json が不足しています",
+        }
+        current_state = {"missing_features": missing}
+        reasons = [f"{feature} の spec.json が見つかりません" for feature in missing]
+        verdict, exit_code = "DEVIATION", 2
+      else:
+        next_action = resolve_next_action(specs)
+        current_state = {
+          "feature_order": FEATURE_ORDER,
+          "workflow_state": summarize_workflow_state(specs),
+        }
+        reasons = []
+        verdict, exit_code = "OK", 0
+
+  if args.json:
+    print(format_next_json_output(verdict, exit_code, next_action, reasons, current_state))
+  else:
+    print(format_next_human_output(verdict, exit_code, next_action, reasons, current_state))
+
+  action_dict = {"subcommand": "next", "args": {}}
+  log_path = args.log_path if args.log_path else DEFAULT_LOG_PATH
+  try:
+    append_log(log_path, action_dict, verdict, exit_code, reasons, current_state)
+  except OSError as e:
+    print(f"warning: ログ書き込みに失敗しました（処理は続行）: {e}", file=sys.stderr)
+
+  return exit_code
+
+
 def main():
   # 共通オプション（サブコマンドの前後どちらでも受け取れるよう親パーサに集約、仕様 §4 共通オプション）
   common_parser = argparse.ArgumentParser(add_help=False)
@@ -523,6 +875,12 @@ def main():
     help="この push を行う理由（必須、利用者承認の出典を含めることを推奨、仕様 §5.3）",
   )
 
+  sub.add_parser(
+    "next",
+    help="現在の workflow_state から次に許可される作業を返す",
+    parents=[common_parser],
+  )
+
   args = parser.parse_args()
 
   if args.subcommand == "spec-set":
@@ -531,6 +889,8 @@ def main():
     sys.exit(cmd_commit(args))
   elif args.subcommand == "push":
     sys.exit(cmd_push(args))
+  elif args.subcommand == "next":
+    sys.exit(cmd_next(args))
   else:
     parser.print_help(sys.stderr)
     sys.exit(2)
