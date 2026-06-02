@@ -1,6 +1,6 @@
 # 次セッション継続用メモ
 
-最終更新：2026-06-02（セッション49）。**次の作業：evaluation 機能の implementation drafting（草案作成）**。runtime は implementation.triad-review まで完了（foundation と並んで 2/7 機能が triad-review 済み）。本セッションの 3 コミット（runtime triad-review）は push 済み。経緯は §3.2／session 記録参照。
+最終更新：2026-06-02（セッション50）。**次の作業：evaluation 機能の implementation drafting（草案作成）**。セッション50 では yaml-audit 規律（補助層 E）を新設・push 済み（コミット b0c98ee・06269c6）。実装進捗（spec.json）はセッション49末から変化なし。経緯は §3.2／session 記録参照。
 
 作業ディレクトリ：`/Users/Daily/Development/ReviewCompass/`、リポジトリ：`git@github.com:kenoogl/ReviewCompass.git`（main ブランチ）
 
@@ -66,14 +66,14 @@ drafting 段は actor=human または llm（草案作成のみ）、triad-review
 zsh -c 'source ~/.zshrc && /Users/Daily/Development/ReviewCompass/.venv/bin/python3 <script.py>'
 ```
 
-## 2. ワークフロー上の現在位置（セッション 49 末、正本は spec.json）
+## 2. ワークフロー上の現在位置（セッション 50 末、正本は spec.json）
 
 - intent／feature-partitioning：全 7 機能 全段 true
 - requirements／design／tasks（全 7 機能）：全段 true（reopened は履歴 true。最新は §3.2／reopen-classification 記録）
 - implementation：foundation・runtime（2/7 機能）＝drafting・triad-review true（review-wave 以降 false）／他 5 機能（evaluation／analysis／workflow-management／self-improvement／conformance-evaluation）＝全段 false
 - recheck：runtime クリア。**foundation のみ upstream_change_pending=true・impacted=["implementation"]**（api_mediated 変更を将来の review-wave→alignment→approval で織り込む、implementation 未到達のため残置）
 
-## 3. 次の作業（セッション 49 起点）
+## 3. 次の作業（セッション 50 起点）
 
 **次の作業：evaluation 機能の implementation drafting（草案作成）**。runtime の triad-review は完了（spec.json で implementation.triad-review=true）。残り機能順序（§3.1）で次は evaluation。review-wave 以降は全機能の triad-review 完了後に機能横断で実施（運営ガイド §2.3、現在 2/7 機能完了）。
 
