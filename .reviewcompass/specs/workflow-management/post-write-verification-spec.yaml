@@ -45,6 +45,19 @@ literal_patterns:
     起草者が「逐語」と分類した指摘は記録に残し、人が事後に検証できるようにする
     （本質を逐語と誤分類して握りつぶすことの防止）。
 
+verifier_availability:                  # 検証者の応答可用性（必要な独立系統が揃わない場合）
+  on_incomplete_responses: escalate_to_human
+  same_family_substitute: requires_explicit_approval  # 同一系統内代替は既定で不可、明示承認時のみ
+  description: |
+    api_mediated（独立 API 経由）の検証で、必要な独立系統のうち一部が応答を返さない
+    （API エラー・クォータ超過・タイムアウト等で揃わない）場合、起草者は揃った少数の
+    系統だけで収束・確定させない。人にエスカレートし、(a) 原因確認のうえ再試行、
+    (b) 揃った範囲で収束とみなす、(c) 別の独立系統で代替、のいずれかの判断を仰ぐ。
+    規律 discipline_post_write_verification.md のフォールバック節を実行時ルールに反映する。
+  rationale: |
+    セッション49（2026-06-02）で OpenAI が残高不足（insufficient_quota／HTTP 429）で
+    応答せず独立3系統がそろわなかった事例を明文化。
+
 scope_of_application: |
   本収束基準は書き込み後検証（docs 配下の正本文書）にのみ適用する。
   ワークフロー段（.reviewcompass/specs/ 配下、5 段で検証）には適用しない（多層防御の役割分担）。
