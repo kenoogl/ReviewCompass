@@ -67,14 +67,6 @@ drafting 段は actor=human または llm（草案作成のみ）、triad-review
 
 計画書・運営ガイドは当該操作に関わる節だけ、必要なときに Read する。
 
-### 1.1 Python 実行（venv 経由、毎セッション要確認）
-
-スクリプト実行は **必ず venv の Python を直接指定**（`python3` 直叩きや `zsh -c '... python3'` は PyYAML なしで失敗。`subprocess.run([sys.executable])` が venv パッケージを参照するため起動 Python が venv である必要）：
-
-```
-zsh -c 'source ~/.zshrc && /Users/Daily/Development/ReviewCompass/.venv/bin/python3 <script.py>'
-```
-
 ## 2. ワークフロー上の現在位置（セッション 50 末、正本は spec.json）
 
 - intent／feature-partitioning：全 7 機能 全段 true
@@ -115,3 +107,11 @@ zsh -c 'source ~/.zshrc && /Users/Daily/Development/ReviewCompass/.venv/bin/pyth
 - 計画書 `docs/plan/reconstruction-plan-2026-05-21.md`／運営ガイド `docs/operations/SESSION_WORKFLOW_GUIDE.md`・`REOPEN_PROCEDURE.md`
 - 雛形 `templates/`／持ち越し所見 `.reviewcompass/pending-cross-feature-findings.md`（未消化 0 件）
 - 実験ノート `docs/experiments/n-model-comparison.md`／規律本体 `docs/disciplines/`（一覧は README.md）／セッション記録 `docs/sessions/`／過去 TODO snapshot `docs/archive/todo/`
+
+### プロジェクト固有の補足
+
+**Python 実行（venv 経由）**：スクリプト実行は **必ず venv の Python を直接指定**（`python3` 直叩きや `zsh -c '... python3'` は PyYAML なしで失敗。`subprocess.run([sys.executable])` が venv パッケージを参照するため起動 Python が venv である必要）：
+
+```
+zsh -c 'source ~/.zshrc && /Users/Daily/Development/ReviewCompass/.venv/bin/python3 <script.py>'
+```
