@@ -77,6 +77,8 @@ zsh -c 'source ~/.zshrc && /Users/Daily/Development/ReviewCompass/.venv/bin/pyth
 
 **次の作業：evaluation 機能の implementation drafting（草案作成）**。runtime の triad-review は完了（spec.json で implementation.triad-review=true）。残り機能順序（§3.1）で次は evaluation。review-wave 以降は全機能の triad-review 完了後に機能横断で実施（運営ガイド §2.3、現在 2/7 機能完了）。
 
+**将来（段階2実装時）の必須作業：yaml-audit ⑦⑧ 必須化**（2026-06-02 セッション50 規律確定）：yaml-audit 補助層 E（`docs/disciplines/discipline_yaml_audit.md`）の観点⑦・⑧（下流コード波及／検証テスト存在）は現在「推奨」。段階2で専用の機械検査スクリプトが整備された時点で自動的に「必須」へ昇格する。段階2移行時に `yaml-audit-spec.yaml` の `promotion.trigger` 条件成立を確認し、⑦⑧を required に変更すること。忘れの自動検出（スクリプトありで推奨のまま＝警告）と多重リマインダ（本行・規律 md 段階づけ節・yaml promotion 節）が機能する。
+
 **次セッション持ち越し（規律改訂、2026-06-02 セッション49 利用者決定「案A」）**：post-write-verification（書き込み後独立検証）の対象範囲を拡大する。`config/` の設定ファイルと、`.reviewcompass/specs/` 配下の動作仕様 yaml（ワークフロー5段の成果物でないもの、例：post-write-verification-spec.yaml）を対象に追加。あわせて (1) 5段で検証される仕様文書と直接編集される動作仕様 yaml の区別ルールの明文化、(2) 今回直接編集した2ファイル（post-write-verification-spec.yaml ／ config/api-settings.yaml、コミット 340413d）への遡及検証の要否、を扱う。改訂対象は規律 docs/disciplines/discipline_post_write_verification.md と post-write-verification-spec.yaml の scope_of_application（利用者明示承認＋所定手続き）。
 
 ### 3.1 実装フェーズで確立した手順（runtime 以降も踏襲）
