@@ -1,6 +1,6 @@
 # 次セッション継続用メモ
 
-最終更新：2026-06-03（セッション52）。**次の作業：evaluation 機能の implementation drafting（草案作成）**。セッション52 では TODO §0.1 をナビゲータ起点方式に改訂し（畳み込みA層完了）、Gemini 検証インフラを整備した（コミット 7755ad9・ffff13a）。実装進捗（spec.json）はセッション49末から変化なし。経緯は §3.2／session 記録参照。
+最終更新：2026-06-03（セッション52完了）。**次の作業：evaluation 機能の implementation drafting（草案作成）**。セッション52 では TODO §0.1・§1・§3 をナビゲータ起点方式に改訂（畳み込みA層完了）、Gemini 検証インフラ整備、coverage matrix（verifications[] フィールド）の TDD 実装と文書化、書き込み後検証6ラウンド ALL_CLEAR を実施した（コミット10件 push 済み）。実装進捗（spec.json）はセッション49末から変化なし。経緯は §3.2／session 記録参照。
 
 作業ディレクトリ：`/Users/Daily/Development/ReviewCompass/`、リポジトリ：`git@github.com:kenoogl/ReviewCompass.git`（main ブランチ）
 
@@ -84,7 +84,7 @@ drafting 段は actor=human または llm（草案作成のみ）、triad-review
 - implementation：foundation・runtime（2/7 機能）＝drafting・triad-review true（review-wave 以降 false）／他 5 機能（evaluation／analysis／workflow-management／self-improvement／conformance-evaluation）＝全段 false
 - recheck：runtime クリア。**foundation のみ upstream_change_pending=true・impacted=["implementation"]**（api_mediated 変更を将来の review-wave→alignment→approval で織り込む、implementation 未到達のため残置）
 
-## 3. 次の作業候補（セッション 52 起点）
+## 3. 次の作業候補（セッション 53 起点）
 
 この節は候補であり、現在の作業順序の正本ではない。
 作業開始前に §0.1 / §1 の navigator を実行し、`next_action` に従う。
@@ -113,7 +113,7 @@ drafting 段は actor=human または llm（草案作成のみ）、triad-review
 
 ### 3.2 過去セッションの完了経緯
 
-- **セッション52**：ナビゲータ導入による規律の畳み込みを議論・着手。A層（§0.1 書き換え・no-redundant の趣旨吸収）を先行実施、B層（規律8・10・14・15 の手続き部分）と no-redundant 規律本体の参照化は workflow-management 正式手続きで実施（急がない）。Gemini 検証インフラ整備（api-settings.yaml に post_write_verification_google バリアント追加、settings.json に run_role.py 実行許可追加）。response_formatter のコードブロック対応バグを TDD で修正（テスト2件追加、全12件緑）。Gemini 書き込み後検証2ラウンドで ALL_CLEAR。コミット2件（`7755ad9`・`ffff13a`）push 待ち。
+- **セッション52**：ナビゲータ導入による規律の畳み込みを議論・着手。A層（§0.1・§1・§3 書き換え・navigator 起点方式・no-redundant の趣旨吸収）を先行実施、B層と no-redundant 規律本体の参照化は workflow-management 正式手続きで実施（急がない）。Gemini 検証インフラ整備、response_formatter コードブロック対応バグを TDD で修正（全12件緑）。post-write-verification の coverage matrix（verifications[] フィールド）を TDD 実装（check-workflow-action.py `coverage_matrix_satisfied` 関数、全47件緑）。実装計画・運用ガイドに coverage matrix 仕様を文書化（8条件・YAML例）。書き込み後検証6ラウンド ALL_CLEAR（Gemini・GPT-5.5・GPT-5.4 独立多重チェック）。コミット10件（`7755ad9`〜`9503e17`）push 済み。
 - **セッション51**：ワークフローナビゲータ（Codex 実装）のレビュー・修正確認・コミット。`check-workflow-action.py next`・`reopen-start`・post-write-verification manifest 完了認定・recheck 補助情報を整備。Claude 向け手引き完成。コミット 6 件（`a02a714`〜`1c3bcdb`）push 済み（セッション52 時点）。
 - **セッション49**：runtime implementation triad-review を api_mediated（独立3社 API：主役 Opus 4.8／敵対役 GPT-5.5／判定役 Gemini 3.1 Pro）で実施・完了。所見 16 件（判定 must-fix9／should-fix5／leave-as-is2、全 in_feature）を TDD で対処、tests/runtime 全テスト緑 143。初回の対象漏れ（RUNTIME.md）による偽陽性を再レビューで解消。RUNTIME.md 更新は post-write-verification（Google）で ALL_CLEAR。spec.json implementation.triad-review=true。コミット 3 件（`99c0471`／`43846f8`／`81cfc90`）push 済み。記録 [reviews/2026-06-02-implementation-triad-review.md](.reviewcompass/specs/runtime/reviews/2026-06-02-implementation-triad-review.md)
 - **セッション48**：runtime implementation drafting（T-001〜T-011）を TDD 完了、テスト緑 351 件。foundation 6 語彙は `foundation_ref.py` 経由で参照のみ、runtime 所有 3 語彙確定。T-011 着手時に tasks 要件追跡の作業単位不整合（要件1・2・4・5・6・10）を発見し再オープン（4 過程、独立 1 体検証＋3 系統諮問）で解消。コミット 11 件（`02daa0a`〜`3810985`、push 済み）。記録 [session-48](docs/sessions/session-48-2026-06-02.md)
