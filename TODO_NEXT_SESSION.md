@@ -5,6 +5,7 @@
 作業ディレクトリ：`/Users/Daily/Development/ReviewCompass/`、リポジトリ：`git@github.com:kenoogl/ReviewCompass.git`（main ブランチ）
 
 > **運用メモ（セッション48 利用者指摘）**：ツール呼び出しを送る直前に、タグが名前空間付きの定型になっているか自己点検する（Write／Edit や長文の直後で接頭辞が抜け「malformed」になる崩れが頻発するため）。
+> **報告メモ（同）**：自律実行区間（承認不要の実装・TDD 等）は報告を最小化——precheck は「（precheck: OK）」の 1 行、進捗はタスク一覧に任せ逐一の緑確認を繰り返さない、ファイル列挙の重複を避ける。コミット／push／spec.json／判断の節目は従来どおり詳述（規律由来の達成基準宣言・事前検査は維持）。
 
 ---
 
