@@ -4,7 +4,8 @@
     "allow": [
       "Bash(python3 -m unittest tests.tools.*)",
       "Bash(python3 -m unittest tests.hooks.*)",
-      "Bash(python3 -m unittest discover -s tests*)"
+      "Bash(python3 -m unittest discover -s tests*)",
+      "Bash(zsh -c 'source ~/.zshrc && /Users/Daily/Development/ReviewCompass/.venv/bin/python3 /Users/Daily/Development/ReviewCompass/tools/api_providers/run_role.py *')"
     ]
   },
   "hooks": {

@@ -1,6 +1,6 @@
 # 次セッション継続用メモ
 
-最終更新：2026-06-02（セッション50）。**次の作業：evaluation 機能の implementation drafting（草案作成）**。セッション50 では yaml-audit 規律（補助層 E）を新設・push 済み（コミット b0c98ee・06269c6）。実装進捗（spec.json）はセッション49末から変化なし。経緯は §3.2／session 記録参照。
+最終更新：2026-06-02（セッション51）。**次の作業：evaluation 機能の implementation drafting（草案作成）**。セッション51 では Codex が実装した `check-workflow-action.py next` サブコマンド（ワークフローナビゲータ）のレビュー・修正・コミットを実施（コミット a02a714〜1c3bcdb、計 6 件）。実装進捗（spec.json）はセッション49末から変化なし。経緯は §3.2／session 記録参照。
 
 作業ディレクトリ：`/Users/Daily/Development/ReviewCompass/`、リポジトリ：`git@github.com:kenoogl/ReviewCompass.git`（main ブランチ）
 
@@ -15,13 +15,21 @@
 
 毎セッション開始時に確認し、毎作業前に守る。
 
-### 0.1 提案前必須確認
+### 0.1 提案前必須確認（ナビゲータ問い合わせを起点とする）
 
-「次の作業」「次のステップ」を提案する前に、次を機械的に確認し応答内で明示宣言：
+「次の作業」「次のステップ」「段取り」「所見の振り分け」を提案する前に、
+まず次のコマンドを venv Python で実行し（実行形は本 TODO 末尾の「プロジェクト固有の補足」参照）、その `next_action` を応答に引用する：
 
-1. **`workflow_state` を必ず読む**：対象機能の `.reviewcompass/specs/<機能>/spec.json` を Read。要約や記憶を根拠にしない（本 TODO §3 は要約、正本は spec.json）
-2. **規律と照合**：運営ガイド §2.3「approval を得てから次フェーズに進む」を毎回確認
-3. **正本と照合**：TODO・設計メモを信頼の根拠にせず、spec.json／計画書／運営ガイド／git log と照合
+    tools/check-workflow-action.py next --json
+
+1. `next_action.kind` を現在の作業順序・優先順位の正本として扱う。
+   読み方は `docs/operations/WORKFLOW_NAVIGATION_FOR_CLAUDE.md` に従う。
+   記憶・要約・本 TODO §3 だけを段取りの根拠にしない。
+2. `post_write_verification`、`reopen_in_progress`、`resume_in_progress` が返った場合は、
+   通常ワークフローよりそれらを優先する。
+3. spec.json 変更・commit・push などの不可逆操作の直前は、
+   対応する precheck サブコマンドを呼ぶ。
+4. `unknown` または判定不能の場合は、推測せず利用者へ報告する。
 
 ### 0.2 利用者明示承認が必要な不可逆操作
 
@@ -67,16 +75,18 @@ drafting 段は actor=human または llm（草案作成のみ）、triad-review
 
 計画書・運営ガイドは当該操作に関わる節だけ、必要なときに Read する。
 
-## 2. ワークフロー上の現在位置（セッション 50 末、正本は spec.json）
+## 2. ワークフロー上の現在位置（セッション 51 末、正本は spec.json）
 
 - intent／feature-partitioning：全 7 機能 全段 true
 - requirements／design／tasks（全 7 機能）：全段 true（reopened は履歴 true。最新は §3.2／reopen-classification 記録）
 - implementation：foundation・runtime（2/7 機能）＝drafting・triad-review true（review-wave 以降 false）／他 5 機能（evaluation／analysis／workflow-management／self-improvement／conformance-evaluation）＝全段 false
 - recheck：runtime クリア。**foundation のみ upstream_change_pending=true・impacted=["implementation"]**（api_mediated 変更を将来の review-wave→alignment→approval で織り込む、implementation 未到達のため残置）
 
-## 3. 次の作業（セッション 50 起点）
+## 3. 次の作業（セッション 51 起点）
 
 **次の作業：evaluation 機能の implementation drafting（草案作成）**。runtime の triad-review は完了（spec.json で implementation.triad-review=true）。残り機能順序（§3.1）で次は evaluation。review-wave 以降は全機能の triad-review 完了後に機能横断で実施（運営ガイド §2.3、現在 2/7 機能完了）。
+
+**セッション51 完了事項（2026-06-02）**：ワークフローナビゲータ（`check-workflow-action.py next`・`reopen-start`）を Codex が実装、Claude がレビュー・修正確認・コミットを実施。主な機能：(1) `next` サブコマンドで現在の workflow_state から次作業を機械的に返す、(2) `reopen-start` で trigger_map から in-progress ファイルを生成、(3) post-write-verification manifest による完了認定、(4) `cross_feature_stage` 時の `recheck_items`・`pending_cross_feature_findings` 補助情報。Claude 向け手引き `docs/operations/WORKFLOW_NAVIGATION_FOR_CLAUDE.md` も整備済み。
 
 **将来（段階2実装時）の必須作業：yaml-audit ⑦⑧ 必須化**（2026-06-02 セッション50 規律確定）：yaml-audit 補助層 E（`docs/disciplines/discipline_yaml_audit.md`）の観点⑦・⑧（下流コード波及／検証テスト存在）は現在「推奨」。段階2で専用の機械検査スクリプトが整備された時点で自動的に「必須」へ昇格する。段階2移行時に `yaml-audit-spec.yaml` の `promotion.trigger` 条件成立を確認し、⑦⑧を required に変更すること。忘れの自動検出（スクリプトありで推奨のまま＝警告）と多重リマインダ（本行・規律 md 段階づけ節・yaml promotion 節）が機能する。
 
@@ -94,6 +104,7 @@ drafting 段は actor=human または llm（草案作成のみ）、triad-review
 
 ### 3.2 過去セッションの完了経緯
 
+- **セッション51**：ワークフローナビゲータ（Codex 実装）のレビュー・修正確認・コミット。`check-workflow-action.py next`・`reopen-start`・post-write-verification manifest 完了認定・recheck 補助情報を整備。Claude 向け手引き完成。コミット 6 件（`a02a714`〜`1c3bcdb`）push 待ち。
 - **セッション49**：runtime implementation triad-review を api_mediated（独立3社 API：主役 Opus 4.8／敵対役 GPT-5.5／判定役 Gemini 3.1 Pro）で実施・完了。所見 16 件（判定 must-fix9／should-fix5／leave-as-is2、全 in_feature）を TDD で対処、tests/runtime 全テスト緑 143。初回の対象漏れ（RUNTIME.md）による偽陽性を再レビューで解消。RUNTIME.md 更新は post-write-verification（Google）で ALL_CLEAR。spec.json implementation.triad-review=true。コミット 3 件（`99c0471`／`43846f8`／`81cfc90`）push 済み。記録 [reviews/2026-06-02-implementation-triad-review.md](.reviewcompass/specs/runtime/reviews/2026-06-02-implementation-triad-review.md)
 - **セッション48**：runtime implementation drafting（T-001〜T-011）を TDD 完了、テスト緑 351 件。foundation 6 語彙は `foundation_ref.py` 経由で参照のみ、runtime 所有 3 語彙確定。T-011 着手時に tasks 要件追跡の作業単位不整合（要件1・2・4・5・6・10）を発見し再オープン（4 過程、独立 1 体検証＋3 系統諮問）で解消。コミット 11 件（`02daa0a`〜`3810985`、push 済み）。記録 [session-48](docs/sessions/session-48-2026-06-02.md)
 - セッション 47 以前（40 含む）の経緯は各 [session 記録](docs/sessions/)・git log・[docs/archive/todo/](docs/archive/todo/) のスナップショット参照

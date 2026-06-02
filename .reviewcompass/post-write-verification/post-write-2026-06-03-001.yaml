@@ -1,0 +1,20 @@
+status: completed
+target_files:
+  - TODO_NEXT_SESSION.md
+required_verifiers:
+  - google
+completed_verifiers:
+  - google
+unresolved_substantive_findings: 0
+findings:
+  - severity: warning
+    type: substantive
+    target_location: "§0.1 提案前必須確認 の第2段落"
+    description: >
+      「§1 補足の venv 実行形で次を実行し」の「§1 補足」が不正確。
+      venv 実行コマンドの補足は §1 起動手順（59行目）の配下ではなく、
+      ファイル末尾の §4 関連参照（116行目）配下の「### プロジェクト固有の補足」（122行目）にある。
+    rationale: >
+      参照の正確性の観点。§1 を探しても補足が見つからず、利用者が混乱する。
+      「§1 補足」を「本 TODO 末尾の補足」または「プロジェクト固有の補足節の venv 実行形」
+      などに修正する必要がある。

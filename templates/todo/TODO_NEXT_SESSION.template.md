@@ -12,13 +12,21 @@
 
 本セクションは ReviewCompass（dual-reviewer 方式の仕様駆動レビューシステム）を使うすべてのプロジェクトに共通する重要規律。**削除・短縮しないこと**。LLM が本 TODO を読む際、毎セッション開始時に本セクションを確認し、本セクションに書かれた手順を毎作業前に守る。
 
-### 0.1 提案前必須確認
+### 0.1 提案前必須確認（ナビゲータ問い合わせを起点とする）
 
-「次の作業」「次のステップ」を利用者に提案する前に、次を機械的に確認し、応答内で明示宣言する：
+「次の作業」「次のステップ」「段取り」「所見の振り分け」を提案する前に、
+まず次のコマンドを venv Python で実行し（実行形は本 TODO 末尾の「プロジェクト固有の補足」参照）、その `next_action` を応答に引用する：
 
-1. **`workflow_state` を必ず読む**：対象機能の `.reviewcompass/specs/<機能>/spec.json` の `workflow_state` を実際に Read で読む。要約や記憶を根拠にしない。本 TODO §3 や §4 に書かれた「次の作業候補」は要約に過ぎず、正本は spec.json の `workflow_state`
-2. **規律と照合する**：運営ガイド `docs/operations/SESSION_WORKFLOW_GUIDE.md` §2.3 段の進め方の規律と照合し、次に進める段か（前段の approval まで完了しているか）を確認する。とくに「approval を得てから次フェーズに進む」（運営ガイド §2.3 第 6 項）の前提を毎回照合する
-3. **TODO や要約文書を信頼せず、正本と照合する**：TODO・設計メモ・要約文の記述を信頼の根拠にしない。提案前に必ず spec.json／計画書／運営ガイド／git ログの正本と照合する
+    tools/check-workflow-action.py next --json
+
+1. `next_action.kind` を現在の作業順序・優先順位の正本として扱う。
+   読み方は `docs/operations/WORKFLOW_NAVIGATION_FOR_CLAUDE.md` に従う。
+   記憶・要約・本 TODO §3 だけを段取りの根拠にしない。
+2. `post_write_verification`、`reopen_in_progress`、`resume_in_progress` が返った場合は、
+   通常ワークフローよりそれらを優先する。
+3. spec.json 変更・commit・push などの不可逆操作の直前は、
+   対応する precheck サブコマンドを呼ぶ。
+4. `unknown` または判定不能の場合は、推測せず利用者へ報告する。
 
 ### 0.2 利用者明示承認が必要な不可逆操作
 
