@@ -37,6 +37,17 @@ def format_response(
   return yaml.dump(data, allow_unicode=True, sort_keys=False)
 
 
+def _strip_code_block(text: str) -> str:
+  """```yaml ... ``` または ``` ... ``` のコードブロックマーカーを除去する。"""
+  stripped = text.strip()
+  if stripped.startswith("```"):
+    lines = stripped.splitlines()
+    # 先頭行（```yaml 等）と末尾行（```）を除く
+    inner = lines[1:-1] if lines[-1].strip() == "```" else lines[1:]
+    return "\n".join(inner)
+  return text
+
+
 def parse_response_text(response_text: str) -> List[dict]:
   """API レスポンスの YAML 文字列から findings リストを返す。
 
@@ -44,7 +55,7 @@ def parse_response_text(response_text: str) -> List[dict]:
   - findings キー欠落：ValueError
   - findings の値がリストでない：ValueError
   """
-  data = yaml.safe_load(response_text)
+  data = yaml.safe_load(_strip_code_block(response_text))
   if not isinstance(data, dict) or "findings" not in data:
     raise ValueError("response_text に findings キーが含まれていません")
   findings = data["findings"]

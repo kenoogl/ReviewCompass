@@ -212,3 +212,19 @@ findings:
 """
   with pytest.raises(ValueError):
     parse_response_text(response_text)
+
+
+def test_parse_response_text_strips_yaml_code_block():
+  """```yaml ... ``` のコードブロック形式でも正常にパースできる。"""
+  response_text = "```yaml\nfindings:\n  - severity: INFO\n    target_location: a.md\n    description: コードブロックテスト\n    rationale: 根拠\n```"
+  findings = parse_response_text(response_text)
+  assert isinstance(findings, list)
+  assert findings[0]["description"] == "コードブロックテスト"
+
+
+def test_parse_response_text_strips_plain_code_block():
+  """``` ... ``` （yaml なし）のコードブロック形式でも正常にパースできる。"""
+  response_text = "```\nfindings:\n  - severity: INFO\n    target_location: b.md\n    description: プレーンブロックテスト\n    rationale: 根拠\n```"
+  findings = parse_response_text(response_text)
+  assert isinstance(findings, list)
+  assert findings[0]["description"] == "プレーンブロックテスト"
