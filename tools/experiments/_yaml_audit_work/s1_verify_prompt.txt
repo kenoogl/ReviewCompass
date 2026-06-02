@@ -1,0 +1,67 @@
+起動手順（§1）を軽量化した。変更の合意内容：
+
+1. 規律 14 件は MEMORY.md 索引がセッション開始時に自動ロード済みのため、
+   起動時の本文全件読み込みは不要と判断した。
+2. 計画書・運営ガイドの全節読み込みも不要とし、必要な節だけ随時 Read に変更。
+3. 新しい §1 は「TODO §2・§3 確認 → git 確認 → spec.json 確認」の 3 ステップのみ。
+4. 操作直前に読む規律を 6 行の対応表（操作×規律ファイル名）として明示した。
+5. 変更対象は TODO_NEXT_SESSION.md と templates/todo/TODO_NEXT_SESSION.template.md の 2 ファイル。
+
+
+# 成果物 1：TODO_NEXT_SESSION.md の §1（変更後）
+## 1. 起動手順（セッション起動と同時に強制実行。利用者の指示を待たず、「ご指示を」と伺わない）
+
+1. 本 `TODO_NEXT_SESSION.md` の §2（現在位置）と §3（次の作業）を確認
+2. `git log --oneline -5` / `git status` で到達点確認
+3. 作業開始前に対象機能の `.reviewcompass/specs/<機能>/spec.json` を Read
+
+規律 14 件は MEMORY.md 索引がセッション開始時に自動ロード済み。全件の本文読み込みは不要。操作の直前に下表の該当行を Read する。
+
+| 操作 | 直前に読む規律ファイル（`docs/disciplines/` 配下） |
+|------|------------------------------------------------|
+| コミット・プッシュ前 | `discipline_workflow_precheck_invocation.md`・`discipline_approval_operation.md` |
+| 規律を変更する前 | `discipline_reopen_procedure_for_settled_topics.md` |
+| triad-review 所見の対処前 | `discipline_must_fix_discussion_obligation.md` |
+| md 文書を書いた後 | `discipline_post_write_verification.md` |
+| yaml ファイルを書いた後 | `discipline_yaml_audit.md` |
+| 複数ファイルの横断操作前 | `discipline_pre_action_precheck.md` |
+
+計画書・運営ガイドは当該操作に関わる節だけ、必要なときに Read する。
+
+# 成果物 2：templates/todo/TODO_NEXT_SESSION.template.md の §1（変更後）
+## 1. 起動手順（セッション X 開始時）
+
+**この手順はセッション起動と同時に強制実行する。利用者の指示を待たず、「ご指示をいただけますか」と伺わない。**
+
+1. 本 `TODO_NEXT_SESSION.md` の §2（現在位置）と §3（次の作業）を確認
+2. `git log --oneline -5` / `git status` で到達点確認
+3. 作業開始前に対象機能の `.reviewcompass/specs/<機能>/spec.json` を Read
+
+規律は MEMORY.md 索引がセッション開始時に自動ロード済み。全件の本文読み込みは不要。操作の直前に下表の該当行を Read する。
+
+| 操作 | 直前に読む規律ファイル（`docs/disciplines/` 配下） |
+|------|------------------------------------------------|
+| コミット・プッシュ前 | `discipline_workflow_precheck_invocation.md`・`discipline_approval_operation.md` |
+| 規律を変更する前 | `discipline_reopen_procedure_for_settled_topics.md` |
+| triad-review 所見の対処前 | `discipline_must_fix_discussion_obligation.md` |
+| md 文書を書いた後 | `discipline_post_write_verification.md` |
+| yaml ファイルを書いた後 | `discipline_yaml_audit.md` |
+| 複数ファイルの横断操作前 | `discipline_pre_action_precheck.md` |
+
+計画書・運営ガイドは当該操作に関わる節だけ、必要なときに Read する。
+
+# 点検の観点
+(1) 合意反映：上の合意内容 1〜5 が 2 つの成果物に正しく反映されているか
+(2) 内部整合：2 つの成果物の間で矛盾がないか
+(3) 参照正確性：ファイルパス・規律ファイル名が正確か
+(4) 重要な抜け：操作対応表に重大な漏れがないか
+
+# 出力形式（厳守）
+次の YAML だけを返してください。指摘がなければ findings: [] とし verdict: ALL_CLEAR。
+verdict: ALL_CLEAR  # または HAS_FINDINGS
+findings:
+  - point: 1
+    severity: high
+    location: ...
+    description: ...
+    classification: substantive  # literal / substantive
