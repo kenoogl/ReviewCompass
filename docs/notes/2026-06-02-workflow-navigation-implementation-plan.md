@@ -36,11 +36,36 @@ post-write-verification pending は、書き込み済み文書の検証に作業
 
 これは完全な許可操作ポリシーではなく、今回観測された逸脱を最小範囲で機械的に止める第一段である。
 
+### 2.2.2 reopen 進行中ファイルの詳細解決
+
+`stages/in-progress/` に `process_id: reopen-procedure` の YAML がある場合、単なる再開指示ではなく、reopen 手続きの具体的な次作業を返す。
+
+初期実装で読むフィールド：
+
+- `process_id`
+- `next_step`
+- `completed_steps`
+- `pending_gates`
+- `current_blocker`
+- `feature`
+
+`required_action` の初期対応：
+
+- `current_blocker` がある：`wait_for_human_approval`
+- `next_step` が第1過程：`classify_and_rollback_flags`
+- `next_step` が第2過程：`repair_canonical_documents`
+- `next_step` が第3過程：`rerun_alignment_approval_chain`
+- `next_step` が第4過程：`finalize_reopen`
+- `next_step` が完了：`reopen_completed`
+- 判定不能：`inspect_reopen_state`
+
+これにより、review-wave などで遡及手戻りが発生し、reopen が `stages/in-progress/` に記録された後は、通常ワークフローや post-write-verification へ進まず、reopen の次作業を優先できる。
+
 ### 2.3 初期実装の境界
 
 - 所見内容の意味分類は行わない。
-- reopen の trigger_map 解決は扱わない。
-- post-write-verification の中身の評価や完了認定は扱わない。初期実装では、対象ファイルの未コミット変更を検出し、検証タスクを優先表示するところまでを担う。
+- reopen は、既に存在する in-progress ファイルの詳細解決と、記録済み classification からの `reopen-start` による trigger_map 解決・in-progress 生成までを扱う。所見から classification を自動判定すること、spec.json のフラグ差し戻しを自動実行することは扱わない。
+- post-write-verification は、対象ファイルの未コミット変更検出、manifest による完了認定、人間判断待ちの検出までを扱う。検証内容の妥当性そのものは扱わない。
 - post-write-verification pending 中の許可操作を完全には管理しない。初期実装では、新規 `tools/*.py` runner 作成だけを逸脱として扱う。
 - 任意の workflow graph は扱わない。
 - ReviewCompass の現行フェーズ、段、機能順を前提にする。
@@ -70,6 +95,8 @@ post-write-verification pending は、書き込み済み文書の検証に作業
 
 `next` は manifest を読み、未完了なら検証継続、収束済みなら通常ワークフローへ戻す。
 
+初期実装では `.reviewcompass/post-write-verification/*.yaml` を読む。対象ファイル群を覆う manifest があり、`status: completed`、`required_verifiers` が `completed_verifiers` で満たされ、`unresolved_substantive_findings: 0` なら通常ワークフローへ戻る。未解決の本質的指摘が 1 件以上ある場合は `post_write_human_decision_required` を返す。
+
 ### 3.3 post-write-verification 許可操作ポリシーの拡張
 
 pending 中に許される操作と禁止される操作を、ファイル種別・操作種別ごとの表として定義する。
@@ -84,14 +111,38 @@ pending 中に許される操作と禁止される操作を、ファイル種別
 - 禁止：未承認の外部 API 呼び出し
 - 禁止：target_files 以外の正本文書変更
 
-### 3.4 定義の外出し
+### 3.4 reopen-start による trigger_map 解決
+
+`reopen-start` サブコマンドで、手戻り種別から `pending_gates` を解決し、`stages/in-progress/reopen-procedure-<日付>.yaml` を生成する。
+
+初期実装の入力：
+
+- `--classification`：手戻り種別（例：`D-1`）
+- `--feature`：対象 feature
+- `--basis`：種別判定根拠ファイル
+- `--date`：進行中ファイル名の日付
+- `--trigger`：reopen 起動理由
+
+初期実装の出力：
+
+- `process_id: reopen-procedure`
+- `classification`
+- `feature`
+- `classification_basis`
+- `next_step: 第1過程：判定とフラグ差し戻し`
+- `pending_gates`
+- `current_blocker: null`
+
+この実装は in-progress 生成までを担う。spec.json のフラグ差し戻しはまだ自動実行しない。
+
+### 3.5 定義の外出し
 
 現在コード内にあるフェーズ順、段順、機能順を、段集合 YAML または workflow 定義ファイルから読む形へ移す。
 
-### 3.5 任意構造への拡張
+### 3.6 任意構造への拡張
 
 intent から feature 分割した結果を workflow 定義として保存し、固定の ReviewCompass 構造ではなく任意の phase / stage / feature graph を解決できるようにする。
 
-### 3.6 フック連携
+### 3.7 フック連携
 
 `next` の結果を commit / push / spec-set の事前検査と連動させ、現在許可されていない作業を検出した場合に fail-closed で止める。

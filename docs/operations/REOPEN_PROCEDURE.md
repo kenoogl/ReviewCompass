@@ -54,7 +54,7 @@
 
 ## 3. 手戻り種別と trigger_map
 
-計画書 §5.6 を参照。種別記号 N（intent）／R（requirements）／D（design）／A（tasks）／I（implementation）× 深さ（どこまで上流に戻るか）。trigger_map（全 14 種、計画書 §5.6）が種別から再実施対象段を返す。再実施対象は各フェーズの alignment と approval（drafting／triad-review／review-wave は原則そのまま）。
+計画書 §5.6 を参照。種別記号 N（intent）／R（requirements）／D（design）／A（tasks）／I（implementation）× 深さ（どこまで上流に戻るか）。trigger_map（全 15 種、計画書 §5.6）が種別から再実施対象段を返す。再実施対象は各フェーズの alignment と approval（drafting／triad-review／review-wave は原則そのまま）。
 
 ## 4. 状態遷移の早見表（現在版、暫定）
 
