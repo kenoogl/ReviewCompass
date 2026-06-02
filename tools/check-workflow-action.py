@@ -26,6 +26,8 @@ import sys
 from datetime import datetime, timezone, timedelta
 from pathlib import Path
 
+import yaml
+
 
 # 既定のログファイルパス（呼び出し時の cwd 相対、仕様 §8.2）
 DEFAULT_LOG_PATH = "docs/logs/workflow-precheck.log"
@@ -71,6 +73,119 @@ POST_WRITE_VERIFICATION_DIR_PREFIXES = (
   "docs/notes/",
   "docs/experiments/",
 )
+
+REOPEN_TRIGGER_MAP = {
+  "I-0": [
+    "stages/implementation.yaml#alignment",
+    "stages/implementation.yaml#approval",
+  ],
+  "I-1": [
+    "stages/tasks.yaml#alignment",
+    "stages/tasks.yaml#approval",
+    "stages/implementation.yaml#alignment",
+    "stages/implementation.yaml#approval",
+  ],
+  "I-2": [
+    "stages/design.yaml#alignment",
+    "stages/design.yaml#approval",
+    "stages/tasks.yaml#alignment",
+    "stages/tasks.yaml#approval",
+    "stages/implementation.yaml#alignment",
+    "stages/implementation.yaml#approval",
+  ],
+  "I-3": [
+    "stages/requirements.yaml#alignment",
+    "stages/requirements.yaml#approval",
+    "stages/design.yaml#alignment",
+    "stages/design.yaml#approval",
+    "stages/tasks.yaml#alignment",
+    "stages/tasks.yaml#approval",
+    "stages/implementation.yaml#alignment",
+    "stages/implementation.yaml#approval",
+  ],
+  "I-4": [
+    "stages/intent.yaml#review",
+    "stages/intent.yaml#approval",
+    "stages/feature-partitioning.yaml#candidate-proposal",
+    "stages/feature-partitioning.yaml#approval",
+    "stages/requirements.yaml#alignment",
+    "stages/requirements.yaml#approval",
+    "stages/design.yaml#alignment",
+    "stages/design.yaml#approval",
+    "stages/tasks.yaml#alignment",
+    "stages/tasks.yaml#approval",
+    "stages/implementation.yaml#alignment",
+    "stages/implementation.yaml#approval",
+  ],
+  "A-0": [
+    "stages/tasks.yaml#alignment",
+    "stages/tasks.yaml#approval",
+  ],
+  "A-1": [
+    "stages/design.yaml#alignment",
+    "stages/design.yaml#approval",
+    "stages/tasks.yaml#alignment",
+    "stages/tasks.yaml#approval",
+  ],
+  "A-2": [
+    "stages/requirements.yaml#alignment",
+    "stages/requirements.yaml#approval",
+    "stages/design.yaml#alignment",
+    "stages/design.yaml#approval",
+    "stages/tasks.yaml#alignment",
+    "stages/tasks.yaml#approval",
+  ],
+  "A-3": [
+    "stages/intent.yaml#review",
+    "stages/intent.yaml#approval",
+    "stages/feature-partitioning.yaml#candidate-proposal",
+    "stages/feature-partitioning.yaml#approval",
+    "stages/requirements.yaml#alignment",
+    "stages/requirements.yaml#approval",
+    "stages/design.yaml#alignment",
+    "stages/design.yaml#approval",
+    "stages/tasks.yaml#alignment",
+    "stages/tasks.yaml#approval",
+  ],
+  "D-0": [
+    "stages/design.yaml#alignment",
+    "stages/design.yaml#approval",
+  ],
+  "D-1": [
+    "stages/requirements.yaml#alignment",
+    "stages/requirements.yaml#approval",
+    "stages/design.yaml#alignment",
+    "stages/design.yaml#approval",
+  ],
+  "D-2": [
+    "stages/intent.yaml#review",
+    "stages/intent.yaml#approval",
+    "stages/feature-partitioning.yaml#candidate-proposal",
+    "stages/feature-partitioning.yaml#approval",
+    "stages/requirements.yaml#alignment",
+    "stages/requirements.yaml#approval",
+    "stages/design.yaml#alignment",
+    "stages/design.yaml#approval",
+  ],
+  "R-0": [
+    "stages/requirements.yaml#alignment",
+    "stages/requirements.yaml#approval",
+  ],
+  "R-1": [
+    "stages/intent.yaml#review",
+    "stages/intent.yaml#approval",
+    "stages/feature-partitioning.yaml#candidate-proposal",
+    "stages/feature-partitioning.yaml#approval",
+    "stages/requirements.yaml#alignment",
+    "stages/requirements.yaml#approval",
+  ],
+  "N-0": [
+    "stages/intent.yaml#review",
+    "stages/intent.yaml#approval",
+    "stages/feature-partitioning.yaml#candidate-proposal",
+    "stages/feature-partitioning.yaml#approval",
+  ],
+}
 
 
 def load_spec_json(cwd, feature):
@@ -502,6 +617,84 @@ def list_in_progress_files(cwd):
   return [str(p.relative_to(cwd)) for p in sorted(files)]
 
 
+def load_in_progress_file(cwd, relative_path):
+  """進行中状態ファイルを YAML として読み込む"""
+  path = Path(cwd) / relative_path
+  try:
+    data = yaml.safe_load(path.read_text(encoding="utf-8"))
+  except (OSError, yaml.YAMLError):
+    return {}
+  return data if isinstance(data, dict) else {}
+
+
+def resolve_reopen_required_action(next_step, current_blocker, step_number=None):
+  """reopen の next_step/current_blocker から要求アクションを返す"""
+  if current_blocker:
+    return "wait_for_human_approval"
+  if step_number in (1, "1"):
+    return "classify_and_rollback_flags"
+  if step_number in (2, "2"):
+    return "repair_canonical_documents"
+  if step_number in (3, "3"):
+    return "rerun_alignment_approval_chain"
+  if step_number in (4, "4"):
+    return "finalize_reopen"
+  if not next_step:
+    return "inspect_reopen_state"
+  # 既存の in-progress YAML は next_step の日本語表記を正本として持つ。
+  # 将来生成分は step_number を併記し、文字列表記ゆれへの依存を下げる。
+  if "第1過程" in next_step:
+    return "classify_and_rollback_flags"
+  if "第2過程" in next_step:
+    return "repair_canonical_documents"
+  if "第3過程" in next_step:
+    return "rerun_alignment_approval_chain"
+  if "第4過程" in next_step:
+    return "finalize_reopen"
+  if "完了" in next_step:
+    return "reopen_completed"
+  return "inspect_reopen_state"
+
+
+def build_in_progress_next_action(cwd, relative_path):
+  """進行中状態ファイルから next_action を作る"""
+  data = load_in_progress_file(cwd, relative_path)
+  process_id = data.get("process_id")
+  if process_id == "reopen-procedure":
+    next_step = data.get("next_step")
+    current_blocker = data.get("current_blocker")
+    pending_gates = data.get("pending_gates", [])
+    if pending_gates is None:
+      pending_gates = []
+    return {
+      "kind": "reopen_in_progress",
+      "file": relative_path,
+      "process_id": process_id,
+      "next_step": next_step,
+      "step_number": data.get("step_number"),
+      "completed_steps": data.get("completed_steps", []),
+      "pending_gates": pending_gates,
+      "current_blocker": current_blocker,
+      "required_action": resolve_reopen_required_action(
+        next_step,
+        current_blocker,
+        data.get("step_number"),
+      ),
+      "feature": data.get("feature"),
+      "phase": None,
+      "stage": None,
+      "reason": "reopen 手続きの進行中状態ファイルがあります",
+    }
+  return {
+    "kind": "resume_in_progress",
+    "file": relative_path,
+    "feature": None,
+    "phase": None,
+    "stage": None,
+    "reason": "stages/in-progress に進行中ファイルがあるため、新規作業より優先します",
+  }
+
+
 def parse_git_status_path(line):
   """git status --short の 1 行から変更後パスを取り出す"""
   if len(line) < 4:
@@ -591,6 +784,59 @@ def list_forbidden_post_write_pending_changes(cwd):
     for path in list_untracked_files(cwd)
     if is_forbidden_post_write_pending_change(path)
   ]
+
+
+def load_post_write_manifests(cwd):
+  """post-write-verification manifest を読み込む"""
+  manifest_dir = Path(cwd) / ".reviewcompass" / "post-write-verification"
+  if not manifest_dir.exists():
+    return []
+  manifests = []
+  # 同じ対象を覆う manifest が複数ある場合は、ファイル名が新しいものを優先する。
+  # 命名は post-write-YYYY-MM-DD-NNN.yaml の辞書順を前提にする。
+  for path in sorted(manifest_dir.glob("*.yaml"), reverse=True):
+    try:
+      data = yaml.safe_load(path.read_text(encoding="utf-8"))
+    except (OSError, yaml.YAMLError):
+      continue
+    if isinstance(data, dict):
+      data["_path"] = str(path.relative_to(cwd))
+      manifests.append(data)
+  return manifests
+
+
+def verifier_requirements_satisfied(manifest):
+  """required_verifiers が completed_verifiers で満たされているかを返す"""
+  required = set(manifest.get("required_verifiers") or [])
+  completed = set(manifest.get("completed_verifiers") or [])
+  return required.issubset(completed)
+
+
+def unresolved_substantive_count(manifest):
+  """manifest の未解決本質的指摘件数を整数で返す"""
+  value = manifest.get("unresolved_substantive_findings", 0)
+  try:
+    return int(value)
+  except (TypeError, ValueError):
+    return 0
+
+
+def evaluate_post_write_manifest_state(cwd, target_files):
+  """対象ファイル群に対する post-write-verification manifest 状態を返す"""
+  target_set = set(target_files)
+  for manifest in load_post_write_manifests(cwd):
+    manifest_targets = set(manifest.get("target_files") or [])
+    if not target_set.issubset(manifest_targets):
+      continue
+    if unresolved_substantive_count(manifest) > 0:
+      return "human_required", manifest
+    if (
+      manifest.get("status") == "completed"
+      and verifier_requirements_satisfied(manifest)
+      and unresolved_substantive_count(manifest) == 0
+    ):
+      return "completed", manifest
+  return "pending", None
 
 
 def load_all_feature_specs(cwd):
@@ -728,14 +974,7 @@ def cmd_next(args):
   in_progress_files = list_in_progress_files(cwd)
 
   if in_progress_files:
-    next_action = {
-      "kind": "resume_in_progress",
-      "file": in_progress_files[0],
-      "feature": None,
-      "phase": None,
-      "stage": None,
-      "reason": "stages/in-progress に進行中ファイルがあるため、新規作業より優先します",
-    }
+    next_action = build_in_progress_next_action(cwd, in_progress_files[0])
     current_state = {"in_progress_files": in_progress_files}
     reasons = []
     verdict, exit_code = "OK", 0
@@ -763,17 +1002,57 @@ def cmd_next(args):
         ]
         verdict, exit_code = "DEVIATION", 2
       else:
-        next_action = {
-          "kind": "post_write_verification",
-          "target_files": verification_targets,
-          "feature": None,
-          "phase": None,
-          "stage": None,
-          "reason": "post-write-verification 対象の未コミット変更があります",
-        }
-        current_state = {"post_write_verification_targets": verification_targets}
-        reasons = []
-        verdict, exit_code = "OK", 0
+        manifest_state, manifest = evaluate_post_write_manifest_state(cwd, verification_targets)
+        if manifest_state == "human_required":
+          next_action = {
+            "kind": "post_write_human_decision_required",
+            "target_files": verification_targets,
+            "manifest": manifest.get("_path"),
+            "feature": None,
+            "phase": None,
+            "stage": None,
+            "reason": "post-write-verification に未解決の本質的指摘があります",
+          }
+          current_state = {
+            "post_write_verification_targets": verification_targets,
+            "manifest": manifest,
+          }
+          reasons = ["未解決の本質的指摘について人間判断が必要です"]
+          verdict, exit_code = "OK", 0
+        elif manifest_state == "completed":
+          specs, missing = load_all_feature_specs(cwd)
+          if missing:
+            next_action = {
+              "kind": "unknown",
+              "feature": None,
+              "phase": None,
+              "stage": None,
+              "reason": "必要な spec.json が不足しています",
+            }
+            current_state = {"missing_features": missing, "manifest": manifest}
+            reasons = [f"{feature} の spec.json が見つかりません" for feature in missing]
+            verdict, exit_code = "DEVIATION", 2
+          else:
+            next_action = resolve_next_action(specs)
+            current_state = {
+              "feature_order": FEATURE_ORDER,
+              "workflow_state": summarize_workflow_state(specs),
+              "post_write_manifest": manifest.get("_path"),
+            }
+            reasons = []
+            verdict, exit_code = "OK", 0
+        else:
+          next_action = {
+            "kind": "post_write_verification",
+            "target_files": verification_targets,
+            "feature": None,
+            "phase": None,
+            "stage": None,
+            "reason": "post-write-verification 対象の未コミット変更があります",
+          }
+          current_state = {"post_write_verification_targets": verification_targets}
+          reasons = []
+          verdict, exit_code = "OK", 0
     else:
       specs, missing = load_all_feature_specs(cwd)
       if missing:
@@ -802,6 +1081,91 @@ def cmd_next(args):
     print(format_next_human_output(verdict, exit_code, next_action, reasons, current_state))
 
   action_dict = {"subcommand": "next", "args": {}}
+  log_path = args.log_path if args.log_path else DEFAULT_LOG_PATH
+  try:
+    append_log(log_path, action_dict, verdict, exit_code, reasons, current_state)
+  except OSError as e:
+    print(f"warning: ログ書き込みに失敗しました（処理は続行）: {e}", file=sys.stderr)
+
+  return exit_code
+
+
+def build_reopen_in_progress_data(args, pending_gates):
+  """reopen-start で生成する in-progress データを作る"""
+  return {
+    "process_id": "reopen-procedure",
+    "feature": args.feature,
+    "classification": args.classification,
+    "started_at": f"{args.date}T00:00:00+09:00",
+    "trigger": args.trigger,
+    "classification_basis": args.basis,
+    "completed_steps": [],
+    "next_step": "第1過程：判定とフラグ差し戻し",
+    "step_number": 1,
+    "pending_gates": pending_gates,
+    "current_blocker": None,
+  }
+
+
+def write_reopen_in_progress(cwd, date, data):
+  """reopen in-progress YAML を書き出す"""
+  path = Path(cwd) / "stages" / "in-progress" / f"reopen-procedure-{date}.yaml"
+  path.parent.mkdir(parents=True, exist_ok=True)
+  path.write_text(
+    yaml.safe_dump(data, allow_unicode=True, sort_keys=False),
+    encoding="utf-8",
+  )
+  return path
+
+
+def cmd_reopen_start(args):
+  """reopen-start サブコマンドのエントリポイント"""
+  cwd = Path.cwd()
+  pending_gates = REOPEN_TRIGGER_MAP.get(args.classification)
+  if pending_gates is None:
+    verdict, exit_code = "DEVIATION", 2
+    reasons = [f"classification {args.classification} は trigger_map に存在しません"]
+    next_action = {
+      "kind": "reopen_start_failed",
+      "classification": args.classification,
+      "feature": args.feature,
+      "phase": None,
+      "stage": None,
+      "reason": "未定義の reopen classification です",
+    }
+    current_state = {"known_classifications": sorted(REOPEN_TRIGGER_MAP.keys())}
+  else:
+    data = build_reopen_in_progress_data(args, pending_gates)
+    path = write_reopen_in_progress(cwd, args.date, data)
+    verdict, exit_code = "OK", 0
+    reasons = []
+    next_action = {
+      "kind": "reopen_started",
+      "file": str(path.relative_to(cwd)),
+      "classification": args.classification,
+      "feature": args.feature,
+      "pending_gates": pending_gates,
+      "phase": None,
+      "stage": None,
+      "reason": "reopen in-progress ファイルを生成しました",
+    }
+    current_state = data
+
+  if args.json:
+    print(format_next_json_output(verdict, exit_code, next_action, reasons, current_state))
+  else:
+    print(format_next_human_output(verdict, exit_code, next_action, reasons, current_state))
+
+  action_dict = {
+    "subcommand": "reopen-start",
+    "args": {
+      "classification": args.classification,
+      "feature": args.feature,
+      "basis": args.basis,
+      "date": args.date,
+      "trigger": args.trigger,
+    },
+  }
   log_path = args.log_path if args.log_path else DEFAULT_LOG_PATH
   try:
     append_log(log_path, action_dict, verdict, exit_code, reasons, current_state)
@@ -881,6 +1245,17 @@ def main():
     parents=[common_parser],
   )
 
+  rs = sub.add_parser(
+    "reopen-start",
+    help="reopen classification から in-progress ファイルを生成する",
+    parents=[common_parser],
+  )
+  rs.add_argument("--classification", required=True, help="手戻り種別（例：D-1）")
+  rs.add_argument("--feature", required=True, help="対象 feature 名")
+  rs.add_argument("--basis", required=True, help="種別判定根拠ファイル")
+  rs.add_argument("--date", required=True, help="in-progress ファイル名に使う日付（YYYY-MM-DD）")
+  rs.add_argument("--trigger", required=True, help="reopen 起動理由")
+
   args = parser.parse_args()
 
   if args.subcommand == "spec-set":
@@ -891,6 +1266,8 @@ def main():
     sys.exit(cmd_push(args))
   elif args.subcommand == "next":
     sys.exit(cmd_next(args))
+  elif args.subcommand == "reopen-start":
+    sys.exit(cmd_reopen_start(args))
   else:
     parser.print_help(sys.stderr)
     sys.exit(2)

@@ -16,6 +16,8 @@ import tempfile
 import unittest
 from pathlib import Path
 
+import yaml
+
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 SCRIPT = REPO_ROOT / "tools" / "check-workflow-action.py"
@@ -100,6 +102,21 @@ def _write_specs_for_next(cwd, states_by_feature):
   }
   for feature in FEATURE_ORDER:
     _write_spec(cwd, feature, states_by_feature.get(feature, untouched))
+
+
+def _write_post_write_manifest(cwd, manifest_name, content):
+  """post-write-verification manifest を作る"""
+  manifest_dir = Path(cwd) / ".reviewcompass" / "post-write-verification"
+  manifest_dir.mkdir(parents=True, exist_ok=True)
+  lines = []
+  for key, value in content.items():
+    if isinstance(value, list):
+      lines.append(f"{key}:")
+      for item in value:
+        lines.append(f"  - {item}")
+    else:
+      lines.append(f"{key}: {value}")
+  (manifest_dir / manifest_name).write_text("\n".join(lines) + "\n", encoding="utf-8")
 
 
 def _assert_script_invoked(testcase, result):
@@ -457,8 +474,8 @@ class NextNavigationTests(unittest.TestCase):
     _write_specs_for_next(cwd, {})
     in_progress_dir = cwd / "stages" / "in-progress"
     in_progress_dir.mkdir(parents=True)
-    (in_progress_dir / "reopen-procedure-2026-06-02.yaml").write_text(
-      "process_id: reopen-procedure\n"
+    (in_progress_dir / "manual-process-2026-06-02.yaml").write_text(
+      "process_id: manual-process\n"
       "next_step: 第3過程：連鎖再実施\n",
       encoding="utf-8",
     )
@@ -472,7 +489,91 @@ class NextNavigationTests(unittest.TestCase):
     self.assertEqual(data["next_action"]["kind"], "resume_in_progress")
     self.assertEqual(
       data["next_action"]["file"],
-      "stages/in-progress/reopen-procedure-2026-06-02.yaml",
+      "stages/in-progress/manual-process-2026-06-02.yaml",
+    )
+
+  def test_next_reads_reopen_in_progress_next_step(self):
+    """reopen の進行中ファイルから next_step と required_action を返す"""
+    cwd = Path(self.tmpdir)
+    _write_specs_for_next(cwd, {})
+    in_progress_dir = cwd / "stages" / "in-progress"
+    in_progress_dir.mkdir(parents=True)
+    (in_progress_dir / "reopen-procedure-2026-06-02.yaml").write_text(
+      "process_id: reopen-procedure\n"
+      "started_at: 2026-06-02T00:00:00+09:00\n"
+      "completed_steps: [\"第1過程：判定とフラグ差し戻し\", \"第2過程：正本修正\"]\n"
+      "next_step: 第3過程：連鎖再実施\n"
+      "pending_gates:\n"
+      "  - stages/requirements.yaml#alignment\n"
+      "  - stages/requirements.yaml#approval\n"
+      "current_blocker: null\n",
+      encoding="utf-8",
+    )
+
+    result = run_script(["next", "--json"], cwd=cwd)
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 0, result.stderr)
+    data = json.loads(result.stdout)
+    self.assertEqual(data["next_action"]["kind"], "reopen_in_progress")
+    self.assertEqual(data["next_action"]["process_id"], "reopen-procedure")
+    self.assertEqual(data["next_action"]["next_step"], "第3過程：連鎖再実施")
+    self.assertEqual(data["next_action"]["required_action"], "rerun_alignment_approval_chain")
+    self.assertEqual(
+      data["next_action"]["pending_gates"],
+      ["stages/requirements.yaml#alignment", "stages/requirements.yaml#approval"],
+    )
+
+  def test_next_reopen_prefers_step_number_over_next_step_text(self):
+    """reopen は next_step の表記ゆれより step_number を優先する"""
+    cwd = Path(self.tmpdir)
+    _write_specs_for_next(cwd, {})
+    in_progress_dir = cwd / "stages" / "in-progress"
+    in_progress_dir.mkdir(parents=True)
+    (in_progress_dir / "reopen-procedure-2026-06-02.yaml").write_text(
+      "process_id: reopen-procedure\n"
+      "next_step: 第三工程：表記ゆれ\n"
+      "step_number: 3\n"
+      "pending_gates:\n"
+      "  - stages/requirements.yaml#alignment\n"
+      "current_blocker: null\n",
+      encoding="utf-8",
+    )
+
+    result = run_script(["next", "--json"], cwd=cwd)
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 0, result.stderr)
+    data = json.loads(result.stdout)
+    self.assertEqual(data["next_action"]["kind"], "reopen_in_progress")
+    self.assertEqual(data["next_action"]["step_number"], 3)
+    self.assertEqual(data["next_action"]["required_action"], "rerun_alignment_approval_chain")
+
+  def test_next_reopen_human_blocker_requires_wait(self):
+    """reopen の current_blocker があれば人間承認待ちを返す"""
+    cwd = Path(self.tmpdir)
+    _write_specs_for_next(cwd, {})
+    in_progress_dir = cwd / "stages" / "in-progress"
+    in_progress_dir.mkdir(parents=True)
+    (in_progress_dir / "reopen-procedure-2026-06-02.yaml").write_text(
+      "process_id: reopen-procedure\n"
+      "next_step: 第3過程：連鎖再実施\n"
+      "pending_gates:\n"
+      "  - stages/requirements.yaml#approval\n"
+      "current_blocker: stages/requirements.yaml#approval（人間承認待ち）\n",
+      encoding="utf-8",
+    )
+
+    result = run_script(["next", "--json"], cwd=cwd)
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 0, result.stderr)
+    data = json.loads(result.stdout)
+    self.assertEqual(data["next_action"]["kind"], "reopen_in_progress")
+    self.assertEqual(data["next_action"]["required_action"], "wait_for_human_approval")
+    self.assertEqual(
+      data["next_action"]["current_blocker"],
+      "stages/requirements.yaml#approval（人間承認待ち）",
     )
 
   def test_next_prioritizes_post_write_verification_for_target_doc_changes(self):
@@ -492,6 +593,105 @@ class NextNavigationTests(unittest.TestCase):
     self.assertEqual(data["verdict"], "OK")
     self.assertEqual(data["next_action"]["kind"], "post_write_verification")
     self.assertEqual(data["next_action"]["target_files"], ["docs/notes/new-policy.md"])
+
+  def test_next_uses_completed_post_write_manifest_to_return_to_workflow(self):
+    """完了 manifest が対象ファイルを覆う場合は通常 workflow に戻る"""
+    cwd = Path(self.tmpdir)
+    _init_git_repo(cwd)
+    _write_specs_for_next(cwd, {})
+    target = cwd / "docs" / "notes" / "new-policy.md"
+    target.parent.mkdir(parents=True, exist_ok=True)
+    target.write_text("検証済みの正本文書\n", encoding="utf-8")
+    _write_post_write_manifest(
+      cwd,
+      "post-write-2026-06-02-001.yaml",
+      {
+        "status": "completed",
+        "target_files": ["docs/notes/new-policy.md"],
+        "required_verifiers": ["google"],
+        "completed_verifiers": ["google"],
+        "unresolved_substantive_findings": 0,
+      },
+    )
+
+    result = run_script(["next", "--json"], cwd=cwd)
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 0, result.stderr)
+    data = json.loads(result.stdout)
+    self.assertEqual(data["verdict"], "OK")
+    self.assertEqual(data["next_action"]["kind"], "stage")
+    self.assertEqual(data["next_action"]["feature"], "foundation")
+
+  def test_next_requires_human_decision_for_unresolved_substantive_findings(self):
+    """manifest に未解決の本質的指摘があれば人間判断待ちを返す"""
+    cwd = Path(self.tmpdir)
+    _init_git_repo(cwd)
+    _write_specs_for_next(cwd, {})
+    target = cwd / "docs" / "notes" / "new-policy.md"
+    target.parent.mkdir(parents=True, exist_ok=True)
+    target.write_text("本質的指摘ありの正本文書\n", encoding="utf-8")
+    _write_post_write_manifest(
+      cwd,
+      "post-write-2026-06-02-001.yaml",
+      {
+        "status": "pending_human",
+        "target_files": ["docs/notes/new-policy.md"],
+        "required_verifiers": ["google"],
+        "completed_verifiers": ["google"],
+        "unresolved_substantive_findings": 1,
+      },
+    )
+
+    result = run_script(["next", "--json"], cwd=cwd)
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 0, result.stderr)
+    data = json.loads(result.stdout)
+    self.assertEqual(data["next_action"]["kind"], "post_write_human_decision_required")
+    self.assertEqual(data["next_action"]["target_files"], ["docs/notes/new-policy.md"])
+
+  def test_next_uses_latest_post_write_manifest_when_multiple_exist(self):
+    """同一対象の manifest が複数ある場合はファイル名が新しいものを優先する"""
+    cwd = Path(self.tmpdir)
+    _init_git_repo(cwd)
+    _write_specs_for_next(cwd, {})
+    target = cwd / "docs" / "notes" / "new-policy.md"
+    target.parent.mkdir(parents=True, exist_ok=True)
+    target.write_text("複数 manifest の正本文書\n", encoding="utf-8")
+    _write_post_write_manifest(
+      cwd,
+      "post-write-2026-06-02-001.yaml",
+      {
+        "status": "completed",
+        "target_files": ["docs/notes/new-policy.md"],
+        "required_verifiers": ["google"],
+        "completed_verifiers": ["google"],
+        "unresolved_substantive_findings": 0,
+      },
+    )
+    _write_post_write_manifest(
+      cwd,
+      "post-write-2026-06-02-002.yaml",
+      {
+        "status": "pending_human",
+        "target_files": ["docs/notes/new-policy.md"],
+        "required_verifiers": ["google"],
+        "completed_verifiers": ["google"],
+        "unresolved_substantive_findings": 1,
+      },
+    )
+
+    result = run_script(["next", "--json"], cwd=cwd)
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 0, result.stderr)
+    data = json.loads(result.stdout)
+    self.assertEqual(data["next_action"]["kind"], "post_write_human_decision_required")
+    self.assertEqual(
+      data["next_action"]["manifest"],
+      ".reviewcompass/post-write-verification/post-write-2026-06-02-002.yaml",
+    )
 
   def test_next_deviation_when_new_runner_created_during_post_write_verification(self):
     """post-write-verification pending 中の新規 runner 作成は逸脱"""
@@ -532,6 +732,73 @@ class NextNavigationTests(unittest.TestCase):
     data = json.loads(result.stdout)
     self.assertEqual(data["verdict"], "OK")
     self.assertNotEqual(data["next_action"]["kind"], "post_write_verification")
+
+
+class ReopenStartTests(unittest.TestCase):
+  """reopen-start サブコマンドの trigger_map 解決と in-progress 生成"""
+
+  def setUp(self):
+    self.tmpdir = tempfile.mkdtemp()
+    self.addCleanup(shutil.rmtree, self.tmpdir)
+
+  def test_reopen_start_generates_in_progress_file_for_d_1(self):
+    """D-1 から pending_gates を解決して in-progress YAML を生成する"""
+    cwd = Path(self.tmpdir)
+    result = run_script(
+      [
+        "reopen-start",
+        "--classification", "D-1",
+        "--feature", "runtime",
+        "--basis", "docs/reviews/reopen-classification-2026-06-02.md",
+        "--date", "2026-06-02",
+        "--trigger", "design で requirements の不整合を検出",
+        "--json",
+      ],
+      cwd=cwd,
+    )
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 0, result.stderr)
+    data = json.loads(result.stdout)
+    self.assertEqual(data["verdict"], "OK")
+    self.assertEqual(data["next_action"]["kind"], "reopen_started")
+    self.assertEqual(
+      data["next_action"]["pending_gates"],
+      [
+        "stages/requirements.yaml#alignment",
+        "stages/requirements.yaml#approval",
+        "stages/design.yaml#alignment",
+        "stages/design.yaml#approval",
+      ],
+    )
+    in_progress = cwd / "stages" / "in-progress" / "reopen-procedure-2026-06-02.yaml"
+    self.assertTrue(in_progress.exists())
+    generated = yaml.safe_load(in_progress.read_text(encoding="utf-8"))
+    self.assertEqual(generated["process_id"], "reopen-procedure")
+    self.assertEqual(generated["classification"], "D-1")
+    self.assertEqual(generated["feature"], "runtime")
+    self.assertEqual(generated["next_step"], "第1過程：判定とフラグ差し戻し")
+
+  def test_reopen_start_invalid_classification_returns_deviation(self):
+    """未定義 classification は fail-closed で逸脱"""
+    cwd = Path(self.tmpdir)
+    result = run_script(
+      [
+        "reopen-start",
+        "--classification", "Z-9",
+        "--feature", "runtime",
+        "--basis", "docs/reviews/reopen-classification-2026-06-02.md",
+        "--date", "2026-06-02",
+        "--trigger", "invalid",
+        "--json",
+      ],
+      cwd=cwd,
+    )
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 2)
+    data = json.loads(result.stdout)
+    self.assertEqual(data["verdict"], "DEVIATION")
 
 
 def _init_git_repo(tmpdir):
