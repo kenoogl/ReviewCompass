@@ -58,13 +58,24 @@ def _strongest_action(labels):
 
 
 def _readiness(treatment, outputs_by_step):
-  """必須段出力の充足のみで実行終了準備を機械判定する（統合手順 ステップ 5）。"""
-  for step_name in included_steps_for(treatment):
+  """実行終了準備を機械判定する（統合手順 ステップ 5、A-004）。
+
+  必須段は実行完了（executed）であること、省略段は skipped_by_treatment マーカーが
+  存在することの両方を確認する。省略段のマーカー欠落（事故的欠落）も準備未完了とみなし、
+  意図的省略と事故的欠落を取り違えない（要件 2 受入 5）。
+  """
+  included = set(included_steps_for(treatment))
+  for step_name, out in outputs_by_step.items():
     if step_name == STEP_NAME:
       continue
-    out = outputs_by_step.get(step_name)
-    if out is None or out.get("step_outcome") == "failed":
-      return False
+    if step_name in included:
+      # 必須段：出力があり failed でない
+      if out is None or out.get("step_outcome") == "failed":
+        return False
+    else:
+      # 省略段：skipped_by_treatment マーカーが存在する（事故的欠落でない）
+      if out is None or out.get("step_outcome") != "skipped_by_treatment":
+        return False
   return True
 
 

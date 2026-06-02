@@ -93,6 +93,11 @@ class EvidenceWriter:
       "invalidation_marker_refs": invalidation_marker_refs,
       "integration_summary": integration_summary,
     }
+    # A-006：実行終了後の確定メタデータ（run_status／validator_status／evidence_class）が
+    # run_manifest にあれば横断正本にも反映する（design.md §実行終了境界 手順 3）。
+    for key in ("run_status", "validator_status", "evidence_class"):
+      if key in manifest:
+        review_case[key] = manifest[key]
     path = self.run_dir / "review_case.json"
     path.write_text(json.dumps(review_case, ensure_ascii=False, indent=2), encoding="utf-8")
     return review_case

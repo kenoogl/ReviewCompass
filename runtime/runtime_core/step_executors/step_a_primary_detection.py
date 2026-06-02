@@ -8,6 +8,7 @@ from . import (
   complete_finding,
   included_steps_for,
   skip_marker,
+  write_failure,
   write_step_json,
 )
 
@@ -24,9 +25,13 @@ def run(*, run_dir, prompt_identity, llm_boundary, target_artifact, treatment, s
     write_step_json(run_dir, FILENAME, marker)
     return marker
 
-  response = llm_boundary.invoke(
-    role=SOURCE_ROLE, prompt=prompt_identity, target_artifact=target_artifact
-  )
+  try:
+    response = llm_boundary.invoke(
+      role=SOURCE_ROLE, prompt=prompt_identity, target_artifact=target_artifact
+    )
+  except Exception as error:
+    return write_failure(run_dir, filename=FILENAME, step_id=STEP_ID,
+                         step_name=STEP_NAME, source_role=SOURCE_ROLE, error=error)
   findings = [
     complete_finding(
       raw,

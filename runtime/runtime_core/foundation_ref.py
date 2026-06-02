@@ -21,8 +21,9 @@ _VALIDATOR_CONTRACT_DIR = _REPO_ROOT / "runtime/validators/contracts"
 def vocabulary(name):
   """metadata_contract.yaml の語彙正本を参照のみで取得する（再定義禁止）。
 
-  対象例：run_status／validator_status／human_signoff_status／evidence_class／
-         review_mode／confidence_label。
+  runtime が参照する対象例：run_status／validator_status／human_signoff_status／
+         evidence_class／review_mode。confidence_label は推定タスク用で runtime の
+         参照範囲外（tasks.md foundation contract consumer 原則、P-004）。
   """
   contract = yaml.safe_load(_METADATA_CONTRACT.read_text(encoding="utf-8"))
   return list(contract["vocabularies"][name])

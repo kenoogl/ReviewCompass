@@ -45,15 +45,33 @@ def test_foundation_6_vocab_reachable():
 
 
 def test_runtime_yaml_do_not_redefine_foundation_vocab():
-  """runtime_core の YAML が foundation 6 語彙をトップレベルキーで再定義していない（参照のみ）。"""
+  """runtime_core の YAML が foundation 6 語彙を再定義しない（キー名＋値集合の両面、P-009）。"""
+  # foundation 6 語彙の値集合を参照のみで取得（再定義しない）。
+  foundation_value_sets = {
+    "validator_status": set(foundation_ref.vocabulary("validator_status")),
+    "evidence_class": set(foundation_ref.vocabulary("evidence_class")),
+    "review_mode": set(foundation_ref.vocabulary("review_mode")),
+    "counter_status": set(foundation_ref.schema_enum("finding.schema.json", "counter_status")),
+    "severity": set(foundation_ref.schema_enum("finding.schema.json", "severity")),
+    "final_label": set(foundation_ref.schema_enum("necessity_judgment.schema.json", "final_label")),
+  }
   offenders = []
   for path in RUNTIME_CORE.rglob("*.yaml"):
     data = yaml.safe_load(path.read_text(encoding="utf-8"))
     if not isinstance(data, dict):
       continue
+    rel = path.relative_to(REPO_ROOT)
+    # キー名での再定義
     for name in FOUNDATION_6:
       if name in data:
-        offenders.append(f"{path.relative_to(REPO_ROOT)} がトップレベルキー {name} を定義")
+        offenders.append(f"{rel} がトップレベルキー {name} を定義")
+    # 値集合での再定義（いずれかのリスト値が foundation 値集合と完全一致）
+    for key, value in data.items():
+      if isinstance(value, list):
+        vset = {v for v in value if isinstance(v, str)}
+        for name, fset in foundation_value_sets.items():
+          if fset and vset == fset:
+            offenders.append(f"{rel} のキー {key} が foundation {name} の値集合を再掲")
   assert offenders == [], "foundation 語彙の再定義の疑い：\n" + "\n".join(offenders)
 
 

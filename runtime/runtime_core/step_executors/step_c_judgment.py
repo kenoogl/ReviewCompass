@@ -10,6 +10,7 @@ from . import (
   foundation_enum,
   included_steps_for,
   skip_marker,
+  write_failure,
   write_step_json,
 )
 
@@ -29,11 +30,15 @@ def run(*, run_dir, prompt_identity, llm_boundary, prior_findings, treatment, st
     write_step_json(run_dir, FILENAME, marker)
     return marker
 
-  response = llm_boundary.invoke(
-    role=SOURCE_ROLE,
-    prompt=prompt_identity,
-    context={"prior_findings": prior_findings},
-  )
+  try:
+    response = llm_boundary.invoke(
+      role=SOURCE_ROLE,
+      prompt=prompt_identity,
+      context={"prior_findings": prior_findings},
+    )
+  except Exception as error:
+    return write_failure(run_dir, filename=FILENAME, step_id=STEP_ID,
+                         step_name=STEP_NAME, source_role=SOURCE_ROLE, error=error)
   judgments = []
   for raw in response["judgments"]:
     final_label = raw.get("final_label")

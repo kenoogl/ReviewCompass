@@ -15,6 +15,7 @@ from pathlib import Path
 import yaml
 
 from ..axis_selector import AxisSelector
+from ..evidence_writer.failure_observation_writer import FailureObservationWriter
 
 RUNTIME_REVIEW_MODE = "runtime_mediated"
 
@@ -77,3 +78,39 @@ def write_step_json(run_dir, filename, output):
   path.parent.mkdir(parents=True, exist_ok=True)
   path.write_text(json.dumps(output, ensure_ascii=False, indent=2), encoding="utf-8")
   return path
+
+
+def fail_marker(*, step_id, step_name, error):
+  """段実行失敗マーカー（step_outcome=failed、P-005）。"""
+  return {
+    "step_id": step_id,
+    "step_name": step_name,
+    "step_outcome": "failed",
+    "reason": f"段実行が失敗：{type(error).__name__}: {error}",
+    "review_mode": RUNTIME_REVIEW_MODE,
+  }
+
+
+def write_failure(run_dir, *, filename, step_id, step_name, source_role, error):
+  """段実行失敗時に failed マーカーと failure_observation を書き出す（P-005／P-006）。
+
+  failed マーカーを steps/ に残し（実行されたが失敗を明示）、foundation の
+  failure_observation スキーマに準拠した記録を failures/failure_observations/ に
+  独立成果物として書き出す（要件 1 受入 4、要件 4 受入 7）。
+  """
+  marker = fail_marker(step_id=step_id, step_name=step_name, error=error)
+  write_step_json(run_dir, filename, marker)
+  manifest_path = Path(run_dir) / "run_manifest.yaml"
+  run_id = "unknown"
+  if manifest_path.is_file():
+    manifest = yaml.safe_load(manifest_path.read_text(encoding="utf-8")) or {}
+    run_id = manifest.get("run_id", "unknown")
+  FailureObservationWriter().write(run_dir, {
+    "observation_id": f"failobs-{step_id}",
+    "run_ref": run_id,
+    "related_finding_ref": "",
+    "failure_type": "step_execution_failure",
+    "missed_by_role": source_role,
+    "detected_at_step": step_id,
+  })
+  return marker

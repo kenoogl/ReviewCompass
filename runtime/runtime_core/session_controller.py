@@ -86,6 +86,10 @@ class SessionController:
 
     run_dir = self.run_root_base / "experiments" / "runs" / run_id
     run_dir.mkdir(parents=True, exist_ok=True)
+    # 必須サブディレクトリを開始時に作成する（A-001、tasks T-001／T-002、layout_spec 準拠）。
+    # design.md §実行成果物配置の 5 サブディレクトリ（＋ルート）を session controller が確立する。
+    for sub in ("steps", "decisions", "failures/failure_observations", "validation", "derived"):
+      (run_dir / sub).mkdir(parents=True, exist_ok=True)
     self._write_manifest(run_dir, manifest)
     return run_dir
 

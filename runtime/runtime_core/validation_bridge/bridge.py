@@ -14,6 +14,7 @@ from pathlib import Path
 import yaml
 
 from ..evidence_writer.immutability_guard import ImmutabilityGuard
+from ..evidence_writer.writer import EvidenceWriter
 from ..foundation_ref import vocabulary
 from .evidence_class_transitioner import EvidenceClassTransitioner
 from .invalidation_marker_writer import InvalidationMarkerWriter
@@ -58,11 +59,19 @@ class ValidationBridge:
       self._fail_closed(code="invalid_run_status", detail=f"run_status={run_status!r}")
       raise RunCloseOrderError(f"実行終了の前提を満たさない run_status：{run_status!r}")
 
-    # 前提 1：Step D 完了。
+    # 前提 1：Step D 完了かつ実行終了準備が整っている（P-002：run_close_ready を消費）。
     step_d_path = self.run_dir / "steps" / "step_d_integration.json"
-    if not step_d_path.is_file() or json.loads(step_d_path.read_text(encoding="utf-8")).get("step_outcome") != "executed":
+    if not step_d_path.is_file():
       self._fail_closed(code="step_d_not_complete", detail="Step D が完了していない")
       raise RunCloseOrderError("Step D 完了前の実行終了は禁止")
+    step_d = json.loads(step_d_path.read_text(encoding="utf-8"))
+    if step_d.get("step_outcome") != "executed":
+      self._fail_closed(code="step_d_not_complete", detail="Step D が完了していない")
+      raise RunCloseOrderError("Step D 完了前の実行終了は禁止")
+    if step_d.get("run_close_ready") is not True:
+      self._fail_closed(code="run_close_not_ready",
+                        detail="Step D が実行終了準備未完了（run_close_ready が True でない）")
+      raise RunCloseOrderError("実行終了準備が整っていない（run_close_ready が True でない）")
 
     # 前提 2：人間署名（検証器呼び出しより前、要件 6 受入 9）。
     signoff_path = self.run_dir / "decisions" / "human_signoff.json"
@@ -78,6 +87,11 @@ class ValidationBridge:
     result = self.validator(self.run_dir)
     validator_status = result.get("validator_status")
     if validator_status not in _VALIDATOR_STATUS_VOCAB:
+      # A-002：検証器が 4 値正本外を返したら fail-closed（中間状態を残さない）。
+      self._fail_closed(
+        code="invalid_validator_status",
+        detail=f"検証器が foundation 4 値正本外の validator_status を返した：{validator_status!r}",
+      )
       raise RunCloseOrderError(
         f"検証器が foundation 4 値正本外の validator_status を返した：{validator_status!r}"
       )
@@ -103,6 +117,22 @@ class ValidationBridge:
     manifest["human_signoff_status"] = signoff["human_signoff_status"]
     manifest["evidence_class"] = evidence_class
     self._save_manifest(manifest)
+
+    # A-003：無効実行（invalid）ならトリアージ記録を生成する（design.md §無効化処理）。
+    if evidence_class == "invalid":
+      self.triage_writer.write(
+        self.run_dir,
+        primary_failure_code=f"validator_status={validator_status}",
+        failed_validator_check_ids=result.get("error_list", []),
+        invalidation_marker_linkage=(
+          ["validation/invalidation_markers.json"] if has_marker else []
+        ),
+        operator_action_hint="検証結果と人間署名を確認し、無効原因を是正してから再実行する",
+      )
+
+    # A-006：唯一の横断正本 review_case.json に終了メタデータを反映する
+    # （design.md §実行終了境界 手順 3）。
+    EvidenceWriter(self.run_dir).project_to_review_case()
 
     return {
       "run_status": "closed",
@@ -141,4 +171,7 @@ class ValidationBridge:
     )
     manifest = self._manifest()
     manifest["run_status"] = "orchestration_failed"
+    # P-010：無効化標識を付与した実行は evidence_class=invalid に確定する
+    # （design.md §セッションモデル §3：無効化標識ありは invalid）。
+    manifest["evidence_class"] = "invalid"
     self._save_manifest(manifest)
