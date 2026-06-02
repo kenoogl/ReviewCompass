@@ -165,7 +165,7 @@ language: ja
 ### T-011：テスト戦略整備と統合テスト
 
 - **対応設計節**：design.md §テスト戦略（5 項目の縫い目）
-- **対応要件**：Requirement 1 受入 1〜6 の網羅検証、各 Requirement の機械判定可能な完了条件の網羅、Requirement 10（参照規約なしの機械検証）
+- **対応要件**：Requirement 1 受入 1〜6 の網羅検証、Requirement 10（参照規約なしの機械検証）。なお「各 Requirement の機械判定可能な完了条件の網羅」は T-011 の横断的責務（テスト整備）であり、個別の対応要件としては要件 1・要件 10 を担う（要件追跡表もこの 2 要件に T-011 を載せる）
 - **責務**：design.md §テスト戦略で定義された 5 項目（言語モデル差し替え点 ／ 検証ブリッジ起動点 ／ 段入出力分離点 ／ 決定単位生成の検証方針 ／ 実行終了境界の順序検証）をすべて Python テストとして整備。pytest で一括実行可能。foundation との接続部（語彙正本 6 件の参照のみで使用、再定義していないこと）の機械検証も含める。要件追跡表と各タスク本文の対応要件欄の双方向整合チェック（foundation T-010 と同様、runtime 側でも採用）
 - **前提タスク**：T-001、T-002、T-003、T-004、T-005、T-006、T-007、T-008、T-009、T-010（全実装タスクが前提）
 - **成果物**：`tests/runtime/` 配下のテストファイル群（test_session_controller.py ／ test_step_executors.py ／ test_prompt_resolver.py ／ test_decision_units.py ／ test_evidence_writer.py ／ test_validation_bridge.py ／ test_bundle_exporter.py ／ test_integration_run_close_order.py の 8 ファイル相当、または機能別に分割）
