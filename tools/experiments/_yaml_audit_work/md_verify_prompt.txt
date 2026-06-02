@@ -1,0 +1,79 @@
+あなたは独立した検証者です。ある開発プロジェクトで 3 つの正本文書を更新しました。
+起草者とは別系統のあなたに、更新内容が正確かつ整合しているかの点検を依頼します。
+
+# 今回の変更の文脈
+今回の作業で yaml-audit 規律（補助層 E）を新設した。その作業の中で以下の合意・決定があった：
+
+1. 設定・動作仕様 yaml 専用の監査規律（補助層 E）を新設した（md 用補助層 D と別立て）。
+2. 監査観点は 11 項目。A 系統①〜⑥必須・⑦⑧推奨（段階2で自動必須化）、B 系統⑨〜⑪必須。
+3. ⑦⑧は機械検査スクリプト整備と同時に自動必須化（promotion.trigger 条件）。
+4. 段階づけは 1（LLM 自律・現状）/ 2（機械検査スクリプト化・⑦⑧必須化）/ 3（commit/push 関門）。
+5. 計画書の多層防御補助層に補助層 E として追加した（A/B/C/D/E の 5 層構成）。
+6. 規律ファイル一覧（README.md）の active 必読 表に新規律を追加した。
+7. TODO に「段階2実装時の⑦⑧必須化」を将来の必須作業として記録した。
+
+
+# 変更された文書（抜粋）
+
+## 成果物 1：TODO_NEXT_SESSION.md（§3 の追加段落）
+d` の §5.4〜§5.9.6・§5.12・§5.23〜§5.24（行番号は変動、参考値）
+6. 実験ノート `docs/experiments/n-model-comparison.md` §3.4（マルチターンプロトコル）
+7. `git log --oneline -10`／`git status` で到達点確認
+
+### 1.1 Python 実行（venv 経由、毎セッション要確認）
+
+スクリプト実行は **必ず venv の Python を直接指定**（`python3` 直叩きや `zsh -c '... python3'` は PyYAML なしで失敗。`subprocess.run([sys.executable])` が venv パッケージを参照するため起動 Python が venv である必要）：
+
+```
+zsh -c 'source ~/.zshrc && /Users/Daily/Development/ReviewCompass/.venv/bin/python3 <script.py>'
+```
+
+## 2. ワークフロー上の現在位置（セッション 49 末、正本は spec.json）
+
+- intent／feature-partitioning：全 7 機能 全段 true
+- requirements／design／tasks（全 7 機能）：全段 true（reopened は履歴 true。最新は §3.2／reopen-classification 記録）
+- implementation：foundation・runtime（2/7 機能）＝drafting・triad-review true（review-wave 以降 false）／他 5 機能（evaluation／analysis／workflow-management／self-improvement／conformance-evaluation）＝全段 false
+- recheck：runtime クリア。**foundation のみ upstream_change_pending=true・impacted=["implementation"]**（api_mediated 変更を将来の review-wave→alignment→approval で織り込む、implementation 未到達のため残置）
+
+## 3. 次の作業（セッション 49 起点）
+
+**次の作業：evaluation 機能の implementation drafting（草案作成）**。runtime の triad-review は完了（spec.json で implementation.triad-review=true）。残り機能順序（§3.1）で次
+
+## 成果物 2：docs/disciplines/README.md（冒頭の最終更新行と active 必読表の末尾行）
+# 規律ファイル（disciplines）
+
+最終更新：2026-06-02（セッション 50：`discipline_yaml_audit.md` を新設、active 必読昇格。設定・動作仕様 yaml 専用の監査規律（補助層 E）。独立 3 系統で 2 回の検証ループを経て発効、利用者明示承認「承認」）／2026-05-31（セッション 41：`discipline_post_write_verification.md` を新設、active 必読昇格。本規律自身の起草に対し独立 3 系統で 5 回の検証ループを経て発効、OpenAI／Google で ALL_CLEAR 達成）／2026-05-26（セッション 27：旧 dominant-dominated-options ／ choice-presentation を統合し `discipline_options_presentation.md` を新設、active 必読昇格＋事前検査宣言義務を新設、旧 2 件は `archive/2026-05-26-consolidation/` へ退避。利用者明示承認「OK」「承認」）
+
+過去履歴：
+- セッション 27（2026-05-26）前半：シンボリックリンク検証失敗・fallback 案イ採用、毎セッション開始時に TODO §1 起動手順で active 必読を Re
+
+## 成果物 3：docs/plan/reconstruction-plan-2026-05-21.md（§5.8 補助層E 節）
+#### 5.8 補助層 E：設定・動作仕様 yaml の書き込み後監査（2026-06-02 セッション 50 新設）
+
+レビューの仕組みの根幹を決める設定・動作仕様 yaml（`config/**/*.yaml`、`runtime/config/**/*.yaml`、`stages/*.yaml`、`.reviewcompass/specs/**/*.yaml`）への書き込みが終わったら、書いた本人とは別系統の検証者による監査を必ず実施する。補助層 D（md 文書用の書き込み後検証）とは別立てで、yaml の性質（人が読む文書ではなく機械が読む構造化データ）に応じた観点で点検する。無監査の yaml が誤っていると、レビュー機構そのものが静かに壊れる（例：規律本体が参照する節が実物の yaml に存在しない不整合が md 用検証では捕まらない）。
+
+**対象範囲**：場所パターン（include/exclude glob）で機械判定する（対象が増えても自動で拾う）。詳細は動作仕様ファイル `.reviewcompass/specs/workflow-management/yaml-audit-spec.yaml` の `scope_of_application` を参照。
+
+**監査の観点（11 項目、2 系統）**：A 系統（機械で静的に検査できる）＝①構文妥当性 ②構造・必須項目 ③値の妥当性 ④参照の実在 ⑤規律・計画書との節一致 ⑥単一正本・重複整合（①〜⑥必須）、⑦下流コード・テストへの波及 ⑧検証テストの存在（推奨。段階2で自動必須化）。B 系統（意味・原則の判断）＝⑨合意反映 ⑩安全側既定・規律との非矛盾 ⑪デプロイ／開発文書の分離（⑨〜⑪必須、独立検証で点検）。
+
+**初回検証**：新たに監査対象へ組み入れる yaml は組み入れ時に全件を初回検証する（「過去への遡及」ではなく初回適用）。
+
+実装段階は補助層 D と同構造の 3 段（段階 1 ＝ LLM 自律、段階 2 ＝書き込み後フック＋機械検査スクリプト整備・⑦⑧自動必須化、段階 3 ＝ commit/push 段での最終関門）。現状は段階 1。
+
+規律本体は規律ファイル [docs/disciplines/discipline_yaml_audit.md](../disciplines/discipline_yaml_audit.md)、動作仕様の正本は `.reviewcompass/specs/workflow-management/yaml-audit-spec.yaml` を参照。
+
+# 点検の観点
+(1) 文脈との整合：上の「変更の文脈」1〜7 が各成果物に正しく反映されているか
+(2) 内部整合：3 つの成果物の間で矛盾がないか
+(3) 参照正確性：ファイルパス・節番号・固有名詞・数値が正確か
+(4) 記述の完全性：重要な決定事項が抜けていないか
+
+# 出力形式（厳守）
+次の YAML だけを返してください。指摘がなければ findings: [] とし verdict: ALL_CLEAR。
+verdict: ALL_CLEAR  # または HAS_FINDINGS
+findings:
+  - point: 1            # 観点番号 1-4
+    severity: high      # high / medium / low
+    location: ...       # 対象文書と箇所
+    description: ...    # 指摘内容
+    classification: substantive  # literal（字句レベル）/ substantive（合意の解釈・設計判断に触れる）

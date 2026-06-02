@@ -1,0 +1,22 @@
+verdict: HAS_FINDINGS
+findings:
+  - point: 1
+    severity: high
+    location: "TODO_NEXT_SESSION.md §3"
+    description: "変更文脈 7 の「段階2実装時の⑦⑧必須化」を将来の必須作業として TODO に記録する、という内容が抜粋中に反映されていない。§3 は依然として「セッション49起点」「evaluation 機能の implementation drafting」を次作業としており、yaml-audit 段階2実装時の必須作業が確認できない。"
+    classification: substantive
+  - point: 2
+    severity: medium
+    location: "TODO_NEXT_SESSION.md §3 / docs/disciplines/README.md 最終更新行 / docs/plan/reconstruction-plan-2026-05-21.md §5.8"
+    description: "README と計画書は 2026-06-02 セッション50で yaml-audit 規律を新設した前提で更新されている一方、TODO は「セッション49起点」のままで、今回のセッション50変更後の到達点・次作業として整合していない。"
+    classification: substantive
+  - point: 1
+    severity: high
+    location: "docs/disciplines/README.md active 必読表の末尾行"
+    description: "変更文脈 6 では active 必読表に新規律を追加したことになっているが、提示された抜粋には active 必読表の新規律行が含まれていない。最終更新行では active 必読昇格に言及しているものの、表への実追加を確認できない。"
+    classification: literal
+  - point: 4
+    severity: low
+    location: "docs/plan/reconstruction-plan-2026-05-21.md §5.8"
+    description: "変更文脈 3 は「promotion.trigger 条件」として⑦⑧の自動必須化を定義しているが、計画書抜粋では「段階2で自動必須化」とだけ記述され、promotion.trigger という条件名・仕様上の対応箇所が明示されていない。動作仕様ファイル側で定義されているなら致命的ではないが、計画書単体では重要な決定事項の参照がやや不足している。"
+    classification: substantive

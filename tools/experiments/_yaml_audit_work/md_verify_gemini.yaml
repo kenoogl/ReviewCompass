@@ -1,0 +1,19 @@
+```yaml
+verdict: HAS_FINDINGS
+findings:
+  - point: 1
+    severity: high
+    location: "成果物 1：TODO_NEXT_SESSION.md"
+    description: "変更の文脈7の合意事項「TODOに『段階2実装時の⑦⑧必須化』を将来の必須作業として記録した」に該当する記述が、提示された抜粋内に一切含まれていません。"
+    classification: substantive
+  - point: 2
+    severity: high
+    location: "成果物 1：TODO_NEXT_SESSION.md"
+    description: "成果物2および3では「セッション 50 新設」として作業結果が記載されていますが、成果物1の記述は「セッション 49 末」「セッション 49 起点」のまま更新されておらず、文書間でセッションの進行状態に矛盾が生じています。"
+    classification: substantive
+  - point: 4
+    severity: medium
+    location: "成果物 2：docs/disciplines/README.md"
+    description: "見出しには「active 必読表の末尾行」と記載されていますが、実際の抜粋テキストには冒頭の最終更新履歴と過去履歴の一部しか含まれていません。そのため、文脈6の「active 必読表に新規律を追加した」内容が反映されているかの点検ができません。"
+    classification: literal
+```
