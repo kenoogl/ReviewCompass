@@ -20,6 +20,7 @@
 """
 
 import argparse
+import hashlib
 import json
 import subprocess
 import sys
@@ -806,12 +807,53 @@ def load_post_write_manifests(cwd):
 
 
 def verifier_requirements_satisfied(manifest):
-  """required_verifiers が completed_verifiers で満たされているかを返す"""
+  """required_verifiers が completed_verifiers で満たされているかを返す（旧形式フォールバック用）"""
   required = set(manifest.get("required_verifiers") or [])
   if not required:
     return False
   completed = set(manifest.get("completed_verifiers") or [])
   return required.issubset(completed)
+
+
+def coverage_matrix_satisfied(manifest, target_files):
+  """verifications[] の各 required_verifier が全 target_files を網羅しているかを確認する
+
+  verifications[] が存在しない場合は None を返す（呼び出し側で旧形式へフォールバック）。
+  存在する場合は、required_verifiers の各検証者について verifications[] の中に
+  全 target_files を target_files として含むエントリがあるかを確認する。
+  """
+  verifications = manifest.get("verifications")
+  if not isinstance(verifications, list) or not verifications:
+    return None
+
+  required = set(manifest.get("required_verifiers") or [])
+  if not required:
+    return False
+
+  target_set = set(target_files)
+  master_sha256 = manifest.get("target_sha256") or {}
+
+  for verifier in required:
+    verifier_has_valid_entry = False
+    for entry in verifications:
+      if entry.get("verifier") != verifier:
+        continue
+      entry_targets = set(entry.get("target_files") or [])
+      if not target_set.issubset(entry_targets):
+        continue
+      entry_sha256 = entry.get("target_sha256")
+      if not isinstance(entry_sha256, dict):
+        continue
+      sha256_matches = all(
+        entry_sha256.get(t) == master_sha256.get(t)
+        for t in target_files
+      )
+      if sha256_matches:
+        verifier_has_valid_entry = True
+        break
+    if not verifier_has_valid_entry:
+      return False
+  return True
 
 
 def unresolved_substantive_count(manifest):
@@ -823,6 +865,30 @@ def unresolved_substantive_count(manifest):
     return 0
 
 
+def file_sha256(path):
+  """ファイル内容の sha256 を返す。読めない場合は None。"""
+  try:
+    return hashlib.sha256(Path(path).read_bytes()).hexdigest()
+  except OSError:
+    return None
+
+
+def manifest_hashes_match_current_files(cwd, manifest, target_files):
+  """manifest の target_sha256 が現在の対象ファイル内容と一致するかを返す"""
+  expected = manifest.get("target_sha256")
+  if not isinstance(expected, dict) or not expected:
+    return False
+
+  for target in target_files:
+    expected_hash = expected.get(target)
+    if not expected_hash:
+      return False
+    actual_hash = file_sha256(Path(cwd) / target)
+    if actual_hash != expected_hash:
+      return False
+  return True
+
+
 def evaluate_post_write_manifest_state(cwd, target_files):
   """対象ファイル群に対する post-write-verification manifest 状態を返す"""
   target_set = set(target_files)
@@ -830,11 +896,16 @@ def evaluate_post_write_manifest_state(cwd, target_files):
     manifest_targets = set(manifest.get("target_files") or [])
     if not target_set.issubset(manifest_targets):
       continue
+    if not manifest_hashes_match_current_files(cwd, manifest, target_files):
+      continue
     if unresolved_substantive_count(manifest) > 0:
       return "human_required", manifest
+    coverage_ok = coverage_matrix_satisfied(manifest, target_files)
+    if coverage_ok is None:
+      coverage_ok = verifier_requirements_satisfied(manifest)
     if (
       manifest.get("status") == "completed"
-      and verifier_requirements_satisfied(manifest)
+      and coverage_ok
       and unresolved_substantive_count(manifest) == 0
     ):
       return "completed", manifest

@@ -10,6 +10,7 @@ TDD 規律（CLAUDE.md 全体規律）に従い、本テストはスクリプト
 """
 
 import json
+import hashlib
 import shutil
 import subprocess
 import tempfile
@@ -108,15 +109,15 @@ def _write_post_write_manifest(cwd, manifest_name, content):
   """post-write-verification manifest を作る"""
   manifest_dir = Path(cwd) / ".reviewcompass" / "post-write-verification"
   manifest_dir.mkdir(parents=True, exist_ok=True)
-  lines = []
-  for key, value in content.items():
-    if isinstance(value, list):
-      lines.append(f"{key}:")
-      for item in value:
-        lines.append(f"  - {item}")
-    else:
-      lines.append(f"{key}: {value}")
-  (manifest_dir / manifest_name).write_text("\n".join(lines) + "\n", encoding="utf-8")
+  (manifest_dir / manifest_name).write_text(
+    yaml.safe_dump(content, allow_unicode=True, sort_keys=False),
+    encoding="utf-8",
+  )
+
+
+def _sha256_file(path):
+  """ファイル内容の sha256 を返す"""
+  return hashlib.sha256(Path(path).read_bytes()).hexdigest()
 
 
 def _assert_script_invoked(testcase, result):
@@ -695,6 +696,9 @@ class NextNavigationTests(unittest.TestCase):
       {
         "status": "completed",
         "target_files": ["docs/notes/new-policy.md"],
+        "target_sha256": {
+          "docs/notes/new-policy.md": _sha256_file(target),
+        },
         "required_verifiers": ["google"],
         "completed_verifiers": ["google"],
         "unresolved_substantive_findings": 0,
@@ -709,6 +713,37 @@ class NextNavigationTests(unittest.TestCase):
     self.assertEqual(data["verdict"], "OK")
     self.assertEqual(data["next_action"]["kind"], "stage")
     self.assertEqual(data["next_action"]["feature"], "foundation")
+
+  def test_next_does_not_complete_manifest_after_target_content_changes(self):
+    """manifest 作成後に対象ファイルが変わった場合は完了扱いしない"""
+    cwd = Path(self.tmpdir)
+    _init_git_repo(cwd)
+    _write_specs_for_next(cwd, {})
+    target = cwd / "docs" / "notes" / "new-policy.md"
+    target.parent.mkdir(parents=True, exist_ok=True)
+    target.write_text("検証済みの正本文書\n", encoding="utf-8")
+    _write_post_write_manifest(
+      cwd,
+      "post-write-2026-06-02-001.yaml",
+      {
+        "status": "completed",
+        "target_files": ["docs/notes/new-policy.md"],
+        "target_sha256": {
+          "docs/notes/new-policy.md": _sha256_file(target),
+        },
+        "required_verifiers": ["google"],
+        "completed_verifiers": ["google"],
+        "unresolved_substantive_findings": 0,
+      },
+    )
+    target.write_text("検証後に追記された正本文書\n", encoding="utf-8")
+
+    result = run_script(["next", "--json"], cwd=cwd)
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 0, result.stderr)
+    data = json.loads(result.stdout)
+    self.assertEqual(data["next_action"]["kind"], "post_write_verification")
 
   def test_next_does_not_complete_manifest_with_empty_required_verifiers(self):
     """required_verifiers が空の manifest は完了扱いしない"""
@@ -751,6 +786,9 @@ class NextNavigationTests(unittest.TestCase):
       {
         "status": "pending_human",
         "target_files": ["docs/notes/new-policy.md"],
+        "target_sha256": {
+          "docs/notes/new-policy.md": _sha256_file(target),
+        },
         "required_verifiers": ["google"],
         "completed_verifiers": ["google"],
         "unresolved_substantive_findings": 1,
@@ -779,6 +817,9 @@ class NextNavigationTests(unittest.TestCase):
       {
         "status": "completed",
         "target_files": ["docs/notes/new-policy.md"],
+        "target_sha256": {
+          "docs/notes/new-policy.md": _sha256_file(target),
+        },
         "required_verifiers": ["google"],
         "completed_verifiers": ["google"],
         "unresolved_substantive_findings": 0,
@@ -790,6 +831,9 @@ class NextNavigationTests(unittest.TestCase):
       {
         "status": "pending_human",
         "target_files": ["docs/notes/new-policy.md"],
+        "target_sha256": {
+          "docs/notes/new-policy.md": _sha256_file(target),
+        },
         "required_verifiers": ["google"],
         "completed_verifiers": ["google"],
         "unresolved_substantive_findings": 1,
@@ -846,6 +890,251 @@ class NextNavigationTests(unittest.TestCase):
     data = json.loads(result.stdout)
     self.assertEqual(data["verdict"], "OK")
     self.assertNotEqual(data["next_action"]["kind"], "post_write_verification")
+
+
+class PostWriteCoverageMatrixTests(unittest.TestCase):
+  """manifest の verifications[] による coverage matrix チェック"""
+
+  def setUp(self):
+    self.tmpdir = tempfile.mkdtemp()
+    self.addCleanup(shutil.rmtree, self.tmpdir)
+
+  def test_next_accepts_manifest_with_full_coverage_and_matching_sha256(self):
+    """verifications[] で全検証者が全ファイルを見て sha256 も一致した manifest は完了と判定する"""
+    cwd = Path(self.tmpdir)
+    _init_git_repo(cwd)
+    _write_specs_for_next(cwd, {})
+    target_a = cwd / "docs" / "notes" / "policy-a.md"
+    target_b = cwd / "docs" / "notes" / "policy-b.md"
+    target_a.parent.mkdir(parents=True, exist_ok=True)
+    target_a.write_text("ポリシーA\n", encoding="utf-8")
+    target_b.write_text("ポリシーB\n", encoding="utf-8")
+    sha_a = _sha256_file(target_a)
+    sha_b = _sha256_file(target_b)
+    _write_post_write_manifest(
+      cwd,
+      "post-write-2026-06-02-001.yaml",
+      {
+        "status": "completed",
+        "target_files": ["docs/notes/policy-a.md", "docs/notes/policy-b.md"],
+        "target_sha256": {
+          "docs/notes/policy-a.md": sha_a,
+          "docs/notes/policy-b.md": sha_b,
+        },
+        "required_verifiers": ["google", "openai-55"],
+        "completed_verifiers": ["google", "openai-55"],
+        "unresolved_substantive_findings": 0,
+        "verifications": [
+          {
+            "verifier": "google",
+            "target_files": ["docs/notes/policy-a.md", "docs/notes/policy-b.md"],
+            "target_sha256": {
+              "docs/notes/policy-a.md": sha_a,
+              "docs/notes/policy-b.md": sha_b,
+            },
+          },
+          {
+            "verifier": "openai-55",
+            "target_files": ["docs/notes/policy-a.md", "docs/notes/policy-b.md"],
+            "target_sha256": {
+              "docs/notes/policy-a.md": sha_a,
+              "docs/notes/policy-b.md": sha_b,
+            },
+          },
+        ],
+      },
+    )
+
+    result = run_script(["next", "--json"], cwd=cwd)
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 0, result.stderr)
+    data = json.loads(result.stdout)
+    self.assertEqual(
+      data["next_action"]["kind"], "stage",
+      f"全検証者が全ファイルを見て sha256 一致の manifest は通常ワークフローに戻るべき。"
+      f"next_action: {data['next_action']}",
+    )
+
+  def test_next_rejects_manifest_when_verifications_lack_per_entry_sha256(self):
+    """verifications[] に per-entry target_sha256 がない manifest は完了と判定しない"""
+    cwd = Path(self.tmpdir)
+    _init_git_repo(cwd)
+    _write_specs_for_next(cwd, {})
+    target_a = cwd / "docs" / "notes" / "policy-a.md"
+    target_b = cwd / "docs" / "notes" / "policy-b.md"
+    target_a.parent.mkdir(parents=True, exist_ok=True)
+    target_a.write_text("ポリシーA\n", encoding="utf-8")
+    target_b.write_text("ポリシーB\n", encoding="utf-8")
+    sha_a = _sha256_file(target_a)
+    sha_b = _sha256_file(target_b)
+    _write_post_write_manifest(
+      cwd,
+      "post-write-2026-06-02-001.yaml",
+      {
+        "status": "completed",
+        "target_files": ["docs/notes/policy-a.md", "docs/notes/policy-b.md"],
+        "target_sha256": {
+          "docs/notes/policy-a.md": sha_a,
+          "docs/notes/policy-b.md": sha_b,
+        },
+        "required_verifiers": ["google"],
+        "completed_verifiers": ["google"],
+        "unresolved_substantive_findings": 0,
+        "verifications": [
+          {
+            "verifier": "google",
+            "target_files": ["docs/notes/policy-a.md", "docs/notes/policy-b.md"],
+            # target_sha256 が意図的に欠落
+          },
+        ],
+      },
+    )
+
+    result = run_script(["next", "--json"], cwd=cwd)
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 0, result.stderr)
+    data = json.loads(result.stdout)
+    self.assertNotEqual(
+      data["next_action"]["kind"], "stage",
+      "verifications[] 内の per-entry target_sha256 が欠落した manifest は完了扱いしてはいけない",
+    )
+    self.assertEqual(
+      data["next_action"]["kind"], "post_write_verification",
+    )
+
+  def test_next_rejects_manifest_when_verifier_entry_sha256_mismatches_master(self):
+    """verifications[] の sha256 がマスターと不一致の場合は完了と判定しない"""
+    cwd = Path(self.tmpdir)
+    _init_git_repo(cwd)
+    _write_specs_for_next(cwd, {})
+    target_a = cwd / "docs" / "notes" / "policy-a.md"
+    target_a.parent.mkdir(parents=True, exist_ok=True)
+    target_a.write_text("ポリシーA\n", encoding="utf-8")
+    sha_a = _sha256_file(target_a)
+    _write_post_write_manifest(
+      cwd,
+      "post-write-2026-06-02-001.yaml",
+      {
+        "status": "completed",
+        "target_files": ["docs/notes/policy-a.md"],
+        "target_sha256": {
+          "docs/notes/policy-a.md": sha_a,
+        },
+        "required_verifiers": ["google"],
+        "completed_verifiers": ["google"],
+        "unresolved_substantive_findings": 0,
+        "verifications": [
+          {
+            "verifier": "google",
+            "target_files": ["docs/notes/policy-a.md"],
+            "target_sha256": {
+              "docs/notes/policy-a.md": "deadbeef" * 8,  # 不正な sha256
+            },
+          },
+        ],
+      },
+    )
+
+    result = run_script(["next", "--json"], cwd=cwd)
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 0, result.stderr)
+    data = json.loads(result.stdout)
+    self.assertNotEqual(
+      data["next_action"]["kind"], "stage",
+      "verifications[] エントリの sha256 がマスターと不一致の manifest は完了扱いしてはいけない",
+    )
+    self.assertEqual(
+      data["next_action"]["kind"], "post_write_verification",
+    )
+
+  def test_next_rejects_manifest_when_verifier_covers_only_partial_files(self):
+    """分業（検証者ごとに異なるファイルのみ）の manifest は完了と判定しない"""
+    cwd = Path(self.tmpdir)
+    _init_git_repo(cwd)
+    _write_specs_for_next(cwd, {})
+    target_a = cwd / "docs" / "notes" / "policy-a.md"
+    target_b = cwd / "docs" / "notes" / "policy-b.md"
+    target_a.parent.mkdir(parents=True, exist_ok=True)
+    target_a.write_text("ポリシーA\n", encoding="utf-8")
+    target_b.write_text("ポリシーB\n", encoding="utf-8")
+    sha_a = _sha256_file(target_a)
+    sha_b = _sha256_file(target_b)
+    _write_post_write_manifest(
+      cwd,
+      "post-write-2026-06-02-001.yaml",
+      {
+        "status": "completed",
+        "target_files": ["docs/notes/policy-a.md", "docs/notes/policy-b.md"],
+        "target_sha256": {
+          "docs/notes/policy-a.md": sha_a,
+          "docs/notes/policy-b.md": sha_b,
+        },
+        "required_verifiers": ["google", "openai-55"],
+        "completed_verifiers": ["google", "openai-55"],
+        "unresolved_substantive_findings": 0,
+        "verifications": [
+          {
+            "verifier": "google",
+            "target_files": ["docs/notes/policy-a.md"],
+          },
+          {
+            "verifier": "openai-55",
+            "target_files": ["docs/notes/policy-b.md"],
+          },
+        ],
+      },
+    )
+
+    result = run_script(["next", "--json"], cwd=cwd)
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 0, result.stderr)
+    data = json.loads(result.stdout)
+    self.assertNotEqual(
+      data["next_action"]["kind"], "stage",
+      "分業（各検証者が全ファイルを見ていない）は完了扱いしてはいけない",
+    )
+    self.assertEqual(
+      data["next_action"]["kind"], "post_write_verification",
+      f"分業の manifest は post_write_verification を継続すべき。"
+      f"next_action: {data['next_action']}",
+    )
+
+  def test_next_falls_back_to_completed_verifiers_without_verifications_field(self):
+    """verifications[] がない旧形式 manifest は completed_verifiers でフォールバック判定する"""
+    cwd = Path(self.tmpdir)
+    _init_git_repo(cwd)
+    _write_specs_for_next(cwd, {})
+    target = cwd / "docs" / "notes" / "legacy-policy.md"
+    target.parent.mkdir(parents=True, exist_ok=True)
+    target.write_text("旧形式の正本文書\n", encoding="utf-8")
+    _write_post_write_manifest(
+      cwd,
+      "post-write-2026-06-02-001.yaml",
+      {
+        "status": "completed",
+        "target_files": ["docs/notes/legacy-policy.md"],
+        "target_sha256": {
+          "docs/notes/legacy-policy.md": _sha256_file(target),
+        },
+        "required_verifiers": ["google"],
+        "completed_verifiers": ["google"],
+        "unresolved_substantive_findings": 0,
+      },
+    )
+
+    result = run_script(["next", "--json"], cwd=cwd)
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 0, result.stderr)
+    data = json.loads(result.stdout)
+    self.assertEqual(
+      data["next_action"]["kind"], "stage",
+      "verifications[] なし旧形式は completed_verifiers で完了判定し通常ワークフローに戻るべき",
+    )
 
 
 class ReopenStartTests(unittest.TestCase):
