@@ -1,0 +1,12 @@
+provider: gemini-api
+model: gemini-3.5-flash
+turn_number: 1
+duration_seconds: 8.471
+sent_messages_count: 1
+response_text: '```yaml
+
+  status: ALL_CLEAR
+
+  findings: []
+
+  ```'

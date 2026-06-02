@@ -1,0 +1,77 @@
+provider: anthropic-api
+model: claude-opus-4-8
+turn_number: 1
+duration_seconds: 59.959
+sent_messages_count: 1
+response_text: "```yaml\nfindings:\n  - finding_id: P-001\n    perspective: 3\n  \
+  \  severity: ERROR\n    target_location: tests/runtime/test_t009_validation_bridge.py::test_close_run_success_valid／ValidationBridge.close_run（bridge.py）\n\
+  \    description: >-\n      正常系の close_run テストで evidence_class=valid を検証しているが、bridge.py\
+  \ は close_run 内で\n      ImmutabilityGuard.freeze() を呼ぶだけで、freeze で書き込んだ closed_at\
+  \ を run_manifest に保持したまま\n      最後に _save_manifest を行う。順序として freeze（closed_at 記録）→\
+  \ validator_result 保存 →\n      manifest 再読込・更新となるが、freeze が書いた closed_at が最終 manifest\
+  \ にも残ることはテストで\n      明示検証されていない。「署名→検証→終了」の順序の観測可能項目のうち closed_at の保持を\n      test_seam_run_close_order\
+  \ が拾うのみで、正常系単体テストでは凍結マーカーの永続を確認していない。\n    rationale: >-\n      design.md §実行終了境界は「凍結\
+  \ → 検証器呼び出し → メタデータ更新」を要件 6 受入 9 として順序強制を要求する。\n      T-009 完了条件は順序強制を求めるが、freeze\
+  \ 後の manifest 再読込で closed_at が確実に維持される保証が\n      テストで網羅されておらず、偽陽性（順序が崩れても通る）の余地が残る。\n\
+  \  - finding_id: P-002\n    perspective: 3\n    severity: WARN\n    target_location:\
+  \ runtime/runtime_core/validation_bridge/bridge.py::close_run（前提 1 の Step D 完了判定）\n\
+  \    description: >-\n      close_run は前提 1 で Step D ファイルの存在と step_outcome==executed\
+  \ のみを確認するが、Step D 出力の\n      run_close_ready フラグ（design.md 統合手順 ステップ 5 で機械判定する実行終了準備信号）を一切参照しない。\n\
+  \      run_close_ready が False の Step D 出力でも検証器呼び出しに進む。\n    rationale: >-\n   \
+  \   design.md §ステップ実行モデル Step D は「実行終了準備を必須段出力の充足で機械判定」し\n      run_close_ready\
+  \ を出力すると定める。実行終了境界がこの信号を消費しないと、Step D が「準備未完了」と\n      判定した実行でも終了に進むため、要件 1 受入 5（実行終了境界の露出）と設計の整合に齟齬がある。\n\
+  \  - finding_id: P-003\n    perspective: 1\n    severity: WARN\n    target_location:\
+  \ runtime/runtime_core/evidence_writer/writer.py::project_to_review_case（投影 2 段別識別子）\n\
+  \    description: >-\n      projection_rules.yaml の step_identifiers 規約は step_id／step_name／step_prompt_artifact_id／\n\
+  \      step_started_at／step_closed_at の 5 項目を求めるが、writer.py は step_name を step_records\
+  \ に投影して\n      いない（step_id／step_status／step_prompt_artifact_id／step_started_at／step_closed_at\
+  \ のみ書き込む）。\n    rationale: >-\n      design.md §証拠出力モデル「主要な投影対応」および projection_rules.yaml\
+  \ の id:step_identifiers は\n      段別識別子に step_name を含む。投影実装が step_name を欠落させており、tasks.md\
+  \ T-008 完了条件\n      「投影規約 7 項目が機械的に適用される」と不整合。テスト test_t008 も step_name の投影を検査していない。\n\
+  \  - finding_id: P-004\n    perspective: 2\n    severity: WARN\n    target_location:\
+  \ runtime/runtime_core/foundation_ref.py::vocabulary（confidence_label の参照口露出）\n\
+  \    description: >-\n      foundation_ref.vocabulary の docstring は対象例に confidence_label\
+  \ を挙げ、汎用の参照口として\n      露出している。runtime は推定タスクを扱わず confidence_label は参照範囲外（tasks.md\
+  \ 完了判定基準・\n      contract consumer 原則注記）と明記されているが、コードはこれを参照可能なまま放置している。\n    rationale:\
+  \ >-\n      tasks.md 冒頭の foundation contract consumer 原則は「runtime が参照するのは 6 件で confidence_label\
+  \ は\n      推定タスク用のため対象外」と明示する。docstring が confidence_label を参照対象例に含めるのは\n      上流方針との軽微な不整合（推測ではなく文面の不一致）。\n\
+  \  - finding_id: P-005\n    perspective: 3\n    severity: WARN\n    target_location:\
+  \ tests/runtime/test_t004_step_executors.py::test_primary_treatment_skips_step_b_and_c\
+  \ ほか\n    description: >-\n      step_outcome の 3 値正本には failed が含まれるが、各段実行器（step_a/b/c）に\
+  \ failed を出力する経路が\n      実装されておらず、failed のテストも存在しない。実行が失敗した場合に step_outcome=failed\
+  \ を残し\n      failure_observation と連結する設計（要件 1 受入 4、要件 4 受入 7）の検証が欠落している。\n    rationale:\
+  \ >-\n      design.md §treatment × 段実行マトリクスは step_outcome に failed を含め、failed 時は\n\
+  \      failures/failure_observations/ への記録と参照連結を求める。実装・テストとも failed 経路を扱っておらず、\n\
+  \      要件 1 受入 4 の「失敗した段の区別」の網羅性が担保されていない（偽陰性の懸念）。\n  - finding_id: P-006\n    perspective:\
+  \ 3\n    severity: WARN\n    target_location: runtime/runtime_core/evidence_writer/failure_observation_writer.py／tests/runtime/test_t008_evidence_writer.py\n\
+  \    description: >-\n      failure_observation_writer は実装・テストされているが、実行パイプライン（bridge.py\
+  \ や step executors）から\n      失敗時に呼び出される結線が無い。T-011 統合テストも正常系のみで failure_observation\
+  \ 生成経路を縫い合わせて\n      いない。failure_observation スキーマの「未使用スキーマとして放置しない」（要件 4 受入 7）の運用結線が\n\
+  \      テストで確認されていない。\n    rationale: >-\n      requirements.md 要件 4 受入 7 は「失敗分類データを取得し、未使用スキーマとして放置しない」を求める。\n\
+  \      writer 単体は存在するが呼び出し経路がパイプラインに組み込まれておらず、要件の実効的達成が検証されていない。\n  - finding_id:\
+  \ P-007\n    perspective: 4\n    severity: INFO\n    target_location: docs/operations/RUNTIME.md\
+  \ §7 配置先\n    description: >-\n      RUNTIME.md §7 は配置先として `schemas/foundation/`／`schemas/domain/`／`schemas/validators/`\
+  \ と\n      `templates/prompts/<段の用途>/<役>.prompt.md` を挙げるが、実装・テストのパス解決は\n      runtime/schemas／runtime/foundation／runtime/validators/contracts／runtime/prompts\
+  \ を用いており、\n      文書と実装の配置記述が一致していない。\n    rationale: >-\n      foundation_ref.py・resolver.py・各テストは\
+  \ runtime/schemas 等を正本パスとする一方、運用文書 §7 は\n      schemas/foundation 等を示す。design.md・tasks.md\
+  \ の成果物欄は runtime/runtime_core 配下で統一されており、\n      RUNTIME.md §7 の記述だけが旧計画書由来のパスを残している軽微な配置記述の不整合。\n\
+  \  - finding_id: P-008\n    perspective: 5\n    severity: INFO\n    target_location:\
+  \ tests/runtime/test_t011_traceability.py（tools/foundation_validators/check_completion\
+  \ への依存）\n    description: >-\n      runtime の追跡整合テストが foundation 配下の tools/foundation_validators/check_completion\
+  \ を sys.path 追加で\n      import し再利用している。foundation 側ツールの関数シグネチャ（check_bidirectional_traceability）変更が\n\
+  \      runtime テストを直接破壊する横断結合が生じている。\n    rationale: >-\n      tasks.md は「foundation\
+  \ T-010 の topic-17 採用方針を踏襲」とするが、踏襲は方針であって実装コードの直接\n      依存までは要求していない。foundation\
+  \ ツールへのハード依存は機能横断波及（観点5）として早期検出に値する。\n  - finding_id: P-009\n    perspective: 2\n\
+  \    severity: INFO\n    target_location: tests/runtime/test_t011_foundation_contract.py::test_runtime_yaml_do_not_redefine_foundation_vocab\n\
+  \    description: >-\n      foundation 6 語彙の再定義検査が「YAML のトップレベルキーに語彙名が現れない」ことのみを検査する。\n\
+  \      step_outcome_vocab.yaml のように値（executed 等）を列挙する形での実体化や、コード内 enum の固定列挙による\n\
+  \      実質的な再定義は検出できない。再定義防止の網羅性が構造的に限定されている。\n    rationale: >-\n      design.md\
+  \ §判断 6・tasks.md 完了判定基準は「6 語彙正本を再定義・縮約せず参照のみ」を機械検証で確認すると\n      する。トップレベルキー名検査のみでは、値の固定列挙による縮約・再定義を見逃す余地があり、検証の信頼性が\n\
+  \      限定される（偽陰性の懸念）。\n  - finding_id: P-010\n    perspective: 1\n    severity:\
+  \ INFO\n    target_location: runtime/runtime_core/validation_bridge/bridge.py::_fail_closed（無効化標識付与と\
+  \ evidence_class 未確定）\n    description: >-\n      _fail_closed は run_status=orchestration_failed\
+  \ に遷移し無効化標識とトリアージ記録を残すが、\n      run_manifest の evidence_class を確定遷移させない。design.md\
+  \ §3 マッピング表は無効化標識ありで invalid と\n      するが、fail-closed 経路ではこの確定が行われず evidence_class\
+  \ が未設定のまま終わる。\n    rationale: >-\n      design.md §セッションモデル §3 は「無効化標識が付与された実行は\
+  \ invalid」と網羅的にマッピングする。\n      fail-closed 時にも下流が evidence_class を機械処理できるよう確定遷移が必要だが、実装では設定されず、\n\
+  \      正常終了経路（close_run）との一貫性に軽微な齟齬がある。\n```"

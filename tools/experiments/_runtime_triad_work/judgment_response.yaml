@@ -1,0 +1,42 @@
+provider: gemini-api
+model: gemini-3.1-pro-preview
+turn_number: 1
+duration_seconds: 72.377
+sent_messages_count: 1
+response_text: "```yaml\nfindings:\n  - finding_id: P-001\n    judgment: leave-as-is\n\
+  \    waveband: leave-as-is\n    rationale: 敵対役の反証通り、実装は freeze() 後にマニフェストを再読込して追加保存しており\
+  \ closed_at は確実に維持されます。T-011の統合テストで順序強制が網羅的に検証されているため、単体テストでの明示検証欠落を仕様不適合として扱うのは偽陽性です。\n\
+  \  - finding_id: P-002\n    judgment: must-fix\n    waveband: in_feature\n    rationale:\
+  \ ValidationBridge.close_run が Step D の出力する run_close_ready フラグを消費していないため、要件1受入5および設計の機械判定信号との接続要件を満たせていません。終了判定ロジックが確実にフラグを確認するよう修正が必須です。\n\
+  \  - finding_id: P-003\n    judgment: leave-as-is\n    waveband: leave-as-is\n \
+  \   rationale: 敵対役の反証通り、writer.pyの実装には step_name の明示的な投影が含まれています。主役所見はコードの事実と反しており、不整合は成立しません。\n\
+  \  - finding_id: P-004\n    judgment: should-fix\n    waveband: in_feature\n   \
+  \ rationale: foundation_ref.vocabulary の docstring に confidence_label が含まれているのは、タスク文書の\
+  \ contract consumer 原則における参照範囲外の指定と軽微に矛盾します。説明文から該当語彙を削除し、一貫性を保つべきです。\n  - finding_id:\
+  \ P-005\n    judgment: must-fix\n    waveband: in_feature\n    rationale: 段実行器のいずれにも例外時に\
+  \ step_outcome=failed を出力して失敗を記録する経路が実装されていません。要件1受入4の「省略と失敗の区別」を実証する運用経路が欠落しており、修正が必須です。\n\
+  \  - finding_id: P-006\n    judgment: must-fix\n    waveband: in_feature\n    rationale:\
+  \ FailureObservationWriter クラスは存在しますが、パイプライン（実行器や検証橋）から失敗時に呼び出される結線がありません。要件4受入7の「未使用スキーマとして放置しない」を満たすため、呼び出し経路の組み込みが必須です。\n\
+  \  - finding_id: P-007\n    judgment: should-fix\n    waveband: in_feature\n   \
+  \ rationale: docs/operations/RUNTIME.md §7 の配置記述が旧計画書由来のパスのまま残っており、実装の正本パス（runtime/schemas等）と一致していません。運用文書の参照先記述を実態に合わせて更新することが推奨されます。\n\
+  \  - finding_id: P-008\n    judgment: should-fix\n    waveband: in_feature\n   \
+  \ rationale: 追跡整合テストが foundation 側ツールの内部関数を直接 import しており、機能横断の破壊的結合が生じています。実装ファイルのハード依存を解消し、独立した検査ロジックを持つか堅牢なインターフェースを経由すべきです。\n\
+  \  - finding_id: P-009\n    judgment: should-fix\n    waveband: in_feature\n   \
+  \ rationale: foundation 6 語彙の再定義検査が YAML トップレベルキー名のみに依存しており、値の固定列挙による実質的な縮約やコード内再定義を見逃す構造です。検査の網羅性を高め、偽陰性を防ぐ改善が推奨されます。\n\
+  \  - finding_id: P-010\n    judgment: must-fix\n    waveband: in_feature\n    rationale:\
+  \ ValidationBridge._fail_closed が無効化標識を付与するにもかかわらず evidence_class を invalid に確定していません。下流が機械処理できるよう、設計書のマッピングに従った状態確定を組み込むことが必須です。\n\
+  \  - finding_id: A-001\n    judgment: must-fix\n    waveband: in_feature\n    rationale:\
+  \ SessionController.start_session がルートディレクトリしか作成しておらず、タスク文書 T-001 が求める必須サブディレクトリの初期生成責務を果たしていません。後続の個別\
+  \ mkdir に依存せず、セッション開始時にディレクトリ構造を確立すべきです。\n  - finding_id: A-002\n    judgment: must-fix\n\
+  \    waveband: in_feature\n    rationale: 検証器から 4 値以外の不正な状態が返された場合、例外を送出するだけでオーケストレーション失敗状態への遷移が行われません。凍結済みだが未終了という不正な中間状態が残るため、適切に\
+  \ fail-closed する修正が必須です。\n  - finding_id: A-003\n    judgment: must-fix\n    waveband:\
+  \ in_feature\n    rationale: 検証器の failed/blocked 結果を受けて evidence_class は遷移しますが、要件\
+  \ 6 受入 7・8 が求める無効実行トリアージ成果物や修復ヒントの生成処理が欠落しています。運用者が修復するための機械可読な出力を統合する必要があります。\n\
+  \  - finding_id: A-004\n    judgment: should-fix\n    waveband: in_feature\n   \
+  \ rationale: Step D の実行準備判定が、処理方式により意図的に省略される段（Step B/C）の省略マーカーの存在を確認していません。要件 2\
+  \ 受入 5 の偶発的欠落との区別を統合段階で保証するため、マーカーの存在確認を追加することが推奨されます。\n  - finding_id: A-005\n\
+  \    judgment: must-fix\n    waveband: in_feature\n    rationale: RUNTIME.md §5\
+  \ が古い 3 値列挙を残しており、要件文書の Change Intent（api_mediated の追加）および foundation 正本と矛盾しています。運用文書の記述を正本参照方式に更新し、下流の誤解を防ぐ必要があります。\n\
+  \  - finding_id: A-006\n    judgment: must-fix\n    waveband: in_feature\n    rationale:\
+  \ ValidationBridge の close_run 完了時に review_case.json の再投影が行われていないため、検証器結果への参照などが横断正本に反映されません。実行終了処理内で\
+  \ EvidenceWriter を呼び出して review_case.json を確定・同期する修正が必須です。\n```"

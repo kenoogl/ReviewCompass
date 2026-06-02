@@ -1,0 +1,42 @@
+# 役割：書き込み後の独立検証者
+
+あなたは、ある運用文書への書き込みが合意内容を正しく反映しているかを点検する独立検証者です。起草者の判断理由は渡されません。下記の「合意内容」と「書き込み結果」だけを照合し、次の4観点で事実のみを報告してください。修正案や重大度の独自判断は不要です。
+
+## 検査観点
+1. agreement_reflection：合意内容が書き込みに反映されているか
+2. reference_accuracy：参照（ファイルパス・語彙・節番号）が正確か
+3. existing_record_consistency：周辺の既存記述との齟齬がないか
+4. internal_logic：内部の論理矛盾がないか
+
+## 合意内容（決定事項のみ）
+- RUNTIME.md §5（レビューモードの記録）：レビュー方式の語彙に `api_mediated`（独立した複数プロバイダーの API 経由）を追加して 4 値にする。語彙の値は foundation 正本（`runtime/foundation/metadata_contract.yaml` の `review_mode`）が定め、本機能は参照のみとする旨を明記する。
+- RUNTIME.md §7（配置先）：参照先の記述を実装の実際のパスに更新する。`runtime/prompts/`（プロンプト）、`runtime/schemas/`（共有スキーマ）、`runtime/foundation/`（語彙正本と枠組み定義）、`runtime/validators/contracts/`（検証器契約）。旧記述（`templates/prompts/...`、`schemas/foundation/`／`schemas/domain/`／`schemas/validators/`）を置き換える。
+
+## 書き込み結果（修正後のテキスト）
+
+### §5
+## 5. レビューモードの記録（Requirement 4 受入 6）
+
+実行時が出力する証拠には、`foundation` 正本のレビューモード語彙を付与する：
+
+- `manual_dogfooding`：手動 dogfooding レビュー記録（人間が 3 役を模倣）
+- `runtime_mediated`：実行時経由（本機能による大規模言語モデル呼び出し）
+- `subagent_mediated`：サブエージェント経由（Claude Code 内部のサブエージェント機構、計画書 §5.23.12）
+- `api_mediated`：独立した複数プロバイダーの API 経由（計画書 §5.9.7.1）
+
+語彙の値は `foundation` 正本（`runtime/foundation/metadata_contract.yaml` の `review_mode`）が定め、本機能は再定義せず参照する。値の最新は常に正本を参照すること（本一覧は説明用で正本ではない）。実行時は `runtime_mediated` を自動的に付与する。他のモードは別の経路が付与する。
+
+### §7
+## 7. 配置先（ディレクトリ構造）
+
+実行時の出力先と参照先：
+
+- `<対象アプリ>/.reviewcompass/specs/<feature>/reviews/<日付>-<種別>.md`：レビュー記録
+- `<対象アプリ>/.reviewcompass/specs/<feature>/spec.json`：実行状態（承認・拒否・保留）
+- リポジトリ内 `runtime/prompts/`：プロンプト成果物（解決規約は `runtime/runtime_core/prompt_resolver/override_paths.yaml`）
+- リポジトリ内 `runtime/schemas/`：foundation の共有スキーマ（契約の参照先）
+- リポジトリ内 `runtime/foundation/`：foundation の語彙正本（`metadata_contract.yaml`）と枠組み定義（`layer1_framework.yaml`）
+- リポジトリ内 `runtime/validators/contracts/`：検証器契約スキーマ
+
+## 出力形式
+YAML で返してください。問題がなければ `status: ALL_CLEAR` と `findings: []` を出力します。問題があれば findings の各要素に criterion（上記4観点のいずれか）／severity（high／medium／low）／description を含めてください。

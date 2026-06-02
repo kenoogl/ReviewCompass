@@ -128,7 +128,7 @@ class AnthropicProvider(ProviderBase):
   ENV_VAR_NAME = "ANTHROPIC_API_KEY"
   URL = "https://api.anthropic.com/v1/messages"
   ANTHROPIC_VERSION = "2023-06-01"
-  DEFAULT_MAX_TOKENS = 4096
+  DEFAULT_MAX_TOKENS = 8192
 
   def _build_request_from_messages(
     self, messages: List[Dict[str, str]]

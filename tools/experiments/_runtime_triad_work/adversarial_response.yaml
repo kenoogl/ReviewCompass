@@ -1,0 +1,76 @@
+provider: openai-api
+model: gpt-5.5
+turn_number: 1
+duration_seconds: 82.255
+sent_messages_count: 1
+response_text: "findings:\n  - finding_id: P-001\n    verdict: refute\n    reason:\
+  \ >-\n      実装は freeze() 後に run_manifest を再読込してから run_status／validator_status／evidence_class\
+  \ を追加保存しており、closed_at は実際には保持される。\n      また正常系単体テスト単独では closed_at を見ていないものの、T-011\
+  \ の test_seam_run_close_order が統合的に凍結マーカーを検査しているため、テストスイート全体の偽陽性として ERROR 扱いする根拠は弱い。\n\
+  \  - finding_id: P-002\n    verdict: agree\n    reason: >-\n      Step D は run_close_ready\
+  \ を明示的な実行終了準備信号として出力しているが、ValidationBridge.close_run は step_outcome==executed だけを前提条件にしている。\n\
+  \      そのため Step D が準備未完了と機械判定した実行でも終了境界へ進める余地があり、design.md の Step D 統合手順と接続していない。\n\
+  \  - finding_id: P-003\n    verdict: refute\n    reason: >-\n      EvidenceWriter.project_to_review_case\
+  \ は step_records.append 内で \"step_name\": step.get(\"step_name\") を明示的に投影している。\n\
+  \      主役所見の記述は実装事実と反しており、step_name 欠落という不整合は成立しない。\n  - finding_id: P-004\n   \
+  \ verdict: agree\n    reason: >-\n      foundation_ref.vocabulary の docstring は\
+  \ confidence_label を参照対象例に含めており、tasks.md が runtime の参照範囲外とした語彙を runtime 側ユーティリティの公開説明に載せている。\n\
+  \      実際の呼び出し経路で使用しているわけではないため機能欠陥ではないが、contract consumer 原則の文面とは軽微にずれている。\n  -\
+  \ finding_id: P-005\n    verdict: agree\n    reason: >-\n      step_outcome_vocab.yaml\
+  \ には failed がある一方、Step A／B／C の実行器は例外時に failed マーカーを書き出す経路を持たない。\n      failure_observation\
+  \ との連結も段実行器側では行われず、要件 1 受入 4 の「省略と失敗の区別」を実運用経路で検証できていない。\n  - finding_id: P-006\n\
+  \    verdict: agree\n    reason: >-\n      FailureObservationWriter は単体として存在するが、step\
+  \ executors や validation bridge から失敗時に呼ばれる結線がない。\n      要件 4 受入 7 は失敗様式に遭遇した場合の記録出力を求めており、writer\
+  \ 単体のスキーマ検証だけでは「未使用スキーマとして放置しない」ことを満たせない。\n  - finding_id: P-007\n    verdict: agree\n\
+  \    reason: >-\n      docs/operations/RUNTIME.md §7 は schemas/foundation や templates/prompts\
+  \ を参照しているが、実装は runtime/schemas、runtime/foundation、runtime/prompts 系のパスを正本としている。\n\
+  \      §9 で新しい実行ディレクトリ配置は追記されているものの、§7 の古い配置先記述が残っており、運用文書内で参照先が一貫しない。\n  - finding_id:\
+  \ P-008\n    verdict: agree\n    reason: >-\n      runtime の T-011 追跡テストは tools/foundation_validators/check_completion.py\
+  \ を sys.path 追加で直接 import している。\n      方針踏襲としては理解できるが、foundation 側ツールの内部 API 変更が\
+  \ runtime テストを壊すため、観点 5 の横断結合として検出する価値がある。\n  - finding_id: P-009\n    verdict:\
+  \ agree\n    reason: >-\n      test_runtime_yaml_do_not_redefine_foundation_vocab\
+  \ は YAML のトップレベルキーだけを見ており、ネストした値集合や Python 定数による固定列挙を一般には検出できない。\n      一部の写像は別テストで補っているが、foundation\
+  \ 6 語彙の再定義・縮約防止としては網羅的ではない。\n  - finding_id: P-010\n    verdict: agree\n    reason:\
+  \ >-\n      _fail_closed は invalidation_markers.json を書き、run_status を orchestration_failed\
+  \ にするだけで evidence_class を invalid に確定しない。\n      design.md のマッピングでは無効化標識ありの実行は invalid\
+  \ とされるため、fail-closed 経路でも下流が evidence_class を機械処理できる状態にしておくべきである。\n  - finding_id:\
+  \ A-001\n    perspective: 1\n    severity: ERROR\n    target_location: runtime/runtime_core/session_controller.py::SessionController.start_session\n\
+  \    description: >-\n      start_session は experiments/runs/<run_id>/ のルートだけを作成し、steps／decisions／failures/failure_observations／validation／derived\
+  \ の必須サブディレクトリを作成しない。\n      T-001 は物理ディレクトリ作成を T-002 session controller が run_id\
+  \ ごとに行うと明記しているが、実装はこの責務を満たしていない。\n    rationale: >-\n      design.md §実行成果物配置と tasks.md\
+  \ T-001 完了条件は 1 実行の必須配置を正本化している。\n      後続コンポーネントが各自 mkdir するため一部テストは通るが、セッション開始直後の実行ディレクトリ構造がタスク文書の成果物構造と一致せず、配置仕様の完了条件を偽陽性にしている。\n\
+  \  - finding_id: A-002\n    perspective: 3\n    severity: ERROR\n    target_location:\
+  \ runtime/runtime_core/validation_bridge/bridge.py::ValidationBridge.close_run\n\
+  \    description: >-\n      検証器が foundation 4 値外の validator_status を返した場合、close_run\
+  \ は凍結後に RunCloseOrderError を送出するだけで fail-closed 処理を行わない。\n      その結果 run_manifest\
+  \ は closed_at を持つ in_progress のまま残り、無効化標識・トリアージ記録・orchestration_failed 遷移が生成されない。\n\
+  \    rationale: >-\n      T-009 は前提条件違反や実行終了境界の異常を検知した場合に検証器を起動せず、または無効実行として fail-closed\
+  \ することを求める。\n      現状は「凍結済みだが閉じても失敗扱いにもなっていない」中間状態を作れるため、順序強制テストと fail-closed テストの信頼性に穴がある。\n\
+  \  - finding_id: A-003\n    perspective: 3\n    severity: ERROR\n    target_location:\
+  \ runtime/runtime_core/validation_bridge/bridge.py::close_run（validator_status=failed/blocked\
+  \ 経路）\n    description: >-\n      validator_status が failed または blocked の場合、evidence_class\
+  \ は invalid または analysis_blocked に遷移するが、無効化標識や derived/invalid_run_triage_note.json\
+  \ は生成されない。\n      design.md §実行終了境界は無効化標識の付与と無効実行時のトリアージ生成を実行終了後処理として定義している。\n \
+  \   rationale: >-\n      Requirement 6 受入 7・8 は、検証または無効化がワークフロー失敗を示す場合に機械可読なトリアージ成果物と修復ヒントの連結を保持することを求める。\n\
+  \      fail-closed 前提違反だけをトリアージ対象にしており、検証器失敗という主要な無効実行経路が運用者向け修復情報を残さない。\n  - finding_id:\
+  \ A-004\n    perspective: 3\n    severity: WARN\n    target_location: runtime/runtime_core/step_executors/step_d_integration.py::_readiness\n\
+  \    description: >-\n      Step D の run_close_ready 判定は included_steps_for(treatment)\
+  \ に含まれる実行対象段だけを確認し、primary treatment で省略される Step B／C の省略マーカーの存在を要求しない。\n      そのため\
+  \ Step B／C のファイルが完全に欠落していても primary 実行は run_close_ready=True になり得る。\n    rationale:\
+  \ >-\n      Requirement 2 受入 4・5 と design.md の treatment × 段実行マトリクスは、処理方式により意図的に実行しない段にも\
+  \ skipped_by_treatment マーカーを残し、事故的欠落と区別することを要求する。\n      現行テストは step_b/step_c を個別に呼んだ場合の省略マーカーだけを検査しており、統合経路でマーカー欠落を検出できない。\n\
+  \  - finding_id: A-005\n    perspective: 2\n    severity: WARN\n    target_location:\
+  \ docs/operations/RUNTIME.md §5 レビューモードの記録\n    description: >-\n      RUNTIME.md\
+  \ §5 は review_mode の値として manual_dogfooding／runtime_mediated／subagent_mediated の\
+  \ 3 値だけを列挙しており、foundation 正本に追加された api_mediated を含めていない。\n      これは foundation 正本語彙を参照のみで使用するという\
+  \ runtime の contract consumer 原則と矛盾する文書上の縮約である。\n    rationale: >-\n      requirements.md\
+  \ の Change Intent は review_mode が api_mediated を含む 4 値体制へ拡張され、runtime 側は固定値を持たず\
+  \ foundation 正本を参照する方式に変更されたと明記している。\n      運用文書が 3 値列挙を残すと、下流運用者が古い語彙を正本と誤認し、機能横断で\
+  \ review_mode 解釈がずれる。\n  - finding_id: A-006\n    perspective: 1\n    severity:\
+  \ WARN\n    target_location: runtime/runtime_core/validation_bridge/bridge.py::close_run／runtime/runtime_core/evidence_writer/writer.py::project_to_review_case\n\
+  \    description: >-\n      design.md §実行終了境界は、実行終了成立後に run_manifest.yaml と review_case.json\
+  \ のメタデータを更新し、run_status／validator_status／evidence_class を確定するとしている。\n      しかし ValidationBridge\
+  \ は run_manifest.yaml だけを更新し、EvidenceWriter の review_case 投影にもこれらの終了メタデータは含まれない。\n\
+  \    rationale: >-\n      review_case.json は唯一の横断正本として下流が読む成果物であり、実行終了後の検証状態と証拠区分を追跡可能にする必要がある。\n\
+  \      現状では下流が review_case.json だけを読むと evidence_class や validator_status を直接機械処理できず、design.md\
+  \ の成果物内容と実装成果物が一致しない。"
