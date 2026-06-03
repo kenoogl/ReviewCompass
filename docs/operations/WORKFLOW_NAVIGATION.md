@@ -39,6 +39,34 @@ reopen 手続きが進行中である。通常ワークフローや post-write-v
 
 検証 manifest は `.reviewcompass/post-write-verification/*.yaml` に置く。`target_files`、`target_sha256`、`required_verifiers`、`completed_verifiers`、`unresolved_substantive_findings` を記録する。`verifications[]` がある場合、各 verifier は `target_files` 全体と対応する `target_sha256` を単一エントリで覆る必要がある。ファイルごとの分業は独立多重チェックではない。
 
+API 経由の複数モデル検証を行う場合の標準手順：
+
+```bash
+python3 tools/api_providers/run_review.py \
+  --target <target-file> \
+  --phase post_write_verification \
+  --criteria <criteria-id> \
+  --review-run-dir docs/notes/review-runs/<run-id>
+
+python3 tools/api_providers/review_triage.py list-pending \
+  --review-run-dir docs/notes/review-runs/<run-id>
+
+python3 tools/api_providers/review_triage.py decide \
+  --review-run-dir docs/notes/review-runs/<run-id> \
+  --finding-id <finding-id> \
+  --final-label must-fix \
+  --decision-reason "<reason>" \
+  --decision-actor human
+
+python3 tools/api_providers/review_triage.py write-manifest \
+  --review-run-dir docs/notes/review-runs/<run-id> \
+  --out auto
+
+python3 tools/check-workflow-action.py next --json
+```
+
+`write-manifest --out auto` は `.reviewcompass/post-write-verification/post-write-YYYY-MM-DD-NNN.yaml` の次番号を作る。`triage.yaml` に `decision_status: human_required` が残る場合は manifest を生成しない。
+
 ### `post_write_policy_violation`
 
 post-write-verification pending 中に禁止変更がある。通常ワークフローへ進まず、`next_action.forbidden_files` を報告して停止する。禁止ファイルを勝手に削除・修正してはいけない。

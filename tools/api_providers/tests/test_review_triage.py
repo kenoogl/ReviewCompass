@@ -256,3 +256,43 @@ def test_write_manifest_creates_file_after_all_decisions(tmp_path):
   manifest = yaml.safe_load(output_path.read_text(encoding="utf-8"))
   assert manifest["status"] == "completed"
   assert manifest["verifications"][1]["verifier"] == "gpt-5.4"
+
+
+def test_write_manifest_auto_chooses_next_post_write_name(tmp_path, monkeypatch, capsys):
+  """--out auto は .reviewcompass/post-write-verification の次番号へ manifest を書く。"""
+  cwd = tmp_path / "repo"
+  cwd.mkdir()
+  monkeypatch.chdir(cwd)
+  existing_dir = cwd / ".reviewcompass" / "post-write-verification"
+  existing_dir.mkdir(parents=True)
+  (existing_dir / "post-write-2026-06-03-001.yaml").write_text(
+    "status: completed\n",
+    encoding="utf-8",
+  )
+  run_dir = _write_review_run(cwd)
+  main(
+    [
+      "decide",
+      "--review-run-dir", str(run_dir),
+      "--finding-id", "finding-001",
+      "--final-label", "must-fix",
+      "--decision-reason", "契約に影響するため修正する",
+      "--decision-actor", "human",
+    ]
+  )
+
+  exit_code = main(
+    [
+      "write-manifest",
+      "--review-run-dir", str(run_dir),
+      "--out", "auto",
+    ]
+  )
+
+  assert exit_code == 0
+  output = capsys.readouterr().out
+  created_path = existing_dir / "post-write-2026-06-03-002.yaml"
+  assert str(created_path) in output
+  assert created_path.is_file()
+  manifest = yaml.safe_load(created_path.read_text(encoding="utf-8"))
+  assert manifest["status"] == "completed"

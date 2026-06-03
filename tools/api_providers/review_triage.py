@@ -6,7 +6,7 @@ import argparse
 import hashlib
 import subprocess
 import sys
-from datetime import datetime, timezone
+from datetime import date, datetime, timezone
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
@@ -365,13 +365,31 @@ def assert_manifest_ready(review_run_dir: str) -> None:
     raise ValueError(f"human_required remains: {unresolved}")
 
 
-def write_manifest(review_run_dir: str, out_path: str) -> None:
-  """完了 manifest をファイルへ書く。"""
+def write_manifest(review_run_dir: str, out_path: str) -> Path:
+  """完了 manifest をファイルへ書き、出力先 path を返す。"""
   assert_manifest_ready(review_run_dir)
   manifest = build_manifest_template(review_run_dir)
-  output = Path(out_path)
+  output = resolve_manifest_output_path(out_path)
   output.parent.mkdir(parents=True, exist_ok=True)
   _dump_yaml(output, manifest)
+  return output
+
+
+def resolve_manifest_output_path(out_path: str) -> Path:
+  """manifest 出力先を解決する。auto は当日の次番号を返す。"""
+  if out_path != "auto":
+    return Path(out_path)
+  manifest_dir = Path.cwd() / ".reviewcompass" / "post-write-verification"
+  manifest_dir.mkdir(parents=True, exist_ok=True)
+  prefix = f"post-write-{date.today().isoformat()}-"
+  max_number = 0
+  for path in manifest_dir.glob(f"{prefix}*.yaml"):
+    suffix = path.stem.removeprefix(prefix)
+    try:
+      max_number = max(max_number, int(suffix))
+    except ValueError:
+      continue
+  return manifest_dir / f"{prefix}{max_number + 1:03d}.yaml"
 
 
 def _parse_argv(argv: Optional[List[str]]) -> argparse.Namespace:
@@ -427,7 +445,8 @@ def main(argv: Optional[List[str]] = None) -> int:
       )
       return 0
     if args.command == "write-manifest":
-      write_manifest(args.review_run_dir, args.out)
+      output = write_manifest(args.review_run_dir, args.out)
+      sys.stdout.write(f"{output}\n")
       return 0
   except Exception as exc:
     sys.stderr.write(f"エラー：{type(exc).__name__}: {exc}\n")
