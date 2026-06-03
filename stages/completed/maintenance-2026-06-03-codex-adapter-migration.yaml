@@ -3,9 +3,10 @@ title: Codex adapter migration
 started_at: 2026-06-03T00:00:00+09:00
 owner: user_directed
 status: in_progress
+completed_at: 2026-06-03T00:00:00+09:00
 reason: Codex 稼働前に Claude 前提の入口記述と運用導線を整理する
-blocked_normal_workflow: true
-required_action: inspect_remaining_claude_assumptions
+blocked_normal_workflow: false
+required_action: maintenance_completed
 allowed_scope:
   - .gitignore
   - AGENTS.md
@@ -26,3 +27,11 @@ completion_conditions:
 notes:
   - 通常ワークフローの次作業は evaluation implementation drafting だが、本保守中は着手しない
   - post-write-verification が返った場合は maintenance より優先して検証する
+completed_steps:
+  - Codex 新規セッションで TODO から共通手引きと Codex adapter を読んで開始できる入口導線を整備
+  - Claude 固有記述を adapter 内または履歴として分類
+  - maintenance_in_progress を next で返す実装とテストを整備
+  - 保守作業中でも post-write-verification が優先されることを確認
+  - Codex 稼働対応の未解決項目をメモ化
+  - 規律本体の adapter 化候補を workflow-management 正式手続き送りとして記録
+  - repo 外 Claude memory の修正判断メモを記録
