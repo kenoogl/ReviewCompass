@@ -1,0 +1,26 @@
+status: completed
+target_files:
+  - docs/notes/2026-06-03-discipline-adapter-revision-candidates.md
+target_sha256:
+  docs/notes/2026-06-03-discipline-adapter-revision-candidates.md: 1a89ae4ab4fab88a7bdd710a8ff372e50b25e2096f03870f6fc5fae1a899eb49
+required_verifiers:
+  - gemini
+completed_verifiers:
+  - gemini
+unresolved_substantive_findings: 0
+verifications:
+  - verifier: gemini
+    provider: gemini-api
+    model: gemini-3.5-flash
+    target_files:
+      - docs/notes/2026-06-03-discipline-adapter-revision-candidates.md
+    target_sha256:
+      docs/notes/2026-06-03-discipline-adapter-revision-candidates.md: 1a89ae4ab4fab88a7bdd710a8ff372e50b25e2096f03870f6fc5fae1a899eb49
+    result_summary: >
+      Verified the discipline adapter revision candidate memo for consistency
+      with docs/disciplines ownership, current Codex hook adapter state, and the
+      next --json navigation model. No findings were reported.
+note: >
+  Post-write verification for the maintenance note that sends discipline body
+  revisions to the workflow-management formal procedure without editing the
+  discipline files directly.
