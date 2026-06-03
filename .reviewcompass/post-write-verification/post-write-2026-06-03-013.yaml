@@ -1,0 +1,26 @@
+status: completed
+target_files:
+  - docs/notes/2026-06-03-claude-memory-correction-decision.md
+target_sha256:
+  docs/notes/2026-06-03-claude-memory-correction-decision.md: 162d20a1cd7a2d117d2c00b4cf6b0a775af6391391211203e8754030098cb34f
+required_verifiers:
+  - gemini
+completed_verifiers:
+  - gemini
+unresolved_substantive_findings: 0
+verifications:
+  - verifier: gemini
+    provider: gemini-api
+    model: gemini-3.5-flash
+    target_files:
+      - docs/notes/2026-06-03-claude-memory-correction-decision.md
+    target_sha256:
+      docs/notes/2026-06-03-claude-memory-correction-decision.md: 162d20a1cd7a2d117d2c00b4cf6b0a775af6391391211203e8754030098cb34f
+    result_summary: >
+      Verified the repo-external Claude memory correction decision memo for
+      consistency with the repo-side discipline loading facts and the requirement
+      to obtain explicit user approval before editing memory. No findings were
+      reported.
+note: >
+  Post-write verification for the maintenance note that raises the repo-external
+  Claude memory correction decision without editing memory.
