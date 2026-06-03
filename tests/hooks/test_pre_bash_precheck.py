@@ -1,9 +1,9 @@
-"""段階 3 フックスクリプト .claude/hooks/pre-bash-precheck.sh の単体テスト
+"""段階 3 フックスクリプト .codex/hooks/pre-bash-precheck.sh の単体テスト
 
 対象仕様：docs/operations/WORKFLOW_PRECHECK.md §12
 対象範囲：Bash の git commit／git push を検出して check-workflow-action.py を呼ぶ MVP
 
-TDD 規律（CLAUDE.md 全体規律）に従い、本テストはフックスクリプト実装前に作成。
+TDD 規律（AGENTS.md 入口規律）に従い、本テストはフックスクリプト実装前に作成。
 実行方法：
   cd /Users/Daily/Development/ReviewCompass
   python3 -m unittest tests.hooks.test_pre_bash_precheck -v
@@ -18,7 +18,7 @@ from pathlib import Path
 
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
-HOOK_SCRIPT = REPO_ROOT / ".claude" / "hooks" / "pre-bash-precheck.sh"
+HOOK_SCRIPT = REPO_ROOT / ".codex" / "hooks" / "pre-bash-precheck.sh"
 
 
 def run_hook(tool_input_dict, cwd):

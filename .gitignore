@@ -13,8 +13,15 @@ docs/logs/workflow-precheck.log
 # 実行ごとに生成される空ファイル群、リポジトリでは管理しない、2026-05-27 セッション 32）
 tools/experiments/logs/
 
-# Codex CLI のローカル設定ディレクトリ（hooks 等、リポジトリでは管理しない、2026-05-28 セッション 36）
-.codex/
+# Codex CLI のローカル設定ディレクトリ。
+# ReviewCompass の Codex adapter として必要な hook 設定だけは管理し、
+# その他のローカル設定は管理しない（2026-06-03 Codex adapter migration）。
+.codex/*
+!.codex/hooks.json
+!.codex/hooks/
+.codex/hooks/*
+!.codex/hooks/README.md
+!.codex/hooks/pre-bash-precheck.sh
 
 # SES シンポジウム論文テンプレート一式（利用者の論文執筆素材、ReviewCompass 本体とは別管理、2026-05-28 セッション 37）
 SES26/
