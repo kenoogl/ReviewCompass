@@ -209,7 +209,14 @@ def _run_one_role(args, config: Dict[str, Any], role: str) -> int:
     max_retries=connection_settings.get("max_retries", 1),
   )
 
-  prompt = build_prompt(args.target, args.phase, args.criteria, args.prior_finding)
+  prompt = build_prompt(
+    args.target,
+    args.phase,
+    args.criteria,
+    args.prior_finding,
+    provider_name=provider_name,
+    model=model,
+  )
   response_text, attempts, duration_seconds = _call_provider(provider, prompt)
   try:
     findings = parse_response_text(response_text)

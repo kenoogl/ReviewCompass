@@ -68,6 +68,35 @@ API 応答の parse に失敗した role があっても、raw と `parse_status
 `manifest-template` と `write-manifest` は、`human_required` が残る場合は fail-closed とし、
 manifest を出力しない。生成する manifest には `verifications[]` coverage matrix を含める。
 
+## プロンプトテンプレート化
+
+実測の smoke run では、`claude-sonnet-4-6` がレビュー内容自体は返したが、
+Markdown code fence と `review:` wrapper を含む YAML だったため、自動 parse の対象である
+top-level `findings:` としては採用できなかった。
+これは「レビュー不能」ではなく「初回自動成形不能」であり、raw を保存して後続成形・人判断へ回す。
+
+この再発率を下げるため、`tools/api_providers/prompt_templates/` に provider 別の
+プロンプトテンプレートを置く。
+`run_role.py` と `run_review.py` は role 設定から得た provider/model に応じてテンプレートを選び、
+実際に送る prompt に `prompt_id`、provider、`model_id`、phase、criteria、target、prior findings を含める。
+
+初期テンプレートは次の 4 種とする。
+
+- `default_review`：未知 provider 用の fallback。
+- `anthropic_review`：`review:` wrapper と Markdown code fence を明示禁止する。
+- `openai_review`：top-level `findings:` と正本 severity 語彙を明示する。
+- `gemini_review`：top-level `findings:` と正本 severity 語彙を明示する。
+
+全テンプレートで、出力は YAML のみ、top-level key は `findings` のみ、
+所見なしは `findings: []`、必須 field は `severity`、`target_location`、
+`description`、`rationale` とする。
+`severity` は foundation 正本語彙の `CRITICAL` / `ERROR` / `WARN` / `INFO` のみを許容するよう指示する。
+
+ただし、プロンプトだけでは完全な保証にならない。
+raw 保存、parse_status、model-result-summary、triage の機械判定は引き続き必須とする。
+将来対応として、raw 原本を残したまま code fence 除去や `review.findings` の救済 parse を行う
+支援成形ステップを追加するかを検討する。
+
 ## 推奨ディレクトリ構造
 
 レビューまたは監査 1 件ごとに、次のような成果物を残す。
@@ -257,6 +286,24 @@ models:
 `run_review.py` が生成する `triage.yaml` は下書きであり、`final_label` は自動確定しない。
 初期状態では `decision_status: human_required` として残し、オーケストレーターまたは人間が
 根拠を確認した後にだけ `decision_status: decided` へ進める。
+
+## 2026-06-03 smoke run の確認事項
+
+`docs/notes/review-runs/review-run-workflow-smoke-2026-06-03-r1/` では、
+3 モデルすべての raw 応答を保存できた。
+`gpt-5.4` と `gemini-3.1-pro-preview` は parsed YAML も生成できた。
+`claude-sonnet-4-6` は raw を保存できたが、top-level が `review:` であり code fence も含まれていたため、
+初回自動 parse は `parse_failed` となった。
+
+同 run では、`gpt-5.4` が `low` / `medium`、`gemini-3.1-pro-preview` が `minor` / `moderate`
+という非正本 severity を返していた。
+このため、後続ではテンプレートで `CRITICAL` / `ERROR` / `WARN` / `INFO` を明示し、
+それでも揺れた場合は raw と `severity_original` を保持したまま triage で判断する。
+
+ここ暫くの修正として、raw 保存、parsed 保存、review-run 成果物、3 role orchestrator、
+summary artifact、triage 下書き、平易な説明と推薦案付き pending 表示、
+manifest-template / write-manifest の fail-closed、post-write-verification manifest からの
+review-run 機械判定は本メモに記録済みである。
 
 ## 今回分への扱い
 

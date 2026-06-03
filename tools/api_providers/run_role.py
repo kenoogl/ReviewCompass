@@ -32,34 +32,67 @@ from tools.api_providers.response_formatter import (  # noqa: E402
 )
 
 
+_PROMPT_TEMPLATE_DIR = Path(__file__).resolve().parent / "prompt_templates"
+_PROVIDER_PROMPT_TEMPLATES = {
+  "anthropic-api": "anthropic_review.md",
+  "openai-api": "openai_review.md",
+  "gemini-api": "gemini_review.md",
+}
+
+
+def _render_prompt_template(template: str, values: Dict[str, str]) -> str:
+  """単純な placeholder 置換でプロンプトテンプレートを描画する。"""
+  rendered = template
+  for key, value in values.items():
+    rendered = rendered.replace("{{ " + key + " }}", value)
+  return rendered
+
+
+def _select_prompt_template(provider_name: Optional[str]) -> Tuple[str, str]:
+  """provider に応じたプロンプトテンプレート ID と本文を返す。"""
+  template_file = _PROVIDER_PROMPT_TEMPLATES.get(
+    provider_name or "",
+    "default_review.md",
+  )
+  template_path = _PROMPT_TEMPLATE_DIR / template_file
+  if not template_path.exists():
+    template_file = "default_review.md"
+    template_path = _PROMPT_TEMPLATE_DIR / template_file
+  return template_file.removesuffix(".md"), template_path.read_text(encoding="utf-8")
+
+
 def build_prompt(
   target_path: str,
   phase: str,
   criteria: str,
   prior_finding_paths: List[str],
+  provider_name: Optional[str] = None,
+  model: Optional[str] = None,
 ) -> str:
   """対象ファイル内容・段名・観点・前段所見からプロンプト文字列を組み立てる。
 
-  プロンプト雛形は計画書 §5.23.12.3 のとおりフェーズ 4 で整備する。
-  本実装は最小構造（メタデータ＋対象文書＋前段所見）のみ。
+  provider ごとの差異を吸収するため、専用テンプレートがあればそれを使う。
   """
   target_content = Path(target_path).read_text(encoding="utf-8")
-  parts = [
-    f"# 段：{phase}",
-    f"# 観点：{criteria}",
-    "",
-    "# 対象文書：",
-    target_content,
-  ]
+  prior_parts = []
   for i, prior_path in enumerate(prior_finding_paths, start=1):
     prior_content = Path(prior_path).read_text(encoding="utf-8")
-    parts.append(f"\n# 前段所見 {i}：")
-    parts.append(prior_content)
-  parts.append(
-    "\n# 出力形式：findings を含む YAML を返してください。"
-    "各所見には severity／target_location／description／rationale を必須項目として含めます。"
+    prior_parts.append(f"# 前段所見 {i}：\n{prior_content}")
+
+  prompt_id, template = _select_prompt_template(provider_name)
+  return _render_prompt_template(
+    template,
+    {
+      "prompt_id": prompt_id,
+      "provider_name": provider_name or "unknown-provider",
+      "model": model or "unknown-model",
+      "phase": phase,
+      "criteria": criteria,
+      "target_path": target_path,
+      "target_content": target_content,
+      "prior_findings": "\n\n".join(prior_parts) if prior_parts else "なし",
+    },
   )
-  return "\n".join(parts)
 
 
 def _call_provider(provider, prompt: str) -> Tuple[str, int, float]:
@@ -367,7 +400,14 @@ def main(argv: Optional[List[str]] = None) -> int:
       max_retries=connection_settings.get("max_retries", 1),
     )
 
-    prompt = build_prompt(args.target, args.phase, args.criteria, args.prior_finding)
+    prompt = build_prompt(
+      args.target,
+      args.phase,
+      args.criteria,
+      args.prior_finding,
+      provider_name=provider_name,
+      model=model,
+    )
     response_text, attempts, duration_seconds = _call_provider(provider, prompt)
     _write_raw_response(args.raw_out, response_text)
     try:

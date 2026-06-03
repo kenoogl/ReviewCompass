@@ -129,6 +129,37 @@ def test_build_prompt_includes_multiple_prior_findings(tmp_target_file, tmp_path
   assert "所見 ベータ" in prompt
 
 
+def test_build_prompt_uses_anthropic_specific_template(tmp_target_file):
+  """anthropic-api では code fence / review wrapper を禁止する専用テンプレートを使う。"""
+  prompt = build_prompt(
+    str(tmp_target_file),
+    "post_write_verification",
+    "観点-1",
+    [],
+    provider_name="anthropic-api",
+    model="claude-sonnet-4-6",
+  )
+  assert "model_id: claude-sonnet-4-6" in prompt
+  assert "Do not wrap the YAML in Markdown code fences" in prompt
+  assert "Do not use review:" in prompt
+  assert "top-level key must be exactly findings" in prompt
+
+
+def test_build_prompt_uses_default_template_for_unknown_provider(tmp_target_file):
+  """未知 provider では共通テンプレートへ fallback する。"""
+  prompt = build_prompt(
+    str(tmp_target_file),
+    "post_write_verification",
+    "観点-1",
+    [],
+    provider_name="unknown-provider",
+    model="unknown-model",
+  )
+  assert "prompt_id: default_review" in prompt
+  assert "top-level key must be exactly findings" in prompt
+  assert "findings: []" in prompt
+
+
 # --- 2. main の正常系 ---
 
 
