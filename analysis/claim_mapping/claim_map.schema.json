@@ -1,0 +1,68 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "claim_map",
+  "type": "object",
+  "required": ["claims"],
+  "properties": {
+    "claims": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "claim_id",
+          "claim_text",
+          "supporting_artifact_refs",
+          "maturity_label",
+          "stale"
+        ],
+        "properties": {
+          "claim_id": {"type": "string"},
+          "claim_text": {"type": "string"},
+          "supporting_artifact_refs": {
+            "type": "array",
+            "items": {"$ref": "#/$defs/artifact_ref"}
+          },
+          "provenance_refs": {
+            "type": "array",
+            "items": {"$ref": "#/$defs/artifact_ref"}
+          },
+          "caveat_refs": {
+            "type": "array",
+            "items": {"$ref": "#/$defs/artifact_ref"}
+          },
+          "maturity_label": {
+            "type": "string",
+            "enum": ["mature", "preliminary", "exploratory"]
+          },
+          "stale": {"type": "boolean"},
+          "stale_reason": {"type": "string"},
+          "stale_source_ref": {"$ref": "#/$defs/artifact_ref"}
+        },
+        "allOf": [
+          {
+            "if": {
+              "properties": {"stale": {"const": true}},
+              "required": ["stale"]
+            },
+            "then": {"required": ["stale_reason", "stale_source_ref"]}
+          }
+        ],
+        "additionalProperties": false
+      }
+    }
+  },
+  "$defs": {
+    "artifact_ref": {
+      "type": "object",
+      "required": ["ref_type", "target_path"],
+      "properties": {
+        "ref_type": {"type": "string"},
+        "target_path": {"type": "string"},
+        "target_id": {"type": ["string", "null"]}
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}
+
