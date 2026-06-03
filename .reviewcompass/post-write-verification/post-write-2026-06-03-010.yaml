@@ -1,0 +1,32 @@
+status: completed
+target_files:
+  - docs/notes/2026-06-03-claude-assumption-inventory.md
+  - docs/operations/SESSION_WORKFLOW_GUIDE.md
+  - docs/operations/WORKFLOW_PRECHECK.md
+target_sha256:
+  docs/notes/2026-06-03-claude-assumption-inventory.md: 42009e92235da226d9f612a0216c93ce94bada456e2350118569f79188d2e02a
+  docs/operations/SESSION_WORKFLOW_GUIDE.md: 2a677c08b05da40782c3dc8d295339025ebf0696b62f432f3ffe61a203d13862
+  docs/operations/WORKFLOW_PRECHECK.md: 5202b3d9a1abfb2d5d51159e8ff20587bbc2eb53855a550b2f61125604ab6680
+required_verifiers:
+  - gemini
+completed_verifiers:
+  - gemini
+unresolved_substantive_findings: 0
+verifications:
+  - verifier: gemini
+    provider: gemini-api
+    model: gemini-3.5-flash
+    target_files:
+      - docs/notes/2026-06-03-claude-assumption-inventory.md
+      - docs/operations/SESSION_WORKFLOW_GUIDE.md
+      - docs/operations/WORKFLOW_PRECHECK.md
+    target_sha256:
+      docs/notes/2026-06-03-claude-assumption-inventory.md: 42009e92235da226d9f612a0216c93ce94bada456e2350118569f79188d2e02a
+      docs/operations/SESSION_WORKFLOW_GUIDE.md: 2a677c08b05da40782c3dc8d295339025ebf0696b62f432f3ffe61a203d13862
+      docs/operations/WORKFLOW_PRECHECK.md: 5202b3d9a1abfb2d5d51159e8ff20587bbc2eb53855a550b2f61125604ab6680
+    result_summary: >
+      Verified the Claude-assumption inventory and the two operations guide
+      updates as one target set. No findings were reported.
+note: >
+  Post-write verification for Codex adapter migration maintenance updates that
+  move Claude Code fixed operational wording into adapter-oriented wording.
