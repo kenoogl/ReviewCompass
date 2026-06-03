@@ -661,6 +661,24 @@ def build_in_progress_next_action(cwd, relative_path):
   """進行中状態ファイルから next_action を作る"""
   data = load_in_progress_file(cwd, relative_path)
   process_id = data.get("process_id")
+  if process_id == "maintenance":
+    return {
+      "kind": "maintenance_in_progress",
+      "file": relative_path,
+      "process_id": process_id,
+      "title": data.get("title"),
+      "required_action": data.get("required_action", "continue_maintenance"),
+      "blocked_normal_workflow": data.get("blocked_normal_workflow", True),
+      "allowed_scope": data.get("allowed_scope", []),
+      "completion_conditions": data.get("completion_conditions", []),
+      "feature": None,
+      "phase": None,
+      "stage": None,
+      "reason": data.get(
+        "reason",
+        "maintenance 手続きの進行中状態ファイルがあります",
+      ),
+    }
   if process_id == "reopen-procedure":
     next_step = data.get("next_step")
     current_blocker = data.get("current_blocker")
@@ -1095,13 +1113,19 @@ def cmd_next(args):
   """next サブコマンドのエントリポイント"""
   cwd = Path.cwd()
   in_progress_files = list_in_progress_files(cwd)
+  maintenance_action = None
 
   if in_progress_files:
-    next_action = build_in_progress_next_action(cwd, in_progress_files[0])
-    current_state = {"in_progress_files": in_progress_files}
-    reasons = []
-    verdict, exit_code = "OK", 0
-  else:
+    in_progress_action = build_in_progress_next_action(cwd, in_progress_files[0])
+    if in_progress_action.get("kind") != "maintenance_in_progress":
+      next_action = in_progress_action
+      current_state = {"in_progress_files": in_progress_files}
+      reasons = []
+      verdict, exit_code = "OK", 0
+    else:
+      maintenance_action = in_progress_action
+
+  if not in_progress_files or maintenance_action:
     verification_targets = list_post_write_verification_targets(cwd)
     if verification_targets:
       forbidden_files = list_forbidden_post_write_pending_changes(cwd, verification_targets)
@@ -1119,6 +1143,8 @@ def cmd_next(args):
           "post_write_verification_targets": verification_targets,
           "forbidden_files": forbidden_files,
         }
+        if maintenance_action:
+          current_state["in_progress_files"] = in_progress_files
         reasons = [
           f"{path} は post-write-verification pending 中に変更してはいけません"
           for path in forbidden_files
@@ -1140,34 +1166,45 @@ def cmd_next(args):
             "post_write_verification_targets": verification_targets,
             "manifest": manifest,
           }
+          if maintenance_action:
+            current_state["in_progress_files"] = in_progress_files
           reasons = ["未解決の本質的指摘について人間判断が必要です"]
           verdict, exit_code = "OK", 0
         elif manifest_state == "completed":
-          specs, missing = load_all_feature_specs(cwd)
-          if missing:
-            next_action = {
-              "kind": "unknown",
-              "feature": None,
-              "phase": None,
-              "stage": None,
-              "reason": "必要な spec.json が不足しています",
-            }
-            current_state = {"missing_features": missing, "manifest": manifest}
-            reasons = [f"{feature} の spec.json が見つかりません" for feature in missing]
-            verdict, exit_code = "DEVIATION", 2
-          else:
-            next_action = augment_cross_feature_next_action(
-              cwd,
-              specs,
-              resolve_next_action(specs),
-            )
+          if maintenance_action:
+            next_action = maintenance_action
             current_state = {
-              "feature_order": FEATURE_ORDER,
-              "workflow_state": summarize_workflow_state(specs),
+              "in_progress_files": in_progress_files,
               "post_write_manifest": manifest.get("_path"),
             }
             reasons = []
             verdict, exit_code = "OK", 0
+          else:
+            specs, missing = load_all_feature_specs(cwd)
+            if missing:
+              next_action = {
+                "kind": "unknown",
+                "feature": None,
+                "phase": None,
+                "stage": None,
+                "reason": "必要な spec.json が不足しています",
+              }
+              current_state = {"missing_features": missing, "manifest": manifest}
+              reasons = [f"{feature} の spec.json が見つかりません" for feature in missing]
+              verdict, exit_code = "DEVIATION", 2
+            else:
+              next_action = augment_cross_feature_next_action(
+                cwd,
+                specs,
+                resolve_next_action(specs),
+              )
+              current_state = {
+                "feature_order": FEATURE_ORDER,
+                "workflow_state": summarize_workflow_state(specs),
+                "post_write_manifest": manifest.get("_path"),
+              }
+              reasons = []
+              verdict, exit_code = "OK", 0
         else:
           next_action = {
             "kind": "post_write_verification",
@@ -1178,33 +1215,41 @@ def cmd_next(args):
             "reason": "post-write-verification 対象の未コミット変更があります",
           }
           current_state = {"post_write_verification_targets": verification_targets}
+          if maintenance_action:
+            current_state["in_progress_files"] = in_progress_files
           reasons = []
           verdict, exit_code = "OK", 0
     else:
-      specs, missing = load_all_feature_specs(cwd)
-      if missing:
-        next_action = {
-          "kind": "unknown",
-          "feature": None,
-          "phase": None,
-          "stage": None,
-          "reason": "必要な spec.json が不足しています",
-        }
-        current_state = {"missing_features": missing}
-        reasons = [f"{feature} の spec.json が見つかりません" for feature in missing]
-        verdict, exit_code = "DEVIATION", 2
-      else:
-        next_action = augment_cross_feature_next_action(
-          cwd,
-          specs,
-          resolve_next_action(specs),
-        )
-        current_state = {
-          "feature_order": FEATURE_ORDER,
-          "workflow_state": summarize_workflow_state(specs),
-        }
+      if maintenance_action:
+        next_action = maintenance_action
+        current_state = {"in_progress_files": in_progress_files}
         reasons = []
         verdict, exit_code = "OK", 0
+      else:
+        specs, missing = load_all_feature_specs(cwd)
+        if missing:
+          next_action = {
+            "kind": "unknown",
+            "feature": None,
+            "phase": None,
+            "stage": None,
+            "reason": "必要な spec.json が不足しています",
+          }
+          current_state = {"missing_features": missing}
+          reasons = [f"{feature} の spec.json が見つかりません" for feature in missing]
+          verdict, exit_code = "DEVIATION", 2
+        else:
+          next_action = augment_cross_feature_next_action(
+            cwd,
+            specs,
+            resolve_next_action(specs),
+          )
+          current_state = {
+            "feature_order": FEATURE_ORDER,
+            "workflow_state": summarize_workflow_state(specs),
+          }
+          reasons = []
+          verdict, exit_code = "OK", 0
 
   if args.json:
     print(format_next_json_output(verdict, exit_code, next_action, reasons, current_state))

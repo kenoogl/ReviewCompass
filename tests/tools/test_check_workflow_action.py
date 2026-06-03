@@ -546,6 +546,85 @@ class NextNavigationTests(unittest.TestCase):
       "stages/in-progress/manual-process-2026-06-02.yaml",
     )
 
+  def test_next_reads_maintenance_in_progress(self):
+    """maintenance の進行中ファイルがあれば通常ワークフローより優先する"""
+    cwd = Path(self.tmpdir)
+    _write_specs_for_next(cwd, {})
+    in_progress_dir = cwd / "stages" / "in-progress"
+    in_progress_dir.mkdir(parents=True)
+    (in_progress_dir / "maintenance-2026-06-03-codex-adapter.yaml").write_text(
+      "process_id: maintenance\n"
+      "title: Codex adapter migration\n"
+      "reason: Codex 稼働前に Claude 前提の入口記述を整理する\n"
+      "required_action: inspect_remaining_claude_assumptions\n"
+      "blocked_normal_workflow: true\n"
+      "allowed_scope:\n"
+      "  - docs/operations/\n"
+      "  - TODO_NEXT_SESSION.md\n"
+      "completion_conditions:\n"
+      "  - Codex 新規セッションで TODO から開始できる\n",
+      encoding="utf-8",
+    )
+
+    result = run_script(["next", "--json"], cwd=cwd)
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 0, result.stderr)
+    data = json.loads(result.stdout)
+    self.assertEqual(data["verdict"], "OK")
+    self.assertEqual(data["next_action"]["kind"], "maintenance_in_progress")
+    self.assertEqual(
+      data["next_action"]["file"],
+      "stages/in-progress/maintenance-2026-06-03-codex-adapter.yaml",
+    )
+    self.assertEqual(data["next_action"]["process_id"], "maintenance")
+    self.assertEqual(data["next_action"]["title"], "Codex adapter migration")
+    self.assertEqual(
+      data["next_action"]["required_action"],
+      "inspect_remaining_claude_assumptions",
+    )
+    self.assertTrue(data["next_action"]["blocked_normal_workflow"])
+    self.assertEqual(
+      data["next_action"]["allowed_scope"],
+      ["docs/operations/", "TODO_NEXT_SESSION.md"],
+    )
+    self.assertEqual(
+      data["next_action"]["completion_conditions"],
+      ["Codex 新規セッションで TODO から開始できる"],
+    )
+
+  def test_next_prioritizes_post_write_over_maintenance(self):
+    """maintenance 中でも書き込み後検証対象があれば post-write を優先する"""
+    cwd = Path(self.tmpdir)
+    _init_git_repo(cwd)
+    _write_specs_for_next(cwd, {})
+    in_progress_dir = cwd / "stages" / "in-progress"
+    in_progress_dir.mkdir(parents=True)
+    (in_progress_dir / "maintenance-2026-06-03-codex-adapter.yaml").write_text(
+      "process_id: maintenance\n"
+      "title: Codex adapter migration\n"
+      "required_action: inspect_remaining_claude_assumptions\n",
+      encoding="utf-8",
+    )
+    target = cwd / "docs" / "notes" / "codex-maintenance.md"
+    target.parent.mkdir(parents=True, exist_ok=True)
+    target.write_text("maintenance 中の検証対象文書\n", encoding="utf-8")
+
+    result = run_script(["next", "--json"], cwd=cwd)
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 0, result.stderr)
+    data = json.loads(result.stdout)
+    self.assertEqual(data["next_action"]["kind"], "post_write_verification")
+    self.assertEqual(
+      data["next_action"]["target_files"],
+      ["docs/notes/codex-maintenance.md"],
+    )
+    self.assertEqual(
+      data["current_state"]["in_progress_files"],
+      ["stages/in-progress/maintenance-2026-06-03-codex-adapter.yaml"],
+    )
+
   def test_next_reads_reopen_in_progress_next_step(self):
     """reopen の進行中ファイルから next_step と required_action を返す"""
     cwd = Path(self.tmpdir)

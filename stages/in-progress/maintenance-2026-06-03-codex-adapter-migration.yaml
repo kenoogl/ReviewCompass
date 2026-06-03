@@ -1,0 +1,26 @@
+process_id: maintenance
+title: Codex adapter migration
+started_at: 2026-06-03T00:00:00+09:00
+owner: user_directed
+status: in_progress
+reason: Codex 稼働前に Claude 前提の入口記述と運用導線を整理する
+blocked_normal_workflow: true
+required_action: inspect_remaining_claude_assumptions
+allowed_scope:
+  - AGENTS.md
+  - TODO_NEXT_SESSION.md
+  - templates/todo/
+  - docs/operations/
+  - docs/notes/
+  - .codex/
+  - tools/check-workflow-action.py
+  - tests/tools/test_check_workflow_action.py
+completion_conditions:
+  - Codex 新規セッションで TODO から共通手引きと Codex adapter を読んで開始できる
+  - Claude 固有記述が adapter 内または履歴として分類済み
+  - 通常ワークフロー外の保守作業が next で maintenance_in_progress として見える
+  - 保守作業中でも post-write-verification が隠れない
+  - Codex 稼働対応の未解決項目が一覧化されている
+notes:
+  - 通常ワークフローの次作業は evaluation implementation drafting だが、本保守中は着手しない
+  - post-write-verification が返った場合は maintenance より優先して検証する
