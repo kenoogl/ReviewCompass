@@ -1,0 +1,98 @@
+```yaml
+review:
+  document: "ReviewCompass ワークフローナビゲータ共通手引き"
+  segment: "post_write_verification"
+  perspective: "review_run_workflow_smoke_test"
+  findings:
+
+    - id: F-01
+      severity: must-fix
+      target_location: "セクション2 post_write_verification / 標準手順コードブロック"
+      description: >
+        `run_review.py` の `--criteria` に渡すべき criteria-id が `<criteria-id>` という
+        プレースホルダのまま定義されておらず、利用者がどの値を渡せばよいか判断できない。
+        smoke test として実際にコマンドを実行しようとすると、ここで必ず詰まる。
+      rationale: >
+        手引きはワークフローナビゲータの「正本」として機能する文書である。
+        コマンド例中の必須引数が具体化されていないと、初めて実行する環境・モデルが
+        手順を再現できず、検証ループが起動しない。
+        `--phase post_write_verification` との組み合わせで使える criteria-id の
+        一覧または参照先（例：`docs/criteria/` 配下のファイル名）を明示する必要がある。
+
+    - id: F-02
+      severity: must-fix
+      target_location: "セクション2 post_write_verification / 標準手順コードブロック"
+      description: >
+        `--review-run-dir docs/notes/review-runs/<run-id>` の `<run-id>` 採番規則が
+        手引き内に記載されていない。
+        `write-manifest --out auto` が採番する manifest の番号規則（`post-write-YYYY-MM-DD-NNN`）
+        は示されているが、review-run-dir 側の命名規則は未定義である。
+      rationale: >
+        `run_review.py`・`review_triage.py list-pending`・`review_triage.py decide`・
+        `review_triage.py write-manifest` の4コマンドはすべて同じ `--review-run-dir` を
+        共有する。採番規則が不明だと、複数の review run を並走させた場合や
+        再実行時にディレクトリが衝突・散逸する。
+        smoke test で一連のコマンドを順に打ち込む際、run-id を自己流に決めると
+        後続ステップで参照先が一致しないリスクがある。
+
+    - id: F-03
+      severity: must-fix
+      target_location: "セクション2 post_write_verification / 標準手順コードブロック"
+      description: >
+        5ステップの手順において、`review_triage.py decide` を実行する前提条件として
+        「`list-pending` の出力で `decision_status: human_required` の所見が存在する場合」
+        と「`pending` のまま自動処理可能な所見が存在する場合」の分岐が記述されていない。
+        特に、pending 所見がゼロのときに `decide` を省略して `write-manifest` へ
+        直接進んでよいのかが不明確である。
+      rationale: >
+        `write-manifest` の前提として「`triage.yaml` に `decision_status: human_required`
+        が残る場合は manifest を生成しない」という制約が後述されているにもかかわらず、
+        手順フローはその分岐を含まない線形記述になっている。
+        smoke test として手順を追うと、pending 所見がない場合に `decide` コマンドが
+        何もしない（あるいはエラーになる）挙動が未定義のまま残り、
+        実行者が手順を誤って解釈する可能性がある。
+
+    - id: F-04
+      severity: should-fix
+      target_location: "セクション2 post_write_verification / manifest 仕様"
+      description: >
+        manifest に記録する `target_sha256` の計算対象（ファイル内容全体か、
+        特定エンコーディングで正規化した文字列か等）が未定義である。
+      rationale: >
+        `verifications[]` の各エントリが `target_files` 全体と対応する `target_sha256` を
+        「単一エントリで覆る必要がある」と述べているが、チェックサムの算出方法が
+        環境依存になりうる。異なる OS・改行コード・ツールバージョンで計算した
+        sha256 が一致しないと、正当な検証が逸脱と判定されるリスクがある。
+        少なくとも「raw bytes の SHA-256」「テキスト正規化後」等の選択肢を
+        明示するか、計算コマンド例を示すべきである。
+
+    - id: F-05
+      severity: should-fix
+      target_location: "セクション2 post_write_verification / manifest 仕様"
+      description: >
+        `unresolved_substantive_findings` フィールドの「本質的指摘（substantive）」と
+        「逐語的指摘（verbatim）」の判定基準が本文書内に定義されておらず、
+        セクション3の禁止事項で「本質的指摘を独断で逐語的指摘に落とさない」と
+        述べるだけに留まっている。
+      rationale: >
+        smoke test として review_run を模擬した場合、各 verifier は所見を
+        substantive / verbatim のどちらに分類するかを決定しなければならない。
+        基準が曖昧だと verifier 間で判定が揺れ、manifest の
+        `unresolved_substantive_findings` の正確性が担保できない。
+        判定基準の定義先（別文書への参照でも可）を示すべきである。
+
+    - id: F-06
+      severity: advisory
+      target_location: "セクション2 post_write_verification / 標準手順コードブロック"
+      description: >
+        5ステップ手順の末尾で `check-workflow-action.py next --json` を再実行する
+        ことが示されているが、`write-manifest` が成功した場合と
+        `decision_status: human_required` が残って manifest 生成がスキップされた場合とで
+        期待される `next_action.kind` が異なる。
+        それぞれのケースで何が返ることを期待すべきかが記述されていない。
+      rationale: >
+        手順の最終ステップとして `next --json` を打った後、実行者が結果を
+        正しく解釈できるかどうかが smoke test の合否判定に直結する。
+        期待出力の記述がないと、手順が正常終了したのか異常終了したのかを
+        判断できず、検証ループの終端条件が不明確になる。
+```

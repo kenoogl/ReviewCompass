@@ -1,0 +1,22 @@
+```yaml
+findings:
+  - severity: minor
+    target_location: "2. 判定結果の共通分岐 > post_write_verification"
+    description: "「各 verifier は target_files 全体と対応する target_sha256 を単一エントリで覆る必要がある」と記載されていますが、「覆う（おおう）」または「網羅する（cover）」の誤字と思われます。"
+    rationale: "「覆る（くつがえる）」では文脈上意味が通じず、ドキュメントの正確性を損なうため。"
+
+  - severity: moderate
+    target_location: "2. 判定結果の共通分岐 > post_write_verification > コマンド例"
+    description: "直前の説明で「next_action.target_files 全体を対象として検証する」と記述されているにもかかわらず、`run_review.py` のコマンド例では `--target <target-file>` と単数形の指定例しかありません。複数の対象ファイルが存在する場合の指定方法（例：複数回の `--target` 指定、あるいはディレクトリ指定など）を明記または補足すべきです。"
+    rationale: "ワークフロー上で複数ファイルが同時に post-write-verification の対象となるケースは一般的であり、実行者がそのままコマンドを模倣しようとした際に、複数ファイルの扱い方で迷うか、あるいは検証漏れを引き起こす可能性があるため。"
+
+  - severity: moderate
+    target_location: "2. 判定結果の共通分岐 > post_write_verification > コマンド例"
+    description: "「API 経由の複数モデル検証を行う場合の標準手順」と記載されていますが、コマンド例では `run_review.py` が1回しか実行されていません。複数モデルによる検証を実施する場合、異なるモデル（例えば `--model <model-name>` など）を指定して `run_review.py` を複数回実行し、同一の `review-run-dir` に集約するなどの具体的な手順が伝わる記述に修正すべきです。"
+    rationale: "「複数モデル検証」という見出しとコマンド例の内容が合致しておらず、マルチモデルでのレビュー集約の正しい手順が実行者に伝わらないため。"
+
+  - severity: minor
+    target_location: "2. 判定結果の共通分岐 > post_write_verification > コマンド例"
+    description: "`review_triage.py decide` の引数として `--final-label must-fix` が使用されていますが、ツールの実際の判定ロジックや manifest ファイル（triage.yaml）におけるラベルのフォーマット（ケバブケースの `must-fix` か、スネークケースの `must_fix` か）と一致しているか確認が必要です。"
+    rationale: "コマンドライン引数とツール内部が想定するステータス値にフォーマットの乖離がある場合、後続の `write-manifest --out auto` やワークフローの次状態判定で意図せぬエラーや判定漏れが発生する可能性があるため。"
+```

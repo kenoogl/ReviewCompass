@@ -1,0 +1,163 @@
+run_id: review-run-workflow-smoke-2026-06-03-r1
+triage_status: draft
+generated_at: '2026-06-03T05:48:01.272374+00:00'
+decision_actor: null
+decision_actor_type: human
+items:
+- finding_id: review-run-workflow-smoke-2026-06-03-r1-gpt-5.4-adversarial-001
+  run_id: review-run-workflow-smoke-2026-06-03-r1
+  source_model: gpt-5.4
+  source_round: round-1
+  source_raw_path: raw/gpt-5.4.round-1.txt
+  source_parsed_path: parsed/gpt-5.4.round-1.yaml
+  severity_original: medium
+  severity_normalized: INFO
+  target_location: '## 1. 最初に実行するコマンド'
+  plain_language_summary: '`tools/check-workflow-action.py next --json` 実行失敗時の扱いが明記されていない。'
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: 本手引きは `next --json` を正本として扱うことを強く要求しているが、コマンド失敗、JSON 破損、権限不足、ファイル欠落などの異常時にどう振る舞うかが本文にない。後段には
+    `unknown` 分岐があるものの、それがコマンド実行失敗時にも適用されるのか不明で、実装や運用ごとに独自解釈が生じうる。
+  applied_files: []
+  superseded_by: null
+- finding_id: review-run-workflow-smoke-2026-06-03-r1-gpt-5.4-adversarial-002
+  run_id: review-run-workflow-smoke-2026-06-03-r1
+  source_model: gpt-5.4
+  source_round: round-1
+  source_raw_path: raw/gpt-5.4.round-1.txt
+  source_parsed_path: parsed/gpt-5.4.round-1.yaml
+  severity_original: medium
+  severity_normalized: INFO
+  target_location: '### `post_write_verification`'
+  plain_language_summary: '`target_files` 全体を単一エントリで覆う要件と、例示コマンドの `--target <target-file>`
+    が緊張関係にある。'
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: 本文では verifier は `target_files` 全体と対応する `target_sha256` を単一エントリで覆う必要があると定めている一方、標準手順の
+    API 実行例は単数の `<target-file>` を受け取る形になっている。このままだと利用者がファイル単位で別々にレビューを回し、それを要件充足と誤認する余地がある。全体対象の指定方法や、単数引数が複数ファイル対象をどう表現するかの補足が必要。
+  applied_files: []
+  superseded_by: null
+- finding_id: review-run-workflow-smoke-2026-06-03-r1-gpt-5.4-adversarial-003
+  run_id: review-run-workflow-smoke-2026-06-03-r1
+  source_model: gpt-5.4
+  source_round: round-1
+  source_raw_path: raw/gpt-5.4.round-1.txt
+  source_parsed_path: parsed/gpt-5.4.round-1.yaml
+  severity_original: low
+  severity_normalized: INFO
+  target_location: '### `post_write_policy_violation`'
+  plain_language_summary: 禁止条件の文が複合的で、どの組み合わせが違反になるかを一読で判定しづらい。
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: 「post-write-verification 対象ファイルが未コミット変更に含まれる状態で、`tools/*.py`、`templates/`、または他の
+    post-write 対象と混ざった `docs/disciplines/` 配下の変更があると逸脱」とあるが、`docs/disciplines/` 単独変更なのか、他対象との混在時のみか、読者が誤解しやすい。禁止例・許容例を添えるか、条件を箇条書きで分解したほうが運用誤りを防げる。
+  applied_files: []
+  superseded_by: null
+- finding_id: review-run-workflow-smoke-2026-06-03-r1-gpt-5.4-adversarial-004
+  run_id: review-run-workflow-smoke-2026-06-03-r1
+  source_model: gpt-5.4
+  source_round: round-1
+  source_raw_path: raw/gpt-5.4.round-1.txt
+  source_parsed_path: parsed/gpt-5.4.round-1.yaml
+  severity_original: low
+  severity_normalized: INFO
+  target_location: '## 2. 判定結果の共通分岐 / 全体'
+  plain_language_summary: 各分岐で参照すべき JSON キーの必須性が統一的に示されていない。
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: '`reopen_in_progress` では複数キーの確認を要求している一方、他分岐では `next_action.file`
+    や `target_files` などが当然に存在する前提で書かれている。JSON スキーマや、キー欠落時は `unknown` 扱いにする等の共通ルールがないため、adapter
+    実装間で扱いがぶれる可能性がある。'
+  applied_files: []
+  superseded_by: null
+- finding_id: review-run-workflow-smoke-2026-06-03-r1-gemini-3.1-pro-preview-judgment-001
+  run_id: review-run-workflow-smoke-2026-06-03-r1
+  source_model: gemini-3.1-pro-preview
+  source_round: round-1
+  source_raw_path: raw/gemini-3.1-pro-preview.round-1.txt
+  source_parsed_path: parsed/gemini-3.1-pro-preview.round-1.yaml
+  severity_original: minor
+  severity_normalized: INFO
+  target_location: 2. 判定結果の共通分岐 > post_write_verification
+  plain_language_summary: 「各 verifier は target_files 全体と対応する target_sha256 を単一エントリで覆る必要がある」と記載されていますが、「覆う（おおう）」または「網羅する（cover）」の誤字と思われます。
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: 「覆る（くつがえる）」では文脈上意味が通じず、ドキュメントの正確性を損なうため。
+  applied_files: []
+  superseded_by: null
+- finding_id: review-run-workflow-smoke-2026-06-03-r1-gemini-3.1-pro-preview-judgment-002
+  run_id: review-run-workflow-smoke-2026-06-03-r1
+  source_model: gemini-3.1-pro-preview
+  source_round: round-1
+  source_raw_path: raw/gemini-3.1-pro-preview.round-1.txt
+  source_parsed_path: parsed/gemini-3.1-pro-preview.round-1.yaml
+  severity_original: moderate
+  severity_normalized: INFO
+  target_location: 2. 判定結果の共通分岐 > post_write_verification > コマンド例
+  plain_language_summary: 直前の説明で「next_action.target_files 全体を対象として検証する」と記述されているにもかかわらず、`run_review.py`
+    のコマンド例では `--target <target-file>` と単数形の指定例しかありません。複数の対象ファイルが存在する場合の指定方法（例：複数回の
+    `--target` 指定、あるいはディレクトリ指定など）を明記または補足すべきです。
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: ワークフロー上で複数ファイルが同時に post-write-verification の対象となるケースは一般的であり、実行者がそのままコマンドを模倣しようとした際に、複数ファイルの扱い方で迷うか、あるいは検証漏れを引き起こす可能性があるため。
+  applied_files: []
+  superseded_by: null
+- finding_id: review-run-workflow-smoke-2026-06-03-r1-gemini-3.1-pro-preview-judgment-003
+  run_id: review-run-workflow-smoke-2026-06-03-r1
+  source_model: gemini-3.1-pro-preview
+  source_round: round-1
+  source_raw_path: raw/gemini-3.1-pro-preview.round-1.txt
+  source_parsed_path: parsed/gemini-3.1-pro-preview.round-1.yaml
+  severity_original: moderate
+  severity_normalized: INFO
+  target_location: 2. 判定結果の共通分岐 > post_write_verification > コマンド例
+  plain_language_summary: 「API 経由の複数モデル検証を行う場合の標準手順」と記載されていますが、コマンド例では `run_review.py`
+    が1回しか実行されていません。複数モデルによる検証を実施する場合、異なるモデル（例えば `--model <model-name>` など）を指定して `run_review.py`
+    を複数回実行し、同一の `review-run-dir` に集約するなどの具体的な手順が伝わる記述に修正すべきです。
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: 「複数モデル検証」という見出しとコマンド例の内容が合致しておらず、マルチモデルでのレビュー集約の正しい手順が実行者に伝わらないため。
+  applied_files: []
+  superseded_by: null
+- finding_id: review-run-workflow-smoke-2026-06-03-r1-gemini-3.1-pro-preview-judgment-004
+  run_id: review-run-workflow-smoke-2026-06-03-r1
+  source_model: gemini-3.1-pro-preview
+  source_round: round-1
+  source_raw_path: raw/gemini-3.1-pro-preview.round-1.txt
+  source_parsed_path: parsed/gemini-3.1-pro-preview.round-1.yaml
+  severity_original: minor
+  severity_normalized: INFO
+  target_location: 2. 判定結果の共通分岐 > post_write_verification > コマンド例
+  plain_language_summary: '`review_triage.py decide` の引数として `--final-label must-fix`
+    が使用されていますが、ツールの実際の判定ロジックや manifest ファイル（triage.yaml）におけるラベルのフォーマット（ケバブケースの `must-fix`
+    か、スネークケースの `must_fix` か）と一致しているか確認が必要です。'
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: コマンドライン引数とツール内部が想定するステータス値にフォーマットの乖離がある場合、後続の `write-manifest --out
+    auto` やワークフローの次状態判定で意図せぬエラーや判定漏れが発生する可能性があるため。
+  applied_files: []
+  superseded_by: null

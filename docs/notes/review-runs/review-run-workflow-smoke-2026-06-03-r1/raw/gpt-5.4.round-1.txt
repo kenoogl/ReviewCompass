@@ -1,0 +1,20 @@
+findings:
+  - severity: medium
+    target_location: "## 1. 最初に実行するコマンド"
+    description: "`tools/check-workflow-action.py next --json` 実行失敗時の扱いが明記されていない。"
+    rationale: "本手引きは `next --json` を正本として扱うことを強く要求しているが、コマンド失敗、JSON 破損、権限不足、ファイル欠落などの異常時にどう振る舞うかが本文にない。後段には `unknown` 分岐があるものの、それがコマンド実行失敗時にも適用されるのか不明で、実装や運用ごとに独自解釈が生じうる。"
+
+  - severity: medium
+    target_location: "### `post_write_verification`"
+    description: "`target_files` 全体を単一エントリで覆う要件と、例示コマンドの `--target <target-file>` が緊張関係にある。"
+    rationale: "本文では verifier は `target_files` 全体と対応する `target_sha256` を単一エントリで覆う必要があると定めている一方、標準手順の API 実行例は単数の `<target-file>` を受け取る形になっている。このままだと利用者がファイル単位で別々にレビューを回し、それを要件充足と誤認する余地がある。全体対象の指定方法や、単数引数が複数ファイル対象をどう表現するかの補足が必要。"
+
+  - severity: low
+    target_location: "### `post_write_policy_violation`"
+    description: "禁止条件の文が複合的で、どの組み合わせが違反になるかを一読で判定しづらい。"
+    rationale: "「post-write-verification 対象ファイルが未コミット変更に含まれる状態で、`tools/*.py`、`templates/`、または他の post-write 対象と混ざった `docs/disciplines/` 配下の変更があると逸脱」とあるが、`docs/disciplines/` 単独変更なのか、他対象との混在時のみか、読者が誤解しやすい。禁止例・許容例を添えるか、条件を箇条書きで分解したほうが運用誤りを防げる。"
+
+  - severity: low
+    target_location: "## 2. 判定結果の共通分岐 / 全体"
+    description: "各分岐で参照すべき JSON キーの必須性が統一的に示されていない。"
+    rationale: "`reopen_in_progress` では複数キーの確認を要求している一方、他分岐では `next_action.file` や `target_files` などが当然に存在する前提で書かれている。JSON スキーマや、キー欠落時は `unknown` 扱いにする等の共通ルールがないため、adapter 実装間で扱いがぶれる可能性がある。"

@@ -1,0 +1,4 @@
+run_id: review-run-workflow-smoke-2026-06-03-r1
+target_files:
+- path: docs/operations/WORKFLOW_NAVIGATION.md
+  sha256: 9d7adfac0588fd0d8a695e62f2ade898b56ac54e937f8a8e99675d461f173bc5
