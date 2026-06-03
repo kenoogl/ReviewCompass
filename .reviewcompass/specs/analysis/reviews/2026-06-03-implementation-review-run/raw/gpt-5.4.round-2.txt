@@ -1,0 +1,50 @@
+findings:
+  - severity: ERROR
+    target_location: "analysis/destinations/destination_deriver.py"
+    description: "Destination manifest is written as manifest.json, while the approved design and task documents require manifest.yaml for each destination."
+    rationale: "design.md §出力先別の派生モデル and tasks.md T-009 both specify `destinations/<出力先>/manifest.yaml`. Writing JSON instead breaks the documented output contract, causes layout/naming inconsistency under the review criteria, and undermines traceability against the approved spec."
+
+  - severity: ERROR
+    target_location: "analysis/destinations/destination_deriver.py"
+    description: "The deriver only emits placeholder payloads for destination artifacts and does not produce the required destination-specific fields mandated for dashboard, weekly, audit, and reports outputs."
+    rationale: "Requirement 8 acceptance criteria and design.md §出力先別の派生モデル require concrete contents such as severity/phase summaries, in-progress procedure states, weekly deltas, top-N findings, compliance-rate changes, invalidation markers, validator failures, and full claim/evidence traces. Current outputs only contain `output_type`, `manifest_ref`, and included refs, so T-009 is not functionally completed and downstream consumers cannot rely on the promised contracts."
+
+  - severity: ERROR
+    target_location: "analysis/convergence/role_diff.schema.json"
+    description: "The role diff schema does not encode the required conditional structure for findings_summary, such as requiring by_final_label for judgment and by_counter_status for adversarial, nor the required by_severity summary."
+    rationale: "tasks.md T-007 and design.md §レビュー収束過程の可視化モデル require these constraints to be machine-verifiable in schema/contract form. The builder checks some conditions at runtime, but the schema itself leaves `findings_summary` unconstrained (`additionalProperties: true`), so the implementation does not satisfy the promised structured contract or the criterion emphasizing behavior checks over presence checks."
+
+  - severity: ERROR
+    target_location: "analysis/convergence/role_diff_builder.py"
+    description: "Role diff entries do not preserve the design-required evidence_refs field."
+    rationale: "design.md §レビュー収束過程の可視化モデル §1 defines `evidence_refs` as part of the role diff entry structure for traceability. The builder/schema omit this field entirely, weakening requirements traceability for Requirement 7 and violating the stated cross-artifact reference consistency."
+
+  - severity: ERROR
+    target_location: "analysis/convergence/mode_diff.schema.json"
+    description: "The mode diff schema does not constrain findings_summary to the required severity-count structure and omits evidence_refs from the contract."
+    rationale: "design.md §レビュー収束過程の可視化モデル §2 requires minimum structured inputs of feature, review_mode, findings_summary (severity counts), target, and optional evidence_refs. Leaving findings_summary as an arbitrary object and not modeling evidence_refs means the implementation falls short of the required machine-checkable data contract for T-007."
+
+  - severity: ERROR
+    target_location: "analysis/evidence_register/evidence_register_builder.py"
+    description: "The evidence register silently drops `invalid` and `analysis_blocked` evidence instead of retaining them in an analysis artifact such as an exclusion report/register path as specified by the design."
+    rationale: "design.md §証拠台帳モデル states these classes are report-excluded but still represented via exclusion handling, preserving traceability to upstream evaluation outputs. Returning `None` removes them from analysis outputs entirely, making it impossible to support audit/reporting expectations around blocked/invalid evidence and weakening Requirement 1/5 traceability."
+
+  - severity: ERROR
+    target_location: "analysis/figures_tables/table_bundle.schema.json"
+    description: "The table bundle schema omits the optional caveat_refs field required by the design."
+    rationale: "design.md §図表束モデル explicitly includes optional `caveat_refs` for table bundles so limitations remain attached to reusable analysis artifacts. Without this field, Requirement 3/2 traceability of caveats into figure/table inputs is incomplete."
+
+  - severity: ERROR
+    target_location: "analysis/figures_tables/figure_bundle.schema.json"
+    description: "The figure bundle schema omits the optional caveat_refs field required by the design."
+    rationale: "The design requires figure bundles to carry `caveat_refs` just like table bundles. Omitting it prevents limitations from being preserved on figure-source artifacts, reducing consistency across analysis contracts and violating the documented model for T-006."
+
+  - severity: ERROR
+    target_location: "analysis/fragments/fragment.schema.json"
+    description: "The fragment schema omits the optional caveat_refs field required by the reporting fragment model."
+    rationale: "design.md §報告断片モデル requires fragments to retain applicable caveat references so downstream destination derivation does not lose limitations. The current implementation has no place to carry those references, which weakens Requirement 3 and Requirement 5 guarantees against silent strengthening."
+
+  - severity: WARN
+    target_location: ".reviewcompass/specs/analysis/spec.json"
+    description: "The implementation triad-review workflow state remains false even though implementation artifacts and tests for T-006 through T-011 are now present in this round."
+    rationale: "This may be intentional pending review completion, but it creates a process traceability mismatch between the documented implementation progress and the workflow metadata. Keeping spec state aligned matters for review governance and downstream tooling."

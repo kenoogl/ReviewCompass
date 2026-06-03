@@ -1,0 +1,17 @@
+findings:
+  - severity: ERROR
+    target_location: "tests/analysis/test_analysis_t007_convergence.py"
+    description: "T-007 完了条件の書き込み先パス制約（evaluation 配下への書き込みゼロ等）の機械検証テストが未実装"
+    rationale: "tasks.md T-007 では「出力ファイルが analysis/destinations/ 配下のみであること」および「evaluation/ 配下への書き込みがゼロであること」を静的解析や grep で機械検証することが求められているが、実装とテストの双方でこの制約確認が完全に欠落している（また、実際のコードは destinations/ ではなく shared/convergence/ に出力しており仕様記述と矛盾している）。"
+  - severity: ERROR
+    target_location: "tests/analysis/test_analysis_t011_traceability.py"
+    description: "T-011 全体完了条件である evaluation 成果物への「書き込みなし（参照のみ）」の機械検証が未実装"
+    rationale: "tasks.md の全体完了条件において、evaluation 側成果物を一次入力として読み取るだけで書き込まないこと（read-only 制約）を機械検証で確認することが必須とされているが、test_analysis_t011_traceability.py に対応する構造検査（grep等）が存在しない。"
+  - severity: WARN
+    target_location: "analysis/fragments/fragment.schema.json"
+    description: "fragment.schema.json の必須項目が 7 個定義されており、仕様の 6 項目指定と不一致"
+    rationale: "design.md および tasks.md T-006 では報告断片の必須項目を 6 つ（fragment_id, fragment_type, source_artifact_refs, maturity_label, text_stub, applicable_destinations）と明記しているが、実装スキーマでは source_maturity_labels が追加され、7 個が required になっている。"
+  - severity: WARN
+    target_location: "tests/analysis/test_analysis_t009_destinations.py"
+    description: "T-009 完了条件の「caveat_register への書き込みは追加のみ（上書き禁止）」の検証が不十分"
+    rationale: "test_destination_deriver_appends_mixed_review_mode_caveat は空の caveats リストを渡してテストを行っており、既存の caveat エントリが失われずに維持されること（上書き禁止による追記動作）を正しく検証できていない。"

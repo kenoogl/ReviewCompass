@@ -1,0 +1,25 @@
+findings:
+  - severity: ERROR
+    target_location: "analysis/intake/intake_reader.py"
+    description: "conformance-evaluation の読み込み失敗を conformance_evaluation_missing として記録しており、設計上求められる unreadable 系の取り込み失敗を区別できていません。"
+    rationale: "design.md の Intake Failure Model は conformance-evaluation 成果物についても『欠落・読み込み失敗』を検知して構造化報告すると定めていますが、実装では _read_conformance_inputs() の JSON 読み込み失敗時も missing 扱いに丸められます。これにより上流欠落と形式不適合が識別不能になり、T-002 の「欠落・読み込み失敗・陳腐化を検知」という完了条件と不整合です。"
+
+  - severity: ERROR
+    target_location: "analysis/destinations/destination_deriver.py (_reports_payload)"
+    description: "reports 向け mode_comparison_report.json が evidence の `mode` フィールドを集計しており、設計で要求される foundation 正本 `review_mode` に基づく比較データになっていません。"
+    rationale: "Requirement 8 / T-009 では reports 出力に『レビューモード別比較データ』が必要で、design.md でも mode_comparison_report.json は evaluation の mode diff を加工したものとされています。しかし実装は `_count_by(evidence_entries, 'mode')` を使っており、evidence_register の正式フィールド `review_mode` とも、mode_diff 系入力とも整合しません。入力 evidence に `mode` が無ければ空集計になり得て、Required artifact を実質満たしません。"
+
+  - severity: ERROR
+    target_location: "analysis/traceability/completion_guards.py (analysis_redefines_foundation_vocabularies)"
+    description: "foundation 語彙の再定義禁止チェックがキー名一致だけで enum を検出しており、analysis 実装内で `maturity_label` などの analysis 所有語彙を定義したスキーマまで誤って foundation 再定義として扱います。"
+    rationale: "T-011 は『foundation 7 語彙正本の参照のみ使用』の機械検証を完了条件にしていますが、このガードはスキーマ内のプロパティ名が foundation 語彙名と同じかだけを見るため、artifact_ref 内の `review_mode` 配列や evidence_register の `evidence_class` 文字列など、foundation 値域を参照せず単なる型宣言に留めた箇所は見逃す一方、analysis 所有語彙との区別も文脈依存です。実装が本当に foundation enum を再定義していないことを保証する検査として不正確で、T-011 の『機械検証』要件を十分満たしていません。"
+
+  - severity: WARN
+    target_location: "analysis/intake/intake_failure_report.schema.json and analysis/intake/intake_reader.py"
+    description: "intake_failure_report の実装契約が tasks/design の必須項目より大幅に弱く、failure_id・affected_destinations・detected_at・recommended_action などが出力されません。"
+    rationale: "design.md の intake_failure_report は失敗事象の追跡と派生段連動のための構造化報告であり、T-002 も欠落・読み込み失敗・陳腐化を記録する責務を負います。現行実装は `intake_failure_reason` と `source_path`、任意の `detail` しか保持せず、どの出力先が影響を受けるかや検出時刻が分からないため、設計された downstream 判断信号としては不十分です。今回は以前の指摘後の再確認なので重大度は WARN に留めますが、まだ設計整合は未達です。"
+
+  - severity: WARN
+    target_location: "analysis/claim_mapping/claim_map.schema.json and analysis/evidence_register/evidence_register.schema.json"
+    description: "構造化参照のスキーマが `target_path` の存在しか要求しておらず、target_id を必要とするエントリ単位参照の追跡性を契約として十分に担保していません。"
+    rationale: "Requirement 1 受入 5 は版付き証拠まで追跡できない支持成果物を許容しないとしており、design.md でも target_id は『エントリ単位で指す場合に用いる』重要な識別子です。現行スキーマでは artifact_ref の多くが target_id 省略可能で、claim→evidence や caveat→artifact などエントリ粒度の追跡がファイル粒度へ劣化しても通ってしまいます。テストもファイル存在解決中心で、エントリ解決保証が弱いままです。"

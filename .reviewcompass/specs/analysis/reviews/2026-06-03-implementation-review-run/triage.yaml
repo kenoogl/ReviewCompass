@@ -1,0 +1,475 @@
+run_id: 2026-06-03-implementation-review-run
+triage_status: decided
+generated_at: '2026-06-03T14:41:20.741261+00:00'
+decision_actor: null
+decision_actor_type: human
+items:
+- finding_id: 2026-06-03-implementation-review-run-claude-sonnet-4-6-primary-001
+  run_id: 2026-06-03-implementation-review-run
+  source_model: claude-sonnet-4-6
+  source_round: round-2
+  source_raw_path: raw/claude-sonnet-4-6.round-2.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-2.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: analysis/convergence/role_diff.schema.json
+  plain_language_summary: role_diff.schema.json does not enforce conditional required
+    fields (by_final_label for judgment, by_counter_status for adversarial) at the
+    schema level. The enforcement exists only in role_diff_builder.py's _normalize_entry
+    method.
+  final_label: must-fix
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-03T21:00:59.668663+00:00'
+  decision_reason: 利用者へ重要案件を1件ずつ平易に説明し、must-fix として承認済み。仕様契約・追跡性・上流不変性に影響するため修正対象とする。
+  applied_files:
+  - analysis/convergence/role_diff.schema.json
+  - tests/analysis/test_analysis_t007_convergence.py
+  superseded_by: null
+- finding_id: 2026-06-03-implementation-review-run-claude-sonnet-4-6-primary-002
+  run_id: 2026-06-03-implementation-review-run
+  source_model: claude-sonnet-4-6
+  source_round: round-2
+  source_raw_path: raw/claude-sonnet-4-6.round-2.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-2.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: analysis/destinations/destination_deriver.py (_write_destination)
+  plain_language_summary: The destination_deriver writes the caveat_register only
+    when caveat_entries is non-empty. If there are no caveats and no mixed_review_mode,
+    the shared/caveat_register.json file is not written at all, which may cause FileNotFoundError
+    in downstream readers that expect the file to always exist.
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-03T21:00:59.719954+00:00'
+  decision_reason: 利用者へ判断余地のある案件を平易に説明し、should-fix として承認済み。取りこぼし防止・下流安定性・検証強化のため修正推奨とする。
+  applied_files:
+  - analysis/destinations/destination_deriver.py
+  - tests/analysis/test_analysis_t009_destinations.py
+  superseded_by: null
+- finding_id: 2026-06-03-implementation-review-run-claude-sonnet-4-6-primary-003
+  run_id: 2026-06-03-implementation-review-run
+  source_model: claude-sonnet-4-6
+  source_round: round-2
+  source_raw_path: raw/claude-sonnet-4-6.round-2.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-2.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: analysis/conformance_intake/derived_audit_writer.py, derived_reports_writer.py
+  plain_language_summary: SOURCE_INTAKE_PATH is hardcoded as a relative string 'shared/conformance/conformance_intake.json'
+    rather than using the structured artifact_ref format defined in analysis/common/reference_format.py.
+    The design specifies that *_ref fields must use the structured {ref_type, target_path,
+    target_id} format.
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-03T21:00:59.768238+00:00'
+  decision_reason: 利用者へ判断余地のある案件を平易に説明し、should-fix として承認済み。取りこぼし防止・下流安定性・検証強化のため修正推奨とする。
+  applied_files:
+  - analysis/conformance_intake/derived_audit_writer.py
+  - analysis/conformance_intake/derived_reports_writer.py
+  - tests/analysis/test_analysis_t008_conformance_intake.py
+  superseded_by: null
+- finding_id: 2026-06-03-implementation-review-run-claude-sonnet-4-6-primary-004
+  run_id: 2026-06-03-implementation-review-run
+  source_model: claude-sonnet-4-6
+  source_round: round-2
+  source_raw_path: raw/claude-sonnet-4-6.round-2.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-2.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: tests/analysis/test_analysis_t008_conformance_intake.py (test_conformance_intake_code_does_not_write_conformance_evaluation_outputs)
+  plain_language_summary: The non-interference test checks that 'experiments/conformance/'
+    and 'conformance-evaluation' strings do not appear in analysis/conformance_intake/*.py,
+    but the actual separation boundary should be about write paths, not string occurrences.
+    A legitimate read reference to 'experiments/conformance/' would also be flagged
+    as a false positive.
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-03T21:00:59.814410+00:00'
+  decision_reason: 利用者へ判断余地のある案件を平易に説明し、should-fix として承認済み。取りこぼし防止・下流安定性・検証強化のため修正推奨とする。
+  applied_files:
+  - analysis/traceability/completion_guards.py
+  - tests/analysis/test_analysis_t008_conformance_intake.py
+  superseded_by: null
+- finding_id: 2026-06-03-implementation-review-run-claude-sonnet-4-6-primary-005
+  run_id: 2026-06-03-implementation-review-run
+  source_model: claude-sonnet-4-6
+  source_round: round-2
+  source_raw_path: raw/claude-sonnet-4-6.round-2.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-2.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: analysis/fragments/fragment.schema.json
+  plain_language_summary: 'fragment.schema.json requires source_maturity_labels as
+    a mandatory field, but this field is not listed in tasks.md T-006''s required
+    fields for fragment (6 items: fragment_id, fragment_type, source_artifact_refs,
+    maturity_label, text_stub, applicable_destinations). The schema adds source_maturity_labels
+    beyond the spec.'
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-03T21:00:59.860652+00:00'
+  decision_reason: 利用者へ対処不要案件を平易に説明し、leave-as-is として承認済み。現状が仕様意図に沿う、またはレビュー中状態として妥当なため今回は修正しない。
+  applied_files:
+  - analysis/figures_tables/table_bundle.schema.json
+  - analysis/figures_tables/figure_bundle.schema.json
+  - analysis/fragments/fragment.schema.json
+  - analysis/figures_tables/table_bundle_builder.py
+  - analysis/figures_tables/figure_bundle_builder.py
+  - analysis/fragments/fragment_builder.py
+  - tests/analysis/test_analysis_t006_figures_fragments.py
+  superseded_by: null
+- finding_id: 2026-06-03-implementation-review-run-claude-sonnet-4-6-primary-006
+  run_id: 2026-06-03-implementation-review-run
+  source_model: claude-sonnet-4-6
+  source_round: round-2
+  source_raw_path: raw/claude-sonnet-4-6.round-2.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-2.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: analysis/figures_tables/table_bundle.schema.json, figure_bundle.schema.json
+  plain_language_summary: 'The table_bundle and figure_bundle schemas require caveat_refs
+    to not be present at all rather than allowing an empty array (they are simply
+    absent from required, which is correct), but they also do not appear as optional
+    properties in the schema, meaning any attempt to include caveat_refs would be
+    rejected by additionalProperties: false.'
+  final_label: must-fix
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-03T21:00:59.905646+00:00'
+  decision_reason: 利用者へ重要案件を1件ずつ平易に説明し、must-fix として承認済み。仕様契約・追跡性・上流不変性に影響するため修正対象とする。
+  applied_files:
+  - analysis/figures_tables/table_bundle.schema.json
+  - analysis/figures_tables/table_bundle_builder.py
+  - tests/analysis/test_analysis_t006_figures_fragments.py
+  superseded_by: null
+- finding_id: 2026-06-03-implementation-review-run-claude-sonnet-4-6-primary-007
+  run_id: 2026-06-03-implementation-review-run
+  source_model: claude-sonnet-4-6
+  source_round: round-2
+  source_raw_path: raw/claude-sonnet-4-6.round-2.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-2.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: analysis/staleness/staleness_checker.py (_dependency_sources)
+  plain_language_summary: _dependency_sources only emits staleness entries for artifacts
+    where stale=True, but tasks.md T-010 describes the registration condition as 'stale
+    が真に変わった' (timestamp comparison). The current implementation skips artifacts where
+    stale=False even if their updated_at is newer than the derived artifact, potentially
+    missing the case where a dependency was recently regenerated (stale reset to False
+    after regeneration).
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-03T21:00:59.953262+00:00'
+  decision_reason: 利用者へ判断余地のある案件を平易に説明し、should-fix として承認済み。取りこぼし防止・下流安定性・検証強化のため修正推奨とする。
+  applied_files:
+  - analysis/staleness/staleness_checker.py
+  - tests/analysis/test_analysis_t010_staleness.py
+  superseded_by: null
+- finding_id: 2026-06-03-implementation-review-run-gpt-5.4-adversarial-001
+  run_id: 2026-06-03-implementation-review-run
+  source_model: gpt-5.4
+  source_round: round-2
+  source_raw_path: raw/gpt-5.4.round-2.txt
+  source_parsed_path: parsed/gpt-5.4.round-2.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: analysis/destinations/destination_deriver.py
+  plain_language_summary: Destination manifest is written as manifest.json, while
+    the approved design and task documents require manifest.yaml for each destination.
+  final_label: must-fix
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-03T21:00:59.998947+00:00'
+  decision_reason: 利用者へ重要案件を1件ずつ平易に説明し、must-fix として承認済み。仕様契約・追跡性・上流不変性に影響するため修正対象とする。
+  applied_files:
+  - analysis/destinations/destination_deriver.py
+  - tests/analysis/test_analysis_t009_destinations.py
+  - tests/analysis/test_analysis_t011_traceability.py
+  superseded_by: null
+- finding_id: 2026-06-03-implementation-review-run-gpt-5.4-adversarial-002
+  run_id: 2026-06-03-implementation-review-run
+  source_model: gpt-5.4
+  source_round: round-2
+  source_raw_path: raw/gpt-5.4.round-2.txt
+  source_parsed_path: parsed/gpt-5.4.round-2.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: analysis/destinations/destination_deriver.py
+  plain_language_summary: The deriver only emits placeholder payloads for destination
+    artifacts and does not produce the required destination-specific fields mandated
+    for dashboard, weekly, audit, and reports outputs.
+  final_label: must-fix
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-03T21:01:00.045159+00:00'
+  decision_reason: 利用者へ重要案件を1件ずつ平易に説明し、must-fix として承認済み。仕様契約・追跡性・上流不変性に影響するため修正対象とする。
+  applied_files:
+  - analysis/destinations/destination_deriver.py
+  - tests/analysis/test_analysis_t009_destinations.py
+  superseded_by: null
+- finding_id: 2026-06-03-implementation-review-run-gpt-5.4-adversarial-003
+  run_id: 2026-06-03-implementation-review-run
+  source_model: gpt-5.4
+  source_round: round-2
+  source_raw_path: raw/gpt-5.4.round-2.txt
+  source_parsed_path: parsed/gpt-5.4.round-2.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: analysis/convergence/role_diff.schema.json
+  plain_language_summary: The role diff schema does not encode the required conditional
+    structure for findings_summary, such as requiring by_final_label for judgment
+    and by_counter_status for adversarial, nor the required by_severity summary.
+  final_label: must-fix
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-03T21:01:00.091250+00:00'
+  decision_reason: 利用者へ重要案件を1件ずつ平易に説明し、must-fix として承認済み。仕様契約・追跡性・上流不変性に影響するため修正対象とする。
+  applied_files:
+  - analysis/convergence/role_diff.schema.json
+  - tests/analysis/test_analysis_t007_convergence.py
+  superseded_by: null
+- finding_id: 2026-06-03-implementation-review-run-gpt-5.4-adversarial-004
+  run_id: 2026-06-03-implementation-review-run
+  source_model: gpt-5.4
+  source_round: round-2
+  source_raw_path: raw/gpt-5.4.round-2.txt
+  source_parsed_path: parsed/gpt-5.4.round-2.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: analysis/convergence/role_diff_builder.py
+  plain_language_summary: Role diff entries do not preserve the design-required evidence_refs
+    field.
+  final_label: must-fix
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-03T21:01:00.137756+00:00'
+  decision_reason: 利用者へ重要案件を1件ずつ平易に説明し、must-fix として承認済み。仕様契約・追跡性・上流不変性に影響するため修正対象とする。
+  applied_files:
+  - analysis/convergence/role_diff.schema.json
+  - analysis/convergence/role_diff_builder.py
+  - tests/analysis/test_analysis_t007_convergence.py
+  superseded_by: null
+- finding_id: 2026-06-03-implementation-review-run-gpt-5.4-adversarial-005
+  run_id: 2026-06-03-implementation-review-run
+  source_model: gpt-5.4
+  source_round: round-2
+  source_raw_path: raw/gpt-5.4.round-2.txt
+  source_parsed_path: parsed/gpt-5.4.round-2.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: analysis/convergence/mode_diff.schema.json
+  plain_language_summary: The mode diff schema does not constrain findings_summary
+    to the required severity-count structure and omits evidence_refs from the contract.
+  final_label: must-fix
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-03T21:01:00.183312+00:00'
+  decision_reason: 利用者へ重要案件を1件ずつ平易に説明し、must-fix として承認済み。仕様契約・追跡性・上流不変性に影響するため修正対象とする。
+  applied_files:
+  - analysis/convergence/mode_diff.schema.json
+  - analysis/convergence/mode_diff_builder.py
+  - tests/analysis/test_analysis_t007_convergence.py
+  superseded_by: null
+- finding_id: 2026-06-03-implementation-review-run-gpt-5.4-adversarial-006
+  run_id: 2026-06-03-implementation-review-run
+  source_model: gpt-5.4
+  source_round: round-2
+  source_raw_path: raw/gpt-5.4.round-2.txt
+  source_parsed_path: parsed/gpt-5.4.round-2.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: analysis/evidence_register/evidence_register_builder.py
+  plain_language_summary: The evidence register silently drops `invalid` and `analysis_blocked`
+    evidence instead of retaining them in an analysis artifact such as an exclusion
+    report/register path as specified by the design.
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-03T21:01:00.228463+00:00'
+  decision_reason: 利用者へ判断余地のある案件を平易に説明し、should-fix として承認済み。取りこぼし防止・下流安定性・検証強化のため修正推奨とする。
+  applied_files:
+  - analysis/evidence_register/evidence_register_builder.py
+  - tests/analysis/test_analysis_t004_evidence_register.py
+  superseded_by: null
+- finding_id: 2026-06-03-implementation-review-run-gpt-5.4-adversarial-007
+  run_id: 2026-06-03-implementation-review-run
+  source_model: gpt-5.4
+  source_round: round-2
+  source_raw_path: raw/gpt-5.4.round-2.txt
+  source_parsed_path: parsed/gpt-5.4.round-2.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: analysis/figures_tables/table_bundle.schema.json
+  plain_language_summary: The table bundle schema omits the optional caveat_refs field
+    required by the design.
+  final_label: must-fix
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-03T21:01:00.273855+00:00'
+  decision_reason: 利用者へ重要案件を1件ずつ平易に説明し、must-fix として承認済み。仕様契約・追跡性・上流不変性に影響するため修正対象とする。
+  applied_files:
+  - analysis/figures_tables/table_bundle.schema.json
+  - analysis/figures_tables/table_bundle_builder.py
+  - tests/analysis/test_analysis_t006_figures_fragments.py
+  superseded_by: null
+- finding_id: 2026-06-03-implementation-review-run-gpt-5.4-adversarial-008
+  run_id: 2026-06-03-implementation-review-run
+  source_model: gpt-5.4
+  source_round: round-2
+  source_raw_path: raw/gpt-5.4.round-2.txt
+  source_parsed_path: parsed/gpt-5.4.round-2.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: analysis/figures_tables/figure_bundle.schema.json
+  plain_language_summary: The figure bundle schema omits the optional caveat_refs
+    field required by the design.
+  final_label: must-fix
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-03T21:01:00.319109+00:00'
+  decision_reason: 利用者へ重要案件を1件ずつ平易に説明し、must-fix として承認済み。仕様契約・追跡性・上流不変性に影響するため修正対象とする。
+  applied_files:
+  - analysis/figures_tables/figure_bundle.schema.json
+  - analysis/figures_tables/figure_bundle_builder.py
+  - tests/analysis/test_analysis_t006_figures_fragments.py
+  superseded_by: null
+- finding_id: 2026-06-03-implementation-review-run-gpt-5.4-adversarial-009
+  run_id: 2026-06-03-implementation-review-run
+  source_model: gpt-5.4
+  source_round: round-2
+  source_raw_path: raw/gpt-5.4.round-2.txt
+  source_parsed_path: parsed/gpt-5.4.round-2.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: analysis/fragments/fragment.schema.json
+  plain_language_summary: The fragment schema omits the optional caveat_refs field
+    required by the reporting fragment model.
+  final_label: must-fix
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-03T21:01:00.363813+00:00'
+  decision_reason: 利用者へ重要案件を1件ずつ平易に説明し、must-fix として承認済み。仕様契約・追跡性・上流不変性に影響するため修正対象とする。
+  applied_files:
+  - analysis/fragments/fragment.schema.json
+  - analysis/fragments/fragment_builder.py
+  - tests/analysis/test_analysis_t006_figures_fragments.py
+  superseded_by: null
+- finding_id: 2026-06-03-implementation-review-run-gpt-5.4-adversarial-010
+  run_id: 2026-06-03-implementation-review-run
+  source_model: gpt-5.4
+  source_round: round-2
+  source_raw_path: raw/gpt-5.4.round-2.txt
+  source_parsed_path: parsed/gpt-5.4.round-2.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: .reviewcompass/specs/analysis/spec.json
+  plain_language_summary: The implementation triad-review workflow state remains false
+    even though implementation artifacts and tests for T-006 through T-011 are now
+    present in this round.
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-03T21:01:00.408100+00:00'
+  decision_reason: 利用者へ対処不要案件を平易に説明し、leave-as-is として承認済み。現状が仕様意図に沿う、またはレビュー中状態として妥当なため今回は修正しない。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-03-implementation-review-run-gemini-3.1-pro-preview-judgment-001
+  run_id: 2026-06-03-implementation-review-run
+  source_model: gemini-3.1-pro-preview
+  source_round: round-2
+  source_raw_path: raw/gemini-3.1-pro-preview.round-2.txt
+  source_parsed_path: parsed/gemini-3.1-pro-preview.round-2.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: tests/analysis/test_analysis_t007_convergence.py
+  plain_language_summary: T-007 完了条件の書き込み先パス制約（evaluation 配下への書き込みゼロ等）の機械検証テストが未実装
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-03T21:01:00.451365+00:00'
+  decision_reason: 利用者へ判断余地のある案件を平易に説明し、should-fix として承認済み。取りこぼし防止・下流安定性・検証強化のため修正推奨とする。
+  applied_files:
+  - analysis/traceability/completion_guards.py
+  - tests/analysis/test_analysis_t007_convergence.py
+  superseded_by: null
+- finding_id: 2026-06-03-implementation-review-run-gemini-3.1-pro-preview-judgment-002
+  run_id: 2026-06-03-implementation-review-run
+  source_model: gemini-3.1-pro-preview
+  source_round: round-2
+  source_raw_path: raw/gemini-3.1-pro-preview.round-2.txt
+  source_parsed_path: parsed/gemini-3.1-pro-preview.round-2.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: tests/analysis/test_analysis_t011_traceability.py
+  plain_language_summary: T-011 全体完了条件である evaluation 成果物への「書き込みなし（参照のみ）」の機械検証が未実装
+  final_label: must-fix
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-03T21:01:00.495032+00:00'
+  decision_reason: 利用者へ重要案件を1件ずつ平易に説明し、must-fix として承認済み。仕様契約・追跡性・上流不変性に影響するため修正対象とする。
+  applied_files:
+  - analysis/traceability/completion_guards.py
+  - tests/analysis/test_analysis_t011_traceability.py
+  superseded_by: null
+- finding_id: 2026-06-03-implementation-review-run-gemini-3.1-pro-preview-judgment-003
+  run_id: 2026-06-03-implementation-review-run
+  source_model: gemini-3.1-pro-preview
+  source_round: round-2
+  source_raw_path: raw/gemini-3.1-pro-preview.round-2.txt
+  source_parsed_path: parsed/gemini-3.1-pro-preview.round-2.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: analysis/fragments/fragment.schema.json
+  plain_language_summary: fragment.schema.json の必須項目が 7 個定義されており、仕様の 6 項目指定と不一致
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-03T21:01:00.539335+00:00'
+  decision_reason: 利用者へ対処不要案件を平易に説明し、leave-as-is として承認済み。現状が仕様意図に沿う、またはレビュー中状態として妥当なため今回は修正しない。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-03-implementation-review-run-gemini-3.1-pro-preview-judgment-004
+  run_id: 2026-06-03-implementation-review-run
+  source_model: gemini-3.1-pro-preview
+  source_round: round-2
+  source_raw_path: raw/gemini-3.1-pro-preview.round-2.txt
+  source_parsed_path: parsed/gemini-3.1-pro-preview.round-2.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: tests/analysis/test_analysis_t009_destinations.py
+  plain_language_summary: T-009 完了条件の「caveat_register への書き込みは追加のみ（上書き禁止）」の検証が不十分
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-03T21:01:00.581119+00:00'
+  decision_reason: 利用者へ判断余地のある案件を平易に説明し、should-fix として承認済み。取りこぼし防止・下流安定性・検証強化のため修正推奨とする。
+  applied_files:
+  - analysis/destinations/destination_deriver.py
+  - tests/analysis/test_analysis_t009_destinations.py
+  superseded_by: null

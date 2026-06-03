@@ -1,0 +1,153 @@
+run_id: 2026-06-04-implementation-recheck-run
+triage_status: decided
+generated_at: '2026-06-03T22:34:40.712643+00:00'
+decision_actor: null
+decision_actor_type: human
+items:
+- finding_id: 2026-06-04-implementation-recheck-run-gpt-5.4-adversarial-001
+  run_id: 2026-06-04-implementation-recheck-run
+  source_model: gpt-5.4
+  source_round: round-1
+  source_raw_path: raw/gpt-5.4.round-1.txt
+  source_parsed_path: parsed/gpt-5.4.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: analysis/intake/intake_reader.py
+  plain_language_summary: conformance-evaluation の読み込み失敗を conformance_evaluation_missing
+    として記録しており、設計上求められる unreadable 系の取り込み失敗を区別できていません。
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: autonomous-main-session-llm
+  decision_actor_type: agent
+  decision_at: '2026-06-03T22:40:50.380724+00:00'
+  decision_reason: 自律モード承認に基づき、現行4値enumを維持しつつfailure_kind等で欠落と読取失敗を区別する方針を採用。
+  applied_files:
+  - analysis/intake/intake_reader.py
+  - analysis/intake/intake_failure_report.schema.json
+  - tests/analysis/test_analysis_t002_intake.py
+  superseded_by: null
+- finding_id: 2026-06-04-implementation-recheck-run-gpt-5.4-adversarial-002
+  run_id: 2026-06-04-implementation-recheck-run
+  source_model: gpt-5.4
+  source_round: round-1
+  source_raw_path: raw/gpt-5.4.round-1.txt
+  source_parsed_path: parsed/gpt-5.4.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: analysis/destinations/destination_deriver.py (_reports_payload)
+  plain_language_summary: reports 向け mode_comparison_report.json が evidence の `mode`
+    フィールドを集計しており、設計で要求される foundation 正本 `review_mode` に基づく比較データになっていません。
+  final_label: must-fix
+  decision_status: decided
+  decision_actor: autonomous-main-session-llm
+  decision_actor_type: agent
+  decision_at: '2026-06-03T22:40:57.448358+00:00'
+  decision_reason: 正式なreview_modeではなくmode別名を集計しており、レビューモード比較成果物の契約を満たさないため修正対象。
+  applied_files:
+  - analysis/destinations/destination_deriver.py
+  - tests/analysis/test_analysis_t009_destinations.py
+  superseded_by: null
+- finding_id: 2026-06-04-implementation-recheck-run-gpt-5.4-adversarial-003
+  run_id: 2026-06-04-implementation-recheck-run
+  source_model: gpt-5.4
+  source_round: round-1
+  source_raw_path: raw/gpt-5.4.round-1.txt
+  source_parsed_path: parsed/gpt-5.4.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: analysis/traceability/completion_guards.py (analysis_redefines_foundation_vocabularies)
+  plain_language_summary: foundation 語彙の再定義禁止チェックがキー名一致だけで enum を検出しており、analysis 実装内で
+    `maturity_label` などの analysis 所有語彙を定義したスキーマまで誤って foundation 再定義として扱います。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: autonomous-main-session-llm
+  decision_actor_type: agent
+  decision_at: '2026-06-03T22:41:19.254844+00:00'
+  decision_reason: 現行ガードはfoundation語彙集合に含まれる語彙名のenum再定義を検出する設計で、今回の指摘は具体的な誤検出を示していないため今回は変更しない。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-04-implementation-recheck-run-gpt-5.4-adversarial-004
+  run_id: 2026-06-04-implementation-recheck-run
+  source_model: gpt-5.4
+  source_round: round-1
+  source_raw_path: raw/gpt-5.4.round-1.txt
+  source_parsed_path: parsed/gpt-5.4.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: analysis/intake/intake_failure_report.schema.json and analysis/intake/intake_reader.py
+  plain_language_summary: intake_failure_report の実装契約が tasks/design の必須項目より大幅に弱く、failure_id・affected_destinations・detected_at・recommended_action
+    などが出力されません。
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: autonomous-main-session-llm
+  decision_actor_type: agent
+  decision_at: '2026-06-03T22:41:26.047009+00:00'
+  decision_reason: intake_failure_reportの最低追跡項目が設計より弱く、下流判断に必要なfailure_id・affected_destinations・detected_atを補う必要がある。
+  applied_files:
+  - analysis/intake/intake_reader.py
+  - analysis/intake/intake_failure_report.schema.json
+  - tests/analysis/test_analysis_t002_intake.py
+  superseded_by: null
+- finding_id: 2026-06-04-implementation-recheck-run-gpt-5.4-adversarial-005
+  run_id: 2026-06-04-implementation-recheck-run
+  source_model: gpt-5.4
+  source_round: round-1
+  source_raw_path: raw/gpt-5.4.round-1.txt
+  source_parsed_path: parsed/gpt-5.4.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: analysis/claim_mapping/claim_map.schema.json and analysis/evidence_register/evidence_register.schema.json
+  plain_language_summary: 構造化参照のスキーマが `target_path` の存在しか要求しておらず、target_id を必要とするエントリ単位参照の追跡性を契約として十分に担保していません。
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: autonomous-main-session-llm
+  decision_actor_type: agent
+  decision_at: '2026-06-03T22:41:32.158913+00:00'
+  decision_reason: target_idは任意だが、指定された場合に実体JSON内のエントリまで解決できる検査が必要なため修正対象。
+  applied_files:
+  - analysis/common/reference_format.py
+  - tests/analysis/test_analysis_t003_claim_map.py
+  superseded_by: null
+- finding_id: 2026-06-04-implementation-recheck-run-gemini-3.1-pro-preview-judgment-001
+  run_id: 2026-06-04-implementation-recheck-run
+  source_model: gemini-3.1-pro-preview
+  source_round: round-1
+  source_raw_path: raw/gemini-3.1-pro-preview.round-1.txt
+  source_parsed_path: parsed/gemini-3.1-pro-preview.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: analysis/traceability/completion_guards.py (_EVALUATION_PATH_MARKERS)
+  plain_language_summary: AST scanner non-interference check misses upstream evaluation
+    paths
+  final_label: must-fix
+  decision_status: decided
+  decision_actor: autonomous-main-session-llm
+  decision_actor_type: agent
+  decision_at: '2026-06-03T22:41:40.149887+00:00'
+  decision_reason: 上流evaluation成果物の実体パスexperiments/analysisがno-writeガードから抜けており、境界検査を満たさないため修正対象。
+  applied_files:
+  - analysis/traceability/completion_guards.py
+  - tests/analysis/test_analysis_t011_traceability.py
+  superseded_by: null
+- finding_id: 2026-06-04-implementation-recheck-run-gemini-3.1-pro-preview-judgment-002
+  run_id: 2026-06-04-implementation-recheck-run
+  source_model: gemini-3.1-pro-preview
+  source_round: round-1
+  source_raw_path: raw/gemini-3.1-pro-preview.round-1.txt
+  source_parsed_path: parsed/gemini-3.1-pro-preview.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: analysis/convergence/role_diff.schema.json, analysis/convergence/mode_diff.schema.json
+  plain_language_summary: evidence_refs uses raw strings instead of the required structural
+    reference format
+  final_label: must-fix
+  decision_status: decided
+  decision_actor: autonomous-main-session-llm
+  decision_actor_type: agent
+  decision_at: '2026-06-03T22:41:47.187802+00:00'
+  decision_reason: design.mdの参照書式では*_refsは構造化参照である必要があり、convergence evidence_refsの裸文字列配列は追跡性契約に反するため修正対象。
+  applied_files:
+  - analysis/convergence/role_diff.schema.json
+  - analysis/convergence/mode_diff.schema.json
+  - tests/analysis/test_analysis_t007_convergence.py
+  superseded_by: null

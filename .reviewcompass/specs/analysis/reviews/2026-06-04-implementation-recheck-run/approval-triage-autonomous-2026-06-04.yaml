@@ -1,0 +1,24 @@
+approved_action: review_run_triage
+approved_by: user
+review_run_id: 2026-06-04-implementation-recheck-run
+summary_presented_to_user: true
+triage_presented_to_user: true
+approval_mode: autonomous
+approval_basis: 利用者が「自律モードで進める」と明示したため、提示済み推薦トリアージに基づく修正適用を許可。
+approved_finding_ids:
+  - 2026-06-04-implementation-recheck-run-gpt-5.4-adversarial-001
+  - 2026-06-04-implementation-recheck-run-gpt-5.4-adversarial-002
+  - 2026-06-04-implementation-recheck-run-gpt-5.4-adversarial-003
+  - 2026-06-04-implementation-recheck-run-gpt-5.4-adversarial-004
+  - 2026-06-04-implementation-recheck-run-gpt-5.4-adversarial-005
+  - 2026-06-04-implementation-recheck-run-gemini-3.1-pro-preview-judgment-001
+  - 2026-06-04-implementation-recheck-run-gemini-3.1-pro-preview-judgment-002
+approved_final_labels:
+  2026-06-04-implementation-recheck-run-gpt-5.4-adversarial-001: should-fix
+  2026-06-04-implementation-recheck-run-gpt-5.4-adversarial-002: must-fix
+  2026-06-04-implementation-recheck-run-gpt-5.4-adversarial-003: leave-as-is
+  2026-06-04-implementation-recheck-run-gpt-5.4-adversarial-004: should-fix
+  2026-06-04-implementation-recheck-run-gpt-5.4-adversarial-005: should-fix
+  2026-06-04-implementation-recheck-run-gemini-3.1-pro-preview-judgment-001: must-fix
+  2026-06-04-implementation-recheck-run-gemini-3.1-pro-preview-judgment-002: must-fix
+consumed: false

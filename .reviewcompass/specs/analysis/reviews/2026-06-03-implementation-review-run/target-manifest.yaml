@@ -1,0 +1,4 @@
+run_id: 2026-06-03-implementation-review-run
+target_files:
+- path: /private/tmp/reviewcompass-analysis-implementation-triad-target-round2.md
+  sha256: b2ed5443b09da03e964bc9a79c1115bb5070bc4ac7e8a1f06db921ceb88beec9

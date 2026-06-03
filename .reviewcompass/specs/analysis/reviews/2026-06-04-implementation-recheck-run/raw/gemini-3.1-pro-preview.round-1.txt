@@ -1,0 +1,9 @@
+findings:
+  - severity: ERROR
+    target_location: "analysis/traceability/completion_guards.py (_EVALUATION_PATH_MARKERS)"
+    description: "AST scanner non-interference check misses upstream evaluation paths"
+    rationale: "The `_EvaluationWriteScanner` is intended to enforce that `analysis` code does not write to upstream `evaluation` artifacts (fulfilling T-007 and T-011 non-interference criteria). However, its `_EVALUATION_PATH_MARKERS` only includes `experiments/conformance/` and `conformance-evaluation/`, entirely missing `experiments/analysis/` (the actual upstream evaluation output path). This completely defeats the architectural guard against reverse control."
+  - severity: ERROR
+    target_location: "analysis/convergence/role_diff.schema.json, analysis/convergence/mode_diff.schema.json"
+    description: "evidence_refs uses raw strings instead of the required structural reference format"
+    rationale: "`design.md §参照書式` strictly mandates that all `*_refs` fields must use the structural object format (`ref_type`, `target_path`, `target_id`). Defining `evidence_refs` as an array of raw strings in the convergence schemas violates this central traceability contract and breaks automated reference resolution."

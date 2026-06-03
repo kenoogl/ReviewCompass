@@ -1,0 +1,15 @@
+findings:
+  - severity: ERROR
+    target_location: "analysis/evidence_register/evidence_register_builder.py"
+    description: "Exploratory evidence never receives the required preliminary caveat because the builder checks `evidence_class == \"exploratory\"` instead of the computed `maturity_label == \"exploratory\"`."
+    rationale: "The schema and task intent distinguish evidence class from maturity. `maturity_for_evidence(...)` computes `maturity_label`, but the follow-up caveat injection is keyed off `evidence_class`. For cases where a non-`exploratory` class maps to exploratory maturity, the mandatory caveat will be omitted, breaking T-006/T-011 traceability and weakening downstream destination caveat propagation."
+
+  - severity: ERROR
+    target_location: "analysis/traceability/completion_guards.py"
+    description: "Foundation vocabulary redefinition detection will produce false positives because it flags any schema property whose key matches a foundation vocabulary name, including local `$defs` references."
+    rationale: "The review criterion requires that foundation vocabularies be consumed by reference, not merely that matching property names exist. Current logic reports a violation whenever a schema node named `review_mode`, `severity`, etc. contains an `enum`, even inside local helper definitions unrelated to actual redefinition. This makes the T-011 mechanical guard unreliable and can either fail valid implementations or force schema shapes around the checker instead of the specification."
+
+  - severity: WARN
+    target_location: "tests/analysis/test_analysis_t009_destinations.py"
+    description: "Destination derivation tests validate only filename presence and a few fields, but do not verify behaviorally important payload contents for the generated destination outputs."
+    rationale: "The implementation review criteria explicitly warn against tests that are only presence/string checks where behavior is required. The current T-009 tests do not assert that each destination artifact contains the correct `manifest_ref`, evidence/caveat references, or destination-specific output typing, so regressions in derivation semantics could pass undetected despite all tests remaining green."

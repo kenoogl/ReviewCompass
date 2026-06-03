@@ -1,0 +1,4 @@
+run_id: 2026-06-04-implementation-recheck-run
+target_files:
+- path: .reviewcompass/specs/analysis/reviews/2026-06-04-implementation-recheck-run/review-target.md
+  sha256: 555c05803d4089da2559ccdf3008de7b3d585cb329ea7f8024d5bbbc9a648675

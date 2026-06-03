@@ -1,0 +1,103 @@
+role: primary
+provider: anthropic-api
+model: claude-sonnet-4-6
+attempts: 1
+duration_seconds: 35.228
+findings:
+- severity: ERROR
+  target_location: analysis/destinations/destination_deriver.py (imports)
+  description: DestinationDeriver imports from analysis.caveat_register.mixed_review_mode_detector
+    and analysis.common.reference_format, but neither module appears in the changed
+    file list or is otherwise shown to exist in the repository.
+  rationale: If these modules do not exist, the implementation will fail at import
+    time and all T-009 and T-011 tests that instantiate DestinationDeriver will fail.
+    The changed file list shows no analysis/caveat_register/ or analysis/common/ files,
+    making it impossible to confirm the imports are satisfiable.
+- severity: ERROR
+  target_location: analysis/traceability/completion_guards.py (imports)
+  description: completion_guards.py imports from analysis.caveat_register.mixed_review_mode_detector
+    (LIMITATION_TYPES) and analysis.evidence_register.binding_rules (MATURITY_LABELS).
+    Neither analysis/caveat_register/ nor the binding_rules submodule appear in the
+    changed file list.
+  rationale: If LIMITATION_TYPES or MATURITY_LABELS are not importable, the T-011
+    traceability tests will fail at collection time. The correctness of test_completion_guard_confirms_analysis_owned_vocabularies
+    (which asserts specific values for limitation_type) cannot be verified without
+    seeing the source of truth for LIMITATION_TYPES.
+- severity: ERROR
+  target_location: tests/analysis/test_analysis_t011_traceability.py (imports)
+  description: The test file imports ClaimMapBuilder from analysis.claim_mapping.claim_map_builder
+    and resolve_artifact_ref from analysis.common.reference_format. Neither module
+    is in the changed file list.
+  rationale: Missing imports will cause the entire test module to fail at collection,
+    preventing all T-011 tests from running. The review criterion requires T-011 to
+    be implemented; unrunnable tests cannot satisfy that criterion.
+- severity: ERROR
+  target_location: analysis/evidence_register/evidence_register_builder.py (imports)
+  description: EvidenceRegisterBuilder imports foundation_vocabulary, maturity_for_evidence,
+    and preliminary_caveat_ref from .binding_rules, but analysis/evidence_register/binding_rules.py
+    is not in the changed file list and its contents are not shown.
+  rationale: The builder is a modified file (git status shows M) yet its required
+    sibling module is absent from the review. It is impossible to verify that evidence_class
+    and review_mode validation actually consult the foundation vocabulary as required
+    by Criterion 5 (cross-feature impact).
+- severity: WARN
+  target_location: analysis/convergence/mode_diff_builder.py – foundation_review_modes()
+  description: foundation_review_modes() reads runtime/foundation/metadata_contract.yaml
+    at call time with a hardcoded path derived from __file__. No fallback or error
+    message is provided if the file is absent or the key is missing.
+  rationale: If the foundation file is moved or the key is renamed, the function will
+    raise an unguided KeyError or FileNotFoundError rather than a clear ValueError.
+    This also means the test test_mode_diff_builder_rejects_unknown_review_mode indirectly
+    depends on a file outside the analysis feature boundary at test execution time.
+- severity: WARN
+  target_location: analysis/traceability/completion_guards.py – analysis_redefines_foundation_vocabularies()
+  description: The redefinition detector checks whether a JSON pointer segment matches
+    a vocabulary name AND the schema node contains an 'enum' key. This will produce
+    a false negative for $ref-based redefinitions and a false positive for any property
+    whose name coincidentally matches a vocabulary name (e.g. a 'severity' property
+    that is not an enum redefinition).
+  rationale: The detection heuristic is fragile. A schema could redefine a foundation
+    vocabulary via an inline $ref resolution, or a legitimately named property could
+    trigger a spurious violation report, undermining the value of the T-011 gate.
+- severity: WARN
+  target_location: tests/analysis/test_analysis_t011_traceability.py – test_traceability_smoke_connects_claim_evidence_and_destination
+  description: The assertion manifest['included_evidence_refs'] == [evidence_ref]
+    compares the full evidence ref list against a single ref derived from the claim
+    map. If DestinationDeriver produces evidence refs via artifact_ref() with a different
+    structure than what is stored in the claim map, this equality check will silently
+    fail to test the intended traceability.
+  rationale: The test couples the output of two separate builders (ClaimMapBuilder
+    and EvidenceRegisterBuilder/DestinationDeriver) without verifying that both use
+    the same artifact_ref construction path. A structural mismatch would cause the
+    assertion to fail for the wrong reason.
+- severity: WARN
+  target_location: analysis/staleness/staleness_checker.py – _conformance_sources()
+  description: _conformance_sources() unconditionally adds every conformance_results
+    entry as a stale source, regardless of whether the conformance result is actually
+    newer than the derived artifact. The is_newer check happens in detect() but operates
+    as a cross-product; there is no filtering of conformance results that are not
+    stale.
+  rationale: While not strictly incorrect (the timestamp comparison in detect() filters
+    correctly), a conformance result that predates the derived artifact will still
+    generate a pairing attempt, which may be surprising and differs from the behavior
+    of _dependency_sources() which pre-filters on stale=True.
+- severity: INFO
+  target_location: analysis/conformance_intake/derived_audit_writer.py and derived_reports_writer.py
+  description: Both derived writers hardcode SOURCE_INTAKE_PATH = 'shared/conformance/conformance_intake.json'
+    as a module-level constant, but the actual intake file is written by ConformanceIntakeBuilder
+    to Path(output_root) / 'shared' / 'conformance' / 'conformance_intake.json'. If
+    output_root is not the repo root, the hardcoded relative path will be incorrect
+    in the derived output.
+  rationale: The path stored in source_intake_path is a documentation/traceability
+    field; a consumer following the path from a different working directory will not
+    find the file. Consider making it relative to output_root or documenting the assumed
+    root.
+- severity: INFO
+  target_location: analysis/destinations/manifest.schema.json
+  description: 'The manifest schema does not enforce additionalProperties: false on
+    the superseded_versions item''s properties block; the item schema does use additionalProperties:
+    false, but the top-level manifest object definition is missing validation for
+    the case where superseded_versions contains items with unexpected extra keys beyond
+    version and manifest_path.'
+  rationale: 'Minor schema hygiene issue; the item-level additionalProperties: false
+    is present, so this is already handled correctly. Noted for completeness.'

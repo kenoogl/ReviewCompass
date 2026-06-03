@@ -1,0 +1,50 @@
+approved_action: review_run_triage
+approved_by: user
+review_run_id: 2026-06-03-implementation-review-run
+summary_presented_to_user: true
+triage_presented_to_user: true
+approved_finding_ids:
+  - 2026-06-03-implementation-review-run-claude-sonnet-4-6-primary-001
+  - 2026-06-03-implementation-review-run-claude-sonnet-4-6-primary-002
+  - 2026-06-03-implementation-review-run-claude-sonnet-4-6-primary-003
+  - 2026-06-03-implementation-review-run-claude-sonnet-4-6-primary-004
+  - 2026-06-03-implementation-review-run-claude-sonnet-4-6-primary-005
+  - 2026-06-03-implementation-review-run-claude-sonnet-4-6-primary-006
+  - 2026-06-03-implementation-review-run-claude-sonnet-4-6-primary-007
+  - 2026-06-03-implementation-review-run-gpt-5.4-adversarial-001
+  - 2026-06-03-implementation-review-run-gpt-5.4-adversarial-002
+  - 2026-06-03-implementation-review-run-gpt-5.4-adversarial-003
+  - 2026-06-03-implementation-review-run-gpt-5.4-adversarial-004
+  - 2026-06-03-implementation-review-run-gpt-5.4-adversarial-005
+  - 2026-06-03-implementation-review-run-gpt-5.4-adversarial-006
+  - 2026-06-03-implementation-review-run-gpt-5.4-adversarial-007
+  - 2026-06-03-implementation-review-run-gpt-5.4-adversarial-008
+  - 2026-06-03-implementation-review-run-gpt-5.4-adversarial-009
+  - 2026-06-03-implementation-review-run-gpt-5.4-adversarial-010
+  - 2026-06-03-implementation-review-run-gemini-3.1-pro-preview-judgment-001
+  - 2026-06-03-implementation-review-run-gemini-3.1-pro-preview-judgment-002
+  - 2026-06-03-implementation-review-run-gemini-3.1-pro-preview-judgment-003
+  - 2026-06-03-implementation-review-run-gemini-3.1-pro-preview-judgment-004
+approved_final_labels:
+  2026-06-03-implementation-review-run-claude-sonnet-4-6-primary-001: must-fix
+  2026-06-03-implementation-review-run-claude-sonnet-4-6-primary-002: should-fix
+  2026-06-03-implementation-review-run-claude-sonnet-4-6-primary-003: should-fix
+  2026-06-03-implementation-review-run-claude-sonnet-4-6-primary-004: should-fix
+  2026-06-03-implementation-review-run-claude-sonnet-4-6-primary-005: leave-as-is
+  2026-06-03-implementation-review-run-claude-sonnet-4-6-primary-006: must-fix
+  2026-06-03-implementation-review-run-claude-sonnet-4-6-primary-007: should-fix
+  2026-06-03-implementation-review-run-gpt-5.4-adversarial-001: must-fix
+  2026-06-03-implementation-review-run-gpt-5.4-adversarial-002: must-fix
+  2026-06-03-implementation-review-run-gpt-5.4-adversarial-003: must-fix
+  2026-06-03-implementation-review-run-gpt-5.4-adversarial-004: must-fix
+  2026-06-03-implementation-review-run-gpt-5.4-adversarial-005: must-fix
+  2026-06-03-implementation-review-run-gpt-5.4-adversarial-006: should-fix
+  2026-06-03-implementation-review-run-gpt-5.4-adversarial-007: must-fix
+  2026-06-03-implementation-review-run-gpt-5.4-adversarial-008: must-fix
+  2026-06-03-implementation-review-run-gpt-5.4-adversarial-009: must-fix
+  2026-06-03-implementation-review-run-gpt-5.4-adversarial-010: leave-as-is
+  2026-06-03-implementation-review-run-gemini-3.1-pro-preview-judgment-001: should-fix
+  2026-06-03-implementation-review-run-gemini-3.1-pro-preview-judgment-002: must-fix
+  2026-06-03-implementation-review-run-gemini-3.1-pro-preview-judgment-003: leave-as-is
+  2026-06-03-implementation-review-run-gemini-3.1-pro-preview-judgment-004: should-fix
+consumed: false

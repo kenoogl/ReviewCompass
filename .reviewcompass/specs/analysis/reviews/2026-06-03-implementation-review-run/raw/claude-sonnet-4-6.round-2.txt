@@ -1,0 +1,35 @@
+findings:
+  - severity: WARN
+    target_location: "analysis/convergence/role_diff.schema.json"
+    description: "role_diff.schema.json does not enforce conditional required fields (by_final_label for judgment, by_counter_status for adversarial) at the schema level. The enforcement exists only in role_diff_builder.py's _normalize_entry method."
+    rationale: "design.md §可視化モデル §1 specifies these as conditional required fields. Schema-level enforcement (via allOf/if/then) would provide machine-verifiable guarantees independent of the builder. Currently a bypass is possible by calling the schema validator directly without going through the builder."
+
+  - severity: WARN
+    target_location: "analysis/destinations/destination_deriver.py (_write_destination)"
+    description: "The destination_deriver writes the caveat_register only when caveat_entries is non-empty. If there are no caveats and no mixed_review_mode, the shared/caveat_register.json file is not written at all, which may cause FileNotFoundError in downstream readers that expect the file to always exist."
+    rationale: "tasks.md T-009 and design.md §証拠台帳モデル §3 imply that the caveat register is a standing shared artifact. Conditional absence of the file breaks the contract consumer principle for downstream components."
+
+  - severity: WARN
+    target_location: "analysis/conformance_intake/derived_audit_writer.py, derived_reports_writer.py"
+    description: "SOURCE_INTAKE_PATH is hardcoded as a relative string 'shared/conformance/conformance_intake.json' rather than using the structured artifact_ref format defined in analysis/common/reference_format.py. The design specifies that *_ref fields must use the structured {ref_type, target_path, target_id} format."
+    rationale: "design.md §参照書式 requires structured references for *_ref fields to enable machine-verifiable traceability. Using a bare path string in source_intake_path deviates from this contract, though the field name does not use the _ref suffix, making it ambiguous."
+
+  - severity: WARN
+    target_location: "tests/analysis/test_analysis_t008_conformance_intake.py (test_conformance_intake_code_does_not_write_conformance_evaluation_outputs)"
+    description: "The non-interference test checks that 'experiments/conformance/' and 'conformance-evaluation' strings do not appear in analysis/conformance_intake/*.py, but the actual separation boundary should be about write paths, not string occurrences. A legitimate read reference to 'experiments/conformance/' would also be flagged as a false positive."
+    rationale: "tasks.md T-008 completion criteria requires structural inspection that the code has no path to write/overwrite conformance-evaluation outputs. The current grep-based test is overly broad and conflates read access (permitted) with write access (prohibited), producing both false positives and incomplete coverage."
+
+  - severity: INFO
+    target_location: "analysis/fragments/fragment.schema.json"
+    description: "fragment.schema.json requires source_maturity_labels as a mandatory field, but this field is not listed in tasks.md T-006's required fields for fragment (6 items: fragment_id, fragment_type, source_artifact_refs, maturity_label, text_stub, applicable_destinations). The schema adds source_maturity_labels beyond the spec."
+    rationale: "The addition is a reasonable implementation of the design's requirement to preserve per-source maturity labels (design.md §報告断片モデル), but the discrepancy between tasks.md's stated 6 required fields and the schema's 7 required fields may cause confusion during traceability audits."
+
+  - severity: INFO
+    target_location: "analysis/figures_tables/table_bundle.schema.json, figure_bundle.schema.json"
+    description: "The table_bundle and figure_bundle schemas require caveat_refs to not be present at all rather than allowing an empty array (they are simply absent from required, which is correct), but they also do not appear as optional properties in the schema, meaning any attempt to include caveat_refs would be rejected by additionalProperties: false."
+    rationale: "design.md §図表束モデル specifies caveat_refs as optional (empty array when absent). The current schema silently discards caveat_refs if provided rather than validating them, because the property is not declared under 'properties'. This prevents the optional caveat association use-case from working."
+
+  - severity: INFO
+    target_location: "analysis/staleness/staleness_checker.py (_dependency_sources)"
+    description: "_dependency_sources only emits staleness entries for artifacts where stale=True, but tasks.md T-010 describes the registration condition as 'stale が真に変わった' (timestamp comparison). The current implementation skips artifacts where stale=False even if their updated_at is newer than the derived artifact, potentially missing the case where a dependency was recently regenerated (stale reset to False after regeneration)."
+    rationale: "The timestamp-based detection (A-012 対処) should consider all dependency artifact updates, not only those still marked stale. An artifact freshly regenerated (stale=False, updated_at=recent) should also trigger re-derivation of downstream artifacts that predate it."
