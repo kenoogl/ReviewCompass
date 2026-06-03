@@ -259,6 +259,167 @@ def _assert_script_invoked(testcase, result):
     )
 
 
+def _write_autonomous_parallel_plan(cwd, overrides=None):
+  """自律・並列モード実行計画の最小正常形を作る"""
+  overrides = overrides or {}
+  plan = {
+    "mode": "autonomous_parallel",
+    "run_id": "ap-001",
+    "authorization": {
+      "approved_by": "user",
+      "approval_record_path": "docs/notes/approval.md",
+      "summary_presented_to_user": True,
+      "triage_presented_to_user": True,
+    },
+    "tasks": [
+      {
+        "task_id": "task-a",
+        "source_finding_ids": ["finding-a"],
+        "assignee": {
+          "kind": "subthread",
+          "worktree_policy": "separate_worktree",
+        },
+        "allowed_paths": ["src/a.py"],
+        "forbidden_paths": [".git/"],
+        "depends_on": [],
+        "expected_tests": ["pytest tests/test_a.py"],
+        "stop_conditions": ["important_decision_requires_approval"],
+      },
+      {
+        "task_id": "task-b",
+        "source_finding_ids": ["finding-b"],
+        "assignee": {
+          "kind": "subthread",
+          "worktree_policy": "separate_worktree",
+        },
+        "allowed_paths": ["src/b.py"],
+        "forbidden_paths": [".git/"],
+        "depends_on": [],
+        "expected_tests": ["pytest tests/test_b.py"],
+        "stop_conditions": ["important_decision_requires_approval"],
+      },
+    ],
+    "integration_gate": {
+      "requires_main_session_review": True,
+      "requires_diff_scope_check": True,
+      "requires_tests": True,
+      "requires_decision_basis_review": True,
+    },
+    "outputs_policy": {
+      "implementation_diff": "commit_candidate",
+      "verification_summary": "required",
+      "decision_basis": "preserve_if_used",
+      "work_noise": "exclude",
+    },
+  }
+  for key, value in overrides.items():
+    if value is None:
+      plan.pop(key, None)
+    else:
+      plan[key] = value
+
+  path = Path(cwd) / "autonomous-parallel-plan.yaml"
+  path.write_text(
+    yaml.safe_dump(plan, allow_unicode=True, sort_keys=False),
+    encoding="utf-8",
+  )
+  return path
+
+
+class AutonomousParallelPlanTests(unittest.TestCase):
+  """自律・並列モード実行計画の機械ガード"""
+
+  def setUp(self):
+    self.tmpdir = tempfile.mkdtemp()
+    self.addCleanup(shutil.rmtree, self.tmpdir)
+
+  def test_valid_plan_returns_zero(self):
+    """正常な実行計画は OK になる"""
+    cwd = Path(self.tmpdir)
+    plan_path = _write_autonomous_parallel_plan(cwd)
+
+    result = run_script(["autonomous-plan", str(plan_path), "--json"], cwd=cwd)
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 0, result.stderr)
+    data = json.loads(result.stdout)
+    self.assertEqual(data["verdict"], "OK")
+    self.assertEqual(data["current_state"]["task_count"], 2)
+
+  def test_missing_authorization_returns_two(self):
+    """人間または proxy_model の承認記録がなければ逸脱にする"""
+    cwd = Path(self.tmpdir)
+    plan_path = _write_autonomous_parallel_plan(
+      cwd,
+      {"authorization": None},
+    )
+
+    result = run_script(["autonomous-plan", str(plan_path), "--json"], cwd=cwd)
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 2)
+    data = json.loads(result.stdout)
+    self.assertEqual(data["verdict"], "DEVIATION")
+    self.assertIn("authorization", "\n".join(data["reasons"]))
+
+  def test_subthread_without_separate_worktree_returns_two(self):
+    """別スレッド実装が分離 worktree でなければ逸脱にする"""
+    cwd = Path(self.tmpdir)
+    plan_path = _write_autonomous_parallel_plan(cwd)
+    plan = yaml.safe_load(plan_path.read_text(encoding="utf-8"))
+    plan["tasks"][0]["assignee"]["worktree_policy"] = "same_repo_write"
+    plan_path.write_text(
+      yaml.safe_dump(plan, allow_unicode=True, sort_keys=False),
+      encoding="utf-8",
+    )
+
+    result = run_script(["autonomous-plan", str(plan_path), "--json"], cwd=cwd)
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 2)
+    data = json.loads(result.stdout)
+    self.assertIn("separate_worktree", "\n".join(data["reasons"]))
+
+  def test_overlapping_parallel_paths_returns_two(self):
+    """依存関係のない並列タスクが同じパスを書く場合は逸脱にする"""
+    cwd = Path(self.tmpdir)
+    plan_path = _write_autonomous_parallel_plan(cwd)
+    plan = yaml.safe_load(plan_path.read_text(encoding="utf-8"))
+    plan["tasks"][1]["allowed_paths"] = ["src/a.py"]
+    plan_path.write_text(
+      yaml.safe_dump(plan, allow_unicode=True, sort_keys=False),
+      encoding="utf-8",
+    )
+
+    result = run_script(["autonomous-plan", str(plan_path), "--json"], cwd=cwd)
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 2)
+    data = json.loads(result.stdout)
+    self.assertIn("allowed_paths", "\n".join(data["reasons"]))
+
+  def test_missing_integration_gate_returns_two(self):
+    """統合ゲートが不足していれば逸脱にする"""
+    cwd = Path(self.tmpdir)
+    plan_path = _write_autonomous_parallel_plan(
+      cwd,
+      {
+        "integration_gate": {
+          "requires_main_session_review": True,
+          "requires_diff_scope_check": True,
+          "requires_tests": True,
+        },
+      },
+    )
+
+    result = run_script(["autonomous-plan", str(plan_path), "--json"], cwd=cwd)
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 2)
+    data = json.loads(result.stdout)
+    self.assertIn("requires_decision_basis_review", "\n".join(data["reasons"]))
+
+
 class SpecSetExitCodeTests(unittest.TestCase):
   """spec-set サブコマンドの終了コード判定
 

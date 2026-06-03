@@ -76,6 +76,20 @@ POST_WRITE_VERIFICATION_DIR_PREFIXES = (
   "docs/experiments/",
 )
 
+AUTONOMOUS_PARALLEL_REQUIRED_INTEGRATION_GATES = (
+  "requires_main_session_review",
+  "requires_diff_scope_check",
+  "requires_tests",
+  "requires_decision_basis_review",
+)
+
+AUTONOMOUS_PARALLEL_REQUIRED_OUTPUTS_POLICY = {
+  "implementation_diff": "commit_candidate",
+  "verification_summary": "required",
+  "decision_basis": "preserve_if_used",
+  "work_noise": "exclude",
+}
+
 REOPEN_TRIGGER_MAP = {
   "I-0": [
     "stages/implementation.yaml#alignment",
@@ -327,6 +341,202 @@ def append_log(log_path, action_dict, verdict, exit_code, reasons, current_state
 
   with open(log_path, "a", encoding="utf-8") as f:
     f.write(json.dumps(entry, ensure_ascii=False) + "\n")
+
+
+def path_specs_overlap(left, right):
+  """allowed_paths の衝突を保守的に判定する"""
+  left_value = str(left).rstrip("/")
+  right_value = str(right).rstrip("/")
+  return (
+    left_value == right_value
+    or left_value.startswith(right_value + "/")
+    or right_value.startswith(left_value + "/")
+  )
+
+
+def tasks_have_dependency(left_task, right_task):
+  """2 タスク間に直列化の依存宣言があるかを判定する"""
+  left_id = left_task.get("task_id")
+  right_id = right_task.get("task_id")
+  left_depends_on = set(left_task.get("depends_on") or [])
+  right_depends_on = set(right_task.get("depends_on") or [])
+  return right_id in left_depends_on or left_id in right_depends_on
+
+
+def validate_autonomous_parallel_plan(plan):
+  """自律・並列モード実行計画を fail-closed で検査する"""
+  reasons = []
+  current_state = {
+    "mode": None,
+    "run_id": None,
+    "task_count": 0,
+    "parallel_task_count": 0,
+    "checked_gates": list(AUTONOMOUS_PARALLEL_REQUIRED_INTEGRATION_GATES),
+  }
+
+  if not isinstance(plan, dict):
+    return reasons + ["plan は YAML mapping である必要があります"], current_state
+
+  current_state["mode"] = plan.get("mode")
+  current_state["run_id"] = plan.get("run_id")
+
+  if plan.get("mode") != "autonomous_parallel":
+    reasons.append("mode は autonomous_parallel である必要があります")
+  if not plan.get("run_id"):
+    reasons.append("run_id が必要です")
+
+  authorization = plan.get("authorization")
+  if not isinstance(authorization, dict):
+    reasons.append("authorization が必要です")
+  else:
+    approved_by = authorization.get("approved_by")
+    if approved_by not in ("user", "proxy_model"):
+      reasons.append("authorization.approved_by は user または proxy_model が必要です")
+    if not authorization.get("approval_record_path"):
+      reasons.append("authorization.approval_record_path が必要です")
+    if authorization.get("summary_presented_to_user") is not True:
+      reasons.append("authorization.summary_presented_to_user は true が必要です")
+    if authorization.get("triage_presented_to_user") is not True:
+      reasons.append("authorization.triage_presented_to_user は true が必要です")
+
+  tasks = plan.get("tasks")
+  if not isinstance(tasks, list) or not tasks:
+    reasons.append("tasks は 1 件以上の list が必要です")
+    tasks = []
+  current_state["task_count"] = len(tasks)
+  current_state["parallel_task_count"] = len([
+    task for task in tasks
+    if isinstance(task, dict) and not task.get("depends_on")
+  ])
+
+  seen_task_ids = set()
+  for index, task in enumerate(tasks):
+    task_label = task.get("task_id") if isinstance(task, dict) else f"index:{index}"
+    if not isinstance(task, dict):
+      reasons.append(f"tasks[{index}] は mapping が必要です")
+      continue
+
+    task_id = task.get("task_id")
+    if not task_id:
+      reasons.append(f"tasks[{index}].task_id が必要です")
+    elif task_id in seen_task_ids:
+      reasons.append(f"tasks[{index}].task_id が重複しています: {task_id}")
+    else:
+      seen_task_ids.add(task_id)
+
+    if not task.get("source_finding_ids"):
+      reasons.append(f"{task_label}.source_finding_ids が必要です")
+    if not task.get("allowed_paths"):
+      reasons.append(f"{task_label}.allowed_paths が必要です")
+    if not task.get("expected_tests"):
+      reasons.append(f"{task_label}.expected_tests が必要です")
+    stop_conditions = task.get("stop_conditions") or []
+    if "important_decision_requires_approval" not in stop_conditions:
+      reasons.append(
+        f"{task_label}.stop_conditions に important_decision_requires_approval が必要です"
+      )
+
+    assignee = task.get("assignee")
+    if not isinstance(assignee, dict):
+      reasons.append(f"{task_label}.assignee が必要です")
+      continue
+    assignee_kind = assignee.get("kind")
+    worktree_policy = assignee.get("worktree_policy")
+    if assignee_kind not in ("main_session", "subthread", "subagent"):
+      reasons.append(f"{task_label}.assignee.kind が無効です")
+    if assignee_kind in ("subthread", "subagent") and worktree_policy != "separate_worktree":
+      reasons.append(
+        f"{task_label}.assignee.worktree_policy は separate_worktree が必要です"
+      )
+
+  for left_index, left_task in enumerate(tasks):
+    if not isinstance(left_task, dict):
+      continue
+    for right_task in tasks[left_index + 1:]:
+      if not isinstance(right_task, dict):
+        continue
+      if tasks_have_dependency(left_task, right_task):
+        continue
+      for left_path in left_task.get("allowed_paths") or []:
+        for right_path in right_task.get("allowed_paths") or []:
+          if path_specs_overlap(left_path, right_path):
+            reasons.append(
+              "依存関係のない並列タスクの allowed_paths が衝突しています: "
+              f"{left_task.get('task_id')}:{left_path} / "
+              f"{right_task.get('task_id')}:{right_path}"
+            )
+
+  integration_gate = plan.get("integration_gate")
+  if not isinstance(integration_gate, dict):
+    reasons.append("integration_gate が必要です")
+  else:
+    for key in AUTONOMOUS_PARALLEL_REQUIRED_INTEGRATION_GATES:
+      if integration_gate.get(key) is not True:
+        reasons.append(f"integration_gate.{key} は true が必要です")
+
+  outputs_policy = plan.get("outputs_policy")
+  if not isinstance(outputs_policy, dict):
+    reasons.append("outputs_policy が必要です")
+  else:
+    for key, expected in AUTONOMOUS_PARALLEL_REQUIRED_OUTPUTS_POLICY.items():
+      if outputs_policy.get(key) != expected:
+        reasons.append(f"outputs_policy.{key} は {expected} が必要です")
+
+  return reasons, current_state
+
+
+def cmd_autonomous_plan(args):
+  """自律・並列モード実行計画の事前検査を行う"""
+  plan_path = Path(args.plan_path)
+  action_str = f"autonomous-plan {plan_path}"
+  action_dict = {
+    "subcommand": "autonomous-plan",
+    "args": {
+      "plan_path": str(plan_path),
+    },
+  }
+
+  try:
+    plan = yaml.safe_load(plan_path.read_text(encoding="utf-8"))
+  except OSError as e:
+    reasons = [f"plan_path を読めません: {e}"]
+    current_state_dict = {"plan_path": str(plan_path)}
+    if args.json:
+      print(format_json_output("DEVIATION", 2, action_dict, reasons, current_state_dict))
+    else:
+      current_state_text = json.dumps(current_state_dict, ensure_ascii=False, indent=2)
+      print(format_human_output("DEVIATION", 2, action_str, reasons, current_state_text))
+    return 2
+  except yaml.YAMLError as e:
+    reasons = [f"plan_path を YAML として読めません: {e}"]
+    current_state_dict = {"plan_path": str(plan_path)}
+    if args.json:
+      print(format_json_output("DEVIATION", 2, action_dict, reasons, current_state_dict))
+    else:
+      current_state_text = json.dumps(current_state_dict, ensure_ascii=False, indent=2)
+      print(format_human_output("DEVIATION", 2, action_str, reasons, current_state_text))
+    return 2
+
+  reasons, current_state_dict = validate_autonomous_parallel_plan(plan)
+  current_state_dict["plan_path"] = str(plan_path)
+  if reasons:
+    verdict, exit_code = "DEVIATION", 2
+  else:
+    verdict, exit_code = "OK", 0
+
+  if args.json:
+    print(format_json_output(verdict, exit_code, action_dict, reasons, current_state_dict))
+  else:
+    current_state_text = json.dumps(current_state_dict, ensure_ascii=False, indent=2)
+    print(format_human_output(verdict, exit_code, action_str, reasons, current_state_text))
+
+  log_path = args.log_path if args.log_path else DEFAULT_LOG_PATH
+  try:
+    append_log(log_path, action_dict, verdict, exit_code, reasons, current_state_dict)
+  except OSError as e:
+    print(f"warning: ログ書き込みに失敗しました（処理は続行）: {e}", file=sys.stderr)
+
+  return exit_code
 
 
 def cmd_spec_set(args):
@@ -1790,6 +2000,13 @@ def main():
     help="この push を行う理由（必須、利用者承認の出典を含めることを推奨、仕様 §5.3）",
   )
 
+  ap = sub.add_parser(
+    "autonomous-plan",
+    help="自律・並列モード実行計画の事前検査を行う",
+    parents=[common_parser],
+  )
+  ap.add_argument("plan_path", help="検査対象の自律・並列モード実行計画 YAML")
+
   ac = sub.add_parser(
     "audit-commit",
     help="指定 commit の post-write-verification 漏れを監査する",
@@ -1822,6 +2039,8 @@ def main():
     sys.exit(cmd_commit(args))
   elif args.subcommand == "push":
     sys.exit(cmd_push(args))
+  elif args.subcommand == "autonomous-plan":
+    sys.exit(cmd_autonomous_plan(args))
   elif args.subcommand == "audit-commit":
     sys.exit(cmd_audit_commit(args))
   elif args.subcommand == "next":
