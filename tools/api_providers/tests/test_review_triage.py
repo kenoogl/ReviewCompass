@@ -141,6 +141,29 @@ def _write_review_run(tmp_path):
   return run_dir
 
 
+def _write_review_run_approval(run_dir, action, finding_ids=None, final_labels=None):
+  """review-run 用のユーザ承認レコードを書く"""
+  approval_path = run_dir / "approval.json"
+  approval_path.write_text(
+    yaml.safe_dump(
+      {
+        "approved_action": action,
+        "approved_by": "user",
+        "review_run_id": run_dir.name,
+        "summary_presented_to_user": True,
+        "triage_presented_to_user": True,
+        "approved_finding_ids": finding_ids or ["finding-001"],
+        "approved_final_labels": final_labels or {"finding-001": "must-fix"},
+        "consumed": False,
+      },
+      allow_unicode=True,
+      sort_keys=False,
+    ),
+    encoding="utf-8",
+  )
+  return approval_path
+
+
 def test_is_post_write_target_includes_prompt_and_agent_md_candidates():
   """レビュー挙動・agent 挙動を変える md は post-write 対象に含める。"""
   target_paths = [
@@ -190,6 +213,7 @@ def test_list_pending_outputs_plain_markdown_with_recommendation(tmp_path, capsy
 def test_decide_updates_triage_and_model_summary(tmp_path):
   """人判断を triage と model-result-summary に反映する。"""
   run_dir = _write_review_run(tmp_path)
+  approval_path = _write_review_run_approval(run_dir, "review_triage_decide")
 
   exit_code = main(
     [
@@ -199,6 +223,7 @@ def test_decide_updates_triage_and_model_summary(tmp_path):
       "--final-label", "must-fix",
       "--decision-reason", "契約に影響するため修正する",
       "--decision-actor", "human",
+      "--approval-record", str(approval_path),
     ]
   )
 
@@ -219,9 +244,32 @@ def test_decide_updates_triage_and_model_summary(tmp_path):
   assert model["human_required_count"] == 0
 
 
+def test_decide_blocks_important_finding_without_user_approval(tmp_path, capsys):
+  """ERROR / must-fix 相当の重要件は承認レコードなしでは decide できない。"""
+  run_dir = _write_review_run(tmp_path)
+
+  exit_code = main(
+    [
+      "decide",
+      "--review-run-dir", str(run_dir),
+      "--finding-id", "finding-001",
+      "--final-label", "must-fix",
+      "--decision-reason", "契約に影響するため修正する",
+      "--decision-actor", "codex",
+    ]
+  )
+
+  assert exit_code == 1
+  captured = capsys.readouterr()
+  assert "approval" in captured.err
+  triage = yaml.safe_load((run_dir / "triage.yaml").read_text(encoding="utf-8"))
+  assert triage["items"][0]["decision_status"] == "human_required"
+
+
 def test_manifest_template_records_review_run_and_unresolved_count(tmp_path, capsys):
   """完了 manifest 雛形を review_run 参照と coverage matrix 付きで出力する。"""
   run_dir = _write_review_run(tmp_path)
+  decide_approval = _write_review_run_approval(run_dir, "review_triage_decide")
   main(
     [
       "decide",
@@ -230,10 +278,18 @@ def test_manifest_template_records_review_run_and_unresolved_count(tmp_path, cap
       "--final-label", "must-fix",
       "--decision-reason", "契約に影響するため修正する",
       "--decision-actor", "human",
+      "--approval-record", str(decide_approval),
     ]
   )
+  manifest_approval = _write_review_run_approval(run_dir, "review_run_manifest")
 
-  exit_code = main(["manifest-template", "--review-run-dir", str(run_dir)])
+  exit_code = main(
+    [
+      "manifest-template",
+      "--review-run-dir", str(run_dir),
+      "--approval-record", str(manifest_approval),
+    ]
+  )
 
   assert exit_code == 0
   manifest = yaml.safe_load(capsys.readouterr().out)
@@ -265,6 +321,7 @@ def test_write_manifest_creates_file_after_all_decisions(tmp_path):
   """write-manifest は解決済み review-run から manifest ファイルを書く。"""
   run_dir = _write_review_run(tmp_path)
   output_path = tmp_path / "post-write-2026-06-03-999.yaml"
+  decide_approval = _write_review_run_approval(run_dir, "review_triage_decide")
   main(
     [
       "decide",
@@ -273,14 +330,17 @@ def test_write_manifest_creates_file_after_all_decisions(tmp_path):
       "--final-label", "must-fix",
       "--decision-reason", "契約に影響するため修正する",
       "--decision-actor", "human",
+      "--approval-record", str(decide_approval),
     ]
   )
+  manifest_approval = _write_review_run_approval(run_dir, "review_run_manifest")
 
   exit_code = main(
     [
       "write-manifest",
       "--review-run-dir", str(run_dir),
       "--out", str(output_path),
+      "--approval-record", str(manifest_approval),
     ]
   )
 
@@ -302,6 +362,7 @@ def test_write_manifest_auto_chooses_next_post_write_name(tmp_path, monkeypatch,
     encoding="utf-8",
   )
   run_dir = _write_review_run(cwd)
+  decide_approval = _write_review_run_approval(run_dir, "review_triage_decide")
   main(
     [
       "decide",
@@ -310,14 +371,17 @@ def test_write_manifest_auto_chooses_next_post_write_name(tmp_path, monkeypatch,
       "--final-label", "must-fix",
       "--decision-reason", "契約に影響するため修正する",
       "--decision-actor", "human",
+      "--approval-record", str(decide_approval),
     ]
   )
+  manifest_approval = _write_review_run_approval(run_dir, "review_run_manifest")
 
   exit_code = main(
     [
       "write-manifest",
       "--review-run-dir", str(run_dir),
       "--out", "auto",
+      "--approval-record", str(manifest_approval),
     ]
   )
 
@@ -328,3 +392,32 @@ def test_write_manifest_auto_chooses_next_post_write_name(tmp_path, monkeypatch,
   assert created_path.is_file()
   manifest = yaml.safe_load(created_path.read_text(encoding="utf-8"))
   assert manifest["status"] == "completed"
+
+
+def test_write_manifest_blocks_important_decisions_without_approval(tmp_path, capsys):
+  """重要件を含む review-run は manifest 生成時にも承認レコードを要求する。"""
+  run_dir = _write_review_run(tmp_path)
+  triage = yaml.safe_load((run_dir / "triage.yaml").read_text(encoding="utf-8"))
+  item = triage["items"][0]
+  item["decision_status"] = "decided"
+  item["final_label"] = "must-fix"
+  item["decision_actor"] = "codex"
+  item["decision_actor_type"] = "human"
+  (run_dir / "triage.yaml").write_text(
+    yaml.safe_dump(triage, allow_unicode=True, sort_keys=False),
+    encoding="utf-8",
+  )
+  output_path = tmp_path / "post-write-2026-06-03-999.yaml"
+
+  exit_code = main(
+    [
+      "write-manifest",
+      "--review-run-dir", str(run_dir),
+      "--out", str(output_path),
+    ]
+  )
+
+  assert exit_code == 1
+  assert not output_path.exists()
+  captured = capsys.readouterr()
+  assert "approval" in captured.err

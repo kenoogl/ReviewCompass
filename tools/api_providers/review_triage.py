@@ -17,6 +17,9 @@ if str(_PROJECT_ROOT) not in sys.path:
 import yaml  # noqa: E402
 
 FINAL_LABELS = ("must-fix", "should-fix", "leave-as-is")
+IMPORTANT_SEVERITIES = ("CRITICAL", "ERROR")
+TRIAGE_DECIDE_APPROVAL_ACTIONS = ("review_triage_decide", "review_run_triage")
+MANIFEST_APPROVAL_ACTIONS = ("review_run_manifest", "review_run_triage")
 POST_WRITE_VERIFICATION_DIR_PREFIXES = (
   "docs/plan/",
   "docs/disciplines/",
@@ -147,6 +150,85 @@ def _recommendation_for(item: Dict[str, Any]) -> Dict[str, str]:
   }
 
 
+def _severity_for(item: Dict[str, Any]) -> str:
+  return str(item.get("severity_normalized") or item.get("severity_original") or "INFO").upper()
+
+
+def _is_important_item(item: Dict[str, Any], final_label: Optional[str] = None) -> bool:
+  """重要件として人承認を要求する finding かを返す。"""
+  label = final_label if final_label is not None else item.get("final_label")
+  return _severity_for(item) in IMPORTANT_SEVERITIES or label == "must-fix"
+
+
+def _load_approval_record(path: Optional[str]) -> Dict[str, Any]:
+  if not path:
+    return {}
+  approval = yaml.safe_load(Path(path).read_text(encoding="utf-8"))
+  return approval if isinstance(approval, dict) else {}
+
+
+def _approval_errors(
+  approval: Dict[str, Any],
+  run_id: str,
+  allowed_actions: tuple,
+  required_finding_ids: List[str],
+  final_labels: Optional[Dict[str, str]] = None,
+) -> List[str]:
+  errors = []
+  if not approval:
+    return ["approval record is required"]
+  if approval.get("approved_action") not in allowed_actions:
+    errors.append("approved_action does not allow this review-run action")
+  if approval.get("approved_by") != "user":
+    errors.append("approved_by must be user")
+  if approval.get("review_run_id") != run_id:
+    errors.append("review_run_id does not match")
+  if approval.get("summary_presented_to_user") is not True:
+    errors.append("summary_presented_to_user must be true")
+  if approval.get("triage_presented_to_user") is not True:
+    errors.append("triage_presented_to_user must be true")
+  if approval.get("consumed") is True:
+    errors.append("approval record is already consumed")
+
+  approved_ids = approval.get("approved_finding_ids")
+  approved_id_set = set(approved_ids) if isinstance(approved_ids, list) else set()
+  missing_ids = sorted(set(required_finding_ids) - approved_id_set)
+  if missing_ids:
+    errors.append(f"approved_finding_ids missing: {', '.join(missing_ids)}")
+
+  approved_labels = approval.get("approved_final_labels")
+  if final_labels and isinstance(approved_labels, dict):
+    mismatched = [
+      finding_id
+      for finding_id, label in final_labels.items()
+      if approved_labels.get(finding_id) != label
+    ]
+    if mismatched:
+      errors.append(f"approved_final_labels mismatch: {', '.join(sorted(mismatched))}")
+  return errors
+
+
+def _require_review_run_approval(
+  run_dir: Path,
+  approval_record_path: Optional[str],
+  allowed_actions: tuple,
+  required_finding_ids: List[str],
+  final_labels: Optional[Dict[str, str]] = None,
+) -> None:
+  if not required_finding_ids:
+    return
+  approval = _load_approval_record(approval_record_path)
+  errors = _approval_errors(
+    approval,
+    run_dir.name,
+    allowed_actions,
+    required_finding_ids,
+    final_labels,
+  )
+  if errors:
+    raise ValueError("approval gate failed: " + "; ".join(errors))
+
+
 def _triage_path(run_dir: Path) -> Path:
   return run_dir / "triage.yaml"
 
@@ -249,6 +331,7 @@ def decide_item(
   final_label: str,
   decision_reason: str,
   decision_actor: str,
+  approval_record_path: Optional[str] = None,
 ) -> bool:
   """1 finding の人判断を反映する。見つかった場合 True。"""
   run_dir = Path(review_run_dir)
@@ -264,10 +347,18 @@ def decide_item(
       continue
     if item.get("finding_id") != finding_id:
       continue
+    if _is_important_item(item, final_label):
+      _require_review_run_approval(
+        run_dir,
+        approval_record_path,
+        TRIAGE_DECIDE_APPROVAL_ACTIONS,
+        [finding_id],
+        {finding_id: final_label},
+      )
     item["final_label"] = final_label
     item["decision_status"] = "decided"
     item["decision_actor"] = decision_actor
-    item["decision_actor_type"] = "human"
+    item["decision_actor_type"] = "human" if decision_actor == "human" else "agent"
     item["decision_at"] = now
     item["decision_reason"] = decision_reason
     found = True
@@ -377,16 +468,42 @@ def build_manifest_template(review_run_dir: str) -> Dict[str, Any]:
   }
 
 
-def assert_manifest_ready(review_run_dir: str) -> None:
+def assert_manifest_ready(
+  review_run_dir: str,
+  approval_record_path: Optional[str] = None,
+) -> None:
   """manifest 生成可能か確認し、未判断があれば例外にする。"""
+  run_dir = Path(review_run_dir)
   unresolved = unresolved_human_required_count(review_run_dir)
   if unresolved > 0:
     raise ValueError(f"human_required remains: {unresolved}")
+  triage = _load_yaml_dict(_triage_path(run_dir))
+  items = triage.get("items")
+  if not isinstance(items, list):
+    items = []
+  important_ids = [
+    item.get("finding_id")
+    for item in items
+    if isinstance(item, dict)
+    and item.get("finding_id")
+    and item.get("decision_status") == "decided"
+    and _is_important_item(item)
+  ]
+  _require_review_run_approval(
+    run_dir,
+    approval_record_path,
+    MANIFEST_APPROVAL_ACTIONS,
+    sorted(set(important_ids)),
+  )
 
 
-def write_manifest(review_run_dir: str, out_path: str) -> Path:
+def write_manifest(
+  review_run_dir: str,
+  out_path: str,
+  approval_record_path: Optional[str] = None,
+) -> Path:
   """完了 manifest をファイルへ書き、出力先 path を返す。"""
-  assert_manifest_ready(review_run_dir)
+  assert_manifest_ready(review_run_dir, approval_record_path)
   manifest = build_manifest_template(review_run_dir)
   output = resolve_manifest_output_path(out_path)
   output.parent.mkdir(parents=True, exist_ok=True)
@@ -424,13 +541,16 @@ def _parse_argv(argv: Optional[List[str]]) -> argparse.Namespace:
   decide_parser.add_argument("--final-label", required=True, choices=FINAL_LABELS)
   decide_parser.add_argument("--decision-reason", required=True)
   decide_parser.add_argument("--decision-actor", required=True)
+  decide_parser.add_argument("--approval-record")
 
   manifest_parser = subparsers.add_parser("manifest-template")
   manifest_parser.add_argument("--review-run-dir", required=True)
+  manifest_parser.add_argument("--approval-record")
 
   write_manifest_parser = subparsers.add_parser("write-manifest")
   write_manifest_parser.add_argument("--review-run-dir", required=True)
   write_manifest_parser.add_argument("--out", required=True)
+  write_manifest_parser.add_argument("--approval-record")
 
   return parser.parse_args(argv)
 
@@ -448,13 +568,14 @@ def main(argv: Optional[List[str]] = None) -> int:
         args.final_label,
         args.decision_reason,
         args.decision_actor,
+        args.approval_record,
       )
       if not found:
         sys.stderr.write(f"finding_id not found: {args.finding_id}\n")
         return 1
       return 0
     if args.command == "manifest-template":
-      assert_manifest_ready(args.review_run_dir)
+      assert_manifest_ready(args.review_run_dir, args.approval_record)
       sys.stdout.write(
         yaml.safe_dump(
           build_manifest_template(args.review_run_dir),
@@ -464,7 +585,7 @@ def main(argv: Optional[List[str]] = None) -> int:
       )
       return 0
     if args.command == "write-manifest":
-      output = write_manifest(args.review_run_dir, args.out)
+      output = write_manifest(args.review_run_dir, args.out, args.approval_record)
       sys.stdout.write(f"{output}\n")
       return 0
   except Exception as exc:

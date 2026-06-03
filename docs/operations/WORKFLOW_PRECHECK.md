@@ -1,6 +1,6 @@
 # WORKFLOW_PRECHECK：ワークフロー事前検査スクリプトの正本仕様
 
-最終更新：2026-06-03（commit 承認レコードガード追加。Codex adapter migration：段階 3 hook 記述を実行環境 adapter 方針へ整理）／2026-05-25 セッション 24（新設、補助層 C 段階 2 の仕様確定）
+最終更新：2026-06-03（commit 時 post-write-verification 監査と audit-commit 追加、commit 承認レコードガード追加。Codex adapter migration：段階 3 hook 記述を実行環境 adapter 方針へ整理）／2026-05-25 セッション 24（新設、補助層 C 段階 2 の仕様確定）
 位置付け：運用文書（`docs/operations/` 配下）、計画書 §5.8 補助層 C の段階 2 の正本仕様
 
 本文書は計画書 §5.8 補助層 C 共存モデルの **段階 2（外部スクリプトによる機械的判定）** の仕様を定める。段階 2 の実装は本文書を入力として進める。仕様の変更には利用者明示承認が必要（規律 §0.2 計画書方針変更に準じる）。
@@ -93,6 +93,7 @@
 check-workflow-action.py spec-set <feature> <phase> <stage> <new-value> [--rationale "<理由>"]
 check-workflow-action.py commit --rationale "<理由>"
 check-workflow-action.py push --rationale "<理由>"
+check-workflow-action.py audit-commit <commit-ish>
 guarded-git-commit.py -m "<commit message>" --rationale "<理由>"
 ```
 
@@ -164,6 +165,8 @@ tools/guarded-git-commit.py -m "<commit message>" --rationale "<理由>"
 
 限界：repo 内スクリプトだけでは「承認レコードを誰が作成したか」を完全には保証できない。強い保証には、段階 3 hook adapter または実行環境側で、承認レコードの発行・更新を利用者操作に限定する必要がある。
 
+また、commit 対象の staged ファイルに post-write-verification 対象（`docs/operations/`、`TODO_NEXT_SESSION.md` 等）が含まれる場合、対象ファイル群の現在 sha256 を覆う completed manifest を必須とする。manifest がない、sha256 が一致しない、coverage matrix が不足する、未解決本質的指摘がある場合は exit 2 とする。
+
 ### 5.3 `push` サブコマンド
 
 ```
@@ -177,6 +180,20 @@ check-workflow-action.py push --rationale "<理由>"
 | `--rationale` | **必須** | この push を行う理由、利用者承認の発言出典を含めることを推奨 |
 
 `--rationale` を必須とする理由：push は origin に影響する不可逆操作、なぜ実行するかの根拠を残すべき。
+
+### 5.4 `audit-commit` サブコマンド
+
+```
+check-workflow-action.py audit-commit <commit-ish>
+```
+
+指定 commit の変更ファイルを読み、post-write-verification 対象が含まれる場合に completed manifest が存在するかを遡及監査する。`<commit-ish>` は `HEAD` や commit hash を指定できる。root commit も監査対象に含める。
+
+commit 済みの見落とし検出用であり、通常は commit 直前の `commit` precheck が主経路。`audit-commit` は commit 内の対象ファイル内容を `git show <commit-ish>:<path>` で読み、その sha256 と現在リポジトリ内に存在する manifest の `target_sha256` を照合する。
+
+この監査は「対象 commit 時点に manifest が存在したか」を証明する時点監査ではなく、「現在のリポジトリ状態で、その commit 内容に対応する検証記録が存在するか」を確認する是正監査である。したがって、見落とし後に追加した manifest による是正完了を認める。
+
+`<commit-ish>` が解決できない場合は逸脱（exit 2）とする。
 
 ## 6. 判定ロジック
 
@@ -205,6 +222,8 @@ check-workflow-action.py push --rationale "<理由>"
 
 - **ユーザ承認レコードの確認**：`.reviewcompass/approvals/commit-approval.json` を読み、`approved_action=commit`、`approved_by=user`、未消費、かつ staged ファイルが `target_files` の範囲内であることを確認
   - レコードなし、形式不正、消費済み、承認対象外ファイルがある場合：逸脱（exit 2）、commit を遮断推奨
+- **post-write-verification 対象の完了確認**：staged ファイルに post-write-verification 対象が含まれる場合、対象ファイル群と現在 sha256 を覆う completed manifest があることを確認
+  - manifest なし、sha256 不一致、coverage matrix 不足、未解決本質的指摘ありの場合：逸脱（exit 2）、commit を遮断推奨
 - **持ち越し所見の確認**：`.reviewcompass/pending-cross-feature-findings.md` を読み、未消化所見の件数を出力
   - 未消化所見が 1 件以上ある場合：警告（exit 1）、commit は可能だが要注意
   - 0 件の場合：OK（exit 0）
@@ -223,6 +242,15 @@ check-workflow-action.py push --rationale "<理由>"
 - **ローカル先行コミット数**：`origin/main` から進んでいるコミット数を出力
 - **直近 5 コミットの題名要約**：利用者が push 前に確認しやすい形で出力
 - **push 先**：`origin/main` 以外への push が要求されていれば警告（exit 1）
+
+### 6.4 `audit-commit` の判定
+
+`git diff-tree --root --no-commit-id --name-only -r <commit-ish>` で指定 commit の変更ファイルを取得し、post-write-verification 対象だけを抽出する。
+
+- 対象なし：OK（exit 0）
+- 対象あり、かつ commit 内ファイル内容 sha256 を覆う completed manifest がある：OK（exit 0）
+- 対象あり、manifest がない／sha256 不一致／coverage matrix 不足／未解決本質的指摘あり：逸脱（exit 2）
+- `<commit-ish>` が解決できない：逸脱（exit 2）
 
 ## 7. 出力形式
 
@@ -350,6 +378,8 @@ tests/fixtures/spec-json-cases/
 - **正常系**：
   - `spec-set foundation requirements approval true` ＋ alignment=true → exit 0
   - `commit` ＋ pending 所見 0 件 ＋ 通常変更のみ ＋ 有効なユーザ承認レコード → exit 0
+  - `commit` ＋ post-write 対象文書 ＋ 有効なユーザ承認レコード ＋ completed manifest → exit 0
+  - `audit-commit HEAD` ＋ post-write 対象文書 ＋ matching completed manifest → exit 0
   - `guarded-git-commit` ＋ 有効なユーザ承認レコード → commit 実行、承認レコード消費済み
   - `push` ＋ 作業ツリー clean ＋ 先行 1 コミット → exit 0
 - **警告系**：
@@ -361,6 +391,8 @@ tests/fixtures/spec-json-cases/
   - `spec-set foundation design drafting true` ＋ requirements.approval=false → exit 2
   - `push` ＋ 作業ツリー dirty → exit 2
   - `commit` ＋ ユーザ承認レコードなし／消費済み／承認対象外 staged ファイルあり → exit 2
+  - `commit` ＋ post-write 対象文書 ＋ completed manifest なし → exit 2
+  - `audit-commit HEAD` ＋ post-write 対象文書 ＋ completed manifest なし → exit 2
   - `guarded-git-commit` ＋ ユーザ承認レコードなし → commit しない
   - `commit` ＋ `.git/` 内ファイル含む → exit 2
 

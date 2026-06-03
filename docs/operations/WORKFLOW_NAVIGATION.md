@@ -56,16 +56,20 @@ python3 tools/api_providers/review_triage.py decide \
   --finding-id <finding-id> \
   --final-label must-fix \
   --decision-reason "<reason>" \
-  --decision-actor human
+  --decision-actor human \
+  --approval-record docs/notes/review-runs/<run-id>/approval.yaml
 
 python3 tools/api_providers/review_triage.py write-manifest \
   --review-run-dir docs/notes/review-runs/<run-id> \
-  --out auto
+  --out auto \
+  --approval-record docs/notes/review-runs/<run-id>/approval.yaml
 
 python3 tools/check-workflow-action.py next --json
 ```
 
-`write-manifest --out auto` は `.reviewcompass/post-write-verification/post-write-YYYY-MM-DD-NNN.yaml` の次番号を作る。`triage.yaml` に `decision_status: human_required` が残る場合は manifest を生成しない。
+API レビュー結果を得た場合は、raw 参照、モデル別要約、三段階トリアージ（`must-fix`／`should-fix`／`leave-as-is`）を利用者へまとめて提示する。`ERROR`／`CRITICAL` または最終判断 `must-fix` の重要件を `decide` する場合、または重要件を含む run から manifest を生成する場合は、利用者提示と承認を記録した `--approval-record` が必須である。承認レコードには `approved_by: user`、`review_run_id`、`summary_presented_to_user: true`、`triage_presented_to_user: true`、`approved_finding_ids`、必要に応じて `approved_final_labels` を含める。
+
+`write-manifest --out auto` は `.reviewcompass/post-write-verification/post-write-YYYY-MM-DD-NNN.yaml` の次番号を作る。`triage.yaml` に `decision_status: human_required` が残る場合、または重要件の利用者承認が確認できない場合は manifest を生成しない。
 
 ### `post_write_policy_violation`
 

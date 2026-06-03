@@ -1,0 +1,136 @@
+status: completed
+target_files:
+- /private/tmp/reviewcompass-postwrite-commit-audit-2026-06-03.md
+- TODO_NEXT_SESSION.md
+- docs/notes/review-runs/postwrite-commit-audit-guard-2026-06-03-r1/model-result-summary.yaml
+- docs/notes/review-runs/postwrite-commit-audit-guard-2026-06-03-r1/parsed/claude-sonnet-4-6.round-1.yaml
+- docs/notes/review-runs/postwrite-commit-audit-guard-2026-06-03-r1/parsed/gemini-3.1-pro-preview.round-1.yaml
+- docs/notes/review-runs/postwrite-commit-audit-guard-2026-06-03-r1/parsed/gpt-5.4.round-1.yaml
+- docs/notes/review-runs/postwrite-commit-audit-guard-2026-06-03-r1/raw/claude-sonnet-4-6.round-1.txt
+- docs/notes/review-runs/postwrite-commit-audit-guard-2026-06-03-r1/raw/gemini-3.1-pro-preview.round-1.txt
+- docs/notes/review-runs/postwrite-commit-audit-guard-2026-06-03-r1/raw/gpt-5.4.round-1.txt
+- docs/notes/review-runs/postwrite-commit-audit-guard-2026-06-03-r1/review_summary.md
+- docs/notes/review-runs/postwrite-commit-audit-guard-2026-06-03-r1/rounds.yaml
+- docs/notes/review-runs/postwrite-commit-audit-guard-2026-06-03-r1/target-manifest.yaml
+- docs/notes/review-runs/postwrite-commit-audit-guard-2026-06-03-r1/triage.yaml
+- docs/operations/WORKFLOW_PRECHECK.md
+target_sha256:
+  /private/tmp/reviewcompass-postwrite-commit-audit-2026-06-03.md: a5ec539ba1291c456119e1152e0f58b638cb7309adfcff5f979379bf811a192f
+  TODO_NEXT_SESSION.md: 2d2b23123f4b55b48c689c2d3f9bc2d4cb372b7df3c64df809adfcebc8da2174
+  docs/notes/review-runs/postwrite-commit-audit-guard-2026-06-03-r1/model-result-summary.yaml: 93f7c40eb4e20db0d83267ff715859ffb1b881c5b0033573245f1441ad66720b
+  docs/notes/review-runs/postwrite-commit-audit-guard-2026-06-03-r1/parsed/claude-sonnet-4-6.round-1.yaml: 928883e3ac03c651a49370eaa6f8380ac83d467778ce1a63db9635dc91c593e5
+  docs/notes/review-runs/postwrite-commit-audit-guard-2026-06-03-r1/parsed/gemini-3.1-pro-preview.round-1.yaml: e00525261fdb0159baa251fcfc66cdde5b6a203a4b97555f231bf60e75f20b89
+  docs/notes/review-runs/postwrite-commit-audit-guard-2026-06-03-r1/parsed/gpt-5.4.round-1.yaml: f4ce07b265fe59038cc356a15737eb44c7c376c170d5ec6921aba933f67ef141
+  docs/notes/review-runs/postwrite-commit-audit-guard-2026-06-03-r1/raw/claude-sonnet-4-6.round-1.txt: acacd51ad1a2038148d7a020eccec8cbc37b385387059d60e64f1dce88d23fb9
+  docs/notes/review-runs/postwrite-commit-audit-guard-2026-06-03-r1/raw/gemini-3.1-pro-preview.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+  docs/notes/review-runs/postwrite-commit-audit-guard-2026-06-03-r1/raw/gpt-5.4.round-1.txt: 914cbbd1bea6400f257b83554739543cea1f7f6f1868c8cbe39e25e670a72937
+  docs/notes/review-runs/postwrite-commit-audit-guard-2026-06-03-r1/review_summary.md: 70e8111f74a79182eb00b3c361c9df10256cb68eb8b7653254f6f3aabef22d9c
+  docs/notes/review-runs/postwrite-commit-audit-guard-2026-06-03-r1/rounds.yaml: e5e1798e289e042f9f11ec5c6b668d38684d1f46c319252f9e6dddd7d36dba2e
+  docs/notes/review-runs/postwrite-commit-audit-guard-2026-06-03-r1/target-manifest.yaml: ea9118b9be55ff662b9f1e10f84245572967017e10ad101007ac8c3290c6cc67
+  docs/notes/review-runs/postwrite-commit-audit-guard-2026-06-03-r1/triage.yaml: 6d08ba5d8217ce5246a6ef70d7b13008c1d559a93d55b1bf76c5c6ed9c948119
+  docs/operations/WORKFLOW_PRECHECK.md: f5041fd15098240ae04ee1f13b811bfd87e3bd1f41ef59f34fe8943caee70c3c
+required_verifiers: &id001
+- claude-sonnet-4-6
+- gpt-5.4
+- gemini-3.1-pro-preview
+completed_verifiers: *id001
+unresolved_substantive_findings: 0
+verifications:
+- verifier: claude-sonnet-4-6
+  target_files:
+  - /private/tmp/reviewcompass-postwrite-commit-audit-2026-06-03.md
+  - TODO_NEXT_SESSION.md
+  - docs/notes/review-runs/postwrite-commit-audit-guard-2026-06-03-r1/model-result-summary.yaml
+  - docs/notes/review-runs/postwrite-commit-audit-guard-2026-06-03-r1/parsed/claude-sonnet-4-6.round-1.yaml
+  - docs/notes/review-runs/postwrite-commit-audit-guard-2026-06-03-r1/parsed/gemini-3.1-pro-preview.round-1.yaml
+  - docs/notes/review-runs/postwrite-commit-audit-guard-2026-06-03-r1/parsed/gpt-5.4.round-1.yaml
+  - docs/notes/review-runs/postwrite-commit-audit-guard-2026-06-03-r1/raw/claude-sonnet-4-6.round-1.txt
+  - docs/notes/review-runs/postwrite-commit-audit-guard-2026-06-03-r1/raw/gemini-3.1-pro-preview.round-1.txt
+  - docs/notes/review-runs/postwrite-commit-audit-guard-2026-06-03-r1/raw/gpt-5.4.round-1.txt
+  - docs/notes/review-runs/postwrite-commit-audit-guard-2026-06-03-r1/review_summary.md
+  - docs/notes/review-runs/postwrite-commit-audit-guard-2026-06-03-r1/rounds.yaml
+  - docs/notes/review-runs/postwrite-commit-audit-guard-2026-06-03-r1/target-manifest.yaml
+  - docs/notes/review-runs/postwrite-commit-audit-guard-2026-06-03-r1/triage.yaml
+  - docs/operations/WORKFLOW_PRECHECK.md
+  target_sha256:
+    /private/tmp/reviewcompass-postwrite-commit-audit-2026-06-03.md: a5ec539ba1291c456119e1152e0f58b638cb7309adfcff5f979379bf811a192f
+    TODO_NEXT_SESSION.md: 2d2b23123f4b55b48c689c2d3f9bc2d4cb372b7df3c64df809adfcebc8da2174
+    docs/notes/review-runs/postwrite-commit-audit-guard-2026-06-03-r1/model-result-summary.yaml: 93f7c40eb4e20db0d83267ff715859ffb1b881c5b0033573245f1441ad66720b
+    docs/notes/review-runs/postwrite-commit-audit-guard-2026-06-03-r1/parsed/claude-sonnet-4-6.round-1.yaml: 928883e3ac03c651a49370eaa6f8380ac83d467778ce1a63db9635dc91c593e5
+    docs/notes/review-runs/postwrite-commit-audit-guard-2026-06-03-r1/parsed/gemini-3.1-pro-preview.round-1.yaml: e00525261fdb0159baa251fcfc66cdde5b6a203a4b97555f231bf60e75f20b89
+    docs/notes/review-runs/postwrite-commit-audit-guard-2026-06-03-r1/parsed/gpt-5.4.round-1.yaml: f4ce07b265fe59038cc356a15737eb44c7c376c170d5ec6921aba933f67ef141
+    docs/notes/review-runs/postwrite-commit-audit-guard-2026-06-03-r1/raw/claude-sonnet-4-6.round-1.txt: acacd51ad1a2038148d7a020eccec8cbc37b385387059d60e64f1dce88d23fb9
+    docs/notes/review-runs/postwrite-commit-audit-guard-2026-06-03-r1/raw/gemini-3.1-pro-preview.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/postwrite-commit-audit-guard-2026-06-03-r1/raw/gpt-5.4.round-1.txt: 914cbbd1bea6400f257b83554739543cea1f7f6f1868c8cbe39e25e670a72937
+    docs/notes/review-runs/postwrite-commit-audit-guard-2026-06-03-r1/review_summary.md: 70e8111f74a79182eb00b3c361c9df10256cb68eb8b7653254f6f3aabef22d9c
+    docs/notes/review-runs/postwrite-commit-audit-guard-2026-06-03-r1/rounds.yaml: e5e1798e289e042f9f11ec5c6b668d38684d1f46c319252f9e6dddd7d36dba2e
+    docs/notes/review-runs/postwrite-commit-audit-guard-2026-06-03-r1/target-manifest.yaml: ea9118b9be55ff662b9f1e10f84245572967017e10ad101007ac8c3290c6cc67
+    docs/notes/review-runs/postwrite-commit-audit-guard-2026-06-03-r1/triage.yaml: 6d08ba5d8217ce5246a6ef70d7b13008c1d559a93d55b1bf76c5c6ed9c948119
+    docs/operations/WORKFLOW_PRECHECK.md: f5041fd15098240ae04ee1f13b811bfd87e3bd1f41ef59f34fe8943caee70c3c
+- verifier: gpt-5.4
+  target_files:
+  - /private/tmp/reviewcompass-postwrite-commit-audit-2026-06-03.md
+  - TODO_NEXT_SESSION.md
+  - docs/notes/review-runs/postwrite-commit-audit-guard-2026-06-03-r1/model-result-summary.yaml
+  - docs/notes/review-runs/postwrite-commit-audit-guard-2026-06-03-r1/parsed/claude-sonnet-4-6.round-1.yaml
+  - docs/notes/review-runs/postwrite-commit-audit-guard-2026-06-03-r1/parsed/gemini-3.1-pro-preview.round-1.yaml
+  - docs/notes/review-runs/postwrite-commit-audit-guard-2026-06-03-r1/parsed/gpt-5.4.round-1.yaml
+  - docs/notes/review-runs/postwrite-commit-audit-guard-2026-06-03-r1/raw/claude-sonnet-4-6.round-1.txt
+  - docs/notes/review-runs/postwrite-commit-audit-guard-2026-06-03-r1/raw/gemini-3.1-pro-preview.round-1.txt
+  - docs/notes/review-runs/postwrite-commit-audit-guard-2026-06-03-r1/raw/gpt-5.4.round-1.txt
+  - docs/notes/review-runs/postwrite-commit-audit-guard-2026-06-03-r1/review_summary.md
+  - docs/notes/review-runs/postwrite-commit-audit-guard-2026-06-03-r1/rounds.yaml
+  - docs/notes/review-runs/postwrite-commit-audit-guard-2026-06-03-r1/target-manifest.yaml
+  - docs/notes/review-runs/postwrite-commit-audit-guard-2026-06-03-r1/triage.yaml
+  - docs/operations/WORKFLOW_PRECHECK.md
+  target_sha256:
+    /private/tmp/reviewcompass-postwrite-commit-audit-2026-06-03.md: a5ec539ba1291c456119e1152e0f58b638cb7309adfcff5f979379bf811a192f
+    TODO_NEXT_SESSION.md: 2d2b23123f4b55b48c689c2d3f9bc2d4cb372b7df3c64df809adfcebc8da2174
+    docs/notes/review-runs/postwrite-commit-audit-guard-2026-06-03-r1/model-result-summary.yaml: 93f7c40eb4e20db0d83267ff715859ffb1b881c5b0033573245f1441ad66720b
+    docs/notes/review-runs/postwrite-commit-audit-guard-2026-06-03-r1/parsed/claude-sonnet-4-6.round-1.yaml: 928883e3ac03c651a49370eaa6f8380ac83d467778ce1a63db9635dc91c593e5
+    docs/notes/review-runs/postwrite-commit-audit-guard-2026-06-03-r1/parsed/gemini-3.1-pro-preview.round-1.yaml: e00525261fdb0159baa251fcfc66cdde5b6a203a4b97555f231bf60e75f20b89
+    docs/notes/review-runs/postwrite-commit-audit-guard-2026-06-03-r1/parsed/gpt-5.4.round-1.yaml: f4ce07b265fe59038cc356a15737eb44c7c376c170d5ec6921aba933f67ef141
+    docs/notes/review-runs/postwrite-commit-audit-guard-2026-06-03-r1/raw/claude-sonnet-4-6.round-1.txt: acacd51ad1a2038148d7a020eccec8cbc37b385387059d60e64f1dce88d23fb9
+    docs/notes/review-runs/postwrite-commit-audit-guard-2026-06-03-r1/raw/gemini-3.1-pro-preview.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/postwrite-commit-audit-guard-2026-06-03-r1/raw/gpt-5.4.round-1.txt: 914cbbd1bea6400f257b83554739543cea1f7f6f1868c8cbe39e25e670a72937
+    docs/notes/review-runs/postwrite-commit-audit-guard-2026-06-03-r1/review_summary.md: 70e8111f74a79182eb00b3c361c9df10256cb68eb8b7653254f6f3aabef22d9c
+    docs/notes/review-runs/postwrite-commit-audit-guard-2026-06-03-r1/rounds.yaml: e5e1798e289e042f9f11ec5c6b668d38684d1f46c319252f9e6dddd7d36dba2e
+    docs/notes/review-runs/postwrite-commit-audit-guard-2026-06-03-r1/target-manifest.yaml: ea9118b9be55ff662b9f1e10f84245572967017e10ad101007ac8c3290c6cc67
+    docs/notes/review-runs/postwrite-commit-audit-guard-2026-06-03-r1/triage.yaml: 6d08ba5d8217ce5246a6ef70d7b13008c1d559a93d55b1bf76c5c6ed9c948119
+    docs/operations/WORKFLOW_PRECHECK.md: f5041fd15098240ae04ee1f13b811bfd87e3bd1f41ef59f34fe8943caee70c3c
+- verifier: gemini-3.1-pro-preview
+  target_files:
+  - /private/tmp/reviewcompass-postwrite-commit-audit-2026-06-03.md
+  - TODO_NEXT_SESSION.md
+  - docs/notes/review-runs/postwrite-commit-audit-guard-2026-06-03-r1/model-result-summary.yaml
+  - docs/notes/review-runs/postwrite-commit-audit-guard-2026-06-03-r1/parsed/claude-sonnet-4-6.round-1.yaml
+  - docs/notes/review-runs/postwrite-commit-audit-guard-2026-06-03-r1/parsed/gemini-3.1-pro-preview.round-1.yaml
+  - docs/notes/review-runs/postwrite-commit-audit-guard-2026-06-03-r1/parsed/gpt-5.4.round-1.yaml
+  - docs/notes/review-runs/postwrite-commit-audit-guard-2026-06-03-r1/raw/claude-sonnet-4-6.round-1.txt
+  - docs/notes/review-runs/postwrite-commit-audit-guard-2026-06-03-r1/raw/gemini-3.1-pro-preview.round-1.txt
+  - docs/notes/review-runs/postwrite-commit-audit-guard-2026-06-03-r1/raw/gpt-5.4.round-1.txt
+  - docs/notes/review-runs/postwrite-commit-audit-guard-2026-06-03-r1/review_summary.md
+  - docs/notes/review-runs/postwrite-commit-audit-guard-2026-06-03-r1/rounds.yaml
+  - docs/notes/review-runs/postwrite-commit-audit-guard-2026-06-03-r1/target-manifest.yaml
+  - docs/notes/review-runs/postwrite-commit-audit-guard-2026-06-03-r1/triage.yaml
+  - docs/operations/WORKFLOW_PRECHECK.md
+  target_sha256:
+    /private/tmp/reviewcompass-postwrite-commit-audit-2026-06-03.md: a5ec539ba1291c456119e1152e0f58b638cb7309adfcff5f979379bf811a192f
+    TODO_NEXT_SESSION.md: 2d2b23123f4b55b48c689c2d3f9bc2d4cb372b7df3c64df809adfcebc8da2174
+    docs/notes/review-runs/postwrite-commit-audit-guard-2026-06-03-r1/model-result-summary.yaml: 93f7c40eb4e20db0d83267ff715859ffb1b881c5b0033573245f1441ad66720b
+    docs/notes/review-runs/postwrite-commit-audit-guard-2026-06-03-r1/parsed/claude-sonnet-4-6.round-1.yaml: 928883e3ac03c651a49370eaa6f8380ac83d467778ce1a63db9635dc91c593e5
+    docs/notes/review-runs/postwrite-commit-audit-guard-2026-06-03-r1/parsed/gemini-3.1-pro-preview.round-1.yaml: e00525261fdb0159baa251fcfc66cdde5b6a203a4b97555f231bf60e75f20b89
+    docs/notes/review-runs/postwrite-commit-audit-guard-2026-06-03-r1/parsed/gpt-5.4.round-1.yaml: f4ce07b265fe59038cc356a15737eb44c7c376c170d5ec6921aba933f67ef141
+    docs/notes/review-runs/postwrite-commit-audit-guard-2026-06-03-r1/raw/claude-sonnet-4-6.round-1.txt: acacd51ad1a2038148d7a020eccec8cbc37b385387059d60e64f1dce88d23fb9
+    docs/notes/review-runs/postwrite-commit-audit-guard-2026-06-03-r1/raw/gemini-3.1-pro-preview.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/postwrite-commit-audit-guard-2026-06-03-r1/raw/gpt-5.4.round-1.txt: 914cbbd1bea6400f257b83554739543cea1f7f6f1868c8cbe39e25e670a72937
+    docs/notes/review-runs/postwrite-commit-audit-guard-2026-06-03-r1/review_summary.md: 70e8111f74a79182eb00b3c361c9df10256cb68eb8b7653254f6f3aabef22d9c
+    docs/notes/review-runs/postwrite-commit-audit-guard-2026-06-03-r1/rounds.yaml: e5e1798e289e042f9f11ec5c6b668d38684d1f46c319252f9e6dddd7d36dba2e
+    docs/notes/review-runs/postwrite-commit-audit-guard-2026-06-03-r1/target-manifest.yaml: ea9118b9be55ff662b9f1e10f84245572967017e10ad101007ac8c3290c6cc67
+    docs/notes/review-runs/postwrite-commit-audit-guard-2026-06-03-r1/triage.yaml: 6d08ba5d8217ce5246a6ef70d7b13008c1d559a93d55b1bf76c5c6ed9c948119
+    docs/operations/WORKFLOW_PRECHECK.md: f5041fd15098240ae04ee1f13b811bfd87e3bd1f41ef59f34fe8943caee70c3c
+review_run:
+  path: docs/notes/review-runs/postwrite-commit-audit-guard-2026-06-03-r1
+  summary_path: docs/notes/review-runs/postwrite-commit-audit-guard-2026-06-03-r1/model-result-summary.yaml
+notes: Generated template; verify target_files cover current post-write targets before
+  use.

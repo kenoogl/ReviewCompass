@@ -915,6 +915,40 @@ class NextNavigationTests(unittest.TestCase):
     self.assertEqual(data["next_action"]["kind"], "stage")
     self.assertEqual(data["next_action"]["feature"], "foundation")
 
+  def test_next_does_not_report_policy_violation_after_manifest_completion(self):
+    """完了 manifest がある場合は pending 中の禁止混在として扱わない"""
+    cwd = Path(self.tmpdir)
+    _init_git_repo(cwd)
+    _write_specs_for_next(cwd, {})
+    target = cwd / "docs" / "notes" / "new-policy.md"
+    target.parent.mkdir(parents=True, exist_ok=True)
+    target.write_text("検証済みの正本文書\n", encoding="utf-8")
+    runner = cwd / "tools" / "post_write_verify_new_policy.py"
+    runner.parent.mkdir(parents=True, exist_ok=True)
+    runner.write_text("# 検証完了後の通常実装変更\n", encoding="utf-8")
+    _write_post_write_manifest(
+      cwd,
+      "post-write-2026-06-02-001.yaml",
+      {
+        "status": "completed",
+        "target_files": ["docs/notes/new-policy.md"],
+        "target_sha256": {
+          "docs/notes/new-policy.md": _sha256_file(target),
+        },
+        "required_verifiers": ["google"],
+        "completed_verifiers": ["google"],
+        "unresolved_substantive_findings": 0,
+      },
+    )
+
+    result = run_script(["next", "--json"], cwd=cwd)
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 0, result.stderr)
+    data = json.loads(result.stdout)
+    self.assertEqual(data["verdict"], "OK")
+    self.assertEqual(data["next_action"]["kind"], "stage")
+
   def test_next_does_not_complete_manifest_after_target_content_changes(self):
     """manifest 作成後に対象ファイルが変わった場合は完了扱いしない"""
     cwd = Path(self.tmpdir)
@@ -1729,6 +1763,26 @@ def _write_commit_approval(tmpdir, target_files, consumed=False):
   return approval_path
 
 
+def _write_completed_post_write_manifest(tmpdir, target_files):
+  """対象ファイルを覆う完了 post-write manifest を書く"""
+  target_sha256 = {
+    relpath: _sha256_file(Path(tmpdir) / relpath)
+    for relpath in target_files
+  }
+  _write_post_write_manifest(
+    tmpdir,
+    "post-write-2026-06-03-999.yaml",
+    {
+      "status": "completed",
+      "target_files": target_files,
+      "target_sha256": target_sha256,
+      "required_verifiers": ["google"],
+      "completed_verifiers": ["google"],
+      "unresolved_substantive_findings": 0,
+    },
+  )
+
+
 class CommitExitCodeTests(unittest.TestCase):
   """commit サブコマンドの終了コード判定（仕様 §6.2）"""
 
@@ -1797,6 +1851,7 @@ class CommitExitCodeTests(unittest.TestCase):
     """計画書（docs/plan/ 配下）の変更含む → exit 1"""
     _set_pending_findings(self.pending_file, unresolved_count=0)
     _stage_file(self.tmpdir, "docs/plan/test-plan.md", "# テスト計画")
+    _write_completed_post_write_manifest(self.tmpdir, ["docs/plan/test-plan.md"])
     _write_commit_approval(self.tmpdir, ["docs/plan/test-plan.md"])
     result = run_script(
       ["commit", "--rationale", "計画書追加のテスト"],
@@ -1871,6 +1926,56 @@ class CommitExitCodeTests(unittest.TestCase):
     self.assertEqual(result.returncode, 2)
     self.assertIn("承認対象外", result.stdout)
 
+  def test_commit_with_post_write_target_without_manifest_returns_two(self):
+    """post-write 対象文書が staged され、完了 manifest がなければ exit 2"""
+    _set_pending_findings(self.pending_file, unresolved_count=0)
+    _stage_file(self.tmpdir, "TODO_NEXT_SESSION.md", "# 次セッション")
+    _write_commit_approval(self.tmpdir, ["TODO_NEXT_SESSION.md"])
+    result = run_script(
+      ["commit", "--rationale", "post-write 未検証の遮断テスト"],
+      cwd=self.tmpdir,
+    )
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 2)
+    self.assertIn("post-write-verification 未完了", result.stdout)
+
+  def test_commit_with_post_write_target_and_completed_manifest_returns_zero(self):
+    """post-write 対象文書が staged されても完了 manifest があれば exit 0"""
+    _set_pending_findings(self.pending_file, unresolved_count=0)
+    _stage_file(self.tmpdir, "TODO_NEXT_SESSION.md", "# 次セッション")
+    _write_completed_post_write_manifest(self.tmpdir, ["TODO_NEXT_SESSION.md"])
+    _write_commit_approval(self.tmpdir, ["TODO_NEXT_SESSION.md"])
+    result = run_script(
+      ["commit", "--rationale", "post-write 検証済み commit のテスト"],
+      cwd=self.tmpdir,
+    )
+    _assert_script_invoked(self, result)
+    self.assertEqual(
+      result.returncode, 0,
+      f"完了 manifest がある post-write 対象 commit は通過すべき。\n"
+      f"stdout: {result.stdout}\nstderr: {result.stderr}",
+    )
+
+  def test_commit_with_operations_doc_and_completed_manifest_returns_zero(self):
+    """docs/operations 配下の対象文書も completed manifest があれば exit 0"""
+    _set_pending_findings(self.pending_file, unresolved_count=0)
+    _stage_file(
+      self.tmpdir,
+      "docs/operations/WORKFLOW_PRECHECK.md",
+      "# WORKFLOW_PRECHECK",
+    )
+    _write_completed_post_write_manifest(
+      self.tmpdir,
+      ["docs/operations/WORKFLOW_PRECHECK.md"],
+    )
+    _write_commit_approval(self.tmpdir, ["docs/operations/WORKFLOW_PRECHECK.md"])
+    result = run_script(
+      ["commit", "--rationale", "operations 文書検証済み commit のテスト"],
+      cwd=self.tmpdir,
+    )
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 0, result.stdout)
+
   def test_commit_rationale_is_required(self):
     """commit に --rationale なし → 非 0 終了（仕様 §5.2 必須）"""
     _stage_file(self.tmpdir, "notes.md", "test")
@@ -1942,6 +2047,71 @@ class PushExitCodeTests(unittest.TestCase):
       "rationale", result.stderr.lower(),
       f"--rationale 不足のエラーメッセージは stderr に 'rationale' を含むべき。\n"
       f"stderr: {result.stderr}",
+    )
+
+
+class AuditCommitTests(unittest.TestCase):
+  """audit-commit サブコマンドの post-write 遡及監査"""
+
+  def setUp(self):
+    self.tmpdir = tempfile.mkdtemp()
+    self.addCleanup(shutil.rmtree, self.tmpdir)
+    _init_git_repo(self.tmpdir)
+
+  def _commit_file(self, relpath, content, message):
+    _stage_file(self.tmpdir, relpath, content)
+    subprocess.run(
+      ["git", "commit", "-qm", message],
+      cwd=str(self.tmpdir),
+      check=True,
+      capture_output=True,
+    )
+
+  def test_audit_commit_detects_post_write_target_without_manifest(self):
+    """指定 commit に post-write 対象があり manifest がなければ exit 2"""
+    self._commit_file("TODO_NEXT_SESSION.md", "# 次セッション", "add todo")
+    result = run_script(["audit-commit", "HEAD", "--json"], cwd=self.tmpdir)
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 2)
+    data = json.loads(result.stdout)
+    self.assertEqual(data["verdict"], "DEVIATION")
+    self.assertIn("TODO_NEXT_SESSION.md", data["current_state"]["post_write_targets"])
+
+  def test_audit_commit_detects_root_commit_post_write_target_without_manifest(self):
+    """root commit の post-write 対象追加も監査対象に含める"""
+    tmpdir = tempfile.mkdtemp()
+    self.addCleanup(shutil.rmtree, tmpdir)
+    for cmd in [
+      ["git", "init", "-q", "-b", "main"],
+      ["git", "config", "user.email", "test@example.com"],
+      ["git", "config", "user.name", "Test User"],
+      ["git", "config", "commit.gpgsign", "false"],
+    ]:
+      subprocess.run(cmd, cwd=str(tmpdir), check=True, capture_output=True)
+    _stage_file(tmpdir, "TODO_NEXT_SESSION.md", "# root todo")
+    subprocess.run(
+      ["git", "commit", "-qm", "root todo"],
+      cwd=str(tmpdir),
+      check=True,
+      capture_output=True,
+    )
+
+    result = run_script(["audit-commit", "HEAD", "--json"], cwd=tmpdir)
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 2)
+    data = json.loads(result.stdout)
+    self.assertIn("TODO_NEXT_SESSION.md", data["current_state"]["post_write_targets"])
+
+  def test_audit_commit_accepts_post_write_target_with_matching_manifest(self):
+    """指定 commit の post-write 対象を覆う manifest があれば exit 0"""
+    self._commit_file("TODO_NEXT_SESSION.md", "# 次セッション", "add todo")
+    _write_completed_post_write_manifest(self.tmpdir, ["TODO_NEXT_SESSION.md"])
+    result = run_script(["audit-commit", "HEAD", "--json"], cwd=self.tmpdir)
+    _assert_script_invoked(self, result)
+    self.assertEqual(
+      result.returncode, 0,
+      f"matching manifest should pass.\nstdout: {result.stdout}\nstderr: {result.stderr}",
     )
 
 

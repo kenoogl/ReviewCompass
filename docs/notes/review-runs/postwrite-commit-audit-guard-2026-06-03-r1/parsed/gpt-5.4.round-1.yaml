@@ -1,0 +1,32 @@
+role: adversarial
+provider: openai-api
+model: gpt-5.4
+attempts: 1
+duration_seconds: 13.749
+findings:
+- severity: ERROR
+  target_location: tools/check-workflow-action.py::list_commit_changed_files / cmd_audit_commit
+  description: audit-commit が root commit を正しく監査できない可能性があります。`git diff-tree --no-commit-id
+    --name-only -r <commit-ish>` は初回コミットでは変更ファイルを返さず、post-write 対象の追加を見逃します。
+  rationale: 仕様では `audit-commit <commit-ish>` が指定コミットの変更ファイルを遡及監査するとされていますが、root commit
+    で対象なしと誤判定すると本来 exit 2 であるべきケースが exit 0 になります。初回導入コミットの監査漏れはこの機能の目的に直接反します。通常は
+    `--root` を付けるなどの対応が必要です。
+- severity: ERROR
+  target_location: docs/operations/WORKFLOW_PRECHECK.md §5.4 / tools/check-workflow-action.py::cmd_audit_commit
+  description: 仕様は `audit-commit` が commit 内ファイル内容の sha256 と manifest を照合すると明記していますが、実装はリポジトリ内の現在存在する
+    manifest 群のみを参照しており、対象コミット時点に存在しなかった後付け manifest でも合格します。
+  rationale: 遡及監査の意味が『そのコミットに対応する検証が当時揃っていたか』なのか『現在の repo 状態として対応 manifest があるか』なのかで判定結果が変わります。現行実装だと後から
+    manifest を追加すれば過去コミットを常に是正済みとして扱えてしまい、ドキュメント記述から自然に期待される commit 時点の監査とずれます。仕様明確化または実装制約の追記が必要です。
+- severity: WARN
+  target_location: tests/tools/test_check_workflow_action.py::test_commit_with_post_write_target_and_completed_manifest_returns_zero
+  description: 新規 commit precheck ガードの正常系テストが post-write 対象として `TODO_NEXT_SESSION.md`
+    のみを検証しており、文書で強調されている `docs/operations/WORKFLOW_PRECHECK.md` 自身の staged commit
+    ガードを直接カバーしていません。
+  rationale: 今回の変更目的は prior miss の再発防止であり、実際に見落とした対象ファイルの一つである `WORKFLOW_PRECHECK.md`
+    に対する commit precheck のテストがあると回帰防止効果が高まります。現状でも共通判定関数を通るため機能上は動く可能性が高いですが、対象パス分類の退行を捕捉しにくいです。
+- severity: INFO
+  target_location: docs/operations/WORKFLOW_PRECHECK.md §5.2, §6.2, §6.4
+  description: post-write-verification 対象の例示（`docs/operations/`、`TODO_NEXT_SESSION.md`
+    等）は追加されていますが、監査対象パスの正確な集合定義が本文中では例示ベースのままです。
+  rationale: 実装側の `is_post_write_verification_target` と文書の解釈が将来ずれると、利用者はどのファイルが commit/audit-commit
+    の必須監査対象かを誤認しやすくなります。列挙が仕様上の厳密集合なのか、例なのかを明示すると運用誤差を減らせます。

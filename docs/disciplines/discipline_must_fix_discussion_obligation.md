@@ -17,5 +17,6 @@ triad-review 段で判定役が must-fix と判定した所見の対処は、起
 - 「現状維持を推奨」する場合も、現状維持の弱点を検証してから示す
 - 一括処理（複数論点を一気に決着）を避け、各論点を個別に深掘りする
 - 候補案は必ず複数提示、代替案との比較を欠かない
+- API 経由の review-run で `ERROR`／`CRITICAL` または最終判断 `must-fix` の重要件を扱う場合は、raw 参照、モデル別要約、三段階トリアージ、利用者承認を提示・記録してから `review_triage.py decide` / `write-manifest` を実行する。機械ゲートの正本手順は `docs/operations/WORKFLOW_NAVIGATION.md` の `post_write_verification` 分岐に従う
 
 関連：[[plain-japanese]]（平易な日本語）、[[concise-complete-report]]（簡潔・もれなく報告）

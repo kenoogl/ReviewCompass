@@ -1,0 +1,4 @@
+run_id: postwrite-commit-audit-guard-2026-06-03-r1
+target_files:
+- path: /private/tmp/reviewcompass-postwrite-commit-audit-2026-06-03.md
+  sha256: a5ec539ba1291c456119e1152e0f58b638cb7309adfcff5f979379bf811a192f

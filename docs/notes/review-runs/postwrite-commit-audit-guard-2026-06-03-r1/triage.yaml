@@ -1,0 +1,225 @@
+run_id: postwrite-commit-audit-guard-2026-06-03-r1
+triage_status: decided
+generated_at: '2026-06-03T09:04:25.443873+00:00'
+decision_actor: null
+decision_actor_type: human
+items:
+- finding_id: postwrite-commit-audit-guard-2026-06-03-r1-claude-sonnet-4-6-primary-001
+  run_id: postwrite-commit-audit-guard-2026-06-03-r1
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: 'tools/check-workflow-action.py: validate_post_write_completion_for_targets'
+  plain_language_summary: 'The function filters `target_files` for post-write targets
+    internally, but `cmd_commit` already passes all staged_files (not pre-filtered),
+    while `cmd_audit_commit` passes only pre-filtered `post_write_targets`. This asymmetry
+    is harmless but creates potential confusion: double-filtering occurs for `commit`
+    path (the function re-filters), whereas for `audit-commit` the list is filtered
+    before passing and then the function re-filters again needlessly.'
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: codex
+  decision_actor_type: human
+  decision_at: '2026-06-03T09:07:08.400546+00:00'
+  decision_reason: validate_post_write_completion_for_targets は入力候補から post-write 対象を抽出する契約であり、全
+    staged と事前抽出済みリストのどちらでも同じ結果になる。現時点では挙動リスクではないため残置。
+  applied_files: []
+  superseded_by: null
+- finding_id: postwrite-commit-audit-guard-2026-06-03-r1-claude-sonnet-4-6-primary-002
+  run_id: postwrite-commit-audit-guard-2026-06-03-r1
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: 'tools/check-workflow-action.py: cmd_audit_commit / validate_post_write_completion_for_targets'
+  plain_language_summary: When `commit_file_sha256` returns `None` (e.g., the file
+    was deleted in that commit), the hash is stored as `None` in `commit_hashes`,
+    passed to `validate_post_write_completion_for_targets`, and then propagated into
+    `actual_hashes`. Inside `manifest_hashes_match_values`, a `None` hash will never
+    equal the manifest's stored hash, causing a false-positive DEVIATION for legitimate
+    deletions of post-write targets.
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: codex
+  decision_actor_type: human
+  decision_at: '2026-06-03T09:07:14.697096+00:00'
+  decision_reason: post-write 対象文書の削除は内容 sha256 を持たないため現行監査では fail-closed になる。削除を許可する別ポリシーは今回スコープ外であり、誤って通すより遮断側が安全。
+  applied_files: []
+  superseded_by: null
+- finding_id: postwrite-commit-audit-guard-2026-06-03-r1-claude-sonnet-4-6-primary-003
+  run_id: postwrite-commit-audit-guard-2026-06-03-r1
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: 'tests/tools/test_check_workflow_action.py: test_audit_commit_accepts_post_write_target_with_matching_manifest'
+  plain_language_summary: The test writes the completed manifest *after* the commit
+    is made, meaning the manifest sha256 is computed against the file as it exists
+    on disk (written by `_stage_file` and then committed). This works incidentally
+    because `_stage_file` writes the file to disk before staging and committing, so
+    the on-disk content still matches. However, if `_stage_file` were to clean up
+    the working-tree file after staging, the test would silently break.
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: codex
+  decision_actor_type: human
+  decision_at: '2026-06-03T09:06:34.420057+00:00'
+  decision_reason: テストヘルパー _stage_file は作業ツリーに内容を書いてから git add する契約で使われており、manifest
+    hash 生成もその明示的な作業ツリー内容に基づく。現時点で追加修正不要。
+  applied_files: []
+  superseded_by: null
+- finding_id: postwrite-commit-audit-guard-2026-06-03-r1-claude-sonnet-4-6-primary-004
+  run_id: postwrite-commit-audit-guard-2026-06-03-r1
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: 'docs/operations/WORKFLOW_PRECHECK.md: §5.4 audit-commit サブコマンド'
+  plain_language_summary: '`audit-commit` is described as checking for completed manifests
+    in the repository''s current working state, but the specification does not clarify
+    what happens when the manifest itself was not present at the time of the commit
+    (i.e., it was added in a later commit). The current implementation looks at the
+    present manifest files on disk, not at manifests as they existed at commit time.'
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: codex
+  decision_actor_type: human
+  decision_at: '2026-06-03T09:07:22.462942+00:00'
+  decision_reason: audit-commit は現在状態での是正監査であり、対象 commit 時点の manifest 存在を証明しないことを
+    WORKFLOW_PRECHECK.md §5.4 に明記した。
+  applied_files: []
+  superseded_by: null
+- finding_id: postwrite-commit-audit-guard-2026-06-03-r1-claude-sonnet-4-6-primary-005
+  run_id: postwrite-commit-audit-guard-2026-06-03-r1
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: 'docs/operations/WORKFLOW_PRECHECK.md: §6.4 audit-commit の判定'
+  plain_language_summary: The specification does not define the exit code or behavior
+    when `<commit-ish>` is invalid or cannot be resolved (e.g., a non-existent hash).
+    The implementation returns exit 2 in that case, but this is undocumented in the
+    spec.
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: codex
+  decision_actor_type: human
+  decision_at: '2026-06-03T09:07:28.132743+00:00'
+  decision_reason: 無効な commit-ish は exit 2 とする挙動を WORKFLOW_PRECHECK.md §5.4 / §6.4
+    に明記した。
+  applied_files: []
+  superseded_by: null
+- finding_id: postwrite-commit-audit-guard-2026-06-03-r1-claude-sonnet-4-6-primary-006
+  run_id: postwrite-commit-audit-guard-2026-06-03-r1
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: 'TODO_NEXT_SESSION.md: post-write-verification commit guard paragraph'
+  plain_language_summary: The added paragraph lists `docs/operations/`, `docs/disciplines/`,
+    `docs/notes/`, `TODO_NEXT_SESSION.md` as examples of post-write-verification targets,
+    but does not reference `is_post_write_verification_target()` as the authoritative
+    source of truth. If that function's classification logic changes, the documentation
+    may become stale.
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: codex
+  decision_actor_type: human
+  decision_at: '2026-06-03T09:06:47.187845+00:00'
+  decision_reason: 対象判定は discipline_post_write_verification.md と is_post_write_verification_target()
+    に従う旨を TODO_NEXT_SESSION.md に明記した。
+  applied_files: []
+  superseded_by: null
+- finding_id: postwrite-commit-audit-guard-2026-06-03-r1-gpt-5.4-adversarial-001
+  run_id: postwrite-commit-audit-guard-2026-06-03-r1
+  source_model: gpt-5.4
+  source_round: round-1
+  source_raw_path: raw/gpt-5.4.round-1.txt
+  source_parsed_path: parsed/gpt-5.4.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: tools/check-workflow-action.py::list_commit_changed_files / cmd_audit_commit
+  plain_language_summary: audit-commit が root commit を正しく監査できない可能性があります。`git diff-tree
+    --no-commit-id --name-only -r <commit-ish>` は初回コミットでは変更ファイルを返さず、post-write 対象の追加を見逃します。
+  final_label: must-fix
+  decision_status: decided
+  decision_actor: codex
+  decision_actor_type: human
+  decision_at: '2026-06-03T09:06:02.833658+00:00'
+  decision_reason: root commit の変更ファイル漏れは audit-commit の目的に直接反するため修正。git diff-tree
+    に --root を追加し、root commit の post-write 対象追加を検出するテストを追加した。
+  applied_files: []
+  superseded_by: null
+- finding_id: postwrite-commit-audit-guard-2026-06-03-r1-gpt-5.4-adversarial-002
+  run_id: postwrite-commit-audit-guard-2026-06-03-r1
+  source_model: gpt-5.4
+  source_round: round-1
+  source_raw_path: raw/gpt-5.4.round-1.txt
+  source_parsed_path: parsed/gpt-5.4.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: docs/operations/WORKFLOW_PRECHECK.md §5.4 / tools/check-workflow-action.py::cmd_audit_commit
+  plain_language_summary: 仕様は `audit-commit` が commit 内ファイル内容の sha256 と manifest を照合すると明記していますが、実装はリポジトリ内の現在存在する
+    manifest 群のみを参照しており、対象コミット時点に存在しなかった後付け manifest でも合格します。
+  final_label: must-fix
+  decision_status: decided
+  decision_actor: codex
+  decision_actor_type: human
+  decision_at: '2026-06-03T09:07:34.572723+00:00'
+  decision_reason: audit-commit は時点監査ではなく現在リポジトリ状態での是正監査として採用する方針を WORKFLOW_PRECHECK.md
+    §5.4 に明記した。後付け manifest による是正完了を認めるため、実装ではなく仕様の曖昧さを修正した。
+  applied_files: []
+  superseded_by: null
+- finding_id: postwrite-commit-audit-guard-2026-06-03-r1-gpt-5.4-adversarial-003
+  run_id: postwrite-commit-audit-guard-2026-06-03-r1
+  source_model: gpt-5.4
+  source_round: round-1
+  source_raw_path: raw/gpt-5.4.round-1.txt
+  source_parsed_path: parsed/gpt-5.4.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: tests/tools/test_check_workflow_action.py::test_commit_with_post_write_target_and_completed_manifest_returns_zero
+  plain_language_summary: 新規 commit precheck ガードの正常系テストが post-write 対象として `TODO_NEXT_SESSION.md`
+    のみを検証しており、文書で強調されている `docs/operations/WORKFLOW_PRECHECK.md` 自身の staged commit
+    ガードを直接カバーしていません。
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: codex
+  decision_actor_type: human
+  decision_at: '2026-06-03T09:07:41.924464+00:00'
+  decision_reason: 実際に見落とした docs/operations/WORKFLOW_PRECHECK.md の staged commit ガード正常系テストを追加した。
+  applied_files: []
+  superseded_by: null
+- finding_id: postwrite-commit-audit-guard-2026-06-03-r1-gpt-5.4-adversarial-004
+  run_id: postwrite-commit-audit-guard-2026-06-03-r1
+  source_model: gpt-5.4
+  source_round: round-1
+  source_raw_path: raw/gpt-5.4.round-1.txt
+  source_parsed_path: parsed/gpt-5.4.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: docs/operations/WORKFLOW_PRECHECK.md §5.2, §6.2, §6.4
+  plain_language_summary: post-write-verification 対象の例示（`docs/operations/`、`TODO_NEXT_SESSION.md`
+    等）は追加されていますが、監査対象パスの正確な集合定義が本文中では例示ベースのままです。
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: codex
+  decision_actor_type: human
+  decision_at: '2026-06-03T09:06:19.646948+00:00'
+  decision_reason: 対象パス集合は例示ではなく discipline_post_write_verification.md と is_post_write_verification_target()
+    に従う旨を TODO_NEXT_SESSION.md に明記した。
+  applied_files: []
+  superseded_by: null

@@ -522,15 +522,24 @@ def cmd_commit(args):
   caution = [f for f in staged_files if classify_staged_file(f) == "caution"]
   normal = [f for f in staged_files if classify_staged_file(f) == "normal"]
   approval_state, approval_errors = validate_commit_approval(cwd, staged_files)
+  post_write_state, post_write_errors = validate_post_write_completion_for_targets(
+    cwd,
+    staged_files,
+  )
 
   # 判定（仕様 §6.2）
   reasons = []
+  deviation_reasons = []
   if approval_errors:
-    reasons.extend(approval_errors)
-    verdict, exit_code = "DEVIATION", 2
-  elif dangerous:
+    deviation_reasons.extend(approval_errors)
+  if dangerous:
     for f in dangerous:
-      reasons.append(f"危険変更: {f}（commit を遮断推奨）")
+      deviation_reasons.append(f"危険変更: {f}（commit を遮断推奨）")
+  if post_write_errors:
+    deviation_reasons.extend(post_write_errors)
+
+  if deviation_reasons:
+    reasons.extend(deviation_reasons)
     verdict, exit_code = "DEVIATION", 2
   elif unresolved_count > 0 or caution:
     if unresolved_count > 0:
@@ -551,7 +560,9 @@ def cmd_commit(args):
     f"  危険変更: {len(dangerous)} 件\n"
     f"  要注意変更: {len(caution)} 件\n"
     f"  通常変更: {len(normal)} 件\n"
-    f"ユーザ承認レコード: {'有効' if approval_state['valid'] else '無効'}"
+    f"ユーザ承認レコード: {'有効' if approval_state['valid'] else '無効'}\n"
+    f"post-write-verification 対象: {len(post_write_state['target_files'])} 件\n"
+    f"post-write-verification 状態: {post_write_state['manifest_status']}"
   )
   current_state_dict = {
     "pending_unresolved_count": unresolved_count,
@@ -561,6 +572,7 @@ def cmd_commit(args):
       "normal": normal,
     },
     "commit_approval": approval_state,
+    "post_write_verification": post_write_state,
   }
   action_str = f"commit (rationale='{rationale}')"
   action_dict = {
@@ -659,6 +671,103 @@ def cmd_push(args):
     print(format_human_output(verdict, exit_code, action_str, reasons, current_state_text))
 
   # ログ記録
+  log_path = args.log_path if args.log_path else DEFAULT_LOG_PATH
+  try:
+    append_log(log_path, action_dict, verdict, exit_code, reasons, current_state_dict)
+  except OSError as e:
+    print(f"warning: ログ書き込みに失敗しました（処理は続行）: {e}", file=sys.stderr)
+
+  return exit_code
+
+
+def list_commit_changed_files(cwd, commitish):
+  """指定 commit の変更ファイル一覧を返す"""
+  result = subprocess.run(
+    ["git", "diff-tree", "--root", "--no-commit-id", "--name-only", "-r", commitish],
+    cwd=str(cwd),
+    capture_output=True,
+    text=True,
+  )
+  if result.returncode != 0:
+    raise ValueError(result.stderr.strip() or f"commit を読めません: {commitish}")
+  return sorted(set(f for f in result.stdout.splitlines() if f))
+
+
+def commit_file_sha256(cwd, commitish, path):
+  """指定 commit 内のファイル内容 sha256 を返す"""
+  result = subprocess.run(
+    ["git", "show", f"{commitish}:{path}"],
+    cwd=str(cwd),
+    capture_output=True,
+  )
+  if result.returncode != 0:
+    return None
+  return hashlib.sha256(result.stdout).hexdigest()
+
+
+def cmd_audit_commit(args):
+  """audit-commit サブコマンドのエントリポイント"""
+  cwd = Path.cwd()
+  commitish = args.commitish
+
+  if not (cwd / ".git").exists():
+    print("error: git リポジトリではありません", file=sys.stderr)
+    return 2
+
+  try:
+    changed_files = list_commit_changed_files(cwd, commitish)
+  except ValueError as e:
+    print(f"error: {e}", file=sys.stderr)
+    return 2
+
+  post_write_targets = [
+    path
+    for path in changed_files
+    if is_post_write_verification_target(path)
+  ]
+  commit_hashes = {
+    target: commit_file_sha256(cwd, commitish, target)
+    for target in post_write_targets
+  }
+  post_write_state, post_write_errors = validate_post_write_completion_for_targets(
+    cwd,
+    post_write_targets,
+    commit_hashes,
+  )
+
+  if post_write_errors:
+    verdict, exit_code = "DEVIATION", 2
+    reasons = [
+      reason.replace("staged ファイル", "commit 対象ファイル")
+      for reason in post_write_errors
+    ]
+  else:
+    verdict, exit_code = "OK", 0
+    reasons = []
+
+  current_state_text = (
+    f"commit: {commitish}\n"
+    f"変更ファイル数: {len(changed_files)} 件\n"
+    f"post-write-verification 対象: {len(post_write_targets)} 件\n"
+    f"post-write-verification 状態: {post_write_state['manifest_status']}"
+  )
+  current_state_dict = {
+    "commit": commitish,
+    "changed_files": changed_files,
+    "post_write_targets": post_write_targets,
+    "post_write_verification": post_write_state,
+  }
+  action_str = f"audit-commit {commitish}"
+  action_dict = {
+    "subcommand": "audit-commit",
+    "args": {"commitish": commitish},
+  }
+
+  if args.json:
+    print(format_json_output(verdict, exit_code, action_dict, reasons, current_state_dict))
+  else:
+    print(format_human_output(verdict, exit_code, action_str, reasons, current_state_text))
+
   log_path = args.log_path if args.log_path else DEFAULT_LOG_PATH
   try:
     append_log(log_path, action_dict, verdict, exit_code, reasons, current_state_dict)
@@ -963,6 +1072,15 @@ def file_sha256(path):
 
 def manifest_hashes_match_current_files(cwd, manifest, target_files):
   """manifest の target_sha256 が現在の対象ファイル内容と一致するかを返す"""
+  actual_hashes = {
+    target: file_sha256(Path(cwd) / target)
+    for target in target_files
+  }
+  return manifest_hashes_match_values(manifest, target_files, actual_hashes)
+
+
+def manifest_hashes_match_values(manifest, target_files, actual_hashes):
+  """manifest の target_sha256 が指定 hash と一致するかを返す"""
   expected = manifest.get("target_sha256")
   if not isinstance(expected, dict) or not expected:
     return False
@@ -971,7 +1089,7 @@ def manifest_hashes_match_current_files(cwd, manifest, target_files):
     expected_hash = expected.get(target)
     if not expected_hash:
       return False
-    actual_hash = file_sha256(Path(cwd) / target)
+    actual_hash = actual_hashes.get(target)
     if actual_hash != expected_hash:
       return False
   return True
@@ -1120,12 +1238,21 @@ def review_run_traceability_satisfied(cwd, manifest):
 
 def evaluate_post_write_manifest_state(cwd, target_files):
   """対象ファイル群に対する post-write-verification manifest 状態を返す"""
+  actual_hashes = {
+    target: file_sha256(Path(cwd) / target)
+    for target in target_files
+  }
+  return evaluate_post_write_manifest_state_for_hashes(cwd, target_files, actual_hashes)
+
+
+def evaluate_post_write_manifest_state_for_hashes(cwd, target_files, actual_hashes):
+  """指定 sha256 群に対する post-write-verification manifest 状態を返す"""
   target_set = set(target_files)
   for manifest in load_post_write_manifests(cwd):
     manifest_targets = set(manifest.get("target_files") or [])
     if not target_set.issubset(manifest_targets):
       continue
-    if not manifest_hashes_match_current_files(cwd, manifest, target_files):
+    if not manifest_hashes_match_values(manifest, target_files, actual_hashes):
       continue
     if unresolved_substantive_count(manifest) > 0:
       return "human_required", manifest
@@ -1140,6 +1267,53 @@ def evaluate_post_write_manifest_state(cwd, target_files):
     ):
       return "completed", manifest
   return "pending", None
+
+
+def validate_post_write_completion_for_targets(cwd, target_files, actual_hashes=None):
+  """post-write 対象ファイルの完了 manifest があるか検査する"""
+  post_write_targets = [
+    path
+    for path in target_files
+    if is_post_write_verification_target(path)
+  ]
+  state = {
+    "target_files": post_write_targets,
+    "manifest_status": "not_applicable" if not post_write_targets else "pending",
+    "manifest_path": None,
+  }
+  if not post_write_targets:
+    return state, []
+
+  if actual_hashes is None:
+    actual_hashes = {
+      target: file_sha256(Path(cwd) / target)
+      for target in post_write_targets
+    }
+  else:
+    actual_hashes = {
+      target: actual_hashes.get(target)
+      for target in post_write_targets
+    }
+
+  manifest_status, manifest = evaluate_post_write_manifest_state_for_hashes(
+    cwd,
+    post_write_targets,
+    actual_hashes,
+  )
+  state["manifest_status"] = manifest_status
+  if manifest:
+    state["manifest_path"] = manifest.get("_path")
+  if manifest_status == "completed":
+    return state, []
+  if manifest_status == "human_required":
+    return state, [
+      "post-write-verification に未解決の本質的指摘があります: "
+      + ", ".join(post_write_targets)
+    ]
+  return state, [
+    "post-write-verification 未完了の staged ファイルがあります: "
+    + ", ".join(post_write_targets)
+  ]
 
 
 def load_all_feature_specs(cwd):
@@ -1329,31 +1503,66 @@ def cmd_next(args):
   if not in_progress_files or maintenance_action:
     verification_targets = list_post_write_verification_targets(cwd)
     if verification_targets:
-      forbidden_files = list_forbidden_post_write_pending_changes(cwd, verification_targets)
-      if forbidden_files:
-        next_action = {
-          "kind": "post_write_policy_violation",
-          "target_files": verification_targets,
-          "forbidden_files": forbidden_files,
-          "feature": None,
-          "phase": None,
-          "stage": None,
-          "reason": "post-write-verification pending 中に禁止された変更があります",
-        }
-        current_state = {
-          "post_write_verification_targets": verification_targets,
-          "forbidden_files": forbidden_files,
-        }
+      manifest_state, manifest = evaluate_post_write_manifest_state(cwd, verification_targets)
+      if manifest_state == "completed":
         if maintenance_action:
-          current_state["in_progress_files"] = in_progress_files
-        reasons = [
-          f"{path} は post-write-verification pending 中に変更してはいけません"
-          for path in forbidden_files
-        ]
-        verdict, exit_code = "DEVIATION", 2
+          next_action = maintenance_action
+          current_state = {
+            "in_progress_files": in_progress_files,
+            "post_write_manifest": manifest.get("_path"),
+          }
+          reasons = []
+          verdict, exit_code = "OK", 0
+        else:
+          specs, missing = load_all_feature_specs(cwd)
+          if missing:
+            next_action = {
+              "kind": "unknown",
+              "feature": None,
+              "phase": None,
+              "stage": None,
+              "reason": "必要な spec.json が不足しています",
+            }
+            current_state = {"missing_features": missing, "manifest": manifest}
+            reasons = [f"{feature} の spec.json が見つかりません" for feature in missing]
+            verdict, exit_code = "DEVIATION", 2
+          else:
+            next_action = augment_cross_feature_next_action(
+              cwd,
+              specs,
+              resolve_next_action(specs),
+            )
+            current_state = {
+              "feature_order": FEATURE_ORDER,
+              "workflow_state": summarize_workflow_state(specs),
+              "post_write_manifest": manifest.get("_path"),
+            }
+            reasons = []
+            verdict, exit_code = "OK", 0
       else:
-        manifest_state, manifest = evaluate_post_write_manifest_state(cwd, verification_targets)
-        if manifest_state == "human_required":
+        forbidden_files = list_forbidden_post_write_pending_changes(cwd, verification_targets)
+        if forbidden_files:
+          next_action = {
+            "kind": "post_write_policy_violation",
+            "target_files": verification_targets,
+            "forbidden_files": forbidden_files,
+            "feature": None,
+            "phase": None,
+            "stage": None,
+            "reason": "post-write-verification pending 中に禁止された変更があります",
+          }
+          current_state = {
+            "post_write_verification_targets": verification_targets,
+            "forbidden_files": forbidden_files,
+          }
+          if maintenance_action:
+            current_state["in_progress_files"] = in_progress_files
+          reasons = [
+            f"{path} は post-write-verification pending 中に変更してはいけません"
+            for path in forbidden_files
+          ]
+          verdict, exit_code = "DEVIATION", 2
+        elif manifest_state == "human_required":
           next_action = {
             "kind": "post_write_human_decision_required",
             "target_files": verification_targets,
@@ -1371,41 +1580,6 @@ def cmd_next(args):
             current_state["in_progress_files"] = in_progress_files
           reasons = ["未解決の本質的指摘について人間判断が必要です"]
           verdict, exit_code = "OK", 0
-        elif manifest_state == "completed":
-          if maintenance_action:
-            next_action = maintenance_action
-            current_state = {
-              "in_progress_files": in_progress_files,
-              "post_write_manifest": manifest.get("_path"),
-            }
-            reasons = []
-            verdict, exit_code = "OK", 0
-          else:
-            specs, missing = load_all_feature_specs(cwd)
-            if missing:
-              next_action = {
-                "kind": "unknown",
-                "feature": None,
-                "phase": None,
-                "stage": None,
-                "reason": "必要な spec.json が不足しています",
-              }
-              current_state = {"missing_features": missing, "manifest": manifest}
-              reasons = [f"{feature} の spec.json が見つかりません" for feature in missing]
-              verdict, exit_code = "DEVIATION", 2
-            else:
-              next_action = augment_cross_feature_next_action(
-                cwd,
-                specs,
-                resolve_next_action(specs),
-              )
-              current_state = {
-                "feature_order": FEATURE_ORDER,
-                "workflow_state": summarize_workflow_state(specs),
-                "post_write_manifest": manifest.get("_path"),
-              }
-              reasons = []
-              verdict, exit_code = "OK", 0
         else:
           next_action = {
             "kind": "post_write_verification",
@@ -1616,6 +1790,13 @@ def main():
     help="この push を行う理由（必須、利用者承認の出典を含めることを推奨、仕様 §5.3）",
   )
 
+  ac = sub.add_parser(
+    "audit-commit",
+    help="指定 commit の post-write-verification 漏れを監査する",
+    parents=[common_parser],
+  )
+  ac.add_argument("commitish", help="監査対象 commit（例：HEAD）")
+
   sub.add_parser(
     "next",
     help="現在の workflow_state から次に許可される作業を返す",
@@ -1641,6 +1822,8 @@ def main():
     sys.exit(cmd_commit(args))
   elif args.subcommand == "push":
     sys.exit(cmd_push(args))
+  elif args.subcommand == "audit-commit":
+    sys.exit(cmd_audit_commit(args))
   elif args.subcommand == "next":
     sys.exit(cmd_next(args))
   elif args.subcommand == "reopen-start":

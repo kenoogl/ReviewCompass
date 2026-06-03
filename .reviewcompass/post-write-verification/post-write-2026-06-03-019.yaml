@@ -1,0 +1,240 @@
+status: completed
+target_files:
+- TODO_NEXT_SESSION.md
+- docs/disciplines/discipline_must_fix_discussion_obligation.md
+- docs/notes/review-runs/postwrite-api-triage-approval-gate-2026-06-03-r1/model-result-summary.yaml
+- docs/notes/review-runs/postwrite-api-triage-approval-gate-2026-06-03-r1/parsed/claude-sonnet-4-6.round-1.yaml
+- docs/notes/review-runs/postwrite-api-triage-approval-gate-2026-06-03-r1/parsed/gemini-3.1-pro-preview.round-1.yaml
+- docs/notes/review-runs/postwrite-api-triage-approval-gate-2026-06-03-r1/parsed/gpt-5.4.round-1.yaml
+- docs/notes/review-runs/postwrite-api-triage-approval-gate-2026-06-03-r1/raw/claude-sonnet-4-6.round-1.txt
+- docs/notes/review-runs/postwrite-api-triage-approval-gate-2026-06-03-r1/raw/gemini-3.1-pro-preview.round-1.txt
+- docs/notes/review-runs/postwrite-api-triage-approval-gate-2026-06-03-r1/raw/gpt-5.4.round-1.txt
+- docs/notes/review-runs/postwrite-api-triage-approval-gate-2026-06-03-r1/review-target.md
+- docs/notes/review-runs/postwrite-api-triage-approval-gate-2026-06-03-r1/review_summary.md
+- docs/notes/review-runs/postwrite-api-triage-approval-gate-2026-06-03-r1/rounds.yaml
+- docs/notes/review-runs/postwrite-api-triage-approval-gate-2026-06-03-r1/target-manifest.yaml
+- docs/notes/review-runs/postwrite-api-triage-approval-gate-2026-06-03-r1/triage.yaml
+- docs/notes/review-runs/postwrite-commit-audit-guard-2026-06-03-r1/model-result-summary.yaml
+- docs/notes/review-runs/postwrite-commit-audit-guard-2026-06-03-r1/parsed/claude-sonnet-4-6.round-1.yaml
+- docs/notes/review-runs/postwrite-commit-audit-guard-2026-06-03-r1/parsed/gemini-3.1-pro-preview.round-1.yaml
+- docs/notes/review-runs/postwrite-commit-audit-guard-2026-06-03-r1/parsed/gpt-5.4.round-1.yaml
+- docs/notes/review-runs/postwrite-commit-audit-guard-2026-06-03-r1/raw/claude-sonnet-4-6.round-1.txt
+- docs/notes/review-runs/postwrite-commit-audit-guard-2026-06-03-r1/raw/gemini-3.1-pro-preview.round-1.txt
+- docs/notes/review-runs/postwrite-commit-audit-guard-2026-06-03-r1/raw/gpt-5.4.round-1.txt
+- docs/notes/review-runs/postwrite-commit-audit-guard-2026-06-03-r1/review_summary.md
+- docs/notes/review-runs/postwrite-commit-audit-guard-2026-06-03-r1/rounds.yaml
+- docs/notes/review-runs/postwrite-commit-audit-guard-2026-06-03-r1/target-manifest.yaml
+- docs/notes/review-runs/postwrite-commit-audit-guard-2026-06-03-r1/triage.yaml
+- docs/operations/WORKFLOW_NAVIGATION.md
+- docs/operations/WORKFLOW_PRECHECK.md
+target_sha256:
+  TODO_NEXT_SESSION.md: b92b13d28fe492f5c3464a06a9b9800a59d3afe607ab9ccb6a9470a6f883fafb
+  docs/disciplines/discipline_must_fix_discussion_obligation.md: 1d31f8dc775831d9840e0732ad0f06444964866d2d272954e0e317bda00aab73
+  docs/notes/review-runs/postwrite-api-triage-approval-gate-2026-06-03-r1/model-result-summary.yaml: ba51054a29c5ca777ef33242d827d25c6d78861f1c31050c4857a202bcecaca9
+  docs/notes/review-runs/postwrite-api-triage-approval-gate-2026-06-03-r1/parsed/claude-sonnet-4-6.round-1.yaml: 081b0ea95a21895df79f9718c4c064a0a2d9e6322f2fb0cdf31759f10922f653
+  docs/notes/review-runs/postwrite-api-triage-approval-gate-2026-06-03-r1/parsed/gemini-3.1-pro-preview.round-1.yaml: eafe9bac6922f4f98b4ad26d017fcd83928cf79714a7d628471e4ac2f1aad191
+  docs/notes/review-runs/postwrite-api-triage-approval-gate-2026-06-03-r1/parsed/gpt-5.4.round-1.yaml: c65934c82d332c6da1c808c169acc929a7fb1c3448b4c305732c7eae0da6839d
+  docs/notes/review-runs/postwrite-api-triage-approval-gate-2026-06-03-r1/raw/claude-sonnet-4-6.round-1.txt: 45f721efa3d306343e72ce0b750f057ad3a1c76c1e4f5526f8338478fdd4aae4
+  docs/notes/review-runs/postwrite-api-triage-approval-gate-2026-06-03-r1/raw/gemini-3.1-pro-preview.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+  docs/notes/review-runs/postwrite-api-triage-approval-gate-2026-06-03-r1/raw/gpt-5.4.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+  docs/notes/review-runs/postwrite-api-triage-approval-gate-2026-06-03-r1/review-target.md: 618f3700c49a7435a18cd91c2ba24adfaa6cf5c0361ecdd72f401ce4ef0a017d
+  docs/notes/review-runs/postwrite-api-triage-approval-gate-2026-06-03-r1/review_summary.md: 63d4fc8a4155397abcfe86fabcda3b8f4822ffb2c28ee3ec055eeef2661ddf87
+  docs/notes/review-runs/postwrite-api-triage-approval-gate-2026-06-03-r1/rounds.yaml: 881afa6d490d22cf46db6f1422d534c1b5d497680e15a5cf6d82ce6656c769be
+  docs/notes/review-runs/postwrite-api-triage-approval-gate-2026-06-03-r1/target-manifest.yaml: e218f2132171dfcafeea03bfea4430c3b8d4080bfc694c7a96a16c41f31d460f
+  docs/notes/review-runs/postwrite-api-triage-approval-gate-2026-06-03-r1/triage.yaml: c461c32331b68f78f0654e9be6e0477c4b6f2706b8cd458b03471ed1ce2b10d6
+  docs/notes/review-runs/postwrite-commit-audit-guard-2026-06-03-r1/model-result-summary.yaml: 93f7c40eb4e20db0d83267ff715859ffb1b881c5b0033573245f1441ad66720b
+  docs/notes/review-runs/postwrite-commit-audit-guard-2026-06-03-r1/parsed/claude-sonnet-4-6.round-1.yaml: 928883e3ac03c651a49370eaa6f8380ac83d467778ce1a63db9635dc91c593e5
+  docs/notes/review-runs/postwrite-commit-audit-guard-2026-06-03-r1/parsed/gemini-3.1-pro-preview.round-1.yaml: e00525261fdb0159baa251fcfc66cdde5b6a203a4b97555f231bf60e75f20b89
+  docs/notes/review-runs/postwrite-commit-audit-guard-2026-06-03-r1/parsed/gpt-5.4.round-1.yaml: f4ce07b265fe59038cc356a15737eb44c7c376c170d5ec6921aba933f67ef141
+  docs/notes/review-runs/postwrite-commit-audit-guard-2026-06-03-r1/raw/claude-sonnet-4-6.round-1.txt: acacd51ad1a2038148d7a020eccec8cbc37b385387059d60e64f1dce88d23fb9
+  docs/notes/review-runs/postwrite-commit-audit-guard-2026-06-03-r1/raw/gemini-3.1-pro-preview.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+  docs/notes/review-runs/postwrite-commit-audit-guard-2026-06-03-r1/raw/gpt-5.4.round-1.txt: 914cbbd1bea6400f257b83554739543cea1f7f6f1868c8cbe39e25e670a72937
+  docs/notes/review-runs/postwrite-commit-audit-guard-2026-06-03-r1/review_summary.md: 70e8111f74a79182eb00b3c361c9df10256cb68eb8b7653254f6f3aabef22d9c
+  docs/notes/review-runs/postwrite-commit-audit-guard-2026-06-03-r1/rounds.yaml: e5e1798e289e042f9f11ec5c6b668d38684d1f46c319252f9e6dddd7d36dba2e
+  docs/notes/review-runs/postwrite-commit-audit-guard-2026-06-03-r1/target-manifest.yaml: ea9118b9be55ff662b9f1e10f84245572967017e10ad101007ac8c3290c6cc67
+  docs/notes/review-runs/postwrite-commit-audit-guard-2026-06-03-r1/triage.yaml: 6d08ba5d8217ce5246a6ef70d7b13008c1d559a93d55b1bf76c5c6ed9c948119
+  docs/operations/WORKFLOW_NAVIGATION.md: 5fa1cd7fc5c51939f8b3ed2978c26943e0798f4afcfec3ff5abc6d69182ee6b8
+  docs/operations/WORKFLOW_PRECHECK.md: f5041fd15098240ae04ee1f13b811bfd87e3bd1f41ef59f34fe8943caee70c3c
+required_verifiers: &id001
+- claude-sonnet-4-6
+- gpt-5.4
+- gemini-3.1-pro-preview
+completed_verifiers: *id001
+unresolved_substantive_findings: 0
+verifications:
+- verifier: claude-sonnet-4-6
+  target_files:
+  - TODO_NEXT_SESSION.md
+  - docs/disciplines/discipline_must_fix_discussion_obligation.md
+  - docs/notes/review-runs/postwrite-api-triage-approval-gate-2026-06-03-r1/model-result-summary.yaml
+  - docs/notes/review-runs/postwrite-api-triage-approval-gate-2026-06-03-r1/parsed/claude-sonnet-4-6.round-1.yaml
+  - docs/notes/review-runs/postwrite-api-triage-approval-gate-2026-06-03-r1/parsed/gemini-3.1-pro-preview.round-1.yaml
+  - docs/notes/review-runs/postwrite-api-triage-approval-gate-2026-06-03-r1/parsed/gpt-5.4.round-1.yaml
+  - docs/notes/review-runs/postwrite-api-triage-approval-gate-2026-06-03-r1/raw/claude-sonnet-4-6.round-1.txt
+  - docs/notes/review-runs/postwrite-api-triage-approval-gate-2026-06-03-r1/raw/gemini-3.1-pro-preview.round-1.txt
+  - docs/notes/review-runs/postwrite-api-triage-approval-gate-2026-06-03-r1/raw/gpt-5.4.round-1.txt
+  - docs/notes/review-runs/postwrite-api-triage-approval-gate-2026-06-03-r1/review-target.md
+  - docs/notes/review-runs/postwrite-api-triage-approval-gate-2026-06-03-r1/review_summary.md
+  - docs/notes/review-runs/postwrite-api-triage-approval-gate-2026-06-03-r1/rounds.yaml
+  - docs/notes/review-runs/postwrite-api-triage-approval-gate-2026-06-03-r1/target-manifest.yaml
+  - docs/notes/review-runs/postwrite-api-triage-approval-gate-2026-06-03-r1/triage.yaml
+  - docs/notes/review-runs/postwrite-commit-audit-guard-2026-06-03-r1/model-result-summary.yaml
+  - docs/notes/review-runs/postwrite-commit-audit-guard-2026-06-03-r1/parsed/claude-sonnet-4-6.round-1.yaml
+  - docs/notes/review-runs/postwrite-commit-audit-guard-2026-06-03-r1/parsed/gemini-3.1-pro-preview.round-1.yaml
+  - docs/notes/review-runs/postwrite-commit-audit-guard-2026-06-03-r1/parsed/gpt-5.4.round-1.yaml
+  - docs/notes/review-runs/postwrite-commit-audit-guard-2026-06-03-r1/raw/claude-sonnet-4-6.round-1.txt
+  - docs/notes/review-runs/postwrite-commit-audit-guard-2026-06-03-r1/raw/gemini-3.1-pro-preview.round-1.txt
+  - docs/notes/review-runs/postwrite-commit-audit-guard-2026-06-03-r1/raw/gpt-5.4.round-1.txt
+  - docs/notes/review-runs/postwrite-commit-audit-guard-2026-06-03-r1/review_summary.md
+  - docs/notes/review-runs/postwrite-commit-audit-guard-2026-06-03-r1/rounds.yaml
+  - docs/notes/review-runs/postwrite-commit-audit-guard-2026-06-03-r1/target-manifest.yaml
+  - docs/notes/review-runs/postwrite-commit-audit-guard-2026-06-03-r1/triage.yaml
+  - docs/operations/WORKFLOW_NAVIGATION.md
+  - docs/operations/WORKFLOW_PRECHECK.md
+  target_sha256:
+    TODO_NEXT_SESSION.md: b92b13d28fe492f5c3464a06a9b9800a59d3afe607ab9ccb6a9470a6f883fafb
+    docs/disciplines/discipline_must_fix_discussion_obligation.md: 1d31f8dc775831d9840e0732ad0f06444964866d2d272954e0e317bda00aab73
+    docs/notes/review-runs/postwrite-api-triage-approval-gate-2026-06-03-r1/model-result-summary.yaml: ba51054a29c5ca777ef33242d827d25c6d78861f1c31050c4857a202bcecaca9
+    docs/notes/review-runs/postwrite-api-triage-approval-gate-2026-06-03-r1/parsed/claude-sonnet-4-6.round-1.yaml: 081b0ea95a21895df79f9718c4c064a0a2d9e6322f2fb0cdf31759f10922f653
+    docs/notes/review-runs/postwrite-api-triage-approval-gate-2026-06-03-r1/parsed/gemini-3.1-pro-preview.round-1.yaml: eafe9bac6922f4f98b4ad26d017fcd83928cf79714a7d628471e4ac2f1aad191
+    docs/notes/review-runs/postwrite-api-triage-approval-gate-2026-06-03-r1/parsed/gpt-5.4.round-1.yaml: c65934c82d332c6da1c808c169acc929a7fb1c3448b4c305732c7eae0da6839d
+    docs/notes/review-runs/postwrite-api-triage-approval-gate-2026-06-03-r1/raw/claude-sonnet-4-6.round-1.txt: 45f721efa3d306343e72ce0b750f057ad3a1c76c1e4f5526f8338478fdd4aae4
+    docs/notes/review-runs/postwrite-api-triage-approval-gate-2026-06-03-r1/raw/gemini-3.1-pro-preview.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/postwrite-api-triage-approval-gate-2026-06-03-r1/raw/gpt-5.4.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/postwrite-api-triage-approval-gate-2026-06-03-r1/review-target.md: 618f3700c49a7435a18cd91c2ba24adfaa6cf5c0361ecdd72f401ce4ef0a017d
+    docs/notes/review-runs/postwrite-api-triage-approval-gate-2026-06-03-r1/review_summary.md: 63d4fc8a4155397abcfe86fabcda3b8f4822ffb2c28ee3ec055eeef2661ddf87
+    docs/notes/review-runs/postwrite-api-triage-approval-gate-2026-06-03-r1/rounds.yaml: 881afa6d490d22cf46db6f1422d534c1b5d497680e15a5cf6d82ce6656c769be
+    docs/notes/review-runs/postwrite-api-triage-approval-gate-2026-06-03-r1/target-manifest.yaml: e218f2132171dfcafeea03bfea4430c3b8d4080bfc694c7a96a16c41f31d460f
+    docs/notes/review-runs/postwrite-api-triage-approval-gate-2026-06-03-r1/triage.yaml: c461c32331b68f78f0654e9be6e0477c4b6f2706b8cd458b03471ed1ce2b10d6
+    docs/notes/review-runs/postwrite-commit-audit-guard-2026-06-03-r1/model-result-summary.yaml: 93f7c40eb4e20db0d83267ff715859ffb1b881c5b0033573245f1441ad66720b
+    docs/notes/review-runs/postwrite-commit-audit-guard-2026-06-03-r1/parsed/claude-sonnet-4-6.round-1.yaml: 928883e3ac03c651a49370eaa6f8380ac83d467778ce1a63db9635dc91c593e5
+    docs/notes/review-runs/postwrite-commit-audit-guard-2026-06-03-r1/parsed/gemini-3.1-pro-preview.round-1.yaml: e00525261fdb0159baa251fcfc66cdde5b6a203a4b97555f231bf60e75f20b89
+    docs/notes/review-runs/postwrite-commit-audit-guard-2026-06-03-r1/parsed/gpt-5.4.round-1.yaml: f4ce07b265fe59038cc356a15737eb44c7c376c170d5ec6921aba933f67ef141
+    docs/notes/review-runs/postwrite-commit-audit-guard-2026-06-03-r1/raw/claude-sonnet-4-6.round-1.txt: acacd51ad1a2038148d7a020eccec8cbc37b385387059d60e64f1dce88d23fb9
+    docs/notes/review-runs/postwrite-commit-audit-guard-2026-06-03-r1/raw/gemini-3.1-pro-preview.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/postwrite-commit-audit-guard-2026-06-03-r1/raw/gpt-5.4.round-1.txt: 914cbbd1bea6400f257b83554739543cea1f7f6f1868c8cbe39e25e670a72937
+    docs/notes/review-runs/postwrite-commit-audit-guard-2026-06-03-r1/review_summary.md: 70e8111f74a79182eb00b3c361c9df10256cb68eb8b7653254f6f3aabef22d9c
+    docs/notes/review-runs/postwrite-commit-audit-guard-2026-06-03-r1/rounds.yaml: e5e1798e289e042f9f11ec5c6b668d38684d1f46c319252f9e6dddd7d36dba2e
+    docs/notes/review-runs/postwrite-commit-audit-guard-2026-06-03-r1/target-manifest.yaml: ea9118b9be55ff662b9f1e10f84245572967017e10ad101007ac8c3290c6cc67
+    docs/notes/review-runs/postwrite-commit-audit-guard-2026-06-03-r1/triage.yaml: 6d08ba5d8217ce5246a6ef70d7b13008c1d559a93d55b1bf76c5c6ed9c948119
+    docs/operations/WORKFLOW_NAVIGATION.md: 5fa1cd7fc5c51939f8b3ed2978c26943e0798f4afcfec3ff5abc6d69182ee6b8
+    docs/operations/WORKFLOW_PRECHECK.md: f5041fd15098240ae04ee1f13b811bfd87e3bd1f41ef59f34fe8943caee70c3c
+- verifier: gpt-5.4
+  target_files:
+  - TODO_NEXT_SESSION.md
+  - docs/disciplines/discipline_must_fix_discussion_obligation.md
+  - docs/notes/review-runs/postwrite-api-triage-approval-gate-2026-06-03-r1/model-result-summary.yaml
+  - docs/notes/review-runs/postwrite-api-triage-approval-gate-2026-06-03-r1/parsed/claude-sonnet-4-6.round-1.yaml
+  - docs/notes/review-runs/postwrite-api-triage-approval-gate-2026-06-03-r1/parsed/gemini-3.1-pro-preview.round-1.yaml
+  - docs/notes/review-runs/postwrite-api-triage-approval-gate-2026-06-03-r1/parsed/gpt-5.4.round-1.yaml
+  - docs/notes/review-runs/postwrite-api-triage-approval-gate-2026-06-03-r1/raw/claude-sonnet-4-6.round-1.txt
+  - docs/notes/review-runs/postwrite-api-triage-approval-gate-2026-06-03-r1/raw/gemini-3.1-pro-preview.round-1.txt
+  - docs/notes/review-runs/postwrite-api-triage-approval-gate-2026-06-03-r1/raw/gpt-5.4.round-1.txt
+  - docs/notes/review-runs/postwrite-api-triage-approval-gate-2026-06-03-r1/review-target.md
+  - docs/notes/review-runs/postwrite-api-triage-approval-gate-2026-06-03-r1/review_summary.md
+  - docs/notes/review-runs/postwrite-api-triage-approval-gate-2026-06-03-r1/rounds.yaml
+  - docs/notes/review-runs/postwrite-api-triage-approval-gate-2026-06-03-r1/target-manifest.yaml
+  - docs/notes/review-runs/postwrite-api-triage-approval-gate-2026-06-03-r1/triage.yaml
+  - docs/notes/review-runs/postwrite-commit-audit-guard-2026-06-03-r1/model-result-summary.yaml
+  - docs/notes/review-runs/postwrite-commit-audit-guard-2026-06-03-r1/parsed/claude-sonnet-4-6.round-1.yaml
+  - docs/notes/review-runs/postwrite-commit-audit-guard-2026-06-03-r1/parsed/gemini-3.1-pro-preview.round-1.yaml
+  - docs/notes/review-runs/postwrite-commit-audit-guard-2026-06-03-r1/parsed/gpt-5.4.round-1.yaml
+  - docs/notes/review-runs/postwrite-commit-audit-guard-2026-06-03-r1/raw/claude-sonnet-4-6.round-1.txt
+  - docs/notes/review-runs/postwrite-commit-audit-guard-2026-06-03-r1/raw/gemini-3.1-pro-preview.round-1.txt
+  - docs/notes/review-runs/postwrite-commit-audit-guard-2026-06-03-r1/raw/gpt-5.4.round-1.txt
+  - docs/notes/review-runs/postwrite-commit-audit-guard-2026-06-03-r1/review_summary.md
+  - docs/notes/review-runs/postwrite-commit-audit-guard-2026-06-03-r1/rounds.yaml
+  - docs/notes/review-runs/postwrite-commit-audit-guard-2026-06-03-r1/target-manifest.yaml
+  - docs/notes/review-runs/postwrite-commit-audit-guard-2026-06-03-r1/triage.yaml
+  - docs/operations/WORKFLOW_NAVIGATION.md
+  - docs/operations/WORKFLOW_PRECHECK.md
+  target_sha256:
+    TODO_NEXT_SESSION.md: b92b13d28fe492f5c3464a06a9b9800a59d3afe607ab9ccb6a9470a6f883fafb
+    docs/disciplines/discipline_must_fix_discussion_obligation.md: 1d31f8dc775831d9840e0732ad0f06444964866d2d272954e0e317bda00aab73
+    docs/notes/review-runs/postwrite-api-triage-approval-gate-2026-06-03-r1/model-result-summary.yaml: ba51054a29c5ca777ef33242d827d25c6d78861f1c31050c4857a202bcecaca9
+    docs/notes/review-runs/postwrite-api-triage-approval-gate-2026-06-03-r1/parsed/claude-sonnet-4-6.round-1.yaml: 081b0ea95a21895df79f9718c4c064a0a2d9e6322f2fb0cdf31759f10922f653
+    docs/notes/review-runs/postwrite-api-triage-approval-gate-2026-06-03-r1/parsed/gemini-3.1-pro-preview.round-1.yaml: eafe9bac6922f4f98b4ad26d017fcd83928cf79714a7d628471e4ac2f1aad191
+    docs/notes/review-runs/postwrite-api-triage-approval-gate-2026-06-03-r1/parsed/gpt-5.4.round-1.yaml: c65934c82d332c6da1c808c169acc929a7fb1c3448b4c305732c7eae0da6839d
+    docs/notes/review-runs/postwrite-api-triage-approval-gate-2026-06-03-r1/raw/claude-sonnet-4-6.round-1.txt: 45f721efa3d306343e72ce0b750f057ad3a1c76c1e4f5526f8338478fdd4aae4
+    docs/notes/review-runs/postwrite-api-triage-approval-gate-2026-06-03-r1/raw/gemini-3.1-pro-preview.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/postwrite-api-triage-approval-gate-2026-06-03-r1/raw/gpt-5.4.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/postwrite-api-triage-approval-gate-2026-06-03-r1/review-target.md: 618f3700c49a7435a18cd91c2ba24adfaa6cf5c0361ecdd72f401ce4ef0a017d
+    docs/notes/review-runs/postwrite-api-triage-approval-gate-2026-06-03-r1/review_summary.md: 63d4fc8a4155397abcfe86fabcda3b8f4822ffb2c28ee3ec055eeef2661ddf87
+    docs/notes/review-runs/postwrite-api-triage-approval-gate-2026-06-03-r1/rounds.yaml: 881afa6d490d22cf46db6f1422d534c1b5d497680e15a5cf6d82ce6656c769be
+    docs/notes/review-runs/postwrite-api-triage-approval-gate-2026-06-03-r1/target-manifest.yaml: e218f2132171dfcafeea03bfea4430c3b8d4080bfc694c7a96a16c41f31d460f
+    docs/notes/review-runs/postwrite-api-triage-approval-gate-2026-06-03-r1/triage.yaml: c461c32331b68f78f0654e9be6e0477c4b6f2706b8cd458b03471ed1ce2b10d6
+    docs/notes/review-runs/postwrite-commit-audit-guard-2026-06-03-r1/model-result-summary.yaml: 93f7c40eb4e20db0d83267ff715859ffb1b881c5b0033573245f1441ad66720b
+    docs/notes/review-runs/postwrite-commit-audit-guard-2026-06-03-r1/parsed/claude-sonnet-4-6.round-1.yaml: 928883e3ac03c651a49370eaa6f8380ac83d467778ce1a63db9635dc91c593e5
+    docs/notes/review-runs/postwrite-commit-audit-guard-2026-06-03-r1/parsed/gemini-3.1-pro-preview.round-1.yaml: e00525261fdb0159baa251fcfc66cdde5b6a203a4b97555f231bf60e75f20b89
+    docs/notes/review-runs/postwrite-commit-audit-guard-2026-06-03-r1/parsed/gpt-5.4.round-1.yaml: f4ce07b265fe59038cc356a15737eb44c7c376c170d5ec6921aba933f67ef141
+    docs/notes/review-runs/postwrite-commit-audit-guard-2026-06-03-r1/raw/claude-sonnet-4-6.round-1.txt: acacd51ad1a2038148d7a020eccec8cbc37b385387059d60e64f1dce88d23fb9
+    docs/notes/review-runs/postwrite-commit-audit-guard-2026-06-03-r1/raw/gemini-3.1-pro-preview.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/postwrite-commit-audit-guard-2026-06-03-r1/raw/gpt-5.4.round-1.txt: 914cbbd1bea6400f257b83554739543cea1f7f6f1868c8cbe39e25e670a72937
+    docs/notes/review-runs/postwrite-commit-audit-guard-2026-06-03-r1/review_summary.md: 70e8111f74a79182eb00b3c361c9df10256cb68eb8b7653254f6f3aabef22d9c
+    docs/notes/review-runs/postwrite-commit-audit-guard-2026-06-03-r1/rounds.yaml: e5e1798e289e042f9f11ec5c6b668d38684d1f46c319252f9e6dddd7d36dba2e
+    docs/notes/review-runs/postwrite-commit-audit-guard-2026-06-03-r1/target-manifest.yaml: ea9118b9be55ff662b9f1e10f84245572967017e10ad101007ac8c3290c6cc67
+    docs/notes/review-runs/postwrite-commit-audit-guard-2026-06-03-r1/triage.yaml: 6d08ba5d8217ce5246a6ef70d7b13008c1d559a93d55b1bf76c5c6ed9c948119
+    docs/operations/WORKFLOW_NAVIGATION.md: 5fa1cd7fc5c51939f8b3ed2978c26943e0798f4afcfec3ff5abc6d69182ee6b8
+    docs/operations/WORKFLOW_PRECHECK.md: f5041fd15098240ae04ee1f13b811bfd87e3bd1f41ef59f34fe8943caee70c3c
+- verifier: gemini-3.1-pro-preview
+  target_files:
+  - TODO_NEXT_SESSION.md
+  - docs/disciplines/discipline_must_fix_discussion_obligation.md
+  - docs/notes/review-runs/postwrite-api-triage-approval-gate-2026-06-03-r1/model-result-summary.yaml
+  - docs/notes/review-runs/postwrite-api-triage-approval-gate-2026-06-03-r1/parsed/claude-sonnet-4-6.round-1.yaml
+  - docs/notes/review-runs/postwrite-api-triage-approval-gate-2026-06-03-r1/parsed/gemini-3.1-pro-preview.round-1.yaml
+  - docs/notes/review-runs/postwrite-api-triage-approval-gate-2026-06-03-r1/parsed/gpt-5.4.round-1.yaml
+  - docs/notes/review-runs/postwrite-api-triage-approval-gate-2026-06-03-r1/raw/claude-sonnet-4-6.round-1.txt
+  - docs/notes/review-runs/postwrite-api-triage-approval-gate-2026-06-03-r1/raw/gemini-3.1-pro-preview.round-1.txt
+  - docs/notes/review-runs/postwrite-api-triage-approval-gate-2026-06-03-r1/raw/gpt-5.4.round-1.txt
+  - docs/notes/review-runs/postwrite-api-triage-approval-gate-2026-06-03-r1/review-target.md
+  - docs/notes/review-runs/postwrite-api-triage-approval-gate-2026-06-03-r1/review_summary.md
+  - docs/notes/review-runs/postwrite-api-triage-approval-gate-2026-06-03-r1/rounds.yaml
+  - docs/notes/review-runs/postwrite-api-triage-approval-gate-2026-06-03-r1/target-manifest.yaml
+  - docs/notes/review-runs/postwrite-api-triage-approval-gate-2026-06-03-r1/triage.yaml
+  - docs/notes/review-runs/postwrite-commit-audit-guard-2026-06-03-r1/model-result-summary.yaml
+  - docs/notes/review-runs/postwrite-commit-audit-guard-2026-06-03-r1/parsed/claude-sonnet-4-6.round-1.yaml
+  - docs/notes/review-runs/postwrite-commit-audit-guard-2026-06-03-r1/parsed/gemini-3.1-pro-preview.round-1.yaml
+  - docs/notes/review-runs/postwrite-commit-audit-guard-2026-06-03-r1/parsed/gpt-5.4.round-1.yaml
+  - docs/notes/review-runs/postwrite-commit-audit-guard-2026-06-03-r1/raw/claude-sonnet-4-6.round-1.txt
+  - docs/notes/review-runs/postwrite-commit-audit-guard-2026-06-03-r1/raw/gemini-3.1-pro-preview.round-1.txt
+  - docs/notes/review-runs/postwrite-commit-audit-guard-2026-06-03-r1/raw/gpt-5.4.round-1.txt
+  - docs/notes/review-runs/postwrite-commit-audit-guard-2026-06-03-r1/review_summary.md
+  - docs/notes/review-runs/postwrite-commit-audit-guard-2026-06-03-r1/rounds.yaml
+  - docs/notes/review-runs/postwrite-commit-audit-guard-2026-06-03-r1/target-manifest.yaml
+  - docs/notes/review-runs/postwrite-commit-audit-guard-2026-06-03-r1/triage.yaml
+  - docs/operations/WORKFLOW_NAVIGATION.md
+  - docs/operations/WORKFLOW_PRECHECK.md
+  target_sha256:
+    TODO_NEXT_SESSION.md: b92b13d28fe492f5c3464a06a9b9800a59d3afe607ab9ccb6a9470a6f883fafb
+    docs/disciplines/discipline_must_fix_discussion_obligation.md: 1d31f8dc775831d9840e0732ad0f06444964866d2d272954e0e317bda00aab73
+    docs/notes/review-runs/postwrite-api-triage-approval-gate-2026-06-03-r1/model-result-summary.yaml: ba51054a29c5ca777ef33242d827d25c6d78861f1c31050c4857a202bcecaca9
+    docs/notes/review-runs/postwrite-api-triage-approval-gate-2026-06-03-r1/parsed/claude-sonnet-4-6.round-1.yaml: 081b0ea95a21895df79f9718c4c064a0a2d9e6322f2fb0cdf31759f10922f653
+    docs/notes/review-runs/postwrite-api-triage-approval-gate-2026-06-03-r1/parsed/gemini-3.1-pro-preview.round-1.yaml: eafe9bac6922f4f98b4ad26d017fcd83928cf79714a7d628471e4ac2f1aad191
+    docs/notes/review-runs/postwrite-api-triage-approval-gate-2026-06-03-r1/parsed/gpt-5.4.round-1.yaml: c65934c82d332c6da1c808c169acc929a7fb1c3448b4c305732c7eae0da6839d
+    docs/notes/review-runs/postwrite-api-triage-approval-gate-2026-06-03-r1/raw/claude-sonnet-4-6.round-1.txt: 45f721efa3d306343e72ce0b750f057ad3a1c76c1e4f5526f8338478fdd4aae4
+    docs/notes/review-runs/postwrite-api-triage-approval-gate-2026-06-03-r1/raw/gemini-3.1-pro-preview.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/postwrite-api-triage-approval-gate-2026-06-03-r1/raw/gpt-5.4.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/postwrite-api-triage-approval-gate-2026-06-03-r1/review-target.md: 618f3700c49a7435a18cd91c2ba24adfaa6cf5c0361ecdd72f401ce4ef0a017d
+    docs/notes/review-runs/postwrite-api-triage-approval-gate-2026-06-03-r1/review_summary.md: 63d4fc8a4155397abcfe86fabcda3b8f4822ffb2c28ee3ec055eeef2661ddf87
+    docs/notes/review-runs/postwrite-api-triage-approval-gate-2026-06-03-r1/rounds.yaml: 881afa6d490d22cf46db6f1422d534c1b5d497680e15a5cf6d82ce6656c769be
+    docs/notes/review-runs/postwrite-api-triage-approval-gate-2026-06-03-r1/target-manifest.yaml: e218f2132171dfcafeea03bfea4430c3b8d4080bfc694c7a96a16c41f31d460f
+    docs/notes/review-runs/postwrite-api-triage-approval-gate-2026-06-03-r1/triage.yaml: c461c32331b68f78f0654e9be6e0477c4b6f2706b8cd458b03471ed1ce2b10d6
+    docs/notes/review-runs/postwrite-commit-audit-guard-2026-06-03-r1/model-result-summary.yaml: 93f7c40eb4e20db0d83267ff715859ffb1b881c5b0033573245f1441ad66720b
+    docs/notes/review-runs/postwrite-commit-audit-guard-2026-06-03-r1/parsed/claude-sonnet-4-6.round-1.yaml: 928883e3ac03c651a49370eaa6f8380ac83d467778ce1a63db9635dc91c593e5
+    docs/notes/review-runs/postwrite-commit-audit-guard-2026-06-03-r1/parsed/gemini-3.1-pro-preview.round-1.yaml: e00525261fdb0159baa251fcfc66cdde5b6a203a4b97555f231bf60e75f20b89
+    docs/notes/review-runs/postwrite-commit-audit-guard-2026-06-03-r1/parsed/gpt-5.4.round-1.yaml: f4ce07b265fe59038cc356a15737eb44c7c376c170d5ec6921aba933f67ef141
+    docs/notes/review-runs/postwrite-commit-audit-guard-2026-06-03-r1/raw/claude-sonnet-4-6.round-1.txt: acacd51ad1a2038148d7a020eccec8cbc37b385387059d60e64f1dce88d23fb9
+    docs/notes/review-runs/postwrite-commit-audit-guard-2026-06-03-r1/raw/gemini-3.1-pro-preview.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/postwrite-commit-audit-guard-2026-06-03-r1/raw/gpt-5.4.round-1.txt: 914cbbd1bea6400f257b83554739543cea1f7f6f1868c8cbe39e25e670a72937
+    docs/notes/review-runs/postwrite-commit-audit-guard-2026-06-03-r1/review_summary.md: 70e8111f74a79182eb00b3c361c9df10256cb68eb8b7653254f6f3aabef22d9c
+    docs/notes/review-runs/postwrite-commit-audit-guard-2026-06-03-r1/rounds.yaml: e5e1798e289e042f9f11ec5c6b668d38684d1f46c319252f9e6dddd7d36dba2e
+    docs/notes/review-runs/postwrite-commit-audit-guard-2026-06-03-r1/target-manifest.yaml: ea9118b9be55ff662b9f1e10f84245572967017e10ad101007ac8c3290c6cc67
+    docs/notes/review-runs/postwrite-commit-audit-guard-2026-06-03-r1/triage.yaml: 6d08ba5d8217ce5246a6ef70d7b13008c1d559a93d55b1bf76c5c6ed9c948119
+    docs/operations/WORKFLOW_NAVIGATION.md: 5fa1cd7fc5c51939f8b3ed2978c26943e0798f4afcfec3ff5abc6d69182ee6b8
+    docs/operations/WORKFLOW_PRECHECK.md: f5041fd15098240ae04ee1f13b811bfd87e3bd1f41ef59f34fe8943caee70c3c
+review_run:
+  path: docs/notes/review-runs/postwrite-api-triage-approval-gate-2026-06-03-r1
+  summary_path: docs/notes/review-runs/postwrite-api-triage-approval-gate-2026-06-03-r1/model-result-summary.yaml
+notes: Generated template; verify target_files cover current post-write targets before
+  use.

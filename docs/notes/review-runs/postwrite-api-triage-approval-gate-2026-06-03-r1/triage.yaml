@@ -1,0 +1,134 @@
+run_id: postwrite-api-triage-approval-gate-2026-06-03-r1
+triage_status: decided
+generated_at: '2026-06-03T09:23:05.325601+00:00'
+decision_actor: null
+decision_actor_type: human
+items:
+- finding_id: postwrite-api-triage-approval-gate-2026-06-03-r1-claude-sonnet-4-6-primary-001
+  run_id: postwrite-api-triage-approval-gate-2026-06-03-r1
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: 'docs/notes/review-runs/postwrite-api-triage-approval-gate-2026-06-03-r1/review-target.md
+    ## Intended behavior, item 5'
+  plain_language_summary: 'The guard ordering change in cmd_next is described correctly:
+    completed-manifest check precedes forbidden-file check.'
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: codex
+  decision_actor_type: agent
+  decision_at: '2026-06-03T09:23:54.836156+00:00'
+  decision_reason: 情報提供であり実装変更は不要
+  applied_files: []
+  superseded_by: null
+- finding_id: postwrite-api-triage-approval-gate-2026-06-03-r1-claude-sonnet-4-6-primary-002
+  run_id: postwrite-api-triage-approval-gate-2026-06-03-r1
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: 'docs/notes/review-runs/postwrite-api-triage-approval-gate-2026-06-03-r1/review-target.md
+    ## Key implementation notes'
+  plain_language_summary: The approval-record field set (approved_by, review_run_id,
+    summary_presented_to_user, triage_presented_to_user, approved_finding_ids, optional
+    approved_final_labels) is described as sufficient for machine-checking the gate.
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: codex
+  decision_actor_type: agent
+  decision_at: '2026-06-03T09:23:59.752373+00:00'
+  decision_reason: 情報提供であり承認レコード項目の妥当性確認として扱う
+  applied_files: []
+  superseded_by: null
+- finding_id: postwrite-api-triage-approval-gate-2026-06-03-r1-claude-sonnet-4-6-primary-003
+  run_id: postwrite-api-triage-approval-gate-2026-06-03-r1
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: 'docs/notes/review-runs/postwrite-api-triage-approval-gate-2026-06-03-r1/review-target.md
+    ## Tests added or updated'
+  plain_language_summary: Test coverage addresses both the triage-decide block path
+    and the manifest-output block path for important findings without approval, as
+    well as the completed-manifest short-circuit for next navigation.
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: codex
+  decision_actor_type: agent
+  decision_at: '2026-06-03T09:24:06.431814+00:00'
+  decision_reason: テスト網羅の確認であり追加対応不要
+  applied_files: []
+  superseded_by: null
+- finding_id: postwrite-api-triage-approval-gate-2026-06-03-r1-claude-sonnet-4-6-primary-004
+  run_id: postwrite-api-triage-approval-gate-2026-06-03-r1
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: 'docs/notes/review-runs/postwrite-api-triage-approval-gate-2026-06-03-r1/review-target.md
+    ## Intended behavior, item 2'
+  plain_language_summary: The approval requirement triggers on severity CRITICAL/ERROR
+    OR final triage label 'must-fix', but the document does not state what happens
+    when a finding is initially below threshold and later re-labeled to must-fix during
+    a subsequent decide call.
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: codex
+  decision_actor_type: agent
+  decision_at: '2026-06-03T09:24:20.587267+00:00'
+  decision_reason: 再ラベル時にも毎回承認ゲートが適用されることを review-target に追記済み
+  applied_files: []
+  superseded_by: null
+- finding_id: postwrite-api-triage-approval-gate-2026-06-03-r1-claude-sonnet-4-6-primary-005
+  run_id: postwrite-api-triage-approval-gate-2026-06-03-r1
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: 'docs/notes/review-runs/postwrite-api-triage-approval-gate-2026-06-03-r1/review-target.md
+    ## Key implementation notes, decide_item paragraph'
+  plain_language_summary: The document states decide_item checks _is_important_item(item,
+    final_label) before mutating, but does not clarify the check order when both the
+    existing item severity and the requested final_label are evaluated. If final_label
+    alone triggers importance, an agent supplying a non-important final_label for
+    a CRITICAL-severity item could potentially bypass the gate.
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: codex
+  decision_actor_type: agent
+  decision_at: '2026-06-03T09:24:25.483128+00:00'
+  decision_reason: 重要判定が severity と final_label の OR 条件であることを review-target に追記済み
+  applied_files: []
+  superseded_by: null
+- finding_id: postwrite-api-triage-approval-gate-2026-06-03-r1-claude-sonnet-4-6-primary-006
+  run_id: postwrite-api-triage-approval-gate-2026-06-03-r1
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: 'docs/notes/review-runs/postwrite-api-triage-approval-gate-2026-06-03-r1/review-target.md
+    ## Tests added or updated, full-suite result'
+  plain_language_summary: The reported baseline of 512 passed is stated as the result
+    before the review target document was added, implying the review target file itself
+    is not a test-suite input.
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: codex
+  decision_actor_type: agent
+  decision_at: '2026-06-03T09:24:30.318944+00:00'
+  decision_reason: テスト結果時点の注記であり監査情報として保持する
+  applied_files: []
+  superseded_by: null

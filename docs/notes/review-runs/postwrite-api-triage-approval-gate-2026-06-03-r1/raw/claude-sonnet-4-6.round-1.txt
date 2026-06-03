@@ -1,0 +1,30 @@
+findings:
+  - severity: INFO
+    target_location: "docs/notes/review-runs/postwrite-api-triage-approval-gate-2026-06-03-r1/review-target.md ## Intended behavior, item 5"
+    description: "The guard ordering change in cmd_next is described correctly: completed-manifest check precedes forbidden-file check."
+    rationale: "The document accurately captures the intent that a completed post-write manifest should short-circuit the post_write_policy_violation path, preventing false positives for files already covered by a finished verification cycle."
+
+  - severity: INFO
+    target_location: "docs/notes/review-runs/postwrite-api-triage-approval-gate-2026-06-03-r1/review-target.md ## Key implementation notes"
+    description: "The approval-record field set (approved_by, review_run_id, summary_presented_to_user, triage_presented_to_user, approved_finding_ids, optional approved_final_labels) is described as sufficient for machine-checking the gate."
+    rationale: "All fields needed to verify user presence and scope are enumerated. The optional nature of approved_final_labels is explicitly noted, avoiding over-constraint while preserving auditability."
+
+  - severity: INFO
+    target_location: "docs/notes/review-runs/postwrite-api-triage-approval-gate-2026-06-03-r1/review-target.md ## Tests added or updated"
+    description: "Test coverage addresses both the triage-decide block path and the manifest-output block path for important findings without approval, as well as the completed-manifest short-circuit for next navigation."
+    rationale: "The four failure modes (decide without approval, manifest without approval, stale policy violation after completion, and deviation scenarios during pending verification) are all explicitly enumerated in the test list."
+
+  - severity: WARN
+    target_location: "docs/notes/review-runs/postwrite-api-triage-approval-gate-2026-06-03-r1/review-target.md ## Intended behavior, item 2"
+    description: "The approval requirement triggers on severity CRITICAL/ERROR OR final triage label 'must-fix', but the document does not state what happens when a finding is initially below threshold and later re-labeled to must-fix during a subsequent decide call."
+    rationale: "If an agent can first decide a finding as 'monitor' (below threshold) and then re-decide it as 'must-fix' in a second call, the approval gate applies only on the second call. This is likely correct behavior but the document does not confirm whether re-labeling a previously decided item is permitted or whether the prior non-important decision is locked. A future reader could misread the rule as applying only to the initial decide call."
+
+  - severity: WARN
+    target_location: "docs/notes/review-runs/postwrite-api-triage-approval-gate-2026-06-03-r1/review-target.md ## Key implementation notes, decide_item paragraph"
+    description: "The document states decide_item checks _is_important_item(item, final_label) before mutating, but does not clarify the check order when both the existing item severity and the requested final_label are evaluated. If final_label alone triggers importance, an agent supplying a non-important final_label for a CRITICAL-severity item could potentially bypass the gate."
+    rationale: "The function signature _is_important_item(item, final_label=None) suggests both dimensions are checked, but the document's prose only describes the combined call without stating the OR semantics explicitly. This ambiguity is low risk given the test suite, but it is a documentation gap that could confuse a future implementer auditing the gate logic."
+
+  - severity: INFO
+    target_location: "docs/notes/review-runs/postwrite-api-triage-approval-gate-2026-06-03-r1/review-target.md ## Tests added or updated, full-suite result"
+    description: "The reported baseline of 512 passed is stated as the result before the review target document was added, implying the review target file itself is not a test-suite input."
+    rationale: "This is correct and expected. The note is informative for audit traceability and does not indicate a gap."

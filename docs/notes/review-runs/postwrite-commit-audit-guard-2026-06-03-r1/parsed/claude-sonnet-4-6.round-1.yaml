@@ -1,0 +1,65 @@
+role: primary
+provider: anthropic-api
+model: claude-sonnet-4-6
+attempts: 1
+duration_seconds: 24.472
+findings:
+- severity: WARN
+  target_location: 'tools/check-workflow-action.py: validate_post_write_completion_for_targets'
+  description: 'The function filters `target_files` for post-write targets internally,
+    but `cmd_commit` already passes all staged_files (not pre-filtered), while `cmd_audit_commit`
+    passes only pre-filtered `post_write_targets`. This asymmetry is harmless but
+    creates potential confusion: double-filtering occurs for `commit` path (the function
+    re-filters), whereas for `audit-commit` the list is filtered before passing and
+    then the function re-filters again needlessly.'
+  rationale: Inconsistent call conventions make the function contract unclear and
+    increase the risk that future callers pass partially-filtered or unfiltered lists,
+    potentially masking targets or double-counting them.
+- severity: WARN
+  target_location: 'tools/check-workflow-action.py: cmd_audit_commit / validate_post_write_completion_for_targets'
+  description: When `commit_file_sha256` returns `None` (e.g., the file was deleted
+    in that commit), the hash is stored as `None` in `commit_hashes`, passed to `validate_post_write_completion_for_targets`,
+    and then propagated into `actual_hashes`. Inside `manifest_hashes_match_values`,
+    a `None` hash will never equal the manifest's stored hash, causing a false-positive
+    DEVIATION for legitimate deletions of post-write targets.
+  rationale: A commit that deletes a post-write-tracked file would be incorrectly
+    flagged as DEVIATION rather than being handled as a special case (deleted file
+    needs no manifest, or needs a different policy decision).
+- severity: WARN
+  target_location: 'tests/tools/test_check_workflow_action.py: test_audit_commit_accepts_post_write_target_with_matching_manifest'
+  description: The test writes the completed manifest *after* the commit is made,
+    meaning the manifest sha256 is computed against the file as it exists on disk
+    (written by `_stage_file` and then committed). This works incidentally because
+    `_stage_file` writes the file to disk before staging and committing, so the on-disk
+    content still matches. However, if `_stage_file` were to clean up the working-tree
+    file after staging, the test would silently break.
+  rationale: Test correctness depends on an implicit side-effect of `_stage_file`
+    leaving the file on disk. This fragility should be documented or the test should
+    explicitly write the file content before computing the manifest hash.
+- severity: INFO
+  target_location: 'docs/operations/WORKFLOW_PRECHECK.md: §5.4 audit-commit サブコマンド'
+  description: '`audit-commit` is described as checking for completed manifests in
+    the repository''s current working state, but the specification does not clarify
+    what happens when the manifest itself was not present at the time of the commit
+    (i.e., it was added in a later commit). The current implementation looks at the
+    present manifest files on disk, not at manifests as they existed at commit time.'
+  rationale: Readers of the spec may expect a time-accurate audit (manifest must have
+    existed at commit time), but the implementation performs a present-state check.
+    This discrepancy should be noted as a known limitation in the spec.
+- severity: INFO
+  target_location: 'docs/operations/WORKFLOW_PRECHECK.md: §6.4 audit-commit の判定'
+  description: The specification does not define the exit code or behavior when `<commit-ish>`
+    is invalid or cannot be resolved (e.g., a non-existent hash). The implementation
+    returns exit 2 in that case, but this is undocumented in the spec.
+  rationale: For completeness and operator predictability, the spec should enumerate
+    the error path for an unresolvable commit-ish.
+- severity: INFO
+  target_location: 'TODO_NEXT_SESSION.md: post-write-verification commit guard paragraph'
+  description: The added paragraph lists `docs/operations/`, `docs/disciplines/`,
+    `docs/notes/`, `TODO_NEXT_SESSION.md` as examples of post-write-verification targets,
+    but does not reference `is_post_write_verification_target()` as the authoritative
+    source of truth. If that function's classification logic changes, the documentation
+    may become stale.
+  rationale: Keeping documentation in sync with code classification logic is an ongoing
+    maintenance concern; referencing the authoritative function or its governing specification
+    section would reduce drift risk.
