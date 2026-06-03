@@ -3,7 +3,7 @@
 対象仕様：docs/operations/WORKFLOW_PRECHECK.md
 対象範囲：spec-set サブコマンド（範囲案 2 のうち、MVP 第 1 ラウンドで先行実装）
 
-TDD 規律（CLAUDE.md 全体規律）に従い、本テストはスクリプト実装前に作成。
+TDD 規律（AGENTS.md 入口規律）に従い、本テストはスクリプト実装前に作成。
 実行方法：
   cd /Users/Daily/Development/ReviewCompass
   python3 -m unittest tests.tools.test_check_workflow_action -v
