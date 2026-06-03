@@ -1,0 +1,35 @@
+status: completed
+target_files:
+  - TODO_NEXT_SESSION.md
+  - templates/todo/TODO_NEXT_SESSION.template.md
+target_sha256:
+  TODO_NEXT_SESSION.md: a6154c95e1730eaeb171e0c4d4351366972ce1c3d8084ccb86bec5beee6df773
+  templates/todo/TODO_NEXT_SESSION.template.md: b59689369a26fb525b39fc469e5c9d41140a302cc3f7a482c37ad35cb02b00b9
+required_verifiers:
+  - gemini
+completed_verifiers:
+  - gemini
+unresolved_substantive_findings: 0
+verifications:
+  - verifier: gemini
+    provider: gemini-api
+    model: gemini-3.5-flash
+    target_files:
+      - TODO_NEXT_SESSION.md
+      - templates/todo/TODO_NEXT_SESSION.template.md
+    target_sha256:
+      TODO_NEXT_SESSION.md: a6154c95e1730eaeb171e0c4d4351366972ce1c3d8084ccb86bec5beee6df773
+      templates/todo/TODO_NEXT_SESSION.template.md: b59689369a26fb525b39fc469e5c9d41140a302cc3f7a482c37ad35cb02b00b9
+    result_summary: >
+      Verified the TODO update and Codex-specialized TODO template against the
+      Codex adapter migration outcome, navigator-first workflow, post-write
+      verification discipline, explicit commit/push instruction policy, and the
+      repo-local discipline source policy. Gemini reported no unresolved
+      substantive findings. It suggested one optional clarification about
+      Codex acting as drafter/facilitator while triad-review judgement remains
+      api_mediated; this was recorded as non-blocking and not applied in this
+      pass.
+note: >
+  Post-write verification for refreshing TODO_NEXT_SESSION.md after Codex
+  adapter migration and specializing templates/todo/TODO_NEXT_SESSION.template.md
+  for ReviewCompass/Codex operation.
