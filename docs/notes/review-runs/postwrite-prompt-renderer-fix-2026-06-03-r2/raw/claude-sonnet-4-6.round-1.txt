@@ -1,0 +1,15 @@
+findings:
+  - severity: WARN
+    target_location: "tools/api_providers/run_role.py: _render_prompt_template"
+    description: "The regex pattern [A-Za-z_][A-Za-z0-9_]* silently drops placeholders whose keys contain non-ASCII characters (e.g., Japanese identifiers) that may appear in existing templates."
+    rationale: "If any template key outside [A-Za-z0-9_] exists, the new regex will leave the placeholder unresolved rather than replacing it. The old loop-based approach would have resolved such keys correctly. A mismatch between what the regex recognises and the actual key names used in _PROVIDER_PROMPT_TEMPLATES could introduce silent rendering failures that are hard to diagnose."
+
+  - severity: INFO
+    target_location: "tools/api_providers/tests/test_run_role.py: test_build_prompt_does_not_replace_placeholders_inside_target_content"
+    description: "The test asserts that placeholder strings inside target document content are preserved verbatim, but it does not assert that the surrounding template placeholders (e.g., prior_findings, target_path at the template level) were actually replaced."
+    rationale: "Without a positive assertion that template-level substitutions did occur, the test would pass even if the entire rendering step were skipped, giving false confidence in the fix."
+
+  - severity: INFO
+    target_location: "tools/api_providers/tests/test_run_role.py: test_build_prompt_renders_prior_findings_in_provider_template"
+    description: "The test checks that '# 前段所見 1' and '前段の所見' appear in the rendered prompt, but does not verify that no raw {{ … }} placeholders remain in the output."
+    rationale: "A partially-rendered prompt (e.g., {{ target_path }} left unreplaced) would still pass this test. Adding an assertion like assert '{{' not in prompt would more completely verify that all expected substitutions occurred."

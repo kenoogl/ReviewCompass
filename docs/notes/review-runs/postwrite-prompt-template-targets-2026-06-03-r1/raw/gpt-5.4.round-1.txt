@@ -1,0 +1,15 @@
+findings:
+  - severity: ERROR
+    target_location: "tools/api_providers/prompt_templates/anthropic_review.md and tools/api_providers/run_role.py: build_prompt/_render_prompt_template"
+    description: "The templates hardcode '# Prior findings\\nなし' and never interpolate the provided prior findings content."
+    rationale: "build_prompt prepares a 'prior_findings' value from prior_finding_paths, but none of the new provider templates contain '{{ prior_findings }}'. As a result, prior findings are silently dropped from all rendered prompts, changing review behavior and breaking intended cross-phase traceability."
+
+  - severity: ERROR
+    target_location: "tools/api_providers/prompt_templates/default_review.md"
+    description: "The default provider template omits the target document output contract requirement to forbid wrapper keys more strongly than provider-specific templates, but still does not include prior findings interpolation."
+    rationale: "This template has the same missing '{{ prior_findings }}' bug as the provider-specific templates, so unknown providers also lose prior context. Because this is the fallback path, the omission affects any unrecognized provider configuration."
+
+  - severity: WARN
+    target_location: "tools/api_providers/tests/test_run_role.py"
+    description: "New prompt-template tests do not verify that prior findings are actually present in rendered prompts."
+    rationale: "The regression above passed because the added tests only check for template-selection markers. A test asserting that supplied prior finding file contents appear in the final prompt would have caught the missing '{{ prior_findings }}' placeholder immediately."

@@ -160,6 +160,44 @@ def test_build_prompt_uses_default_template_for_unknown_provider(tmp_target_file
   assert "findings: []" in prompt
 
 
+def test_build_prompt_does_not_replace_placeholders_inside_target_content(tmp_path):
+  """対象文書内の template placeholder 文字列は本文として保持する。"""
+  target = tmp_path / "target.md"
+  target.write_text(
+    "# Target\n{{ prior_findings }}\n{{ target_path }}\n",
+    encoding="utf-8",
+  )
+
+  prompt = build_prompt(
+    str(target),
+    "post_write_verification",
+    "観点-1",
+    [],
+    provider_name="anthropic-api",
+    model="claude-sonnet-4-6",
+  )
+
+  assert "# Target\n{{ prior_findings }}\n{{ target_path }}" in prompt
+
+
+def test_build_prompt_renders_prior_findings_in_provider_template(
+  tmp_target_file,
+  tmp_prior_finding,
+):
+  """provider template 経由でも前段所見がプロンプトへ入る。"""
+  prompt = build_prompt(
+    str(tmp_target_file),
+    "post_write_verification",
+    "観点-1",
+    [str(tmp_prior_finding)],
+    provider_name="openai-api",
+    model="gpt-5.4",
+  )
+
+  assert "# 前段所見 1" in prompt
+  assert "前段の所見" in prompt
+
+
 # --- 2. main の正常系 ---
 
 

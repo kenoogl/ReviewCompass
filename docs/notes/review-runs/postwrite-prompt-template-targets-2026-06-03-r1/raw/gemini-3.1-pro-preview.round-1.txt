@@ -1,0 +1,5 @@
+findings:
+  - severity: ERROR
+    target_location: "tools/api_providers/prompt_templates/*.md"
+    description: "All four newly added prompt templates hardcode `# Prior findings\nなし` instead of using the `{{ prior_findings }}` placeholder."
+    rationale: "Although `run_role.py` correctly formats prior findings and passes the `prior_findings` key to `_render_prompt_template`, the templates themselves do not contain the placeholder to render it. This will cause all API requests to silently discard prior findings, breaking sequential review chains (like adversarial and judgment roles) that depend on previous outputs. It will also cause existing tests like `test_build_prompt_includes_multiple_prior_findings` to fail."

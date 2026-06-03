@@ -1,0 +1,200 @@
+run_id: postwrite-prompt-template-targets-2026-06-03-r1
+triage_status: decided
+generated_at: '2026-06-03T06:48:51.851597+00:00'
+decision_actor: null
+decision_actor_type: human
+items:
+- finding_id: postwrite-prompt-template-targets-2026-06-03-r1-claude-sonnet-4-6-primary-001
+  run_id: postwrite-prompt-template-targets-2026-06-03-r1
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: tools/api_providers/prompt_templates/openai_review.md
+  plain_language_summary: openai_review.md and gemini_review.md are byte-for-byte
+    identical
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: codex
+  decision_actor_type: human
+  decision_at: '2026-06-03T06:53:25.008483+00:00'
+  decision_reason: OpenAI/Gemini templates are intentionally separated by file while
+    initially sharing the same strict YAML contract; provider-specific divergence
+    can be added when a concrete behavioral need appears.
+  applied_files: []
+  superseded_by: null
+- finding_id: postwrite-prompt-template-targets-2026-06-03-r1-claude-sonnet-4-6-primary-002
+  run_id: postwrite-prompt-template-targets-2026-06-03-r1
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: 'tools/api_providers/run_role.py: _render_prompt_template'
+  plain_language_summary: Template placeholder syntax requires spaces inside braces
+    ('{{ key }}'); missing-space variants are silently left unrendered
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: codex
+  decision_actor_type: human
+  decision_at: '2026-06-03T06:53:31.588572+00:00'
+  decision_reason: The renderer now uses a single-pass regex replacement that accepts
+    whitespace/no-whitespace placeholders and does not recursively rewrite inserted
+    target content.
+  applied_files: []
+  superseded_by: null
+- finding_id: postwrite-prompt-template-targets-2026-06-03-r1-claude-sonnet-4-6-primary-003
+  run_id: postwrite-prompt-template-targets-2026-06-03-r1
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: tools/api_providers/prompt_templates/anthropic_review.md – Prior
+    findings section
+  plain_language_summary: Hard-coded 'なし' in the template's '# Prior findings' section
+    is not rendered via a placeholder
+  final_label: must-fix
+  decision_status: decided
+  decision_actor: codex
+  decision_actor_type: human
+  decision_at: '2026-06-03T06:53:38.676568+00:00'
+  decision_reason: The apparent hard-coded value was caused by recursive placeholder
+    replacement inside target_content. Fixed by rendering only placeholders from the
+    original prompt template and preserving placeholders inside inserted content.
+  applied_files: []
+  superseded_by: null
+- finding_id: postwrite-prompt-template-targets-2026-06-03-r1-claude-sonnet-4-6-primary-004
+  run_id: postwrite-prompt-template-targets-2026-06-03-r1
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: 'tools/api_providers/review_triage.py: POST_WRITE_VERIFICATION_DIR_PREFIXES
+    vs POST_WRITE_VERIFICATION_MD_DIR_PREFIXES'
+  plain_language_summary: Paths matched by POST_WRITE_VERIFICATION_DIR_PREFIXES are
+    accepted regardless of file extension, while the new MD-specific prefixes gate
+    on .md; this asymmetry is undocumented
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: codex
+  decision_actor_type: human
+  decision_at: '2026-06-03T06:53:48.217679+00:00'
+  decision_reason: 'The asymmetry is intentional: docs/notes review-run artifacts
+    include non-md evidence files, while the newly added operational prompt/template
+    paths are md-only. The plan note records this boundary.'
+  applied_files: []
+  superseded_by: null
+- finding_id: postwrite-prompt-template-targets-2026-06-03-r1-claude-sonnet-4-6-primary-005
+  run_id: postwrite-prompt-template-targets-2026-06-03-r1
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: 'tools/api_providers/tests/test_run_role.py: test_build_prompt_uses_anthropic_specific_template'
+  plain_language_summary: Test asserts 'Do not use review:' but does not assert that
+    prior_findings placeholder renders correctly
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: codex
+  decision_actor_type: human
+  decision_at: '2026-06-03T06:53:53.735887+00:00'
+  decision_reason: Added tests for provider-template prior findings rendering and
+    for preserving placeholder-like text inside target documents.
+  applied_files: []
+  superseded_by: null
+- finding_id: postwrite-prompt-template-targets-2026-06-03-r1-gpt-5.4-adversarial-001
+  run_id: postwrite-prompt-template-targets-2026-06-03-r1
+  source_model: gpt-5.4
+  source_round: round-1
+  source_raw_path: raw/gpt-5.4.round-1.txt
+  source_parsed_path: parsed/gpt-5.4.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: 'tools/api_providers/prompt_templates/anthropic_review.md and tools/api_providers/run_role.py:
+    build_prompt/_render_prompt_template'
+  plain_language_summary: The templates hardcode '# Prior findings\nなし' and never
+    interpolate the provided prior findings content.
+  final_label: must-fix
+  decision_status: decided
+  decision_actor: codex
+  decision_actor_type: human
+  decision_at: '2026-06-03T06:53:59.540758+00:00'
+  decision_reason: The prompt sent to reviewers displayed target-content placeholders
+    as rendered values because _render_prompt_template recursively replaced inserted
+    content. Fixed with single-pass rendering and regression tests.
+  applied_files: []
+  superseded_by: null
+- finding_id: postwrite-prompt-template-targets-2026-06-03-r1-gpt-5.4-adversarial-002
+  run_id: postwrite-prompt-template-targets-2026-06-03-r1
+  source_model: gpt-5.4
+  source_round: round-1
+  source_raw_path: raw/gpt-5.4.round-1.txt
+  source_parsed_path: parsed/gpt-5.4.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: tools/api_providers/prompt_templates/default_review.md
+  plain_language_summary: The default provider template omits the target document
+    output contract requirement to forbid wrapper keys more strongly than provider-specific
+    templates, but still does not include prior findings interpolation.
+  final_label: must-fix
+  decision_status: decided
+  decision_actor: codex
+  decision_actor_type: human
+  decision_at: '2026-06-03T06:54:05.393952+00:00'
+  decision_reason: Default template content contains the prior_findings placeholder,
+    but the review prompt had been distorted by recursive rendering of target_content.
+    The renderer fix applies to default and provider-specific templates.
+  applied_files: []
+  superseded_by: null
+- finding_id: postwrite-prompt-template-targets-2026-06-03-r1-gpt-5.4-adversarial-003
+  run_id: postwrite-prompt-template-targets-2026-06-03-r1
+  source_model: gpt-5.4
+  source_round: round-1
+  source_raw_path: raw/gpt-5.4.round-1.txt
+  source_parsed_path: parsed/gpt-5.4.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: tools/api_providers/tests/test_run_role.py
+  plain_language_summary: New prompt-template tests do not verify that prior findings
+    are actually present in rendered prompts.
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: codex
+  decision_actor_type: human
+  decision_at: '2026-06-03T06:54:11.982702+00:00'
+  decision_reason: Added regression tests that assert prior finding content appears
+    in provider-rendered prompts and placeholder-like target text remains unchanged.
+  applied_files: []
+  superseded_by: null
+- finding_id: postwrite-prompt-template-targets-2026-06-03-r1-gemini-3.1-pro-preview-judgment-001
+  run_id: postwrite-prompt-template-targets-2026-06-03-r1
+  source_model: gemini-3.1-pro-preview
+  source_round: round-1
+  source_raw_path: raw/gemini-3.1-pro-preview.round-1.txt
+  source_parsed_path: parsed/gemini-3.1-pro-preview.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: tools/api_providers/prompt_templates/*.md
+  plain_language_summary: 'All four newly added prompt templates hardcode `# Prior
+    findings
+
+    なし` instead of using the `{{ prior_findings }}` placeholder.'
+  final_label: must-fix
+  decision_status: decided
+  decision_actor: codex
+  decision_actor_type: human
+  decision_at: '2026-06-03T06:54:17.724460+00:00'
+  decision_reason: Confirmed the templates contain {{ prior_findings }}; the reviewers
+    saw a distorted target because inserted target_content was recursively rendered.
+    Fixed the renderer and added regression coverage.
+  applied_files: []
+  superseded_by: null

@@ -1,0 +1,73 @@
+run_id: postwrite-prompt-renderer-fix-2026-06-03-r2
+triage_status: decided
+generated_at: '2026-06-03T06:55:32.244309+00:00'
+decision_actor: null
+decision_actor_type: human
+items:
+- finding_id: postwrite-prompt-renderer-fix-2026-06-03-r2-claude-sonnet-4-6-primary-001
+  run_id: postwrite-prompt-renderer-fix-2026-06-03-r2
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: 'tools/api_providers/run_role.py: _render_prompt_template'
+  plain_language_summary: The regex pattern [A-Za-z_][A-Za-z0-9_]* silently drops
+    placeholders whose keys contain non-ASCII characters (e.g., Japanese identifiers)
+    that may appear in existing templates.
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: codex
+  decision_actor_type: human
+  decision_at: '2026-06-03T06:55:49.984217+00:00'
+  decision_reason: Prompt template keys are controlled internal ASCII identifiers.
+    Leaving unknown/non-ASCII placeholders unresolved is acceptable and avoids replacing
+    arbitrary user content.
+  applied_files: []
+  superseded_by: null
+- finding_id: postwrite-prompt-renderer-fix-2026-06-03-r2-claude-sonnet-4-6-primary-002
+  run_id: postwrite-prompt-renderer-fix-2026-06-03-r2
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: 'tools/api_providers/tests/test_run_role.py: test_build_prompt_does_not_replace_placeholders_inside_target_content'
+  plain_language_summary: The test asserts that placeholder strings inside target
+    document content are preserved verbatim, but it does not assert that the surrounding
+    template placeholders (e.g., prior_findings, target_path at the template level)
+    were actually replaced.
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: codex
+  decision_actor_type: human
+  decision_at: '2026-06-03T06:55:56.680906+00:00'
+  decision_reason: Template-level replacement is already covered by existing provider-template
+    tests that assert rendered model_id and output-contract text. This test focuses
+    specifically on preserving placeholder-like target content.
+  applied_files: []
+  superseded_by: null
+- finding_id: postwrite-prompt-renderer-fix-2026-06-03-r2-claude-sonnet-4-6-primary-003
+  run_id: postwrite-prompt-renderer-fix-2026-06-03-r2
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: 'tools/api_providers/tests/test_run_role.py: test_build_prompt_renders_prior_findings_in_provider_template'
+  plain_language_summary: The test checks that '# 前段所見 1' and '前段の所見' appear in the
+    rendered prompt, but does not verify that no raw {{ … }} placeholders remain in
+    the output.
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: codex
+  decision_actor_type: human
+  decision_at: '2026-06-03T06:56:02.678574+00:00'
+  decision_reason: A global assert that no raw placeholders remain would be wrong
+    because placeholder-like text inside target_content must be preserved. The prior-finding
+    positive assertions cover the intended behavior.
+  applied_files: []
+  superseded_by: null

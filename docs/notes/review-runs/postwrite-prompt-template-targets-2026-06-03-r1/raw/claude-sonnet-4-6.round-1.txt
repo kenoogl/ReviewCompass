@@ -1,0 +1,25 @@
+findings:
+  - severity: WARN
+    target_location: "tools/api_providers/prompt_templates/openai_review.md"
+    description: "openai_review.md and gemini_review.md are byte-for-byte identical"
+    rationale: "The diff shows both files share the same content (index 0775463). If provider-specific differentiation is the goal—e.g., emphasising top-level 'findings' and severity vocabulary differently for OpenAI vs Gemini per the plan—having identical templates defeats the purpose. At minimum the 'prompt_id' header line will render as 'openai_review' vs 'gemini_review' after template substitution, but any provider-specific phrasing differences noted in the design doc are absent."
+
+  - severity: WARN
+    target_location: "tools/api_providers/run_role.py: _render_prompt_template"
+    description: "Template placeholder syntax requires spaces inside braces ('{{ key }}'); missing-space variants are silently left unrendered"
+    rationale: "The replacement logic uses the literal string '{{ ' + key + ' }}'. Any template that accidentally uses '{{key}}' (no spaces) will not be substituted and will leak the raw placeholder into the sent prompt. There is no validation or warning for un-replaced placeholders after rendering, so errors will be silent and hard to detect in production."
+
+  - severity: WARN
+    target_location: "tools/api_providers/prompt_templates/anthropic_review.md – Prior findings section"
+    description: "Hard-coded 'なし' in the template's '# Prior findings' section is not rendered via a placeholder"
+    rationale: "The template contains a literal 'なし' instead of '{{ prior_findings }}'. The 'prior_findings' key is correctly populated in the values dict passed to _render_prompt_template, but because the template has the hard-coded value, prior findings from earlier phases will never actually appear in the prompt sent to the model. The other templates (default_review, gemini_review, openai_review) share the same problem. Only the anthropic_review template is directly visible in this diff, but the pattern is consistent."
+
+  - severity: INFO
+    target_location: "tools/api_providers/review_triage.py: POST_WRITE_VERIFICATION_DIR_PREFIXES vs POST_WRITE_VERIFICATION_MD_DIR_PREFIXES"
+    description: "Paths matched by POST_WRITE_VERIFICATION_DIR_PREFIXES are accepted regardless of file extension, while the new MD-specific prefixes gate on .md; this asymmetry is undocumented"
+    rationale: "Files under docs/notes/ or docs/experiments/ with non-.md extensions (e.g., .yaml, .json) will still be flagged as post-write targets because the .md guard is applied only after the original DIR_PREFIXES check. This may be intentional but is not explained and could cause unexpected behaviour when structured files are placed under those directories."
+
+  - severity: INFO
+    target_location: "tools/api_providers/tests/test_run_role.py: test_build_prompt_uses_anthropic_specific_template"
+    description: "Test asserts 'Do not use review:' but does not assert that prior_findings placeholder renders correctly"
+    rationale: "Given the hard-coded 'なし' finding above, a test passing prior_finding_paths with actual content would expose the regression. The current test suite does not cover this path for the new template-based flow, leaving the silent substitution failure undetected."
