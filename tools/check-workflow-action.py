@@ -918,6 +918,147 @@ def manifest_hashes_match_current_files(cwd, manifest, target_files):
   return True
 
 
+def load_yaml_file(path):
+  """YAML ファイルを dict/list として読み込む。読めない場合は None。"""
+  try:
+    return yaml.safe_load(Path(path).read_text(encoding="utf-8"))
+  except (OSError, yaml.YAMLError):
+    return None
+
+
+def resolve_review_run_path(cwd, run_dir, value):
+  """review run 内の相対パスを実ファイルパスへ解決する"""
+  if not value:
+    return None
+  path = Path(value)
+  if path.is_absolute():
+    return path
+  candidate_from_cwd = Path(cwd) / path
+  if candidate_from_cwd.exists():
+    return candidate_from_cwd
+  return Path(run_dir) / path
+
+
+def review_run_traceability_satisfied(cwd, manifest):
+  """review_run 宣言付き manifest の raw/rounds/triage/summary 整合を検査する
+
+  review_run がない旧 manifest は対象外として True を返す。
+  """
+  review_run = manifest.get("review_run")
+  if review_run is None:
+    return True
+  if not isinstance(review_run, dict):
+    return False
+
+  run_path = review_run.get("path")
+  if not run_path:
+    return False
+  run_dir = Path(cwd) / run_path
+  if not run_dir.is_dir():
+    return False
+
+  target_manifest_path = run_dir / "target-manifest.yaml"
+  rounds_path = run_dir / "rounds.yaml"
+  triage_path = run_dir / "triage.yaml"
+  summary_path = review_run.get("summary_path")
+  if summary_path:
+    summary_file = resolve_review_run_path(cwd, run_dir, summary_path)
+  else:
+    summary_file = run_dir / "model-result-summary.yaml"
+
+  required_paths = [
+    target_manifest_path,
+    rounds_path,
+    triage_path,
+    summary_file,
+  ]
+  if any(path is None or not Path(path).is_file() for path in required_paths):
+    return False
+
+  rounds = load_yaml_file(rounds_path)
+  triage = load_yaml_file(triage_path)
+  summary = load_yaml_file(summary_file)
+  if not isinstance(rounds, dict):
+    return False
+  if not isinstance(triage, dict):
+    return False
+  if not isinstance(summary, dict):
+    return False
+
+  model_results = rounds.get("model_results")
+  if not isinstance(model_results, list) or not model_results:
+    return False
+
+  required_verifiers = set(manifest.get("required_verifiers") or [])
+  model_ids = set()
+  for result in model_results:
+    if not isinstance(result, dict):
+      return False
+    model_id = result.get("model_id")
+    raw_path = result.get("raw_path")
+    raw_sha256 = result.get("raw_sha256")
+    parse_status = result.get("parse_status")
+    if not model_id or not raw_path or not raw_sha256:
+      return False
+    if parse_status not in ("parsed", "parse_failed"):
+      return False
+
+    raw_file = resolve_review_run_path(cwd, run_dir, raw_path)
+    if raw_file is None or not raw_file.is_file():
+      return False
+    if file_sha256(raw_file) != raw_sha256:
+      return False
+    model_ids.add(model_id)
+
+  if required_verifiers and not required_verifiers.issubset(model_ids):
+    return False
+
+  summary_models = summary.get("models")
+  if not isinstance(summary_models, list):
+    return False
+  summary_by_model = {
+    item.get("model_id"): item
+    for item in summary_models
+    if isinstance(item, dict) and item.get("model_id")
+  }
+  if not model_ids.issubset(set(summary_by_model)):
+    return False
+
+  triage_items = triage.get("items")
+  if not isinstance(triage_items, list):
+    return False
+  triaged_models = set()
+  for item in triage_items:
+    if not isinstance(item, dict):
+      return False
+    source_model = item.get("source_model")
+    source_raw_path = item.get("source_raw_path")
+    decision_status = item.get("decision_status")
+    final_label = item.get("final_label")
+    if source_model:
+      triaged_models.add(source_model)
+    if source_raw_path:
+      raw_file = resolve_review_run_path(cwd, run_dir, source_raw_path)
+      if raw_file is None or not raw_file.is_file():
+        return False
+    if decision_status == "human_required":
+      return False
+    if decision_status != "decided":
+      return False
+    if final_label not in ("must-fix", "should-fix", "leave-as-is"):
+      return False
+
+  for model_id in model_ids:
+    summary_item = summary_by_model[model_id]
+    triage_status = summary_item.get("triage_status")
+    if model_id not in triaged_models and triage_status != "no_findings":
+      return False
+    if triage_status not in ("triaged", "no_findings"):
+      return False
+
+  return True
+
+
 def evaluate_post_write_manifest_state(cwd, target_files):
   """対象ファイル群に対する post-write-verification manifest 状態を返す"""
   target_set = set(target_files)
@@ -935,6 +1076,7 @@ def evaluate_post_write_manifest_state(cwd, target_files):
     if (
       manifest.get("status") == "completed"
       and coverage_ok
+      and review_run_traceability_satisfied(cwd, manifest)
       and unresolved_substantive_count(manifest) == 0
     ):
       return "completed", manifest

@@ -120,6 +120,127 @@ def _sha256_file(path):
   return hashlib.sha256(Path(path).read_bytes()).hexdigest()
 
 
+def _write_review_run(cwd, run_id, models, omit_summary=False, omit_triage_model=None):
+  """post-write review run の最小成果物を作る"""
+  run_dir = Path(cwd) / "docs" / "notes" / "review-runs" / run_id
+  raw_dir = run_dir / "raw"
+  raw_dir.mkdir(parents=True, exist_ok=True)
+
+  target = Path(cwd) / "docs" / "notes" / "review-target.md"
+  target.parent.mkdir(parents=True, exist_ok=True)
+  if not target.exists():
+    target.write_text("レビュー対象\n", encoding="utf-8")
+
+  model_results = []
+  triage_items = []
+  summary_models = []
+  for model in models:
+    raw_path = raw_dir / f"{model}.round-1.txt"
+    raw_path.write_text(f"{model} raw response\n", encoding="utf-8")
+    raw_sha = _sha256_file(raw_path)
+    model_results.append({
+      "model_id": model,
+      "provider": f"{model}-provider",
+      "role": model,
+      "treatment": model,
+      "invocation_path": "api",
+      "raw_path": f"raw/{model}.round-1.txt",
+      "raw_sha256": raw_sha,
+      "parsed_path": None,
+      "parsed_sha256": None,
+      "parse_status": "parse_failed",
+      "follow_up_action": "triage",
+    })
+    if model != omit_triage_model:
+      triage_items.append({
+        "finding_id": f"{run_id}-{model}-001",
+        "source_model": model,
+        "source_round": f"{run_id}-round-1",
+        "source_raw_path": f"raw/{model}.round-1.txt",
+        "source_parsed_path": None,
+        "severity_original": "INFO",
+        "severity_normalized": "INFO",
+        "final_label": "leave-as-is",
+        "decision_status": "decided",
+        "target_location": "docs/notes/review-target.md",
+        "plain_language_summary": "問題なし。",
+        "decision_reason": "テスト用の完了記録。",
+        "applied_files": [],
+        "superseded_by": None,
+      })
+    summary_models.append({
+      "model_id": model,
+      "raw_path": f"raw/{model}.round-1.txt",
+      "parse_status": "parse_failed",
+      "triage_status": "triaged",
+      "findings_count": 1,
+      "must_fix_count": 0,
+      "should_fix_count": 0,
+      "leave_as_is_count": 1,
+      "human_required_count": 0,
+    })
+
+  (run_dir / "target-manifest.yaml").write_text(
+    yaml.safe_dump(
+      {
+        "run_id": run_id,
+        "target_files": [
+          {
+            "path": "docs/notes/review-target.md",
+            "sha256": _sha256_file(target),
+          },
+        ],
+      },
+      allow_unicode=True,
+      sort_keys=False,
+    ),
+    encoding="utf-8",
+  )
+  (run_dir / "rounds.yaml").write_text(
+    yaml.safe_dump(
+      {
+        "round_id": f"{run_id}-round-1",
+        "purpose": "post_write_verification",
+        "target_files": [
+          {
+            "path": "docs/notes/review-target.md",
+            "sha256": _sha256_file(target),
+          },
+        ],
+        "model_results": model_results,
+      },
+      allow_unicode=True,
+      sort_keys=False,
+    ),
+    encoding="utf-8",
+  )
+  (run_dir / "triage.yaml").write_text(
+    yaml.safe_dump(
+      {
+        "run_id": run_id,
+        "items": triage_items,
+      },
+      allow_unicode=True,
+      sort_keys=False,
+    ),
+    encoding="utf-8",
+  )
+  if not omit_summary:
+    (run_dir / "model-result-summary.yaml").write_text(
+      yaml.safe_dump(
+        {
+          "run_id": run_id,
+          "models": summary_models,
+        },
+        allow_unicode=True,
+        sort_keys=False,
+      ),
+      encoding="utf-8",
+    )
+
+  return run_dir
+
+
 def _assert_script_invoked(testcase, result):
   """スクリプトが実際に起動したことを確認する厳密性確保のヘルパー
 
@@ -1278,6 +1399,137 @@ class PostWriteCoverageMatrixTests(unittest.TestCase):
     self.assertEqual(
       data["next_action"]["kind"], "stage",
       "verifications[] なし旧形式は completed_verifiers で完了判定し通常ワークフローに戻るべき",
+    )
+
+
+class PostWriteReviewRunTraceabilityTests(unittest.TestCase):
+  """review_run 宣言付き manifest の raw/rounds/triage/summary 機械検査"""
+
+  def setUp(self):
+    self.tmpdir = tempfile.mkdtemp()
+    self.addCleanup(shutil.rmtree, self.tmpdir)
+
+  def _write_manifest_for_review_run(self, cwd, run_id):
+    changed_targets = ["docs/notes/review-target.md"]
+    run_dir = Path(cwd) / "docs" / "notes" / "review-runs" / run_id
+    for path in sorted(run_dir.rglob("*")):
+      if path.is_file():
+        changed_targets.append(str(path.relative_to(cwd)))
+    models = ["claude-sonnet-4-6", "gpt-5.4", "gemini-3.1-pro-preview"]
+    _write_post_write_manifest(
+      cwd,
+      "post-write-2026-06-02-001.yaml",
+      {
+        "status": "completed",
+        "target_files": changed_targets,
+        "target_sha256": {
+          path: _sha256_file(Path(cwd) / path)
+          for path in changed_targets
+        },
+        "required_verifiers": models,
+        "completed_verifiers": models,
+        "unresolved_substantive_findings": 0,
+        "review_run": {
+          "path": f"docs/notes/review-runs/{run_id}",
+          "summary_path": f"docs/notes/review-runs/{run_id}/model-result-summary.yaml",
+        },
+      },
+    )
+
+  def test_next_accepts_manifest_when_review_run_traceability_is_complete(self):
+    """raw、rounds、triage、summary が全モデル分そろう manifest は完了と判定する"""
+    cwd = Path(self.tmpdir)
+    _init_git_repo(cwd)
+    _write_specs_for_next(cwd, {})
+    run_id = "traceability-complete"
+    _write_review_run(
+      cwd,
+      run_id,
+      ["claude-sonnet-4-6", "gpt-5.4", "gemini-3.1-pro-preview"],
+    )
+    self._write_manifest_for_review_run(cwd, run_id)
+
+    result = run_script(["next", "--json"], cwd=cwd)
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 0, result.stderr)
+    data = json.loads(result.stdout)
+    self.assertEqual(
+      data["next_action"]["kind"], "stage",
+      f"review_run の raw/rounds/triage/summary がそろう manifest は完了すべき。"
+      f"next_action: {data['next_action']}",
+    )
+
+  def test_next_rejects_manifest_when_review_summary_is_missing(self):
+    """summary artifact がない review_run は完了と判定しない"""
+    cwd = Path(self.tmpdir)
+    _init_git_repo(cwd)
+    _write_specs_for_next(cwd, {})
+    run_id = "missing-summary"
+    _write_review_run(
+      cwd,
+      run_id,
+      ["claude-sonnet-4-6", "gpt-5.4", "gemini-3.1-pro-preview"],
+      omit_summary=True,
+    )
+    self._write_manifest_for_review_run(cwd, run_id)
+
+    result = run_script(["next", "--json"], cwd=cwd)
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 0, result.stderr)
+    data = json.loads(result.stdout)
+    self.assertEqual(
+      data["next_action"]["kind"], "post_write_verification",
+      "モデル別 summary artifact がない review_run は完了扱いしてはいけない",
+    )
+
+  def test_next_rejects_manifest_when_required_model_raw_is_missing(self):
+    """required_verifiers の raw が欠ける review_run は完了と判定しない"""
+    cwd = Path(self.tmpdir)
+    _init_git_repo(cwd)
+    _write_specs_for_next(cwd, {})
+    run_id = "missing-raw"
+    run_dir = _write_review_run(
+      cwd,
+      run_id,
+      ["claude-sonnet-4-6", "gpt-5.4", "gemini-3.1-pro-preview"],
+    )
+    (run_dir / "raw" / "gpt-5.4.round-1.txt").unlink()
+    self._write_manifest_for_review_run(cwd, run_id)
+
+    result = run_script(["next", "--json"], cwd=cwd)
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 0, result.stderr)
+    data = json.loads(result.stdout)
+    self.assertEqual(
+      data["next_action"]["kind"], "post_write_verification",
+      "required_verifiers の raw ファイルが欠ける review_run は完了扱いしてはいけない",
+    )
+
+  def test_next_rejects_manifest_when_model_is_absent_from_triage(self):
+    """rounds にいるモデルが triage に出ていない review_run は完了と判定しない"""
+    cwd = Path(self.tmpdir)
+    _init_git_repo(cwd)
+    _write_specs_for_next(cwd, {})
+    run_id = "missing-triage-model"
+    _write_review_run(
+      cwd,
+      run_id,
+      ["claude-sonnet-4-6", "gpt-5.4", "gemini-3.1-pro-preview"],
+      omit_triage_model="gpt-5.4",
+    )
+    self._write_manifest_for_review_run(cwd, run_id)
+
+    result = run_script(["next", "--json"], cwd=cwd)
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 0, result.stderr)
+    data = json.loads(result.stdout)
+    self.assertEqual(
+      data["next_action"]["kind"], "post_write_verification",
+      "rounds にいるモデルが triage に出ていない review_run は完了扱いしてはいけない",
     )
 
 

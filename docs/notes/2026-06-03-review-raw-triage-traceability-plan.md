@@ -168,6 +168,50 @@ raw から手動成形した parsed YAML には、手動であっても一意な
 finding 単位の判断を `triage.yaml` へ移す。成形不能または判断保留の場合は
 `decision_status=human_required` として残し、放置された raw 応答が台帳から消えないようにする。
 
+## 機械判定化
+
+規律だけで「全モデルの結果をまとめてからトリアージへ進む」ことを守るのは不十分である。
+今後、post-write-verification manifest に `review_run:` を記録する場合は、
+`tools/check-workflow-action.py next` が review run 成果物の整合を機械判定する。
+
+`review_run:` 付き manifest は、次の条件を満たさない限り完了扱いにしない。
+
+- `target-manifest.yaml`、`rounds.yaml`、`triage.yaml`、`model-result-summary.yaml` が存在する。
+- `rounds.yaml` の全 `model_results` に `model_id`、`raw_path`、`raw_sha256`、`parse_status` がある。
+- 各 `raw_path` が存在し、実ファイルの sha256 が `raw_sha256` と一致する。
+- `required_verifiers` の全モデルが `rounds.yaml` の `model_results` に存在する。
+- `model-result-summary.yaml` の `models` に、`rounds.yaml` の全モデルが存在する。
+- `triage.yaml` の `items` は全件 `decision_status: decided` で、`final_label` が
+  `must-fix` / `should-fix` / `leave-as-is` のいずれかである。
+- `rounds.yaml` に存在する各モデルは、`triage.yaml` の `source_model` に現れるか、
+  `model-result-summary.yaml` で `triage_status: no_findings` と明示される。
+- `decision_status: human_required` が残る review run は完了扱いにしない。
+
+この機械判定は「チャット上で表を提示したか」を直接検査するものではない。
+代替として、モデル別まとめを永続成果物 `model-result-summary.yaml` として必須化し、
+完了 manifest から参照可能にする。ユーザ向け報告では、この summary artifact の内容を
+平易な説明つきで示してから、三段階トリアージと修正方針へ進む。
+
+`model-result-summary.yaml` の最小項目は次のとおり。
+
+```yaml
+run_id: "<run-id>"
+models:
+  - model_id: claude-sonnet-4-6
+    raw_path: raw/claude-sonnet-4-6.round-1.txt
+    parse_status: parse_failed
+    triage_status: triaged
+    findings_count: 3
+    must_fix_count: 0
+    should_fix_count: 2
+    leave_as_is_count: 1
+    human_required_count: 0
+```
+
+`triage_status` は `triaged` / `no_findings` のいずれかとする。
+`triaged` は finding 単位の判断が `triage.yaml` に移された状態、
+`no_findings` は raw を読んだうえで指摘なしと判断した状態を表す。
+
 ## 今回分への扱い
 
 今回の `docs/operations/EVALUATION.md` と `config/api-settings.yaml` のレビューでは、
