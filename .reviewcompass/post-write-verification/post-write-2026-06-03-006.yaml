@@ -1,0 +1,42 @@
+status: completed
+target_files:
+  - docs/notes/2026-06-02-workflow-navigation-implementation-plan.md
+  - docs/operations/WORKFLOW_NAVIGATION_FOR_CLAUDE.md
+target_sha256:
+  docs/notes/2026-06-02-workflow-navigation-implementation-plan.md: da53dda30b0d299c4b3c7772c94497917eb97fd04950b151e8202629707649b7
+  docs/operations/WORKFLOW_NAVIGATION_FOR_CLAUDE.md: 3f7425c8f6a63ee261262fb9c73f66236e21744f50a5f6faffa4059e357d3e96
+required_verifiers:
+  - claude
+  - codex
+completed_verifiers:
+  - claude
+  - codex
+unresolved_substantive_findings: 0
+verifications:
+  - verifier: claude
+    target_files:
+      - docs/notes/2026-06-02-workflow-navigation-implementation-plan.md
+      - docs/operations/WORKFLOW_NAVIGATION_FOR_CLAUDE.md
+    target_sha256:
+      docs/notes/2026-06-02-workflow-navigation-implementation-plan.md: da53dda30b0d299c4b3c7772c94497917eb97fd04950b151e8202629707649b7
+      docs/operations/WORKFLOW_NAVIGATION_FOR_CLAUDE.md: 3f7425c8f6a63ee261262fb9c73f66236e21744f50a5f6faffa4059e357d3e96
+    result_summary: >
+      対象2ファイルを読み、現行実装との整合、post-write pending 中の禁止操作、
+      memory 操作の扱い、独立多重チェック方針、スコープを確認。判定 OK。
+      本質的指摘なし。逐語的指摘なし。
+  - verifier: codex
+    target_files:
+      - docs/notes/2026-06-02-workflow-navigation-implementation-plan.md
+      - docs/operations/WORKFLOW_NAVIGATION_FOR_CLAUDE.md
+    target_sha256:
+      docs/notes/2026-06-02-workflow-navigation-implementation-plan.md: da53dda30b0d299c4b3c7772c94497917eb97fd04950b151e8202629707649b7
+      docs/operations/WORKFLOW_NAVIGATION_FOR_CLAUDE.md: 3f7425c8f6a63ee261262fb9c73f66236e21744f50a5f6faffa4059e357d3e96
+    result_summary: >
+      対象2ファイルの差分を読み、tools/check-workflow-action.py の
+      is_forbidden_post_write_pending_change、list_forbidden_post_write_pending_changes、
+      coverage_matrix_satisfied、evaluate_post_write_manifest_state と照合。
+      文書は現行実装と整合。memory 操作はリポジトリ外のため機械検出しないという制限も明記済み。
+      本質的指摘なし。
+note: >
+  post-write pending 中の禁止変更検出拡張を tools/tests として先に確定した後、
+  残った文書2件を対象に実施した post-write-verification。
