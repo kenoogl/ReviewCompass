@@ -1,0 +1,27 @@
+role: primary
+provider: anthropic-api
+model: claude-sonnet-4-6
+attempts: 1
+duration_seconds: 18.618
+findings:
+- severity: INFO
+  target_location: §5.4 セッション記録の作成規律
+  description: セッション記録ファイルの命名規則（session-<N>-<YYYY-MM-DD>.md）と保存先（docs/sessions/）は明記されているが、<N>
+    の採番方法（通し番号の管理主体・重複回避方法）が未定義。
+  rationale: セッション番号の採番ルールがなければ、複数セッションが同番号を使用するリスクや、番号の確認手順がオペレーターに委ねられ手順の一貫性が失われる可能性がある。
+- severity: INFO
+  target_location: §5.4 セッション記録の作成規律
+  description: 「セッション終了時または重要判断後に作成または更新する」とあるが、作成タイミングの判断基準（「重要な判断・承認・レビュー結果・修正経緯が発生した場合」）が主観的であり、省略可能な条件として読める。
+  rationale: セッション記録が任意判断で省略された場合、後続セッションの経緯確認が TODO_NEXT_SESSION.md だけに依存してしまい、「詳細経緯は
+    docs/sessions/ に残す」という方針と矛盾する。必須条件と任意条件を区別する記述があると運用上の齟齬を防げる。
+- severity: WARN
+  target_location: §5.4 セッション記録の作成規律
+  description: 「最低限、次を記録する」として6項目が列挙されているが、セッション記録ファイルのテンプレートまたはフォーマット仕様への参照リンクがない。§4.4
+    のレビュー記録には front-matter の必須フィールドが明示されているのとは対照的。
+  rationale: フォーマットが不定義のままでは記録の構造が実施者ごとに異なり、自動検査や参照の機械可読性が担保されない。§9 関連文書にセッション記録テンプレートが含まれていないことからも、テンプレート未整備の可能性がある。
+- severity: WARN
+  target_location: §5.4 セッション記録の作成規律、§1.1 必読5件
+  description: セッション開始時の必読5件（§1.1）に docs/sessions/ の前回記録が含まれていない。TODO_NEXT_SESSION.md
+    とセッション記録の関係で「詳細経緯は docs/sessions/ に残す」と規定しているが、セッション開始時の確認フローに組み込まれていない。
+  rationale: 詳細経緯の正本が docs/sessions/ であるにもかかわらず、開始時確認の対象が TODO_NEXT_SESSION.md 止まりであれば、直前セッションの重要決定が見落とされるリスクがある。§5.4
+    と §1.1 の間に手順上の不整合がある。

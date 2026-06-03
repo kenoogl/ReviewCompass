@@ -1,0 +1,25 @@
+findings:
+  - severity: INFO
+    target_location: "§5.4 セッション記録の作成規律"
+    description: "セッション記録ファイル名の採番ルール（既存最大番号+1）と、並行セッション・採番衝突時の待機手順が明記されている。"
+    rationale: "session_record_contract_workflow_procedure_recheck_2 の観点から、採番衝突時にメインセッション LLM が利用者確定まで新規作成を停止するという制約が文書化されており、手順として機能している。"
+  - severity: INFO
+    target_location: "§5.4 セッション記録の作成規律"
+    description: "セッション記録の最低記載項目（実施作業・利用者承認判断・API レビュー結果・修正ファイル・失敗と気づき・引き継ぎ）と推奨見出し構造が明示されている。"
+    rationale: "session_record_contract に対応する必須フィールドが運用ガイドラインとして正本化されており、contract の実行可能な手順が存在している。"
+  - severity: WARN
+    target_location: "§5.4 セッション記録の作成規律"
+    description: "「原則として毎セッション」という表現が残っており、例外条件（重要な判断・承認等が発生しない軽微な調査セッションの場合）の取り扱いが曖昧。"
+    rationale: "session_record_contract_workflow_procedure の観点から、記録作成の必須／省略可の境界が不明瞭であると、記録漏れが生じた際に手順違反か意図的省略かを事後に判別できなくなる。"
+  - severity: WARN
+    target_location: "§5.4 セッション記録の作成規律"
+    description: "推奨見出し構造の参照先として `docs/sessions/session-49-2026-06-02.md` を固定例示しているが、このファイルが将来削除・改名された場合に参照が無効化される。"
+    rationale: "運用ガイドラインの参照先が特定セッション番号に依存すると、ファイル数が増えるにつれて例示が陳腐化し、実際の雛形と乖離が生じるリスクがある。テンプレートファイルへの参照に置き換えることを検討すべき。"
+  - severity: WARN
+    target_location: "§5.4 セッション記録の作成規律"
+    description: "「メインセッション LLM はセッション記録の草案作成責任を持つ」と明記されているが、メインセッション LLM が作業途中でコンテキスト切れまたはセッション中断した場合の草案作成責任の引き継ぎ手順が記載されていない。"
+    rationale: "session_record_contract_workflow_procedure_recheck_2 の観点から、記録作成責任者が不在になる状況での手順欠落は、セッション記録の未作成リスクに直結する。"
+  - severity: INFO
+    target_location: "§5.4 セッション記録の作成規律 / §9 関連文書"
+    description: "TODO_NEXT_SESSION.md とセッション記録の役割分担（TODO は入口メモ、sessions/ が詳細正本）が明示されており、二重管理の方針が文書化されている。"
+    rationale: "session_record_contract の観点から、記録の正本所在が明確であることは後続セッションの参照コストを下げる。"

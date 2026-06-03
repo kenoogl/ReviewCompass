@@ -1,0 +1,24 @@
+approved_action: review_run_triage
+approved_by: user
+review_run_id: postwrite-session-record-contract-final-recheck-2026-06-04-r4
+summary_presented_to_user: true
+triage_presented_to_user: true
+approved_finding_ids:
+  - postwrite-session-record-contract-final-recheck-2026-06-04-r4-claude-sonnet-4-6-primary-001
+  - postwrite-session-record-contract-final-recheck-2026-06-04-r4-claude-sonnet-4-6-primary-002
+  - postwrite-session-record-contract-final-recheck-2026-06-04-r4-claude-sonnet-4-6-primary-003
+  - postwrite-session-record-contract-final-recheck-2026-06-04-r4-claude-sonnet-4-6-primary-004
+  - postwrite-session-record-contract-final-recheck-2026-06-04-r4-claude-sonnet-4-6-primary-005
+  - postwrite-session-record-contract-final-recheck-2026-06-04-r4-gpt-5.4-raw-001
+  - postwrite-session-record-contract-final-recheck-2026-06-04-r4-gpt-5.4-raw-002
+  - postwrite-session-record-contract-final-recheck-2026-06-04-r4-gpt-5.4-raw-003
+approved_final_labels:
+  postwrite-session-record-contract-final-recheck-2026-06-04-r4-claude-sonnet-4-6-primary-001: leave-as-is
+  postwrite-session-record-contract-final-recheck-2026-06-04-r4-claude-sonnet-4-6-primary-002: should-fix
+  postwrite-session-record-contract-final-recheck-2026-06-04-r4-claude-sonnet-4-6-primary-003: leave-as-is
+  postwrite-session-record-contract-final-recheck-2026-06-04-r4-claude-sonnet-4-6-primary-004: leave-as-is
+  postwrite-session-record-contract-final-recheck-2026-06-04-r4-claude-sonnet-4-6-primary-005: leave-as-is
+  postwrite-session-record-contract-final-recheck-2026-06-04-r4-gpt-5.4-raw-001: leave-as-is
+  postwrite-session-record-contract-final-recheck-2026-06-04-r4-gpt-5.4-raw-002: leave-as-is
+  postwrite-session-record-contract-final-recheck-2026-06-04-r4-gpt-5.4-raw-003: leave-as-is
+consumed: false

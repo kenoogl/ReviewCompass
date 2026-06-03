@@ -1,0 +1,18 @@
+role: adversarial
+provider: openai-api
+model: gpt-5.4
+attempts: 1
+duration_seconds: 12.244
+findings:
+- severity: WARN
+  target_location: §5.4 セッション記録の作成規律
+  description: セッション記録の作成対象が『重要な判断・承認・レビュー結果・修正経緯が発生した場合』と条件付きで定義されており、通常セッションで記録不要と解釈される余地がある。
+  rationale: criteria が session_record_contract_workflow_procedure である以上、セッション記録の作成契約は『いつ作るか』を曖昧にしない方がよい。現行文でも最低限の記録内容は示されているが、作成必須条件が広く解釈可能なため、全セッション必須か、例外条件付き必須かを明文化した方が運用の抜け漏れを防げる。
+- severity: WARN
+  target_location: §5.4 セッション記録の作成規律
+  description: セッション記録の作成責任者・更新責任者が明示されていない。
+  rationale: 『作成または更新する』という規定はあるが、メインセッションLLM・利用者・承認後の担当者のどれが責任主体か不明である。責任主体が不明だと、セッション終了時の記録漏れや『誰が正本を更新するか』の判断ぶれが起きやすい。
+- severity: INFO
+  target_location: §5.4 セッション記録の作成規律
+  description: セッション記録に求める最低限の記録項目が列挙されており、TODO_NEXT_SESSION.md と docs/sessions/ の役割分担も明確化されている。
+  rationale: セッション記録の内容契約として必要な要素（作業内容、承認判断、レビュー結果、修正ファイル、再発防止、引き継ぎ）が具体化されており、入口メモと正本記録の混同を防ぐ構成になっている。

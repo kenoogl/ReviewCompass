@@ -1,0 +1,105 @@
+run_id: postwrite-proxy-review-parallel-workflow-recheck-2026-06-04-r2
+triage_status: decided
+generated_at: '2026-06-03T22:11:26.452610+00:00'
+decision_actor: null
+decision_actor_type: human
+items:
+- finding_id: postwrite-proxy-review-parallel-workflow-recheck-2026-06-04-r2-claude-sonnet-4-6-primary-001
+  run_id: postwrite-proxy-review-parallel-workflow-recheck-2026-06-04-r2
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: '## r1 leave-as-is decisions'
+  plain_language_summary: The leave-as-is decision for proxy_model identity provenance
+    relies on 'structured evidence presence and consistency' without specifying what
+    consistency check is performed.
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: codex
+  decision_actor_type: agent
+  decision_at: '2026-06-03T22:11:45.178713+00:00'
+  decision_reason: 現行軽量ガードの整合検査が何を確認し、何を将来課題に残すかを明示する
+  applied_files: []
+  superseded_by: null
+- finding_id: postwrite-proxy-review-parallel-workflow-recheck-2026-06-04-r2-claude-sonnet-4-6-primary-002
+  run_id: postwrite-proxy-review-parallel-workflow-recheck-2026-06-04-r2
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: '## r1 should-fix clusters and applied fixes / 1. Important-finding
+    threshold'
+  plain_language_summary: The threshold definition lists 'same-root findings from
+    multiple models' as a trigger for importance, but the document does not define
+    how same-root identity is determined across models that may phrase findings differently.
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: codex
+  decision_actor_type: agent
+  decision_at: '2026-06-03T22:11:52.559974+00:00'
+  decision_reason: 同根所見の判定基準を共有対象、共有契約、共有原因、モデル間の対象一致として明記する
+  applied_files: []
+  superseded_by: null
+- finding_id: postwrite-proxy-review-parallel-workflow-recheck-2026-06-04-r2-claude-sonnet-4-6-primary-003
+  run_id: postwrite-proxy-review-parallel-workflow-recheck-2026-06-04-r2
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: '## Verification commands'
+  plain_language_summary: Test counts are reported as pass totals but the review-target
+    document does not identify which specific test cases cover the newly added guard
+    fields (decision_prompt_path, source_raw_paths, candidate_options).
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: codex
+  decision_actor_type: agent
+  decision_at: '2026-06-03T22:12:10.464347+00:00'
+  decision_reason: recheck targetの説明粒度に関する観測性指摘であり、実テストにはcandidate_options欠落とraw欠落のfail-closedが存在するため修正不要
+  applied_files: []
+  superseded_by: null
+- finding_id: postwrite-proxy-review-parallel-workflow-recheck-2026-06-04-r2-gemini-3.1-pro-preview-judgment-001
+  run_id: postwrite-proxy-review-parallel-workflow-recheck-2026-06-04-r2
+  source_model: gemini-3.1-pro-preview
+  source_round: round-1
+  source_raw_path: raw/gemini-3.1-pro-preview.round-1.txt
+  source_parsed_path: parsed/gemini-3.1-pro-preview.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: '### 2. Proxy input evidence'
+  plain_language_summary: Potential rigidity in requiring `candidate_options` for
+    all proxy requests.
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: codex
+  decision_actor_type: agent
+  decision_at: '2026-06-03T22:12:04.835540+00:00'
+  decision_reason: 本モードは候補案比較による判断代行であり、candidate_options必須は意図した制約。将来の自由相談モードは別variantで扱う
+  applied_files: []
+  superseded_by: null
+- finding_id: postwrite-proxy-review-parallel-workflow-recheck-2026-06-04-r2-gemini-3.1-pro-preview-judgment-002
+  run_id: postwrite-proxy-review-parallel-workflow-recheck-2026-06-04-r2
+  source_model: gemini-3.1-pro-preview
+  source_round: round-1
+  source_raw_path: raw/gemini-3.1-pro-preview.round-1.txt
+  source_parsed_path: parsed/gemini-3.1-pro-preview.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: '### 3. Work-noise promotion'
+  plain_language_summary: Lack of specificity regarding which actor summarizes promoted
+    work noise.
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: codex
+  decision_actor_type: agent
+  decision_at: '2026-06-03T22:11:58.080388+00:00'
+  decision_reason: 昇格されたwork_noiseの要約責任はメインセッションLLMにあることを明記する
+  applied_files: []
+  superseded_by: null

@@ -1,0 +1,15 @@
+findings:
+  - severity: WARN
+    target_location: "docs/operations/SESSION_WORKFLOW_GUIDE.md §5.4"
+    description: "セッション記録の採番規則が『既存の最大セッション番号に 1 を加えた番号』と『利用者が採番を確定するまで新しいセッション記録を作成しない』の組み合わせになっており、並行作業時の実施手順が未確定です。"
+    rationale: "本改定でセッション記録作成を正本化した一方、採番衝突時に草案をどこへ保持するか、既存記録の更新で代替するのか、一時ファイル名を使うのかが定義されていません。記録必須規律と作成禁止条件が衝突すると、重要判断の記録漏れや運用停止を招きます。"
+
+  - severity: WARN
+    target_location: "docs/operations/SESSION_WORKFLOW_GUIDE.md §5.4"
+    description: "セッション記録を『セッション終了時または重要判断後に作成または更新』としつつ、『同日の複数セッションでも番号を進める』としているため、同一セッション内で複数回更新した場合に新規作成と更新の境界が曖昧です。"
+    rationale: "記録運用の再確認という観点では、1 セッションにつき 1 ファイルなのか、重要判断ごとに別ファイル化するのかを明確にしないと、重複ファイルや追記漏れ、番号の過剰消費が発生し得ます。"
+
+  - severity: INFO
+    target_location: "docs/operations/SESSION_WORKFLOW_GUIDE.md 全体"
+    description: "セッション記録の作成責任、最低記録項目、採番時の衝突対応確認義務が明文化され、今回の改定目的である『セッション記録の作成手順の正本化』自体は文書全体に反映されています。"
+    rationale: "post_write_verification として主要な追加事項は一貫しており、TODO を正本扱いしないこと、docs/sessions を詳細経緯の保存先とすることも整合しています。"

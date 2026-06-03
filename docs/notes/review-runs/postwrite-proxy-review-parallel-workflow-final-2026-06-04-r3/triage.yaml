@@ -1,0 +1,47 @@
+run_id: postwrite-proxy-review-parallel-workflow-final-2026-06-04-r3
+triage_status: decided
+generated_at: '2026-06-03T22:13:34.460150+00:00'
+decision_actor: null
+decision_actor_type: human
+items:
+- finding_id: postwrite-proxy-review-parallel-workflow-final-2026-06-04-r3-claude-sonnet-4-6-primary-001
+  run_id: postwrite-proxy-review-parallel-workflow-final-2026-06-04-r3
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: 'docs/notes/review-runs/postwrite-proxy-review-parallel-workflow-final-2026-06-04-r3/review-target.md
+    ## r2 fixes now present'
+  plain_language_summary: The document notes that cryptographic/API-signed provenance
+    is 'future scope', but no tracking issue or deferral record is referenced.
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: codex
+  decision_actor_type: agent
+  decision_at: '2026-06-03T22:13:52.646597+00:00'
+  decision_reason: API署名や暗号学的provenanceは将来課題として既に明記済み。専用追跡は後続のworkflow-management強化で扱う
+  applied_files: []
+  superseded_by: null
+- finding_id: postwrite-proxy-review-parallel-workflow-final-2026-06-04-r3-claude-sonnet-4-6-primary-002
+  run_id: postwrite-proxy-review-parallel-workflow-final-2026-06-04-r3
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: 'docs/notes/review-runs/postwrite-proxy-review-parallel-workflow-final-2026-06-04-r3/review-target.md
+    ## r2 fixes now present'
+  plain_language_summary: The responsibility assignment for summarizing or preserving
+    promoted decision_basis evidence is placed on the 'main session LLM', but no machine
+    guard or structural enforcement is described for this responsibility.
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: codex
+  decision_actor_type: agent
+  decision_at: '2026-06-03T22:13:58.262480+00:00'
+  decision_reason: decision_basis保存の構造化ガードは将来のサブ担当統合コマンドで扱う。現時点では正本責務とsession record運用で十分
+  applied_files: []
+  superseded_by: null

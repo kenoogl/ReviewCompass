@@ -1,0 +1,202 @@
+status: completed
+target_files: &id002
+- docs/notes/review-runs/postwrite-proxy-review-parallel-workflow-2026-06-04-r1/model-result-summary.yaml
+- docs/notes/review-runs/postwrite-proxy-review-parallel-workflow-2026-06-04-r1/parsed/claude-sonnet-4-6.round-1.yaml
+- docs/notes/review-runs/postwrite-proxy-review-parallel-workflow-2026-06-04-r1/parsed/gemini-3.1-pro-preview.round-1.yaml
+- docs/notes/review-runs/postwrite-proxy-review-parallel-workflow-2026-06-04-r1/parsed/gpt-5.4.round-1.yaml
+- docs/notes/review-runs/postwrite-proxy-review-parallel-workflow-2026-06-04-r1/raw/claude-sonnet-4-6.round-1.txt
+- docs/notes/review-runs/postwrite-proxy-review-parallel-workflow-2026-06-04-r1/raw/gemini-3.1-pro-preview.round-1.txt
+- docs/notes/review-runs/postwrite-proxy-review-parallel-workflow-2026-06-04-r1/raw/gpt-5.4.round-1.txt
+- docs/notes/review-runs/postwrite-proxy-review-parallel-workflow-2026-06-04-r1/review-target.md
+- docs/notes/review-runs/postwrite-proxy-review-parallel-workflow-2026-06-04-r1/review_summary.md
+- docs/notes/review-runs/postwrite-proxy-review-parallel-workflow-2026-06-04-r1/rounds.yaml
+- docs/notes/review-runs/postwrite-proxy-review-parallel-workflow-2026-06-04-r1/target-manifest.yaml
+- docs/notes/review-runs/postwrite-proxy-review-parallel-workflow-2026-06-04-r1/triage.yaml
+- docs/notes/review-runs/postwrite-proxy-review-parallel-workflow-final-2026-06-04-r3/model-result-summary.yaml
+- docs/notes/review-runs/postwrite-proxy-review-parallel-workflow-final-2026-06-04-r3/parsed/claude-sonnet-4-6.round-1.yaml
+- docs/notes/review-runs/postwrite-proxy-review-parallel-workflow-final-2026-06-04-r3/parsed/gemini-3.1-pro-preview.round-1.yaml
+- docs/notes/review-runs/postwrite-proxy-review-parallel-workflow-final-2026-06-04-r3/parsed/gpt-5.4.round-1.yaml
+- docs/notes/review-runs/postwrite-proxy-review-parallel-workflow-final-2026-06-04-r3/raw/claude-sonnet-4-6.round-1.txt
+- docs/notes/review-runs/postwrite-proxy-review-parallel-workflow-final-2026-06-04-r3/raw/gemini-3.1-pro-preview.round-1.txt
+- docs/notes/review-runs/postwrite-proxy-review-parallel-workflow-final-2026-06-04-r3/raw/gpt-5.4.round-1.txt
+- docs/notes/review-runs/postwrite-proxy-review-parallel-workflow-final-2026-06-04-r3/review-target.md
+- docs/notes/review-runs/postwrite-proxy-review-parallel-workflow-final-2026-06-04-r3/review_summary.md
+- docs/notes/review-runs/postwrite-proxy-review-parallel-workflow-final-2026-06-04-r3/rounds.yaml
+- docs/notes/review-runs/postwrite-proxy-review-parallel-workflow-final-2026-06-04-r3/target-manifest.yaml
+- docs/notes/review-runs/postwrite-proxy-review-parallel-workflow-final-2026-06-04-r3/triage.yaml
+- docs/notes/review-runs/postwrite-proxy-review-parallel-workflow-recheck-2026-06-04-r2/model-result-summary.yaml
+- docs/notes/review-runs/postwrite-proxy-review-parallel-workflow-recheck-2026-06-04-r2/parsed/claude-sonnet-4-6.round-1.yaml
+- docs/notes/review-runs/postwrite-proxy-review-parallel-workflow-recheck-2026-06-04-r2/parsed/gemini-3.1-pro-preview.round-1.yaml
+- docs/notes/review-runs/postwrite-proxy-review-parallel-workflow-recheck-2026-06-04-r2/parsed/gpt-5.4.round-1.yaml
+- docs/notes/review-runs/postwrite-proxy-review-parallel-workflow-recheck-2026-06-04-r2/raw/claude-sonnet-4-6.round-1.txt
+- docs/notes/review-runs/postwrite-proxy-review-parallel-workflow-recheck-2026-06-04-r2/raw/gemini-3.1-pro-preview.round-1.txt
+- docs/notes/review-runs/postwrite-proxy-review-parallel-workflow-recheck-2026-06-04-r2/raw/gpt-5.4.round-1.txt
+- docs/notes/review-runs/postwrite-proxy-review-parallel-workflow-recheck-2026-06-04-r2/review-target.md
+- docs/notes/review-runs/postwrite-proxy-review-parallel-workflow-recheck-2026-06-04-r2/review_summary.md
+- docs/notes/review-runs/postwrite-proxy-review-parallel-workflow-recheck-2026-06-04-r2/rounds.yaml
+- docs/notes/review-runs/postwrite-proxy-review-parallel-workflow-recheck-2026-06-04-r2/target-manifest.yaml
+- docs/notes/review-runs/postwrite-proxy-review-parallel-workflow-recheck-2026-06-04-r2/triage.yaml
+- docs/notes/review-runs/postwrite-session-record-contract-2026-06-04-r1/approval-triage-2026-06-04.yaml
+- docs/notes/review-runs/postwrite-session-record-contract-2026-06-04-r1/model-result-summary.yaml
+- docs/notes/review-runs/postwrite-session-record-contract-2026-06-04-r1/parsed/claude-sonnet-4-6.round-1.yaml
+- docs/notes/review-runs/postwrite-session-record-contract-2026-06-04-r1/parsed/gemini-3.1-pro-preview.round-1.yaml
+- docs/notes/review-runs/postwrite-session-record-contract-2026-06-04-r1/parsed/gpt-5.4.round-1.yaml
+- docs/notes/review-runs/postwrite-session-record-contract-2026-06-04-r1/raw/claude-sonnet-4-6.round-1.txt
+- docs/notes/review-runs/postwrite-session-record-contract-2026-06-04-r1/raw/gemini-3.1-pro-preview.round-1.txt
+- docs/notes/review-runs/postwrite-session-record-contract-2026-06-04-r1/raw/gpt-5.4.round-1.txt
+- docs/notes/review-runs/postwrite-session-record-contract-2026-06-04-r1/review_summary.md
+- docs/notes/review-runs/postwrite-session-record-contract-2026-06-04-r1/rounds.yaml
+- docs/notes/review-runs/postwrite-session-record-contract-2026-06-04-r1/target-manifest.yaml
+- docs/notes/review-runs/postwrite-session-record-contract-2026-06-04-r1/triage.yaml
+- docs/notes/review-runs/postwrite-session-record-contract-final-2026-06-04-r3/approval-triage-2026-06-04.yaml
+- docs/notes/review-runs/postwrite-session-record-contract-final-2026-06-04-r3/model-result-summary.yaml
+- docs/notes/review-runs/postwrite-session-record-contract-final-2026-06-04-r3/parsed/claude-sonnet-4-6.round-1.yaml
+- docs/notes/review-runs/postwrite-session-record-contract-final-2026-06-04-r3/parsed/gemini-3.1-pro-preview.round-1.yaml
+- docs/notes/review-runs/postwrite-session-record-contract-final-2026-06-04-r3/parsed/gpt-5.4.round-1.yaml
+- docs/notes/review-runs/postwrite-session-record-contract-final-2026-06-04-r3/raw/claude-sonnet-4-6.round-1.txt
+- docs/notes/review-runs/postwrite-session-record-contract-final-2026-06-04-r3/raw/gemini-3.1-pro-preview.round-1.txt
+- docs/notes/review-runs/postwrite-session-record-contract-final-2026-06-04-r3/raw/gpt-5.4.round-1.txt
+- docs/notes/review-runs/postwrite-session-record-contract-final-2026-06-04-r3/review_summary.md
+- docs/notes/review-runs/postwrite-session-record-contract-final-2026-06-04-r3/rounds.yaml
+- docs/notes/review-runs/postwrite-session-record-contract-final-2026-06-04-r3/target-manifest.yaml
+- docs/notes/review-runs/postwrite-session-record-contract-final-2026-06-04-r3/triage.yaml
+- docs/notes/review-runs/postwrite-session-record-contract-final-recheck-2026-06-04-r4/approval-triage-2026-06-04.yaml
+- docs/notes/review-runs/postwrite-session-record-contract-final-recheck-2026-06-04-r4/model-result-summary.yaml
+- docs/notes/review-runs/postwrite-session-record-contract-final-recheck-2026-06-04-r4/parsed/claude-sonnet-4-6.round-1.yaml
+- docs/notes/review-runs/postwrite-session-record-contract-final-recheck-2026-06-04-r4/parsed/gemini-3.1-pro-preview.round-1.yaml
+- docs/notes/review-runs/postwrite-session-record-contract-final-recheck-2026-06-04-r4/parsed/gpt-5.4.round-1.yaml
+- docs/notes/review-runs/postwrite-session-record-contract-final-recheck-2026-06-04-r4/raw/claude-sonnet-4-6.round-1.txt
+- docs/notes/review-runs/postwrite-session-record-contract-final-recheck-2026-06-04-r4/raw/gemini-3.1-pro-preview.round-1.txt
+- docs/notes/review-runs/postwrite-session-record-contract-final-recheck-2026-06-04-r4/raw/gpt-5.4.round-1.txt
+- docs/notes/review-runs/postwrite-session-record-contract-final-recheck-2026-06-04-r4/review_summary.md
+- docs/notes/review-runs/postwrite-session-record-contract-final-recheck-2026-06-04-r4/rounds.yaml
+- docs/notes/review-runs/postwrite-session-record-contract-final-recheck-2026-06-04-r4/target-manifest.yaml
+- docs/notes/review-runs/postwrite-session-record-contract-final-recheck-2026-06-04-r4/triage.yaml
+- docs/notes/review-runs/postwrite-session-record-contract-recheck-2026-06-04-r2/approval-triage-2026-06-04.yaml
+- docs/notes/review-runs/postwrite-session-record-contract-recheck-2026-06-04-r2/model-result-summary.yaml
+- docs/notes/review-runs/postwrite-session-record-contract-recheck-2026-06-04-r2/parsed/claude-sonnet-4-6.round-1.yaml
+- docs/notes/review-runs/postwrite-session-record-contract-recheck-2026-06-04-r2/parsed/gemini-3.1-pro-preview.round-1.yaml
+- docs/notes/review-runs/postwrite-session-record-contract-recheck-2026-06-04-r2/parsed/gpt-5.4.round-1.yaml
+- docs/notes/review-runs/postwrite-session-record-contract-recheck-2026-06-04-r2/raw/claude-sonnet-4-6.round-1.txt
+- docs/notes/review-runs/postwrite-session-record-contract-recheck-2026-06-04-r2/raw/gemini-3.1-pro-preview.round-1.txt
+- docs/notes/review-runs/postwrite-session-record-contract-recheck-2026-06-04-r2/raw/gpt-5.4.round-1.txt
+- docs/notes/review-runs/postwrite-session-record-contract-recheck-2026-06-04-r2/review_summary.md
+- docs/notes/review-runs/postwrite-session-record-contract-recheck-2026-06-04-r2/rounds.yaml
+- docs/notes/review-runs/postwrite-session-record-contract-recheck-2026-06-04-r2/target-manifest.yaml
+- docs/notes/review-runs/postwrite-session-record-contract-recheck-2026-06-04-r2/triage.yaml
+target_sha256: &id003
+  docs/notes/review-runs/postwrite-proxy-review-parallel-workflow-2026-06-04-r1/model-result-summary.yaml: e26f518762ab953b519f23ed69e6d4c43ebcb06b706e2856a56fd888cad08614
+  docs/notes/review-runs/postwrite-proxy-review-parallel-workflow-2026-06-04-r1/parsed/claude-sonnet-4-6.round-1.yaml: 2496e538f49510ddcf68f2e8451c4e4bf451508b88f484e2df4f71f247f1b867
+  docs/notes/review-runs/postwrite-proxy-review-parallel-workflow-2026-06-04-r1/parsed/gemini-3.1-pro-preview.round-1.yaml: a0f5bc68ca63a278a42879e23e69f80d518ecded4b316436a86b52023778c54c
+  docs/notes/review-runs/postwrite-proxy-review-parallel-workflow-2026-06-04-r1/parsed/gpt-5.4.round-1.yaml: b284bb9c9ecd6dbb2b7f7d2f966a75bc8b6b539b36395b52aa99b2686bc0730a
+  docs/notes/review-runs/postwrite-proxy-review-parallel-workflow-2026-06-04-r1/raw/claude-sonnet-4-6.round-1.txt: 04303707cb58456f0fa3dc78f6cfe407b3fb7a6e8a930befaf4874f985fc0897
+  docs/notes/review-runs/postwrite-proxy-review-parallel-workflow-2026-06-04-r1/raw/gemini-3.1-pro-preview.round-1.txt: 91110207a4e63158cc100ce671a67c8c6ba0c3d66377b7759aab12d86f16a8c2
+  docs/notes/review-runs/postwrite-proxy-review-parallel-workflow-2026-06-04-r1/raw/gpt-5.4.round-1.txt: d37076ea0d55a4d6e6c65cbf6671b7472d6f6029b29a041580d93799ae991490
+  docs/notes/review-runs/postwrite-proxy-review-parallel-workflow-2026-06-04-r1/review-target.md: 51f4d8fd77325a7955e72c370d98df22e059f770be8c221e11d3b3a296fa08dd
+  docs/notes/review-runs/postwrite-proxy-review-parallel-workflow-2026-06-04-r1/review_summary.md: b8362ee2ec3bb0e542bc545fc717441190492936507de964a7c63076ead16e30
+  docs/notes/review-runs/postwrite-proxy-review-parallel-workflow-2026-06-04-r1/rounds.yaml: 233a531d2cbd09add6bf35986b6d172978e525e2d2e3c8fae6203877e7a0626d
+  docs/notes/review-runs/postwrite-proxy-review-parallel-workflow-2026-06-04-r1/target-manifest.yaml: 7b69c08c77f1fa79aa01e1d1fabe8bde456f40701ac577bc20a0c535b0556d0b
+  docs/notes/review-runs/postwrite-proxy-review-parallel-workflow-2026-06-04-r1/triage.yaml: 5ea62fc61347cbc705eb81a8ee5d4bb657e5a54f3b0fcd1ef67d2703ca8cdb88
+  docs/notes/review-runs/postwrite-proxy-review-parallel-workflow-final-2026-06-04-r3/model-result-summary.yaml: 12d5106c80c098437fba3f7d1c614399aca07ee8a170707c5b7ec5b17ed47349
+  docs/notes/review-runs/postwrite-proxy-review-parallel-workflow-final-2026-06-04-r3/parsed/claude-sonnet-4-6.round-1.yaml: 841c93bcd081a5fe16dee075a3f39053c019418cd2f151c703efc5032d18af0a
+  ? docs/notes/review-runs/postwrite-proxy-review-parallel-workflow-final-2026-06-04-r3/parsed/gemini-3.1-pro-preview.round-1.yaml
+  : 904a8586422fab81334f8e7a8d6d74cfa78349fc3314a208b74e5e8d3e2f38bd
+  docs/notes/review-runs/postwrite-proxy-review-parallel-workflow-final-2026-06-04-r3/parsed/gpt-5.4.round-1.yaml: bbae29451456da62a90bd8563e1f02e3964fad23363c478083cb3dacb9bd2c23
+  docs/notes/review-runs/postwrite-proxy-review-parallel-workflow-final-2026-06-04-r3/raw/claude-sonnet-4-6.round-1.txt: ed488bc6e33743d40adc4664cdd61fbdb7403773228c79521fe26157eccb77e4
+  docs/notes/review-runs/postwrite-proxy-review-parallel-workflow-final-2026-06-04-r3/raw/gemini-3.1-pro-preview.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+  docs/notes/review-runs/postwrite-proxy-review-parallel-workflow-final-2026-06-04-r3/raw/gpt-5.4.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+  docs/notes/review-runs/postwrite-proxy-review-parallel-workflow-final-2026-06-04-r3/review-target.md: 798ca29810ef793cb8c9a568addcb8890d8cd8af4addaa34cfee540532710937
+  docs/notes/review-runs/postwrite-proxy-review-parallel-workflow-final-2026-06-04-r3/review_summary.md: 680260523939e92fc57e4c0a779a4c5a83c86239592566017a000141f356dd72
+  docs/notes/review-runs/postwrite-proxy-review-parallel-workflow-final-2026-06-04-r3/rounds.yaml: eb2c34a1d8135ada2903c0c8421fd917e564006ccd17142c18e769afa348c916
+  docs/notes/review-runs/postwrite-proxy-review-parallel-workflow-final-2026-06-04-r3/target-manifest.yaml: cd5daef482ae8a8f7acc9c9e21b2623c18dfa8af1b772891737911fd6f2a8aa1
+  docs/notes/review-runs/postwrite-proxy-review-parallel-workflow-final-2026-06-04-r3/triage.yaml: b1d451e2314bc2971170fd87dce3bff976962865d8245a31e0e4992b7b5a0fb6
+  docs/notes/review-runs/postwrite-proxy-review-parallel-workflow-recheck-2026-06-04-r2/model-result-summary.yaml: 66d3634113ac7fb7ea7e685781627bd456dfa85d76f553bd71bc1500cf502a9d
+  ? docs/notes/review-runs/postwrite-proxy-review-parallel-workflow-recheck-2026-06-04-r2/parsed/claude-sonnet-4-6.round-1.yaml
+  : 8b2b1e007e4334074a358e3c76a89bf191da6eb9917b4b5ac27f8ccd0d65a2d2
+  ? docs/notes/review-runs/postwrite-proxy-review-parallel-workflow-recheck-2026-06-04-r2/parsed/gemini-3.1-pro-preview.round-1.yaml
+  : 54186656ba710956fa5b5608e1110e7ff90c8261b5e7c2146d456187f00dc890
+  docs/notes/review-runs/postwrite-proxy-review-parallel-workflow-recheck-2026-06-04-r2/parsed/gpt-5.4.round-1.yaml: 9c107ee203c9f6fa6f3c1a1fd0830cf560b8927481baeb5ca0cf9664c719ad86
+  docs/notes/review-runs/postwrite-proxy-review-parallel-workflow-recheck-2026-06-04-r2/raw/claude-sonnet-4-6.round-1.txt: 72f49e2c6bfabd9ecd351eb0e01ed0f16242270cb7045595e751a15e7826b702
+  ? docs/notes/review-runs/postwrite-proxy-review-parallel-workflow-recheck-2026-06-04-r2/raw/gemini-3.1-pro-preview.round-1.txt
+  : 6643c9c5a572edf59cb9a26f3badb7de20ba9fd1b5278fed66efb460fb33717b
+  docs/notes/review-runs/postwrite-proxy-review-parallel-workflow-recheck-2026-06-04-r2/raw/gpt-5.4.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+  docs/notes/review-runs/postwrite-proxy-review-parallel-workflow-recheck-2026-06-04-r2/review-target.md: 42e2ed585f9bc0ea04536f52833099c669b3f23e0249fdef982a4b9188538822
+  docs/notes/review-runs/postwrite-proxy-review-parallel-workflow-recheck-2026-06-04-r2/review_summary.md: bdfaf006df07a8c7ccd059d9eef76922e2feae14193b818e7e3218a78fa2ee02
+  docs/notes/review-runs/postwrite-proxy-review-parallel-workflow-recheck-2026-06-04-r2/rounds.yaml: 21eb008bf36523cbd462293ae4824cf615f920fcf8f7399c24bc98304fd3c248
+  docs/notes/review-runs/postwrite-proxy-review-parallel-workflow-recheck-2026-06-04-r2/target-manifest.yaml: 7b39221a98cf8fb32c4341b7b2ae608d64b18db0bcd40a743b6555d419c50bb2
+  docs/notes/review-runs/postwrite-proxy-review-parallel-workflow-recheck-2026-06-04-r2/triage.yaml: d2670137d0d379bf9ee5a699edf2797473d21fea7141eec2f53da2a9544e4bf2
+  docs/notes/review-runs/postwrite-session-record-contract-2026-06-04-r1/approval-triage-2026-06-04.yaml: 082b10ebdd4c9b9b2d3a18502acb1d4bd4726d810453d8d88f9072aa8d9ba6d0
+  docs/notes/review-runs/postwrite-session-record-contract-2026-06-04-r1/model-result-summary.yaml: 15154f543f80cac333278e5f3c651d6bd76655d8fc2693816c8f2b22d268acd3
+  docs/notes/review-runs/postwrite-session-record-contract-2026-06-04-r1/parsed/claude-sonnet-4-6.round-1.yaml: 49e811e271ec69bb8135dd3ebdba5f256663664f9928750c5a48e2391144ef36
+  docs/notes/review-runs/postwrite-session-record-contract-2026-06-04-r1/parsed/gemini-3.1-pro-preview.round-1.yaml: 23e29fc993d8de81815cbe92cc17baaaa233aa4f7b0f74a5a53dad226b5fb87a
+  docs/notes/review-runs/postwrite-session-record-contract-2026-06-04-r1/parsed/gpt-5.4.round-1.yaml: e9aefe185c75f02032743acd9abbb85cfb7eeafaf75385fa8f37cdeb3a864d1b
+  docs/notes/review-runs/postwrite-session-record-contract-2026-06-04-r1/raw/claude-sonnet-4-6.round-1.txt: 92db82f8a1c7d6fd54c7e16d93d5e77c5cc0a24c4ab8aed2c475e3552c43cd0c
+  docs/notes/review-runs/postwrite-session-record-contract-2026-06-04-r1/raw/gemini-3.1-pro-preview.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+  docs/notes/review-runs/postwrite-session-record-contract-2026-06-04-r1/raw/gpt-5.4.round-1.txt: c62445c40de544efe85e32618aab6f804d3065a6f8901d98b97c0e7134b2dd75
+  docs/notes/review-runs/postwrite-session-record-contract-2026-06-04-r1/review_summary.md: 8605d57b2a6f002274781178f6a9b459e552fbb8b70a85374d1c6ca136c3f28a
+  docs/notes/review-runs/postwrite-session-record-contract-2026-06-04-r1/rounds.yaml: 8bf0ecf9a308ccb596320016a973ed7e73bbc0fde8dfa349e70c51bdc1727261
+  docs/notes/review-runs/postwrite-session-record-contract-2026-06-04-r1/target-manifest.yaml: 9b5f428db1d7e8b16a8832e41cb461f7197691f32b4d412018ea27479986a64e
+  docs/notes/review-runs/postwrite-session-record-contract-2026-06-04-r1/triage.yaml: 9889801211f42e2b2a90d71239f1406a539656a74672d5dc63ff60429c679a82
+  docs/notes/review-runs/postwrite-session-record-contract-final-2026-06-04-r3/approval-triage-2026-06-04.yaml: e1c92ecdda5a237a36bb4c5f9c60522921e3572aba28bb0135dca34dc09236fc
+  docs/notes/review-runs/postwrite-session-record-contract-final-2026-06-04-r3/model-result-summary.yaml: d54cd71aeafd5b0aa538f136948a9e0313abc1c58874fdf89cb66f0bf83e0bc8
+  docs/notes/review-runs/postwrite-session-record-contract-final-2026-06-04-r3/parsed/claude-sonnet-4-6.round-1.yaml: 36a68711482eb529b66bde7a6239d0514ca0277007834bf62c4c42420859a97c
+  docs/notes/review-runs/postwrite-session-record-contract-final-2026-06-04-r3/parsed/gemini-3.1-pro-preview.round-1.yaml: a0c1513af60d926bbee02d4f0985e0286dcebd80e92bec0ff90fb6ff1d4ea346
+  docs/notes/review-runs/postwrite-session-record-contract-final-2026-06-04-r3/parsed/gpt-5.4.round-1.yaml: 741b2279db85e21a17cbaf311ab20534ef09dbac8ffde5e5b77105ea40cea577
+  docs/notes/review-runs/postwrite-session-record-contract-final-2026-06-04-r3/raw/claude-sonnet-4-6.round-1.txt: ace2b504e0e63feb9fabd800adb52290cf4834964d1faba4bee9df189f095b8e
+  docs/notes/review-runs/postwrite-session-record-contract-final-2026-06-04-r3/raw/gemini-3.1-pro-preview.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+  docs/notes/review-runs/postwrite-session-record-contract-final-2026-06-04-r3/raw/gpt-5.4.round-1.txt: a575535037073bb586173a3653ec65fabb0a8fce5a7b4315568a1893e8437e98
+  docs/notes/review-runs/postwrite-session-record-contract-final-2026-06-04-r3/review_summary.md: f64e54c3929db8be9b5a83f8676dfcce7f7c6bd963df7ca64bd94121986768e7
+  docs/notes/review-runs/postwrite-session-record-contract-final-2026-06-04-r3/rounds.yaml: c3472a9c0157cfd81d08fb6c1a29e7f782157912950df8119a77d587655e57a2
+  docs/notes/review-runs/postwrite-session-record-contract-final-2026-06-04-r3/target-manifest.yaml: 828c4f7fc0ab33cdee70a2c1f4613af55ccd818ed7ea8b3aa670a11f5568b13f
+  docs/notes/review-runs/postwrite-session-record-contract-final-2026-06-04-r3/triage.yaml: c729dcba539d6def9b1d98655c733819e38dbe1bbe3c7a4b41b84f6906961334
+  docs/notes/review-runs/postwrite-session-record-contract-final-recheck-2026-06-04-r4/approval-triage-2026-06-04.yaml: ccd94b045acea22fccb17e503455430a2c9b4d7870c1a0fd6a1d13d858b29205
+  docs/notes/review-runs/postwrite-session-record-contract-final-recheck-2026-06-04-r4/model-result-summary.yaml: 13d1f882db944da6793f7f6269958206bce7929640f37ee2cc1b5357df1d4fc7
+  docs/notes/review-runs/postwrite-session-record-contract-final-recheck-2026-06-04-r4/parsed/claude-sonnet-4-6.round-1.yaml: 4b9d5c653a71ffa236b1bf7c4d92ed2dd3909b243d58558d143f39db613d75e8
+  ? docs/notes/review-runs/postwrite-session-record-contract-final-recheck-2026-06-04-r4/parsed/gemini-3.1-pro-preview.round-1.yaml
+  : 2fc8fe89d240498bb2c062ae84d9664586ed26e184c460f1fc95f4c114f1d03f
+  docs/notes/review-runs/postwrite-session-record-contract-final-recheck-2026-06-04-r4/parsed/gpt-5.4.round-1.yaml: b1443a806bde33a0de566f86a71828d50adc263271e990bf762eab388868a11f
+  docs/notes/review-runs/postwrite-session-record-contract-final-recheck-2026-06-04-r4/raw/claude-sonnet-4-6.round-1.txt: e8672bfa22303075c87161ecdc4df19c13b6fb8c4bb792fb76adfb2697b1676a
+  ? docs/notes/review-runs/postwrite-session-record-contract-final-recheck-2026-06-04-r4/raw/gemini-3.1-pro-preview.round-1.txt
+  : ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+  docs/notes/review-runs/postwrite-session-record-contract-final-recheck-2026-06-04-r4/raw/gpt-5.4.round-1.txt: c931006ebbd930f56e1b2033051ea9cedb32ed449234bcc017ffbe1c9fbea883
+  docs/notes/review-runs/postwrite-session-record-contract-final-recheck-2026-06-04-r4/review_summary.md: 13cadf17442389b815aafbdb9b0bb69bb5b2d6d13917ff4fcc497031477f9891
+  docs/notes/review-runs/postwrite-session-record-contract-final-recheck-2026-06-04-r4/rounds.yaml: 3883340a90c1a5537c004c0ffb54f7f851b94b08588fd16f971fbce1cbbf0761
+  docs/notes/review-runs/postwrite-session-record-contract-final-recheck-2026-06-04-r4/target-manifest.yaml: a1f3495337a631d66453a9eb776f536bf995d8b3507a961434a1dc9c8c0b5d95
+  docs/notes/review-runs/postwrite-session-record-contract-final-recheck-2026-06-04-r4/triage.yaml: f061858c5c865a85d94817564f0148fb740fb65ebb4009ba7891b96db9037eb0
+  docs/notes/review-runs/postwrite-session-record-contract-recheck-2026-06-04-r2/approval-triage-2026-06-04.yaml: ff6a88cf7f7bc1ce780ead8dd20f0e65414a898a9b1c8e99ba26dcb140f3ad62
+  docs/notes/review-runs/postwrite-session-record-contract-recheck-2026-06-04-r2/model-result-summary.yaml: 3b9fb9bd642d5ef105675405e6def41b97e57f0c43913cce05864ff8b8020958
+  docs/notes/review-runs/postwrite-session-record-contract-recheck-2026-06-04-r2/parsed/claude-sonnet-4-6.round-1.yaml: a924ed7f2a445667aa0c432c77ec5694213e1b1c20ee2fa07322b8515c50dcb0
+  docs/notes/review-runs/postwrite-session-record-contract-recheck-2026-06-04-r2/parsed/gemini-3.1-pro-preview.round-1.yaml: ff6db973eba93066ef343f49fd96d4985d1c9f5aed63db5dcf37b624d7a24e7e
+  docs/notes/review-runs/postwrite-session-record-contract-recheck-2026-06-04-r2/parsed/gpt-5.4.round-1.yaml: c753689e023ffc4cb709a220a7ea489dca3ab71f52b11cb2135b7edb8eda87ff
+  docs/notes/review-runs/postwrite-session-record-contract-recheck-2026-06-04-r2/raw/claude-sonnet-4-6.round-1.txt: 6529846c1874179c411659e57c03528e08b2c55b78797d33418fc2e003661687
+  docs/notes/review-runs/postwrite-session-record-contract-recheck-2026-06-04-r2/raw/gemini-3.1-pro-preview.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+  docs/notes/review-runs/postwrite-session-record-contract-recheck-2026-06-04-r2/raw/gpt-5.4.round-1.txt: e566edd3540d226b45fe24d2314c420884cdd7d4eaf98646c335373406a785f9
+  docs/notes/review-runs/postwrite-session-record-contract-recheck-2026-06-04-r2/review_summary.md: 8eeeef57159fdb23710102f495f7d33782d086abccf363bc36e1bdd6c96e69bb
+  docs/notes/review-runs/postwrite-session-record-contract-recheck-2026-06-04-r2/rounds.yaml: bf6a5da227c74199b92e16596a23c78c8da7a825dabf9f3895b5c1851b4cb4da
+  docs/notes/review-runs/postwrite-session-record-contract-recheck-2026-06-04-r2/target-manifest.yaml: f45231cfeea77fba0306d3bbb1ef1e64743ac1a089a9aa426add049ae56a119d
+  docs/notes/review-runs/postwrite-session-record-contract-recheck-2026-06-04-r2/triage.yaml: 0938677393e313ca02267079595fe4af38fcdbfe627373f8997044ebf42aac8b
+required_verifiers: &id001
+- claude-sonnet-4-6
+- gpt-5.4
+- gemini-3.1-pro-preview
+completed_verifiers: *id001
+unresolved_substantive_findings: 0
+verifications:
+- verifier: claude-sonnet-4-6
+  target_files: *id002
+  target_sha256: *id003
+  result: completed
+  notes: Current staged post-write review-run evidence is traceable and has no unresolved
+    substantive findings.
+- verifier: gpt-5.4
+  target_files: *id002
+  target_sha256: *id003
+  result: completed
+  notes: Current staged post-write review-run evidence is traceable and has no unresolved
+    substantive findings.
+- verifier: gemini-3.1-pro-preview
+  target_files: *id002
+  target_sha256: *id003
+  result: completed
+  notes: Current staged post-write review-run evidence is traceable and has no unresolved
+    substantive findings.

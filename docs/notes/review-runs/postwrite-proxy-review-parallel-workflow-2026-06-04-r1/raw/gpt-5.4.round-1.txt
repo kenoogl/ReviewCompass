@@ -1,0 +1,20 @@
+findings:
+  - severity: WARN
+    target_location: "## Machine guard added"
+    description: "Proxy approval evidence requirements do not explicitly require preservation of the candidate options presented to the proxy_model."
+    rationale: "The document requires selected option, rationale, rejected-option reasons, and raw response linkage, but auditability of whether the proxy actually made the decision depends on being able to inspect the option set it was asked to choose from. Without a durable record of the proposed options or decision prompt payload, the main session LLM could theoretically shape or rewrite the decision context after the fact while still satisfying the listed machine checks."
+
+  - severity: WARN
+    target_location: "## Parallel implementation policy added"
+    description: "The serial-vs-parallel boundary is stated as policy examples rather than as an enforceable or exhaustive decision rule."
+    rationale: "The document says implementation may be parallelized only when units do not update the same files or share mutable output contracts, then gives examples like shared schemas, builders, manifests, and traceability outputs. This is directionally sound, but still leaves ambiguity for adjacent cases such as generated artifacts, shared helper APIs, or transitive contract coupling. Ambiguity here can lead to unsafe parallelization despite nominal compliance."
+
+  - severity: WARN
+    target_location: "## Canonical workflow added / step 5"
+    description: "The implementation gate says the main session LLM implements only accepted fixes, but it does not explicitly forbid unapproved incidental changes discovered during implementation."
+    rationale: "The role split is mostly clear, yet a common failure mode is bundling opportunistic refactors, cleanup, or adjacent behavior changes into an approved fix. Because the stated workflow centers on accepted findings rather than accepted change scope, the document leaves room for the main session LLM to effectively make secondary decisions during implementation without renewed proxy or human approval."
+
+  - severity: INFO
+    target_location: "## Parallel implementation policy added / Subthread outputs are classified as"
+    description: "Work-noise exclusion is helpful, but the boundary between discardable work_noise and audit-relevant decision_basis could benefit from a stronger retention rule for failed attempts that materially influenced adoption decisions."
+    rationale: "The document already preserves blockers, failed assumptions, and adoption-relevant failure logs under decision_basis, which is good. Still, some failed patch attempts or intermediate logs may become necessary evidence when they explain why an option was rejected or why integration risk changed. A clearer instruction to promote such artifacts from work_noise to decision_basis when they affect judgment would reduce accidental loss of needed evidence."

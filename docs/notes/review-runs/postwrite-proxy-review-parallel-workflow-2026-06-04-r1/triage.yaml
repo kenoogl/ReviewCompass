@@ -1,0 +1,273 @@
+run_id: postwrite-proxy-review-parallel-workflow-2026-06-04-r1
+triage_status: decided
+generated_at: '2026-06-03T22:05:54.912699+00:00'
+decision_actor: null
+decision_actor_type: human
+items:
+- finding_id: postwrite-proxy-review-parallel-workflow-2026-06-04-r1-claude-sonnet-4-6-primary-001
+  run_id: postwrite-proxy-review-parallel-workflow-2026-06-04-r1
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: 'docs/notes/review-runs/postwrite-proxy-review-parallel-workflow-2026-06-04-r1/review-target.md
+    ## Canonical workflow added, step 1'
+  plain_language_summary: The threshold for 'important findings' that trigger proxy_model
+    delegation is not defined. The main session LLM determines what is 'important,'
+    giving it discretionary authority over the scope of proxy review.
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: codex
+  decision_actor_type: agent
+  decision_at: '2026-06-03T22:06:41.664981+00:00'
+  decision_reason: 重要件の閾値が曖昧だとメインLLMがproxy判断の対象を狭められるため、閾値を正本に明示する
+  applied_files: []
+  superseded_by: null
+- finding_id: postwrite-proxy-review-parallel-workflow-2026-06-04-r1-claude-sonnet-4-6-primary-002
+  run_id: postwrite-proxy-review-parallel-workflow-2026-06-04-r1
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: 'docs/notes/review-runs/postwrite-proxy-review-parallel-workflow-2026-06-04-r1/review-target.md
+    ## Machine guard added'
+  plain_language_summary: The guard validates that raw_response_path files exist but
+    does not verify their content integrity (e.g., hash, minimum token length, or
+    structural schema). An empty or trivially generated file would satisfy the existence
+    check.
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: codex
+  decision_actor_type: agent
+  decision_at: '2026-06-03T22:06:48.285411+00:00'
+  decision_reason: rawの存在だけでは監査証跡が弱いため、prompt/options/raw review をproxy decision証跡へ含める方向で補強する
+  applied_files: []
+  superseded_by: null
+- finding_id: postwrite-proxy-review-parallel-workflow-2026-06-04-r1-claude-sonnet-4-6-primary-003
+  run_id: postwrite-proxy-review-parallel-workflow-2026-06-04-r1
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: 'docs/notes/review-runs/postwrite-proxy-review-parallel-workflow-2026-06-04-r1/review-target.md
+    ## Parallel implementation policy added, subthread outputs'
+  plain_language_summary: The boundary between 'decision_basis' and 'work_noise' is
+    defined by examples (blockers, failed assumptions vs. intermediate logs, failed
+    patch attempts) but no rule distinguishes them when a failed patch attempt surfaces
+    a new blocker or exposes a failed assumption.
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: codex
+  decision_actor_type: agent
+  decision_at: '2026-06-03T22:07:08.705513+00:00'
+  decision_reason: 失敗パッチや中間ログが判断根拠になった場合はwork_noiseではなくdecision_basisへ昇格する規律を明記する
+  applied_files: []
+  superseded_by: null
+- finding_id: postwrite-proxy-review-parallel-workflow-2026-06-04-r1-claude-sonnet-4-6-primary-004
+  run_id: postwrite-proxy-review-parallel-workflow-2026-06-04-r1
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: 'docs/notes/review-runs/postwrite-proxy-review-parallel-workflow-2026-06-04-r1/review-target.md
+    ## Canonical workflow added, step 3'
+  plain_language_summary: The workflow states the proxy model 'does not implement
+    changes,' but no machine check enforces this. The constraint is stated as policy
+    text only.
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: codex
+  decision_actor_type: agent
+  decision_at: '2026-06-03T22:07:51.097232+00:00'
+  decision_reason: proxyが実装しない規律は今回の正本と権限分離で扱う。完全な機械強制は別スレッド権限実装の将来課題
+  applied_files: []
+  superseded_by: null
+- finding_id: postwrite-proxy-review-parallel-workflow-2026-06-04-r1-claude-sonnet-4-6-primary-005
+  run_id: postwrite-proxy-review-parallel-workflow-2026-06-04-r1
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: 'docs/notes/review-runs/postwrite-proxy-review-parallel-workflow-2026-06-04-r1/review-target.md
+    ## Parallel implementation policy added'
+  plain_language_summary: The policy prohibits same-repo parallel implementation except
+    for 'very small non-conflicting checks,' but 'very small' is not operationalized.
+    There is no size or scope metric, and no guard enforces the exception boundary.
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: codex
+  decision_actor_type: agent
+  decision_at: '2026-06-03T22:07:27.585342+00:00'
+  decision_reason: 同一repo例外のvery smallが曖昧なので、読み取り調査または差分を残さない確認に限定する
+  applied_files: []
+  superseded_by: null
+- finding_id: postwrite-proxy-review-parallel-workflow-2026-06-04-r1-claude-sonnet-4-6-primary-006
+  run_id: postwrite-proxy-review-parallel-workflow-2026-06-04-r1
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: 'docs/notes/review-runs/postwrite-proxy-review-parallel-workflow-2026-06-04-r1/review-target.md
+    ## Canonical workflow added, step 6'
+  plain_language_summary: The list of human-approved irreversible operations includes
+    commit, push, spec.json updates, phase transitions, discipline changes, and major
+    policy changes, but does not explicitly include deletion of canonical documents,
+    removal of machine guards, or downgrade of severity thresholds.
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: codex
+  decision_actor_type: agent
+  decision_at: '2026-06-03T22:07:45.401384+00:00'
+  decision_reason: 正本削除、機械ガード削除、重要閾値引き下げも不可逆操作として人間承認対象に加える
+  applied_files: []
+  superseded_by: null
+- finding_id: postwrite-proxy-review-parallel-workflow-2026-06-04-r1-gpt-5.4-adversarial-001
+  run_id: postwrite-proxy-review-parallel-workflow-2026-06-04-r1
+  source_model: gpt-5.4
+  source_round: round-1
+  source_raw_path: raw/gpt-5.4.round-1.txt
+  source_parsed_path: parsed/gpt-5.4.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: '## Machine guard added'
+  plain_language_summary: Proxy approval evidence requirements do not explicitly require
+    preservation of the candidate options presented to the proxy_model.
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: codex
+  decision_actor_type: agent
+  decision_at: '2026-06-03T22:06:53.631976+00:00'
+  decision_reason: proxyに提示した候補案セット自体を残さないと、後から判断文脈を監査できないため補強する
+  applied_files: []
+  superseded_by: null
+- finding_id: postwrite-proxy-review-parallel-workflow-2026-06-04-r1-gpt-5.4-adversarial-002
+  run_id: postwrite-proxy-review-parallel-workflow-2026-06-04-r1
+  source_model: gpt-5.4
+  source_round: round-1
+  source_raw_path: raw/gpt-5.4.round-1.txt
+  source_parsed_path: parsed/gpt-5.4.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: '## Parallel implementation policy added'
+  plain_language_summary: The serial-vs-parallel boundary is stated as policy examples
+    rather than as an enforceable or exhaustive decision rule.
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: codex
+  decision_actor_type: agent
+  decision_at: '2026-06-03T22:07:33.892613+00:00'
+  decision_reason: 生成物、共有helper、推移的契約も直列条件に含めるよう並列境界を補強する
+  applied_files: []
+  superseded_by: null
+- finding_id: postwrite-proxy-review-parallel-workflow-2026-06-04-r1-gpt-5.4-adversarial-003
+  run_id: postwrite-proxy-review-parallel-workflow-2026-06-04-r1
+  source_model: gpt-5.4
+  source_round: round-1
+  source_raw_path: raw/gpt-5.4.round-1.txt
+  source_parsed_path: parsed/gpt-5.4.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: '## Canonical workflow added / step 5'
+  plain_language_summary: The implementation gate says the main session LLM implements
+    only accepted fixes, but it does not explicitly forbid unapproved incidental changes
+    discovered during implementation.
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: codex
+  decision_actor_type: agent
+  decision_at: '2026-06-03T22:07:39.102165+00:00'
+  decision_reason: 承認済みfixに便乗したリファクタや隣接変更を禁止し、新規判断問題は停止条件にする
+  applied_files: []
+  superseded_by: null
+- finding_id: postwrite-proxy-review-parallel-workflow-2026-06-04-r1-gpt-5.4-adversarial-004
+  run_id: postwrite-proxy-review-parallel-workflow-2026-06-04-r1
+  source_model: gpt-5.4
+  source_round: round-1
+  source_raw_path: raw/gpt-5.4.round-1.txt
+  source_parsed_path: parsed/gpt-5.4.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: '## Parallel implementation policy added / Subthread outputs are
+    classified as'
+  plain_language_summary: Work-noise exclusion is helpful, but the boundary between
+    discardable work_noise and audit-relevant decision_basis could benefit from a
+    stronger retention rule for failed attempts that materially influenced adoption
+    decisions.
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: codex
+  decision_actor_type: agent
+  decision_at: '2026-06-03T22:07:15.157340+00:00'
+  decision_reason: 採否判断に影響した失敗試行はdecision_basisとして要約保存する規律を追加する
+  applied_files: []
+  superseded_by: null
+- finding_id: postwrite-proxy-review-parallel-workflow-2026-06-04-r1-gemini-3.1-pro-preview-judgment-001
+  run_id: postwrite-proxy-review-parallel-workflow-2026-06-04-r1
+  source_model: gemini-3.1-pro-preview
+  source_round: round-1
+  source_raw_path: raw/gemini-3.1-pro-preview.round-1.txt
+  source_parsed_path: parsed/gemini-3.1-pro-preview.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: Canonical workflow added (Steps 2 and 3)
+  plain_language_summary: The workflow states the main LLM prepares explanations and
+    options for the proxy model, but does not explicitly require the proxy model to
+    consume the original raw review finding.
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: codex
+  decision_actor_type: agent
+  decision_at: '2026-06-03T22:07:01.027254+00:00'
+  decision_reason: proxy_modelがメインLLMの要約だけで判断しないよう、元のraw reviewを入力に含める規律を明記する
+  applied_files: []
+  superseded_by: null
+- finding_id: postwrite-proxy-review-parallel-workflow-2026-06-04-r1-gemini-3.1-pro-preview-judgment-002
+  run_id: postwrite-proxy-review-parallel-workflow-2026-06-04-r1
+  source_model: gemini-3.1-pro-preview
+  source_round: round-1
+  source_raw_path: raw/gemini-3.1-pro-preview.round-1.txt
+  source_parsed_path: parsed/gemini-3.1-pro-preview.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: Parallel implementation policy added (Subthread outputs)
+  plain_language_summary: Classifying 'failed patch attempts' strictly as 'work_noise'
+    risks discarding valuable implementation history and rationale.
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: codex
+  decision_actor_type: agent
+  decision_at: '2026-06-03T22:07:21.608861+00:00'
+  decision_reason: failed patch attemptsを一律ノイズ扱いせず、判断に影響したものはdecision_basisへ昇格する条件を明記する
+  applied_files: []
+  superseded_by: null
+- finding_id: postwrite-proxy-review-parallel-workflow-2026-06-04-r1-gemini-3.1-pro-preview-judgment-003
+  run_id: postwrite-proxy-review-parallel-workflow-2026-06-04-r1
+  source_model: gemini-3.1-pro-preview
+  source_round: round-1
+  source_raw_path: raw/gemini-3.1-pro-preview.round-1.txt
+  source_parsed_path: parsed/gemini-3.1-pro-preview.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: Machine guard added
+  plain_language_summary: The guard validates proxy decisions based on structured
+    files but does not verify the cryptographic or session provenance of the 'proxy_model_id'.
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: codex
+  decision_actor_type: agent
+  decision_at: '2026-06-03T22:07:56.967973+00:00'
+  decision_reason: proxy_model_idの暗号学的・署名付き真正性検証は軽量ガードの範囲外であり、将来のAPIログIDや署名連携の課題として記録に留める
+  applied_files: []
+  superseded_by: null

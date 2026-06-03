@@ -1,0 +1,174 @@
+run_id: postwrite-session-record-contract-final-2026-06-04-r3
+triage_status: decided
+generated_at: '2026-06-03T21:23:09.481024+00:00'
+decision_actor: null
+decision_actor_type: human
+items:
+- finding_id: postwrite-session-record-contract-final-2026-06-04-r3-claude-sonnet-4-6-primary-001
+  run_id: postwrite-session-record-contract-final-2026-06-04-r3
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: §5.4 セッション記録の作成規律
+  plain_language_summary: セッション記録ファイル名の採番ルール（既存最大番号+1）と、並行セッション・採番衝突時の待機手順が明記されている。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-03T21:25:30.322991+00:00'
+  decision_reason: 利用者へ再々検証所見を提示し、反映済み確認または今回の追加修正不要として leave-as-is 承認済み。
+  applied_files: []
+  superseded_by: null
+- finding_id: postwrite-session-record-contract-final-2026-06-04-r3-claude-sonnet-4-6-primary-002
+  run_id: postwrite-session-record-contract-final-2026-06-04-r3
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: §5.4 セッション記録の作成規律
+  plain_language_summary: セッション記録の最低記載項目（実施作業・利用者承認判断・API レビュー結果・修正ファイル・失敗と気づき・引き継ぎ）と推奨見出し構造が明示されている。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-03T21:25:30.342604+00:00'
+  decision_reason: 利用者へ再々検証所見を提示し、反映済み確認または今回の追加修正不要として leave-as-is 承認済み。
+  applied_files: []
+  superseded_by: null
+- finding_id: postwrite-session-record-contract-final-2026-06-04-r3-claude-sonnet-4-6-primary-003
+  run_id: postwrite-session-record-contract-final-2026-06-04-r3
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: §5.4 セッション記録の作成規律
+  plain_language_summary: 「原則として毎セッション」という表現が残っており、例外条件（重要な判断・承認等が発生しない軽微な調査セッションの場合）の取り扱いが曖昧。
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-03T21:25:30.361867+00:00'
+  decision_reason: 利用者へ再々検証所見を提示し、セッション記録手順に直結する境界条件として should-fix 承認済み。
+  applied_files: &id001
+  - docs/operations/SESSION_WORKFLOW_GUIDE.md
+  - .reviewcompass/specs/workflow-management/design.md
+  - tests/tools/test_session_record_contract.py
+  superseded_by: null
+- finding_id: postwrite-session-record-contract-final-2026-06-04-r3-claude-sonnet-4-6-primary-004
+  run_id: postwrite-session-record-contract-final-2026-06-04-r3
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: §5.4 セッション記録の作成規律
+  plain_language_summary: 推奨見出し構造の参照先として `docs/sessions/session-49-2026-06-02.md`
+    を固定例示しているが、このファイルが将来削除・改名された場合に参照が無効化される。
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-03T21:25:30.380756+00:00'
+  decision_reason: 利用者へ再々検証所見を提示し、セッション記録手順に直結する境界条件として should-fix 承認済み。
+  applied_files: *id001
+  superseded_by: null
+- finding_id: postwrite-session-record-contract-final-2026-06-04-r3-claude-sonnet-4-6-primary-005
+  run_id: postwrite-session-record-contract-final-2026-06-04-r3
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: §5.4 セッション記録の作成規律
+  plain_language_summary: 「メインセッション LLM はセッション記録の草案作成責任を持つ」と明記されているが、メインセッション LLM
+    が作業途中でコンテキスト切れまたはセッション中断した場合の草案作成責任の引き継ぎ手順が記載されていない。
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-03T21:25:30.398877+00:00'
+  decision_reason: 利用者へ再々検証所見を提示し、セッション記録手順に直結する境界条件として should-fix 承認済み。
+  applied_files: *id001
+  superseded_by: null
+- finding_id: postwrite-session-record-contract-final-2026-06-04-r3-claude-sonnet-4-6-primary-006
+  run_id: postwrite-session-record-contract-final-2026-06-04-r3
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: §5.4 セッション記録の作成規律 / §9 関連文書
+  plain_language_summary: TODO_NEXT_SESSION.md とセッション記録の役割分担（TODO は入口メモ、sessions/
+    が詳細正本）が明示されており、二重管理の方針が文書化されている。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-03T21:25:30.416929+00:00'
+  decision_reason: 利用者へ再々検証所見を提示し、反映済み確認または今回の追加修正不要として leave-as-is 承認済み。
+  applied_files: []
+  superseded_by: null
+- finding_id: postwrite-session-record-contract-final-2026-06-04-r3-gpt-5.4-adversarial-001
+  run_id: postwrite-session-record-contract-final-2026-06-04-r3
+  source_model: gpt-5.4
+  source_round: round-1
+  source_raw_path: raw/gpt-5.4.round-1.txt
+  source_parsed_path: parsed/gpt-5.4.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: docs/operations/SESSION_WORKFLOW_GUIDE.md §5.4
+  plain_language_summary: セッション記録の採番規則が『既存の最大セッション番号に 1 を加えた番号』と『利用者が採番を確定するまで新しいセッション記録を作成しない』の組み合わせになっており、並行作業時の実施手順が未確定です。
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-03T21:25:30.436418+00:00'
+  decision_reason: 利用者へ再々検証所見を提示し、セッション記録手順に直結する境界条件として should-fix 承認済み。
+  applied_files: *id001
+  superseded_by: null
+- finding_id: postwrite-session-record-contract-final-2026-06-04-r3-gpt-5.4-adversarial-002
+  run_id: postwrite-session-record-contract-final-2026-06-04-r3
+  source_model: gpt-5.4
+  source_round: round-1
+  source_raw_path: raw/gpt-5.4.round-1.txt
+  source_parsed_path: parsed/gpt-5.4.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: docs/operations/SESSION_WORKFLOW_GUIDE.md §5.4
+  plain_language_summary: セッション記録を『セッション終了時または重要判断後に作成または更新』としつつ、『同日の複数セッションでも番号を進める』としているため、同一セッション内で複数回更新した場合に新規作成と更新の境界が曖昧です。
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-03T21:25:30.454486+00:00'
+  decision_reason: 利用者へ再々検証所見を提示し、セッション記録手順に直結する境界条件として should-fix 承認済み。
+  applied_files: *id001
+  superseded_by: null
+- finding_id: postwrite-session-record-contract-final-2026-06-04-r3-gpt-5.4-adversarial-003
+  run_id: postwrite-session-record-contract-final-2026-06-04-r3
+  source_model: gpt-5.4
+  source_round: round-1
+  source_raw_path: raw/gpt-5.4.round-1.txt
+  source_parsed_path: parsed/gpt-5.4.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: docs/operations/SESSION_WORKFLOW_GUIDE.md 全体
+  plain_language_summary: セッション記録の作成責任、最低記録項目、採番時の衝突対応確認義務が明文化され、今回の改定目的である『セッション記録の作成手順の正本化』自体は文書全体に反映されています。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-03T21:25:30.472972+00:00'
+  decision_reason: 利用者へ再々検証所見を提示し、反映済み確認または今回の追加修正不要として leave-as-is 承認済み。
+  applied_files: []
+  superseded_by: null

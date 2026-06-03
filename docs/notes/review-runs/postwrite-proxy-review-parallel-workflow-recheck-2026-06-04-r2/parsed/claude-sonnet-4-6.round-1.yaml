@@ -1,0 +1,35 @@
+role: primary
+provider: anthropic-api
+model: claude-sonnet-4-6
+attempts: 1
+duration_seconds: 11.189
+findings:
+- severity: INFO
+  target_location: '## r1 leave-as-is decisions'
+  description: The leave-as-is decision for proxy_model identity provenance relies
+    on 'structured evidence presence and consistency' without specifying what consistency
+    check is performed.
+  rationale: If a caller can supply a conforming but fabricated proxy_model_id alongside
+    otherwise valid evidence paths, the lightweight guard cannot detect the substitution.
+    The document acknowledges this gap and defers it, but does not record what the
+    current consistency check actually verifies, making future auditors unable to
+    assess the residual risk boundary.
+- severity: INFO
+  target_location: '## r1 should-fix clusters and applied fixes / 1. Important-finding
+    threshold'
+  description: The threshold definition lists 'same-root findings from multiple models'
+    as a trigger for importance, but the document does not define how same-root identity
+    is determined across models that may phrase findings differently.
+  rationale: Without a concrete same-root matching rule (e.g., shared target_location,
+    shared criterion label, or human judgment), the threshold remains partially subjective.
+    This is a narrow residual gap rather than a blocking issue, but it may cause inconsistent
+    triage in edge cases.
+- severity: INFO
+  target_location: '## Verification commands'
+  description: Test counts are reported as pass totals but the review-target document
+    does not identify which specific test cases cover the newly added guard fields
+    (decision_prompt_path, source_raw_paths, candidate_options).
+  rationale: The 16-pass total for test_review_triage.py is consistent with adequate
+    coverage, but the document alone cannot confirm that the four new required fields
+    each have a dedicated failure-path test. This is an observability gap in the recheck
+    artifact, not necessarily in the tests themselves.

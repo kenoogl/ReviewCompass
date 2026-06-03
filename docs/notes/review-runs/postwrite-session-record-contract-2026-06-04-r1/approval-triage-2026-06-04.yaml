@@ -1,0 +1,22 @@
+approved_action: review_run_triage
+approved_by: user
+review_run_id: postwrite-session-record-contract-2026-06-04-r1
+summary_presented_to_user: true
+triage_presented_to_user: true
+approved_finding_ids:
+  - postwrite-session-record-contract-2026-06-04-r1-claude-sonnet-4-6-primary-001
+  - postwrite-session-record-contract-2026-06-04-r1-claude-sonnet-4-6-primary-002
+  - postwrite-session-record-contract-2026-06-04-r1-claude-sonnet-4-6-primary-003
+  - postwrite-session-record-contract-2026-06-04-r1-claude-sonnet-4-6-primary-004
+  - postwrite-session-record-contract-2026-06-04-r1-gpt-5.4-adversarial-001
+  - postwrite-session-record-contract-2026-06-04-r1-gpt-5.4-adversarial-002
+  - postwrite-session-record-contract-2026-06-04-r1-gpt-5.4-adversarial-003
+approved_final_labels:
+  postwrite-session-record-contract-2026-06-04-r1-claude-sonnet-4-6-primary-001: should-fix
+  postwrite-session-record-contract-2026-06-04-r1-claude-sonnet-4-6-primary-002: should-fix
+  postwrite-session-record-contract-2026-06-04-r1-claude-sonnet-4-6-primary-003: should-fix
+  postwrite-session-record-contract-2026-06-04-r1-claude-sonnet-4-6-primary-004: should-fix
+  postwrite-session-record-contract-2026-06-04-r1-gpt-5.4-adversarial-001: should-fix
+  postwrite-session-record-contract-2026-06-04-r1-gpt-5.4-adversarial-002: should-fix
+  postwrite-session-record-contract-2026-06-04-r1-gpt-5.4-adversarial-003: leave-as-is
+consumed: false

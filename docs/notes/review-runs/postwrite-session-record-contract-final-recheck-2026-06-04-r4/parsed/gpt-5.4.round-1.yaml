@@ -1,0 +1,18 @@
+role: adversarial
+provider: openai-api
+model: gpt-5.4
+attempts: 1
+duration_seconds: 12.581
+findings:
+- severity: WARN
+  target_location: docs/operations/SESSION_WORKFLOW_GUIDE.md §3.6
+  description: 機能横断波及所見の消化対象として review-wave／alignment／approval の各段着手時に全件を消化すると読める記述があり、§2.3・§3.3(b) の「波及は review-wave 段で処理」と不整合です。
+  rationale: 本書全体では波及所見の処理段を review-wave に限定している一方、§3.6 では alignment／approval でも未消化全件を扱うように読めます。手順の最終確認として、消化は review-wave で完了し、alignment／approval は残件ゼロ確認のみなのか、例外的再消化を認めるのかを明確化しないと運用時に段責務がぶれます。
+- severity: WARN
+  target_location: docs/operations/SESSION_WORKFLOW_GUIDE.md §7.3
+  description: 「機能内対処：当該機能の drafting 段で本セッション内に修正」という説明が、§2.2・§3.3(a) の『機能内対処は triad-review 段で対処』という主記述とずれています。
+  rationale: 用語ガイドは実務上の早見表として参照されやすいため、ここで段名が食い違うと誤った進め方を誘発します。drafting 中の自己発見を含めたいのか、triad-review での正式対処を指すのかを揃える必要があります。
+- severity: INFO
+  target_location: docs/operations/SESSION_WORKFLOW_GUIDE.md 全体
+  description: 「approval を人間または別モデル承認」とする記述と、「承認・フェーズ移行はすべて利用者明示承認必須」とする記述が併存しています。
+  rationale: 厳密には両立可能ですが、approval 段の proxy_model 承認と、実際のフェーズ移行・コミット・push に必要な利用者承認の関係を一文で明確化すると、最終再確認として契約境界がさらに明瞭になります。

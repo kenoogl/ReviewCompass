@@ -1,0 +1,141 @@
+run_id: postwrite-session-record-contract-2026-06-04-r1
+triage_status: decided
+generated_at: '2026-06-03T21:16:27.804845+00:00'
+decision_actor: null
+decision_actor_type: human
+items:
+- finding_id: postwrite-session-record-contract-2026-06-04-r1-claude-sonnet-4-6-primary-001
+  run_id: postwrite-session-record-contract-2026-06-04-r1
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: §5.4 セッション記録の作成規律
+  plain_language_summary: セッション記録ファイルの命名規則（session-<N>-<YYYY-MM-DD>.md）と保存先（docs/sessions/）は明記されているが、<N>
+    の採番方法（通し番号の管理主体・重複回避方法）が未定義。
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-03T21:17:45.457780+00:00'
+  decision_reason: 利用者へ三段階トリアージを提示し、should-fix として承認済み。セッション記録手順の抜け漏れ防止のため反映する。
+  applied_files: &id001
+  - docs/operations/SESSION_WORKFLOW_GUIDE.md
+  - .reviewcompass/specs/workflow-management/requirements.md
+  - .reviewcompass/specs/workflow-management/design.md
+  - .reviewcompass/specs/workflow-management/tasks.md
+  - tests/tools/test_session_record_contract.py
+  superseded_by: null
+- finding_id: postwrite-session-record-contract-2026-06-04-r1-claude-sonnet-4-6-primary-002
+  run_id: postwrite-session-record-contract-2026-06-04-r1
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: §5.4 セッション記録の作成規律
+  plain_language_summary: 「セッション終了時または重要判断後に作成または更新する」とあるが、作成タイミングの判断基準（「重要な判断・承認・レビュー結果・修正経緯が発生した場合」）が主観的であり、省略可能な条件として読める。
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-03T21:17:45.474262+00:00'
+  decision_reason: 利用者へ三段階トリアージを提示し、should-fix として承認済み。セッション記録手順の抜け漏れ防止のため反映する。
+  applied_files: *id001
+  superseded_by: null
+- finding_id: postwrite-session-record-contract-2026-06-04-r1-claude-sonnet-4-6-primary-003
+  run_id: postwrite-session-record-contract-2026-06-04-r1
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: §5.4 セッション記録の作成規律
+  plain_language_summary: 「最低限、次を記録する」として6項目が列挙されているが、セッション記録ファイルのテンプレートまたはフォーマット仕様への参照リンクがない。§4.4
+    のレビュー記録には front-matter の必須フィールドが明示されているのとは対照的。
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-03T21:17:45.489445+00:00'
+  decision_reason: 利用者へ三段階トリアージを提示し、should-fix として承認済み。セッション記録手順の抜け漏れ防止のため反映する。
+  applied_files: *id001
+  superseded_by: null
+- finding_id: postwrite-session-record-contract-2026-06-04-r1-claude-sonnet-4-6-primary-004
+  run_id: postwrite-session-record-contract-2026-06-04-r1
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: §5.4 セッション記録の作成規律、§1.1 必読5件
+  plain_language_summary: セッション開始時の必読5件（§1.1）に docs/sessions/ の前回記録が含まれていない。TODO_NEXT_SESSION.md
+    とセッション記録の関係で「詳細経緯は docs/sessions/ に残す」と規定しているが、セッション開始時の確認フローに組み込まれていない。
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-03T21:17:45.504645+00:00'
+  decision_reason: 利用者へ三段階トリアージを提示し、should-fix として承認済み。セッション記録手順の抜け漏れ防止のため反映する。
+  applied_files: *id001
+  superseded_by: null
+- finding_id: postwrite-session-record-contract-2026-06-04-r1-gpt-5.4-adversarial-001
+  run_id: postwrite-session-record-contract-2026-06-04-r1
+  source_model: gpt-5.4
+  source_round: round-1
+  source_raw_path: raw/gpt-5.4.round-1.txt
+  source_parsed_path: parsed/gpt-5.4.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: §5.4 セッション記録の作成規律
+  plain_language_summary: セッション記録の作成対象が『重要な判断・承認・レビュー結果・修正経緯が発生した場合』と条件付きで定義されており、通常セッションで記録不要と解釈される余地がある。
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-03T21:17:45.519239+00:00'
+  decision_reason: 利用者へ三段階トリアージを提示し、should-fix として承認済み。セッション記録手順の抜け漏れ防止のため反映する。
+  applied_files: *id001
+  superseded_by: null
+- finding_id: postwrite-session-record-contract-2026-06-04-r1-gpt-5.4-adversarial-002
+  run_id: postwrite-session-record-contract-2026-06-04-r1
+  source_model: gpt-5.4
+  source_round: round-1
+  source_raw_path: raw/gpt-5.4.round-1.txt
+  source_parsed_path: parsed/gpt-5.4.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: §5.4 セッション記録の作成規律
+  plain_language_summary: セッション記録の作成責任者・更新責任者が明示されていない。
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-03T21:17:45.533651+00:00'
+  decision_reason: 利用者へ三段階トリアージを提示し、should-fix として承認済み。セッション記録手順の抜け漏れ防止のため反映する。
+  applied_files: *id001
+  superseded_by: null
+- finding_id: postwrite-session-record-contract-2026-06-04-r1-gpt-5.4-adversarial-003
+  run_id: postwrite-session-record-contract-2026-06-04-r1
+  source_model: gpt-5.4
+  source_round: round-1
+  source_raw_path: raw/gpt-5.4.round-1.txt
+  source_parsed_path: parsed/gpt-5.4.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: §5.4 セッション記録の作成規律
+  plain_language_summary: セッション記録に求める最低限の記録項目が列挙されており、TODO_NEXT_SESSION.md と docs/sessions/
+    の役割分担も明確化されている。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-03T21:17:45.548230+00:00'
+  decision_reason: 利用者へ三段階トリアージを提示し、leave-as-is として承認済み。内容契約は十分であり修正不要。
+  applied_files: []
+  superseded_by: null

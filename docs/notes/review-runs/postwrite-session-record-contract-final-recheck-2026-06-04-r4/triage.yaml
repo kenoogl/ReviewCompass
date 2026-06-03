@@ -1,0 +1,159 @@
+run_id: postwrite-session-record-contract-final-recheck-2026-06-04-r4
+triage_status: decided
+generated_at: '2026-06-03T21:27:42.271828+00:00'
+decision_actor: null
+decision_actor_type: human
+items:
+- finding_id: postwrite-session-record-contract-final-recheck-2026-06-04-r4-claude-sonnet-4-6-primary-001
+  run_id: postwrite-session-record-contract-final-recheck-2026-06-04-r4
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: §4.2 モデル割り当て（規律）
+  plain_language_summary: 推奨既定モデルとして「主役 Opus 4.7 ／ 敵対役 Sonnet 4.6 ／ 判定役 Opus 4.7」と記載されているが、実態の配置例（foundation
+    tasks triad-review）では「主役 Sonnet 4.6 ／ 敵対役 Opus 4.7 ／ 判定役 Opus 4.7」と逆転している。推奨既定と実態例の主役・敵対役が入れ替わっており、どちらが正とする運用なのか本文内で不一致
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-03T21:30:07.941492+00:00'
+  decision_reason: 利用者へ r4 所見を提示し、今回のセッション記録手順修正範囲外または追加修正不要として leave-as-is 承認済み。
+  applied_files: []
+  superseded_by: null
+- finding_id: postwrite-session-record-contract-final-recheck-2026-06-04-r4-claude-sonnet-4-6-primary-002
+  run_id: postwrite-session-record-contract-final-recheck-2026-06-04-r4
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: §5.4 セッション記録の作成規律
+  plain_language_summary: 「並行セッションや未コミット作業により採番が衝突した場合、メインセッション LLM は既存記録・git 状態・未コミット差分を確認し、利用者が採番を確定するまで正式な新規セッション記録を作成しない」とあるが、利用者が採番を確定するまでの暫定期間に発生した重要判断の記録手順（drafts/
+    への保存時の命名規則、確定後の移動手順）が具体化されていない
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-03T21:30:07.960363+00:00'
+  decision_reason: 利用者へ r4 所見を提示し、drafts 命名・正式移動手順のみ should-fix 承認済み。
+  applied_files:
+  - docs/operations/SESSION_WORKFLOW_GUIDE.md
+  - .reviewcompass/specs/workflow-management/design.md
+  - tests/tools/test_session_record_contract.py
+  superseded_by: null
+- finding_id: postwrite-session-record-contract-final-recheck-2026-06-04-r4-claude-sonnet-4-6-primary-003
+  run_id: postwrite-session-record-contract-final-recheck-2026-06-04-r4
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: §2.3 段の進め方の規律
+  plain_language_summary: 「全機能で drafting ＋ triad-review を完了してから review-wave に進む（部分的に
+    review-wave を始めない）」と規律されているが、機能数（7 機能体制）が多く一部機能の triad-review が長期化した場合の例外処理や中断時の再開手順が記載されていない
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-03T21:30:07.978021+00:00'
+  decision_reason: 利用者へ r4 所見を提示し、今回のセッション記録手順修正範囲外または追加修正不要として leave-as-is 承認済み。
+  applied_files: []
+  superseded_by: null
+- finding_id: postwrite-session-record-contract-final-recheck-2026-06-04-r4-claude-sonnet-4-6-primary-004
+  run_id: postwrite-session-record-contract-final-recheck-2026-06-04-r4
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: §4.3 サブエージェント呼び出し時の規律
+  plain_language_summary: 「モデル指定」の説明において「Claude Code では Agent ツールの model パラメータで 'sonnet'／'haiku'
+    を指定していた」とあるが、§4.2 で主役に Opus を推奨しているにもかかわらず Opus の指定例が参照例に含まれていない
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-03T21:30:07.995188+00:00'
+  decision_reason: 利用者へ r4 所見を提示し、今回のセッション記録手順修正範囲外または追加修正不要として leave-as-is 承認済み。
+  applied_files: []
+  superseded_by: null
+- finding_id: postwrite-session-record-contract-final-recheck-2026-06-04-r4-claude-sonnet-4-6-primary-005
+  run_id: postwrite-session-record-contract-final-recheck-2026-06-04-r4
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: 最終更新行（文書冒頭）
+  plain_language_summary: 最終更新は「2026-06-04（セッション記録の作成手順を正本化）」とあるが、§5.4 セッション記録の作成規律の内容（drafts/
+    への一時草案配置、採番衝突処理等）がいつ追記されたかを示す節内の変更注記がない。他の節（§2.1、§4.2 等）では変更日付が節内に明示されているため記述スタイルが不統一
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-03T21:30:08.012144+00:00'
+  decision_reason: 利用者へ r4 所見を提示し、今回のセッション記録手順修正範囲外または追加修正不要として leave-as-is 承認済み。
+  applied_files: []
+  superseded_by: null
+- finding_id: postwrite-session-record-contract-final-recheck-2026-06-04-r4-gpt-5.4-raw-001
+  run_id: postwrite-session-record-contract-final-recheck-2026-06-04-r4
+  source_model: gpt-5.4
+  source_round: round-1
+  source_raw_path: raw/gpt-5.4.round-1.txt
+  source_parsed_path: parsed/gpt-5.4.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: docs/operations/SESSION_WORKFLOW_GUIDE.md §3.6
+  plain_language_summary: 機能横断波及所見の消化対象として review-wave/alignment/approval の各段着手時に全件を消化すると読める記述があり、波及は
+    review-wave 段で処理するという主記述とずれる。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-03T21:30:08.029102+00:00'
+  decision_reason: 利用者へ r4 所見を提示し、今回のセッション記録手順修正範囲外または追加修正不要として leave-as-is 承認済み。
+  applied_files: []
+  superseded_by: null
+- finding_id: postwrite-session-record-contract-final-recheck-2026-06-04-r4-gpt-5.4-raw-002
+  run_id: postwrite-session-record-contract-final-recheck-2026-06-04-r4
+  source_model: gpt-5.4
+  source_round: round-1
+  source_raw_path: raw/gpt-5.4.round-1.txt
+  source_parsed_path: parsed/gpt-5.4.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: docs/operations/SESSION_WORKFLOW_GUIDE.md §7.3
+  plain_language_summary: 用語ガイドの「機能内対処」が drafting 段で修正と説明され、主記述の triad-review 段で対処とずれる。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-03T21:30:08.046618+00:00'
+  decision_reason: 利用者へ r4 所見を提示し、今回のセッション記録手順修正範囲外または追加修正不要として leave-as-is 承認済み。
+  applied_files: []
+  superseded_by: null
+- finding_id: postwrite-session-record-contract-final-recheck-2026-06-04-r4-gpt-5.4-raw-003
+  run_id: postwrite-session-record-contract-final-recheck-2026-06-04-r4
+  source_model: gpt-5.4
+  source_round: round-1
+  source_raw_path: raw/gpt-5.4.round-1.txt
+  source_parsed_path: parsed/gpt-5.4.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: docs/operations/SESSION_WORKFLOW_GUIDE.md 全体
+  plain_language_summary: approval 段の proxy_model 承認と、フェーズ移行・コミット・push に必要な利用者承認の関係を一文で明確化すると境界がさらに明瞭になる。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-03T21:30:08.063886+00:00'
+  decision_reason: 利用者へ r4 所見を提示し、今回のセッション記録手順修正範囲外または追加修正不要として leave-as-is 承認済み。
+  applied_files: []
+  superseded_by: null

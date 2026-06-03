@@ -1,0 +1,143 @@
+run_id: postwrite-session-record-contract-recheck-2026-06-04-r2
+triage_status: decided
+generated_at: '2026-06-03T21:20:11.396464+00:00'
+decision_actor: null
+decision_actor_type: human
+items:
+- finding_id: postwrite-session-record-contract-recheck-2026-06-04-r2-claude-sonnet-4-6-primary-001
+  run_id: postwrite-session-record-contract-recheck-2026-06-04-r2
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: §4.2 モデル割り当て（規律）推奨既定
+  plain_language_summary: 推奨モデル名として「Opus 4.7」「Sonnet 4.6」が記載されているが、文書ヘッダーの最終更新日（2026-06-04）時点でこれらのバージョン番号が実在・正確であるかの検証根拠が本文書内にない。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-03T21:21:23.256379+00:00'
+  decision_reason: 利用者へ再検証所見を三段階トリアージで提示し、今回のセッション記録手順修正範囲外または現行で十分として leave-as-is
+    承認済み。
+  applied_files: []
+  superseded_by: null
+- finding_id: postwrite-session-record-contract-recheck-2026-06-04-r2-claude-sonnet-4-6-primary-002
+  run_id: postwrite-session-record-contract-recheck-2026-06-04-r2
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: §5.4 セッション記録の作成規律 — セッション番号採番ルール
+  plain_language_summary: 「docs/sessions/ に存在する既存の最大セッション番号に 1 を加えた番号」と規定されているが、並行セッションや欠番が生じた場合の採番衝突・欠番処理の指針が存在しない。
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-03T21:21:23.273593+00:00'
+  decision_reason: 利用者へ再検証所見を三段階トリアージで提示し、採番衝突時の扱いのみ should-fix として承認済み。
+  applied_files:
+  - docs/operations/SESSION_WORKFLOW_GUIDE.md
+  - .reviewcompass/specs/workflow-management/design.md
+  - tests/tools/test_session_record_contract.py
+  superseded_by: null
+- finding_id: postwrite-session-record-contract-recheck-2026-06-04-r2-claude-sonnet-4-6-primary-003
+  run_id: postwrite-session-record-contract-recheck-2026-06-04-r2
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: §3.3 (a-1) must-fix 所見の対処手順 — 手順 6「grep または Read で機械的に照合」
+  plain_language_summary: 照合の成功基準（どの文字列が存在すれば反映確認とみなすか）が未定義。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-03T21:21:23.289561+00:00'
+  decision_reason: 利用者へ再検証所見を三段階トリアージで提示し、今回のセッション記録手順修正範囲外または現行で十分として leave-as-is
+    承認済み。
+  applied_files: []
+  superseded_by: null
+- finding_id: postwrite-session-record-contract-recheck-2026-06-04-r2-claude-sonnet-4-6-primary-004
+  run_id: postwrite-session-record-contract-recheck-2026-06-04-r2
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: §1.1 必読 5 件 — 項目 2（計画書 §5.5）
+  plain_language_summary: 「責務分離による 5 段化が確定済み 2026-05-23。計画書改定は第 2 段階で実施」と記載されているが、計画書改定の完了可否・完了日が本文書内で追跡されていない。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-03T21:21:23.304998+00:00'
+  decision_reason: 利用者へ再検証所見を三段階トリアージで提示し、今回のセッション記録手順修正範囲外または現行で十分として leave-as-is
+    承認済み。
+  applied_files: []
+  superseded_by: null
+- finding_id: postwrite-session-record-contract-recheck-2026-06-04-r2-claude-sonnet-4-6-primary-005
+  run_id: postwrite-session-record-contract-recheck-2026-06-04-r2
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: §6.3 コミットメッセージ規律 — Co-Authored-By
+  plain_language_summary: Claude Code 運用時の Co-Authored-By 例（noreply@anthropic.com）が残っており、Codex・外部
+    API 運用時の具体的な代替形式が「自動付与を前提にしない」とだけ記載されている。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-03T21:21:23.320319+00:00'
+  decision_reason: 利用者へ再検証所見を三段階トリアージで提示し、今回のセッション記録手順修正範囲外または現行で十分として leave-as-is
+    承認済み。
+  applied_files: []
+  superseded_by: null
+- finding_id: postwrite-session-record-contract-recheck-2026-06-04-r2-gpt-5.4-adversarial-001
+  run_id: postwrite-session-record-contract-recheck-2026-06-04-r2
+  source_model: gpt-5.4
+  source_round: round-1
+  source_raw_path: raw/gpt-5.4.round-1.txt
+  source_parsed_path: parsed/gpt-5.4.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: §3.6 機能横断波及所見の管理ルール
+  plain_language_summary: 機能横断波及所見の消化対象として review-wave／alignment／approval を並記しており、前節までの『波及は
+    review-wave 段で処理』という規律と読後印象がずれる。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-03T21:21:23.335329+00:00'
+  decision_reason: 利用者へ再検証所見を三段階トリアージで提示し、今回のセッション記録手順修正範囲外または現行で十分として leave-as-is
+    承認済み。
+  applied_files: []
+  superseded_by: null
+- finding_id: postwrite-session-record-contract-recheck-2026-06-04-r2-gpt-5.4-adversarial-002
+  run_id: postwrite-session-record-contract-recheck-2026-06-04-r2
+  source_model: gpt-5.4
+  source_round: round-1
+  source_raw_path: raw/gpt-5.4.round-1.txt
+  source_parsed_path: parsed/gpt-5.4.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: §5.4 セッション記録の作成規律
+  plain_language_summary: セッション記録の作成・更新を必須級で規定しているが、既存記録の追記で足りる条件と新規ファイル作成が必須となる条件の境界がやや曖昧。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-03T21:21:23.350183+00:00'
+  decision_reason: 利用者へ再検証所見を三段階トリアージで提示し、今回のセッション記録手順修正範囲外または現行で十分として leave-as-is
+    承認済み。
+  applied_files: []
+  superseded_by: null

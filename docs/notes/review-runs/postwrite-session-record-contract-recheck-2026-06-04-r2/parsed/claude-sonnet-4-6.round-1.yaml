@@ -1,0 +1,29 @@
+role: primary
+provider: anthropic-api
+model: claude-sonnet-4-6
+attempts: 1
+duration_seconds: 25.521
+findings:
+- severity: WARN
+  target_location: §4.2 モデル割り当て（規律）推奨既定
+  description: 推奨モデル名として「Opus 4.7」「Sonnet 4.6」が記載されているが、文書ヘッダーの最終更新日（2026-06-04）時点でこれらのバージョン番号が実在・正確であるかの検証根拠が本文書内にない。
+  rationale: モデル識別子が誤っていると reviewcompass.yaml の設定ミスに直結し、サブエージェント呼び出しが失敗または意図しないモデルを使う可能性がある。バージョン番号の正本参照先（config/api-settings.yaml
+    等）を明記するか、「最新の reviewcompass.yaml 定義を優先する」旨を注記すべき。
+- severity: WARN
+  target_location: §5.4 セッション記録の作成規律 — セッション番号採番ルール
+  description: 「docs/sessions/ に存在する既存の最大セッション番号に 1 を加えた番号」と規定されているが、並行セッションや欠番が生じた場合の採番衝突・欠番処理の指針が存在しない。
+  rationale: 複数の LLM セッションが同時進行した際に同番号が付与されるリスクがある。衝突時の解決手順（例：git log で最終コミット時刻を参照、または利用者が採番を確定する）を明記しないと記録の一意性が損なわれる。
+- severity: WARN
+  target_location: §3.3 (a-1) must-fix 所見の対処手順 — 手順 6「grep または Read で機械的に照合」
+  description: 照合の成功基準（どの文字列が存在すれば反映確認とみなすか）が未定義。
+  rationale: 「grep で確認した」という行為の記録だけでは後から検証できない。最低限「grep の対象パターンとヒット件数を記録する」等の基準を規律として追記しないと、形式的な照合に留まり実効性がない。
+- severity: INFO
+  target_location: §1.1 必読 5 件 — 項目 2（計画書 §5.5）
+  description: 「責務分離による 5 段化が確定済み 2026-05-23。計画書改定は第 2 段階で実施」と記載されているが、計画書改定の完了可否・完了日が本文書内で追跡されていない。
+  rationale: 計画書が旧記述（3 段）のままの場合、新規参加者が計画書を読むと本ガイドラインと矛盾する記述に遭遇する。計画書改定の状態（未着手／進行中／完了）と完了時の本文書更新要否をここに明示しておくと混乱を防げる。
+- severity: INFO
+  target_location: §6.3 コミットメッセージ規律 — Co-Authored-By
+  description: Claude Code 運用時の Co-Authored-By 例（noreply@anthropic.com）が残っており、Codex・外部
+    API 運用時の具体的な代替形式が「自動付与を前提にしない」とだけ記載されている。
+  rationale: adapter 切り替え時に Co-Authored-By をどう扱うかの判断基準が不明瞭なため、コミット履歴の一貫性が失われる可能性がある。config/api-settings.yaml
+    または adapter 手引きへの参照を追加するか、「adapter ごとの Co-Authored-By テンプレートを adapter 設定ファイルに定義する」という方針を明記すると運用が安定する。

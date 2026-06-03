@@ -1,0 +1,455 @@
+status: completed
+target_files:
+- .reviewcompass/specs/analysis/reviews/2026-06-03-implementation-review-run/review_summary.md
+- .reviewcompass/specs/workflow-management/design.md
+- .reviewcompass/specs/workflow-management/requirements.md
+- .reviewcompass/specs/workflow-management/tasks.md
+- docs/notes/review-runs/postwrite-session-record-contract-2026-06-04-r1/approval-triage-2026-06-04.yaml
+- docs/notes/review-runs/postwrite-session-record-contract-2026-06-04-r1/model-result-summary.yaml
+- docs/notes/review-runs/postwrite-session-record-contract-2026-06-04-r1/parsed/claude-sonnet-4-6.round-1.yaml
+- docs/notes/review-runs/postwrite-session-record-contract-2026-06-04-r1/parsed/gemini-3.1-pro-preview.round-1.yaml
+- docs/notes/review-runs/postwrite-session-record-contract-2026-06-04-r1/parsed/gpt-5.4.round-1.yaml
+- docs/notes/review-runs/postwrite-session-record-contract-2026-06-04-r1/raw/claude-sonnet-4-6.round-1.txt
+- docs/notes/review-runs/postwrite-session-record-contract-2026-06-04-r1/raw/gemini-3.1-pro-preview.round-1.txt
+- docs/notes/review-runs/postwrite-session-record-contract-2026-06-04-r1/raw/gpt-5.4.round-1.txt
+- docs/notes/review-runs/postwrite-session-record-contract-2026-06-04-r1/review_summary.md
+- docs/notes/review-runs/postwrite-session-record-contract-2026-06-04-r1/rounds.yaml
+- docs/notes/review-runs/postwrite-session-record-contract-2026-06-04-r1/target-manifest.yaml
+- docs/notes/review-runs/postwrite-session-record-contract-2026-06-04-r1/triage.yaml
+- docs/notes/review-runs/postwrite-session-record-contract-final-2026-06-04-r3/approval-triage-2026-06-04.yaml
+- docs/notes/review-runs/postwrite-session-record-contract-final-2026-06-04-r3/model-result-summary.yaml
+- docs/notes/review-runs/postwrite-session-record-contract-final-2026-06-04-r3/parsed/claude-sonnet-4-6.round-1.yaml
+- docs/notes/review-runs/postwrite-session-record-contract-final-2026-06-04-r3/parsed/gemini-3.1-pro-preview.round-1.yaml
+- docs/notes/review-runs/postwrite-session-record-contract-final-2026-06-04-r3/parsed/gpt-5.4.round-1.yaml
+- docs/notes/review-runs/postwrite-session-record-contract-final-2026-06-04-r3/raw/claude-sonnet-4-6.round-1.txt
+- docs/notes/review-runs/postwrite-session-record-contract-final-2026-06-04-r3/raw/gemini-3.1-pro-preview.round-1.txt
+- docs/notes/review-runs/postwrite-session-record-contract-final-2026-06-04-r3/raw/gpt-5.4.round-1.txt
+- docs/notes/review-runs/postwrite-session-record-contract-final-2026-06-04-r3/review_summary.md
+- docs/notes/review-runs/postwrite-session-record-contract-final-2026-06-04-r3/rounds.yaml
+- docs/notes/review-runs/postwrite-session-record-contract-final-2026-06-04-r3/target-manifest.yaml
+- docs/notes/review-runs/postwrite-session-record-contract-final-2026-06-04-r3/triage.yaml
+- docs/notes/review-runs/postwrite-session-record-contract-final-recheck-2026-06-04-r4/approval-triage-2026-06-04.yaml
+- docs/notes/review-runs/postwrite-session-record-contract-final-recheck-2026-06-04-r4/model-result-summary.yaml
+- docs/notes/review-runs/postwrite-session-record-contract-final-recheck-2026-06-04-r4/parsed/claude-sonnet-4-6.round-1.yaml
+- docs/notes/review-runs/postwrite-session-record-contract-final-recheck-2026-06-04-r4/parsed/gemini-3.1-pro-preview.round-1.yaml
+- docs/notes/review-runs/postwrite-session-record-contract-final-recheck-2026-06-04-r4/raw/claude-sonnet-4-6.round-1.txt
+- docs/notes/review-runs/postwrite-session-record-contract-final-recheck-2026-06-04-r4/raw/gemini-3.1-pro-preview.round-1.txt
+- docs/notes/review-runs/postwrite-session-record-contract-final-recheck-2026-06-04-r4/raw/gpt-5.4.round-1.txt
+- docs/notes/review-runs/postwrite-session-record-contract-final-recheck-2026-06-04-r4/review_summary.md
+- docs/notes/review-runs/postwrite-session-record-contract-final-recheck-2026-06-04-r4/rounds.yaml
+- docs/notes/review-runs/postwrite-session-record-contract-final-recheck-2026-06-04-r4/target-manifest.yaml
+- docs/notes/review-runs/postwrite-session-record-contract-final-recheck-2026-06-04-r4/triage.yaml
+- docs/notes/review-runs/postwrite-session-record-contract-recheck-2026-06-04-r2/approval-triage-2026-06-04.yaml
+- docs/notes/review-runs/postwrite-session-record-contract-recheck-2026-06-04-r2/model-result-summary.yaml
+- docs/notes/review-runs/postwrite-session-record-contract-recheck-2026-06-04-r2/parsed/claude-sonnet-4-6.round-1.yaml
+- docs/notes/review-runs/postwrite-session-record-contract-recheck-2026-06-04-r2/parsed/gemini-3.1-pro-preview.round-1.yaml
+- docs/notes/review-runs/postwrite-session-record-contract-recheck-2026-06-04-r2/parsed/gpt-5.4.round-1.yaml
+- docs/notes/review-runs/postwrite-session-record-contract-recheck-2026-06-04-r2/raw/claude-sonnet-4-6.round-1.txt
+- docs/notes/review-runs/postwrite-session-record-contract-recheck-2026-06-04-r2/raw/gemini-3.1-pro-preview.round-1.txt
+- docs/notes/review-runs/postwrite-session-record-contract-recheck-2026-06-04-r2/raw/gpt-5.4.round-1.txt
+- docs/notes/review-runs/postwrite-session-record-contract-recheck-2026-06-04-r2/review_summary.md
+- docs/notes/review-runs/postwrite-session-record-contract-recheck-2026-06-04-r2/rounds.yaml
+- docs/notes/review-runs/postwrite-session-record-contract-recheck-2026-06-04-r2/target-manifest.yaml
+- docs/notes/review-runs/postwrite-session-record-contract-recheck-2026-06-04-r2/triage.yaml
+- docs/operations/SESSION_WORKFLOW_GUIDE.md
+target_sha256:
+  .reviewcompass/specs/analysis/reviews/2026-06-03-implementation-review-run/review_summary.md: 85035b903e3126425a012681f1ce68ecfc51e29fd8bcba22460a35b665c11f82
+  .reviewcompass/specs/workflow-management/design.md: 91705a49e94e1e24a4569b432adcef5f2cc893710a6d2ad3d7c4e4978cae8135
+  .reviewcompass/specs/workflow-management/requirements.md: 61c4c24b53b67a5ce4584394638c48b861928d4756176bfa9edf58a129eb52b9
+  .reviewcompass/specs/workflow-management/tasks.md: 616ec3632e257afe5fdfa925af4f2fa66505f992d7e7f1385b7ffee0471e1660
+  docs/notes/review-runs/postwrite-session-record-contract-2026-06-04-r1/approval-triage-2026-06-04.yaml: 082b10ebdd4c9b9b2d3a18502acb1d4bd4726d810453d8d88f9072aa8d9ba6d0
+  docs/notes/review-runs/postwrite-session-record-contract-2026-06-04-r1/model-result-summary.yaml: 15154f543f80cac333278e5f3c651d6bd76655d8fc2693816c8f2b22d268acd3
+  docs/notes/review-runs/postwrite-session-record-contract-2026-06-04-r1/parsed/claude-sonnet-4-6.round-1.yaml: 49e811e271ec69bb8135dd3ebdba5f256663664f9928750c5a48e2391144ef36
+  docs/notes/review-runs/postwrite-session-record-contract-2026-06-04-r1/parsed/gemini-3.1-pro-preview.round-1.yaml: 23e29fc993d8de81815cbe92cc17baaaa233aa4f7b0f74a5a53dad226b5fb87a
+  docs/notes/review-runs/postwrite-session-record-contract-2026-06-04-r1/parsed/gpt-5.4.round-1.yaml: e9aefe185c75f02032743acd9abbb85cfb7eeafaf75385fa8f37cdeb3a864d1b
+  docs/notes/review-runs/postwrite-session-record-contract-2026-06-04-r1/raw/claude-sonnet-4-6.round-1.txt: 92db82f8a1c7d6fd54c7e16d93d5e77c5cc0a24c4ab8aed2c475e3552c43cd0c
+  docs/notes/review-runs/postwrite-session-record-contract-2026-06-04-r1/raw/gemini-3.1-pro-preview.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+  docs/notes/review-runs/postwrite-session-record-contract-2026-06-04-r1/raw/gpt-5.4.round-1.txt: c62445c40de544efe85e32618aab6f804d3065a6f8901d98b97c0e7134b2dd75
+  docs/notes/review-runs/postwrite-session-record-contract-2026-06-04-r1/review_summary.md: 8605d57b2a6f002274781178f6a9b459e552fbb8b70a85374d1c6ca136c3f28a
+  docs/notes/review-runs/postwrite-session-record-contract-2026-06-04-r1/rounds.yaml: 8bf0ecf9a308ccb596320016a973ed7e73bbc0fde8dfa349e70c51bdc1727261
+  docs/notes/review-runs/postwrite-session-record-contract-2026-06-04-r1/target-manifest.yaml: 9b5f428db1d7e8b16a8832e41cb461f7197691f32b4d412018ea27479986a64e
+  docs/notes/review-runs/postwrite-session-record-contract-2026-06-04-r1/triage.yaml: 9889801211f42e2b2a90d71239f1406a539656a74672d5dc63ff60429c679a82
+  docs/notes/review-runs/postwrite-session-record-contract-final-2026-06-04-r3/approval-triage-2026-06-04.yaml: e1c92ecdda5a237a36bb4c5f9c60522921e3572aba28bb0135dca34dc09236fc
+  docs/notes/review-runs/postwrite-session-record-contract-final-2026-06-04-r3/model-result-summary.yaml: d54cd71aeafd5b0aa538f136948a9e0313abc1c58874fdf89cb66f0bf83e0bc8
+  docs/notes/review-runs/postwrite-session-record-contract-final-2026-06-04-r3/parsed/claude-sonnet-4-6.round-1.yaml: 36a68711482eb529b66bde7a6239d0514ca0277007834bf62c4c42420859a97c
+  docs/notes/review-runs/postwrite-session-record-contract-final-2026-06-04-r3/parsed/gemini-3.1-pro-preview.round-1.yaml: a0c1513af60d926bbee02d4f0985e0286dcebd80e92bec0ff90fb6ff1d4ea346
+  docs/notes/review-runs/postwrite-session-record-contract-final-2026-06-04-r3/parsed/gpt-5.4.round-1.yaml: 741b2279db85e21a17cbaf311ab20534ef09dbac8ffde5e5b77105ea40cea577
+  docs/notes/review-runs/postwrite-session-record-contract-final-2026-06-04-r3/raw/claude-sonnet-4-6.round-1.txt: ace2b504e0e63feb9fabd800adb52290cf4834964d1faba4bee9df189f095b8e
+  docs/notes/review-runs/postwrite-session-record-contract-final-2026-06-04-r3/raw/gemini-3.1-pro-preview.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+  docs/notes/review-runs/postwrite-session-record-contract-final-2026-06-04-r3/raw/gpt-5.4.round-1.txt: a575535037073bb586173a3653ec65fabb0a8fce5a7b4315568a1893e8437e98
+  docs/notes/review-runs/postwrite-session-record-contract-final-2026-06-04-r3/review_summary.md: f64e54c3929db8be9b5a83f8676dfcce7f7c6bd963df7ca64bd94121986768e7
+  docs/notes/review-runs/postwrite-session-record-contract-final-2026-06-04-r3/rounds.yaml: c3472a9c0157cfd81d08fb6c1a29e7f782157912950df8119a77d587655e57a2
+  docs/notes/review-runs/postwrite-session-record-contract-final-2026-06-04-r3/target-manifest.yaml: 828c4f7fc0ab33cdee70a2c1f4613af55ccd818ed7ea8b3aa670a11f5568b13f
+  docs/notes/review-runs/postwrite-session-record-contract-final-2026-06-04-r3/triage.yaml: c729dcba539d6def9b1d98655c733819e38dbe1bbe3c7a4b41b84f6906961334
+  docs/notes/review-runs/postwrite-session-record-contract-final-recheck-2026-06-04-r4/approval-triage-2026-06-04.yaml: ccd94b045acea22fccb17e503455430a2c9b4d7870c1a0fd6a1d13d858b29205
+  docs/notes/review-runs/postwrite-session-record-contract-final-recheck-2026-06-04-r4/model-result-summary.yaml: 13d1f882db944da6793f7f6269958206bce7929640f37ee2cc1b5357df1d4fc7
+  docs/notes/review-runs/postwrite-session-record-contract-final-recheck-2026-06-04-r4/parsed/claude-sonnet-4-6.round-1.yaml: 4b9d5c653a71ffa236b1bf7c4d92ed2dd3909b243d58558d143f39db613d75e8
+  ? docs/notes/review-runs/postwrite-session-record-contract-final-recheck-2026-06-04-r4/parsed/gemini-3.1-pro-preview.round-1.yaml
+  : 2fc8fe89d240498bb2c062ae84d9664586ed26e184c460f1fc95f4c114f1d03f
+  docs/notes/review-runs/postwrite-session-record-contract-final-recheck-2026-06-04-r4/parsed/gpt-5.4.round-1.yaml: b1443a806bde33a0de566f86a71828d50adc263271e990bf762eab388868a11f
+  docs/notes/review-runs/postwrite-session-record-contract-final-recheck-2026-06-04-r4/raw/claude-sonnet-4-6.round-1.txt: e8672bfa22303075c87161ecdc4df19c13b6fb8c4bb792fb76adfb2697b1676a
+  ? docs/notes/review-runs/postwrite-session-record-contract-final-recheck-2026-06-04-r4/raw/gemini-3.1-pro-preview.round-1.txt
+  : ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+  docs/notes/review-runs/postwrite-session-record-contract-final-recheck-2026-06-04-r4/raw/gpt-5.4.round-1.txt: c931006ebbd930f56e1b2033051ea9cedb32ed449234bcc017ffbe1c9fbea883
+  docs/notes/review-runs/postwrite-session-record-contract-final-recheck-2026-06-04-r4/review_summary.md: 13cadf17442389b815aafbdb9b0bb69bb5b2d6d13917ff4fcc497031477f9891
+  docs/notes/review-runs/postwrite-session-record-contract-final-recheck-2026-06-04-r4/rounds.yaml: 3883340a90c1a5537c004c0ffb54f7f851b94b08588fd16f971fbce1cbbf0761
+  docs/notes/review-runs/postwrite-session-record-contract-final-recheck-2026-06-04-r4/target-manifest.yaml: a1f3495337a631d66453a9eb776f536bf995d8b3507a961434a1dc9c8c0b5d95
+  docs/notes/review-runs/postwrite-session-record-contract-final-recheck-2026-06-04-r4/triage.yaml: f061858c5c865a85d94817564f0148fb740fb65ebb4009ba7891b96db9037eb0
+  docs/notes/review-runs/postwrite-session-record-contract-recheck-2026-06-04-r2/approval-triage-2026-06-04.yaml: ff6a88cf7f7bc1ce780ead8dd20f0e65414a898a9b1c8e99ba26dcb140f3ad62
+  docs/notes/review-runs/postwrite-session-record-contract-recheck-2026-06-04-r2/model-result-summary.yaml: 3b9fb9bd642d5ef105675405e6def41b97e57f0c43913cce05864ff8b8020958
+  docs/notes/review-runs/postwrite-session-record-contract-recheck-2026-06-04-r2/parsed/claude-sonnet-4-6.round-1.yaml: a924ed7f2a445667aa0c432c77ec5694213e1b1c20ee2fa07322b8515c50dcb0
+  docs/notes/review-runs/postwrite-session-record-contract-recheck-2026-06-04-r2/parsed/gemini-3.1-pro-preview.round-1.yaml: ff6db973eba93066ef343f49fd96d4985d1c9f5aed63db5dcf37b624d7a24e7e
+  docs/notes/review-runs/postwrite-session-record-contract-recheck-2026-06-04-r2/parsed/gpt-5.4.round-1.yaml: c753689e023ffc4cb709a220a7ea489dca3ab71f52b11cb2135b7edb8eda87ff
+  docs/notes/review-runs/postwrite-session-record-contract-recheck-2026-06-04-r2/raw/claude-sonnet-4-6.round-1.txt: 6529846c1874179c411659e57c03528e08b2c55b78797d33418fc2e003661687
+  docs/notes/review-runs/postwrite-session-record-contract-recheck-2026-06-04-r2/raw/gemini-3.1-pro-preview.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+  docs/notes/review-runs/postwrite-session-record-contract-recheck-2026-06-04-r2/raw/gpt-5.4.round-1.txt: e566edd3540d226b45fe24d2314c420884cdd7d4eaf98646c335373406a785f9
+  docs/notes/review-runs/postwrite-session-record-contract-recheck-2026-06-04-r2/review_summary.md: 8eeeef57159fdb23710102f495f7d33782d086abccf363bc36e1bdd6c96e69bb
+  docs/notes/review-runs/postwrite-session-record-contract-recheck-2026-06-04-r2/rounds.yaml: bf6a5da227c74199b92e16596a23c78c8da7a825dabf9f3895b5c1851b4cb4da
+  docs/notes/review-runs/postwrite-session-record-contract-recheck-2026-06-04-r2/target-manifest.yaml: f45231cfeea77fba0306d3bbb1ef1e64743ac1a089a9aa426add049ae56a119d
+  docs/notes/review-runs/postwrite-session-record-contract-recheck-2026-06-04-r2/triage.yaml: 0938677393e313ca02267079595fe4af38fcdbfe627373f8997044ebf42aac8b
+  docs/operations/SESSION_WORKFLOW_GUIDE.md: ee887807d47872d997c0027f731facf9e1064444fd09d999921c0a77e12378fe
+required_verifiers: &id001
+- claude-sonnet-4-6
+- gpt-5.4
+- gemini-3.1-pro-preview
+completed_verifiers: *id001
+unresolved_substantive_findings: 0
+verifications:
+- verifier: claude-sonnet-4-6
+  target_files:
+  - .reviewcompass/specs/analysis/reviews/2026-06-03-implementation-review-run/review_summary.md
+  - .reviewcompass/specs/workflow-management/design.md
+  - .reviewcompass/specs/workflow-management/requirements.md
+  - .reviewcompass/specs/workflow-management/tasks.md
+  - docs/notes/review-runs/postwrite-session-record-contract-2026-06-04-r1/approval-triage-2026-06-04.yaml
+  - docs/notes/review-runs/postwrite-session-record-contract-2026-06-04-r1/model-result-summary.yaml
+  - docs/notes/review-runs/postwrite-session-record-contract-2026-06-04-r1/parsed/claude-sonnet-4-6.round-1.yaml
+  - docs/notes/review-runs/postwrite-session-record-contract-2026-06-04-r1/parsed/gemini-3.1-pro-preview.round-1.yaml
+  - docs/notes/review-runs/postwrite-session-record-contract-2026-06-04-r1/parsed/gpt-5.4.round-1.yaml
+  - docs/notes/review-runs/postwrite-session-record-contract-2026-06-04-r1/raw/claude-sonnet-4-6.round-1.txt
+  - docs/notes/review-runs/postwrite-session-record-contract-2026-06-04-r1/raw/gemini-3.1-pro-preview.round-1.txt
+  - docs/notes/review-runs/postwrite-session-record-contract-2026-06-04-r1/raw/gpt-5.4.round-1.txt
+  - docs/notes/review-runs/postwrite-session-record-contract-2026-06-04-r1/review_summary.md
+  - docs/notes/review-runs/postwrite-session-record-contract-2026-06-04-r1/rounds.yaml
+  - docs/notes/review-runs/postwrite-session-record-contract-2026-06-04-r1/target-manifest.yaml
+  - docs/notes/review-runs/postwrite-session-record-contract-2026-06-04-r1/triage.yaml
+  - docs/notes/review-runs/postwrite-session-record-contract-final-2026-06-04-r3/approval-triage-2026-06-04.yaml
+  - docs/notes/review-runs/postwrite-session-record-contract-final-2026-06-04-r3/model-result-summary.yaml
+  - docs/notes/review-runs/postwrite-session-record-contract-final-2026-06-04-r3/parsed/claude-sonnet-4-6.round-1.yaml
+  - docs/notes/review-runs/postwrite-session-record-contract-final-2026-06-04-r3/parsed/gemini-3.1-pro-preview.round-1.yaml
+  - docs/notes/review-runs/postwrite-session-record-contract-final-2026-06-04-r3/parsed/gpt-5.4.round-1.yaml
+  - docs/notes/review-runs/postwrite-session-record-contract-final-2026-06-04-r3/raw/claude-sonnet-4-6.round-1.txt
+  - docs/notes/review-runs/postwrite-session-record-contract-final-2026-06-04-r3/raw/gemini-3.1-pro-preview.round-1.txt
+  - docs/notes/review-runs/postwrite-session-record-contract-final-2026-06-04-r3/raw/gpt-5.4.round-1.txt
+  - docs/notes/review-runs/postwrite-session-record-contract-final-2026-06-04-r3/review_summary.md
+  - docs/notes/review-runs/postwrite-session-record-contract-final-2026-06-04-r3/rounds.yaml
+  - docs/notes/review-runs/postwrite-session-record-contract-final-2026-06-04-r3/target-manifest.yaml
+  - docs/notes/review-runs/postwrite-session-record-contract-final-2026-06-04-r3/triage.yaml
+  - docs/notes/review-runs/postwrite-session-record-contract-final-recheck-2026-06-04-r4/approval-triage-2026-06-04.yaml
+  - docs/notes/review-runs/postwrite-session-record-contract-final-recheck-2026-06-04-r4/model-result-summary.yaml
+  - docs/notes/review-runs/postwrite-session-record-contract-final-recheck-2026-06-04-r4/parsed/claude-sonnet-4-6.round-1.yaml
+  - docs/notes/review-runs/postwrite-session-record-contract-final-recheck-2026-06-04-r4/parsed/gemini-3.1-pro-preview.round-1.yaml
+  - docs/notes/review-runs/postwrite-session-record-contract-final-recheck-2026-06-04-r4/parsed/gpt-5.4.round-1.yaml
+  - docs/notes/review-runs/postwrite-session-record-contract-final-recheck-2026-06-04-r4/raw/claude-sonnet-4-6.round-1.txt
+  - docs/notes/review-runs/postwrite-session-record-contract-final-recheck-2026-06-04-r4/raw/gemini-3.1-pro-preview.round-1.txt
+  - docs/notes/review-runs/postwrite-session-record-contract-final-recheck-2026-06-04-r4/raw/gpt-5.4.round-1.txt
+  - docs/notes/review-runs/postwrite-session-record-contract-final-recheck-2026-06-04-r4/review_summary.md
+  - docs/notes/review-runs/postwrite-session-record-contract-final-recheck-2026-06-04-r4/rounds.yaml
+  - docs/notes/review-runs/postwrite-session-record-contract-final-recheck-2026-06-04-r4/target-manifest.yaml
+  - docs/notes/review-runs/postwrite-session-record-contract-final-recheck-2026-06-04-r4/triage.yaml
+  - docs/notes/review-runs/postwrite-session-record-contract-recheck-2026-06-04-r2/approval-triage-2026-06-04.yaml
+  - docs/notes/review-runs/postwrite-session-record-contract-recheck-2026-06-04-r2/model-result-summary.yaml
+  - docs/notes/review-runs/postwrite-session-record-contract-recheck-2026-06-04-r2/parsed/claude-sonnet-4-6.round-1.yaml
+  - docs/notes/review-runs/postwrite-session-record-contract-recheck-2026-06-04-r2/parsed/gemini-3.1-pro-preview.round-1.yaml
+  - docs/notes/review-runs/postwrite-session-record-contract-recheck-2026-06-04-r2/parsed/gpt-5.4.round-1.yaml
+  - docs/notes/review-runs/postwrite-session-record-contract-recheck-2026-06-04-r2/raw/claude-sonnet-4-6.round-1.txt
+  - docs/notes/review-runs/postwrite-session-record-contract-recheck-2026-06-04-r2/raw/gemini-3.1-pro-preview.round-1.txt
+  - docs/notes/review-runs/postwrite-session-record-contract-recheck-2026-06-04-r2/raw/gpt-5.4.round-1.txt
+  - docs/notes/review-runs/postwrite-session-record-contract-recheck-2026-06-04-r2/review_summary.md
+  - docs/notes/review-runs/postwrite-session-record-contract-recheck-2026-06-04-r2/rounds.yaml
+  - docs/notes/review-runs/postwrite-session-record-contract-recheck-2026-06-04-r2/target-manifest.yaml
+  - docs/notes/review-runs/postwrite-session-record-contract-recheck-2026-06-04-r2/triage.yaml
+  - docs/operations/SESSION_WORKFLOW_GUIDE.md
+  target_sha256:
+    .reviewcompass/specs/analysis/reviews/2026-06-03-implementation-review-run/review_summary.md: 85035b903e3126425a012681f1ce68ecfc51e29fd8bcba22460a35b665c11f82
+    .reviewcompass/specs/workflow-management/design.md: 91705a49e94e1e24a4569b432adcef5f2cc893710a6d2ad3d7c4e4978cae8135
+    .reviewcompass/specs/workflow-management/requirements.md: 61c4c24b53b67a5ce4584394638c48b861928d4756176bfa9edf58a129eb52b9
+    .reviewcompass/specs/workflow-management/tasks.md: 616ec3632e257afe5fdfa925af4f2fa66505f992d7e7f1385b7ffee0471e1660
+    docs/notes/review-runs/postwrite-session-record-contract-2026-06-04-r1/approval-triage-2026-06-04.yaml: 082b10ebdd4c9b9b2d3a18502acb1d4bd4726d810453d8d88f9072aa8d9ba6d0
+    docs/notes/review-runs/postwrite-session-record-contract-2026-06-04-r1/model-result-summary.yaml: 15154f543f80cac333278e5f3c651d6bd76655d8fc2693816c8f2b22d268acd3
+    docs/notes/review-runs/postwrite-session-record-contract-2026-06-04-r1/parsed/claude-sonnet-4-6.round-1.yaml: 49e811e271ec69bb8135dd3ebdba5f256663664f9928750c5a48e2391144ef36
+    docs/notes/review-runs/postwrite-session-record-contract-2026-06-04-r1/parsed/gemini-3.1-pro-preview.round-1.yaml: 23e29fc993d8de81815cbe92cc17baaaa233aa4f7b0f74a5a53dad226b5fb87a
+    docs/notes/review-runs/postwrite-session-record-contract-2026-06-04-r1/parsed/gpt-5.4.round-1.yaml: e9aefe185c75f02032743acd9abbb85cfb7eeafaf75385fa8f37cdeb3a864d1b
+    docs/notes/review-runs/postwrite-session-record-contract-2026-06-04-r1/raw/claude-sonnet-4-6.round-1.txt: 92db82f8a1c7d6fd54c7e16d93d5e77c5cc0a24c4ab8aed2c475e3552c43cd0c
+    docs/notes/review-runs/postwrite-session-record-contract-2026-06-04-r1/raw/gemini-3.1-pro-preview.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/postwrite-session-record-contract-2026-06-04-r1/raw/gpt-5.4.round-1.txt: c62445c40de544efe85e32618aab6f804d3065a6f8901d98b97c0e7134b2dd75
+    docs/notes/review-runs/postwrite-session-record-contract-2026-06-04-r1/review_summary.md: 8605d57b2a6f002274781178f6a9b459e552fbb8b70a85374d1c6ca136c3f28a
+    docs/notes/review-runs/postwrite-session-record-contract-2026-06-04-r1/rounds.yaml: 8bf0ecf9a308ccb596320016a973ed7e73bbc0fde8dfa349e70c51bdc1727261
+    docs/notes/review-runs/postwrite-session-record-contract-2026-06-04-r1/target-manifest.yaml: 9b5f428db1d7e8b16a8832e41cb461f7197691f32b4d412018ea27479986a64e
+    docs/notes/review-runs/postwrite-session-record-contract-2026-06-04-r1/triage.yaml: 9889801211f42e2b2a90d71239f1406a539656a74672d5dc63ff60429c679a82
+    docs/notes/review-runs/postwrite-session-record-contract-final-2026-06-04-r3/approval-triage-2026-06-04.yaml: e1c92ecdda5a237a36bb4c5f9c60522921e3572aba28bb0135dca34dc09236fc
+    docs/notes/review-runs/postwrite-session-record-contract-final-2026-06-04-r3/model-result-summary.yaml: d54cd71aeafd5b0aa538f136948a9e0313abc1c58874fdf89cb66f0bf83e0bc8
+    docs/notes/review-runs/postwrite-session-record-contract-final-2026-06-04-r3/parsed/claude-sonnet-4-6.round-1.yaml: 36a68711482eb529b66bde7a6239d0514ca0277007834bf62c4c42420859a97c
+    docs/notes/review-runs/postwrite-session-record-contract-final-2026-06-04-r3/parsed/gemini-3.1-pro-preview.round-1.yaml: a0c1513af60d926bbee02d4f0985e0286dcebd80e92bec0ff90fb6ff1d4ea346
+    docs/notes/review-runs/postwrite-session-record-contract-final-2026-06-04-r3/parsed/gpt-5.4.round-1.yaml: 741b2279db85e21a17cbaf311ab20534ef09dbac8ffde5e5b77105ea40cea577
+    docs/notes/review-runs/postwrite-session-record-contract-final-2026-06-04-r3/raw/claude-sonnet-4-6.round-1.txt: ace2b504e0e63feb9fabd800adb52290cf4834964d1faba4bee9df189f095b8e
+    docs/notes/review-runs/postwrite-session-record-contract-final-2026-06-04-r3/raw/gemini-3.1-pro-preview.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/postwrite-session-record-contract-final-2026-06-04-r3/raw/gpt-5.4.round-1.txt: a575535037073bb586173a3653ec65fabb0a8fce5a7b4315568a1893e8437e98
+    docs/notes/review-runs/postwrite-session-record-contract-final-2026-06-04-r3/review_summary.md: f64e54c3929db8be9b5a83f8676dfcce7f7c6bd963df7ca64bd94121986768e7
+    docs/notes/review-runs/postwrite-session-record-contract-final-2026-06-04-r3/rounds.yaml: c3472a9c0157cfd81d08fb6c1a29e7f782157912950df8119a77d587655e57a2
+    docs/notes/review-runs/postwrite-session-record-contract-final-2026-06-04-r3/target-manifest.yaml: 828c4f7fc0ab33cdee70a2c1f4613af55ccd818ed7ea8b3aa670a11f5568b13f
+    docs/notes/review-runs/postwrite-session-record-contract-final-2026-06-04-r3/triage.yaml: c729dcba539d6def9b1d98655c733819e38dbe1bbe3c7a4b41b84f6906961334
+    docs/notes/review-runs/postwrite-session-record-contract-final-recheck-2026-06-04-r4/approval-triage-2026-06-04.yaml: ccd94b045acea22fccb17e503455430a2c9b4d7870c1a0fd6a1d13d858b29205
+    docs/notes/review-runs/postwrite-session-record-contract-final-recheck-2026-06-04-r4/model-result-summary.yaml: 13d1f882db944da6793f7f6269958206bce7929640f37ee2cc1b5357df1d4fc7
+    docs/notes/review-runs/postwrite-session-record-contract-final-recheck-2026-06-04-r4/parsed/claude-sonnet-4-6.round-1.yaml: 4b9d5c653a71ffa236b1bf7c4d92ed2dd3909b243d58558d143f39db613d75e8
+    ? docs/notes/review-runs/postwrite-session-record-contract-final-recheck-2026-06-04-r4/parsed/gemini-3.1-pro-preview.round-1.yaml
+    : 2fc8fe89d240498bb2c062ae84d9664586ed26e184c460f1fc95f4c114f1d03f
+    docs/notes/review-runs/postwrite-session-record-contract-final-recheck-2026-06-04-r4/parsed/gpt-5.4.round-1.yaml: b1443a806bde33a0de566f86a71828d50adc263271e990bf762eab388868a11f
+    docs/notes/review-runs/postwrite-session-record-contract-final-recheck-2026-06-04-r4/raw/claude-sonnet-4-6.round-1.txt: e8672bfa22303075c87161ecdc4df19c13b6fb8c4bb792fb76adfb2697b1676a
+    ? docs/notes/review-runs/postwrite-session-record-contract-final-recheck-2026-06-04-r4/raw/gemini-3.1-pro-preview.round-1.txt
+    : ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/postwrite-session-record-contract-final-recheck-2026-06-04-r4/raw/gpt-5.4.round-1.txt: c931006ebbd930f56e1b2033051ea9cedb32ed449234bcc017ffbe1c9fbea883
+    docs/notes/review-runs/postwrite-session-record-contract-final-recheck-2026-06-04-r4/review_summary.md: 13cadf17442389b815aafbdb9b0bb69bb5b2d6d13917ff4fcc497031477f9891
+    docs/notes/review-runs/postwrite-session-record-contract-final-recheck-2026-06-04-r4/rounds.yaml: 3883340a90c1a5537c004c0ffb54f7f851b94b08588fd16f971fbce1cbbf0761
+    docs/notes/review-runs/postwrite-session-record-contract-final-recheck-2026-06-04-r4/target-manifest.yaml: a1f3495337a631d66453a9eb776f536bf995d8b3507a961434a1dc9c8c0b5d95
+    docs/notes/review-runs/postwrite-session-record-contract-final-recheck-2026-06-04-r4/triage.yaml: f061858c5c865a85d94817564f0148fb740fb65ebb4009ba7891b96db9037eb0
+    docs/notes/review-runs/postwrite-session-record-contract-recheck-2026-06-04-r2/approval-triage-2026-06-04.yaml: ff6a88cf7f7bc1ce780ead8dd20f0e65414a898a9b1c8e99ba26dcb140f3ad62
+    docs/notes/review-runs/postwrite-session-record-contract-recheck-2026-06-04-r2/model-result-summary.yaml: 3b9fb9bd642d5ef105675405e6def41b97e57f0c43913cce05864ff8b8020958
+    docs/notes/review-runs/postwrite-session-record-contract-recheck-2026-06-04-r2/parsed/claude-sonnet-4-6.round-1.yaml: a924ed7f2a445667aa0c432c77ec5694213e1b1c20ee2fa07322b8515c50dcb0
+    docs/notes/review-runs/postwrite-session-record-contract-recheck-2026-06-04-r2/parsed/gemini-3.1-pro-preview.round-1.yaml: ff6db973eba93066ef343f49fd96d4985d1c9f5aed63db5dcf37b624d7a24e7e
+    docs/notes/review-runs/postwrite-session-record-contract-recheck-2026-06-04-r2/parsed/gpt-5.4.round-1.yaml: c753689e023ffc4cb709a220a7ea489dca3ab71f52b11cb2135b7edb8eda87ff
+    docs/notes/review-runs/postwrite-session-record-contract-recheck-2026-06-04-r2/raw/claude-sonnet-4-6.round-1.txt: 6529846c1874179c411659e57c03528e08b2c55b78797d33418fc2e003661687
+    docs/notes/review-runs/postwrite-session-record-contract-recheck-2026-06-04-r2/raw/gemini-3.1-pro-preview.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/postwrite-session-record-contract-recheck-2026-06-04-r2/raw/gpt-5.4.round-1.txt: e566edd3540d226b45fe24d2314c420884cdd7d4eaf98646c335373406a785f9
+    docs/notes/review-runs/postwrite-session-record-contract-recheck-2026-06-04-r2/review_summary.md: 8eeeef57159fdb23710102f495f7d33782d086abccf363bc36e1bdd6c96e69bb
+    docs/notes/review-runs/postwrite-session-record-contract-recheck-2026-06-04-r2/rounds.yaml: bf6a5da227c74199b92e16596a23c78c8da7a825dabf9f3895b5c1851b4cb4da
+    docs/notes/review-runs/postwrite-session-record-contract-recheck-2026-06-04-r2/target-manifest.yaml: f45231cfeea77fba0306d3bbb1ef1e64743ac1a089a9aa426add049ae56a119d
+    docs/notes/review-runs/postwrite-session-record-contract-recheck-2026-06-04-r2/triage.yaml: 0938677393e313ca02267079595fe4af38fcdbfe627373f8997044ebf42aac8b
+    docs/operations/SESSION_WORKFLOW_GUIDE.md: ee887807d47872d997c0027f731facf9e1064444fd09d999921c0a77e12378fe
+- verifier: gpt-5.4
+  target_files:
+  - .reviewcompass/specs/analysis/reviews/2026-06-03-implementation-review-run/review_summary.md
+  - .reviewcompass/specs/workflow-management/design.md
+  - .reviewcompass/specs/workflow-management/requirements.md
+  - .reviewcompass/specs/workflow-management/tasks.md
+  - docs/notes/review-runs/postwrite-session-record-contract-2026-06-04-r1/approval-triage-2026-06-04.yaml
+  - docs/notes/review-runs/postwrite-session-record-contract-2026-06-04-r1/model-result-summary.yaml
+  - docs/notes/review-runs/postwrite-session-record-contract-2026-06-04-r1/parsed/claude-sonnet-4-6.round-1.yaml
+  - docs/notes/review-runs/postwrite-session-record-contract-2026-06-04-r1/parsed/gemini-3.1-pro-preview.round-1.yaml
+  - docs/notes/review-runs/postwrite-session-record-contract-2026-06-04-r1/parsed/gpt-5.4.round-1.yaml
+  - docs/notes/review-runs/postwrite-session-record-contract-2026-06-04-r1/raw/claude-sonnet-4-6.round-1.txt
+  - docs/notes/review-runs/postwrite-session-record-contract-2026-06-04-r1/raw/gemini-3.1-pro-preview.round-1.txt
+  - docs/notes/review-runs/postwrite-session-record-contract-2026-06-04-r1/raw/gpt-5.4.round-1.txt
+  - docs/notes/review-runs/postwrite-session-record-contract-2026-06-04-r1/review_summary.md
+  - docs/notes/review-runs/postwrite-session-record-contract-2026-06-04-r1/rounds.yaml
+  - docs/notes/review-runs/postwrite-session-record-contract-2026-06-04-r1/target-manifest.yaml
+  - docs/notes/review-runs/postwrite-session-record-contract-2026-06-04-r1/triage.yaml
+  - docs/notes/review-runs/postwrite-session-record-contract-final-2026-06-04-r3/approval-triage-2026-06-04.yaml
+  - docs/notes/review-runs/postwrite-session-record-contract-final-2026-06-04-r3/model-result-summary.yaml
+  - docs/notes/review-runs/postwrite-session-record-contract-final-2026-06-04-r3/parsed/claude-sonnet-4-6.round-1.yaml
+  - docs/notes/review-runs/postwrite-session-record-contract-final-2026-06-04-r3/parsed/gemini-3.1-pro-preview.round-1.yaml
+  - docs/notes/review-runs/postwrite-session-record-contract-final-2026-06-04-r3/parsed/gpt-5.4.round-1.yaml
+  - docs/notes/review-runs/postwrite-session-record-contract-final-2026-06-04-r3/raw/claude-sonnet-4-6.round-1.txt
+  - docs/notes/review-runs/postwrite-session-record-contract-final-2026-06-04-r3/raw/gemini-3.1-pro-preview.round-1.txt
+  - docs/notes/review-runs/postwrite-session-record-contract-final-2026-06-04-r3/raw/gpt-5.4.round-1.txt
+  - docs/notes/review-runs/postwrite-session-record-contract-final-2026-06-04-r3/review_summary.md
+  - docs/notes/review-runs/postwrite-session-record-contract-final-2026-06-04-r3/rounds.yaml
+  - docs/notes/review-runs/postwrite-session-record-contract-final-2026-06-04-r3/target-manifest.yaml
+  - docs/notes/review-runs/postwrite-session-record-contract-final-2026-06-04-r3/triage.yaml
+  - docs/notes/review-runs/postwrite-session-record-contract-final-recheck-2026-06-04-r4/approval-triage-2026-06-04.yaml
+  - docs/notes/review-runs/postwrite-session-record-contract-final-recheck-2026-06-04-r4/model-result-summary.yaml
+  - docs/notes/review-runs/postwrite-session-record-contract-final-recheck-2026-06-04-r4/parsed/claude-sonnet-4-6.round-1.yaml
+  - docs/notes/review-runs/postwrite-session-record-contract-final-recheck-2026-06-04-r4/parsed/gemini-3.1-pro-preview.round-1.yaml
+  - docs/notes/review-runs/postwrite-session-record-contract-final-recheck-2026-06-04-r4/parsed/gpt-5.4.round-1.yaml
+  - docs/notes/review-runs/postwrite-session-record-contract-final-recheck-2026-06-04-r4/raw/claude-sonnet-4-6.round-1.txt
+  - docs/notes/review-runs/postwrite-session-record-contract-final-recheck-2026-06-04-r4/raw/gemini-3.1-pro-preview.round-1.txt
+  - docs/notes/review-runs/postwrite-session-record-contract-final-recheck-2026-06-04-r4/raw/gpt-5.4.round-1.txt
+  - docs/notes/review-runs/postwrite-session-record-contract-final-recheck-2026-06-04-r4/review_summary.md
+  - docs/notes/review-runs/postwrite-session-record-contract-final-recheck-2026-06-04-r4/rounds.yaml
+  - docs/notes/review-runs/postwrite-session-record-contract-final-recheck-2026-06-04-r4/target-manifest.yaml
+  - docs/notes/review-runs/postwrite-session-record-contract-final-recheck-2026-06-04-r4/triage.yaml
+  - docs/notes/review-runs/postwrite-session-record-contract-recheck-2026-06-04-r2/approval-triage-2026-06-04.yaml
+  - docs/notes/review-runs/postwrite-session-record-contract-recheck-2026-06-04-r2/model-result-summary.yaml
+  - docs/notes/review-runs/postwrite-session-record-contract-recheck-2026-06-04-r2/parsed/claude-sonnet-4-6.round-1.yaml
+  - docs/notes/review-runs/postwrite-session-record-contract-recheck-2026-06-04-r2/parsed/gemini-3.1-pro-preview.round-1.yaml
+  - docs/notes/review-runs/postwrite-session-record-contract-recheck-2026-06-04-r2/parsed/gpt-5.4.round-1.yaml
+  - docs/notes/review-runs/postwrite-session-record-contract-recheck-2026-06-04-r2/raw/claude-sonnet-4-6.round-1.txt
+  - docs/notes/review-runs/postwrite-session-record-contract-recheck-2026-06-04-r2/raw/gemini-3.1-pro-preview.round-1.txt
+  - docs/notes/review-runs/postwrite-session-record-contract-recheck-2026-06-04-r2/raw/gpt-5.4.round-1.txt
+  - docs/notes/review-runs/postwrite-session-record-contract-recheck-2026-06-04-r2/review_summary.md
+  - docs/notes/review-runs/postwrite-session-record-contract-recheck-2026-06-04-r2/rounds.yaml
+  - docs/notes/review-runs/postwrite-session-record-contract-recheck-2026-06-04-r2/target-manifest.yaml
+  - docs/notes/review-runs/postwrite-session-record-contract-recheck-2026-06-04-r2/triage.yaml
+  - docs/operations/SESSION_WORKFLOW_GUIDE.md
+  target_sha256:
+    .reviewcompass/specs/analysis/reviews/2026-06-03-implementation-review-run/review_summary.md: 85035b903e3126425a012681f1ce68ecfc51e29fd8bcba22460a35b665c11f82
+    .reviewcompass/specs/workflow-management/design.md: 91705a49e94e1e24a4569b432adcef5f2cc893710a6d2ad3d7c4e4978cae8135
+    .reviewcompass/specs/workflow-management/requirements.md: 61c4c24b53b67a5ce4584394638c48b861928d4756176bfa9edf58a129eb52b9
+    .reviewcompass/specs/workflow-management/tasks.md: 616ec3632e257afe5fdfa925af4f2fa66505f992d7e7f1385b7ffee0471e1660
+    docs/notes/review-runs/postwrite-session-record-contract-2026-06-04-r1/approval-triage-2026-06-04.yaml: 082b10ebdd4c9b9b2d3a18502acb1d4bd4726d810453d8d88f9072aa8d9ba6d0
+    docs/notes/review-runs/postwrite-session-record-contract-2026-06-04-r1/model-result-summary.yaml: 15154f543f80cac333278e5f3c651d6bd76655d8fc2693816c8f2b22d268acd3
+    docs/notes/review-runs/postwrite-session-record-contract-2026-06-04-r1/parsed/claude-sonnet-4-6.round-1.yaml: 49e811e271ec69bb8135dd3ebdba5f256663664f9928750c5a48e2391144ef36
+    docs/notes/review-runs/postwrite-session-record-contract-2026-06-04-r1/parsed/gemini-3.1-pro-preview.round-1.yaml: 23e29fc993d8de81815cbe92cc17baaaa233aa4f7b0f74a5a53dad226b5fb87a
+    docs/notes/review-runs/postwrite-session-record-contract-2026-06-04-r1/parsed/gpt-5.4.round-1.yaml: e9aefe185c75f02032743acd9abbb85cfb7eeafaf75385fa8f37cdeb3a864d1b
+    docs/notes/review-runs/postwrite-session-record-contract-2026-06-04-r1/raw/claude-sonnet-4-6.round-1.txt: 92db82f8a1c7d6fd54c7e16d93d5e77c5cc0a24c4ab8aed2c475e3552c43cd0c
+    docs/notes/review-runs/postwrite-session-record-contract-2026-06-04-r1/raw/gemini-3.1-pro-preview.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/postwrite-session-record-contract-2026-06-04-r1/raw/gpt-5.4.round-1.txt: c62445c40de544efe85e32618aab6f804d3065a6f8901d98b97c0e7134b2dd75
+    docs/notes/review-runs/postwrite-session-record-contract-2026-06-04-r1/review_summary.md: 8605d57b2a6f002274781178f6a9b459e552fbb8b70a85374d1c6ca136c3f28a
+    docs/notes/review-runs/postwrite-session-record-contract-2026-06-04-r1/rounds.yaml: 8bf0ecf9a308ccb596320016a973ed7e73bbc0fde8dfa349e70c51bdc1727261
+    docs/notes/review-runs/postwrite-session-record-contract-2026-06-04-r1/target-manifest.yaml: 9b5f428db1d7e8b16a8832e41cb461f7197691f32b4d412018ea27479986a64e
+    docs/notes/review-runs/postwrite-session-record-contract-2026-06-04-r1/triage.yaml: 9889801211f42e2b2a90d71239f1406a539656a74672d5dc63ff60429c679a82
+    docs/notes/review-runs/postwrite-session-record-contract-final-2026-06-04-r3/approval-triage-2026-06-04.yaml: e1c92ecdda5a237a36bb4c5f9c60522921e3572aba28bb0135dca34dc09236fc
+    docs/notes/review-runs/postwrite-session-record-contract-final-2026-06-04-r3/model-result-summary.yaml: d54cd71aeafd5b0aa538f136948a9e0313abc1c58874fdf89cb66f0bf83e0bc8
+    docs/notes/review-runs/postwrite-session-record-contract-final-2026-06-04-r3/parsed/claude-sonnet-4-6.round-1.yaml: 36a68711482eb529b66bde7a6239d0514ca0277007834bf62c4c42420859a97c
+    docs/notes/review-runs/postwrite-session-record-contract-final-2026-06-04-r3/parsed/gemini-3.1-pro-preview.round-1.yaml: a0c1513af60d926bbee02d4f0985e0286dcebd80e92bec0ff90fb6ff1d4ea346
+    docs/notes/review-runs/postwrite-session-record-contract-final-2026-06-04-r3/parsed/gpt-5.4.round-1.yaml: 741b2279db85e21a17cbaf311ab20534ef09dbac8ffde5e5b77105ea40cea577
+    docs/notes/review-runs/postwrite-session-record-contract-final-2026-06-04-r3/raw/claude-sonnet-4-6.round-1.txt: ace2b504e0e63feb9fabd800adb52290cf4834964d1faba4bee9df189f095b8e
+    docs/notes/review-runs/postwrite-session-record-contract-final-2026-06-04-r3/raw/gemini-3.1-pro-preview.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/postwrite-session-record-contract-final-2026-06-04-r3/raw/gpt-5.4.round-1.txt: a575535037073bb586173a3653ec65fabb0a8fce5a7b4315568a1893e8437e98
+    docs/notes/review-runs/postwrite-session-record-contract-final-2026-06-04-r3/review_summary.md: f64e54c3929db8be9b5a83f8676dfcce7f7c6bd963df7ca64bd94121986768e7
+    docs/notes/review-runs/postwrite-session-record-contract-final-2026-06-04-r3/rounds.yaml: c3472a9c0157cfd81d08fb6c1a29e7f782157912950df8119a77d587655e57a2
+    docs/notes/review-runs/postwrite-session-record-contract-final-2026-06-04-r3/target-manifest.yaml: 828c4f7fc0ab33cdee70a2c1f4613af55ccd818ed7ea8b3aa670a11f5568b13f
+    docs/notes/review-runs/postwrite-session-record-contract-final-2026-06-04-r3/triage.yaml: c729dcba539d6def9b1d98655c733819e38dbe1bbe3c7a4b41b84f6906961334
+    docs/notes/review-runs/postwrite-session-record-contract-final-recheck-2026-06-04-r4/approval-triage-2026-06-04.yaml: ccd94b045acea22fccb17e503455430a2c9b4d7870c1a0fd6a1d13d858b29205
+    docs/notes/review-runs/postwrite-session-record-contract-final-recheck-2026-06-04-r4/model-result-summary.yaml: 13d1f882db944da6793f7f6269958206bce7929640f37ee2cc1b5357df1d4fc7
+    docs/notes/review-runs/postwrite-session-record-contract-final-recheck-2026-06-04-r4/parsed/claude-sonnet-4-6.round-1.yaml: 4b9d5c653a71ffa236b1bf7c4d92ed2dd3909b243d58558d143f39db613d75e8
+    ? docs/notes/review-runs/postwrite-session-record-contract-final-recheck-2026-06-04-r4/parsed/gemini-3.1-pro-preview.round-1.yaml
+    : 2fc8fe89d240498bb2c062ae84d9664586ed26e184c460f1fc95f4c114f1d03f
+    docs/notes/review-runs/postwrite-session-record-contract-final-recheck-2026-06-04-r4/parsed/gpt-5.4.round-1.yaml: b1443a806bde33a0de566f86a71828d50adc263271e990bf762eab388868a11f
+    docs/notes/review-runs/postwrite-session-record-contract-final-recheck-2026-06-04-r4/raw/claude-sonnet-4-6.round-1.txt: e8672bfa22303075c87161ecdc4df19c13b6fb8c4bb792fb76adfb2697b1676a
+    ? docs/notes/review-runs/postwrite-session-record-contract-final-recheck-2026-06-04-r4/raw/gemini-3.1-pro-preview.round-1.txt
+    : ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/postwrite-session-record-contract-final-recheck-2026-06-04-r4/raw/gpt-5.4.round-1.txt: c931006ebbd930f56e1b2033051ea9cedb32ed449234bcc017ffbe1c9fbea883
+    docs/notes/review-runs/postwrite-session-record-contract-final-recheck-2026-06-04-r4/review_summary.md: 13cadf17442389b815aafbdb9b0bb69bb5b2d6d13917ff4fcc497031477f9891
+    docs/notes/review-runs/postwrite-session-record-contract-final-recheck-2026-06-04-r4/rounds.yaml: 3883340a90c1a5537c004c0ffb54f7f851b94b08588fd16f971fbce1cbbf0761
+    docs/notes/review-runs/postwrite-session-record-contract-final-recheck-2026-06-04-r4/target-manifest.yaml: a1f3495337a631d66453a9eb776f536bf995d8b3507a961434a1dc9c8c0b5d95
+    docs/notes/review-runs/postwrite-session-record-contract-final-recheck-2026-06-04-r4/triage.yaml: f061858c5c865a85d94817564f0148fb740fb65ebb4009ba7891b96db9037eb0
+    docs/notes/review-runs/postwrite-session-record-contract-recheck-2026-06-04-r2/approval-triage-2026-06-04.yaml: ff6a88cf7f7bc1ce780ead8dd20f0e65414a898a9b1c8e99ba26dcb140f3ad62
+    docs/notes/review-runs/postwrite-session-record-contract-recheck-2026-06-04-r2/model-result-summary.yaml: 3b9fb9bd642d5ef105675405e6def41b97e57f0c43913cce05864ff8b8020958
+    docs/notes/review-runs/postwrite-session-record-contract-recheck-2026-06-04-r2/parsed/claude-sonnet-4-6.round-1.yaml: a924ed7f2a445667aa0c432c77ec5694213e1b1c20ee2fa07322b8515c50dcb0
+    docs/notes/review-runs/postwrite-session-record-contract-recheck-2026-06-04-r2/parsed/gemini-3.1-pro-preview.round-1.yaml: ff6db973eba93066ef343f49fd96d4985d1c9f5aed63db5dcf37b624d7a24e7e
+    docs/notes/review-runs/postwrite-session-record-contract-recheck-2026-06-04-r2/parsed/gpt-5.4.round-1.yaml: c753689e023ffc4cb709a220a7ea489dca3ab71f52b11cb2135b7edb8eda87ff
+    docs/notes/review-runs/postwrite-session-record-contract-recheck-2026-06-04-r2/raw/claude-sonnet-4-6.round-1.txt: 6529846c1874179c411659e57c03528e08b2c55b78797d33418fc2e003661687
+    docs/notes/review-runs/postwrite-session-record-contract-recheck-2026-06-04-r2/raw/gemini-3.1-pro-preview.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/postwrite-session-record-contract-recheck-2026-06-04-r2/raw/gpt-5.4.round-1.txt: e566edd3540d226b45fe24d2314c420884cdd7d4eaf98646c335373406a785f9
+    docs/notes/review-runs/postwrite-session-record-contract-recheck-2026-06-04-r2/review_summary.md: 8eeeef57159fdb23710102f495f7d33782d086abccf363bc36e1bdd6c96e69bb
+    docs/notes/review-runs/postwrite-session-record-contract-recheck-2026-06-04-r2/rounds.yaml: bf6a5da227c74199b92e16596a23c78c8da7a825dabf9f3895b5c1851b4cb4da
+    docs/notes/review-runs/postwrite-session-record-contract-recheck-2026-06-04-r2/target-manifest.yaml: f45231cfeea77fba0306d3bbb1ef1e64743ac1a089a9aa426add049ae56a119d
+    docs/notes/review-runs/postwrite-session-record-contract-recheck-2026-06-04-r2/triage.yaml: 0938677393e313ca02267079595fe4af38fcdbfe627373f8997044ebf42aac8b
+    docs/operations/SESSION_WORKFLOW_GUIDE.md: ee887807d47872d997c0027f731facf9e1064444fd09d999921c0a77e12378fe
+- verifier: gemini-3.1-pro-preview
+  target_files:
+  - .reviewcompass/specs/analysis/reviews/2026-06-03-implementation-review-run/review_summary.md
+  - .reviewcompass/specs/workflow-management/design.md
+  - .reviewcompass/specs/workflow-management/requirements.md
+  - .reviewcompass/specs/workflow-management/tasks.md
+  - docs/notes/review-runs/postwrite-session-record-contract-2026-06-04-r1/approval-triage-2026-06-04.yaml
+  - docs/notes/review-runs/postwrite-session-record-contract-2026-06-04-r1/model-result-summary.yaml
+  - docs/notes/review-runs/postwrite-session-record-contract-2026-06-04-r1/parsed/claude-sonnet-4-6.round-1.yaml
+  - docs/notes/review-runs/postwrite-session-record-contract-2026-06-04-r1/parsed/gemini-3.1-pro-preview.round-1.yaml
+  - docs/notes/review-runs/postwrite-session-record-contract-2026-06-04-r1/parsed/gpt-5.4.round-1.yaml
+  - docs/notes/review-runs/postwrite-session-record-contract-2026-06-04-r1/raw/claude-sonnet-4-6.round-1.txt
+  - docs/notes/review-runs/postwrite-session-record-contract-2026-06-04-r1/raw/gemini-3.1-pro-preview.round-1.txt
+  - docs/notes/review-runs/postwrite-session-record-contract-2026-06-04-r1/raw/gpt-5.4.round-1.txt
+  - docs/notes/review-runs/postwrite-session-record-contract-2026-06-04-r1/review_summary.md
+  - docs/notes/review-runs/postwrite-session-record-contract-2026-06-04-r1/rounds.yaml
+  - docs/notes/review-runs/postwrite-session-record-contract-2026-06-04-r1/target-manifest.yaml
+  - docs/notes/review-runs/postwrite-session-record-contract-2026-06-04-r1/triage.yaml
+  - docs/notes/review-runs/postwrite-session-record-contract-final-2026-06-04-r3/approval-triage-2026-06-04.yaml
+  - docs/notes/review-runs/postwrite-session-record-contract-final-2026-06-04-r3/model-result-summary.yaml
+  - docs/notes/review-runs/postwrite-session-record-contract-final-2026-06-04-r3/parsed/claude-sonnet-4-6.round-1.yaml
+  - docs/notes/review-runs/postwrite-session-record-contract-final-2026-06-04-r3/parsed/gemini-3.1-pro-preview.round-1.yaml
+  - docs/notes/review-runs/postwrite-session-record-contract-final-2026-06-04-r3/parsed/gpt-5.4.round-1.yaml
+  - docs/notes/review-runs/postwrite-session-record-contract-final-2026-06-04-r3/raw/claude-sonnet-4-6.round-1.txt
+  - docs/notes/review-runs/postwrite-session-record-contract-final-2026-06-04-r3/raw/gemini-3.1-pro-preview.round-1.txt
+  - docs/notes/review-runs/postwrite-session-record-contract-final-2026-06-04-r3/raw/gpt-5.4.round-1.txt
+  - docs/notes/review-runs/postwrite-session-record-contract-final-2026-06-04-r3/review_summary.md
+  - docs/notes/review-runs/postwrite-session-record-contract-final-2026-06-04-r3/rounds.yaml
+  - docs/notes/review-runs/postwrite-session-record-contract-final-2026-06-04-r3/target-manifest.yaml
+  - docs/notes/review-runs/postwrite-session-record-contract-final-2026-06-04-r3/triage.yaml
+  - docs/notes/review-runs/postwrite-session-record-contract-final-recheck-2026-06-04-r4/approval-triage-2026-06-04.yaml
+  - docs/notes/review-runs/postwrite-session-record-contract-final-recheck-2026-06-04-r4/model-result-summary.yaml
+  - docs/notes/review-runs/postwrite-session-record-contract-final-recheck-2026-06-04-r4/parsed/claude-sonnet-4-6.round-1.yaml
+  - docs/notes/review-runs/postwrite-session-record-contract-final-recheck-2026-06-04-r4/parsed/gemini-3.1-pro-preview.round-1.yaml
+  - docs/notes/review-runs/postwrite-session-record-contract-final-recheck-2026-06-04-r4/parsed/gpt-5.4.round-1.yaml
+  - docs/notes/review-runs/postwrite-session-record-contract-final-recheck-2026-06-04-r4/raw/claude-sonnet-4-6.round-1.txt
+  - docs/notes/review-runs/postwrite-session-record-contract-final-recheck-2026-06-04-r4/raw/gemini-3.1-pro-preview.round-1.txt
+  - docs/notes/review-runs/postwrite-session-record-contract-final-recheck-2026-06-04-r4/raw/gpt-5.4.round-1.txt
+  - docs/notes/review-runs/postwrite-session-record-contract-final-recheck-2026-06-04-r4/review_summary.md
+  - docs/notes/review-runs/postwrite-session-record-contract-final-recheck-2026-06-04-r4/rounds.yaml
+  - docs/notes/review-runs/postwrite-session-record-contract-final-recheck-2026-06-04-r4/target-manifest.yaml
+  - docs/notes/review-runs/postwrite-session-record-contract-final-recheck-2026-06-04-r4/triage.yaml
+  - docs/notes/review-runs/postwrite-session-record-contract-recheck-2026-06-04-r2/approval-triage-2026-06-04.yaml
+  - docs/notes/review-runs/postwrite-session-record-contract-recheck-2026-06-04-r2/model-result-summary.yaml
+  - docs/notes/review-runs/postwrite-session-record-contract-recheck-2026-06-04-r2/parsed/claude-sonnet-4-6.round-1.yaml
+  - docs/notes/review-runs/postwrite-session-record-contract-recheck-2026-06-04-r2/parsed/gemini-3.1-pro-preview.round-1.yaml
+  - docs/notes/review-runs/postwrite-session-record-contract-recheck-2026-06-04-r2/parsed/gpt-5.4.round-1.yaml
+  - docs/notes/review-runs/postwrite-session-record-contract-recheck-2026-06-04-r2/raw/claude-sonnet-4-6.round-1.txt
+  - docs/notes/review-runs/postwrite-session-record-contract-recheck-2026-06-04-r2/raw/gemini-3.1-pro-preview.round-1.txt
+  - docs/notes/review-runs/postwrite-session-record-contract-recheck-2026-06-04-r2/raw/gpt-5.4.round-1.txt
+  - docs/notes/review-runs/postwrite-session-record-contract-recheck-2026-06-04-r2/review_summary.md
+  - docs/notes/review-runs/postwrite-session-record-contract-recheck-2026-06-04-r2/rounds.yaml
+  - docs/notes/review-runs/postwrite-session-record-contract-recheck-2026-06-04-r2/target-manifest.yaml
+  - docs/notes/review-runs/postwrite-session-record-contract-recheck-2026-06-04-r2/triage.yaml
+  - docs/operations/SESSION_WORKFLOW_GUIDE.md
+  target_sha256:
+    .reviewcompass/specs/analysis/reviews/2026-06-03-implementation-review-run/review_summary.md: 85035b903e3126425a012681f1ce68ecfc51e29fd8bcba22460a35b665c11f82
+    .reviewcompass/specs/workflow-management/design.md: 91705a49e94e1e24a4569b432adcef5f2cc893710a6d2ad3d7c4e4978cae8135
+    .reviewcompass/specs/workflow-management/requirements.md: 61c4c24b53b67a5ce4584394638c48b861928d4756176bfa9edf58a129eb52b9
+    .reviewcompass/specs/workflow-management/tasks.md: 616ec3632e257afe5fdfa925af4f2fa66505f992d7e7f1385b7ffee0471e1660
+    docs/notes/review-runs/postwrite-session-record-contract-2026-06-04-r1/approval-triage-2026-06-04.yaml: 082b10ebdd4c9b9b2d3a18502acb1d4bd4726d810453d8d88f9072aa8d9ba6d0
+    docs/notes/review-runs/postwrite-session-record-contract-2026-06-04-r1/model-result-summary.yaml: 15154f543f80cac333278e5f3c651d6bd76655d8fc2693816c8f2b22d268acd3
+    docs/notes/review-runs/postwrite-session-record-contract-2026-06-04-r1/parsed/claude-sonnet-4-6.round-1.yaml: 49e811e271ec69bb8135dd3ebdba5f256663664f9928750c5a48e2391144ef36
+    docs/notes/review-runs/postwrite-session-record-contract-2026-06-04-r1/parsed/gemini-3.1-pro-preview.round-1.yaml: 23e29fc993d8de81815cbe92cc17baaaa233aa4f7b0f74a5a53dad226b5fb87a
+    docs/notes/review-runs/postwrite-session-record-contract-2026-06-04-r1/parsed/gpt-5.4.round-1.yaml: e9aefe185c75f02032743acd9abbb85cfb7eeafaf75385fa8f37cdeb3a864d1b
+    docs/notes/review-runs/postwrite-session-record-contract-2026-06-04-r1/raw/claude-sonnet-4-6.round-1.txt: 92db82f8a1c7d6fd54c7e16d93d5e77c5cc0a24c4ab8aed2c475e3552c43cd0c
+    docs/notes/review-runs/postwrite-session-record-contract-2026-06-04-r1/raw/gemini-3.1-pro-preview.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/postwrite-session-record-contract-2026-06-04-r1/raw/gpt-5.4.round-1.txt: c62445c40de544efe85e32618aab6f804d3065a6f8901d98b97c0e7134b2dd75
+    docs/notes/review-runs/postwrite-session-record-contract-2026-06-04-r1/review_summary.md: 8605d57b2a6f002274781178f6a9b459e552fbb8b70a85374d1c6ca136c3f28a
+    docs/notes/review-runs/postwrite-session-record-contract-2026-06-04-r1/rounds.yaml: 8bf0ecf9a308ccb596320016a973ed7e73bbc0fde8dfa349e70c51bdc1727261
+    docs/notes/review-runs/postwrite-session-record-contract-2026-06-04-r1/target-manifest.yaml: 9b5f428db1d7e8b16a8832e41cb461f7197691f32b4d412018ea27479986a64e
+    docs/notes/review-runs/postwrite-session-record-contract-2026-06-04-r1/triage.yaml: 9889801211f42e2b2a90d71239f1406a539656a74672d5dc63ff60429c679a82
+    docs/notes/review-runs/postwrite-session-record-contract-final-2026-06-04-r3/approval-triage-2026-06-04.yaml: e1c92ecdda5a237a36bb4c5f9c60522921e3572aba28bb0135dca34dc09236fc
+    docs/notes/review-runs/postwrite-session-record-contract-final-2026-06-04-r3/model-result-summary.yaml: d54cd71aeafd5b0aa538f136948a9e0313abc1c58874fdf89cb66f0bf83e0bc8
+    docs/notes/review-runs/postwrite-session-record-contract-final-2026-06-04-r3/parsed/claude-sonnet-4-6.round-1.yaml: 36a68711482eb529b66bde7a6239d0514ca0277007834bf62c4c42420859a97c
+    docs/notes/review-runs/postwrite-session-record-contract-final-2026-06-04-r3/parsed/gemini-3.1-pro-preview.round-1.yaml: a0c1513af60d926bbee02d4f0985e0286dcebd80e92bec0ff90fb6ff1d4ea346
+    docs/notes/review-runs/postwrite-session-record-contract-final-2026-06-04-r3/parsed/gpt-5.4.round-1.yaml: 741b2279db85e21a17cbaf311ab20534ef09dbac8ffde5e5b77105ea40cea577
+    docs/notes/review-runs/postwrite-session-record-contract-final-2026-06-04-r3/raw/claude-sonnet-4-6.round-1.txt: ace2b504e0e63feb9fabd800adb52290cf4834964d1faba4bee9df189f095b8e
+    docs/notes/review-runs/postwrite-session-record-contract-final-2026-06-04-r3/raw/gemini-3.1-pro-preview.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/postwrite-session-record-contract-final-2026-06-04-r3/raw/gpt-5.4.round-1.txt: a575535037073bb586173a3653ec65fabb0a8fce5a7b4315568a1893e8437e98
+    docs/notes/review-runs/postwrite-session-record-contract-final-2026-06-04-r3/review_summary.md: f64e54c3929db8be9b5a83f8676dfcce7f7c6bd963df7ca64bd94121986768e7
+    docs/notes/review-runs/postwrite-session-record-contract-final-2026-06-04-r3/rounds.yaml: c3472a9c0157cfd81d08fb6c1a29e7f782157912950df8119a77d587655e57a2
+    docs/notes/review-runs/postwrite-session-record-contract-final-2026-06-04-r3/target-manifest.yaml: 828c4f7fc0ab33cdee70a2c1f4613af55ccd818ed7ea8b3aa670a11f5568b13f
+    docs/notes/review-runs/postwrite-session-record-contract-final-2026-06-04-r3/triage.yaml: c729dcba539d6def9b1d98655c733819e38dbe1bbe3c7a4b41b84f6906961334
+    docs/notes/review-runs/postwrite-session-record-contract-final-recheck-2026-06-04-r4/approval-triage-2026-06-04.yaml: ccd94b045acea22fccb17e503455430a2c9b4d7870c1a0fd6a1d13d858b29205
+    docs/notes/review-runs/postwrite-session-record-contract-final-recheck-2026-06-04-r4/model-result-summary.yaml: 13d1f882db944da6793f7f6269958206bce7929640f37ee2cc1b5357df1d4fc7
+    docs/notes/review-runs/postwrite-session-record-contract-final-recheck-2026-06-04-r4/parsed/claude-sonnet-4-6.round-1.yaml: 4b9d5c653a71ffa236b1bf7c4d92ed2dd3909b243d58558d143f39db613d75e8
+    ? docs/notes/review-runs/postwrite-session-record-contract-final-recheck-2026-06-04-r4/parsed/gemini-3.1-pro-preview.round-1.yaml
+    : 2fc8fe89d240498bb2c062ae84d9664586ed26e184c460f1fc95f4c114f1d03f
+    docs/notes/review-runs/postwrite-session-record-contract-final-recheck-2026-06-04-r4/parsed/gpt-5.4.round-1.yaml: b1443a806bde33a0de566f86a71828d50adc263271e990bf762eab388868a11f
+    docs/notes/review-runs/postwrite-session-record-contract-final-recheck-2026-06-04-r4/raw/claude-sonnet-4-6.round-1.txt: e8672bfa22303075c87161ecdc4df19c13b6fb8c4bb792fb76adfb2697b1676a
+    ? docs/notes/review-runs/postwrite-session-record-contract-final-recheck-2026-06-04-r4/raw/gemini-3.1-pro-preview.round-1.txt
+    : ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/postwrite-session-record-contract-final-recheck-2026-06-04-r4/raw/gpt-5.4.round-1.txt: c931006ebbd930f56e1b2033051ea9cedb32ed449234bcc017ffbe1c9fbea883
+    docs/notes/review-runs/postwrite-session-record-contract-final-recheck-2026-06-04-r4/review_summary.md: 13cadf17442389b815aafbdb9b0bb69bb5b2d6d13917ff4fcc497031477f9891
+    docs/notes/review-runs/postwrite-session-record-contract-final-recheck-2026-06-04-r4/rounds.yaml: 3883340a90c1a5537c004c0ffb54f7f851b94b08588fd16f971fbce1cbbf0761
+    docs/notes/review-runs/postwrite-session-record-contract-final-recheck-2026-06-04-r4/target-manifest.yaml: a1f3495337a631d66453a9eb776f536bf995d8b3507a961434a1dc9c8c0b5d95
+    docs/notes/review-runs/postwrite-session-record-contract-final-recheck-2026-06-04-r4/triage.yaml: f061858c5c865a85d94817564f0148fb740fb65ebb4009ba7891b96db9037eb0
+    docs/notes/review-runs/postwrite-session-record-contract-recheck-2026-06-04-r2/approval-triage-2026-06-04.yaml: ff6a88cf7f7bc1ce780ead8dd20f0e65414a898a9b1c8e99ba26dcb140f3ad62
+    docs/notes/review-runs/postwrite-session-record-contract-recheck-2026-06-04-r2/model-result-summary.yaml: 3b9fb9bd642d5ef105675405e6def41b97e57f0c43913cce05864ff8b8020958
+    docs/notes/review-runs/postwrite-session-record-contract-recheck-2026-06-04-r2/parsed/claude-sonnet-4-6.round-1.yaml: a924ed7f2a445667aa0c432c77ec5694213e1b1c20ee2fa07322b8515c50dcb0
+    docs/notes/review-runs/postwrite-session-record-contract-recheck-2026-06-04-r2/parsed/gemini-3.1-pro-preview.round-1.yaml: ff6db973eba93066ef343f49fd96d4985d1c9f5aed63db5dcf37b624d7a24e7e
+    docs/notes/review-runs/postwrite-session-record-contract-recheck-2026-06-04-r2/parsed/gpt-5.4.round-1.yaml: c753689e023ffc4cb709a220a7ea489dca3ab71f52b11cb2135b7edb8eda87ff
+    docs/notes/review-runs/postwrite-session-record-contract-recheck-2026-06-04-r2/raw/claude-sonnet-4-6.round-1.txt: 6529846c1874179c411659e57c03528e08b2c55b78797d33418fc2e003661687
+    docs/notes/review-runs/postwrite-session-record-contract-recheck-2026-06-04-r2/raw/gemini-3.1-pro-preview.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/postwrite-session-record-contract-recheck-2026-06-04-r2/raw/gpt-5.4.round-1.txt: e566edd3540d226b45fe24d2314c420884cdd7d4eaf98646c335373406a785f9
+    docs/notes/review-runs/postwrite-session-record-contract-recheck-2026-06-04-r2/review_summary.md: 8eeeef57159fdb23710102f495f7d33782d086abccf363bc36e1bdd6c96e69bb
+    docs/notes/review-runs/postwrite-session-record-contract-recheck-2026-06-04-r2/rounds.yaml: bf6a5da227c74199b92e16596a23c78c8da7a825dabf9f3895b5c1851b4cb4da
+    docs/notes/review-runs/postwrite-session-record-contract-recheck-2026-06-04-r2/target-manifest.yaml: f45231cfeea77fba0306d3bbb1ef1e64743ac1a089a9aa426add049ae56a119d
+    docs/notes/review-runs/postwrite-session-record-contract-recheck-2026-06-04-r2/triage.yaml: 0938677393e313ca02267079595fe4af38fcdbfe627373f8997044ebf42aac8b
+    docs/operations/SESSION_WORKFLOW_GUIDE.md: ee887807d47872d997c0027f731facf9e1064444fd09d999921c0a77e12378fe
+review_run:
+  path: docs/notes/review-runs/postwrite-session-record-contract-final-recheck-2026-06-04-r4
+  summary_path: docs/notes/review-runs/postwrite-session-record-contract-final-recheck-2026-06-04-r4/model-result-summary.yaml
+notes: Generated template; verify target_files cover current post-write targets before
+  use.

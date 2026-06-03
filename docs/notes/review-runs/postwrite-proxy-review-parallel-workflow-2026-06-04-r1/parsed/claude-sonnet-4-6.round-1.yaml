@@ -1,0 +1,67 @@
+role: primary
+provider: anthropic-api
+model: claude-sonnet-4-6
+attempts: 1
+duration_seconds: 19.936
+findings:
+- severity: WARN
+  target_location: 'docs/notes/review-runs/postwrite-proxy-review-parallel-workflow-2026-06-04-r1/review-target.md
+    ## Canonical workflow added, step 1'
+  description: The threshold for 'important findings' that trigger proxy_model delegation
+    is not defined. The main session LLM determines what is 'important,' giving it
+    discretionary authority over the scope of proxy review.
+  rationale: Without an explicit threshold (e.g., severity level, affected file count,
+    or policy category), the main session LLM can silently classify a finding as non-important
+    and implement it without proxy delegation. This undermines the role split the
+    workflow intends to enforce.
+- severity: WARN
+  target_location: 'docs/notes/review-runs/postwrite-proxy-review-parallel-workflow-2026-06-04-r1/review-target.md
+    ## Machine guard added'
+  description: The guard validates that raw_response_path files exist but does not
+    verify their content integrity (e.g., hash, minimum token length, or structural
+    schema). An empty or trivially generated file would satisfy the existence check.
+  rationale: Auditability of proxy decisions depends on the raw response containing
+    substantive evidence. A file-existence check alone does not prevent a synthetic
+    or empty raw response from being used to satisfy the guard, undermining the audit
+    trail.
+- severity: WARN
+  target_location: 'docs/notes/review-runs/postwrite-proxy-review-parallel-workflow-2026-06-04-r1/review-target.md
+    ## Parallel implementation policy added, subthread outputs'
+  description: The boundary between 'decision_basis' and 'work_noise' is defined by
+    examples (blockers, failed assumptions vs. intermediate logs, failed patch attempts)
+    but no rule distinguishes them when a failed patch attempt surfaces a new blocker
+    or exposes a failed assumption.
+  rationale: Ambiguous classification could cause a maintainer or automated import
+    step to discard a failed patch log that contains a critical failure signal. If
+    work_noise exclusion is applied broadly, relevant decision context may not reach
+    the mainline record.
+- severity: INFO
+  target_location: 'docs/notes/review-runs/postwrite-proxy-review-parallel-workflow-2026-06-04-r1/review-target.md
+    ## Canonical workflow added, step 3'
+  description: The workflow states the proxy model 'does not implement changes,' but
+    no machine check enforces this. The constraint is stated as policy text only.
+  rationale: If proxy model interaction is mediated through an automated pipeline
+    rather than a human-supervised session, there is no technical barrier preventing
+    an operator from wiring the proxy model output directly into an apply step. A
+    guard or schema restriction noting that proxy output records have no 'apply' field
+    would make this constraint verifiable.
+- severity: INFO
+  target_location: 'docs/notes/review-runs/postwrite-proxy-review-parallel-workflow-2026-06-04-r1/review-target.md
+    ## Parallel implementation policy added'
+  description: The policy prohibits same-repo parallel implementation except for 'very
+    small non-conflicting checks,' but 'very small' is not operationalized. There
+    is no size or scope metric, and no guard enforces the exception boundary.
+  rationale: Vague exception language leaves the decision to operator judgment. Over
+    time, the exception may be applied more broadly than intended, eroding the worktree
+    isolation policy.
+- severity: INFO
+  target_location: 'docs/notes/review-runs/postwrite-proxy-review-parallel-workflow-2026-06-04-r1/review-target.md
+    ## Canonical workflow added, step 6'
+  description: The list of human-approved irreversible operations includes commit,
+    push, spec.json updates, phase transitions, discipline changes, and major policy
+    changes, but does not explicitly include deletion of canonical documents, removal
+    of machine guards, or downgrade of severity thresholds.
+  rationale: Operations that weaken the workflow itself (removing guards, deleting
+    audit records, lowering severity thresholds) are at least as irreversible as a
+    commit in terms of process integrity. Their omission from the protected list is
+    a gap.

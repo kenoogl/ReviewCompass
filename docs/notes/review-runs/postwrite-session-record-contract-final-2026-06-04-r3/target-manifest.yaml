@@ -1,0 +1,4 @@
+run_id: postwrite-session-record-contract-final-2026-06-04-r3
+target_files:
+- path: docs/operations/SESSION_WORKFLOW_GUIDE.md
+  sha256: e2b07bec52f9e4b5aee126bb59e3433503ca2fcede19c5f0bec1b0777dbed5fa

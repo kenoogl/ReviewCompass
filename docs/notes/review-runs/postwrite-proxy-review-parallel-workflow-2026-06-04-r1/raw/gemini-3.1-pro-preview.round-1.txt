@@ -1,0 +1,13 @@
+findings:
+  - severity: WARN
+    target_location: "Canonical workflow added (Steps 2 and 3)"
+    description: "The workflow states the main LLM prepares explanations and options for the proxy model, but does not explicitly require the proxy model to consume the original raw review finding."
+    rationale: "If the proxy model evaluates only the main LLM's synthesized options and recommended choice, the main LLM can inadvertently dictate the decision through biased framing. To enforce the role boundary, the proxy model's input context must include the raw review response, not just the main LLM's summary."
+  - severity: WARN
+    target_location: "Parallel implementation policy added (Subthread outputs)"
+    description: "Classifying 'failed patch attempts' strictly as 'work_noise' risks discarding valuable implementation history and rationale."
+    rationale: "While raw scratch logs are noise, a failed patch attempt often serves as the technical proof for a 'failed assumption' (which is classified as 'decision_basis'). Completely excluding failed patches from mainline traceability could leave future maintainers or LLMs without context as to why a seemingly obvious approach was abandoned."
+  - severity: INFO
+    target_location: "Machine guard added"
+    description: "The guard validates proxy decisions based on structured files but does not verify the cryptographic or session provenance of the 'proxy_model_id'."
+    rationale: "The current fail-closed logic checks for the existence of required fields like 'proxy_model_id' and 'approved_by: proxy_model'. Since main LLMs generate these files, a strict security boundary would eventually require verifying that the proxy model actually generated the specific decision file (e.g., via a signed trace or API log ID), rather than just checking that the text field is present."
