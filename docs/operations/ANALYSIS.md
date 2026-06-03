@@ -68,7 +68,22 @@ ReviewCompass 新規追加機能。同一対象に対する 3 役（`primary`／
 - **`workflow-management`**：所定手続きの実行履歴に対する可視化要求を受ける
 - **`conformance-evaluation`**：本機能の出力は `conformance-evaluation` の検査入力にもなりうるが、評価判定自体は `conformance-evaluation` の責務
 
-## 7. 後続セッションでの追加予定
+## 7. アプリ側 analysis 配置規約
+
+ReviewCompass をアプリまたは対象リポジトリへ配置するとき、アプリ側の分析成果物は
+`.reviewcompass/analysis/` 配下に置く。リポジトリ内の `analysis/` は実装・雛形・配置規約の
+正本であり、アプリ側 `.reviewcompass/analysis/` は実行時に生成される成果物の置き場である。
+
+アプリ側 `.reviewcompass/analysis/` は、リポジトリ内 `analysis/` と同じ 3 層構造を使う。
+
+- `analysis/shared/`：4 出力先で共通に参照する主張対応図、証拠台帳、注意点台帳、manifest
+- `analysis/destinations/`：運用ダッシュボード、週次レポート、監査用報告、報告書向け原データの派生成果物
+- `analysis/figures_tables/`：表・図の原データ束
+
+この配置では、`evaluation` の成果物を入力として参照し、生の `runtime` 実行証拠へ直接戻らない。
+出力先別の加工は `destinations/` 配下に閉じ、共通の追跡情報は `shared/` に残す。
+
+## 8. 後続セッションでの追加予定
 
 本文書は requirements 部分のみの骨子。次のセッション以降で次を追加する：
 
@@ -79,7 +94,7 @@ ReviewCompass 新規追加機能。同一対象に対する 3 役（`primary`／
 - レビュー収束過程の可視化の詳細設計（§5.14.5）
 - 主要な発見の構造化（§5.14.6）
 
-## 8. 関連文書
+## 9. 関連文書
 
 - 形式仕様：[.reviewcompass/specs/analysis/requirements.md](../../.reviewcompass/specs/analysis/requirements.md)
 - 計画書 §5.14：[analysis 機能の役割と料理方法](../plan/reconstruction-plan-2026-05-21.md)
