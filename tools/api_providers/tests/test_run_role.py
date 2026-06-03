@@ -262,3 +262,159 @@ variants:
   parsed = yaml.safe_load(captured.out)
   assert parsed["provider"] == "openai-api"
   assert parsed["model"] == "gpt-test"
+
+
+# --- 5. raw / parsed / review-run 成果物 ---
+
+
+def test_main_writes_raw_out_before_parse_failure(
+  tmp_target_file, tmp_config, tmp_path, monkeypatch, capsys
+):
+  """parse 失敗時でも --raw-out に provider 生応答を保存する。"""
+  monkeypatch.setenv("ANTHROPIC_API_KEY", "test-key")
+  raw_out = tmp_path / "raw.txt"
+  mock_cls, _ = _make_mock_provider(send_response="not: [valid\n")
+  with patch("tools.api_providers.run_role.get_provider", return_value=mock_cls):
+    exit_code = main(
+      [
+        "--role", "primary",
+        "--target", str(tmp_target_file),
+        "--phase", "requirements",
+        "--criteria", "観点-1",
+        "--config", str(tmp_config),
+        "--raw-out", str(raw_out),
+      ]
+    )
+
+  assert exit_code != 0
+  assert raw_out.read_text(encoding="utf-8") == "not: [valid\n"
+  captured = capsys.readouterr()
+  assert "エラー" in captured.err
+
+
+def test_main_writes_parsed_out_on_parse_success(
+  tmp_target_file, tmp_config, tmp_path, monkeypatch
+):
+  """parse 成功時に --parsed-out へ整形済み YAML を保存する。"""
+  monkeypatch.setenv("ANTHROPIC_API_KEY", "test-key")
+  parsed_out = tmp_path / "parsed.yaml"
+  mock_response = """
+findings:
+  - severity: INFO
+    target_location: a.md
+    description: 指摘なし
+    rationale: テスト
+"""
+  mock_cls, _ = _make_mock_provider(send_response=mock_response)
+  with patch("tools.api_providers.run_role.get_provider", return_value=mock_cls):
+    exit_code = main(
+      [
+        "--role", "primary",
+        "--target", str(tmp_target_file),
+        "--phase", "requirements",
+        "--criteria", "観点-1",
+        "--config", str(tmp_config),
+        "--parsed-out", str(parsed_out),
+      ]
+    )
+
+  assert exit_code == 0
+  parsed = yaml.safe_load(parsed_out.read_text(encoding="utf-8"))
+  assert parsed["role"] == "primary"
+  assert parsed["model"] == "claude-opus-4-7"
+  assert parsed["findings"][0]["severity"] == "INFO"
+
+
+def test_main_updates_review_run_artifacts(
+  tmp_target_file, tmp_config, tmp_path, monkeypatch
+):
+  """--review-run-dir 指定時に raw、parsed、rounds、summary、target manifest を生成する。"""
+  monkeypatch.setenv("ANTHROPIC_API_KEY", "test-key")
+  review_run_dir = tmp_path / "review-run"
+  mock_response = """
+findings:
+  - severity: WARN
+    target_location: a.md
+    description: 要確認
+    rationale: テスト
+"""
+  mock_cls, _ = _make_mock_provider(send_response=mock_response)
+  with patch("tools.api_providers.run_role.get_provider", return_value=mock_cls):
+    exit_code = main(
+      [
+        "--role", "primary",
+        "--target", str(tmp_target_file),
+        "--phase", "post_write_verification",
+        "--criteria", "観点-1",
+        "--config", str(tmp_config),
+        "--review-run-dir", str(review_run_dir),
+        "--round-id", "round-1",
+      ]
+    )
+
+  assert exit_code == 0
+  raw_path = review_run_dir / "raw" / "claude-opus-4-7.round-1.txt"
+  parsed_path = review_run_dir / "parsed" / "claude-opus-4-7.round-1.yaml"
+  assert raw_path.is_file()
+  assert parsed_path.is_file()
+
+  target_manifest = yaml.safe_load(
+    (review_run_dir / "target-manifest.yaml").read_text(encoding="utf-8")
+  )
+  rounds = yaml.safe_load((review_run_dir / "rounds.yaml").read_text(encoding="utf-8"))
+  summary = yaml.safe_load(
+    (review_run_dir / "model-result-summary.yaml").read_text(encoding="utf-8")
+  )
+
+  assert target_manifest["target_files"][0]["path"] == str(tmp_target_file)
+  model_result = rounds["model_results"][0]
+  assert model_result["model_id"] == "claude-opus-4-7"
+  assert model_result["raw_path"] == "raw/claude-opus-4-7.round-1.txt"
+  assert model_result["parsed_path"] == "parsed/claude-opus-4-7.round-1.yaml"
+  assert model_result["parse_status"] == "parsed"
+  assert len(model_result["raw_sha256"]) == 64
+  assert len(model_result["parsed_sha256"]) == 64
+
+  summary_model = summary["models"][0]
+  assert summary_model["model_id"] == "claude-opus-4-7"
+  assert summary_model["parse_status"] == "parsed"
+  assert summary_model["triage_status"] == "triage_pending"
+  assert summary_model["findings_count"] == 1
+  assert summary_model["findings_count_by_severity"]["WARN"] == 1
+
+
+def test_main_updates_review_run_artifacts_on_parse_failure(
+  tmp_target_file, tmp_config, tmp_path, monkeypatch
+):
+  """parse 失敗時も review-run に raw と parse_failed 状態を残す。"""
+  monkeypatch.setenv("ANTHROPIC_API_KEY", "test-key")
+  review_run_dir = tmp_path / "review-run"
+  mock_cls, _ = _make_mock_provider(send_response="findings: [broken\n")
+  with patch("tools.api_providers.run_role.get_provider", return_value=mock_cls):
+    exit_code = main(
+      [
+        "--role", "primary",
+        "--target", str(tmp_target_file),
+        "--phase", "post_write_verification",
+        "--criteria", "観点-1",
+        "--config", str(tmp_config),
+        "--review-run-dir", str(review_run_dir),
+        "--round-id", "round-1",
+      ]
+    )
+
+  assert exit_code != 0
+  raw_path = review_run_dir / "raw" / "claude-opus-4-7.round-1.txt"
+  assert raw_path.read_text(encoding="utf-8") == "findings: [broken\n"
+
+  rounds = yaml.safe_load((review_run_dir / "rounds.yaml").read_text(encoding="utf-8"))
+  summary = yaml.safe_load(
+    (review_run_dir / "model-result-summary.yaml").read_text(encoding="utf-8")
+  )
+  model_result = rounds["model_results"][0]
+  assert model_result["parse_status"] == "parse_failed"
+  assert model_result["parsed_path"] is None
+  assert model_result["follow_up_action"] == "format_pending"
+  summary_model = summary["models"][0]
+  assert summary_model["parse_status"] == "parse_failed"
+  assert summary_model["triage_status"] == "triage_pending"

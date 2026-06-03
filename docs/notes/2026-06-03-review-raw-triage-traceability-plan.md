@@ -35,18 +35,21 @@ parse 成功・失敗にかかわらず raw を保存し、parse 失敗は「レ
 
 ## runner 側の対応
 
-`tools/api_providers/run_role.py` に次のオプションを追加する。本メモ作成時点では実装予定であり、
-本メモの post-write verification 完了後、同一作業単位内で TDD 実装する。
-完了後は対象 commit または差分参照を追記する。
+`tools/api_providers/run_role.py` に次のオプションを追加した。
 
 - `--raw-out <path>`：provider 生応答を保存する。parse 成否に関係なく保存する。
 - `--parsed-out <path>`：成形済み YAML を保存する。parse 成功時のみ保存する。
+- `--review-run-dir <path>`：review run 成果物ディレクトリを指定し、`raw/`、`parsed/`、
+  `target-manifest.yaml`、`rounds.yaml`、`model-result-summary.yaml` を生成・更新する。
+- `--round-id <id>`：review run に記録する round ID。未指定時は `round-1`。
 
 これにより、`findings:` YAML として読めない応答も raw として残し、後から人間または別処理で成形できる。
-CLI オプション自体は任意指定だが、レビュー・監査運用では指定必須として扱う。
-強制方法は後続で CLI 必須化、workflow check、CI のいずれかに確定する。
-強制実装が入るまでの暫定運用では、API 呼び出しを行うオーケストレーターが呼び出し直後に
-raw 保存ファイルの存在と checksum を確認し、triage 開始前に `rounds.yaml` へ記録する。
+`--review-run-dir` 指定時は parse 失敗時でも raw と `rounds.yaml` / `model-result-summary.yaml`
+を更新し、該当モデルを `parse_status: parse_failed`、`triage_status: triage_pending` として残す。
+
+CLI オプション自体は任意指定だが、レビュー・監査運用では `--review-run-dir` 指定を必須として扱う。
+post-write-verification manifest に `review_run:` を記録した場合は、`tools/check-workflow-action.py next`
+が raw、rounds、summary、triage の整合を完了条件として機械判定する。
 この確認を経ていないレビュー結果は、監査ログとして不完全と扱う。
 
 ## 推奨ディレクトリ構造
@@ -58,6 +61,7 @@ docs/notes/review-runs/<run_id>/
   target-manifest.yaml
   rounds.yaml
   triage.yaml
+  model-result-summary.yaml
   raw/
     <model_id>.round-1.txt
   parsed/
@@ -185,6 +189,7 @@ finding 単位の判断を `triage.yaml` へ移す。成形不能または判断
   `must-fix` / `should-fix` / `leave-as-is` のいずれかである。
 - `rounds.yaml` に存在する各モデルは、`triage.yaml` の `source_model` に現れるか、
   `model-result-summary.yaml` で `triage_status: no_findings` と明示される。
+- `model-result-summary.yaml` に `triage_status: triage_pending` が残る review run は完了扱いにしない。
 - `decision_status: human_required` が残る review run は完了扱いにしない。
 
 この機械判定は「チャット上で表を提示したか」を直接検査するものではない。
@@ -208,9 +213,12 @@ models:
     human_required_count: 0
 ```
 
-`triage_status` は `triaged` / `no_findings` のいずれかとする。
+`triage_status` は `triage_pending` / `triaged` / `no_findings` のいずれかとする。
+`triage_pending` は runner が raw と summary を初期生成しただけで、finding 単位の判断が
+まだ `triage.yaml` に移っていない状態を表す。
 `triaged` は finding 単位の判断が `triage.yaml` に移された状態、
 `no_findings` は raw を読んだうえで指摘なしと判断した状態を表す。
+完了 manifest の機械判定では、`triage_pending` が残っていれば未完了として扱う。
 
 ## 今回分への扱い
 
@@ -218,12 +226,12 @@ models:
 最終 manifest と一部ログに要約は残っているが、全ラウンドの raw / parsed / finding 単位 triage は残っていない。
 そのため、今回分は完全な監査再構成はできない。
 
-次回以降は `--raw-out` と `--parsed-out` を必須運用にし、raw から成形した結果を
-`triage.yaml` へ落としてから修正・人判断へ進む。
+次回以降は `--review-run-dir` を必須運用にし、必要に応じて個別の `--raw-out` と
+`--parsed-out` も併用する。runner が生成した raw / parsed / rounds / summary を起点に、
+raw から成形した結果を `triage.yaml` へ落としてから修正・人判断へ進む。
 
 必須化の施行方法（CLI で必須にするか、workflow check / CI で検出するか）は後続実装で確定する。
-それまでの暫定運用では、review run の `rounds.yaml` に実行コマンドを記録し、
-`--raw-out` と `--parsed-out` の指定を含まないレビュー結果は監査ログとして不完全と扱う。
+それまでの暫定運用では、`--review-run-dir` の指定を含まないレビュー結果は監査ログとして不完全と扱う。
 
 `config/api-settings.yaml` など設定ファイルを対象にする場合、raw 応答には対象ファイル本文が
 含まれうる。現行の同ファイルはシークレット本体を持たない前提だが、将来シークレット値を
