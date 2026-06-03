@@ -24,19 +24,8 @@
           "artifact_ref": {"$ref": "#/$defs/artifact_ref"},
           "source_analysis_manifest_ref": {"$ref": "#/$defs/artifact_ref"},
           "input_run_set_ref": {"$ref": "#/$defs/artifact_ref"},
-          "evidence_class": {
-            "type": "string",
-            "enum": ["valid", "invalid", "exploratory", "analysis_blocked"]
-          },
-          "review_mode": {
-            "type": "string",
-            "enum": [
-              "manual_dogfooding",
-              "runtime_mediated",
-              "subagent_mediated",
-              "api_mediated"
-            ]
-          },
+          "evidence_class": {"type": "string"},
+          "review_mode": {"type": "string"},
           "maturity_label": {
             "type": "string",
             "enum": ["mature", "preliminary", "exploratory"]
@@ -85,4 +74,3 @@
   },
   "additionalProperties": false
 }
-

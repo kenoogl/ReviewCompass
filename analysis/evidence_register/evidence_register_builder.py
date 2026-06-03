@@ -4,34 +4,48 @@ from pathlib import Path
 
 import jsonschema
 
-from .binding_rules import maturity_for_evidence, preliminary_caveat_ref
+from .binding_rules import (
+  foundation_vocabulary,
+  maturity_for_evidence,
+  preliminary_caveat_ref,
+)
 
 
 _SCHEMA_PATH = Path(__file__).with_name("evidence_register.schema.json")
+_EXCLUSION_REGISTER_PATH = "shared/evidence_exclusion_register.json"
 
 
 class EvidenceRegisterBuilder:
   """shared/evidence_register.json を書き出す。"""
 
   def write(self, output_root, *, evidences):
+    root = Path(output_root)
     entries = []
+    exclusions = []
     for evidence in evidences:
       entry = self._normalize_evidence(evidence)
       if entry is not None:
         entries.append(entry)
+      else:
+        exclusions.append(self._exclusion_entry(evidence))
     payload = {"entries": entries}
     self._validate(payload)
-    path = Path(output_root) / "shared" / "evidence_register.json"
-    path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(
-      json.dumps(payload, ensure_ascii=False, indent=2) + "\n",
-      encoding="utf-8",
-    )
+    path = self._write_json(root / "shared" / "evidence_register.json", payload)
+    if exclusions:
+      self._write_json(
+        root / _EXCLUSION_REGISTER_PATH,
+        {"entries": exclusions},
+      )
     return path
 
   @staticmethod
   def _normalize_evidence(evidence):
     evidence_class = evidence["evidence_class"]
+    if evidence_class not in foundation_vocabulary("evidence_class"):
+      raise ValueError(f"unknown evidence_class: {evidence_class}")
+    review_mode = evidence["review_mode"]
+    if review_mode not in foundation_vocabulary("review_mode"):
+      raise ValueError(f"unknown review_mode: {review_mode}")
     maturity_label = maturity_for_evidence(
       evidence_class,
       eligible_for_standard_comparison=evidence.get(
@@ -48,7 +62,7 @@ class EvidenceRegisterBuilder:
       "source_analysis_manifest_ref": evidence["source_analysis_manifest_ref"],
       "input_run_set_ref": evidence["input_run_set_ref"],
       "evidence_class": evidence_class,
-      "review_mode": evidence["review_mode"],
+      "review_mode": review_mode,
       "maturity_label": maturity_label,
       "caveat_refs": list(evidence.get("caveat_refs", [])),
       "supersedes": list(evidence.get("supersedes", [])),
@@ -64,6 +78,15 @@ class EvidenceRegisterBuilder:
     return entry
 
   @staticmethod
+  def _exclusion_entry(evidence):
+    return {
+      "evidence_id": evidence["evidence_id"],
+      "artifact_ref": evidence["artifact_ref"],
+      "evidence_class": evidence["evidence_class"],
+      "exclusion_reason": evidence["evidence_class"],
+    }
+
+  @staticmethod
   def _schema():
     return json.loads(_SCHEMA_PATH.read_text(encoding="utf-8"))
 
@@ -75,3 +98,12 @@ class EvidenceRegisterBuilder:
       if missing:
         raise ValueError(", ".join(missing)) from exc
       raise ValueError(exc.message) from exc
+
+  @staticmethod
+  def _write_json(path, payload):
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(
+      json.dumps(payload, ensure_ascii=False, indent=2) + "\n",
+      encoding="utf-8",
+    )
+    return path

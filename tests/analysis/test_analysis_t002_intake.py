@@ -14,6 +14,7 @@ import importlib
 import json
 from pathlib import Path
 
+import jsonschema
 import yaml
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
@@ -77,6 +78,21 @@ def _setup_conformance_root(tmp_path):
   return root
 
 
+def _setup_unreadable_conformance_root(tmp_path):
+  root = tmp_path / "experiments" / "conformance"
+  root.mkdir(parents=True)
+  (root / "conformance_run.json").write_text("{not-json", encoding="utf-8")
+  return root
+
+
+def _failure_report(output_root):
+  return json.loads(
+    (
+      output_root / "shared" / "manifests" / "intake_failure_report.json"
+    ).read_text(encoding="utf-8")
+  )
+
+
 def test_intake_reader_reads_evaluation_and_conformance_outputs(tmp_path):
   """正常系では evaluation / conformance-evaluation 成果物を読み込める。"""
   evaluation_root = _setup_evaluation_root(tmp_path)
@@ -115,6 +131,13 @@ def test_intake_reader_reports_missing_evaluation_root(tmp_path):
 
   assert result["ok"] is False
   assert result["failures"][0]["intake_failure_reason"] == "upstream_evaluation_missing"
+  failure = _failure_report(tmp_path / "analysis-output")["entries"][0]
+  assert set(failure) >= {
+    "failure_id",
+    "intake_failure_reason",
+    "affected_destinations",
+    "detected_at",
+  }
 
 
 def test_intake_reader_reports_unreadable_evaluation_artifact(tmp_path):
@@ -157,6 +180,49 @@ def test_intake_reader_reports_missing_conformance_root(tmp_path):
 
   assert result["ok"] is False
   assert result["failures"][0]["intake_failure_reason"] == "conformance_evaluation_missing"
+
+
+def test_intake_reader_distinguishes_unreadable_conformance_artifact(tmp_path):
+  """conformance-evaluation の読取失敗は欠落と区別できる。"""
+  result = _reader_class()().read(
+    evaluation_root=_setup_evaluation_root(tmp_path),
+    conformance_root=_setup_unreadable_conformance_root(tmp_path),
+    output_root=tmp_path / "analysis-output",
+    analysis_logic_version="analysis-1",
+    generated_at="2026-06-03T12:30:00+09:00",
+  )
+
+  assert result["ok"] is False
+  failure = result["failures"][0]
+  assert failure["intake_failure_reason"] == "conformance_evaluation_missing"
+  assert failure["failure_kind"] == "unreadable"
+  assert "detail" in failure
+
+
+def test_intake_failure_report_schema_requires_tracking_fields():
+  """intake_failure_report schema は設計上の最低追跡項目を必須にする。"""
+  schema_path = (
+    REPO_ROOT / "analysis" / "intake" / "intake_failure_report.schema.json"
+  )
+  schema = json.loads(schema_path.read_text(encoding="utf-8"))
+  validator = jsonschema.Draft202012Validator(schema)
+
+  errors = list(
+    validator.iter_errors(
+      {
+        "entries": [
+          {
+            "intake_failure_reason": "upstream_evaluation_missing",
+            "source_path": "experiments/analysis",
+          }
+        ]
+      }
+    )
+  )
+
+  assert any("failure_id" in error.message for error in errors)
+  assert any("affected_destinations" in error.message for error in errors)
+  assert any("detected_at" in error.message for error in errors)
 
 
 def test_intake_code_does_not_reference_runtime_raw_evidence():

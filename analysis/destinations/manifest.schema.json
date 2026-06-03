@@ -1,0 +1,56 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "destination_manifest",
+  "type": "object",
+  "required": [
+    "destination",
+    "analysis_logic_version",
+    "derivation_contract_version",
+    "included_evidence_refs",
+    "included_caveat_refs",
+    "granularity_profile",
+    "summary_level",
+    "review_mode_mixed"
+  ],
+  "properties": {
+    "destination": {"type": "string"},
+    "analysis_logic_version": {"type": "string"},
+    "derivation_contract_version": {"type": "string"},
+    "included_evidence_refs": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/artifact_ref"}
+    },
+    "included_caveat_refs": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/artifact_ref"}
+    },
+    "granularity_profile": {"type": "string"},
+    "summary_level": {"type": "string"},
+    "review_mode_mixed": {"type": "boolean"},
+    "superseded_versions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["version", "manifest_path"],
+        "properties": {
+          "version": {"type": "string"},
+          "manifest_path": {"type": "string"}
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "$defs": {
+    "artifact_ref": {
+      "type": "object",
+      "required": ["ref_type", "target_path"],
+      "properties": {
+        "ref_type": {"type": "string"},
+        "target_path": {"type": "string"},
+        "target_id": {"type": ["string", "null"]}
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

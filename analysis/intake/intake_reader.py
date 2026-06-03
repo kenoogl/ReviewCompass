@@ -25,26 +25,59 @@ class IntakeReader:
     evaluation_manifest = {}
 
     if not evaluation_root.is_dir():
-      failures.append(self._failure("upstream_evaluation_missing", evaluation_root))
+      failures.append(
+        self._failure(
+          "upstream_evaluation_missing",
+          evaluation_root,
+          detected_at=generated_at,
+          failure_kind="missing",
+        )
+      )
     else:
       try:
         evaluation_manifest = self._read_evaluation_inputs(evaluation_root)
       except (OSError, json.JSONDecodeError, yaml.YAMLError) as exc:
         failures.append(
-          self._failure("upstream_evaluation_unreadable", evaluation_root, str(exc))
+          self._failure(
+            "upstream_evaluation_unreadable",
+            evaluation_root,
+            str(exc),
+            detected_at=generated_at,
+            failure_kind="unreadable",
+          )
         )
       else:
         if self._has_stale_entries(evaluation_root):
-          failures.append(self._failure("upstream_evaluation_stale", evaluation_root))
+          failures.append(
+            self._failure(
+              "upstream_evaluation_stale",
+              evaluation_root,
+              detected_at=generated_at,
+              failure_kind="stale",
+            )
+          )
 
     if not conformance_root.is_dir():
-      failures.append(self._failure("conformance_evaluation_missing", conformance_root))
+      failures.append(
+        self._failure(
+          "conformance_evaluation_missing",
+          conformance_root,
+          detected_at=generated_at,
+          failure_kind="missing",
+        )
+      )
     elif not failures:
       try:
         self._read_conformance_inputs(conformance_root)
       except (OSError, json.JSONDecodeError) as exc:
         failures.append(
-          self._failure("conformance_evaluation_missing", conformance_root, str(exc))
+          self._failure(
+            "conformance_evaluation_missing",
+            conformance_root,
+            str(exc),
+            detected_at=generated_at,
+            failure_kind="unreadable",
+          )
         )
 
     self._write_outputs(
@@ -60,10 +93,14 @@ class IntakeReader:
     }
 
   @staticmethod
-  def _failure(reason, path, detail=None):
+  def _failure(reason, path, detail=None, *, detected_at, failure_kind):
     failure = {
+      "failure_id": f"{reason}:{Path(path).name or 'root'}",
       "intake_failure_reason": reason,
       "source_path": str(path),
+      "affected_destinations": ["dashboard", "weekly", "audit", "reports"],
+      "detected_at": detected_at,
+      "failure_kind": failure_kind,
     }
     if detail:
       failure["detail"] = detail

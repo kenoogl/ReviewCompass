@@ -132,6 +132,40 @@ def test_invalid_and_analysis_blocked_evidence_are_not_report_entries(tmp_path):
   assert payload["entries"] == []
 
 
+def test_invalid_and_analysis_blocked_evidence_are_recorded_as_exclusions(tmp_path):
+  """報告対象外 evidence は除外台帳に理由付きで残す。"""
+  _builder_class()().write(
+    tmp_path,
+    evidences=[
+      _base_evidence(evidence_id="invalid-001", evidence_class="invalid"),
+      _base_evidence(
+        evidence_id="blocked-001",
+        evidence_class="analysis_blocked",
+        eligible_for_standard_comparison=False,
+      ),
+    ],
+  )
+
+  path = tmp_path / "shared" / "evidence_exclusion_register.json"
+  payload = json.loads(path.read_text(encoding="utf-8"))
+  assert payload == {
+    "entries": [
+      {
+        "evidence_id": "invalid-001",
+        "artifact_ref": _artifact_ref(),
+        "evidence_class": "invalid",
+        "exclusion_reason": "invalid",
+      },
+      {
+        "evidence_id": "blocked-001",
+        "artifact_ref": _artifact_ref(),
+        "evidence_class": "analysis_blocked",
+        "exclusion_reason": "analysis_blocked",
+      },
+    ]
+  }
+
+
 def test_evidence_register_preserves_review_mode_and_lineage(tmp_path):
   """review_mode と supersedes / superseded_by の置換系譜を保持する。"""
   path = _builder_class()().write(

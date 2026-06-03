@@ -61,6 +61,49 @@ def test_reference_format_resolves_evaluation_artifact(tmp_path):
   assert resolved == target
 
 
+def test_reference_format_resolves_entry_target_id(tmp_path):
+  """target_id がある参照は成果物内エントリまで解決できる。"""
+  evaluation_root = tmp_path / "experiments" / "analysis"
+  target = evaluation_root / "comparisons" / "treatment_comparisons.json"
+  target.parent.mkdir(parents=True)
+  target.write_text(
+    json.dumps({"entries": [{"comparison_id": "cmp-001"}]}),
+    encoding="utf-8",
+  )
+  ref = {
+    "ref_type": "treatment_comparison",
+    "target_path": "comparisons/treatment_comparisons.json",
+    "target_id": "cmp-001",
+  }
+
+  resolved = _reference_module().resolve_artifact_ref(ref, base_dir=evaluation_root)
+
+  assert resolved == target
+
+
+def test_reference_format_rejects_missing_entry_target_id(tmp_path):
+  """target_id が実体 JSON 内に無ければ追跡失敗にする。"""
+  evaluation_root = tmp_path / "experiments" / "analysis"
+  target = evaluation_root / "comparisons" / "treatment_comparisons.json"
+  target.parent.mkdir(parents=True)
+  target.write_text(
+    json.dumps({"entries": [{"comparison_id": "cmp-001"}]}),
+    encoding="utf-8",
+  )
+  ref = {
+    "ref_type": "treatment_comparison",
+    "target_path": "comparisons/treatment_comparisons.json",
+    "target_id": "missing",
+  }
+
+  try:
+    _reference_module().resolve_artifact_ref(ref, base_dir=evaluation_root)
+  except LookupError as exc:
+    assert "missing" in str(exc)
+  else:
+    raise AssertionError("存在しない target_id が解決された")
+
+
 def test_claim_map_builder_writes_required_claim_fields(tmp_path):
   """claim_map builder は必須 5 項目を持つ claim_map.json を書き出す。"""
   output_root = tmp_path / "analysis-output"
