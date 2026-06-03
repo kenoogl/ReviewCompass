@@ -34,6 +34,7 @@ testpaths = [
   "tests/foundation",
   "tests/runtime",
   "tests/evaluation",
+  "tests/analysis",
 ]
 python_files = ["test_*.py"]
 python_classes = ["Test*"]
