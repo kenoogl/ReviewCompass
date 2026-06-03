@@ -108,6 +108,29 @@ def _stage_file(tmpdir, relpath, content):
   )
 
 
+def _write_commit_approval(tmpdir, target_files, consumed=False):
+  """temp git repo に commit 承認レコードを書く"""
+  approval_dir = Path(tmpdir) / ".reviewcompass" / "approvals"
+  approval_dir.mkdir(parents=True, exist_ok=True)
+  approval_path = approval_dir / "commit-approval.json"
+  approval_path.write_text(
+    json.dumps(
+      {
+        "approved_action": "commit",
+        "approved_by": "user",
+        "approved_at": "2026-06-03T00:00:00+09:00",
+        "rationale": "利用者がコミットを明示承認",
+        "target_files": target_files,
+        "expires_after_commit": True,
+        "consumed": consumed,
+      },
+      ensure_ascii=False,
+      indent=2,
+    ),
+    encoding="utf-8",
+  )
+
+
 class HookPassThroughTests(unittest.TestCase):
   """フックが非 git／読み取り専用 git コマンドを通過させる（仕様 §12.1）"""
 
@@ -147,9 +170,10 @@ class HookCommitTests(unittest.TestCase):
     self.addCleanup(shutil.rmtree, self.tmpdir)
     self.pending_file = _setup_git_repo_with_script(self.tmpdir)
 
-  def test_clean_commit_allows(self):
-    """通常変更のみの git commit は通過（exit 0 で permissionDecision 出力なし）"""
+  def test_approved_clean_commit_allows(self):
+    """承認済み通常変更の git commit は通過（permissionDecision 出力なし）"""
     _stage_file(self.tmpdir, "notes.md", "# テストノート")
+    _write_commit_approval(self.tmpdir, ["notes.md"])
     result = run_hook(
       {"command": "git commit -m 'add notes'"},
       cwd=self.tmpdir,
@@ -169,9 +193,23 @@ class HookCommitTests(unittest.TestCase):
       except json.JSONDecodeError:
         pass  # JSON 出力がなければ allow 扱い
 
+  def test_commit_without_user_approval_denies(self):
+    """承認レコードなしの git commit は deny"""
+    _stage_file(self.tmpdir, "notes.md", "# テストノート")
+    result = run_hook(
+      {"command": "git commit -m 'add notes'"},
+      cwd=self.tmpdir,
+    )
+    _assert_hook_invoked(self, result)
+    self.assertEqual(result.returncode, 0)
+    data = json.loads(result.stdout)
+    decision = data["hookSpecificOutput"]["permissionDecision"]
+    self.assertEqual(decision, "deny")
+
   def test_dangerous_file_denies_commit(self):
-    """credentials.json を含む commit は deny（仕様 §6.2 危険変更）"""
+    """credentials.json を含む commit は承認済みでも deny（仕様 §6.2 危険変更）"""
     _stage_file(self.tmpdir, "credentials.json", '{"key":"dummy"}')
+    _write_commit_approval(self.tmpdir, ["credentials.json"])
     result = run_hook(
       {"command": "git commit -m 'add creds'"},
       cwd=self.tmpdir,

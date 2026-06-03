@@ -1705,6 +1705,30 @@ def _stage_file(tmpdir, relpath, content):
   )
 
 
+def _write_commit_approval(tmpdir, target_files, consumed=False):
+  """commit 事前検査用のユーザ承認レコードを書く"""
+  approval_dir = Path(tmpdir) / ".reviewcompass" / "approvals"
+  approval_dir.mkdir(parents=True, exist_ok=True)
+  approval_path = approval_dir / "commit-approval.json"
+  approval_path.write_text(
+    json.dumps(
+      {
+        "approved_action": "commit",
+        "approved_by": "user",
+        "approved_at": "2026-06-03T00:00:00+09:00",
+        "rationale": "利用者がコミットを明示承認",
+        "target_files": target_files,
+        "expires_after_commit": True,
+        "consumed": consumed,
+      },
+      ensure_ascii=False,
+      indent=2,
+    ),
+    encoding="utf-8",
+  )
+  return approval_path
+
+
 class CommitExitCodeTests(unittest.TestCase):
   """commit サブコマンドの終了コード判定（仕様 §6.2）"""
 
@@ -1714,9 +1738,10 @@ class CommitExitCodeTests(unittest.TestCase):
     self.pending_file = _init_git_repo(self.tmpdir)
 
   def test_commit_with_no_pending_and_normal_changes_returns_zero(self):
-    """未消化所見 0 件 + 通常変更のみ → exit 0"""
+    """未消化所見 0 件 + 通常変更 + ユーザ承認あり → exit 0"""
     _set_pending_findings(self.pending_file, unresolved_count=0, resolved_count=2)
     _stage_file(self.tmpdir, "notes.md", "# テスト用ノート")
+    _write_commit_approval(self.tmpdir, ["notes.md"])
     result = run_script(
       ["commit", "--rationale", "テスト用 commit、利用者承認の出典あり"],
       cwd=self.tmpdir,
@@ -1732,6 +1757,7 @@ class CommitExitCodeTests(unittest.TestCase):
     """未消化所見 1 件以上 → exit 1（警告）"""
     _set_pending_findings(self.pending_file, unresolved_count=1)
     _stage_file(self.tmpdir, "notes.md", "# テスト用ノート")
+    _write_commit_approval(self.tmpdir, ["notes.md"])
     result = run_script(
       ["commit", "--rationale", "未消化所見ありの場面のテスト"],
       cwd=self.tmpdir,
@@ -1755,6 +1781,7 @@ class CommitExitCodeTests(unittest.TestCase):
       ".reviewcompass/specs/foundation/spec.json",
       '{"feature_name":"foundation"}',
     )
+    _write_commit_approval(self.tmpdir, [".reviewcompass/specs/foundation/spec.json"])
     result = run_script(
       ["commit", "--rationale", "spec.json 更新のテスト"],
       cwd=self.tmpdir,
@@ -1770,6 +1797,7 @@ class CommitExitCodeTests(unittest.TestCase):
     """計画書（docs/plan/ 配下）の変更含む → exit 1"""
     _set_pending_findings(self.pending_file, unresolved_count=0)
     _stage_file(self.tmpdir, "docs/plan/test-plan.md", "# テスト計画")
+    _write_commit_approval(self.tmpdir, ["docs/plan/test-plan.md"])
     result = run_script(
       ["commit", "--rationale", "計画書追加のテスト"],
       cwd=self.tmpdir,
@@ -1785,6 +1813,7 @@ class CommitExitCodeTests(unittest.TestCase):
     """ファイル名に credentials を含む変更 → exit 2（危険変更）"""
     _set_pending_findings(self.pending_file, unresolved_count=0)
     _stage_file(self.tmpdir, "credentials.json", '{"key":"dummy"}')
+    _write_commit_approval(self.tmpdir, ["credentials.json"])
     result = run_script(
       ["commit", "--rationale", "credentials を含むファイルのテスト"],
       cwd=self.tmpdir,
@@ -1799,6 +1828,48 @@ class CommitExitCodeTests(unittest.TestCase):
       "DEVIATION", result.stdout,
       f"逸脱判定の出力に DEVIATION が含まれるべき。stdout: {result.stdout}",
     )
+
+  def test_commit_without_user_approval_returns_two(self):
+    """ユーザ承認レコードなし → exit 2（逸脱）"""
+    _set_pending_findings(self.pending_file, unresolved_count=0)
+    _stage_file(self.tmpdir, "notes.md", "# テスト用ノート")
+    result = run_script(
+      ["commit", "--rationale", "承認なし commit のテスト"],
+      cwd=self.tmpdir,
+    )
+    _assert_script_invoked(self, result)
+    self.assertEqual(
+      result.returncode, 2,
+      f"承認レコードなしの commit は逸脱 exit 2。\n"
+      f"stdout: {result.stdout}\nstderr: {result.stderr}",
+    )
+    self.assertIn("ユーザ承認レコード", result.stdout)
+
+  def test_commit_with_consumed_user_approval_returns_two(self):
+    """消費済み承認レコード → exit 2（逸脱）"""
+    _set_pending_findings(self.pending_file, unresolved_count=0)
+    _stage_file(self.tmpdir, "notes.md", "# テスト用ノート")
+    _write_commit_approval(self.tmpdir, ["notes.md"], consumed=True)
+    result = run_script(
+      ["commit", "--rationale", "消費済み承認のテスト"],
+      cwd=self.tmpdir,
+    )
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 2)
+    self.assertIn("消費済み", result.stdout)
+
+  def test_commit_with_approval_scope_mismatch_returns_two(self):
+    """承認対象と staged ファイルが一致しない → exit 2（逸脱）"""
+    _set_pending_findings(self.pending_file, unresolved_count=0)
+    _stage_file(self.tmpdir, "notes.md", "# テスト用ノート")
+    _write_commit_approval(self.tmpdir, ["other.md"])
+    result = run_script(
+      ["commit", "--rationale", "承認対象不一致のテスト"],
+      cwd=self.tmpdir,
+    )
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 2)
+    self.assertIn("承認対象外", result.stdout)
 
   def test_commit_rationale_is_required(self):
     """commit に --rationale なし → 非 0 終了（仕様 §5.2 必須）"""
@@ -1884,6 +1955,7 @@ class CommitPushOutputTests(unittest.TestCase):
 
   def test_commit_json_output(self):
     """commit に --json で JSON 出力に切り替わる"""
+    _write_commit_approval(self.tmpdir, [])
     result = run_script(
       ["commit", "--rationale", "JSON 出力のテスト", "--json"],
       cwd=self.tmpdir,
@@ -1896,6 +1968,7 @@ class CommitPushOutputTests(unittest.TestCase):
       data["action"]["subcommand"], "commit",
       "JSON 出力の action.subcommand は 'commit' であるべき",
     )
+    self.assertIn("commit_approval", data["current_state"])
 
   def test_push_json_output(self):
     """push に --json で JSON 出力に切り替わる"""

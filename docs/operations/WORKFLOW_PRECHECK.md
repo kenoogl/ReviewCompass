@@ -1,6 +1,6 @@
 # WORKFLOW_PRECHECK：ワークフロー事前検査スクリプトの正本仕様
 
-最終更新：2026-06-03（Codex adapter migration：段階 3 hook 記述を実行環境 adapter 方針へ整理）／2026-05-25 セッション 24（新設、補助層 C 段階 2 の仕様確定）
+最終更新：2026-06-03（commit 承認レコードガード追加。Codex adapter migration：段階 3 hook 記述を実行環境 adapter 方針へ整理）／2026-05-25 セッション 24（新設、補助層 C 段階 2 の仕様確定）
 位置付け：運用文書（`docs/operations/` 配下）、計画書 §5.8 補助層 C の段階 2 の正本仕様
 
 本文書は計画書 §5.8 補助層 C 共存モデルの **段階 2（外部スクリプトによる機械的判定）** の仕様を定める。段階 2 の実装は本文書を入力として進める。仕様の変更には利用者明示承認が必要（規律 §0.2 計画書方針変更に準じる）。
@@ -93,6 +93,7 @@
 check-workflow-action.py spec-set <feature> <phase> <stage> <new-value> [--rationale "<理由>"]
 check-workflow-action.py commit --rationale "<理由>"
 check-workflow-action.py push --rationale "<理由>"
+guarded-git-commit.py -m "<commit message>" --rationale "<理由>"
 ```
 
 共通オプション：
@@ -135,6 +136,34 @@ check-workflow-action.py commit --rationale "<理由>"
 
 `--rationale` を必須とする理由：commit は不可逆操作のため、なぜ実行するかの根拠を残すべき。
 
+commit は利用者の職掌範囲であり、LLM は利用者の明示指示なしに実行しない。機械判定では、`--rationale` に加えて `.reviewcompass/approvals/commit-approval.json` のユーザ承認レコードを必須とする。
+
+承認レコードの最小形：
+
+```json
+{
+  "approved_action": "commit",
+  "approved_by": "user",
+  "approved_at": "2026-06-03T00:00:00+09:00",
+  "rationale": "利用者がコミットを明示承認",
+  "target_files": ["path/to/file.md"],
+  "expires_after_commit": true,
+  "consumed": false
+}
+```
+
+`target_files` は staged ファイルの許可範囲。`"*"` を含む場合は全 staged ファイルを許可する。`consumed: true` は消費済みとして逸脱扱いにする。
+
+実行時は直接 `git commit` ではなく、次のラッパーを使う：
+
+```
+tools/guarded-git-commit.py -m "<commit message>" --rationale "<理由>"
+```
+
+このラッパーは `check-workflow-action.py commit` を先に実行し、exit 2 なら遮断する。exit 1（WARN）は既定では停止し、利用者判断で続行する場合だけ `--allow-warn` を付ける。commit 成功後、`expires_after_commit` が false でない承認レコードは `consumed: true` に更新する。
+
+限界：repo 内スクリプトだけでは「承認レコードを誰が作成したか」を完全には保証できない。強い保証には、段階 3 hook adapter または実行環境側で、承認レコードの発行・更新を利用者操作に限定する必要がある。
+
 ### 5.3 `push` サブコマンド
 
 ```
@@ -174,6 +203,8 @@ check-workflow-action.py push --rationale "<理由>"
 
 `git status` と `git diff --cached` を読み、次を機械判定：
 
+- **ユーザ承認レコードの確認**：`.reviewcompass/approvals/commit-approval.json` を読み、`approved_action=commit`、`approved_by=user`、未消費、かつ staged ファイルが `target_files` の範囲内であることを確認
+  - レコードなし、形式不正、消費済み、承認対象外ファイルがある場合：逸脱（exit 2）、commit を遮断推奨
 - **持ち越し所見の確認**：`.reviewcompass/pending-cross-feature-findings.md` を読み、未消化所見の件数を出力
   - 未消化所見が 1 件以上ある場合：警告（exit 1）、commit は可能だが要注意
   - 0 件の場合：OK（exit 0）
@@ -318,7 +349,8 @@ tests/fixtures/spec-json-cases/
 
 - **正常系**：
   - `spec-set foundation requirements approval true` ＋ alignment=true → exit 0
-  - `commit` ＋ pending 所見 0 件 ＋ 通常変更のみ → exit 0
+  - `commit` ＋ pending 所見 0 件 ＋ 通常変更のみ ＋ 有効なユーザ承認レコード → exit 0
+  - `guarded-git-commit` ＋ 有効なユーザ承認レコード → commit 実行、承認レコード消費済み
   - `push` ＋ 作業ツリー clean ＋ 先行 1 コミット → exit 0
 - **警告系**：
   - `commit` ＋ pending 所見 1 件以上 → exit 1
@@ -328,6 +360,8 @@ tests/fixtures/spec-json-cases/
   - `spec-set foundation requirements approval true` ＋ alignment=false → exit 2
   - `spec-set foundation design drafting true` ＋ requirements.approval=false → exit 2
   - `push` ＋ 作業ツリー dirty → exit 2
+  - `commit` ＋ ユーザ承認レコードなし／消費済み／承認対象外 staged ファイルあり → exit 2
+  - `guarded-git-commit` ＋ ユーザ承認レコードなし → commit しない
   - `commit` ＋ `.git/` 内ファイル含む → exit 2
 
 ### 9.4 TDD の遵守（入口規律）
@@ -346,6 +380,7 @@ tests/fixtures/spec-json-cases/
 ```
 tools/
 ├── check-workflow-action.py        # スクリプト本体（実行ファイル、shebang あり）
+├── guarded-git-commit.py           # commit 承認レコード検査つき git commit ラッパー
 └── workflow_precheck/              # 補助モジュール（必要に応じて分割）
     ├── __init__.py
     ├── spec_loader.py              # spec.json 読み込み
@@ -377,7 +412,7 @@ docs/
 段階 1（LLM）の規律として、不可逆操作の **直前に必ず** 本スクリプトを呼ぶ：
 
 - spec.json の `workflow_state` を変更する Edit／Write の直前 → `spec-set` 呼び出し
-- `git commit` の直前 → `commit` 呼び出し
+- `git commit` の直前 → `commit` 呼び出し。実行は原則 `guarded-git-commit.py` 経由
 - `git push` の直前 → `push` 呼び出し
 
 ### 11.2 出力の解釈と次の行動

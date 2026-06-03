@@ -10,8 +10,8 @@
 
 サブコマンド：
   spec-set <feature> <phase> <stage> <new-value>  spec.json の workflow_state 変更を判定
-  commit   --rationale "<理由>"                    git commit を判定（未実装、後続ラウンド）
-  push     --rationale "<理由>"                    git push を判定（未実装、後続ラウンド）
+  commit   --rationale "<理由>"                    git commit を判定
+  push     --rationale "<理由>"                    git push を判定
 
 終了コード（仕様 §7.1）：
   0  問題なし、処理続行可
@@ -32,6 +32,7 @@ import yaml
 
 # 既定のログファイルパス（呼び出し時の cwd 相対、仕様 §8.2）
 DEFAULT_LOG_PATH = "docs/logs/workflow-precheck.log"
+DEFAULT_COMMIT_APPROVAL_PATH = ".reviewcompass/approvals/commit-approval.json"
 
 # 各フェーズの段集合（計画書 §5.5 と §5.24.4 と整合）
 PHASE_STAGES = {
@@ -439,6 +440,58 @@ def classify_staged_file(filepath):
   return "normal"
 
 
+def validate_commit_approval(cwd, staged_files):
+  """commit 用ユーザ承認レコードを検査する"""
+  approval_path = Path(cwd) / DEFAULT_COMMIT_APPROVAL_PATH
+  approval_state = {
+    "path": DEFAULT_COMMIT_APPROVAL_PATH,
+    "exists": approval_path.exists(),
+    "valid": False,
+    "target_files": [],
+    "consumed": None,
+  }
+
+  if not approval_path.exists():
+    return approval_state, [
+      f"ユーザ承認レコードがありません（{DEFAULT_COMMIT_APPROVAL_PATH}）"
+    ]
+
+  try:
+    approval = json.loads(approval_path.read_text(encoding="utf-8"))
+  except (OSError, json.JSONDecodeError) as e:
+    return approval_state, [f"ユーザ承認レコードを読めません: {e}"]
+
+  if not isinstance(approval, dict):
+    return approval_state, ["ユーザ承認レコードの形式が不正です（object ではありません）"]
+
+  target_files = approval.get("target_files")
+  if target_files is None:
+    target_files = []
+  approval_state["target_files"] = target_files
+  approval_state["consumed"] = approval.get("consumed")
+
+  errors = []
+  if approval.get("approved_action") != "commit":
+    errors.append("ユーザ承認レコードの approved_action が commit ではありません")
+  if approval.get("approved_by") != "user":
+    errors.append("ユーザ承認レコードの approved_by が user ではありません")
+  if approval.get("consumed") is True:
+    errors.append("ユーザ承認レコードは消費済みです")
+  if not isinstance(target_files, list) or not all(isinstance(f, str) for f in target_files):
+    errors.append("ユーザ承認レコードの target_files が文字列配列ではありません")
+  else:
+    approved_set = set(target_files)
+    if "*" not in approved_set:
+      out_of_scope = [f for f in staged_files if f not in approved_set]
+      if out_of_scope:
+        errors.append(
+          "承認対象外の staged ファイルがあります: " + ", ".join(out_of_scope)
+        )
+
+  approval_state["valid"] = not errors
+  return approval_state, errors
+
+
 def cmd_commit(args):
   """commit サブコマンドのエントリポイント（仕様 §6.2）"""
   cwd = Path.cwd()
@@ -468,10 +521,14 @@ def cmd_commit(args):
   dangerous = [f for f in staged_files if classify_staged_file(f) == "dangerous"]
   caution = [f for f in staged_files if classify_staged_file(f) == "caution"]
   normal = [f for f in staged_files if classify_staged_file(f) == "normal"]
+  approval_state, approval_errors = validate_commit_approval(cwd, staged_files)
 
   # 判定（仕様 §6.2）
   reasons = []
-  if dangerous:
+  if approval_errors:
+    reasons.extend(approval_errors)
+    verdict, exit_code = "DEVIATION", 2
+  elif dangerous:
     for f in dangerous:
       reasons.append(f"危険変更: {f}（commit を遮断推奨）")
     verdict, exit_code = "DEVIATION", 2
@@ -493,7 +550,8 @@ def cmd_commit(args):
     f"staged ファイル数: {len(staged_files)} 件\n"
     f"  危険変更: {len(dangerous)} 件\n"
     f"  要注意変更: {len(caution)} 件\n"
-    f"  通常変更: {len(normal)} 件"
+    f"  通常変更: {len(normal)} 件\n"
+    f"ユーザ承認レコード: {'有効' if approval_state['valid'] else '無効'}"
   )
   current_state_dict = {
     "pending_unresolved_count": unresolved_count,
@@ -502,6 +560,7 @@ def cmd_commit(args):
       "caution": caution,
       "normal": normal,
     },
+    "commit_approval": approval_state,
   }
   action_str = f"commit (rationale='{rationale}')"
   action_dict = {

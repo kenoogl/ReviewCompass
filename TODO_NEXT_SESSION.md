@@ -44,6 +44,8 @@
 
 承認の判定基準：「承認」「OK」「採用」「進めて」「はい」「案 ア」等の明示的肯定発言、または AskUserQuestion 等での明示選択のみ。議論継続・停止・方法論指示・沈黙は承認とみなさない。
 
+commit は利用者の職掌範囲として扱う。Codex/LLM は利用者から明示的に「コミット」と指示された場合だけ実行し、直前に `tools/check-workflow-action.py commit --rationale "<理由>"` を通す。機械ガードとして `.reviewcompass/approvals/commit-approval.json` のユーザ承認レコードを必須にし、実行は原則 `tools/guarded-git-commit.py -m "<message>" --rationale "<理由>"` 経由とする。承認レコードなし・消費済み・承認対象外 staged ファイルありの場合は `DEVIATION` として停止する。
+
 ### 0.3 起草者と判定者の分離（計画書 §5.4）
 
 drafting 段は actor=human または llm（草案作成のみ）、triad-review 段は actor=llm（主役・敵対役・判定役の 3 役）。**同一の actor が起草と判定を兼ねない**。レビュー記録 front-matter に `author.identity` と `reviewer.identity` を異名必須記載、機械検査対象。
