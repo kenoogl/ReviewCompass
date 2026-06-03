@@ -1,0 +1,25 @@
+findings:
+  - severity: INFO
+    target_location: docs/operations/EVALUATION.md §4, §6, §7
+    description: foundation 正本語彙への参照は概ね整合しており、`evidence_class`・`review_mode`・`validator_status` を evaluation 局所語彙として再定義せず参照語彙として扱えている。
+    rationale: foundation_vocabulary_alignment_final_post_write_check の観点では、正本語彙を evaluation 側が上書きしないことが重要であり、本稿はその原則を明示している。
+
+  - severity: WARN
+    target_location: docs/notes/2026-06-03-review-raw-triage-traceability-plan.md 「rounds.yaml の最小項目」
+    description: `parse_status` の許容値として `parsed` / `parse_failed` を記しているが、これが foundation 正本語彙か局所台帳語彙かの区別が本文だけでは明確でない。
+    rationale: EVALUATION.md 側では review run 証拠の `parse_status=parse_failed` を評価上参照している一方、§10 でも actor 類型語彙と同様に後続で正本化判断が必要な項目がある。`parse_status` も foundation 正本ではなく notes 局所語彙なら、その旨を明示した方が foundation 語彙との境界がぶれにくい。
+
+  - severity: WARN
+    target_location: docs/notes/2026-06-03-review-raw-triage-traceability-plan.md 「triage.yaml の最小項目」および「必要性判定の三段階」
+    description: `decision_status` の値 `decided` / `human_required` と `final_label` の関係は説明されているが、`decision_status` が foundation 正本語彙か局所語彙かが明示されていない。
+    rationale: EVALUATION.md では `decision_status=human_required` を admission の安全側既定に使っているため、語彙の所有者が曖昧だと後続の変換規則で衝突しやすい。少なくとも actor 類型語彙と同様に「現時点では notes 局所語彙」と明記すると整合性が上がる。
+
+  - severity: WARN
+    target_location: docs/notes/2026-06-03-review-raw-triage-traceability-plan.md 「必要性判定の三段階」
+    description: `severity_normalized` を foundation 正本語彙と説明しているが、対応する正本ファイルや契約参照先がこの文書内に示されていない。
+    rationale: EVALUATION.md では `review_mode`・`evidence_class`・`validator_status` について正本参照先を具体的に書いている。これに対し notes 文書では `severity_normalized` と `final_label` のうち、後者は比較的文脈が明瞭でも、前者の正本位置が不明なため「foundation 語彙への整列」という観点では弱い。
+
+  - severity: SHOULD_FIX
+    target_location: docs/operations/EVALUATION.md §10
+    description: `decision_actor_type` や `formatted_by_actor_type` は foundation 正本へ追加するか evaluation 局所語彙とするか未確定と明記されていて適切だが、同じく notes 側で運用中の `parse_status`・`decision_status`・`aggregation_mode` も同列に語彙所有者未確定項目として並べるとより一貫する。
+    rationale: 既に actor 類型語彙だけは「正本へ追加するか局所語彙か」を追跡対象化できている。review run 変換規則の語彙境界を安定させるには、foundation 語彙と局所語彙の棚卸し対象をもう少し広く揃えた方が後続実装で迷いが少ない。

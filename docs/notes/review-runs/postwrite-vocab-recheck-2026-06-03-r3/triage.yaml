@@ -1,0 +1,37 @@
+run_id: postwrite-vocab-recheck-2026-06-03-r3
+triaged_at: "2026-06-03T13:48:00+09:00"
+decision_actor: codex
+decision_actor_type: orchestrator
+items:
+  - finding_id: postwrite-vocab-recheck-2026-06-03-r3-gemini-3.1-pro-preview-round-1-001
+    source_model: gemini-3.1-pro-preview
+    source_round: postwrite-vocab-recheck-2026-06-03-r3-round-1
+    source_raw_path: raw/gemini-3.1-pro-preview.round-1.txt
+    source_parsed_path: null
+    severity_original: ERROR
+    severity_normalized: INFO
+    final_label: leave-as-is
+    decision_status: decided
+    target_location: docs/notes/2026-06-03-review-raw-triage-traceability-plan.md
+    plain_language_summary: WARN が正本 enum と一致するかの再確認要求。
+    decision_reason: runtime/schemas/finding.schema.json と foundation design.md と tests/foundation/test_t004_schemas.py のすべてで正本値は WARN と確認済み。WARNING ではないため修正不要。
+    evidence_refs:
+      - runtime/schemas/finding.schema.json
+      - .reviewcompass/specs/foundation/design.md
+      - tests/foundation/test_t004_schemas.py
+    applied_files: []
+    superseded_by: null
+  - finding_id: postwrite-vocab-recheck-2026-06-03-r3-claude-sonnet-4-6-round-1-001
+    source_model: claude-sonnet-4-6
+    source_round: postwrite-vocab-recheck-2026-06-03-r3-round-1
+    source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+    source_parsed_path: null
+    severity_original: WARN
+    severity_normalized: WARN
+    final_label: should-fix
+    decision_status: decided
+    target_location: docs/notes/2026-06-03-review-raw-triage-traceability-plan.md
+    plain_language_summary: role と treatment の語彙所在や対応規則を将来さらに明確化する余地。
+    decision_reason: 現版では role と treatment の区別および初期対応規則を記載済みで、post-write のブロッカーではない。後続語彙所有者判断の範囲で扱う。
+    applied_files: []
+    superseded_by: null

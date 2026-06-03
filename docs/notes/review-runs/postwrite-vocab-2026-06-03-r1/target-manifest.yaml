@@ -1,0 +1,10 @@
+run_id: postwrite-vocab-2026-06-03-r1
+purpose: post_write_verification
+created_at: "2026-06-03T13:35:00+09:00"
+target_files:
+  - path: docs/operations/EVALUATION.md
+    sha256: ab7ae109ec1a7c5725c8ea985089ac0b8904d80f6cd041731c661f2aec43f69d
+  - path: docs/notes/2026-06-03-review-raw-triage-traceability-plan.md
+    sha256: bdf4a96043fae725c9588cccdf2d0c5a1f24cd65e036fbcf18a8176fcb309495
+criteria: foundation_vocabulary_alignment_and_raw_triage_plan_post_write_check
+variant: post_write_verification_independent_3way

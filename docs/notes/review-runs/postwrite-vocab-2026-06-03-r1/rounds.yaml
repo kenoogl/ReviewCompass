@@ -1,0 +1,54 @@
+round_id: postwrite-vocab-2026-06-03-r1-round-1
+purpose: post_write_verification
+invocation_timestamp: "2026-06-03T13:35:00+09:00"
+target_files:
+  - path: docs/operations/EVALUATION.md
+    sha256: ab7ae109ec1a7c5725c8ea985089ac0b8904d80f6cd041731c661f2aec43f69d
+  - path: docs/notes/2026-06-03-review-raw-triage-traceability-plan.md
+    sha256: bdf4a96043fae725c9588cccdf2d0c5a1f24cd65e036fbcf18a8176fcb309495
+prompt_set_version: ad-hoc-post-write-verification-2026-06-03
+prompt_id: foundation_vocabulary_alignment_and_raw_triage_plan_post_write_check
+prompt_sha256: unknown
+model_results:
+  - model_id: claude-sonnet-4-6
+    provider: anthropic-api
+    role: primary
+    invocation_path: api
+    raw_path: raw/claude-sonnet-4-6.round-1.txt
+    raw_sha256: fd7caf8059ac2463c51db31b33b7cbbc06304309d842d1a5e02a0523f4cdafc5
+    parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+    parsed_sha256: cb4620280d4b5022a5b72791281d77661998fbf6ec8612c0d5e0e0046d9a6366
+    parse_status: parsed
+    formatted_by: parser
+    formatted_by_actor_type: orchestrator
+    formatted_by_actor: codex
+    formatted_at: "2026-06-03T13:36:00+09:00"
+    follow_up_action: triage
+  - model_id: gpt-5.4
+    provider: openai-api
+    role: adversarial
+    invocation_path: api
+    raw_path: raw/gpt-5.4.round-1.txt
+    raw_sha256: bad3f0d8e1282cd2ff29f127e7882e44b6647f01709fe1abec6316cef3c7cd81
+    parsed_path: null
+    parsed_sha256: null
+    parse_status: parse_failed
+    formatted_by: parser
+    formatted_by_actor_type: orchestrator
+    formatted_by_actor: codex
+    formatted_at: "2026-06-03T13:36:00+09:00"
+    follow_up_action: manually_triaged_from_raw
+  - model_id: gemini-3.1-pro-preview
+    provider: gemini-api
+    role: judgment
+    invocation_path: api
+    raw_path: raw/gemini-3.1-pro-preview.round-1.txt
+    raw_sha256: 78fe7cb98f881fb915e2d621c0a706155a32292cd0c790d2847eb09d59a91c29
+    parsed_path: null
+    parsed_sha256: null
+    parse_status: parse_failed
+    formatted_by: parser
+    formatted_by_actor_type: orchestrator
+    formatted_by_actor: codex
+    formatted_at: "2026-06-03T13:36:00+09:00"
+    follow_up_action: manually_triaged_from_raw

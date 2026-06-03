@@ -1,0 +1,59 @@
+analysis_root: experiments/analysis
+required_directories:
+  - path: imports
+    purpose: 取り込み履歴、許容判定履歴、取り込み済み可搬証拠束を保持する。
+  - path: manifests
+    purpose: analysis_run_manifest.yaml と staleness_register.json を保持する。
+  - path: classifications
+    purpose: 実行分類、除外報告、不十分メタデータ診断を保持する。
+  - path: metrics
+    purpose: 実行レベル、所見レベル、処理方式レベルのメトリクスを分離して保持する。
+  - path: comparisons
+    purpose: 処理方式比較とフェーズ対応比較を分離して保持する。
+  - path: caveats
+    purpose: analysis と self-improvement が継承する注意点登録を保持する。
+  - path: modes
+    purpose: レビューモード別の所見差分報告を保持する。
+  - path: roles
+    purpose: 主役、敵対役、判定役別の所見差分報告を保持する。
+analysis_run_manifest:
+  path: manifests/analysis_run_manifest.yaml
+  required_fields:
+    - analysis_logic_version
+    - input_run_set
+    - generated_at
+    - metric_set_version
+    - phase_metric_profile_version
+    - comparison_contract_version
+    - protocol_version_coverage
+    - runtime_version_coverage
+    - prompt_set_version_coverage
+    - analysis_run_id
+    - analysis_started_at
+    - analysis_completed_at
+    - output_artifact_ids
+artifact_families:
+  imports:
+    - imports/ingestion_register.json
+    - imports/admission_register.json
+    - imports/bundles/<bundle_id>/run/<run_id>/
+  manifests:
+    - manifests/analysis_run_manifest.yaml
+    - manifests/staleness_register.json
+  classifications:
+    - classifications/run_classification_index.json
+    - classifications/exclusion_report.json
+    - classifications/insufficient_metadata_report.json
+  metrics:
+    - metrics/run_metrics.json
+    - metrics/finding_metrics.json
+    - metrics/treatment_metrics.json
+  comparisons:
+    - comparisons/treatment_comparisons.json
+    - comparisons/phase_comparisons.json
+  caveats:
+    - caveats/caveat_register.json
+  modes:
+    - modes/mode_diff_report.json
+  roles:
+    - roles/role_diff_report.json

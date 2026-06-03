@@ -1,0 +1,68 @@
+run_id: postwrite-vocab-2026-06-03-r1
+triaged_at: "2026-06-03T13:40:00+09:00"
+decision_actor: codex
+decision_actor_type: orchestrator
+items:
+  - finding_id: postwrite-vocab-2026-06-03-r1-claude-sonnet-4-6-round-1-001
+    source_model: claude-sonnet-4-6
+    source_round: postwrite-vocab-2026-06-03-r1-round-1
+    source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+    source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+    severity_original: WARN
+    severity_normalized: WARN
+    final_label: should-fix
+    decision_status: decided
+    target_location: docs/notes/2026-06-03-review-raw-triage-traceability-plan.md
+    plain_language_summary: raw の永続保存先と台帳エントリが必要。
+    decision_reason: raw を review-runs 配下へ保存し、target-manifest / rounds / triage を追加した。
+    applied_files:
+      - docs/notes/2026-06-03-review-raw-triage-traceability-plan.md
+      - docs/notes/review-runs/postwrite-vocab-2026-06-03-r1/target-manifest.yaml
+      - docs/notes/review-runs/postwrite-vocab-2026-06-03-r1/rounds.yaml
+      - docs/notes/review-runs/postwrite-vocab-2026-06-03-r1/triage.yaml
+    superseded_by: null
+  - finding_id: postwrite-vocab-2026-06-03-r1-gpt-5.4-round-1-001
+    source_model: gpt-5.4
+    source_round: postwrite-vocab-2026-06-03-r1-round-1
+    source_raw_path: raw/gpt-5.4.round-1.txt
+    source_parsed_path: null
+    severity_original: WARN
+    severity_normalized: WARN
+    final_label: should-fix
+    decision_status: decided
+    target_location: docs/operations/EVALUATION.md
+    plain_language_summary: notes 台帳不備と imports admission 判定が別段階であることを補足する。
+    decision_reason: EVALUATION.md §6 に二段階処理と、再分類手続き確定まで探索利用しない旨を追記した。
+    applied_files:
+      - docs/operations/EVALUATION.md
+    superseded_by: null
+  - finding_id: postwrite-vocab-2026-06-03-r1-gpt-5.4-round-1-002
+    source_model: gpt-5.4
+    source_round: postwrite-vocab-2026-06-03-r1-round-1
+    source_raw_path: raw/gpt-5.4.round-1.txt
+    source_parsed_path: null
+    severity_original: WARN
+    severity_normalized: WARN
+    final_label: should-fix
+    decision_status: decided
+    target_location: docs/notes/2026-06-03-review-raw-triage-traceability-plan.md
+    plain_language_summary: invocation_path は review_mode ではないことを明記する。
+    decision_reason: rounds.yaml 説明へ局所フィールドである旨を追記した。
+    applied_files:
+      - docs/notes/2026-06-03-review-raw-triage-traceability-plan.md
+    superseded_by: null
+  - finding_id: postwrite-vocab-2026-06-03-r1-gemini-3.1-pro-preview-round-1-001
+    source_model: gemini-3.1-pro-preview
+    source_round: postwrite-vocab-2026-06-03-r1-round-1
+    source_raw_path: raw/gemini-3.1-pro-preview.round-1.txt
+    source_parsed_path: null
+    severity_original: WARN
+    severity_normalized: WARN
+    final_label: should-fix
+    decision_status: decided
+    target_location: docs/operations/EVALUATION.md
+    plain_language_summary: actor type と severity/final_label のメトリクス取り込みを後続論点に追加する。
+    decision_reason: EVALUATION.md §10 に actor 類型語彙とメトリクスマッピングを追記した。
+    applied_files:
+      - docs/operations/EVALUATION.md
+    superseded_by: null

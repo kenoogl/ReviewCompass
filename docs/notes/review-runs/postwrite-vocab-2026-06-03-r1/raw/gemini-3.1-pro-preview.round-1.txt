@@ -1,0 +1,23 @@
+```yaml
+findings:
+  - severity: WARN
+    target_location: "docs/operations/EVALUATION.md §10 および docs/notes/2026-06-03-review-raw-triage-traceability-plan.md"
+    description: |
+      raw triage 計画における `triage.yaml` の `decision_actor_type` や `rounds.yaml` の `formatted_by_actor_type` に登場する列挙値（`model`, `human`, `orchestrator`, `parser` など）について、Foundation 側のメタデータ正本語彙（`actor_type` 等）と同期・アライメントさせるための後続論点が EVALUATION.md §10 に明記されていません。
+    rationale: |
+      §10 に「判断主体をモデル ID と版で記録し...」という値の正規化ルールは記載されていますが、アクターの類型（type）を示す語彙も同様に Foundation 正本とアライメントしなければ、可搬証拠束をインポートする際のバリデーションや機械的処理でスキーマ不整合を引き起こすリスクがあるためです。
+
+  - severity: WARN
+    target_location: "docs/operations/EVALUATION.md §3, §10 および docs/notes/2026-06-03-review-raw-triage-traceability-plan.md"
+    description: |
+      raw triage 計画で定められた `severity_normalized`（`CRITICAL`/`ERROR`/`WARN`/`INFO`）および `final_label`（`must-fix`/`should-fix`/`leave-as-is`）を、EVALUATION.md が定める Requirement 3 の「所見レベルのメトリクス」の集計軸としてどう取り込むかについての言及が不足しています。
+    rationale: |
+      所見レベルのメトリクスを構造化証拠から算出する際、元の `severity_original` ではなく正規化された `severity_normalized` や最終判断である `final_label` を主軸として集計することが必然となります。これらの語彙とメトリクス抽出処理とのマッピングを §10 の後続論点（または Requirement 3 の詳細化）として明示しておくことで、後続の分析設計時の抜け漏れを防ぐことができます。
+
+  - severity: INFO
+    target_location: "docs/operations/EVALUATION.md §6"
+    description: |
+      `parse_status=parse_failed` や `decision_status=human_required` の状態に陥った証拠について、外部取り込み証拠の場合は `admission_status=rejected` で除外する方針が示されていますが、内部の `runtime_mediated` 証拠（`admission_status` を持たない証拠）で同様のパースエラーや判断保留が発生した場合、どの `evidence_class`（例：`analysis_blocked`）へマッピングして標準集計から除外するかという処理方針が明示されていません。
+    rationale: |
+      現状は API 経由のレビュー（外部証拠）における「自動成形不能」への対応を主眼に置いているため直ちに矛盾にはなりませんが、将来的に内部ランタイムでも同様の事象が発生した際、内部証拠は `admission_status` のチェックを経ないため、`evidence_class` の分類ロジックだけで安全に遮断するマッピング規則を定義しておくことが望ましいためです。
+```

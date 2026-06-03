@@ -1,0 +1,22 @@
+```yaml
+findings:
+  - severity: ERROR
+    target_location: docs/operations/EVALUATION.md - §4. 直交独立な 2 軸の分類
+    description: "`evidence_class` の分類として `analysis_blocked` を挙げているが、これが foundation 正本（metadata_contract.yaml）に存在する値なのか、evaluation による局所的な拡張値なのかの扱いが矛盾して書かれている。"
+    rationale: "「正本定義を上書きしない」と記載しつつ「4値」として明記しており、もし foundation 正本が3値（valid/invalid/exploratory）のままであれば、メタデータスキーマ検証時に違反を引き起こす。正本側へ正式に4値目として追加するのか、evaluation側で別フィールド（例: `evaluation_evidence_status`）に格納するのかを明記しないと、契約の不整合が生じる。"
+
+  - severity: ERROR
+    target_location: docs/operations/EVALUATION.md - §10. 後続セッションでの追加予定 / docs/notes/2026-06-03-review-raw-triage-traceability-plan.md
+    description: "`parse_status`、`decision_status`、`follow_up_action` などの状態を示す語彙について、foundation 正本へ追加するか局所語彙とするかの判断事項が §10 のリストから漏れている。"
+    rationale: "actor 類型（`decision_actor_type` 等）については §10 で論点化されているが、`parse_status` や `decision_status` は EVALUATION.md §6 にて「標準比較候補へ入れない」ためのコアな判定条件としてハードコードされている。評価ロジックが直接依存するこれらの語彙の所有権と契約の所在を確定しなければ、暗黙のスキーマ依存を招く。"
+
+  - severity: WARN
+    target_location: docs/operations/EVALUATION.md - §8. 分析成果物配置 / docs/notes/2026-06-03-review-raw-triage-traceability-plan.md
+    description: "EVALUATION.md では `treatment`（実行条件の比較軸）と `roles`（役別の所見差分出力）を「値名は対応しうるが別概念」として扱っているが、traceability plan の `rounds.yaml` には `role` フィールドしか定義されていない。"
+    rationale: "評価機能が `treatment` 軸で集計・比較を行う仕様になっているにもかかわらず、入力となるメタデータ側に `treatment` を識別するフィールドが存在しない。`role` の値から `treatment` を推論・マッピングする明確な規則を定義するか、メタデータに `treatment` フィールドを追加しないと、後続の比較器の実装で集計軸が取得できず破綻する。"
+
+  - severity: WARN
+    target_location: docs/operations/EVALUATION.md - §6. 取り込み許容の 3 状態
+    description: "`admission_status` に `rejected` がある一方で、`evidence_class` にも無効を示す `invalid` が存在し、これらの語彙の境界や組み合わせ時の明確な役割分担の定義が不十分である。"
+    rationale: "外部取り込み束の判定（`admission_status`）と実行有効性（`evidence_class`）は直交独立な軸とされているが、「母集団に含めない」「標準集計から除外する」という操作結果が重複している。将来的に `admission_status=rejected` だが `evidence_class=valid` のような状態を人間がどう解釈すべきかが曖昧であり、運用の混乱を防ぐため、§10 に予定されている「組み合わせ判定表」の作成時に語彙がもたらす意味の重複を整理する必要がある。"
+```

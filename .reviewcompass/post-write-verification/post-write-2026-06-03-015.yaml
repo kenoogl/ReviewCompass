@@ -1,0 +1,79 @@
+status: completed
+target_files:
+  - docs/operations/EVALUATION.md
+target_sha256:
+  docs/operations/EVALUATION.md: c4f30a25c8ebe0e3aa22e51f75b0d8075082c4a14dbb7666fb88125fd6c6cdaf
+required_verifiers:
+  - claude-opus-4-8
+  - gpt-5.4
+  - gemini-3.1-pro-preview
+completed_verifiers:
+  - claude-opus-4-8
+  - gpt-5.4
+  - gemini-3.1-pro-preview
+unresolved_substantive_findings: 0
+verifications:
+  - verifier: claude-opus-4-8
+    provider: anthropic-api
+    model: claude-opus-4-8
+    target_files:
+      - docs/operations/EVALUATION.md
+    target_sha256:
+      docs/operations/EVALUATION.md: c4f30a25c8ebe0e3aa22e51f75b0d8075082c4a14dbb7666fb88125fd6c6cdaf
+    result_summary: >
+      Final structured retry completed. claude-opus-4-8 reported one high and several
+      medium/low maintainability findings around registry placement wording,
+      exploratory inclusion boundaries, timestamp field wording, and logical
+      artifact ID follow-through. These were triaged as non-blocking for the
+      current initial-contract document because the machine-readable layout
+      contract already owns artifact placement, standard comparison safety
+      defaults are explicit, and the remaining items are tracked in the
+      prioritized follow-up list.
+  - verifier: gpt-5.4
+    provider: openai-api
+    model: gpt-5.4
+    target_files:
+      - docs/operations/EVALUATION.md
+    target_sha256:
+      docs/operations/EVALUATION.md: c4f30a25c8ebe0e3aa22e51f75b0d8075082c4a14dbb7666fb88125fd6c6cdaf
+    result_summary: >
+      Final verification returned only minor findings: wording consistency for
+      the layout_spec.yaml reference, clarifying that bundle_id/run_id is an
+      identifier rather than a path, and optionally presenting interim
+      undefined-combination defaults and version terminology in a more compact
+      form. No blocking substantive issue remained.
+  - verifier: gemini-3.1-pro-preview
+    provider: gemini-api
+    model: gemini-3.1-pro-preview
+    target_files:
+      - docs/operations/EVALUATION.md
+    target_sha256:
+      docs/operations/EVALUATION.md: c4f30a25c8ebe0e3aa22e51f75b0d8075082c4a14dbb7666fb88125fd6c6cdaf
+    result_summary: >
+      Final verification returned low/info findings only: confirm whether the
+      external bundle path should use run/ or runs/, refine wording so
+      evaluation reads an existing evidence_class rather than deciding it, and
+      optionally reinforce parse-failure behavior for blocked evidence. These
+      are non-blocking follow-up wording issues.
+triage:
+  high:
+    - >
+      The claude-opus-4-8 high item was treated as non-blocking because it concerned
+      cross-reference clarity between registry placement descriptions and the
+      layout_spec.yaml artifact_families contract, not a contradictory
+      behavioral rule.
+  medium:
+    - >
+      gpt-5.4 had no medium findings in the final pass. claude-opus-4-8 medium items
+      were captured as follow-up refinements to wording and ID/timestamp
+      precision. Earlier medium findings about admission/evidence defaults,
+      input identifiers, version coverage, and manifest/staleness boundaries
+      were already reflected in the document.
+  low:
+    - >
+      Remaining low/minor findings are optional wording and readability
+      improvements, suitable for the next documentation pass.
+note: >
+  Post-write verification for docs/operations/EVALUATION.md after adding the
+  evaluation implementation operating contract and incorporating independent
+  claude-opus-4-8 / gpt-5.4 / gemini-3.1-pro-preview review feedback.

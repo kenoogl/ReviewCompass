@@ -1,0 +1,30 @@
+```yaml
+findings:
+  - severity: ERROR
+    target_location: docs/notes/2026-06-03-review-raw-triage-traceability-plan.md (severity_normalized の定義部分)
+    description: >
+      `severity_normalized` の値として `CRITICAL` / `ERROR` / `WARN` / `INFO` が挙げられ、これを foundation 正本語彙（runtime/schemas/finding.schema.json）へ正規化すると記述されていますが、列挙値の `WARN` が実際のスキーマのenum定義（一般的には `WARNING` が多用されます）と厳密に一致しているか再確認が必要です。
+    rationale: >
+      略称（WARN）と正式名称（WARNING）の不一致は、JSON Schemaのバリデーションエラーを招き、後続のEVALUATIONによるメトリクス集計から当該所見が欠落する直接的な原因となります。Foundation正本語彙とのアラインメントにおいて、列挙型（enum）の文字列完全一致は必須です。
+
+  - severity: WARN
+    target_location: docs/notes/2026-06-03-review-raw-triage-traceability-plan.md (rounds.yaml の最小項目)
+    description: >
+      台帳のファイル名が `rounds.yaml`（複数形）であるにもかかわらず、例示されているYAMLデータ構造は `round_id: review-2026-06-03-r1` をルート要素に持つ単一ラウンドのオブジェクトとなっています。同一実行（run）内の複数ラウンドを記録する場合、トップレベルをリストにするのか、`round_id` をキーとする辞書にするのかのスキーマ構造が曖昧です。
+    rationale: >
+      データ構造が明確でないと、複数のラウンドで実行されたAPI台帳が上書きされて消失するか、EVALUATION側での外部証拠束（bundle）取り込み時のパースロジックと不整合を起こし、追跡性（traceability）が損なわれます。
+
+  - severity: WARN
+    target_location: docs/notes/2026-06-03-review-raw-triage-traceability-plan.md (rounds.yaml の最小項目と説明文)
+    description: >
+      `formatted_by` フィールドの説明文において「`assisted` の場合は...別フィールドで記録する」とあり、手動・自動支援時の記録要件が規定されていますが、YAMLの例示では `formatted_by: parser`（完全自動）の場合でも `formatted_by_actor_type: orchestrator` および `formatted_by_actor: codex` が記録されています。説明文と例示の間で、アクター記録の必須・任意条件に微細な不整合があります。
+    rationale: >
+      局所語彙とメタデータの記録条件が曖昧なままだと、後続のEVALUATION機能がこれらの属性をパースして役別（roles）や処理方式（treatment）の比較に利用する際、アクターの判定において一貫したアラインメントが保てなくなるためです。
+
+  - severity: INFO
+    target_location: docs/operations/EVALUATION.md (§10 後続セッションでの追加予定)
+    description: >
+      must-fix事項として「`decision_actor_type` や `formatted_by_actor_type` など...」および「`formatted_by` など...」が列挙され、正本語彙化か局所語彙化かの判断がタスク化されていますが、これらと対になる `decision_actor` や `formatted_by_actor`（主体そのものを示すフィールド）が明示的に列挙されていません。
+    rationale: >
+      Foundationへの語彙追加や境界設定を行う際、フィールド群の一部だけが判断対象となり、残りの関連フィールドの扱いが未定義のまま漏れるのを防ぐため、包含関係を明示しておくことが設計の安全性を高めます。
+```

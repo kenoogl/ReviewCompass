@@ -1,0 +1,25 @@
+findings:
+  - severity: INFO
+    target_location: docs/operations/EVALUATION.md §7
+    description: "`validator_status` を foundation 正本語彙として参照する旨の記述は他節と整合しており、今回の語彙整合修正後も不整合は見当たりません。"
+    rationale: "§7 では `review_mode`、`evidence_class`、`validator_status` の正本を `runtime/foundation/metadata_contract.yaml` に置くと明記しており、他節での foundation 正本参照方針と衝突していません。"
+
+  - severity: INFO
+    target_location: docs/operations/EVALUATION.md §§4,6,8,9
+    description: "`evidence_class`・`review_mode`・`admission_status`・`analysis_run_manifest.yaml` の役割分離は明確で、前回懸念されやすかった '正本保持先の混同' は適切に回避されています。"
+    rationale: "§4 で実行属性と取り込み補助軸を分け、§6 で admission 判定の適用範囲を限定し、§8-9 で manifest は参照・記録用途であって正本ではないと整理されているため、foundation 語彙との責務境界は十分明瞭です。"
+
+  - severity: WARN
+    target_location: docs/notes/2026-06-03-review-raw-triage-traceability-plan.md「rounds.yaml の最小項目」
+    description: "`role` と `treatment` の関係説明が、EVALUATION.md §8 の『処理方式と役別出力は別概念』という整理とやや紛らわしく見える可能性があります。"
+    rationale: "本メモでは『API runner の役割』として `role`、evaluation の比較軸として `treatment` を分けたうえで、初期運用では同値対応するとしています。意味上は許容範囲ですが、EVALUATION.md 側が treatment と roles の非同一性を強調しているため、『値が同じでも概念的には別』をもう一段明示すると語彙整合の再確認としてさらに堅くなります。"
+
+  - severity: WARN
+    target_location: docs/notes/2026-06-03-review-raw-triage-traceability-plan.md「必要性判定の三段階」
+    description: "`decision_status=human_required` を『最終的には decided と final_label へ遷移させる』とする説明は運用意図として自然ですが、EVALUATION.md §6 の安全側既定では未解決証拠を標準比較候補へ入れない点を脚注的に再接続すると、foundation/evaluation 契約との往復参照がさらに明確になります。"
+    rationale: "語彙自体の矛盾はありませんが、本メモ単独で読むと `human_required` が review-run 台帳上の中間状態なのか、evaluation 取り込み後も残り得る状態なのかが少し曖昧です。EVALUATION.md では変換規則確定まで安全側で `rejected` 扱いとしているため、その接続を一文で補強すると誤読を減らせます。"
+
+  - severity: INFO
+    target_location: docs/notes/2026-06-03-review-raw-triage-traceability-plan.md 全体
+    description: "`final_label`、`severity_normalized`、`review_mode=api_mediated`、局所語彙と foundation 正本語彙の区別は全体として一貫しています。"
+    rationale: "foundation 正本語彙を使う箇所と、後続判断が必要な局所語彙を使う箇所が明示的に分けられており、今回の修正対象である foundation vocabulary alignment の観点では大きな齟齬は確認できません。"

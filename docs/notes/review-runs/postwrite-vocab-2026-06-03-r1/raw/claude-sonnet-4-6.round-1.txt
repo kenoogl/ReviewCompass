@@ -1,0 +1,161 @@
+```yaml
+findings:
+  - severity: INFO
+    target_location: "docs/notes/2026-06-03-review-raw-triage-traceability-plan.md § 2026-06-03 追加 raw 取得と暫定トリアージ"
+    description: >
+      モデル ID として `gpt-5.4` および `gemini-3.1-pro-preview` が記載されている。
+      これらは本文書作成時点（2026-06-03）において実在が確認されているモデル識別子ではない。
+      本メモ自体が「モデル ID と版で記録する」規律を定めている以上、
+      架空または未確認の ID を例示として混入させることは、規律の信頼性を損なう。
+    rationale: >
+      本文書の確定方針（§確定方針）および triage.yaml の項目定義は、
+      「会社名ではなくモデル ID と版で記録する」を繰り返し強調している。
+      検証不能な ID を正規台帳項目の値として用いることは、
+      同規律の自己矛盾となりうる。実在確認済みの ID への差し替えか、
+      例示である旨の明示的な注記を推奨する。
+
+  - severity: WARN
+    target_location: "docs/notes/2026-06-03-review-raw-triage-traceability-plan.md § rounds.yaml の最小項目"
+    description: >
+      `rounds.yaml` の例示で `model_id: claude-sonnet-4-6` と記載されているが、
+      本文書 § 2026-06-03 追加 raw 取得 では同モデルを `claude-sonnet-4-6` と表記している。
+      ハイフンの数・位置が一致しており問題はないが、
+      `formatted_by_actor: codex` という値が「オーケストレーター名」として
+      具体的固有名で埋め込まれている。
+      これは説明上の例示値なのか、実運用での固定値なのかが文書上で不明確である。
+    rationale: >
+      `formatted_by_actor` は「採番は `<run_id>-<source_model>-...`」と同様に
+      運用時に実値が入るフィールドであるはずだが、YAML 例示にハードコードされた値が
+      混在すると、読み手がスキーマ定義と実例の境界を混同しやすい。
+      例示値である旨をコメントまたは注記で明示することを推奨する。
+
+  - severity: WARN
+    target_location: "docs/notes/2026-06-03-review-raw-triage-traceability-plan.md § 2026-06-03 追加 raw 取得と暫定トリアージ"
+    description: >
+      raw ファイルの保存先が `/private/tmp/` である。
+      本メモ § raw 応答の既定運用 では「保存先はリポジトリ内に置く場合でも公開・配布対象へ含めず」
+      と定めているが、`/private/tmp/` はリポジトリ外の一時領域であり、
+      セッション終了・再起動で消失する可能性がある。
+      本メモが定める「推奨ディレクトリ構造 `docs/notes/review-runs/<run_id>/raw/`」とも乖離している。
+    rationale: >
+      本文書の趣旨は「raw を永続保存して後から監査できるようにする」ことであり、
+      一時ディレクトリへの保存はその目的と矛盾する。
+      今回分について「完全な監査再構成はできない」と § 今回分への扱い で認めているが、
+      追加取得分についても同様の問題が発生している。
+      推奨ディレクトリ構造への移動、またはその不可能な理由と暫定扱いの明示を推奨する。
+
+  - severity: WARN
+    target_location: "docs/notes/2026-06-03-review-raw-triage-traceability-plan.md § 2026-06-03 追加 raw 取得と暫定トリアージ"
+    description: >
+      `must-fix` 2 件の推薦案がメモ本文（§ 今回分への扱い 以前）に先行して記述されており、
+      `EVALUATION.md § 10` の後続論点にも同内容が列挙されているが、
+      本メモの triage.yaml 形式では `decision_status=human_required` として
+      追跡可能な台帳項目として残す設計になっている。
+      しかし、`must-fix` 2 件に対応する `triage.yaml` エントリが本メモ内に存在しない。
+      推薦案の記述だけがあり、`finding_id`・`decision_status`・`decision_actor` を持つ
+      台帳エントリへの変換が未実施である。
+    rationale: >
+      本文書が定める規律では、`parse_status=parse_failed` の raw と同様に、
+      `decision_status=human_required` の所見も台帳から消えないよう追跡することを要求している。
+      メモ本文内の散文として推薦案を書くだけでは、
+      本文書自身が定める台帳管理規律に従っていない状態となる。
+      `triage.yaml` エントリの作成、または「本メモは台帳の代替として使う」旨の
+      明示的な適用除外の記述が必要である。
+
+  - severity: WARN
+    target_location: "docs/operations/EVALUATION.md § 6"
+    description: >
+      `docs/notes/review-runs/<run_id>/` 由来の証拠に対し
+      「raw/triage 台帳が存在しないものは、変換規則が確定するまで暫定的に
+      `admission_status=rejected` とし、`admission_status=admitted_standard` にしない」
+      と定めている。一方、同節末尾の探索分析 opt-in 条件は後続論点とされており、
+      `admitted_exploratory` への再分類手続きが未確定のままである。
+      この状態では、`rejected` とした証拠を探索分析で再利用したい場合に
+      適用可能な手続きが存在しない空白期間が生じる。
+    rationale: >
+      安全側既定として `rejected` を選択すること自体は適切だが、
+      `admitted_exploratory` への移行手続きが後続論点のままだと、
+      `rejected` が事実上の永続的廃棄に近い状態になりうる。
+      `§ 10` に `must-fix` として列挙されている点は確認できるが、
+      `§ 6` 本文にも「この空白期間中は探索分析での再利用も行わない」または
+      「手続き確定まで判定を保留する」旨を明示することで、
+      読み手の誤解を防ぐことができる。
+
+  - severity: WARN
+    target_location: "docs/operations/EVALUATION.md § 9"
+    description: >
+      `analysis_run_manifest.yaml` の必須項目として 13 件を列挙し、
+      「この一覧は `evaluation/analysis_layout/layout_spec.yaml` の
+      `analysis_run_manifest.required_fields` と一致する」と明記している。
+      しかし、`layout_spec.yaml` の実体が別ファイルである以上、
+      2 つの一覧の同期が壊れた場合に検出する仕組みが本文書内に記述されていない。
+      `tests/evaluation/test_t001_layout.py` はディレクトリ構造の検査であり、
+      `required_fields` の一致を検査するテストが存在するかどうかが不明である。
+    rationale: >
+      `§ 8` では「`tests/evaluation/test_t001_layout.py` がこの対応を検査している」と
+      明記されているが、`§ 9` の `required_fields` 一致については同様の言及がない。
+      将来の改訂で一方だけが更新された場合に乖離が生じるリスクがある。
+      対応するテストの明記、または `layout_spec.yaml` を正本として本文書は参照のみと
+      する旨の明示を推奨する。
+
+  - severity: INFO
+    target_location: "docs/operations/EVALUATION.md § 4"
+    description: >
+      「`analysis_blocked` の説明は正本値の運用上の読み替えであり、正本定義を上書きしない」
+      と注記されているが、`analysis_blocked` が `foundation` の `evidence_class` 正本語彙に
+      含まれる値なのか、`evaluation` 層で追加された値なのかが本文内で明示されていない。
+    rationale: >
+      `§ 4` は `runtime/foundation/metadata_contract.yaml` の `evidence_class` 正本値に
+      従うと述べているが、`analysis_blocked` という値が正本に存在するのか、
+      それとも evaluation 層の拡張なのかは本文を読むだけでは判断できない。
+      「正本値の運用上の読み替え」という表現は前者を示唆するが、
+      `§ 3` の Requirement 1 の説明には 4 分類すべてが並列記載されており、
+      distinction が不明確である。
+      正本語彙への出典明記か、拡張値である場合の明示を推奨する。
+
+  - severity: INFO
+    target_location: "docs/notes/2026-06-03-review-raw-triage-traceability-plan.md § triage.yaml の最小項目"
+    description: >
+      `finding_id` の暫定採番形式として
+      `<run_id>-<source_model>-<source_round>-<連番>` を定義しているが、
+      `source_model` にモデル ID と版を含める場合、
+      バージョン文字列（例：`claude-opus-4-20250514`）のハイフンと
+      フィールド区切りのハイフンが衝突し、機械的な再パースが困難になりうる。
+    rationale: >
+      本文書自身が「ファイル名や ID に使えない文字は機械採番時に安全な表記へ正規化する」
+      と注記しているが、フィールド区切り文字の衝突については言及がない。
+      後続で機械採番へ置き換えるとされているため致命的ではないが、
+      暫定運用期間中に人手で採番する際の混乱を防ぐため、
+      区切り文字の候補（例：`__` またはドット区切り）を暫定でも明示することを推奨する。
+
+  - severity: INFO
+    target_location: "docs/notes/2026-06-03-review-raw-triage-traceability-plan.md § runner 側の対応"
+    description: >
+      「本メモの post-write verification 完了後、同一作業単位内で TDD 実装する。
+      完了後は対象 commit または差分参照を追記する」と記載されているが、
+      本文書の現版には commit または差分参照が追記されていない。
+    rationale: >
+      記述の意図は「実装が完了したら参照を埋める」という追記予定だと読めるが、
+      この状態で post-write verification が完了した場合、
+      未記入のプレースホルダが残ったまま文書が確定しうる。
+      実装未完であれば「実装予定」のままとし、完了後追記する運用を明示するか、
+      または § 10 相当の後続論点として項目化することを推奨する。
+
+  - severity: INFO
+    target_location: "docs/operations/EVALUATION.md § 6 および docs/notes/2026-06-03-review-raw-triage-traceability-plan.md § 2026-06-03 追加 raw 取得"
+    description: >
+      `EVALUATION.md § 6` は「`parse_status=parse_failed` または
+      `decision_status=human_required` を含むもの、または raw/triage 台帳が存在しないものは
+      暫定的に `admission_status=rejected`」と定める。
+      本メモの追加取得分（3 モデルの raw）は `/private/tmp/` に存在し、
+      推奨ディレクトリ構造へ移動されていない。
+      この状態では `raw/triage 台帳が存在しない` 条件に該当するため、
+      当該 raw を用いた暫定トリアージの結果も `rejected` 相当の扱いになる。
+      しかし、本メモはその扱いを明示せずに `must-fix` 推薦案を記述している。
+    rationale: >
+      2 つの文書の契約を組み合わせると、今回の追加取得分も台帳不存在に起因して
+      標準比較候補に入れられないだけでなく、推薦案の位置付け自体が
+      `decision_status=human_required` の台帳エントリとして扱われるべきものである。
+      この矛盾を認識した上での暫定扱いであれば、その旨を本メモに明記することで
+      後続セッションでの混乱を防ぐことができる。
+```

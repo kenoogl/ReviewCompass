@@ -1,0 +1,35 @@
+run_id: postwrite-vocab-final-2026-06-03-r2
+triaged_at: "2026-06-03T13:45:00+09:00"
+decision_actor: codex
+decision_actor_type: orchestrator
+items:
+  - finding_id: postwrite-vocab-final-2026-06-03-r2-gemini-3.1-pro-preview-round-1-001
+    source_model: gemini-3.1-pro-preview
+    source_round: postwrite-vocab-final-2026-06-03-r2-round-1
+    source_raw_path: raw/gemini-3.1-pro-preview.round-1.txt
+    source_parsed_path: null
+    severity_original: ERROR
+    severity_normalized: ERROR
+    final_label: must-fix
+    decision_status: decided
+    target_location: docs/operations/EVALUATION.md
+    plain_language_summary: analysis_blocked が foundation 正本値であることを明示する。
+    decision_reason: EVALUATION.md §4 に 4 値すべてが foundation 正本値であり、analysis_blocked は evaluation 拡張値ではないと追記した。
+    applied_files:
+      - docs/operations/EVALUATION.md
+    superseded_by: null
+  - finding_id: postwrite-vocab-final-2026-06-03-r2-gemini-3.1-pro-preview-round-1-002
+    source_model: gemini-3.1-pro-preview
+    source_round: postwrite-vocab-final-2026-06-03-r2-round-1
+    source_raw_path: raw/gemini-3.1-pro-preview.round-1.txt
+    source_parsed_path: null
+    severity_original: ERROR
+    severity_normalized: ERROR
+    final_label: must-fix
+    decision_status: decided
+    target_location: docs/operations/EVALUATION.md
+    plain_language_summary: parse_status などの局所状態語彙の所有者判断を後続論点へ入れる。
+    decision_reason: EVALUATION.md §10 に parse_status / decision_status / follow_up_action / invocation_path / formatted_by の語彙所有者判断を追記した。
+    applied_files:
+      - docs/operations/EVALUATION.md
+    superseded_by: null

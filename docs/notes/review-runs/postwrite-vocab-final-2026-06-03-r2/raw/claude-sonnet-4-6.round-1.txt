@@ -1,0 +1,145 @@
+```yaml
+findings:
+  - severity: INFO
+    target_location: "docs/notes/2026-06-03-review-raw-triage-traceability-plan.md § 2026-06-03 追加 raw 取得と暫定トリアージ — モデル ID 表記"
+    description: |
+      `gpt-5.4` および `gemini-3.1-pro-preview` は、2026-06-03 時点で公開されている
+      既知モデルラインナップと一致しない。`gpt-5.4` は GPT-4 系・GPT-4o 系・GPT-4.1 系
+      いずれとも対応しない文字列であり、`gemini-3.1-pro-preview` も Gemini 1.x / 2.x 系の
+      既知バリアントと一致しない。foundation_vocabulary_alignment の観点では、
+      モデル ID は「設定ファイルまたは実行ログに記録された実際のモデル ID をそのまま使う」
+      と本メモ自身が定めているため、この文字列が config/api-settings.yaml の実行時値として
+      正しければ問題は設定ファイル側にある。正しくなければ本メモの記録が誤りである。
+      どちらの場合も foundation 正本語彙との整合確認が必要。
+    rationale: |
+      本検査観点は foundation_vocabulary_alignment_final_post_write_check であり、
+      文書内で使われた識別子・語彙が foundation 正本または文書自身が定める規律と
+      整合しているかを確認する。モデル ID は判断主体の追跡に直結する記録項目であるため、
+      実行時値との不一致は監査ログの信頼性に影響する。`claude-sonnet-4-6` も
+      公開されている `claude-sonnet-4-5` 系と字面が異なるため、同様に確認対象。
+
+  - severity: WARN
+    target_location: "docs/notes/2026-06-03-review-raw-triage-traceability-plan.md § rounds.yaml の最小項目 — invocation_path フィールド"
+    description: |
+      サンプル YAML 内の `invocation_path: api` について、本メモは「runner 台帳内の
+      局所フィールドであり、foundation 正本語彙の `review_mode=api_mediated` とは別物」
+      と明記している。しかし `invocation_path` が取りうる値の語彙一覧、および
+      `review_mode` との対応規則がどこにも定義されていない。
+      foundation 正本語彙と局所語彙を分ける方針は正しいが、対応規則が未定義のまま
+      変換規則の確定を後続論点とする構造になっており、現時点では両者の整合を
+      機械的に検査できない空白が残る。
+    rationale: |
+      foundation_vocabulary_alignment の観点では、局所語彙を定義する場合でも
+      正本語彙との境界と対応規則を明示することが求められる。
+      対応規則の欠如は、後続の変換規則策定時に解釈の揺れを生む可能性がある。
+
+  - severity: WARN
+    target_location: "docs/notes/2026-06-03-review-raw-triage-traceability-plan.md § rounds.yaml の最小項目 — formatted_by 語彙"
+    description: |
+      `formatted_by` の値として `parser` / `human` / `assisted` の 3 値を定めている。
+      一方、サンプル YAML 内では `formatted_by: parser` と `formatted_by_actor_type: orchestrator`
+      が共存しており、`formatted_by=parser` が actor_type=orchestrator と組み合わされている。
+      `parser` が自動処理主体を指す語であれば `orchestrator` との組み合わせに矛盾はないが、
+      `parser` という語が foundation 正本語彙に存在しない局所語であることを明示する記述が
+      本メモ内に見当たらない。`formatted_by_actor_type` と `formatted_by` の関係
+      （どちらが上位か、両者の組み合わせ規則）も未定義。
+    rationale: |
+      foundation_vocabulary_alignment の観点では、複数の actor 記録フィールドが
+      同一エントリに混在する場合、各フィールドの語彙所有者と組み合わせ規則を
+      明示しないと、後続処理が同一概念を異なるフィールドから二重に読む可能性がある。
+
+  - severity: WARN
+    target_location: "docs/notes/2026-06-03-review-raw-triage-traceability-plan.md § triage.yaml の最小項目 — decision_actor_type 語彙"
+    description: |
+      `decision_actor_type` の値として `model` / `human` / `orchestrator` の 3 値を定めている。
+      本メモはこれを「暫定局所語彙」と明記しているが、`formatted_by_actor_type` も
+      同じ 3 値を持つ別フィールドとして存在する。両フィールドが同じ語彙空間を共有するか、
+      独立した語彙空間を持つかが明記されていない。
+      また `orchestrator` が `model` の特殊ケースなのか、独立した actor 種別なのかも不明。
+      EVALUATION.md §10 の must-fix 後続論点として「foundation 正本語彙を追加するかどうか」
+      が挙げられているが、それまでの暫定期間中に局所語彙が文書をまたいで増殖すると
+      後続の正規化コストが上がる。
+    rationale: |
+      foundation_vocabulary_alignment の観点では、暫定局所語彙であっても
+      同一文書内で使われる類似フィールド間の語彙共有範囲を明示することで、
+      後続の foundation 正本化作業の入力品質を保つことができる。
+
+  - severity: WARN
+    target_location: "docs/operations/EVALUATION.md §6 — admission_status と evidence_class の組み合わせ記述"
+    description: |
+      §6 では `admitted_exploratory` の外部証拠は `evidence_class=valid` であっても
+      標準比較セットへ入れないと明記している。また `evidence_class=invalid` または
+      `analysis_blocked` の証拠は探索分析にも黙示的に入れないと明記している。
+      しかし `evidence_class=exploratory` の内部証拠（`admission_status` を持たない
+      runtime 直産証拠）が探索分析に入るかどうかの記述が §6 に存在しない。
+      §4 で `exploratory` は実行有効性軸の正本値として定義されているが、
+      その証拠が分析パイプラインのどの集合に入るかは §6 の判定表で確定するとされており、
+      §10 の must-fix 後続論点として残っている。現版では内部 exploratory 証拠の
+      扱いに明示的な空白がある。
+    rationale: |
+      foundation_vocabulary_alignment の観点では、正本語彙として定義した
+      `evidence_class=exploratory` の運用上の扱いが、参照先の §6 で未定義のまま
+      残っていることは、読み手が異なる解釈をする余地を生む。
+      §10 への委譲は適切だが、現版の §6 に「内部 exploratory 証拠は §10 確定まで
+      探索分析にも入れない」または「§10 確定まで扱い未定」という明示的な仮置きが
+      あるとよい。
+
+  - severity: INFO
+    target_location: "docs/operations/EVALUATION.md §4 — analysis_blocked の記述"
+    description: |
+      §4 では `analysis_blocked` について「`runtime/foundation/metadata_contract.yaml` の
+      `evidence_class` 正本値の運用上の読み替えであり、正本定義を上書きしない」と
+      注記している。しかし `analysis_blocked` が正本 YAML の実際の値として
+      存在するのか、それとも運用文書だけで使われる別名なのかが読み取れない。
+      正本値と運用名が一致するなら注記は不要、異なるなら正本での実際の値を
+      併記するとよい。
+    rationale: |
+      foundation_vocabulary_alignment の観点では、正本語彙の値と運用文書内の
+      表記が一致しているかを読み手が確認できるよう、正本側の実際の値を明示することが
+      望ましい。注記の意図は理解できるが、読み手が正本 YAML を開かずに
+      両者の関係を把握できない。
+
+  - severity: INFO
+    target_location: "docs/notes/2026-06-03-review-raw-triage-traceability-plan.md § triage.yaml の最小項目 — severity_normalized 語彙"
+    description: |
+      `severity_normalized` の値として `CRITICAL` / `ERROR` / `WARN` / `INFO` の 4 値を
+      「foundation 正本語彙」と明記している。EVALUATION.md §10 の must-fix 後続論点として
+      「`severity_normalized` と `final_label` を所見レベルメトリクスの集計軸へどう取り込むか」
+      が挙げられており、これは foundation 正本語彙として確定済みであることを前提とした
+      後続論点である。foundation 正本 (`runtime/foundation/metadata_contract.yaml` 等)
+      で実際にこの 4 値が定義されているかを、post-write 時点で確認できると望ましい。
+      現版では本メモ内の自己参照のみで正本所在が不明瞭。
+    rationale: |
+      foundation_vocabulary_alignment の観点では、「foundation 正本語彙」と主張する値は
+      正本ファイルへのパス参照を持つことが望ましい。`review_mode` や `evidence_class` は
+      正本ファイルパスが明記されているのに対し、`severity_normalized` は正本所在の
+      明示がない。
+
+  - severity: INFO
+    target_location: "docs/notes/2026-06-03-review-raw-triage-traceability-plan.md § triage.yaml の最小項目 — final_label 語彙"
+    description: |
+      `final_label` の値として `must-fix` / `should-fix` / `leave-as-is` の 3 値を
+      「foundation 正本語彙」と明記している。同じ値が §10 の必要性判定の三段階でも
+      使われており、一貫している。ただし `final_label` の正本所在ファイルパスが
+      本メモ内に明示されていない。`severity_normalized` と同様に、
+      正本参照パスを添えると foundation_vocabulary_alignment の検査が容易になる。
+    rationale: |
+      `severity_normalized` と同じ理由。foundation 正本語彙と主張するフィールドには
+      正本参照を持つことが、後続の機械検査と仕様駆動手続きの一貫性を高める。
+
+  - severity: INFO
+    target_location: "docs/notes/2026-06-03-review-raw-triage-traceability-plan.md § rounds.yaml の最小項目 — prompt_id の説明"
+    description: |
+      `prompt_id` は「`prompt_set_version` 内の識別子」と説明されており、
+      `prompt_sha256` は「実際に送ったプロンプト本文の checksum」と説明されている。
+      両者の関係（`prompt_id` が指すプロンプトと `prompt_sha256` が指すプロンプトは
+      同一であるべきか、または送信前に変数展開等が入る可能性があるか）が明記されていない。
+      EVALUATION.md §9 では `prompt_set_version_coverage` を manifest の必須項目として
+      定めており、rounds.yaml の `prompt_id` / `prompt_sha256` との接続規則が
+      後続の変換規則で確定する必要がある。
+    rationale: |
+      foundation_vocabulary_alignment の観点では、プロンプト追跡に関わる識別子が
+      複数存在する場合、各識別子の指示対象と相互関係を明記しておくと、
+      変換規則策定時の解釈揺れを防げる。現版では両フィールドが独立して定義されており、
+      同一プロンプトを異なる粒度で指しているのか、異なるプロンプトを指しうるのかが不明。
+```

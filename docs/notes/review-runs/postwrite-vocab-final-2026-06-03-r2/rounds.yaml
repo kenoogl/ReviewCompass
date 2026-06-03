@@ -1,0 +1,57 @@
+round_id: postwrite-vocab-final-2026-06-03-r2-round-1
+purpose: post_write_verification
+invocation_timestamp: "2026-06-03T13:40:00+09:00"
+target_files:
+  - path: docs/operations/EVALUATION.md
+    sha256: f0ef6578b5b984890f2b5325b84d7a8939cb606c18a4cc9b114095a321b8a6d9
+  - path: docs/notes/2026-06-03-review-raw-triage-traceability-plan.md
+    sha256: e1b5e9d50a33f4c73977498c3b8b2dc5d3e745b11e8443609d2686a489bb2b14
+prompt_set_version: ad-hoc-post-write-verification-2026-06-03
+prompt_id: foundation_vocabulary_alignment_final_post_write_check
+prompt_sha256: unknown
+model_results:
+  - model_id: claude-sonnet-4-6
+    provider: anthropic-api
+    role: primary
+    treatment: primary
+    invocation_path: api
+    raw_path: raw/claude-sonnet-4-6.round-1.txt
+    raw_sha256: 13b49315e043169df701a1b7d3bfd2384ca659a593a2339ef56a1a4edef5ee9d
+    parsed_path: null
+    parsed_sha256: null
+    parse_status: parse_failed
+    formatted_by: parser
+    formatted_by_actor_type: orchestrator
+    formatted_by_actor: codex
+    formatted_at: "2026-06-03T13:42:00+09:00"
+    follow_up_action: triage
+  - model_id: gpt-5.4
+    provider: openai-api
+    role: adversarial
+    treatment: adversarial
+    invocation_path: api
+    raw_path: raw/gpt-5.4.round-1.txt
+    raw_sha256: 83701d075b719a09b2f08a0fadbe58087bd7ce8bedd8b49b5c3def9dcd436532
+    parsed_path: null
+    parsed_sha256: null
+    parse_status: parse_failed
+    formatted_by: parser
+    formatted_by_actor_type: orchestrator
+    formatted_by_actor: codex
+    formatted_at: "2026-06-03T13:42:00+09:00"
+    follow_up_action: triage
+  - model_id: gemini-3.1-pro-preview
+    provider: gemini-api
+    role: judgment
+    treatment: judgment
+    invocation_path: api
+    raw_path: raw/gemini-3.1-pro-preview.round-1.txt
+    raw_sha256: f957429568bb1d9436d856f42175120b5c4d7f93f44f809d2726577bebaf8eea
+    parsed_path: null
+    parsed_sha256: null
+    parse_status: parse_failed
+    formatted_by: parser
+    formatted_by_actor_type: orchestrator
+    formatted_by_actor: codex
+    formatted_at: "2026-06-03T13:42:00+09:00"
+    follow_up_action: triage

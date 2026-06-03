@@ -1,0 +1,139 @@
+```yaml
+findings:
+  - severity: INFO
+    target_location: "docs/operations/EVALUATION.md §4, §6, §7"
+    description: >
+      `foundation` 正本語彙（`evidence_class`、`review_mode`、`validator_status`）への
+      参照表記は一貫しており、`runtime/foundation/metadata_contract.yaml` が正本であることが
+      §4・§6・§7 それぞれで明記されている。`analysis_blocked` が evaluation 側拡張値では
+      なく正本値であるとの注記（§4）も保持されており、foundation 依存の記述に齟齬は見当たらない。
+    rationale: >
+      foundation 語彙との整合を確認する観点での検査。正本参照先が複数箇所で一致しており、
+      `evidence_class` の 4 値すべてが正本由来と明示されている。問題なし。
+
+  - severity: INFO
+    target_location: "docs/operations/EVALUATION.md §6"
+    description: >
+      `admission_status` の 3 値（`rejected` / `admitted_exploratory` / `admitted_standard`）と
+      `evidence_class` の 4 値が別フィールドであることが明記されており、両軸の混同を防ぐ
+      記述になっている。外部取り込み証拠のみが `admission_status` を持ち、内部直産証拠には
+      付かないという非対称性も §4 末尾と §6 末尾で整合している。
+    rationale: >
+      `admission_status` は evaluation 局所フィールドであり foundation 正本語彙ではないが、
+      そのことが §6 で明示されている。局所語彙と正本語彙の区別が正しく保たれている。
+      問題なし。
+
+  - severity: INFO
+    target_location: "docs/notes/2026-06-03-review-raw-triage-traceability-plan.md §rounds.yaml 最小項目"
+    description: >
+      `invocation_path` は「runner 台帳内の局所フィールドであり、foundation 正本語彙の
+      `review_mode=api_mediated` とは別物である」と明示されている。
+      同様に `parse_status`、`follow_up_action`、`formatted_by`、`formatted_by_actor_type`、
+      `decision_status`、`decision_actor_type` が「本メモ内の暫定局所語彙」として
+      §rounds.yaml 最小項目の末尾段落に列挙されており、foundation への昇格是非が
+      後続判断として保留されている。
+    rationale: >
+      foundation 語彙整合再確認の観点。局所語彙と正本語彙の境界が明示されており、
+      foundation への無断追加が行われていないことを確認した。問題なし。
+
+  - severity: INFO
+    target_location: "docs/notes/2026-06-03-review-raw-triage-traceability-plan.md §triage.yaml 最小項目"
+    description: >
+      `severity_normalized` の正規化先として `runtime/schemas/finding.schema.json` の
+      `CRITICAL` / `ERROR` / `WARN` / `INFO` が、`final_label` の正本として
+      `runtime/schemas/necessity_judgment.schema.json` の `must-fix` / `should-fix` /
+      `leave-as-is` が参照されている。これらは foundation 正本スキーマへの参照として
+      明示されており、triage メモ局所語彙と混同されていない。
+    rationale: >
+      foundation スキーマ参照の確認。正本参照が明示されており、局所語彙との混同がない。
+      問題なし。
+
+  - severity: WARN
+    target_location: "docs/operations/EVALUATION.md §10 後続論点一覧"
+    description: >
+      §10 の後続論点として「`decision_actor_type` や `formatted_by_actor_type` など、
+      review run 証拠内の actor 類型語彙を foundation 正本へ追加するか、evaluation 局所語彙
+      として扱うかの判断」が must-fix として列挙されている。一方、
+      `docs/notes/2026-06-03-review-raw-triage-traceability-plan.md` では同語彙が
+      「本メモ内の暫定局所語彙」として宣言されている。
+      この二文書間で、同語彙の現在の扱いが「暫定局所（メモ側）」と「後続判断待ち（EVALUATION.md 側）」で
+      並列して存在しており、どちらが最新の確定状態かが文書上明確でない。
+    rationale: >
+      foundation 語彙整合の観点で、同一語彙が二文書にわたって異なるステータス表記を持つ
+      ことは、後続セッションでの判断者が混乱する可能性がある。現時点では両文書が
+      整合していると読めるが、「暫定局所 ＝ 後続判断待ち」を同義と読んでよいか、
+      あるいはどちらかの表記を優先する正本文書を明示すべきかを確認する。
+      現在の範囲では実害はないが、語彙の正本判定前に他文書が参照し始めるリスクに注意。
+
+  - severity: WARN
+    target_location: "docs/notes/2026-06-03-review-raw-triage-traceability-plan.md §rounds.yaml 最小項目（`role` / `treatment` フィールド）"
+    description: >
+      `rounds.yaml` の `role` フィールドは「API runner の役割」、`treatment` フィールドは
+      「evaluation が使う実行条件の比較軸」として区別が明記されており、
+      初期運用では同じ値（`primary` / `adversarial` / `judgment`）で対応付けるとされている。
+      しかし `role` の語彙が foundation 正本に存在するかどうか、および `treatment` の語彙が
+      evaluation requirements に定める 3 処理方式（§3 Requirement 2）と一致するかどうかの
+      明示的な参照先が、このメモには記載されていない。
+    rationale: >
+      `treatment` の 3 値は EVALUATION.md §8 および §3 Requirement 2 と合致しており
+      内容上の矛盾はないが、`role` 語彙の正本所在が未参照のまま局所使用されている。
+      foundation 正本への参照、または「runner 局所語彙」としての明示宣言を
+      `rounds.yaml` 最小項目の説明段落に追加することで、後続での語彙管理が明確になる。
+
+  - severity: WARN
+    target_location: "docs/notes/2026-06-03-review-raw-triage-traceability-plan.md §2026-06-03 追加 raw 取得と暫定トリアージ"
+    description: >
+      `gpt-5.4` および `gemini-3.1-pro-preview` というモデル ID が具体的に記載されている。
+      これらは `config/api-settings.yaml` の当該 variant で使った実行時値であるとされているが、
+      当該ファイルの内容は本文書群には含まれておらず、ID の正確性を本文書群だけでは
+      検証できない。また sha256 値も同様に外部ファイルへの依存がある。
+      records としての問題ではないが、後続の自動検査や変換規則が実行時に
+      これらの ID を基準に raw を照合する際、設定ファイルとの一致が前提となることを
+      明示しておくことが望ましい。
+    rationale: >
+      モデル ID は会社名ではなく実行時 ID で記録するという本メモ自体の方針に従っており
+      表記の問題ではない。ただし ID が `config/api-settings.yaml` 由来であるという
+      来歴依存が追記段落にのみ記載されており、rounds.yaml や triage.yaml のスキーマ説明と
+      連結されていない。後続の変換規則を書く際に設定ファイル参照が必要になることを
+      示す参照注記を、変換規則の後続論点と併せて EVALUATION.md §10 に追記することを推奨。
+
+  - severity: INFO
+    target_location: "docs/operations/EVALUATION.md §6（`analysis_blocked` の探索分析扱い）"
+    description: >
+      §6 末尾近くに「`evidence_class=invalid` または `analysis_blocked` の証拠は
+      探索分析にも黙示的に入れない」と明記されており、これは foundation 正本の
+      `evidence_class` 語彙を参照した安全側既定として読める。
+      `exploratory` 区分に限り「明示 opt-in した場合だけ含める」という例外が
+      別文で定められており、`analysis_blocked` と `invalid` はその例外対象外として
+      明確に区別されている。
+    rationale: >
+      foundation 正本 4 値の取り扱いが §6 内で一貫して区別されていることを確認した。
+      問題なし。
+
+  - severity: INFO
+    target_location: "docs/operations/EVALUATION.md §7（`validator_status` 参照）"
+    description: >
+      §7 の foundation 依存記述に「`validator_status` は評価準備メタデータ検査と診断出力で、
+      検証器由来の状態を解釈するために使う」と用途が明示されており、`review_mode`・
+      `evidence_class` と並べて `runtime/foundation/metadata_contract.yaml` を正本として
+      参照する形になっている。
+    rationale: >
+      foundation 依存語彙の用途説明が揃っていることを確認。問題なし。
+
+  - severity: WARN
+    target_location: "docs/operations/EVALUATION.md §9（`protocol_version_coverage` の「規約版」定義）"
+    description: >
+      §9 で「ここでいう規約版はレビュー手続きやメタデータ契約の版」と説明されているが、
+      この「メタデータ契約の版」が具体的に `runtime/foundation/metadata_contract.yaml` の
+      バージョン管理と一致するのか、あるいはより広い契約文書セットを指すのかが明示されていない。
+      `foundation` が正本を持つ語彙（`review_mode`、`evidence_class`、`validator_status`）は
+      明示されているが、「メタデータ契約の版」という版管理単位は foundation 側のどこで
+      定義されるかが本文書から追えない。
+    rationale: >
+      `protocol_version_coverage` は `analysis_run_manifest.yaml` の必須 13 項目の 1 つであり、
+      比較器が混在を検査する際に使う重要なフィールドである。「規約版」の具体的な版管理単位が
+      不明のまま後続実装が進むと、異なる解釈で記録された manifest が生じるリスクがある。
+      §10 の後続論点「`metric_set_version`、`phase_metric_profile_version`、
+      `comparison_contract_version` の運用単位」と同一のセッションで、
+      `protocol_version_coverage` の版管理単位も確定することを推奨する。
+```

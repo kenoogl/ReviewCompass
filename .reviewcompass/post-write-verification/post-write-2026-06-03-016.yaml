@@ -1,0 +1,96 @@
+status: completed
+target_files:
+  - docs/notes/2026-06-03-review-raw-triage-traceability-plan.md
+  - docs/operations/EVALUATION.md
+  - docs/notes/review-runs/postwrite-vocab-2026-06-03-r1/parsed/claude-sonnet-4-6.round-1.yaml
+  - docs/notes/review-runs/postwrite-vocab-2026-06-03-r1/raw/claude-sonnet-4-6.round-1.txt
+  - docs/notes/review-runs/postwrite-vocab-2026-06-03-r1/raw/gemini-3.1-pro-preview.round-1.txt
+  - docs/notes/review-runs/postwrite-vocab-2026-06-03-r1/raw/gpt-5.4.round-1.txt
+  - docs/notes/review-runs/postwrite-vocab-2026-06-03-r1/rounds.yaml
+  - docs/notes/review-runs/postwrite-vocab-2026-06-03-r1/target-manifest.yaml
+  - docs/notes/review-runs/postwrite-vocab-2026-06-03-r1/triage.yaml
+  - docs/notes/review-runs/postwrite-vocab-final-2026-06-03-r2/raw/claude-sonnet-4-6.round-1.txt
+  - docs/notes/review-runs/postwrite-vocab-final-2026-06-03-r2/raw/gemini-3.1-pro-preview.round-1.txt
+  - docs/notes/review-runs/postwrite-vocab-final-2026-06-03-r2/raw/gpt-5.4.round-1.txt
+  - docs/notes/review-runs/postwrite-vocab-final-2026-06-03-r2/rounds.yaml
+  - docs/notes/review-runs/postwrite-vocab-final-2026-06-03-r2/target-manifest.yaml
+  - docs/notes/review-runs/postwrite-vocab-final-2026-06-03-r2/triage.yaml
+  - docs/notes/review-runs/postwrite-vocab-recheck-2026-06-03-r3/raw/claude-sonnet-4-6.round-1.txt
+  - docs/notes/review-runs/postwrite-vocab-recheck-2026-06-03-r3/raw/gemini-3.1-pro-preview.round-1.txt
+  - docs/notes/review-runs/postwrite-vocab-recheck-2026-06-03-r3/raw/gpt-5.4.round-1.txt
+  - docs/notes/review-runs/postwrite-vocab-recheck-2026-06-03-r3/rounds.yaml
+  - docs/notes/review-runs/postwrite-vocab-recheck-2026-06-03-r3/target-manifest.yaml
+  - docs/notes/review-runs/postwrite-vocab-recheck-2026-06-03-r3/triage.yaml
+target_sha256:
+  docs/notes/2026-06-03-review-raw-triage-traceability-plan.md: 31c06d5f285ed0ae4287572c10a291c7500346921a0818b6479cce0f8704c32f
+  docs/operations/EVALUATION.md: 7690109be0689c3835bf19db6650054863fd92e6465ff7fb1bd352a12d5f9ae3
+  docs/notes/review-runs/postwrite-vocab-2026-06-03-r1/parsed/claude-sonnet-4-6.round-1.yaml: cb4620280d4b5022a5b72791281d77661998fbf6ec8612c0d5e0e0046d9a6366
+  docs/notes/review-runs/postwrite-vocab-2026-06-03-r1/raw/claude-sonnet-4-6.round-1.txt: fd7caf8059ac2463c51db31b33b7cbbc06304309d842d1a5e02a0523f4cdafc5
+  docs/notes/review-runs/postwrite-vocab-2026-06-03-r1/raw/gemini-3.1-pro-preview.round-1.txt: 78fe7cb98f881fb915e2d621c0a706155a32292cd0c790d2847eb09d59a91c29
+  docs/notes/review-runs/postwrite-vocab-2026-06-03-r1/raw/gpt-5.4.round-1.txt: bad3f0d8e1282cd2ff29f127e7882e44b6647f01709fe1abec6316cef3c7cd81
+  docs/notes/review-runs/postwrite-vocab-2026-06-03-r1/rounds.yaml: f9a0011d5aeb89ef726870ee98a69bea71c874a733d2dd66cbd6c3bed65d52c0
+  docs/notes/review-runs/postwrite-vocab-2026-06-03-r1/target-manifest.yaml: 8acdad41564e71a26efde4c211a83a67321a4534868870e1af81fe4b81f44f48
+  docs/notes/review-runs/postwrite-vocab-2026-06-03-r1/triage.yaml: 94015c3303590ed51f1735000b2ea5f864d7263a21d0c2761732543bbbf94446
+  docs/notes/review-runs/postwrite-vocab-final-2026-06-03-r2/raw/claude-sonnet-4-6.round-1.txt: 13b49315e043169df701a1b7d3bfd2384ca659a593a2339ef56a1a4edef5ee9d
+  docs/notes/review-runs/postwrite-vocab-final-2026-06-03-r2/raw/gemini-3.1-pro-preview.round-1.txt: f957429568bb1d9436d856f42175120b5c4d7f93f44f809d2726577bebaf8eea
+  docs/notes/review-runs/postwrite-vocab-final-2026-06-03-r2/raw/gpt-5.4.round-1.txt: 83701d075b719a09b2f08a0fadbe58087bd7ce8bedd8b49b5c3def9dcd436532
+  docs/notes/review-runs/postwrite-vocab-final-2026-06-03-r2/rounds.yaml: 5ceeae5fe494ed83b3e7aaa45c12a32326557e5bb3cc59f8158097226866bfc0
+  docs/notes/review-runs/postwrite-vocab-final-2026-06-03-r2/target-manifest.yaml: f3ae1fd84732574e2a137cfced5aea13da735b15929d17c339c3d68aba8200ce
+  docs/notes/review-runs/postwrite-vocab-final-2026-06-03-r2/triage.yaml: 9567b3ed7f19c7b9a4136e31064858b1fd0d66c9856ce9e3aced3afb45889036
+  docs/notes/review-runs/postwrite-vocab-recheck-2026-06-03-r3/raw/claude-sonnet-4-6.round-1.txt: 2bfd2444d56733bcc99aa20fd341694ba6d7391f6b0213301307d807dc870dae
+  docs/notes/review-runs/postwrite-vocab-recheck-2026-06-03-r3/raw/gemini-3.1-pro-preview.round-1.txt: f5571345298071d64d4c00be7015bbea9838c3a03c6e009403bd0d0e42188154
+  docs/notes/review-runs/postwrite-vocab-recheck-2026-06-03-r3/raw/gpt-5.4.round-1.txt: 1989da9ad07f441c4d8418ba38efa5a1d75c33f50315fef399e9842a30839f80
+  docs/notes/review-runs/postwrite-vocab-recheck-2026-06-03-r3/rounds.yaml: 4a98f8b11da471e4db42bd4403cd5fcc6959d50b4be9329b0341b54b4f522a70
+  docs/notes/review-runs/postwrite-vocab-recheck-2026-06-03-r3/target-manifest.yaml: 6b8f193e86a0de790d5147c67d78e341ce2c148e4aa2c9a313a1ce6dcf7d546c
+  docs/notes/review-runs/postwrite-vocab-recheck-2026-06-03-r3/triage.yaml: 90d473996004af55cf5438818d2c6cbcf37a93efe4ede2b7965968eb3171a716
+required_verifiers:
+  - claude-sonnet-4-6
+  - gpt-5.4
+  - gemini-3.1-pro-preview
+completed_verifiers:
+  - claude-sonnet-4-6
+  - gpt-5.4
+  - gemini-3.1-pro-preview
+unresolved_substantive_findings: 0
+review_run:
+  path: docs/notes/review-runs/postwrite-vocab-recheck-2026-06-03-r3
+  raw_paths:
+    - docs/notes/review-runs/postwrite-vocab-recheck-2026-06-03-r3/raw/claude-sonnet-4-6.round-1.txt
+    - docs/notes/review-runs/postwrite-vocab-recheck-2026-06-03-r3/raw/gpt-5.4.round-1.txt
+    - docs/notes/review-runs/postwrite-vocab-recheck-2026-06-03-r3/raw/gemini-3.1-pro-preview.round-1.txt
+verification_summaries:
+  - verifier: claude-sonnet-4-6
+    provider: anthropic-api
+    model: claude-sonnet-4-6
+    result_summary: >
+      Recheck found no foundation vocabulary contradiction. Remaining WARN items
+      concern future clarity for local-vocabulary status, role/treatment mapping,
+      model ID provenance, and protocol version units. These are non-blocking
+      follow-up refinements.
+  - verifier: gpt-5.4
+    provider: openai-api
+    model: gpt-5.4
+    result_summary: >
+      Recheck found no blocking issue. WARN items ask for small cross-reference
+      clarifications around role/treatment and human_required safety handling.
+  - verifier: gemini-3.1-pro-preview
+    provider: gemini-api
+    model: gemini-3.1-pro-preview
+    result_summary: >
+      Recheck raised one ERROR requesting confirmation that WARN, not WARNING, is
+      the foundation severity enum. The schema, foundation design, and foundation
+      tests all confirm WARN, so this was triaged as leave-as-is rather than a
+      substantive defect. Remaining WARN items are schema-shape and wording
+      follow-ups.
+triage:
+  blocking:
+    - >
+      None. The only ERROR was a verification request about WARN vs WARNING and
+      was resolved by direct schema/design/test evidence.
+  should_fix:
+    - >
+      Clarify role/treatment mapping, local vocabulary ownership, and protocol
+      version unit details in a later documentation pass.
+note: >
+  Post-write verification after foundation vocabulary alignment fixes and raw
+  review-run traceability additions. All model responses were saved as raw files.

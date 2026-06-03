@@ -1,0 +1,35 @@
+findings:
+  - severity: INFO
+    target_location: docs/operations/EVALUATION.md §6, docs/notes/2026-06-03-review-raw-triage-traceability-plan.md 全体
+    description: foundation 正本語彙との整合は概ね取れており、`review_mode`・`evidence_class`・`final_label`・正規化重大度の使い分けも明示されている。
+    rationale: 文書間で foundation を語彙正本として参照する姿勢が一貫しており、用語の独自拡張で既存契約を上書きしていない点は良好。
+
+  - severity: WARN
+    target_location: docs/operations/EVALUATION.md §6
+    description: raw/triage 台帳不存在、`parse_status=parse_failed`、`decision_status=human_required` を含む review run 証拠を暫定的に `admission_status=rejected` とする安全側既定は明記されているが、これは「現行既定」であって恒久意味論ではないことを冒頭寄りでも再強調してよい。
+    rationale: 現状でも本文後半に十分書かれているが、読者が `rejected` を恒久的な意味論と誤読すると、後続で予定している `admitted_exploratory` への再分類余地を見落としやすい。
+
+  - severity: WARN
+    target_location: docs/operations/EVALUATION.md §6, §10
+    description: raw/triage 台帳不存在を `rejected` 扱いする規則と、review run 証拠を可搬証拠束へ変換する規則の関係は十分読めるが、「変換前の notes 台帳不備」と「変換後 bundle の admission 判定」の二段階であることを短く整理するとさらに明確になる。
+    rationale: 現状でも内容上は整合しているが、notes 側の監査台帳要件と evaluation 側の imports/admission_register 契約が別層であるため、実装担当が一段階の判定だと誤解する余地が少しある。
+
+  - severity: INFO
+    target_location: docs/notes/2026-06-03-review-raw-triage-traceability-plan.md 必要性判定の三段階
+    description: `severity_normalized` と `final_label` を分離し、前者を foundation 正本語彙、後者を修正要否判断として扱っている点は vocabulary alignment として適切。
+    rationale: 重大度と最終処置判断を混同していないため、後続の evaluation 取り込み時にもラベルの意味が崩れにくい。
+
+  - severity: WARN
+    target_location: docs/notes/2026-06-03-review-raw-triage-traceability-plan.md rounds.yaml の最小項目
+    description: `invocation_path: api` という値例は、EVALUATION.md 側の正本語彙 `review_mode=api_mediated` と近いが別語彙であるため、「これは review_mode ではなく runner 記録用の局所フィールドである」と一言添えると混線を防げる。
+    rationale: 現状でも文脈上は runner の台帳項目だと読めるが、`api` と `api_mediated` の近接した語が並ぶため、foundation 契約値との誤対応付けを防ぐ注記があると実装時に安全。
+
+  - severity: WARN
+    target_location: docs/notes/2026-06-03-review-raw-triage-traceability-plan.md 全体, docs/operations/EVALUATION.md §10
+    description: 独立レビュー群の集約と議論モードを区別する方針は両文書で整合しているが、notes 側では `discussion.yaml`、EVALUATION 側では `aggregation_mode` 提案が出てくるため、将来の変換時にどちらが正本フィールドになるか未確定であることを明示してもよい。
+    rationale: 現時点では後続論点として十分だが、ファイル名レベルの運用案と評価メタデータ案が並走しているため、読者によっては両方を同時に必須実装だと受け取りうる。
+
+  - severity: INFO
+    target_location: docs/operations/EVALUATION.md §4, §8, §9
+    description: `analysis_run_manifest.yaml` を属性正本にせず、`review_mode`・`evidence_class`・`admission_status` の正本保持先を分離している点は foundation alignment と traceability の観点で妥当。
+    rationale: manifest に分析入力識別子のみを載せ、属性の正本を foundation metadata や admission register に残す構造は、再計算性と責務分離に沿っている。
