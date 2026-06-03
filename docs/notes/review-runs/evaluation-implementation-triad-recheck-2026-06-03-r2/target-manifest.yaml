@@ -1,0 +1,4 @@
+run_id: evaluation-implementation-triad-recheck-2026-06-03-r2
+target_files:
+- path: /private/tmp/reviewcompass-evaluation-implementation-fix-recheck-2026-06-03.md
+  sha256: 89c0e984d93bbba6b5eb4e4db411e5e3fde5b77674ad209339b8a491a0a0ce24

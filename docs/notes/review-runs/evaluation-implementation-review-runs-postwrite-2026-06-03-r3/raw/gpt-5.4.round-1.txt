@@ -1,0 +1,35 @@
+findings:
+  - severity: ERROR
+    target_location: "docs/notes/review-runs/evaluation-implementation-triad-2026-06-03-r1/triage.yaml: header fields"
+    description: "The triage file declares decision_actor_type: human while multiple item-level decisions are attributed to decision_actor: codex with decision_actor_type: human."
+    rationale: "This is internally inconsistent traceability metadata. Post-write verification requires reliable attribution of who made triage decisions; conflicting actor identity/type values make audit and accountability ambiguous."
+
+  - severity: ERROR
+    target_location: "docs/notes/review-runs/evaluation-implementation-triad-2026-06-03-r1/triage.yaml and docs/notes/review-runs/evaluation-implementation-triad-recheck-2026-06-03-r2/triage.yaml: applied_files"
+    description: "Every triage item that claims a fix was made has applied_files: [] despite decision_reason text stating specific fixes were implemented."
+    rationale: "This breaks implementation-to-artifact traceability. A post-write verification summary should let a reviewer identify which files changed for each must-fix/should-fix decision; empty applied_files prevents verification of the claimed remediation."
+
+  - severity: WARN
+    target_location: "docs/notes/review-runs/evaluation-implementation-triad-2026-06-03-r1/review_summary.md: Next steps"
+    description: "The summary still instructs readers to move judgments into triage.yaml and resolve human_required items even though triage.yaml is already present with triage_status: decided and human_required_count is 0 for all models."
+    rationale: "Stale next-step guidance makes the run artifact package look incomplete or mechanically generated without final verification. The summary should reflect the actual terminal state of the run."
+
+  - severity: WARN
+    target_location: "docs/notes/review-runs/evaluation-implementation-triad-recheck-2026-06-03-r2/review_summary.md: Next steps"
+    description: "The recheck summary repeats generic next steps about triage and human_required resolution even though triage is already decided and all model results show no human-required items."
+    rationale: "Run-summary artifacts should accurately communicate current status. Leaving unresolved-action boilerplate in a completed recheck package weakens triage-summary quality and can mislead downstream reviewers."
+
+  - severity: WARN
+    target_location: "docs/notes/review-runs/evaluation-implementation-triad-2026-06-03-r1/triage.yaml: item counts vs model-result-summary.yaml"
+    description: "The document does not provide an explicit reconciliation showing that the 20 triage items exactly correspond to the 14 Claude findings plus 6 GPT findings recorded in model-result-summary.yaml."
+    rationale: "Although the counts appear to align by inspection, post-write verification for artifacts traceability should make the cross-artifact mapping explicit or trivially auditable. Missing an explicit reconciliation step increases the chance of unnoticed omissions or duplicates."
+
+  - severity: INFO
+    target_location: "docs/notes/review-runs/evaluation-implementation-triad-recheck-2026-06-03-r2/model-result-summary.yaml and triage.yaml"
+    description: "The recheck run records 3 Claude findings and 3 triage items with no findings from GPT or Gemini, and these counts appear internally consistent."
+    rationale: "This is a positive traceability signal: parsed outputs, summary counts, and triage item volume match for the recheck package."
+
+  - severity: INFO
+    target_location: "docs/notes/review-runs/evaluation-implementation-triad-2026-06-03-r1/raw/*.txt and parsed/*.yaml"
+    description: "Raw and parsed artifacts for all three models are present for the initial run, and the parsed findings mirror the raw findings structure and content."
+    rationale: "This supports review-run artifact completeness and parser traceability, even though attribution and applied_files metadata still need tightening."

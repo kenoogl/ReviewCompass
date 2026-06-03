@@ -1,0 +1,478 @@
+run_id: evaluation-implementation-triad-2026-06-03-r1
+triage_status: decided
+generated_at: '2026-06-03T07:07:48.968883+00:00'
+decision_actor: codex
+decision_actor_type: orchestrator
+items:
+- finding_id: evaluation-implementation-triad-2026-06-03-r1-claude-sonnet-4-6-primary-001
+  run_id: evaluation-implementation-triad-2026-06-03-r1
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: 'evaluation/admission/admission_classifier.py: import statement'
+  plain_language_summary: admission_classifier.py uses a relative-style bare import
+    `from admission.checksum_verifier import ChecksumVerifier`, which relies on `evaluation/`
+    being in sys.path (set only in conftest.py). This works in tests but will fail
+    if the module is imported from any context where conftest.py has not been executed.
+  final_label: must-fix
+  decision_status: decided
+  decision_actor: codex
+  decision_actor_type: orchestrator
+  decision_at: '2026-06-03T07:13:02.798849+00:00'
+  decision_reason: Fixed package import to use a relative import so evaluation.admission
+    imports correctly outside the test-only sys.path setup.
+  applied_files:
+  - evaluation/admission/admission_classifier.py
+  - tests/evaluation/test_t003_admission.py
+  superseded_by: null
+- finding_id: evaluation-implementation-triad-2026-06-03-r1-claude-sonnet-4-6-primary-002
+  run_id: evaluation-implementation-triad-2026-06-03-r1
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: 'evaluation/classifier/step_omission_validator.py: _TREATMENT_VOCAB
+    path'
+  plain_language_summary: StepOmissionValidator hard-codes a path to `runtime/runtime_core/treatment_vocab.yaml`
+    two levels up from the evaluation package root. If this file does not exist at
+    that path or the repository layout changes, the validator silently fails at runtime
+    with a FileNotFoundError rather than a design-time contract violation.
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: codex
+  decision_actor_type: orchestrator
+  decision_at: '2026-06-03T07:13:02.849349+00:00'
+  decision_reason: The canonical runtime treatment vocab exists at the referenced
+    path and T-011 contract tests cover vocabulary-reference behavior; no functional
+    failure was reproduced.
+  applied_files: []
+  superseded_by: null
+- finding_id: evaluation-implementation-triad-2026-06-03-r1-claude-sonnet-4-6-primary-003
+  run_id: evaluation-implementation-triad-2026-06-03-r1
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: 'evaluation/classifier/foundation_ref.py: _METADATA_CONTRACT path'
+  plain_language_summary: foundation_ref.py hard-codes the path `runtime/foundation/metadata_contract.yaml`
+    relative to the repository root. If this file is absent or the vocabulary key
+    `evidence_class` is missing, the module raises an unhandled KeyError/FileNotFoundError
+    with no diagnostic message.
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: codex
+  decision_actor_type: orchestrator
+  decision_at: '2026-06-03T07:13:02.898956+00:00'
+  decision_reason: The canonical metadata contract exists at the referenced path and
+    current T-004/T-011 tests verify reference-only use. Missing-contract diagnostics
+    can be improved later without blocking this triad review.
+  applied_files: []
+  superseded_by: null
+- finding_id: evaluation-implementation-triad-2026-06-03-r1-claude-sonnet-4-6-primary-004
+  run_id: evaluation-implementation-triad-2026-06-03-r1
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: 'evaluation/intake/physical_placement.py: place() – overwrite on
+    re-ingest'
+  plain_language_summary: PhysicalPlacement.place() calls shutil.rmtree on the destination
+    bundle directory before copying if it already exists. This silently destroys a
+    previously admitted bundle without recording the overwrite event in ingestion_register.json
+    or admission_register.json.
+  final_label: must-fix
+  decision_status: decided
+  decision_actor: codex
+  decision_actor_type: orchestrator
+  decision_at: '2026-06-03T07:13:02.948073+00:00'
+  decision_reason: Fixed PhysicalPlacement so existing imported bundles are preserved
+    instead of silently removed; re-ingestion is recorded as already_present.
+  applied_files:
+  - evaluation/intake/physical_placement.py
+  - evaluation/intake/bundle_intake.py
+  - tests/evaluation/test_t002_intake.py
+  superseded_by: null
+- finding_id: evaluation-implementation-triad-2026-06-03-r1-claude-sonnet-4-6-primary-005
+  run_id: evaluation-implementation-triad-2026-06-03-r1
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: 'evaluation/metrics/phase_overlay_definition.yaml: ''implementation''
+    phase overlay'
+  plain_language_summary: phase_overlay_definition.yaml declares a phase overlay for
+    `implementation`, but the canonical four-phase set defined in EVALUATION.md §3
+    (Requirement 7) is `intent / requirements / design / tasks`. An `implementation`
+    phase is not part of the declared contract.
+  final_label: must-fix
+  decision_status: decided
+  decision_actor: codex
+  decision_actor_type: orchestrator
+  decision_at: '2026-06-03T07:13:02.996704+00:00'
+  decision_reason: Removed the non-canonical implementation phase overlay and added
+    a test that locks the canonical four document phases.
+  applied_files:
+  - evaluation/metrics/phase_overlay_definition.yaml
+  - tests/evaluation/test_t006_metrics.py
+  superseded_by: null
+- finding_id: evaluation-implementation-triad-2026-06-03-r1-claude-sonnet-4-6-primary-006
+  run_id: evaluation-implementation-triad-2026-06-03-r1
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: 'evaluation/classifier/run_classifier.py: classify() – included_in_standard_metrics
+    logic'
+  plain_language_summary: 'RunClassifier sets included_in_standard_metrics=True only
+    when classification==''valid'', but does not account for the admission_status
+    requirement from EVALUATION.md §6: an external bundle must also have admission_status=''admitted_standard''
+    to be eligible for the standard comparison set. A run with evidence_class=valid
+    but admission_status=''admitted_exploratory'' will be marked included_in_standard_metrics=True.'
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: codex
+  decision_actor_type: orchestrator
+  decision_at: '2026-06-03T07:13:03.044373+00:00'
+  decision_reason: Fixed RunClassifier standard metrics eligibility so admitted_exploratory
+    evidence is not included in standard metrics.
+  applied_files:
+  - evaluation/classifier/run_classifier.py
+  - tests/evaluation/test_t004_classifier.py
+  superseded_by: null
+- finding_id: evaluation-implementation-triad-2026-06-03-r1-claude-sonnet-4-6-primary-007
+  run_id: evaluation-implementation-triad-2026-06-03-r1
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: 'evaluation/comparison/valid_population_rule.py: apply()'
+  plain_language_summary: ValidPopulationRule filters only on classification=='valid',
+    without enforcing that admission_status='admitted_standard' for externally ingested
+    runs. Combined with the classifier issue above, this means admitted_exploratory
+    external evidence could flow into the standard comparison set.
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: codex
+  decision_actor_type: orchestrator
+  decision_at: '2026-06-03T07:13:03.091482+00:00'
+  decision_reason: Fixed ValidPopulationRule and mode slicing to exclude admitted_exploratory
+    external evidence from the standard comparison path.
+  applied_files:
+  - evaluation/comparison/valid_population_rule.py
+  - evaluation/comparison/mode_population_rule.py
+  - tests/evaluation/test_t007_comparison.py
+  superseded_by: null
+- finding_id: evaluation-implementation-triad-2026-06-03-r1-claude-sonnet-4-6-primary-008
+  run_id: evaluation-implementation-triad-2026-06-03-r1
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: 'tests/evaluation/test_t004_classifier.py: test_foundation_evidence_class_vocab_is_referenced'
+  plain_language_summary: The test hard-codes the expected vocabulary list `['valid',
+    'invalid', 'exploratory', 'analysis_blocked']` as an ordered equality assertion
+    against the live foundation_ref.vocabulary(). If the canonical file changes order
+    without changing content, the test will fail spuriously.
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: codex
+  decision_actor_type: orchestrator
+  decision_at: '2026-06-03T07:13:03.139939+00:00'
+  decision_reason: Changed the foundation evidence_class test to compare membership
+    as a set rather than ordering.
+  applied_files:
+  - tests/evaluation/test_t004_classifier.py
+  superseded_by: null
+- finding_id: evaluation-implementation-triad-2026-06-03-r1-claude-sonnet-4-6-primary-009
+  run_id: evaluation-implementation-triad-2026-06-03-r1
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: 'evaluation/admission/checksum_verifier.py: _single_run_root()'
+  plain_language_summary: _single_run_root silently falls back to returning run_parent
+    when the number of run directories is not exactly one, instead of raising an error
+    or returning a ChecksumResult with ok=False. This causes the checksum verification
+    loop to look for files directly inside the 'run/' directory rather than inside
+    a run_id sub-directory, producing spurious 'missing_files' entries.
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: codex
+  decision_actor_type: orchestrator
+  decision_at: '2026-06-03T07:13:03.187633+00:00'
+  decision_reason: Fixed ChecksumVerifier to reject ambiguous run directories explicitly
+    with ambiguous_run_directory.
+  applied_files:
+  - evaluation/admission/checksum_verifier.py
+  - tests/evaluation/test_t003_admission.py
+  superseded_by: null
+- finding_id: evaluation-implementation-triad-2026-06-03-r1-claude-sonnet-4-6-primary-010
+  run_id: evaluation-implementation-triad-2026-06-03-r1
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: 'evaluation/readiness/metadata_validator.py: validate() – fatal
+    failure returns evidence_class=''invalid'''
+  plain_language_summary: When the YAML manifest is unreadable, MetadataValidator
+    returns evidence_class='invalid'. However, EVALUATION.md §4 states that evidence_class
+    values are canonical foundation values from metadata_contract.yaml; 'invalid'
+    is a legitimate evidence_class meaning the run was intentionally invalidated,
+    not that the manifest is unreadable.
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: codex
+  decision_actor_type: orchestrator
+  decision_at: '2026-06-03T07:13:03.234612+00:00'
+  decision_reason: Current readiness contract intentionally distinguishes fatal failures
+    with failure_kind=fatal while retaining evidence_class=invalid, as covered by
+    existing tests.
+  applied_files: []
+  superseded_by: null
+- finding_id: evaluation-implementation-triad-2026-06-03-r1-claude-sonnet-4-6-primary-011
+  run_id: evaluation-implementation-triad-2026-06-03-r1
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: 'tests/evaluation/test_t002_intake.py: _setup_export_bundle – empty
+    checksums'
+  plain_language_summary: The test fixture writes an empty `bundle_checksums.json`
+    (`{}`), which means ChecksumVerifier will verify zero files and return ok=True
+    unconditionally. Downstream admission tests that rely on checksum verification
+    being exercised are therefore not actually testing the checksum path for non-trivial
+    bundles.
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: codex
+  decision_actor_type: orchestrator
+  decision_at: '2026-06-03T07:13:03.281397+00:00'
+  decision_reason: ChecksumVerifier has dedicated non-empty checksum tests in T-003;
+    the T-002 fixture focuses on placement/register behavior and can remain lightweight.
+  applied_files: []
+  superseded_by: null
+- finding_id: evaluation-implementation-triad-2026-06-03-r1-claude-sonnet-4-6-primary-012
+  run_id: evaluation-implementation-triad-2026-06-03-r1
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: 'evaluation/staleness/handler_selection_logic.py: select()'
+  plain_language_summary: The rederive_threshold default of 0.05 (5%) is a hard-coded
+    magic number with no reference to a configuration file, design document section,
+    or named constant.
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: codex
+  decision_actor_type: orchestrator
+  decision_at: '2026-06-03T07:13:03.327976+00:00'
+  decision_reason: The 0.05 threshold is an initial implementation default and the
+    staleness threshold policy remains an explicit DVT/backlog topic.
+  applied_files: []
+  superseded_by: null
+- finding_id: evaluation-implementation-triad-2026-06-03-r1-claude-sonnet-4-6-primary-013
+  run_id: evaluation-implementation-triad-2026-06-03-r1
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: 'evaluation/metrics/treatment_metrics_extractor.py: extract()'
+  plain_language_summary: TreatmentMetricsExtractor mutates the dict returned by treatments.setdefault()
+    in place (via current['run_ids'].append, etc.). While this works in CPython, it
+    relies on dict identity semantics that could be surprising and is inconsistent
+    with the otherwise immutable/dataclass style used throughout the package.
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: codex
+  decision_actor_type: orchestrator
+  decision_at: '2026-06-03T07:13:03.374202+00:00'
+  decision_reason: The in-place dict accumulation is deterministic and covered by
+    tests; this is style-only with no behavioral impact.
+  applied_files: []
+  superseded_by: null
+- finding_id: evaluation-implementation-triad-2026-06-03-r1-claude-sonnet-4-6-primary-014
+  run_id: evaluation-implementation-triad-2026-06-03-r1
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: docs/operations/EVALUATION.md §10 – must-fix backlog size
+  plain_language_summary: §10 lists 14 'must-fix' items that are explicitly unresolved
+    at commit time, including the admission_status × evidence_class combination table,
+    the input_run_set external-evidence identifier format, and the exploratory opt-in
+    procedure.
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: codex
+  decision_actor_type: orchestrator
+  decision_at: '2026-06-03T07:13:03.420461+00:00'
+  decision_reason: The unresolved items are documented as deferred/known gaps in EVALUATION.md
+    and do not block the current implementation drafting triad review.
+  applied_files: []
+  superseded_by: null
+- finding_id: evaluation-implementation-triad-2026-06-03-r1-gpt-5.4-adversarial-001
+  run_id: evaluation-implementation-triad-2026-06-03-r1
+  source_model: gpt-5.4
+  source_round: round-1
+  source_raw_path: raw/gpt-5.4.round-1.txt
+  source_parsed_path: parsed/gpt-5.4.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: evaluation/admission/admission_classifier.py
+  plain_language_summary: AdmissionClassifier never checks runtime_version consistency,
+    so bundles with mismatched runtime versions can still be classified as admitted_standard.
+  final_label: must-fix
+  decision_status: decided
+  decision_actor: codex
+  decision_actor_type: orchestrator
+  decision_at: '2026-06-03T07:13:03.466525+00:00'
+  decision_reason: Added runtime_version mismatch coverage to AdmissionClassifier
+    through expected_versions and regression tests.
+  applied_files:
+  - evaluation/admission/admission_classifier.py
+  - tests/evaluation/test_t003_admission.py
+  superseded_by: null
+- finding_id: evaluation-implementation-triad-2026-06-03-r1-gpt-5.4-adversarial-002
+  run_id: evaluation-implementation-triad-2026-06-03-r1
+  source_model: gpt-5.4
+  source_round: round-1
+  source_raw_path: raw/gpt-5.4.round-1.txt
+  source_parsed_path: parsed/gpt-5.4.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: evaluation/comparison/version_consistency_validator.py
+  plain_language_summary: VersionConsistencyValidator ignores runtime_version when
+    validating comparison-set consistency.
+  final_label: must-fix
+  decision_status: decided
+  decision_actor: codex
+  decision_actor_type: orchestrator
+  decision_at: '2026-06-03T07:13:03.512290+00:00'
+  decision_reason: Fixed VersionConsistencyValidator to include runtime_version mixed-set
+    detection.
+  applied_files:
+  - evaluation/admission/admission_classifier.py
+  - evaluation/comparison/version_consistency_validator.py
+  - tests/evaluation/test_t003_admission.py
+  - tests/evaluation/test_t007_comparison.py
+  superseded_by: null
+- finding_id: evaluation-implementation-triad-2026-06-03-r1-gpt-5.4-adversarial-003
+  run_id: evaluation-implementation-triad-2026-06-03-r1
+  source_model: gpt-5.4
+  source_round: round-1
+  source_raw_path: raw/gpt-5.4.round-1.txt
+  source_parsed_path: parsed/gpt-5.4.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: evaluation/classifier/run_classifier.py
+  plain_language_summary: included_in_standard_metrics is computed solely from classification
+    == 'valid' and does not exclude non-runtime review modes or admitted_exploratory
+    inputs.
+  final_label: must-fix
+  decision_status: decided
+  decision_actor: codex
+  decision_actor_type: orchestrator
+  decision_at: '2026-06-03T07:13:03.557729+00:00'
+  decision_reason: Fixed included_in_standard_metrics to require classification valid,
+    runtime_mediated review_mode, and admitted_standard admission_status.
+  applied_files:
+  - evaluation/classifier/run_classifier.py
+  - tests/evaluation/test_t004_classifier.py
+  superseded_by: null
+- finding_id: evaluation-implementation-triad-2026-06-03-r1-gpt-5.4-adversarial-004
+  run_id: evaluation-implementation-triad-2026-06-03-r1
+  source_model: gpt-5.4
+  source_round: round-1
+  source_raw_path: raw/gpt-5.4.round-1.txt
+  source_parsed_path: parsed/gpt-5.4.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: evaluation/intake/bundle_intake.py
+  plain_language_summary: Bundle intake copies and registers bundles even when required
+    provenance fields are missing, rather than failing or explicitly distinguishing
+    incomplete ingestion.
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: codex
+  decision_actor_type: orchestrator
+  decision_at: '2026-06-03T07:13:03.603402+00:00'
+  decision_reason: Changed intake register status to incomplete when provenance fields
+    are missing, while preserving the missing_fields evidence.
+  applied_files:
+  - evaluation/intake/bundle_intake.py
+  - tests/evaluation/test_t002_intake.py
+  superseded_by: null
+- finding_id: evaluation-implementation-triad-2026-06-03-r1-gpt-5.4-adversarial-005
+  run_id: evaluation-implementation-triad-2026-06-03-r1
+  source_model: gpt-5.4
+  source_round: round-1
+  source_raw_path: raw/gpt-5.4.round-1.txt
+  source_parsed_path: parsed/gpt-5.4.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: evaluation/readiness/metadata_validator.py
+  plain_language_summary: MetadataValidator handles YAML parse errors but not missing
+    run_manifest.yaml files.
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: codex
+  decision_actor_type: orchestrator
+  decision_at: '2026-06-03T07:13:03.648385+00:00'
+  decision_reason: Fixed MetadataValidator so missing run_manifest.yaml returns a
+    fatal diagnostic instead of raising FileNotFoundError.
+  applied_files:
+  - evaluation/readiness/metadata_validator.py
+  - tests/evaluation/test_t005_readiness.py
+  superseded_by: null
+- finding_id: evaluation-implementation-triad-2026-06-03-r1-gpt-5.4-adversarial-006
+  run_id: evaluation-implementation-triad-2026-06-03-r1
+  source_model: gpt-5.4
+  source_round: round-1
+  source_raw_path: raw/gpt-5.4.round-1.txt
+  source_parsed_path: parsed/gpt-5.4.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: evaluation/intake/physical_placement.py
+  plain_language_summary: PhysicalPlacement.place accepts a run_id parameter but does
+    not validate that the copied bundle actually contains the expected run/<run_id>
+    path.
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: codex
+  decision_actor_type: orchestrator
+  decision_at: '2026-06-03T07:13:03.692685+00:00'
+  decision_reason: Added run/<run_id> validation in PhysicalPlacement before copying
+    a bundle.
+  applied_files:
+  - evaluation/intake/physical_placement.py
+  - tests/evaluation/test_t002_intake.py
+  superseded_by: null

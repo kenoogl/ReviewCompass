@@ -90,6 +90,16 @@ def test_fatal_failure_is_distinct_from_analysis_blocked(tmp_path):
   assert result.evidence_class == "invalid"
 
 
+def test_missing_run_manifest_returns_fatal_diagnostic(tmp_path):
+  """run_manifest.yaml 不在も例外ではなく致命的診断として返す。"""
+  run_dir = _write_run(tmp_path)
+  (run_dir / "run_manifest.yaml").unlink()
+  result = MetadataValidator().validate(run_dir)
+  assert result.ok is False
+  assert result.failure_kind == "fatal"
+  assert result.missing_fields == MetadataValidator().required_fields
+
+
 def test_insufficient_metadata_report_has_required_5_fields(tmp_path):
   """insufficient_metadata_report.json に 5 項目を出力する。"""
   result = MetadataValidator().validate(_write_run(tmp_path, updates={"prompt_set_version": None}))

@@ -53,11 +53,24 @@ RUNS = [
     "prompt_set_version": "q1",
     "finding_count": 4,
   },
+  {
+    "run_id": "run-5",
+    "target_id": "target-4",
+    "classification": "valid",
+    "treatment": "primary",
+    "phase_profile": "design",
+    "review_mode": "runtime_mediated",
+    "admission_status": "admitted_exploratory",
+    "protocol_version": "p1",
+    "runtime_version": "r1",
+    "prompt_set_version": "q1",
+    "finding_count": 1,
+  },
 ]
 
 
 def test_valid_population_rule_includes_only_valid_runs():
-  """有効母集団規則は valid のみを含める。"""
+  """有効母集団規則は valid かつ標準許容の実行だけを含める。"""
   included = ValidPopulationRule().apply(RUNS)
   assert [run["run_id"] for run in included] == ["run-1", "run-2", "run-4"]
 
@@ -75,6 +88,14 @@ def test_version_consistency_validator_detects_mixed_protocol():
   result = VersionConsistencyValidator().validate(runs)
   assert result.ok is False
   assert result.reason_codes == ["mixed_protocol_version"]
+
+
+def test_version_consistency_validator_detects_mixed_runtime_version():
+  """比較セット内の runtime 版混在を検出する。"""
+  runs = [dict(RUNS[0], runtime_version="r1"), dict(RUNS[1], runtime_version="r2")]
+  result = VersionConsistencyValidator().validate(runs)
+  assert result.ok is False
+  assert result.reason_codes == ["mixed_runtime_version"]
 
 
 def test_treatment_comparison_builder_outputs_included_valid_runtime_runs(tmp_path):

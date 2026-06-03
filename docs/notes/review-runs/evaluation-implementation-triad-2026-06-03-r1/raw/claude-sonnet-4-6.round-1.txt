@@ -1,0 +1,70 @@
+findings:
+  - severity: ERROR
+    target_location: "evaluation/admission/admission_classifier.py: import statement"
+    description: "admission_classifier.py uses a relative-style bare import `from admission.checksum_verifier import ChecksumVerifier`, which relies on `evaluation/` being in sys.path (set only in conftest.py). This works in tests but will fail if the module is imported from any context where conftest.py has not been executed."
+    rationale: "The tasks design requires each package to be independently importable. The current import structure creates a fragile runtime dependency on test-only path manipulation. Within-package imports should use relative imports (e.g., `from .checksum_verifier import ChecksumVerifier`) to be reliable outside the test harness."
+
+  - severity: ERROR
+    target_location: "evaluation/classifier/step_omission_validator.py: _TREATMENT_VOCAB path"
+    description: "StepOmissionValidator hard-codes a path to `runtime/runtime_core/treatment_vocab.yaml` two levels up from the evaluation package root. If this file does not exist at that path or the repository layout changes, the validator silently fails at runtime with a FileNotFoundError rather than a design-time contract violation."
+    rationale: "The design states that evaluation must not override foundation/runtime contracts and must follow them. Depending on a hard-coded sibling-package file path with no fallback, schema validation, or existence check at module load time creates a fragile cross-package dependency that is not captured in any declared interface."
+
+  - severity: ERROR
+    target_location: "evaluation/classifier/foundation_ref.py: _METADATA_CONTRACT path"
+    description: "foundation_ref.py hard-codes the path `runtime/foundation/metadata_contract.yaml` relative to the repository root. If this file is absent or the vocabulary key `evidence_class` is missing, the module raises an unhandled KeyError/FileNotFoundError with no diagnostic message."
+    rationale: "Tasks T-004 requires 'foundation 4-value canonical reference only' to be machine-verified. A missing-file or missing-key scenario at import time produces an opaque traceback rather than a clear contract violation report, undermining the 'fast failure with recorded reason' design principle stated in EVALUATION.md §2."
+
+  - severity: ERROR
+    target_location: "evaluation/intake/physical_placement.py: place() – overwrite on re-ingest"
+    description: "PhysicalPlacement.place() calls shutil.rmtree on the destination bundle directory before copying if it already exists. This silently destroys a previously admitted bundle without recording the overwrite event in ingestion_register.json or admission_register.json."
+    rationale: "EVALUATION.md §8 states that imports/ is a 'protected storage area' with a different lifecycle from ordinary derived outputs. Silently overwriting an admitted bundle violates the preservation contract and breaks auditability. The design requires every state-changing event on import artefacts to be traceable."
+
+  - severity: ERROR
+    target_location: "evaluation/metrics/phase_overlay_definition.yaml: 'implementation' phase overlay"
+    description: "phase_overlay_definition.yaml declares a phase overlay for `implementation`, but the canonical four-phase set defined in EVALUATION.md §3 (Requirement 7) is `intent / requirements / design / tasks`. An `implementation` phase is not part of the declared contract."
+    rationale: "Adding a fifth phase in an implementation artefact without a corresponding requirement change creates an inconsistency between the canonical specification and the deployed artefact. Downstream phase-slicing logic that validates against the four-phase list will silently accept or reject this extra value depending on implementation, introducing a latent data quality risk."
+
+  - severity: WARN
+    target_location: "evaluation/classifier/run_classifier.py: classify() – included_in_standard_metrics logic"
+    description: "RunClassifier sets included_in_standard_metrics=True only when classification=='valid', but does not account for the admission_status requirement from EVALUATION.md §6: an external bundle must also have admission_status='admitted_standard' to be eligible for the standard comparison set. A run with evidence_class=valid but admission_status='admitted_exploratory' will be marked included_in_standard_metrics=True."
+    rationale: "EVALUATION.md §6 states that all four conditions (evidence_class=valid, review_mode=runtime_mediated, version consistency, admission_status=admitted_standard) must be satisfied simultaneously for standard comparison eligibility. The classifier only enforces the evidence_class dimension, leaving the admission_status gate unenforced at the classification layer."
+
+  - severity: WARN
+    target_location: "evaluation/comparison/valid_population_rule.py: apply()"
+    description: "ValidPopulationRule filters only on classification=='valid', without enforcing that admission_status='admitted_standard' for externally ingested runs. Combined with the classifier issue above, this means admitted_exploratory external evidence could flow into the standard comparison set."
+    rationale: "Per EVALUATION.md §6, external evidence with admission_status='admitted_exploratory' must never enter the standard comparison set even if evidence_class=valid. The population rule is a second line of defence that should enforce this boundary explicitly."
+
+  - severity: WARN
+    target_location: "tests/evaluation/test_t004_classifier.py: test_foundation_evidence_class_vocab_is_referenced"
+    description: "The test hard-codes the expected vocabulary list `['valid', 'invalid', 'exploratory', 'analysis_blocked']` as an ordered equality assertion against the live foundation_ref.vocabulary(). If the canonical file changes order without changing content, the test will fail spuriously."
+    rationale: "The design intent is to verify that evaluation references the foundation canonical, not to pin the order. Using a set equality check (or sorted comparison) would make the test more robust against canonical-file formatting changes while still enforcing the correct membership."
+
+  - severity: WARN
+    target_location: "evaluation/admission/checksum_verifier.py: _single_run_root()"
+    description: "_single_run_root silently falls back to returning run_parent when the number of run directories is not exactly one, instead of raising an error or returning a ChecksumResult with ok=False. This causes the checksum verification loop to look for files directly inside the 'run/' directory rather than inside a run_id sub-directory, producing spurious 'missing_files' entries."
+    rationale: "The contract requires that a bundle contains exactly one run directory. An ambiguous or empty 'run/' directory should be a hard rejection (reason_code: ambiguous_run_directory), not a silent path fallback. The current behaviour masks structural violations in inbound bundles."
+
+  - severity: WARN
+    target_location: "evaluation/readiness/metadata_validator.py: validate() – fatal failure returns evidence_class='invalid'"
+    description: "When the YAML manifest is unreadable, MetadataValidator returns evidence_class='invalid'. However, EVALUATION.md §4 states that evidence_class values are canonical foundation values from metadata_contract.yaml; 'invalid' is a legitimate evidence_class meaning the run was intentionally invalidated, not that the manifest is unreadable."
+    rationale: "Using 'invalid' as the evidence_class for a fatal parse failure conflates two distinct situations: a run that was intentionally invalidated (evidence_class=invalid in the run manifest) and a run whose manifest cannot be read at all. The failure_kind='fatal' field partially mitigates this, but downstream consumers filtering on evidence_class alone will misclassify fatal failures as intentionally-invalidated runs."
+
+  - severity: WARN
+    target_location: "tests/evaluation/test_t002_intake.py: _setup_export_bundle – empty checksums"
+    description: "The test fixture writes an empty `bundle_checksums.json` (`{}`), which means ChecksumVerifier will verify zero files and return ok=True unconditionally. Downstream admission tests that rely on checksum verification being exercised are therefore not actually testing the checksum path for non-trivial bundles."
+    rationale: "Test T-003 does separately test checksum mismatch, but the integration test (T-011) also uses an empty checksum file. A meaningful integration test should include at least one file in the checksum manifest to confirm the end-to-end path functions correctly under realistic conditions."
+
+  - severity: INFO
+    target_location: "evaluation/staleness/handler_selection_logic.py: select()"
+    description: "The rederive_threshold default of 0.05 (5%) is a hard-coded magic number with no reference to a configuration file, design document section, or named constant."
+    rationale: "EVALUATION.md §10 lists staleness_register.json contract details as a 'should-fix' item, suggesting the threshold policy is not yet finalised. Hard-coding 0.05 without a named constant or externalised configuration makes future calibration opaque and untraceable."
+
+  - severity: INFO
+    target_location: "evaluation/metrics/treatment_metrics_extractor.py: extract()"
+    description: "TreatmentMetricsExtractor mutates the dict returned by treatments.setdefault() in place (via current['run_ids'].append, etc.). While this works in CPython, it relies on dict identity semantics that could be surprising and is inconsistent with the otherwise immutable/dataclass style used throughout the package."
+    rationale: "Consistency with the rest of the codebase (which uses frozen dataclasses for intermediate results) would make the data flow easier to reason about and test. This is a code style concern with no functional impact under current usage."
+
+  - severity: INFO
+    target_location: "docs/operations/EVALUATION.md §10 – must-fix backlog size"
+    description: "§10 lists 14 'must-fix' items that are explicitly unresolved at commit time, including the admission_status × evidence_class combination table, the input_run_set external-evidence identifier format, and the exploratory opt-in procedure."
+    rationale: "The implementation artefacts in this commit (particularly AdmissionClassifier and RunClassifier) make behavioural choices in areas that §10 explicitly marks as unresolved. The code will need to be revisited when those decisions are made, and the current implementations may not match the eventual design. Tracking these as known gaps is appropriate but reviewers should note the implementation risk."

@@ -8,5 +8,3 @@ phase_overlays:
     primary_effectiveness_metric: architectural_risk_detection
   tasks:
     primary_effectiveness_metric: implementation_readiness
-  implementation:
-    primary_effectiveness_metric: defect_prevention

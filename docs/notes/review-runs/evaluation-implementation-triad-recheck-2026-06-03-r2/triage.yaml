@@ -1,0 +1,71 @@
+run_id: evaluation-implementation-triad-recheck-2026-06-03-r2
+triage_status: decided
+generated_at: '2026-06-03T07:14:08.098151+00:00'
+decision_actor: codex
+decision_actor_type: orchestrator
+items:
+- finding_id: evaluation-implementation-triad-recheck-2026-06-03-r2-claude-sonnet-4-6-primary-001
+  run_id: evaluation-implementation-triad-recheck-2026-06-03-r2
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: evaluation/metrics/phase_overlay_definition.yaml (removal of implementation
+    overlay)
+  plain_language_summary: 'The `implementation` phase overlay entry (with `primary_effectiveness_metric:
+    defect_prevention`) has been removed from phase_overlay_definition.yaml.'
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: codex
+  decision_actor_type: orchestrator
+  decision_at: '2026-06-03T07:14:29.289867+00:00'
+  decision_reason: implementation is the workflow phase, not one of the four reviewed
+    document phase_profile values. Requirement 7 covers intent/requirements/design/tasks,
+    so removing implementation from phase overlays is intentional.
+  applied_files: []
+  superseded_by: null
+- finding_id: evaluation-implementation-triad-recheck-2026-06-03-r2-claude-sonnet-4-6-primary-002
+  run_id: evaluation-implementation-triad-recheck-2026-06-03-r2
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: 'tests/evaluation/test_t006_metrics.py: test_phase_overlay_uses_canonical_four_document_phases'
+  plain_language_summary: 'A new test asserts that the phase overlay contains exactly
+    the four phases: intent, requirements, design, tasks — explicitly excluding `implementation`.'
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: codex
+  decision_actor_type: orchestrator
+  decision_at: '2026-06-03T07:14:29.301129+00:00'
+  decision_reason: The test intentionally locks phase_overlay_definition.yaml to the
+    four canonical document phases from Requirement 7; implementation.drafting in
+    spec.json is a workflow state, not a phase_profile value.
+  applied_files: []
+  superseded_by: null
+- finding_id: evaluation-implementation-triad-recheck-2026-06-03-r2-claude-sonnet-4-6-primary-003
+  run_id: evaluation-implementation-triad-recheck-2026-06-03-r2
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: 'evaluation/comparison/mode_population_rule.py: slice method'
+  plain_language_summary: The `by_review_mode` slice loop (lines after standard population
+    filter) still iterates all runs including those with `admission_status != admitted_standard`,
+    which means non-standard admitted runs appear in per-mode slices.
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: codex
+  decision_actor_type: orchestrator
+  decision_at: '2026-06-03T07:14:29.311128+00:00'
+  decision_reason: by_review_mode is a visibility slice separate from the standard
+    runtime_mediated population. Non-standard evidence is excluded from standard comparisons
+    but may remain visible in mode-specific slices for explicit exploratory analysis.
+  applied_files: []
+  superseded_by: null

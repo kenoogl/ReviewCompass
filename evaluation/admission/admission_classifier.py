@@ -4,7 +4,7 @@ from pathlib import Path
 
 import yaml
 
-from admission.checksum_verifier import ChecksumVerifier
+from .checksum_verifier import ChecksumVerifier
 
 _REQUIRED_FIELDS = [
   "bundle_id",

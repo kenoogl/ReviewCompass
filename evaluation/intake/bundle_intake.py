@@ -42,6 +42,8 @@ class BundleIntake:
     bundle_id = manifest["bundle_id"]
     run_id = manifest["run_id"]
     missing_fields = [field for field in _PROVENANCE_FIELDS if not manifest.get(field)]
+    destination_bundle = analysis_root / "imports" / "bundles" / bundle_id
+    already_present = destination_bundle.exists()
 
     bundle_path = self.placement.place(
       bundle_dir,
@@ -49,6 +51,13 @@ class BundleIntake:
       bundle_id=bundle_id,
       run_id=run_id,
     )
+    if already_present:
+      ingestion_status = "already_present"
+    elif missing_fields:
+      ingestion_status = "incomplete"
+    else:
+      ingestion_status = "ingested"
+
     entry = {
       "bundle_id": bundle_id,
       "run_id": run_id,
@@ -56,7 +65,7 @@ class BundleIntake:
       "source_revision": manifest.get("source_revision"),
       "review_mode": manifest.get("review_mode"),
       "ingested_at": ingested_at,
-      "ingestion_status": "ingested",
+      "ingestion_status": ingestion_status,
       "missing_fields": missing_fields,
     }
     register_path = self.register_writer.append(analysis_root, entry)

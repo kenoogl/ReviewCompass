@@ -1,0 +1,30 @@
+findings:
+  - severity: ERROR
+    target_location: "evaluation/admission/admission_classifier.py"
+    description: "AdmissionClassifier never checks runtime_version consistency, so bundles with mismatched runtime versions can still be classified as admitted_standard."
+    rationale: "The documented standard-comparison eligibility in docs/operations/EVALUATION.md §6 requires protocol version, runtime version, and prompt version coverage to be aligned. The implementation only compares fields passed in expected_versions and all current tests exercise protocol_version and prompt_set_version only; a runtime_version mismatch would therefore bypass the gating and violate the stated comparison contract."
+
+  - severity: ERROR
+    target_location: "evaluation/comparison/version_consistency_validator.py"
+    description: "VersionConsistencyValidator ignores runtime_version when validating comparison-set consistency."
+    rationale: "The requirements and operations document explicitly treat runtime version coverage as part of the standard comparison eligibility and analysis manifest contract. Detecting only protocol_version and prompt_set_version means a mixed-runtime comparison set can be reported with version_consistency.ok=true, which undermines the design requirement to block standard aggregation on version mixing."
+
+  - severity: ERROR
+    target_location: "evaluation/classifier/run_classifier.py"
+    description: "included_in_standard_metrics is computed solely from classification == 'valid' and does not exclude non-runtime review modes or admitted_exploratory inputs."
+    rationale: "The documented standard comparison set requires all of: evidence_class valid, review_mode runtime_mediated, version alignment, and for imported evidence admission_status=admitted_standard. Current logic marks api_mediated valid runs and admitted_exploratory valid runs as included_in_standard_metrics=True, contradicting the standard-population rules and creating downstream risk if this flag is consumed by other components."
+
+  - severity: WARN
+    target_location: "evaluation/intake/bundle_intake.py"
+    description: "Bundle intake copies and registers bundles even when required provenance fields are missing, rather than failing or explicitly distinguishing incomplete ingestion."
+    rationale: "The documented intake/admission flow emphasizes provenance verification and safety-first handling for external evidence. This implementation records missing_fields but still stamps ingestion_status='ingested' and places the bundle unconditionally, which weakens the contract boundary between mere file placement and a provenance-sound intake stage."
+
+  - severity: WARN
+    target_location: "evaluation/readiness/metadata_validator.py"
+    description: "MetadataValidator handles YAML parse errors but not missing run_manifest.yaml files."
+    rationale: "Several implementation components assume filesystem artifacts may be absent and convert that into analysis-blocking diagnostics. Here, a missing run_manifest.yaml raises FileNotFoundError instead of producing a structured validation result, leaving a gap in the 'diagnostic output rather than silent crash' behavior expected for readiness checks."
+
+  - severity: WARN
+    target_location: "evaluation/intake/physical_placement.py"
+    description: "PhysicalPlacement.place accepts a run_id parameter but does not validate that the copied bundle actually contains the expected run/<run_id> path."
+    rationale: "The placement contract is described as preserving the exports/<bundle_id>/run/<run_id>/ structure. Because the implementation ignores the supplied run_id and blindly copies the whole bundle, malformed or mismatched bundle contents can be placed without detection, reducing confidence in deterministic structural intake."

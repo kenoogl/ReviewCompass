@@ -30,9 +30,10 @@ class MetadataValidator:
 
   def validate(self, run_dir):
     run_dir = Path(run_dir)
+    manifest_path = run_dir / "run_manifest.yaml"
     try:
-      manifest = yaml.safe_load((run_dir / "run_manifest.yaml").read_text(encoding="utf-8"))
-    except yaml.YAMLError:
+      manifest = yaml.safe_load(manifest_path.read_text(encoding="utf-8"))
+    except (OSError, yaml.YAMLError):
       return MetadataValidationResult(
         run_id=None,
         ok=False,

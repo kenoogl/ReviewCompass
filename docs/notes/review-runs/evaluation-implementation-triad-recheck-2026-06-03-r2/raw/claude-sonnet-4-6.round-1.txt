@@ -1,0 +1,15 @@
+findings:
+  - severity: WARN
+    target_location: "evaluation/metrics/phase_overlay_definition.yaml (removal of implementation overlay)"
+    description: "The `implementation` phase overlay entry (with `primary_effectiveness_metric: defect_prevention`) has been removed from phase_overlay_definition.yaml."
+    rationale: "The spec.json simultaneously sets `implementation.drafting` to `true`, indicating the implementation phase is now active. Removing the phase overlay for `implementation` while the phase is being drafted creates an inconsistency: the overlay definition no longer covers all active phases. If the implementation phase is used in metric extraction, it will have no primary_effectiveness_metric defined, potentially causing silent metric gaps or runtime errors."
+
+  - severity: INFO
+    target_location: "tests/evaluation/test_t006_metrics.py: test_phase_overlay_uses_canonical_four_document_phases"
+    description: "A new test asserts that the phase overlay contains exactly the four phases: intent, requirements, design, tasks — explicitly excluding `implementation`."
+    rationale: "This test locks in the absence of the `implementation` overlay. Combined with spec.json enabling `implementation.drafting`, this divergence should be documented as intentional or the test assertion should explain why implementation is excluded despite the phase being drafted. As written, a reader cannot determine whether this is a deliberate architectural decision or an oversight."
+
+  - severity: INFO
+    target_location: "evaluation/comparison/mode_population_rule.py: slice method"
+    description: "The `by_review_mode` slice loop (lines after standard population filter) still iterates all runs including those with `admission_status != admitted_standard`, which means non-standard admitted runs appear in per-mode slices."
+    rationale: "Whether non-standard runs should appear in mode-sliced populations is not addressed in this diff. If the intent is to exclude non-standard runs from all analysis populations, the by_review_mode loop may also need an admission_status guard. This may be acceptable by design but is worth confirming."

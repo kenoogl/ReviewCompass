@@ -54,12 +54,12 @@ def _write_run(tmp_path, *, evidence_class="valid", treatment="judgment", review
 
 def test_foundation_evidence_class_vocab_is_referenced():
   """foundation の evidence_class 4 値正本を参照できる。"""
-  assert vocabulary("evidence_class") == [
+  assert set(vocabulary("evidence_class")) == {
     "valid",
     "invalid",
     "exploratory",
     "analysis_blocked",
-  ]
+  }
 
 
 def test_valid_run_is_classified_valid(tmp_path):
@@ -93,6 +93,24 @@ def test_rejected_admission_becomes_analysis_blocked(tmp_path):
   result = RunClassifier().classify(run_dir, admission_status="rejected")
   assert result.classification == "analysis_blocked"
   assert "admission_rejected" in result.reason_codes
+
+
+def test_exploratory_admission_is_not_included_in_standard_metrics(tmp_path):
+  """admitted_exploratory の外部証拠は valid でも標準集計に入れない。"""
+  run_dir = _write_run(tmp_path, evidence_class="valid")
+  result = RunClassifier().classify(run_dir, admission_status="admitted_exploratory")
+  assert result.classification == "valid"
+  assert result.included_in_standard_metrics is False
+  assert "admission_not_standard" in result.reason_codes
+
+
+def test_non_runtime_review_mode_is_not_included_in_standard_metrics(tmp_path):
+  """runtime_mediated 以外の valid 実行は標準集計ではなく別集団に回す。"""
+  run_dir = _write_run(tmp_path, evidence_class="valid", review_mode="api_mediated")
+  result = RunClassifier().classify(run_dir)
+  assert result.classification == "valid"
+  assert result.included_in_standard_metrics is False
+  assert "review_mode_not_standard" in result.reason_codes
 
 
 def test_review_mode_is_orthogonal_to_validity(tmp_path):

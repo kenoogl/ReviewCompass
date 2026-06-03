@@ -21,9 +21,12 @@ class PhysicalPlacement:
     bundle_dir = Path(bundle_dir)
     analysis_root = Path(analysis_root)
     destination_bundle = analysis_root / "imports" / "bundles" / bundle_id
+    source_run = bundle_dir / "run" / run_id
+    if not source_run.is_dir():
+      raise ValueError(f"missing_run_path: run/{run_id}")
 
     destination_bundle.parent.mkdir(parents=True, exist_ok=True)
     if destination_bundle.exists():
-      shutil.rmtree(destination_bundle)
+      return destination_bundle
     shutil.copytree(bundle_dir, destination_bundle)
     return destination_bundle

@@ -115,6 +115,23 @@ def test_bundle_intake_physically_places_run_bundle(tmp_path):
   assert (placed_run / "validation" / "validator_result.json").is_file()
 
 
+def test_bundle_intake_rejects_bundle_without_expected_run_path(tmp_path):
+  """bundle_manifest の run_id と実体の run/<run_id> が一致しなければ配置しない。"""
+  bundle_dir = _setup_export_bundle(tmp_path)
+  (bundle_dir / "run" / "run-001").rename(bundle_dir / "run" / "run-other")
+
+  try:
+    BundleIntake().ingest(
+      bundle_dir,
+      analysis_root=tmp_path / "experiments" / "analysis",
+      ingested_at="2026-06-03T11:00:00+09:00",
+    )
+  except ValueError as exc:
+    assert "missing_run_path" in str(exc)
+  else:
+    raise AssertionError("run_id 不一致の bundle が配置された")
+
+
 def test_bundle_intake_preserves_export_run_structure(tmp_path):
   """輸出前後の run/<run_id>/ 配下の相対パス構造が一致する。"""
   bundle_dir = _setup_export_bundle(tmp_path)
@@ -155,7 +172,7 @@ def test_ingestion_register_is_created_with_required_8_fields(tmp_path):
 
 
 def test_ingestion_register_appends_entries(tmp_path):
-  """既存 ingestion_register.json がある場合、履歴を上書きせず追記する。"""
+  """既存 bundle は無言上書きせず、履歴だけを追記する。"""
   bundle_dir = _setup_export_bundle(tmp_path)
   analysis_root = tmp_path / "experiments" / "analysis"
 
@@ -165,6 +182,10 @@ def test_ingestion_register_appends_entries(tmp_path):
     analysis_root=analysis_root,
     ingested_at="2026-06-03T11:00:00+09:00",
   )
+  placed_marker = (
+    analysis_root / "imports" / "bundles" / "bundle-001" / "run" / "run-001" / "marker.txt"
+  )
+  placed_marker.write_text("keep\n", encoding="utf-8")
   intake.ingest(
     bundle_dir,
     analysis_root=analysis_root,
@@ -178,6 +199,8 @@ def test_ingestion_register_appends_entries(tmp_path):
     "2026-06-03T11:00:00+09:00",
     "2026-06-03T11:05:00+09:00",
   ]
+  assert placed_marker.read_text(encoding="utf-8") == "keep\n"
+  assert register["entries"][1]["ingestion_status"] == "already_present"
 
 
 def test_missing_provenance_is_recorded_without_invention(tmp_path):
@@ -204,3 +227,4 @@ def test_missing_provenance_is_recorded_without_invention(tmp_path):
   entry = register["entries"][0]
   assert entry["source_revision"] is None
   assert entry["missing_fields"] == ["source_revision"]
+  assert entry["ingestion_status"] == "incomplete"

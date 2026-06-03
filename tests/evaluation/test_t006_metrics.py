@@ -48,6 +48,17 @@ def test_core_and_phase_overlay_definitions_are_parseable():
   assert "design" in overlay["phase_overlays"]
 
 
+def test_phase_overlay_uses_canonical_four_document_phases():
+  """phase overlay は intent / requirements / design / tasks の 4 相だけを宣言する。"""
+  overlay = RunMetricsExtractor.load_yaml_definition("phase_overlay")
+  assert set(overlay["phase_overlays"]) == {
+    "intent",
+    "requirements",
+    "design",
+    "tasks",
+  }
+
+
 def test_run_metrics_are_separated_from_finding_metrics(tmp_path):
   """実行レベルメトリクスは所見レベルメトリクスと分離して出力される。"""
   run_dir = _write_review_case(tmp_path)

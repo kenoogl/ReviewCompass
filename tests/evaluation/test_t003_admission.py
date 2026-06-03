@@ -10,6 +10,7 @@
 - チェックサム照合テスト
 """
 import hashlib
+import importlib
 import json
 from pathlib import Path
 
@@ -92,6 +93,12 @@ def test_admission_vocab_declares_3_values():
   assert spec["values"] == ["admitted_standard", "admitted_exploratory", "rejected"]
 
 
+def test_admission_classifier_imports_as_repo_package():
+  """conftest の evaluation/ パス追加なしでも repo package として import できる。"""
+  module = importlib.import_module("evaluation.admission.admission_classifier")
+  assert module.AdmissionClassifier.__name__ == "AdmissionClassifier"
+
+
 def test_missing_bundle_manifest_is_rejected(tmp_path):
   """境界 1：bundle_manifest.yaml 不在は rejected。"""
   bundle_dir = tmp_path / "imports" / "bundles" / "bundle-001"
@@ -140,6 +147,17 @@ def test_version_mismatch_is_admitted_exploratory(tmp_path):
   assert result.eligible_for_exploratory_analysis is True
 
 
+def test_runtime_version_mismatch_is_admitted_exploratory(tmp_path):
+  """runtime_version の比較集合不整合も admitted_exploratory。"""
+  bundle_dir = _write_bundle(tmp_path, manifest_updates={"runtime_version": "runtime-2"})
+  result = AdmissionClassifier().classify(
+    bundle_dir,
+    expected_versions={"runtime_version": "runtime-1"},
+  )
+  assert result.admission_status == "admitted_exploratory"
+  assert "version_mismatch" in result.admission_reason_codes
+
+
 def test_complete_bundle_is_admitted_standard(tmp_path):
   """境界 6：全条件が揃えば admitted_standard。"""
   bundle_dir = _write_bundle(tmp_path)
@@ -166,6 +184,16 @@ def test_checksum_verifier_accepts_matching_bundle(tmp_path):
   result = ChecksumVerifier().verify(bundle_dir)
   assert result.ok is True
   assert result.mismatches == []
+
+
+def test_checksum_verifier_rejects_ambiguous_run_directory(tmp_path):
+  """run/ 配下の run_id が複数なら構造違反として rejected 相当の失敗を返す。"""
+  bundle_dir = _write_bundle(tmp_path)
+  extra = bundle_dir / "run" / "run-002"
+  extra.mkdir()
+  result = ChecksumVerifier().verify(bundle_dir)
+  assert result.ok is False
+  assert "ambiguous_run_directory" in result.missing_files
 
 
 def test_admission_register_writer_records_result(tmp_path):

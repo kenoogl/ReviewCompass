@@ -1,0 +1,25 @@
+findings:
+  - severity: WARN
+    target_location: "docs/notes/review-runs/evaluation-implementation-triad-2026-06-03-r1/triage.yaml: items with applied_files: []"
+    description: "All 20 triage items across both run r1 and r2 show applied_files: [] (empty list), even for findings labeled must-fix or should-fix where the decision_reason describes specific code changes as already completed."
+    rationale: "Triage items labeled must-fix or should-fix with decision_reason text phrased as past-tense completed actions (e.g., 'Fixed PhysicalPlacement', 'Added runtime_version mismatch coverage') should reference the files that were actually modified. An empty applied_files list makes it impossible to trace which source files received the fix, breaking the auditability the review-run artefacts are designed to provide."
+
+  - severity: WARN
+    target_location: "docs/notes/review-runs/evaluation-implementation-triad-2026-06-03-r1/triage.yaml: decision_actor field"
+    description: "triage.yaml declares decision_actor_type: human at the run level but sets decision_actor: null at the run level while each item carries decision_actor: codex. This is internally contradictory: codex is not a human actor."
+    rationale: "The run-level decision_actor_type: human combined with item-level decision_actor: codex creates an ambiguous record of who made each triage decision. If codex is an automated agent, decision_actor_type should be machine or similar; if it is a human alias, the null at run level should be populated consistently. The inconsistency undermines the traceability contract the triage artefact is meant to satisfy."
+
+  - severity: WARN
+    target_location: "docs/notes/review-runs/evaluation-implementation-triad-recheck-2026-06-03-r2/rounds.yaml: raw_sha256 for gpt-5.4 and gemini-3.1-pro-preview"
+    description: "Both gpt-5.4 and gemini-3.1-pro-preview share the identical raw_sha256 value ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63 in r2/rounds.yaml, and that same hash also appears for gemini-3.1-pro-preview in r1/rounds.yaml."
+    rationale: "Two independently generated model responses yielding the same SHA-256 of their raw output files is only plausible if both files are identical (both happen to be findings: []). However, the hash collision across three distinct model invocations from different providers on different runs warrants explicit verification. If the orchestrator reused a cached or placeholder file rather than recording the actual response, the content provenance for these runs cannot be trusted."
+
+  - severity: INFO
+    target_location: "docs/notes/review-runs/evaluation-implementation-triad-recheck-2026-06-03-r2/review_summary.md: Next steps section"
+    description: "The Next steps section in the r2 review_summary.md is identical boilerplate to the r1 summary and instructs the reader to 'Read raw responses for any parse_failed or triage_pending model' and 'Resolve human_required items before treating the run as complete', but r2 has no parse_failed or human_required items and triage is already decided for all items."
+    rationale: "Stale or templated next-steps text that does not reflect the actual state of the run can mislead downstream readers about whether action is still required. Since r2 triage is fully decided, the next steps should either be cleared or updated to reflect the closed state."
+
+  - severity: INFO
+    target_location: "docs/notes/review-runs/evaluation-implementation-triad-2026-06-03-r1/model-result-summary.yaml: leave_as_is_count for claude-sonnet-4-6"
+    description: "model-result-summary.yaml records leave_as_is_count: 7 for claude-sonnet-4-6 in r1, but counting the triage.yaml items with final_label: leave-as-is sourced from claude-sonnet-4-6 yields 6 items (primary-002, 003, 010, 011, 012, 013, 014 = 7 — this checks out). Cross-checking should_fix_count: 4 against triage items labeled should-fix from claude-sonnet-4-6 gives primary-006, 007, 008, 009 = 4. These counts reconcile, but must_fix_count: 3 in the summary versus primary-001, 004, 005 = 3 also reconciles. No numeric error found; recorded for completeness."
+    rationale: "Counts in model-result-summary.yaml are consistent with triage.yaml item labels for claude-sonnet-4-6. This INFO finding confirms the summary is accurate and no correction is needed."

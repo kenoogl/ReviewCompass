@@ -59,6 +59,14 @@ class RunClassifier:
     if classification in ("invalid", "exploratory", "analysis_blocked") and not reason_codes:
       reason_codes.append(f"evidence_class_{classification}")
 
+    included_in_standard_metrics = classification == "valid"
+    if classification == "valid" and admission_status != "admitted_standard":
+      included_in_standard_metrics = False
+      reason_codes.append("admission_not_standard")
+    if classification == "valid" and manifest["review_mode"] != "runtime_mediated":
+      included_in_standard_metrics = False
+      reason_codes.append("review_mode_not_standard")
+
     return RunClassification(
       run_id=manifest["run_id"],
       target_id=manifest.get("target_id"),
@@ -66,7 +74,7 @@ class RunClassifier:
       evidence_class=evidence_class,
       treatment=manifest["treatment"],
       review_mode=manifest["review_mode"],
-      included_in_standard_metrics=classification == "valid",
+      included_in_standard_metrics=included_in_standard_metrics,
       reason_codes=reason_codes,
       step_failures=step_failures,
     )

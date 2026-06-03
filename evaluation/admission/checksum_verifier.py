@@ -25,6 +25,12 @@ class ChecksumVerifier:
 
     checksums = json.loads(checksums_path.read_text(encoding="utf-8"))
     run_root = self._single_run_root(bundle_dir)
+    if run_root is None:
+      return ChecksumResult(
+        ok=False,
+        mismatches=[],
+        missing_files=["ambiguous_run_directory"],
+      )
     mismatches = []
     missing_files = []
     for rel, expected in checksums.items():
@@ -45,5 +51,5 @@ class ChecksumVerifier:
     run_parent = Path(bundle_dir) / "run"
     run_dirs = [path for path in run_parent.iterdir() if path.is_dir()]
     if len(run_dirs) != 1:
-      return run_parent
+      return None
     return run_dirs[0]
