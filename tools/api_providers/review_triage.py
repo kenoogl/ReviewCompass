@@ -4,6 +4,7 @@ review-run の triage 下書きを一覧化し、人判断の反映と manifest 
 """
 import argparse
 import hashlib
+import subprocess
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
@@ -16,6 +17,13 @@ if str(_PROJECT_ROOT) not in sys.path:
 import yaml  # noqa: E402
 
 FINAL_LABELS = ("must-fix", "should-fix", "leave-as-is")
+POST_WRITE_VERIFICATION_DIR_PREFIXES = (
+  "docs/plan/",
+  "docs/disciplines/",
+  "docs/operations/",
+  "docs/notes/",
+  "docs/experiments/",
+)
 
 
 def _load_yaml_dict(path: Path) -> Dict[str, Any]:
@@ -34,11 +42,72 @@ def _sha256_file(path: Path) -> str:
   return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
-def _resolve_path(path: str) -> Path:
+def _parse_git_status_path(line: str) -> Optional[str]:
+  """git status --short の行から path を取り出す。"""
+  if len(line) < 4:
+    return None
+  path = line[3:]
+  if " -> " in path:
+    path = path.split(" -> ", 1)[1]
+  return path.strip()
+
+
+def _is_post_write_target(path: str) -> bool:
+  """post-write-verification 対象の docs/TODO パスかを返す。"""
+  if path.startswith("docs/archive/"):
+    return False
+  if path == "TODO_NEXT_SESSION.md":
+    return True
+  if any(path.startswith(prefix) for prefix in POST_WRITE_VERIFICATION_DIR_PREFIXES):
+    return True
+  if path.startswith("docs/reviews/"):
+    name = Path(path).name
+    return (
+      name.startswith("reopen-classification-")
+      or "-audit-" in name
+    ) and name.endswith(".md")
+  return False
+
+
+def _current_git_post_write_targets(cwd: Path) -> List[str]:
+  """現在の git 変更から post-write 対象を返す。git 外では空リスト。"""
+  try:
+    result = subprocess.run(
+      ["git", "status", "--short", "--untracked-files=all"],
+      cwd=str(cwd),
+      capture_output=True,
+      text=True,
+      timeout=10,
+      check=False,
+    )
+  except (OSError, subprocess.SubprocessError):
+    return []
+  if result.returncode != 0:
+    return []
+  targets = []
+  for line in result.stdout.splitlines():
+    path = _parse_git_status_path(line)
+    if path and _is_post_write_target(path):
+      targets.append(path)
+  return sorted(set(targets))
+
+
+def _find_git_root(start: Path) -> Path:
+  """start から上位へ .git を探し、見つからなければ現在ディレクトリを返す。"""
+  current = start.resolve()
+  if current.is_file():
+    current = current.parent
+  for candidate in [current] + list(current.parents):
+    if (candidate / ".git").exists():
+      return candidate
+  return Path.cwd()
+
+
+def _resolve_path(path: str, base_dir: Optional[Path] = None) -> Path:
   candidate = Path(path)
   if candidate.is_absolute():
     return candidate
-  return Path.cwd() / candidate
+  return (base_dir or Path.cwd()) / candidate
 
 
 def _recommendation_for(item: Dict[str, Any]) -> Dict[str, str]:
@@ -215,11 +284,15 @@ def unresolved_human_required_count(review_run_dir: str) -> int:
   return count
 
 
-def _current_target_sha256(target_files: List[str], fallback: Dict[str, str]) -> Dict[str, str]:
+def _current_target_sha256(
+  target_files: List[str],
+  fallback: Dict[str, str],
+  base_dir: Path,
+) -> Dict[str, str]:
   """対象ファイルの現在 sha256 を返す。存在しない場合は fallback を使う。"""
   values: Dict[str, str] = {}
   for target in target_files:
-    target_path = _resolve_path(target)
+    target_path = _resolve_path(target, base_dir)
     if target_path.is_file():
       values[target] = _sha256_file(target_path)
     elif target in fallback:
@@ -242,6 +315,7 @@ def _verification_entries(models: List[str], target_files: List[str], target_sha
 def build_manifest_template(review_run_dir: str) -> Dict[str, Any]:
   """post-write-verification manifest 雛形を返す。"""
   run_dir = Path(review_run_dir)
+  git_root = _find_git_root(run_dir)
   target_manifest = _load_yaml_dict(run_dir / "target-manifest.yaml")
   rounds = _load_yaml_dict(run_dir / "rounds.yaml")
   triage = _load_yaml_dict(run_dir / "triage.yaml")
@@ -251,12 +325,15 @@ def build_manifest_template(review_run_dir: str) -> Dict[str, Any]:
     for item in target_manifest.get("target_files", [])
     if isinstance(item, dict) and item.get("path")
   ]
+  current_targets = _current_git_post_write_targets(git_root)
+  if current_targets:
+    target_files = sorted(set(target_files).union(current_targets))
   fallback_sha256 = {
     item.get("path"): item.get("sha256")
     for item in target_manifest.get("target_files", [])
     if isinstance(item, dict) and item.get("path") and item.get("sha256")
   }
-  target_sha256 = _current_target_sha256(target_files, fallback_sha256)
+  target_sha256 = _current_target_sha256(target_files, fallback_sha256, git_root)
   models = [
     item.get("model_id")
     for item in rounds.get("model_results", [])

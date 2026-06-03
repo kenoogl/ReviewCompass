@@ -19,6 +19,8 @@ from pathlib import Path
 
 import yaml
 
+from tools.api_providers.review_triage import write_manifest
+
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 SCRIPT = REPO_ROOT / "tools" / "check-workflow-action.py"
@@ -1530,6 +1532,48 @@ class PostWriteReviewRunTraceabilityTests(unittest.TestCase):
     self.assertEqual(
       data["next_action"]["kind"], "post_write_verification",
       "rounds にいるモデルが triage に出ていない review_run は完了扱いしてはいけない",
+    )
+
+
+class PostWriteReviewRunEndToEndTests(unittest.TestCase):
+  """review-run から manifest 生成、next 完了認定までの統合テスト"""
+
+  def setUp(self):
+    self.tmpdir = tempfile.mkdtemp()
+    self.addCleanup(shutil.rmtree, self.tmpdir)
+
+  def test_next_accepts_manifest_generated_from_review_triage_helper(self):
+    """review_triage.write_manifest が生成した厳格 manifest で next が通常 workflow に戻る"""
+    cwd = Path(self.tmpdir)
+    _init_git_repo(cwd)
+    _write_specs_for_next(cwd, {})
+    run_id = "e2e-review-run"
+    run_dir = _write_review_run(
+      cwd,
+      run_id,
+      ["claude-sonnet-4-6", "gpt-5.4", "gemini-3.1-pro-preview"],
+    )
+    manifest_path = (
+      cwd
+      / ".reviewcompass"
+      / "post-write-verification"
+      / "post-write-2026-06-03-999.yaml"
+    )
+
+    write_manifest(str(run_dir), str(manifest_path))
+    result = run_script(["next", "--json"], cwd=cwd)
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 0, result.stderr)
+    data = json.loads(result.stdout)
+    self.assertEqual(
+      data["next_action"]["kind"], "stage",
+      f"review_triage.write_manifest 生成 manifest は next で完了認定されるべき。"
+      f"next_action: {data['next_action']}",
+    )
+    self.assertEqual(
+      data["current_state"]["post_write_manifest"],
+      ".reviewcompass/post-write-verification/post-write-2026-06-03-999.yaml",
     )
 
 
