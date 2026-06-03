@@ -90,6 +90,12 @@ AUTONOMOUS_PARALLEL_REQUIRED_OUTPUTS_POLICY = {
   "work_noise": "exclude",
 }
 
+AUTONOMOUS_PARALLEL_REQUIRED_HISTORY_FLAGS = (
+  "record_task_assignments",
+  "record_decision_basis",
+  "record_integration_result",
+)
+
 REOPEN_TRIGGER_MAP = {
   "I-0": [
     "stages/implementation.yaml#alignment",
@@ -372,6 +378,7 @@ def validate_autonomous_parallel_plan(plan):
     "task_count": 0,
     "parallel_task_count": 0,
     "checked_gates": list(AUTONOMOUS_PARALLEL_REQUIRED_INTEGRATION_GATES),
+    "history_ledger_path": None,
   }
 
   if not isinstance(plan, dict):
@@ -482,11 +489,70 @@ def validate_autonomous_parallel_plan(plan):
       if outputs_policy.get(key) != expected:
         reasons.append(f"outputs_policy.{key} は {expected} が必要です")
 
+  history = plan.get("history")
+  if not isinstance(history, dict):
+    reasons.append("history が必要です")
+  else:
+    ledger_path = history.get("ledger_path")
+    current_state["history_ledger_path"] = ledger_path
+    if not ledger_path:
+      reasons.append("history.ledger_path が必要です")
+    elif not str(ledger_path).startswith("docs/logs/autonomous-parallel/"):
+      reasons.append(
+        "history.ledger_path は docs/logs/autonomous-parallel/ 配下が必要です"
+      )
+    for key in AUTONOMOUS_PARALLEL_REQUIRED_HISTORY_FLAGS:
+      if history.get(key) is not True:
+        reasons.append(f"history.{key} は true が必要です")
+    if history.get("retention") != "preserve":
+      reasons.append("history.retention は preserve が必要です")
+
   return reasons, current_state
+
+
+def write_autonomous_parallel_ledger(cwd, plan, verdict, exit_code, reasons, current_state):
+  """自律・並列モード実行計画の後追い用台帳を書き出す"""
+  history = plan.get("history") if isinstance(plan, dict) else None
+  if not isinstance(history, dict):
+    return
+  ledger_path_value = history.get("ledger_path")
+  if not ledger_path_value:
+    return
+
+  ledger_path = Path(ledger_path_value)
+  if ledger_path.is_absolute():
+    return
+  ledger_path = cwd / ledger_path
+  ledger_path.parent.mkdir(parents=True, exist_ok=True)
+
+  tasks = plan.get("tasks") if isinstance(plan.get("tasks"), list) else []
+  task_ids = [
+    task.get("task_id")
+    for task in tasks
+    if isinstance(task, dict) and task.get("task_id")
+  ]
+  ledger = {
+    "run_id": plan.get("run_id"),
+    "mode": plan.get("mode"),
+    "verdict": verdict,
+    "exit_code": exit_code,
+    "reasons": reasons,
+    "task_ids": task_ids,
+    "authorization": plan.get("authorization"),
+    "history": history,
+    "integration_gate": plan.get("integration_gate"),
+    "outputs_policy": plan.get("outputs_policy"),
+    "current_state": current_state,
+  }
+  ledger_path.write_text(
+    yaml.safe_dump(ledger, allow_unicode=True, sort_keys=False),
+    encoding="utf-8",
+  )
 
 
 def cmd_autonomous_plan(args):
   """自律・並列モード実行計画の事前検査を行う"""
+  cwd = Path.cwd()
   plan_path = Path(args.plan_path)
   action_str = f"autonomous-plan {plan_path}"
   action_dict = {
@@ -523,6 +589,15 @@ def cmd_autonomous_plan(args):
     verdict, exit_code = "DEVIATION", 2
   else:
     verdict, exit_code = "OK", 0
+
+  write_autonomous_parallel_ledger(
+    cwd,
+    plan,
+    verdict,
+    exit_code,
+    reasons,
+    current_state_dict,
+  )
 
   if args.json:
     print(format_json_output(verdict, exit_code, action_dict, reasons, current_state_dict))

@@ -1,6 +1,6 @@
 # WORKFLOW_PRECHECK：ワークフロー事前検査スクリプトの正本仕様
 
-最終更新：2026-06-03（commit 時 post-write-verification 監査と audit-commit 追加、commit 承認レコードガード追加。Codex adapter migration：段階 3 hook 記述を実行環境 adapter 方針へ整理）／2026-05-25 セッション 24（新設、補助層 C 段階 2 の仕様確定）
+最終更新：2026-06-04（自律・並列実行計画 `autonomous-plan` と履歴台帳ガードを追加）／2026-06-03（commit 時 post-write-verification 監査と audit-commit 追加、commit 承認レコードガード追加。Codex adapter migration：段階 3 hook 記述を実行環境 adapter 方針へ整理）／2026-05-25 セッション 24（新設、補助層 C 段階 2 の仕様確定）
 位置付け：運用文書（`docs/operations/` 配下）、計画書 §5.8 補助層 C の段階 2 の正本仕様
 
 本文書は計画書 §5.8 補助層 C 共存モデルの **段階 2（外部スクリプトによる機械的判定）** の仕様を定める。段階 2 の実装は本文書を入力として進める。仕様の変更には利用者明示承認が必要（規律 §0.2 計画書方針変更に準じる）。
@@ -93,6 +93,7 @@
 check-workflow-action.py spec-set <feature> <phase> <stage> <new-value> [--rationale "<理由>"]
 check-workflow-action.py commit --rationale "<理由>"
 check-workflow-action.py push --rationale "<理由>"
+check-workflow-action.py autonomous-plan <plan.yaml>
 check-workflow-action.py audit-commit <commit-ish>
 guarded-git-commit.py -m "<commit message>" --rationale "<理由>"
 ```
@@ -195,6 +196,26 @@ commit 済みの見落とし検出用であり、通常は commit 直前の `com
 
 `<commit-ish>` が解決できない場合は逸脱（exit 2）とする。
 
+### 5.5 `autonomous-plan` サブコマンド
+
+```
+check-workflow-action.py autonomous-plan <plan.yaml>
+```
+
+自律・並列モードで実装作業を始める前に、実行計画 YAML を検査する。目的は、並列化できる作業だけを切り出し、重要判断の停止条件と統合時の確認点を明示し、後から判断履歴を追える台帳を残すこと。
+
+計画 YAML は最低限、次を持つ。
+
+- `mode: autonomous_parallel`
+- `run_id`
+- `authorization`：`approved_by`、`approval_record_path`、`summary_presented_to_user`、`triage_presented_to_user`
+- `tasks[]`：`task_id`、`source_finding_ids`、`assignee`、`allowed_paths`、`depends_on`、`expected_tests`、`stop_conditions`
+- `integration_gate`：メインセッション確認、差分範囲確認、テスト確認、判断根拠確認
+- `outputs_policy`：実装差分、検証結果、判断根拠、作業ノイズの扱い
+- `history`：`ledger_path`、`record_task_assignments`、`record_decision_basis`、`record_integration_result`、`retention`
+
+`history.ledger_path` は `docs/logs/autonomous-parallel/` 配下とする。`autonomous-plan` は検査結果をこの台帳へ YAML として書き出し、後から `run_id`、task ID、承認根拠、統合ゲート、出力分類、判定結果を確認できるようにする。
+
 ## 6. 判定ロジック
 
 ### 6.1 `spec-set` の判定
@@ -251,6 +272,23 @@ commit 済みの見落とし検出用であり、通常は commit 直前の `com
 - 対象あり、かつ commit 内ファイル内容 sha256 を覆う completed manifest がある：OK（exit 0）
 - 対象あり、manifest がない／sha256 不一致／coverage matrix 不足／未解決本質的指摘あり：逸脱（exit 2）
 - `<commit-ish>` が解決できない：逸脱（exit 2）
+
+### 6.5 `autonomous-plan` の判定
+
+実行計画 YAML を読み、次を fail-closed で判定する。
+
+- `mode` が `autonomous_parallel` である
+- `run_id` がある
+- `authorization.approved_by` が `user` または `proxy_model` である
+- レビュー結果サマリと三段階トリアージが提示済みである
+- 各 task に `source_finding_ids`、`allowed_paths`、`expected_tests`、`important_decision_requires_approval` 停止条件がある
+- 別スレッドまたはサブ担当の task は `assignee.worktree_policy: separate_worktree` である
+- 依存関係のない並列 task 同士で `allowed_paths` が衝突しない
+- `integration_gate` の 4 条件がすべて `true` である
+- `outputs_policy.work_noise` が `exclude` であり、作業ノイズを本線 repo に取り込まない
+- `history` が台帳パス、タスク割当記録、判断根拠記録、統合結果記録、保存方針を持つ
+
+検査に通った場合も、通らなかった場合も、`history.ledger_path` が妥当なら台帳を生成する。これにより、自律実行の開始可否、止まった理由、並列 task の境界、統合時の確認点を後から追跡できる。
 
 ## 7. 出力形式
 

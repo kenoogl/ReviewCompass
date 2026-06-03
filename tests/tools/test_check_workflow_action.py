@@ -305,6 +305,13 @@ def _write_autonomous_parallel_plan(cwd, overrides=None):
       "requires_tests": True,
       "requires_decision_basis_review": True,
     },
+    "history": {
+      "ledger_path": "docs/logs/autonomous-parallel/ap-001.yaml",
+      "record_task_assignments": True,
+      "record_decision_basis": True,
+      "record_integration_result": True,
+      "retention": "preserve",
+    },
     "outputs_policy": {
       "implementation_diff": "commit_candidate",
       "verification_summary": "required",
@@ -345,6 +352,23 @@ class AutonomousParallelPlanTests(unittest.TestCase):
     data = json.loads(result.stdout)
     self.assertEqual(data["verdict"], "OK")
     self.assertEqual(data["current_state"]["task_count"], 2)
+
+  def test_valid_plan_writes_history_ledger(self):
+    """正常な実行計画は後追い用の履歴台帳を書き出す"""
+    cwd = Path(self.tmpdir)
+    plan_path = _write_autonomous_parallel_plan(cwd)
+
+    result = run_script(["autonomous-plan", str(plan_path), "--json"], cwd=cwd)
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 0, result.stderr)
+    ledger_path = cwd / "docs" / "logs" / "autonomous-parallel" / "ap-001.yaml"
+    self.assertTrue(ledger_path.exists())
+    ledger = yaml.safe_load(ledger_path.read_text(encoding="utf-8"))
+    self.assertEqual(ledger["run_id"], "ap-001")
+    self.assertEqual(ledger["verdict"], "OK")
+    self.assertEqual(ledger["task_ids"], ["task-a", "task-b"])
+    self.assertEqual(ledger["history"]["record_decision_basis"], True)
 
   def test_missing_authorization_returns_two(self):
     """人間または proxy_model の承認記録がなければ逸脱にする"""
@@ -418,6 +442,21 @@ class AutonomousParallelPlanTests(unittest.TestCase):
     self.assertEqual(result.returncode, 2)
     data = json.loads(result.stdout)
     self.assertIn("requires_decision_basis_review", "\n".join(data["reasons"]))
+
+  def test_missing_history_returns_two(self):
+    """履歴保存設定がなければ逸脱にする"""
+    cwd = Path(self.tmpdir)
+    plan_path = _write_autonomous_parallel_plan(
+      cwd,
+      {"history": None},
+    )
+
+    result = run_script(["autonomous-plan", str(plan_path), "--json"], cwd=cwd)
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 2)
+    data = json.loads(result.stdout)
+    self.assertIn("history", "\n".join(data["reasons"]))
 
 
 class SpecSetExitCodeTests(unittest.TestCase):
