@@ -24,6 +24,19 @@ POST_WRITE_VERIFICATION_DIR_PREFIXES = (
   "docs/notes/",
   "docs/experiments/",
 )
+POST_WRITE_VERIFICATION_MD_DIR_PREFIXES = (
+  ".reviewcompass/specs/",
+  "intent/",
+  "templates/",
+)
+POST_WRITE_VERIFICATION_FILE_PATHS = (
+  "AGENTS.md",
+  "TODO_NEXT_SESSION.md",
+)
+POST_WRITE_VERIFICATION_FILE_PREFIXES = (
+  "runtime/prompts/",
+  "tools/api_providers/prompt_templates/",
+)
 
 
 def _load_yaml_dict(path: Path) -> Dict[str, Any]:
@@ -53,12 +66,18 @@ def _parse_git_status_path(line: str) -> Optional[str]:
 
 
 def _is_post_write_target(path: str) -> bool:
-  """post-write-verification 対象の docs/TODO パスかを返す。"""
+  """post-write-verification 対象の md 文書パスかを返す。"""
   if path.startswith("docs/archive/"):
     return False
-  if path == "TODO_NEXT_SESSION.md":
+  if path in POST_WRITE_VERIFICATION_FILE_PATHS:
     return True
   if any(path.startswith(prefix) for prefix in POST_WRITE_VERIFICATION_DIR_PREFIXES):
+    return True
+  if not path.endswith(".md"):
+    return False
+  if any(path.startswith(prefix) for prefix in POST_WRITE_VERIFICATION_FILE_PREFIXES):
+    return True
+  if any(path.startswith(prefix) for prefix in POST_WRITE_VERIFICATION_MD_DIR_PREFIXES):
     return True
   if path.startswith("docs/reviews/"):
     name = Path(path).name

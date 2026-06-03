@@ -10,7 +10,7 @@ if str(_PROJECT_ROOT) not in sys.path:
 
 import yaml
 
-from tools.api_providers.review_triage import main
+from tools.api_providers.review_triage import _is_post_write_target, main
 
 
 def _write_review_run(tmp_path):
@@ -139,6 +139,38 @@ def _write_review_run(tmp_path):
     encoding="utf-8",
   )
   return run_dir
+
+
+def test_is_post_write_target_includes_prompt_and_agent_md_candidates():
+  """レビュー挙動・agent 挙動を変える md は post-write 対象に含める。"""
+  target_paths = [
+    "AGENTS.md",
+    "intent/INTENT.md",
+    "intent/DESIGN_PRINCIPLES.md",
+    "templates/todo/TODO_NEXT_SESSION.template.md",
+    "templates/review/manual_dogfooding_review_template.md",
+    "runtime/prompts/primary_detection/primary_reviewer.prompt.md",
+    "runtime/prompts/adversarial_review/adversarial_reviewer.prompt.md",
+    "runtime/prompts/judgment/judgment_reviewer.prompt.md",
+    "tools/api_providers/prompt_templates/anthropic_review.md",
+    "tools/api_providers/prompt_templates/openai_review.md",
+    ".reviewcompass/specs/workflow-management/design.md",
+  ]
+
+  assert all(_is_post_write_target(path) for path in target_paths)
+
+
+def test_is_post_write_target_excludes_structured_templates_for_separate_audit():
+  """構造化 template は md post-write ではなく別監査へ寄せる。"""
+  excluded_paths = [
+    "config/api-settings.yaml",
+    ".reviewcompass/specs/workflow-management/yaml-audit-spec.yaml",
+    "runtime/config/config.yaml.template",
+    "runtime/schemas/finding.schema.json",
+    "templates/specs/spec.json.template",
+  ]
+
+  assert not any(_is_post_write_target(path) for path in excluded_paths)
 
 
 def test_list_pending_outputs_plain_markdown_with_recommendation(tmp_path, capsys):
