@@ -34,6 +34,13 @@ def _sha256_file(path: Path) -> str:
   return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
+def _resolve_path(path: str) -> Path:
+  candidate = Path(path)
+  if candidate.is_absolute():
+    return candidate
+  return Path.cwd() / candidate
+
+
 def _recommendation_for(item: Dict[str, Any]) -> Dict[str, str]:
   severity = str(item.get("severity_normalized") or item.get("severity_original") or "INFO").upper()
   if severity in ("CRITICAL", "ERROR"):
@@ -198,6 +205,40 @@ def _path_string(path: Path) -> str:
     return str(path)
 
 
+def unresolved_human_required_count(review_run_dir: str) -> int:
+  """human_required が残る件数を返す。"""
+  triage = _load_yaml_dict(_triage_path(Path(review_run_dir)))
+  count = 0
+  for item in triage.get("items", []):
+    if isinstance(item, dict) and item.get("decision_status") == "human_required":
+      count += 1
+  return count
+
+
+def _current_target_sha256(target_files: List[str], fallback: Dict[str, str]) -> Dict[str, str]:
+  """対象ファイルの現在 sha256 を返す。存在しない場合は fallback を使う。"""
+  values: Dict[str, str] = {}
+  for target in target_files:
+    target_path = _resolve_path(target)
+    if target_path.is_file():
+      values[target] = _sha256_file(target_path)
+    elif target in fallback:
+      values[target] = fallback[target]
+  return values
+
+
+def _verification_entries(models: List[str], target_files: List[str], target_sha256: Dict[str, str]) -> List[Dict[str, Any]]:
+  """required verifier ごとの coverage matrix を作る。"""
+  return [
+    {
+      "verifier": model,
+      "target_files": list(target_files),
+      "target_sha256": dict(target_sha256),
+    }
+    for model in models
+  ]
+
+
 def build_manifest_template(review_run_dir: str) -> Dict[str, Any]:
   """post-write-verification manifest 雛形を返す。"""
   run_dir = Path(review_run_dir)
@@ -210,20 +251,18 @@ def build_manifest_template(review_run_dir: str) -> Dict[str, Any]:
     for item in target_manifest.get("target_files", [])
     if isinstance(item, dict) and item.get("path")
   ]
-  target_sha256 = {
+  fallback_sha256 = {
     item.get("path"): item.get("sha256")
     for item in target_manifest.get("target_files", [])
     if isinstance(item, dict) and item.get("path") and item.get("sha256")
   }
+  target_sha256 = _current_target_sha256(target_files, fallback_sha256)
   models = [
     item.get("model_id")
     for item in rounds.get("model_results", [])
     if isinstance(item, dict) and item.get("model_id")
   ]
-  unresolved = 0
-  for item in triage.get("items", []):
-    if isinstance(item, dict) and item.get("decision_status") == "human_required":
-      unresolved += 1
+  unresolved = unresolved_human_required_count(review_run_dir)
 
   status = "completed" if unresolved == 0 else "pending"
   return {
@@ -233,12 +272,29 @@ def build_manifest_template(review_run_dir: str) -> Dict[str, Any]:
     "required_verifiers": models,
     "completed_verifiers": models,
     "unresolved_substantive_findings": unresolved,
+    "verifications": _verification_entries(models, target_files, target_sha256),
     "review_run": {
       "path": _path_string(run_dir),
       "summary_path": _path_string(summary_path),
     },
     "notes": "Generated template; verify target_files cover current post-write targets before use.",
   }
+
+
+def assert_manifest_ready(review_run_dir: str) -> None:
+  """manifest 生成可能か確認し、未判断があれば例外にする。"""
+  unresolved = unresolved_human_required_count(review_run_dir)
+  if unresolved > 0:
+    raise ValueError(f"human_required remains: {unresolved}")
+
+
+def write_manifest(review_run_dir: str, out_path: str) -> None:
+  """完了 manifest をファイルへ書く。"""
+  assert_manifest_ready(review_run_dir)
+  manifest = build_manifest_template(review_run_dir)
+  output = Path(out_path)
+  output.parent.mkdir(parents=True, exist_ok=True)
+  _dump_yaml(output, manifest)
 
 
 def _parse_argv(argv: Optional[List[str]]) -> argparse.Namespace:
@@ -257,6 +313,10 @@ def _parse_argv(argv: Optional[List[str]]) -> argparse.Namespace:
 
   manifest_parser = subparsers.add_parser("manifest-template")
   manifest_parser.add_argument("--review-run-dir", required=True)
+
+  write_manifest_parser = subparsers.add_parser("write-manifest")
+  write_manifest_parser.add_argument("--review-run-dir", required=True)
+  write_manifest_parser.add_argument("--out", required=True)
 
   return parser.parse_args(argv)
 
@@ -280,6 +340,7 @@ def main(argv: Optional[List[str]] = None) -> int:
         return 1
       return 0
     if args.command == "manifest-template":
+      assert_manifest_ready(args.review_run_dir)
       sys.stdout.write(
         yaml.safe_dump(
           build_manifest_template(args.review_run_dir),
@@ -287,6 +348,9 @@ def main(argv: Optional[List[str]] = None) -> int:
           sort_keys=False,
         )
       )
+      return 0
+    if args.command == "write-manifest":
+      write_manifest(args.review_run_dir, args.out)
       return 0
   except Exception as exc:
     sys.stderr.write(f"エラー：{type(exc).__name__}: {exc}\n")

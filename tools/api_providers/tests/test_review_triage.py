@@ -188,7 +188,7 @@ def test_decide_updates_triage_and_model_summary(tmp_path):
 
 
 def test_manifest_template_records_review_run_and_unresolved_count(tmp_path, capsys):
-  """完了 manifest 雛形を review_run 参照付きで出力する。"""
+  """完了 manifest 雛形を review_run 参照と coverage matrix 付きで出力する。"""
   run_dir = _write_review_run(tmp_path)
   main(
     [
@@ -210,3 +210,49 @@ def test_manifest_template_records_review_run_and_unresolved_count(tmp_path, cap
   assert manifest["review_run"]["path"] == str(run_dir)
   assert manifest["review_run"]["summary_path"].endswith("model-result-summary.yaml")
   assert manifest["required_verifiers"] == ["claude-sonnet-4-6", "gpt-5.4"]
+  assert [entry["verifier"] for entry in manifest["verifications"]] == [
+    "claude-sonnet-4-6",
+    "gpt-5.4",
+  ]
+  assert manifest["verifications"][0]["target_files"] == manifest["target_files"]
+  assert manifest["verifications"][0]["target_sha256"] == manifest["target_sha256"]
+
+
+def test_manifest_template_fails_when_human_required_remains(tmp_path, capsys):
+  """未判断 finding が残る場合は manifest 雛形を出力しない。"""
+  run_dir = _write_review_run(tmp_path)
+
+  exit_code = main(["manifest-template", "--review-run-dir", str(run_dir)])
+
+  assert exit_code == 1
+  captured = capsys.readouterr()
+  assert "human_required" in captured.err
+
+
+def test_write_manifest_creates_file_after_all_decisions(tmp_path):
+  """write-manifest は解決済み review-run から manifest ファイルを書く。"""
+  run_dir = _write_review_run(tmp_path)
+  output_path = tmp_path / "post-write-2026-06-03-999.yaml"
+  main(
+    [
+      "decide",
+      "--review-run-dir", str(run_dir),
+      "--finding-id", "finding-001",
+      "--final-label", "must-fix",
+      "--decision-reason", "契約に影響するため修正する",
+      "--decision-actor", "human",
+    ]
+  )
+
+  exit_code = main(
+    [
+      "write-manifest",
+      "--review-run-dir", str(run_dir),
+      "--out", str(output_path),
+    ]
+  )
+
+  assert exit_code == 0
+  manifest = yaml.safe_load(output_path.read_text(encoding="utf-8"))
+  assert manifest["status"] == "completed"
+  assert manifest["verifications"][1]["verifier"] == "gpt-5.4"

@@ -64,6 +64,9 @@ API 応答の parse に失敗した role があっても、raw と `parse_status
 平易な説明と推薦案を表示する。`decide` は明示された 1 finding の人判断を
 `triage.yaml` と `model-result-summary.yaml` に反映する。
 `manifest-template` は `review_run:` 参照付きの post-write-verification manifest 雛形を出力する。
+`write-manifest` は解決済み review run から manifest ファイルを生成する。
+`manifest-template` と `write-manifest` は、`human_required` が残る場合は fail-closed とし、
+manifest を出力しない。生成する manifest には `verifications[]` coverage matrix を含める。
 
 ## 推奨ディレクトリ構造
 
@@ -245,8 +248,11 @@ models:
    判断は `review_triage.py decide` で 1 件ずつ `triage.yaml` と `model-result-summary.yaml` に反映する。
 5. `decision_status: human_required` の項目は、平易な説明と推薦案を添えて人間判断へ上げる。
 6. 全件判断後、`review_triage.py manifest-template` で manifest 雛形を作り、対象ファイル範囲を確認する。
+   `human_required` が残る場合はここで停止する。
 7. 修正が必要な項目だけを反映し、反映後に post-write-verification manifest の `review_run:` から
    raw / rounds / summary / triage の整合を機械判定する。
+8. manifest を保存する場合は `review_triage.py write-manifest --out .reviewcompass/post-write-verification/post-write-YYYY-MM-DD-NNN.yaml`
+   を使い、生成後に `tools/check-workflow-action.py next --json` で完了認定を確認する。
 
 `run_review.py` が生成する `triage.yaml` は下書きであり、`final_label` は自動確定しない。
 初期状態では `decision_status: human_required` として残し、オーケストレーターまたは人間が
