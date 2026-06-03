@@ -550,6 +550,105 @@ def write_autonomous_parallel_ledger(cwd, plan, verdict, exit_code, reasons, cur
   )
 
 
+def build_autonomous_parallel_plan_template(run_id):
+  """自律・並列モード実行計画の最小テンプレートを返す"""
+  return {
+    "mode": "autonomous_parallel",
+    "run_id": run_id,
+    "authorization": {
+      "approved_by": "user",
+      "approval_record_path": "docs/notes/approval.md",
+      "summary_presented_to_user": True,
+      "triage_presented_to_user": True,
+    },
+    "tasks": [
+      {
+        "task_id": "task-001",
+        "source_finding_ids": ["finding-001"],
+        "assignee": {
+          "kind": "subthread",
+          "worktree_policy": "separate_worktree",
+        },
+        "allowed_paths": ["path/to/target.py"],
+        "forbidden_paths": [".git/"],
+        "depends_on": [],
+        "expected_tests": ["python3 -m pytest path/to/test.py -q"],
+        "stop_conditions": ["important_decision_requires_approval"],
+      }
+    ],
+    "integration_gate": {
+      "requires_main_session_review": True,
+      "requires_diff_scope_check": True,
+      "requires_tests": True,
+      "requires_decision_basis_review": True,
+    },
+    "history": {
+      "ledger_path": f"docs/logs/autonomous-parallel/{run_id}.yaml",
+      "record_task_assignments": True,
+      "record_decision_basis": True,
+      "record_integration_result": True,
+      "retention": "preserve",
+    },
+    "outputs_policy": {
+      "implementation_diff": "commit_candidate",
+      "verification_summary": "required",
+      "decision_basis": "preserve_if_used",
+      "work_noise": "exclude",
+    },
+  }
+
+
+def cmd_autonomous_plan_template(args):
+  """自律・並列モード実行計画のテンプレートを書き出す"""
+  plan = build_autonomous_parallel_plan_template(args.run_id)
+  out_path = Path(args.out)
+  out_path.parent.mkdir(parents=True, exist_ok=True)
+  out_path.write_text(
+    yaml.safe_dump(plan, allow_unicode=True, sort_keys=False),
+    encoding="utf-8",
+  )
+  print(str(out_path))
+  return 0
+
+
+def cmd_autonomous_plan_record_integration(args):
+  """自律・並列モード台帳へ統合結果を追記する"""
+  ledger_path = Path(args.ledger)
+  try:
+    ledger = yaml.safe_load(ledger_path.read_text(encoding="utf-8"))
+  except OSError as e:
+    print(f"error: ledger を読めません: {e}", file=sys.stderr)
+    return 2
+  except yaml.YAMLError as e:
+    print(f"error: ledger を YAML として読めません: {e}", file=sys.stderr)
+    return 2
+
+  if not isinstance(ledger, dict):
+    print("error: ledger は YAML mapping である必要があります", file=sys.stderr)
+    return 2
+  if args.status not in ("completed", "blocked", "rejected"):
+    print("error: --status は completed / blocked / rejected のいずれかです", file=sys.stderr)
+    return 2
+  if not args.tests:
+    print("error: --tests が必要です", file=sys.stderr)
+    return 2
+  if not args.decision:
+    print("error: --decision が必要です", file=sys.stderr)
+    return 2
+
+  ledger["integration_result"] = {
+    "status": args.status,
+    "tests": args.tests,
+    "decision": args.decision,
+  }
+  ledger_path.write_text(
+    yaml.safe_dump(ledger, allow_unicode=True, sort_keys=False),
+    encoding="utf-8",
+  )
+  print(str(ledger_path))
+  return 0
+
+
 def cmd_autonomous_plan(args):
   """自律・並列モード実行計画の事前検査を行う"""
   cwd = Path.cwd()
@@ -2082,6 +2181,24 @@ def main():
   )
   ap.add_argument("plan_path", help="検査対象の自律・並列モード実行計画 YAML")
 
+  apt = sub.add_parser(
+    "autonomous-plan-template",
+    help="自律・並列モード実行計画のテンプレートを書き出す",
+    parents=[common_parser],
+  )
+  apt.add_argument("--run-id", required=True, help="実行計画の run_id")
+  apt.add_argument("--out", required=True, help="テンプレート YAML の出力先")
+
+  apr = sub.add_parser(
+    "autonomous-plan-record-integration",
+    help="自律・並列モード台帳へ統合結果を追記する",
+    parents=[common_parser],
+  )
+  apr.add_argument("--ledger", required=True, help="更新対象の履歴台帳 YAML")
+  apr.add_argument("--status", required=True, help="統合結果 completed / blocked / rejected")
+  apr.add_argument("--tests", required=True, help="実行したテストまたは未実行理由")
+  apr.add_argument("--decision", required=True, help="統合判断の要約")
+
   ac = sub.add_parser(
     "audit-commit",
     help="指定 commit の post-write-verification 漏れを監査する",
@@ -2116,6 +2233,10 @@ def main():
     sys.exit(cmd_push(args))
   elif args.subcommand == "autonomous-plan":
     sys.exit(cmd_autonomous_plan(args))
+  elif args.subcommand == "autonomous-plan-template":
+    sys.exit(cmd_autonomous_plan_template(args))
+  elif args.subcommand == "autonomous-plan-record-integration":
+    sys.exit(cmd_autonomous_plan_record_integration(args))
   elif args.subcommand == "audit-commit":
     sys.exit(cmd_audit_commit(args))
   elif args.subcommand == "next":

@@ -458,6 +458,67 @@ class AutonomousParallelPlanTests(unittest.TestCase):
     data = json.loads(result.stdout)
     self.assertIn("history", "\n".join(data["reasons"]))
 
+  def test_template_command_writes_valid_autonomous_plan(self):
+    """テンプレート生成コマンドはそのまま検査可能な実行計画を書く"""
+    cwd = Path(self.tmpdir)
+    out_path = cwd / "plan.yaml"
+
+    result = run_script(
+      [
+        "autonomous-plan-template",
+        "--run-id", "ap-template-001",
+        "--out", str(out_path),
+      ],
+      cwd=cwd,
+    )
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 0, result.stderr)
+    self.assertTrue(out_path.exists())
+
+    plan = yaml.safe_load(out_path.read_text(encoding="utf-8"))
+    self.assertEqual(plan["mode"], "autonomous_parallel")
+    self.assertEqual(plan["run_id"], "ap-template-001")
+    self.assertEqual(
+      plan["history"]["ledger_path"],
+      "docs/logs/autonomous-parallel/ap-template-001.yaml",
+    )
+
+    check = run_script(["autonomous-plan", str(out_path), "--json"], cwd=cwd)
+    self.assertEqual(check.returncode, 0, check.stderr)
+
+  def test_record_integration_updates_history_ledger(self):
+    """統合結果記録コマンドは既存台帳に統合結果を追記する"""
+    cwd = Path(self.tmpdir)
+    plan_path = _write_autonomous_parallel_plan(cwd)
+    check = run_script(["autonomous-plan", str(plan_path), "--json"], cwd=cwd)
+    self.assertEqual(check.returncode, 0, check.stderr)
+
+    ledger_path = cwd / "docs" / "logs" / "autonomous-parallel" / "ap-001.yaml"
+    result = run_script(
+      [
+        "autonomous-plan-record-integration",
+        "--ledger", str(ledger_path),
+        "--status", "completed",
+        "--tests", "python3 -m unittest tests.tools.test_check_workflow_action -v",
+        "--decision", "main_session accepted scoped diff",
+      ],
+      cwd=cwd,
+    )
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 0, result.stderr)
+    ledger = yaml.safe_load(ledger_path.read_text(encoding="utf-8"))
+    self.assertEqual(ledger["integration_result"]["status"], "completed")
+    self.assertEqual(
+      ledger["integration_result"]["decision"],
+      "main_session accepted scoped diff",
+    )
+    self.assertEqual(
+      ledger["integration_result"]["tests"],
+      "python3 -m unittest tests.tools.test_check_workflow_action -v",
+    )
+
 
 class SpecSetExitCodeTests(unittest.TestCase):
   """spec-set サブコマンドの終了コード判定

@@ -1,0 +1,18 @@
+status: completed
+target_files:
+  - docs/operations/WORKFLOW_PRECHECK.md
+target_sha256:
+  docs/operations/WORKFLOW_PRECHECK.md: 4bb31a1b529298fb4bef8fa3ad01f8c7a47808b80c82e97a260a895be60f00d3
+required_verifiers:
+  - codex-self-check
+completed_verifiers:
+  - codex-self-check
+unresolved_substantive_findings: 0
+verifications:
+  - verifier: codex-self-check
+    target_files:
+      - docs/operations/WORKFLOW_PRECHECK.md
+    target_sha256:
+      docs/operations/WORKFLOW_PRECHECK.md: 4bb31a1b529298fb4bef8fa3ad01f8c7a47808b80c82e97a260a895be60f00d3
+    result: completed
+    notes: autonomous-plan-template と autonomous-plan-record-integration の正本仕様追記が実装済みサブコマンドと対応していることを確認。

@@ -94,6 +94,8 @@ check-workflow-action.py spec-set <feature> <phase> <stage> <new-value> [--ratio
 check-workflow-action.py commit --rationale "<理由>"
 check-workflow-action.py push --rationale "<理由>"
 check-workflow-action.py autonomous-plan <plan.yaml>
+check-workflow-action.py autonomous-plan-template --run-id <run-id> --out <plan.yaml>
+check-workflow-action.py autonomous-plan-record-integration --ledger <ledger.yaml> --status <status> --tests "<tests>" --decision "<decision>"
 check-workflow-action.py audit-commit <commit-ish>
 guarded-git-commit.py -m "<commit message>" --rationale "<理由>"
 ```
@@ -215,6 +217,22 @@ check-workflow-action.py autonomous-plan <plan.yaml>
 - `history`：`ledger_path`、`record_task_assignments`、`record_decision_basis`、`record_integration_result`、`retention`
 
 `history.ledger_path` は `docs/logs/autonomous-parallel/` 配下とする。`autonomous-plan` は検査結果をこの台帳へ YAML として書き出し、後から `run_id`、task ID、承認根拠、統合ゲート、出力分類、判定結果を確認できるようにする。
+
+### 5.6 `autonomous-plan-template` サブコマンド
+
+```
+check-workflow-action.py autonomous-plan-template --run-id <run-id> --out <plan.yaml>
+```
+
+自律・並列モード実行計画の最小テンプレートを生成する。生成物は `autonomous-plan` の必須フィールドをすべて含み、そのまま検査可能である。実作業では、生成後に `tasks[]` の `source_finding_ids`、`allowed_paths`、`expected_tests` を実対象へ差し替える。
+
+### 5.7 `autonomous-plan-record-integration` サブコマンド
+
+```
+check-workflow-action.py autonomous-plan-record-integration --ledger <ledger.yaml> --status <status> --tests "<tests>" --decision "<decision>"
+```
+
+自律・並列モードの統合後に、既存の履歴台帳へ `integration_result` を追記する。`status` は `completed`、`blocked`、`rejected` のいずれか。`tests` には実行したテストまたは未実行理由、`decision` にはメインセッション LLM による統合判断の要約を記録する。
 
 ## 6. 判定ロジック
 
