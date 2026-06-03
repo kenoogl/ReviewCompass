@@ -48,7 +48,7 @@ commit は利用者の職掌範囲として扱う。Codex/LLM は利用者から
 
 post-write-verification 対象文書を含む commit は、commit precheck が completed manifest の存在・sha256 一致・coverage matrix を機械監査する。対象判定は `docs/disciplines/discipline_post_write_verification.md` の適用範囲と `tools/check-workflow-action.py` の `is_post_write_verification_target()` に従う。未検証の対象文書が staged されている場合は `DEVIATION` として停止する。commit 後の見落とし確認には `tools/check-workflow-action.py audit-commit <commit-ish>` を使う。
 
-API 経由の review-run 結果を用いる場合は、raw 参照・モデル別要約・三段階トリアージ（must-fix／should-fix／leave-as-is）を利用者へまとめて提示する。`ERROR`／`CRITICAL` または最終判断 `must-fix` の重要件は、修正前に推薦案と判断材料を示して利用者承認を得る。機械ガードとして、`tools/api_providers/review_triage.py decide` と `write-manifest` は重要件に `--approval-record` を要求する。承認レコードは `approved_by: user`、`summary_presented_to_user: true`、`triage_presented_to_user: true`、`approved_finding_ids` を含む。
+API 経由の review-run 結果を用いる場合は、raw 参照・モデル別要約・三段階トリアージ（must-fix／should-fix／leave-as-is）を利用者へまとめて提示する。`ERROR`／`CRITICAL` または最終判断 `must-fix` の重要件は、通常モードでは修正前に推薦案と判断材料を示して利用者承認を得る。proxy_model 判断代行モードでは、正本 `SESSION_WORKFLOW_GUIDE.md` の手順に従い、proxy decision の raw・候補案・採用案・判断理由・最終ラベルを記録する。機械ガードとして、`tools/api_providers/review_triage.py decide` と `write-manifest` と `assert-apply-fixes-ready` は重要件に `--approval-record` を要求する。承認レコードは `approved_by: user` または `approved_by: proxy_model`、`summary_presented_to_user: true`、`triage_presented_to_user: true`、`approved_finding_ids` を含む。
 
 ### 0.3 起草者と判定者の分離（計画書 §5.4）
 

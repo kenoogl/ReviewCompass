@@ -20,6 +20,8 @@ FINAL_LABELS = ("must-fix", "should-fix", "leave-as-is")
 IMPORTANT_SEVERITIES = ("CRITICAL", "ERROR")
 TRIAGE_DECIDE_APPROVAL_ACTIONS = ("review_triage_decide", "review_run_triage")
 MANIFEST_APPROVAL_ACTIONS = ("review_run_manifest", "review_run_triage")
+APPLY_FIXES_APPROVAL_ACTIONS = ("review_run_apply_fixes", "review_run_triage")
+FIX_LABELS = ("must-fix", "should-fix")
 POST_WRITE_VERIFICATION_DIR_PREFIXES = (
   "docs/plan/",
   "docs/disciplines/",
@@ -167,9 +169,109 @@ def _load_approval_record(path: Optional[str]) -> Dict[str, Any]:
   return approval if isinstance(approval, dict) else {}
 
 
+def _resolve_record_path(path_value: str, run_dir: Path, base_dir: Path) -> Path:
+  path = Path(path_value)
+  if path.is_absolute():
+    return path
+  base_candidate = base_dir / path
+  if base_candidate.exists():
+    return base_candidate
+  return run_dir / path
+
+
+def _proxy_decision_errors(
+  approval: Dict[str, Any],
+  run_dir: Path,
+  approval_path: Optional[Path],
+  required_finding_ids: List[str],
+  final_labels: Optional[Dict[str, str]],
+) -> List[str]:
+  errors = []
+  proxy_model_id = approval.get("proxy_model_id")
+  if not isinstance(proxy_model_id, str) or not proxy_model_id.strip():
+    errors.append("proxy_model_id is required")
+
+  proxy_decisions = approval.get("proxy_decisions")
+  if not isinstance(proxy_decisions, dict):
+    return errors + ["proxy_decisions must be a mapping"]
+
+  base_dir = approval_path.parent if approval_path else run_dir
+  for finding_id in sorted(set(required_finding_ids)):
+    decision_ref = proxy_decisions.get(finding_id)
+    if not isinstance(decision_ref, str) or not decision_ref:
+      errors.append(f"proxy_decisions missing: {finding_id}")
+      continue
+
+    decision_path = _resolve_record_path(decision_ref, run_dir, base_dir)
+    if not decision_path.is_file():
+      errors.append(f"proxy decision file missing: {decision_ref}")
+      continue
+
+    decision = _load_yaml_dict(decision_path)
+    if decision.get("approved_by") != "proxy_model":
+      errors.append(f"{finding_id}: decision approved_by must be proxy_model")
+    if decision.get("finding_id") != finding_id:
+      errors.append(f"{finding_id}: decision finding_id mismatch")
+    if decision.get("proxy_model_id") != proxy_model_id:
+      errors.append(f"{finding_id}: proxy_model_id mismatch")
+
+    for key in (
+      "decision_prompt_path",
+      "selected_option",
+      "final_label",
+      "rationale",
+      "raw_response_path",
+    ):
+      value = decision.get(key)
+      if not isinstance(value, str) or not value.strip():
+        errors.append(f"{finding_id}: {key} is required")
+
+    candidate_options = decision.get("candidate_options")
+    if not isinstance(candidate_options, list) or not candidate_options:
+      errors.append(f"{finding_id}: candidate_options is required")
+
+    source_raw_paths = decision.get("source_raw_paths")
+    if not isinstance(source_raw_paths, list) or not source_raw_paths:
+      errors.append(f"{finding_id}: source_raw_paths is required")
+    elif not all(isinstance(item, str) and item.strip() for item in source_raw_paths):
+      errors.append(f"{finding_id}: source_raw_paths must contain paths")
+
+    rejected_options = decision.get("rejected_options")
+    if not isinstance(rejected_options, dict) or not rejected_options:
+      errors.append(f"{finding_id}: rejected_options is required")
+
+    expected_label = final_labels.get(finding_id) if final_labels else None
+    if expected_label and decision.get("final_label") != expected_label:
+      errors.append(f"{finding_id}: final_label mismatch")
+
+    raw_response_path = decision.get("raw_response_path")
+    if isinstance(raw_response_path, str) and raw_response_path.strip():
+      raw_path = _resolve_record_path(raw_response_path, run_dir, decision_path.parent)
+      if not raw_path.is_file():
+        errors.append(f"{finding_id}: raw_response_path missing")
+      elif raw_path.stat().st_size == 0:
+        errors.append(f"{finding_id}: raw_response_path empty")
+
+    decision_prompt_path = decision.get("decision_prompt_path")
+    if isinstance(decision_prompt_path, str) and decision_prompt_path.strip():
+      prompt_path = _resolve_record_path(decision_prompt_path, run_dir, decision_path.parent)
+      if not prompt_path.is_file():
+        errors.append(f"{finding_id}: decision_prompt_path missing")
+
+    if isinstance(source_raw_paths, list):
+      for source_raw_path in source_raw_paths:
+        if not isinstance(source_raw_path, str) or not source_raw_path.strip():
+          continue
+        source_path = _resolve_record_path(source_raw_path, run_dir, decision_path.parent)
+        if not source_path.is_file():
+          errors.append(f"{finding_id}: source_raw_paths missing: {source_raw_path}")
+  return errors
+
+
 def _approval_errors(
   approval: Dict[str, Any],
-  run_id: str,
+  run_dir: Path,
+  approval_path: Optional[Path],
   allowed_actions: tuple,
   required_finding_ids: List[str],
   final_labels: Optional[Dict[str, str]] = None,
@@ -179,9 +281,10 @@ def _approval_errors(
     return ["approval record is required"]
   if approval.get("approved_action") not in allowed_actions:
     errors.append("approved_action does not allow this review-run action")
-  if approval.get("approved_by") != "user":
-    errors.append("approved_by must be user")
-  if approval.get("review_run_id") != run_id:
+  approved_by = approval.get("approved_by")
+  if approved_by not in ("user", "proxy_model"):
+    errors.append("approved_by must be user or proxy_model")
+  if approval.get("review_run_id") != run_dir.name:
     errors.append("review_run_id does not match")
   if approval.get("summary_presented_to_user") is not True:
     errors.append("summary_presented_to_user must be true")
@@ -205,6 +308,16 @@ def _approval_errors(
     ]
     if mismatched:
       errors.append(f"approved_final_labels mismatch: {', '.join(sorted(mismatched))}")
+  if approved_by == "proxy_model":
+    errors.extend(
+      _proxy_decision_errors(
+        approval,
+        run_dir,
+        approval_path,
+        required_finding_ids,
+        final_labels,
+      )
+    )
   return errors
 
 
@@ -218,9 +331,11 @@ def _require_review_run_approval(
   if not required_finding_ids:
     return
   approval = _load_approval_record(approval_record_path)
+  approval_path = Path(approval_record_path) if approval_record_path else None
   errors = _approval_errors(
     approval,
-    run_dir.name,
+    run_dir,
+    approval_path,
     allowed_actions,
     required_finding_ids,
     final_labels,
@@ -497,6 +612,44 @@ def assert_manifest_ready(
   )
 
 
+def assert_apply_fixes_ready(
+  review_run_dir: str,
+  approval_record_path: Optional[str] = None,
+) -> None:
+  """API review 所見への修正適用を始めてよいか機械判定する。"""
+  run_dir = Path(review_run_dir)
+  unresolved = unresolved_human_required_count(review_run_dir)
+  if unresolved > 0:
+    raise ValueError(f"human_required remains: {unresolved}")
+
+  triage = _load_yaml_dict(_triage_path(run_dir))
+  items = triage.get("items")
+  if not isinstance(items, list):
+    items = []
+  final_labels = {}
+  required_ids = []
+  for item in items:
+    if not isinstance(item, dict):
+      continue
+    finding_id = item.get("finding_id")
+    final_label = item.get("final_label")
+    if (
+      finding_id
+      and item.get("decision_status") == "decided"
+      and final_label in FIX_LABELS
+    ):
+      required_ids.append(finding_id)
+      final_labels[finding_id] = final_label
+
+  _require_review_run_approval(
+    run_dir,
+    approval_record_path,
+    APPLY_FIXES_APPROVAL_ACTIONS,
+    sorted(set(required_ids)),
+    final_labels,
+  )
+
+
 def write_manifest(
   review_run_dir: str,
   out_path: str,
@@ -552,6 +705,10 @@ def _parse_argv(argv: Optional[List[str]]) -> argparse.Namespace:
   write_manifest_parser.add_argument("--out", required=True)
   write_manifest_parser.add_argument("--approval-record")
 
+  apply_fixes_parser = subparsers.add_parser("assert-apply-fixes-ready")
+  apply_fixes_parser.add_argument("--review-run-dir", required=True)
+  apply_fixes_parser.add_argument("--approval-record")
+
   return parser.parse_args(argv)
 
 
@@ -587,6 +744,10 @@ def main(argv: Optional[List[str]] = None) -> int:
     if args.command == "write-manifest":
       output = write_manifest(args.review_run_dir, args.out, args.approval_record)
       sys.stdout.write(f"{output}\n")
+      return 0
+    if args.command == "assert-apply-fixes-ready":
+      assert_apply_fixes_ready(args.review_run_dir, args.approval_record)
+      sys.stdout.write("apply_fixes_ready: true\n")
       return 0
   except Exception as exc:
     sys.stderr.write(f"エラー：{type(exc).__name__}: {exc}\n")

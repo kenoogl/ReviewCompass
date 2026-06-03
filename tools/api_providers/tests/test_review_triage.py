@@ -2,6 +2,7 @@
 # review-run triage 補助コマンドの TDD テスト。
 
 import sys
+from datetime import date
 from pathlib import Path
 
 _PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent.parent
@@ -154,6 +155,76 @@ def _write_review_run_approval(run_dir, action, finding_ids=None, final_labels=N
         "triage_presented_to_user": True,
         "approved_finding_ids": finding_ids or ["finding-001"],
         "approved_final_labels": final_labels or {"finding-001": "must-fix"},
+        "consumed": False,
+      },
+      allow_unicode=True,
+      sort_keys=False,
+    ),
+    encoding="utf-8",
+  )
+  return approval_path
+
+
+def _write_proxy_decision(run_dir, finding_id="finding-001", final_label="must-fix"):
+  """proxy_model 判断レコードと raw を review-run 配下に書く。"""
+  decision_dir = run_dir / "proxy-decisions"
+  decision_dir.mkdir()
+  prompt_path = decision_dir / f"{finding_id}.prompt.md"
+  prompt_path.write_text("proxy prompt with options and source raw\n", encoding="utf-8")
+  raw_path = decision_dir / f"{finding_id}.raw.txt"
+  raw_path.write_text("proxy raw response\n", encoding="utf-8")
+  decision_path = decision_dir / f"{finding_id}.decision.yaml"
+  decision_path.write_text(
+    yaml.safe_dump(
+      {
+        "finding_id": finding_id,
+        "approved_by": "proxy_model",
+        "proxy_model_id": "gemini-3.1-pro-preview",
+        "decision_prompt_path": f"proxy-decisions/{finding_id}.prompt.md",
+        "source_raw_paths": ["raw/claude-sonnet-4-6.round-1.txt"],
+        "candidate_options": [
+          {
+            "id": "option_1",
+            "summary": "修正する",
+          },
+          {
+            "id": "option_2",
+            "summary": "延期する",
+          },
+        ],
+        "selected_option": "option_1",
+        "final_label": final_label,
+        "rationale": "契約違反を防ぐため採用する",
+        "rejected_options": {
+          "option_2": "後続で手戻りが大きい",
+        },
+        "raw_response_path": f"proxy-decisions/{finding_id}.raw.txt",
+      },
+      allow_unicode=True,
+      sort_keys=False,
+    ),
+    encoding="utf-8",
+  )
+  return decision_path
+
+
+def _write_proxy_approval(run_dir, action, decision_path, final_label="must-fix"):
+  """review-run 用の proxy_model 承認レコードを書く。"""
+  approval_path = run_dir / "approval-proxy.yaml"
+  approval_path.write_text(
+    yaml.safe_dump(
+      {
+        "approved_action": action,
+        "approved_by": "proxy_model",
+        "proxy_model_id": "gemini-3.1-pro-preview",
+        "review_run_id": run_dir.name,
+        "summary_presented_to_user": True,
+        "triage_presented_to_user": True,
+        "approved_finding_ids": ["finding-001"],
+        "approved_final_labels": {"finding-001": final_label},
+        "proxy_decisions": {
+          "finding-001": str(decision_path.relative_to(run_dir)),
+        },
         "consumed": False,
       },
       allow_unicode=True,
@@ -357,7 +428,8 @@ def test_write_manifest_auto_chooses_next_post_write_name(tmp_path, monkeypatch,
   monkeypatch.chdir(cwd)
   existing_dir = cwd / ".reviewcompass" / "post-write-verification"
   existing_dir.mkdir(parents=True)
-  (existing_dir / "post-write-2026-06-03-001.yaml").write_text(
+  today = date.today().isoformat()
+  (existing_dir / f"post-write-{today}-001.yaml").write_text(
     "status: completed\n",
     encoding="utf-8",
   )
@@ -387,7 +459,7 @@ def test_write_manifest_auto_chooses_next_post_write_name(tmp_path, monkeypatch,
 
   assert exit_code == 0
   output = capsys.readouterr().out
-  created_path = existing_dir / "post-write-2026-06-03-002.yaml"
+  created_path = existing_dir / f"post-write-{today}-002.yaml"
   assert str(created_path) in output
   assert created_path.is_file()
   manifest = yaml.safe_load(created_path.read_text(encoding="utf-8"))
@@ -421,3 +493,180 @@ def test_write_manifest_blocks_important_decisions_without_approval(tmp_path, ca
   assert not output_path.exists()
   captured = capsys.readouterr()
   assert "approval" in captured.err
+
+
+def test_assert_apply_fixes_ready_blocks_when_human_required_remains(tmp_path, capsys):
+  """未判断 finding が残る間は修正適用へ進めない。"""
+  run_dir = _write_review_run(tmp_path)
+
+  exit_code = main(
+    [
+      "assert-apply-fixes-ready",
+      "--review-run-dir", str(run_dir),
+    ]
+  )
+
+  assert exit_code == 1
+  captured = capsys.readouterr()
+  assert "human_required" in captured.err
+
+
+def test_assert_apply_fixes_ready_requires_user_approval_for_fix_labels(tmp_path, capsys):
+  """must-fix / should-fix の修正適用は利用者承認なしでは進めない。"""
+  run_dir = _write_review_run(tmp_path)
+  triage = yaml.safe_load((run_dir / "triage.yaml").read_text(encoding="utf-8"))
+  item = triage["items"][0]
+  item["decision_status"] = "decided"
+  item["final_label"] = "must-fix"
+  item["decision_actor"] = "human"
+  item["decision_actor_type"] = "human"
+  (run_dir / "triage.yaml").write_text(
+    yaml.safe_dump(triage, allow_unicode=True, sort_keys=False),
+    encoding="utf-8",
+  )
+
+  exit_code = main(
+    [
+      "assert-apply-fixes-ready",
+      "--review-run-dir", str(run_dir),
+    ]
+  )
+
+  assert exit_code == 1
+  captured = capsys.readouterr()
+  assert "approval" in captured.err
+
+
+def test_assert_apply_fixes_ready_passes_after_user_approval(tmp_path):
+  """修正対象 finding が利用者承認済みなら修正適用へ進める。"""
+  run_dir = _write_review_run(tmp_path)
+  triage = yaml.safe_load((run_dir / "triage.yaml").read_text(encoding="utf-8"))
+  item = triage["items"][0]
+  item["decision_status"] = "decided"
+  item["final_label"] = "must-fix"
+  item["decision_actor"] = "human"
+  item["decision_actor_type"] = "human"
+  (run_dir / "triage.yaml").write_text(
+    yaml.safe_dump(triage, allow_unicode=True, sort_keys=False),
+    encoding="utf-8",
+  )
+  approval_path = _write_review_run_approval(
+    run_dir,
+    "review_run_apply_fixes",
+    finding_ids=["finding-001"],
+    final_labels={"finding-001": "must-fix"},
+  )
+
+  exit_code = main(
+    [
+      "assert-apply-fixes-ready",
+      "--review-run-dir", str(run_dir),
+      "--approval-record", str(approval_path),
+    ]
+  )
+
+  assert exit_code == 0
+
+
+def test_assert_apply_fixes_ready_passes_after_proxy_model_approval(tmp_path):
+  """proxy_model の判断証跡が揃っていれば修正適用へ進める。"""
+  run_dir = _write_review_run(tmp_path)
+  triage = yaml.safe_load((run_dir / "triage.yaml").read_text(encoding="utf-8"))
+  item = triage["items"][0]
+  item["decision_status"] = "decided"
+  item["final_label"] = "must-fix"
+  item["decision_actor"] = "gemini-3.1-pro-preview"
+  item["decision_actor_type"] = "proxy_model"
+  (run_dir / "triage.yaml").write_text(
+    yaml.safe_dump(triage, allow_unicode=True, sort_keys=False),
+    encoding="utf-8",
+  )
+  decision_path = _write_proxy_decision(run_dir)
+  approval_path = _write_proxy_approval(
+    run_dir,
+    "review_run_apply_fixes",
+    decision_path,
+  )
+
+  exit_code = main(
+    [
+      "assert-apply-fixes-ready",
+      "--review-run-dir", str(run_dir),
+      "--approval-record", str(approval_path),
+    ]
+  )
+
+  assert exit_code == 0
+
+
+def test_assert_apply_fixes_ready_blocks_proxy_approval_without_raw(tmp_path, capsys):
+  """proxy decision の raw response が欠ける場合は fail-closed する。"""
+  run_dir = _write_review_run(tmp_path)
+  triage = yaml.safe_load((run_dir / "triage.yaml").read_text(encoding="utf-8"))
+  item = triage["items"][0]
+  item["decision_status"] = "decided"
+  item["final_label"] = "must-fix"
+  item["decision_actor"] = "gemini-3.1-pro-preview"
+  item["decision_actor_type"] = "proxy_model"
+  (run_dir / "triage.yaml").write_text(
+    yaml.safe_dump(triage, allow_unicode=True, sort_keys=False),
+    encoding="utf-8",
+  )
+  decision_path = _write_proxy_decision(run_dir)
+  (run_dir / "proxy-decisions" / "finding-001.raw.txt").unlink()
+  approval_path = _write_proxy_approval(
+    run_dir,
+    "review_run_apply_fixes",
+    decision_path,
+  )
+
+  exit_code = main(
+    [
+      "assert-apply-fixes-ready",
+      "--review-run-dir", str(run_dir),
+      "--approval-record", str(approval_path),
+    ]
+  )
+
+  assert exit_code == 1
+  captured = capsys.readouterr()
+  assert "raw_response_path" in captured.err
+
+
+def test_assert_apply_fixes_ready_blocks_proxy_approval_without_options(tmp_path, capsys):
+  """proxy に提示した候補案セットが欠ける場合は fail-closed する。"""
+  run_dir = _write_review_run(tmp_path)
+  triage = yaml.safe_load((run_dir / "triage.yaml").read_text(encoding="utf-8"))
+  item = triage["items"][0]
+  item["decision_status"] = "decided"
+  item["final_label"] = "must-fix"
+  item["decision_actor"] = "gemini-3.1-pro-preview"
+  item["decision_actor_type"] = "proxy_model"
+  (run_dir / "triage.yaml").write_text(
+    yaml.safe_dump(triage, allow_unicode=True, sort_keys=False),
+    encoding="utf-8",
+  )
+  decision_path = _write_proxy_decision(run_dir)
+  decision = yaml.safe_load(decision_path.read_text(encoding="utf-8"))
+  decision.pop("candidate_options")
+  decision_path.write_text(
+    yaml.safe_dump(decision, allow_unicode=True, sort_keys=False),
+    encoding="utf-8",
+  )
+  approval_path = _write_proxy_approval(
+    run_dir,
+    "review_run_apply_fixes",
+    decision_path,
+  )
+
+  exit_code = main(
+    [
+      "assert-apply-fixes-ready",
+      "--review-run-dir", str(run_dir),
+      "--approval-record", str(approval_path),
+    ]
+  )
+
+  assert exit_code == 1
+  captured = capsys.readouterr()
+  assert "candidate_options" in captured.err
