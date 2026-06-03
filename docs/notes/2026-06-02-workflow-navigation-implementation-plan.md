@@ -220,3 +220,22 @@ intent から feature 分割した結果を workflow 定義として保存し、
 ### 3.7 フック連携
 
 `next` の結果を commit / push / spec-set の事前検査と連動させ、現在許可されていない作業を検出した場合に fail-closed で止める。
+
+### 3.8 commit 承認レコードの runtime state 化
+
+commit 承認レコード `.reviewcompass/approvals/commit-approval.json` は、利用者のその場の明示承認と
+staged ファイル範囲を機械判定するためのローカル runtime state として扱う。
+
+`guarded-git-commit.py` は commit 成功後に同レコードへ `consumed: true` と `consumed_at` を書く。
+このため、承認レコードを Git 管理すると commit のたびに作業ツリーへ差分が残り、
+「承認レコード消費結果をさらに commit する」循環が発生する。
+
+対応方針：
+
+- `.reviewcompass/approvals/commit-approval.json` は `.gitignore` 対象にし、Git では管理しない。
+- 既に Git 管理済みの承認レコードがある場合は、ローカルファイルを残したまま
+  `git rm --cached .reviewcompass/approvals/commit-approval.json` で index から外す。
+- precheck は従来どおり同 path のローカルファイルを読む。
+- commit の明示指示があった turn で、staged ファイルに合わせた承認レコードをローカル生成する。
+- commit 成功後の `consumed_at` 更新はローカル監査状態として残し、正本文書・計画メモ・post-write manifest とは分ける。
+- 将来、より強い保証が必要な場合は、repo 内 JSON ではなく実行環境側の approval token または hook adapter が発行する一時証跡へ移す。

@@ -1,0 +1,4 @@
+run_id: postwrite-commit-approval-runtime-state-2026-06-03-r1
+target_files:
+- path: docs/notes/2026-06-02-workflow-navigation-implementation-plan.md
+  sha256: 44cc048df189eaff5b74d07656fe9e5601afcd77ab470d002e1f97bc8286caa7

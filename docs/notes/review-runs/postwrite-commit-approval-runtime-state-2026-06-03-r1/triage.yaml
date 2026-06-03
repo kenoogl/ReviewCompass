@@ -1,0 +1,66 @@
+run_id: postwrite-commit-approval-runtime-state-2026-06-03-r1
+triage_status: decided
+generated_at: '2026-06-03T13:48:22.829297+00:00'
+decision_actor: null
+decision_actor_type: human
+items:
+- finding_id: postwrite-commit-approval-runtime-state-2026-06-03-r1-claude-sonnet-4-6-primary-001
+  run_id: postwrite-commit-approval-runtime-state-2026-06-03-r1
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: docs/notes/2026-06-02-workflow-navigation-implementation-plan.md
+    § 3.8
+  plain_language_summary: commit 承認レコードの runtime state 化方針が計画メモに記載されている。内容は `.gitignore`
+    対象化・ローカル生成・consumed 更新のローカル保持・将来の approval token 移行の 4 点で構成されており、実装境界と循環防止の根拠が明示されている。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: codex
+  decision_actor_type: agent
+  decision_at: '2026-06-03T13:48:56.976799+00:00'
+  decision_reason: 計画メモ記述の妥当性確認であり追加対応不要
+  applied_files: []
+  superseded_by: null
+- finding_id: postwrite-commit-approval-runtime-state-2026-06-03-r1-gpt-5.4-adversarial-001
+  run_id: postwrite-commit-approval-runtime-state-2026-06-03-r1
+  source_model: gpt-5.4
+  source_round: round-1
+  source_raw_path: raw/gpt-5.4.round-1.txt
+  source_parsed_path: parsed/gpt-5.4.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: docs/notes/2026-06-02-workflow-navigation-implementation-plan.md
+    §3.8
+  plain_language_summary: runtime state 化の方針は記載されているが、既存の Git 管理済み commit-approval
+    レコードをどう移行・除去するかの具体手順がない。
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: codex
+  decision_actor_type: agent
+  decision_at: '2026-06-03T13:49:02.589059+00:00'
+  decision_reason: 既存 Git 管理済み承認レコードは git rm --cached で index から外す手順を計画メモへ追記済み
+  applied_files: []
+  superseded_by: null
+- finding_id: postwrite-commit-approval-runtime-state-2026-06-03-r1-gpt-5.4-adversarial-002
+  run_id: postwrite-commit-approval-runtime-state-2026-06-03-r1
+  source_model: gpt-5.4
+  source_round: round-1
+  source_raw_path: raw/gpt-5.4.round-1.txt
+  source_parsed_path: parsed/gpt-5.4.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: docs/notes/2026-06-02-workflow-navigation-implementation-plan.md
+    §3.8
+  plain_language_summary: commit 承認レコードをローカル runtime state として扱う理由、commit 後に consumed
+    状態を書き戻すこと、Git 管理しない方針が明確に記録されている。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: codex
+  decision_actor_type: agent
+  decision_at: '2026-06-03T13:49:08.946371+00:00'
+  decision_reason: 設計意図と運用方針が追跡可能との確認であり追加対応不要
+  applied_files: []
+  superseded_by: null

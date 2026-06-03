@@ -9,6 +9,10 @@ __pycache__/
 # 仕様：docs/operations/WORKFLOW_PRECHECK.md §8
 docs/logs/workflow-precheck.log
 
+# commit 承認レコードは利用者操作ごとの runtime state。
+# guarded-git-commit.py が commit 成功後に consumed_at を更新するため、Git では管理しない。
+.reviewcompass/approvals/commit-approval.json
+
 # 7 モデル比較実験の一時エラーログ（実験スクリプト実行時のエラー記録、
 # 実行ごとに生成される空ファイル群、リポジトリでは管理しない、2026-05-27 セッション 32）
 tools/experiments/logs/

@@ -1,0 +1,120 @@
+status: completed
+target_files:
+- docs/notes/2026-06-02-workflow-navigation-implementation-plan.md
+- docs/notes/review-runs/postwrite-commit-approval-runtime-state-2026-06-03-r1/model-result-summary.yaml
+- docs/notes/review-runs/postwrite-commit-approval-runtime-state-2026-06-03-r1/parsed/claude-sonnet-4-6.round-1.yaml
+- docs/notes/review-runs/postwrite-commit-approval-runtime-state-2026-06-03-r1/parsed/gemini-3.1-pro-preview.round-1.yaml
+- docs/notes/review-runs/postwrite-commit-approval-runtime-state-2026-06-03-r1/parsed/gpt-5.4.round-1.yaml
+- docs/notes/review-runs/postwrite-commit-approval-runtime-state-2026-06-03-r1/raw/claude-sonnet-4-6.round-1.txt
+- docs/notes/review-runs/postwrite-commit-approval-runtime-state-2026-06-03-r1/raw/gemini-3.1-pro-preview.round-1.txt
+- docs/notes/review-runs/postwrite-commit-approval-runtime-state-2026-06-03-r1/raw/gpt-5.4.round-1.txt
+- docs/notes/review-runs/postwrite-commit-approval-runtime-state-2026-06-03-r1/review_summary.md
+- docs/notes/review-runs/postwrite-commit-approval-runtime-state-2026-06-03-r1/rounds.yaml
+- docs/notes/review-runs/postwrite-commit-approval-runtime-state-2026-06-03-r1/target-manifest.yaml
+- docs/notes/review-runs/postwrite-commit-approval-runtime-state-2026-06-03-r1/triage.yaml
+target_sha256:
+  docs/notes/2026-06-02-workflow-navigation-implementation-plan.md: b2d7a6ec92fd667f189bb1bfd15f70fa8bd02df3c8a6db45c08ce9ccb054e037
+  docs/notes/review-runs/postwrite-commit-approval-runtime-state-2026-06-03-r1/model-result-summary.yaml: 29c904c0c000fa2246f860f49376285a96fce10ba9a61f21dedce3dd7fbaed85
+  docs/notes/review-runs/postwrite-commit-approval-runtime-state-2026-06-03-r1/parsed/claude-sonnet-4-6.round-1.yaml: fca0f6b239244229c0207740961f154a184d9a21dc3d0a388f061e3733a0225f
+  docs/notes/review-runs/postwrite-commit-approval-runtime-state-2026-06-03-r1/parsed/gemini-3.1-pro-preview.round-1.yaml: 77016ca256f49744f8f17718726efdca589f2ceffda0ddefca9431b8384105d0
+  docs/notes/review-runs/postwrite-commit-approval-runtime-state-2026-06-03-r1/parsed/gpt-5.4.round-1.yaml: 14ada4e851019426c10aa6b211246b787aff483a000450df8f4a1dfde811f383
+  docs/notes/review-runs/postwrite-commit-approval-runtime-state-2026-06-03-r1/raw/claude-sonnet-4-6.round-1.txt: b0571f9d8c8f02febd30b19ec0285711593e77e8e716224a6020f528d4e5f681
+  docs/notes/review-runs/postwrite-commit-approval-runtime-state-2026-06-03-r1/raw/gemini-3.1-pro-preview.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+  docs/notes/review-runs/postwrite-commit-approval-runtime-state-2026-06-03-r1/raw/gpt-5.4.round-1.txt: 3a6812dbdc881bc3b40f70afcbe352373eef9d6992f62d74439392921d1fac64
+  docs/notes/review-runs/postwrite-commit-approval-runtime-state-2026-06-03-r1/review_summary.md: 53b12869135112f0c6d6452c28bd4890a4a31524522db015eaf359882713f32c
+  docs/notes/review-runs/postwrite-commit-approval-runtime-state-2026-06-03-r1/rounds.yaml: 1552493ccc42c42e4cc5168935c046259cced3500d54772c1f4d37a7a1847dbd
+  docs/notes/review-runs/postwrite-commit-approval-runtime-state-2026-06-03-r1/target-manifest.yaml: a758502273882d379948ed433339082b175977b29429c8433e0b1248faa7a8ee
+  docs/notes/review-runs/postwrite-commit-approval-runtime-state-2026-06-03-r1/triage.yaml: a4b02a1aacf1c0eb5510760387693883ac17139c01c387c190850666f60c6306
+required_verifiers: &id001
+- claude-sonnet-4-6
+- gpt-5.4
+- gemini-3.1-pro-preview
+completed_verifiers: *id001
+unresolved_substantive_findings: 0
+verifications:
+- verifier: claude-sonnet-4-6
+  target_files:
+  - docs/notes/2026-06-02-workflow-navigation-implementation-plan.md
+  - docs/notes/review-runs/postwrite-commit-approval-runtime-state-2026-06-03-r1/model-result-summary.yaml
+  - docs/notes/review-runs/postwrite-commit-approval-runtime-state-2026-06-03-r1/parsed/claude-sonnet-4-6.round-1.yaml
+  - docs/notes/review-runs/postwrite-commit-approval-runtime-state-2026-06-03-r1/parsed/gemini-3.1-pro-preview.round-1.yaml
+  - docs/notes/review-runs/postwrite-commit-approval-runtime-state-2026-06-03-r1/parsed/gpt-5.4.round-1.yaml
+  - docs/notes/review-runs/postwrite-commit-approval-runtime-state-2026-06-03-r1/raw/claude-sonnet-4-6.round-1.txt
+  - docs/notes/review-runs/postwrite-commit-approval-runtime-state-2026-06-03-r1/raw/gemini-3.1-pro-preview.round-1.txt
+  - docs/notes/review-runs/postwrite-commit-approval-runtime-state-2026-06-03-r1/raw/gpt-5.4.round-1.txt
+  - docs/notes/review-runs/postwrite-commit-approval-runtime-state-2026-06-03-r1/review_summary.md
+  - docs/notes/review-runs/postwrite-commit-approval-runtime-state-2026-06-03-r1/rounds.yaml
+  - docs/notes/review-runs/postwrite-commit-approval-runtime-state-2026-06-03-r1/target-manifest.yaml
+  - docs/notes/review-runs/postwrite-commit-approval-runtime-state-2026-06-03-r1/triage.yaml
+  target_sha256:
+    docs/notes/2026-06-02-workflow-navigation-implementation-plan.md: b2d7a6ec92fd667f189bb1bfd15f70fa8bd02df3c8a6db45c08ce9ccb054e037
+    docs/notes/review-runs/postwrite-commit-approval-runtime-state-2026-06-03-r1/model-result-summary.yaml: 29c904c0c000fa2246f860f49376285a96fce10ba9a61f21dedce3dd7fbaed85
+    docs/notes/review-runs/postwrite-commit-approval-runtime-state-2026-06-03-r1/parsed/claude-sonnet-4-6.round-1.yaml: fca0f6b239244229c0207740961f154a184d9a21dc3d0a388f061e3733a0225f
+    docs/notes/review-runs/postwrite-commit-approval-runtime-state-2026-06-03-r1/parsed/gemini-3.1-pro-preview.round-1.yaml: 77016ca256f49744f8f17718726efdca589f2ceffda0ddefca9431b8384105d0
+    docs/notes/review-runs/postwrite-commit-approval-runtime-state-2026-06-03-r1/parsed/gpt-5.4.round-1.yaml: 14ada4e851019426c10aa6b211246b787aff483a000450df8f4a1dfde811f383
+    docs/notes/review-runs/postwrite-commit-approval-runtime-state-2026-06-03-r1/raw/claude-sonnet-4-6.round-1.txt: b0571f9d8c8f02febd30b19ec0285711593e77e8e716224a6020f528d4e5f681
+    docs/notes/review-runs/postwrite-commit-approval-runtime-state-2026-06-03-r1/raw/gemini-3.1-pro-preview.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/postwrite-commit-approval-runtime-state-2026-06-03-r1/raw/gpt-5.4.round-1.txt: 3a6812dbdc881bc3b40f70afcbe352373eef9d6992f62d74439392921d1fac64
+    docs/notes/review-runs/postwrite-commit-approval-runtime-state-2026-06-03-r1/review_summary.md: 53b12869135112f0c6d6452c28bd4890a4a31524522db015eaf359882713f32c
+    docs/notes/review-runs/postwrite-commit-approval-runtime-state-2026-06-03-r1/rounds.yaml: 1552493ccc42c42e4cc5168935c046259cced3500d54772c1f4d37a7a1847dbd
+    docs/notes/review-runs/postwrite-commit-approval-runtime-state-2026-06-03-r1/target-manifest.yaml: a758502273882d379948ed433339082b175977b29429c8433e0b1248faa7a8ee
+    docs/notes/review-runs/postwrite-commit-approval-runtime-state-2026-06-03-r1/triage.yaml: a4b02a1aacf1c0eb5510760387693883ac17139c01c387c190850666f60c6306
+- verifier: gpt-5.4
+  target_files:
+  - docs/notes/2026-06-02-workflow-navigation-implementation-plan.md
+  - docs/notes/review-runs/postwrite-commit-approval-runtime-state-2026-06-03-r1/model-result-summary.yaml
+  - docs/notes/review-runs/postwrite-commit-approval-runtime-state-2026-06-03-r1/parsed/claude-sonnet-4-6.round-1.yaml
+  - docs/notes/review-runs/postwrite-commit-approval-runtime-state-2026-06-03-r1/parsed/gemini-3.1-pro-preview.round-1.yaml
+  - docs/notes/review-runs/postwrite-commit-approval-runtime-state-2026-06-03-r1/parsed/gpt-5.4.round-1.yaml
+  - docs/notes/review-runs/postwrite-commit-approval-runtime-state-2026-06-03-r1/raw/claude-sonnet-4-6.round-1.txt
+  - docs/notes/review-runs/postwrite-commit-approval-runtime-state-2026-06-03-r1/raw/gemini-3.1-pro-preview.round-1.txt
+  - docs/notes/review-runs/postwrite-commit-approval-runtime-state-2026-06-03-r1/raw/gpt-5.4.round-1.txt
+  - docs/notes/review-runs/postwrite-commit-approval-runtime-state-2026-06-03-r1/review_summary.md
+  - docs/notes/review-runs/postwrite-commit-approval-runtime-state-2026-06-03-r1/rounds.yaml
+  - docs/notes/review-runs/postwrite-commit-approval-runtime-state-2026-06-03-r1/target-manifest.yaml
+  - docs/notes/review-runs/postwrite-commit-approval-runtime-state-2026-06-03-r1/triage.yaml
+  target_sha256:
+    docs/notes/2026-06-02-workflow-navigation-implementation-plan.md: b2d7a6ec92fd667f189bb1bfd15f70fa8bd02df3c8a6db45c08ce9ccb054e037
+    docs/notes/review-runs/postwrite-commit-approval-runtime-state-2026-06-03-r1/model-result-summary.yaml: 29c904c0c000fa2246f860f49376285a96fce10ba9a61f21dedce3dd7fbaed85
+    docs/notes/review-runs/postwrite-commit-approval-runtime-state-2026-06-03-r1/parsed/claude-sonnet-4-6.round-1.yaml: fca0f6b239244229c0207740961f154a184d9a21dc3d0a388f061e3733a0225f
+    docs/notes/review-runs/postwrite-commit-approval-runtime-state-2026-06-03-r1/parsed/gemini-3.1-pro-preview.round-1.yaml: 77016ca256f49744f8f17718726efdca589f2ceffda0ddefca9431b8384105d0
+    docs/notes/review-runs/postwrite-commit-approval-runtime-state-2026-06-03-r1/parsed/gpt-5.4.round-1.yaml: 14ada4e851019426c10aa6b211246b787aff483a000450df8f4a1dfde811f383
+    docs/notes/review-runs/postwrite-commit-approval-runtime-state-2026-06-03-r1/raw/claude-sonnet-4-6.round-1.txt: b0571f9d8c8f02febd30b19ec0285711593e77e8e716224a6020f528d4e5f681
+    docs/notes/review-runs/postwrite-commit-approval-runtime-state-2026-06-03-r1/raw/gemini-3.1-pro-preview.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/postwrite-commit-approval-runtime-state-2026-06-03-r1/raw/gpt-5.4.round-1.txt: 3a6812dbdc881bc3b40f70afcbe352373eef9d6992f62d74439392921d1fac64
+    docs/notes/review-runs/postwrite-commit-approval-runtime-state-2026-06-03-r1/review_summary.md: 53b12869135112f0c6d6452c28bd4890a4a31524522db015eaf359882713f32c
+    docs/notes/review-runs/postwrite-commit-approval-runtime-state-2026-06-03-r1/rounds.yaml: 1552493ccc42c42e4cc5168935c046259cced3500d54772c1f4d37a7a1847dbd
+    docs/notes/review-runs/postwrite-commit-approval-runtime-state-2026-06-03-r1/target-manifest.yaml: a758502273882d379948ed433339082b175977b29429c8433e0b1248faa7a8ee
+    docs/notes/review-runs/postwrite-commit-approval-runtime-state-2026-06-03-r1/triage.yaml: a4b02a1aacf1c0eb5510760387693883ac17139c01c387c190850666f60c6306
+- verifier: gemini-3.1-pro-preview
+  target_files:
+  - docs/notes/2026-06-02-workflow-navigation-implementation-plan.md
+  - docs/notes/review-runs/postwrite-commit-approval-runtime-state-2026-06-03-r1/model-result-summary.yaml
+  - docs/notes/review-runs/postwrite-commit-approval-runtime-state-2026-06-03-r1/parsed/claude-sonnet-4-6.round-1.yaml
+  - docs/notes/review-runs/postwrite-commit-approval-runtime-state-2026-06-03-r1/parsed/gemini-3.1-pro-preview.round-1.yaml
+  - docs/notes/review-runs/postwrite-commit-approval-runtime-state-2026-06-03-r1/parsed/gpt-5.4.round-1.yaml
+  - docs/notes/review-runs/postwrite-commit-approval-runtime-state-2026-06-03-r1/raw/claude-sonnet-4-6.round-1.txt
+  - docs/notes/review-runs/postwrite-commit-approval-runtime-state-2026-06-03-r1/raw/gemini-3.1-pro-preview.round-1.txt
+  - docs/notes/review-runs/postwrite-commit-approval-runtime-state-2026-06-03-r1/raw/gpt-5.4.round-1.txt
+  - docs/notes/review-runs/postwrite-commit-approval-runtime-state-2026-06-03-r1/review_summary.md
+  - docs/notes/review-runs/postwrite-commit-approval-runtime-state-2026-06-03-r1/rounds.yaml
+  - docs/notes/review-runs/postwrite-commit-approval-runtime-state-2026-06-03-r1/target-manifest.yaml
+  - docs/notes/review-runs/postwrite-commit-approval-runtime-state-2026-06-03-r1/triage.yaml
+  target_sha256:
+    docs/notes/2026-06-02-workflow-navigation-implementation-plan.md: b2d7a6ec92fd667f189bb1bfd15f70fa8bd02df3c8a6db45c08ce9ccb054e037
+    docs/notes/review-runs/postwrite-commit-approval-runtime-state-2026-06-03-r1/model-result-summary.yaml: 29c904c0c000fa2246f860f49376285a96fce10ba9a61f21dedce3dd7fbaed85
+    docs/notes/review-runs/postwrite-commit-approval-runtime-state-2026-06-03-r1/parsed/claude-sonnet-4-6.round-1.yaml: fca0f6b239244229c0207740961f154a184d9a21dc3d0a388f061e3733a0225f
+    docs/notes/review-runs/postwrite-commit-approval-runtime-state-2026-06-03-r1/parsed/gemini-3.1-pro-preview.round-1.yaml: 77016ca256f49744f8f17718726efdca589f2ceffda0ddefca9431b8384105d0
+    docs/notes/review-runs/postwrite-commit-approval-runtime-state-2026-06-03-r1/parsed/gpt-5.4.round-1.yaml: 14ada4e851019426c10aa6b211246b787aff483a000450df8f4a1dfde811f383
+    docs/notes/review-runs/postwrite-commit-approval-runtime-state-2026-06-03-r1/raw/claude-sonnet-4-6.round-1.txt: b0571f9d8c8f02febd30b19ec0285711593e77e8e716224a6020f528d4e5f681
+    docs/notes/review-runs/postwrite-commit-approval-runtime-state-2026-06-03-r1/raw/gemini-3.1-pro-preview.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/postwrite-commit-approval-runtime-state-2026-06-03-r1/raw/gpt-5.4.round-1.txt: 3a6812dbdc881bc3b40f70afcbe352373eef9d6992f62d74439392921d1fac64
+    docs/notes/review-runs/postwrite-commit-approval-runtime-state-2026-06-03-r1/review_summary.md: 53b12869135112f0c6d6452c28bd4890a4a31524522db015eaf359882713f32c
+    docs/notes/review-runs/postwrite-commit-approval-runtime-state-2026-06-03-r1/rounds.yaml: 1552493ccc42c42e4cc5168935c046259cced3500d54772c1f4d37a7a1847dbd
+    docs/notes/review-runs/postwrite-commit-approval-runtime-state-2026-06-03-r1/target-manifest.yaml: a758502273882d379948ed433339082b175977b29429c8433e0b1248faa7a8ee
+    docs/notes/review-runs/postwrite-commit-approval-runtime-state-2026-06-03-r1/triage.yaml: a4b02a1aacf1c0eb5510760387693883ac17139c01c387c190850666f60c6306
+review_run:
+  path: docs/notes/review-runs/postwrite-commit-approval-runtime-state-2026-06-03-r1
+  summary_path: docs/notes/review-runs/postwrite-commit-approval-runtime-state-2026-06-03-r1/model-result-summary.yaml
+notes: Generated template; verify target_files cover current post-write targets before
+  use.
