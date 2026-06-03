@@ -1,0 +1,39 @@
+status: completed
+target_files:
+  - TODO_NEXT_SESSION.md
+  - docs/notes/2026-06-03-agent-adapter-strategy.md
+  - docs/operations/WORKFLOW_NAVIGATION.md
+  - docs/operations/WORKFLOW_NAVIGATION_FOR_CODEX.md
+target_sha256:
+  TODO_NEXT_SESSION.md: 5f3f0b7dafb511c1705174b9f6e5ac60912b49756e6d57d05490d55f37453d7b
+  docs/notes/2026-06-03-agent-adapter-strategy.md: 9b77788edb78135e802b16fc6d9f5909b0353006dd4b8d7b6b1bfc91fea74b5e
+  docs/operations/WORKFLOW_NAVIGATION.md: 8c92b30bd23c1b5ad09c2597e78e424646625674c383fb4e66ee2eacf5bab7f9
+  docs/operations/WORKFLOW_NAVIGATION_FOR_CODEX.md: 763bb23ca95a4034b7c73c4e247de661515481f517e2de5d045ae021919476a2
+required_verifiers:
+  - gemini
+completed_verifiers:
+  - gemini
+unresolved_substantive_findings: 0
+verifications:
+  - verifier: gemini
+    provider: gemini-api
+    model: gemini-3.5-flash
+    target_files:
+      - TODO_NEXT_SESSION.md
+      - docs/notes/2026-06-03-agent-adapter-strategy.md
+      - docs/operations/WORKFLOW_NAVIGATION.md
+      - docs/operations/WORKFLOW_NAVIGATION_FOR_CODEX.md
+    target_sha256:
+      TODO_NEXT_SESSION.md: 5f3f0b7dafb511c1705174b9f6e5ac60912b49756e6d57d05490d55f37453d7b
+      docs/notes/2026-06-03-agent-adapter-strategy.md: 9b77788edb78135e802b16fc6d9f5909b0353006dd4b8d7b6b1bfc91fea74b5e
+      docs/operations/WORKFLOW_NAVIGATION.md: 8c92b30bd23c1b5ad09c2597e78e424646625674c383fb4e66ee2eacf5bab7f9
+      docs/operations/WORKFLOW_NAVIGATION_FOR_CODEX.md: 763bb23ca95a4034b7c73c4e247de661515481f517e2de5d045ae021919476a2
+    result_summary: >
+      Gemini 3.5 Flash に対象4ファイルを結合した一時ファイルを読ませた。
+      通常ワークフローを一時停止して Codex 稼働入口整備を優先する意図、
+      共通ナビゲータ文書と Codex adapter の責務分離、Claude 固有資産を adapter に閉じ込める方針、
+      TODO の Codex 起点化、post-write-verification / policy violation / 外部 API / commit / push /
+      人間承認の扱い、参照先ファイル名を確認。findings は空で、本質的指摘・逐語的指摘ともになし。
+note: >
+  Codex 稼働入口整備のための小規模 post-write-verification。
+  templates/ 配下は post-write pending 中の policy violation を避けるため、この manifest の対象外。

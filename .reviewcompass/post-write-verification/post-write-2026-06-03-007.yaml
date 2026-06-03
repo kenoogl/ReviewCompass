@@ -1,0 +1,27 @@
+status: completed
+target_files:
+  - docs/notes/2026-06-03-agent-adapter-strategy.md
+target_sha256:
+  docs/notes/2026-06-03-agent-adapter-strategy.md: 9b77788edb78135e802b16fc6d9f5909b0353006dd4b8d7b6b1bfc91fea74b5e
+required_verifiers:
+  - gemini
+completed_verifiers:
+  - gemini
+unresolved_substantive_findings: 0
+verifications:
+  - verifier: gemini
+    provider: gemini-api
+    model: gemini-3.5-flash
+    target_files:
+      - docs/notes/2026-06-03-agent-adapter-strategy.md
+    target_sha256:
+      docs/notes/2026-06-03-agent-adapter-strategy.md: 9b77788edb78135e802b16fc6d9f5909b0353006dd4b8d7b6b1bfc91fea74b5e
+    result_summary: >
+      Gemini 3.5 Flash に、各社モデル向け adapter 方針メモを読ませた。
+      共通ロジックと各社 adapter の分離方針、Claude 前提を adapter に閉じ込める方針、
+      Codex 移行の修正対象、正式化前メモとしての位置付け、内部矛盾・参照ミス・重大な抜けを確認。
+      findings は空で、本質的指摘・逐語的指摘ともになし。
+note: >
+  小規模な方針メモ 1 件に対する post-write-verification。
+  既存の tools/api_providers/run_role.py と config/api-settings.yaml の
+  post_write_verification_google variant を使用した。

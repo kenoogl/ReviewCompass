@@ -23,7 +23,9 @@
     tools/check-workflow-action.py next --json
 
 1. `next_action.kind` を現在の作業順序・優先順位の正本として扱う。
-   読み方は `docs/operations/WORKFLOW_NAVIGATION_FOR_CLAUDE.md` に従う。
+   共通の読み方は `docs/operations/WORKFLOW_NAVIGATION.md` に従う。
+   実行環境固有の制約は、Codex では `docs/operations/WORKFLOW_NAVIGATION_FOR_CODEX.md`、
+   Claude Code では `docs/operations/WORKFLOW_NAVIGATION_FOR_CLAUDE.md` に従う。
    記憶・要約・本 TODO §3 だけを段取りの根拠にしない。
 2. `post_write_verification`、`reopen_in_progress`、`resume_in_progress` が返った場合は、
    通常ワークフローよりそれらを優先する。
@@ -64,7 +66,7 @@ drafting 段は actor=human または llm（草案作成のみ）、triad-review
 3. `git log --oneline -5` / `git status` で到達点確認
 4. 作業開始前に対象機能の `.reviewcompass/specs/<機能>/spec.json` を Read
 
-規律 14 件は MEMORY.md 索引がセッション開始時に自動ロード済み。全件の本文読み込みは不要。操作の直前に下表の該当行を Read する。
+Codex では Claude memory の自動ロードを前提にしない。規律本文は repo 内 `docs/disciplines/` を正本とし、操作の直前に下表の該当行を Read する。Claude Code で作業する場合のみ、Claude 用 memory 索引は補助参照として扱う。
 
 | 操作 | 直前に読む規律ファイル（`docs/disciplines/` 配下） |
 |------|------------------------------------------------|
@@ -103,7 +105,7 @@ drafting 段は actor=human または llm（草案作成のみ）、triad-review
 
 ### 3.1 実装フェーズで確立した手順（runtime 以降も踏襲）
 
-- TDD（テスト先行で赤 → 実装で緑）。コミットは依存グループ単位＋テスト/実装の 2 段（CLAUDE.md 優先）
+- TDD（テスト先行で赤 → 実装で緑）。Codex では `AGENTS.md` を入口規律とし、コミットは利用者の明示指示がある場合のみ実行する。
 - 実装レビュー観点 5 点（タスク文書整合・要件追跡・テスト網羅性・配置命名規約・機能横断波及）。本体 [docs/notes/2026-06-01-implementation-phase-approach.md](docs/notes/2026-06-01-implementation-phase-approach.md)
 - **triad-review は独立 API 経由 3 役**（主役 `claude-opus-4-8`／敵対役 `gpt-5.5`／判定役 `gemini-3.1-pro-preview`、mode 値 `api_mediated`）。GPT-5.5 は `timeout_seconds=300` 指定。呼び出しは `tools/api_providers/providers.py`（get_provider／send_request）経由、鍵は OpenAI／Anthropic／Gemini 設定済み
 - 所見の調停（must-fix 含む）は LLM、上位判断（規律変更・大方針転換・遡及）は本人留保

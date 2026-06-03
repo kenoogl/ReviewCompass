@@ -1,0 +1,38 @@
+# Codex 作業用：ReviewCompass ワークフローナビゲータの使い方
+
+この文書は、Codex が ReviewCompass の開発作業を始める前に読むための adapter 手引きである。
+
+共通の `next_action` の読み方は `docs/operations/WORKFLOW_NAVIGATION.md` を正本とする。本書は Codex 環境に固有の制約だけを補う。
+
+## 1. 起点
+
+作業開始前、または次に何をするかを提案する前に、必ず次を実行する。
+
+```bash
+python3 tools/check-workflow-action.py next --json
+```
+
+その後、`next_action.kind` は `docs/operations/WORKFLOW_NAVIGATION.md` に従って読む。
+
+## 2. Codex 固有の作業規則
+
+1. `AGENTS.md` をプロジェクト内の Codex 向け入口規律として扱う。
+2. Claude memory が自動ロードされる前提を置かない。必要な規律本文は repo 内 `docs/disciplines/` を読む。
+3. repo 外 memory への書き込みを前提にしない。memory 相当の永続記録が必要な場合は、まず記録先と内容を利用者へ提示し、明示承認を得る。
+4. filesystem sandbox と approval の制約を守る。外部 API、ネットワーク通信、repo 外書き込み、破壊的操作は、許可が必要な場合に承認を得てから実行する。
+5. commit と push は利用者の運用方針に従う。利用者が明示的に依頼した場合だけ実行し、直前に precheck を行う。
+6. docs/ 配下や `TODO_NEXT_SESSION.md` を書いた後は、`next` を再実行して結果を報告する。`post_write_verification` が返った場合は通常ワークフローへ戻らない。
+7. post-write-verification pending 中に、再発防止や反省を目的として規律、TODO、テンプレート、hook、スクリプトを勝手に変更しない。必要なら提案して利用者の承認を待つ。
+8. `.codex/hooks.json` と `.codex/hooks/` は Codex 側の hook 設定である。Claude Code の `.claude/` 設定とは分けて扱う。
+
+## 3. post-write-verification の扱い
+
+Codex は `next_action.target_files` 全体を確認する。複数ファイルがある場合でも、ファイルごとの分業を独立多重チェックとして扱わない。
+
+外部 API を使う検証は、利用者の明示承認または既に許可された既存コマンドがある場合だけ実行する。実行できない場合は、検証対象、必要な検証者数、実行しようとした手段、実行できない理由を報告して停止する。
+
+## 4. Claude 固有資産の扱い
+
+Claude 用の手引き、memory、`.claude/` hook、Claude Code session log converter は削除しない。Claude Code で再検証・比較実行するための adapter 資産として残す。
+
+Codex 作業時に修正すべきなのは、「現在の作業者が必ず Claude Code である」と読める入口記述である。triad-review のモデル名としての `claude-*` や、過去セッション記録内の Claude 記述は履歴・モデル識別子として扱う。
