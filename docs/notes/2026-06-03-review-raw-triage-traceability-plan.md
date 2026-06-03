@@ -52,6 +52,13 @@ post-write-verification manifest に `review_run:` を記録した場合は、`t
 が raw、rounds、summary、triage の整合を完了条件として機械判定する。
 この確認を経ていないレビュー結果は、監査ログとして不完全と扱う。
 
+複数モデルを 1 つの review run に集約する入口として `tools/api_providers/run_review.py` を追加した。
+同 script は `primary`、`adversarial`、`judgment` の 3 role を同じ `--review-run-dir` に順に実行し、
+`run_role.py` と同じ raw / parsed / rounds / summary 成果物を更新する。
+さらに、ユーザ提示用の `review_summary.md` と、finding 単位の `triage.yaml` 下書きを生成する。
+API 応答の parse に失敗した role があっても、raw と `parse_status: parse_failed` を残し、
+他 role の実行と summary 生成は継続する。
+
 ## 推奨ディレクトリ構造
 
 レビューまたは監査 1 件ごとに、次のような成果物を残す。
@@ -219,6 +226,21 @@ models:
 `triaged` は finding 単位の判断が `triage.yaml` に移された状態、
 `no_findings` は raw を読んだうえで指摘なしと判断した状態を表す。
 完了 manifest の機械判定では、`triage_pending` が残っていれば未完了として扱う。
+
+## 実運用フロー
+
+複数モデル API レビューでは、次の順序を守る。
+
+1. `tools/api_providers/run_review.py` を `--review-run-dir docs/notes/review-runs/<run_id>` 付きで実行する。
+2. `model-result-summary.yaml` と `review_summary.md` を読み、モデル別に raw 保存、parse 状態、所見件数をユーザへ示す。
+3. `triage.yaml` 下書きの各 finding を、`must-fix` / `should-fix` / `leave-as-is` の三段階へ分類する。
+4. `decision_status: human_required` の項目は、平易な説明と推薦案を添えて人間判断へ上げる。
+5. 修正が必要な項目だけを反映し、反映後に post-write-verification manifest の `review_run:` から
+   raw / rounds / summary / triage の整合を機械判定する。
+
+`run_review.py` が生成する `triage.yaml` は下書きであり、`final_label` は自動確定しない。
+初期状態では `decision_status: human_required` として残し、オーケストレーターまたは人間が
+根拠を確認した後にだけ `decision_status: decided` へ進める。
 
 ## 今回分への扱い
 
