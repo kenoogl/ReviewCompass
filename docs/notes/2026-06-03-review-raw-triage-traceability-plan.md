@@ -59,6 +59,12 @@ post-write-verification manifest に `review_run:` を記録した場合は、`t
 API 応答の parse に失敗した role があっても、raw と `parse_status: parse_failed` を残し、
 他 role の実行と summary 生成は継続する。
 
+`tools/api_providers/review_triage.py` は、`run_review.py` 後の判断補助を担う。
+`list-pending` は `triage.yaml` の `decision_status: human_required` 項目を Markdown 表にし、
+平易な説明と推薦案を表示する。`decide` は明示された 1 finding の人判断を
+`triage.yaml` と `model-result-summary.yaml` に反映する。
+`manifest-template` は `review_run:` 参照付きの post-write-verification manifest 雛形を出力する。
+
 ## 推奨ディレクトリ構造
 
 レビューまたは監査 1 件ごとに、次のような成果物を残す。
@@ -233,9 +239,13 @@ models:
 
 1. `tools/api_providers/run_review.py` を `--review-run-dir docs/notes/review-runs/<run_id>` 付きで実行する。
 2. `model-result-summary.yaml` と `review_summary.md` を読み、モデル別に raw 保存、parse 状態、所見件数をユーザへ示す。
-3. `triage.yaml` 下書きの各 finding を、`must-fix` / `should-fix` / `leave-as-is` の三段階へ分類する。
-4. `decision_status: human_required` の項目は、平易な説明と推薦案を添えて人間判断へ上げる。
-5. 修正が必要な項目だけを反映し、反映後に post-write-verification manifest の `review_run:` から
+3. `tools/api_providers/review_triage.py list-pending` で、`triage.yaml` 下書きの未判断 finding を
+   平易な説明と推薦案付きで表示する。
+4. 各 finding を、`must-fix` / `should-fix` / `leave-as-is` の三段階へ分類する。
+   判断は `review_triage.py decide` で 1 件ずつ `triage.yaml` と `model-result-summary.yaml` に反映する。
+5. `decision_status: human_required` の項目は、平易な説明と推薦案を添えて人間判断へ上げる。
+6. 全件判断後、`review_triage.py manifest-template` で manifest 雛形を作り、対象ファイル範囲を確認する。
+7. 修正が必要な項目だけを反映し、反映後に post-write-verification manifest の `review_run:` から
    raw / rounds / summary / triage の整合を機械判定する。
 
 `run_review.py` が生成する `triage.yaml` は下書きであり、`final_label` は自動確定しない。
