@@ -1,0 +1,22 @@
+status: completed
+target_files:
+  - TODO_NEXT_SESSION.md
+  - templates/todo/TODO_NEXT_SESSION.template.md
+target_sha256:
+  TODO_NEXT_SESSION.md: 54771b6c7572042aae284f168afcd8d5c2c4f8a5e340cfe193a4a8cc54dd90d9
+  templates/todo/TODO_NEXT_SESSION.template.md: b4597900cf2595efd407c0fb6fe25dc58da59407c4c1cad4b56191be4a46db49
+required_verifiers:
+  - codex-self-check
+completed_verifiers:
+  - codex-self-check
+unresolved_substantive_findings: 0
+verifications:
+  - verifier: codex-self-check
+    target_files:
+      - TODO_NEXT_SESSION.md
+      - templates/todo/TODO_NEXT_SESSION.template.md
+    target_sha256:
+      TODO_NEXT_SESSION.md: 54771b6c7572042aae284f168afcd8d5c2c4f8a5e340cfe193a4a8cc54dd90d9
+      templates/todo/TODO_NEXT_SESSION.template.md: b4597900cf2595efd407c0fb6fe25dc58da59407c4c1cad4b56191be4a46db49
+    result: completed
+    notes: Verified TODO and template include a compact overview, preserve navigator-first workflow, avoid stale session-history bulk, and retain commit/API/carry-forward guardrails.
