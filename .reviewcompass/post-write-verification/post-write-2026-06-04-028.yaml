@@ -1,0 +1,48 @@
+status: completed
+target_files:
+- docs/notes/2026-06-04-implementation-review-wave-improvements.md
+- docs/notes/review-runs/postwrite-implementation-review-wave-improvements-2026-06-04-r1/model-result-summary.yaml
+- docs/notes/review-runs/postwrite-implementation-review-wave-improvements-2026-06-04-r1/parsed/gemini-3.5-flash.r1.yaml
+- docs/notes/review-runs/postwrite-implementation-review-wave-improvements-2026-06-04-r1/raw/gemini-3.5-flash.r1.txt
+- docs/notes/review-runs/postwrite-implementation-review-wave-improvements-2026-06-04-r1/review_summary.md
+- docs/notes/review-runs/postwrite-implementation-review-wave-improvements-2026-06-04-r1/rounds.yaml
+- docs/notes/review-runs/postwrite-implementation-review-wave-improvements-2026-06-04-r1/target-manifest.yaml
+- docs/notes/review-runs/postwrite-implementation-review-wave-improvements-2026-06-04-r1/triage.yaml
+target_sha256:
+  docs/notes/2026-06-04-implementation-review-wave-improvements.md: b2ed73b6ad021bcb1c9cb1f9c24244e99644c84658dd829ba6cbcec9f4b0f603
+  docs/notes/review-runs/postwrite-implementation-review-wave-improvements-2026-06-04-r1/model-result-summary.yaml: a73396290cfcc5c43efd985e0995106a3c2ed0355944ce5bf465a3ee1c86f185
+  docs/notes/review-runs/postwrite-implementation-review-wave-improvements-2026-06-04-r1/parsed/gemini-3.5-flash.r1.yaml: c7098333065d6c117d40811445aea8d48a415534e6c13a580cdb3c21cb195e46
+  docs/notes/review-runs/postwrite-implementation-review-wave-improvements-2026-06-04-r1/raw/gemini-3.5-flash.r1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+  docs/notes/review-runs/postwrite-implementation-review-wave-improvements-2026-06-04-r1/review_summary.md: b2d0175a2dcbb6217cbe2878af6023924c14c55f2db173ec87761ee7eeb03191
+  docs/notes/review-runs/postwrite-implementation-review-wave-improvements-2026-06-04-r1/rounds.yaml: 7bce929ceeb6ae48848b3c816abe34ab23e598f47e14b6e55d59ee901a4f55dd
+  docs/notes/review-runs/postwrite-implementation-review-wave-improvements-2026-06-04-r1/target-manifest.yaml: e5386c49c71f1231f9dfe9e9beee73b0858ddf747b7f9c8532d2f2821f7bc5b4
+  docs/notes/review-runs/postwrite-implementation-review-wave-improvements-2026-06-04-r1/triage.yaml: 438149988014010f720e480a8d5fc13f4a8f2f9b2e5ebd755356ac6533f3732b
+required_verifiers: &id001
+- gemini-3.5-flash
+completed_verifiers: *id001
+unresolved_substantive_findings: 0
+verifications:
+- verifier: gemini-3.5-flash
+  target_files:
+  - docs/notes/2026-06-04-implementation-review-wave-improvements.md
+  - docs/notes/review-runs/postwrite-implementation-review-wave-improvements-2026-06-04-r1/model-result-summary.yaml
+  - docs/notes/review-runs/postwrite-implementation-review-wave-improvements-2026-06-04-r1/parsed/gemini-3.5-flash.r1.yaml
+  - docs/notes/review-runs/postwrite-implementation-review-wave-improvements-2026-06-04-r1/raw/gemini-3.5-flash.r1.txt
+  - docs/notes/review-runs/postwrite-implementation-review-wave-improvements-2026-06-04-r1/review_summary.md
+  - docs/notes/review-runs/postwrite-implementation-review-wave-improvements-2026-06-04-r1/rounds.yaml
+  - docs/notes/review-runs/postwrite-implementation-review-wave-improvements-2026-06-04-r1/target-manifest.yaml
+  - docs/notes/review-runs/postwrite-implementation-review-wave-improvements-2026-06-04-r1/triage.yaml
+  target_sha256:
+    docs/notes/2026-06-04-implementation-review-wave-improvements.md: b2ed73b6ad021bcb1c9cb1f9c24244e99644c84658dd829ba6cbcec9f4b0f603
+    docs/notes/review-runs/postwrite-implementation-review-wave-improvements-2026-06-04-r1/model-result-summary.yaml: a73396290cfcc5c43efd985e0995106a3c2ed0355944ce5bf465a3ee1c86f185
+    docs/notes/review-runs/postwrite-implementation-review-wave-improvements-2026-06-04-r1/parsed/gemini-3.5-flash.r1.yaml: c7098333065d6c117d40811445aea8d48a415534e6c13a580cdb3c21cb195e46
+    docs/notes/review-runs/postwrite-implementation-review-wave-improvements-2026-06-04-r1/raw/gemini-3.5-flash.r1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/postwrite-implementation-review-wave-improvements-2026-06-04-r1/review_summary.md: b2d0175a2dcbb6217cbe2878af6023924c14c55f2db173ec87761ee7eeb03191
+    docs/notes/review-runs/postwrite-implementation-review-wave-improvements-2026-06-04-r1/rounds.yaml: 7bce929ceeb6ae48848b3c816abe34ab23e598f47e14b6e55d59ee901a4f55dd
+    docs/notes/review-runs/postwrite-implementation-review-wave-improvements-2026-06-04-r1/target-manifest.yaml: e5386c49c71f1231f9dfe9e9beee73b0858ddf747b7f9c8532d2f2821f7bc5b4
+    docs/notes/review-runs/postwrite-implementation-review-wave-improvements-2026-06-04-r1/triage.yaml: 438149988014010f720e480a8d5fc13f4a8f2f9b2e5ebd755356ac6533f3732b
+review_run:
+  path: docs/notes/review-runs/postwrite-implementation-review-wave-improvements-2026-06-04-r1
+  summary_path: docs/notes/review-runs/postwrite-implementation-review-wave-improvements-2026-06-04-r1/model-result-summary.yaml
+notes: Generated template; verify target_files cover current post-write targets before
+  use.

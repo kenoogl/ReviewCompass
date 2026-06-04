@@ -378,8 +378,13 @@ def _summary_path(run_dir: Path) -> Path:
   return run_dir / "model-result-summary.yaml"
 
 
+def _is_unresolved_triage_item(item: Dict[str, Any]) -> bool:
+  """decided 以外の item は triage 未完了として扱う。"""
+  return item.get("decision_status") != "decided"
+
+
 def list_pending(review_run_dir: str) -> str:
-  """human_required の triage item を Markdown 表で返す。"""
+  """未完了の triage item を Markdown 表で返す。"""
   run_dir = Path(review_run_dir)
   triage = _load_yaml_dict(_triage_path(run_dir))
   items = triage.get("items")
@@ -395,7 +400,7 @@ def list_pending(review_run_dir: str) -> str:
   for item in items:
     if not isinstance(item, dict):
       continue
-    if item.get("decision_status") != "human_required":
+    if not _is_unresolved_triage_item(item):
       continue
     recommendation = _recommendation_for(item)
     lines.append(
@@ -421,7 +426,7 @@ def _count_summary_for_model(items: List[Dict[str, Any]], model_id: str) -> Dict
   for item in items:
     if item.get("source_model") != model_id:
       continue
-    if item.get("decision_status") == "human_required":
+    if _is_unresolved_triage_item(item):
       counts["human_required_count"] += 1
       continue
     label = item.get("final_label")
@@ -459,7 +464,13 @@ def refresh_summary_from_triage(review_run_dir: str) -> None:
       continue
     counts = _count_summary_for_model(items, model_id)
     model.update(counts)
-    if counts["human_required_count"] > 0:
+    unresolved_for_model = [
+      item for item in items
+      if isinstance(item, dict)
+      and item.get("source_model") == model_id
+      and _is_unresolved_triage_item(item)
+    ]
+    if unresolved_for_model:
       model["triage_status"] = "triage_pending"
     else:
       model["triage_status"] = "triaged"
@@ -510,7 +521,7 @@ def decide_item(
 
   unresolved = [
     item for item in items
-    if isinstance(item, dict) and item.get("decision_status") == "human_required"
+    if isinstance(item, dict) and _is_unresolved_triage_item(item)
   ]
   triage["triage_status"] = "draft" if unresolved else "decided"
   _dump_yaml(_triage_path(run_dir), triage)
@@ -531,6 +542,16 @@ def unresolved_human_required_count(review_run_dir: str) -> int:
   count = 0
   for item in triage.get("items", []):
     if isinstance(item, dict) and item.get("decision_status") == "human_required":
+      count += 1
+  return count
+
+
+def unresolved_triage_count(review_run_dir: str) -> int:
+  """decided 以外の triage item が残る件数を返す。"""
+  triage = _load_yaml_dict(_triage_path(Path(review_run_dir)))
+  count = 0
+  for item in triage.get("items", []):
+    if isinstance(item, dict) and _is_unresolved_triage_item(item):
       count += 1
   return count
 
@@ -590,7 +611,7 @@ def build_manifest_template(review_run_dir: str) -> Dict[str, Any]:
     for item in rounds.get("model_results", [])
     if isinstance(item, dict) and item.get("model_id")
   ]
-  unresolved = unresolved_human_required_count(review_run_dir)
+  unresolved = unresolved_triage_count(review_run_dir)
 
   status = "completed" if unresolved == 0 else "pending"
   return {
@@ -615,9 +636,9 @@ def assert_manifest_ready(
 ) -> None:
   """manifest 生成可能か確認し、未判断があれば例外にする。"""
   run_dir = Path(review_run_dir)
-  unresolved = unresolved_human_required_count(review_run_dir)
+  unresolved = unresolved_triage_count(review_run_dir)
   if unresolved > 0:
-    raise ValueError(f"human_required remains: {unresolved}")
+    raise ValueError(f"unresolved triage remains (human_required/draft): {unresolved}")
   triage = _load_yaml_dict(_triage_path(run_dir))
   items = triage.get("items")
   if not isinstance(items, list):
@@ -644,9 +665,9 @@ def assert_apply_fixes_ready(
 ) -> None:
   """API review 所見への修正適用を始めてよいか機械判定する。"""
   run_dir = Path(review_run_dir)
-  unresolved = unresolved_human_required_count(review_run_dir)
+  unresolved = unresolved_triage_count(review_run_dir)
   if unresolved > 0:
-    raise ValueError(f"human_required remains: {unresolved}")
+    raise ValueError(f"unresolved triage remains (human_required/draft): {unresolved}")
 
   triage = _load_yaml_dict(_triage_path(run_dir))
   items = triage.get("items")

@@ -318,6 +318,72 @@ def test_decide_updates_triage_and_model_summary(tmp_path):
   assert model["human_required_count"] == 0
 
 
+def test_decide_keeps_triage_draft_when_other_draft_item_remains(tmp_path):
+  """個別 item に draft が残る限り triage_status は decided にしない。"""
+  run_dir = _write_review_run(tmp_path)
+  approval_path = _write_review_run_approval(run_dir, "review_triage_decide")
+  triage_path = run_dir / "triage.yaml"
+  triage = yaml.safe_load(triage_path.read_text(encoding="utf-8"))
+  second_item = dict(triage["items"][0])
+  second_item.update({
+    "finding_id": "finding-002",
+    "severity_original": "WARN",
+    "severity_normalized": "WARN",
+    "final_label": "should-fix",
+    "decision_status": "draft",
+    "decision_actor": "main_session_llm_draft",
+    "decision_actor_type": "llm_draft",
+  })
+  triage["items"].append(second_item)
+  triage_path.write_text(
+    yaml.safe_dump(triage, allow_unicode=True, sort_keys=False),
+    encoding="utf-8",
+  )
+
+  exit_code = main(
+    [
+      "decide",
+      "--review-run-dir", str(run_dir),
+      "--finding-id", "finding-001",
+      "--final-label", "must-fix",
+      "--decision-reason", "契約に影響するため修正する",
+      "--decision-actor", "human",
+      "--approval-record", str(approval_path),
+    ]
+  )
+
+  assert exit_code == 0
+  triage = yaml.safe_load(triage_path.read_text(encoding="utf-8"))
+  assert triage["triage_status"] == "draft"
+  summary = yaml.safe_load(
+    (run_dir / "model-result-summary.yaml").read_text(encoding="utf-8")
+  )
+  assert summary["models"][0]["triage_status"] == "triage_pending"
+
+
+def test_list_pending_includes_draft_items(tmp_path, capsys):
+  """draft item も未完了 triage として一覧に出す。"""
+  run_dir = _write_review_run(tmp_path)
+  triage_path = run_dir / "triage.yaml"
+  triage = yaml.safe_load(triage_path.read_text(encoding="utf-8"))
+  triage["items"][0]["finding_id"] = "finding-draft"
+  triage["items"][0]["severity_original"] = "WARN"
+  triage["items"][0]["severity_normalized"] = "WARN"
+  triage["items"][0]["final_label"] = "should-fix"
+  triage["items"][0]["decision_status"] = "draft"
+  triage_path.write_text(
+    yaml.safe_dump(triage, allow_unicode=True, sort_keys=False),
+    encoding="utf-8",
+  )
+
+  exit_code = main(["list-pending", "--review-run-dir", str(run_dir)])
+
+  assert exit_code == 0
+  output = capsys.readouterr().out
+  assert "finding-draft" in output
+  assert "should-fix" in output
+
+
 def test_decide_blocks_important_finding_without_user_approval(tmp_path, capsys):
   """ERROR / must-fix 相当の重要件は承認レコードなしでは decide できない。"""
   run_dir = _write_review_run(tmp_path)
