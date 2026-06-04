@@ -2453,14 +2453,16 @@ def is_post_write_verification_target(path):
     return False
   if path == "TODO_NEXT_SESSION.md":
     return True
-  if any(path.startswith(prefix) for prefix in POST_WRITE_VERIFICATION_DIR_PREFIXES):
-    return True
   if path.startswith("docs/reviews/"):
     name = Path(path).name
     return (
       name.startswith("reopen-classification-")
       or "-audit-" in name
     ) and name.endswith(".md")
+  if path.startswith("docs/"):
+    return True
+  if any(path.startswith(prefix) for prefix in POST_WRITE_VERIFICATION_DIR_PREFIXES):
+    return True
   return False
 
 

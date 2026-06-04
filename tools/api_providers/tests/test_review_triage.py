@@ -249,6 +249,8 @@ def test_is_post_write_target_includes_prompt_and_agent_md_candidates():
     "runtime/prompts/judgment/judgment_reviewer.prompt.md",
     "tools/api_providers/prompt_templates/anthropic_review.md",
     "tools/api_providers/prompt_templates/openai_review.md",
+    "docs/logs/autonomous-parallel/run.yaml",
+    "docs/workflow-evidence/future-generated.yaml",
     ".reviewcompass/specs/workflow-management/design.md",
   ]
 

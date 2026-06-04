@@ -2232,11 +2232,13 @@ class NextNavigationTests(unittest.TestCase):
     target_paths = [
       "TODO_NEXT_SESSION.md",
       "docs/experiments/foo.md",
+      "docs/logs/autonomous-parallel/run.yaml",
       "docs/notes/foo.md",
       "docs/operations/foo.md",
       "docs/plan/foo.md",
       "docs/reviews/2026-06-02-audit-foo.md",
       "docs/reviews/reopen-classification-2026-06-02.md",
+      "docs/workflow-evidence/future-generated.yaml",
     ]
     non_target_paths = [
       ".reviewcompass/specs/foundation/spec.json",
