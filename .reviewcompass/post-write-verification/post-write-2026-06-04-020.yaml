@@ -1,0 +1,19 @@
+status: completed
+target_files:
+  - docs/operations/WORKFLOW_DISCIPLINE_MAP.yaml
+target_sha256:
+  docs/operations/WORKFLOW_DISCIPLINE_MAP.yaml: c611b856f9d28fced10f118ba5bfb71376d293d819d109df1381fa18ffced978
+required_verifiers:
+  - codex-self-check
+completed_verifiers:
+  - codex-self-check
+unresolved_substantive_findings: 0
+verifications:
+  - verifier: codex-self-check
+    target_files:
+      - docs/operations/WORKFLOW_DISCIPLINE_MAP.yaml
+    target_sha256:
+      docs/operations/WORKFLOW_DISCIPLINE_MAP.yaml: c611b856f9d28fced10f118ba5bfb71376d293d819d109df1381fa18ffced978
+    summary: >
+      Added triad-review required_inputs as abstract stage inputs, keeping
+      project-specific state out of required_disciplines.

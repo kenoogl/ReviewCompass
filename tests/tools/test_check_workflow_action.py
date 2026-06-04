@@ -1843,6 +1843,60 @@ class NextNavigationTests(unittest.TestCase):
       data["next_action"]["required_disciplines"],
     )
 
+  def test_next_triad_review_reports_target_and_review_run_inputs(self):
+    """triad-review 直前に読む対象文書と review-run 成果物を抽象入力として返す"""
+    cwd = Path(self.tmpdir)
+    _write_specs_for_next(
+      cwd,
+      {
+        "foundation": {
+          "drafting": True,
+          "triad-review": False,
+          "review-wave": False,
+          "alignment": False,
+          "approval": False,
+        },
+      },
+    )
+
+    result = run_script(["next", "--json"], cwd=cwd)
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 0, result.stderr)
+    data = json.loads(result.stdout)
+    self.assertEqual(data["next_action"]["kind"], "stage")
+    self.assertEqual(data["next_action"]["feature"], "foundation")
+    self.assertEqual(data["next_action"]["phase"], "implementation")
+    self.assertEqual(data["next_action"]["stage"], "triad-review")
+    required_inputs = {
+      item["id"]: item
+      for item in data["next_action"]["required_inputs"]
+    }
+    self.assertEqual(
+      required_inputs["target_feature_documents"]["paths"],
+      [
+        ".reviewcompass/specs/foundation/spec.json",
+        ".reviewcompass/specs/foundation/requirements.md",
+        ".reviewcompass/specs/foundation/design.md",
+        ".reviewcompass/specs/foundation/tasks.md",
+      ],
+    )
+    self.assertEqual(
+      required_inputs["triad_review_run_artifacts"]["base_path_pattern"],
+      ".reviewcompass/specs/foundation/reviews/*-foundation-implementation-review-run",
+    )
+    self.assertEqual(
+      required_inputs["triad_review_run_artifacts"]["required_artifacts"],
+      [
+        "review-target.md",
+        "raw/",
+        "rounds.yaml",
+        "model-result-summary.yaml",
+        "triage.yaml",
+        "raw-review-triage-summary.md",
+      ],
+    )
+
   def test_next_review_wave_reports_recheck_and_pending_findings(self):
     """review-wave では recheck と抽象入力としての未消化所見情報を返す"""
     cwd = Path(self.tmpdir)

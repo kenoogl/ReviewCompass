@@ -267,6 +267,52 @@ DEFAULT_DISCIPLINE_MAP = {
   },
   "required_inputs": {
     "by_stage": {
+      "triad-review": [
+        {
+          "id": "target_feature_documents",
+          "role": "stage_entry_context",
+          "source_type": "feature_document_set",
+          "purpose": (
+            "Read the current feature state and phase documents before "
+            "starting triad-review."
+          ),
+          "resolver": {
+            "kind": "next_action_template",
+            "paths": [
+              ".reviewcompass/specs/{feature}/spec.json",
+              ".reviewcompass/specs/{feature}/requirements.md",
+              ".reviewcompass/specs/{feature}/design.md",
+              ".reviewcompass/specs/{feature}/tasks.md",
+            ],
+          },
+          "read_policy": "current_feature_documents",
+        },
+        {
+          "id": "triad_review_run_artifacts",
+          "role": "review_run_context",
+          "source_type": "review_run_artifact_set",
+          "purpose": (
+            "Prepare or read the review-run bundle, raw responses, model "
+            "summaries, and three-level triage records for this triad-review."
+          ),
+          "resolver": {
+            "kind": "next_action_template",
+            "base_path_pattern": (
+              ".reviewcompass/specs/{feature}/reviews/"
+              "*-{feature}-{phase}-review-run"
+            ),
+          },
+          "required_artifacts": [
+            "review-target.md",
+            "raw/",
+            "rounds.yaml",
+            "model-result-summary.yaml",
+            "triage.yaml",
+            "raw-review-triage-summary.md",
+          ],
+          "read_policy": "review_run_bundle_and_triage",
+        },
+      ],
       "review-wave": [
         {
           "id": "unresolved_cross_scope_items",
@@ -799,6 +845,32 @@ def _dedupe_strings(values):
   return result
 
 
+def _render_next_action_template(value, next_action):
+  """next_action の値で required_input のテンプレートを解決する"""
+  if isinstance(value, str):
+    replacements = {
+      "feature": next_action.get("feature") or "",
+      "phase": next_action.get("phase") or "",
+      "stage": next_action.get("stage") or "",
+      "kind": next_action.get("kind") or "",
+    }
+    try:
+      return value.format(**replacements)
+    except (KeyError, ValueError):
+      return value
+  if isinstance(value, list):
+    return [
+      _render_next_action_template(item, next_action)
+      for item in value
+    ]
+  if isinstance(value, dict):
+    return {
+      key: _render_next_action_template(item, next_action)
+      for key, item in value.items()
+    }
+  return value
+
+
 def _load_discipline_map(cwd):
   """next_action 別の直前必読規律マップを読み込む"""
   map_path = Path(cwd) / DEFAULT_DISCIPLINE_MAP_PATH
@@ -857,7 +929,7 @@ def _required_input_entries_for_next_action(cwd, next_action):
   return result
 
 
-def _resolve_required_input(cwd, entry):
+def _resolve_required_input(cwd, entry, next_action):
   """入力定義を現プロジェクトの状態に解決する"""
   if not isinstance(entry, dict):
     return None
@@ -869,6 +941,13 @@ def _resolve_required_input(cwd, entry):
   }
   resolver = entry.get("resolver") or {}
   if not isinstance(resolver, dict):
+    return resolved
+
+  if resolver.get("kind") == "next_action_template":
+    for key, value in resolver.items():
+      if key == "kind":
+        continue
+      resolved[key] = _render_next_action_template(value, next_action)
     return resolved
 
   if resolver.get("kind") == "project_state":
@@ -887,7 +966,7 @@ def required_inputs_for_next_action(cwd, next_action):
   """next_action の直前に解決すべき抽象入力を返す"""
   result = []
   for entry in _required_input_entries_for_next_action(cwd, next_action):
-    resolved = _resolve_required_input(cwd, entry)
+    resolved = _resolve_required_input(cwd, entry, next_action)
     if resolved is not None:
       result.append(resolved)
   return result

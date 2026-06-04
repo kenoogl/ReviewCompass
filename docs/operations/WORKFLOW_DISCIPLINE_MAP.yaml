@@ -39,6 +39,34 @@ by_stage:
     - docs/operations/WORKFLOW_PRECHECK.md#spec-set
 required_inputs:
   by_stage:
+    triad-review:
+      - id: target_feature_documents
+        role: stage_entry_context
+        source_type: feature_document_set
+        purpose: Read the current feature state and phase documents before starting triad-review.
+        resolver:
+          kind: next_action_template
+          paths:
+            - .reviewcompass/specs/{feature}/spec.json
+            - .reviewcompass/specs/{feature}/requirements.md
+            - .reviewcompass/specs/{feature}/design.md
+            - .reviewcompass/specs/{feature}/tasks.md
+        read_policy: current_feature_documents
+      - id: triad_review_run_artifacts
+        role: review_run_context
+        source_type: review_run_artifact_set
+        purpose: Prepare or read the review-run bundle, raw responses, model summaries, and three-level triage records for this triad-review.
+        resolver:
+          kind: next_action_template
+          base_path_pattern: .reviewcompass/specs/{feature}/reviews/*-{feature}-{phase}-review-run
+        required_artifacts:
+          - review-target.md
+          - raw/
+          - rounds.yaml
+          - model-result-summary.yaml
+          - triage.yaml
+          - raw-review-triage-summary.md
+        read_policy: review_run_bundle_and_triage
     review-wave:
       - id: unresolved_cross_scope_items
         role: stage_entry_context
