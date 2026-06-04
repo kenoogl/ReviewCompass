@@ -1,0 +1,20 @@
+criteria:
+  - criterion_id: criterion-1
+    axis: requirements
+    title: 受け入れ基準と実装の対応
+  - criterion_id: criterion-2
+    axis: requirements
+    title: API・データ契約と実装の対応
+  - criterion_id: criterion-3
+    axis: requirements
+    title: 例外系・境界条件と実装の対応
+  - criterion_id: criterion-4
+    axis: design
+    title: モジュール構成・データモデルと実装の対応
+  - criterion_id: criterion-5
+    axis: design
+    title: 接合面と実装の対応
+  - criterion_id: criterion-6
+    axis: design
+    title: アルゴリズム・性能達成手段と実装の対応
+

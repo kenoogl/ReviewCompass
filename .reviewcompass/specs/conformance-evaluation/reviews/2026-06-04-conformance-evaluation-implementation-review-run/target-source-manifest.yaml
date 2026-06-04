@@ -1,0 +1,25 @@
+run_id: 2026-06-04-conformance-evaluation-implementation-review-run
+target: .reviewcompass/specs/conformance-evaluation/reviews/2026-06-04-conformance-evaluation-implementation-review-run/review-target.md
+source_paths:
+- .reviewcompass/specs/conformance-evaluation/spec.json
+- .reviewcompass/specs/conformance-evaluation/requirements.md
+- .reviewcompass/specs/conformance-evaluation/design.md
+- .reviewcompass/specs/conformance-evaluation/tasks.md
+- docs/operations/CONFORMANCE_EVALUATION.md
+- tools/README.md
+- schemas/review-criteria/conformance_evaluation.yaml
+- stages/feature-dependency.yaml
+- tests/conformance-evaluation/test_conformance_evaluation.py
+- tools/conformance_evaluation/__init__.py
+- tools/conformance_evaluation/check_mode.py
+- tools/conformance_evaluation/comparison_model.py
+- tools/conformance_evaluation/criteria.py
+- tools/conformance_evaluation/estimation_model.py
+- tools/conformance_evaluation/evaluation_record.py
+- tools/conformance_evaluation/generation_mode.py
+- tools/conformance_evaluation/interfaces.py
+- tools/conformance_evaluation/machine_verification.py
+- tools/conformance_evaluation/mode_switch.py
+- tools/conformance_evaluation/triad_review.py
+- tools/conformance-evaluation-check.py
+target_sha256: a2715d0d871b889c555ff6366bc06c430cec0f3a7f28c2d4c5de9612d6cd3899

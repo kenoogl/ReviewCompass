@@ -1,0 +1,58 @@
+role: primary
+provider: anthropic-api
+model: claude-sonnet-4-6
+attempts: 1
+duration_seconds: 35.647
+findings:
+- severity: WARN
+  target_location: 'tools/conformance_evaluation/interfaces.py: foundation_reference_only()'
+  description: foundation_reference_only() accepts any list and returns True when
+    every item contains 'foundation' or 'metadata_contract'. Nothing in T-011 or the
+    tests prevents passing non-foundation strings that happen to contain those substrings,
+    and the test only passes a single-element list. The method does not actually verify
+    that no re-definition occurs—only string membership.
+  rationale: tasks.md T-011 完了条件 1 は『foundation 語彙正本を再定義せず参照のみで使用していることが機械検証される（grep
+    検査）』と明記しているが、現実装はヒューリスティック文字列照合に留まり、再定義の不在を grep で保証していない。将来のリグレッション検知が弱い。
+- severity: WARN
+  target_location: 'tests/conformance-evaluation/test_conformance_evaluation.py: test_t011_interfaces_do_not_reverse_self_improvement_direction'
+  description: commit_hashes_are_independent() is tested only with two identical non-empty
+    strings ('abc', 'abc'). The method returns True for any pair of non-empty strings
+    including identical ones, which does not verify independence.
+  rationale: design.md §12.3 ／ §14.6 は target_commit（conformance-evaluation 所有）と materialization_commit_hash（self-improvement
+    所有）の独立性を要件として定めているが、同一値のペアを渡すテストはむしろ独立性を保証しない。T-009 完了条件 5 と T-011 完了条件 6 の機械検証として不十分。
+- severity: WARN
+  target_location: 'tools/conformance_evaluation/machine_verification.py: check_prompt_isolation()'
+  description: The prohibition keyword check accepts either Japanese '自律探索禁止' or English
+    'Do not read existing upstream documents'. These are the only accepted forms.
+    A prompt that omits both strings but still effectively prohibits autonomous exploration
+    (e.g., paraphrased instruction) would incorrectly receive a DEVIATION status,
+    while a prompt that includes only the exact English phrase regardless of broader
+    context passes.
+  rationale: tasks.md T-012 完了条件 3 は MV-6（遮断必須）が推定役プロンプトへの既存上流文書混入を検知し即時停止することを要件とするが、検査が
+    2 つの固定文字列に依存しているため、プロンプト設計の自由度が過度に制約される可能性がある。design §18.1 MV-6 の仕様では『自律探索禁止条項の存在確認』と記述しており、複数形態の条項を許容する余地を検討すべき。
+- severity: WARN
+  target_location: schemas/review-criteria/conformance_evaluation.yaml
+  description: The file exists and has been placed in the repository, but tasks.md
+    T-005 records DVT-C001 as '未解除（フェーズ 2 まで延期）' and states the file should be placed
+    in phase 2. The spec.json also shows implementation.triad-review is still false.
+    The YAML file is present but tasks.md has not been updated to reflect DVT-C001
+    as resolved.
+  rationale: DVT-C001 の解除トリガーは『フェーズ 2 で検査仕様を実体配置する時に T-005 完了条件と整合を再確認』であり、配置は実施されたが
+    DVT テーブルの状態が『未解除』のままである。T-013 完了条件は『DVT 内の未解除項目がない（または延期理由が明記されている）』をゲート化しているため、整合性が取れていない。
+- severity: INFO
+  target_location: 'tools/conformance_evaluation/comparison_model.py: format_next_id()'
+  description: format_next_id() uses width = len(str(number)) when number > 999, which
+    produces 4-digit formatting for 1000. However, the test asserts format_next_id('CF',
+    1000) == 'CF-1000', which passes correctly. The boundary at 999→1000 is tested,
+    but the counter reset boundary (CF-999 → CF-1000 transition within a single ComparisonModel
+    instance) is not tested in test_t007.
+  rationale: tasks.md T-007 テスト要件は『最初の採番（CF-001）・3 桁 → 4 桁拡張（999 → 1000）の境界（topic-118／F-011
+    対処）』を明示しているが、test_t007 では format_next_id のスタティックメソッドを直接呼ぶだけで、インスタンスカウンタが 999 →
+    1000 に遷移する連続採番シナリオはテストされていない。
+- severity: INFO
+  target_location: 'tools/conformance_evaluation/check_mode.py: run()'
+  description: The --check-partitioning optional path is implemented as a parameter
+    but no test exercises the enabled branch (check_partitioning=True). tasks.md T-004
+    テスト要件は『CLI 引数 --check-partitioning の付与／不付与で標準動作に含まれないことを確認（topic-118／F-012 対処）』を明示しているが、肯定確認テスト（有効化時の動作）が欠落している。
+  rationale: 標準動作に含まれないことは test_t004 で確認できているが、有効化した場合に独立推定経路が起動することは test_t004 では確認されない。Req
+    3 受入 4 の機能分割食い違いオプションの正常系テストが不足している。

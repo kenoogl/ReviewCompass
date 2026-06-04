@@ -1,0 +1,346 @@
+run_id: 2026-06-04-conformance-evaluation-implementation-review-run
+triage_status: draft
+generated_at: '2026-06-04T11:01:31.723686+00:00'
+decision_actor: null
+decision_actor_type: human
+items:
+- finding_id: 2026-06-04-conformance-evaluation-implementation-review-run-claude-sonnet-4-6-primary-001
+  run_id: 2026-06-04-conformance-evaluation-implementation-review-run
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: 'tools/conformance_evaluation/interfaces.py: foundation_reference_only()'
+  plain_language_summary: foundation_reference_only() accepts any list and returns
+    True when every item contains 'foundation' or 'metadata_contract'. Nothing in
+    T-011 or the tests prevents passing non-foundation strings that happen to contain
+    those substrings, and the test only passes a single-element list. The method does
+    not actually verify that no re-definition occurs—only string membership.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: tasks.md T-011 完了条件 1 は『foundation 語彙正本を再定義せず参照のみで使用していることが機械検証される（grep
+    検査）』と明記しているが、現実装はヒューリスティック文字列照合に留まり、再定義の不在を grep で保証していない。将来のリグレッション検知が弱い。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-04-conformance-evaluation-implementation-review-run-claude-sonnet-4-6-primary-002
+  run_id: 2026-06-04-conformance-evaluation-implementation-review-run
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: 'tests/conformance-evaluation/test_conformance_evaluation.py: test_t011_interfaces_do_not_reverse_self_improvement_direction'
+  plain_language_summary: commit_hashes_are_independent() is tested only with two
+    identical non-empty strings ('abc', 'abc'). The method returns True for any pair
+    of non-empty strings including identical ones, which does not verify independence.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: design.md §12.3 ／ §14.6 は target_commit（conformance-evaluation
+    所有）と materialization_commit_hash（self-improvement 所有）の独立性を要件として定めているが、同一値のペアを渡すテストはむしろ独立性を保証しない。T-009
+    完了条件 5 と T-011 完了条件 6 の機械検証として不十分。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-04-conformance-evaluation-implementation-review-run-claude-sonnet-4-6-primary-003
+  run_id: 2026-06-04-conformance-evaluation-implementation-review-run
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: 'tools/conformance_evaluation/machine_verification.py: check_prompt_isolation()'
+  plain_language_summary: The prohibition keyword check accepts either Japanese '自律探索禁止'
+    or English 'Do not read existing upstream documents'. These are the only accepted
+    forms. A prompt that omits both strings but still effectively prohibits autonomous
+    exploration (e.g., paraphrased instruction) would incorrectly receive a DEVIATION
+    status, while a prompt that includes only the exact English phrase regardless
+    of broader context passes.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: tasks.md T-012 完了条件 3 は MV-6（遮断必須）が推定役プロンプトへの既存上流文書混入を検知し即時停止することを要件とするが、検査が
+    2 つの固定文字列に依存しているため、プロンプト設計の自由度が過度に制約される可能性がある。design §18.1 MV-6 の仕様では『自律探索禁止条項の存在確認』と記述しており、複数形態の条項を許容する余地を検討すべき。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-04-conformance-evaluation-implementation-review-run-claude-sonnet-4-6-primary-004
+  run_id: 2026-06-04-conformance-evaluation-implementation-review-run
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: schemas/review-criteria/conformance_evaluation.yaml
+  plain_language_summary: The file exists and has been placed in the repository, but
+    tasks.md T-005 records DVT-C001 as '未解除（フェーズ 2 まで延期）' and states the file should
+    be placed in phase 2. The spec.json also shows implementation.triad-review is
+    still false. The YAML file is present but tasks.md has not been updated to reflect
+    DVT-C001 as resolved.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: DVT-C001 の解除トリガーは『フェーズ 2 で検査仕様を実体配置する時に T-005 完了条件と整合を再確認』であり、配置は実施されたが
+    DVT テーブルの状態が『未解除』のままである。T-013 完了条件は『DVT 内の未解除項目がない（または延期理由が明記されている）』をゲート化しているため、整合性が取れていない。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-04-conformance-evaluation-implementation-review-run-claude-sonnet-4-6-primary-005
+  run_id: 2026-06-04-conformance-evaluation-implementation-review-run
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: 'tools/conformance_evaluation/comparison_model.py: format_next_id()'
+  plain_language_summary: format_next_id() uses width = len(str(number)) when number
+    > 999, which produces 4-digit formatting for 1000. However, the test asserts format_next_id('CF',
+    1000) == 'CF-1000', which passes correctly. The boundary at 999→1000 is tested,
+    but the counter reset boundary (CF-999 → CF-1000 transition within a single ComparisonModel
+    instance) is not tested in test_t007.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: tasks.md T-007 テスト要件は『最初の採番（CF-001）・3 桁 → 4 桁拡張（999 → 1000）の境界（topic-118／F-011
+    対処）』を明示しているが、test_t007 では format_next_id のスタティックメソッドを直接呼ぶだけで、インスタンスカウンタが 999 →
+    1000 に遷移する連続採番シナリオはテストされていない。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-04-conformance-evaluation-implementation-review-run-claude-sonnet-4-6-primary-006
+  run_id: 2026-06-04-conformance-evaluation-implementation-review-run
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: 'tools/conformance_evaluation/check_mode.py: run()'
+  plain_language_summary: The --check-partitioning optional path is implemented as
+    a parameter but no test exercises the enabled branch (check_partitioning=True).
+    tasks.md T-004 テスト要件は『CLI 引数 --check-partitioning の付与／不付与で標準動作に含まれないことを確認（topic-118／F-012
+    対処）』を明示しているが、肯定確認テスト（有効化時の動作）が欠落している。
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: 標準動作に含まれないことは test_t004 で確認できているが、有効化した場合に独立推定経路が起動することは test_t004
+    では確認されない。Req 3 受入 4 の機能分割食い違いオプションの正常系テストが不足している。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-04-conformance-evaluation-implementation-review-run-gpt-5.4-adversarial-001
+  run_id: 2026-06-04-conformance-evaluation-implementation-review-run
+  source_model: gpt-5.4
+  source_round: round-1
+  source_raw_path: raw/gpt-5.4.round-1.txt
+  source_parsed_path: parsed/gpt-5.4.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: tools/conformance_evaluation/evaluation_record.py
+  plain_language_summary: 評価記録に `materialization_commit_hash` を常設 front-matter として出力しており、設計で定義された
+    conformance-evaluation 側の記録契約と乖離している。
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: Requirement 6 と design §12.3 では conformance-evaluation の評価記録は `target_commit`
+    を本機能の出典として保持し、self-improvement 側の `materialization_commit_hash` は必要時に `related_artifacts.self_improvement`
+    経由で参照可能とされている。一方、現実装は全記録に `materialization_commit_hash` を直接埋め込み、`related_artifacts`
+    ではなく `related_records` の配列で代替しているため、他機能が front-matter 契約に従って読むと契約不一致になる。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-04-conformance-evaluation-implementation-review-run-gpt-5.4-adversarial-002
+  run_id: 2026-06-04-conformance-evaluation-implementation-review-run
+  source_model: gpt-5.4
+  source_round: round-1
+  source_raw_path: raw/gpt-5.4.round-1.txt
+  source_parsed_path: parsed/gpt-5.4.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: tools/conformance_evaluation/machine_verification.py
+  plain_language_summary: MV-6 の遮断検査が要件の最小仕様を満たしておらず、既存上流文書パスの混入検知と自律探索禁止条項の確認しか実装していない。
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: 運用文書・tasks T-012 では MV-6 の第1期最小仕様として、時刻・実行ID・プロンプト全文を残した `logs/estimation/<run_id>/prompt.log`
+    相当の保存を前提にそのログを検査対象とすることが明記されている。しかし現実装は文字列を直接検査するだけで、ログ保存要件も run_id/時刻の存在検証もない。遮断必須の
+    fail-closed 検査としては監査可能性が不足し、Requirement 3 の技術的遮断の裏付けにならない。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-04-conformance-evaluation-implementation-review-run-gpt-5.4-adversarial-003
+  run_id: 2026-06-04-conformance-evaluation-implementation-review-run
+  source_model: gpt-5.4
+  source_round: round-1
+  source_raw_path: raw/gpt-5.4.round-1.txt
+  source_parsed_path: parsed/gpt-5.4.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: tools/conformance_evaluation/interfaces.py
+  plain_language_summary: '`commit_hashes_are_independent` が 2つの値が空でないことしか確認しておらず、独立性の契約を実質的に検証していない。'
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: design §12.3 / §14.6 で求めるのは `target_commit` と self-improvement
+    側の `materialization_commit_hash` の責務分離・整合ルールであり、単なる non-empty 判定では同一値の誤用や未分離状態を検出できない。実際、テストでも同一値
+    `("abc", "abc")` を真とみなしており、契約検証として弱すぎる。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-04-conformance-evaluation-implementation-review-run-gpt-5.4-adversarial-004
+  run_id: 2026-06-04-conformance-evaluation-implementation-review-run
+  source_model: gpt-5.4
+  source_round: round-1
+  source_raw_path: raw/gpt-5.4.round-1.txt
+  source_parsed_path: parsed/gpt-5.4.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: docs/operations/CONFORMANCE_EVALUATION.md:5. 2 モードの使い分け
+  plain_language_summary: 運用文書の文書生成モード説明が最新 requirements/design とずれており、intent と tasks
+    を自動推定対象のように記述している。
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: Requirement 2 では文書生成モードの自動推定対象は requirements/design のみで、intent
+    は参考情報として人間が補完し、tasks は対象外である。にもかかわらず本節は「intent／requirements／design／tasks の各文書を推定生成」と記載しており、今回追加された出力先・モード規則と合わせて読むと運用者に誤実装を誘発する。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-04-conformance-evaluation-implementation-review-run-gpt-5.4-adversarial-005
+  run_id: 2026-06-04-conformance-evaluation-implementation-review-run
+  source_model: gpt-5.4
+  source_round: round-1
+  source_raw_path: raw/gpt-5.4.round-1.txt
+  source_parsed_path: parsed/gpt-5.4.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: .reviewcompass/specs/conformance-evaluation/spec.json
+  plain_language_summary: '`updated_at` が今回の drafting 更新内容を反映していない。'
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: implementation.drafting を true に進め、関連文書も更新しているが `updated_at` は
+    2026-06-02 のままである。機能要件の直接違反ではないが、仕様状態の追跡と監査の一貫性を保つため更新しておく方がよい。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-04-conformance-evaluation-implementation-review-run-gemini-3.1-pro-preview-judgment-001
+  run_id: 2026-06-04-conformance-evaluation-implementation-review-run
+  source_model: gemini-3.1-pro-preview
+  source_round: round-1
+  source_raw_path: raw/gemini-3.1-pro-preview.round-1.txt
+  source_parsed_path: parsed/gemini-3.1-pro-preview.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: schemas/review-criteria/conformance_evaluation.yaml
+  plain_language_summary: 6 criteria 検査仕様の YAML に `sub_structure` フィールドが欠落しており、スキーマ定義が設計と不一致
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: 'design §8.5 および T-005 にて `sub_structure: [要点, 詳細抽出, 深掘り, 該当なし]`
+    の定義と `name` / `criterion_short_name` などのキーが指定されていますが、現在の YAML は `title` などの異なるキーを使用し、サブ構造も持っていないため要件違反です。'
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-04-conformance-evaluation-implementation-review-run-gemini-3.1-pro-preview-judgment-002
+  run_id: 2026-06-04-conformance-evaluation-implementation-review-run
+  source_model: gemini-3.1-pro-preview
+  source_round: round-1
+  source_raw_path: raw/gemini-3.1-pro-preview.round-1.txt
+  source_parsed_path: parsed/gemini-3.1-pro-preview.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: tools/conformance_evaluation/comparison_model.py
+  plain_language_summary: ComparisonModel が生成する食い違い所見のデータ構造が design §10.4 のスキーマと乖離している
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: design §10.4 で指定された必須フィールド（finding_type, correspondence_type, existing_text,
+    estimated_text, discrepancy_description, implementation_code_refs）が含まれておらず、独自フィールド（mismatch_types
+    等）が使われています。analysis 機能への連携（§14.5）において機械可読データの不整合が生じます。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-04-conformance-evaluation-implementation-review-run-gemini-3.1-pro-preview-judgment-003
+  run_id: 2026-06-04-conformance-evaluation-implementation-review-run
+  source_model: gemini-3.1-pro-preview
+  source_round: round-1
+  source_raw_path: raw/gemini-3.1-pro-preview.round-1.txt
+  source_parsed_path: parsed/gemini-3.1-pro-preview.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: tools/conformance_evaluation/check_mode.py
+  plain_language_summary: CheckPipeline の実行記録出力時、検出された findings（食い違い結果）が Markdown
+    本文に書き出されていない
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: 'design §10.6 に従い、照合チェックモードの実行記録（conformance/<日付>-check.md）には食い違いごとの
+    YAML エントリや比較結果を出力する必要がありますが、現状の実装は `## 機械検査結果
+
+    MV-6 OK
+
+    ` の固定文字列のみを書き込んでおり、評価結果がファイルに記録されません。'
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-04-conformance-evaluation-implementation-review-run-gemini-3.1-pro-preview-judgment-004
+  run_id: 2026-06-04-conformance-evaluation-implementation-review-run
+  source_model: gemini-3.1-pro-preview
+  source_round: round-1
+  source_raw_path: raw/gemini-3.1-pro-preview.round-1.txt
+  source_parsed_path: parsed/gemini-3.1-pro-preview.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: tools/conformance_evaluation/schemas/evaluation_record.schema.json
+  plain_language_summary: T-009 の成果物として要求されている評価記録の front-matter スキーマファイルが実装・提供されていない
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: tasks.md の T-009 成果物リストに `tools/conformance_evaluation/schemas/evaluation_record.schema.json`
+    が明記されていますが、ファイルが存在しません。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-04-conformance-evaluation-implementation-review-run-gemini-3.1-pro-preview-judgment-005
+  run_id: 2026-06-04-conformance-evaluation-implementation-review-run
+  source_model: gemini-3.1-pro-preview
+  source_round: round-1
+  source_raw_path: raw/gemini-3.1-pro-preview.round-1.txt
+  source_parsed_path: parsed/gemini-3.1-pro-preview.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: tests/conformance-evaluation/test_conformance_evaluation.py
+  plain_language_summary: test_t013_traceability_smoke が要件追跡表の双方向整合チェックを適切に実装していない
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: T-013 の完了条件として「要件追跡表（design §15）と各タスク本文の対応要件欄の双方向整合チェック」が求められていますが、現在のテストは単に
+    T-001〜T-013 という文字列の存在を確認するだけの簡易な内容に留まっており、厳密な整合チェックになっていません。
+  applied_files: []
+  superseded_by: null

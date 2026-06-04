@@ -95,6 +95,39 @@
 
 評価記録の `type` 値は `conformance_evaluation` に統合し、`mode_internal` フィールドで `generation` と `check` を区別する。
 
+評価記録は必ず `conformance/<日付>-<mode>.md` のパス規則に従い、`reviews/` とは別に保管する。`reviews/` は仕様駆動レビューの記録、`conformance/` は本機能の下流 → 上流評価記録であり、混在させない。
+
+文書生成モードの推定出力先は次のとおりとする。
+
+```
+<対象アプリ>/.reviewcompass/conformance/inferred/<日付>/
+├── feature-partitioning-candidates.md
+├── intent-reference.md
+└── specs/<feature>/
+    ├── requirements.md
+    └── design.md
+```
+
+モード切替は `check` または `generation` の明示指定のみで行い、既存文書の有無による自動判定は行わない。
+
+## 6.1 機械検査（MV-1〜MV-7）
+
+第 1 期の機械検査は手動 grep / find の補助として `tools/conformance-evaluation-check.py` から段階導入する。
+
+| ID | 検査 | 失敗時の扱い |
+|---|---|---|
+| MV-1 | 評価記録に `type: conformance_evaluation` がある | 遮断推奨 |
+| MV-2 | `mode_internal` が `check` または `generation` | 遮断推奨 |
+| MV-3 | 評価記録が `conformance/` にあり `reviews/` と混在しない | 遮断推奨 |
+| MV-4 | 推定文書に Introduction / Boundary Context / Requirements 相当の 3 節がある | 警告続行可 |
+| MV-5 | 推定根拠が `<ファイルパス>:<行範囲>` 形式である | 警告続行可 |
+| MV-6 | 推定役プロンプトに既存上流文書パスが混入せず、自律探索禁止条項がある | 遮断必須 |
+| MV-7 | foundation 受入番号参照が foundation requirements.md と一致する | 警告続行可 |
+
+MV-6 の第 1 期最小仕様では、推定役プロンプトログに時刻、実行 ID、プロンプト全文を残し、`logs/estimation/<run_id>/prompt.log` 相当の場所に保存する。検査は、既存上流文書パス（例 `intent.md`、`requirements.md`、`design.md`）の不在確認と、自律探索禁止条項の存在確認の 2 条件で行う。
+
+`tools/conformance-evaluation-check.py` は conformance-evaluation 固有の評価記録・遮断・推定根拠を検査する。workflow-management の `tools/check-workflow-action.py` は workflow_state や不可逆操作の順序を検査するため、責務は異なる。
+
 ## 7. 依存関係の特殊構造（Requirement 7）
 
 本機能は他機能と異なり、`stages/feature-dependency.yaml` で依存種別を区別する連想配列構造を持つ（計画書 §5.10.5 由来、A-005 連動）：

@@ -1,0 +1,39 @@
+status: completed
+target_files:
+  - docs/operations/CONFORMANCE_EVALUATION.md
+  - docs/operations/SESSION_WORKFLOW_GUIDE.md
+  - docs/operations/WORKFLOW_DISCIPLINE_MAP.yaml
+  - docs/operations/WORKFLOW_NAVIGATION.md
+  - docs/operations/WORKFLOW_NAVIGATION_FOR_CODEX.md
+target_sha256:
+  docs/operations/CONFORMANCE_EVALUATION.md: 841512fef15d0a2ac58297935de974e7d458faa9577876e295dee8455e161d31
+  docs/operations/SESSION_WORKFLOW_GUIDE.md: dcff1687bf02177600f8b28bfa93f70c61160e19ab5959fd6d389c826f18c85e
+  docs/operations/WORKFLOW_DISCIPLINE_MAP.yaml: b860844bbae34464bd6218cace131cb758e6cb9ca76f7210790ad28d8740c1c7
+  docs/operations/WORKFLOW_NAVIGATION.md: 455a87e90ff25776b73ca2d754dcc2e8cc3775923105b07e16ebbaf9cb14e3be
+  docs/operations/WORKFLOW_NAVIGATION_FOR_CODEX.md: 0bcbb99b789925021720cbf3697458da9fcdff7afcacddc84a7771e6a225d9d3
+required_verifiers:
+  - codex-self-check
+completed_verifiers:
+  - codex-self-check
+unresolved_substantive_findings: 0
+verifications:
+  - verifier: codex-self-check
+    target_files:
+      - docs/operations/CONFORMANCE_EVALUATION.md
+      - docs/operations/SESSION_WORKFLOW_GUIDE.md
+      - docs/operations/WORKFLOW_DISCIPLINE_MAP.yaml
+      - docs/operations/WORKFLOW_NAVIGATION.md
+      - docs/operations/WORKFLOW_NAVIGATION_FOR_CODEX.md
+    target_sha256:
+      docs/operations/CONFORMANCE_EVALUATION.md: 841512fef15d0a2ac58297935de974e7d458faa9577876e295dee8455e161d31
+      docs/operations/SESSION_WORKFLOW_GUIDE.md: dcff1687bf02177600f8b28bfa93f70c61160e19ab5959fd6d389c826f18c85e
+      docs/operations/WORKFLOW_DISCIPLINE_MAP.yaml: b860844bbae34464bd6218cace131cb758e6cb9ca76f7210790ad28d8740c1c7
+      docs/operations/WORKFLOW_NAVIGATION.md: 455a87e90ff25776b73ca2d754dcc2e8cc3775923105b07e16ebbaf9cb14e3be
+      docs/operations/WORKFLOW_NAVIGATION_FOR_CODEX.md: 0bcbb99b789925021720cbf3697458da9fcdff7afcacddc84a7771e6a225d9d3
+    result: completed
+    notes: >
+      Verified the current post-write target set as a single coverage unit. The
+      additions expose the triad-review user-visible gate in the shared navigator,
+      Codex adapter, and machine-readable discipline map while keeping
+      SESSION_WORKFLOW_GUIDE.md as the detailed source of truth. No unresolved
+      substantive findings.

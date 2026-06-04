@@ -128,20 +128,46 @@ def initialize_triage_draft(review_run_dir: str) -> None:
   )
 
 
-def write_review_summary_markdown(review_run_dir: str) -> str:
+def write_review_summary_markdown(review_run_dir: str, variant_name: str = "default") -> str:
   """model-result-summary.yaml からユーザ提示用 Markdown を生成する。"""
   run_dir = Path(review_run_dir)
   summary = _load_yaml_dict(run_dir / "model-result-summary.yaml")
+  rounds = _load_yaml_dict(run_dir / "rounds.yaml")
   models = summary.get("models")
   if not isinstance(models, list):
     models = []
+  model_results = rounds.get("model_results")
+  if not isinstance(model_results, list):
+    model_results = []
 
   lines = [
     f"# Review run summary: {run_dir.name}",
     "",
+    f"variant: {variant_name}",
+    "",
+    "## Role assignments",
+    "",
+    "| role | path | provider | model |",
+    "| --- | --- | --- | --- |",
+  ]
+  for item in model_results:
+    if not isinstance(item, dict):
+      continue
+    lines.append(
+      "| {role} | {path} | {provider} | {model} |".format(
+        role=item.get("role"),
+        path=item.get("invocation_path"),
+        provider=item.get("provider"),
+        model=item.get("model_id"),
+      )
+    )
+  lines.extend([
+    "",
+    "## Model results",
+    "",
     "| model_id | parse_status | triage_status | findings | severity | raw |",
     "| --- | --- | --- | ---: | --- | --- |",
-  ]
+  ])
   for item in models:
     if not isinstance(item, dict):
       continue
@@ -165,7 +191,9 @@ def write_review_summary_markdown(review_run_dir: str) -> str:
     "",
     "1. Read raw responses for any parse_failed or triage_pending model.",
     "2. Move finding-level judgments into triage.yaml.",
-    "3. Resolve human_required items before treating the run as complete.",
+    "3. Present the variant, role assignments, raw/model summary, same-root clusters, and three-level triage to the user.",
+    "4. Stop at the 利用者提示ゲート before asking proxy_model, editing implementation, updating spec.json, or moving phases.",
+    "5. Resolve human_required items before treating the run as complete.",
   ])
   content = "\n".join(lines) + "\n"
   (run_dir / "review_summary.md").write_text(content, encoding="utf-8")
@@ -278,7 +306,8 @@ def main(argv: Optional[List[str]] = None) -> int:
       if role_exit_code != 0:
         exit_code = 1
     initialize_triage_draft(args.review_run_dir)
-    summary_markdown = write_review_summary_markdown(args.review_run_dir)
+    variant_name = args.variant or "default"
+    summary_markdown = write_review_summary_markdown(args.review_run_dir, variant_name)
     sys.stdout.write(summary_markdown)
     return exit_code
   except Exception as exc:

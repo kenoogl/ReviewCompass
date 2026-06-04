@@ -1,0 +1,8 @@
+features:
+  conformance-evaluation:
+    depends_on:
+      foundation: hard
+      runtime: review
+      evaluation: review
+      workflow-management: review
+

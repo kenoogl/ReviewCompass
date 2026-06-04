@@ -55,7 +55,7 @@ required_inputs:
       - id: triad_review_run_artifacts
         role: review_run_context
         source_type: review_run_artifact_set
-        purpose: Prepare or read the review-run bundle, raw responses, model summaries, and three-level triage records for this triad-review.
+        purpose: Prepare or read the review-run bundle, raw responses, model summaries, variant/role assignments, same-root finding clusters, and three-level triage records for this triad-review. Before proxy_model, implementation edits, spec.json updates, or phase movement, present the user-visible triage gate described in SESSION_WORKFLOW_GUIDE.md#3.3-a-2 and stop.
         resolver:
           kind: next_action_template
           base_path_pattern: .reviewcompass/specs/{feature}/reviews/*-{feature}-{phase}-review-run
@@ -66,6 +66,8 @@ required_inputs:
           - model-result-summary.yaml
           - triage.yaml
           - raw-review-triage-summary.md
+          - variant-role-assignment
+          - user-visible-triage-gate
         read_policy: review_run_bundle_and_triage
     review-wave:
       - id: unresolved_cross_scope_items

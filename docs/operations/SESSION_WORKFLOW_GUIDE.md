@@ -174,6 +174,20 @@ triad-review 段で判定役が must-fix と判定した所見の対処は、起
 
 API 経由の review-run 後に、人間の個別判断を proxy_model が代行する場合も、メインセッション LLM が重要件を独自に確定して実装へ進むことを禁ずる。proxy_model 代行は「人間判断を省略する」ものではなく、判断主体を別モデルへ移す運用である。
 
+**proxy_model 判断依頼前の利用者提示ゲート**：
+
+API review-run が完了したら、proxy_model 判断依頼、実装修正、spec.json 更新、フェーズ移行のいずれにも進む前に、メインセッション LLM は次を利用者へ提示して停止する。この提示ゲートを完了する前に proxy_model を呼び出してはいけない。
+
+1. 使用 variant 名
+2. role ごとの path／provider／model（例：primary／adversarial／judgment の割当）
+3. モデル別 raw 結果概要（parse 状態、所見数、severity 内訳、raw path）
+4. 同根所見クラスタの一覧
+5. `must-fix`／`should-fix`／`leave-as-is` の三段階トリアージ案
+6. `must-fix` 候補ごとの平易な説明、候補案、各案の利点と弱点、後段影響、推薦案
+7. proxy_model に判断させる場合の対象 finding／cluster、判断範囲、不可逆操作（commit／push／spec.json 更新／フェーズ移行）を含まないこと
+
+variant が未確定、または role 割当が曖昧な場合は review-run を開始しない。既定 variant が CLI 経路を含む等、実行環境と合わない場合は、設定ファイルを読んで候補 variant と role 割当を利用者へ説明し、選択理由を review-run 記録に残す。
+
 **役割分担**：
 
 1. メインセッション LLM は raw レビューを集約し、三段階トリアージの下書きを作る。parsed YAML だけでなく raw response も読み、同根所見をまとめ、`must-fix` ／ `should-fix` ／ `leave-as-is` の候補を作る

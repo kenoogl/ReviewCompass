@@ -1,0 +1,23 @@
+status: completed
+target_files:
+  - docs/operations/SESSION_WORKFLOW_GUIDE.md
+target_sha256:
+  docs/operations/SESSION_WORKFLOW_GUIDE.md: dcff1687bf02177600f8b28bfa93f70c61160e19ab5959fd6d389c826f18c85e
+required_verifiers:
+  - codex-self-check
+completed_verifiers:
+  - codex-self-check
+unresolved_substantive_findings: 0
+verifications:
+  - verifier: codex-self-check
+    target_files:
+      - docs/operations/SESSION_WORKFLOW_GUIDE.md
+    target_sha256:
+      docs/operations/SESSION_WORKFLOW_GUIDE.md: dcff1687bf02177600f8b28bfa93f70c61160e19ab5959fd6d389c826f18c85e
+    result: completed
+    notes: >
+      Verified that the added proxy_model pre-decision gate makes the user-visible
+      review-run summary mandatory before proxy invocation. The addition explicitly
+      requires variant name, role path/provider/model assignment, raw/model summary,
+      same-root clusters, three-level triage, plain-language must-fix explanation,
+      and proxy decision scope. No unresolved substantive findings.

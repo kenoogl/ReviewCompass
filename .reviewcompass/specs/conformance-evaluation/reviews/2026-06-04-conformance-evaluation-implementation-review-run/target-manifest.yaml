@@ -1,0 +1,4 @@
+run_id: 2026-06-04-conformance-evaluation-implementation-review-run
+target_files:
+- path: .reviewcompass/specs/conformance-evaluation/reviews/2026-06-04-conformance-evaluation-implementation-review-run/review-target.md
+  sha256: a2715d0d871b889c555ff6366bc06c430cec0f3a7f28c2d4c5de9612d6cd3899

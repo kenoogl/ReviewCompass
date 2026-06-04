@@ -1,0 +1,23 @@
+status: completed
+target_files:
+  - docs/operations/CONFORMANCE_EVALUATION.md
+target_sha256:
+  docs/operations/CONFORMANCE_EVALUATION.md: 841512fef15d0a2ac58297935de974e7d458faa9577876e295dee8455e161d31
+required_verifiers:
+  - codex-self-check
+completed_verifiers:
+  - codex-self-check
+unresolved_substantive_findings: 0
+verifications:
+  - verifier: codex-self-check
+    target_files:
+      - docs/operations/CONFORMANCE_EVALUATION.md
+    target_sha256:
+      docs/operations/CONFORMANCE_EVALUATION.md: 841512fef15d0a2ac58297935de974e7d458faa9577876e295dee8455e161d31
+    result: completed
+    notes: >
+      Verified that the added CONFORMANCE_EVALUATION operation notes only record
+      the conformance/ versus reviews/ placement rule, inferred-output path rule,
+      explicit mode selection, MV-1 through MV-7 checks, MV-6 minimum prompt-log
+      requirements, and responsibility split from check-workflow-action.py. No
+      unresolved substantive findings.

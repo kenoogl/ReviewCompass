@@ -1,0 +1,25 @@
+findings:
+  - severity: ERROR
+    target_location: "tools/conformance_evaluation/evaluation_record.py"
+    description: "評価記録に `materialization_commit_hash` を常設 front-matter として出力しており、設計で定義された conformance-evaluation 側の記録契約と乖離している。"
+    rationale: "Requirement 6 と design §12.3 では conformance-evaluation の評価記録は `target_commit` を本機能の出典として保持し、self-improvement 側の `materialization_commit_hash` は必要時に `related_artifacts.self_improvement` 経由で参照可能とされている。一方、現実装は全記録に `materialization_commit_hash` を直接埋め込み、`related_artifacts` ではなく `related_records` の配列で代替しているため、他機能が front-matter 契約に従って読むと契約不一致になる。"
+
+  - severity: ERROR
+    target_location: "tools/conformance_evaluation/machine_verification.py"
+    description: "MV-6 の遮断検査が要件の最小仕様を満たしておらず、既存上流文書パスの混入検知と自律探索禁止条項の確認しか実装していない。"
+    rationale: "運用文書・tasks T-012 では MV-6 の第1期最小仕様として、時刻・実行ID・プロンプト全文を残した `logs/estimation/<run_id>/prompt.log` 相当の保存を前提にそのログを検査対象とすることが明記されている。しかし現実装は文字列を直接検査するだけで、ログ保存要件も run_id/時刻の存在検証もない。遮断必須の fail-closed 検査としては監査可能性が不足し、Requirement 3 の技術的遮断の裏付けにならない。"
+
+  - severity: WARN
+    target_location: "tools/conformance_evaluation/interfaces.py"
+    description: "`commit_hashes_are_independent` が 2つの値が空でないことしか確認しておらず、独立性の契約を実質的に検証していない。"
+    rationale: "design §12.3 / §14.6 で求めるのは `target_commit` と self-improvement 側の `materialization_commit_hash` の責務分離・整合ルールであり、単なる non-empty 判定では同一値の誤用や未分離状態を検出できない。実際、テストでも同一値 `(\"abc\", \"abc\")` を真とみなしており、契約検証として弱すぎる。"
+
+  - severity: WARN
+    target_location: "docs/operations/CONFORMANCE_EVALUATION.md:5. 2 モードの使い分け"
+    description: "運用文書の文書生成モード説明が最新 requirements/design とずれており、intent と tasks を自動推定対象のように記述している。"
+    rationale: "Requirement 2 では文書生成モードの自動推定対象は requirements/design のみで、intent は参考情報として人間が補完し、tasks は対象外である。にもかかわらず本節は「intent／requirements／design／tasks の各文書を推定生成」と記載しており、今回追加された出力先・モード規則と合わせて読むと運用者に誤実装を誘発する。"
+
+  - severity: INFO
+    target_location: ".reviewcompass/specs/conformance-evaluation/spec.json"
+    description: "`updated_at` が今回の drafting 更新内容を反映していない。"
+    rationale: "implementation.drafting を true に進め、関連文書も更新しているが `updated_at` は 2026-06-02 のままである。機能要件の直接違反ではないが、仕様状態の追跡と監査の一貫性を保つため更新しておく方がよい。"

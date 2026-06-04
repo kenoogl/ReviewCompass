@@ -99,6 +99,12 @@ findings:
   assert "gpt-5.4" in output
   assert "gemini-3.1-pro-preview" in output
   assert "triage_pending" in output
+  assert "variant: default" in output
+  assert "| primary | api | anthropic-api | claude-sonnet-4-6 |" in output
+  assert "| adversarial | api | openai-api | gpt-5.4 |" in output
+  assert "| judgment | api | gemini-api | gemini-3.1-pro-preview |" in output
+  assert "proxy_model" in output
+  assert "利用者提示ゲート" in output
 
   rounds = yaml.safe_load((review_run_dir / "rounds.yaml").read_text(encoding="utf-8"))
   summary = yaml.safe_load(
@@ -124,6 +130,10 @@ findings:
   }
   assert all(item["decision_status"] == "human_required" for item in triage["items"])
   assert all(item["final_label"] is None for item in triage["items"])
+  review_summary = (review_run_dir / "review_summary.md").read_text(encoding="utf-8")
+  assert "variant: default" in review_summary
+  assert "proxy_model" in review_summary
+  assert "利用者提示ゲート" in review_summary
 
 
 def test_run_review_continues_after_one_role_parse_failure(tmp_path, monkeypatch):

@@ -1,0 +1,23 @@
+```yaml
+findings:
+  - severity: ERROR
+    target_location: "schemas/review-criteria/conformance_evaluation.yaml"
+    description: "6 criteria 検査仕様の YAML に `sub_structure` フィールドが欠落しており、スキーマ定義が設計と不一致"
+    rationale: "design §8.5 および T-005 にて `sub_structure: [要点, 詳細抽出, 深掘り, 該当なし]` の定義と `name` / `criterion_short_name` などのキーが指定されていますが、現在の YAML は `title` などの異なるキーを使用し、サブ構造も持っていないため要件違反です。"
+  - severity: ERROR
+    target_location: "tools/conformance_evaluation/comparison_model.py"
+    description: "ComparisonModel が生成する食い違い所見のデータ構造が design §10.4 のスキーマと乖離している"
+    rationale: "design §10.4 で指定された必須フィールド（finding_type, correspondence_type, existing_text, estimated_text, discrepancy_description, implementation_code_refs）が含まれておらず、独自フィールド（mismatch_types 等）が使われています。analysis 機能への連携（§14.5）において機械可読データの不整合が生じます。"
+  - severity: ERROR
+    target_location: "tools/conformance_evaluation/check_mode.py"
+    description: "CheckPipeline の実行記録出力時、検出された findings（食い違い結果）が Markdown 本文に書き出されていない"
+    rationale: "design §10.6 に従い、照合チェックモードの実行記録（conformance/<日付>-check.md）には食い違いごとの YAML エントリや比較結果を出力する必要がありますが、現状の実装は `## 機械検査結果\nMV-6 OK\n` の固定文字列のみを書き込んでおり、評価結果がファイルに記録されません。"
+  - severity: ERROR
+    target_location: "tools/conformance_evaluation/schemas/evaluation_record.schema.json"
+    description: "T-009 の成果物として要求されている評価記録の front-matter スキーマファイルが実装・提供されていない"
+    rationale: "tasks.md の T-009 成果物リストに `tools/conformance_evaluation/schemas/evaluation_record.schema.json` が明記されていますが、ファイルが存在しません。"
+  - severity: WARN
+    target_location: "tests/conformance-evaluation/test_conformance_evaluation.py"
+    description: "test_t013_traceability_smoke が要件追跡表の双方向整合チェックを適切に実装していない"
+    rationale: "T-013 の完了条件として「要件追跡表（design §15）と各タスク本文の対応要件欄の双方向整合チェック」が求められていますが、現在のテストは単に T-001〜T-013 という文字列の存在を確認するだけの簡易な内容に留まっており、厳密な整合チェックになっていません。"
+```
