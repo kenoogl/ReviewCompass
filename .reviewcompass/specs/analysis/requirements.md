@@ -151,4 +151,4 @@ ReviewCompass 固有の追加：
 
 機能横断レビューで対処された所見：
 
-- 機能横断波及所見の対処履歴は [.reviewcompass/pending-cross-feature-findings.md](../../pending-cross-feature-findings.md) を参照（A-001 `not_run` 欠落 → 2026-05-23 対処済み、A-003 `analysis_blocked` 欠落 → 2026-05-23 対処済み）
+- 機能横断波及所見の対処履歴は carry-forward register 正本 [reviewcompass-import.yaml](../../../learning/workflow/carry-forward-register/reviewcompass-import.yaml) を参照（A-001 `not_run` 欠落 → 2026-05-23 対処済み、A-003 `analysis_blocked` 欠落 → 2026-05-23 対処済み）

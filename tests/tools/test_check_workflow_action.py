@@ -1844,7 +1844,7 @@ class NextNavigationTests(unittest.TestCase):
     )
 
   def test_next_review_wave_reports_recheck_and_pending_findings(self):
-    """review-wave では recheck と pending-cross-feature-findings の確認情報を返す"""
+    """review-wave では recheck と抽象入力としての未消化所見情報を返す"""
     cwd = Path(self.tmpdir)
     implementation_ready = {
       "drafting": True,
@@ -1867,10 +1867,46 @@ class NextNavigationTests(unittest.TestCase):
       json.dumps(foundation_spec, ensure_ascii=False, indent=2),
       encoding="utf-8",
     )
-    pending_path = cwd / ".reviewcompass" / "pending-cross-feature-findings.md"
+    pending_path = (
+      cwd / "learning" / "workflow" / "carry-forward-register" / "sources"
+      / "reviewcompass-pending-cross-feature-findings.md"
+    )
+    pending_path.parent.mkdir(parents=True)
     pending_path.write_text(
       "# 機能横断レビューで扱う所見の集約\n\n"
       "### A-001：未消化の波及所見\n",
+      encoding="utf-8",
+    )
+    register_path = (
+      cwd / "learning" / "workflow" / "carry-forward-register" / "reviewcompass-import.yaml"
+    )
+    register_path.parent.mkdir(parents=True, exist_ok=True)
+    register_path.write_text(
+      yaml.safe_dump(
+        {
+          "register_id": "carry-forward-register",
+          "schema_version": 1,
+          "source_type": "carry_forward_register",
+          "items": [
+            {
+              "item_id": "carry-forward-001",
+              "scope": "cross_scope",
+              "source_feature": "foundation",
+              "target_feature_or_phase": ["runtime"],
+              "finding_summary": "未消化の波及所見",
+              "status": "open",
+              "decision_needed": False,
+              "decision_reasons": [],
+              "carry_forward_reason": "review-wave で消化する",
+              "resolution": None,
+              "evidence_refs": [],
+              "project_local_context": {"legacy_id": "A-001"},
+            }
+          ],
+        },
+        allow_unicode=True,
+        sort_keys=False,
+      ),
       encoding="utf-8",
     )
 
@@ -1894,6 +1930,31 @@ class NextNavigationTests(unittest.TestCase):
     self.assertEqual(
       data["next_action"]["pending_cross_feature_findings"]["unresolved_count"],
       1,
+    )
+    self.assertEqual(
+      data["next_action"]["pending_cross_feature_findings"]["file"],
+      "learning/workflow/carry-forward-register/sources/reviewcompass-pending-cross-feature-findings.md",
+    )
+    self.assertNotIn(
+      ".reviewcompass/pending-cross-feature-findings.md",
+      data["next_action"]["required_disciplines"],
+    )
+    self.assertEqual(
+      data["next_action"]["required_inputs"],
+      [
+        {
+          "id": "unresolved_cross_scope_items",
+          "role": "stage_entry_context",
+          "source_type": "carry_forward_register",
+          "purpose": (
+            "Read unresolved items carried forward from prior reviews or "
+            "adjacent scopes before starting this stage."
+          ),
+          "read_policy": "unresolved_items_only",
+          "path": "learning/workflow/carry-forward-register/reviewcompass-import.yaml",
+          "unresolved_count": 1,
+        }
+      ],
     )
 
   def test_next_prioritizes_in_progress_file(self):
@@ -2958,34 +3019,78 @@ def _init_git_repo(tmpdir):
     ["git", "commit", "-qm", "initial"],
     cwd=str(tmpdir), check=True, capture_output=True,
   )
-  # .reviewcompass 構造を準備（pending ファイルの土台）
-  pending_dir = Path(tmpdir) / ".reviewcompass"
-  pending_dir.mkdir()
-  pending_file = pending_dir / "pending-cross-feature-findings.md"
-  pending_file.write_text("# 機能横断レビューで扱う所見の集約\n")
-  # pending ファイルもコミットして作業ツリーを clean な初期状態にする
+  # carry-forward register 構造を準備
+  register_dir = Path(tmpdir) / "learning" / "workflow" / "carry-forward-register"
+  source_dir = register_dir / "sources"
+  source_dir.mkdir(parents=True)
+  source_file = source_dir / "reviewcompass-pending-cross-feature-findings.md"
+  source_file.write_text("# 機能横断レビューで扱う所見の集約\n")
+  register_file = register_dir / "reviewcompass-import.yaml"
+  _set_pending_findings(register_file, unresolved_count=0, resolved_count=0)
+  # register と source もコミットして作業ツリーを clean な初期状態にする
   subprocess.run(
-    ["git", "add", ".reviewcompass/pending-cross-feature-findings.md"],
+    [
+      "git",
+      "add",
+      "learning/workflow/carry-forward-register/reviewcompass-import.yaml",
+      "learning/workflow/carry-forward-register/sources/reviewcompass-pending-cross-feature-findings.md",
+    ],
     cwd=str(tmpdir), check=True, capture_output=True,
   )
   subprocess.run(
-    ["git", "commit", "-qm", "add pending file"],
+    ["git", "commit", "-qm", "add carry-forward register"],
     cwd=str(tmpdir), check=True, capture_output=True,
   )
-  return pending_file
+  return register_file
 
 
-def _set_pending_findings(pending_file, unresolved_count=0, resolved_count=0):
-  """pending ファイルに未消化／対処済み所見を設定する"""
-  lines = ["# 機能横断レビューで扱う所見の集約\n"]
+def _set_pending_findings(register_file, unresolved_count=0, resolved_count=0):
+  """抽象レジスタに未消化／対処済み所見を設定する"""
+  items = []
   for i in range(unresolved_count):
-    lines.append(f"\n### A-{i+1:03d}：テスト用未消化所見\n")
-    lines.append("詳細内容...\n")
+    items.append({
+      "item_id": f"carry-forward-{i+1:03d}",
+      "scope": "cross_scope",
+      "source_feature": "foundation",
+      "target_feature_or_phase": ["runtime"],
+      "finding_summary": "テスト用未消化所見",
+      "status": "open",
+      "decision_needed": False,
+      "decision_reasons": [],
+      "carry_forward_reason": "テスト用",
+      "resolution": None,
+      "evidence_refs": [],
+      "project_local_context": {"legacy_id": f"A-{i+1:03d}"},
+    })
   for i in range(resolved_count):
     n = unresolved_count + i + 1
-    lines.append(f"\n### A-{n:03d}：テスト用対処済み所見 ✅ 対処済み（2026-05-25）\n")
-    lines.append("詳細内容...\n")
-  pending_file.write_text("".join(lines))
+    items.append({
+      "item_id": f"carry-forward-{n:03d}",
+      "scope": "cross_scope",
+      "source_feature": "foundation",
+      "target_feature_or_phase": ["runtime"],
+      "finding_summary": "テスト用対処済み所見",
+      "status": "resolved",
+      "decision_needed": False,
+      "decision_reasons": [],
+      "carry_forward_reason": "テスト用",
+      "resolution": "テスト用対処済み",
+      "evidence_refs": [],
+      "project_local_context": {"legacy_id": f"A-{n:03d}"},
+    })
+  register_file.write_text(
+    yaml.safe_dump(
+      {
+        "register_id": "carry-forward-register",
+        "schema_version": 1,
+        "source_type": "carry_forward_register",
+        "items": items,
+      },
+      allow_unicode=True,
+      sort_keys=False,
+    ),
+    encoding="utf-8",
+  )
 
 
 def _stage_file(tmpdir, relpath, content):

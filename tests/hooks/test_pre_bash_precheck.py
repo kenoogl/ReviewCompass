@@ -10,6 +10,7 @@ TDD 規律（AGENTS.md 入口規律）に従い、本テストはフックスク
 """
 
 import json
+import hashlib
 import shutil
 import subprocess
 import tempfile
@@ -69,13 +70,28 @@ def _setup_git_repo_with_script(tmpdir):
     ["git", "commit", "-qm", "initial"],
     cwd=str(tmpdir), check=True, capture_output=True,
   )
-  # .reviewcompass 構造
-  pending_dir = Path(tmpdir) / ".reviewcompass"
-  pending_dir.mkdir()
-  pending_file = pending_dir / "pending-cross-feature-findings.md"
-  pending_file.write_text("# 機能横断レビューで扱う所見の集約\n")
+  # carry-forward register 正本と履歴 source 構造
+  register_dir = Path(tmpdir) / "learning" / "workflow" / "carry-forward-register"
+  register_dir.mkdir(parents=True)
+  register_file = register_dir / "reviewcompass-import.yaml"
+  register_file.write_text(
+    "items: []\n",
+    encoding="utf-8",
+  )
+  pending_dir = register_dir / "sources"
+  pending_dir.mkdir(parents=True)
+  pending_file = pending_dir / "reviewcompass-pending-cross-feature-findings.md"
+  pending_file.write_text(
+    "# 機能横断レビューで扱う所見の集約\n",
+    encoding="utf-8",
+  )
   subprocess.run(
-    ["git", "add", ".reviewcompass/pending-cross-feature-findings.md"],
+    [
+      "git",
+      "add",
+      "learning/workflow/carry-forward-register/reviewcompass-import.yaml",
+      "learning/workflow/carry-forward-register/sources/reviewcompass-pending-cross-feature-findings.md",
+    ],
     cwd=str(tmpdir), check=True, capture_output=True,
   )
   subprocess.run(
@@ -110,6 +126,18 @@ def _stage_file(tmpdir, relpath, content):
 
 def _write_commit_approval(tmpdir, target_files, consumed=False):
   """temp git repo に commit 承認レコードを書く"""
+  target_sha256 = {}
+  for target_file in target_files:
+    if target_file == "*":
+      continue
+    result = subprocess.run(
+      ["git", "show", f":{target_file}"],
+      cwd=str(tmpdir),
+      capture_output=True,
+      check=True,
+    )
+    target_sha256[target_file] = hashlib.sha256(result.stdout).hexdigest()
+
   approval_dir = Path(tmpdir) / ".reviewcompass" / "approvals"
   approval_dir.mkdir(parents=True, exist_ok=True)
   approval_path = approval_dir / "commit-approval.json"
@@ -121,6 +149,7 @@ def _write_commit_approval(tmpdir, target_files, consumed=False):
         "approved_at": "2026-06-03T00:00:00+09:00",
         "rationale": "利用者がコミットを明示承認",
         "target_files": target_files,
+        "target_sha256": target_sha256,
         "expires_after_commit": True,
         "consumed": consumed,
       },

@@ -99,5 +99,5 @@ ReviewCompass をアプリまたは対象リポジトリへ配置するとき、
 - 形式仕様：[.reviewcompass/specs/analysis/requirements.md](../../.reviewcompass/specs/analysis/requirements.md)
 - 計画書 §5.14：[analysis 機能の役割と料理方法](../plan/reconstruction-plan-2026-05-21.md)
 - 計画書 §5.20.2 analysis 行：[抽出対応表](../extraction-mapping.md)
-- 機能横断波及所見：[.reviewcompass/pending-cross-feature-findings.md](../../.reviewcompass/pending-cross-feature-findings.md)
+- 機能横断波及所見：正本 [reviewcompass-import.yaml](../../learning/workflow/carry-forward-register/reviewcompass-import.yaml)、履歴 source [reviewcompass-pending-cross-feature-findings.md](../../learning/workflow/carry-forward-register/sources/reviewcompass-pending-cross-feature-findings.md)
 - 隣接機能：[foundation](FOUNDATION.md)、[runtime](RUNTIME.md)、[evaluation](EVALUATION.md)

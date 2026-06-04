@@ -86,5 +86,5 @@
 - 形式仕様：[.reviewcompass/specs/workflow-management/requirements.md](../../.reviewcompass/specs/workflow-management/requirements.md)
 - 計画書 §5.4〜§5.8：[軽量化方針／段階層構造／reopen 機械強制／session 跨ぎ状態管理／多層防御](../plan/reconstruction-plan-2026-05-21.md)
 - 計画書 §5.20.2 workflow-management 行：[抽出対応表](../extraction-mapping.md)
-- 機能横断波及所見：[.reviewcompass/pending-cross-feature-findings.md](../../.reviewcompass/pending-cross-feature-findings.md)
+- 機能横断波及所見：正本 [reviewcompass-import.yaml](../../learning/workflow/carry-forward-register/reviewcompass-import.yaml)、履歴 source [reviewcompass-pending-cross-feature-findings.md](../../learning/workflow/carry-forward-register/sources/reviewcompass-pending-cross-feature-findings.md)
 - 隣接機能：[foundation](FOUNDATION.md)、[runtime](RUNTIME.md)、[evaluation](EVALUATION.md)、[analysis](ANALYSIS.md)

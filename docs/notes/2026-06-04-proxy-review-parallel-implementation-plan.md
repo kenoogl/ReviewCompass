@@ -150,3 +150,19 @@ self-improvement implementation.triad-review では、workflow-management の gu
 - `stage` では workflow state 正本、`triad-review` では review-run/proxy 判断代行、`post_write_verification` では post-write 規律、`reopen_in_progress` では reopen 手順、`approval` では approval-operation と precheck を読む。
 
 これにより、LLM はセッション全体で規律を保持しようとせず、場面ごとに短い規律セットを読み直して実行直前の挙動を調整できる。
+
+## 追加対応：固有台帳を self-improvement の抽象入力へ移す
+
+ReviewCompass の dogfooding で使っていた旧 Markdown 台帳は、未消化の機能横断所見を保持する状態台帳であり、一般規律そのものではない。これを `required_disciplines` に混ぜると、配布先プロジェクトでも同名ファイルが存在するかのような前提になり、self-improvement の一般性を失う。
+
+方針：
+
+- `required_disciplines` は規律・運用文書だけに限定する。
+- 作業対象ごとの状態台帳、持ち越し一覧、外部課題リストは `required_inputs` として返す。
+- `required_inputs` は `unresolved_cross_scope_items` のような抽象 ID、`source_type`、`read_policy`、必要に応じた `path` と件数を持つ。
+- ReviewCompass では旧 Markdown 台帳を `learning/workflow/carry-forward-register/sources/reviewcompass-pending-cross-feature-findings.md` に履歴 source として移し、`learning/workflow/carry-forward-register/reviewcompass-import.yaml` を resolver の実体として使う。正本上は「持ち越し台帳」という入力スロットとして扱う。
+- デプロイ先では同じ抽象入力を別ファイル、外部台帳、または未配置として解決できるようにし、ReviewCompass 固有語彙を一般ワークフローの根拠にしない。
+
+この変更は、dogfooding で生まれた固有の運用知識を self-improvement の対象として抽象化し、プロジェクト非依存の workflow 入力契約に移すためのものとする。
+
+追加で、これは参照経路の抽象化にすぎず、旧 Markdown 台帳の内容そのものは ReviewCompass 固有の台帳である。したがって self-improvement tasks に T-012「固有台帳内容の抽象化」を追加し、既存 Markdown 台帳を機械可読な持ち越し所見レジスタへ変換する作業を別タスクとして扱う。T-012 では A-xxx 番号、ReviewCompass 固有機能名、セッション番号、局所的な運用語彙を一般判断フィールドへ漏らさず、`evidence_refs` または `project_local_context` に隔離する。

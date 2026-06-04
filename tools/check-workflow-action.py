@@ -35,6 +35,11 @@ DEFAULT_LOG_PATH = "docs/logs/workflow-precheck.log"
 DEFAULT_COMMIT_APPROVAL_PATH = ".reviewcompass/approvals/commit-approval.json"
 DEFAULT_LAST_COMMIT_PRECHECK_PATH = ".git/reviewcompass/last-commit-precheck.json"
 DEFAULT_DISCIPLINE_MAP_PATH = "docs/operations/WORKFLOW_DISCIPLINE_MAP.yaml"
+DEFAULT_CARRY_FORWARD_REGISTER_PATH = "learning/workflow/carry-forward-register/reviewcompass-import.yaml"
+DEFAULT_CARRY_FORWARD_SOURCE_PATH = (
+  "learning/workflow/carry-forward-register/sources/"
+  "reviewcompass-pending-cross-feature-findings.md"
+)
 
 # 各フェーズの段集合（計画書 §5.5 と §5.24.4 と整合）
 PHASE_STAGES = {
@@ -221,7 +226,6 @@ DEFAULT_DISCIPLINE_MAP = {
     ],
     "cross_feature_stage": [
       "docs/disciplines/discipline_workflow_state_truth_source.md",
-      ".reviewcompass/pending-cross-feature-findings.md",
     ],
     "post_write_verification": [
       "docs/operations/WORKFLOW_NAVIGATION.md#post_write_verification",
@@ -252,9 +256,7 @@ DEFAULT_DISCIPLINE_MAP = {
       "docs/operations/SESSION_WORKFLOW_GUIDE.md#3.3-a-2",
       "docs/disciplines/discipline_approval_operation.md",
     ],
-    "review-wave": [
-      ".reviewcompass/pending-cross-feature-findings.md",
-    ],
+    "review-wave": [],
     "alignment": [
       "docs/disciplines/discipline_workflow_state_truth_source.md",
     ],
@@ -262,6 +264,26 @@ DEFAULT_DISCIPLINE_MAP = {
       "docs/disciplines/discipline_approval_operation.md",
       "docs/operations/WORKFLOW_PRECHECK.md#spec-set",
     ],
+  },
+  "required_inputs": {
+    "by_stage": {
+      "review-wave": [
+        {
+          "id": "unresolved_cross_scope_items",
+          "role": "stage_entry_context",
+          "source_type": "carry_forward_register",
+          "purpose": (
+            "Read unresolved items carried forward from prior reviews or "
+            "adjacent scopes before starting this stage."
+          ),
+          "resolver": {
+            "kind": "project_state",
+            "path": DEFAULT_CARRY_FORWARD_REGISTER_PATH,
+          },
+          "read_policy": "unresolved_items_only",
+        },
+      ],
+    },
   },
 }
 
@@ -808,13 +830,79 @@ def required_disciplines_for_next_action(cwd, next_action):
   return _dedupe_strings(result)
 
 
-def attach_required_disciplines(cwd, next_action):
-  """next_action に required_disciplines を付与する"""
+def _required_input_entries_for_next_action(cwd, next_action):
+  """next_action の直前に解決すべき入力定義を返す"""
+  discipline_map = _load_discipline_map(cwd)
+  required_inputs = discipline_map.get("required_inputs") or {}
+  if not isinstance(required_inputs, dict):
+    return []
+
+  result = []
+  default = required_inputs.get("default") or []
+  if isinstance(default, list):
+    result.extend(default)
+
+  by_kind = required_inputs.get("by_kind") or {}
+  if isinstance(by_kind, dict):
+    entries = by_kind.get(next_action.get("kind")) or []
+    if isinstance(entries, list):
+      result.extend(entries)
+
+  by_stage = required_inputs.get("by_stage") or {}
+  if isinstance(by_stage, dict):
+    entries = by_stage.get(next_action.get("stage")) or []
+    if isinstance(entries, list):
+      result.extend(entries)
+
+  return result
+
+
+def _resolve_required_input(cwd, entry):
+  """入力定義を現プロジェクトの状態に解決する"""
+  if not isinstance(entry, dict):
+    return None
+
+  resolved = {
+    key: value
+    for key, value in entry.items()
+    if key != "resolver"
+  }
+  resolver = entry.get("resolver") or {}
+  if not isinstance(resolver, dict):
+    return resolved
+
+  if resolver.get("kind") == "project_state":
+    path = resolver.get("path")
+    if isinstance(path, str):
+      resolved["path"] = path
+      if entry.get("source_type") == "carry_forward_register":
+        resolved["unresolved_count"] = count_unresolved_carry_forward_items(
+          Path(cwd) / path,
+        )
+
+  return resolved
+
+
+def required_inputs_for_next_action(cwd, next_action):
+  """next_action の直前に解決すべき抽象入力を返す"""
+  result = []
+  for entry in _required_input_entries_for_next_action(cwd, next_action):
+    resolved = _resolve_required_input(cwd, entry)
+    if resolved is not None:
+      result.append(resolved)
+  return result
+
+
+def attach_required_context(cwd, next_action):
+  """next_action に直前必読規律と抽象入力を付与する"""
   augmented = dict(next_action)
   augmented["required_disciplines"] = required_disciplines_for_next_action(
     cwd,
     next_action,
   )
+  required_inputs = required_inputs_for_next_action(cwd, next_action)
+  if required_inputs:
+    augmented["required_inputs"] = required_inputs
   return augmented
 
 
@@ -1642,6 +1730,27 @@ def count_unresolved_findings(pending_path):
   return count
 
 
+def count_unresolved_carry_forward_items(register_path):
+  """抽象持ち越しレジスタから未解決件数を数える"""
+  path = Path(register_path)
+  if not path.exists():
+    return 0
+  try:
+    data = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
+  except (OSError, yaml.YAMLError):
+    return 0
+  if not isinstance(data, dict):
+    return 0
+  items = data.get("items") or []
+  if not isinstance(items, list):
+    return 0
+  return sum(
+    1
+    for item in items
+    if isinstance(item, dict) and item.get("status") != "resolved"
+  )
+
+
 def classify_staged_file(filepath):
   """staged ファイルを 3 群に分類する（仕様 §6.2）
 
@@ -1804,8 +1913,8 @@ def cmd_commit(args):
     return 2
 
   # 未消化所見の確認
-  pending_path = cwd / ".reviewcompass" / "pending-cross-feature-findings.md"
-  unresolved_count = count_unresolved_findings(pending_path)
+  carry_forward_register_path = cwd / DEFAULT_CARRY_FORWARD_REGISTER_PATH
+  unresolved_count = count_unresolved_carry_forward_items(carry_forward_register_path)
   in_progress_files = list_in_progress_files(cwd)
 
   # staged ファイルの取得と分類
@@ -1852,7 +1961,7 @@ def cmd_commit(args):
     if unresolved_count > 0:
       reasons.append(
         f"未消化所見が {unresolved_count} 件あります"
-        f"（.reviewcompass/pending-cross-feature-findings.md）"
+        f"（{DEFAULT_CARRY_FORWARD_REGISTER_PATH}）"
       )
     for f in caution:
       reasons.append(f"要注意変更: {f}（変更根拠を確認してください）")
@@ -2731,10 +2840,11 @@ def augment_cross_feature_next_action(cwd, specs, next_action):
     augmented["recheck_items"] = recheck_items
 
   if stage == "review-wave":
-    pending_path = Path(cwd) / ".reviewcompass" / "pending-cross-feature-findings.md"
     augmented["pending_cross_feature_findings"] = {
-      "file": ".reviewcompass/pending-cross-feature-findings.md",
-      "unresolved_count": count_unresolved_findings(pending_path),
+      "file": DEFAULT_CARRY_FORWARD_SOURCE_PATH,
+      "unresolved_count": count_unresolved_carry_forward_items(
+        Path(cwd) / DEFAULT_CARRY_FORWARD_REGISTER_PATH,
+      ),
     }
 
   return augmented
@@ -2952,7 +3062,7 @@ def cmd_next(args):
           reasons = []
           verdict, exit_code = "OK", 0
 
-  next_action = attach_required_disciplines(cwd, next_action)
+  next_action = attach_required_context(cwd, next_action)
 
   if args.json:
     print(format_next_json_output(verdict, exit_code, next_action, reasons, current_state))

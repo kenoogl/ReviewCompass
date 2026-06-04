@@ -155,5 +155,5 @@ phase_order の最後に位置付ける。
 - 計画書 §5.9：レビュー方法（流用元）
 - 計画書 §5.20.2 conformance-evaluation 行：[抽出対応表](../extraction-mapping.md)
 - 元計画：素材リポジトリ `.kiro/methodology/dual-reviewer-spec-driven-paper/v3-plan.md`
-- 機能横断波及所見：[.reviewcompass/pending-cross-feature-findings.md](../../.reviewcompass/pending-cross-feature-findings.md)
+- 機能横断波及所見：正本 [reviewcompass-import.yaml](../../learning/workflow/carry-forward-register/reviewcompass-import.yaml)、履歴 source [reviewcompass-pending-cross-feature-findings.md](../../learning/workflow/carry-forward-register/sources/reviewcompass-pending-cross-feature-findings.md)
 - 隣接機能：[foundation](FOUNDATION.md)、[runtime](RUNTIME.md)、[evaluation](EVALUATION.md)、[analysis](ANALYSIS.md)、[workflow-management](WORKFLOW_MANAGEMENT.md)、[self-improvement](SELF_IMPROVEMENT.md)

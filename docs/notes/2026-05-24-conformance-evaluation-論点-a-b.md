@@ -167,7 +167,7 @@ design 段着手前の必須事項として TODO §3 セクション C に記録
 
 1. **計画書 §5.10 改訂**：§5.10.1（主要用途を本筋／傍流で整理）、§5.10.2（2 軸 6 criteria に絞る）、§5.10.3（推定段階にも triad-review 適用）、§5.10.6（v3-plan §3.3 の扱いを本筋／傍流で整理）、§5.10.7（criteria 数の更新）、§5.10.9 新設（モード別の既存文書扱いルール）、§5.10.10 新設（推定段階の triad-review 適用方針）
 2. **conformance-evaluation requirements.md 改訂**：Boundary Context、Requirement 1〜5、Change Intent
-3. **pending-cross-feature-findings.md に A-010 として記録**
+3. **持ち越し所見正本に A-010 として記録**
 4. **spec.json**：alignment と approval を一度 false に戻し（再開状態の明示）、改訂完了後に再度 true に
 5. **TODO §3 セクション C を「完了済み」として更新**
 

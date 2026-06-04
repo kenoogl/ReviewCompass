@@ -185,7 +185,7 @@ ReviewCompass 固有の構築：
   - A-008（conformance-evaluation から self-improvement への出力方向、Boundary Context 隣接仕様の self-improvement 記述で対処済み、2026-05-23）
   - A-009 第 2 波（旧 paper-interface 由来の用語不整合、Boundary Context 隣接仕様の analysis 記述 行 32 で「論文向け原データ」→「報告書向け原データ」修正済み、2026-05-24 セッション 23）
   - A-010 論点 A・B 対処（推定プロセスの整理と 2 軸 6 criteria 化、本仕様 Requirement 1〜5 ＋ Boundary Context と計画書 §5.10 改訂で対処済み、2026-05-24 セッション 23 軽量 reopen、利用者承認に基づく改訂）
-- 参考：他機能の所見（A-001／A-003／A-004／A-007 とも 2026-05-23 対処済み）の対処履歴は [.reviewcompass/pending-cross-feature-findings.md](../../pending-cross-feature-findings.md) を参照
+- 参考：他機能の所見（A-001／A-003／A-004／A-007 とも 2026-05-23 対処済み）の対処履歴は carry-forward register 正本 [reviewcompass-import.yaml](../../../learning/workflow/carry-forward-register/reviewcompass-import.yaml) を参照
 
 v3-plan §3.3 の扱い（§5.10.6 由来、2026-05-24 セッション 23 改訂で本筋／傍流に整理）：
 

@@ -17,6 +17,7 @@ EXPECTED_TASK_TESTS = {
   "T-009": "tests/self-improvement/test_t009_machine_verification.py",
   "T-010": "tests/self-improvement/test_t010_interfaces.py",
   "T-011": "tests/self-improvement/test_t011_traceability.py",
+  "T-012": "tests/self-improvement/test_t012_carry_forward_register.py",
 }
 
 

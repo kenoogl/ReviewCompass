@@ -19,7 +19,7 @@ def audit():
 
 def test_t011_expected_task_tests_are_present(audit):
   assert audit.missing_task_tests() == []
-  assert sorted(EXPECTED_TASK_TESTS) == [f"T-{index:03d}" for index in range(1, 12)]
+  assert sorted(EXPECTED_TASK_TESTS) == [f"T-{index:03d}" for index in range(1, 13)]
 
 
 def test_t011_seven_models_have_all_three_test_levels(audit):
@@ -65,7 +65,7 @@ def test_t011_requirements_traceability_ignores_non_requirement_rows(tmp_path):
 
 | 要件 | 対応タスク |
 |------|-----------|
-| Requirement 1 受入 1：workflow 層改善のみ | T-001〜T-011 |
+| Requirement 1 受入 1：workflow 層改善のみ | T-001〜T-012 |
 | Boundary Context 隣接期待：foundation | なし |
 | Boundary Context 隣接期待：runtime | なし |
 
@@ -96,6 +96,7 @@ def test_t011_requirements_traceability_detects_missing_task_references(tmp_path
   issues = TraceabilityAudit(tmp_path).requirements_traceability_issues()
 
   assert "T-011 is not referenced by requirements traceability" in issues
+  assert "T-012 is not referenced by requirements traceability" in issues
 
 
 def test_t011_dvt_unresolved_items_have_deferral_reasons(audit):

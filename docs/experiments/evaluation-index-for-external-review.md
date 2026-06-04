@@ -137,7 +137,7 @@
 
 **所見が指していた仕様文書本体**：`.reviewcompass/specs/<機能>/{requirements.md, design.md, tasks.md}`（7 機能）。
 
-**機能横断（2 回目）の所見**：`.reviewcompass/pending-cross-feature-findings.md`（A-017／A-018／A-019、すべて対処済み）。
+**機能横断（2 回目）の所見**：`learning/workflow/carry-forward-register/reviewcompass-import.yaml`（旧 Markdown source 由来の A-017／A-018／A-019、すべて対処済み）。
 
 ---
 

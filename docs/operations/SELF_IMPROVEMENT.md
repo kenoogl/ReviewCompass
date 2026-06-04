@@ -122,5 +122,5 @@ workflow 改善運用の 4 指標：
 - 計画書 §5.16：[self-improvement の workflow 改善仕様](../plan/reconstruction-plan-2026-05-21.md)
 - 計画書 §5.9.5：効果測定 3 指標
 - 計画書 §5.20.2 self-improvement 行：[抽出対応表](../extraction-mapping.md)
-- 機能横断波及所見：[.reviewcompass/pending-cross-feature-findings.md](../../.reviewcompass/pending-cross-feature-findings.md)
+- 機能横断波及所見：正本 [reviewcompass-import.yaml](../../learning/workflow/carry-forward-register/reviewcompass-import.yaml)、履歴 source [reviewcompass-pending-cross-feature-findings.md](../../learning/workflow/carry-forward-register/sources/reviewcompass-pending-cross-feature-findings.md)
 - 隣接機能：[foundation](FOUNDATION.md)、[runtime](RUNTIME.md)、[evaluation](EVALUATION.md)、[analysis](ANALYSIS.md)、[workflow-management](WORKFLOW_MANAGEMENT.md)

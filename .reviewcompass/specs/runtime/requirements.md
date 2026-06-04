@@ -178,4 +178,4 @@ ReviewCompass 固有の追加：
 
 機能横断レビューで対処された所見：
 
-- A-001：`validator_status` 語彙の正本 4 値（`not_run`／`passed`／`failed`／`blocked`、計画書 §5.18.7 行 2239 由来）のうち `not_run` が本実行時 Requirement 6 受入 2 と `foundation` 仕様 Requirement 6 受入 10 の両方で欠落していたが、2026-05-23 の要件 review-wave で 4 値に拡張済み。詳細は [.reviewcompass/pending-cross-feature-findings.md](../../pending-cross-feature-findings.md) §A-001 を参照
+- A-001：`validator_status` 語彙の正本 4 値（`not_run`／`passed`／`failed`／`blocked`、計画書 §5.18.7 行 2239 由来）のうち `not_run` が本実行時 Requirement 6 受入 2 と `foundation` 仕様 Requirement 6 受入 10 の両方で欠落していたが、2026-05-23 の要件 review-wave で 4 値に拡張済み。詳細は carry-forward register 正本 [reviewcompass-import.yaml](../../../learning/workflow/carry-forward-register/reviewcompass-import.yaml) の `carry-forward-001` を参照

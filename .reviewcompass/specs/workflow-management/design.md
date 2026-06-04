@@ -75,7 +75,7 @@ graph TD
     Script --> Stages["stages/*.yaml<br>段集合と完了判定（Req 1）"]
     Script --> InProgress["stages/in-progress/<br>進行中状態（Req 6）"]
     Script --> SpecJson["spec.json<br>機能単位 workflow_state"]
-    Script --> Pending["pending-cross-feature-findings.md<br>未消化所見"]
+    Script --> CarryForward["carry-forward register<br>未消化所見"]
     Script --> Verdict{"verdict 判定"}
     Verdict -->|OK| Pass["不可逆操作の実行を許可"]
     Verdict -->|WARN| Warn["警告して継続"]
@@ -84,7 +84,7 @@ graph TD
     Block --> Log
 ```
 
-検査スクリプトは段集合 YAML、進行中状態ファイル、spec.json、未消化所見の 4 つを入力として読み、verdict（判定結果）を返す。verdict には OK／WARN／DEVIATION の 3 値を使う（actor=human の段で承認待ちのときは DEVIATION で止め、警告のみで継続できる軽微な未整合は WARN とする）。語彙の正本は補助層 C 段階 2 仕様 `docs/operations/WORKFLOW_PRECHECK.md` §7.1〜§7.2 と検査スクリプト本体 `tools/check-workflow-action.py` の実装で、本設計は実装に合わせる方向で語彙を確定する（F-003 対処、2026-05-25 セッション 26 利用者明示承認）。
+検査スクリプトは段集合 YAML、進行中状態ファイル、spec.json、持ち越し所見レジスタの 4 つを入力として読み、verdict（判定結果）を返す。verdict には OK／WARN／DEVIATION の 3 値を使う（actor=human の段で承認待ちのときは DEVIATION で止め、警告のみで継続できる軽微な未整合は WARN とする）。語彙の正本は補助層 C 段階 2 仕様 `docs/operations/WORKFLOW_PRECHECK.md` §7.1〜§7.2 と検査スクリプト本体 `tools/check-workflow-action.py` の実装で、本設計は実装に合わせる方向で語彙を確定する（F-003 対処、2026-05-25 セッション 26 利用者明示承認）。
 
 ### 責務境界の明確化（Boundary Clarification）
 
@@ -294,7 +294,7 @@ subimplementation_outputs：
 - 段集合 YAML（`stages/*.yaml`）
 - 進行中状態ファイル（`stages/in-progress/*.yaml`）
 - 機能単位 spec.json（`.reviewcompass/specs/<機能>/spec.json`）
-- 未消化所見（`.reviewcompass/pending-cross-feature-findings.md`）
+- 未消化所見（`learning/workflow/carry-forward-register/reviewcompass-import.yaml`）
 
 判定原則：
 

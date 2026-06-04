@@ -1,6 +1,8 @@
 # next_action ごとの直前必読規律マップ。
 # `tools/check-workflow-action.py next --json` はこの内容を
 # `next_action.required_disciplines` として返す。
+# 作業対象の状態台帳や持ち越し一覧は規律ではないため、
+# `required_inputs` の抽象入力として返す。
 default:
   - docs/operations/WORKFLOW_NAVIGATION.md
 by_kind:
@@ -8,7 +10,6 @@ by_kind:
     - docs/disciplines/discipline_workflow_state_truth_source.md
   cross_feature_stage:
     - docs/disciplines/discipline_workflow_state_truth_source.md
-    - .reviewcompass/pending-cross-feature-findings.md
   post_write_verification:
     - docs/operations/WORKFLOW_NAVIGATION.md#post_write_verification
     - docs/disciplines/discipline_post_write_verification.md
@@ -30,10 +31,20 @@ by_stage:
   triad-review:
     - docs/operations/SESSION_WORKFLOW_GUIDE.md#3.3-a-2
     - docs/disciplines/discipline_approval_operation.md
-  review-wave:
-    - .reviewcompass/pending-cross-feature-findings.md
+  review-wave: []
   alignment:
     - docs/disciplines/discipline_workflow_state_truth_source.md
   approval:
     - docs/disciplines/discipline_approval_operation.md
     - docs/operations/WORKFLOW_PRECHECK.md#spec-set
+required_inputs:
+  by_stage:
+    review-wave:
+      - id: unresolved_cross_scope_items
+        role: stage_entry_context
+        source_type: carry_forward_register
+        purpose: Read unresolved items carried forward from prior reviews or adjacent scopes before starting this stage.
+        resolver:
+          kind: project_state
+          path: learning/workflow/carry-forward-register/reviewcompass-import.yaml
+        read_policy: unresolved_items_only

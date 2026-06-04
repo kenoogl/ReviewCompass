@@ -721,7 +721,7 @@ requirements.md Req 7 受入 5 に対応。
 | 形式 | `evaluation` 機能の出力（評価結果集約 YAML／JSON）：経路別差分（3 役差分／モード別差分）／severity 集計／`role_diff_report.json`（**A-011 対処済み**：evaluation 設計に新設済み、2026-05-26 セッション 28、topic-112 で陳腐化記述を更新） |
 | 突き合わせ手順 | 1. 本機能の推定 design ／ requirements を確定（§9.2 step 3〜4）／ 2. 既存上流文書との比較で食い違いを列挙（§10）／ 3. evaluation の経路別差分と突き合わせ、severity 集計の整合を確認 |
 | 活用 | 推定段階での妥当性検証（evaluation の集計結果と食い違いの傾向が一致するか）、照合段階での実装コード言及齟齬の追加判定材料 |
-| 波及 | 本接合面の詳細確定は design レビュー波段で evaluation 設計改訂と合わせて実施、`pending-cross-feature-findings.md` に追記 |
+| 波及 | 本接合面の詳細確定は design レビュー波段で evaluation 設計改訂と合わせて実施、carry-forward register に登録 |
 
 ### 14.4 workflow-management との接合面（依存：review）
 
@@ -740,7 +740,7 @@ requirements.md Req 7 受入 5 に対応。
 | 必須フィールド | `feature`／`axis`（**requirements ／ design の 2 値**、topic-111／G-003 対処）／`criterion_id`（criterion-1〜6）／`severity`（4 段）／`finding_id`（CF-NNN）／`correspondence_type`（3 対応関係）／`discrepancy_description`／`implementation_code_refs`／`judgment_id`（JD-NNN） |
 | 任意フィールド | `reference_axis`（intent の参考情報記録専用、§10.5、必須でない）／`target_commit`／`materialization_commit_hash`（規律改訂の影響を伴う場合、§12.3 由来） |
 | 活用先 | `analysis` の 4 出力先（特に監査用報告と報告書向け原データ、`analysis` Requirement 8 受入 5 由来） |
-| 波及 | 本接合面の最終確定は design レビュー波段で analysis 設計と合わせて実施、`pending-cross-feature-findings.md` に追記 |
+| 波及 | 本接合面の最終確定は design レビュー波段で analysis 設計と合わせて実施、carry-forward register に登録 |
 
 ### 14.6 self-improvement との接合面（G10 対処：commit hash 整合）
 
@@ -750,7 +750,7 @@ requirements.md Req 7 受入 5 に対応。
 | 依存方向 | conformance-evaluation → self-improvement（self-improvement が conformance-evaluation の出典を読む、A-008 で確定済み 2026-05-23） |
 | 整合ルール | §12.3 の target_commit／materialization_commit_hash の整合ルールに従う |
 | 注記 | `self-improvement` は本機能の `depends_on` には含まれず、出力先として参照される関係 |
-| 波及 | 本接合面の最終確定は design レビュー波段で self-improvement 設計と合わせて実施、`pending-cross-feature-findings.md` に追記 |
+| 波及 | 本接合面の最終確定は design レビュー波段で self-improvement 設計と合わせて実施、carry-forward register に登録 |
 
 ## 15. 要件追跡表（Requirements Traceability、受入基準単位）
 
@@ -999,12 +999,12 @@ requirements.md の Boundary Context との整合：
 #### 波及（要 他機能設計改訂）
 
 - **A-003（G4 利用者明示承認、本セッション 27 で対処、A-013 として持ち越し → 2026-05-26 セッション 28 で完了）**：信頼度ラベル（high／medium／low）を foundation 語彙体系に追加（foundation 要件 6 受入 11 ＋設計 §3.5）。本機能 §9.5 ／ §14.1 ／ Decision 11 を foundation 参照に書き換え（セッション 28、A-013 対処完了）
-- **F-006 ／ A-008 ／ A-011（G10 利用者明示承認、本セッション 27 で対処）**：evaluation 接合面の突き合わせ詳細／analysis 接合面の機械可読出力スキーマ／self-improvement との commit hash 整合ルール。本機能 design.md §14.3 ／ §14.5 ／ §14.6 ／ §12.3 に詳細記述、`pending-cross-feature-findings.md` に追記、design レビュー波段で各機能側設計と合わせて消化
+- **F-006 ／ A-008 ／ A-011（G10 利用者明示承認、本セッション 27 で対処）**：evaluation 接合面の突き合わせ詳細／analysis 接合面の機械可読出力スキーマ／self-improvement との commit hash 整合ルール。本機能 design.md §14.3 ／ §14.5 ／ §14.6 ／ §12.3 に詳細記述、carry-forward register に登録、design レビュー波段で各機能側設計と合わせて消化
 
 #### 他機能横断の所見（対処済み、topic-112／F-015 で陳腐化記述を更新、2026-05-29 セッション 39）
 
-- **A-011（✅ 対処済み、2026-05-26 セッション 28）**：analysis／evaluation 接合面の `roles/role_diff_report.json` 新設は evaluation 設計に反映済み（正本 `pending-cross-feature-findings.md` 166 行）。本機能の §14.3 ／ §14.5 で参照しており、A-011 消化が本機能の design.alignment の前提だったが、**前提は充足済み**
-- **A-012（✅ 対処済み、2026-05-26 セッション 28）**：self-improvement と workflow-management の時系列契約・完了通知形式（正本 `pending-cross-feature-findings.md` 190 行）。本欄は topic-112／F-015 で陳腐化記述を更新。現時点で本機能の他機能横断の未消化所見はない
+- **A-011（✅ 対処済み、2026-05-26 セッション 28）**：analysis／evaluation 接合面の `roles/role_diff_report.json` 新設は evaluation 設計に反映済み（正本 carry-forward register の `carry-forward-011`）。本機能の §14.3 ／ §14.5 で参照しており、A-011 消化が本機能の design.alignment の前提だったが、**前提は充足済み**
+- **A-012（✅ 対処済み、2026-05-26 セッション 28）**：self-improvement と workflow-management の時系列契約・完了通知形式（正本 carry-forward register の `carry-forward-012`）。本欄は topic-112／F-015 で陳腐化記述を更新。現時点で本機能の他機能横断の未消化所見はない
 
 #### 章番号体系の整合確認（持ち越し）
 
@@ -1037,4 +1037,4 @@ requirements.md の Boundary Context との整合：
 - [x] 3 役レビュー機構の軽量／本格使い分け（§11.2）が明示されている
 - [x] 評価記録の type 値と配置（§12）が確定している（target_commit ／ materialization_commit_hash の整合ルール、A-011 対処）
 - [x] 依存関係の連想配列構造（§13）と確定値が明示されている
-- [x] **遡及／波及所見が §20.1 で明示され、`pending-cross-feature-findings.md` に追記済み**
+- [x] **遡及／波及所見が §20.1 で明示され、carry-forward register に登録済み**

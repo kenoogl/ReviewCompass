@@ -175,4 +175,4 @@ ReviewCompass 固有の追加・変更：
 - 本機能に関連する所見：
   - A-007（self-improvement と workflow-management の権限分散調停、Requirement 1 受入 4 で対処済み、案 2 採用、2026-05-23 利用者承認）
   - A-008（conformance-evaluation から self-improvement への出力方向、conformance-evaluation 側 Boundary Context 修正で対処済み、2026-05-23、本機能側は変更不要だが整合確認済み）
-- 参考：他機能の所見（A-001／A-003／A-004／A-005 とも 2026-05-23 対処済み）の対処履歴は [.reviewcompass/pending-cross-feature-findings.md](../../pending-cross-feature-findings.md) を参照
+- 参考：他機能の所見（A-001／A-003／A-004／A-005 とも 2026-05-23 対処済み）の対処履歴は carry-forward register 正本 [reviewcompass-import.yaml](../../../learning/workflow/carry-forward-register/reviewcompass-import.yaml) を参照

@@ -263,7 +263,7 @@ check-workflow-action.py autonomous-plan-record-integration --ledger <ledger.yam
   - レコードなし、形式不正、消費済み、承認対象外ファイルがある場合：逸脱（exit 2）、commit を遮断推奨
 - **post-write-verification 対象の完了確認**：staged ファイルに post-write-verification 対象が含まれる場合、対象ファイル群と現在 sha256 を覆う completed manifest があることを確認
   - manifest なし、sha256 不一致、coverage matrix 不足、未解決本質的指摘ありの場合：逸脱（exit 2）、commit を遮断推奨
-- **持ち越し所見の確認**：`.reviewcompass/pending-cross-feature-findings.md` を読み、未消化所見の件数を出力
+- **持ち越し所見の確認**：`learning/workflow/carry-forward-register/reviewcompass-import.yaml` を読み、未消化所見の件数を出力
   - 未消化所見が 1 件以上ある場合：警告（exit 1）、commit は可能だが要注意
   - 0 件の場合：OK（exit 0）
 - **対象ファイルの分類**：staged されたファイルを次の 3 群に分類して出力
@@ -473,7 +473,7 @@ tools/
     ├── __init__.py
     ├── spec_loader.py              # spec.json 読み込み
     ├── git_reader.py               # git status／diff 読み込み（subprocess 経由）
-    ├── pending_findings.py         # pending-cross-feature-findings.md 読み込み
+    ├── pending_findings.py         # carry-forward register 読み込み
     ├── judges.py                   # 判定ロジック（spec_set／commit／push）
     ├── output.py                   # 人間可読／JSON 出力の整形
     └── logger.py                   # ログ書き出し
