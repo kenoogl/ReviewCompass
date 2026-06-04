@@ -1,0 +1,27 @@
+approved_by: proxy_model
+finding_id: 2026-06-04-conformance-evaluation-implementation-review-run-claude-sonnet-4-6-primary-006
+cluster_id: CE-IMPL-SF-007
+proxy_model_id: gpt-5.5
+decision_prompt_path: proxy-decision-prompts/CE-IMPL-all.prompt.md
+selected_option: B
+final_label: should-fix
+rationale: 採番境界、--check-partitioning enabled、traceability 双方向整合はいずれもテスト網羅性の不足であり、将来的な退行を見逃すリスクがある。一方で、指摘の中心は既存実装が直ちに中核契約を破壊しているというより、検証の薄さであるため
+  should-fix とする。
+implementation_policy: ComparisonModel インスタンス内で CF-999 から CF-1000 に遷移するケース、--check-partitioning=True
+  の有効化分岐、要件追跡表の requirement→task と task→requirement の双方向整合を確認するテストを追加する。既存 smoke test
+  は双方向不整合を検出できる形に強化する。
+raw_response_path: proxy-decisions/CE-IMPL-all.raw.yaml
+candidate_options:
+- A
+- B
+- C
+source_raw_paths:
+- raw/claude-sonnet-4-6.round-1.txt
+- raw/gemini-3.1-pro-preview.round-1.txt
+rejected_options:
+  A: 'テストギャップは重要だが、現時点の所見は主に網羅性不足であり、ERROR 級の中核契約不一致とは区別する。
+
+    '
+  C: 'tasks に明示された確認観点を含み、放置すると退行検知が弱いままになるため記録のみにはしない。
+
+    '

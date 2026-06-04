@@ -1,0 +1,25 @@
+approved_by: proxy_model
+finding_id: 2026-06-04-conformance-evaluation-implementation-review-run-gpt-5.4-adversarial-004
+cluster_id: CE-IMPL-SF-006
+proxy_model_id: gpt-5.5
+decision_prompt_path: proxy-decision-prompts/CE-IMPL-all.prompt.md
+selected_option: B
+final_label: should-fix
+rationale: 運用文書の §5 が intent/tasks を推定生成対象のように説明している点は、最新 requirements/design との不一致であり、利用者の誤操作やレビュー観点のずれを招く。ただし中核の実装契約や機械ガードを直接破壊する箇所ではないため、triad-review
+  完了の絶対阻害要因ではなく should-fix とする。
+implementation_policy: docs/operations/CONFORMANCE_EVALUATION.md の 2 モード説明を最新 requirements/design
+  に合わせ、intent/tasks を自動推定・生成するかのような表現を削除または修正する。実際に許可される入力、生成対象、手動確認点を明確化し、誤解を招く例があれば差し替える。
+raw_response_path: proxy-decisions/CE-IMPL-all.raw.yaml
+candidate_options:
+- A
+- B
+- C
+source_raw_paths:
+- raw/gpt-5.4.round-1.txt
+rejected_options:
+  A: '重要な文書不整合ではあるが、評価記録 schema や MV ガードのような中核機械契約の破壊ではないため must-fix までは求めない。
+
+    '
+  C: '運用誤解を招く実害があり、近接修正の価値が高いため単なる記録のみにはしない。
+
+    '

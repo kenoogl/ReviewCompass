@@ -1,0 +1,27 @@
+approved_by: proxy_model
+finding_id: 2026-06-04-conformance-evaluation-implementation-review-run-claude-sonnet-4-6-primary-004
+cluster_id: CE-IMPL-MF-003
+proxy_model_id: gpt-5.5
+decision_prompt_path: proxy-decision-prompts/CE-IMPL-all.prompt.md
+selected_option: A
+final_label: must-fix
+rationale: 6 criteria YAML はレビュー基準を機械的に供給する契約ファイルであり、sub_structure 等の欠落は設計契約の不一致に直結する。また
+  DVT-C001 の状態と実ファイル配置の整合も崩れており、成果物の完了判定が曖昧になる。ERROR 所見を含むため must-fix とする。
+implementation_policy: design に定義された criteria YAML スキーマを正とし、6 criteria すべてに必要な sub_structure
+  等のフィールドを追加する。YAML の構造検証テストを追加し、DVT-C001 の状態と実装物の関係が矛盾しないよう tasks 側の記述も実態に合わせて整理する。ただし
+  spec.json のフェーズ遷移や状態更新の承認はこの判断には含めない。
+raw_response_path: proxy-decisions/CE-IMPL-all.raw.yaml
+candidate_options:
+- A
+- B
+- C
+source_raw_paths:
+- raw/claude-sonnet-4-6.round-1.txt
+- raw/gemini-3.1-pro-preview.round-1.txt
+rejected_options:
+  B: 'レビュー基準の機械可読契約が壊れている状態を carry-forward にすると、以後のレビュー入力が不安定になる。
+
+    '
+  C: 'ファイルが存在するだけでは契約充足にならず、schema/設計との不一致があるため leave-as-is は不可。
+
+    '

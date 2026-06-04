@@ -1,6 +1,8 @@
 from pathlib import Path
+import re
 
 import pytest
+import yaml
 
 from tools.conformance_evaluation.check_mode import CheckPipeline
 from tools.conformance_evaluation.comparison_model import ComparisonModel
@@ -76,7 +78,12 @@ def test_t004_check_mode_enforces_two_stage_isolation(tmp_path):
   assert result["intent_policy"] == "reference_only"
   assert result["partitioning_check"] == "standard_disabled"
   assert result["findings"][0]["severity"] == "INFO"
-  assert (tmp_path / ".reviewcompass" / "specs" / "billing" / "conformance" / "2026-06-04-check.md").is_file()
+  record_path = tmp_path / ".reviewcompass" / "specs" / "billing" / "conformance" / "2026-06-04-check.md"
+  assert record_path.is_file()
+  record_text = record_path.read_text(encoding="utf-8")
+  assert "## 食い違い所見" in record_text
+  assert "finding_id: CF-001" in record_text
+  assert "criterion_id: criterion-1" in record_text
   with pytest.raises(ValueError):
     pipeline.run(
       feature="billing",
@@ -87,6 +94,20 @@ def test_t004_check_mode_enforces_two_stage_isolation(tmp_path):
     )
 
 
+def test_t004_check_partitioning_enabled_branch_is_explicit(tmp_path):
+  pipeline = CheckPipeline(tmp_path)
+  result = pipeline.run(
+    feature="billing",
+    implementation_refs=["src/billing.py:1-20"],
+    feature_partitioning="billing boundary",
+    prompt_text="Implementation only. Do not read existing upstream documents.",
+    run_date="2026-06-04",
+    check_partitioning=True,
+  )
+  assert result["partitioning_check"] == "enabled"
+  assert result["partitioning_input"] == "billing boundary"
+
+
 def test_t005_six_criteria_are_two_axis_only():
   assert len(CRITERIA) == 6
   assert {item.axis for item in CRITERIA} == {"requirements", "design"}
@@ -94,6 +115,11 @@ def test_t005_six_criteria_are_two_axis_only():
   assert criterion_by_id("criterion-1").axis == "requirements"
   with pytest.raises(CriteriaError):
     criterion_by_id("intent")
+  data = yaml.safe_load((ROOT / "schemas" / "review-criteria" / "conformance_evaluation.yaml").read_text(encoding="utf-8"))
+  assert len(data["criteria"]) == 6
+  for item in data["criteria"]:
+    assert {"id", "axis", "criterion_short_name", "name", "sub_structure"} <= set(item)
+    assert item["sub_structure"] == ["要点", "詳細抽出", "深掘り", "該当なし"]
 
 
 def test_t006_estimation_runs_design_before_requirements():
@@ -116,12 +142,32 @@ def test_t007_comparison_records_mismatches_and_ids():
   )
   assert finding["finding_id"] == "CF-001"
   assert finding["judgment_id"] == "JD-001"
+  assert finding["finding_type"] == "discrepancy"
+  assert finding["correspondence_type"] == "claim_correspondence"
+  assert finding["existing_text"] == "returns YAML"
+  assert finding["estimated_text"] == "returns JSON"
+  assert len(finding["discrepancy_description"]) >= 30
+  assert finding["implementation_code_refs"] == [
+    {"path": "src/a.py", "lines": "1-2"},
+  ]
   assert finding["mismatch"] is True
   assert finding["mismatch_types"] == ["claim_mismatch"]
   intent = model.intent_difference("existing intent", "inferred intent")
   assert intent["reference_axis"] == "intent"
   assert intent["eligible_for_must_fix"] is False
   assert model.format_next_id("CF", 1000) == "CF-1000"
+  boundary_model = ComparisonModel()
+  boundary_model.finding_counter = 998
+  assert boundary_model.compare_one(
+    criterion_id="criterion-1",
+    existing={"section": "A", "claim": "x", "code_refs": ["src/a.py:1"]},
+    inferred={"section": "B", "claim": "x", "code_refs": ["src/a.py:1"]},
+  )["finding_id"] == "CF-999"
+  assert boundary_model.compare_one(
+    criterion_id="criterion-1",
+    existing={"section": "A", "claim": "x", "code_refs": ["src/a.py:1"]},
+    inferred={"section": "B", "claim": "x", "code_refs": ["src/a.py:1"]},
+  )["finding_id"] == "CF-1000"
 
 
 def test_t008_triad_review_policy_applies_stage_and_intensity():
@@ -153,6 +199,10 @@ def test_t009_evaluation_record_front_matter_and_placement(tmp_path):
   assert "type: conformance_evaluation" in text
   assert "mode_internal: check" in text
   assert "target_commit: abc123" in text
+  assert "materialization_commit_hash:" not in text
+  assert "related_artifacts:" in text
+  assert "self_improvement: def456" in text
+  assert (ROOT / "tools" / "conformance_evaluation" / "schemas" / "evaluation_record.schema.json").is_file()
   with pytest.raises(RecordError):
     model.write_record(
       feature="billing",
@@ -186,7 +236,9 @@ def test_t011_interfaces_do_not_reverse_self_improvement_direction():
   interfaces = Interfaces()
   assert interfaces.self_improvement_direction() == "conformance-evaluation -> self-improvement"
   assert interfaces.foundation_reference_only(["foundation_vocab_ref"])
-  assert interfaces.commit_hashes_are_independent("abc", "abc")
+  assert not interfaces.foundation_reference_only(["not_foundation_but_contains_foundation_word"])
+  assert interfaces.commit_hashes_are_independent("target-a", "materialized-b")
+  assert not interfaces.commit_hashes_are_independent("abc", "abc")
 
 
 def test_t012_machine_verification_mv6_is_blocking(tmp_path):
@@ -194,11 +246,19 @@ def test_t012_machine_verification_mv6_is_blocking(tmp_path):
   ok = verifier.check_prompt_isolation(
     prompt_text="Implementation only. 自律探索禁止: existing upstream docs must not be read.",
     forbidden_paths=["requirements.md", "design.md", "intent.md"],
+    run_id="run-001",
   )
   assert ok.status == VerificationStatus.OK
+  prompt_log = tmp_path / "logs" / "estimation" / "run-001" / "prompt.log"
+  assert prompt_log.is_file()
+  log_text = prompt_log.read_text(encoding="utf-8")
+  assert "run_id: run-001" in log_text
+  assert "prompt_text:" in log_text
+  assert "Implementation only." in log_text
   bad = verifier.check_prompt_isolation(
     prompt_text="Read requirements.md before estimating.",
     forbidden_paths=["requirements.md", "design.md", "intent.md"],
+    run_id="run-002",
   )
   assert bad.status == VerificationStatus.DEVIATION
   assert bad.fail_closed == "blocking"
@@ -208,4 +268,8 @@ def test_t013_traceability_smoke():
   tasks_text = (ROOT / ".reviewcompass" / "specs" / "conformance-evaluation" / "tasks.md").read_text(encoding="utf-8")
   for index in range(1, 14):
     assert f"T-{index:03d}" in tasks_text
+    task_block = re.search(rf"### T-{index:03d}：.*?(?=^### T-|\Z)", tasks_text, re.S | re.M)
+    assert task_block is not None
+    assert "対応要件" in task_block.group(0)
+    assert "テスト要件" in task_block.group(0)
   assert "DVT" in tasks_text

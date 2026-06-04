@@ -1,0 +1,26 @@
+approved_by: proxy_model
+finding_id: 2026-06-04-conformance-evaluation-implementation-review-run-claude-sonnet-4-6-primary-003
+cluster_id: CE-IMPL-MF-002
+proxy_model_id: gpt-5.5
+decision_prompt_path: proxy-decision-prompts/CE-IMPL-all.prompt.md
+selected_option: A
+final_label: must-fix
+rationale: MV-6 は prompt isolation/auditability の機械ガードであり、単純な文字列包含検査だけでは、prompt log
+  の時刻、run_id、全文保存、ログ検査という要件を満たさない。遮断検査が実質的に形骸化しており、ERROR 所見もあるため、review 完了前に修正対象とする。
+implementation_policy: MV-6 の期待契約を明文化したテストを先に追加し、prompt log に run_id、timestamp、完全な
+  prompt 本文、対象入力、検査結果が保存されることを検証する。禁止条項は単一固定文字列のみでなく、設計が要求する最小文言・構造・ログ存在確認を組み合わせて判定する。既存上流文書パス混入検知もログ実体に対して検査する。
+raw_response_path: proxy-decisions/CE-IMPL-all.raw.yaml
+candidate_options:
+- A
+- B
+- C
+source_raw_paths:
+- raw/claude-sonnet-4-6.round-1.txt
+- raw/gpt-5.4.round-1.txt
+rejected_options:
+  B: 'prompt isolation は誤実行や証跡欠落を防ぐ中核ガードであり、後回しにすると不十分な検査で合格記録を生成し得る。
+
+    '
+  C: '仕様上要求された監査可能性を満たしていないため、現状維持は認められない。
+
+    '

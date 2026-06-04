@@ -1,20 +1,31 @@
 criteria:
-  - criterion_id: criterion-1
+  - id: criterion-1
     axis: requirements
-    title: 受け入れ基準と実装の対応
-  - criterion_id: criterion-2
+    criterion_short_name: receive_criteria
+    name: 受け入れ基準と実装の対応
+    sub_structure: [要点, 詳細抽出, 深掘り, 該当なし]
+  - id: criterion-2
     axis: requirements
-    title: API・データ契約と実装の対応
-  - criterion_id: criterion-3
+    criterion_short_name: api_data_contract
+    name: API・データ契約と実装の対応
+    sub_structure: [要点, 詳細抽出, 深掘り, 該当なし]
+  - id: criterion-3
     axis: requirements
-    title: 例外系・境界条件と実装の対応
-  - criterion_id: criterion-4
+    criterion_short_name: boundary_condition
+    name: 例外系・境界条件と実装の対応
+    sub_structure: [要点, 詳細抽出, 深掘り, 該当なし]
+  - id: criterion-4
     axis: design
-    title: モジュール構成・データモデルと実装の対応
-  - criterion_id: criterion-5
+    criterion_short_name: module_data_model
+    name: モジュール構成・データモデルと実装の対応
+    sub_structure: [要点, 詳細抽出, 深掘り, 該当なし]
+  - id: criterion-5
     axis: design
-    title: 接合面と実装の対応
-  - criterion_id: criterion-6
+    criterion_short_name: interface_signature
+    name: 接合面と実装の対応
+    sub_structure: [要点, 詳細抽出, 深掘り, 該当なし]
+  - id: criterion-6
     axis: design
-    title: アルゴリズム・性能達成手段と実装の対応
-
+    criterion_short_name: algorithm_performance
+    name: アルゴリズム・性能達成手段と実装の対応
+    sub_structure: [要点, 詳細抽出, 深掘り, 該当なし]

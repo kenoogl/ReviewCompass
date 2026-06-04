@@ -64,7 +64,7 @@
 ### 文書生成モード（オンボーディング、Requirement 2）
 
 - 既存プロジェクトに ReviewCompass を導入する初回利用
-- 実装コードから intent／requirements／design／tasks の各文書を推定生成
+- 実装コードから requirements／design を自動推定し、feature-partitioning は候補提示、intent は参考情報として人間が補完する。tasks は推定生成対象外
 - 出力は推定版として明示（既存上流文書がある場合は上書きしない）
 - 推定の根拠（実装コードのどの部分から推定したか）を実行記録に保持
 - 推定はあくまで初版、人間が修正する前提

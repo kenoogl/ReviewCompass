@@ -1,0 +1,27 @@
+approved_by: proxy_model
+finding_id: 2026-06-04-conformance-evaluation-implementation-review-run-claude-sonnet-4-6-primary-002
+cluster_id: CE-IMPL-MF-005
+proxy_model_id: gpt-5.5
+decision_prompt_path: proxy-decision-prompts/CE-IMPL-all.prompt.md
+selected_option: A
+final_label: must-fix
+rationale: foundation 参照のみ検査と commit hash 独立性検査は、自己改善方向の逆流防止や境界維持に関わるインターフェース契約である。現状は文字列部分一致や非空チェックに近く、検査として実効性が不足している。複数モデルが同根の弱さを指摘しており、must-fix
+  と判断する。
+implementation_policy: foundation_reference_only() は許可された foundation/metadata_contract
+  参照の形式、参照先、再定義禁止を検査するよう強化する。commit_hashes_are_independent() は単に非空であることではなく、対象ハッシュの由来・フィールド分離・同一値の扱いなど設計上の独立性条件を検査する。悪性ケース、部分一致ケース、同一ハッシュケースを含む
+  TDD テストを追加する。
+raw_response_path: proxy-decisions/CE-IMPL-all.raw.yaml
+candidate_options:
+- A
+- B
+- C
+source_raw_paths:
+- raw/claude-sonnet-4-6.round-1.txt
+- raw/gpt-5.4.round-1.txt
+rejected_options:
+  B: 'インターフェース境界の検査が実質的に機能していないため、後回しにすると誤った合格を許す。
+
+    '
+  C: 'テスト不足だけでなく実装ロジック自体が契約を検証できていないため leave-as-is は不可。
+
+    '

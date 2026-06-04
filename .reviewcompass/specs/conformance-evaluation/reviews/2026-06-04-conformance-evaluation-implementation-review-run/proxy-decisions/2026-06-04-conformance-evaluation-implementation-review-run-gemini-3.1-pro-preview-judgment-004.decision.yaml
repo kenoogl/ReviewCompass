@@ -1,0 +1,27 @@
+approved_by: proxy_model
+finding_id: 2026-06-04-conformance-evaluation-implementation-review-run-gemini-3.1-pro-preview-judgment-004
+cluster_id: CE-IMPL-MF-001
+proxy_model_id: gpt-5.5
+decision_prompt_path: proxy-decision-prompts/CE-IMPL-all.prompt.md
+selected_option: A
+final_label: must-fix
+rationale: 評価記録の front-matter/schema は design/tasks が定める成果物契約そのものであり、materialization_commit_hash
+  の常設、related_records 配列、schema 欠落はいずれも後続の機械検証・監査・証跡参照を壊す可能性が高い。ERROR 所見を含み、複数の観点から同根のデータ契約不一致が示されているため、implementation.triad-review
+  完了前に TDD で修正する必要がある。
+implementation_policy: design/tasks の評価記録契約を正とし、front-matter の必須/任意項目、related_records
+  の構造、schema ファイルの配置と検証テストを揃える。materialization_commit_hash は設計上必要な場合のみ条件付きで扱い、常設項目として固定しない。既存テストは契約不一致を失敗として検出するよう先に追加・更新する。
+raw_response_path: proxy-decisions/CE-IMPL-all.raw.yaml
+candidate_options:
+- A
+- B
+- C
+source_raw_paths:
+- raw/gemini-3.1-pro-preview.round-1.txt
+- raw/gpt-5.4.round-1.txt
+rejected_options:
+  B: 'carry-forward にすると、以後生成される評価記録が不正な契約のまま蓄積され、監査証跡と機械ガードの信頼性を損なうため不適切。
+
+    '
+  C: '単なる記録上の差分ではなく、成果物スキーマと評価記録の互換性に関わるため leave-as-is は不可。
+
+    '

@@ -1,0 +1,23 @@
+status: completed
+target_files:
+  - docs/operations/CONFORMANCE_EVALUATION.md
+target_sha256:
+  docs/operations/CONFORMANCE_EVALUATION.md: 338d1272e86a58f5a52e784d77f70da03d7e4dd55f55949fc1ad6015c002649d
+required_verifiers:
+  - codex-self-check
+completed_verifiers:
+  - codex-self-check
+unresolved_substantive_findings: 0
+verifications:
+  - verifier: codex-self-check
+    target_files:
+      - docs/operations/CONFORMANCE_EVALUATION.md
+    target_sha256:
+      docs/operations/CONFORMANCE_EVALUATION.md: 338d1272e86a58f5a52e784d77f70da03d7e4dd55f55949fc1ad6015c002649d
+    result: completed
+    notes: >
+      Verified that the generation-mode wording now matches the current
+      conformance-evaluation requirements/design contract: requirements and design
+      are automatic estimation targets, feature-partitioning and intent are
+      human-collaboration/reference areas, and tasks are excluded. No unresolved
+      substantive findings.

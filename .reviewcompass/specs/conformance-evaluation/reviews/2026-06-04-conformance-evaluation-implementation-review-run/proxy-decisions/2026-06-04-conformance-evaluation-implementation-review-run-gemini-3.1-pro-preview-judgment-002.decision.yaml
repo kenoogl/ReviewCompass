@@ -1,0 +1,27 @@
+approved_by: proxy_model
+finding_id: 2026-06-04-conformance-evaluation-implementation-review-run-gemini-3.1-pro-preview-judgment-002
+cluster_id: CE-IMPL-MF-004
+proxy_model_id: gpt-5.5
+decision_prompt_path: proxy-decision-prompts/CE-IMPL-all.prompt.md
+selected_option: A
+final_label: must-fix
+rationale: ComparisonModel の finding 構造と CheckPipeline の記録出力は、conformance evaluation
+  の主要成果である差分検出結果の表現契約である。design §10.4/§10.6 と乖離し、さらに検出 findings が Markdown 本文に出力されない場合、レビュー結果を人間・機械の双方が追跡できない。ERROR
+  が複数あり、完了前修正が必要。
+implementation_policy: design §10.4 の finding schema に合わせて ComparisonModel の出力構造を修正し、severity、target、summary、根拠、関連
+  ID 等の必要項目を契約どおり生成する。CheckPipeline は検出 findings を check record の Markdown 本文および必要な
+  front-matter/structured section に出力する。schema 準拠と本文出力の両方を失敗先行テストで確認する。
+raw_response_path: proxy-decisions/CE-IMPL-all.raw.yaml
+candidate_options:
+- A
+- B
+- C
+source_raw_paths:
+- raw/gemini-3.1-pro-preview.round-1.txt
+rejected_options:
+  B: '差分検出結果そのものが記録に残らない、または契約外構造になる問題であり、完了後の持ち越しにはできない。
+
+    '
+  C: '中核出力の欠落・不一致であり、記録のみで済ませる性質ではない。
+
+    '
