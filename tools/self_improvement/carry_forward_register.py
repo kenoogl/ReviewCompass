@@ -232,15 +232,6 @@ def _extract_carry_forward_reason(body: str) -> Optional[str]:
   return None
 
 
-def _legacy_references(section: Mapping[str, str]) -> List[str]:
-  references = []
-  for text in (section.get("title"), section.get("body")):
-    for value in _local_references(text):
-      if value not in references:
-        references.append(value)
-  return references
-
-
 def _extract_evidence_refs(body: str) -> List[Dict[str, str]]:
   refs = []
   for label, path in re.findall(r"\[([^\]]+)\]\(([^)]+)\)", body):
@@ -297,7 +288,6 @@ def parse_pending_markdown(markdown: str) -> Dict[str, object]:
       "project_local_context": {
         "legacy_id": section["legacy_id"],
         "detected_session": _extract_detected_session(section["body"]),
-        "legacy_references": _legacy_references(section),
       },
     }
     items.append(item)

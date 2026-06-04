@@ -106,19 +106,7 @@ def test_t012_general_fields_do_not_keep_local_spec_references():
 
   assert item["finding_summary"] == "ローカル参照"
   assert item["carry_forward_reason"] == "関連仕様の値と時系列契約を整合させる"
-  legacy_references = item["project_local_context"]["legacy_references"]
-  for expected in [
-    "本機能 §12.3",
-    "設計書 判断 7",
-    "runtime Req 6",
-    "受入 2",
-    "foundation Req 6",
-    "受入 10",
-    "T-010",
-    "design.md",
-    "tasks.md",
-  ]:
-    assert expected in legacy_references
+  assert "legacy_references" not in item["project_local_context"]
   assert general_field_local_reference_violations(register) == []
 
 
@@ -133,6 +121,21 @@ def test_t012_generated_import_has_no_local_references_in_general_fields():
   register = yaml.safe_load(path.read_text(encoding="utf-8"))
 
   assert general_field_local_reference_violations(register) == []
+
+
+def test_t012_generated_import_has_no_weak_legacy_reference_lists():
+  path = (
+    CarryForwardRegister.project_root()
+    / "learning"
+    / "workflow"
+    / "carry-forward-register"
+    / "reviewcompass-import.yaml"
+  )
+  register = yaml.safe_load(path.read_text(encoding="utf-8"))
+
+  for item in register["items"]:
+    context = item.get("project_local_context") or {}
+    assert "legacy_references" not in context
 
 
 def test_t012_markdown_source_is_moved_out_of_reviewcompass_root():
