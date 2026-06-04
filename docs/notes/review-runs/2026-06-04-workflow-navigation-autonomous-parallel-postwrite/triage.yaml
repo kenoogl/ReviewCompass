@@ -1,0 +1,26 @@
+run_id: 2026-06-04-workflow-navigation-autonomous-parallel-postwrite
+triage_status: decided
+generated_at: '2026-06-04T11:55:05.166611+00:00'
+decision_actor: null
+decision_actor_type: human
+items:
+- finding_id: 2026-06-04-workflow-navigation-autonomous-parallel-postwrite-gemini-3.5-flash-primary-001
+  run_id: 2026-06-04-workflow-navigation-autonomous-parallel-postwrite
+  source_model: gemini-3.5-flash
+  source_round: round-1
+  source_raw_path: raw/gemini-3.5-flash.round-1.txt
+  source_parsed_path: parsed/gemini-3.5-flash.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: '## 2. 判定結果の共通分岐 の `cross_feature_stage`'
+  plain_language_summary: 自律・並列実行時に、関連する上流機能（feature）で post_write_verification が未完了（pending）である場合の依存ゲート制御ルールが明記されていません。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: codex
+  decision_actor_type: agent
+  decision_at: '2026-06-04T11:55:23.886932+00:00'
+  decision_reason: post_write_verification / post_write_policy_violation は WORKFLOW_NAVIGATION.md
+    の分岐で通常 workflow より優先され、pending 中は cross_feature_stage に到達しない。今回追記した自律・並列依存ゲートは
+    cross_feature_stage 到達後の読取試行ルールであり、post-write pending 優先制御は既存分岐で機械的に担保されているため追加修正しない。
+  applied_files: []
+  superseded_by: null

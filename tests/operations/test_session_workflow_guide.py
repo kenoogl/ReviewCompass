@@ -51,3 +51,25 @@ def test_cross_feature_stage_artifacts_have_canonical_location():
   assert ".reviewcompass/specs/_cross_feature/reviews/" in navigation
   assert "cross_feature_stage_artifacts" in discipline_map
   assert ".reviewcompass/specs/_cross_feature/reviews/{date}-{phase}-{stage}.md" in discipline_map
+
+
+def test_cross_feature_stage_autonomous_parallel_dependency_gate_is_canonical():
+  navigation = (ROOT / "docs" / "operations" / "WORKFLOW_NAVIGATION.md").read_text(encoding="utf-8")
+
+  assert "自律・並列" in navigation
+  assert "`autonomous-plan`" in navigation
+  assert "`recheck_items` と `stages/feature-dependency.yaml`" in navigation
+  assert "読取調査または差分を残さない確認" in navigation
+  assert "新しい依存、暗黙依存、未記録依存" in navigation
+  assert "機能横断段の実施記録" in navigation
+
+
+def test_post_write_verification_command_uses_explicit_api_variant():
+  navigation = (ROOT / "docs" / "operations" / "WORKFLOW_NAVIGATION.md").read_text(encoding="utf-8")
+
+  assert "--variant post_write_verification_google" in navigation
+  post_write_section = navigation.split("### `post_write_verification`", 1)[1].split(
+    "### `post_write_policy_violation`",
+    1,
+  )[0]
+  assert "--variant <post-write-api-variant>" in post_write_section

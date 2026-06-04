@@ -34,6 +34,15 @@ default:
     path: api
     provider: gemini-api
     model: gemini-3.1-pro-preview
+variants:
+  post_write_verification_google:
+    context: post_write_verification
+    variant_type: single_role
+    required_roles: [primary]
+    primary:
+      path: api
+      provider: gemini-api
+      model: gemini-3.5-flash
 """,
     encoding="utf-8",
   )
@@ -157,6 +166,7 @@ def test_run_review_continues_after_one_role_parse_failure(tmp_path, monkeypatch
   ):
     exit_code = main(
       [
+        "--variant", "default",
         "--target", str(target),
         "--phase", "post_write_verification",
         "--criteria", "観点-1",
@@ -177,3 +187,83 @@ def test_run_review_continues_after_one_role_parse_failure(tmp_path, monkeypatch
   assert (review_run_dir / "raw" / "claude-sonnet-4-6.round-1.txt").is_file()
   triage = yaml.safe_load((review_run_dir / "triage.yaml").read_text(encoding="utf-8"))
   assert triage["triage_status"] == "draft"
+
+
+def test_run_review_uses_post_write_default_variant_when_phase_is_post_write(tmp_path, monkeypatch, capsys):
+  """post_write_verification は未指定 variant でも CLI default に落とさない。"""
+  monkeypatch.setenv("GEMINI_API_KEY", "test-key")
+  target = tmp_path / "target.md"
+  target.write_text("レビュー対象\n", encoding="utf-8")
+  config_path = _make_config(tmp_path)
+  review_run_dir = tmp_path / "review-run"
+  responses = {
+    "gemini-api": "findings: []\n",
+  }
+
+  with patch(
+    "tools.api_providers.run_review.get_provider",
+    side_effect=_make_provider_factory(responses),
+  ):
+    exit_code = main(
+      [
+        "--target", str(target),
+        "--phase", "post_write_verification",
+        "--criteria", "観点-1",
+        "--review-run-dir", str(review_run_dir),
+        "--round-id", "round-1",
+        "--config", str(config_path),
+      ]
+    )
+
+  assert exit_code == 0
+  output = capsys.readouterr().out
+  assert "variant: post_write_verification_google" in output
+  assert "gemini-3.5-flash" in output
+  assert "claude-code-cli" not in output
+
+  rounds = yaml.safe_load((review_run_dir / "rounds.yaml").read_text(encoding="utf-8"))
+  assert [item["role"] for item in rounds["model_results"]] == ["primary"]
+
+
+def test_run_review_respects_single_role_variant_required_roles(tmp_path, monkeypatch, capsys):
+  """single_role variant は required_roles に従い primary だけを実行する。"""
+  monkeypatch.setenv("GEMINI_API_KEY", "test-key")
+  target = tmp_path / "target.md"
+  target.write_text("レビュー対象\n", encoding="utf-8")
+  config_path = _make_config(tmp_path)
+  review_run_dir = tmp_path / "review-run"
+  responses = {
+    "gemini-api": """
+findings:
+  - severity: INFO
+    target_location: target.md
+    description: 軽微な確認事項
+    rationale: 補足確認
+""",
+  }
+
+  with patch(
+    "tools.api_providers.run_review.get_provider",
+    side_effect=_make_provider_factory(responses),
+  ):
+    exit_code = main(
+      [
+        "--variant", "post_write_verification_google",
+        "--target", str(target),
+        "--phase", "post_write_verification",
+        "--criteria", "観点-1",
+        "--review-run-dir", str(review_run_dir),
+        "--round-id", "round-1",
+        "--config", str(config_path),
+      ]
+    )
+
+  assert exit_code == 0
+  output = capsys.readouterr().out
+  assert "| primary | api | gemini-api | gemini-3.5-flash |" in output
+  assert "| adversarial |" not in output
+  assert "| judgment |" not in output
+
+  triage = yaml.safe_load((review_run_dir / "triage.yaml").read_text(encoding="utf-8"))
+  assert len(triage["items"]) == 1
+  assert triage["items"][0]["source_model"] == "gemini-3.5-flash"

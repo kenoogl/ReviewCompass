@@ -34,6 +34,7 @@ from tools.api_providers.run_role import (  # noqa: E402
 
 ROLES = ["primary", "adversarial", "judgment"]
 NORMALIZED_SEVERITY = {"CRITICAL", "ERROR", "WARN", "INFO"}
+POST_WRITE_DEFAULT_VARIANT = "post_write_verification_google"
 
 
 def _load_yaml_dict(path: Path) -> Dict[str, Any]:
@@ -220,9 +221,32 @@ def _parse_argv(argv: Optional[List[str]]) -> argparse.Namespace:
   return parser.parse_args(argv)
 
 
-def _run_one_role(args, config: Dict[str, Any], role: str) -> int:
+def _select_variant_name(args) -> Optional[str]:
+  """phase に応じた実効 variant 名を返す。"""
+  if args.variant == "default":
+    return None
+  if args.variant:
+    return args.variant
+  if args.phase == "post_write_verification":
+    return POST_WRITE_DEFAULT_VARIANT
+  return None
+
+
+def _roles_for_variant(variant_config: Dict[str, Any]) -> List[str]:
+  """variant の required_roles があればそれを使い、なければ 3 役を使う。"""
+  required_roles = variant_config.get("required_roles")
+  if isinstance(required_roles, list) and required_roles:
+    return [role for role in required_roles if isinstance(role, str)]
+  return list(ROLES)
+
+
+def _run_one_role(
+  args,
+  config: Dict[str, Any],
+  variant_name: Optional[str],
+  role: str,
+) -> int:
   """1 role を実行して review-run 成果物へ反映する。"""
-  variant_name = None if args.variant == "default" else args.variant
   variant_config = resolve_variant(config, variant_name)
   role_config = resolve_role(variant_config, role)
   connection_defaults = config.get("connection", {})
@@ -301,13 +325,19 @@ def main(argv: Optional[List[str]] = None) -> int:
   exit_code = 0
   try:
     config = load_config(args.config)
-    for role in ROLES:
-      role_exit_code = _run_one_role(args, config, role)
+    variant_name = _select_variant_name(args)
+    variant_config = resolve_variant(config, variant_name)
+    roles = _roles_for_variant(variant_config)
+    for role in roles:
+      role_exit_code = _run_one_role(args, config, variant_name, role)
       if role_exit_code != 0:
         exit_code = 1
     initialize_triage_draft(args.review_run_dir)
-    variant_name = args.variant or "default"
-    summary_markdown = write_review_summary_markdown(args.review_run_dir, variant_name)
+    summary_variant_name = variant_name or "default"
+    summary_markdown = write_review_summary_markdown(
+      args.review_run_dir,
+      summary_variant_name,
+    )
     sys.stdout.write(summary_markdown)
     return exit_code
   except Exception as exc:

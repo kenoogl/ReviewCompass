@@ -1,0 +1,11 @@
+role: primary
+provider: gemini-api
+model: gemini-3.5-flash
+attempts: 1
+duration_seconds: 12.586
+findings:
+- severity: WARN
+  target_location: '## 2. 判定結果の共通分岐 の `cross_feature_stage`'
+  description: 自律・並列実行時に、関連する上流機能（feature）で post_write_verification が未完了（pending）である場合の依存ゲート制御ルールが明記されていません。
+  rationale: 上流機能の post_write_verification が未完了のまま、下流の並列タスクや機能横断段（cross_feature_stage）の処理を進めると、検証不十分な変更に基づいて検証や統合が行われ、手戻りや不整合が生じる原因になります。依存する上流の
+    post_write_verification がすべて承認されるまで進行をブロックする明確なゲート条件を定義する必要があります。

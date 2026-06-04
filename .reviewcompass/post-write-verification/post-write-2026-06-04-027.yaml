@@ -1,0 +1,48 @@
+status: completed
+target_files:
+- .reviewcompass/specs/_cross_feature/reviews/2026-06-04-implementation-review-wave.md
+- docs/notes/review-runs/2026-06-04-workflow-navigation-autonomous-parallel-postwrite/model-result-summary.yaml
+- docs/notes/review-runs/2026-06-04-workflow-navigation-autonomous-parallel-postwrite/parsed/gemini-3.5-flash.round-1.yaml
+- docs/notes/review-runs/2026-06-04-workflow-navigation-autonomous-parallel-postwrite/raw/gemini-3.5-flash.round-1.txt
+- docs/notes/review-runs/2026-06-04-workflow-navigation-autonomous-parallel-postwrite/rounds.yaml
+- docs/notes/review-runs/2026-06-04-workflow-navigation-autonomous-parallel-postwrite/target-manifest.yaml
+- docs/notes/review-runs/2026-06-04-workflow-navigation-autonomous-parallel-postwrite/triage.yaml
+- docs/operations/WORKFLOW_NAVIGATION.md
+target_sha256:
+  .reviewcompass/specs/_cross_feature/reviews/2026-06-04-implementation-review-wave.md: a8bc91e90a938a84f2effb33250f1aa3cf45dfa597807c3d28ec88a6fbc74edc
+  docs/notes/review-runs/2026-06-04-workflow-navigation-autonomous-parallel-postwrite/model-result-summary.yaml: 4c896ca277294f7575a78105ed06f03e1e5857ef64a92f51700c1a0b7fc75d95
+  docs/notes/review-runs/2026-06-04-workflow-navigation-autonomous-parallel-postwrite/parsed/gemini-3.5-flash.round-1.yaml: 38cc7207813e354b9e65d8f7c6b4a9067fcd40579bfc8fb1c0d8ca1838c58cb7
+  docs/notes/review-runs/2026-06-04-workflow-navigation-autonomous-parallel-postwrite/raw/gemini-3.5-flash.round-1.txt: 95795284dde362ffc258dd8235fd1190bf58f58266e11ccb2590e581ae00dffc
+  docs/notes/review-runs/2026-06-04-workflow-navigation-autonomous-parallel-postwrite/rounds.yaml: 96829b103bcd415799e184f92d2737f15e2c41855acebb12e679cacf9c44b00e
+  docs/notes/review-runs/2026-06-04-workflow-navigation-autonomous-parallel-postwrite/target-manifest.yaml: 6e21f091ab7ca835fa59e25d62e3b068dc4afc226ef495358827203994254773
+  docs/notes/review-runs/2026-06-04-workflow-navigation-autonomous-parallel-postwrite/triage.yaml: 5b8bd2d5c5f742d348700444e06eb8bdebf34b65a227fbf48f763618d7e4e2b1
+  docs/operations/WORKFLOW_NAVIGATION.md: 59a9e9941dfecd4be672b78a8991b55bba889e9c55d89568e72f0b5005b7ac3e
+required_verifiers: &id001
+- gemini-3.5-flash
+completed_verifiers: *id001
+unresolved_substantive_findings: 0
+verifications:
+- verifier: gemini-3.5-flash
+  target_files:
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-04-implementation-review-wave.md
+  - docs/notes/review-runs/2026-06-04-workflow-navigation-autonomous-parallel-postwrite/model-result-summary.yaml
+  - docs/notes/review-runs/2026-06-04-workflow-navigation-autonomous-parallel-postwrite/parsed/gemini-3.5-flash.round-1.yaml
+  - docs/notes/review-runs/2026-06-04-workflow-navigation-autonomous-parallel-postwrite/raw/gemini-3.5-flash.round-1.txt
+  - docs/notes/review-runs/2026-06-04-workflow-navigation-autonomous-parallel-postwrite/rounds.yaml
+  - docs/notes/review-runs/2026-06-04-workflow-navigation-autonomous-parallel-postwrite/target-manifest.yaml
+  - docs/notes/review-runs/2026-06-04-workflow-navigation-autonomous-parallel-postwrite/triage.yaml
+  - docs/operations/WORKFLOW_NAVIGATION.md
+  target_sha256:
+    .reviewcompass/specs/_cross_feature/reviews/2026-06-04-implementation-review-wave.md: a8bc91e90a938a84f2effb33250f1aa3cf45dfa597807c3d28ec88a6fbc74edc
+    docs/notes/review-runs/2026-06-04-workflow-navigation-autonomous-parallel-postwrite/model-result-summary.yaml: 4c896ca277294f7575a78105ed06f03e1e5857ef64a92f51700c1a0b7fc75d95
+    docs/notes/review-runs/2026-06-04-workflow-navigation-autonomous-parallel-postwrite/parsed/gemini-3.5-flash.round-1.yaml: 38cc7207813e354b9e65d8f7c6b4a9067fcd40579bfc8fb1c0d8ca1838c58cb7
+    docs/notes/review-runs/2026-06-04-workflow-navigation-autonomous-parallel-postwrite/raw/gemini-3.5-flash.round-1.txt: 95795284dde362ffc258dd8235fd1190bf58f58266e11ccb2590e581ae00dffc
+    docs/notes/review-runs/2026-06-04-workflow-navigation-autonomous-parallel-postwrite/rounds.yaml: 96829b103bcd415799e184f92d2737f15e2c41855acebb12e679cacf9c44b00e
+    docs/notes/review-runs/2026-06-04-workflow-navigation-autonomous-parallel-postwrite/target-manifest.yaml: 6e21f091ab7ca835fa59e25d62e3b068dc4afc226ef495358827203994254773
+    docs/notes/review-runs/2026-06-04-workflow-navigation-autonomous-parallel-postwrite/triage.yaml: 5b8bd2d5c5f742d348700444e06eb8bdebf34b65a227fbf48f763618d7e4e2b1
+    docs/operations/WORKFLOW_NAVIGATION.md: 59a9e9941dfecd4be672b78a8991b55bba889e9c55d89568e72f0b5005b7ac3e
+review_run:
+  path: docs/notes/review-runs/2026-06-04-workflow-navigation-autonomous-parallel-postwrite
+  summary_path: docs/notes/review-runs/2026-06-04-workflow-navigation-autonomous-parallel-postwrite/model-result-summary.yaml
+notes: Generated template; verify target_files cover current post-write targets before
+  use.

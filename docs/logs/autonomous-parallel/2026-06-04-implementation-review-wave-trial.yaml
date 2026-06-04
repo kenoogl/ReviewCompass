@@ -1,0 +1,69 @@
+run_id: 2026-06-04-implementation-review-wave-trial
+mode: autonomous_parallel
+verdict: OK
+exit_code: 0
+reasons: []
+task_ids:
+- foundation-recheck-read
+- runtime-implementation-read
+- evaluation-implementation-read
+- analysis-implementation-read
+- workflow-management-implementation-read
+- self-improvement-implementation-read
+- conformance-evaluation-implementation-read
+authorization:
+  approved_by: user
+  approval_record_path: docs/logs/autonomous-parallel/2026-06-04-implementation-review-wave-trial.plan.yaml
+  summary_presented_to_user: true
+  triage_presented_to_user: true
+history:
+  ledger_path: docs/logs/autonomous-parallel/2026-06-04-implementation-review-wave-trial.yaml
+  record_task_assignments: true
+  record_decision_basis: true
+  record_integration_result: true
+  retention: preserve
+integration_gate:
+  requires_main_session_review: true
+  requires_diff_scope_check: true
+  requires_tests: true
+  requires_decision_basis_review: true
+outputs_policy:
+  implementation_diff: commit_candidate
+  verification_summary: required
+  decision_basis: preserve_if_used
+  work_noise: exclude
+current_state:
+  mode: autonomous_parallel
+  run_id: 2026-06-04-implementation-review-wave-trial
+  task_count: 7
+  parallel_task_count: 3
+  checked_gates:
+  - requires_main_session_review
+  - requires_diff_scope_check
+  - requires_tests
+  - requires_decision_basis_review
+  history_ledger_path: docs/logs/autonomous-parallel/2026-06-04-implementation-review-wave-trial.yaml
+  execution_evidence:
+    review_run_dir: null
+    required_raw_paths: &id001 []
+    triage_path: null
+    human_required_count: 0
+    completed_tasks: &id002
+    - plan_created
+    parallelized_operations: &id003
+    - independent read-only evidence collection
+  plan_path: docs/logs/autonomous-parallel/2026-06-04-implementation-review-wave-trial.plan.yaml
+execution_evidence_snapshot:
+  review_run_dir: null
+  required_raw_paths: *id001
+  triage_path: null
+  human_required_count: 0
+  completed_tasks: *id002
+  parallelized_operations: *id003
+integration_result:
+  status: blocked
+  tests: autonomous-plan OK; read-only evidence collection; no pytest because no implementation
+    diff
+  decision: 'implementation.review-wave trial blocked: workflow-management triage
+    has 11 draft items, evaluation evidence is outside feature review namespace, and
+    foundation implementation recheck remains pending'

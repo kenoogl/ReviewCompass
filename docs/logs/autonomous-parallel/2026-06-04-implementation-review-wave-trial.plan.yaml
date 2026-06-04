@@ -1,0 +1,177 @@
+mode: autonomous_parallel
+run_id: 2026-06-04-implementation-review-wave-trial
+authorization:
+  approved_by: user
+  approval_record_path: docs/logs/autonomous-parallel/2026-06-04-implementation-review-wave-trial.plan.yaml
+  summary_presented_to_user: true
+  triage_presented_to_user: true
+tasks:
+  - task_id: foundation-recheck-read
+    source_finding_ids:
+      - next-json-recheck-foundation-implementation
+    assignee:
+      kind: main_session
+      worktree_policy: same_worktree
+    allowed_paths:
+      - .reviewcompass/specs/foundation/
+      - runtime/foundation/
+    forbidden_paths:
+      - .git/
+    depends_on: []
+    expected_tests:
+      - read-only evidence collection; no repository diff
+    stop_conditions:
+      - important_decision_requires_approval
+      - new_or_implicit_dependency_found
+      - upstream_recheck_requires_downstream_change
+    writes_repo_diff: false
+    output_only: true
+  - task_id: runtime-implementation-read
+    source_finding_ids:
+      - implementation-review-wave-runtime
+    assignee:
+      kind: main_session
+      worktree_policy: same_worktree
+    allowed_paths:
+      - .reviewcompass/specs/runtime/
+      - runtime/reviewcompass_runtime/
+    forbidden_paths:
+      - .git/
+    depends_on:
+      - foundation-recheck-read
+    expected_tests:
+      - read-only evidence collection; no repository diff
+    stop_conditions:
+      - important_decision_requires_approval
+      - new_or_implicit_dependency_found
+    writes_repo_diff: false
+    output_only: true
+  - task_id: evaluation-implementation-read
+    source_finding_ids:
+      - implementation-review-wave-evaluation
+    assignee:
+      kind: main_session
+      worktree_policy: same_worktree
+    allowed_paths:
+      - .reviewcompass/specs/evaluation/
+      - evaluation/
+    forbidden_paths:
+      - .git/
+    depends_on:
+      - foundation-recheck-read
+    expected_tests:
+      - read-only evidence collection; no repository diff
+    stop_conditions:
+      - important_decision_requires_approval
+      - new_or_implicit_dependency_found
+    writes_repo_diff: false
+    output_only: true
+  - task_id: analysis-implementation-read
+    source_finding_ids:
+      - implementation-review-wave-analysis
+    assignee:
+      kind: main_session
+      worktree_policy: same_worktree
+    allowed_paths:
+      - .reviewcompass/specs/analysis/
+      - analysis/
+    forbidden_paths:
+      - .git/
+    depends_on:
+      - foundation-recheck-read
+      - evaluation-implementation-read
+    expected_tests:
+      - read-only evidence collection; no repository diff
+    stop_conditions:
+      - important_decision_requires_approval
+      - new_or_implicit_dependency_found
+    writes_repo_diff: false
+    output_only: true
+  - task_id: workflow-management-implementation-read
+    source_finding_ids:
+      - implementation-review-wave-workflow-management
+    assignee:
+      kind: main_session
+      worktree_policy: same_worktree
+    allowed_paths:
+      - .reviewcompass/specs/workflow-management/
+      - tools/check-workflow-action.py
+      - docs/operations/
+      - stages/
+    forbidden_paths:
+      - .git/
+    depends_on: []
+    expected_tests:
+      - read-only evidence collection; no repository diff
+    stop_conditions:
+      - important_decision_requires_approval
+      - new_or_implicit_dependency_found
+    writes_repo_diff: false
+    output_only: true
+  - task_id: self-improvement-implementation-read
+    source_finding_ids:
+      - implementation-review-wave-self-improvement
+    assignee:
+      kind: main_session
+      worktree_policy: same_worktree
+    allowed_paths:
+      - .reviewcompass/specs/self-improvement/
+      - docs/disciplines/
+      - learning/workflow/
+    forbidden_paths:
+      - .git/
+    depends_on: []
+    expected_tests:
+      - read-only evidence collection; no repository diff
+    stop_conditions:
+      - important_decision_requires_approval
+      - new_or_implicit_dependency_found
+    writes_repo_diff: false
+    output_only: true
+  - task_id: conformance-evaluation-implementation-read
+    source_finding_ids:
+      - implementation-review-wave-conformance-evaluation
+    assignee:
+      kind: main_session
+      worktree_policy: same_worktree
+    allowed_paths:
+      - .reviewcompass/specs/conformance-evaluation/
+      - tools/conformance_evaluation/
+      - tests/conformance-evaluation/
+      - schemas/review-criteria/
+    forbidden_paths:
+      - .git/
+    depends_on:
+      - foundation-recheck-read
+      - runtime-implementation-read
+      - evaluation-implementation-read
+      - workflow-management-implementation-read
+    expected_tests:
+      - read-only evidence collection; no repository diff
+    stop_conditions:
+      - important_decision_requires_approval
+      - new_or_implicit_dependency_found
+    writes_repo_diff: false
+    output_only: true
+execution_evidence:
+  completed_tasks:
+    - plan_created
+  parallelized_operations:
+    - independent read-only evidence collection
+  human_required_count: 0
+integration_gate:
+  requires_main_session_review: true
+  requires_diff_scope_check: true
+  requires_tests: true
+  requires_decision_basis_review: true
+history:
+  ledger_path: docs/logs/autonomous-parallel/2026-06-04-implementation-review-wave-trial.yaml
+  record_task_assignments: true
+  record_decision_basis: true
+  record_integration_result: true
+  retention: preserve
+outputs_policy:
+  implementation_diff: commit_candidate
+  verification_summary: required
+  decision_basis: preserve_if_used
+  work_noise: exclude

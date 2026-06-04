@@ -1,0 +1,4 @@
+run_id: 2026-06-04-workflow-navigation-autonomous-parallel-postwrite
+target_files:
+- path: docs/operations/WORKFLOW_NAVIGATION.md
+  sha256: bccd71b79e0d59fceab2264f1cf933dc7cd372183a002b0c7c0131c84b560e4e
