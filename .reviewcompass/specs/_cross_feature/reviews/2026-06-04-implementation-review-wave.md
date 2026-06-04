@@ -104,6 +104,32 @@ The autonomous parallel trial was useful but did not produce a completion-ready 
 - Failed or incomplete part: the current workflow state cannot safely advance to `implementation.review-wave=true` for all features.
 - Integration result: blocked.
 
+## Continuation: 2026-06-04
+
+The continuation rechecked the three blockers from the initial trial.
+
+### Recheck Results
+
+| Finding | Previous status | Continuation result | Current status |
+| --- | --- | --- | --- |
+| RW-IMPL-001 | workflow-management triage had 11 draft item decisions | Normalized the 11 non-`human_required` draft items to `decision_status: decided` while preserving their final labels. `list-pending` was empty before the normalization, and the important must-fix findings had proxy-model approval plus implementation evidence. | resolved |
+| RW-IMPL-002 | evaluation review evidence lived only under `docs/notes/review-runs/` | Added `.reviewcompass/specs/evaluation/reviews/2026-06-03-implementation-triad-review.md` as a feature-local pointer to the three API review-run evidence directories. All three observed `triage.yaml` files are `triage_status: decided` and all items are decided. | resolved |
+| RW-IMPL-003 | foundation `recheck.upstream_change_pending: true` impacts `implementation` | Downstream implementation review evidence exists after the foundation recheck window: runtime 2026-06-02, evaluation 2026-06-03, analysis 2026-06-03/04, workflow-management 2026-06-04, self-improvement 2026-06-04, conformance-evaluation 2026-06-04. User approved clearing the recheck flag, and `.reviewcompass/specs/foundation/spec.json` now has `recheck.upstream_change_pending: false` and `recheck.impacted_downstream_phases: []`. | resolved |
+
+### Current Review-Wave Readiness
+
+| Gate | Result | Evidence |
+| --- | --- | --- |
+| Feature coverage | pass | 7 / 7 features have implementation drafting and triad-review true in workflow_state. |
+| Carry-forward unresolved count | pass | `next --json` reported `unresolved_cross_scope_items.unresolved_count: 0`. |
+| Cross-feature dependency input | pass | `foundation` recheck evidence has been collected and the spec recheck flag has been cleared with user approval. |
+| Review evidence traceability | pass | Every feature has implementation review evidence under `.reviewcompass/specs/<feature>/reviews/` or a feature-local pointer to API review-run evidence. |
+| Triage completeness | pass | Observed implementation review triage files have no `human_required` items and no remaining `decision_status: draft` items in the previously blocking workflow-management triage. |
+
+### Remaining State Update
+
+The review-wave blockers found in this artifact are resolved. The next candidate irreversible update is setting `implementation.review-wave=true` for all seven features. That phase-state update requires the normal `spec-set` precheck and explicit human approval.
+
 ## Candidate Documentation Lessons
 
 If this operating pattern is later documented, the useful pieces are:

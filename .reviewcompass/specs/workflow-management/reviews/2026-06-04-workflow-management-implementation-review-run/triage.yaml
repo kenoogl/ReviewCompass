@@ -155,13 +155,15 @@ items:
     implements sha256 comparison for manifests; the same pattern should be applied
     to raw files in rounds.yaml.
   final_label: should-fix
-  decision_status: draft
-  decision_actor: main_session_llm_draft
-  decision_actor_type: llm_draft
-  decision_at: '2026-06-04T01:29:24.198142+00:00'
+  decision_status: decided
+  decision_actor: main_session_llm
+  decision_actor_type: agent
+  decision_at: '2026-06-04T12:20:02.364023+00:00'
   important_gate_required: false
   applied_files: []
   superseded_by: null
+  decision_reason: 重要 must-fix は proxy_model 承認後に実装済みで、list-pending は空。残件は非 human_required
+    の改善候補として final_label=should-fix を維持し、review-wave 完了判定のため draft 状態だけを正規化する。
 - finding_id: 2026-06-04-workflow-management-implementation-review-run-claude-sonnet-4-6-primary-006
   run_id: 2026-06-04-workflow-management-implementation-review-run
   source_model: claude-sonnet-4-6
@@ -188,13 +190,15 @@ items:
     logic is conservative in a safe direction but the comment and current_state.parallel_task_count
     field are misleading since they undercount parallel candidates.
   final_label: should-fix
-  decision_status: draft
-  decision_actor: main_session_llm_draft
-  decision_actor_type: llm_draft
-  decision_at: '2026-06-04T01:29:24.198142+00:00'
+  decision_status: decided
+  decision_actor: main_session_llm
+  decision_actor_type: agent
+  decision_at: '2026-06-04T12:20:02.428311+00:00'
   important_gate_required: false
   applied_files: []
   superseded_by: null
+  decision_reason: 重要 must-fix は proxy_model 承認後に実装済みで、list-pending は空。残件は非 human_required
+    の改善候補として final_label=should-fix を維持し、review-wave 完了判定のため draft 状態だけを正規化する。
 - finding_id: 2026-06-04-workflow-management-implementation-review-run-claude-sonnet-4-6-primary-007
   run_id: 2026-06-04-workflow-management-implementation-review-run
   source_model: claude-sonnet-4-6
@@ -217,13 +221,15 @@ items:
     spec.json state is internally inconsistent: reopened phases are marked approved
     without evidence that the reopen procedure completed through all four processes.'
   final_label: should-fix
-  decision_status: draft
-  decision_actor: main_session_llm_draft
-  decision_actor_type: llm_draft
-  decision_at: '2026-06-04T01:29:24.198142+00:00'
+  decision_status: decided
+  decision_actor: main_session_llm
+  decision_actor_type: agent
+  decision_at: '2026-06-04T12:20:02.488787+00:00'
   important_gate_required: false
   applied_files: []
   superseded_by: null
+  decision_reason: 重要 must-fix は proxy_model 承認後に実装済みで、list-pending は空。残件は非 human_required
+    の改善候補として final_label=should-fix を維持し、review-wave 完了判定のため draft 状態だけを正規化する。
 - finding_id: 2026-06-04-workflow-management-implementation-review-run-claude-sonnet-4-6-primary-008
   run_id: 2026-06-04-workflow-management-implementation-review-run
   source_model: claude-sonnet-4-6
@@ -248,13 +254,15 @@ items:
     be fixed before the commit is allowed. The JSON output exposes both via current_state_dict,
     but the human-readable path does not.
   final_label: should-fix
-  decision_status: draft
-  decision_actor: main_session_llm_draft
-  decision_actor_type: llm_draft
-  decision_at: '2026-06-04T01:29:24.198142+00:00'
+  decision_status: decided
+  decision_actor: main_session_llm
+  decision_actor_type: agent
+  decision_at: '2026-06-04T12:20:02.548649+00:00'
   important_gate_required: false
   applied_files: []
   superseded_by: null
+  decision_reason: 重要 must-fix は proxy_model 承認後に実装済みで、list-pending は空。残件は非 human_required
+    の改善候補として final_label=should-fix を維持し、review-wave 完了判定のため draft 状態だけを正規化する。
 - finding_id: 2026-06-04-workflow-management-implementation-review-run-claude-sonnet-4-6-primary-009
   run_id: 2026-06-04-workflow-management-implementation-review-run
   source_model: claude-sonnet-4-6
@@ -274,13 +282,15 @@ items:
     Combinatorial coverage for co-occurring deviations is necessary to confirm fail-closed
     behaviour is not short-circuited when multiple guards fire simultaneously.
   final_label: should-fix
-  decision_status: draft
-  decision_actor: main_session_llm_draft
-  decision_actor_type: llm_draft
-  decision_at: '2026-06-04T01:29:24.198142+00:00'
+  decision_status: decided
+  decision_actor: main_session_llm
+  decision_actor_type: agent
+  decision_at: '2026-06-04T12:20:02.608659+00:00'
   important_gate_required: false
   applied_files: []
   superseded_by: null
+  decision_reason: 重要 must-fix は proxy_model 承認後に実装済みで、list-pending は空。残件は非 human_required
+    の改善候補として final_label=should-fix を維持し、review-wave 完了判定のため draft 状態だけを正規化する。
 - finding_id: 2026-06-04-workflow-management-implementation-review-run-claude-sonnet-4-6-primary-010
   run_id: 2026-06-04-workflow-management-implementation-review-run
   source_model: claude-sonnet-4-6
@@ -302,13 +312,15 @@ items:
     risk. It is consistent with the WARN finding above about parallel task detection
     logic.
   final_label: leave-as-is
-  decision_status: draft
-  decision_actor: main_session_llm_draft
-  decision_actor_type: llm_draft
-  decision_at: '2026-06-04T01:29:24.198142+00:00'
+  decision_status: decided
+  decision_actor: main_session_llm
+  decision_actor_type: agent
+  decision_at: '2026-06-04T12:20:02.669112+00:00'
   important_gate_required: false
   applied_files: []
   superseded_by: null
+  decision_reason: 重要件ではなく修正不要の記録対象。final_label=leave-as-is を維持し、review-wave 完了判定のため
+    draft 状態だけを正規化する。
 - finding_id: 2026-06-04-workflow-management-implementation-review-run-claude-sonnet-4-6-primary-011
   run_id: 2026-06-04-workflow-management-implementation-review-run
   source_model: claude-sonnet-4-6
@@ -333,13 +345,15 @@ items:
     the field exists, so the gate passes today, but the reference creates a traceability
     gap for audit purposes.
   final_label: leave-as-is
-  decision_status: draft
-  decision_actor: main_session_llm_draft
-  decision_actor_type: llm_draft
-  decision_at: '2026-06-04T01:29:24.198142+00:00'
+  decision_status: decided
+  decision_actor: main_session_llm
+  decision_actor_type: agent
+  decision_at: '2026-06-04T12:20:02.730653+00:00'
   important_gate_required: false
   applied_files: []
   superseded_by: null
+  decision_reason: 重要件ではなく修正不要の記録対象。final_label=leave-as-is を維持し、review-wave 完了判定のため
+    draft 状態だけを正規化する。
 - finding_id: 2026-06-04-workflow-management-implementation-review-run-gpt-5.4-adversarial-001
   run_id: 2026-06-04-workflow-management-implementation-review-run
   source_model: gpt-5.4
@@ -435,13 +449,15 @@ items:
     は `summary_presented_to_user` / `triage_presented_to_user` の真偽や task メタ情報しか見ず、review-run
     ディレクトリ、raw/triage/proxy evidence への参照整合を全く確認しないため、重要証跡欠落を機械的に見逃す。
   final_label: should-fix
-  decision_status: draft
-  decision_actor: main_session_llm_draft
-  decision_actor_type: llm_draft
-  decision_at: '2026-06-04T01:29:24.198142+00:00'
+  decision_status: decided
+  decision_actor: main_session_llm
+  decision_actor_type: agent
+  decision_at: '2026-06-04T12:20:02.791676+00:00'
   important_gate_required: false
   applied_files: []
   superseded_by: null
+  decision_reason: 重要 must-fix は proxy_model 承認後に実装済みで、list-pending は空。残件は非 human_required
+    の改善候補として final_label=should-fix を維持し、review-wave 完了判定のため draft 状態だけを正規化する。
 - finding_id: 2026-06-04-workflow-management-implementation-review-run-gpt-5.4-adversarial-005
   run_id: 2026-06-04-workflow-management-implementation-review-run
   source_model: gpt-5.4
@@ -458,13 +474,15 @@ items:
     と `reviewer` を必須化している。design.md でも front-matter 必須フィールドと異名条件を明記しているが、本準備メモには `author`
     はある一方 `reviewer` がなく、起草者と判定者の分離・監査可能性が不足する。準備メモをレビュー証跡として扱うなら契約違反であり、扱わないなら対象外を明記すべき。
   final_label: should-fix
-  decision_status: draft
-  decision_actor: main_session_llm_draft
-  decision_actor_type: llm_draft
-  decision_at: '2026-06-04T01:29:24.198142+00:00'
+  decision_status: decided
+  decision_actor: main_session_llm
+  decision_actor_type: agent
+  decision_at: '2026-06-04T12:20:02.852844+00:00'
   important_gate_required: false
   applied_files: []
   superseded_by: null
+  decision_reason: 重要 must-fix は proxy_model 承認後に実装済みで、list-pending は空。残件は非 human_required
+    の改善候補として final_label=should-fix を維持し、review-wave 完了判定のため draft 状態だけを正規化する。
 - finding_id: 2026-06-04-workflow-management-implementation-review-run-gpt-5.4-adversarial-006
   run_id: 2026-06-04-workflow-management-implementation-review-run
   source_model: gpt-5.4
@@ -484,13 +502,15 @@ items:
     もなく、history フラグだけで監査可能と扱われているため、『後から履歴を確認できるようにする』という implementation-drafting.md
     の目的を十分満たしていない。
   final_label: should-fix
-  decision_status: draft
-  decision_actor: main_session_llm_draft
-  decision_actor_type: llm_draft
-  decision_at: '2026-06-04T01:29:24.198142+00:00'
+  decision_status: decided
+  decision_actor: main_session_llm
+  decision_actor_type: agent
+  decision_at: '2026-06-04T12:20:02.914125+00:00'
   important_gate_required: false
   applied_files: []
   superseded_by: null
+  decision_reason: 重要 must-fix は proxy_model 承認後に実装済みで、list-pending は空。残件は非 human_required
+    の改善候補として final_label=should-fix を維持し、review-wave 完了判定のため draft 状態だけを正規化する。
 - finding_id: 2026-06-04-workflow-management-implementation-review-run-gemini-3.1-pro-preview-judgment-001
   run_id: 2026-06-04-workflow-management-implementation-review-run
   source_model: gemini-3.1-pro-preview
@@ -591,11 +611,13 @@ items:
     flag these contextually important items allows them to bypass the requirement
     for approval during the initial decide_item triage phase.
   final_label: should-fix
-  decision_status: draft
-  decision_actor: main_session_llm_draft
-  decision_actor_type: llm_draft
-  decision_at: '2026-06-04T01:29:24.198142+00:00'
+  decision_status: decided
+  decision_actor: main_session_llm
+  decision_actor_type: agent
+  decision_at: '2026-06-04T12:20:02.975603+00:00'
   important_gate_required: false
   applied_files: []
   superseded_by: null
+  decision_reason: 重要 must-fix は proxy_model 承認後に実装済みで、list-pending は空。残件は非 human_required
+    の改善候補として final_label=should-fix を維持し、review-wave 完了判定のため draft 状態だけを正規化する。
 updated_at: '2026-06-04T01:54:26.988276+00:00'
