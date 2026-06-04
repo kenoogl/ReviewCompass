@@ -1,0 +1,39 @@
+# next_action ごとの直前必読規律マップ。
+# `tools/check-workflow-action.py next --json` はこの内容を
+# `next_action.required_disciplines` として返す。
+default:
+  - docs/operations/WORKFLOW_NAVIGATION.md
+by_kind:
+  stage:
+    - docs/disciplines/discipline_workflow_state_truth_source.md
+  cross_feature_stage:
+    - docs/disciplines/discipline_workflow_state_truth_source.md
+    - .reviewcompass/pending-cross-feature-findings.md
+  post_write_verification:
+    - docs/operations/WORKFLOW_NAVIGATION.md#post_write_verification
+    - docs/disciplines/discipline_post_write_verification.md
+  post_write_policy_violation:
+    - docs/operations/WORKFLOW_NAVIGATION.md#post_write_policy_violation
+    - docs/disciplines/discipline_post_write_verification.md
+  post_write_human_decision_required:
+    - docs/operations/WORKFLOW_NAVIGATION.md#post_write_human_decision_required
+    - docs/disciplines/discipline_post_write_verification.md
+    - docs/disciplines/discipline_approval_operation.md
+  reopen_in_progress:
+    - docs/operations/REOPEN_PROCEDURE.md
+    - docs/disciplines/discipline_approval_operation.md
+  maintenance_in_progress:
+    - docs/operations/WORKFLOW_NAVIGATION.md#maintenance_in_progress
+  resume_in_progress:
+    - docs/operations/WORKFLOW_NAVIGATION.md#resume_in_progress
+by_stage:
+  triad-review:
+    - docs/operations/SESSION_WORKFLOW_GUIDE.md#3.3-a-2
+    - docs/disciplines/discipline_approval_operation.md
+  review-wave:
+    - .reviewcompass/pending-cross-feature-findings.md
+  alignment:
+    - docs/disciplines/discipline_workflow_state_truth_source.md
+  approval:
+    - docs/disciplines/discipline_approval_operation.md
+    - docs/operations/WORKFLOW_PRECHECK.md#spec-set

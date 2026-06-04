@@ -1806,6 +1806,42 @@ class NextNavigationTests(unittest.TestCase):
     self.assertEqual(data["next_action"]["feature"], "evaluation")
     self.assertEqual(data["next_action"]["phase"], "implementation")
     self.assertEqual(data["next_action"]["stage"], "drafting")
+    self.assertIn(
+      "docs/operations/WORKFLOW_NAVIGATION.md",
+      data["next_action"]["required_disciplines"],
+    )
+    self.assertIn(
+      "docs/disciplines/discipline_workflow_state_truth_source.md",
+      data["next_action"]["required_disciplines"],
+    )
+
+  def test_next_triad_review_reports_review_run_disciplines(self):
+    """triad-review 直前に読むべき review-run/proxy 規律を返す"""
+    cwd = Path(self.tmpdir)
+    _write_specs_for_next(
+      cwd,
+      {
+        "foundation": {
+          "drafting": True,
+          "triad-review": False,
+          "review-wave": False,
+          "alignment": False,
+          "approval": False,
+        },
+      },
+    )
+
+    result = run_script(["next", "--json"], cwd=cwd)
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 0, result.stderr)
+    data = json.loads(result.stdout)
+    self.assertEqual(data["next_action"]["kind"], "stage")
+    self.assertEqual(data["next_action"]["stage"], "triad-review")
+    self.assertIn(
+      "docs/operations/SESSION_WORKFLOW_GUIDE.md#3.3-a-2",
+      data["next_action"]["required_disciplines"],
+    )
 
   def test_next_review_wave_reports_recheck_and_pending_findings(self):
     """review-wave では recheck と pending-cross-feature-findings の確認情報を返す"""
@@ -1957,6 +1993,14 @@ class NextNavigationTests(unittest.TestCase):
     self.assertEqual(
       data["next_action"]["target_files"],
       ["docs/notes/codex-maintenance.md"],
+    )
+    self.assertIn(
+      "docs/operations/WORKFLOW_NAVIGATION.md#post_write_verification",
+      data["next_action"]["required_disciplines"],
+    )
+    self.assertIn(
+      "docs/disciplines/discipline_post_write_verification.md",
+      data["next_action"]["required_disciplines"],
     )
     self.assertEqual(
       data["current_state"]["in_progress_files"],

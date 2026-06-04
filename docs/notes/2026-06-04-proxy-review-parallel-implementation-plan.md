@@ -137,3 +137,16 @@ implementation.triad-review の review-run 準備では、既存の workflow-man
 - 実装後に測るメトリクス
 
 self-improvement implementation.triad-review では、workflow-management の guard 中心の観点を持ち込まず、規律と実体の双方向同期、提案権と実体変更権の分離、入力モデル、signal 抽出、提案、検証、承認、rollback、効果測定、機械検査、他機能接合、T-001〜T-011 の traceability を中心に review target bundle を作る。
+
+## 追加対応：next_action ごとの直前必読規律
+
+長いワークフロー規約をセッション冒頭に一括で読む運用では、コンテキスト消費が大きく、後段で規律そのものを忘れる問題があった。`check-workflow-action.py next --json` により「次に何をするか」は機械的に判定できるようになったため、今後は next_action ごとに必要な規律だけを作業直前に読む。
+
+方針：
+
+- 入口判定は `next --json` に任せる。
+- `next_action.required_disciplines` に、直前に読むべき規律・運用文書を返す。
+- 対応表は `docs/operations/WORKFLOW_DISCIPLINE_MAP.yaml` に置き、人間向け説明は `docs/operations/WORKFLOW_NAVIGATION.md` に置く。
+- `stage` では workflow state 正本、`triad-review` では review-run/proxy 判断代行、`post_write_verification` では post-write 規律、`reopen_in_progress` では reopen 手順、`approval` では approval-operation と precheck を読む。
+
+これにより、LLM はセッション全体で規律を保持しようとせず、場面ごとに短い規律セットを読み直して実行直前の挙動を調整できる。

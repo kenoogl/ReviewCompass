@@ -34,6 +34,7 @@ import yaml
 DEFAULT_LOG_PATH = "docs/logs/workflow-precheck.log"
 DEFAULT_COMMIT_APPROVAL_PATH = ".reviewcompass/approvals/commit-approval.json"
 DEFAULT_LAST_COMMIT_PRECHECK_PATH = ".git/reviewcompass/last-commit-precheck.json"
+DEFAULT_DISCIPLINE_MAP_PATH = "docs/operations/WORKFLOW_DISCIPLINE_MAP.yaml"
 
 # 各フェーズの段集合（計画書 §5.5 と §5.24.4 と整合）
 PHASE_STAGES = {
@@ -208,6 +209,60 @@ REOPEN_TRIGGER_MAP = {
     "stages/feature-partitioning.yaml#candidate-proposal",
     "stages/feature-partitioning.yaml#approval",
   ],
+}
+
+DEFAULT_DISCIPLINE_MAP = {
+  "default": [
+    "docs/operations/WORKFLOW_NAVIGATION.md",
+  ],
+  "by_kind": {
+    "stage": [
+      "docs/disciplines/discipline_workflow_state_truth_source.md",
+    ],
+    "cross_feature_stage": [
+      "docs/disciplines/discipline_workflow_state_truth_source.md",
+      ".reviewcompass/pending-cross-feature-findings.md",
+    ],
+    "post_write_verification": [
+      "docs/operations/WORKFLOW_NAVIGATION.md#post_write_verification",
+      "docs/disciplines/discipline_post_write_verification.md",
+    ],
+    "post_write_policy_violation": [
+      "docs/operations/WORKFLOW_NAVIGATION.md#post_write_policy_violation",
+      "docs/disciplines/discipline_post_write_verification.md",
+    ],
+    "post_write_human_decision_required": [
+      "docs/operations/WORKFLOW_NAVIGATION.md#post_write_human_decision_required",
+      "docs/disciplines/discipline_post_write_verification.md",
+      "docs/disciplines/discipline_approval_operation.md",
+    ],
+    "reopen_in_progress": [
+      "docs/operations/REOPEN_PROCEDURE.md",
+      "docs/disciplines/discipline_approval_operation.md",
+    ],
+    "maintenance_in_progress": [
+      "docs/operations/WORKFLOW_NAVIGATION.md#maintenance_in_progress",
+    ],
+    "resume_in_progress": [
+      "docs/operations/WORKFLOW_NAVIGATION.md#resume_in_progress",
+    ],
+  },
+  "by_stage": {
+    "triad-review": [
+      "docs/operations/SESSION_WORKFLOW_GUIDE.md#3.3-a-2",
+      "docs/disciplines/discipline_approval_operation.md",
+    ],
+    "review-wave": [
+      ".reviewcompass/pending-cross-feature-findings.md",
+    ],
+    "alignment": [
+      "docs/disciplines/discipline_workflow_state_truth_source.md",
+    ],
+    "approval": [
+      "docs/disciplines/discipline_approval_operation.md",
+      "docs/operations/WORKFLOW_PRECHECK.md#spec-set",
+    ],
+  },
 }
 
 
@@ -706,6 +761,61 @@ def format_next_json_output(verdict, exit_code, next_action, reasons, current_st
     ensure_ascii=False,
     indent=2,
   )
+
+
+def _dedupe_strings(values):
+  """文字列配列を順序保持で重複排除する"""
+  seen = set()
+  result = []
+  for value in values:
+    if not isinstance(value, str) or not value:
+      continue
+    if value in seen:
+      continue
+    seen.add(value)
+    result.append(value)
+  return result
+
+
+def _load_discipline_map(cwd):
+  """next_action 別の直前必読規律マップを読み込む"""
+  map_path = Path(cwd) / DEFAULT_DISCIPLINE_MAP_PATH
+  if not map_path.exists():
+    return DEFAULT_DISCIPLINE_MAP
+  try:
+    loaded = yaml.safe_load(map_path.read_text(encoding="utf-8")) or {}
+  except (OSError, yaml.YAMLError):
+    return DEFAULT_DISCIPLINE_MAP
+  if not isinstance(loaded, dict):
+    return DEFAULT_DISCIPLINE_MAP
+  return loaded
+
+
+def required_disciplines_for_next_action(cwd, next_action):
+  """next_action の直前に読むべき規律・運用文書を返す"""
+  discipline_map = _load_discipline_map(cwd)
+  result = []
+  result.extend(discipline_map.get("default") or [])
+
+  by_kind = discipline_map.get("by_kind") or {}
+  if isinstance(by_kind, dict):
+    result.extend(by_kind.get(next_action.get("kind")) or [])
+
+  by_stage = discipline_map.get("by_stage") or {}
+  if isinstance(by_stage, dict):
+    result.extend(by_stage.get(next_action.get("stage")) or [])
+
+  return _dedupe_strings(result)
+
+
+def attach_required_disciplines(cwd, next_action):
+  """next_action に required_disciplines を付与する"""
+  augmented = dict(next_action)
+  augmented["required_disciplines"] = required_disciplines_for_next_action(
+    cwd,
+    next_action,
+  )
+  return augmented
 
 
 def append_log(log_path, action_dict, verdict, exit_code, reasons, current_state_dict):
@@ -2841,6 +2951,8 @@ def cmd_next(args):
           }
           reasons = []
           verdict, exit_code = "OK", 0
+
+  next_action = attach_required_disciplines(cwd, next_action)
 
   if args.json:
     print(format_next_json_output(verdict, exit_code, next_action, reasons, current_state))
