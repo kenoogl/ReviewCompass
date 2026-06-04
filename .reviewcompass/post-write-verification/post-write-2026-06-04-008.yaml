@@ -1,0 +1,19 @@
+status: completed
+target_files:
+- docs/notes/2026-06-03-dogfooding-deployment-metrics.md
+target_sha256:
+  docs/notes/2026-06-03-dogfooding-deployment-metrics.md: 23d0cc70964cb3bf5850af7ba7069b74ab805c20e4d8c3dca8026ab9891d0158
+required_verifiers:
+- codex-self-check
+completed_verifiers:
+- codex-self-check
+unresolved_substantive_findings: 0
+verifications:
+- verifier: codex-self-check
+  target_files:
+  - docs/notes/2026-06-03-dogfooding-deployment-metrics.md
+  target_sha256:
+    docs/notes/2026-06-03-dogfooding-deployment-metrics.md: 23d0cc70964cb3bf5850af7ba7069b74ab805c20e4d8c3dca8026ab9891d0158
+  result: completed
+  notes: dogfooding metrics note now records the minimal extractor scope and remains
+    aligned with implementation/test additions.

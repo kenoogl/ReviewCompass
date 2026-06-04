@@ -695,6 +695,87 @@ def assert_review_report_ready(
     if not (run_dir / relpath).is_file():
       errors.append(f"required artifact missing: {relpath}")
 
+  cluster_ids = []
+  clusters_path = run_dir / "must-fix-clusters.yaml"
+  proxy_summary_path = run_dir / "proxy-decision-summary.md"
+  if clusters_path.is_file():
+    clusters_data = _load_yaml_dict(clusters_path)
+    clusters = clusters_data.get("clusters")
+    if not isinstance(clusters, list) or not clusters:
+      errors.append("must-fix-clusters.yaml clusters is required")
+    else:
+      for index, cluster in enumerate(clusters, start=1):
+        if not isinstance(cluster, dict):
+          errors.append(f"must-fix-clusters.yaml clusters[{index}] must be a mapping")
+          continue
+        cluster_id = cluster.get("cluster_id")
+        cluster_label = cluster_id if isinstance(cluster_id, str) else f"#{index}"
+        if not isinstance(cluster_id, str) or not cluster_id.strip():
+          errors.append(f"must-fix-clusters.yaml cluster {cluster_label}: cluster_id is required")
+        else:
+          cluster_ids.append(cluster_id)
+        if not isinstance(cluster.get("plain_explanation"), str) or not cluster.get("plain_explanation").strip():
+          errors.append(
+            f"must-fix-clusters.yaml cluster {cluster_label}: plain_explanation is required"
+          )
+        candidate_options = cluster.get("candidate_options")
+        if not isinstance(candidate_options, list) or len(candidate_options) < 2:
+          errors.append(
+            f"must-fix-clusters.yaml cluster {cluster_label}: candidate_options "
+            "requires at least two options"
+          )
+        else:
+          option_ids = []
+          for option_index, option in enumerate(candidate_options, start=1):
+            if not isinstance(option, dict):
+              errors.append(
+                f"must-fix-clusters.yaml cluster {cluster_label}: "
+                f"candidate_options[{option_index}] must be a mapping"
+              )
+              continue
+            option_id = option.get("option_id", option.get("id"))
+            if not isinstance(option_id, str) or not option_id.strip():
+              errors.append(
+                f"must-fix-clusters.yaml cluster {cluster_label}: "
+                f"candidate_options[{option_index}].option_id is required"
+              )
+            else:
+              option_ids.append(option_id)
+            for key in ("summary", "tradeoff"):
+              if not isinstance(option.get(key), str) or not option.get(key).strip():
+                errors.append(
+                  f"must-fix-clusters.yaml cluster {cluster_label}: "
+                  f"candidate_options[{option_index}].{key} is required"
+                )
+          recommended_option = cluster.get("recommended_option")
+          if not isinstance(recommended_option, str) or not recommended_option.strip():
+            errors.append(
+              f"must-fix-clusters.yaml cluster {cluster_label}: recommended_option is required"
+            )
+          elif option_ids and recommended_option not in option_ids:
+            errors.append(
+              f"must-fix-clusters.yaml cluster {cluster_label}: "
+              "recommended_option must match candidate_options"
+            )
+        if not isinstance(cluster.get("recommended_reason"), str) or not cluster.get("recommended_reason").strip():
+          errors.append(
+            f"must-fix-clusters.yaml cluster {cluster_label}: recommended_reason is required"
+          )
+        final_label = cluster.get("proposed_final_label", cluster.get("final_label"))
+        if final_label not in FINAL_LABELS:
+          errors.append(
+            f"must-fix-clusters.yaml cluster {cluster_label}: "
+            "proposed_final_label/final_label is required"
+          )
+
+  if proxy_summary_path.is_file() and cluster_ids:
+    proxy_summary = proxy_summary_path.read_text(encoding="utf-8")
+    for cluster_id in cluster_ids:
+      if cluster_id not in proxy_summary:
+        errors.append(
+          f"proxy-decision-summary.md missing cluster: {cluster_id}"
+        )
+
   report = Path(report_path)
   if not report.is_file():
     errors.append(f"required artifact missing: {report.name}")
@@ -733,6 +814,175 @@ def write_manifest(
   output = resolve_manifest_output_path(out_path)
   output.parent.mkdir(parents=True, exist_ok=True)
   _dump_yaml(output, manifest)
+  return output
+
+
+def _count_by_label(items: List[Dict[str, Any]]) -> Dict[str, int]:
+  """triage items を final_label ごとに数える。"""
+  counts = {label: 0 for label in FINAL_LABELS}
+  for item in items:
+    label = item.get("final_label")
+    if label in counts:
+      counts[label] += 1
+  return counts
+
+
+def _markdown_table(headers: List[str], rows: List[List[Any]]) -> List[str]:
+  """単純な Markdown table を返す。"""
+  lines = [
+    "| " + " | ".join(headers) + " |",
+    "| " + " | ".join("---" for _ in headers) + " |",
+  ]
+  for row in rows:
+    lines.append("| " + " | ".join(str(value) for value in row) + " |")
+  return lines
+
+
+def build_review_traceability_report(review_run_dir: str, ledger_path: str) -> str:
+  """review-run の主要証跡を 1 枚の Markdown report にまとめる。"""
+  run_dir = Path(review_run_dir)
+  summary = _load_yaml_dict(run_dir / "model-result-summary.yaml")
+  triage = _load_yaml_dict(run_dir / "triage.yaml")
+  clusters_data = _load_yaml_dict(run_dir / "must-fix-clusters.yaml")
+  ledger = _load_yaml_dict(Path(ledger_path))
+  proxy_summary_path = run_dir / "proxy-decision-summary.md"
+
+  models = summary.get("models") if isinstance(summary.get("models"), list) else []
+  items = triage.get("items") if isinstance(triage.get("items"), list) else []
+  clusters = (
+    clusters_data.get("clusters")
+    if isinstance(clusters_data.get("clusters"), list)
+    else []
+  )
+  label_counts = _count_by_label([
+    item for item in items if isinstance(item, dict)
+  ])
+  integration_result = ledger.get("integration_result", {})
+  if not isinstance(integration_result, dict):
+    integration_result = {}
+
+  lines = [
+    f"# Review Run Traceability Report: {run_dir.name}",
+    "",
+    "## Raw Responses",
+  ]
+  raw_rows = []
+  for model in models:
+    if not isinstance(model, dict):
+      continue
+    raw_rows.append([
+      model.get("model_id", ""),
+      model.get("raw_path", ""),
+      model.get("parse_status", ""),
+      model.get("triage_status", ""),
+    ])
+  lines.extend(_markdown_table(
+    ["model", "raw_path", "parse_status", "triage_status"],
+    raw_rows,
+  ))
+
+  lines.extend(["", "## Model Findings"])
+  finding_rows = []
+  for model in models:
+    if not isinstance(model, dict):
+      continue
+    finding_rows.append([
+      model.get("model_id", ""),
+      model.get("findings_count", 0),
+      model.get("must_fix_count", 0),
+      model.get("should_fix_count", 0),
+      model.get("leave_as_is_count", 0),
+      model.get("human_required_count", 0),
+    ])
+  lines.extend(_markdown_table(
+    [
+      "model",
+      "findings_count",
+      "must_fix_count",
+      "should_fix_count",
+      "leave_as_is_count",
+      "human_required_count",
+    ],
+    finding_rows,
+  ))
+
+  lines.extend([
+    "",
+    "## Three-Level Triage",
+    "",
+    f"- must-fix: {label_counts['must-fix']}",
+    f"- should-fix: {label_counts['should-fix']}",
+    f"- leave-as-is: {label_counts['leave-as-is']}",
+    f"- decision_actor: {triage.get('decision_actor', '')}",
+    f"- decision_actor_type: {triage.get('decision_actor_type', '')}",
+    "",
+    "## Important Findings",
+  ])
+  important_rows = []
+  for cluster in clusters:
+    if not isinstance(cluster, dict):
+      continue
+    important_rows.append([
+      cluster.get("cluster_id", ""),
+      cluster.get("severity_max", ""),
+      cluster.get("proposed_final_label", cluster.get("final_label", "")),
+      cluster.get("title", ""),
+      cluster.get("plain_explanation", ""),
+    ])
+  lines.extend(_markdown_table(
+    ["cluster", "severity", "label", "title", "plain_explanation"],
+    important_rows,
+  ))
+
+  lines.extend(["", "## Adopted Options"])
+  option_rows = []
+  for cluster in clusters:
+    if not isinstance(cluster, dict):
+      continue
+    option_rows.append([
+      cluster.get("cluster_id", ""),
+      f"option {cluster.get('recommended_option', '')}",
+      cluster.get("recommended_reason", ""),
+    ])
+  lines.extend(_markdown_table(
+    ["cluster", "selected", "reason"],
+    option_rows,
+  ))
+  if proxy_summary_path.is_file():
+    lines.extend([
+      "",
+      "Proxy decision summary: proxy-decision-summary.md",
+    ])
+
+  lines.extend([
+    "",
+    "## Implementation Result",
+    "",
+    f"- status: {integration_result.get('status', '')}",
+    f"- tests: {integration_result.get('tests', '')}",
+    f"- decision: {integration_result.get('decision', '')}",
+    "",
+  ])
+  return "\n".join(lines)
+
+
+def generate_review_traceability_report(
+  review_run_dir: str,
+  ledger_path: str,
+  out_path: str,
+) -> Path:
+  """ready 検査後に review-run traceability report を書き出す。"""
+  assert_review_report_ready(
+    review_run_dir,
+    str(Path(review_run_dir) / "autonomous-execution-report.md"),
+    ledger_path,
+  )
+  output = Path(out_path)
+  output.parent.mkdir(parents=True, exist_ok=True)
+  output.write_text(
+    build_review_traceability_report(review_run_dir, ledger_path),
+    encoding="utf-8",
+  )
   return output
 
 
@@ -786,6 +1036,11 @@ def _parse_argv(argv: Optional[List[str]]) -> argparse.Namespace:
   report_parser.add_argument("--report-path", required=True)
   report_parser.add_argument("--ledger-path", required=True)
 
+  generate_report_parser = subparsers.add_parser("generate-review-report")
+  generate_report_parser.add_argument("--review-run-dir", required=True)
+  generate_report_parser.add_argument("--ledger-path", required=True)
+  generate_report_parser.add_argument("--out", required=True)
+
   return parser.parse_args(argv)
 
 
@@ -829,6 +1084,14 @@ def main(argv: Optional[List[str]] = None) -> int:
     if args.command == "assert-review-report-ready":
       assert_review_report_ready(args.review_run_dir, args.report_path, args.ledger_path)
       sys.stdout.write("review_report_ready: true\n")
+      return 0
+    if args.command == "generate-review-report":
+      output = generate_review_traceability_report(
+        args.review_run_dir,
+        args.ledger_path,
+        args.out,
+      )
+      sys.stdout.write(f"{output}\n")
       return 0
   except Exception as exc:
     sys.stderr.write(f"エラー：{type(exc).__name__}: {exc}\n")

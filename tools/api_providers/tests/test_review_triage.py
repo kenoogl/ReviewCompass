@@ -722,7 +722,24 @@ def _write_autonomous_report_artifacts(run_dir):
         "clusters": [
           {
             "cluster_id": "WM-IMPL-MF-001",
-            "final_label": "must-fix",
+            "title": "raw response と triage 完了を機械確認できない",
+            "plain_explanation": "レビュー結果が本当に揃ったかを機械確認できない。",
+            "candidate_options": [
+              {
+                "option_id": "A",
+                "summary": "raw と triage を開始前に機械検査する",
+                "tradeoff": "実装量は増えるが取りこぼしを防げる",
+              },
+              {
+                "option_id": "B",
+                "summary": "文書規律だけで必須化する",
+                "tradeoff": "軽いが機械的には防げない",
+              },
+            ],
+            "recommended_option": "A",
+            "recommended_reason": "同じ見落としを機械的に防げるため。",
+            "proposed_final_label": "must-fix",
+            "source_raw_paths": ["raw/claude-sonnet-4-6.round-1.txt"],
           },
         ],
       },
@@ -762,6 +779,118 @@ def _write_autonomous_report_artifacts(run_dir):
   return report_path, ledger_path
 
 
+def test_assert_review_report_ready_requires_plain_cluster_explanation(
+  tmp_path,
+  capsys,
+):
+  """重要所見 cluster に平易な説明がなければ fail-closed する。"""
+  run_dir = _write_review_run(tmp_path)
+  report_path, ledger_path = _write_autonomous_report_artifacts(run_dir)
+  clusters_path = run_dir / "must-fix-clusters.yaml"
+  clusters = yaml.safe_load(clusters_path.read_text(encoding="utf-8"))
+  clusters["clusters"][0].pop("plain_explanation")
+  clusters_path.write_text(
+    yaml.safe_dump(clusters, allow_unicode=True, sort_keys=False),
+    encoding="utf-8",
+  )
+
+  exit_code = main(
+    [
+      "assert-review-report-ready",
+      "--review-run-dir", str(run_dir),
+      "--report-path", str(report_path),
+      "--ledger-path", str(ledger_path),
+    ]
+  )
+
+  assert exit_code == 1
+  captured = capsys.readouterr()
+  assert "plain_explanation" in captured.err
+
+
+def test_assert_review_report_ready_requires_candidate_options(tmp_path, capsys):
+  """重要所見 cluster に候補案がなければ fail-closed する。"""
+  run_dir = _write_review_run(tmp_path)
+  report_path, ledger_path = _write_autonomous_report_artifacts(run_dir)
+  clusters_path = run_dir / "must-fix-clusters.yaml"
+  clusters = yaml.safe_load(clusters_path.read_text(encoding="utf-8"))
+  clusters["clusters"][0]["candidate_options"] = [
+    {
+      "option_id": "A",
+      "summary": "raw と triage を機械検査する",
+    },
+  ]
+  clusters_path.write_text(
+    yaml.safe_dump(clusters, allow_unicode=True, sort_keys=False),
+    encoding="utf-8",
+  )
+
+  exit_code = main(
+    [
+      "assert-review-report-ready",
+      "--review-run-dir", str(run_dir),
+      "--report-path", str(report_path),
+      "--ledger-path", str(ledger_path),
+    ]
+  )
+
+  assert exit_code == 1
+  captured = capsys.readouterr()
+  assert "candidate_options" in captured.err
+
+
+def test_assert_review_report_ready_requires_recommended_option(tmp_path, capsys):
+  """重要所見 cluster に推薦案と理由がなければ fail-closed する。"""
+  run_dir = _write_review_run(tmp_path)
+  report_path, ledger_path = _write_autonomous_report_artifacts(run_dir)
+  clusters_path = run_dir / "must-fix-clusters.yaml"
+  clusters = yaml.safe_load(clusters_path.read_text(encoding="utf-8"))
+  clusters["clusters"][0].pop("recommended_reason")
+  clusters_path.write_text(
+    yaml.safe_dump(clusters, allow_unicode=True, sort_keys=False),
+    encoding="utf-8",
+  )
+
+  exit_code = main(
+    [
+      "assert-review-report-ready",
+      "--review-run-dir", str(run_dir),
+      "--report-path", str(report_path),
+      "--ledger-path", str(ledger_path),
+    ]
+  )
+
+  assert exit_code == 1
+  captured = capsys.readouterr()
+  assert "recommended_reason" in captured.err
+
+
+def test_assert_review_report_ready_requires_cluster_in_proxy_summary(
+  tmp_path,
+  capsys,
+):
+  """重要所見 cluster が proxy summary に出ていなければ fail-closed する。"""
+  run_dir = _write_review_run(tmp_path)
+  report_path, ledger_path = _write_autonomous_report_artifacts(run_dir)
+  (run_dir / "proxy-decision-summary.md").write_text(
+    "# Proxy decision summary\n\n- other-cluster: option A\n",
+    encoding="utf-8",
+  )
+
+  exit_code = main(
+    [
+      "assert-review-report-ready",
+      "--review-run-dir", str(run_dir),
+      "--report-path", str(report_path),
+      "--ledger-path", str(ledger_path),
+    ]
+  )
+
+  assert exit_code == 1
+  captured = capsys.readouterr()
+  assert "proxy-decision-summary.md missing cluster" in captured.err
+
+
 def test_assert_review_report_ready_requires_report_artifacts(tmp_path, capsys):
   """自動実行テスト報告の成果物が不足していれば fail-closed する。"""
   run_dir = _write_review_run(tmp_path)
@@ -798,3 +927,58 @@ def test_assert_review_report_ready_passes_when_report_artifacts_exist(tmp_path,
   assert exit_code == 0
   output = capsys.readouterr().out
   assert "review_report_ready: true" in output
+
+
+def test_generate_review_report_writes_single_traceability_report(tmp_path, capsys):
+  """review-run の raw/triage/重要所見/採用案/実装結果を一枚の report にまとめる。"""
+  run_dir = _write_review_run(tmp_path)
+  _write_autonomous_report_artifacts(run_dir)
+  output_path = run_dir / "generated-review-report.md"
+  ledger_path = run_dir / "autonomous-ledger.yaml"
+
+  exit_code = main(
+    [
+      "generate-review-report",
+      "--review-run-dir", str(run_dir),
+      "--ledger-path", str(ledger_path),
+      "--out", str(output_path),
+    ]
+  )
+
+  assert exit_code == 0
+  assert str(output_path) in capsys.readouterr().out
+  text = output_path.read_text(encoding="utf-8")
+  assert "# Review Run Traceability Report" in text
+  assert "## Raw Responses" in text
+  assert "claude-sonnet-4-6" in text
+  assert "raw/claude-sonnet-4-6.round-1.txt" in text
+  assert "## Model Findings" in text
+  assert "human_required_count" in text
+  assert "## Three-Level Triage" in text
+  assert "must-fix" in text
+  assert "## Important Findings" in text
+  assert "WM-IMPL-MF-001" in text
+  assert "## Adopted Options" in text
+  assert "option A" in text
+  assert "## Implementation Result" in text
+  assert "accepted" in text
+
+
+def test_generate_review_report_requires_ready_inputs(tmp_path, capsys):
+  """入力成果物が不足した report 生成は fail-closed する。"""
+  run_dir = _write_review_run(tmp_path)
+  output_path = run_dir / "generated-review-report.md"
+
+  exit_code = main(
+    [
+      "generate-review-report",
+      "--review-run-dir", str(run_dir),
+      "--ledger-path", str(run_dir / "autonomous-ledger.yaml"),
+      "--out", str(output_path),
+    ]
+  )
+
+  assert exit_code == 1
+  captured = capsys.readouterr()
+  assert "must-fix-clusters.md" in captured.err
+  assert not output_path.exists()

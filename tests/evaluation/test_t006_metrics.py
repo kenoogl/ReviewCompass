@@ -12,6 +12,7 @@ from metrics.finding_metrics_extractor import FindingMetricsExtractor
 from metrics.identifier_link_validator import IdentifierLinkValidator
 from metrics.run_metrics_extractor import RunMetricsExtractor
 from metrics.treatment_metrics_extractor import TreatmentMetricsExtractor
+from metrics.dogfooding_metrics_extractor import DogfoodingMetricsExtractor
 from manifests.analysis_run_manifest_writer import AnalysisRunManifestWriter
 
 
@@ -152,3 +153,162 @@ def test_analysis_run_manifest_writer_outputs_13_required_fields(tmp_path):
     "analysis_completed_at",
     "output_artifact_ids",
   }
+
+
+def _write_dogfooding_sources(tmp_path):
+  """dogfooding メトリクス用の最小入力証跡を書く。"""
+  review_run_dir = tmp_path / "review-run"
+  review_run_dir.mkdir()
+  (review_run_dir / "model-result-summary.yaml").write_text(
+    yaml.safe_dump(
+      {
+        "run_id": "review-run",
+        "models": [
+          {
+            "model_id": "claude-sonnet-4-6",
+            "raw_path": "raw/claude-sonnet-4-6.round-1.txt",
+            "findings_count": 2,
+            "must_fix_count": 1,
+            "should_fix_count": 1,
+            "leave_as_is_count": 0,
+            "human_required_count": 0,
+          },
+          {
+            "model_id": "gpt-5.4",
+            "raw_path": "raw/gpt-5.4.round-1.txt",
+            "findings_count": 1,
+            "must_fix_count": 0,
+            "should_fix_count": 1,
+            "leave_as_is_count": 0,
+            "human_required_count": 0,
+          },
+        ],
+      },
+      allow_unicode=True,
+      sort_keys=False,
+    ),
+    encoding="utf-8",
+  )
+  (review_run_dir / "triage.yaml").write_text(
+    yaml.safe_dump(
+      {
+        "run_id": "review-run",
+        "decision_actor": "gpt-5.5",
+        "decision_actor_type": "proxy_model",
+        "items": [
+          {"finding_id": "F-001", "final_label": "must-fix"},
+          {"finding_id": "F-002", "final_label": "should-fix"},
+          {"finding_id": "F-003", "final_label": "should-fix"},
+        ],
+      },
+      allow_unicode=True,
+      sort_keys=False,
+    ),
+    encoding="utf-8",
+  )
+  (review_run_dir / "must-fix-clusters.yaml").write_text(
+    yaml.safe_dump(
+      {
+        "clusters": [
+          {"cluster_id": "C-001", "proposed_final_label": "must-fix"},
+        ],
+      },
+      allow_unicode=True,
+      sort_keys=False,
+    ),
+    encoding="utf-8",
+  )
+  ledger_path = tmp_path / "autonomous-ledger.yaml"
+  ledger_path.write_text(
+    yaml.safe_dump(
+      {
+        "integration_result": {
+          "status": "completed",
+          "tests": "pytest -q; unittest",
+          "decision": "accepted",
+        },
+      },
+      allow_unicode=True,
+      sort_keys=False,
+    ),
+    encoding="utf-8",
+  )
+  workflow_log_path = tmp_path / "workflow-precheck.log"
+  workflow_log_path.write_text(
+    "\n".join(
+      [
+        json.dumps(
+          {
+            "action": {"subcommand": "next"},
+            "verdict": "OK",
+            "exit_code": 0,
+            "reasons": [],
+          },
+          ensure_ascii=False,
+        ),
+        json.dumps(
+          {
+            "action": {"subcommand": "commit"},
+            "verdict": "DEVIATION",
+            "exit_code": 2,
+            "reasons": [
+              "ユーザ承認レコードは消費済みです",
+              "stages/in-progress に進行中ファイルがあります",
+            ],
+          },
+          ensure_ascii=False,
+        ),
+        json.dumps(
+          {
+            "action": {"subcommand": "push"},
+            "verdict": "WARN",
+            "exit_code": 1,
+            "reasons": ["未消化所見 1 件以上"],
+          },
+          ensure_ascii=False,
+        ),
+      ]
+    ) + "\n",
+    encoding="utf-8",
+  )
+  return review_run_dir, ledger_path, workflow_log_path
+
+
+def test_dogfooding_metrics_extract_review_run_and_workflow_precheck(tmp_path):
+  """dogfooding 抽出器は review-run と workflow-precheck.log を最小スキーマに正規化する。"""
+  review_run_dir, ledger_path, workflow_log_path = _write_dogfooding_sources(tmp_path)
+
+  metrics = DogfoodingMetricsExtractor().extract(
+    review_run_dir=review_run_dir,
+    workflow_log_path=workflow_log_path,
+    ledger_path=ledger_path,
+  )
+
+  assert metrics["artifact_id"] == "dogfooding_deployment_metrics"
+  assert metrics["metric_level"] == "dogfooding_deployment"
+  assert metrics["review_run"]["run_id"] == "review-run"
+  assert metrics["review_run"]["model_count"] == 2
+  assert metrics["review_run"]["raw_response_count"] == 2
+  assert metrics["review_run"]["finding_count"] == 3
+  assert metrics["review_run"]["human_required_count"] == 0
+  assert metrics["review_run"]["triage_label_counts"] == {
+    "must-fix": 1,
+    "should-fix": 2,
+    "leave-as-is": 0,
+  }
+  assert metrics["workflow_precheck"]["total_checks"] == 3
+  assert metrics["workflow_precheck"]["by_verdict"] == {
+    "OK": 1,
+    "WARN": 1,
+    "DEVIATION": 1,
+  }
+  assert metrics["workflow_precheck"]["blocked_count"] == 1
+  assert metrics["workflow_precheck"]["warning_count"] == 1
+  assert metrics["workflow_precheck"]["commit_approval_failure_count"] == 1
+  assert metrics["workflow_precheck"]["in_progress_block_count"] == 1
+  assert metrics["implementation"]["status"] == "completed"
+  assert metrics["implementation"]["test_command_count"] == 2
+  assert any(
+    path.endswith("workflow-precheck.log")
+    for path in metrics["derivation"]["source_artifacts"]
+  )
