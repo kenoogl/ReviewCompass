@@ -22,6 +22,12 @@ REQUIRED_FIELDS = (
   "related_artifacts",
 )
 RB_PATTERN = re.compile(r"^RB-(?P<number>[0-9]+)$")
+ROLLBACK_ID_DIRECTORIES = (
+  "proposals",
+  "approved-updates",
+  "rejected-updates",
+  "rollback",
+)
 
 
 class RollbackError(ValueError):
@@ -77,14 +83,16 @@ class RollbackModel:
 
   def next_rollback_id(self) -> str:
     max_number = 0
-    rollback_root = self.root / "learning" / "workflow" / "rollback"
-    for path in sorted(rollback_root.glob("*.yaml")):
-      data = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
-      if not isinstance(data, Mapping):
-        continue
-      match = RB_PATTERN.match(str(data.get("rollback_id", "")))
-      if match:
-        max_number = max(max_number, int(match.group("number")))
+    workflow_root = self.root / "learning" / "workflow"
+    for directory in ROLLBACK_ID_DIRECTORIES:
+      for path in sorted((workflow_root / directory).glob("*.yaml")):
+        data = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
+        if not isinstance(data, Mapping):
+          continue
+        rollback_id = self._rollback_identifier(data)
+        match = RB_PATTERN.match(rollback_id)
+        if match:
+          max_number = max(max_number, int(match.group("number")))
     next_number = max_number + 1
     width = 3 if next_number <= 999 else len(str(next_number))
     return f"RB-{next_number:0{width}d}"
@@ -184,6 +192,12 @@ class RollbackModel:
       yaml.safe_dump(data, allow_unicode=True, sort_keys=False),
       encoding="utf-8",
     )
+
+  def _rollback_identifier(self, data: Mapping[str, object]) -> str:
+    rollback_id = str(data.get("rollback_id", ""))
+    if RB_PATTERN.match(rollback_id):
+      return rollback_id
+    return str(data.get("proposal_id", ""))
 
   def _relative(self, path: Path) -> str:
     return str(path.relative_to(self.root))

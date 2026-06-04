@@ -111,3 +111,16 @@ def test_t010_approved_updates_readme_documents_workflow_management_route():
   assert "git mv" in text
   assert "materialized_at" in text
   assert "materialization_commit_hash" in text
+
+
+def test_t010_self_improvement_operations_document_proposal_authority_only():
+  text = (
+    InterfaceAdapter.project_root()
+    / "docs"
+    / "operations"
+    / "SELF_IMPROVEMENT.md"
+  ).read_text(encoding="utf-8")
+
+  assert "提案権のみ" in text
+  assert "実体変更は workflow-management 経由" in text
+  assert "- docs/disciplines/ の規律更新" not in text

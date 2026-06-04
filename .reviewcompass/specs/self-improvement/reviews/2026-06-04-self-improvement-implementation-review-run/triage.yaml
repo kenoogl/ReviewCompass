@@ -1,0 +1,358 @@
+run_id: 2026-06-04-self-improvement-implementation-review-run
+triage_status: draft
+generated_at: '2026-06-04T05:57:45.121789+00:00'
+decision_actor: null
+decision_actor_type: human
+items:
+- finding_id: 2026-06-04-self-improvement-implementation-review-run-claude-sonnet-4-6-primary-001
+  run_id: 2026-06-04-self-improvement-implementation-review-run
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: tests/self-improvement/test_t011_traceability.py::test_t011_seven_models_have_all_three_test_levels
+    + tools/self_improvement/traceability.py::model_level_coverage
+  plain_language_summary: test_t011_seven_models_have_all_three_test_levels asserts
+    that every model must have {'unit','integration','acceptance'}, but traceability.py::model_level_coverage
+    parses design.md §18.1 table rows and only adds a level key when the cell is non-empty.
+    The design §18.1 table uses Japanese free-text (not 'unit'/'integration'/'acceptance')
+    in each cell, so the parsed level strings will never equal the hard-coded English
+    set. The test will always fail unless the design table uses exactly those English
+    tokens. Additionally, the section boundary 'start_heading=### 18.1' / 'end_heading=###
+    18.2' depends on exact Markdown heading text in the live design.md file which
+    is not verified to match.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: T-011's acceptance gate for 7-model × 3-level coverage will always
+    report failure or always trivially pass (empty dict) depending on parsing luck,
+    making the test non-functional as a completion predicate. Design §18 explicitly
+    requires this coverage to be verified (F-017 treatment), so a broken gate undermines
+    the entire T-011 safeguard.
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-04-self-improvement-implementation-review-run-claude-sonnet-4-6-primary-002
+  run_id: 2026-06-04-self-improvement-implementation-review-run
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: tests/self-improvement/test_t011_traceability.py::test_t011_key_regression_surfaces_are_covered
+    + tools/self_improvement/traceability.py::key_regression_coverage
+  plain_language_summary: 'key_regression_coverage checks ''superseded_reopen_five_steps''
+    by asserting that ALL of [''superseded_by'',''superseded_at'',''reopen_reason'',''five'']
+    appear in the union of test_t006_approval_model.py, test_t009_machine_verification.py.
+    The token ''five'' is not a natural test identifier; it is absent from the actual
+    test files (none contain the literal string ''five''), causing this predicate
+    to permanently return False. The test_t011 assertion `assert audit.key_regression_coverage()
+    == {''superseded_reopen_five_steps'': True, ...}` will therefore always fail.'
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: The reopen-procedure 5-step check (MV-4, design §8.7, T-006 requirement)
+    is a must-have safety gate per design §17.1. A permanently-failing oracle at T-011
+    either blocks all deployment or gets disabled, both outcomes destroying the audit
+    value.
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-04-self-improvement-implementation-review-run-claude-sonnet-4-6-primary-003
+  run_id: 2026-06-04-self-improvement-implementation-review-run
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: tools/self_improvement/approval_model.py::_is_enforcement_status_change
+    (called from approve)
+  plain_language_summary: 'In ApprovalModel.approve(), _require_approval(approval_text)
+    is called once unconditionally, then _is_enforcement_status_change() is evaluated
+    and _require_approval() is called a second time if it returns True. The double
+    call to _require_approval is harmless but the real defect is structural: the aspirational→enforced
+    guard only triggers AFTER the status has already been mutated to ''approved''
+    (line `proposal[''status''] = ''approved''` precedes the conditional check in
+    code flow). A reviewer who passes ordinary approval text (''承認します'') will clear
+    the first check; the duplicate check then also passes. So the intended ''stronger
+    gate for status_change to enforced'' provides no additional protection beyond
+    the ordinary approval gate. Req 6 受入 2 requires explicit user approval as a distinct
+    gate for aspirational→enforced promotion.'
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: The test test_t006_approval_model.py::test_t006_blocks_status_change_to_enforced_without_explicit_approval
+    passes 'よさそう' which fails APPROVAL_WORDS, so MV-2 prevents the basic case. However
+    any text containing '承認' passes both gates identically—there is no stronger constraint
+    for status_change proposals as the requirement mandates. Design §10.2 and Req
+    6 受入 2 distinguish this transition as requiring special treatment.
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-04-self-improvement-implementation-review-run-claude-sonnet-4-6-primary-004
+  run_id: 2026-06-04-self-improvement-implementation-review-run
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: tools/self_improvement/proposal_model.py::validate_proposal + _validate_type_specific
+    (new_discipline branch)
+  plain_language_summary: 'For proposal_type=''new_discipline'', _validate_type_specific
+    checks proposed_change.get(''relationship_notes'') but tasks.md T-004 test requirement
+    note reads: ''new_discipline: ドラフト＋関係明示。ただし「関係明示」を機械検証可能な形＝grep 可能なキーワード等に定義してからテスト化する（topic-108／F-012）''.
+    No such definition has been established; the implementation accepts any non-empty
+    string as relationship_notes without a machine-checkable keyword constraint. The
+    test test_t004_proposal_model.py passes ''relationship_notes: 既存規律との関係'' which
+    is a trivially non-empty string. This means the machine-checkable criterion required
+    by topic-108/F-012 is not implemented and the completion condition ''new_discipline:
+    ドラフト＋関係明示の機械検証'' remains unresolved.'
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: Tasks T-004 explicitly defers this to 'first define a machine-checkable
+    form then write the test'; the implementation proceeded without the definition,
+    leaving a DVT-equivalent gap with no corresponding DVT entry and no deferred reason
+    in the completion gate.
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-04-self-improvement-implementation-review-run-claude-sonnet-4-6-primary-005
+  run_id: 2026-06-04-self-improvement-implementation-review-run
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: tools/self_improvement/proposal_model.py::validate_proposal motivating_evidence
+    check
+  plain_language_summary: The evidence validation `if set(item) < {'source','location','observation'}`
+    uses strict subset (<), which means a dict with exactly those three keys evaluates
+    to False (a set is not a proper subset of itself). The condition should be `not
+    set(item) >= {'source','location','observation'}` or equivalently `not {'source','location','observation'}.issubset(set(item))`.
+    The current code raises ProposalError for any evidence item that has exactly the
+    three required keys, causing all valid proposals to be rejected.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: This is a logic inversion bug that makes ProposalError fire on
+    valid input and silently pass on invalid input. Every compliant proposal will
+    be rejected by MV-2, breaking T-002/T-004 integration.
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-04-self-improvement-implementation-review-run-claude-sonnet-4-6-primary-006
+  run_id: 2026-06-04-self-improvement-implementation-review-run
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: tools/self_improvement/traceability.py::requirements_traceability_issues
+    section boundary
+  plain_language_summary: requirements_traceability_issues uses start_heading='##
+    要件追跡' and end_heading='## テスト戦略' to parse the traceability table from tasks.md.
+    The actual tasks.md heading is '## 要件追跡（Requirements Traceability）' which does
+    not start with exactly '## 要件追跡' because the method uses startswith—actually startswith
+    DOES match a prefix so this particular heading would work. However end_heading='##
+    テスト戦略の継承（Test Strategy Inheritance）' in tasks.md also starts with '## テスト戦略' so
+    the boundary should close correctly. The real issue is that the last two rows
+    of the traceability table in tasks.md use '| Boundary Context 隣接期待...' and '|
+    権限分離の機械検査...' which do not start with 'Requirement', causing _requirements_traceability_issues
+    to emit false 'has no task reference' warnings for those rows. The audit will
+    produce non-empty issues list, causing test_t011_requirements_traceability_is_bidirectional
+    to fail.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: test_t011 asserts issues == [], but the parsing logic does not
+    handle the non-Requirement rows at the bottom of the table, producing spurious
+    issues and a false-negative gate failure.
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-04-self-improvement-implementation-review-run-claude-sonnet-4-6-primary-007
+  run_id: 2026-06-04-self-improvement-implementation-review-run
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: learning/workflow/schemas/proposal.schema.json properties.proposed_change
+  plain_language_summary: The proposal schema defines proposed_change as type:object
+    with no required sub-properties and no per-proposal_type conditional validation.
+    Design §8.4 and design §8.8 specify that archive requires archive_readme_path,
+    consolidation requires mapping_table, new_discipline requires draft_discipline
+    and relationship_notes, update requires change_diff, status_change requires statistical_evidence
+    at the proposal level. These constraints are enforced only in Python (proposal_model.py)
+    but not in the JSON Schema. workflow-management reads approved-updates/ YAMLs
+    using this schema (per design §13.5 and T-010 interfaces), so a schema-only consumer
+    would not see the type-specific validation constraints.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: Design §8.4 is declared the authoritative schema source ('self-improvement
+    design §8.4 が正本スキーマ'). Missing per-type constraints in the JSON Schema weaken
+    the machine-verifiable contract that workflow-management depends on, and undermine
+    the 'dual gate' (MV-1 + pattern constraint) intent described in T-004 completion
+    condition 7.
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-04-self-improvement-implementation-review-run-claude-sonnet-4-6-primary-008
+  run_id: 2026-06-04-self-improvement-implementation-review-run
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: tools/self_improvement/effect_measurement.py::_average_days_to_adoption
+  plain_language_summary: 'The method looks for proposal.get(''approved_at'') to compute
+    cycle time, but design §8.4 and proposal.schema.json define no ''approved_at''
+    field—the field is ''materialized_at'' (workflow-management completion) or implicitly
+    the date embedded in the file name. The field ''approved_at'' was explicitly removed
+    as part of DVT-S001 / A-019 resolution (tasks.md DVT table: ''workflow-management
+    T-010 の独自項目名 approved_at を廃止''). As a result, average_days_to_adoption will always
+    return 0.0 because no proposal will ever have an ''approved_at'' key.'
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: Effect metric 'average_days_to_adoption' (Req 8 受入 1, 7th indicator)
+    is permanently zero, making it useless for the improvement-cycle tracking that
+    design §12.1 requires. T-008 completion condition 1 says all 7 metrics must be
+    computed correctly.
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-04-self-improvement-implementation-review-run-claude-sonnet-4-6-primary-009
+  run_id: 2026-06-04-self-improvement-implementation-review-run
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: tools/self_improvement/approval_model.py::reject — REJECTION_WORDS
+    list
+  plain_language_summary: reject() calls _require_rejection(approval_text) which checks
+    REJECTION_WORDS = ('却下','不採用','reject'). The design §10.1 and discipline [approval-operation]
+    define approval words but do not specify a symmetric rejection vocabulary. Using
+    English 'reject' as a recognized rejection word may be inconsistent with the Japanese-only
+    workflow and could be silently omitted by operators. More critically, the rejection
+    test passes '却下します' but the approval test uses '承認します'—there is no symmetric test
+    verifying that rejection fails when approval words are used.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: If an operator uses '採用しない' (a natural Japanese rejection phrase
+    not in REJECTION_WORDS) the system raises ApprovalError and the proposal cannot
+    be moved to rejected-updates, blocking the lifecycle. This is a fail-closed failure
+    on a valid operation rather than on an invalid one.
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-04-self-improvement-implementation-review-run-claude-sonnet-4-6-primary-010
+  run_id: 2026-06-04-self-improvement-implementation-review-run
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: docs/logs/autonomous-parallel/2026-06-04-self-improvement-implementation-drafting-plan.yaml
+    + ledger.yaml authorization
+  plain_language_summary: 'Both plan and ledger reference authorization.approval_record_path:
+    ''conversation:2026-06-04:self-improvement-autonomous-parallel-test''. The SESSION_WORKFLOW_GUIDE.md
+    §3 (a-2) states: ''proxy_model が元 review raw を読めない形の判断材料しか受け取っていない場合、その decision
+    は実装着手の承認証跡として扱わない'' and ''authorization_snapshot を ledger に保存することを検討する''. A conversation-reference-only
+    approval record is not machine-auditable post-run because the conversation log
+    is transient. The ledger does not contain an authorization_snapshot. The note
+    in docs/notes/2026-06-04-proxy-review-parallel-implementation-plan.md §追加対応 explicitly
+    identifies this as a known gap (''急ぎの遮断条件ではないが…authorization_snapshot を ledger
+    に保存することを検討'') but the ledger was finalized without it.'
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: Per design §17.3 and the proxy review policy, post-run audit must
+    not rely solely on transient conversation context. An implementation run of all
+    11 tasks (T-001–T-011) with only a conversation reference as authorization evidence
+    cannot be independently verified—this is exactly the scenario the policy was designed
+    to prevent.
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-04-self-improvement-implementation-review-run-claude-sonnet-4-6-primary-011
+  run_id: 2026-06-04-self-improvement-implementation-review-run
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: tools/self_improvement/signal_extraction.py::_classify — discipline_absence
+    vs discipline_violation priority
+  plain_language_summary: In _classify(), the conflict check (conflicting_disciplines
+    >= 2) is evaluated first, then obsolete, then violation, then absence. A candidate
+    with both matching_discipline set AND evidence_count >= threshold AND sessions_without_reference
+    >= threshold will be classified as discipline_obsolete rather than discipline_violation.
+    Design §7.2 does not specify priority rules among the four types, and no test
+    exercises the ambiguous multi-condition case. This may produce unexpected proposal_type
+    candidates (archive instead of update) for active-but-violated disciplines that
+    happen to also have high sessions_without_reference.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: Not a blocking defect for first-period operation since classification
+    is semi-manual (§7.3), but the absence of a documented priority rule and no negative
+    test covering the overlap case is a gap relative to T-003 completion condition
+    1 ('4 種類の乖離判定がそれぞれ正しく分類される').
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-04-self-improvement-implementation-review-run-claude-sonnet-4-6-primary-012
+  run_id: 2026-06-04-self-improvement-implementation-review-run
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: learning/workflow/schemas/proposal.schema.json properties.proposal_id
+    pattern
+  plain_language_summary: proposal_id pattern is '^(WP|RB)-[0-9]{3,}$' which includes
+    RB-NNN prefixes. However design §8.5 states that RB-NNN is used for rollback proposals
+    (stored in learning/workflow/rollback/) while WP-NNN is for workflow proposals.
+    The rollback schema (rollback.schema.json) already validates rollback_id separately.
+    Allowing RB-NNN in the proposal schema means a rollback record accidentally placed
+    in proposals/ or approved-updates/ would pass MV-2 validation even though it should
+    only appear in rollback/. Tasks T-004 completion condition 2 says 'proposal_id
+    の採番（接頭辞分離）が正しく機能し' implying the namespaces are meant to be distinct per directory.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: Minor schema over-permissiveness; does not cause immediate failures
+    but relaxes the namespace separation that design §8.5 Decision 9 intends to enforce.
+  applied_files: []
+  superseded_by: null

@@ -1,0 +1,33 @@
+findings:
+  - severity: ERROR
+    target_location: "tools/self_improvement/proposal_model.py#validate_proposal, learning/workflow/schemas/proposal.schema.json"
+    description: "提案モデルが `proposed_change` を Mapping のみ許容しており、上流設計・要件で規定された文字列ベースの提案本文を受け付けない。"
+    rationale: "requirements.md Requirement 4 受入 1 と design.md §8.4 は `proposed_change: |` の YAML 文字列本文を正本として示している一方、実装は `if not isinstance(proposed_change, Mapping): raise ProposalError(\"invalid_proposed_change\")` として文字列を fail-closed している。さらに proposal.schema.json も `proposed_change` を object 固定にしており、仕様準拠の提案 YAML を不正扱いする。T-004 の中核データ契約違反で、workflow-management との接合前提も崩す。"
+  - severity: ERROR
+    target_location: "tools/self_improvement/proposal_model.py#_validate_type_specific, learning/workflow/schemas/proposal.schema.json"
+    description: "`source_discipline_paths` のスキーマ制約が consolidation 用の archive パスを拒否しており、設計で定義された統廃合提案を表現できない。"
+    rationale: "design.md §8.4 の例では `source_discipline_paths` に `docs/disciplines/archive/.../discipline_*.md` が入るが、proposal.schema.json は `^docs/disciplines/discipline_.*\\.md$` のみ許容している。実装側も consolidation で配列の存在しか見ておらず archive パスとの整合を持たないため、設計どおりの統廃合提案を機械検証で通せない。Requirement 3 受入 5 / Requirement 6 受入 4 の具体化不足。"
+  - severity: ERROR
+    target_location: "tools/self_improvement/rollback_model.py#next_rollback_id"
+    description: "RB 採番が rollback ディレクトリのみを走査しており、設計・タスクで確定した『全4ディレクトリ走査』ルールを満たしていない。"
+    rationale: "design.md §8.5 と tasks.md T-004 は proposal/rollback 採番とも `proposals` / `approved-updates` / `rejected-updates` / `rollback` の全4ディレクトリ走査を要求しているが、実装は `learning/workflow/rollback/*.yaml` しか見ない。将来 RB ID が他ディレクトリ由来の履歴と衝突する可能性があり、T-007 の履歴連結要件に反する。"
+  - severity: ERROR
+    target_location: "tools/self_improvement/effect_measurement.py#_average_days_to_adoption"
+    description: "平均採用日数が `approved_at` を前提に算出されており、設計で採用した `approved` + `materialized_at` 契約と不整合なため、承認済み提案から正しく計測できない。"
+    rationale: "design.md §13.5 は self-improvement 側の正式状態を `approved` とし、workflow-management 完了は `materialized_at` / `materialization_commit_hash` で追跡すると定義している。一方、実装は `submitted_at` と `approved_at` が揃わないと平均日数を計上せず、仕様に存在しない `approved_at` へ依存している。T-008 の 7 指標の1つが実運用データで空振りするため、traceability と auditability を損なう。"
+  - severity: WARN
+    target_location: "tools/self_improvement/interfaces.py#assert_commit_fields_are_independent, tests/self-improvement/test_t010_interfaces.py"
+    description: "`target_commit` と `materialization_commit_hash` の独立性検査が『値が異なること』に矮小化されており、設計上の責務分離を誤って実装している。"
+    rationale: "design.md §13.6 は両 commit が『所有者・意味が独立』であることを要求しており、同値になる場合を禁じていない。しかし実装は `independent: target_commit != materialization_commit_hash` としており、同一ハッシュでも文脈上独立な正当ケースを誤判定する。これは接合面仕様の意味論を値比較にすり替えている。"
+  - severity: WARN
+    target_location: "tools/self_improvement/input_model.py#_load_file"
+    description: "入力モデルが全入力源を `records` 配列 YAML に正規化された形しか読めず、上流出力を『再定義せず直接消費する』契約を十分に満たしていない。"
+    rationale: "requirements.md Requirement 2 受入 4 と design.md §6.1/§6.4 は、レビュー記録 front-matter、利用者監査自由記述、運用記録など異種フォーマットの上流出力を本機能が読むことを求めている。現実装はすべて `records` リストを持つ YAML 前提で、front-matter や自由記述入力を直接処理できないため、実質的に本機能用の中間形式を要求している。第1期の半自動でも最低限の直接消費アダプタが必要。"
+  - severity: WARN
+    target_location: "tools/self_improvement/schemas/signal.schema.json"
+    description: "signal スキーマに非標準キー `required_for_obsolete_or_conflict` を置いているが、JSON Schema として機械強制されず、設計上の必須条件がスキーマ検証で担保されていない。"
+    rationale: "design.md §7.4 と tasks.md T-003 完了条件 4 は、衝突型・形骸化型で `related_disciplines` 必須を機械検証することを要求している。現在は Python 実装側で一部補っているが、スキーマ自体は標準 JSON Schema の条件分岐を使っておらず、schema-based validation では見落とす。fail-closed の二重ゲートが弱い。"
+  - severity: WARN
+    target_location: "docs/operations/SELF_IMPROVEMENT.md §1, §4"
+    description: "運用文書が self-improvement の出力として `docs/disciplines/` 更新を直接記述しており、権限分離の確定仕様より強い権限を示している。"
+    rationale: "requirements.md Requirement 1 受入 4 と design.md Decision 1 は、自機能は提案権のみ・実体変更は workflow-management 経由と明確化している。しかし運用文書は §1 で『規律ファイルの作成・更新・退避・統廃合』、§4 で出力に『docs/disciplines/ の規律更新』と記しており、実装・監査時に authority separation を誤解させる。実コードはMV-1で直接書換えを防いでいるため、文書側を実装に合わせて修正すべき。

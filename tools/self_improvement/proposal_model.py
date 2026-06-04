@@ -35,6 +35,7 @@ WORKFLOW_DIRECTORIES = (
   "rollback",
 )
 TARGET_DISCIPLINE_PATTERN = re.compile(r"^docs/disciplines/discipline_.*\.md$")
+RELATED_DISCIPLINE_PATTERN = re.compile(r"^docs/disciplines/discipline_.*\.md$")
 ID_PATTERN = re.compile(r"^(?P<prefix>[A-Z]+)-(?P<number>[0-9]+)$")
 
 
@@ -63,7 +64,7 @@ def validate_proposal(proposal: Mapping[str, object]) -> None:
   for item in evidence:
     if not isinstance(item, Mapping):
       raise ProposalError("invalid_motivating_evidence")
-    if set(item) < {"source", "location", "observation"}:
+    if not {"source", "location", "observation"}.issubset(set(item)):
       raise ProposalError("invalid_motivating_evidence")
 
   _validate_type_specific(proposal_type, proposal)
@@ -79,6 +80,12 @@ def _validate_type_specific(proposal_type: str, proposal: Mapping[str, object]) 
       raise ProposalError("missing_draft_discipline")
     if not proposed_change.get("relationship_notes"):
       raise ProposalError("missing_relationship_notes")
+    related_disciplines = proposed_change.get("related_disciplines")
+    if not isinstance(related_disciplines, list) or not related_disciplines:
+      raise ProposalError("missing_related_disciplines")
+    for path in related_disciplines:
+      if not RELATED_DISCIPLINE_PATTERN.match(str(path)):
+        raise ProposalError("invalid_related_disciplines")
   elif proposal_type == "update":
     if not proposed_change.get("change_diff"):
       raise ProposalError("missing_change_diff")

@@ -1,5 +1,5 @@
 """Effect measurement for workflow improvement proposals."""
-from datetime import date
+from datetime import date, datetime
 from pathlib import Path
 from typing import Mapping
 
@@ -147,10 +147,18 @@ class EffectMeasurement:
       if proposal.get("status") not in ("approved", "superseded"):
         continue
       submitted_at = proposal.get("submitted_at")
-      approved_at = proposal.get("approved_at")
-      if not submitted_at or not approved_at:
+      materialized_at = proposal.get("materialized_at")
+      if not submitted_at or not materialized_at:
         continue
       durations.append(
-        (date.fromisoformat(approved_at) - date.fromisoformat(submitted_at)).days
+        (self._iso_date(materialized_at) - self._iso_date(submitted_at)).days
       )
     return sum(durations) / len(durations) if durations else 0.0
+
+  def _iso_date(self, value: str) -> date:
+    text = str(value)
+    if text.endswith("Z"):
+      text = f"{text[:-1]}+00:00"
+    if "T" in text:
+      return datetime.fromisoformat(text).date()
+    return date.fromisoformat(text)

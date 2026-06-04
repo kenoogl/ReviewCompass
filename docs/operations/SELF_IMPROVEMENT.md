@@ -8,11 +8,11 @@
 
 `self-improvement` は ReviewCompass の改善機能だが、第 1 期では **workflow 層改善のみ**を担う（計画書 §7、§5.16）。先行プロジェクトの自己改善仕様（8 要件、主に runtime 層改善向け）は workflow 改善の性格に合わないため、計画書 §5.16 で全面書き直し済み。
 
-workflow 改善は次を中核責務とする：
+workflow 改善は次を中核責務とする。`self-improvement` は **提案権のみ**を持ち、`docs/disciplines/discipline_*.md` の実体変更は workflow-management 経由で行う：
 
-- **規律と実体の双方向同期**：規律と実体の乖離を観察し、規律を実体に追従させるか、実体を規律に追従させるかを判断
-- **規律の正本所有**：規律ファイル（`docs/disciplines/discipline_*.md`）の作成・更新・退避・統廃合
-- **5 種類の改善提案**：新規規律起案／既存規律更新／ステータス変更／archive 退避／規律間統廃合
+- **規律と実体の双方向同期案**：規律と実体の乖離を観察し、規律を実体に追従させるか、実体を規律に追従させるかを提案
+- **規律変更提案の管理**：規律ファイル（`docs/disciplines/discipline_*.md`）の作成・更新・退避・統廃合は提案として扱い、正本への反映は workflow-management が担う
+- **5 種類の改善提案**：新規規律起案／既存規律更新案／ステータス変更案／archive 退避案／規律間統廃合案
 - **3 つの検証方法**：過去遡及シミュレーション／パイロット運用／影響範囲事前分析
 - **効果測定 7 指標**：規律遵守率／昇格件数／退避件数 ＋ 提案件数／採用率／ロールバック率／提案から採用までの平均日数
 
@@ -52,8 +52,10 @@ workflow 改善は次を中核責務とする：
 [workflow 改善] signal 抽出 → 提案構築 → 検証 → 利用者承認 → 採用または却下 → ロールバック
    ↓
 [出力]
-- learning/workflow/ 配下の改善履歴
-- docs/disciplines/ の規律更新
+- learning/workflow/proposals/ 配下の改善提案
+- learning/workflow/approved-updates/ 配下の承認済み提案と workflow-management への受け渡し証跡
+- learning/workflow/metrics/ 配下の効果測定 metrics
+- docs/disciplines/ の規律実体更新は workflow-management の出力
 ```
 
 ## 5. 5 種類の提案種別（Requirement 3）
@@ -95,7 +97,7 @@ workflow 改善運用の 4 指標：
 - **`runtime`**：規律遵守検査の結果（レビュー記録の機械検査出力）を入力源とする
 - **`evaluation`**：規律違反データの集計と評価結果を入力源とする
 - **`analysis`**：効果測定 7 指標を本機能から受け取る
-- **`workflow-management`**：規律の昇格・退避・統廃合を所定手続き（drafting → review → approval）に従って実行
+- **`workflow-management`**：承認済み提案を入力として受け取り、規律の昇格・退避・統廃合などの `docs/disciplines/` 実体変更を所定手続き（drafting → review → approval）に従って実行
 - **`conformance-evaluation`**：規律遵守検査の上流文書との適合性評価結果を入力源として活用可能
 
 ## 9. 旧実装モジュールとの関係（§5.16.11 由来）

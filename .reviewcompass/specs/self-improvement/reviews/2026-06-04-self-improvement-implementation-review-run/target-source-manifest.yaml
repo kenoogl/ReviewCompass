@@ -1,0 +1,112 @@
+run_id: 2026-06-04-self-improvement-implementation-review-run
+generated_at: "2026-06-04T05:48:00.761207+00:00"
+generation_policy:
+  basis: feature_specific_from_intent_feature_partitioning_requirements_design_tasks
+  prior_run_usage: artifact_structure_sample_only
+  copied_feature_viewpoints: false
+bundle:
+  path: ".reviewcompass/specs/self-improvement/reviews/2026-06-04-self-improvement-implementation-review-run/review-target.md"
+  sha256: 1cf49128d08c92551035afc0d41ba95490ab585f6cb6e0f67034294f67a60420
+source_files:
+  - path: ".reviewcompass/specs/self-improvement/requirements.md"
+    sha256: 65aea3af5d343579d0022981dfc544884d7c0c548933eb1392320b80f0226818
+  - path: ".reviewcompass/specs/self-improvement/design.md"
+    sha256: f2253615599c615921db90399f260d31bcb7ad15628240cd4091b560dcdd35cd
+  - path: ".reviewcompass/specs/self-improvement/tasks.md"
+    sha256: aba8ea5772c9b24650071a39ab8de1d3bff8d9426cfe53238d4098fa2333d34e
+  - path: ".reviewcompass/specs/self-improvement/spec.json"
+    sha256: ab9f42adf0d6e7b88dd3a8b5f98e80a3f443ae290d23c192523458a9580306d6
+  - path: ".reviewcompass/specs/self-improvement/reviews/2026-05-22-requirements.md"
+    sha256: dfd0218dca205a80cca4445984e51553245771f833d1b3555bb6c8e45436e0b8
+  - path: ".reviewcompass/specs/self-improvement/reviews/2026-05-26-design-triad-review.md"
+    sha256: a7a6ab1bd087a7d7f3905ef42cf547b38046d25ca3ad9185bf30b4455700497d
+  - path: ".reviewcompass/specs/self-improvement/reviews/2026-05-29-tasks-triad-review.md"
+    sha256: b0f10c61f4544b071370e015e659d0c4100810ccd0d8d8c58ea4a9585efda47a
+  - path: "docs/operations/SELF_IMPROVEMENT.md"
+    sha256: 33ec1ffebc6dd10fd711b4c086262089b806f80383dc977a4df7c67574cb058a
+  - path: "docs/operations/SELF_IMPROVEMENT_MACHINE_VERIFICATION.md"
+    sha256: e73b4117d6484be3fb10c4bf656edb7630a376623e09c1a2dd90c5b6e2e8dddf
+  - path: "docs/operations/SESSION_WORKFLOW_GUIDE.md"
+    sha256: ee887807d47872d997c0027f731facf9e1064444fd09d999921c0a77e12378fe
+  - path: "docs/notes/2026-06-04-proxy-review-parallel-implementation-plan.md"
+    sha256: 0d8281fe0a6bd58e7fecc0f8015e99c9003822e08dee3060e461877aa2716921
+  - path: "docs/logs/autonomous-parallel/2026-06-04-self-improvement-implementation-drafting-plan.yaml"
+    sha256: 23d66801f14e2879dfdff355796c0d7e8b087032233b1ef6f24b28448d455f7c
+  - path: "docs/logs/autonomous-parallel/2026-06-04-self-improvement-implementation-drafting.yaml"
+    sha256: 76e0d2fb6ffaed6b49b2a24e4e2204e97d9f0d24607e89242c72d156059332b1
+  - path: "tools/README.md"
+    sha256: c9734e96cc5a2f19358b0d3eb8d479b0581b3421817a2c605ab565e312c8ed19
+  - path: "tools/self-improvement-check.py"
+    sha256: e786b6ef72c907a1d5e9e2169daea70a2c9c16e8850b644e23603856ba419f9e
+  - path: "tools/self_improvement/input_model.py"
+    sha256: 42830700b7242dec66aa42b7c6a8e569049d6a860ba958fd89cca057d8868f28
+  - path: "tools/self_improvement/signal_extraction.py"
+    sha256: 79761f375e798af407e96d44943576ba25bbb501be3ca9feec38084de317f798
+  - path: "tools/self_improvement/proposal_model.py"
+    sha256: 29b02b9705b50e09b345a6914801c37bd6bcf4d303870590e075aea745c8b1cb
+  - path: "tools/self_improvement/verification_model.py"
+    sha256: 2372581bd1358f9576a80e0d8a6a0196230ec75af049bb6c983568c18ae42320
+  - path: "tools/self_improvement/impact_analysis.py"
+    sha256: 5ef9cb3a882407d57addc8746cf90e0604fa60e8abd49ce24777400452e68cdf
+  - path: "tools/self_improvement/approval_model.py"
+    sha256: a2839a05ebd2a845ffa8f56c088d27a57bc0a081516b3623111f88bbba5d1e63
+  - path: "tools/self_improvement/rollback_model.py"
+    sha256: 953ab51ab1267ec35bd0f43aad41bcbd1dd00653c277cf988942c8b1754490e7
+  - path: "tools/self_improvement/effect_measurement.py"
+    sha256: e91f05693c400a25d91a22ceeaac3a0718760fa16652051eaba4500b557319c4
+  - path: "tools/self_improvement/machine_verification.py"
+    sha256: 6b77e2fefe7df1044402075ef13357b1f2c81c665cb9dcf5673ce775b23c9fb1
+  - path: "tools/self_improvement/interfaces.py"
+    sha256: f436220c5964af668baf924099f6148ac20c809b6f8db67877ff161291a687c3
+  - path: "tools/self_improvement/traceability.py"
+    sha256: 88f21c2ac351ff156aeb594d50c6ed0d806d97e168413bc9c17b506ac873fa49
+  - path: "tools/self_improvement/schemas/provenance.schema.json"
+    sha256: 01f0d2c9ba8e6a7f0f2e780419c6ddfe2fa72565916e8066500298ab87776e65
+  - path: "tools/self_improvement/schemas/signal.schema.json"
+    sha256: 4fffc860e0d280226c1226715ad3286711eb4fe43ad3082d23312d44e6640411
+  - path: "learning/workflow/schemas/proposal.schema.json"
+    sha256: 991d224b005c88b2ac9c610664d641c1a0a8c2a635169db7cd9e30f9f5bc20bb
+  - path: "learning/workflow/schemas/rollback.schema.json"
+    sha256: fc2915b2229b20790b6752830945b46d63e2232b19ce8e3d166944f7367279e2
+  - path: "learning/workflow/schemas/metrics.schema.json"
+    sha256: a4921d826bf3d69e442f8f6be398a620f838f844e4dce08c21c12af24b0024cd
+  - path: "learning/workflow/proposals/README.md"
+    sha256: 4b8fcc4703113cf903217beadc307968fdb769d95bf44cf3b81073c2d398dbe6
+  - path: "learning/workflow/approved-updates/README.md"
+    sha256: cb533b8aeca84becea0e1ff744d785042c3d1d04e6fe2b56c3e74c7c1c656f3f
+  - path: "learning/workflow/rejected-updates/README.md"
+    sha256: 54ee991b0a7c2f3acd177bbbc1a7d955de6c02c40cea3440474f0262d70ecda0
+  - path: "learning/workflow/rollback/README.md"
+    sha256: 35fba4242b354cac3a45feae66a1955c60cb5c10e262c3d7a4f501d3fb2db958
+  - path: "learning/workflow/metrics/README.md"
+    sha256: 0d579bd2326715074921ec5790b2a060ae2be550d19fb344ce996177f9a348dd
+  - path: "learning/workflow/schemas/README.md"
+    sha256: ebc52dbc5872243cf8617244ece90f8edf2b46445ebee21470abcc04fa1e0b5e
+  - path: "learning/findings/README.md"
+    sha256: ea46ca6158712cfbdcc91399ee06ae0973360fee6afac294b22b9fc8c17514d1
+  - path: "learning/backtests/README.md"
+    sha256: 2a8f8c8788dfc0e38d1fd2f9b7c9263a0c1f5adf17cc7805bf471e7cb795b797
+  - path: "learning/templates/README.md"
+    sha256: 053b2c3cdd6a5a30fba9e2548c1f18850131106fbbf6924808cacd1fc985fbf7
+  - path: "tests/self-improvement/test_t001_layout.py"
+    sha256: ef4710f22f38c90cd3af860f4c32f74f71270e802665d3aa8b587bddc4bc1c01
+  - path: "tests/self-improvement/test_t002_input_model.py"
+    sha256: 5b04546269d814ee50a22b03cd40116280e3f06fd06a424b06204af1c215804c
+  - path: "tests/self-improvement/test_t003_signal_extraction.py"
+    sha256: a1439543dc74b3684de6b9f5055870baf7acec562bab831661cd6ce4b9e24aa0
+  - path: "tests/self-improvement/test_t004_proposal_model.py"
+    sha256: 8d0337ed511bae7cfa5264ab82363699570e0d50ad32fc95cbf074ec7ee94f8d
+  - path: "tests/self-improvement/test_t005_verification_model.py"
+    sha256: b3f4069cf50aa030e1edcbb4607141c9325aac64cf6aff84fc1e179845126b5e
+  - path: "tests/self-improvement/test_t006_approval_model.py"
+    sha256: 97c27d64f138b21b86f0ac4319c20574f933245170527e4d9ba7b837d827b9e5
+  - path: "tests/self-improvement/test_t007_rollback_model.py"
+    sha256: a76a6a2c43f17c2e7e4db4a74ea1d00231760fe5ed264aca5606987ba8ee1724
+  - path: "tests/self-improvement/test_t008_effect_measurement.py"
+    sha256: bec0dea164010eb91480b58038dde338adda74861526978159b707e8eeb59bf1
+  - path: "tests/self-improvement/test_t009_machine_verification.py"
+    sha256: 07d20932fa80538b89f2fe348ea2117048924700f8fd2eaaa45a217fbe1e1479
+  - path: "tests/self-improvement/test_t010_interfaces.py"
+    sha256: 6c077789b906dd94e78cf8621942a91ecaf0111834a7daa6db2ac1760bd58b2b
+  - path: "tests/self-improvement/test_t011_traceability.py"
+    sha256: 3696e78e9a8d26e38e82bfa58417630b47a78389ef14645b3c508fedb501ef75

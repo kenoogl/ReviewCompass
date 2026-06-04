@@ -1,0 +1,79 @@
+run_id: 2026-06-04-self-improvement-implementation-review-run
+mode: autonomous_parallel
+verdict: DEVIATION
+exit_code: 2
+reasons:
+- 'execution_evidence human_required が残っています: 12'
+task_ids:
+- target-bundle
+- api-primary
+- api-adversarial
+- api-judgment
+- aggregate-review-run
+authorization:
+  approved_by: user
+  approval_record_path: conversation:2026-06-04:self-improvement-review-run-feature-specific-template
+  summary_presented_to_user: true
+  triage_presented_to_user: true
+history:
+  ledger_path: docs/logs/autonomous-parallel/2026-06-04-self-improvement-implementation-review-run.yaml
+  record_task_assignments: true
+  record_decision_basis: true
+  record_integration_result: true
+  retention: preserve
+integration_gate:
+  requires_main_session_review: true
+  requires_diff_scope_check: true
+  requires_tests: true
+  requires_decision_basis_review: true
+outputs_policy:
+  implementation_diff: commit_candidate
+  verification_summary: required
+  decision_basis: preserve_if_used
+  work_noise: exclude
+current_state:
+  mode: autonomous_parallel
+  run_id: 2026-06-04-self-improvement-implementation-review-run
+  task_count: 5
+  parallel_task_count: 1
+  checked_gates:
+  - requires_main_session_review
+  - requires_diff_scope_check
+  - requires_tests
+  - requires_decision_basis_review
+  history_ledger_path: docs/logs/autonomous-parallel/2026-06-04-self-improvement-implementation-review-run.yaml
+  execution_evidence:
+    review_run_dir: .reviewcompass/specs/self-improvement/reviews/2026-06-04-self-improvement-implementation-review-run
+    required_raw_paths:
+    - raw/claude-sonnet-4-6.round-1.txt
+    - raw/gpt-5.4.round-1.txt
+    - raw/gemini-3.1-pro-preview.round-1.txt
+    triage_path: triage.yaml
+    human_required_count: 12
+  plan_path: docs/logs/autonomous-parallel/2026-06-04-self-improvement-implementation-review-run-plan.yaml
+execution_evidence_snapshot:
+  review_run_dir: .reviewcompass/specs/self-improvement/reviews/2026-06-04-self-improvement-implementation-review-run
+  required_raw_paths:
+  - raw/claude-sonnet-4-6.round-1.txt
+  - raw/gpt-5.4.round-1.txt
+  - raw/gemini-3.1-pro-preview.round-1.txt
+  triage_path: triage.yaml
+  raw_review_triage_summary_path: raw-review-triage-summary.md
+  human_required_count: 8
+  completed_tasks:
+  - target-bundle
+  - api-primary
+  - api-adversarial
+  - api-judgment
+  - aggregate-review-run
+  parallelized_operations: []
+integration_result:
+  status: stopped_for_approval
+  tests: .venv/bin/python3 tools/api_providers/run_review.py --variant implementation_review_independent_3way
+    --target .reviewcompass/specs/self-improvement/reviews/2026-06-04-self-improvement-implementation-review-run/review-target.md
+    --phase implementation.triad-review --criteria self_improvement_implementation_t001_t011_feature_specific_review
+    --review-run-dir .reviewcompass/specs/self-improvement/reviews/2026-06-04-self-improvement-implementation-review-run
+    --round-id round-1
+  decision: Review-run completed with all raw responses preserved. Important findings
+    were summarized into raw-review-triage-summary.md. Implementation fixes are not
+    started until approval or proxy decision is recorded.

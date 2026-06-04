@@ -43,12 +43,12 @@ def test_t008_calculates_all_seven_metrics(tmp_path):
       "approved",
       proposed_change={"from": "aspirational", "to": "enforced"},
       submitted_at="2026-06-01",
-      approved_at="2026-06-04",
+      materialized_at="2026-06-04T00:00:00+09:00",
     ),
   )
   _write_yaml(
     tmp_path / "learning" / "workflow" / "approved-updates" / "WP-002.yaml",
-    _proposal("WP-002", "archive", "superseded", submitted_at="2026-06-02", approved_at="2026-06-04"),
+    _proposal("WP-002", "archive", "superseded", submitted_at="2026-06-02", materialized_at="2026-06-04T00:00:00+09:00"),
   )
   _write_yaml(
     tmp_path / "learning" / "workflow" / "rejected-updates" / "WP-003.yaml",
@@ -78,6 +78,23 @@ def test_t008_calculates_all_seven_metrics(tmp_path):
   assert metrics["adoption_rate"] == 2 / 3
   assert metrics["rollback_rate"] == 1.0
   assert metrics["average_days_to_adoption"] == 2.5
+
+
+def test_t008_average_days_to_adoption_uses_materialized_at_not_approved_at(tmp_path):
+  _write_yaml(
+    tmp_path / "learning" / "workflow" / "approved-updates" / "WP-001.yaml",
+    _proposal(
+      "WP-001",
+      "update",
+      "approved",
+      submitted_at="2026-06-01",
+      materialized_at="2026-06-05T12:00:00+09:00",
+    ),
+  )
+
+  metrics = EffectMeasurement(tmp_path).calculate_metrics(metric_date="2026-06-04")
+
+  assert metrics["average_days_to_adoption"] == 4.0
 
 
 def test_t008_adoption_rate_counts_superseded_as_adopted_and_excludes_pending(tmp_path):

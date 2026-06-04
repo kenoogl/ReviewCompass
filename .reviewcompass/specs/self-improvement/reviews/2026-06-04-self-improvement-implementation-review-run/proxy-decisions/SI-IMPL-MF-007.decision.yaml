@@ -1,0 +1,25 @@
+finding_id: SI-IMPL-MF-007
+approved_by: proxy_model
+proxy_model_id: gpt-5.5
+decision_prompt_path: proxy-decision-prompts/SI-IMPL-MF-all.prompt.md
+source_raw_paths:
+- raw/gpt-5.4.round-1.txt
+candidate_options:
+- option_id: A
+  summary: must-fix として実装または正本契約を整合する
+- option_id: B
+  summary: should-fix として延期または文書化する
+- option_id: C
+  summary: leave-as-is として対応しない
+selected_option: A
+final_label: must-fix
+rationale: RB 採番について正本が全4ディレクトリ走査を要求しているなら、rollback 配下のみの走査は重複や契約違反の原因になる。まず正本上の WP/RB
+  名前空間分離を確認し、RB も全4ディレクトリ走査が必要なら実装とテストを修正し、分離が正しい場合でも正本・テスト側でその境界を明確化すべきである。
+rejected_options:
+- option_id: B
+  reason: RB が rollback 専用 ID である可能性は確認対象だが、現時点で全4ディレクトリ走査ルール違反の疑いを延期扱いにすると採番契約の破綻を見逃す。
+- option_id: C
+  reason: rollback 配下のみで十分と断定するには正本上の名前空間分離確認が必要であり、現状維持のまま許容する根拠が不足している。
+raw_response_path: proxy-decisions/SI-IMPL-MF-all.raw.yaml
+covered_source_findings:
+- gpt-5.4-raw-003

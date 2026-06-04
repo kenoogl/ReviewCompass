@@ -1,0 +1,25 @@
+finding_id: SI-IMPL-MF-006
+approved_by: proxy_model
+proxy_model_id: gpt-5.5
+decision_prompt_path: proxy-decision-prompts/SI-IMPL-MF-all.prompt.md
+source_raw_paths:
+- raw/claude-sonnet-4-6.round-1.txt
+candidate_options:
+- option_id: A
+  summary: must-fix として実装または正本契約を整合する
+- option_id: B
+  summary: should-fix として延期または文書化する
+- option_id: C
+  summary: leave-as-is として対応しない
+selected_option: A
+final_label: must-fix
+rationale: tasks.md が new_discipline の関係明示を機械検証可能に定義してテスト化することを要求しているなら、relationship_notes
+  の非空確認だけでは未完了に近い。related_disciplines 配列や [[discipline_*]] 参照など最低構造を定義し、機械検証とテストで固定すべきである。
+rejected_options:
+- option_id: B
+  reason: 明示タスクが定義とテスト化を求めているため、DVT への延期では現フェーズの完了条件を満たさない。
+- option_id: C
+  reason: 非空文字列では関係先や関係性を機械的に検証できず、要求を満たさない。
+raw_response_path: proxy-decisions/SI-IMPL-MF-all.raw.yaml
+covered_source_findings:
+- 2026-06-04-self-improvement-implementation-review-run-claude-sonnet-4-6-primary-004

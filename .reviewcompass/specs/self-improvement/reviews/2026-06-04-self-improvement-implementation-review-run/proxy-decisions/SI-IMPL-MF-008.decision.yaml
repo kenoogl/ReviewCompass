@@ -1,0 +1,25 @@
+finding_id: SI-IMPL-MF-008
+approved_by: proxy_model
+proxy_model_id: gpt-5.5
+decision_prompt_path: proxy-decision-prompts/SI-IMPL-MF-all.prompt.md
+source_raw_paths:
+- raw/gpt-5.4.round-1.txt
+candidate_options:
+- option_id: A
+  summary: must-fix として実装または正本契約を整合する
+- option_id: B
+  summary: should-fix として延期または文書化する
+- option_id: C
+  summary: leave-as-is として対応しない
+selected_option: A
+final_label: must-fix
+rationale: self-improvement は規律への直接更新権ではなく提案権を持つという権限分離が中心仕様である。運用文書が docs/disciplines/
+  の直接更新を出力に含むよう読めるなら、提案 YAML と証跡を出し、実体変更は workflow-management 経由で行うことを明確化すべきである。
+rejected_options:
+- option_id: B
+  reason: 実装 MV-1 が守っていても、運用文書の誤読は実運用事故につながるため後回しにできない。
+- option_id: C
+  reason: 直接更新権があるように読める表現は権限分離仕様と矛盾する可能性があり、問題なしとはいえない。
+raw_response_path: proxy-decisions/SI-IMPL-MF-all.raw.yaml
+covered_source_findings:
+- gpt-5.4-raw-008

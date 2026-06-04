@@ -50,7 +50,11 @@ def test_t004_generates_all_five_proposal_types(tmp_path):
       proposal_type="new_discipline",
       target_discipline_path="docs/disciplines/discipline_new.md",
       signal=BASE_SIGNAL,
-      proposed_change={"draft_discipline": "新規規律本文", "relationship_notes": "既存規律との関係"},
+      proposed_change={
+        "draft_discipline": "新規規律本文",
+        "relationship_notes": "既存規律 [[discipline_existing]] との関係",
+        "related_disciplines": ["docs/disciplines/discipline_existing.md"],
+      },
       expected_effect="規律不在を解消する",
     ),
     model.create_proposal(
@@ -146,6 +150,20 @@ def test_t004_requires_motivating_evidence_three_fields():
     validate_proposal(proposal)
 
 
+def test_t004_accepts_exact_motivating_evidence_three_fields():
+  proposal = {
+    "proposal_id": "WP-001",
+    "proposal_type": "update",
+    "target_discipline_path": "docs/disciplines/discipline_update.md",
+    "motivating_evidence": EVIDENCE,
+    "proposed_change": {"change_diff": "- old\n+ new"},
+    "expected_effect": "改善する",
+    "status": "pending",
+  }
+
+  validate_proposal(proposal)
+
+
 def test_t004_allocates_next_id_across_four_workflow_directories(tmp_path):
   for directory, proposal_id in [
     ("proposals", "WP-001"),
@@ -192,6 +210,38 @@ def test_t004_enforces_type_specific_requirements(tmp_path):
     )
 
 
+def test_t004_new_discipline_requires_machine_checkable_relationship(tmp_path):
+  model = ProposalModel(tmp_path)
+
+  with pytest.raises(ProposalError, match="missing_related_disciplines"):
+    model.create_proposal(
+      proposal_type="new_discipline",
+      target_discipline_path="docs/disciplines/discipline_new.md",
+      signal=BASE_SIGNAL,
+      proposed_change={
+        "draft_discipline": "新規規律本文",
+        "relationship_notes": "既存規律との関係",
+      },
+      expected_effect="規律不在を解消する",
+    )
+
+  proposal = model.create_proposal(
+    proposal_type="new_discipline",
+    target_discipline_path="docs/disciplines/discipline_new.md",
+    signal=BASE_SIGNAL,
+    proposed_change={
+      "draft_discipline": "新規規律本文",
+      "relationship_notes": "既存規律 [[discipline_existing]] との関係",
+      "related_disciplines": ["docs/disciplines/discipline_existing.md"],
+    },
+    expected_effect="規律不在を解消する",
+  )
+
+  assert proposal["proposed_change"]["related_disciplines"] == [
+    "docs/disciplines/discipline_existing.md"
+  ]
+
+
 def test_t004_proposal_schema_documents_owned_constraints():
   schema = json.loads(
     (ProposalModel.project_root() / "learning" / "workflow" / "schemas" / "proposal.schema.json")
@@ -212,6 +262,7 @@ def test_t004_proposal_schema_documents_owned_constraints():
     "superseded",
   ]
   assert schema["properties"]["target_discipline_path"]["pattern"] == "^docs/disciplines/discipline_.*\\.md$"
+  assert "allOf" in schema
   assert schema["required"] == [
     "proposal_id",
     "proposal_type",

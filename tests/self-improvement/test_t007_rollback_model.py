@@ -86,6 +86,21 @@ def test_t007_next_rb_id_scans_existing_rollback_records(tmp_path):
   assert RollbackModel(tmp_path).next_rollback_id() == "RB-100"
 
 
+def test_t007_next_rb_id_scans_all_four_workflow_directories(tmp_path):
+  for directory, rollback_id in [
+    ("proposals", "RB-010"),
+    ("approved-updates", "RB-099"),
+    ("rejected-updates", "RB-100"),
+    ("rollback", "RB-003"),
+  ]:
+    _write_yaml(
+      tmp_path / "learning" / "workflow" / directory / f"{rollback_id}.yaml",
+      {"rollback_id": rollback_id},
+    )
+
+  assert RollbackModel(tmp_path).next_rollback_id() == "RB-101"
+
+
 def test_t007_symlink_recreation_plan_has_five_steps(tmp_path):
   plan = RollbackModel(tmp_path).symlink_recreation_plan(
     memory_link="memory/feedback_x.md",

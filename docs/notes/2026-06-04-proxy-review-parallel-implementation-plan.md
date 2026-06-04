@@ -107,3 +107,32 @@ API review-run 型の自律・並列実行は raw response、triage、model-resu
 後続課題：
 
 - `authorization.approval_record_path` が `conversation:` を指す場合、デプロイ後に会話ログが同梱されないと承認内容を再確認できない。急ぎの遮断条件ではないが、次の監査性強化では `authorization_snapshot` を ledger に保存することを検討する。
+
+## 追加対応：review-run bundle は先例コピーではなく機能固有生成にする
+
+implementation.triad-review の review-run 準備では、既存の workflow-management review-run をそのままコピー元にしない。workflow-management の実例は、raw response 保存、三段階トリアージ、plan/ledger、review summary、target manifest などの成果物構造が実際に動いた検証済みサンプルとして参照する。一方、レビュー観点、対象ファイル集合、重要所見の判定基準は、対象機能の intent、feature-partitioning、requirements、design、tasks から生成する。
+
+理由は、機能軸そのものが intent から feature-partitioning を経て生成されるためである。開発するアプリが変われば、機能名、責務、隣接機能、受入基準、必要な証跡、テスト観点が変わる。したがって、review-run のひな形は特定機能の内容を持たず、フェーズ処理として不変な骨格だけを持つべきである。
+
+共通骨格に入れる事項：
+
+- `run_id`、対象 feature、phase/stage
+- review target bundle と source manifest
+- 3 役レビューの raw response 保存
+- parsed、model-result-summary、triage、review summary の保存
+- 三段階トリアージ
+- 重要件は候補案、推薦案、判断理由を示し、承認または proxy decision の証跡ができるまで実装修正に進めないこと
+- 自律・並列実行 plan/ledger と、事後監査用の ledger snapshot
+- 人間判断、proxy_model 判断、不可逆操作の境界
+
+機能ごとに生成する事項：
+
+- レビュー観点
+- 対象ファイル集合
+- requirements/design/tasks/spec.json との対応
+- 実装ファイルとテストファイルの対応
+- 失敗時の影響と重要度
+- 並列化できる作業単位
+- 実装後に測るメトリクス
+
+self-improvement implementation.triad-review では、workflow-management の guard 中心の観点を持ち込まず、規律と実体の双方向同期、提案権と実体変更権の分離、入力モデル、signal 抽出、提案、検証、承認、rollback、効果測定、機械検査、他機能接合、T-001〜T-011 の traceability を中心に review target bundle を作る。

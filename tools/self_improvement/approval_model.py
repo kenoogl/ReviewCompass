@@ -5,6 +5,7 @@ import yaml
 
 
 APPROVAL_WORDS = ("承認", "OK", "採用", "進めて", "はい")
+ENFORCEMENT_APPROVAL_WORDS = ("正式化を承認", "enforced を承認", "enforced承認")
 REJECTION_WORDS = ("却下", "不採用", "reject")
 
 
@@ -22,7 +23,7 @@ class ApprovalModel:
     self._require_transition(proposal, "pending", "approved")
     self._require_approval(approval_text)
     if self._is_enforcement_status_change(proposal):
-      self._require_approval(approval_text)
+      self._require_enforcement_approval(approval_text)
     proposal["status"] = "approved"
     target = self.root / "learning" / "workflow" / "approved-updates" / proposal_path.name
     return self._write_transition(proposal_path, target, proposal, "pending", "approved")
@@ -109,6 +110,10 @@ class ApprovalModel:
   def _require_approval(self, text: str) -> None:
     if not any(word in text for word in APPROVAL_WORDS):
       raise ApprovalError("explicit_user_approval_required")
+
+  def _require_enforcement_approval(self, text: str) -> None:
+    if not any(word in text for word in ENFORCEMENT_APPROVAL_WORDS):
+      raise ApprovalError("explicit_enforcement_approval_required")
 
   def _require_rejection(self, text: str) -> None:
     if not any(word in text for word in REJECTION_WORDS):

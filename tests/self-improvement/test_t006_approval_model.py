@@ -85,6 +85,22 @@ def test_t006_blocks_status_change_to_enforced_without_explicit_approval(tmp_pat
     ApprovalModel(tmp_path).approve(source, approval_text="よさそう")
 
 
+def test_t006_status_change_to_enforced_requires_formalization_approval(tmp_path):
+  source = tmp_path / "learning" / "workflow" / "proposals" / "WP-003.yaml"
+  proposal = _base_proposal("WP-003")
+  proposal["proposal_type"] = "status_change"
+  proposal["proposed_change"] = {"from": "aspirational", "to": "enforced"}
+  proposal["statistical_evidence"] = {"compliance_rate": 0.9}
+  _write_proposal(source, proposal)
+
+  with pytest.raises(ApprovalError, match="explicit_enforcement_approval_required"):
+    ApprovalModel(tmp_path).approve(source, approval_text="承認します")
+
+  result = ApprovalModel(tmp_path).approve(source, approval_text="正式化を承認します")
+
+  assert result["to_status"] == "approved"
+
+
 def test_t006_superseded_transition_requires_reopen_five_step_fields(tmp_path):
   source = tmp_path / "learning" / "workflow" / "approved-updates" / "WP-004.yaml"
   _write_proposal(source, _base_proposal("WP-004", status="approved"))

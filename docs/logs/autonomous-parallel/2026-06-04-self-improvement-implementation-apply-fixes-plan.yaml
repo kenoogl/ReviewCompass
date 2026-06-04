@@ -1,0 +1,160 @@
+mode: autonomous_parallel
+run_id: 2026-06-04-self-improvement-implementation-apply-fixes
+authorization:
+  approved_by: proxy_model
+  approval_record_path: .reviewcompass/specs/self-improvement/reviews/2026-06-04-self-improvement-implementation-review-run/proxy-decisions/SI-IMPL-MF-all.raw.yaml
+  summary_presented_to_user: true
+  triage_presented_to_user: true
+tasks:
+  - task_id: main-proposal-approval-schema
+    source_finding_ids:
+      - SI-IMPL-MF-001
+      - SI-IMPL-MF-002
+      - SI-IMPL-MF-005
+      - SI-IMPL-MF-006
+    assignee:
+      kind: main_session
+      worktree_policy: same_worktree
+    allowed_paths:
+      - tools/self_improvement/proposal_model.py
+      - tools/self_improvement/approval_model.py
+      - tests/self-improvement/test_t004_proposal_model.py
+      - tests/self-improvement/test_t006_approval_model.py
+      - learning/workflow/schemas/proposal.schema.json
+      - .reviewcompass/specs/self-improvement/reviews/2026-06-04-self-improvement-implementation-review-run/proxy-decisions/
+      - .reviewcompass/specs/self-improvement/reviews/2026-06-04-self-improvement-implementation-review-run/proxy-decision-prompts/
+    forbidden_paths:
+      - .git/
+      - docs/disciplines/discipline_*.md
+    depends_on: []
+    expected_tests:
+      - .venv/bin/python3 -m pytest tests/self-improvement/test_t004_proposal_model.py tests/self-improvement/test_t006_approval_model.py -q
+    stop_conditions:
+      - irreversible_operation_requires_user
+      - important_decision_requires_approval
+    writes_repo_diff: true
+    output_only: false
+  - task_id: worker-effect-rollback
+    source_finding_ids:
+      - SI-IMPL-MF-003
+      - SI-IMPL-MF-007
+    assignee:
+      kind: subagent
+      worktree_policy: separate_worktree
+      agent_id: 019e913e-7964-7f20-a5d2-0ce12ecf9317
+    allowed_paths:
+      - tools/self_improvement/effect_measurement.py
+      - tools/self_improvement/rollback_model.py
+      - tests/self-improvement/test_t007_rollback_model.py
+      - tests/self-improvement/test_t008_effect_measurement.py
+      - learning/workflow/schemas/metrics.schema.json
+      - learning/workflow/schemas/rollback.schema.json
+    forbidden_paths:
+      - .git/
+      - docs/disciplines/discipline_*.md
+    depends_on: []
+    expected_tests:
+      - .venv/bin/python3 -m pytest tests/self-improvement/test_t007_rollback_model.py tests/self-improvement/test_t008_effect_measurement.py -q
+    stop_conditions:
+      - irreversible_operation_requires_user
+      - important_decision_requires_approval
+    writes_repo_diff: true
+    output_only: false
+  - task_id: worker-traceability
+    source_finding_ids:
+      - SI-IMPL-MF-004
+    assignee:
+      kind: subagent
+      worktree_policy: separate_worktree
+      agent_id: 019e913e-b578-7e23-903f-dbbf30f27677
+    allowed_paths:
+      - tools/self_improvement/traceability.py
+      - tests/self-improvement/test_t011_traceability.py
+    forbidden_paths:
+      - .git/
+      - docs/disciplines/discipline_*.md
+    depends_on: []
+    expected_tests:
+      - .venv/bin/python3 -m pytest tests/self-improvement/test_t011_traceability.py -q
+    stop_conditions:
+      - irreversible_operation_requires_user
+      - important_decision_requires_approval
+    writes_repo_diff: true
+    output_only: false
+  - task_id: worker-operations-document
+    source_finding_ids:
+      - SI-IMPL-MF-008
+    assignee:
+      kind: subagent
+      worktree_policy: separate_worktree
+      agent_id: 019e913f-1c42-7d12-8d81-47d322c15039
+    allowed_paths:
+      - docs/operations/SELF_IMPROVEMENT.md
+      - tests/self-improvement/test_t010_interfaces.py
+    forbidden_paths:
+      - .git/
+      - docs/disciplines/discipline_*.md
+    depends_on: []
+    expected_tests:
+      - .venv/bin/python3 -m pytest tests/self-improvement/test_t010_interfaces.py -q
+    stop_conditions:
+      - irreversible_operation_requires_user
+      - important_decision_requires_approval
+    writes_repo_diff: true
+    output_only: false
+  - task_id: integration
+    source_finding_ids:
+      - SI-IMPL-MF-001
+      - SI-IMPL-MF-002
+      - SI-IMPL-MF-003
+      - SI-IMPL-MF-004
+      - SI-IMPL-MF-005
+      - SI-IMPL-MF-006
+      - SI-IMPL-MF-007
+      - SI-IMPL-MF-008
+    assignee:
+      kind: main_session
+      worktree_policy: same_worktree
+    allowed_paths:
+      - docs/logs/autonomous-parallel/2026-06-04-self-improvement-implementation-apply-fixes.yaml
+      - .reviewcompass/specs/self-improvement/reviews/2026-06-04-self-improvement-implementation-review-run/proxy-decision-summary.md
+    forbidden_paths:
+      - .git/
+      - docs/disciplines/discipline_*.md
+    depends_on:
+      - main-proposal-approval-schema
+      - worker-effect-rollback
+      - worker-traceability
+      - worker-operations-document
+    expected_tests:
+      - .venv/bin/python3 -m pytest tests/self-improvement -q
+      - git diff --check
+    stop_conditions:
+      - irreversible_operation_requires_user
+      - important_decision_requires_approval
+    writes_repo_diff: true
+    output_only: false
+integration_gate:
+  requires_main_session_review: true
+  requires_diff_scope_check: true
+  requires_tests: true
+  requires_decision_basis_review: true
+history:
+  ledger_path: docs/logs/autonomous-parallel/2026-06-04-self-improvement-implementation-apply-fixes.yaml
+  record_task_assignments: true
+  record_decision_basis: true
+  record_integration_result: true
+  retention: preserve
+outputs_policy:
+  implementation_diff: commit_candidate
+  verification_summary: required
+  decision_basis: preserve_if_used
+  work_noise: exclude
+execution_evidence:
+  completed_tasks:
+    - main-proposal-approval-schema
+  parallelized_operations:
+    - worker-effect-rollback
+    - worker-traceability
+    - worker-operations-document
+  human_required_count: 0
