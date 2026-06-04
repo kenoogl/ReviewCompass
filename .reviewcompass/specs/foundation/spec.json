@@ -41,7 +41,7 @@
       "triad-review": true,
       "review-wave": true,
       "alignment": true,
-      "approval": false
+      "approval": true
     }
   },
   "reopened": {
