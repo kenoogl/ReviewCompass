@@ -42,3 +42,12 @@ def test_discipline_map_surfaces_user_visible_triad_review_gate():
   assert "user-visible triage gate" in text
   assert "variant-role-assignment" in text
   assert "user-visible-triage-gate" in text
+
+
+def test_cross_feature_stage_artifacts_have_canonical_location():
+  navigation = (ROOT / "docs" / "operations" / "WORKFLOW_NAVIGATION.md").read_text(encoding="utf-8")
+  discipline_map = (ROOT / "docs" / "operations" / "WORKFLOW_DISCIPLINE_MAP.yaml").read_text(encoding="utf-8")
+
+  assert ".reviewcompass/specs/_cross_feature/reviews/" in navigation
+  assert "cross_feature_stage_artifacts" in discipline_map
+  assert ".reviewcompass/specs/_cross_feature/reviews/{date}-{phase}-{stage}.md" in discipline_map

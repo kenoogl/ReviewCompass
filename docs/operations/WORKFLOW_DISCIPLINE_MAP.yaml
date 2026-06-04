@@ -70,6 +70,14 @@ required_inputs:
           - user-visible-triage-gate
         read_policy: review_run_bundle_and_triage
     review-wave:
+      - id: cross_feature_stage_artifacts
+        role: stage_output_contract
+        source_type: artifact_location_contract
+        purpose: Record cross-feature stage evidence under the cross-feature namespace instead of any single feature. Standard path is .reviewcompass/specs/_cross_feature/reviews/{date}-{phase}-{stage}.md.
+        resolver:
+          kind: static_path_template
+          path: .reviewcompass/specs/_cross_feature/reviews/{date}-{phase}-{stage}.md
+        read_policy: create_or_update_stage_artifact
       - id: unresolved_cross_scope_items
         role: stage_entry_context
         source_type: carry_forward_register

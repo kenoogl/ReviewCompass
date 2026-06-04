@@ -1,0 +1,27 @@
+status: completed
+target_files:
+  - docs/operations/WORKFLOW_DISCIPLINE_MAP.yaml
+  - docs/operations/WORKFLOW_NAVIGATION.md
+target_sha256:
+  docs/operations/WORKFLOW_DISCIPLINE_MAP.yaml: ddf2ebc31ceb8fbf4a891218163fe62293ad2e67065c808a8a93397f4f367da6
+  docs/operations/WORKFLOW_NAVIGATION.md: cc91210036c1345fae4bae8f301d90ed6308c9204bcb0e985503f3bbc2d0d126
+required_verifiers:
+  - codex-self-check
+completed_verifiers:
+  - codex-self-check
+unresolved_substantive_findings: 0
+verifications:
+  - verifier: codex-self-check
+    target_files:
+      - docs/operations/WORKFLOW_DISCIPLINE_MAP.yaml
+      - docs/operations/WORKFLOW_NAVIGATION.md
+    target_sha256:
+      docs/operations/WORKFLOW_DISCIPLINE_MAP.yaml: ddf2ebc31ceb8fbf4a891218163fe62293ad2e67065c808a8a93397f4f367da6
+      docs/operations/WORKFLOW_NAVIGATION.md: cc91210036c1345fae4bae8f301d90ed6308c9204bcb0e985503f3bbc2d0d126
+    result: completed
+    notes: >
+      Verified the cross-feature stage artifact placement contract as a single
+      coverage unit. WORKFLOW_NAVIGATION.md defines the canonical namespace
+      .reviewcompass/specs/_cross_feature/reviews/ and WORKFLOW_DISCIPLINE_MAP.yaml
+      exposes cross_feature_stage_artifacts as a machine-visible required input.
+      No unresolved substantive findings.
