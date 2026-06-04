@@ -661,6 +661,12 @@ def write_autonomous_parallel_ledger(cwd, plan, verdict, exit_code, reasons, cur
     return
   ledger_path = cwd / ledger_path
   ledger_path.parent.mkdir(parents=True, exist_ok=True)
+  existing_ledger = None
+  if ledger_path.exists():
+    try:
+      existing_ledger = yaml.safe_load(ledger_path.read_text(encoding="utf-8"))
+    except (OSError, yaml.YAMLError):
+      existing_ledger = None
 
   tasks = plan.get("tasks") if isinstance(plan.get("tasks"), list) else []
   task_ids = [
@@ -681,6 +687,11 @@ def write_autonomous_parallel_ledger(cwd, plan, verdict, exit_code, reasons, cur
     "outputs_policy": plan.get("outputs_policy"),
     "current_state": current_state,
   }
+  if (
+    isinstance(existing_ledger, dict)
+    and isinstance(existing_ledger.get("integration_result"), dict)
+  ):
+    ledger["integration_result"] = existing_ledger["integration_result"]
   ledger_path.write_text(
     yaml.safe_dump(ledger, allow_unicode=True, sort_keys=False),
     encoding="utf-8",

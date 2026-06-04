@@ -638,6 +638,37 @@ class AutonomousParallelPlanTests(unittest.TestCase):
       "python3 -m unittest tests.tools.test_check_workflow_action -v",
     )
 
+  def test_autonomous_plan_preserves_existing_integration_result(self):
+    """autonomous-plan 再実行は既存の統合結果を消さない"""
+    cwd = Path(self.tmpdir)
+    plan_path = _write_autonomous_parallel_plan(cwd)
+    check = run_script(["autonomous-plan", str(plan_path), "--json"], cwd=cwd)
+    self.assertEqual(check.returncode, 0, check.stderr)
+
+    ledger_path = cwd / "docs" / "logs" / "autonomous-parallel" / "ap-001.yaml"
+    result = run_script(
+      [
+        "autonomous-plan-record-integration",
+        "--ledger", str(ledger_path),
+        "--status", "completed",
+        "--tests", "python3 -m unittest tests.tools.test_check_workflow_action -v",
+        "--decision", "main_session accepted scoped diff",
+      ],
+      cwd=cwd,
+    )
+    self.assertEqual(result.returncode, 0, result.stderr)
+
+    recheck = run_script(["autonomous-plan", str(plan_path), "--json"], cwd=cwd)
+
+    _assert_script_invoked(self, recheck)
+    self.assertEqual(recheck.returncode, 0, recheck.stderr)
+    ledger = yaml.safe_load(ledger_path.read_text(encoding="utf-8"))
+    self.assertEqual(ledger["integration_result"]["status"], "completed")
+    self.assertEqual(
+      ledger["integration_result"]["decision"],
+      "main_session accepted scoped diff",
+    )
+
 
 class SpecSetExitCodeTests(unittest.TestCase):
   """spec-set サブコマンドの終了コード判定
