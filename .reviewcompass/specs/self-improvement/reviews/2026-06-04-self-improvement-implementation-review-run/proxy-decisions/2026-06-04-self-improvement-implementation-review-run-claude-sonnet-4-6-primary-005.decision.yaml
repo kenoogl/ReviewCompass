@@ -1,0 +1,26 @@
+finding_id: 2026-06-04-self-improvement-implementation-review-run-claude-sonnet-4-6-primary-005
+approved_by: proxy_model
+proxy_model_id: gpt-5.5
+decision_prompt_path: proxy-decision-prompts/SI-IMPL-MF-all.prompt.md
+source_raw_paths:
+- raw/claude-sonnet-4-6.round-1.txt
+candidate_options:
+- option_id: A
+  summary: must-fix として実装または正本契約を整合する
+- option_id: B
+  summary: should-fix として延期または文書化する
+- option_id: C
+  summary: leave-as-is として対応しない
+selected_option: A
+final_label: must-fix
+rationale: motivating_evidence は提案 YAML の中核検証であり、集合比較の向きが誤っていると正しい入力を不正扱いする。source/location/observation
+  の全存在を issubset 等で正しく検査し、正常系と欠落系のテストで契約を固定すべきである。
+rejected_options:
+  B:
+    reason: 既存テストが通っていても、検証式自体が誤っていれば正しい証拠を拒否する可能性が残るため延期は不適切である。
+  C:
+    reason: 現状の比較式で十分とはいえず、必須3項目検証として意味をなさない可能性がある。
+raw_response_path: proxy-decisions/SI-IMPL-MF-all.raw.yaml
+covered_source_findings:
+- 2026-06-04-self-improvement-implementation-review-run-claude-sonnet-4-6-primary-005
+cluster_id: SI-IMPL-MF-001

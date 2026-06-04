@@ -1,0 +1,28 @@
+finding_id: 2026-06-04-self-improvement-implementation-review-run-claude-sonnet-4-6-primary-006
+approved_by: proxy_model
+proxy_model_id: gpt-5.5
+decision_prompt_path: proxy-decision-prompts/SI-IMPL-MF-all.prompt.md
+source_raw_paths:
+- raw/claude-sonnet-4-6.round-1.txt
+candidate_options:
+- option_id: A
+  summary: must-fix として実装または正本契約を整合する
+- option_id: B
+  summary: should-fix として延期または文書化する
+- option_id: C
+  summary: leave-as-is として対応しない
+selected_option: A
+final_label: must-fix
+rationale: T-011 traceability gate が実際の日本語表や token と合わない場合、正しい実装でも失敗するか、逆に意味のない pass
+  になる。文書実体に合わせて parser と期待値を修正し、pass/fail が traceability の実態を反映するゲートにする必要がある。
+rejected_options:
+  B:
+    reason: 現行テストが pass していても、文書形式依存が壊れているなら完了判断の根拠にならないため延期は不適切である。
+  C:
+    reason: T-011 は最終 traceability gate として機能すべきであり、参考テスト扱いで空洞化させるべきではない。
+raw_response_path: proxy-decisions/SI-IMPL-MF-all.raw.yaml
+covered_source_findings:
+- 2026-06-04-self-improvement-implementation-review-run-claude-sonnet-4-6-primary-001
+- 2026-06-04-self-improvement-implementation-review-run-claude-sonnet-4-6-primary-002
+- 2026-06-04-self-improvement-implementation-review-run-claude-sonnet-4-6-primary-006
+cluster_id: SI-IMPL-MF-004

@@ -1,0 +1,27 @@
+finding_id: 2026-06-04-self-improvement-implementation-review-run-claude-sonnet-4-6-primary-010
+approved_by: proxy_model
+proxy_model_id: gpt-5.5
+decision_prompt_path: proxy-decision-prompts/SI-IMPL-WARN-009-010.prompt.md
+source_raw_paths:
+- raw/claude-sonnet-4-6.round-1.txt
+- raw/gpt-5.4.round-1.txt
+- raw/gemini-3.1-pro-preview.round-1.txt
+candidate_options:
+- option_id: A
+  summary: must-fix として既存 ledger に authorization_snapshot を追加する
+- option_id: B
+  summary: should-fix として ledger schema / workflow guard 強化へ carry-forward する
+- option_id: C
+  summary: leave-as-is として追加 snapshot を不要とみなす
+selected_option: B
+final_label: should-fix
+rationale: authorization_snapshot を ledger に保存することは、会話ログに依存しない監査性を高める有効な改善である。一方で、今回の
+  apply-fixes ledger には proxy raw、prompt、decision、実施結果への参照が残っており、既存の 8 件の実装修正や review-run
+  完了を遮断するほどの証跡欠落とは判断しない。ledger schema / workflow guard の強化課題として carry-forward するのが妥当。
+rejected_options:
+  A:
+    reason: 監査性強化として望ましいが、現時点で承認根拠が完全に失われているわけではなく、今回の implementation.triad-review
+      完了前に既存 ledger を必ず修正すべき must-fix とは言えない。
+  C:
+    reason: proxy raw 等の既存証跡があるとしても、会話参照に依存しない snapshot 化は再現性とデプロイ時監査性を高める実質的な改善であり、不要として破棄するのは適切でない。
+raw_response_path: proxy-decisions/SI-IMPL-WARN-009-010.raw.yaml

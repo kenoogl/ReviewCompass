@@ -73,6 +73,25 @@ def test_t006_rejects_pending_proposal_with_explicit_user_rejection(tmp_path):
   assert _read_yaml(target)["status"] == "rejected"
 
 
+def test_t006_rejects_pending_proposal_with_declined_adoption_phrase(tmp_path):
+  source = tmp_path / "learning" / "workflow" / "proposals" / "WP-007.yaml"
+  _write_proposal(source, _base_proposal("WP-007"))
+
+  result = ApprovalModel(tmp_path).reject(source, approval_text="今回は採用しません")
+
+  target = tmp_path / "learning" / "workflow" / "rejected-updates" / "WP-007.yaml"
+  assert result["to_status"] == "rejected"
+  assert _read_yaml(target)["status"] == "rejected"
+
+
+def test_t006_does_not_approve_with_declined_adoption_phrase(tmp_path):
+  source = tmp_path / "learning" / "workflow" / "proposals" / "WP-008.yaml"
+  _write_proposal(source, _base_proposal("WP-008"))
+
+  with pytest.raises(ApprovalError, match="explicit_user_approval_required"):
+    ApprovalModel(tmp_path).approve(source, approval_text="今回は採用しません")
+
+
 def test_t006_blocks_status_change_to_enforced_without_explicit_approval(tmp_path):
   source = tmp_path / "learning" / "workflow" / "proposals" / "WP-003.yaml"
   proposal = _base_proposal("WP-003")

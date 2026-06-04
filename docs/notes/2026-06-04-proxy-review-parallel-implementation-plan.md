@@ -107,6 +107,7 @@ API review-run 型の自律・並列実行は raw response、triage、model-resu
 後続課題：
 
 - `authorization.approval_record_path` が `conversation:` を指す場合、デプロイ後に会話ログが同梱されないと承認内容を再確認できない。急ぎの遮断条件ではないが、次の監査性強化では `authorization_snapshot` を ledger に保存することを検討する。
+- self-improvement implementation.triad-review の所見 9 で、`rejected = 却下` の状態語彙は正本化済みだが、却下操作を成立させる入力語句が実装内 `REJECTION_WORDS` に閉じていたことを確認した。利用者判断により後続送りではなく即時対応とし、`approval-operation` 規律に明示的否定発言を追加し、T-006 で「採用しません」のような否定形が承認として誤検出されないことを検査する。
 
 ## 追加対応：review-run bundle は先例コピーではなく機能固有生成にする
 

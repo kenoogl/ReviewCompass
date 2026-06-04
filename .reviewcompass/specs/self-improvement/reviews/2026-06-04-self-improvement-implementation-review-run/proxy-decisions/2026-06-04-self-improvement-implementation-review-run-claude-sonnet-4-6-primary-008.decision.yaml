@@ -1,0 +1,28 @@
+finding_id: 2026-06-04-self-improvement-implementation-review-run-claude-sonnet-4-6-primary-008
+approved_by: proxy_model
+proxy_model_id: gpt-5.5
+decision_prompt_path: proxy-decision-prompts/SI-IMPL-MF-all.prompt.md
+source_raw_paths:
+- raw/claude-sonnet-4-6.round-1.txt
+- raw/gpt-5.4.round-1.txt
+candidate_options:
+- option_id: A
+  summary: must-fix として実装または正本契約を整合する
+- option_id: B
+  summary: should-fix として延期または文書化する
+- option_id: C
+  summary: leave-as-is として対応しない
+selected_option: A
+final_label: must-fix
+rationale: approved_at が正本上廃止済みであるなら、effect_measurement.py がそれに依存する限り平均採用日数が実質的に空振りし、効果測定7指標の信頼性を損なう。materialized_at
+  または正本で定める配置時点契約に合わせ、0.0 固定にならないテストを追加すべきである。
+rejected_options:
+  B:
+    reason: 論文用メトリクス以前に self-improvement の効果測定そのものが壊れるため延期は不適切である。
+  C:
+    reason: 0.0 を未知値として許容すると、廃止フィールド依存による欠測と実際のゼロ日採用を区別できず、指標として無効化される。
+raw_response_path: proxy-decisions/SI-IMPL-MF-all.raw.yaml
+covered_source_findings:
+- 2026-06-04-self-improvement-implementation-review-run-claude-sonnet-4-6-primary-008
+- gpt-5.4-raw-004
+cluster_id: SI-IMPL-MF-003

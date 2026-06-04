@@ -139,14 +139,14 @@ language: ja
 
 - **対応設計節**：design.md §10.1〜§10.5
 - **対応要件**：Requirement 6 受入 1〜5
-- **責務**：フェーズ境目の利用者監査による承認機構を実装。session 内連続承認を強制しない（§10.1）。規律正式化（aspirational → enforced）に利用者明示承認を必須化（§10.2、規律 [[approval-operation]] の明示的肯定発言判定に従う）。status 4 状態遷移を提案 YAML の `status` フィールドで管理し、ディレクトリ間 git mv（pending → proposals/ ／ approved → approved-updates/ ／ rejected → rejected-updates/ ／ superseded は approved-updates/ で status のみ更新、§10.5）。**`superseded` 遷移は reopen-procedure 5 ステップを必須**（§8.7 ／ §10.5、A-007 対処、規律 [[reopen-procedure-for-settled-topics]] 準拠）：宣言 ／ 理由記述（`reopen_reason`）／ 新結論案 ／ 明示承認 ／ 履歴記録（`superseded_by` ／ `superseded_at` ／ `reopen_reason` の追記）
+- **責務**：フェーズ境目の利用者監査による承認機構を実装。session 内連続承認を強制しない（§10.1）。規律正式化（aspirational → enforced）に利用者明示承認を必須化（§10.2、規律 [[approval-operation]] の明示的肯定発言判定に従う）。却下は同規律の明示的否定発言判定に従い、「採用しません」のような承認語を含む否定形は承認ではなく却下として扱う。status 4 状態遷移を提案 YAML の `status` フィールドで管理し、ディレクトリ間 git mv（pending → proposals/ ／ approved → approved-updates/ ／ rejected → rejected-updates/ ／ superseded は approved-updates/ で status のみ更新、§10.5）。**`superseded` 遷移は reopen-procedure 5 ステップを必須**（§8.7 ／ §10.5、A-007 対処、規律 [[reopen-procedure-for-settled-topics]] 準拠）：宣言 ／ 理由記述（`reopen_reason`）／ 新結論案 ／ 明示承認 ／ 履歴記録（`superseded_by` ／ `superseded_at` ／ `reopen_reason` の追記）
 - **前提タスク**：T-004
 - **成果物**：
   - `tools/self_improvement/approval_model.py`（4 状態遷移 ＋ git mv ＋ 明示承認判定 ＋ superseded 5 ステップ強制）
 - **完了条件**：
   1. 4 状態（pending ／ approved ／ rejected ／ superseded）の遷移が `status` フィールドとディレクトリ配置で機械検証される
   2. 状態遷移時に提案 ID を維持し、git mv で履歴が保持される
-  3. `aspirational → enforced` の正式化に利用者明示承認が必須（承認なしは遷移不可）
+  3. `aspirational → enforced` の正式化に利用者明示承認が必須（承認なしは遷移不可）。明示的否定発言による却下が可能であり、否定形が承認として誤検出されない
   4. `superseded` 遷移時に `superseded_by` ／ `superseded_at` ／ `reopen_reason` の 3 フィールドがすべて存在することが機械検証される（MV-4 連動、§17.1）
   5. `superseded` 遷移の利用者明示承認が後続提案 WP-MMM の承認とは別建てで取得されることが運用文書に明示される
 - **テスト要件**：4 状態遷移テスト、git mv 履歴保持テスト、明示承認必須テスト（承認あり／なし）、superseded 3 フィールド存在テスト、reopen-procedure 5 ステップ完了テスト

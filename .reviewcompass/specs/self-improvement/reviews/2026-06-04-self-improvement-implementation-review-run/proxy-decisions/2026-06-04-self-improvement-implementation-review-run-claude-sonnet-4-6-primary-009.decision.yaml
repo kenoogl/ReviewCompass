@@ -1,0 +1,26 @@
+finding_id: 2026-06-04-self-improvement-implementation-review-run-claude-sonnet-4-6-primary-009
+approved_by: proxy_model
+proxy_model_id: gpt-5.5
+decision_prompt_path: proxy-decision-prompts/SI-IMPL-WARN-009-010.prompt.md
+source_raw_paths:
+- raw/claude-sonnet-4-6.round-1.txt
+- raw/gpt-5.4.round-1.txt
+- raw/gemini-3.1-pro-preview.round-1.txt
+candidate_options:
+- option_id: A
+  summary: must-fix として却下語彙を正本化しテスト/実装する
+- option_id: B
+  summary: should-fix として運用語彙設計の後続課題に残す
+- option_id: C
+  summary: leave-as-is として後続課題に残さない
+selected_option: B
+final_label: should-fix
+rationale: 却下語彙の正本化は運用上の一貫性とユーザビリティを改善する価値があるが、現行実装は明示的な却下語を一定範囲で受理しており、今回の implementation.triad-review
+  の完了を遮断する安全性・正当性上の必須欠陥とは判断しない。承認語彙との対称性や日本語運用語彙の設計として carry-forward し、後続で仕様化とテスト追加を行うのが適切。
+rejected_options:
+  A:
+    reason: 自然な却下語が不足している点は改善対象だが、承認処理を誤って通す欠陥や今回修正済み must-fix 事項の成立を崩す問題ではないため、完了前の
+      must-fix にはしない。
+  C:
+    reason: 現行語彙だけで十分とは言い切れず、特に日本語の自然な拒否表現や英語 reject の扱いは運用語彙として明確化する価値があるため、後続課題には残すべき。
+raw_response_path: proxy-decisions/SI-IMPL-WARN-009-010.raw.yaml

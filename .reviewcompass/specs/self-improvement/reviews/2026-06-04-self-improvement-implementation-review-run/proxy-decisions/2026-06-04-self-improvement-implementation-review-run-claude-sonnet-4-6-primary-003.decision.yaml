@@ -1,0 +1,26 @@
+finding_id: 2026-06-04-self-improvement-implementation-review-run-claude-sonnet-4-6-primary-003
+approved_by: proxy_model
+proxy_model_id: gpt-5.5
+decision_prompt_path: proxy-decision-prompts/SI-IMPL-MF-all.prompt.md
+source_raw_paths:
+- raw/claude-sonnet-4-6.round-1.txt
+candidate_options:
+- option_id: A
+  summary: must-fix として実装または正本契約を整合する
+- option_id: B
+  summary: should-fix として延期または文書化する
+- option_id: C
+  summary: leave-as-is として対応しない
+selected_option: A
+final_label: must-fix
+rationale: aspirational から enforced への正式化は通常承認より権限上重要な status_change であり、通常承認と同じ語彙だけで通ると特別ゲートの設計意図が弱い。専用の明示語句または
+  evidence を要求し、通常承認では通らない回帰テストを追加すべきである。
+rejected_options:
+  B:
+    reason: 正本語彙の追加判断が必要でも、正式規律化ゲートの弱さは権限分離に関わるため運用文書への延期だけでは不十分である。
+  C:
+    reason: 通常の明示承認と同一扱いでは aspirational から enforced への昇格を特別操作として検証できない。
+raw_response_path: proxy-decisions/SI-IMPL-MF-all.raw.yaml
+covered_source_findings:
+- 2026-06-04-self-improvement-implementation-review-run-claude-sonnet-4-6-primary-003
+cluster_id: SI-IMPL-MF-005

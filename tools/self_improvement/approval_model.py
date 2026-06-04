@@ -6,7 +6,7 @@ import yaml
 
 APPROVAL_WORDS = ("承認", "OK", "採用", "進めて", "はい")
 ENFORCEMENT_APPROVAL_WORDS = ("正式化を承認", "enforced を承認", "enforced承認")
-REJECTION_WORDS = ("却下", "不採用", "reject")
+REJECTION_WORDS = ("却下", "不採用", "採用しない", "採用しません", "見送り")
 
 
 class ApprovalError(ValueError):
@@ -108,6 +108,8 @@ class ApprovalModel:
       )
 
   def _require_approval(self, text: str) -> None:
+    if any(word in text for word in REJECTION_WORDS):
+      raise ApprovalError("explicit_user_approval_required")
     if not any(word in text for word in APPROVAL_WORDS):
       raise ApprovalError("explicit_user_approval_required")
 

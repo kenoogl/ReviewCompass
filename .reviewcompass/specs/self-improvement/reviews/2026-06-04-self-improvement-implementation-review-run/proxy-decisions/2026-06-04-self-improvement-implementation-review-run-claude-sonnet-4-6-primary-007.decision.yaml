@@ -1,0 +1,28 @@
+finding_id: 2026-06-04-self-improvement-implementation-review-run-claude-sonnet-4-6-primary-007
+approved_by: proxy_model
+proxy_model_id: gpt-5.5
+decision_prompt_path: proxy-decision-prompts/SI-IMPL-MF-all.prompt.md
+source_raw_paths:
+- raw/gpt-5.4.round-1.txt
+- raw/claude-sonnet-4-6.round-1.txt
+candidate_options:
+- option_id: A
+  summary: must-fix として実装または正本契約を整合する
+- option_id: B
+  summary: should-fix として延期または文書化する
+- option_id: C
+  summary: leave-as-is として対応しない
+selected_option: A
+final_label: must-fix
+rationale: proposed_change の型契約が仕様・schema・実装・テストで不一致だと、正当な提案の受理可否が経路により変わる。正本を再確認し、object
+  正本なら schema 条件とテストを object 契約へ強化し、文字列正本なら実装と schema を文字列対応へ揃える必要がある。
+rejected_options:
+  B:
+    reason: 現状実装が object で動作していても、仕様または schema との不整合は入力契約の破綻であり review-wave へ延期できない。
+  C:
+    reason: Python 側検査だけでは schema 経由の検証や利用者向け契約の不整合を許容することになり不十分である。
+raw_response_path: proxy-decisions/SI-IMPL-MF-all.raw.yaml
+covered_source_findings:
+- gpt-5.4-raw-001
+- 2026-06-04-self-improvement-implementation-review-run-claude-sonnet-4-6-primary-007
+cluster_id: SI-IMPL-MF-002

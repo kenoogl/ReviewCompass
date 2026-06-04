@@ -1,5 +1,5 @@
 run_id: 2026-06-04-self-improvement-implementation-review-run
-triage_status: draft
+triage_status: decided
 generated_at: '2026-06-04T05:57:45.121789+00:00'
 decision_actor: null
 decision_actor_type: human
@@ -23,16 +23,13 @@ items:
     tokens. Additionally, the section boundary 'start_heading=### 18.1' / 'end_heading=###
     18.2' depends on exact Markdown heading text in the live design.md file which
     is not verified to match.
-  final_label: null
-  decision_status: human_required
-  decision_actor: null
-  decision_actor_type: human
-  decision_at: null
-  decision_reason: T-011's acceptance gate for 7-model × 3-level coverage will always
-    report failure or always trivially pass (empty dict) depending on parsing luck,
-    making the test non-functional as a completion predicate. Design §18 explicitly
-    requires this coverage to be verified (F-017 treatment), so a broken gate undermines
-    the entire T-011 safeguard.
+  final_label: must-fix
+  decision_status: decided
+  decision_actor: proxy_model
+  decision_actor_type: agent
+  decision_at: '2026-06-04T06:27:36.378832+00:00'
+  decision_reason: gpt-5.5 proxy decision approved this finding as must-fix; implemented
+    in commit 1d1ec7c and recorded in the apply-fixes ledger.
   applied_files: []
   superseded_by: null
 - finding_id: 2026-06-04-self-improvement-implementation-review-run-claude-sonnet-4-6-primary-002
@@ -52,15 +49,13 @@ items:
     test files (none contain the literal string ''five''), causing this predicate
     to permanently return False. The test_t011 assertion `assert audit.key_regression_coverage()
     == {''superseded_reopen_five_steps'': True, ...}` will therefore always fail.'
-  final_label: null
-  decision_status: human_required
-  decision_actor: null
-  decision_actor_type: human
-  decision_at: null
-  decision_reason: The reopen-procedure 5-step check (MV-4, design §8.7, T-006 requirement)
-    is a must-have safety gate per design §17.1. A permanently-failing oracle at T-011
-    either blocks all deployment or gets disabled, both outcomes destroying the audit
-    value.
+  final_label: must-fix
+  decision_status: decided
+  decision_actor: proxy_model
+  decision_actor_type: agent
+  decision_at: '2026-06-04T06:27:36.456095+00:00'
+  decision_reason: gpt-5.5 proxy decision approved this finding as must-fix; implemented
+    in commit 1d1ec7c and recorded in the apply-fixes ledger.
   applied_files: []
   superseded_by: null
 - finding_id: 2026-06-04-self-improvement-implementation-review-run-claude-sonnet-4-6-primary-003
@@ -84,16 +79,13 @@ items:
     gate for status_change to enforced'' provides no additional protection beyond
     the ordinary approval gate. Req 6 受入 2 requires explicit user approval as a distinct
     gate for aspirational→enforced promotion.'
-  final_label: null
-  decision_status: human_required
-  decision_actor: null
-  decision_actor_type: human
-  decision_at: null
-  decision_reason: The test test_t006_approval_model.py::test_t006_blocks_status_change_to_enforced_without_explicit_approval
-    passes 'よさそう' which fails APPROVAL_WORDS, so MV-2 prevents the basic case. However
-    any text containing '承認' passes both gates identically—there is no stronger constraint
-    for status_change proposals as the requirement mandates. Design §10.2 and Req
-    6 受入 2 distinguish this transition as requiring special treatment.
+  final_label: must-fix
+  decision_status: decided
+  decision_actor: proxy_model
+  decision_actor_type: agent
+  decision_at: '2026-06-04T06:27:36.535973+00:00'
+  decision_reason: gpt-5.5 proxy decision approved this finding as must-fix; implemented
+    in commit 1d1ec7c and recorded in the apply-fixes ledger.
   applied_files: []
   superseded_by: null
 - finding_id: 2026-06-04-self-improvement-implementation-review-run-claude-sonnet-4-6-primary-004
@@ -115,15 +107,13 @@ items:
     is a trivially non-empty string. This means the machine-checkable criterion required
     by topic-108/F-012 is not implemented and the completion condition ''new_discipline:
     ドラフト＋関係明示の機械検証'' remains unresolved.'
-  final_label: null
-  decision_status: human_required
-  decision_actor: null
-  decision_actor_type: human
-  decision_at: null
-  decision_reason: Tasks T-004 explicitly defers this to 'first define a machine-checkable
-    form then write the test'; the implementation proceeded without the definition,
-    leaving a DVT-equivalent gap with no corresponding DVT entry and no deferred reason
-    in the completion gate.
+  final_label: must-fix
+  decision_status: decided
+  decision_actor: proxy_model
+  decision_actor_type: agent
+  decision_at: '2026-06-04T06:27:36.614107+00:00'
+  decision_reason: gpt-5.5 proxy decision approved this finding as must-fix; implemented
+    in commit 1d1ec7c and recorded in the apply-fixes ledger.
   applied_files: []
   superseded_by: null
 - finding_id: 2026-06-04-self-improvement-implementation-review-run-claude-sonnet-4-6-primary-005
@@ -142,14 +132,13 @@ items:
     set(item) >= {'source','location','observation'}` or equivalently `not {'source','location','observation'}.issubset(set(item))`.
     The current code raises ProposalError for any evidence item that has exactly the
     three required keys, causing all valid proposals to be rejected.
-  final_label: null
-  decision_status: human_required
-  decision_actor: null
-  decision_actor_type: human
-  decision_at: null
-  decision_reason: This is a logic inversion bug that makes ProposalError fire on
-    valid input and silently pass on invalid input. Every compliant proposal will
-    be rejected by MV-2, breaking T-002/T-004 integration.
+  final_label: must-fix
+  decision_status: decided
+  decision_actor: proxy_model
+  decision_actor_type: agent
+  decision_at: '2026-06-04T06:27:36.690653+00:00'
+  decision_reason: gpt-5.5 proxy decision approved this finding as must-fix; implemented
+    in commit 1d1ec7c and recorded in the apply-fixes ledger.
   applied_files: []
   superseded_by: null
 - finding_id: 2026-06-04-self-improvement-implementation-review-run-claude-sonnet-4-6-primary-006
@@ -174,14 +163,13 @@ items:
     to emit false 'has no task reference' warnings for those rows. The audit will
     produce non-empty issues list, causing test_t011_requirements_traceability_is_bidirectional
     to fail.
-  final_label: null
-  decision_status: human_required
-  decision_actor: null
-  decision_actor_type: human
-  decision_at: null
-  decision_reason: test_t011 asserts issues == [], but the parsing logic does not
-    handle the non-Requirement rows at the bottom of the table, producing spurious
-    issues and a false-negative gate failure.
+  final_label: must-fix
+  decision_status: decided
+  decision_actor: proxy_model
+  decision_actor_type: agent
+  decision_at: '2026-06-04T06:27:36.768509+00:00'
+  decision_reason: gpt-5.5 proxy decision approved this finding as must-fix; implemented
+    in commit 1d1ec7c and recorded in the apply-fixes ledger.
   applied_files: []
   superseded_by: null
 - finding_id: 2026-06-04-self-improvement-implementation-review-run-claude-sonnet-4-6-primary-007
@@ -202,16 +190,13 @@ items:
     but not in the JSON Schema. workflow-management reads approved-updates/ YAMLs
     using this schema (per design §13.5 and T-010 interfaces), so a schema-only consumer
     would not see the type-specific validation constraints.
-  final_label: null
-  decision_status: human_required
-  decision_actor: null
-  decision_actor_type: human
-  decision_at: null
-  decision_reason: Design §8.4 is declared the authoritative schema source ('self-improvement
-    design §8.4 が正本スキーマ'). Missing per-type constraints in the JSON Schema weaken
-    the machine-verifiable contract that workflow-management depends on, and undermine
-    the 'dual gate' (MV-1 + pattern constraint) intent described in T-004 completion
-    condition 7.
+  final_label: must-fix
+  decision_status: decided
+  decision_actor: proxy_model
+  decision_actor_type: agent
+  decision_at: '2026-06-04T06:27:36.849369+00:00'
+  decision_reason: gpt-5.5 proxy decision approved this finding as must-fix; implemented
+    in commit 1d1ec7c and recorded in the apply-fixes ledger.
   applied_files: []
   superseded_by: null
 - finding_id: 2026-06-04-self-improvement-implementation-review-run-claude-sonnet-4-6-primary-008
@@ -230,15 +215,13 @@ items:
     as part of DVT-S001 / A-019 resolution (tasks.md DVT table: ''workflow-management
     T-010 の独自項目名 approved_at を廃止''). As a result, average_days_to_adoption will always
     return 0.0 because no proposal will ever have an ''approved_at'' key.'
-  final_label: null
-  decision_status: human_required
-  decision_actor: null
-  decision_actor_type: human
-  decision_at: null
-  decision_reason: Effect metric 'average_days_to_adoption' (Req 8 受入 1, 7th indicator)
-    is permanently zero, making it useless for the improvement-cycle tracking that
-    design §12.1 requires. T-008 completion condition 1 says all 7 metrics must be
-    computed correctly.
+  final_label: must-fix
+  decision_status: decided
+  decision_actor: proxy_model
+  decision_actor_type: agent
+  decision_at: '2026-06-04T06:27:36.926987+00:00'
+  decision_reason: gpt-5.5 proxy decision approved this finding as must-fix; implemented
+    in commit 1d1ec7c and recorded in the apply-fixes ledger.
   applied_files: []
   superseded_by: null
 - finding_id: 2026-06-04-self-improvement-implementation-review-run-claude-sonnet-4-6-primary-009
@@ -258,16 +241,22 @@ items:
     workflow and could be silently omitted by operators. More critically, the rejection
     test passes '却下します' but the approval test uses '承認します'—there is no symmetric test
     verifying that rejection fails when approval words are used.
-  final_label: null
-  decision_status: human_required
-  decision_actor: null
-  decision_actor_type: human
-  decision_at: null
-  decision_reason: If an operator uses '採用しない' (a natural Japanese rejection phrase
-    not in REJECTION_WORDS) the system raises ApprovalError and the proposal cannot
-    be moved to rejected-updates, blocking the lifecycle. This is a fail-closed failure
-    on a valid operation rather than on an invalid one.
-  applied_files: []
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: proxy_model
+  decision_actor_type: agent
+  decision_at: '2026-06-04T06:30:15.321200+00:00'
+  decision_reason: gpt-5.5 proxy decision classified rejection vocabulary as a should-fix
+    carry-forward item. The user then requested immediate handling; approval-operation
+    now canonicalizes explicit rejection phrases, and T-006 verifies that declined
+    adoption phrases reject proposals without being misdetected as approval.
+  applied_files:
+  - docs/disciplines/discipline_approval_operation.md
+  - .reviewcompass/specs/self-improvement/design.md
+  - .reviewcompass/specs/self-improvement/tasks.md
+  - tools/self_improvement/approval_model.py
+  - tests/self-improvement/test_t006_approval_model.py
+  - docs/notes/2026-06-04-proxy-review-parallel-implementation-plan.md
   superseded_by: null
 - finding_id: 2026-06-04-self-improvement-implementation-review-run-claude-sonnet-4-6-primary-010
   run_id: 2026-06-04-self-improvement-implementation-review-run
@@ -288,16 +277,15 @@ items:
     in docs/notes/2026-06-04-proxy-review-parallel-implementation-plan.md §追加対応 explicitly
     identifies this as a known gap (''急ぎの遮断条件ではないが…authorization_snapshot を ledger
     に保存することを検討'') but the ledger was finalized without it.'
-  final_label: null
-  decision_status: human_required
-  decision_actor: null
-  decision_actor_type: human
-  decision_at: null
-  decision_reason: Per design §17.3 and the proxy review policy, post-run audit must
-    not rely solely on transient conversation context. An implementation run of all
-    11 tasks (T-001–T-011) with only a conversation reference as authorization evidence
-    cannot be independently verified—this is exactly the scenario the policy was designed
-    to prevent.
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: proxy_model
+  decision_actor_type: agent
+  decision_at: '2026-06-04T06:30:22.279034+00:00'
+  decision_reason: 'gpt-5.5 proxy decision classified authorization_snapshot auditability
+    as a should-fix carry-forward item: important for ledger/schema hardening, but
+    not a blocker because proxy raw, prompts, decisions, and apply-fixes ledger evidence
+    remain available.'
   applied_files: []
   superseded_by: null
 - finding_id: 2026-06-04-self-improvement-implementation-review-run-claude-sonnet-4-6-primary-011
@@ -318,15 +306,14 @@ items:
     exercises the ambiguous multi-condition case. This may produce unexpected proposal_type
     candidates (archive instead of update) for active-but-violated disciplines that
     happen to also have high sessions_without_reference.
-  final_label: null
-  decision_status: human_required
-  decision_actor: null
-  decision_actor_type: human
-  decision_at: null
-  decision_reason: Not a blocking defect for first-period operation since classification
-    is semi-manual (§7.3), but the absence of a documented priority rule and no negative
-    test covering the overlap case is a gap relative to T-003 completion condition
-    1 ('4 種類の乖離判定がそれぞれ正しく分類される').
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: main_session_llm
+  decision_actor_type: agent
+  decision_at: '2026-06-04T06:27:44.646918+00:00'
+  decision_reason: Signal-classification priority is a non-blocking design refinement
+    for first-period semi-manual operation, so it is recorded as a future vocabulary/priority-rule
+    candidate rather than a current implementation blocker.
   applied_files: []
   superseded_by: null
 - finding_id: 2026-06-04-self-improvement-implementation-review-run-claude-sonnet-4-6-primary-012
@@ -347,12 +334,13 @@ items:
     in proposals/ or approved-updates/ would pass MV-2 validation even though it should
     only appear in rollback/. Tasks T-004 completion condition 2 says 'proposal_id
     の採番（接頭辞分離）が正しく機能し' implying the namespaces are meant to be distinct per directory.
-  final_label: null
-  decision_status: human_required
-  decision_actor: null
-  decision_actor_type: human
-  decision_at: null
-  decision_reason: Minor schema over-permissiveness; does not cause immediate failures
-    but relaxes the namespace separation that design §8.5 Decision 9 intends to enforce.
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: main_session_llm
+  decision_actor_type: agent
+  decision_at: '2026-06-04T06:27:49.903817+00:00'
+  decision_reason: proposal_id schema permissiveness around RB prefixes is minor because
+    rollback_id remains separately validated by rollback.schema.json; namespace tightening
+    is not a current blocker.
   applied_files: []
   superseded_by: null
