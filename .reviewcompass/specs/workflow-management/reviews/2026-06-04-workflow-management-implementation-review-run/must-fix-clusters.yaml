@@ -1,0 +1,156 @@
+run_id: 2026-06-04-workflow-management-implementation-review-run
+generated_at: '2026-06-04T01:46:50.019850+00:00'
+status: proposal_ready_for_proxy_or_human_decision
+clusters:
+- cluster_id: WM-IMPL-MF-001
+  title: raw response と triage 完了を自律実行ガードで機械確認できない
+  finding_ids:
+  - 2026-06-04-workflow-management-implementation-review-run-claude-sonnet-4-6-primary-001
+  - 2026-06-04-workflow-management-implementation-review-run-claude-sonnet-4-6-primary-002
+  plain_explanation: レビュー結果の生データと三段階トリアージが本当に揃ったかを、現在の自律実行計画ガードはファイル参照で確認していません。つまり「揃いました」という自己申告だけで次へ進めてしまう余地があります。
+  candidate_options:
+  - option_id: A
+    summary: autonomous-plan に review_run_dir, required_raw_paths, triage_path を追加し、raw存在・hash・未判断0件を検査する
+    tradeoff: 実装量は中程度だが、今回の問題を直接ふさげる
+  - option_id: B
+    summary: 既存 review_triage.py の assert 系を autonomous-plan から呼ぶ
+    tradeoff: 重複は少ないが、計画段と実装着手段の責務が混ざる可能性がある
+  - option_id: C
+    summary: 運用文書だけで必須化し、機械ガードは追加しない
+    tradeoff: 早いが、同じミスを機械的に防げない
+  recommended_option: A
+  recommended_reason: 自律実行の開始前に証跡の有無を機械判定できるため。ユーザが求めた「取りこぼしを機械判定に持ち込む」に最も合う。
+  proposed_final_label: must-fix
+  source_raw_paths:
+  - raw/claude-sonnet-4-6.round-1.txt
+  source_models:
+  - claude-sonnet-4-6
+  severity_max: ERROR
+- cluster_id: WM-IMPL-MF-002
+  title: commit / push / spec-set が stages/in-progress を見ていない
+  finding_ids:
+  - 2026-06-04-workflow-management-implementation-review-run-gpt-5.4-adversarial-002
+  - 2026-06-04-workflow-management-implementation-review-run-gemini-3.1-pro-preview-judgment-002
+  plain_explanation: 進行中の手続きが残っているときに commit、push、spec-set を通せてしまう、という指摘です。作業途中のまま不可逆操作をしてしまう危険があります。
+  candidate_options:
+  - option_id: A
+    summary: stages/in-progress/ の非空検査を共通関数化し、commit / push / spec-set の直前に必ず見る
+    tradeoff: 実装範囲は明確で、不可逆操作全体に効く
+  - option_id: B
+    summary: commit / push だけ先に遮断し、spec-set は後続に回す
+    tradeoff: 小さく始められるが、spec-set の穴が残る
+  - option_id: C
+    summary: WARN に留める
+    tradeoff: 自律実行中の事故防止として弱い
+  recommended_option: A
+  recommended_reason: 要件上の不可逆操作ゲートなので、対象を分けず共通で fail-closed にするのが自然。
+  proposed_final_label: must-fix
+  source_raw_paths:
+  - raw/gemini-3.1-pro-preview.round-1.txt
+  - raw/gpt-5.4.round-1.txt
+  source_models:
+  - gemini-3.1-pro-preview
+  - gpt-5.4
+  severity_max: ERROR
+- cluster_id: WM-IMPL-MF-003
+  title: proxy decision が元 raw と一致しているか確認できない
+  finding_ids:
+  - 2026-06-04-workflow-management-implementation-review-run-claude-sonnet-4-6-primary-004
+  - 2026-06-04-workflow-management-implementation-review-run-gemini-3.1-pro-preview-judgment-003
+  plain_explanation: proxy decision は「どのレビュー生データを読んで判断したか」が重要ですが、今は raw ファイルが存在することしか見ていません。別の
+    raw に差し替わっても見抜きにくい、という問題です。
+  candidate_options:
+  - option_id: A
+    summary: decision の source_raw_paths を triage.yaml と rounds.yaml に照合し、raw_sha256
+      まで一致確認する
+    tradeoff: 証跡の真正性を一番強く守れる
+  - option_id: B
+    summary: source_raw_paths が triage の source_raw_path と一致することだけ確認する
+    tradeoff: 軽いが、ファイル内容の差し替えは防げない
+  - option_id: C
+    summary: decision に raw_sha256 を追記するだけにする
+    tradeoff: 記録は増えるが検査がなければ防止力が弱い
+  recommended_option: A
+  recommended_reason: raw response を根拠にした判断代行という契約を守るには、パスとハッシュの両方を照合する必要がある。
+  proposed_final_label: must-fix
+  source_raw_paths:
+  - raw/claude-sonnet-4-6.round-1.txt
+  - raw/gemini-3.1-pro-preview.round-1.txt
+  source_models:
+  - claude-sonnet-4-6
+  - gemini-3.1-pro-preview
+  severity_max: ERROR
+- cluster_id: WM-IMPL-MF-004
+  title: spec-set が stages/*.yaml の completion_predicate を評価していない
+  finding_ids:
+  - 2026-06-04-workflow-management-implementation-review-run-gemini-3.1-pro-preview-judgment-001
+  plain_explanation: spec-set が段階定義 YAML を読まず、コード内の固定順序だけで段の進行可否を見ている、という指摘です。段ごとの「成果物があるか」「author/reviewer
+    が分離しているか」などの述語が効いていない可能性があります。
+  candidate_options:
+  - option_id: A
+    summary: まず実装済み範囲との差分を確認し、completion_predicate 評価不足をT-004残課題として機械検査に追加する
+    tradeoff: 大きな改修に入る前に事実確認できる
+  - option_id: B
+    summary: stages/*.yaml パーサと全 predicate 評価を即実装する
+    tradeoff: 正攻法だが影響範囲が大きく、この場の自律実装としては危険
+  - option_id: C
+    summary: 今回は誤検出として保留する
+    tradeoff: CRITICAL 指摘を十分に扱えない
+  recommended_option: A
+  recommended_reason: CRITICAL だが広範囲。まず現実の実装差分とタスク残を照合し、実装単位を切るのが安全。
+  proposed_final_label: must-fix
+  source_raw_paths:
+  - raw/gemini-3.1-pro-preview.round-1.txt
+  source_models:
+  - gemini-3.1-pro-preview
+  severity_max: CRITICAL
+- cluster_id: WM-IMPL-MF-005
+  title: 自律並列計画で main_session/same_worktree のAPI並列をどう扱うかが曖昧
+  finding_ids:
+  - 2026-06-04-workflow-management-implementation-review-run-gpt-5.4-adversarial-001
+  plain_explanation: サブ担当による実装並列は別 worktree が原則ですが、今回の3モデルAPI呼び出しは実装差分を作らない読み取り・生成処理です。この例外を計画ガード上で明示できていない、という問題です。
+  candidate_options:
+  - option_id: A
+    summary: task に writes_repo_diff=false / output_only=true のような区分を追加し、同一 worktree
+      API並列を証跡生成に限定して許可する
+    tradeoff: 今回の実態に合い、実装並列との混同を防げる
+  - option_id: B
+    summary: API呼び出しもすべて subthread/separate_worktree 扱いにする
+    tradeoff: 規律は単純だが、raw取得だけでも過剰に重くなる
+  - option_id: C
+    summary: この指摘を leave-as-is にする
+    tradeoff: 今後も同じ混乱が起きる
+  recommended_option: A
+  recommended_reason: 実装差分を作る並列と、raw取得だけの並列を分けて機械判定できるため。
+  proposed_final_label: must-fix
+  source_raw_paths:
+  - raw/gpt-5.4.round-1.txt
+  source_models:
+  - gpt-5.4
+  severity_max: ERROR
+- cluster_id: WM-IMPL-MF-006
+  title: commit 承認レコードと push 直前検査の新鮮さが足りない
+  finding_ids:
+  - 2026-06-04-workflow-management-implementation-review-run-claude-sonnet-4-6-primary-003
+  - 2026-06-04-workflow-management-implementation-review-run-gpt-5.4-adversarial-003
+  plain_explanation: commit 承認が古いまま使われたり、push 時に直前 commit が正しく検査済みか見ない、という指摘です。人の承認を得たつもりでも、別の差分に承認が流用される危険があります。
+  candidate_options:
+  - option_id: A
+    summary: commit approval に staged file sha256 と作成時刻を記録し、commit/push で監査可能にする
+    tradeoff: 承認の流用を防ぎ、push 監査にも接続できる
+  - option_id: B
+    summary: approval record の consumed だけをさらに厳格化する
+    tradeoff: 古い未消費承認の問題は残る
+  - option_id: C
+    summary: push 側だけ audit-commit を強制する
+    tradeoff: commit 承認の新鮮さ問題は直接解決しない
+  recommended_option: A
+  recommended_reason: コミット対象と承認をハッシュで結びつけるのが、機械判定として最も追跡しやすい。
+  proposed_final_label: must-fix
+  source_raw_paths:
+  - raw/claude-sonnet-4-6.round-1.txt
+  - raw/gpt-5.4.round-1.txt
+  source_models:
+  - claude-sonnet-4-6
+  - gpt-5.4
+  severity_max: ERROR

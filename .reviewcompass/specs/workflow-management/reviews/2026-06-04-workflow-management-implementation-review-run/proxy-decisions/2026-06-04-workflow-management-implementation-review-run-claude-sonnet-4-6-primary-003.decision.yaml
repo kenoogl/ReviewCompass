@@ -1,0 +1,32 @@
+finding_id: 2026-06-04-workflow-management-implementation-review-run-claude-sonnet-4-6-primary-003
+cluster_id: WM-IMPL-MF-006
+approved_by: proxy_model
+proxy_model_id: gpt-5.5
+decision_prompt_path: proxy-decisions/2026-06-04-workflow-management-implementation-review-run-claude-sonnet-4-6-primary-003.prompt.md
+source_raw_paths:
+- raw/claude-sonnet-4-6.round-1.txt
+- raw/gpt-5.4.round-1.txt
+candidate_options:
+- id: A
+  summary: commit approval に staged file sha256 と作成時刻を記録し、commit/push で監査可能にする
+  tradeoff: 承認の流用を防ぎ、push 監査にも接続できる
+- id: B
+  summary: approval record の consumed だけをさらに厳格化する
+  tradeoff: 古い未消費承認の問題は残る
+- id: C
+  summary: push 側だけ audit-commit を強制する
+  tradeoff: commit 承認の新鮮さ問題は直接解決しない
+selected_option: A
+final_label: must-fix
+rationale: commit 承認が対象差分と強く結び付いていない場合、古い承認や別差分への承認流用が可能になり、レビュー済みでない内容が commit/push
+  されるリスクが残る。staged file sha256 と作成時刻を approval record に記録し、commit/push 時に照合・監査できるようにする案が、承認の新鮮さと対象同一性を機械的に検証できるため最も妥当。push
+  直前検査とも接続しやすく、ワークフロー上の安全性を直接改善する。
+rejected_options:
+  B: consumed 状態の厳格化だけでは、未消費だが古い承認や、承認取得後に差分が変わったケースを検出できない。承認対象との同一性保証が不足する。
+  C: push 側で audit-commit を強制しても、commit 承認そのものの新鮮さや対象差分との一致は保証されない。push 時監査の強化としては有効だが、根本原因である承認流用リスクを直接解決しない。
+raw_response_path: proxy-decisions/WM-IMPL-MF-006.raw.yaml
+raw_response_model: gpt-5.5
+raw_response_provider: openai-api
+raw_response_proxy_model_id_original: openai-chatgpt
+formatted_at: '2026-06-04T01:54:26.988276+00:00'
+formatted_by: main_session_llm

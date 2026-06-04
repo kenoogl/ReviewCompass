@@ -33,6 +33,7 @@ import yaml
 # 既定のログファイルパス（呼び出し時の cwd 相対、仕様 §8.2）
 DEFAULT_LOG_PATH = "docs/logs/workflow-precheck.log"
 DEFAULT_COMMIT_APPROVAL_PATH = ".reviewcompass/approvals/commit-approval.json"
+DEFAULT_LAST_COMMIT_PRECHECK_PATH = ".git/reviewcompass/last-commit-precheck.json"
 
 # 各フェーズの段集合（計画書 §5.5 と §5.24.4 と整合）
 PHASE_STAGES = {
@@ -272,6 +273,37 @@ def judge_spec_set(spec_data, phase, stage, new_value):
     return "OK", 0, []
 
 
+def unimplemented_completion_predicate_reasons(cwd, phase, stage, new_value):
+  """未実装の completion_predicate を spec-set が無視しないための保守的検査"""
+  if not new_value:
+    return []
+
+  stage_definition_path = Path(cwd) / "stages" / f"{phase}.yaml"
+  if not stage_definition_path.exists():
+    return []
+
+  try:
+    stage_definition = load_yaml_file(stage_definition_path)
+  except (OSError, yaml.YAMLError) as e:
+    return [f"stage 定義 YAML を読めません: {stage_definition_path}: {e}"]
+
+  if not isinstance(stage_definition, dict):
+    return []
+  stage_entries = stage_definition.get("stages")
+  if not isinstance(stage_entries, list):
+    return []
+
+  for entry in stage_entries:
+    if not isinstance(entry, dict) or entry.get("name") != stage:
+      continue
+    if "completion_predicate" in entry:
+      return [
+        f"stages/{phase}.yaml#{stage}.completion_predicate は未評価です"
+        "（predicate 評価実装または明示的な残課題化が必要）"
+      ]
+  return []
+
+
 def format_current_state_text(feature, phase, phase_state):
   """現状を人間可読のテキストとして整形する（仕様 §7.2 サンプル準拠で小文字真偽値）"""
   lines = [f"{feature}.{phase}:"]
@@ -369,9 +401,95 @@ def tasks_have_dependency(left_task, right_task):
   return right_id in left_depends_on or left_id in right_depends_on
 
 
-def validate_autonomous_parallel_plan(plan):
+def _resolve_plan_path(cwd, base_dir, path_value):
+  """plan 内の相対パスを、plan 基準または cwd 基準で解決する。"""
+  path = Path(path_value)
+  if path.is_absolute():
+    return path
+  base_candidate = Path(base_dir) / path
+  if base_candidate.exists():
+    return base_candidate
+  return Path(cwd) / path
+
+
+def validate_autonomous_execution_evidence(plan, cwd, base_dir):
+  """自律実行計画が参照する raw/triage 証跡を検査する。"""
+  reasons = []
+  current_state = {
+    "review_run_dir": None,
+    "required_raw_paths": [],
+    "triage_path": None,
+    "human_required_count": None,
+  }
+  evidence = plan.get("execution_evidence")
+  if not isinstance(evidence, dict):
+    return ["execution_evidence が必要です"], current_state
+
+  review_run_dir_value = evidence.get("review_run_dir")
+  if not isinstance(review_run_dir_value, str) or not review_run_dir_value.strip():
+    reasons.append("execution_evidence.review_run_dir が必要です")
+    return reasons, current_state
+
+  review_run_dir = _resolve_plan_path(cwd, base_dir, review_run_dir_value)
+  current_state["review_run_dir"] = str(review_run_dir_value)
+  if not review_run_dir.is_dir():
+    reasons.append("execution_evidence.review_run_dir が存在しません")
+
+  required_raw_paths = evidence.get("required_raw_paths")
+  if not isinstance(required_raw_paths, list) or not required_raw_paths:
+    reasons.append("execution_evidence.required_raw_paths が必要です")
+    required_raw_paths = []
+  current_state["required_raw_paths"] = required_raw_paths
+  for raw_path_value in required_raw_paths:
+    if not isinstance(raw_path_value, str) or not raw_path_value.strip():
+      reasons.append("execution_evidence.required_raw_paths は文字列配列が必要です")
+      continue
+    raw_path = review_run_dir / raw_path_value
+    if not raw_path.is_file():
+      reasons.append(
+        f"execution_evidence.required_raw_paths が見つかりません: {raw_path_value}"
+      )
+      continue
+    if raw_path.stat().st_size == 0:
+      reasons.append(
+        f"execution_evidence.required_raw_paths が空です: {raw_path_value}"
+      )
+
+  triage_path_value = evidence.get("triage_path")
+  if not isinstance(triage_path_value, str) or not triage_path_value.strip():
+    reasons.append("execution_evidence.triage_path が必要です")
+    return reasons, current_state
+  triage_path = review_run_dir / triage_path_value
+  current_state["triage_path"] = triage_path_value
+  if not triage_path.is_file():
+    reasons.append("execution_evidence.triage_path が見つかりません")
+    return reasons, current_state
+
+  triage = load_yaml_file(triage_path)
+  if not isinstance(triage, dict):
+    reasons.append("execution_evidence.triage_path は YAML mapping が必要です")
+    return reasons, current_state
+  items = triage.get("items")
+  if not isinstance(items, list):
+    reasons.append("execution_evidence.triage_path.items は list が必要です")
+    return reasons, current_state
+  human_required_count = sum(
+    1 for item in items
+    if isinstance(item, dict) and item.get("decision_status") == "human_required"
+  )
+  current_state["human_required_count"] = human_required_count
+  if evidence.get("require_no_human_required") is True and human_required_count:
+    reasons.append(
+      f"execution_evidence human_required が残っています: {human_required_count}"
+    )
+  return reasons, current_state
+
+
+def validate_autonomous_parallel_plan(plan, cwd=None, base_dir=None):
   """自律・並列モード実行計画を fail-closed で検査する"""
   reasons = []
+  cwd = Path(cwd) if cwd is not None else Path.cwd()
+  base_dir = Path(base_dir) if base_dir is not None else cwd
   current_state = {
     "mode": None,
     "run_id": None,
@@ -379,6 +497,7 @@ def validate_autonomous_parallel_plan(plan):
     "parallel_task_count": 0,
     "checked_gates": list(AUTONOMOUS_PARALLEL_REQUIRED_INTEGRATION_GATES),
     "history_ledger_path": None,
+    "execution_evidence": {},
   }
 
   if not isinstance(plan, dict):
@@ -455,6 +574,24 @@ def validate_autonomous_parallel_plan(plan):
       reasons.append(
         f"{task_label}.assignee.worktree_policy は separate_worktree が必要です"
       )
+    if assignee_kind == "main_session" and worktree_policy == "same_worktree":
+      if task.get("output_only") is not True or task.get("writes_repo_diff") is not False:
+        reasons.append(
+          f"{task_label}.output_only は true、writes_repo_diff は false が必要です"
+        )
+
+    if "writes_repo_diff" not in task:
+      reasons.append(f"{task_label}.writes_repo_diff が必要です")
+    if "output_only" not in task:
+      reasons.append(f"{task_label}.output_only が必要です")
+
+  evidence_reasons, evidence_state = validate_autonomous_execution_evidence(
+    plan,
+    cwd,
+    base_dir,
+  )
+  reasons.extend(evidence_reasons)
+  current_state["execution_evidence"] = evidence_state
 
   for left_index, left_task in enumerate(tasks):
     if not isinstance(left_task, dict):
@@ -574,8 +711,16 @@ def build_autonomous_parallel_plan_template(run_id):
         "depends_on": [],
         "expected_tests": ["python3 -m pytest path/to/test.py -q"],
         "stop_conditions": ["important_decision_requires_approval"],
+        "writes_repo_diff": True,
+        "output_only": False,
       }
     ],
+    "execution_evidence": {
+      "review_run_dir": f"docs/notes/review-runs/{run_id}-review",
+      "required_raw_paths": ["raw/model.round-1.txt"],
+      "triage_path": "triage.yaml",
+      "require_no_human_required": True,
+    },
     "integration_gate": {
       "requires_main_session_review": True,
       "requires_diff_scope_check": True,
@@ -603,6 +748,44 @@ def cmd_autonomous_plan_template(args):
   plan = build_autonomous_parallel_plan_template(args.run_id)
   out_path = Path(args.out)
   out_path.parent.mkdir(parents=True, exist_ok=True)
+  review_run_dir = Path.cwd() / "docs" / "notes" / "review-runs" / f"{args.run_id}-review"
+  raw_dir = review_run_dir / "raw"
+  raw_dir.mkdir(parents=True, exist_ok=True)
+  raw_path = raw_dir / "model.round-1.txt"
+  raw_path.write_text("template raw response\n", encoding="utf-8")
+  (review_run_dir / "rounds.yaml").write_text(
+    yaml.safe_dump(
+      {
+        "model_results": [
+          {
+            "model_id": "model",
+            "raw_path": "raw/model.round-1.txt",
+            "raw_sha256": file_sha256(raw_path),
+          },
+        ],
+      },
+      allow_unicode=True,
+      sort_keys=False,
+    ),
+    encoding="utf-8",
+  )
+  (review_run_dir / "triage.yaml").write_text(
+    yaml.safe_dump(
+      {
+        "triage_status": "decided",
+        "items": [
+          {
+            "finding_id": "finding-001",
+            "decision_status": "decided",
+            "source_raw_path": "raw/model.round-1.txt",
+          },
+        ],
+      },
+      allow_unicode=True,
+      sort_keys=False,
+    ),
+    encoding="utf-8",
+  )
   out_path.write_text(
     yaml.safe_dump(plan, allow_unicode=True, sort_keys=False),
     encoding="utf-8",
@@ -682,7 +865,11 @@ def cmd_autonomous_plan(args):
       print(format_human_output("DEVIATION", 2, action_str, reasons, current_state_text))
     return 2
 
-  reasons, current_state_dict = validate_autonomous_parallel_plan(plan)
+  reasons, current_state_dict = validate_autonomous_parallel_plan(
+    plan,
+    cwd,
+    plan_path.parent,
+  )
   current_state_dict["plan_path"] = str(plan_path)
   if reasons:
     verdict, exit_code = "DEVIATION", 2
@@ -761,12 +948,36 @@ def cmd_spec_set(args):
 
   # 判定
   verdict, exit_code, reasons = judge_spec_set(spec_data, phase, stage, new_value)
+  predicate_reasons = unimplemented_completion_predicate_reasons(
+    cwd,
+    phase,
+    stage,
+    new_value,
+  )
+  if predicate_reasons:
+    reasons.extend(predicate_reasons)
+    verdict, exit_code = "DEVIATION", 2
+  in_progress_files = list_in_progress_files(cwd)
+  if in_progress_files:
+    reasons.insert(
+      0,
+      "stages/in-progress に進行中ファイルがあります: "
+      + ", ".join(in_progress_files),
+    )
+    verdict, exit_code = "DEVIATION", 2
 
   # 出力の組み立て
   workflow_state = spec_data.get("workflow_state", {})
   phase_state = workflow_state.get(phase, {})
   current_state_text = format_current_state_text(feature, phase, phase_state)
-  current_state_dict = {feature: {phase: phase_state}}
+  if in_progress_files:
+    current_state_text += (
+      "\n進行中ファイル: " + ", ".join(in_progress_files)
+    )
+  current_state_dict = {
+    feature: {phase: phase_state},
+    "in_progress_files": in_progress_files,
+  }
 
   action_str = f"spec-set {feature} {phase} {stage} {new_value_str}"
   action_dict = {
@@ -824,6 +1035,18 @@ def classify_staged_file(filepath):
   return "normal"
 
 
+def staged_file_sha256(cwd, filepath):
+  """staged blob の sha256 を返す"""
+  result = subprocess.run(
+    ["git", "show", f":{filepath}"],
+    cwd=str(cwd),
+    capture_output=True,
+  )
+  if result.returncode != 0:
+    return None
+  return hashlib.sha256(result.stdout).hexdigest()
+
+
 def validate_commit_approval(cwd, staged_files):
   """commit 用ユーザ承認レコードを検査する"""
   approval_path = Path(cwd) / DEFAULT_COMMIT_APPROVAL_PATH
@@ -832,6 +1055,7 @@ def validate_commit_approval(cwd, staged_files):
     "exists": approval_path.exists(),
     "valid": False,
     "target_files": [],
+    "target_sha256": {},
     "consumed": None,
   }
 
@@ -851,7 +1075,9 @@ def validate_commit_approval(cwd, staged_files):
   target_files = approval.get("target_files")
   if target_files is None:
     target_files = []
+  target_sha256 = approval.get("target_sha256")
   approval_state["target_files"] = target_files
+  approval_state["target_sha256"] = target_sha256 if isinstance(target_sha256, dict) else {}
   approval_state["consumed"] = approval.get("consumed")
 
   errors = []
@@ -871,9 +1097,80 @@ def validate_commit_approval(cwd, staged_files):
         errors.append(
           "承認対象外の staged ファイルがあります: " + ", ".join(out_of_scope)
         )
+      if staged_files:
+        if not isinstance(target_sha256, dict):
+          errors.append("ユーザ承認レコードの target_sha256 が object ではありません")
+        else:
+          for filepath in staged_files:
+            expected_sha = target_sha256.get(filepath)
+            actual_sha = staged_file_sha256(cwd, filepath)
+            if not isinstance(expected_sha, str) or not expected_sha:
+              errors.append(
+                f"ユーザ承認レコードの target_sha256 に {filepath} がありません"
+              )
+            elif actual_sha != expected_sha:
+              errors.append(
+                f"ユーザ承認レコードの target_sha256 が staged 内容と一致しません: "
+                f"{filepath}"
+              )
 
   approval_state["valid"] = not errors
   return approval_state, errors
+
+
+def git_head_commit(cwd):
+  """現在の HEAD commit を返す"""
+  result = subprocess.run(
+    ["git", "rev-parse", "HEAD"],
+    cwd=str(cwd),
+    capture_output=True,
+    text=True,
+  )
+  if result.returncode != 0:
+    return None
+  return result.stdout.strip()
+
+
+def validate_last_commit_precheck(cwd, ahead_info):
+  """push 前に HEAD の commit 事前検査通過記録を確認する"""
+  state = {
+    "path": DEFAULT_LAST_COMMIT_PRECHECK_PATH,
+    "required": False,
+    "exists": False,
+    "valid": False,
+    "head_commit": git_head_commit(cwd),
+    "recorded_head_commit": None,
+  }
+  if not str(ahead_info).isdigit() or int(ahead_info) <= 0:
+    state["valid"] = True
+    return state, []
+
+  state["required"] = True
+  precheck_path = Path(cwd) / DEFAULT_LAST_COMMIT_PRECHECK_PATH
+  state["exists"] = precheck_path.exists()
+  if not precheck_path.exists():
+    return state, [
+      f"push 対象 HEAD の commit 事前検査記録がありません"
+      f"（{DEFAULT_LAST_COMMIT_PRECHECK_PATH}）"
+    ]
+
+  try:
+    record = json.loads(precheck_path.read_text(encoding="utf-8"))
+  except (OSError, json.JSONDecodeError) as e:
+    return state, [f"commit 事前検査記録を読めません: {e}"]
+
+  if not isinstance(record, dict):
+    return state, ["commit 事前検査記録の形式が不正です（object ではありません）"]
+
+  recorded_head = record.get("head_commit")
+  state["recorded_head_commit"] = recorded_head
+  if record.get("precheck_exit_code") not in (0, 1):
+    return state, ["commit 事前検査記録が通過状態ではありません"]
+  if recorded_head != state["head_commit"]:
+    return state, ["commit 事前検査記録の head_commit が現在の HEAD と一致しません"]
+
+  state["valid"] = True
+  return state, []
 
 
 def cmd_commit(args):
@@ -889,6 +1186,7 @@ def cmd_commit(args):
   # 未消化所見の確認
   pending_path = cwd / ".reviewcompass" / "pending-cross-feature-findings.md"
   unresolved_count = count_unresolved_findings(pending_path)
+  in_progress_files = list_in_progress_files(cwd)
 
   # staged ファイルの取得と分類
   result = subprocess.run(
@@ -916,6 +1214,11 @@ def cmd_commit(args):
   deviation_reasons = []
   if approval_errors:
     deviation_reasons.extend(approval_errors)
+  if in_progress_files:
+    deviation_reasons.append(
+      "stages/in-progress に進行中ファイルがあります: "
+      + ", ".join(in_progress_files)
+    )
   if dangerous:
     for f in dangerous:
       deviation_reasons.append(f"危険変更: {f}（commit を遮断推奨）")
@@ -944,6 +1247,7 @@ def cmd_commit(args):
     f"  危険変更: {len(dangerous)} 件\n"
     f"  要注意変更: {len(caution)} 件\n"
     f"  通常変更: {len(normal)} 件\n"
+    f"進行中ファイル: {len(in_progress_files)} 件\n"
     f"ユーザ承認レコード: {'有効' if approval_state['valid'] else '無効'}\n"
     f"post-write-verification 対象: {len(post_write_state['target_files'])} 件\n"
     f"post-write-verification 状態: {post_write_state['manifest_status']}"
@@ -955,6 +1259,7 @@ def cmd_commit(args):
       "caution": caution,
       "normal": normal,
     },
+    "in_progress_files": in_progress_files,
     "commit_approval": approval_state,
     "post_write_verification": post_write_state,
   }
@@ -990,6 +1295,7 @@ def cmd_push(args):
     return 2
 
   # 作業ツリーの clean 性
+  in_progress_files = list_in_progress_files(cwd)
   status_result = subprocess.run(
     ["git", "status", "--porcelain"],
     cwd=str(cwd),
@@ -1023,11 +1329,23 @@ def cmd_push(args):
     if ahead_result.returncode == 0
     else "(リモート origin/main が未設定または取得失敗)"
   )
+  commit_precheck_state, commit_precheck_errors = validate_last_commit_precheck(
+    cwd,
+    ahead_info,
+  )
 
   # 判定（仕様 §6.3）
   reasons = []
+  if in_progress_files:
+    reasons.append(
+      "stages/in-progress に進行中ファイルがあります: "
+      + ", ".join(in_progress_files)
+    )
   if is_dirty:
     reasons.append("作業ツリーに未コミット変更があります（push 前に commit が必要）")
+  if commit_precheck_errors:
+    reasons.extend(commit_precheck_errors)
+  if reasons:
     verdict, exit_code = "DEVIATION", 2
   else:
     verdict, exit_code = "OK", 0
@@ -1035,12 +1353,16 @@ def cmd_push(args):
   # 出力の組み立て
   current_state_text = (
     f"作業ツリー: {'dirty' if is_dirty else 'clean'}\n"
+    f"進行中ファイル: {len(in_progress_files)} 件\n"
     f"origin/main からの先行コミット数: {ahead_info}\n"
+    f"commit 事前検査記録: {'有効' if commit_precheck_state['valid'] else '無効'}\n"
     f"直近 5 コミット:\n{recent_commits}"
   )
   current_state_dict = {
     "is_dirty": is_dirty,
+    "in_progress_files": in_progress_files,
     "ahead_count": ahead_info,
+    "commit_precheck": commit_precheck_state,
     "recent_commits": recent_commits.splitlines() if recent_commits else [],
   }
   action_str = f"push (rationale='{rationale}')"

@@ -179,6 +179,23 @@ def _resolve_record_path(path_value: str, run_dir: Path, base_dir: Path) -> Path
   return run_dir / path
 
 
+def _rounds_raw_sha256_by_path(run_dir: Path) -> Dict[str, str]:
+  """rounds.yaml の raw_path -> raw_sha256 対応を返す。"""
+  rounds = _load_yaml_dict(run_dir / "rounds.yaml")
+  model_results = rounds.get("model_results")
+  if not isinstance(model_results, list):
+    return {}
+  raw_sha256 = {}
+  for result in model_results:
+    if not isinstance(result, dict):
+      continue
+    raw_path = result.get("raw_path")
+    raw_hash = result.get("raw_sha256")
+    if isinstance(raw_path, str) and raw_path and isinstance(raw_hash, str) and raw_hash:
+      raw_sha256[raw_path] = raw_hash
+  return raw_sha256
+
+
 def _proxy_decision_errors(
   approval: Dict[str, Any],
   run_dir: Path,
@@ -196,6 +213,7 @@ def _proxy_decision_errors(
     return errors + ["proxy_decisions must be a mapping"]
 
   base_dir = approval_path.parent if approval_path else run_dir
+  expected_raw_sha256 = _rounds_raw_sha256_by_path(run_dir)
   for finding_id in sorted(set(required_finding_ids)):
     decision_ref = proxy_decisions.get(finding_id)
     if not isinstance(decision_ref, str) or not decision_ref:
@@ -265,6 +283,12 @@ def _proxy_decision_errors(
         source_path = _resolve_record_path(source_raw_path, run_dir, decision_path.parent)
         if not source_path.is_file():
           errors.append(f"{finding_id}: source_raw_paths missing: {source_raw_path}")
+          continue
+        expected_hash = expected_raw_sha256.get(source_raw_path)
+        if expected_hash and _sha256_file(source_path) != expected_hash:
+          errors.append(
+            f"{finding_id}: source_raw_paths sha256 mismatch: {source_raw_path}"
+          )
   return errors
 
 

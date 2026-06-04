@@ -1,0 +1,31 @@
+finding_id: 2026-06-04-workflow-management-implementation-review-run-gpt-5.4-adversarial-001
+cluster_id: WM-IMPL-MF-005
+approved_by: proxy_model
+proxy_model_id: gpt-5.5
+decision_prompt_path: proxy-decisions/2026-06-04-workflow-management-implementation-review-run-gpt-5.4-adversarial-001.prompt.md
+source_raw_paths:
+- raw/gpt-5.4.round-1.txt
+candidate_options:
+- id: A
+  summary: task に writes_repo_diff=false / output_only=true のような区分を追加し、同一 worktree
+    API並列を証跡生成に限定して許可する
+  tradeoff: 今回の実態に合い、実装並列との混同を防げる
+- id: B
+  summary: API呼び出しもすべて subthread/separate_worktree 扱いにする
+  tradeoff: 規律は単純だが、raw取得だけでも過剰に重くなる
+- id: C
+  summary: この指摘を leave-as-is にする
+  tradeoff: 今後も同じ混乱が起きる
+selected_option: A
+final_label: must-fix
+rationale: 実装差分を生成する並列作業と、raw取得・証跡生成のみの読み取り系API並列はリスクと必要な隔離粒度が異なるため、計画ガード上で writes_repo_diff=false
+  / output_only=true のように機械判定可能な区分を明示すべき。これにより same_worktree で許可される並列が証跡生成に限定され、実装並列との混同や将来の運用逸脱を防げる。
+rejected_options:
+  B: すべてのAPI呼び出しを separate_worktree 扱いにすると規律は単純になるが、実装差分を作らないraw取得・生成処理まで過剰に重くなり、今回の実態に対して運用コストが高い。
+  C: leave-as-is では main_session/same_worktree で許可される並列の境界が曖昧なままとなり、今後も実装並列と証跡生成並列の混同が再発する可能性が高い。
+raw_response_path: proxy-decisions/WM-IMPL-MF-005.raw.yaml
+raw_response_model: gpt-5.5
+raw_response_provider: openai-api
+raw_response_proxy_model_id_original: openai-chatgpt
+formatted_at: '2026-06-04T01:54:26.988276+00:00'
+formatted_by: main_session_llm

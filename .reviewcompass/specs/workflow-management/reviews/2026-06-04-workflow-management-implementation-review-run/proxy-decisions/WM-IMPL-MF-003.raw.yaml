@@ -1,0 +1,12 @@
+provider: openai-api
+model: gpt-5.5
+turn_number: 1
+duration_seconds: 8.69
+sent_messages_count: 1
+response_text: "cluster_id: WM-IMPL-MF-003\napproved_by: proxy_model\nproxy_model_id:\
+  \ gpt-4.1\nselected_option: A\nfinal_label: must-fix\nrationale: \"proxy decision\
+  \ は元の raw response を根拠に判断したことを保証する必要があるため、単に raw ファイルの存在やパス一致を見るだけでは不十分。decision\
+  \ の source_raw_paths を triage.yaml および rounds.yaml と照合し、raw_sha256 まで一致確認することで、別ファイルへの差し替えや内容改変を検出できる。判断代行の証跡真正性に関わるため\
+  \ must-fix とする。\"\nrejected_options:\n  - option_id: B\n    reason: \"source_raw_path\
+  \ の一致だけでは、同じパス上の raw ファイル内容が差し替えられた場合に検出できず、証跡の真正性を保証できない。\"\n  - option_id: C\n\
+  \    reason: \"decision に raw_sha256 を記録するだけでは、triage.yaml や rounds.yaml 側の期待値との検査がなければ改変検出として機能せず、防止力が弱い。\""

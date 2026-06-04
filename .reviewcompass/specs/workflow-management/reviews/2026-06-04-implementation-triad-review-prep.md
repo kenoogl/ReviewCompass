@@ -19,12 +19,35 @@ workflow-management implementation.drafting の完了を受け、次段の triad
 
 ## レビュー対象
 
+- `.reviewcompass/specs/workflow-management/requirements.md`
+- `.reviewcompass/specs/workflow-management/design.md`
+- `.reviewcompass/specs/workflow-management/tasks.md`
+- `.reviewcompass/specs/workflow-management/spec.json`
 - `tools/check-workflow-action.py`
+- `tools/api_providers/run_review.py`
+- `tools/api_providers/run_role.py`
+- `tools/api_providers/review_triage.py`
 - `tests/tools/test_check_workflow_action.py`
 - `tests/tools/test_workflow_management_implementation_drafting.py`
+- `tools/api_providers/tests/test_run_review.py`
+- `tools/api_providers/tests/test_run_role.py`
+- `tools/api_providers/tests/test_review_triage.py`
 - `.reviewcompass/specs/workflow-management/implementation-drafting.md`
 - `docs/operations/WORKFLOW_PRECHECK.md`
+- `docs/operations/SESSION_WORKFLOW_GUIDE.md`
 - `docs/notes/2026-06-04-proxy-review-parallel-implementation-plan.md`
+
+## 証跡パス
+
+今回の review-run ID は `2026-06-04-workflow-management-implementation-review-run` とする。
+成果物は次を予定する。
+
+- `.reviewcompass/specs/workflow-management/reviews/2026-06-04-workflow-management-implementation-review-run/target-manifest.yaml`
+- `.reviewcompass/specs/workflow-management/reviews/2026-06-04-workflow-management-implementation-review-run/rounds.yaml`
+- `.reviewcompass/specs/workflow-management/reviews/2026-06-04-workflow-management-implementation-review-run/model-result-summary.yaml`
+- `.reviewcompass/specs/workflow-management/reviews/2026-06-04-workflow-management-implementation-review-run/triage.yaml`
+- `.reviewcompass/specs/workflow-management/reviews/2026-06-04-workflow-management-implementation-review-run/review_summary.md`
+- `docs/logs/autonomous-parallel/2026-06-04-workflow-management-implementation-review-run.yaml`
 
 ## 必須規律
 

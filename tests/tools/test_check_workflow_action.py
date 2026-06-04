@@ -262,6 +262,45 @@ def _assert_script_invoked(testcase, result):
 def _write_autonomous_parallel_plan(cwd, overrides=None):
   """自律・並列モード実行計画の最小正常形を作る"""
   overrides = overrides or {}
+  run_dir = Path(cwd) / "docs" / "notes" / "review-runs" / "ap-001-review"
+  raw_dir = run_dir / "raw"
+  raw_dir.mkdir(parents=True, exist_ok=True)
+  raw_path = raw_dir / "gpt-5.4.round-1.txt"
+  raw_path.write_text("raw response\n", encoding="utf-8")
+  raw_sha = _sha256_file(raw_path)
+  (run_dir / "rounds.yaml").write_text(
+    yaml.safe_dump(
+      {
+        "model_results": [
+          {
+            "model_id": "gpt-5.4",
+            "raw_path": "raw/gpt-5.4.round-1.txt",
+            "raw_sha256": raw_sha,
+          },
+        ],
+      },
+      allow_unicode=True,
+      sort_keys=False,
+    ),
+    encoding="utf-8",
+  )
+  (run_dir / "triage.yaml").write_text(
+    yaml.safe_dump(
+      {
+        "triage_status": "decided",
+        "items": [
+          {
+            "finding_id": "finding-a",
+            "decision_status": "decided",
+            "source_raw_path": "raw/gpt-5.4.round-1.txt",
+          },
+        ],
+      },
+      allow_unicode=True,
+      sort_keys=False,
+    ),
+    encoding="utf-8",
+  )
   plan = {
     "mode": "autonomous_parallel",
     "run_id": "ap-001",
@@ -284,6 +323,8 @@ def _write_autonomous_parallel_plan(cwd, overrides=None):
         "depends_on": [],
         "expected_tests": ["pytest tests/test_a.py"],
         "stop_conditions": ["important_decision_requires_approval"],
+        "writes_repo_diff": True,
+        "output_only": False,
       },
       {
         "task_id": "task-b",
@@ -297,8 +338,16 @@ def _write_autonomous_parallel_plan(cwd, overrides=None):
         "depends_on": [],
         "expected_tests": ["pytest tests/test_b.py"],
         "stop_conditions": ["important_decision_requires_approval"],
+        "writes_repo_diff": True,
+        "output_only": False,
       },
     ],
+    "execution_evidence": {
+      "review_run_dir": "docs/notes/review-runs/ap-001-review",
+      "required_raw_paths": ["raw/gpt-5.4.round-1.txt"],
+      "triage_path": "triage.yaml",
+      "require_no_human_required": True,
+    },
     "integration_gate": {
       "requires_main_session_review": True,
       "requires_diff_scope_check": True,
@@ -421,6 +470,76 @@ class AutonomousParallelPlanTests(unittest.TestCase):
     self.assertEqual(result.returncode, 2)
     data = json.loads(result.stdout)
     self.assertIn("allowed_paths", "\n".join(data["reasons"]))
+
+  def test_missing_execution_evidence_returns_two(self):
+    """raw/triage 証跡への参照がなければ逸脱にする"""
+    cwd = Path(self.tmpdir)
+    plan_path = _write_autonomous_parallel_plan(
+      cwd,
+      {"execution_evidence": None},
+    )
+
+    result = run_script(["autonomous-plan", str(plan_path), "--json"], cwd=cwd)
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 2)
+    data = json.loads(result.stdout)
+    self.assertIn("execution_evidence", "\n".join(data["reasons"]))
+
+  def test_missing_required_raw_path_returns_two(self):
+    """required_raw_paths の raw が欠けていれば逸脱にする"""
+    cwd = Path(self.tmpdir)
+    plan_path = _write_autonomous_parallel_plan(cwd)
+    (cwd / "docs" / "notes" / "review-runs" / "ap-001-review" / "raw" / "gpt-5.4.round-1.txt").unlink()
+
+    result = run_script(["autonomous-plan", str(plan_path), "--json"], cwd=cwd)
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 2)
+    data = json.loads(result.stdout)
+    self.assertIn("required_raw_paths", "\n".join(data["reasons"]))
+
+  def test_human_required_triage_returns_two(self):
+    """未判断 triage item が残っていれば逸脱にする"""
+    cwd = Path(self.tmpdir)
+    plan_path = _write_autonomous_parallel_plan(cwd)
+    triage_path = cwd / "docs" / "notes" / "review-runs" / "ap-001-review" / "triage.yaml"
+    triage = yaml.safe_load(triage_path.read_text(encoding="utf-8"))
+    triage["items"][0]["decision_status"] = "human_required"
+    triage_path.write_text(
+      yaml.safe_dump(triage, allow_unicode=True, sort_keys=False),
+      encoding="utf-8",
+    )
+
+    result = run_script(["autonomous-plan", str(plan_path), "--json"], cwd=cwd)
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 2)
+    data = json.loads(result.stdout)
+    self.assertIn("human_required", "\n".join(data["reasons"]))
+
+  def test_main_session_parallel_writer_requires_output_only_boundary(self):
+    """main_session/same_worktree の並列タスクは出力専用でなければ逸脱にする"""
+    cwd = Path(self.tmpdir)
+    plan_path = _write_autonomous_parallel_plan(cwd)
+    plan = yaml.safe_load(plan_path.read_text(encoding="utf-8"))
+    plan["tasks"][0]["assignee"] = {
+      "kind": "main_session",
+      "worktree_policy": "same_worktree",
+    }
+    plan["tasks"][0]["writes_repo_diff"] = True
+    plan["tasks"][0]["output_only"] = False
+    plan_path.write_text(
+      yaml.safe_dump(plan, allow_unicode=True, sort_keys=False),
+      encoding="utf-8",
+    )
+
+    result = run_script(["autonomous-plan", str(plan_path), "--json"], cwd=cwd)
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 2)
+    data = json.loads(result.stdout)
+    self.assertIn("output_only", "\n".join(data["reasons"]))
 
   def test_missing_integration_gate_returns_two(self):
     """統合ゲートが不足していれば逸脱にする"""
@@ -552,6 +671,59 @@ class SpecSetExitCodeTests(unittest.TestCase):
       f"alignment=true なので approval=true は通過すべき。\n"
       f"stdout: {result.stdout}\nstderr: {result.stderr}",
     )
+
+  def test_spec_set_blocks_when_in_progress_file_exists(self):
+    """stages/in-progress が非空なら spec-set は不可逆操作として exit 2"""
+    cwd = self._copy_fixture("case-a-ready-for-approval")
+    in_progress_dir = cwd / "stages" / "in-progress"
+    in_progress_dir.mkdir(parents=True)
+    (in_progress_dir / "manual-process.yaml").write_text(
+      "next_step: human approval\n",
+      encoding="utf-8",
+    )
+
+    result = run_script(
+      ["spec-set", "foundation", "requirements", "approval", "true"],
+      cwd=cwd,
+    )
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 2, result.stdout)
+    self.assertIn("stages/in-progress", result.stdout)
+
+  def test_spec_set_blocks_unimplemented_completion_predicate(self):
+    """stage YAML に completion_predicate があれば未評価のまま true にしない"""
+    cwd = self._copy_fixture("case-a-ready-for-approval")
+    stages_dir = cwd / "stages"
+    stages_dir.mkdir(parents=True, exist_ok=True)
+    (stages_dir / "requirements.yaml").write_text(
+      yaml.safe_dump(
+        {
+          "phase": "requirements",
+          "stages": [
+            {
+              "name": "approval",
+              "completion_predicate": {
+                "type": "file_exists",
+                "path": "docs/approvals/requirements.md",
+              },
+            },
+          ],
+        },
+        allow_unicode=True,
+        sort_keys=False,
+      ),
+      encoding="utf-8",
+    )
+
+    result = run_script(
+      ["spec-set", "foundation", "requirements", "approval", "true"],
+      cwd=cwd,
+    )
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 2, result.stdout)
+    self.assertIn("completion_predicate", result.stdout)
 
   def test_approval_with_alignment_false_returns_two(self):
     """ケース B：alignment が false で approval を true にする → exit 2
@@ -2000,25 +2172,36 @@ def _stage_file(tmpdir, relpath, content):
   )
 
 
-def _write_commit_approval(tmpdir, target_files, consumed=False):
+def _write_commit_approval(
+  tmpdir,
+  target_files,
+  consumed=False,
+  target_sha256=None,
+  include_target_sha256=True,
+):
   """commit 事前検査用のユーザ承認レコードを書く"""
   approval_dir = Path(tmpdir) / ".reviewcompass" / "approvals"
   approval_dir.mkdir(parents=True, exist_ok=True)
   approval_path = approval_dir / "commit-approval.json"
+  if target_sha256 is None:
+    target_sha256 = {
+      relpath: _sha256_file(Path(tmpdir) / relpath)
+      for relpath in target_files
+      if (Path(tmpdir) / relpath).exists()
+    }
+  approval = {
+    "approved_action": "commit",
+    "approved_by": "user",
+    "approved_at": "2026-06-03T00:00:00+09:00",
+    "rationale": "利用者がコミットを明示承認",
+    "target_files": target_files,
+    "expires_after_commit": True,
+    "consumed": consumed,
+  }
+  if include_target_sha256:
+    approval["target_sha256"] = target_sha256
   approval_path.write_text(
-    json.dumps(
-      {
-        "approved_action": "commit",
-        "approved_by": "user",
-        "approved_at": "2026-06-03T00:00:00+09:00",
-        "rationale": "利用者がコミットを明示承認",
-        "target_files": target_files,
-        "expires_after_commit": True,
-        "consumed": consumed,
-      },
-      ensure_ascii=False,
-      indent=2,
-    ),
+    json.dumps(approval, ensure_ascii=False, indent=2),
     encoding="utf-8",
   )
   return approval_path
@@ -2044,6 +2227,36 @@ def _write_completed_post_write_manifest(tmpdir, target_files):
   )
 
 
+def _write_last_commit_precheck(tmpdir, head_commit=None):
+  """push 事前検査用の直近 commit 検査通過記録を書く"""
+  if head_commit is None:
+    result = subprocess.run(
+      ["git", "rev-parse", "HEAD"],
+      cwd=str(tmpdir),
+      check=True,
+      capture_output=True,
+      text=True,
+    )
+    head_commit = result.stdout.strip()
+  approval_dir = Path(tmpdir) / ".git" / "reviewcompass"
+  approval_dir.mkdir(parents=True, exist_ok=True)
+  precheck_path = approval_dir / "last-commit-precheck.json"
+  precheck_path.write_text(
+    json.dumps(
+      {
+        "head_commit": head_commit,
+        "precheck_command": "tools/check-workflow-action.py commit",
+        "precheck_exit_code": 0,
+        "recorded_at": "2026-06-03T00:00:00+09:00",
+      },
+      ensure_ascii=False,
+      indent=2,
+    ),
+    encoding="utf-8",
+  )
+  return precheck_path
+
+
 class CommitExitCodeTests(unittest.TestCase):
   """commit サブコマンドの終了コード判定（仕様 §6.2）"""
 
@@ -2067,6 +2280,27 @@ class CommitExitCodeTests(unittest.TestCase):
       f"未消化所見なし＋通常変更のみは通過すべき。\n"
       f"stdout: {result.stdout}\nstderr: {result.stderr}",
     )
+
+  def test_commit_blocks_when_in_progress_file_exists(self):
+    """stages/in-progress が非空なら commit は exit 2"""
+    _set_pending_findings(self.pending_file, unresolved_count=0)
+    _stage_file(self.tmpdir, "notes.md", "# テスト用ノート")
+    _write_commit_approval(self.tmpdir, ["notes.md"])
+    in_progress_dir = Path(self.tmpdir) / "stages" / "in-progress"
+    in_progress_dir.mkdir(parents=True)
+    (in_progress_dir / "manual-process.yaml").write_text(
+      "next_step: human approval\n",
+      encoding="utf-8",
+    )
+
+    result = run_script(
+      ["commit", "--rationale", "in-progress 遮断テスト"],
+      cwd=self.tmpdir,
+    )
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 2, result.stdout)
+    self.assertIn("stages/in-progress", result.stdout)
 
   def test_commit_with_pending_findings_returns_one(self):
     """未消化所見 1 件以上 → exit 1（警告）"""
@@ -2187,6 +2421,37 @@ class CommitExitCodeTests(unittest.TestCase):
     self.assertEqual(result.returncode, 2)
     self.assertIn("承認対象外", result.stdout)
 
+  def test_commit_with_missing_approval_target_sha256_returns_two(self):
+    """承認レコードに target_sha256 がなければ exit 2"""
+    _set_pending_findings(self.pending_file, unresolved_count=0)
+    _stage_file(self.tmpdir, "notes.md", "# テスト用ノート")
+    _write_commit_approval(
+      self.tmpdir,
+      ["notes.md"],
+      include_target_sha256=False,
+    )
+    result = run_script(
+      ["commit", "--rationale", "承認 sha256 欠落のテスト"],
+      cwd=self.tmpdir,
+    )
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 2)
+    self.assertIn("target_sha256", result.stdout)
+
+  def test_commit_with_stale_approval_target_sha256_returns_two(self):
+    """承認後に staged 内容が変わったら exit 2"""
+    _set_pending_findings(self.pending_file, unresolved_count=0)
+    _stage_file(self.tmpdir, "notes.md", "# 承認時点")
+    _write_commit_approval(self.tmpdir, ["notes.md"])
+    _stage_file(self.tmpdir, "notes.md", "# 実行時点")
+    result = run_script(
+      ["commit", "--rationale", "古い承認レコードのテスト"],
+      cwd=self.tmpdir,
+    )
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 2)
+    self.assertIn("sha256", result.stdout)
+
   def test_commit_with_post_write_target_without_manifest_returns_two(self):
     """post-write 対象文書が staged され、完了 manifest がなければ exit 2"""
     _set_pending_findings(self.pending_file, unresolved_count=0)
@@ -2276,6 +2541,24 @@ class PushExitCodeTests(unittest.TestCase):
       f"stdout: {result.stdout}\nstderr: {result.stderr}",
     )
 
+  def test_push_blocks_when_in_progress_file_exists(self):
+    """stages/in-progress が非空なら push は exit 2"""
+    in_progress_dir = Path(self.tmpdir) / "stages" / "in-progress"
+    in_progress_dir.mkdir(parents=True)
+    (in_progress_dir / "manual-process.yaml").write_text(
+      "next_step: human approval\n",
+      encoding="utf-8",
+    )
+
+    result = run_script(
+      ["push", "--rationale", "in-progress 遮断テスト"],
+      cwd=self.tmpdir,
+    )
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 2, result.stdout)
+    self.assertIn("stages/in-progress", result.stdout)
+
   def test_push_with_dirty_tree_returns_two(self):
     """作業ツリーが dirty（未追跡ファイルあり）→ exit 2"""
     (Path(self.tmpdir) / "untracked.md").write_text("# 未追跡")
@@ -2293,6 +2576,56 @@ class PushExitCodeTests(unittest.TestCase):
       "DEVIATION", result.stdout,
       f"逸脱判定の出力に DEVIATION が含まれるべき。stdout: {result.stdout}",
     )
+
+  def test_push_with_ahead_commit_without_commit_precheck_record_returns_two(self):
+    """先行 commit があり、直前 commit 検査記録がなければ exit 2"""
+    subprocess.run(
+      ["git", "update-ref", "refs/remotes/origin/main", "HEAD"],
+      cwd=str(self.tmpdir),
+      check=True,
+      capture_output=True,
+    )
+    _stage_file(self.tmpdir, "notes.md", "# push 対象")
+    subprocess.run(
+      ["git", "commit", "-qm", "add push target"],
+      cwd=str(self.tmpdir),
+      check=True,
+      capture_output=True,
+    )
+
+    result = run_script(
+      ["push", "--rationale", "commit 検査記録なし push のテスト"],
+      cwd=self.tmpdir,
+    )
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 2, result.stdout)
+    self.assertIn("last-commit-precheck", result.stdout)
+
+  def test_push_with_ahead_commit_and_matching_commit_precheck_record_returns_zero(self):
+    """先行 commit の HEAD と直前 commit 検査記録が一致すれば exit 0"""
+    subprocess.run(
+      ["git", "update-ref", "refs/remotes/origin/main", "HEAD"],
+      cwd=str(self.tmpdir),
+      check=True,
+      capture_output=True,
+    )
+    _stage_file(self.tmpdir, "notes.md", "# push 対象")
+    subprocess.run(
+      ["git", "commit", "-qm", "add push target"],
+      cwd=str(self.tmpdir),
+      check=True,
+      capture_output=True,
+    )
+    _write_last_commit_precheck(self.tmpdir)
+
+    result = run_script(
+      ["push", "--rationale", "commit 検査記録あり push のテスト"],
+      cwd=self.tmpdir,
+    )
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 0, result.stdout)
 
   def test_push_rationale_is_required(self):
     """push に --rationale なし → 非 0 終了（仕様 §5.3 必須）"""

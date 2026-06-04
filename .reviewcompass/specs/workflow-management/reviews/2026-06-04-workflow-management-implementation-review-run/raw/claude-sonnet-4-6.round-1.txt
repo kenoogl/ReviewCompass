@@ -1,0 +1,55 @@
+findings:
+  - severity: ERROR
+    target_location: "tools/check-workflow-action.py: validate_autonomous_parallel_plan()"
+    description: "raw response preservation is not enforced by the autonomous-plan gate. The plan schema requires authorization, integration_gate, and outputs_policy fields, but there is no requirement that raw API responses from each model be saved before triage proceeds. The design specifies that 'raw response を保存する' is a mandatory discipline, yet no field in the plan YAML or gate check enforces a raw_storage path or verifies that raw files exist prior to triage."
+    rationale: "requirements.md Requirement 3 受入 5 and design.md §段集合の静的列挙モデル §review-run 後の proxy_model 判断代行モデル both state that raw response preservation is a pre-condition for triage and proxy decision. Without a machine guard on raw path existence in autonomous-plan validation, an operator could submit a plan that proceeds to triage without any raw files, violating the traceability contract the entire proxy-decision chain depends on."
+
+  - severity: ERROR
+    target_location: "tools/check-workflow-action.py: validate_autonomous_parallel_plan() / AUTONOMOUS_PARALLEL_REQUIRED_INTEGRATION_GATES"
+    description: "The autonomous-plan gate does not verify that a three-level triage (must-fix / should-fix / leave-as-is) has actually been completed before parallel implementation begins. The gate checks that 'triage_presented_to_user: true' exists in authorization, but this is a self-declared boolean rather than a machine-verified reference to a triage.yaml with all items in 'decided' status and zero 'human_required' items."
+    rationale: "design.md §review-run 後の proxy_model 判断代行モデル and SESSION_WORKFLOW_GUIDE.md §3(a-2) both specify that implementation must not start until three-level triage is complete and human_required count is zero. tasks.md T-004 完了条件 7 requires the proxy model judgment gate to check for undecided items. Accepting a self-declared flag instead of verifying triage.yaml state means the gate can be bypassed by simply setting the flag without completing triage."
+
+  - severity: ERROR
+    target_location: "tools/check-workflow-action.py: cmd_commit() / validate_commit_approval()"
+    description: "The commit gate reads a single static approval record at DEFAULT_COMMIT_APPROVAL_PATH (.reviewcompass/approvals/commit-approval.json) but does not verify that this record was created after the most recent staged file was modified. A stale approval record from a previous commit cycle that was not consumed (or was manually reset to consumed=false) will pass the gate even though it was issued for a different set of staged files."
+    rationale: "requirements.md Requirement 4 受入 2 states that '直前ゲートは毎回独立して走行する' and must re-detect state changes since session start. design.md §不可逆操作の直前ゲートモデル §2 elaborates that the gate must not cache session-start results. A stale approval record undermines the independence guarantee. The test suite (test_commit_with_consumed_user_approval_returns_two) only checks the consumed flag, not whether the record post-dates the staged content."
+
+  - severity: ERROR
+    target_location: "tools/api_providers/review_triage.py: _proxy_decision_errors()"
+    description: "The proxy decision gate checks that source_raw_paths entries exist as files, but does not verify that their sha256 matches the raw_sha256 recorded in rounds.yaml. An attacker or erroneous workflow could replace a raw response file after the proxy decision was made, causing the decision to be evaluated against different content than what the proxy model actually saw."
+    rationale: "design.md §review-run 後の proxy_model 判断代行モデル requires that 'source_raw_paths は元 review raw' and that the chain from raw response through proxy decision through triage is traceable. SESSION_WORKFLOW_GUIDE.md §3(a-2) states 'proxy_model が元 review raw を読めない形の判断材料しか受け取っていない場合、その decision は実装着手の承認証跡として扱わない'. Without hash verification the integrity of the decision chain cannot be confirmed."
+
+  - severity: WARN
+    target_location: "tools/check-workflow-action.py: review_run_traceability_satisfied()"
+    description: "The function verifies that triage items reference source_raw_path files that exist, but it does not cross-check that the raw_sha256 in rounds.yaml model_results matches the current on-disk content of those raw files. The function only checks file existence, not integrity."
+    rationale: "design.md §review-run 後の proxy_model 判断代行モデル specifies that raw response preservation is required for auditability. If a raw file is silently modified after recording, review_run_traceability_satisfied will return True despite the tampered evidence. The sister function manifest_hashes_match_current_files already implements sha256 comparison for manifests; the same pattern should be applied to raw files in rounds.yaml."
+
+  - severity: WARN
+    target_location: "tools/check-workflow-action.py: validate_autonomous_parallel_plan() — depends_on / parallel task detection"
+    description: "The parallel task count in current_state is computed as tasks with no depends_on entries. However, two tasks that both depend on a common ancestor but not on each other are also truly parallel, yet the gate does not check allowed_paths overlap between them. Only tasks with depends_on=[] are identified as parallel for the overlap check."
+    rationale: "tasks.md T-004 完了条件 and design.md §parallelizable_units specify that tasks sharing no direct dependency must not overlap on allowed_paths. The current implementation in path_specs_overlap / tasks_have_dependency only serialises tasks that explicitly list each other in depends_on. Tasks that share a common ancestor (e.g., both depend on 'target-bundle' but not on each other) are treated as having a dependency by tasks_have_dependency, which correctly serialises them. However the intent of the guard is to catch all truly concurrent writers, and the current logic is conservative in a safe direction but the comment and current_state.parallel_task_count field are misleading since they undercount parallel candidates."
+
+  - severity: WARN
+    target_location: "spec.json: workflow_state.tasks and workflow_state.design"
+    description: "spec.json records reopened.requirements=true, reopened.design=true, reopened.tasks=true, yet workflow_state.tasks.approval=true and workflow_state.design.approval=true. The reopened flags indicate these phases were re-opened at some point, but there is no corresponding recheck.upstream_change_pending=true or impacted_downstream_phases entry to indicate that downstream phases were re-validated after the reopen."
+    rationale: "requirements.md Requirement 5 受入 2 and design.md §reopen 機械強制モデル §5 specify that after reopen the trigger_map drives re-execution of alignment and approval stages for all downstream phases. design.md §機能依存マップモデル §6 states that hard dependency changes must set recheck.upstream_change_pending=true. The current spec.json state is internally inconsistent: reopened phases are marked approved without evidence that the reopen procedure completed through all four processes."
+
+  - severity: WARN
+    target_location: "tools/check-workflow-action.py: cmd_commit() — post_write_errors priority vs approval_errors"
+    description: "In cmd_commit, deviation_reasons from approval_errors and post_write_errors are appended together and the first non-empty set wins the DEVIATION verdict. However the output message for post-write failures ('post-write-verification 未完了の staged ファイルがあります') is distinct from approval failures ('ユーザ承認レコードがありません'). When both conditions occur simultaneously the reasons list combines both but the CURRENT STATE block only shows post_write_state, hiding the approval state from the human-readable output."
+    rationale: "design.md §軽量版検査スクリプトモデル §2 requires the [CURRENT STATE] block to show the state relevant to the verdict. When multiple deviation reasons exist, the operator needs to see both approval and post-write states to understand what must be fixed before the commit is allowed. The JSON output exposes both via current_state_dict, but the human-readable path does not."
+
+  - severity: WARN
+    target_location: "tests/tools/test_check_workflow_action.py: CommitExitCodeTests"
+    description: "There is no test case verifying that a commit with both a missing approval record AND a missing post-write manifest returns exit 2 with reasons covering both deficiencies. The existing tests exercise each condition independently but not in combination."
+    rationale: "tasks.md T-004 テスト要件 lists 'proxy_model 判断代行ゲートの正常系／raw 欠落／候補案欠落' as separate test cases and T-011 requires all four verification classes to be covered. Combinatorial coverage for co-occurring deviations is necessary to confirm fail-closed behaviour is not short-circuited when multiple guards fire simultaneously."
+
+  - severity: INFO
+    target_location: "docs/logs/autonomous-parallel/2026-06-04-workflow-management-implementation-review-run.yaml"
+    description: "The ledger records parallel_task_count=1 for a plan with 5 tasks, of which api-primary, api-adversarial, and api-judgment all depend only on target-bundle and not on each other, making them three truly parallel tasks. The discrepancy arises because parallel_task_count counts only tasks with depends_on=[] (only target-bundle qualifies), not tasks that are mutually independent after their common dependency resolves."
+    rationale: "This is a documentation accuracy issue rather than a functional defect, but it may mislead future operators reviewing the ledger when assessing concurrency risk. It is consistent with the WARN finding above about parallel task detection logic."
+
+  - severity: INFO
+    target_location: ".reviewcompass/specs/workflow-management/reviews/2026-06-04-implementation-triad-review-prep.md"
+    description: "The triad-review-prep document is referenced as the approval_record_path in the autonomous-plan authorization block, but it does not contain the required fields for a machine-verifiable approval record (approved_action, approved_by, review_run_id, summary_presented_to_user, triage_presented_to_user, approved_finding_ids). It is a preparation memo, not an approval record in the schema expected by the gate."
+    rationale: "WORKFLOW_PRECHECK.md §5.2 and review_triage.py _approval_errors() define the required structure for an approval record. Using a preparation memo as the approval_record_path means that any downstream gate that tries to parse this file as an approval record (e.g., assert_apply_fixes_ready) will fail. The autonomous-plan gate itself does not parse the approval_record_path contents, only checks that the field exists, so the gate passes today, but the reference creates a traceability gap for audit purposes."

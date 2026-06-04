@@ -1,0 +1,31 @@
+finding_id: 2026-06-04-workflow-management-implementation-review-run-gpt-5.4-adversarial-002
+cluster_id: WM-IMPL-MF-002
+approved_by: proxy_model
+proxy_model_id: gpt-5.5
+decision_prompt_path: proxy-decisions/2026-06-04-workflow-management-implementation-review-run-gpt-5.4-adversarial-002.prompt.md
+source_raw_paths:
+- raw/gemini-3.1-pro-preview.round-1.txt
+- raw/gpt-5.4.round-1.txt
+candidate_options:
+- id: A
+  summary: stages/in-progress/ の非空検査を共通関数化し、commit / push / spec-set の直前に必ず見る
+  tradeoff: 実装範囲は明確で、不可逆操作全体に効く
+- id: B
+  summary: commit / push だけ先に遮断し、spec-set は後続に回す
+  tradeoff: 小さく始められるが、spec-set の穴が残る
+- id: C
+  summary: WARN に留める
+  tradeoff: 自律実行中の事故防止として弱い
+selected_option: A
+final_label: must-fix
+rationale: commit / push / spec-set はいずれも進行中手続きが残った状態で通すと整合性破壊や不可逆な反映につながるため、stages/in-progress/
+  の非空検査を共通関数化し、各操作の直前で fail-closed に遮断する方針が妥当。対象操作ごとに扱いを分けると同種の安全要件に穴が残るため、不可逆操作ゲートとして一貫して実装すべき。
+rejected_options:
+  B: commit / push の事故は防げるが、spec-set が進行中手続きを無視して通る穴が残る。要件が不可逆操作全体のゲートである以上、部分対応では不十分。
+  C: WARN のみでは自律実行や見落とし時に操作が継続され、作業途中の状態を確定・反映してしまう危険を防げない。安全性要件としては fail-closed が必要。
+raw_response_path: proxy-decisions/WM-IMPL-MF-002.raw.yaml
+raw_response_model: gpt-5.5
+raw_response_provider: openai-api
+raw_response_proxy_model_id_original: gpt-5
+formatted_at: '2026-06-04T01:54:26.988276+00:00'
+formatted_by: main_session_llm

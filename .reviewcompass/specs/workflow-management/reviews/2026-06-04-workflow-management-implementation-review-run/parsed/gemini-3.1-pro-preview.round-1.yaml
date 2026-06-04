@@ -1,0 +1,40 @@
+role: judgment
+provider: gemini-api
+model: gemini-3.1-pro-preview
+attempts: 1
+duration_seconds: 125.97
+findings:
+- severity: CRITICAL
+  target_location: tools/check-workflow-action.py (cmd_spec_set, judge_spec_set)
+  description: cmd_spec_set completely omits the parsing of stages/*.yaml and the
+    evaluation of completion_predicate logic, relying instead on hardcoded phase dictionaries.
+  rationale: This bypasses the core workflow-management machine guard (Req 1, Req
+    2, Req 3). Artifact existence, required sections, distinct authors/reviewers,
+    and explicit human/proxy approvals are never checked, allowing arbitrary and unauthorized
+    advancement of phase gates without actual evidence.
+- severity: ERROR
+  target_location: tools/check-workflow-action.py (cmd_commit, cmd_push, cmd_spec_set)
+  description: Irreversible operation gates fail to check if stages/in-progress/ contains
+    active files.
+  rationale: Req 4 and Req 6 explicitly mandate that irreversible operations must
+    be blocked (fail-closed) if there is an ongoing procedure in stages/in-progress/.
+    The absence of this machine guard allows concurrent irreversible changes that
+    could corrupt the workflow state.
+- severity: ERROR
+  target_location: tools/api_providers/review_triage.py (_proxy_decision_errors)
+  description: Proxy decision validation checks that paths in source_raw_paths exist,
+    but fails to verify that they match the original source_raw_path recorded in triage.yaml
+    for the given finding.
+  rationale: This flaw allows a proxy decision to pass the mechanical guard by referencing
+    an unrelated or dummy raw response file, breaking traceability from the original
+    review run and violating the raw response preservation discipline.
+- severity: WARN
+  target_location: tools/api_providers/review_triage.py (_is_important_item)
+  description: _is_important_item identifies important items strictly by CRITICAL/ERROR
+    severities or a must-fix label, mechanically missing contextually important should-fix
+    items.
+  rationale: SESSION_WORKFLOW_GUIDE.md requires should-fix items related to machine
+    guards, data contracts, and scope boundaries to be treated as important. Although
+    assert_apply_fixes_ready acts as a catch-all safety net later, the failure to
+    flag these contextually important items allows them to bypass the requirement
+    for approval during the initial decide_item triage phase.

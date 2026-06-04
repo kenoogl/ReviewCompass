@@ -1,0 +1,31 @@
+finding_id: 2026-06-04-workflow-management-implementation-review-run-gemini-3.1-pro-preview-judgment-001
+cluster_id: WM-IMPL-MF-004
+approved_by: proxy_model
+proxy_model_id: gpt-5.5
+decision_prompt_path: proxy-decisions/2026-06-04-workflow-management-implementation-review-run-gemini-3.1-pro-preview-judgment-001.prompt.md
+source_raw_paths:
+- raw/gemini-3.1-pro-preview.round-1.txt
+candidate_options:
+- id: A
+  summary: まず実装済み範囲との差分を確認し、completion_predicate 評価不足をT-004残課題として機械検査に追加する
+  tradeoff: 大きな改修に入る前に事実確認できる
+- id: B
+  summary: stages/*.yaml パーサと全 predicate 評価を即実装する
+  tradeoff: 正攻法だが影響範囲が大きく、この場の自律実装としては危険
+- id: C
+  summary: 今回は誤検出として保留する
+  tradeoff: CRITICAL 指摘を十分に扱えない
+selected_option: A
+final_label: must-fix
+rationale: 指摘内容は workflow の段階進行条件が仕様 YAML の completion_predicate と乖離する可能性を示しており、成立すれば
+  CRITICAL 相当の仕様不履行である。一方で stages/*.yaml の全パースおよび全 predicate 評価を即時実装するには影響範囲が広く、既存実装がどこまで対応済みかの確認なしに着手すると過剰改修や互換性破壊のリスクが高い。したがって、まず実装済み範囲との差分を確認し、completion_predicate
+  評価不足を T-004 の残課題として機械検査に追加する方針を採用する。
+rejected_options:
+  B: 正攻法ではあるが、stages/*.yaml パーサと全 predicate 評価の即時実装は影響範囲が大きく、既存仕様・既存実装との差分確認なしに進めるにはリスクが高い。
+  C: spec-set が completion_predicate を評価していない場合、段階完了条件の仕様不履行となり得るため、誤検出として保留するには根拠が不足している。
+raw_response_path: proxy-decisions/WM-IMPL-MF-004.raw.yaml
+raw_response_model: gpt-5.5
+raw_response_provider: openai-api
+raw_response_proxy_model_id_original: gpt-4o
+formatted_at: '2026-06-04T01:54:26.988276+00:00'
+formatted_by: main_session_llm

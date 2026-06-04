@@ -10,6 +10,7 @@ from pathlib import Path
 
 
 DEFAULT_COMMIT_APPROVAL_PATH = ".reviewcompass/approvals/commit-approval.json"
+DEFAULT_LAST_COMMIT_PRECHECK_PATH = ".git/reviewcompass/last-commit-precheck.json"
 
 
 def consume_commit_approval(cwd):
@@ -56,6 +57,43 @@ def run_git_commit(cwd, messages):
   for message in messages:
     cmd.extend(["-m", message])
   return subprocess.run(cmd, cwd=str(cwd), capture_output=True, text=True)
+
+
+def current_head_commit(cwd):
+  """現在の HEAD commit を返す"""
+  result = subprocess.run(
+    ["git", "rev-parse", "HEAD"],
+    cwd=str(cwd),
+    capture_output=True,
+    text=True,
+  )
+  if result.returncode != 0:
+    return None
+  return result.stdout.strip()
+
+
+def record_last_commit_precheck(cwd, precheck):
+  """commit 成功後に push 用の事前検査通過記録を repo 外へ残す"""
+  head_commit = current_head_commit(cwd)
+  if not head_commit:
+    print("warning: HEAD commit を取得できず commit 事前検査記録を残せません", file=sys.stderr)
+    return
+
+  precheck_path = Path(cwd) / DEFAULT_LAST_COMMIT_PRECHECK_PATH
+  precheck_path.parent.mkdir(parents=True, exist_ok=True)
+  record = {
+    "head_commit": head_commit,
+    "precheck_command": "tools/check-workflow-action.py commit",
+    "precheck_exit_code": precheck.returncode,
+    "recorded_at": datetime.now(timezone.utc).isoformat(),
+  }
+  try:
+    precheck_path.write_text(
+      json.dumps(record, ensure_ascii=False, indent=2) + "\n",
+      encoding="utf-8",
+    )
+  except OSError as e:
+    print(f"warning: commit 事前検査記録の保存に失敗しました: {e}", file=sys.stderr)
 
 
 def main(argv=None):
@@ -105,6 +143,7 @@ def main(argv=None):
   if result.returncode != 0:
     return result.returncode
 
+  record_last_commit_precheck(cwd, precheck)
   consume_commit_approval(cwd)
   return 0
 

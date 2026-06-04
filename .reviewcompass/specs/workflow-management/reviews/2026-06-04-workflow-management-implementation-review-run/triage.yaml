@@ -1,0 +1,601 @@
+run_id: 2026-06-04-workflow-management-implementation-review-run
+triage_status: decided
+generated_at: '2026-06-04T01:29:24.198142+00:00'
+decision_actor: gpt-5.5
+decision_actor_type: proxy_model
+items:
+- finding_id: 2026-06-04-workflow-management-implementation-review-run-claude-sonnet-4-6-primary-001
+  run_id: 2026-06-04-workflow-management-implementation-review-run
+  source_model: claude-sonnet-4-6
+  source_role: primary
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: 'tools/check-workflow-action.py: validate_autonomous_parallel_plan()'
+  plain_language_summary: raw response preservation is not enforced by the autonomous-plan
+    gate. The plan schema requires authorization, integration_gate, and outputs_policy
+    fields, but there is no requirement that raw API responses from each model be
+    saved before triage proceeds. The design specifies that 'raw response を保存する' is
+    a mandatory discipline, yet no field in the plan YAML or gate check enforces a
+    raw_storage path or verifies that raw files exist prior to triage.
+  rationale: requirements.md Requirement 3 受入 5 and design.md §段集合の静的列挙モデル §review-run
+    後の proxy_model 判断代行モデル both state that raw response preservation is a pre-condition
+    for triage and proxy decision. Without a machine guard on raw path existence in
+    autonomous-plan validation, an operator could submit a plan that proceeds to triage
+    without any raw files, violating the traceability contract the entire proxy-decision
+    chain depends on.
+  final_label: must-fix
+  decision_status: decided
+  decision_actor: gpt-5.5
+  decision_actor_type: proxy_model
+  decision_at: '2026-06-04T01:54:26.988276+00:00'
+  important_gate_required: true
+  applied_files: []
+  superseded_by: null
+  decision_reason: raw response と triage 完了の有無を自己申告ではなく機械的に確認できない状態は、自律実行ガードとしての信頼性を損なう。autonomous-plan
+    に review_run_dir、required_raw_paths、triage_path を明示し、raw ファイルの存在、hash、未判断0件を開始前に検査する案は、証跡欠落や
+    triage 未完了の取りこぼしを直接防げるため、今回の問題に対する最も適切な修正である。
+- finding_id: 2026-06-04-workflow-management-implementation-review-run-claude-sonnet-4-6-primary-002
+  run_id: 2026-06-04-workflow-management-implementation-review-run
+  source_model: claude-sonnet-4-6
+  source_role: primary
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: 'tools/check-workflow-action.py: validate_autonomous_parallel_plan()
+    / AUTONOMOUS_PARALLEL_REQUIRED_INTEGRATION_GATES'
+  plain_language_summary: 'The autonomous-plan gate does not verify that a three-level
+    triage (must-fix / should-fix / leave-as-is) has actually been completed before
+    parallel implementation begins. The gate checks that ''triage_presented_to_user:
+    true'' exists in authorization, but this is a self-declared boolean rather than
+    a machine-verified reference to a triage.yaml with all items in ''decided'' status
+    and zero ''human_required'' items.'
+  rationale: design.md §review-run 後の proxy_model 判断代行モデル and SESSION_WORKFLOW_GUIDE.md
+    §3(a-2) both specify that implementation must not start until three-level triage
+    is complete and human_required count is zero. tasks.md T-004 完了条件 7 requires the
+    proxy model judgment gate to check for undecided items. Accepting a self-declared
+    flag instead of verifying triage.yaml state means the gate can be bypassed by
+    simply setting the flag without completing triage.
+  final_label: must-fix
+  decision_status: decided
+  decision_actor: gpt-5.5
+  decision_actor_type: proxy_model
+  decision_at: '2026-06-04T01:54:26.988276+00:00'
+  important_gate_required: true
+  applied_files: []
+  superseded_by: null
+  decision_reason: raw response と triage 完了の有無を自己申告ではなく機械的に確認できない状態は、自律実行ガードとしての信頼性を損なう。autonomous-plan
+    に review_run_dir、required_raw_paths、triage_path を明示し、raw ファイルの存在、hash、未判断0件を開始前に検査する案は、証跡欠落や
+    triage 未完了の取りこぼしを直接防げるため、今回の問題に対する最も適切な修正である。
+- finding_id: 2026-06-04-workflow-management-implementation-review-run-claude-sonnet-4-6-primary-003
+  run_id: 2026-06-04-workflow-management-implementation-review-run
+  source_model: claude-sonnet-4-6
+  source_role: primary
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: 'tools/check-workflow-action.py: cmd_commit() / validate_commit_approval()'
+  plain_language_summary: The commit gate reads a single static approval record at
+    DEFAULT_COMMIT_APPROVAL_PATH (.reviewcompass/approvals/commit-approval.json) but
+    does not verify that this record was created after the most recent staged file
+    was modified. A stale approval record from a previous commit cycle that was not
+    consumed (or was manually reset to consumed=false) will pass the gate even though
+    it was issued for a different set of staged files.
+  rationale: requirements.md Requirement 4 受入 2 states that '直前ゲートは毎回独立して走行する' and
+    must re-detect state changes since session start. design.md §不可逆操作の直前ゲートモデル §2
+    elaborates that the gate must not cache session-start results. A stale approval
+    record undermines the independence guarantee. The test suite (test_commit_with_consumed_user_approval_returns_two)
+    only checks the consumed flag, not whether the record post-dates the staged content.
+  final_label: must-fix
+  decision_status: decided
+  decision_actor: gpt-5.5
+  decision_actor_type: proxy_model
+  decision_at: '2026-06-04T01:54:26.988276+00:00'
+  important_gate_required: true
+  applied_files: []
+  superseded_by: null
+  decision_reason: commit 承認が対象差分と強く結び付いていない場合、古い承認や別差分への承認流用が可能になり、レビュー済みでない内容が commit/push
+    されるリスクが残る。staged file sha256 と作成時刻を approval record に記録し、commit/push 時に照合・監査できるようにする案が、承認の新鮮さと対象同一性を機械的に検証できるため最も妥当。push
+    直前検査とも接続しやすく、ワークフロー上の安全性を直接改善する。
+- finding_id: 2026-06-04-workflow-management-implementation-review-run-claude-sonnet-4-6-primary-004
+  run_id: 2026-06-04-workflow-management-implementation-review-run
+  source_model: claude-sonnet-4-6
+  source_role: primary
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: 'tools/api_providers/review_triage.py: _proxy_decision_errors()'
+  plain_language_summary: The proxy decision gate checks that source_raw_paths entries
+    exist as files, but does not verify that their sha256 matches the raw_sha256 recorded
+    in rounds.yaml. An attacker or erroneous workflow could replace a raw response
+    file after the proxy decision was made, causing the decision to be evaluated against
+    different content than what the proxy model actually saw.
+  rationale: design.md §review-run 後の proxy_model 判断代行モデル requires that 'source_raw_paths
+    は元 review raw' and that the chain from raw response through proxy decision through
+    triage is traceable. SESSION_WORKFLOW_GUIDE.md §3(a-2) states 'proxy_model が元
+    review raw を読めない形の判断材料しか受け取っていない場合、その decision は実装着手の承認証跡として扱わない'. Without hash
+    verification the integrity of the decision chain cannot be confirmed.
+  final_label: must-fix
+  decision_status: decided
+  decision_actor: gpt-5.5
+  decision_actor_type: proxy_model
+  decision_at: '2026-06-04T01:54:26.988276+00:00'
+  important_gate_required: true
+  applied_files: []
+  superseded_by: null
+  decision_reason: proxy decision は元の raw response を根拠に判断したことを保証する必要があるため、単に raw ファイルの存在やパス一致を見るだけでは不十分。decision
+    の source_raw_paths を triage.yaml および rounds.yaml と照合し、raw_sha256 まで一致確認することで、別ファイルへの差し替えや内容改変を検出できる。判断代行の証跡真正性に関わるため
+    must-fix とする。
+- finding_id: 2026-06-04-workflow-management-implementation-review-run-claude-sonnet-4-6-primary-005
+  run_id: 2026-06-04-workflow-management-implementation-review-run
+  source_model: claude-sonnet-4-6
+  source_role: primary
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: 'tools/check-workflow-action.py: review_run_traceability_satisfied()'
+  plain_language_summary: The function verifies that triage items reference source_raw_path
+    files that exist, but it does not cross-check that the raw_sha256 in rounds.yaml
+    model_results matches the current on-disk content of those raw files. The function
+    only checks file existence, not integrity.
+  rationale: design.md §review-run 後の proxy_model 判断代行モデル specifies that raw response
+    preservation is required for auditability. If a raw file is silently modified
+    after recording, review_run_traceability_satisfied will return True despite the
+    tampered evidence. The sister function manifest_hashes_match_current_files already
+    implements sha256 comparison for manifests; the same pattern should be applied
+    to raw files in rounds.yaml.
+  final_label: should-fix
+  decision_status: draft
+  decision_actor: main_session_llm_draft
+  decision_actor_type: llm_draft
+  decision_at: '2026-06-04T01:29:24.198142+00:00'
+  important_gate_required: false
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-04-workflow-management-implementation-review-run-claude-sonnet-4-6-primary-006
+  run_id: 2026-06-04-workflow-management-implementation-review-run
+  source_model: claude-sonnet-4-6
+  source_role: primary
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: 'tools/check-workflow-action.py: validate_autonomous_parallel_plan()
+    — depends_on / parallel task detection'
+  plain_language_summary: The parallel task count in current_state is computed as
+    tasks with no depends_on entries. However, two tasks that both depend on a common
+    ancestor but not on each other are also truly parallel, yet the gate does not
+    check allowed_paths overlap between them. Only tasks with depends_on=[] are identified
+    as parallel for the overlap check.
+  rationale: tasks.md T-004 完了条件 and design.md §parallelizable_units specify that
+    tasks sharing no direct dependency must not overlap on allowed_paths. The current
+    implementation in path_specs_overlap / tasks_have_dependency only serialises tasks
+    that explicitly list each other in depends_on. Tasks that share a common ancestor
+    (e.g., both depend on 'target-bundle' but not on each other) are treated as having
+    a dependency by tasks_have_dependency, which correctly serialises them. However
+    the intent of the guard is to catch all truly concurrent writers, and the current
+    logic is conservative in a safe direction but the comment and current_state.parallel_task_count
+    field are misleading since they undercount parallel candidates.
+  final_label: should-fix
+  decision_status: draft
+  decision_actor: main_session_llm_draft
+  decision_actor_type: llm_draft
+  decision_at: '2026-06-04T01:29:24.198142+00:00'
+  important_gate_required: false
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-04-workflow-management-implementation-review-run-claude-sonnet-4-6-primary-007
+  run_id: 2026-06-04-workflow-management-implementation-review-run
+  source_model: claude-sonnet-4-6
+  source_role: primary
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: 'spec.json: workflow_state.tasks and workflow_state.design'
+  plain_language_summary: spec.json records reopened.requirements=true, reopened.design=true,
+    reopened.tasks=true, yet workflow_state.tasks.approval=true and workflow_state.design.approval=true.
+    The reopened flags indicate these phases were re-opened at some point, but there
+    is no corresponding recheck.upstream_change_pending=true or impacted_downstream_phases
+    entry to indicate that downstream phases were re-validated after the reopen.
+  rationale: 'requirements.md Requirement 5 受入 2 and design.md §reopen 機械強制モデル §5
+    specify that after reopen the trigger_map drives re-execution of alignment and
+    approval stages for all downstream phases. design.md §機能依存マップモデル §6 states that
+    hard dependency changes must set recheck.upstream_change_pending=true. The current
+    spec.json state is internally inconsistent: reopened phases are marked approved
+    without evidence that the reopen procedure completed through all four processes.'
+  final_label: should-fix
+  decision_status: draft
+  decision_actor: main_session_llm_draft
+  decision_actor_type: llm_draft
+  decision_at: '2026-06-04T01:29:24.198142+00:00'
+  important_gate_required: false
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-04-workflow-management-implementation-review-run-claude-sonnet-4-6-primary-008
+  run_id: 2026-06-04-workflow-management-implementation-review-run
+  source_model: claude-sonnet-4-6
+  source_role: primary
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: 'tools/check-workflow-action.py: cmd_commit() — post_write_errors
+    priority vs approval_errors'
+  plain_language_summary: In cmd_commit, deviation_reasons from approval_errors and
+    post_write_errors are appended together and the first non-empty set wins the DEVIATION
+    verdict. However the output message for post-write failures ('post-write-verification
+    未完了の staged ファイルがあります') is distinct from approval failures ('ユーザ承認レコードがありません').
+    When both conditions occur simultaneously the reasons list combines both but the
+    CURRENT STATE block only shows post_write_state, hiding the approval state from
+    the human-readable output.
+  rationale: design.md §軽量版検査スクリプトモデル §2 requires the [CURRENT STATE] block to show
+    the state relevant to the verdict. When multiple deviation reasons exist, the
+    operator needs to see both approval and post-write states to understand what must
+    be fixed before the commit is allowed. The JSON output exposes both via current_state_dict,
+    but the human-readable path does not.
+  final_label: should-fix
+  decision_status: draft
+  decision_actor: main_session_llm_draft
+  decision_actor_type: llm_draft
+  decision_at: '2026-06-04T01:29:24.198142+00:00'
+  important_gate_required: false
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-04-workflow-management-implementation-review-run-claude-sonnet-4-6-primary-009
+  run_id: 2026-06-04-workflow-management-implementation-review-run
+  source_model: claude-sonnet-4-6
+  source_role: primary
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: 'tests/tools/test_check_workflow_action.py: CommitExitCodeTests'
+  plain_language_summary: There is no test case verifying that a commit with both
+    a missing approval record AND a missing post-write manifest returns exit 2 with
+    reasons covering both deficiencies. The existing tests exercise each condition
+    independently but not in combination.
+  rationale: tasks.md T-004 テスト要件 lists 'proxy_model 判断代行ゲートの正常系／raw 欠落／候補案欠落' as
+    separate test cases and T-011 requires all four verification classes to be covered.
+    Combinatorial coverage for co-occurring deviations is necessary to confirm fail-closed
+    behaviour is not short-circuited when multiple guards fire simultaneously.
+  final_label: should-fix
+  decision_status: draft
+  decision_actor: main_session_llm_draft
+  decision_actor_type: llm_draft
+  decision_at: '2026-06-04T01:29:24.198142+00:00'
+  important_gate_required: false
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-04-workflow-management-implementation-review-run-claude-sonnet-4-6-primary-010
+  run_id: 2026-06-04-workflow-management-implementation-review-run
+  source_model: claude-sonnet-4-6
+  source_role: primary
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: docs/logs/autonomous-parallel/2026-06-04-workflow-management-implementation-review-run.yaml
+  plain_language_summary: The ledger records parallel_task_count=1 for a plan with
+    5 tasks, of which api-primary, api-adversarial, and api-judgment all depend only
+    on target-bundle and not on each other, making them three truly parallel tasks.
+    The discrepancy arises because parallel_task_count counts only tasks with depends_on=[]
+    (only target-bundle qualifies), not tasks that are mutually independent after
+    their common dependency resolves.
+  rationale: This is a documentation accuracy issue rather than a functional defect,
+    but it may mislead future operators reviewing the ledger when assessing concurrency
+    risk. It is consistent with the WARN finding above about parallel task detection
+    logic.
+  final_label: leave-as-is
+  decision_status: draft
+  decision_actor: main_session_llm_draft
+  decision_actor_type: llm_draft
+  decision_at: '2026-06-04T01:29:24.198142+00:00'
+  important_gate_required: false
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-04-workflow-management-implementation-review-run-claude-sonnet-4-6-primary-011
+  run_id: 2026-06-04-workflow-management-implementation-review-run
+  source_model: claude-sonnet-4-6
+  source_role: primary
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: .reviewcompass/specs/workflow-management/reviews/2026-06-04-implementation-triad-review-prep.md
+  plain_language_summary: The triad-review-prep document is referenced as the approval_record_path
+    in the autonomous-plan authorization block, but it does not contain the required
+    fields for a machine-verifiable approval record (approved_action, approved_by,
+    review_run_id, summary_presented_to_user, triage_presented_to_user, approved_finding_ids).
+    It is a preparation memo, not an approval record in the schema expected by the
+    gate.
+  rationale: WORKFLOW_PRECHECK.md §5.2 and review_triage.py _approval_errors() define
+    the required structure for an approval record. Using a preparation memo as the
+    approval_record_path means that any downstream gate that tries to parse this file
+    as an approval record (e.g., assert_apply_fixes_ready) will fail. The autonomous-plan
+    gate itself does not parse the approval_record_path contents, only checks that
+    the field exists, so the gate passes today, but the reference creates a traceability
+    gap for audit purposes.
+  final_label: leave-as-is
+  decision_status: draft
+  decision_actor: main_session_llm_draft
+  decision_actor_type: llm_draft
+  decision_at: '2026-06-04T01:29:24.198142+00:00'
+  important_gate_required: false
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-04-workflow-management-implementation-review-run-gpt-5.4-adversarial-001
+  run_id: 2026-06-04-workflow-management-implementation-review-run
+  source_model: gpt-5.4
+  source_role: adversarial
+  source_round: round-1
+  source_raw_path: raw/gpt-5.4.round-1.txt
+  source_parsed_path: parsed/gpt-5.4.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: docs/logs/autonomous-parallel/2026-06-04-workflow-management-implementation-review-run-plan.yaml
+  plain_language_summary: 自律・並列実行計画が、並列サブ担当は原則別スレッドかつ分離 worktree とする設計要求に反し、API 実行タスクを
+    `main_session` / `same_worktree` で列挙している。
+  rationale: requirements.md Requirement 3 受入 5、design.md の parallelizable_units /
+    実装サブ担当 LLM 規律、docs/notes/2026-06-04-proxy-review-parallel-implementation-plan.md
+    は並列実装・サブ担当を分離 worktree 前提で扱う。現行ガード実装も `subthread`/`subagent` にしか `separate_worktree`
+    を強制せず、`main_session` による複数 API タスクを同一 worktree で『autonomous_parallel』として通しており、並列境界の機械強制が弱い。
+  final_label: must-fix
+  decision_status: decided
+  decision_actor: gpt-5.5
+  decision_actor_type: proxy_model
+  decision_at: '2026-06-04T01:54:26.988276+00:00'
+  important_gate_required: true
+  applied_files: []
+  superseded_by: null
+  decision_reason: 実装差分を生成する並列作業と、raw取得・証跡生成のみの読み取り系API並列はリスクと必要な隔離粒度が異なるため、計画ガード上で
+    writes_repo_diff=false / output_only=true のように機械判定可能な区分を明示すべき。これにより same_worktree
+    で許可される並列が証跡生成に限定され、実装並列との混同や将来の運用逸脱を防げる。
+- finding_id: 2026-06-04-workflow-management-implementation-review-run-gpt-5.4-adversarial-002
+  run_id: 2026-06-04-workflow-management-implementation-review-run
+  source_model: gpt-5.4
+  source_role: adversarial
+  source_round: round-1
+  source_raw_path: raw/gpt-5.4.round-1.txt
+  source_parsed_path: parsed/gpt-5.4.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: 'tools/check-workflow-action.py: cmd_commit / cmd_push'
+  plain_language_summary: commit・push の直前ゲートが、要件で必須の `stages/in-progress/` 非空時の遮断を実装していない。
+  rationale: requirements.md Requirement 4 受入 2 と Requirement 6 受入 5 は、不可逆操作の条件として
+    `stages/in-progress/` が空であることを要求している。design.md でも commit/push 直前ゲートに統合されると明記されているが、実装の
+    `cmd_commit` と `cmd_push` は in-progress の有無を読まず、pending findings・approval record・dirty
+    tree などしか見ていないため、未完了手続きを抱えたまま不可逆操作を通してしまう。
+  final_label: must-fix
+  decision_status: decided
+  decision_actor: gpt-5.5
+  decision_actor_type: proxy_model
+  decision_at: '2026-06-04T01:54:26.988276+00:00'
+  important_gate_required: true
+  applied_files: []
+  superseded_by: null
+  decision_reason: commit / push / spec-set はいずれも進行中手続きが残った状態で通すと整合性破壊や不可逆な反映につながるため、stages/in-progress/
+    の非空検査を共通関数化し、各操作の直前で fail-closed に遮断する方針が妥当。対象操作ごとに扱いを分けると同種の安全要件に穴が残るため、不可逆操作ゲートとして一貫して実装すべき。
+- finding_id: 2026-06-04-workflow-management-implementation-review-run-gpt-5.4-adversarial-003
+  run_id: 2026-06-04-workflow-management-implementation-review-run
+  source_model: gpt-5.4
+  source_role: adversarial
+  source_round: round-1
+  source_raw_path: raw/gpt-5.4.round-1.txt
+  source_parsed_path: parsed/gpt-5.4.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: 'tools/check-workflow-action.py: cmd_push'
+  plain_language_summary: push 事前検査が、要件上必要な『直前コミットが検査通過済みであること』を確認していない。
+  rationale: design.md §不可逆操作の直前ゲートモデルでは、push は『直前のコミットが上記検査を通過済み、リモート状態と整合』であることが条件とされている。しかし実装は作業ツリーの
+    clean 性と ahead 情報を表示するだけで、直近コミットに対する commit precheck 通過記録や approval record 消費状態を検査していないため、commit
+    境界の機械ガードが push で再確認されず、commit/push 境界の監査性が不足する。
+  final_label: must-fix
+  decision_status: decided
+  decision_actor: gpt-5.5
+  decision_actor_type: proxy_model
+  decision_at: '2026-06-04T01:54:26.988276+00:00'
+  important_gate_required: true
+  applied_files: []
+  superseded_by: null
+  decision_reason: commit 承認が対象差分と強く結び付いていない場合、古い承認や別差分への承認流用が可能になり、レビュー済みでない内容が commit/push
+    されるリスクが残る。staged file sha256 と作成時刻を approval record に記録し、commit/push 時に照合・監査できるようにする案が、承認の新鮮さと対象同一性を機械的に検証できるため最も妥当。push
+    直前検査とも接続しやすく、ワークフロー上の安全性を直接改善する。
+- finding_id: 2026-06-04-workflow-management-implementation-review-run-gpt-5.4-adversarial-004
+  run_id: 2026-06-04-workflow-management-implementation-review-run
+  source_model: gpt-5.4
+  source_role: adversarial
+  source_round: round-1
+  source_raw_path: raw/gpt-5.4.round-1.txt
+  source_parsed_path: parsed/gpt-5.4.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: 'tools/check-workflow-action.py: validate_autonomous_parallel_plan'
+  plain_language_summary: 自律・並列実行計画ガードが、タスク単位の raw response preservation や triage/proxy
+    decision 参照を検査せず、承認・提示フラグの存在確認に留まっている。
+  rationale: レビュー指示は raw response preservation、three-level triage、important-finding
+    approval/proxy gates、auditability を重視している。設計・運用文書でも main session が raw を読み triage
+    を作り、proxy decision と source raw を証跡化することを要求しているが、`validate_autonomous_parallel_plan`
+    は `summary_presented_to_user` / `triage_presented_to_user` の真偽や task メタ情報しか見ず、review-run
+    ディレクトリ、raw/triage/proxy evidence への参照整合を全く確認しないため、重要証跡欠落を機械的に見逃す。
+  final_label: should-fix
+  decision_status: draft
+  decision_actor: main_session_llm_draft
+  decision_actor_type: llm_draft
+  decision_at: '2026-06-04T01:29:24.198142+00:00'
+  important_gate_required: false
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-04-workflow-management-implementation-review-run-gpt-5.4-adversarial-005
+  run_id: 2026-06-04-workflow-management-implementation-review-run
+  source_model: gpt-5.4
+  source_role: adversarial
+  source_round: round-1
+  source_raw_path: raw/gpt-5.4.round-1.txt
+  source_parsed_path: parsed/gpt-5.4.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: .reviewcompass/specs/workflow-management/reviews/2026-06-04-implementation-triad-review-prep.md
+  plain_language_summary: triad-review 準備メモの front-matter が Requirement 3 の必須メタデータを満たしておらず、`reviewer`
+    が存在しない。
+  rationale: requirements.md Requirement 3 受入 1 は review 記録 front-matter に `author`
+    と `reviewer` を必須化している。design.md でも front-matter 必須フィールドと異名条件を明記しているが、本準備メモには `author`
+    はある一方 `reviewer` がなく、起草者と判定者の分離・監査可能性が不足する。準備メモをレビュー証跡として扱うなら契約違反であり、扱わないなら対象外を明記すべき。
+  final_label: should-fix
+  decision_status: draft
+  decision_actor: main_session_llm_draft
+  decision_actor_type: llm_draft
+  decision_at: '2026-06-04T01:29:24.198142+00:00'
+  important_gate_required: false
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-04-workflow-management-implementation-review-run-gpt-5.4-adversarial-006
+  run_id: 2026-06-04-workflow-management-implementation-review-run
+  source_model: gpt-5.4
+  source_role: adversarial
+  source_round: round-1
+  source_raw_path: raw/gpt-5.4.round-1.txt
+  source_parsed_path: parsed/gpt-5.4.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: 'tools/check-workflow-action.py: validate_autonomous_parallel_plan
+    / docs/logs/autonomous-parallel/2026-06-04-workflow-management-implementation-review-run.yaml'
+  plain_language_summary: 自律・並列履歴台帳が計画時点の task ID と設定しか残さず、各 task の実行結果・担当別判断根拠・統合結果が未記録でも
+    `OK` 台帳として成立してしまう。
+  rationale: レビュー観点は auditability と autonomous/parallel execution workflow の後追い可能性を求めている。実装には
+    `autonomous-plan-record-integration` があるが、計画通過時に書かれる ledger は task assignments
+    と高位設定のみで、各 task の実行結果や decision basis を必須化していない。しかも現物 ledger には `integration_result`
+    もなく、history フラグだけで監査可能と扱われているため、『後から履歴を確認できるようにする』という implementation-drafting.md
+    の目的を十分満たしていない。
+  final_label: should-fix
+  decision_status: draft
+  decision_actor: main_session_llm_draft
+  decision_actor_type: llm_draft
+  decision_at: '2026-06-04T01:29:24.198142+00:00'
+  important_gate_required: false
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-04-workflow-management-implementation-review-run-gemini-3.1-pro-preview-judgment-001
+  run_id: 2026-06-04-workflow-management-implementation-review-run
+  source_model: gemini-3.1-pro-preview
+  source_role: judgment
+  source_round: round-1
+  source_raw_path: raw/gemini-3.1-pro-preview.round-1.txt
+  source_parsed_path: parsed/gemini-3.1-pro-preview.round-1.yaml
+  severity_original: CRITICAL
+  severity_normalized: CRITICAL
+  target_location: tools/check-workflow-action.py (cmd_spec_set, judge_spec_set)
+  plain_language_summary: cmd_spec_set completely omits the parsing of stages/*.yaml
+    and the evaluation of completion_predicate logic, relying instead on hardcoded
+    phase dictionaries.
+  rationale: This bypasses the core workflow-management machine guard (Req 1, Req
+    2, Req 3). Artifact existence, required sections, distinct authors/reviewers,
+    and explicit human/proxy approvals are never checked, allowing arbitrary and unauthorized
+    advancement of phase gates without actual evidence.
+  final_label: must-fix
+  decision_status: decided
+  decision_actor: gpt-5.5
+  decision_actor_type: proxy_model
+  decision_at: '2026-06-04T01:54:26.988276+00:00'
+  important_gate_required: true
+  applied_files: []
+  superseded_by: null
+  decision_reason: 指摘内容は workflow の段階進行条件が仕様 YAML の completion_predicate と乖離する可能性を示しており、成立すれば
+    CRITICAL 相当の仕様不履行である。一方で stages/*.yaml の全パースおよび全 predicate 評価を即時実装するには影響範囲が広く、既存実装がどこまで対応済みかの確認なしに着手すると過剰改修や互換性破壊のリスクが高い。したがって、まず実装済み範囲との差分を確認し、completion_predicate
+    評価不足を T-004 の残課題として機械検査に追加する方針を採用する。
+- finding_id: 2026-06-04-workflow-management-implementation-review-run-gemini-3.1-pro-preview-judgment-002
+  run_id: 2026-06-04-workflow-management-implementation-review-run
+  source_model: gemini-3.1-pro-preview
+  source_role: judgment
+  source_round: round-1
+  source_raw_path: raw/gemini-3.1-pro-preview.round-1.txt
+  source_parsed_path: parsed/gemini-3.1-pro-preview.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: tools/check-workflow-action.py (cmd_commit, cmd_push, cmd_spec_set)
+  plain_language_summary: Irreversible operation gates fail to check if stages/in-progress/
+    contains active files.
+  rationale: Req 4 and Req 6 explicitly mandate that irreversible operations must
+    be blocked (fail-closed) if there is an ongoing procedure in stages/in-progress/.
+    The absence of this machine guard allows concurrent irreversible changes that
+    could corrupt the workflow state.
+  final_label: must-fix
+  decision_status: decided
+  decision_actor: gpt-5.5
+  decision_actor_type: proxy_model
+  decision_at: '2026-06-04T01:54:26.988276+00:00'
+  important_gate_required: true
+  applied_files: []
+  superseded_by: null
+  decision_reason: commit / push / spec-set はいずれも進行中手続きが残った状態で通すと整合性破壊や不可逆な反映につながるため、stages/in-progress/
+    の非空検査を共通関数化し、各操作の直前で fail-closed に遮断する方針が妥当。対象操作ごとに扱いを分けると同種の安全要件に穴が残るため、不可逆操作ゲートとして一貫して実装すべき。
+- finding_id: 2026-06-04-workflow-management-implementation-review-run-gemini-3.1-pro-preview-judgment-003
+  run_id: 2026-06-04-workflow-management-implementation-review-run
+  source_model: gemini-3.1-pro-preview
+  source_role: judgment
+  source_round: round-1
+  source_raw_path: raw/gemini-3.1-pro-preview.round-1.txt
+  source_parsed_path: parsed/gemini-3.1-pro-preview.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: tools/api_providers/review_triage.py (_proxy_decision_errors)
+  plain_language_summary: Proxy decision validation checks that paths in source_raw_paths
+    exist, but fails to verify that they match the original source_raw_path recorded
+    in triage.yaml for the given finding.
+  rationale: This flaw allows a proxy decision to pass the mechanical guard by referencing
+    an unrelated or dummy raw response file, breaking traceability from the original
+    review run and violating the raw response preservation discipline.
+  final_label: must-fix
+  decision_status: decided
+  decision_actor: gpt-5.5
+  decision_actor_type: proxy_model
+  decision_at: '2026-06-04T01:54:26.988276+00:00'
+  important_gate_required: true
+  applied_files: []
+  superseded_by: null
+  decision_reason: proxy decision は元の raw response を根拠に判断したことを保証する必要があるため、単に raw ファイルの存在やパス一致を見るだけでは不十分。decision
+    の source_raw_paths を triage.yaml および rounds.yaml と照合し、raw_sha256 まで一致確認することで、別ファイルへの差し替えや内容改変を検出できる。判断代行の証跡真正性に関わるため
+    must-fix とする。
+- finding_id: 2026-06-04-workflow-management-implementation-review-run-gemini-3.1-pro-preview-judgment-004
+  run_id: 2026-06-04-workflow-management-implementation-review-run
+  source_model: gemini-3.1-pro-preview
+  source_role: judgment
+  source_round: round-1
+  source_raw_path: raw/gemini-3.1-pro-preview.round-1.txt
+  source_parsed_path: parsed/gemini-3.1-pro-preview.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: tools/api_providers/review_triage.py (_is_important_item)
+  plain_language_summary: _is_important_item identifies important items strictly by
+    CRITICAL/ERROR severities or a must-fix label, mechanically missing contextually
+    important should-fix items.
+  rationale: SESSION_WORKFLOW_GUIDE.md requires should-fix items related to machine
+    guards, data contracts, and scope boundaries to be treated as important. Although
+    assert_apply_fixes_ready acts as a catch-all safety net later, the failure to
+    flag these contextually important items allows them to bypass the requirement
+    for approval during the initial decide_item triage phase.
+  final_label: should-fix
+  decision_status: draft
+  decision_actor: main_session_llm_draft
+  decision_actor_type: llm_draft
+  decision_at: '2026-06-04T01:29:24.198142+00:00'
+  important_gate_required: false
+  applied_files: []
+  superseded_by: null
+updated_at: '2026-06-04T01:54:26.988276+00:00'

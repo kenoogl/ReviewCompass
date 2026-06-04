@@ -1,0 +1,46 @@
+run_id: 2026-06-04-workflow-management-implementation-review-run
+generated_at: "2026-06-04T01:25:48.678606+00:00"
+bundle:
+  path: ".reviewcompass/specs/workflow-management/reviews/2026-06-04-workflow-management-implementation-review-run/review-target.md"
+  sha256: f4761116ea469b033ebfe4df900907bfcd02a448a5ca896daed528ccf8049bff
+source_files:
+  - path: ".reviewcompass/specs/workflow-management/requirements.md"
+    sha256: 61c4c24b53b67a5ce4584394638c48b861928d4756176bfa9edf58a129eb52b9
+  - path: ".reviewcompass/specs/workflow-management/design.md"
+    sha256: 91705a49e94e1e24a4569b432adcef5f2cc893710a6d2ad3d7c4e4978cae8135
+  - path: ".reviewcompass/specs/workflow-management/tasks.md"
+    sha256: 616ec3632e257afe5fdfa925af4f2fa66505f992d7e7f1385b7ffee0471e1660
+  - path: ".reviewcompass/specs/workflow-management/spec.json"
+    sha256: 92b9fcc4d636ba8e8fd6155b710e02969ad8519c25e17ae5b8efbd8c0130ae25
+  - path: "tools/check-workflow-action.py"
+    sha256: 8d2b695127b87111dfe02e02aba5c18dcc9fb6303141b220a3ec97b6991638df
+  - path: "tools/api_providers/run_review.py"
+    sha256: 2c583a47493ca45d4fdf8882ef01481e2433dea45e3c85bf16a34b34d7c31bdd
+  - path: "tools/api_providers/run_role.py"
+    sha256: e99c5e1a39559c3bc3d487e7ce4b9326c6fc0e1364c8692fbad3e973797d917b
+  - path: "tools/api_providers/review_triage.py"
+    sha256: cd9e461520b3407f8c013c55fbdd5bf42875927535fb1876a5806b63c2ab7dda
+  - path: "tests/tools/test_check_workflow_action.py"
+    sha256: e60241a5b32c23bc052f782e79c6d27fc61d036a510db937ce68f0e3f55aad82
+  - path: "tests/tools/test_workflow_management_implementation_drafting.py"
+    sha256: ea409c7e5d924c69584c97f2570d876aa3069617d5420b73a574e3e0f37d7dac
+  - path: "tools/api_providers/tests/test_run_review.py"
+    sha256: a5d17badec62e51f8ea1a1cc92e61eca3868a642e0b3e23023d8c1b0eb44de68
+  - path: "tools/api_providers/tests/test_run_role.py"
+    sha256: 0c64995993a2bb360ea413e04a5f959ff08fb2ed9387c5ad661cd46f8562d183
+  - path: "tools/api_providers/tests/test_review_triage.py"
+    sha256: ed5513307f1fdbf74459815e95b7567b99456c4381df4add43e14fa45d524502
+  - path: ".reviewcompass/specs/workflow-management/implementation-drafting.md"
+    sha256: bcd5528c7d228a365fa8336eb78f77bb032ec7838bcec03af277665fbe7d36b7
+  - path: ".reviewcompass/specs/workflow-management/reviews/2026-06-04-implementation-triad-review-prep.md"
+    sha256: 03a2de592028779315a42d471fbaece46a6ca6c6c04588af5b92b6b0e6f36d1c
+  - path: "docs/operations/WORKFLOW_PRECHECK.md"
+    sha256: 4bb31a1b529298fb4bef8fa3ad01f8c7a47808b80c82e97a260a895be60f00d3
+  - path: "docs/operations/SESSION_WORKFLOW_GUIDE.md"
+    sha256: ee887807d47872d997c0027f731facf9e1064444fd09d999921c0a77e12378fe
+  - path: "docs/notes/2026-06-04-proxy-review-parallel-implementation-plan.md"
+    sha256: 55b0ff5d9a5cd5b1a1a87e91ce1e40c11fe891703991331b2517aed007c20def
+  - path: "docs/logs/autonomous-parallel/2026-06-04-workflow-management-implementation-review-run-plan.yaml"
+    sha256: 414a18099795dc97c48a6ace83df5e62481e855d5165cb0f1585b9564a27d611
+  - path: "docs/logs/autonomous-parallel/2026-06-04-workflow-management-implementation-review-run.yaml"
+    sha256: 24c591fd1154cfc88e222e59bdf6c8115e3c5d47149966bc8afb57f1b5255b11

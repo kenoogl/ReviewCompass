@@ -1,0 +1,13 @@
+provider: openai-api
+model: gpt-5.5
+turn_number: 1
+duration_seconds: 7.645
+sent_messages_count: 1
+response_text: "cluster_id: WM-IMPL-MF-006\napproved_by: proxy_model\nproxy_model_id:\
+  \ openai-chatgpt\nselected_option: A\nfinal_label: must-fix\nrationale: \"commit\
+  \ 承認が対象差分と強く結び付いていない場合、古い承認や別差分への承認流用が可能になり、レビュー済みでない内容が commit/push されるリスクが残る。staged\
+  \ file sha256 と作成時刻を approval record に記録し、commit/push 時に照合・監査できるようにする案が、承認の新鮮さと対象同一性を機械的に検証できるため最も妥当。push\
+  \ 直前検査とも接続しやすく、ワークフロー上の安全性を直接改善する。\"\nrejected_options:\n  - option_id: B\n    reason:\
+  \ \"consumed 状態の厳格化だけでは、未消費だが古い承認や、承認取得後に差分が変わったケースを検出できない。承認対象との同一性保証が不足する。\"\n\
+  \  - option_id: C\n    reason: \"push 側で audit-commit を強制しても、commit 承認そのものの新鮮さや対象差分との一致は保証されない。push\
+  \ 時監査の強化としては有効だが、根本原因である承認流用リスクを直接解決しない。\""

@@ -1,0 +1,30 @@
+findings:
+  - severity: ERROR
+    target_location: "docs/logs/autonomous-parallel/2026-06-04-workflow-management-implementation-review-run-plan.yaml"
+    description: "自律・並列実行計画が、並列サブ担当は原則別スレッドかつ分離 worktree とする設計要求に反し、API 実行タスクを `main_session` / `same_worktree` で列挙している。"
+    rationale: "requirements.md Requirement 3 受入 5、design.md の parallelizable_units / 実装サブ担当 LLM 規律、docs/notes/2026-06-04-proxy-review-parallel-implementation-plan.md は並列実装・サブ担当を分離 worktree 前提で扱う。現行ガード実装も `subthread`/`subagent` にしか `separate_worktree` を強制せず、`main_session` による複数 API タスクを同一 worktree で『autonomous_parallel』として通しており、並列境界の機械強制が弱い。"
+
+  - severity: ERROR
+    target_location: "tools/check-workflow-action.py: cmd_commit / cmd_push"
+    description: "commit・push の直前ゲートが、要件で必須の `stages/in-progress/` 非空時の遮断を実装していない。"
+    rationale: "requirements.md Requirement 4 受入 2 と Requirement 6 受入 5 は、不可逆操作の条件として `stages/in-progress/` が空であることを要求している。design.md でも commit/push 直前ゲートに統合されると明記されているが、実装の `cmd_commit` と `cmd_push` は in-progress の有無を読まず、pending findings・approval record・dirty tree などしか見ていないため、未完了手続きを抱えたまま不可逆操作を通してしまう。"
+
+  - severity: ERROR
+    target_location: "tools/check-workflow-action.py: cmd_push"
+    description: "push 事前検査が、要件上必要な『直前コミットが検査通過済みであること』を確認していない。"
+    rationale: "design.md §不可逆操作の直前ゲートモデルでは、push は『直前のコミットが上記検査を通過済み、リモート状態と整合』であることが条件とされている。しかし実装は作業ツリーの clean 性と ahead 情報を表示するだけで、直近コミットに対する commit precheck 通過記録や approval record 消費状態を検査していないため、commit 境界の機械ガードが push で再確認されず、commit/push 境界の監査性が不足する。"
+
+  - severity: WARN
+    target_location: "tools/check-workflow-action.py: validate_autonomous_parallel_plan"
+    description: "自律・並列実行計画ガードが、タスク単位の raw response preservation や triage/proxy decision 参照を検査せず、承認・提示フラグの存在確認に留まっている。"
+    rationale: "レビュー指示は raw response preservation、three-level triage、important-finding approval/proxy gates、auditability を重視している。設計・運用文書でも main session が raw を読み triage を作り、proxy decision と source raw を証跡化することを要求しているが、`validate_autonomous_parallel_plan` は `summary_presented_to_user` / `triage_presented_to_user` の真偽や task メタ情報しか見ず、review-run ディレクトリ、raw/triage/proxy evidence への参照整合を全く確認しないため、重要証跡欠落を機械的に見逃す。"
+
+  - severity: WARN
+    target_location: ".reviewcompass/specs/workflow-management/reviews/2026-06-04-implementation-triad-review-prep.md"
+    description: "triad-review 準備メモの front-matter が Requirement 3 の必須メタデータを満たしておらず、`reviewer` が存在しない。"
+    rationale: "requirements.md Requirement 3 受入 1 は review 記録 front-matter に `author` と `reviewer` を必須化している。design.md でも front-matter 必須フィールドと異名条件を明記しているが、本準備メモには `author` はある一方 `reviewer` がなく、起草者と判定者の分離・監査可能性が不足する。準備メモをレビュー証跡として扱うなら契約違反であり、扱わないなら対象外を明記すべき。"
+
+  - severity: WARN
+    target_location: "tools/check-workflow-action.py: validate_autonomous_parallel_plan / docs/logs/autonomous-parallel/2026-06-04-workflow-management-implementation-review-run.yaml"
+    description: "自律・並列履歴台帳が計画時点の task ID と設定しか残さず、各 task の実行結果・担当別判断根拠・統合結果が未記録でも `OK` 台帳として成立してしまう。"
+    rationale: "レビュー観点は auditability と autonomous/parallel execution workflow の後追い可能性を求めている。実装には `autonomous-plan-record-integration` があるが、計画通過時に書かれる ledger は task assignments と高位設定のみで、各 task の実行結果や decision basis を必須化していない。しかも現物 ledger には `integration_result` もなく、history フラグだけで監査可能と扱われているため、『後から履歴を確認できるようにする』という implementation-drafting.md の目的を十分満たしていない。"

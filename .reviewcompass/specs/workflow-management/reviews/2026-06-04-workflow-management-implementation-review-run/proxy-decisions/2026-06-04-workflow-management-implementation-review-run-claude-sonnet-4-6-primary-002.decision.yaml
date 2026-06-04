@@ -1,0 +1,32 @@
+finding_id: 2026-06-04-workflow-management-implementation-review-run-claude-sonnet-4-6-primary-002
+cluster_id: WM-IMPL-MF-001
+approved_by: proxy_model
+proxy_model_id: gpt-5.5
+decision_prompt_path: proxy-decisions/2026-06-04-workflow-management-implementation-review-run-claude-sonnet-4-6-primary-002.prompt.md
+source_raw_paths:
+- raw/claude-sonnet-4-6.round-1.txt
+candidate_options:
+- id: A
+  summary: autonomous-plan に review_run_dir, required_raw_paths, triage_path を追加し、raw存在・hash・未判断0件を検査する
+  tradeoff: 実装量は中程度だが、今回の問題を直接ふさげる
+- id: B
+  summary: 既存 review_triage.py の assert 系を autonomous-plan から呼ぶ
+  tradeoff: 重複は少ないが、計画段と実装着手段の責務が混ざる可能性がある
+- id: C
+  summary: 運用文書だけで必須化し、機械ガードは追加しない
+  tradeoff: 早いが、同じミスを機械的に防げない
+selected_option: A
+final_label: must-fix
+rationale: raw response と triage 完了の有無を自己申告ではなく機械的に確認できない状態は、自律実行ガードとしての信頼性を損なう。autonomous-plan
+  に review_run_dir、required_raw_paths、triage_path を明示し、raw ファイルの存在、hash、未判断0件を開始前に検査する案は、証跡欠落や
+  triage 未完了の取りこぼしを直接防げるため、今回の問題に対する最も適切な修正である。
+rejected_options:
+  B: 既存 review_triage.py の assert 系を再利用できる利点はあるが、計画段階のガードと triage 実装側の責務が結合しやすく、自律実行開始前に必要な証跡条件を明示的に表現する解決としては
+    A より弱い。
+  C: 運用文書で必須化するだけでは自己申告依存が残り、raw response 欠落や triage 未完了を機械的に防止できないため、同種のミス再発防止として不十分である。
+raw_response_path: proxy-decisions/WM-IMPL-MF-001.raw.yaml
+raw_response_model: gpt-5.5
+raw_response_provider: openai-api
+raw_response_proxy_model_id_original: openai-chatgpt
+formatted_at: '2026-06-04T01:54:26.988276+00:00'
+formatted_by: main_session_llm

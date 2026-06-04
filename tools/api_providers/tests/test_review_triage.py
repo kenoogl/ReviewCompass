@@ -2,6 +2,7 @@
 # review-run triage 補助コマンドの TDD テスト。
 
 import sys
+import hashlib
 from datetime import date
 from pathlib import Path
 
@@ -22,7 +23,7 @@ def _write_review_run(tmp_path):
   raw_file.write_text("raw\n", encoding="utf-8")
   target = tmp_path / "target.md"
   target.write_text("target\n", encoding="utf-8")
-  raw_sha = "0" * 64
+  raw_sha = hashlib.sha256(raw_file.read_bytes()).hexdigest()
   target_sha = "1" * 64
   (run_dir / "target-manifest.yaml").write_text(
     yaml.safe_dump(
@@ -670,3 +671,40 @@ def test_assert_apply_fixes_ready_blocks_proxy_approval_without_options(tmp_path
   assert exit_code == 1
   captured = capsys.readouterr()
   assert "candidate_options" in captured.err
+
+
+def test_assert_apply_fixes_ready_blocks_proxy_approval_with_tampered_source_raw(tmp_path, capsys):
+  """proxy decision の元 review raw が改変されていれば fail-closed する。"""
+  run_dir = _write_review_run(tmp_path)
+  triage = yaml.safe_load((run_dir / "triage.yaml").read_text(encoding="utf-8"))
+  item = triage["items"][0]
+  item["decision_status"] = "decided"
+  item["final_label"] = "must-fix"
+  item["decision_actor"] = "gemini-3.1-pro-preview"
+  item["decision_actor_type"] = "proxy_model"
+  (run_dir / "triage.yaml").write_text(
+    yaml.safe_dump(triage, allow_unicode=True, sort_keys=False),
+    encoding="utf-8",
+  )
+  decision_path = _write_proxy_decision(run_dir)
+  (run_dir / "raw" / "claude-sonnet-4-6.round-1.txt").write_text(
+    "tampered raw\n",
+    encoding="utf-8",
+  )
+  approval_path = _write_proxy_approval(
+    run_dir,
+    "review_run_apply_fixes",
+    decision_path,
+  )
+
+  exit_code = main(
+    [
+      "assert-apply-fixes-ready",
+      "--review-run-dir", str(run_dir),
+      "--approval-record", str(approval_path),
+    ]
+  )
+
+  assert exit_code == 1
+  captured = capsys.readouterr()
+  assert "source_raw_paths sha256 mismatch" in captured.err

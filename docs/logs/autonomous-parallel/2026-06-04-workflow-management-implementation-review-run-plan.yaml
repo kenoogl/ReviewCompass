@@ -1,0 +1,133 @@
+mode: autonomous_parallel
+run_id: 2026-06-04-workflow-management-implementation-review-run
+authorization:
+  approved_by: user
+  approval_record_path: .reviewcompass/specs/workflow-management/reviews/2026-06-04-implementation-triad-review-prep.md
+  summary_presented_to_user: true
+  triage_presented_to_user: true
+tasks:
+- task_id: target-bundle
+  source_finding_ids:
+  - workflow-management-implementation-triad-review-prep
+  assignee:
+    kind: main_session
+    worktree_policy: same_worktree
+  allowed_paths:
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-04-workflow-management-implementation-review-run/review-target.md
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-04-workflow-management-implementation-review-run/target-source-manifest.yaml
+  forbidden_paths:
+  - .git/
+  depends_on: []
+  expected_tests:
+  - python3 -m pytest tests/tools/test_workflow_management_implementation_triad_prep.py
+    -q
+  stop_conditions:
+  - important_decision_requires_approval
+  writes_repo_diff: false
+  output_only: true
+- task_id: api-primary
+  source_finding_ids:
+  - workflow-management-implementation-triad-review-prep
+  assignee:
+    kind: main_session
+    worktree_policy: same_worktree
+  allowed_paths:
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-04-workflow-management-implementation-review-run/raw/claude-sonnet-4-6.round-1.txt
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-04-workflow-management-implementation-review-run/parsed/claude-sonnet-4-6.round-1.yaml
+  forbidden_paths:
+  - .git/
+  depends_on:
+  - target-bundle
+  expected_tests:
+  - test -s .reviewcompass/specs/workflow-management/reviews/2026-06-04-workflow-management-implementation-review-run/raw/claude-sonnet-4-6.round-1.txt
+  stop_conditions:
+  - important_decision_requires_approval
+  writes_repo_diff: false
+  output_only: true
+- task_id: api-adversarial
+  source_finding_ids:
+  - workflow-management-implementation-triad-review-prep
+  assignee:
+    kind: main_session
+    worktree_policy: same_worktree
+  allowed_paths:
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-04-workflow-management-implementation-review-run/raw/gpt-5.4.round-1.txt
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-04-workflow-management-implementation-review-run/parsed/gpt-5.4.round-1.yaml
+  forbidden_paths:
+  - .git/
+  depends_on:
+  - target-bundle
+  expected_tests:
+  - test -s .reviewcompass/specs/workflow-management/reviews/2026-06-04-workflow-management-implementation-review-run/raw/gpt-5.4.round-1.txt
+  stop_conditions:
+  - important_decision_requires_approval
+  writes_repo_diff: false
+  output_only: true
+- task_id: api-judgment
+  source_finding_ids:
+  - workflow-management-implementation-triad-review-prep
+  assignee:
+    kind: main_session
+    worktree_policy: same_worktree
+  allowed_paths:
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-04-workflow-management-implementation-review-run/raw/gemini-3.1-pro-preview.round-1.txt
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-04-workflow-management-implementation-review-run/parsed/gemini-3.1-pro-preview.round-1.yaml
+  forbidden_paths:
+  - .git/
+  depends_on:
+  - target-bundle
+  expected_tests:
+  - test -s .reviewcompass/specs/workflow-management/reviews/2026-06-04-workflow-management-implementation-review-run/raw/gemini-3.1-pro-preview.round-1.txt
+  stop_conditions:
+  - important_decision_requires_approval
+  writes_repo_diff: false
+  output_only: true
+- task_id: aggregate-review-run
+  source_finding_ids:
+  - workflow-management-implementation-triad-review-prep
+  assignee:
+    kind: main_session
+    worktree_policy: same_worktree
+  allowed_paths:
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-04-workflow-management-implementation-review-run/target-manifest.yaml
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-04-workflow-management-implementation-review-run/rounds.yaml
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-04-workflow-management-implementation-review-run/model-result-summary.yaml
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-04-workflow-management-implementation-review-run/triage.yaml
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-04-workflow-management-implementation-review-run/review_summary.md
+  forbidden_paths:
+  - .git/
+  depends_on:
+  - api-primary
+  - api-adversarial
+  - api-judgment
+  expected_tests:
+  - python3 -m pytest tests/tools/test_workflow_management_implementation_triad_prep.py
+    -q
+  stop_conditions:
+  - important_decision_requires_approval
+  writes_repo_diff: false
+  output_only: true
+integration_gate:
+  requires_main_session_review: true
+  requires_diff_scope_check: true
+  requires_tests: true
+  requires_decision_basis_review: true
+history:
+  ledger_path: docs/logs/autonomous-parallel/2026-06-04-workflow-management-implementation-review-run.yaml
+  record_task_assignments: true
+  record_decision_basis: true
+  record_integration_result: true
+  retention: preserve
+outputs_policy:
+  implementation_diff: commit_candidate
+  verification_summary: required
+  decision_basis: preserve_if_used
+  work_noise: exclude
+execution_evidence:
+  review_run_dir: .reviewcompass/specs/workflow-management/reviews/2026-06-04-workflow-management-implementation-review-run
+  required_raw_paths:
+  - raw/claude-sonnet-4-6.round-1.txt
+  - raw/gpt-5.4.round-1.txt
+  - raw/gemini-3.1-pro-preview.round-1.txt
+  triage_path: triage.yaml
+  require_no_human_required: true

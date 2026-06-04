@@ -1,0 +1,11 @@
+provider: openai-api
+model: gpt-5.5
+turn_number: 1
+duration_seconds: 12.816
+sent_messages_count: 1
+response_text: "cluster_id: WM-IMPL-MF-005\napproved_by: proxy_model\nproxy_model_id:\
+  \ openai-chatgpt\nselected_option: A\nfinal_label: must-fix\nrationale: 実装差分を生成する並列作業と、raw取得・証跡生成のみの読み取り系API並列はリスクと必要な隔離粒度が異なるため、計画ガード上で\
+  \ writes_repo_diff=false / output_only=true のように機械判定可能な区分を明示すべき。これにより same_worktree\
+  \ で許可される並列が証跡生成に限定され、実装並列との混同や将来の運用逸脱を防げる。\nrejected_options:\n  - option_id: B\n\
+  \    reason: すべてのAPI呼び出しを separate_worktree 扱いにすると規律は単純になるが、実装差分を作らないraw取得・生成処理まで過剰に重くなり、今回の実態に対して運用コストが高い。\n\
+  \  - option_id: C\n    reason: leave-as-is では main_session/same_worktree で許可される並列の境界が曖昧なままとなり、今後も実装並列と証跡生成並列の混同が再発する可能性が高い。"
