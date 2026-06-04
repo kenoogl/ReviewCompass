@@ -1,0 +1,48 @@
+status: completed
+target_files:
+- TODO_NEXT_SESSION.md
+- docs/notes/review-runs/postwrite-todo-next-session-completed-state-2026-06-04-r1/model-result-summary.yaml
+- docs/notes/review-runs/postwrite-todo-next-session-completed-state-2026-06-04-r1/parsed/gemini-3.5-flash.r1.yaml
+- docs/notes/review-runs/postwrite-todo-next-session-completed-state-2026-06-04-r1/raw/gemini-3.5-flash.r1.txt
+- docs/notes/review-runs/postwrite-todo-next-session-completed-state-2026-06-04-r1/review_summary.md
+- docs/notes/review-runs/postwrite-todo-next-session-completed-state-2026-06-04-r1/rounds.yaml
+- docs/notes/review-runs/postwrite-todo-next-session-completed-state-2026-06-04-r1/target-manifest.yaml
+- docs/notes/review-runs/postwrite-todo-next-session-completed-state-2026-06-04-r1/triage.yaml
+target_sha256:
+  TODO_NEXT_SESSION.md: 044cf101f18fdb2be57ac9fead40a5aa25f7d21e9608f3b3de4531c009e4dd5e
+  docs/notes/review-runs/postwrite-todo-next-session-completed-state-2026-06-04-r1/model-result-summary.yaml: 699475eb1833f923ce73b64d1fcce570f00a373b5d398cae86716714405b1ce6
+  docs/notes/review-runs/postwrite-todo-next-session-completed-state-2026-06-04-r1/parsed/gemini-3.5-flash.r1.yaml: 6774573652490faa395aa8ebb2642fc3da8564ea84c3d22b2bb35ee0a87f6467
+  docs/notes/review-runs/postwrite-todo-next-session-completed-state-2026-06-04-r1/raw/gemini-3.5-flash.r1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+  docs/notes/review-runs/postwrite-todo-next-session-completed-state-2026-06-04-r1/review_summary.md: fd0b7f7570592e1df970be643b2ebd1701c5bc29a3b3a251740179ef6c99d13d
+  docs/notes/review-runs/postwrite-todo-next-session-completed-state-2026-06-04-r1/rounds.yaml: 37da6f989cf889db86fc7b9879a0c2df8bcb8209cd381e8021a1d80b2c43c6d3
+  docs/notes/review-runs/postwrite-todo-next-session-completed-state-2026-06-04-r1/target-manifest.yaml: 7aaa6ac63f71d1b6fe7474b0ae9b51731c171816e04cc04ba189d830f48de96b
+  docs/notes/review-runs/postwrite-todo-next-session-completed-state-2026-06-04-r1/triage.yaml: 18b464b12f4e7c8b7068e9f98677a2bf7f7c47dd2d8d4d0186e3b74487e82592
+required_verifiers: &id001
+- gemini-3.5-flash
+completed_verifiers: *id001
+unresolved_substantive_findings: 0
+verifications:
+- verifier: gemini-3.5-flash
+  target_files:
+  - TODO_NEXT_SESSION.md
+  - docs/notes/review-runs/postwrite-todo-next-session-completed-state-2026-06-04-r1/model-result-summary.yaml
+  - docs/notes/review-runs/postwrite-todo-next-session-completed-state-2026-06-04-r1/parsed/gemini-3.5-flash.r1.yaml
+  - docs/notes/review-runs/postwrite-todo-next-session-completed-state-2026-06-04-r1/raw/gemini-3.5-flash.r1.txt
+  - docs/notes/review-runs/postwrite-todo-next-session-completed-state-2026-06-04-r1/review_summary.md
+  - docs/notes/review-runs/postwrite-todo-next-session-completed-state-2026-06-04-r1/rounds.yaml
+  - docs/notes/review-runs/postwrite-todo-next-session-completed-state-2026-06-04-r1/target-manifest.yaml
+  - docs/notes/review-runs/postwrite-todo-next-session-completed-state-2026-06-04-r1/triage.yaml
+  target_sha256:
+    TODO_NEXT_SESSION.md: 044cf101f18fdb2be57ac9fead40a5aa25f7d21e9608f3b3de4531c009e4dd5e
+    docs/notes/review-runs/postwrite-todo-next-session-completed-state-2026-06-04-r1/model-result-summary.yaml: 699475eb1833f923ce73b64d1fcce570f00a373b5d398cae86716714405b1ce6
+    docs/notes/review-runs/postwrite-todo-next-session-completed-state-2026-06-04-r1/parsed/gemini-3.5-flash.r1.yaml: 6774573652490faa395aa8ebb2642fc3da8564ea84c3d22b2bb35ee0a87f6467
+    docs/notes/review-runs/postwrite-todo-next-session-completed-state-2026-06-04-r1/raw/gemini-3.5-flash.r1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/postwrite-todo-next-session-completed-state-2026-06-04-r1/review_summary.md: fd0b7f7570592e1df970be643b2ebd1701c5bc29a3b3a251740179ef6c99d13d
+    docs/notes/review-runs/postwrite-todo-next-session-completed-state-2026-06-04-r1/rounds.yaml: 37da6f989cf889db86fc7b9879a0c2df8bcb8209cd381e8021a1d80b2c43c6d3
+    docs/notes/review-runs/postwrite-todo-next-session-completed-state-2026-06-04-r1/target-manifest.yaml: 7aaa6ac63f71d1b6fe7474b0ae9b51731c171816e04cc04ba189d830f48de96b
+    docs/notes/review-runs/postwrite-todo-next-session-completed-state-2026-06-04-r1/triage.yaml: 18b464b12f4e7c8b7068e9f98677a2bf7f7c47dd2d8d4d0186e3b74487e82592
+review_run:
+  path: docs/notes/review-runs/postwrite-todo-next-session-completed-state-2026-06-04-r1
+  summary_path: docs/notes/review-runs/postwrite-todo-next-session-completed-state-2026-06-04-r1/model-result-summary.yaml
+notes: Generated template; verify target_files cover current post-write targets before
+  use.

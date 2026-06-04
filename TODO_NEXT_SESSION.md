@@ -43,33 +43,50 @@ Python 実行は、必要に応じて venv を使う：
 
 `next --json` の直近確認では、次は以下：
 
-- feature: `self-improvement`
-- phase: `implementation`
-- stage: `triad-review`
-- reason: `self-improvement の implementation.triad-review が未完了です`
+- kind: `completed`
+- reason: `すべての workflow_state が完了しています`
 
-implementation の進捗：
+全 feature の workflow_state は完了済み：
 
-- `foundation`、`runtime`、`evaluation`、`analysis`、`workflow-management` は `drafting` と `triad-review` が完了。
-- `self-improvement` は `drafting` 完了、`triad-review` 未完了。
-- `conformance-evaluation` は implementation 未着手。
-- `foundation` は `upstream_change_pending=true`、`impacted=["implementation"]` が残る。implementation review-wave 以降で織り込む。
+- `foundation`
+- `runtime`
+- `evaluation`
+- `analysis`
+- `workflow-management`
+- `self-improvement`
+- `conformance-evaluation`
+
+上記 7 feature は、intent、feature-partitioning、requirements、design、tasks、implementation の全段が完了している。
+
+直近 commit：
+
+- `2e06307 Approve implementation workflow`
+- `43b216b Treat draft triage as unresolved`
+- `5a5b226 Advance implementation to approval gate`
+- `4733ecd Resolve implementation review wave blockers`
 
 ## 4. 次作業
 
-`next_action.kind == "stage"` かつ `feature == "self-improvement"`、`phase == "implementation"`、`stage == "triad-review"` の場合のみ、self-improvement implementation triad-review に進む。
+通常ワークフロー上の未完了タスクはない。
 
-進め方：
+次セッションでは、まず `next --json` で `kind: completed` が維持されていることと、`git status --short` が clean であることを確認する。
 
-1. `docs/operations/WORKFLOW_NAVIGATION.md`
-2. `docs/disciplines/discipline_workflow_state_truth_source.md`
-3. `docs/operations/SESSION_WORKFLOW_GUIDE.md#3.3-a-2`
-4. `docs/disciplines/discipline_approval_operation.md`
+候補タスク：
 
-を確認し、self-improvement の implementation review-run を実施する。API 経由で投げる場合は raw を必ず保存し、モデル別要約と三段階トリアージを残す。
+1. completed 到達後の全体サマリを作る。
+2. 必要なら `git push` する。
+3. 運用・リリース・追加改善の計画を新しく切る。
+4. review-wave 改善メモに残した follow-up candidates を、次の改善候補として扱う。
 
 ## 5. 直近の完了事項
 
+- 全 7 feature の implementation review-wave、alignment、approval を完了。
+- `implementation.approval=true` を全 feature に設定し、`next --json` が `kind: completed` を返す状態にした。
+- workflow-management の draft triage 残りを未解決扱いするように `review_triage.py` を修正し、回帰テストを追加。
+- review-wave 中に見つかった 3 件のブロッカーを解消：
+  - workflow-management の draft triage 残り
+  - evaluation の証跡配置
+  - foundation recheck pending
 - carry-forward register を正本化し、旧 `.reviewcompass/pending-cross-feature-findings.md` を `learning/workflow/carry-forward-register/sources/` へ移動。
 - `learning/workflow/carry-forward-register/reviewcompass-import.yaml` を `required_inputs.unresolved_cross_scope_items` の実体にした。
 - 再利用される入力や review-target bundle に旧台帳参照が残らない監査を追加。
