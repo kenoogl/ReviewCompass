@@ -792,6 +792,567 @@ class SpecSetExitCodeTests(unittest.TestCase):
     _assert_script_invoked(self, result)
     self.assertEqual(result.returncode, 0, result.stdout)
 
+  def test_spec_set_blocks_artifact_exists_when_artifact_missing(self):
+    """artifact_exists は証跡ファイル欠落時に true 化を遮断する"""
+    cwd = self._copy_fixture("case-a-ready-for-approval")
+    stages_dir = cwd / "stages"
+    stages_dir.mkdir(parents=True, exist_ok=True)
+    (stages_dir / "requirements.yaml").write_text(
+      yaml.safe_dump(
+        {
+          "phase": "requirements",
+          "stages": [
+            {
+              "name": "approval",
+              "artifact_paths": ["docs/approvals/requirements.md"],
+              "completion_predicate": "artifact_exists",
+            },
+          ],
+        },
+        allow_unicode=True,
+        sort_keys=False,
+      ),
+      encoding="utf-8",
+    )
+
+    result = run_script(
+      ["spec-set", "foundation", "requirements", "approval", "true"],
+      cwd=cwd,
+    )
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 2, result.stdout)
+    self.assertIn("artifact_exists", result.stdout)
+
+  def test_spec_set_allows_artifact_exists_when_artifact_exists(self):
+    """artifact_exists は証跡ファイル存在時に通過する"""
+    cwd = self._copy_fixture("case-a-ready-for-approval")
+    stages_dir = cwd / "stages"
+    stages_dir.mkdir(parents=True, exist_ok=True)
+    approval_path = cwd / "docs" / "approvals" / "requirements.md"
+    approval_path.parent.mkdir(parents=True)
+    approval_path.write_text("承認証跡\n", encoding="utf-8")
+    (stages_dir / "requirements.yaml").write_text(
+      yaml.safe_dump(
+        {
+          "phase": "requirements",
+          "stages": [
+            {
+              "name": "approval",
+              "artifact_paths": ["docs/approvals/requirements.md"],
+              "completion_predicate": "artifact_exists",
+            },
+          ],
+        },
+        allow_unicode=True,
+        sort_keys=False,
+      ),
+      encoding="utf-8",
+    )
+
+    result = run_script(
+      ["spec-set", "foundation", "requirements", "approval", "true"],
+      cwd=cwd,
+    )
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 0, result.stdout)
+
+  def test_spec_set_blocks_sections_predicate_when_section_missing(self):
+    """artifact_exists_and_sections_present は必須節欠落時に遮断する"""
+    cwd = self._copy_fixture("case-a-ready-for-approval")
+    stages_dir = cwd / "stages"
+    stages_dir.mkdir(parents=True, exist_ok=True)
+    approval_path = cwd / "docs" / "approvals" / "requirements.md"
+    approval_path.parent.mkdir(parents=True)
+    approval_path.write_text("# Introduction\n\n本文\n", encoding="utf-8")
+    (stages_dir / "requirements.yaml").write_text(
+      yaml.safe_dump(
+        {
+          "phase": "requirements",
+          "stages": [
+            {
+              "name": "approval",
+              "artifact_paths": ["docs/approvals/requirements.md"],
+              "required_sections": ["Introduction", "Decision"],
+              "completion_predicate": "artifact_exists_and_sections_present",
+            },
+          ],
+        },
+        allow_unicode=True,
+        sort_keys=False,
+      ),
+      encoding="utf-8",
+    )
+
+    result = run_script(
+      ["spec-set", "foundation", "requirements", "approval", "true"],
+      cwd=cwd,
+    )
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 2, result.stdout)
+    self.assertIn("Decision", result.stdout)
+
+  def test_spec_set_allows_sections_predicate_when_sections_present(self):
+    """artifact_exists_and_sections_present は証跡と必須節が揃えば通過する"""
+    cwd = self._copy_fixture("case-a-ready-for-approval")
+    stages_dir = cwd / "stages"
+    stages_dir.mkdir(parents=True, exist_ok=True)
+    approval_path = cwd / "docs" / "approvals" / "requirements.md"
+    approval_path.parent.mkdir(parents=True)
+    approval_path.write_text(
+      "# Introduction\n\n本文\n\n## Decision\n\n承認\n",
+      encoding="utf-8",
+    )
+    (stages_dir / "requirements.yaml").write_text(
+      yaml.safe_dump(
+        {
+          "phase": "requirements",
+          "stages": [
+            {
+              "name": "approval",
+              "artifact_paths": ["docs/approvals/requirements.md"],
+              "required_sections": ["Introduction", "Decision"],
+              "completion_predicate": "artifact_exists_and_sections_present",
+            },
+          ],
+        },
+        allow_unicode=True,
+        sort_keys=False,
+      ),
+      encoding="utf-8",
+    )
+
+    result = run_script(
+      ["spec-set", "foundation", "requirements", "approval", "true"],
+      cwd=cwd,
+    )
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 0, result.stdout)
+
+  def test_spec_set_blocks_author_reviewer_predicate_when_identity_matches(self):
+    """author/reviewer 異名述語は同一 identity を遮断する"""
+    cwd = self._copy_fixture("case-a-ready-for-approval")
+    stages_dir = cwd / "stages"
+    stages_dir.mkdir(parents=True, exist_ok=True)
+    review_path = (
+      cwd / ".reviewcompass" / "specs" / "foundation" / "reviews"
+      / "2026-06-04-requirements-triad-review.md"
+    )
+    review_path.parent.mkdir(parents=True)
+    review_path.write_text(
+      "---\n"
+      "author:\n"
+      "  identity: main-session\n"
+      "reviewer:\n"
+      "  identity: main-session\n"
+      "  separation_from_author: false\n"
+      "---\n"
+      "# 主役レビュー\n\n# 敵対役レビュー\n\n# 判定役レビュー\n\n# 統合\n",
+      encoding="utf-8",
+    )
+    (stages_dir / "requirements.yaml").write_text(
+      yaml.safe_dump(
+        {
+          "phase": "requirements",
+          "stages": [
+            {
+              "name": "approval",
+              "artifact_paths": [
+                ".reviewcompass/specs/{feature}/reviews/*-requirements-triad-review.md",
+              ],
+              "required_sections": [
+                "主役レビュー",
+                "敵対役レビュー",
+                "判定役レビュー",
+                "統合",
+              ],
+              "completion_predicate": (
+                "artifact_exists_and_sections_present_and_author_reviewer_distinct"
+              ),
+            },
+          ],
+        },
+        allow_unicode=True,
+        sort_keys=False,
+      ),
+      encoding="utf-8",
+    )
+
+    result = run_script(
+      ["spec-set", "foundation", "requirements", "approval", "true"],
+      cwd=cwd,
+    )
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 2, result.stdout)
+    self.assertIn("author.identity", result.stdout)
+
+  def test_spec_set_allows_author_reviewer_predicate_when_identity_distinct(self):
+    """author/reviewer 異名述語は異なる identity なら通過する"""
+    cwd = self._copy_fixture("case-a-ready-for-approval")
+    stages_dir = cwd / "stages"
+    stages_dir.mkdir(parents=True, exist_ok=True)
+    review_path = (
+      cwd / ".reviewcompass" / "specs" / "foundation" / "reviews"
+      / "2026-06-04-requirements-triad-review.md"
+    )
+    review_path.parent.mkdir(parents=True)
+    review_path.write_text(
+      "---\n"
+      "author:\n"
+      "  identity: main-session\n"
+      "reviewer:\n"
+      "  identity: independent-reviewer\n"
+      "  separation_from_author: true\n"
+      "---\n"
+      "# 主役レビュー\n\n# 敵対役レビュー\n\n# 判定役レビュー\n\n# 統合\n",
+      encoding="utf-8",
+    )
+    (stages_dir / "requirements.yaml").write_text(
+      yaml.safe_dump(
+        {
+          "phase": "requirements",
+          "stages": [
+            {
+              "name": "approval",
+              "artifact_paths": [
+                ".reviewcompass/specs/{feature}/reviews/*-requirements-triad-review.md",
+              ],
+              "required_sections": [
+                "主役レビュー",
+                "敵対役レビュー",
+                "判定役レビュー",
+                "統合",
+              ],
+              "completion_predicate": (
+                "artifact_exists_and_sections_present_and_author_reviewer_distinct"
+              ),
+            },
+          ],
+        },
+        allow_unicode=True,
+        sort_keys=False,
+      ),
+      encoding="utf-8",
+    )
+
+    result = run_script(
+      ["spec-set", "foundation", "requirements", "approval", "true"],
+      cwd=cwd,
+    )
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 0, result.stdout)
+
+  def test_spec_set_blocks_all_features_predicate_when_feature_incomplete(self):
+    """全機能 drafting/triad-review 述語は未完了 feature があれば遮断する"""
+    cwd = Path(self.tmpdir) / "all-features-incomplete"
+    cwd.mkdir()
+    _write_specs_for_next(cwd, {})
+    spec_path = cwd / ".reviewcompass" / "specs" / "runtime" / "spec.json"
+    spec = json.loads(spec_path.read_text(encoding="utf-8"))
+    spec["workflow_state"]["requirements"]["triad-review"] = False
+    spec_path.write_text(
+      json.dumps(spec, ensure_ascii=False, indent=2),
+      encoding="utf-8",
+    )
+    stages_dir = cwd / "stages"
+    stages_dir.mkdir(parents=True)
+    (stages_dir / "requirements.yaml").write_text(
+      yaml.safe_dump(
+        {
+          "phase": "requirements",
+          "stages": [
+            {
+              "name": "review-wave",
+              "completion_predicate": (
+                "all_features_drafting_and_triad_review_completed"
+              ),
+            },
+          ],
+        },
+        allow_unicode=True,
+        sort_keys=False,
+      ),
+      encoding="utf-8",
+    )
+
+    result = run_script(
+      ["spec-set", "foundation", "requirements", "review-wave", "true"],
+      cwd=cwd,
+    )
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 2, result.stdout)
+    self.assertIn("runtime.requirements.triad-review", result.stdout)
+
+  def test_spec_set_allows_all_features_predicate_when_features_complete(self):
+    """全機能 drafting/triad-review 述語は全 feature 完了時に通過する"""
+    cwd = Path(self.tmpdir) / "all-features-complete"
+    cwd.mkdir()
+    _write_specs_for_next(cwd, {})
+    stages_dir = cwd / "stages"
+    stages_dir.mkdir(parents=True)
+    (stages_dir / "requirements.yaml").write_text(
+      yaml.safe_dump(
+        {
+          "phase": "requirements",
+          "stages": [
+            {
+              "name": "review-wave",
+              "completion_predicate": (
+                "all_features_drafting_and_triad_review_completed"
+              ),
+            },
+          ],
+        },
+        allow_unicode=True,
+        sort_keys=False,
+      ),
+      encoding="utf-8",
+    )
+
+    result = run_script(
+      ["spec-set", "foundation", "requirements", "review-wave", "true"],
+      cwd=cwd,
+    )
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 0, result.stdout)
+
+  def test_spec_set_blocks_alignment_predicate_when_unresolved_findings_exist(self):
+    """cross_spec_alignment_passed は未消化所見があれば遮断する"""
+    cwd = self._copy_fixture("case-a-ready-for-approval")
+    stages_dir = cwd / "stages"
+    stages_dir.mkdir(parents=True, exist_ok=True)
+    report_path = cwd / "docs" / "alignment" / "requirements.yaml"
+    report_path.parent.mkdir(parents=True)
+    report_path.write_text(
+      yaml.safe_dump(
+        {"status": "pass", "unresolved_findings": 1},
+        allow_unicode=True,
+      ),
+      encoding="utf-8",
+    )
+    (stages_dir / "requirements.yaml").write_text(
+      yaml.safe_dump(
+        {
+          "phase": "requirements",
+          "stages": [
+            {
+              "name": "alignment",
+              "artifact_paths": ["docs/alignment/requirements.yaml"],
+              "completion_predicate": "cross_spec_alignment_passed",
+            },
+          ],
+        },
+        allow_unicode=True,
+        sort_keys=False,
+      ),
+      encoding="utf-8",
+    )
+
+    result = run_script(
+      ["spec-set", "foundation", "requirements", "alignment", "true"],
+      cwd=cwd,
+    )
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 2, result.stdout)
+    self.assertIn("未消化所見 0 件", result.stdout)
+
+  def test_spec_set_allows_alignment_predicate_when_passed(self):
+    """cross_spec_alignment_passed は pass かつ未消化所見 0 件なら通過する"""
+    cwd = self._copy_fixture("case-a-ready-for-approval")
+    stages_dir = cwd / "stages"
+    stages_dir.mkdir(parents=True, exist_ok=True)
+    report_path = cwd / "docs" / "alignment" / "requirements.yaml"
+    report_path.parent.mkdir(parents=True)
+    report_path.write_text(
+      yaml.safe_dump(
+        {"status": "pass", "unresolved_findings": 0},
+        allow_unicode=True,
+      ),
+      encoding="utf-8",
+    )
+    (stages_dir / "requirements.yaml").write_text(
+      yaml.safe_dump(
+        {
+          "phase": "requirements",
+          "stages": [
+            {
+              "name": "alignment",
+              "artifact_paths": ["docs/alignment/requirements.yaml"],
+              "completion_predicate": "cross_spec_alignment_passed",
+            },
+          ],
+        },
+        allow_unicode=True,
+        sort_keys=False,
+      ),
+      encoding="utf-8",
+    )
+
+    result = run_script(
+      ["spec-set", "foundation", "requirements", "alignment", "true"],
+      cwd=cwd,
+    )
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 0, result.stdout)
+
+  def test_spec_set_blocks_human_approval_predicate_when_record_missing(self):
+    """explicit_human_approval_recorded は承認証跡欠落時に遮断する"""
+    cwd = self._copy_fixture("case-a-ready-for-approval")
+    stages_dir = cwd / "stages"
+    stages_dir.mkdir(parents=True, exist_ok=True)
+    (stages_dir / "requirements.yaml").write_text(
+      yaml.safe_dump(
+        {
+          "phase": "requirements",
+          "stages": [
+            {
+              "name": "approval",
+              "approval_record_path": "docs/approvals/requirements.yaml",
+              "completion_predicate": "explicit_human_approval_recorded",
+            },
+          ],
+        },
+        allow_unicode=True,
+        sort_keys=False,
+      ),
+      encoding="utf-8",
+    )
+
+    result = run_script(
+      ["spec-set", "foundation", "requirements", "approval", "true"],
+      cwd=cwd,
+    )
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 2, result.stdout)
+    self.assertIn("承認証跡", result.stdout)
+
+  def test_spec_set_allows_human_approval_predicate_when_record_exists(self):
+    """explicit_human_approval_recorded は承認証跡があれば通過する"""
+    cwd = self._copy_fixture("case-a-ready-for-approval")
+    stages_dir = cwd / "stages"
+    stages_dir.mkdir(parents=True, exist_ok=True)
+    approval_path = cwd / "docs" / "approvals" / "requirements.yaml"
+    approval_path.parent.mkdir(parents=True)
+    approval_path.write_text("approved_by: user\n", encoding="utf-8")
+    (stages_dir / "requirements.yaml").write_text(
+      yaml.safe_dump(
+        {
+          "phase": "requirements",
+          "stages": [
+            {
+              "name": "approval",
+              "approval_record_path": "docs/approvals/requirements.yaml",
+              "completion_predicate": "explicit_human_approval_recorded",
+            },
+          ],
+        },
+        allow_unicode=True,
+        sort_keys=False,
+      ),
+      encoding="utf-8",
+    )
+
+    result = run_script(
+      ["spec-set", "foundation", "requirements", "approval", "true"],
+      cwd=cwd,
+    )
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 0, result.stdout)
+
+  def test_spec_set_blocks_depends_on_predicate_when_kind_invalid(self):
+    """depends_on_resolves_correctly は不正な依存種別を遮断する"""
+    cwd = self._copy_fixture("case-a-ready-for-approval")
+    stages_dir = cwd / "stages"
+    stages_dir.mkdir(parents=True, exist_ok=True)
+    (stages_dir / "feature-dependency.yaml").write_text(
+      yaml.safe_dump(
+        {"features": {"runtime": {"depends_on": {"foundation": "optional"}}}},
+        allow_unicode=True,
+        sort_keys=False,
+      ),
+      encoding="utf-8",
+    )
+    (stages_dir / "requirements.yaml").write_text(
+      yaml.safe_dump(
+        {
+          "phase": "requirements",
+          "stages": [
+            {
+              "name": "approval",
+              "completion_predicate": "depends_on_resolves_correctly",
+            },
+          ],
+        },
+        allow_unicode=True,
+        sort_keys=False,
+      ),
+      encoding="utf-8",
+    )
+
+    result = run_script(
+      ["spec-set", "foundation", "requirements", "approval", "true"],
+      cwd=cwd,
+    )
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 2, result.stdout)
+    self.assertIn("hard または review", result.stdout)
+
+  def test_spec_set_allows_depends_on_predicate_when_kind_valid(self):
+    """depends_on_resolves_correctly は list/object の正しい依存構造を通過する"""
+    cwd = self._copy_fixture("case-a-ready-for-approval")
+    stages_dir = cwd / "stages"
+    stages_dir.mkdir(parents=True, exist_ok=True)
+    (stages_dir / "feature-dependency.yaml").write_text(
+      yaml.safe_dump(
+        {
+          "features": {
+            "foundation": {"depends_on": []},
+            "runtime": {"depends_on": {"foundation": "hard"}},
+            "evaluation": {"depends_on": ["runtime"]},
+          },
+        },
+        allow_unicode=True,
+        sort_keys=False,
+      ),
+      encoding="utf-8",
+    )
+    (stages_dir / "requirements.yaml").write_text(
+      yaml.safe_dump(
+        {
+          "phase": "requirements",
+          "stages": [
+            {
+              "name": "approval",
+              "completion_predicate": "depends_on_resolves_correctly",
+            },
+          ],
+        },
+        allow_unicode=True,
+        sort_keys=False,
+      ),
+      encoding="utf-8",
+    )
+
+    result = run_script(
+      ["spec-set", "foundation", "requirements", "approval", "true"],
+      cwd=cwd,
+    )
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 0, result.stdout)
+
   def test_approval_with_alignment_false_returns_two(self):
     """ケース B：alignment が false で approval を true にする → exit 2
 

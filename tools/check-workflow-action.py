@@ -273,7 +273,324 @@ def judge_spec_set(spec_data, phase, stage, new_value):
     return "OK", 0, []
 
 
-def completion_predicate_reasons(cwd, phase, stage, new_value):
+def _stage_ref(phase, stage):
+  """stage 定義内の項目を指す表示用ラベルを返す"""
+  return f"stages/{phase}.yaml#{stage}"
+
+
+def _as_list(value):
+  """YAML の単一値または list を list に正規化する"""
+  if value is None:
+    return []
+  if isinstance(value, list):
+    return value
+  return [value]
+
+
+def _artifact_matches(cwd, feature, entry):
+  """stage 定義の artifact_paths を実ファイルへ解決する"""
+  matches_by_pattern = []
+  for raw_pattern in _as_list(entry.get("artifact_paths")):
+    if not isinstance(raw_pattern, str) or not raw_pattern.strip():
+      matches_by_pattern.append((str(raw_pattern), []))
+      continue
+    pattern = raw_pattern.replace("{feature}", feature)
+    path = Path(pattern)
+    if path.is_absolute():
+      base = Path("/")
+      relative_pattern = str(path.relative_to(base))
+    else:
+      base = Path(cwd)
+      relative_pattern = pattern
+    if any(token in relative_pattern for token in ("*", "?", "[")):
+      matches = sorted(p for p in base.glob(relative_pattern) if p.is_file())
+    else:
+      candidate = base / relative_pattern
+      matches = [candidate] if candidate.is_file() else []
+    matches_by_pattern.append((raw_pattern, matches))
+  return matches_by_pattern
+
+
+def _artifact_exists_reasons(cwd, feature, phase, stage, entry, predicate_name):
+  """artifact_paths の各 pattern について少なくとも 1 ファイル存在するか調べる"""
+  artifact_patterns = _as_list(entry.get("artifact_paths"))
+  if not artifact_patterns:
+    return [
+      f"{_stage_ref(phase, stage)}.{predicate_name} は artifact_paths が必要です"
+    ]
+
+  reasons = []
+  for pattern, matches in _artifact_matches(cwd, feature, entry):
+    if not matches:
+      reasons.append(
+        f"{_stage_ref(phase, stage)}.{predicate_name} が未充足です: {pattern}"
+      )
+  return reasons
+
+
+def _section_reasons(cwd, feature, phase, stage, entry, predicate_name):
+  """必須節が artifact に含まれるか調べる"""
+  existence_reasons = _artifact_exists_reasons(
+    cwd,
+    feature,
+    phase,
+    stage,
+    entry,
+    predicate_name,
+  )
+  if existence_reasons:
+    return existence_reasons
+
+  required_sections = [
+    value for value in _as_list(entry.get("required_sections"))
+    if isinstance(value, str) and value.strip()
+  ]
+  if not required_sections:
+    return [
+      f"{_stage_ref(phase, stage)}.{predicate_name} は required_sections が必要です"
+    ]
+
+  reasons = []
+  for pattern, matches in _artifact_matches(cwd, feature, entry):
+    pattern_satisfied = False
+    first_missing = []
+    first_path = None
+    for path in matches:
+      try:
+        text = path.read_text(encoding="utf-8")
+      except OSError as e:
+        reasons.append(f"{path} を読めません: {e}")
+        continue
+      missing = [section for section in required_sections if section not in text]
+      if not missing:
+        pattern_satisfied = True
+        break
+      if first_path is None:
+        first_path = path
+        first_missing = missing
+    if not pattern_satisfied:
+      reasons.append(
+        f"{_stage_ref(phase, stage)}.{predicate_name} の必須節が不足しています: "
+        f"{pattern} ({first_path}): {', '.join(first_missing)}"
+      )
+  return reasons
+
+
+def _front_matter_from_markdown(path):
+  """Markdown 先頭の YAML front matter を dict として読む"""
+  try:
+    text = path.read_text(encoding="utf-8")
+  except OSError:
+    return None
+  lines = text.splitlines()
+  if not lines or lines[0].strip() != "---":
+    return None
+  for index in range(1, len(lines)):
+    if lines[index].strip() == "---":
+      try:
+        data = yaml.safe_load("\n".join(lines[1:index]))
+      except yaml.YAMLError:
+        return None
+      return data if isinstance(data, dict) else None
+  return None
+
+
+def _nested_value(data, dotted_key):
+  """dict から dotted key の値を取り出す"""
+  current = data
+  for part in dotted_key.split("."):
+    if not isinstance(current, dict) or part not in current:
+      return None
+    current = current[part]
+  return current
+
+
+def _author_reviewer_reasons(cwd, feature, phase, stage, entry, predicate_name):
+  """front matter の author/reviewer 異名規律を調べる"""
+  section_reasons = _section_reasons(cwd, feature, phase, stage, entry, predicate_name)
+  if section_reasons:
+    return section_reasons
+
+  reasons = []
+  for pattern, matches in _artifact_matches(cwd, feature, entry):
+    pattern_satisfied = False
+    for path in matches:
+      front_matter = _front_matter_from_markdown(path)
+      if front_matter is None:
+        continue
+      author = _nested_value(front_matter, "author.identity")
+      reviewer = _nested_value(front_matter, "reviewer.identity")
+      separation = _nested_value(front_matter, "reviewer.separation_from_author")
+      if (
+        isinstance(author, str)
+        and author.strip()
+        and isinstance(reviewer, str)
+        and reviewer.strip()
+        and author != reviewer
+        and separation is not False
+      ):
+        pattern_satisfied = True
+        break
+    if not pattern_satisfied:
+      reasons.append(
+        f"{_stage_ref(phase, stage)}.{predicate_name} は author.identity と "
+        f"reviewer.identity の異名 front-matter が必要です: {pattern}"
+      )
+  return reasons
+
+
+def _all_features_review_ready_reasons(cwd, phase, stage):
+  """全機能で drafting と triad-review が完了しているか調べる"""
+  reasons = []
+  for feature in FEATURE_ORDER:
+    spec = load_spec_json(Path(cwd), feature)
+    state = {}
+    if isinstance(spec, dict):
+      state = spec.get("workflow_state", {}).get(phase, {})
+    if not isinstance(state, dict):
+      reasons.append(f"{feature}.{phase} の workflow_state が見つかりません")
+      continue
+    for required_stage in ("drafting", "triad-review"):
+      if state.get(required_stage) is not True:
+        reasons.append(
+          f"{_stage_ref(phase, stage)}.all_features_drafting_and_triad_review_completed "
+          f"が未充足です: {feature}.{phase}.{required_stage} が true ではありません"
+        )
+  return reasons
+
+
+def _alignment_passed_reasons(cwd, feature, phase, stage, entry, predicate_name):
+  """整合確認証跡が pass かつ未消化所見 0 件か調べる"""
+  existence_reasons = _artifact_exists_reasons(
+    cwd,
+    feature,
+    phase,
+    stage,
+    entry,
+    predicate_name,
+  )
+  if existence_reasons:
+    return existence_reasons
+
+  for _, matches in _artifact_matches(cwd, feature, entry):
+    for path in matches:
+      data = load_yaml_file(path)
+      if isinstance(data, dict):
+        verdict = data.get("verdict", data.get("status", data.get("result")))
+        unresolved = data.get(
+          "unresolved_findings",
+          data.get("open_findings", data.get("remaining_findings")),
+        )
+        if str(verdict).lower() in ("ok", "pass", "passed") and unresolved == 0:
+          return []
+      try:
+        text = path.read_text(encoding="utf-8")
+      except OSError:
+        continue
+      lower_text = text.lower()
+      has_pass = "pass" in lower_text or "passed" in lower_text or "ok" in lower_text
+      has_zero = (
+        "unresolved_findings: 0" in lower_text
+        or "open_findings: 0" in lower_text
+        or "remaining_findings: 0" in lower_text
+        or "未消化所見: 0" in text
+      )
+      if has_pass and has_zero:
+        return []
+  return [
+    f"{_stage_ref(phase, stage)}.{predicate_name} は pass かつ未消化所見 0 件の"
+    "証跡が必要です"
+  ]
+
+
+def _human_approval_reasons(cwd, feature, phase, stage, entry, predicate_name):
+  """明示承認証跡と proxy_model 代行可否を調べる"""
+  if entry.get("actor") == "proxy_model":
+    config = load_yaml_file(Path(cwd) / "reviewcompass.yaml")
+    proxy_allowed = False
+    if isinstance(config, dict):
+      human_proxy = config.get("human_proxy")
+      if isinstance(human_proxy, dict):
+        proxy_allowed = human_proxy.get("proxy_allowed") is True
+    if not proxy_allowed:
+      return [
+        f"{_stage_ref(phase, stage)}.{predicate_name} は proxy_model 代行許可が"
+        "必要です"
+      ]
+
+  record_path = entry.get("approval_record_path")
+  if isinstance(record_path, str) and record_path.strip():
+    if (Path(cwd) / record_path).is_file():
+      return []
+    return [
+      f"{_stage_ref(phase, stage)}.{predicate_name} の承認証跡がありません: "
+      f"{record_path}"
+    ]
+  return _artifact_exists_reasons(cwd, feature, phase, stage, entry, predicate_name)
+
+
+def _depends_on_reasons(cwd, phase, stage):
+  """feature-dependency.yaml の depends_on 値域を調べる"""
+  candidates = [
+    Path(cwd) / "stages" / "feature-dependency.yaml",
+    Path(cwd) / "feature-dependency.yaml",
+  ]
+  dependency_path = next((path for path in candidates if path.exists()), None)
+  if dependency_path is None:
+    return [
+      f"{_stage_ref(phase, stage)}.depends_on_resolves_correctly は "
+      "feature-dependency.yaml が必要です"
+    ]
+  data = load_yaml_file(dependency_path)
+  if not isinstance(data, dict):
+    return [f"{dependency_path} を YAML object として読めません"]
+
+  features = data.get("features", data)
+  if not isinstance(features, dict):
+    return [f"{dependency_path} の features は object が必要です"]
+
+  reasons = []
+  for feature, value in features.items():
+    depends_on = value.get("depends_on", []) if isinstance(value, dict) else []
+    if depends_on is None:
+      continue
+    if isinstance(depends_on, list):
+      invalid = [item for item in depends_on if not isinstance(item, str)]
+      if invalid:
+        reasons.append(f"{feature}.depends_on は文字列 list が必要です")
+    elif isinstance(depends_on, dict):
+      for dep_name, dep_kind in depends_on.items():
+        if not isinstance(dep_name, str) or dep_kind not in ("hard", "review"):
+          reasons.append(
+            f"{feature}.depends_on.{dep_name} は hard または review が必要です"
+          )
+    else:
+      reasons.append(f"{feature}.depends_on は list または object が必要です")
+  return reasons
+
+
+def _string_completion_predicate_reasons(cwd, feature, phase, stage, entry, predicate):
+  """正本で定義された文字列 completion_predicate を評価する"""
+  if predicate == "artifact_exists":
+    return _artifact_exists_reasons(cwd, feature, phase, stage, entry, predicate)
+  if predicate == "artifact_exists_and_sections_present":
+    return _section_reasons(cwd, feature, phase, stage, entry, predicate)
+  if predicate == "artifact_exists_and_sections_present_and_author_reviewer_distinct":
+    return _author_reviewer_reasons(cwd, feature, phase, stage, entry, predicate)
+  if predicate == "all_features_drafting_and_triad_review_completed":
+    return _all_features_review_ready_reasons(cwd, phase, stage)
+  if predicate == "cross_spec_alignment_passed":
+    return _alignment_passed_reasons(cwd, feature, phase, stage, entry, predicate)
+  if predicate == "explicit_human_approval_recorded":
+    return _human_approval_reasons(cwd, feature, phase, stage, entry, predicate)
+  if predicate == "depends_on_resolves_correctly":
+    return _depends_on_reasons(cwd, phase, stage)
+  return [
+    f"{_stage_ref(phase, stage)}.completion_predicate は未対応です: {predicate}"
+  ]
+
+
+def completion_predicate_reasons(cwd, feature, phase, stage, new_value):
   """completion_predicate を保守的に評価する"""
   if not new_value:
     return []
@@ -299,6 +616,15 @@ def completion_predicate_reasons(cwd, phase, stage, new_value):
     predicate = entry.get("completion_predicate")
     if predicate is None:
       continue
+    if isinstance(predicate, str):
+      return _string_completion_predicate_reasons(
+        cwd,
+        feature,
+        phase,
+        stage,
+        entry,
+        predicate,
+      )
     if not isinstance(predicate, dict):
       return [
         f"stages/{phase}.yaml#{stage}.completion_predicate は mapping が必要です"
@@ -981,6 +1307,7 @@ def cmd_spec_set(args):
   verdict, exit_code, reasons = judge_spec_set(spec_data, phase, stage, new_value)
   predicate_reasons = completion_predicate_reasons(
     cwd,
+    feature,
     phase,
     stage,
     new_value,
