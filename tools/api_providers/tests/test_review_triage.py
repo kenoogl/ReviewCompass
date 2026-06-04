@@ -764,7 +764,15 @@ def _write_autonomous_report_artifacts(run_dir):
   ledger_path.write_text(
     yaml.safe_dump(
       {
+        "mode": "autonomous_parallel",
+        "verdict": "OK",
+        "exit_code": 0,
         "run_id": run_dir.name,
+        "execution_evidence_snapshot": {
+          "completed_tasks": ["target-bundle", "api-primary", "aggregate-review-run"],
+          "parallelized_operations": ["api_review_calls"],
+          "human_required_count": 0,
+        },
         "integration_result": {
           "status": "completed",
           "tests": "pytest",
@@ -889,6 +897,34 @@ def test_assert_review_report_ready_requires_cluster_in_proxy_summary(
   assert exit_code == 1
   captured = capsys.readouterr()
   assert "proxy-decision-summary.md missing cluster" in captured.err
+
+
+def test_assert_review_report_ready_requires_ledger_execution_snapshot(
+  tmp_path,
+  capsys,
+):
+  """自動実行報告は plan なし監査に必要な ledger snapshot を要求する。"""
+  run_dir = _write_review_run(tmp_path)
+  report_path, ledger_path = _write_autonomous_report_artifacts(run_dir)
+  ledger = yaml.safe_load(ledger_path.read_text(encoding="utf-8"))
+  ledger.pop("execution_evidence_snapshot")
+  ledger_path.write_text(
+    yaml.safe_dump(ledger, allow_unicode=True, sort_keys=False),
+    encoding="utf-8",
+  )
+
+  exit_code = main(
+    [
+      "assert-review-report-ready",
+      "--review-run-dir", str(run_dir),
+      "--report-path", str(report_path),
+      "--ledger-path", str(ledger_path),
+    ]
+  )
+
+  assert exit_code == 1
+  captured = capsys.readouterr()
+  assert "ledger.execution_evidence_snapshot" in captured.err
 
 
 def test_assert_review_report_ready_requires_report_artifacts(tmp_path, capsys):

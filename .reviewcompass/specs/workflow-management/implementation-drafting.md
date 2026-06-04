@@ -36,6 +36,10 @@ workflow-management implementation.drafting の現時点の実装状況を、後
 
 台帳には、`run_id`、verdict、reasons、task IDs、承認根拠、統合ゲート、出力分類、current_state を記録する。
 
+デプロイ後監査では plan ファイルが残らない可能性があるため、ledger を事後監査の正本とする。`autonomous-plan` は `execution_evidence_snapshot` を ledger に保存し、`completed_tasks`、`parallelized_operations`、`human_required_count` を plan なしで確認できるようにする。既存 ledger に snapshot がある場合、古い plan の再実行では snapshot を巻き戻さない。
+
+`tools/check-workflow-action.py autonomous-ledger-audit <ledger.yaml>` を実装済み。これは plan ファイルなしで、ledger の `mode`、verdict、`execution_evidence_snapshot`、`integration_result` を検査する。
+
 ### 統合結果追記
 
 `tools/check-workflow-action.py autonomous-plan-record-integration --ledger <ledger.yaml> --status <status> --tests "<tests>" --decision "<decision>"` を実装済み。
@@ -45,6 +49,8 @@ workflow-management implementation.drafting の現時点の実装状況を、後
 - 統合状態：`completed`、`blocked`、`rejected`
 - 実行したテストまたは未実行理由
 - メインセッション LLM の統合判断
+
+`tools/api_providers/review_triage.py assert-review-report-ready` は、`integration_result` だけでなく `execution_evidence_snapshot` も要求する。これにより、自動実行報告の ready 判定は plan に依存せず、ledger 単独で監査可能な状態を前提にする。
 
 ### 正本仕様
 

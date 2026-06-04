@@ -92,3 +92,18 @@ API review-run 型の自律・並列実行は raw response、triage、model-resu
 5. `integration_result.status`、`integration_result.tests`、`integration_result.decision` が存在する。
 
 これにより、実行前検査は plan、デプロイ後監査は ledger という責務分離を明確にし、計画ファイルが消えても履歴確認できる状態を保つ。
+
+## 追加対応：同種問題の横展開
+
+上記修正後に、同じ「デプロイ後に一時 artifact がないと監査できない」問題が他にもないか精査した。結果、過去の workflow-management 自律・並列実行 ledger と review-run 報告 ready 判定に同種の穴があった。
+
+対応内容：
+
+1. `docs/logs/autonomous-parallel/2026-06-04-workflow-management-implementation-review-run.yaml` に `execution_evidence_snapshot` を補完し、`autonomous-ledger-audit` で plan なし監査できる状態にした。
+2. `tools/api_providers/review_triage.py assert-review-report-ready` で、`ledger.integration_result` だけでなく `ledger.execution_evidence_snapshot` も要求するようにした。
+3. `evaluation/metrics/dogfooding_metrics_extractor.py` が `ledger.execution_evidence_snapshot` から `completed_task_count`、`parallelized_operation_count`、`human_required_count` を抽出するようにした。
+4. `.reviewcompass/specs/workflow-management/implementation-drafting.md` に、ledger がデプロイ後監査正本であること、`execution_evidence_snapshot` と `autonomous-ledger-audit` を使うことを追記した。
+
+後続課題：
+
+- `authorization.approval_record_path` が `conversation:` を指す場合、デプロイ後に会話ログが同梱されないと承認内容を再確認できない。急ぎの遮断条件ではないが、次の監査性強化では `authorization_snapshot` を ledger に保存することを検討する。

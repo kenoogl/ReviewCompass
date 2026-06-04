@@ -222,6 +222,14 @@ def _write_dogfooding_sources(tmp_path):
   ledger_path.write_text(
     yaml.safe_dump(
       {
+        "mode": "autonomous_parallel",
+        "verdict": "OK",
+        "exit_code": 0,
+        "execution_evidence_snapshot": {
+          "completed_tasks": ["target-bundle", "api-primary", "aggregate-review-run"],
+          "parallelized_operations": ["api_review_calls", "local_test_checks"],
+          "human_required_count": 0,
+        },
         "integration_result": {
           "status": "completed",
           "tests": "pytest -q; unittest",
@@ -308,7 +316,11 @@ def test_dogfooding_metrics_extract_review_run_and_workflow_precheck(tmp_path):
   assert metrics["workflow_precheck"]["in_progress_block_count"] == 1
   assert metrics["implementation"]["status"] == "completed"
   assert metrics["implementation"]["test_command_count"] == 2
+  assert metrics["implementation"]["completed_task_count"] == 3
+  assert metrics["implementation"]["parallelized_operation_count"] == 2
+  assert metrics["implementation"]["human_required_count"] == 0
   assert any(
     path.endswith("workflow-precheck.log")
     for path in metrics["derivation"]["source_artifacts"]
   )
+  assert "ledger.execution_evidence_snapshot" in metrics["derivation"]["source_fields"]

@@ -43,13 +43,25 @@ current_state:
   history_ledger_path: docs/logs/autonomous-parallel/2026-06-04-workflow-management-implementation-review-run.yaml
   execution_evidence:
     review_run_dir: .reviewcompass/specs/workflow-management/reviews/2026-06-04-workflow-management-implementation-review-run
-    required_raw_paths:
+    required_raw_paths: &id001
     - raw/claude-sonnet-4-6.round-1.txt
     - raw/gpt-5.4.round-1.txt
     - raw/gemini-3.1-pro-preview.round-1.txt
     triage_path: triage.yaml
     human_required_count: 0
   plan_path: docs/logs/autonomous-parallel/2026-06-04-workflow-management-implementation-review-run-plan.yaml
+execution_evidence_snapshot:
+  review_run_dir: .reviewcompass/specs/workflow-management/reviews/2026-06-04-workflow-management-implementation-review-run
+  required_raw_paths: *id001
+  triage_path: triage.yaml
+  human_required_count: 0
+  completed_tasks:
+  - target-bundle
+  - api-primary
+  - api-adversarial
+  - api-judgment
+  - aggregate-review-run
+  parallelized_operations: []
 integration_result:
   status: completed
   tests: python3 -m unittest tests.tools.test_check_workflow_action.SpecSetExitCodeTests

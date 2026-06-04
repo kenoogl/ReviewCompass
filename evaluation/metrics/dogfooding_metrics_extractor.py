@@ -65,6 +65,7 @@ class DogfoodingMetricsExtractor:
           "workflow-precheck.log[].verdict",
           "workflow-precheck.log[].exit_code",
           "ledger.integration_result",
+          "ledger.execution_evidence_snapshot",
         ],
       },
     }
@@ -159,9 +160,21 @@ class DogfoodingMetricsExtractor:
     integration_result = ledger.get("integration_result")
     if not isinstance(integration_result, dict):
       integration_result = {}
+    snapshot = ledger.get("execution_evidence_snapshot")
+    if not isinstance(snapshot, dict):
+      snapshot = {}
+    completed_tasks = snapshot.get("completed_tasks")
+    if not isinstance(completed_tasks, list):
+      completed_tasks = []
+    parallelized_operations = snapshot.get("parallelized_operations")
+    if not isinstance(parallelized_operations, list):
+      parallelized_operations = []
     test_commands = _split_test_commands(integration_result.get("tests"))
     return {
       "status": integration_result.get("status"),
       "test_command_count": len(test_commands),
       "decision": integration_result.get("decision"),
+      "completed_task_count": len(completed_tasks),
+      "parallelized_operation_count": len(parallelized_operations),
+      "human_required_count": snapshot.get("human_required_count"),
     }

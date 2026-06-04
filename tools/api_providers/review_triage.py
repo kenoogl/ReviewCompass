@@ -788,19 +788,47 @@ def assert_review_report_ready(
   ledger = _load_yaml_dict(Path(ledger_path)) if Path(ledger_path).is_file() else {}
   if not ledger:
     errors.append(f"required artifact missing: {Path(ledger_path).name}")
-  elif not isinstance(ledger.get("integration_result"), dict):
-    errors.append("ledger.integration_result is required")
   else:
-    integration_result = ledger["integration_result"]
-    if integration_result.get("status") != "completed":
-      errors.append("ledger.integration_result.status must be completed")
-    if not integration_result.get("tests"):
-      errors.append("ledger.integration_result.tests is required")
-    if not integration_result.get("decision"):
-      errors.append("ledger.integration_result.decision is required")
+    errors.extend(_autonomous_ledger_errors(ledger))
 
   if errors:
     raise ValueError("; ".join(errors))
+
+
+def _autonomous_ledger_errors(ledger: Dict[str, Any]) -> List[str]:
+  """plan なしで監査できる自律実行 ledger か検査する。"""
+  errors = []
+  if ledger.get("mode") != "autonomous_parallel":
+    errors.append("ledger.mode must be autonomous_parallel")
+  if ledger.get("verdict") != "OK" or ledger.get("exit_code") != 0:
+    errors.append("ledger verdict/exit_code must be OK/0")
+
+  snapshot = ledger.get("execution_evidence_snapshot")
+  if not isinstance(snapshot, dict):
+    errors.append("ledger.execution_evidence_snapshot is required")
+    snapshot = {}
+  completed_tasks = snapshot.get("completed_tasks")
+  if not isinstance(completed_tasks, list) or not completed_tasks:
+    errors.append("ledger.execution_evidence_snapshot.completed_tasks is required")
+  if not isinstance(snapshot.get("parallelized_operations"), list):
+    errors.append("ledger.execution_evidence_snapshot.parallelized_operations is required")
+  human_required_count = snapshot.get("human_required_count")
+  if not isinstance(human_required_count, int):
+    errors.append("ledger.execution_evidence_snapshot.human_required_count is required")
+  elif human_required_count:
+    errors.append("ledger.execution_evidence_snapshot.human_required_count must be 0")
+
+  integration_result = ledger.get("integration_result")
+  if not isinstance(integration_result, dict):
+    errors.append("ledger.integration_result is required")
+    integration_result = {}
+  if integration_result.get("status") != "completed":
+    errors.append("ledger.integration_result.status must be completed")
+  if not integration_result.get("tests"):
+    errors.append("ledger.integration_result.tests is required")
+  if not integration_result.get("decision"):
+    errors.append("ledger.integration_result.decision is required")
+  return errors
 
 
 def write_manifest(
