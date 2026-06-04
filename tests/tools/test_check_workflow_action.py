@@ -723,7 +723,7 @@ class SpecSetExitCodeTests(unittest.TestCase):
     self.assertIn("stages/in-progress", result.stdout)
 
   def test_spec_set_blocks_unimplemented_completion_predicate(self):
-    """stage YAML に completion_predicate があれば未評価のまま true にしない"""
+    """file_exists completion_predicate の対象ファイルがなければ true にしない"""
     cwd = self._copy_fixture("case-a-ready-for-approval")
     stages_dir = cwd / "stages"
     stages_dir.mkdir(parents=True, exist_ok=True)
@@ -755,6 +755,42 @@ class SpecSetExitCodeTests(unittest.TestCase):
     _assert_script_invoked(self, result)
     self.assertEqual(result.returncode, 2, result.stdout)
     self.assertIn("completion_predicate", result.stdout)
+
+  def test_spec_set_allows_file_exists_completion_predicate_when_file_exists(self):
+    """file_exists completion_predicate の対象ファイルがあれば通過する"""
+    cwd = self._copy_fixture("case-a-ready-for-approval")
+    stages_dir = cwd / "stages"
+    stages_dir.mkdir(parents=True, exist_ok=True)
+    approval_path = cwd / "docs" / "approvals" / "requirements.md"
+    approval_path.parent.mkdir(parents=True)
+    approval_path.write_text("承認証跡\n", encoding="utf-8")
+    (stages_dir / "requirements.yaml").write_text(
+      yaml.safe_dump(
+        {
+          "phase": "requirements",
+          "stages": [
+            {
+              "name": "approval",
+              "completion_predicate": {
+                "type": "file_exists",
+                "path": "docs/approvals/requirements.md",
+              },
+            },
+          ],
+        },
+        allow_unicode=True,
+        sort_keys=False,
+      ),
+      encoding="utf-8",
+    )
+
+    result = run_script(
+      ["spec-set", "foundation", "requirements", "approval", "true"],
+      cwd=cwd,
+    )
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 0, result.stdout)
 
   def test_approval_with_alignment_false_returns_two(self):
     """ケース B：alignment が false で approval を true にする → exit 2

@@ -273,8 +273,8 @@ def judge_spec_set(spec_data, phase, stage, new_value):
     return "OK", 0, []
 
 
-def unimplemented_completion_predicate_reasons(cwd, phase, stage, new_value):
-  """未実装の completion_predicate を spec-set が無視しないための保守的検査"""
+def completion_predicate_reasons(cwd, phase, stage, new_value):
+  """completion_predicate を保守的に評価する"""
   if not new_value:
     return []
 
@@ -296,10 +296,30 @@ def unimplemented_completion_predicate_reasons(cwd, phase, stage, new_value):
   for entry in stage_entries:
     if not isinstance(entry, dict) or entry.get("name") != stage:
       continue
-    if "completion_predicate" in entry:
+    predicate = entry.get("completion_predicate")
+    if predicate is None:
+      continue
+    if not isinstance(predicate, dict):
       return [
-        f"stages/{phase}.yaml#{stage}.completion_predicate は未評価です"
-        "（predicate 評価実装または明示的な残課題化が必要）"
+        f"stages/{phase}.yaml#{stage}.completion_predicate は mapping が必要です"
+      ]
+    predicate_type = predicate.get("type")
+    if predicate_type == "file_exists":
+      path_value = predicate.get("path")
+      if not isinstance(path_value, str) or not path_value.strip():
+        return [
+          f"stages/{phase}.yaml#{stage}.completion_predicate.path が必要です"
+        ]
+      if not (Path(cwd) / path_value).is_file():
+        return [
+          f"stages/{phase}.yaml#{stage}.completion_predicate file_exists が未充足です: "
+          f"{path_value}"
+        ]
+      return []
+    else:
+      return [
+        f"stages/{phase}.yaml#{stage}.completion_predicate type は未対応です: "
+        f"{predicate_type}"
       ]
   return []
 
@@ -959,7 +979,7 @@ def cmd_spec_set(args):
 
   # 判定
   verdict, exit_code, reasons = judge_spec_set(spec_data, phase, stage, new_value)
-  predicate_reasons = unimplemented_completion_predicate_reasons(
+  predicate_reasons = completion_predicate_reasons(
     cwd,
     phase,
     stage,

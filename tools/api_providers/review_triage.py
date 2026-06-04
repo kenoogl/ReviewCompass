@@ -674,6 +674,54 @@ def assert_apply_fixes_ready(
   )
 
 
+def assert_review_report_ready(
+  review_run_dir: str,
+  report_path: str,
+  ledger_path: str,
+) -> None:
+  """自動実行テスト報告に必要な成果物が揃っているか確認する。"""
+  run_dir = Path(review_run_dir)
+  required_run_files = [
+    "target-manifest.yaml",
+    "rounds.yaml",
+    "triage.yaml",
+    "model-result-summary.yaml",
+    "must-fix-clusters.md",
+    "must-fix-clusters.yaml",
+    "proxy-decision-summary.md",
+  ]
+  errors = []
+  for relpath in required_run_files:
+    if not (run_dir / relpath).is_file():
+      errors.append(f"required artifact missing: {relpath}")
+
+  report = Path(report_path)
+  if not report.is_file():
+    errors.append(f"required artifact missing: {report.name}")
+  else:
+    report_text = report.read_text(encoding="utf-8")
+    for heading in ("生じた問題", "対応したこと", "残った課題"):
+      if heading not in report_text:
+        errors.append(f"report section missing: {heading}")
+
+  ledger = _load_yaml_dict(Path(ledger_path)) if Path(ledger_path).is_file() else {}
+  if not ledger:
+    errors.append(f"required artifact missing: {Path(ledger_path).name}")
+  elif not isinstance(ledger.get("integration_result"), dict):
+    errors.append("ledger.integration_result is required")
+  else:
+    integration_result = ledger["integration_result"]
+    if integration_result.get("status") != "completed":
+      errors.append("ledger.integration_result.status must be completed")
+    if not integration_result.get("tests"):
+      errors.append("ledger.integration_result.tests is required")
+    if not integration_result.get("decision"):
+      errors.append("ledger.integration_result.decision is required")
+
+  if errors:
+    raise ValueError("; ".join(errors))
+
+
 def write_manifest(
   review_run_dir: str,
   out_path: str,
@@ -733,6 +781,11 @@ def _parse_argv(argv: Optional[List[str]]) -> argparse.Namespace:
   apply_fixes_parser.add_argument("--review-run-dir", required=True)
   apply_fixes_parser.add_argument("--approval-record")
 
+  report_parser = subparsers.add_parser("assert-review-report-ready")
+  report_parser.add_argument("--review-run-dir", required=True)
+  report_parser.add_argument("--report-path", required=True)
+  report_parser.add_argument("--ledger-path", required=True)
+
   return parser.parse_args(argv)
 
 
@@ -772,6 +825,10 @@ def main(argv: Optional[List[str]] = None) -> int:
     if args.command == "assert-apply-fixes-ready":
       assert_apply_fixes_ready(args.review_run_dir, args.approval_record)
       sys.stdout.write("apply_fixes_ready: true\n")
+      return 0
+    if args.command == "assert-review-report-ready":
+      assert_review_report_ready(args.review_run_dir, args.report_path, args.ledger_path)
+      sys.stdout.write("review_report_ready: true\n")
       return 0
   except Exception as exc:
     sys.stderr.write(f"エラー：{type(exc).__name__}: {exc}\n")

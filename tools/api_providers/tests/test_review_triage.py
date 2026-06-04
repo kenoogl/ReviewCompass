@@ -708,3 +708,93 @@ def test_assert_apply_fixes_ready_blocks_proxy_approval_with_tampered_source_raw
   assert exit_code == 1
   captured = capsys.readouterr()
   assert "source_raw_paths sha256 mismatch" in captured.err
+
+
+def _write_autonomous_report_artifacts(run_dir):
+  """自動実行テスト報告に必要な最小成果物を書く。"""
+  (run_dir / "must-fix-clusters.md").write_text(
+    "# Must-fix clusters\n\n## WM-IMPL-MF-001\n",
+    encoding="utf-8",
+  )
+  (run_dir / "must-fix-clusters.yaml").write_text(
+    yaml.safe_dump(
+      {
+        "clusters": [
+          {
+            "cluster_id": "WM-IMPL-MF-001",
+            "final_label": "must-fix",
+          },
+        ],
+      },
+      allow_unicode=True,
+      sort_keys=False,
+    ),
+    encoding="utf-8",
+  )
+  (run_dir / "proxy-decision-summary.md").write_text(
+    "# Proxy decision summary\n\n- WM-IMPL-MF-001: option A\n",
+    encoding="utf-8",
+  )
+  report_path = run_dir / "autonomous-execution-report.md"
+  report_path.write_text(
+    "# 自動実行テスト報告\n\n"
+    "## 生じた問題\n\n- raw / triage の自己申告化\n\n"
+    "## 対応したこと\n\n- raw / triage を機械確認\n\n"
+    "## 残った課題\n\n- completion_predicate の本格評価\n",
+    encoding="utf-8",
+  )
+  ledger_path = run_dir / "autonomous-ledger.yaml"
+  ledger_path.write_text(
+    yaml.safe_dump(
+      {
+        "run_id": run_dir.name,
+        "integration_result": {
+          "status": "completed",
+          "tests": "pytest",
+          "decision": "accepted",
+        },
+      },
+      allow_unicode=True,
+      sort_keys=False,
+    ),
+    encoding="utf-8",
+  )
+  return report_path, ledger_path
+
+
+def test_assert_review_report_ready_requires_report_artifacts(tmp_path, capsys):
+  """自動実行テスト報告の成果物が不足していれば fail-closed する。"""
+  run_dir = _write_review_run(tmp_path)
+
+  exit_code = main(
+    [
+      "assert-review-report-ready",
+      "--review-run-dir", str(run_dir),
+      "--report-path", str(run_dir / "autonomous-execution-report.md"),
+      "--ledger-path", str(run_dir / "autonomous-ledger.yaml"),
+    ]
+  )
+
+  assert exit_code == 1
+  captured = capsys.readouterr()
+  assert "must-fix-clusters.md" in captured.err
+  assert "autonomous-execution-report.md" in captured.err
+
+
+def test_assert_review_report_ready_passes_when_report_artifacts_exist(tmp_path, capsys):
+  """自動実行テスト報告の成果物が揃えば通過する。"""
+  run_dir = _write_review_run(tmp_path)
+  report_path, ledger_path = _write_autonomous_report_artifacts(run_dir)
+
+  exit_code = main(
+    [
+      "assert-review-report-ready",
+      "--review-run-dir", str(run_dir),
+      "--report-path", str(report_path),
+      "--ledger-path", str(ledger_path),
+    ]
+  )
+
+  assert exit_code == 0
+  output = capsys.readouterr().out
+  assert "review_report_ready: true" in output
