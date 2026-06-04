@@ -529,6 +529,7 @@ class AutonomousParallelPlanTests(unittest.TestCase):
     }
     plan["tasks"][0]["writes_repo_diff"] = True
     plan["tasks"][0]["output_only"] = False
+    plan["outputs_policy"]["implementation_diff"] = "forbidden"
     plan_path.write_text(
       yaml.safe_dump(plan, allow_unicode=True, sort_keys=False),
       encoding="utf-8",
@@ -540,6 +541,38 @@ class AutonomousParallelPlanTests(unittest.TestCase):
     self.assertEqual(result.returncode, 2)
     data = json.loads(result.stdout)
     self.assertIn("output_only", "\n".join(data["reasons"]))
+
+  def test_main_session_same_worktree_commit_candidate_writer_is_allowed_when_serialized(self):
+    """commit_candidate の直列 main_session 実装タスクは履歴付きで許可する"""
+    cwd = Path(self.tmpdir)
+    plan_path = _write_autonomous_parallel_plan(cwd)
+    plan = yaml.safe_load(plan_path.read_text(encoding="utf-8"))
+    for index, task in enumerate(plan["tasks"]):
+      task["assignee"] = {
+        "kind": "main_session",
+        "worktree_policy": "same_worktree",
+      }
+      task["writes_repo_diff"] = True
+      task["output_only"] = False
+      if index > 0:
+        task["depends_on"] = [plan["tasks"][index - 1]["task_id"]]
+    plan["execution_evidence"] = {
+      "completed_tasks": ["task-a", "task-b"],
+      "parallelized_operations": ["context_reads", "verification_checks"],
+      "human_required_count": 0,
+    }
+    plan_path.write_text(
+      yaml.safe_dump(plan, allow_unicode=True, sort_keys=False),
+      encoding="utf-8",
+    )
+
+    result = run_script(["autonomous-plan", str(plan_path), "--json"], cwd=cwd)
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 0, result.stderr)
+    data = json.loads(result.stdout)
+    self.assertEqual(data["verdict"], "OK")
+    self.assertEqual(data["current_state"]["execution_evidence"]["human_required_count"], 0)
 
   def test_missing_integration_gate_returns_two(self):
     """統合ゲートが不足していれば逸脱にする"""
@@ -637,6 +670,10 @@ class AutonomousParallelPlanTests(unittest.TestCase):
       ledger["integration_result"]["tests"],
       "python3 -m unittest tests.tools.test_check_workflow_action -v",
     )
+    self.assertEqual(
+      ledger["execution_evidence_snapshot"]["completed_tasks"],
+      ["task-a", "task-b"],
+    )
 
   def test_autonomous_plan_preserves_existing_integration_result(self):
     """autonomous-plan 再実行は既存の統合結果を消さない"""
@@ -668,6 +705,123 @@ class AutonomousParallelPlanTests(unittest.TestCase):
       ledger["integration_result"]["decision"],
       "main_session accepted scoped diff",
     )
+
+  def test_autonomous_plan_preserves_existing_execution_evidence_snapshot(self):
+    """autonomous-plan 再実行は実行後証跡 snapshot を巻き戻さない"""
+    cwd = Path(self.tmpdir)
+    plan_path = _write_autonomous_parallel_plan(cwd)
+    plan = yaml.safe_load(plan_path.read_text(encoding="utf-8"))
+    plan["tasks"].append(
+      {
+        "task_id": "task-c",
+        "source_finding_ids": ["finding-c"],
+        "assignee": {
+          "kind": "main_session",
+          "worktree_policy": "same_worktree",
+        },
+        "allowed_paths": ["src/c.py"],
+        "forbidden_paths": [".git/"],
+        "depends_on": ["task-b"],
+        "expected_tests": ["pytest tests/test_c.py"],
+        "stop_conditions": ["important_decision_requires_approval"],
+        "writes_repo_diff": True,
+        "output_only": False,
+      }
+    )
+    plan["execution_evidence"] = {
+      "completed_tasks": ["task-a", "task-b", "task-c"],
+      "parallelized_operations": ["context_reads", "ledger_audit"],
+      "human_required_count": 0,
+    }
+    plan_path.write_text(
+      yaml.safe_dump(plan, allow_unicode=True, sort_keys=False),
+      encoding="utf-8",
+    )
+    check = run_script(["autonomous-plan", str(plan_path), "--json"], cwd=cwd)
+    self.assertEqual(check.returncode, 0, check.stderr)
+
+    stale_plan = yaml.safe_load(plan_path.read_text(encoding="utf-8"))
+    stale_plan["execution_evidence"]["completed_tasks"] = ["task-a", "task-b"]
+    stale_plan["execution_evidence"]["parallelized_operations"] = ["context_reads"]
+    plan_path.write_text(
+      yaml.safe_dump(stale_plan, allow_unicode=True, sort_keys=False),
+      encoding="utf-8",
+    )
+    recheck = run_script(["autonomous-plan", str(plan_path), "--json"], cwd=cwd)
+
+    _assert_script_invoked(self, recheck)
+    self.assertEqual(recheck.returncode, 0, recheck.stderr)
+    ledger_path = cwd / "docs" / "logs" / "autonomous-parallel" / "ap-001.yaml"
+    ledger = yaml.safe_load(ledger_path.read_text(encoding="utf-8"))
+    self.assertEqual(
+      ledger["execution_evidence_snapshot"]["completed_tasks"],
+      ["task-a", "task-b", "task-c"],
+    )
+    self.assertEqual(
+      ledger["execution_evidence_snapshot"]["parallelized_operations"],
+      ["context_reads", "ledger_audit"],
+    )
+
+  def test_autonomous_ledger_audit_passes_without_plan_file(self):
+    """デプロイ後監査は plan なしで ledger 単独から判定する"""
+    cwd = Path(self.tmpdir)
+    plan_path = _write_autonomous_parallel_plan(cwd)
+    check = run_script(["autonomous-plan", str(plan_path), "--json"], cwd=cwd)
+    self.assertEqual(check.returncode, 0, check.stderr)
+
+    ledger_path = cwd / "docs" / "logs" / "autonomous-parallel" / "ap-001.yaml"
+    result = run_script(
+      [
+        "autonomous-plan-record-integration",
+        "--ledger", str(ledger_path),
+        "--status", "completed",
+        "--tests", "python3 -m unittest tests.tools.test_check_workflow_action -v",
+        "--decision", "main_session accepted scoped diff",
+      ],
+      cwd=cwd,
+    )
+    self.assertEqual(result.returncode, 0, result.stderr)
+    plan_path.unlink()
+
+    audit = run_script(["autonomous-ledger-audit", str(ledger_path), "--json"], cwd=cwd)
+
+    _assert_script_invoked(self, audit)
+    self.assertEqual(audit.returncode, 0, audit.stderr)
+    data = json.loads(audit.stdout)
+    self.assertEqual(data["verdict"], "OK")
+    self.assertEqual(data["current_state"]["plan_required"], False)
+
+  def test_autonomous_ledger_audit_requires_execution_snapshot(self):
+    """台帳単独監査は実行後 snapshot が欠けていれば逸脱にする"""
+    cwd = Path(self.tmpdir)
+    ledger_path = cwd / "docs" / "logs" / "autonomous-parallel" / "ap-001.yaml"
+    ledger_path.parent.mkdir(parents=True)
+    ledger_path.write_text(
+      yaml.safe_dump(
+        {
+          "run_id": "ap-001",
+          "mode": "autonomous_parallel",
+          "verdict": "OK",
+          "exit_code": 0,
+          "task_ids": ["task-a"],
+          "integration_result": {
+            "status": "completed",
+            "tests": "pytest",
+            "decision": "accepted",
+          },
+        },
+        allow_unicode=True,
+        sort_keys=False,
+      ),
+      encoding="utf-8",
+    )
+
+    audit = run_script(["autonomous-ledger-audit", str(ledger_path), "--json"], cwd=cwd)
+
+    _assert_script_invoked(self, audit)
+    self.assertEqual(audit.returncode, 2)
+    data = json.loads(audit.stdout)
+    self.assertIn("execution_evidence_snapshot", "\n".join(data["reasons"]))
 
 
 class SpecSetExitCodeTests(unittest.TestCase):

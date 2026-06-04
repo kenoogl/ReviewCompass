@@ -1,0 +1,311 @@
+mode: autonomous_parallel
+run_id: 2026-06-04-self-improvement-implementation-drafting
+authorization:
+  approved_by: user
+  approval_record_path: conversation:2026-06-04:self-improvement-autonomous-parallel-test
+  summary_presented_to_user: true
+  triage_presented_to_user: true
+tasks:
+  - task_id: t001-layout
+    source_finding_ids:
+      - self-improvement-T-001
+    assignee:
+      kind: main_session
+      worktree_policy: same_worktree
+    allowed_paths:
+      - learning/workflow/
+      - learning/findings/
+      - learning/backtests/
+      - learning/templates/
+      - docs/discipline-compliance-reports/README.md
+      - docs/disciplines/archive/README.md
+      - tools/README.md
+      - tools/self_improvement/schemas/.gitkeep
+      - tests/self-improvement/.gitkeep
+      - tests/self-improvement/test_t001_layout.py
+    forbidden_paths:
+      - .git/
+      - docs/disciplines/discipline_*.md
+    depends_on: []
+    expected_tests:
+      - python3 -m pytest tests/self-improvement/test_t001_layout.py -q
+    stop_conditions:
+      - irreversible_operation_requires_user
+      - important_decision_requires_approval
+    writes_repo_diff: true
+    output_only: false
+  - task_id: t002-input-model
+    source_finding_ids:
+      - self-improvement-T-002
+    assignee:
+      kind: main_session
+      worktree_policy: same_worktree
+    allowed_paths:
+      - tools/self_improvement/input_model.py
+      - tools/self_improvement/schemas/provenance.schema.json
+      - tests/self-improvement/test_t002_input_model.py
+    forbidden_paths:
+      - .git/
+      - docs/disciplines/discipline_*.md
+    depends_on:
+      - t001-layout
+    expected_tests:
+      - python3 -m pytest tests/self-improvement/test_t002_input_model.py -q
+    stop_conditions:
+      - irreversible_operation_requires_user
+      - important_decision_requires_approval
+    writes_repo_diff: true
+    output_only: false
+  - task_id: t003-signal-extraction
+    source_finding_ids:
+      - self-improvement-T-003
+    assignee:
+      kind: main_session
+      worktree_policy: same_worktree
+    allowed_paths:
+      - tools/self_improvement/signal_extraction.py
+      - tools/self_improvement/schemas/signal.schema.json
+      - tests/self-improvement/test_t003_signal_extraction.py
+    forbidden_paths:
+      - .git/
+      - docs/disciplines/discipline_*.md
+    depends_on:
+      - t002-input-model
+    expected_tests:
+      - python3 -m pytest tests/self-improvement/test_t003_signal_extraction.py -q
+    stop_conditions:
+      - irreversible_operation_requires_user
+      - important_decision_requires_approval
+    writes_repo_diff: true
+    output_only: false
+  - task_id: t004-proposal-model
+    source_finding_ids:
+      - self-improvement-T-004
+    assignee:
+      kind: main_session
+      worktree_policy: same_worktree
+    allowed_paths:
+      - tools/self_improvement/proposal_model.py
+      - learning/workflow/schemas/proposal.schema.json
+      - tests/self-improvement/test_t004_proposal_model.py
+    forbidden_paths:
+      - .git/
+      - docs/disciplines/discipline_*.md
+    depends_on:
+      - t001-layout
+      - t003-signal-extraction
+    expected_tests:
+      - python3 -m pytest tests/self-improvement/test_t004_proposal_model.py -q
+    stop_conditions:
+      - irreversible_operation_requires_user
+      - important_decision_requires_approval
+    writes_repo_diff: true
+    output_only: false
+  - task_id: t005-verification-model
+    source_finding_ids:
+      - self-improvement-T-005
+    assignee:
+      kind: main_session
+      worktree_policy: same_worktree
+    allowed_paths:
+      - tools/self_improvement/verification_model.py
+      - tools/self_improvement/impact_analysis.py
+      - tests/self-improvement/test_t005_verification_model.py
+    forbidden_paths:
+      - .git/
+      - docs/disciplines/discipline_*.md
+    depends_on:
+      - t004-proposal-model
+    expected_tests:
+      - python3 -m pytest tests/self-improvement/test_t005_verification_model.py -q
+    stop_conditions:
+      - irreversible_operation_requires_user
+      - important_decision_requires_approval
+    writes_repo_diff: true
+    output_only: false
+  - task_id: t006-approval-model
+    source_finding_ids:
+      - self-improvement-T-006
+    assignee:
+      kind: main_session
+      worktree_policy: same_worktree
+    allowed_paths:
+      - tools/self_improvement/approval_model.py
+      - tests/self-improvement/test_t006_approval_model.py
+    forbidden_paths:
+      - .git/
+      - docs/disciplines/discipline_*.md
+    depends_on:
+      - t004-proposal-model
+    expected_tests:
+      - python3 -m pytest tests/self-improvement/test_t006_approval_model.py -q
+    stop_conditions:
+      - irreversible_operation_requires_user
+      - important_decision_requires_approval
+    writes_repo_diff: true
+    output_only: false
+  - task_id: t007-rollback-model
+    source_finding_ids:
+      - self-improvement-T-007
+    assignee:
+      kind: main_session
+      worktree_policy: same_worktree
+    allowed_paths:
+      - tools/self_improvement/rollback_model.py
+      - learning/workflow/schemas/rollback.schema.json
+      - tests/self-improvement/test_t007_rollback_model.py
+    forbidden_paths:
+      - .git/
+      - docs/disciplines/discipline_*.md
+    depends_on:
+      - t001-layout
+      - t006-approval-model
+    expected_tests:
+      - python3 -m pytest tests/self-improvement/test_t007_rollback_model.py -q
+    stop_conditions:
+      - irreversible_operation_requires_user
+      - important_decision_requires_approval
+    writes_repo_diff: true
+    output_only: false
+  - task_id: t008-effect-measurement
+    source_finding_ids:
+      - self-improvement-T-008
+    assignee:
+      kind: main_session
+      worktree_policy: same_worktree
+    allowed_paths:
+      - tools/self_improvement/effect_measurement.py
+      - learning/workflow/schemas/metrics.schema.json
+      - tests/self-improvement/test_t008_effect_measurement.py
+    forbidden_paths:
+      - .git/
+      - docs/disciplines/discipline_*.md
+    depends_on:
+      - t001-layout
+      - t004-proposal-model
+      - t006-approval-model
+      - t007-rollback-model
+    expected_tests:
+      - python3 -m pytest tests/self-improvement/test_t008_effect_measurement.py -q
+    stop_conditions:
+      - irreversible_operation_requires_user
+      - important_decision_requires_approval
+    writes_repo_diff: true
+    output_only: false
+  - task_id: t009-machine-verification
+    source_finding_ids:
+      - self-improvement-T-009
+    assignee:
+      kind: main_session
+      worktree_policy: same_worktree
+    allowed_paths:
+      - tools/self-improvement-check.py
+      - tools/self_improvement/machine_verification.py
+      - docs/operations/SELF_IMPROVEMENT_MACHINE_VERIFICATION.md
+      - tests/self-improvement/test_t009_machine_verification.py
+    forbidden_paths:
+      - .git/
+      - docs/disciplines/discipline_*.md
+    depends_on:
+      - t004-proposal-model
+      - t006-approval-model
+      - t007-rollback-model
+      - t008-effect-measurement
+    expected_tests:
+      - python3 -m pytest tests/self-improvement/test_t009_machine_verification.py -q
+    stop_conditions:
+      - irreversible_operation_requires_user
+      - important_decision_requires_approval
+    writes_repo_diff: true
+    output_only: false
+  - task_id: t010-interfaces
+    source_finding_ids:
+      - self-improvement-T-010
+    assignee:
+      kind: main_session
+      worktree_policy: same_worktree
+    allowed_paths:
+      - tools/self_improvement/interfaces.py
+      - learning/workflow/approved-updates/README.md
+      - tests/self-improvement/test_t010_interfaces.py
+    forbidden_paths:
+      - .git/
+      - docs/disciplines/discipline_*.md
+    depends_on:
+      - t001-layout
+      - t002-input-model
+      - t004-proposal-model
+      - t006-approval-model
+      - t008-effect-measurement
+    expected_tests:
+      - python3 -m pytest tests/self-improvement/test_t010_interfaces.py -q
+    stop_conditions:
+      - irreversible_operation_requires_user
+      - important_decision_requires_approval
+    writes_repo_diff: true
+    output_only: false
+  - task_id: t011-test-strategy
+    source_finding_ids:
+      - self-improvement-T-011
+    assignee:
+      kind: main_session
+      worktree_policy: same_worktree
+    allowed_paths:
+      - tools/self_improvement/traceability.py
+      - tests/self-improvement/test_t011_traceability.py
+    forbidden_paths:
+      - .git/
+      - docs/disciplines/discipline_*.md
+    depends_on:
+      - t001-layout
+      - t002-input-model
+      - t003-signal-extraction
+      - t004-proposal-model
+      - t005-verification-model
+      - t006-approval-model
+      - t007-rollback-model
+      - t008-effect-measurement
+      - t009-machine-verification
+      - t010-interfaces
+    expected_tests:
+      - python3 -m pytest tests/self-improvement/test_t011_traceability.py -q
+      - python3 -m pytest tests/self-improvement -q
+    stop_conditions:
+      - irreversible_operation_requires_user
+      - important_decision_requires_approval
+    writes_repo_diff: true
+    output_only: false
+integration_gate:
+  requires_main_session_review: true
+  requires_diff_scope_check: true
+  requires_tests: true
+  requires_decision_basis_review: true
+history:
+  ledger_path: docs/logs/autonomous-parallel/2026-06-04-self-improvement-implementation-drafting.yaml
+  record_task_assignments: true
+  record_decision_basis: true
+  record_integration_result: true
+  retention: preserve
+outputs_policy:
+  implementation_diff: commit_candidate
+  verification_summary: required
+  decision_basis: preserve_if_used
+  work_noise: exclude
+execution_evidence:
+  completed_tasks:
+    - t001-layout
+    - t002-input-model
+    - t003-signal-extraction
+    - t004-proposal-model
+    - t005-verification-model
+    - t006-approval-model
+    - t007-rollback-model
+    - t008-effect-measurement
+    - t009-machine-verification
+    - t010-interfaces
+    - t011-test-strategy
+  parallelized_operations:
+    - spec_and_repository_context_reads
+    - local_test_and_workflow_gate_checks
+    - traceability_and_dvt_audit
+  human_required_count: 0

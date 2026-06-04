@@ -1,0 +1,26 @@
+status: completed
+target_files:
+  - docs/disciplines/archive/README.md
+  - docs/notes/2026-06-04-proxy-review-parallel-implementation-plan.md
+  - docs/operations/SELF_IMPROVEMENT_MACHINE_VERIFICATION.md
+target_sha256:
+  docs/disciplines/archive/README.md: fbd77402a3d05c97d6506bdd05472c9a9590f0fbbb3386156c2a940c304987c6
+  docs/notes/2026-06-04-proxy-review-parallel-implementation-plan.md: 8f79515e47855f75a0b648e1ec80b5edd21fbb98d3350ab77a7449a654e94b34
+  docs/operations/SELF_IMPROVEMENT_MACHINE_VERIFICATION.md: e73b4117d6484be3fb10c4bf656edb7630a376623e09c1a2dd90c5b6e2e8dddf
+required_verifiers:
+  - codex-self-check
+completed_verifiers:
+  - codex-self-check
+unresolved_substantive_findings: 0
+verifications:
+  - verifier: codex-self-check
+    target_files:
+      - docs/disciplines/archive/README.md
+      - docs/notes/2026-06-04-proxy-review-parallel-implementation-plan.md
+      - docs/operations/SELF_IMPROVEMENT_MACHINE_VERIFICATION.md
+    target_sha256:
+      docs/disciplines/archive/README.md: fbd77402a3d05c97d6506bdd05472c9a9590f0fbbb3386156c2a940c304987c6
+      docs/notes/2026-06-04-proxy-review-parallel-implementation-plan.md: 8f79515e47855f75a0b648e1ec80b5edd21fbb98d3350ab77a7449a654e94b34
+      docs/operations/SELF_IMPROVEMENT_MACHINE_VERIFICATION.md: e73b4117d6484be3fb10c4bf656edb7630a376623e09c1a2dd90c5b6e2e8dddf
+    result: completed
+    notes: Post-write verification covers the self-improvement machine verification operation document together with prior pending post-write targets.

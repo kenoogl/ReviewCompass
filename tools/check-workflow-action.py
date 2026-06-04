@@ -759,7 +759,7 @@ def _resolve_plan_path(cwd, base_dir, path_value):
 
 
 def validate_autonomous_execution_evidence(plan, cwd, base_dir):
-  """自律実行計画が参照する raw/triage 証跡を検査する。"""
+  """自律実行計画が参照する raw/triage または実装証跡を検査する。"""
   reasons = []
   current_state = {
     "review_run_dir": None,
@@ -773,6 +773,25 @@ def validate_autonomous_execution_evidence(plan, cwd, base_dir):
 
   review_run_dir_value = evidence.get("review_run_dir")
   if not isinstance(review_run_dir_value, str) or not review_run_dir_value.strip():
+    outputs_policy = plan.get("outputs_policy") or {}
+    if outputs_policy.get("implementation_diff") == "commit_candidate":
+      completed_tasks = evidence.get("completed_tasks")
+      if not isinstance(completed_tasks, list) or not completed_tasks:
+        reasons.append("execution_evidence.completed_tasks が必要です")
+      current_state["completed_tasks"] = completed_tasks or []
+      current_state["parallelized_operations"] = evidence.get(
+        "parallelized_operations",
+        [],
+      )
+      human_required_count = evidence.get("human_required_count")
+      current_state["human_required_count"] = human_required_count
+      if not isinstance(human_required_count, int):
+        reasons.append("execution_evidence.human_required_count が必要です")
+      elif human_required_count:
+        reasons.append(
+          f"execution_evidence human_required が残っています: {human_required_count}"
+        )
+      return reasons, current_state
     reasons.append("execution_evidence.review_run_dir が必要です")
     return reasons, current_state
 
@@ -920,7 +939,13 @@ def validate_autonomous_parallel_plan(plan, cwd=None, base_dir=None):
       reasons.append(
         f"{task_label}.assignee.worktree_policy は separate_worktree が必要です"
       )
-    if assignee_kind == "main_session" and worktree_policy == "same_worktree":
+    outputs_policy = plan.get("outputs_policy") or {}
+    commit_candidate = outputs_policy.get("implementation_diff") == "commit_candidate"
+    if (
+      assignee_kind == "main_session"
+      and worktree_policy == "same_worktree"
+      and not commit_candidate
+    ):
       if task.get("output_only") is not True or task.get("writes_repo_diff") is not False:
         reasons.append(
           f"{task_label}.output_only は true、writes_repo_diff は false が必要です"
@@ -1033,6 +1058,16 @@ def write_autonomous_parallel_ledger(cwd, plan, verdict, exit_code, reasons, cur
     "outputs_policy": plan.get("outputs_policy"),
     "current_state": current_state,
   }
+  existing_snapshot = None
+  if isinstance(existing_ledger, dict):
+    existing_snapshot = existing_ledger.get("execution_evidence_snapshot")
+  if isinstance(existing_snapshot, dict):
+    ledger["execution_evidence_snapshot"] = existing_snapshot
+  else:
+    ledger["execution_evidence_snapshot"] = build_autonomous_execution_snapshot(
+      current_state,
+      task_ids,
+    )
   if (
     isinstance(existing_ledger, dict)
     and isinstance(existing_ledger.get("integration_result"), dict)
@@ -1187,6 +1222,123 @@ def cmd_autonomous_plan_record_integration(args):
   )
   print(str(ledger_path))
   return 0
+
+
+def validate_autonomous_ledger(ledger):
+  """デプロイ後に plan なしで読める自律・並列台帳を検査する"""
+  reasons = []
+  current_state = {
+    "plan_required": False,
+    "run_id": None,
+    "completed_tasks": [],
+    "parallelized_operations": [],
+    "human_required_count": None,
+    "integration_status": None,
+  }
+
+  if not isinstance(ledger, dict):
+    return ["ledger は YAML mapping である必要があります"], current_state
+
+  current_state["run_id"] = ledger.get("run_id")
+  if ledger.get("mode") != "autonomous_parallel":
+    reasons.append("mode は autonomous_parallel である必要があります")
+  if ledger.get("verdict") != "OK" or ledger.get("exit_code") != 0:
+    reasons.append("ledger verdict/exit_code が OK/0 ではありません")
+
+  snapshot = ledger.get("execution_evidence_snapshot")
+  if not isinstance(snapshot, dict):
+    reasons.append("execution_evidence_snapshot が必要です")
+    snapshot = {}
+
+  completed_tasks = snapshot.get("completed_tasks")
+  if not isinstance(completed_tasks, list) or not completed_tasks:
+    reasons.append("execution_evidence_snapshot.completed_tasks が必要です")
+  current_state["completed_tasks"] = completed_tasks or []
+
+  parallelized_operations = snapshot.get("parallelized_operations")
+  if not isinstance(parallelized_operations, list):
+    reasons.append("execution_evidence_snapshot.parallelized_operations が必要です")
+  current_state["parallelized_operations"] = parallelized_operations or []
+
+  human_required_count = snapshot.get("human_required_count")
+  current_state["human_required_count"] = human_required_count
+  if not isinstance(human_required_count, int):
+    reasons.append("execution_evidence_snapshot.human_required_count が必要です")
+  elif human_required_count:
+    reasons.append(
+      f"execution_evidence_snapshot human_required が残っています: {human_required_count}"
+    )
+
+  integration_result = ledger.get("integration_result")
+  if not isinstance(integration_result, dict):
+    reasons.append("integration_result が必要です")
+    integration_result = {}
+  current_state["integration_status"] = integration_result.get("status")
+  if integration_result.get("status") not in ("completed", "blocked", "rejected"):
+    reasons.append("integration_result.status が不正です")
+  if not integration_result.get("tests"):
+    reasons.append("integration_result.tests が必要です")
+  if not integration_result.get("decision"):
+    reasons.append("integration_result.decision が必要です")
+
+  return reasons, current_state
+
+
+def build_autonomous_execution_snapshot(current_state, task_ids):
+  """plan なし監査に必要な実行証跡 snapshot を正規化する"""
+  evidence = current_state.get("execution_evidence")
+  if not isinstance(evidence, dict):
+    evidence = {}
+  snapshot = dict(evidence)
+  if not isinstance(snapshot.get("completed_tasks"), list):
+    snapshot["completed_tasks"] = list(task_ids)
+  if not isinstance(snapshot.get("parallelized_operations"), list):
+    snapshot["parallelized_operations"] = []
+  return snapshot
+
+
+def cmd_autonomous_ledger_audit(args):
+  """自律・並列モード台帳を plan なしで監査する"""
+  ledger_path = Path(args.ledger_path)
+  action_str = f"autonomous-ledger-audit {ledger_path}"
+  action_dict = {
+    "subcommand": "autonomous-ledger-audit",
+    "args": {
+      "ledger_path": str(ledger_path),
+    },
+  }
+
+  try:
+    ledger = yaml.safe_load(ledger_path.read_text(encoding="utf-8"))
+  except OSError as e:
+    reasons = [f"ledger_path を読めません: {e}"]
+    current_state_dict = {"ledger_path": str(ledger_path), "plan_required": False}
+    if args.json:
+      print(format_json_output("DEVIATION", 2, action_dict, reasons, current_state_dict))
+    else:
+      current_state_text = json.dumps(current_state_dict, ensure_ascii=False, indent=2)
+      print(format_human_output("DEVIATION", 2, action_str, reasons, current_state_text))
+    return 2
+  except yaml.YAMLError as e:
+    reasons = [f"ledger_path を YAML として読めません: {e}"]
+    current_state_dict = {"ledger_path": str(ledger_path), "plan_required": False}
+    if args.json:
+      print(format_json_output("DEVIATION", 2, action_dict, reasons, current_state_dict))
+    else:
+      current_state_text = json.dumps(current_state_dict, ensure_ascii=False, indent=2)
+      print(format_human_output("DEVIATION", 2, action_str, reasons, current_state_text))
+    return 2
+
+  reasons, current_state_dict = validate_autonomous_ledger(ledger)
+  current_state_dict["ledger_path"] = str(ledger_path)
+  verdict = "OK" if not reasons else "DEVIATION"
+  exit_code = 0 if not reasons else 2
+  if args.json:
+    print(format_json_output(verdict, exit_code, action_dict, reasons, current_state_dict))
+  else:
+    current_state_text = json.dumps(current_state_dict, ensure_ascii=False, indent=2)
+    print(format_human_output(verdict, exit_code, action_str, reasons, current_state_text))
+  return exit_code
 
 
 def cmd_autonomous_plan(args):
@@ -2879,6 +3031,13 @@ def main():
   apr.add_argument("--tests", required=True, help="実行したテストまたは未実行理由")
   apr.add_argument("--decision", required=True, help="統合判断の要約")
 
+  ala = sub.add_parser(
+    "autonomous-ledger-audit",
+    help="自律・並列モード台帳を plan なしで監査する",
+    parents=[common_parser],
+  )
+  ala.add_argument("ledger_path", help="監査対象の自律・並列モード履歴台帳 YAML")
+
   ac = sub.add_parser(
     "audit-commit",
     help="指定 commit の post-write-verification 漏れを監査する",
@@ -2917,6 +3076,8 @@ def main():
     sys.exit(cmd_autonomous_plan_template(args))
   elif args.subcommand == "autonomous-plan-record-integration":
     sys.exit(cmd_autonomous_plan_record_integration(args))
+  elif args.subcommand == "autonomous-ledger-audit":
+    sys.exit(cmd_autonomous_ledger_audit(args))
   elif args.subcommand == "audit-commit":
     sys.exit(cmd_audit_commit(args))
   elif args.subcommand == "next":
