@@ -1,0 +1,60 @@
+round_id: r15
+purpose: post_write_verification
+invocation_timestamp: '2026-06-05T10:31:12.154066+00:00'
+target_files:
+- path: docs/notes/2026-06-05-future-development-candidates.md
+  sha256: 953ddcd883c54b25d528afce74e284b6b6067b022d73fe914966715d9bf9e64f
+criteria: future_development_candidates_post_write_check
+prompt_sha256: ae05317704cea94532c43e52e20074e5802f06925f68e094a18de22b9ffb80f4
+model_results:
+- model_id: claude-sonnet-4-6
+  provider: anthropic-api
+  role: primary
+  treatment: primary
+  invocation_path: api
+  raw_path: raw/claude-sonnet-4-6.r15.txt
+  raw_sha256: 43c1fd0d56a02743443c4351c2079f5e621bf1a6ca0cf7c133e5c6ae12a35a9c
+  parsed_path: parsed/claude-sonnet-4-6.r15.yaml
+  parsed_sha256: d741c0cf280ff88068def02e07fbb64651b75dd6d7aefdb05988c7da233822f4
+  parse_status: parsed
+  formatted_by: parser
+  formatted_by_actor_type: orchestrator
+  formatted_by_actor: run_role.py
+  formatted_at: '2026-06-05T10:30:36.217478+00:00'
+  follow_up_action: triage
+  attempts: 1
+  duration_seconds: 21.954
+- model_id: gpt-5.4
+  provider: openai-api
+  role: adversarial
+  treatment: adversarial
+  invocation_path: api
+  raw_path: raw/gpt-5.4.r15.txt
+  raw_sha256: d6db1c1a7c9676da024460cb52899fe47ea443841eb53f896c00df64565afeb3
+  parsed_path: parsed/gpt-5.4.r15.yaml
+  parsed_sha256: 65e1bef88b1c9fddc839e1bb51edd1371d5ded75f0c878beb0d52eb0744db790
+  parse_status: parsed
+  formatted_by: parser
+  formatted_by_actor_type: orchestrator
+  formatted_by_actor: run_role.py
+  formatted_at: '2026-06-05T10:30:44.195504+00:00'
+  follow_up_action: triage
+  attempts: 1
+  duration_seconds: 7.969
+- model_id: gemini-3.1-pro-preview
+  provider: gemini-api
+  role: judgment
+  treatment: judgment
+  invocation_path: api
+  raw_path: raw/gemini-3.1-pro-preview.r15.txt
+  raw_sha256: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+  parsed_path: parsed/gemini-3.1-pro-preview.r15.yaml
+  parsed_sha256: 6489dbf141e427ab83415d9260d3b1e2ad31af6fd5dd1e335c5537def55f4c9d
+  parse_status: parsed
+  formatted_by: parser
+  formatted_by_actor_type: orchestrator
+  formatted_by_actor: run_role.py
+  formatted_at: '2026-06-05T10:31:12.154066+00:00'
+  follow_up_action: triage
+  attempts: 1
+  duration_seconds: 27.947

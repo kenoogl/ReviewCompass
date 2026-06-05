@@ -1,0 +1,1088 @@
+status: completed
+target_files:
+- docs/notes/2026-06-05-future-development-candidates.md
+- docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r1/model-result-summary.yaml
+- docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r1/parsed/claude-sonnet-4-6.r1.yaml
+- docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r1/parsed/gemini-3.1-pro-preview.r1.yaml
+- docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r1/parsed/gpt-5.4.r1.yaml
+- docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r1/raw/claude-sonnet-4-6.r1.txt
+- docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r1/raw/gemini-3.1-pro-preview.r1.txt
+- docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r1/raw/gpt-5.4.r1.txt
+- docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r1/review_summary.md
+- docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r1/rounds.yaml
+- docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r1/target-manifest.yaml
+- docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r1/triage.yaml
+- docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r10/model-result-summary.yaml
+- docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r10/parsed/claude-sonnet-4-6.r10.yaml
+- docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r10/parsed/gemini-3.1-pro-preview.r10.yaml
+- docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r10/parsed/gpt-5.4.r10.yaml
+- docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r10/raw/claude-sonnet-4-6.r10.txt
+- docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r10/raw/gemini-3.1-pro-preview.r10.txt
+- docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r10/raw/gpt-5.4.r10.txt
+- docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r10/review_summary.md
+- docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r10/rounds.yaml
+- docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r10/target-manifest.yaml
+- docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r10/triage.yaml
+- docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r11/model-result-summary.yaml
+- docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r11/parsed/claude-sonnet-4-6.r11.yaml
+- docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r11/parsed/gemini-3.1-pro-preview.r11.yaml
+- docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r11/parsed/gpt-5.4.r11.yaml
+- docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r11/raw/claude-sonnet-4-6.r11.txt
+- docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r11/raw/gemini-3.1-pro-preview.r11.txt
+- docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r11/raw/gpt-5.4.r11.txt
+- docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r11/review_summary.md
+- docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r11/rounds.yaml
+- docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r11/target-manifest.yaml
+- docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r11/triage.yaml
+- docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r12/model-result-summary.yaml
+- docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r12/parsed/claude-sonnet-4-6.r12.yaml
+- docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r12/parsed/gemini-3.1-pro-preview.r12.yaml
+- docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r12/parsed/gpt-5.4.r12.yaml
+- docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r12/raw/claude-sonnet-4-6.r12.txt
+- docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r12/raw/gemini-3.1-pro-preview.r12.txt
+- docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r12/raw/gpt-5.4.r12.txt
+- docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r12/review_summary.md
+- docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r12/rounds.yaml
+- docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r12/target-manifest.yaml
+- docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r12/triage.yaml
+- docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r2/model-result-summary.yaml
+- docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r2/parsed/claude-sonnet-4-6.r2.yaml
+- docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r2/parsed/gemini-3.1-pro-preview.r2.yaml
+- docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r2/parsed/gpt-5.4.r2.yaml
+- docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r2/raw/claude-sonnet-4-6.r2.txt
+- docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r2/raw/gemini-3.1-pro-preview.r2.txt
+- docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r2/raw/gpt-5.4.r2.txt
+- docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r2/review_summary.md
+- docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r2/rounds.yaml
+- docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r2/target-manifest.yaml
+- docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r2/triage.yaml
+- docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r3/model-result-summary.yaml
+- docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r3/parsed/claude-sonnet-4-6.r3.yaml
+- docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r3/parsed/gemini-3.1-pro-preview.r3.yaml
+- docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r3/parsed/gpt-5.4.r3.yaml
+- docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r3/raw/claude-sonnet-4-6.r3.txt
+- docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r3/raw/gemini-3.1-pro-preview.r3.txt
+- docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r3/raw/gpt-5.4.r3.txt
+- docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r3/review_summary.md
+- docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r3/rounds.yaml
+- docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r3/target-manifest.yaml
+- docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r3/triage.yaml
+- docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r4/model-result-summary.yaml
+- docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r4/parsed/claude-sonnet-4-6.r4.yaml
+- docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r4/parsed/gemini-3.1-pro-preview.r4.yaml
+- docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r4/parsed/gpt-5.4.r4.yaml
+- docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r4/raw/claude-sonnet-4-6.r4.txt
+- docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r4/raw/gemini-3.1-pro-preview.r4.txt
+- docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r4/raw/gpt-5.4.r4.txt
+- docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r4/review_summary.md
+- docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r4/rounds.yaml
+- docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r4/target-manifest.yaml
+- docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r4/triage.yaml
+- docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r5/model-result-summary.yaml
+- docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r5/parsed/claude-sonnet-4-6.r5.yaml
+- docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r5/parsed/gemini-3.1-pro-preview.r5.yaml
+- docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r5/parsed/gpt-5.4.r5.yaml
+- docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r5/raw/claude-sonnet-4-6.r5.txt
+- docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r5/raw/gemini-3.1-pro-preview.r5.txt
+- docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r5/raw/gpt-5.4.r5.txt
+- docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r5/review_summary.md
+- docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r5/rounds.yaml
+- docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r5/target-manifest.yaml
+- docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r5/triage.yaml
+- docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r6/model-result-summary.yaml
+- docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r6/parsed/claude-sonnet-4-6.r6.yaml
+- docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r6/parsed/gemini-3.1-pro-preview.r6.yaml
+- docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r6/parsed/gpt-5.4.r6.yaml
+- docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r6/raw/claude-sonnet-4-6.r6.txt
+- docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r6/raw/gemini-3.1-pro-preview.r6.txt
+- docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r6/raw/gpt-5.4.r6.txt
+- docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r6/review_summary.md
+- docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r6/rounds.yaml
+- docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r6/target-manifest.yaml
+- docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r6/triage.yaml
+- docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r7/model-result-summary.yaml
+- docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r7/parsed/claude-sonnet-4-6.r7.yaml
+- docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r7/parsed/gemini-3.1-pro-preview.r7.yaml
+- docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r7/parsed/gpt-5.4.r7.yaml
+- docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r7/raw/claude-sonnet-4-6.r7.txt
+- docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r7/raw/gemini-3.1-pro-preview.r7.txt
+- docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r7/raw/gpt-5.4.r7.txt
+- docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r7/review_summary.md
+- docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r7/rounds.yaml
+- docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r7/target-manifest.yaml
+- docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r7/triage.yaml
+- docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r8/model-result-summary.yaml
+- docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r8/parsed/claude-sonnet-4-6.r8.yaml
+- docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r8/parsed/gemini-3.1-pro-preview.r8.yaml
+- docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r8/parsed/gpt-5.4.r8.yaml
+- docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r8/raw/claude-sonnet-4-6.r8.txt
+- docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r8/raw/gemini-3.1-pro-preview.r8.txt
+- docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r8/raw/gpt-5.4.r8.txt
+- docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r8/review_summary.md
+- docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r8/rounds.yaml
+- docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r8/target-manifest.yaml
+- docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r8/triage.yaml
+- docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r9/model-result-summary.yaml
+- docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r9/parsed/claude-sonnet-4-6.r9.yaml
+- docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r9/parsed/gemini-3.1-pro-preview.r9.yaml
+- docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r9/parsed/gpt-5.4.r9.yaml
+- docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r9/raw/claude-sonnet-4-6.r9.txt
+- docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r9/raw/gemini-3.1-pro-preview.r9.txt
+- docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r9/raw/gpt-5.4.r9.txt
+- docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r9/review_summary.md
+- docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r9/rounds.yaml
+- docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r9/target-manifest.yaml
+- docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r9/triage.yaml
+target_sha256:
+  docs/notes/2026-06-05-future-development-candidates.md: 149674c17adea88708e3b821fb87b8e88c0bc8d8aee9af43d31e1d9a23d3cf4d
+  docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r1/model-result-summary.yaml: da65b5013b74fd14aa1b39e7dec3a24d04fb6917c5cabb0995e2aee9e98cd15d
+  docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r1/parsed/claude-sonnet-4-6.r1.yaml: 428b61c55a575831ed6527b2d1b2db05f294bab82d16b9a34ef778db1db2895e
+  docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r1/parsed/gemini-3.1-pro-preview.r1.yaml: 1272f4e84e71eef50e9dba6cb4d3c82ced7477d34c40b936e81f824227417d3d
+  docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r1/parsed/gpt-5.4.r1.yaml: 41092cf61ac5d52f495c83e1f737589c3d47635f6136641929eb9447782890a9
+  docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r1/raw/claude-sonnet-4-6.r1.txt: fd0247f8285f44805d9efedfc7cc399468418d2ba9476e84fa6dc0d4c53ffee4
+  docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r1/raw/gemini-3.1-pro-preview.r1.txt: c33718e89fff7b6b9e6c48b01d2888a286b9256e8b4f9030271b4ff4ce0522aa
+  docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r1/raw/gpt-5.4.r1.txt: 4b738a7856f03224121b39d100e27f942a430fe875bacd3f2355aabd9c64d2eb
+  docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r1/review_summary.md: 637a5a7fef4a654a8716a3c57e49d0b32030cc2783ef0f9c7153566403444b31
+  docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r1/rounds.yaml: 79bcf1a1402711d18a1801f8e124bd81e49cded2eb1bd8679da8cc09dc8340cb
+  docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r1/target-manifest.yaml: 781c622e59817525f2e359c2200530b07964fd025fde8c39ec671f0aad62a3f7
+  docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r1/triage.yaml: 0264fbb7eb1747390283efe5ee10be57c98db63ee9223bff8e97bd01f0331289
+  docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r10/model-result-summary.yaml: a96e8dfba5f069aee9f73d3dbb35160436125bc84a90ba9e6988d42e38b59b1c
+  docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r10/parsed/claude-sonnet-4-6.r10.yaml: 228d756008584eef63788b432df6f5e55279d247cbcbe89713673bd27e094ea1
+  docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r10/parsed/gemini-3.1-pro-preview.r10.yaml: 284c498ae0b45b81b7298c4f8365158ff2121a80a8239b43f079e63a4a9d68f2
+  docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r10/parsed/gpt-5.4.r10.yaml: 1f397e47ef9241cc5f3565e21e4310f266d2d30a37205b275b8ff6ed9d10a25b
+  docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r10/raw/claude-sonnet-4-6.r10.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+  docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r10/raw/gemini-3.1-pro-preview.r10.txt: dff5d45c3b7bbea5939e69819d2b239f733701692d4d2da690cc7e6aaaef0402
+  docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r10/raw/gpt-5.4.r10.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+  docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r10/review_summary.md: 0bf8beb28a474961365706f71534881d8f2703bb51b10733cc03c25038a8b439
+  docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r10/rounds.yaml: b6f024eb6d2b879eb86017d867cea72c59ec2a8f917b1b52fea19065f1b94bc9
+  docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r10/target-manifest.yaml: de46f2cf4209e87bde3da574ecd7adeca1290489cd29e05badb3a8c757558796
+  docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r10/triage.yaml: 8e316c966f315be372a603e4a23e4d65ec928f59a3082566ab8875fe844708de
+  docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r11/model-result-summary.yaml: c0ae6fbe118c269419641e7abf730dd2439dee31c9ccd195bf3771e42c3a5835
+  docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r11/parsed/claude-sonnet-4-6.r11.yaml: 3573c358d604e563686145a0f73324c6a619134a14a7398f3b92f263d13746df
+  docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r11/parsed/gemini-3.1-pro-preview.r11.yaml: 53ca6b4becca8284f8cb6de0e5bdac357756c3c35098310e340e889ebfacc7e7
+  docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r11/parsed/gpt-5.4.r11.yaml: 485bb1ee17ec9a0f85515b11c073dff55ecd2160d03fdae574ad484b7de33f1c
+  docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r11/raw/claude-sonnet-4-6.r11.txt: 51cfad7000b5f6784e82b1ed4c5ab70639d79d08e9ff85c02829a5a8171e7061
+  docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r11/raw/gemini-3.1-pro-preview.r11.txt: bdeb91d14e1ab7b9f52158c2c32cdf7ca63edecf1430dde1f7ce4160999c3285
+  docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r11/raw/gpt-5.4.r11.txt: 01c092942356d123af137f9fb6928eeb0b3301aebc9764cad21cf00b52a10cd6
+  docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r11/review_summary.md: b10d8e4bdb5f1b063e2d6626a8c9b753349c2d695b0703ea618fb535c9a50833
+  docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r11/rounds.yaml: 46cc406d86d67f15755a7cbe958e515cf03e579e4985d8a6cd4cf9a0e158ae27
+  docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r11/target-manifest.yaml: 5df13d7d43401b47227beac56f93ca89bc044a937aaa87fdd0285dc72ab7e301
+  docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r11/triage.yaml: 0d06acb984b625ea8b67fa2e468074bb9bcd3916966e7b1ea3ecb08a54945216
+  docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r12/model-result-summary.yaml: 993005ce40c45e4805f436d064f7165d0f29cbe0ea61f76706dc9947f7ac447f
+  docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r12/parsed/claude-sonnet-4-6.r12.yaml: f7c41d793947e8058431a1b15be65918612a70a4863275749a3b3185dfb05123
+  docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r12/parsed/gemini-3.1-pro-preview.r12.yaml: 68d81aa8097937398d22e03b5b4b98f6414bda2e1773f972215d0a008061f747
+  docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r12/parsed/gpt-5.4.r12.yaml: ab8a59a6226d7aefbc0206f94d7fdecd0505258f29152c317633cb949f9dac08
+  docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r12/raw/claude-sonnet-4-6.r12.txt: d5e08238afac0e2592302528caf8088ae6d80d8bff1f98dc5fdcbda5d57b0d30
+  docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r12/raw/gemini-3.1-pro-preview.r12.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+  docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r12/raw/gpt-5.4.r12.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+  docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r12/review_summary.md: 10690fca4f1d27b686cc56c93cbcffef9bc6788c81beb96c9d340ce3fbc02ce3
+  docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r12/rounds.yaml: 14b86480020a6123430c6f74fb238fe1c99991f7338a2bd42f7c79a360fec52e
+  docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r12/target-manifest.yaml: 85a5f51a1f6b0ed924c8d8779831704dfb239ed39064fe24f5d96c06ba87f441
+  docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r12/triage.yaml: 5fad6897372112426261f6e97acf9162466c74eccf19c8ab095e7eb3c644f99e
+  docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r2/model-result-summary.yaml: 77728d3133146b77059c83b7156916449252f0e0fd68e4d67fa16c461b850af2
+  docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r2/parsed/claude-sonnet-4-6.r2.yaml: 7b2585aee9dfa8618cba24ea118374019506dc41a6fbd80e1d230fd508c9d733
+  docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r2/parsed/gemini-3.1-pro-preview.r2.yaml: 38b57522cbc8e98a0c7778caac55a7c50a603599b66c920b9bac803033f218c8
+  docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r2/parsed/gpt-5.4.r2.yaml: bd05aac6b23028117909ab69ab7356200b052680f23266c7ad699ed789b3648f
+  docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r2/raw/claude-sonnet-4-6.r2.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+  docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r2/raw/gemini-3.1-pro-preview.r2.txt: 1a4696d7be8fabe62ad24045e00777d508b4f9d9261b798843523b2224cf8d7a
+  docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r2/raw/gpt-5.4.r2.txt: 0fdfc743e85b55024a7b286d29f5207537a8b8fda34923c346777d87149e19c0
+  docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r2/review_summary.md: aaf8e62711321cd8ac3bf8aa8decab937999f0b6fcdac5c59966241838558e48
+  docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r2/rounds.yaml: 3fe24f681acf9133b1e4d2d4628e6b72163d5348094d7c88191ddd1fd6cccc81
+  docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r2/target-manifest.yaml: 9aaae9203fe4850a5924ad30a0c6eabaee64cef4d13864ec71f5ce2d4ded5df2
+  docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r2/triage.yaml: e6e69085215db2dea58de0eac82fb4ac01636a1514eba7ad626b10d7cc47d6fd
+  docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r3/model-result-summary.yaml: 6b32c7c6c31bb4ad76014f3a716487e33f4aec36fd83561299f763c942ddd808
+  docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r3/parsed/claude-sonnet-4-6.r3.yaml: 55f1f7300154ccd092e3fb117bba9edae3793234184bb1a42406b9c7c9720b20
+  docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r3/parsed/gemini-3.1-pro-preview.r3.yaml: 1a1cc1c9c8908f5ba145750151281df01f25a3f0afdf4aa4dfc3baf42a9f4932
+  docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r3/parsed/gpt-5.4.r3.yaml: e2686c50dbd42fd0f091d12704130553ab951316416d86182e63b34e43c863d8
+  docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r3/raw/claude-sonnet-4-6.r3.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+  docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r3/raw/gemini-3.1-pro-preview.r3.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+  docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r3/raw/gpt-5.4.r3.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+  docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r3/review_summary.md: 1e88a9717e03417dc86e7c09c9eed9c90c3bee434e8a1fbac6062ca16aafe0e1
+  docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r3/rounds.yaml: 66d6d6535508d3c9d8cb8d959f760176507bdd2c9c6d8c067e1c8b1c4986f4a5
+  docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r3/target-manifest.yaml: ddafd72d7535cd210b8d044518198024ba25113a57797258f28e03c6a13ac985
+  docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r3/triage.yaml: ec99f19d8b856b06fce7666aad737e99bd32ab70f4e38165a7c7e7e16a166f54
+  docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r4/model-result-summary.yaml: b4a16296662b23365a586b5dac33cf67464333befdff8cceda8a63eb7e40e648
+  docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r4/parsed/claude-sonnet-4-6.r4.yaml: b05de17adb45727c0c94d4f7a342609081bff02da9d63d7476d6d0d066f776ae
+  docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r4/parsed/gemini-3.1-pro-preview.r4.yaml: df558d54ae25ae2a001e6d6c2b4a677fd746796e4b352bf8aefb4cb2f0377621
+  docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r4/parsed/gpt-5.4.r4.yaml: 2390db6fc6ca997a76e517f5bc53c601f248e814bc4ea35c45985a3a53a6f5f9
+  docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r4/raw/claude-sonnet-4-6.r4.txt: f44660b64295a8c898d8cf53521e182ff4f60bd7b38a02a63f45052ca4d01fe9
+  docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r4/raw/gemini-3.1-pro-preview.r4.txt: 8b580c766d35bb83e1bdc9fd77c8d43a5d3429d1d279fad93e98b69647c8b2c7
+  docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r4/raw/gpt-5.4.r4.txt: c8dadeb1391743971f307b977c19d8326827912f45ba5bd19d62c16bbf9c3f98
+  docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r4/review_summary.md: 8ec5d29aaf2d7241f4a498a94ab559ed881a6f7fd9b9a79d752b2029ba1d48b6
+  docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r4/rounds.yaml: e2b36833f977e73847595cdbf1d5f6af9b2c0da59fe4daf06de8d28de82a5fb3
+  docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r4/target-manifest.yaml: 34c392b741400fe267d60cf8b76d3522859726a31a0daaa55c3620fd55e627a7
+  docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r4/triage.yaml: caebdb76c8aea1fa7930777f0e62189a54bdcb215baea274f65e763529973db1
+  docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r5/model-result-summary.yaml: 6384fb0cfba395f5a33ddb324f7a4ef4923e0abfb6dd0558c22896ecd23f5f29
+  docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r5/parsed/claude-sonnet-4-6.r5.yaml: 4ccace342ad0ccebbdf88e516b902bcca8dd2102734795da451e91dfc252454a
+  docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r5/parsed/gemini-3.1-pro-preview.r5.yaml: f45a60fac9d1ef01b4dc962391e2bb8edd9d0452276fa7f3b60cd72722f55e0b
+  docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r5/parsed/gpt-5.4.r5.yaml: 687601e3b4faaee2f452e41366583617574f83283cfca837a97763f68244283f
+  docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r5/raw/claude-sonnet-4-6.r5.txt: 6882a7c186a5fa61bcc485d0e2d2f27b4cb04e9a61a8afca0d386227cd9f34b5
+  docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r5/raw/gemini-3.1-pro-preview.r5.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+  docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r5/raw/gpt-5.4.r5.txt: 3fa8f5f148a719a15d4c026aa23a033bbb7c51c50368c83a28d96ccfaa95de0e
+  docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r5/review_summary.md: 265eaad05ed121dabb6b8ebc4b023f5d662c0032ec2a292a303e91ae02fa4a11
+  docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r5/rounds.yaml: c431d0a9a2daa1d45627e32f5d19c4a5dbc3f557d7255209cdedd25b81516e88
+  docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r5/target-manifest.yaml: e8eaaabe4efd937adc0014891fd7c6b91e881d6ca77827c096728f4b4bf11cf3
+  docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r5/triage.yaml: a3c162a426a074271bf59ee265e07664de8872d7838721c81d14096d887ca76f
+  docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r6/model-result-summary.yaml: 1ae7057730b57ad78b7c4ff44683cf435c83163dd6df92126adae9bd0f1e9da6
+  docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r6/parsed/claude-sonnet-4-6.r6.yaml: 5edef26879952fa3b5ea883592d1ec50c0304482feca1e1062a12d7f2e1e2997
+  docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r6/parsed/gemini-3.1-pro-preview.r6.yaml: e5a26df99952d4b996d5f039c35bd465a05195d09d957cd0250629ff75c0237a
+  docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r6/parsed/gpt-5.4.r6.yaml: 0ad5f173e806d5a5d9b95a7b76eccb30a1a5e7c7bb5e68a7368f235b4b3943b5
+  docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r6/raw/claude-sonnet-4-6.r6.txt: fba37298ea778bdf555577a049ce69a3a27d916a2d47ef3e106fa3f3e151cc91
+  docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r6/raw/gemini-3.1-pro-preview.r6.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+  docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r6/raw/gpt-5.4.r6.txt: 908e7f41cb2afd7b205bce7f31b505824e6b772b29b24093b28bb3e4ebf3e30d
+  docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r6/review_summary.md: 55008fa79f4862418f2dc96d36361450b79f17e054d06b39d0faa08983388d7e
+  docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r6/rounds.yaml: e0dc28337c466a662095bee148a3ac043d900ca77e7f29b186ab23ee4e446c83
+  docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r6/target-manifest.yaml: 86f2065e11319b88a5bb84c9201f67c8161f09a30225a7f2d14846891f40d040
+  docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r6/triage.yaml: 7ff1d5c20746b0d7848ea626038eed7eecc4da6c78d674203becd298897b5068
+  docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r7/model-result-summary.yaml: 02c73e6e30b5de7ac149b6acd089ff1a968ab0f5feae095445668c4356e7228e
+  docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r7/parsed/claude-sonnet-4-6.r7.yaml: 6986d65e70e0cd06958005019a4ef5a478122c2b3477d9b09bc606b59242c764
+  docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r7/parsed/gemini-3.1-pro-preview.r7.yaml: 9d3ab0f4c115b51a5563f8bbb27f72447e66dc7597f9b7dfe51bee670bf79db1
+  docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r7/parsed/gpt-5.4.r7.yaml: a2df22a7b7c56a9be21c1abfb9bb19f9a3bae88ba4008ec8c15ad6cb9f1f13dc
+  docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r7/raw/claude-sonnet-4-6.r7.txt: fccba41f463c4d8a97f0e3b97e64166122bc8f77b966962c7989989b6a404038
+  docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r7/raw/gemini-3.1-pro-preview.r7.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+  docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r7/raw/gpt-5.4.r7.txt: 80b5d6d3ef2ea601e51e37d654f0c0ef2b07204dcfb98a330d296baf428d8b45
+  docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r7/review_summary.md: 146e408e161bb460ff2e07dfccbe362fbab504133976f080f8fbeb3518247bbd
+  docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r7/rounds.yaml: 9ba2f332f6dd2e209cbe1e949264ccf359e490645708b40f609cf4a6b3d6c7c4
+  docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r7/target-manifest.yaml: c527afd7a5983bd152afd2c45c088fdfbd323a5ab6ce080169813178672387c4
+  docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r7/triage.yaml: 742f523938b66360a8dbb90e7138aef47ba0e26fc234fd8b9b215b28311c8674
+  docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r8/model-result-summary.yaml: ad66c2fd07257b6174b6c94306899b85406213a6d996c2c4226b96063598abde
+  docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r8/parsed/claude-sonnet-4-6.r8.yaml: dad7b4c5891c975be2bb032b08090045fb4e43cf86e83bc82edfa0e449b0fe0e
+  docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r8/parsed/gemini-3.1-pro-preview.r8.yaml: 10bfe8c18aadd2ad1f7b4473ba681d718882c363e20f2cefefa5b6c562694613
+  docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r8/parsed/gpt-5.4.r8.yaml: 8ed0b90467dcbff71fd37ce40084c293f8abd4ec7ba28221da12bcf1d434c17a
+  docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r8/raw/claude-sonnet-4-6.r8.txt: 3cc8a7b21ba6e1c643f539e0dfae0f9e495445457a104ae255fc509747cb153f
+  docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r8/raw/gemini-3.1-pro-preview.r8.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+  docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r8/raw/gpt-5.4.r8.txt: e7baeb53007389ed5ec6f523c6804a8973ae295c43de1fa2e6231a63777f6e53
+  docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r8/review_summary.md: a6c849e18c3a8decef16ca49574b16a2b99d9ffa1689a4e2bee76f4858413693
+  docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r8/rounds.yaml: 8b2bf3181e95ce86ff5c1693325ec01c84151733cfc4af031cfbcdcfedd72e4e
+  docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r8/target-manifest.yaml: b22b5be73bc586daa159e09e620098a76a9fa2bdfe6cf7a6bdefcef829090a44
+  docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r8/triage.yaml: ff1602323f6e3a46bc4e41a7ff918f3ee8dd1a00e73373653343b5c1186cc656
+  docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r9/model-result-summary.yaml: 8eaf0436ad8c0bd6ef00d393a2681ab952bde773a9aaff6dbf3013ee8612b41c
+  docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r9/parsed/claude-sonnet-4-6.r9.yaml: b1301c74024302ebc610c2432cd54505fd5b0a3be97ef6cf6504e28876ad2201
+  docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r9/parsed/gemini-3.1-pro-preview.r9.yaml: 200c1565b29bf529e5ca16dad63aaac021cbb27519527aced4e9c86cf1be9960
+  docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r9/parsed/gpt-5.4.r9.yaml: e83635bfaeb69484c2dd7f1fc7ffca4410f66f31b8ea620c48bbe9e9ac21c26f
+  docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r9/raw/claude-sonnet-4-6.r9.txt: 6349119c9dbc05afb3e17eedd16ba30f7f7126477000d6915fdd758b4cdaa3db
+  docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r9/raw/gemini-3.1-pro-preview.r9.txt: 6e6e2b3e8a166068a091365f787613cc890bbe1e5db7aa8a9bf750f21658c886
+  docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r9/raw/gpt-5.4.r9.txt: a08dc3485968ae64d9f2a3d90328b338d709efb21612331baf3b464739c39557
+  docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r9/review_summary.md: 2e9b9ab6c7cf7370134770e4b032536d605ad26ffd40d837809490d7982e290d
+  docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r9/rounds.yaml: 61fef7c7e5bd01742d13b2beafd4e4fcc93c85c3d56120fb4d2bdc767c03442d
+  docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r9/target-manifest.yaml: 2aabb592de5bba91ceff22148dd6a9020c3bb20a15a209b35fe332482cfbac99
+  docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r9/triage.yaml: f399c8141b56527e7ef7fd0d881df82cf69e8051db5952608fcffecad8ff0bf7
+required_verifiers: &id001
+- claude-sonnet-4-6
+- gpt-5.4
+- gemini-3.1-pro-preview
+completed_verifiers: *id001
+unresolved_substantive_findings: 0
+verifications:
+- verifier: claude-sonnet-4-6
+  target_files:
+  - docs/notes/2026-06-05-future-development-candidates.md
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r1/model-result-summary.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r1/parsed/claude-sonnet-4-6.r1.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r1/parsed/gemini-3.1-pro-preview.r1.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r1/parsed/gpt-5.4.r1.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r1/raw/claude-sonnet-4-6.r1.txt
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r1/raw/gemini-3.1-pro-preview.r1.txt
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r1/raw/gpt-5.4.r1.txt
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r1/review_summary.md
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r1/rounds.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r1/target-manifest.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r1/triage.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r10/model-result-summary.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r10/parsed/claude-sonnet-4-6.r10.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r10/parsed/gemini-3.1-pro-preview.r10.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r10/parsed/gpt-5.4.r10.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r10/raw/claude-sonnet-4-6.r10.txt
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r10/raw/gemini-3.1-pro-preview.r10.txt
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r10/raw/gpt-5.4.r10.txt
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r10/review_summary.md
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r10/rounds.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r10/target-manifest.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r10/triage.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r11/model-result-summary.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r11/parsed/claude-sonnet-4-6.r11.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r11/parsed/gemini-3.1-pro-preview.r11.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r11/parsed/gpt-5.4.r11.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r11/raw/claude-sonnet-4-6.r11.txt
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r11/raw/gemini-3.1-pro-preview.r11.txt
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r11/raw/gpt-5.4.r11.txt
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r11/review_summary.md
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r11/rounds.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r11/target-manifest.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r11/triage.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r12/model-result-summary.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r12/parsed/claude-sonnet-4-6.r12.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r12/parsed/gemini-3.1-pro-preview.r12.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r12/parsed/gpt-5.4.r12.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r12/raw/claude-sonnet-4-6.r12.txt
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r12/raw/gemini-3.1-pro-preview.r12.txt
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r12/raw/gpt-5.4.r12.txt
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r12/review_summary.md
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r12/rounds.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r12/target-manifest.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r12/triage.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r2/model-result-summary.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r2/parsed/claude-sonnet-4-6.r2.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r2/parsed/gemini-3.1-pro-preview.r2.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r2/parsed/gpt-5.4.r2.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r2/raw/claude-sonnet-4-6.r2.txt
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r2/raw/gemini-3.1-pro-preview.r2.txt
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r2/raw/gpt-5.4.r2.txt
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r2/review_summary.md
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r2/rounds.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r2/target-manifest.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r2/triage.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r3/model-result-summary.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r3/parsed/claude-sonnet-4-6.r3.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r3/parsed/gemini-3.1-pro-preview.r3.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r3/parsed/gpt-5.4.r3.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r3/raw/claude-sonnet-4-6.r3.txt
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r3/raw/gemini-3.1-pro-preview.r3.txt
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r3/raw/gpt-5.4.r3.txt
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r3/review_summary.md
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r3/rounds.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r3/target-manifest.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r3/triage.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r4/model-result-summary.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r4/parsed/claude-sonnet-4-6.r4.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r4/parsed/gemini-3.1-pro-preview.r4.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r4/parsed/gpt-5.4.r4.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r4/raw/claude-sonnet-4-6.r4.txt
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r4/raw/gemini-3.1-pro-preview.r4.txt
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r4/raw/gpt-5.4.r4.txt
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r4/review_summary.md
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r4/rounds.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r4/target-manifest.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r4/triage.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r5/model-result-summary.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r5/parsed/claude-sonnet-4-6.r5.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r5/parsed/gemini-3.1-pro-preview.r5.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r5/parsed/gpt-5.4.r5.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r5/raw/claude-sonnet-4-6.r5.txt
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r5/raw/gemini-3.1-pro-preview.r5.txt
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r5/raw/gpt-5.4.r5.txt
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r5/review_summary.md
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r5/rounds.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r5/target-manifest.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r5/triage.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r6/model-result-summary.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r6/parsed/claude-sonnet-4-6.r6.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r6/parsed/gemini-3.1-pro-preview.r6.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r6/parsed/gpt-5.4.r6.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r6/raw/claude-sonnet-4-6.r6.txt
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r6/raw/gemini-3.1-pro-preview.r6.txt
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r6/raw/gpt-5.4.r6.txt
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r6/review_summary.md
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r6/rounds.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r6/target-manifest.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r6/triage.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r7/model-result-summary.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r7/parsed/claude-sonnet-4-6.r7.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r7/parsed/gemini-3.1-pro-preview.r7.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r7/parsed/gpt-5.4.r7.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r7/raw/claude-sonnet-4-6.r7.txt
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r7/raw/gemini-3.1-pro-preview.r7.txt
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r7/raw/gpt-5.4.r7.txt
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r7/review_summary.md
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r7/rounds.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r7/target-manifest.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r7/triage.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r8/model-result-summary.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r8/parsed/claude-sonnet-4-6.r8.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r8/parsed/gemini-3.1-pro-preview.r8.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r8/parsed/gpt-5.4.r8.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r8/raw/claude-sonnet-4-6.r8.txt
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r8/raw/gemini-3.1-pro-preview.r8.txt
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r8/raw/gpt-5.4.r8.txt
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r8/review_summary.md
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r8/rounds.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r8/target-manifest.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r8/triage.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r9/model-result-summary.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r9/parsed/claude-sonnet-4-6.r9.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r9/parsed/gemini-3.1-pro-preview.r9.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r9/parsed/gpt-5.4.r9.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r9/raw/claude-sonnet-4-6.r9.txt
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r9/raw/gemini-3.1-pro-preview.r9.txt
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r9/raw/gpt-5.4.r9.txt
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r9/review_summary.md
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r9/rounds.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r9/target-manifest.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r9/triage.yaml
+  target_sha256:
+    docs/notes/2026-06-05-future-development-candidates.md: 149674c17adea88708e3b821fb87b8e88c0bc8d8aee9af43d31e1d9a23d3cf4d
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r1/model-result-summary.yaml: da65b5013b74fd14aa1b39e7dec3a24d04fb6917c5cabb0995e2aee9e98cd15d
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r1/parsed/claude-sonnet-4-6.r1.yaml: 428b61c55a575831ed6527b2d1b2db05f294bab82d16b9a34ef778db1db2895e
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r1/parsed/gemini-3.1-pro-preview.r1.yaml: 1272f4e84e71eef50e9dba6cb4d3c82ced7477d34c40b936e81f824227417d3d
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r1/parsed/gpt-5.4.r1.yaml: 41092cf61ac5d52f495c83e1f737589c3d47635f6136641929eb9447782890a9
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r1/raw/claude-sonnet-4-6.r1.txt: fd0247f8285f44805d9efedfc7cc399468418d2ba9476e84fa6dc0d4c53ffee4
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r1/raw/gemini-3.1-pro-preview.r1.txt: c33718e89fff7b6b9e6c48b01d2888a286b9256e8b4f9030271b4ff4ce0522aa
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r1/raw/gpt-5.4.r1.txt: 4b738a7856f03224121b39d100e27f942a430fe875bacd3f2355aabd9c64d2eb
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r1/review_summary.md: 637a5a7fef4a654a8716a3c57e49d0b32030cc2783ef0f9c7153566403444b31
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r1/rounds.yaml: 79bcf1a1402711d18a1801f8e124bd81e49cded2eb1bd8679da8cc09dc8340cb
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r1/target-manifest.yaml: 781c622e59817525f2e359c2200530b07964fd025fde8c39ec671f0aad62a3f7
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r1/triage.yaml: 0264fbb7eb1747390283efe5ee10be57c98db63ee9223bff8e97bd01f0331289
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r10/model-result-summary.yaml: a96e8dfba5f069aee9f73d3dbb35160436125bc84a90ba9e6988d42e38b59b1c
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r10/parsed/claude-sonnet-4-6.r10.yaml: 228d756008584eef63788b432df6f5e55279d247cbcbe89713673bd27e094ea1
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r10/parsed/gemini-3.1-pro-preview.r10.yaml: 284c498ae0b45b81b7298c4f8365158ff2121a80a8239b43f079e63a4a9d68f2
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r10/parsed/gpt-5.4.r10.yaml: 1f397e47ef9241cc5f3565e21e4310f266d2d30a37205b275b8ff6ed9d10a25b
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r10/raw/claude-sonnet-4-6.r10.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r10/raw/gemini-3.1-pro-preview.r10.txt: dff5d45c3b7bbea5939e69819d2b239f733701692d4d2da690cc7e6aaaef0402
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r10/raw/gpt-5.4.r10.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r10/review_summary.md: 0bf8beb28a474961365706f71534881d8f2703bb51b10733cc03c25038a8b439
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r10/rounds.yaml: b6f024eb6d2b879eb86017d867cea72c59ec2a8f917b1b52fea19065f1b94bc9
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r10/target-manifest.yaml: de46f2cf4209e87bde3da574ecd7adeca1290489cd29e05badb3a8c757558796
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r10/triage.yaml: 8e316c966f315be372a603e4a23e4d65ec928f59a3082566ab8875fe844708de
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r11/model-result-summary.yaml: c0ae6fbe118c269419641e7abf730dd2439dee31c9ccd195bf3771e42c3a5835
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r11/parsed/claude-sonnet-4-6.r11.yaml: 3573c358d604e563686145a0f73324c6a619134a14a7398f3b92f263d13746df
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r11/parsed/gemini-3.1-pro-preview.r11.yaml: 53ca6b4becca8284f8cb6de0e5bdac357756c3c35098310e340e889ebfacc7e7
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r11/parsed/gpt-5.4.r11.yaml: 485bb1ee17ec9a0f85515b11c073dff55ecd2160d03fdae574ad484b7de33f1c
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r11/raw/claude-sonnet-4-6.r11.txt: 51cfad7000b5f6784e82b1ed4c5ab70639d79d08e9ff85c02829a5a8171e7061
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r11/raw/gemini-3.1-pro-preview.r11.txt: bdeb91d14e1ab7b9f52158c2c32cdf7ca63edecf1430dde1f7ce4160999c3285
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r11/raw/gpt-5.4.r11.txt: 01c092942356d123af137f9fb6928eeb0b3301aebc9764cad21cf00b52a10cd6
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r11/review_summary.md: b10d8e4bdb5f1b063e2d6626a8c9b753349c2d695b0703ea618fb535c9a50833
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r11/rounds.yaml: 46cc406d86d67f15755a7cbe958e515cf03e579e4985d8a6cd4cf9a0e158ae27
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r11/target-manifest.yaml: 5df13d7d43401b47227beac56f93ca89bc044a937aaa87fdd0285dc72ab7e301
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r11/triage.yaml: 0d06acb984b625ea8b67fa2e468074bb9bcd3916966e7b1ea3ecb08a54945216
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r12/model-result-summary.yaml: 993005ce40c45e4805f436d064f7165d0f29cbe0ea61f76706dc9947f7ac447f
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r12/parsed/claude-sonnet-4-6.r12.yaml: f7c41d793947e8058431a1b15be65918612a70a4863275749a3b3185dfb05123
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r12/parsed/gemini-3.1-pro-preview.r12.yaml: 68d81aa8097937398d22e03b5b4b98f6414bda2e1773f972215d0a008061f747
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r12/parsed/gpt-5.4.r12.yaml: ab8a59a6226d7aefbc0206f94d7fdecd0505258f29152c317633cb949f9dac08
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r12/raw/claude-sonnet-4-6.r12.txt: d5e08238afac0e2592302528caf8088ae6d80d8bff1f98dc5fdcbda5d57b0d30
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r12/raw/gemini-3.1-pro-preview.r12.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r12/raw/gpt-5.4.r12.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r12/review_summary.md: 10690fca4f1d27b686cc56c93cbcffef9bc6788c81beb96c9d340ce3fbc02ce3
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r12/rounds.yaml: 14b86480020a6123430c6f74fb238fe1c99991f7338a2bd42f7c79a360fec52e
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r12/target-manifest.yaml: 85a5f51a1f6b0ed924c8d8779831704dfb239ed39064fe24f5d96c06ba87f441
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r12/triage.yaml: 5fad6897372112426261f6e97acf9162466c74eccf19c8ab095e7eb3c644f99e
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r2/model-result-summary.yaml: 77728d3133146b77059c83b7156916449252f0e0fd68e4d67fa16c461b850af2
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r2/parsed/claude-sonnet-4-6.r2.yaml: 7b2585aee9dfa8618cba24ea118374019506dc41a6fbd80e1d230fd508c9d733
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r2/parsed/gemini-3.1-pro-preview.r2.yaml: 38b57522cbc8e98a0c7778caac55a7c50a603599b66c920b9bac803033f218c8
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r2/parsed/gpt-5.4.r2.yaml: bd05aac6b23028117909ab69ab7356200b052680f23266c7ad699ed789b3648f
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r2/raw/claude-sonnet-4-6.r2.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r2/raw/gemini-3.1-pro-preview.r2.txt: 1a4696d7be8fabe62ad24045e00777d508b4f9d9261b798843523b2224cf8d7a
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r2/raw/gpt-5.4.r2.txt: 0fdfc743e85b55024a7b286d29f5207537a8b8fda34923c346777d87149e19c0
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r2/review_summary.md: aaf8e62711321cd8ac3bf8aa8decab937999f0b6fcdac5c59966241838558e48
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r2/rounds.yaml: 3fe24f681acf9133b1e4d2d4628e6b72163d5348094d7c88191ddd1fd6cccc81
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r2/target-manifest.yaml: 9aaae9203fe4850a5924ad30a0c6eabaee64cef4d13864ec71f5ce2d4ded5df2
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r2/triage.yaml: e6e69085215db2dea58de0eac82fb4ac01636a1514eba7ad626b10d7cc47d6fd
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r3/model-result-summary.yaml: 6b32c7c6c31bb4ad76014f3a716487e33f4aec36fd83561299f763c942ddd808
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r3/parsed/claude-sonnet-4-6.r3.yaml: 55f1f7300154ccd092e3fb117bba9edae3793234184bb1a42406b9c7c9720b20
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r3/parsed/gemini-3.1-pro-preview.r3.yaml: 1a1cc1c9c8908f5ba145750151281df01f25a3f0afdf4aa4dfc3baf42a9f4932
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r3/parsed/gpt-5.4.r3.yaml: e2686c50dbd42fd0f091d12704130553ab951316416d86182e63b34e43c863d8
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r3/raw/claude-sonnet-4-6.r3.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r3/raw/gemini-3.1-pro-preview.r3.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r3/raw/gpt-5.4.r3.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r3/review_summary.md: 1e88a9717e03417dc86e7c09c9eed9c90c3bee434e8a1fbac6062ca16aafe0e1
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r3/rounds.yaml: 66d6d6535508d3c9d8cb8d959f760176507bdd2c9c6d8c067e1c8b1c4986f4a5
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r3/target-manifest.yaml: ddafd72d7535cd210b8d044518198024ba25113a57797258f28e03c6a13ac985
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r3/triage.yaml: ec99f19d8b856b06fce7666aad737e99bd32ab70f4e38165a7c7e7e16a166f54
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r4/model-result-summary.yaml: b4a16296662b23365a586b5dac33cf67464333befdff8cceda8a63eb7e40e648
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r4/parsed/claude-sonnet-4-6.r4.yaml: b05de17adb45727c0c94d4f7a342609081bff02da9d63d7476d6d0d066f776ae
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r4/parsed/gemini-3.1-pro-preview.r4.yaml: df558d54ae25ae2a001e6d6c2b4a677fd746796e4b352bf8aefb4cb2f0377621
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r4/parsed/gpt-5.4.r4.yaml: 2390db6fc6ca997a76e517f5bc53c601f248e814bc4ea35c45985a3a53a6f5f9
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r4/raw/claude-sonnet-4-6.r4.txt: f44660b64295a8c898d8cf53521e182ff4f60bd7b38a02a63f45052ca4d01fe9
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r4/raw/gemini-3.1-pro-preview.r4.txt: 8b580c766d35bb83e1bdc9fd77c8d43a5d3429d1d279fad93e98b69647c8b2c7
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r4/raw/gpt-5.4.r4.txt: c8dadeb1391743971f307b977c19d8326827912f45ba5bd19d62c16bbf9c3f98
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r4/review_summary.md: 8ec5d29aaf2d7241f4a498a94ab559ed881a6f7fd9b9a79d752b2029ba1d48b6
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r4/rounds.yaml: e2b36833f977e73847595cdbf1d5f6af9b2c0da59fe4daf06de8d28de82a5fb3
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r4/target-manifest.yaml: 34c392b741400fe267d60cf8b76d3522859726a31a0daaa55c3620fd55e627a7
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r4/triage.yaml: caebdb76c8aea1fa7930777f0e62189a54bdcb215baea274f65e763529973db1
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r5/model-result-summary.yaml: 6384fb0cfba395f5a33ddb324f7a4ef4923e0abfb6dd0558c22896ecd23f5f29
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r5/parsed/claude-sonnet-4-6.r5.yaml: 4ccace342ad0ccebbdf88e516b902bcca8dd2102734795da451e91dfc252454a
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r5/parsed/gemini-3.1-pro-preview.r5.yaml: f45a60fac9d1ef01b4dc962391e2bb8edd9d0452276fa7f3b60cd72722f55e0b
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r5/parsed/gpt-5.4.r5.yaml: 687601e3b4faaee2f452e41366583617574f83283cfca837a97763f68244283f
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r5/raw/claude-sonnet-4-6.r5.txt: 6882a7c186a5fa61bcc485d0e2d2f27b4cb04e9a61a8afca0d386227cd9f34b5
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r5/raw/gemini-3.1-pro-preview.r5.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r5/raw/gpt-5.4.r5.txt: 3fa8f5f148a719a15d4c026aa23a033bbb7c51c50368c83a28d96ccfaa95de0e
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r5/review_summary.md: 265eaad05ed121dabb6b8ebc4b023f5d662c0032ec2a292a303e91ae02fa4a11
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r5/rounds.yaml: c431d0a9a2daa1d45627e32f5d19c4a5dbc3f557d7255209cdedd25b81516e88
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r5/target-manifest.yaml: e8eaaabe4efd937adc0014891fd7c6b91e881d6ca77827c096728f4b4bf11cf3
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r5/triage.yaml: a3c162a426a074271bf59ee265e07664de8872d7838721c81d14096d887ca76f
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r6/model-result-summary.yaml: 1ae7057730b57ad78b7c4ff44683cf435c83163dd6df92126adae9bd0f1e9da6
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r6/parsed/claude-sonnet-4-6.r6.yaml: 5edef26879952fa3b5ea883592d1ec50c0304482feca1e1062a12d7f2e1e2997
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r6/parsed/gemini-3.1-pro-preview.r6.yaml: e5a26df99952d4b996d5f039c35bd465a05195d09d957cd0250629ff75c0237a
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r6/parsed/gpt-5.4.r6.yaml: 0ad5f173e806d5a5d9b95a7b76eccb30a1a5e7c7bb5e68a7368f235b4b3943b5
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r6/raw/claude-sonnet-4-6.r6.txt: fba37298ea778bdf555577a049ce69a3a27d916a2d47ef3e106fa3f3e151cc91
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r6/raw/gemini-3.1-pro-preview.r6.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r6/raw/gpt-5.4.r6.txt: 908e7f41cb2afd7b205bce7f31b505824e6b772b29b24093b28bb3e4ebf3e30d
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r6/review_summary.md: 55008fa79f4862418f2dc96d36361450b79f17e054d06b39d0faa08983388d7e
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r6/rounds.yaml: e0dc28337c466a662095bee148a3ac043d900ca77e7f29b186ab23ee4e446c83
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r6/target-manifest.yaml: 86f2065e11319b88a5bb84c9201f67c8161f09a30225a7f2d14846891f40d040
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r6/triage.yaml: 7ff1d5c20746b0d7848ea626038eed7eecc4da6c78d674203becd298897b5068
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r7/model-result-summary.yaml: 02c73e6e30b5de7ac149b6acd089ff1a968ab0f5feae095445668c4356e7228e
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r7/parsed/claude-sonnet-4-6.r7.yaml: 6986d65e70e0cd06958005019a4ef5a478122c2b3477d9b09bc606b59242c764
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r7/parsed/gemini-3.1-pro-preview.r7.yaml: 9d3ab0f4c115b51a5563f8bbb27f72447e66dc7597f9b7dfe51bee670bf79db1
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r7/parsed/gpt-5.4.r7.yaml: a2df22a7b7c56a9be21c1abfb9bb19f9a3bae88ba4008ec8c15ad6cb9f1f13dc
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r7/raw/claude-sonnet-4-6.r7.txt: fccba41f463c4d8a97f0e3b97e64166122bc8f77b966962c7989989b6a404038
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r7/raw/gemini-3.1-pro-preview.r7.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r7/raw/gpt-5.4.r7.txt: 80b5d6d3ef2ea601e51e37d654f0c0ef2b07204dcfb98a330d296baf428d8b45
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r7/review_summary.md: 146e408e161bb460ff2e07dfccbe362fbab504133976f080f8fbeb3518247bbd
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r7/rounds.yaml: 9ba2f332f6dd2e209cbe1e949264ccf359e490645708b40f609cf4a6b3d6c7c4
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r7/target-manifest.yaml: c527afd7a5983bd152afd2c45c088fdfbd323a5ab6ce080169813178672387c4
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r7/triage.yaml: 742f523938b66360a8dbb90e7138aef47ba0e26fc234fd8b9b215b28311c8674
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r8/model-result-summary.yaml: ad66c2fd07257b6174b6c94306899b85406213a6d996c2c4226b96063598abde
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r8/parsed/claude-sonnet-4-6.r8.yaml: dad7b4c5891c975be2bb032b08090045fb4e43cf86e83bc82edfa0e449b0fe0e
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r8/parsed/gemini-3.1-pro-preview.r8.yaml: 10bfe8c18aadd2ad1f7b4473ba681d718882c363e20f2cefefa5b6c562694613
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r8/parsed/gpt-5.4.r8.yaml: 8ed0b90467dcbff71fd37ce40084c293f8abd4ec7ba28221da12bcf1d434c17a
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r8/raw/claude-sonnet-4-6.r8.txt: 3cc8a7b21ba6e1c643f539e0dfae0f9e495445457a104ae255fc509747cb153f
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r8/raw/gemini-3.1-pro-preview.r8.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r8/raw/gpt-5.4.r8.txt: e7baeb53007389ed5ec6f523c6804a8973ae295c43de1fa2e6231a63777f6e53
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r8/review_summary.md: a6c849e18c3a8decef16ca49574b16a2b99d9ffa1689a4e2bee76f4858413693
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r8/rounds.yaml: 8b2bf3181e95ce86ff5c1693325ec01c84151733cfc4af031cfbcdcfedd72e4e
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r8/target-manifest.yaml: b22b5be73bc586daa159e09e620098a76a9fa2bdfe6cf7a6bdefcef829090a44
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r8/triage.yaml: ff1602323f6e3a46bc4e41a7ff918f3ee8dd1a00e73373653343b5c1186cc656
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r9/model-result-summary.yaml: 8eaf0436ad8c0bd6ef00d393a2681ab952bde773a9aaff6dbf3013ee8612b41c
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r9/parsed/claude-sonnet-4-6.r9.yaml: b1301c74024302ebc610c2432cd54505fd5b0a3be97ef6cf6504e28876ad2201
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r9/parsed/gemini-3.1-pro-preview.r9.yaml: 200c1565b29bf529e5ca16dad63aaac021cbb27519527aced4e9c86cf1be9960
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r9/parsed/gpt-5.4.r9.yaml: e83635bfaeb69484c2dd7f1fc7ffca4410f66f31b8ea620c48bbe9e9ac21c26f
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r9/raw/claude-sonnet-4-6.r9.txt: 6349119c9dbc05afb3e17eedd16ba30f7f7126477000d6915fdd758b4cdaa3db
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r9/raw/gemini-3.1-pro-preview.r9.txt: 6e6e2b3e8a166068a091365f787613cc890bbe1e5db7aa8a9bf750f21658c886
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r9/raw/gpt-5.4.r9.txt: a08dc3485968ae64d9f2a3d90328b338d709efb21612331baf3b464739c39557
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r9/review_summary.md: 2e9b9ab6c7cf7370134770e4b032536d605ad26ffd40d837809490d7982e290d
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r9/rounds.yaml: 61fef7c7e5bd01742d13b2beafd4e4fcc93c85c3d56120fb4d2bdc767c03442d
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r9/target-manifest.yaml: 2aabb592de5bba91ceff22148dd6a9020c3bb20a15a209b35fe332482cfbac99
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r9/triage.yaml: f399c8141b56527e7ef7fd0d881df82cf69e8051db5952608fcffecad8ff0bf7
+- verifier: gpt-5.4
+  target_files:
+  - docs/notes/2026-06-05-future-development-candidates.md
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r1/model-result-summary.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r1/parsed/claude-sonnet-4-6.r1.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r1/parsed/gemini-3.1-pro-preview.r1.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r1/parsed/gpt-5.4.r1.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r1/raw/claude-sonnet-4-6.r1.txt
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r1/raw/gemini-3.1-pro-preview.r1.txt
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r1/raw/gpt-5.4.r1.txt
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r1/review_summary.md
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r1/rounds.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r1/target-manifest.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r1/triage.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r10/model-result-summary.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r10/parsed/claude-sonnet-4-6.r10.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r10/parsed/gemini-3.1-pro-preview.r10.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r10/parsed/gpt-5.4.r10.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r10/raw/claude-sonnet-4-6.r10.txt
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r10/raw/gemini-3.1-pro-preview.r10.txt
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r10/raw/gpt-5.4.r10.txt
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r10/review_summary.md
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r10/rounds.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r10/target-manifest.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r10/triage.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r11/model-result-summary.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r11/parsed/claude-sonnet-4-6.r11.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r11/parsed/gemini-3.1-pro-preview.r11.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r11/parsed/gpt-5.4.r11.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r11/raw/claude-sonnet-4-6.r11.txt
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r11/raw/gemini-3.1-pro-preview.r11.txt
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r11/raw/gpt-5.4.r11.txt
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r11/review_summary.md
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r11/rounds.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r11/target-manifest.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r11/triage.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r12/model-result-summary.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r12/parsed/claude-sonnet-4-6.r12.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r12/parsed/gemini-3.1-pro-preview.r12.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r12/parsed/gpt-5.4.r12.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r12/raw/claude-sonnet-4-6.r12.txt
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r12/raw/gemini-3.1-pro-preview.r12.txt
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r12/raw/gpt-5.4.r12.txt
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r12/review_summary.md
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r12/rounds.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r12/target-manifest.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r12/triage.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r2/model-result-summary.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r2/parsed/claude-sonnet-4-6.r2.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r2/parsed/gemini-3.1-pro-preview.r2.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r2/parsed/gpt-5.4.r2.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r2/raw/claude-sonnet-4-6.r2.txt
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r2/raw/gemini-3.1-pro-preview.r2.txt
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r2/raw/gpt-5.4.r2.txt
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r2/review_summary.md
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r2/rounds.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r2/target-manifest.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r2/triage.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r3/model-result-summary.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r3/parsed/claude-sonnet-4-6.r3.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r3/parsed/gemini-3.1-pro-preview.r3.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r3/parsed/gpt-5.4.r3.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r3/raw/claude-sonnet-4-6.r3.txt
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r3/raw/gemini-3.1-pro-preview.r3.txt
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r3/raw/gpt-5.4.r3.txt
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r3/review_summary.md
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r3/rounds.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r3/target-manifest.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r3/triage.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r4/model-result-summary.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r4/parsed/claude-sonnet-4-6.r4.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r4/parsed/gemini-3.1-pro-preview.r4.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r4/parsed/gpt-5.4.r4.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r4/raw/claude-sonnet-4-6.r4.txt
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r4/raw/gemini-3.1-pro-preview.r4.txt
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r4/raw/gpt-5.4.r4.txt
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r4/review_summary.md
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r4/rounds.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r4/target-manifest.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r4/triage.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r5/model-result-summary.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r5/parsed/claude-sonnet-4-6.r5.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r5/parsed/gemini-3.1-pro-preview.r5.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r5/parsed/gpt-5.4.r5.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r5/raw/claude-sonnet-4-6.r5.txt
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r5/raw/gemini-3.1-pro-preview.r5.txt
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r5/raw/gpt-5.4.r5.txt
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r5/review_summary.md
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r5/rounds.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r5/target-manifest.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r5/triage.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r6/model-result-summary.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r6/parsed/claude-sonnet-4-6.r6.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r6/parsed/gemini-3.1-pro-preview.r6.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r6/parsed/gpt-5.4.r6.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r6/raw/claude-sonnet-4-6.r6.txt
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r6/raw/gemini-3.1-pro-preview.r6.txt
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r6/raw/gpt-5.4.r6.txt
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r6/review_summary.md
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r6/rounds.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r6/target-manifest.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r6/triage.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r7/model-result-summary.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r7/parsed/claude-sonnet-4-6.r7.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r7/parsed/gemini-3.1-pro-preview.r7.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r7/parsed/gpt-5.4.r7.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r7/raw/claude-sonnet-4-6.r7.txt
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r7/raw/gemini-3.1-pro-preview.r7.txt
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r7/raw/gpt-5.4.r7.txt
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r7/review_summary.md
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r7/rounds.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r7/target-manifest.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r7/triage.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r8/model-result-summary.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r8/parsed/claude-sonnet-4-6.r8.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r8/parsed/gemini-3.1-pro-preview.r8.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r8/parsed/gpt-5.4.r8.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r8/raw/claude-sonnet-4-6.r8.txt
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r8/raw/gemini-3.1-pro-preview.r8.txt
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r8/raw/gpt-5.4.r8.txt
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r8/review_summary.md
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r8/rounds.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r8/target-manifest.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r8/triage.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r9/model-result-summary.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r9/parsed/claude-sonnet-4-6.r9.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r9/parsed/gemini-3.1-pro-preview.r9.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r9/parsed/gpt-5.4.r9.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r9/raw/claude-sonnet-4-6.r9.txt
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r9/raw/gemini-3.1-pro-preview.r9.txt
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r9/raw/gpt-5.4.r9.txt
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r9/review_summary.md
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r9/rounds.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r9/target-manifest.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r9/triage.yaml
+  target_sha256:
+    docs/notes/2026-06-05-future-development-candidates.md: 149674c17adea88708e3b821fb87b8e88c0bc8d8aee9af43d31e1d9a23d3cf4d
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r1/model-result-summary.yaml: da65b5013b74fd14aa1b39e7dec3a24d04fb6917c5cabb0995e2aee9e98cd15d
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r1/parsed/claude-sonnet-4-6.r1.yaml: 428b61c55a575831ed6527b2d1b2db05f294bab82d16b9a34ef778db1db2895e
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r1/parsed/gemini-3.1-pro-preview.r1.yaml: 1272f4e84e71eef50e9dba6cb4d3c82ced7477d34c40b936e81f824227417d3d
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r1/parsed/gpt-5.4.r1.yaml: 41092cf61ac5d52f495c83e1f737589c3d47635f6136641929eb9447782890a9
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r1/raw/claude-sonnet-4-6.r1.txt: fd0247f8285f44805d9efedfc7cc399468418d2ba9476e84fa6dc0d4c53ffee4
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r1/raw/gemini-3.1-pro-preview.r1.txt: c33718e89fff7b6b9e6c48b01d2888a286b9256e8b4f9030271b4ff4ce0522aa
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r1/raw/gpt-5.4.r1.txt: 4b738a7856f03224121b39d100e27f942a430fe875bacd3f2355aabd9c64d2eb
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r1/review_summary.md: 637a5a7fef4a654a8716a3c57e49d0b32030cc2783ef0f9c7153566403444b31
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r1/rounds.yaml: 79bcf1a1402711d18a1801f8e124bd81e49cded2eb1bd8679da8cc09dc8340cb
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r1/target-manifest.yaml: 781c622e59817525f2e359c2200530b07964fd025fde8c39ec671f0aad62a3f7
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r1/triage.yaml: 0264fbb7eb1747390283efe5ee10be57c98db63ee9223bff8e97bd01f0331289
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r10/model-result-summary.yaml: a96e8dfba5f069aee9f73d3dbb35160436125bc84a90ba9e6988d42e38b59b1c
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r10/parsed/claude-sonnet-4-6.r10.yaml: 228d756008584eef63788b432df6f5e55279d247cbcbe89713673bd27e094ea1
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r10/parsed/gemini-3.1-pro-preview.r10.yaml: 284c498ae0b45b81b7298c4f8365158ff2121a80a8239b43f079e63a4a9d68f2
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r10/parsed/gpt-5.4.r10.yaml: 1f397e47ef9241cc5f3565e21e4310f266d2d30a37205b275b8ff6ed9d10a25b
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r10/raw/claude-sonnet-4-6.r10.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r10/raw/gemini-3.1-pro-preview.r10.txt: dff5d45c3b7bbea5939e69819d2b239f733701692d4d2da690cc7e6aaaef0402
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r10/raw/gpt-5.4.r10.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r10/review_summary.md: 0bf8beb28a474961365706f71534881d8f2703bb51b10733cc03c25038a8b439
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r10/rounds.yaml: b6f024eb6d2b879eb86017d867cea72c59ec2a8f917b1b52fea19065f1b94bc9
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r10/target-manifest.yaml: de46f2cf4209e87bde3da574ecd7adeca1290489cd29e05badb3a8c757558796
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r10/triage.yaml: 8e316c966f315be372a603e4a23e4d65ec928f59a3082566ab8875fe844708de
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r11/model-result-summary.yaml: c0ae6fbe118c269419641e7abf730dd2439dee31c9ccd195bf3771e42c3a5835
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r11/parsed/claude-sonnet-4-6.r11.yaml: 3573c358d604e563686145a0f73324c6a619134a14a7398f3b92f263d13746df
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r11/parsed/gemini-3.1-pro-preview.r11.yaml: 53ca6b4becca8284f8cb6de0e5bdac357756c3c35098310e340e889ebfacc7e7
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r11/parsed/gpt-5.4.r11.yaml: 485bb1ee17ec9a0f85515b11c073dff55ecd2160d03fdae574ad484b7de33f1c
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r11/raw/claude-sonnet-4-6.r11.txt: 51cfad7000b5f6784e82b1ed4c5ab70639d79d08e9ff85c02829a5a8171e7061
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r11/raw/gemini-3.1-pro-preview.r11.txt: bdeb91d14e1ab7b9f52158c2c32cdf7ca63edecf1430dde1f7ce4160999c3285
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r11/raw/gpt-5.4.r11.txt: 01c092942356d123af137f9fb6928eeb0b3301aebc9764cad21cf00b52a10cd6
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r11/review_summary.md: b10d8e4bdb5f1b063e2d6626a8c9b753349c2d695b0703ea618fb535c9a50833
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r11/rounds.yaml: 46cc406d86d67f15755a7cbe958e515cf03e579e4985d8a6cd4cf9a0e158ae27
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r11/target-manifest.yaml: 5df13d7d43401b47227beac56f93ca89bc044a937aaa87fdd0285dc72ab7e301
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r11/triage.yaml: 0d06acb984b625ea8b67fa2e468074bb9bcd3916966e7b1ea3ecb08a54945216
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r12/model-result-summary.yaml: 993005ce40c45e4805f436d064f7165d0f29cbe0ea61f76706dc9947f7ac447f
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r12/parsed/claude-sonnet-4-6.r12.yaml: f7c41d793947e8058431a1b15be65918612a70a4863275749a3b3185dfb05123
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r12/parsed/gemini-3.1-pro-preview.r12.yaml: 68d81aa8097937398d22e03b5b4b98f6414bda2e1773f972215d0a008061f747
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r12/parsed/gpt-5.4.r12.yaml: ab8a59a6226d7aefbc0206f94d7fdecd0505258f29152c317633cb949f9dac08
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r12/raw/claude-sonnet-4-6.r12.txt: d5e08238afac0e2592302528caf8088ae6d80d8bff1f98dc5fdcbda5d57b0d30
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r12/raw/gemini-3.1-pro-preview.r12.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r12/raw/gpt-5.4.r12.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r12/review_summary.md: 10690fca4f1d27b686cc56c93cbcffef9bc6788c81beb96c9d340ce3fbc02ce3
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r12/rounds.yaml: 14b86480020a6123430c6f74fb238fe1c99991f7338a2bd42f7c79a360fec52e
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r12/target-manifest.yaml: 85a5f51a1f6b0ed924c8d8779831704dfb239ed39064fe24f5d96c06ba87f441
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r12/triage.yaml: 5fad6897372112426261f6e97acf9162466c74eccf19c8ab095e7eb3c644f99e
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r2/model-result-summary.yaml: 77728d3133146b77059c83b7156916449252f0e0fd68e4d67fa16c461b850af2
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r2/parsed/claude-sonnet-4-6.r2.yaml: 7b2585aee9dfa8618cba24ea118374019506dc41a6fbd80e1d230fd508c9d733
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r2/parsed/gemini-3.1-pro-preview.r2.yaml: 38b57522cbc8e98a0c7778caac55a7c50a603599b66c920b9bac803033f218c8
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r2/parsed/gpt-5.4.r2.yaml: bd05aac6b23028117909ab69ab7356200b052680f23266c7ad699ed789b3648f
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r2/raw/claude-sonnet-4-6.r2.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r2/raw/gemini-3.1-pro-preview.r2.txt: 1a4696d7be8fabe62ad24045e00777d508b4f9d9261b798843523b2224cf8d7a
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r2/raw/gpt-5.4.r2.txt: 0fdfc743e85b55024a7b286d29f5207537a8b8fda34923c346777d87149e19c0
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r2/review_summary.md: aaf8e62711321cd8ac3bf8aa8decab937999f0b6fcdac5c59966241838558e48
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r2/rounds.yaml: 3fe24f681acf9133b1e4d2d4628e6b72163d5348094d7c88191ddd1fd6cccc81
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r2/target-manifest.yaml: 9aaae9203fe4850a5924ad30a0c6eabaee64cef4d13864ec71f5ce2d4ded5df2
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r2/triage.yaml: e6e69085215db2dea58de0eac82fb4ac01636a1514eba7ad626b10d7cc47d6fd
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r3/model-result-summary.yaml: 6b32c7c6c31bb4ad76014f3a716487e33f4aec36fd83561299f763c942ddd808
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r3/parsed/claude-sonnet-4-6.r3.yaml: 55f1f7300154ccd092e3fb117bba9edae3793234184bb1a42406b9c7c9720b20
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r3/parsed/gemini-3.1-pro-preview.r3.yaml: 1a1cc1c9c8908f5ba145750151281df01f25a3f0afdf4aa4dfc3baf42a9f4932
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r3/parsed/gpt-5.4.r3.yaml: e2686c50dbd42fd0f091d12704130553ab951316416d86182e63b34e43c863d8
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r3/raw/claude-sonnet-4-6.r3.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r3/raw/gemini-3.1-pro-preview.r3.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r3/raw/gpt-5.4.r3.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r3/review_summary.md: 1e88a9717e03417dc86e7c09c9eed9c90c3bee434e8a1fbac6062ca16aafe0e1
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r3/rounds.yaml: 66d6d6535508d3c9d8cb8d959f760176507bdd2c9c6d8c067e1c8b1c4986f4a5
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r3/target-manifest.yaml: ddafd72d7535cd210b8d044518198024ba25113a57797258f28e03c6a13ac985
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r3/triage.yaml: ec99f19d8b856b06fce7666aad737e99bd32ab70f4e38165a7c7e7e16a166f54
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r4/model-result-summary.yaml: b4a16296662b23365a586b5dac33cf67464333befdff8cceda8a63eb7e40e648
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r4/parsed/claude-sonnet-4-6.r4.yaml: b05de17adb45727c0c94d4f7a342609081bff02da9d63d7476d6d0d066f776ae
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r4/parsed/gemini-3.1-pro-preview.r4.yaml: df558d54ae25ae2a001e6d6c2b4a677fd746796e4b352bf8aefb4cb2f0377621
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r4/parsed/gpt-5.4.r4.yaml: 2390db6fc6ca997a76e517f5bc53c601f248e814bc4ea35c45985a3a53a6f5f9
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r4/raw/claude-sonnet-4-6.r4.txt: f44660b64295a8c898d8cf53521e182ff4f60bd7b38a02a63f45052ca4d01fe9
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r4/raw/gemini-3.1-pro-preview.r4.txt: 8b580c766d35bb83e1bdc9fd77c8d43a5d3429d1d279fad93e98b69647c8b2c7
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r4/raw/gpt-5.4.r4.txt: c8dadeb1391743971f307b977c19d8326827912f45ba5bd19d62c16bbf9c3f98
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r4/review_summary.md: 8ec5d29aaf2d7241f4a498a94ab559ed881a6f7fd9b9a79d752b2029ba1d48b6
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r4/rounds.yaml: e2b36833f977e73847595cdbf1d5f6af9b2c0da59fe4daf06de8d28de82a5fb3
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r4/target-manifest.yaml: 34c392b741400fe267d60cf8b76d3522859726a31a0daaa55c3620fd55e627a7
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r4/triage.yaml: caebdb76c8aea1fa7930777f0e62189a54bdcb215baea274f65e763529973db1
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r5/model-result-summary.yaml: 6384fb0cfba395f5a33ddb324f7a4ef4923e0abfb6dd0558c22896ecd23f5f29
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r5/parsed/claude-sonnet-4-6.r5.yaml: 4ccace342ad0ccebbdf88e516b902bcca8dd2102734795da451e91dfc252454a
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r5/parsed/gemini-3.1-pro-preview.r5.yaml: f45a60fac9d1ef01b4dc962391e2bb8edd9d0452276fa7f3b60cd72722f55e0b
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r5/parsed/gpt-5.4.r5.yaml: 687601e3b4faaee2f452e41366583617574f83283cfca837a97763f68244283f
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r5/raw/claude-sonnet-4-6.r5.txt: 6882a7c186a5fa61bcc485d0e2d2f27b4cb04e9a61a8afca0d386227cd9f34b5
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r5/raw/gemini-3.1-pro-preview.r5.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r5/raw/gpt-5.4.r5.txt: 3fa8f5f148a719a15d4c026aa23a033bbb7c51c50368c83a28d96ccfaa95de0e
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r5/review_summary.md: 265eaad05ed121dabb6b8ebc4b023f5d662c0032ec2a292a303e91ae02fa4a11
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r5/rounds.yaml: c431d0a9a2daa1d45627e32f5d19c4a5dbc3f557d7255209cdedd25b81516e88
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r5/target-manifest.yaml: e8eaaabe4efd937adc0014891fd7c6b91e881d6ca77827c096728f4b4bf11cf3
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r5/triage.yaml: a3c162a426a074271bf59ee265e07664de8872d7838721c81d14096d887ca76f
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r6/model-result-summary.yaml: 1ae7057730b57ad78b7c4ff44683cf435c83163dd6df92126adae9bd0f1e9da6
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r6/parsed/claude-sonnet-4-6.r6.yaml: 5edef26879952fa3b5ea883592d1ec50c0304482feca1e1062a12d7f2e1e2997
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r6/parsed/gemini-3.1-pro-preview.r6.yaml: e5a26df99952d4b996d5f039c35bd465a05195d09d957cd0250629ff75c0237a
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r6/parsed/gpt-5.4.r6.yaml: 0ad5f173e806d5a5d9b95a7b76eccb30a1a5e7c7bb5e68a7368f235b4b3943b5
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r6/raw/claude-sonnet-4-6.r6.txt: fba37298ea778bdf555577a049ce69a3a27d916a2d47ef3e106fa3f3e151cc91
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r6/raw/gemini-3.1-pro-preview.r6.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r6/raw/gpt-5.4.r6.txt: 908e7f41cb2afd7b205bce7f31b505824e6b772b29b24093b28bb3e4ebf3e30d
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r6/review_summary.md: 55008fa79f4862418f2dc96d36361450b79f17e054d06b39d0faa08983388d7e
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r6/rounds.yaml: e0dc28337c466a662095bee148a3ac043d900ca77e7f29b186ab23ee4e446c83
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r6/target-manifest.yaml: 86f2065e11319b88a5bb84c9201f67c8161f09a30225a7f2d14846891f40d040
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r6/triage.yaml: 7ff1d5c20746b0d7848ea626038eed7eecc4da6c78d674203becd298897b5068
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r7/model-result-summary.yaml: 02c73e6e30b5de7ac149b6acd089ff1a968ab0f5feae095445668c4356e7228e
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r7/parsed/claude-sonnet-4-6.r7.yaml: 6986d65e70e0cd06958005019a4ef5a478122c2b3477d9b09bc606b59242c764
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r7/parsed/gemini-3.1-pro-preview.r7.yaml: 9d3ab0f4c115b51a5563f8bbb27f72447e66dc7597f9b7dfe51bee670bf79db1
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r7/parsed/gpt-5.4.r7.yaml: a2df22a7b7c56a9be21c1abfb9bb19f9a3bae88ba4008ec8c15ad6cb9f1f13dc
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r7/raw/claude-sonnet-4-6.r7.txt: fccba41f463c4d8a97f0e3b97e64166122bc8f77b966962c7989989b6a404038
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r7/raw/gemini-3.1-pro-preview.r7.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r7/raw/gpt-5.4.r7.txt: 80b5d6d3ef2ea601e51e37d654f0c0ef2b07204dcfb98a330d296baf428d8b45
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r7/review_summary.md: 146e408e161bb460ff2e07dfccbe362fbab504133976f080f8fbeb3518247bbd
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r7/rounds.yaml: 9ba2f332f6dd2e209cbe1e949264ccf359e490645708b40f609cf4a6b3d6c7c4
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r7/target-manifest.yaml: c527afd7a5983bd152afd2c45c088fdfbd323a5ab6ce080169813178672387c4
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r7/triage.yaml: 742f523938b66360a8dbb90e7138aef47ba0e26fc234fd8b9b215b28311c8674
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r8/model-result-summary.yaml: ad66c2fd07257b6174b6c94306899b85406213a6d996c2c4226b96063598abde
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r8/parsed/claude-sonnet-4-6.r8.yaml: dad7b4c5891c975be2bb032b08090045fb4e43cf86e83bc82edfa0e449b0fe0e
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r8/parsed/gemini-3.1-pro-preview.r8.yaml: 10bfe8c18aadd2ad1f7b4473ba681d718882c363e20f2cefefa5b6c562694613
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r8/parsed/gpt-5.4.r8.yaml: 8ed0b90467dcbff71fd37ce40084c293f8abd4ec7ba28221da12bcf1d434c17a
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r8/raw/claude-sonnet-4-6.r8.txt: 3cc8a7b21ba6e1c643f539e0dfae0f9e495445457a104ae255fc509747cb153f
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r8/raw/gemini-3.1-pro-preview.r8.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r8/raw/gpt-5.4.r8.txt: e7baeb53007389ed5ec6f523c6804a8973ae295c43de1fa2e6231a63777f6e53
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r8/review_summary.md: a6c849e18c3a8decef16ca49574b16a2b99d9ffa1689a4e2bee76f4858413693
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r8/rounds.yaml: 8b2bf3181e95ce86ff5c1693325ec01c84151733cfc4af031cfbcdcfedd72e4e
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r8/target-manifest.yaml: b22b5be73bc586daa159e09e620098a76a9fa2bdfe6cf7a6bdefcef829090a44
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r8/triage.yaml: ff1602323f6e3a46bc4e41a7ff918f3ee8dd1a00e73373653343b5c1186cc656
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r9/model-result-summary.yaml: 8eaf0436ad8c0bd6ef00d393a2681ab952bde773a9aaff6dbf3013ee8612b41c
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r9/parsed/claude-sonnet-4-6.r9.yaml: b1301c74024302ebc610c2432cd54505fd5b0a3be97ef6cf6504e28876ad2201
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r9/parsed/gemini-3.1-pro-preview.r9.yaml: 200c1565b29bf529e5ca16dad63aaac021cbb27519527aced4e9c86cf1be9960
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r9/parsed/gpt-5.4.r9.yaml: e83635bfaeb69484c2dd7f1fc7ffca4410f66f31b8ea620c48bbe9e9ac21c26f
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r9/raw/claude-sonnet-4-6.r9.txt: 6349119c9dbc05afb3e17eedd16ba30f7f7126477000d6915fdd758b4cdaa3db
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r9/raw/gemini-3.1-pro-preview.r9.txt: 6e6e2b3e8a166068a091365f787613cc890bbe1e5db7aa8a9bf750f21658c886
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r9/raw/gpt-5.4.r9.txt: a08dc3485968ae64d9f2a3d90328b338d709efb21612331baf3b464739c39557
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r9/review_summary.md: 2e9b9ab6c7cf7370134770e4b032536d605ad26ffd40d837809490d7982e290d
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r9/rounds.yaml: 61fef7c7e5bd01742d13b2beafd4e4fcc93c85c3d56120fb4d2bdc767c03442d
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r9/target-manifest.yaml: 2aabb592de5bba91ceff22148dd6a9020c3bb20a15a209b35fe332482cfbac99
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r9/triage.yaml: f399c8141b56527e7ef7fd0d881df82cf69e8051db5952608fcffecad8ff0bf7
+- verifier: gemini-3.1-pro-preview
+  target_files:
+  - docs/notes/2026-06-05-future-development-candidates.md
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r1/model-result-summary.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r1/parsed/claude-sonnet-4-6.r1.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r1/parsed/gemini-3.1-pro-preview.r1.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r1/parsed/gpt-5.4.r1.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r1/raw/claude-sonnet-4-6.r1.txt
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r1/raw/gemini-3.1-pro-preview.r1.txt
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r1/raw/gpt-5.4.r1.txt
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r1/review_summary.md
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r1/rounds.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r1/target-manifest.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r1/triage.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r10/model-result-summary.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r10/parsed/claude-sonnet-4-6.r10.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r10/parsed/gemini-3.1-pro-preview.r10.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r10/parsed/gpt-5.4.r10.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r10/raw/claude-sonnet-4-6.r10.txt
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r10/raw/gemini-3.1-pro-preview.r10.txt
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r10/raw/gpt-5.4.r10.txt
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r10/review_summary.md
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r10/rounds.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r10/target-manifest.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r10/triage.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r11/model-result-summary.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r11/parsed/claude-sonnet-4-6.r11.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r11/parsed/gemini-3.1-pro-preview.r11.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r11/parsed/gpt-5.4.r11.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r11/raw/claude-sonnet-4-6.r11.txt
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r11/raw/gemini-3.1-pro-preview.r11.txt
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r11/raw/gpt-5.4.r11.txt
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r11/review_summary.md
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r11/rounds.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r11/target-manifest.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r11/triage.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r12/model-result-summary.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r12/parsed/claude-sonnet-4-6.r12.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r12/parsed/gemini-3.1-pro-preview.r12.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r12/parsed/gpt-5.4.r12.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r12/raw/claude-sonnet-4-6.r12.txt
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r12/raw/gemini-3.1-pro-preview.r12.txt
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r12/raw/gpt-5.4.r12.txt
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r12/review_summary.md
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r12/rounds.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r12/target-manifest.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r12/triage.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r2/model-result-summary.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r2/parsed/claude-sonnet-4-6.r2.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r2/parsed/gemini-3.1-pro-preview.r2.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r2/parsed/gpt-5.4.r2.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r2/raw/claude-sonnet-4-6.r2.txt
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r2/raw/gemini-3.1-pro-preview.r2.txt
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r2/raw/gpt-5.4.r2.txt
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r2/review_summary.md
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r2/rounds.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r2/target-manifest.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r2/triage.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r3/model-result-summary.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r3/parsed/claude-sonnet-4-6.r3.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r3/parsed/gemini-3.1-pro-preview.r3.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r3/parsed/gpt-5.4.r3.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r3/raw/claude-sonnet-4-6.r3.txt
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r3/raw/gemini-3.1-pro-preview.r3.txt
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r3/raw/gpt-5.4.r3.txt
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r3/review_summary.md
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r3/rounds.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r3/target-manifest.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r3/triage.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r4/model-result-summary.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r4/parsed/claude-sonnet-4-6.r4.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r4/parsed/gemini-3.1-pro-preview.r4.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r4/parsed/gpt-5.4.r4.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r4/raw/claude-sonnet-4-6.r4.txt
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r4/raw/gemini-3.1-pro-preview.r4.txt
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r4/raw/gpt-5.4.r4.txt
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r4/review_summary.md
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r4/rounds.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r4/target-manifest.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r4/triage.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r5/model-result-summary.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r5/parsed/claude-sonnet-4-6.r5.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r5/parsed/gemini-3.1-pro-preview.r5.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r5/parsed/gpt-5.4.r5.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r5/raw/claude-sonnet-4-6.r5.txt
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r5/raw/gemini-3.1-pro-preview.r5.txt
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r5/raw/gpt-5.4.r5.txt
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r5/review_summary.md
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r5/rounds.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r5/target-manifest.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r5/triage.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r6/model-result-summary.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r6/parsed/claude-sonnet-4-6.r6.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r6/parsed/gemini-3.1-pro-preview.r6.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r6/parsed/gpt-5.4.r6.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r6/raw/claude-sonnet-4-6.r6.txt
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r6/raw/gemini-3.1-pro-preview.r6.txt
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r6/raw/gpt-5.4.r6.txt
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r6/review_summary.md
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r6/rounds.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r6/target-manifest.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r6/triage.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r7/model-result-summary.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r7/parsed/claude-sonnet-4-6.r7.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r7/parsed/gemini-3.1-pro-preview.r7.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r7/parsed/gpt-5.4.r7.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r7/raw/claude-sonnet-4-6.r7.txt
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r7/raw/gemini-3.1-pro-preview.r7.txt
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r7/raw/gpt-5.4.r7.txt
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r7/review_summary.md
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r7/rounds.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r7/target-manifest.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r7/triage.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r8/model-result-summary.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r8/parsed/claude-sonnet-4-6.r8.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r8/parsed/gemini-3.1-pro-preview.r8.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r8/parsed/gpt-5.4.r8.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r8/raw/claude-sonnet-4-6.r8.txt
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r8/raw/gemini-3.1-pro-preview.r8.txt
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r8/raw/gpt-5.4.r8.txt
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r8/review_summary.md
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r8/rounds.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r8/target-manifest.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r8/triage.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r9/model-result-summary.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r9/parsed/claude-sonnet-4-6.r9.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r9/parsed/gemini-3.1-pro-preview.r9.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r9/parsed/gpt-5.4.r9.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r9/raw/claude-sonnet-4-6.r9.txt
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r9/raw/gemini-3.1-pro-preview.r9.txt
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r9/raw/gpt-5.4.r9.txt
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r9/review_summary.md
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r9/rounds.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r9/target-manifest.yaml
+  - docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r9/triage.yaml
+  target_sha256:
+    docs/notes/2026-06-05-future-development-candidates.md: 149674c17adea88708e3b821fb87b8e88c0bc8d8aee9af43d31e1d9a23d3cf4d
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r1/model-result-summary.yaml: da65b5013b74fd14aa1b39e7dec3a24d04fb6917c5cabb0995e2aee9e98cd15d
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r1/parsed/claude-sonnet-4-6.r1.yaml: 428b61c55a575831ed6527b2d1b2db05f294bab82d16b9a34ef778db1db2895e
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r1/parsed/gemini-3.1-pro-preview.r1.yaml: 1272f4e84e71eef50e9dba6cb4d3c82ced7477d34c40b936e81f824227417d3d
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r1/parsed/gpt-5.4.r1.yaml: 41092cf61ac5d52f495c83e1f737589c3d47635f6136641929eb9447782890a9
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r1/raw/claude-sonnet-4-6.r1.txt: fd0247f8285f44805d9efedfc7cc399468418d2ba9476e84fa6dc0d4c53ffee4
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r1/raw/gemini-3.1-pro-preview.r1.txt: c33718e89fff7b6b9e6c48b01d2888a286b9256e8b4f9030271b4ff4ce0522aa
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r1/raw/gpt-5.4.r1.txt: 4b738a7856f03224121b39d100e27f942a430fe875bacd3f2355aabd9c64d2eb
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r1/review_summary.md: 637a5a7fef4a654a8716a3c57e49d0b32030cc2783ef0f9c7153566403444b31
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r1/rounds.yaml: 79bcf1a1402711d18a1801f8e124bd81e49cded2eb1bd8679da8cc09dc8340cb
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r1/target-manifest.yaml: 781c622e59817525f2e359c2200530b07964fd025fde8c39ec671f0aad62a3f7
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r1/triage.yaml: 0264fbb7eb1747390283efe5ee10be57c98db63ee9223bff8e97bd01f0331289
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r10/model-result-summary.yaml: a96e8dfba5f069aee9f73d3dbb35160436125bc84a90ba9e6988d42e38b59b1c
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r10/parsed/claude-sonnet-4-6.r10.yaml: 228d756008584eef63788b432df6f5e55279d247cbcbe89713673bd27e094ea1
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r10/parsed/gemini-3.1-pro-preview.r10.yaml: 284c498ae0b45b81b7298c4f8365158ff2121a80a8239b43f079e63a4a9d68f2
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r10/parsed/gpt-5.4.r10.yaml: 1f397e47ef9241cc5f3565e21e4310f266d2d30a37205b275b8ff6ed9d10a25b
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r10/raw/claude-sonnet-4-6.r10.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r10/raw/gemini-3.1-pro-preview.r10.txt: dff5d45c3b7bbea5939e69819d2b239f733701692d4d2da690cc7e6aaaef0402
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r10/raw/gpt-5.4.r10.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r10/review_summary.md: 0bf8beb28a474961365706f71534881d8f2703bb51b10733cc03c25038a8b439
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r10/rounds.yaml: b6f024eb6d2b879eb86017d867cea72c59ec2a8f917b1b52fea19065f1b94bc9
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r10/target-manifest.yaml: de46f2cf4209e87bde3da574ecd7adeca1290489cd29e05badb3a8c757558796
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r10/triage.yaml: 8e316c966f315be372a603e4a23e4d65ec928f59a3082566ab8875fe844708de
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r11/model-result-summary.yaml: c0ae6fbe118c269419641e7abf730dd2439dee31c9ccd195bf3771e42c3a5835
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r11/parsed/claude-sonnet-4-6.r11.yaml: 3573c358d604e563686145a0f73324c6a619134a14a7398f3b92f263d13746df
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r11/parsed/gemini-3.1-pro-preview.r11.yaml: 53ca6b4becca8284f8cb6de0e5bdac357756c3c35098310e340e889ebfacc7e7
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r11/parsed/gpt-5.4.r11.yaml: 485bb1ee17ec9a0f85515b11c073dff55ecd2160d03fdae574ad484b7de33f1c
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r11/raw/claude-sonnet-4-6.r11.txt: 51cfad7000b5f6784e82b1ed4c5ab70639d79d08e9ff85c02829a5a8171e7061
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r11/raw/gemini-3.1-pro-preview.r11.txt: bdeb91d14e1ab7b9f52158c2c32cdf7ca63edecf1430dde1f7ce4160999c3285
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r11/raw/gpt-5.4.r11.txt: 01c092942356d123af137f9fb6928eeb0b3301aebc9764cad21cf00b52a10cd6
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r11/review_summary.md: b10d8e4bdb5f1b063e2d6626a8c9b753349c2d695b0703ea618fb535c9a50833
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r11/rounds.yaml: 46cc406d86d67f15755a7cbe958e515cf03e579e4985d8a6cd4cf9a0e158ae27
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r11/target-manifest.yaml: 5df13d7d43401b47227beac56f93ca89bc044a937aaa87fdd0285dc72ab7e301
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r11/triage.yaml: 0d06acb984b625ea8b67fa2e468074bb9bcd3916966e7b1ea3ecb08a54945216
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r12/model-result-summary.yaml: 993005ce40c45e4805f436d064f7165d0f29cbe0ea61f76706dc9947f7ac447f
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r12/parsed/claude-sonnet-4-6.r12.yaml: f7c41d793947e8058431a1b15be65918612a70a4863275749a3b3185dfb05123
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r12/parsed/gemini-3.1-pro-preview.r12.yaml: 68d81aa8097937398d22e03b5b4b98f6414bda2e1773f972215d0a008061f747
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r12/parsed/gpt-5.4.r12.yaml: ab8a59a6226d7aefbc0206f94d7fdecd0505258f29152c317633cb949f9dac08
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r12/raw/claude-sonnet-4-6.r12.txt: d5e08238afac0e2592302528caf8088ae6d80d8bff1f98dc5fdcbda5d57b0d30
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r12/raw/gemini-3.1-pro-preview.r12.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r12/raw/gpt-5.4.r12.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r12/review_summary.md: 10690fca4f1d27b686cc56c93cbcffef9bc6788c81beb96c9d340ce3fbc02ce3
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r12/rounds.yaml: 14b86480020a6123430c6f74fb238fe1c99991f7338a2bd42f7c79a360fec52e
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r12/target-manifest.yaml: 85a5f51a1f6b0ed924c8d8779831704dfb239ed39064fe24f5d96c06ba87f441
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r12/triage.yaml: 5fad6897372112426261f6e97acf9162466c74eccf19c8ab095e7eb3c644f99e
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r2/model-result-summary.yaml: 77728d3133146b77059c83b7156916449252f0e0fd68e4d67fa16c461b850af2
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r2/parsed/claude-sonnet-4-6.r2.yaml: 7b2585aee9dfa8618cba24ea118374019506dc41a6fbd80e1d230fd508c9d733
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r2/parsed/gemini-3.1-pro-preview.r2.yaml: 38b57522cbc8e98a0c7778caac55a7c50a603599b66c920b9bac803033f218c8
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r2/parsed/gpt-5.4.r2.yaml: bd05aac6b23028117909ab69ab7356200b052680f23266c7ad699ed789b3648f
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r2/raw/claude-sonnet-4-6.r2.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r2/raw/gemini-3.1-pro-preview.r2.txt: 1a4696d7be8fabe62ad24045e00777d508b4f9d9261b798843523b2224cf8d7a
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r2/raw/gpt-5.4.r2.txt: 0fdfc743e85b55024a7b286d29f5207537a8b8fda34923c346777d87149e19c0
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r2/review_summary.md: aaf8e62711321cd8ac3bf8aa8decab937999f0b6fcdac5c59966241838558e48
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r2/rounds.yaml: 3fe24f681acf9133b1e4d2d4628e6b72163d5348094d7c88191ddd1fd6cccc81
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r2/target-manifest.yaml: 9aaae9203fe4850a5924ad30a0c6eabaee64cef4d13864ec71f5ce2d4ded5df2
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r2/triage.yaml: e6e69085215db2dea58de0eac82fb4ac01636a1514eba7ad626b10d7cc47d6fd
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r3/model-result-summary.yaml: 6b32c7c6c31bb4ad76014f3a716487e33f4aec36fd83561299f763c942ddd808
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r3/parsed/claude-sonnet-4-6.r3.yaml: 55f1f7300154ccd092e3fb117bba9edae3793234184bb1a42406b9c7c9720b20
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r3/parsed/gemini-3.1-pro-preview.r3.yaml: 1a1cc1c9c8908f5ba145750151281df01f25a3f0afdf4aa4dfc3baf42a9f4932
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r3/parsed/gpt-5.4.r3.yaml: e2686c50dbd42fd0f091d12704130553ab951316416d86182e63b34e43c863d8
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r3/raw/claude-sonnet-4-6.r3.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r3/raw/gemini-3.1-pro-preview.r3.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r3/raw/gpt-5.4.r3.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r3/review_summary.md: 1e88a9717e03417dc86e7c09c9eed9c90c3bee434e8a1fbac6062ca16aafe0e1
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r3/rounds.yaml: 66d6d6535508d3c9d8cb8d959f760176507bdd2c9c6d8c067e1c8b1c4986f4a5
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r3/target-manifest.yaml: ddafd72d7535cd210b8d044518198024ba25113a57797258f28e03c6a13ac985
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r3/triage.yaml: ec99f19d8b856b06fce7666aad737e99bd32ab70f4e38165a7c7e7e16a166f54
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r4/model-result-summary.yaml: b4a16296662b23365a586b5dac33cf67464333befdff8cceda8a63eb7e40e648
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r4/parsed/claude-sonnet-4-6.r4.yaml: b05de17adb45727c0c94d4f7a342609081bff02da9d63d7476d6d0d066f776ae
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r4/parsed/gemini-3.1-pro-preview.r4.yaml: df558d54ae25ae2a001e6d6c2b4a677fd746796e4b352bf8aefb4cb2f0377621
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r4/parsed/gpt-5.4.r4.yaml: 2390db6fc6ca997a76e517f5bc53c601f248e814bc4ea35c45985a3a53a6f5f9
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r4/raw/claude-sonnet-4-6.r4.txt: f44660b64295a8c898d8cf53521e182ff4f60bd7b38a02a63f45052ca4d01fe9
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r4/raw/gemini-3.1-pro-preview.r4.txt: 8b580c766d35bb83e1bdc9fd77c8d43a5d3429d1d279fad93e98b69647c8b2c7
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r4/raw/gpt-5.4.r4.txt: c8dadeb1391743971f307b977c19d8326827912f45ba5bd19d62c16bbf9c3f98
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r4/review_summary.md: 8ec5d29aaf2d7241f4a498a94ab559ed881a6f7fd9b9a79d752b2029ba1d48b6
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r4/rounds.yaml: e2b36833f977e73847595cdbf1d5f6af9b2c0da59fe4daf06de8d28de82a5fb3
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r4/target-manifest.yaml: 34c392b741400fe267d60cf8b76d3522859726a31a0daaa55c3620fd55e627a7
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r4/triage.yaml: caebdb76c8aea1fa7930777f0e62189a54bdcb215baea274f65e763529973db1
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r5/model-result-summary.yaml: 6384fb0cfba395f5a33ddb324f7a4ef4923e0abfb6dd0558c22896ecd23f5f29
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r5/parsed/claude-sonnet-4-6.r5.yaml: 4ccace342ad0ccebbdf88e516b902bcca8dd2102734795da451e91dfc252454a
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r5/parsed/gemini-3.1-pro-preview.r5.yaml: f45a60fac9d1ef01b4dc962391e2bb8edd9d0452276fa7f3b60cd72722f55e0b
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r5/parsed/gpt-5.4.r5.yaml: 687601e3b4faaee2f452e41366583617574f83283cfca837a97763f68244283f
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r5/raw/claude-sonnet-4-6.r5.txt: 6882a7c186a5fa61bcc485d0e2d2f27b4cb04e9a61a8afca0d386227cd9f34b5
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r5/raw/gemini-3.1-pro-preview.r5.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r5/raw/gpt-5.4.r5.txt: 3fa8f5f148a719a15d4c026aa23a033bbb7c51c50368c83a28d96ccfaa95de0e
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r5/review_summary.md: 265eaad05ed121dabb6b8ebc4b023f5d662c0032ec2a292a303e91ae02fa4a11
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r5/rounds.yaml: c431d0a9a2daa1d45627e32f5d19c4a5dbc3f557d7255209cdedd25b81516e88
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r5/target-manifest.yaml: e8eaaabe4efd937adc0014891fd7c6b91e881d6ca77827c096728f4b4bf11cf3
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r5/triage.yaml: a3c162a426a074271bf59ee265e07664de8872d7838721c81d14096d887ca76f
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r6/model-result-summary.yaml: 1ae7057730b57ad78b7c4ff44683cf435c83163dd6df92126adae9bd0f1e9da6
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r6/parsed/claude-sonnet-4-6.r6.yaml: 5edef26879952fa3b5ea883592d1ec50c0304482feca1e1062a12d7f2e1e2997
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r6/parsed/gemini-3.1-pro-preview.r6.yaml: e5a26df99952d4b996d5f039c35bd465a05195d09d957cd0250629ff75c0237a
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r6/parsed/gpt-5.4.r6.yaml: 0ad5f173e806d5a5d9b95a7b76eccb30a1a5e7c7bb5e68a7368f235b4b3943b5
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r6/raw/claude-sonnet-4-6.r6.txt: fba37298ea778bdf555577a049ce69a3a27d916a2d47ef3e106fa3f3e151cc91
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r6/raw/gemini-3.1-pro-preview.r6.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r6/raw/gpt-5.4.r6.txt: 908e7f41cb2afd7b205bce7f31b505824e6b772b29b24093b28bb3e4ebf3e30d
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r6/review_summary.md: 55008fa79f4862418f2dc96d36361450b79f17e054d06b39d0faa08983388d7e
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r6/rounds.yaml: e0dc28337c466a662095bee148a3ac043d900ca77e7f29b186ab23ee4e446c83
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r6/target-manifest.yaml: 86f2065e11319b88a5bb84c9201f67c8161f09a30225a7f2d14846891f40d040
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r6/triage.yaml: 7ff1d5c20746b0d7848ea626038eed7eecc4da6c78d674203becd298897b5068
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r7/model-result-summary.yaml: 02c73e6e30b5de7ac149b6acd089ff1a968ab0f5feae095445668c4356e7228e
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r7/parsed/claude-sonnet-4-6.r7.yaml: 6986d65e70e0cd06958005019a4ef5a478122c2b3477d9b09bc606b59242c764
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r7/parsed/gemini-3.1-pro-preview.r7.yaml: 9d3ab0f4c115b51a5563f8bbb27f72447e66dc7597f9b7dfe51bee670bf79db1
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r7/parsed/gpt-5.4.r7.yaml: a2df22a7b7c56a9be21c1abfb9bb19f9a3bae88ba4008ec8c15ad6cb9f1f13dc
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r7/raw/claude-sonnet-4-6.r7.txt: fccba41f463c4d8a97f0e3b97e64166122bc8f77b966962c7989989b6a404038
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r7/raw/gemini-3.1-pro-preview.r7.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r7/raw/gpt-5.4.r7.txt: 80b5d6d3ef2ea601e51e37d654f0c0ef2b07204dcfb98a330d296baf428d8b45
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r7/review_summary.md: 146e408e161bb460ff2e07dfccbe362fbab504133976f080f8fbeb3518247bbd
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r7/rounds.yaml: 9ba2f332f6dd2e209cbe1e949264ccf359e490645708b40f609cf4a6b3d6c7c4
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r7/target-manifest.yaml: c527afd7a5983bd152afd2c45c088fdfbd323a5ab6ce080169813178672387c4
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r7/triage.yaml: 742f523938b66360a8dbb90e7138aef47ba0e26fc234fd8b9b215b28311c8674
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r8/model-result-summary.yaml: ad66c2fd07257b6174b6c94306899b85406213a6d996c2c4226b96063598abde
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r8/parsed/claude-sonnet-4-6.r8.yaml: dad7b4c5891c975be2bb032b08090045fb4e43cf86e83bc82edfa0e449b0fe0e
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r8/parsed/gemini-3.1-pro-preview.r8.yaml: 10bfe8c18aadd2ad1f7b4473ba681d718882c363e20f2cefefa5b6c562694613
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r8/parsed/gpt-5.4.r8.yaml: 8ed0b90467dcbff71fd37ce40084c293f8abd4ec7ba28221da12bcf1d434c17a
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r8/raw/claude-sonnet-4-6.r8.txt: 3cc8a7b21ba6e1c643f539e0dfae0f9e495445457a104ae255fc509747cb153f
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r8/raw/gemini-3.1-pro-preview.r8.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r8/raw/gpt-5.4.r8.txt: e7baeb53007389ed5ec6f523c6804a8973ae295c43de1fa2e6231a63777f6e53
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r8/review_summary.md: a6c849e18c3a8decef16ca49574b16a2b99d9ffa1689a4e2bee76f4858413693
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r8/rounds.yaml: 8b2bf3181e95ce86ff5c1693325ec01c84151733cfc4af031cfbcdcfedd72e4e
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r8/target-manifest.yaml: b22b5be73bc586daa159e09e620098a76a9fa2bdfe6cf7a6bdefcef829090a44
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r8/triage.yaml: ff1602323f6e3a46bc4e41a7ff918f3ee8dd1a00e73373653343b5c1186cc656
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r9/model-result-summary.yaml: 8eaf0436ad8c0bd6ef00d393a2681ab952bde773a9aaff6dbf3013ee8612b41c
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r9/parsed/claude-sonnet-4-6.r9.yaml: b1301c74024302ebc610c2432cd54505fd5b0a3be97ef6cf6504e28876ad2201
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r9/parsed/gemini-3.1-pro-preview.r9.yaml: 200c1565b29bf529e5ca16dad63aaac021cbb27519527aced4e9c86cf1be9960
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r9/parsed/gpt-5.4.r9.yaml: e83635bfaeb69484c2dd7f1fc7ffca4410f66f31b8ea620c48bbe9e9ac21c26f
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r9/raw/claude-sonnet-4-6.r9.txt: 6349119c9dbc05afb3e17eedd16ba30f7f7126477000d6915fdd758b4cdaa3db
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r9/raw/gemini-3.1-pro-preview.r9.txt: 6e6e2b3e8a166068a091365f787613cc890bbe1e5db7aa8a9bf750f21658c886
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r9/raw/gpt-5.4.r9.txt: a08dc3485968ae64d9f2a3d90328b338d709efb21612331baf3b464739c39557
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r9/review_summary.md: 2e9b9ab6c7cf7370134770e4b032536d605ad26ffd40d837809490d7982e290d
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r9/rounds.yaml: 61fef7c7e5bd01742d13b2beafd4e4fcc93c85c3d56120fb4d2bdc767c03442d
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r9/target-manifest.yaml: 2aabb592de5bba91ceff22148dd6a9020c3bb20a15a209b35fe332482cfbac99
+    docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r9/triage.yaml: f399c8141b56527e7ef7fd0d881df82cf69e8051db5952608fcffecad8ff0bf7
+review_run:
+  path: docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r12
+  summary_path: docs/notes/review-runs/postwrite-future-development-candidates-2026-06-05-r12/model-result-summary.yaml
+notes: Generated template; verify target_files cover current post-write targets before
+  use.

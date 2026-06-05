@@ -1,0 +1,117 @@
+run_id: postwrite-future-development-candidates-2026-06-05-r8
+triage_status: decided
+generated_at: '2026-06-05T09:50:47.419556+00:00'
+decision_actor: null
+decision_actor_type: human
+items:
+- finding_id: postwrite-future-development-candidates-2026-06-05-r8-claude-sonnet-4-6-primary-001
+  run_id: postwrite-future-development-candidates-2026-06-05-r8
+  source_model: claude-sonnet-4-6
+  source_round: r8
+  source_raw_path: raw/claude-sonnet-4-6.r8.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.r8.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: docs/notes/2026-06-05-future-development-candidates.md § 0
+  plain_language_summary: 位置づけセクションで通常ワークフロー正本との関係が明示されているが、本メモ自体の更新・廃止条件が記載されていない。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: codex_main_session
+  decision_actor_type: agent
+  decision_at: '2026-06-05T09:51:09.754491+00:00'
+  decision_reason: 本メモは議論の出発点であり、更新・廃止条件は次回の計画管理で扱うため現状維持する。
+  applied_files: []
+  superseded_by: null
+- finding_id: postwrite-future-development-candidates-2026-06-05-r8-claude-sonnet-4-6-primary-002
+  run_id: postwrite-future-development-candidates-2026-06-05-r8
+  source_model: claude-sonnet-4-6
+  source_round: r8
+  source_raw_path: raw/claude-sonnet-4-6.r8.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.r8.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: docs/notes/2026-06-05-future-development-candidates.md § 4 D-009
+  plain_language_summary: D-009の再現条件記録先として `docs/notes/review-runs/` 配下が参照されているが、該当
+    run が複数存在しうる場合の特定方法が未定義。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: codex_main_session
+  decision_actor_type: agent
+  decision_at: '2026-06-05T09:51:09.807204+00:00'
+  decision_reason: D-009着手時に関連runを選定する設計であり、本メモでrunを固定しないため現状維持する。
+  applied_files: []
+  superseded_by: null
+- finding_id: postwrite-future-development-candidates-2026-06-05-r8-claude-sonnet-4-6-primary-003
+  run_id: postwrite-future-development-candidates-2026-06-05-r8
+  source_model: claude-sonnet-4-6
+  source_round: r8
+  source_raw_path: raw/claude-sonnet-4-6.r8.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.r8.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: docs/notes/2026-06-05-future-development-candidates.md § 8 推奨着手順
+  plain_language_summary: 推奨着手順リストに D-022・D-023・D-024 がまとめて第16位に置かれているが、D-022とD-023は相互に前提関係がある可能性（D-022の監査結果がD-023の対象範囲に影響する）にもかかわらず、内部順序が明示されていない。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: codex_main_session
+  decision_actor_type: agent
+  decision_at: '2026-06-05T09:51:09.859982+00:00'
+  decision_reason: D-022〜D-024は中優先度のbacklog整理としてまとめており、内部順序はD-021結果を見て再調整するため現状維持する。
+  applied_files: []
+  superseded_by: null
+- finding_id: postwrite-future-development-candidates-2026-06-05-r8-gpt-5.4-adversarial-001
+  run_id: postwrite-future-development-candidates-2026-06-05-r8
+  source_model: gpt-5.4
+  source_round: r8
+  source_raw_path: raw/gpt-5.4.r8.txt
+  source_parsed_path: parsed/gpt-5.4.r8.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: §8 推奨着手順
+  plain_language_summary: 推奨着手順の説明と列挙順に不整合がある。D-009 は D-010 より先行確認すべきと説明している一方、D-015〜D-017
+    を D-010 より前に挟んでいる。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: codex_main_session
+  decision_actor_type: agent
+  decision_at: '2026-06-05T09:51:09.912627+00:00'
+  decision_reason: 実際の推奨着手順ではD-009が10、D-010が11、D-015〜D-017が12であり、指摘された順序不整合は本文に存在しないため現状維持する。
+  applied_files: []
+  superseded_by: null
+- finding_id: postwrite-future-development-candidates-2026-06-05-r8-gpt-5.4-adversarial-002
+  run_id: postwrite-future-development-candidates-2026-06-05-r8
+  source_model: gpt-5.4
+  source_round: r8
+  source_raw_path: raw/gpt-5.4.r8.txt
+  source_parsed_path: parsed/gpt-5.4.r8.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: 文書全体（候補項目の記述方針）
+  plain_language_summary: 各候補に『目的・背景・議論内容・検討する実装』はあるが、着手判断に必要な完了条件や非目標が明示されていない。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: codex_main_session
+  decision_actor_type: agent
+  decision_at: '2026-06-05T09:51:09.965203+00:00'
+  decision_reason: 本メモは候補一覧であり、完了条件や非目標は各項目着手時の計画で定義するため現状維持する。
+  applied_files: []
+  superseded_by: null
+- finding_id: postwrite-future-development-candidates-2026-06-05-r8-gpt-5.4-adversarial-003
+  run_id: postwrite-future-development-candidates-2026-06-05-r8
+  source_model: gpt-5.4
+  source_round: r8
+  source_raw_path: raw/gpt-5.4.r8.txt
+  source_parsed_path: parsed/gpt-5.4.r8.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: D-004 normalized finding schema / D-005 finding-to-fix traceability
+    / D-018 false-positive reversal / D-024 フェーズ4後の宿題 backlog の再整理
+  plain_language_summary: 関連候補間の重複には言及しているが、依存関係・統合方針が候補ごとに均一には記述されていない。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: codex_main_session
+  decision_actor_type: agent
+  decision_at: '2026-06-05T09:51:10.017803+00:00'
+  decision_reason: 候補一覧として必要な関連性は記述済みで、依存関係の完全定義は次工程で扱うため現状維持する。
+  applied_files: []
+  superseded_by: null

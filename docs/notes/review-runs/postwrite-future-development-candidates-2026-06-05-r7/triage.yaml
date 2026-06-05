@@ -1,0 +1,138 @@
+run_id: postwrite-future-development-candidates-2026-06-05-r7
+triage_status: decided
+generated_at: '2026-06-05T09:49:18.311232+00:00'
+decision_actor: null
+decision_actor_type: human
+items:
+- finding_id: postwrite-future-development-candidates-2026-06-05-r7-claude-sonnet-4-6-primary-001
+  run_id: postwrite-future-development-candidates-2026-06-05-r7
+  source_model: claude-sonnet-4-6
+  source_round: r7
+  source_raw_path: raw/claude-sonnet-4-6.r7.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.r7.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: docs/notes/2026-06-05-future-development-candidates.md, セクション全体
+  plain_language_summary: 文書は well-structured であり、24項目の開発候補が優先度・根拠・実装案とともに整理されている。重大な構造的欠陥や内容上の誤りは検出されなかった。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: codex_main_session
+  decision_actor_type: agent
+  decision_at: '2026-06-05T09:49:59.238460+00:00'
+  decision_reason: 文書全体への肯定的INFOであり、修正不要。
+  applied_files: []
+  superseded_by: null
+- finding_id: postwrite-future-development-candidates-2026-06-05-r7-claude-sonnet-4-6-primary-002
+  run_id: postwrite-future-development-candidates-2026-06-05-r7
+  source_model: claude-sonnet-4-6
+  source_round: r7
+  source_raw_path: raw/claude-sonnet-4-6.r7.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.r7.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: セクション 8「推奨着手順」
+  plain_language_summary: 推奨着手順のリストで D-013、D-014 が本文中で中優先度として独立説明されているにもかかわらず、着手順リストに明示的なエントリとして現れず、「D-011
+    から D-014」という範囲表現の中に暗黙的に含まれている。一方で D-015 から D-017 は別行として扱われており、扱いに非対称性がある。
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: codex_main_session
+  decision_actor_type: agent
+  decision_at: '2026-06-05T09:49:59.293502+00:00'
+  decision_reason: 推奨着手順でD-011〜D-012とD-013〜D-014を分け、D-013/D-014の扱いを明示した。
+  applied_files: []
+  superseded_by: null
+- finding_id: postwrite-future-development-candidates-2026-06-05-r7-claude-sonnet-4-6-primary-003
+  run_id: postwrite-future-development-candidates-2026-06-05-r7
+  source_model: claude-sonnet-4-6
+  source_round: r7
+  source_raw_path: raw/claude-sonnet-4-6.r7.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.r7.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: セクション 3 D-004「normalized finding schema の設計」
+  plain_language_summary: 重複確認対象として `learning/workflow/schemas/` 配下の 5 ファイルを列挙しているが、`rollback.schema.json`
+    は他の 4 ファイルと比べて finding schema との関連が薄く、確認すべき理由が本文中で説明されていない。逆に、`triage.yaml` の構造（finding
+    相当フィールドを直接持つ）が確認対象リストに含まれていない。
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: codex_main_session
+  decision_actor_type: agent
+  decision_at: '2026-06-05T09:49:59.348598+00:00'
+  decision_reason: D-004の確認対象に既存review-runのtriage.yaml構造を追加し、rollback.schema.jsonを確認対象に含める理由も追記した。
+  applied_files: []
+  superseded_by: null
+- finding_id: postwrite-future-development-candidates-2026-06-05-r7-claude-sonnet-4-6-primary-004
+  run_id: postwrite-future-development-candidates-2026-06-05-r7
+  source_model: claude-sonnet-4-6
+  source_round: r7
+  source_raw_path: raw/claude-sonnet-4-6.r7.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.r7.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: セクション 4 D-009「post-write verification の収束基準の再検討」
+  plain_language_summary: 再現条件の記録方法として 'D-009 着手時に検討メモとして記録する' と将来タスクとして記述されているが、現時点でベースラインとなる
+    run path が特定可能であれば、本メモ内に仮記録しておくとより参照性が高まる。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: codex_main_session
+  decision_actor_type: agent
+  decision_at: '2026-06-05T09:49:59.403773+00:00'
+  decision_reason: D-009は将来の検討項目であり、本メモでbaseline runを固定しすぎると探索範囲を狭めるため現状維持する。
+  applied_files: []
+  superseded_by: null
+- finding_id: postwrite-future-development-candidates-2026-06-05-r7-claude-sonnet-4-6-primary-005
+  run_id: postwrite-future-development-candidates-2026-06-05-r7
+  source_model: claude-sonnet-4-6
+  source_round: r7
+  source_raw_path: raw/claude-sonnet-4-6.r7.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.r7.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: セクション 7 D-024「フェーズ 4 後の宿題 backlog の再整理」
+  plain_language_summary: '`related_candidate_ids` と `overlap_resolution` を各 backlog
+    item に記録するとしているが、D-024 自体が D-008・D-011・D-019 との重複を整理する meta-item であるため、D-024 自身の
+    `related_candidate_ids` と `overlap_resolution` がどこに記録されるかが不明である。'
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: codex_main_session
+  decision_actor_type: agent
+  decision_at: '2026-06-05T09:49:59.459137+00:00'
+  decision_reason: D-024はmeta-itemであり、具体記録先はD-024着手時のbacklog schemaで定めるため現状維持する。
+  applied_files: []
+  superseded_by: null
+- finding_id: postwrite-future-development-candidates-2026-06-05-r7-gpt-5.4-adversarial-001
+  run_id: postwrite-future-development-candidates-2026-06-05-r7
+  source_model: gpt-5.4
+  source_round: r7
+  source_raw_path: raw/gpt-5.4.r7.txt
+  source_parsed_path: parsed/gpt-5.4.r7.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: docs/notes/2026-06-05-future-development-candidates.md §8 推奨着手順
+  plain_language_summary: 優先度ラベルと推奨着手順の整合が一部弱く、高優先度項目 D-022〜D-024 が中優先度項目や低優先度項目より後ろにまとめられている。
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: codex_main_session
+  decision_actor_type: agent
+  decision_at: '2026-06-05T09:49:59.513781+00:00'
+  decision_reason: D-022〜D-024は中優先度の整理項目であることを理由欄に明記した。
+  applied_files: []
+  superseded_by: null
+- finding_id: postwrite-future-development-candidates-2026-06-05-r7-gpt-5.4-adversarial-002
+  run_id: postwrite-future-development-candidates-2026-06-05-r7
+  source_model: gpt-5.4
+  source_round: r7
+  source_raw_path: raw/gpt-5.4.r7.txt
+  source_parsed_path: parsed/gpt-5.4.r7.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: docs/notes/2026-06-05-future-development-candidates.md 全体
+  plain_language_summary: 将来候補一覧としての体裁・根拠・目的整理は十分で、post-write 時点で追加の重大な欠落は見当たらない。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: codex_main_session
+  decision_actor_type: agent
+  decision_at: '2026-06-05T09:49:59.569184+00:00'
+  decision_reason: 文書全体への肯定的INFOであり、修正不要。
+  applied_files: []
+  superseded_by: null

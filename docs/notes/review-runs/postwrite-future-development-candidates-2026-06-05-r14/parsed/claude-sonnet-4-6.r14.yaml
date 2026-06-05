@@ -1,0 +1,25 @@
+role: primary
+provider: anthropic-api
+model: claude-sonnet-4-6
+attempts: 1
+duration_seconds: 13.857
+findings:
+- severity: INFO
+  target_location: docs/notes/2026-06-05-future-development-candidates.md, Section
+    3, D-004
+  description: D-004 の normalized finding schema 設計において、既存 schema との重複確認が「現時点では未実施」と明記されているが、その確認は
+    D-004 着手時まで意図的に延期されていることが本文中で説明されている。
+  rationale: 意図的な延期であり、文書内でも明示されているため問題は軽微。ただし D-004 着手前に schema comparison が実施されないまま設計が進んだ場合のリスクを認識しておく価値がある。
+- severity: INFO
+  target_location: docs/notes/2026-06-05-future-development-candidates.md, Section
+    8
+  description: 推奨着手順において D-021 の readiness report で問題が検出された場合に D-022 または D-024 を繰り上げる
+    escalation 条件が示されているが、繰り上げを誰が・どのタイミングで判断するかの明示がない。
+  rationale: escalation の発動条件は記載されているが、判断主体と記録先が不明のため、実際の着手判断時に曖昧さが残る可能性がある。深刻度は低いが、将来の参照時に混乱を避けるために記録しておく。
+- severity: INFO
+  target_location: docs/notes/2026-06-05-future-development-candidates.md, Section
+    4, D-009
+  description: D-009 の再現条件として 'baseline locator を作成し、少なくとも参照する note、candidate review-run
+    directory、variant、role assignment、raw response paths の候補を列挙する' とあるが、その baseline
+    locator 文書の作成は D-009 着手前の別タスクとして扱われており、本文書内には含まれていない。
+  rationale: baseline locator が存在しない状態で D-009 着手が始まった場合、再現条件の根拠が不明確になる。本文書の指摘として残しておくことで、着手時のチェック漏れを防げる。

@@ -1,0 +1,20 @@
+findings:
+  - severity: INFO
+    target_location: "docs/notes/2026-06-05-future-development-candidates.md, Section 3, D-004"
+    description: "D-004 の normalized finding schema 設計において、既存 schema との確認が未実施である旨が明記されており、着手時の設計ノート作成が求められている。"
+    rationale: "schema 重複・衝突の確認が未完了のまま設計に進むと、後から field 統廃合や破壊的変更が発生するリスクがある。ただし本文でその旨を明示的に注記しており、設計前に確認する意図は示されている。"
+
+  - severity: INFO
+    target_location: "docs/notes/2026-06-05-future-development-candidates.md, Section 4, D-009"
+    description: "D-009 の再現条件（対象 prompt、variant、model assignment、raw response path）の記録が着手時まで保留されている。"
+    rationale: "収束基準の評価は再現性のある基準からのみ意味のある改善につながる。再現条件が未記録のまま改善が行われると、改善効果の検証が困難になる可能性があるが、本文でその記録が着手時に必要と明示されており、先送り理由も説明されている。"
+
+  - severity: INFO
+    target_location: "docs/notes/2026-06-05-future-development-candidates.md, Section 7, D-024"
+    description: "D-024 の backlog item に `related_candidate_ids` と `overlap_resolution` の記録が求められているが、本文リスト内での D-008 / D-011 / D-019 との具体的な overlap 解決方針は詳述されていない。"
+    rationale: "別セッションで実装された場合の追跡可能性を担保するため、overlap_resolution の方針が先に示されていると、将来の実装者がより明確に判断できる。ただし着手時の設計作業として留保されており、現時点での未記載は設計選択として説明可能である。"
+
+  - severity: INFO
+    target_location: "docs/notes/2026-06-05-future-development-candidates.md, Section 8"
+    description: "推奨着手順において、D-013 と D-014 が D-022 / D-024 より後の位置に置かれているが、D-014 の commit/push guard 強化は D-021 の deployment smoke と部分的に関連する可能性がある。"
+    rationale: "D-021 の deployment smoke に commit/push guard の複合エラー検査が含まれていない場合、外部デプロイ時に D-014 の既知の弱点が顕在化するリスクがある。ただし D-021 の readiness report へ escalation note を記録する仕組みが既に本文に設けられており、リスクは管理下に置かれている。"

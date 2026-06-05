@@ -1,0 +1,151 @@
+run_id: postwrite-future-development-candidates-2026-06-05-r9
+triage_status: decided
+generated_at: '2026-06-05T10:01:55.459674+00:00'
+decision_actor: null
+decision_actor_type: human
+items:
+- finding_id: postwrite-future-development-candidates-2026-06-05-r9-claude-sonnet-4-6-primary-001
+  run_id: postwrite-future-development-candidates-2026-06-05-r9
+  source_model: claude-sonnet-4-6
+  source_round: r9
+  source_raw_path: raw/claude-sonnet-4-6.r9.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.r9.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: docs/notes/2026-06-05-future-development-candidates.md, セクション全体
+  plain_language_summary: 文書は24項目（D-001からD-024）の開発候補を、優先度・背景・議論・検討実装・根拠の形式で網羅的に記載しており、構造的整合性は高い。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: codex_main_session
+  decision_actor_type: agent
+  decision_at: '2026-06-05T10:02:55.744004+00:00'
+  decision_reason: 文書全体への肯定的INFOであり、修正不要。
+  applied_files: []
+  superseded_by: null
+- finding_id: postwrite-future-development-candidates-2026-06-05-r9-claude-sonnet-4-6-primary-002
+  run_id: postwrite-future-development-candidates-2026-06-05-r9
+  source_model: claude-sonnet-4-6
+  source_round: r9
+  source_raw_path: raw/claude-sonnet-4-6.r9.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.r9.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: セクション3, D-004 normalized finding schema の設計
+  plain_language_summary: 「実装前には、既存の learning/workflow/schemas/ 配下の schema と重複・衝突しないかを確認する」と記載されているが、確認対象リストが列挙されているだけで、確認が完了したかどうかの記録がない。
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: codex_main_session
+  decision_actor_type: agent
+  decision_at: '2026-06-05T10:02:55.801974+00:00'
+  decision_reason: D-004のschema重複確認は現時点で未実施であり、着手時に記録することを明記した。
+  applied_files: []
+  superseded_by: null
+- finding_id: postwrite-future-development-candidates-2026-06-05-r9-claude-sonnet-4-6-primary-003
+  run_id: postwrite-future-development-candidates-2026-06-05-r9
+  source_model: claude-sonnet-4-6
+  source_round: r9
+  source_raw_path: raw/claude-sonnet-4-6.r9.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.r9.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: セクション8, 推奨着手順
+  plain_language_summary: D-022 と D-024 が推奨着手順の最後（18・19番）に置かれているが、D-021 の結果を見て優先順位を再調整するとのみ記載され、再調整のトリガー条件や判断基準が示されていない。
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: codex_main_session
+  decision_actor_type: agent
+  decision_at: '2026-06-05T10:02:55.860414+00:00'
+  decision_reason: D-022/D-024を繰り上げるトリガー条件をD-021結果に基づく旧素材混入・外部配置失敗・相対リンク違反・スコープ外宿題の阻害として明記した。
+  applied_files: []
+  superseded_by: null
+- finding_id: postwrite-future-development-candidates-2026-06-05-r9-claude-sonnet-4-6-primary-004
+  run_id: postwrite-future-development-candidates-2026-06-05-r9
+  source_model: claude-sonnet-4-6
+  source_round: r9
+  source_raw_path: raw/claude-sonnet-4-6.r9.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.r9.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: セクション3, D-009 post-write verification の収束基準の再検討
+  plain_language_summary: 「再現条件は D-009 着手時に検討メモとして記録する」と明示されており、ベースライン入力の参照先も示されている。現時点では未着手であることが明確である。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: codex_main_session
+  decision_actor_type: agent
+  decision_at: '2026-06-05T10:02:55.916257+00:00'
+  decision_reason: 既に記述済みの再現条件記録を評価したINFOであり、修正不要。
+  applied_files: []
+  superseded_by: null
+- finding_id: postwrite-future-development-candidates-2026-06-05-r9-claude-sonnet-4-6-primary-005
+  run_id: postwrite-future-development-candidates-2026-06-05-r9
+  source_model: claude-sonnet-4-6
+  source_round: r9
+  source_raw_path: raw/claude-sonnet-4-6.r9.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.r9.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: セクション7, D-024 フェーズ4後の宿題 backlog の再整理
+  plain_language_summary: 「既存の D-008 / D-011 / D-019 と重複しないように4軸で backlog schema を整理する」と記載されており、related_candidate_ids
+    と overlap_resolution の記録も求めている。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: codex_main_session
+  decision_actor_type: agent
+  decision_at: '2026-06-05T10:02:55.973087+00:00'
+  decision_reason: 既に記述済みのbacklog重複整理を評価したINFOであり、修正不要。
+  applied_files: []
+  superseded_by: null
+- finding_id: postwrite-future-development-candidates-2026-06-05-r9-gpt-5.4-adversarial-001
+  run_id: postwrite-future-development-candidates-2026-06-05-r9
+  source_model: gpt-5.4
+  source_round: r9
+  source_raw_path: raw/gpt-5.4.r9.txt
+  source_parsed_path: parsed/gpt-5.4.r9.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: '## 8. 推奨着手順'
+  plain_language_summary: 推奨着手順から D-006 と D-007 の依存対象である D-012 が先行・近接配置されておらず、順序説明ともやや不整合。
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: codex_main_session
+  decision_actor_type: agent
+  decision_at: '2026-06-05T10:02:56.030106+00:00'
+  decision_reason: D-012をD-006/D-007に近接配置し、人間向け説明品質がproxy/autonomous監査を支えることを理由に明記した。
+  applied_files: []
+  superseded_by: null
+- finding_id: postwrite-future-development-candidates-2026-06-05-r9-gpt-5.4-adversarial-002
+  run_id: postwrite-future-development-candidates-2026-06-05-r9
+  source_model: gpt-5.4
+  source_round: r9
+  source_raw_path: raw/gpt-5.4.r9.txt
+  source_parsed_path: parsed/gpt-5.4.r9.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: 全体
+  plain_language_summary: 各候補は詳細だが、候補間の重複解消方針が一部項目にしか明記されていない。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: codex_main_session
+  decision_actor_type: agent
+  decision_at: '2026-06-05T10:02:56.087111+00:00'
+  decision_reason: 候補一覧として十分であり、重複解消方針の完全定義は各項目着手時に扱うため現状維持する。
+  applied_files: []
+  superseded_by: null
+- finding_id: postwrite-future-development-candidates-2026-06-05-r9-gemini-3.1-pro-preview-judgment-001
+  run_id: postwrite-future-development-candidates-2026-06-05-r9
+  source_model: gemini-3.1-pro-preview
+  source_round: r9
+  source_raw_path: raw/gemini-3.1-pro-preview.r9.txt
+  source_parsed_path: parsed/gemini-3.1-pro-preview.r9.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: 8. 推奨着手順
+  plain_language_summary: 導入段落の記述と実際の着手リスト・理由間で、D-019およびD-020の扱いに関する矛盾が生じています。
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: codex_main_session
+  decision_actor_type: agent
+  decision_at: '2026-06-05T10:02:56.143480+00:00'
+  decision_reason: D-019/D-020は研究評価・展開準備の中でもデータ取得と複数ケース評価に直結するため早めに扱い、D-018はschema整備後に扱うと明記した。
+  applied_files: []
+  superseded_by: null

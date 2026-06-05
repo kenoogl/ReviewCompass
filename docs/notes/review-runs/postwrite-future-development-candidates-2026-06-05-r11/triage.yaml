@@ -1,0 +1,266 @@
+run_id: postwrite-future-development-candidates-2026-06-05-r11
+triage_status: decided
+generated_at: '2026-06-05T10:05:55.798087+00:00'
+decision_actor: null
+decision_actor_type: human
+items:
+- finding_id: postwrite-future-development-candidates-2026-06-05-r11-claude-sonnet-4-6-primary-001
+  run_id: postwrite-future-development-candidates-2026-06-05-r11
+  source_model: claude-sonnet-4-6
+  source_round: r11
+  source_raw_path: raw/claude-sonnet-4-6.r11.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.r11.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: docs/notes/2026-06-05-future-development-candidates.md § 0. 位置づけ
+  plain_language_summary: Document correctly identifies itself as a discussion-starting
+    memo rather than a workflow authority, and notes that the workflow source of truth
+    remains `tools/check-workflow-action.py next --json` and `spec.json`.
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: codex_main_session
+  decision_actor_type: agent
+  decision_at: '2026-06-05T10:07:36.342249+00:00'
+  decision_reason: 文書の位置づけに関する肯定的INFOであり、修正不要。
+  applied_files: []
+  superseded_by: null
+- finding_id: postwrite-future-development-candidates-2026-06-05-r11-claude-sonnet-4-6-primary-002
+  run_id: postwrite-future-development-candidates-2026-06-05-r11
+  source_model: claude-sonnet-4-6
+  source_round: r11
+  source_raw_path: raw/claude-sonnet-4-6.r11.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.r11.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: docs/notes/2026-06-05-future-development-candidates.md § 3. D-004
+  plain_language_summary: D-004 explicitly defers schema-conflict resolution with
+    existing `learning/workflow/schemas/` artifacts to design-time, naming the specific
+    fields and files that need comparison.
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: codex_main_session
+  decision_actor_type: agent
+  decision_at: '2026-06-05T10:07:36.410930+00:00'
+  decision_reason: D-004の既存schema比較方針に関する肯定的INFOであり、修正不要。
+  applied_files: []
+  superseded_by: null
+- finding_id: postwrite-future-development-candidates-2026-06-05-r11-claude-sonnet-4-6-primary-003
+  run_id: postwrite-future-development-candidates-2026-06-05-r11
+  source_model: claude-sonnet-4-6
+  source_round: r11
+  source_raw_path: raw/claude-sonnet-4-6.r11.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.r11.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: docs/notes/2026-06-05-future-development-candidates.md § 8. 推奨着手順
+  plain_language_summary: The ordering rationale states D-022 and D-024 may be pulled
+    ahead of D-004 if D-021 reveals blockers, but no concrete trigger condition or
+    escalation mechanism is defined to enforce this conditional re-ordering.
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: codex_main_session
+  decision_actor_type: agent
+  decision_at: '2026-06-05T10:07:36.485905+00:00'
+  decision_reason: D-021のreadiness reportにescalation noteを記録してD-022/D-024を繰り上げる仕組みを明記した。
+  applied_files: []
+  superseded_by: null
+- finding_id: postwrite-future-development-candidates-2026-06-05-r11-claude-sonnet-4-6-primary-004
+  run_id: postwrite-future-development-candidates-2026-06-05-r11
+  source_model: claude-sonnet-4-6
+  source_round: r11
+  source_raw_path: raw/claude-sonnet-4-6.r11.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.r11.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: docs/notes/2026-06-05-future-development-candidates.md § 3. D-001
+    through D-008 (all marked 優先度：高)
+  plain_language_summary: Eight items are simultaneously marked high-priority with
+    no intra-group relative ordering provided, while the recommended execution order
+    in §8 does give a sequence. The disconnect between the per-item priority label
+    and the §8 ordering rationale may cause confusion about which items to start first
+    within the high-priority group.
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: codex_main_session
+  decision_actor_type: agent
+  decision_at: '2026-06-05T10:07:36.553841+00:00'
+  decision_reason: 高優先度群内の着手順は§8の推奨着手順を正とする旨を明記した。
+  applied_files: []
+  superseded_by: null
+- finding_id: postwrite-future-development-candidates-2026-06-05-r11-claude-sonnet-4-6-primary-005
+  run_id: postwrite-future-development-candidates-2026-06-05-r11
+  source_model: claude-sonnet-4-6
+  source_round: r11
+  source_raw_path: raw/claude-sonnet-4-6.r11.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.r11.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: docs/notes/2026-06-05-future-development-candidates.md § 3. D-009
+  plain_language_summary: D-009 correctly notes it is not a hard prerequisite for
+    D-010 but recommends prior confirmation to stabilize post-write verification loops
+    before D-010 body edits begin. Baseline input sources are explicitly named.
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: codex_main_session
+  decision_actor_type: agent
+  decision_at: '2026-06-05T10:07:36.620414+00:00'
+  decision_reason: D-009の記述に関する肯定的INFOであり、修正不要。
+  applied_files: []
+  superseded_by: null
+- finding_id: postwrite-future-development-candidates-2026-06-05-r11-claude-sonnet-4-6-primary-006
+  run_id: postwrite-future-development-candidates-2026-06-05-r11
+  source_model: claude-sonnet-4-6
+  source_round: r11
+  source_raw_path: raw/claude-sonnet-4-6.r11.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.r11.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: docs/notes/2026-06-05-future-development-candidates.md § 4. D-013
+  plain_language_summary: D-013 proposes structured flags (`requires_approval`, `affects_auditability`,
+    `affects_raw_integrity`) to supplement label-based important-item detection, addressing
+    the identified gap where context-sensitive should-fix items are missed by simple
+    label filtering.
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: codex_main_session
+  decision_actor_type: agent
+  decision_at: '2026-06-05T10:07:36.685665+00:00'
+  decision_reason: D-013の記述に関する肯定的INFOであり、修正不要。
+  applied_files: []
+  superseded_by: null
+- finding_id: postwrite-future-development-candidates-2026-06-05-r11-claude-sonnet-4-6-primary-007
+  run_id: postwrite-future-development-candidates-2026-06-05-r11
+  source_model: claude-sonnet-4-6
+  source_round: r11
+  source_raw_path: raw/claude-sonnet-4-6.r11.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.r11.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: docs/notes/2026-06-05-future-development-candidates.md § 6. D-020
+    and § 7. D-021
+  plain_language_summary: D-020 (cross-repository replication) and D-021 (deployable
+    reconstruction readiness) share substantial overlap in their implementation candidates
+    (project-independent inputs, adapter checklist, same-schema metrics), yet no explicit
+    cross-reference or deduplication note exists between the two items.
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: codex_main_session
+  decision_actor_type: agent
+  decision_at: '2026-06-05T10:07:36.752762+00:00'
+  decision_reason: D-020とD-021の関係を、D-021は配置可否、D-020は配置後の複数ケース比較データ取得と明記し、readiness
+    reportからreplication planへ引き継ぐと追記した。
+  applied_files: []
+  superseded_by: null
+- finding_id: postwrite-future-development-candidates-2026-06-05-r11-claude-sonnet-4-6-primary-008
+  run_id: postwrite-future-development-candidates-2026-06-05-r11
+  source_model: claude-sonnet-4-6
+  source_round: r11
+  source_raw_path: raw/claude-sonnet-4-6.r11.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.r11.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: docs/notes/2026-06-05-future-development-candidates.md § 7. D-024
+  plain_language_summary: D-024 introduces a `related_candidate_ids` and `overlap_resolution`
+    convention for backlog items to prevent duplicate tracking across sessions. This
+    pattern is useful but is applied only prospectively to D-024 itself and not retrospectively
+    to other candidate pairs (e.g., D-008/D-019, D-006/D-007) that also share field-level
+    overlap.
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: codex_main_session
+  decision_actor_type: agent
+  decision_at: '2026-06-05T10:07:36.817510+00:00'
+  decision_reason: D-024の将来適用範囲に関するINFOであり、本メモでは候補一覧の範囲を超えるため現状維持する。
+  applied_files: []
+  superseded_by: null
+- finding_id: postwrite-future-development-candidates-2026-06-05-r11-gpt-5.4-adversarial-001
+  run_id: postwrite-future-development-candidates-2026-06-05-r11
+  source_model: gpt-5.4
+  source_round: r11
+  source_raw_path: raw/gpt-5.4.r11.txt
+  source_parsed_path: parsed/gpt-5.4.r11.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: '## 3. 優先検討項目 / D-004 normalized finding schema の設計'
+  plain_language_summary: 提案フィールド群に日時・時系列情報が含まれておらず、後続の分析や監査でイベント順序を再構成しにくい。
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: codex_main_session
+  decision_actor_type: agent
+  decision_at: '2026-06-05T10:07:36.883261+00:00'
+  decision_reason: finding schema候補にobserved_at、decided_at、resolved_atを追加し、既存schema比較対象fieldにも含めた。
+  applied_files: []
+  superseded_by: null
+- finding_id: postwrite-future-development-candidates-2026-06-05-r11-gpt-5.4-adversarial-002
+  run_id: postwrite-future-development-candidates-2026-06-05-r11
+  source_model: gpt-5.4
+  source_round: r11
+  source_raw_path: raw/gpt-5.4.r11.txt
+  source_parsed_path: parsed/gpt-5.4.r11.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: '## 8. 推奨着手順'
+  plain_language_summary: 推奨着手順に D-006 を先行配置しつつ、依存関係の説明では D-011 から D-014 を『proxy /
+    review record / guard の後続品質改善』とまとめており、D-013・D-014 の位置づけがやや曖昧。
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: codex_main_session
+  decision_actor_type: agent
+  decision_at: '2026-06-05T10:07:36.950427+00:00'
+  decision_reason: D-013/D-014はproxy説明品質ではなくtriage重要項目検出とcommit/push guard品質改善として分けて扱うと明記した。
+  applied_files: []
+  superseded_by: null
+- finding_id: postwrite-future-development-candidates-2026-06-05-r11-gpt-5.4-adversarial-003
+  run_id: postwrite-future-development-candidates-2026-06-05-r11
+  source_model: gpt-5.4
+  source_round: r11
+  source_raw_path: raw/gpt-5.4.r11.txt
+  source_parsed_path: parsed/gpt-5.4.r11.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: 文書全体
+  plain_language_summary: 今後開発候補の網羅的整理としては十分だが、各候補の完了条件（done criteria）が統一形式で定義されていない。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: codex_main_session
+  decision_actor_type: agent
+  decision_at: '2026-06-05T10:07:37.016347+00:00'
+  decision_reason: 完了条件は各項目着手時に定義するため候補メモでは現状維持する。
+  applied_files: []
+  superseded_by: null
+- finding_id: postwrite-future-development-candidates-2026-06-05-r11-gemini-3.1-pro-preview-judgment-001
+  run_id: postwrite-future-development-candidates-2026-06-05-r11
+  source_model: gemini-3.1-pro-preview
+  source_round: r11
+  source_raw_path: raw/gemini-3.1-pro-preview.r11.txt
+  source_parsed_path: parsed/gemini-3.1-pro-preview.r11.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: 2. 全体判断
+  plain_language_summary: 提示された7群のテーマ分類と、以降の章立て（セクション3〜7）が連動していない
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: codex_main_session
+  decision_actor_type: agent
+  decision_at: '2026-06-05T10:07:37.084028+00:00'
+  decision_reason: テーマ分類と章立ては完全対応を意図しておらず、候補一覧として支障がないため現状維持する。
+  applied_files: []
+  superseded_by: null
+- finding_id: postwrite-future-development-candidates-2026-06-05-r11-gemini-3.1-pro-preview-judgment-002
+  run_id: postwrite-future-development-candidates-2026-06-05-r11
+  source_model: gemini-3.1-pro-preview
+  source_round: r11
+  source_raw_path: raw/gemini-3.1-pro-preview.r11.txt
+  source_parsed_path: parsed/gemini-3.1-pro-preview.r11.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: 8. 推奨着手順
+  plain_language_summary: 段落冒頭の総括文と箇条書きの理由リストで、D-012のグループ化に関する表記に不一致がある
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: codex_main_session
+  decision_actor_type: agent
+  decision_at: '2026-06-05T10:07:37.151860+00:00'
+  decision_reason: D-013/D-014のグループ化を理由欄で明確化した。
+  applied_files: []
+  superseded_by: null

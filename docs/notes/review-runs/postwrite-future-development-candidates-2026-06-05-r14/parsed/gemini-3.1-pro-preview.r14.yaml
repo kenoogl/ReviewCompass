@@ -1,0 +1,15 @@
+role: judgment
+provider: gemini-api
+model: gemini-3.1-pro-preview
+attempts: 1
+duration_seconds: 38.571
+findings:
+- severity: WARN
+  target_location: '## 8. 推奨着手順'
+  description: 冒頭段落の「D-011 から D-014 は...後続品質改善として扱う」という記載が、直後のリストおよび理由説明と矛盾している。
+  rationale: 実際の着手順リストでは、D-012が14番目に独立して配置され、D-011, D-013, D-014が18〜19番目に配置されています。理由の箇条書きでも「D-011、D-013、D-014
+    は...後続品質改善として扱う」と正しく分割されているため、冒頭のまとめ文を修正して整合性を取る必要があります。
+- severity: INFO
+  target_location: '### D-010 規律本体の adapter 化改訂'
+  description: サブ見出しが「検討する対象：」となっており、他の全項目で使用されている「検討する実装：」とフォーマットが異なっている。
+  rationale: 規律の改訂であるため「実装」という表現を避けた意図的な変更の可能性もありますが、ドキュメント全体の項目フォーマットの一貫性を保つ観点からは統一することが望ましいです。

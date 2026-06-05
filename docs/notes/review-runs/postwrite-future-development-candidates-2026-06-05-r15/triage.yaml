@@ -1,0 +1,156 @@
+run_id: postwrite-future-development-candidates-2026-06-05-r15
+triage_status: decided
+generated_at: '2026-06-05T10:31:12.169406+00:00'
+decision_actor: null
+decision_actor_type: human
+items:
+- finding_id: postwrite-future-development-candidates-2026-06-05-r15-claude-sonnet-4-6-primary-001
+  run_id: postwrite-future-development-candidates-2026-06-05-r15
+  source_model: claude-sonnet-4-6
+  source_round: r15
+  source_raw_path: raw/claude-sonnet-4-6.r15.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.r15.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: docs/notes/2026-06-05-future-development-candidates.md § 3 D-004
+  plain_language_summary: D-004 の schema comparison table 作成は「D-004 着手時」に実施と明記されており、現時点では未実施であることがドキュメント自身に記載されている。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: codex_main_session
+  decision_actor_type: agent
+  decision_at: '2026-06-05T10:31:57.936291+00:00'
+  decision_reason: D-004着手時に実施する事項として明記済みであり、候補メモでは現状維持する。
+  applied_files: []
+  superseded_by: null
+- finding_id: postwrite-future-development-candidates-2026-06-05-r15-claude-sonnet-4-6-primary-002
+  run_id: postwrite-future-development-candidates-2026-06-05-r15
+  source_model: claude-sonnet-4-6
+  source_round: r15
+  source_raw_path: raw/claude-sonnet-4-6.r15.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.r15.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: docs/notes/2026-06-05-future-development-candidates.md § 4 D-009
+  plain_language_summary: D-009 の baseline locator（参照 note、candidate review-run directory、variant、role
+    assignment、raw response paths の候補列挙）は「D-009 着手前に作成する」とされているが、現時点では未作成。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: codex_main_session
+  decision_actor_type: agent
+  decision_at: '2026-06-05T10:31:57.989391+00:00'
+  decision_reason: baseline locatorはD-009着手前タスクとして扱うため現状維持する。
+  applied_files: []
+  superseded_by: null
+- finding_id: postwrite-future-development-candidates-2026-06-05-r15-claude-sonnet-4-6-primary-003
+  run_id: postwrite-future-development-candidates-2026-06-05-r15
+  source_model: claude-sonnet-4-6
+  source_round: r15
+  source_raw_path: raw/claude-sonnet-4-6.r15.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.r15.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: docs/notes/2026-06-05-future-development-candidates.md § 8 推奨着手順
+  plain_language_summary: D-021 readiness report で旧素材混入・外部配置失敗・相対リンク違反・スコープ外宿題が検出された場合、D-022
+    または D-024 を D-004 より前へ繰り上げると明記されているが、その繰り上げを誰がどのタイミングで判断・記録するかの手続きは明示されていない。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: codex_main_session
+  decision_actor_type: agent
+  decision_at: '2026-06-05T10:31:58.044455+00:00'
+  decision_reason: 繰り上げ判断はD-021 readiness reportにescalation noteとして記録する方針で足りるため現状維持する。
+  applied_files: []
+  superseded_by: null
+- finding_id: postwrite-future-development-candidates-2026-06-05-r15-claude-sonnet-4-6-primary-004
+  run_id: postwrite-future-development-candidates-2026-06-05-r15
+  source_model: claude-sonnet-4-6
+  source_round: r15
+  source_raw_path: raw/claude-sonnet-4-6.r15.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.r15.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: docs/notes/2026-06-05-future-development-candidates.md § 6 D-020
+  plain_language_summary: D-020 は D-021 の deployment readiness を前提とすると明記されているが、D-020
+    の成功条件（同一 schema で event / finding / TDD cycle / cost / model assignment を取得し、同じ集計表へ取り込めること）の検証方法・担当・受入基準が具体化されていない。
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: codex_main_session
+  decision_actor_type: agent
+  decision_at: '2026-06-05T10:31:58.097061+00:00'
+  decision_reason: D-020 pilot reportがdeployment smoke、data acquisition run、analysis
+    importの3結果を記録して検証することを追記した。
+  applied_files: []
+  superseded_by: null
+- finding_id: postwrite-future-development-candidates-2026-06-05-r15-claude-sonnet-4-6-primary-005
+  run_id: postwrite-future-development-candidates-2026-06-05-r15
+  source_model: claude-sonnet-4-6
+  source_round: r15
+  source_raw_path: raw/claude-sonnet-4-6.r15.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.r15.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: docs/notes/2026-06-05-future-development-candidates.md § 3 D-007
+  plain_language_summary: 自律・並列実行 ledger 強化（D-007）で、実装 diff を並列に作る場合は統合前に main session
+    review を必須化するとあるが、その必須化を強制する guard の実装候補・配置先・検査タイミングが本文では未定義。
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: codex_main_session
+  decision_actor_type: agent
+  decision_at: '2026-06-05T10:31:58.149488+00:00'
+  decision_reason: D-007にledger guardまたはpre-integration checkでintegration_result、diff
+    refs、main session review refsを検査する候補を追記した。
+  applied_files: []
+  superseded_by: null
+- finding_id: postwrite-future-development-candidates-2026-06-05-r15-gpt-5.4-adversarial-001
+  run_id: postwrite-future-development-candidates-2026-06-05-r15
+  source_model: gpt-5.4
+  source_round: r15
+  source_raw_path: raw/gpt-5.4.r15.txt
+  source_parsed_path: parsed/gpt-5.4.r15.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: '## 8. 推奨着手順'
+  plain_language_summary: 推奨着手順に D-022 が含まれている一方で、D-023 が欠落しています。
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: codex_main_session
+  decision_actor_type: agent
+  decision_at: '2026-06-05T10:31:58.201348+00:00'
+  decision_reason: D-023は8番で扱うと明記し、D-021結果による繰り上げ対象にもD-023を含めた。
+  applied_files: []
+  superseded_by: null
+- finding_id: postwrite-future-development-candidates-2026-06-05-r15-gpt-5.4-adversarial-002
+  run_id: postwrite-future-development-candidates-2026-06-05-r15
+  source_model: gpt-5.4
+  source_round: r15
+  source_raw_path: raw/gpt-5.4.r15.txt
+  source_parsed_path: parsed/gpt-5.4.r15.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: '## 3. 優先検討項目 / D-004 normalized finding schema の設計'
+  plain_language_summary: 候補フィールド一覧にない `linked` 系参照が最低契約の説明に登場しています。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: codex_main_session
+  decision_actor_type: agent
+  decision_at: '2026-06-05T10:31:58.253917+00:00'
+  decision_reason: linked系という表現はTDD cycle evidenceのlinked_finding_ids等を含む一般表現として許容し、現状維持する。
+  applied_files: []
+  superseded_by: null
+- finding_id: postwrite-future-development-candidates-2026-06-05-r15-gpt-5.4-adversarial-003
+  run_id: postwrite-future-development-candidates-2026-06-05-r15
+  source_model: gpt-5.4
+  source_round: r15
+  source_raw_path: raw/gpt-5.4.r15.txt
+  source_parsed_path: parsed/gpt-5.4.r15.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: '## 8. 推奨着手順'
+  plain_language_summary: 『高優先度群の中で何から着手するかは本節の推奨着手順を正とする』という運用ルールが、このメモの『正本ではない』という位置づけとやや緊張関係にあります。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: codex_main_session
+  decision_actor_type: agent
+  decision_at: '2026-06-05T10:31:58.306461+00:00'
+  decision_reason: 本メモは正本ではなく推奨着手順の議論メモであるため、緊張関係は位置づけ文で許容されている。
+  applied_files: []
+  superseded_by: null

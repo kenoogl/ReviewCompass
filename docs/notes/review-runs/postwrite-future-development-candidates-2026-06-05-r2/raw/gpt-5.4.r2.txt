@@ -1,0 +1,15 @@
+findings:
+  - severity: WARN
+    target_location: "docs/notes/2026-06-05-future-development-candidates.md §6 / D-018 false-positive reversal の明示記録"
+    description: "D-018 は『低優先度または研究寄り』セクションに配置されている一方で、項目内の優先度表示が『中』になっている。"
+    rationale: "セクション見出しと個別項目の優先度が不一致だと、後続で優先順位表や実施計画へ転記する際に解釈がぶれる。文書自体が候補の優先整理を目的としているため、分類軸の整合性は重要。"
+
+  - severity: WARN
+    target_location: "docs/notes/2026-06-05-future-development-candidates.md §6 / D-019 時間・コスト・モデル割当の記録"
+    description: "D-019 は『低優先度または研究寄り』セクションに配置されている一方で、項目内の優先度表示が『中』になっている。"
+    rationale: "優先度の二重表現が一致していないため、一覧化・トリアージ・バックログ化の際に誤って中優先タスクとして扱われる可能性がある。セクション分類か個別優先度のどちらかを揃えるべき。"
+
+  - severity: INFO
+    target_location: "docs/notes/2026-06-05-future-development-candidates.md §7 推奨着手順"
+    description: "推奨着手順では D-011 から D-014、D-018 から D-020 が順序列に含まれておらず、全候補に対する扱いが明示されていない。"
+    rationale: "必須ではないが、将来このメモをそのまま実行順の参考に使う場合、未列挙項目が『意図的に後回しなのか』『記載漏れなのか』判別しづらい。『上位推奨のみ列挙』等の注記があると運用上より明確になる。"

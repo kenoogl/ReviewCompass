@@ -1,0 +1,12 @@
+role: adversarial
+provider: openai-api
+model: gpt-5.4
+attempts: 1
+duration_seconds: 4.467
+findings:
+- severity: WARN
+  target_location: docs/notes/2026-06-05-future-development-candidates.md §3 D-004
+    normalized finding schema の設計
+  description: スキーマ候補フィールドの列挙が箇条書きとして構造化されておらず、文書上で1つの独立項目として見えてしまう。
+  rationale: 「- `finding_id`」から始まる連続行が通常の箇条書きになっておらず、候補フィールド一覧としての可読性と転記容易性が下がる。将来この一覧を設計メモや
+    schema draft に転用する際に、項目境界の誤読や抜け漏れの原因になりうる。

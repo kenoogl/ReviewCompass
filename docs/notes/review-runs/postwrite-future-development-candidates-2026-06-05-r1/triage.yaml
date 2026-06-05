@@ -1,0 +1,135 @@
+run_id: postwrite-future-development-candidates-2026-06-05-r1
+triage_status: decided
+generated_at: '2026-06-05T09:27:54.010996+00:00'
+decision_actor: null
+decision_actor_type: human
+items:
+- finding_id: postwrite-future-development-candidates-2026-06-05-r1-claude-sonnet-4-6-primary-001
+  run_id: postwrite-future-development-candidates-2026-06-05-r1
+  source_model: claude-sonnet-4-6
+  source_round: r1
+  source_raw_path: raw/claude-sonnet-4-6.r1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.r1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: docs/notes/2026-06-05-future-development-candidates.md § 3 D-004
+  plain_language_summary: normalized finding schema の設計で列挙されたフィールド群（finding_id, source_model
+    等）に、既存 `learning/workflow/schemas/` との重複・衝突確認が明示されていない。
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: codex_main_session
+  decision_actor_type: agent
+  decision_at: '2026-06-05T09:30:13.776933+00:00'
+  decision_reason: 既存 learning/workflow/schemas との重複・衝突確認を D-004 に追記したため、反映済み should-fix
+    として閉じる。
+  applied_files: []
+  superseded_by: null
+- finding_id: postwrite-future-development-candidates-2026-06-05-r1-claude-sonnet-4-6-primary-002
+  run_id: postwrite-future-development-candidates-2026-06-05-r1
+  source_model: claude-sonnet-4-6
+  source_round: r1
+  source_raw_path: raw/claude-sonnet-4-6.r1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.r1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: docs/notes/2026-06-05-future-development-candidates.md § 7 推奨着手順
+  plain_language_summary: 推奨着手順に D-005（finding-to-fix traceability）が含まれていない。本文では優先度：高とされているが、順序リストから抜け落ちている。
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: codex_main_session
+  decision_actor_type: agent
+  decision_at: '2026-06-05T09:30:13.833002+00:00'
+  decision_reason: D-005 を推奨着手順に追加し、D-004 と連続して扱う理由を追記したため、反映済み should-fix として閉じる。
+  applied_files: []
+  superseded_by: null
+- finding_id: postwrite-future-development-candidates-2026-06-05-r1-claude-sonnet-4-6-primary-003
+  run_id: postwrite-future-development-candidates-2026-06-05-r1
+  source_model: claude-sonnet-4-6
+  source_round: r1
+  source_raw_path: raw/claude-sonnet-4-6.r1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.r1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: docs/notes/2026-06-05-future-development-candidates.md § 4 D-009
+  plain_language_summary: post-write verification 収束基準の再検討（D-009）は優先度：中とされているが、D-010
+    規律本体の adapter 化改訂（§ 7 で着手順 8 位）と post-write verification が連動する旨の言及があり、依存関係が明確でない。
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: codex_main_session
+  decision_actor_type: agent
+  decision_at: '2026-06-05T09:30:13.889478+00:00'
+  decision_reason: D-009 と D-010 の関係を本文と推奨着手順に追記したため、反映済み should-fix として閉じる。
+  applied_files: []
+  superseded_by: null
+- finding_id: postwrite-future-development-candidates-2026-06-05-r1-gpt-5.4-adversarial-001
+  run_id: postwrite-future-development-candidates-2026-06-05-r1
+  source_model: gpt-5.4
+  source_round: r1
+  source_raw_path: raw/gpt-5.4.r1.txt
+  source_parsed_path: parsed/gpt-5.4.r1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: '## 7. 推奨着手順'
+  plain_language_summary: 優先検討項目として列挙した D-005 が推奨着手順から漏れている。
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: codex_main_session
+  decision_actor_type: agent
+  decision_at: '2026-06-05T09:30:13.944318+00:00'
+  decision_reason: D-005 を推奨着手順に追加したため、反映済み should-fix として閉じる。
+  applied_files: []
+  superseded_by: null
+- finding_id: postwrite-future-development-candidates-2026-06-05-r1-gpt-5.4-adversarial-002
+  run_id: postwrite-future-development-candidates-2026-06-05-r1
+  source_model: gpt-5.4
+  source_round: r1
+  source_raw_path: raw/gpt-5.4.r1.txt
+  source_parsed_path: parsed/gpt-5.4.r1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: '## 3. 優先検討項目 / ## 4. 中優先度の検討項目 / ## 6. 低優先度または研究寄りの検討項目'
+  plain_language_summary: 優先度表記が本文見出しの区分と各項目内の記載で混在しており、一部は『低から中』のような中間表現になっている。
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: codex_main_session
+  decision_actor_type: agent
+  decision_at: '2026-06-05T09:30:13.999675+00:00'
+  decision_reason: 低から中の曖昧表現を中または低へ正規化したため、反映済み should-fix として閉じる。
+  applied_files: []
+  superseded_by: null
+- finding_id: postwrite-future-development-candidates-2026-06-05-r1-gemini-3.1-pro-preview-judgment-001
+  run_id: postwrite-future-development-candidates-2026-06-05-r1
+  source_model: gemini-3.1-pro-preview
+  source_round: r1
+  source_raw_path: raw/gemini-3.1-pro-preview.r1.txt
+  source_parsed_path: parsed/gemini-3.1-pro-preview.r1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: 7. 推奨着手順
+  plain_language_summary: 高優先度項目である「D-005 finding-to-fix traceability の強化」が推奨着手順から漏れている
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: codex_main_session
+  decision_actor_type: agent
+  decision_at: '2026-06-05T09:30:14.055104+00:00'
+  decision_reason: D-005 を推奨着手順に追加したため、反映済み should-fix として閉じる。
+  applied_files: []
+  superseded_by: null
+- finding_id: postwrite-future-development-candidates-2026-06-05-r1-gemini-3.1-pro-preview-judgment-002
+  run_id: postwrite-future-development-candidates-2026-06-05-r1
+  source_model: gemini-3.1-pro-preview
+  source_round: r1
+  source_raw_path: raw/gemini-3.1-pro-preview.r1.txt
+  source_parsed_path: parsed/gemini-3.1-pro-preview.r1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: 5. feature 個別の品質改善候補 および 6. 低優先度または研究寄りの検討項目
+  plain_language_summary: 一部の項目で「目的」や「議論内容」の見出しが省略されており、フォーマットが一貫していない
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: codex_main_session
+  decision_actor_type: agent
+  decision_at: '2026-06-05T09:30:14.109893+00:00'
+  decision_reason: D-015 以降に目的・議論内容を補い、記載粒度を揃えたため、反映済み should-fix として閉じる。
+  applied_files: []
+  superseded_by: null

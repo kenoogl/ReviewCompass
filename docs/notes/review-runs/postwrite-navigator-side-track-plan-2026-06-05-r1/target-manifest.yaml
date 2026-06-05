@@ -1,0 +1,4 @@
+run_id: postwrite-navigator-side-track-plan-2026-06-05-r1
+target_files:
+- path: docs/notes/2026-06-05-future-development-candidates.md
+  sha256: 23c51cc91784e728142781ac13955dba1f904ea9946b4aba690bfd4e15f0d4f6

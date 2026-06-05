@@ -1,0 +1,203 @@
+run_id: postwrite-future-development-candidates-2026-06-05-r6
+triage_status: decided
+generated_at: '2026-06-05T09:47:23.342732+00:00'
+decision_actor: null
+decision_actor_type: human
+items:
+- finding_id: postwrite-future-development-candidates-2026-06-05-r6-claude-sonnet-4-6-primary-001
+  run_id: postwrite-future-development-candidates-2026-06-05-r6
+  source_model: claude-sonnet-4-6
+  source_round: r6
+  source_raw_path: raw/claude-sonnet-4-6.r6.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.r6.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: docs/notes/2026-06-05-future-development-candidates.md, Section
+    0
+  plain_language_summary: Document correctly identifies itself as a discussion-starting
+    list rather than an authoritative work order, and acknowledges the canonical workflow
+    tool.
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: codex_main_session
+  decision_actor_type: agent
+  decision_at: '2026-06-05T09:48:16.857504+00:00'
+  decision_reason: 文書の位置づけを正しく評価した肯定的INFOであり、修正不要。
+  applied_files: []
+  superseded_by: null
+- finding_id: postwrite-future-development-candidates-2026-06-05-r6-claude-sonnet-4-6-primary-002
+  run_id: postwrite-future-development-candidates-2026-06-05-r6
+  source_model: claude-sonnet-4-6
+  source_round: r6
+  source_raw_path: raw/claude-sonnet-4-6.r6.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.r6.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: docs/notes/2026-06-05-future-development-candidates.md, Section
+    8 (推奨着手順)
+  plain_language_summary: The recommended order explicitly states that D-numbers reflect
+    discovery order, not priority order, and provides rationale for each grouping.
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: codex_main_session
+  decision_actor_type: agent
+  decision_at: '2026-06-05T09:48:16.922103+00:00'
+  decision_reason: 推奨順の説明を正しく評価した肯定的INFOであり、修正不要。
+  applied_files: []
+  superseded_by: null
+- finding_id: postwrite-future-development-candidates-2026-06-05-r6-claude-sonnet-4-6-primary-003
+  run_id: postwrite-future-development-candidates-2026-06-05-r6
+  source_model: claude-sonnet-4-6
+  source_round: r6
+  source_raw_path: raw/claude-sonnet-4-6.r6.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.r6.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: docs/notes/2026-06-05-future-development-candidates.md, D-004
+  plain_language_summary: D-004 instructs a schema overlap check against existing
+    schemas under learning/workflow/schemas/ before implementation, but does not name
+    specific files or fields to check, leaving the pre-condition underspecified.
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: codex_main_session
+  decision_actor_type: agent
+  decision_at: '2026-06-05T09:48:16.985427+00:00'
+  decision_reason: D-004の最低限の確認対象schemaファイルと確認すべきfield例を追記した。
+  applied_files: []
+  superseded_by: null
+- finding_id: postwrite-future-development-candidates-2026-06-05-r6-claude-sonnet-4-6-primary-004
+  run_id: postwrite-future-development-candidates-2026-06-05-r6
+  source_model: claude-sonnet-4-6
+  source_round: r6
+  source_raw_path: raw/claude-sonnet-4-6.r6.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.r6.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: docs/notes/2026-06-05-future-development-candidates.md, D-009
+  plain_language_summary: D-009 states that reproduction conditions will be recorded
+    at the time of work, but the document does not identify which existing raw responses
+    or trial records should serve as baseline inputs for that reproduction.
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: codex_main_session
+  decision_actor_type: agent
+  decision_at: '2026-06-05T09:48:17.047833+00:00'
+  decision_reason: D-009のbaseline inputとして試行メモとdocs/notes/review-runs配下の関連runを明記した。
+  applied_files: []
+  superseded_by: null
+- finding_id: postwrite-future-development-candidates-2026-06-05-r6-claude-sonnet-4-6-primary-005
+  run_id: postwrite-future-development-candidates-2026-06-05-r6
+  source_model: claude-sonnet-4-6
+  source_round: r6
+  source_raw_path: raw/claude-sonnet-4-6.r6.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.r6.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: docs/notes/2026-06-05-future-development-candidates.md, D-024
+  plain_language_summary: D-024 references deduplication against D-008, D-011, and
+    D-019 but does not specify how backlog schema overlap will be detected or recorded
+    if those items are implemented in separate sessions.
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: codex_main_session
+  decision_actor_type: agent
+  decision_at: '2026-06-05T09:48:17.109883+00:00'
+  decision_reason: D-024の重複検出・記録方法としてrelated_candidate_idsとoverlap_resolutionを追記した。
+  applied_files: []
+  superseded_by: null
+- finding_id: postwrite-future-development-candidates-2026-06-05-r6-claude-sonnet-4-6-primary-006
+  run_id: postwrite-future-development-candidates-2026-06-05-r6
+  source_model: claude-sonnet-4-6
+  source_round: r6
+  source_raw_path: raw/claude-sonnet-4-6.r6.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.r6.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: docs/notes/2026-06-05-future-development-candidates.md, Section
+    1 (調査対象)
+  plain_language_summary: The list of inspected sources is explicit and traceable
+    to named files, which supports future auditability of how items were derived.
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: codex_main_session
+  decision_actor_type: agent
+  decision_at: '2026-06-05T09:48:17.169851+00:00'
+  decision_reason: 調査対象の明示性を評価した肯定的INFOであり、修正不要。
+  applied_files: []
+  superseded_by: null
+- finding_id: postwrite-future-development-candidates-2026-06-05-r6-claude-sonnet-4-6-primary-007
+  run_id: postwrite-future-development-candidates-2026-06-05-r6
+  source_model: claude-sonnet-4-6
+  source_round: r6
+  source_raw_path: raw/claude-sonnet-4-6.r6.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.r6.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: docs/notes/2026-06-05-future-development-candidates.md, D-006 and
+    D-007
+  plain_language_summary: D-006 and D-007 share overlapping implementation concerns
+    (raw sha256, ledger schema, fail-closed behavior) but are listed as separate items
+    without cross-referencing each other.
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: codex_main_session
+  decision_actor_type: agent
+  decision_at: '2026-06-05T09:48:17.236888+00:00'
+  decision_reason: D-006/D-007は隣接するが、proxy decision auditabilityとautonomous ledgerで目的が異なるため現状維持する。
+  applied_files: []
+  superseded_by: null
+- finding_id: postwrite-future-development-candidates-2026-06-05-r6-gpt-5.4-adversarial-001
+  run_id: postwrite-future-development-candidates-2026-06-05-r6
+  source_model: gpt-5.4
+  source_round: r6
+  source_raw_path: raw/gpt-5.4.r6.txt
+  source_parsed_path: parsed/gpt-5.4.r6.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: '## 2. 全体判断 / ## 8. 推奨着手順'
+  plain_language_summary: 優先度群と推奨着手順の関係が一部ねじれており、読者が『高優先度』と『実際の推奨順』を同一視すると誤解しうる。
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: codex_main_session
+  decision_actor_type: agent
+  decision_at: '2026-06-05T09:48:17.301139+00:00'
+  decision_reason: 優先度ラベルは重要度の目安で、推奨着手順は依存関係・検証準備・外部展開readinessを加味した実行順であると明記した。
+  applied_files: []
+  superseded_by: null
+- finding_id: postwrite-future-development-candidates-2026-06-05-r6-gpt-5.4-adversarial-002
+  run_id: postwrite-future-development-candidates-2026-06-05-r6
+  source_model: gpt-5.4
+  source_round: r6
+  source_raw_path: raw/gpt-5.4.r6.txt
+  source_parsed_path: parsed/gpt-5.4.r6.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: '## 3. 優先検討項目 / D-004 normalized finding schema の設計'
+  plain_language_summary: 既存 schema との重複・責務境界の確認結果を記録する必要性が追記されており、将来の schema 衝突防止に有益。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: codex_main_session
+  decision_actor_type: agent
+  decision_at: '2026-06-05T09:48:17.362095+00:00'
+  decision_reason: 既に反映済みの改善を評価した肯定的INFOであり、修正不要。
+  applied_files: []
+  superseded_by: null
+- finding_id: postwrite-future-development-candidates-2026-06-05-r6-gpt-5.4-adversarial-003
+  run_id: postwrite-future-development-candidates-2026-06-05-r6
+  source_model: gpt-5.4
+  source_round: r6
+  source_raw_path: raw/gpt-5.4.r6.txt
+  source_parsed_path: parsed/gpt-5.4.r6.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: '## 4. 中優先度の検討項目 / D-009 post-write verification の収束基準の再検討'
+  plain_language_summary: 再現条件として prompt・variant・model assignment・raw response path
+    の記録を要求しており、検討可能性が高い。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: codex_main_session
+  decision_actor_type: agent
+  decision_at: '2026-06-05T09:48:17.422548+00:00'
+  decision_reason: 既に反映済みの改善を評価した肯定的INFOであり、修正不要。
+  applied_files: []
+  superseded_by: null

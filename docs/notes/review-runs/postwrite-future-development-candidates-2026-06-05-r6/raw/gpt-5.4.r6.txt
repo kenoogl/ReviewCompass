@@ -1,0 +1,15 @@
+findings:
+  - severity: WARN
+    target_location: "## 2. 全体判断 / ## 8. 推奨着手順"
+    description: "優先度群と推奨着手順の関係が一部ねじれており、読者が『高優先度』と『実際の推奨順』を同一視すると誤解しうる。"
+    rationale: "D-008 は §3 で高優先度だが推奨順では 9 位、D-021 は §7 の追加項目ながら 4 位に置かれている。本文に『D 番号は優先度順ではない』とはあるが、『高/中/低優先度』と『推奨着手順』が別軸であることをより明示しないと、後続で backlog 化する際に優先度解釈の揺れが起きやすい。"
+
+  - severity: INFO
+    target_location: "## 3. 優先検討項目 / D-004 normalized finding schema の設計"
+    description: "既存 schema との重複・責務境界の確認結果を記録する必要性が追記されており、将来の schema 衝突防止に有益。"
+    rationale: "post-write 観点では、単なる候補列挙に留まらず、既存 `learning/workflow/schemas/` との比較記録を成果物として求めている点は、後続設計時の再検討漏れを防ぐ前向きな補強になっている。"
+
+  - severity: INFO
+    target_location: "## 4. 中優先度の検討項目 / D-009 post-write verification の収束基準の再検討"
+    description: "再現条件として prompt・variant・model assignment・raw response path の記録を要求しており、検討可能性が高い。"
+    rationale: "本項目は現象論だけでなく、後で再分析可能な証跡要件まで明示しているため、future development candidate としての具体性が十分ある。文書品質上の欠陥ではないが、実行可能性を高める良い記述である。"

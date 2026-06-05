@@ -1,0 +1,20 @@
+findings:
+  - severity: INFO
+    target_location: "docs/notes/2026-06-05-future-development-candidates.md § 2 全体判断"
+    description: "Section 2 lists 6 numbered groups (1–6) but the introductory sentence says '大きく分けると、検討項目は次の 5 群に整理できる' while the actual enumeration contains 6 items."
+    rationale: "The stated count (5) does not match the list that follows (6 items). Readers scanning the document will notice the discrepancy; correcting the count or the list prevents confusion about scope."
+
+  - severity: INFO
+    target_location: "docs/notes/2026-06-05-future-development-candidates.md § 8 推奨着手順"
+    description: "The recommended order places D-021 at position 4, but D-021 is classified as 優先度：高 in § 7, while D-004 and D-005 (also 高) are placed at positions 5–6. The rationale paragraph explains the placement, but the ordering is not fully consistent with the stated priority labels."
+    rationale: "When a reader uses the priority labels to filter candidates, the mismatch between label and ordering position may cause misinterpretation. A note clarifying that position 4 is an early checkpoint rather than a lower-priority slot would resolve ambiguity."
+
+  - severity: INFO
+    target_location: "docs/notes/2026-06-05-future-development-candidates.md § 4 D-009"
+    description: "D-009 is described as not a prerequisite for D-010 ('D-009 は D-010 の完全な前提ではないが'), yet § 8 rationale says 'D-009 は D-010 の規律変更時に post-write verification の収束を安定させるため、D-010 より前に検討する.' This creates a minor logical tension between the item description and the ordering rationale."
+    rationale: "The two statements are not contradictory but may confuse a reader who reads D-009's own section first and then sees the stronger dependency implied in § 8. Aligning the wording in D-009 with the § 8 rationale would make the dependency relationship clearer."
+
+  - severity: INFO
+    target_location: "docs/notes/2026-06-05-future-development-candidates.md § 3 D-004"
+    description: "D-004 references 'learning/workflow/schemas/ 配下の既存 schema 群' as a conflict-check target but does not provide any concrete field-level overlap analysis or a pointer to where that analysis will be recorded."
+    rationale: "Without even a placeholder for the conflict-check outcome, implementers may skip the check or record it inconsistently. Adding a note such as 'conflict-check result to be filed at learning/workflow/schemas/conflict-check-D004.md' would make the intent actionable."

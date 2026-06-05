@@ -1,0 +1,85 @@
+run_id: postwrite-future-development-candidates-2026-06-05-r12
+triage_status: decided
+generated_at: '2026-06-05T10:08:31.869030+00:00'
+decision_actor: null
+decision_actor_type: human
+items:
+- finding_id: postwrite-future-development-candidates-2026-06-05-r12-claude-sonnet-4-6-primary-001
+  run_id: postwrite-future-development-candidates-2026-06-05-r12
+  source_model: claude-sonnet-4-6
+  source_round: r12
+  source_raw_path: raw/claude-sonnet-4-6.r12.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.r12.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: docs/notes/2026-06-05-future-development-candidates.md, Section
+    3, D-004
+  plain_language_summary: D-004 の normalized finding schema 設計において、既存 schema との確認が未実施である旨が明記されており、着手時の設計ノート作成が求められている。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: codex_main_session
+  decision_actor_type: agent
+  decision_at: '2026-06-05T10:08:48.800006+00:00'
+  decision_reason: D-004着手時に設計ノートで扱う事項として明記済みであり、候補メモでは現状維持する。
+  applied_files: []
+  superseded_by: null
+- finding_id: postwrite-future-development-candidates-2026-06-05-r12-claude-sonnet-4-6-primary-002
+  run_id: postwrite-future-development-candidates-2026-06-05-r12
+  source_model: claude-sonnet-4-6
+  source_round: r12
+  source_raw_path: raw/claude-sonnet-4-6.r12.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.r12.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: docs/notes/2026-06-05-future-development-candidates.md, Section
+    4, D-009
+  plain_language_summary: D-009 の再現条件（対象 prompt、variant、model assignment、raw response
+    path）の記録が着手時まで保留されている。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: codex_main_session
+  decision_actor_type: agent
+  decision_at: '2026-06-05T10:08:48.847938+00:00'
+  decision_reason: D-009着手時に再現条件を記録する方針であり、候補メモでは現状維持する。
+  applied_files: []
+  superseded_by: null
+- finding_id: postwrite-future-development-candidates-2026-06-05-r12-claude-sonnet-4-6-primary-003
+  run_id: postwrite-future-development-candidates-2026-06-05-r12
+  source_model: claude-sonnet-4-6
+  source_round: r12
+  source_raw_path: raw/claude-sonnet-4-6.r12.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.r12.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: docs/notes/2026-06-05-future-development-candidates.md, Section
+    7, D-024
+  plain_language_summary: D-024 の backlog item に `related_candidate_ids` と `overlap_resolution`
+    の記録が求められているが、本文リスト内での D-008 / D-011 / D-019 との具体的な overlap 解決方針は詳述されていない。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: codex_main_session
+  decision_actor_type: agent
+  decision_at: '2026-06-05T10:08:48.896668+00:00'
+  decision_reason: D-024着手時のbacklog schemaで具体化する事項であり、候補メモでは現状維持する。
+  applied_files: []
+  superseded_by: null
+- finding_id: postwrite-future-development-candidates-2026-06-05-r12-claude-sonnet-4-6-primary-004
+  run_id: postwrite-future-development-candidates-2026-06-05-r12
+  source_model: claude-sonnet-4-6
+  source_round: r12
+  source_raw_path: raw/claude-sonnet-4-6.r12.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.r12.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: docs/notes/2026-06-05-future-development-candidates.md, Section
+    8
+  plain_language_summary: 推奨着手順において、D-013 と D-014 が D-022 / D-024 より後の位置に置かれているが、D-014
+    の commit/push guard 強化は D-021 の deployment smoke と部分的に関連する可能性がある。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: codex_main_session
+  decision_actor_type: agent
+  decision_at: '2026-06-05T10:08:48.943991+00:00'
+  decision_reason: D-014は関連可能性があるが、D-021の主目的はdeployment/data acquisition readinessであり、guard強化は後続品質改善として現状維持する。
+  applied_files: []
+  superseded_by: null

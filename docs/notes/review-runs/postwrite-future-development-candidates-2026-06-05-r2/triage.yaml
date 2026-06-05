@@ -1,0 +1,98 @@
+run_id: postwrite-future-development-candidates-2026-06-05-r2
+triage_status: decided
+generated_at: '2026-06-05T09:30:58.681797+00:00'
+decision_actor: null
+decision_actor_type: human
+items:
+- finding_id: postwrite-future-development-candidates-2026-06-05-r2-gpt-5.4-adversarial-001
+  run_id: postwrite-future-development-candidates-2026-06-05-r2
+  source_model: gpt-5.4
+  source_round: r2
+  source_raw_path: raw/gpt-5.4.r2.txt
+  source_parsed_path: parsed/gpt-5.4.r2.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: docs/notes/2026-06-05-future-development-candidates.md §6 / D-018
+    false-positive reversal の明示記録
+  plain_language_summary: D-018 は『低優先度または研究寄り』セクションに配置されている一方で、項目内の優先度表示が『中』になっている。
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: codex_main_session
+  decision_actor_type: agent
+  decision_at: '2026-06-05T09:32:36.672373+00:00'
+  decision_reason: 分類見出しを研究・展開寄りへ変更し、D-018 の優先度とのずれを解消した。
+  applied_files: []
+  superseded_by: null
+- finding_id: postwrite-future-development-candidates-2026-06-05-r2-gpt-5.4-adversarial-002
+  run_id: postwrite-future-development-candidates-2026-06-05-r2
+  source_model: gpt-5.4
+  source_round: r2
+  source_raw_path: raw/gpt-5.4.r2.txt
+  source_parsed_path: parsed/gpt-5.4.r2.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: docs/notes/2026-06-05-future-development-candidates.md §6 / D-019
+    時間・コスト・モデル割当の記録
+  plain_language_summary: D-019 は『低優先度または研究寄り』セクションに配置されている一方で、項目内の優先度表示が『中』になっている。
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: codex_main_session
+  decision_actor_type: agent
+  decision_at: '2026-06-05T09:32:41.903792+00:00'
+  decision_reason: 分類見出しを研究・展開寄りへ変更し、D-019 の優先度とのずれを解消した。
+  applied_files: []
+  superseded_by: null
+- finding_id: postwrite-future-development-candidates-2026-06-05-r2-gpt-5.4-adversarial-003
+  run_id: postwrite-future-development-candidates-2026-06-05-r2
+  source_model: gpt-5.4
+  source_round: r2
+  source_raw_path: raw/gpt-5.4.r2.txt
+  source_parsed_path: parsed/gpt-5.4.r2.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: docs/notes/2026-06-05-future-development-candidates.md §7 推奨着手順
+  plain_language_summary: 推奨着手順では D-011 から D-014、D-018 から D-020 が順序列に含まれておらず、全候補に対する扱いが明示されていない。
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: codex_main_session
+  decision_actor_type: agent
+  decision_at: '2026-06-05T09:32:47.229413+00:00'
+  decision_reason: 推奨着手順が全候補の扱いを否定しないことを明記し、D-011 から D-014 と D-018 から D-020 を第二波・研究展開候補として順序に追加した。
+  applied_files: []
+  superseded_by: null
+- finding_id: postwrite-future-development-candidates-2026-06-05-r2-gemini-3.1-pro-preview-judgment-001
+  run_id: postwrite-future-development-candidates-2026-06-05-r2
+  source_model: gemini-3.1-pro-preview
+  source_round: r2
+  source_raw_path: raw/gemini-3.1-pro-preview.r2.txt
+  source_parsed_path: parsed/gemini-3.1-pro-preview.r2.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: 6. 低優先度または研究寄りの検討項目 > D-018 false-positive reversal の明示記録
+  plain_language_summary: 「主な根拠：」セクションが欠落している
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: codex_main_session
+  decision_actor_type: agent
+  decision_at: '2026-06-05T09:32:52.988310+00:00'
+  decision_reason: D-018 に主な根拠を追加し、他項目と同じ説明粒度に揃えた。
+  applied_files: []
+  superseded_by: null
+- finding_id: postwrite-future-development-candidates-2026-06-05-r2-gemini-3.1-pro-preview-judgment-002
+  run_id: postwrite-future-development-candidates-2026-06-05-r2
+  source_model: gemini-3.1-pro-preview
+  source_round: r2
+  source_raw_path: raw/gemini-3.1-pro-preview.r2.txt
+  source_parsed_path: parsed/gemini-3.1-pro-preview.r2.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: 7. 推奨着手順
+  plain_language_summary: D-011〜D-014の項目が推奨着手順に言及されていない
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: codex_main_session
+  decision_actor_type: agent
+  decision_at: '2026-06-05T09:33:00.289456+00:00'
+  decision_reason: 推奨着手順に D-011 から D-014 の扱いを明記し、第二波の品質改善候補として位置づけた。
+  applied_files: []
+  superseded_by: null

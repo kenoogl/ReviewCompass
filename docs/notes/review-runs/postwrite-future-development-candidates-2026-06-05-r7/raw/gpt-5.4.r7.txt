@@ -1,0 +1,10 @@
+findings:
+  - severity: WARN
+    target_location: "docs/notes/2026-06-05-future-development-candidates.md §8 推奨着手順"
+    description: "優先度ラベルと推奨着手順の整合が一部弱く、高優先度項目 D-022〜D-024 が中優先度項目や低優先度項目より後ろにまとめられている。"
+    rationale: "本メモは議論の出発点としての一覧化が目的だが、読者は推奨着手順を事実上の優先順位として読む可能性が高い。優先度と実行順が異なること自体は明記されているものの、D-021 が高優先度で早期着手なのに対して、同じ再構築計画由来の D-022〜D-024 が一括で末尾に置かれており、依存関係や後回しの根拠をもう一段明確化しないと優先判断の解釈ぶれが残る。"
+
+  - severity: INFO
+    target_location: "docs/notes/2026-06-05-future-development-candidates.md 全体"
+    description: "将来候補一覧としての体裁・根拠・目的整理は十分で、post-write 時点で追加の重大な欠落は見当たらない。"
+    rationale: "各候補に目的、背景、議論内容、検討する実装、主な根拠が揃っており、completed 後の開発候補メモとして再利用しやすい。軽微な順序解釈の余地はあるが、将来開発候補の整理文書としては成立している。"

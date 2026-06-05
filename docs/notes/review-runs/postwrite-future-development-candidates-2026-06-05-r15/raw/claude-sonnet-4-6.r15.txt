@@ -1,0 +1,21 @@
+findings:
+  - severity: INFO
+    target_location: "docs/notes/2026-06-05-future-development-candidates.md § 3 D-004"
+    description: "D-004 の schema comparison table 作成は「D-004 着手時」に実施と明記されており、現時点では未実施であることがドキュメント自身に記載されている。"
+    rationale: "将来開発候補リストとして意図的に未実施を明示しているため問題ではないが、着手時に既存 schema 群（proposal / metrics / carry-forward register / rollback / triage.yaml）との責務境界整理が必須であることを確認として記録する。"
+  - severity: INFO
+    target_location: "docs/notes/2026-06-05-future-development-candidates.md § 4 D-009"
+    description: "D-009 の baseline locator（参照 note、candidate review-run directory、variant、role assignment、raw response paths の候補列挙）は「D-009 着手前に作成する」とされているが、現時点では未作成。"
+    rationale: "将来候補リストとしての記述であり構造的欠陥ではないが、D-009 着手前にこの locator が実際に作成されないと、再現条件の特定が困難になる点を確認として残す。"
+  - severity: INFO
+    target_location: "docs/notes/2026-06-05-future-development-candidates.md § 8 推奨着手順"
+    description: "D-021 readiness report で旧素材混入・外部配置失敗・相対リンク違反・スコープ外宿題が検出された場合、D-022 または D-024 を D-004 より前へ繰り上げると明記されているが、その繰り上げを誰がどのタイミングで判断・記録するかの手続きは明示されていない。"
+    rationale: "escalation note を readiness report に記録するとあるが、繰り上げ判断の承認者・タイミング・記録先が未定義のため、実施時に曖昧さが残る可能性がある。"
+  - severity: WARN
+    target_location: "docs/notes/2026-06-05-future-development-candidates.md § 6 D-020"
+    description: "D-020 は D-021 の deployment readiness を前提とすると明記されているが、D-020 の成功条件（同一 schema で event / finding / TDD cycle / cost / model assignment を取得し、同じ集計表へ取り込めること）の検証方法・担当・受入基準が具体化されていない。"
+    rationale: "cross-repository replication は論文化の核心であり、成功条件が抽象的なまま着手すると、複数ケースのデータ比較可能性が保証されない。D-021 readiness report の段階で受入基準を具体化しておくことが推奨される。"
+  - severity: WARN
+    target_location: "docs/notes/2026-06-05-future-development-candidates.md § 3 D-007"
+    description: "自律・並列実行 ledger 強化（D-007）で、実装 diff を並列に作る場合は統合前に main session review を必須化するとあるが、その必須化を強制する guard の実装候補・配置先・検査タイミングが本文では未定義。"
+    rationale: "並列実行で最もリスクが高いのは統合判断の根拠欠落であり、必須化の意図が強調されているにもかかわらず、その強制手段が具体化されていないと、将来の実装時に見落とされる可能性がある。"

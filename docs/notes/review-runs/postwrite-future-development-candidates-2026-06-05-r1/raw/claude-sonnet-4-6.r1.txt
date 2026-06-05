@@ -1,0 +1,13 @@
+findings:
+  - severity: INFO
+    target_location: "docs/notes/2026-06-05-future-development-candidates.md § 3 D-004"
+    description: "normalized finding schema の設計で列挙されたフィールド群（finding_id, source_model 等）に、既存 `learning/workflow/schemas/` との重複・衝突確認が明示されていない。"
+    rationale: "既存 schema 群との整合を確認せずに新 schema を設計すると、後で統合コストが生じる。参照先として言及はあるが、差分整理の手順が記載されていない点は、実装着手前に補足しておく価値がある。"
+  - severity: INFO
+    target_location: "docs/notes/2026-06-05-future-development-candidates.md § 7 推奨着手順"
+    description: "推奨着手順に D-005（finding-to-fix traceability）が含まれていない。本文では優先度：高とされているが、順序リストから抜け落ちている。"
+    rationale: "D-004 normalized finding schema と D-005 finding-to-fix traceability は密接に関連しており、schema 設計後に着手すべき項目として順序リストに明示されないと、実装計画から漏れるリスクがある。"
+  - severity: INFO
+    target_location: "docs/notes/2026-06-05-future-development-candidates.md § 4 D-009"
+    description: "post-write verification 収束基準の再検討（D-009）は優先度：中とされているが、D-010 規律本体の adapter 化改訂（§ 7 で着手順 8 位）と post-write verification が連動する旨の言及があり、依存関係が明確でない。"
+    rationale: "D-010 の規律変更には post-write verification が必要とされているが、D-009 で収束基準が未確定のまま D-010 を実行すると検証ループが不安定になる可能性がある。依存関係を明記するか着手順を調整すると安全側に倒せる。"

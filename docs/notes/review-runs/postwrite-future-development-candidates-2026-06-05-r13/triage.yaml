@@ -1,0 +1,202 @@
+run_id: postwrite-future-development-candidates-2026-06-05-r13
+triage_status: decided
+generated_at: '2026-06-05T10:26:15.757313+00:00'
+decision_actor: null
+decision_actor_type: human
+items:
+- finding_id: postwrite-future-development-candidates-2026-06-05-r13-claude-sonnet-4-6-primary-001
+  run_id: postwrite-future-development-candidates-2026-06-05-r13
+  source_model: claude-sonnet-4-6
+  source_round: r13
+  source_raw_path: raw/claude-sonnet-4-6.r13.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.r13.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: docs/notes/2026-06-05-future-development-candidates.md, Section
+    2 (全体判断)
+  plain_language_summary: Section 2 lists 8 numbered groups but the numbering jumps
+    from 7 to 8 without a group label for number 8 in the introductory list, while
+    the body covers all items.
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: codex_main_session
+  decision_actor_type: agent
+  decision_at: '2026-06-05T10:27:13.869089+00:00'
+  decision_reason: 分類数を7群から8群へ修正し、実際の列挙数と一致させた。
+  applied_files: []
+  superseded_by: null
+- finding_id: postwrite-future-development-candidates-2026-06-05-r13-claude-sonnet-4-6-primary-002
+  run_id: postwrite-future-development-candidates-2026-06-05-r13
+  source_model: claude-sonnet-4-6
+  source_round: r13
+  source_raw_path: raw/claude-sonnet-4-6.r13.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.r13.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: docs/notes/2026-06-05-future-development-candidates.md, D-004 (normalized
+    finding schema)
+  plain_language_summary: D-004 notes that schema comparison with existing schemas
+    in learning/workflow/schemas/ is 'not yet performed', explicitly flagging it as
+    a prerequisite task for D-004 design work.
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: codex_main_session
+  decision_actor_type: agent
+  decision_at: '2026-06-05T10:27:13.931569+00:00'
+  decision_reason: D-004の未実施明示を評価したINFOであり、修正不要。
+  applied_files: []
+  superseded_by: null
+- finding_id: postwrite-future-development-candidates-2026-06-05-r13-claude-sonnet-4-6-primary-003
+  run_id: postwrite-future-development-candidates-2026-06-05-r13
+  source_model: claude-sonnet-4-6
+  source_round: r13
+  source_raw_path: raw/claude-sonnet-4-6.r13.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.r13.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: docs/notes/2026-06-05-future-development-candidates.md, Section
+    8 (推奨着手順)
+  plain_language_summary: D-021 escalation path to D-022 or D-024 is described only
+    in the rationale section at the bottom of Section 8, not as a conditional branch
+    visible in the ordered list itself.
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: codex_main_session
+  decision_actor_type: agent
+  decision_at: '2026-06-05T10:27:14.000413+00:00'
+  decision_reason: 条件分岐は理由欄で十分説明しており、ordered listへ入れると候補一覧として過剰になるため現状維持する。
+  applied_files: []
+  superseded_by: null
+- finding_id: postwrite-future-development-candidates-2026-06-05-r13-claude-sonnet-4-6-primary-004
+  run_id: postwrite-future-development-candidates-2026-06-05-r13
+  source_model: claude-sonnet-4-6
+  source_round: r13
+  source_raw_path: raw/claude-sonnet-4-6.r13.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.r13.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: docs/notes/2026-06-05-future-development-candidates.md, D-009 (post-write
+    verification 収束基準)
+  plain_language_summary: D-009 states that 'baseline input' for reproducing the convergence-loop
+    problem is docs/notes/2026-05-31-item2-proxy-and-postwrite-verification-trial.md
+    and related review-run paths, but the specific prompt variant, model assignment,
+    and raw response paths required to reproduce are deferred to a future 'design
+    note at D-009 start'. If those inputs are lost or difficult to reconstruct before
+    D-009 begins, the baseline may be unrecoverable.
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: codex_main_session
+  decision_actor_type: agent
+  decision_at: '2026-06-05T10:27:14.061760+00:00'
+  decision_reason: D-009着手前にbaseline locatorを作成し、note、review-run directory、variant、role
+    assignment、raw response paths候補を列挙すると追記した。
+  applied_files: []
+  superseded_by: null
+- finding_id: postwrite-future-development-candidates-2026-06-05-r13-gpt-5.4-adversarial-001
+  run_id: postwrite-future-development-candidates-2026-06-05-r13
+  source_model: gpt-5.4
+  source_round: r13
+  source_raw_path: raw/gpt-5.4.r13.txt
+  source_parsed_path: parsed/gpt-5.4.r13.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: '## 2. 全体判断'
+  plain_language_summary: 検討項目数の記述が実際の列挙数と一致していない。
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: codex_main_session
+  decision_actor_type: agent
+  decision_at: '2026-06-05T10:27:14.122503+00:00'
+  decision_reason: 分類数を8群へ修正した。
+  applied_files: []
+  superseded_by: null
+- finding_id: postwrite-future-development-candidates-2026-06-05-r13-gpt-5.4-adversarial-002
+  run_id: postwrite-future-development-candidates-2026-06-05-r13
+  source_model: gpt-5.4
+  source_round: r13
+  source_raw_path: raw/gpt-5.4.r13.txt
+  source_parsed_path: parsed/gpt-5.4.r13.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: '## 3. 優先検討項目 / D-020 cross-repository replication'
+  plain_language_summary: 優先度が『高』である D-020 が『中優先度の検討項目』節ではなく『研究・展開寄りの検討項目』節に配置されており、節構成と優先度の対応が一貫していない。
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: codex_main_session
+  decision_actor_type: agent
+  decision_at: '2026-06-05T10:27:14.183995+00:00'
+  decision_reason: D-020を含む節見出しを研究評価・外部展開の検討項目へ変更し、優先度と節名のずれを緩和した。
+  applied_files: []
+  superseded_by: null
+- finding_id: postwrite-future-development-candidates-2026-06-05-r13-gpt-5.4-adversarial-003
+  run_id: postwrite-future-development-candidates-2026-06-05-r13
+  source_model: gpt-5.4
+  source_round: r13
+  source_raw_path: raw/gpt-5.4.r13.txt
+  source_parsed_path: parsed/gpt-5.4.r13.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: '## 8. 推奨着手順'
+  plain_language_summary: D-015 から D-017、D-013 から D-014 のように範囲指定でまとめており、個別順位が不明確である。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: codex_main_session
+  decision_actor_type: agent
+  decision_at: '2026-06-05T10:27:14.245498+00:00'
+  decision_reason: 範囲指定は候補一覧の粒度として許容し、個別順位は各項目着手時に決めるため現状維持する。
+  applied_files: []
+  superseded_by: null
+- finding_id: postwrite-future-development-candidates-2026-06-05-r13-gemini-3.1-pro-preview-judgment-001
+  run_id: postwrite-future-development-candidates-2026-06-05-r13
+  source_model: gemini-3.1-pro-preview
+  source_round: r13
+  source_raw_path: raw/gemini-3.1-pro-preview.r13.txt
+  source_parsed_path: parsed/gemini-3.1-pro-preview.r13.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: 2. 全体判断
+  plain_language_summary: 検討項目の群数と実際のリスト項目の数の不一致
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: codex_main_session
+  decision_actor_type: agent
+  decision_at: '2026-06-05T10:28:01.424727+00:00'
+  decision_reason: 分類数を8群へ修正し、リスト項目数との不一致を解消した。
+  applied_files: []
+  superseded_by: null
+- finding_id: postwrite-future-development-candidates-2026-06-05-r13-gemini-3.1-pro-preview-judgment-002
+  run_id: postwrite-future-development-candidates-2026-06-05-r13
+  source_model: gemini-3.1-pro-preview
+  source_round: r13
+  source_raw_path: raw/gemini-3.1-pro-preview.r13.txt
+  source_parsed_path: parsed/gemini-3.1-pro-preview.r13.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: 3. 優先検討項目 および 8. 推奨着手順
+  plain_language_summary: D番号の配置順と「発見・追記順」という説明の矛盾
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: codex_main_session
+  decision_actor_type: agent
+  decision_at: '2026-06-05T10:28:01.484251+00:00'
+  decision_reason: D番号は発見・追記順ではなく安定識別子であると説明を変更した。
+  applied_files: []
+  superseded_by: null
+- finding_id: postwrite-future-development-candidates-2026-06-05-r13-gemini-3.1-pro-preview-judgment-003
+  run_id: postwrite-future-development-candidates-2026-06-05-r13
+  source_model: gemini-3.1-pro-preview
+  source_round: r13
+  source_raw_path: raw/gemini-3.1-pro-preview.r13.txt
+  source_parsed_path: parsed/gemini-3.1-pro-preview.r13.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: 3. 優先検討項目 > D-010
+  plain_language_summary: 小見出しフォーマットの不統一
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: codex_main_session
+  decision_actor_type: agent
+  decision_at: '2026-06-05T10:28:01.545152+00:00'
+  decision_reason: 小見出しの差は内容上の不整合ではなく、候補の性質に応じた表現差として現状維持する。
+  applied_files: []
+  superseded_by: null

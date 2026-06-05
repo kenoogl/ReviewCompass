@@ -1,0 +1,75 @@
+role: primary
+provider: anthropic-api
+model: claude-sonnet-4-6
+attempts: 1
+duration_seconds: 26.951
+findings:
+- severity: INFO
+  target_location: docs/notes/2026-06-05-future-development-candidates.md § 0. 位置づけ
+  description: Document correctly identifies itself as a discussion-starting memo
+    rather than a workflow authority, and notes that the workflow source of truth
+    remains `tools/check-workflow-action.py next --json` and `spec.json`.
+  rationale: Positioning is accurate and reduces risk of this memo being mistaken
+    for an actionable work-order document.
+- severity: INFO
+  target_location: docs/notes/2026-06-05-future-development-candidates.md § 3. D-004
+  description: D-004 explicitly defers schema-conflict resolution with existing `learning/workflow/schemas/`
+    artifacts to design-time, naming the specific fields and files that need comparison.
+  rationale: Deferral is acceptable for a planning memo, and the concrete checklist
+    (`decision_status`, `decision_actor`, `evidence_refs`, `resolution_commit`, `false_positive_reversal`)
+    reduces the risk of the conflict going unnoticed at implementation time.
+- severity: WARN
+  target_location: docs/notes/2026-06-05-future-development-candidates.md § 8. 推奨着手順
+  description: The ordering rationale states D-022 and D-024 may be pulled ahead of
+    D-004 if D-021 reveals blockers, but no concrete trigger condition or escalation
+    mechanism is defined to enforce this conditional re-ordering.
+  rationale: Without a stated detection mechanism (e.g., a specific D-021 output field
+    or threshold), the conditional promotion of D-022/D-024 may be overlooked in practice,
+    leaving old-material contamination or scope-backlog gaps unaddressed before data-collection
+    work begins.
+- severity: WARN
+  target_location: docs/notes/2026-06-05-future-development-candidates.md § 3. D-001
+    through D-008 (all marked 優先度：高)
+  description: Eight items are simultaneously marked high-priority with no intra-group
+    relative ordering provided, while the recommended execution order in §8 does give
+    a sequence. The disconnect between the per-item priority label and the §8 ordering
+    rationale may cause confusion about which items to start first within the high-priority
+    group.
+  rationale: Readers scanning per-item priority labels may treat all eight as equally
+    urgent rather than following the §8 sequence, particularly if §8 is consulted
+    separately from the individual item descriptions.
+- severity: INFO
+  target_location: docs/notes/2026-06-05-future-development-candidates.md § 3. D-009
+  description: D-009 correctly notes it is not a hard prerequisite for D-010 but recommends
+    prior confirmation to stabilize post-write verification loops before D-010 body
+    edits begin. Baseline input sources are explicitly named.
+  rationale: The soft-ordering guidance is appropriately hedged and traceable to source
+    material.
+- severity: INFO
+  target_location: docs/notes/2026-06-05-future-development-candidates.md § 4. D-013
+  description: D-013 proposes structured flags (`requires_approval`, `affects_auditability`,
+    `affects_raw_integrity`) to supplement label-based important-item detection, addressing
+    the identified gap where context-sensitive should-fix items are missed by simple
+    label filtering.
+  rationale: The proposed extension is well-scoped and grounded in a concrete observed
+    failure mode from the workflow-management triage.
+- severity: WARN
+  target_location: docs/notes/2026-06-05-future-development-candidates.md § 6. D-020
+    and § 7. D-021
+  description: D-020 (cross-repository replication) and D-021 (deployable reconstruction
+    readiness) share substantial overlap in their implementation candidates (project-independent
+    inputs, adapter checklist, same-schema metrics), yet no explicit cross-reference
+    or deduplication note exists between the two items.
+  rationale: Without a deduplication note, parallel work on D-020 and D-021 may produce
+    redundant or inconsistent artifacts. The D-024 section acknowledges a similar
+    risk for other item pairs and provides `related_candidate_ids` / `overlap_resolution`
+    guidance, but this pattern is not applied to D-020 vs D-021.
+- severity: INFO
+  target_location: docs/notes/2026-06-05-future-development-candidates.md § 7. D-024
+  description: D-024 introduces a `related_candidate_ids` and `overlap_resolution`
+    convention for backlog items to prevent duplicate tracking across sessions. This
+    pattern is useful but is applied only prospectively to D-024 itself and not retrospectively
+    to other candidate pairs (e.g., D-008/D-019, D-006/D-007) that also share field-level
+    overlap.
+  rationale: Inconsistent application of the deduplication convention may result in
+    schema conflicts at implementation time for pairs outside D-024's scope.

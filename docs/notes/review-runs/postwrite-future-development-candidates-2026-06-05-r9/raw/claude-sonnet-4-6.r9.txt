@@ -1,0 +1,25 @@
+findings:
+  - severity: INFO
+    target_location: "docs/notes/2026-06-05-future-development-candidates.md, セクション全体"
+    description: "文書は24項目（D-001からD-024）の開発候補を、優先度・背景・議論・検討実装・根拠の形式で網羅的に記載しており、構造的整合性は高い。"
+    rationale: "future_development_candidates_post_write_check の観点では、各候補が目的・背景・議論・実装案・根拠を持ち、セクション8の推奨着手順で依存関係も明示されている。重大な欠落や矛盾は検出されない。"
+
+  - severity: WARN
+    target_location: "セクション3, D-004 normalized finding schema の設計"
+    description: "「実装前には、既存の learning/workflow/schemas/ 配下の schema と重複・衝突しないかを確認する」と記載されているが、確認対象リストが列挙されているだけで、確認が完了したかどうかの記録がない。"
+    rationale: "D-004 着手時に設計 note を記録するとされているが、本メモ自体が起点となる文書であるため、確認未実施の状態が明示されていないと、読者が設計作業に入った際に重複確認を省略するリスクがある。「本メモ時点では未確認」と明示するか、確認済みの場合はその結果を記載することが望ましい。"
+
+  - severity: WARN
+    target_location: "セクション8, 推奨着手順"
+    description: "D-022 と D-024 が推奨着手順の最後（18・19番）に置かれているが、D-021 の結果を見て優先順位を再調整するとのみ記載され、再調整のトリガー条件や判断基準が示されていない。"
+    rationale: "「D-021の結果を見て」という表現は、具体的にどの結果が何を示したときに D-022・D-024 を前倒しするかが不明である。将来のセッションで参照した際に、判断根拠が曖昧になるリスクがある。最低限、「deployment readiness report で配置依存性違反が検出された場合は D-022・D-023 を前倒しする」等の条件を付記することが望ましい。"
+
+  - severity: INFO
+    target_location: "セクション3, D-009 post-write verification の収束基準の再検討"
+    description: "「再現条件は D-009 着手時に検討メモとして記録する」と明示されており、ベースライン入力の参照先も示されている。現時点では未着手であることが明確である。"
+    rationale: "候補メモとしての記述範囲を適切に限定しており、着手時の作業義務を本文内で誘導できている。追加アクションは不要。"
+
+  - severity: INFO
+    target_location: "セクション7, D-024 フェーズ4後の宿題 backlog の再整理"
+    description: "「既存の D-008 / D-011 / D-019 と重複しないように4軸で backlog schema を整理する」と記載されており、related_candidate_ids と overlap_resolution の記録も求めている。"
+    rationale: "候補間の重複管理方針が本文内で明示されており、将来の追跡可能性が確保されている。現時点では適切な記述範囲である。"

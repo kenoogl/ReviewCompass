@@ -1,0 +1,15 @@
+findings:
+  - severity: WARN
+    target_location: "§8 推奨着手順"
+    description: "推奨着手順の説明と列挙順に不整合がある。D-009 は D-010 より先行確認すべきと説明している一方、D-015〜D-017 を D-010 より前に挟んでいる。"
+    rationale: "本メモは『作業順序の正本ではない』としつつも実行順の提案を与えているため、依存関係の説明と順序が一致していないと読者が優先度判断を誤る。特に D-009 を D-010 前提の安定化項目として扱うなら、その位置づけは列挙順にも反映した方がよい。"
+
+  - severity: INFO
+    target_location: "文書全体（候補項目の記述方針）"
+    description: "各候補に『目的・背景・議論内容・検討する実装』はあるが、着手判断に必要な完了条件や非目標が明示されていない。"
+    rationale: "future development candidates の整理としては十分だが、後続で候補を proposal 化する際にスコープ膨張や重複着手が起きやすい。特に D-004、D-007、D-008、D-024 のような schema/ledger 系は境界が広いため、完了条件や非目標を短く添えると比較・優先付けがしやすくなる。"
+
+  - severity: INFO
+    target_location: "D-004 normalized finding schema / D-005 finding-to-fix traceability / D-018 false-positive reversal / D-024 フェーズ4後の宿題 backlog の再整理"
+    description: "関連候補間の重複には言及しているが、依存関係・統合方針が候補ごとに均一には記述されていない。"
+    rationale: "D-024 では overlap 管理の記録方針まで踏み込んでいる一方、D-004/D-005/D-018 も schema 上の責務重複が起こりやすい。候補一覧としての可読性は高いが、後続の実装計画化で二重設計を避けるため、関連 ID・先行候補・統合先を統一フォーマットで併記すると運用しやすい。"

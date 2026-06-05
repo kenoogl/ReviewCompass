@@ -1,0 +1,13 @@
+findings:
+  - severity: INFO
+    target_location: "docs/notes/2026-06-05-future-development-candidates.md § 0"
+    description: "位置づけセクションで通常ワークフロー正本との関係が明示されているが、本メモ自体の更新・廃止条件が記載されていない。"
+    rationale: "開発候補リストは時間経過とともに陳腐化する。次フェーズ開始時に本メモをどう扱うか（archive / supersede / living document化）の方針がないと、後続セッションで参照可否の判断が揺れる。"
+  - severity: INFO
+    target_location: "docs/notes/2026-06-05-future-development-candidates.md § 4 D-009"
+    description: "D-009の再現条件記録先として `docs/notes/review-runs/` 配下が参照されているが、該当 run が複数存在しうる場合の特定方法が未定義。"
+    rationale: "着手時に「関連 run」を特定する基準がないと、baseline input の選定が担当者依存になり、再現性が落ちる。具体的な run 識別子または選定ルールを D-009 着手前に補足することで、検討メモの品質が安定する。"
+  - severity: INFO
+    target_location: "docs/notes/2026-06-05-future-development-candidates.md § 8 推奨着手順"
+    description: "推奨着手順リストに D-022・D-023・D-024 がまとめて第16位に置かれているが、D-022とD-023は相互に前提関係がある可能性（D-022の監査結果がD-023の対象範囲に影響する）にもかかわらず、内部順序が明示されていない。"
+    rationale: "実行順序が曖昧なまま後続セッションへ引き継がれると、D-023のlint対象選定がD-022の監査前に固定される恐れがある。注記レベルでもD-022→D-023の順序推奨を付記すると着手時の判断コストが下がる。"

@@ -1,0 +1,100 @@
+run_id: postwrite-future-development-candidates-2026-06-05-r5
+triage_status: decided
+generated_at: '2026-06-05T09:45:24.231027+00:00'
+decision_actor: null
+decision_actor_type: human
+items:
+- finding_id: postwrite-future-development-candidates-2026-06-05-r5-claude-sonnet-4-6-primary-001
+  run_id: postwrite-future-development-candidates-2026-06-05-r5
+  source_model: claude-sonnet-4-6
+  source_round: r5
+  source_raw_path: raw/claude-sonnet-4-6.r5.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.r5.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: '## 3. 優先検討項目 / D-004 normalized finding schema の設計'
+  plain_language_summary: D-004 の検討する実装セクションで、フィールドリスト列挙後に「などを持つ schema を設計する。候補フィールドは次のとおりである。」という文が現れるが、「次のとおりである」と示した後に追加リストが存在せず、リスト自体が前出文より後に来ている。文章の順序が逆転しており、読者が「候補フィールドは次のとおり」と読んだ時点でリストはすでに上に終わっている。
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: codex_main_session
+  decision_actor_type: agent
+  decision_at: '2026-06-05T09:46:10.829117+00:00'
+  decision_reason: D-004の候補フィールド説明をリスト前に移し、列挙後の文を「これらを持つschema」に改めた。
+  applied_files: []
+  superseded_by: null
+- finding_id: postwrite-future-development-candidates-2026-06-05-r5-claude-sonnet-4-6-primary-002
+  run_id: postwrite-future-development-candidates-2026-06-05-r5
+  source_model: claude-sonnet-4-6
+  source_round: r5
+  source_raw_path: raw/claude-sonnet-4-6.r5.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.r5.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: '## 8. 推奨着手順'
+  plain_language_summary: 推奨着手順のリストでは D-009 が D-010 に先行する位置（項目10）に置かれているが、同セクションの説明文では「D-009
+    は D-010 に先行または同時に検討する」と記述されており、単なる先行か同時並行かが未確定のまま番号順に整理されている。また D-009 の項目説明（§4）にも同様の曖昧さがある。
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: codex_main_session
+  decision_actor_type: agent
+  decision_at: '2026-06-05T09:46:10.879263+00:00'
+  decision_reason: D-009はD-010本文変更前に先行確認する、という表現へ統一した。
+  applied_files: []
+  superseded_by: null
+- finding_id: postwrite-future-development-candidates-2026-06-05-r5-claude-sonnet-4-6-primary-003
+  run_id: postwrite-future-development-candidates-2026-06-05-r5
+  source_model: claude-sonnet-4-6
+  source_round: r5
+  source_raw_path: raw/claude-sonnet-4-6.r5.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.r5.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: '## 4. 中優先度の検討項目 / D-009'
+  plain_language_summary: D-009 の背景では「2 系統が ALL_CLEAR でも 1 系統が逐語的・検証可能性レベルの指摘を出し続ける挙動が観察された」と記載されているが、この観察の出典として引用されている
+    `docs/notes/2026-05-31-item2-proxy-and-postwrite-verification-trial.md` のみが根拠とされており、再現条件（実行環境、プロンプト版、モデル）への参照がない。
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: codex_main_session
+  decision_actor_type: agent
+  decision_at: '2026-06-05T09:46:10.930224+00:00'
+  decision_reason: D-009着手時にprompt、variant、model assignment、raw response pathを含む再現条件を記録する旨を追記した。
+  applied_files: []
+  superseded_by: null
+- finding_id: postwrite-future-development-candidates-2026-06-05-r5-claude-sonnet-4-6-primary-004
+  run_id: postwrite-future-development-candidates-2026-06-05-r5
+  source_model: claude-sonnet-4-6
+  source_round: r5
+  source_raw_path: raw/claude-sonnet-4-6.r5.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.r5.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: '## 7. 再構築計画からの追加検討項目 / D-024'
+  plain_language_summary: D-024 の「検討する実装」で「既存の D-008 / D-011 / D-019 と重複しないように backlog
+    schema を整理する」と述べているが、具体的にどの軸で重複を判定するか（例：event type、schema field、測定対象）の記述がなく、重複排除基準が不明確である。
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: codex_main_session
+  decision_actor_type: agent
+  decision_at: '2026-06-05T09:46:10.979825+00:00'
+  decision_reason: D-024の重複判定軸をevent type、schema field、測定対象、モデル割当情報として明記した。
+  applied_files: []
+  superseded_by: null
+- finding_id: postwrite-future-development-candidates-2026-06-05-r5-gpt-5.4-adversarial-001
+  run_id: postwrite-future-development-candidates-2026-06-05-r5
+  source_model: gpt-5.4
+  source_round: r5
+  source_raw_path: raw/gpt-5.4.r5.txt
+  source_parsed_path: parsed/gpt-5.4.r5.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: docs/notes/2026-06-05-future-development-candidates.md §3 D-004
+    normalized finding schema の設計
+  plain_language_summary: スキーマ候補フィールドの列挙が箇条書きとして構造化されておらず、文書上で1つの独立項目として見えてしまう。
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: codex_main_session
+  decision_actor_type: agent
+  decision_at: '2026-06-05T09:46:11.028166+00:00'
+  decision_reason: D-004の候補フィールド列挙を説明文付きの箇条書きとして整理した。
+  applied_files: []
+  superseded_by: null

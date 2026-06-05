@@ -1,0 +1,11 @@
+approved_action: review_run_triage
+approved_by: user
+approval_source: "利用者指示「記入しましょう」（2026-06-05）"
+review_run_id: postwrite-future-development-candidates-2026-06-05-r13
+summary_presented_to_user: true
+triage_presented_to_user: true
+approved_finding_ids:
+  - postwrite-future-development-candidates-2026-06-05-r13-gemini-3.1-pro-preview-judgment-001
+approved_final_labels:
+  postwrite-future-development-candidates-2026-06-05-r13-gemini-3.1-pro-preview-judgment-001: should-fix
+consumed: false

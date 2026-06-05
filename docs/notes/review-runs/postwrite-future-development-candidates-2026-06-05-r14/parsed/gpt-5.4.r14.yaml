@@ -1,0 +1,20 @@
+role: adversarial
+provider: openai-api
+model: gpt-5.4
+attempts: 1
+duration_seconds: 8.971
+findings:
+- severity: WARN
+  target_location: '## 3. 優先検討項目 / D-004 normalized finding schema の設計'
+  description: 候補フィールドに型・必須性・列挙値・一意性などの最小契約がなく、schema 設計候補としては未確定要素が大きい。
+  rationale: post-write verification 観点では、将来開発候補として十分に実装検討可能かを確認する必要がある。フィールド名の列挙だけでは既存
+    schema との責務境界や実装難易度は見えるが、分析基盤や機械検証に必要な最小契約が不足しており、着手時に再設計が発生しやすい。
+- severity: WARN
+  target_location: '## 6. 研究評価・外部展開の検討項目 / D-020 cross-repository replication'
+  description: 高優先度とされている一方で、比較対象リポジトリの選定条件、成功条件、最小実施単位が未定義で、候補としての実行可能性がやや曖昧である。
+  rationale: 将来開発候補リストとしては、外部展開の重要性は十分説明されているが、何をもって replication 成功とするかがないと D-021
+    以降の計画分解が難しい。評価設計が曖昧なままだと、研究目的の比較可能性が実装項目に落ちにくい。
+- severity: INFO
+  target_location: 文書全体
+  description: 各候補に目的・背景・議論内容・実装案・根拠が揃っており、completed 後の追加開発候補一覧としての体裁は概ね整っている。
+  rationale: future development candidates の post-write check 観点では、候補の出所と優先順位が追える構成になっており、次段階の議論メモとして利用しやすい。重大な欠落や自己矛盾は見当たらない。

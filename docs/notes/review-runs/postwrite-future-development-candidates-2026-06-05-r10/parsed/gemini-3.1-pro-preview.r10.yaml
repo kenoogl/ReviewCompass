@@ -1,0 +1,18 @@
+role: judgment
+provider: gemini-api
+model: gemini-3.1-pro-preview
+attempts: 1
+duration_seconds: 35.243
+findings:
+- severity: WARN
+  target_location: 4. 中優先度の検討項目 > D-009 post-write verification の収束基準の再検討
+  description: 「主な根拠：」の箇条書きの後に、再現条件に関する地の文が配置されている
+  rationale: 他の全項目において「主な根拠：」セクションはファイルの末尾に配置され、箇条書きの参照リストのみで構成されている。フォーマットの統一性を保つため、この地の文は「検討する実装：」または「議論内容：」セクションに移動することが望ましい。
+- severity: INFO
+  target_location: 4. 中優先度の検討項目 > D-010 規律本体の adapter 化改訂
+  description: 他の項目で使われている「検討する実装：」ではなく、「検討する対象：」という見出しが使用されている
+  rationale: ドキュメント全体での構造化された項目のパースや、読者の認知負荷軽減の観点から、見出し名称は完全に統一されている方が良い。
+- severity: WARN
+  target_location: 6. 研究・展開寄りの検討項目 > D-020 cross-repository replication
+  description: 優先度が「低」に設定されているが、「8. 推奨着手順」では第6位（全24項目中）と非常に早期の着手が推奨されている
+  rationale: ドキュメント冒頭の「全体判断」において「複数リポジトリでの測定設計の再現」が論文化に向けた主眼とされており、D-020の目的はこれに直結している。重要度の目安である「優先度」が「低」であることと、推奨着手順が高いことの間に論理的な矛盾があり、優先度の設定（本来は「中」または「高」）を見直す必要があると考えられる。

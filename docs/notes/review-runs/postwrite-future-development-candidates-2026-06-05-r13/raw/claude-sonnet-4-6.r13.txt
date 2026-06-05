@@ -1,0 +1,20 @@
+findings:
+  - severity: INFO
+    target_location: "docs/notes/2026-06-05-future-development-candidates.md, Section 2 (全体判断)"
+    description: "Section 2 lists 8 numbered groups but the numbering jumps from 7 to 8 without a group label for number 8 in the introductory list, while the body covers all items."
+    rationale: "Minor structural inconsistency that could cause confusion when cross-referencing the numbered groups to body sections, but does not affect content correctness."
+
+  - severity: INFO
+    target_location: "docs/notes/2026-06-05-future-development-candidates.md, D-004 (normalized finding schema)"
+    description: "D-004 notes that schema comparison with existing schemas in learning/workflow/schemas/ is 'not yet performed', explicitly flagging it as a prerequisite task for D-004 design work."
+    rationale: "The document itself acknowledges this gap and documents it appropriately as a design prerequisite. No corrective action needed beyond awareness that this comparison must occur before D-004 implementation begins."
+
+  - severity: INFO
+    target_location: "docs/notes/2026-06-05-future-development-candidates.md, Section 8 (推奨着手順)"
+    description: "D-021 escalation path to D-022 or D-024 is described only in the rationale section at the bottom of Section 8, not as a conditional branch visible in the ordered list itself."
+    rationale: "Readers scanning the ordered list may miss the conditional escalation rule. A forward reference or note inline with item 1 (D-021) would improve navigability, but the content is not missing, only placement is suboptimal."
+
+  - severity: WARN
+    target_location: "docs/notes/2026-06-05-future-development-candidates.md, D-009 (post-write verification 収束基準)"
+    description: "D-009 states that 'baseline input' for reproducing the convergence-loop problem is docs/notes/2026-05-31-item2-proxy-and-postwrite-verification-trial.md and related review-run paths, but the specific prompt variant, model assignment, and raw response paths required to reproduce are deferred to a future 'design note at D-009 start'. If those inputs are lost or difficult to reconstruct before D-009 begins, the baseline may be unrecoverable."
+    rationale: "The reproduction condition is explicitly marked as not yet recorded, which is appropriate for a future-development candidates document. However, if the raw evidence files are ephemeral or session-scoped, the baseline could be lost before D-009 is scheduled. Flagging as WARN to ensure the deferred recording does not become unrecoverable."

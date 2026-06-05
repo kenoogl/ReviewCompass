@@ -1,0 +1,25 @@
+findings:
+  - severity: INFO
+    target_location: "docs/notes/2026-06-05-future-development-candidates.md, セクション全体"
+    description: "文書は well-structured であり、24項目の開発候補が優先度・根拠・実装案とともに整理されている。重大な構造的欠陥や内容上の誤りは検出されなかった。"
+    rationale: "post_write_verification フェーズにおける future_development_candidates_post_write_check として、文書の完全性・整合性・位置づけの正確性を確認した結果、全体として品質基準を満たしている。"
+
+  - severity: WARN
+    target_location: "セクション 8「推奨着手順」"
+    description: "推奨着手順のリストで D-013、D-014 が本文中で中優先度として独立説明されているにもかかわらず、着手順リストに明示的なエントリとして現れず、「D-011 から D-014」という範囲表現の中に暗黙的に含まれている。一方で D-015 から D-017 は別行として扱われており、扱いに非対称性がある。"
+    rationale: "読者が各候補の着手順を追う際、D-013・D-014 が独立したエントリとして見えないと、スコープ漏れと誤認する可能性がある。候補数と着手順エントリ数の対応を明示するか、範囲表現で包含していることを注記すると誤解が減る。"
+
+  - severity: WARN
+    target_location: "セクション 3 D-004「normalized finding schema の設計」"
+    description: "重複確認対象として `learning/workflow/schemas/` 配下の 5 ファイルを列挙しているが、`rollback.schema.json` は他の 4 ファイルと比べて finding schema との関連が薄く、確認すべき理由が本文中で説明されていない。逆に、`triage.yaml` の構造（finding 相当フィールドを直接持つ）が確認対象リストに含まれていない。"
+    rationale: "D-004 着手時の重複確認が不完全または不要なファイルを含むと、design note 作成コストが上がる。確認対象の選定根拠を一文添えるか、`triage.yaml` の扱いを明示すると、着手時の調査範囲が適切に絞られる。"
+
+  - severity: INFO
+    target_location: "セクション 4 D-009「post-write verification の収束基準の再検討」"
+    description: "再現条件の記録方法として 'D-009 着手時に検討メモとして記録する' と将来タスクとして記述されているが、現時点でベースラインとなる run path が特定可能であれば、本メモ内に仮記録しておくとより参照性が高まる。"
+    rationale: "将来セッションで D-009 に着手する際、参照すべき run が `docs/notes/review-runs/` のどのファイルか本文から特定できない。探索コストを下げるために、既知の run path があれば仮でも記録する価値がある。ただし必須ではないため INFO とする。"
+
+  - severity: INFO
+    target_location: "セクション 7 D-024「フェーズ 4 後の宿題 backlog の再整理」"
+    description: "`related_candidate_ids` と `overlap_resolution` を各 backlog item に記録するとしているが、D-024 自体が D-008・D-011・D-019 との重複を整理する meta-item であるため、D-024 自身の `related_candidate_ids` と `overlap_resolution` がどこに記録されるかが不明である。"
+    rationale: "D-024 が他候補との重複整理を担うメタ項目であるにもかかわらず、自身の重複関係が本文に記載されていないと、着手時に同じ整理を再度行う可能性がある。該当候補 ID を本文に一行添えると自己参照が明確になる。"

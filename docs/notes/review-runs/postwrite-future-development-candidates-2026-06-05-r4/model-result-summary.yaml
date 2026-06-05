@@ -1,0 +1,36 @@
+run_id: postwrite-future-development-candidates-2026-06-05-r4
+models:
+- model_id: claude-sonnet-4-6
+  raw_path: raw/claude-sonnet-4-6.r4.txt
+  parse_status: parsed
+  triage_status: triaged
+  findings_count: 4
+  findings_count_by_severity:
+    INFO: 4
+  must_fix_count: 0
+  should_fix_count: 4
+  leave_as_is_count: 0
+  human_required_count: 0
+- model_id: gpt-5.4
+  raw_path: raw/gpt-5.4.r4.txt
+  parse_status: parsed
+  triage_status: triaged
+  findings_count: 5
+  findings_count_by_severity:
+    WARN: 2
+    INFO: 3
+  must_fix_count: 0
+  should_fix_count: 5
+  leave_as_is_count: 0
+  human_required_count: 0
+- model_id: gemini-3.1-pro-preview
+  raw_path: raw/gemini-3.1-pro-preview.r4.txt
+  parse_status: parsed
+  triage_status: triaged
+  findings_count: 1
+  findings_count_by_severity:
+    WARN: 1
+  must_fix_count: 0
+  should_fix_count: 1
+  leave_as_is_count: 0
+  human_required_count: 0

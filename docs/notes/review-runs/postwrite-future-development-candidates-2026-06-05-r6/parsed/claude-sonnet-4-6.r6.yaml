@@ -1,0 +1,62 @@
+role: primary
+provider: anthropic-api
+model: claude-sonnet-4-6
+attempts: 1
+duration_seconds: 20.925
+findings:
+- severity: INFO
+  target_location: docs/notes/2026-06-05-future-development-candidates.md, Section
+    0
+  description: Document correctly identifies itself as a discussion-starting list
+    rather than an authoritative work order, and acknowledges the canonical workflow
+    tool.
+  rationale: The positioning statement is clear and appropriately scoped. No corrective
+    action needed.
+- severity: INFO
+  target_location: docs/notes/2026-06-05-future-development-candidates.md, Section
+    8 (推奨着手順)
+  description: The recommended order explicitly states that D-numbers reflect discovery
+    order, not priority order, and provides rationale for each grouping.
+  rationale: This is a useful disambiguation that prevents misreading the list as
+    a strict sequence. No corrective action needed.
+- severity: WARN
+  target_location: docs/notes/2026-06-05-future-development-candidates.md, D-004
+  description: D-004 instructs a schema overlap check against existing schemas under
+    learning/workflow/schemas/ before implementation, but does not name specific files
+    or fields to check, leaving the pre-condition underspecified.
+  rationale: Without naming the target schemas, the overlap-check instruction may
+    be skipped or inconsistently applied. Adding concrete file names (e.g., proposal
+    schema, metrics schema, carry-forward register schema) and a checklist of fields
+    to compare would make the precondition verifiable.
+- severity: WARN
+  target_location: docs/notes/2026-06-05-future-development-candidates.md, D-009
+  description: D-009 states that reproduction conditions will be recorded at the time
+    of work, but the document does not identify which existing raw responses or trial
+    records should serve as baseline inputs for that reproduction.
+  rationale: If the relevant raw response paths are not preserved here, they may be
+    difficult to locate later. Referencing the specific paths from docs/notes/2026-05-31-item2-proxy-and-postwrite-verification-trial.md
+    that demonstrate the non-convergence behavior would make the entry self-contained.
+- severity: WARN
+  target_location: docs/notes/2026-06-05-future-development-candidates.md, D-024
+  description: D-024 references deduplication against D-008, D-011, and D-019 but
+    does not specify how backlog schema overlap will be detected or recorded if those
+    items are implemented in separate sessions.
+  rationale: Without a shared schema or cross-reference mechanism, D-024's four-axis
+    backlog schema may silently overlap with schema fields added during D-008 or D-019.
+    Naming where the consolidated schema file will live would reduce this risk.
+- severity: INFO
+  target_location: docs/notes/2026-06-05-future-development-candidates.md, Section
+    1 (調査対象)
+  description: The list of inspected sources is explicit and traceable to named files,
+    which supports future auditability of how items were derived.
+  rationale: No corrective action needed. This is a positive structural choice.
+- severity: INFO
+  target_location: docs/notes/2026-06-05-future-development-candidates.md, D-006 and
+    D-007
+  description: D-006 and D-007 share overlapping implementation concerns (raw sha256,
+    ledger schema, fail-closed behavior) but are listed as separate items without
+    cross-referencing each other.
+  rationale: Adding a mutual cross-reference (e.g., 'see also D-007' in D-006 and
+    vice versa) would help prevent redundant or conflicting implementations when these
+    items are worked on in separate sessions. This is a low-severity documentation
+    quality note rather than a correctness issue.

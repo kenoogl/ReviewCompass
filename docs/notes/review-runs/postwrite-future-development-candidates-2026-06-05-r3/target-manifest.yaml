@@ -1,0 +1,4 @@
+run_id: postwrite-future-development-candidates-2026-06-05-r3
+target_files:
+- path: docs/notes/2026-06-05-future-development-candidates.md
+  sha256: 0a66845772f2efe19dfbf2907727ea7d5533efb55a63ddd2ca2a754c0b8fcff0

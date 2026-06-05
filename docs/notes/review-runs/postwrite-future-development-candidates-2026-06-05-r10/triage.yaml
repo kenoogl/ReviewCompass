@@ -1,0 +1,60 @@
+run_id: postwrite-future-development-candidates-2026-06-05-r10
+triage_status: decided
+generated_at: '2026-06-05T10:03:47.605049+00:00'
+decision_actor: null
+decision_actor_type: human
+items:
+- finding_id: postwrite-future-development-candidates-2026-06-05-r10-gemini-3.1-pro-preview-judgment-001
+  run_id: postwrite-future-development-candidates-2026-06-05-r10
+  source_model: gemini-3.1-pro-preview
+  source_round: r10
+  source_raw_path: raw/gemini-3.1-pro-preview.r10.txt
+  source_parsed_path: parsed/gemini-3.1-pro-preview.r10.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: 4. 中優先度の検討項目 > D-009 post-write verification の収束基準の再検討
+  plain_language_summary: 「主な根拠：」の箇条書きの後に、再現条件に関する地の文が配置されている
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: codex_main_session
+  decision_actor_type: agent
+  decision_at: '2026-06-05T10:04:26.683757+00:00'
+  decision_reason: D-009の再現条件文を主な根拠の前へ移動し、根拠箇条書き後の地の文配置を解消した。
+  applied_files: []
+  superseded_by: null
+- finding_id: postwrite-future-development-candidates-2026-06-05-r10-gemini-3.1-pro-preview-judgment-002
+  run_id: postwrite-future-development-candidates-2026-06-05-r10
+  source_model: gemini-3.1-pro-preview
+  source_round: r10
+  source_raw_path: raw/gemini-3.1-pro-preview.r10.txt
+  source_parsed_path: parsed/gemini-3.1-pro-preview.r10.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: 4. 中優先度の検討項目 > D-010 規律本体の adapter 化改訂
+  plain_language_summary: 他の項目で使われている「検討する実装：」ではなく、「検討する対象：」という見出しが使用されている
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: codex_main_session
+  decision_actor_type: agent
+  decision_at: '2026-06-05T10:04:26.731958+00:00'
+  decision_reason: D-010は実装対象ではなく文書改訂対象を示す項目であり、「検討する対象」は意図的な見出しのため現状維持する。
+  applied_files: []
+  superseded_by: null
+- finding_id: postwrite-future-development-candidates-2026-06-05-r10-gemini-3.1-pro-preview-judgment-003
+  run_id: postwrite-future-development-candidates-2026-06-05-r10
+  source_model: gemini-3.1-pro-preview
+  source_round: r10
+  source_raw_path: raw/gemini-3.1-pro-preview.r10.txt
+  source_parsed_path: parsed/gemini-3.1-pro-preview.r10.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: 6. 研究・展開寄りの検討項目 > D-020 cross-repository replication
+  plain_language_summary: 優先度が「低」に設定されているが、「8. 推奨着手順」では第6位（全24項目中）と非常に早期の着手が推奨されている
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: codex_main_session
+  decision_actor_type: agent
+  decision_at: '2026-06-05T10:04:26.780008+00:00'
+  decision_reason: D-020は論文化に向けた複数ケース評価の中核として早期着手になったため、優先度を低から高へ変更した。
+  applied_files: []
+  superseded_by: null

@@ -1,0 +1,158 @@
+run_id: postwrite-future-development-candidates-2026-06-05-r14
+triage_status: decided
+generated_at: '2026-06-05T10:29:12.852696+00:00'
+decision_actor: null
+decision_actor_type: human
+items:
+- finding_id: postwrite-future-development-candidates-2026-06-05-r14-claude-sonnet-4-6-primary-001
+  run_id: postwrite-future-development-candidates-2026-06-05-r14
+  source_model: claude-sonnet-4-6
+  source_round: r14
+  source_raw_path: raw/claude-sonnet-4-6.r14.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.r14.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: docs/notes/2026-06-05-future-development-candidates.md, Section
+    3, D-004
+  plain_language_summary: D-004 の normalized finding schema 設計において、既存 schema との重複確認が「現時点では未実施」と明記されているが、その確認は
+    D-004 着手時まで意図的に延期されていることが本文中で説明されている。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: codex_main_session
+  decision_actor_type: agent
+  decision_at: '2026-06-05T10:30:06.214240+00:00'
+  decision_reason: D-004の未実施明示に関するINFOであり、修正不要。
+  applied_files: []
+  superseded_by: null
+- finding_id: postwrite-future-development-candidates-2026-06-05-r14-claude-sonnet-4-6-primary-002
+  run_id: postwrite-future-development-candidates-2026-06-05-r14
+  source_model: claude-sonnet-4-6
+  source_round: r14
+  source_raw_path: raw/claude-sonnet-4-6.r14.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.r14.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: docs/notes/2026-06-05-future-development-candidates.md, Section
+    8
+  plain_language_summary: 推奨着手順において D-021 の readiness report で問題が検出された場合に D-022 または
+    D-024 を繰り上げる escalation 条件が示されているが、繰り上げを誰が・どのタイミングで判断するかの明示がない。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: codex_main_session
+  decision_actor_type: agent
+  decision_at: '2026-06-05T10:30:06.268298+00:00'
+  decision_reason: 繰り上げ判断の詳細はD-021 readiness reportで扱うため、候補メモでは現状維持する。
+  applied_files: []
+  superseded_by: null
+- finding_id: postwrite-future-development-candidates-2026-06-05-r14-claude-sonnet-4-6-primary-003
+  run_id: postwrite-future-development-candidates-2026-06-05-r14
+  source_model: claude-sonnet-4-6
+  source_round: r14
+  source_raw_path: raw/claude-sonnet-4-6.r14.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.r14.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: docs/notes/2026-06-05-future-development-candidates.md, Section
+    4, D-009
+  plain_language_summary: D-009 の再現条件として 'baseline locator を作成し、少なくとも参照する note、candidate
+    review-run directory、variant、role assignment、raw response paths の候補を列挙する' とあるが、その
+    baseline locator 文書の作成は D-009 着手前の別タスクとして扱われており、本文書内には含まれていない。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: codex_main_session
+  decision_actor_type: agent
+  decision_at: '2026-06-05T10:30:06.323540+00:00'
+  decision_reason: baseline locatorはD-009着手前タスクとして明記済みであり、本文内には含めない。
+  applied_files: []
+  superseded_by: null
+- finding_id: postwrite-future-development-candidates-2026-06-05-r14-gpt-5.4-adversarial-001
+  run_id: postwrite-future-development-candidates-2026-06-05-r14
+  source_model: gpt-5.4
+  source_round: r14
+  source_raw_path: raw/gpt-5.4.r14.txt
+  source_parsed_path: parsed/gpt-5.4.r14.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: '## 3. 優先検討項目 / D-004 normalized finding schema の設計'
+  plain_language_summary: 候補フィールドに型・必須性・列挙値・一意性などの最小契約がなく、schema 設計候補としては未確定要素が大きい。
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: codex_main_session
+  decision_actor_type: agent
+  decision_at: '2026-06-05T10:30:06.376256+00:00'
+  decision_reason: D-004でfield type、required/optional、許容値、一意性、時刻形式、相互参照先をschema comparison
+    tableに含めると追記した。
+  applied_files: []
+  superseded_by: null
+- finding_id: postwrite-future-development-candidates-2026-06-05-r14-gpt-5.4-adversarial-002
+  run_id: postwrite-future-development-candidates-2026-06-05-r14
+  source_model: gpt-5.4
+  source_round: r14
+  source_raw_path: raw/gpt-5.4.r14.txt
+  source_parsed_path: parsed/gpt-5.4.r14.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: '## 6. 研究評価・外部展開の検討項目 / D-020 cross-repository replication'
+  plain_language_summary: 高優先度とされている一方で、比較対象リポジトリの選定条件、成功条件、最小実施単位が未定義で、候補としての実行可能性がやや曖昧である。
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: codex_main_session
+  decision_actor_type: agent
+  decision_at: '2026-06-05T10:30:06.428891+00:00'
+  decision_reason: D-020に最小実施単位、比較対象リポジトリ選定条件、成功条件を追記した。
+  applied_files: []
+  superseded_by: null
+- finding_id: postwrite-future-development-candidates-2026-06-05-r14-gpt-5.4-adversarial-003
+  run_id: postwrite-future-development-candidates-2026-06-05-r14
+  source_model: gpt-5.4
+  source_round: r14
+  source_raw_path: raw/gpt-5.4.r14.txt
+  source_parsed_path: parsed/gpt-5.4.r14.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: 文書全体
+  plain_language_summary: 各候補に目的・背景・議論内容・実装案・根拠が揃っており、completed 後の追加開発候補一覧としての体裁は概ね整っている。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: codex_main_session
+  decision_actor_type: agent
+  decision_at: '2026-06-05T10:30:06.482252+00:00'
+  decision_reason: 候補一覧としての肯定的INFOであり、修正不要。
+  applied_files: []
+  superseded_by: null
+- finding_id: postwrite-future-development-candidates-2026-06-05-r14-gemini-3.1-pro-preview-judgment-001
+  run_id: postwrite-future-development-candidates-2026-06-05-r14
+  source_model: gemini-3.1-pro-preview
+  source_round: r14
+  source_raw_path: raw/gemini-3.1-pro-preview.r14.txt
+  source_parsed_path: parsed/gemini-3.1-pro-preview.r14.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: '## 8. 推奨着手順'
+  plain_language_summary: 冒頭段落の「D-011 から D-014 は...後続品質改善として扱う」という記載が、直後のリストおよび理由説明と矛盾している。
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: codex_main_session
+  decision_actor_type: agent
+  decision_at: '2026-06-05T10:30:06.534783+00:00'
+  decision_reason: 推奨順の冒頭説明を、D-012はD-006/D-007に近接、D-011/D-013/D-014は後続品質改善として扱う表現へ修正した。
+  applied_files: []
+  superseded_by: null
+- finding_id: postwrite-future-development-candidates-2026-06-05-r14-gemini-3.1-pro-preview-judgment-002
+  run_id: postwrite-future-development-candidates-2026-06-05-r14
+  source_model: gemini-3.1-pro-preview
+  source_round: r14
+  source_raw_path: raw/gemini-3.1-pro-preview.r14.txt
+  source_parsed_path: parsed/gemini-3.1-pro-preview.r14.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: '### D-010 規律本体の adapter 化改訂'
+  plain_language_summary: サブ見出しが「検討する対象：」となっており、他の全項目で使用されている「検討する実装：」とフォーマットが異なっている。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: codex_main_session
+  decision_actor_type: agent
+  decision_at: '2026-06-05T10:30:06.587160+00:00'
+  decision_reason: 見出し差は内容上の不整合ではないため現状維持する。
+  applied_files: []
+  superseded_by: null
