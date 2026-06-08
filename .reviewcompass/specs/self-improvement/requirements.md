@@ -165,6 +165,7 @@ ReviewCompass 固有の追加・変更：
 - 効果測定 7 指標を採用（Requirement 8、§5.16.8 由来、§5.9.5 連動）
 - 隣接仕様として `workflow-management`／`conformance-evaluation` を追加（Boundary Context 隣接期待、計画書 §3.1 由来）
 - 出力先を `learning/workflow/` に限定（Requirement 7 受入 1、§5.16.10 由来）
+- 2026-06-08 の feature-partitioning 再確認により、intent の「レビュー収集処理を事前設定の写像にしない」意図は新機能追加を要さず、self-improvement では Requirement 1 の workflow 層改善限定、Requirement 2 の規律と実体の乖離入力、Requirement 3 の規律提案単位、および Requirement 7 の改善履歴で受けることを確認した。
 
 スコープ外の明示（§5.16.9 由来）：
 
