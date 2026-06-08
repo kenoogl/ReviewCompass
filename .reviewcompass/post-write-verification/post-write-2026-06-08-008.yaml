@@ -1,0 +1,25 @@
+status: completed
+target_files:
+  - docs/operations/WORKFLOW_NAVIGATION.md
+target_sha256:
+  docs/operations/WORKFLOW_NAVIGATION.md: "bc403c1fe00a254cbb112f941615ad8fc5141a8c25337ba90e11d356f3b59c1d"
+required_verifiers:
+  - gemini-3.5-flash
+completed_verifiers:
+  - gemini-3.5-flash
+unresolved_substantive_findings: 0
+verifications:
+  - verifier: gemini-3.5-flash
+    target_files:
+      - docs/operations/WORKFLOW_NAVIGATION.md
+    target_sha256:
+      docs/operations/WORKFLOW_NAVIGATION.md: "bc403c1fe00a254cbb112f941615ad8fc5141a8c25337ba90e11d356f3b59c1d"
+    inspection_criteria:
+      agreement_reflection: pass
+      reference_accuracy: pass
+      existing_record_consistency: pass
+      internal_logic: pass
+    result: all_clear
+notes:
+  - Small-scope post-write verification for adding the upstream_recheck and maintenance side-track guidance to the workflow navigation procedure, including tasks-to-implementation recheck.
+  - No unresolved substantive findings remain.

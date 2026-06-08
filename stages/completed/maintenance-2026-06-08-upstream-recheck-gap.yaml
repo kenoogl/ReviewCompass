@@ -1,0 +1,48 @@
+process_id: maintenance
+title: Upstream recheck workflow gap repair
+started_at: 2026-06-08T00:00:00+09:00
+completed_at: 2026-06-08T00:00:00+09:00
+status: completed
+trigger: "intent 更新後に next が completed を返し、feature-partitioning 確認を飛ばせる抜け穴を利用者が指摘した"
+required_action: continue_maintenance
+mainline_blocked_by: "conformance-evaluation intent 追加後の feature-partitioning 確認"
+side_track_scope:
+  - "workflow-management の next 判定で、完了済み workflow でも上流成果物更新後の再展開を返す"
+  - "intent → feature-partitioning、feature-partitioning → requirements、requirements → design、design → tasks、tasks → implementation を対象にする"
+  - "side track の in-progress 記録を後追いで作成し、未記録で着手した逸脱の原因と対策を明示する"
+allowed_scope:
+  - "upstream_recheck 判定の実装・テスト・仕様・運用文書更新"
+  - "side track 未記録着手の原因分析と再発防止策の記録"
+allowed_files:
+  - tools/check-workflow-action.py
+  - tests/tools/test_check_workflow_action.py
+  - docs/operations/WORKFLOW_NAVIGATION.md
+  - .reviewcompass/specs/workflow-management/requirements.md
+  - .reviewcompass/specs/workflow-management/design.md
+  - .reviewcompass/specs/workflow-management/tasks.md
+  - .reviewcompass/post-write-verification/post-write-2026-06-08-008.yaml
+  - stages/in-progress/maintenance-2026-06-08-upstream-recheck-gap.yaml
+  - stages/completed/maintenance-2026-06-08-upstream-recheck-gap.yaml
+completed_steps:
+  - "upstream_recheck の intent → feature-partitioning 検出テストを追加"
+  - "requirements → design 検出テストを追加"
+  - "tasks → implementation 検出テストを追加"
+  - "tools/check-workflow-action.py に upstream_recheck 判定を実装"
+  - "workflow-management 仕様と WORKFLOW_NAVIGATION に upstream_recheck を反映"
+  - "post-write verification manifest を追加"
+root_cause_analysis:
+  direct_cause: "利用者が workflow の穴を指摘した時点で、通常 next_action から外れる修復作業であるにもかかわらず、maintenance in-progress を先に立てずに実装へ入った"
+  process_cause: "WORKFLOW_NAVIGATION に maintenance_in_progress の読み方と、next 判定自体の欠陥修復へ入る場合の side track 発行手順が明記されていなかった"
+  mechanical_cause: "check-workflow-action.py は in-progress がある場合の優先処理を持つが、通常 next_action から外れた作業を始める前に in-progress が必要かどうかを機械的に問う入口を持っていなかった"
+  scope_cause: "upstream_recheck の実装が本筋を正しく進めるために必要な修復である一方、作業分類として workflow-management の maintenance であることを明示する判断が遅れた"
+countermeasures:
+  - "next_action と異なる作業、または next 判定自体の欠陥修復に入る場合は、ファイル編集前に maintenance in-progress を作成する"
+  - "maintenance in-progress には trigger、mainline_blocked_by、allowed_scope、allowed_files、completion_conditions を記録する"
+  - "WORKFLOW_NAVIGATION に maintenance_in_progress と side track 着手条件を明記する"
+  - "今回の side track 完了前に、next が maintenance_in_progress を返すことを確認する"
+next_step: "side track 手続きを立てずに着手した原因追及と再発防止策を記録する"
+completion_conditions:
+  - "PYTHONPATH=. .venv/bin/pytest tests/tools/test_check_workflow_action.py -q が通る"
+  - ".venv/bin/python3 tools/check-workflow-action.py next --json が maintenance_in_progress を返す"
+  - "side track 未記録で着手した原因と対策が記録されている"
+  - "完了時に本ファイルを stages/completed/ へ移す"

@@ -11,6 +11,7 @@ TDD 規律（AGENTS.md 入口規律）に従い、本テストはスクリプト
 
 import json
 import hashlib
+import os
 import shutil
 import subprocess
 import tempfile
@@ -105,6 +106,39 @@ def _write_specs_for_next(cwd, states_by_feature):
   }
   for feature in FEATURE_ORDER:
     _write_spec(cwd, feature, states_by_feature.get(feature, untouched))
+
+
+def _write_phase_artifact(cwd, relative_path, text, timestamp):
+  """phase 成果物を指定時刻で作る"""
+  path = Path(cwd) / relative_path
+  path.parent.mkdir(parents=True, exist_ok=True)
+  path.write_text(text, encoding="utf-8")
+  os.utime(path, (timestamp, timestamp))
+
+
+def _write_completed_phase_artifacts(cwd, timestamp=1000):
+  """next 再展開検査用の完了済み成果物一式を作る"""
+  _write_phase_artifact(cwd, "intent/INTENT.md", "intent\n", timestamp)
+  _write_phase_artifact(
+    cwd,
+    "stages/feature-partitioning/2026-05-24-proposal.md",
+    "feature partitioning\n",
+    timestamp,
+  )
+  for feature in FEATURE_ORDER:
+    for phase in ("requirements", "design", "tasks"):
+      _write_phase_artifact(
+        cwd,
+        f".reviewcompass/specs/{feature}/{phase}.md",
+        f"{feature} {phase}\n",
+        timestamp,
+      )
+    _write_phase_artifact(
+      cwd,
+      f".reviewcompass/specs/{feature}/implementation-drafting.md",
+      f"{feature} implementation drafting\n",
+      timestamp,
+    )
 
 
 def _write_post_write_manifest(cwd, manifest_name, content):
@@ -1815,6 +1849,99 @@ class NextNavigationTests(unittest.TestCase):
       data["next_action"]["required_disciplines"],
     )
 
+  def test_next_detects_intent_update_requires_feature_partitioning_confirmation(self):
+    """完了済み workflow でも intent が新しければ feature-partitioning 確認を返す"""
+    cwd = Path(self.tmpdir)
+    complete = {
+      "drafting": True,
+      "triad-review": True,
+      "review-wave": True,
+      "alignment": True,
+      "approval": True,
+    }
+    _write_specs_for_next(cwd, {feature: dict(complete) for feature in FEATURE_ORDER})
+    _write_completed_phase_artifacts(cwd, timestamp=1000)
+    _write_phase_artifact(
+      cwd,
+      "intent/INTENT.md",
+      "intent updated\n",
+      timestamp=2000,
+    )
+
+    result = run_script(["next", "--json"], cwd=cwd)
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 0, result.stderr)
+    data = json.loads(result.stdout)
+    self.assertEqual(data["next_action"]["kind"], "upstream_recheck")
+    self.assertEqual(data["next_action"]["phase"], "feature-partitioning")
+    self.assertEqual(data["next_action"]["stage"], "candidate-proposal")
+    self.assertEqual(data["next_action"]["upstream_phase"], "intent")
+    self.assertEqual(
+      data["next_action"]["reason"],
+      "intent 成果物が feature-partitioning 成果物より新しいため、機能分割確認が必要です",
+    )
+
+  def test_next_detects_requirements_update_requires_design_recheck(self):
+    """下流工程でも requirements が新しければ design 再確認を返す"""
+    cwd = Path(self.tmpdir)
+    complete = {
+      "drafting": True,
+      "triad-review": True,
+      "review-wave": True,
+      "alignment": True,
+      "approval": True,
+    }
+    _write_specs_for_next(cwd, {feature: dict(complete) for feature in FEATURE_ORDER})
+    _write_completed_phase_artifacts(cwd, timestamp=1000)
+    _write_phase_artifact(
+      cwd,
+      ".reviewcompass/specs/foundation/requirements.md",
+      "foundation requirements updated\n",
+      timestamp=2000,
+    )
+
+    result = run_script(["next", "--json"], cwd=cwd)
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 0, result.stderr)
+    data = json.loads(result.stdout)
+    self.assertEqual(data["next_action"]["kind"], "upstream_recheck")
+    self.assertEqual(data["next_action"]["feature"], "foundation")
+    self.assertEqual(data["next_action"]["phase"], "design")
+    self.assertEqual(data["next_action"]["stage"], "drafting")
+    self.assertEqual(data["next_action"]["upstream_phase"], "requirements")
+
+  def test_next_detects_tasks_update_requires_implementation_recheck(self):
+    """tasks が implementation 成果物より新しければ implementation 再確認を返す"""
+    cwd = Path(self.tmpdir)
+    complete = {
+      "drafting": True,
+      "triad-review": True,
+      "review-wave": True,
+      "alignment": True,
+      "approval": True,
+    }
+    _write_specs_for_next(cwd, {feature: dict(complete) for feature in FEATURE_ORDER})
+    _write_completed_phase_artifacts(cwd, timestamp=1000)
+    _write_phase_artifact(
+      cwd,
+      ".reviewcompass/specs/foundation/tasks.md",
+      "foundation tasks updated\n",
+      timestamp=2000,
+    )
+
+    result = run_script(["next", "--json"], cwd=cwd)
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 0, result.stderr)
+    data = json.loads(result.stdout)
+    self.assertEqual(data["next_action"]["kind"], "upstream_recheck")
+    self.assertEqual(data["next_action"]["feature"], "foundation")
+    self.assertEqual(data["next_action"]["phase"], "implementation")
+    self.assertEqual(data["next_action"]["stage"], "drafting")
+    self.assertEqual(data["next_action"]["upstream_phase"], "tasks")
+
   def test_next_triad_review_reports_review_run_disciplines(self):
     """triad-review 直前に読むべき review-run/proxy 規律を返す"""
     cwd = Path(self.tmpdir)
@@ -2047,8 +2174,12 @@ class NextNavigationTests(unittest.TestCase):
       "reason: Codex 稼働前に Claude 前提の入口記述を整理する\n"
       "required_action: inspect_remaining_claude_assumptions\n"
       "blocked_normal_workflow: true\n"
+      "mainline_blocked_by: conformance-evaluation feature-partitioning confirmation\n"
       "allowed_scope:\n"
       "  - docs/operations/\n"
+      "  - TODO_NEXT_SESSION.md\n"
+      "allowed_files:\n"
+      "  - docs/operations/WORKFLOW_NAVIGATION.md\n"
       "  - TODO_NEXT_SESSION.md\n"
       "completion_conditions:\n"
       "  - Codex 新規セッションで TODO から開始できる\n",
@@ -2074,8 +2205,16 @@ class NextNavigationTests(unittest.TestCase):
     )
     self.assertTrue(data["next_action"]["blocked_normal_workflow"])
     self.assertEqual(
+      data["next_action"]["mainline_blocked_by"],
+      "conformance-evaluation feature-partitioning confirmation",
+    )
+    self.assertEqual(
       data["next_action"]["allowed_scope"],
       ["docs/operations/", "TODO_NEXT_SESSION.md"],
+    )
+    self.assertEqual(
+      data["next_action"]["allowed_files"],
+      ["docs/operations/WORKFLOW_NAVIGATION.md", "TODO_NEXT_SESSION.md"],
     )
     self.assertEqual(
       data["next_action"]["completion_conditions"],

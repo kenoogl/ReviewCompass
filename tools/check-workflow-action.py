@@ -2351,7 +2351,9 @@ def build_in_progress_next_action(cwd, relative_path):
       "title": data.get("title"),
       "required_action": data.get("required_action", "continue_maintenance"),
       "blocked_normal_workflow": data.get("blocked_normal_workflow", True),
+      "mainline_blocked_by": data.get("mainline_blocked_by"),
       "allowed_scope": data.get("allowed_scope", []),
+      "allowed_files": data.get("allowed_files", []),
       "completion_conditions": data.get("completion_conditions", []),
       "feature": None,
       "phase": None,
@@ -2891,6 +2893,135 @@ def build_cross_stage_next_action(phase, stage, reason):
   }
 
 
+def _max_existing_mtime(cwd, relative_paths):
+  """存在する成果物群の最新更新時刻を返す"""
+  mtimes = []
+  for relative_path in relative_paths:
+    if "*" in relative_path:
+      mtimes.extend(
+        path.stat().st_mtime
+        for path in Path(cwd).glob(relative_path)
+        if path.exists()
+      )
+    else:
+      path = Path(cwd) / relative_path
+      if path.exists():
+        mtimes.append(path.stat().st_mtime)
+  if not mtimes:
+    return None
+  return max(mtimes)
+
+
+def _phase_artifact_paths(feature, phase):
+  """phase の代表成果物パスを返す"""
+  if phase == "intent":
+    return [
+      "intent/INTENT.md",
+      "intent/DESIGN_PRINCIPLES.md",
+      "intent/NON_GOALS.md",
+      "intent/TRACEABILITY.md",
+    ]
+  if phase == "feature-partitioning":
+    return [
+      "stages/feature-partitioning/2026-05-24-proposal.md",
+    ]
+  if phase in ("requirements", "design", "tasks"):
+    return [
+      f".reviewcompass/specs/{feature}/{phase}.md",
+    ]
+  if phase == "implementation":
+    return [
+      f".reviewcompass/specs/{feature}/implementation-drafting.md",
+      f".reviewcompass/specs/{feature}/reviews/*implementation*.md",
+      f".reviewcompass/specs/{feature}/reviews/*implementation*/*.yaml",
+      f".reviewcompass/specs/{feature}/reviews/*implementation*/*.md",
+    ]
+  return []
+
+
+def build_upstream_recheck_next_action(
+  feature,
+  upstream_phase,
+  downstream_phase,
+  downstream_stage,
+  reason,
+):
+  """上流成果物更新に伴う再展開 next_action を作る"""
+  return {
+    "kind": "upstream_recheck",
+    "feature": feature,
+    "phase": downstream_phase,
+    "stage": downstream_stage,
+    "upstream_phase": upstream_phase,
+    "reason": reason,
+  }
+
+
+def resolve_upstream_recheck_action(cwd):
+  """完了済み workflow に対し、上流更新後の再展開漏れを検出する"""
+  intent_mtime = _max_existing_mtime(cwd, _phase_artifact_paths(None, "intent"))
+  partitioning_mtime = _max_existing_mtime(
+    cwd,
+    _phase_artifact_paths(None, "feature-partitioning"),
+  )
+  if (
+    intent_mtime is not None
+    and partitioning_mtime is not None
+    and intent_mtime > partitioning_mtime
+  ):
+    return build_upstream_recheck_next_action(
+      None,
+      "intent",
+      "feature-partitioning",
+      "candidate-proposal",
+      "intent 成果物が feature-partitioning 成果物より新しいため、機能分割確認が必要です",
+    )
+
+  if partitioning_mtime is not None:
+    for feature in FEATURE_ORDER:
+      requirements_mtime = _max_existing_mtime(
+        cwd,
+        _phase_artifact_paths(feature, "requirements"),
+      )
+      if requirements_mtime is not None and partitioning_mtime > requirements_mtime:
+        return build_upstream_recheck_next_action(
+          feature,
+          "feature-partitioning",
+          "requirements",
+          "drafting",
+          f"feature-partitioning 成果物が {feature} requirements 成果物より新しいため、requirements 再確認が必要です",
+        )
+
+  for upstream_phase, downstream_phase in (
+    ("requirements", "design"),
+    ("design", "tasks"),
+    ("tasks", "implementation"),
+  ):
+    for feature in FEATURE_ORDER:
+      upstream_mtime = _max_existing_mtime(
+        cwd,
+        _phase_artifact_paths(feature, upstream_phase),
+      )
+      downstream_mtime = _max_existing_mtime(
+        cwd,
+        _phase_artifact_paths(feature, downstream_phase),
+      )
+      if (
+        upstream_mtime is not None
+        and downstream_mtime is not None
+        and upstream_mtime > downstream_mtime
+      ):
+        return build_upstream_recheck_next_action(
+          feature,
+          upstream_phase,
+          downstream_phase,
+          "drafting",
+          f"{feature} {upstream_phase} 成果物が {downstream_phase} 成果物より新しいため、{downstream_phase} 再確認が必要です",
+        )
+
+  return None
+
+
 def collect_recheck_items(specs, phase):
   """指定 phase に影響する upstream recheck 項目を集める"""
   items = []
@@ -3044,10 +3175,13 @@ def cmd_next(args):
             reasons = [f"{feature} の spec.json が見つかりません" for feature in missing]
             verdict, exit_code = "DEVIATION", 2
           else:
+            resolved_action = resolve_next_action(specs)
+            if resolved_action.get("kind") == "completed":
+              resolved_action = resolve_upstream_recheck_action(cwd) or resolved_action
             next_action = augment_cross_feature_next_action(
               cwd,
               specs,
-              resolve_next_action(specs),
+              resolved_action,
             )
             current_state = {
               "feature_order": FEATURE_ORDER,
@@ -3131,10 +3265,13 @@ def cmd_next(args):
           reasons = [f"{feature} の spec.json が見つかりません" for feature in missing]
           verdict, exit_code = "DEVIATION", 2
         else:
+          resolved_action = resolve_next_action(specs)
+          if resolved_action.get("kind") == "completed":
+            resolved_action = resolve_upstream_recheck_action(cwd) or resolved_action
           next_action = augment_cross_feature_next_action(
             cwd,
             specs,
-            resolve_next_action(specs),
+            resolved_action,
           )
           current_state = {
             "feature_order": FEATURE_ORDER,
