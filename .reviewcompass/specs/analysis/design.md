@@ -779,6 +779,17 @@ analysis/
 - 規律遵守率の集計粒度（基準別・全体・時系列）
 - `limitation_type=mixed_review_mode`（過渡的対処）の運用必要性の再評価（フェーズ 4 完了後、各レビューモードの恒久運用が定着した時点で、本値が日常業務で出現しない場合は廃止または条件付き運用への変更を検討、F-012＋A-009 対処 2026-05-25 セッション 25）
 
+## 実装由来契約の採用（Implementation-Derived Contracts）
+
+### XDI-ANALYSIS-001：取り込み境界と出力先境界の防護
+
+2026-06-08 の機能横断 conformance check で、analysis の実装およびテストが intake boundary guard と destination boundary guard を設計本文より具体に固定していることを確認した。本設計はその差分を実装由来契約として採用する。
+
+- intake boundary guard は、`evaluation` 成果物および `conformance-evaluation` 成果物を唯一の入力境界とし、生実行ディレクトリを一次入力として読まない
+- `evaluation` 成果物が欠落・読取不能・陳腐化している場合は、生ログや生実行ディレクトリにフォールバックせず、`intake_failure_report.json` に構造化失敗として記録する
+- destination boundary guard は、`shared/` の正本台帳と `destinations/<出力先>/` の派生成果物を分離し、出力先固有の加工が共通台帳を上書きしないことを保証する
+- 出力先別成果物は `manifest.yaml` に入力参照と加工方針を保持し、同一の `shared/` 正本から派生したことを追跡可能にする
+
 ## 完成判定基準（Completion Criteria）
 
 - 主張と証拠源の対応を本機能の成果物群から説明できる

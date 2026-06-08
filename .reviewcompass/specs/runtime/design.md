@@ -696,6 +696,17 @@ runtime はパターン定義ファイル（種パターン・重大パターン
 
 これらは `evaluation`／`self-improvement`／`analysis`／`workflow-management`／`conformance-evaluation` 設計が揃った後の design alignment 段で詰める。
 
+## 実装由来契約の採用（Implementation-Derived Contracts）
+
+### XDI-RUNTIME-001：実行状態・来歴・不変性契約
+
+2026-06-08 の機能横断 conformance check で、runtime の実装およびテストが `run_manifest.yaml`、state transition、provenance、immutable な生証拠の扱いを本文仕様より精密に固定していることを確認した。本設計はその差分を実装由来契約として採用する。
+
+- `run_manifest.yaml` は実行 state transition の観測可能な正本であり、`created` → `in_progress` → `closed`／`orchestration_failed` の遷移と `validator_status`／`evidence_class` の確定結果を保持する
+- provenance は `target_artifact_hash`、`source_repository_id`、`source_revision`、`runtime_version`、`prompt_set_version`、`schema_set_version`、`config_hash` を含む開始時固定項目で表し、実行中に上書きしない
+- immutable な生証拠は `steps/` と `review_case.json` に凍結し、検証器結果・人間署名・無効化標識は別成果物として重ねる
+- validation bridge は凍結後の生証拠だけを入力とし、前提条件違反または多重起動を検知した場合は検証器を起動せず fail-closed にする
+
 ## 完成判定基準（Completion Criteria）
 
 - 1 実行の成果物配置を §実行成果物配置 で一意に説明できる

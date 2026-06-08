@@ -128,6 +128,15 @@ workflow 改善は、**規律と実体の乖離を観察し、規律を実体に
 4. 本機能は履歴の連結を保持し、提案 → 承認 → ロールバックの追跡を可能にする。
 5. 本機能はロールバック後の整合性検査（例：撤廃から復活した規律の機械検査）を要求する。
 
+#### 実装由来契約（XDI-SI-001）
+
+2026-06-08 の機能横断 conformance check で、self-improvement の実装およびテストが提案 ID、承認、却下、carry-forward の防護を本文仕様より具体に固定していることを確認した。本要件はその差分を実装由来契約として採用する。
+
+1. 本機能は `proposal_id` を提案履歴の安定識別子として扱い、提案 → 承認 → 却下 → ロールバックまたは後続提案への連結で同じ ID を追跡可能にする。
+2. approval guard は、利用者明示承認なしに `approved` 状態または `learning/workflow/approved-updates/` への採用済み成果物を作成しない。
+3. rejection guard は、却下済み提案を採用済み履歴や有効な規律変更として扱わず、`learning/workflow/rejected-updates/` に分離して保持する。
+4. carry-forward guard は、未解決または後続判断待ちの所見を消失させず、carry-forward register へ追跡可能な形で残す。
+
 ### Requirement 8：効果測定
 
 **目的**：本機能の運用者と監査担当が、改善活動自体の有効性を測定できるようにする。
