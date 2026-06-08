@@ -1,0 +1,57 @@
+status: completed
+target_files:
+  - docs/notes/2026-06-08-conformance-drift-audit-process.md
+  - docs/notes/2026-06-08-workflow-management-conformance-drift-audit.md
+target_sha256:
+  docs/notes/2026-06-08-conformance-drift-audit-process.md: "03f973a2eeeed7e731a3d722613b3a3b074f56334d0d36e7f4802ce721728ca7"
+  docs/notes/2026-06-08-workflow-management-conformance-drift-audit.md: "cb2fb3ded98c02094c6268d162463f644d331f999a4074c58c2a718da834390d"
+required_verifiers:
+  - claude-sonnet-4-6
+  - gpt-5.4
+  - gemini-3.1-pro-preview
+completed_verifiers:
+  - claude-sonnet-4-6
+  - gpt-5.4
+  - gemini-3.1-pro-preview
+unresolved_substantive_findings: 0
+verifications:
+  - verifier: claude-sonnet-4-6
+    target_files:
+      - docs/notes/2026-06-08-conformance-drift-audit-process.md
+      - docs/notes/2026-06-08-workflow-management-conformance-drift-audit.md
+    target_sha256:
+      docs/notes/2026-06-08-conformance-drift-audit-process.md: "03f973a2eeeed7e731a3d722613b3a3b074f56334d0d36e7f4802ce721728ca7"
+      docs/notes/2026-06-08-workflow-management-conformance-drift-audit.md: "cb2fb3ded98c02094c6268d162463f644d331f999a4074c58c2a718da834390d"
+  - verifier: gpt-5.4
+    target_files:
+      - docs/notes/2026-06-08-conformance-drift-audit-process.md
+      - docs/notes/2026-06-08-workflow-management-conformance-drift-audit.md
+    target_sha256:
+      docs/notes/2026-06-08-conformance-drift-audit-process.md: "03f973a2eeeed7e731a3d722613b3a3b074f56334d0d36e7f4802ce721728ca7"
+      docs/notes/2026-06-08-workflow-management-conformance-drift-audit.md: "cb2fb3ded98c02094c6268d162463f644d331f999a4074c58c2a718da834390d"
+  - verifier: gemini-3.1-pro-preview
+    target_files:
+      - docs/notes/2026-06-08-conformance-drift-audit-process.md
+      - docs/notes/2026-06-08-workflow-management-conformance-drift-audit.md
+    target_sha256:
+      docs/notes/2026-06-08-conformance-drift-audit-process.md: "03f973a2eeeed7e731a3d722613b3a3b074f56334d0d36e7f4802ce721728ca7"
+      docs/notes/2026-06-08-workflow-management-conformance-drift-audit.md: "cb2fb3ded98c02094c6268d162463f644d331f999a4074c58c2a718da834390d"
+verification_evidence:
+  - verifier: claude-sonnet-4-6
+    provider: anthropic-api
+    model: claude-sonnet-4-6
+    raw_output: /private/tmp/postwrite-2026-06-08-workflow-audit-r2-anthropic.raw.yaml
+    parsed_output: /private/tmp/postwrite-2026-06-08-workflow-audit-r2-anthropic.parsed.yaml
+    result: all_clear
+  - verifier: gpt-5.4
+    provider: openai-api
+    model: gpt-5.4
+    raw_output: /private/tmp/postwrite-2026-06-08-workflow-audit-r2-openai.raw.yaml
+    parsed_output: /private/tmp/postwrite-2026-06-08-workflow-audit-r2-openai.parsed.yaml
+    result: info_only_no_substantive_findings
+  - verifier: gemini-3.1-pro-preview
+    provider: gemini-api
+    model: gemini-3.1-pro-preview
+    raw_output: /private/tmp/postwrite-2026-06-08-workflow-audit-r2-gemini.raw.yaml
+    parsed_output: /private/tmp/postwrite-2026-06-08-workflow-audit-r2-gemini.parsed.yaml
+    result: all_clear
