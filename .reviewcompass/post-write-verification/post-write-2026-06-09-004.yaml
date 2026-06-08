@@ -1,0 +1,34 @@
+status: completed
+target_files:
+  - docs/operations/REOPEN_PROCEDURE.md
+  - docs/operations/WORKFLOW_PRECHECK.md
+target_sha256:
+  docs/operations/REOPEN_PROCEDURE.md: c5878469e72c4fd7fbe4b4a1389d5b5166ccc68d29923f3175dd098c8e1241de
+  docs/operations/WORKFLOW_PRECHECK.md: 64a37a17c47655fca32364abeceda6d08cf694b406bd66ed5c721ca3eebef01f
+required_verifiers:
+  - gemini
+completed_verifiers:
+  - gemini
+unresolved_substantive_findings: 0
+verifications:
+  - verifier: gemini
+    provider: gemini-api
+    model: gemini-3.5-flash
+    target_files:
+      - docs/operations/REOPEN_PROCEDURE.md
+      - docs/operations/WORKFLOW_PRECHECK.md
+    target_sha256:
+      docs/operations/REOPEN_PROCEDURE.md: c5878469e72c4fd7fbe4b4a1389d5b5166ccc68d29923f3175dd098c8e1241de
+      docs/operations/WORKFLOW_PRECHECK.md: 64a37a17c47655fca32364abeceda6d08cf694b406bd66ed5c721ca3eebef01f
+    raw_path: .reviewcompass/post-write-verification/feature-impact-decision-policy.raw.txt
+    parsed_path: .reviewcompass/post-write-verification/feature-impact-decision-policy.parsed.yaml
+    raw_sha256: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    parsed_sha256: c91db6f6e32ddc12382992ebe90f543fa56865749d8ca08a320674ba660c7652
+    result_summary: >
+      Gemini 3.5 Flash に、任意フェーズの上流変更に対する feature impact
+      判定、既存 feature 全件網羅、新 feature 要否判定、recheck pending 中の
+      spec-set true 遮断、および no-impact 判定と下流段 true 維持の整合性を
+      検証させた。findings は空。
+note: >
+  docs/operations/REOPEN_PROCEDURE.md と
+  docs/operations/WORKFLOW_PRECHECK.md に対する post-write-verification。

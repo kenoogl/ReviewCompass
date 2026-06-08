@@ -20,6 +20,22 @@ This record covers the formal reopen chain for the completed-workflow intent upd
 
 The user explicitly authorized autonomous progress to the next commit on 2026-06-09 with: `次のコミットまで自律的に進める`.
 
+## Feature Reopen Decisions
+
+The feature-partitioning decision is not only "no new feature". Since an existing receptacle exists, the corresponding existing features must be selected for reopen.
+
+| Feature | Decision | Evidence |
+| --- | --- | --- |
+| foundation | reopen existing feature | `.reviewcompass/specs/_cross_feature/reviews/2026-06-09-intent-feature-reopen-decision.md` |
+| runtime | reopen existing feature | `.reviewcompass/specs/_cross_feature/reviews/2026-06-09-intent-feature-reopen-decision.md` |
+| evaluation | reopen existing feature | `.reviewcompass/specs/_cross_feature/reviews/2026-06-09-intent-feature-reopen-decision.md` |
+| analysis | reopen existing feature | `.reviewcompass/specs/_cross_feature/reviews/2026-06-09-intent-feature-reopen-decision.md` |
+| workflow-management | reopen existing feature | `.reviewcompass/specs/_cross_feature/reviews/2026-06-09-intent-feature-reopen-decision.md` |
+| self-improvement | reopen existing feature | `.reviewcompass/specs/_cross_feature/reviews/2026-06-09-intent-feature-reopen-decision.md` |
+| conformance-evaluation | reopen existing feature | `.reviewcompass/specs/_cross_feature/reviews/2026-06-09-intent-feature-reopen-decision.md` |
+
+No new feature is created because the intent is covered by the existing seven feature boundaries.
+
 ## Gate Results
 
 | Gate | Result | Evidence |

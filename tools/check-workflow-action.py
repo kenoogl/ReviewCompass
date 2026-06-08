@@ -345,31 +345,6 @@ def load_spec_json(cwd, feature):
   return json.loads(spec_path.read_text(encoding="utf-8"))
 
 
-def downstream_true_reasons_for_false_set(workflow_state, phase, stage):
-  """上流段を false に戻す時に true のまま残る下流段を返す"""
-  reasons = []
-  stages = PHASE_STAGES[phase]
-  stage_index = stages.index(stage)
-  phase_state = workflow_state.get(phase, {})
-  for later_stage in stages[stage_index + 1:]:
-    if phase_state.get(later_stage) is True:
-      reasons.append(
-        f"workflow_state.{phase}.{later_stage} が true のままです"
-        f"（{phase}.{stage} の下流段です）"
-      )
-
-  phase_index = PHASE_ORDER.index(phase)
-  for downstream_phase in PHASE_ORDER[phase_index + 1:]:
-    downstream_state = workflow_state.get(downstream_phase, {})
-    for downstream_stage in PHASE_STAGES[downstream_phase]:
-      if downstream_state.get(downstream_stage) is True:
-        reasons.append(
-          f"workflow_state.{downstream_phase}.{downstream_stage} が true のままです"
-          f"（{phase}.{stage} の下流段です）"
-        )
-  return reasons
-
-
 def judge_spec_set(spec_data, phase, stage, new_value):
   """spec-set の判定を行う（仕様 §6.1）
 
@@ -385,6 +360,19 @@ def judge_spec_set(spec_data, phase, stage, new_value):
   if new_value:
     # true に変える場合：依存チェック
     reasons = []
+    recheck = spec_data.get("recheck", {})
+    if isinstance(recheck, dict):
+      impacted = recheck.get("impacted_downstream_phases")
+      if (
+        recheck.get("upstream_change_pending") is True
+        and isinstance(impacted, list)
+        and phase in impacted
+      ):
+        reasons.append(
+          f"recheck.upstream_change_pending が true で、"
+          f"{phase} が impacted_downstream_phases に含まれています"
+          "（reopen 手続きの feature impact 判定と下流影響判定を完了してから true 化してください）"
+        )
 
     # 同フェーズ内の前段がすべて true か
     stages = PHASE_STAGES[phase]
@@ -414,18 +402,9 @@ def judge_spec_set(spec_data, phase, stage, new_value):
   else:
     # false に変える場合：reopen 警告（現状 true のときのみ）
     if current_value is True:
-      downstream_reasons = downstream_true_reasons_for_false_set(
-        workflow_state,
-        phase,
-        stage,
-      )
-      if downstream_reasons:
-        return "DEVIATION", 2, downstream_reasons + [
-          "上流段を false に戻す場合は、下流段の再オープンまたは影響なし判定を先に記録してください"
-        ]
       return "WARN", 1, [
         f"{phase}.{stage} を true から false に戻しています"
-        f"（reopen 手続き 計画書 §5.6 に従っているか確認してください）"
+        f"（reopen 手続き 計画書 §5.6 に従い、feature impact 判定と下流影響判定を記録してください）"
       ]
     return "OK", 0, []
 
@@ -2160,6 +2139,87 @@ def _impact_decision_phase_set(decision_gates):
   return phases
 
 
+def _validate_evidence_list(value, label):
+  """証跡 list の形式を検査する"""
+  if not isinstance(value, list) or not value or not all(isinstance(v, str) and v for v in value):
+    return [f"{label} は空でない文字列 list が必要です"]
+  return []
+
+
+def _validate_feature_impact_decisions(data):
+  """上流変更に対する feature impact 判定を検査する"""
+  errors = []
+  decisions = data.get("feature_impact_decisions")
+  if not isinstance(decisions, list) or not decisions:
+    errors.append("feature_impact_decisions は空でない list が必要です")
+    decisions = []
+
+  allowed_feature_decisions = {
+    "reopen_existing_feature",
+    "no_reopen_existing_feature",
+    "indirect_check_only",
+    "new_feature_required",
+  }
+  covered_features = set()
+  for index, item in enumerate(decisions):
+    prefix = f"feature_impact_decisions[{index}]"
+    if not isinstance(item, dict):
+      errors.append(f"{prefix} は object が必要です")
+      continue
+    feature = item.get("feature")
+    if (
+      not isinstance(feature, str)
+      or not feature.strip()
+      or (feature not in FEATURE_ORDER and feature != "new_feature")
+    ):
+      errors.append(f"{prefix}.feature は既存 feature 名または new_feature が必要です")
+    elif feature in FEATURE_ORDER:
+      covered_features.add(feature)
+    decision = item.get("decision")
+    if decision not in allowed_feature_decisions:
+      errors.append(
+        f"{prefix}.decision は {', '.join(sorted(allowed_feature_decisions))} のいずれかが必要です"
+      )
+    rationale = item.get("rationale")
+    if not isinstance(rationale, str) or not rationale.strip():
+      errors.append(f"{prefix}.rationale が必要です")
+    errors.extend(_validate_evidence_list(item.get("evidence"), f"{prefix}.evidence"))
+
+  missing_features = [feature for feature in FEATURE_ORDER if feature not in covered_features]
+  if missing_features:
+    errors.append(
+      "feature_impact_decisions に既存 feature の判定が不足しています: "
+      + ", ".join(missing_features)
+    )
+
+  new_feature_decision = data.get("new_feature_decision")
+  if not isinstance(new_feature_decision, dict):
+    errors.append("new_feature_decision は object が必要です")
+    return errors
+
+  allowed_new_feature_decisions = {
+    "no_new_feature",
+    "new_feature_required",
+  }
+  decision = new_feature_decision.get("decision")
+  if decision not in allowed_new_feature_decisions:
+    errors.append(
+      "new_feature_decision.decision は "
+      + ", ".join(sorted(allowed_new_feature_decisions))
+      + " のいずれかが必要です"
+    )
+  rationale = new_feature_decision.get("rationale")
+  if not isinstance(rationale, str) or not rationale.strip():
+    errors.append("new_feature_decision.rationale が必要です")
+  errors.extend(
+    _validate_evidence_list(
+      new_feature_decision.get("evidence"),
+      "new_feature_decision.evidence",
+    )
+  )
+  return errors
+
+
 def validate_reopen_completion_impact_decisions(cwd, staged_files):
   """reopen 完了時に下流影響判定表があるか検査する"""
   errors = []
@@ -2176,6 +2236,9 @@ def validate_reopen_completion_impact_decisions(cwd, staged_files):
     if not isinstance(data, dict):
       errors.append(f"{filepath} は YAML object が必要です")
       continue
+
+    for error in _validate_feature_impact_decisions(data):
+      errors.append(f"{filepath}: {error}")
 
     pending_gates = data.get("pending_gates")
     if not isinstance(pending_gates, list) or not all(isinstance(v, str) for v in pending_gates):

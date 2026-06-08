@@ -20,27 +20,31 @@
 
 1. 遡及所見を発見し、下流の作業を停止する
 2. 手戻り種別を判定する（N／R／D／A／I × 深さ、計画書 §5.6）
-3. trigger_map で再実施対象の段を決定する（依存順＝`feature-dependency.yaml#phase_order`）
-4. 種別判定の根拠を `docs/reviews/reopen-classification-<日付>.md` に記録する（雛形：`templates/review/reopen_classification_template.md`）
-5. 進行中状態ファイル `stages/in-progress/reopen-procedure-<日付>.yaml` を発行する
-6. spec.json のフラグを差し戻す（計画書 §5.24.8.1）：
+3. 上流変更を既存 feature の責務境界へ写像し、feature impact を判定する。これは intent に限らず、feature-partitioning／requirements／design／tasks／implementation のいずれを変更した場合も共通で行う
+   - 既存 feature に受け皿がある場合：該当 feature ごとに `reopen_existing_feature`、`no_reopen_existing_feature`、`indirect_check_only` のいずれかを判定する
+   - 既存 feature に受け皿がない場合：`new_feature_required` として新 feature 候補を作る
+   - 判定が重要、曖昧、広範囲の場合は 3 役レビューに送る
+4. trigger_map で再実施対象の段を決定する（依存順＝`feature-dependency.yaml#phase_order`）
+5. 種別判定と feature impact 判定の根拠を `docs/reviews/reopen-classification-<日付>.md` に記録する（雛形：`templates/review/reopen_classification_template.md`）
+6. 進行中状態ファイル `stages/in-progress/reopen-procedure-<日付>.yaml` を発行する
+7. spec.json のフラグを差し戻す（計画書 §5.24.8.1）：
    - 上流：`reopened.<上流>=true`、上流の修正対象段（alignment／approval）を `false` に
-   - 下流：`recheck.upstream_change_pending=true`、`impacted_downstream_phases` に下流を列挙、下流の再実施対象段を `false` に
-   - 上流段を `false` に戻す場合、同フェーズ後段または下流フェーズ段を `true` のまま残してはならない。残す必要がある場合は、下流影響なしの判定を手続き記録へ明示する
-   - 複数段を差し戻す場合は、下流側から上流側へ `false` にする。上流側から先に `false` にすると、下流段が完了扱いのまま残るため事前検査で逸脱になる
+   - 下流：`recheck.upstream_change_pending=true`、`impacted_downstream_phases` に下流確認対象を列挙する。下流段を `false` に戻すか、完了扱いのまま影響なし／間接確認のみとするかは feature impact 判定と下流影響判定で決める
+   - 上流段を `false` に戻しても、同フェーズ後段または下流フェーズ段を機械的にすべて `false` にする必要はない。ただし完了 commit までに、残した段を含む feature impact 判定と下流影響判定を手続き記録へ明示する
+   - 複数段を実際に差し戻す場合は、下流側から上流側へ `false` にすると作業状態を読みやすい。影響なしと判定した段は `true` のまま残してよい
    - `recheck.upstream_change_pending=true` または空でない `impacted_downstream_phases` を含む `spec.json` 変更は、対応する `stages/in-progress/reopen-procedure-*.yaml` と同じ停止点 commit に含める
 
 → **停止点：フラグ差し戻しの内容（手戻り種別・再実施範囲・差し戻し）を人が承認する**（この時点ではコミットしない）
 
 ### 第2過程：正本修正（actor=human または llm）
 
-7. 上流フェーズの正本（仕様文書の該当箇所）を修正する
+8. 上流フェーズの正本（仕様文書の該当箇所）を修正する
 
 → **停止点：コミット**（第1過程のフラグ差し戻しと本過程の正本修正をまとめて 1 コミット）
 
 ### 第3過程：連鎖再実施（依存順、各 approval で停止）
 
-8. 依存順に上流 → 下流の各フェーズで：
+9. 依存順に上流 → 下流の各フェーズで：
    - alignment（整合チェック）を実施し、波及（同フェーズの他機能への影響）の有無を確認
    - 上流変更に対する下流影響判定を `downstream_impact_decisions` に記録する。これは intent に限らず、feature-partitioning／requirements／design／tasks／implementation のいずれを変更した場合も共通で必須とする
    - 「既存で受けられる」「修正不要」と判断する場合も、判定対象 gate、feature 範囲、判断、理由、証跡を記録する。修正不要は reopen を省略する理由ではなく、reopen 後の影響判定結果としてのみ扱う
@@ -52,12 +56,12 @@
 
 ### 第4過程：完了（連続実行）
 
-9. 整合性の最終確認（上流の変更が下流に正しく伝わったか）
-10. recheck をクリアする（`upstream_change_pending=false`、`impacted_downstream_phases=[]`）。`reopened.<上流>` は `true` のまま残す（履歴）。進行中状態ファイルを `stages/completed/` へ移動する
+10. 整合性の最終確認（上流の変更が下流に正しく伝わったか）
+11. recheck をクリアする（`upstream_change_pending=false`、`impacted_downstream_phases=[]`）。`reopened.<上流>` は `true` のまま残す（履歴）。進行中状態ファイルを `stages/completed/` へ移動する
 
 → **停止点：コミット**
 
-第4過程の完了 commit では、`stages/completed/reopen-procedure-*.yaml` に `impacted_downstream_phases` と、`pending_gates` の各 gate を覆う `downstream_impact_decisions` が必要である。各判定は最低限、`gate`、`feature_scope`、`decision`、`rationale`、`evidence` を持つ。`decision` は `affected_update_required`、`existing_sufficient`、`no_impact`、`approved`、`proxy_approved` のいずれかとする。`impacted_downstream_phases` に列挙した各フェーズには、対応する `downstream_impact_decisions[].gate` を少なくとも 1 件記録する。
+第4過程の完了 commit では、`stages/completed/reopen-procedure-*.yaml` に `feature_impact_decisions`、`new_feature_decision`、`impacted_downstream_phases` と、`pending_gates` の各 gate を覆う `downstream_impact_decisions` が必要である。`feature_impact_decisions` は、既存 feature ごとに `feature`、`decision`、`rationale`、`evidence` を持つ。`decision` は `reopen_existing_feature`、`no_reopen_existing_feature`、`indirect_check_only`、`new_feature_required` のいずれかとする。`new_feature_decision.decision` は `no_new_feature` または `new_feature_required` とする。`downstream_impact_decisions` の各判定は最低限、`gate`、`feature_scope`、`decision`、`rationale`、`evidence` を持つ。`decision` は `affected_update_required`、`existing_sufficient`、`no_impact`、`approved`、`proxy_approved` のいずれかとする。`impacted_downstream_phases` に列挙した各フェーズには、対応する `downstream_impact_decisions[].gate` を少なくとも 1 件記録する。
 
 ## 3. 手戻り種別と trigger_map
 

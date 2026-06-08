@@ -257,6 +257,7 @@ check-workflow-action.py autonomous-plan-record-integration --ledger <ledger.yam
   - 例：`design drafting true` → `requirements approval` が `true` か
 - **フェーズの依存チェック**：上流フェーズの最終段（`approval`）が `true` か
   - 例：`design drafting true` → `requirements approval` が `true`、`feature-partitioning approval` が `true`、`intent approval` が `true`
+- **recheck pending の遮断**：`recheck.upstream_change_pending=true` かつ対象 `<phase>` が `recheck.impacted_downstream_phases` に含まれる場合、`true` 化は逸脱（exit 2）。reopen 手続きの feature impact 判定と下流影響判定を完了せず、影響対象 phase を完了扱いに戻してはならない
 - **機能横断段の整合**：`intent`／`feature-partitioning` は全機能で同じ値を持つべき（計画書 §5.24.4）。当該機能の値だけを変えると不整合
 - **承認発言の有無は判定しない**：それは段階 1 規律の責務
 
@@ -264,8 +265,8 @@ check-workflow-action.py autonomous-plan-record-integration --ledger <ledger.yam
 
 - 一般に許容（reopen 手続きの一部）
 - ただし当該段が `true` だった場合は警告：「reopen を実施しています、reopen 手続き（計画書 §5.6）に従っていますか」
-- 当該段より後ろの同フェーズ段、または下流フェーズの段が `true` のまま残る場合は逸脱（exit 2）。上流段だけを `false` に戻して下流段を完了扱いに残すと、再オープン後の影響判定を飛ばせるため、下流段の再オープンまたは影響なし判定の記録が必要である
-- 複数段を差し戻す場合は、下流側から上流側へ `false` にする。例：requirements を再オープンする場合、design／tasks／implementation 側の対象段を先に `false` にし、その後 requirements 側を `false` にする
+- 当該段より後ろの同フェーズ段、または下流フェーズの段が `true` のまま残っていても、それだけでは逸脱にしない。影響なし／間接確認のみの可能性があるため、完了 commit 時の `feature_impact_decisions` と `downstream_impact_decisions` で機械検査する
+- 複数段を実際に差し戻す場合は、下流側から上流側へ `false` にすると作業状態を読みやすい。影響なしと判定した段は `true` のまま残してよい
 
 ### 6.2 `commit` の判定
 
@@ -276,6 +277,7 @@ check-workflow-action.py autonomous-plan-record-integration --ledger <ledger.yam
 - **post-write-verification 対象の完了確認**：staged ファイルに post-write-verification 対象が含まれる場合、対象ファイル群と現在 sha256 を覆う completed manifest があることを確認
   - manifest なし、sha256 不一致、coverage matrix 不足、未解決本質的指摘ありの場合：逸脱（exit 2）、commit を遮断推奨
 - **reopen 印付き spec.json の手続き確認**：staged された `spec.json` に `recheck.upstream_change_pending=true` または空でない `recheck.impacted_downstream_phases` がある場合、同じ commit に `stages/in-progress/reopen-procedure-*.yaml` または `stages/completed/reopen-procedure-*.yaml` を含める。手続きファイルがない場合は逸脱（exit 2）
+- **reopen 完了時の feature impact 判定確認**：`stages/completed/reopen-procedure-*.yaml` が staged されている場合、`feature_impact_decisions` と `new_feature_decision` を必須とする。任意フェーズの上流変更について、既存 feature に受け皿があるなら該当 feature を reopen 対象にするか、影響なし／間接確認のみとするかを記録する。`feature_impact_decisions` は現在の既存 feature 全件を覆う必要があり、未記録 feature がある場合は逸脱（exit 2）。受け皿がなければ新 feature 必要として記録する
 - **reopen 完了時の下流影響判定確認**：`stages/completed/reopen-procedure-*.yaml` が staged されている場合、`pending_gates` の各 gate を覆う `downstream_impact_decisions` を必須とする。各判定は `gate`、`feature_scope`、`decision`、`rationale`、`evidence` を持つ。上流変更に対して下流修正が不要な場合も、`existing_sufficient` または `no_impact` として理由と証跡を記録する
 - **reopen 完了時の影響フェーズ網羅確認**：`stages/completed/reopen-procedure-*.yaml` には `impacted_downstream_phases` を記録する。commit 判定では、その各フェーズに対応する `downstream_impact_decisions[].gate` が少なくとも 1 件あることを確認する。影響フェーズに対応する gate 判定がない場合は逸脱（exit 2）
 - **持ち越し所見の確認**：`learning/workflow/carry-forward-register/reviewcompass-import.yaml` を読み、未消化所見の件数を出力
@@ -461,12 +463,13 @@ tests/fixtures/spec-json-cases/
 - **逸脱系**：
   - `spec-set foundation requirements approval true` ＋ alignment=false → exit 2
   - `spec-set foundation design drafting true` ＋ requirements.approval=false → exit 2
-  - `spec-set <upstream-stage> false` ＋ 同フェーズ後段または下流フェーズ段が true のまま → exit 2
+  - `spec-set <impacted-phase> <stage> true` ＋ `recheck.upstream_change_pending=true` ＋ `<impacted-phase>` が `impacted_downstream_phases` に含まれる → exit 2
   - `push` ＋ 作業ツリー dirty → exit 2
   - `commit` ＋ ユーザ承認レコードなし／消費済み／承認対象外 staged ファイルあり → exit 2
   - `commit --execution-actor llm` ＋ LLM 実行代行承認なし → exit 2
   - `commit` ＋ post-write 対象文書 ＋ completed manifest なし → exit 2
   - `commit` ＋ reopen 印付き `spec.json` ＋ `stages/in-progress/reopen-procedure-*.yaml` または `stages/completed/reopen-procedure-*.yaml` なし → exit 2
+  - `commit` ＋ `stages/completed/reopen-procedure-*.yaml` ＋ `feature_impact_decisions`／`new_feature_decision` 欠落または既存 feature 未網羅 → exit 2
   - `commit` ＋ `stages/completed/reopen-procedure-*.yaml` ＋ `impacted_downstream_phases` 欠落／未網羅 → exit 2
   - `commit` ＋ `stages/completed/reopen-procedure-*.yaml` ＋ `downstream_impact_decisions` 欠落／不足 → exit 2
   - `audit-commit HEAD` ＋ post-write 対象文書 ＋ completed manifest なし → exit 2

@@ -1599,6 +1599,29 @@ class SpecSetExitCodeTests(unittest.TestCase):
       f"逸脱判定の場合は stdout に DEVIATION が含まれるべき。stdout: {result.stdout}",
     )
 
+  def test_setting_impacted_recheck_phase_to_true_returns_two(self):
+    """recheck pending の影響対象 phase は spec-set true で完了扱いにできない"""
+    cwd = self._copy_fixture("case-a-ready-for-approval")
+    spec_path = cwd / ".reviewcompass" / "specs" / "foundation" / "spec.json"
+    spec = json.loads(spec_path.read_text(encoding="utf-8"))
+    spec["recheck"] = {
+      "upstream_change_pending": True,
+      "impacted_downstream_phases": ["requirements"],
+    }
+    spec_path.write_text(
+      json.dumps(spec, ensure_ascii=False, indent=2),
+      encoding="utf-8",
+    )
+
+    result = run_script(
+      ["spec-set", "foundation", "requirements", "approval", "true"],
+      cwd=cwd,
+    )
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 2, result.stdout)
+    self.assertIn("recheck", result.stdout)
+
   def test_setting_true_stage_to_false_returns_one(self):
     """ケース E：現状 true の段を false に戻す → exit 1（reopen 警告）
 
@@ -1615,8 +1638,8 @@ class SpecSetExitCodeTests(unittest.TestCase):
       f"stdout: {result.stdout}\nstderr: {result.stderr}",
     )
 
-  def test_setting_upstream_stage_to_false_with_downstream_true_returns_two(self):
-    """上流段を false に戻す時、下流段が true のままなら exit 2"""
+  def test_setting_upstream_stage_to_false_with_downstream_true_returns_one(self):
+    """上流段を false に戻す時、下流段が true のままでも reopen 警告に留める"""
     cwd = self._copy_fixture("case-a-ready-for-approval")
     spec_path = cwd / ".reviewcompass" / "specs" / "foundation" / "spec.json"
     spec = json.loads(spec_path.read_text(encoding="utf-8"))
@@ -1633,8 +1656,8 @@ class SpecSetExitCodeTests(unittest.TestCase):
     )
 
     _assert_script_invoked(self, result)
-    self.assertEqual(result.returncode, 2, result.stdout)
-    self.assertIn("下流", result.stdout)
+    self.assertEqual(result.returncode, 1, result.stdout)
+    self.assertIn("reopen", result.stdout)
 
 
 class SpecSetOutputTests(unittest.TestCase):
@@ -3641,6 +3664,14 @@ class CommitExitCodeTests(unittest.TestCase):
   def test_commit_allows_completed_reopen_with_impact_decisions(self):
     """reopen 完了 commit は全 pending gate の下流影響判定表があれば通過する"""
     _set_pending_findings(self.pending_file, unresolved_count=0)
+    feature_impact_decisions = "".join(
+      f"  - feature: {feature}\n"
+      "    decision: reopen_existing_feature\n"
+      "    rationale: 既存 feature で受けるため reopen 対象にする。\n"
+      "    evidence:\n"
+      f"      - .reviewcompass/specs/{feature}/requirements.md\n"
+      for feature in FEATURE_ORDER
+    )
     completed_path = (
       Path(self.tmpdir)
       / "stages"
@@ -3656,6 +3687,13 @@ class CommitExitCodeTests(unittest.TestCase):
       "  - stages/requirements.yaml#approval\n"
       "impacted_downstream_phases:\n"
       "  - requirements\n"
+      "feature_impact_decisions:\n"
+      f"{feature_impact_decisions}"
+      "new_feature_decision:\n"
+      "  decision: no_new_feature\n"
+      "  rationale: 既存 feature で受けられる。\n"
+      "  evidence:\n"
+      "    - stages/feature-partitioning/2026-05-24-proposal.md\n"
       "downstream_impact_decisions:\n"
       "  - gate: stages/requirements.yaml#alignment\n"
       "    feature_scope: all_features\n"
@@ -3690,6 +3728,111 @@ class CommitExitCodeTests(unittest.TestCase):
 
     _assert_script_invoked(self, result)
     self.assertEqual(result.returncode, 0, result.stdout)
+
+  def test_commit_blocks_completed_reopen_with_partial_feature_impact_decisions(self):
+    """feature impact 判定は既存 feature 全件を覆わなければ遮断する"""
+    _set_pending_findings(self.pending_file, unresolved_count=0)
+    completed_path = (
+      Path(self.tmpdir)
+      / "stages"
+      / "completed"
+      / "reopen-procedure-2026-06-09.yaml"
+    )
+    completed_path.parent.mkdir(parents=True)
+    completed_path.write_text(
+      "process_id: reopen-procedure\n"
+      "step_number: 4\n"
+      "pending_gates:\n"
+      "  - stages/requirements.yaml#alignment\n"
+      "impacted_downstream_phases:\n"
+      "  - requirements\n"
+      "feature_impact_decisions:\n"
+      "  - feature: foundation\n"
+      "    decision: reopen_existing_feature\n"
+      "    rationale: foundation は確認済み。\n"
+      "    evidence:\n"
+      "      - .reviewcompass/specs/foundation/requirements.md\n"
+      "new_feature_decision:\n"
+      "  decision: no_new_feature\n"
+      "  rationale: 既存 feature で受けられる。\n"
+      "  evidence:\n"
+      "    - stages/feature-partitioning/2026-05-24-proposal.md\n"
+      "downstream_impact_decisions:\n"
+      "  - gate: stages/requirements.yaml#alignment\n"
+      "    feature_scope: all_features\n"
+      "    decision: existing_sufficient\n"
+      "    rationale: requirements は確認済み。\n"
+      "    evidence:\n"
+      "      - .reviewcompass/specs/foundation/requirements.md\n"
+      "next_step: 完了\n",
+      encoding="utf-8",
+    )
+    subprocess.run(
+      ["git", "add", "stages/completed/reopen-procedure-2026-06-09.yaml"],
+      cwd=str(self.tmpdir),
+      check=True,
+      capture_output=True,
+    )
+    _write_commit_approval(
+      self.tmpdir,
+      ["stages/completed/reopen-procedure-2026-06-09.yaml"],
+    )
+
+    result = run_script(
+      ["commit", "--rationale", "reopen 完了の feature impact 網羅不足テスト"],
+      cwd=self.tmpdir,
+    )
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 2, result.stdout)
+    self.assertIn("feature_impact_decisions", result.stdout)
+
+  def test_commit_blocks_completed_reopen_without_feature_impact_decisions(self):
+    """reopen 完了 commit は feature impact 判定がなければ遮断する"""
+    _set_pending_findings(self.pending_file, unresolved_count=0)
+    completed_path = (
+      Path(self.tmpdir)
+      / "stages"
+      / "completed"
+      / "reopen-procedure-2026-06-09.yaml"
+    )
+    completed_path.parent.mkdir(parents=True)
+    completed_path.write_text(
+      "process_id: reopen-procedure\n"
+      "step_number: 4\n"
+      "pending_gates:\n"
+      "  - stages/requirements.yaml#alignment\n"
+      "impacted_downstream_phases:\n"
+      "  - requirements\n"
+      "downstream_impact_decisions:\n"
+      "  - gate: stages/requirements.yaml#alignment\n"
+      "    feature_scope: all_features\n"
+      "    decision: existing_sufficient\n"
+      "    rationale: requirements は確認済み。\n"
+      "    evidence:\n"
+      "      - .reviewcompass/specs/foundation/requirements.md\n"
+      "next_step: 完了\n",
+      encoding="utf-8",
+    )
+    subprocess.run(
+      ["git", "add", "stages/completed/reopen-procedure-2026-06-09.yaml"],
+      cwd=str(self.tmpdir),
+      check=True,
+      capture_output=True,
+    )
+    _write_commit_approval(
+      self.tmpdir,
+      ["stages/completed/reopen-procedure-2026-06-09.yaml"],
+    )
+
+    result = run_script(
+      ["commit", "--rationale", "reopen 完了の feature impact 判定欠落テスト"],
+      cwd=self.tmpdir,
+    )
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 2, result.stdout)
+    self.assertIn("feature_impact_decisions", result.stdout)
 
   def test_commit_blocks_completed_reopen_when_impacted_phase_is_uncovered(self):
     """reopen 完了 commit は影響フェーズを覆う gate 判定がなければ遮断する"""
