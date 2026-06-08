@@ -1,0 +1,27 @@
+status: completed
+target_files:
+  - docs/operations/WORKFLOW_NAVIGATION.md
+target_sha256:
+  docs/operations/WORKFLOW_NAVIGATION.md: 136c1080574f2404d289a367870e72dcdbc4d63625c2aced1623b1597fa1d74b
+required_verifiers:
+  - gemini
+completed_verifiers:
+  - gemini
+unresolved_substantive_findings: 0
+verifications:
+  - verifier: gemini
+    provider: gemini-api
+    model: gemini-3.5-flash
+    target_files:
+      - docs/operations/WORKFLOW_NAVIGATION.md
+    target_sha256:
+      docs/operations/WORKFLOW_NAVIGATION.md: 136c1080574f2404d289a367870e72dcdbc4d63625c2aced1623b1597fa1d74b
+    result_summary: >
+      Gemini 3.5 Flash に、WORKFLOW_NAVIGATION.md の
+      reopen_classification_required 分岐追加を検証させた。完了済み
+      workflow の上流正本更新を単なる再確認として進めず、reopen 分類と
+      reopen-start へ送る運用記述が、今回の利用者指摘と既存の reopen /
+      maintenance 優先規則に反しないことを確認した。findings は空。
+note: >
+  完了済み workflow の上流正本変更を reopen で扱うための
+  WORKFLOW_NAVIGATION.md 追記に対する post-write-verification。

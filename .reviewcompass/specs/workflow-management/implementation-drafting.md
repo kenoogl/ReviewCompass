@@ -80,11 +80,12 @@ workflow-management 全体の T-001〜T-011 は、まだ一括完了ではない
 intent の「レビュー収集処理を事前設定の写像にしない」意図に伴い、workflow-management tasks.md の変更を implementation 観点で再確認した。
 
 - T-004 の `next` による上流更新再展開は、`tools/check-workflow-action.py next --json` と `tests/tools/test_check_workflow_action.py` の upstream recheck 系テストで受けられている
+- 2026-06-08 の reopen 判定修正により、完了済み workflow の上流正本更新は `upstream_recheck` ではなく `reopen_classification_required` として返す。`tools/check-workflow-action.py` と `tests/tools/test_check_workflow_action.py` は intent → feature-partitioning、requirements → design、tasks → implementation の代表経路を検証する
 - T-006 の不可逆操作直前ゲートは、`tools/check-workflow-action.py` の commit／push／spec-set／phase-transition 系検査と `tests/tools/test_check_workflow_action.py` で受けられている
 - T-008 の session 跨ぎ状態管理は、`stages/in-progress/` 優先判定、maintenance side track 判定、post-write pending 判定として `tools/check-workflow-action.py` と `tests/tools/test_check_workflow_action.py` で受けられている
 - T-002 の機能依存マップ一元化は、`stages/feature-dependency.yaml` の `feature_order`／`depends_on` 参照と `tests/tools/test_check_workflow_action.py` で受けられている
 
-確認結果として、実装済み workflow-management は次作業を事前設定の写像として固定せず、現在の成果物・進行中状態・post-write manifest・機能依存マップを読み直して `next_action` を機械判定している。追加の実装変更は不要。
+確認結果として、実装済み workflow-management は次作業を事前設定の写像として固定せず、現在の成果物・進行中状態・post-write manifest・機能依存マップを読み直して `next_action` を機械判定している。完了済み workflow の上流正本更新は reopen 分類へ送るよう修正済みである。
 
 ## 検証
 

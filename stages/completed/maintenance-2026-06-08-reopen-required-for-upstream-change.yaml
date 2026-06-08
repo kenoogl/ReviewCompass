@@ -1,0 +1,40 @@
+process_id: maintenance
+title: Reopen required for completed upstream changes
+started_at: 2026-06-08T00:00:00+09:00
+completed_at: 2026-06-08T00:00:00+09:00
+status: completed
+trigger: "完了済み workflow で intent や requirements などの上流正本へ後追い追記した場合は reopen で扱うべき、という利用者指摘"
+required_action: continue_maintenance
+mainline_blocked_by: "完了済み workflow の上流正本変更を upstream_recheck だけで進められる判定穴"
+side_track_scope:
+  - "完了済み workflow で上流正本が下流成果物より新しい場合に reopen classification required を返す"
+  - "単なる再確認ではなく reopen-start へ進ませる入口を next 判定に追加する"
+allowed_scope:
+  - "workflow-management の next 判定、テスト、運用文書、仕様への反映"
+allowed_files:
+  - tools/check-workflow-action.py
+  - tests/tools/test_check_workflow_action.py
+  - docs/operations/WORKFLOW_NAVIGATION.md
+  - .reviewcompass/specs/workflow-management/requirements.md
+  - .reviewcompass/specs/workflow-management/design.md
+  - .reviewcompass/specs/workflow-management/tasks.md
+  - .reviewcompass/specs/workflow-management/implementation-drafting.md
+  - .reviewcompass/post-write-verification/post-write-2026-06-08-010.yaml
+  - .reviewcompass/post-write-verification/workflow-navigation-reopen-required-postwrite.parsed.yaml
+  - .reviewcompass/post-write-verification/workflow-navigation-reopen-required-postwrite.raw.txt
+  - stages/in-progress/maintenance-2026-06-08-reopen-required-for-upstream-change.yaml
+  - stages/completed/maintenance-2026-06-08-reopen-required-for-upstream-change.yaml
+completed_steps:
+  - "完了済み workflow の上流正本更新が reopen_classification_required を返す失敗テストを追加"
+  - "tools/check-workflow-action.py の completed 後 upstream 更新判定を reopen_classification_required に変更"
+  - "WORKFLOW_NAVIGATION.md に reopen_classification_required 分岐を追加"
+  - "workflow-management requirements/design/tasks/implementation-drafting に reopen 判定修正を反映"
+  - "tests/tools/test_check_workflow_action.py 全体を実行し 113 passed を確認"
+  - "WORKFLOW_NAVIGATION.md の post-write verification を実行し findings なしを確認"
+  - "post-write manifest post-write-2026-06-08-010.yaml を追加"
+next_step: "本線へ戻る"
+completion_conditions:
+  - ".venv/bin/python3 -m pytest tests/tools/test_check_workflow_action.py -q が通る"
+  - ".venv/bin/python3 tools/check-workflow-action.py next --json が maintenance_in_progress を返す"
+  - "post-write 対象文書を変更した場合は post-write verification manifest を追加する"
+  - "完了時に本ファイルを stages/completed/ へ移す"

@@ -1849,8 +1849,8 @@ class NextNavigationTests(unittest.TestCase):
       data["next_action"]["required_disciplines"],
     )
 
-  def test_next_detects_intent_update_requires_feature_partitioning_confirmation(self):
-    """完了済み workflow でも intent が新しければ feature-partitioning 確認を返す"""
+  def test_next_detects_intent_update_requires_reopen_classification(self):
+    """完了済み workflow で intent が新しければ reopen 分類を要求する"""
     cwd = Path(self.tmpdir)
     complete = {
       "drafting": True,
@@ -1873,17 +1873,18 @@ class NextNavigationTests(unittest.TestCase):
     _assert_script_invoked(self, result)
     self.assertEqual(result.returncode, 0, result.stderr)
     data = json.loads(result.stdout)
-    self.assertEqual(data["next_action"]["kind"], "upstream_recheck")
+    self.assertEqual(data["next_action"]["kind"], "reopen_classification_required")
     self.assertEqual(data["next_action"]["phase"], "feature-partitioning")
     self.assertEqual(data["next_action"]["stage"], "candidate-proposal")
     self.assertEqual(data["next_action"]["upstream_phase"], "intent")
+    self.assertEqual(data["next_action"]["reopen_trigger"], "N-0")
     self.assertEqual(
       data["next_action"]["reason"],
-      "intent 成果物が feature-partitioning 成果物より新しいため、機能分割確認が必要です",
+      "完了済み workflow で intent 成果物が feature-partitioning 成果物より新しいため、reopen 分類が必要です",
     )
 
-  def test_next_detects_requirements_update_requires_design_recheck(self):
-    """下流工程でも requirements が新しければ design 再確認を返す"""
+  def test_next_detects_requirements_update_requires_reopen_classification(self):
+    """完了済み workflow で requirements が新しければ reopen 分類を要求する"""
     cwd = Path(self.tmpdir)
     complete = {
       "drafting": True,
@@ -1906,14 +1907,15 @@ class NextNavigationTests(unittest.TestCase):
     _assert_script_invoked(self, result)
     self.assertEqual(result.returncode, 0, result.stderr)
     data = json.loads(result.stdout)
-    self.assertEqual(data["next_action"]["kind"], "upstream_recheck")
+    self.assertEqual(data["next_action"]["kind"], "reopen_classification_required")
     self.assertEqual(data["next_action"]["feature"], "foundation")
     self.assertEqual(data["next_action"]["phase"], "design")
     self.assertEqual(data["next_action"]["stage"], "drafting")
     self.assertEqual(data["next_action"]["upstream_phase"], "requirements")
+    self.assertEqual(data["next_action"]["reopen_trigger"], "R-0")
 
-  def test_next_detects_tasks_update_requires_implementation_recheck(self):
-    """tasks が implementation 成果物より新しければ implementation 再確認を返す"""
+  def test_next_detects_tasks_update_requires_reopen_classification(self):
+    """完了済み workflow で tasks が新しければ reopen 分類を要求する"""
     cwd = Path(self.tmpdir)
     complete = {
       "drafting": True,
@@ -1936,11 +1938,12 @@ class NextNavigationTests(unittest.TestCase):
     _assert_script_invoked(self, result)
     self.assertEqual(result.returncode, 0, result.stderr)
     data = json.loads(result.stdout)
-    self.assertEqual(data["next_action"]["kind"], "upstream_recheck")
+    self.assertEqual(data["next_action"]["kind"], "reopen_classification_required")
     self.assertEqual(data["next_action"]["feature"], "foundation")
     self.assertEqual(data["next_action"]["phase"], "implementation")
     self.assertEqual(data["next_action"]["stage"], "drafting")
     self.assertEqual(data["next_action"]["upstream_phase"], "tasks")
+    self.assertEqual(data["next_action"]["reopen_trigger"], "A-0")
 
   def test_next_triad_review_reports_review_run_disciplines(self):
     """triad-review 直前に読むべき review-run/proxy 規律を返す"""

@@ -2957,8 +2957,39 @@ def build_upstream_recheck_next_action(
   }
 
 
+def _reopen_trigger_for_upstream_phase(upstream_phase):
+  """上流正本変更の起点 phase から reopen 分類の既定候補を返す"""
+  return {
+    "intent": "N-0",
+    "feature-partitioning": "N-0",
+    "requirements": "R-0",
+    "design": "D-0",
+    "tasks": "A-0",
+  }.get(upstream_phase)
+
+
+def build_reopen_classification_required_next_action(
+  feature,
+  upstream_phase,
+  downstream_phase,
+  downstream_stage,
+  reason,
+):
+  """完了済み workflow の上流正本変更に対する reopen 分類要求を作る"""
+  return {
+    "kind": "reopen_classification_required",
+    "feature": feature,
+    "phase": downstream_phase,
+    "stage": downstream_stage,
+    "upstream_phase": upstream_phase,
+    "reopen_trigger": _reopen_trigger_for_upstream_phase(upstream_phase),
+    "required_action": "classify_reopen_and_run_reopen_start",
+    "reason": reason,
+  }
+
+
 def resolve_upstream_recheck_action(cwd):
-  """完了済み workflow に対し、上流更新後の再展開漏れを検出する"""
+  """完了済み workflow に対し、上流更新後の reopen 必要性を検出する"""
   intent_mtime = _max_existing_mtime(cwd, _phase_artifact_paths(None, "intent"))
   partitioning_mtime = _max_existing_mtime(
     cwd,
@@ -2969,12 +3000,12 @@ def resolve_upstream_recheck_action(cwd):
     and partitioning_mtime is not None
     and intent_mtime > partitioning_mtime
   ):
-    return build_upstream_recheck_next_action(
+    return build_reopen_classification_required_next_action(
       None,
       "intent",
       "feature-partitioning",
       "candidate-proposal",
-      "intent 成果物が feature-partitioning 成果物より新しいため、機能分割確認が必要です",
+      "完了済み workflow で intent 成果物が feature-partitioning 成果物より新しいため、reopen 分類が必要です",
     )
 
   if partitioning_mtime is not None:
@@ -2984,12 +3015,12 @@ def resolve_upstream_recheck_action(cwd):
         _phase_artifact_paths(feature, "requirements"),
       )
       if requirements_mtime is not None and partitioning_mtime > requirements_mtime:
-        return build_upstream_recheck_next_action(
+        return build_reopen_classification_required_next_action(
           feature,
           "feature-partitioning",
           "requirements",
           "drafting",
-          f"feature-partitioning 成果物が {feature} requirements 成果物より新しいため、requirements 再確認が必要です",
+          f"完了済み workflow で feature-partitioning 成果物が {feature} requirements 成果物より新しいため、reopen 分類が必要です",
         )
 
   for upstream_phase, downstream_phase in (
@@ -3011,12 +3042,12 @@ def resolve_upstream_recheck_action(cwd):
         and downstream_mtime is not None
         and upstream_mtime > downstream_mtime
       ):
-        return build_upstream_recheck_next_action(
+        return build_reopen_classification_required_next_action(
           feature,
           upstream_phase,
           downstream_phase,
           "drafting",
-          f"{feature} {upstream_phase} 成果物が {downstream_phase} 成果物より新しいため、{downstream_phase} 再確認が必要です",
+          f"完了済み workflow で {feature} {upstream_phase} 成果物が {downstream_phase} 成果物より新しいため、reopen 分類が必要です",
         )
 
   return None
