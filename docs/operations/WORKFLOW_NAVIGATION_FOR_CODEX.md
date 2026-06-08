@@ -20,12 +20,13 @@ python3 tools/check-workflow-action.py next --json
 2. Claude memory が自動ロードされる前提を置かない。必要な規律本文は repo 内 `docs/disciplines/` を読む。
 3. repo 外 memory への書き込みを前提にしない。memory 相当の永続記録が必要な場合は、まず記録先と内容を利用者へ提示し、明示承認を得る。
 4. filesystem sandbox と approval の制約を守る。外部 API、ネットワーク通信、repo 外書き込み、破壊的操作は、許可が必要な場合に承認を得てから実行する。
-5. commit と push は利用者の運用方針に従う。利用者が明示的に依頼した場合だけ実行し、直前に precheck を行う。
-6. docs/ 配下や `TODO_NEXT_SESSION.md` を書いた後は、`next` を再実行して結果を報告する。`post_write_verification` が返った場合は通常ワークフローへ戻らない。
-7. post-write-verification pending 中に、再発防止や反省を目的として規律、TODO、テンプレート、hook、スクリプトを勝手に変更しない。必要なら提案して利用者の承認を待つ。
-8. `.codex/hooks.json` と `.codex/hooks/` は Codex 側の hook 設定である。Claude Code の `.claude/` 設定とは分けて扱う。
-9. `triad-review` の API review-run を開始する前に、使用 variant と role ごとの path／provider／model を利用者へ提示する。variant や role 割当が曖昧な場合は開始しない。
-10. API review-run 完了後は、`SESSION_WORKFLOW_GUIDE.md#3.3-a-2` の利用者提示ゲートを完了するまで、proxy_model 判断依頼、実装修正、spec.json 更新、フェーズ移行へ進まない。
+5. commit と push は利用者の運用方針に従う。commit 停止点では原則として停止し、人間が実行する。Codex が commit 実行を代行できるのは、利用者が「LLM がコミット実行を代行してよい」と明示した場合だけであり、通常の「コミット」「次のコミットまで」「進めて」は実行代行承認とみなさない。代行時は直前に precheck を行う。
+6. 通常の `next_action` と異なる side track に入るときは、作業前に `SIDE TRACK 開始: <名前>`、`本線停止理由`、`復帰条件` を利用者へ明示する。side track から抜けるときは、`SIDE TRACK 終了: <名前>`、`復帰先`、`next` の判定結果を明示する。
+7. docs/ 配下や `TODO_NEXT_SESSION.md` を書いた後は、`next` を再実行して結果を報告する。`post_write_verification` が返った場合は通常ワークフローへ戻らない。
+8. post-write-verification pending 中に、再発防止や反省を目的として規律、TODO、テンプレート、hook、スクリプトを勝手に変更しない。必要なら提案して利用者の承認を待つ。
+9. `.codex/hooks.json` と `.codex/hooks/` は Codex 側の hook 設定である。Claude Code の `.claude/` 設定とは分けて扱う。
+10. `triad-review` の API review-run を開始する前に、使用 variant と role ごとの path／provider／model を利用者へ提示する。variant や role 割当が曖昧な場合は開始しない。
+11. API review-run 完了後は、`SESSION_WORKFLOW_GUIDE.md#3.3-a-2` の利用者提示ゲートを完了するまで、proxy_model 判断依頼、実装修正、spec.json 更新、フェーズ移行へ進まない。
 
 ## 3. post-write-verification の扱い
 

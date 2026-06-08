@@ -44,7 +44,15 @@ def run_precheck(cwd, rationale):
   """commit 事前検査を実行する"""
   script = Path(__file__).resolve().parent / "check-workflow-action.py"
   return subprocess.run(
-    ["python3", str(script), "commit", "--rationale", rationale],
+    [
+      "python3",
+      str(script),
+      "commit",
+      "--rationale",
+      rationale,
+      "--execution-actor",
+      "llm",
+    ],
     cwd=str(cwd),
     capture_output=True,
     text=True,

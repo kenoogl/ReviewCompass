@@ -129,7 +129,7 @@ check-workflow-action.py spec-set <feature> <phase> <stage> <new-value> [--ratio
 ### 5.2 `commit` サブコマンド
 
 ```
-check-workflow-action.py commit --rationale "<理由>"
+check-workflow-action.py commit --rationale "<理由>" [--execution-actor llm|human]
 ```
 
 引数：
@@ -137,10 +137,13 @@ check-workflow-action.py commit --rationale "<理由>"
 | 引数 | 必須 | 説明 |
 |---|---|---|
 | `--rationale` | **必須** | このコミットを行う理由、利用者承認の発言出典を含めることを推奨 |
+| `--execution-actor` | 任意 | commit 実行主体。既定は `llm`。`llm` の場合は、通常の commit 内容承認とは別に、LLM による実行代行の明示承認を要求する。人間が自分で commit する前の事前検査だけを行う場合は `human` を指定する |
 
 `--rationale` を必須とする理由：commit は不可逆操作のため、なぜ実行するかの根拠を残すべき。
 
-commit は利用者の職掌範囲であり、LLM は利用者の明示指示なしに実行しない。機械判定では、`--rationale` に加えて `.reviewcompass/approvals/commit-approval.json` のユーザ承認レコードを必須とする。
+commit は利用者の職掌範囲であり、LLM は「LLM がコミット実行を代行してよい」と明示的に指示された場合を除き、停止点で必ず止まる。機械判定では、`--rationale` に加えて `.reviewcompass/approvals/commit-approval.json` のユーザ承認レコードを必須とする。
+
+`--execution-actor llm` の場合、承認レコードには通常の commit 内容承認とは別に `execution_delegation` を含める。`「コミット」`、`「次のコミットまで」`、`「進めて」` は内容承認または停止点到達指示として扱い、LLM による commit 実行代行承認とはみなさない。
 
 承認レコードの最小形：
 
@@ -151,12 +154,19 @@ commit は利用者の職掌範囲であり、LLM は利用者の明示指示な
   "approved_at": "2026-06-03T00:00:00+09:00",
   "rationale": "利用者がコミットを明示承認",
   "target_files": ["path/to/file.md"],
+  "execution_delegation": {
+    "delegated_to": "llm",
+    "approved_by": "user",
+    "approved_at": "2026-06-03T00:00:00+09:00",
+    "explicit_instruction": "LLM がコミット実行を代行してよい",
+    "rationale": "利用者が LLM によるコミット実行代行を明示承認"
+  },
   "expires_after_commit": true,
   "consumed": false
 }
 ```
 
-`target_files` は staged ファイルの許可範囲。`"*"` を含む場合は全 staged ファイルを許可する。`consumed: true` は消費済みとして逸脱扱いにする。
+`target_files` は staged ファイルの許可範囲。`"*"` を含む場合は全 staged ファイルを許可する。`consumed: true` は消費済みとして逸脱扱いにする。`execution_delegation` は LLM 実行時だけ必須であり、人間が自分で commit する場合の内容承認レコードには不要。
 
 実行時は直接 `git commit` ではなく、次のラッパーを使う：
 
@@ -164,7 +174,7 @@ commit は利用者の職掌範囲であり、LLM は利用者の明示指示な
 tools/guarded-git-commit.py -m "<commit message>" --rationale "<理由>"
 ```
 
-このラッパーは `check-workflow-action.py commit` を先に実行し、exit 2 なら遮断する。exit 1（WARN）は既定では停止し、利用者判断で続行する場合だけ `--allow-warn` を付ける。commit 成功後、`expires_after_commit` が false でない承認レコードは `consumed: true` に更新する。
+このラッパーは `check-workflow-action.py commit --execution-actor llm` を先に実行し、exit 2 なら遮断する。exit 1（WARN）は既定では停止し、利用者判断で続行する場合だけ `--allow-warn` を付ける。commit 成功後、`expires_after_commit` が false でない承認レコードは `consumed: true` に更新する。
 
 限界：repo 内スクリプトだけでは「承認レコードを誰が作成したか」を完全には保証できない。強い保証には、段階 3 hook adapter または実行環境側で、承認レコードの発行・更新を利用者操作に限定する必要がある。
 
@@ -433,10 +443,11 @@ tests/fixtures/spec-json-cases/
 
 - **正常系**：
   - `spec-set foundation requirements approval true` ＋ alignment=true → exit 0
-  - `commit` ＋ pending 所見 0 件 ＋ 通常変更のみ ＋ 有効なユーザ承認レコード → exit 0
-  - `commit` ＋ post-write 対象文書 ＋ 有効なユーザ承認レコード ＋ completed manifest → exit 0
+  - `commit --execution-actor llm` ＋ pending 所見 0 件 ＋ 通常変更のみ ＋ 有効なユーザ承認レコード ＋ LLM 実行代行承認 → exit 0
+  - `commit --execution-actor human` ＋ pending 所見 0 件 ＋ 通常変更のみ ＋ 有効なユーザ承認レコード → exit 0
+  - `commit` ＋ post-write 対象文書 ＋ 有効なユーザ承認レコード ＋ LLM 実行代行承認 ＋ completed manifest → exit 0
   - `audit-commit HEAD` ＋ post-write 対象文書 ＋ matching completed manifest → exit 0
-  - `guarded-git-commit` ＋ 有効なユーザ承認レコード → commit 実行、承認レコード消費済み
+  - `guarded-git-commit` ＋ 有効なユーザ承認レコード ＋ LLM 実行代行承認 → commit 実行、承認レコード消費済み
   - `push` ＋ 作業ツリー clean ＋ 先行 1 コミット → exit 0
 - **警告系**：
   - `commit` ＋ pending 所見 1 件以上 → exit 1
@@ -447,9 +458,10 @@ tests/fixtures/spec-json-cases/
   - `spec-set foundation design drafting true` ＋ requirements.approval=false → exit 2
   - `push` ＋ 作業ツリー dirty → exit 2
   - `commit` ＋ ユーザ承認レコードなし／消費済み／承認対象外 staged ファイルあり → exit 2
+  - `commit --execution-actor llm` ＋ LLM 実行代行承認なし → exit 2
   - `commit` ＋ post-write 対象文書 ＋ completed manifest なし → exit 2
   - `audit-commit HEAD` ＋ post-write 対象文書 ＋ completed manifest なし → exit 2
-  - `guarded-git-commit` ＋ ユーザ承認レコードなし → commit しない
+  - `guarded-git-commit` ＋ ユーザ承認レコードなし／LLM 実行代行承認なし → commit しない
   - `commit` ＋ `.git/` 内ファイル含む → exit 2
 
 ### 9.4 TDD の遵守（入口規律）
@@ -500,7 +512,7 @@ docs/
 段階 1（LLM）の規律として、不可逆操作の **直前に必ず** 本スクリプトを呼ぶ：
 
 - spec.json の `workflow_state` を変更する Edit／Write の直前 → `spec-set` 呼び出し
-- `git commit` の直前 → `commit` 呼び出し。実行は原則 `guarded-git-commit.py` 経由
+- `git commit` の直前 → `commit --execution-actor llm` 呼び出し。実行は原則 `guarded-git-commit.py` 経由。LLM 実行代行承認がなければ停止する
 - `git push` の直前 → `push` 呼び出し
 
 ### 11.2 出力の解釈と次の行動

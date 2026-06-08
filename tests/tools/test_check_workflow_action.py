@@ -3307,6 +3307,7 @@ def _write_commit_approval(
   consumed=False,
   target_sha256=None,
   include_target_sha256=True,
+  include_execution_delegation=True,
 ):
   """commit 事前検査用のユーザ承認レコードを書く"""
   approval_dir = Path(tmpdir) / ".reviewcompass" / "approvals"
@@ -3327,6 +3328,14 @@ def _write_commit_approval(
     "expires_after_commit": True,
     "consumed": consumed,
   }
+  if include_execution_delegation:
+    approval["execution_delegation"] = {
+      "delegated_to": "llm",
+      "approved_by": "user",
+      "approved_at": "2026-06-03T00:00:00+09:00",
+      "explicit_instruction": "LLM がコミット実行を代行してよい",
+      "rationale": "利用者が LLM によるコミット実行代行を明示承認",
+    }
   if include_target_sha256:
     approval["target_sha256"] = target_sha256
   approval_path.write_text(
@@ -3409,6 +3418,47 @@ class CommitExitCodeTests(unittest.TestCase):
       f"未消化所見なし＋通常変更のみは通過すべき。\n"
       f"stdout: {result.stdout}\nstderr: {result.stderr}",
     )
+
+  def test_llm_commit_without_execution_delegation_returns_two(self):
+    """LLM 実行では通常の commit 承認だけでは exit 2"""
+    _set_pending_findings(self.pending_file, unresolved_count=0, resolved_count=2)
+    _stage_file(self.tmpdir, "notes.md", "# テスト用ノート")
+    _write_commit_approval(
+      self.tmpdir,
+      ["notes.md"],
+      include_execution_delegation=False,
+    )
+
+    result = run_script(
+      ["commit", "--rationale", "内容承認のみで LLM commit しようとするテスト"],
+      cwd=self.tmpdir,
+    )
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 2, result.stdout)
+    self.assertIn("コミット実行代行", result.stdout)
+
+  def test_human_commit_precheck_allows_content_approval_without_delegation(self):
+    """人間実行としての事前検査なら実行代行承認は不要"""
+    _set_pending_findings(self.pending_file, unresolved_count=0, resolved_count=2)
+    _stage_file(self.tmpdir, "notes.md", "# テスト用ノート")
+    _write_commit_approval(
+      self.tmpdir,
+      ["notes.md"],
+      include_execution_delegation=False,
+    )
+
+    result = run_script(
+      [
+        "commit",
+        "--rationale", "人間が commit する前の内容承認チェック",
+        "--execution-actor", "human",
+      ],
+      cwd=self.tmpdir,
+    )
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 0, result.stdout)
 
   def test_commit_blocks_when_in_progress_file_exists(self):
     """stages/in-progress が非空なら commit は exit 2"""

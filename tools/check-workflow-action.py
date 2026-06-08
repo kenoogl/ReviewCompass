@@ -1865,6 +1865,7 @@ def validate_commit_approval(cwd, staged_files):
     "target_files": [],
     "target_sha256": {},
     "consumed": None,
+    "execution_delegation": None,
   }
 
   if not approval_path.exists():
@@ -1887,6 +1888,7 @@ def validate_commit_approval(cwd, staged_files):
   approval_state["target_files"] = target_files
   approval_state["target_sha256"] = target_sha256 if isinstance(target_sha256, dict) else {}
   approval_state["consumed"] = approval.get("consumed")
+  approval_state["execution_delegation"] = approval.get("execution_delegation")
 
   errors = []
   if approval.get("approved_action") != "commit":
@@ -1924,6 +1926,32 @@ def validate_commit_approval(cwd, staged_files):
 
   approval_state["valid"] = not errors
   return approval_state, errors
+
+
+def validate_commit_execution_delegation(approval_state, execution_actor):
+  """LLM による commit 実行代行が明示承認されているか検査する"""
+  if execution_actor == "human":
+    return []
+
+  delegation = approval_state.get("execution_delegation")
+  if not isinstance(delegation, dict):
+    return [
+      "LLM によるコミット実行代行の明示承認がありません"
+      "（execution_delegation が必要）"
+    ]
+
+  errors = []
+  if delegation.get("delegated_to") != "llm":
+    errors.append("execution_delegation.delegated_to が llm ではありません")
+  if delegation.get("approved_by") != "user":
+    errors.append("execution_delegation.approved_by が user ではありません")
+  instruction = delegation.get("explicit_instruction")
+  if not isinstance(instruction, str) or "LLM" not in instruction or "コミット実行" not in instruction:
+    errors.append(
+      "execution_delegation.explicit_instruction に "
+      "LLM によるコミット実行代行の明示がありません"
+    )
+  return errors
 
 
 def git_head_commit(cwd):
@@ -2012,6 +2040,10 @@ def cmd_commit(args):
   caution = [f for f in staged_files if classify_staged_file(f) == "caution"]
   normal = [f for f in staged_files if classify_staged_file(f) == "normal"]
   approval_state, approval_errors = validate_commit_approval(cwd, staged_files)
+  execution_delegation_errors = validate_commit_execution_delegation(
+    approval_state,
+    args.execution_actor,
+  )
   post_write_state, post_write_errors = validate_post_write_completion_for_targets(
     cwd,
     staged_files,
@@ -2022,6 +2054,8 @@ def cmd_commit(args):
   deviation_reasons = []
   if approval_errors:
     deviation_reasons.extend(approval_errors)
+  if execution_delegation_errors:
+    deviation_reasons.extend(execution_delegation_errors)
   if (
     in_progress_files
     and not is_reopen_stop_point_commit_allowed(cwd, in_progress_files, staged_files)
@@ -2060,6 +2094,7 @@ def cmd_commit(args):
     f"  通常変更: {len(normal)} 件\n"
     f"進行中ファイル: {len(in_progress_files)} 件\n"
     f"ユーザ承認レコード: {'有効' if approval_state['valid'] else '無効'}\n"
+    f"commit 実行主体: {args.execution_actor}\n"
     f"post-write-verification 対象: {len(post_write_state['target_files'])} 件\n"
     f"post-write-verification 状態: {post_write_state['manifest_status']}"
   )
@@ -2072,12 +2107,16 @@ def cmd_commit(args):
     },
     "in_progress_files": in_progress_files,
     "commit_approval": approval_state,
+    "execution_actor": args.execution_actor,
     "post_write_verification": post_write_state,
   }
   action_str = f"commit (rationale='{rationale}')"
   action_dict = {
     "subcommand": "commit",
-    "args": {"rationale": rationale},
+    "args": {
+      "rationale": rationale,
+      "execution_actor": args.execution_actor,
+    },
   }
 
   if args.json:
@@ -3483,6 +3522,15 @@ def main():
     "--rationale",
     required=True,
     help="このコミットを行う理由（必須、利用者承認の出典を含めることを推奨、仕様 §5.2）",
+  )
+  cs.add_argument(
+    "--execution-actor",
+    choices=["llm", "human"],
+    default="llm",
+    help=(
+      "commit 実行主体。llm の場合は commit 内容承認とは別に "
+      "execution_delegation が必要"
+    ),
   )
 
   # push サブコマンド（仕様 §5.3）
