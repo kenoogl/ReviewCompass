@@ -1,0 +1,52 @@
+status: completed
+target_files:
+  - docs/notes/2026-06-08-cross-feature-conformance-drift-audit.md
+target_sha256:
+  docs/notes/2026-06-08-cross-feature-conformance-drift-audit.md: "4a8105eb176afc34ab74c3a0a177ff60634ed35c460db7ae209bdaa707055a10"
+required_verifiers:
+  - claude-sonnet-4-6
+  - gpt-5.4
+  - gemini-3.1-pro-preview
+completed_verifiers:
+  - claude-sonnet-4-6
+  - gpt-5.4
+  - gemini-3.1-pro-preview
+unresolved_substantive_findings: 0
+verifications:
+  - verifier: claude-sonnet-4-6
+    target_files:
+      - docs/notes/2026-06-08-cross-feature-conformance-drift-audit.md
+    target_sha256:
+      docs/notes/2026-06-08-cross-feature-conformance-drift-audit.md: "4a8105eb176afc34ab74c3a0a177ff60634ed35c460db7ae209bdaa707055a10"
+  - verifier: gpt-5.4
+    target_files:
+      - docs/notes/2026-06-08-cross-feature-conformance-drift-audit.md
+    target_sha256:
+      docs/notes/2026-06-08-cross-feature-conformance-drift-audit.md: "4a8105eb176afc34ab74c3a0a177ff60634ed35c460db7ae209bdaa707055a10"
+  - verifier: gemini-3.1-pro-preview
+    target_files:
+      - docs/notes/2026-06-08-cross-feature-conformance-drift-audit.md
+    target_sha256:
+      docs/notes/2026-06-08-cross-feature-conformance-drift-audit.md: "4a8105eb176afc34ab74c3a0a177ff60634ed35c460db7ae209bdaa707055a10"
+verification_evidence:
+  - verifier: claude-sonnet-4-6
+    provider: anthropic-api
+    model: claude-sonnet-4-6
+    raw_output: /private/tmp/cross-drift-postwrite-primary-final2.raw.txt
+    parsed_output: /private/tmp/cross-drift-postwrite-primary-final2.yaml
+    result: warnings_only_no_scope_error
+  - verifier: gpt-5.4
+    provider: openai-api
+    model: gpt-5.4
+    raw_output: /private/tmp/cross-drift-postwrite-adversarial-final2.raw.txt
+    parsed_output: /private/tmp/cross-drift-postwrite-adversarial-final2.yaml
+    result: warnings_only_no_scope_error
+  - verifier: gemini-3.1-pro-preview
+    provider: gemini-api
+    model: gemini-3.1-pro-preview
+    raw_output: /private/tmp/cross-drift-postwrite-judgment-final2.raw.txt
+    parsed_output: /private/tmp/cross-drift-postwrite-judgment-final2.yaml
+    result: all_clear
+notes:
+  - The remaining warnings concern the documented path-level traceability limitation of this representative audit memo.
+  - The memo explicitly excludes itself from authoritative evidence ingestion until commit and approval are complete.
