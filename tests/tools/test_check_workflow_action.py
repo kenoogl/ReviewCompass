@@ -1615,6 +1615,27 @@ class SpecSetExitCodeTests(unittest.TestCase):
       f"stdout: {result.stdout}\nstderr: {result.stderr}",
     )
 
+  def test_setting_upstream_stage_to_false_with_downstream_true_returns_two(self):
+    """上流段を false に戻す時、下流段が true のままなら exit 2"""
+    cwd = self._copy_fixture("case-a-ready-for-approval")
+    spec_path = cwd / ".reviewcompass" / "specs" / "foundation" / "spec.json"
+    spec = json.loads(spec_path.read_text(encoding="utf-8"))
+    spec["workflow_state"]["requirements"]["approval"] = True
+    spec["workflow_state"]["design"]["drafting"] = True
+    spec_path.write_text(
+      json.dumps(spec, ensure_ascii=False, indent=2),
+      encoding="utf-8",
+    )
+
+    result = run_script(
+      ["spec-set", "foundation", "requirements", "alignment", "false"],
+      cwd=cwd,
+    )
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 2, result.stdout)
+    self.assertIn("下流", result.stdout)
+
 
 class SpecSetOutputTests(unittest.TestCase):
   """spec-set サブコマンドの出力形式
@@ -3577,6 +3598,253 @@ class CommitExitCodeTests(unittest.TestCase):
 
     _assert_script_invoked(self, result)
     self.assertEqual(result.returncode, 0, result.stdout)
+
+  def test_commit_blocks_completed_reopen_without_impact_decisions(self):
+    """reopen 完了 commit は下流影響判定表がなければ遮断する"""
+    _set_pending_findings(self.pending_file, unresolved_count=0)
+    completed_path = (
+      Path(self.tmpdir)
+      / "stages"
+      / "completed"
+      / "reopen-procedure-2026-06-09.yaml"
+    )
+    completed_path.parent.mkdir(parents=True)
+    completed_path.write_text(
+      "process_id: reopen-procedure\n"
+      "step_number: 4\n"
+      "pending_gates:\n"
+      "  - stages/requirements.yaml#alignment\n"
+      "  - stages/requirements.yaml#approval\n"
+      "next_step: 完了\n",
+      encoding="utf-8",
+    )
+    subprocess.run(
+      ["git", "add", "stages/completed/reopen-procedure-2026-06-09.yaml"],
+      cwd=str(self.tmpdir),
+      check=True,
+      capture_output=True,
+    )
+    _write_commit_approval(
+      self.tmpdir,
+      ["stages/completed/reopen-procedure-2026-06-09.yaml"],
+    )
+
+    result = run_script(
+      ["commit", "--rationale", "reopen 完了の影響判定欠落テスト"],
+      cwd=self.tmpdir,
+    )
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 2, result.stdout)
+    self.assertIn("downstream_impact_decisions", result.stdout)
+
+  def test_commit_allows_completed_reopen_with_impact_decisions(self):
+    """reopen 完了 commit は全 pending gate の下流影響判定表があれば通過する"""
+    _set_pending_findings(self.pending_file, unresolved_count=0)
+    completed_path = (
+      Path(self.tmpdir)
+      / "stages"
+      / "completed"
+      / "reopen-procedure-2026-06-09.yaml"
+    )
+    completed_path.parent.mkdir(parents=True)
+    completed_path.write_text(
+      "process_id: reopen-procedure\n"
+      "step_number: 4\n"
+      "pending_gates:\n"
+      "  - stages/requirements.yaml#alignment\n"
+      "  - stages/requirements.yaml#approval\n"
+      "impacted_downstream_phases:\n"
+      "  - requirements\n"
+      "downstream_impact_decisions:\n"
+      "  - gate: stages/requirements.yaml#alignment\n"
+      "    feature_scope: all_features\n"
+      "    decision: existing_sufficient\n"
+      "    rationale: 既存要件で受けられることを確認した。\n"
+      "    evidence:\n"
+      "      - .reviewcompass/specs/foundation/requirements.md\n"
+      "  - gate: stages/requirements.yaml#approval\n"
+      "    feature_scope: all_features\n"
+      "    decision: approved\n"
+      "    rationale: alignment 判定を承認した。\n"
+      "    evidence:\n"
+      "      - .reviewcompass/specs/foundation/requirements.md\n"
+      "next_step: 完了\n",
+      encoding="utf-8",
+    )
+    subprocess.run(
+      ["git", "add", "stages/completed/reopen-procedure-2026-06-09.yaml"],
+      cwd=str(self.tmpdir),
+      check=True,
+      capture_output=True,
+    )
+    _write_commit_approval(
+      self.tmpdir,
+      ["stages/completed/reopen-procedure-2026-06-09.yaml"],
+    )
+
+    result = run_script(
+      ["commit", "--rationale", "reopen 完了の影響判定ありテスト"],
+      cwd=self.tmpdir,
+    )
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 0, result.stdout)
+
+  def test_commit_blocks_completed_reopen_when_impacted_phase_is_uncovered(self):
+    """reopen 完了 commit は影響フェーズを覆う gate 判定がなければ遮断する"""
+    _set_pending_findings(self.pending_file, unresolved_count=0)
+    completed_path = (
+      Path(self.tmpdir)
+      / "stages"
+      / "completed"
+      / "reopen-procedure-2026-06-09.yaml"
+    )
+    completed_path.parent.mkdir(parents=True)
+    completed_path.write_text(
+      "process_id: reopen-procedure\n"
+      "step_number: 4\n"
+      "pending_gates:\n"
+      "  - stages/requirements.yaml#alignment\n"
+      "impacted_downstream_phases:\n"
+      "  - requirements\n"
+      "  - design\n"
+      "downstream_impact_decisions:\n"
+      "  - gate: stages/requirements.yaml#alignment\n"
+      "    feature_scope: all_features\n"
+      "    decision: existing_sufficient\n"
+      "    rationale: requirements は確認済み。\n"
+      "    evidence:\n"
+      "      - .reviewcompass/specs/foundation/requirements.md\n"
+      "next_step: 完了\n",
+      encoding="utf-8",
+    )
+    subprocess.run(
+      ["git", "add", "stages/completed/reopen-procedure-2026-06-09.yaml"],
+      cwd=str(self.tmpdir),
+      check=True,
+      capture_output=True,
+    )
+    _write_commit_approval(
+      self.tmpdir,
+      ["stages/completed/reopen-procedure-2026-06-09.yaml"],
+    )
+
+    result = run_script(
+      ["commit", "--rationale", "reopen 完了の影響フェーズ漏れテスト"],
+      cwd=self.tmpdir,
+    )
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 2, result.stdout)
+    self.assertIn("impacted_downstream_phases", result.stdout)
+
+  def test_commit_blocks_reopen_marked_spec_without_reopen_procedure(self):
+    """reopen 印のある spec.json 変更は reopen 手続きファイルなしでは遮断する"""
+    _set_pending_findings(self.pending_file, unresolved_count=0)
+    _write_spec(
+      self.tmpdir,
+      "foundation",
+      {
+        "drafting": False,
+        "triad-review": False,
+        "review-wave": False,
+        "alignment": False,
+        "approval": False,
+      },
+    )
+    spec_path = (
+      Path(self.tmpdir)
+      / ".reviewcompass"
+      / "specs"
+      / "foundation"
+      / "spec.json"
+    )
+    spec = json.loads(spec_path.read_text(encoding="utf-8"))
+    spec["recheck"]["upstream_change_pending"] = True
+    spec["recheck"]["impacted_downstream_phases"] = ["requirements"]
+    spec_path.write_text(
+      json.dumps(spec, ensure_ascii=False, indent=2),
+      encoding="utf-8",
+    )
+    relpath = ".reviewcompass/specs/foundation/spec.json"
+    subprocess.run(
+      ["git", "add", relpath],
+      cwd=str(self.tmpdir),
+      check=True,
+      capture_output=True,
+    )
+    _write_commit_approval(self.tmpdir, [relpath])
+
+    result = run_script(
+      ["commit", "--rationale", "reopen 印 spec の手続きファイル必須テスト"],
+      cwd=self.tmpdir,
+    )
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 2, result.stdout)
+    self.assertIn("reopen 手続き", result.stdout)
+
+  def test_commit_allows_reopen_marked_spec_with_reopen_procedure(self):
+    """reopen 印のある spec.json 変更は reopen 手続きファイルがあれば逸脱ではない"""
+    _set_pending_findings(self.pending_file, unresolved_count=0)
+    _write_spec(
+      self.tmpdir,
+      "foundation",
+      {
+        "drafting": False,
+        "triad-review": False,
+        "review-wave": False,
+        "alignment": False,
+        "approval": False,
+      },
+    )
+    spec_path = (
+      Path(self.tmpdir)
+      / ".reviewcompass"
+      / "specs"
+      / "foundation"
+      / "spec.json"
+    )
+    spec = json.loads(spec_path.read_text(encoding="utf-8"))
+    spec["recheck"]["upstream_change_pending"] = True
+    spec["recheck"]["impacted_downstream_phases"] = ["requirements"]
+    spec_path.write_text(
+      json.dumps(spec, ensure_ascii=False, indent=2),
+      encoding="utf-8",
+    )
+    in_progress_path = (
+      Path(self.tmpdir)
+      / "stages"
+      / "in-progress"
+      / "reopen-procedure-2026-06-09.yaml"
+    )
+    in_progress_path.parent.mkdir(parents=True)
+    in_progress_path.write_text(
+      "process_id: reopen-procedure\n"
+      "step_number: 2\n"
+      "next_step: 第2過程：停止点コミット\n",
+      encoding="utf-8",
+    )
+    relpaths = [
+      ".reviewcompass/specs/foundation/spec.json",
+      "stages/in-progress/reopen-procedure-2026-06-09.yaml",
+    ]
+    subprocess.run(
+      ["git", "add"] + relpaths,
+      cwd=str(self.tmpdir),
+      check=True,
+      capture_output=True,
+    )
+    _write_commit_approval(self.tmpdir, relpaths)
+
+    result = run_script(
+      ["commit", "--rationale", "reopen 印 spec と手続きファイルのテスト"],
+      cwd=self.tmpdir,
+    )
+
+    _assert_script_invoked(self, result)
+    self.assertNotEqual(result.returncode, 2, result.stdout)
 
   def test_commit_with_pending_findings_returns_one(self):
     """未消化所見 1 件以上 → exit 1（警告）"""

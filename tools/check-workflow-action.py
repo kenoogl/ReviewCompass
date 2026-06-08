@@ -345,6 +345,31 @@ def load_spec_json(cwd, feature):
   return json.loads(spec_path.read_text(encoding="utf-8"))
 
 
+def downstream_true_reasons_for_false_set(workflow_state, phase, stage):
+  """上流段を false に戻す時に true のまま残る下流段を返す"""
+  reasons = []
+  stages = PHASE_STAGES[phase]
+  stage_index = stages.index(stage)
+  phase_state = workflow_state.get(phase, {})
+  for later_stage in stages[stage_index + 1:]:
+    if phase_state.get(later_stage) is True:
+      reasons.append(
+        f"workflow_state.{phase}.{later_stage} が true のままです"
+        f"（{phase}.{stage} の下流段です）"
+      )
+
+  phase_index = PHASE_ORDER.index(phase)
+  for downstream_phase in PHASE_ORDER[phase_index + 1:]:
+    downstream_state = workflow_state.get(downstream_phase, {})
+    for downstream_stage in PHASE_STAGES[downstream_phase]:
+      if downstream_state.get(downstream_stage) is True:
+        reasons.append(
+          f"workflow_state.{downstream_phase}.{downstream_stage} が true のままです"
+          f"（{phase}.{stage} の下流段です）"
+        )
+  return reasons
+
+
 def judge_spec_set(spec_data, phase, stage, new_value):
   """spec-set の判定を行う（仕様 §6.1）
 
@@ -389,6 +414,15 @@ def judge_spec_set(spec_data, phase, stage, new_value):
   else:
     # false に変える場合：reopen 警告（現状 true のときのみ）
     if current_value is True:
+      downstream_reasons = downstream_true_reasons_for_false_set(
+        workflow_state,
+        phase,
+        stage,
+      )
+      if downstream_reasons:
+        return "DEVIATION", 2, downstream_reasons + [
+          "上流段を false に戻す場合は、下流段の再オープンまたは影響なし判定を先に記録してください"
+        ]
       return "WARN", 1, [
         f"{phase}.{stage} を true から false に戻しています"
         f"（reopen 手続き 計画書 §5.6 に従っているか確認してください）"
@@ -1978,6 +2012,212 @@ def _is_commit_execution_delegation_instruction(instruction):
   return False
 
 
+def _staged_text(cwd, filepath):
+  """staged blob を text として読む"""
+  result = subprocess.run(
+    ["git", "show", f":{filepath}"],
+    cwd=str(cwd),
+    capture_output=True,
+    text=True,
+  )
+  if result.returncode != 0:
+    return None
+  return result.stdout
+
+
+def _reopen_completed_files(staged_files):
+  """staged された reopen 完了ファイルを返す"""
+  return [
+    path for path in staged_files
+    if (
+      path.startswith("stages/completed/reopen-procedure-")
+      and path.endswith((".yaml", ".yml"))
+    )
+  ]
+
+
+def _reopen_procedure_files(staged_files):
+  """staged された reopen 手続きファイルを返す"""
+  prefixes = (
+    "stages/in-progress/reopen-procedure-",
+    "stages/completed/reopen-procedure-",
+  )
+  return [
+    path for path in staged_files
+    if path.endswith((".yaml", ".yml")) and path.startswith(prefixes)
+  ]
+
+
+def _staged_spec_files(staged_files):
+  """staged された feature spec.json を返す"""
+  return [
+    path for path in staged_files
+    if (
+      path.startswith(".reviewcompass/specs/")
+      and path.endswith("/spec.json")
+    )
+  ]
+
+
+def _staged_json(cwd, filepath):
+  """staged blob を JSON として読む"""
+  text = _staged_text(cwd, filepath)
+  if text is None:
+    return None, f"{filepath} の staged 内容を読めません"
+  try:
+    data = json.loads(text)
+  except json.JSONDecodeError as e:
+    return None, f"{filepath} を JSON として読めません: {e}"
+  if not isinstance(data, dict):
+    return None, f"{filepath} は JSON object が必要です"
+  return data, None
+
+
+def _spec_has_reopen_marker(spec_data):
+  """spec.json に reopen/recheck 進行を示す印があるか判定する"""
+  recheck = spec_data.get("recheck")
+  if isinstance(recheck, dict):
+    if recheck.get("upstream_change_pending") is True:
+      return True
+    impacted = recheck.get("impacted_downstream_phases")
+    if isinstance(impacted, list) and impacted:
+      return True
+  return False
+
+
+def validate_reopen_spec_changes_have_procedure(cwd, staged_files):
+  """reopen 印付き spec.json commit に reopen 手続きファイルがあるか検査する"""
+  if _reopen_procedure_files(staged_files):
+    return []
+
+  errors = []
+  for filepath in _staged_spec_files(staged_files):
+    data, error = _staged_json(cwd, filepath)
+    if error:
+      errors.append(error)
+      continue
+    if _spec_has_reopen_marker(data):
+      errors.append(
+        f"{filepath} は reopen/recheck 印を含むため、"
+        "対応する reopen 手続きファイルを同じ commit に含めてください"
+      )
+  return errors
+
+
+def _impact_decision_gate_set(data):
+  """downstream_impact_decisions から gate 集合を作る"""
+  decisions = data.get("downstream_impact_decisions")
+  if not isinstance(decisions, list):
+    return None, ["downstream_impact_decisions は list が必要です"]
+
+  errors = []
+  gates = set()
+  allowed_decisions = {
+    "affected_update_required",
+    "existing_sufficient",
+    "no_impact",
+    "approved",
+    "proxy_approved",
+  }
+  for index, item in enumerate(decisions):
+    prefix = f"downstream_impact_decisions[{index}]"
+    if not isinstance(item, dict):
+      errors.append(f"{prefix} は object が必要です")
+      continue
+    gate = item.get("gate")
+    if not isinstance(gate, str) or not gate.strip():
+      errors.append(f"{prefix}.gate が必要です")
+    else:
+      gates.add(gate)
+    feature_scope = item.get("feature_scope")
+    if not isinstance(feature_scope, str) or not feature_scope.strip():
+      errors.append(f"{prefix}.feature_scope が必要です")
+    decision = item.get("decision")
+    if decision not in allowed_decisions:
+      errors.append(
+        f"{prefix}.decision は {', '.join(sorted(allowed_decisions))} のいずれかが必要です"
+      )
+    rationale = item.get("rationale")
+    if not isinstance(rationale, str) or not rationale.strip():
+      errors.append(f"{prefix}.rationale が必要です")
+    evidence = item.get("evidence")
+    if not isinstance(evidence, list) or not evidence or not all(isinstance(v, str) and v for v in evidence):
+      errors.append(f"{prefix}.evidence は空でない文字列 list が必要です")
+  return gates, errors
+
+
+def _impact_decision_phase_set(decision_gates):
+  """判定済み gate から phase 集合を作る"""
+  phases = set()
+  for gate in decision_gates:
+    if not isinstance(gate, str):
+      continue
+    if not gate.startswith("stages/") or ".yaml#" not in gate:
+      continue
+    phase = gate[len("stages/"):].split(".yaml#", 1)[0]
+    if phase in PHASE_STAGES:
+      phases.add(phase)
+  return phases
+
+
+def validate_reopen_completion_impact_decisions(cwd, staged_files):
+  """reopen 完了時に下流影響判定表があるか検査する"""
+  errors = []
+  for filepath in _reopen_completed_files(staged_files):
+    text = _staged_text(cwd, filepath)
+    if text is None:
+      errors.append(f"{filepath} の staged 内容を読めません")
+      continue
+    try:
+      data = yaml.safe_load(text)
+    except yaml.YAMLError as e:
+      errors.append(f"{filepath} を YAML として読めません: {e}")
+      continue
+    if not isinstance(data, dict):
+      errors.append(f"{filepath} は YAML object が必要です")
+      continue
+
+    pending_gates = data.get("pending_gates")
+    if not isinstance(pending_gates, list) or not all(isinstance(v, str) for v in pending_gates):
+      errors.append(f"{filepath}.pending_gates は文字列 list が必要です")
+      continue
+
+    impacted_phases = data.get("impacted_downstream_phases")
+    if (
+      not isinstance(impacted_phases, list)
+      or not all(isinstance(v, str) and v in PHASE_STAGES for v in impacted_phases)
+    ):
+      errors.append(
+        f"{filepath}.impacted_downstream_phases は既知フェーズ名の list が必要です"
+      )
+      impacted_phases = []
+
+    decision_gates, decision_errors = _impact_decision_gate_set(data)
+    for error in decision_errors:
+      errors.append(f"{filepath}: {error}")
+    if decision_gates is None:
+      continue
+
+    missing = [gate for gate in pending_gates if gate not in decision_gates]
+    if missing:
+      errors.append(
+        f"{filepath}.downstream_impact_decisions に pending_gates の判定が不足しています: "
+        + ", ".join(missing)
+      )
+
+    decision_phases = _impact_decision_phase_set(decision_gates)
+    uncovered_phases = [
+      phase for phase in impacted_phases
+      if phase not in decision_phases
+    ]
+    if uncovered_phases:
+      errors.append(
+        f"{filepath}.impacted_downstream_phases に対応する gate 判定が不足しています: "
+        + ", ".join(uncovered_phases)
+      )
+  return errors
+
+
 def git_head_commit(cwd):
   """現在の HEAD commit を返す"""
   result = subprocess.run(
@@ -2068,6 +2308,14 @@ def cmd_commit(args):
     approval_state,
     args.execution_actor,
   )
+  reopen_spec_errors = validate_reopen_spec_changes_have_procedure(
+    cwd,
+    staged_files,
+  )
+  reopen_completion_errors = validate_reopen_completion_impact_decisions(
+    cwd,
+    staged_files,
+  )
   post_write_state, post_write_errors = validate_post_write_completion_for_targets(
     cwd,
     staged_files,
@@ -2080,6 +2328,10 @@ def cmd_commit(args):
     deviation_reasons.extend(approval_errors)
   if execution_delegation_errors:
     deviation_reasons.extend(execution_delegation_errors)
+  if reopen_spec_errors:
+    deviation_reasons.extend(reopen_spec_errors)
+  if reopen_completion_errors:
+    deviation_reasons.extend(reopen_completion_errors)
   if (
     in_progress_files
     and not is_reopen_stop_point_commit_allowed(cwd, in_progress_files, staged_files)

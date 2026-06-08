@@ -30,6 +30,91 @@ pending_gates:
 - stages/tasks.yaml#approval
 - stages/implementation.yaml#alignment
 - stages/implementation.yaml#approval
+impacted_downstream_phases:
+- intent
+- feature-partitioning
+- requirements
+- design
+- tasks
+- implementation
+downstream_impact_decisions:
+- gate: stages/intent.yaml#review
+  feature_scope: all_features
+  decision: existing_sufficient
+  rationale: intent review 記録で、追加 intent が既存の reopen 分類と下流確認へ接続されることを確認した。
+  evidence:
+  - docs/reviews/intent-review-2026-06-09-review-collection-mapping.md
+- gate: stages/intent.yaml#approval
+  feature_scope: all_features
+  decision: approved
+  rationale: intent review の結果を承認済みとして扱った。
+  evidence:
+  - docs/reviews/intent-review-2026-06-09-review-collection-mapping.md
+- gate: stages/feature-partitioning.yaml#candidate-proposal
+  feature_scope: all_features
+  decision: existing_sufficient
+  rationale: 追加 intent は新 feature 追加ではなく、既存の conformance-evaluation を中心とする workflow policy として扱えることを確認した。
+  evidence:
+  - stages/feature-partitioning/2026-05-24-proposal.md
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-09-intent-reopen-chain.md
+- gate: stages/feature-partitioning.yaml#approval
+  feature_scope: all_features
+  decision: approved
+  rationale: feature 分割変更なしの判定を承認済みとして扱った。
+  evidence:
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-09-intent-reopen-chain.md
+- gate: stages/requirements.yaml#alignment
+  feature_scope: all_features
+  decision: existing_sufficient
+  rationale: 全 feature の requirements に 2026-06-08 の伝播確認があり、該当 intent を既存要件または明示注記で受けることを確認した。
+  evidence:
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-09-intent-reopen-chain.md
+  - .reviewcompass/specs/conformance-evaluation/requirements.md
+- gate: stages/requirements.yaml#approval
+  feature_scope: all_features
+  decision: approved
+  rationale: requirements alignment の判定を承認済みとして扱った。
+  evidence:
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-09-intent-reopen-chain.md
+- gate: stages/design.yaml#alignment
+  feature_scope: all_features
+  decision: existing_sufficient
+  rationale: 全 feature の design に 2026-06-08 の伝播確認があり、該当 intent を既存設計または明示注記で受けることを確認した。
+  evidence:
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-09-intent-reopen-chain.md
+  - .reviewcompass/specs/conformance-evaluation/design.md
+- gate: stages/design.yaml#approval
+  feature_scope: all_features
+  decision: approved
+  rationale: design alignment の判定を承認済みとして扱った。
+  evidence:
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-09-intent-reopen-chain.md
+- gate: stages/tasks.yaml#alignment
+  feature_scope: all_features
+  decision: existing_sufficient
+  rationale: 全 feature の tasks に 2026-06-08 の伝播確認があり、該当 intent を既存タスクまたは明示注記で受けることを確認した。
+  evidence:
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-09-intent-reopen-chain.md
+  - .reviewcompass/specs/conformance-evaluation/tasks.md
+- gate: stages/tasks.yaml#approval
+  feature_scope: all_features
+  decision: approved
+  rationale: tasks alignment の判定を承認済みとして扱った。
+  evidence:
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-09-intent-reopen-chain.md
+- gate: stages/implementation.yaml#alignment
+  feature_scope: all_features
+  decision: existing_sufficient
+  rationale: 全 feature の implementation-drafting に 2026-06-08 の伝播確認があり、追加実装不要の判断を記録済みであることを確認した。
+  evidence:
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-09-intent-reopen-chain.md
+  - .reviewcompass/specs/conformance-evaluation/implementation-drafting.md
+- gate: stages/implementation.yaml#approval
+  feature_scope: all_features
+  decision: approved
+  rationale: implementation alignment の判定を承認済みとして扱った。
+  evidence:
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-09-intent-reopen-chain.md
 approval_source: 2026-06-09 利用者発言「次のコミットまで自律的に進める」
 evidence:
 - docs/reviews/intent-review-2026-06-09-review-collection-mapping.md

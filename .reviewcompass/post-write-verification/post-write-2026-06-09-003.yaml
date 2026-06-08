@@ -1,0 +1,34 @@
+status: completed
+target_files:
+  - docs/operations/REOPEN_PROCEDURE.md
+  - docs/operations/WORKFLOW_PRECHECK.md
+target_sha256:
+  docs/operations/REOPEN_PROCEDURE.md: 14259199f460d19feb78ab2a80979ae8eda596bb22924c011364822f722d2317
+  docs/operations/WORKFLOW_PRECHECK.md: 83eb7740380e09a67e2528ccdb81a8976fefbe6dfdee0526b7b0cb00b7705ed2
+required_verifiers:
+  - gemini
+completed_verifiers:
+  - gemini
+unresolved_substantive_findings: 0
+verifications:
+  - verifier: gemini
+    provider: gemini-api
+    model: gemini-3.5-flash
+    target_files:
+      - docs/operations/REOPEN_PROCEDURE.md
+      - docs/operations/WORKFLOW_PRECHECK.md
+    target_sha256:
+      docs/operations/REOPEN_PROCEDURE.md: 14259199f460d19feb78ab2a80979ae8eda596bb22924c011364822f722d2317
+      docs/operations/WORKFLOW_PRECHECK.md: 83eb7740380e09a67e2528ccdb81a8976fefbe6dfdee0526b7b0cb00b7705ed2
+    raw_path: .reviewcompass/post-write-verification/reopen-impact-decisions-policy.raw.txt
+    parsed_path: .reviewcompass/post-write-verification/reopen-impact-decisions-policy.parsed.yaml
+    raw_sha256: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    parsed_sha256: 7deaf989c4074126713025b960235acea73eb57bb4b4e008999ae3645a88effc
+    result_summary: >
+      Gemini 3.5 Flash に、reopen 時の下流影響判定ポリシー、
+      spec-set false 化時の下流 true 残存防止、reopen 印付き spec.json の
+      手続きファイル必須化、完了 reopen ファイルの影響フェーズ網羅確認を
+      検証させた。findings は空。
+note: >
+  docs/operations/REOPEN_PROCEDURE.md と
+  docs/operations/WORKFLOW_PRECHECK.md に対する post-write-verification。
