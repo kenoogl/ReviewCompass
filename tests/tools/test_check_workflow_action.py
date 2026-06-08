@@ -3308,6 +3308,7 @@ def _write_commit_approval(
   target_sha256=None,
   include_target_sha256=True,
   include_execution_delegation=True,
+  execution_instruction="コミット",
 ):
   """commit 事前検査用のユーザ承認レコードを書く"""
   approval_dir = Path(tmpdir) / ".reviewcompass" / "approvals"
@@ -3333,7 +3334,7 @@ def _write_commit_approval(
       "delegated_to": "llm",
       "approved_by": "user",
       "approved_at": "2026-06-03T00:00:00+09:00",
-      "explicit_instruction": "LLM がコミット実行を代行してよい",
+      "explicit_instruction": execution_instruction,
       "rationale": "利用者が LLM によるコミット実行代行を明示承認",
     }
   if include_target_sha256:
@@ -3437,6 +3438,62 @@ class CommitExitCodeTests(unittest.TestCase):
     _assert_script_invoked(self, result)
     self.assertEqual(result.returncode, 2, result.stdout)
     self.assertIn("コミット実行代行", result.stdout)
+
+  def test_llm_commit_rejects_autonomous_until_next_commit_instruction(self):
+    """次のコミットまで自律実行は commit 停止点到達指示であり代行承認ではない"""
+    _set_pending_findings(self.pending_file, unresolved_count=0, resolved_count=2)
+    _stage_file(self.tmpdir, "notes.md", "# テスト用ノート")
+    _write_commit_approval(
+      self.tmpdir,
+      ["notes.md"],
+      execution_instruction="次のコミットまで自律実行",
+    )
+
+    result = run_script(
+      ["commit", "--rationale", "次のコミットまで自律実行の誤解釈防止テスト"],
+      cwd=self.tmpdir,
+    )
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 2, result.stdout)
+    self.assertIn("コミット実行代行", result.stdout)
+
+  def test_llm_commit_rejects_autonomous_instruction_without_commit(self):
+    """自律実行して、だけでは commit 実行代行承認にならない"""
+    _set_pending_findings(self.pending_file, unresolved_count=0, resolved_count=2)
+    _stage_file(self.tmpdir, "notes.md", "# テスト用ノート")
+    _write_commit_approval(
+      self.tmpdir,
+      ["notes.md"],
+      execution_instruction="自律実行して",
+    )
+
+    result = run_script(
+      ["commit", "--rationale", "自律実行して単独の誤解釈防止テスト"],
+      cwd=self.tmpdir,
+    )
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 2, result.stdout)
+    self.assertIn("コミット実行代行", result.stdout)
+
+  def test_llm_commit_accepts_autonomous_with_commit_delegation_instruction(self):
+    """コミット代行も含めて自律実行なら LLM commit を許可する"""
+    _set_pending_findings(self.pending_file, unresolved_count=0, resolved_count=2)
+    _stage_file(self.tmpdir, "notes.md", "# テスト用ノート")
+    _write_commit_approval(
+      self.tmpdir,
+      ["notes.md"],
+      execution_instruction="コミット代行も含めて自律実行",
+    )
+
+    result = run_script(
+      ["commit", "--rationale", "コミット代行込みの自律実行テスト"],
+      cwd=self.tmpdir,
+    )
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 0, result.stdout)
 
   def test_human_commit_precheck_allows_content_approval_without_delegation(self):
     """人間実行としての事前検査なら実行代行承認は不要"""

@@ -1946,12 +1946,36 @@ def validate_commit_execution_delegation(approval_state, execution_actor):
   if delegation.get("approved_by") != "user":
     errors.append("execution_delegation.approved_by が user ではありません")
   instruction = delegation.get("explicit_instruction")
-  if not isinstance(instruction, str) or "LLM" not in instruction or "コミット実行" not in instruction:
+  if not isinstance(instruction, str) or not _is_commit_execution_delegation_instruction(instruction):
     errors.append(
       "execution_delegation.explicit_instruction に "
       "LLM によるコミット実行代行の明示がありません"
     )
   return errors
+
+
+def _is_commit_execution_delegation_instruction(instruction):
+  """利用者発言が LLM の commit 実行代行を許可しているか判定する"""
+  text = "".join(str(instruction).split())
+  if not text:
+    return False
+
+  # 「次のコミットまで」は commit 停止点までの自律進行であり、commit 実行は含まない。
+  if "次のコミットまで" in text and "代行" not in text and "含め" not in text:
+    return False
+
+  # 停止点での単発「コミット」は、LLM に commit 実行を依頼する通常指示として扱う。
+  if text in ("コミット", "コミットして", "コミットを実行"):
+    return True
+
+  # 全自動の場合は commit 代行を含むことが明示されている場合だけ許可する。
+  if "自律" in text and "コミット" in text and ("代行" in text or "含め" in text):
+    return True
+
+  if "コミット実行" in text and ("代行" in text or "よい" in text or "許可" in text):
+    return True
+
+  return False
 
 
 def git_head_commit(cwd):

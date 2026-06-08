@@ -3,8 +3,8 @@ target_files:
   - docs/operations/WORKFLOW_PRECHECK.md
   - docs/operations/WORKFLOW_NAVIGATION_FOR_CODEX.md
 target_sha256:
-  docs/operations/WORKFLOW_PRECHECK.md: 4ffbdd8bf5a6a094d21e51caa3e547e02c417b4bcce7bbc09bc553962a315892
-  docs/operations/WORKFLOW_NAVIGATION_FOR_CODEX.md: 158cef0fe3c817ffe445646891cd79a006317063cd3164038f9d9d8b0c06ecf3
+  docs/operations/WORKFLOW_PRECHECK.md: aaa77129d16b2484fa305f23747c140fa1d44c719670d72885bd1a5c5f6da322
+  docs/operations/WORKFLOW_NAVIGATION_FOR_CODEX.md: 32058f2e5a1b184e6fd670aa236a2f9db1cc231f22687055bc6a31bea5cf47bc
 required_verifiers:
   - gemini
 completed_verifiers:
@@ -18,18 +18,19 @@ verifications:
       - docs/operations/WORKFLOW_PRECHECK.md
       - docs/operations/WORKFLOW_NAVIGATION_FOR_CODEX.md
     target_sha256:
-      docs/operations/WORKFLOW_PRECHECK.md: 4ffbdd8bf5a6a094d21e51caa3e547e02c417b4bcce7bbc09bc553962a315892
-      docs/operations/WORKFLOW_NAVIGATION_FOR_CODEX.md: 158cef0fe3c817ffe445646891cd79a006317063cd3164038f9d9d8b0c06ecf3
+      docs/operations/WORKFLOW_PRECHECK.md: aaa77129d16b2484fa305f23747c140fa1d44c719670d72885bd1a5c5f6da322
+      docs/operations/WORKFLOW_NAVIGATION_FOR_CODEX.md: 32058f2e5a1b184e6fd670aa236a2f9db1cc231f22687055bc6a31bea5cf47bc
     raw_path: .reviewcompass/post-write-verification/commit-execution-delegation-docs.raw.txt
     parsed_path: .reviewcompass/post-write-verification/commit-execution-delegation-docs.parsed.yaml
     raw_sha256: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
-    parsed_sha256: c6820e2557e383d549e487c56d7b8d0fac5df5955538684d20e6d3e10171ab10
+    parsed_sha256: c5ce8e730af5c105677e6641c02d17050a21bca1d475d1676e6e730298f16a4b
     result_summary: >
-      Gemini 3.5 Flash に、commit 実行代行承認と side track 開始／終了表示に関する
-      運用文書更新を検証させた。通常の commit 内容承認と LLM による commit 実行代行承認を
-      分離する記述、および side track の開始・終了時に名前、本線停止理由、
-      復帰条件または復帰先を表示する記述が、今回の利用者指示と矛盾しないことを確認した。
-      findings は空。
+      Gemini 3.5 Flash に、commit 指示語の解釈、commit 実行代行承認、
+      side track 開始／終了表示に関する運用文書更新を検証させた。
+      「次のコミットまで自律実行」は停止点まで進めて止まる指示、
+      停止点での「コミット」は単発 commit 実行代行指示、
+      「コミット代行も含めて自律実行」は全自動時の commit 実行代行指示として扱う記述が、
+      今回の利用者指示と矛盾しないことを確認した。findings は空。
 note: >
   docs/operations/WORKFLOW_PRECHECK.md と
   docs/operations/WORKFLOW_NAVIGATION_FOR_CODEX.md に対する
