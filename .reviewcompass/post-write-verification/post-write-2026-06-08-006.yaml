@@ -1,0 +1,25 @@
+status: completed
+target_files:
+  - docs/operations/CONFORMANCE_EVALUATION.md
+target_sha256:
+  docs/operations/CONFORMANCE_EVALUATION.md: "685529dde9fda4ed6cac3e14315db49a34ac2ba609df503894ba9bd327493919"
+required_verifiers:
+  - gemini-3.5-flash
+completed_verifiers:
+  - gemini-3.5-flash
+unresolved_substantive_findings: 0
+verifications:
+  - verifier: gemini-3.5-flash
+    target_files:
+      - docs/operations/CONFORMANCE_EVALUATION.md
+    target_sha256:
+      docs/operations/CONFORMANCE_EVALUATION.md: "685529dde9fda4ed6cac3e14315db49a34ac2ba609df503894ba9bd327493919"
+    inspection_criteria:
+      agreement_reflection: pass
+      reference_accuracy: pass
+      existing_record_consistency: pass
+      internal_logic: pass
+    result: all_clear
+notes:
+  - Small-scope post-write verification for replacing direct CheckPipeline wording with the reusable CrossFeatureDriftWorkflow entry point.
+  - No unresolved substantive findings remain.

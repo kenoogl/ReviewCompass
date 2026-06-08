@@ -170,7 +170,7 @@ phase_order の最後に位置付ける。
 標準手順：
 
 1. **code → ownership fixture**：実装コード、テスト、運用文書、既存仕様を読み、`tests/fixtures/conformance-evaluation/cross-feature-contract-ownership.yaml` に代表 drift item を記録する。各 item は contract ID、対象 feature、claim、owner candidate、contract refs、evidence refs、related clusters、必要に応じて `depends_on` を持つ。
-2. **check record**：`CheckPipeline(..., feature="_cross_feature", ownership_fixture=..., write_spec_update_drafts=True)` を実行し、`.reviewcompass/specs/_cross_feature/conformance/<日付>-check.md` に contract ownership map と spec update proposals を保存する。
+2. **check record**：`tools/conformance_evaluation/cross_feature_workflow.py` の `CrossFeatureDriftWorkflow` を実行し、内部で `_cross_feature` の check mode と draft 生成を標準手順として呼び出す。`.reviewcompass/specs/_cross_feature/conformance/<日付>-check.md` に contract ownership map と spec update proposals を保存する。
 3. **spec update drafts**：同じ実行で `.reviewcompass/specs/_cross_feature/conformance/<日付>-spec-update-drafts/*.md` を生成する。draft は `apply_status: draft_only` を持ち、実仕様を直接変更しない。
 4. **spec adoption**：人間判断を含めて draft を読み、各 feature の requirements.md／design.md／tasks.md へ必要最小限で反映する。反映時は XDI ID を保持し、採用先の正本文書を明示する。
 5. **spec triad traceability test**：`tools/conformance_evaluation/spec_triad_traceability.py` の checker を使う `tests/conformance-evaluation/test_spec_update_adoption.py` を更新し、各 XDI ID が該当 feature の requirements.md／design.md／tasks.md すべてから追跡できることを検査する。
