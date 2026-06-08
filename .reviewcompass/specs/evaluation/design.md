@@ -775,6 +775,7 @@ ReviewCompass 固有の追加：
 - **取り込み証拠の許容判定 3 値正本を本機能で所有**：`admitted_standard`／`admitted_exploratory`／`rejected` を新規正本として確定
 - **`modes/mode_diff_report.json` の構造化**：要件 9 受入 7 由来。4 要素（feature／review_mode／findings_by_severity／target）を含む構造化形式で `analysis` 向けに提供
 - **`counter_status` メトリクスの中核層活用**（triad-review must-fix A-002 対処）：foundation 3 値正本 `counter_status`（`counter_evidence_raised`／`no_counter_evidence_after_challenge`／`not_assessed`）を所見レベル中核メトリクスとして集計、処理方式レベルに反証発生率指標を追加。ReviewCompass の中核価値命題「treatment 比較で敵対役効果を測る」（要件 2 受入 2、計画書 §5.17.8）の機械測定を骨格段階で保証
+- **2026-06-08 の requirements 再確認への対応**：intent の「レビュー収集処理を事前設定の写像にしない」意図は、§分類モデルの有効・無効分離、§メトリクスモデルの構造化証拠からの導出、§評価準備メタデータの検査、§レビューモード母集団規則で受けられるため、設計構造の追加は不要と確認
 
 triad-review 段（2026-05-25 セッション 25）由来の追加修正：
 

@@ -811,5 +811,6 @@ analysis/
 - **`workflow-management` との接合**：所定手続きの実行履歴を運用ダッシュボード派生に取り込むため、新規の隣接機能として追加
 - **レビューモード 3 値体制**：先行設計の 2 値（手動／実行時）から 3 値（手動／実行時／サブエージェント経由）への拡張に伴い、関連箇所を更新。その後 2026-06-02 に `api_mediated` を追加し 4 値へ拡張、本設計の機能記述は固定値を持たず `foundation` 正本を参照する方式に変更
 - **共通／派生の分離**：先行設計は論文向け 1 系統のみで共通／派生の分離が不要だったが、本機能は 4 出力先のため、共通台帳の単一配置と出力先別派生の分離を判断 5 として確立
+- **2026-06-08 の requirements 再確認への対応**：intent の「レビュー収集処理を事前設定の写像にしない」意図は、§主張対応モデル、§証拠台帳モデル、§上流機能との接合面、§runtime と evaluation ロジックからの分離で受けられるため、設計構造の追加は不要と確認
 
 機能横断レビューで対処された所見は carry-forward register 正本 [reviewcompass-import.yaml](../../../learning/workflow/carry-forward-register/reviewcompass-import.yaml) を参照（要件段で対処済み）。旧 Markdown 台帳は履歴 source として [reviewcompass-pending-cross-feature-findings.md](../../../learning/workflow/carry-forward-register/sources/reviewcompass-pending-cross-feature-findings.md) に残す。本設計段で新たに検出された波及所見は本設計に対応する 3 役レビュー段で扱う。
