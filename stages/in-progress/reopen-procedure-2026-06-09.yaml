@@ -4,14 +4,15 @@ classification: N-0
 started_at: '2026-06-09T00:00:00+09:00'
 trigger: feature-partitioning補正によりfoundation requirementsの再確認が必要
 classification_basis: docs/reviews/reopen-classification-2026-06-09-feature-impact-foundation-requirements.md
-completed_steps: []
 completed_steps:
 - 第1過程：判定とフラグ差し戻し
-next_step: 第1過程停止点コミット：フラグ差し戻し内容の利用者承認
-step_number: 1
+- 第1過程停止点：利用者承認
+next_step: 第2過程停止点コミット：正本修正確認
+step_number: 2
 pending_gates:
 - stages/intent.yaml#review
 - stages/intent.yaml#approval
 - stages/feature-partitioning.yaml#candidate-proposal
 - stages/feature-partitioning.yaml#approval
-current_blocker: 第1過程の停止点として、手戻り種別・再実施範囲・spec.json フラグ差し戻し内容の利用者承認が必要
+approval_source: 2026-06-09 利用者発言「承認」
+current_blocker: null
