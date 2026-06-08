@@ -262,24 +262,27 @@ language: ja
   5. 人間判断が必要な候補を `needs_human_decision` で明示できる
 - **テスト要件**：contract ownership map の値域検査、update candidate 分類テスト、spec update proposals 出力テスト、draft-only spec update artifacts 生成テスト、requirements.md, design.md, tasks.md を直接変更しないことの回帰テスト
 
-### T-015：機能横断 drift clustering と ownership 出力の採用判断
+### T-015：機能横断 drift workflow の正式化
 
 - **対応設計節**：design.md §13.6 契約所有候補と仕様更新草案、§19 テスト戦略
 - **対応要件**：Requirement 9 受入 1〜5、および機能横断 conformance check の carry-forward 所見 XDI-CE-001
-- **責務**：cross-feature drift clustering と contract ownership outputs を、単発のドラフト生成成果物に留めるか、conformance-evaluation の本実装機能として昇格するかを判断する。follow-up implementation decision として、代表 fixture から全機能を横断するクラスタ、所有候補、仕様更新候補、human decision 要否を再現可能に出力できるかを確認する。
+- **責務**：cross-feature drift workflow を conformance-evaluation の正式運用として定義する。code → ownership fixture、check record、spec update drafts、spec adoption、spec triad traceability test、commit の順に進め、実装由来契約を requirements.md／design.md／tasks.md の三文書から追跡可能にする。cross-feature drift clustering と contract ownership outputs は単発のドラフト生成成果物ではなく、再実行可能な workflow として扱う。
 - **前提タスク**：T-014
 - **成果物**：
   - `tests/fixtures/conformance-evaluation/cross-feature-contract-ownership.yaml`
   - `.reviewcompass/specs/_cross_feature/conformance/<日付>-check.md`
   - `.reviewcompass/specs/_cross_feature/conformance/<日付>-spec-update-drafts/*.md`
-  - 採用判断を記録する follow-up note または tasks 更新
+  - `tests/conformance-evaluation/test_spec_update_adoption.py`
+  - `docs/operations/CONFORMANCE_EVALUATION.md`
+  - 採用判断と再実行手順を記録する tasks 更新
 - **完了条件**：
   1. cross-feature drift clustering が全 7 機能を代表する drift item を保持し、関連クラスタと証跡参照を失わない
   2. contract ownership outputs が対象仕様ファイル単位に畳み込まれ、requirements.md、design.md、tasks.md の更新候補へ分類される
   3. `ownership-unclear` または `carry_forward` の item は `needs_human_decision: true` として follow-up implementation decision に残る
   4. `_cross_feature` の check record と spec update drafts が、単一機能の conformance output と同じ形で再生成できる
-  5. 本タスクを恒久機能へ昇格しない場合でも、理由と代替運用が tasks または carry-forward register に残る
-- **テスト要件**：代表 fixture の 7 機能被覆テスト、cross-feature drift clustering のクラスタ保持テスト、contract ownership outputs の target file 分類テスト、`needs_human_decision` 判定テスト、follow-up implementation decision の記録検査
+  5. spec triad traceability test が、各 XDI ID を対象 feature の requirements.md／design.md／tasks.md すべてから追跡できることを検査する
+  6. `docs/operations/CONFORMANCE_EVALUATION.md` に cross-feature drift workflow の手順が記録され、commit までの運用順序が説明される
+- **テスト要件**：代表 fixture の 7 機能被覆テスト、cross-feature drift clustering のクラスタ保持テスト、contract ownership outputs の target file 分類テスト、`needs_human_decision` 判定テスト、`tests/conformance-evaluation/test_spec_update_adoption.py` による spec triad traceability test、`docs/operations/CONFORMANCE_EVALUATION.md` の cross-feature drift workflow 記述検査
 
 ## 要件追跡（Requirements Traceability）
 

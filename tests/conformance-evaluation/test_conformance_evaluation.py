@@ -266,7 +266,7 @@ def test_t012_machine_verification_mv6_is_blocking(tmp_path):
 
 def test_t013_traceability_smoke():
   tasks_text = (ROOT / ".reviewcompass" / "specs" / "conformance-evaluation" / "tasks.md").read_text(encoding="utf-8")
-  for index in range(1, 15):
+  for index in range(1, 16):
     assert f"T-{index:03d}" in tasks_text
     task_block = re.search(rf"### T-{index:03d}：.*?(?=^### T-|\Z)", tasks_text, re.S | re.M)
     assert task_block is not None
@@ -285,3 +285,30 @@ def test_conformance_evaluation_specs_track_contract_ownership_and_spec_update_d
     assert "spec update proposals" in text
     assert "draft-only spec update artifacts" in text
     assert "requirements.md, design.md, tasks.md" in text
+
+
+def test_cross_feature_conformance_workflow_is_operationalized():
+  operations = (ROOT / "docs" / "operations" / "CONFORMANCE_EVALUATION.md").read_text(encoding="utf-8")
+  tasks = (ROOT / ".reviewcompass" / "specs" / "conformance-evaluation" / "tasks.md").read_text(encoding="utf-8")
+
+  for phrase in (
+    "cross-feature drift workflow",
+    "code → ownership fixture",
+    "check record",
+    "spec update drafts",
+    "spec adoption",
+    "spec triad traceability test",
+    "commit",
+  ):
+    assert phrase in operations
+
+  t015 = re.search(r"### T-015：.*?(?=^## |\Z)", tasks, re.S | re.M)
+  assert t015 is not None
+  t015_text = t015.group(0)
+  for phrase in (
+    "cross-feature drift workflow",
+    "tests/conformance-evaluation/test_spec_update_adoption.py",
+    "spec triad traceability test",
+    "docs/operations/CONFORMANCE_EVALUATION.md",
+  ):
+    assert phrase in t015_text

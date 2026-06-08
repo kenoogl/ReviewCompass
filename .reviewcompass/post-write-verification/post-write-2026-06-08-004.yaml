@@ -1,0 +1,26 @@
+status: completed
+target_files:
+  - docs/operations/CONFORMANCE_EVALUATION.md
+target_sha256:
+  docs/operations/CONFORMANCE_EVALUATION.md: "18ae6f894c02fabc817b0c9bdcffd11cd4576c561651e345c7a2c537cbd02a44"
+required_verifiers:
+  - gemini-3.5-flash
+completed_verifiers:
+  - gemini-3.5-flash
+unresolved_substantive_findings: 0
+verifications:
+  - verifier: gemini-3.5-flash
+    target_files:
+      - docs/operations/CONFORMANCE_EVALUATION.md
+    target_sha256:
+      docs/operations/CONFORMANCE_EVALUATION.md: "18ae6f894c02fabc817b0c9bdcffd11cd4576c561651e345c7a2c537cbd02a44"
+    inspection_criteria:
+      agreement_reflection: pass
+      reference_accuracy: pass
+      existing_record_consistency: pass
+      internal_logic: pass
+    result: all_clear
+notes:
+  - Small-scope post-write verification for adding the cross-feature drift workflow operation procedure.
+  - The new section records code → ownership fixture, check record, spec update drafts, spec adoption, spec triad traceability test, and commit order.
+  - No unresolved substantive findings remain.
