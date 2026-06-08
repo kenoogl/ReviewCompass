@@ -1,5 +1,9 @@
 from pathlib import Path
 
+from tools.conformance_evaluation.spec_triad_traceability import (
+  SpecTriadTraceabilityChecker,
+)
+
 
 ROOT = Path(__file__).resolve().parents[2]
 
@@ -20,15 +24,31 @@ def _read(path):
 
 
 def test_cross_feature_xdi_contracts_are_traceable_across_spec_triad():
-  missing_refs = []
+  result = SpecTriadTraceabilityChecker(ROOT).check(XDI_SPEC_MATRIX)
 
-  for contract_id, feature in XDI_SPEC_MATRIX.items():
-    for spec_name in ("requirements", "design", "tasks"):
-      path = f".reviewcompass/specs/{feature}/{spec_name}.md"
-      if contract_id not in _read(path):
-        missing_refs.append(f"{path}: {contract_id}")
+  assert result["ok"] is True
+  assert result["missing_refs"] == []
+  assert result["checked_refs"] == 21
 
-  assert missing_refs == []
+
+def test_spec_triad_traceability_checker_reports_missing_refs(tmp_path):
+  specs_root = tmp_path / ".reviewcompass" / "specs" / "sample"
+  specs_root.mkdir(parents=True)
+  (specs_root / "requirements.md").write_text("XDI-SAMPLE-001\n", encoding="utf-8")
+  (specs_root / "design.md").write_text("XDI-SAMPLE-001\n", encoding="utf-8")
+  (specs_root / "tasks.md").write_text("no trace\n", encoding="utf-8")
+
+  result = SpecTriadTraceabilityChecker(tmp_path).check({
+    "XDI-SAMPLE-001": "sample",
+  })
+
+  assert result == {
+    "ok": False,
+    "checked_refs": 3,
+    "missing_refs": [
+      ".reviewcompass/specs/sample/tasks.md: XDI-SAMPLE-001",
+    ],
+  }
 
 
 def test_cross_feature_runtime_design_contract_is_adopted():

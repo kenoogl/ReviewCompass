@@ -272,6 +272,7 @@ language: ja
   - `tests/fixtures/conformance-evaluation/cross-feature-contract-ownership.yaml`
   - `.reviewcompass/specs/_cross_feature/conformance/<日付>-check.md`
   - `.reviewcompass/specs/_cross_feature/conformance/<日付>-spec-update-drafts/*.md`
+  - `tools/conformance_evaluation/spec_triad_traceability.py`
   - `tests/conformance-evaluation/test_spec_update_adoption.py`
   - `docs/operations/CONFORMANCE_EVALUATION.md`
   - 採用判断と再実行手順を記録する tasks 更新
@@ -282,7 +283,7 @@ language: ja
   4. `_cross_feature` の check record と spec update drafts が、単一機能の conformance output と同じ形で再生成できる
   5. spec triad traceability test が、各 XDI ID を対象 feature の requirements.md／design.md／tasks.md すべてから追跡できることを検査する
   6. `docs/operations/CONFORMANCE_EVALUATION.md` に cross-feature drift workflow の手順が記録され、commit までの運用順序が説明される
-- **テスト要件**：代表 fixture の 7 機能被覆テスト、cross-feature drift clustering のクラスタ保持テスト、contract ownership outputs の target file 分類テスト、`needs_human_decision` 判定テスト、`tests/conformance-evaluation/test_spec_update_adoption.py` による spec triad traceability test、`docs/operations/CONFORMANCE_EVALUATION.md` の cross-feature drift workflow 記述検査
+- **テスト要件**：代表 fixture の 7 機能被覆テスト、cross-feature drift clustering のクラスタ保持テスト、contract ownership outputs の target file 分類テスト、`needs_human_decision` 判定テスト、`tools/conformance_evaluation/spec_triad_traceability.py` と `tests/conformance-evaluation/test_spec_update_adoption.py` による spec triad traceability test、`docs/operations/CONFORMANCE_EVALUATION.md` の cross-feature drift workflow 記述検査
 
 ## 要件追跡（Requirements Traceability）
 

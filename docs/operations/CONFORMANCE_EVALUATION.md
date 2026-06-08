@@ -173,7 +173,7 @@ phase_order の最後に位置付ける。
 2. **check record**：`CheckPipeline(..., feature="_cross_feature", ownership_fixture=..., write_spec_update_drafts=True)` を実行し、`.reviewcompass/specs/_cross_feature/conformance/<日付>-check.md` に contract ownership map と spec update proposals を保存する。
 3. **spec update drafts**：同じ実行で `.reviewcompass/specs/_cross_feature/conformance/<日付>-spec-update-drafts/*.md` を生成する。draft は `apply_status: draft_only` を持ち、実仕様を直接変更しない。
 4. **spec adoption**：人間判断を含めて draft を読み、各 feature の requirements.md／design.md／tasks.md へ必要最小限で反映する。反映時は XDI ID を保持し、採用先の正本文書を明示する。
-5. **spec triad traceability test**：`tests/conformance-evaluation/test_spec_update_adoption.py` を更新し、各 XDI ID が該当 feature の requirements.md／design.md／tasks.md すべてから追跡できることを検査する。
+5. **spec triad traceability test**：`tools/conformance_evaluation/spec_triad_traceability.py` の checker を使う `tests/conformance-evaluation/test_spec_update_adoption.py` を更新し、各 XDI ID が該当 feature の requirements.md／design.md／tasks.md すべてから追跡できることを検査する。
 6. **commit**：`PYTHONPATH=. .venv/bin/pytest tests/conformance-evaluation -q` を通し、workflow-management の commit gate と承認レコードを通して commit する。
 
 この workflow は、実装から仕様へ戻す経路を文書生成モードと混同しない。上流文書の骨子生成ではなく、既存仕様と実装由来契約の差分を contract ownership と spec triad traceability で管理する運用である。
