@@ -174,6 +174,7 @@ ReviewCompass 固有の追加：
 - `foundation` の正本語彙を再定義せず参照することを各受入で明示（Requirement 1 受入 1／受入 6、Requirement 9 受入 1／受入 6、Requirement 10 受入 2）
 - Boundary Context Out of scope に「上流文書との適合性評価（`conformance-evaluation` の責務）」を追加（計画書 §5.10 由来、新規 7 番目機能との分担）
 - 3 役（main／adversarial／judgment）別の所見差分を analysis 向け出力として提供する受入を追加（Requirement 9 受入 8、A-011 対処、2026-05-26 セッション 28 確定）
+- 2026-06-08 の feature-partitioning 再確認により、intent の「レビュー収集処理を事前設定の写像にしない」意図は新機能追加を要さず、evaluation では Requirement 1 の有効・無効実行の分離、Requirement 3 の構造化証拠からのメトリクス抽出、Requirement 6 のメタデータ完全性検査、および Requirement 9 のレビューモード区別で受けることを確認した。
 
 機能横断レビューで対処された所見：
 

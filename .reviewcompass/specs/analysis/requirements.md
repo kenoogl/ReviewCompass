@@ -148,6 +148,7 @@ ReviewCompass 固有の追加：
 - 隣接仕様として `workflow-management` を追加（Boundary Context 隣接期待、計画書 §3.1 由来、conformance-evaluation は Out of scope）
 - Requirement 2 受入 6 を陳腐化伝播の連動として `foundation` Req 6 受入 9 ＋ `evaluation` Req 5 受入 6 へ参照（A-001／A-003 の機能横断整合と関連）
 - Requirement 5 受入 6 で `foundation` Req 6 受入 8 への連動を明示（`evidence_class` 語彙正本の参照）
+- 2026-06-08 の feature-partitioning 再確認により、intent の「レビュー収集処理を事前設定の写像にしない」意図は新機能追加を要さず、analysis では Requirement 1 の主張から証拠への写像、Requirement 2 の `evaluation` 出力への来歴連結、Requirement 4 の `runtime`／`evaluation` ロジックからの分離、および Requirement 5 の証拠分類で受けることを確認した。
 
 機能横断レビューで対処された所見：
 

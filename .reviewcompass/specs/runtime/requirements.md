@@ -175,6 +175,7 @@ ReviewCompass 固有の追加：
 - `step_outcome` フィールドと語彙（`executed`／`skipped_by_treatment`／`failed`）を段結果出力に必須化（Requirement 1 受入 4、検証可能性の確保のため）
 - 無効実行トリアージ成果物の foundation スキーマ参照を明示（Requirement 6 受入 7、§5.18.9 由来）
 - Requirement 3（プロンプト一意解決）と Requirement 8 受入 6（複数候補時の選択方針）の対象シナリオ差を明示（Requirement 8 受入 6 への一文追加、両者の連動を実装側で保証）
+- 2026-06-08 の feature-partitioning 再確認により、intent の「レビュー収集処理を事前設定の写像にしない」意図は新機能追加を要さず、runtime では Requirement 1 のレビュー実行制御、Requirement 3 のプロンプト解決と版追跡、Requirement 4 の構造化証拠出力、および Requirement 10 のパターン定義依存除外で受けることを確認した。
 
 機能横断レビューで対処された所見：
 

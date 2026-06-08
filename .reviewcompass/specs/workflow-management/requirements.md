@@ -152,6 +152,7 @@ ReviewCompass 固有の追加：
 - 多層防御の第 1 層位置付けを明示（Requirement 7、§5.8 由来）
 - 機能依存マップの一元化（Requirement 8、§5.5 由来）
 - サブエージェント方式（`mode: subagent_mediated`）への対応を Requirement 3 受入 3 で明示（計画書 §5.23.12 由来）
+- 2026-06-08 の feature-partitioning 再確認により、intent の「レビュー収集処理を事前設定の写像にしない」意図は新機能追加を要さず、workflow-management では Requirement 2 の `next` による上流から下流への再展開、Requirement 4 の不可逆操作直前ゲート、Requirement 6 の session 跨ぎ状態管理、および Requirement 8 の機能依存マップ一元化で受けることを確認した。
 
 削減・除去：
 
