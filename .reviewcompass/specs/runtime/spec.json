@@ -6,42 +6,42 @@
   "workflow_state": {
     "intent": {
       "drafting": true,
-      "review": false,
-      "approval": false,
+      "review": true,
+      "approval": true,
       "reference": "stages/intent.yaml"
     },
     "feature-partitioning": {
-      "candidate-proposal": false,
-      "approval": false,
+      "candidate-proposal": true,
+      "approval": true,
       "reference": "stages/feature-partitioning/2026-05-24-proposal.md"
     },
     "requirements": {
       "drafting": true,
       "triad-review": true,
       "review-wave": true,
-      "alignment": false,
-      "approval": false
+      "alignment": true,
+      "approval": true
     },
     "design": {
       "drafting": true,
       "triad-review": true,
       "review-wave": true,
-      "alignment": false,
-      "approval": false
+      "alignment": true,
+      "approval": true
     },
     "tasks": {
       "drafting": true,
       "triad-review": true,
       "review-wave": true,
-      "alignment": false,
-      "approval": false
+      "alignment": true,
+      "approval": true
     },
     "implementation": {
       "drafting": true,
       "triad-review": true,
       "review-wave": true,
-      "alignment": false,
-      "approval": false
+      "alignment": true,
+      "approval": true
     }
   },
   "reopened": {
@@ -53,13 +53,7 @@
     "implementation": true
   },
   "recheck": {
-    "upstream_change_pending": true,
-    "impacted_downstream_phases": [
-      "feature-partitioning",
-      "requirements",
-      "design",
-      "tasks",
-      "implementation"
-    ]
+    "upstream_change_pending": false,
+    "impacted_downstream_phases": []
   }
 }

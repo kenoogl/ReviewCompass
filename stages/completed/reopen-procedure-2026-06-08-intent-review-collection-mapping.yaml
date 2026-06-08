@@ -2,6 +2,7 @@ process_id: reopen-procedure
 feature: all_features
 classification: I-4
 started_at: 2026-06-08T00:00:00+09:00
+completed_at: 2026-06-09T00:00:00+09:00
 trigger: 完了済み workflow への intent 追記を正式な reopen 手続きとして扱う
 classification_basis: docs/reviews/reopen-classification-2026-06-08-intent-review-collection-mapping.md
 completed_steps:
@@ -11,8 +12,11 @@ completed_steps:
 - 第1過程：全 feature の spec.json フラグ差し戻し
 - 第1過程：手戻り種別・再実施範囲・spec.json フラグ差し戻し内容を利用者が承認
 - 第2過程：intent/INTENT.md と下流仕様文書の正本修正が反映済みであることを確認
-next_step: 第2過程：停止点コミット
-step_number: 2
+- 第2過程：停止点コミット完了（2d24cf2 Start intent reopen procedure）
+- 第3過程：連鎖再実施完了（intent review/approval から implementation alignment/approval まで）
+- 第4過程：recheck クリア、進行中ファイル完了処理
+next_step: （完了。再オープン手続き終了）
+step_number: 4
 pending_gates:
 - stages/intent.yaml#review
 - stages/intent.yaml#approval
@@ -26,4 +30,8 @@ pending_gates:
 - stages/tasks.yaml#approval
 - stages/implementation.yaml#alignment
 - stages/implementation.yaml#approval
-current_blocker: 第2過程の停止点として、第1過程のフラグ差し戻しと第2過程の正本修正確認をコミットする必要がある
+approval_source: 2026-06-09 利用者発言「次のコミットまで自律的に進める」
+evidence:
+- docs/reviews/intent-review-2026-06-09-review-collection-mapping.md
+- .reviewcompass/specs/_cross_feature/reviews/2026-06-09-intent-reopen-chain.md
+current_blocker: null

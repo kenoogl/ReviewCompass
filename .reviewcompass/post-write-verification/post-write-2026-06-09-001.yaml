@@ -1,0 +1,26 @@
+status: completed
+target_files:
+  - docs/reviews/intent-review-2026-06-09-review-collection-mapping.md
+target_sha256:
+  docs/reviews/intent-review-2026-06-09-review-collection-mapping.md: 7700215cb2529293cf51086b7b11a3f529526ccfed9775e61b4484163c51d269
+required_verifiers:
+  - gemini
+completed_verifiers:
+  - gemini
+unresolved_substantive_findings: 0
+verifications:
+  - verifier: gemini
+    provider: gemini-api
+    model: gemini-3.5-flash
+    target_files:
+      - docs/reviews/intent-review-2026-06-09-review-collection-mapping.md
+    target_sha256:
+      docs/reviews/intent-review-2026-06-09-review-collection-mapping.md: 7700215cb2529293cf51086b7b11a3f529526ccfed9775e61b4484163c51d269
+    result_summary: >
+      Gemini 3.5 Flash に、intent review 記録を検証させた。レビュー対象、
+      判定、traceability と feature-partitioning への接続、blocking finding
+      なしの結論が、reopen 手続きと今回の intent 追記に反しないことを確認した。
+      findings は空。
+note: >
+  docs/reviews/intent-review-2026-06-09-review-collection-mapping.md
+  に対する post-write-verification。
