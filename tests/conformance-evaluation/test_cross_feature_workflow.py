@@ -1,4 +1,7 @@
 from pathlib import Path
+import json
+import subprocess
+import sys
 
 from tools.conformance_evaluation.cross_feature_workflow import (
   CrossFeatureDriftWorkflow,
@@ -68,3 +71,65 @@ def test_cross_feature_workflow_uses_default_fixture_and_refs(tmp_path):
   assert result["feature"] == "_cross_feature"
   assert len(result["draft_files"]) == 4
   assert result["traceability"]["checked_refs"] == 21
+
+
+def test_cross_feature_workflow_cli_outputs_json(tmp_path):
+  fixture_path = (
+    ROOT
+    / "tests"
+    / "fixtures"
+    / "conformance-evaluation"
+    / "cross-feature-contract-ownership.yaml"
+  )
+
+  result = subprocess.run(
+    [
+      sys.executable,
+      str(ROOT / "tools" / "conformance-evaluation-cross-feature.py"),
+      "--root",
+      str(tmp_path),
+      "--run-date",
+      "2026-06-08",
+      "--ownership-fixture",
+      str(fixture_path),
+      "--json",
+    ],
+    cwd=ROOT,
+    check=False,
+    capture_output=True,
+    text=True,
+  )
+
+  assert result.returncode == 0, result.stderr
+  payload = json.loads(result.stdout)
+  assert payload["feature"] == "_cross_feature"
+  assert payload["check_record"].endswith(
+    ".reviewcompass/specs/_cross_feature/conformance/2026-06-08-check.md"
+  )
+  assert len(payload["draft_files"]) == 4
+  assert payload["traceability"]["checked_refs"] == 21
+
+
+def test_cross_feature_workflow_cli_fails_closed_for_missing_fixture(tmp_path):
+  result = subprocess.run(
+    [
+      sys.executable,
+      str(ROOT / "tools" / "conformance-evaluation-cross-feature.py"),
+      "--root",
+      str(tmp_path),
+      "--run-date",
+      "2026-06-08",
+      "--ownership-fixture",
+      str(tmp_path / "missing.yaml"),
+      "--json",
+    ],
+    cwd=ROOT,
+    check=False,
+    capture_output=True,
+    text=True,
+  )
+
+  assert result.returncode == 2
+  payload = json.loads(result.stdout)
+  assert payload["ok"] is False
+  assert payload["error"] == "ownership_fixture_not_found"

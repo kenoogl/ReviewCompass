@@ -266,10 +266,11 @@ language: ja
 
 - **対応設計節**：design.md §13.6 契約所有候補と仕様更新草案、§19 テスト戦略
 - **対応要件**：Requirement 9 受入 1〜5、および機能横断 conformance check の carry-forward 所見 XDI-CE-001
-- **責務**：cross-feature drift workflow を conformance-evaluation の正式運用として定義する。`tools/conformance_evaluation/cross_feature_workflow.py` を実行入口とし、code → ownership fixture、check record、spec update drafts、spec adoption、spec triad traceability test、commit の順に進め、実装由来契約を requirements.md／design.md／tasks.md の三文書から追跡可能にする。cross-feature drift clustering と contract ownership outputs は単発のドラフト生成成果物ではなく、再実行可能な workflow として扱う。
+- **責務**：cross-feature drift workflow を conformance-evaluation の正式運用として定義する。`tools/conformance-evaluation-cross-feature.py` を標準 CLI 入口、`tools/conformance_evaluation/cross_feature_workflow.py` を内部 workflow 実装とし、code → ownership fixture、check record、spec update drafts、spec adoption、spec triad traceability test、commit の順に進め、実装由来契約を requirements.md／design.md／tasks.md の三文書から追跡可能にする。cross-feature drift clustering と contract ownership outputs は単発のドラフト生成成果物ではなく、再実行可能な workflow として扱う。
 - **前提タスク**：T-014
 - **成果物**：
   - `tests/fixtures/conformance-evaluation/cross-feature-contract-ownership.yaml`
+  - `tools/conformance-evaluation-cross-feature.py`
   - `tools/conformance_evaluation/cross_feature_workflow.py`
   - `.reviewcompass/specs/_cross_feature/conformance/<日付>-check.md`
   - `.reviewcompass/specs/_cross_feature/conformance/<日付>-spec-update-drafts/*.md`

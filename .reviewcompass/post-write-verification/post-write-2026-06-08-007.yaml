@@ -1,0 +1,25 @@
+status: completed
+target_files:
+  - docs/operations/CONFORMANCE_EVALUATION.md
+target_sha256:
+  docs/operations/CONFORMANCE_EVALUATION.md: "775733b0a83f1270abc9300c7ee97180ebca208ab40066791384fc969e852a9c"
+required_verifiers:
+  - gemini-3.5-flash
+completed_verifiers:
+  - gemini-3.5-flash
+unresolved_substantive_findings: 0
+verifications:
+  - verifier: gemini-3.5-flash
+    target_files:
+      - docs/operations/CONFORMANCE_EVALUATION.md
+    target_sha256:
+      docs/operations/CONFORMANCE_EVALUATION.md: "775733b0a83f1270abc9300c7ee97180ebca208ab40066791384fc969e852a9c"
+    inspection_criteria:
+      agreement_reflection: pass
+      reference_accuracy: pass
+      existing_record_consistency: pass
+      internal_logic: pass
+    result: all_clear
+notes:
+  - Small-scope post-write verification for adding the cross-feature CLI command reference to the operation procedure.
+  - No unresolved substantive findings remain.

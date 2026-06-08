@@ -298,6 +298,7 @@ def test_cross_feature_conformance_workflow_is_operationalized():
     "spec update drafts",
     "spec adoption",
     "tools/conformance_evaluation/cross_feature_workflow.py",
+    "tools/conformance-evaluation-cross-feature.py",
     "spec triad traceability test",
     "commit",
   ):
@@ -309,6 +310,7 @@ def test_cross_feature_conformance_workflow_is_operationalized():
   for phrase in (
     "cross-feature drift workflow",
     "tools/conformance_evaluation/cross_feature_workflow.py",
+    "tools/conformance-evaluation-cross-feature.py",
     "tests/conformance-evaluation/test_spec_update_adoption.py",
     "tools/conformance_evaluation/spec_triad_traceability.py",
     "spec triad traceability test",
