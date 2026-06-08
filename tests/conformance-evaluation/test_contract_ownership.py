@@ -202,6 +202,56 @@ def test_contract_ownership_map_builds_spec_update_proposals():
   ]
 
 
+def test_contract_ownership_map_builds_spec_update_drafts_without_applying():
+  ownership_map = ContractOwnershipMap()
+  ownership_map.add_item(
+    contract_id="XDI-REQ-001",
+    feature="workflow-management",
+    classification="spec-missing",
+    primary_owner_candidate="requirements",
+    secondary_owner_candidate="design",
+    contract_refs=[".reviewcompass/specs/workflow-management/requirements.md"],
+    evidence_refs=["tests/tools/test_check_workflow_action.py"],
+    related_clusters=["XDRIFT-001"],
+    claim="next action is a user-visible workflow contract",
+  )
+  ownership_map.add_item(
+    contract_id="XDI-TASK-001",
+    feature="conformance-evaluation",
+    classification="ownership-unclear",
+    primary_owner_candidate="carry_forward",
+    secondary_owner_candidate="test_contract",
+    contract_refs=[".reviewcompass/specs/conformance-evaluation/tasks.md"],
+    evidence_refs=["docs/notes/2026-06-08-cross-feature-conformance-drift-audit.md"],
+    related_clusters=["XDRIFT-007"],
+    claim="line-level traceability needs a follow-up decision",
+    depends_on=["XDI-META-001"],
+  )
+
+  assert ownership_map.spec_update_drafts() == [
+    {
+      "target_file": ".reviewcompass/specs/workflow-management/requirements.md",
+      "target_kind": "requirements",
+      "apply_status": "draft_only",
+      "draft_heading": "Implementation-derived requirements candidates",
+      "draft_bullets": [
+        "- XDI-REQ-001: next action is a user-visible workflow contract",
+      ],
+      "needs_human_decision": False,
+    },
+    {
+      "target_file": ".reviewcompass/specs/conformance-evaluation/tasks.md",
+      "target_kind": "tasks",
+      "apply_status": "draft_only",
+      "draft_heading": "Carry-forward implementation drift tasks",
+      "draft_bullets": [
+        "- XDI-TASK-001: line-level traceability needs a follow-up decision",
+      ],
+      "needs_human_decision": True,
+    },
+  ]
+
+
 def test_mixed_contract_ownership_fixture_builds_spec_update_proposals():
   fixture_path = (
     ROOT
@@ -389,6 +439,19 @@ def test_check_pipeline_includes_spec_update_proposals(tmp_path):
       "needs_human_decision": False,
     },
   ]
+  assert result["contract_ownership"]["spec_update_drafts"][0] == {
+    "target_file": ".reviewcompass/specs/workflow-management/requirements.md",
+    "target_kind": "requirements",
+    "apply_status": "draft_only",
+    "draft_heading": "Implementation-derived requirements candidates",
+    "draft_bullets": [
+      "- WM-DRIFT-001: next subcommand is the canonical workflow navigation entry point",
+      "- WM-DRIFT-002: post-write target detection and manifest verification are implementation contracts",
+      "- WM-DRIFT-005: commit approval records require target_sha256 coverage for staged content",
+      "- WM-DRIFT-008: autonomous plan and ledger contracts are implemented as workflow-management safety contracts",
+    ],
+    "needs_human_decision": False,
+  }
 
   record_path = (
     tmp_path
@@ -400,5 +463,6 @@ def test_check_pipeline_includes_spec_update_proposals(tmp_path):
   )
   record_text = record_path.read_text(encoding="utf-8")
   assert "## Spec Update Proposals" in record_text
+  assert "## Spec Update Drafts" in record_text
   assert "target_file: .reviewcompass/specs/workflow-management/requirements.md" in record_text
   assert "WM-DRIFT-008" in record_text

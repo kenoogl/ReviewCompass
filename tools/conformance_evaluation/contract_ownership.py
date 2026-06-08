@@ -105,6 +105,22 @@ class ContractOwnershipMap:
           grouped[path]["needs_human_decision"] = True
     return list(grouped.values())
 
+  def spec_update_drafts(self) -> list:
+    drafts = []
+    for proposal in self.spec_update_proposals():
+      drafts.append({
+        "target_file": proposal["target_file"],
+        "target_kind": proposal["target_kind"],
+        "apply_status": "draft_only",
+        "draft_heading": self._draft_heading(proposal["target_kind"]),
+        "draft_bullets": [
+          f"- {contract_id}: {claim}"
+          for contract_id, claim in zip(proposal["contract_ids"], proposal["claims"])
+        ],
+        "needs_human_decision": proposal["needs_human_decision"],
+      })
+    return drafts
+
   def _validate_owner(self, owner: str) -> None:
     if owner not in OWNER_CANDIDATES:
       raise ContractOwnershipMapError(f"unknown_owner_candidate: {owner}")
@@ -151,6 +167,15 @@ class ContractOwnershipMap:
     if owner in {"carry_forward", "test_contract", "tool_contract"}:
       return path.endswith("/tasks.md")
     return False
+
+  def _draft_heading(self, target_kind: str) -> str:
+    if target_kind == "requirements":
+      return "Implementation-derived requirements candidates"
+    if target_kind == "design":
+      return "Implementation-derived design candidates"
+    if target_kind == "tasks":
+      return "Carry-forward implementation drift tasks"
+    return "Implementation-derived contract candidates"
 
 
 def workflow_management_seed_items() -> list:

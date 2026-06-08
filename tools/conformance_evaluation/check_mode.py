@@ -46,6 +46,7 @@ class CheckPipeline:
     contract_ownership = None
     ownership_section = ""
     proposal_section = ""
+    draft_section = ""
     if ownership_items is not None and ownership_fixture is not None:
       raise ValueError("ownership_items_and_fixture_are_mutually_exclusive")
     if ownership_fixture is not None:
@@ -56,10 +57,16 @@ class CheckPipeline:
         "items": ownership_map.items,
         "update_candidates": ownership_map.update_candidates(),
         "spec_update_proposals": ownership_map.spec_update_proposals(),
+        "spec_update_drafts": ownership_map.spec_update_drafts(),
       }
       ownership_yaml = yaml.safe_dump(contract_ownership, allow_unicode=True, sort_keys=False)
       proposal_yaml = yaml.safe_dump(
         contract_ownership["spec_update_proposals"],
+        allow_unicode=True,
+        sort_keys=False,
+      )
+      draft_yaml = yaml.safe_dump(
+        contract_ownership["spec_update_drafts"],
         allow_unicode=True,
         sort_keys=False,
       )
@@ -73,6 +80,12 @@ class CheckPipeline:
         "\n## Spec Update Proposals\n"
         "```yaml\n"
         f"{proposal_yaml}"
+        "```\n"
+      )
+      draft_section = (
+        "\n## Spec Update Drafts\n"
+        "```yaml\n"
+        f"{draft_yaml}"
         "```\n"
       )
     EvaluationRecordModel(self.root).write_record(
@@ -93,6 +106,7 @@ class CheckPipeline:
         "```\n"
         f"{ownership_section}"
         f"{proposal_section}"
+        f"{draft_section}"
       ),
     )
     result = {
