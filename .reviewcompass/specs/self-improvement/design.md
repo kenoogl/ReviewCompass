@@ -937,6 +937,7 @@ requirements.md の Boundary Context との整合：
 
 - **A-007（既存）**：self-improvement と workflow-management の権限分散調停 → Decision 1（A-007 案 2）として反映済み
 - **A-008（既存）**：conformance-evaluation から self-improvement への出力方向 → §13.6 で「conformance-evaluation → self-improvement の方向」として整理済み（2026-05-23）
+- **2026-06-08 の requirements 再確認への対応**：intent の「レビュー収集処理を事前設定の写像にしない」意図は、§6 入力モデル、§7 signal_extraction モデル、§8 提案モデル、§11 履歴とロールバックで受けられるため、設計構造の追加は不要と確認
 
 ## 20. 起草完了基準（Completion Criteria）
 
