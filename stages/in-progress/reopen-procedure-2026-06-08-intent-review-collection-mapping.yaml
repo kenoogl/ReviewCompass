@@ -1,0 +1,29 @@
+process_id: reopen-procedure
+feature: all_features
+classification: I-4
+started_at: 2026-06-08T00:00:00+09:00
+trigger: 完了済み workflow への intent 追記を正式な reopen 手続きとして扱う
+classification_basis: docs/reviews/reopen-classification-2026-06-08-intent-review-collection-mapping.md
+completed_steps:
+- 第1過程：手戻り種別 I-4 の分類
+- 第1過程：分類根拠ファイルの作成
+- 第1過程：reopen in-progress ファイルの発行
+- 第1過程：全 feature の spec.json フラグ差し戻し
+- 第1過程：手戻り種別・再実施範囲・spec.json フラグ差し戻し内容を利用者が承認
+- 第2過程：intent/INTENT.md と下流仕様文書の正本修正が反映済みであることを確認
+next_step: 第2過程：停止点コミット
+step_number: 2
+pending_gates:
+- stages/intent.yaml#review
+- stages/intent.yaml#approval
+- stages/feature-partitioning.yaml#candidate-proposal
+- stages/feature-partitioning.yaml#approval
+- stages/requirements.yaml#alignment
+- stages/requirements.yaml#approval
+- stages/design.yaml#alignment
+- stages/design.yaml#approval
+- stages/tasks.yaml#alignment
+- stages/tasks.yaml#approval
+- stages/implementation.yaml#alignment
+- stages/implementation.yaml#approval
+current_blocker: 第2過程の停止点として、第1過程のフラグ差し戻しと第2過程の正本修正確認をコミットする必要がある

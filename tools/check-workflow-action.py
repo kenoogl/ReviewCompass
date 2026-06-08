@@ -2022,7 +2022,10 @@ def cmd_commit(args):
   deviation_reasons = []
   if approval_errors:
     deviation_reasons.extend(approval_errors)
-  if in_progress_files:
+  if (
+    in_progress_files
+    and not is_reopen_stop_point_commit_allowed(cwd, in_progress_files, staged_files)
+  ):
     deviation_reasons.append(
       "stages/in-progress に進行中ファイルがあります: "
       + ", ".join(in_progress_files)
@@ -2298,6 +2301,23 @@ def list_in_progress_files(cwd):
     return []
   files = [p for p in in_progress_dir.iterdir() if p.is_file()]
   return [str(p.relative_to(cwd)) for p in sorted(files)]
+
+
+def is_reopen_stop_point_commit_allowed(cwd, in_progress_files, staged_files):
+  """reopen 手続きの停止点 commit だけは in-progress 同伴を許可する"""
+  if not in_progress_files:
+    return False
+  staged_set = set(staged_files)
+  for relative_path in in_progress_files:
+    if relative_path not in staged_set:
+      return False
+    data = load_in_progress_file(cwd, relative_path)
+    if data.get("process_id") != "reopen-procedure":
+      return False
+    next_step = data.get("next_step") or ""
+    if "停止点コミット" not in next_step:
+      return False
+  return True
 
 
 def load_in_progress_file(cwd, relative_path):

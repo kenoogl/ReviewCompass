@@ -1,0 +1,25 @@
+status: completed
+target_files:
+  - docs/reviews/reopen-classification-2026-06-08-intent-review-collection-mapping.md
+target_sha256:
+  docs/reviews/reopen-classification-2026-06-08-intent-review-collection-mapping.md: ef86a0fc43ec6254e6a5a409676f87ed0e9d537b665554794e3ad9b9740da8fe
+required_verifiers:
+  - gemini
+completed_verifiers:
+  - gemini
+unresolved_substantive_findings: 0
+verifications:
+  - verifier: gemini
+    provider: gemini-api
+    model: gemini-3.5-flash
+    target_files:
+      - docs/reviews/reopen-classification-2026-06-08-intent-review-collection-mapping.md
+    target_sha256:
+      docs/reviews/reopen-classification-2026-06-08-intent-review-collection-mapping.md: ef86a0fc43ec6254e6a5a409676f87ed0e9d537b665554794e3ad9b9740da8fe
+    result_summary: >
+      Gemini 3.5 Flash に、intent 追記を正式 reopen として扱う分類根拠記録を検証させた。
+      I-4 分類、全 feature 対象、停止点、差し戻し範囲の記述が既存 reopen 手順と
+      今回の利用者指摘に反しないことを確認した。findings は空。
+note: >
+  docs/reviews/reopen-classification-2026-06-08-intent-review-collection-mapping.md
+  に対する post-write-verification。

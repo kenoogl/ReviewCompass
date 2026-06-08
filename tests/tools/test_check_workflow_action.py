@@ -3431,6 +3431,46 @@ class CommitExitCodeTests(unittest.TestCase):
     self.assertEqual(result.returncode, 2, result.stdout)
     self.assertIn("stages/in-progress", result.stdout)
 
+  def test_commit_allows_reopen_stop_point_when_in_progress_file_is_staged(self):
+    """reopen 手続きの停止点 commit は in-progress ファイルを含めれば通過する"""
+    _set_pending_findings(self.pending_file, unresolved_count=0)
+    _stage_file(self.tmpdir, "notes.md", "# reopen 停止点の記録")
+    in_progress_path = (
+      Path(self.tmpdir)
+      / "stages"
+      / "in-progress"
+      / "reopen-procedure-2026-06-08.yaml"
+    )
+    in_progress_path.parent.mkdir(parents=True)
+    in_progress_path.write_text(
+      "process_id: reopen-procedure\n"
+      "next_step: 第2過程：停止点コミット\n"
+      "step_number: 2\n"
+      "current_blocker: 第2過程の停止点としてコミットが必要\n",
+      encoding="utf-8",
+    )
+    subprocess.run(
+      ["git", "add", "stages/in-progress/reopen-procedure-2026-06-08.yaml"],
+      cwd=str(self.tmpdir),
+      check=True,
+      capture_output=True,
+    )
+    _write_commit_approval(
+      self.tmpdir,
+      [
+        "notes.md",
+        "stages/in-progress/reopen-procedure-2026-06-08.yaml",
+      ],
+    )
+
+    result = run_script(
+      ["commit", "--rationale", "reopen 停止点 commit"],
+      cwd=self.tmpdir,
+    )
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 0, result.stdout)
+
   def test_commit_with_pending_findings_returns_one(self):
     """未消化所見 1 件以上 → exit 1（警告）"""
     _set_pending_findings(self.pending_file, unresolved_count=1)
