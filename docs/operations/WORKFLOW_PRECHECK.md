@@ -277,7 +277,7 @@ check-workflow-action.py autonomous-plan-record-integration --ledger <ledger.yam
 - **post-write-verification 対象の完了確認**：staged ファイルに post-write-verification 対象が含まれる場合、対象ファイル群と現在 sha256 を覆う completed manifest があることを確認
   - manifest なし、sha256 不一致、coverage matrix 不足、未解決本質的指摘ありの場合：逸脱（exit 2）、commit を遮断推奨
 - **reopen 印付き spec.json の手続き確認**：staged された `spec.json` に `recheck.upstream_change_pending=true` または空でない `recheck.impacted_downstream_phases` がある場合、同じ commit に `stages/in-progress/reopen-procedure-*.yaml` または `stages/completed/reopen-procedure-*.yaml` を含める。手続きファイルがない場合は逸脱（exit 2）
-- **reopen 完了時の feature impact 判定確認**：`stages/completed/reopen-procedure-*.yaml` が staged されている場合、`feature_impact_decisions` と `new_feature_decision` を必須とする。任意フェーズの上流変更について、既存 feature に受け皿があるなら該当 feature を reopen 対象にするか、影響なし／間接確認のみとするかを記録する。`feature_impact_decisions` は現在の既存 feature 全件を覆う必要があり、未記録 feature がある場合は逸脱（exit 2）。受け皿がなければ新 feature 必要として記録する
+- **reopen 完了時の feature impact 判定確認**：`stages/completed/reopen-procedure-*.yaml` が staged されている場合、`feature_impact_decisions` と `new_feature_decision` を必須とする。任意フェーズの上流変更について、既存 feature に受け皿があるなら該当 feature を reopen 対象にするか、影響なし／間接確認のみとするかを記録する。判定の主軸は文書内の挿入箇所ではなく実装上の所有責務であり、各 `feature_impact_decisions[]` は `impact_basis` として `implementation_ownership`、`contract_ownership`、`consumer_or_derivative_only`、`no_implementation_impact`、`new_feature_boundary` のいずれかを持つ。`feature_impact_decisions` は現在の既存 feature 全件を覆う必要があり、未記録 feature や `impact_basis` 欠落がある場合は逸脱（exit 2）。受け皿がなければ新 feature 必要として記録する
 - **reopen 完了時の下流影響判定確認**：`stages/completed/reopen-procedure-*.yaml` が staged されている場合、`pending_gates` の各 gate を覆う `downstream_impact_decisions` を必須とする。各判定は `gate`、`feature_scope`、`decision`、`rationale`、`evidence` を持つ。上流変更に対して下流修正が不要な場合も、`existing_sufficient` または `no_impact` として理由と証跡を記録する
 - **reopen 完了時の影響フェーズ網羅確認**：`stages/completed/reopen-procedure-*.yaml` には `impacted_downstream_phases` を記録する。commit 判定では、その各フェーズに対応する `downstream_impact_decisions[].gate` が少なくとも 1 件あることを確認する。影響フェーズに対応する gate 判定がない場合は逸脱（exit 2）
 - **持ち越し所見の確認**：`learning/workflow/carry-forward-register/reviewcompass-import.yaml` を読み、未消化所見の件数を出力
@@ -469,7 +469,7 @@ tests/fixtures/spec-json-cases/
   - `commit --execution-actor llm` ＋ LLM 実行代行承認なし → exit 2
   - `commit` ＋ post-write 対象文書 ＋ completed manifest なし → exit 2
   - `commit` ＋ reopen 印付き `spec.json` ＋ `stages/in-progress/reopen-procedure-*.yaml` または `stages/completed/reopen-procedure-*.yaml` なし → exit 2
-  - `commit` ＋ `stages/completed/reopen-procedure-*.yaml` ＋ `feature_impact_decisions`／`new_feature_decision` 欠落または既存 feature 未網羅 → exit 2
+  - `commit` ＋ `stages/completed/reopen-procedure-*.yaml` ＋ `feature_impact_decisions`／`new_feature_decision` 欠落、`impact_basis` 欠落、または既存 feature 未網羅 → exit 2
   - `commit` ＋ `stages/completed/reopen-procedure-*.yaml` ＋ `impacted_downstream_phases` 欠落／未網羅 → exit 2
   - `commit` ＋ `stages/completed/reopen-procedure-*.yaml` ＋ `downstream_impact_decisions` 欠落／不足 → exit 2
   - `audit-commit HEAD` ＋ post-write 対象文書 ＋ completed manifest なし → exit 2

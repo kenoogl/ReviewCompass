@@ -1,0 +1,22 @@
+role: judgment
+provider: gemini-api
+model: gemini-3.1-pro-preview
+attempts: 1
+duration_seconds: 21.817
+findings:
+- severity: WARN
+  target_location: '## 現在の仮判断'
+  description: 全7featureを一律でreopen対象とする判断に、直接影響と間接影響（波及確認）の区別が明示されていない。
+  rationale: intent変更の核心（LLM判断への委譲と観測結果の構造的自由度）が直接影響するのは主にfoundation、runtime、evaluationの3つである。他4つは間接的な波及確認に留まる可能性が高く、一律のreopenはreopen-start後の修正責務範囲や完了条件を曖昧にし、工程管理上のリスクを招くため、影響の直接・間接の区分と根拠を明示する必要がある。
+- severity: WARN
+  target_location: '## レビューで判定してほしいこと'
+  description: reopen_trigger `N-0` の妥当性を判定するための定義や選定根拠、参照先が欠落している。
+  rationale: 現状はツール（check-workflow-action.py）の返却値を記載しているのみで、なぜ `N-0` なのかという理由やトリガー種別の意味が説明されていない。レビュー対象に妥当性の判定が含まれる以上、命名規則への参照や判定の根拠を提示しないと、レビュアーがツール出力を盲目的に追認する状態になり、後から判定が覆るリスクがある。
+- severity: INFO
+  target_location: '## 現在の仮判断'
+  description: 新feature不要（no_new_feature）の判断に対し、既存featureの変更規模が分割基準を超過した際の再検討に関する留保事項がない。
+  rationale: 『実LLM判断に基づく』という意図の追加は、runtime等における実行エンジンの責務境界を大きく再定義する可能性がある。現時点での新feature不要判断は妥当としつつも、reopen後の要件精査段階で変更量が既存featureの枠に収まらない（feature分割基準を超える）場合に備え、新feature化再検討の可能性を注記しておくと後続判断の安全性が高まる。
+- severity: INFO
+  target_location: '## 出力期待'
+  description: 『既存featureに受け皿がある場合は該当featureをreopen対象にする』という判定ルールの出典や適用根拠が不明確である。
+  rationale: この判定ルールがworkflowの共通原則（別文書で規定されているもの）なのか、本文書固有のローカルな運用判断なのかが判別できない。共通原則であれば参照リンクを付与し、固有の判断であれば適用条件を記載すべきである。根拠が自己完結していないと、後続の人間承認プロセスや別案件のレビューで同様の議論が再燃するリスクがある。

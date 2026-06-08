@@ -1,0 +1,20 @@
+findings:
+  - severity: WARN
+    target_location: "## 現在の仮判断 / 全7feature reopen対象"
+    description: "全7featureを reopen 対象とする仮判断に、直接影響・間接影響・確認のみの区分が明示されていない。"
+    rationale: "今回の intent 変更の中心は、レビュー収集処理を固定規則照合から実 LLM 判断へ移し、観測結果の構造自由度を制約しない点にある。この変更に一次的に関わるのは foundation・runtime・evaluation であり、analysis・workflow-management・self-improvement・conformance-evaluation は主に上流変更の波及確認として扱える可能性が高い。区分なく一律 reopen とすると、reopen-start 後の修正責務範囲と完了条件が曖昧になる。"
+
+  - severity: WARN
+    target_location: "## レビューで判定してほしいこと / 4. reopen trigger 候補 `N-0` は妥当か"
+    description: "`N-0` を妥当と判定するための定義・比較基準・参照先が本文書に欠けている。"
+    rationale: "文書では `tools/check-workflow-action.py` の返却値として `N-0` が示されるのみで、trigger 種別の意味や、なぜ他の候補ではなく `N-0` になるかが説明されていない。レビュー対象が trigger 妥当性を含む以上、少なくとも命名規則の参照先または選定根拠が必要である。現状では reviewer が仕様妥当性ではなくツール出力を追認するだけになりやすい。"
+
+  - severity: INFO
+    target_location: "## 現在の仮判断 / new_feature_decision: no_new_feature"
+    description: "新 feature 不要の判断は概ね妥当だが、runtime の責務境界再定義が既存 feature 分割に収まるかの確認を留保事項として明記した方がよい。"
+    rationale: "『実 LLM 判断に基づいて発見と判断を生成する』という意図は、単なる要件追加ではなく runtime の実行責務の核を更新する可能性がある。既存 runtime がプロンプト版管理・LLM 呼び出し境界・非固定構造の出力取り扱いを十分に包含していない場合、feature 内の大規模再編が必要になる。現時点で新 feature 必須とまでは言えないが、reopen 後の要件精査で feature 分割基準超過の有無を確認する注記があると判断の再現性が上がる。"
+
+  - severity: INFO
+    target_location: "## 出力期待 / 『既存 feature に受け皿がある』から『reopen 対象にする』までの判断"
+    description: "reopen 判定ルールが workflow 共通原則なのか、この文書固有の判断なのかが明確でない。"
+    rationale: "本文では『既存 feature に受け皿があるなら reopen 対象にする』ことの妥当性を重視しているが、その根拠が別文書の共通ルールなのか、本件レビューのローカルな運用判断なのかが分からない。共通ルールであれば参照を追記し、ローカル判断であれば適用条件を記録すべきである。そうしないと、後続の人間承認や別案件レビューで同じ論点が再発する。"

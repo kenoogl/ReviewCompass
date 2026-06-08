@@ -910,6 +910,30 @@ class SpecSetExitCodeTests(unittest.TestCase):
     self.assertEqual(result.returncode, 2, result.stdout)
     self.assertIn("stages/in-progress", result.stdout)
 
+  def test_spec_set_allows_reopen_pending_gate_rollback(self):
+    """reopen 第1過程の pending gate 差し戻しは in-progress 中でも許可する"""
+    cwd = self._copy_fixture("case-a-ready-for-approval")
+    in_progress_dir = cwd / "stages" / "in-progress"
+    in_progress_dir.mkdir(parents=True)
+    (in_progress_dir / "reopen-procedure-2026-06-09.yaml").write_text(
+      "process_id: reopen-procedure\n"
+      "step_number: 1\n"
+      "next_step: 第1過程：判定とフラグ差し戻し\n"
+      "pending_gates:\n"
+      "  - stages/requirements.yaml#alignment\n"
+      "current_blocker: null\n",
+      encoding="utf-8",
+    )
+
+    result = run_script(
+      ["spec-set", "foundation", "requirements", "alignment", "false"],
+      cwd=cwd,
+    )
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 1, result.stdout)
+    self.assertIn("reopen", result.stdout)
+
   def test_spec_set_blocks_unimplemented_completion_predicate(self):
     """file_exists completion_predicate の対象ファイルがなければ true にしない"""
     cwd = self._copy_fixture("case-a-ready-for-approval")
@@ -3667,6 +3691,7 @@ class CommitExitCodeTests(unittest.TestCase):
     feature_impact_decisions = "".join(
       f"  - feature: {feature}\n"
       "    decision: reopen_existing_feature\n"
+      "    impact_basis: implementation_ownership\n"
       "    rationale: 既存 feature で受けるため reopen 対象にする。\n"
       "    evidence:\n"
       f"      - .reviewcompass/specs/{feature}/requirements.md\n"
@@ -3728,6 +3753,68 @@ class CommitExitCodeTests(unittest.TestCase):
 
     _assert_script_invoked(self, result)
     self.assertEqual(result.returncode, 0, result.stdout)
+
+  def test_commit_blocks_completed_reopen_without_feature_impact_basis(self):
+    """feature impact 判定は任意フェーズで判定軸を明示しなければ遮断する"""
+    _set_pending_findings(self.pending_file, unresolved_count=0)
+    feature_impact_decisions = "".join(
+      f"  - feature: {feature}\n"
+      "    decision: reopen_existing_feature\n"
+      "    rationale: 既存 feature で受けるため reopen 対象にする。\n"
+      "    evidence:\n"
+      f"      - .reviewcompass/specs/{feature}/requirements.md\n"
+      for feature in FEATURE_ORDER
+    )
+    completed_path = (
+      Path(self.tmpdir)
+      / "stages"
+      / "completed"
+      / "reopen-procedure-2026-06-09.yaml"
+    )
+    completed_path.parent.mkdir(parents=True)
+    completed_path.write_text(
+      "process_id: reopen-procedure\n"
+      "step_number: 4\n"
+      "pending_gates:\n"
+      "  - stages/design.yaml#alignment\n"
+      "impacted_downstream_phases:\n"
+      "  - design\n"
+      "feature_impact_decisions:\n"
+      f"{feature_impact_decisions}"
+      "new_feature_decision:\n"
+      "  decision: no_new_feature\n"
+      "  rationale: 既存 feature で受けられる。\n"
+      "  evidence:\n"
+      "    - stages/feature-partitioning/2026-05-24-proposal.md\n"
+      "downstream_impact_decisions:\n"
+      "  - gate: stages/design.yaml#alignment\n"
+      "    feature_scope: all_features\n"
+      "    decision: existing_sufficient\n"
+      "    rationale: design は確認済み。\n"
+      "    evidence:\n"
+      "      - .reviewcompass/specs/foundation/design.md\n"
+      "next_step: 完了\n",
+      encoding="utf-8",
+    )
+    subprocess.run(
+      ["git", "add", "stages/completed/reopen-procedure-2026-06-09.yaml"],
+      cwd=str(self.tmpdir),
+      check=True,
+      capture_output=True,
+    )
+    _write_commit_approval(
+      self.tmpdir,
+      ["stages/completed/reopen-procedure-2026-06-09.yaml"],
+    )
+
+    result = run_script(
+      ["commit", "--rationale", "reopen 完了の feature impact 判定軸欠落テスト"],
+      cwd=self.tmpdir,
+    )
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 2, result.stdout)
+    self.assertIn("impact_basis", result.stdout)
 
   def test_commit_blocks_completed_reopen_with_partial_feature_impact_decisions(self):
     """feature impact 判定は既存 feature 全件を覆わなければ遮断する"""

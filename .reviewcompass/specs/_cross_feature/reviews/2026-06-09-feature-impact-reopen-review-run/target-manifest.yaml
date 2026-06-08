@@ -1,0 +1,4 @@
+run_id: 2026-06-09-feature-impact-reopen-review-run
+target_files:
+- path: .reviewcompass/specs/_cross_feature/reviews/2026-06-09-feature-impact-reopen-review-run/target.md
+  sha256: 91a6defa019027e8afe8a76b7749beadbd1677e9281c6962f797288e0a28827a

@@ -1,0 +1,14 @@
+Post-write verification: reopen impact basis policy
+
+Target files:
+- docs/operations/REOPEN_PROCEDURE.md
+- docs/operations/WORKFLOW_PRECHECK.md
+- docs/reviews/reopen-classification-2026-06-09-feature-impact-foundation-requirements.md
+
+Checks performed:
+- Confirmed the procedure applies to any upstream phase, not only intent.
+- Confirmed feature impact decisions require impact_basis.
+- Confirmed impact_basis values distinguish implementation ownership, contract ownership, consumer/derivative-only impact, no implementation impact, and new feature boundary.
+- Confirmed the classification record uses implementation ownership as the primary basis and does not rely on document insertion location.
+
+Findings: none.

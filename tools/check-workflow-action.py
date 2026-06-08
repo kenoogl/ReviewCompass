@@ -1758,7 +1758,14 @@ def cmd_spec_set(args):
     reasons.extend(predicate_reasons)
     verdict, exit_code = "DEVIATION", 2
   in_progress_files = list_in_progress_files(cwd)
-  if in_progress_files:
+  allow_reopen_rollback = is_reopen_pending_gate_rollback_allowed(
+    cwd,
+    in_progress_files,
+    phase,
+    stage,
+    new_value,
+  )
+  if in_progress_files and not allow_reopen_rollback:
     reasons.insert(
       0,
       "stages/in-progress に進行中ファイルがあります: "
@@ -2160,6 +2167,13 @@ def _validate_feature_impact_decisions(data):
     "indirect_check_only",
     "new_feature_required",
   }
+  allowed_impact_bases = {
+    "implementation_ownership",
+    "contract_ownership",
+    "consumer_or_derivative_only",
+    "no_implementation_impact",
+    "new_feature_boundary",
+  }
   covered_features = set()
   for index, item in enumerate(decisions):
     prefix = f"feature_impact_decisions[{index}]"
@@ -2179,6 +2193,11 @@ def _validate_feature_impact_decisions(data):
     if decision not in allowed_feature_decisions:
       errors.append(
         f"{prefix}.decision は {', '.join(sorted(allowed_feature_decisions))} のいずれかが必要です"
+      )
+    impact_basis = item.get("impact_basis")
+    if impact_basis not in allowed_impact_bases:
+      errors.append(
+        f"{prefix}.impact_basis は {', '.join(sorted(allowed_impact_bases))} のいずれかが必要です"
       )
     rationale = item.get("rationale")
     if not isinstance(rationale, str) or not rationale.strip():
@@ -2696,6 +2715,32 @@ def is_reopen_stop_point_commit_allowed(cwd, in_progress_files, staged_files):
     if "停止点コミット" not in next_step:
       return False
   return True
+
+
+def is_reopen_pending_gate_rollback_allowed(
+  cwd,
+  in_progress_files,
+  phase,
+  stage,
+  new_value,
+):
+  """reopen 第1過程の pending gate 差し戻しだけは spec-set 中でも許可する"""
+  if new_value:
+    return False
+  if len(in_progress_files) != 1:
+    return False
+  data = load_in_progress_file(cwd, in_progress_files[0])
+  if data.get("process_id") != "reopen-procedure":
+    return False
+  if data.get("current_blocker") is not None:
+    return False
+  if data.get("step_number") not in (1, "1"):
+    return False
+  pending_gates = data.get("pending_gates")
+  if not isinstance(pending_gates, list):
+    return False
+  gate = f"stages/{phase}.yaml#{stage}"
+  return gate in pending_gates
 
 
 def load_in_progress_file(cwd, relative_path):

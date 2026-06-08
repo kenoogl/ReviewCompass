@@ -22,19 +22,19 @@ The user explicitly authorized autonomous progress to the next commit on 2026-06
 
 ## Feature Reopen Decisions
 
-The feature-partitioning decision is not only "no new feature". Since an existing receptacle exists, the corresponding existing features must be selected for reopen.
+The feature-partitioning decision is not only "no new feature". Since an existing receptacle exists, the corresponding existing features must be classified as direct impact, indirect check, or no impact before reopen scope is selected.
 
-| Feature | Decision | Evidence |
-| --- | --- | --- |
-| foundation | reopen existing feature | `.reviewcompass/specs/_cross_feature/reviews/2026-06-09-intent-feature-reopen-decision.md` |
-| runtime | reopen existing feature | `.reviewcompass/specs/_cross_feature/reviews/2026-06-09-intent-feature-reopen-decision.md` |
-| evaluation | reopen existing feature | `.reviewcompass/specs/_cross_feature/reviews/2026-06-09-intent-feature-reopen-decision.md` |
-| analysis | reopen existing feature | `.reviewcompass/specs/_cross_feature/reviews/2026-06-09-intent-feature-reopen-decision.md` |
-| workflow-management | reopen existing feature | `.reviewcompass/specs/_cross_feature/reviews/2026-06-09-intent-feature-reopen-decision.md` |
-| self-improvement | reopen existing feature | `.reviewcompass/specs/_cross_feature/reviews/2026-06-09-intent-feature-reopen-decision.md` |
-| conformance-evaluation | reopen existing feature | `.reviewcompass/specs/_cross_feature/reviews/2026-06-09-intent-feature-reopen-decision.md` |
+| Feature | Impact | Decision | Evidence |
+| --- | --- | --- | --- |
+| foundation | direct impact | reopen existing feature | `.reviewcompass/specs/_cross_feature/reviews/2026-06-09-intent-feature-reopen-decision.md`, `.reviewcompass/specs/_cross_feature/reviews/2026-06-09-feature-impact-reopen-review-run/review_summary.md` |
+| runtime | direct impact | reopen existing feature | `.reviewcompass/specs/_cross_feature/reviews/2026-06-09-intent-feature-reopen-decision.md`, `.reviewcompass/specs/_cross_feature/reviews/2026-06-09-feature-impact-reopen-review-run/review_summary.md` |
+| evaluation | direct impact | reopen existing feature | `.reviewcompass/specs/_cross_feature/reviews/2026-06-09-intent-feature-reopen-decision.md`, `.reviewcompass/specs/_cross_feature/reviews/2026-06-09-feature-impact-reopen-review-run/review_summary.md` |
+| conformance-evaluation | direct impact | reopen existing feature | `.reviewcompass/specs/_cross_feature/reviews/2026-06-09-intent-feature-reopen-decision.md`, `.reviewcompass/specs/conformance-evaluation/implementation-drafting.md` |
+| analysis | indirect check | indirect check only | `.reviewcompass/specs/_cross_feature/reviews/2026-06-09-intent-feature-reopen-decision.md`, `.reviewcompass/specs/_cross_feature/reviews/2026-06-09-feature-impact-reopen-review-run/review_summary.md` |
+| workflow-management | indirect check | indirect check only | `.reviewcompass/specs/_cross_feature/reviews/2026-06-09-intent-feature-reopen-decision.md`, `.reviewcompass/specs/_cross_feature/reviews/2026-06-09-feature-impact-reopen-review-run/review_summary.md` |
+| self-improvement | indirect check | indirect check only | `.reviewcompass/specs/_cross_feature/reviews/2026-06-09-intent-feature-reopen-decision.md`, `.reviewcompass/specs/_cross_feature/reviews/2026-06-09-feature-impact-reopen-review-run/review_summary.md` |
 
-No new feature is created because the intent is covered by the existing seven feature boundaries.
+No new feature is created because the intent is covered by the existing feature boundaries. If direct impact review shows that foundation or runtime responsibilities must exceed their current boundaries, feature-partitioning must be reopened again.
 
 ## Gate Results
 

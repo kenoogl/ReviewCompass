@@ -1,0 +1,27 @@
+status: completed
+target_files: &id001
+- docs/operations/REOPEN_PROCEDURE.md
+- docs/operations/WORKFLOW_PRECHECK.md
+- docs/reviews/reopen-classification-2026-06-09-feature-impact-foundation-requirements.md
+target_sha256: &id002
+  docs/operations/REOPEN_PROCEDURE.md: 778f2689fd3ce7a1471160952247f1a8cd6dd54127e8752dae327f87949a25ec
+  docs/operations/WORKFLOW_PRECHECK.md: 568eabc0abda01a54899d6bbacb13672f7491430749d2b5dedf5a92b1f537c05
+  docs/reviews/reopen-classification-2026-06-09-feature-impact-foundation-requirements.md: 72f9f2b3d88384005ace96ef4068736d0b0ab71be3588300640d2c434abd1bbc
+required_verifiers:
+- local-codex
+completed_verifiers:
+- local-codex
+unresolved_substantive_findings: 0
+verifications:
+- verifier: local-codex
+  provider: local
+  model: codex
+  target_files: *id001
+  target_sha256: *id002
+  raw_path: .reviewcompass/post-write-verification/reopen-impact-basis-policy.raw.txt
+  parsed_path: .reviewcompass/post-write-verification/reopen-impact-basis-policy.parsed.yaml
+  raw_sha256: 126083eaf6565fae4e1ade43de169d336837d96f9cb082168bcc074d10ce6336
+  parsed_sha256: befc4065a6934b016b055c5e144bee538c746f3bd36c6756c81ec65403125e28
+  result_summary: 任意フェーズ共通の feature impact 判定軸、impact_basis 必須化、実装上の所有責務を主軸にする記述を確認。findings
+    は空。
+note: reopen feature impact basis policy post-write verification.

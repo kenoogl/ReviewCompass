@@ -1,0 +1,5 @@
+role: post_write_verifier
+provider: local-codex
+model: codex
+attempts: 1
+findings: []

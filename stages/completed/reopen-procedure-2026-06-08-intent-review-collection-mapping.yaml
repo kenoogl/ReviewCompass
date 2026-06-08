@@ -40,52 +40,67 @@ impacted_downstream_phases:
 feature_impact_decisions:
 - feature: foundation
   decision: reopen_existing_feature
-  rationale: 固定パターン依存の除外、実行メタデータ、証拠スキーマ、検証成果物分離の共有契約で受けるため。
+  impact_basis: contract_ownership
+  rationale: 固定パターン依存の除外、実行メタデータ、証拠スキーマ、検証成果物分離の共有契約で直接受けるため。
   evidence:
   - .reviewcompass/specs/_cross_feature/reviews/2026-06-09-intent-feature-reopen-decision.md
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-09-feature-impact-reopen-review-run/review_summary.md
   - .reviewcompass/specs/foundation/requirements.md
 - feature: runtime
   decision: reopen_existing_feature
-  rationale: 実 LLM 呼び出し、プロンプト版追跡、構造化証拠、パターン定義非依存の実行境界で受けるため。
+  impact_basis: implementation_ownership
+  rationale: 実 LLM 呼び出し、プロンプト版追跡、構造化証拠、パターン定義非依存の実行境界で直接受けるため。
   evidence:
   - .reviewcompass/specs/_cross_feature/reviews/2026-06-09-intent-feature-reopen-decision.md
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-09-feature-impact-reopen-review-run/review_summary.md
   - .reviewcompass/specs/runtime/requirements.md
 - feature: evaluation
   decision: reopen_existing_feature
-  rationale: 収集結果の有効・無効分類、構造化証拠からのメトリクス導出、レビューモード母集団分離で受けるため。
+  impact_basis: implementation_ownership
+  rationale: 収集結果の有効・無効分類、構造化証拠からのメトリクス導出、レビューモード母集団分離で直接受けるため。
   evidence:
   - .reviewcompass/specs/_cross_feature/reviews/2026-06-09-intent-feature-reopen-decision.md
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-09-feature-impact-reopen-review-run/review_summary.md
   - .reviewcompass/specs/evaluation/requirements.md
 - feature: analysis
-  decision: reopen_existing_feature
-  rationale: 評価・適合性確認の出力を証拠台帳と主張対応図へ構造化し、実行判断を上書きしない派生層として受けるため。
+  decision: indirect_check_only
+  impact_basis: consumer_or_derivative_only
+  rationale: 評価・適合性確認の出力を証拠台帳と主張対応図へ構造化する派生層であり、収集判断自体は上書きしないため。
   evidence:
   - .reviewcompass/specs/_cross_feature/reviews/2026-06-09-intent-feature-reopen-decision.md
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-09-feature-impact-reopen-review-run/review_summary.md
   - .reviewcompass/specs/analysis/requirements.md
 - feature: workflow-management
-  decision: reopen_existing_feature
-  rationale: intent 変更を下流工程へ再展開し、不可逆操作前に機械判定する workflow として受けるため。
+  decision: indirect_check_only
+  impact_basis: consumer_or_derivative_only
+  rationale: intent 変更を下流工程へ再展開する手続き側の整合確認として扱い、レビュー収集仕様の直接受け皿ではないため。
   evidence:
   - .reviewcompass/specs/_cross_feature/reviews/2026-06-09-intent-feature-reopen-decision.md
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-09-feature-impact-reopen-review-run/review_summary.md
   - .reviewcompass/specs/workflow-management/requirements.md
 - feature: self-improvement
-  decision: reopen_existing_feature
-  rationale: 観測事実と証跡を入力モデルとして保持し、改善提案・履歴・ロールバックへ接続する責務で受けるため。
+  decision: indirect_check_only
+  impact_basis: consumer_or_derivative_only
+  rationale: 観測事実と証跡を改善提案・履歴・ロールバックへ接続する後段であり、収集処理の判断主体ではないため。
   evidence:
   - .reviewcompass/specs/_cross_feature/reviews/2026-06-09-intent-feature-reopen-decision.md
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-09-feature-impact-reopen-review-run/review_summary.md
   - .reviewcompass/specs/self-improvement/requirements.md
 - feature: conformance-evaluation
   decision: reopen_existing_feature
-  rationale: 実装コードからの推定、既存上流文書との比較、契約所有候補と仕様更新草案で受けるため。
+  impact_basis: implementation_ownership
+  rationale: 実装コードからの推定、既存上流文書との比較、契約所有候補、仕様更新草案を実装上の所有責務として持ち、レビュー収集を事前設定の写像にしない意図を直接受けるため。
   evidence:
   - .reviewcompass/specs/_cross_feature/reviews/2026-06-09-intent-feature-reopen-decision.md
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-09-feature-impact-reopen-review-run/review_summary.md
   - .reviewcompass/specs/conformance-evaluation/requirements.md
 new_feature_decision:
   decision: no_new_feature
-  rationale: 追加 intent は既存 7 feature の責務境界で受けられるため、新 feature 作成は不要。
+  rationale: 追加 intent は既存 feature の責務境界で受けられるため、新 feature 作成は不要。ただし direct impact feature の再確認で既存責務を超えると判明した場合は feature-partitioning に戻して再判定する。
   evidence:
   - stages/feature-partitioning/2026-05-24-proposal.md
   - .reviewcompass/specs/_cross_feature/reviews/2026-06-09-intent-feature-reopen-decision.md
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-09-feature-impact-reopen-review-run/review_summary.md
 downstream_impact_decisions:
 - gate: stages/intent.yaml#review
   feature_scope: all_features

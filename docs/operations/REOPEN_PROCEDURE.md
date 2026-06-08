@@ -23,6 +23,8 @@
 3. 上流変更を既存 feature の責務境界へ写像し、feature impact を判定する。これは intent に限らず、feature-partitioning／requirements／design／tasks／implementation のいずれを変更した場合も共通で行う
    - 既存 feature に受け皿がある場合：該当 feature ごとに `reopen_existing_feature`、`no_reopen_existing_feature`、`indirect_check_only` のいずれかを判定する
    - 既存 feature に受け皿がない場合：`new_feature_required` として新 feature 候補を作る
+   - 判定の主軸は、文書内の挿入箇所ではなく、実装上の所有責務である。変更が実装責務または契約正本を変え得る feature は direct impact として扱い、出力を読むだけ、派生物を作るだけ、手続きを確認するだけの feature は indirect check として扱う
+   - 各 feature impact 判定には `impact_basis` を記録する。値は `implementation_ownership`、`contract_ownership`、`consumer_or_derivative_only`、`no_implementation_impact`、`new_feature_boundary` のいずれかとする
    - 判定が重要、曖昧、広範囲の場合は 3 役レビューに送る
 4. trigger_map で再実施対象の段を決定する（依存順＝`feature-dependency.yaml#phase_order`）
 5. 種別判定と feature impact 判定の根拠を `docs/reviews/reopen-classification-<日付>.md` に記録する（雛形：`templates/review/reopen_classification_template.md`）
@@ -61,7 +63,7 @@
 
 → **停止点：コミット**
 
-第4過程の完了 commit では、`stages/completed/reopen-procedure-*.yaml` に `feature_impact_decisions`、`new_feature_decision`、`impacted_downstream_phases` と、`pending_gates` の各 gate を覆う `downstream_impact_decisions` が必要である。`feature_impact_decisions` は、既存 feature ごとに `feature`、`decision`、`rationale`、`evidence` を持つ。`decision` は `reopen_existing_feature`、`no_reopen_existing_feature`、`indirect_check_only`、`new_feature_required` のいずれかとする。`new_feature_decision.decision` は `no_new_feature` または `new_feature_required` とする。`downstream_impact_decisions` の各判定は最低限、`gate`、`feature_scope`、`decision`、`rationale`、`evidence` を持つ。`decision` は `affected_update_required`、`existing_sufficient`、`no_impact`、`approved`、`proxy_approved` のいずれかとする。`impacted_downstream_phases` に列挙した各フェーズには、対応する `downstream_impact_decisions[].gate` を少なくとも 1 件記録する。
+第4過程の完了 commit では、`stages/completed/reopen-procedure-*.yaml` に `feature_impact_decisions`、`new_feature_decision`、`impacted_downstream_phases` と、`pending_gates` の各 gate を覆う `downstream_impact_decisions` が必要である。`feature_impact_decisions` は、既存 feature ごとに `feature`、`decision`、`impact_basis`、`rationale`、`evidence` を持つ。`decision` は `reopen_existing_feature`、`no_reopen_existing_feature`、`indirect_check_only`、`new_feature_required` のいずれかとする。`impact_basis` は `implementation_ownership`、`contract_ownership`、`consumer_or_derivative_only`、`no_implementation_impact`、`new_feature_boundary` のいずれかとする。`new_feature_decision.decision` は `no_new_feature` または `new_feature_required` とする。`downstream_impact_decisions` の各判定は最低限、`gate`、`feature_scope`、`decision`、`rationale`、`evidence` を持つ。`decision` は `affected_update_required`、`existing_sufficient`、`no_impact`、`approved`、`proxy_approved` のいずれかとする。`impacted_downstream_phases` に列挙した各フェーズには、対応する `downstream_impact_decisions[].gate` を少なくとも 1 件記録する。
 
 ## 3. 手戻り種別と trigger_map
 

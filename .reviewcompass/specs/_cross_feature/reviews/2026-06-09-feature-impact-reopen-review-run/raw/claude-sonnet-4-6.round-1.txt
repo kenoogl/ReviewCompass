@@ -1,0 +1,20 @@
+findings:
+  - severity: WARN
+    target_location: "## 現在の仮判断 / 全7feature reopen対象"
+    description: "全7featureを一律reopenとする判断に、影響経路の粒度区別がない。"
+    rationale: "intent変更の核心は『LLM判断への委譲』と『観測結果の構造的自由度』であり、直接影響するのはruntime（LLM呼び出し境界）・foundation（共有契約・証拠スキーマ）・evaluation（収集結果分類）の3featureと考えられる。workflow-management・self-improvement・conformance-evaluation・analysisへの影響は間接的であり、reopenが必要か『上流変更の波及確認』で足りるかの区別が記録されていない。全reopen判断を採用する場合でも、直接／間接の分類を根拠として明示しないと、reopen-start後の作業範囲が曖昧になり、工程管理上のリスクが生じる。"
+
+  - severity: WARN
+    target_location: "## レビューで判定してほしいこと / 項目4 reopen_trigger N-0"
+    description: "reopen_trigger `N-0` の妥当性について、判定根拠が文書内に存在しない。"
+    rationale: "`N-0` はおそらく『現サイクルの変更』を意味するトリガー識別子と推定されるが、その定義・命名規則・選択理由が本文書にも参照先にも記載されていない。reviewフェーズでこの妥当性を判定するには、トリガー種別の定義表への参照、または「なぜN-1やN+1でないか」の説明が最低限必要である。記載がないまま進行すると、workflow-managementフェーズでのreopen条件判定が後から覆される可能性がある。"
+
+  - severity: INFO
+    target_location: "## 現在の仮判断 / new_feature_decision: no_new_feature"
+    description: "新feature不要の判断は現時点では妥当だが、評価留保点が一つある。"
+    rationale: "『LLM判断への委譲』は実行エンジンの責務境界そのものを再定義する可能性がある。runtimeが担う『プロンプト版追跡』と『パターン定義非依存の実行境界』が現在のruntime feature仕様に既に明記されているかどうかが確認できない。もしruntimeのrequirementsにその概念が存在しない場合、新featureではなく既存featureへの大規模変更となるが、その変更量がfeature分割基準を超えるときは新feature化の再検討が必要になる。reopen後の要件起草段階でこの点を再チェックするよう記録することを推奨する。"
+
+  - severity: INFO
+    target_location: "## 出力期待 / 判断ルールの妥当性"
+    description: "『既存featureに受け皿がある → reopen対象にする』という判断ルールの全フェーズ共通性について、本文書での根拠付けが薄い。"
+    rationale: "このルールがworkflow共通規則として別文書（stages/feature-partitioning/2026-05-24-proposal.md等）に明記されているなら参照を追記すべきである。文書内に自己完結した根拠がないと、3役レビュー後の人間承認フェーズで同じ議論が再燃するリスクがある。参照先リンクを追加する、またはルールの出典を1行記載するだけで解決できる。"
