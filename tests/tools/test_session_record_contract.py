@@ -119,3 +119,43 @@ def test_proxy_review_workflow_defines_subthread_worktree_and_outputs():
   assert "判断に影響した失敗試行" in guide
   assert "作業ノイズは本線 repo に取り込まない" in guide
   assert "subimplementation_outputs" in design
+
+
+def test_workflow_management_requirements_adopt_implementation_derived_contracts():
+  """実装由来の workflow-management 契約が requirements に採用されている。"""
+  requirements = WORKFLOW_REQUIREMENTS.read_text(encoding="utf-8")
+
+  assert "next サブコマンドを標準のワークフロー遷移入口" in requirements
+  assert "post-write target detection" in requirements
+  assert "manifest verification" in requirements
+  assert "commit 承認レコード" in requirements
+  assert "target_sha256" in requirements
+  assert "自律 plan" in requirements
+  assert "履歴 ledger" in requirements
+
+
+def test_workflow_management_design_tracks_implementation_derived_contracts():
+  """実装由来の workflow-management 契約が design に対応している。"""
+  design = WORKFLOW_DESIGN.read_text(encoding="utf-8")
+
+  assert "next サブコマンド" in design
+  assert "ワークフロー遷移入口" in design
+  assert "post-write target detection" in design
+  assert "manifest verification" in design
+  assert "commit 承認レコード" in design
+  assert "staged 内容と一致する `target_sha256`" in design
+  assert "自律 plan" in design
+  assert "履歴 ledger" in design
+
+
+def test_workflow_management_tasks_track_implementation_derived_contracts():
+  """実装由来の workflow-management 契約が tasks に落ちている。"""
+  tasks = WORKFLOW_TASKS.read_text(encoding="utf-8")
+
+  assert "next サブコマンド" in tasks
+  assert "post-write target detection" in tasks
+  assert "manifest verification" in tasks
+  assert "commit 承認レコード" in tasks
+  assert "target_sha256" in tasks
+  assert "自律 plan" in tasks
+  assert "履歴 ledger" in tasks

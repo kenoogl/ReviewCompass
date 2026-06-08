@@ -1,0 +1,9 @@
+run_id: workflow-management-2026-06-08-check
+timestamp: 2026-06-08T09:30:50.639358+00:00
+prompt_text:
+Implementation only. Do not read existing upstream documents.
+forbidden_paths:
+- intent.md
+- requirements.md
+- design.md
+status: OK

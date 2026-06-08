@@ -100,7 +100,7 @@ language: ja
 
 - **対応設計節**：design.md §軽量版検査スクリプトモデル §1〜§4、§主要な設計判断 判断 2 ／ 判断 3 ／ 判断 8
 - **対応要件**：Requirement 2 受入 1〜5、Requirement 4 受入 2 ／ 3（fail-closed と独立走行）
-- **責務**：`tools/check-workflow-action.py` を Python で実装。3 サブコマンド（`spec-set <feature> <phase> <stage> <new_value> [--rationale "..."]` ／ `commit --rationale "..."` ／ `push --rationale "..."`）と `--json` 出力オプションを提供。verdict 3 値（OK／WARN／DEVIATION）と exit code（0 ／ 1 ／ 2）の対応。`completion_predicate` 述語集合 7 値（`artifact_exists` ／ `artifact_exists_and_sections_present` ／ `artifact_exists_and_sections_present_and_author_reviewer_distinct` ／ `all_features_drafting_and_triad_review_completed` ／ `cross_spec_alignment_passed` ／ `explicit_human_approval_recorded` ／ `depends_on_resolves_correctly`）の判定ロジックを符号化。fail-closed の既定（YAML パースエラー ／ 証跡欠落 ／ 必須フィールド欠落 ／ `feature_order` 解決失敗の全ケースで遮断）を全面採用。`docs/logs/workflow-precheck.log` への追記、出力形式は `[VERDICT]` ／ `[ACTION]` ／ `[REASON]` ／ `[CURRENT STATE]` の 4 ブロック大括弧付きラベル形式
+- **責務**：`tools/check-workflow-action.py` を Python で実装。3 サブコマンド（`spec-set <feature> <phase> <stage> <new_value> [--rationale "..."]` ／ `commit --rationale "..."` ／ `push --rationale "..."`）と next サブコマンド、`--json` 出力オプションを提供。next サブコマンドは標準のワークフロー遷移入口として `workflow_state`、`stages/in-progress/`、reopen pending、post-write-verification pending を読み、次作業を返す。verdict 3 値（OK／WARN／DEVIATION）と exit code（0 ／ 1 ／ 2）の対応。`completion_predicate` 述語集合 7 値（`artifact_exists` ／ `artifact_exists_and_sections_present` ／ `artifact_exists_and_sections_present_and_author_reviewer_distinct` ／ `all_features_drafting_and_triad_review_completed` ／ `cross_spec_alignment_passed` ／ `explicit_human_approval_recorded` ／ `depends_on_resolves_correctly`）の判定ロジックを符号化。post-write target detection と manifest verification を実装契約として扱い、completed manifest の `target_files`、`target_sha256`、`required_verifiers`、`verifications[]`、`unresolved_substantive_findings` を検査する。fail-closed の既定（YAML パースエラー ／ 証跡欠落 ／ 必須フィールド欠落 ／ `feature_order` 解決失敗の全ケースで遮断）を全面採用。`docs/logs/workflow-precheck.log` への追記、出力形式は `[VERDICT]` ／ `[ACTION]` ／ `[REASON]` ／ `[CURRENT STATE]` の 4 ブロック大括弧付きラベル形式
 - **前提タスク**：T-001、T-002、T-003
 - **成果物**：
   - `tools/check-workflow-action.py`（argparse 定義 ＋ 3 サブコマンド ＋ `--json` ＋ ログ追記）
@@ -109,14 +109,15 @@ language: ja
   - `tools/check_workflow_action/output_formatter.py`（4 ブロック大括弧付きラベル形式 ／ JSON 形式）
   - `docs/operations/WORKFLOW_PRECHECK.md`（補助層 C 段階 2 正本仕様：§5 サブコマンド引数 ／ §7 出力形式 ／ §8 ログ）
 - **完了条件**：
-  1. 3 サブコマンドが exit code 0 ／ 1 ／ 2 を正しく返す
+  1. 3 サブコマンドと `next` サブコマンドが exit code 0 ／ 1 ／ 2 を正しく返す
   2. 述語 7 値すべてが正常系で OK、異常系（証跡欠落 ／ 必須節欠落 ／ 異名不成立 等）で DEVIATION を返す
   3. YAML パースエラー時に DEVIATION（exit 2）を返す（fail-closed）
   4. `--rationale` が `commit` ／ `push` で必須引数として強制される（省略時はエラー）。`spec-set` の `--rationale`（任意）を省略した場合もログ記録が正しく行われる（F-013 対処 2026-05-28）
   5. ログ追記が `docs/logs/workflow-precheck.log` に発生、4 ブロックラベル形式と JSON 形式の両方が正しく出力される
   6. `explicit_human_approval_recorded` 述語は `actor=proxy_model` の場合 `reviewcompass.yaml#human_proxy.proxy_allowed` を参照して代行可否を機械判定する（条件を満たさなければ DEVIATION）。`depends_on_resolves_correctly` 述語は値域チェック（依存先の解決可能性）のみを担い、依存先の変更検知と recheck 更新発火は別機構（フェーズ 2 宿題、DVT-W007）であることを境界テストで明示する（A-004／A-006 対処 2026-05-28）
   7. review-run の proxy_model 判断代行ゲートは、`approval-proxy-<日付>.yaml`、`proxy-decisions/<finding-id>.decision.yaml`、decision prompt、元 review raw、raw response、候補案、採用案、判断理由、最終ラベルを検査し、欠落または triage との不一致があれば DEVIATION にする。proxy_model 代行は実装方針判断に限定し、コミット・プッシュ・spec.json 更新・フェーズ移行には使わない
-- **テスト要件**：3 サブコマンド × 各 verdict 3 値 = 9 ケース、述語 7 値の正常系 ／ 異常系テスト、YAML パースエラーの fail-closed テスト、`--rationale` 必須化テスト（commit／push）＋ `spec-set` 省略時ログ記録テスト（F-013）、ログ追記テスト、4 ブロックラベル形式 ／ JSON 出力テスト、`explicit_human_approval_recorded` の proxy_model 代行可否テスト（proxy_allowed 満たす／満たさないの 2 ケース、A-004）、`depends_on_resolves_correctly` の境界テスト（値域チェックのみで変更検知しないことの確認、A-006）、proxy_model 判断代行ゲートの正常系／raw 欠落／候補案欠落／採用案欠落／判断理由欠落／triage 不一致の fail-closed テスト
+  8. post-write-verification pending の検出、completed manifest の sha 一致、verifier ごとの全対象 coverage、未解決本質的指摘 0 件が機械検証される
+- **テスト要件**：3 サブコマンド × 各 verdict 3 値 = 9 ケース、`next` サブコマンドの通常 workflow／reopen pending／post-write-verification pending ケース、述語 7 値の正常系 ／ 異常系テスト、YAML パースエラーの fail-closed テスト、`--rationale` 必須化テスト（commit／push）＋ `spec-set` 省略時ログ記録テスト（F-013）、ログ追記テスト、4 ブロックラベル形式 ／ JSON 出力テスト、`explicit_human_approval_recorded` の proxy_model 代行可否テスト（proxy_allowed 満たす／満たさないの 2 ケース、A-004）、`depends_on_resolves_correctly` の境界テスト（値域チェックのみで変更検知しないことの確認、A-006）、post-write target detection と manifest verification の正常系／sha 不一致／coverage 不足／未解決本質的指摘ありテスト、proxy_model 判断代行ゲートの正常系／raw 欠落／候補案欠落／採用案欠落／判断理由欠落／triage 不一致の fail-closed テスト
 
 ### T-005：起草者と判定者の分離 機械検査
 
@@ -138,7 +139,7 @@ language: ja
 
 - **対応設計節**：design.md §不可逆操作の直前ゲートモデル §1〜§4、§主要な設計判断 判断 4
 - **対応要件**：Requirement 4 受入 1〜4
-- **責務**：4 種類の不可逆操作（`spec.json` の `approval` 段書き込み ／ `git commit` ／ `git push` ／ フェーズ移行）の直前ゲート判定ロジックを `tools/check_workflow_action/gate_predicates.py` として実装、T-004 のサブコマンドから呼ばれる。ゲート発火条件：(1) Requirement 2 検査スクリプトが pass を返す、(2) `stages/in-progress/` が空。毎回独立走行（session 開始時のキャッシュを使わない、状態変化を直前で再検出）。fail-closed の既定（検査結論不能で必ず遮断）。フェーズ移行検査は `feature-dependency.yaml#phase_order` の全機能で approval=true を要求。最小集合方針の徹底（中間段の遷移には機械ゲートを置かない）
+- **責務**：4 種類の不可逆操作（`spec.json` の `approval` 段書き込み ／ `git commit` ／ `git push` ／ フェーズ移行）の直前ゲート判定ロジックを `tools/check_workflow_action/gate_predicates.py` として実装、T-004 のサブコマンドから呼ばれる。ゲート発火条件：(1) Requirement 2 検査スクリプトが pass を返す、(2) `stages/in-progress/` が空。毎回独立走行（session 開始時のキャッシュを使わない、状態変化を直前で再検出）。fail-closed の既定（検査結論不能で必ず遮断）。`git commit` では commit 承認レコードを読み、`approved_action=commit`、`approved_by=user`、未消費、staged ファイル被覆、staged 内容と一致する `target_sha256` を検査する。フェーズ移行検査は `feature-dependency.yaml#phase_order` の全機能で approval=true を要求。最小集合方針の徹底（中間段の遷移には機械ゲートを置かない）
 - **前提タスク**：T-002、T-003、T-004
 - **成果物**：
   - `tools/check_workflow_action/gate_predicates.py`（4 種類のゲート判定）
@@ -147,7 +148,8 @@ language: ja
   1. 4 種類のゲートそれぞれが正常系で OK、異常系（前段未完了 ／ in-progress あり ／ 未消化所見あり ／ 全機能 approval 未完了）で DEVIATION を返す
   2. session 開始時のキャッシュを使わず、毎回 spec.json と `stages/in-progress/` を読み直すことが機械検証される
   3. 最小集合方針（中間段の遷移には機械ゲートが発火しない）が機械検証される
-- **テスト要件**：4 種類ゲート × 正常系 ／ 異常系 = 8 ケース、独立走行テスト（同 session 内で状態変化させて再検査が異なる結果を返す）、最小集合テスト（drafting ／ triad-review の遷移ではゲート発火しない）
+  4. commit 承認レコードの `target_sha256` 欠落、形式不正、staged 内容との不一致が DEVIATION になる
+- **テスト要件**：4 種類ゲート × 正常系 ／ 異常系 = 8 ケース、独立走行テスト（同 session 内で状態変化させて再検査が異なる結果を返す）、最小集合テスト（drafting ／ triad-review の遷移ではゲート発火しない）、commit 承認レコードの `target_sha256` 正常系／欠落／不一致テスト
 
 ### T-007：reopen 機械強制
 
@@ -190,7 +192,7 @@ language: ja
 
 - **対応設計節**：design.md §多層防御の位置付けモデル §1〜§5、§主要な設計判断（全般）
 - **対応要件**：Requirement 7 受入 1〜4
-- **責務**：第 1 層の限界（中身の空疎 ／ 検査呼び出し依存 ／ in-progress 自己申告性 ／ 文脈圧力下での規律低下）を運用文書 `docs/operations/WORKFLOW_PRECHECK.md` に明示。第 2〜5 層（git フック ／ 利用者監査 ／ 定期事後監査 ／ 処理表面積の抑制）と補助層 A／B／C の位置付けを記述。第 5 層運用ルール「新規規律を追加するときは既存規律 1 つ以上を統廃合する」を本機能の運用ルールに反映（フェーズ 4 まで利用者の意識に依拠、機械強制は第 5 層導入時に検討）。本タスクは実装ではなく運用文書の整備が主、機械検査の対象ではない。規律変更ゲート（T-010 が実装）の説明追記も本タスクが担い、T-010 の実装内容を参照して `WORKFLOW_PRECHECK.md` に記述する（運用文書の所有を T-009 に一本化、F-004 対処 案 2 2026-05-28）
+- **責務**：第 1 層の限界（中身の空疎 ／ 検査呼び出し依存 ／ in-progress 自己申告性 ／ 文脈圧力下での規律低下）を運用文書 `docs/operations/WORKFLOW_PRECHECK.md` に明示。第 2〜5 層（git フック ／ 利用者監査 ／ 定期事後監査 ／ 処理表面積の抑制）と補助層 A／B／C の位置付けを記述。第 5 層運用ルール「新規規律を追加するときは既存規律 1 つ以上を統廃合する」を本機能の運用ルールに反映（フェーズ 4 まで利用者の意識に依拠、機械強制は第 5 層導入時に検討）。自律・並列実行の安全契約として自律 plan と履歴 ledger を運用文書に明示し、依存順、recheck 対象、許可パス、期待テスト、統合判断、未解決 blocker を追跡できるようにする。本タスクは実装ではなく運用文書の整備が主、機械検査の対象ではない。規律変更ゲート（T-010 が実装）の説明追記も本タスクが担い、T-010 の実装内容を参照して `WORKFLOW_PRECHECK.md` に記述する（運用文書の所有を T-009 に一本化、F-004 対処 案 2 2026-05-28）
 - **前提タスク**：T-004、T-005、T-006、T-007、T-008
 - **成果物**：
   - `docs/operations/WORKFLOW_PRECHECK.md`（§第 1 層の限界 ／ §第 2〜5 層の宿題 ／ §補助層 A／B／C ／ §第 5 層運用ルール）
@@ -199,6 +201,7 @@ language: ja
   1. 第 1 層の限界 4 点が運用文書に明示される
   2. 第 2〜5 層と補助層 A／B／C の位置付けが運用文書に記述される
   3. 第 5 層運用ルールが本機能の運用ルールとして反映される（フェーズ 4 まで利用者の意識に依拠の旨を明示）
+  4. 自律 plan と履歴 ledger の必須目的が運用文書に明示される
 - **テスト要件**：運用文書の必須節検査（4 節すべての存在）。本タスクの「実装ではなく運用文書の整備が主、機械検査の対象ではない」位置づけ（責務記述）と整合させ、文書内容の grep キーワード検査は完了条件・テスト要件から外す（自己矛盾の解消、F-011 対処 案 2 2026-05-28）
 
 ### T-010：規律変更の所定手続き経由実体変更（A-007 案 2、A-012 連動）
