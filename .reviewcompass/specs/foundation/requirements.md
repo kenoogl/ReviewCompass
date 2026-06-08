@@ -160,6 +160,7 @@ ReviewCompass 固有の追加：
 - 検証器状態語彙の参照禁止対象に `conformance-evaluation` を追加（Requirement 6 受入 10、隣接仕様の整合）
 - Requirement 5 を「削除済み」表記から「パターン定義依存の除外」の能動的要件に書き換え（先行プロジェクトの歴史的経緯を一般化）
 - 信頼度語彙（high／medium／low）を foundation の語彙正本として追加（Requirement 6 受入 11、A-013 対処、2026-05-26 セッション 28 確定）
+- 2026-06-08 の feature-partitioning 再確認により、intent の「レビュー収集処理を事前設定の写像にしない」意図は新機能追加を要さず、foundation では Requirement 5 の固定パターン依存除外、および Requirement 1／3／6 の証拠・メタデータ契約で受けることを確認した。
 
 ## 実装由来契約の波及トレース
 
