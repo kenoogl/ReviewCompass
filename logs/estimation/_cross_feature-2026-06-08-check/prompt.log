@@ -1,0 +1,9 @@
+run_id: _cross_feature-2026-06-08-check
+timestamp: 2026-06-08T09:50:54.122827+00:00
+prompt_text:
+Implementation only. Do not read existing upstream documents.
+forbidden_paths:
+- intent.md
+- requirements.md
+- design.md
+status: OK

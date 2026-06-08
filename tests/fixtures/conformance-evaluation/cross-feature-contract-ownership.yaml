@@ -1,0 +1,146 @@
+items:
+  - contract_id: XDI-FOUND-001
+    feature: foundation
+    claim: foundation completion, encoding, and strategy coverage contracts are hidden in validators and tests
+    classification: ownership-unclear
+    primary_owner_candidate: tool_contract
+    secondary_owner_candidate: test_contract
+    contract_refs:
+      - .reviewcompass/specs/foundation/requirements.md
+      - .reviewcompass/specs/foundation/design.md
+    evidence_refs:
+      - tools/foundation_validators/check_completion.py
+      - tools/foundation_validators/check_encoding_convention.py
+      - tests/foundation/test_t008_encoding.py
+      - tests/foundation/test_t010_completion.py
+      - docs/notes/2026-06-08-cross-feature-conformance-drift-audit.md
+    related_clusters:
+      - XDRIFT-001
+      - XDRIFT-002
+      - XDRIFT-006
+  - contract_id: XDI-RUNTIME-001
+    feature: runtime
+    claim: runtime manifest, state transition, provenance, and immutability contracts are more precise in tests than in prose specs
+    classification: spec-missing
+    primary_owner_candidate: design
+    secondary_owner_candidate: tool_contract
+    contract_refs:
+      - .reviewcompass/specs/runtime/requirements.md
+      - .reviewcompass/specs/runtime/design.md
+    evidence_refs:
+      - tests/runtime/test_t002_session_controller.py
+      - tests/runtime/test_t008_evidence_writer.py
+      - tests/runtime/test_t009_validation_bridge.py
+      - tests/runtime/test_t010_bundle_exporter.py
+      - docs/notes/2026-06-08-cross-feature-conformance-drift-audit.md
+    related_clusters:
+      - XDRIFT-001
+      - XDRIFT-003
+      - XDRIFT-005
+      - XDRIFT-006
+  - contract_id: XDI-EVAL-001
+    feature: evaluation
+    claim: evaluation bundle placement, admission readiness, staleness, and dogfooding metrics need an owner decision
+    classification: ownership-unclear
+    primary_owner_candidate: operations
+    secondary_owner_candidate: review_evidence
+    contract_refs:
+      - .reviewcompass/specs/evaluation/requirements.md
+      - .reviewcompass/specs/evaluation/design.md
+    evidence_refs:
+      - .reviewcompass/specs/evaluation/reviews/2026-06-03-implementation-triad-review.md
+      - docs/notes/review-runs/evaluation-implementation-triad-2026-06-03-r1/
+      - tests/evaluation/test_t002_intake.py
+      - tests/evaluation/test_t010_staleness.py
+      - docs/notes/2026-06-08-cross-feature-conformance-drift-audit.md
+    related_clusters:
+      - XDRIFT-002
+      - XDRIFT-003
+      - XDRIFT-006
+  - contract_id: XDI-ANALYSIS-001
+    feature: analysis
+    claim: analysis intake and destination boundary guards are implementation-derived design contracts
+    classification: spec-missing
+    primary_owner_candidate: design
+    secondary_owner_candidate: operations
+    contract_refs:
+      - .reviewcompass/specs/analysis/requirements.md
+      - .reviewcompass/specs/analysis/design.md
+    evidence_refs:
+      - tests/analysis/test_analysis_t002_intake.py
+      - tests/analysis/test_analysis_t005_caveat_register.py
+      - tests/analysis/test_analysis_t008_conformance_intake.py
+      - tests/analysis/test_analysis_t009_destinations.py
+      - docs/notes/2026-06-08-cross-feature-conformance-drift-audit.md
+    related_clusters:
+      - XDRIFT-003
+      - XDRIFT-005
+      - XDRIFT-006
+  - contract_id: XDI-WM-001
+    feature: workflow-management
+    claim: workflow-management post-write, approval, audit, and autonomous ledger contracts span operations and tool contracts
+    classification: spec-missing
+    primary_owner_candidate: operations
+    secondary_owner_candidate: tool_contract
+    contract_refs:
+      - .reviewcompass/specs/workflow-management/requirements.md
+      - .reviewcompass/specs/workflow-management/design.md
+      - docs/operations/WORKFLOW_NAVIGATION.md
+      - docs/disciplines/discipline_post_write_verification.md
+    evidence_refs:
+      - tools/check-workflow-action.py
+      - tools/guarded-git-commit.py
+      - tests/tools/test_check_workflow_action.py
+      - tests/tools/test_guarded_git_commit.py
+      - docs/notes/2026-06-08-cross-feature-conformance-drift-audit.md
+    related_clusters:
+      - XDRIFT-001
+      - XDRIFT-002
+      - XDRIFT-003
+      - XDRIFT-004
+      - XDRIFT-005
+      - XDRIFT-006
+  - contract_id: XDI-SI-001
+    feature: self-improvement
+    claim: self-improvement approval, rejection, proposal id, and carry-forward guards are externally visible requirements candidates
+    classification: spec-missing
+    primary_owner_candidate: requirements
+    secondary_owner_candidate: test_contract
+    contract_refs:
+      - .reviewcompass/specs/self-improvement/requirements.md
+      - .reviewcompass/specs/self-improvement/design.md
+    evidence_refs:
+      - tools/self_improvement/approval_model.py
+      - tools/self_improvement/proposal_model.py
+      - tools/self_improvement/carry_forward_register.py
+      - tools/self_improvement/machine_verification.py
+      - docs/notes/2026-06-08-cross-feature-conformance-drift-audit.md
+    related_clusters:
+      - XDRIFT-001
+      - XDRIFT-002
+      - XDRIFT-004
+      - XDRIFT-005
+  - contract_id: XDI-CE-001
+    feature: conformance-evaluation
+    claim: cross-feature drift clustering and contract ownership outputs need a follow-up implementation decision
+    classification: ownership-unclear
+    primary_owner_candidate: carry_forward
+    secondary_owner_candidate: requirements
+    contract_refs:
+      - .reviewcompass/specs/conformance-evaluation/requirements.md
+      - .reviewcompass/specs/conformance-evaluation/design.md
+      - .reviewcompass/specs/conformance-evaluation/tasks.md
+      - docs/operations/CONFORMANCE_EVALUATION.md
+    evidence_refs:
+      - tools/conformance_evaluation/check_mode.py
+      - tools/conformance_evaluation/generation_mode.py
+      - tests/conformance-evaluation/test_conformance_evaluation.py
+      - docs/notes/2026-06-08-cross-feature-conformance-drift-audit.md
+    related_clusters:
+      - XDRIFT-001
+      - XDRIFT-003
+      - XDRIFT-004
+      - XDRIFT-007
+    depends_on:
+      - XDI-META-001
+      - XDI-META-002

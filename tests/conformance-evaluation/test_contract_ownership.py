@@ -331,6 +331,102 @@ def test_mixed_contract_ownership_fixture_builds_spec_update_proposals():
   ]
 
 
+def test_cross_feature_contract_ownership_fixture_covers_representative_drift_items():
+  fixture_path = (
+    ROOT
+    / "tests"
+    / "fixtures"
+    / "conformance-evaluation"
+    / "cross-feature-contract-ownership.yaml"
+  )
+  ownership_map = ContractOwnershipMap.from_items(
+    load_contract_ownership_items(fixture_path)
+  )
+
+  assert {item["feature"] for item in ownership_map.items} == {
+    "foundation",
+    "runtime",
+    "evaluation",
+    "analysis",
+    "workflow-management",
+    "self-improvement",
+    "conformance-evaluation",
+  }
+  assert [item["contract_id"] for item in ownership_map.items] == [
+    "XDI-FOUND-001",
+    "XDI-RUNTIME-001",
+    "XDI-EVAL-001",
+    "XDI-ANALYSIS-001",
+    "XDI-WM-001",
+    "XDI-SI-001",
+    "XDI-CE-001",
+  ]
+  assert ownership_map.item_by_id("XDI-FOUND-001")["source_refs"][0] == {
+    "path": ".reviewcompass/specs/foundation/requirements.md",
+    "source_kind": "requirements",
+  }
+  assert ownership_map.item_by_id("XDI-EVAL-001")[
+    "primary_owner_candidate"
+  ] == "operations"
+  assert ownership_map.item_by_id("XDI-CE-001")["depends_on"] == [
+    "XDI-META-001",
+    "XDI-META-002",
+  ]
+
+
+def test_cross_feature_contract_ownership_fixture_builds_spec_update_drafts():
+  fixture_path = (
+    ROOT
+    / "tests"
+    / "fixtures"
+    / "conformance-evaluation"
+    / "cross-feature-contract-ownership.yaml"
+  )
+  ownership_map = ContractOwnershipMap.from_items(
+    load_contract_ownership_items(fixture_path)
+  )
+
+  proposals = ownership_map.spec_update_proposals()
+  assert proposals == [
+    {
+      "target_file": ".reviewcompass/specs/runtime/design.md",
+      "target_kind": "design",
+      "contract_ids": ["XDI-RUNTIME-001"],
+      "claims": [
+        "runtime manifest, state transition, provenance, and immutability contracts are more precise in tests than in prose specs",
+      ],
+      "needs_human_decision": False,
+    },
+    {
+      "target_file": ".reviewcompass/specs/analysis/design.md",
+      "target_kind": "design",
+      "contract_ids": ["XDI-ANALYSIS-001"],
+      "claims": [
+        "analysis intake and destination boundary guards are implementation-derived design contracts",
+      ],
+      "needs_human_decision": False,
+    },
+    {
+      "target_file": ".reviewcompass/specs/self-improvement/requirements.md",
+      "target_kind": "requirements",
+      "contract_ids": ["XDI-SI-001"],
+      "claims": [
+        "self-improvement approval, rejection, proposal id, and carry-forward guards are externally visible requirements candidates",
+      ],
+      "needs_human_decision": False,
+    },
+    {
+      "target_file": ".reviewcompass/specs/conformance-evaluation/tasks.md",
+      "target_kind": "tasks",
+      "contract_ids": ["XDI-CE-001"],
+      "claims": [
+        "cross-feature drift clustering and contract ownership outputs need a follow-up implementation decision",
+      ],
+      "needs_human_decision": True,
+    },
+  ]
+
+
 def test_workflow_management_seed_items_capture_representative_drift():
   ownership_map = ContractOwnershipMap.from_items(workflow_management_seed_items())
 
@@ -543,3 +639,48 @@ def test_check_pipeline_can_materialize_spec_update_draft_files(tmp_path):
   assert "# Implementation-derived requirements candidates" in text
   assert "WM-DRIFT-001" in text
   assert not (tmp_path / ".reviewcompass" / "specs" / "workflow-management" / "requirements.md").exists()
+
+
+def test_check_pipeline_can_materialize_cross_feature_spec_update_drafts(tmp_path):
+  fixture_path = (
+    ROOT
+    / "tests"
+    / "fixtures"
+    / "conformance-evaluation"
+    / "cross-feature-contract-ownership.yaml"
+  )
+  pipeline = CheckPipeline(tmp_path)
+  result = pipeline.run(
+    feature="_cross_feature",
+    implementation_refs=[
+      "tests/runtime/test_t009_validation_bridge.py",
+      "tests/analysis/test_analysis_t008_conformance_intake.py",
+      "tests/self-improvement/test_t004_proposal_model.py",
+      "tests/conformance-evaluation/test_conformance_evaluation.py",
+    ],
+    feature_partitioning="cross-feature representative drift items",
+    prompt_text="Implementation only. Do not read existing upstream documents.",
+    run_date="2026-06-08",
+    ownership_fixture=fixture_path,
+    write_spec_update_drafts=True,
+  )
+
+  draft_result = result["contract_ownership"]["spec_update_draft_files"]
+  assert draft_result["draft_dir"].endswith(
+    ".reviewcompass/specs/_cross_feature/conformance/2026-06-08-spec-update-drafts"
+  )
+  draft_files = [Path(path) for path in draft_result["draft_files"]]
+  assert [path.name for path in draft_files] == [
+    "reviewcompass-specs-runtime-design.md",
+    "reviewcompass-specs-analysis-design.md",
+    "reviewcompass-specs-self-improvement-requirements.md",
+    "reviewcompass-specs-conformance-evaluation-tasks.md",
+  ]
+  for path in draft_files:
+    assert path.is_file()
+    text = path.read_text(encoding="utf-8")
+    assert "apply_status: draft_only" in text
+    assert "target_file: .reviewcompass/specs/" in text
+  assert "XDI-RUNTIME-001" in draft_files[0].read_text(encoding="utf-8")
+  assert "needs_human_decision: true" in draft_files[-1].read_text(encoding="utf-8")
+  assert not (tmp_path / ".reviewcompass" / "specs" / "runtime" / "design.md").exists()
