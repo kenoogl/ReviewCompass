@@ -1,0 +1,28 @@
+status: completed
+target_files:
+  - docs/operations/FOUNDATION.md
+target_sha256:
+  docs/operations/FOUNDATION.md: 01c3d5426809a876c53749fbc5acdd30ec9f09a88c13776dddca18848b96ce82
+required_verifiers:
+  - gemini
+completed_verifiers:
+  - gemini
+unresolved_substantive_findings: 0
+verifications:
+  - verifier: gemini
+    provider: gemini-api
+    model: gemini-3.5-flash
+    target_files:
+      - docs/operations/FOUNDATION.md
+    target_sha256:
+      docs/operations/FOUNDATION.md: 01c3d5426809a876c53749fbc5acdd30ec9f09a88c13776dddca18848b96ce82
+    result_summary: >
+      Gemini 3.5 Flash に、FOUNDATION.md の implementation 再確認追記を検証させた。
+      intent「レビュー収集処理を事前設定の写像にしない」に対し、既存の
+      T-001／T-003／T-004／T-005 で受けられ、追加実装不要とする記録が
+      合意内容・参照・既存記述・内部論理に反しないことを確認した。
+      findings は空で、本質的指摘・逐語的指摘ともになし。
+note: >
+  小規模な docs/operations/FOUNDATION.md 追記に対する post-write-verification。
+  既存の tools/api_providers/run_role.py と config/api-settings.yaml の
+  post_write_verification_google variant を使用した。

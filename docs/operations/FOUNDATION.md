@@ -1,6 +1,6 @@
 # FOUNDATION：土台機能の運用文書
 
-最終更新：2026-06-01（セッション45、implementation 段の実装と triad-review を反映。配置先の正本追従、実装状況の追補）
+最終更新：2026-06-08（intent「レビュー収集処理を事前設定の写像にしない」に伴う implementation 再確認を反映）
 
 本文書は ReviewCompass の `foundation`（土台機能）の運用上の役割と契約を解説する。形式仕様は [.reviewcompass/specs/foundation/requirements.md](../../.reviewcompass/specs/foundation/requirements.md) を参照する。本文書は読み手向けの解説、仕様文書は機械検査と仕様駆動手続きの正本という関係。
 
@@ -100,6 +100,8 @@ foundation はレビュー実行を持たず、他機能の土台になる：
 - 各スキーマのフィールド構造：`runtime/schemas/` ／ `runtime/validators/contracts/` の各 `*.schema.json`
 - プロンプト雛形の配置と識別規則：`runtime/prompts/`（本文の整備はフェーズ 4 対象、計画書 §5.23.12.3）
 - 検証器の動作：`tools/foundation_validators/`（符号化規約検証 `check_encoding_convention.py`・完成判定 `check_completion.py`）
+
+2026-06-08 の tasks 再確認への対応として、intent の「レビュー収集処理を事前設定の写像にしない」意図は、既存の T-001 パターン定義依存除外、T-003 実行メタデータ契約、T-004 証拠スキーマ、T-005 検証・無効化成果物分離で受けられることを確認した。実装済み成果物は固定パターン写像ではなく、メタデータ・証拠・検証成果物の契約を提供するため、追加の実装変更は不要。
 
 ## 10. 関連文書
 

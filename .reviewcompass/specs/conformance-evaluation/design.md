@@ -1027,6 +1027,7 @@ requirements.md の Boundary Context との整合：
 - **A-008（既存）**：conformance-evaluation から self-improvement への出力方向 → §14.6 で「conformance-evaluation → self-improvement の方向」として明示
 - **A-009 第 2 波（既存）**：旧 paper-interface 由来の用語不整合 → Boundary Context 隣接仕様の analysis 記述で対処済み
 - **A-010（既存）**：推定プロセスの整理と 2 軸 6 criteria 化 → Requirement 1〜5 ＋計画書 §5.10 改訂で対処済み、本設計で全面反映
+- **2026-06-08 の requirements 再確認への対応**：intent の「レビュー収集処理を事前設定の写像にしない」意図は、§7 照合チェックモード、§9 推定モデル、§10 比較モデル、§13.6 契約所有候補と仕様更新草案で受けられるため、設計構造の追加は不要と確認
 
 ### 20.3 起草完了基準
 
