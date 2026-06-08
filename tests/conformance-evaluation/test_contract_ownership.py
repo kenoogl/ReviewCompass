@@ -6,6 +6,7 @@ from tools.conformance_evaluation.check_mode import CheckPipeline
 from tools.conformance_evaluation.contract_ownership import (
   ContractOwnershipMap,
   ContractOwnershipMapError,
+  SpecUpdateDraftWriter,
   load_contract_ownership_items,
   workflow_management_seed_items,
 )
@@ -252,6 +253,49 @@ def test_contract_ownership_map_builds_spec_update_drafts_without_applying():
   ]
 
 
+def test_spec_update_draft_writer_materializes_markdown_without_applying(tmp_path):
+  ownership_map = ContractOwnershipMap()
+  ownership_map.add_item(
+    contract_id="XDI-REQ-001",
+    feature="workflow-management",
+    classification="spec-missing",
+    primary_owner_candidate="requirements",
+    secondary_owner_candidate="design",
+    contract_refs=[".reviewcompass/specs/workflow-management/requirements.md"],
+    evidence_refs=["tests/tools/test_check_workflow_action.py"],
+    related_clusters=["XDRIFT-001"],
+    claim="next action is a user-visible workflow contract",
+  )
+
+  writer = SpecUpdateDraftWriter(tmp_path)
+  result = writer.write(
+    feature="workflow-management",
+    run_date="2026-06-08",
+    drafts=ownership_map.spec_update_drafts(),
+  )
+
+  expected_path = (
+    tmp_path
+    / ".reviewcompass"
+    / "specs"
+    / "workflow-management"
+    / "conformance"
+    / "2026-06-08-spec-update-drafts"
+    / "reviewcompass-specs-workflow-management-requirements.md"
+  )
+  assert result == {
+    "draft_dir": str(expected_path.parent),
+    "draft_files": [str(expected_path)],
+  }
+  assert expected_path.is_file()
+  text = expected_path.read_text(encoding="utf-8")
+  assert "apply_status: draft_only" in text
+  assert "target_file: .reviewcompass/specs/workflow-management/requirements.md" in text
+  assert "# Implementation-derived requirements candidates" in text
+  assert "- XDI-REQ-001: next action is a user-visible workflow contract" in text
+  assert not (tmp_path / ".reviewcompass" / "specs" / "workflow-management" / "requirements.md").exists()
+
+
 def test_mixed_contract_ownership_fixture_builds_spec_update_proposals():
   fixture_path = (
     ROOT
@@ -466,3 +510,36 @@ def test_check_pipeline_includes_spec_update_proposals(tmp_path):
   assert "## Spec Update Drafts" in record_text
   assert "target_file: .reviewcompass/specs/workflow-management/requirements.md" in record_text
   assert "WM-DRIFT-008" in record_text
+
+
+def test_check_pipeline_can_materialize_spec_update_draft_files(tmp_path):
+  fixture_path = (
+    ROOT
+    / "tests"
+    / "fixtures"
+    / "conformance-evaluation"
+    / "workflow-management-contract-ownership.yaml"
+  )
+  pipeline = CheckPipeline(tmp_path)
+  result = pipeline.run(
+    feature="workflow-management",
+    implementation_refs=["tools/check-workflow-action.py"],
+    feature_partitioning="workflow-management boundary",
+    prompt_text="Implementation only. Do not read existing upstream documents.",
+    run_date="2026-06-08",
+    ownership_fixture=fixture_path,
+    write_spec_update_drafts=True,
+  )
+
+  draft_result = result["contract_ownership"]["spec_update_draft_files"]
+  assert draft_result["draft_dir"].endswith(
+    ".reviewcompass/specs/workflow-management/conformance/2026-06-08-spec-update-drafts"
+  )
+  assert len(draft_result["draft_files"]) == 1
+  draft_path = Path(draft_result["draft_files"][0])
+  assert draft_path.is_file()
+  text = draft_path.read_text(encoding="utf-8")
+  assert "apply_status: draft_only" in text
+  assert "# Implementation-derived requirements candidates" in text
+  assert "WM-DRIFT-001" in text
+  assert not (tmp_path / ".reviewcompass" / "specs" / "workflow-management" / "requirements.md").exists()

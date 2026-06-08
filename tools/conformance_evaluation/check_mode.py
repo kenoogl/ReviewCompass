@@ -5,6 +5,7 @@ import yaml
 from tools.conformance_evaluation.comparison_model import ComparisonModel
 from tools.conformance_evaluation.contract_ownership import (
   ContractOwnershipMap,
+  SpecUpdateDraftWriter,
   load_contract_ownership_items,
 )
 from tools.conformance_evaluation.estimation_model import EstimationModel
@@ -27,6 +28,7 @@ class CheckPipeline:
     check_partitioning: bool = False,
     ownership_items=None,
     ownership_fixture=None,
+    write_spec_update_drafts: bool = False,
   ) -> dict:
     isolation = MachineVerification(self.root).check_prompt_isolation(
       prompt_text=prompt_text,
@@ -59,6 +61,12 @@ class CheckPipeline:
         "spec_update_proposals": ownership_map.spec_update_proposals(),
         "spec_update_drafts": ownership_map.spec_update_drafts(),
       }
+      if write_spec_update_drafts:
+        contract_ownership["spec_update_draft_files"] = SpecUpdateDraftWriter(self.root).write(
+          feature=feature,
+          run_date=run_date,
+          drafts=contract_ownership["spec_update_drafts"],
+        )
       ownership_yaml = yaml.safe_dump(contract_ownership, allow_unicode=True, sort_keys=False)
       proposal_yaml = yaml.safe_dump(
         contract_ownership["spec_update_proposals"],

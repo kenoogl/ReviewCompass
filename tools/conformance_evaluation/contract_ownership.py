@@ -178,6 +178,50 @@ class ContractOwnershipMap:
     return "Implementation-derived contract candidates"
 
 
+class SpecUpdateDraftWriter:
+  def __init__(self, root: Path):
+    self.root = Path(root)
+
+  def write(self, *, feature: str, run_date: str, drafts: list) -> dict:
+    draft_dir = (
+      self.root
+      / ".reviewcompass"
+      / "specs"
+      / feature
+      / "conformance"
+      / f"{run_date}-spec-update-drafts"
+    )
+    draft_dir.mkdir(parents=True, exist_ok=True)
+    draft_files = []
+    for draft in drafts:
+      path = draft_dir / f"{self._safe_target_name(draft['target_file'])}.md"
+      path.write_text(self._markdown(draft), encoding="utf-8")
+      draft_files.append(str(path))
+    return {
+      "draft_dir": str(draft_dir),
+      "draft_files": draft_files,
+    }
+
+  def _safe_target_name(self, target_file: str) -> str:
+    safe = target_file.strip("./").replace("/", "-").replace("_", "-")
+    safe = safe.replace(".md", "")
+    return safe
+
+  def _markdown(self, draft: dict) -> str:
+    bullets = "\n".join(draft["draft_bullets"])
+    human_decision = "true" if draft["needs_human_decision"] else "false"
+    return (
+      "---\n"
+      f"apply_status: {draft['apply_status']}\n"
+      f"target_file: {draft['target_file']}\n"
+      f"target_kind: {draft['target_kind']}\n"
+      f"needs_human_decision: {human_decision}\n"
+      "---\n\n"
+      f"# {draft['draft_heading']}\n\n"
+      f"{bullets}\n"
+    )
+
+
 def workflow_management_seed_items() -> list:
   contract_refs = [
     ".reviewcompass/specs/workflow-management/requirements.md",
