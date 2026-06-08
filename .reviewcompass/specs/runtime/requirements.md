@@ -179,3 +179,7 @@ ReviewCompass 固有の追加：
 機能横断レビューで対処された所見：
 
 - A-001：`validator_status` 語彙の正本 4 値（`not_run`／`passed`／`failed`／`blocked`、計画書 §5.18.7 行 2239 由来）のうち `not_run` が本実行時 Requirement 6 受入 2 と `foundation` 仕様 Requirement 6 受入 10 の両方で欠落していたが、2026-05-23 の要件 review-wave で 4 値に拡張済み。詳細は carry-forward register 正本 [reviewcompass-import.yaml](../../../learning/workflow/carry-forward-register/reviewcompass-import.yaml) の `carry-forward-001` を参照
+
+## 実装由来契約の波及トレース
+
+- `XDI-RUNTIME-001`：`run_manifest.yaml`、state transition、provenance、immutable な生証拠、validation bridge の契約は、Requirement 1／4／6／7 の外部可視要件にまたがる。詳細な設計採用は design.md §実装由来契約の採用を正本とし、本 requirements.md は要件層から追跡可能であることを示す。

@@ -970,3 +970,7 @@ requirements.md の Boundary Context との整合：
 8. 拡張余地と将来宿題 → §3 範囲外／§19 Open Issues
 9. テスト戦略 → §18 テスト戦略
 10. リスクと残余課題 → §19 Open Issues
+
+## 実装由来契約の波及トレース
+
+- `XDI-SI-001`：approval guard、rejection guard、`proposal_id`、carry-forward guard は、proposal model、approval model、carry-forward register の設計境界にまたがる。詳細な要件採用は requirements.md §実装由来契約を正本とし、本 design.md は設計層から追跡可能であることを示す。

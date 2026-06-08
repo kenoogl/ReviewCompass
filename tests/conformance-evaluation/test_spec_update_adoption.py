@@ -4,8 +4,31 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 
 
+XDI_SPEC_MATRIX = {
+  "XDI-FOUND-001": "foundation",
+  "XDI-RUNTIME-001": "runtime",
+  "XDI-EVAL-001": "evaluation",
+  "XDI-ANALYSIS-001": "analysis",
+  "XDI-WM-001": "workflow-management",
+  "XDI-SI-001": "self-improvement",
+  "XDI-CE-001": "conformance-evaluation",
+}
+
+
 def _read(path):
   return (ROOT / path).read_text(encoding="utf-8")
+
+
+def test_cross_feature_xdi_contracts_are_traceable_across_spec_triad():
+  missing_refs = []
+
+  for contract_id, feature in XDI_SPEC_MATRIX.items():
+    for spec_name in ("requirements", "design", "tasks"):
+      path = f".reviewcompass/specs/{feature}/{spec_name}.md"
+      if contract_id not in _read(path):
+        missing_refs.append(f"{path}: {contract_id}")
+
+  assert missing_refs == []
 
 
 def test_cross_feature_runtime_design_contract_is_adopted():

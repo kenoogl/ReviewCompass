@@ -206,3 +206,7 @@ v3-plan §3.3 の扱い（§5.10.6 由来、2026-05-24 セッション 23 改訂
 - **傍流（文書生成、オンボーディング）**：requirements ／ design は自動推定、intent と feature-partitioning は人協働で決定、tasks は対象外
 - 規律レベルの戻し：`self-improvement` の workflow 改善（§5.16）が扱う、本機能のスコープ外
 - schema／prompt／code レベルの戻し：`self-improvement` の他 4 層改善、フェーズ 4 完了後の宿題、本機能のスコープ外
+
+## 実装由来契約の波及トレース
+
+- `XDI-CE-001`：cross-feature drift clustering、contract ownership outputs、follow-up implementation decision は、Requirement 9 の contract ownership map／spec update proposals／draft-only artifacts の外部可視要件に含める。詳細な follow-up タスク化は tasks.md T-015 を正本とし、本 requirements.md は要件層から追跡可能であることを示す。

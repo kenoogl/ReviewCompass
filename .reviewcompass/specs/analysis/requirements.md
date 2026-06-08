@@ -152,3 +152,7 @@ ReviewCompass 固有の追加：
 機能横断レビューで対処された所見：
 
 - 機能横断波及所見の対処履歴は carry-forward register 正本 [reviewcompass-import.yaml](../../../learning/workflow/carry-forward-register/reviewcompass-import.yaml) を参照（A-001 `not_run` 欠落 → 2026-05-23 対処済み、A-003 `analysis_blocked` 欠落 → 2026-05-23 対処済み）
+
+## 実装由来契約の波及トレース
+
+- `XDI-ANALYSIS-001`：intake boundary guard と destination boundary guard は、Requirement 1／4／8 の外部可視要件にまたがる。詳細な設計採用は design.md §実装由来契約の採用を正本とし、本 requirements.md は要件層から追跡可能であることを示す。

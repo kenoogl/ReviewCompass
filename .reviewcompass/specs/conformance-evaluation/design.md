@@ -1049,3 +1049,7 @@ requirements.md の Boundary Context との整合：
 - [x] 評価記録の type 値と配置（§12）が確定している（target_commit ／ materialization_commit_hash の整合ルール、A-011 対処）
 - [x] 依存関係の連想配列構造（§13）と確定値が明示されている
 - [x] **遡及／波及所見が §20.1 で明示され、carry-forward register に登録済み**
+
+## 実装由来契約の波及トレース
+
+- `XDI-CE-001`：cross-feature drift clustering と contract ownership outputs は、design.md §13.6 の契約所有候補と仕様更新草案の派生運用として追跡する。follow-up implementation decision の正本は tasks.md T-015 とし、本 design.md は設計層から追跡可能であることを示す。

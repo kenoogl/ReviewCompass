@@ -178,3 +178,7 @@ ReviewCompass 固有の追加：
 機能横断レビューで対処された所見：
 
 - 機能横断波及所見の対処履歴は carry-forward register 正本 [reviewcompass-import.yaml](../../../learning/workflow/carry-forward-register/reviewcompass-import.yaml) を参照
+
+## 実装由来契約の波及トレース
+
+- `XDI-EVAL-001`：bundle placement、admission readiness、staleness、dogfooding metrics は、Requirement 5／9／10 の外部可視要件にまたがる。詳細な設計採用は design.md §実装由来契約の採用を正本とし、本 requirements.md は要件層から追跡可能であることを示す。
