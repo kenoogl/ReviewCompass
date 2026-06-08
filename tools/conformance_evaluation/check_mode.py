@@ -3,6 +3,10 @@ from pathlib import Path
 import yaml
 
 from tools.conformance_evaluation.comparison_model import ComparisonModel
+from tools.conformance_evaluation.contract_ownership import (
+  ContractOwnershipMap,
+  load_contract_ownership_items,
+)
 from tools.conformance_evaluation.estimation_model import EstimationModel
 from tools.conformance_evaluation.evaluation_record import EvaluationRecordModel
 from tools.conformance_evaluation.machine_verification import MachineVerification, VerificationStatus
@@ -21,6 +25,8 @@ class CheckPipeline:
     prompt_text: str,
     run_date: str,
     check_partitioning: bool = False,
+    ownership_items=None,
+    ownership_fixture=None,
   ) -> dict:
     isolation = MachineVerification(self.root).check_prompt_isolation(
       prompt_text=prompt_text,
@@ -37,6 +43,38 @@ class CheckPipeline:
     )
     comparison["severity"] = comparison.get("severity", "INFO")
     findings_yaml = yaml.safe_dump([comparison], allow_unicode=True, sort_keys=False)
+    contract_ownership = None
+    ownership_section = ""
+    proposal_section = ""
+    if ownership_items is not None and ownership_fixture is not None:
+      raise ValueError("ownership_items_and_fixture_are_mutually_exclusive")
+    if ownership_fixture is not None:
+      ownership_items = load_contract_ownership_items(ownership_fixture)
+    if ownership_items is not None:
+      ownership_map = ContractOwnershipMap.from_items(ownership_items)
+      contract_ownership = {
+        "items": ownership_map.items,
+        "update_candidates": ownership_map.update_candidates(),
+        "spec_update_proposals": ownership_map.spec_update_proposals(),
+      }
+      ownership_yaml = yaml.safe_dump(contract_ownership, allow_unicode=True, sort_keys=False)
+      proposal_yaml = yaml.safe_dump(
+        contract_ownership["spec_update_proposals"],
+        allow_unicode=True,
+        sort_keys=False,
+      )
+      ownership_section = (
+        "\n## Contract Ownership Candidates\n"
+        "```yaml\n"
+        f"{ownership_yaml}"
+        "```\n"
+      )
+      proposal_section = (
+        "\n## Spec Update Proposals\n"
+        "```yaml\n"
+        f"{proposal_yaml}"
+        "```\n"
+      )
     EvaluationRecordModel(self.root).write_record(
       feature=feature,
       mode_internal="check",
@@ -53,9 +91,11 @@ class CheckPipeline:
         "```yaml\n"
         f"{findings_yaml}"
         "```\n"
+        f"{ownership_section}"
+        f"{proposal_section}"
       ),
     )
-    return {
+    result = {
       "stages": ["estimate", "compare"],
       "estimation": estimate,
       "estimation_input": {"feature_partitioning": feature_partitioning},
@@ -64,3 +104,6 @@ class CheckPipeline:
       "partitioning_input": feature_partitioning if check_partitioning else None,
       "findings": [comparison],
     }
+    if contract_ownership is not None:
+      result["contract_ownership"] = contract_ownership
+    return result

@@ -1,0 +1,40 @@
+items:
+  - contract_id: XDI-REQ-001
+    feature: workflow-management
+    claim: next action is a user-visible workflow contract
+    classification: spec-missing
+    primary_owner_candidate: requirements
+    secondary_owner_candidate: design
+    contract_refs:
+      - .reviewcompass/specs/workflow-management/requirements.md
+      - .reviewcompass/specs/workflow-management/design.md
+    evidence_refs:
+      - tests/tools/test_check_workflow_action.py
+    related_clusters:
+      - XDRIFT-001
+  - contract_id: XDI-DES-001
+    feature: runtime
+    claim: validation bridge state transitions are design contracts
+    classification: spec-missing
+    primary_owner_candidate: design
+    secondary_owner_candidate: tool_contract
+    contract_refs:
+      - .reviewcompass/specs/runtime/design.md
+    evidence_refs:
+      - tests/runtime/test_t009_validation_bridge.py
+    related_clusters:
+      - XDRIFT-006
+  - contract_id: XDI-TASK-001
+    feature: conformance-evaluation
+    claim: line-level traceability needs a follow-up decision
+    classification: ownership-unclear
+    primary_owner_candidate: carry_forward
+    secondary_owner_candidate: test_contract
+    contract_refs:
+      - .reviewcompass/specs/conformance-evaluation/tasks.md
+    evidence_refs:
+      - docs/notes/2026-06-08-cross-feature-conformance-drift-audit.md
+    related_clusters:
+      - XDRIFT-007
+    depends_on:
+      - XDI-META-001
