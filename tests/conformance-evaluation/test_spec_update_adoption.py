@@ -18,6 +18,25 @@ def test_cross_feature_runtime_design_contract_is_adopted():
   assert "immutable" in text
 
 
+def test_cross_feature_foundation_contract_is_adopted():
+  text = _read(".reviewcompass/specs/foundation/design.md")
+
+  assert "XDI-FOUND-001" in text
+  assert "completion validator" in text
+  assert "encoding convention validator" in text
+  assert "strategy coverage" in text
+
+
+def test_cross_feature_evaluation_contract_is_adopted():
+  text = _read(".reviewcompass/specs/evaluation/design.md")
+
+  assert "XDI-EVAL-001" in text
+  assert "bundle placement" in text
+  assert "admission readiness" in text
+  assert "staleness" in text
+  assert "dogfooding metrics" in text
+
+
 def test_cross_feature_analysis_design_contract_is_adopted():
   text = _read(".reviewcompass/specs/analysis/design.md")
 
@@ -25,6 +44,16 @@ def test_cross_feature_analysis_design_contract_is_adopted():
   assert "intake boundary guard" in text
   assert "destination boundary guard" in text
   assert "生実行ディレクトリ" in text
+
+
+def test_cross_feature_workflow_management_contract_is_adopted():
+  text = _read(".reviewcompass/specs/workflow-management/design.md")
+
+  assert "XDI-WM-001" in text
+  assert "post-write verification" in text
+  assert "commit approval" in text
+  assert "audit trail" in text
+  assert "autonomous ledger" in text
 
 
 def test_cross_feature_self_improvement_requirements_contract_is_adopted():

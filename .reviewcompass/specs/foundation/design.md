@@ -648,6 +648,17 @@ Step C の出力単位。必要性 5 項目と最終ラベルを表す（要件 
 
 これらは外部依存なしにリポジトリ内で実行できる静的検証であり、CI（継続的統合、自動ビルドと検証の仕組み）または手動検査のいずれでも同一基準で判定できる。
 
+## 実装由来契約の採用（Implementation-Derived Contracts）
+
+### XDI-FOUND-001：validator と test contract に隠れていた完成・文字コード・戦略被覆契約
+
+2026-06-08 の機能横断 conformance check で、foundation の completion validator、encoding convention validator、strategy coverage に関する契約が、本文仕様よりも `tools/foundation_validators/` と `tests/foundation/` に具体化されていることを確認した。本設計はその差分を実装由来契約として採用する。
+
+- completion validator は、完成判定基準 6 項目と YAML レポートスキーマを対応させ、`overall_pass` と `criteria_results` によって完了可否を機械的に説明する
+- encoding convention validator は、foundation 資産が UTF-8 として読めること、語彙正本・スキーマ・プロンプト・雛形の文字コードが検査可能であることを保証する
+- strategy coverage は、レビュー実行戦略・語彙正本・下流参照禁止対象が設計本文、資産ファイル、テストのいずれかで欠落しないことを確認する
+- これらの validator/test contract は foundation の仕様本文を置き換えず、完成判定と静的検証の観測可能な実装として扱う
+
 ## 完成判定基準（Completion Criteria）
 
 本設計は、少なくとも次を満たすときに有効とみなす。判定は上記テスト戦略の機械検証で行い、説明文は補助とする。

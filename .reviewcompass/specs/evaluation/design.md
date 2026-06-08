@@ -738,6 +738,17 @@ foundation で「伝播義務の存在」が固定され、本機能で「具体
 
 これらは `self-improvement`／`analysis`／`workflow-management`／`conformance-evaluation` 設計が揃った後の design alignment 段で詰める。
 
+## 実装由来契約の採用（Implementation-Derived Contracts）
+
+### XDI-EVAL-001：取り込み束配置・許容準備・陳腐化・dogfooding 指標の所有判断
+
+2026-06-08 の機能横断 conformance check で、evaluation の bundle placement、admission readiness、staleness、dogfooding metrics に関する契約が、実装レビュー証跡とテストにまたがって具体化されていることを確認した。本設計はその差分を実装由来契約として採用する。
+
+- bundle placement は `experiments/analysis/imports/bundles/<bundle_id>/run/<run_id>/...` を正本配置とし、外部可搬束を参照だけでなく物理コピーして評価可能な入力に固定する
+- admission readiness は `bundle_manifest.yaml`、来歴情報、規約版、チェックサム、無効化標識を確認し、`admitted_standard`／`admitted_exploratory`／`rejected` の 3 値で評価対象化の可否を決める
+- staleness は上流無効化や評価再導出に伴う影響を `manifests/staleness_register.json` に記録し、下流派生成果物の再生成対象を追跡可能にする
+- dogfooding metrics は `review_mode` 別母集団、3 役所見差分、`counter_status` 集計を評価実行自身の観察にも適用できるものとして扱う
+
 ## 完成判定基準（Completion Criteria）
 
 - 生実行と分析成果物の境界を §分析成果物配置 で説明できる
