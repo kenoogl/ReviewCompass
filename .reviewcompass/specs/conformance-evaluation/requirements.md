@@ -190,6 +190,7 @@ ReviewCompass 固有の構築：
 - 依存関係の連想配列構造を Requirement 7 で定義（§5.10.5 由来、A-005 連動）
 - 実装適合レビューとの分離を Requirement 8 で明示（§5.10.1 由来）
 - 実装由来契約の contract ownership map、spec update proposals、draft-only spec update artifacts を Requirement 9 で明示（2026-06-08 実装由来契約横展開）
+- 2026-06-08 の feature-partitioning 再確認により、intent の「レビュー収集処理を事前設定の写像にしない」意図は新機能追加を要さず、conformance-evaluation では Requirement 1 の下流から上流への逆方向推定、Requirement 3 の二段階照合、Requirement 5 の推定・照合両段階への 3 役レビュー適用、および Requirement 9 の実装由来契約の仕様更新草案で受けることを確認した。
 
 機能横断レビューで対処された所見：
 

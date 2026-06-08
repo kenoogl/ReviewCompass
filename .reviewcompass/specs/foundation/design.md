@@ -739,6 +739,7 @@ ReviewCompass 固有の追加（要件 Change Intent との対応）：
 - **検証器状態語彙の参照禁止対象に `conformance-evaluation` を追加**（§3、要件 6 受入 10 由来）：隣接仕様の整合
 - **証拠区分語彙を 4 値に再定義**（§3、要件 6 受入 8 由来）：素材の `candidate / valid / invalid / exploratory` を要件側の `valid / invalid / exploratory / analysis_blocked` に変更（`candidate` は `run_status=in_progress` で表現可能なため証拠区分から除外、代わりに「分析不能」の明示区分を導入）
 - **パターン定義依存除外を能動的要件として位置付け**（§7、要件 5 由来）：先行プロジェクトの「削除済み」表記から能動的要件への書き換え
+- **2026-06-08 の requirements 再確認への対応**：intent の「レビュー収集処理を事前設定の写像にしない」意図は、§7 のパターン定義依存除外、§3 の実行メタデータ契約、§4 の証拠スキーマ、§8 の検証・無効化成果物分離で受けられるため、設計構造の追加は不要と確認
 
 triad-review 段（2026-05-25 セッション 25）由来の修正：
 
