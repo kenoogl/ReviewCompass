@@ -162,6 +162,18 @@
 3. 本機能と実装適合レビューは方向（下流 → 上流 vs 順方向）、前提（上流文書なくてもよい vs 上流文書必須）、実施時期（任意 vs フェーズ終端）で性格が違う。
 4. 本機能の実装者は実装適合レビューと混在する成果物を作らない（評価記録は `conformance/` ディレクトリ、実装適合レビュー記録は `reviews/` ディレクトリ）。
 
+### Requirement 9：実装由来契約の所有候補と仕様更新草案
+
+**目的**：保守担当者が、照合チェックで見つかった実装由来契約を requirements.md, design.md, tasks.md のどこへ反映すべきかを判断できるようにする。仕様本文への直接適用は人間判断を前提とし、本機能は候補分類と草案生成に留める。
+
+#### 受入基準
+
+1. 本機能は contract ownership map を作成し、各実装由来契約について `contract_id`、対象 feature、claim、classification、primary_owner_candidate、secondary_owner_candidate、contract_refs、evidence_refs、related_clusters、source_refs を保持する。
+2. 本機能は ownership 候補の primary owner に基づき、requirements.md, design.md, tasks.md のいずれを仕様更新候補にするかを分類する。requirements owner は requirements.md、design owner は design.md、carry_forward／test_contract／tool_contract owner は tasks.md を主な反映候補とする。
+3. 本機能は spec update proposals を評価記録に含め、対象ファイルごとに contract_ids、claims、needs_human_decision をまとめる。
+4. 本機能は draft-only spec update artifacts を `<対象アプリ>/.reviewcompass/specs/<feature>/conformance/<日付>-spec-update-drafts/` に出力する。草案は `apply_status: draft_only` を持ち、requirements.md, design.md, tasks.md を直接書き換えない。
+5. ownership が不明確な契約、または primary owner が carry_forward の契約は `needs_human_decision: true` とし、人間判断なしに仕様本文へ適用しない。
+
 ## Change Intent
 
 本仕様は計画書 §5.10 で第 1 期から含めることを確定した **新規 7 番目機能**で、先行プロジェクトの `v3-plan.md` で future feature として記録されていた「artifact-to-spec conformance evaluation」を独立機能として書き起こした。**2026-05-24 セッション 23 で利用者考察により本筋／傍流の整理と 2 軸 6 criteria への絞り込みを実施**（論点 A・B 対処、計画書 §5.10 改訂と連動）。
@@ -177,6 +189,7 @@ ReviewCompass 固有の構築：
 - 評価記録の type 値と配置先を Requirement 6 で確定（§5.10.4 由来）
 - 依存関係の連想配列構造を Requirement 7 で定義（§5.10.5 由来、A-005 連動）
 - 実装適合レビューとの分離を Requirement 8 で明示（§5.10.1 由来）
+- 実装由来契約の contract ownership map、spec update proposals、draft-only spec update artifacts を Requirement 9 で明示（2026-06-08 実装由来契約横展開）
 
 機能横断レビューで対処された所見：
 

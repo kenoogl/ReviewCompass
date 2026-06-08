@@ -266,10 +266,22 @@ def test_t012_machine_verification_mv6_is_blocking(tmp_path):
 
 def test_t013_traceability_smoke():
   tasks_text = (ROOT / ".reviewcompass" / "specs" / "conformance-evaluation" / "tasks.md").read_text(encoding="utf-8")
-  for index in range(1, 14):
+  for index in range(1, 15):
     assert f"T-{index:03d}" in tasks_text
     task_block = re.search(rf"### T-{index:03d}：.*?(?=^### T-|\Z)", tasks_text, re.S | re.M)
     assert task_block is not None
     assert "対応要件" in task_block.group(0)
     assert "テスト要件" in task_block.group(0)
   assert "DVT" in tasks_text
+
+
+def test_conformance_evaluation_specs_track_contract_ownership_and_spec_update_drafts():
+  requirements = (ROOT / ".reviewcompass" / "specs" / "conformance-evaluation" / "requirements.md").read_text(encoding="utf-8")
+  design = (ROOT / ".reviewcompass" / "specs" / "conformance-evaluation" / "design.md").read_text(encoding="utf-8")
+  tasks = (ROOT / ".reviewcompass" / "specs" / "conformance-evaluation" / "tasks.md").read_text(encoding="utf-8")
+
+  for text in (requirements, design, tasks):
+    assert "contract ownership map" in text
+    assert "spec update proposals" in text
+    assert "draft-only spec update artifacts" in text
+    assert "requirements.md, design.md, tasks.md" in text

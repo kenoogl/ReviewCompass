@@ -11,9 +11,9 @@
 - **照合チェックモード（本筋）**：仕様駆動開発で構築したコードの要件充足判断。バイアス防止のため二段階方式（推定 → 比較）を採用、既存 feature-partitioning だけは推定時の入力として尊重し、他の既存上流文書は遮断
 - **文書生成モード（傍流、人協働）**：既存上流文書のないコードベースに ReviewCompass を導入するための推定支援。完全自動推定は目指さず、機能境界の決定等の本質的判断は人間が担う
 
-要件文書（requirements.md）は 8 件の Requirement で、機能の方向性／文書生成モード／照合チェックモード／6 criteria 検査構造／3 役レビュー機構の流用／評価記録の type 値と配置／依存関係の連想配列構造／実装適合レビューとの分離を求めている。本設計は計画書 §5.10.1〜§5.10.10（機能の性格・評価軸・5 評価軸の整理・評価記録・依存関係・v3-plan 連携・criteria 数・段階的導入・モード別の既存文書扱い・推定段階の triad-review 適用）を実装可能な形に落とし込み、`v3-plan.md` の素材（future feature 記述）から本機能の独立仕様として再設計する。
+要件文書（requirements.md）は 9 件の Requirement で、機能の方向性／文書生成モード／照合チェックモード／6 criteria 検査構造／3 役レビュー機構の流用／評価記録の type 値と配置／依存関係の連想配列構造／実装適合レビューとの分離／実装由来契約の所有候補と仕様更新草案を求めている。本設計は計画書 §5.10.1〜§5.10.10（機能の性格・評価軸・5 評価軸の整理・評価記録・依存関係・v3-plan 連携・criteria 数・段階的導入・モード別の既存文書扱い・推定段階の triad-review 適用）を実装可能な形に落とし込み、`v3-plan.md` の素材（future feature 記述）から本機能の独立仕様として再設計する。
 
-本設計の所有物は **推定モデル・比較モデル・モード切替モデル・triad-review 適用モデル・評価記録モデル・依存関係モデル** の 6 つのモデルである。実装適合レビュー（順方向、上流文書がある前提でフェーズ終端で実施）は `analysis` および `runtime` の連携に残し、本機能では吸収しない（§5.10.1）。
+本設計の所有物は **推定モデル・比較モデル・モード切替モデル・triad-review 適用モデル・評価記録モデル・依存関係モデル・契約所有候補モデル** の 7 つのモデルである。実装適合レビュー（順方向、上流文書がある前提でフェーズ終端で実施）は `analysis` および `runtime` の連携に残し、本機能では吸収しない（§5.10.1）。
 
 ## 目標（Goals）
 
@@ -24,6 +24,7 @@
 - **評価記録の type 値 `conformance_evaluation`** と配置先 `<対象アプリ>/.reviewcompass/specs/<feature>/conformance/<日付>-<mode>.md` を機械可読に確定（Req 6）
 - **依存関係の連想配列構造**（`hard`／`review` の 2 値）を `workflow-management` のスキーマ拡張と整合させて表現（Req 7、§5.10.5）
 - **実装適合レビューとの分離**を機械検査可能な形で担保（評価記録は `conformance/` ディレクトリ、実装適合レビューは `reviews/` ディレクトリ、Req 8）
+- **contract ownership map** と **spec update proposals** により、実装由来契約を requirements.md, design.md, tasks.md の更新候補へ分類し、**draft-only spec update artifacts** として出力する（Req 9）
 
 ## 範囲外（Non-Goals）
 
@@ -695,6 +696,16 @@ requirements.md Req 7 受入 5 に対応。
 - 計画書 §5.5 ／ §5.10.5 の正本 phase_order は self-improvement を含まない 6 機能体制だが、workflow-management/design.md（利用者明示承認 2026-05-25 セッション 26、7 機能採用）と整合する 7 機能 phase_order：`foundation → runtime → evaluation → analysis → workflow-management → self-improvement → conformance-evaluation`
 - 計画書 §5.5 構造例の self-improvement 記載漏れは workflow-management 側 TODO で別途追跡
 
+### 13.6 契約所有候補と仕様更新草案（Contract Ownership and Spec Update Drafts）
+
+Requirement 9 に対応する。照合チェックで見つかった実装由来契約は、食い違い所見として記録するだけでなく、どの仕様文書が所有すべきかを provisional に分類する。
+
+contract ownership map は、各契約について `contract_id`、feature、claim、classification、primary_owner_candidate、secondary_owner_candidate、contract_refs、evidence_refs、related_clusters、source_refs を持つ。owner 候補の値域は requirements、design、operations、tool_contract、test_contract、review_evidence、carry_forward とし、classification は spec-missing、code-missing、mismatch、implementation-detail、ownership-unclear を使う。
+
+spec update proposals は、contract ownership map を対象ファイル単位に畳み込んだ候補である。primary owner が requirements の契約は requirements.md、design の契約は design.md、carry_forward／test_contract／tool_contract の契約は tasks.md を主な反映候補にする。対象ファイルごとに `contract_ids`、`claims`、`needs_human_decision` を保持する。
+
+draft-only spec update artifacts は、`<対象アプリ>/.reviewcompass/specs/<feature>/conformance/<日付>-spec-update-drafts/` に Markdown として出力する。front-matter は `apply_status: draft_only`、`target_file`、`target_kind`、`needs_human_decision` を含む。草案は requirements.md, design.md, tasks.md を直接変更せず、人間が採否判断した後に別手続きで仕様本文へ反映する。
+
 ## 14. 他機能との接合面（Interfaces with Other Features）
 
 ### 14.1 foundation との接合面（依存：hard）
@@ -1022,7 +1033,7 @@ requirements.md の Boundary Context との整合：
 本設計が design.drafting＋triad-review 段の完了とみなされる条件：
 
 - [x] 全 20 章（番号なし 5 章＋番号付き §6〜§20 の 15 章）が記述されている
-- [x] requirements.md の全 8 件の Requirement と受入基準が §15 要件追跡表で章節と対応している（受入基準単位の追跡、F-001 部分対処：Req 8 を受入単位で展開）
+- [x] requirements.md の全 9 件の Requirement と受入基準が §15 要件追跡表で章節と対応している（受入基準単位の追跡、F-001 部分対処：Req 8 を受入単位で展開、Req 9 を §13.6 に追加）
 - [x] 計画書 §5.10 の 10 小節（§5.10.1〜§5.10.10）の方針が反映されている
 - [x] 他機能との接合面が §14 で全 6 機能分（foundation／runtime／evaluation／analysis／workflow-management／self-improvement）明示されている
 - [x] Boundary Context との整合が §17 で確認されている
