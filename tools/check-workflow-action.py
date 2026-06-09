@@ -3434,6 +3434,58 @@ def build_reopen_classification_required_next_action(
   }
 
 
+def _load_yaml_file(path):
+  """YAML ファイルを dict として読む。読めなければ空 dict を返す"""
+  try:
+    data = yaml.safe_load(path.read_text(encoding="utf-8"))
+  except Exception:
+    return {}
+  return data if isinstance(data, dict) else {}
+
+
+def _completed_reopen_covers_downstream_phase(cwd, downstream_phase):
+  """完了済み reopen が指定 downstream phase の再確認を覆うか判定する"""
+  completed_dir = Path(cwd) / "stages" / "completed"
+  if not completed_dir.exists():
+    return False
+
+  required_gates = {
+    f"stages/{downstream_phase}.yaml#alignment",
+    f"stages/{downstream_phase}.yaml#approval",
+  }
+  allowed_decisions = {
+    "affected_update_required",
+    "existing_sufficient",
+    "no_impact",
+    "approved",
+    "proxy_approved",
+  }
+  for path in completed_dir.glob("reopen-procedure-*.yaml"):
+    data = _load_yaml_file(path)
+    if data.get("step_number") != 4:
+      continue
+    if data.get("current_blocker") not in (None, "null"):
+      continue
+    impacted = data.get("impacted_downstream_phases")
+    if not isinstance(impacted, list) or downstream_phase not in impacted:
+      continue
+    decisions = data.get("downstream_impact_decisions")
+    if not isinstance(decisions, list):
+      continue
+    covered = set()
+    for decision in decisions:
+      if not isinstance(decision, dict):
+        continue
+      if decision.get("decision") not in allowed_decisions:
+        continue
+      gate = decision.get("gate")
+      if gate in required_gates:
+        covered.add(gate)
+    if required_gates.issubset(covered):
+      return True
+  return False
+
+
 def resolve_upstream_recheck_action(cwd):
   """完了済み workflow に対し、上流更新後の reopen 必要性を検出する"""
   intent_mtime = _max_existing_mtime(cwd, _phase_artifact_paths(None, "intent"))
@@ -3460,7 +3512,11 @@ def resolve_upstream_recheck_action(cwd):
         cwd,
         _phase_artifact_paths(feature, "requirements"),
       )
-      if requirements_mtime is not None and partitioning_mtime > requirements_mtime:
+      if (
+        requirements_mtime is not None
+        and partitioning_mtime > requirements_mtime
+        and not _completed_reopen_covers_downstream_phase(cwd, "requirements")
+      ):
         return build_reopen_classification_required_next_action(
           feature,
           "feature-partitioning",
@@ -3487,6 +3543,7 @@ def resolve_upstream_recheck_action(cwd):
         upstream_mtime is not None
         and downstream_mtime is not None
         and upstream_mtime > downstream_mtime
+        and not _completed_reopen_covers_downstream_phase(cwd, downstream_phase)
       ):
         return build_reopen_classification_required_next_action(
           feature,

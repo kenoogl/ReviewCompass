@@ -2005,6 +2005,60 @@ class NextNavigationTests(unittest.TestCase):
     self.assertEqual(data["next_action"]["upstream_phase"], "requirements")
     self.assertEqual(data["next_action"]["reopen_trigger"], "R-0")
 
+  def test_next_does_not_redetect_completed_feature_partitioning_reopen(self):
+    """完了済み reopen が同じ feature-partitioning→requirements を覆うなら再要求しない"""
+    cwd = Path(self.tmpdir)
+    complete = {
+      "drafting": True,
+      "triad-review": True,
+      "review-wave": True,
+      "alignment": True,
+      "approval": True,
+    }
+    _write_specs_for_next(cwd, {feature: dict(complete) for feature in FEATURE_ORDER})
+    _write_completed_phase_artifacts(cwd, timestamp=1000)
+    _write_phase_artifact(
+      cwd,
+      "stages/feature-partitioning/2026-05-24-proposal.md",
+      "feature partitioning updated\n",
+      timestamp=2000,
+    )
+    completed = cwd / "stages" / "completed" / "reopen-procedure-2026-06-09.yaml"
+    completed.parent.mkdir(parents=True, exist_ok=True)
+    completed.write_text(
+      "process_id: reopen-procedure\n"
+      "step_number: 4\n"
+      "next_step: （完了。再オープン手続き終了）\n"
+      "current_blocker: null\n"
+      "impacted_downstream_phases:\n"
+      "  - requirements\n"
+      "downstream_impact_decisions:\n"
+      "  - gate: stages/requirements.yaml#alignment\n"
+      "    feature_scope: all_features\n"
+      "    decision: existing_sufficient\n"
+      "    rationale: requirements で受けられることを確認した。\n"
+      "    evidence:\n"
+      "      - .reviewcompass/specs/foundation/requirements.md\n"
+      "  - gate: stages/requirements.yaml#approval\n"
+      "    feature_scope: all_features\n"
+      "    decision: approved\n"
+      "    rationale: requirements alignment を承認した。\n"
+      "    evidence:\n"
+      "      - .reviewcompass/specs/foundation/requirements.md\n",
+      encoding="utf-8",
+    )
+
+    result = run_script(["next", "--json"], cwd=cwd)
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 0, result.stderr)
+    data = json.loads(result.stdout)
+    self.assertNotEqual(
+      data["next_action"]["kind"],
+      "reopen_classification_required",
+      data["next_action"],
+    )
+
   def test_next_detects_tasks_update_requires_reopen_classification(self):
     """完了済み workflow で tasks が新しければ reopen 分類を要求する"""
     cwd = Path(self.tmpdir)
