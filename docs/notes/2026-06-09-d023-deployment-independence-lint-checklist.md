@@ -28,8 +28,8 @@ D-023 の目的は、ReviewCompass の文書・設定・スキーマが、配置
 
 | Target | Rule |
 | --- | --- |
-| Unix local absolute path | `/Users/...`、`/private/...` などを検出する。 |
-| Windows local absolute path | `C:\...` などを検出する。 |
+| Unix local absolute path | local user / private temp などの Unix 絶対パスを検出する。 |
+| Windows local absolute path | drive-letter 形式の Windows 絶対パスを検出する。 |
 | Markdown / YAML / JSON | lint 対象 suffix とする。 |
 | External URL | `https://...` / `http://...` は許容する。 |
 | Temporary audit path | `/private/tmp/reviewcompass-...` と `/tmp/reviewcompass-...` は許容する。 |
@@ -47,6 +47,8 @@ D-023 の目的は、ReviewCompass の文書・設定・スキーマが、配置
 - [x] `tools/README.md` に実行例を追記した。
 - [x] 初期対象範囲 lint を実行した。
 - [x] post-write verification を実施する。
+- [x] commit precheck guard に deployable artifact の staged 内容 lint を統合した。
+- [ ] push guard への直接統合要否を判断する。
 
 ## 4. Initial Lint Result
 
@@ -79,13 +81,14 @@ D-023 の目的は、ReviewCompass の文書・設定・スキーマが、配置
 | docs/operations lint | passed |
 | learning/workflow/schemas lint | passed |
 | config lint | passed |
-| commit / push guard integration | not implemented |
+| commit guard integration | implemented |
+| push guard integration | not implemented; push は直前 commit precheck 記録を要求するため間接的に commit guard 結果を参照する |
 
-stable deploy candidate までに残る項目は、D-020 の 2 repository pilot execution、または D-023 linter の commit / push guard 統合判断である。
+stable deploy candidate までに残る blocking 項目はない。push guard への直接統合は hardening follow-up として扱う。
 
 ## 6. Status Snapshot
 
 - `next --json`: `completed`
-- current task: D-023 deployment independence lint implemented and post-write verified
-- next task: stable deploy pilot execution planning
-- last status refresh: 2026-06-09, after post-write verification r1
+- current task: D-023 commit precheck guard integration implemented
+- next task: push guard direct integration decision or commit
+- last status refresh: 2026-06-09, after commit guard tests

@@ -1,0 +1,26 @@
+round_id: round-1
+purpose: post_write_verification
+invocation_timestamp: '2026-06-09T08:11:13.781800+00:00'
+target_files:
+- path: docs/notes/2026-06-09-d023-deployment-independence-lint-checklist.md
+  sha256: 8d34526b2eff39d52f9572b011b076096f23e2795aa43afd0d20bc90a747f7d1
+criteria: d023_commit_precheck_guard_integration_scope_after_path_example_cleanup
+prompt_sha256: 8c8579eb78fd86376e5f4df95e5f42f08efaacf5dc2733f88c17bd7382f508ff
+model_results:
+- model_id: gemini-3.5-flash
+  provider: gemini-api
+  role: primary
+  treatment: primary
+  invocation_path: api
+  raw_path: raw/gemini-3.5-flash.round-1.txt
+  raw_sha256: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+  parsed_path: parsed/gemini-3.5-flash.round-1.yaml
+  parsed_sha256: 694743f945eaab3843f726421c091c28c14d2c6bb23a338337b73f6dd4f18443
+  parse_status: parsed
+  formatted_by: parser
+  formatted_by_actor_type: orchestrator
+  formatted_by_actor: run_role.py
+  formatted_at: '2026-06-09T08:11:13.781800+00:00'
+  follow_up_action: triage
+  attempts: 1
+  duration_seconds: 8.535

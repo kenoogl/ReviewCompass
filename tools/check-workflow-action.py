@@ -29,6 +29,8 @@ from pathlib import Path
 
 import yaml
 
+from deployment_independence_lint import lint_text
+
 
 # 既定のログファイルパス（呼び出し時の cwd 相対、仕様 §8.2）
 DEFAULT_LOG_PATH = "docs/logs/workflow-precheck.log"
@@ -40,6 +42,14 @@ DEFAULT_CARRY_FORWARD_SOURCE_PATH = (
   "learning/workflow/carry-forward-register/sources/"
   "reviewcompass-pending-cross-feature-findings.md"
 )
+DEPLOYMENT_INDEPENDENCE_GUARD_PREFIXES = (
+  "config/",
+  "docs/operations/",
+  "learning/workflow/deployment-readiness/",
+  "learning/workflow/replication-pilots/",
+  "learning/workflow/schemas/",
+)
+DEPLOYMENT_INDEPENDENCE_GUARD_SUFFIXES = (".md", ".yaml", ".yml", ".json")
 
 # 各フェーズの段集合（計画書 §5.5 と §5.24.4 と整合）
 PHASE_STAGES = {
@@ -2088,6 +2098,45 @@ def _staged_text(cwd, filepath):
   return result.stdout
 
 
+def is_deployment_independence_guard_target(filepath):
+  """D-023 commit guard の対象 staged artifact かを返す"""
+  return (
+    filepath.endswith(DEPLOYMENT_INDEPENDENCE_GUARD_SUFFIXES)
+    and filepath.startswith(DEPLOYMENT_INDEPENDENCE_GUARD_PREFIXES)
+  )
+
+
+def validate_deployment_independence_for_staged_files(cwd, staged_files):
+  """D-023 配置非依存 lint を staged 内容に対して実行する"""
+  target_files = [
+    filepath for filepath in staged_files
+    if is_deployment_independence_guard_target(filepath)
+  ]
+  state = {
+    "target_files": target_files,
+    "findings": [],
+  }
+  errors = []
+  for filepath in target_files:
+    text = _staged_text(cwd, filepath)
+    if text is None:
+      errors.append(f"配置非依存 lint 対象の staged 内容を読めません: {filepath}")
+      continue
+    findings = lint_text(filepath, text)
+    state["findings"].extend(findings)
+
+  for finding in state["findings"]:
+    errors.append(
+      "配置非依存 lint 違反: {path}:{line}: {kind}: {value}".format(
+        path=finding["path"],
+        line=finding["line"],
+        kind=finding["kind"],
+        value=finding["value"],
+      )
+    )
+  return state, errors
+
+
 def _reopen_completed_files(staged_files):
   """staged された reopen 完了ファイルを返す"""
   return [
@@ -2583,6 +2632,9 @@ def cmd_commit(args):
     cwd,
     staged_files,
   )
+  deployment_lint_state, deployment_lint_errors = (
+    validate_deployment_independence_for_staged_files(cwd, staged_files)
+  )
 
   # 判定（仕様 §6.2）
   reasons = []
@@ -2609,6 +2661,8 @@ def cmd_commit(args):
       deviation_reasons.append(f"危険変更: {f}（commit を遮断推奨）")
   if post_write_errors:
     deviation_reasons.extend(post_write_errors)
+  if deployment_lint_errors:
+    deviation_reasons.extend(deployment_lint_errors)
 
   if deviation_reasons:
     reasons.extend(deviation_reasons)
@@ -2636,7 +2690,9 @@ def cmd_commit(args):
     f"ユーザ承認レコード: {'有効' if approval_state['valid'] else '無効'}\n"
     f"commit 実行主体: {args.execution_actor}\n"
     f"post-write-verification 対象: {len(post_write_state['target_files'])} 件\n"
-    f"post-write-verification 状態: {post_write_state['manifest_status']}"
+    f"post-write-verification 状態: {post_write_state['manifest_status']}\n"
+    f"配置非依存 lint 対象: {len(deployment_lint_state['target_files'])} 件\n"
+    f"配置非依存 lint 所見: {len(deployment_lint_state['findings'])} 件"
   )
   current_state_dict = {
     "pending_unresolved_count": unresolved_count,
@@ -2649,6 +2705,7 @@ def cmd_commit(args):
     "commit_approval": approval_state,
     "execution_actor": args.execution_actor,
     "post_write_verification": post_write_state,
+    "deployment_independence_lint": deployment_lint_state,
   }
   action_str = f"commit (rationale='{rationale}')"
   action_dict = {

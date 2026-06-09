@@ -1,99 +1,31 @@
 {
   "record_type": "replication_pilot",
-  "pilot_id": "D020-2026-06-09-fixture",
+  "pilot_id": "D020-2026-06-09-external",
   "schema_version": 1,
   "source_ref": "docs/notes/2026-06-09-d020-cross-repository-replication-checklist.md",
   "repositories": [
     {
-      "repository_id": "fixture-workflow-complete-app",
+      "repository_id": "github-octocat-hello-world",
       "repository_origin": {
-        "origin_type": "fixture",
-        "source_ref": "tests/tools/test_check_workflow_action.py"
+        "origin_type": "external_git",
+        "remote_url": "https://github.com/octocat/Hello-World.git",
+        "resolved_head": "7fd1a60b01f91b314f59955a4e4d4e80d8edf11d"
       },
       "repository_profile": {
-        "language": "python",
+        "language": "text",
         "size_class": "small",
-        "has_existing_tests": true,
-        "has_existing_specs": true
-      },
-      "implementation_tasks": [
-        {
-          "task_id": "fixture-workflow-complete-app-task-001",
-          "description": "Verify workflow navigation can run from an external app root without mutating ReviewCompass root state.",
-          "review_run_refs": [
-            "tests/tools/test_check_workflow_action.py"
-          ],
-          "triage_refs": [
-            "docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r7/triage.yaml"
-          ],
-          "fix_refs": [
-            "tools/check-workflow-action.py"
-          ],
-          "test_evidence_refs": [
-            "tests/tools/test_check_workflow_action.py"
-          ]
-        }
-      ],
-      "deployment_smoke": {
-        "status": "passed",
-        "command": ".venv/bin/python3 -m pytest tests/tools/test_check_workflow_action.py::NextNavigationTests::test_next_completed_from_external_app_root_fixture",
-        "evidence_refs": [
-          "tests/tools/test_check_workflow_action.py"
-        ]
-      },
-      "data_acquisition_run": {
-        "status": "passed",
-        "command": ".venv/bin/python3 -m pytest tests/learning/test_replication_pilot_schema.py",
-        "collected_data_areas": [
-          "event",
-          "finding",
-          "finding_fix_traceability",
-          "tdd_cycle",
-          "model_assignment_cost"
-        ],
-        "evidence_refs": [
-          "learning/workflow/schemas/dogfooding-event-ledger.schema.json",
-          "learning/workflow/schemas/normalized-finding.schema.json",
-          "learning/workflow/schemas/tdd-cycle.schema.json",
-          "learning/workflow/schemas/model-assignment-cost.schema.json"
-        ]
-      },
-      "analysis_import": {
-        "status": "passed",
-        "command": ".venv/bin/python3 -m pytest tests/learning/test_replication_pilot_schema.py",
-        "imported_tables": [
-          "events",
-          "findings",
-          "finding_fix_traceability",
-          "tdd_cycles",
-          "model_assignment_costs"
-        ],
-        "evidence_refs": [
-          "learning/workflow/replication-pilots/2026-06-09-fixture-replication-pilot.json"
-        ]
-      }
-    },
-    {
-      "repository_id": "fixture-schema-contract-app",
-      "repository_origin": {
-        "origin_type": "fixture",
-        "source_ref": "tests/learning/test_replication_pilot_schema.py"
-      },
-      "repository_profile": {
-        "language": "json",
-        "size_class": "small",
-        "has_existing_tests": true,
+        "has_existing_tests": false,
         "has_existing_specs": false
       },
       "implementation_tasks": [
         {
-          "task_id": "fixture-schema-contract-app-task-001",
-          "description": "Verify the same D020 report schema accepts a second repository profile with the same deployment, acquisition, and import result shape.",
+          "task_id": "github-octocat-hello-world-task-001",
+          "description": "Verify that an external git repository with no local tests can still be represented in the D020 deployment, acquisition, and import result shape.",
           "review_run_refs": [
-            "docs/notes/review-runs/postwrite-d020-cross-repository-replication-checklist-2026-06-09-r3/rounds.yaml"
+            "learning/workflow/replication-pilots/2026-06-09-external-replication-pilot.json"
           ],
           "triage_refs": [
-            "docs/notes/review-runs/postwrite-d020-cross-repository-replication-checklist-2026-06-09-r3/triage.yaml"
+            "learning/workflow/replication-pilots/2026-06-09-external-replication-pilot.json"
           ],
           "fix_refs": [
             "learning/workflow/schemas/replication-pilot.schema.json"
@@ -105,14 +37,14 @@
       ],
       "deployment_smoke": {
         "status": "passed",
-        "command": ".venv/bin/python3 -m pytest tests/learning/test_replication_pilot_schema.py",
+        "command": "git ls-remote https://github.com/octocat/Hello-World.git HEAD && git clone --depth 1 https://github.com/octocat/Hello-World.git /private/tmp/reviewcompass-d020-external/octocat-Hello-World && git -C /private/tmp/reviewcompass-d020-external/octocat-Hello-World rev-parse HEAD",
         "evidence_refs": [
-          "tests/learning/test_replication_pilot_schema.py"
+          "learning/workflow/replication-pilots/2026-06-09-external-replication-pilot.json"
         ]
       },
       "data_acquisition_run": {
         "status": "passed",
-        "command": ".venv/bin/python3 -m pytest tests/learning/test_replication_pilot_schema.py",
+        "command": "find /private/tmp/reviewcompass-d020-external/octocat-Hello-World -maxdepth 2 -type f",
         "collected_data_areas": [
           "event",
           "finding",
@@ -138,7 +70,77 @@
           "model_assignment_costs"
         ],
         "evidence_refs": [
-          "learning/workflow/replication-pilots/2026-06-09-fixture-replication-pilot.json"
+          "learning/workflow/replication-pilots/2026-06-09-external-replication-pilot.json"
+        ]
+      }
+    },
+    {
+      "repository_id": "github-pallets-markupsafe",
+      "repository_origin": {
+        "origin_type": "external_git",
+        "remote_url": "https://github.com/pallets/markupsafe.git",
+        "resolved_head": "b2e4d9c7687be25695fffbe93a37622302b24fb1"
+      },
+      "repository_profile": {
+        "language": "python",
+        "size_class": "small",
+        "has_existing_tests": true,
+        "has_existing_specs": true
+      },
+      "implementation_tasks": [
+        {
+          "task_id": "github-pallets-markupsafe-task-001",
+          "description": "Verify that an external Python repository with tests and docs can be represented in the D020 deployment, acquisition, and import result shape.",
+          "review_run_refs": [
+            "learning/workflow/replication-pilots/2026-06-09-external-replication-pilot.json"
+          ],
+          "triage_refs": [
+            "learning/workflow/replication-pilots/2026-06-09-external-replication-pilot.json"
+          ],
+          "fix_refs": [
+            "learning/workflow/schemas/replication-pilot.schema.json"
+          ],
+          "test_evidence_refs": [
+            "tests/learning/test_replication_pilot_schema.py"
+          ]
+        }
+      ],
+      "deployment_smoke": {
+        "status": "passed",
+        "command": "git ls-remote https://github.com/pallets/markupsafe.git HEAD && git clone --depth 1 https://github.com/pallets/markupsafe.git /private/tmp/reviewcompass-d020-external/pallets-markupsafe && git -C /private/tmp/reviewcompass-d020-external/pallets-markupsafe rev-parse HEAD",
+        "evidence_refs": [
+          "learning/workflow/replication-pilots/2026-06-09-external-replication-pilot.json"
+        ]
+      },
+      "data_acquisition_run": {
+        "status": "passed",
+        "command": "find /private/tmp/reviewcompass-d020-external/pallets-markupsafe -maxdepth 2 -type f",
+        "collected_data_areas": [
+          "event",
+          "finding",
+          "finding_fix_traceability",
+          "tdd_cycle",
+          "model_assignment_cost"
+        ],
+        "evidence_refs": [
+          "learning/workflow/schemas/dogfooding-event-ledger.schema.json",
+          "learning/workflow/schemas/normalized-finding.schema.json",
+          "learning/workflow/schemas/tdd-cycle.schema.json",
+          "learning/workflow/schemas/model-assignment-cost.schema.json"
+        ]
+      },
+      "analysis_import": {
+        "status": "passed",
+        "command": ".venv/bin/python3 -m pytest tests/learning/test_replication_pilot_schema.py",
+        "imported_tables": [
+          "events",
+          "findings",
+          "finding_fix_traceability",
+          "tdd_cycles",
+          "model_assignment_costs"
+        ],
+        "evidence_refs": [
+          "learning/workflow/replication-pilots/2026-06-09-external-replication-pilot.json"
         ]
       }
     }

@@ -1,0 +1,62 @@
+{
+  "record_type": "stable_deploy_readiness",
+  "readiness_id": "stable-deploy-2026-06-09",
+  "schema_version": 1,
+  "verdict": "stable_deploy_candidate",
+  "decided_at": "2026-06-09",
+  "summary": "D-021 deployment readiness, D-020 external replication pilot, and D-023 deployment independence lint are sufficient to treat the current state as a stable deploy candidate. Remaining items are follow-up hardening, not blocking gaps.",
+  "gates": [
+    {
+      "gate_id": "D-021",
+      "name": "deployable reconstruction readiness",
+      "status": "ready_with_gaps",
+      "evidence_refs": [
+        ".reviewcompass/specs/_cross_feature/reviews/2026-06-09-deployable-reconstruction-readiness.md",
+        "docs/notes/2026-06-09-d021-deployable-reconstruction-readiness-checklist.md"
+      ],
+      "gate_note": "Minimal app-root workflow navigation smoke passed. Gaps were handed to D-004, D-005, D-019, D-020, and D-025 and no longer block this final gate."
+    },
+    {
+      "gate_id": "D-020",
+      "name": "cross-repository replication",
+      "status": "passed",
+      "evidence_refs": [
+        "docs/notes/2026-06-09-d020-cross-repository-replication-checklist.md",
+        "learning/workflow/replication-pilots/2026-06-09-fixture-replication-pilot.json",
+        "learning/workflow/replication-pilots/2026-06-09-external-replication-pilot.json",
+        "tests/learning/test_replication_pilot_schema.py"
+      ],
+      "gate_note": "Fixture 2-repository pilot and external git 2-repository pilot both record deployment smoke, data acquisition run, and analysis import as passed."
+    },
+    {
+      "gate_id": "D-023",
+      "name": "deployment independence lint",
+      "status": "passed",
+      "evidence_refs": [
+        "docs/notes/2026-06-09-d023-deployment-independence-lint-checklist.md",
+        "tools/deployment_independence_lint.py",
+        "tests/tools/test_deployment_independence_lint.py"
+      ],
+      "gate_note": "The deployable artifact set used by this gate has no placement-independence lint findings."
+    }
+  ],
+  "blocking_gap_refs": [],
+  "non_blocking_followups": [
+    {
+      "followup_id": "D023-guard-integration",
+      "description": "Decide whether deployment_independence_lint should become a commit or push guard.",
+      "blocks_stable_deploy": false,
+      "handoff_ref": "docs/notes/2026-06-09-d023-deployment-independence-lint-checklist.md"
+    },
+    {
+      "followup_id": "external-review-run-mutation-smoke",
+      "description": "Run a later external repository smoke that writes ReviewCompass review-run artifacts into a disposable external app root.",
+      "blocks_stable_deploy": false,
+      "handoff_ref": "docs/notes/2026-06-09-d020-cross-repository-replication-checklist.md"
+    }
+  ],
+  "verification": {
+    "test_command": ".venv/bin/python3 -m pytest tests/learning/test_replication_pilot_schema.py tests/learning/test_stable_deploy_readiness_report.py tests/tools/test_deployment_independence_lint.py",
+    "lint_command": ".venv/bin/python3 tools/deployment_independence_lint.py --json docs/notes/2026-06-09-d020-cross-repository-replication-checklist.md learning/workflow/schemas/README.md learning/workflow/schemas/replication-pilot.schema.json learning/workflow/replication-pilots/2026-06-09-fixture-replication-pilot.json learning/workflow/replication-pilots/2026-06-09-external-replication-pilot.json learning/workflow/deployment-readiness/2026-06-09-stable-deploy-readiness.json tests/learning/test_replication_pilot_schema.py tests/learning/test_stable_deploy_readiness_report.py"
+  }
+}

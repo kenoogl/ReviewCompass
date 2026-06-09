@@ -1,0 +1,4 @@
+run_id: postwrite-d020-external-replication-pilot-report-2026-06-09-r1
+target_files:
+- path: docs/notes/2026-06-09-d020-cross-repository-replication-checklist.md
+  sha256: a835fa5431168eaac8f578ec7a1874f19c1c7bca596ebcec8c9ec683824a0e1e

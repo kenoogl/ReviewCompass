@@ -4686,6 +4686,27 @@ class CommitExitCodeTests(unittest.TestCase):
       f"逸脱判定の出力に DEVIATION が含まれるべき。stdout: {result.stdout}",
     )
 
+  def test_commit_blocks_deployable_artifact_with_absolute_path(self):
+    """deployable artifact にローカル絶対パスが混入した commit は exit 2"""
+    _set_pending_findings(self.pending_file, unresolved_count=0)
+    relpath = "learning/workflow/deployment-readiness/bad.json"
+    _stage_file(
+      self.tmpdir,
+      relpath,
+      '{"path": "/Users/Daily/Development/ReviewCompass/config.yaml"}\n',
+    )
+    _write_commit_approval(self.tmpdir, [relpath])
+
+    result = run_script(
+      ["commit", "--rationale", "配置非依存 lint guard のテスト"],
+      cwd=self.tmpdir,
+    )
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 2, result.stdout)
+    self.assertIn("配置非依存", result.stdout)
+    self.assertIn(relpath, result.stdout)
+
   def test_commit_without_user_approval_returns_two(self):
     """ユーザ承認レコードなし → exit 2（逸脱）"""
     _set_pending_findings(self.pending_file, unresolved_count=0)

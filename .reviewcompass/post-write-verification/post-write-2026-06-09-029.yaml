@@ -1,0 +1,48 @@
+status: completed
+target_files:
+- docs/notes/2026-06-09-d020-cross-repository-replication-checklist.md
+- docs/notes/review-runs/postwrite-d020-external-replication-pilot-report-2026-06-09-r1/model-result-summary.yaml
+- docs/notes/review-runs/postwrite-d020-external-replication-pilot-report-2026-06-09-r1/parsed/gemini-3.5-flash.round-1.yaml
+- docs/notes/review-runs/postwrite-d020-external-replication-pilot-report-2026-06-09-r1/raw/gemini-3.5-flash.round-1.txt
+- docs/notes/review-runs/postwrite-d020-external-replication-pilot-report-2026-06-09-r1/review_summary.md
+- docs/notes/review-runs/postwrite-d020-external-replication-pilot-report-2026-06-09-r1/rounds.yaml
+- docs/notes/review-runs/postwrite-d020-external-replication-pilot-report-2026-06-09-r1/target-manifest.yaml
+- docs/notes/review-runs/postwrite-d020-external-replication-pilot-report-2026-06-09-r1/triage.yaml
+target_sha256:
+  docs/notes/2026-06-09-d020-cross-repository-replication-checklist.md: a835fa5431168eaac8f578ec7a1874f19c1c7bca596ebcec8c9ec683824a0e1e
+  docs/notes/review-runs/postwrite-d020-external-replication-pilot-report-2026-06-09-r1/model-result-summary.yaml: de456474e7d4e7f27f84c50ba1fd6e3f8069a8c01d46e1898ff94dc77dc58d0e
+  docs/notes/review-runs/postwrite-d020-external-replication-pilot-report-2026-06-09-r1/parsed/gemini-3.5-flash.round-1.yaml: bd3951d50c7455c4cfa026bd2345faa345e2360e7014b8e1a250f023949c4aba
+  docs/notes/review-runs/postwrite-d020-external-replication-pilot-report-2026-06-09-r1/raw/gemini-3.5-flash.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+  docs/notes/review-runs/postwrite-d020-external-replication-pilot-report-2026-06-09-r1/review_summary.md: d8d60be0b534f1eed2c0bb7edc0f1d658aee48f634a765334dbb632be10213b1
+  docs/notes/review-runs/postwrite-d020-external-replication-pilot-report-2026-06-09-r1/rounds.yaml: c14b55c37f1ff3d2180a1c719565de4409e9c67bb3aa9a905ac644941a0b858d
+  docs/notes/review-runs/postwrite-d020-external-replication-pilot-report-2026-06-09-r1/target-manifest.yaml: 2a5c44d26b8324e317d216d4c07bc20840f87f957dcc8873ba4cc684cb102c76
+  docs/notes/review-runs/postwrite-d020-external-replication-pilot-report-2026-06-09-r1/triage.yaml: abc060fc7dc3269b4fd8c8e581e636ffb994e31d241334d7e362ba1a74555099
+required_verifiers: &id001
+- gemini-3.5-flash
+completed_verifiers: *id001
+unresolved_substantive_findings: 0
+verifications:
+- verifier: gemini-3.5-flash
+  target_files:
+  - docs/notes/2026-06-09-d020-cross-repository-replication-checklist.md
+  - docs/notes/review-runs/postwrite-d020-external-replication-pilot-report-2026-06-09-r1/model-result-summary.yaml
+  - docs/notes/review-runs/postwrite-d020-external-replication-pilot-report-2026-06-09-r1/parsed/gemini-3.5-flash.round-1.yaml
+  - docs/notes/review-runs/postwrite-d020-external-replication-pilot-report-2026-06-09-r1/raw/gemini-3.5-flash.round-1.txt
+  - docs/notes/review-runs/postwrite-d020-external-replication-pilot-report-2026-06-09-r1/review_summary.md
+  - docs/notes/review-runs/postwrite-d020-external-replication-pilot-report-2026-06-09-r1/rounds.yaml
+  - docs/notes/review-runs/postwrite-d020-external-replication-pilot-report-2026-06-09-r1/target-manifest.yaml
+  - docs/notes/review-runs/postwrite-d020-external-replication-pilot-report-2026-06-09-r1/triage.yaml
+  target_sha256:
+    docs/notes/2026-06-09-d020-cross-repository-replication-checklist.md: a835fa5431168eaac8f578ec7a1874f19c1c7bca596ebcec8c9ec683824a0e1e
+    docs/notes/review-runs/postwrite-d020-external-replication-pilot-report-2026-06-09-r1/model-result-summary.yaml: de456474e7d4e7f27f84c50ba1fd6e3f8069a8c01d46e1898ff94dc77dc58d0e
+    docs/notes/review-runs/postwrite-d020-external-replication-pilot-report-2026-06-09-r1/parsed/gemini-3.5-flash.round-1.yaml: bd3951d50c7455c4cfa026bd2345faa345e2360e7014b8e1a250f023949c4aba
+    docs/notes/review-runs/postwrite-d020-external-replication-pilot-report-2026-06-09-r1/raw/gemini-3.5-flash.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/postwrite-d020-external-replication-pilot-report-2026-06-09-r1/review_summary.md: d8d60be0b534f1eed2c0bb7edc0f1d658aee48f634a765334dbb632be10213b1
+    docs/notes/review-runs/postwrite-d020-external-replication-pilot-report-2026-06-09-r1/rounds.yaml: c14b55c37f1ff3d2180a1c719565de4409e9c67bb3aa9a905ac644941a0b858d
+    docs/notes/review-runs/postwrite-d020-external-replication-pilot-report-2026-06-09-r1/target-manifest.yaml: 2a5c44d26b8324e317d216d4c07bc20840f87f957dcc8873ba4cc684cb102c76
+    docs/notes/review-runs/postwrite-d020-external-replication-pilot-report-2026-06-09-r1/triage.yaml: abc060fc7dc3269b4fd8c8e581e636ffb994e31d241334d7e362ba1a74555099
+review_run:
+  path: docs/notes/review-runs/postwrite-d020-external-replication-pilot-report-2026-06-09-r1
+  summary_path: docs/notes/review-runs/postwrite-d020-external-replication-pilot-report-2026-06-09-r1/model-result-summary.yaml
+notes: Generated template; verify target_files cover current post-write targets before
+  use.

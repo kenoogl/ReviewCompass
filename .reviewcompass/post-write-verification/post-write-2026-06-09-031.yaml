@@ -1,0 +1,108 @@
+status: completed
+target_files:
+- docs/notes/2026-06-09-d020-cross-repository-replication-checklist.md
+- docs/notes/2026-06-09-d023-deployment-independence-lint-checklist.md
+- docs/notes/review-runs/postwrite-d020-external-replication-pilot-report-2026-06-09-r1/model-result-summary.yaml
+- docs/notes/review-runs/postwrite-d020-external-replication-pilot-report-2026-06-09-r1/parsed/gemini-3.5-flash.round-1.yaml
+- docs/notes/review-runs/postwrite-d020-external-replication-pilot-report-2026-06-09-r1/raw/gemini-3.5-flash.round-1.txt
+- docs/notes/review-runs/postwrite-d020-external-replication-pilot-report-2026-06-09-r1/review_summary.md
+- docs/notes/review-runs/postwrite-d020-external-replication-pilot-report-2026-06-09-r1/rounds.yaml
+- docs/notes/review-runs/postwrite-d020-external-replication-pilot-report-2026-06-09-r1/target-manifest.yaml
+- docs/notes/review-runs/postwrite-d020-external-replication-pilot-report-2026-06-09-r1/triage.yaml
+- docs/notes/review-runs/postwrite-d023-commit-guard-integration-2026-06-09-r1/model-result-summary.yaml
+- docs/notes/review-runs/postwrite-d023-commit-guard-integration-2026-06-09-r1/parsed/gemini-3.5-flash.round-1.yaml
+- docs/notes/review-runs/postwrite-d023-commit-guard-integration-2026-06-09-r1/raw/gemini-3.5-flash.round-1.txt
+- docs/notes/review-runs/postwrite-d023-commit-guard-integration-2026-06-09-r1/review_summary.md
+- docs/notes/review-runs/postwrite-d023-commit-guard-integration-2026-06-09-r1/rounds.yaml
+- docs/notes/review-runs/postwrite-d023-commit-guard-integration-2026-06-09-r1/target-manifest.yaml
+- docs/notes/review-runs/postwrite-d023-commit-guard-integration-2026-06-09-r1/triage.yaml
+- docs/notes/review-runs/postwrite-d023-commit-guard-integration-2026-06-09-r2/model-result-summary.yaml
+- docs/notes/review-runs/postwrite-d023-commit-guard-integration-2026-06-09-r2/parsed/gemini-3.5-flash.round-1.yaml
+- docs/notes/review-runs/postwrite-d023-commit-guard-integration-2026-06-09-r2/raw/gemini-3.5-flash.round-1.txt
+- docs/notes/review-runs/postwrite-d023-commit-guard-integration-2026-06-09-r2/review_summary.md
+- docs/notes/review-runs/postwrite-d023-commit-guard-integration-2026-06-09-r2/rounds.yaml
+- docs/notes/review-runs/postwrite-d023-commit-guard-integration-2026-06-09-r2/target-manifest.yaml
+- docs/notes/review-runs/postwrite-d023-commit-guard-integration-2026-06-09-r2/triage.yaml
+target_sha256:
+  docs/notes/2026-06-09-d020-cross-repository-replication-checklist.md: a835fa5431168eaac8f578ec7a1874f19c1c7bca596ebcec8c9ec683824a0e1e
+  docs/notes/2026-06-09-d023-deployment-independence-lint-checklist.md: 8d34526b2eff39d52f9572b011b076096f23e2795aa43afd0d20bc90a747f7d1
+  docs/notes/review-runs/postwrite-d020-external-replication-pilot-report-2026-06-09-r1/model-result-summary.yaml: de456474e7d4e7f27f84c50ba1fd6e3f8069a8c01d46e1898ff94dc77dc58d0e
+  docs/notes/review-runs/postwrite-d020-external-replication-pilot-report-2026-06-09-r1/parsed/gemini-3.5-flash.round-1.yaml: bd3951d50c7455c4cfa026bd2345faa345e2360e7014b8e1a250f023949c4aba
+  docs/notes/review-runs/postwrite-d020-external-replication-pilot-report-2026-06-09-r1/raw/gemini-3.5-flash.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+  docs/notes/review-runs/postwrite-d020-external-replication-pilot-report-2026-06-09-r1/review_summary.md: d8d60be0b534f1eed2c0bb7edc0f1d658aee48f634a765334dbb632be10213b1
+  docs/notes/review-runs/postwrite-d020-external-replication-pilot-report-2026-06-09-r1/rounds.yaml: c14b55c37f1ff3d2180a1c719565de4409e9c67bb3aa9a905ac644941a0b858d
+  docs/notes/review-runs/postwrite-d020-external-replication-pilot-report-2026-06-09-r1/target-manifest.yaml: 2a5c44d26b8324e317d216d4c07bc20840f87f957dcc8873ba4cc684cb102c76
+  docs/notes/review-runs/postwrite-d020-external-replication-pilot-report-2026-06-09-r1/triage.yaml: abc060fc7dc3269b4fd8c8e581e636ffb994e31d241334d7e362ba1a74555099
+  docs/notes/review-runs/postwrite-d023-commit-guard-integration-2026-06-09-r1/model-result-summary.yaml: 1ff7e9e427a69e871cbc380257eb67c89861e54f2e25592f7646b9f29e9cac7f
+  docs/notes/review-runs/postwrite-d023-commit-guard-integration-2026-06-09-r1/parsed/gemini-3.5-flash.round-1.yaml: ff80d7d79436d6da6e9c534828932e6fbf0ea351ce48541797777b5be2536235
+  docs/notes/review-runs/postwrite-d023-commit-guard-integration-2026-06-09-r1/raw/gemini-3.5-flash.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+  docs/notes/review-runs/postwrite-d023-commit-guard-integration-2026-06-09-r1/review_summary.md: 28b366ef206fddc43fa19cb7bc95a123d6dae7d431faf07db263956f114ae098
+  docs/notes/review-runs/postwrite-d023-commit-guard-integration-2026-06-09-r1/rounds.yaml: 441c823d06bca9baf97fea739dab6e4b76d0e91f73bb12208ae51bf0df1cf0c2
+  docs/notes/review-runs/postwrite-d023-commit-guard-integration-2026-06-09-r1/target-manifest.yaml: 40674a766b2e504b24f78bf1a21fb07b9f57e9c463606b6e791839eee89c8c8a
+  docs/notes/review-runs/postwrite-d023-commit-guard-integration-2026-06-09-r1/triage.yaml: f943ed4df8e4c1fa4a80d81f1d097510e7c1dab5fd097ae785eb81cb04628977
+  docs/notes/review-runs/postwrite-d023-commit-guard-integration-2026-06-09-r2/model-result-summary.yaml: fcf9a26fe3d5d77c053596c9252e87e02d10879b12ae165d6cd9a6ee8c6203c0
+  docs/notes/review-runs/postwrite-d023-commit-guard-integration-2026-06-09-r2/parsed/gemini-3.5-flash.round-1.yaml: 694743f945eaab3843f726421c091c28c14d2c6bb23a338337b73f6dd4f18443
+  docs/notes/review-runs/postwrite-d023-commit-guard-integration-2026-06-09-r2/raw/gemini-3.5-flash.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+  docs/notes/review-runs/postwrite-d023-commit-guard-integration-2026-06-09-r2/review_summary.md: d14b625a27b9aadeabb7bafc7c5b7a62976ac63fe76b7e7b11a2312de7812ddc
+  docs/notes/review-runs/postwrite-d023-commit-guard-integration-2026-06-09-r2/rounds.yaml: 4fee24f2afec9d5075cdd0786acc0cf7a11ffa4a7dc56277fdea45a56eaa7bbb
+  docs/notes/review-runs/postwrite-d023-commit-guard-integration-2026-06-09-r2/target-manifest.yaml: 5b880d0e33d587f3fe0b0e05ecb16df2acfbf6a4dffa6f77360a2e0cd15627d0
+  docs/notes/review-runs/postwrite-d023-commit-guard-integration-2026-06-09-r2/triage.yaml: e237c0fb2352aaa55a4f78c7f4827c1250fb8495ef9d354442b5168cda7a00ed
+required_verifiers: &id001
+- gemini-3.5-flash
+completed_verifiers: *id001
+unresolved_substantive_findings: 0
+verifications:
+- verifier: gemini-3.5-flash
+  target_files:
+  - docs/notes/2026-06-09-d020-cross-repository-replication-checklist.md
+  - docs/notes/2026-06-09-d023-deployment-independence-lint-checklist.md
+  - docs/notes/review-runs/postwrite-d020-external-replication-pilot-report-2026-06-09-r1/model-result-summary.yaml
+  - docs/notes/review-runs/postwrite-d020-external-replication-pilot-report-2026-06-09-r1/parsed/gemini-3.5-flash.round-1.yaml
+  - docs/notes/review-runs/postwrite-d020-external-replication-pilot-report-2026-06-09-r1/raw/gemini-3.5-flash.round-1.txt
+  - docs/notes/review-runs/postwrite-d020-external-replication-pilot-report-2026-06-09-r1/review_summary.md
+  - docs/notes/review-runs/postwrite-d020-external-replication-pilot-report-2026-06-09-r1/rounds.yaml
+  - docs/notes/review-runs/postwrite-d020-external-replication-pilot-report-2026-06-09-r1/target-manifest.yaml
+  - docs/notes/review-runs/postwrite-d020-external-replication-pilot-report-2026-06-09-r1/triage.yaml
+  - docs/notes/review-runs/postwrite-d023-commit-guard-integration-2026-06-09-r1/model-result-summary.yaml
+  - docs/notes/review-runs/postwrite-d023-commit-guard-integration-2026-06-09-r1/parsed/gemini-3.5-flash.round-1.yaml
+  - docs/notes/review-runs/postwrite-d023-commit-guard-integration-2026-06-09-r1/raw/gemini-3.5-flash.round-1.txt
+  - docs/notes/review-runs/postwrite-d023-commit-guard-integration-2026-06-09-r1/review_summary.md
+  - docs/notes/review-runs/postwrite-d023-commit-guard-integration-2026-06-09-r1/rounds.yaml
+  - docs/notes/review-runs/postwrite-d023-commit-guard-integration-2026-06-09-r1/target-manifest.yaml
+  - docs/notes/review-runs/postwrite-d023-commit-guard-integration-2026-06-09-r1/triage.yaml
+  - docs/notes/review-runs/postwrite-d023-commit-guard-integration-2026-06-09-r2/model-result-summary.yaml
+  - docs/notes/review-runs/postwrite-d023-commit-guard-integration-2026-06-09-r2/parsed/gemini-3.5-flash.round-1.yaml
+  - docs/notes/review-runs/postwrite-d023-commit-guard-integration-2026-06-09-r2/raw/gemini-3.5-flash.round-1.txt
+  - docs/notes/review-runs/postwrite-d023-commit-guard-integration-2026-06-09-r2/review_summary.md
+  - docs/notes/review-runs/postwrite-d023-commit-guard-integration-2026-06-09-r2/rounds.yaml
+  - docs/notes/review-runs/postwrite-d023-commit-guard-integration-2026-06-09-r2/target-manifest.yaml
+  - docs/notes/review-runs/postwrite-d023-commit-guard-integration-2026-06-09-r2/triage.yaml
+  target_sha256:
+    docs/notes/2026-06-09-d020-cross-repository-replication-checklist.md: a835fa5431168eaac8f578ec7a1874f19c1c7bca596ebcec8c9ec683824a0e1e
+    docs/notes/2026-06-09-d023-deployment-independence-lint-checklist.md: 8d34526b2eff39d52f9572b011b076096f23e2795aa43afd0d20bc90a747f7d1
+    docs/notes/review-runs/postwrite-d020-external-replication-pilot-report-2026-06-09-r1/model-result-summary.yaml: de456474e7d4e7f27f84c50ba1fd6e3f8069a8c01d46e1898ff94dc77dc58d0e
+    docs/notes/review-runs/postwrite-d020-external-replication-pilot-report-2026-06-09-r1/parsed/gemini-3.5-flash.round-1.yaml: bd3951d50c7455c4cfa026bd2345faa345e2360e7014b8e1a250f023949c4aba
+    docs/notes/review-runs/postwrite-d020-external-replication-pilot-report-2026-06-09-r1/raw/gemini-3.5-flash.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/postwrite-d020-external-replication-pilot-report-2026-06-09-r1/review_summary.md: d8d60be0b534f1eed2c0bb7edc0f1d658aee48f634a765334dbb632be10213b1
+    docs/notes/review-runs/postwrite-d020-external-replication-pilot-report-2026-06-09-r1/rounds.yaml: c14b55c37f1ff3d2180a1c719565de4409e9c67bb3aa9a905ac644941a0b858d
+    docs/notes/review-runs/postwrite-d020-external-replication-pilot-report-2026-06-09-r1/target-manifest.yaml: 2a5c44d26b8324e317d216d4c07bc20840f87f957dcc8873ba4cc684cb102c76
+    docs/notes/review-runs/postwrite-d020-external-replication-pilot-report-2026-06-09-r1/triage.yaml: abc060fc7dc3269b4fd8c8e581e636ffb994e31d241334d7e362ba1a74555099
+    docs/notes/review-runs/postwrite-d023-commit-guard-integration-2026-06-09-r1/model-result-summary.yaml: 1ff7e9e427a69e871cbc380257eb67c89861e54f2e25592f7646b9f29e9cac7f
+    docs/notes/review-runs/postwrite-d023-commit-guard-integration-2026-06-09-r1/parsed/gemini-3.5-flash.round-1.yaml: ff80d7d79436d6da6e9c534828932e6fbf0ea351ce48541797777b5be2536235
+    docs/notes/review-runs/postwrite-d023-commit-guard-integration-2026-06-09-r1/raw/gemini-3.5-flash.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/postwrite-d023-commit-guard-integration-2026-06-09-r1/review_summary.md: 28b366ef206fddc43fa19cb7bc95a123d6dae7d431faf07db263956f114ae098
+    docs/notes/review-runs/postwrite-d023-commit-guard-integration-2026-06-09-r1/rounds.yaml: 441c823d06bca9baf97fea739dab6e4b76d0e91f73bb12208ae51bf0df1cf0c2
+    docs/notes/review-runs/postwrite-d023-commit-guard-integration-2026-06-09-r1/target-manifest.yaml: 40674a766b2e504b24f78bf1a21fb07b9f57e9c463606b6e791839eee89c8c8a
+    docs/notes/review-runs/postwrite-d023-commit-guard-integration-2026-06-09-r1/triage.yaml: f943ed4df8e4c1fa4a80d81f1d097510e7c1dab5fd097ae785eb81cb04628977
+    docs/notes/review-runs/postwrite-d023-commit-guard-integration-2026-06-09-r2/model-result-summary.yaml: fcf9a26fe3d5d77c053596c9252e87e02d10879b12ae165d6cd9a6ee8c6203c0
+    docs/notes/review-runs/postwrite-d023-commit-guard-integration-2026-06-09-r2/parsed/gemini-3.5-flash.round-1.yaml: 694743f945eaab3843f726421c091c28c14d2c6bb23a338337b73f6dd4f18443
+    docs/notes/review-runs/postwrite-d023-commit-guard-integration-2026-06-09-r2/raw/gemini-3.5-flash.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/postwrite-d023-commit-guard-integration-2026-06-09-r2/review_summary.md: d14b625a27b9aadeabb7bafc7c5b7a62976ac63fe76b7e7b11a2312de7812ddc
+    docs/notes/review-runs/postwrite-d023-commit-guard-integration-2026-06-09-r2/rounds.yaml: 4fee24f2afec9d5075cdd0786acc0cf7a11ffa4a7dc56277fdea45a56eaa7bbb
+    docs/notes/review-runs/postwrite-d023-commit-guard-integration-2026-06-09-r2/target-manifest.yaml: 5b880d0e33d587f3fe0b0e05ecb16df2acfbf6a4dffa6f77360a2e0cd15627d0
+    docs/notes/review-runs/postwrite-d023-commit-guard-integration-2026-06-09-r2/triage.yaml: e237c0fb2352aaa55a4f78c7f4827c1250fb8495ef9d354442b5168cda7a00ed
+review_run:
+  path: docs/notes/review-runs/postwrite-d023-commit-guard-integration-2026-06-09-r2
+  summary_path: docs/notes/review-runs/postwrite-d023-commit-guard-integration-2026-06-09-r2/model-result-summary.yaml
+notes: Generated template; verify target_files cover current post-write targets before
+  use.

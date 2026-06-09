@@ -43,6 +43,7 @@ repository item の必須 field:
 | Field | Required | Purpose |
 | --- | --- | --- |
 | `repository_id` | yes | repository 識別子。 |
+| `repository_origin` | yes | fixture / external git の由来、remote URL、確認済み HEAD。 |
 | `repository_profile` | yes | language、size、既存 test/spec 有無。 |
 | `implementation_tasks` | yes | 各 repo で 1 件以上の実装 task。 |
 | `deployment_smoke` | yes | 配置 smoke の status / command / evidence。 |
@@ -61,7 +62,8 @@ repository item の必須 field:
 - [x] absolute `source_ref` を拒否するテストを追加した。
 - [x] post-write verification を実施する。
 - [x] fixture 2 repository の pilot report を追加し、schema 適合と stable deploy candidate 条件をテストで確認した。
-- [ ] 実外部 repository 2 件の pilot report を取得する。
+- [x] 実外部 repository 2 件の pilot report を取得する。
+- [x] 外部 git repository の remote URL と確認済み HEAD を `repository_origin` として記録する。
 
 ## 4. Deployment Gate
 
@@ -75,7 +77,7 @@ D-020 schema 固定後の deployability 判定:
 | D-008 dogfooding event ledger | schema ready | event ledger の記録形式は固定済み。 |
 | D-019 model assignment / cost | schema ready | elapsed time / retry / cost missing を含む記録形式は固定済み。 |
 | D-025 TDD cycle evidence | schema ready | review finding から failing test、green result までの記録形式は固定済み。 |
-| D-020 replication pilot | fixture pilot passed, external pilot not run | fixture 2 repo の同一 schema 比較は通過。実外部 repo pilot は未完了。 |
+| D-020 replication pilot | external pilot passed | fixture 2 repo と実外部 2 repo の同一 schema 比較は通過。 |
 
 安定デプロイ可能と判断できる時点:
 
@@ -89,27 +91,34 @@ D-020 schema 固定後の deployability 判定:
 - `learning/workflow/replication-pilots/2026-06-09-fixture-replication-pilot.json` は 2 repository を含む。
 - 両 repository で deployment smoke、data acquisition run、analysis import は `passed`。
 - `summary.blocking_gap_refs` は空で、fixture scope では stable deploy candidate として扱える。
-- 実外部 repository での再現性は未確認のため、外部配布前の follow-up として残す。
+
+2026-06-09 external pilot 判定:
+
+- `learning/workflow/replication-pilots/2026-06-09-external-replication-pilot.json` は 2 external git repository を含む。
+- `octocat/Hello-World` と `pallets/markupsafe` は `git ls-remote` と shallow clone で HEAD を確認済み。
+- 両 repository で deployment smoke、data acquisition run、analysis import は `passed`。
+- `summary.blocking_gap_refs` は空で、D-020 scope では stable deploy candidate として扱える。
 
 ## 5. Scope Boundary
 
-今回の追加作業では、fixture repository 2 件相当の pilot report を作成する。実外部 repository の checkout、外部環境での API review-run、外部対象 repo への配置作業は行わない。
+今回の追加作業では、実外部 repository 2 件の到達性、shallow clone、HEAD 確認、profile 取得、同一 schema import を pilot report に記録する。外部対象 repo へのコード変更や、外部 repo 内での ReviewCompass 専用ファイル生成は行わない。
 
 理由:
 
-- D-020 の deployability 判定を前進させる最小単位は、同一 schema で 2 repo の deployment / acquisition / import 結果を比較できる fixture report を固定することである。
-- 実外部 repository の選定と環境差分は、fixture pilot が緑になった後に独立した外部 pilot execution task として扱う方が証跡を分離しやすい。
+- D-020 の deployability 判定に必要な最小単位は、同一 schema で 2 external repository の deployment / acquisition / import 結果を比較できる report を固定することである。
+- 外部 repo への変更適用や API review-run は、安定デプロイ候補の次段で扱う方が影響範囲を限定しやすい。
 
 ## 6. Fixture Pilot Evidence
 
 | Evidence | Result |
 | --- | --- |
 | `tests/learning/test_replication_pilot_schema.py::test_fixture_replication_pilot_report_is_stable_deploy_candidate` | fixture report が schema 適合し、2 repo とも 3 結果 passed であることを確認する。 |
+| `tests/learning/test_replication_pilot_schema.py::test_external_replication_pilot_report_records_two_real_repository_heads` | external report が schema 適合し、2 repo とも remote URL / 40 桁 HEAD / 3 結果 passed を持つことを確認する。 |
 | `tests/tools/test_check_workflow_action.py::NextNavigationTests::test_next_completed_from_external_app_root_fixture` | ReviewCompass repo 外の app root で workflow navigation が completed 判定でき、本体 repo state を変更しないことを確認する。 |
 
 ## 7. Status Snapshot
 
 - `next --json`: `completed`
-- current task: D-020 fixture replication pilot report implemented
-- next task: D-020 external repository pilot selection and execution evidence
-- last status refresh: 2026-06-09, after fixture pilot report tests
+- current task: D-020 external repository pilot report implemented
+- next task: stable deploy readiness final gate or D-023 commit/push guard integration decision
+- last status refresh: 2026-06-09, after external pilot report tests

@@ -1,0 +1,4 @@
+run_id: postwrite-d023-commit-guard-integration-2026-06-09-r2
+target_files:
+- path: docs/notes/2026-06-09-d023-deployment-independence-lint-checklist.md
+  sha256: 8d34526b2eff39d52f9572b011b076096f23e2795aa43afd0d20bc90a747f7d1

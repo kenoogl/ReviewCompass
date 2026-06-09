@@ -36,6 +36,70 @@
         "model_assignment_cost"
       ]
     },
+    "repositoryOrigin": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "origin_type"
+      ],
+      "properties": {
+        "origin_type": {
+          "type": "string",
+          "enum": [
+            "fixture",
+            "external_git"
+          ]
+        },
+        "source_ref": {
+          "$ref": "#/$defs/relativePath"
+        },
+        "remote_url": {
+          "type": "string",
+          "pattern": "^https://"
+        },
+        "resolved_head": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{40}$"
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "origin_type": {
+                "const": "fixture"
+              }
+            },
+            "required": [
+              "origin_type"
+            ]
+          },
+          "then": {
+            "required": [
+              "source_ref"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "origin_type": {
+                "const": "external_git"
+              }
+            },
+            "required": [
+              "origin_type"
+            ]
+          },
+          "then": {
+            "required": [
+              "remote_url",
+              "resolved_head"
+            ]
+          }
+        }
+      ]
+    },
     "runResult": {
       "type": "object",
       "additionalProperties": false,
@@ -106,6 +170,7 @@
         "additionalProperties": false,
         "required": [
           "repository_id",
+          "repository_origin",
           "repository_profile",
           "implementation_tasks",
           "deployment_smoke",
@@ -116,6 +181,9 @@
           "repository_id": {
             "type": "string",
             "minLength": 1
+          },
+          "repository_origin": {
+            "$ref": "#/$defs/repositoryOrigin"
           },
           "repository_profile": {
             "type": "object",

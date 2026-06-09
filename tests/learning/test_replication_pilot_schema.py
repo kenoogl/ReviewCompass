@@ -13,6 +13,13 @@ FIXTURE_REPORT_PATH = (
   / "replication-pilots"
   / "2026-06-09-fixture-replication-pilot.json"
 )
+EXTERNAL_REPORT_PATH = (
+  REPO_ROOT
+  / "learning"
+  / "workflow"
+  / "replication-pilots"
+  / "2026-06-09-external-replication-pilot.json"
+)
 
 REQUIRED_FIELDS = [
   "record_type",
@@ -26,6 +33,7 @@ REQUIRED_FIELDS = [
 
 REQUIRED_REPOSITORY_FIELDS = [
   "repository_id",
+  "repository_origin",
   "repository_profile",
   "implementation_tasks",
   "deployment_smoke",
@@ -42,9 +50,17 @@ def _load_fixture_report():
   return json.loads(FIXTURE_REPORT_PATH.read_text(encoding="utf-8"))
 
 
+def _load_external_report():
+  return json.loads(EXTERNAL_REPORT_PATH.read_text(encoding="utf-8"))
+
+
 def _repository(repository_id):
   return {
     "repository_id": repository_id,
+    "repository_origin": {
+      "origin_type": "fixture",
+      "source_ref": f"tests/fixtures/{repository_id}"
+    },
     "repository_profile": {
       "language": "python",
       "size_class": "small",
@@ -192,6 +208,26 @@ def test_fixture_replication_pilot_report_is_stable_deploy_candidate():
   assert report["summary"]["blocking_gap_refs"] == []
 
   for repository in report["repositories"]:
+    assert repository["deployment_smoke"]["status"] == "passed"
+    assert repository["data_acquisition_run"]["status"] == "passed"
+    assert repository["analysis_import"]["status"] == "passed"
+
+
+def test_external_replication_pilot_report_records_two_real_repository_heads():
+  schema = _load_schema()
+  report = _load_external_report()
+
+  Draft202012Validator(schema).validate(report)
+
+  assert report["summary"]["pilot_status"] == "pilot_passed"
+  assert report["summary"]["blocking_gap_refs"] == []
+  assert len(report["repositories"]) >= 2
+
+  for repository in report["repositories"]:
+    origin = repository["repository_origin"]
+    assert origin["origin_type"] == "external_git"
+    assert origin["remote_url"].startswith("https://github.com/")
+    assert len(origin["resolved_head"]) == 40
     assert repository["deployment_smoke"]["status"] == "passed"
     assert repository["data_acquisition_run"]["status"] == "passed"
     assert repository["analysis_import"]["status"] == "passed"

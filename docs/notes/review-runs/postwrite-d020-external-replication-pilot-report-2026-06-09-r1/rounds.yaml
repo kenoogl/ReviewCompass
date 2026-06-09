@@ -1,0 +1,26 @@
+round_id: round-1
+purpose: post_write_verification
+invocation_timestamp: '2026-06-09T07:24:49.673796+00:00'
+target_files:
+- path: docs/notes/2026-06-09-d020-cross-repository-replication-checklist.md
+  sha256: a835fa5431168eaac8f578ec7a1874f19c1c7bca596ebcec8c9ec683824a0e1e
+criteria: d020_external_replication_pilot_report_scope
+prompt_sha256: 7cb9a4b39551f65f9e1ec4a3326104a7a065f52132b8fa91652c647a9ed3c1af
+model_results:
+- model_id: gemini-3.5-flash
+  provider: gemini-api
+  role: primary
+  treatment: primary
+  invocation_path: api
+  raw_path: raw/gemini-3.5-flash.round-1.txt
+  raw_sha256: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+  parsed_path: parsed/gemini-3.5-flash.round-1.yaml
+  parsed_sha256: bd3951d50c7455c4cfa026bd2345faa345e2360e7014b8e1a250f023949c4aba
+  parse_status: parsed
+  formatted_by: parser
+  formatted_by_actor_type: orchestrator
+  formatted_by_actor: run_role.py
+  formatted_at: '2026-06-09T07:24:49.673796+00:00'
+  follow_up_action: triage
+  attempts: 1
+  duration_seconds: 7.192
