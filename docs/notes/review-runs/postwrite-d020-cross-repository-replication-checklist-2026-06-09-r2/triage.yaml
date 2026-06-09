@@ -1,0 +1,44 @@
+run_id: postwrite-d020-cross-repository-replication-checklist-2026-06-09-r2
+triage_status: decided
+generated_at: '2026-06-09T06:45:57.235575+00:00'
+decision_actor: null
+decision_actor_type: human
+items:
+- finding_id: postwrite-d020-cross-repository-replication-checklist-2026-06-09-r2-gemini-3.5-flash-primary-001
+  run_id: postwrite-d020-cross-repository-replication-checklist-2026-06-09-r2
+  source_model: gemini-3.5-flash
+  source_round: round-1
+  source_raw_path: raw/gemini-3.5-flash.round-1.txt
+  source_parsed_path: parsed/gemini-3.5-flash.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: '## 4. Deployment Gate'
+  plain_language_summary: D-025 schema is omitted from the Deployment Gate table,
+    despite being listed as part of the comparison schema in Section 1.
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: main_session_llm
+  decision_actor_type: agent
+  decision_at: '2026-06-09T06:46:35.685673+00:00'
+  decision_reason: D-025 は comparison schema の構成要素であり、Deployment Gate にも明示する必要があるため反映した。
+  applied_files: []
+  superseded_by: null
+- finding_id: postwrite-d020-cross-repository-replication-checklist-2026-06-09-r2-gemini-3.5-flash-primary-002
+  run_id: postwrite-d020-cross-repository-replication-checklist-2026-06-09-r2
+  source_model: gemini-3.5-flash
+  source_round: round-1
+  source_raw_path: raw/gemini-3.5-flash.round-1.txt
+  source_parsed_path: parsed/gemini-3.5-flash.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: '## 6. Status Snapshot'
+  plain_language_summary: The last status refresh description refers to 'r1' instead
+    of the current 'r2' round.
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: main_session_llm
+  decision_actor_type: agent
+  decision_at: '2026-06-09T06:46:35.690769+00:00'
+  decision_reason: Status Snapshot の検証 round 表記は現在の反映状態に合わせる必要があるため r2 に更新した。
+  applied_files: []
+  superseded_by: null

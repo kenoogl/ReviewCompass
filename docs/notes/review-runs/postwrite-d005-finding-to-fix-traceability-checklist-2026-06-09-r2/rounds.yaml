@@ -1,0 +1,26 @@
+round_id: round-1
+purpose: post_write_verification
+invocation_timestamp: '2026-06-09T06:26:08.018875+00:00'
+target_files:
+- path: docs/notes/2026-06-09-d005-finding-to-fix-traceability-checklist.md
+  sha256: 10813f86889a44f01b658906809fbb975ce79413c203709b5a9e83ae4eb82618
+criteria: d005_finding_to_fix_traceability_checklist
+prompt_sha256: 51a1e1f892b244d67207efe6403afacbc25244994c22a76773e76435111f8044
+model_results:
+- model_id: gemini-3.5-flash
+  provider: gemini-api
+  role: primary
+  treatment: primary
+  invocation_path: api
+  raw_path: raw/gemini-3.5-flash.round-1.txt
+  raw_sha256: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+  parsed_path: parsed/gemini-3.5-flash.round-1.yaml
+  parsed_sha256: 382e198fa65bea734b03ec450dd6cb0115faee05e66c063942fe2d978fd55220
+  parse_status: parsed
+  formatted_by: parser
+  formatted_by_actor_type: orchestrator
+  formatted_by_actor: run_role.py
+  formatted_at: '2026-06-09T06:26:08.018875+00:00'
+  follow_up_action: triage
+  attempts: 1
+  duration_seconds: 3.89

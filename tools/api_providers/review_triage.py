@@ -718,6 +718,7 @@ def assert_review_report_ready(
     if not (run_dir / relpath).is_file():
       errors.append(f"required artifact missing: {relpath}")
 
+  triage = _load_yaml_dict(run_dir / "triage.yaml")
   cluster_ids = []
   clusters_path = run_dir / "must-fix-clusters.yaml"
   proxy_summary_path = run_dir / "proxy-decision-summary.md"
@@ -813,6 +814,7 @@ def assert_review_report_ready(
     errors.append(f"required artifact missing: {Path(ledger_path).name}")
   else:
     errors.extend(_autonomous_ledger_errors(ledger))
+    errors.extend(_finding_fix_traceability_errors(triage, ledger))
 
   if errors:
     raise ValueError("; ".join(errors))
@@ -854,6 +856,72 @@ def _autonomous_ledger_errors(ledger: Dict[str, Any]) -> List[str]:
   return errors
 
 
+def _accepted_finding_ids(triage: Dict[str, Any]) -> List[str]:
+  """修正追跡が必要な accepted finding ids を返す。"""
+  items = triage.get("items")
+  if not isinstance(items, list):
+    return []
+  finding_ids = []
+  for item in items:
+    if not isinstance(item, dict):
+      continue
+    finding_id = item.get("finding_id")
+    if (
+      isinstance(finding_id, str)
+      and finding_id
+      and item.get("decision_status") == "decided"
+      and item.get("final_label") in FIX_LABELS
+    ):
+      finding_ids.append(finding_id)
+  return sorted(set(finding_ids))
+
+
+def _finding_fix_traceability_errors(
+  triage: Dict[str, Any],
+  ledger: Dict[str, Any],
+) -> List[str]:
+  """accepted finding と fix/test/commit trace の対応を検査する。"""
+  accepted_ids = _accepted_finding_ids(triage)
+  if not accepted_ids:
+    return []
+
+  traces = ledger.get("finding_fix_traceability")
+  if not isinstance(traces, list):
+    return ["ledger.finding_fix_traceability is required"]
+
+  by_finding = {}
+  errors = []
+  for index, trace in enumerate(traces, start=1):
+    if not isinstance(trace, dict):
+      errors.append(f"finding_fix_traceability[{index}] must be a mapping")
+      continue
+    finding_id = trace.get("finding_id")
+    if not isinstance(finding_id, str) or not finding_id:
+      errors.append(f"finding_fix_traceability[{index}].finding_id is required")
+      continue
+    by_finding[finding_id] = trace
+
+  for finding_id in accepted_ids:
+    trace = by_finding.get(finding_id)
+    if not isinstance(trace, dict):
+      errors.append(f"finding_fix_traceability missing finding: {finding_id}")
+      continue
+    resolution_commit = trace.get("resolution_commit")
+    if not isinstance(resolution_commit, str) or not resolution_commit.strip():
+      errors.append(f"{finding_id}: resolution_commit is required")
+    changed_files = trace.get("changed_files")
+    if not isinstance(changed_files, list) or not changed_files:
+      errors.append(f"{finding_id}: changed_files is required")
+    elif not all(isinstance(path, str) and path.strip() for path in changed_files):
+      errors.append(f"{finding_id}: changed_files must contain paths")
+    test_refs = trace.get("test_refs")
+    if not isinstance(test_refs, list) or not test_refs:
+      errors.append(f"{finding_id}: test_refs is required")
+    elif not all(isinstance(path, str) and path.strip() for path in test_refs):
+      errors.append(f"{finding_id}: test_refs must contain paths")
+  return errors
+
+
 def write_manifest(
   review_run_dir: str,
   out_path: str,
@@ -889,6 +957,13 @@ def _markdown_table(headers: List[str], rows: List[List[Any]]) -> List[str]:
   return lines
 
 
+def _joined_list(value: Any) -> str:
+  """Markdown table 向けに list 値を改行なし文字列へ変換する。"""
+  if isinstance(value, list):
+    return "<br>".join(str(item) for item in value)
+  return "" if value is None else str(value)
+
+
 def build_review_traceability_report(review_run_dir: str, ledger_path: str) -> str:
   """review-run の主要証跡を 1 枚の Markdown report にまとめる。"""
   run_dir = Path(review_run_dir)
@@ -911,6 +986,11 @@ def build_review_traceability_report(review_run_dir: str, ledger_path: str) -> s
   integration_result = ledger.get("integration_result", {})
   if not isinstance(integration_result, dict):
     integration_result = {}
+  fix_traces = (
+    ledger.get("finding_fix_traceability")
+    if isinstance(ledger.get("finding_fix_traceability"), list)
+    else []
+  )
 
   lines = [
     f"# Review Run Traceability Report: {run_dir.name}",
@@ -1004,6 +1084,22 @@ def build_review_traceability_report(review_run_dir: str, ledger_path: str) -> s
       "",
       "Proxy decision summary: proxy-decision-summary.md",
     ])
+
+  lines.extend(["", "## Finding-to-Fix Matrix"])
+  fix_rows = []
+  for trace in fix_traces:
+    if not isinstance(trace, dict):
+      continue
+    fix_rows.append([
+      trace.get("finding_id", ""),
+      trace.get("resolution_commit", ""),
+      _joined_list(trace.get("changed_files", [])),
+      _joined_list(trace.get("test_refs", [])),
+    ])
+  lines.extend(_markdown_table(
+    ["finding_id", "resolution_commit", "changed_files", "test_refs"],
+    fix_rows,
+  ))
 
   lines.extend([
     "",

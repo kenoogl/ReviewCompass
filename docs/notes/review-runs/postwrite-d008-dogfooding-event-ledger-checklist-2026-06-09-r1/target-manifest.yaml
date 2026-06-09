@@ -1,0 +1,4 @@
+run_id: postwrite-d008-dogfooding-event-ledger-checklist-2026-06-09-r1
+target_files:
+- path: docs/notes/2026-06-09-d008-dogfooding-event-ledger-checklist.md
+  sha256: c37839fe1ba17b2a1f7e98a2cbf1b24e694bf788ad64e20271b4337997f5ffce

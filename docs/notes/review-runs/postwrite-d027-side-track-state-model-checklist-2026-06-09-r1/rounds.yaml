@@ -1,0 +1,26 @@
+round_id: round-1
+purpose: post_write_verification
+invocation_timestamp: '2026-06-09T06:31:13.489916+00:00'
+target_files:
+- path: docs/notes/2026-06-09-d027-side-track-state-model-checklist.md
+  sha256: 07bcb4b41a9c2b011659f237dd076b11df27e616f451c8bd7cca55eb917b7ad9
+criteria: d027_side_track_state_model_checklist
+prompt_sha256: 8440160ed25f84e8a1aa3bfccbad404293d5f71d3cfd147612e0c34b13bbcbfc
+model_results:
+- model_id: gemini-3.5-flash
+  provider: gemini-api
+  role: primary
+  treatment: primary
+  invocation_path: api
+  raw_path: raw/gemini-3.5-flash.round-1.txt
+  raw_sha256: aa8f22fc2d43f5bab03dd1cd1b3345a896a929857f390c862390af5c40e3f86a
+  parsed_path: parsed/gemini-3.5-flash.round-1.yaml
+  parsed_sha256: 4b9a3e111ab728c93818f26f6aa2fb40af78cded98e0812a16caa2fe0b188a5d
+  parse_status: parsed
+  formatted_by: parser
+  formatted_by_actor_type: orchestrator
+  formatted_by_actor: run_role.py
+  formatted_at: '2026-06-09T06:31:13.489916+00:00'
+  follow_up_action: triage
+  attempts: 1
+  duration_seconds: 9.832

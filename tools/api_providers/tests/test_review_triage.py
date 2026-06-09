@@ -995,6 +995,36 @@ def test_assert_review_report_ready_requires_ledger_execution_snapshot(
   assert "ledger.execution_evidence_snapshot" in captured.err
 
 
+def test_assert_review_report_ready_requires_finding_fix_traceability(
+  tmp_path,
+  capsys,
+):
+  """accepted finding は commit / tests / changed_files の trace を要求する。"""
+  run_dir = _write_review_run(tmp_path)
+  report_path, ledger_path = _write_autonomous_report_artifacts(run_dir)
+  triage_path = run_dir / "triage.yaml"
+  triage = yaml.safe_load(triage_path.read_text(encoding="utf-8"))
+  triage["items"][0]["decision_status"] = "decided"
+  triage["items"][0]["final_label"] = "must-fix"
+  triage_path.write_text(
+    yaml.safe_dump(triage, allow_unicode=True, sort_keys=False),
+    encoding="utf-8",
+  )
+
+  exit_code = main(
+    [
+      "assert-review-report-ready",
+      "--review-run-dir", str(run_dir),
+      "--report-path", str(report_path),
+      "--ledger-path", str(ledger_path),
+    ]
+  )
+
+  assert exit_code == 1
+  captured = capsys.readouterr()
+  assert "ledger.finding_fix_traceability is required" in captured.err
+
+
 def test_assert_review_report_ready_requires_report_artifacts(tmp_path, capsys):
   """自動実行テスト報告の成果物が不足していれば fail-closed する。"""
   run_dir = _write_review_run(tmp_path)
@@ -1037,8 +1067,29 @@ def test_generate_review_report_writes_single_traceability_report(tmp_path, caps
   """review-run の raw/triage/重要所見/採用案/実装結果を一枚の report にまとめる。"""
   run_dir = _write_review_run(tmp_path)
   _write_autonomous_report_artifacts(run_dir)
-  output_path = run_dir / "generated-review-report.md"
+  triage_path = run_dir / "triage.yaml"
+  triage = yaml.safe_load(triage_path.read_text(encoding="utf-8"))
+  triage["items"][0]["decision_status"] = "decided"
+  triage["items"][0]["final_label"] = "must-fix"
+  triage_path.write_text(
+    yaml.safe_dump(triage, allow_unicode=True, sort_keys=False),
+    encoding="utf-8",
+  )
   ledger_path = run_dir / "autonomous-ledger.yaml"
+  ledger = yaml.safe_load(ledger_path.read_text(encoding="utf-8"))
+  ledger["finding_fix_traceability"] = [
+    {
+      "finding_id": "finding-001",
+      "resolution_commit": "fc30479",
+      "changed_files": ["tools/check-workflow-action.py"],
+      "test_refs": ["tests/tools/test_check_workflow_action.py"],
+    },
+  ]
+  ledger_path.write_text(
+    yaml.safe_dump(ledger, allow_unicode=True, sort_keys=False),
+    encoding="utf-8",
+  )
+  output_path = run_dir / "generated-review-report.md"
 
   exit_code = main(
     [
@@ -1064,6 +1115,10 @@ def test_generate_review_report_writes_single_traceability_report(tmp_path, caps
   assert "WM-IMPL-MF-001" in text
   assert "## Adopted Options" in text
   assert "option A" in text
+  assert "## Finding-to-Fix Matrix" in text
+  assert "finding-001" in text
+  assert "fc30479" in text
+  assert "tests/tools/test_check_workflow_action.py" in text
   assert "## Implementation Result" in text
   assert "accepted" in text
 

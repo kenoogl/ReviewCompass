@@ -1,0 +1,9 @@
+findings:
+  - severity: WARN
+    target_location: "## 4. Deployment Gate"
+    description: "D-025 schema is omitted from the Deployment Gate table, despite being listed as part of the comparison schema in Section 1."
+    rationale: "Section 1 states that D-004, D-005, D-008, D-019, and D-025 schemas are part of the comparison schema. However, Section 4's Deployment Gate table only lists D-004, D-005, D-008, and D-019. Adding D-025 to the gate table ensures all relevant schemas have their deployment readiness tracked."
+  - severity: INFO
+    target_location: "## 6. Status Snapshot"
+    description: "The last status refresh description refers to 'r1' instead of the current 'r2' round."
+    rationale: "Updating the snapshot to reflect 'after post-write verification r2' maintains accurate document history."

@@ -1,0 +1,144 @@
+status: completed
+target_files:
+- docs/notes/2026-06-09-d004-normalized-finding-schema-checklist.md
+- docs/notes/2026-06-09-d005-finding-to-fix-traceability-checklist.md
+- docs/notes/review-runs/postwrite-d004-normalized-finding-schema-checklist-2026-06-09-r1/model-result-summary.yaml
+- docs/notes/review-runs/postwrite-d004-normalized-finding-schema-checklist-2026-06-09-r1/parsed/gemini-3.5-flash.round-1.yaml
+- docs/notes/review-runs/postwrite-d004-normalized-finding-schema-checklist-2026-06-09-r1/raw/gemini-3.5-flash.round-1.txt
+- docs/notes/review-runs/postwrite-d004-normalized-finding-schema-checklist-2026-06-09-r1/review_summary.md
+- docs/notes/review-runs/postwrite-d004-normalized-finding-schema-checklist-2026-06-09-r1/rounds.yaml
+- docs/notes/review-runs/postwrite-d004-normalized-finding-schema-checklist-2026-06-09-r1/target-manifest.yaml
+- docs/notes/review-runs/postwrite-d004-normalized-finding-schema-checklist-2026-06-09-r1/triage.yaml
+- docs/notes/review-runs/postwrite-d004-normalized-finding-schema-checklist-2026-06-09-r2/model-result-summary.yaml
+- docs/notes/review-runs/postwrite-d004-normalized-finding-schema-checklist-2026-06-09-r2/parsed/gemini-3.5-flash.round-1.yaml
+- docs/notes/review-runs/postwrite-d004-normalized-finding-schema-checklist-2026-06-09-r2/raw/gemini-3.5-flash.round-1.txt
+- docs/notes/review-runs/postwrite-d004-normalized-finding-schema-checklist-2026-06-09-r2/review_summary.md
+- docs/notes/review-runs/postwrite-d004-normalized-finding-schema-checklist-2026-06-09-r2/rounds.yaml
+- docs/notes/review-runs/postwrite-d004-normalized-finding-schema-checklist-2026-06-09-r2/target-manifest.yaml
+- docs/notes/review-runs/postwrite-d004-normalized-finding-schema-checklist-2026-06-09-r2/triage.yaml
+- docs/notes/review-runs/postwrite-d005-finding-to-fix-traceability-checklist-2026-06-09-r1/model-result-summary.yaml
+- docs/notes/review-runs/postwrite-d005-finding-to-fix-traceability-checklist-2026-06-09-r1/parsed/gemini-3.5-flash.round-1.yaml
+- docs/notes/review-runs/postwrite-d005-finding-to-fix-traceability-checklist-2026-06-09-r1/raw/gemini-3.5-flash.round-1.txt
+- docs/notes/review-runs/postwrite-d005-finding-to-fix-traceability-checklist-2026-06-09-r1/review_summary.md
+- docs/notes/review-runs/postwrite-d005-finding-to-fix-traceability-checklist-2026-06-09-r1/rounds.yaml
+- docs/notes/review-runs/postwrite-d005-finding-to-fix-traceability-checklist-2026-06-09-r1/target-manifest.yaml
+- docs/notes/review-runs/postwrite-d005-finding-to-fix-traceability-checklist-2026-06-09-r1/triage.yaml
+- docs/notes/review-runs/postwrite-d005-finding-to-fix-traceability-checklist-2026-06-09-r2/model-result-summary.yaml
+- docs/notes/review-runs/postwrite-d005-finding-to-fix-traceability-checklist-2026-06-09-r2/parsed/gemini-3.5-flash.round-1.yaml
+- docs/notes/review-runs/postwrite-d005-finding-to-fix-traceability-checklist-2026-06-09-r2/raw/gemini-3.5-flash.round-1.txt
+- docs/notes/review-runs/postwrite-d005-finding-to-fix-traceability-checklist-2026-06-09-r2/review_summary.md
+- docs/notes/review-runs/postwrite-d005-finding-to-fix-traceability-checklist-2026-06-09-r2/rounds.yaml
+- docs/notes/review-runs/postwrite-d005-finding-to-fix-traceability-checklist-2026-06-09-r2/target-manifest.yaml
+- docs/notes/review-runs/postwrite-d005-finding-to-fix-traceability-checklist-2026-06-09-r2/triage.yaml
+target_sha256:
+  docs/notes/2026-06-09-d004-normalized-finding-schema-checklist.md: c41a91327e7e51565b77529593c0dd49cbc89e1084be41534b3673f28ace03bc
+  docs/notes/2026-06-09-d005-finding-to-fix-traceability-checklist.md: 10813f86889a44f01b658906809fbb975ce79413c203709b5a9e83ae4eb82618
+  docs/notes/review-runs/postwrite-d004-normalized-finding-schema-checklist-2026-06-09-r1/model-result-summary.yaml: 7308416a141104ad0c2abd2c5fef93a9f571731613c490e593e8bd7297533def
+  ? docs/notes/review-runs/postwrite-d004-normalized-finding-schema-checklist-2026-06-09-r1/parsed/gemini-3.5-flash.round-1.yaml
+  : 85cb43ce4f968cd18c87c05f6cc65d92834a455c68c6f7422b1962ce8a53d80e
+  docs/notes/review-runs/postwrite-d004-normalized-finding-schema-checklist-2026-06-09-r1/raw/gemini-3.5-flash.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+  docs/notes/review-runs/postwrite-d004-normalized-finding-schema-checklist-2026-06-09-r1/review_summary.md: 6df7391ec32d1d5f39e13f9e2db062f55afbfc7b1daa51039fdc7db5a06aaf14
+  docs/notes/review-runs/postwrite-d004-normalized-finding-schema-checklist-2026-06-09-r1/rounds.yaml: 58344cee410d9975ca705abb761fdf199a0c1cb4a3c7e372916d2787d56b0a0f
+  docs/notes/review-runs/postwrite-d004-normalized-finding-schema-checklist-2026-06-09-r1/target-manifest.yaml: d9820e7b848aa9dd186666713b89364a1dea1d092e0d378de7485934ee1f3c33
+  docs/notes/review-runs/postwrite-d004-normalized-finding-schema-checklist-2026-06-09-r1/triage.yaml: a379b33079f98aa83c802e77cd34444c1abd3867504cbcdc66d1e41cbe6a3f56
+  docs/notes/review-runs/postwrite-d004-normalized-finding-schema-checklist-2026-06-09-r2/model-result-summary.yaml: 88baf0bc689201af9192b56bb13a7b54a37465d205bd593baf175daf81fddeb3
+  ? docs/notes/review-runs/postwrite-d004-normalized-finding-schema-checklist-2026-06-09-r2/parsed/gemini-3.5-flash.round-1.yaml
+  : baf96b46aec88329b38bc321f77f6f29cccfdede90c3a0e1e93641baa813a107
+  docs/notes/review-runs/postwrite-d004-normalized-finding-schema-checklist-2026-06-09-r2/raw/gemini-3.5-flash.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+  docs/notes/review-runs/postwrite-d004-normalized-finding-schema-checklist-2026-06-09-r2/review_summary.md: b4d4fa8a0fe890fac5317a798dc157b9b34e04a65d76502d03dab3bff2b360cb
+  docs/notes/review-runs/postwrite-d004-normalized-finding-schema-checklist-2026-06-09-r2/rounds.yaml: 8c14492cf900aec79fc1e1134b1a355e001438d349d057418c7bc0a040cc2e25
+  docs/notes/review-runs/postwrite-d004-normalized-finding-schema-checklist-2026-06-09-r2/target-manifest.yaml: d78fb08be8cfe077f9357f5fd127d5730fe3de5e8b09232c676fa58b401e0d08
+  docs/notes/review-runs/postwrite-d004-normalized-finding-schema-checklist-2026-06-09-r2/triage.yaml: 91867ab38aaa110862d353b03ba03bd7ab52e123595fcbc394f23859b69235f0
+  docs/notes/review-runs/postwrite-d005-finding-to-fix-traceability-checklist-2026-06-09-r1/model-result-summary.yaml: f652605659358f9a4631f03a73f0a9f49cacc04c4a88e56b052ef2a15e817320
+  ? docs/notes/review-runs/postwrite-d005-finding-to-fix-traceability-checklist-2026-06-09-r1/parsed/gemini-3.5-flash.round-1.yaml
+  : de4221e30ffc7ed90fc4d8f204d5ae5d8e846c2c3de89b605466ee45b51999cf
+  docs/notes/review-runs/postwrite-d005-finding-to-fix-traceability-checklist-2026-06-09-r1/raw/gemini-3.5-flash.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+  docs/notes/review-runs/postwrite-d005-finding-to-fix-traceability-checklist-2026-06-09-r1/review_summary.md: 547bae583fc8701da122bf101ceea07bb955f91d4080f75209be1fe3fed80406
+  docs/notes/review-runs/postwrite-d005-finding-to-fix-traceability-checklist-2026-06-09-r1/rounds.yaml: ee065a71a92ada1549ba8fdf87eac88cbc2622fe30f98a601d6b44011f06a6ca
+  docs/notes/review-runs/postwrite-d005-finding-to-fix-traceability-checklist-2026-06-09-r1/target-manifest.yaml: a04915ac703c42799e64965602d9eed4fb80b1f33661130e2aaa54e86f5bce3f
+  docs/notes/review-runs/postwrite-d005-finding-to-fix-traceability-checklist-2026-06-09-r1/triage.yaml: 7dc9a7401fa143c492c289b8c53ed308a1a4085f30d86b376a8b6a8a30ac5b4d
+  docs/notes/review-runs/postwrite-d005-finding-to-fix-traceability-checklist-2026-06-09-r2/model-result-summary.yaml: 19117677904645d6e0efcd96202236be73c5df5cbe53e38555318a726d34b417
+  ? docs/notes/review-runs/postwrite-d005-finding-to-fix-traceability-checklist-2026-06-09-r2/parsed/gemini-3.5-flash.round-1.yaml
+  : 382e198fa65bea734b03ec450dd6cb0115faee05e66c063942fe2d978fd55220
+  docs/notes/review-runs/postwrite-d005-finding-to-fix-traceability-checklist-2026-06-09-r2/raw/gemini-3.5-flash.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+  docs/notes/review-runs/postwrite-d005-finding-to-fix-traceability-checklist-2026-06-09-r2/review_summary.md: 119c9118215a9c5748cf309fd1814f3ee7876f51159f9d9e2358793a237c36ba
+  docs/notes/review-runs/postwrite-d005-finding-to-fix-traceability-checklist-2026-06-09-r2/rounds.yaml: 498074134c91f6f609a0624720f943131e3123082a9e53ff0e577eb0351e5cc4
+  docs/notes/review-runs/postwrite-d005-finding-to-fix-traceability-checklist-2026-06-09-r2/target-manifest.yaml: 21b086473cc8aa8eafb713a44e2a5d35508f786f3603af390ebb7fef54f8fb58
+  docs/notes/review-runs/postwrite-d005-finding-to-fix-traceability-checklist-2026-06-09-r2/triage.yaml: 66f575acc35bfc5e546912abd3b06b651c15010a05b2e30ae531563f3b43a295
+required_verifiers: &id001
+- gemini-3.5-flash
+completed_verifiers: *id001
+unresolved_substantive_findings: 0
+verifications:
+- verifier: gemini-3.5-flash
+  target_files:
+  - docs/notes/2026-06-09-d004-normalized-finding-schema-checklist.md
+  - docs/notes/2026-06-09-d005-finding-to-fix-traceability-checklist.md
+  - docs/notes/review-runs/postwrite-d004-normalized-finding-schema-checklist-2026-06-09-r1/model-result-summary.yaml
+  - docs/notes/review-runs/postwrite-d004-normalized-finding-schema-checklist-2026-06-09-r1/parsed/gemini-3.5-flash.round-1.yaml
+  - docs/notes/review-runs/postwrite-d004-normalized-finding-schema-checklist-2026-06-09-r1/raw/gemini-3.5-flash.round-1.txt
+  - docs/notes/review-runs/postwrite-d004-normalized-finding-schema-checklist-2026-06-09-r1/review_summary.md
+  - docs/notes/review-runs/postwrite-d004-normalized-finding-schema-checklist-2026-06-09-r1/rounds.yaml
+  - docs/notes/review-runs/postwrite-d004-normalized-finding-schema-checklist-2026-06-09-r1/target-manifest.yaml
+  - docs/notes/review-runs/postwrite-d004-normalized-finding-schema-checklist-2026-06-09-r1/triage.yaml
+  - docs/notes/review-runs/postwrite-d004-normalized-finding-schema-checklist-2026-06-09-r2/model-result-summary.yaml
+  - docs/notes/review-runs/postwrite-d004-normalized-finding-schema-checklist-2026-06-09-r2/parsed/gemini-3.5-flash.round-1.yaml
+  - docs/notes/review-runs/postwrite-d004-normalized-finding-schema-checklist-2026-06-09-r2/raw/gemini-3.5-flash.round-1.txt
+  - docs/notes/review-runs/postwrite-d004-normalized-finding-schema-checklist-2026-06-09-r2/review_summary.md
+  - docs/notes/review-runs/postwrite-d004-normalized-finding-schema-checklist-2026-06-09-r2/rounds.yaml
+  - docs/notes/review-runs/postwrite-d004-normalized-finding-schema-checklist-2026-06-09-r2/target-manifest.yaml
+  - docs/notes/review-runs/postwrite-d004-normalized-finding-schema-checklist-2026-06-09-r2/triage.yaml
+  - docs/notes/review-runs/postwrite-d005-finding-to-fix-traceability-checklist-2026-06-09-r1/model-result-summary.yaml
+  - docs/notes/review-runs/postwrite-d005-finding-to-fix-traceability-checklist-2026-06-09-r1/parsed/gemini-3.5-flash.round-1.yaml
+  - docs/notes/review-runs/postwrite-d005-finding-to-fix-traceability-checklist-2026-06-09-r1/raw/gemini-3.5-flash.round-1.txt
+  - docs/notes/review-runs/postwrite-d005-finding-to-fix-traceability-checklist-2026-06-09-r1/review_summary.md
+  - docs/notes/review-runs/postwrite-d005-finding-to-fix-traceability-checklist-2026-06-09-r1/rounds.yaml
+  - docs/notes/review-runs/postwrite-d005-finding-to-fix-traceability-checklist-2026-06-09-r1/target-manifest.yaml
+  - docs/notes/review-runs/postwrite-d005-finding-to-fix-traceability-checklist-2026-06-09-r1/triage.yaml
+  - docs/notes/review-runs/postwrite-d005-finding-to-fix-traceability-checklist-2026-06-09-r2/model-result-summary.yaml
+  - docs/notes/review-runs/postwrite-d005-finding-to-fix-traceability-checklist-2026-06-09-r2/parsed/gemini-3.5-flash.round-1.yaml
+  - docs/notes/review-runs/postwrite-d005-finding-to-fix-traceability-checklist-2026-06-09-r2/raw/gemini-3.5-flash.round-1.txt
+  - docs/notes/review-runs/postwrite-d005-finding-to-fix-traceability-checklist-2026-06-09-r2/review_summary.md
+  - docs/notes/review-runs/postwrite-d005-finding-to-fix-traceability-checklist-2026-06-09-r2/rounds.yaml
+  - docs/notes/review-runs/postwrite-d005-finding-to-fix-traceability-checklist-2026-06-09-r2/target-manifest.yaml
+  - docs/notes/review-runs/postwrite-d005-finding-to-fix-traceability-checklist-2026-06-09-r2/triage.yaml
+  target_sha256:
+    docs/notes/2026-06-09-d004-normalized-finding-schema-checklist.md: c41a91327e7e51565b77529593c0dd49cbc89e1084be41534b3673f28ace03bc
+    docs/notes/2026-06-09-d005-finding-to-fix-traceability-checklist.md: 10813f86889a44f01b658906809fbb975ce79413c203709b5a9e83ae4eb82618
+    docs/notes/review-runs/postwrite-d004-normalized-finding-schema-checklist-2026-06-09-r1/model-result-summary.yaml: 7308416a141104ad0c2abd2c5fef93a9f571731613c490e593e8bd7297533def
+    ? docs/notes/review-runs/postwrite-d004-normalized-finding-schema-checklist-2026-06-09-r1/parsed/gemini-3.5-flash.round-1.yaml
+    : 85cb43ce4f968cd18c87c05f6cc65d92834a455c68c6f7422b1962ce8a53d80e
+    docs/notes/review-runs/postwrite-d004-normalized-finding-schema-checklist-2026-06-09-r1/raw/gemini-3.5-flash.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/postwrite-d004-normalized-finding-schema-checklist-2026-06-09-r1/review_summary.md: 6df7391ec32d1d5f39e13f9e2db062f55afbfc7b1daa51039fdc7db5a06aaf14
+    docs/notes/review-runs/postwrite-d004-normalized-finding-schema-checklist-2026-06-09-r1/rounds.yaml: 58344cee410d9975ca705abb761fdf199a0c1cb4a3c7e372916d2787d56b0a0f
+    docs/notes/review-runs/postwrite-d004-normalized-finding-schema-checklist-2026-06-09-r1/target-manifest.yaml: d9820e7b848aa9dd186666713b89364a1dea1d092e0d378de7485934ee1f3c33
+    docs/notes/review-runs/postwrite-d004-normalized-finding-schema-checklist-2026-06-09-r1/triage.yaml: a379b33079f98aa83c802e77cd34444c1abd3867504cbcdc66d1e41cbe6a3f56
+    docs/notes/review-runs/postwrite-d004-normalized-finding-schema-checklist-2026-06-09-r2/model-result-summary.yaml: 88baf0bc689201af9192b56bb13a7b54a37465d205bd593baf175daf81fddeb3
+    ? docs/notes/review-runs/postwrite-d004-normalized-finding-schema-checklist-2026-06-09-r2/parsed/gemini-3.5-flash.round-1.yaml
+    : baf96b46aec88329b38bc321f77f6f29cccfdede90c3a0e1e93641baa813a107
+    docs/notes/review-runs/postwrite-d004-normalized-finding-schema-checklist-2026-06-09-r2/raw/gemini-3.5-flash.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/postwrite-d004-normalized-finding-schema-checklist-2026-06-09-r2/review_summary.md: b4d4fa8a0fe890fac5317a798dc157b9b34e04a65d76502d03dab3bff2b360cb
+    docs/notes/review-runs/postwrite-d004-normalized-finding-schema-checklist-2026-06-09-r2/rounds.yaml: 8c14492cf900aec79fc1e1134b1a355e001438d349d057418c7bc0a040cc2e25
+    docs/notes/review-runs/postwrite-d004-normalized-finding-schema-checklist-2026-06-09-r2/target-manifest.yaml: d78fb08be8cfe077f9357f5fd127d5730fe3de5e8b09232c676fa58b401e0d08
+    docs/notes/review-runs/postwrite-d004-normalized-finding-schema-checklist-2026-06-09-r2/triage.yaml: 91867ab38aaa110862d353b03ba03bd7ab52e123595fcbc394f23859b69235f0
+    docs/notes/review-runs/postwrite-d005-finding-to-fix-traceability-checklist-2026-06-09-r1/model-result-summary.yaml: f652605659358f9a4631f03a73f0a9f49cacc04c4a88e56b052ef2a15e817320
+    ? docs/notes/review-runs/postwrite-d005-finding-to-fix-traceability-checklist-2026-06-09-r1/parsed/gemini-3.5-flash.round-1.yaml
+    : de4221e30ffc7ed90fc4d8f204d5ae5d8e846c2c3de89b605466ee45b51999cf
+    docs/notes/review-runs/postwrite-d005-finding-to-fix-traceability-checklist-2026-06-09-r1/raw/gemini-3.5-flash.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/postwrite-d005-finding-to-fix-traceability-checklist-2026-06-09-r1/review_summary.md: 547bae583fc8701da122bf101ceea07bb955f91d4080f75209be1fe3fed80406
+    docs/notes/review-runs/postwrite-d005-finding-to-fix-traceability-checklist-2026-06-09-r1/rounds.yaml: ee065a71a92ada1549ba8fdf87eac88cbc2622fe30f98a601d6b44011f06a6ca
+    docs/notes/review-runs/postwrite-d005-finding-to-fix-traceability-checklist-2026-06-09-r1/target-manifest.yaml: a04915ac703c42799e64965602d9eed4fb80b1f33661130e2aaa54e86f5bce3f
+    docs/notes/review-runs/postwrite-d005-finding-to-fix-traceability-checklist-2026-06-09-r1/triage.yaml: 7dc9a7401fa143c492c289b8c53ed308a1a4085f30d86b376a8b6a8a30ac5b4d
+    docs/notes/review-runs/postwrite-d005-finding-to-fix-traceability-checklist-2026-06-09-r2/model-result-summary.yaml: 19117677904645d6e0efcd96202236be73c5df5cbe53e38555318a726d34b417
+    ? docs/notes/review-runs/postwrite-d005-finding-to-fix-traceability-checklist-2026-06-09-r2/parsed/gemini-3.5-flash.round-1.yaml
+    : 382e198fa65bea734b03ec450dd6cb0115faee05e66c063942fe2d978fd55220
+    docs/notes/review-runs/postwrite-d005-finding-to-fix-traceability-checklist-2026-06-09-r2/raw/gemini-3.5-flash.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/postwrite-d005-finding-to-fix-traceability-checklist-2026-06-09-r2/review_summary.md: 119c9118215a9c5748cf309fd1814f3ee7876f51159f9d9e2358793a237c36ba
+    docs/notes/review-runs/postwrite-d005-finding-to-fix-traceability-checklist-2026-06-09-r2/rounds.yaml: 498074134c91f6f609a0624720f943131e3123082a9e53ff0e577eb0351e5cc4
+    docs/notes/review-runs/postwrite-d005-finding-to-fix-traceability-checklist-2026-06-09-r2/target-manifest.yaml: 21b086473cc8aa8eafb713a44e2a5d35508f786f3603af390ebb7fef54f8fb58
+    docs/notes/review-runs/postwrite-d005-finding-to-fix-traceability-checklist-2026-06-09-r2/triage.yaml: 66f575acc35bfc5e546912abd3b06b651c15010a05b2e30ae531563f3b43a295
+review_run:
+  path: docs/notes/review-runs/postwrite-d005-finding-to-fix-traceability-checklist-2026-06-09-r2
+  summary_path: docs/notes/review-runs/postwrite-d005-finding-to-fix-traceability-checklist-2026-06-09-r2/model-result-summary.yaml
+notes: Generated template; verify target_files cover current post-write targets before
+  use.

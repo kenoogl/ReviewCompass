@@ -1,0 +1,5 @@
+findings:
+  - severity: WARN
+    target_location: "## 3. 実装チェックリスト"
+    description: "「post-write verification を実施する」のチェックボックスが未チェックのままになっています。"
+    rationale: "本ドキュメントの status が ready とされており、現在 post-write verification フェーズの検証を実施しているため、この検証プロセスが完了した段階でチェックマーク（[x]）に更新される必要があります。チェック漏れを防ぐために、検証の完了と同期して更新を行ってください。"

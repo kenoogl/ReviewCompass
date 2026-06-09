@@ -1,0 +1,4 @@
+run_id: postwrite-d004-normalized-finding-schema-checklist-2026-06-09-r1
+target_files:
+- path: docs/notes/2026-06-09-d004-normalized-finding-schema-checklist.md
+  sha256: f93dbae3317025caeb49faa4f069ca845bee8b593aaaa847533a3f2387f97cc4

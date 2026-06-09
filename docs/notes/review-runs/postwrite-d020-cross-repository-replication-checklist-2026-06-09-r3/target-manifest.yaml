@@ -1,0 +1,4 @@
+run_id: postwrite-d020-cross-repository-replication-checklist-2026-06-09-r3
+target_files:
+- path: docs/notes/2026-06-09-d020-cross-repository-replication-checklist.md
+  sha256: e7c9be4973ece57c69080be7a1ec5ce2845ff7a48e0ab2e8796d3c6c4602fd44

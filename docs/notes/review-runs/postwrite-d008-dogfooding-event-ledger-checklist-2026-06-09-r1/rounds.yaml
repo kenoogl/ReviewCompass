@@ -1,0 +1,26 @@
+round_id: round-1
+purpose: post_write_verification
+invocation_timestamp: '2026-06-09T06:34:31.023796+00:00'
+target_files:
+- path: docs/notes/2026-06-09-d008-dogfooding-event-ledger-checklist.md
+  sha256: c37839fe1ba17b2a1f7e98a2cbf1b24e694bf788ad64e20271b4337997f5ffce
+criteria: d008_dogfooding_event_ledger_checklist
+prompt_sha256: 7856aba9aca8ad0f23d0129c540d4caa99126b0eaf576c7bc6fe7a0dd227c72c
+model_results:
+- model_id: gemini-3.5-flash
+  provider: gemini-api
+  role: primary
+  treatment: primary
+  invocation_path: api
+  raw_path: raw/gemini-3.5-flash.round-1.txt
+  raw_sha256: 514ca7ce698924d6d317b58eb180fac52856c6e44dd083b725c9ff5738c2f87c
+  parsed_path: parsed/gemini-3.5-flash.round-1.yaml
+  parsed_sha256: b80a9ec42ec84ffc83124e8dbae304820d9b654d1b88eb21128bda1799498fc1
+  parse_status: parsed
+  formatted_by: parser
+  formatted_by_actor_type: orchestrator
+  formatted_by_actor: run_role.py
+  formatted_at: '2026-06-09T06:34:31.023796+00:00'
+  follow_up_action: triage
+  attempts: 1
+  duration_seconds: 11.518

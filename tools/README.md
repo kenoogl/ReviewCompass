@@ -27,3 +27,13 @@ ReviewCompass の補助スクリプトを置く場所。
 - 単独実行 CLI スクリプトはハイフン区切りにする。例: `tools/conformance-evaluation-check.py`
 
 `tools/conformance-evaluation-check.py` は conformance-evaluation の機械検査 CLI の配置名である。第 1 期では手動 grep の補助から開始し、フェーズ 4 以降に段階的に自動化する。
+
+## deployment independence
+
+`tools/deployment_independence_lint.py` は D-023 の配置非依存性 lint である。Markdown / YAML / JSON 成果物に混入したローカル絶対パスを検出し、外部 URL と明示された一時監査パスは除外する。
+
+実行例:
+
+```bash
+.venv/bin/python3 tools/deployment_independence_lint.py --json docs/operations learning/workflow/schemas config
+```

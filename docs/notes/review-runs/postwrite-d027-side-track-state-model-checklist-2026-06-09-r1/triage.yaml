@@ -1,0 +1,24 @@
+run_id: postwrite-d027-side-track-state-model-checklist-2026-06-09-r1
+triage_status: decided
+generated_at: '2026-06-09T06:31:13.495813+00:00'
+decision_actor: null
+decision_actor_type: human
+items:
+- finding_id: postwrite-d027-side-track-state-model-checklist-2026-06-09-r1-gemini-3.5-flash-primary-001
+  run_id: postwrite-d027-side-track-state-model-checklist-2026-06-09-r1
+  source_model: gemini-3.5-flash
+  source_round: round-1
+  source_raw_path: raw/gemini-3.5-flash.round-1.txt
+  source_parsed_path: parsed/gemini-3.5-flash.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: '## 3. 実装チェックリスト'
+  plain_language_summary: 「post-write verification を実施する」のチェックボックスが未チェックのままになっています。
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: main_session_llm
+  decision_actor_type: agent
+  decision_at: '2026-06-09T06:31:51.151245+00:00'
+  decision_reason: post-write verification 完了チェックの未反映指摘は妥当なため、チェックリストへ反映した。
+  applied_files: []
+  superseded_by: null

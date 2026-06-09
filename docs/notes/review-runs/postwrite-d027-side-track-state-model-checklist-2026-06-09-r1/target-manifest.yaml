@@ -1,0 +1,4 @@
+run_id: postwrite-d027-side-track-state-model-checklist-2026-06-09-r1
+target_files:
+- path: docs/notes/2026-06-09-d027-side-track-state-model-checklist.md
+  sha256: 07bcb4b41a9c2b011659f237dd076b11df27e616f451c8bd7cca55eb917b7ad9

@@ -1,0 +1,26 @@
+round_id: round-1
+purpose: post_write_verification
+invocation_timestamp: '2026-06-09T06:18:38.652991+00:00'
+target_files:
+- path: docs/notes/2026-06-09-d004-normalized-finding-schema-checklist.md
+  sha256: c41a91327e7e51565b77529593c0dd49cbc89e1084be41534b3673f28ace03bc
+criteria: d004_normalized_finding_schema_checklist
+prompt_sha256: e5e950db2f79049f03049bf49fd5c2199441deb4bca5adec2d1034a4bb81f912
+model_results:
+- model_id: gemini-3.5-flash
+  provider: gemini-api
+  role: primary
+  treatment: primary
+  invocation_path: api
+  raw_path: raw/gemini-3.5-flash.round-1.txt
+  raw_sha256: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+  parsed_path: parsed/gemini-3.5-flash.round-1.yaml
+  parsed_sha256: baf96b46aec88329b38bc321f77f6f29cccfdede90c3a0e1e93641baa813a107
+  parse_status: parsed
+  formatted_by: parser
+  formatted_by_actor_type: orchestrator
+  formatted_by_actor: run_role.py
+  formatted_at: '2026-06-09T06:18:38.652991+00:00'
+  follow_up_action: triage
+  attempts: 1
+  duration_seconds: 5.937

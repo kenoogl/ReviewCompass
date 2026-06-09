@@ -1,0 +1,269 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://reviewcompass.local/schemas/workflow/normalized-finding.schema.json",
+  "title": "Normalized Review Finding",
+  "description": "Markdown review と API review-run の所見を横断分析するための正規化 schema。",
+  "type": "object",
+  "additionalProperties": false,
+  "$defs": {
+    "rfc3339Timestamp": {
+      "type": "string",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(\\.[0-9]+)?(Z|[+-][0-9]{2}:[0-9]{2})$"
+    },
+    "relativePath": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^(?!/)(?![A-Za-z]:).+"
+    },
+    "evidenceRef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "label",
+        "path"
+      ],
+      "properties": {
+        "label": {
+          "type": "string",
+          "minLength": 1
+        },
+        "path": {
+          "$ref": "#/$defs/relativePath"
+        },
+        "target_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "sha256": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^[0-9a-f]{64}$"
+        }
+      }
+    }
+  },
+  "required": [
+    "finding_id",
+    "run_id",
+    "source_model",
+    "review_role",
+    "inspection_criterion",
+    "severity",
+    "initial_recommendation",
+    "final_label",
+    "decision_status",
+    "decision_actor",
+    "observed_at",
+    "evidence_refs",
+    "affected_files",
+    "resolution",
+    "false_positive_reversal"
+  ],
+  "properties": {
+    "finding_id": {
+      "type": "string",
+      "minLength": 1,
+      "description": "横断分析内で一意な finding id。既存 triage.yaml の finding_id を保持してよい。"
+    },
+    "run_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "source_model": {
+      "type": "string",
+      "minLength": 1
+    },
+    "review_role": {
+      "type": "string",
+      "enum": [
+        "primary",
+        "adversarial",
+        "judgment",
+        "integration",
+        "post_write",
+        "unknown"
+      ]
+    },
+    "inspection_criterion": {
+      "type": "string",
+      "minLength": 1
+    },
+    "severity": {
+      "type": "string",
+      "enum": [
+        "CRITICAL",
+        "ERROR",
+        "WARN",
+        "INFO"
+      ]
+    },
+    "initial_recommendation": {
+      "type": "string",
+      "enum": [
+        "must-fix",
+        "should-fix",
+        "leave-as-is",
+        "human-required",
+        "unknown"
+      ]
+    },
+    "final_label": {
+      "type": "string",
+      "enum": [
+        "must-fix",
+        "should-fix",
+        "leave-as-is"
+      ]
+    },
+    "decision_status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "human_required",
+        "decided",
+        "superseded"
+      ]
+    },
+    "decision_actor": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "actor_type",
+        "actor_id"
+      ],
+      "properties": {
+        "actor_type": {
+          "type": "string",
+          "enum": [
+            "human",
+            "proxy_model",
+            "agent",
+            "unknown"
+          ]
+        },
+        "actor_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    },
+    "observed_at": {
+      "$ref": "#/$defs/rfc3339Timestamp"
+    },
+    "decided_at": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/rfc3339Timestamp"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "resolved_at": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/rfc3339Timestamp"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "evidence_refs": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/evidenceRef"
+      }
+    },
+    "affected_files": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/relativePath"
+      }
+    },
+    "resolution": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status",
+        "summary"
+      ],
+      "properties": {
+        "status": {
+          "type": "string",
+          "enum": [
+            "unresolved",
+            "fixed",
+            "accepted_no_change",
+            "false_positive",
+            "superseded"
+          ]
+        },
+        "summary": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    },
+    "resolution_commit": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "pattern": "^[0-9a-f]{7,40}$"
+    },
+    "linked": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "source_raw_path": {
+          "$ref": "#/$defs/relativePath"
+        },
+        "source_parsed_path": {
+          "$ref": "#/$defs/relativePath"
+        },
+        "triage_path": {
+          "$ref": "#/$defs/relativePath"
+        },
+        "approval_ref": {
+          "$ref": "#/$defs/relativePath"
+        },
+        "test_refs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/relativePath"
+          }
+        }
+      }
+    },
+    "false_positive_reversal": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "is_reversal",
+        "reason"
+      ],
+      "properties": {
+        "is_reversal": {
+          "type": "boolean"
+        },
+        "reason": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    }
+  }
+}

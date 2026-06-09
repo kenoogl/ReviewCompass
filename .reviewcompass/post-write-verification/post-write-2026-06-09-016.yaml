@@ -1,0 +1,50 @@
+status: completed
+target_files:
+- docs/notes/2026-06-09-d004-normalized-finding-schema-checklist.md
+- docs/notes/review-runs/postwrite-d004-normalized-finding-schema-checklist-2026-06-09-r1/model-result-summary.yaml
+- docs/notes/review-runs/postwrite-d004-normalized-finding-schema-checklist-2026-06-09-r1/parsed/gemini-3.5-flash.round-1.yaml
+- docs/notes/review-runs/postwrite-d004-normalized-finding-schema-checklist-2026-06-09-r1/raw/gemini-3.5-flash.round-1.txt
+- docs/notes/review-runs/postwrite-d004-normalized-finding-schema-checklist-2026-06-09-r1/review_summary.md
+- docs/notes/review-runs/postwrite-d004-normalized-finding-schema-checklist-2026-06-09-r1/rounds.yaml
+- docs/notes/review-runs/postwrite-d004-normalized-finding-schema-checklist-2026-06-09-r1/target-manifest.yaml
+- docs/notes/review-runs/postwrite-d004-normalized-finding-schema-checklist-2026-06-09-r1/triage.yaml
+target_sha256:
+  docs/notes/2026-06-09-d004-normalized-finding-schema-checklist.md: f93dbae3317025caeb49faa4f069ca845bee8b593aaaa847533a3f2387f97cc4
+  docs/notes/review-runs/postwrite-d004-normalized-finding-schema-checklist-2026-06-09-r1/model-result-summary.yaml: 7308416a141104ad0c2abd2c5fef93a9f571731613c490e593e8bd7297533def
+  ? docs/notes/review-runs/postwrite-d004-normalized-finding-schema-checklist-2026-06-09-r1/parsed/gemini-3.5-flash.round-1.yaml
+  : 85cb43ce4f968cd18c87c05f6cc65d92834a455c68c6f7422b1962ce8a53d80e
+  docs/notes/review-runs/postwrite-d004-normalized-finding-schema-checklist-2026-06-09-r1/raw/gemini-3.5-flash.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+  docs/notes/review-runs/postwrite-d004-normalized-finding-schema-checklist-2026-06-09-r1/review_summary.md: 6df7391ec32d1d5f39e13f9e2db062f55afbfc7b1daa51039fdc7db5a06aaf14
+  docs/notes/review-runs/postwrite-d004-normalized-finding-schema-checklist-2026-06-09-r1/rounds.yaml: 58344cee410d9975ca705abb761fdf199a0c1cb4a3c7e372916d2787d56b0a0f
+  docs/notes/review-runs/postwrite-d004-normalized-finding-schema-checklist-2026-06-09-r1/target-manifest.yaml: d9820e7b848aa9dd186666713b89364a1dea1d092e0d378de7485934ee1f3c33
+  docs/notes/review-runs/postwrite-d004-normalized-finding-schema-checklist-2026-06-09-r1/triage.yaml: a379b33079f98aa83c802e77cd34444c1abd3867504cbcdc66d1e41cbe6a3f56
+required_verifiers: &id001
+- gemini-3.5-flash
+completed_verifiers: *id001
+unresolved_substantive_findings: 0
+verifications:
+- verifier: gemini-3.5-flash
+  target_files:
+  - docs/notes/2026-06-09-d004-normalized-finding-schema-checklist.md
+  - docs/notes/review-runs/postwrite-d004-normalized-finding-schema-checklist-2026-06-09-r1/model-result-summary.yaml
+  - docs/notes/review-runs/postwrite-d004-normalized-finding-schema-checklist-2026-06-09-r1/parsed/gemini-3.5-flash.round-1.yaml
+  - docs/notes/review-runs/postwrite-d004-normalized-finding-schema-checklist-2026-06-09-r1/raw/gemini-3.5-flash.round-1.txt
+  - docs/notes/review-runs/postwrite-d004-normalized-finding-schema-checklist-2026-06-09-r1/review_summary.md
+  - docs/notes/review-runs/postwrite-d004-normalized-finding-schema-checklist-2026-06-09-r1/rounds.yaml
+  - docs/notes/review-runs/postwrite-d004-normalized-finding-schema-checklist-2026-06-09-r1/target-manifest.yaml
+  - docs/notes/review-runs/postwrite-d004-normalized-finding-schema-checklist-2026-06-09-r1/triage.yaml
+  target_sha256:
+    docs/notes/2026-06-09-d004-normalized-finding-schema-checklist.md: f93dbae3317025caeb49faa4f069ca845bee8b593aaaa847533a3f2387f97cc4
+    docs/notes/review-runs/postwrite-d004-normalized-finding-schema-checklist-2026-06-09-r1/model-result-summary.yaml: 7308416a141104ad0c2abd2c5fef93a9f571731613c490e593e8bd7297533def
+    ? docs/notes/review-runs/postwrite-d004-normalized-finding-schema-checklist-2026-06-09-r1/parsed/gemini-3.5-flash.round-1.yaml
+    : 85cb43ce4f968cd18c87c05f6cc65d92834a455c68c6f7422b1962ce8a53d80e
+    docs/notes/review-runs/postwrite-d004-normalized-finding-schema-checklist-2026-06-09-r1/raw/gemini-3.5-flash.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/postwrite-d004-normalized-finding-schema-checklist-2026-06-09-r1/review_summary.md: 6df7391ec32d1d5f39e13f9e2db062f55afbfc7b1daa51039fdc7db5a06aaf14
+    docs/notes/review-runs/postwrite-d004-normalized-finding-schema-checklist-2026-06-09-r1/rounds.yaml: 58344cee410d9975ca705abb761fdf199a0c1cb4a3c7e372916d2787d56b0a0f
+    docs/notes/review-runs/postwrite-d004-normalized-finding-schema-checklist-2026-06-09-r1/target-manifest.yaml: d9820e7b848aa9dd186666713b89364a1dea1d092e0d378de7485934ee1f3c33
+    docs/notes/review-runs/postwrite-d004-normalized-finding-schema-checklist-2026-06-09-r1/triage.yaml: a379b33079f98aa83c802e77cd34444c1abd3867504cbcdc66d1e41cbe6a3f56
+review_run:
+  path: docs/notes/review-runs/postwrite-d004-normalized-finding-schema-checklist-2026-06-09-r1
+  summary_path: docs/notes/review-runs/postwrite-d004-normalized-finding-schema-checklist-2026-06-09-r1/model-result-summary.yaml
+notes: Generated template; verify target_files cover current post-write targets before
+  use.

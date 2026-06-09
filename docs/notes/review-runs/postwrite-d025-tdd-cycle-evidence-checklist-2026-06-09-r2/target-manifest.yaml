@@ -1,0 +1,4 @@
+run_id: postwrite-d025-tdd-cycle-evidence-checklist-2026-06-09-r2
+target_files:
+- path: docs/notes/2026-06-09-d025-tdd-cycle-evidence-checklist.md
+  sha256: cd347e92571a0e8d6757580b42a63a5a09f0ad5f10943f003fe3a44a6c3814b3

@@ -1,0 +1,560 @@
+status: completed
+target_files:
+- docs/notes/2026-06-09-d004-normalized-finding-schema-checklist.md
+- docs/notes/2026-06-09-d005-finding-to-fix-traceability-checklist.md
+- docs/notes/2026-06-09-d008-dogfooding-event-ledger-checklist.md
+- docs/notes/2026-06-09-d019-time-cost-model-assignment-checklist.md
+- docs/notes/2026-06-09-d020-cross-repository-replication-checklist.md
+- docs/notes/2026-06-09-d023-deployment-independence-lint-checklist.md
+- docs/notes/2026-06-09-d025-tdd-cycle-evidence-checklist.md
+- docs/notes/2026-06-09-d027-side-track-state-model-checklist.md
+- docs/notes/review-runs/postwrite-d004-normalized-finding-schema-checklist-2026-06-09-r1/model-result-summary.yaml
+- docs/notes/review-runs/postwrite-d004-normalized-finding-schema-checklist-2026-06-09-r1/parsed/gemini-3.5-flash.round-1.yaml
+- docs/notes/review-runs/postwrite-d004-normalized-finding-schema-checklist-2026-06-09-r1/raw/gemini-3.5-flash.round-1.txt
+- docs/notes/review-runs/postwrite-d004-normalized-finding-schema-checklist-2026-06-09-r1/review_summary.md
+- docs/notes/review-runs/postwrite-d004-normalized-finding-schema-checklist-2026-06-09-r1/rounds.yaml
+- docs/notes/review-runs/postwrite-d004-normalized-finding-schema-checklist-2026-06-09-r1/target-manifest.yaml
+- docs/notes/review-runs/postwrite-d004-normalized-finding-schema-checklist-2026-06-09-r1/triage.yaml
+- docs/notes/review-runs/postwrite-d004-normalized-finding-schema-checklist-2026-06-09-r2/model-result-summary.yaml
+- docs/notes/review-runs/postwrite-d004-normalized-finding-schema-checklist-2026-06-09-r2/parsed/gemini-3.5-flash.round-1.yaml
+- docs/notes/review-runs/postwrite-d004-normalized-finding-schema-checklist-2026-06-09-r2/raw/gemini-3.5-flash.round-1.txt
+- docs/notes/review-runs/postwrite-d004-normalized-finding-schema-checklist-2026-06-09-r2/review_summary.md
+- docs/notes/review-runs/postwrite-d004-normalized-finding-schema-checklist-2026-06-09-r2/rounds.yaml
+- docs/notes/review-runs/postwrite-d004-normalized-finding-schema-checklist-2026-06-09-r2/target-manifest.yaml
+- docs/notes/review-runs/postwrite-d004-normalized-finding-schema-checklist-2026-06-09-r2/triage.yaml
+- docs/notes/review-runs/postwrite-d005-finding-to-fix-traceability-checklist-2026-06-09-r1/model-result-summary.yaml
+- docs/notes/review-runs/postwrite-d005-finding-to-fix-traceability-checklist-2026-06-09-r1/parsed/gemini-3.5-flash.round-1.yaml
+- docs/notes/review-runs/postwrite-d005-finding-to-fix-traceability-checklist-2026-06-09-r1/raw/gemini-3.5-flash.round-1.txt
+- docs/notes/review-runs/postwrite-d005-finding-to-fix-traceability-checklist-2026-06-09-r1/review_summary.md
+- docs/notes/review-runs/postwrite-d005-finding-to-fix-traceability-checklist-2026-06-09-r1/rounds.yaml
+- docs/notes/review-runs/postwrite-d005-finding-to-fix-traceability-checklist-2026-06-09-r1/target-manifest.yaml
+- docs/notes/review-runs/postwrite-d005-finding-to-fix-traceability-checklist-2026-06-09-r1/triage.yaml
+- docs/notes/review-runs/postwrite-d005-finding-to-fix-traceability-checklist-2026-06-09-r2/model-result-summary.yaml
+- docs/notes/review-runs/postwrite-d005-finding-to-fix-traceability-checklist-2026-06-09-r2/parsed/gemini-3.5-flash.round-1.yaml
+- docs/notes/review-runs/postwrite-d005-finding-to-fix-traceability-checklist-2026-06-09-r2/raw/gemini-3.5-flash.round-1.txt
+- docs/notes/review-runs/postwrite-d005-finding-to-fix-traceability-checklist-2026-06-09-r2/review_summary.md
+- docs/notes/review-runs/postwrite-d005-finding-to-fix-traceability-checklist-2026-06-09-r2/rounds.yaml
+- docs/notes/review-runs/postwrite-d005-finding-to-fix-traceability-checklist-2026-06-09-r2/target-manifest.yaml
+- docs/notes/review-runs/postwrite-d005-finding-to-fix-traceability-checklist-2026-06-09-r2/triage.yaml
+- docs/notes/review-runs/postwrite-d008-dogfooding-event-ledger-checklist-2026-06-09-r1/model-result-summary.yaml
+- docs/notes/review-runs/postwrite-d008-dogfooding-event-ledger-checklist-2026-06-09-r1/parsed/gemini-3.5-flash.round-1.yaml
+- docs/notes/review-runs/postwrite-d008-dogfooding-event-ledger-checklist-2026-06-09-r1/raw/gemini-3.5-flash.round-1.txt
+- docs/notes/review-runs/postwrite-d008-dogfooding-event-ledger-checklist-2026-06-09-r1/review_summary.md
+- docs/notes/review-runs/postwrite-d008-dogfooding-event-ledger-checklist-2026-06-09-r1/rounds.yaml
+- docs/notes/review-runs/postwrite-d008-dogfooding-event-ledger-checklist-2026-06-09-r1/target-manifest.yaml
+- docs/notes/review-runs/postwrite-d008-dogfooding-event-ledger-checklist-2026-06-09-r1/triage.yaml
+- docs/notes/review-runs/postwrite-d008-dogfooding-event-ledger-checklist-2026-06-09-r2/model-result-summary.yaml
+- docs/notes/review-runs/postwrite-d008-dogfooding-event-ledger-checklist-2026-06-09-r2/parsed/gemini-3.5-flash.round-1.yaml
+- docs/notes/review-runs/postwrite-d008-dogfooding-event-ledger-checklist-2026-06-09-r2/raw/gemini-3.5-flash.round-1.txt
+- docs/notes/review-runs/postwrite-d008-dogfooding-event-ledger-checklist-2026-06-09-r2/review_summary.md
+- docs/notes/review-runs/postwrite-d008-dogfooding-event-ledger-checklist-2026-06-09-r2/rounds.yaml
+- docs/notes/review-runs/postwrite-d008-dogfooding-event-ledger-checklist-2026-06-09-r2/target-manifest.yaml
+- docs/notes/review-runs/postwrite-d008-dogfooding-event-ledger-checklist-2026-06-09-r2/triage.yaml
+- docs/notes/review-runs/postwrite-d019-time-cost-model-assignment-checklist-2026-06-09-r1/model-result-summary.yaml
+- docs/notes/review-runs/postwrite-d019-time-cost-model-assignment-checklist-2026-06-09-r1/parsed/gemini-3.5-flash.round-1.yaml
+- docs/notes/review-runs/postwrite-d019-time-cost-model-assignment-checklist-2026-06-09-r1/raw/gemini-3.5-flash.round-1.txt
+- docs/notes/review-runs/postwrite-d019-time-cost-model-assignment-checklist-2026-06-09-r1/review_summary.md
+- docs/notes/review-runs/postwrite-d019-time-cost-model-assignment-checklist-2026-06-09-r1/rounds.yaml
+- docs/notes/review-runs/postwrite-d019-time-cost-model-assignment-checklist-2026-06-09-r1/target-manifest.yaml
+- docs/notes/review-runs/postwrite-d019-time-cost-model-assignment-checklist-2026-06-09-r1/triage.yaml
+- docs/notes/review-runs/postwrite-d019-time-cost-model-assignment-checklist-2026-06-09-r2/model-result-summary.yaml
+- docs/notes/review-runs/postwrite-d019-time-cost-model-assignment-checklist-2026-06-09-r2/parsed/gemini-3.5-flash.round-1.yaml
+- docs/notes/review-runs/postwrite-d019-time-cost-model-assignment-checklist-2026-06-09-r2/raw/gemini-3.5-flash.round-1.txt
+- docs/notes/review-runs/postwrite-d019-time-cost-model-assignment-checklist-2026-06-09-r2/review_summary.md
+- docs/notes/review-runs/postwrite-d019-time-cost-model-assignment-checklist-2026-06-09-r2/rounds.yaml
+- docs/notes/review-runs/postwrite-d019-time-cost-model-assignment-checklist-2026-06-09-r2/target-manifest.yaml
+- docs/notes/review-runs/postwrite-d019-time-cost-model-assignment-checklist-2026-06-09-r2/triage.yaml
+- docs/notes/review-runs/postwrite-d020-cross-repository-replication-checklist-2026-06-09-r1/model-result-summary.yaml
+- docs/notes/review-runs/postwrite-d020-cross-repository-replication-checklist-2026-06-09-r1/parsed/gemini-3.5-flash.round-1.yaml
+- docs/notes/review-runs/postwrite-d020-cross-repository-replication-checklist-2026-06-09-r1/raw/gemini-3.5-flash.round-1.txt
+- docs/notes/review-runs/postwrite-d020-cross-repository-replication-checklist-2026-06-09-r1/review_summary.md
+- docs/notes/review-runs/postwrite-d020-cross-repository-replication-checklist-2026-06-09-r1/rounds.yaml
+- docs/notes/review-runs/postwrite-d020-cross-repository-replication-checklist-2026-06-09-r1/target-manifest.yaml
+- docs/notes/review-runs/postwrite-d020-cross-repository-replication-checklist-2026-06-09-r1/triage.yaml
+- docs/notes/review-runs/postwrite-d020-cross-repository-replication-checklist-2026-06-09-r2/model-result-summary.yaml
+- docs/notes/review-runs/postwrite-d020-cross-repository-replication-checklist-2026-06-09-r2/parsed/gemini-3.5-flash.round-1.yaml
+- docs/notes/review-runs/postwrite-d020-cross-repository-replication-checklist-2026-06-09-r2/raw/gemini-3.5-flash.round-1.txt
+- docs/notes/review-runs/postwrite-d020-cross-repository-replication-checklist-2026-06-09-r2/review_summary.md
+- docs/notes/review-runs/postwrite-d020-cross-repository-replication-checklist-2026-06-09-r2/rounds.yaml
+- docs/notes/review-runs/postwrite-d020-cross-repository-replication-checklist-2026-06-09-r2/target-manifest.yaml
+- docs/notes/review-runs/postwrite-d020-cross-repository-replication-checklist-2026-06-09-r2/triage.yaml
+- docs/notes/review-runs/postwrite-d020-cross-repository-replication-checklist-2026-06-09-r3/model-result-summary.yaml
+- docs/notes/review-runs/postwrite-d020-cross-repository-replication-checklist-2026-06-09-r3/parsed/gemini-3.5-flash.round-1.yaml
+- docs/notes/review-runs/postwrite-d020-cross-repository-replication-checklist-2026-06-09-r3/raw/gemini-3.5-flash.round-1.txt
+- docs/notes/review-runs/postwrite-d020-cross-repository-replication-checklist-2026-06-09-r3/review_summary.md
+- docs/notes/review-runs/postwrite-d020-cross-repository-replication-checklist-2026-06-09-r3/rounds.yaml
+- docs/notes/review-runs/postwrite-d020-cross-repository-replication-checklist-2026-06-09-r3/target-manifest.yaml
+- docs/notes/review-runs/postwrite-d020-cross-repository-replication-checklist-2026-06-09-r3/triage.yaml
+- docs/notes/review-runs/postwrite-d023-deployment-independence-lint-checklist-2026-06-09-r1/model-result-summary.yaml
+- docs/notes/review-runs/postwrite-d023-deployment-independence-lint-checklist-2026-06-09-r1/parsed/gemini-3.5-flash.round-1.yaml
+- docs/notes/review-runs/postwrite-d023-deployment-independence-lint-checklist-2026-06-09-r1/raw/gemini-3.5-flash.round-1.txt
+- docs/notes/review-runs/postwrite-d023-deployment-independence-lint-checklist-2026-06-09-r1/review_summary.md
+- docs/notes/review-runs/postwrite-d023-deployment-independence-lint-checklist-2026-06-09-r1/rounds.yaml
+- docs/notes/review-runs/postwrite-d023-deployment-independence-lint-checklist-2026-06-09-r1/target-manifest.yaml
+- docs/notes/review-runs/postwrite-d023-deployment-independence-lint-checklist-2026-06-09-r1/triage.yaml
+- docs/notes/review-runs/postwrite-d023-deployment-independence-lint-checklist-2026-06-09-r2/model-result-summary.yaml
+- docs/notes/review-runs/postwrite-d023-deployment-independence-lint-checklist-2026-06-09-r2/parsed/gemini-3.5-flash.round-1.yaml
+- docs/notes/review-runs/postwrite-d023-deployment-independence-lint-checklist-2026-06-09-r2/raw/gemini-3.5-flash.round-1.txt
+- docs/notes/review-runs/postwrite-d023-deployment-independence-lint-checklist-2026-06-09-r2/review_summary.md
+- docs/notes/review-runs/postwrite-d023-deployment-independence-lint-checklist-2026-06-09-r2/rounds.yaml
+- docs/notes/review-runs/postwrite-d023-deployment-independence-lint-checklist-2026-06-09-r2/target-manifest.yaml
+- docs/notes/review-runs/postwrite-d023-deployment-independence-lint-checklist-2026-06-09-r2/triage.yaml
+- docs/notes/review-runs/postwrite-d025-tdd-cycle-evidence-checklist-2026-06-09-r1/model-result-summary.yaml
+- docs/notes/review-runs/postwrite-d025-tdd-cycle-evidence-checklist-2026-06-09-r1/parsed/gemini-3.5-flash.round-1.yaml
+- docs/notes/review-runs/postwrite-d025-tdd-cycle-evidence-checklist-2026-06-09-r1/raw/gemini-3.5-flash.round-1.txt
+- docs/notes/review-runs/postwrite-d025-tdd-cycle-evidence-checklist-2026-06-09-r1/review_summary.md
+- docs/notes/review-runs/postwrite-d025-tdd-cycle-evidence-checklist-2026-06-09-r1/rounds.yaml
+- docs/notes/review-runs/postwrite-d025-tdd-cycle-evidence-checklist-2026-06-09-r1/target-manifest.yaml
+- docs/notes/review-runs/postwrite-d025-tdd-cycle-evidence-checklist-2026-06-09-r1/triage.yaml
+- docs/notes/review-runs/postwrite-d025-tdd-cycle-evidence-checklist-2026-06-09-r2/model-result-summary.yaml
+- docs/notes/review-runs/postwrite-d025-tdd-cycle-evidence-checklist-2026-06-09-r2/parsed/gemini-3.5-flash.round-1.yaml
+- docs/notes/review-runs/postwrite-d025-tdd-cycle-evidence-checklist-2026-06-09-r2/raw/gemini-3.5-flash.round-1.txt
+- docs/notes/review-runs/postwrite-d025-tdd-cycle-evidence-checklist-2026-06-09-r2/review_summary.md
+- docs/notes/review-runs/postwrite-d025-tdd-cycle-evidence-checklist-2026-06-09-r2/rounds.yaml
+- docs/notes/review-runs/postwrite-d025-tdd-cycle-evidence-checklist-2026-06-09-r2/target-manifest.yaml
+- docs/notes/review-runs/postwrite-d025-tdd-cycle-evidence-checklist-2026-06-09-r2/triage.yaml
+- docs/notes/review-runs/postwrite-d027-side-track-state-model-checklist-2026-06-09-r1/model-result-summary.yaml
+- docs/notes/review-runs/postwrite-d027-side-track-state-model-checklist-2026-06-09-r1/parsed/gemini-3.5-flash.round-1.yaml
+- docs/notes/review-runs/postwrite-d027-side-track-state-model-checklist-2026-06-09-r1/raw/gemini-3.5-flash.round-1.txt
+- docs/notes/review-runs/postwrite-d027-side-track-state-model-checklist-2026-06-09-r1/review_summary.md
+- docs/notes/review-runs/postwrite-d027-side-track-state-model-checklist-2026-06-09-r1/rounds.yaml
+- docs/notes/review-runs/postwrite-d027-side-track-state-model-checklist-2026-06-09-r1/target-manifest.yaml
+- docs/notes/review-runs/postwrite-d027-side-track-state-model-checklist-2026-06-09-r1/triage.yaml
+- docs/notes/review-runs/postwrite-d027-side-track-state-model-checklist-2026-06-09-r2/model-result-summary.yaml
+- docs/notes/review-runs/postwrite-d027-side-track-state-model-checklist-2026-06-09-r2/parsed/gemini-3.5-flash.round-1.yaml
+- docs/notes/review-runs/postwrite-d027-side-track-state-model-checklist-2026-06-09-r2/raw/gemini-3.5-flash.round-1.txt
+- docs/notes/review-runs/postwrite-d027-side-track-state-model-checklist-2026-06-09-r2/review_summary.md
+- docs/notes/review-runs/postwrite-d027-side-track-state-model-checklist-2026-06-09-r2/rounds.yaml
+- docs/notes/review-runs/postwrite-d027-side-track-state-model-checklist-2026-06-09-r2/target-manifest.yaml
+- docs/notes/review-runs/postwrite-d027-side-track-state-model-checklist-2026-06-09-r2/triage.yaml
+- docs/operations/WORKFLOW_NAVIGATION_FOR_CLAUDE.md
+target_sha256:
+  docs/notes/2026-06-09-d004-normalized-finding-schema-checklist.md: c41a91327e7e51565b77529593c0dd49cbc89e1084be41534b3673f28ace03bc
+  docs/notes/2026-06-09-d005-finding-to-fix-traceability-checklist.md: 10813f86889a44f01b658906809fbb975ce79413c203709b5a9e83ae4eb82618
+  docs/notes/2026-06-09-d008-dogfooding-event-ledger-checklist.md: 47e8cfa999c6e73ab1f81ddff7ac235d626d4746a0c8c4d0f614c619ebf28d77
+  docs/notes/2026-06-09-d019-time-cost-model-assignment-checklist.md: 6240242823425193e79bfd6f70df622dda2f43be21e5635ab7d41e6467e86ffc
+  docs/notes/2026-06-09-d020-cross-repository-replication-checklist.md: e7c9be4973ece57c69080be7a1ec5ce2845ff7a48e0ab2e8796d3c6c4602fd44
+  docs/notes/2026-06-09-d023-deployment-independence-lint-checklist.md: b51267834e66f126c7b941b1a8cdc015a2c7c33055c82dd873dccc74506cc2f4
+  docs/notes/2026-06-09-d025-tdd-cycle-evidence-checklist.md: cd347e92571a0e8d6757580b42a63a5a09f0ad5f10943f003fe3a44a6c3814b3
+  docs/notes/2026-06-09-d027-side-track-state-model-checklist.md: 0c46f30d76b909405918af1652ced510894361d774214e5d7864d53e3524e4e3
+  docs/notes/review-runs/postwrite-d004-normalized-finding-schema-checklist-2026-06-09-r1/model-result-summary.yaml: 7308416a141104ad0c2abd2c5fef93a9f571731613c490e593e8bd7297533def
+  ? docs/notes/review-runs/postwrite-d004-normalized-finding-schema-checklist-2026-06-09-r1/parsed/gemini-3.5-flash.round-1.yaml
+  : 85cb43ce4f968cd18c87c05f6cc65d92834a455c68c6f7422b1962ce8a53d80e
+  docs/notes/review-runs/postwrite-d004-normalized-finding-schema-checklist-2026-06-09-r1/raw/gemini-3.5-flash.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+  docs/notes/review-runs/postwrite-d004-normalized-finding-schema-checklist-2026-06-09-r1/review_summary.md: 6df7391ec32d1d5f39e13f9e2db062f55afbfc7b1daa51039fdc7db5a06aaf14
+  docs/notes/review-runs/postwrite-d004-normalized-finding-schema-checklist-2026-06-09-r1/rounds.yaml: 58344cee410d9975ca705abb761fdf199a0c1cb4a3c7e372916d2787d56b0a0f
+  docs/notes/review-runs/postwrite-d004-normalized-finding-schema-checklist-2026-06-09-r1/target-manifest.yaml: d9820e7b848aa9dd186666713b89364a1dea1d092e0d378de7485934ee1f3c33
+  docs/notes/review-runs/postwrite-d004-normalized-finding-schema-checklist-2026-06-09-r1/triage.yaml: a379b33079f98aa83c802e77cd34444c1abd3867504cbcdc66d1e41cbe6a3f56
+  docs/notes/review-runs/postwrite-d004-normalized-finding-schema-checklist-2026-06-09-r2/model-result-summary.yaml: 88baf0bc689201af9192b56bb13a7b54a37465d205bd593baf175daf81fddeb3
+  ? docs/notes/review-runs/postwrite-d004-normalized-finding-schema-checklist-2026-06-09-r2/parsed/gemini-3.5-flash.round-1.yaml
+  : baf96b46aec88329b38bc321f77f6f29cccfdede90c3a0e1e93641baa813a107
+  docs/notes/review-runs/postwrite-d004-normalized-finding-schema-checklist-2026-06-09-r2/raw/gemini-3.5-flash.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+  docs/notes/review-runs/postwrite-d004-normalized-finding-schema-checklist-2026-06-09-r2/review_summary.md: b4d4fa8a0fe890fac5317a798dc157b9b34e04a65d76502d03dab3bff2b360cb
+  docs/notes/review-runs/postwrite-d004-normalized-finding-schema-checklist-2026-06-09-r2/rounds.yaml: 8c14492cf900aec79fc1e1134b1a355e001438d349d057418c7bc0a040cc2e25
+  docs/notes/review-runs/postwrite-d004-normalized-finding-schema-checklist-2026-06-09-r2/target-manifest.yaml: d78fb08be8cfe077f9357f5fd127d5730fe3de5e8b09232c676fa58b401e0d08
+  docs/notes/review-runs/postwrite-d004-normalized-finding-schema-checklist-2026-06-09-r2/triage.yaml: 91867ab38aaa110862d353b03ba03bd7ab52e123595fcbc394f23859b69235f0
+  docs/notes/review-runs/postwrite-d005-finding-to-fix-traceability-checklist-2026-06-09-r1/model-result-summary.yaml: f652605659358f9a4631f03a73f0a9f49cacc04c4a88e56b052ef2a15e817320
+  ? docs/notes/review-runs/postwrite-d005-finding-to-fix-traceability-checklist-2026-06-09-r1/parsed/gemini-3.5-flash.round-1.yaml
+  : de4221e30ffc7ed90fc4d8f204d5ae5d8e846c2c3de89b605466ee45b51999cf
+  docs/notes/review-runs/postwrite-d005-finding-to-fix-traceability-checklist-2026-06-09-r1/raw/gemini-3.5-flash.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+  docs/notes/review-runs/postwrite-d005-finding-to-fix-traceability-checklist-2026-06-09-r1/review_summary.md: 547bae583fc8701da122bf101ceea07bb955f91d4080f75209be1fe3fed80406
+  docs/notes/review-runs/postwrite-d005-finding-to-fix-traceability-checklist-2026-06-09-r1/rounds.yaml: ee065a71a92ada1549ba8fdf87eac88cbc2622fe30f98a601d6b44011f06a6ca
+  docs/notes/review-runs/postwrite-d005-finding-to-fix-traceability-checklist-2026-06-09-r1/target-manifest.yaml: a04915ac703c42799e64965602d9eed4fb80b1f33661130e2aaa54e86f5bce3f
+  docs/notes/review-runs/postwrite-d005-finding-to-fix-traceability-checklist-2026-06-09-r1/triage.yaml: 7dc9a7401fa143c492c289b8c53ed308a1a4085f30d86b376a8b6a8a30ac5b4d
+  docs/notes/review-runs/postwrite-d005-finding-to-fix-traceability-checklist-2026-06-09-r2/model-result-summary.yaml: 19117677904645d6e0efcd96202236be73c5df5cbe53e38555318a726d34b417
+  ? docs/notes/review-runs/postwrite-d005-finding-to-fix-traceability-checklist-2026-06-09-r2/parsed/gemini-3.5-flash.round-1.yaml
+  : 382e198fa65bea734b03ec450dd6cb0115faee05e66c063942fe2d978fd55220
+  docs/notes/review-runs/postwrite-d005-finding-to-fix-traceability-checklist-2026-06-09-r2/raw/gemini-3.5-flash.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+  docs/notes/review-runs/postwrite-d005-finding-to-fix-traceability-checklist-2026-06-09-r2/review_summary.md: 119c9118215a9c5748cf309fd1814f3ee7876f51159f9d9e2358793a237c36ba
+  docs/notes/review-runs/postwrite-d005-finding-to-fix-traceability-checklist-2026-06-09-r2/rounds.yaml: 498074134c91f6f609a0624720f943131e3123082a9e53ff0e577eb0351e5cc4
+  docs/notes/review-runs/postwrite-d005-finding-to-fix-traceability-checklist-2026-06-09-r2/target-manifest.yaml: 21b086473cc8aa8eafb713a44e2a5d35508f786f3603af390ebb7fef54f8fb58
+  docs/notes/review-runs/postwrite-d005-finding-to-fix-traceability-checklist-2026-06-09-r2/triage.yaml: 66f575acc35bfc5e546912abd3b06b651c15010a05b2e30ae531563f3b43a295
+  docs/notes/review-runs/postwrite-d008-dogfooding-event-ledger-checklist-2026-06-09-r1/model-result-summary.yaml: 05b0478d301bf18b5f0591ea01c001f501919d845d0394154794984be8281a0a
+  docs/notes/review-runs/postwrite-d008-dogfooding-event-ledger-checklist-2026-06-09-r1/parsed/gemini-3.5-flash.round-1.yaml: b80a9ec42ec84ffc83124e8dbae304820d9b654d1b88eb21128bda1799498fc1
+  docs/notes/review-runs/postwrite-d008-dogfooding-event-ledger-checklist-2026-06-09-r1/raw/gemini-3.5-flash.round-1.txt: 514ca7ce698924d6d317b58eb180fac52856c6e44dd083b725c9ff5738c2f87c
+  docs/notes/review-runs/postwrite-d008-dogfooding-event-ledger-checklist-2026-06-09-r1/review_summary.md: 72906d029356ebfb1ee7c49e86eb299b90b8578e7dbf29239af5e79d4bc4d5ea
+  docs/notes/review-runs/postwrite-d008-dogfooding-event-ledger-checklist-2026-06-09-r1/rounds.yaml: 7ae47812f5e00b534cd903d50bc099e64504609f629a26ce08386588c02d2bd4
+  docs/notes/review-runs/postwrite-d008-dogfooding-event-ledger-checklist-2026-06-09-r1/target-manifest.yaml: 74e4736b584e833fe11042913d97452c9f04a1d9a9481bcd1e16e55df26a01ab
+  docs/notes/review-runs/postwrite-d008-dogfooding-event-ledger-checklist-2026-06-09-r1/triage.yaml: 365b0bb1316cfe796ea2fe6a97fb543d82651320f5e6caabf96f4a32e73b671d
+  docs/notes/review-runs/postwrite-d008-dogfooding-event-ledger-checklist-2026-06-09-r2/model-result-summary.yaml: fbc2200d3b9067a9c73052e73a10d192d96db8decc6787e798258c157870a562
+  docs/notes/review-runs/postwrite-d008-dogfooding-event-ledger-checklist-2026-06-09-r2/parsed/gemini-3.5-flash.round-1.yaml: 020ae3b34319144c0dff90800fe94644180e6f839684a63e408a1fbbc5676469
+  docs/notes/review-runs/postwrite-d008-dogfooding-event-ledger-checklist-2026-06-09-r2/raw/gemini-3.5-flash.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+  docs/notes/review-runs/postwrite-d008-dogfooding-event-ledger-checklist-2026-06-09-r2/review_summary.md: 2b8e90903cb286fc81737efe5901c0beba1efcb81b46ee8328ac00bd91e9dad6
+  docs/notes/review-runs/postwrite-d008-dogfooding-event-ledger-checklist-2026-06-09-r2/rounds.yaml: 7c29a1cc8dfe3b2e88c05a1e9638905ac7c97fdd7859cd1df7224f95674890b1
+  docs/notes/review-runs/postwrite-d008-dogfooding-event-ledger-checklist-2026-06-09-r2/target-manifest.yaml: db10c7e07ac8522ac28a66a4b9168f606c0d3231eae5cdd1f19d4b10eb2656d4
+  docs/notes/review-runs/postwrite-d008-dogfooding-event-ledger-checklist-2026-06-09-r2/triage.yaml: 78dbd3c86b0206a66cf4f6b78848a6fc8a71f52d0ffc5dd1314482af0c18dade
+  docs/notes/review-runs/postwrite-d019-time-cost-model-assignment-checklist-2026-06-09-r1/model-result-summary.yaml: f8d82d80c19331b06e3c16f204a73ec287bc8532874e7c9831a8271712b812e5
+  ? docs/notes/review-runs/postwrite-d019-time-cost-model-assignment-checklist-2026-06-09-r1/parsed/gemini-3.5-flash.round-1.yaml
+  : 2f1d13f63ba5d34f30ba8e9804dfa71ea638a100156f641d7f4bc5dab83685a8
+  docs/notes/review-runs/postwrite-d019-time-cost-model-assignment-checklist-2026-06-09-r1/raw/gemini-3.5-flash.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+  docs/notes/review-runs/postwrite-d019-time-cost-model-assignment-checklist-2026-06-09-r1/review_summary.md: 9d53ac82a6ed78ac68276723cc2099d941c14106aa985b5a69dbb7585b788dc6
+  docs/notes/review-runs/postwrite-d019-time-cost-model-assignment-checklist-2026-06-09-r1/rounds.yaml: 5e80e7162a1a2dc6958d5f0be00229324ca1495ef5c36dd36680722cfb1d764f
+  docs/notes/review-runs/postwrite-d019-time-cost-model-assignment-checklist-2026-06-09-r1/target-manifest.yaml: dabb863d4913ed06c591cc394eaf26f0b8bf28e08a9077bc9d6f183def703d43
+  docs/notes/review-runs/postwrite-d019-time-cost-model-assignment-checklist-2026-06-09-r1/triage.yaml: 5d046e6d49ee7da733f24b7388fec75bde77fdb6d57abfd092b2586848d946ee
+  docs/notes/review-runs/postwrite-d019-time-cost-model-assignment-checklist-2026-06-09-r2/model-result-summary.yaml: 1d79bd6d5b021f4972f37d8e7453383fc70dcbd33c9a26bde7d4049783fd53b8
+  ? docs/notes/review-runs/postwrite-d019-time-cost-model-assignment-checklist-2026-06-09-r2/parsed/gemini-3.5-flash.round-1.yaml
+  : 3adf94d3f329f2714bfc7dc3b1a8a77ecb575b8031783f58c32bec2637f21841
+  docs/notes/review-runs/postwrite-d019-time-cost-model-assignment-checklist-2026-06-09-r2/raw/gemini-3.5-flash.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+  docs/notes/review-runs/postwrite-d019-time-cost-model-assignment-checklist-2026-06-09-r2/review_summary.md: 7d1df1283fd1199e4f906c6e7854b0b1631268242fbda665edec753dc3d4acd0
+  docs/notes/review-runs/postwrite-d019-time-cost-model-assignment-checklist-2026-06-09-r2/rounds.yaml: 240201a92336bb3026440308317b74788c4a2976edb368a0358339c879574aa0
+  docs/notes/review-runs/postwrite-d019-time-cost-model-assignment-checklist-2026-06-09-r2/target-manifest.yaml: fde8f4177c481e29e1d483805e9f7e6fa8f31d9a87dcd30f71865d31c90a9ec5
+  docs/notes/review-runs/postwrite-d019-time-cost-model-assignment-checklist-2026-06-09-r2/triage.yaml: ecd5fa293870cefffb4a0cc590a5216b66536ade4ab74ffd7637125073ad9644
+  docs/notes/review-runs/postwrite-d020-cross-repository-replication-checklist-2026-06-09-r1/model-result-summary.yaml: d4a367d6d3267701be4b271aefd4f276837923a413221c0602a5567b877b8bb2
+  ? docs/notes/review-runs/postwrite-d020-cross-repository-replication-checklist-2026-06-09-r1/parsed/gemini-3.5-flash.round-1.yaml
+  : 3d093ca271e511ee44ab294953415de824033745c65c12493f1644741b81ed78
+  ? docs/notes/review-runs/postwrite-d020-cross-repository-replication-checklist-2026-06-09-r1/raw/gemini-3.5-flash.round-1.txt
+  : ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+  docs/notes/review-runs/postwrite-d020-cross-repository-replication-checklist-2026-06-09-r1/review_summary.md: 5be663f04e82574bc59c29b75ba6f27e11d3f6b8c12c2bd966f015b23eba57f4
+  docs/notes/review-runs/postwrite-d020-cross-repository-replication-checklist-2026-06-09-r1/rounds.yaml: 3e6dc51676acbfabf69a6002d5ec68329777bdad1a4befa1d778fd668774c2b0
+  docs/notes/review-runs/postwrite-d020-cross-repository-replication-checklist-2026-06-09-r1/target-manifest.yaml: 2a54a954bae66b2f7ac55fdb9a0277c5bba764eeec3bbdaf8140a5442cea651b
+  docs/notes/review-runs/postwrite-d020-cross-repository-replication-checklist-2026-06-09-r1/triage.yaml: 6376d85cda799b330c258776bc5a9193aae029fa44839994d184231026eebb62
+  docs/notes/review-runs/postwrite-d020-cross-repository-replication-checklist-2026-06-09-r2/model-result-summary.yaml: 0b080d51db854336b0c9fdcc82ee232f7e856dcb87399a87ab00e014418f6d06
+  ? docs/notes/review-runs/postwrite-d020-cross-repository-replication-checklist-2026-06-09-r2/parsed/gemini-3.5-flash.round-1.yaml
+  : 6fe0e6e28e9e1147add308a78a4b78579d8d206d92b708d8f8eeebb09b82bd65
+  ? docs/notes/review-runs/postwrite-d020-cross-repository-replication-checklist-2026-06-09-r2/raw/gemini-3.5-flash.round-1.txt
+  : 790fcd054b29620b555338c420595cbb51026715a47afca21470eb4b7a7ecf12
+  docs/notes/review-runs/postwrite-d020-cross-repository-replication-checklist-2026-06-09-r2/review_summary.md: 9a8c2781bd8e8060e8b9590d90564f869b0753dc9255c831fc2dbab5eca0ce5e
+  docs/notes/review-runs/postwrite-d020-cross-repository-replication-checklist-2026-06-09-r2/rounds.yaml: 902ff7f675bec803c3be2aa50aae205c949f28b02ca31e39f8490a8e2cb56aa3
+  docs/notes/review-runs/postwrite-d020-cross-repository-replication-checklist-2026-06-09-r2/target-manifest.yaml: 448ab4fe166d5a7ad261080ea1eba03fba423450b91a458edb1eaeff5b52bf34
+  docs/notes/review-runs/postwrite-d020-cross-repository-replication-checklist-2026-06-09-r2/triage.yaml: 0eca164bddbd82ca486764ff1a3fabc40b08bc10c38d5ffa8557e59faec922be
+  docs/notes/review-runs/postwrite-d020-cross-repository-replication-checklist-2026-06-09-r3/model-result-summary.yaml: 4fa96a72f34463a4cc65b665b99aa335698dabcf4aa53d53eab1bf87c371066e
+  ? docs/notes/review-runs/postwrite-d020-cross-repository-replication-checklist-2026-06-09-r3/parsed/gemini-3.5-flash.round-1.yaml
+  : 1fbbf90e305e4d0e7ead1cfc7101dbc1259d2483b8024a47cdaee5f137b52e0a
+  ? docs/notes/review-runs/postwrite-d020-cross-repository-replication-checklist-2026-06-09-r3/raw/gemini-3.5-flash.round-1.txt
+  : ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+  docs/notes/review-runs/postwrite-d020-cross-repository-replication-checklist-2026-06-09-r3/review_summary.md: 487a916d1fda60bd6a003280d08ff9c586ace51585814768adfa7efa1fca05a0
+  docs/notes/review-runs/postwrite-d020-cross-repository-replication-checklist-2026-06-09-r3/rounds.yaml: eb3857c965b340fa66cd0f64b5f57ae81e8a2e7743581543616c65214535091b
+  docs/notes/review-runs/postwrite-d020-cross-repository-replication-checklist-2026-06-09-r3/target-manifest.yaml: 2a6a2e34413e6fab9d3a2419c217544cc2d616766b5983811cfd9d22ee667105
+  docs/notes/review-runs/postwrite-d020-cross-repository-replication-checklist-2026-06-09-r3/triage.yaml: 9ca756c90e4d7cf60b3c764213eb8b6ba215c1e57e2b86af5ad59a86601036be
+  docs/notes/review-runs/postwrite-d023-deployment-independence-lint-checklist-2026-06-09-r1/model-result-summary.yaml: 7d4e500c10d7afa6fed96758d50fc8c346c30ddf291335c50d56463db661563e
+  ? docs/notes/review-runs/postwrite-d023-deployment-independence-lint-checklist-2026-06-09-r1/parsed/gemini-3.5-flash.round-1.yaml
+  : fa905b81dda494ea9b8a9101a89c6842cd6e41c696d93124f78ef71f14452096
+  ? docs/notes/review-runs/postwrite-d023-deployment-independence-lint-checklist-2026-06-09-r1/raw/gemini-3.5-flash.round-1.txt
+  : ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+  docs/notes/review-runs/postwrite-d023-deployment-independence-lint-checklist-2026-06-09-r1/review_summary.md: c79b55e473ce1f02b94b980cc34dce81c768eb3d3259ac12bc03d8020eb97019
+  docs/notes/review-runs/postwrite-d023-deployment-independence-lint-checklist-2026-06-09-r1/rounds.yaml: ca1190ed00609508edd71258d9250568fa05bec355bca7b146c9242ee8784449
+  docs/notes/review-runs/postwrite-d023-deployment-independence-lint-checklist-2026-06-09-r1/target-manifest.yaml: 66b662966d3977be39586ad8a26134088dc359d6e46bb2e945e2ea07f556dd71
+  docs/notes/review-runs/postwrite-d023-deployment-independence-lint-checklist-2026-06-09-r1/triage.yaml: 59b1a6fc1be82b0244ba9c581cf61f5a49915fc2ad3109dbaf53b75467fc8a9c
+  docs/notes/review-runs/postwrite-d023-deployment-independence-lint-checklist-2026-06-09-r2/model-result-summary.yaml: 34239743e391d0cbae1edfbf6daa613b01530aaf99aa541bbac4beeb3a7ec1c8
+  ? docs/notes/review-runs/postwrite-d023-deployment-independence-lint-checklist-2026-06-09-r2/parsed/gemini-3.5-flash.round-1.yaml
+  : 96cb623d5896a0546508b411234d9565db119b6a92c04ec10a6784dd44b5ee6f
+  ? docs/notes/review-runs/postwrite-d023-deployment-independence-lint-checklist-2026-06-09-r2/raw/gemini-3.5-flash.round-1.txt
+  : ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+  docs/notes/review-runs/postwrite-d023-deployment-independence-lint-checklist-2026-06-09-r2/review_summary.md: 49a7b629ee422d13147e63634256cf0d121cc03b7c38df2d9c5c07370b09690b
+  docs/notes/review-runs/postwrite-d023-deployment-independence-lint-checklist-2026-06-09-r2/rounds.yaml: 2b762e4138e7807857221208949f43d90d318bc7cb85edc5be6651880f801011
+  docs/notes/review-runs/postwrite-d023-deployment-independence-lint-checklist-2026-06-09-r2/target-manifest.yaml: 62212976a11f62e5aebeef36ac7e160fc21e2fbc24b0bdc92ee56f5db1224a63
+  docs/notes/review-runs/postwrite-d023-deployment-independence-lint-checklist-2026-06-09-r2/triage.yaml: 2ad7710415e1f2e9025f0b450b3948d1cde2d5b7dd7218b4c0338dcd86a22f3d
+  docs/notes/review-runs/postwrite-d025-tdd-cycle-evidence-checklist-2026-06-09-r1/model-result-summary.yaml: 9bcd2f2a6fb1ef2fd1f48ce90bb0b333c59ab5686bb6e4d5d1435f174fb6cdbf
+  docs/notes/review-runs/postwrite-d025-tdd-cycle-evidence-checklist-2026-06-09-r1/parsed/gemini-3.5-flash.round-1.yaml: 4c7d463c06cd3fd05f218fd521c316054067da14fbd36d0df5aff5df8b527c6f
+  docs/notes/review-runs/postwrite-d025-tdd-cycle-evidence-checklist-2026-06-09-r1/raw/gemini-3.5-flash.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+  docs/notes/review-runs/postwrite-d025-tdd-cycle-evidence-checklist-2026-06-09-r1/review_summary.md: f2f9fa591242f158806d94413385e51463739bfd4edfe2bf1b48d0e44f7c21d6
+  docs/notes/review-runs/postwrite-d025-tdd-cycle-evidence-checklist-2026-06-09-r1/rounds.yaml: 8ea2207b97549744f9a79712f575f68839e11eba277cdc788857bcd271735b08
+  docs/notes/review-runs/postwrite-d025-tdd-cycle-evidence-checklist-2026-06-09-r1/target-manifest.yaml: 56ab6fec31d68652678e5ec723c8a979886b7f35e8fd6dcfea88c19fd4f3e6f8
+  docs/notes/review-runs/postwrite-d025-tdd-cycle-evidence-checklist-2026-06-09-r1/triage.yaml: 7b04b35ccf75c4b999aece6742833fb7892ecb7019603dff188a199d0d18b878
+  docs/notes/review-runs/postwrite-d025-tdd-cycle-evidence-checklist-2026-06-09-r2/model-result-summary.yaml: dee8656730cc43917ab2a8ef631b8cc62a093672e8cec765d3c6e1ccbc48c57f
+  docs/notes/review-runs/postwrite-d025-tdd-cycle-evidence-checklist-2026-06-09-r2/parsed/gemini-3.5-flash.round-1.yaml: e7beaddcd42ab7ba825d418794dca5eeaae08a4c9ef3153a71515c2d3b56993d
+  docs/notes/review-runs/postwrite-d025-tdd-cycle-evidence-checklist-2026-06-09-r2/raw/gemini-3.5-flash.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+  docs/notes/review-runs/postwrite-d025-tdd-cycle-evidence-checklist-2026-06-09-r2/review_summary.md: 839df3683a1197e2f362ef0fc0770345a5f41d89e3c6491291cb3db7f8b8b67a
+  docs/notes/review-runs/postwrite-d025-tdd-cycle-evidence-checklist-2026-06-09-r2/rounds.yaml: be600fe025f840f4fa82eb1953ffab5975060bfb943302c9b8f0d0f856c694dd
+  docs/notes/review-runs/postwrite-d025-tdd-cycle-evidence-checklist-2026-06-09-r2/target-manifest.yaml: 089b5e7fe9c812b15fda15fb41ff3f1807dbe407c42edb6d10f85590a97ba689
+  docs/notes/review-runs/postwrite-d025-tdd-cycle-evidence-checklist-2026-06-09-r2/triage.yaml: d1b1d9e5ff219e50dd1edb47b731fb2b4050b30182f68a827c7e591e6c607371
+  docs/notes/review-runs/postwrite-d027-side-track-state-model-checklist-2026-06-09-r1/model-result-summary.yaml: bc90e9fe49890a8a38c5e2d7124b0d8d07cbdebbf744f843a9555e2990abcdc0
+  docs/notes/review-runs/postwrite-d027-side-track-state-model-checklist-2026-06-09-r1/parsed/gemini-3.5-flash.round-1.yaml: 4b9a3e111ab728c93818f26f6aa2fb40af78cded98e0812a16caa2fe0b188a5d
+  docs/notes/review-runs/postwrite-d027-side-track-state-model-checklist-2026-06-09-r1/raw/gemini-3.5-flash.round-1.txt: aa8f22fc2d43f5bab03dd1cd1b3345a896a929857f390c862390af5c40e3f86a
+  docs/notes/review-runs/postwrite-d027-side-track-state-model-checklist-2026-06-09-r1/review_summary.md: 9dfe141f2cad3b1839f25c2bdb9e21df01969709286b758a221071c082043433
+  docs/notes/review-runs/postwrite-d027-side-track-state-model-checklist-2026-06-09-r1/rounds.yaml: 3447fcb08952c87fc396c9644067f1724e848dea3fe494c74726aa0e4b7514a0
+  docs/notes/review-runs/postwrite-d027-side-track-state-model-checklist-2026-06-09-r1/target-manifest.yaml: e89f6ab1aca04e121ef752ae46d88c1503695c0e15c62d0fba3697bd8991148b
+  docs/notes/review-runs/postwrite-d027-side-track-state-model-checklist-2026-06-09-r1/triage.yaml: 466feb7569d7be49c57c3fcac0e4d515ef2cd8973f2a94816ac6d8c894b69df9
+  docs/notes/review-runs/postwrite-d027-side-track-state-model-checklist-2026-06-09-r2/model-result-summary.yaml: 408638a5282fe8f2d451697abd074cdb264a4cba63c94fdf78380f5838c50ef2
+  docs/notes/review-runs/postwrite-d027-side-track-state-model-checklist-2026-06-09-r2/parsed/gemini-3.5-flash.round-1.yaml: c4510c405810a6034029f0d05f340187539367bf066da1120a5f2ad277c41d4e
+  docs/notes/review-runs/postwrite-d027-side-track-state-model-checklist-2026-06-09-r2/raw/gemini-3.5-flash.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+  docs/notes/review-runs/postwrite-d027-side-track-state-model-checklist-2026-06-09-r2/review_summary.md: 3745d76203a205617f5434a3bcf2787927dccd400e4b022a0ff81c78572d9d24
+  docs/notes/review-runs/postwrite-d027-side-track-state-model-checklist-2026-06-09-r2/rounds.yaml: f3cbf875f817639a854b03c392c13d0b1500d7c8e29f4ae25af1eeef7c730b94
+  docs/notes/review-runs/postwrite-d027-side-track-state-model-checklist-2026-06-09-r2/target-manifest.yaml: c4237f481046fbc2e3c7f5cb45a16f717dc5e68995474bca0703999eb073b7e4
+  docs/notes/review-runs/postwrite-d027-side-track-state-model-checklist-2026-06-09-r2/triage.yaml: 8f2a169046edfbc1b3970ac52806ce9cb18fd003c125066b0a1cc0254189f49c
+  docs/operations/WORKFLOW_NAVIGATION_FOR_CLAUDE.md: b737004dfad7989a70e6a386a8b6c1df86a55c21927749ff77b966f3e5b4a2a2
+required_verifiers: &id001
+- gemini-3.5-flash
+completed_verifiers: *id001
+unresolved_substantive_findings: 0
+verifications:
+- verifier: gemini-3.5-flash
+  target_files:
+  - docs/notes/2026-06-09-d004-normalized-finding-schema-checklist.md
+  - docs/notes/2026-06-09-d005-finding-to-fix-traceability-checklist.md
+  - docs/notes/2026-06-09-d008-dogfooding-event-ledger-checklist.md
+  - docs/notes/2026-06-09-d019-time-cost-model-assignment-checklist.md
+  - docs/notes/2026-06-09-d020-cross-repository-replication-checklist.md
+  - docs/notes/2026-06-09-d023-deployment-independence-lint-checklist.md
+  - docs/notes/2026-06-09-d025-tdd-cycle-evidence-checklist.md
+  - docs/notes/2026-06-09-d027-side-track-state-model-checklist.md
+  - docs/notes/review-runs/postwrite-d004-normalized-finding-schema-checklist-2026-06-09-r1/model-result-summary.yaml
+  - docs/notes/review-runs/postwrite-d004-normalized-finding-schema-checklist-2026-06-09-r1/parsed/gemini-3.5-flash.round-1.yaml
+  - docs/notes/review-runs/postwrite-d004-normalized-finding-schema-checklist-2026-06-09-r1/raw/gemini-3.5-flash.round-1.txt
+  - docs/notes/review-runs/postwrite-d004-normalized-finding-schema-checklist-2026-06-09-r1/review_summary.md
+  - docs/notes/review-runs/postwrite-d004-normalized-finding-schema-checklist-2026-06-09-r1/rounds.yaml
+  - docs/notes/review-runs/postwrite-d004-normalized-finding-schema-checklist-2026-06-09-r1/target-manifest.yaml
+  - docs/notes/review-runs/postwrite-d004-normalized-finding-schema-checklist-2026-06-09-r1/triage.yaml
+  - docs/notes/review-runs/postwrite-d004-normalized-finding-schema-checklist-2026-06-09-r2/model-result-summary.yaml
+  - docs/notes/review-runs/postwrite-d004-normalized-finding-schema-checklist-2026-06-09-r2/parsed/gemini-3.5-flash.round-1.yaml
+  - docs/notes/review-runs/postwrite-d004-normalized-finding-schema-checklist-2026-06-09-r2/raw/gemini-3.5-flash.round-1.txt
+  - docs/notes/review-runs/postwrite-d004-normalized-finding-schema-checklist-2026-06-09-r2/review_summary.md
+  - docs/notes/review-runs/postwrite-d004-normalized-finding-schema-checklist-2026-06-09-r2/rounds.yaml
+  - docs/notes/review-runs/postwrite-d004-normalized-finding-schema-checklist-2026-06-09-r2/target-manifest.yaml
+  - docs/notes/review-runs/postwrite-d004-normalized-finding-schema-checklist-2026-06-09-r2/triage.yaml
+  - docs/notes/review-runs/postwrite-d005-finding-to-fix-traceability-checklist-2026-06-09-r1/model-result-summary.yaml
+  - docs/notes/review-runs/postwrite-d005-finding-to-fix-traceability-checklist-2026-06-09-r1/parsed/gemini-3.5-flash.round-1.yaml
+  - docs/notes/review-runs/postwrite-d005-finding-to-fix-traceability-checklist-2026-06-09-r1/raw/gemini-3.5-flash.round-1.txt
+  - docs/notes/review-runs/postwrite-d005-finding-to-fix-traceability-checklist-2026-06-09-r1/review_summary.md
+  - docs/notes/review-runs/postwrite-d005-finding-to-fix-traceability-checklist-2026-06-09-r1/rounds.yaml
+  - docs/notes/review-runs/postwrite-d005-finding-to-fix-traceability-checklist-2026-06-09-r1/target-manifest.yaml
+  - docs/notes/review-runs/postwrite-d005-finding-to-fix-traceability-checklist-2026-06-09-r1/triage.yaml
+  - docs/notes/review-runs/postwrite-d005-finding-to-fix-traceability-checklist-2026-06-09-r2/model-result-summary.yaml
+  - docs/notes/review-runs/postwrite-d005-finding-to-fix-traceability-checklist-2026-06-09-r2/parsed/gemini-3.5-flash.round-1.yaml
+  - docs/notes/review-runs/postwrite-d005-finding-to-fix-traceability-checklist-2026-06-09-r2/raw/gemini-3.5-flash.round-1.txt
+  - docs/notes/review-runs/postwrite-d005-finding-to-fix-traceability-checklist-2026-06-09-r2/review_summary.md
+  - docs/notes/review-runs/postwrite-d005-finding-to-fix-traceability-checklist-2026-06-09-r2/rounds.yaml
+  - docs/notes/review-runs/postwrite-d005-finding-to-fix-traceability-checklist-2026-06-09-r2/target-manifest.yaml
+  - docs/notes/review-runs/postwrite-d005-finding-to-fix-traceability-checklist-2026-06-09-r2/triage.yaml
+  - docs/notes/review-runs/postwrite-d008-dogfooding-event-ledger-checklist-2026-06-09-r1/model-result-summary.yaml
+  - docs/notes/review-runs/postwrite-d008-dogfooding-event-ledger-checklist-2026-06-09-r1/parsed/gemini-3.5-flash.round-1.yaml
+  - docs/notes/review-runs/postwrite-d008-dogfooding-event-ledger-checklist-2026-06-09-r1/raw/gemini-3.5-flash.round-1.txt
+  - docs/notes/review-runs/postwrite-d008-dogfooding-event-ledger-checklist-2026-06-09-r1/review_summary.md
+  - docs/notes/review-runs/postwrite-d008-dogfooding-event-ledger-checklist-2026-06-09-r1/rounds.yaml
+  - docs/notes/review-runs/postwrite-d008-dogfooding-event-ledger-checklist-2026-06-09-r1/target-manifest.yaml
+  - docs/notes/review-runs/postwrite-d008-dogfooding-event-ledger-checklist-2026-06-09-r1/triage.yaml
+  - docs/notes/review-runs/postwrite-d008-dogfooding-event-ledger-checklist-2026-06-09-r2/model-result-summary.yaml
+  - docs/notes/review-runs/postwrite-d008-dogfooding-event-ledger-checklist-2026-06-09-r2/parsed/gemini-3.5-flash.round-1.yaml
+  - docs/notes/review-runs/postwrite-d008-dogfooding-event-ledger-checklist-2026-06-09-r2/raw/gemini-3.5-flash.round-1.txt
+  - docs/notes/review-runs/postwrite-d008-dogfooding-event-ledger-checklist-2026-06-09-r2/review_summary.md
+  - docs/notes/review-runs/postwrite-d008-dogfooding-event-ledger-checklist-2026-06-09-r2/rounds.yaml
+  - docs/notes/review-runs/postwrite-d008-dogfooding-event-ledger-checklist-2026-06-09-r2/target-manifest.yaml
+  - docs/notes/review-runs/postwrite-d008-dogfooding-event-ledger-checklist-2026-06-09-r2/triage.yaml
+  - docs/notes/review-runs/postwrite-d019-time-cost-model-assignment-checklist-2026-06-09-r1/model-result-summary.yaml
+  - docs/notes/review-runs/postwrite-d019-time-cost-model-assignment-checklist-2026-06-09-r1/parsed/gemini-3.5-flash.round-1.yaml
+  - docs/notes/review-runs/postwrite-d019-time-cost-model-assignment-checklist-2026-06-09-r1/raw/gemini-3.5-flash.round-1.txt
+  - docs/notes/review-runs/postwrite-d019-time-cost-model-assignment-checklist-2026-06-09-r1/review_summary.md
+  - docs/notes/review-runs/postwrite-d019-time-cost-model-assignment-checklist-2026-06-09-r1/rounds.yaml
+  - docs/notes/review-runs/postwrite-d019-time-cost-model-assignment-checklist-2026-06-09-r1/target-manifest.yaml
+  - docs/notes/review-runs/postwrite-d019-time-cost-model-assignment-checklist-2026-06-09-r1/triage.yaml
+  - docs/notes/review-runs/postwrite-d019-time-cost-model-assignment-checklist-2026-06-09-r2/model-result-summary.yaml
+  - docs/notes/review-runs/postwrite-d019-time-cost-model-assignment-checklist-2026-06-09-r2/parsed/gemini-3.5-flash.round-1.yaml
+  - docs/notes/review-runs/postwrite-d019-time-cost-model-assignment-checklist-2026-06-09-r2/raw/gemini-3.5-flash.round-1.txt
+  - docs/notes/review-runs/postwrite-d019-time-cost-model-assignment-checklist-2026-06-09-r2/review_summary.md
+  - docs/notes/review-runs/postwrite-d019-time-cost-model-assignment-checklist-2026-06-09-r2/rounds.yaml
+  - docs/notes/review-runs/postwrite-d019-time-cost-model-assignment-checklist-2026-06-09-r2/target-manifest.yaml
+  - docs/notes/review-runs/postwrite-d019-time-cost-model-assignment-checklist-2026-06-09-r2/triage.yaml
+  - docs/notes/review-runs/postwrite-d020-cross-repository-replication-checklist-2026-06-09-r1/model-result-summary.yaml
+  - docs/notes/review-runs/postwrite-d020-cross-repository-replication-checklist-2026-06-09-r1/parsed/gemini-3.5-flash.round-1.yaml
+  - docs/notes/review-runs/postwrite-d020-cross-repository-replication-checklist-2026-06-09-r1/raw/gemini-3.5-flash.round-1.txt
+  - docs/notes/review-runs/postwrite-d020-cross-repository-replication-checklist-2026-06-09-r1/review_summary.md
+  - docs/notes/review-runs/postwrite-d020-cross-repository-replication-checklist-2026-06-09-r1/rounds.yaml
+  - docs/notes/review-runs/postwrite-d020-cross-repository-replication-checklist-2026-06-09-r1/target-manifest.yaml
+  - docs/notes/review-runs/postwrite-d020-cross-repository-replication-checklist-2026-06-09-r1/triage.yaml
+  - docs/notes/review-runs/postwrite-d020-cross-repository-replication-checklist-2026-06-09-r2/model-result-summary.yaml
+  - docs/notes/review-runs/postwrite-d020-cross-repository-replication-checklist-2026-06-09-r2/parsed/gemini-3.5-flash.round-1.yaml
+  - docs/notes/review-runs/postwrite-d020-cross-repository-replication-checklist-2026-06-09-r2/raw/gemini-3.5-flash.round-1.txt
+  - docs/notes/review-runs/postwrite-d020-cross-repository-replication-checklist-2026-06-09-r2/review_summary.md
+  - docs/notes/review-runs/postwrite-d020-cross-repository-replication-checklist-2026-06-09-r2/rounds.yaml
+  - docs/notes/review-runs/postwrite-d020-cross-repository-replication-checklist-2026-06-09-r2/target-manifest.yaml
+  - docs/notes/review-runs/postwrite-d020-cross-repository-replication-checklist-2026-06-09-r2/triage.yaml
+  - docs/notes/review-runs/postwrite-d020-cross-repository-replication-checklist-2026-06-09-r3/model-result-summary.yaml
+  - docs/notes/review-runs/postwrite-d020-cross-repository-replication-checklist-2026-06-09-r3/parsed/gemini-3.5-flash.round-1.yaml
+  - docs/notes/review-runs/postwrite-d020-cross-repository-replication-checklist-2026-06-09-r3/raw/gemini-3.5-flash.round-1.txt
+  - docs/notes/review-runs/postwrite-d020-cross-repository-replication-checklist-2026-06-09-r3/review_summary.md
+  - docs/notes/review-runs/postwrite-d020-cross-repository-replication-checklist-2026-06-09-r3/rounds.yaml
+  - docs/notes/review-runs/postwrite-d020-cross-repository-replication-checklist-2026-06-09-r3/target-manifest.yaml
+  - docs/notes/review-runs/postwrite-d020-cross-repository-replication-checklist-2026-06-09-r3/triage.yaml
+  - docs/notes/review-runs/postwrite-d023-deployment-independence-lint-checklist-2026-06-09-r1/model-result-summary.yaml
+  - docs/notes/review-runs/postwrite-d023-deployment-independence-lint-checklist-2026-06-09-r1/parsed/gemini-3.5-flash.round-1.yaml
+  - docs/notes/review-runs/postwrite-d023-deployment-independence-lint-checklist-2026-06-09-r1/raw/gemini-3.5-flash.round-1.txt
+  - docs/notes/review-runs/postwrite-d023-deployment-independence-lint-checklist-2026-06-09-r1/review_summary.md
+  - docs/notes/review-runs/postwrite-d023-deployment-independence-lint-checklist-2026-06-09-r1/rounds.yaml
+  - docs/notes/review-runs/postwrite-d023-deployment-independence-lint-checklist-2026-06-09-r1/target-manifest.yaml
+  - docs/notes/review-runs/postwrite-d023-deployment-independence-lint-checklist-2026-06-09-r1/triage.yaml
+  - docs/notes/review-runs/postwrite-d023-deployment-independence-lint-checklist-2026-06-09-r2/model-result-summary.yaml
+  - docs/notes/review-runs/postwrite-d023-deployment-independence-lint-checklist-2026-06-09-r2/parsed/gemini-3.5-flash.round-1.yaml
+  - docs/notes/review-runs/postwrite-d023-deployment-independence-lint-checklist-2026-06-09-r2/raw/gemini-3.5-flash.round-1.txt
+  - docs/notes/review-runs/postwrite-d023-deployment-independence-lint-checklist-2026-06-09-r2/review_summary.md
+  - docs/notes/review-runs/postwrite-d023-deployment-independence-lint-checklist-2026-06-09-r2/rounds.yaml
+  - docs/notes/review-runs/postwrite-d023-deployment-independence-lint-checklist-2026-06-09-r2/target-manifest.yaml
+  - docs/notes/review-runs/postwrite-d023-deployment-independence-lint-checklist-2026-06-09-r2/triage.yaml
+  - docs/notes/review-runs/postwrite-d025-tdd-cycle-evidence-checklist-2026-06-09-r1/model-result-summary.yaml
+  - docs/notes/review-runs/postwrite-d025-tdd-cycle-evidence-checklist-2026-06-09-r1/parsed/gemini-3.5-flash.round-1.yaml
+  - docs/notes/review-runs/postwrite-d025-tdd-cycle-evidence-checklist-2026-06-09-r1/raw/gemini-3.5-flash.round-1.txt
+  - docs/notes/review-runs/postwrite-d025-tdd-cycle-evidence-checklist-2026-06-09-r1/review_summary.md
+  - docs/notes/review-runs/postwrite-d025-tdd-cycle-evidence-checklist-2026-06-09-r1/rounds.yaml
+  - docs/notes/review-runs/postwrite-d025-tdd-cycle-evidence-checklist-2026-06-09-r1/target-manifest.yaml
+  - docs/notes/review-runs/postwrite-d025-tdd-cycle-evidence-checklist-2026-06-09-r1/triage.yaml
+  - docs/notes/review-runs/postwrite-d025-tdd-cycle-evidence-checklist-2026-06-09-r2/model-result-summary.yaml
+  - docs/notes/review-runs/postwrite-d025-tdd-cycle-evidence-checklist-2026-06-09-r2/parsed/gemini-3.5-flash.round-1.yaml
+  - docs/notes/review-runs/postwrite-d025-tdd-cycle-evidence-checklist-2026-06-09-r2/raw/gemini-3.5-flash.round-1.txt
+  - docs/notes/review-runs/postwrite-d025-tdd-cycle-evidence-checklist-2026-06-09-r2/review_summary.md
+  - docs/notes/review-runs/postwrite-d025-tdd-cycle-evidence-checklist-2026-06-09-r2/rounds.yaml
+  - docs/notes/review-runs/postwrite-d025-tdd-cycle-evidence-checklist-2026-06-09-r2/target-manifest.yaml
+  - docs/notes/review-runs/postwrite-d025-tdd-cycle-evidence-checklist-2026-06-09-r2/triage.yaml
+  - docs/notes/review-runs/postwrite-d027-side-track-state-model-checklist-2026-06-09-r1/model-result-summary.yaml
+  - docs/notes/review-runs/postwrite-d027-side-track-state-model-checklist-2026-06-09-r1/parsed/gemini-3.5-flash.round-1.yaml
+  - docs/notes/review-runs/postwrite-d027-side-track-state-model-checklist-2026-06-09-r1/raw/gemini-3.5-flash.round-1.txt
+  - docs/notes/review-runs/postwrite-d027-side-track-state-model-checklist-2026-06-09-r1/review_summary.md
+  - docs/notes/review-runs/postwrite-d027-side-track-state-model-checklist-2026-06-09-r1/rounds.yaml
+  - docs/notes/review-runs/postwrite-d027-side-track-state-model-checklist-2026-06-09-r1/target-manifest.yaml
+  - docs/notes/review-runs/postwrite-d027-side-track-state-model-checklist-2026-06-09-r1/triage.yaml
+  - docs/notes/review-runs/postwrite-d027-side-track-state-model-checklist-2026-06-09-r2/model-result-summary.yaml
+  - docs/notes/review-runs/postwrite-d027-side-track-state-model-checklist-2026-06-09-r2/parsed/gemini-3.5-flash.round-1.yaml
+  - docs/notes/review-runs/postwrite-d027-side-track-state-model-checklist-2026-06-09-r2/raw/gemini-3.5-flash.round-1.txt
+  - docs/notes/review-runs/postwrite-d027-side-track-state-model-checklist-2026-06-09-r2/review_summary.md
+  - docs/notes/review-runs/postwrite-d027-side-track-state-model-checklist-2026-06-09-r2/rounds.yaml
+  - docs/notes/review-runs/postwrite-d027-side-track-state-model-checklist-2026-06-09-r2/target-manifest.yaml
+  - docs/notes/review-runs/postwrite-d027-side-track-state-model-checklist-2026-06-09-r2/triage.yaml
+  - docs/operations/WORKFLOW_NAVIGATION_FOR_CLAUDE.md
+  target_sha256:
+    docs/notes/2026-06-09-d004-normalized-finding-schema-checklist.md: c41a91327e7e51565b77529593c0dd49cbc89e1084be41534b3673f28ace03bc
+    docs/notes/2026-06-09-d005-finding-to-fix-traceability-checklist.md: 10813f86889a44f01b658906809fbb975ce79413c203709b5a9e83ae4eb82618
+    docs/notes/2026-06-09-d008-dogfooding-event-ledger-checklist.md: 47e8cfa999c6e73ab1f81ddff7ac235d626d4746a0c8c4d0f614c619ebf28d77
+    docs/notes/2026-06-09-d019-time-cost-model-assignment-checklist.md: 6240242823425193e79bfd6f70df622dda2f43be21e5635ab7d41e6467e86ffc
+    docs/notes/2026-06-09-d020-cross-repository-replication-checklist.md: e7c9be4973ece57c69080be7a1ec5ce2845ff7a48e0ab2e8796d3c6c4602fd44
+    docs/notes/2026-06-09-d023-deployment-independence-lint-checklist.md: b51267834e66f126c7b941b1a8cdc015a2c7c33055c82dd873dccc74506cc2f4
+    docs/notes/2026-06-09-d025-tdd-cycle-evidence-checklist.md: cd347e92571a0e8d6757580b42a63a5a09f0ad5f10943f003fe3a44a6c3814b3
+    docs/notes/2026-06-09-d027-side-track-state-model-checklist.md: 0c46f30d76b909405918af1652ced510894361d774214e5d7864d53e3524e4e3
+    docs/notes/review-runs/postwrite-d004-normalized-finding-schema-checklist-2026-06-09-r1/model-result-summary.yaml: 7308416a141104ad0c2abd2c5fef93a9f571731613c490e593e8bd7297533def
+    ? docs/notes/review-runs/postwrite-d004-normalized-finding-schema-checklist-2026-06-09-r1/parsed/gemini-3.5-flash.round-1.yaml
+    : 85cb43ce4f968cd18c87c05f6cc65d92834a455c68c6f7422b1962ce8a53d80e
+    docs/notes/review-runs/postwrite-d004-normalized-finding-schema-checklist-2026-06-09-r1/raw/gemini-3.5-flash.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/postwrite-d004-normalized-finding-schema-checklist-2026-06-09-r1/review_summary.md: 6df7391ec32d1d5f39e13f9e2db062f55afbfc7b1daa51039fdc7db5a06aaf14
+    docs/notes/review-runs/postwrite-d004-normalized-finding-schema-checklist-2026-06-09-r1/rounds.yaml: 58344cee410d9975ca705abb761fdf199a0c1cb4a3c7e372916d2787d56b0a0f
+    docs/notes/review-runs/postwrite-d004-normalized-finding-schema-checklist-2026-06-09-r1/target-manifest.yaml: d9820e7b848aa9dd186666713b89364a1dea1d092e0d378de7485934ee1f3c33
+    docs/notes/review-runs/postwrite-d004-normalized-finding-schema-checklist-2026-06-09-r1/triage.yaml: a379b33079f98aa83c802e77cd34444c1abd3867504cbcdc66d1e41cbe6a3f56
+    docs/notes/review-runs/postwrite-d004-normalized-finding-schema-checklist-2026-06-09-r2/model-result-summary.yaml: 88baf0bc689201af9192b56bb13a7b54a37465d205bd593baf175daf81fddeb3
+    ? docs/notes/review-runs/postwrite-d004-normalized-finding-schema-checklist-2026-06-09-r2/parsed/gemini-3.5-flash.round-1.yaml
+    : baf96b46aec88329b38bc321f77f6f29cccfdede90c3a0e1e93641baa813a107
+    docs/notes/review-runs/postwrite-d004-normalized-finding-schema-checklist-2026-06-09-r2/raw/gemini-3.5-flash.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/postwrite-d004-normalized-finding-schema-checklist-2026-06-09-r2/review_summary.md: b4d4fa8a0fe890fac5317a798dc157b9b34e04a65d76502d03dab3bff2b360cb
+    docs/notes/review-runs/postwrite-d004-normalized-finding-schema-checklist-2026-06-09-r2/rounds.yaml: 8c14492cf900aec79fc1e1134b1a355e001438d349d057418c7bc0a040cc2e25
+    docs/notes/review-runs/postwrite-d004-normalized-finding-schema-checklist-2026-06-09-r2/target-manifest.yaml: d78fb08be8cfe077f9357f5fd127d5730fe3de5e8b09232c676fa58b401e0d08
+    docs/notes/review-runs/postwrite-d004-normalized-finding-schema-checklist-2026-06-09-r2/triage.yaml: 91867ab38aaa110862d353b03ba03bd7ab52e123595fcbc394f23859b69235f0
+    docs/notes/review-runs/postwrite-d005-finding-to-fix-traceability-checklist-2026-06-09-r1/model-result-summary.yaml: f652605659358f9a4631f03a73f0a9f49cacc04c4a88e56b052ef2a15e817320
+    ? docs/notes/review-runs/postwrite-d005-finding-to-fix-traceability-checklist-2026-06-09-r1/parsed/gemini-3.5-flash.round-1.yaml
+    : de4221e30ffc7ed90fc4d8f204d5ae5d8e846c2c3de89b605466ee45b51999cf
+    docs/notes/review-runs/postwrite-d005-finding-to-fix-traceability-checklist-2026-06-09-r1/raw/gemini-3.5-flash.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/postwrite-d005-finding-to-fix-traceability-checklist-2026-06-09-r1/review_summary.md: 547bae583fc8701da122bf101ceea07bb955f91d4080f75209be1fe3fed80406
+    docs/notes/review-runs/postwrite-d005-finding-to-fix-traceability-checklist-2026-06-09-r1/rounds.yaml: ee065a71a92ada1549ba8fdf87eac88cbc2622fe30f98a601d6b44011f06a6ca
+    docs/notes/review-runs/postwrite-d005-finding-to-fix-traceability-checklist-2026-06-09-r1/target-manifest.yaml: a04915ac703c42799e64965602d9eed4fb80b1f33661130e2aaa54e86f5bce3f
+    docs/notes/review-runs/postwrite-d005-finding-to-fix-traceability-checklist-2026-06-09-r1/triage.yaml: 7dc9a7401fa143c492c289b8c53ed308a1a4085f30d86b376a8b6a8a30ac5b4d
+    docs/notes/review-runs/postwrite-d005-finding-to-fix-traceability-checklist-2026-06-09-r2/model-result-summary.yaml: 19117677904645d6e0efcd96202236be73c5df5cbe53e38555318a726d34b417
+    ? docs/notes/review-runs/postwrite-d005-finding-to-fix-traceability-checklist-2026-06-09-r2/parsed/gemini-3.5-flash.round-1.yaml
+    : 382e198fa65bea734b03ec450dd6cb0115faee05e66c063942fe2d978fd55220
+    docs/notes/review-runs/postwrite-d005-finding-to-fix-traceability-checklist-2026-06-09-r2/raw/gemini-3.5-flash.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/postwrite-d005-finding-to-fix-traceability-checklist-2026-06-09-r2/review_summary.md: 119c9118215a9c5748cf309fd1814f3ee7876f51159f9d9e2358793a237c36ba
+    docs/notes/review-runs/postwrite-d005-finding-to-fix-traceability-checklist-2026-06-09-r2/rounds.yaml: 498074134c91f6f609a0624720f943131e3123082a9e53ff0e577eb0351e5cc4
+    docs/notes/review-runs/postwrite-d005-finding-to-fix-traceability-checklist-2026-06-09-r2/target-manifest.yaml: 21b086473cc8aa8eafb713a44e2a5d35508f786f3603af390ebb7fef54f8fb58
+    docs/notes/review-runs/postwrite-d005-finding-to-fix-traceability-checklist-2026-06-09-r2/triage.yaml: 66f575acc35bfc5e546912abd3b06b651c15010a05b2e30ae531563f3b43a295
+    docs/notes/review-runs/postwrite-d008-dogfooding-event-ledger-checklist-2026-06-09-r1/model-result-summary.yaml: 05b0478d301bf18b5f0591ea01c001f501919d845d0394154794984be8281a0a
+    docs/notes/review-runs/postwrite-d008-dogfooding-event-ledger-checklist-2026-06-09-r1/parsed/gemini-3.5-flash.round-1.yaml: b80a9ec42ec84ffc83124e8dbae304820d9b654d1b88eb21128bda1799498fc1
+    docs/notes/review-runs/postwrite-d008-dogfooding-event-ledger-checklist-2026-06-09-r1/raw/gemini-3.5-flash.round-1.txt: 514ca7ce698924d6d317b58eb180fac52856c6e44dd083b725c9ff5738c2f87c
+    docs/notes/review-runs/postwrite-d008-dogfooding-event-ledger-checklist-2026-06-09-r1/review_summary.md: 72906d029356ebfb1ee7c49e86eb299b90b8578e7dbf29239af5e79d4bc4d5ea
+    docs/notes/review-runs/postwrite-d008-dogfooding-event-ledger-checklist-2026-06-09-r1/rounds.yaml: 7ae47812f5e00b534cd903d50bc099e64504609f629a26ce08386588c02d2bd4
+    docs/notes/review-runs/postwrite-d008-dogfooding-event-ledger-checklist-2026-06-09-r1/target-manifest.yaml: 74e4736b584e833fe11042913d97452c9f04a1d9a9481bcd1e16e55df26a01ab
+    docs/notes/review-runs/postwrite-d008-dogfooding-event-ledger-checklist-2026-06-09-r1/triage.yaml: 365b0bb1316cfe796ea2fe6a97fb543d82651320f5e6caabf96f4a32e73b671d
+    docs/notes/review-runs/postwrite-d008-dogfooding-event-ledger-checklist-2026-06-09-r2/model-result-summary.yaml: fbc2200d3b9067a9c73052e73a10d192d96db8decc6787e798258c157870a562
+    docs/notes/review-runs/postwrite-d008-dogfooding-event-ledger-checklist-2026-06-09-r2/parsed/gemini-3.5-flash.round-1.yaml: 020ae3b34319144c0dff90800fe94644180e6f839684a63e408a1fbbc5676469
+    docs/notes/review-runs/postwrite-d008-dogfooding-event-ledger-checklist-2026-06-09-r2/raw/gemini-3.5-flash.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/postwrite-d008-dogfooding-event-ledger-checklist-2026-06-09-r2/review_summary.md: 2b8e90903cb286fc81737efe5901c0beba1efcb81b46ee8328ac00bd91e9dad6
+    docs/notes/review-runs/postwrite-d008-dogfooding-event-ledger-checklist-2026-06-09-r2/rounds.yaml: 7c29a1cc8dfe3b2e88c05a1e9638905ac7c97fdd7859cd1df7224f95674890b1
+    docs/notes/review-runs/postwrite-d008-dogfooding-event-ledger-checklist-2026-06-09-r2/target-manifest.yaml: db10c7e07ac8522ac28a66a4b9168f606c0d3231eae5cdd1f19d4b10eb2656d4
+    docs/notes/review-runs/postwrite-d008-dogfooding-event-ledger-checklist-2026-06-09-r2/triage.yaml: 78dbd3c86b0206a66cf4f6b78848a6fc8a71f52d0ffc5dd1314482af0c18dade
+    docs/notes/review-runs/postwrite-d019-time-cost-model-assignment-checklist-2026-06-09-r1/model-result-summary.yaml: f8d82d80c19331b06e3c16f204a73ec287bc8532874e7c9831a8271712b812e5
+    ? docs/notes/review-runs/postwrite-d019-time-cost-model-assignment-checklist-2026-06-09-r1/parsed/gemini-3.5-flash.round-1.yaml
+    : 2f1d13f63ba5d34f30ba8e9804dfa71ea638a100156f641d7f4bc5dab83685a8
+    docs/notes/review-runs/postwrite-d019-time-cost-model-assignment-checklist-2026-06-09-r1/raw/gemini-3.5-flash.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/postwrite-d019-time-cost-model-assignment-checklist-2026-06-09-r1/review_summary.md: 9d53ac82a6ed78ac68276723cc2099d941c14106aa985b5a69dbb7585b788dc6
+    docs/notes/review-runs/postwrite-d019-time-cost-model-assignment-checklist-2026-06-09-r1/rounds.yaml: 5e80e7162a1a2dc6958d5f0be00229324ca1495ef5c36dd36680722cfb1d764f
+    docs/notes/review-runs/postwrite-d019-time-cost-model-assignment-checklist-2026-06-09-r1/target-manifest.yaml: dabb863d4913ed06c591cc394eaf26f0b8bf28e08a9077bc9d6f183def703d43
+    docs/notes/review-runs/postwrite-d019-time-cost-model-assignment-checklist-2026-06-09-r1/triage.yaml: 5d046e6d49ee7da733f24b7388fec75bde77fdb6d57abfd092b2586848d946ee
+    docs/notes/review-runs/postwrite-d019-time-cost-model-assignment-checklist-2026-06-09-r2/model-result-summary.yaml: 1d79bd6d5b021f4972f37d8e7453383fc70dcbd33c9a26bde7d4049783fd53b8
+    ? docs/notes/review-runs/postwrite-d019-time-cost-model-assignment-checklist-2026-06-09-r2/parsed/gemini-3.5-flash.round-1.yaml
+    : 3adf94d3f329f2714bfc7dc3b1a8a77ecb575b8031783f58c32bec2637f21841
+    docs/notes/review-runs/postwrite-d019-time-cost-model-assignment-checklist-2026-06-09-r2/raw/gemini-3.5-flash.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/postwrite-d019-time-cost-model-assignment-checklist-2026-06-09-r2/review_summary.md: 7d1df1283fd1199e4f906c6e7854b0b1631268242fbda665edec753dc3d4acd0
+    docs/notes/review-runs/postwrite-d019-time-cost-model-assignment-checklist-2026-06-09-r2/rounds.yaml: 240201a92336bb3026440308317b74788c4a2976edb368a0358339c879574aa0
+    docs/notes/review-runs/postwrite-d019-time-cost-model-assignment-checklist-2026-06-09-r2/target-manifest.yaml: fde8f4177c481e29e1d483805e9f7e6fa8f31d9a87dcd30f71865d31c90a9ec5
+    docs/notes/review-runs/postwrite-d019-time-cost-model-assignment-checklist-2026-06-09-r2/triage.yaml: ecd5fa293870cefffb4a0cc590a5216b66536ade4ab74ffd7637125073ad9644
+    docs/notes/review-runs/postwrite-d020-cross-repository-replication-checklist-2026-06-09-r1/model-result-summary.yaml: d4a367d6d3267701be4b271aefd4f276837923a413221c0602a5567b877b8bb2
+    ? docs/notes/review-runs/postwrite-d020-cross-repository-replication-checklist-2026-06-09-r1/parsed/gemini-3.5-flash.round-1.yaml
+    : 3d093ca271e511ee44ab294953415de824033745c65c12493f1644741b81ed78
+    ? docs/notes/review-runs/postwrite-d020-cross-repository-replication-checklist-2026-06-09-r1/raw/gemini-3.5-flash.round-1.txt
+    : ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/postwrite-d020-cross-repository-replication-checklist-2026-06-09-r1/review_summary.md: 5be663f04e82574bc59c29b75ba6f27e11d3f6b8c12c2bd966f015b23eba57f4
+    docs/notes/review-runs/postwrite-d020-cross-repository-replication-checklist-2026-06-09-r1/rounds.yaml: 3e6dc51676acbfabf69a6002d5ec68329777bdad1a4befa1d778fd668774c2b0
+    docs/notes/review-runs/postwrite-d020-cross-repository-replication-checklist-2026-06-09-r1/target-manifest.yaml: 2a54a954bae66b2f7ac55fdb9a0277c5bba764eeec3bbdaf8140a5442cea651b
+    docs/notes/review-runs/postwrite-d020-cross-repository-replication-checklist-2026-06-09-r1/triage.yaml: 6376d85cda799b330c258776bc5a9193aae029fa44839994d184231026eebb62
+    docs/notes/review-runs/postwrite-d020-cross-repository-replication-checklist-2026-06-09-r2/model-result-summary.yaml: 0b080d51db854336b0c9fdcc82ee232f7e856dcb87399a87ab00e014418f6d06
+    ? docs/notes/review-runs/postwrite-d020-cross-repository-replication-checklist-2026-06-09-r2/parsed/gemini-3.5-flash.round-1.yaml
+    : 6fe0e6e28e9e1147add308a78a4b78579d8d206d92b708d8f8eeebb09b82bd65
+    ? docs/notes/review-runs/postwrite-d020-cross-repository-replication-checklist-2026-06-09-r2/raw/gemini-3.5-flash.round-1.txt
+    : 790fcd054b29620b555338c420595cbb51026715a47afca21470eb4b7a7ecf12
+    docs/notes/review-runs/postwrite-d020-cross-repository-replication-checklist-2026-06-09-r2/review_summary.md: 9a8c2781bd8e8060e8b9590d90564f869b0753dc9255c831fc2dbab5eca0ce5e
+    docs/notes/review-runs/postwrite-d020-cross-repository-replication-checklist-2026-06-09-r2/rounds.yaml: 902ff7f675bec803c3be2aa50aae205c949f28b02ca31e39f8490a8e2cb56aa3
+    docs/notes/review-runs/postwrite-d020-cross-repository-replication-checklist-2026-06-09-r2/target-manifest.yaml: 448ab4fe166d5a7ad261080ea1eba03fba423450b91a458edb1eaeff5b52bf34
+    docs/notes/review-runs/postwrite-d020-cross-repository-replication-checklist-2026-06-09-r2/triage.yaml: 0eca164bddbd82ca486764ff1a3fabc40b08bc10c38d5ffa8557e59faec922be
+    docs/notes/review-runs/postwrite-d020-cross-repository-replication-checklist-2026-06-09-r3/model-result-summary.yaml: 4fa96a72f34463a4cc65b665b99aa335698dabcf4aa53d53eab1bf87c371066e
+    ? docs/notes/review-runs/postwrite-d020-cross-repository-replication-checklist-2026-06-09-r3/parsed/gemini-3.5-flash.round-1.yaml
+    : 1fbbf90e305e4d0e7ead1cfc7101dbc1259d2483b8024a47cdaee5f137b52e0a
+    ? docs/notes/review-runs/postwrite-d020-cross-repository-replication-checklist-2026-06-09-r3/raw/gemini-3.5-flash.round-1.txt
+    : ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/postwrite-d020-cross-repository-replication-checklist-2026-06-09-r3/review_summary.md: 487a916d1fda60bd6a003280d08ff9c586ace51585814768adfa7efa1fca05a0
+    docs/notes/review-runs/postwrite-d020-cross-repository-replication-checklist-2026-06-09-r3/rounds.yaml: eb3857c965b340fa66cd0f64b5f57ae81e8a2e7743581543616c65214535091b
+    docs/notes/review-runs/postwrite-d020-cross-repository-replication-checklist-2026-06-09-r3/target-manifest.yaml: 2a6a2e34413e6fab9d3a2419c217544cc2d616766b5983811cfd9d22ee667105
+    docs/notes/review-runs/postwrite-d020-cross-repository-replication-checklist-2026-06-09-r3/triage.yaml: 9ca756c90e4d7cf60b3c764213eb8b6ba215c1e57e2b86af5ad59a86601036be
+    docs/notes/review-runs/postwrite-d023-deployment-independence-lint-checklist-2026-06-09-r1/model-result-summary.yaml: 7d4e500c10d7afa6fed96758d50fc8c346c30ddf291335c50d56463db661563e
+    ? docs/notes/review-runs/postwrite-d023-deployment-independence-lint-checklist-2026-06-09-r1/parsed/gemini-3.5-flash.round-1.yaml
+    : fa905b81dda494ea9b8a9101a89c6842cd6e41c696d93124f78ef71f14452096
+    ? docs/notes/review-runs/postwrite-d023-deployment-independence-lint-checklist-2026-06-09-r1/raw/gemini-3.5-flash.round-1.txt
+    : ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/postwrite-d023-deployment-independence-lint-checklist-2026-06-09-r1/review_summary.md: c79b55e473ce1f02b94b980cc34dce81c768eb3d3259ac12bc03d8020eb97019
+    docs/notes/review-runs/postwrite-d023-deployment-independence-lint-checklist-2026-06-09-r1/rounds.yaml: ca1190ed00609508edd71258d9250568fa05bec355bca7b146c9242ee8784449
+    docs/notes/review-runs/postwrite-d023-deployment-independence-lint-checklist-2026-06-09-r1/target-manifest.yaml: 66b662966d3977be39586ad8a26134088dc359d6e46bb2e945e2ea07f556dd71
+    docs/notes/review-runs/postwrite-d023-deployment-independence-lint-checklist-2026-06-09-r1/triage.yaml: 59b1a6fc1be82b0244ba9c581cf61f5a49915fc2ad3109dbaf53b75467fc8a9c
+    docs/notes/review-runs/postwrite-d023-deployment-independence-lint-checklist-2026-06-09-r2/model-result-summary.yaml: 34239743e391d0cbae1edfbf6daa613b01530aaf99aa541bbac4beeb3a7ec1c8
+    ? docs/notes/review-runs/postwrite-d023-deployment-independence-lint-checklist-2026-06-09-r2/parsed/gemini-3.5-flash.round-1.yaml
+    : 96cb623d5896a0546508b411234d9565db119b6a92c04ec10a6784dd44b5ee6f
+    ? docs/notes/review-runs/postwrite-d023-deployment-independence-lint-checklist-2026-06-09-r2/raw/gemini-3.5-flash.round-1.txt
+    : ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/postwrite-d023-deployment-independence-lint-checklist-2026-06-09-r2/review_summary.md: 49a7b629ee422d13147e63634256cf0d121cc03b7c38df2d9c5c07370b09690b
+    docs/notes/review-runs/postwrite-d023-deployment-independence-lint-checklist-2026-06-09-r2/rounds.yaml: 2b762e4138e7807857221208949f43d90d318bc7cb85edc5be6651880f801011
+    docs/notes/review-runs/postwrite-d023-deployment-independence-lint-checklist-2026-06-09-r2/target-manifest.yaml: 62212976a11f62e5aebeef36ac7e160fc21e2fbc24b0bdc92ee56f5db1224a63
+    docs/notes/review-runs/postwrite-d023-deployment-independence-lint-checklist-2026-06-09-r2/triage.yaml: 2ad7710415e1f2e9025f0b450b3948d1cde2d5b7dd7218b4c0338dcd86a22f3d
+    docs/notes/review-runs/postwrite-d025-tdd-cycle-evidence-checklist-2026-06-09-r1/model-result-summary.yaml: 9bcd2f2a6fb1ef2fd1f48ce90bb0b333c59ab5686bb6e4d5d1435f174fb6cdbf
+    docs/notes/review-runs/postwrite-d025-tdd-cycle-evidence-checklist-2026-06-09-r1/parsed/gemini-3.5-flash.round-1.yaml: 4c7d463c06cd3fd05f218fd521c316054067da14fbd36d0df5aff5df8b527c6f
+    docs/notes/review-runs/postwrite-d025-tdd-cycle-evidence-checklist-2026-06-09-r1/raw/gemini-3.5-flash.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/postwrite-d025-tdd-cycle-evidence-checklist-2026-06-09-r1/review_summary.md: f2f9fa591242f158806d94413385e51463739bfd4edfe2bf1b48d0e44f7c21d6
+    docs/notes/review-runs/postwrite-d025-tdd-cycle-evidence-checklist-2026-06-09-r1/rounds.yaml: 8ea2207b97549744f9a79712f575f68839e11eba277cdc788857bcd271735b08
+    docs/notes/review-runs/postwrite-d025-tdd-cycle-evidence-checklist-2026-06-09-r1/target-manifest.yaml: 56ab6fec31d68652678e5ec723c8a979886b7f35e8fd6dcfea88c19fd4f3e6f8
+    docs/notes/review-runs/postwrite-d025-tdd-cycle-evidence-checklist-2026-06-09-r1/triage.yaml: 7b04b35ccf75c4b999aece6742833fb7892ecb7019603dff188a199d0d18b878
+    docs/notes/review-runs/postwrite-d025-tdd-cycle-evidence-checklist-2026-06-09-r2/model-result-summary.yaml: dee8656730cc43917ab2a8ef631b8cc62a093672e8cec765d3c6e1ccbc48c57f
+    docs/notes/review-runs/postwrite-d025-tdd-cycle-evidence-checklist-2026-06-09-r2/parsed/gemini-3.5-flash.round-1.yaml: e7beaddcd42ab7ba825d418794dca5eeaae08a4c9ef3153a71515c2d3b56993d
+    docs/notes/review-runs/postwrite-d025-tdd-cycle-evidence-checklist-2026-06-09-r2/raw/gemini-3.5-flash.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/postwrite-d025-tdd-cycle-evidence-checklist-2026-06-09-r2/review_summary.md: 839df3683a1197e2f362ef0fc0770345a5f41d89e3c6491291cb3db7f8b8b67a
+    docs/notes/review-runs/postwrite-d025-tdd-cycle-evidence-checklist-2026-06-09-r2/rounds.yaml: be600fe025f840f4fa82eb1953ffab5975060bfb943302c9b8f0d0f856c694dd
+    docs/notes/review-runs/postwrite-d025-tdd-cycle-evidence-checklist-2026-06-09-r2/target-manifest.yaml: 089b5e7fe9c812b15fda15fb41ff3f1807dbe407c42edb6d10f85590a97ba689
+    docs/notes/review-runs/postwrite-d025-tdd-cycle-evidence-checklist-2026-06-09-r2/triage.yaml: d1b1d9e5ff219e50dd1edb47b731fb2b4050b30182f68a827c7e591e6c607371
+    docs/notes/review-runs/postwrite-d027-side-track-state-model-checklist-2026-06-09-r1/model-result-summary.yaml: bc90e9fe49890a8a38c5e2d7124b0d8d07cbdebbf744f843a9555e2990abcdc0
+    docs/notes/review-runs/postwrite-d027-side-track-state-model-checklist-2026-06-09-r1/parsed/gemini-3.5-flash.round-1.yaml: 4b9a3e111ab728c93818f26f6aa2fb40af78cded98e0812a16caa2fe0b188a5d
+    docs/notes/review-runs/postwrite-d027-side-track-state-model-checklist-2026-06-09-r1/raw/gemini-3.5-flash.round-1.txt: aa8f22fc2d43f5bab03dd1cd1b3345a896a929857f390c862390af5c40e3f86a
+    docs/notes/review-runs/postwrite-d027-side-track-state-model-checklist-2026-06-09-r1/review_summary.md: 9dfe141f2cad3b1839f25c2bdb9e21df01969709286b758a221071c082043433
+    docs/notes/review-runs/postwrite-d027-side-track-state-model-checklist-2026-06-09-r1/rounds.yaml: 3447fcb08952c87fc396c9644067f1724e848dea3fe494c74726aa0e4b7514a0
+    docs/notes/review-runs/postwrite-d027-side-track-state-model-checklist-2026-06-09-r1/target-manifest.yaml: e89f6ab1aca04e121ef752ae46d88c1503695c0e15c62d0fba3697bd8991148b
+    docs/notes/review-runs/postwrite-d027-side-track-state-model-checklist-2026-06-09-r1/triage.yaml: 466feb7569d7be49c57c3fcac0e4d515ef2cd8973f2a94816ac6d8c894b69df9
+    docs/notes/review-runs/postwrite-d027-side-track-state-model-checklist-2026-06-09-r2/model-result-summary.yaml: 408638a5282fe8f2d451697abd074cdb264a4cba63c94fdf78380f5838c50ef2
+    docs/notes/review-runs/postwrite-d027-side-track-state-model-checklist-2026-06-09-r2/parsed/gemini-3.5-flash.round-1.yaml: c4510c405810a6034029f0d05f340187539367bf066da1120a5f2ad277c41d4e
+    docs/notes/review-runs/postwrite-d027-side-track-state-model-checklist-2026-06-09-r2/raw/gemini-3.5-flash.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/postwrite-d027-side-track-state-model-checklist-2026-06-09-r2/review_summary.md: 3745d76203a205617f5434a3bcf2787927dccd400e4b022a0ff81c78572d9d24
+    docs/notes/review-runs/postwrite-d027-side-track-state-model-checklist-2026-06-09-r2/rounds.yaml: f3cbf875f817639a854b03c392c13d0b1500d7c8e29f4ae25af1eeef7c730b94
+    docs/notes/review-runs/postwrite-d027-side-track-state-model-checklist-2026-06-09-r2/target-manifest.yaml: c4237f481046fbc2e3c7f5cb45a16f717dc5e68995474bca0703999eb073b7e4
+    docs/notes/review-runs/postwrite-d027-side-track-state-model-checklist-2026-06-09-r2/triage.yaml: 8f2a169046edfbc1b3970ac52806ce9cb18fd003c125066b0a1cc0254189f49c
+    docs/operations/WORKFLOW_NAVIGATION_FOR_CLAUDE.md: b737004dfad7989a70e6a386a8b6c1df86a55c21927749ff77b966f3e5b4a2a2
+review_run:
+  path: docs/notes/review-runs/postwrite-d023-deployment-independence-lint-checklist-2026-06-09-r2
+  summary_path: docs/notes/review-runs/postwrite-d023-deployment-independence-lint-checklist-2026-06-09-r2/model-result-summary.yaml
+notes: Generated template; verify target_files cover current post-write targets before
+  use.

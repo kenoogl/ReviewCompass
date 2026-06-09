@@ -1,0 +1,13 @@
+run_id: postwrite-d008-dogfooding-event-ledger-checklist-2026-06-09-r1
+models:
+- model_id: gemini-3.5-flash
+  raw_path: raw/gemini-3.5-flash.round-1.txt
+  parse_status: parsed
+  triage_status: triaged
+  findings_count: 1
+  findings_count_by_severity:
+    INFO: 1
+  must_fix_count: 0
+  should_fix_count: 1
+  leave_as_is_count: 0
+  human_required_count: 0

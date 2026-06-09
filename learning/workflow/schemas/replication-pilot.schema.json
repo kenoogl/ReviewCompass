@@ -1,0 +1,255 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://reviewcompass.local/schemas/workflow/replication-pilot.schema.json",
+  "title": "Cross-Repository Replication Pilot",
+  "description": "D-020 cross-repository replication pilot の deployment smoke、data acquisition run、analysis import 結果を repository 横断で記録する schema。",
+  "type": "object",
+  "additionalProperties": false,
+  "$defs": {
+    "relativePath": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^(?!/)(?![A-Za-z]:).+"
+    },
+    "relativePathArray": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/relativePath"
+      }
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "passed",
+        "failed",
+        "blocked",
+        "not_run"
+      ]
+    },
+    "dataArea": {
+      "type": "string",
+      "enum": [
+        "event",
+        "finding",
+        "finding_fix_traceability",
+        "tdd_cycle",
+        "model_assignment_cost"
+      ]
+    },
+    "runResult": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status",
+        "evidence_refs"
+      ],
+      "properties": {
+        "status": {
+          "$ref": "#/$defs/status"
+        },
+        "command": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "collected_data_areas": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/dataArea"
+          },
+          "uniqueItems": true
+        },
+        "imported_tables": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        },
+        "evidence_refs": {
+          "$ref": "#/$defs/relativePathArray"
+        }
+      }
+    }
+  },
+  "required": [
+    "record_type",
+    "pilot_id",
+    "schema_version",
+    "source_ref",
+    "repositories",
+    "comparison_schema",
+    "summary"
+  ],
+  "properties": {
+    "record_type": {
+      "const": "replication_pilot"
+    },
+    "pilot_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "schema_version": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "source_ref": {
+      "$ref": "#/$defs/relativePath"
+    },
+    "repositories": {
+      "type": "array",
+      "minItems": 2,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "repository_id",
+          "repository_profile",
+          "implementation_tasks",
+          "deployment_smoke",
+          "data_acquisition_run",
+          "analysis_import"
+        ],
+        "properties": {
+          "repository_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "repository_profile": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "language",
+              "size_class",
+              "has_existing_tests",
+              "has_existing_specs"
+            ],
+            "properties": {
+              "language": {
+                "type": "string",
+                "minLength": 1
+              },
+              "size_class": {
+                "type": "string",
+                "enum": [
+                  "small",
+                  "medium",
+                  "large",
+                  "unknown"
+                ]
+              },
+              "has_existing_tests": {
+                "type": "boolean"
+              },
+              "has_existing_specs": {
+                "type": "boolean"
+              }
+            }
+          },
+          "implementation_tasks": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "task_id",
+                "description",
+                "review_run_refs",
+                "triage_refs",
+                "fix_refs",
+                "test_evidence_refs"
+              ],
+              "properties": {
+                "task_id": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "description": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "review_run_refs": {
+                  "$ref": "#/$defs/relativePathArray"
+                },
+                "triage_refs": {
+                  "$ref": "#/$defs/relativePathArray"
+                },
+                "fix_refs": {
+                  "$ref": "#/$defs/relativePathArray"
+                },
+                "test_evidence_refs": {
+                  "$ref": "#/$defs/relativePathArray"
+                }
+              }
+            }
+          },
+          "deployment_smoke": {
+            "$ref": "#/$defs/runResult"
+          },
+          "data_acquisition_run": {
+            "$ref": "#/$defs/runResult"
+          },
+          "analysis_import": {
+            "$ref": "#/$defs/runResult"
+          }
+        }
+      }
+    },
+    "comparison_schema": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "data_areas",
+        "schema_refs"
+      ],
+      "properties": {
+        "data_areas": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/dataArea"
+          },
+          "uniqueItems": true
+        },
+        "schema_refs": {
+          "$ref": "#/$defs/relativePathArray"
+        }
+      }
+    },
+    "summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "pilot_status",
+        "minimum_repository_count",
+        "completed_repository_count",
+        "blocking_gap_refs"
+      ],
+      "properties": {
+        "pilot_status": {
+          "type": "string",
+          "enum": [
+            "ready_for_pilot",
+            "pilot_passed",
+            "pilot_failed",
+            "blocked"
+          ]
+        },
+        "minimum_repository_count": {
+          "type": "integer",
+          "minimum": 2
+        },
+        "completed_repository_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "blocking_gap_refs": {
+          "$ref": "#/$defs/relativePathArray"
+        }
+      }
+    }
+  }
+}
