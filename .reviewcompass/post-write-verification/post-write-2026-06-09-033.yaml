@@ -1,0 +1,52 @@
+status: completed
+target_files:
+- .reviewcompass/specs/conformance-evaluation/conformance/2026-06-09-completed-followup-conformance.md
+- docs/notes/2026-06-09-formal-completed-followup-summary.md
+- docs/notes/review-runs/postwrite-formal-completed-followup-summary-2026-06-09-r1/model-result-summary.yaml
+- docs/notes/review-runs/postwrite-formal-completed-followup-summary-2026-06-09-r1/parsed/gemini-3.5-flash.round-1.yaml
+- docs/notes/review-runs/postwrite-formal-completed-followup-summary-2026-06-09-r1/raw/gemini-3.5-flash.round-1.txt
+- docs/notes/review-runs/postwrite-formal-completed-followup-summary-2026-06-09-r1/review_summary.md
+- docs/notes/review-runs/postwrite-formal-completed-followup-summary-2026-06-09-r1/rounds.yaml
+- docs/notes/review-runs/postwrite-formal-completed-followup-summary-2026-06-09-r1/target-manifest.yaml
+- docs/notes/review-runs/postwrite-formal-completed-followup-summary-2026-06-09-r1/triage.yaml
+target_sha256:
+  .reviewcompass/specs/conformance-evaluation/conformance/2026-06-09-completed-followup-conformance.md: 6070e7a45174dd99e1ad90506f0dd15cf1f77059c0fc5a2877c9fc176206f064
+  docs/notes/2026-06-09-formal-completed-followup-summary.md: e0d71642f73b8967ad4b31505371742f0fc12271196b713e23174a519e33117e
+  docs/notes/review-runs/postwrite-formal-completed-followup-summary-2026-06-09-r1/model-result-summary.yaml: 3fd359736ddb06c2b96f7dab0b2bebad490f3ee1ca7e827ae3d8aa6d006aaaec
+  docs/notes/review-runs/postwrite-formal-completed-followup-summary-2026-06-09-r1/parsed/gemini-3.5-flash.round-1.yaml: a2fef998a174a8d4acb6f2e3f2ca410fd86637dca55b0162acc4f1d17446880c
+  docs/notes/review-runs/postwrite-formal-completed-followup-summary-2026-06-09-r1/raw/gemini-3.5-flash.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+  docs/notes/review-runs/postwrite-formal-completed-followup-summary-2026-06-09-r1/review_summary.md: f16872466b9796a68abd3913129a4829e65dd9b443795dfc1f1b6629910ed58f
+  docs/notes/review-runs/postwrite-formal-completed-followup-summary-2026-06-09-r1/rounds.yaml: 2388d14e38bea573291f052af7a708ab469d1bede974378881821d5a9436fc1f
+  docs/notes/review-runs/postwrite-formal-completed-followup-summary-2026-06-09-r1/target-manifest.yaml: 689391407609dfb1cc485a5c0bd5468824329a94e1b4bde7fd90727eb9734924
+  docs/notes/review-runs/postwrite-formal-completed-followup-summary-2026-06-09-r1/triage.yaml: 0bc523c0d96d91a9c38510e78465f34f9cb0f78e736ba35ecb51151be9aef520
+required_verifiers: &id001
+- gemini-3.5-flash
+completed_verifiers: *id001
+unresolved_substantive_findings: 0
+verifications:
+- verifier: gemini-3.5-flash
+  target_files:
+  - .reviewcompass/specs/conformance-evaluation/conformance/2026-06-09-completed-followup-conformance.md
+  - docs/notes/2026-06-09-formal-completed-followup-summary.md
+  - docs/notes/review-runs/postwrite-formal-completed-followup-summary-2026-06-09-r1/model-result-summary.yaml
+  - docs/notes/review-runs/postwrite-formal-completed-followup-summary-2026-06-09-r1/parsed/gemini-3.5-flash.round-1.yaml
+  - docs/notes/review-runs/postwrite-formal-completed-followup-summary-2026-06-09-r1/raw/gemini-3.5-flash.round-1.txt
+  - docs/notes/review-runs/postwrite-formal-completed-followup-summary-2026-06-09-r1/review_summary.md
+  - docs/notes/review-runs/postwrite-formal-completed-followup-summary-2026-06-09-r1/rounds.yaml
+  - docs/notes/review-runs/postwrite-formal-completed-followup-summary-2026-06-09-r1/target-manifest.yaml
+  - docs/notes/review-runs/postwrite-formal-completed-followup-summary-2026-06-09-r1/triage.yaml
+  target_sha256:
+    .reviewcompass/specs/conformance-evaluation/conformance/2026-06-09-completed-followup-conformance.md: 6070e7a45174dd99e1ad90506f0dd15cf1f77059c0fc5a2877c9fc176206f064
+    docs/notes/2026-06-09-formal-completed-followup-summary.md: e0d71642f73b8967ad4b31505371742f0fc12271196b713e23174a519e33117e
+    docs/notes/review-runs/postwrite-formal-completed-followup-summary-2026-06-09-r1/model-result-summary.yaml: 3fd359736ddb06c2b96f7dab0b2bebad490f3ee1ca7e827ae3d8aa6d006aaaec
+    docs/notes/review-runs/postwrite-formal-completed-followup-summary-2026-06-09-r1/parsed/gemini-3.5-flash.round-1.yaml: a2fef998a174a8d4acb6f2e3f2ca410fd86637dca55b0162acc4f1d17446880c
+    docs/notes/review-runs/postwrite-formal-completed-followup-summary-2026-06-09-r1/raw/gemini-3.5-flash.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/postwrite-formal-completed-followup-summary-2026-06-09-r1/review_summary.md: f16872466b9796a68abd3913129a4829e65dd9b443795dfc1f1b6629910ed58f
+    docs/notes/review-runs/postwrite-formal-completed-followup-summary-2026-06-09-r1/rounds.yaml: 2388d14e38bea573291f052af7a708ab469d1bede974378881821d5a9436fc1f
+    docs/notes/review-runs/postwrite-formal-completed-followup-summary-2026-06-09-r1/target-manifest.yaml: 689391407609dfb1cc485a5c0bd5468824329a94e1b4bde7fd90727eb9734924
+    docs/notes/review-runs/postwrite-formal-completed-followup-summary-2026-06-09-r1/triage.yaml: 0bc523c0d96d91a9c38510e78465f34f9cb0f78e736ba35ecb51151be9aef520
+review_run:
+  path: docs/notes/review-runs/postwrite-formal-completed-followup-summary-2026-06-09-r1
+  summary_path: docs/notes/review-runs/postwrite-formal-completed-followup-summary-2026-06-09-r1/model-result-summary.yaml
+notes: Generated template; verify target_files cover current post-write targets before
+  use.

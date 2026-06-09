@@ -1,0 +1,4 @@
+run_id: postwrite-formal-completed-followup-summary-2026-06-09-r1
+target_files:
+- path: docs/notes/2026-06-09-formal-completed-followup-summary.md
+  sha256: e0d71642f73b8967ad4b31505371742f0fc12271196b713e23174a519e33117e
