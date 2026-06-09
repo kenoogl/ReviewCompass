@@ -1,0 +1,104 @@
+status: completed
+target_files:
+- docs/notes/2026-06-09-completed-followup-contract-ownership.md
+- docs/notes/review-runs/postwrite-completed-followup-contract-ownership-2026-06-09-r1/model-result-summary.yaml
+- docs/notes/review-runs/postwrite-completed-followup-contract-ownership-2026-06-09-r1/parsed/gemini-3.5-flash.round-1.yaml
+- docs/notes/review-runs/postwrite-completed-followup-contract-ownership-2026-06-09-r1/raw/gemini-3.5-flash.round-1.txt
+- docs/notes/review-runs/postwrite-completed-followup-contract-ownership-2026-06-09-r1/review_summary.md
+- docs/notes/review-runs/postwrite-completed-followup-contract-ownership-2026-06-09-r1/rounds.yaml
+- docs/notes/review-runs/postwrite-completed-followup-contract-ownership-2026-06-09-r1/target-manifest.yaml
+- docs/notes/review-runs/postwrite-completed-followup-contract-ownership-2026-06-09-r1/triage.yaml
+- docs/notes/review-runs/postwrite-completed-followup-contract-ownership-2026-06-09-r2/model-result-summary.yaml
+- docs/notes/review-runs/postwrite-completed-followup-contract-ownership-2026-06-09-r2/parsed/gemini-3.5-flash.round-1.yaml
+- docs/notes/review-runs/postwrite-completed-followup-contract-ownership-2026-06-09-r2/raw/gemini-3.5-flash.round-1.txt
+- docs/notes/review-runs/postwrite-completed-followup-contract-ownership-2026-06-09-r2/review_summary.md
+- docs/notes/review-runs/postwrite-completed-followup-contract-ownership-2026-06-09-r2/rounds.yaml
+- docs/notes/review-runs/postwrite-completed-followup-contract-ownership-2026-06-09-r2/target-manifest.yaml
+- docs/notes/review-runs/postwrite-completed-followup-contract-ownership-2026-06-09-r2/triage.yaml
+- docs/notes/review-runs/postwrite-completed-followup-contract-ownership-2026-06-09-r3/model-result-summary.yaml
+- docs/notes/review-runs/postwrite-completed-followup-contract-ownership-2026-06-09-r3/parsed/gemini-3.5-flash.round-1.yaml
+- docs/notes/review-runs/postwrite-completed-followup-contract-ownership-2026-06-09-r3/raw/gemini-3.5-flash.round-1.txt
+- docs/notes/review-runs/postwrite-completed-followup-contract-ownership-2026-06-09-r3/review_summary.md
+- docs/notes/review-runs/postwrite-completed-followup-contract-ownership-2026-06-09-r3/rounds.yaml
+- docs/notes/review-runs/postwrite-completed-followup-contract-ownership-2026-06-09-r3/target-manifest.yaml
+- docs/notes/review-runs/postwrite-completed-followup-contract-ownership-2026-06-09-r3/triage.yaml
+target_sha256:
+  docs/notes/2026-06-09-completed-followup-contract-ownership.md: c5a7ad4e332551a2198e687663b16194a5355f26a263e389dd0bda753a00e0af
+  docs/notes/review-runs/postwrite-completed-followup-contract-ownership-2026-06-09-r1/model-result-summary.yaml: a796248c53c6043861a6fd32f549cc84aba166fecfe3ad2f9a2a278d157a1bad
+  docs/notes/review-runs/postwrite-completed-followup-contract-ownership-2026-06-09-r1/parsed/gemini-3.5-flash.round-1.yaml: f9f3ea726a8abd4b552c68d8361e8fceb3b6d2de6023f26930c411174f537bca
+  docs/notes/review-runs/postwrite-completed-followup-contract-ownership-2026-06-09-r1/raw/gemini-3.5-flash.round-1.txt: e6035b630a28d7d4d55eb6b85fd612d445251b066052d909ced580f5c2ff1624
+  docs/notes/review-runs/postwrite-completed-followup-contract-ownership-2026-06-09-r1/review_summary.md: 1e4ef0e1b895cbeb208fbcc0811ad2de8dd74b4d5d1abaab9b1ddafa2ba5f8ef
+  docs/notes/review-runs/postwrite-completed-followup-contract-ownership-2026-06-09-r1/rounds.yaml: 71b648d163a576203d1c9e7b8c1815963cbcb233a121bdcb8763ba7139d92477
+  docs/notes/review-runs/postwrite-completed-followup-contract-ownership-2026-06-09-r1/target-manifest.yaml: 0139fa0a665eca6dc642a52d3401e02c52eb84b275edbdcf23e10002f0527f59
+  docs/notes/review-runs/postwrite-completed-followup-contract-ownership-2026-06-09-r1/triage.yaml: b8799957bb2d5f29d0665bfbb9bdc65ddb58f85853511cfd06a3c8886ffec867
+  docs/notes/review-runs/postwrite-completed-followup-contract-ownership-2026-06-09-r2/model-result-summary.yaml: 806736cc24909cab3b2d0195c17003c77ffb705c4694346f5a92332ae5be9f0b
+  docs/notes/review-runs/postwrite-completed-followup-contract-ownership-2026-06-09-r2/parsed/gemini-3.5-flash.round-1.yaml: c770e95f854d475cda8e45d4a671725af6c394bf3567185119c8be05f243d125
+  docs/notes/review-runs/postwrite-completed-followup-contract-ownership-2026-06-09-r2/raw/gemini-3.5-flash.round-1.txt: 0ab5a1c1a9bbd672dee607d829f1599e8a21f292428985074179204834679b54
+  docs/notes/review-runs/postwrite-completed-followup-contract-ownership-2026-06-09-r2/review_summary.md: ed6b7cb52b08ded83602636112d7b548371e0431d06dfd56e5f09c190a340f3c
+  docs/notes/review-runs/postwrite-completed-followup-contract-ownership-2026-06-09-r2/rounds.yaml: b91ed82dc660525fba2c9a893a5d4d4f741d17d8953b2fca3d0301c7547487d5
+  docs/notes/review-runs/postwrite-completed-followup-contract-ownership-2026-06-09-r2/target-manifest.yaml: 28b77e9deb6dbf8f29584cb3d86ddfc304823d40bf67e28961404598296ce127
+  docs/notes/review-runs/postwrite-completed-followup-contract-ownership-2026-06-09-r2/triage.yaml: ae29f5e7d028e85cc19073ab233a7ad971663ced532854f63519d1634a530a32
+  docs/notes/review-runs/postwrite-completed-followup-contract-ownership-2026-06-09-r3/model-result-summary.yaml: 0ea7dfb9071b7d401f65349d36a2bff08a38933f6ab03ce7a58b005416a1671f
+  docs/notes/review-runs/postwrite-completed-followup-contract-ownership-2026-06-09-r3/parsed/gemini-3.5-flash.round-1.yaml: 9715eab290b60e76e7e7b23686fb6fafdb6164256007914b1fc0cd217b5b4779
+  docs/notes/review-runs/postwrite-completed-followup-contract-ownership-2026-06-09-r3/raw/gemini-3.5-flash.round-1.txt: 012f8ad39ff9718bd1f411cc1b86db10c679586fceba509a093c43c3b2c289c8
+  docs/notes/review-runs/postwrite-completed-followup-contract-ownership-2026-06-09-r3/review_summary.md: 3b1980d8657cbd889e6edd2d93f9d0610289da8c787a1e411be809a689d7b674
+  docs/notes/review-runs/postwrite-completed-followup-contract-ownership-2026-06-09-r3/rounds.yaml: 38a160e63c5dc0d1229a405b022f69e1fea0c7573a8584b86162f289ba5d290e
+  docs/notes/review-runs/postwrite-completed-followup-contract-ownership-2026-06-09-r3/target-manifest.yaml: 1d3d3edec4abc9753c76f3df618918cb82195f6dace048f4dcc1f23ee108b20e
+  docs/notes/review-runs/postwrite-completed-followup-contract-ownership-2026-06-09-r3/triage.yaml: eca22c057e948931a3433be16dfc17ee8bd0c5faf409bd36da8aa16bf708f0a6
+required_verifiers: &id001
+- gemini-3.5-flash
+completed_verifiers: *id001
+unresolved_substantive_findings: 0
+verifications:
+- verifier: gemini-3.5-flash
+  target_files:
+  - docs/notes/2026-06-09-completed-followup-contract-ownership.md
+  - docs/notes/review-runs/postwrite-completed-followup-contract-ownership-2026-06-09-r1/model-result-summary.yaml
+  - docs/notes/review-runs/postwrite-completed-followup-contract-ownership-2026-06-09-r1/parsed/gemini-3.5-flash.round-1.yaml
+  - docs/notes/review-runs/postwrite-completed-followup-contract-ownership-2026-06-09-r1/raw/gemini-3.5-flash.round-1.txt
+  - docs/notes/review-runs/postwrite-completed-followup-contract-ownership-2026-06-09-r1/review_summary.md
+  - docs/notes/review-runs/postwrite-completed-followup-contract-ownership-2026-06-09-r1/rounds.yaml
+  - docs/notes/review-runs/postwrite-completed-followup-contract-ownership-2026-06-09-r1/target-manifest.yaml
+  - docs/notes/review-runs/postwrite-completed-followup-contract-ownership-2026-06-09-r1/triage.yaml
+  - docs/notes/review-runs/postwrite-completed-followup-contract-ownership-2026-06-09-r2/model-result-summary.yaml
+  - docs/notes/review-runs/postwrite-completed-followup-contract-ownership-2026-06-09-r2/parsed/gemini-3.5-flash.round-1.yaml
+  - docs/notes/review-runs/postwrite-completed-followup-contract-ownership-2026-06-09-r2/raw/gemini-3.5-flash.round-1.txt
+  - docs/notes/review-runs/postwrite-completed-followup-contract-ownership-2026-06-09-r2/review_summary.md
+  - docs/notes/review-runs/postwrite-completed-followup-contract-ownership-2026-06-09-r2/rounds.yaml
+  - docs/notes/review-runs/postwrite-completed-followup-contract-ownership-2026-06-09-r2/target-manifest.yaml
+  - docs/notes/review-runs/postwrite-completed-followup-contract-ownership-2026-06-09-r2/triage.yaml
+  - docs/notes/review-runs/postwrite-completed-followup-contract-ownership-2026-06-09-r3/model-result-summary.yaml
+  - docs/notes/review-runs/postwrite-completed-followup-contract-ownership-2026-06-09-r3/parsed/gemini-3.5-flash.round-1.yaml
+  - docs/notes/review-runs/postwrite-completed-followup-contract-ownership-2026-06-09-r3/raw/gemini-3.5-flash.round-1.txt
+  - docs/notes/review-runs/postwrite-completed-followup-contract-ownership-2026-06-09-r3/review_summary.md
+  - docs/notes/review-runs/postwrite-completed-followup-contract-ownership-2026-06-09-r3/rounds.yaml
+  - docs/notes/review-runs/postwrite-completed-followup-contract-ownership-2026-06-09-r3/target-manifest.yaml
+  - docs/notes/review-runs/postwrite-completed-followup-contract-ownership-2026-06-09-r3/triage.yaml
+  target_sha256:
+    docs/notes/2026-06-09-completed-followup-contract-ownership.md: c5a7ad4e332551a2198e687663b16194a5355f26a263e389dd0bda753a00e0af
+    docs/notes/review-runs/postwrite-completed-followup-contract-ownership-2026-06-09-r1/model-result-summary.yaml: a796248c53c6043861a6fd32f549cc84aba166fecfe3ad2f9a2a278d157a1bad
+    docs/notes/review-runs/postwrite-completed-followup-contract-ownership-2026-06-09-r1/parsed/gemini-3.5-flash.round-1.yaml: f9f3ea726a8abd4b552c68d8361e8fceb3b6d2de6023f26930c411174f537bca
+    docs/notes/review-runs/postwrite-completed-followup-contract-ownership-2026-06-09-r1/raw/gemini-3.5-flash.round-1.txt: e6035b630a28d7d4d55eb6b85fd612d445251b066052d909ced580f5c2ff1624
+    docs/notes/review-runs/postwrite-completed-followup-contract-ownership-2026-06-09-r1/review_summary.md: 1e4ef0e1b895cbeb208fbcc0811ad2de8dd74b4d5d1abaab9b1ddafa2ba5f8ef
+    docs/notes/review-runs/postwrite-completed-followup-contract-ownership-2026-06-09-r1/rounds.yaml: 71b648d163a576203d1c9e7b8c1815963cbcb233a121bdcb8763ba7139d92477
+    docs/notes/review-runs/postwrite-completed-followup-contract-ownership-2026-06-09-r1/target-manifest.yaml: 0139fa0a665eca6dc642a52d3401e02c52eb84b275edbdcf23e10002f0527f59
+    docs/notes/review-runs/postwrite-completed-followup-contract-ownership-2026-06-09-r1/triage.yaml: b8799957bb2d5f29d0665bfbb9bdc65ddb58f85853511cfd06a3c8886ffec867
+    docs/notes/review-runs/postwrite-completed-followup-contract-ownership-2026-06-09-r2/model-result-summary.yaml: 806736cc24909cab3b2d0195c17003c77ffb705c4694346f5a92332ae5be9f0b
+    docs/notes/review-runs/postwrite-completed-followup-contract-ownership-2026-06-09-r2/parsed/gemini-3.5-flash.round-1.yaml: c770e95f854d475cda8e45d4a671725af6c394bf3567185119c8be05f243d125
+    docs/notes/review-runs/postwrite-completed-followup-contract-ownership-2026-06-09-r2/raw/gemini-3.5-flash.round-1.txt: 0ab5a1c1a9bbd672dee607d829f1599e8a21f292428985074179204834679b54
+    docs/notes/review-runs/postwrite-completed-followup-contract-ownership-2026-06-09-r2/review_summary.md: ed6b7cb52b08ded83602636112d7b548371e0431d06dfd56e5f09c190a340f3c
+    docs/notes/review-runs/postwrite-completed-followup-contract-ownership-2026-06-09-r2/rounds.yaml: b91ed82dc660525fba2c9a893a5d4d4f741d17d8953b2fca3d0301c7547487d5
+    docs/notes/review-runs/postwrite-completed-followup-contract-ownership-2026-06-09-r2/target-manifest.yaml: 28b77e9deb6dbf8f29584cb3d86ddfc304823d40bf67e28961404598296ce127
+    docs/notes/review-runs/postwrite-completed-followup-contract-ownership-2026-06-09-r2/triage.yaml: ae29f5e7d028e85cc19073ab233a7ad971663ced532854f63519d1634a530a32
+    docs/notes/review-runs/postwrite-completed-followup-contract-ownership-2026-06-09-r3/model-result-summary.yaml: 0ea7dfb9071b7d401f65349d36a2bff08a38933f6ab03ce7a58b005416a1671f
+    docs/notes/review-runs/postwrite-completed-followup-contract-ownership-2026-06-09-r3/parsed/gemini-3.5-flash.round-1.yaml: 9715eab290b60e76e7e7b23686fb6fafdb6164256007914b1fc0cd217b5b4779
+    docs/notes/review-runs/postwrite-completed-followup-contract-ownership-2026-06-09-r3/raw/gemini-3.5-flash.round-1.txt: 012f8ad39ff9718bd1f411cc1b86db10c679586fceba509a093c43c3b2c289c8
+    docs/notes/review-runs/postwrite-completed-followup-contract-ownership-2026-06-09-r3/review_summary.md: 3b1980d8657cbd889e6edd2d93f9d0610289da8c787a1e411be809a689d7b674
+    docs/notes/review-runs/postwrite-completed-followup-contract-ownership-2026-06-09-r3/rounds.yaml: 38a160e63c5dc0d1229a405b022f69e1fea0c7573a8584b86162f289ba5d290e
+    docs/notes/review-runs/postwrite-completed-followup-contract-ownership-2026-06-09-r3/target-manifest.yaml: 1d3d3edec4abc9753c76f3df618918cb82195f6dace048f4dcc1f23ee108b20e
+    docs/notes/review-runs/postwrite-completed-followup-contract-ownership-2026-06-09-r3/triage.yaml: eca22c057e948931a3433be16dfc17ee8bd0c5faf409bd36da8aa16bf708f0a6
+review_run:
+  path: docs/notes/review-runs/postwrite-completed-followup-contract-ownership-2026-06-09-r3
+  summary_path: docs/notes/review-runs/postwrite-completed-followup-contract-ownership-2026-06-09-r3/model-result-summary.yaml
+notes: Generated template; verify target_files cover current post-write targets before
+  use.

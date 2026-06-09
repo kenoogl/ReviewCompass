@@ -1,0 +1,48 @@
+run_id: postwrite-completed-followup-contract-ownership-2026-06-09-r1
+triage_status: draft
+generated_at: '2026-06-09T09:20:14.979580+00:00'
+decision_actor: null
+decision_actor_type: human
+items:
+- finding_id: postwrite-completed-followup-contract-ownership-2026-06-09-r1-gemini-3.5-flash-primary-001
+  run_id: postwrite-completed-followup-contract-ownership-2026-06-09-r1
+  source_model: gemini-3.5-flash
+  source_round: round-1
+  source_raw_path: raw/gemini-3.5-flash.round-1.txt
+  source_parsed_path: parsed/gemini-3.5-flash.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: '## Ownership Decision'
+  plain_language_summary: The 'Gap' column values redundantly include the word 'owner'
+    (e.g., 'requirements gap owner'), which duplicates the 'Owner' column header concept.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: The column is titled 'Gap', so its values should represent the
+    gaps themselves (e.g., 'requirements gap', 'design gap') rather than suffixing
+    them with 'owner', especially when the 'Owner' column specifies the target files.
+  applied_files: []
+  superseded_by: null
+- finding_id: postwrite-completed-followup-contract-ownership-2026-06-09-r1-gemini-3.5-flash-primary-002
+  run_id: postwrite-completed-followup-contract-ownership-2026-06-09-r1
+  source_model: gemini-3.5-flash
+  source_round: round-1
+  source_raw_path: raw/gemini-3.5-flash.round-1.txt
+  source_parsed_path: parsed/gemini-3.5-flash.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: '## Boundary'
+  plain_language_summary: The section contains mixed Japanese and English text ('実アプリ
+    pilot は開始しない; it waits...').
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: For maximum consistency in an English-primary documentation base,
+    this phrase should ideally be translated fully into English (e.g., 'The actual
+    app pilot will not start; it waits...').
+  applied_files: []
+  superseded_by: null

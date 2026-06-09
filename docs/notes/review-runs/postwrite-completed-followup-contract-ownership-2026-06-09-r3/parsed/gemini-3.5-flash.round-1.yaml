@@ -1,0 +1,12 @@
+role: primary
+provider: gemini-api
+model: gemini-3.5-flash
+attempts: 1
+duration_seconds: 7.888
+findings:
+- severity: WARN
+  target_location: '## Boundary'
+  description: The paragraph contains a Japanese phrase ('実アプリ pilot は開始しない') in an
+    otherwise fully English document.
+  rationale: To maintain consistency and professional quality, technical documentation
+    should be written in a single consistent language.

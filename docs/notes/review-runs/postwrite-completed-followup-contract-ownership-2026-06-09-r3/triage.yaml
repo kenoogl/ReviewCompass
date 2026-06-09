@@ -1,0 +1,25 @@
+run_id: postwrite-completed-followup-contract-ownership-2026-06-09-r3
+triage_status: decided
+generated_at: '2026-06-09T09:23:37.830909+00:00'
+decision_actor: null
+decision_actor_type: human
+items:
+- finding_id: postwrite-completed-followup-contract-ownership-2026-06-09-r3-gemini-3.5-flash-primary-001
+  run_id: postwrite-completed-followup-contract-ownership-2026-06-09-r3
+  source_model: gemini-3.5-flash
+  source_round: round-1
+  source_raw_path: raw/gemini-3.5-flash.round-1.txt
+  source_parsed_path: parsed/gemini-3.5-flash.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: '## Boundary'
+  plain_language_summary: The paragraph contains a Japanese phrase ('実アプリ pilot は開始しない')
+    in an otherwise fully English document.
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: user
+  decision_actor_type: agent
+  decision_at: '2026-06-09T09:24:41.795396+00:00'
+  decision_reason: 利用者が前回提示した方針を承認。実アプリ pilot を開始しない境界を日本語の運用語として明示する意図があり、文書のスコープ確認には影響しないため据え置く。
+  applied_files: []
+  superseded_by: null

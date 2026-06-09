@@ -18,6 +18,12 @@ SUMMARY_PATH = (
   / "notes"
   / "2026-06-09-formal-completed-followup-summary.md"
 )
+OWNERSHIP_PATH = (
+  ROOT
+  / "docs"
+  / "notes"
+  / "2026-06-09-completed-followup-contract-ownership.md"
+)
 
 EXPECTED_CANDIDATES = [
   "D-021",
@@ -72,3 +78,14 @@ def test_formal_completed_followup_summary_records_scope_and_next_issue():
   assert "実アプリ pilot はこのサマリの対象外" in text
   for candidate_id in EXPECTED_CANDIDATES:
     assert f"| {candidate_id} |" in text
+
+
+def test_completed_followup_contract_ownership_assigns_spec_and_design_gaps():
+  text = OWNERSHIP_PATH.read_text(encoding="utf-8")
+
+  assert "| requirements gap |" in text
+  assert ".reviewcompass/specs/conformance-evaluation/requirements.md" in text
+  assert "| design gap |" in text
+  assert ".reviewcompass/specs/conformance-evaluation/design.md" in text
+  assert "実アプリ pilot は開始しない" in text
+  assert "docs/notes/2026-06-09-formal-completed-followup-summary.md" in text

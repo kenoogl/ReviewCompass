@@ -1,0 +1,5 @@
+findings:
+  - severity: WARN
+    target_location: "## Boundary"
+    description: "The paragraph contains a Japanese phrase ('実アプリ pilot は開始しない') in an otherwise fully English document."
+    rationale: "To maintain consistency and professional quality, technical documentation should be written in a single consistent language."

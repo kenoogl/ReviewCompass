@@ -1,0 +1,27 @@
+run_id: postwrite-completed-followup-contract-ownership-2026-06-09-r2
+triage_status: draft
+generated_at: '2026-06-09T09:22:28.098457+00:00'
+decision_actor: null
+decision_actor_type: human
+items:
+- finding_id: postwrite-completed-followup-contract-ownership-2026-06-09-r2-gemini-3.5-flash-primary-001
+  run_id: postwrite-completed-followup-contract-ownership-2026-06-09-r2
+  source_model: gemini-3.5-flash
+  source_round: round-1
+  source_raw_path: raw/gemini-3.5-flash.round-1.txt
+  source_parsed_path: parsed/gemini-3.5-flash.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: '## Ownership Decision'
+  plain_language_summary: The 'Owner' column in the decision table specifies target
+    file paths rather than assigning actual roles or owners responsible for the documents.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: To ensure proper accountability and contract ownership, the table
+    should designate the role or team responsible for maintaining and updating each
+    document, rather than listing the document paths as the owner.
+  applied_files: []
+  superseded_by: null

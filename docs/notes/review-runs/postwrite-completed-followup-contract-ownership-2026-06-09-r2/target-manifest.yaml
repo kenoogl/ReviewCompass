@@ -1,0 +1,4 @@
+run_id: postwrite-completed-followup-contract-ownership-2026-06-09-r2
+target_files:
+- path: docs/notes/2026-06-09-completed-followup-contract-ownership.md
+  sha256: f9554193f719e1c7ea8efc28ddbe0913319c5566de0354b7956afe88d9e4b082

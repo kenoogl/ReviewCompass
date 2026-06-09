@@ -1,0 +1,5 @@
+findings:
+  - severity: WARN
+    target_location: "## Ownership Decision"
+    description: "The 'Owner' column in the decision table specifies target file paths rather than assigning actual roles or owners responsible for the documents."
+    rationale: "To ensure proper accountability and contract ownership, the table should designate the role or team responsible for maintaining and updating each document, rather than listing the document paths as the owner."

@@ -1,0 +1,9 @@
+findings:
+  - severity: WARN
+    target_location: "## Ownership Decision"
+    description: "The 'Gap' column values redundantly include the word 'owner' (e.g., 'requirements gap owner'), which duplicates the 'Owner' column header concept."
+    rationale: "The column is titled 'Gap', so its values should represent the gaps themselves (e.g., 'requirements gap', 'design gap') rather than suffixing them with 'owner', especially when the 'Owner' column specifies the target files."
+  - severity: INFO
+    target_location: "## Boundary"
+    description: "The section contains mixed Japanese and English text ('実アプリ pilot は開始しない; it waits...')."
+    rationale: "For maximum consistency in an English-primary documentation base, this phrase should ideally be translated fully into English (e.g., 'The actual app pilot will not start; it waits...')."
