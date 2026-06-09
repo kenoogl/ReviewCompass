@@ -2137,6 +2137,60 @@ def validate_deployment_independence_for_staged_files(cwd, staged_files):
   return state, errors
 
 
+def commit_file_text(cwd, commitish, path):
+  """指定 commit 内のファイル内容を text として返す"""
+  result = subprocess.run(
+    ["git", "show", f"{commitish}:{path}"],
+    cwd=str(cwd),
+    capture_output=True,
+    text=True,
+  )
+  if result.returncode != 0:
+    return None
+  return result.stdout
+
+
+def validate_deployment_independence_for_commit(cwd, commitish):
+  """D-023 配置非依存 lint を commit 内容に対して実行する"""
+  try:
+    changed_files = list_commit_changed_files(cwd, commitish)
+  except ValueError as e:
+    return {
+      "commit": commitish,
+      "target_files": [],
+      "findings": [],
+    }, [f"配置非依存 lint 対象 commit を読めません: {e}"]
+
+  target_files = [
+    filepath for filepath in changed_files
+    if is_deployment_independence_guard_target(filepath)
+  ]
+  state = {
+    "commit": commitish,
+    "target_files": target_files,
+    "findings": [],
+  }
+  errors = []
+  for filepath in target_files:
+    text = commit_file_text(cwd, commitish, filepath)
+    if text is None:
+      errors.append(f"配置非依存 lint 対象の commit 内容を読めません: {filepath}")
+      continue
+    findings = lint_text(filepath, text)
+    state["findings"].extend(findings)
+
+  for finding in state["findings"]:
+    errors.append(
+      "配置非依存 lint 違反: {path}:{line}: {kind}: {value}".format(
+        path=finding["path"],
+        line=finding["line"],
+        kind=finding["kind"],
+        value=finding["value"],
+      )
+    )
+  return state, errors
+
+
 def _reopen_completed_files(staged_files):
   """staged された reopen 完了ファイルを返す"""
   return [
@@ -2780,6 +2834,10 @@ def cmd_push(args):
     cwd,
     ahead_info,
   )
+  deployment_lint_state, deployment_lint_errors = validate_deployment_independence_for_commit(
+    cwd,
+    "HEAD",
+  )
 
   # 判定（仕様 §6.3）
   reasons = []
@@ -2792,6 +2850,8 @@ def cmd_push(args):
     reasons.append("作業ツリーに未コミット変更があります（push 前に commit が必要）")
   if commit_precheck_errors:
     reasons.extend(commit_precheck_errors)
+  if deployment_lint_errors:
+    reasons.extend(deployment_lint_errors)
   if reasons:
     verdict, exit_code = "DEVIATION", 2
   else:
@@ -2803,6 +2863,8 @@ def cmd_push(args):
     f"進行中ファイル: {len(in_progress_files)} 件\n"
     f"origin/main からの先行コミット数: {ahead_info}\n"
     f"commit 事前検査記録: {'有効' if commit_precheck_state['valid'] else '無効'}\n"
+    f"配置非依存 lint 対象: {len(deployment_lint_state['target_files'])} 件\n"
+    f"配置非依存 lint 所見: {len(deployment_lint_state['findings'])} 件\n"
     f"直近 5 コミット:\n{recent_commits}"
   )
   current_state_dict = {
@@ -2810,6 +2872,7 @@ def cmd_push(args):
     "in_progress_files": in_progress_files,
     "ahead_count": ahead_info,
     "commit_precheck": commit_precheck_state,
+    "deployment_independence_lint": deployment_lint_state,
     "recent_commits": recent_commits.splitlines() if recent_commits else [],
   }
   action_str = f"push (rationale='{rationale}')"

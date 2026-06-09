@@ -1,0 +1,48 @@
+status: completed
+target_files:
+- docs/notes/2026-06-09-d023-deployment-independence-lint-checklist.md
+- docs/notes/review-runs/postwrite-d023-push-guard-integration-2026-06-09-r1/model-result-summary.yaml
+- docs/notes/review-runs/postwrite-d023-push-guard-integration-2026-06-09-r1/parsed/gemini-3.5-flash.round-1.yaml
+- docs/notes/review-runs/postwrite-d023-push-guard-integration-2026-06-09-r1/raw/gemini-3.5-flash.round-1.txt
+- docs/notes/review-runs/postwrite-d023-push-guard-integration-2026-06-09-r1/review_summary.md
+- docs/notes/review-runs/postwrite-d023-push-guard-integration-2026-06-09-r1/rounds.yaml
+- docs/notes/review-runs/postwrite-d023-push-guard-integration-2026-06-09-r1/target-manifest.yaml
+- docs/notes/review-runs/postwrite-d023-push-guard-integration-2026-06-09-r1/triage.yaml
+target_sha256:
+  docs/notes/2026-06-09-d023-deployment-independence-lint-checklist.md: bafc765f2371aefb73704a643e409965d845c944e5a570c828eed88dd93fd26e
+  docs/notes/review-runs/postwrite-d023-push-guard-integration-2026-06-09-r1/model-result-summary.yaml: 5ee2261222d873496c7b83f7f964f3ba56eb919e4b1efaca23725c74a8dad7e5
+  docs/notes/review-runs/postwrite-d023-push-guard-integration-2026-06-09-r1/parsed/gemini-3.5-flash.round-1.yaml: c24c439899d0ef0f82c2f9ffb370417785da31921b3af20feed45d8b4205c3ca
+  docs/notes/review-runs/postwrite-d023-push-guard-integration-2026-06-09-r1/raw/gemini-3.5-flash.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+  docs/notes/review-runs/postwrite-d023-push-guard-integration-2026-06-09-r1/review_summary.md: 5f356e60508ac1bbbf2a0c5366f7de87a55c063141ecf2271b5cae2ed12a2c22
+  docs/notes/review-runs/postwrite-d023-push-guard-integration-2026-06-09-r1/rounds.yaml: cdd7c2b6f0ee2a2e243630d8bf0c66aefcf3a873ebd034664378dcf934dd226a
+  docs/notes/review-runs/postwrite-d023-push-guard-integration-2026-06-09-r1/target-manifest.yaml: 19f5a272609a245092a9662721f635e3ce05b41b50877e73c91556e5fa48fe85
+  docs/notes/review-runs/postwrite-d023-push-guard-integration-2026-06-09-r1/triage.yaml: a2c69ad846b13b2c4008819332c6dc6a674ea1a040fe8e13d7aad9ba8c5888c9
+required_verifiers: &id001
+- gemini-3.5-flash
+completed_verifiers: *id001
+unresolved_substantive_findings: 0
+verifications:
+- verifier: gemini-3.5-flash
+  target_files:
+  - docs/notes/2026-06-09-d023-deployment-independence-lint-checklist.md
+  - docs/notes/review-runs/postwrite-d023-push-guard-integration-2026-06-09-r1/model-result-summary.yaml
+  - docs/notes/review-runs/postwrite-d023-push-guard-integration-2026-06-09-r1/parsed/gemini-3.5-flash.round-1.yaml
+  - docs/notes/review-runs/postwrite-d023-push-guard-integration-2026-06-09-r1/raw/gemini-3.5-flash.round-1.txt
+  - docs/notes/review-runs/postwrite-d023-push-guard-integration-2026-06-09-r1/review_summary.md
+  - docs/notes/review-runs/postwrite-d023-push-guard-integration-2026-06-09-r1/rounds.yaml
+  - docs/notes/review-runs/postwrite-d023-push-guard-integration-2026-06-09-r1/target-manifest.yaml
+  - docs/notes/review-runs/postwrite-d023-push-guard-integration-2026-06-09-r1/triage.yaml
+  target_sha256:
+    docs/notes/2026-06-09-d023-deployment-independence-lint-checklist.md: bafc765f2371aefb73704a643e409965d845c944e5a570c828eed88dd93fd26e
+    docs/notes/review-runs/postwrite-d023-push-guard-integration-2026-06-09-r1/model-result-summary.yaml: 5ee2261222d873496c7b83f7f964f3ba56eb919e4b1efaca23725c74a8dad7e5
+    docs/notes/review-runs/postwrite-d023-push-guard-integration-2026-06-09-r1/parsed/gemini-3.5-flash.round-1.yaml: c24c439899d0ef0f82c2f9ffb370417785da31921b3af20feed45d8b4205c3ca
+    docs/notes/review-runs/postwrite-d023-push-guard-integration-2026-06-09-r1/raw/gemini-3.5-flash.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/postwrite-d023-push-guard-integration-2026-06-09-r1/review_summary.md: 5f356e60508ac1bbbf2a0c5366f7de87a55c063141ecf2271b5cae2ed12a2c22
+    docs/notes/review-runs/postwrite-d023-push-guard-integration-2026-06-09-r1/rounds.yaml: cdd7c2b6f0ee2a2e243630d8bf0c66aefcf3a873ebd034664378dcf934dd226a
+    docs/notes/review-runs/postwrite-d023-push-guard-integration-2026-06-09-r1/target-manifest.yaml: 19f5a272609a245092a9662721f635e3ce05b41b50877e73c91556e5fa48fe85
+    docs/notes/review-runs/postwrite-d023-push-guard-integration-2026-06-09-r1/triage.yaml: a2c69ad846b13b2c4008819332c6dc6a674ea1a040fe8e13d7aad9ba8c5888c9
+review_run:
+  path: docs/notes/review-runs/postwrite-d023-push-guard-integration-2026-06-09-r1
+  summary_path: docs/notes/review-runs/postwrite-d023-push-guard-integration-2026-06-09-r1/model-result-summary.yaml
+notes: Generated template; verify target_files cover current post-write targets before
+  use.

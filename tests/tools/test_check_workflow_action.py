@@ -4955,6 +4955,38 @@ class PushExitCodeTests(unittest.TestCase):
     _assert_script_invoked(self, result)
     self.assertEqual(result.returncode, 0, result.stdout)
 
+  def test_push_blocks_ahead_deployable_artifact_with_absolute_path(self):
+    """先行 commit の deployable artifact にローカル絶対パスがあれば push は exit 2"""
+    subprocess.run(
+      ["git", "update-ref", "refs/remotes/origin/main", "HEAD"],
+      cwd=str(self.tmpdir),
+      check=True,
+      capture_output=True,
+    )
+    relpath = "learning/workflow/deployment-readiness/bad.json"
+    _stage_file(
+      self.tmpdir,
+      relpath,
+      '{"path": "/Users/Daily/Development/ReviewCompass/config.yaml"}\n',
+    )
+    subprocess.run(
+      ["git", "commit", "-qm", "add bad deployable artifact"],
+      cwd=str(self.tmpdir),
+      check=True,
+      capture_output=True,
+    )
+    _write_last_commit_precheck(self.tmpdir)
+
+    result = run_script(
+      ["push", "--rationale", "push 配置非依存 lint guard のテスト"],
+      cwd=self.tmpdir,
+    )
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 2, result.stdout)
+    self.assertIn("配置非依存", result.stdout)
+    self.assertIn(relpath, result.stdout)
+
   def test_push_rationale_is_required(self):
     """push に --rationale なし → 非 0 終了（仕様 §5.3 必須）"""
     result = run_script(["push"], cwd=self.tmpdir)

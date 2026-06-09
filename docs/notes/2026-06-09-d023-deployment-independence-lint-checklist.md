@@ -48,7 +48,7 @@ D-023 の目的は、ReviewCompass の文書・設定・スキーマが、配置
 - [x] 初期対象範囲 lint を実行した。
 - [x] post-write verification を実施する。
 - [x] commit precheck guard に deployable artifact の staged 内容 lint を統合した。
-- [ ] push guard への直接統合要否を判断する。
+- [x] push guard に HEAD commit 内容 lint を直接統合した。
 
 ## 4. Initial Lint Result
 
@@ -82,13 +82,13 @@ D-023 の目的は、ReviewCompass の文書・設定・スキーマが、配置
 | learning/workflow/schemas lint | passed |
 | config lint | passed |
 | commit guard integration | implemented |
-| push guard integration | not implemented; push は直前 commit precheck 記録を要求するため間接的に commit guard 結果を参照する |
+| push guard integration | implemented |
 
-stable deploy candidate までに残る blocking 項目はない。push guard への直接統合は hardening follow-up として扱う。
+stable deploy candidate までに残る blocking 項目はない。push guard 直接統合も完了したため、D-023 scope の guard hardening は完了として扱える。
 
 ## 6. Status Snapshot
 
 - `next --json`: `completed`
-- current task: D-023 commit precheck guard integration implemented
-- next task: push guard direct integration decision or commit
-- last status refresh: 2026-06-09, after commit guard tests
+- current task: D-023 commit and push guard integration implemented
+- next task: commit
+- last status refresh: 2026-06-09, after push guard tests
