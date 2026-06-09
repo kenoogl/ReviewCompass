@@ -10,7 +10,9 @@ completed_steps:
 - 第2過程：正本修正確認
 - 第2過程停止点：コミット完了
 - 第3過程：stages/intent.yaml#review 再実施
-next_step: 第3過程停止点コミット：stages/intent.yaml#review 再実施完了
+- 第3過程：stages/intent.yaml#approval 承認
+- 第3過程：stages/feature-partitioning.yaml#candidate-proposal 再実施
+next_step: 第3過程停止点コミット：stages/feature-partitioning.yaml#candidate-proposal 再実施完了
 step_number: 3
 pending_gates:
 - stages/intent.yaml#review
@@ -19,4 +21,5 @@ pending_gates:
 - stages/feature-partitioning.yaml#approval
 approval_source: 2026-06-09 利用者発言「承認」
 canonical_repair_result: 既存の正本修正は、実装上の所有を主軸とする feature impact 判定、conformance-evaluation の direct impact 化、新 feature 不要判断を反映済み。第2過程で追加修正した範囲は direct impact 留保文の一般化のみ。
-current_blocker: stages/intent.yaml#approval（人間承認待ち）
+intent_approval_source: 2026-06-09 利用者発言「承認」
+current_blocker: stages/feature-partitioning.yaml#approval（人間承認待ち）

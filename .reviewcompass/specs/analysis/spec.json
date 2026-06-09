@@ -7,11 +7,11 @@
     "intent": {
       "drafting": true,
       "review": true,
-      "approval": false,
+      "approval": true,
       "reference": "stages/intent.yaml"
     },
     "feature-partitioning": {
-      "candidate-proposal": false,
+      "candidate-proposal": true,
       "approval": false,
       "reference": "stages/feature-partitioning/2026-05-24-proposal.md"
     },
