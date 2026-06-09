@@ -113,11 +113,13 @@ def test_requirements_and_design_adopt_completed_followup_prerequisite_contract(
     assert "completed follow-up prerequisite set" in text
     assert "D-021 / D-004 / D-005 / D-025 / D-027 / D-008 / D-019 / D-020 / D-023" in text
     assert "docs/notes/2026-06-09-formal-completed-followup-summary.md" in text
-    assert "実アプリ pilot" in text
 
   assert "Requirement 11" in requirements
   assert "formal completed follow-up outputs" in requirements
   assert "requirements gap" in requirements
   assert "design gap" in requirements
+  assert "以後の作業開始判断は、この Requirement の範囲外" in requirements
   assert "### 13.8 Completed follow-up prerequisite set" in design
   assert "Target document" in design
+  assert "実アプリ pilot" not in requirements
+  assert "実アプリ pilot" not in design

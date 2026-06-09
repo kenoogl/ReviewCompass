@@ -191,16 +191,16 @@
 
 ### Requirement 11：completed follow-up prerequisite set の正式化
 
-**目的**：保守担当者が、将来計画候補から昇格して実装済みになった completed follow-up prerequisite set を、実アプリ pilot の前提条件として参照できるようにする。これは実装済み成果物の正式化であり、実アプリ pilot の開始指示ではない。
+**目的**：保守担当者が、将来計画候補から昇格して実装済みになった completed follow-up prerequisite set を、formal completed follow-up outputs として参照できるようにする。
 
 #### 受入基準
 
 1. 本機能は `D-021 / D-004 / D-005 / D-025 / D-027 / D-008 / D-019 / D-020 / D-023` を completed follow-up prerequisite set として扱う。
 2. 本機能は completed follow-up prerequisite set を formal completed follow-up outputs として記録し、`docs/notes/2026-06-09-formal-completed-followup-summary.md` を handoff summary として参照する。
 3. 本機能は completed follow-up conformance result が `gap_found` の場合でも、各候補の実装・テスト・検証証跡を正式な completed follow-up 成果物として扱う。ただし requirements gap と design gap は残存 gap として明示する。
-4. requirements gap は、本 requirements.md が completed follow-up prerequisite set の外部可視契約を引き受ける。外部可視契約には候補一覧、formal completed follow-up outputs としての扱い、実アプリ pilot との境界を含める。
-5. design gap は、design.md が completed follow-up prerequisite set の設計境界を引き受ける。設計境界には「completed follow-up prerequisite set は実アプリ pilot の前提であり、pilot 自体ではない」ことを含める。
-6. 本機能は実アプリ pilot をこの Requirement の完了条件に含めない。実アプリ pilot は、completed follow-up prerequisite set の文書化後に別途開始判断する外部検証作業である。
+4. requirements gap は、本 requirements.md が completed follow-up prerequisite set の外部可視契約を引き受ける。外部可視契約には候補一覧、formal completed follow-up outputs としての扱い、残存 gap の扱いを含める。
+5. design gap は、design.md が completed follow-up prerequisite set の設計境界を引き受ける。設計境界には、各 completed follow-up output の責務、相互関係、handoff summary との接続を含める。
+6. 本機能は completed follow-up prerequisite set の正式化をこの Requirement の完了条件とする。以後の作業開始判断は、この Requirement の範囲外で扱う。
 
 ## Change Intent
 
@@ -220,7 +220,7 @@ ReviewCompass 固有の構築：
 - 実装由来契約の contract ownership map、spec update proposals、draft-only spec update artifacts を Requirement 9 で明示（2026-06-08 実装由来契約横展開）
 - 2026-06-08 の feature-partitioning 再確認により、intent の「レビュー収集処理を事前設定の写像にしない」意図は新 feature 追加を要さず、conformance-evaluation では Requirement 1 の下流から上流への逆方向推定、Requirement 3 の二段階照合、Requirement 5 の推定・照合両段階への 3 役レビュー適用、および Requirement 9 の実装由来契約の仕様更新草案で受けることを確認した。
 - 2026-06-09 の再確認により、同 intent は単なる既存要件確認ではなく、既存システムへ後追いで intent を追加した場合に、コード由来の requirements／design 差分候補、下流影響候補、実装変更候補を抽出し、既存設計との衝突を確認しながら仕様駆動開発へ戻す機能追加として Requirement 10 に明示した。tasks.md 本体の推定・再作成は本機能の責務外であり、正式な tasks 反映は `workflow-management` の reopen 手続きに委ねる。
-- 2026-06-09 の completed follow-up conformance により、D-021 / D-004 / D-005 / D-025 / D-027 / D-008 / D-019 / D-020 / D-023 は completed follow-up prerequisite set として正式化した。formal completed follow-up outputs の handoff summary は `docs/notes/2026-06-09-formal-completed-followup-summary.md` とし、実アプリ pilot はこの前提セットの文書化後に別途開始判断する。
+- 2026-06-09 の completed follow-up conformance により、D-021 / D-004 / D-005 / D-025 / D-027 / D-008 / D-019 / D-020 / D-023 は completed follow-up prerequisite set として正式化した。formal completed follow-up outputs の handoff summary は `docs/notes/2026-06-09-formal-completed-followup-summary.md` とする。
 
 機能横断レビューで対処された所見：
 
@@ -242,4 +242,4 @@ v3-plan §3.3 の扱い（§5.10.6 由来、2026-05-24 セッション 23 改訂
 
 - `XDI-CE-001`：cross-feature drift clustering、contract ownership outputs、follow-up implementation decision は、Requirement 9 の contract ownership map／spec update proposals／draft-only artifacts の外部可視要件に含める。詳細な follow-up タスク化は tasks.md T-015 を正本とし、本 requirements.md は要件層から追跡可能であることを示す。
 - `XDI-CE-002`：既存システムに後追いで intent を追加した場合のコード由来仕様差分抽出、既存設計との衝突確認、仕様更新草案、下流影響候補、実装変更候補の分離は Requirement 10 の外部可視要件に含める。tasks.md 本体の推定は本機能の責務外とし、詳細な設計・タスク化は design／tasks 段で確定する。
-- `XDI-CE-003`：completed follow-up prerequisite set の正式化、formal completed follow-up outputs の扱い、requirements gap／design gap の残存明示、実アプリ pilot との境界は Requirement 11 の外部可視要件に含める。handoff summary は `docs/notes/2026-06-09-formal-completed-followup-summary.md` とする。
+- `XDI-CE-003`：completed follow-up prerequisite set の正式化、formal completed follow-up outputs の扱い、requirements gap／design gap の残存明示は Requirement 11 の外部可視要件に含める。handoff summary は `docs/notes/2026-06-09-formal-completed-followup-summary.md` とする。
