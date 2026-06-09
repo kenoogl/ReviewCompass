@@ -1100,7 +1100,7 @@ requirements.md の Boundary Context との整合：
 本設計が design.drafting＋triad-review 段の完了とみなされる条件：
 
 - [x] 全 20 章（番号なし 5 章＋番号付き §6〜§20 の 15 章）が記述されている
-- [x] requirements.md の全 10 件の Requirement と受入基準が §15 要件追跡表で章節と対応している（受入基準単位の追跡、F-001 部分対処：Req 8 を受入単位で展開、Req 9 を §13.6 に追加、Req 10 を §7.10／§13.7 に追加）
+- [x] requirements.md の全 11 件の Requirement と受入基準が §15 要件追跡表で章節と対応している（受入基準単位の追跡、F-001 部分対処：Req 8 を受入単位で展開、Req 9 を §13.6 に追加、Req 10 を §7.10／§13.7 に追加）
 - [x] 計画書 §5.10 の 10 小節（§5.10.1〜§5.10.10）の方針が反映されている
 - [x] 他機能との接合面が §14 で全 6 機能分（foundation／runtime／evaluation／analysis／workflow-management／self-improvement）明示されている
 - [x] Boundary Context との整合が §17 で確認されている
