@@ -1,0 +1,37 @@
+role: adversarial
+provider: openai-api
+model: gpt-5.4
+attempts: 1
+duration_seconds: 7.875
+findings:
+- severity: ERROR
+  target_location: docs/notes/2026-06-09-d021-deployable-reconstruction-readiness-checklist.md
+    front matter
+  description: Document status remains `in_progress` even though Section 0 defines
+    the document creation completion condition as already satisfied.
+  rationale: 'For a post-write readiness checklist, metadata should reflect the document''s
+    actual completion state. Leaving `status: in_progress` creates ambiguity about
+    whether the checklist artifact itself is ready for use or still being drafted.'
+- severity: WARN
+  target_location: Section 1. 参照正本
+  description: The checklist marks key source-confirmation items as completed without
+    recording concrete evidence such as command output, timestamps, or referenced
+    excerpts.
+  rationale: Post-write verification should confirm that checked items are auditable.
+    Without minimal evidence for completed checks like `next --json`, clean worktree,
+    and D-021 body review, later readers cannot verify that the asserted prerequisites
+    were actually confirmed.
+- severity: WARN
+  target_location: Section 8. Current Status
+  description: Current status is embedded as time-sensitive prose inside the checklist
+    and may become stale independently of the checklist's enduring guidance.
+  rationale: A readiness checklist should stay reusable and stable. Including mutable
+    operational state such as current task and next task risks document drift unless
+    there is a defined maintenance rule or these fields are moved to the report or
+    task log.
+- severity: INFO
+  target_location: Section 2. Readiness Report 作成
+  description: The report output path is specified, but the checklist does not state
+    whether the parent directory already exists or should be created as part of D-021.
+  rationale: This is a minor readiness clarity gap. Explicitly stating directory preconditions
+    helps prevent avoidable execution friction when the checklist is used.

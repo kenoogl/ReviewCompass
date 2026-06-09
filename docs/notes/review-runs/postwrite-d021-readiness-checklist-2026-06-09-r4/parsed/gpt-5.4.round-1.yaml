@@ -1,0 +1,19 @@
+role: adversarial
+provider: openai-api
+model: gpt-5.4
+attempts: 1
+duration_seconds: 6.492
+findings:
+- severity: WARN
+  target_location: 'docs/notes/2026-06-09-d021-deployable-reconstruction-readiness-checklist.md:
+    Section 8 ''Status Snapshot'''
+  description: 時点依存の運用状態を固定値で記載しており、文書の陳腐化リスクがある。
+  rationale: Section 8 自体で snapshot が永続的根拠ではないと注記しているが、`current task`、`next task`、`last
+    status refresh` はすぐに古くなる。post-write readiness の観点では、チェックリスト正本として長く参照される文書に可変の運用状態を残す場合、更新責務や更新条件を明示するか、参照先に委譲したほうが誤読を減らせる。
+- severity: INFO
+  target_location: 'docs/notes/2026-06-09-d021-deployable-reconstruction-readiness-checklist.md:
+    Section 2 ''Readiness Report 作成'''
+  description: readiness report の出力先は明示されているが、front matter の必須項目一覧が本文に具体化されていない。
+  rationale: Section 2 で `report の front matter を決める` は完了済みになっている一方、後続作業者が同じ形式で report
+    を起票するための項目一覧がこのチェックリスト中に見当たらない。致命的ではないが、チェックリスト単体の再利用性と検証容易性を高めるには、最低限の front
+    matter 項目を列挙しておくとよい。

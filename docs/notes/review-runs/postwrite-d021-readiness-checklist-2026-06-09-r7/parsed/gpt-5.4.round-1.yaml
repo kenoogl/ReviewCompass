@@ -1,0 +1,29 @@
+role: adversarial
+provider: openai-api
+model: gpt-5.4
+attempts: 1
+duration_seconds: 8.694
+findings:
+- severity: WARN
+  target_location: Section 1. 参照正本
+  description: 参照正本セクション内に未完了のチェック項目が残っている。
+  rationale: post_write_verification の readiness checklist としては文書単体で参照可能な状態が求められるが、参照方針の要約が未完了のままだと
+    Section 2 以降の report 作成前提が未確定であることを文書自身が示しており、実運用開始時の即時利用性が下がる。
+- severity: WARN
+  target_location: Section 2. Readiness Report 作成
+  description: readiness report 作成セクションに主要な未完了項目が複数残っている。
+  rationale: 出力先と verdict 定義はあるが、目的・範囲・非範囲、deployment/data acquisition checklist 転記、escalation
+    note など report 骨子の中核が未完了であり、後続作業者がこの文書だけで report を起票する際の一貫性確保に追加判断を要する。
+- severity: INFO
+  target_location: Front matter / Section 0
+  description: '`status: checklist_ready` の意味と D-021 本体完了とは異なることが明示されている。'
+  rationale: 文書状態と候補タスク状態の混同を防ぐ記述があり、checklist_ready の解釈が明確になっているため、運用上の誤読リスクを下げている。
+- severity: INFO
+  target_location: Sections 3-6
+  description: deployment readiness、data acquisition readiness、smoke 条件、escalation
+    rules が具体的な証跡基準つきで整理されている。
+  rationale: 要求されたチェックリスト要素が網羅されており、D-021 の後続 report 作成や blocker 判定に必要な観点が参照可能な形で揃っている。
+- severity: INFO
+  target_location: Section 8. Status Snapshot
+  description: snapshot の時点依存性と、作業開始時に再確認すべき正本が明示されている。
+  rationale: 固定的な状態記述を恒久的事実として誤用しないよう制約が書かれており、completed 後の改善作業台帳としての使い方が明確である。

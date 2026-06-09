@@ -1,0 +1,35 @@
+findings:
+  - severity: INFO
+    target_location: "Section 0.1 Checklist Creation Done Criteria"
+    description: "All seven checklist creation done criteria are marked complete ([x]), confirming the document fulfills its stated purpose as a work ledger."
+    rationale: "Verifying that the document's own completion criteria are satisfied confirms it is ready for use as a D-021 reference checklist."
+
+  - severity: INFO
+    target_location: "Section 1, evidence table"
+    description: "Three of five Section 1 reference items are marked complete with evidence recorded in the table; two items (reconstruction-plan summary and D-020/D-022/D-023/D-024 relationship summary) remain as open [ ] items."
+    rationale: "The document explicitly states these are pre-conditions before drafting the readiness report body, not defects in the checklist itself. The open items correctly represent future work."
+
+  - severity: WARN
+    target_location: "Section 2, readiness report front matter block"
+    description: "The front matter block shows `status: draft` for the readiness report that has not yet been created. The checklist itself carries `status: checklist_ready` in its own front matter, which is accurate, but a reader skimming Section 2 may confuse the embedded report front matter with the checklist's own status."
+    rationale: "Mixing the target document's front matter with an embedded template front matter in the same file could cause misreading. A brief inline label clarifying this is a template excerpt would reduce ambiguity."
+
+  - severity: INFO
+    target_location: "Section 5, fixture implementation judgment rules"
+    description: "The fixture implementation rules are clear and self-consistent: document audit first, fixture only if audit cannot determine verdict. This aligns with the stated D-021 scope."
+    rationale: "No action needed; recorded for completeness of review."
+
+  - severity: INFO
+    target_location: "Section 8, Status Snapshot"
+    description: "The snapshot accurately records the current state as of 2026-06-09 and clearly disclaims it is time-dependent. The update rules and pointer to `next --json` as authoritative source are present."
+    rationale: "No defect; the section correctly manages expectations about snapshot staleness."
+
+  - severity: WARN
+    target_location: "Section 3 and Section 4, all checklist items"
+    description: "All items in Deployment Readiness (Section 3) and Data Acquisition Readiness (Section 4) are unchecked [ ]. While Section 0 explains this is intentional (they represent future work), there is no explicit ordered dependency or sequencing guidance within these sections to indicate which items must be completed before others."
+    rationale: "Without intra-section ordering guidance, a worker beginning D-021 execution might address items in arbitrary order, potentially investing effort in data acquisition checks before confirming deployment blockers. Adding a brief sequencing note (e.g., complete Section 3 before Section 4) would reduce execution risk."
+
+  - severity: INFO
+    target_location: "Section 6, Escalation Rules"
+    description: "All four escalation rule items are unchecked [ ], consistent with them being judgment calls that depend on Section 3/4 findings. The tie-break order defined in Section 2 provides the necessary decision logic."
+    rationale: "No defect; the open items correctly represent contingent future decisions."

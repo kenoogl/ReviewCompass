@@ -1,0 +1,188 @@
+run_id: postwrite-d021-readiness-checklist-2026-06-09-r3
+triage_status: draft
+generated_at: '2026-06-09T05:17:41.765383+00:00'
+decision_actor: null
+decision_actor_type: human
+items:
+- finding_id: postwrite-d021-readiness-checklist-2026-06-09-r3-claude-sonnet-4-6-primary-001
+  run_id: postwrite-d021-readiness-checklist-2026-06-09-r3
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: '## 0. 位置づけ / Section 0.1 Checklist Creation Done Criteria'
+  plain_language_summary: Section 0.1 marks all creation-phase items as [x] complete,
+    but the document status field reads 'in_progress', which is internally consistent
+    given that the work items in Sections 1–7 remain unchecked.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: No inconsistency that would block progress; the distinction between
+    checklist-creation done criteria and the actual D-021 work items is clearly explained
+    in Section 0. This is informational to confirm the dual-layer intent is legible.
+  applied_files: []
+  superseded_by: null
+- finding_id: postwrite-d021-readiness-checklist-2026-06-09-r3-claude-sonnet-4-6-primary-002
+  run_id: postwrite-d021-readiness-checklist-2026-06-09-r3
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: '## 2. Readiness Report 作成 — 出力先'
+  plain_language_summary: The report output path is specified as '.reviewcompass/specs/_cross_feature/reviews/2026-06-09-deployable-reconstruction-readiness.md'.
+    This path has not yet been confirmed to exist or be reachable within the repo
+    structure.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: If the directory does not exist, the first write task will fail
+    silently or require manual directory creation. Noting this as INFO so the executor
+    verifies or creates the path before writing the report.
+  applied_files: []
+  superseded_by: null
+- finding_id: postwrite-d021-readiness-checklist-2026-06-09-r3-claude-sonnet-4-6-primary-003
+  run_id: postwrite-d021-readiness-checklist-2026-06-09-r3
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: '## 1. 参照正本 — unchecked items'
+  plain_language_summary: 'Two items remain unchecked in Section 1: summarising ''docs/plan/reconstruction-plan-2026-05-21.md''
+    policy and summarising D-020/D-022/D-023/D-024 relationships. These are listed
+    as prerequisites (''参照正本'') but carry no explicit ordering constraint relative
+    to Section 2 onward.'
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: If Section 1 prerequisites are not completed before writing the
+    Section 2 report, the report may omit critical policy context (e.g. app-tool separation
+    rationale, relative-link policy). The checklist should clarify that Section 1
+    must be fully checked before Section 2 work begins, or accept the risk of a partial
+    report.
+  applied_files: []
+  superseded_by: null
+- finding_id: postwrite-d021-readiness-checklist-2026-06-09-r3-claude-sonnet-4-6-primary-004
+  run_id: postwrite-d021-readiness-checklist-2026-06-09-r3
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: '## 5. Deployment Smoke 最小 Fixture 案 — 最後の bullet'
+  plain_language_summary: The final bullet in Section 5 asks whether to implement
+    the fixture or leave it as an unimplemented gap. This decision point has no assigned
+    owner, acceptance criterion, or deadline within the checklist itself.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: Without an explicit decision rule or owner, this item may stall
+    or be deferred indefinitely. Recommend adding a decision criterion (e.g. 'if smoke
+    cannot be implemented within D-021 scope, record as needs_smoke_implementation
+    verdict and escalate') to make the item actionable.
+  applied_files: []
+  superseded_by: null
+- finding_id: postwrite-d021-readiness-checklist-2026-06-09-r3-gpt-5.4-adversarial-001
+  run_id: postwrite-d021-readiness-checklist-2026-06-09-r3
+  source_model: gpt-5.4
+  source_round: round-1
+  source_raw_path: raw/gpt-5.4.round-1.txt
+  source_parsed_path: parsed/gpt-5.4.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: docs/notes/2026-06-09-d021-deployable-reconstruction-readiness-checklist.md
+    front matter
+  plain_language_summary: Document status remains `in_progress` even though Section
+    0 defines the document creation completion condition as already satisfied.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: 'For a post-write readiness checklist, metadata should reflect
+    the document''s actual completion state. Leaving `status: in_progress` creates
+    ambiguity about whether the checklist artifact itself is ready for use or still
+    being drafted.'
+  applied_files: []
+  superseded_by: null
+- finding_id: postwrite-d021-readiness-checklist-2026-06-09-r3-gpt-5.4-adversarial-002
+  run_id: postwrite-d021-readiness-checklist-2026-06-09-r3
+  source_model: gpt-5.4
+  source_round: round-1
+  source_raw_path: raw/gpt-5.4.round-1.txt
+  source_parsed_path: parsed/gpt-5.4.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: Section 1. 参照正本
+  plain_language_summary: The checklist marks key source-confirmation items as completed
+    without recording concrete evidence such as command output, timestamps, or referenced
+    excerpts.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: Post-write verification should confirm that checked items are auditable.
+    Without minimal evidence for completed checks like `next --json`, clean worktree,
+    and D-021 body review, later readers cannot verify that the asserted prerequisites
+    were actually confirmed.
+  applied_files: []
+  superseded_by: null
+- finding_id: postwrite-d021-readiness-checklist-2026-06-09-r3-gpt-5.4-adversarial-003
+  run_id: postwrite-d021-readiness-checklist-2026-06-09-r3
+  source_model: gpt-5.4
+  source_round: round-1
+  source_raw_path: raw/gpt-5.4.round-1.txt
+  source_parsed_path: parsed/gpt-5.4.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: Section 8. Current Status
+  plain_language_summary: Current status is embedded as time-sensitive prose inside
+    the checklist and may become stale independently of the checklist's enduring guidance.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: A readiness checklist should stay reusable and stable. Including
+    mutable operational state such as current task and next task risks document drift
+    unless there is a defined maintenance rule or these fields are moved to the report
+    or task log.
+  applied_files: []
+  superseded_by: null
+- finding_id: postwrite-d021-readiness-checklist-2026-06-09-r3-gpt-5.4-adversarial-004
+  run_id: postwrite-d021-readiness-checklist-2026-06-09-r3
+  source_model: gpt-5.4
+  source_round: round-1
+  source_raw_path: raw/gpt-5.4.round-1.txt
+  source_parsed_path: parsed/gpt-5.4.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: Section 2. Readiness Report 作成
+  plain_language_summary: The report output path is specified, but the checklist does
+    not state whether the parent directory already exists or should be created as
+    part of D-021.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: This is a minor readiness clarity gap. Explicitly stating directory
+    preconditions helps prevent avoidable execution friction when the checklist is
+    used.
+  applied_files: []
+  superseded_by: null

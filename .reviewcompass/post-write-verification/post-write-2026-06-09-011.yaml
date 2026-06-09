@@ -1,0 +1,640 @@
+status: completed
+target_files:
+- docs/notes/2026-06-09-d021-deployable-reconstruction-readiness-checklist.md
+- docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r1/model-result-summary.yaml
+- docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r1/parsed/claude-sonnet-4-6.round-1.yaml
+- docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r1/parsed/gemini-3.1-pro-preview.round-1.yaml
+- docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r1/raw/claude-sonnet-4-6.round-1.txt
+- docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r1/raw/gemini-3.1-pro-preview.round-1.txt
+- docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r1/raw/gpt-5.4.round-1.txt
+- docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r1/review_summary.md
+- docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r1/rounds.yaml
+- docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r1/target-manifest.yaml
+- docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r1/triage.yaml
+- docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r2/model-result-summary.yaml
+- docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r2/parsed/claude-sonnet-4-6.round-1.yaml
+- docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r2/parsed/gemini-3.1-pro-preview.round-1.yaml
+- docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r2/parsed/gpt-5.4.round-1.yaml
+- docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r2/raw/claude-sonnet-4-6.round-1.txt
+- docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r2/raw/gemini-3.1-pro-preview.round-1.txt
+- docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r2/raw/gpt-5.4.round-1.txt
+- docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r2/review_summary.md
+- docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r2/rounds.yaml
+- docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r2/target-manifest.yaml
+- docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r2/triage.yaml
+- docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r3/model-result-summary.yaml
+- docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r3/parsed/claude-sonnet-4-6.round-1.yaml
+- docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r3/parsed/gemini-3.1-pro-preview.round-1.yaml
+- docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r3/parsed/gpt-5.4.round-1.yaml
+- docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r3/raw/claude-sonnet-4-6.round-1.txt
+- docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r3/raw/gemini-3.1-pro-preview.round-1.txt
+- docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r3/raw/gpt-5.4.round-1.txt
+- docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r3/review_summary.md
+- docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r3/rounds.yaml
+- docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r3/target-manifest.yaml
+- docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r3/triage.yaml
+- docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r4/model-result-summary.yaml
+- docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r4/parsed/claude-sonnet-4-6.round-1.yaml
+- docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r4/parsed/gemini-3.1-pro-preview.round-1.yaml
+- docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r4/parsed/gpt-5.4.round-1.yaml
+- docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r4/raw/claude-sonnet-4-6.round-1.txt
+- docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r4/raw/gemini-3.1-pro-preview.round-1.txt
+- docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r4/raw/gpt-5.4.round-1.txt
+- docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r4/review_summary.md
+- docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r4/rounds.yaml
+- docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r4/target-manifest.yaml
+- docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r4/triage.yaml
+- docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r5/model-result-summary.yaml
+- docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r5/parsed/claude-sonnet-4-6.round-1.yaml
+- docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r5/parsed/gemini-3.1-pro-preview.round-1.yaml
+- docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r5/parsed/gpt-5.4.round-1.yaml
+- docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r5/raw/claude-sonnet-4-6.round-1.txt
+- docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r5/raw/gemini-3.1-pro-preview.round-1.txt
+- docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r5/raw/gpt-5.4.round-1.txt
+- docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r5/review_summary.md
+- docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r5/rounds.yaml
+- docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r5/target-manifest.yaml
+- docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r5/triage.yaml
+- docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r6/model-result-summary.yaml
+- docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r6/parsed/claude-sonnet-4-6.round-1.yaml
+- docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r6/parsed/gemini-3.1-pro-preview.round-1.yaml
+- docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r6/parsed/gpt-5.4.round-1.yaml
+- docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r6/raw/claude-sonnet-4-6.round-1.txt
+- docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r6/raw/gemini-3.1-pro-preview.round-1.txt
+- docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r6/raw/gpt-5.4.round-1.txt
+- docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r6/review_summary.md
+- docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r6/rounds.yaml
+- docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r6/target-manifest.yaml
+- docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r6/triage.yaml
+- docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r7/model-result-summary.yaml
+- docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r7/parsed/claude-sonnet-4-6.round-1.yaml
+- docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r7/parsed/gemini-3.1-pro-preview.round-1.yaml
+- docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r7/parsed/gpt-5.4.round-1.yaml
+- docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r7/raw/claude-sonnet-4-6.round-1.txt
+- docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r7/raw/gemini-3.1-pro-preview.round-1.txt
+- docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r7/raw/gpt-5.4.round-1.txt
+- docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r7/review_summary.md
+- docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r7/rounds.yaml
+- docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r7/target-manifest.yaml
+- docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r7/triage.yaml
+target_sha256:
+  docs/notes/2026-06-09-d021-deployable-reconstruction-readiness-checklist.md: 57d12f06452ab43dd08518b0beabd19918ac8471abcdf0bb8de6500f6b9c1e20
+  docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r1/model-result-summary.yaml: e57316bc1565a8123ca86c1b7bcab8e9eaa558bfaa5d6ba3ace972b68de710ec
+  docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r1/parsed/claude-sonnet-4-6.round-1.yaml: e3098af67927193b84091735a07e6250682521e00e40a6b12170a57f6d003fc4
+  docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r1/parsed/gemini-3.1-pro-preview.round-1.yaml: 08be559cc0ebbe27649d8dc7f7aa8da796c0f6857d1aa0dd0d2a56347f837d23
+  docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r1/raw/claude-sonnet-4-6.round-1.txt: 988c28845bce98b21571e71f51481f293b698e3d42d5c14d4a1826c1d278e67a
+  docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r1/raw/gemini-3.1-pro-preview.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+  docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r1/raw/gpt-5.4.round-1.txt: caf6cdfefd3cd1ab5c9370b9ebcdc37c35130fadff2224e4b1ff3e698122de59
+  docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r1/review_summary.md: bc26f3b2d2bd64ad1a019d221f60b8fa0f751f6e75721d53a2cef90e099fa425
+  docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r1/rounds.yaml: 4c51b5e45d0025e10392d8b9bd1082fd752a239582a34b61a52a46d1c69d5225
+  docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r1/target-manifest.yaml: 4b68a1838e1c552297ba2d7f95d6e92d5e0f7790eba1a0ac572a2a59c13cd474
+  docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r1/triage.yaml: 7c1a54c117eacedc1ba81e523adfc6cb7822421c0e74dedbba0ae1e60eca2dc6
+  docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r2/model-result-summary.yaml: 67dee7f7beaf29a26aef7d1890565e21241c0fb40fde3addb3daf01086029557
+  docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r2/parsed/claude-sonnet-4-6.round-1.yaml: 304931c02743a926c12cd66c884f63bb1b35fe7cba343b20a2acf697ad4137f3
+  docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r2/parsed/gemini-3.1-pro-preview.round-1.yaml: 5a3d80983b9300d68029d2e7bfe764694ac28dac2826b0c3e88c1af9224b74b8
+  docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r2/parsed/gpt-5.4.round-1.yaml: 3753a8f1accb5d715a7af76528ba0b5c8d790b79e0bc8476d4ecdd7a5c238967
+  docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r2/raw/claude-sonnet-4-6.round-1.txt: 2ecead7af0d1dd2cf1f705cb946622169e61fc9fb25d1e72e07a45e56e1df61e
+  docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r2/raw/gemini-3.1-pro-preview.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+  docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r2/raw/gpt-5.4.round-1.txt: 811ead0ea4fdbf3e9b3e2c7294fa7ed125b154e11e173cae42951ace312b989f
+  docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r2/review_summary.md: 47cb0aa2f505134ea38ebe1787389d1d6d6ecc47684ed3d7f69c87bd07ae00a6
+  docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r2/rounds.yaml: b9c2606c26155237c6e77e9e8249a36dd16a7d2c178e081ec009713bb9ab13d2
+  docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r2/target-manifest.yaml: e83bfd6746ac108d3c71d995767dca794be57bf97f801afa9f64fb862562f65f
+  docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r2/triage.yaml: b6a53b80b038b99e9fbe45aa71ab344927a3e5eafeaadf4baa7e86acd624e1fd
+  docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r3/model-result-summary.yaml: 6cf64713ccbf47a427ed99f3d9a0a13cc6e44dde63d23358c0774e07712a4d53
+  docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r3/parsed/claude-sonnet-4-6.round-1.yaml: fc069436b01c24c2c1c7c0dbdd10c253ff28032494a9ae51a75805f4142f0dda
+  docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r3/parsed/gemini-3.1-pro-preview.round-1.yaml: 6f8c49a4456b08f8cfda5bbfae03c355c8cdd77798cf80ceddca9f51bf8c7353
+  docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r3/parsed/gpt-5.4.round-1.yaml: 7925305f411ffc79e9de12f6e2c72d933f0dfd72abfd67e09f43e9a90fe74039
+  docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r3/raw/claude-sonnet-4-6.round-1.txt: aa75a505db808d5afaefbc072d5eb7b599e238496ce5b8121f68f90121ce7c91
+  docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r3/raw/gemini-3.1-pro-preview.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+  docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r3/raw/gpt-5.4.round-1.txt: 6a53ae98d9b3f6cb6c0f972e1a4d2a01231d20ced2bd43c7a4e8203f2274a408
+  docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r3/review_summary.md: 68c9312ce22815a31bec067c2f94fafc35873e25956dd9414a738cfecc05c1c8
+  docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r3/rounds.yaml: c7ebd385f090e4329320e79502fad880b6fce29af1a654c5b732551c2644f3c0
+  docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r3/target-manifest.yaml: e018c7d82ef06e3a51b3287ac8f202d90ea267d5619307d9784a4abae385e158
+  docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r3/triage.yaml: 791f73e1daf483832d4017a32f4bd8f62a1b713e4e657801a146494a3732d2c8
+  docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r4/model-result-summary.yaml: 44cfaa98b234596155312c0dffbdce76a1b311270dd8f2a6bc83a27e774e14ed
+  docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r4/parsed/claude-sonnet-4-6.round-1.yaml: 580ccdd242b5b0eea69d70185aeaa91fadcfc8d677746b5df2ffe6ae89a4519b
+  docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r4/parsed/gemini-3.1-pro-preview.round-1.yaml: 9b5772624056b95145e435cc753983820d821c65b1e3e5d8b21051662fc6870b
+  docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r4/parsed/gpt-5.4.round-1.yaml: 74614274f2b22f7b6c49fcc5f51b23c9b73c3811313218e9be242a845b005c9e
+  docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r4/raw/claude-sonnet-4-6.round-1.txt: a789995b9b0f352f770270eee62e5caa4abd0f6b25d65157d6cf3f039cd75c96
+  docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r4/raw/gemini-3.1-pro-preview.round-1.txt: 67f20b5f2a77ca36c12b6b153ce451a10d7c0026c9147c2eb86f0e1d33ea4fb1
+  docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r4/raw/gpt-5.4.round-1.txt: d95e2b55afb88e0edf27ac0ccc332df6f9a534cc50720c92221599313faf8c78
+  docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r4/review_summary.md: bbea6be9c27609818865f99812f87c9b06f3193c5c10ba41f28b65d181da6bd7
+  docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r4/rounds.yaml: 6d723676fc34e66abc92e82c6f76994a971781a3cb03efa750bc231718b989b6
+  docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r4/target-manifest.yaml: ec6da8539a0f38c2ab06614e5870fd122455d8b3b7e5fa22be581a72a7d3d36d
+  docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r4/triage.yaml: 85ccb2aafb635e48cb9ccf59a1958b214e463848cf60ce76d364a38bcc0b7b4d
+  docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r5/model-result-summary.yaml: 803ef4247c8523a778fe45a59ea3bee8960e73c48a2987e98a8632f2e604b08d
+  docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r5/parsed/claude-sonnet-4-6.round-1.yaml: be465f87837384725ad6fd3689b5249d50703725a660eeb3c3b1e1b875e3cf17
+  docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r5/parsed/gemini-3.1-pro-preview.round-1.yaml: 08be559cc0ebbe27649d8dc7f7aa8da796c0f6857d1aa0dd0d2a56347f837d23
+  docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r5/parsed/gpt-5.4.round-1.yaml: be8bd06311343ab5d59dd99358d54218fb88cfdb49c7f074431cc846ac215365
+  docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r5/raw/claude-sonnet-4-6.round-1.txt: 2ebd66e14c545b2c085aacfd20092e192534bd25fa3ea29d21710c89533306f2
+  docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r5/raw/gemini-3.1-pro-preview.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+  docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r5/raw/gpt-5.4.round-1.txt: 4196cce63c3afc07566eceaad28f6afcd9b7479473d08b5fa251fec5f3d2452d
+  docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r5/review_summary.md: 5cf9b67f18e0934f181b6c7195a3684b3112f6c504e4b46fb01b5834cf26b4a6
+  docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r5/rounds.yaml: 58f937a575e6d139ef68694ef341af470d008fa085515bbeec1661f2f6d42387
+  docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r5/target-manifest.yaml: 92ca6dc23e79f00ec0a602c9386bad0f139b8cdcb8e8381f6973ec91cbdc8142
+  docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r5/triage.yaml: 6fe7edf16cc5ef0811714b794e7df742a2d1079bd164d48d42c93c8ee2a644a9
+  docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r6/model-result-summary.yaml: 4dbf3ca3d173c351f3cfa4652ca29159a7201371a1ab7b73a0ecf2ec38c81a06
+  docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r6/parsed/claude-sonnet-4-6.round-1.yaml: 9cf0dda8cc7fc0a40736b9cb8fecaae0dd4f8061863024e66c409acfc7adca7d
+  docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r6/parsed/gemini-3.1-pro-preview.round-1.yaml: 60fd0dc0f2885f623d808abdc31ef008ebf1d666f7fa2e8934a416b5922f3b9a
+  docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r6/parsed/gpt-5.4.round-1.yaml: 09d439e597d5f2a4387688d89459e73fff23352dfbefbfed0c7e1060fe30fcb7
+  docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r6/raw/claude-sonnet-4-6.round-1.txt: c72876736614a82f8f9edd22191285ee9542932bd8c286d7f6697a1075afe9ef
+  docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r6/raw/gemini-3.1-pro-preview.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+  docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r6/raw/gpt-5.4.round-1.txt: 549755036fb53d03bdc21f308f8b165cfddb8cbf4484772c1058bbd1e5da5c17
+  docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r6/review_summary.md: d9ca84602772202d7985bdac845412a39c54c98f75b8d913e15eb1ab6210ea6b
+  docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r6/rounds.yaml: 3d814d39fc0fb53bcc761ab8eb4c3d576eb961d26019adc6c099385e23ad8f2e
+  docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r6/target-manifest.yaml: 2d60ed6ce2197aa833baad92aec0af827e4537acaef19c4f9dade1e549d84d4e
+  docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r6/triage.yaml: ae99ef296d30708c7a3e231d48733d8da56cd097b2b8ab0080702ae7625e0835
+  docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r7/model-result-summary.yaml: 383bd49f8d1a7b9dbed721276fa3b4721e737c6f2d714ffd50c783e93c4869bf
+  docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r7/parsed/claude-sonnet-4-6.round-1.yaml: e3fbff76ceaa07fae0899e700cefa842cd57895b1c5f65100d03a20a7885602d
+  docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r7/parsed/gemini-3.1-pro-preview.round-1.yaml: ce087a4fc60ed1e4ddc1b7a92c8f31e275459eb886dc07dfa9c91080b81e40e6
+  docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r7/parsed/gpt-5.4.round-1.yaml: e0f8b71e2dfb4a6d9745db54fcf440422485111e1c5310d4fdeee606f507a7d7
+  docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r7/raw/claude-sonnet-4-6.round-1.txt: 41167beeae2ac76a938bf30ae48faa3982ab59bf322f42425c5e862015d50ea4
+  docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r7/raw/gemini-3.1-pro-preview.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+  docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r7/raw/gpt-5.4.round-1.txt: 424c594f4737868b6f24cf228fbe2406bc4dd4346ada154abbc0679adfb3f02a
+  docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r7/review_summary.md: 57ff5fc3d4ca7fe17cbc0e3f492de5ca0ec964534054b23432c39862fbddbd8b
+  docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r7/rounds.yaml: c078df2a1c66758bf4770a50850b9ec6d7771529b45db4313ae23d89fe9ec208
+  docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r7/target-manifest.yaml: a5338b65c4218769f427acb98b0bf34bbe14b13b04cc20b5dc2a7a9883e7f4ac
+  docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r7/triage.yaml: 2ef36cae5b36ff864467dd1bd48d71fa9679829a288033f136d87a61b149437f
+required_verifiers: &id001
+- claude-sonnet-4-6
+- gpt-5.4
+- gemini-3.1-pro-preview
+completed_verifiers: *id001
+unresolved_substantive_findings: 0
+verifications:
+- verifier: claude-sonnet-4-6
+  target_files:
+  - docs/notes/2026-06-09-d021-deployable-reconstruction-readiness-checklist.md
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r1/model-result-summary.yaml
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r1/parsed/claude-sonnet-4-6.round-1.yaml
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r1/parsed/gemini-3.1-pro-preview.round-1.yaml
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r1/raw/claude-sonnet-4-6.round-1.txt
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r1/raw/gemini-3.1-pro-preview.round-1.txt
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r1/raw/gpt-5.4.round-1.txt
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r1/review_summary.md
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r1/rounds.yaml
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r1/target-manifest.yaml
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r1/triage.yaml
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r2/model-result-summary.yaml
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r2/parsed/claude-sonnet-4-6.round-1.yaml
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r2/parsed/gemini-3.1-pro-preview.round-1.yaml
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r2/parsed/gpt-5.4.round-1.yaml
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r2/raw/claude-sonnet-4-6.round-1.txt
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r2/raw/gemini-3.1-pro-preview.round-1.txt
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r2/raw/gpt-5.4.round-1.txt
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r2/review_summary.md
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r2/rounds.yaml
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r2/target-manifest.yaml
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r2/triage.yaml
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r3/model-result-summary.yaml
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r3/parsed/claude-sonnet-4-6.round-1.yaml
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r3/parsed/gemini-3.1-pro-preview.round-1.yaml
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r3/parsed/gpt-5.4.round-1.yaml
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r3/raw/claude-sonnet-4-6.round-1.txt
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r3/raw/gemini-3.1-pro-preview.round-1.txt
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r3/raw/gpt-5.4.round-1.txt
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r3/review_summary.md
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r3/rounds.yaml
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r3/target-manifest.yaml
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r3/triage.yaml
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r4/model-result-summary.yaml
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r4/parsed/claude-sonnet-4-6.round-1.yaml
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r4/parsed/gemini-3.1-pro-preview.round-1.yaml
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r4/parsed/gpt-5.4.round-1.yaml
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r4/raw/claude-sonnet-4-6.round-1.txt
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r4/raw/gemini-3.1-pro-preview.round-1.txt
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r4/raw/gpt-5.4.round-1.txt
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r4/review_summary.md
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r4/rounds.yaml
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r4/target-manifest.yaml
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r4/triage.yaml
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r5/model-result-summary.yaml
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r5/parsed/claude-sonnet-4-6.round-1.yaml
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r5/parsed/gemini-3.1-pro-preview.round-1.yaml
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r5/parsed/gpt-5.4.round-1.yaml
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r5/raw/claude-sonnet-4-6.round-1.txt
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r5/raw/gemini-3.1-pro-preview.round-1.txt
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r5/raw/gpt-5.4.round-1.txt
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r5/review_summary.md
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r5/rounds.yaml
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r5/target-manifest.yaml
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r5/triage.yaml
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r6/model-result-summary.yaml
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r6/parsed/claude-sonnet-4-6.round-1.yaml
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r6/parsed/gemini-3.1-pro-preview.round-1.yaml
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r6/parsed/gpt-5.4.round-1.yaml
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r6/raw/claude-sonnet-4-6.round-1.txt
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r6/raw/gemini-3.1-pro-preview.round-1.txt
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r6/raw/gpt-5.4.round-1.txt
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r6/review_summary.md
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r6/rounds.yaml
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r6/target-manifest.yaml
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r6/triage.yaml
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r7/model-result-summary.yaml
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r7/parsed/claude-sonnet-4-6.round-1.yaml
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r7/parsed/gemini-3.1-pro-preview.round-1.yaml
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r7/parsed/gpt-5.4.round-1.yaml
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r7/raw/claude-sonnet-4-6.round-1.txt
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r7/raw/gemini-3.1-pro-preview.round-1.txt
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r7/raw/gpt-5.4.round-1.txt
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r7/review_summary.md
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r7/rounds.yaml
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r7/target-manifest.yaml
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r7/triage.yaml
+  target_sha256:
+    docs/notes/2026-06-09-d021-deployable-reconstruction-readiness-checklist.md: 57d12f06452ab43dd08518b0beabd19918ac8471abcdf0bb8de6500f6b9c1e20
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r1/model-result-summary.yaml: e57316bc1565a8123ca86c1b7bcab8e9eaa558bfaa5d6ba3ace972b68de710ec
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r1/parsed/claude-sonnet-4-6.round-1.yaml: e3098af67927193b84091735a07e6250682521e00e40a6b12170a57f6d003fc4
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r1/parsed/gemini-3.1-pro-preview.round-1.yaml: 08be559cc0ebbe27649d8dc7f7aa8da796c0f6857d1aa0dd0d2a56347f837d23
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r1/raw/claude-sonnet-4-6.round-1.txt: 988c28845bce98b21571e71f51481f293b698e3d42d5c14d4a1826c1d278e67a
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r1/raw/gemini-3.1-pro-preview.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r1/raw/gpt-5.4.round-1.txt: caf6cdfefd3cd1ab5c9370b9ebcdc37c35130fadff2224e4b1ff3e698122de59
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r1/review_summary.md: bc26f3b2d2bd64ad1a019d221f60b8fa0f751f6e75721d53a2cef90e099fa425
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r1/rounds.yaml: 4c51b5e45d0025e10392d8b9bd1082fd752a239582a34b61a52a46d1c69d5225
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r1/target-manifest.yaml: 4b68a1838e1c552297ba2d7f95d6e92d5e0f7790eba1a0ac572a2a59c13cd474
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r1/triage.yaml: 7c1a54c117eacedc1ba81e523adfc6cb7822421c0e74dedbba0ae1e60eca2dc6
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r2/model-result-summary.yaml: 67dee7f7beaf29a26aef7d1890565e21241c0fb40fde3addb3daf01086029557
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r2/parsed/claude-sonnet-4-6.round-1.yaml: 304931c02743a926c12cd66c884f63bb1b35fe7cba343b20a2acf697ad4137f3
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r2/parsed/gemini-3.1-pro-preview.round-1.yaml: 5a3d80983b9300d68029d2e7bfe764694ac28dac2826b0c3e88c1af9224b74b8
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r2/parsed/gpt-5.4.round-1.yaml: 3753a8f1accb5d715a7af76528ba0b5c8d790b79e0bc8476d4ecdd7a5c238967
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r2/raw/claude-sonnet-4-6.round-1.txt: 2ecead7af0d1dd2cf1f705cb946622169e61fc9fb25d1e72e07a45e56e1df61e
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r2/raw/gemini-3.1-pro-preview.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r2/raw/gpt-5.4.round-1.txt: 811ead0ea4fdbf3e9b3e2c7294fa7ed125b154e11e173cae42951ace312b989f
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r2/review_summary.md: 47cb0aa2f505134ea38ebe1787389d1d6d6ecc47684ed3d7f69c87bd07ae00a6
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r2/rounds.yaml: b9c2606c26155237c6e77e9e8249a36dd16a7d2c178e081ec009713bb9ab13d2
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r2/target-manifest.yaml: e83bfd6746ac108d3c71d995767dca794be57bf97f801afa9f64fb862562f65f
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r2/triage.yaml: b6a53b80b038b99e9fbe45aa71ab344927a3e5eafeaadf4baa7e86acd624e1fd
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r3/model-result-summary.yaml: 6cf64713ccbf47a427ed99f3d9a0a13cc6e44dde63d23358c0774e07712a4d53
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r3/parsed/claude-sonnet-4-6.round-1.yaml: fc069436b01c24c2c1c7c0dbdd10c253ff28032494a9ae51a75805f4142f0dda
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r3/parsed/gemini-3.1-pro-preview.round-1.yaml: 6f8c49a4456b08f8cfda5bbfae03c355c8cdd77798cf80ceddca9f51bf8c7353
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r3/parsed/gpt-5.4.round-1.yaml: 7925305f411ffc79e9de12f6e2c72d933f0dfd72abfd67e09f43e9a90fe74039
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r3/raw/claude-sonnet-4-6.round-1.txt: aa75a505db808d5afaefbc072d5eb7b599e238496ce5b8121f68f90121ce7c91
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r3/raw/gemini-3.1-pro-preview.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r3/raw/gpt-5.4.round-1.txt: 6a53ae98d9b3f6cb6c0f972e1a4d2a01231d20ced2bd43c7a4e8203f2274a408
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r3/review_summary.md: 68c9312ce22815a31bec067c2f94fafc35873e25956dd9414a738cfecc05c1c8
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r3/rounds.yaml: c7ebd385f090e4329320e79502fad880b6fce29af1a654c5b732551c2644f3c0
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r3/target-manifest.yaml: e018c7d82ef06e3a51b3287ac8f202d90ea267d5619307d9784a4abae385e158
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r3/triage.yaml: 791f73e1daf483832d4017a32f4bd8f62a1b713e4e657801a146494a3732d2c8
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r4/model-result-summary.yaml: 44cfaa98b234596155312c0dffbdce76a1b311270dd8f2a6bc83a27e774e14ed
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r4/parsed/claude-sonnet-4-6.round-1.yaml: 580ccdd242b5b0eea69d70185aeaa91fadcfc8d677746b5df2ffe6ae89a4519b
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r4/parsed/gemini-3.1-pro-preview.round-1.yaml: 9b5772624056b95145e435cc753983820d821c65b1e3e5d8b21051662fc6870b
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r4/parsed/gpt-5.4.round-1.yaml: 74614274f2b22f7b6c49fcc5f51b23c9b73c3811313218e9be242a845b005c9e
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r4/raw/claude-sonnet-4-6.round-1.txt: a789995b9b0f352f770270eee62e5caa4abd0f6b25d65157d6cf3f039cd75c96
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r4/raw/gemini-3.1-pro-preview.round-1.txt: 67f20b5f2a77ca36c12b6b153ce451a10d7c0026c9147c2eb86f0e1d33ea4fb1
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r4/raw/gpt-5.4.round-1.txt: d95e2b55afb88e0edf27ac0ccc332df6f9a534cc50720c92221599313faf8c78
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r4/review_summary.md: bbea6be9c27609818865f99812f87c9b06f3193c5c10ba41f28b65d181da6bd7
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r4/rounds.yaml: 6d723676fc34e66abc92e82c6f76994a971781a3cb03efa750bc231718b989b6
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r4/target-manifest.yaml: ec6da8539a0f38c2ab06614e5870fd122455d8b3b7e5fa22be581a72a7d3d36d
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r4/triage.yaml: 85ccb2aafb635e48cb9ccf59a1958b214e463848cf60ce76d364a38bcc0b7b4d
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r5/model-result-summary.yaml: 803ef4247c8523a778fe45a59ea3bee8960e73c48a2987e98a8632f2e604b08d
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r5/parsed/claude-sonnet-4-6.round-1.yaml: be465f87837384725ad6fd3689b5249d50703725a660eeb3c3b1e1b875e3cf17
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r5/parsed/gemini-3.1-pro-preview.round-1.yaml: 08be559cc0ebbe27649d8dc7f7aa8da796c0f6857d1aa0dd0d2a56347f837d23
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r5/parsed/gpt-5.4.round-1.yaml: be8bd06311343ab5d59dd99358d54218fb88cfdb49c7f074431cc846ac215365
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r5/raw/claude-sonnet-4-6.round-1.txt: 2ebd66e14c545b2c085aacfd20092e192534bd25fa3ea29d21710c89533306f2
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r5/raw/gemini-3.1-pro-preview.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r5/raw/gpt-5.4.round-1.txt: 4196cce63c3afc07566eceaad28f6afcd9b7479473d08b5fa251fec5f3d2452d
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r5/review_summary.md: 5cf9b67f18e0934f181b6c7195a3684b3112f6c504e4b46fb01b5834cf26b4a6
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r5/rounds.yaml: 58f937a575e6d139ef68694ef341af470d008fa085515bbeec1661f2f6d42387
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r5/target-manifest.yaml: 92ca6dc23e79f00ec0a602c9386bad0f139b8cdcb8e8381f6973ec91cbdc8142
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r5/triage.yaml: 6fe7edf16cc5ef0811714b794e7df742a2d1079bd164d48d42c93c8ee2a644a9
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r6/model-result-summary.yaml: 4dbf3ca3d173c351f3cfa4652ca29159a7201371a1ab7b73a0ecf2ec38c81a06
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r6/parsed/claude-sonnet-4-6.round-1.yaml: 9cf0dda8cc7fc0a40736b9cb8fecaae0dd4f8061863024e66c409acfc7adca7d
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r6/parsed/gemini-3.1-pro-preview.round-1.yaml: 60fd0dc0f2885f623d808abdc31ef008ebf1d666f7fa2e8934a416b5922f3b9a
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r6/parsed/gpt-5.4.round-1.yaml: 09d439e597d5f2a4387688d89459e73fff23352dfbefbfed0c7e1060fe30fcb7
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r6/raw/claude-sonnet-4-6.round-1.txt: c72876736614a82f8f9edd22191285ee9542932bd8c286d7f6697a1075afe9ef
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r6/raw/gemini-3.1-pro-preview.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r6/raw/gpt-5.4.round-1.txt: 549755036fb53d03bdc21f308f8b165cfddb8cbf4484772c1058bbd1e5da5c17
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r6/review_summary.md: d9ca84602772202d7985bdac845412a39c54c98f75b8d913e15eb1ab6210ea6b
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r6/rounds.yaml: 3d814d39fc0fb53bcc761ab8eb4c3d576eb961d26019adc6c099385e23ad8f2e
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r6/target-manifest.yaml: 2d60ed6ce2197aa833baad92aec0af827e4537acaef19c4f9dade1e549d84d4e
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r6/triage.yaml: ae99ef296d30708c7a3e231d48733d8da56cd097b2b8ab0080702ae7625e0835
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r7/model-result-summary.yaml: 383bd49f8d1a7b9dbed721276fa3b4721e737c6f2d714ffd50c783e93c4869bf
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r7/parsed/claude-sonnet-4-6.round-1.yaml: e3fbff76ceaa07fae0899e700cefa842cd57895b1c5f65100d03a20a7885602d
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r7/parsed/gemini-3.1-pro-preview.round-1.yaml: ce087a4fc60ed1e4ddc1b7a92c8f31e275459eb886dc07dfa9c91080b81e40e6
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r7/parsed/gpt-5.4.round-1.yaml: e0f8b71e2dfb4a6d9745db54fcf440422485111e1c5310d4fdeee606f507a7d7
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r7/raw/claude-sonnet-4-6.round-1.txt: 41167beeae2ac76a938bf30ae48faa3982ab59bf322f42425c5e862015d50ea4
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r7/raw/gemini-3.1-pro-preview.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r7/raw/gpt-5.4.round-1.txt: 424c594f4737868b6f24cf228fbe2406bc4dd4346ada154abbc0679adfb3f02a
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r7/review_summary.md: 57ff5fc3d4ca7fe17cbc0e3f492de5ca0ec964534054b23432c39862fbddbd8b
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r7/rounds.yaml: c078df2a1c66758bf4770a50850b9ec6d7771529b45db4313ae23d89fe9ec208
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r7/target-manifest.yaml: a5338b65c4218769f427acb98b0bf34bbe14b13b04cc20b5dc2a7a9883e7f4ac
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r7/triage.yaml: 2ef36cae5b36ff864467dd1bd48d71fa9679829a288033f136d87a61b149437f
+- verifier: gpt-5.4
+  target_files:
+  - docs/notes/2026-06-09-d021-deployable-reconstruction-readiness-checklist.md
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r1/model-result-summary.yaml
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r1/parsed/claude-sonnet-4-6.round-1.yaml
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r1/parsed/gemini-3.1-pro-preview.round-1.yaml
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r1/raw/claude-sonnet-4-6.round-1.txt
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r1/raw/gemini-3.1-pro-preview.round-1.txt
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r1/raw/gpt-5.4.round-1.txt
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r1/review_summary.md
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r1/rounds.yaml
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r1/target-manifest.yaml
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r1/triage.yaml
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r2/model-result-summary.yaml
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r2/parsed/claude-sonnet-4-6.round-1.yaml
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r2/parsed/gemini-3.1-pro-preview.round-1.yaml
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r2/parsed/gpt-5.4.round-1.yaml
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r2/raw/claude-sonnet-4-6.round-1.txt
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r2/raw/gemini-3.1-pro-preview.round-1.txt
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r2/raw/gpt-5.4.round-1.txt
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r2/review_summary.md
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r2/rounds.yaml
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r2/target-manifest.yaml
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r2/triage.yaml
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r3/model-result-summary.yaml
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r3/parsed/claude-sonnet-4-6.round-1.yaml
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r3/parsed/gemini-3.1-pro-preview.round-1.yaml
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r3/parsed/gpt-5.4.round-1.yaml
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r3/raw/claude-sonnet-4-6.round-1.txt
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r3/raw/gemini-3.1-pro-preview.round-1.txt
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r3/raw/gpt-5.4.round-1.txt
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r3/review_summary.md
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r3/rounds.yaml
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r3/target-manifest.yaml
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r3/triage.yaml
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r4/model-result-summary.yaml
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r4/parsed/claude-sonnet-4-6.round-1.yaml
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r4/parsed/gemini-3.1-pro-preview.round-1.yaml
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r4/parsed/gpt-5.4.round-1.yaml
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r4/raw/claude-sonnet-4-6.round-1.txt
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r4/raw/gemini-3.1-pro-preview.round-1.txt
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r4/raw/gpt-5.4.round-1.txt
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r4/review_summary.md
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r4/rounds.yaml
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r4/target-manifest.yaml
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r4/triage.yaml
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r5/model-result-summary.yaml
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r5/parsed/claude-sonnet-4-6.round-1.yaml
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r5/parsed/gemini-3.1-pro-preview.round-1.yaml
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r5/parsed/gpt-5.4.round-1.yaml
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r5/raw/claude-sonnet-4-6.round-1.txt
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r5/raw/gemini-3.1-pro-preview.round-1.txt
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r5/raw/gpt-5.4.round-1.txt
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r5/review_summary.md
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r5/rounds.yaml
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r5/target-manifest.yaml
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r5/triage.yaml
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r6/model-result-summary.yaml
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r6/parsed/claude-sonnet-4-6.round-1.yaml
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r6/parsed/gemini-3.1-pro-preview.round-1.yaml
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r6/parsed/gpt-5.4.round-1.yaml
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r6/raw/claude-sonnet-4-6.round-1.txt
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r6/raw/gemini-3.1-pro-preview.round-1.txt
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r6/raw/gpt-5.4.round-1.txt
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r6/review_summary.md
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r6/rounds.yaml
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r6/target-manifest.yaml
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r6/triage.yaml
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r7/model-result-summary.yaml
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r7/parsed/claude-sonnet-4-6.round-1.yaml
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r7/parsed/gemini-3.1-pro-preview.round-1.yaml
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r7/parsed/gpt-5.4.round-1.yaml
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r7/raw/claude-sonnet-4-6.round-1.txt
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r7/raw/gemini-3.1-pro-preview.round-1.txt
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r7/raw/gpt-5.4.round-1.txt
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r7/review_summary.md
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r7/rounds.yaml
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r7/target-manifest.yaml
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r7/triage.yaml
+  target_sha256:
+    docs/notes/2026-06-09-d021-deployable-reconstruction-readiness-checklist.md: 57d12f06452ab43dd08518b0beabd19918ac8471abcdf0bb8de6500f6b9c1e20
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r1/model-result-summary.yaml: e57316bc1565a8123ca86c1b7bcab8e9eaa558bfaa5d6ba3ace972b68de710ec
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r1/parsed/claude-sonnet-4-6.round-1.yaml: e3098af67927193b84091735a07e6250682521e00e40a6b12170a57f6d003fc4
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r1/parsed/gemini-3.1-pro-preview.round-1.yaml: 08be559cc0ebbe27649d8dc7f7aa8da796c0f6857d1aa0dd0d2a56347f837d23
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r1/raw/claude-sonnet-4-6.round-1.txt: 988c28845bce98b21571e71f51481f293b698e3d42d5c14d4a1826c1d278e67a
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r1/raw/gemini-3.1-pro-preview.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r1/raw/gpt-5.4.round-1.txt: caf6cdfefd3cd1ab5c9370b9ebcdc37c35130fadff2224e4b1ff3e698122de59
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r1/review_summary.md: bc26f3b2d2bd64ad1a019d221f60b8fa0f751f6e75721d53a2cef90e099fa425
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r1/rounds.yaml: 4c51b5e45d0025e10392d8b9bd1082fd752a239582a34b61a52a46d1c69d5225
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r1/target-manifest.yaml: 4b68a1838e1c552297ba2d7f95d6e92d5e0f7790eba1a0ac572a2a59c13cd474
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r1/triage.yaml: 7c1a54c117eacedc1ba81e523adfc6cb7822421c0e74dedbba0ae1e60eca2dc6
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r2/model-result-summary.yaml: 67dee7f7beaf29a26aef7d1890565e21241c0fb40fde3addb3daf01086029557
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r2/parsed/claude-sonnet-4-6.round-1.yaml: 304931c02743a926c12cd66c884f63bb1b35fe7cba343b20a2acf697ad4137f3
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r2/parsed/gemini-3.1-pro-preview.round-1.yaml: 5a3d80983b9300d68029d2e7bfe764694ac28dac2826b0c3e88c1af9224b74b8
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r2/parsed/gpt-5.4.round-1.yaml: 3753a8f1accb5d715a7af76528ba0b5c8d790b79e0bc8476d4ecdd7a5c238967
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r2/raw/claude-sonnet-4-6.round-1.txt: 2ecead7af0d1dd2cf1f705cb946622169e61fc9fb25d1e72e07a45e56e1df61e
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r2/raw/gemini-3.1-pro-preview.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r2/raw/gpt-5.4.round-1.txt: 811ead0ea4fdbf3e9b3e2c7294fa7ed125b154e11e173cae42951ace312b989f
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r2/review_summary.md: 47cb0aa2f505134ea38ebe1787389d1d6d6ecc47684ed3d7f69c87bd07ae00a6
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r2/rounds.yaml: b9c2606c26155237c6e77e9e8249a36dd16a7d2c178e081ec009713bb9ab13d2
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r2/target-manifest.yaml: e83bfd6746ac108d3c71d995767dca794be57bf97f801afa9f64fb862562f65f
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r2/triage.yaml: b6a53b80b038b99e9fbe45aa71ab344927a3e5eafeaadf4baa7e86acd624e1fd
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r3/model-result-summary.yaml: 6cf64713ccbf47a427ed99f3d9a0a13cc6e44dde63d23358c0774e07712a4d53
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r3/parsed/claude-sonnet-4-6.round-1.yaml: fc069436b01c24c2c1c7c0dbdd10c253ff28032494a9ae51a75805f4142f0dda
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r3/parsed/gemini-3.1-pro-preview.round-1.yaml: 6f8c49a4456b08f8cfda5bbfae03c355c8cdd77798cf80ceddca9f51bf8c7353
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r3/parsed/gpt-5.4.round-1.yaml: 7925305f411ffc79e9de12f6e2c72d933f0dfd72abfd67e09f43e9a90fe74039
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r3/raw/claude-sonnet-4-6.round-1.txt: aa75a505db808d5afaefbc072d5eb7b599e238496ce5b8121f68f90121ce7c91
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r3/raw/gemini-3.1-pro-preview.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r3/raw/gpt-5.4.round-1.txt: 6a53ae98d9b3f6cb6c0f972e1a4d2a01231d20ced2bd43c7a4e8203f2274a408
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r3/review_summary.md: 68c9312ce22815a31bec067c2f94fafc35873e25956dd9414a738cfecc05c1c8
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r3/rounds.yaml: c7ebd385f090e4329320e79502fad880b6fce29af1a654c5b732551c2644f3c0
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r3/target-manifest.yaml: e018c7d82ef06e3a51b3287ac8f202d90ea267d5619307d9784a4abae385e158
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r3/triage.yaml: 791f73e1daf483832d4017a32f4bd8f62a1b713e4e657801a146494a3732d2c8
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r4/model-result-summary.yaml: 44cfaa98b234596155312c0dffbdce76a1b311270dd8f2a6bc83a27e774e14ed
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r4/parsed/claude-sonnet-4-6.round-1.yaml: 580ccdd242b5b0eea69d70185aeaa91fadcfc8d677746b5df2ffe6ae89a4519b
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r4/parsed/gemini-3.1-pro-preview.round-1.yaml: 9b5772624056b95145e435cc753983820d821c65b1e3e5d8b21051662fc6870b
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r4/parsed/gpt-5.4.round-1.yaml: 74614274f2b22f7b6c49fcc5f51b23c9b73c3811313218e9be242a845b005c9e
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r4/raw/claude-sonnet-4-6.round-1.txt: a789995b9b0f352f770270eee62e5caa4abd0f6b25d65157d6cf3f039cd75c96
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r4/raw/gemini-3.1-pro-preview.round-1.txt: 67f20b5f2a77ca36c12b6b153ce451a10d7c0026c9147c2eb86f0e1d33ea4fb1
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r4/raw/gpt-5.4.round-1.txt: d95e2b55afb88e0edf27ac0ccc332df6f9a534cc50720c92221599313faf8c78
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r4/review_summary.md: bbea6be9c27609818865f99812f87c9b06f3193c5c10ba41f28b65d181da6bd7
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r4/rounds.yaml: 6d723676fc34e66abc92e82c6f76994a971781a3cb03efa750bc231718b989b6
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r4/target-manifest.yaml: ec6da8539a0f38c2ab06614e5870fd122455d8b3b7e5fa22be581a72a7d3d36d
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r4/triage.yaml: 85ccb2aafb635e48cb9ccf59a1958b214e463848cf60ce76d364a38bcc0b7b4d
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r5/model-result-summary.yaml: 803ef4247c8523a778fe45a59ea3bee8960e73c48a2987e98a8632f2e604b08d
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r5/parsed/claude-sonnet-4-6.round-1.yaml: be465f87837384725ad6fd3689b5249d50703725a660eeb3c3b1e1b875e3cf17
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r5/parsed/gemini-3.1-pro-preview.round-1.yaml: 08be559cc0ebbe27649d8dc7f7aa8da796c0f6857d1aa0dd0d2a56347f837d23
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r5/parsed/gpt-5.4.round-1.yaml: be8bd06311343ab5d59dd99358d54218fb88cfdb49c7f074431cc846ac215365
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r5/raw/claude-sonnet-4-6.round-1.txt: 2ebd66e14c545b2c085aacfd20092e192534bd25fa3ea29d21710c89533306f2
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r5/raw/gemini-3.1-pro-preview.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r5/raw/gpt-5.4.round-1.txt: 4196cce63c3afc07566eceaad28f6afcd9b7479473d08b5fa251fec5f3d2452d
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r5/review_summary.md: 5cf9b67f18e0934f181b6c7195a3684b3112f6c504e4b46fb01b5834cf26b4a6
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r5/rounds.yaml: 58f937a575e6d139ef68694ef341af470d008fa085515bbeec1661f2f6d42387
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r5/target-manifest.yaml: 92ca6dc23e79f00ec0a602c9386bad0f139b8cdcb8e8381f6973ec91cbdc8142
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r5/triage.yaml: 6fe7edf16cc5ef0811714b794e7df742a2d1079bd164d48d42c93c8ee2a644a9
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r6/model-result-summary.yaml: 4dbf3ca3d173c351f3cfa4652ca29159a7201371a1ab7b73a0ecf2ec38c81a06
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r6/parsed/claude-sonnet-4-6.round-1.yaml: 9cf0dda8cc7fc0a40736b9cb8fecaae0dd4f8061863024e66c409acfc7adca7d
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r6/parsed/gemini-3.1-pro-preview.round-1.yaml: 60fd0dc0f2885f623d808abdc31ef008ebf1d666f7fa2e8934a416b5922f3b9a
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r6/parsed/gpt-5.4.round-1.yaml: 09d439e597d5f2a4387688d89459e73fff23352dfbefbfed0c7e1060fe30fcb7
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r6/raw/claude-sonnet-4-6.round-1.txt: c72876736614a82f8f9edd22191285ee9542932bd8c286d7f6697a1075afe9ef
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r6/raw/gemini-3.1-pro-preview.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r6/raw/gpt-5.4.round-1.txt: 549755036fb53d03bdc21f308f8b165cfddb8cbf4484772c1058bbd1e5da5c17
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r6/review_summary.md: d9ca84602772202d7985bdac845412a39c54c98f75b8d913e15eb1ab6210ea6b
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r6/rounds.yaml: 3d814d39fc0fb53bcc761ab8eb4c3d576eb961d26019adc6c099385e23ad8f2e
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r6/target-manifest.yaml: 2d60ed6ce2197aa833baad92aec0af827e4537acaef19c4f9dade1e549d84d4e
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r6/triage.yaml: ae99ef296d30708c7a3e231d48733d8da56cd097b2b8ab0080702ae7625e0835
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r7/model-result-summary.yaml: 383bd49f8d1a7b9dbed721276fa3b4721e737c6f2d714ffd50c783e93c4869bf
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r7/parsed/claude-sonnet-4-6.round-1.yaml: e3fbff76ceaa07fae0899e700cefa842cd57895b1c5f65100d03a20a7885602d
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r7/parsed/gemini-3.1-pro-preview.round-1.yaml: ce087a4fc60ed1e4ddc1b7a92c8f31e275459eb886dc07dfa9c91080b81e40e6
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r7/parsed/gpt-5.4.round-1.yaml: e0f8b71e2dfb4a6d9745db54fcf440422485111e1c5310d4fdeee606f507a7d7
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r7/raw/claude-sonnet-4-6.round-1.txt: 41167beeae2ac76a938bf30ae48faa3982ab59bf322f42425c5e862015d50ea4
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r7/raw/gemini-3.1-pro-preview.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r7/raw/gpt-5.4.round-1.txt: 424c594f4737868b6f24cf228fbe2406bc4dd4346ada154abbc0679adfb3f02a
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r7/review_summary.md: 57ff5fc3d4ca7fe17cbc0e3f492de5ca0ec964534054b23432c39862fbddbd8b
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r7/rounds.yaml: c078df2a1c66758bf4770a50850b9ec6d7771529b45db4313ae23d89fe9ec208
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r7/target-manifest.yaml: a5338b65c4218769f427acb98b0bf34bbe14b13b04cc20b5dc2a7a9883e7f4ac
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r7/triage.yaml: 2ef36cae5b36ff864467dd1bd48d71fa9679829a288033f136d87a61b149437f
+- verifier: gemini-3.1-pro-preview
+  target_files:
+  - docs/notes/2026-06-09-d021-deployable-reconstruction-readiness-checklist.md
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r1/model-result-summary.yaml
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r1/parsed/claude-sonnet-4-6.round-1.yaml
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r1/parsed/gemini-3.1-pro-preview.round-1.yaml
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r1/raw/claude-sonnet-4-6.round-1.txt
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r1/raw/gemini-3.1-pro-preview.round-1.txt
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r1/raw/gpt-5.4.round-1.txt
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r1/review_summary.md
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r1/rounds.yaml
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r1/target-manifest.yaml
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r1/triage.yaml
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r2/model-result-summary.yaml
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r2/parsed/claude-sonnet-4-6.round-1.yaml
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r2/parsed/gemini-3.1-pro-preview.round-1.yaml
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r2/parsed/gpt-5.4.round-1.yaml
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r2/raw/claude-sonnet-4-6.round-1.txt
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r2/raw/gemini-3.1-pro-preview.round-1.txt
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r2/raw/gpt-5.4.round-1.txt
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r2/review_summary.md
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r2/rounds.yaml
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r2/target-manifest.yaml
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r2/triage.yaml
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r3/model-result-summary.yaml
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r3/parsed/claude-sonnet-4-6.round-1.yaml
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r3/parsed/gemini-3.1-pro-preview.round-1.yaml
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r3/parsed/gpt-5.4.round-1.yaml
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r3/raw/claude-sonnet-4-6.round-1.txt
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r3/raw/gemini-3.1-pro-preview.round-1.txt
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r3/raw/gpt-5.4.round-1.txt
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r3/review_summary.md
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r3/rounds.yaml
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r3/target-manifest.yaml
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r3/triage.yaml
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r4/model-result-summary.yaml
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r4/parsed/claude-sonnet-4-6.round-1.yaml
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r4/parsed/gemini-3.1-pro-preview.round-1.yaml
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r4/parsed/gpt-5.4.round-1.yaml
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r4/raw/claude-sonnet-4-6.round-1.txt
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r4/raw/gemini-3.1-pro-preview.round-1.txt
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r4/raw/gpt-5.4.round-1.txt
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r4/review_summary.md
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r4/rounds.yaml
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r4/target-manifest.yaml
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r4/triage.yaml
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r5/model-result-summary.yaml
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r5/parsed/claude-sonnet-4-6.round-1.yaml
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r5/parsed/gemini-3.1-pro-preview.round-1.yaml
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r5/parsed/gpt-5.4.round-1.yaml
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r5/raw/claude-sonnet-4-6.round-1.txt
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r5/raw/gemini-3.1-pro-preview.round-1.txt
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r5/raw/gpt-5.4.round-1.txt
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r5/review_summary.md
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r5/rounds.yaml
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r5/target-manifest.yaml
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r5/triage.yaml
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r6/model-result-summary.yaml
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r6/parsed/claude-sonnet-4-6.round-1.yaml
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r6/parsed/gemini-3.1-pro-preview.round-1.yaml
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r6/parsed/gpt-5.4.round-1.yaml
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r6/raw/claude-sonnet-4-6.round-1.txt
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r6/raw/gemini-3.1-pro-preview.round-1.txt
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r6/raw/gpt-5.4.round-1.txt
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r6/review_summary.md
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r6/rounds.yaml
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r6/target-manifest.yaml
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r6/triage.yaml
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r7/model-result-summary.yaml
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r7/parsed/claude-sonnet-4-6.round-1.yaml
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r7/parsed/gemini-3.1-pro-preview.round-1.yaml
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r7/parsed/gpt-5.4.round-1.yaml
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r7/raw/claude-sonnet-4-6.round-1.txt
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r7/raw/gemini-3.1-pro-preview.round-1.txt
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r7/raw/gpt-5.4.round-1.txt
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r7/review_summary.md
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r7/rounds.yaml
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r7/target-manifest.yaml
+  - docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r7/triage.yaml
+  target_sha256:
+    docs/notes/2026-06-09-d021-deployable-reconstruction-readiness-checklist.md: 57d12f06452ab43dd08518b0beabd19918ac8471abcdf0bb8de6500f6b9c1e20
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r1/model-result-summary.yaml: e57316bc1565a8123ca86c1b7bcab8e9eaa558bfaa5d6ba3ace972b68de710ec
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r1/parsed/claude-sonnet-4-6.round-1.yaml: e3098af67927193b84091735a07e6250682521e00e40a6b12170a57f6d003fc4
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r1/parsed/gemini-3.1-pro-preview.round-1.yaml: 08be559cc0ebbe27649d8dc7f7aa8da796c0f6857d1aa0dd0d2a56347f837d23
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r1/raw/claude-sonnet-4-6.round-1.txt: 988c28845bce98b21571e71f51481f293b698e3d42d5c14d4a1826c1d278e67a
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r1/raw/gemini-3.1-pro-preview.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r1/raw/gpt-5.4.round-1.txt: caf6cdfefd3cd1ab5c9370b9ebcdc37c35130fadff2224e4b1ff3e698122de59
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r1/review_summary.md: bc26f3b2d2bd64ad1a019d221f60b8fa0f751f6e75721d53a2cef90e099fa425
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r1/rounds.yaml: 4c51b5e45d0025e10392d8b9bd1082fd752a239582a34b61a52a46d1c69d5225
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r1/target-manifest.yaml: 4b68a1838e1c552297ba2d7f95d6e92d5e0f7790eba1a0ac572a2a59c13cd474
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r1/triage.yaml: 7c1a54c117eacedc1ba81e523adfc6cb7822421c0e74dedbba0ae1e60eca2dc6
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r2/model-result-summary.yaml: 67dee7f7beaf29a26aef7d1890565e21241c0fb40fde3addb3daf01086029557
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r2/parsed/claude-sonnet-4-6.round-1.yaml: 304931c02743a926c12cd66c884f63bb1b35fe7cba343b20a2acf697ad4137f3
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r2/parsed/gemini-3.1-pro-preview.round-1.yaml: 5a3d80983b9300d68029d2e7bfe764694ac28dac2826b0c3e88c1af9224b74b8
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r2/parsed/gpt-5.4.round-1.yaml: 3753a8f1accb5d715a7af76528ba0b5c8d790b79e0bc8476d4ecdd7a5c238967
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r2/raw/claude-sonnet-4-6.round-1.txt: 2ecead7af0d1dd2cf1f705cb946622169e61fc9fb25d1e72e07a45e56e1df61e
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r2/raw/gemini-3.1-pro-preview.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r2/raw/gpt-5.4.round-1.txt: 811ead0ea4fdbf3e9b3e2c7294fa7ed125b154e11e173cae42951ace312b989f
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r2/review_summary.md: 47cb0aa2f505134ea38ebe1787389d1d6d6ecc47684ed3d7f69c87bd07ae00a6
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r2/rounds.yaml: b9c2606c26155237c6e77e9e8249a36dd16a7d2c178e081ec009713bb9ab13d2
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r2/target-manifest.yaml: e83bfd6746ac108d3c71d995767dca794be57bf97f801afa9f64fb862562f65f
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r2/triage.yaml: b6a53b80b038b99e9fbe45aa71ab344927a3e5eafeaadf4baa7e86acd624e1fd
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r3/model-result-summary.yaml: 6cf64713ccbf47a427ed99f3d9a0a13cc6e44dde63d23358c0774e07712a4d53
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r3/parsed/claude-sonnet-4-6.round-1.yaml: fc069436b01c24c2c1c7c0dbdd10c253ff28032494a9ae51a75805f4142f0dda
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r3/parsed/gemini-3.1-pro-preview.round-1.yaml: 6f8c49a4456b08f8cfda5bbfae03c355c8cdd77798cf80ceddca9f51bf8c7353
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r3/parsed/gpt-5.4.round-1.yaml: 7925305f411ffc79e9de12f6e2c72d933f0dfd72abfd67e09f43e9a90fe74039
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r3/raw/claude-sonnet-4-6.round-1.txt: aa75a505db808d5afaefbc072d5eb7b599e238496ce5b8121f68f90121ce7c91
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r3/raw/gemini-3.1-pro-preview.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r3/raw/gpt-5.4.round-1.txt: 6a53ae98d9b3f6cb6c0f972e1a4d2a01231d20ced2bd43c7a4e8203f2274a408
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r3/review_summary.md: 68c9312ce22815a31bec067c2f94fafc35873e25956dd9414a738cfecc05c1c8
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r3/rounds.yaml: c7ebd385f090e4329320e79502fad880b6fce29af1a654c5b732551c2644f3c0
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r3/target-manifest.yaml: e018c7d82ef06e3a51b3287ac8f202d90ea267d5619307d9784a4abae385e158
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r3/triage.yaml: 791f73e1daf483832d4017a32f4bd8f62a1b713e4e657801a146494a3732d2c8
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r4/model-result-summary.yaml: 44cfaa98b234596155312c0dffbdce76a1b311270dd8f2a6bc83a27e774e14ed
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r4/parsed/claude-sonnet-4-6.round-1.yaml: 580ccdd242b5b0eea69d70185aeaa91fadcfc8d677746b5df2ffe6ae89a4519b
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r4/parsed/gemini-3.1-pro-preview.round-1.yaml: 9b5772624056b95145e435cc753983820d821c65b1e3e5d8b21051662fc6870b
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r4/parsed/gpt-5.4.round-1.yaml: 74614274f2b22f7b6c49fcc5f51b23c9b73c3811313218e9be242a845b005c9e
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r4/raw/claude-sonnet-4-6.round-1.txt: a789995b9b0f352f770270eee62e5caa4abd0f6b25d65157d6cf3f039cd75c96
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r4/raw/gemini-3.1-pro-preview.round-1.txt: 67f20b5f2a77ca36c12b6b153ce451a10d7c0026c9147c2eb86f0e1d33ea4fb1
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r4/raw/gpt-5.4.round-1.txt: d95e2b55afb88e0edf27ac0ccc332df6f9a534cc50720c92221599313faf8c78
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r4/review_summary.md: bbea6be9c27609818865f99812f87c9b06f3193c5c10ba41f28b65d181da6bd7
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r4/rounds.yaml: 6d723676fc34e66abc92e82c6f76994a971781a3cb03efa750bc231718b989b6
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r4/target-manifest.yaml: ec6da8539a0f38c2ab06614e5870fd122455d8b3b7e5fa22be581a72a7d3d36d
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r4/triage.yaml: 85ccb2aafb635e48cb9ccf59a1958b214e463848cf60ce76d364a38bcc0b7b4d
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r5/model-result-summary.yaml: 803ef4247c8523a778fe45a59ea3bee8960e73c48a2987e98a8632f2e604b08d
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r5/parsed/claude-sonnet-4-6.round-1.yaml: be465f87837384725ad6fd3689b5249d50703725a660eeb3c3b1e1b875e3cf17
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r5/parsed/gemini-3.1-pro-preview.round-1.yaml: 08be559cc0ebbe27649d8dc7f7aa8da796c0f6857d1aa0dd0d2a56347f837d23
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r5/parsed/gpt-5.4.round-1.yaml: be8bd06311343ab5d59dd99358d54218fb88cfdb49c7f074431cc846ac215365
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r5/raw/claude-sonnet-4-6.round-1.txt: 2ebd66e14c545b2c085aacfd20092e192534bd25fa3ea29d21710c89533306f2
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r5/raw/gemini-3.1-pro-preview.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r5/raw/gpt-5.4.round-1.txt: 4196cce63c3afc07566eceaad28f6afcd9b7479473d08b5fa251fec5f3d2452d
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r5/review_summary.md: 5cf9b67f18e0934f181b6c7195a3684b3112f6c504e4b46fb01b5834cf26b4a6
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r5/rounds.yaml: 58f937a575e6d139ef68694ef341af470d008fa085515bbeec1661f2f6d42387
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r5/target-manifest.yaml: 92ca6dc23e79f00ec0a602c9386bad0f139b8cdcb8e8381f6973ec91cbdc8142
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r5/triage.yaml: 6fe7edf16cc5ef0811714b794e7df742a2d1079bd164d48d42c93c8ee2a644a9
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r6/model-result-summary.yaml: 4dbf3ca3d173c351f3cfa4652ca29159a7201371a1ab7b73a0ecf2ec38c81a06
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r6/parsed/claude-sonnet-4-6.round-1.yaml: 9cf0dda8cc7fc0a40736b9cb8fecaae0dd4f8061863024e66c409acfc7adca7d
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r6/parsed/gemini-3.1-pro-preview.round-1.yaml: 60fd0dc0f2885f623d808abdc31ef008ebf1d666f7fa2e8934a416b5922f3b9a
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r6/parsed/gpt-5.4.round-1.yaml: 09d439e597d5f2a4387688d89459e73fff23352dfbefbfed0c7e1060fe30fcb7
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r6/raw/claude-sonnet-4-6.round-1.txt: c72876736614a82f8f9edd22191285ee9542932bd8c286d7f6697a1075afe9ef
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r6/raw/gemini-3.1-pro-preview.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r6/raw/gpt-5.4.round-1.txt: 549755036fb53d03bdc21f308f8b165cfddb8cbf4484772c1058bbd1e5da5c17
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r6/review_summary.md: d9ca84602772202d7985bdac845412a39c54c98f75b8d913e15eb1ab6210ea6b
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r6/rounds.yaml: 3d814d39fc0fb53bcc761ab8eb4c3d576eb961d26019adc6c099385e23ad8f2e
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r6/target-manifest.yaml: 2d60ed6ce2197aa833baad92aec0af827e4537acaef19c4f9dade1e549d84d4e
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r6/triage.yaml: ae99ef296d30708c7a3e231d48733d8da56cd097b2b8ab0080702ae7625e0835
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r7/model-result-summary.yaml: 383bd49f8d1a7b9dbed721276fa3b4721e737c6f2d714ffd50c783e93c4869bf
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r7/parsed/claude-sonnet-4-6.round-1.yaml: e3fbff76ceaa07fae0899e700cefa842cd57895b1c5f65100d03a20a7885602d
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r7/parsed/gemini-3.1-pro-preview.round-1.yaml: ce087a4fc60ed1e4ddc1b7a92c8f31e275459eb886dc07dfa9c91080b81e40e6
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r7/parsed/gpt-5.4.round-1.yaml: e0f8b71e2dfb4a6d9745db54fcf440422485111e1c5310d4fdeee606f507a7d7
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r7/raw/claude-sonnet-4-6.round-1.txt: 41167beeae2ac76a938bf30ae48faa3982ab59bf322f42425c5e862015d50ea4
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r7/raw/gemini-3.1-pro-preview.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r7/raw/gpt-5.4.round-1.txt: 424c594f4737868b6f24cf228fbe2406bc4dd4346ada154abbc0679adfb3f02a
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r7/review_summary.md: 57ff5fc3d4ca7fe17cbc0e3f492de5ca0ec964534054b23432c39862fbddbd8b
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r7/rounds.yaml: c078df2a1c66758bf4770a50850b9ec6d7771529b45db4313ae23d89fe9ec208
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r7/target-manifest.yaml: a5338b65c4218769f427acb98b0bf34bbe14b13b04cc20b5dc2a7a9883e7f4ac
+    docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r7/triage.yaml: 2ef36cae5b36ff864467dd1bd48d71fa9679829a288033f136d87a61b149437f
+review_run:
+  path: docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r7
+  summary_path: docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r7/model-result-summary.yaml
+notes: Generated template; verify target_files cover current post-write targets before
+  use.

@@ -1,0 +1,10 @@
+findings:
+  - severity: WARN
+    target_location: "Section 8. Status Snapshot"
+    description: "「post-write manifest」を正本として参照しているが、その具体的なファイルパスや生成物名が文書内で定義されていない。"
+    rationale: "post_write_verification の観点では、文書単体で追跡可能な参照先が明示されていることが望ましい。現状では manifest の実体が不明なため、後続作業者がどの成果物を確認すべきか判断しづらい。"
+
+  - severity: INFO
+    target_location: "Section 1. 参照正本 / completed 証跡"
+    description: "`tools/check-workflow-action.py next --json` と `git status --short` の実行証跡は記載されているが、出力内容の抜粋や保存先への参照はない。"
+    rationale: "必須欠陥ではないが、post-write の検証可能性を高めるには、コマンド実行日時だけでなく出力要約や保存場所があると再確認しやすい。"

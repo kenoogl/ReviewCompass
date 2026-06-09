@@ -1,0 +1,91 @@
+run_id: postwrite-d021-readiness-checklist-2026-06-09-r1
+triage_status: draft
+generated_at: '2026-06-09T05:13:03.311874+00:00'
+decision_actor: null
+decision_actor_type: human
+items:
+- finding_id: postwrite-d021-readiness-checklist-2026-06-09-r1-claude-sonnet-4-6-primary-001
+  run_id: postwrite-d021-readiness-checklist-2026-06-09-r1
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: '## 0. 位置づけ'
+  plain_language_summary: Document status is 'in_progress' and multiple checklist
+    items remain unchecked.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: This is a working checklist document in active use. The unchecked
+    items in sections 1–7 reflect planned but not yet completed work. No structural
+    or content defects detected; this is expected for an in-progress task ledger.
+  applied_files: []
+  superseded_by: null
+- finding_id: postwrite-d021-readiness-checklist-2026-06-09-r1-claude-sonnet-4-6-primary-002
+  run_id: postwrite-d021-readiness-checklist-2026-06-09-r1
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: '## 2. Readiness Report 作成 — 出力先候補'
+  plain_language_summary: Output destination is listed as a candidate path, not a
+    confirmed path.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: The word '候補' (candidate) indicates the path has not been finalized.
+    This is acceptable for an in-progress checklist but should be resolved before
+    the report is drafted to avoid creating the file at a wrong location.
+  applied_files: []
+  superseded_by: null
+- finding_id: postwrite-d021-readiness-checklist-2026-06-09-r1-claude-sonnet-4-6-primary-003
+  run_id: postwrite-d021-readiness-checklist-2026-06-09-r1
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: '## 1. 参照正本 — unchecked items'
+  plain_language_summary: 'Two prerequisite items remain unchecked: summarizing the
+    reconstruction-plan policy and summarizing relationships with D-020/D-022/D-023/D-024.'
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: These are listed as reference prerequisites in Section 1. Proceeding
+    to Sections 3–6 without completing these may cause the report to omit or misstate
+    scope boundaries and inter-candidate dependencies.
+  applied_files: []
+  superseded_by: null
+- finding_id: postwrite-d021-readiness-checklist-2026-06-09-r1-claude-sonnet-4-6-primary-004
+  run_id: postwrite-d021-readiness-checklist-2026-06-09-r1
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: '## 5. Deployment Smoke 最小 Fixture 案 — last bullet'
+  plain_language_summary: The decision whether to implement the smoke fixture or leave
+    it as an unimplemented gap is itself an unchecked item, creating an open branch
+    in the task flow.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: Without resolving this decision, the report cannot declare a definitive
+    readiness verdict. The checklist should surface this as a blocking decision point
+    before the report is finalized.
+  applied_files: []
+  superseded_by: null

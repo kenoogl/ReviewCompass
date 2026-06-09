@@ -1,0 +1,225 @@
+run_id: postwrite-d021-readiness-checklist-2026-06-09-r5
+triage_status: draft
+generated_at: '2026-06-09T05:20:30.991255+00:00'
+decision_actor: null
+decision_actor_type: human
+items:
+- finding_id: postwrite-d021-readiness-checklist-2026-06-09-r5-claude-sonnet-4-6-primary-001
+  run_id: postwrite-d021-readiness-checklist-2026-06-09-r5
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: Section 0.1 Checklist Creation Done Criteria
+  plain_language_summary: All seven checklist creation done criteria are marked complete
+    ([x]), confirming the document fulfills its stated purpose as a work ledger.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: Verifying that the document's own completion criteria are satisfied
+    confirms it is ready for use as a D-021 reference checklist.
+  applied_files: []
+  superseded_by: null
+- finding_id: postwrite-d021-readiness-checklist-2026-06-09-r5-claude-sonnet-4-6-primary-002
+  run_id: postwrite-d021-readiness-checklist-2026-06-09-r5
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: Section 1, evidence table
+  plain_language_summary: Three of five Section 1 reference items are marked complete
+    with evidence recorded in the table; two items (reconstruction-plan summary and
+    D-020/D-022/D-023/D-024 relationship summary) remain as open [ ] items.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: The document explicitly states these are pre-conditions before
+    drafting the readiness report body, not defects in the checklist itself. The open
+    items correctly represent future work.
+  applied_files: []
+  superseded_by: null
+- finding_id: postwrite-d021-readiness-checklist-2026-06-09-r5-claude-sonnet-4-6-primary-003
+  run_id: postwrite-d021-readiness-checklist-2026-06-09-r5
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: Section 2, readiness report front matter block
+  plain_language_summary: 'The front matter block shows `status: draft` for the readiness
+    report that has not yet been created. The checklist itself carries `status: checklist_ready`
+    in its own front matter, which is accurate, but a reader skimming Section 2 may
+    confuse the embedded report front matter with the checklist''s own status.'
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: Mixing the target document's front matter with an embedded template
+    front matter in the same file could cause misreading. A brief inline label clarifying
+    this is a template excerpt would reduce ambiguity.
+  applied_files: []
+  superseded_by: null
+- finding_id: postwrite-d021-readiness-checklist-2026-06-09-r5-claude-sonnet-4-6-primary-004
+  run_id: postwrite-d021-readiness-checklist-2026-06-09-r5
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: Section 5, fixture implementation judgment rules
+  plain_language_summary: 'The fixture implementation rules are clear and self-consistent:
+    document audit first, fixture only if audit cannot determine verdict. This aligns
+    with the stated D-021 scope.'
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: No action needed; recorded for completeness of review.
+  applied_files: []
+  superseded_by: null
+- finding_id: postwrite-d021-readiness-checklist-2026-06-09-r5-claude-sonnet-4-6-primary-005
+  run_id: postwrite-d021-readiness-checklist-2026-06-09-r5
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: Section 8, Status Snapshot
+  plain_language_summary: The snapshot accurately records the current state as of
+    2026-06-09 and clearly disclaims it is time-dependent. The update rules and pointer
+    to `next --json` as authoritative source are present.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: No defect; the section correctly manages expectations about snapshot
+    staleness.
+  applied_files: []
+  superseded_by: null
+- finding_id: postwrite-d021-readiness-checklist-2026-06-09-r5-claude-sonnet-4-6-primary-006
+  run_id: postwrite-d021-readiness-checklist-2026-06-09-r5
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: Section 3 and Section 4, all checklist items
+  plain_language_summary: All items in Deployment Readiness (Section 3) and Data Acquisition
+    Readiness (Section 4) are unchecked [ ]. While Section 0 explains this is intentional
+    (they represent future work), there is no explicit ordered dependency or sequencing
+    guidance within these sections to indicate which items must be completed before
+    others.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: Without intra-section ordering guidance, a worker beginning D-021
+    execution might address items in arbitrary order, potentially investing effort
+    in data acquisition checks before confirming deployment blockers. Adding a brief
+    sequencing note (e.g., complete Section 3 before Section 4) would reduce execution
+    risk.
+  applied_files: []
+  superseded_by: null
+- finding_id: postwrite-d021-readiness-checklist-2026-06-09-r5-claude-sonnet-4-6-primary-007
+  run_id: postwrite-d021-readiness-checklist-2026-06-09-r5
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: Section 6, Escalation Rules
+  plain_language_summary: All four escalation rule items are unchecked [ ], consistent
+    with them being judgment calls that depend on Section 3/4 findings. The tie-break
+    order defined in Section 2 provides the necessary decision logic.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: No defect; the open items correctly represent contingent future
+    decisions.
+  applied_files: []
+  superseded_by: null
+- finding_id: postwrite-d021-readiness-checklist-2026-06-09-r5-gpt-5.4-adversarial-001
+  run_id: postwrite-d021-readiness-checklist-2026-06-09-r5
+  source_model: gpt-5.4
+  source_round: round-1
+  source_raw_path: raw/gpt-5.4.round-1.txt
+  source_parsed_path: parsed/gpt-5.4.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: Section 8. Status Snapshot
+  plain_language_summary: 'Section 8 states that editing the checklist requires updating
+    both `last status refresh` and `current task`, but the current snapshot still
+    says `current task: post-write verification for D-021 readiness checklist`.'
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: For a post-write readiness checklist, the document should reflect
+    its present usable state. A stale `current task` weakens the reliability of the
+    snapshot and indicates the checklist may not have been fully normalized after
+    verification-oriented edits.
+  applied_files: []
+  superseded_by: null
+- finding_id: postwrite-d021-readiness-checklist-2026-06-09-r5-gpt-5.4-adversarial-002
+  run_id: postwrite-d021-readiness-checklist-2026-06-09-r5
+  source_model: gpt-5.4
+  source_round: round-1
+  source_raw_path: raw/gpt-5.4.round-1.txt
+  source_parsed_path: parsed/gpt-5.4.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: Section 1. 参照正本 / completed evidence table
+  plain_language_summary: The evidence records completion of `next --json`, clean
+    worktree, and source review, but does not capture concrete command output excerpts
+    or paths to persisted evidence artifacts.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: The checklist is still usable, but stronger traceability would
+    make post-write verification easier and reduce ambiguity if the recorded assertions
+    are revisited later.
+  applied_files: []
+  superseded_by: null
+- finding_id: postwrite-d021-readiness-checklist-2026-06-09-r5-gpt-5.4-adversarial-003
+  run_id: postwrite-d021-readiness-checklist-2026-06-09-r5
+  source_model: gpt-5.4
+  source_round: round-1
+  source_raw_path: raw/gpt-5.4.round-1.txt
+  source_parsed_path: parsed/gpt-5.4.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: Document overall
+  plain_language_summary: The document remains intentionally incomplete in many checklist
+    items, but it clearly distinguishes unchecked work items from document defects.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: This is not a blocking issue; it is noted because post-write verification
+    should confirm that incompleteness is deliberate and correctly framed as future
+    execution work rather than missing checklist structure.
+  applied_files: []
+  superseded_by: null

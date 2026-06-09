@@ -1,0 +1,180 @@
+run_id: postwrite-d021-readiness-checklist-2026-06-09-r7
+triage_status: decided
+generated_at: '2026-06-09T05:22:54.035401+00:00'
+decision_actor: null
+decision_actor_type: human
+items:
+- finding_id: postwrite-d021-readiness-checklist-2026-06-09-r7-claude-sonnet-4-6-primary-001
+  run_id: postwrite-d021-readiness-checklist-2026-06-09-r7
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: Section 0 / front matter status field
+  plain_language_summary: front matter の status は checklist_ready であり、Section 0 の説明もこれを正確に限定している。D-021
+    本体の readiness 判定完了を意味しないことが明記されており、誤読リスクは低い。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: llm
+  decision_actor_type: agent
+  decision_at: '2026-06-09T05:23:36.901419+00:00'
+  decision_reason: 作業台帳として意図された未完了項目または軽微な追跡性改善であり、D-021 report 側の実作業で扱うため、このチェックリスト作成の
+    blocker ではない。
+  applied_files: []
+  superseded_by: null
+- finding_id: postwrite-d021-readiness-checklist-2026-06-09-r7-claude-sonnet-4-6-primary-002
+  run_id: postwrite-d021-readiness-checklist-2026-06-09-r7
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: Section 1 完了済み証跡表
+  plain_language_summary: 完了済み項目の証跡は日付と手順の概要のみで、コマンド出力の実際のログやファイルパスへの参照が含まれていない。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: llm
+  decision_actor_type: agent
+  decision_at: '2026-06-09T05:23:36.953747+00:00'
+  decision_reason: 作業台帳として意図された未完了項目または軽微な追跡性改善であり、D-021 report 側の実作業で扱うため、このチェックリスト作成の
+    blocker ではない。
+  applied_files: []
+  superseded_by: null
+- finding_id: postwrite-d021-readiness-checklist-2026-06-09-r7-claude-sonnet-4-6-primary-003
+  run_id: postwrite-d021-readiness-checklist-2026-06-09-r7
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: Section 2 readiness report front matter template
+  plain_language_summary: front matter template に candidate_id と record_type が含まれているが、これらフィールドのスキーマ正本への参照がない。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: llm
+  decision_actor_type: agent
+  decision_at: '2026-06-09T05:23:37.007563+00:00'
+  decision_reason: 作業台帳として意図された未完了項目または軽微な追跡性改善であり、D-021 report 側の実作業で扱うため、このチェックリスト作成の
+    blocker ではない。
+  applied_files: []
+  superseded_by: null
+- finding_id: postwrite-d021-readiness-checklist-2026-06-09-r7-claude-sonnet-4-6-primary-004
+  run_id: postwrite-d021-readiness-checklist-2026-06-09-r7
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: Section 5 fixture 実装判断ルール
+  plain_language_summary: fixture 実装判断ルールは D-021 report の verdict に依存しているが、verdict
+    が確定する前に Section 5 を参照した場合の手順が明示されていない。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: llm
+  decision_actor_type: agent
+  decision_at: '2026-06-09T05:23:37.063375+00:00'
+  decision_reason: 作業台帳として意図された未完了項目または軽微な追跡性改善であり、D-021 report 側の実作業で扱うため、このチェックリスト作成の
+    blocker ではない。
+  applied_files: []
+  superseded_by: null
+- finding_id: postwrite-d021-readiness-checklist-2026-06-09-r7-gpt-5.4-adversarial-001
+  run_id: postwrite-d021-readiness-checklist-2026-06-09-r7
+  source_model: gpt-5.4
+  source_round: round-1
+  source_raw_path: raw/gpt-5.4.round-1.txt
+  source_parsed_path: parsed/gpt-5.4.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: Section 1. 参照正本
+  plain_language_summary: 参照正本セクション内に未完了のチェック項目が残っている。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: llm
+  decision_actor_type: agent
+  decision_at: '2026-06-09T05:23:37.118402+00:00'
+  decision_reason: 作業台帳として意図された未完了項目または軽微な追跡性改善であり、D-021 report 側の実作業で扱うため、このチェックリスト作成の
+    blocker ではない。
+  applied_files: []
+  superseded_by: null
+- finding_id: postwrite-d021-readiness-checklist-2026-06-09-r7-gpt-5.4-adversarial-002
+  run_id: postwrite-d021-readiness-checklist-2026-06-09-r7
+  source_model: gpt-5.4
+  source_round: round-1
+  source_raw_path: raw/gpt-5.4.round-1.txt
+  source_parsed_path: parsed/gpt-5.4.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: Section 2. Readiness Report 作成
+  plain_language_summary: readiness report 作成セクションに主要な未完了項目が複数残っている。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: llm
+  decision_actor_type: agent
+  decision_at: '2026-06-09T05:23:37.172065+00:00'
+  decision_reason: 作業台帳として意図された未完了項目または軽微な追跡性改善であり、D-021 report 側の実作業で扱うため、このチェックリスト作成の
+    blocker ではない。
+  applied_files: []
+  superseded_by: null
+- finding_id: postwrite-d021-readiness-checklist-2026-06-09-r7-gpt-5.4-adversarial-003
+  run_id: postwrite-d021-readiness-checklist-2026-06-09-r7
+  source_model: gpt-5.4
+  source_round: round-1
+  source_raw_path: raw/gpt-5.4.round-1.txt
+  source_parsed_path: parsed/gpt-5.4.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: Front matter / Section 0
+  plain_language_summary: '`status: checklist_ready` の意味と D-021 本体完了とは異なることが明示されている。'
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: llm
+  decision_actor_type: agent
+  decision_at: '2026-06-09T05:23:37.225316+00:00'
+  decision_reason: 作業台帳として意図された未完了項目または軽微な追跡性改善であり、D-021 report 側の実作業で扱うため、このチェックリスト作成の
+    blocker ではない。
+  applied_files: []
+  superseded_by: null
+- finding_id: postwrite-d021-readiness-checklist-2026-06-09-r7-gpt-5.4-adversarial-004
+  run_id: postwrite-d021-readiness-checklist-2026-06-09-r7
+  source_model: gpt-5.4
+  source_round: round-1
+  source_raw_path: raw/gpt-5.4.round-1.txt
+  source_parsed_path: parsed/gpt-5.4.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: Sections 3-6
+  plain_language_summary: deployment readiness、data acquisition readiness、smoke 条件、escalation
+    rules が具体的な証跡基準つきで整理されている。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: llm
+  decision_actor_type: agent
+  decision_at: '2026-06-09T05:23:37.278537+00:00'
+  decision_reason: 作業台帳として意図された未完了項目または軽微な追跡性改善であり、D-021 report 側の実作業で扱うため、このチェックリスト作成の
+    blocker ではない。
+  applied_files: []
+  superseded_by: null
+- finding_id: postwrite-d021-readiness-checklist-2026-06-09-r7-gpt-5.4-adversarial-005
+  run_id: postwrite-d021-readiness-checklist-2026-06-09-r7
+  source_model: gpt-5.4
+  source_round: round-1
+  source_raw_path: raw/gpt-5.4.round-1.txt
+  source_parsed_path: parsed/gpt-5.4.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: Section 8. Status Snapshot
+  plain_language_summary: snapshot の時点依存性と、作業開始時に再確認すべき正本が明示されている。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: llm
+  decision_actor_type: agent
+  decision_at: '2026-06-09T05:23:37.332851+00:00'
+  decision_reason: 作業台帳として意図された未完了項目または軽微な追跡性改善であり、D-021 report 側の実作業で扱うため、このチェックリスト作成の
+    blocker ではない。
+  applied_files: []
+  superseded_by: null

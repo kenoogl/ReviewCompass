@@ -1,0 +1,17 @@
+findings:
+  - severity: INFO
+    target_location: "Section 0 / front matter status field"
+    description: "front matter の status は checklist_ready であり、Section 0 の説明もこれを正確に限定している。D-021 本体の readiness 判定完了を意味しないことが明記されており、誤読リスクは低い。"
+    rationale: "status 値の意味範囲が文書内で一貫して説明されているため、読者が混乱する可能性は小さいが、外部参照者のために Section 0 の説明が唯一の正本になっている点は注意が必要。"
+  - severity: INFO
+    target_location: "Section 1 完了済み証跡表"
+    description: "完了済み項目の証跡は日付と手順の概要のみで、コマンド出力の実際のログやファイルパスへの参照が含まれていない。"
+    rationale: "証跡として記録されている内容が自己申告に近く、外部レビュアーが独立検証する手段がない。D-021 の readiness report に証跡ファイルへのポインタを追加することで補完できる。"
+  - severity: INFO
+    target_location: "Section 2 readiness report front matter template"
+    description: "front matter template に candidate_id と record_type が含まれているが、これらフィールドのスキーマ正本への参照がない。"
+    rationale: "他の report との一貫性を保つためにスキーマ正本への参照があると望ましいが、チェックリスト文書としての機能は損なわれていない。"
+  - severity: INFO
+    target_location: "Section 5 fixture 実装判断ルール"
+    description: "fixture 実装判断ルールは D-021 report の verdict に依存しているが、verdict が確定する前に Section 5 を参照した場合の手順が明示されていない。"
+    rationale: "作業順序は Section 3 → Section 4 → Section 5 の流れで読み取れるが、参照者が Section 5 を独立して参照した際に誤解する可能性がわずかにある。軽微な懸念。"

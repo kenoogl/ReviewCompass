@@ -1,0 +1,40 @@
+findings:
+  - severity: INFO
+    target_location: "Section 0 / front matter status field"
+    description: "status: checklist_ready is explained in Section 0 but the distinction between checklist readiness and D-021 body readiness could be misread by automated tooling that treats status as a completion signal."
+    rationale: "Automated reviewers or CI scripts scanning front matter may interpret checklist_ready as work-complete. The inline prose clarification in Section 0 mitigates this for human readers but not for tooling."
+
+  - severity: INFO
+    target_location: "Section 1 – 参照正本, incomplete items"
+    description: "Two items remain unchecked ([ ]): reconstruction-plan summary and D-020/D-022/D-023/D-024 relationship summary. Section 1 itself states these must be completed before writing the readiness report, so the open state is intentional, but downstream readers should be aware that Section 2 work is blocked until these are resolved."
+    rationale: "The dependency constraint is documented correctly; flagging as INFO so reviewers do not mistake the open checkboxes for a document defect."
+
+  - severity: WARN
+    target_location: "Section 2 – readiness report front matter template, status: draft"
+    description: "The template excerpt hard-codes status: draft. If this template is copied without modification to initialize the report file, a stale draft status may persist unnoticed after the report is finalized."
+    rationale: "Template fields that require active updating (like status) benefit from a placeholder or explicit TODO comment to reduce the risk of shipping an unupdated value."
+
+  - severity: WARN
+    target_location: "Section 2 – 判定値, tie-break order item 4"
+    description: "needs_smoke_implementation appears as tie-break priority 4, implying it is only reached when all three blocked_by_* conditions are absent. However, it is possible for needs_smoke_implementation to coexist with a blocked_by_D023 condition (e.g., path violations discovered only during smoke execution). The tie-break table does not address this overlap."
+    rationale: "Without clarification, an assessor encountering both a path-dependency issue and smoke-execution failure may apply the wrong final verdict, leading to an incomplete escalation decision."
+
+  - severity: INFO
+    target_location: "Section 3 – Deployment Readiness Checklist, Evidence standard column"
+    description: "Several evidence standards reference tables or classifications to be placed in the report, but the checklist does not specify a minimum row count or completeness threshold for those tables. This leaves acceptance criteria partially undefined."
+    rationale: "For audit traceability, evidence standards benefit from at least a minimum-sample statement (e.g., 'at least 2 representative examples') to make pass/fail deterministic."
+
+  - severity: INFO
+    target_location: "Section 4 – Data Acquisition Readiness Checklist, minimum fields table"
+    description: "The cost and elapsed_time rows list available / missing as the minimum field, which is a binary presence check rather than a structured value. Downstream consumers (D-004, D-019) may need the actual value schema, not just presence."
+    rationale: "If D-004 or D-019 require structured cost/time records, a presence-only standard may produce a false-positive readiness verdict."
+
+  - severity: INFO
+    target_location: "Section 5 – fixture 実装判断ルール, third bullet"
+    description: "The rule states 'fixture 実装に入る場合は、このチェックリスト上で Section 1 と Section 2 の report 骨子を先に完了させる' but does not define what constitutes completion of the report 骨子 (outline). Without a sub-checklist or pointer, this gate condition is ambiguous."
+    rationale: "Ambiguous gate conditions can cause work to begin on fixture implementation before prerequisite documentation is sufficiently stable."
+
+  - severity: INFO
+    target_location: "Section 8 – Status Snapshot, last status refresh"
+    description: "The snapshot references a specific review round (r5 post-write review) that is not cross-referenced anywhere else in the document, making it difficult to locate the corresponding review artifact."
+    rationale: "For audit and reproducibility, snapshot notes that reference specific review rounds benefit from a path or identifier to the corresponding review record."

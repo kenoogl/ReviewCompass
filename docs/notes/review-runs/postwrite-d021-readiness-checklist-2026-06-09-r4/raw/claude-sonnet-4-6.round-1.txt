@@ -1,0 +1,20 @@
+findings:
+  - severity: INFO
+    target_location: "Section 0 / front matter status field"
+    description: "status: checklist_ready is defined in front matter and explained in Section 0, but the distinction between checklist readiness and D-021 body readiness could be reinforced with a cross-reference to Section 8 Status Snapshot."
+    rationale: "Readers skimming only the front matter may conflate checklist_ready with D-021 overall readiness. Section 0 does clarify this, but a brief inline pointer to Section 8 would reduce ambiguity for future maintainers."
+
+  - severity: INFO
+    target_location: "Section 1 — 参照正本, incomplete items"
+    description: "Two items remain unchecked: reconstruction-plan summary and D-020/D-022/D-023/D-024 relationship summary. Section 1 itself states these must be completed before Section 2 report body is written, which is consistent with the current checklist_ready status."
+    rationale: "No defect; the document correctly defers these to the D-021 work phase. Noting for traceability that downstream work cannot begin Section 2 prose until these are resolved."
+
+  - severity: INFO
+    target_location: "Section 2 — 判定値の使い分け table"
+    description: "The verdict table lists blocked_by_D022, blocked_by_D023, blocked_by_D024 as mutually exclusive final verdicts, with secondary_blockers for additional cases. The rule for selecting the primary blocker ('外部配置を最初に妨げる blocker') is stated but the ordering priority among D-022, D-023, D-024 is implicit."
+    rationale: "If two blockers fire simultaneously, the resolver must infer priority. Making the tie-break order explicit (e.g., D-022 > D-023 > D-024) would remove ambiguity without requiring a structural change."
+
+  - severity: INFO
+    target_location: "Section 5 — fixture 実装判断ルール"
+    description: "The rule states 'fixture 実装は D-021 report の follow-up に残してよい' when document audit alone is sufficient, but does not specify where in the report the follow-up should be recorded (e.g., escalation note, gap table, or separate section)."
+    rationale: "Minor clarity gap; actionable but not a blocker for checklist_ready status. Adding a pointer to the report section where the follow-up lives would help future reviewers confirm it was not silently dropped."

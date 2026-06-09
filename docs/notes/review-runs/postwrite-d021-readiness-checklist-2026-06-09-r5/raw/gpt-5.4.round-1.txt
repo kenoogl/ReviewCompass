@@ -1,0 +1,15 @@
+findings:
+  - severity: WARN
+    target_location: "Section 8. Status Snapshot"
+    description: "Section 8 states that editing the checklist requires updating both `last status refresh` and `current task`, but the current snapshot still says `current task: post-write verification for D-021 readiness checklist`."
+    rationale: "For a post-write readiness checklist, the document should reflect its present usable state. A stale `current task` weakens the reliability of the snapshot and indicates the checklist may not have been fully normalized after verification-oriented edits."
+
+  - severity: INFO
+    target_location: "Section 1. 参照正本 / completed evidence table"
+    description: "The evidence records completion of `next --json`, clean worktree, and source review, but does not capture concrete command output excerpts or paths to persisted evidence artifacts."
+    rationale: "The checklist is still usable, but stronger traceability would make post-write verification easier and reduce ambiguity if the recorded assertions are revisited later."
+
+  - severity: INFO
+    target_location: "Document overall"
+    description: "The document remains intentionally incomplete in many checklist items, but it clearly distinguishes unchecked work items from document defects."
+    rationale: "This is not a blocking issue; it is noted because post-write verification should confirm that incompleteness is deliberate and correctly framed as future execution work rather than missing checklist structure."

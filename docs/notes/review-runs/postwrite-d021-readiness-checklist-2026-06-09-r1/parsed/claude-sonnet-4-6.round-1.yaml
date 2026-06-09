@@ -1,0 +1,34 @@
+role: primary
+provider: anthropic-api
+model: claude-sonnet-4-6
+attempts: 1
+duration_seconds: 11.12
+findings:
+- severity: INFO
+  target_location: '## 0. 位置づけ'
+  description: Document status is 'in_progress' and multiple checklist items remain
+    unchecked.
+  rationale: This is a working checklist document in active use. The unchecked items
+    in sections 1–7 reflect planned but not yet completed work. No structural or content
+    defects detected; this is expected for an in-progress task ledger.
+- severity: INFO
+  target_location: '## 2. Readiness Report 作成 — 出力先候補'
+  description: Output destination is listed as a candidate path, not a confirmed path.
+  rationale: The word '候補' (candidate) indicates the path has not been finalized.
+    This is acceptable for an in-progress checklist but should be resolved before
+    the report is drafted to avoid creating the file at a wrong location.
+- severity: WARN
+  target_location: '## 1. 参照正本 — unchecked items'
+  description: 'Two prerequisite items remain unchecked: summarizing the reconstruction-plan
+    policy and summarizing relationships with D-020/D-022/D-023/D-024.'
+  rationale: These are listed as reference prerequisites in Section 1. Proceeding
+    to Sections 3–6 without completing these may cause the report to omit or misstate
+    scope boundaries and inter-candidate dependencies.
+- severity: WARN
+  target_location: '## 5. Deployment Smoke 最小 Fixture 案 — last bullet'
+  description: The decision whether to implement the smoke fixture or leave it as
+    an unimplemented gap is itself an unchecked item, creating an open branch in the
+    task flow.
+  rationale: Without resolving this decision, the report cannot declare a definitive
+    readiness verdict. The checklist should surface this as a blocking decision point
+    before the report is finalized.

@@ -1,0 +1,40 @@
+findings:
+  - severity: WARN
+    target_location: "front matter / status"
+    description: "文書ステータスが `in_progress` のままで、post_write_verification 時点の完了状態が明示されていません。"
+    rationale: "readiness checklist の完成文書として検証する段階では、少なくともドラフト完了やレビュー待ちなどの状態が分かる方が公開・引き継ぎ判断をしやすくなります。現状のままだと、文書自体が未完成なのか、チェックリスト運用中なのか判別しづらいです。"
+
+  - severity: WARN
+    target_location: "## 1. 参照正本"
+    description: "参照正本の必須項目として挙げた `reconstruction-plan` 要約と D-020/D-022/D-023/D-024 関係整理が未完了のままです。"
+    rationale: "この文書は D-021 の readiness を進めるための作業台帳であり、依存方針や関連候補との関係整理は後続判断の前提になります。正本参照の未消化が残ると、後続 report の範囲設定や escalation 条件の妥当性がぶれやすくなります。"
+
+  - severity: INFO
+    target_location: "## 2. Readiness Report 作成 / 出力先候補"
+    description: "Readiness Report の出力先が『候補』のままで確定していません。"
+    rationale: "致命的ではありませんが、レビュー成果物の保存先が未確定だと、後続の記録・参照・自動化で揺れが生じる可能性があります。早めに確定しておくと運用が安定します。"
+
+  - severity: WARN
+    target_location: "## 2. Readiness Report 作成 / 判定値案"
+    description: "判定値が『案』として列挙されている一方で、各値の判定条件や相互排他性が定義されていません。"
+    rationale: "readiness report で一貫した結論を出すには、`ready` と `ready_with_gaps`、各 `blocked_by_*`、`needs_smoke_implementation` の使い分け条件が必要です。定義がないと複数回の評価で判定ぶれが起きます。"
+
+  - severity: WARN
+    target_location: "## 3. Deployment Readiness Checklist"
+    description: "確認観点は列挙されていますが、各項目で何をもって『確認済み』とするかの証跡基準が不足しています。"
+    rationale: "post-write の運用文書としては、コマンド、対象ファイル、期待結果などの最小証跡があると再現性が高まります。現状だと担当者ごとに確認の深さが変わる恐れがあります。"
+
+  - severity: WARN
+    target_location: "## 4. Data Acquisition Readiness Checklist"
+    description: "研究用データを『同じ形式』で取得することを求めていますが、対象スキーマや必須フィールドが本文内で明示されていません。"
+    rationale: "same-schema readiness を判定するには、最低限の共通記録項目が必要です。スキーマ定義がないと、取得可否の判断や D-020 への引き継ぎ内容が曖昧になります。"
+
+  - severity: INFO
+    target_location: "## 5. Deployment Smoke 最小 Fixture 案"
+    description: "fixture 案は整理されていますが、成功条件・失敗条件が明文化されていません。"
+    rationale: "smoke 実施可否や `needs_smoke_implementation` 判定に直結するため、生成物・終了コード・確認観点などの受け入れ条件を追加すると判断しやすくなります。"
+
+  - severity: INFO
+    target_location: "## 8. Current Status"
+    description: "Current Status に作成開始時点の状態はありますが、最終更新時点や更新責任者の記録がありません。"
+    rationale: "台帳型文書では、状態がいつのものか分かると後続担当者が stale 情報を避けやすくなります。特に `next --json` や worktree clean は時点依存の情報です。"}

@@ -1,0 +1,4 @@
+run_id: postwrite-d021-readiness-checklist-2026-06-09-r5
+target_files:
+- path: docs/notes/2026-06-09-d021-deployable-reconstruction-readiness-checklist.md
+  sha256: fcc935415788e095e41d4e636f4fbd5bdcf7744336a9dce4f045f8366e9258cf
