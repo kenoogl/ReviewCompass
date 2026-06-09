@@ -17,9 +17,9 @@ completed_steps:
   - 第3過程：requirements triad-review 修正後再レビュー実施
   - 第3過程停止点：requirements triad-review 完了承認
   - 第3過程：requirements review-wave 実施
+  - 第3過程停止点：requirements review-wave 完了承認
 step_number: 3
 pending_gates:
-  - stages/requirements.yaml#review-wave
   - stages/requirements.yaml#alignment
   - stages/requirements.yaml#approval
   - stages/design.yaml#triad-review
@@ -36,6 +36,7 @@ pending_gates:
   - stages/implementation.yaml#approval
 completed_gates:
   - stages/requirements.yaml#triad-review
+  - stages/requirements.yaml#review-wave
 approval_source: 2026-06-09 利用者発言「次へ」
 requirements_drafting_result: conformance-evaluation Requirement 10 と workflow-management Requirement 9 を追加し、既存システムへの後追い intent 追加を仕様駆動開発として下流再展開する要件を明文化した。
 requirements_drafting_evidence:
@@ -55,8 +56,9 @@ requirements_review_wave_evidence:
   - .reviewcompass/specs/_cross_feature/reviews/2026-06-09-existing-system-sdd-requirements-all-features-review-run-r2/raw-review-triage-summary.md
   - .reviewcompass/specs/conformance-evaluation/requirements.md
   - .reviewcompass/specs/workflow-management/requirements.md
+requirements_review_wave_approval_source: 2026-06-09 利用者発言「承認」
 requirements_chain_correction: requirements 正本を実質修正したため、alignment へ直行せず、requirements triad-review と review-wave を再実施してから alignment / approval に進む。
-next_step: 第3過程：stages/requirements.yaml#review-wave 再実施
+next_step: 第3過程停止点コミット：requirements review-wave 完了承認反映（次 gate は stages/requirements.yaml#alignment）
 superseded_partial_review_run: .reviewcompass/specs/_cross_feature/reviews/2026-06-09-existing-system-sdd-requirements-review-run
 planned_review_run: .reviewcompass/specs/_cross_feature/reviews/2026-06-09-existing-system-sdd-requirements-all-features-review-run
 active_review_run: .reviewcompass/specs/_cross_feature/reviews/2026-06-09-existing-system-sdd-requirements-all-features-review-run-r2
@@ -138,4 +140,22 @@ downstream_impact_decisions:
       - .reviewcompass/specs/workflow-management/requirements.md
     decision_actor: human
     decision_source: 2026-06-09 利用者発言「承認」
-current_blocker: requirements review-wave の実施結果を利用者へ提示し、spec.json の requirements.review-wave 完了反映と pending_gates 更新の承認を得る。
+  - gate: stages/requirements.yaml#review-wave
+    feature_scope:
+      - foundation
+      - runtime
+      - evaluation
+      - analysis
+      - workflow-management
+      - self-improvement
+      - conformance-evaluation
+    decision: approved
+    rationale: requirements review-wave で CE Requirement 10 と WM Requirement 9 は相補的であり、間接 feature 5 件には requirements 本体変更不要と判断し、利用者が完了反映を承認したため。
+    evidence:
+      - .reviewcompass/specs/_cross_feature/reviews/2026-06-09-existing-system-sdd-requirements-review-wave.md
+      - .reviewcompass/specs/_cross_feature/reviews/2026-06-09-existing-system-sdd-requirements-all-features-review-run-r2/raw-review-triage-summary.md
+      - .reviewcompass/specs/conformance-evaluation/requirements.md
+      - .reviewcompass/specs/workflow-management/requirements.md
+    decision_actor: human
+    decision_source: 2026-06-09 利用者発言「承認」
+current_blocker: null
