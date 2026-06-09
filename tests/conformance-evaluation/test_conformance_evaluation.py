@@ -404,6 +404,23 @@ def test_conformance_evaluation_specs_track_contract_ownership_and_spec_update_d
     assert "requirements.md, design.md, tasks.md" in text
 
 
+def test_conformance_evaluation_specs_route_formal_spec_updates_through_reopen():
+  requirements = (ROOT / ".reviewcompass" / "specs" / "conformance-evaluation" / "requirements.md").read_text(encoding="utf-8")
+  design = (ROOT / ".reviewcompass" / "specs" / "conformance-evaluation" / "design.md").read_text(encoding="utf-8")
+  tasks = (ROOT / ".reviewcompass" / "specs" / "conformance-evaluation" / "tasks.md").read_text(encoding="utf-8")
+
+  for text in (requirements, design, tasks):
+    assert "workflow-management の reopen 手続き" in text
+    assert "triad-review / review-wave / alignment / approval" in text
+    assert "requirements.md, design.md, tasks.md を直接書き換えない" in text
+    assert "phase: tasks" in text
+    assert "tasks.md 本体の推定・再作成やタスク分解の確定は行わない" in text
+
+  assert "resolved 扱いにしてはならない" in requirements
+  assert "reopen handoff package" in design
+  assert "T-017" in tasks
+
+
 def test_cross_feature_conformance_workflow_is_operationalized():
   operations = (ROOT / "docs" / "operations" / "CONFORMANCE_EVALUATION.md").read_text(encoding="utf-8")
   tasks = (ROOT / ".reviewcompass" / "specs" / "conformance-evaluation" / "tasks.md").read_text(encoding="utf-8")

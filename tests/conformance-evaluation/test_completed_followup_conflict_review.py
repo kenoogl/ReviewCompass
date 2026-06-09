@@ -41,4 +41,4 @@ def test_completed_followup_design_requirement_count_is_current():
   ).read_text(encoding="utf-8")
 
   assert "requirements.md の全 10 件の Requirement" not in design
-  assert "requirements.md の全 11 件の Requirement" in design
+  assert "requirements.md の全 12 件の Requirement" in design

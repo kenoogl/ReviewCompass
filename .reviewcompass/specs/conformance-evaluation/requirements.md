@@ -202,6 +202,18 @@
 5. design gap は、design.md が completed follow-up prerequisite set の設計境界を引き受ける。設計境界には、各 completed follow-up output の責務、相互関係、handoff summary との接続を含める。
 6. 本機能は completed follow-up prerequisite set の正式化をこの Requirement の完了条件とする。以後の作業開始判断は、この Requirement の範囲外で扱う。
 
+### Requirement 12：正本更新の reopen 引き渡し
+
+**目的**：保守担当者が、conformance-evaluation で見つかった gap を requirements.md, design.md, tasks.md の正本更新で解消する場合に、通常の仕様駆動 workflow と同じ reopen 手続きで整合確認できるようにする。
+
+#### 受入基準
+
+1. 本機能は conformance result から正本更新が必要と判断された場合でも、requirements.md, design.md, tasks.md を直接書き換えない。正式な正本更新は workflow-management の reopen 手続きに引き渡す。
+2. 本機能は reopen handoff package を評価記録または draft-only artifact として出力できる。package は最低限 `source_conformance_record`、`gap_ids`、`target_feature`、`target_phase`、`target_documents`、`proposed_update_refs`、`needs_human_decision` を含む。
+3. 正本更新の整合確認は、reopen 後の `triad-review / review-wave / alignment / approval` が担う。本機能はこれらを独自の ad hoc review で代替しない。
+4. 本機能は reopen 後の対象 phase が `triad-review / review-wave / alignment / approval` を完了するまで、当該 gap を resolved 扱いにしてはならない。
+5. tasks の扱いは境界を固定する。本機能は `phase: tasks` の reopen 候補、下流影響候補、仕様更新草案を出力できるが、tasks.md 本体の推定・再作成やタスク分解の確定は行わない。tasks.md の正式更新は `workflow-management` の reopen 手続きで判断する。
+
 ## Change Intent
 
 本仕様は計画書 §5.10 で第 1 期から含めることを確定した **新規 7 番目機能**で、先行プロジェクトの `v3-plan.md` で future feature として記録されていた「artifact-to-spec conformance evaluation」を独立機能として書き起こした。**2026-05-24 セッション 23 で利用者考察により本筋／傍流の整理と 2 軸 6 criteria への絞り込みを実施**（論点 A・B 対処、計画書 §5.10 改訂と連動）。
@@ -221,6 +233,7 @@ ReviewCompass 固有の構築：
 - 2026-06-08 の feature-partitioning 再確認により、intent の「レビュー収集処理を事前設定の写像にしない」意図は新 feature 追加を要さず、conformance-evaluation では Requirement 1 の下流から上流への逆方向推定、Requirement 3 の二段階照合、Requirement 5 の推定・照合両段階への 3 役レビュー適用、および Requirement 9 の実装由来契約の仕様更新草案で受けることを確認した。
 - 2026-06-09 の再確認により、同 intent は単なる既存要件確認ではなく、既存システムへ後追いで intent を追加した場合に、コード由来の requirements／design 差分候補、下流影響候補、実装変更候補を抽出し、既存設計との衝突を確認しながら仕様駆動開発へ戻す機能追加として Requirement 10 に明示した。tasks.md 本体の推定・再作成は本機能の責務外であり、正式な tasks 反映は `workflow-management` の reopen 手続きに委ねる。
 - 2026-06-09 の completed follow-up conformance により、D-021 / D-004 / D-005 / D-025 / D-027 / D-008 / D-019 / D-020 / D-023 は completed follow-up prerequisite set として正式化した。formal completed follow-up outputs の handoff summary は `docs/notes/2026-06-09-formal-completed-followup-summary.md` とする。
+- 2026-06-09 の reopen 方針確認により、conformance-evaluation で見つかった gap を正本更新で解消する場合は、requirements.md, design.md, tasks.md を直接書き換えない。`workflow-management` の reopen 手続きへ渡し、`triad-review / review-wave / alignment / approval` によって整合確認する。tasks は `phase: tasks` の候補として出力できるが、tasks.md 本体の推定・再作成やタスク分解の確定は行わない。
 
 機能横断レビューで対処された所見：
 
@@ -243,3 +256,4 @@ v3-plan §3.3 の扱い（§5.10.6 由来、2026-05-24 セッション 23 改訂
 - `XDI-CE-001`：cross-feature drift clustering、contract ownership outputs、follow-up implementation decision は、Requirement 9 の contract ownership map／spec update proposals／draft-only artifacts の外部可視要件に含める。詳細な follow-up タスク化は tasks.md T-015 を正本とし、本 requirements.md は要件層から追跡可能であることを示す。
 - `XDI-CE-002`：既存システムに後追いで intent を追加した場合のコード由来仕様差分抽出、既存設計との衝突確認、仕様更新草案、下流影響候補、実装変更候補の分離は Requirement 10 の外部可視要件に含める。tasks.md 本体の推定は本機能の責務外とし、詳細な設計・タスク化は design／tasks 段で確定する。
 - `XDI-CE-003`：completed follow-up prerequisite set の正式化、formal completed follow-up outputs の扱い、requirements gap／design gap の残存明示は Requirement 11 の外部可視要件に含める。handoff summary は `docs/notes/2026-06-09-formal-completed-followup-summary.md` とする。
+- `XDI-CE-004`：正本更新が必要な gap の reopen 引き渡し、reopen handoff package、`triad-review / review-wave / alignment / approval` 完了前に `resolved` 扱いにしない制約、`phase: tasks` 候補の境界は Requirement 12 の外部可視要件に含める。
