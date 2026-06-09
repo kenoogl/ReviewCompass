@@ -20,9 +20,9 @@ completed_steps:
   - 第3過程停止点：requirements review-wave 完了承認
   - 第3過程：requirements alignment 実施
   - 第3過程停止点：requirements alignment 完了承認
+  - 第3過程停止点：requirements approval 完了承認
 step_number: 3
 pending_gates:
-  - stages/requirements.yaml#approval
   - stages/design.yaml#triad-review
   - stages/design.yaml#review-wave
   - stages/design.yaml#alignment
@@ -39,6 +39,7 @@ completed_gates:
   - stages/requirements.yaml#triad-review
   - stages/requirements.yaml#review-wave
   - stages/requirements.yaml#alignment
+  - stages/requirements.yaml#approval
 approval_source: 2026-06-09 利用者発言「次へ」
 requirements_drafting_result: conformance-evaluation Requirement 10 と workflow-management Requirement 9 を追加し、既存システムへの後追い intent 追加を仕様駆動開発として下流再展開する要件を明文化した。
 requirements_drafting_evidence:
@@ -68,8 +69,9 @@ requirements_alignment_evidence:
   - .reviewcompass/specs/conformance-evaluation/requirements.md
   - .reviewcompass/specs/workflow-management/requirements.md
 requirements_alignment_approval_source: 2026-06-09 利用者発言「承認」
+requirements_approval_source: 2026-06-09 利用者発言「承認」
 requirements_chain_correction: requirements 正本を実質修正したため、alignment へ直行せず、requirements triad-review と review-wave を再実施してから alignment / approval に進む。
-next_step: 第3過程停止点コミット：requirements alignment 完了承認反映（次 gate は stages/requirements.yaml#approval）
+next_step: 第3過程停止点コミット：requirements approval 完了承認反映（次 gate は stages/design.yaml#triad-review）
 superseded_partial_review_run: .reviewcompass/specs/_cross_feature/reviews/2026-06-09-existing-system-sdd-requirements-review-run
 planned_review_run: .reviewcompass/specs/_cross_feature/reviews/2026-06-09-existing-system-sdd-requirements-all-features-review-run
 active_review_run: .reviewcompass/specs/_cross_feature/reviews/2026-06-09-existing-system-sdd-requirements-all-features-review-run-r2
@@ -184,6 +186,25 @@ downstream_impact_decisions:
       - .reviewcompass/specs/_cross_feature/reviews/2026-06-09-existing-system-sdd-requirements-alignment.md
       - intent/INTENT.md
       - stages/feature-partitioning/2026-05-24-proposal.md
+      - .reviewcompass/specs/conformance-evaluation/requirements.md
+      - .reviewcompass/specs/workflow-management/requirements.md
+    decision_actor: human
+    decision_source: 2026-06-09 利用者発言「承認」
+  - gate: stages/requirements.yaml#approval
+    feature_scope:
+      - foundation
+      - runtime
+      - evaluation
+      - analysis
+      - workflow-management
+      - self-improvement
+      - conformance-evaluation
+    decision: approved
+    rationale: requirements 段の triad-review、review-wave、alignment が完了し、追加 intent と CE/WM requirements の分担に矛盾がないことを利用者が承認したため。
+    evidence:
+      - .reviewcompass/specs/_cross_feature/reviews/2026-06-09-existing-system-sdd-requirements-alignment.md
+      - .reviewcompass/specs/_cross_feature/reviews/2026-06-09-existing-system-sdd-requirements-review-wave.md
+      - .reviewcompass/specs/_cross_feature/reviews/2026-06-09-existing-system-sdd-requirements-all-features-review-run-r2/raw-review-triage-summary.md
       - .reviewcompass/specs/conformance-evaluation/requirements.md
       - .reviewcompass/specs/workflow-management/requirements.md
     decision_actor: human
