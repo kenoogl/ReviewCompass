@@ -1,0 +1,10 @@
+findings:
+  - severity: WARN
+    target_location: "§3.6 機能横断波及所見の管理ルール"
+    description: "carry-forward register の正本を YAML に移行したと説明している一方で、消化後に付与する状態表現として『✅ 対処済み（YYYY-MM-DD、要件 review-wave）ラベルを追加』という Markdown 台帳由来の表現が残っている。"
+    rationale: "completion_report_contract_post_write の観点では、完了時の報告や記録が機械的に解釈できることが重要である。YAML 正本に対して『ラベル追加』とだけ書くと、実際にはどのキーを更新するのか（例: status, resolution, resolved_at）が不明確で、完了報告と正本更新の整合確認が曖昧になる。"
+
+  - severity: INFO
+    target_location: "§7 作業完了時レポート"
+    description: "完了時レポートの必須要素として『作業サマリ』『検証結果』『現在状態』『次タスク』が明記されており、post-write verification 後の完了報告契約は概ね明確に定義されている。"
+    rationale: "completion_report_contract_post_write の主要要件である、変更内容・検証・状態・次アクションの報告契約が文書上で満たされていることを確認できる。"

@@ -1,0 +1,11 @@
+role: primary
+provider: gemini-api
+model: gemini-3.5-flash
+attempts: 1
+duration_seconds: 26.085
+findings:
+- severity: WARN
+  target_location: SESSION_WORKFLOW_GUIDE.md §7. 作業完了時レポート
+  description: 作業完了時レポートの契約における `post_write_verification` の位置づけの適正化および表記の統一
+  rationale: '`next --json` が `post_write_verification` を返すケースは成果物変更後に実行される正常系プロセスの一部であり、`reopen_in_progress`
+    や `unknown` などの「通常完了以外」と同列に扱うのは不適切です。また、文脈内で「post-write verification」と「post_write_verification」の表記ゆれが存在するため、ワークフロー定義に準拠したアンダースコア表記に統一し、正常系プロセスとしての適切な次アクション（事後検証レビューの要求など）への参照を明確にする必要があります。'

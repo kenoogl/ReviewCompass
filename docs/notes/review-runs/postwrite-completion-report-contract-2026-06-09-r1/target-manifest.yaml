@@ -1,0 +1,4 @@
+run_id: postwrite-completion-report-contract-2026-06-09-r1
+target_files:
+- path: docs/operations/SESSION_WORKFLOW_GUIDE.md
+  sha256: ee2e92baca10d023ca51eda50f466b67eb7fba1cc5d8cda61755501e091bf17b

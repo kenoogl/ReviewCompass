@@ -1,0 +1,128 @@
+status: completed
+target_files:
+- AGENTS.md
+- docs/notes/review-runs/postwrite-completion-report-contract-2026-06-09-r1/model-result-summary.yaml
+- docs/notes/review-runs/postwrite-completion-report-contract-2026-06-09-r1/parsed/claude-sonnet-4-6.round-1.yaml
+- docs/notes/review-runs/postwrite-completion-report-contract-2026-06-09-r1/parsed/gemini-3.1-pro-preview.round-1.yaml
+- docs/notes/review-runs/postwrite-completion-report-contract-2026-06-09-r1/parsed/gpt-5.4.round-1.yaml
+- docs/notes/review-runs/postwrite-completion-report-contract-2026-06-09-r1/raw/claude-sonnet-4-6.round-1.txt
+- docs/notes/review-runs/postwrite-completion-report-contract-2026-06-09-r1/raw/gemini-3.1-pro-preview.round-1.txt
+- docs/notes/review-runs/postwrite-completion-report-contract-2026-06-09-r1/raw/gpt-5.4.round-1.txt
+- docs/notes/review-runs/postwrite-completion-report-contract-2026-06-09-r1/review_summary.md
+- docs/notes/review-runs/postwrite-completion-report-contract-2026-06-09-r1/rounds.yaml
+- docs/notes/review-runs/postwrite-completion-report-contract-2026-06-09-r1/target-manifest.yaml
+- docs/notes/review-runs/postwrite-completion-report-contract-2026-06-09-r1/triage.yaml
+- docs/operations/SESSION_WORKFLOW_GUIDE.md
+target_sha256:
+  AGENTS.md: 38cb996c1c34d60c5140ab58537e7ccb5b5ae55ed4605483de5837527e9b757e
+  docs/notes/review-runs/postwrite-completion-report-contract-2026-06-09-r1/model-result-summary.yaml: ffd2569556ed00375f5adcd6b079b7cfb2a041ced25711b81dc72cedde199d6a
+  docs/notes/review-runs/postwrite-completion-report-contract-2026-06-09-r1/parsed/claude-sonnet-4-6.round-1.yaml: 2226f4e4d2e57bc341babd289b48706441b41e9b5a16a5e7d1753d696f6a8ff4
+  docs/notes/review-runs/postwrite-completion-report-contract-2026-06-09-r1/parsed/gemini-3.1-pro-preview.round-1.yaml: 5a3d80983b9300d68029d2e7bfe764694ac28dac2826b0c3e88c1af9224b74b8
+  docs/notes/review-runs/postwrite-completion-report-contract-2026-06-09-r1/parsed/gpt-5.4.round-1.yaml: 2c77582c1a87dfafcbb637bf95d8948c868ec1e71522ea1d6bb506964745181d
+  docs/notes/review-runs/postwrite-completion-report-contract-2026-06-09-r1/raw/claude-sonnet-4-6.round-1.txt: 217f854c6db739857bd6368d97c1a4fe83c1ba5e72953ae752d25e78756c24c0
+  docs/notes/review-runs/postwrite-completion-report-contract-2026-06-09-r1/raw/gemini-3.1-pro-preview.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+  docs/notes/review-runs/postwrite-completion-report-contract-2026-06-09-r1/raw/gpt-5.4.round-1.txt: 5d3f3bdaa12e850ab10321fd49510ebff273c6045bba1d0be177a8776edc1b7b
+  docs/notes/review-runs/postwrite-completion-report-contract-2026-06-09-r1/review_summary.md: f01d720dc1c87cb860d8a2b8e4b007288bd55a354c7f944be5eb6f22256a5de7
+  docs/notes/review-runs/postwrite-completion-report-contract-2026-06-09-r1/rounds.yaml: 131f195bb6d2ad8bdb4e3bb77f3249965728c73483156836649b8f725c3c79be
+  docs/notes/review-runs/postwrite-completion-report-contract-2026-06-09-r1/target-manifest.yaml: 63c12b45e6338dc681b0277f0b634996bca3e6a2293de07a4ce87fd6015dcc81
+  docs/notes/review-runs/postwrite-completion-report-contract-2026-06-09-r1/triage.yaml: fe0f141a710b86e3dbe3fc10faf6abe8006fd73e9366028c4c95cb0bac08f0be
+  docs/operations/SESSION_WORKFLOW_GUIDE.md: ee2e92baca10d023ca51eda50f466b67eb7fba1cc5d8cda61755501e091bf17b
+required_verifiers: &id001
+- claude-sonnet-4-6
+- gpt-5.4
+- gemini-3.1-pro-preview
+completed_verifiers: *id001
+unresolved_substantive_findings: 0
+verifications:
+- verifier: claude-sonnet-4-6
+  target_files:
+  - AGENTS.md
+  - docs/notes/review-runs/postwrite-completion-report-contract-2026-06-09-r1/model-result-summary.yaml
+  - docs/notes/review-runs/postwrite-completion-report-contract-2026-06-09-r1/parsed/claude-sonnet-4-6.round-1.yaml
+  - docs/notes/review-runs/postwrite-completion-report-contract-2026-06-09-r1/parsed/gemini-3.1-pro-preview.round-1.yaml
+  - docs/notes/review-runs/postwrite-completion-report-contract-2026-06-09-r1/parsed/gpt-5.4.round-1.yaml
+  - docs/notes/review-runs/postwrite-completion-report-contract-2026-06-09-r1/raw/claude-sonnet-4-6.round-1.txt
+  - docs/notes/review-runs/postwrite-completion-report-contract-2026-06-09-r1/raw/gemini-3.1-pro-preview.round-1.txt
+  - docs/notes/review-runs/postwrite-completion-report-contract-2026-06-09-r1/raw/gpt-5.4.round-1.txt
+  - docs/notes/review-runs/postwrite-completion-report-contract-2026-06-09-r1/review_summary.md
+  - docs/notes/review-runs/postwrite-completion-report-contract-2026-06-09-r1/rounds.yaml
+  - docs/notes/review-runs/postwrite-completion-report-contract-2026-06-09-r1/target-manifest.yaml
+  - docs/notes/review-runs/postwrite-completion-report-contract-2026-06-09-r1/triage.yaml
+  - docs/operations/SESSION_WORKFLOW_GUIDE.md
+  target_sha256:
+    AGENTS.md: 38cb996c1c34d60c5140ab58537e7ccb5b5ae55ed4605483de5837527e9b757e
+    docs/notes/review-runs/postwrite-completion-report-contract-2026-06-09-r1/model-result-summary.yaml: ffd2569556ed00375f5adcd6b079b7cfb2a041ced25711b81dc72cedde199d6a
+    docs/notes/review-runs/postwrite-completion-report-contract-2026-06-09-r1/parsed/claude-sonnet-4-6.round-1.yaml: 2226f4e4d2e57bc341babd289b48706441b41e9b5a16a5e7d1753d696f6a8ff4
+    docs/notes/review-runs/postwrite-completion-report-contract-2026-06-09-r1/parsed/gemini-3.1-pro-preview.round-1.yaml: 5a3d80983b9300d68029d2e7bfe764694ac28dac2826b0c3e88c1af9224b74b8
+    docs/notes/review-runs/postwrite-completion-report-contract-2026-06-09-r1/parsed/gpt-5.4.round-1.yaml: 2c77582c1a87dfafcbb637bf95d8948c868ec1e71522ea1d6bb506964745181d
+    docs/notes/review-runs/postwrite-completion-report-contract-2026-06-09-r1/raw/claude-sonnet-4-6.round-1.txt: 217f854c6db739857bd6368d97c1a4fe83c1ba5e72953ae752d25e78756c24c0
+    docs/notes/review-runs/postwrite-completion-report-contract-2026-06-09-r1/raw/gemini-3.1-pro-preview.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/postwrite-completion-report-contract-2026-06-09-r1/raw/gpt-5.4.round-1.txt: 5d3f3bdaa12e850ab10321fd49510ebff273c6045bba1d0be177a8776edc1b7b
+    docs/notes/review-runs/postwrite-completion-report-contract-2026-06-09-r1/review_summary.md: f01d720dc1c87cb860d8a2b8e4b007288bd55a354c7f944be5eb6f22256a5de7
+    docs/notes/review-runs/postwrite-completion-report-contract-2026-06-09-r1/rounds.yaml: 131f195bb6d2ad8bdb4e3bb77f3249965728c73483156836649b8f725c3c79be
+    docs/notes/review-runs/postwrite-completion-report-contract-2026-06-09-r1/target-manifest.yaml: 63c12b45e6338dc681b0277f0b634996bca3e6a2293de07a4ce87fd6015dcc81
+    docs/notes/review-runs/postwrite-completion-report-contract-2026-06-09-r1/triage.yaml: fe0f141a710b86e3dbe3fc10faf6abe8006fd73e9366028c4c95cb0bac08f0be
+    docs/operations/SESSION_WORKFLOW_GUIDE.md: ee2e92baca10d023ca51eda50f466b67eb7fba1cc5d8cda61755501e091bf17b
+- verifier: gpt-5.4
+  target_files:
+  - AGENTS.md
+  - docs/notes/review-runs/postwrite-completion-report-contract-2026-06-09-r1/model-result-summary.yaml
+  - docs/notes/review-runs/postwrite-completion-report-contract-2026-06-09-r1/parsed/claude-sonnet-4-6.round-1.yaml
+  - docs/notes/review-runs/postwrite-completion-report-contract-2026-06-09-r1/parsed/gemini-3.1-pro-preview.round-1.yaml
+  - docs/notes/review-runs/postwrite-completion-report-contract-2026-06-09-r1/parsed/gpt-5.4.round-1.yaml
+  - docs/notes/review-runs/postwrite-completion-report-contract-2026-06-09-r1/raw/claude-sonnet-4-6.round-1.txt
+  - docs/notes/review-runs/postwrite-completion-report-contract-2026-06-09-r1/raw/gemini-3.1-pro-preview.round-1.txt
+  - docs/notes/review-runs/postwrite-completion-report-contract-2026-06-09-r1/raw/gpt-5.4.round-1.txt
+  - docs/notes/review-runs/postwrite-completion-report-contract-2026-06-09-r1/review_summary.md
+  - docs/notes/review-runs/postwrite-completion-report-contract-2026-06-09-r1/rounds.yaml
+  - docs/notes/review-runs/postwrite-completion-report-contract-2026-06-09-r1/target-manifest.yaml
+  - docs/notes/review-runs/postwrite-completion-report-contract-2026-06-09-r1/triage.yaml
+  - docs/operations/SESSION_WORKFLOW_GUIDE.md
+  target_sha256:
+    AGENTS.md: 38cb996c1c34d60c5140ab58537e7ccb5b5ae55ed4605483de5837527e9b757e
+    docs/notes/review-runs/postwrite-completion-report-contract-2026-06-09-r1/model-result-summary.yaml: ffd2569556ed00375f5adcd6b079b7cfb2a041ced25711b81dc72cedde199d6a
+    docs/notes/review-runs/postwrite-completion-report-contract-2026-06-09-r1/parsed/claude-sonnet-4-6.round-1.yaml: 2226f4e4d2e57bc341babd289b48706441b41e9b5a16a5e7d1753d696f6a8ff4
+    docs/notes/review-runs/postwrite-completion-report-contract-2026-06-09-r1/parsed/gemini-3.1-pro-preview.round-1.yaml: 5a3d80983b9300d68029d2e7bfe764694ac28dac2826b0c3e88c1af9224b74b8
+    docs/notes/review-runs/postwrite-completion-report-contract-2026-06-09-r1/parsed/gpt-5.4.round-1.yaml: 2c77582c1a87dfafcbb637bf95d8948c868ec1e71522ea1d6bb506964745181d
+    docs/notes/review-runs/postwrite-completion-report-contract-2026-06-09-r1/raw/claude-sonnet-4-6.round-1.txt: 217f854c6db739857bd6368d97c1a4fe83c1ba5e72953ae752d25e78756c24c0
+    docs/notes/review-runs/postwrite-completion-report-contract-2026-06-09-r1/raw/gemini-3.1-pro-preview.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/postwrite-completion-report-contract-2026-06-09-r1/raw/gpt-5.4.round-1.txt: 5d3f3bdaa12e850ab10321fd49510ebff273c6045bba1d0be177a8776edc1b7b
+    docs/notes/review-runs/postwrite-completion-report-contract-2026-06-09-r1/review_summary.md: f01d720dc1c87cb860d8a2b8e4b007288bd55a354c7f944be5eb6f22256a5de7
+    docs/notes/review-runs/postwrite-completion-report-contract-2026-06-09-r1/rounds.yaml: 131f195bb6d2ad8bdb4e3bb77f3249965728c73483156836649b8f725c3c79be
+    docs/notes/review-runs/postwrite-completion-report-contract-2026-06-09-r1/target-manifest.yaml: 63c12b45e6338dc681b0277f0b634996bca3e6a2293de07a4ce87fd6015dcc81
+    docs/notes/review-runs/postwrite-completion-report-contract-2026-06-09-r1/triage.yaml: fe0f141a710b86e3dbe3fc10faf6abe8006fd73e9366028c4c95cb0bac08f0be
+    docs/operations/SESSION_WORKFLOW_GUIDE.md: ee2e92baca10d023ca51eda50f466b67eb7fba1cc5d8cda61755501e091bf17b
+- verifier: gemini-3.1-pro-preview
+  target_files:
+  - AGENTS.md
+  - docs/notes/review-runs/postwrite-completion-report-contract-2026-06-09-r1/model-result-summary.yaml
+  - docs/notes/review-runs/postwrite-completion-report-contract-2026-06-09-r1/parsed/claude-sonnet-4-6.round-1.yaml
+  - docs/notes/review-runs/postwrite-completion-report-contract-2026-06-09-r1/parsed/gemini-3.1-pro-preview.round-1.yaml
+  - docs/notes/review-runs/postwrite-completion-report-contract-2026-06-09-r1/parsed/gpt-5.4.round-1.yaml
+  - docs/notes/review-runs/postwrite-completion-report-contract-2026-06-09-r1/raw/claude-sonnet-4-6.round-1.txt
+  - docs/notes/review-runs/postwrite-completion-report-contract-2026-06-09-r1/raw/gemini-3.1-pro-preview.round-1.txt
+  - docs/notes/review-runs/postwrite-completion-report-contract-2026-06-09-r1/raw/gpt-5.4.round-1.txt
+  - docs/notes/review-runs/postwrite-completion-report-contract-2026-06-09-r1/review_summary.md
+  - docs/notes/review-runs/postwrite-completion-report-contract-2026-06-09-r1/rounds.yaml
+  - docs/notes/review-runs/postwrite-completion-report-contract-2026-06-09-r1/target-manifest.yaml
+  - docs/notes/review-runs/postwrite-completion-report-contract-2026-06-09-r1/triage.yaml
+  - docs/operations/SESSION_WORKFLOW_GUIDE.md
+  target_sha256:
+    AGENTS.md: 38cb996c1c34d60c5140ab58537e7ccb5b5ae55ed4605483de5837527e9b757e
+    docs/notes/review-runs/postwrite-completion-report-contract-2026-06-09-r1/model-result-summary.yaml: ffd2569556ed00375f5adcd6b079b7cfb2a041ced25711b81dc72cedde199d6a
+    docs/notes/review-runs/postwrite-completion-report-contract-2026-06-09-r1/parsed/claude-sonnet-4-6.round-1.yaml: 2226f4e4d2e57bc341babd289b48706441b41e9b5a16a5e7d1753d696f6a8ff4
+    docs/notes/review-runs/postwrite-completion-report-contract-2026-06-09-r1/parsed/gemini-3.1-pro-preview.round-1.yaml: 5a3d80983b9300d68029d2e7bfe764694ac28dac2826b0c3e88c1af9224b74b8
+    docs/notes/review-runs/postwrite-completion-report-contract-2026-06-09-r1/parsed/gpt-5.4.round-1.yaml: 2c77582c1a87dfafcbb637bf95d8948c868ec1e71522ea1d6bb506964745181d
+    docs/notes/review-runs/postwrite-completion-report-contract-2026-06-09-r1/raw/claude-sonnet-4-6.round-1.txt: 217f854c6db739857bd6368d97c1a4fe83c1ba5e72953ae752d25e78756c24c0
+    docs/notes/review-runs/postwrite-completion-report-contract-2026-06-09-r1/raw/gemini-3.1-pro-preview.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/postwrite-completion-report-contract-2026-06-09-r1/raw/gpt-5.4.round-1.txt: 5d3f3bdaa12e850ab10321fd49510ebff273c6045bba1d0be177a8776edc1b7b
+    docs/notes/review-runs/postwrite-completion-report-contract-2026-06-09-r1/review_summary.md: f01d720dc1c87cb860d8a2b8e4b007288bd55a354c7f944be5eb6f22256a5de7
+    docs/notes/review-runs/postwrite-completion-report-contract-2026-06-09-r1/rounds.yaml: 131f195bb6d2ad8bdb4e3bb77f3249965728c73483156836649b8f725c3c79be
+    docs/notes/review-runs/postwrite-completion-report-contract-2026-06-09-r1/target-manifest.yaml: 63c12b45e6338dc681b0277f0b634996bca3e6a2293de07a4ce87fd6015dcc81
+    docs/notes/review-runs/postwrite-completion-report-contract-2026-06-09-r1/triage.yaml: fe0f141a710b86e3dbe3fc10faf6abe8006fd73e9366028c4c95cb0bac08f0be
+    docs/operations/SESSION_WORKFLOW_GUIDE.md: ee2e92baca10d023ca51eda50f466b67eb7fba1cc5d8cda61755501e091bf17b
+review_run:
+  path: docs/notes/review-runs/postwrite-completion-report-contract-2026-06-09-r1
+  summary_path: docs/notes/review-runs/postwrite-completion-report-contract-2026-06-09-r1/model-result-summary.yaml
+notes: Generated template; verify target_files cover current post-write targets before
+  use.

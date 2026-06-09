@@ -1,0 +1,24 @@
+run_id: postwrite-completion-report-contract-2026-06-09-r2
+triage_status: decided
+generated_at: '2026-06-09T05:34:27.815005+00:00'
+decision_actor: null
+decision_actor_type: human
+items:
+- finding_id: postwrite-completion-report-contract-2026-06-09-r2-gemini-3.5-flash-primary-001
+  run_id: postwrite-completion-report-contract-2026-06-09-r2
+  source_model: gemini-3.5-flash
+  source_round: round-1
+  source_raw_path: raw/gemini-3.5-flash.round-1.txt
+  source_parsed_path: parsed/gemini-3.5-flash.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: SESSION_WORKFLOW_GUIDE.md §7. 作業完了時レポート
+  plain_language_summary: 作業完了時レポートの契約における `post_write_verification` の位置づけの適正化および表記の統一
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: codex
+  decision_actor_type: agent
+  decision_at: '2026-06-09T05:35:06.444538+00:00'
+  decision_reason: §7の表現精度に関わるため反映。post_write_verificationをworkflow kind表記に統一し、通常完了以外をcompleted以外へ明確化した。
+  applied_files: []
+  superseded_by: null

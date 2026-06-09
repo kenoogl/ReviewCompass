@@ -4,6 +4,7 @@
 
 - 常に日本語で会話する
 - ユーザの指示どおりに処理する。拡張解釈しない。合意範囲を超える追加・解釈をしない。
+- 処理完了時は `docs/operations/SESSION_WORKFLOW_GUIDE.md` の作業完了時レポート契約に従い、作業サマリ・現在状態・次タスクを示す。
 
 ## Development Philosophy
 

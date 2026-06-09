@@ -1,0 +1,31 @@
+role: primary
+provider: anthropic-api
+model: claude-sonnet-4-6
+attempts: 1
+duration_seconds: 22.529
+findings:
+- severity: WARN
+  target_location: §7 作業完了時レポート
+  description: '`next --json` コマンドの存在・定義が本文書内で説明されていない'
+  rationale: §7 では `next --json` の出力値（post_write_verification 等）を参照して次タスクを決定するよう規定しているが、このコマンドが何か、どこで定義・実行されるかの説明または参照先がない。読み手がコマンドを知らない場合、手順を実行できない。
+- severity: WARN
+  target_location: §4.2 モデル割り当て（規律）
+  description: 参照モデル名（Opus 4.7、Sonnet 4.6）が実在するモデル識別子として検証されていない可能性
+  rationale: '推奨既定として『Opus 4.7 ／ Sonnet 4.6』と記述されているが、2026-06-09 時点で一般的に知られる Anthropic
+    モデル識別子（例: claude-opus-4, claude-sonnet-4-5 等）との対応が不明。誤ったモデル名が設定ファイルに記述された場合、review-run
+    が失敗する。参照先 `reviewcompass.yaml` または `config/api-settings.yaml` へのリンクがあると安全性が高まる。'
+- severity: WARN
+  target_location: §5.1 利用者判断必須の項目（最終行）
+  description: 「作業の打ち切り・先送りの誘導」禁止規律の追記日（2026-05-31）が他項目に比べ出典セッション記録への参照を欠く
+  rationale: 同節の他の規律は計画書節番号や経緯が明示されているが、この追記だけは日付とセッション番号の記述にとどまり、対応する session record
+    や計画書節への参照がない。後続セッションが経緯を追えない可能性がある。
+- severity: INFO
+  target_location: §7 作業完了時レポート（タイトルおよび冒頭説明）
+  description: 本節の内容が criteria『completion_report_contract_post_write』と合致することが文書内で明示されていない
+  rationale: criteria 名と本節の対応関係が読み手にとって自明でない。本節が post_write_verification フェーズで参照される
+    completion_report_contract の正本であることを冒頭に一行明記すると、契約文書としての参照性が向上する。
+- severity: INFO
+  target_location: §7 作業完了時レポート
+  description: レポートの形式（箇条書き・表・自由文）が規定されておらず、機械検査の対象外になる可能性
+  rationale: §7 は必須項目を列挙しているが、出力フォーマット（YAML、Markdown 見出し、箇条書きなど）を規定していない。§4.4 のレビュー記録が
+    front-matter YAML を必須化しているのと対称的に、completion report の構造が不定のままでは機械ガード実装が困難になりうる。将来的な機械検査を想定する場合、フォーマット規定の追加が望ましい。

@@ -1,0 +1,134 @@
+run_id: postwrite-completion-report-contract-2026-06-09-r1
+triage_status: decided
+generated_at: '2026-06-09T05:32:31.811009+00:00'
+decision_actor: null
+decision_actor_type: human
+items:
+- finding_id: postwrite-completion-report-contract-2026-06-09-r1-claude-sonnet-4-6-primary-001
+  run_id: postwrite-completion-report-contract-2026-06-09-r1
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: §7 作業完了時レポート
+  plain_language_summary: '`next --json` コマンドの存在・定義が本文書内で説明されていない'
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: codex
+  decision_actor_type: agent
+  decision_at: '2026-06-09T05:33:09.584699+00:00'
+  decision_reason: §1でnext --jsonの定義と実行手順を説明済みであり、§7は同一文書内の運用契約として参照しているため追加修正不要。
+  applied_files: []
+  superseded_by: null
+- finding_id: postwrite-completion-report-contract-2026-06-09-r1-claude-sonnet-4-6-primary-002
+  run_id: postwrite-completion-report-contract-2026-06-09-r1
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: §4.2 モデル割り当て（規律）
+  plain_language_summary: 参照モデル名（Opus 4.7、Sonnet 4.6）が実在するモデル識別子として検証されていない可能性
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: codex
+  decision_actor_type: agent
+  decision_at: '2026-06-09T05:33:09.636774+00:00'
+  decision_reason: 既存の§4.2に対する横滑り指摘であり、今回の作業完了時レポート契約追加の対象外。
+  applied_files: []
+  superseded_by: null
+- finding_id: postwrite-completion-report-contract-2026-06-09-r1-claude-sonnet-4-6-primary-003
+  run_id: postwrite-completion-report-contract-2026-06-09-r1
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: §5.1 利用者判断必須の項目（最終行）
+  plain_language_summary: 「作業の打ち切り・先送りの誘導」禁止規律の追記日（2026-05-31）が他項目に比べ出典セッション記録への参照を欠く
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: codex
+  decision_actor_type: agent
+  decision_at: '2026-06-09T05:33:09.690912+00:00'
+  decision_reason: 既存の§5.1に対する横滑り指摘であり、今回の作業完了時レポート契約追加の対象外。
+  applied_files: []
+  superseded_by: null
+- finding_id: postwrite-completion-report-contract-2026-06-09-r1-claude-sonnet-4-6-primary-004
+  run_id: postwrite-completion-report-contract-2026-06-09-r1
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: §7 作業完了時レポート（タイトルおよび冒頭説明）
+  plain_language_summary: 本節の内容が criteria『completion_report_contract_post_write』と合致することが文書内で明示されていない
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: codex
+  decision_actor_type: agent
+  decision_at: '2026-06-09T05:33:09.746540+00:00'
+  decision_reason: criteria名はレビュー実行側の識別子であり、運用ガイド本文へ明記する契約要素ではない。§7の役割は本文で十分に説明している。
+  applied_files: []
+  superseded_by: null
+- finding_id: postwrite-completion-report-contract-2026-06-09-r1-claude-sonnet-4-6-primary-005
+  run_id: postwrite-completion-report-contract-2026-06-09-r1
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: §7 作業完了時レポート
+  plain_language_summary: レポートの形式（箇条書き・表・自由文）が規定されておらず、機械検査の対象外になる可能性
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: codex
+  decision_actor_type: agent
+  decision_at: '2026-06-09T05:33:09.797413+00:00'
+  decision_reason: §7は会話末尾の報告契約であり、workflow_state正本を代替しないと明記している。現時点で固定フォーマット化は合意範囲外。
+  applied_files: []
+  superseded_by: null
+- finding_id: postwrite-completion-report-contract-2026-06-09-r1-gpt-5.4-adversarial-001
+  run_id: postwrite-completion-report-contract-2026-06-09-r1
+  source_model: gpt-5.4
+  source_round: round-1
+  source_raw_path: raw/gpt-5.4.round-1.txt
+  source_parsed_path: parsed/gpt-5.4.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: §3.6 機能横断波及所見の管理ルール
+  plain_language_summary: carry-forward register の正本を YAML に移行したと説明している一方で、消化後に付与する状態表現として『✅
+    対処済み（YYYY-MM-DD、要件 review-wave）ラベルを追加』という Markdown 台帳由来の表現が残っている。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: codex
+  decision_actor_type: agent
+  decision_at: '2026-06-09T05:33:09.854503+00:00'
+  decision_reason: 既存の§3.6に対する横滑り指摘であり、今回の作業完了時レポート契約追加の対象外。
+  applied_files: []
+  superseded_by: null
+- finding_id: postwrite-completion-report-contract-2026-06-09-r1-gpt-5.4-adversarial-002
+  run_id: postwrite-completion-report-contract-2026-06-09-r1
+  source_model: gpt-5.4
+  source_round: round-1
+  source_raw_path: raw/gpt-5.4.round-1.txt
+  source_parsed_path: parsed/gpt-5.4.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: §7 作業完了時レポート
+  plain_language_summary: 完了時レポートの必須要素として『作業サマリ』『検証結果』『現在状態』『次タスク』が明記されており、post-write
+    verification 後の完了報告契約は概ね明確に定義されている。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: codex
+  decision_actor_type: agent
+  decision_at: '2026-06-09T05:33:09.908113+00:00'
+  decision_reason: 肯定的確認であり修正不要。
+  applied_files: []
+  superseded_by: null

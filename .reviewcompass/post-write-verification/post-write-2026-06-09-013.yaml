@@ -1,0 +1,124 @@
+status: completed
+target_files:
+- AGENTS.md
+- docs/notes/review-runs/postwrite-completion-report-contract-2026-06-09-r1/model-result-summary.yaml
+- docs/notes/review-runs/postwrite-completion-report-contract-2026-06-09-r1/parsed/claude-sonnet-4-6.round-1.yaml
+- docs/notes/review-runs/postwrite-completion-report-contract-2026-06-09-r1/parsed/gemini-3.1-pro-preview.round-1.yaml
+- docs/notes/review-runs/postwrite-completion-report-contract-2026-06-09-r1/parsed/gpt-5.4.round-1.yaml
+- docs/notes/review-runs/postwrite-completion-report-contract-2026-06-09-r1/raw/claude-sonnet-4-6.round-1.txt
+- docs/notes/review-runs/postwrite-completion-report-contract-2026-06-09-r1/raw/gemini-3.1-pro-preview.round-1.txt
+- docs/notes/review-runs/postwrite-completion-report-contract-2026-06-09-r1/raw/gpt-5.4.round-1.txt
+- docs/notes/review-runs/postwrite-completion-report-contract-2026-06-09-r1/review_summary.md
+- docs/notes/review-runs/postwrite-completion-report-contract-2026-06-09-r1/rounds.yaml
+- docs/notes/review-runs/postwrite-completion-report-contract-2026-06-09-r1/target-manifest.yaml
+- docs/notes/review-runs/postwrite-completion-report-contract-2026-06-09-r1/triage.yaml
+- docs/notes/review-runs/postwrite-completion-report-contract-2026-06-09-r2/model-result-summary.yaml
+- docs/notes/review-runs/postwrite-completion-report-contract-2026-06-09-r2/parsed/gemini-3.5-flash.round-1.yaml
+- docs/notes/review-runs/postwrite-completion-report-contract-2026-06-09-r2/raw/gemini-3.5-flash.round-1.txt
+- docs/notes/review-runs/postwrite-completion-report-contract-2026-06-09-r2/review_summary.md
+- docs/notes/review-runs/postwrite-completion-report-contract-2026-06-09-r2/rounds.yaml
+- docs/notes/review-runs/postwrite-completion-report-contract-2026-06-09-r2/target-manifest.yaml
+- docs/notes/review-runs/postwrite-completion-report-contract-2026-06-09-r2/triage.yaml
+- docs/notes/review-runs/postwrite-completion-report-contract-2026-06-09-r3/model-result-summary.yaml
+- docs/notes/review-runs/postwrite-completion-report-contract-2026-06-09-r3/parsed/gemini-3.5-flash.round-1.yaml
+- docs/notes/review-runs/postwrite-completion-report-contract-2026-06-09-r3/raw/gemini-3.5-flash.round-1.txt
+- docs/notes/review-runs/postwrite-completion-report-contract-2026-06-09-r3/review_summary.md
+- docs/notes/review-runs/postwrite-completion-report-contract-2026-06-09-r3/rounds.yaml
+- docs/notes/review-runs/postwrite-completion-report-contract-2026-06-09-r3/target-manifest.yaml
+- docs/notes/review-runs/postwrite-completion-report-contract-2026-06-09-r3/triage.yaml
+- docs/operations/SESSION_WORKFLOW_GUIDE.md
+target_sha256:
+  AGENTS.md: 38cb996c1c34d60c5140ab58537e7ccb5b5ae55ed4605483de5837527e9b757e
+  docs/notes/review-runs/postwrite-completion-report-contract-2026-06-09-r1/model-result-summary.yaml: ffd2569556ed00375f5adcd6b079b7cfb2a041ced25711b81dc72cedde199d6a
+  docs/notes/review-runs/postwrite-completion-report-contract-2026-06-09-r1/parsed/claude-sonnet-4-6.round-1.yaml: 2226f4e4d2e57bc341babd289b48706441b41e9b5a16a5e7d1753d696f6a8ff4
+  docs/notes/review-runs/postwrite-completion-report-contract-2026-06-09-r1/parsed/gemini-3.1-pro-preview.round-1.yaml: 5a3d80983b9300d68029d2e7bfe764694ac28dac2826b0c3e88c1af9224b74b8
+  docs/notes/review-runs/postwrite-completion-report-contract-2026-06-09-r1/parsed/gpt-5.4.round-1.yaml: 2c77582c1a87dfafcbb637bf95d8948c868ec1e71522ea1d6bb506964745181d
+  docs/notes/review-runs/postwrite-completion-report-contract-2026-06-09-r1/raw/claude-sonnet-4-6.round-1.txt: 217f854c6db739857bd6368d97c1a4fe83c1ba5e72953ae752d25e78756c24c0
+  docs/notes/review-runs/postwrite-completion-report-contract-2026-06-09-r1/raw/gemini-3.1-pro-preview.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+  docs/notes/review-runs/postwrite-completion-report-contract-2026-06-09-r1/raw/gpt-5.4.round-1.txt: 5d3f3bdaa12e850ab10321fd49510ebff273c6045bba1d0be177a8776edc1b7b
+  docs/notes/review-runs/postwrite-completion-report-contract-2026-06-09-r1/review_summary.md: f01d720dc1c87cb860d8a2b8e4b007288bd55a354c7f944be5eb6f22256a5de7
+  docs/notes/review-runs/postwrite-completion-report-contract-2026-06-09-r1/rounds.yaml: 131f195bb6d2ad8bdb4e3bb77f3249965728c73483156836649b8f725c3c79be
+  docs/notes/review-runs/postwrite-completion-report-contract-2026-06-09-r1/target-manifest.yaml: 63c12b45e6338dc681b0277f0b634996bca3e6a2293de07a4ce87fd6015dcc81
+  docs/notes/review-runs/postwrite-completion-report-contract-2026-06-09-r1/triage.yaml: fe0f141a710b86e3dbe3fc10faf6abe8006fd73e9366028c4c95cb0bac08f0be
+  docs/notes/review-runs/postwrite-completion-report-contract-2026-06-09-r2/model-result-summary.yaml: 39e8c48d18d7270187e524720f32d61d1f28f1f3a70c476261fbef8fd112823b
+  docs/notes/review-runs/postwrite-completion-report-contract-2026-06-09-r2/parsed/gemini-3.5-flash.round-1.yaml: 66caf47e44c06b71159dd29994f3f77724da8f89166a74a7874f741f21b40e16
+  docs/notes/review-runs/postwrite-completion-report-contract-2026-06-09-r2/raw/gemini-3.5-flash.round-1.txt: 33eb0cc3e338147ca938e627b70a29e5c144a5efe3ae417023fe892400a0c1fb
+  docs/notes/review-runs/postwrite-completion-report-contract-2026-06-09-r2/review_summary.md: 53cf0e20006cc8f341d636e631a79213c70bc834ac24e329abae170eeb4fbaba
+  docs/notes/review-runs/postwrite-completion-report-contract-2026-06-09-r2/rounds.yaml: 98bcae377272f8b1e0c72cce0604ded32ad4712f3f8895b41ee236404a3f84cd
+  docs/notes/review-runs/postwrite-completion-report-contract-2026-06-09-r2/target-manifest.yaml: 4eb6837a17c9e5e6c779867afbb375e8ee7820310fabc2e53b2c2908258f6f45
+  docs/notes/review-runs/postwrite-completion-report-contract-2026-06-09-r2/triage.yaml: 4bed30cc04a9fc6ce134714d70294cc4f4b6f9a98512e8105f46388969bfc8cd
+  docs/notes/review-runs/postwrite-completion-report-contract-2026-06-09-r3/model-result-summary.yaml: 0cc4ce9e8f48f571bfe027f8f30f6dfa889f2d75e6250e9aeac5eb820b745fdf
+  docs/notes/review-runs/postwrite-completion-report-contract-2026-06-09-r3/parsed/gemini-3.5-flash.round-1.yaml: f77231af7ff7aaea682d2b2a478de0355d9ecc28e88690967aa45c58ad38d1d9
+  docs/notes/review-runs/postwrite-completion-report-contract-2026-06-09-r3/raw/gemini-3.5-flash.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+  docs/notes/review-runs/postwrite-completion-report-contract-2026-06-09-r3/review_summary.md: b1bf3c26a31a73940b1356b44f36499d6e9ed1cf959d93553803702e9986f710
+  docs/notes/review-runs/postwrite-completion-report-contract-2026-06-09-r3/rounds.yaml: 892a696a8767a5ccca1185e1199fab7bbe8d4d008821106dba0fd5cde1d78a70
+  docs/notes/review-runs/postwrite-completion-report-contract-2026-06-09-r3/target-manifest.yaml: 13af0beefa0810c9f41d851e554183d9b4524c41d09e9cb9e28589c64a270fb1
+  docs/notes/review-runs/postwrite-completion-report-contract-2026-06-09-r3/triage.yaml: 5e895b281f3a6854f135dee89f2ebf75cc22643d6e407c1bdc620b65df291c06
+  docs/operations/SESSION_WORKFLOW_GUIDE.md: 25098ef8a9caeb62bd5833d74e14f85abcf198e2717a5c075f9e08b26529f3c1
+required_verifiers: &id001
+- gemini-3.5-flash
+completed_verifiers: *id001
+unresolved_substantive_findings: 0
+verifications:
+- verifier: gemini-3.5-flash
+  target_files:
+  - AGENTS.md
+  - docs/notes/review-runs/postwrite-completion-report-contract-2026-06-09-r1/model-result-summary.yaml
+  - docs/notes/review-runs/postwrite-completion-report-contract-2026-06-09-r1/parsed/claude-sonnet-4-6.round-1.yaml
+  - docs/notes/review-runs/postwrite-completion-report-contract-2026-06-09-r1/parsed/gemini-3.1-pro-preview.round-1.yaml
+  - docs/notes/review-runs/postwrite-completion-report-contract-2026-06-09-r1/parsed/gpt-5.4.round-1.yaml
+  - docs/notes/review-runs/postwrite-completion-report-contract-2026-06-09-r1/raw/claude-sonnet-4-6.round-1.txt
+  - docs/notes/review-runs/postwrite-completion-report-contract-2026-06-09-r1/raw/gemini-3.1-pro-preview.round-1.txt
+  - docs/notes/review-runs/postwrite-completion-report-contract-2026-06-09-r1/raw/gpt-5.4.round-1.txt
+  - docs/notes/review-runs/postwrite-completion-report-contract-2026-06-09-r1/review_summary.md
+  - docs/notes/review-runs/postwrite-completion-report-contract-2026-06-09-r1/rounds.yaml
+  - docs/notes/review-runs/postwrite-completion-report-contract-2026-06-09-r1/target-manifest.yaml
+  - docs/notes/review-runs/postwrite-completion-report-contract-2026-06-09-r1/triage.yaml
+  - docs/notes/review-runs/postwrite-completion-report-contract-2026-06-09-r2/model-result-summary.yaml
+  - docs/notes/review-runs/postwrite-completion-report-contract-2026-06-09-r2/parsed/gemini-3.5-flash.round-1.yaml
+  - docs/notes/review-runs/postwrite-completion-report-contract-2026-06-09-r2/raw/gemini-3.5-flash.round-1.txt
+  - docs/notes/review-runs/postwrite-completion-report-contract-2026-06-09-r2/review_summary.md
+  - docs/notes/review-runs/postwrite-completion-report-contract-2026-06-09-r2/rounds.yaml
+  - docs/notes/review-runs/postwrite-completion-report-contract-2026-06-09-r2/target-manifest.yaml
+  - docs/notes/review-runs/postwrite-completion-report-contract-2026-06-09-r2/triage.yaml
+  - docs/notes/review-runs/postwrite-completion-report-contract-2026-06-09-r3/model-result-summary.yaml
+  - docs/notes/review-runs/postwrite-completion-report-contract-2026-06-09-r3/parsed/gemini-3.5-flash.round-1.yaml
+  - docs/notes/review-runs/postwrite-completion-report-contract-2026-06-09-r3/raw/gemini-3.5-flash.round-1.txt
+  - docs/notes/review-runs/postwrite-completion-report-contract-2026-06-09-r3/review_summary.md
+  - docs/notes/review-runs/postwrite-completion-report-contract-2026-06-09-r3/rounds.yaml
+  - docs/notes/review-runs/postwrite-completion-report-contract-2026-06-09-r3/target-manifest.yaml
+  - docs/notes/review-runs/postwrite-completion-report-contract-2026-06-09-r3/triage.yaml
+  - docs/operations/SESSION_WORKFLOW_GUIDE.md
+  target_sha256:
+    AGENTS.md: 38cb996c1c34d60c5140ab58537e7ccb5b5ae55ed4605483de5837527e9b757e
+    docs/notes/review-runs/postwrite-completion-report-contract-2026-06-09-r1/model-result-summary.yaml: ffd2569556ed00375f5adcd6b079b7cfb2a041ced25711b81dc72cedde199d6a
+    docs/notes/review-runs/postwrite-completion-report-contract-2026-06-09-r1/parsed/claude-sonnet-4-6.round-1.yaml: 2226f4e4d2e57bc341babd289b48706441b41e9b5a16a5e7d1753d696f6a8ff4
+    docs/notes/review-runs/postwrite-completion-report-contract-2026-06-09-r1/parsed/gemini-3.1-pro-preview.round-1.yaml: 5a3d80983b9300d68029d2e7bfe764694ac28dac2826b0c3e88c1af9224b74b8
+    docs/notes/review-runs/postwrite-completion-report-contract-2026-06-09-r1/parsed/gpt-5.4.round-1.yaml: 2c77582c1a87dfafcbb637bf95d8948c868ec1e71522ea1d6bb506964745181d
+    docs/notes/review-runs/postwrite-completion-report-contract-2026-06-09-r1/raw/claude-sonnet-4-6.round-1.txt: 217f854c6db739857bd6368d97c1a4fe83c1ba5e72953ae752d25e78756c24c0
+    docs/notes/review-runs/postwrite-completion-report-contract-2026-06-09-r1/raw/gemini-3.1-pro-preview.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/postwrite-completion-report-contract-2026-06-09-r1/raw/gpt-5.4.round-1.txt: 5d3f3bdaa12e850ab10321fd49510ebff273c6045bba1d0be177a8776edc1b7b
+    docs/notes/review-runs/postwrite-completion-report-contract-2026-06-09-r1/review_summary.md: f01d720dc1c87cb860d8a2b8e4b007288bd55a354c7f944be5eb6f22256a5de7
+    docs/notes/review-runs/postwrite-completion-report-contract-2026-06-09-r1/rounds.yaml: 131f195bb6d2ad8bdb4e3bb77f3249965728c73483156836649b8f725c3c79be
+    docs/notes/review-runs/postwrite-completion-report-contract-2026-06-09-r1/target-manifest.yaml: 63c12b45e6338dc681b0277f0b634996bca3e6a2293de07a4ce87fd6015dcc81
+    docs/notes/review-runs/postwrite-completion-report-contract-2026-06-09-r1/triage.yaml: fe0f141a710b86e3dbe3fc10faf6abe8006fd73e9366028c4c95cb0bac08f0be
+    docs/notes/review-runs/postwrite-completion-report-contract-2026-06-09-r2/model-result-summary.yaml: 39e8c48d18d7270187e524720f32d61d1f28f1f3a70c476261fbef8fd112823b
+    docs/notes/review-runs/postwrite-completion-report-contract-2026-06-09-r2/parsed/gemini-3.5-flash.round-1.yaml: 66caf47e44c06b71159dd29994f3f77724da8f89166a74a7874f741f21b40e16
+    docs/notes/review-runs/postwrite-completion-report-contract-2026-06-09-r2/raw/gemini-3.5-flash.round-1.txt: 33eb0cc3e338147ca938e627b70a29e5c144a5efe3ae417023fe892400a0c1fb
+    docs/notes/review-runs/postwrite-completion-report-contract-2026-06-09-r2/review_summary.md: 53cf0e20006cc8f341d636e631a79213c70bc834ac24e329abae170eeb4fbaba
+    docs/notes/review-runs/postwrite-completion-report-contract-2026-06-09-r2/rounds.yaml: 98bcae377272f8b1e0c72cce0604ded32ad4712f3f8895b41ee236404a3f84cd
+    docs/notes/review-runs/postwrite-completion-report-contract-2026-06-09-r2/target-manifest.yaml: 4eb6837a17c9e5e6c779867afbb375e8ee7820310fabc2e53b2c2908258f6f45
+    docs/notes/review-runs/postwrite-completion-report-contract-2026-06-09-r2/triage.yaml: 4bed30cc04a9fc6ce134714d70294cc4f4b6f9a98512e8105f46388969bfc8cd
+    docs/notes/review-runs/postwrite-completion-report-contract-2026-06-09-r3/model-result-summary.yaml: 0cc4ce9e8f48f571bfe027f8f30f6dfa889f2d75e6250e9aeac5eb820b745fdf
+    docs/notes/review-runs/postwrite-completion-report-contract-2026-06-09-r3/parsed/gemini-3.5-flash.round-1.yaml: f77231af7ff7aaea682d2b2a478de0355d9ecc28e88690967aa45c58ad38d1d9
+    docs/notes/review-runs/postwrite-completion-report-contract-2026-06-09-r3/raw/gemini-3.5-flash.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/postwrite-completion-report-contract-2026-06-09-r3/review_summary.md: b1bf3c26a31a73940b1356b44f36499d6e9ed1cf959d93553803702e9986f710
+    docs/notes/review-runs/postwrite-completion-report-contract-2026-06-09-r3/rounds.yaml: 892a696a8767a5ccca1185e1199fab7bbe8d4d008821106dba0fd5cde1d78a70
+    docs/notes/review-runs/postwrite-completion-report-contract-2026-06-09-r3/target-manifest.yaml: 13af0beefa0810c9f41d851e554183d9b4524c41d09e9cb9e28589c64a270fb1
+    docs/notes/review-runs/postwrite-completion-report-contract-2026-06-09-r3/triage.yaml: 5e895b281f3a6854f135dee89f2ebf75cc22643d6e407c1bdc620b65df291c06
+    docs/operations/SESSION_WORKFLOW_GUIDE.md: 25098ef8a9caeb62bd5833d74e14f85abcf198e2717a5c075f9e08b26529f3c1
+review_run:
+  path: docs/notes/review-runs/postwrite-completion-report-contract-2026-06-09-r3
+  summary_path: docs/notes/review-runs/postwrite-completion-report-contract-2026-06-09-r3/model-result-summary.yaml
+notes: Generated template; verify target_files cover current post-write targets before
+  use.
