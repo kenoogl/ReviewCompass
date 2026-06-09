@@ -24,6 +24,20 @@ OWNERSHIP_PATH = (
   / "notes"
   / "2026-06-09-completed-followup-contract-ownership.md"
 )
+REQUIREMENTS_PATH = (
+  ROOT
+  / ".reviewcompass"
+  / "specs"
+  / "conformance-evaluation"
+  / "requirements.md"
+)
+DESIGN_PATH = (
+  ROOT
+  / ".reviewcompass"
+  / "specs"
+  / "conformance-evaluation"
+  / "design.md"
+)
 
 EXPECTED_CANDIDATES = [
   "D-021",
@@ -89,3 +103,21 @@ def test_completed_followup_contract_ownership_assigns_spec_and_design_gaps():
   assert ".reviewcompass/specs/conformance-evaluation/design.md" in text
   assert "実アプリ pilot は開始しない" in text
   assert "docs/notes/2026-06-09-formal-completed-followup-summary.md" in text
+
+
+def test_requirements_and_design_adopt_completed_followup_prerequisite_contract():
+  requirements = REQUIREMENTS_PATH.read_text(encoding="utf-8")
+  design = DESIGN_PATH.read_text(encoding="utf-8")
+
+  for text in (requirements, design):
+    assert "completed follow-up prerequisite set" in text
+    assert "D-021 / D-004 / D-005 / D-025 / D-027 / D-008 / D-019 / D-020 / D-023" in text
+    assert "docs/notes/2026-06-09-formal-completed-followup-summary.md" in text
+    assert "実アプリ pilot" in text
+
+  assert "Requirement 11" in requirements
+  assert "formal completed follow-up outputs" in requirements
+  assert "requirements gap" in requirements
+  assert "design gap" in requirements
+  assert "### 13.8 Completed follow-up prerequisite set" in design
+  assert "Target document" in design

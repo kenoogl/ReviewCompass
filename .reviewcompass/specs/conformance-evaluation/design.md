@@ -11,9 +11,9 @@
 - **照合チェックモード（本筋）**：仕様駆動開発で構築したコードの要件充足判断。バイアス防止のため二段階方式（推定 → 比較）を採用、既存 feature-partitioning だけは推定時の入力として尊重し、他の既存上流文書は遮断
 - **文書生成モード（傍流、人協働）**：既存上流文書のないコードベースに ReviewCompass を導入するための推定支援。完全自動推定は目指さず、機能境界の決定等の本質的判断は人間が担う
 
-要件文書（requirements.md）は 10 件の Requirement で、機能の方向性／文書生成モード／照合チェックモード／6 criteria 検査構造／3 役レビュー機構の流用／評価記録の type 値と配置／依存関係の連想配列構造／実装適合レビューとの分離／実装由来契約の所有候補と仕様更新草案／既存システムへの後追い intent 追加時のコード由来差分抽出を求めている。本設計は計画書 §5.10.1〜§5.10.10（機能の性格・評価軸・5 評価軸の整理・評価記録・依存関係・v3-plan 連携・criteria 数・段階的導入・モード別の既存文書扱い・推定段階の triad-review 適用）を実装可能な形に落とし込み、`v3-plan.md` の素材（future feature 記述）から本機能の独立仕様として再設計する。
+要件文書（requirements.md）は 11 件の Requirement で、機能の方向性／文書生成モード／照合チェックモード／6 criteria 検査構造／3 役レビュー機構の流用／評価記録の type 値と配置／依存関係の連想配列構造／実装適合レビューとの分離／実装由来契約の所有候補と仕様更新草案／既存システムへの後追い intent 追加時のコード由来差分抽出／completed follow-up prerequisite set の正式化を求めている。本設計は計画書 §5.10.1〜§5.10.10（機能の性格・評価軸・5 評価軸の整理・評価記録・依存関係・v3-plan 連携・criteria 数・段階的導入・モード別の既存文書扱い・推定段階の triad-review 適用）を実装可能な形に落とし込み、`v3-plan.md` の素材（future feature 記述）から本機能の独立仕様として再設計する。
 
-本設計の所有物は **推定モデル・比較モデル・モード切替モデル・triad-review 適用モデル・評価記録モデル・依存関係モデル・契約所有候補モデル・既存システム差分抽出モデル** の 8 つのモデルである。実装適合レビュー（順方向、上流文書がある前提でフェーズ終端で実施）は `analysis` および `runtime` の連携に残し、本機能では吸収しない（§5.10.1）。
+本設計の所有物は **推定モデル・比較モデル・モード切替モデル・triad-review 適用モデル・評価記録モデル・依存関係モデル・契約所有候補モデル・既存システム差分抽出モデル・completed follow-up 前提セットモデル** の 9 つのモデルである。実装適合レビュー（順方向、上流文書がある前提でフェーズ終端で実施）は `analysis` および `runtime` の連携に残し、本機能では吸収しない（§5.10.1）。
 
 ## 目標（Goals）
 
@@ -26,6 +26,7 @@
 - **実装適合レビューとの分離**を機械検査可能な形で担保（評価記録は `conformance/` ディレクトリ、実装適合レビューは `reviews/` ディレクトリ、Req 8）
 - **contract ownership map** と **spec update proposals** により、実装由来契約を requirements.md, design.md, tasks.md の更新候補へ分類し、**draft-only spec update artifacts** として出力する（Req 9）
 - **既存システム差分抽出モデル**により、後追い intent、既存 feature-partitioning、既存 requirements／design／tasks、実装コードを突き合わせ、仕様追記候補・設計衝突候補・下流影響候補・実装変更候補を証拠付きで出力する（Req 10）
+- **completed follow-up 前提セットモデル**により、D-021 / D-004 / D-005 / D-025 / D-027 / D-008 / D-019 / D-020 / D-023 を completed follow-up prerequisite set として扱い、実アプリ pilot との境界を固定する（Req 11）
 
 ## 範囲外（Non-Goals）
 
@@ -741,6 +742,20 @@ Requirement 10 に対応する。本機能は後追い intent 差分候補を評
 
 tasks の扱いは境界を固定する。tasks.md は参照入力であり、候補の `phase: tasks` や `classification: downstream_impact_candidate` を出すことはできるが、tasks.md 本体の再作成、タスク分解の確定、正式タスク更新は本機能の責務外である。
 
+### 13.8 Completed follow-up prerequisite set
+
+Requirement 11 に対応する。completed follow-up prerequisite set は、将来計画候補から昇格し、実装・テスト・検証証跡を持つ formal completed follow-up outputs の集合である。対象候補は `D-021 / D-004 / D-005 / D-025 / D-027 / D-008 / D-019 / D-020 / D-023` とする。
+
+このセットは実アプリ pilot の前提であり、pilot 自体ではない。実アプリ pilot は、このセットが handoff summary と requirements/design の境界で参照可能になった後に、別途開始判断する外部検証作業として扱う。
+
+| Gap | Target document | Responsibility |
+| --- | --- | --- |
+| requirements gap | `.reviewcompass/specs/conformance-evaluation/requirements.md` | completed follow-up prerequisite set の外部可視契約を記録する。 |
+| design gap | `.reviewcompass/specs/conformance-evaluation/design.md` | completed follow-up prerequisite set と実アプリ pilot の設計境界を記録する。 |
+| handoff summary | `docs/notes/2026-06-09-formal-completed-followup-summary.md` | 実装済み候補一覧、conformance result、残存 gap を保持する。 |
+
+conformance result が `gap_found` の場合でも、候補ごとの実装・テスト・post-write verification・guard 証跡は formal completed follow-up outputs として扱う。ただし requirements gap と design gap は解消済みと見なさず、上表の Target document により明示的に追跡する。
+
 ## 14. 他機能との接合面（Interfaces with Other Features）
 
 ### 14.1 foundation との接合面（依存：hard）
@@ -1078,6 +1093,7 @@ requirements.md の Boundary Context との整合：
 - **A-010（既存）**：推定プロセスの整理と 2 軸 6 criteria 化 → Requirement 1〜5 ＋計画書 §5.10 改訂で対処済み、本設計で全面反映
 - **2026-06-08 の requirements 再確認への対応**：intent の「レビュー収集処理を事前設定の写像にしない」意図は、§7 照合チェックモード、§9 推定モデル、§10 比較モデル、§13.6 契約所有候補と仕様更新草案で受けられるため、設計構造の追加は不要と確認
 - **2026-06-09 の後追い intent 追加への対応**：既存システムに intent を後から追加した場合のコード由来差分抽出は、§7.10 既存システム差分抽出モード、§13.7 workflow-management 引き渡し、§14.4 接合面に反映した。これは 2026-06-09 の pre-drafting gap audit で確認された design drafting 漏れへの本線対処である
+- **2026-06-09 の completed follow-up 前提セット正式化**：D-021 / D-004 / D-005 / D-025 / D-027 / D-008 / D-019 / D-020 / D-023 は completed follow-up prerequisite set として §13.8 に反映した。handoff summary は `docs/notes/2026-06-09-formal-completed-followup-summary.md` とし、実アプリ pilot は本設計更新の完了条件に含めない
 
 ### 20.3 起草完了基準
 
@@ -1105,3 +1121,4 @@ requirements.md の Boundary Context との整合：
 
 - `XDI-CE-001`：cross-feature drift clustering と contract ownership outputs は、design.md §13.6 の契約所有候補と仕様更新草案の派生運用として追跡する。follow-up implementation decision の正本は tasks.md T-015 とし、本 design.md は設計層から追跡可能であることを示す。
 - `XDI-CE-002`：既存システムに後追いで intent を追加した場合のコード由来仕様差分抽出、既存設計との衝突確認、仕様更新草案、下流影響候補、実装変更候補の分離は、design.md §7.10 の既存システム差分抽出モード、§13.7 の workflow-management 引き渡し、§14.4 の接合面で追跡する。tasks.md 本体の推定は本機能の責務外であり、正式な tasks 反映は workflow-management の reopen 手続きに委ねる。
+- `XDI-CE-003`：completed follow-up prerequisite set、formal completed follow-up outputs、requirements gap／design gap の Target document、実アプリ pilot との境界は design.md §13.8 で追跡する。handoff summary は `docs/notes/2026-06-09-formal-completed-followup-summary.md` とする。
