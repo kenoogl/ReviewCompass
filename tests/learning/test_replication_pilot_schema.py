@@ -6,6 +6,13 @@ from jsonschema import Draft202012Validator, ValidationError
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 SCHEMA_PATH = REPO_ROOT / "learning" / "workflow" / "schemas" / "replication-pilot.schema.json"
+FIXTURE_REPORT_PATH = (
+  REPO_ROOT
+  / "learning"
+  / "workflow"
+  / "replication-pilots"
+  / "2026-06-09-fixture-replication-pilot.json"
+)
 
 REQUIRED_FIELDS = [
   "record_type",
@@ -29,6 +36,10 @@ REQUIRED_REPOSITORY_FIELDS = [
 
 def _load_schema():
   return json.loads(SCHEMA_PATH.read_text(encoding="utf-8"))
+
+
+def _load_fixture_report():
+  return json.loads(FIXTURE_REPORT_PATH.read_text(encoding="utf-8"))
 
 
 def _repository(repository_id):
@@ -167,3 +178,20 @@ def test_replication_pilot_requires_relative_source_refs():
     return
 
   raise AssertionError("source_ref は relative path のみ許容する")
+
+
+def test_fixture_replication_pilot_report_is_stable_deploy_candidate():
+  schema = _load_schema()
+  report = _load_fixture_report()
+
+  Draft202012Validator(schema).validate(report)
+
+  assert report["summary"]["pilot_status"] == "pilot_passed"
+  assert report["summary"]["completed_repository_count"] == len(report["repositories"])
+  assert report["summary"]["completed_repository_count"] >= report["summary"]["minimum_repository_count"]
+  assert report["summary"]["blocking_gap_refs"] == []
+
+  for repository in report["repositories"]:
+    assert repository["deployment_smoke"]["status"] == "passed"
+    assert repository["data_acquisition_run"]["status"] == "passed"
+    assert repository["analysis_import"]["status"] == "passed"

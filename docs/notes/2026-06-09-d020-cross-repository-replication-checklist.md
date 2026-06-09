@@ -60,6 +60,8 @@ repository item の必須 field:
 - [x] 各 repository に deployment / acquisition / import の 3 結果を要求するテストを追加した。
 - [x] absolute `source_ref` を拒否するテストを追加した。
 - [x] post-write verification を実施する。
+- [x] fixture 2 repository の pilot report を追加し、schema 適合と stable deploy candidate 条件をテストで確認した。
+- [ ] 実外部 repository 2 件の pilot report を取得する。
 
 ## 4. Deployment Gate
 
@@ -73,7 +75,7 @@ D-020 schema 固定後の deployability 判定:
 | D-008 dogfooding event ledger | schema ready | event ledger の記録形式は固定済み。 |
 | D-019 model assignment / cost | schema ready | elapsed time / retry / cost missing を含む記録形式は固定済み。 |
 | D-025 TDD cycle evidence | schema ready | review finding から failing test、green result までの記録形式は固定済み。 |
-| D-020 replication pilot | schema ready, pilot not run | 安定デプロイ判定には 2 repo pilot 実行が残る。 |
+| D-020 replication pilot | fixture pilot passed, external pilot not run | fixture 2 repo の同一 schema 比較は通過。実外部 repo pilot は未完了。 |
 
 安定デプロイ可能と判断できる時点:
 
@@ -82,18 +84,32 @@ D-020 schema 固定後の deployability 判定:
 - blocker がある場合は `summary.blocking_gap_refs` に記録し、D-022 / D-023 / D-024 / D-026 のどれへ渡すかを決める。
 - blocker がなく、既存テストと post-write verification が緑なら、stable deploy candidate として扱える。
 
+2026-06-09 fixture pilot 判定:
+
+- `learning/workflow/replication-pilots/2026-06-09-fixture-replication-pilot.json` は 2 repository を含む。
+- 両 repository で deployment smoke、data acquisition run、analysis import は `passed`。
+- `summary.blocking_gap_refs` は空で、fixture scope では stable deploy candidate として扱える。
+- 実外部 repository での再現性は未確認のため、外部配布前の follow-up として残す。
+
 ## 5. Scope Boundary
 
-今回の D-020 では、実外部 repository 2 件への pilot 実行は行わない。
+今回の追加作業では、fixture repository 2 件相当の pilot report を作成する。実外部 repository の checkout、外部環境での API review-run、外部対象 repo への配置作業は行わない。
 
 理由:
 
-- D-020 の最初の必要条件は、複数 repository の結果を同じ形式で記録できる pilot report schema を固定することである。
-- 実外部 repository の選定、checkout、実行環境差分、API review-run 実行は、schema 固定後に独立した pilot execution task として扱う方が証跡を分離しやすい。
+- D-020 の deployability 判定を前進させる最小単位は、同一 schema で 2 repo の deployment / acquisition / import 結果を比較できる fixture report を固定することである。
+- 実外部 repository の選定と環境差分は、fixture pilot が緑になった後に独立した外部 pilot execution task として扱う方が証跡を分離しやすい。
 
-## 6. Status Snapshot
+## 6. Fixture Pilot Evidence
+
+| Evidence | Result |
+| --- | --- |
+| `tests/learning/test_replication_pilot_schema.py::test_fixture_replication_pilot_report_is_stable_deploy_candidate` | fixture report が schema 適合し、2 repo とも 3 結果 passed であることを確認する。 |
+| `tests/tools/test_check_workflow_action.py::NextNavigationTests::test_next_completed_from_external_app_root_fixture` | ReviewCompass repo 外の app root で workflow navigation が completed 判定でき、本体 repo state を変更しないことを確認する。 |
+
+## 7. Status Snapshot
 
 - `next --json`: `completed`
-- current task: D-020 replication pilot schema implemented and post-write verified
-- next task: D-020 pilot execution planning or D-023 deployment independence lint
-- last status refresh: 2026-06-09, after post-write verification r2
+- current task: D-020 fixture replication pilot report implemented
+- next task: D-020 external repository pilot selection and execution evidence
+- last status refresh: 2026-06-09, after fixture pilot report tests

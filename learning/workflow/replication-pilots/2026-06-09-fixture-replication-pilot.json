@@ -1,0 +1,159 @@
+{
+  "record_type": "replication_pilot",
+  "pilot_id": "D020-2026-06-09-fixture",
+  "schema_version": 1,
+  "source_ref": "docs/notes/2026-06-09-d020-cross-repository-replication-checklist.md",
+  "repositories": [
+    {
+      "repository_id": "fixture-workflow-complete-app",
+      "repository_profile": {
+        "language": "python",
+        "size_class": "small",
+        "has_existing_tests": true,
+        "has_existing_specs": true
+      },
+      "implementation_tasks": [
+        {
+          "task_id": "fixture-workflow-complete-app-task-001",
+          "description": "Verify workflow navigation can run from an external app root without mutating ReviewCompass root state.",
+          "review_run_refs": [
+            "tests/tools/test_check_workflow_action.py"
+          ],
+          "triage_refs": [
+            "docs/notes/review-runs/postwrite-d021-readiness-checklist-2026-06-09-r7/triage.yaml"
+          ],
+          "fix_refs": [
+            "tools/check-workflow-action.py"
+          ],
+          "test_evidence_refs": [
+            "tests/tools/test_check_workflow_action.py"
+          ]
+        }
+      ],
+      "deployment_smoke": {
+        "status": "passed",
+        "command": ".venv/bin/python3 -m pytest tests/tools/test_check_workflow_action.py::NextNavigationTests::test_next_completed_from_external_app_root_fixture",
+        "evidence_refs": [
+          "tests/tools/test_check_workflow_action.py"
+        ]
+      },
+      "data_acquisition_run": {
+        "status": "passed",
+        "command": ".venv/bin/python3 -m pytest tests/learning/test_replication_pilot_schema.py",
+        "collected_data_areas": [
+          "event",
+          "finding",
+          "finding_fix_traceability",
+          "tdd_cycle",
+          "model_assignment_cost"
+        ],
+        "evidence_refs": [
+          "learning/workflow/schemas/dogfooding-event-ledger.schema.json",
+          "learning/workflow/schemas/normalized-finding.schema.json",
+          "learning/workflow/schemas/tdd-cycle.schema.json",
+          "learning/workflow/schemas/model-assignment-cost.schema.json"
+        ]
+      },
+      "analysis_import": {
+        "status": "passed",
+        "command": ".venv/bin/python3 -m pytest tests/learning/test_replication_pilot_schema.py",
+        "imported_tables": [
+          "events",
+          "findings",
+          "finding_fix_traceability",
+          "tdd_cycles",
+          "model_assignment_costs"
+        ],
+        "evidence_refs": [
+          "learning/workflow/replication-pilots/2026-06-09-fixture-replication-pilot.json"
+        ]
+      }
+    },
+    {
+      "repository_id": "fixture-schema-contract-app",
+      "repository_profile": {
+        "language": "json",
+        "size_class": "small",
+        "has_existing_tests": true,
+        "has_existing_specs": false
+      },
+      "implementation_tasks": [
+        {
+          "task_id": "fixture-schema-contract-app-task-001",
+          "description": "Verify the same D020 report schema accepts a second repository profile with the same deployment, acquisition, and import result shape.",
+          "review_run_refs": [
+            "docs/notes/review-runs/postwrite-d020-cross-repository-replication-checklist-2026-06-09-r3/rounds.yaml"
+          ],
+          "triage_refs": [
+            "docs/notes/review-runs/postwrite-d020-cross-repository-replication-checklist-2026-06-09-r3/triage.yaml"
+          ],
+          "fix_refs": [
+            "learning/workflow/schemas/replication-pilot.schema.json"
+          ],
+          "test_evidence_refs": [
+            "tests/learning/test_replication_pilot_schema.py"
+          ]
+        }
+      ],
+      "deployment_smoke": {
+        "status": "passed",
+        "command": ".venv/bin/python3 -m pytest tests/learning/test_replication_pilot_schema.py",
+        "evidence_refs": [
+          "tests/learning/test_replication_pilot_schema.py"
+        ]
+      },
+      "data_acquisition_run": {
+        "status": "passed",
+        "command": ".venv/bin/python3 -m pytest tests/learning/test_replication_pilot_schema.py",
+        "collected_data_areas": [
+          "event",
+          "finding",
+          "finding_fix_traceability",
+          "tdd_cycle",
+          "model_assignment_cost"
+        ],
+        "evidence_refs": [
+          "learning/workflow/schemas/dogfooding-event-ledger.schema.json",
+          "learning/workflow/schemas/normalized-finding.schema.json",
+          "learning/workflow/schemas/tdd-cycle.schema.json",
+          "learning/workflow/schemas/model-assignment-cost.schema.json"
+        ]
+      },
+      "analysis_import": {
+        "status": "passed",
+        "command": ".venv/bin/python3 -m pytest tests/learning/test_replication_pilot_schema.py",
+        "imported_tables": [
+          "events",
+          "findings",
+          "finding_fix_traceability",
+          "tdd_cycles",
+          "model_assignment_costs"
+        ],
+        "evidence_refs": [
+          "learning/workflow/replication-pilots/2026-06-09-fixture-replication-pilot.json"
+        ]
+      }
+    }
+  ],
+  "comparison_schema": {
+    "data_areas": [
+      "event",
+      "finding",
+      "finding_fix_traceability",
+      "tdd_cycle",
+      "model_assignment_cost"
+    ],
+    "schema_refs": [
+      "learning/workflow/schemas/dogfooding-event-ledger.schema.json",
+      "learning/workflow/schemas/normalized-finding.schema.json",
+      "learning/workflow/schemas/tdd-cycle.schema.json",
+      "learning/workflow/schemas/model-assignment-cost.schema.json"
+    ]
+  },
+  "summary": {
+    "pilot_status": "pilot_passed",
+    "minimum_repository_count": 2,
+    "completed_repository_count": 2,
+    "blocking_gap_refs": []
+  }
+}

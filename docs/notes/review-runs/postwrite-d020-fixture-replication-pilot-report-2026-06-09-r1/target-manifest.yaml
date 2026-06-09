@@ -1,0 +1,4 @@
+run_id: postwrite-d020-fixture-replication-pilot-report-2026-06-09-r1
+target_files:
+- path: docs/notes/2026-06-09-d020-cross-repository-replication-checklist.md
+  sha256: b7bbeefba0112c419cc2ebea233d5db04eaf0b801ddea0965dbcb1c29493b9aa

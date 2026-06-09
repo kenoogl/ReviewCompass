@@ -1,0 +1,48 @@
+status: completed
+target_files:
+- docs/notes/2026-06-09-d020-cross-repository-replication-checklist.md
+- docs/notes/review-runs/postwrite-d020-fixture-replication-pilot-report-2026-06-09-r1/model-result-summary.yaml
+- docs/notes/review-runs/postwrite-d020-fixture-replication-pilot-report-2026-06-09-r1/parsed/gemini-3.5-flash.round-1.yaml
+- docs/notes/review-runs/postwrite-d020-fixture-replication-pilot-report-2026-06-09-r1/raw/gemini-3.5-flash.round-1.txt
+- docs/notes/review-runs/postwrite-d020-fixture-replication-pilot-report-2026-06-09-r1/review_summary.md
+- docs/notes/review-runs/postwrite-d020-fixture-replication-pilot-report-2026-06-09-r1/rounds.yaml
+- docs/notes/review-runs/postwrite-d020-fixture-replication-pilot-report-2026-06-09-r1/target-manifest.yaml
+- docs/notes/review-runs/postwrite-d020-fixture-replication-pilot-report-2026-06-09-r1/triage.yaml
+target_sha256:
+  docs/notes/2026-06-09-d020-cross-repository-replication-checklist.md: b7bbeefba0112c419cc2ebea233d5db04eaf0b801ddea0965dbcb1c29493b9aa
+  docs/notes/review-runs/postwrite-d020-fixture-replication-pilot-report-2026-06-09-r1/model-result-summary.yaml: 898da869892345bf979fe0ac4b4cccb2725bbcd676624af90180fceb3bde724d
+  docs/notes/review-runs/postwrite-d020-fixture-replication-pilot-report-2026-06-09-r1/parsed/gemini-3.5-flash.round-1.yaml: 5831fb934ec8083fcfe33089486d53b0af394cde74a2173d675c01bd0a0515da
+  docs/notes/review-runs/postwrite-d020-fixture-replication-pilot-report-2026-06-09-r1/raw/gemini-3.5-flash.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+  docs/notes/review-runs/postwrite-d020-fixture-replication-pilot-report-2026-06-09-r1/review_summary.md: c0bf1d738595980391012200bbf8fb5a8016125053beddd4c17acacea7991ab2
+  docs/notes/review-runs/postwrite-d020-fixture-replication-pilot-report-2026-06-09-r1/rounds.yaml: e32ca445fc295b94fad4c13c85a4d9a785f069b5981df8adbe808b49892b742d
+  docs/notes/review-runs/postwrite-d020-fixture-replication-pilot-report-2026-06-09-r1/target-manifest.yaml: 44c2d6ad8c0aeeebf2e7ce69523918dcd006b80faab52986bb1e8c4ff12aad86
+  docs/notes/review-runs/postwrite-d020-fixture-replication-pilot-report-2026-06-09-r1/triage.yaml: 781b2b2582f252b37a60d6535b4f51bc1ad0156a0636361ff70729f3f7c8af01
+required_verifiers: &id001
+- gemini-3.5-flash
+completed_verifiers: *id001
+unresolved_substantive_findings: 0
+verifications:
+- verifier: gemini-3.5-flash
+  target_files:
+  - docs/notes/2026-06-09-d020-cross-repository-replication-checklist.md
+  - docs/notes/review-runs/postwrite-d020-fixture-replication-pilot-report-2026-06-09-r1/model-result-summary.yaml
+  - docs/notes/review-runs/postwrite-d020-fixture-replication-pilot-report-2026-06-09-r1/parsed/gemini-3.5-flash.round-1.yaml
+  - docs/notes/review-runs/postwrite-d020-fixture-replication-pilot-report-2026-06-09-r1/raw/gemini-3.5-flash.round-1.txt
+  - docs/notes/review-runs/postwrite-d020-fixture-replication-pilot-report-2026-06-09-r1/review_summary.md
+  - docs/notes/review-runs/postwrite-d020-fixture-replication-pilot-report-2026-06-09-r1/rounds.yaml
+  - docs/notes/review-runs/postwrite-d020-fixture-replication-pilot-report-2026-06-09-r1/target-manifest.yaml
+  - docs/notes/review-runs/postwrite-d020-fixture-replication-pilot-report-2026-06-09-r1/triage.yaml
+  target_sha256:
+    docs/notes/2026-06-09-d020-cross-repository-replication-checklist.md: b7bbeefba0112c419cc2ebea233d5db04eaf0b801ddea0965dbcb1c29493b9aa
+    docs/notes/review-runs/postwrite-d020-fixture-replication-pilot-report-2026-06-09-r1/model-result-summary.yaml: 898da869892345bf979fe0ac4b4cccb2725bbcd676624af90180fceb3bde724d
+    docs/notes/review-runs/postwrite-d020-fixture-replication-pilot-report-2026-06-09-r1/parsed/gemini-3.5-flash.round-1.yaml: 5831fb934ec8083fcfe33089486d53b0af394cde74a2173d675c01bd0a0515da
+    docs/notes/review-runs/postwrite-d020-fixture-replication-pilot-report-2026-06-09-r1/raw/gemini-3.5-flash.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/postwrite-d020-fixture-replication-pilot-report-2026-06-09-r1/review_summary.md: c0bf1d738595980391012200bbf8fb5a8016125053beddd4c17acacea7991ab2
+    docs/notes/review-runs/postwrite-d020-fixture-replication-pilot-report-2026-06-09-r1/rounds.yaml: e32ca445fc295b94fad4c13c85a4d9a785f069b5981df8adbe808b49892b742d
+    docs/notes/review-runs/postwrite-d020-fixture-replication-pilot-report-2026-06-09-r1/target-manifest.yaml: 44c2d6ad8c0aeeebf2e7ce69523918dcd006b80faab52986bb1e8c4ff12aad86
+    docs/notes/review-runs/postwrite-d020-fixture-replication-pilot-report-2026-06-09-r1/triage.yaml: 781b2b2582f252b37a60d6535b4f51bc1ad0156a0636361ff70729f3f7c8af01
+review_run:
+  path: docs/notes/review-runs/postwrite-d020-fixture-replication-pilot-report-2026-06-09-r1
+  summary_path: docs/notes/review-runs/postwrite-d020-fixture-replication-pilot-report-2026-06-09-r1/model-result-summary.yaml
+notes: Generated template; verify target_files cover current post-write targets before
+  use.
