@@ -26,6 +26,7 @@ It also checks the existing traceability entry in `intent/TRACEABILITY.md` §4.6
 | Avoids requirement-level detail | pass | The text describes intent and failure mode, not concrete CLI/API behavior. |
 | Traceability exists | pass | `intent/TRACEABILITY.md` §4.6 maps this intent to review protocol and runtime responsibilities. |
 | Feature partitioning impact recorded | pass | `stages/feature-partitioning/2026-05-24-proposal.md` §7 records that no new feature is needed. |
+| Feature impact basis corrected | pass | `.reviewcompass/specs/_cross_feature/reviews/2026-06-09-intent-feature-reopen-decision.md` records implementation ownership as the primary basis, and classifies `conformance-evaluation` as direct impact. |
 | Downstream specification propagation recorded | pass | Each feature requirements/design/tasks/implementation-drafting file records the 2026-06-08 recheck. |
 | Reopen handling corrected | pass | `docs/reviews/reopen-classification-2026-06-08-intent-review-collection-mapping.md` classifies the completed-workflow intent update as `I-4`. |
 

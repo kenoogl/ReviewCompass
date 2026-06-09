@@ -1758,14 +1758,14 @@ def cmd_spec_set(args):
     reasons.extend(predicate_reasons)
     verdict, exit_code = "DEVIATION", 2
   in_progress_files = list_in_progress_files(cwd)
-  allow_reopen_rollback = is_reopen_pending_gate_rollback_allowed(
+  allow_reopen_gate_change = is_reopen_pending_gate_change_allowed(
     cwd,
     in_progress_files,
     phase,
     stage,
     new_value,
   )
-  if in_progress_files and not allow_reopen_rollback:
+  if in_progress_files and not allow_reopen_gate_change:
     reasons.insert(
       0,
       "stages/in-progress に進行中ファイルがあります: "
@@ -2717,16 +2717,14 @@ def is_reopen_stop_point_commit_allowed(cwd, in_progress_files, staged_files):
   return True
 
 
-def is_reopen_pending_gate_rollback_allowed(
+def is_reopen_pending_gate_change_allowed(
   cwd,
   in_progress_files,
   phase,
   stage,
   new_value,
 ):
-  """reopen 第1過程の pending gate 差し戻しだけは spec-set 中でも許可する"""
-  if new_value:
-    return False
+  """reopen 手続き内の pending gate 変更だけは spec-set 中でも許可する"""
   if len(in_progress_files) != 1:
     return False
   data = load_in_progress_file(cwd, in_progress_files[0])
@@ -2734,13 +2732,18 @@ def is_reopen_pending_gate_rollback_allowed(
     return False
   if data.get("current_blocker") is not None:
     return False
-  if data.get("step_number") not in (1, "1"):
-    return False
   pending_gates = data.get("pending_gates")
   if not isinstance(pending_gates, list):
     return False
   gate = f"stages/{phase}.yaml#{stage}"
-  return gate in pending_gates
+  if gate not in pending_gates:
+    return False
+  step_number = data.get("step_number")
+  if step_number in (1, "1"):
+    return new_value is False
+  if step_number in (3, "3"):
+    return new_value is True
+  return False
 
 
 def load_in_progress_file(cwd, relative_path):

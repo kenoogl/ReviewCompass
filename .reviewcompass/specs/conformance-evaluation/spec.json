@@ -6,7 +6,7 @@
   "workflow_state": {
     "intent": {
       "drafting": true,
-      "review": false,
+      "review": true,
       "approval": false,
       "reference": "stages/intent.yaml"
     },

@@ -934,6 +934,29 @@ class SpecSetExitCodeTests(unittest.TestCase):
     self.assertEqual(result.returncode, 1, result.stdout)
     self.assertIn("reopen", result.stdout)
 
+  def test_spec_set_allows_reopen_pending_gate_completion(self):
+    """reopen 第3過程の pending gate 完了は in-progress 中でも許可する"""
+    cwd = self._copy_fixture("case-a-ready-for-approval")
+    in_progress_dir = cwd / "stages" / "in-progress"
+    in_progress_dir.mkdir(parents=True)
+    (in_progress_dir / "reopen-procedure-2026-06-09.yaml").write_text(
+      "process_id: reopen-procedure\n"
+      "step_number: 3\n"
+      "next_step: 第3過程：連鎖再実施\n"
+      "pending_gates:\n"
+      "  - stages/requirements.yaml#approval\n"
+      "current_blocker: null\n",
+      encoding="utf-8",
+    )
+
+    result = run_script(
+      ["spec-set", "foundation", "requirements", "approval", "true"],
+      cwd=cwd,
+    )
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 0, result.stdout)
+
   def test_spec_set_blocks_unimplemented_completion_predicate(self):
     """file_exists completion_predicate の対象ファイルがなければ true にしない"""
     cwd = self._copy_fixture("case-a-ready-for-approval")
