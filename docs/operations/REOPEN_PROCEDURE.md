@@ -47,7 +47,8 @@
 ### 第3過程：連鎖再実施（依存順、各 approval で停止）
 
 9. 依存順に上流 → 下流の各フェーズで：
-   - alignment（整合チェック）を実施し、波及（同フェーズの他機能への影響）の有無を確認
+   - 正本本文（`.reviewcompass/specs/<feature>/<phase>.md`）を実質修正した phase は、triad-review → review-wave → alignment → approval の順に再実施する。これは requirements／design／tasks／implementation のいずれでも同じ
+   - 正本本文を修正していない phase は、trigger_map の pending gate に従って alignment（整合チェック）から再確認してよい
    - 上流変更に対する下流影響判定を `downstream_impact_decisions` に記録する。これは intent に限らず、feature-partitioning／requirements／design／tasks／implementation のいずれを変更した場合も共通で必須とする
    - 「既存で受けられる」「修正不要」と判断する場合も、判定対象 gate、feature 範囲、判断、理由、証跡を記録する。修正不要は reopen を省略する理由ではなく、reopen 後の影響判定結果としてのみ扱う
    - 波及あり → triad-review に戻して対処（機能内対処または機能横断段へ）
@@ -63,11 +64,11 @@
 
 → **停止点：コミット**
 
-第4過程の完了 commit では、`stages/completed/reopen-procedure-*.yaml` に `feature_impact_decisions`、`new_feature_decision`、`impacted_downstream_phases` と、`pending_gates` の各 gate を覆う `downstream_impact_decisions` が必要である。`feature_impact_decisions` は、既存 feature ごとに `feature`、`decision`、`impact_basis`、`rationale`、`evidence` を持つ。`decision` は `reopen_existing_feature`、`no_reopen_existing_feature`、`indirect_check_only`、`new_feature_required` のいずれかとする。`impact_basis` は `implementation_ownership`、`contract_ownership`、`consumer_or_derivative_only`、`no_implementation_impact`、`new_feature_boundary` のいずれかとする。`new_feature_decision.decision` は `no_new_feature` または `new_feature_required` とする。`downstream_impact_decisions` の各判定は最低限、`gate`、`feature_scope`、`decision`、`rationale`、`evidence` を持つ。`decision` は `affected_update_required`、`existing_sufficient`、`no_impact`、`approved`、`proxy_approved` のいずれかとする。`impacted_downstream_phases` に列挙した各フェーズには、対応する `downstream_impact_decisions[].gate` を少なくとも 1 件記録する。
+第4過程の完了 commit では、`stages/completed/reopen-procedure-*.yaml` に `feature_impact_decisions`、`new_feature_decision`、`impacted_downstream_phases` と、`pending_gates` の各 gate を覆う `downstream_impact_decisions` が必要である。`feature_impact_decisions` は、既存 feature ごとに `feature`、`decision`、`impact_basis`、`rationale`、`evidence` を持つ。`decision` は `reopen_existing_feature`、`no_reopen_existing_feature`、`indirect_check_only`、`new_feature_required` のいずれかとする。`impact_basis` は `implementation_ownership`、`contract_ownership`、`consumer_or_derivative_only`、`no_implementation_impact`、`new_feature_boundary` のいずれかとする。`new_feature_decision.decision` は `no_new_feature` または `new_feature_required` とする。`downstream_impact_decisions` の各判定は最低限、`gate`、`feature_scope`、`decision`、`rationale`、`evidence` を持つ。`decision` は `affected_update_required`、`existing_sufficient`、`no_impact`、`approved`、`proxy_approved` のいずれかとする。`impacted_downstream_phases` に列挙した各フェーズには、対応する `downstream_impact_decisions[].gate` を少なくとも 1 件記録する。完了 commit に正本本文の変更が含まれる phase は、`pending_gates` に triad-review／review-wave／alignment／approval をすべて含める。
 
 ## 3. 手戻り種別と trigger_map
 
-計画書 §5.6 を参照。種別記号 N（intent）／R（requirements）／D（design）／A（tasks）／I（implementation）× 深さ（どこまで上流に戻るか）。trigger_map（全 15 種、計画書 §5.6）が種別から再実施対象段を返す。再実施対象は各フェーズの alignment と approval（drafting／triad-review／review-wave は原則そのまま）。
+計画書 §5.6 を参照。種別記号 N（intent）／R（requirements）／D（design）／A（tasks）／I（implementation）× 深さ（どこまで上流に戻るか）。trigger_map（全 15 種、計画書 §5.6）が種別から再実施対象段を返す。trigger_map の alignment／approval-only は、該当 phase の正本本文を修正しない再確認に限る。正本本文を修正した phase は、その phase の triad-review／review-wave／alignment／approval を再実施対象に加える。
 
 ## 4. 状態遷移の早見表（現在版、暫定）
 

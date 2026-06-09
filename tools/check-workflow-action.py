@@ -2034,6 +2034,17 @@ def _reopen_procedure_files(staged_files):
   ]
 
 
+def _maintenance_completed_files(staged_files):
+  """staged された maintenance 完了ファイルを返す"""
+  return [
+    path for path in staged_files
+    if (
+      path.startswith("stages/completed/maintenance-")
+      and path.endswith((".yaml", ".yml"))
+    )
+  ]
+
+
 def _staged_spec_files(staged_files):
   """staged された feature spec.json を返す"""
   return [
@@ -2042,6 +2053,51 @@ def _staged_spec_files(staged_files):
       path.startswith(".reviewcompass/specs/")
       and path.endswith("/spec.json")
     )
+  ]
+
+
+def _staged_canonical_spec_phases(staged_files):
+  """staged された feature 正本文書の phase 集合を返す"""
+  phases = set()
+  for path in staged_files:
+    parts = path.split("/")
+    if len(parts) != 4:
+      continue
+    if parts[0] != ".reviewcompass" or parts[1] != "specs":
+      continue
+    filename = parts[3]
+    if not filename.endswith(".md"):
+      continue
+    phase = filename[:-3]
+    if phase in ("requirements", "design", "tasks", "implementation"):
+      phases.add(phase)
+  return phases
+
+
+def _stage_gate(phase, stage):
+  """phase/stage から gate 参照を作る"""
+  return f"stages/{phase}.yaml#{stage}"
+
+
+def _parse_stage_gate(gate):
+  """gate 参照から phase/stage を取り出す"""
+  if not isinstance(gate, str):
+    return None, None
+  if not gate.startswith("stages/") or ".yaml#" not in gate:
+    return None, None
+  path, stage = gate.split("#", 1)
+  phase = path[len("stages/"):-len(".yaml")]
+  if phase not in PHASE_STAGES or stage not in PHASE_STAGES[phase]:
+    return None, None
+  return phase, stage
+
+
+def _full_reopen_gates_for_changed_phase(phase):
+  """正本変更済み phase が完了までに必要とする reopen gate を返す"""
+  return [
+    _stage_gate(phase, stage)
+    for stage in ("triad-review", "review-wave", "alignment", "approval")
+    if stage in PHASE_STAGES.get(phase, [])
   ]
 
 
@@ -2264,6 +2320,20 @@ def validate_reopen_completion_impact_decisions(cwd, staged_files):
       errors.append(f"{filepath}.pending_gates は文字列 list が必要です")
       continue
 
+    changed_phases = _staged_canonical_spec_phases(staged_files)
+    required_gates = []
+    for phase in sorted(changed_phases, key=PHASE_ORDER.index):
+      required_gates.extend(_full_reopen_gates_for_changed_phase(phase))
+    missing_required_gates = [
+      gate for gate in required_gates
+      if gate not in pending_gates
+    ]
+    if missing_required_gates:
+      errors.append(
+        f"{filepath}.pending_gates は正本変更済み phase の review gate を含む必要があります: "
+        + ", ".join(missing_required_gates)
+      )
+
     impacted_phases = data.get("impacted_downstream_phases")
     if (
       not isinstance(impacted_phases, list)
@@ -2417,6 +2487,7 @@ def cmd_commit(args):
   if (
     in_progress_files
     and not is_reopen_stop_point_commit_allowed(cwd, in_progress_files, staged_files)
+    and not is_completed_maintenance_commit_allowed(cwd, in_progress_files, staged_files)
   ):
     deviation_reasons.append(
       "stages/in-progress に進行中ファイルがあります: "
@@ -2717,6 +2788,44 @@ def is_reopen_stop_point_commit_allowed(cwd, in_progress_files, staged_files):
   return True
 
 
+def is_completed_maintenance_commit_allowed(cwd, in_progress_files, staged_files):
+  """maintenance 完了 commit だけは本線 in-progress 同伴を許可する"""
+  if not in_progress_files:
+    return False
+  staged_set = set(staged_files)
+  if not set(in_progress_files).issubset(staged_set):
+    return False
+
+  completed_files = _maintenance_completed_files(staged_files)
+  if not completed_files:
+    return False
+
+  covered_in_progress = set()
+  for filepath in completed_files:
+    text = _staged_text(cwd, filepath)
+    if text is None:
+      return False
+    try:
+      data = yaml.safe_load(text)
+    except yaml.YAMLError:
+      return False
+    if not isinstance(data, dict):
+      return False
+    if data.get("process_id") != "maintenance":
+      return False
+    mainline_blocked_by = data.get("mainline_blocked_by")
+    if isinstance(mainline_blocked_by, str):
+      covered_in_progress.add(mainline_blocked_by)
+
+  for relative_path in in_progress_files:
+    if relative_path not in covered_in_progress:
+      return False
+    data = load_in_progress_file(cwd, relative_path)
+    if data.get("process_id") != "reopen-procedure":
+      return False
+  return True
+
+
 def is_reopen_pending_gate_change_allowed(
   cwd,
   in_progress_files,
@@ -2815,6 +2924,19 @@ def build_in_progress_next_action(cwd, relative_path):
     pending_gates = data.get("pending_gates", [])
     if pending_gates is None:
       pending_gates = []
+    next_pending_gate = None
+    pending_phase = None
+    pending_stage = None
+    if not current_blocker and pending_gates:
+      next_pending_gate = pending_gates[0]
+      pending_phase, pending_stage = _parse_stage_gate(next_pending_gate)
+    required_action = resolve_reopen_required_action(
+      next_step,
+      current_blocker,
+      data.get("step_number"),
+    )
+    if next_pending_gate:
+      required_action = "run_reopen_pending_gate"
     return {
       "kind": "reopen_in_progress",
       "file": relative_path,
@@ -2823,15 +2945,12 @@ def build_in_progress_next_action(cwd, relative_path):
       "step_number": data.get("step_number"),
       "completed_steps": data.get("completed_steps", []),
       "pending_gates": pending_gates,
+      "next_pending_gate": next_pending_gate,
       "current_blocker": current_blocker,
-      "required_action": resolve_reopen_required_action(
-        next_step,
-        current_blocker,
-        data.get("step_number"),
-      ),
+      "required_action": required_action,
       "feature": data.get("feature"),
-      "phase": None,
-      "stage": None,
+      "phase": pending_phase,
+      "stage": pending_stage,
       "reason": "reopen 手続きの進行中状態ファイルがあります",
     }
   return {

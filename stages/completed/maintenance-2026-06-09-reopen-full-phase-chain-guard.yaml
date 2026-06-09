@@ -1,0 +1,20 @@
+process_id: maintenance
+title: reopen full phase chain guard
+started_at: 2026-06-09T00:00:00+09:00
+completed_at: 2026-06-09T00:00:00+09:00
+blocked_normal_workflow: true
+mainline_blocked_by: stages/in-progress/reopen-procedure-2026-06-09-existing-system-sdd-code-drift.yaml
+reason: reopen の pending gate と完了判定に LLM 判断依存の穴が残っていたため、本線へ戻る前に機械化した。
+completed_actions:
+  - reopen 第3過程の次タスクを pending_gates 先頭から next_pending_gate / phase / stage として返すようにした
+  - 正本本文変更済み phase の reopen 完了では triad-review / review-wave / alignment / approval の不足を遮断するようにした
+  - REOPEN_PROCEDURE に alignment/approval-only の適用条件を明記した
+verification:
+  - command: .venv/bin/python3 -m pytest tests/tools/test_check_workflow_action.py
+    result: 134 passed
+allowed_files:
+  - tools/check-workflow-action.py
+  - tests/tools/test_check_workflow_action.py
+  - docs/operations/REOPEN_PROCEDURE.md
+  - stages/in-progress/maintenance-2026-06-09-reopen-full-phase-chain-guard.yaml
+  - stages/completed/maintenance-2026-06-09-reopen-full-phase-chain-guard.yaml

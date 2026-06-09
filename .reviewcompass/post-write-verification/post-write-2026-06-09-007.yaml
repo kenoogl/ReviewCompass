@@ -1,0 +1,18 @@
+status: completed
+target_files: &target_files
+  - docs/operations/REOPEN_PROCEDURE.md
+target_sha256: &target_sha256
+  docs/operations/REOPEN_PROCEDURE.md: 7fee20733778ddc24fae2fba3e819affd659dec9862ea63f51788438ab5546fc
+required_verifiers:
+  - local-codex
+completed_verifiers:
+  - local-codex
+unresolved_substantive_findings: 0
+verifications:
+  - verifier: local-codex
+    provider: local
+    model: codex
+    target_files: *target_files
+    target_sha256: *target_sha256
+    result_summary: reopen 手続きで正本本文を修正した phase は triad-review / review-wave / alignment / approval を再実施し、alignment/approval-only は正本本文を修正しない再確認に限るという追記を確認。今回のツール実装およびテストの機械化方針と整合しており、未解決の本質的指摘はない。
+note: reopen full phase chain guard post-write verification.

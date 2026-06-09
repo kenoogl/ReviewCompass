@@ -17,8 +17,8 @@
     },
     "requirements": {
       "drafting": true,
-      "triad-review": true,
-      "review-wave": true,
+      "triad-review": false,
+      "review-wave": false,
       "alignment": false,
       "approval": false
     },

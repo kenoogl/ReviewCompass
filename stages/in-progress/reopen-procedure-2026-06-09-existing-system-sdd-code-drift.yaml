@@ -10,14 +10,23 @@ completed_steps:
   - 第1過程：判定とフラグ差し戻し
   - 第1過程停止点：利用者承認
   - 第2過程：requirements 正本修正
-step_number: 2
+  - 第2過程停止点：コミット完了
+step_number: 3
 pending_gates:
+  - stages/requirements.yaml#triad-review
+  - stages/requirements.yaml#review-wave
   - stages/requirements.yaml#alignment
   - stages/requirements.yaml#approval
+  - stages/design.yaml#triad-review
+  - stages/design.yaml#review-wave
   - stages/design.yaml#alignment
   - stages/design.yaml#approval
+  - stages/tasks.yaml#triad-review
+  - stages/tasks.yaml#review-wave
   - stages/tasks.yaml#alignment
   - stages/tasks.yaml#approval
+  - stages/implementation.yaml#triad-review
+  - stages/implementation.yaml#review-wave
   - stages/implementation.yaml#alignment
   - stages/implementation.yaml#approval
 approval_source: 2026-06-09 利用者発言「次へ」
@@ -25,7 +34,8 @@ requirements_drafting_result: conformance-evaluation Requirement 10 と workflow
 requirements_drafting_evidence:
   - .reviewcompass/specs/conformance-evaluation/requirements.md
   - .reviewcompass/specs/workflow-management/requirements.md
-next_step: 第2過程：停止点コミット
+requirements_chain_correction: requirements 正本を実質修正したため、alignment へ直行せず、requirements triad-review と review-wave を再実施してから alignment / approval に進む。
+next_step: 第3過程：stages/requirements.yaml#triad-review 再実施
 impacted_downstream_phases:
   - requirements
   - design
@@ -85,4 +95,4 @@ new_feature_decision:
     - stages/feature-partitioning/2026-05-24-proposal.md
     - docs/reviews/reopen-classification-2026-06-09-existing-system-sdd-code-drift.md
 downstream_impact_decisions: []
-current_blocker: 第2過程停止点。requirements 正本修正内容の確認とコミット待ち。
+current_blocker: null

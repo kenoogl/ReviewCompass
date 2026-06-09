@@ -2435,7 +2435,10 @@ class NextNavigationTests(unittest.TestCase):
     self.assertEqual(data["next_action"]["kind"], "reopen_in_progress")
     self.assertEqual(data["next_action"]["process_id"], "reopen-procedure")
     self.assertEqual(data["next_action"]["next_step"], "第3過程：連鎖再実施")
-    self.assertEqual(data["next_action"]["required_action"], "rerun_alignment_approval_chain")
+    self.assertEqual(data["next_action"]["required_action"], "run_reopen_pending_gate")
+    self.assertEqual(data["next_action"]["next_pending_gate"], "stages/requirements.yaml#alignment")
+    self.assertEqual(data["next_action"]["phase"], "requirements")
+    self.assertEqual(data["next_action"]["stage"], "alignment")
     self.assertEqual(
       data["next_action"]["pending_gates"],
       ["stages/requirements.yaml#alignment", "stages/requirements.yaml#approval"],
@@ -2464,7 +2467,46 @@ class NextNavigationTests(unittest.TestCase):
     data = json.loads(result.stdout)
     self.assertEqual(data["next_action"]["kind"], "reopen_in_progress")
     self.assertEqual(data["next_action"]["step_number"], 3)
-    self.assertEqual(data["next_action"]["required_action"], "rerun_alignment_approval_chain")
+    self.assertEqual(data["next_action"]["required_action"], "run_reopen_pending_gate")
+    self.assertEqual(data["next_action"]["next_pending_gate"], "stages/requirements.yaml#alignment")
+    self.assertEqual(data["next_action"]["phase"], "requirements")
+    self.assertEqual(data["next_action"]["stage"], "alignment")
+
+  def test_next_reopen_reports_first_pending_gate_as_unique_task(self):
+    """reopen 第3過程は pending_gates 先頭を次タスクとして機械的に返す"""
+    cwd = Path(self.tmpdir)
+    _write_specs_for_next(cwd, {})
+    in_progress_dir = cwd / "stages" / "in-progress"
+    in_progress_dir.mkdir(parents=True)
+    (in_progress_dir / "reopen-procedure-2026-06-02.yaml").write_text(
+      "process_id: reopen-procedure\n"
+      "next_step: 第3過程：連鎖再実施\n"
+      "step_number: 3\n"
+      "pending_gates:\n"
+      "  - stages/requirements.yaml#triad-review\n"
+      "  - stages/requirements.yaml#review-wave\n"
+      "  - stages/requirements.yaml#alignment\n"
+      "  - stages/requirements.yaml#approval\n"
+      "current_blocker: null\n",
+      encoding="utf-8",
+    )
+
+    result = run_script(["next", "--json"], cwd=cwd)
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 0, result.stderr)
+    data = json.loads(result.stdout)
+    self.assertEqual(data["next_action"]["kind"], "reopen_in_progress")
+    self.assertEqual(
+      data["next_action"]["next_pending_gate"],
+      "stages/requirements.yaml#triad-review",
+    )
+    self.assertEqual(data["next_action"]["phase"], "requirements")
+    self.assertEqual(data["next_action"]["stage"], "triad-review")
+    self.assertEqual(
+      data["next_action"]["required_action"],
+      "run_reopen_pending_gate",
+    )
 
   def test_next_reopen_human_blocker_requires_wait(self):
     """reopen の current_blocker があれば人間承認待ちを返す"""
@@ -3683,6 +3725,66 @@ class CommitExitCodeTests(unittest.TestCase):
     self.assertEqual(result.returncode, 2, result.stdout)
     self.assertIn("stages/in-progress", result.stdout)
 
+  def test_commit_allows_completed_maintenance_with_mainline_reopen_in_progress(self):
+    """本線 reopen 中でも対応する maintenance 完了 commit は許可する"""
+    _set_pending_findings(self.pending_file, unresolved_count=0)
+    reopen_path = (
+      Path(self.tmpdir)
+      / "stages"
+      / "in-progress"
+      / "reopen-procedure-2026-06-09.yaml"
+    )
+    reopen_path.parent.mkdir(parents=True)
+    reopen_path.write_text(
+      "process_id: reopen-procedure\n"
+      "step_number: 3\n"
+      "next_step: 第3過程：stages/requirements.yaml#triad-review 再実施\n"
+      "pending_gates:\n"
+      "  - stages/requirements.yaml#triad-review\n",
+      encoding="utf-8",
+    )
+    maintenance_path = (
+      Path(self.tmpdir)
+      / "stages"
+      / "completed"
+      / "maintenance-2026-06-09-reopen-guard.yaml"
+    )
+    maintenance_path.parent.mkdir(parents=True)
+    maintenance_path.write_text(
+      "process_id: maintenance\n"
+      "title: reopen guard\n"
+      "mainline_blocked_by: stages/in-progress/reopen-procedure-2026-06-09.yaml\n"
+      "completed_actions:\n"
+      "  - guarded side track completed\n",
+      encoding="utf-8",
+    )
+    subprocess.run(
+      [
+        "git",
+        "add",
+        "stages/in-progress/reopen-procedure-2026-06-09.yaml",
+        "stages/completed/maintenance-2026-06-09-reopen-guard.yaml",
+      ],
+      cwd=str(self.tmpdir),
+      check=True,
+      capture_output=True,
+    )
+    _write_commit_approval(
+      self.tmpdir,
+      [
+        "stages/in-progress/reopen-procedure-2026-06-09.yaml",
+        "stages/completed/maintenance-2026-06-09-reopen-guard.yaml",
+      ],
+    )
+
+    result = run_script(
+      ["commit", "--rationale", "maintenance side track 完了 commit"],
+      cwd=self.tmpdir,
+    )
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 0, result.stdout)
+
   def test_commit_allows_reopen_stop_point_when_in_progress_file_is_staged(self):
     """reopen 手続きの停止点 commit は in-progress ファイルを含めれば通過する"""
     _set_pending_findings(self.pending_file, unresolved_count=0)
@@ -3830,6 +3932,90 @@ class CommitExitCodeTests(unittest.TestCase):
 
     _assert_script_invoked(self, result)
     self.assertEqual(result.returncode, 0, result.stdout)
+
+  def test_commit_blocks_completed_reopen_missing_review_gates_after_canonical_change(self):
+    """正本変更済み phase の reopen 完了は review 系 gate 不足を遮断する"""
+    _set_pending_findings(self.pending_file, unresolved_count=0)
+    _stage_file(
+      self.tmpdir,
+      ".reviewcompass/specs/foundation/requirements.md",
+      "# Requirements\n\nUpdated requirements body.\n",
+    )
+    feature_impact_decisions = "".join(
+      f"  - feature: {feature}\n"
+      "    decision: reopen_existing_feature\n"
+      "    impact_basis: implementation_ownership\n"
+      "    rationale: 既存 feature で受けるため reopen 対象にする。\n"
+      "    evidence:\n"
+      f"      - .reviewcompass/specs/{feature}/requirements.md\n"
+      for feature in FEATURE_ORDER
+    )
+    completed_path = (
+      Path(self.tmpdir)
+      / "stages"
+      / "completed"
+      / "reopen-procedure-2026-06-09.yaml"
+    )
+    completed_path.parent.mkdir(parents=True)
+    completed_path.write_text(
+      "process_id: reopen-procedure\n"
+      "step_number: 4\n"
+      "pending_gates:\n"
+      "  - stages/requirements.yaml#alignment\n"
+      "  - stages/requirements.yaml#approval\n"
+      "impacted_downstream_phases:\n"
+      "  - requirements\n"
+      "feature_impact_decisions:\n"
+      f"{feature_impact_decisions}"
+      "new_feature_decision:\n"
+      "  decision: no_new_feature\n"
+      "  rationale: 既存 feature で受けられる。\n"
+      "  evidence:\n"
+      "    - stages/feature-partitioning/2026-05-24-proposal.md\n"
+      "downstream_impact_decisions:\n"
+      "  - gate: stages/requirements.yaml#alignment\n"
+      "    feature_scope: all_features\n"
+      "    decision: existing_sufficient\n"
+      "    rationale: 既存要件で受けられることを確認した。\n"
+      "    evidence:\n"
+      "      - .reviewcompass/specs/foundation/requirements.md\n"
+      "  - gate: stages/requirements.yaml#approval\n"
+      "    feature_scope: all_features\n"
+      "    decision: approved\n"
+      "    rationale: alignment 判定を承認した。\n"
+      "    evidence:\n"
+      "      - .reviewcompass/specs/foundation/requirements.md\n"
+      "next_step: 完了\n",
+      encoding="utf-8",
+    )
+    subprocess.run(
+      [
+        "git",
+        "add",
+        ".reviewcompass/specs/foundation/requirements.md",
+        "stages/completed/reopen-procedure-2026-06-09.yaml",
+      ],
+      cwd=str(self.tmpdir),
+      check=True,
+      capture_output=True,
+    )
+    _write_commit_approval(
+      self.tmpdir,
+      [
+        ".reviewcompass/specs/foundation/requirements.md",
+        "stages/completed/reopen-procedure-2026-06-09.yaml",
+      ],
+    )
+
+    result = run_script(
+      ["commit", "--rationale", "reopen 完了の review gate 不足テスト"],
+      cwd=self.tmpdir,
+    )
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 2, result.stdout)
+    self.assertIn("stages/requirements.yaml#triad-review", result.stdout)
+    self.assertIn("stages/requirements.yaml#review-wave", result.stdout)
 
   def test_commit_blocks_completed_reopen_without_feature_impact_basis(self):
     """feature impact 判定は任意フェーズで判定軸を明示しなければ遮断する"""
