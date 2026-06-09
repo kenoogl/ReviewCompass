@@ -28,6 +28,9 @@ by_kind:
   resume_in_progress:
     - docs/operations/WORKFLOW_NAVIGATION.md#resume_in_progress
 by_stage:
+  drafting:
+    - docs/operations/REOPEN_PROCEDURE.md
+    - docs/disciplines/discipline_workflow_state_truth_source.md
   triad-review:
     - docs/operations/SESSION_WORKFLOW_GUIDE.md#3.3-a-2
     - docs/disciplines/discipline_approval_operation.md
@@ -39,6 +42,28 @@ by_stage:
     - docs/operations/WORKFLOW_PRECHECK.md#spec-set
 required_inputs:
   by_stage:
+    drafting:
+      - id: target_feature_documents
+        role: stage_entry_context
+        source_type: feature_document_set
+        purpose: Read the current feature state and phase documents before updating the phase artifact.
+        resolver:
+          kind: next_action_template
+          paths:
+            - .reviewcompass/specs/{feature}/spec.json
+            - .reviewcompass/specs/{feature}/requirements.md
+            - .reviewcompass/specs/{feature}/design.md
+            - .reviewcompass/specs/{feature}/tasks.md
+        read_policy: current_feature_documents
+      - id: reopen_procedure_state
+        role: workflow_state_context
+        source_type: reopen_in_progress_file
+        purpose: Read the reopen state and downstream impact decisions before drafting.
+        resolver:
+          kind: next_action_template
+          paths:
+            - "{file}"
+        read_policy: reopen_state
     triad-review:
       - id: target_feature_documents
         role: stage_entry_context

@@ -252,6 +252,10 @@ DEFAULT_DISCIPLINE_MAP = {
     ],
   },
   "by_stage": {
+    "drafting": [
+      "docs/operations/REOPEN_PROCEDURE.md",
+      "docs/disciplines/discipline_workflow_state_truth_source.md",
+    ],
     "triad-review": [
       "docs/operations/SESSION_WORKFLOW_GUIDE.md#3.3-a-2",
       "docs/disciplines/discipline_approval_operation.md",
@@ -267,6 +271,40 @@ DEFAULT_DISCIPLINE_MAP = {
   },
   "required_inputs": {
     "by_stage": {
+      "drafting": [
+        {
+          "id": "target_feature_documents",
+          "role": "stage_entry_context",
+          "source_type": "feature_document_set",
+          "purpose": (
+            "Read the current feature state and phase documents before "
+            "updating the phase artifact."
+          ),
+          "resolver": {
+            "kind": "next_action_template",
+            "paths": [
+              ".reviewcompass/specs/{feature}/spec.json",
+              ".reviewcompass/specs/{feature}/requirements.md",
+              ".reviewcompass/specs/{feature}/design.md",
+              ".reviewcompass/specs/{feature}/tasks.md",
+            ],
+          },
+          "read_policy": "current_feature_documents",
+        },
+        {
+          "id": "reopen_procedure_state",
+          "role": "workflow_state_context",
+          "source_type": "reopen_in_progress_file",
+          "purpose": "Read the reopen state and downstream impact decisions before drafting.",
+          "resolver": {
+            "kind": "next_action_template",
+            "paths": [
+              "{file}",
+            ],
+          },
+          "read_policy": "reopen_state",
+        },
+      ],
       "triad-review": [
         {
           "id": "target_feature_documents",
@@ -870,6 +908,7 @@ def _render_next_action_template(value, next_action):
           "phase": next_action.get("phase") or "",
           "stage": next_action.get("stage") or "",
           "kind": next_action.get("kind") or "",
+          "file": next_action.get("file") or "",
         }
         try:
           rendered.append(value.format(**replacements))
@@ -881,6 +920,7 @@ def _render_next_action_template(value, next_action):
       "phase": next_action.get("phase") or "",
       "stage": next_action.get("stage") or "",
       "kind": next_action.get("kind") or "",
+      "file": next_action.get("file") or "",
     }
     try:
       return value.format(**replacements)
@@ -3028,6 +3068,62 @@ def reopen_feature_scope_from_data(data):
   }
 
 
+def _reopen_gate_list(data, field_name):
+  """reopen 手続きデータの gate list を set で返す"""
+  value = data.get(field_name, [])
+  if not isinstance(value, list):
+    return set()
+  return {
+    item
+    for item in value
+    if isinstance(item, str)
+  }
+
+
+def _reopen_drafting_completed(data, phase):
+  """指定 phase の reopen drafting 完了記録があるか判定する"""
+  drafting_gate = _stage_gate(phase, "drafting")
+  completed = set()
+  completed.update(_reopen_gate_list(data, "drafting_completed_gates"))
+  completed.update(_reopen_gate_list(data, "completed_gates"))
+  return drafting_gate in completed
+
+
+def _resolve_reopen_next_gate(data, pending_gates, current_blocker):
+  """reopen の次 gate と、その前に必要な drafting を解決する"""
+  if current_blocker or not pending_gates:
+    return {
+      "next_pending_gate": None,
+      "next_drafting_gate": None,
+      "phase": None,
+      "stage": None,
+      "required_action": None,
+    }
+
+  next_pending_gate = pending_gates[0]
+  pending_phase, pending_stage = _parse_stage_gate(next_pending_gate)
+  if (
+    pending_phase
+    and pending_stage == "triad-review"
+    and not _reopen_drafting_completed(data, pending_phase)
+  ):
+    return {
+      "next_pending_gate": next_pending_gate,
+      "next_drafting_gate": _stage_gate(pending_phase, "drafting"),
+      "phase": pending_phase,
+      "stage": "drafting",
+      "required_action": "run_reopen_drafting",
+    }
+
+  return {
+    "next_pending_gate": next_pending_gate,
+    "next_drafting_gate": None,
+    "phase": pending_phase,
+    "stage": pending_stage,
+    "required_action": "run_reopen_pending_gate",
+  }
+
+
 def build_in_progress_next_action(cwd, relative_path):
   """進行中状態ファイルから next_action を作る"""
   data = load_in_progress_file(cwd, relative_path)
@@ -3058,19 +3154,18 @@ def build_in_progress_next_action(cwd, relative_path):
     pending_gates = data.get("pending_gates", [])
     if pending_gates is None:
       pending_gates = []
-    next_pending_gate = None
-    pending_phase = None
-    pending_stage = None
-    if not current_blocker and pending_gates:
-      next_pending_gate = pending_gates[0]
-      pending_phase, pending_stage = _parse_stage_gate(next_pending_gate)
+    gate_action = _resolve_reopen_next_gate(
+      data,
+      pending_gates,
+      current_blocker,
+    )
     required_action = resolve_reopen_required_action(
       next_step,
       current_blocker,
       data.get("step_number"),
     )
-    if next_pending_gate:
-      required_action = "run_reopen_pending_gate"
+    if gate_action["required_action"]:
+      required_action = gate_action["required_action"]
     feature_scope = reopen_feature_scope_from_data(data)
     return {
       "kind": "reopen_in_progress",
@@ -3080,7 +3175,8 @@ def build_in_progress_next_action(cwd, relative_path):
       "step_number": data.get("step_number"),
       "completed_steps": data.get("completed_steps", []),
       "pending_gates": pending_gates,
-      "next_pending_gate": next_pending_gate,
+      "next_pending_gate": gate_action["next_pending_gate"],
+      "next_drafting_gate": gate_action["next_drafting_gate"],
       "current_blocker": current_blocker,
       "required_action": required_action,
       "feature": feature_scope["required_feature_scope"],
@@ -3088,8 +3184,8 @@ def build_in_progress_next_action(cwd, relative_path):
       "direct_features": feature_scope["direct_features"],
       "indirect_features": feature_scope["indirect_features"],
       "feature_impact_scope_basis": feature_scope["feature_impact_scope_basis"],
-      "phase": pending_phase,
-      "stage": pending_stage,
+      "phase": gate_action["phase"],
+      "stage": gate_action["stage"],
       "reason": "reopen 手続きの進行中状態ファイルがあります",
     }
   return {

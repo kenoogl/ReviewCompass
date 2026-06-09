@@ -33,6 +33,8 @@ reopen 手続きが進行中である。通常ワークフローや post-write-v
 - `classify_and_rollback_flags`：第1過程。種別判定、根拠記録、進行中ファイル発行、spec.json フラグ差し戻し。
 - `repair_canonical_documents`：第2過程。上流フェーズの正本文書修正。
 - `rerun_alignment_approval_chain`：第3過程。`pending_gates` に従う alignment / approval の連鎖再実施。
+- `run_reopen_drafting`：第3過程。`next_pending_gate` が triad-review でも、同じ phase の drafting 完了が `drafting_completed_gates` または `completed_gates` に記録されていないため、先に正本文書を更新する。`next_drafting_gate`、`phase`、`stage: drafting`、`required_feature_scope` を確認し、レビューを開始しない。
+- `run_reopen_pending_gate`：第3過程。drafting 完了記録がある、または次 gate が triad-review 以外であるため、`next_pending_gate` の gate を実行する。
 - `wait_for_human_approval`：人間承認待ち。承認なしに進めない。
 - `finalize_reopen`：第4過程。最終確認、recheck クリア、in-progress の完了処理。
 - `inspect_reopen_state`：判定不能。推測で進めず利用者へ報告する。

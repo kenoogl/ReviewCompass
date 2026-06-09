@@ -1,0 +1,102 @@
+role: adversarial
+provider: openai-api
+model: gpt-5.4
+attempts: 1
+duration_seconds: 22.32
+findings:
+- severity: ERROR
+  target_location: conformance-evaluation design.md
+  description: Conformance-evaluation design is materially stale against approved
+    Requirement 10 and does not yet define the existing-system/post-hoc intent design
+    needed for code-derived drift extraction.
+  rationale: 'must-fix: The target document itself records that CE design still states
+    9 requirements, stops at Requirement 9 behavior, lacks a Requirement 10 trace
+    row, and omits XDI-CE-002. Because design triad-review is the current gate for
+    deciding whether design handling is complete enough to proceed, this is a direct
+    design-stage gap, not merely documentation polish. Without an explicit design
+    for inputs, output candidate structure, classification vocabulary, and WM handoff,
+    downstream review-wave cannot assess correctness or boundary adherence.'
+  verifying_commands: Inspect conformance-evaluation/design.md for requirement count,
+    goal list, section covering Requirement 10, traceability row for Req 10, and XDI-CE-002
+    presence.
+- severity: ERROR
+  target_location: workflow-management design.md
+  description: Workflow-management design is materially stale against approved Requirement
+    9 and does not define how CE evaluation records become formal reopen decisions
+    across downstream phases.
+  rationale: 'must-fix: The review target states WM design still reflects 8 requirements,
+    lacks post-hoc intent downstream propagation goals, predates the new reopen model,
+    does not define downstream_impact_decisions shape, does not define CE intake contract,
+    and omits XDI-WM-002. Since workflow-management is one of the two direct reopen
+    features, this leaves the design incomplete at the exact gate meant to validate
+    design impacts before review-wave.'
+  verifying_commands: Inspect workflow-management/design.md for requirement count,
+    Requirement 9 coverage, reopen architecture updates, downstream_impact_decisions
+    schema/record shape, CE intake contract, and XDI-WM-002 traceability.
+- severity: WARN
+  target_location: conformance-evaluation design.md and workflow-management design.md
+    interface boundary
+  description: The CE/WM boundary is specified as a design question rather than an
+    adopted design contract, leaving risk of overlap or ownership drift between candidate
+    extraction and official reopen decision-making.
+  rationale: 'should-fix: The target review correctly identifies the intended separation—CE
+    extracts/classifies evidence-backed candidates; WM owns formal reopen workflow
+    decisions—but the document does not present that as already implemented design.
+    If not made explicit in both feature designs, CE could overstep into workflow
+    state mutation or WM could underspecify evidence intake semantics, creating cross-feature
+    ambiguity.'
+  verifying_commands: Check both design.md files for explicit statements that CE outputs
+    candidate records only, WM owns reopen procedure/state transitions, and the handoff
+    contract names required fields and ownership.
+- severity: WARN
+  target_location: conformance-evaluation design.md
+  description: Tasks-phase handling for the existing-system mode is not yet explicitly
+    bounded, creating risk that CE may be interpreted as recreating or inferring tasks.md
+    rather than only using tasks as comparison inputs and emitting downstream impact
+    candidates.
+  rationale: 'should-fix: The review target highlights this boundary as important,
+    but current evidence says the new design is absent. Because the reopen scope includes
+    downstream phases through tasks and implementation, lack of an explicit non-goal
+    here can cause code-drift extraction to expand into unauthorized task synthesis
+    behavior, blurring CE and WM responsibilities.'
+  verifying_commands: Inspect CE design for explicit statements that tasks are reference
+    inputs and downstream impact candidates only, not a formal inferred tasks.md output.
+- severity: INFO
+  target_location: foundation, runtime, evaluation, analysis, self-improvement design
+    impact review
+  description: The document includes all seven features in scope and provides feature-by-feature
+    indirect design checks for the five non-direct features.
+  rationale: 'leave-as-is: This satisfies the review criterion that all seven features
+    be included in design-stage impact review. The current document does not show
+    evidence that requirements must be reopened again for omitted feature coverage;
+    instead it frames the remaining question as whether indirect features require
+    design.md changes.'
+  verifying_commands: Review the front matter feature list and the 'Indirect Feature
+    Evidence' section to confirm coverage of foundation, runtime, evaluation, analysis,
+    and self-improvement alongside CE and WM.
+- severity: WARN
+  target_location: Indirect feature design decisions in this triad-review target
+  description: For the five indirect features, the review target asks whether existing
+    designs are sufficient but does not record explicit design-stage decisions or
+    acceptance criteria per feature.
+  rationale: 'should-fix: If the project intends to keep these features as indirect_check_only
+    at design stage, the triad-review output should state that decision clearly with
+    a brief basis for each feature. Otherwise reviewers must infer sufficiency from
+    open-ended questions, which weakens the gate outcome and can create rework during
+    design review-wave.'
+  verifying_commands: Inspect this review target and any resulting design triad-review
+    disposition for explicit per-feature decisions for foundation, runtime, evaluation,
+    analysis, and self-improvement.
+- severity: INFO
+  target_location: Current reopen state / pending gates
+  description: Nothing in the target document indicates that requirements must be
+    reopened again; the immediate gating issue is design completeness in CE and WM
+    before proceeding to design review-wave.
+  rationale: 'leave-as-is: The requirements stage is described as approved, and the
+    identified defects are design-stage staleness and missing design contracts in
+    the two direct reopen features. Unless investigation of indirect features reveals
+    unmet design dependencies, the pending gates remain appropriate after design fixes:
+    complete design triad-review, then continue to design review-wave.'
+  verifying_commands: Verify approved requirements gates in the reopen state section
+    and confirm that identified gaps are design.md/impact-decision issues rather than
+    missing requirements approvals.

@@ -1,0 +1,119 @@
+findings:
+  - severity: CRITICAL
+    target_location: "conformance-evaluation/design.md — overview and requirement count"
+    description: "The conformance-evaluation design.md overview still states that requirements.md contains 9 Requirements. Requirement 10 (existing-system post-hoc intent code-derived difference extraction) was approved at requirements stage but is not reflected in the design overview, goals section, or section numbering."
+    rationale: "must-fix: The design document is materially stale relative to the approved requirements. A design triad-review cannot confirm design completeness when the design itself does not acknowledge the requirement it must address. This blocks design review-wave."
+    verifying_commands:
+      - "grep -n 'Requirement' .reviewcompass/specs/conformance-evaluation/design.md | head -40"
+      - "grep -n 'Req.*10\\|Requirement 10' .reviewcompass/specs/conformance-evaluation/design.md"
+
+  - severity: CRITICAL
+    target_location: "conformance-evaluation/design.md — missing design model for Requirement 10"
+    description: "No design section exists for Requirement 10. The required design model elements are absent: existing-system/post-hoc intent mode or submode; input specification (added intent, existing feature partitioning, existing requirements/design/tasks, implementation code); code-derived candidate output structure with fields feature, phase, classification, code_refs, existing_spec_refs, reasoning_summary, needs_human_decision; classification values covering existing_sufficient, spec_update_candidate, design_conflict_candidate, downstream_impact_candidate, implementation_change_candidate; tasks-as-reference-input boundary; and handoff contract to workflow-management."
+    rationale: "must-fix: Without a design model for Requirement 10, downstream task and implementation phases have no design basis to follow. The CE/WM boundary cannot be validated, and the handoff contract between CE and WM remains undefined. This is a blocking gap."
+    verifying_commands:
+      - "grep -n 'existing.system\\|post.hoc\\|code.derived\\|XDI-CE-002' .reviewcompass/specs/conformance-evaluation/design.md"
+      - "grep -n 'spec_update_candidate\\|design_conflict_candidate\\|downstream_impact_candidate' .reviewcompass/specs/conformance-evaluation/design.md"
+
+  - severity: CRITICAL
+    target_location: "conformance-evaluation/design.md — XDI-CE-002 traceability row missing"
+    description: "The requirement traceability table in conformance-evaluation/design.md stops at Req 8 in observed excerpts and does not contain a row for Requirement 10 or implementation-derived trace identifier XDI-CE-002. XDI-CE-001 is present; XDI-CE-002 is entirely absent."
+    rationale: "must-fix: Traceability is a gate-completion artifact. A missing trace row for an approved requirement means conformance of the design to requirements cannot be verified, which blocks design triad-review sign-off."
+    verifying_commands:
+      - "grep -n 'XDI-CE-002\\|Req.*10\\|R10' .reviewcompass/specs/conformance-evaluation/design.md"
+      - "grep -n 'traceability\\|trace.*table' .reviewcompass/specs/conformance-evaluation/design.md"
+
+  - severity: CRITICAL
+    target_location: "workflow-management/design.md — overview and requirement count"
+    description: "The workflow-management design.md overview still states that requirements.md contains 8 Requirements. Requirement 9 (downstream propagation when intent is added to an existing system) was approved at requirements stage but is not reflected in the design overview or goals."
+    rationale: "must-fix: Same class of staleness as CE. The design document does not acknowledge the approved requirement it must address. Blocks design review-wave."
+    verifying_commands:
+      - "grep -n 'Requirement\\|8 Req\\|9 Req' .reviewcompass/specs/workflow-management/design.md | head -40"
+      - "grep -n 'Requirement 9\\|Req.*9' .reviewcompass/specs/workflow-management/design.md"
+
+  - severity: CRITICAL
+    target_location: "workflow-management/design.md — missing design model for Requirement 9"
+    description: "No design section exists for Requirement 9. Required design model elements are absent: machine-readable detection that post-hoc intent on an existing system creates reopen work; feature receptacle decision logic (reopen existing feature vs. new feature candidate); downstream phase sequence requirements/design/tasks/implementation; per-gate decision record structure covering existing_sufficient, spec_update_required, conflict_candidate; required evidence fields for downstream_impact_decisions (gate, feature scope, decision, reason, evidence, actor, source); conflict handling and human stop points via current_blocker or phase approval; CE evaluation record intake contract with minimum candidate fields; side-track distinction for workflow defects discovered during dogfooding."
+    rationale: "must-fix: Without a design model for Requirement 9, the CE-to-WM handoff has no receiving contract. WM cannot formally accept CE evaluation records, and downstream task/implementation phases have no design basis. This is a blocking gap."
+    verifying_commands:
+      - "grep -n 'post.hoc\\|existing.system\\|downstream_impact_decisions\\|intake\\|XDI-WM-002' .reviewcompass/specs/workflow-management/design.md"
+      - "grep -n 'feature.receptacle\\|side.track\\|dogfooding' .reviewcompass/specs/workflow-management/design.md"
+
+  - severity: CRITICAL
+    target_location: "workflow-management/design.md — XDI-WM-002 traceability row missing"
+    description: "XDI-WM-002 is not represented in the workflow-management design.md traceability table. The design's traceability coverage predates Requirement 9."
+    rationale: "must-fix: Same traceability blocking condition as XDI-CE-002. A missing trace row for an approved requirement prevents gate sign-off."
+    verifying_commands:
+      - "grep -n 'XDI-WM-002\\|Req.*9\\|R9' .reviewcompass/specs/workflow-management/design.md"
+
+  - severity: ERROR
+    target_location: "conformance-evaluation/design.md — tasks boundary not specified"
+    description: "The design.md does not contain an explicit boundary statement that tasks.md files are reference inputs and downstream impact candidates only, and are not formal CE output targets for recreation or inference. This boundary is required by the approved requirements and the review criteria."
+    rationale: "must-fix: Without an explicit boundary, implementors may over-scope CE to reconstruct tasks.md, violating the CE/WM separation of concerns and creating conflicting ownership. Must be stated in the CE design model."
+    verifying_commands:
+      - "grep -n 'tasks.*reference\\|tasks.*input\\|not.*recreat\\|not.*infer.*tasks' .reviewcompass/specs/conformance-evaluation/design.md"
+
+  - severity: ERROR
+    target_location: "workflow-management/design.md — CE evaluation record intake contract undefined"
+    description: "The workflow-management design does not define the intake contract for CE evaluation records. The minimum candidate fields required (feature, phase, classification, code_refs, existing_spec_refs, reasoning_summary, needs_human_decision) are not specified as a WM-side receiving schema."
+    rationale: "must-fix: The CE/WM boundary requires a defined handoff contract on both sides. CE defines the output shape; WM must define the intake shape and validation. Without this, the two designs cannot be verified as compatible at design triad-review."
+    verifying_commands:
+      - "grep -n 'intake\\|candidate.*field\\|evaluation.*record\\|CE.*record' .reviewcompass/specs/workflow-management/design.md"
+
+  - severity: ERROR
+    target_location: "conformance-evaluation/design.md — section 13.6 scope"
+    description: "Section 13.6 covers only Requirement 9 (contract ownership map / spec update proposals). It must be extended or a new section added to cover Requirement 10's distinct mode. As written, the design conflates or omits the new requirement's design scope."
+    rationale: "should-fix elevated to must-fix given the requirement is approved and no other section addresses Requirement 10. Design completeness requires distinct coverage."
+    verifying_commands:
+      - "grep -n '13\\.6\\|13\\.7\\|Section 13' .reviewcompass/specs/conformance-evaluation/design.md"
+
+  - severity: WARN
+    target_location: "foundation — indirect check sufficiency"
+    description: "CE Requirement 10 references foundation vocabulary for evidence and metadata (code_refs, existing_spec_refs, reasoning_summary fields). The review target document asserts these can reference existing foundation design contracts without changes. This assumption is not verified by a foundation design.md cross-check in the current evidence."
+    rationale: "should-fix: Before design review-wave, there should be a documented cross-check confirming that the CE candidate output field names and evidence types are already covered by foundation's schema/vocabulary contracts, or that foundation requires a minor addition. Leaving this implicit creates integration risk."
+    verifying_commands:
+      - "grep -n 'code_refs\\|existing_spec_refs\\|reasoning_summary\\|evidence.*schema' .reviewcompass/specs/foundation/design.md"
+      - "grep -n 'candidate.*output\\|CE.*output' .reviewcompass/specs/foundation/design.md"
+
+  - severity: WARN
+    target_location: "workflow-management/design.md — side-track distinction for dogfooding defects"
+    description: "The design does not yet define how workflow defects discovered during a dogfooding run (i.e., defects in the workflow process itself, not in the system under review) are distinguished from normal reopen candidates and routed as a side-track."
+    rationale: "should-fix: This distinction is called out in the Requirement 9 design question. Without it, dogfooding-discovered workflow defects may be incorrectly processed as standard reopen items, polluting the reopen record. Should be addressed in the WM design model for Requirement 9."
+    verifying_commands:
+      - "grep -n 'side.track\\|dogfood\\|workflow.*defect\\|process.*defect' .reviewcompass/specs/workflow-management/design.md"
+
+  - severity: WARN
+    target_location: "runtime — indirect check sufficiency"
+    description: "The review target document asserts that existing runtime interfaces are sufficient for the post-hoc intent / code-derived extraction design. This is not verified by an explicit runtime design.md cross-check. Code-derived extraction may introduce new prompt types or evidence output shapes that runtime must handle."
+    rationale: "should-fix: A brief documented cross-check of runtime's prompt resolution and evidence output interfaces against CE Requirement 10's new mode should be recorded before design review-wave, even if the conclusion is 'no change needed.'"
+    verifying_commands:
+      - "grep -n 'code.derived\\|post.hoc\\|existing.system' .reviewcompass/specs/runtime/design.md"
+      - "grep -n 'prompt.*resolution\\|evidence.*output' .reviewcompass/specs/runtime/design.md | head -20"
+
+  - severity: WARN
+    target_location: "analysis — indirect check sufficiency"
+    description: "The review target document defers analysis design changes for new CE output candidates to later downstream consumption. However, if CE Requirement 10 introduces new candidate classification values (e.g., design_conflict_candidate, implementation_change_candidate) that analysis is expected to read, analysis design.md may need a forward-compatibility note or consumption boundary statement."
+    rationale: "leave-as-is acceptable only if analysis design.md explicitly acknowledges the new CE output types as future inputs. Without any acknowledgment, there is silent drift risk."
+    verifying_commands:
+      - "grep -n 'conformance.*candidate\\|CE.*output\\|design_conflict\\|implementation_change' .reviewcompass/specs/analysis/design.md"
+
+  - severity: WARN
+    target_location: "self-improvement — indirect check sufficiency"
+    description: "The review target document asserts WM ownership is sufficient for workflow-defect side-track lessons and that self-improvement design.md need not change. This is plausible but unverified. If self-improvement already has a signals intake contract, the new WM side-track must either conform to it or explicitly exclude it."
+    rationale: "leave-as-is acceptable only if self-improvement design.md does not define a signals intake that would be triggered by WM side-track records. A cross-check should be documented."
+    verifying_commands:
+      - "grep -n 'workflow.*signal\\|improvement.*signal\\|intake\\|side.track' .reviewcompass/specs/self-improvement/design.md"
+
+  - severity: INFO
+    target_location: "reopen-procedure-2026-06-09-existing-system-sdd-code-drift.yaml — next gate alignment"
+    description: "The reopen procedure lists the next gate as stages/design.yaml#triad-review. After the CRITICAL must-fix items above are resolved (CE design.md and WM design.md updated), the gate should advance to design.yaml#review-wave. The procedure file should be updated to reflect completion of triad-review once fixes are confirmed."
+    rationale: "leave-as-is until fixes are applied. Recording to ensure the procedure file is not forgotten as a gate-advancement artifact after must-fix corrections."
+    verifying_commands:
+      - "grep -n 'next_gate\\|current_gate\\|triad.review\\|review.wave' stages/in-progress/reopen-procedure-2026-06-09-existing-system-sdd-code-drift.yaml"
+
+  - severity: INFO
+    target_location: "review-target.md — seven-feature scope confirmation"
+    description: "All seven features (foundation, runtime, evaluation, analysis, workflow-management, self-improvement, conformance-evaluation) are addressed in this review. The five indirect features are assessed as indirect-check-only at design stage pending the documented cross-checks noted above. This scope alignment is consistent with the approved requirements stage decision."
+    rationale: "leave-as-is. Recording confirmation that feature scope was verified as complete for this review run."
+    verifying_commands:
+      - "grep -n 'features:' .reviewcompass/specs/_cross_feature/reviews/2026-06-09-existing-system-sdd-design-all-features-review-run/review-target.md"

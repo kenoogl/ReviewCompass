@@ -47,6 +47,7 @@
 ### 第3過程：連鎖再実施（依存順、各 approval で停止）
 
 9. 依存順に上流 → 下流の各フェーズで：
+   - `pending_gates` は review 系 gate（triad-review／review-wave／alignment／approval）の処理順を表す。phase の正本本文を更新する必要があり、先頭 gate が triad-review の場合、triad-review の前に drafting を実施する。drafting 完了後は `drafting_completed_gates` に `stages/<phase>.yaml#drafting` を記録し、その後に triad-review へ進む
    - 正本本文（`.reviewcompass/specs/<feature>/<phase>.md`）を実質修正した phase は、triad-review → review-wave → alignment → approval の順に再実施する。これは requirements／design／tasks／implementation のいずれでも同じ
    - 正本本文を修正していない phase は、trigger_map の pending gate に従って alignment（整合チェック）から再確認してよい
    - 上流変更に対する下流影響判定を `downstream_impact_decisions` に記録する。これは intent に限らず、feature-partitioning／requirements／design／tasks／implementation のいずれを変更した場合も共通で必須とする
@@ -64,7 +65,7 @@
 
 → **停止点：コミット**
 
-第4過程の完了 commit では、`stages/completed/reopen-procedure-*.yaml` に `feature_impact_decisions`、`new_feature_decision`、`impacted_downstream_phases` と、`pending_gates` の各 gate を覆う `downstream_impact_decisions` が必要である。`feature_impact_decisions` は、既存 feature ごとに `feature`、`decision`、`impact_basis`、`rationale`、`evidence` を持つ。`decision` は `reopen_existing_feature`、`no_reopen_existing_feature`、`indirect_check_only`、`new_feature_required` のいずれかとする。`impact_basis` は `implementation_ownership`、`contract_ownership`、`consumer_or_derivative_only`、`no_implementation_impact`、`new_feature_boundary` のいずれかとする。`new_feature_decision.decision` は `no_new_feature` または `new_feature_required` とする。`downstream_impact_decisions` の各判定は最低限、`gate`、`feature_scope`、`decision`、`rationale`、`evidence` を持つ。`decision` は `affected_update_required`、`existing_sufficient`、`no_impact`、`approved`、`proxy_approved` のいずれかとする。`impacted_downstream_phases` に列挙した各フェーズには、対応する `downstream_impact_decisions[].gate` を少なくとも 1 件記録する。完了 commit に正本本文の変更が含まれる phase は、`pending_gates` に triad-review／review-wave／alignment／approval をすべて含める。
+第4過程の完了 commit では、`stages/completed/reopen-procedure-*.yaml` に `feature_impact_decisions`、`new_feature_decision`、`impacted_downstream_phases` と、`pending_gates` の各 gate を覆う `downstream_impact_decisions` が必要である。`feature_impact_decisions` は、既存 feature ごとに `feature`、`decision`、`impact_basis`、`rationale`、`evidence` を持つ。`decision` は `reopen_existing_feature`、`no_reopen_existing_feature`、`indirect_check_only`、`new_feature_required` のいずれかとする。`impact_basis` は `implementation_ownership`、`contract_ownership`、`consumer_or_derivative_only`、`no_implementation_impact`、`new_feature_boundary` のいずれかとする。`new_feature_decision.decision` は `no_new_feature` または `new_feature_required` とする。`downstream_impact_decisions` の各判定は最低限、`gate`、`feature_scope`、`decision`、`rationale`、`evidence` を持つ。`decision` は `affected_update_required`、`existing_sufficient`、`no_impact`、`approved`、`proxy_approved` のいずれかとする。`impacted_downstream_phases` に列挙した各フェーズには、対応する `downstream_impact_decisions[].gate` を少なくとも 1 件記録する。完了 commit に正本本文の変更が含まれる phase は、`pending_gates` に triad-review／review-wave／alignment／approval をすべて含め、drafting を実施した phase は `drafting_completed_gates` または `completed_gates` に `stages/<phase>.yaml#drafting` を含める。
 
 ## 3. 手戻り種別と trigger_map
 

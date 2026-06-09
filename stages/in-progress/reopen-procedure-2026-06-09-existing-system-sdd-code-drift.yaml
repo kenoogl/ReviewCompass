@@ -71,11 +71,12 @@ requirements_alignment_evidence:
 requirements_alignment_approval_source: 2026-06-09 利用者発言「承認」
 requirements_approval_source: 2026-06-09 利用者発言「承認」
 requirements_chain_correction: requirements 正本を実質修正したため、alignment へ直行せず、requirements triad-review と review-wave を再実施してから alignment / approval に進む。
-next_step: 第3過程停止点コミット：requirements approval 完了承認反映（次 gate は stages/design.yaml#triad-review）
+next_step: 第3過程：design drafting
 superseded_partial_review_run: .reviewcompass/specs/_cross_feature/reviews/2026-06-09-existing-system-sdd-requirements-review-run
 planned_review_run: .reviewcompass/specs/_cross_feature/reviews/2026-06-09-existing-system-sdd-requirements-all-features-review-run
-active_review_run: .reviewcompass/specs/_cross_feature/reviews/2026-06-09-existing-system-sdd-requirements-all-features-review-run-r2
-active_review_summary: .reviewcompass/specs/_cross_feature/reviews/2026-06-09-existing-system-sdd-requirements-all-features-review-run-r2/raw-review-triage-summary.md
+active_review_run: .reviewcompass/specs/_cross_feature/reviews/2026-06-09-existing-system-sdd-design-all-features-review-run
+active_review_summary: .reviewcompass/specs/_cross_feature/reviews/2026-06-09-existing-system-sdd-design-all-features-review-run/raw-review-triage-summary.md
+superseded_design_review_run_status: pre_drafting_gap_audit_not_formal_triad_review
 impacted_downstream_phases:
   - requirements
   - design

@@ -25,6 +25,18 @@ def test_workflow_navigation_exposes_triad_review_proxy_gate():
   assert "利用者へ提示して停止" in text
 
 
+def test_reopen_drafting_is_required_before_triad_review():
+  navigation = (ROOT / "docs" / "operations" / "WORKFLOW_NAVIGATION.md").read_text(encoding="utf-8")
+  reopen = (ROOT / "docs" / "operations" / "REOPEN_PROCEDURE.md").read_text(encoding="utf-8")
+  discipline_map = (ROOT / "docs" / "operations" / "WORKFLOW_DISCIPLINE_MAP.yaml").read_text(encoding="utf-8")
+
+  assert "`run_reopen_drafting`" in navigation
+  assert "`drafting_completed_gates`" in navigation
+  assert "triad-review の前に drafting" in reopen
+  assert "drafting_completed_gates" in reopen
+  assert "reopen_procedure_state" in discipline_map
+
+
 def test_codex_adapter_exposes_triad_review_proxy_gate():
   text = (ROOT / "docs" / "operations" / "WORKFLOW_NAVIGATION_FOR_CODEX.md").read_text(encoding="utf-8")
 

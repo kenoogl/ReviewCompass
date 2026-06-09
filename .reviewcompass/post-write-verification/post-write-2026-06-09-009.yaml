@@ -1,0 +1,44 @@
+status: completed
+target_files:
+- .reviewcompass/specs/_cross_feature/reviews/2026-06-09-existing-system-sdd-design-all-features-review-run/raw-review-triage-summary.md
+- .reviewcompass/specs/_cross_feature/reviews/2026-06-09-existing-system-sdd-design-all-features-review-run/review-target.md
+- .reviewcompass/specs/_cross_feature/reviews/2026-06-09-existing-system-sdd-design-all-features-review-run/review_summary.md
+- docs/operations/REOPEN_PROCEDURE.md
+- docs/operations/WORKFLOW_DISCIPLINE_MAP.yaml
+- docs/operations/WORKFLOW_NAVIGATION.md
+target_sha256:
+  ? .reviewcompass/specs/_cross_feature/reviews/2026-06-09-existing-system-sdd-design-all-features-review-run/raw-review-triage-summary.md
+  : 04f7decfe1c6dfc34357acfcd9411ae3f9bd7d797c4b2bf23a7814395e551bc5
+  .reviewcompass/specs/_cross_feature/reviews/2026-06-09-existing-system-sdd-design-all-features-review-run/review-target.md: 9799284a98a3ce5c9e48c33699ed81862cfb072533e0894f9b38a24adf476274
+  ? .reviewcompass/specs/_cross_feature/reviews/2026-06-09-existing-system-sdd-design-all-features-review-run/review_summary.md
+  : 2ad454e5994f25a34e612cc45d7decb548d28192de81272650b35e63bd1d3a07
+  docs/operations/REOPEN_PROCEDURE.md: 91c5af4d097ccc4b8a43044cb58bb70700e43dd275f677c40485086869498acb
+  docs/operations/WORKFLOW_DISCIPLINE_MAP.yaml: e8868a2a73f51691ee3aa84ce896d0178f7e690168f18258553ed83914903d32
+  docs/operations/WORKFLOW_NAVIGATION.md: d2296d541c47917562b6481861e17f74ebf10e6b563f16810d9837e2cb70e13f
+required_verifiers: &id001
+- gemini-3.5-flash
+completed_verifiers: *id001
+unresolved_substantive_findings: 0
+verifications:
+- verifier: gemini-3.5-flash
+  target_files:
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-09-existing-system-sdd-design-all-features-review-run/raw-review-triage-summary.md
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-09-existing-system-sdd-design-all-features-review-run/review-target.md
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-09-existing-system-sdd-design-all-features-review-run/review_summary.md
+  - docs/operations/REOPEN_PROCEDURE.md
+  - docs/operations/WORKFLOW_DISCIPLINE_MAP.yaml
+  - docs/operations/WORKFLOW_NAVIGATION.md
+  target_sha256:
+    ? .reviewcompass/specs/_cross_feature/reviews/2026-06-09-existing-system-sdd-design-all-features-review-run/raw-review-triage-summary.md
+    : 04f7decfe1c6dfc34357acfcd9411ae3f9bd7d797c4b2bf23a7814395e551bc5
+    .reviewcompass/specs/_cross_feature/reviews/2026-06-09-existing-system-sdd-design-all-features-review-run/review-target.md: 9799284a98a3ce5c9e48c33699ed81862cfb072533e0894f9b38a24adf476274
+    ? .reviewcompass/specs/_cross_feature/reviews/2026-06-09-existing-system-sdd-design-all-features-review-run/review_summary.md
+    : 2ad454e5994f25a34e612cc45d7decb548d28192de81272650b35e63bd1d3a07
+    docs/operations/REOPEN_PROCEDURE.md: 91c5af4d097ccc4b8a43044cb58bb70700e43dd275f677c40485086869498acb
+    docs/operations/WORKFLOW_DISCIPLINE_MAP.yaml: e8868a2a73f51691ee3aa84ce896d0178f7e690168f18258553ed83914903d32
+    docs/operations/WORKFLOW_NAVIGATION.md: d2296d541c47917562b6481861e17f74ebf10e6b563f16810d9837e2cb70e13f
+review_run:
+  path: .reviewcompass/post-write-review-runs/2026-06-09-reopen-drafting-before-review-postwrite
+  summary_path: .reviewcompass/post-write-review-runs/2026-06-09-reopen-drafting-before-review-postwrite/model-result-summary.yaml
+notes: Generated template; verify target_files cover current post-write targets before
+  use.

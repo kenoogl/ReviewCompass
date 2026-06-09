@@ -1,0 +1,13 @@
+findings:
+  - severity: ERROR
+    target_location: "Direct Design Evidence > conformance-evaluation design.md"
+    description: "conformance-evaluation design.md is stale and lacks Requirement 10 and XDI-CE-002 updates"
+    rationale: "must-fix: The document overview still states 9 requirements and stops at Requirement 9 goals. It must be updated to include the design model for existing-system post-hoc intent, task bounding as reference inputs, candidate output structures, and XDI-CE-002 traceability before proceeding to design review-wave."
+  - severity: ERROR
+    target_location: "Direct Design Evidence > workflow-management design.md"
+    description: "workflow-management design.md is stale and lacks Requirement 9 and XDI-WM-002 updates"
+    rationale: "must-fix: The document overview states 8 requirements and predates Requirement 9. It must be updated to define the CE evaluation record intake contract, downstream phase sequence, downstream_impact_decisions record shape, and XDI-WM-002 traceability before proceeding to design review-wave."
+  - severity: INFO
+    target_location: "Indirect Feature Evidence"
+    description: "Indirect features do not require design changes"
+    rationale: "leave-as-is: foundation, runtime, evaluation, analysis, and self-improvement designs have been reviewed and do not require modifications to support the CE and WM changes. Maintaining them as indirect_check_only is sufficient at the design stage."

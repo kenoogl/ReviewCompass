@@ -2473,7 +2473,7 @@ class NextNavigationTests(unittest.TestCase):
     self.assertEqual(data["next_action"]["stage"], "alignment")
 
   def test_next_reopen_reports_first_pending_gate_as_unique_task(self):
-    """reopen 第3過程は pending_gates 先頭を次タスクとして機械的に返す"""
+    """reopen 第3過程は drafting 完了後に pending_gates 先頭を次タスクとして返す"""
     cwd = Path(self.tmpdir)
     _write_specs_for_next(cwd, {})
     in_progress_dir = cwd / "stages" / "in-progress"
@@ -2487,6 +2487,8 @@ class NextNavigationTests(unittest.TestCase):
       "  - stages/requirements.yaml#review-wave\n"
       "  - stages/requirements.yaml#alignment\n"
       "  - stages/requirements.yaml#approval\n"
+      "drafting_completed_gates:\n"
+      "  - stages/requirements.yaml#drafting\n"
       "current_blocker: null\n",
       encoding="utf-8",
     )
@@ -2506,6 +2508,46 @@ class NextNavigationTests(unittest.TestCase):
     self.assertEqual(
       data["next_action"]["required_action"],
       "run_reopen_pending_gate",
+    )
+
+  def test_next_reopen_requires_drafting_before_triad_review(self):
+    """reopen 第3過程は triad-review の前に phase drafting を一意に返す"""
+    cwd = Path(self.tmpdir)
+    _write_specs_for_next(cwd, {})
+    in_progress_dir = cwd / "stages" / "in-progress"
+    in_progress_dir.mkdir(parents=True)
+    (in_progress_dir / "reopen-procedure-2026-06-02.yaml").write_text(
+      "process_id: reopen-procedure\n"
+      "next_step: 第3過程：連鎖再実施\n"
+      "step_number: 3\n"
+      "pending_gates:\n"
+      "  - stages/design.yaml#triad-review\n"
+      "  - stages/design.yaml#review-wave\n"
+      "  - stages/design.yaml#alignment\n"
+      "  - stages/design.yaml#approval\n"
+      "current_blocker: null\n",
+      encoding="utf-8",
+    )
+
+    result = run_script(["next", "--json"], cwd=cwd)
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 0, result.stderr)
+    data = json.loads(result.stdout)
+    action = data["next_action"]
+    self.assertEqual(action["kind"], "reopen_in_progress")
+    self.assertEqual(action["required_action"], "run_reopen_drafting")
+    self.assertEqual(action["next_pending_gate"], "stages/design.yaml#triad-review")
+    self.assertEqual(action["next_drafting_gate"], "stages/design.yaml#drafting")
+    self.assertEqual(action["phase"], "design")
+    self.assertEqual(action["stage"], "drafting")
+    required_inputs = {
+      item["id"]: item
+      for item in action["required_inputs"]
+    }
+    self.assertEqual(
+      required_inputs["reopen_procedure_state"]["paths"],
+      ["stages/in-progress/reopen-procedure-2026-06-02.yaml"],
     )
 
   def test_next_reopen_uses_feature_impact_decisions_as_review_scope(self):

@@ -1,0 +1,636 @@
+run_id: 2026-06-09-existing-system-sdd-design-all-features-review-run
+triage_status: draft
+generated_at: '2026-06-09T02:51:20.941336+00:00'
+decision_actor: null
+decision_actor_type: human
+items:
+- finding_id: 2026-06-09-existing-system-sdd-design-all-features-review-run-claude-sonnet-4-6-primary-001
+  run_id: 2026-06-09-existing-system-sdd-design-all-features-review-run
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: CRITICAL
+  severity_normalized: CRITICAL
+  target_location: conformance-evaluation/design.md — overview and requirement count
+  plain_language_summary: The conformance-evaluation design.md overview still states
+    that requirements.md contains 9 Requirements. Requirement 10 (existing-system
+    post-hoc intent code-derived difference extraction) was approved at requirements
+    stage but is not reflected in the design overview, goals section, or section numbering.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: 'must-fix: The design document is materially stale relative to
+    the approved requirements. A design triad-review cannot confirm design completeness
+    when the design itself does not acknowledge the requirement it must address. This
+    blocks design review-wave.'
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-09-existing-system-sdd-design-all-features-review-run-claude-sonnet-4-6-primary-002
+  run_id: 2026-06-09-existing-system-sdd-design-all-features-review-run
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: CRITICAL
+  severity_normalized: CRITICAL
+  target_location: conformance-evaluation/design.md — missing design model for Requirement
+    10
+  plain_language_summary: 'No design section exists for Requirement 10. The required
+    design model elements are absent: existing-system/post-hoc intent mode or submode;
+    input specification (added intent, existing feature partitioning, existing requirements/design/tasks,
+    implementation code); code-derived candidate output structure with fields feature,
+    phase, classification, code_refs, existing_spec_refs, reasoning_summary, needs_human_decision;
+    classification values covering existing_sufficient, spec_update_candidate, design_conflict_candidate,
+    downstream_impact_candidate, implementation_change_candidate; tasks-as-reference-input
+    boundary; and handoff contract to workflow-management.'
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: 'must-fix: Without a design model for Requirement 10, downstream
+    task and implementation phases have no design basis to follow. The CE/WM boundary
+    cannot be validated, and the handoff contract between CE and WM remains undefined.
+    This is a blocking gap.'
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-09-existing-system-sdd-design-all-features-review-run-claude-sonnet-4-6-primary-003
+  run_id: 2026-06-09-existing-system-sdd-design-all-features-review-run
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: CRITICAL
+  severity_normalized: CRITICAL
+  target_location: conformance-evaluation/design.md — XDI-CE-002 traceability row
+    missing
+  plain_language_summary: The requirement traceability table in conformance-evaluation/design.md
+    stops at Req 8 in observed excerpts and does not contain a row for Requirement
+    10 or implementation-derived trace identifier XDI-CE-002. XDI-CE-001 is present;
+    XDI-CE-002 is entirely absent.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: 'must-fix: Traceability is a gate-completion artifact. A missing
+    trace row for an approved requirement means conformance of the design to requirements
+    cannot be verified, which blocks design triad-review sign-off.'
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-09-existing-system-sdd-design-all-features-review-run-claude-sonnet-4-6-primary-004
+  run_id: 2026-06-09-existing-system-sdd-design-all-features-review-run
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: CRITICAL
+  severity_normalized: CRITICAL
+  target_location: workflow-management/design.md — overview and requirement count
+  plain_language_summary: The workflow-management design.md overview still states
+    that requirements.md contains 8 Requirements. Requirement 9 (downstream propagation
+    when intent is added to an existing system) was approved at requirements stage
+    but is not reflected in the design overview or goals.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: 'must-fix: Same class of staleness as CE. The design document does
+    not acknowledge the approved requirement it must address. Blocks design review-wave.'
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-09-existing-system-sdd-design-all-features-review-run-claude-sonnet-4-6-primary-005
+  run_id: 2026-06-09-existing-system-sdd-design-all-features-review-run
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: CRITICAL
+  severity_normalized: CRITICAL
+  target_location: workflow-management/design.md — missing design model for Requirement
+    9
+  plain_language_summary: 'No design section exists for Requirement 9. Required design
+    model elements are absent: machine-readable detection that post-hoc intent on
+    an existing system creates reopen work; feature receptacle decision logic (reopen
+    existing feature vs. new feature candidate); downstream phase sequence requirements/design/tasks/implementation;
+    per-gate decision record structure covering existing_sufficient, spec_update_required,
+    conflict_candidate; required evidence fields for downstream_impact_decisions (gate,
+    feature scope, decision, reason, evidence, actor, source); conflict handling and
+    human stop points via current_blocker or phase approval; CE evaluation record
+    intake contract with minimum candidate fields; side-track distinction for workflow
+    defects discovered during dogfooding.'
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: 'must-fix: Without a design model for Requirement 9, the CE-to-WM
+    handoff has no receiving contract. WM cannot formally accept CE evaluation records,
+    and downstream task/implementation phases have no design basis. This is a blocking
+    gap.'
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-09-existing-system-sdd-design-all-features-review-run-claude-sonnet-4-6-primary-006
+  run_id: 2026-06-09-existing-system-sdd-design-all-features-review-run
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: CRITICAL
+  severity_normalized: CRITICAL
+  target_location: workflow-management/design.md — XDI-WM-002 traceability row missing
+  plain_language_summary: XDI-WM-002 is not represented in the workflow-management
+    design.md traceability table. The design's traceability coverage predates Requirement
+    9.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: 'must-fix: Same traceability blocking condition as XDI-CE-002.
+    A missing trace row for an approved requirement prevents gate sign-off.'
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-09-existing-system-sdd-design-all-features-review-run-claude-sonnet-4-6-primary-007
+  run_id: 2026-06-09-existing-system-sdd-design-all-features-review-run
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: conformance-evaluation/design.md — tasks boundary not specified
+  plain_language_summary: The design.md does not contain an explicit boundary statement
+    that tasks.md files are reference inputs and downstream impact candidates only,
+    and are not formal CE output targets for recreation or inference. This boundary
+    is required by the approved requirements and the review criteria.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: 'must-fix: Without an explicit boundary, implementors may over-scope
+    CE to reconstruct tasks.md, violating the CE/WM separation of concerns and creating
+    conflicting ownership. Must be stated in the CE design model.'
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-09-existing-system-sdd-design-all-features-review-run-claude-sonnet-4-6-primary-008
+  run_id: 2026-06-09-existing-system-sdd-design-all-features-review-run
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: workflow-management/design.md — CE evaluation record intake contract
+    undefined
+  plain_language_summary: The workflow-management design does not define the intake
+    contract for CE evaluation records. The minimum candidate fields required (feature,
+    phase, classification, code_refs, existing_spec_refs, reasoning_summary, needs_human_decision)
+    are not specified as a WM-side receiving schema.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: 'must-fix: The CE/WM boundary requires a defined handoff contract
+    on both sides. CE defines the output shape; WM must define the intake shape and
+    validation. Without this, the two designs cannot be verified as compatible at
+    design triad-review.'
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-09-existing-system-sdd-design-all-features-review-run-claude-sonnet-4-6-primary-009
+  run_id: 2026-06-09-existing-system-sdd-design-all-features-review-run
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: conformance-evaluation/design.md — section 13.6 scope
+  plain_language_summary: Section 13.6 covers only Requirement 9 (contract ownership
+    map / spec update proposals). It must be extended or a new section added to cover
+    Requirement 10's distinct mode. As written, the design conflates or omits the
+    new requirement's design scope.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: should-fix elevated to must-fix given the requirement is approved
+    and no other section addresses Requirement 10. Design completeness requires distinct
+    coverage.
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-09-existing-system-sdd-design-all-features-review-run-claude-sonnet-4-6-primary-010
+  run_id: 2026-06-09-existing-system-sdd-design-all-features-review-run
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: foundation — indirect check sufficiency
+  plain_language_summary: CE Requirement 10 references foundation vocabulary for evidence
+    and metadata (code_refs, existing_spec_refs, reasoning_summary fields). The review
+    target document asserts these can reference existing foundation design contracts
+    without changes. This assumption is not verified by a foundation design.md cross-check
+    in the current evidence.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: 'should-fix: Before design review-wave, there should be a documented
+    cross-check confirming that the CE candidate output field names and evidence types
+    are already covered by foundation''s schema/vocabulary contracts, or that foundation
+    requires a minor addition. Leaving this implicit creates integration risk.'
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-09-existing-system-sdd-design-all-features-review-run-claude-sonnet-4-6-primary-011
+  run_id: 2026-06-09-existing-system-sdd-design-all-features-review-run
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: workflow-management/design.md — side-track distinction for dogfooding
+    defects
+  plain_language_summary: The design does not yet define how workflow defects discovered
+    during a dogfooding run (i.e., defects in the workflow process itself, not in
+    the system under review) are distinguished from normal reopen candidates and routed
+    as a side-track.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: 'should-fix: This distinction is called out in the Requirement
+    9 design question. Without it, dogfooding-discovered workflow defects may be incorrectly
+    processed as standard reopen items, polluting the reopen record. Should be addressed
+    in the WM design model for Requirement 9.'
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-09-existing-system-sdd-design-all-features-review-run-claude-sonnet-4-6-primary-012
+  run_id: 2026-06-09-existing-system-sdd-design-all-features-review-run
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: runtime — indirect check sufficiency
+  plain_language_summary: The review target document asserts that existing runtime
+    interfaces are sufficient for the post-hoc intent / code-derived extraction design.
+    This is not verified by an explicit runtime design.md cross-check. Code-derived
+    extraction may introduce new prompt types or evidence output shapes that runtime
+    must handle.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: 'should-fix: A brief documented cross-check of runtime''s prompt
+    resolution and evidence output interfaces against CE Requirement 10''s new mode
+    should be recorded before design review-wave, even if the conclusion is ''no change
+    needed.'''
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-09-existing-system-sdd-design-all-features-review-run-claude-sonnet-4-6-primary-013
+  run_id: 2026-06-09-existing-system-sdd-design-all-features-review-run
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: analysis — indirect check sufficiency
+  plain_language_summary: The review target document defers analysis design changes
+    for new CE output candidates to later downstream consumption. However, if CE Requirement
+    10 introduces new candidate classification values (e.g., design_conflict_candidate,
+    implementation_change_candidate) that analysis is expected to read, analysis design.md
+    may need a forward-compatibility note or consumption boundary statement.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: leave-as-is acceptable only if analysis design.md explicitly acknowledges
+    the new CE output types as future inputs. Without any acknowledgment, there is
+    silent drift risk.
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-09-existing-system-sdd-design-all-features-review-run-claude-sonnet-4-6-primary-014
+  run_id: 2026-06-09-existing-system-sdd-design-all-features-review-run
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: self-improvement — indirect check sufficiency
+  plain_language_summary: The review target document asserts WM ownership is sufficient
+    for workflow-defect side-track lessons and that self-improvement design.md need
+    not change. This is plausible but unverified. If self-improvement already has
+    a signals intake contract, the new WM side-track must either conform to it or
+    explicitly exclude it.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: leave-as-is acceptable only if self-improvement design.md does
+    not define a signals intake that would be triggered by WM side-track records.
+    A cross-check should be documented.
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-09-existing-system-sdd-design-all-features-review-run-claude-sonnet-4-6-primary-015
+  run_id: 2026-06-09-existing-system-sdd-design-all-features-review-run
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: reopen-procedure-2026-06-09-existing-system-sdd-code-drift.yaml
+    — next gate alignment
+  plain_language_summary: The reopen procedure lists the next gate as stages/design.yaml#triad-review.
+    After the CRITICAL must-fix items above are resolved (CE design.md and WM design.md
+    updated), the gate should advance to design.yaml#review-wave. The procedure file
+    should be updated to reflect completion of triad-review once fixes are confirmed.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: leave-as-is until fixes are applied. Recording to ensure the procedure
+    file is not forgotten as a gate-advancement artifact after must-fix corrections.
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-09-existing-system-sdd-design-all-features-review-run-claude-sonnet-4-6-primary-016
+  run_id: 2026-06-09-existing-system-sdd-design-all-features-review-run
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: review-target.md — seven-feature scope confirmation
+  plain_language_summary: All seven features (foundation, runtime, evaluation, analysis,
+    workflow-management, self-improvement, conformance-evaluation) are addressed in
+    this review. The five indirect features are assessed as indirect-check-only at
+    design stage pending the documented cross-checks noted above. This scope alignment
+    is consistent with the approved requirements stage decision.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: leave-as-is. Recording confirmation that feature scope was verified
+    as complete for this review run.
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-09-existing-system-sdd-design-all-features-review-run-gpt-5.4-adversarial-001
+  run_id: 2026-06-09-existing-system-sdd-design-all-features-review-run
+  source_model: gpt-5.4
+  source_round: round-1
+  source_raw_path: raw/gpt-5.4.round-1.txt
+  source_parsed_path: parsed/gpt-5.4.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: conformance-evaluation design.md
+  plain_language_summary: Conformance-evaluation design is materially stale against
+    approved Requirement 10 and does not yet define the existing-system/post-hoc intent
+    design needed for code-derived drift extraction.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: 'must-fix: The target document itself records that CE design still
+    states 9 requirements, stops at Requirement 9 behavior, lacks a Requirement 10
+    trace row, and omits XDI-CE-002. Because design triad-review is the current gate
+    for deciding whether design handling is complete enough to proceed, this is a
+    direct design-stage gap, not merely documentation polish. Without an explicit
+    design for inputs, output candidate structure, classification vocabulary, and
+    WM handoff, downstream review-wave cannot assess correctness or boundary adherence.'
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-09-existing-system-sdd-design-all-features-review-run-gpt-5.4-adversarial-002
+  run_id: 2026-06-09-existing-system-sdd-design-all-features-review-run
+  source_model: gpt-5.4
+  source_round: round-1
+  source_raw_path: raw/gpt-5.4.round-1.txt
+  source_parsed_path: parsed/gpt-5.4.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: workflow-management design.md
+  plain_language_summary: Workflow-management design is materially stale against approved
+    Requirement 9 and does not define how CE evaluation records become formal reopen
+    decisions across downstream phases.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: 'must-fix: The review target states WM design still reflects 8
+    requirements, lacks post-hoc intent downstream propagation goals, predates the
+    new reopen model, does not define downstream_impact_decisions shape, does not
+    define CE intake contract, and omits XDI-WM-002. Since workflow-management is
+    one of the two direct reopen features, this leaves the design incomplete at the
+    exact gate meant to validate design impacts before review-wave.'
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-09-existing-system-sdd-design-all-features-review-run-gpt-5.4-adversarial-003
+  run_id: 2026-06-09-existing-system-sdd-design-all-features-review-run
+  source_model: gpt-5.4
+  source_round: round-1
+  source_raw_path: raw/gpt-5.4.round-1.txt
+  source_parsed_path: parsed/gpt-5.4.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: conformance-evaluation design.md and workflow-management design.md
+    interface boundary
+  plain_language_summary: The CE/WM boundary is specified as a design question rather
+    than an adopted design contract, leaving risk of overlap or ownership drift between
+    candidate extraction and official reopen decision-making.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: 'should-fix: The target review correctly identifies the intended
+    separation—CE extracts/classifies evidence-backed candidates; WM owns formal reopen
+    workflow decisions—but the document does not present that as already implemented
+    design. If not made explicit in both feature designs, CE could overstep into workflow
+    state mutation or WM could underspecify evidence intake semantics, creating cross-feature
+    ambiguity.'
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-09-existing-system-sdd-design-all-features-review-run-gpt-5.4-adversarial-004
+  run_id: 2026-06-09-existing-system-sdd-design-all-features-review-run
+  source_model: gpt-5.4
+  source_round: round-1
+  source_raw_path: raw/gpt-5.4.round-1.txt
+  source_parsed_path: parsed/gpt-5.4.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: conformance-evaluation design.md
+  plain_language_summary: Tasks-phase handling for the existing-system mode is not
+    yet explicitly bounded, creating risk that CE may be interpreted as recreating
+    or inferring tasks.md rather than only using tasks as comparison inputs and emitting
+    downstream impact candidates.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: 'should-fix: The review target highlights this boundary as important,
+    but current evidence says the new design is absent. Because the reopen scope includes
+    downstream phases through tasks and implementation, lack of an explicit non-goal
+    here can cause code-drift extraction to expand into unauthorized task synthesis
+    behavior, blurring CE and WM responsibilities.'
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-09-existing-system-sdd-design-all-features-review-run-gpt-5.4-adversarial-005
+  run_id: 2026-06-09-existing-system-sdd-design-all-features-review-run
+  source_model: gpt-5.4
+  source_round: round-1
+  source_raw_path: raw/gpt-5.4.round-1.txt
+  source_parsed_path: parsed/gpt-5.4.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: foundation, runtime, evaluation, analysis, self-improvement design
+    impact review
+  plain_language_summary: The document includes all seven features in scope and provides
+    feature-by-feature indirect design checks for the five non-direct features.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: 'leave-as-is: This satisfies the review criterion that all seven
+    features be included in design-stage impact review. The current document does
+    not show evidence that requirements must be reopened again for omitted feature
+    coverage; instead it frames the remaining question as whether indirect features
+    require design.md changes.'
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-09-existing-system-sdd-design-all-features-review-run-gpt-5.4-adversarial-006
+  run_id: 2026-06-09-existing-system-sdd-design-all-features-review-run
+  source_model: gpt-5.4
+  source_round: round-1
+  source_raw_path: raw/gpt-5.4.round-1.txt
+  source_parsed_path: parsed/gpt-5.4.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: Indirect feature design decisions in this triad-review target
+  plain_language_summary: For the five indirect features, the review target asks whether
+    existing designs are sufficient but does not record explicit design-stage decisions
+    or acceptance criteria per feature.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: 'should-fix: If the project intends to keep these features as indirect_check_only
+    at design stage, the triad-review output should state that decision clearly with
+    a brief basis for each feature. Otherwise reviewers must infer sufficiency from
+    open-ended questions, which weakens the gate outcome and can create rework during
+    design review-wave.'
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-09-existing-system-sdd-design-all-features-review-run-gpt-5.4-adversarial-007
+  run_id: 2026-06-09-existing-system-sdd-design-all-features-review-run
+  source_model: gpt-5.4
+  source_round: round-1
+  source_raw_path: raw/gpt-5.4.round-1.txt
+  source_parsed_path: parsed/gpt-5.4.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: Current reopen state / pending gates
+  plain_language_summary: Nothing in the target document indicates that requirements
+    must be reopened again; the immediate gating issue is design completeness in CE
+    and WM before proceeding to design review-wave.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: 'leave-as-is: The requirements stage is described as approved,
+    and the identified defects are design-stage staleness and missing design contracts
+    in the two direct reopen features. Unless investigation of indirect features reveals
+    unmet design dependencies, the pending gates remain appropriate after design fixes:
+    complete design triad-review, then continue to design review-wave.'
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-09-existing-system-sdd-design-all-features-review-run-gemini-3.1-pro-preview-judgment-001
+  run_id: 2026-06-09-existing-system-sdd-design-all-features-review-run
+  source_model: gemini-3.1-pro-preview
+  source_round: round-1
+  source_raw_path: raw/gemini-3.1-pro-preview.round-1.txt
+  source_parsed_path: parsed/gemini-3.1-pro-preview.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: Direct Design Evidence > conformance-evaluation design.md
+  plain_language_summary: conformance-evaluation design.md is stale and lacks Requirement
+    10 and XDI-CE-002 updates
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: 'must-fix: The document overview still states 9 requirements and
+    stops at Requirement 9 goals. It must be updated to include the design model for
+    existing-system post-hoc intent, task bounding as reference inputs, candidate
+    output structures, and XDI-CE-002 traceability before proceeding to design review-wave.'
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-09-existing-system-sdd-design-all-features-review-run-gemini-3.1-pro-preview-judgment-002
+  run_id: 2026-06-09-existing-system-sdd-design-all-features-review-run
+  source_model: gemini-3.1-pro-preview
+  source_round: round-1
+  source_raw_path: raw/gemini-3.1-pro-preview.round-1.txt
+  source_parsed_path: parsed/gemini-3.1-pro-preview.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: Direct Design Evidence > workflow-management design.md
+  plain_language_summary: workflow-management design.md is stale and lacks Requirement
+    9 and XDI-WM-002 updates
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: 'must-fix: The document overview states 8 requirements and predates
+    Requirement 9. It must be updated to define the CE evaluation record intake contract,
+    downstream phase sequence, downstream_impact_decisions record shape, and XDI-WM-002
+    traceability before proceeding to design review-wave.'
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-09-existing-system-sdd-design-all-features-review-run-gemini-3.1-pro-preview-judgment-003
+  run_id: 2026-06-09-existing-system-sdd-design-all-features-review-run
+  source_model: gemini-3.1-pro-preview
+  source_round: round-1
+  source_raw_path: raw/gemini-3.1-pro-preview.round-1.txt
+  source_parsed_path: parsed/gemini-3.1-pro-preview.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: Indirect Feature Evidence
+  plain_language_summary: Indirect features do not require design changes
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: 'leave-as-is: foundation, runtime, evaluation, analysis, and self-improvement
+    designs have been reviewed and do not require modifications to support the CE
+    and WM changes. Maintaining them as indirect_check_only is sufficient at the design
+    stage.'
+  applied_files: []
+  superseded_by: null

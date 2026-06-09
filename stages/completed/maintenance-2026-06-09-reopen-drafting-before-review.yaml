@@ -1,0 +1,30 @@
+process_id: maintenance
+status: completed
+title: Reopen drafting before triad-review guard
+started_at: '2026-06-09T00:00:00+09:00'
+completed_at: '2026-06-09T00:00:00+09:00'
+mainline_blocked_by: stages/in-progress/reopen-procedure-2026-06-09-existing-system-sdd-code-drift.yaml
+trigger: design drafting を実施せずに design triad-review を開始できる next 判定の抜け穴が見つかった。
+allowed_scope:
+  - workflow-management next action guard
+  - workflow navigation documentation
+  - current reopen state correction
+allowed_files:
+  - tools/check-workflow-action.py
+  - tests/tools/test_check_workflow_action.py
+  - tests/operations/test_session_workflow_guide.py
+  - docs/operations/WORKFLOW_NAVIGATION.md
+  - docs/operations/REOPEN_PROCEDURE.md
+  - docs/operations/WORKFLOW_DISCIPLINE_MAP.yaml
+  - stages/in-progress/reopen-procedure-2026-06-09-existing-system-sdd-code-drift.yaml
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-09-existing-system-sdd-design-all-features-review-run/raw-review-triage-summary.md
+completion_conditions:
+  - next が triad-review 前に drafting 未完了を検出する。
+  - drafting 完了記録がある場合のみ triad-review gate を次タスクとして返す。
+  - 運用文書が run_reopen_drafting と drafting_completed_gates を説明する。
+result:
+  - tools/check-workflow-action.py に run_reopen_drafting 判定を追加した。
+  - drafting_completed_gates または completed_gates に stages/<phase>.yaml#drafting がある場合のみ triad-review へ進むようにした。
+  - design review-run を正式 triad-review ではなく pre-drafting gap audit として位置付け直した。
+verification:
+  - python3 -m unittest tests.tools.test_check_workflow_action.NextNavigationTests.test_next_reopen_requires_drafting_before_triad_review tests.tools.test_check_workflow_action.NextNavigationTests.test_next_reopen_reports_first_pending_gate_as_unique_task -v
