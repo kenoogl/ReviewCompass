@@ -24,6 +24,14 @@ OWNERSHIP_PATH = (
   / "notes"
   / "2026-06-09-completed-followup-contract-ownership.md"
 )
+CONTRACT_CONFIRMATION_PATH = (
+  ROOT
+  / ".reviewcompass"
+  / "specs"
+  / "conformance-evaluation"
+  / "conformance"
+  / "2026-06-09-completed-followup-contract-confirmation.md"
+)
 REQUIREMENTS_PATH = (
   ROOT
   / ".reviewcompass"
@@ -123,3 +131,16 @@ def test_requirements_and_design_adopt_completed_followup_prerequisite_contract(
   assert "Target document" in design
   assert "実アプリ pilot" not in requirements
   assert "実アプリ pilot" not in design
+
+
+def test_completed_followup_contract_confirmation_records_gap_resolution():
+  front_matter, body = _front_matter_and_body(CONTRACT_CONFIRMATION_PATH)
+
+  assert front_matter["type"] == "conformance_evaluation"
+  assert front_matter["mode_internal"] == "completed_followup_contract_confirmation"
+  assert front_matter["status"] == "conforms"
+  assert "completed follow-up prerequisite set" in body
+  assert "requirements gap: resolved" in body
+  assert "design gap: resolved" in body
+  assert "formal completed follow-up outputs" in body
+  assert "実アプリ pilot" not in body
