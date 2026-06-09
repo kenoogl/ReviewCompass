@@ -1,0 +1,13 @@
+role: primary
+provider: gemini-api
+model: gemini-3.5-flash
+attempts: 1
+duration_seconds: 18.11
+findings:
+- severity: WARN
+  target_location: docs/notes/2026-06-09-d021-deployable-reconstruction-readiness-checklist.md
+  description: Section 8 のステータスが `ready_with_gaps` 完了（次のタスクが D-004）を示しているにもかかわらず、Section
+    3、Section 4、Section 6 の各チェック項目がすべて `[ ]` のままである。
+  rationale: Section 7（Task Management Rules）にて「完了した項目は `[x]` に更新する」と定められています。D-021
+    の検証を完了して `ready_with_gaps` のレディネス判定を下したのであれば、実際の検証項目（Section 3, 4）の実施結果やエスカレーションルール（Section
+    6）の判定結果を反映し、チェックリストを `[x]` に更新すべきです。

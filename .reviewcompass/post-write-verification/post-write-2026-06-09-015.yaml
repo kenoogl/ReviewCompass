@@ -1,0 +1,108 @@
+status: completed
+target_files:
+- .reviewcompass/specs/_cross_feature/reviews/2026-06-09-deployable-reconstruction-readiness.md
+- docs/notes/2026-06-09-d021-deployable-reconstruction-readiness-checklist.md
+- docs/notes/review-runs/postwrite-d021-readiness-report-checklist-2026-06-09-r1/model-result-summary.yaml
+- docs/notes/review-runs/postwrite-d021-readiness-report-checklist-2026-06-09-r1/parsed/gemini-3.5-flash.round-1.yaml
+- docs/notes/review-runs/postwrite-d021-readiness-report-checklist-2026-06-09-r1/raw/gemini-3.5-flash.round-1.txt
+- docs/notes/review-runs/postwrite-d021-readiness-report-checklist-2026-06-09-r1/review_summary.md
+- docs/notes/review-runs/postwrite-d021-readiness-report-checklist-2026-06-09-r1/rounds.yaml
+- docs/notes/review-runs/postwrite-d021-readiness-report-checklist-2026-06-09-r1/target-manifest.yaml
+- docs/notes/review-runs/postwrite-d021-readiness-report-checklist-2026-06-09-r1/triage.yaml
+- docs/notes/review-runs/postwrite-d021-readiness-report-checklist-2026-06-09-r2/model-result-summary.yaml
+- docs/notes/review-runs/postwrite-d021-readiness-report-checklist-2026-06-09-r2/parsed/gemini-3.5-flash.round-1.yaml
+- docs/notes/review-runs/postwrite-d021-readiness-report-checklist-2026-06-09-r2/raw/gemini-3.5-flash.round-1.txt
+- docs/notes/review-runs/postwrite-d021-readiness-report-checklist-2026-06-09-r2/review_summary.md
+- docs/notes/review-runs/postwrite-d021-readiness-report-checklist-2026-06-09-r2/rounds.yaml
+- docs/notes/review-runs/postwrite-d021-readiness-report-checklist-2026-06-09-r2/target-manifest.yaml
+- docs/notes/review-runs/postwrite-d021-readiness-report-checklist-2026-06-09-r2/triage.yaml
+- docs/notes/review-runs/postwrite-d021-readiness-report-checklist-2026-06-09-r3/model-result-summary.yaml
+- docs/notes/review-runs/postwrite-d021-readiness-report-checklist-2026-06-09-r3/parsed/gemini-3.5-flash.round-1.yaml
+- docs/notes/review-runs/postwrite-d021-readiness-report-checklist-2026-06-09-r3/raw/gemini-3.5-flash.round-1.txt
+- docs/notes/review-runs/postwrite-d021-readiness-report-checklist-2026-06-09-r3/review_summary.md
+- docs/notes/review-runs/postwrite-d021-readiness-report-checklist-2026-06-09-r3/rounds.yaml
+- docs/notes/review-runs/postwrite-d021-readiness-report-checklist-2026-06-09-r3/target-manifest.yaml
+- docs/notes/review-runs/postwrite-d021-readiness-report-checklist-2026-06-09-r3/triage.yaml
+target_sha256:
+  .reviewcompass/specs/_cross_feature/reviews/2026-06-09-deployable-reconstruction-readiness.md: c557136ba28645c66a9d871bc775ecb9b7587ee907c0b9ffcb0336637093f6fe
+  docs/notes/2026-06-09-d021-deployable-reconstruction-readiness-checklist.md: 4e7ef18daee5927442cb92323dc14f01ded8e7cb4da3e3b840e84bd8c2b74dd8
+  docs/notes/review-runs/postwrite-d021-readiness-report-checklist-2026-06-09-r1/model-result-summary.yaml: 0d4d62d7b148271f682cab5fa54216f12d2c12613cf136b36a99cfe1f49cebef
+  docs/notes/review-runs/postwrite-d021-readiness-report-checklist-2026-06-09-r1/parsed/gemini-3.5-flash.round-1.yaml: 203e2684d8c7686807ae2f5bf0997fde33d7a07839ba777a3c3bd8b1fbf074e8
+  docs/notes/review-runs/postwrite-d021-readiness-report-checklist-2026-06-09-r1/raw/gemini-3.5-flash.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+  docs/notes/review-runs/postwrite-d021-readiness-report-checklist-2026-06-09-r1/review_summary.md: 9c197521406b1c700d8cf59bccfab778ab63f1314880617e0990c47d5a087451
+  docs/notes/review-runs/postwrite-d021-readiness-report-checklist-2026-06-09-r1/rounds.yaml: 4448c3572963ecdb1f5d7a6c51feeaa06d0e882e657a100541557a0089777299
+  docs/notes/review-runs/postwrite-d021-readiness-report-checklist-2026-06-09-r1/target-manifest.yaml: eff8dab47566909704add298f48df3c835999307b1cecfe4f11024a6eefbd080
+  docs/notes/review-runs/postwrite-d021-readiness-report-checklist-2026-06-09-r1/triage.yaml: 05f7eb390943f6a02e35aae65297490bf12cc518990fc251e8cb681c7af821f6
+  docs/notes/review-runs/postwrite-d021-readiness-report-checklist-2026-06-09-r2/model-result-summary.yaml: b1751985a67c01f5024c49506127f722b82dc72a624887eb4e33dc9e4ee485ff
+  docs/notes/review-runs/postwrite-d021-readiness-report-checklist-2026-06-09-r2/parsed/gemini-3.5-flash.round-1.yaml: 49240df0f1e2b9a775093b0cffe3b15fb6a3206433c89948b9fb7be1f70f1a33
+  docs/notes/review-runs/postwrite-d021-readiness-report-checklist-2026-06-09-r2/raw/gemini-3.5-flash.round-1.txt: c53067e8612a3f40eb56136ad84b8ab00c6f1c9dc729935f58da55ba4b7aa7f9
+  docs/notes/review-runs/postwrite-d021-readiness-report-checklist-2026-06-09-r2/review_summary.md: b098bb9f96d99014cac2503bb3c8eb99ebf4d53abb206040f8913c7a5916bdb7
+  docs/notes/review-runs/postwrite-d021-readiness-report-checklist-2026-06-09-r2/rounds.yaml: 75277e1318e4f03d4a5651eb00c7ee63302ce05c17b6a27d6e81793cbe8f3243
+  docs/notes/review-runs/postwrite-d021-readiness-report-checklist-2026-06-09-r2/target-manifest.yaml: 04ac3cd1ba31bf1620c8d1c099146ba3a5d81deba588f3d32e657e693fa3b320
+  docs/notes/review-runs/postwrite-d021-readiness-report-checklist-2026-06-09-r2/triage.yaml: 8fb657344582b1c07df4653029ca22a1f70741ddd96b111f9b5fd945d1548914
+  docs/notes/review-runs/postwrite-d021-readiness-report-checklist-2026-06-09-r3/model-result-summary.yaml: 4afc922eb520ad66e81b9adfa73b2e7871c2af08c80ccc2a73f5bcb44737d6ee
+  docs/notes/review-runs/postwrite-d021-readiness-report-checklist-2026-06-09-r3/parsed/gemini-3.5-flash.round-1.yaml: 6807ad0f0387a8c0aebc501aa7417e6788b32958e5c990c3a15cb0ccdab9dc84
+  docs/notes/review-runs/postwrite-d021-readiness-report-checklist-2026-06-09-r3/raw/gemini-3.5-flash.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+  docs/notes/review-runs/postwrite-d021-readiness-report-checklist-2026-06-09-r3/review_summary.md: df328be8d0792df79d3413c02449c9a64851462d5d817c1d47ae557f0d9a3147
+  docs/notes/review-runs/postwrite-d021-readiness-report-checklist-2026-06-09-r3/rounds.yaml: c126d0bb3e72af685a342357594538c414b9415b52e3790f4b21f68ab4f72124
+  docs/notes/review-runs/postwrite-d021-readiness-report-checklist-2026-06-09-r3/target-manifest.yaml: c054fa73b35d874f327da51ac3f4cc9901704b07299e075118e354686ed7fbb6
+  docs/notes/review-runs/postwrite-d021-readiness-report-checklist-2026-06-09-r3/triage.yaml: 3a8791bec17e66b40ed4a20eef027529311a9863ab44bc82f90a3889400458c8
+required_verifiers: &id001
+- gemini-3.5-flash
+completed_verifiers: *id001
+unresolved_substantive_findings: 0
+verifications:
+- verifier: gemini-3.5-flash
+  target_files:
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-09-deployable-reconstruction-readiness.md
+  - docs/notes/2026-06-09-d021-deployable-reconstruction-readiness-checklist.md
+  - docs/notes/review-runs/postwrite-d021-readiness-report-checklist-2026-06-09-r1/model-result-summary.yaml
+  - docs/notes/review-runs/postwrite-d021-readiness-report-checklist-2026-06-09-r1/parsed/gemini-3.5-flash.round-1.yaml
+  - docs/notes/review-runs/postwrite-d021-readiness-report-checklist-2026-06-09-r1/raw/gemini-3.5-flash.round-1.txt
+  - docs/notes/review-runs/postwrite-d021-readiness-report-checklist-2026-06-09-r1/review_summary.md
+  - docs/notes/review-runs/postwrite-d021-readiness-report-checklist-2026-06-09-r1/rounds.yaml
+  - docs/notes/review-runs/postwrite-d021-readiness-report-checklist-2026-06-09-r1/target-manifest.yaml
+  - docs/notes/review-runs/postwrite-d021-readiness-report-checklist-2026-06-09-r1/triage.yaml
+  - docs/notes/review-runs/postwrite-d021-readiness-report-checklist-2026-06-09-r2/model-result-summary.yaml
+  - docs/notes/review-runs/postwrite-d021-readiness-report-checklist-2026-06-09-r2/parsed/gemini-3.5-flash.round-1.yaml
+  - docs/notes/review-runs/postwrite-d021-readiness-report-checklist-2026-06-09-r2/raw/gemini-3.5-flash.round-1.txt
+  - docs/notes/review-runs/postwrite-d021-readiness-report-checklist-2026-06-09-r2/review_summary.md
+  - docs/notes/review-runs/postwrite-d021-readiness-report-checklist-2026-06-09-r2/rounds.yaml
+  - docs/notes/review-runs/postwrite-d021-readiness-report-checklist-2026-06-09-r2/target-manifest.yaml
+  - docs/notes/review-runs/postwrite-d021-readiness-report-checklist-2026-06-09-r2/triage.yaml
+  - docs/notes/review-runs/postwrite-d021-readiness-report-checklist-2026-06-09-r3/model-result-summary.yaml
+  - docs/notes/review-runs/postwrite-d021-readiness-report-checklist-2026-06-09-r3/parsed/gemini-3.5-flash.round-1.yaml
+  - docs/notes/review-runs/postwrite-d021-readiness-report-checklist-2026-06-09-r3/raw/gemini-3.5-flash.round-1.txt
+  - docs/notes/review-runs/postwrite-d021-readiness-report-checklist-2026-06-09-r3/review_summary.md
+  - docs/notes/review-runs/postwrite-d021-readiness-report-checklist-2026-06-09-r3/rounds.yaml
+  - docs/notes/review-runs/postwrite-d021-readiness-report-checklist-2026-06-09-r3/target-manifest.yaml
+  - docs/notes/review-runs/postwrite-d021-readiness-report-checklist-2026-06-09-r3/triage.yaml
+  target_sha256:
+    .reviewcompass/specs/_cross_feature/reviews/2026-06-09-deployable-reconstruction-readiness.md: c557136ba28645c66a9d871bc775ecb9b7587ee907c0b9ffcb0336637093f6fe
+    docs/notes/2026-06-09-d021-deployable-reconstruction-readiness-checklist.md: 4e7ef18daee5927442cb92323dc14f01ded8e7cb4da3e3b840e84bd8c2b74dd8
+    docs/notes/review-runs/postwrite-d021-readiness-report-checklist-2026-06-09-r1/model-result-summary.yaml: 0d4d62d7b148271f682cab5fa54216f12d2c12613cf136b36a99cfe1f49cebef
+    docs/notes/review-runs/postwrite-d021-readiness-report-checklist-2026-06-09-r1/parsed/gemini-3.5-flash.round-1.yaml: 203e2684d8c7686807ae2f5bf0997fde33d7a07839ba777a3c3bd8b1fbf074e8
+    docs/notes/review-runs/postwrite-d021-readiness-report-checklist-2026-06-09-r1/raw/gemini-3.5-flash.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/postwrite-d021-readiness-report-checklist-2026-06-09-r1/review_summary.md: 9c197521406b1c700d8cf59bccfab778ab63f1314880617e0990c47d5a087451
+    docs/notes/review-runs/postwrite-d021-readiness-report-checklist-2026-06-09-r1/rounds.yaml: 4448c3572963ecdb1f5d7a6c51feeaa06d0e882e657a100541557a0089777299
+    docs/notes/review-runs/postwrite-d021-readiness-report-checklist-2026-06-09-r1/target-manifest.yaml: eff8dab47566909704add298f48df3c835999307b1cecfe4f11024a6eefbd080
+    docs/notes/review-runs/postwrite-d021-readiness-report-checklist-2026-06-09-r1/triage.yaml: 05f7eb390943f6a02e35aae65297490bf12cc518990fc251e8cb681c7af821f6
+    docs/notes/review-runs/postwrite-d021-readiness-report-checklist-2026-06-09-r2/model-result-summary.yaml: b1751985a67c01f5024c49506127f722b82dc72a624887eb4e33dc9e4ee485ff
+    docs/notes/review-runs/postwrite-d021-readiness-report-checklist-2026-06-09-r2/parsed/gemini-3.5-flash.round-1.yaml: 49240df0f1e2b9a775093b0cffe3b15fb6a3206433c89948b9fb7be1f70f1a33
+    docs/notes/review-runs/postwrite-d021-readiness-report-checklist-2026-06-09-r2/raw/gemini-3.5-flash.round-1.txt: c53067e8612a3f40eb56136ad84b8ab00c6f1c9dc729935f58da55ba4b7aa7f9
+    docs/notes/review-runs/postwrite-d021-readiness-report-checklist-2026-06-09-r2/review_summary.md: b098bb9f96d99014cac2503bb3c8eb99ebf4d53abb206040f8913c7a5916bdb7
+    docs/notes/review-runs/postwrite-d021-readiness-report-checklist-2026-06-09-r2/rounds.yaml: 75277e1318e4f03d4a5651eb00c7ee63302ce05c17b6a27d6e81793cbe8f3243
+    docs/notes/review-runs/postwrite-d021-readiness-report-checklist-2026-06-09-r2/target-manifest.yaml: 04ac3cd1ba31bf1620c8d1c099146ba3a5d81deba588f3d32e657e693fa3b320
+    docs/notes/review-runs/postwrite-d021-readiness-report-checklist-2026-06-09-r2/triage.yaml: 8fb657344582b1c07df4653029ca22a1f70741ddd96b111f9b5fd945d1548914
+    docs/notes/review-runs/postwrite-d021-readiness-report-checklist-2026-06-09-r3/model-result-summary.yaml: 4afc922eb520ad66e81b9adfa73b2e7871c2af08c80ccc2a73f5bcb44737d6ee
+    docs/notes/review-runs/postwrite-d021-readiness-report-checklist-2026-06-09-r3/parsed/gemini-3.5-flash.round-1.yaml: 6807ad0f0387a8c0aebc501aa7417e6788b32958e5c990c3a15cb0ccdab9dc84
+    docs/notes/review-runs/postwrite-d021-readiness-report-checklist-2026-06-09-r3/raw/gemini-3.5-flash.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/postwrite-d021-readiness-report-checklist-2026-06-09-r3/review_summary.md: df328be8d0792df79d3413c02449c9a64851462d5d817c1d47ae557f0d9a3147
+    docs/notes/review-runs/postwrite-d021-readiness-report-checklist-2026-06-09-r3/rounds.yaml: c126d0bb3e72af685a342357594538c414b9415b52e3790f4b21f68ab4f72124
+    docs/notes/review-runs/postwrite-d021-readiness-report-checklist-2026-06-09-r3/target-manifest.yaml: c054fa73b35d874f327da51ac3f4cc9901704b07299e075118e354686ed7fbb6
+    docs/notes/review-runs/postwrite-d021-readiness-report-checklist-2026-06-09-r3/triage.yaml: 3a8791bec17e66b40ed4a20eef027529311a9863ab44bc82f90a3889400458c8
+review_run:
+  path: docs/notes/review-runs/postwrite-d021-readiness-report-checklist-2026-06-09-r3
+  summary_path: docs/notes/review-runs/postwrite-d021-readiness-report-checklist-2026-06-09-r3/model-result-summary.yaml
+notes: Generated template; verify target_files cover current post-write targets before
+  use.

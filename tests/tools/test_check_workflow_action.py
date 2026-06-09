@@ -1940,6 +1940,33 @@ class NextNavigationTests(unittest.TestCase):
       data["next_action"]["required_disciplines"],
     )
 
+  def test_next_completed_from_external_app_root_fixture(self):
+    """ReviewCompass repo 外の対象 app root でも completed を判定できる"""
+    cwd = Path(self.tmpdir) / "external-app"
+    cwd.mkdir()
+    done = {
+      "drafting": True,
+      "triad-review": True,
+      "review-wave": True,
+      "alignment": True,
+      "approval": True,
+    }
+    _write_specs_for_next(
+      cwd,
+      {feature: done for feature in FEATURE_ORDER},
+    )
+    _write_completed_phase_artifacts(cwd)
+
+    result = run_script(["next", "--json"], cwd=cwd)
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 0, result.stderr)
+    data = json.loads(result.stdout)
+    self.assertEqual(data["verdict"], "OK")
+    self.assertEqual(data["next_action"]["kind"], "completed")
+    self.assertEqual(data["next_action"]["reason"], "すべての workflow_state が完了しています")
+    self.assertFalse((REPO_ROOT / ".reviewcompass" / "specs" / "external-app").exists())
+
   def test_next_detects_intent_update_requires_reopen_classification(self):
     """完了済み workflow で intent が新しければ reopen 分類を要求する"""
     cwd = Path(self.tmpdir)

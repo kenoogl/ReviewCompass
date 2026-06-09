@@ -1,0 +1,26 @@
+run_id: postwrite-d021-readiness-report-checklist-2026-06-09-r2
+triage_status: decided
+generated_at: '2026-06-09T05:54:28.430939+00:00'
+decision_actor: null
+decision_actor_type: human
+items:
+- finding_id: postwrite-d021-readiness-report-checklist-2026-06-09-r2-gemini-3.5-flash-primary-001
+  run_id: postwrite-d021-readiness-report-checklist-2026-06-09-r2
+  source_model: gemini-3.5-flash
+  source_round: round-1
+  source_raw_path: raw/gemini-3.5-flash.round-1.txt
+  source_parsed_path: parsed/gemini-3.5-flash.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: docs/notes/2026-06-09-d021-deployable-reconstruction-readiness-checklist.md
+  plain_language_summary: Section 8 のステータスが `ready_with_gaps` 完了（次のタスクが D-004）を示しているにもかかわらず、Section
+    3、Section 4、Section 6 の各チェック項目がすべて `[ ]` のままである。
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: codex
+  decision_actor_type: agent
+  decision_at: '2026-06-09T05:55:41.617058+00:00'
+  decision_reason: D-021 verdict を ready_with_gaps に更新したため、report で判定済みの Section 3
+    / 4 / 6 項目を [x] に更新した。
+  applied_files: []
+  superseded_by: null
