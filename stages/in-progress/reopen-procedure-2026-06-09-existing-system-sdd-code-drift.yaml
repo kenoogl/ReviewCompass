@@ -36,6 +36,8 @@ requirements_drafting_evidence:
   - .reviewcompass/specs/workflow-management/requirements.md
 requirements_chain_correction: requirements 正本を実質修正したため、alignment へ直行せず、requirements triad-review と review-wave を再実施してから alignment / approval に進む。
 next_step: 第3過程：stages/requirements.yaml#triad-review 再実施
+superseded_partial_review_run: .reviewcompass/specs/_cross_feature/reviews/2026-06-09-existing-system-sdd-requirements-review-run
+planned_review_run: .reviewcompass/specs/_cross_feature/reviews/2026-06-09-existing-system-sdd-requirements-all-features-review-run
 impacted_downstream_phases:
   - requirements
   - design

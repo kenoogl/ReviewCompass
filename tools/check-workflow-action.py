@@ -861,8 +861,23 @@ def _dedupe_strings(values):
 def _render_next_action_template(value, next_action):
   """next_action の値で required_input のテンプレートを解決する"""
   if isinstance(value, str):
+    feature_value = next_action.get("feature") or ""
+    if "{feature}" in value and isinstance(feature_value, list):
+      rendered = []
+      for feature in feature_value:
+        replacements = {
+          "feature": feature,
+          "phase": next_action.get("phase") or "",
+          "stage": next_action.get("stage") or "",
+          "kind": next_action.get("kind") or "",
+        }
+        try:
+          rendered.append(value.format(**replacements))
+        except (KeyError, ValueError):
+          rendered.append(value)
+      return rendered
     replacements = {
-      "feature": next_action.get("feature") or "",
+      "feature": feature_value,
       "phase": next_action.get("phase") or "",
       "stage": next_action.get("stage") or "",
       "kind": next_action.get("kind") or "",
@@ -872,10 +887,32 @@ def _render_next_action_template(value, next_action):
     except (KeyError, ValueError):
       return value
   if isinstance(value, list):
-    return [
-      _render_next_action_template(item, next_action)
-      for item in value
-    ]
+    feature_value = next_action.get("feature") or ""
+    if (
+      isinstance(feature_value, list)
+      and value
+      and all(isinstance(item, str) for item in value)
+      and any("{feature}" in item for item in value)
+    ):
+      rendered = []
+      for feature in feature_value:
+        scoped_action = dict(next_action)
+        scoped_action["feature"] = feature
+        for item in value:
+          resolved = _render_next_action_template(item, scoped_action)
+          if isinstance(resolved, list):
+            rendered.extend(resolved)
+          else:
+            rendered.append(resolved)
+      return rendered
+    rendered = []
+    for item in value:
+      resolved = _render_next_action_template(item, next_action)
+      if isinstance(resolved, list):
+        rendered.extend(resolved)
+      else:
+        rendered.append(resolved)
+    return rendered
   if isinstance(value, dict):
     return {
       key: _render_next_action_template(item, next_action)
@@ -2894,6 +2931,69 @@ def resolve_reopen_required_action(next_step, current_blocker, step_number=None)
   return "inspect_reopen_state"
 
 
+def _ordered_known_features(features):
+  """既知 feature 順を優先して feature list を返す"""
+  feature_set = {
+    feature for feature in features
+    if isinstance(feature, str) and feature
+  }
+  ordered = [
+    feature for feature in FEATURE_ORDER
+    if feature in feature_set
+  ]
+  extras = sorted(feature_set - set(ordered))
+  return ordered + extras
+
+
+def _as_feature_list(value):
+  """YAML 値を feature list に正規化する"""
+  if isinstance(value, str):
+    return [value]
+  if isinstance(value, list):
+    return [
+      feature for feature in value
+      if isinstance(feature, str) and feature
+    ]
+  return []
+
+
+def reopen_feature_scope_from_data(data):
+  """reopen 手続き YAML から対象 feature scope を機械的に返す"""
+  decisions = data.get("feature_impact_decisions")
+  if not isinstance(decisions, list) or not decisions:
+    features = _as_feature_list(data.get("feature"))
+    ordered = _ordered_known_features(features)
+    return {
+      "required_feature_scope": ordered,
+      "direct_features": ordered,
+      "indirect_features": [],
+      "feature_impact_scope_basis": "feature",
+    }
+
+  all_features = []
+  direct_features = []
+  indirect_features = []
+  for decision in decisions:
+    if not isinstance(decision, dict):
+      continue
+    feature = decision.get("feature")
+    if not isinstance(feature, str) or not feature:
+      continue
+    all_features.append(feature)
+    decision_value = decision.get("decision")
+    if decision_value in ("reopen_existing_feature", "new_feature_required"):
+      direct_features.append(feature)
+    else:
+      indirect_features.append(feature)
+
+  return {
+    "required_feature_scope": _ordered_known_features(all_features),
+    "direct_features": _ordered_known_features(direct_features),
+    "indirect_features": _ordered_known_features(indirect_features),
+    "feature_impact_scope_basis": "feature_impact_decisions",
+  }
+
+
 def build_in_progress_next_action(cwd, relative_path):
   """進行中状態ファイルから next_action を作る"""
   data = load_in_progress_file(cwd, relative_path)
@@ -2937,6 +3037,7 @@ def build_in_progress_next_action(cwd, relative_path):
     )
     if next_pending_gate:
       required_action = "run_reopen_pending_gate"
+    feature_scope = reopen_feature_scope_from_data(data)
     return {
       "kind": "reopen_in_progress",
       "file": relative_path,
@@ -2948,7 +3049,11 @@ def build_in_progress_next_action(cwd, relative_path):
       "next_pending_gate": next_pending_gate,
       "current_blocker": current_blocker,
       "required_action": required_action,
-      "feature": data.get("feature"),
+      "feature": feature_scope["required_feature_scope"],
+      "required_feature_scope": feature_scope["required_feature_scope"],
+      "direct_features": feature_scope["direct_features"],
+      "indirect_features": feature_scope["indirect_features"],
+      "feature_impact_scope_basis": feature_scope["feature_impact_scope_basis"],
       "phase": pending_phase,
       "stage": pending_stage,
       "reason": "reopen 手続きの進行中状態ファイルがあります",

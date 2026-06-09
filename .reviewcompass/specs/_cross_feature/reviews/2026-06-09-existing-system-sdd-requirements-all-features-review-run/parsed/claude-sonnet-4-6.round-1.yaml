@@ -1,0 +1,127 @@
+role: primary
+provider: anthropic-api
+model: claude-sonnet-4-6
+attempts: 1
+duration_seconds: 41.165
+findings:
+- severity: ERROR
+  target_location: conformance-evaluation Requirement 10, Acceptance Criteria 2
+  description: Requirement 10 AC2 states the feature extracts 'tasks または実装上の作業契約候補'
+    from implementation code, but existing CE scope explicitly excludes tasks from
+    CE's responsibility.
+  rationale: 'Prior partial review finding #1 identified this conflict. Existing CE
+    feature scope does not include tasks ownership. Including task contract extraction
+    in CE Requirement 10 creates an undeclared scope expansion that conflicts with
+    the established feature boundary. This must-fix conflict must be resolved before
+    requirements triad-review can complete: either remove task contract extraction
+    from CE Requirement 10 and assign it elsewhere, or explicitly amend the CE scope
+    statement to include it.'
+- severity: ERROR
+  target_location: conformance-evaluation Requirement 10, Acceptance Criteria 3 and
+    6
+  description: The classification scheme (5 categories in AC3) and output structure
+    (AC6) are insufficiently specified to serve as a verifiable requirements contract.
+    Category definitions lack boundary conditions, and the output record structure
+    does not specify required fields, cardinality, or schema reference.
+  rationale: 'Prior partial review finding #2 identified under-specification in CE
+    classification and output structure. Without precise category definitions and
+    output schema anchors, design and test stages cannot derive acceptance tests from
+    these requirements. This is a must-fix for requirements completeness before review-wave
+    proceeds.'
+- severity: ERROR
+  target_location: workflow-management Requirement 9, Acceptance Criteria 3
+  description: The conflict stop condition in WM Requirement 9 AC3 is under-specified.
+    It states 'human approval or designated review as a stop point' but does not define
+    what constitutes a stop, what the stop gate artifact is, who is the approver,
+    or under what conditions the stop may be bypassed or overridden.
+  rationale: 'Prior partial review finding #3 identified this gap. A stop condition
+    that lacks operational definition cannot be enforced by design or implemented
+    deterministically. This is a must-fix: the requirement must specify the gate artifact,
+    approval actor, and bypass conditions at minimum.'
+- severity: WARN
+  target_location: workflow-management Requirement 9, Acceptance Criteria 4
+  description: 'AC4 states WM receives conformance-evaluation output and progresses
+    through the formal reopen procedure, but does not specify the interface contract:
+    the format, schema, or handoff mechanism between CE output and WM intake.'
+  rationale: 'The CE/WM boundary is described narratively but the handoff artifact
+    is not defined in either Requirement 10 or Requirement 9. This creates a design-stage
+    gap. Should-fix: the interface should be named and schema-anchored at requirements
+    stage to prevent boundary ambiguity during design.'
+- severity: WARN
+  target_location: 'Feature impact table, indirect features: foundation'
+  description: Foundation owns evidence vocabulary and metadata contracts that CE
+    Requirement 10 and WM Requirement 9 both depend on (code references, evaluation
+    records, reopen procedure schema). The indirect_check_only decision is not accompanied
+    by a documented check result confirming no foundation requirements text changes
+    are needed.
+  rationale: 'The review target states foundation must be referenced and not redefined,
+    and the 2026-06-08 note confirms evidence/metadata contracts are in scope for
+    the added intent. Without a recorded check result for foundation, the indirect_check_only
+    decision is unverifiable. Should-fix: a foundation indirect check result confirming
+    existing requirements are sufficient must be recorded before review-wave.'
+- severity: WARN
+  target_location: 'Feature impact table, indirect features: runtime'
+  description: Runtime owns structured evidence output and fixed-pattern exclusion,
+    both of which are referenced as receiving the added intent per the 2026-06-08
+    note. The indirect_check_only decision is not supported by a documented check
+    result.
+  rationale: CE Requirement 10 AC2 and AC5 depend on structured evidence output that
+    runtime produces. If runtime's evidence output schema does not already accommodate
+    code-reference fields, runtime requirements may need amendment. The absence of
+    a check result leaves this risk unresolved. Should-fix before review-wave.
+- severity: WARN
+  target_location: 'Feature impact table, indirect features: evaluation'
+  description: Evaluation explicitly excludes upstream document conformance as CE's
+    responsibility, but CE Requirement 10 AC6 generates evaluation records. It is
+    not confirmed that the existing evaluation schema and validity-separation logic
+    can ingest CE-generated records without evaluation requirements changes.
+  rationale: 'If CE outputs a new record type not covered by existing evaluation ingestion
+    contracts, evaluation requirements must be amended. The indirect_check_only decision
+    does not include a check result confirming compatibility. Should-fix: record a
+    compatibility check result for evaluation before review-wave.'
+- severity: WARN
+  target_location: 'Feature impact table, indirect features: analysis'
+  description: Analysis owns claim-to-evidence mapping and evaluation-output provenance.
+    CE Requirement 10 produces new evidence record types (code references, conflict
+    candidates). No check result confirms that existing analysis data contracts cover
+    these new record types.
+  rationale: If analysis must map claims from CE-derived evidence, its data contracts
+    may need extension. The indirect_check_only decision without a recorded check
+    result is insufficient assurance. Should-fix before review-wave.
+- severity: INFO
+  target_location: 'Feature impact table, indirect features: self-improvement'
+  description: Self-improvement may consume conformance-evaluation results as workflow
+    improvement signals per its existing requirements. The indirect_check_only decision
+    appears plausible given that self-improvement does not mutate workflow files directly.
+  rationale: 'No requirements text change appears necessary for self-improvement based
+    on current evidence. Leave-as-is: the existing requirements stating that workflow-management
+    executes approved changes through the formal procedure adequately cover the added
+    intent boundary. Record only.'
+- severity: WARN
+  target_location: 'Review target document, section: Current Reopen State, pending
+    gates'
+  description: The pending gate sequence lists requirements triad-review, review-wave,
+    alignment, approval for all seven features, but the review target does not confirm
+    whether feature-partitioning must be reopened again given that CE scope may require
+    amendment (tasks ownership question).
+  rationale: 'If CE Requirement 10 is amended to remove task contract extraction,
+    the question of which feature owns that responsibility must be resolved. If no
+    existing feature owns it, feature-partitioning may need reopening. This gate sequence
+    risk should be acknowledged and a decision recorded. Should-fix: explicitly state
+    whether feature-partitioning is or is not reopened as part of this chain after
+    resolving the CE scope conflict.'
+- severity: INFO
+  target_location: conformance-evaluation Requirement 10, Acceptance Criteria 8
+  description: AC8 permits ReviewCompass self-targeting trial runs and saving results
+    as workflow improvement input. This is consistent with WM Requirement 9 AC6 and
+    self-improvement scope. No conflict detected.
+  rationale: 'Leave-as-is: the self-targeting allowance is appropriately bounded by
+    the requirement that formal updates proceed through workflow-management''s formal
+    procedure. The symmetry with WM AC6 is adequate.'
+- severity: INFO
+  target_location: 'Trace sections: XDI-CE-002 and XDI-WM-002'
+  description: Both trace entries correctly defer detailed design and task decomposition
+    to design/tasks stages. The trace language is consistent with the review gate
+    sequence.
+  rationale: 'Leave-as-is: trace entries are appropriately scoped for requirements
+    stage and do not prematurely constrain design decisions.'

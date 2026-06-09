@@ -1,0 +1,25 @@
+findings:
+  - severity: ERROR
+    target_location: "Direct Requirements Changes > conformance-evaluation Requirement 10 > Acceptance criteria 2"
+    description: "CE Requirement 10 newly requires extraction of 'tasks または実装上の作業契約候補', which conflicts with the stated prior CE scope concern that tasks are out of scope and leaves the feature boundary with workflow-management/design-task stages unresolved."
+    rationale: "must-fix: The review target itself flags this as a prior candidate issue, and the current text does not resolve it. Requiring CE to extract task-level artifacts expands external scope beyond evidence-backed requirements/design candidate extraction and risks duplicating downstream planning responsibility owned elsewhere. The requirement should either remove task/implementation work-contract extraction from CE, or explicitly amend CE scope and cross-feature boundaries so later design/tests have a stable contract."
+  - severity: WARN
+    target_location: "Direct Requirements Changes > conformance-evaluation Requirement 10 > Acceptance criteria 3, 4, 6"
+    description: "CE Requirement 10 defines several classifications and outputs, but the required result schema and decision semantics remain under-specified for downstream workflow consumption."
+    rationale: "should-fix: Categories such as '仕様追記候補', '既存設計との衝突候補', '実装変更候補', and '人間判断が必要' are named, but the document does not state whether these are mutually exclusive, feature-scoped, phase-scoped, many-to-many, or how they map into the evaluation record consumed by workflow-management. This may be survivable at triad-review, but should be tightened in this reopen chain to avoid design drift and incompatible evidence structures."
+  - severity: WARN
+    target_location: "Direct Requirements Changes > workflow-management Requirement 9 > Acceptance criteria 3"
+    description: "The workflow-management stop condition for conflicts is still not concrete enough to ensure deterministic downstream handling."
+    rationale: "should-fix: AC3 says conflict candidates should be recorded and '人間承認または所定のレビューを停止点にする', but it does not state which review/gate is mandatory, whether all conflict candidates block progress, or what minimum evidence is needed before proceeding. Because this requirement governs reopen propagation across requirements/design/tasks/implementation, ambiguity here can produce inconsistent gate behavior across features."
+  - severity: INFO
+    target_location: "Feature Impact Decisions From Reopen Record / Existing Requirements Context For Indirect Features"
+    description: "All seven features are explicitly included in scope, and the direct vs indirect impact split is plausibly justified by ownership boundaries in the current requirements text."
+    rationale: "leave-as-is: The document corrects the earlier partial-review gap by bringing all features into scope, while preserving direct reopen only for conformance-evaluation and workflow-management. The indirect features are described as consumers of shared evidence, metadata, execution, evaluation, reporting, or improvement signals rather than owners of the new reopen/extraction behavior, which is a reasonable requirements-stage impact decision."
+  - severity: INFO
+    target_location: "Existing Requirements Context For Indirect Features"
+    description: "No must-fix evidence is provided that foundation, runtime, evaluation, analysis, or self-improvement require immediate requirements-text changes, assuming they can consume the new records via existing contracts."
+    rationale: "leave-as-is: The target document supplies ownership context for each indirect feature and explains why the change is derivative rather than contract-owning. At requirements stage, 'indirect_check_only' appears sufficient unless later review finds that CE/WM outputs exceed existing shared schema, evidence vocabulary, or bundle contracts."
+  - severity: INFO
+    target_location: "Current Reopen State"
+    description: "The pending gate sequence remains appropriate for material requirements changes: rerun requirements triad-review and review-wave before alignment/approval, with downstream phases still marked impacted."
+    rationale: "leave-as-is: Given the stated substantive requirements changes and the reopen record's impacted_downstream_phases across requirements/design/tasks/implementation, the current sequence is consistent with the formal workflow and does not itself require feature-partitioning to be reopened again unless CE scope is intentionally expanded beyond its current ownership."

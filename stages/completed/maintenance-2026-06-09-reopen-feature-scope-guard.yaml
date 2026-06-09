@@ -1,0 +1,19 @@
+process_id: maintenance
+title: reopen feature scope guard
+started_at: 2026-06-09T00:00:00+09:00
+completed_at: 2026-06-09T00:00:00+09:00
+blocked_normal_workflow: true
+mainline_blocked_by: stages/in-progress/reopen-procedure-2026-06-09-existing-system-sdd-code-drift.yaml
+reason: reopen の requirements triad-review 対象 feature scope が LLM 判断に依存していたため、本線レビュー実行前に機械化した。
+completed_actions:
+  - reopen next_action が feature_impact_decisions から全対象 feature を required_feature_scope として返すようにした
+  - direct_features と indirect_features を next_action に明示した
+  - triad-review required_inputs が全対象 feature の文書パスへ展開されるようにした
+verification:
+  - command: .venv/bin/python3 -m pytest tests/tools/test_check_workflow_action.py
+    result: 136 passed
+allowed_files:
+  - tools/check-workflow-action.py
+  - tests/tools/test_check_workflow_action.py
+  - stages/in-progress/maintenance-2026-06-09-reopen-feature-scope-guard.yaml
+  - stages/completed/maintenance-2026-06-09-reopen-feature-scope-guard.yaml

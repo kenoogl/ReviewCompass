@@ -1,0 +1,59 @@
+findings:
+  - severity: WARN
+    target_location: ".reviewcompass/specs/conformance-evaluation/requirements.md Requirement 10, Acceptance Criterion 2"
+    description: "Acceptance criterion 2 introduces 'tasks または実装上の作業契約候補' as extraction targets alongside requirements and design candidates, but prior CE requirements explicitly treated tasks as out of scope for conformance-evaluation. No explicit statement reconciles or supersedes that prior scope boundary."
+    rationale: "should-fix: If existing CE requirements exclude tasks from scope, Requirement 10 AC-2 silently expands scope without a documented scope-change rationale. Downstream design and test work will be ambiguous about whether task-layer extraction is in scope. Either a scope-extension note should be added to Requirement 10, or a cross-reference to the prior scope statement with an explicit override should be included, so reviewers and designers can trace the deliberate decision."
+    verifying_commands:
+      - "grep -n 'tasks' .reviewcompass/specs/conformance-evaluation/requirements.md"
+      - "grep -n 'scope' .reviewcompass/specs/conformance-evaluation/requirements.md"
+
+  - severity: WARN
+    target_location: ".reviewcompass/specs/conformance-evaluation/requirements.md Requirement 10, Acceptance Criterion 3 — classification labels"
+    description: "AC-3 defines five classification labels ('既存仕様で説明済み', '仕様追記候補', '既存設計との衝突候補', '実装変更候補', '人間判断が必要') but does not specify whether these labels are mutually exclusive, whether a single candidate can carry multiple labels, or what precedence rule applies when multiple labels could apply."
+    rationale: "should-fix: Ambiguity in classification semantics makes it difficult to write deterministic design rules or test cases. For example, a candidate that is both a '仕様追記候補' and triggers '人間判断が必要' has no defined representation. Clarifying the label model (e.g., primary label + flags, or ordered priority) would make the requirement testable."
+    verifying_commands:
+      - "grep -n '分類' .reviewcompass/specs/conformance-evaluation/requirements.md"
+
+  - severity: WARN
+    target_location: ".reviewcompass/specs/conformance-evaluation/requirements.md Requirement 10, Acceptance Criterion 6 — output artifact names"
+    description: "AC-6 lists four output artifacts ('feature ごとの差分候補一覧', '仕様更新草案', '実装変更候補', '既存設計との衝突候補') as a single '評価記録' but does not specify whether these are separate files, sections of one file, or structured fields. The storage location and file naming convention are not stated."
+    rationale: "should-fix: Without output artifact structure, downstream workflow-management Requirement 9 AC-4 (which consumes CE output) cannot specify a concrete handoff contract. Design and implementation will have to invent conventions, risking drift from intent. Adding at minimum a note on artifact granularity (e.g., one YAML per feature, or a single review record with named sections) would make the handoff boundary testable."
+    verifying_commands:
+      - "grep -n '評価記録\|出力' .reviewcompass/specs/conformance-evaluation/requirements.md"
+      - "find .reviewcompass/specs/conformance-evaluation -name '*.md' | xargs grep -l 'output\|artifact'"
+
+  - severity: WARN
+    target_location: ".reviewcompass/specs/workflow-management/requirements.md Requirement 9, Acceptance Criterion 4 — handoff contract vagueness"
+    description: "AC-4 states that WM Requirement 9 'receives conformance-evaluation output' but does not define what format, schema, or trigger mechanism is used. The phrase 'conformance-evaluation の出力として受け取り' implies a dependency, but neither the trigger (manual hand-off, automated read, file path convention) nor the required fields are specified."
+    rationale: "should-fix: Without a concrete handoff contract, the boundary between the two features remains informal. This risks implementation-time coupling decisions being made ad hoc. A note referencing the CE output artifact format (even if that format is finalized in design) would make the requirement boundary enforceable at the design stage."
+    verifying_commands:
+      - "grep -n '受け取り\|handoff\|output' .reviewcompass/specs/workflow-management/requirements.md"
+
+  - severity: WARN
+    target_location: ".reviewcompass/specs/workflow-management/requirements.md Requirement 9, Acceptance Criterion 5 — 'existing_sufficient' judgment criteria"
+    description: "AC-5 requires that even when each downstream phase is judged 'existing_sufficient', the judgment target, reason, and evidence must be recorded in 'downstream_impact_decisions'. However, the requirement does not specify who or what makes this judgment, nor the minimum evidence required to close the judgment. This leaves the stopping condition undefined."
+    rationale: "should-fix: An undefined judgment authority means the reopen chain can be closed prematurely or kept open indefinitely depending on individual interpretation. Specifying at minimum that judgment requires a named reviewer action (or a gate approval step) would make the criterion testable and prevent silent closure."
+    verifying_commands:
+      - "grep -n 'existing_sufficient\|downstream_impact_decisions' .reviewcompass/specs/workflow-management/requirements.md"
+      - "grep -rn 'existing_sufficient' stages/"
+
+  - severity: INFO
+    target_location: "Trace additions XDI-CE-002 and XDI-WM-002"
+    description: "Both trace additions state '詳細な設計・タスク化は design／tasks 段で確定する', which is appropriate deferral language. However, neither trace entry references the corresponding acceptance criteria by number, making forward traceability from trace ID to specific AC harder to automate."
+    rationale: "leave-as-is: Acceptable for requirements stage. Adding AC number references (e.g., 'CE-10-AC-2 through AC-8') in the trace text would improve traceability tooling support in future design/tasks stages, but is not a blocker."
+    verifying_commands:
+      - "grep -n 'XDI-CE-002\|XDI-WM-002' .reviewcompass/specs/conformance-evaluation/requirements.md .reviewcompass/specs/workflow-management/requirements.md"
+
+  - severity: INFO
+    target_location: "reopen-procedure-2026-06-09-existing-system-sdd-code-drift.yaml — pending gates"
+    description: "The reopen record correctly lists requirements triad-review → review-wave → alignment → approval as pending gates, consistent with the stated rationale that requirements were materially modified. The gate sequence matches the review-target document's description and appears appropriate."
+    rationale: "leave-as-is: No gap found. Confirming that the gate sequence is consistent with the reopen classification N-0 and the stated change type (requirements正本の実質修正)."
+    verifying_commands:
+      - "grep -n 'pending\|gate\|triad' stages/in-progress/reopen-procedure-2026-06-09-existing-system-sdd-code-drift.yaml"
+
+  - severity: INFO
+    target_location: ".reviewcompass/specs/conformance-evaluation/requirements.md Requirement 10, Acceptance Criterion 8 and workflow-management Requirement 9 AC-6 — self-application scope"
+    description: "Both requirements explicitly permit ReviewCompass itself as a trial target. This self-referential scope is consistent across both requirements and with the reopen procedure's stated origin. No contradiction found."
+    rationale: "leave-as-is: The symmetry between CE AC-8 and WM AC-6 on self-application is intentional and adequately stated. No action needed at requirements stage."
+    verifying_commands:
+      - "grep -n '試行\|ReviewCompass 自身' .reviewcompass/specs/conformance-evaluation/requirements.md .reviewcompass/specs/workflow-management/requirements.md"

@@ -1,0 +1,199 @@
+run_id: 2026-06-09-existing-system-sdd-requirements-review-run
+triage_status: draft
+generated_at: '2026-06-09T01:50:48.815758+00:00'
+decision_actor: null
+decision_actor_type: human
+items:
+- finding_id: 2026-06-09-existing-system-sdd-requirements-review-run-gpt-5.4-adversarial-001
+  run_id: 2026-06-09-existing-system-sdd-requirements-review-run
+  source_model: gpt-5.4
+  source_round: round-1
+  source_raw_path: raw/gpt-5.4.round-1.txt
+  source_parsed_path: parsed/gpt-5.4.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: Output contract vs. Review Criteria section
+  plain_language_summary: The review criteria require each finding to include `verifying_commands`,
+    but the output contract explicitly allows only `severity`, `target_location`,
+    `description`, and `rationale`.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: 'must-fix: This specification is internally inconsistent for the
+    reviewer deliverable. A compliant response cannot satisfy both instructions at
+    once, which makes review completion criteria ambiguous and non-testable.'
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-09-existing-system-sdd-requirements-review-run-gpt-5.4-adversarial-002
+  run_id: 2026-06-09-existing-system-sdd-requirements-review-run
+  source_model: gpt-5.4
+  source_round: round-1
+  source_raw_path: raw/gpt-5.4.round-1.txt
+  source_parsed_path: parsed/gpt-5.4.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: .reviewcompass/specs/conformance-evaluation/requirements.md Requirement
+    10 Acceptance criteria 2
+  plain_language_summary: Requirement 10 expands conformance-evaluation to extract
+    `tasks` and `実装上の作業契約候補`, but the review target does not define how this reconciles
+    with prior CE scope that reportedly treated tasks as out of scope.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: 'must-fix: The review explicitly asks to check for contradiction
+    with existing CE requirements, and this added requirement appears to broaden scope
+    without stating supersession, exception, or compatibility rules. Downstream design
+    and test work would be blocked by unresolved requirement drift.'
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-09-existing-system-sdd-requirements-review-run-gpt-5.4-adversarial-003
+  run_id: 2026-06-09-existing-system-sdd-requirements-review-run
+  source_model: gpt-5.4
+  source_round: round-1
+  source_raw_path: raw/gpt-5.4.round-1.txt
+  source_parsed_path: parsed/gpt-5.4.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: .reviewcompass/specs/conformance-evaluation/requirements.md Requirement
+    10 Acceptance criteria 3-6
+  plain_language_summary: 'The classification/output model is not sufficiently normalized:
+    criteria list five classifications, while outputs list four artifact groups, and
+    it is unclear whether each candidate must map to exactly one class, multiple classes,
+    or both a class and an output bucket.'
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: 'should-fix: The intent is understandable, but later design and
+    verification will struggle to define stable data structures and acceptance tests
+    unless the relationship between candidate classification and generated report
+    sections is made explicit.'
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-09-existing-system-sdd-requirements-review-run-gpt-5.4-adversarial-004
+  run_id: 2026-06-09-existing-system-sdd-requirements-review-run
+  source_model: gpt-5.4
+  source_round: round-1
+  source_raw_path: raw/gpt-5.4.round-1.txt
+  source_parsed_path: parsed/gpt-5.4.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: .reviewcompass/specs/conformance-evaluation/requirements.md Requirement
+    10 Acceptance criteria 5
+  plain_language_summary: The phrase `LLM による推定理由` is required as evidence, but no
+    minimum provenance or reproducibility expectations are stated for model-generated
+    reasoning.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: 'should-fix: Because this requirement is about evidence-backed
+    extraction from existing code/specs, relying on LLM reasoning without specifying
+    traceability expectations risks non-repeatable outputs and disputes over whether
+    evidence is sufficient.'
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-09-existing-system-sdd-requirements-review-run-gpt-5.4-adversarial-005
+  run_id: 2026-06-09-existing-system-sdd-requirements-review-run
+  source_model: gpt-5.4
+  source_round: round-1
+  source_raw_path: raw/gpt-5.4.round-1.txt
+  source_parsed_path: parsed/gpt-5.4.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: .reviewcompass/specs/workflow-management/requirements.md Requirement
+    9 Acceptance criteria 3
+  plain_language_summary: 'The stopping condition for conflicts is underspecified:
+    the requirement says to record conflict candidates and use `human approval or
+    prescribed review` as a stop point, but it does not identify which review, at
+    which phase, or what state transition should occur.'
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: 'should-fix: Workflow-management is responsible for formal process
+    control, so ambiguous stop/go semantics can cause inconsistent reopen handling
+    across requirements/design/tasks/implementation phases.'
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-09-existing-system-sdd-requirements-review-run-gpt-5.4-adversarial-006
+  run_id: 2026-06-09-existing-system-sdd-requirements-review-run
+  source_model: gpt-5.4
+  source_round: round-1
+  source_raw_path: raw/gpt-5.4.round-1.txt
+  source_parsed_path: parsed/gpt-5.4.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: Reopen State
+  plain_language_summary: 'The reopen pending gates are consistent with a material
+    requirements change: re-running requirements triad-review and review-wave before
+    alignment/approval matches the stated reopen record.'
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: 'leave-as-is: This aligns with the stated procedure and supports
+    the workflow intent of not bypassing formal downstream review after substantive
+    requirements edits.'
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-09-existing-system-sdd-requirements-review-run-gemini-3.1-pro-preview-judgment-001
+  run_id: 2026-06-09-existing-system-sdd-requirements-review-run
+  source_model: gemini-3.1-pro-preview
+  source_round: round-1
+  source_raw_path: raw/gemini-3.1-pro-preview.round-1.txt
+  source_parsed_path: parsed/gemini-3.1-pro-preview.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: 'Added Requirement: conformance-evaluation Requirement 10 (Acceptance
+    criteria 2 and 3)'
+  plain_language_summary: CE Requirement 10 explicitly requires extracting and comparing
+    'tasks' and implementation task contracts. This contradicts the existing CE scope,
+    which limits conformance-evaluation to requirements and design and treats tasks
+    as out of scope.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: 'must-fix: The review criteria specifically requires checking for
+    contradictions regarding tasks being out of scope for conformance-evaluation.
+    Including ''tasks'' in CE 10 without addressing the existing limitation creates
+    a scope contradiction. This must be resolved before review-wave by either explicitly
+    expanding CE''s system-wide scope to include tasks or removing tasks from CE 10''s
+    responsibilities.'
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-09-existing-system-sdd-requirements-review-run-gemini-3.1-pro-preview-judgment-002
+  run_id: 2026-06-09-existing-system-sdd-requirements-review-run
+  source_model: gemini-3.1-pro-preview
+  source_round: round-1
+  source_raw_path: raw/gemini-3.1-pro-preview.round-1.txt
+  source_parsed_path: parsed/gemini-3.1-pro-preview.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: 'Added Requirement: workflow-management Requirement 9 (Acceptance
+    criterion 3)'
+  plain_language_summary: The phrase '人間承認または所定のレビューを停止点にする' (make human approval
+    or a designated review a stopping point) is too vague for downstream design and
+    implementation.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: 'should-fix: The requirement mandates a stopping point when a conflict
+    is found, but does not define how this translates to the workflow state machine
+    (e.g., injecting a specific pending gate like ''alignment'', halting a state transition,
+    or setting a specific flag in the reopen record). Clarifying this structural mechanism
+    will ensure accurate design and testing.'
+  applied_files: []
+  superseded_by: null

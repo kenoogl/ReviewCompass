@@ -1,0 +1,544 @@
+run_id: 2026-06-09-existing-system-sdd-requirements-all-features-review-run
+triage_status: draft
+generated_at: '2026-06-09T01:58:41.438991+00:00'
+decision_actor: null
+decision_actor_type: human
+items:
+- finding_id: 2026-06-09-existing-system-sdd-requirements-all-features-review-run-claude-sonnet-4-6-primary-001
+  run_id: 2026-06-09-existing-system-sdd-requirements-all-features-review-run
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: conformance-evaluation Requirement 10, Acceptance Criteria 2
+  plain_language_summary: Requirement 10 AC2 states the feature extracts 'tasks または実装上の作業契約候補'
+    from implementation code, but existing CE scope explicitly excludes tasks from
+    CE's responsibility.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: 'Prior partial review finding #1 identified this conflict. Existing
+    CE feature scope does not include tasks ownership. Including task contract extraction
+    in CE Requirement 10 creates an undeclared scope expansion that conflicts with
+    the established feature boundary. This must-fix conflict must be resolved before
+    requirements triad-review can complete: either remove task contract extraction
+    from CE Requirement 10 and assign it elsewhere, or explicitly amend the CE scope
+    statement to include it.'
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-09-existing-system-sdd-requirements-all-features-review-run-claude-sonnet-4-6-primary-002
+  run_id: 2026-06-09-existing-system-sdd-requirements-all-features-review-run
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: conformance-evaluation Requirement 10, Acceptance Criteria 3 and
+    6
+  plain_language_summary: The classification scheme (5 categories in AC3) and output
+    structure (AC6) are insufficiently specified to serve as a verifiable requirements
+    contract. Category definitions lack boundary conditions, and the output record
+    structure does not specify required fields, cardinality, or schema reference.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: 'Prior partial review finding #2 identified under-specification
+    in CE classification and output structure. Without precise category definitions
+    and output schema anchors, design and test stages cannot derive acceptance tests
+    from these requirements. This is a must-fix for requirements completeness before
+    review-wave proceeds.'
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-09-existing-system-sdd-requirements-all-features-review-run-claude-sonnet-4-6-primary-003
+  run_id: 2026-06-09-existing-system-sdd-requirements-all-features-review-run
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: workflow-management Requirement 9, Acceptance Criteria 3
+  plain_language_summary: The conflict stop condition in WM Requirement 9 AC3 is under-specified.
+    It states 'human approval or designated review as a stop point' but does not define
+    what constitutes a stop, what the stop gate artifact is, who is the approver,
+    or under what conditions the stop may be bypassed or overridden.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: 'Prior partial review finding #3 identified this gap. A stop condition
+    that lacks operational definition cannot be enforced by design or implemented
+    deterministically. This is a must-fix: the requirement must specify the gate artifact,
+    approval actor, and bypass conditions at minimum.'
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-09-existing-system-sdd-requirements-all-features-review-run-claude-sonnet-4-6-primary-004
+  run_id: 2026-06-09-existing-system-sdd-requirements-all-features-review-run
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: workflow-management Requirement 9, Acceptance Criteria 4
+  plain_language_summary: 'AC4 states WM receives conformance-evaluation output and
+    progresses through the formal reopen procedure, but does not specify the interface
+    contract: the format, schema, or handoff mechanism between CE output and WM intake.'
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: 'The CE/WM boundary is described narratively but the handoff artifact
+    is not defined in either Requirement 10 or Requirement 9. This creates a design-stage
+    gap. Should-fix: the interface should be named and schema-anchored at requirements
+    stage to prevent boundary ambiguity during design.'
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-09-existing-system-sdd-requirements-all-features-review-run-claude-sonnet-4-6-primary-005
+  run_id: 2026-06-09-existing-system-sdd-requirements-all-features-review-run
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: 'Feature impact table, indirect features: foundation'
+  plain_language_summary: Foundation owns evidence vocabulary and metadata contracts
+    that CE Requirement 10 and WM Requirement 9 both depend on (code references, evaluation
+    records, reopen procedure schema). The indirect_check_only decision is not accompanied
+    by a documented check result confirming no foundation requirements text changes
+    are needed.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: 'The review target states foundation must be referenced and not
+    redefined, and the 2026-06-08 note confirms evidence/metadata contracts are in
+    scope for the added intent. Without a recorded check result for foundation, the
+    indirect_check_only decision is unverifiable. Should-fix: a foundation indirect
+    check result confirming existing requirements are sufficient must be recorded
+    before review-wave.'
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-09-existing-system-sdd-requirements-all-features-review-run-claude-sonnet-4-6-primary-006
+  run_id: 2026-06-09-existing-system-sdd-requirements-all-features-review-run
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: 'Feature impact table, indirect features: runtime'
+  plain_language_summary: Runtime owns structured evidence output and fixed-pattern
+    exclusion, both of which are referenced as receiving the added intent per the
+    2026-06-08 note. The indirect_check_only decision is not supported by a documented
+    check result.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: CE Requirement 10 AC2 and AC5 depend on structured evidence output
+    that runtime produces. If runtime's evidence output schema does not already accommodate
+    code-reference fields, runtime requirements may need amendment. The absence of
+    a check result leaves this risk unresolved. Should-fix before review-wave.
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-09-existing-system-sdd-requirements-all-features-review-run-claude-sonnet-4-6-primary-007
+  run_id: 2026-06-09-existing-system-sdd-requirements-all-features-review-run
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: 'Feature impact table, indirect features: evaluation'
+  plain_language_summary: Evaluation explicitly excludes upstream document conformance
+    as CE's responsibility, but CE Requirement 10 AC6 generates evaluation records.
+    It is not confirmed that the existing evaluation schema and validity-separation
+    logic can ingest CE-generated records without evaluation requirements changes.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: 'If CE outputs a new record type not covered by existing evaluation
+    ingestion contracts, evaluation requirements must be amended. The indirect_check_only
+    decision does not include a check result confirming compatibility. Should-fix:
+    record a compatibility check result for evaluation before review-wave.'
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-09-existing-system-sdd-requirements-all-features-review-run-claude-sonnet-4-6-primary-008
+  run_id: 2026-06-09-existing-system-sdd-requirements-all-features-review-run
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: 'Feature impact table, indirect features: analysis'
+  plain_language_summary: Analysis owns claim-to-evidence mapping and evaluation-output
+    provenance. CE Requirement 10 produces new evidence record types (code references,
+    conflict candidates). No check result confirms that existing analysis data contracts
+    cover these new record types.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: If analysis must map claims from CE-derived evidence, its data
+    contracts may need extension. The indirect_check_only decision without a recorded
+    check result is insufficient assurance. Should-fix before review-wave.
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-09-existing-system-sdd-requirements-all-features-review-run-claude-sonnet-4-6-primary-009
+  run_id: 2026-06-09-existing-system-sdd-requirements-all-features-review-run
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: 'Feature impact table, indirect features: self-improvement'
+  plain_language_summary: Self-improvement may consume conformance-evaluation results
+    as workflow improvement signals per its existing requirements. The indirect_check_only
+    decision appears plausible given that self-improvement does not mutate workflow
+    files directly.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: 'No requirements text change appears necessary for self-improvement
+    based on current evidence. Leave-as-is: the existing requirements stating that
+    workflow-management executes approved changes through the formal procedure adequately
+    cover the added intent boundary. Record only.'
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-09-existing-system-sdd-requirements-all-features-review-run-claude-sonnet-4-6-primary-010
+  run_id: 2026-06-09-existing-system-sdd-requirements-all-features-review-run
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: 'Review target document, section: Current Reopen State, pending
+    gates'
+  plain_language_summary: The pending gate sequence lists requirements triad-review,
+    review-wave, alignment, approval for all seven features, but the review target
+    does not confirm whether feature-partitioning must be reopened again given that
+    CE scope may require amendment (tasks ownership question).
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: 'If CE Requirement 10 is amended to remove task contract extraction,
+    the question of which feature owns that responsibility must be resolved. If no
+    existing feature owns it, feature-partitioning may need reopening. This gate sequence
+    risk should be acknowledged and a decision recorded. Should-fix: explicitly state
+    whether feature-partitioning is or is not reopened as part of this chain after
+    resolving the CE scope conflict.'
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-09-existing-system-sdd-requirements-all-features-review-run-claude-sonnet-4-6-primary-011
+  run_id: 2026-06-09-existing-system-sdd-requirements-all-features-review-run
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: conformance-evaluation Requirement 10, Acceptance Criteria 8
+  plain_language_summary: AC8 permits ReviewCompass self-targeting trial runs and
+    saving results as workflow improvement input. This is consistent with WM Requirement
+    9 AC6 and self-improvement scope. No conflict detected.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: 'Leave-as-is: the self-targeting allowance is appropriately bounded
+    by the requirement that formal updates proceed through workflow-management''s
+    formal procedure. The symmetry with WM AC6 is adequate.'
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-09-existing-system-sdd-requirements-all-features-review-run-claude-sonnet-4-6-primary-012
+  run_id: 2026-06-09-existing-system-sdd-requirements-all-features-review-run
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: 'Trace sections: XDI-CE-002 and XDI-WM-002'
+  plain_language_summary: Both trace entries correctly defer detailed design and task
+    decomposition to design/tasks stages. The trace language is consistent with the
+    review gate sequence.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: 'Leave-as-is: trace entries are appropriately scoped for requirements
+    stage and do not prematurely constrain design decisions.'
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-09-existing-system-sdd-requirements-all-features-review-run-gpt-5.4-adversarial-001
+  run_id: 2026-06-09-existing-system-sdd-requirements-all-features-review-run
+  source_model: gpt-5.4
+  source_round: round-1
+  source_raw_path: raw/gpt-5.4.round-1.txt
+  source_parsed_path: parsed/gpt-5.4.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: Direct Requirements Changes > conformance-evaluation Requirement
+    10 > Acceptance criteria 2
+  plain_language_summary: CE Requirement 10 newly requires extraction of 'tasks または実装上の作業契約候補',
+    which conflicts with the stated prior CE scope concern that tasks are out of scope
+    and leaves the feature boundary with workflow-management/design-task stages unresolved.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: 'must-fix: The review target itself flags this as a prior candidate
+    issue, and the current text does not resolve it. Requiring CE to extract task-level
+    artifacts expands external scope beyond evidence-backed requirements/design candidate
+    extraction and risks duplicating downstream planning responsibility owned elsewhere.
+    The requirement should either remove task/implementation work-contract extraction
+    from CE, or explicitly amend CE scope and cross-feature boundaries so later design/tests
+    have a stable contract.'
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-09-existing-system-sdd-requirements-all-features-review-run-gpt-5.4-adversarial-002
+  run_id: 2026-06-09-existing-system-sdd-requirements-all-features-review-run
+  source_model: gpt-5.4
+  source_round: round-1
+  source_raw_path: raw/gpt-5.4.round-1.txt
+  source_parsed_path: parsed/gpt-5.4.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: Direct Requirements Changes > conformance-evaluation Requirement
+    10 > Acceptance criteria 3, 4, 6
+  plain_language_summary: CE Requirement 10 defines several classifications and outputs,
+    but the required result schema and decision semantics remain under-specified for
+    downstream workflow consumption.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: 'should-fix: Categories such as ''仕様追記候補'', ''既存設計との衝突候補'', ''実装変更候補'',
+    and ''人間判断が必要'' are named, but the document does not state whether these are mutually
+    exclusive, feature-scoped, phase-scoped, many-to-many, or how they map into the
+    evaluation record consumed by workflow-management. This may be survivable at triad-review,
+    but should be tightened in this reopen chain to avoid design drift and incompatible
+    evidence structures.'
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-09-existing-system-sdd-requirements-all-features-review-run-gpt-5.4-adversarial-003
+  run_id: 2026-06-09-existing-system-sdd-requirements-all-features-review-run
+  source_model: gpt-5.4
+  source_round: round-1
+  source_raw_path: raw/gpt-5.4.round-1.txt
+  source_parsed_path: parsed/gpt-5.4.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: Direct Requirements Changes > workflow-management Requirement 9
+    > Acceptance criteria 3
+  plain_language_summary: The workflow-management stop condition for conflicts is
+    still not concrete enough to ensure deterministic downstream handling.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: 'should-fix: AC3 says conflict candidates should be recorded and
+    ''人間承認または所定のレビューを停止点にする'', but it does not state which review/gate is mandatory,
+    whether all conflict candidates block progress, or what minimum evidence is needed
+    before proceeding. Because this requirement governs reopen propagation across
+    requirements/design/tasks/implementation, ambiguity here can produce inconsistent
+    gate behavior across features.'
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-09-existing-system-sdd-requirements-all-features-review-run-gpt-5.4-adversarial-004
+  run_id: 2026-06-09-existing-system-sdd-requirements-all-features-review-run
+  source_model: gpt-5.4
+  source_round: round-1
+  source_raw_path: raw/gpt-5.4.round-1.txt
+  source_parsed_path: parsed/gpt-5.4.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: Feature Impact Decisions From Reopen Record / Existing Requirements
+    Context For Indirect Features
+  plain_language_summary: All seven features are explicitly included in scope, and
+    the direct vs indirect impact split is plausibly justified by ownership boundaries
+    in the current requirements text.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: 'leave-as-is: The document corrects the earlier partial-review
+    gap by bringing all features into scope, while preserving direct reopen only for
+    conformance-evaluation and workflow-management. The indirect features are described
+    as consumers of shared evidence, metadata, execution, evaluation, reporting, or
+    improvement signals rather than owners of the new reopen/extraction behavior,
+    which is a reasonable requirements-stage impact decision.'
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-09-existing-system-sdd-requirements-all-features-review-run-gpt-5.4-adversarial-005
+  run_id: 2026-06-09-existing-system-sdd-requirements-all-features-review-run
+  source_model: gpt-5.4
+  source_round: round-1
+  source_raw_path: raw/gpt-5.4.round-1.txt
+  source_parsed_path: parsed/gpt-5.4.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: Existing Requirements Context For Indirect Features
+  plain_language_summary: No must-fix evidence is provided that foundation, runtime,
+    evaluation, analysis, or self-improvement require immediate requirements-text
+    changes, assuming they can consume the new records via existing contracts.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: 'leave-as-is: The target document supplies ownership context for
+    each indirect feature and explains why the change is derivative rather than contract-owning.
+    At requirements stage, ''indirect_check_only'' appears sufficient unless later
+    review finds that CE/WM outputs exceed existing shared schema, evidence vocabulary,
+    or bundle contracts.'
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-09-existing-system-sdd-requirements-all-features-review-run-gpt-5.4-adversarial-006
+  run_id: 2026-06-09-existing-system-sdd-requirements-all-features-review-run
+  source_model: gpt-5.4
+  source_round: round-1
+  source_raw_path: raw/gpt-5.4.round-1.txt
+  source_parsed_path: parsed/gpt-5.4.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: Current Reopen State
+  plain_language_summary: 'The pending gate sequence remains appropriate for material
+    requirements changes: rerun requirements triad-review and review-wave before alignment/approval,
+    with downstream phases still marked impacted.'
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: 'leave-as-is: Given the stated substantive requirements changes
+    and the reopen record''s impacted_downstream_phases across requirements/design/tasks/implementation,
+    the current sequence is consistent with the formal workflow and does not itself
+    require feature-partitioning to be reopened again unless CE scope is intentionally
+    expanded beyond its current ownership.'
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-09-existing-system-sdd-requirements-all-features-review-run-gemini-3.1-pro-preview-judgment-001
+  run_id: 2026-06-09-existing-system-sdd-requirements-all-features-review-run
+  source_model: gemini-3.1-pro-preview
+  source_round: round-1
+  source_raw_path: raw/gemini-3.1-pro-preview.round-1.txt
+  source_parsed_path: parsed/gemini-3.1-pro-preview.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: Direct Requirements Changes > conformance-evaluation Requirement
+    10
+  plain_language_summary: AC2 and AC3 explicitly mandate the extraction and comparison
+    of 'tasks' from implementation code, which violates the existing conformance-evaluation
+    scope boundary that excludes task management.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: 'must-fix: As flagged in the prior partial review findings, tasks
+    are out of scope for CE. Forcing CE to evaluate tasks creates a feature boundary
+    conflict. Either Requirement 10 must be rescoped to requirements and design only,
+    or feature-partitioning must be reopened to formally expand CE scope. This blocks
+    requirements triad-review completion.'
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-09-existing-system-sdd-requirements-all-features-review-run-gemini-3.1-pro-preview-judgment-002
+  run_id: 2026-06-09-existing-system-sdd-requirements-all-features-review-run
+  source_model: gemini-3.1-pro-preview
+  source_round: round-1
+  source_raw_path: raw/gemini-3.1-pro-preview.round-1.txt
+  source_parsed_path: parsed/gemini-3.1-pro-preview.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: Direct Requirements Changes > workflow-management Requirement 9
+  plain_language_summary: AC6 introduces novel workflow concepts ('side track', 'maintenance
+    進行中ファイル') and AC3 introduces new stop conditions ('人間承認または所定のレビューを停止点にする') without
+    anchoring them to existing foundation schemas.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: 'should-fix: Workflow-management manages procedures, but foundation
+    owns repository asset rules and evidence schemas. Introducing ad-hoc file types
+    or unmapped stop conditions risks downstream design ambiguity. The requirements
+    should clarify if these use existing foundation states or require foundation schema
+    updates.'
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-09-existing-system-sdd-requirements-all-features-review-run-gemini-3.1-pro-preview-judgment-003
+  run_id: 2026-06-09-existing-system-sdd-requirements-all-features-review-run
+  source_model: gemini-3.1-pro-preview
+  source_round: round-1
+  source_raw_path: raw/gemini-3.1-pro-preview.round-1.txt
+  source_parsed_path: parsed/gemini-3.1-pro-preview.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: Direct Requirements Changes > conformance-evaluation Requirement
+    10
+  plain_language_summary: AC3 and AC6 list output classifications and candidate structures
+    (e.g., '既存仕様で説明済み', '仕様追記候補') but do not specify mapping to foundation's structured
+    evidence vocabularies.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: 'should-fix: CE classification output is under-specified. While
+    detailed schema definitions belong in design, the requirement should explicitly
+    mandate using or extending foundation evidence contracts to ensure interoperability
+    with workflow-management and evaluation.'
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-09-existing-system-sdd-requirements-all-features-review-run-gemini-3.1-pro-preview-judgment-004
+  run_id: 2026-06-09-existing-system-sdd-requirements-all-features-review-run
+  source_model: gemini-3.1-pro-preview
+  source_round: round-1
+  source_raw_path: raw/gemini-3.1-pro-preview.round-1.txt
+  source_parsed_path: parsed/gemini-3.1-pro-preview.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: Existing Requirements Context For Indirect Features
+  plain_language_summary: The assessment correctly evaluates foundation, runtime,
+    evaluation, analysis, and self-improvement as 'indirect_check_only' with sufficient
+    justification.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: 'leave-as-is: The rationale that these five features are consumers
+    or rely on fixed-pattern abstractions is sound. They can process the new outputs
+    from CE and WM without requiring their own requirements text changes.'
+  applied_files: []
+  superseded_by: null

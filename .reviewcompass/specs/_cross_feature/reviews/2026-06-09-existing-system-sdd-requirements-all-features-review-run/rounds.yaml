@@ -1,0 +1,60 @@
+round_id: round-1
+purpose: requirements.triad-review
+invocation_timestamp: '2026-06-09T01:58:41.430566+00:00'
+target_files:
+- path: .reviewcompass/specs/_cross_feature/reviews/2026-06-09-existing-system-sdd-requirements-all-features-review-run/review-target.md
+  sha256: a0aafc4181a8633320a13f5879110b9c51ad49f310a168e7e4b8ed06cf497f2e
+criteria: existing_system_sdd_code_drift_requirements_all_features_review
+prompt_sha256: 3e70874afb4d6f1120756b532ce521983807a6bf3c9fa26018ad8531295a0134
+model_results:
+- model_id: claude-sonnet-4-6
+  provider: anthropic-api
+  role: primary
+  treatment: primary
+  invocation_path: api
+  raw_path: raw/claude-sonnet-4-6.round-1.txt
+  raw_sha256: c3575c948d957892c91c94e1cc54941cb389194d9e8d83588a76732c18277c4f
+  parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  parsed_sha256: 1252ed189634c36eb0cccd1a069233b3f82273195a47ecdfe6077a94698fc4c0
+  parse_status: parsed
+  formatted_by: parser
+  formatted_by_actor_type: orchestrator
+  formatted_by_actor: run_role.py
+  formatted_at: '2026-06-09T01:57:43.534205+00:00'
+  follow_up_action: triage
+  attempts: 1
+  duration_seconds: 41.165
+- model_id: gpt-5.4
+  provider: openai-api
+  role: adversarial
+  treatment: adversarial
+  invocation_path: api
+  raw_path: raw/gpt-5.4.round-1.txt
+  raw_sha256: 7c0abbf8551cd844edcbe7adb2ff9b9cf164a4858c6253be8dfa4929be58f31b
+  parsed_path: parsed/gpt-5.4.round-1.yaml
+  parsed_sha256: 3b62e52d35c78b2f722a260cda45d0b995c1f9546d6b8dbd10fde2d5706ce317
+  parse_status: parsed
+  formatted_by: parser
+  formatted_by_actor_type: orchestrator
+  formatted_by_actor: run_role.py
+  formatted_at: '2026-06-09T01:57:58.944173+00:00'
+  follow_up_action: triage
+  attempts: 1
+  duration_seconds: 15.4
+- model_id: gemini-3.1-pro-preview
+  provider: gemini-api
+  role: judgment
+  treatment: judgment
+  invocation_path: api
+  raw_path: raw/gemini-3.1-pro-preview.round-1.txt
+  raw_sha256: 21e71a5f82290208b90621fb527ad39de1382def803ac671d1a83f350ed33329
+  parsed_path: parsed/gemini-3.1-pro-preview.round-1.yaml
+  parsed_sha256: 59c8ea528afd5abe348c64f9bbefc80e2a0c4d8553057cb3e982be41cfaa96e7
+  parse_status: parsed
+  formatted_by: parser
+  formatted_by_actor_type: orchestrator
+  formatted_by_actor: run_role.py
+  formatted_at: '2026-06-09T01:58:41.430566+00:00'
+  follow_up_action: triage
+  attempts: 1
+  duration_seconds: 42.478

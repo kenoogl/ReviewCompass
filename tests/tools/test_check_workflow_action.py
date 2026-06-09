@@ -2508,6 +2508,78 @@ class NextNavigationTests(unittest.TestCase):
       "run_reopen_pending_gate",
     )
 
+  def test_next_reopen_uses_feature_impact_decisions_as_review_scope(self):
+    """reopen のレビュー対象 feature は feature_impact_decisions から機械的に返す"""
+    cwd = Path(self.tmpdir)
+    _write_specs_for_next(cwd, {})
+    in_progress_dir = cwd / "stages" / "in-progress"
+    in_progress_dir.mkdir(parents=True)
+    (in_progress_dir / "reopen-procedure-2026-06-02.yaml").write_text(
+      "process_id: reopen-procedure\n"
+      "feature:\n"
+      "  - conformance-evaluation\n"
+      "  - workflow-management\n"
+      "next_step: 第3過程：連鎖再実施\n"
+      "step_number: 3\n"
+      "pending_gates:\n"
+      "  - stages/requirements.yaml#triad-review\n"
+      "current_blocker: null\n"
+      "feature_impact_decisions:\n"
+      "  - feature: conformance-evaluation\n"
+      "    decision: reopen_existing_feature\n"
+      "    impact_basis: implementation_ownership\n"
+      "    rationale: direct\n"
+      "    evidence: [intent/INTENT.md]\n"
+      "  - feature: workflow-management\n"
+      "    decision: reopen_existing_feature\n"
+      "    impact_basis: contract_ownership\n"
+      "    rationale: direct\n"
+      "    evidence: [docs/operations/REOPEN_PROCEDURE.md]\n"
+      "  - feature: foundation\n"
+      "    decision: indirect_check_only\n"
+      "    impact_basis: consumer_or_derivative_only\n"
+      "    rationale: indirect\n"
+      "    evidence: [.reviewcompass/specs/foundation/requirements.md]\n",
+      encoding="utf-8",
+    )
+
+    result = run_script(["next", "--json"], cwd=cwd)
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 0, result.stderr)
+    data = json.loads(result.stdout)
+    action = data["next_action"]
+    self.assertEqual(
+      action["required_feature_scope"],
+      ["foundation", "workflow-management", "conformance-evaluation"],
+    )
+    self.assertEqual(
+      action["direct_features"],
+      ["workflow-management", "conformance-evaluation"],
+    )
+    self.assertEqual(action["indirect_features"], ["foundation"])
+    required_inputs = {
+      item["id"]: item
+      for item in action["required_inputs"]
+    }
+    self.assertEqual(
+      required_inputs["target_feature_documents"]["paths"],
+      [
+        ".reviewcompass/specs/foundation/spec.json",
+        ".reviewcompass/specs/foundation/requirements.md",
+        ".reviewcompass/specs/foundation/design.md",
+        ".reviewcompass/specs/foundation/tasks.md",
+        ".reviewcompass/specs/workflow-management/spec.json",
+        ".reviewcompass/specs/workflow-management/requirements.md",
+        ".reviewcompass/specs/workflow-management/design.md",
+        ".reviewcompass/specs/workflow-management/tasks.md",
+        ".reviewcompass/specs/conformance-evaluation/spec.json",
+        ".reviewcompass/specs/conformance-evaluation/requirements.md",
+        ".reviewcompass/specs/conformance-evaluation/design.md",
+        ".reviewcompass/specs/conformance-evaluation/tasks.md",
+      ],
+    )
+
   def test_next_reopen_human_blocker_requires_wait(self):
     """reopen の current_blocker があれば人間承認待ちを返す"""
     cwd = Path(self.tmpdir)

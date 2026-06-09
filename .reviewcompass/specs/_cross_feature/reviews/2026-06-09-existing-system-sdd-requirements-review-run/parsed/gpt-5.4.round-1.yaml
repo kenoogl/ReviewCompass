@@ -1,0 +1,62 @@
+role: adversarial
+provider: openai-api
+model: gpt-5.4
+attempts: 1
+duration_seconds: 13.398
+findings:
+- severity: ERROR
+  target_location: Output contract vs. Review Criteria section
+  description: The review criteria require each finding to include `verifying_commands`,
+    but the output contract explicitly allows only `severity`, `target_location`,
+    `description`, and `rationale`.
+  rationale: 'must-fix: This specification is internally inconsistent for the reviewer
+    deliverable. A compliant response cannot satisfy both instructions at once, which
+    makes review completion criteria ambiguous and non-testable.'
+- severity: ERROR
+  target_location: .reviewcompass/specs/conformance-evaluation/requirements.md Requirement
+    10 Acceptance criteria 2
+  description: Requirement 10 expands conformance-evaluation to extract `tasks` and
+    `実装上の作業契約候補`, but the review target does not define how this reconciles with prior
+    CE scope that reportedly treated tasks as out of scope.
+  rationale: 'must-fix: The review explicitly asks to check for contradiction with
+    existing CE requirements, and this added requirement appears to broaden scope
+    without stating supersession, exception, or compatibility rules. Downstream design
+    and test work would be blocked by unresolved requirement drift.'
+- severity: WARN
+  target_location: .reviewcompass/specs/conformance-evaluation/requirements.md Requirement
+    10 Acceptance criteria 3-6
+  description: 'The classification/output model is not sufficiently normalized: criteria
+    list five classifications, while outputs list four artifact groups, and it is
+    unclear whether each candidate must map to exactly one class, multiple classes,
+    or both a class and an output bucket.'
+  rationale: 'should-fix: The intent is understandable, but later design and verification
+    will struggle to define stable data structures and acceptance tests unless the
+    relationship between candidate classification and generated report sections is
+    made explicit.'
+- severity: WARN
+  target_location: .reviewcompass/specs/conformance-evaluation/requirements.md Requirement
+    10 Acceptance criteria 5
+  description: The phrase `LLM による推定理由` is required as evidence, but no minimum provenance
+    or reproducibility expectations are stated for model-generated reasoning.
+  rationale: 'should-fix: Because this requirement is about evidence-backed extraction
+    from existing code/specs, relying on LLM reasoning without specifying traceability
+    expectations risks non-repeatable outputs and disputes over whether evidence is
+    sufficient.'
+- severity: WARN
+  target_location: .reviewcompass/specs/workflow-management/requirements.md Requirement
+    9 Acceptance criteria 3
+  description: 'The stopping condition for conflicts is underspecified: the requirement
+    says to record conflict candidates and use `human approval or prescribed review`
+    as a stop point, but it does not identify which review, at which phase, or what
+    state transition should occur.'
+  rationale: 'should-fix: Workflow-management is responsible for formal process control,
+    so ambiguous stop/go semantics can cause inconsistent reopen handling across requirements/design/tasks/implementation
+    phases.'
+- severity: INFO
+  target_location: Reopen State
+  description: 'The reopen pending gates are consistent with a material requirements
+    change: re-running requirements triad-review and review-wave before alignment/approval
+    matches the stated reopen record.'
+  rationale: 'leave-as-is: This aligns with the stated procedure and supports the
+    workflow intent of not bypassing formal downstream review after substantive requirements
+    edits.'

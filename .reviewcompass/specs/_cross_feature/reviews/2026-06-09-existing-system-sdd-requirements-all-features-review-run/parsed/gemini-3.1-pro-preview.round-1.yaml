@@ -1,0 +1,53 @@
+role: judgment
+provider: gemini-api
+model: gemini-3.1-pro-preview
+attempts: 1
+duration_seconds: 42.478
+findings:
+- severity: ERROR
+  target_location: Direct Requirements Changes > conformance-evaluation Requirement
+    10
+  description: AC2 and AC3 explicitly mandate the extraction and comparison of 'tasks'
+    from implementation code, which violates the existing conformance-evaluation scope
+    boundary that excludes task management.
+  rationale: 'must-fix: As flagged in the prior partial review findings, tasks are
+    out of scope for CE. Forcing CE to evaluate tasks creates a feature boundary conflict.
+    Either Requirement 10 must be rescoped to requirements and design only, or feature-partitioning
+    must be reopened to formally expand CE scope. This blocks requirements triad-review
+    completion.'
+  verifying_commands:
+  - cat .reviewcompass/specs/_cross_feature/reviews/2026-06-09-existing-system-sdd-requirements-all-features-review-run/review-target.md
+    | grep 'tasks または実装上の作業契約候補'
+- severity: WARN
+  target_location: Direct Requirements Changes > workflow-management Requirement 9
+  description: AC6 introduces novel workflow concepts ('side track', 'maintenance
+    進行中ファイル') and AC3 introduces new stop conditions ('人間承認または所定のレビューを停止点にする') without
+    anchoring them to existing foundation schemas.
+  rationale: 'should-fix: Workflow-management manages procedures, but foundation owns
+    repository asset rules and evidence schemas. Introducing ad-hoc file types or
+    unmapped stop conditions risks downstream design ambiguity. The requirements should
+    clarify if these use existing foundation states or require foundation schema updates.'
+  verifying_commands:
+  - cat .reviewcompass/specs/_cross_feature/reviews/2026-06-09-existing-system-sdd-requirements-all-features-review-run/review-target.md
+    | grep -E 'side track|maintenance'
+- severity: WARN
+  target_location: Direct Requirements Changes > conformance-evaluation Requirement
+    10
+  description: AC3 and AC6 list output classifications and candidate structures (e.g.,
+    '既存仕様で説明済み', '仕様追記候補') but do not specify mapping to foundation's structured evidence
+    vocabularies.
+  rationale: 'should-fix: CE classification output is under-specified. While detailed
+    schema definitions belong in design, the requirement should explicitly mandate
+    using or extending foundation evidence contracts to ensure interoperability with
+    workflow-management and evaluation.'
+  verifying_commands:
+  - cat .reviewcompass/specs/_cross_feature/reviews/2026-06-09-existing-system-sdd-requirements-all-features-review-run/review-target.md
+    | grep '次のいずれに当たるかを分類する'
+- severity: INFO
+  target_location: Existing Requirements Context For Indirect Features
+  description: The assessment correctly evaluates foundation, runtime, evaluation,
+    analysis, and self-improvement as 'indirect_check_only' with sufficient justification.
+  rationale: 'leave-as-is: The rationale that these five features are consumers or
+    rely on fixed-pattern abstractions is sound. They can process the new outputs
+    from CE and WM without requiring their own requirements text changes.'
+  verifying_commands: []
