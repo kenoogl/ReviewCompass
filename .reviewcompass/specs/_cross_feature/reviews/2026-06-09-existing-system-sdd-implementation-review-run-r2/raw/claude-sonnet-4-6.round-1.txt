@@ -1,0 +1,30 @@
+findings:
+  - severity: INFO
+    target_location: "## Implementation Changes / conformance-evaluation"
+    description: "PostHocIntentDiff schema and classification contract are declared inline in the review-target document but the actual schema file (post_hoc_intent_diff.schema.json) is listed only as an evidence file without any structural verification being shown."
+    rationale: "The review document asserts the schema tracks the classification contract (via test_t016_post_hoc_intent_diff_schema_tracks_classification_contract) but provides no inline confirmation that the JSON Schema enumeration matches the five allowed classifications listed in the document. A drift between the prose list and the schema file would not be caught by reading this document alone."
+
+  - severity: INFO
+    target_location: "## Implementation Changes / workflow-management"
+    description: "The workflow-management section claims no new code was required because existing behavior already covers Requirement 9 / XDI-WM-002, but the document does not show which version or commit of check-workflow-action.py contained the relevant functions prior to this reopen."
+    rationale: "Without a baseline reference it is not possible to confirm from this document alone that the cited functions (build_in_progress_next_action, _resolve_reopen_next_gate, reopen_feature_scope_from_data, validate_reopen_completion_impact_decisions) were already present before the reopen chain began. If any were added during this reopen they should appear as implementation changes, not as pre-existing coverage."
+
+  - severity: WARN
+    target_location: "## Implementation Changes / conformance-evaluation – needs_human_decision clarification"
+    description: "The document states 'Even when this value is false, downstream adoption still happens through workflow-management gate decisions, not by CE writing back to the reopen YAML.' This is a behavioral contract that affects how consumers interpret needs_human_decision=false, but no test explicitly covers the false-branch handoff path to workflow-management."
+    rationale: "The three T-016 tests listed cover candidate output, unknown-classification rejection, and schema tracking. None is described as testing the false-branch case where needs_human_decision=false and verifying that CE still does not write back to the reopen YAML. A gap here means the stated contract is not mechanically enforced by the test suite."
+
+  - severity: WARN
+    target_location: "## Indirect Feature No-change Check"
+    description: "The indirect no-change check for analysis notes 'T-016 output is not yet a reportable analysis intake artifact', implying a known future integration point. No task or reopen record is referenced to track this pending integration."
+    rationale: "If T-016 output is expected to eventually become an analysis intake artifact, the absence of a tracking reference means the deferred work could be silently forgotten. The SDD workflow requires downstream impact decisions to cover impacted phases; a deferred but unrecorded impact creates a conformance gap in future reopens."
+
+  - severity: INFO
+    target_location: "## Current Mechanical State"
+    description: "The document shows before/after next output states but does not include the actual YAML content of the reopen-in-progress file (stages/in-progress/reopen-procedure-2026-06-09-existing-system-sdd-code-drift.yaml) that was updated to transition from drafting to triad-review."
+    rationale: "Reviewers cannot independently verify that drafting_completed_gates was correctly populated or that downstream_impact_decisions fields are present and well-formed without seeing the YAML file content, even though it is listed as an evidence file."
+
+  - severity: INFO
+    target_location: "## Evidence Files"
+    description: "The cross-feature implementation drafting review document (.reviewcompass/specs/_cross_feature/reviews/2026-06-09-existing-system-sdd-implementation-drafting.md) is listed as evidence but no findings or conclusions from it are summarized in the review-target document."
+    rationale: "If that drafting review produced any concerns or conditions they would be relevant to this triad-review. Their absence from the review-target makes it impossible to determine whether prior-phase findings were addressed before proceeding to implementation triad-review."

@@ -1,0 +1,40 @@
+role: judgment
+provider: gemini-api
+model: gemini-3.1-pro-preview
+attempts: 1
+duration_seconds: 28.048
+findings:
+- severity: ERROR
+  target_location: Indirect Feature Scope
+  description: Foundation design.md is missing required schema and state contract
+    updates to support new CE and WM data structures.
+  rationale: 'CE introduces new classification vocabulary (`existing_sufficient`,
+    `spec_update_candidate`, etc.) and candidate fields. WM introduces new session
+    state fields (`drafting_completed_gates`, `current_blocker`, `process_id: maintenance`).
+    Because the foundation feature owns shared metadata, vocabulary, schema, and state
+    contracts, it cannot remain `indirect_check_only`. The design drafting for foundation
+    must be updated to define these new shared contracts before triad-review can complete.
+    Label: `must-fix`.'
+- severity: WARN
+  target_location: workflow-management design.md
+  description: WM intake contract does not explicitly reference foundation-owned schema
+    definitions.
+  rationale: 'While WM correctly defines the session state fields and intake contract
+    with minimum fields, it should explicitly delegate the strict type/schema definition
+    of these shared objects (like `downstream_impact_decisions`) to the foundation
+    feature to maintain architectural boundaries. Label: `should-fix`.'
+- severity: INFO
+  target_location: conformance-evaluation design.md
+  description: CE design properly bounds its responsibility regarding formal tasks.md
+    updates.
+  rationale: 'The design correctly limits CE to treating tasks as reference input
+    and downstream impact candidates, deferring formal tasks.md mutations to the WM
+    reopen responsibility, effectively satisfying Requirement 10 and maintaining clear
+    boundaries. Label: `leave-as-is`.'
+- severity: INFO
+  target_location: workflow-management design.md
+  description: WM design successfully closes the drafting-before-review state machine
+    hole.
+  rationale: 'By introducing `drafting_completed_gates` and the rule preventing triad-review
+    unless drafting is complete, the design fixes the mechanical action defect that
+    led to this superseded review run. Label: `leave-as-is`.'

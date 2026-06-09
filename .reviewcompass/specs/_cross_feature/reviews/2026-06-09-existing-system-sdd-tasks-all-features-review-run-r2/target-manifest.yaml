@@ -1,0 +1,4 @@
+run_id: 2026-06-09-existing-system-sdd-tasks-all-features-review-run-r2
+target_files:
+- path: .reviewcompass/specs/_cross_feature/reviews/2026-06-09-existing-system-sdd-tasks-all-features-review-run-r2/review-target.md
+  sha256: e8bdc4f3261e084a08d0836bd8d95db904c9737eaea6b62f4580976fe9caaae7

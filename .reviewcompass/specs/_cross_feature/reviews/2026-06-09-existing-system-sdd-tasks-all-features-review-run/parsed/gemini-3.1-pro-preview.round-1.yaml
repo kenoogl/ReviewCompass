@@ -1,0 +1,28 @@
+role: judgment
+provider: gemini-api
+model: gemini-3.1-pro-preview
+attempts: 1
+duration_seconds: 34.022
+findings:
+- severity: WARN
+  target_location: Indirect Feature Scope (foundation)
+  description: Foundation tasks.md is missing an implementation task for updating
+    reopen state schemas.
+  rationale: Workflow-management T-008 introduces new required fields in the in-progress
+    reopen state (e.g., `drafting_completed_gates` and `downstream_impact_decisions`
+    with specific minimum fields). Since Foundation is responsible for 'schema and
+    state contracts', a direct task is needed in foundation tasks.md to update the
+    state JSON/YAML schemas to validate these new properties. [should-fix]
+  verifying_commands:
+  - grep -i 'schema' .reviewcompass/specs/foundation/tasks.md
+- severity: WARN
+  target_location: Indirect Feature Scope (analysis)
+  description: Analysis tasks.md is missing an implementation task to consume the
+    new T-016 candidate output format.
+  rationale: Conformance-evaluation T-016 specifies a new structured output for difference
+    candidates (including fields like `classification`, `code_refs`, `existing_spec_refs`,
+    and `needs_human_decision`). Since Analysis owns 'conformance output consumption
+    and reporting', it requires an explicit task to parse this new payload structure
+    and include it in reports. [should-fix]
+  verifying_commands:
+  - grep -i 'candidate' .reviewcompass/specs/analysis/tasks.md

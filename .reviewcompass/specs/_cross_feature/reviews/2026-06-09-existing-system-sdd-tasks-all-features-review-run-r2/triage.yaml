@@ -1,0 +1,272 @@
+run_id: 2026-06-09-existing-system-sdd-tasks-all-features-review-run-r2
+triage_status: draft
+generated_at: '2026-06-09T03:52:33.254817+00:00'
+decision_actor: null
+decision_actor_type: human
+items:
+- finding_id: 2026-06-09-existing-system-sdd-tasks-all-features-review-run-r2-claude-sonnet-4-6-primary-001
+  run_id: 2026-06-09-existing-system-sdd-tasks-all-features-review-run-r2
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: tasks-impact-decisions.md / C1 resolution
+  plain_language_summary: 'C1 resolved: all seven features have explicit tasks-stage
+    impact determinations recorded in tasks-impact-decisions.md.'
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: 'leave-as-is: conformance-evaluation and workflow-management are
+    marked as updated; foundation, runtime, evaluation, analysis, and self-improvement
+    each carry a documented no-change rationale. The prior must-fix cluster C1 is
+    fully addressed.'
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-09-existing-system-sdd-tasks-all-features-review-run-r2-claude-sonnet-4-6-primary-002
+  run_id: 2026-06-09-existing-system-sdd-tasks-all-features-review-run-r2
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: workflow-management tasks.md T-008 / C2 resolution
+  plain_language_summary: 'C2 resolved: schema ownership of completed_gates, drafting_completed_gates,
+    and downstream_impact_decisions is explicitly bounded to workflow-management stages/in-progress.schema.json;
+    foundation reopening is deferred unless a future promotion occurs.'
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: 'leave-as-is: the boundary is now unambiguous. Foundation tasks.md
+    does not need to change within this reopen chain. The should-fix cluster C2 is
+    addressed without requiring a foundation reopen.'
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-09-existing-system-sdd-tasks-all-features-review-run-r2-claude-sonnet-4-6-primary-003
+  run_id: 2026-06-09-existing-system-sdd-tasks-all-features-review-run-r2
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: tasks-impact-decisions.md analysis entry / C3 resolution
+  plain_language_summary: 'C3 resolved: analysis no-change rationale is documented
+    — T-016 candidate flow is CE-to-WM for workflow propagation, not a reporting intake
+    requirement in this reopen chain.'
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: 'leave-as-is: the rationale is explicit and scoped. Analysis does
+    not need to be reopened. The should-fix cluster C3 is addressed.'
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-09-existing-system-sdd-tasks-all-features-review-run-r2-claude-sonnet-4-6-primary-004
+  run_id: 2026-06-09-existing-system-sdd-tasks-all-features-review-run-r2
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: conformance-evaluation tasks.md T-016 and workflow-management tasks.md
+    T-007 / C4 resolution
+  plain_language_summary: 'C4 resolved: CE T-016 now explicitly states it does not
+    update tasks.md directly and passes candidate ID plus evidence references to WM
+    reopen; WM T-007 now owns the receptacle decision and converts candidates to reopen
+    pending_gates without directly implementing them.'
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: 'leave-as-is: the handoff boundary between CE T-016 and WM T-007
+    is now fully specified for tasks-phase candidates. The should-fix cluster C4 is
+    addressed.'
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-09-existing-system-sdd-tasks-all-features-review-run-r2-claude-sonnet-4-6-primary-005
+  run_id: 2026-06-09-existing-system-sdd-tasks-all-features-review-run-r2
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: review-target.md features list
+  plain_language_summary: All seven features (foundation, runtime, evaluation, analysis,
+    workflow-management, self-improvement, conformance-evaluation) remain in scope
+    and are accounted for.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: 'leave-as-is: scope completeness confirmed. No feature has been
+    silently dropped.'
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-09-existing-system-sdd-tasks-all-features-review-run-r2-claude-sonnet-4-6-primary-006
+  run_id: 2026-06-09-existing-system-sdd-tasks-all-features-review-run-r2
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: stages/tasks.yaml#triad-review overall
+  plain_language_summary: 'Tasks triad-review can complete: all must-fix clusters
+    (C1) and all should-fix clusters (C2, C3, C4) are resolved; no new must-fix findings
+    were identified in this r2 review.'
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: 'leave-as-is: with C1 through C4 addressed and all seven features
+    accounted for, no blocking issue remains. The gate may be advanced.'
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-09-existing-system-sdd-tasks-all-features-review-run-r2-gpt-5.4-adversarial-001
+  run_id: 2026-06-09-existing-system-sdd-tasks-all-features-review-run-r2
+  source_model: gpt-5.4
+  source_round: round-1
+  source_raw_path: raw/gpt-5.4.round-1.txt
+  source_parsed_path: parsed/gpt-5.4.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: .reviewcompass/specs/_cross_feature/reviews/2026-06-09-existing-system-sdd-tasks-all-features-review-run-r2/review-target.md#output-contract
+  plain_language_summary: The review target requires each finding to include `verifying_commands`,
+    but the stated output contract earlier says each finding must include only `severity`,
+    `target_location`, `description`, and `rationale`.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: 'must-fix: The document contains an internal contract inconsistency
+    that makes compliant output ambiguous. A reviewer cannot satisfy both the strict
+    schema stated at the top and the later requirement to include `verifying_commands`
+    unless the contract is reconciled.'
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-09-existing-system-sdd-tasks-all-features-review-run-r2-gpt-5.4-adversarial-002
+  run_id: 2026-06-09-existing-system-sdd-tasks-all-features-review-run-r2
+  source_model: gpt-5.4
+  source_round: round-1
+  source_raw_path: raw/gpt-5.4.round-1.txt
+  source_parsed_path: parsed/gpt-5.4.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: .reviewcompass/specs/_cross_feature/reviews/2026-06-09-existing-system-sdd-tasks-all-features-review-run-r2/review-target.md#cross-feature-impact-evidence
+  plain_language_summary: All seven features have explicit tasks-stage impact determinations
+    recorded, resolving the prior C1 coverage gap.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: 'leave-as-is: The review target now explicitly enumerates conformance-evaluation,
+    workflow-management, foundation, runtime, evaluation, analysis, and self-improvement
+    with a yes/no tasks-change decision for each, satisfying the all-feature scope
+    check.'
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-09-existing-system-sdd-tasks-all-features-review-run-r2-gpt-5.4-adversarial-003
+  run_id: 2026-06-09-existing-system-sdd-tasks-all-features-review-run-r2
+  source_model: gpt-5.4
+  source_round: round-1
+  source_raw_path: raw/gpt-5.4.round-1.txt
+  source_parsed_path: parsed/gpt-5.4.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: .reviewcompass/specs/_cross_feature/reviews/2026-06-09-existing-system-sdd-tasks-all-features-review-run-r2/review-target.md#workflow-management-tasksmd
+  plain_language_summary: The workflow-management schema ownership boundary is now
+    stated clearly enough to avoid reopening foundation in this chain.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: 'leave-as-is: C2 appears resolved because T-008 explicitly assigns
+    ownership of `completed_gates`, `drafting_completed_gates`, and `downstream_impact_decisions`
+    to workflow-management `stages/in-progress.schema.json`, while the foundation
+    no-change rationale states no promotion to shared schemas occurs in this reopen
+    chain.'
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-09-existing-system-sdd-tasks-all-features-review-run-r2-gpt-5.4-adversarial-004
+  run_id: 2026-06-09-existing-system-sdd-tasks-all-features-review-run-r2
+  source_model: gpt-5.4
+  source_round: round-1
+  source_raw_path: raw/gpt-5.4.round-1.txt
+  source_parsed_path: parsed/gpt-5.4.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: .reviewcompass/specs/_cross_feature/reviews/2026-06-09-existing-system-sdd-tasks-all-features-review-run-r2/review-target.md#cross-feature-impact-evidence
+  plain_language_summary: 'The analysis no-change rationale is explicit: T-016 candidate
+    flow is CE-to-WM workflow propagation, not an analysis intake/reporting obligation
+    in this reopen chain.'
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: 'leave-as-is: C3 appears resolved because the document explains
+    why analysis does not need a tasks.md body change, rather than merely omitting
+    analysis updates.'
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-09-existing-system-sdd-tasks-all-features-review-run-r2-gpt-5.4-adversarial-005
+  run_id: 2026-06-09-existing-system-sdd-tasks-all-features-review-run-r2
+  source_model: gpt-5.4
+  source_round: round-1
+  source_raw_path: raw/gpt-5.4.round-1.txt
+  source_parsed_path: parsed/gpt-5.4.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: .reviewcompass/specs/_cross_feature/reviews/2026-06-09-existing-system-sdd-tasks-all-features-review-run-r2/review-target.md#conformance-evaluation-tasksmd
+  plain_language_summary: The CE T-016 to WM T-007/T-008 handoff is now defined for
+    tasks-phase candidates.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: 'leave-as-is: C4 appears resolved because the target states CE
+    does not update tasks.md directly, passes candidate ID and evidence refs to workflow-management,
+    and WM converts the candidate into reopen `pending_gates` without directly implementing
+    it.'
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-09-existing-system-sdd-tasks-all-features-review-run-r2-gpt-5.4-adversarial-006
+  run_id: 2026-06-09-existing-system-sdd-tasks-all-features-review-run-r2
+  source_model: gpt-5.4
+  source_round: round-1
+  source_raw_path: raw/gpt-5.4.round-1.txt
+  source_parsed_path: parsed/gpt-5.4.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: .reviewcompass/specs/_cross_feature/reviews/2026-06-09-existing-system-sdd-tasks-all-features-review-run-r2/review-purpose
+  plain_language_summary: Aside from the output-contract inconsistency, the substantive
+    prior must-fix issues appear closed and the tasks triad-review is otherwise ready
+    to complete.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: 'leave-as-is: The documented fixes address the prior C1 must-fix
+    and the cited should-fix clarifications C2-C4, while preserving all seven features
+    in scope. No additional content-level must-fix drift is evident in the review
+    target itself.'
+  applied_files: []
+  superseded_by: null

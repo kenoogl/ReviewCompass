@@ -1,0 +1,30 @@
+findings:
+  - severity: INFO
+    target_location: "## Implementation Changes / workflow-management"
+    description: "workflow-management claims no new code was required because existing behavior already covers Requirement 9 / XDI-WM-002, but the review target does not provide direct evidence that the existing code was audited against the full requirement specification."
+    rationale: "Asserting 'no new code required' without referencing a specific audit trace or a passage in implementation-drafting.md that maps each sub-requirement to existing code lines leaves a gap. If a reviewer cannot verify the mapping, the claim is unverifiable from this document alone."
+
+  - severity: WARN
+    target_location: "## Evidence Files"
+    description: "The review target lists `.reviewcompass/specs/workflow-management/implementation-drafting.md` as evidence but provides no excerpt or pointer to the section that demonstrates downstream reopen propagation and downstream_impact_decisions coverage are already satisfied."
+    rationale: "For a triad-review the reviewer must be able to trace each task anchor to concrete code or test evidence. Without inline evidence or a quoted section, the workflow-management coverage assertion cannot be independently confirmed during this review pass."
+
+  - severity: WARN
+    target_location: "## Implementation Changes / conformance-evaluation / candidate record fields"
+    description: "The document states the emitted candidate records must include `needs_human_decision`, but the allowed `classification` values do not include a classification that unambiguously maps to 'human decision required now' versus 'candidate only'. The relationship between `needs_human_decision: true` and the downstream handoff contract is not specified."
+    rationale: "If downstream workflow-management processing depends on `needs_human_decision` to trigger a decision record, an underspecified contract risks silent data loss where a candidate is emitted but the downstream gate never fires because the field semantics differ between producer and consumer."
+
+  - severity: INFO
+    target_location: "## Tests Run"
+    description: "Test counts are reported (18, 3, 139 passed) but no coverage metric or list of newly added test cases is provided. It is unclear which of the 18 conformance-evaluation tests are new for T-016 and which existed before this reopen."
+    rationale: "Without knowing which tests are new, a reviewer cannot confirm that T-016-specific paths (e.g., post-hoc intent with no downstream impact, post-hoc intent requiring spec_update_candidate) are independently covered rather than relying on pre-existing tests that may not exercise the new code paths."
+
+  - severity: INFO
+    target_location: "## Review Questions / Q4"
+    description: "The document correctly asserts that indirect features (foundation, runtime, evaluation, analysis, self-improvement) receive no implementation changes, but does not document any conflict-check result or reference a checklist showing each indirect feature was examined."
+    rationale: "A reopen chain that adds a new intent could introduce subtle conflicts in shared utilities or schemas used by indirect features. Stating 'indirect check only' without a brief conflict-check summary leaves this question open for a reviewer."
+
+  - severity: INFO
+    target_location: "## Current Mechanical State"
+    description: "The mechanical state section documents the before/after `next` output but does not confirm that the `downstream_impact_decisions` field in the reopen YAML was populated as a result of the conformance-evaluation run."
+    rationale: "The completion condition for the reopen requires `downstream_impact_decisions` coverage. If the trial run of `PostHocIntentDiff` did not write back into the reopen YAML, the gate may not close automatically, which could stall the workflow silently."

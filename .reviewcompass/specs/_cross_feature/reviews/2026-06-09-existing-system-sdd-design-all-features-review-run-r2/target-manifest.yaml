@@ -1,0 +1,4 @@
+run_id: 2026-06-09-existing-system-sdd-design-all-features-review-run-r2
+target_files:
+- path: .reviewcompass/specs/_cross_feature/reviews/2026-06-09-existing-system-sdd-design-all-features-review-run-r2/review-target.md
+  sha256: cf7221522d0f0e41cdeba019d0b9a62be3291958fd757553b4ea0bea515fad57

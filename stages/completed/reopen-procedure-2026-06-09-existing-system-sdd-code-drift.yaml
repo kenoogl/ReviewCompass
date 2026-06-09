@@ -1,0 +1,642 @@
+process_id: reopen-procedure
+feature:
+  - conformance-evaluation
+  - workflow-management
+classification: N-0
+started_at: '2026-06-09T00:00:00+09:00'
+completed_at: '2026-06-09T00:00:00+09:00'
+trigger: 追加 intent の目的を、既存システムに対する仕様駆動開発とコード由来仕様ずれ検出機能の追加として再確認した
+classification_basis: docs/reviews/reopen-classification-2026-06-09-existing-system-sdd-code-drift.md
+completed_steps:
+  - 第1過程：判定とフラグ差し戻し
+  - 第1過程停止点：利用者承認
+  - 第2過程：requirements 正本修正
+  - 第2過程停止点：コミット完了
+  - 第3過程：requirements triad-review 全 feature レビュー実施
+  - 第3過程：requirements triad-review トリアージ承認
+  - 第3過程：requirements triad-review must-fix/should-fix 反映
+  - 第3過程：requirements triad-review 修正後再レビュー実施
+  - 第3過程停止点：requirements triad-review 完了承認
+  - 第3過程：requirements review-wave 実施
+  - 第3過程停止点：requirements review-wave 完了承認
+  - 第3過程：requirements alignment 実施
+  - 第3過程停止点：requirements alignment 完了承認
+  - 第3過程停止点：requirements approval 完了承認
+  - 第3過程：design drafting 実施
+  - 第3過程：design triad-review 実施
+  - 第3過程停止点：design triad-review 完了承認
+  - 第3過程：design review-wave 実施
+  - 第3過程停止点：design review-wave 完了承認
+  - 第3過程：design alignment 実施
+  - 第3過程停止点：design alignment 完了承認
+  - 第3過程停止点：design approval 完了承認
+  - 第3過程：tasks drafting 実施
+  - 第3過程：tasks triad-review 実施
+  - 第3過程：tasks triad-review トリアージ承認
+  - 第3過程：tasks triad-review must-fix/should-fix 反映
+  - 第3過程：tasks triad-review 修正後再レビュー実施
+  - 第3過程停止点：tasks triad-review 完了承認
+  - 第3過程：tasks review-wave 実施
+  - 第3過程停止点：tasks review-wave 完了承認
+  - 第3過程：tasks alignment 実施
+  - 第3過程停止点：tasks alignment 完了承認
+  - 第3過程：tasks approval 証跡作成
+  - 第3過程停止点：tasks approval 完了承認
+  - 第3過程：implementation drafting 実施
+  - 第3過程：implementation triad-review 実施
+  - 第3過程：implementation triad-review トリアージ承認
+  - 第3過程：implementation triad-review should-fix 反映
+  - 第3過程：implementation triad-review 修正後再レビュー実施
+  - 第3過程：implementation triad-review r2 トリアージ承認
+  - 第3過程：implementation triad-review r2 should-fix 反映
+  - 第3過程停止点：implementation triad-review 完了承認
+  - 第3過程：implementation review-wave 実施
+  - 第3過程：implementation alignment 実施
+  - 第3過程：implementation approval 証跡作成
+  - 第3過程停止点：implementation approval 完了承認
+  - 第4過程：reopen 完了処理
+step_number: 4
+pending_gates: []
+completed_gates:
+  - stages/requirements.yaml#triad-review
+  - stages/requirements.yaml#review-wave
+  - stages/requirements.yaml#alignment
+  - stages/requirements.yaml#approval
+  - stages/design.yaml#triad-review
+  - stages/design.yaml#review-wave
+  - stages/design.yaml#alignment
+  - stages/design.yaml#approval
+  - stages/tasks.yaml#triad-review
+  - stages/tasks.yaml#review-wave
+  - stages/tasks.yaml#alignment
+  - stages/tasks.yaml#approval
+  - stages/implementation.yaml#triad-review
+  - stages/implementation.yaml#review-wave
+  - stages/implementation.yaml#alignment
+  - stages/implementation.yaml#approval
+drafting_completed_gates:
+  - stages/design.yaml#drafting
+  - stages/tasks.yaml#drafting
+  - stages/implementation.yaml#drafting
+approval_source: 2026-06-09 利用者発言「次へ」
+requirements_drafting_result: conformance-evaluation Requirement 10 と workflow-management Requirement 9 を追加し、既存システムへの後追い intent 追加を仕様駆動開発として下流再展開する要件を明文化した。
+requirements_drafting_evidence:
+  - .reviewcompass/specs/conformance-evaluation/requirements.md
+  - .reviewcompass/specs/workflow-management/requirements.md
+requirements_triad_review_result: 全 feature 対象の requirements triad-review で、CE Requirement 10 の tasks 責務境界、CE 出力候補構造、WM の衝突時停止点と handoff 記録を修正した。
+requirements_triad_review_evidence:
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-09-existing-system-sdd-requirements-all-features-review-run/raw-review-triage-summary.md
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-09-existing-system-sdd-requirements-all-features-review-run-r2/raw-review-triage-summary.md
+  - .reviewcompass/specs/conformance-evaluation/requirements.md
+  - .reviewcompass/specs/workflow-management/requirements.md
+requirements_triad_review_postfix_result: 修正後 r2 review-run で must-fix/should-fix が解消し、全所見が leave-as-is または no findings となった。
+requirements_triad_review_approval_source: 2026-06-09 利用者発言「承認」
+requirements_review_wave_result: 全 feature 対象の requirements review-wave で、CE Requirement 10 と WM Requirement 9 は相補的であり、間接 feature 5 件には requirements 本体変更不要と判断した。
+requirements_review_wave_evidence:
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-09-existing-system-sdd-requirements-review-wave.md
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-09-existing-system-sdd-requirements-all-features-review-run-r2/raw-review-triage-summary.md
+  - .reviewcompass/specs/conformance-evaluation/requirements.md
+  - .reviewcompass/specs/workflow-management/requirements.md
+requirements_review_wave_approval_source: 2026-06-09 利用者発言「承認」
+requirements_alignment_result: 全 feature 対象の requirements alignment で、追加 intent、既存 feature 分割、CE Requirement 10、WM Requirement 9 が整合していると判断した。
+requirements_alignment_evidence:
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-09-existing-system-sdd-requirements-alignment.md
+  - intent/INTENT.md
+  - stages/feature-partitioning/2026-05-24-proposal.md
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-09-existing-system-sdd-requirements-review-wave.md
+  - .reviewcompass/specs/conformance-evaluation/requirements.md
+  - .reviewcompass/specs/workflow-management/requirements.md
+requirements_alignment_approval_source: 2026-06-09 利用者発言「承認」
+requirements_approval_source: 2026-06-09 利用者発言「承認」
+requirements_chain_correction: requirements 正本を実質修正したため、alignment へ直行せず、requirements triad-review と review-wave を再実施してから alignment / approval に進む。
+design_drafting_result: conformance-evaluation design.md に既存システム差分抽出モデルを追加し、workflow-management design.md に後追い intent の下流再展開モデルを追加した。
+design_drafting_evidence:
+  - .reviewcompass/specs/conformance-evaluation/design.md
+  - .reviewcompass/specs/workflow-management/design.md
+design_chain_correction: design 正本を実質修正したため、triad-review から開始し、その後 review-wave、alignment、approval の順に再実施する。
+design_triad_review_result: design triad-review r2 で CE/WM の直接設計反映は妥当、間接 feature には現時点の design.md 本体変更不要と判断した。foundation 所有 schema 化の指摘は design review-wave の watch item として扱う。
+design_triad_review_evidence:
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-09-existing-system-sdd-design-all-features-review-run-r2/raw-review-triage-summary.md
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-09-existing-system-sdd-design-all-features-review-run-r2/triage.yaml
+  - .reviewcompass/specs/conformance-evaluation/design.md
+  - .reviewcompass/specs/workflow-management/design.md
+design_triad_review_approval_source: 2026-06-09 利用者発言「承認」
+design_review_wave_result: 全 feature 対象の design review-wave で、CE Requirement 10 と WM Requirement 9 の設計反映は相補的であり、間接 feature 5 件には design.md 本体変更不要と判断した。foundation 所有 schema 化は現時点では不要で、将来 CE/WM 契約が共有 schema 化した時点で再判定する。
+design_review_wave_evidence:
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-09-existing-system-sdd-design-review-wave.md
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-09-existing-system-sdd-design-all-features-review-run-r2/raw-review-triage-summary.md
+  - .reviewcompass/specs/conformance-evaluation/design.md
+  - .reviewcompass/specs/workflow-management/design.md
+design_review_wave_approval_source: 2026-06-09 利用者発言「承認」
+design_alignment_result: 全 feature 対象の design alignment で、追加 intent、既存 feature 分割、CE/WM requirements、CE/WM design、design review-wave 判断が整合していると判断した。
+design_alignment_evidence:
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-09-existing-system-sdd-design-alignment.md
+  - intent/INTENT.md
+  - stages/feature-partitioning/2026-05-24-proposal.md
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-09-existing-system-sdd-design-review-wave.md
+  - .reviewcompass/specs/conformance-evaluation/requirements.md
+  - .reviewcompass/specs/workflow-management/requirements.md
+  - .reviewcompass/specs/conformance-evaluation/design.md
+  - .reviewcompass/specs/workflow-management/design.md
+design_alignment_approval_source: 2026-06-09 利用者発言「承認」
+design_approval_evidence:
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-09-existing-system-sdd-design-approval.md
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-09-existing-system-sdd-design-alignment.md
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-09-existing-system-sdd-design-review-wave.md
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-09-existing-system-sdd-design-all-features-review-run-r2/raw-review-triage-summary.md
+design_approval_source: 2026-06-09 利用者発言「承認。その後、task段を自律実行」
+tasks_drafting_result: conformance-evaluation tasks.md に Requirement 10 / XDI-CE-002 の既存システム差分抽出タスクを追加し、workflow-management tasks.md に Requirement 9 / XDI-WM-002 の下流再展開、drafting-before-review、downstream decision 記録の実装範囲を追記した。
+tasks_drafting_evidence:
+  - .reviewcompass/specs/conformance-evaluation/tasks.md
+  - .reviewcompass/specs/workflow-management/tasks.md
+tasks_chain_correction: tasks 正本を実質修正したため、triad-review から開始し、その後 review-wave、alignment、approval の順に再実施する。
+tasks_triad_review_result: tasks triad-review で、間接 feature の tasks 段確認証跡不足、foundation schema 所有確認、analysis 消費確認、CE→WM handoff 明示が指摘された。
+tasks_triad_review_evidence:
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-09-existing-system-sdd-tasks-all-features-review-run/raw-review-triage-summary.md
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-09-existing-system-sdd-tasks-all-features-review-run/triage.yaml
+tasks_triad_review_approval_source: 2026-06-09 利用者発言「承認」
+tasks_triad_review_fix_result: 全 7 feature の tasks 段影響判断を tasks-impact-decisions.md に記録し、CE T-016 と WM T-007/T-008 に CE→WM handoff、tasks phase 候補の reopen pending gate 変換、WM 所有 schema 境界を追記した。
+tasks_triad_review_fix_evidence:
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-09-existing-system-sdd-tasks-all-features-review-run/tasks-impact-decisions.md
+  - .reviewcompass/specs/conformance-evaluation/tasks.md
+  - .reviewcompass/specs/workflow-management/tasks.md
+superseded_partial_review_run: .reviewcompass/specs/_cross_feature/reviews/2026-06-09-existing-system-sdd-requirements-review-run
+planned_review_run: .reviewcompass/specs/_cross_feature/reviews/2026-06-09-existing-system-sdd-requirements-all-features-review-run
+active_review_run: .reviewcompass/specs/_cross_feature/reviews/2026-06-09-existing-system-sdd-tasks-all-features-review-run-r2
+active_review_summary: .reviewcompass/specs/_cross_feature/reviews/2026-06-09-existing-system-sdd-tasks-all-features-review-run-r2/raw-review-triage-summary.md
+active_stage_artifact: .reviewcompass/specs/_cross_feature/reviews/2026-06-09-existing-system-sdd-tasks-review-wave.md
+active_alignment_artifact: .reviewcompass/specs/_cross_feature/reviews/2026-06-09-existing-system-sdd-tasks-alignment.md
+active_approval_artifact: .reviewcompass/specs/_cross_feature/reviews/2026-06-09-existing-system-sdd-tasks-approval.md
+active_implementation_review_run: .reviewcompass/specs/_cross_feature/reviews/2026-06-09-existing-system-sdd-implementation-review-run
+active_implementation_review_summary: .reviewcompass/specs/_cross_feature/reviews/2026-06-09-existing-system-sdd-implementation-review-run/raw-review-triage-summary.md
+active_implementation_review_run_r2: .reviewcompass/specs/_cross_feature/reviews/2026-06-09-existing-system-sdd-implementation-review-run-r2
+active_implementation_review_summary_r2: .reviewcompass/specs/_cross_feature/reviews/2026-06-09-existing-system-sdd-implementation-review-run-r2/raw-review-triage-summary.md
+active_implementation_stage_artifact: .reviewcompass/specs/_cross_feature/reviews/2026-06-09-existing-system-sdd-implementation-review-wave.md
+active_implementation_alignment_artifact: .reviewcompass/specs/_cross_feature/reviews/2026-06-09-existing-system-sdd-implementation-alignment.md
+active_implementation_approval_artifact: .reviewcompass/specs/_cross_feature/reviews/2026-06-09-existing-system-sdd-implementation-approval.md
+tasks_triad_review_r2_result: r2 では C1〜C4 の実質所見が解消し、残所見は review-target 出力形式に関する再指摘のみとなった。
+tasks_triad_review_r2_evidence:
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-09-existing-system-sdd-tasks-all-features-review-run-r2/raw-review-triage-summary.md
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-09-existing-system-sdd-tasks-all-features-review-run-r2/model-result-summary.yaml
+tasks_triad_review_postfix_result: r2 review-run で前回の実質所見 C1〜C4 は解消し、残所見は review-target 出力形式に関する指摘のみのため leave-as-is として tasks triad-review を完了扱いにした。
+tasks_triad_review_completion_source: 2026-06-09 利用者発言「承認」
+tasks_review_wave_result: 全 feature 対象の tasks review-wave で、CE T-016 と WM Requirement 9 / XDI-WM-002 の tasks 反映は相補的であり、間接 feature 5 件には tasks.md 本体変更不要と判断した。foundation schema 所有と analysis 消費は今回の reopen chain では発生しない。
+tasks_review_wave_evidence:
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-09-existing-system-sdd-tasks-review-wave.md
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-09-existing-system-sdd-tasks-all-features-review-run-r2/raw-review-triage-summary.md
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-09-existing-system-sdd-tasks-all-features-review-run/tasks-impact-decisions.md
+  - .reviewcompass/specs/conformance-evaluation/tasks.md
+  - .reviewcompass/specs/workflow-management/tasks.md
+tasks_review_wave_approval_source: 2026-06-09 利用者発言「承認」
+tasks_alignment_result: 全 feature 対象の tasks alignment で、追加 intent、既存 feature 分割、CE/WM requirements、CE/WM design、CE/WM tasks、tasks review-wave 判断が整合していると判断した。
+tasks_alignment_evidence:
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-09-existing-system-sdd-tasks-alignment.md
+  - intent/INTENT.md
+  - stages/feature-partitioning/2026-05-24-proposal.md
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-09-existing-system-sdd-requirements-alignment.md
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-09-existing-system-sdd-design-alignment.md
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-09-existing-system-sdd-tasks-review-wave.md
+  - .reviewcompass/specs/conformance-evaluation/tasks.md
+  - .reviewcompass/specs/workflow-management/tasks.md
+tasks_alignment_approval_source: 2026-06-09 利用者発言「承認」
+tasks_approval_evidence:
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-09-existing-system-sdd-tasks-approval.md
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-09-existing-system-sdd-tasks-alignment.md
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-09-existing-system-sdd-tasks-review-wave.md
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-09-existing-system-sdd-tasks-all-features-review-run-r2/raw-review-triage-summary.md
+tasks_approval_source: 2026-06-09 利用者発言「承認」
+implementation_drafting_result: conformance-evaluation T-016 の既存システム差分抽出モードを実装し、workflow-management は既存の reopen next 判定と downstream decision 記録で受けられることを確認した。間接 feature 5 件には implementation 本体変更不要と判断した。
+implementation_drafting_evidence:
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-09-existing-system-sdd-implementation-drafting.md
+  - .reviewcompass/specs/conformance-evaluation/implementation-drafting.md
+  - .reviewcompass/specs/workflow-management/implementation-drafting.md
+  - tools/conformance_evaluation/post_hoc_intent_diff.py
+  - tools/conformance_evaluation/schemas/post_hoc_intent_diff.schema.json
+  - tests/conformance-evaluation/test_conformance_evaluation.py
+  - .reviewcompass/specs/conformance-evaluation/conformance/2026-06-09-post-hoc-intent-diff.md
+implementation_triad_review_result: implementation triad-review で WARN 5 件、INFO 7 件が出た。CRITICAL/ERROR はなく、同根は WM 既存実装証跡不足、T-016 出力契約説明不足、間接 feature no-change 証跡不足、CE→WM handoff と downstream_impact_decisions の責務境界不足に集約された。
+implementation_triad_review_evidence:
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-09-existing-system-sdd-implementation-review-run/raw-review-triage-summary.md
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-09-existing-system-sdd-implementation-review-run/triage.yaml
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-09-existing-system-sdd-implementation-review-run/model-result-summary.yaml
+implementation_triad_review_approval_source: 2026-06-09 利用者発言「承認」
+implementation_triad_review_fix_result: 12 件すべてを should-fix として、WM 既存実装対応表、T-016 出力契約、schema 同期テスト、間接 feature no-change 表、CE→WM handoff 責務境界を補強した。
+implementation_triad_review_fix_evidence:
+  - .reviewcompass/specs/conformance-evaluation/implementation-drafting.md
+  - .reviewcompass/specs/workflow-management/implementation-drafting.md
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-09-existing-system-sdd-implementation-drafting.md
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-09-existing-system-sdd-implementation-review-run/review-target.md
+  - tests/conformance-evaluation/test_conformance_evaluation.py
+implementation_triad_review_r2_result: r2 では Gemini が no findings、残所見は WARN 3 件 / INFO 5 件となった。R2-C3 と R2-C7 を should-fix、その他を leave-as-is として利用者が承認した。
+implementation_triad_review_r2_evidence:
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-09-existing-system-sdd-implementation-review-run-r2/raw-review-triage-summary.md
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-09-existing-system-sdd-implementation-review-run-r2/triage.yaml
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-09-existing-system-sdd-implementation-review-run-r2/model-result-summary.yaml
+implementation_triad_review_r2_approval_source: 2026-06-09 利用者発言「承認」
+implementation_triad_review_r2_fix_result: CE T-016 テストに reopen YAML 非破壊確認を追加し、WM drafting-before-review の named regression test を単独実行して証跡へ明記した。
+implementation_triad_review_r2_fix_evidence:
+  - tests/conformance-evaluation/test_conformance_evaluation.py
+  - .reviewcompass/specs/conformance-evaluation/implementation-drafting.md
+  - .reviewcompass/specs/workflow-management/implementation-drafting.md
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-09-existing-system-sdd-implementation-review-run/review-target.md
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-09-existing-system-sdd-implementation-review-run-r2/raw-review-triage-summary.md
+implementation_review_wave_result: 全 feature 対象の implementation review-wave で、CE T-016 実装と WM Requirement 9 / XDI-WM-002 の実装受け皿は相補的であり、間接 feature 5 件には implementation 本体変更不要と判断した。
+implementation_review_wave_evidence:
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-09-existing-system-sdd-implementation-review-wave.md
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-09-existing-system-sdd-implementation-review-run-r2/raw-review-triage-summary.md
+  - .reviewcompass/specs/conformance-evaluation/implementation-drafting.md
+  - .reviewcompass/specs/workflow-management/implementation-drafting.md
+  - tools/conformance_evaluation/post_hoc_intent_diff.py
+  - tools/check-workflow-action.py
+implementation_alignment_result: 全 feature 対象の implementation alignment で、追加 intent、既存 feature 分割、CE/WM requirements、CE/WM design、CE/WM tasks、実装証跡、implementation review-wave 判断が整合していると判断した。
+implementation_alignment_evidence:
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-09-existing-system-sdd-implementation-alignment.md
+  - intent/INTENT.md
+  - stages/feature-partitioning/2026-05-24-proposal.md
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-09-existing-system-sdd-requirements-alignment.md
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-09-existing-system-sdd-design-alignment.md
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-09-existing-system-sdd-tasks-alignment.md
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-09-existing-system-sdd-implementation-review-wave.md
+  - tools/conformance_evaluation/post_hoc_intent_diff.py
+  - tools/check-workflow-action.py
+implementation_approval_evidence:
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-09-existing-system-sdd-implementation-approval.md
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-09-existing-system-sdd-implementation-alignment.md
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-09-existing-system-sdd-implementation-review-wave.md
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-09-existing-system-sdd-implementation-review-run-r2/raw-review-triage-summary.md
+  - .reviewcompass/specs/conformance-evaluation/implementation-drafting.md
+  - .reviewcompass/specs/workflow-management/implementation-drafting.md
+implementation_approval_source: 2026-06-09 利用者発言「承認」
+next_step: （完了。再オープン手続き終了）
+superseded_design_review_run_status: pre_drafting_gap_audit_not_formal_triad_review
+impacted_downstream_phases:
+  - requirements
+  - design
+  - tasks
+  - implementation
+feature_impact_decisions:
+  - feature: conformance-evaluation
+    decision: reopen_existing_feature
+    impact_basis: implementation_ownership
+    rationale: 実装コードから requirements／design 候補と差分候補を抽出し、既存仕様と照合する機能本体の所有 feature であるため。
+    evidence:
+      - intent/INTENT.md
+      - stages/feature-partitioning/2026-05-24-proposal.md
+      - .reviewcompass/specs/conformance-evaluation/requirements.md
+  - feature: workflow-management
+    decision: reopen_existing_feature
+    impact_basis: contract_ownership
+    rationale: 既存システムに intent を後追い追加した場合も、仕様駆動開発として下流工程へ進める手続きの正本を持つため。
+    evidence:
+      - docs/operations/REOPEN_PROCEDURE.md
+      - .reviewcompass/specs/workflow-management/requirements.md
+      - .reviewcompass/specs/workflow-management/tasks.md
+  - feature: foundation
+    decision: indirect_check_only
+    impact_basis: consumer_or_derivative_only
+    rationale: 証拠区分やメタデータ語彙は参照されるが、今回の主変更は語彙正本そのものではないため。
+    evidence:
+      - .reviewcompass/specs/foundation/requirements.md
+  - feature: runtime
+    decision: indirect_check_only
+    impact_basis: consumer_or_derivative_only
+    rationale: LLM 実行基盤は利用され得るが、今回の主変更はコード由来仕様差分の抽出・手続き化であるため。
+    evidence:
+      - .reviewcompass/specs/runtime/requirements.md
+  - feature: evaluation
+    decision: indirect_check_only
+    impact_basis: consumer_or_derivative_only
+    rationale: 評価結果を参照する可能性はあるが、今回の主変更は評価メトリクス本体ではないため。
+    evidence:
+      - .reviewcompass/specs/evaluation/requirements.md
+  - feature: analysis
+    decision: indirect_check_only
+    impact_basis: consumer_or_derivative_only
+    rationale: conformance-evaluation の出力を後段で読む側であり、今回の所有 feature ではないため。
+    evidence:
+      - .reviewcompass/specs/analysis/requirements.md
+  - feature: self-improvement
+    decision: indirect_check_only
+    impact_basis: consumer_or_derivative_only
+    rationale: ワークフロー改善の入力を読む側であり、今回の所有 feature ではないため。
+    evidence:
+      - .reviewcompass/specs/self-improvement/requirements.md
+new_feature_decision:
+  decision: no_new_feature
+  rationale: 追加 intent は既存の conformance-evaluation と workflow-management の責務境界で扱えるため、新 feature は作成しない。
+  evidence:
+    - stages/feature-partitioning/2026-05-24-proposal.md
+    - docs/reviews/reopen-classification-2026-06-09-existing-system-sdd-code-drift.md
+downstream_impact_decisions:
+  - gate: stages/requirements.yaml#triad-review
+    feature_scope:
+      - foundation
+      - runtime
+      - evaluation
+      - analysis
+      - workflow-management
+      - self-improvement
+      - conformance-evaluation
+    decision: approved
+    rationale: 修正後 r2 review-run で must-fix/should-fix が解消し、利用者が requirements triad-review 完了を承認したため。
+    evidence:
+      - .reviewcompass/specs/_cross_feature/reviews/2026-06-09-existing-system-sdd-requirements-all-features-review-run-r2/raw-review-triage-summary.md
+      - .reviewcompass/specs/_cross_feature/reviews/2026-06-09-existing-system-sdd-requirements-all-features-review-run-r2/triage.yaml
+      - .reviewcompass/specs/conformance-evaluation/requirements.md
+      - .reviewcompass/specs/workflow-management/requirements.md
+    decision_actor: human
+    decision_source: 2026-06-09 利用者発言「承認」
+  - gate: stages/requirements.yaml#review-wave
+    feature_scope:
+      - foundation
+      - runtime
+      - evaluation
+      - analysis
+      - workflow-management
+      - self-improvement
+      - conformance-evaluation
+    decision: approved
+    rationale: requirements review-wave で CE Requirement 10 と WM Requirement 9 は相補的であり、間接 feature 5 件には requirements 本体変更不要と判断し、利用者が完了反映を承認したため。
+    evidence:
+      - .reviewcompass/specs/_cross_feature/reviews/2026-06-09-existing-system-sdd-requirements-review-wave.md
+      - .reviewcompass/specs/_cross_feature/reviews/2026-06-09-existing-system-sdd-requirements-all-features-review-run-r2/raw-review-triage-summary.md
+      - .reviewcompass/specs/conformance-evaluation/requirements.md
+      - .reviewcompass/specs/workflow-management/requirements.md
+    decision_actor: human
+    decision_source: 2026-06-09 利用者発言「承認」
+  - gate: stages/requirements.yaml#alignment
+    feature_scope:
+      - foundation
+      - runtime
+      - evaluation
+      - analysis
+      - workflow-management
+      - self-improvement
+      - conformance-evaluation
+    decision: approved
+    rationale: requirements alignment で追加 intent、既存 feature 分割、CE Requirement 10、WM Requirement 9 が整合していると判断し、利用者が完了反映を承認したため。
+    evidence:
+      - .reviewcompass/specs/_cross_feature/reviews/2026-06-09-existing-system-sdd-requirements-alignment.md
+      - intent/INTENT.md
+      - stages/feature-partitioning/2026-05-24-proposal.md
+      - .reviewcompass/specs/conformance-evaluation/requirements.md
+      - .reviewcompass/specs/workflow-management/requirements.md
+    decision_actor: human
+    decision_source: 2026-06-09 利用者発言「承認」
+  - gate: stages/requirements.yaml#approval
+    feature_scope:
+      - foundation
+      - runtime
+      - evaluation
+      - analysis
+      - workflow-management
+      - self-improvement
+      - conformance-evaluation
+    decision: approved
+    rationale: requirements 段の triad-review、review-wave、alignment が完了し、追加 intent と CE/WM requirements の分担に矛盾がないことを利用者が承認したため。
+    evidence:
+      - .reviewcompass/specs/_cross_feature/reviews/2026-06-09-existing-system-sdd-requirements-alignment.md
+      - .reviewcompass/specs/_cross_feature/reviews/2026-06-09-existing-system-sdd-requirements-review-wave.md
+      - .reviewcompass/specs/_cross_feature/reviews/2026-06-09-existing-system-sdd-requirements-all-features-review-run-r2/raw-review-triage-summary.md
+      - .reviewcompass/specs/conformance-evaluation/requirements.md
+      - .reviewcompass/specs/workflow-management/requirements.md
+    decision_actor: human
+    decision_source: 2026-06-09 利用者発言「承認」
+  - gate: stages/design.yaml#triad-review
+    feature_scope:
+      - foundation
+      - runtime
+      - evaluation
+      - analysis
+      - workflow-management
+      - self-improvement
+      - conformance-evaluation
+    decision: approved
+    rationale: design triad-review r2 の利用者向けトリアージで、CE/WM の直接設計反映は妥当、間接 feature には現時点の design.md 本体変更不要と判断し、利用者が完了を承認したため。foundation 所有 schema 化の指摘は design review-wave の watch item として扱う。
+    evidence:
+      - .reviewcompass/specs/_cross_feature/reviews/2026-06-09-existing-system-sdd-design-all-features-review-run-r2/raw-review-triage-summary.md
+      - .reviewcompass/specs/_cross_feature/reviews/2026-06-09-existing-system-sdd-design-all-features-review-run-r2/triage.yaml
+      - .reviewcompass/specs/conformance-evaluation/design.md
+      - .reviewcompass/specs/workflow-management/design.md
+    decision_actor: human
+    decision_source: 2026-06-09 利用者発言「承認」
+  - gate: stages/design.yaml#review-wave
+    feature_scope:
+      - foundation
+      - runtime
+      - evaluation
+      - analysis
+      - workflow-management
+      - self-improvement
+      - conformance-evaluation
+    decision: approved
+    rationale: 全 feature 対象の design review-wave で CE Requirement 10 と WM Requirement 9 の設計反映は相補的であり、間接 feature 5 件には design.md 本体変更不要と判断し、利用者が完了を承認したため。foundation 所有 schema 化は現時点では不要で、将来 CE/WM 契約が共有 schema 化した時点で再判定する。
+    evidence:
+      - .reviewcompass/specs/_cross_feature/reviews/2026-06-09-existing-system-sdd-design-review-wave.md
+      - .reviewcompass/specs/_cross_feature/reviews/2026-06-09-existing-system-sdd-design-all-features-review-run-r2/raw-review-triage-summary.md
+      - .reviewcompass/specs/conformance-evaluation/design.md
+      - .reviewcompass/specs/workflow-management/design.md
+    decision_actor: human
+    decision_source: 2026-06-09 利用者発言「承認」
+  - gate: stages/design.yaml#alignment
+    feature_scope:
+      - foundation
+      - runtime
+      - evaluation
+      - analysis
+      - workflow-management
+      - self-improvement
+      - conformance-evaluation
+    decision: approved
+    rationale: design alignment で追加 intent、既存 feature 分割、CE/WM requirements、CE/WM design、design review-wave 判断が整合していると判断し、利用者が完了を承認したため。
+    evidence:
+      - .reviewcompass/specs/_cross_feature/reviews/2026-06-09-existing-system-sdd-design-alignment.md
+      - intent/INTENT.md
+      - stages/feature-partitioning/2026-05-24-proposal.md
+      - .reviewcompass/specs/_cross_feature/reviews/2026-06-09-existing-system-sdd-design-review-wave.md
+      - .reviewcompass/specs/conformance-evaluation/requirements.md
+      - .reviewcompass/specs/workflow-management/requirements.md
+      - .reviewcompass/specs/conformance-evaluation/design.md
+      - .reviewcompass/specs/workflow-management/design.md
+    decision_actor: human
+    decision_source: 2026-06-09 利用者発言「承認」
+  - gate: stages/design.yaml#approval
+    feature_scope:
+      - foundation
+      - runtime
+      - evaluation
+      - analysis
+      - workflow-management
+      - self-improvement
+      - conformance-evaluation
+    decision: approved
+    rationale: design 段の drafting、triad-review、review-wave、alignment が完了し、追加 intent と CE/WM design の分担に矛盾がないことを利用者が承認したため。
+    evidence:
+      - .reviewcompass/specs/_cross_feature/reviews/2026-06-09-existing-system-sdd-design-approval.md
+      - .reviewcompass/specs/_cross_feature/reviews/2026-06-09-existing-system-sdd-design-alignment.md
+      - .reviewcompass/specs/_cross_feature/reviews/2026-06-09-existing-system-sdd-design-review-wave.md
+      - .reviewcompass/specs/_cross_feature/reviews/2026-06-09-existing-system-sdd-design-all-features-review-run-r2/raw-review-triage-summary.md
+      - .reviewcompass/specs/conformance-evaluation/design.md
+      - .reviewcompass/specs/workflow-management/design.md
+    decision_actor: human
+    decision_source: 2026-06-09 利用者発言「承認。その後、task段を自律実行」
+  - gate: stages/tasks.yaml#triad-review
+    feature_scope:
+      - foundation
+      - runtime
+      - evaluation
+      - analysis
+      - workflow-management
+      - self-improvement
+      - conformance-evaluation
+    decision: approved
+    rationale: tasks triad-review r2 で前回の実質所見 C1〜C4 は解消し、残所見は review-target 出力形式に関する指摘のみで tasks 正本の blocker ではないと判断し、利用者が完了を承認したため。
+    evidence:
+      - .reviewcompass/specs/_cross_feature/reviews/2026-06-09-existing-system-sdd-tasks-all-features-review-run-r2/raw-review-triage-summary.md
+      - .reviewcompass/specs/_cross_feature/reviews/2026-06-09-existing-system-sdd-tasks-all-features-review-run-r2/model-result-summary.yaml
+      - .reviewcompass/specs/_cross_feature/reviews/2026-06-09-existing-system-sdd-tasks-all-features-review-run/tasks-impact-decisions.md
+      - .reviewcompass/specs/conformance-evaluation/tasks.md
+      - .reviewcompass/specs/workflow-management/tasks.md
+    decision_actor: human
+    decision_source: 2026-06-09 利用者発言「承認」
+  - gate: stages/tasks.yaml#review-wave
+    feature_scope:
+      - foundation
+      - runtime
+      - evaluation
+      - analysis
+      - workflow-management
+      - self-improvement
+      - conformance-evaluation
+    decision: approved
+    rationale: 全 feature 対象の tasks review-wave で CE T-016 と WM Requirement 9 / XDI-WM-002 の tasks 反映は相補的であり、間接 feature 5 件には tasks.md 本体変更不要と判断し、利用者が完了を承認したため。
+    evidence:
+      - .reviewcompass/specs/_cross_feature/reviews/2026-06-09-existing-system-sdd-tasks-review-wave.md
+      - .reviewcompass/specs/_cross_feature/reviews/2026-06-09-existing-system-sdd-tasks-all-features-review-run-r2/raw-review-triage-summary.md
+      - .reviewcompass/specs/_cross_feature/reviews/2026-06-09-existing-system-sdd-tasks-all-features-review-run/tasks-impact-decisions.md
+      - .reviewcompass/specs/conformance-evaluation/tasks.md
+      - .reviewcompass/specs/workflow-management/tasks.md
+    decision_actor: human
+    decision_source: 2026-06-09 利用者発言「承認」
+  - gate: stages/tasks.yaml#alignment
+    feature_scope:
+      - foundation
+      - runtime
+      - evaluation
+      - analysis
+      - workflow-management
+      - self-improvement
+      - conformance-evaluation
+    decision: approved
+    rationale: tasks alignment で追加 intent、既存 feature 分割、CE/WM requirements、CE/WM design、CE/WM tasks、tasks review-wave 判断が整合していると判断し、利用者が完了を承認したため。
+    evidence:
+      - .reviewcompass/specs/_cross_feature/reviews/2026-06-09-existing-system-sdd-tasks-alignment.md
+      - intent/INTENT.md
+      - stages/feature-partitioning/2026-05-24-proposal.md
+      - .reviewcompass/specs/_cross_feature/reviews/2026-06-09-existing-system-sdd-requirements-alignment.md
+      - .reviewcompass/specs/_cross_feature/reviews/2026-06-09-existing-system-sdd-design-alignment.md
+      - .reviewcompass/specs/_cross_feature/reviews/2026-06-09-existing-system-sdd-tasks-review-wave.md
+      - .reviewcompass/specs/conformance-evaluation/tasks.md
+      - .reviewcompass/specs/workflow-management/tasks.md
+    decision_actor: human
+    decision_source: 2026-06-09 利用者発言「承認」
+  - gate: stages/tasks.yaml#approval
+    feature_scope:
+      - foundation
+      - runtime
+      - evaluation
+      - analysis
+      - workflow-management
+      - self-improvement
+      - conformance-evaluation
+    decision: approved
+    rationale: tasks 段の drafting、triad-review、review-wave、alignment が完了し、追加 intent と CE/WM tasks の分担に矛盾がないことを利用者が承認したため。
+    evidence:
+      - .reviewcompass/specs/_cross_feature/reviews/2026-06-09-existing-system-sdd-tasks-approval.md
+      - .reviewcompass/specs/_cross_feature/reviews/2026-06-09-existing-system-sdd-tasks-alignment.md
+      - .reviewcompass/specs/_cross_feature/reviews/2026-06-09-existing-system-sdd-tasks-review-wave.md
+      - .reviewcompass/specs/_cross_feature/reviews/2026-06-09-existing-system-sdd-tasks-all-features-review-run-r2/raw-review-triage-summary.md
+      - .reviewcompass/specs/conformance-evaluation/tasks.md
+      - .reviewcompass/specs/workflow-management/tasks.md
+    decision_actor: human
+    decision_source: 2026-06-09 利用者発言「承認」
+  - gate: stages/implementation.yaml#triad-review
+    feature_scope:
+      - foundation
+      - runtime
+      - evaluation
+      - analysis
+      - workflow-management
+      - self-improvement
+      - conformance-evaluation
+    decision: approved
+    rationale: implementation triad-review と r2 で CRITICAL/ERROR はなく、r2 の R2-C3/R2-C7 を should-fix として反映し、残りは leave-as-is とする判断を利用者が承認したため。
+    evidence:
+      - .reviewcompass/specs/_cross_feature/reviews/2026-06-09-existing-system-sdd-implementation-review-run-r2/raw-review-triage-summary.md
+      - .reviewcompass/specs/_cross_feature/reviews/2026-06-09-existing-system-sdd-implementation-review-run-r2/triage.yaml
+      - .reviewcompass/specs/_cross_feature/reviews/2026-06-09-existing-system-sdd-implementation-review-run-r2/model-result-summary.yaml
+      - tests/conformance-evaluation/test_conformance_evaluation.py
+      - .reviewcompass/specs/workflow-management/implementation-drafting.md
+    decision_actor: human
+    decision_source: 2026-06-09 利用者発言「承認」
+  - gate: stages/implementation.yaml#review-wave
+    feature_scope:
+      - foundation
+      - runtime
+      - evaluation
+      - analysis
+      - workflow-management
+      - self-improvement
+      - conformance-evaluation
+    decision: approved
+    rationale: 全 feature 対象の implementation review-wave で CE T-016 実装と WM Requirement 9 / XDI-WM-002 の実装受け皿は相補的であり、間接 feature 5 件には implementation 本体変更不要と判断したため。
+    evidence:
+      - .reviewcompass/specs/_cross_feature/reviews/2026-06-09-existing-system-sdd-implementation-review-wave.md
+      - .reviewcompass/specs/_cross_feature/reviews/2026-06-09-existing-system-sdd-implementation-review-run-r2/raw-review-triage-summary.md
+      - .reviewcompass/specs/conformance-evaluation/implementation-drafting.md
+      - .reviewcompass/specs/workflow-management/implementation-drafting.md
+      - tools/conformance_evaluation/post_hoc_intent_diff.py
+      - tools/check-workflow-action.py
+    decision_actor: human
+    decision_source: 2026-06-09 利用者発言「承認」
+  - gate: stages/implementation.yaml#alignment
+    feature_scope:
+      - foundation
+      - runtime
+      - evaluation
+      - analysis
+      - workflow-management
+      - self-improvement
+      - conformance-evaluation
+    decision: approved
+    rationale: implementation alignment で追加 intent、既存 feature 分割、CE/WM requirements、CE/WM design、CE/WM tasks、実装証跡、implementation review-wave 判断が整合していると判断したため。
+    evidence:
+      - .reviewcompass/specs/_cross_feature/reviews/2026-06-09-existing-system-sdd-implementation-alignment.md
+      - intent/INTENT.md
+      - stages/feature-partitioning/2026-05-24-proposal.md
+      - .reviewcompass/specs/_cross_feature/reviews/2026-06-09-existing-system-sdd-implementation-review-wave.md
+      - tools/conformance_evaluation/post_hoc_intent_diff.py
+      - tools/check-workflow-action.py
+    decision_actor: human
+    decision_source: 2026-06-09 利用者発言「承認」
+  - gate: stages/implementation.yaml#approval
+    feature_scope:
+      - foundation
+      - runtime
+      - evaluation
+      - analysis
+      - workflow-management
+      - self-improvement
+      - conformance-evaluation
+    decision: approved
+    rationale: implementation 段の drafting、triad-review、review-wave、alignment が完了し、追加 intent と CE/WM implementation の分担に矛盾がないことを利用者が承認したため。
+    evidence:
+      - .reviewcompass/specs/_cross_feature/reviews/2026-06-09-existing-system-sdd-implementation-approval.md
+      - .reviewcompass/specs/_cross_feature/reviews/2026-06-09-existing-system-sdd-implementation-alignment.md
+      - .reviewcompass/specs/_cross_feature/reviews/2026-06-09-existing-system-sdd-implementation-review-wave.md
+      - .reviewcompass/specs/_cross_feature/reviews/2026-06-09-existing-system-sdd-implementation-review-run-r2/raw-review-triage-summary.md
+      - .reviewcompass/specs/conformance-evaluation/implementation-drafting.md
+      - .reviewcompass/specs/workflow-management/implementation-drafting.md
+    decision_actor: human
+    decision_source: 2026-06-09 利用者発言「承認」
+current_blocker: null

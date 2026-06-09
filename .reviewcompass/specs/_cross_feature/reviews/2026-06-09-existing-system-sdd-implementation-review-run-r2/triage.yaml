@@ -1,0 +1,180 @@
+run_id: 2026-06-09-existing-system-sdd-implementation-review-run-r2
+triage_status: decided
+generated_at: '2026-06-09T04:26:40.379107+00:00'
+decision_actor: null
+decision_actor_type: human
+items:
+- finding_id: 2026-06-09-existing-system-sdd-implementation-review-run-r2-claude-sonnet-4-6-primary-001
+  run_id: 2026-06-09-existing-system-sdd-implementation-review-run-r2
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: '## Implementation Changes / conformance-evaluation'
+  plain_language_summary: PostHocIntentDiff schema and classification contract are
+    declared inline in the review-target document but the actual schema file (post_hoc_intent_diff.schema.json)
+    is listed only as an evidence file without any structural verification being shown.
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-09T04:29:57.634720+00:00'
+  decision_reason: 利用者承認に基づく r2 triage。R2-C3/R2-C7 は should-fix、それ以外は今回 gate の必須修正ではないため
+    leave-as-is。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-09-existing-system-sdd-implementation-review-run-r2-claude-sonnet-4-6-primary-002
+  run_id: 2026-06-09-existing-system-sdd-implementation-review-run-r2
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: '## Implementation Changes / workflow-management'
+  plain_language_summary: The workflow-management section claims no new code was required
+    because existing behavior already covers Requirement 9 / XDI-WM-002, but the document
+    does not show which version or commit of check-workflow-action.py contained the
+    relevant functions prior to this reopen.
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-09T04:29:57.658191+00:00'
+  decision_reason: 利用者承認に基づく r2 triage。R2-C3/R2-C7 は should-fix、それ以外は今回 gate の必須修正ではないため
+    leave-as-is。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-09-existing-system-sdd-implementation-review-run-r2-claude-sonnet-4-6-primary-003
+  run_id: 2026-06-09-existing-system-sdd-implementation-review-run-r2
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: '## Implementation Changes / conformance-evaluation – needs_human_decision
+    clarification'
+  plain_language_summary: The document states 'Even when this value is false, downstream
+    adoption still happens through workflow-management gate decisions, not by CE writing
+    back to the reopen YAML.' This is a behavioral contract that affects how consumers
+    interpret needs_human_decision=false, but no test explicitly covers the false-branch
+    handoff path to workflow-management.
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-09T04:29:57.680725+00:00'
+  decision_reason: 利用者承認に基づく r2 triage。R2-C3/R2-C7 は should-fix、それ以外は今回 gate の必須修正ではないため
+    leave-as-is。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-09-existing-system-sdd-implementation-review-run-r2-claude-sonnet-4-6-primary-004
+  run_id: 2026-06-09-existing-system-sdd-implementation-review-run-r2
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: '## Indirect Feature No-change Check'
+  plain_language_summary: The indirect no-change check for analysis notes 'T-016 output
+    is not yet a reportable analysis intake artifact', implying a known future integration
+    point. No task or reopen record is referenced to track this pending integration.
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-09T04:29:57.702163+00:00'
+  decision_reason: 利用者承認に基づく r2 triage。R2-C3/R2-C7 は should-fix、それ以外は今回 gate の必須修正ではないため
+    leave-as-is。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-09-existing-system-sdd-implementation-review-run-r2-claude-sonnet-4-6-primary-005
+  run_id: 2026-06-09-existing-system-sdd-implementation-review-run-r2
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: '## Current Mechanical State'
+  plain_language_summary: The document shows before/after next output states but does
+    not include the actual YAML content of the reopen-in-progress file (stages/in-progress/reopen-procedure-2026-06-09-existing-system-sdd-code-drift.yaml)
+    that was updated to transition from drafting to triad-review.
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-09T04:29:57.723223+00:00'
+  decision_reason: 利用者承認に基づく r2 triage。R2-C3/R2-C7 は should-fix、それ以外は今回 gate の必須修正ではないため
+    leave-as-is。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-09-existing-system-sdd-implementation-review-run-r2-claude-sonnet-4-6-primary-006
+  run_id: 2026-06-09-existing-system-sdd-implementation-review-run-r2
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: '## Evidence Files'
+  plain_language_summary: The cross-feature implementation drafting review document
+    (.reviewcompass/specs/_cross_feature/reviews/2026-06-09-existing-system-sdd-implementation-drafting.md)
+    is listed as evidence but no findings or conclusions from it are summarized in
+    the review-target document.
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-09T04:29:57.744816+00:00'
+  decision_reason: 利用者承認に基づく r2 triage。R2-C3/R2-C7 は should-fix、それ以外は今回 gate の必須修正ではないため
+    leave-as-is。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-09-existing-system-sdd-implementation-review-run-r2-gpt-5.4-adversarial-001
+  run_id: 2026-06-09-existing-system-sdd-implementation-review-run-r2
+  source_model: gpt-5.4
+  source_round: round-1
+  source_raw_path: raw/gpt-5.4.round-1.txt
+  source_parsed_path: parsed/gpt-5.4.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: '## workflow-management / ## Tests Run'
+  plain_language_summary: The review claims no new workflow-management code was required,
+    but the listed executed tests do not include the feature-specific regression test
+    named in the evidence table.
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-09T04:29:57.765078+00:00'
+  decision_reason: 利用者承認に基づく r2 triage。R2-C3/R2-C7 は should-fix、それ以外は今回 gate の必須修正ではないため
+    leave-as-is。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-09-existing-system-sdd-implementation-review-run-r2-gpt-5.4-adversarial-002
+  run_id: 2026-06-09-existing-system-sdd-implementation-review-run-r2
+  source_model: gpt-5.4
+  source_round: round-1
+  source_raw_path: raw/gpt-5.4.round-1.txt
+  source_parsed_path: parsed/gpt-5.4.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: '## Implementation Changes / workflow-management'
+  plain_language_summary: The statement that workflow-management required no new implementation
+    depends entirely on pre-existing behavior and tests, but the document does not
+    identify the specific commit/change context showing those behaviors predated this
+    reopen.
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-09T04:29:57.785340+00:00'
+  decision_reason: 利用者承認に基づく r2 triage。R2-C3/R2-C7 は should-fix、それ以外は今回 gate の必須修正ではないため
+    leave-as-is。
+  applied_files: []
+  superseded_by: null

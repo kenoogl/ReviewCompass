@@ -1,0 +1,279 @@
+run_id: 2026-06-09-existing-system-sdd-design-all-features-review-run-r2
+triage_status: approved
+generated_at: '2026-06-09T03:22:51.406207+00:00'
+decision_actor: user
+decision_actor_type: human
+items:
+- finding_id: 2026-06-09-existing-system-sdd-design-all-features-review-run-r2-claude-sonnet-4-6-primary-001
+  run_id: 2026-06-09-existing-system-sdd-design-all-features-review-run-r2
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: conformance-evaluation design.md §7.10
+  plain_language_summary: CE design adds existing-system difference extraction mode
+    with candidate fields and classification values that are well-scoped to CE responsibility.
+  final_label: leave-as-is
+  decision_status: approved
+  decision_actor: user
+  decision_actor_type: human
+  decision_at: 2026-06-09T12:25:37+09:00
+  decision_reason: 'leave-as-is: CE correctly stops at candidate extraction and classification.
+    The boundary that tasks.md updates remain WM reopen responsibility is explicit.
+    Req 10 traceability and XDI-CE-002 are present. No must-fix or should-fix issues
+    detected in this section.'
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-09-existing-system-sdd-design-all-features-review-run-r2-claude-sonnet-4-6-primary-002
+  run_id: 2026-06-09-existing-system-sdd-design-all-features-review-run-r2
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: conformance-evaluation design.md §13.7 and §14.4
+  plain_language_summary: Handoff to workflow-management and output interface sections
+    are present and align with the CE/WM boundary established in the requirements
+    review-wave.
+  final_label: leave-as-is
+  decision_status: approved
+  decision_actor: user
+  decision_actor_type: human
+  decision_at: 2026-06-09T12:25:37+09:00
+  decision_reason: 'leave-as-is: CE produces structured candidates and hands off to
+    WM without overreaching into reopen orchestration. The interface contract is sufficient
+    for WM intake.'
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-09-existing-system-sdd-design-all-features-review-run-r2-claude-sonnet-4-6-primary-003
+  run_id: 2026-06-09-existing-system-sdd-design-all-features-review-run-r2
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: workflow-management design.md §reopen 機械強制モデル §6
+  plain_language_summary: WM design adds post-hoc intent downstream redeployment section
+    covering feature receptacle decisions, CE candidate intake contract, downstream_impact_decisions
+    record shape, and side-track handling.
+  final_label: leave-as-is
+  decision_status: approved
+  decision_actor: user
+  decision_actor_type: human
+  decision_at: 2026-06-09T12:25:37+09:00
+  decision_reason: 'leave-as-is: WM correctly owns orchestration, receptacle decisions,
+    and formal reopen workflow. The drafting-before-review rule closes the workflow
+    hole identified in the earlier run. Req 9 traceability and XDI-WM-002 are present.'
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-09-existing-system-sdd-design-all-features-review-run-r2-claude-sonnet-4-6-primary-004
+  run_id: 2026-06-09-existing-system-sdd-design-all-features-review-run-r2
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: 'workflow-management design.md: drafting_completed_gates rule'
+  plain_language_summary: The rule that pending_gates pointing to triad-review still
+    requires drafting first unless drafting_completed_gates or completed_gates contains
+    the drafting gate is now encoded in WM design.
+  final_label: leave-as-is
+  decision_status: approved
+  decision_actor: user
+  decision_actor_type: human
+  decision_at: 2026-06-09T12:25:37+09:00
+  decision_reason: 'leave-as-is: This closes the workflow hole that caused the earlier
+    review run to be superseded. The mechanical enforcement model is now consistent
+    with the reopen procedure state machine.'
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-09-existing-system-sdd-design-all-features-review-run-r2-claude-sonnet-4-6-primary-005
+  run_id: 2026-06-09-existing-system-sdd-design-all-features-review-run-r2
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: 'workflow-management design.md: side-track handling'
+  plain_language_summary: 'Side-track handling through process_id: maintenance is
+    present, consistent with the user clarification that workflow procedure defects
+    discovered during dogfooding must be handled as side track work before mainline
+    reopen resumes.'
+  final_label: leave-as-is
+  decision_status: approved
+  decision_actor: user
+  decision_actor_type: human
+  decision_at: 2026-06-09T12:25:37+09:00
+  decision_reason: 'leave-as-is: The design correctly encodes the side-track/mainline
+    separation. No overreach into other feature responsibilities.'
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-09-existing-system-sdd-design-all-features-review-run-r2-claude-sonnet-4-6-primary-006
+  run_id: 2026-06-09-existing-system-sdd-design-all-features-review-run-r2
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: 'indirect features: foundation, runtime, evaluation, analysis,
+    self-improvement'
+  plain_language_summary: All five indirect features have been checked. The design
+    drafting does not create new contracts that these features must own directly.
+    The expected baseline of indirect_check_only is appropriate for this reopen chain
+    at the design stage.
+  final_label: leave-as-is
+  decision_status: approved
+  decision_actor: user
+  decision_actor_type: human
+  decision_at: 2026-06-09T12:25:37+09:00
+  decision_reason: 'leave-as-is: The new CE candidate schema and WM intake contract
+    are owned by CE and WM respectively. No shared metadata, evidence bundle, or reporting
+    schema changes are introduced that would require foundation, runtime, evaluation,
+    analysis, or self-improvement to update their design.md bodies now.'
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-09-existing-system-sdd-design-all-features-review-run-r2-claude-sonnet-4-6-primary-007
+  run_id: 2026-06-09-existing-system-sdd-design-all-features-review-run-r2
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: 'all seven features: design triad-review gate readiness'
+  plain_language_summary: Design triad-review can proceed to completion. All seven
+    features are in scope. CE and WM have sufficient design coverage for their respective
+    requirements and cross-document identifiers. Indirect features require no design.md
+    changes at this stage. CE/WM boundaries are clear. Tasks handling is correctly
+    bounded to WM reopen responsibility. The drafting_completed_gates workflow hole
+    is closed.
+  final_label: leave-as-is
+  decision_status: approved
+  decision_actor: user
+  decision_actor_type: human
+  decision_at: 2026-06-09T12:25:37+09:00
+  decision_reason: 'leave-as-is: No must-fix or should-fix blockers are present. The
+    design drafting is sufficient to complete stages/design.yaml#triad-review as the
+    next mechanical gate in the reopen procedure.'
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-09-existing-system-sdd-design-all-features-review-run-r2-gpt-5.4-adversarial-001
+  run_id: 2026-06-09-existing-system-sdd-design-all-features-review-run-r2
+  source_model: gpt-5.4
+  source_round: round-1
+  source_raw_path: raw/gpt-5.4.round-1.txt
+  source_parsed_path: parsed/gpt-5.4.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: Review Criteria / Output contract
+  plain_language_summary: The document requests each finding to include `verifying_commands`,
+    but the output contract for this review run explicitly permits only `severity`,
+    `target_location`, `description`, and `rationale`.
+  final_label: leave-as-is
+  decision_status: approved
+  decision_actor: user
+  decision_actor_type: human
+  decision_at: 2026-06-09T12:25:37+09:00
+  decision_reason: 'must-fix: The target document is internally inconsistent about
+    the required review artifact shape. A reviewer cannot satisfy both constraints
+    simultaneously, which makes the triad-review completion criteria ambiguous and
+    can cause mechanical rejection of an otherwise valid review output.'
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-09-existing-system-sdd-design-all-features-review-run-r2-gemini-3.1-pro-preview-judgment-001
+  run_id: 2026-06-09-existing-system-sdd-design-all-features-review-run-r2
+  source_model: gemini-3.1-pro-preview
+  source_round: round-1
+  source_raw_path: raw/gemini-3.1-pro-preview.round-1.txt
+  source_parsed_path: parsed/gemini-3.1-pro-preview.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: Indirect Feature Scope
+  plain_language_summary: Foundation design.md is missing required schema and state
+    contract updates to support new CE and WM data structures.
+  final_label: leave-as-is
+  decision_status: approved
+  decision_actor: user
+  decision_actor_type: human
+  decision_at: 2026-06-09T12:25:37+09:00
+  decision_reason: 'CE introduces new classification vocabulary (`existing_sufficient`,
+    `spec_update_candidate`, etc.) and candidate fields. WM introduces new session
+    state fields (`drafting_completed_gates`, `current_blocker`, `process_id: maintenance`).
+    Because the foundation feature owns shared metadata, vocabulary, schema, and state
+    contracts, it cannot remain `indirect_check_only`. The design drafting for foundation
+    must be updated to define these new shared contracts before triad-review can complete.
+    Label: `must-fix`.'
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-09-existing-system-sdd-design-all-features-review-run-r2-gemini-3.1-pro-preview-judgment-002
+  run_id: 2026-06-09-existing-system-sdd-design-all-features-review-run-r2
+  source_model: gemini-3.1-pro-preview
+  source_round: round-1
+  source_raw_path: raw/gemini-3.1-pro-preview.round-1.txt
+  source_parsed_path: parsed/gemini-3.1-pro-preview.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: workflow-management design.md
+  plain_language_summary: WM intake contract does not explicitly reference foundation-owned
+    schema definitions.
+  final_label: leave-as-is
+  decision_status: approved
+  decision_actor: user
+  decision_actor_type: human
+  decision_at: 2026-06-09T12:25:37+09:00
+  decision_reason: 'While WM correctly defines the session state fields and intake
+    contract with minimum fields, it should explicitly delegate the strict type/schema
+    definition of these shared objects (like `downstream_impact_decisions`) to the
+    foundation feature to maintain architectural boundaries. Label: `should-fix`.'
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-09-existing-system-sdd-design-all-features-review-run-r2-gemini-3.1-pro-preview-judgment-003
+  run_id: 2026-06-09-existing-system-sdd-design-all-features-review-run-r2
+  source_model: gemini-3.1-pro-preview
+  source_round: round-1
+  source_raw_path: raw/gemini-3.1-pro-preview.round-1.txt
+  source_parsed_path: parsed/gemini-3.1-pro-preview.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: conformance-evaluation design.md
+  plain_language_summary: CE design properly bounds its responsibility regarding formal
+    tasks.md updates.
+  final_label: leave-as-is
+  decision_status: approved
+  decision_actor: user
+  decision_actor_type: human
+  decision_at: 2026-06-09T12:25:37+09:00
+  decision_reason: 'The design correctly limits CE to treating tasks as reference
+    input and downstream impact candidates, deferring formal tasks.md mutations to
+    the WM reopen responsibility, effectively satisfying Requirement 10 and maintaining
+    clear boundaries. Label: `leave-as-is`.'
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-09-existing-system-sdd-design-all-features-review-run-r2-gemini-3.1-pro-preview-judgment-004
+  run_id: 2026-06-09-existing-system-sdd-design-all-features-review-run-r2
+  source_model: gemini-3.1-pro-preview
+  source_round: round-1
+  source_raw_path: raw/gemini-3.1-pro-preview.round-1.txt
+  source_parsed_path: parsed/gemini-3.1-pro-preview.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: workflow-management design.md
+  plain_language_summary: WM design successfully closes the drafting-before-review
+    state machine hole.
+  final_label: leave-as-is
+  decision_status: approved
+  decision_actor: user
+  decision_actor_type: human
+  decision_at: 2026-06-09T12:25:37+09:00
+  decision_reason: 'By introducing `drafting_completed_gates` and the rule preventing
+    triad-review unless drafting is complete, the design fixes the mechanical action
+    defect that led to this superseded review run. Label: `leave-as-is`.'
+  applied_files: []
+  superseded_by: null

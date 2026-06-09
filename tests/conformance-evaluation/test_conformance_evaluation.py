@@ -1,4 +1,5 @@
 from pathlib import Path
+import json
 import re
 
 import pytest
@@ -12,6 +13,11 @@ from tools.conformance_evaluation.evaluation_record import EvaluationRecordModel
 from tools.conformance_evaluation.generation_mode import GenerationPipeline
 from tools.conformance_evaluation.machine_verification import MachineVerification, VerificationStatus
 from tools.conformance_evaluation.mode_switch import ModeSwitch, ModeSwitchError
+from tools.conformance_evaluation.post_hoc_intent_diff import (
+  ALLOWED_CLASSIFICATIONS,
+  PostHocIntentDiff,
+  PostHocIntentDiffError,
+)
 from tools.conformance_evaluation.triad_review import TriadReviewPolicy
 
 
@@ -266,13 +272,124 @@ def test_t012_machine_verification_mv6_is_blocking(tmp_path):
 
 def test_t013_traceability_smoke():
   tasks_text = (ROOT / ".reviewcompass" / "specs" / "conformance-evaluation" / "tasks.md").read_text(encoding="utf-8")
-  for index in range(1, 16):
+  for index in range(1, 17):
     assert f"T-{index:03d}" in tasks_text
     task_block = re.search(rf"### T-{index:03d}：.*?(?=^### T-|\Z)", tasks_text, re.S | re.M)
     assert task_block is not None
     assert "対応要件" in task_block.group(0)
     assert "テスト要件" in task_block.group(0)
   assert "DVT" in tasks_text
+
+
+def test_t016_post_hoc_intent_diff_outputs_candidates_and_record(tmp_path):
+  tasks_path = tmp_path / ".reviewcompass" / "specs" / "workflow-management" / "tasks.md"
+  tasks_path.parent.mkdir(parents=True)
+  original_tasks = "既存 tasks 本文\n"
+  tasks_path.write_text(original_tasks, encoding="utf-8")
+  reopen_path = tmp_path / "stages" / "in-progress" / "reopen-procedure-2026-06-09.yaml"
+  reopen_path.parent.mkdir(parents=True)
+  original_reopen = (
+    "process_id: reopen-procedure\n"
+    "pending_gates:\n"
+    "  - stages/implementation.yaml#triad-review\n"
+  )
+  reopen_path.write_text(original_reopen, encoding="utf-8")
+
+  extractor = PostHocIntentDiff(tmp_path)
+  result = extractor.extract(
+    added_intent="既存システムに intent を後から追加した場合も仕様駆動開発で下流工程へ進める。",
+    feature_partitioning="conformance-evaluation は差分候補抽出、workflow-management は reopen 伝播を担当する。",
+    existing_specs={
+      "conformance-evaluation": {
+        "requirements": "Requirement 10: 既存システム差分抽出",
+        "design": "post-hoc intent diff model",
+        "tasks": "T-016",
+      },
+      "workflow-management": {
+        "requirements": "Requirement 9: 後追い intent の下流再展開",
+        "design": "downstream_impact_decisions",
+        "tasks": str(tasks_path),
+      },
+    },
+    implementation_refs=[
+      {
+        "path": "tools/conformance_evaluation/post_hoc_intent_diff.py",
+        "symbol": "PostHocIntentDiff.extract",
+      },
+      {
+        "path": "tools/check-workflow-action.py",
+        "symbol": "build_in_progress_next_action",
+      },
+    ],
+    run_date="2026-06-09",
+  )
+
+  assert result["mode_internal"] == "post_hoc_intent_diff"
+  assert result["added_intent"] == "既存システムに intent を後から追加した場合も仕様駆動開発で下流工程へ進める。"
+  assert {candidate["feature"] for candidate in result["candidates"]} == {
+    "conformance-evaluation",
+    "workflow-management",
+  }
+  allowed = {
+    "existing_sufficient",
+    "spec_update_candidate",
+    "design_conflict_candidate",
+    "downstream_impact_candidate",
+    "implementation_change_candidate",
+  }
+  for candidate in result["candidates"]:
+    assert {
+      "feature",
+      "phase",
+      "classification",
+      "code_refs",
+      "existing_spec_refs",
+      "reasoning_summary",
+      "needs_human_decision",
+    } <= set(candidate)
+    assert candidate["classification"] in allowed
+
+  wm_candidates = [
+    candidate for candidate in result["candidates"]
+    if candidate["feature"] == "workflow-management"
+  ]
+  assert wm_candidates[0]["classification"] == "downstream_impact_candidate"
+  assert wm_candidates[0]["handoff_target"] == "workflow-management"
+  assert tasks_path.read_text(encoding="utf-8") == original_tasks
+  assert reopen_path.read_text(encoding="utf-8") == original_reopen
+
+  record_path = Path(result["record_path"])
+  assert record_path.is_file()
+  record_text = record_path.read_text(encoding="utf-8")
+  assert "type: conformance_evaluation" in record_text
+  assert "mode_internal: post_hoc_intent_diff" in record_text
+  assert "post_hoc_intent_diff" in record_text
+  assert "workflow-management" in record_text
+
+
+def test_t016_post_hoc_intent_diff_rejects_unknown_classification(tmp_path):
+  extractor = PostHocIntentDiff(tmp_path)
+  with pytest.raises(PostHocIntentDiffError):
+    extractor.validate_candidate(
+      {
+        "feature": "conformance-evaluation",
+        "phase": "requirements",
+        "classification": "fixed_checklist_match",
+        "code_refs": [],
+        "existing_spec_refs": [],
+        "reasoning_summary": "固定チェックリストだけの分類は許可しない。",
+        "needs_human_decision": False,
+      }
+    )
+
+
+def test_t016_post_hoc_intent_diff_schema_tracks_classification_contract():
+  schema_path = ROOT / "tools" / "conformance_evaluation" / "schemas" / "post_hoc_intent_diff.schema.json"
+  schema = json.loads(schema_path.read_text(encoding="utf-8"))
+
+  assert set(schema["properties"]["classification"]["enum"]) == ALLOWED_CLASSIFICATIONS
+  assert "tasks" in schema["properties"]["phase"]["enum"]
+  assert "needs_human_decision" in schema["required"]
 
 
 def test_conformance_evaluation_specs_track_contract_ownership_and_spec_update_drafts():

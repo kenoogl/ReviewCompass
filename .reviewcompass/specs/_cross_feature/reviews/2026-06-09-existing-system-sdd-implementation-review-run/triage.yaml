@@ -1,0 +1,252 @@
+run_id: 2026-06-09-existing-system-sdd-implementation-review-run
+triage_status: decided
+generated_at: '2026-06-09T04:19:11.304669+00:00'
+decision_actor: null
+decision_actor_type: human
+items:
+- finding_id: 2026-06-09-existing-system-sdd-implementation-review-run-claude-sonnet-4-6-primary-001
+  run_id: 2026-06-09-existing-system-sdd-implementation-review-run
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: '## Implementation Changes / workflow-management'
+  plain_language_summary: workflow-management claims no new code was required because
+    existing behavior already covers Requirement 9 / XDI-WM-002, but the review target
+    does not provide direct evidence that the existing code was audited against the
+    full requirement specification.
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-09T04:23:52.089162+00:00'
+  decision_reason: 利用者承認に基づき、implementation triad-review の証跡不足・契約説明不足を補強する。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-09-existing-system-sdd-implementation-review-run-claude-sonnet-4-6-primary-002
+  run_id: 2026-06-09-existing-system-sdd-implementation-review-run
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: '## Evidence Files'
+  plain_language_summary: The review target lists `.reviewcompass/specs/workflow-management/implementation-drafting.md`
+    as evidence but provides no excerpt or pointer to the section that demonstrates
+    downstream reopen propagation and downstream_impact_decisions coverage are already
+    satisfied.
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-09T04:23:52.119845+00:00'
+  decision_reason: 利用者承認に基づき、implementation triad-review の証跡不足・契約説明不足を補強する。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-09-existing-system-sdd-implementation-review-run-claude-sonnet-4-6-primary-003
+  run_id: 2026-06-09-existing-system-sdd-implementation-review-run
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: '## Implementation Changes / conformance-evaluation / candidate
+    record fields'
+  plain_language_summary: 'The document states the emitted candidate records must
+    include `needs_human_decision`, but the allowed `classification` values do not
+    include a classification that unambiguously maps to ''human decision required
+    now'' versus ''candidate only''. The relationship between `needs_human_decision:
+    true` and the downstream handoff contract is not specified.'
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-09T04:23:52.150272+00:00'
+  decision_reason: 利用者承認に基づき、implementation triad-review の証跡不足・契約説明不足を補強する。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-09-existing-system-sdd-implementation-review-run-claude-sonnet-4-6-primary-004
+  run_id: 2026-06-09-existing-system-sdd-implementation-review-run
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: '## Tests Run'
+  plain_language_summary: Test counts are reported (18, 3, 139 passed) but no coverage
+    metric or list of newly added test cases is provided. It is unclear which of the
+    18 conformance-evaluation tests are new for T-016 and which existed before this
+    reopen.
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-09T04:23:52.179361+00:00'
+  decision_reason: 利用者承認に基づき、implementation triad-review の証跡不足・契約説明不足を補強する。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-09-existing-system-sdd-implementation-review-run-claude-sonnet-4-6-primary-005
+  run_id: 2026-06-09-existing-system-sdd-implementation-review-run
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: '## Review Questions / Q4'
+  plain_language_summary: The document correctly asserts that indirect features (foundation,
+    runtime, evaluation, analysis, self-improvement) receive no implementation changes,
+    but does not document any conflict-check result or reference a checklist showing
+    each indirect feature was examined.
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-09T04:23:52.209537+00:00'
+  decision_reason: 利用者承認に基づき、implementation triad-review の証跡不足・契約説明不足を補強する。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-09-existing-system-sdd-implementation-review-run-claude-sonnet-4-6-primary-006
+  run_id: 2026-06-09-existing-system-sdd-implementation-review-run
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: '## Current Mechanical State'
+  plain_language_summary: The mechanical state section documents the before/after
+    `next` output but does not confirm that the `downstream_impact_decisions` field
+    in the reopen YAML was populated as a result of the conformance-evaluation run.
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-09T04:23:52.238553+00:00'
+  decision_reason: 利用者承認に基づき、implementation triad-review の証跡不足・契約説明不足を補強する。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-09-existing-system-sdd-implementation-review-run-gpt-5.4-adversarial-001
+  run_id: 2026-06-09-existing-system-sdd-implementation-review-run
+  source_model: gpt-5.4
+  source_round: round-1
+  source_raw_path: raw/gpt-5.4.round-1.txt
+  source_parsed_path: parsed/gpt-5.4.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: '## Implementation Changes / workflow-management'
+  plain_language_summary: The review target asserts that no new workflow-management
+    code was required, but it does not provide concrete implementation evidence for
+    Requirement 9 / XDI-WM-002 beyond a single navigation test and behavioral claims.
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-09T04:23:52.267294+00:00'
+  decision_reason: 利用者承認に基づき、implementation triad-review の証跡不足・契約説明不足を補強する。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-09-existing-system-sdd-implementation-review-run-gpt-5.4-adversarial-002
+  run_id: 2026-06-09-existing-system-sdd-implementation-review-run
+  source_model: gpt-5.4
+  source_round: round-1
+  source_raw_path: raw/gpt-5.4.round-1.txt
+  source_parsed_path: parsed/gpt-5.4.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: '## Tests Run'
+  plain_language_summary: The listed tests do not show direct verification of the
+    generated post-hoc intent diff artifact against the declared schema or candidate
+    classification contract.
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-09T04:23:52.295241+00:00'
+  decision_reason: 利用者承認に基づき、implementation triad-review の証跡不足・契約説明不足を補強する。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-09-existing-system-sdd-implementation-review-run-gpt-5.4-adversarial-003
+  run_id: 2026-06-09-existing-system-sdd-implementation-review-run
+  source_model: gpt-5.4
+  source_round: round-1
+  source_raw_path: raw/gpt-5.4.round-1.txt
+  source_parsed_path: parsed/gpt-5.4.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: '## Scope'
+  plain_language_summary: Indirect features are declared as 'check for conflict only'
+    with no implementation changes, but the document provides no explicit implementation
+    evidence demonstrating that these features were inspected and found unaffected.
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-09T04:23:52.323612+00:00'
+  decision_reason: 利用者承認に基づき、implementation triad-review の証跡不足・契約説明不足を補強する。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-09-existing-system-sdd-implementation-review-run-gemini-3.1-pro-preview-judgment-001
+  run_id: 2026-06-09-existing-system-sdd-implementation-review-run
+  source_model: gemini-3.1-pro-preview
+  source_round: round-1
+  source_raw_path: raw/gemini-3.1-pro-preview.round-1.txt
+  source_parsed_path: parsed/gemini-3.1-pro-preview.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: Implementation Changes > conformance-evaluation
+  plain_language_summary: The allowed classifications for PostHocIntentDiff do not
+    include a specific classification for task-level impacts (e.g., task_update_candidate).
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-09T04:23:52.351526+00:00'
+  decision_reason: 利用者承認に基づき、implementation triad-review の証跡不足・契約説明不足を補強する。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-09-existing-system-sdd-implementation-review-run-gemini-3.1-pro-preview-judgment-002
+  run_id: 2026-06-09-existing-system-sdd-implementation-review-run
+  source_model: gemini-3.1-pro-preview
+  source_round: round-1
+  source_raw_path: raw/gemini-3.1-pro-preview.round-1.txt
+  source_parsed_path: parsed/gemini-3.1-pro-preview.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: Implementation Changes > workflow-management
+  plain_language_summary: The document states that no new code was required for workflow-management
+    to satisfy task XDI-WM-002, but it does not specify which existing component or
+    prior implementation fulfills the 'downstream decision records' requirement.
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-09T04:23:52.378193+00:00'
+  decision_reason: 利用者承認に基づき、implementation triad-review の証跡不足・契約説明不足を補強する。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-09-existing-system-sdd-implementation-review-run-gemini-3.1-pro-preview-judgment-003
+  run_id: 2026-06-09-existing-system-sdd-implementation-review-run
+  source_model: gemini-3.1-pro-preview
+  source_round: round-1
+  source_raw_path: raw/gemini-3.1-pro-preview.round-1.txt
+  source_parsed_path: parsed/gemini-3.1-pro-preview.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: Evidence Files
+  plain_language_summary: No direct evidence files (such as no-change drafting notes)
+    are listed for the 5 indirect features (foundation, runtime, evaluation, analysis,
+    self-improvement).
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-09T04:23:52.405943+00:00'
+  decision_reason: 利用者承認に基づき、implementation triad-review の証跡不足・契約説明不足を補強する。
+  applied_files: []
+  superseded_by: null

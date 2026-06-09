@@ -1,0 +1,15 @@
+role: adversarial
+provider: openai-api
+model: gpt-5.4
+attempts: 1
+duration_seconds: 3.306
+findings:
+- severity: ERROR
+  target_location: .reviewcompass/specs/_cross_feature/reviews/2026-06-09-existing-system-sdd-tasks-all-features-review-run/review-target.md
+  description: 'The document''s required output contract is internally inconsistent:
+    it mandates each finding include only severity, target_location, description,
+    and rationale, but later also requires verifying_commands.'
+  rationale: 'must-fix: This creates an invalid review target specification because
+    a compliant reviewer cannot satisfy both constraints simultaneously. The review
+    artifact format must be clarified before triad-review results can be considered
+    mechanically valid.'

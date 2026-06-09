@@ -1,0 +1,15 @@
+findings:
+  - severity: WARN
+    target_location: "## Implementation Changes / workflow-management"
+    description: "The review target asserts that no new workflow-management code was required, but it does not provide concrete implementation evidence for Requirement 9 / XDI-WM-002 beyond a single navigation test and behavioral claims."
+    rationale: "For an implementation-phase review, saying behavior 'already exists' is not sufficient by itself to verify code coverage of all required reopen behaviors, especially downstream decision-record enforcement. The document should cite the exact implementation locations and tests demonstrating decision coverage checks, not only the drafting-before-triad-review path."
+
+  - severity: WARN
+    target_location: "## Tests Run"
+    description: "The listed tests do not show direct verification of the generated post-hoc intent diff artifact against the declared schema or candidate classification contract."
+    rationale: "The implementation introduces a new schema and a generated conformance record with required fields and allowed classifications. Without explicit schema-validation or output-contract tests cited here, the review cannot fully confirm that the implementation evidence matches the specified output structure in code."
+
+  - severity: INFO
+    target_location: "## Scope"
+    description: "Indirect features are declared as 'check for conflict only' with no implementation changes, but the document provides no explicit implementation evidence demonstrating that these features were inspected and found unaffected."
+    rationale: "This may be acceptable if upstream review artifacts already capture the indirect no-change assessment, but implementation-phase traceability would be stronger if the target linked the specific evidence showing foundation, runtime, evaluation, analysis, and self-improvement were reviewed for non-impact."

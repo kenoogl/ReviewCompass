@@ -1,0 +1,56 @@
+findings:
+  - severity: INFO
+    target_location: "conformance-evaluation design.md §7.10"
+    description: "CE design adds existing-system difference extraction mode with candidate fields and classification values that are well-scoped to CE responsibility."
+    rationale: "leave-as-is: CE correctly stops at candidate extraction and classification. The boundary that tasks.md updates remain WM reopen responsibility is explicit. Req 10 traceability and XDI-CE-002 are present. No must-fix or should-fix issues detected in this section."
+    verifying_commands:
+      - "grep -n 'XDI-CE-002' conformance-evaluation/design.md"
+      - "grep -n 'needs_human_decision' conformance-evaluation/design.md"
+      - "grep -n 'existing_sufficient\\|spec_update_candidate\\|design_conflict_candidate\\|downstream_impact_candidate\\|implementation_change_candidate' conformance-evaluation/design.md"
+
+  - severity: INFO
+    target_location: "conformance-evaluation design.md §13.7 and §14.4"
+    description: "Handoff to workflow-management and output interface sections are present and align with the CE/WM boundary established in the requirements review-wave."
+    rationale: "leave-as-is: CE produces structured candidates and hands off to WM without overreaching into reopen orchestration. The interface contract is sufficient for WM intake."
+    verifying_commands:
+      - "grep -n 'handoff\\|workflow-management' conformance-evaluation/design.md"
+      - "grep -n '14.4\\|output interface' conformance-evaluation/design.md"
+
+  - severity: INFO
+    target_location: "workflow-management design.md §reopen 機械強制モデル §6"
+    description: "WM design adds post-hoc intent downstream redeployment section covering feature receptacle decisions, CE candidate intake contract, downstream_impact_decisions record shape, and side-track handling."
+    rationale: "leave-as-is: WM correctly owns orchestration, receptacle decisions, and formal reopen workflow. The drafting-before-review rule closes the workflow hole identified in the earlier run. Req 9 traceability and XDI-WM-002 are present."
+    verifying_commands:
+      - "grep -n 'XDI-WM-002' workflow-management/design.md"
+      - "grep -n 'reopen_existing_feature\\|new_feature_required\\|human_decision_required' workflow-management/design.md"
+      - "grep -n 'drafting_completed_gates' workflow-management/design.md"
+
+  - severity: INFO
+    target_location: "workflow-management design.md: drafting_completed_gates rule"
+    description: "The rule that pending_gates pointing to triad-review still requires drafting first unless drafting_completed_gates or completed_gates contains the drafting gate is now encoded in WM design."
+    rationale: "leave-as-is: This closes the workflow hole that caused the earlier review run to be superseded. The mechanical enforcement model is now consistent with the reopen procedure state machine."
+    verifying_commands:
+      - "grep -n 'pending_gates\\|drafting_completed_gates\\|completed_gates' workflow-management/design.md"
+
+  - severity: INFO
+    target_location: "workflow-management design.md: side-track handling"
+    description: "Side-track handling through process_id: maintenance is present, consistent with the user clarification that workflow procedure defects discovered during dogfooding must be handled as side track work before mainline reopen resumes."
+    rationale: "leave-as-is: The design correctly encodes the side-track/mainline separation. No overreach into other feature responsibilities."
+    verifying_commands:
+      - "grep -n 'process_id.*maintenance\\|side.track\\|side_track' workflow-management/design.md"
+
+  - severity: INFO
+    target_location: "indirect features: foundation, runtime, evaluation, analysis, self-improvement"
+    description: "All five indirect features have been checked. The design drafting does not create new contracts that these features must own directly. The expected baseline of indirect_check_only is appropriate for this reopen chain at the design stage."
+    rationale: "leave-as-is: The new CE candidate schema and WM intake contract are owned by CE and WM respectively. No shared metadata, evidence bundle, or reporting schema changes are introduced that would require foundation, runtime, evaluation, analysis, or self-improvement to update their design.md bodies now."
+    verifying_commands:
+      - "grep -rn 'XDI-CE-002\\|XDI-WM-002\\|existing_system\\|post.hoc' foundation/design.md runtime/design.md evaluation/design.md analysis/design.md self-improvement/design.md 2>/dev/null || echo 'no cross-feature references found in indirect features'"
+
+  - severity: INFO
+    target_location: "all seven features: design triad-review gate readiness"
+    description: "Design triad-review can proceed to completion. All seven features are in scope. CE and WM have sufficient design coverage for their respective requirements and cross-document identifiers. Indirect features require no design.md changes at this stage. CE/WM boundaries are clear. Tasks handling is correctly bounded to WM reopen responsibility. The drafting_completed_gates workflow hole is closed."
+    rationale: "leave-as-is: No must-fix or should-fix blockers are present. The design drafting is sufficient to complete stages/design.yaml#triad-review as the next mechanical gate in the reopen procedure."
+    verifying_commands:
+      - "cat stages/in-progress/reopen-procedure-2026-06-09-existing-system-sdd-code-drift.yaml | grep -A5 'drafting_completed_gates\\|pending_gates\\|completed_gates'"
+      - "grep -n 'Requirement.*10\\|Req.*10' conformance-evaluation/design.md"
+      - "grep -n 'Requirement.*9\\|Req.*9' workflow-management/design.md"

@@ -1,0 +1,5 @@
+findings:
+  - severity: ERROR
+    target_location: "Review Criteria / Output contract"
+    description: "The document requests each finding to include `verifying_commands`, but the output contract for this review run explicitly permits only `severity`, `target_location`, `description`, and `rationale`."
+    rationale: "must-fix: The target document is internally inconsistent about the required review artifact shape. A reviewer cannot satisfy both constraints simultaneously, which makes the triad-review completion criteria ambiguous and can cause mechanical rejection of an otherwise valid review output."

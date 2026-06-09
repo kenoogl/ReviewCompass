@@ -1,0 +1,60 @@
+round_id: round-1
+purpose: implementation
+invocation_timestamp: '2026-06-09T04:26:40.360464+00:00'
+target_files:
+- path: .reviewcompass/specs/_cross_feature/reviews/2026-06-09-existing-system-sdd-implementation-review-run/review-target.md
+  sha256: 82213517c14089cb7d3b2965f5178e6ac1b07cdd3672d3e119ad486b4e47e295
+criteria: existing_system_sdd_code_drift_implementation_all_features_review_postfix_r2
+prompt_sha256: dec1dd17b115cbac5c5d6dc33da4a6d5f03961d6cf1909b795892653a9377552
+model_results:
+- model_id: claude-sonnet-4-6
+  provider: anthropic-api
+  role: primary
+  treatment: primary
+  invocation_path: api
+  raw_path: raw/claude-sonnet-4-6.round-1.txt
+  raw_sha256: 73d379cc10ce0e6919185ae16f9cb5c83dc11dc62f6525c015c9d3f5606e019a
+  parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  parsed_sha256: 22e3b6d6678ec33fc6a4ad303cf73535e26632477e2484fdea176aca68b97643
+  parse_status: parsed
+  formatted_by: parser
+  formatted_by_actor_type: orchestrator
+  formatted_by_actor: run_role.py
+  formatted_at: '2026-06-09T04:26:22.970820+00:00'
+  follow_up_action: triage
+  attempts: 1
+  duration_seconds: 21.893
+- model_id: gpt-5.4
+  provider: openai-api
+  role: adversarial
+  treatment: adversarial
+  invocation_path: api
+  raw_path: raw/gpt-5.4.round-1.txt
+  raw_sha256: 919470f9d21df04fdc468f2b70019a061d7a5991d7d47ec59243dd658eb9b753
+  parsed_path: parsed/gpt-5.4.round-1.yaml
+  parsed_sha256: b4d80205030e279452f0d2f158cd658cab6699655048b4eded83532facdba0bd
+  parse_status: parsed
+  formatted_by: parser
+  formatted_by_actor_type: orchestrator
+  formatted_by_actor: run_role.py
+  formatted_at: '2026-06-09T04:26:29.299809+00:00'
+  follow_up_action: triage
+  attempts: 1
+  duration_seconds: 6.319
+- model_id: gemini-3.1-pro-preview
+  provider: gemini-api
+  role: judgment
+  treatment: judgment
+  invocation_path: api
+  raw_path: raw/gemini-3.1-pro-preview.round-1.txt
+  raw_sha256: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+  parsed_path: parsed/gemini-3.1-pro-preview.round-1.yaml
+  parsed_sha256: 7418aeca50d5172ceb0dc7fb32dd3c05b20d9c4723428d9f7a2b5d7fe7c86d4d
+  parse_status: parsed
+  formatted_by: parser
+  formatted_by_actor_type: orchestrator
+  formatted_by_actor: run_role.py
+  formatted_at: '2026-06-09T04:26:40.360464+00:00'
+  follow_up_action: triage
+  attempts: 1
+  duration_seconds: 11.048
