@@ -772,8 +772,20 @@ reopen handoff package は、conformance result と workflow-management の reop
 | `target_documents` | 更新候補の正本文書。 |
 | `proposed_update_refs` | draft-only spec update artifacts または提案本文への参照。 |
 | `needs_human_decision` | 人間判断が必要かどうか。 |
+| `change_policy` | 既存項目をできるだけ変更しない方針。値は `minimal_existing_spec_change`。 |
+| `change_type` | 更新候補の型。`additive` または `semantic_change`。 |
+| `existing_contract_changed` | 既存 requirements/design/tasks の意味変更を含むかどうか。 |
+| `human_escalation_required` | 既存項目の意味変更または判断困難な分類を人間判断へ上げるかどうか。 |
+| `downstream_reopen_required` | semantic_change により下流 phase の reopen が必要かどうか。 |
+| `downstream_reopen_phases` | downstream reopen_required が true の場合の対象 phase。 |
+| `next_task_prompt_refs` | 次タスク effective prompt を作るために参照した複数の元資料。 |
+| `effective_next_task_prompt_path` | 判定点ごとに 1 本へ束ね、実際に LLM へ読ませる次タスク effective prompt のパス。 |
+| `effective_next_task_prompt_sha256` | 読み込んだ次タスク effective prompt 内容の sha256。 |
+| `effective_next_task_prompt_loaded` | 次タスク effective prompt を読み込んだかどうか。 |
 
-機械判定は、reopen handoff package の存在、必須フィールド、対象 phase、対象文書、source conformance record への参照、reopen 後の `triad-review / review-wave / alignment / approval` 完了証跡の有無を確認できる。レビュー判断の意味的妥当性は機械判定だけでは確定せず、reopen 後の通常 review に委ねる。
+機械判定は、reopen handoff package の存在、必須フィールド、対象 phase、対象文書、source conformance record への参照、reopen 後の `triad-review / review-wave / alignment / approval` 完了証跡の有無を確認できる。さらに、次タスクプロンプトの元資料参照が存在し、判定点ごとに 1 本の `effective_next_task_prompt_path` が指定され、`effective_next_task_prompt_sha256` が現在内容と一致し、`effective_next_task_prompt_loaded: true` であることを確認する。レビュー判断の意味的妥当性は機械判定だけでは確定せず、reopen 後の通常 review に委ねる。
+
+LLM への方針指示は `change_policy: minimal_existing_spec_change` として固定する。通常は `change_type: additive` を優先し、既存項目の意味変更を避ける。ただし既存項目を絶対に変更してはならないわけではない。既存 requirements/design/tasks の意味変更が必要な場合、または additive で足りるか判断できない場合は `change_type: semantic_change` とし、semantic_change の場合は `human_escalation_required: true`、`existing_contract_changed: true` を要求する。semantic_change が下流実装のやり直しを必要としうる場合は、`downstream_reopen_required: true` と `downstream_reopen_phases` に tasks / implementation などの候補を記録する。この方針は package フィールドだけでなく、機械判定時に読み込む次タスク effective prompt にも含める。`effective_next_task_prompt_loaded: true` は、そのプロンプトが読み込まれたことを示す。
 
 tasks の扱いは境界を固定する。tasks は照合対象外であり、tasks.md 本体の推定・再作成やタスク分解の確定は行わない。一方で、下流影響または実装変更候補がタスク更新を必要とする場合、`phase: tasks` の reopen 候補として package に含めることはできる。tasks.md の正式更新は `workflow-management` の reopen 手続きで判断する。
 
@@ -1115,7 +1127,7 @@ requirements.md の Boundary Context との整合：
 - **2026-06-08 の requirements 再確認への対応**：intent の「レビュー収集処理を事前設定の写像にしない」意図は、§7 照合チェックモード、§9 推定モデル、§10 比較モデル、§13.6 契約所有候補と仕様更新草案で受けられるため、設計構造の追加は不要と確認
 - **2026-06-09 の後追い intent 追加への対応**：既存システムに intent を後から追加した場合のコード由来差分抽出は、§7.10 既存システム差分抽出モード、§13.7 workflow-management 引き渡し、§14.4 接合面に反映した。これは 2026-06-09 の pre-drafting gap audit で確認された design drafting 漏れへの本線対処である
 - **2026-06-09 の completed follow-up 前提セット正式化**：D-021 / D-004 / D-005 / D-025 / D-027 / D-008 / D-019 / D-020 / D-023 は completed follow-up prerequisite set として §13.8 に反映した。handoff summary は `docs/notes/2026-06-09-formal-completed-followup-summary.md` とする
-- **2026-06-09 の reopen 引き渡し方針正式化**：正本更新が必要な gap は §13.9 の reopen handoff package として `workflow-management` の reopen 手続きへ渡し、`triad-review / review-wave / alignment / approval` 完了前に resolved 扱いにしない。tasks は `phase: tasks` 候補として扱えるが、tasks.md 本体の推定・再作成やタスク分解の確定は行わない
+- **2026-06-09 の reopen 引き渡し方針正式化**：正本更新が必要な gap は §13.9 の reopen handoff package として `workflow-management` の reopen 手続きへ渡し、`triad-review / review-wave / alignment / approval` 完了前に resolved 扱いにしない。tasks は `phase: tasks` 候補として扱えるが、tasks.md 本体の推定・再作成やタスク分解の確定は行わない。既存項目の意味変更は `minimal_existing_spec_change` 方針の下で `semantic_change` と分類し、人間判断へエスカレーションする
 
 ### 20.3 起草完了基準
 
@@ -1144,4 +1156,4 @@ requirements.md の Boundary Context との整合：
 - `XDI-CE-001`：cross-feature drift clustering と contract ownership outputs は、design.md §13.6 の契約所有候補と仕様更新草案の派生運用として追跡する。follow-up implementation decision の正本は tasks.md T-015 とし、本 design.md は設計層から追跡可能であることを示す。
 - `XDI-CE-002`：既存システムに後追いで intent を追加した場合のコード由来仕様差分抽出、既存設計との衝突確認、仕様更新草案、下流影響候補、実装変更候補の分離は、design.md §7.10 の既存システム差分抽出モード、§13.7 の workflow-management 引き渡し、§14.4 の接合面で追跡する。tasks.md 本体の推定は本機能の責務外であり、正式な tasks 反映は workflow-management の reopen 手続きに委ねる。
 - `XDI-CE-003`：completed follow-up prerequisite set、formal completed follow-up outputs、requirements gap／design gap の Target document、各 output の責務と相互関係は design.md §13.8 で追跡する。handoff summary は `docs/notes/2026-06-09-formal-completed-followup-summary.md` とする。
-- `XDI-CE-004`：正本更新が必要な gap の reopen 引き渡し、reopen handoff package、`triad-review / review-wave / alignment / approval` 完了前に resolved 扱いにしない制約、`phase: tasks` 候補の境界は design.md §13.9 で追跡する。
+- `XDI-CE-004`：正本更新が必要な gap の reopen 引き渡し、reopen handoff package、`triad-review / review-wave / alignment / approval` 完了前に resolved 扱いにしない制約、`phase: tasks` 候補の境界、`minimal_existing_spec_change`、`additive`／`semantic_change` 分類、`existing_contract_changed`、`human_escalation_required`、`downstream_reopen_required`、`next_task_prompt_refs`、`effective_next_task_prompt_path`、`effective_next_task_prompt_sha256`、`effective_next_task_prompt_loaded` は design.md §13.9 で追跡する。

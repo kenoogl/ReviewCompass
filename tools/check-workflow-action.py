@@ -37,6 +37,7 @@ DEFAULT_LOG_PATH = "docs/logs/workflow-precheck.log"
 DEFAULT_COMMIT_APPROVAL_PATH = ".reviewcompass/approvals/commit-approval.json"
 DEFAULT_LAST_COMMIT_PRECHECK_PATH = ".git/reviewcompass/last-commit-precheck.json"
 DEFAULT_DISCIPLINE_MAP_PATH = "docs/operations/WORKFLOW_DISCIPLINE_MAP.yaml"
+DEFAULT_EFFECTIVE_PROMPT_DIR = ".reviewcompass/effective-prompts"
 DEFAULT_CARRY_FORWARD_REGISTER_PATH = "learning/workflow/carry-forward-register/reviewcompass-import.yaml"
 DEFAULT_CARRY_FORWARD_SOURCE_PATH = (
   "learning/workflow/carry-forward-register/sources/"
@@ -906,6 +907,11 @@ def _dedupe_strings(values):
   return result
 
 
+def _sha256_text(value):
+  """文字列内容の sha256 を返す"""
+  return hashlib.sha256(value.encode("utf-8")).hexdigest()
+
+
 def _render_next_action_template(value, next_action):
   """next_action の値で required_input のテンプレートを解決する"""
   if isinstance(value, str):
@@ -973,16 +979,26 @@ def _render_next_action_template(value, next_action):
 
 def _load_discipline_map(cwd):
   """next_action 別の直前必読規律マップを読み込む"""
-  map_path = Path(cwd) / DEFAULT_DISCIPLINE_MAP_PATH
-  if not map_path.exists():
-    return DEFAULT_DISCIPLINE_MAP
-  try:
-    loaded = yaml.safe_load(map_path.read_text(encoding="utf-8")) or {}
-  except (OSError, yaml.YAMLError):
-    return DEFAULT_DISCIPLINE_MAP
-  if not isinstance(loaded, dict):
-    return DEFAULT_DISCIPLINE_MAP
-  return loaded
+  script_root = Path(__file__).resolve().parents[1]
+  candidate_paths = [
+    Path(cwd) / DEFAULT_DISCIPLINE_MAP_PATH,
+    script_root / DEFAULT_DISCIPLINE_MAP_PATH,
+  ]
+  for map_path in candidate_paths:
+    if not map_path.exists():
+      continue
+    try:
+      loaded = yaml.safe_load(map_path.read_text(encoding="utf-8")) or {}
+    except (OSError, yaml.YAMLError):
+      continue
+    if isinstance(loaded, dict):
+      return loaded
+  return DEFAULT_DISCIPLINE_MAP
+
+
+def _script_root():
+  """ReviewCompass スクリプト基準のリポジトリ root を返す"""
+  return Path(__file__).resolve().parents[1]
 
 
 def required_disciplines_for_next_action(cwd, next_action):
@@ -1050,6 +1066,12 @@ def _resolve_required_input(cwd, entry, next_action):
       resolved[key] = _render_next_action_template(value, next_action)
     return resolved
 
+  if resolver.get("kind") == "static_path_template":
+    path = resolver.get("path")
+    if isinstance(path, str):
+      resolved["path"] = path
+    return resolved
+
   if resolver.get("kind") == "project_state":
     path = resolver.get("path")
     if isinstance(path, str):
@@ -1072,6 +1094,194 @@ def required_inputs_for_next_action(cwd, next_action):
   return result
 
 
+def _find_decision_point(catalog, group, point_id):
+  """decision_points から指定 group/id の項目を返す"""
+  if not isinstance(catalog, dict):
+    return None
+  entries = catalog.get(group)
+  if not isinstance(entries, list):
+    return None
+  for entry in entries:
+    if isinstance(entry, dict) and entry.get("id") == point_id:
+      return entry
+  return None
+
+
+def _decision_point_refs_for_next_action(next_action):
+  """next_action から対応する判定点参照を作る"""
+  refs = []
+  kind = next_action.get("kind")
+  if isinstance(kind, str) and kind:
+    refs.append({"group": "next_action_kind", "id": kind})
+
+  stage = next_action.get("stage")
+  if isinstance(stage, str) and stage:
+    refs.append({"group": "workflow_stage", "id": stage})
+
+  required_action = next_action.get("required_action")
+  if isinstance(required_action, str) and required_action:
+    refs.append({"group": "reopen_required_action", "id": required_action})
+
+  return refs
+
+
+def effective_prompt_for_next_action(cwd, next_action):
+  """next_action に対応する effective prompt 元資料メタデータを返す"""
+  discipline_map = _load_discipline_map(cwd)
+  catalog = discipline_map.get("decision_points")
+  refs = []
+  source_refs = []
+  policies = []
+
+  for ref in _decision_point_refs_for_next_action(next_action):
+    entry = _find_decision_point(catalog, ref["group"], ref["id"])
+    if entry is None:
+      continue
+    refs.append(ref)
+    source_refs.extend(entry.get("prompt_source_refs") or [])
+    policy = entry.get("effective_prompt_policy")
+    if isinstance(policy, str) and policy:
+      policies.append(policy)
+
+  if not refs:
+    return None
+
+  return {
+    "effective_prompt_policy": (
+      policies[0] if policies else "one_effective_prompt_per_decision_point"
+    ),
+    "decision_point_refs": refs,
+    "prompt_source_refs": _dedupe_strings(source_refs),
+  }
+
+
+def _sanitize_prompt_path_part(value):
+  """effective prompt ファイル名に使える ASCII 文字列へ寄せる"""
+  result = []
+  for char in str(value):
+    if char.isalnum() or char in ("-", "_"):
+      result.append(char)
+    else:
+      result.append("-")
+  cleaned = "".join(result).strip("-")
+  while "--" in cleaned:
+    cleaned = cleaned.replace("--", "-")
+  return cleaned or "unknown"
+
+
+def _effective_prompt_relative_path(effective_prompt):
+  """判定点参照から effective prompt の保存先を決める"""
+  parts = []
+  for ref in effective_prompt.get("decision_point_refs") or []:
+    if not isinstance(ref, dict):
+      continue
+    group = _sanitize_prompt_path_part(ref.get("group", "unknown"))
+    point_id = _sanitize_prompt_path_part(ref.get("id", "unknown"))
+    parts.append(f"{group}-{point_id}")
+  if not parts:
+    parts.append("unknown")
+  filename = "__".join(parts) + ".prompt.md"
+  return str(Path(DEFAULT_EFFECTIVE_PROMPT_DIR) / filename)
+
+
+def _split_prompt_source_ref(source_ref):
+  """source ref を path と anchor に分ける"""
+  if "#" not in source_ref:
+    return source_ref, None
+  path_value, anchor = source_ref.split("#", 1)
+  return path_value, anchor or None
+
+
+def _resolve_prompt_source_path(cwd, source_ref):
+  """source ref の実ファイルを cwd または ReviewCompass root から解決する"""
+  path_value, _ = _split_prompt_source_ref(source_ref)
+  path = Path(path_value)
+  if path.is_absolute():
+    return path if path.is_file() else None
+
+  candidates = [
+    Path(cwd) / path,
+    _script_root() / path,
+  ]
+  return next((candidate for candidate in candidates if candidate.is_file()), None)
+
+
+def _read_prompt_source(cwd, source_ref):
+  """effective prompt 元資料を読む"""
+  source_path = _resolve_prompt_source_path(cwd, source_ref)
+  if source_path is None:
+    return {
+      "source_ref": source_ref,
+      "loaded": False,
+      "content": f"[missing source: {source_ref}]",
+    }
+  try:
+    content = source_path.read_text(encoding="utf-8")
+  except OSError as e:
+    return {
+      "source_ref": source_ref,
+      "loaded": False,
+      "content": f"[unreadable source: {source_ref}: {e}]",
+    }
+  return {
+    "source_ref": source_ref,
+    "loaded": True,
+    "content": content,
+  }
+
+
+def _render_effective_prompt_text(next_action, effective_prompt, sources):
+  """複数元資料を 1 本の effective prompt 本文へ束ねる"""
+  lines = [
+    "# Effective Prompt",
+    "",
+    "## Decision Point",
+  ]
+  for ref in effective_prompt.get("decision_point_refs") or []:
+    lines.append(f"- {ref.get('group')}:{ref.get('id')}")
+  lines.extend([
+    "",
+    "## Next Action",
+    json.dumps(next_action, ensure_ascii=False, indent=2),
+    "",
+    "## Prompt Source Refs",
+  ])
+  for source_ref in effective_prompt.get("prompt_source_refs") or []:
+    lines.append(f"- {source_ref}")
+  lines.extend(["", "## Source Contents"])
+  for source in sources:
+    lines.extend([
+      "",
+      f"### {source['source_ref']}",
+      "",
+      source["content"],
+    ])
+  return "\n".join(lines).rstrip() + "\n"
+
+
+def materialize_effective_prompt(cwd, next_action, effective_prompt):
+  """effective prompt 本文を生成し、パスと sha256 をメタデータへ追記する"""
+  sources = [
+    _read_prompt_source(cwd, source_ref)
+    for source_ref in effective_prompt.get("prompt_source_refs") or []
+  ]
+  prompt_text = _render_effective_prompt_text(next_action, effective_prompt, sources)
+  relative_path = _effective_prompt_relative_path(effective_prompt)
+  output_path = Path(cwd) / relative_path
+  try:
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    output_path.write_text(prompt_text, encoding="utf-8")
+    loaded = all(source["loaded"] for source in sources)
+  except OSError:
+    loaded = False
+
+  augmented = dict(effective_prompt)
+  augmented["effective_prompt_path"] = relative_path
+  augmented["effective_prompt_sha256"] = _sha256_text(prompt_text)
+  augmented["effective_prompt_loaded"] = loaded
+  return augmented
+
+
 def attach_required_context(cwd, next_action):
   """next_action に直前必読規律と抽象入力を付与する"""
   augmented = dict(next_action)
@@ -1082,6 +1292,13 @@ def attach_required_context(cwd, next_action):
   required_inputs = required_inputs_for_next_action(cwd, next_action)
   if required_inputs:
     augmented["required_inputs"] = required_inputs
+  effective_prompt = effective_prompt_for_next_action(cwd, next_action)
+  if effective_prompt is not None:
+    augmented["effective_prompt"] = materialize_effective_prompt(
+      cwd,
+      next_action,
+      effective_prompt,
+    )
   return augmented
 
 
@@ -4289,6 +4506,13 @@ def cmd_next(args):
           verdict, exit_code = "OK", 0
 
   next_action = attach_required_context(cwd, next_action)
+  effective_prompt = next_action.get("effective_prompt")
+  if (
+    isinstance(effective_prompt, dict)
+    and effective_prompt.get("effective_prompt_loaded") is False
+  ):
+    reasons.append("effective prompt の元資料をすべて読めません")
+    verdict, exit_code = "DEVIATION", 2
 
   if args.json:
     print(format_next_json_output(verdict, exit_code, next_action, reasons, current_state))

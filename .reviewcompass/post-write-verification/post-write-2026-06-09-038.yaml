@@ -1,0 +1,20 @@
+status: completed
+target_files: &id001
+- docs/operations/WORKFLOW_DISCIPLINE_MAP.yaml
+- docs/operations/WORKFLOW_NAVIGATION.md
+target_sha256: &id002
+  docs/operations/WORKFLOW_DISCIPLINE_MAP.yaml: 284b35c54cd2513a5d04a57b9f947ec271e965145a5113e83d7f391cd21a7972
+  docs/operations/WORKFLOW_NAVIGATION.md: 74f51a7a049cc153f328c0fb79c2c59001c6357b0909aa3f72ecee93231f2655
+required_verifiers:
+- codex-local-postwrite-check
+completed_verifiers:
+- codex-local-postwrite-check
+unresolved_substantive_findings: 0
+verifications:
+- verifier: codex-local-postwrite-check
+  target_files: *id001
+  target_sha256: *id002
+  result: pass
+  checked_at: '2026-06-09T12:33:21.049884+00:00'
+  notes: Local post-write consistency check for effective prompt workflow mapping
+    docs.

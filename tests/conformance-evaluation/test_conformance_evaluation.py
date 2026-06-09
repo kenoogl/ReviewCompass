@@ -415,10 +415,27 @@ def test_conformance_evaluation_specs_route_formal_spec_updates_through_reopen()
     assert "requirements.md, design.md, tasks.md を直接書き換えない" in text
     assert "phase: tasks" in text
     assert "tasks.md 本体の推定・再作成やタスク分解の確定は行わない" in text
+    assert "minimal_existing_spec_change" in text
+    assert "additive" in text
+    assert "semantic_change" in text
+    assert "existing_contract_changed" in text
+    assert "human_escalation_required" in text
+    assert "downstream_reopen_required" in text
+    assert "next_task_prompt_refs" in text
+    assert "effective_next_task_prompt_path" in text
+    assert "effective_next_task_prompt_sha256" in text
+    assert "effective_next_task_prompt_loaded" in text
+    assert "判定点ごとに 1 本" in text
 
   assert "resolved 扱いにしてはならない" in requirements
+  assert "既存項目の意味変更が必要な場合は、人間判断へエスカレーションする" in requirements
+  assert "次タスク effective prompt を読み込む" in requirements
   assert "reopen handoff package" in design
+  assert "semantic_change の場合は `human_escalation_required: true`" in design
+  assert "effective_next_task_prompt_loaded: true" in design
   assert "T-017" in tasks
+  assert "semantic_change の理由、人間判断へのエスカレーション、下流 reopen 要否を検査する" in tasks
+  assert "次タスクプロンプトの元資料参照、effective prompt パス、sha256" in tasks
 
 
 def test_cross_feature_conformance_workflow_is_operationalized():

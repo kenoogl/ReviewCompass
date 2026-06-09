@@ -267,3 +267,44 @@ findings:
   triage = yaml.safe_load((review_run_dir / "triage.yaml").read_text(encoding="utf-8"))
   assert len(triage["items"]) == 1
   assert triage["items"][0]["source_model"] == "gemini-3.5-flash"
+
+
+def test_run_review_records_effective_prompt_metadata(tmp_path, monkeypatch, capsys):
+  """run_review でも effective prompt のパスと sha256 を rounds.yaml に記録する。"""
+  monkeypatch.setenv("ANTHROPIC_API_KEY", "test-key")
+  monkeypatch.setenv("OPENAI_API_KEY", "test-key")
+  monkeypatch.setenv("GEMINI_API_KEY", "test-key")
+  target = tmp_path / "target.md"
+  target.write_text("レビュー対象\n", encoding="utf-8")
+  config_path = _make_config(tmp_path)
+  review_run_dir = tmp_path / "review-run"
+  effective_prompt = tmp_path / ".reviewcompass" / "effective-prompts" / "stage.prompt.md"
+  effective_prompt.parent.mkdir(parents=True)
+  effective_prompt.write_text("# Effective Prompt\n\nbody\n", encoding="utf-8")
+  responses = {
+    "anthropic-api": "findings: []\n",
+    "openai-api": "findings: []\n",
+    "gemini-api": "findings: []\n",
+  }
+
+  with patch(
+    "tools.api_providers.run_review.get_provider",
+    side_effect=_make_provider_factory(responses),
+  ):
+    exit_code = main(
+      [
+        "--target", str(target),
+        "--phase", "implementation",
+        "--criteria", "criteria",
+        "--review-run-dir", str(review_run_dir),
+        "--round-id", "round-1",
+        "--config", str(config_path),
+        "--effective-prompt-path", str(effective_prompt),
+      ]
+    )
+
+  assert exit_code == 0
+  capsys.readouterr()
+  rounds = yaml.safe_load((review_run_dir / "rounds.yaml").read_text(encoding="utf-8"))
+  assert rounds["effective_prompt_path"] == str(effective_prompt)
+  assert len(rounds["effective_prompt_sha256"]) == 64

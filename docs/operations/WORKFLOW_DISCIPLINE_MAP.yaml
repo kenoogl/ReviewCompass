@@ -3,8 +3,302 @@
 # `next_action.required_disciplines` として返す。
 # 作業対象の状態台帳や持ち越し一覧は規律ではないため、
 # `required_inputs` の抽象入力として返す。
+# `decision_points` は機械可読な判定点の全体カタログである。
+# `by_kind`、`by_stage`、`required_inputs` は既存実装が読む実行時マップとして維持する。
 default:
   - docs/operations/WORKFLOW_NAVIGATION.md
+decision_points:
+  next_action_kind:
+    - id: stage
+      prompt_source_refs:
+        - docs/operations/WORKFLOW_NAVIGATION.md
+        - docs/disciplines/discipline_workflow_state_truth_source.md
+      effective_prompt_policy: one_effective_prompt_per_decision_point
+    - id: cross_feature_stage
+      prompt_source_refs:
+        - docs/operations/WORKFLOW_NAVIGATION.md
+        - docs/disciplines/discipline_workflow_state_truth_source.md
+      effective_prompt_policy: one_effective_prompt_per_decision_point
+    - id: upstream_recheck
+      prompt_source_refs:
+        - docs/operations/WORKFLOW_NAVIGATION.md
+        - docs/operations/REOPEN_PROCEDURE.md
+      effective_prompt_policy: one_effective_prompt_per_decision_point
+    - id: reopen_classification_required
+      prompt_source_refs:
+        - docs/operations/WORKFLOW_NAVIGATION.md
+        - docs/operations/REOPEN_PROCEDURE.md
+      effective_prompt_policy: one_effective_prompt_per_decision_point
+    - id: completed
+      prompt_source_refs:
+        - docs/operations/WORKFLOW_NAVIGATION.md
+      effective_prompt_policy: one_effective_prompt_per_decision_point
+    - id: unknown
+      prompt_source_refs:
+        - docs/operations/WORKFLOW_NAVIGATION.md
+      effective_prompt_policy: one_effective_prompt_per_decision_point
+    - id: post_write_verification
+      prompt_source_refs:
+        - docs/operations/WORKFLOW_NAVIGATION.md#post_write_verification
+        - docs/disciplines/discipline_post_write_verification.md
+      effective_prompt_policy: one_effective_prompt_per_decision_point
+    - id: post_write_policy_violation
+      prompt_source_refs:
+        - docs/operations/WORKFLOW_NAVIGATION.md#post_write_policy_violation
+        - docs/disciplines/discipline_post_write_verification.md
+      effective_prompt_policy: one_effective_prompt_per_decision_point
+    - id: post_write_human_decision_required
+      prompt_source_refs:
+        - docs/operations/WORKFLOW_NAVIGATION.md#post_write_human_decision_required
+        - docs/disciplines/discipline_post_write_verification.md
+        - docs/disciplines/discipline_approval_operation.md
+      effective_prompt_policy: one_effective_prompt_per_decision_point
+    - id: reopen_in_progress
+      prompt_source_refs:
+        - docs/operations/WORKFLOW_NAVIGATION.md#reopen_in_progress
+        - docs/operations/REOPEN_PROCEDURE.md
+        - docs/disciplines/discipline_approval_operation.md
+      effective_prompt_policy: one_effective_prompt_per_decision_point
+    - id: maintenance_in_progress
+      prompt_source_refs:
+        - docs/operations/WORKFLOW_NAVIGATION.md#maintenance_in_progress
+      effective_prompt_policy: one_effective_prompt_per_decision_point
+    - id: resume_in_progress
+      prompt_source_refs:
+        - docs/operations/WORKFLOW_NAVIGATION.md#resume_in_progress
+      effective_prompt_policy: one_effective_prompt_per_decision_point
+    - id: reopen_started
+      prompt_source_refs:
+        - docs/operations/WORKFLOW_PRECHECK.md#reopen-start
+        - docs/operations/REOPEN_PROCEDURE.md
+      effective_prompt_policy: one_effective_prompt_per_decision_point
+    - id: reopen_start_failed
+      prompt_source_refs:
+        - docs/operations/WORKFLOW_PRECHECK.md#reopen-start
+        - docs/operations/REOPEN_PROCEDURE.md
+      effective_prompt_policy: one_effective_prompt_per_decision_point
+  workflow_stage:
+    - id: candidate-proposal
+      prompt_source_refs:
+        - docs/operations/WORKFLOW_NAVIGATION.md
+        - stages/feature-partitioning/2026-05-24-proposal.md
+      effective_prompt_policy: one_effective_prompt_per_decision_point
+    - id: review
+      prompt_source_refs:
+        - docs/operations/WORKFLOW_NAVIGATION.md
+        - stages/intent.yaml
+      effective_prompt_policy: one_effective_prompt_per_decision_point
+    - id: drafting
+      prompt_source_refs:
+        - docs/operations/WORKFLOW_NAVIGATION.md
+        - docs/operations/REOPEN_PROCEDURE.md
+        - docs/disciplines/discipline_workflow_state_truth_source.md
+      effective_prompt_policy: one_effective_prompt_per_decision_point
+    - id: triad-review
+      prompt_source_refs:
+        - docs/operations/WORKFLOW_NAVIGATION.md
+        - docs/operations/SESSION_WORKFLOW_GUIDE.md#3.3-a-2
+        - docs/disciplines/discipline_approval_operation.md
+      effective_prompt_policy: one_effective_prompt_per_decision_point
+    - id: review-wave
+      prompt_source_refs:
+        - docs/operations/WORKFLOW_NAVIGATION.md
+        - learning/workflow/carry-forward-register/reviewcompass-import.yaml
+      effective_prompt_policy: one_effective_prompt_per_decision_point
+    - id: alignment
+      prompt_source_refs:
+        - docs/operations/WORKFLOW_NAVIGATION.md
+        - docs/disciplines/discipline_workflow_state_truth_source.md
+      effective_prompt_policy: one_effective_prompt_per_decision_point
+    - id: approval
+      prompt_source_refs:
+        - docs/operations/WORKFLOW_NAVIGATION.md
+        - docs/operations/WORKFLOW_PRECHECK.md#spec-set
+        - docs/disciplines/discipline_approval_operation.md
+      effective_prompt_policy: one_effective_prompt_per_decision_point
+  precheck_subcommand:
+    - id: spec-set
+      prompt_source_refs:
+        - docs/operations/WORKFLOW_PRECHECK.md#spec-set
+      effective_prompt_policy: one_effective_prompt_per_decision_point
+    - id: commit
+      prompt_source_refs:
+        - docs/operations/WORKFLOW_PRECHECK.md#commit
+      effective_prompt_policy: one_effective_prompt_per_decision_point
+    - id: push
+      prompt_source_refs:
+        - docs/operations/WORKFLOW_PRECHECK.md#push
+      effective_prompt_policy: one_effective_prompt_per_decision_point
+    - id: autonomous-plan
+      prompt_source_refs:
+        - docs/operations/WORKFLOW_PRECHECK.md
+      effective_prompt_policy: one_effective_prompt_per_decision_point
+    - id: autonomous-plan-template
+      prompt_source_refs:
+        - docs/operations/WORKFLOW_PRECHECK.md
+      effective_prompt_policy: one_effective_prompt_per_decision_point
+    - id: autonomous-plan-record-integration
+      prompt_source_refs:
+        - docs/operations/WORKFLOW_PRECHECK.md
+      effective_prompt_policy: one_effective_prompt_per_decision_point
+    - id: autonomous-ledger-audit
+      prompt_source_refs:
+        - docs/operations/WORKFLOW_PRECHECK.md
+      effective_prompt_policy: one_effective_prompt_per_decision_point
+    - id: audit-commit
+      prompt_source_refs:
+        - docs/operations/WORKFLOW_PRECHECK.md#audit-commit
+      effective_prompt_policy: one_effective_prompt_per_decision_point
+    - id: next
+      prompt_source_refs:
+        - docs/operations/WORKFLOW_NAVIGATION.md
+        - docs/operations/WORKFLOW_DISCIPLINE_MAP.yaml
+      effective_prompt_policy: one_effective_prompt_per_decision_point
+    - id: reopen-start
+      prompt_source_refs:
+        - docs/operations/WORKFLOW_PRECHECK.md#reopen-start
+        - docs/operations/REOPEN_PROCEDURE.md
+      effective_prompt_policy: one_effective_prompt_per_decision_point
+  reopen_required_action:
+    - id: classify_and_rollback_flags
+      prompt_source_refs:
+        - docs/operations/REOPEN_PROCEDURE.md
+        - docs/operations/WORKFLOW_NAVIGATION.md#reopen_in_progress
+      effective_prompt_policy: one_effective_prompt_per_decision_point
+    - id: repair_canonical_documents
+      prompt_source_refs:
+        - docs/operations/REOPEN_PROCEDURE.md
+        - docs/operations/WORKFLOW_NAVIGATION.md#reopen_in_progress
+      effective_prompt_policy: one_effective_prompt_per_decision_point
+    - id: rerun_alignment_approval_chain
+      prompt_source_refs:
+        - docs/operations/REOPEN_PROCEDURE.md
+        - docs/operations/WORKFLOW_NAVIGATION.md#reopen_in_progress
+      effective_prompt_policy: one_effective_prompt_per_decision_point
+    - id: run_reopen_pending_gate
+      prompt_source_refs:
+        - docs/operations/REOPEN_PROCEDURE.md
+        - docs/operations/WORKFLOW_NAVIGATION.md#reopen_in_progress
+      effective_prompt_policy: one_effective_prompt_per_decision_point
+    - id: run_reopen_drafting
+      prompt_source_refs:
+        - docs/operations/REOPEN_PROCEDURE.md
+        - docs/operations/WORKFLOW_NAVIGATION.md#reopen_in_progress
+      effective_prompt_policy: one_effective_prompt_per_decision_point
+    - id: wait_for_human_approval
+      prompt_source_refs:
+        - docs/operations/REOPEN_PROCEDURE.md
+        - docs/disciplines/discipline_approval_operation.md
+      effective_prompt_policy: one_effective_prompt_per_decision_point
+    - id: finalize_reopen
+      prompt_source_refs:
+        - docs/operations/REOPEN_PROCEDURE.md
+      effective_prompt_policy: one_effective_prompt_per_decision_point
+    - id: reopen_completed
+      prompt_source_refs:
+        - docs/operations/REOPEN_PROCEDURE.md
+      effective_prompt_policy: one_effective_prompt_per_decision_point
+    - id: inspect_reopen_state
+      prompt_source_refs:
+        - docs/operations/WORKFLOW_NAVIGATION.md#reopen_in_progress
+        - docs/operations/REOPEN_PROCEDURE.md
+      effective_prompt_policy: one_effective_prompt_per_decision_point
+  review_run_triage_command:
+    - id: list-pending
+      prompt_source_refs:
+        - docs/operations/SESSION_WORKFLOW_GUIDE.md#3.3-a-2
+      effective_prompt_policy: one_effective_prompt_per_decision_point
+    - id: decide
+      prompt_source_refs:
+        - docs/operations/SESSION_WORKFLOW_GUIDE.md#3.3-a-2
+        - docs/disciplines/discipline_approval_operation.md
+      effective_prompt_policy: one_effective_prompt_per_decision_point
+    - id: manifest-template
+      prompt_source_refs:
+        - docs/operations/SESSION_WORKFLOW_GUIDE.md#3.3-a-2
+      effective_prompt_policy: one_effective_prompt_per_decision_point
+    - id: write-manifest
+      prompt_source_refs:
+        - docs/operations/SESSION_WORKFLOW_GUIDE.md#3.3-a-2
+        - docs/disciplines/discipline_post_write_verification.md
+      effective_prompt_policy: one_effective_prompt_per_decision_point
+    - id: assert-apply-fixes-ready
+      prompt_source_refs:
+        - docs/operations/SESSION_WORKFLOW_GUIDE.md#3.3-a-2
+        - docs/disciplines/discipline_approval_operation.md
+      effective_prompt_policy: one_effective_prompt_per_decision_point
+    - id: assert-review-report-ready
+      prompt_source_refs:
+        - docs/operations/SESSION_WORKFLOW_GUIDE.md#3.3-a-2
+      effective_prompt_policy: one_effective_prompt_per_decision_point
+    - id: generate-review-report
+      prompt_source_refs:
+        - docs/operations/SESSION_WORKFLOW_GUIDE.md#3.3-a-2
+      effective_prompt_policy: one_effective_prompt_per_decision_point
+  post_write_manifest_gate:
+    - id: post_write_manifest_completed
+      prompt_source_refs:
+        - docs/operations/WORKFLOW_NAVIGATION.md#post_write_verification
+        - docs/disciplines/discipline_post_write_verification.md
+      effective_prompt_policy: one_effective_prompt_per_decision_point
+    - id: post_write_manifest_human_required
+      prompt_source_refs:
+        - docs/operations/WORKFLOW_NAVIGATION.md#post_write_human_decision_required
+        - docs/disciplines/discipline_post_write_verification.md
+        - docs/disciplines/discipline_approval_operation.md
+      effective_prompt_policy: one_effective_prompt_per_decision_point
+    - id: post_write_manifest_missing_or_invalid
+      prompt_source_refs:
+        - docs/operations/WORKFLOW_NAVIGATION.md#post_write_verification
+        - docs/disciplines/discipline_post_write_verification.md
+      effective_prompt_policy: one_effective_prompt_per_decision_point
+    - id: post_write_policy_violation
+      prompt_source_refs:
+        - docs/operations/WORKFLOW_NAVIGATION.md#post_write_policy_violation
+        - docs/disciplines/discipline_post_write_verification.md
+      effective_prompt_policy: one_effective_prompt_per_decision_point
+  proxy_model_decision_gate:
+    - id: user_visible_triage_gate
+      prompt_source_refs:
+        - docs/operations/SESSION_WORKFLOW_GUIDE.md#3.3-a-2
+      effective_prompt_policy: one_effective_prompt_per_decision_point
+    - id: proxy_decision_prompt
+      prompt_source_refs:
+        - docs/operations/SESSION_WORKFLOW_GUIDE.md#3.3-a-2
+        - docs/disciplines/discipline_approval_operation.md
+      effective_prompt_policy: one_effective_prompt_per_decision_point
+    - id: proxy_decision_file
+      prompt_source_refs:
+        - docs/operations/SESSION_WORKFLOW_GUIDE.md#3.3-a-2
+        - docs/disciplines/discipline_approval_operation.md
+      effective_prompt_policy: one_effective_prompt_per_decision_point
+    - id: proxy_approval_record
+      prompt_source_refs:
+        - docs/operations/SESSION_WORKFLOW_GUIDE.md#3.3-a-2
+        - docs/disciplines/discipline_approval_operation.md
+      effective_prompt_policy: one_effective_prompt_per_decision_point
+  conformance_evaluation_gate:
+    - id: mv6_prompt_isolation
+      prompt_source_refs:
+        - docs/operations/WORKFLOW_NAVIGATION.md
+        - .reviewcompass/specs/conformance-evaluation/tasks.md
+      effective_prompt_policy: one_effective_prompt_per_decision_point
+    - id: reopen_handoff_package
+      prompt_source_refs:
+        - docs/operations/REOPEN_PROCEDURE.md
+        - .reviewcompass/specs/conformance-evaluation/design.md
+        - .reviewcompass/specs/conformance-evaluation/tasks.md
+      effective_prompt_policy: one_effective_prompt_per_decision_point
+  yaml_audit_gate:
+    - id: yaml_audit_scope
+      prompt_source_refs:
+        - docs/disciplines/discipline_yaml_audit.md
+      effective_prompt_policy: one_effective_prompt_per_decision_point
+    - id: yaml_audit_post_write_check
+      prompt_source_refs:
+        - docs/disciplines/discipline_yaml_audit.md
+        - docs/disciplines/discipline_post_write_verification.md
+      effective_prompt_policy: one_effective_prompt_per_decision_point
 by_kind:
   stage:
     - docs/disciplines/discipline_workflow_state_truth_source.md

@@ -213,6 +213,10 @@
 3. 正本更新の整合確認は、reopen 後の `triad-review / review-wave / alignment / approval` が担う。本機能はこれらを独自の ad hoc review で代替しない。
 4. 本機能は reopen 後の対象 phase が `triad-review / review-wave / alignment / approval` を完了するまで、当該 gap を resolved 扱いにしてはならない。
 5. tasks の扱いは境界を固定する。本機能は `phase: tasks` の reopen 候補、下流影響候補、仕様更新草案を出力できるが、tasks.md 本体の推定・再作成やタスク分解の確定は行わない。tasks.md の正式更新は `workflow-management` の reopen 手続きで判断する。
+6. 本機能は reopen handoff package に `change_policy: minimal_existing_spec_change` を含め、既存項目の意味をできるだけ変更しない方針を LLM 指示として明示する。ただし既存項目を絶対に変更してはならないとはしない。
+7. 本機能は正本更新候補を `change_type: additive` または `change_type: semantic_change` に分類し、`existing_contract_changed`、`human_escalation_required`、`downstream_reopen_required`、`downstream_reopen_phases` を機械可読フィールドとして保持する。
+8. 既存項目の意味変更が必要な場合は、人間判断へエスカレーションする。この場合 `change_type: semantic_change`、`existing_contract_changed: true`、`human_escalation_required: true` とし、下流の tasks／implementation reopen 要否を明示する。
+9. 本機能は reopen handoff package の機械判定時に、判定点ごとに 1 本の次タスク effective prompt を読み込む。package は元資料への参照として `next_task_prompt_refs` を保持し、実際に読ませた統合プロンプトを `effective_next_task_prompt_path`、`effective_next_task_prompt_sha256`、`effective_next_task_prompt_loaded` で記録する。`effective_next_task_prompt_loaded: true` でない場合は handoff 完了扱いにしない。
 
 ## Change Intent
 
@@ -234,6 +238,7 @@ ReviewCompass 固有の構築：
 - 2026-06-09 の再確認により、同 intent は単なる既存要件確認ではなく、既存システムへ後追いで intent を追加した場合に、コード由来の requirements／design 差分候補、下流影響候補、実装変更候補を抽出し、既存設計との衝突を確認しながら仕様駆動開発へ戻す機能追加として Requirement 10 に明示した。tasks.md 本体の推定・再作成は本機能の責務外であり、正式な tasks 反映は `workflow-management` の reopen 手続きに委ねる。
 - 2026-06-09 の completed follow-up conformance により、D-021 / D-004 / D-005 / D-025 / D-027 / D-008 / D-019 / D-020 / D-023 は completed follow-up prerequisite set として正式化した。formal completed follow-up outputs の handoff summary は `docs/notes/2026-06-09-formal-completed-followup-summary.md` とする。
 - 2026-06-09 の reopen 方針確認により、conformance-evaluation で見つかった gap を正本更新で解消する場合は、requirements.md, design.md, tasks.md を直接書き換えない。`workflow-management` の reopen 手続きへ渡し、`triad-review / review-wave / alignment / approval` によって整合確認する。tasks は `phase: tasks` の候補として出力できるが、tasks.md 本体の推定・再作成やタスク分解の確定は行わない。
+- 2026-06-09 の既存項目変更方針確認により、reopen handoff package は `change_policy: minimal_existing_spec_change` を持つ。更新候補は原則 `additive` とし、既存契約の意味変更が必要な場合は `semantic_change`、`existing_contract_changed: true`、`human_escalation_required: true`、`downstream_reopen_required` を明示する。機械判定時には判定点ごとに 1 本の次タスク effective prompt を読み込むため、元資料として `next_task_prompt_refs`、実際に読ませた統合プロンプトとして `effective_next_task_prompt_path`、`effective_next_task_prompt_sha256`、`effective_next_task_prompt_loaded` を保持する。
 
 機能横断レビューで対処された所見：
 
@@ -256,4 +261,4 @@ v3-plan §3.3 の扱い（§5.10.6 由来、2026-05-24 セッション 23 改訂
 - `XDI-CE-001`：cross-feature drift clustering、contract ownership outputs、follow-up implementation decision は、Requirement 9 の contract ownership map／spec update proposals／draft-only artifacts の外部可視要件に含める。詳細な follow-up タスク化は tasks.md T-015 を正本とし、本 requirements.md は要件層から追跡可能であることを示す。
 - `XDI-CE-002`：既存システムに後追いで intent を追加した場合のコード由来仕様差分抽出、既存設計との衝突確認、仕様更新草案、下流影響候補、実装変更候補の分離は Requirement 10 の外部可視要件に含める。tasks.md 本体の推定は本機能の責務外とし、詳細な設計・タスク化は design／tasks 段で確定する。
 - `XDI-CE-003`：completed follow-up prerequisite set の正式化、formal completed follow-up outputs の扱い、requirements gap／design gap の残存明示は Requirement 11 の外部可視要件に含める。handoff summary は `docs/notes/2026-06-09-formal-completed-followup-summary.md` とする。
-- `XDI-CE-004`：正本更新が必要な gap の reopen 引き渡し、reopen handoff package、`triad-review / review-wave / alignment / approval` 完了前に `resolved` 扱いにしない制約、`phase: tasks` 候補の境界は Requirement 12 の外部可視要件に含める。
+- `XDI-CE-004`：正本更新が必要な gap の reopen 引き渡し、reopen handoff package、`triad-review / review-wave / alignment / approval` 完了前に `resolved` 扱いにしない制約、`phase: tasks` 候補の境界、`minimal_existing_spec_change`、`additive`／`semantic_change` 分類、`existing_contract_changed`、`human_escalation_required`、`downstream_reopen_required`、`next_task_prompt_refs`、`effective_next_task_prompt_path`、`effective_next_task_prompt_sha256`、`effective_next_task_prompt_loaded` は Requirement 12 の外部可視要件に含める。

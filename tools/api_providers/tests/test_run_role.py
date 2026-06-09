@@ -3,6 +3,7 @@
 # 計画書 §5.9.7.1 の入出力契約に準拠する。
 # プロバイダーは MagicMock で置換し、in-process でテストする。
 
+import hashlib
 import sys
 from pathlib import Path
 from unittest.mock import MagicMock, patch
@@ -450,6 +451,38 @@ findings:
   assert summary_model["triage_status"] == "triage_pending"
   assert summary_model["findings_count"] == 1
   assert summary_model["findings_count_by_severity"]["WARN"] == 1
+
+
+def test_main_records_effective_prompt_metadata_in_rounds(
+  tmp_target_file, tmp_config, tmp_path, monkeypatch
+):
+  """effective prompt のパスと sha256 を rounds.yaml に記録する。"""
+  monkeypatch.setenv("ANTHROPIC_API_KEY", "test-key")
+  review_run_dir = tmp_path / "review-run"
+  effective_prompt = tmp_path / ".reviewcompass" / "effective-prompts" / "stage.prompt.md"
+  effective_prompt.parent.mkdir(parents=True)
+  effective_prompt.write_text("# Effective Prompt\n\nbody\n", encoding="utf-8")
+  mock_cls, _ = _make_mock_provider(send_response="findings: []\n")
+  with patch("tools.api_providers.run_role.get_provider", return_value=mock_cls):
+    exit_code = main(
+      [
+        "--role", "primary",
+        "--target", str(tmp_target_file),
+        "--phase", "post_write_verification",
+        "--criteria", "観点-1",
+        "--config", str(tmp_config),
+        "--review-run-dir", str(review_run_dir),
+        "--round-id", "round-1",
+        "--effective-prompt-path", str(effective_prompt),
+      ]
+    )
+
+  assert exit_code == 0
+  rounds = yaml.safe_load((review_run_dir / "rounds.yaml").read_text(encoding="utf-8"))
+  assert rounds["effective_prompt_path"] == str(effective_prompt)
+  assert rounds["effective_prompt_sha256"] == hashlib.sha256(
+    effective_prompt.read_bytes()
+  ).hexdigest()
 
 
 def test_main_updates_review_run_artifacts_on_parse_failure(

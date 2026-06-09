@@ -218,6 +218,8 @@ def update_review_run_artifacts(
   parse_status: str,
   findings: Optional[List[Dict[str, Any]]],
   formatted_output: Optional[str],
+  effective_prompt_path: Optional[str] = None,
+  effective_prompt_sha256: Optional[str] = None,
 ) -> None:
   """1 回の API 応答を review-run 成果物へ反映する。"""
   run_dir = Path(review_run_dir)
@@ -278,7 +280,7 @@ def update_review_run_artifacts(
   }
   _upsert_by_keys(model_results, model_result, ["model_id", "role"])
 
-  rounds.update({
+  rounds_update = {
     "round_id": round_id,
     "purpose": phase,
     "invocation_timestamp": now,
@@ -291,7 +293,12 @@ def update_review_run_artifacts(
     "criteria": criteria,
     "prompt_sha256": _sha256_text(prompt),
     "model_results": model_results,
-  })
+  }
+  if effective_prompt_path:
+    rounds_update["effective_prompt_path"] = effective_prompt_path
+  if effective_prompt_sha256:
+    rounds_update["effective_prompt_sha256"] = effective_prompt_sha256
+  rounds.update(rounds_update)
   _dump_yaml(rounds_path, rounds)
 
   summary_path = run_dir / "model-result-summary.yaml"
@@ -382,7 +389,29 @@ def _parse_argv(argv: Optional[List[str]]) -> argparse.Namespace:
     default="round-1",
     help="review-run に記録する round_id",
   )
+  parser.add_argument(
+    "--effective-prompt-path",
+    default=None,
+    help="判定点ごとに生成された effective prompt ファイルのパス",
+  )
+  parser.add_argument(
+    "--effective-prompt-sha256",
+    default=None,
+    help="effective prompt ファイルの sha256。未指定ならファイルから計算する",
+  )
   return parser.parse_args(argv)
+
+
+def _resolve_effective_prompt_sha256(path_value: Optional[str], sha_value: Optional[str]) -> Optional[str]:
+  """effective prompt sha256 を明示値またはファイル内容から返す。"""
+  if sha_value:
+    return sha_value
+  if not path_value:
+    return None
+  path = Path(path_value)
+  if not path.is_file():
+    return None
+  return _sha256_file(path)
 
 
 def main(argv: Optional[List[str]] = None) -> int:
@@ -412,6 +441,10 @@ def main(argv: Optional[List[str]] = None) -> int:
       provider_name=provider_name,
       model=model,
     )
+    effective_prompt_sha256 = _resolve_effective_prompt_sha256(
+      args.effective_prompt_path,
+      args.effective_prompt_sha256,
+    )
     response_text, attempts, duration_seconds = _call_provider(provider, prompt)
     _write_raw_response(args.raw_out, response_text)
     try:
@@ -434,6 +467,8 @@ def main(argv: Optional[List[str]] = None) -> int:
           parse_status="parse_failed",
           findings=None,
           formatted_output=None,
+          effective_prompt_path=args.effective_prompt_path,
+          effective_prompt_sha256=effective_prompt_sha256,
         )
       raise
     output = format_response(
@@ -462,6 +497,8 @@ def main(argv: Optional[List[str]] = None) -> int:
         parse_status="parsed",
         findings=findings,
         formatted_output=output,
+        effective_prompt_path=args.effective_prompt_path,
+        effective_prompt_sha256=effective_prompt_sha256,
       )
     sys.stdout.write(output)
     return 0

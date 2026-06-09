@@ -2144,6 +2144,74 @@ class NextNavigationTests(unittest.TestCase):
       "docs/operations/SESSION_WORKFLOW_GUIDE.md#3.3-a-2",
       data["next_action"]["required_disciplines"],
     )
+    self.assertEqual(
+      data["next_action"]["effective_prompt"]["effective_prompt_policy"],
+      "one_effective_prompt_per_decision_point",
+    )
+    self.assertIn(
+      {"group": "next_action_kind", "id": "stage"},
+      data["next_action"]["effective_prompt"]["decision_point_refs"],
+    )
+    self.assertIn(
+      {"group": "workflow_stage", "id": "triad-review"},
+      data["next_action"]["effective_prompt"]["decision_point_refs"],
+    )
+    self.assertIn(
+      "docs/operations/SESSION_WORKFLOW_GUIDE.md#3.3-a-2",
+      data["next_action"]["effective_prompt"]["prompt_source_refs"],
+    )
+    prompt_path = cwd / data["next_action"]["effective_prompt"]["effective_prompt_path"]
+    self.assertTrue(prompt_path.is_file())
+    self.assertEqual(
+      data["next_action"]["effective_prompt"]["effective_prompt_sha256"],
+      _sha256_file(prompt_path),
+    )
+    self.assertTrue(
+      data["next_action"]["effective_prompt"]["effective_prompt_loaded"],
+    )
+    prompt_text = prompt_path.read_text(encoding="utf-8")
+    self.assertIn("# Effective Prompt", prompt_text)
+    self.assertIn("docs/operations/SESSION_WORKFLOW_GUIDE.md#3.3-a-2", prompt_text)
+
+  def test_next_fails_closed_when_effective_prompt_source_is_missing(self):
+    """effective prompt の元資料が読めない判定点は fail-closed とする"""
+    cwd = Path(self.tmpdir)
+    _write_specs_for_next(cwd, {})
+    map_path = cwd / "docs" / "operations" / "WORKFLOW_DISCIPLINE_MAP.yaml"
+    map_path.parent.mkdir(parents=True, exist_ok=True)
+    map_path.write_text(
+      yaml.safe_dump(
+        {
+          "default": ["docs/operations/WORKFLOW_NAVIGATION.md"],
+          "decision_points": {
+            "next_action_kind": [
+              {
+                "id": "stage",
+                "prompt_source_refs": ["docs/missing-effective-prompt-source.md"],
+                "effective_prompt_policy": "one_effective_prompt_per_decision_point",
+              }
+            ]
+          },
+        },
+        allow_unicode=True,
+        sort_keys=False,
+      ),
+      encoding="utf-8",
+    )
+
+    result = run_script(["next", "--json"], cwd=cwd)
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 2, result.stdout)
+    data = json.loads(result.stdout)
+    self.assertEqual(data["verdict"], "DEVIATION")
+    self.assertFalse(
+      data["next_action"]["effective_prompt"]["effective_prompt_loaded"],
+    )
+    self.assertIn(
+      "effective prompt の元資料をすべて読めません",
+      data["reasons"],
+    )
 
   def test_next_triad_review_reports_target_and_review_run_inputs(self):
     """triad-review 直前に読む対象文書と review-run 成果物を抽象入力として返す"""
@@ -2196,6 +2264,8 @@ class NextNavigationTests(unittest.TestCase):
         "model-result-summary.yaml",
         "triage.yaml",
         "raw-review-triage-summary.md",
+        "variant-role-assignment",
+        "user-visible-triage-gate",
       ],
     )
 
@@ -2295,22 +2365,28 @@ class NextNavigationTests(unittest.TestCase):
       ".reviewcompass/pending-cross-feature-findings.md",
       data["next_action"]["required_disciplines"],
     )
+    required_inputs = {
+      item["id"]: item
+      for item in data["next_action"]["required_inputs"]
+    }
     self.assertEqual(
-      data["next_action"]["required_inputs"],
-      [
-        {
-          "id": "unresolved_cross_scope_items",
-          "role": "stage_entry_context",
-          "source_type": "carry_forward_register",
-          "purpose": (
-            "Read unresolved items carried forward from prior reviews or "
-            "adjacent scopes before starting this stage."
-          ),
-          "read_policy": "unresolved_items_only",
-          "path": "learning/workflow/carry-forward-register/reviewcompass-import.yaml",
-          "unresolved_count": 1,
-        }
-      ],
+      required_inputs["cross_feature_stage_artifacts"]["path"],
+      ".reviewcompass/specs/_cross_feature/reviews/{date}-{phase}-{stage}.md",
+    )
+    self.assertEqual(
+      required_inputs["unresolved_cross_scope_items"],
+      {
+        "id": "unresolved_cross_scope_items",
+        "role": "stage_entry_context",
+        "source_type": "carry_forward_register",
+        "purpose": (
+          "Read unresolved items carried forward from prior reviews or "
+          "adjacent scopes before starting this stage."
+        ),
+        "read_policy": "unresolved_items_only",
+        "path": "learning/workflow/carry-forward-register/reviewcompass-import.yaml",
+        "unresolved_count": 1,
+      },
     )
 
   def test_next_prioritizes_in_progress_file(self):

@@ -28,6 +28,7 @@ from tools.api_providers.response_formatter import (  # noqa: E402
   parse_response_text,
 )
 from tools.api_providers.run_role import (  # noqa: E402
+  _resolve_effective_prompt_sha256,
   build_prompt,
   update_review_run_artifacts,
 )
@@ -218,6 +219,16 @@ def _parse_argv(argv: Optional[List[str]]) -> argparse.Namespace:
     default=[],
     help="前段役の所見ファイルパス（複数指定可）",
   )
+  parser.add_argument(
+    "--effective-prompt-path",
+    default=None,
+    help="判定点ごとに生成された effective prompt ファイルのパス",
+  )
+  parser.add_argument(
+    "--effective-prompt-sha256",
+    default=None,
+    help="effective prompt ファイルの sha256。未指定ならファイルから計算する",
+  )
   return parser.parse_args(argv)
 
 
@@ -269,6 +280,10 @@ def _run_one_role(
     provider_name=provider_name,
     model=model,
   )
+  effective_prompt_sha256 = _resolve_effective_prompt_sha256(
+    args.effective_prompt_path,
+    args.effective_prompt_sha256,
+  )
   response_text, attempts, duration_seconds = _call_provider(provider, prompt)
   try:
     findings = parse_response_text(response_text)
@@ -289,6 +304,8 @@ def _run_one_role(
       parse_status="parse_failed",
       findings=None,
       formatted_output=None,
+      effective_prompt_path=args.effective_prompt_path,
+      effective_prompt_sha256=effective_prompt_sha256,
     )
     return 1
 
@@ -316,6 +333,8 @@ def _run_one_role(
     parse_status="parsed",
     findings=findings,
     formatted_output=output,
+    effective_prompt_path=args.effective_prompt_path,
+    effective_prompt_sha256=effective_prompt_sha256,
   )
   return 0
 
