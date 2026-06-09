@@ -12,7 +12,7 @@
     },
     "feature-partitioning": {
       "candidate-proposal": true,
-      "approval": false,
+      "approval": true,
       "reference": "stages/feature-partitioning/2026-05-24-proposal.md"
     },
     "requirements": {

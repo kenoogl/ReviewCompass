@@ -12,14 +12,33 @@ completed_steps:
 - 第3過程：stages/intent.yaml#review 再実施
 - 第3過程：stages/intent.yaml#approval 承認
 - 第3過程：stages/feature-partitioning.yaml#candidate-proposal 再実施
-next_step: 第3過程停止点コミット：stages/feature-partitioning.yaml#candidate-proposal 再実施完了
+- 第3過程：stages/feature-partitioning.yaml#approval 承認
+- 第3過程：stages/requirements.yaml#drafting 再実施
+- 第3過程：stages/requirements.yaml#triad-review review-run 実行
+- 第3過程：requirements triad-review 根拠補強結果 承認
 step_number: 3
-pending_gates:
-- stages/intent.yaml#review
-- stages/intent.yaml#approval
-- stages/feature-partitioning.yaml#candidate-proposal
-- stages/feature-partitioning.yaml#approval
+pending_gates: []
 approval_source: 2026-06-09 利用者発言「承認」
 canonical_repair_result: 既存の正本修正は、実装上の所有を主軸とする feature impact 判定、conformance-evaluation の direct impact 化、新 feature 不要判断を反映済み。第2過程で追加修正した範囲は direct impact 留保文の一般化のみ。
 intent_approval_source: 2026-06-09 利用者発言「承認」
-current_blocker: stages/feature-partitioning.yaml#approval（人間承認待ち）
+feature_partitioning_approval_source: 2026-06-09 利用者発言「承認」
+requirements_drafting_result: 7 feature の requirements.md は、2026-06-08 intent 追加を既存 Requirement で受ける記録を既に持つため、追加の正本修正は不要。次段で triad-review によりこの判断を検証する。
+requirements_drafting_evidence:
+- .reviewcompass/specs/foundation/requirements.md: Requirement 5 と Requirement 1／3／6 で受ける記録
+- .reviewcompass/specs/runtime/requirements.md: Requirement 1／3／4／10 で受ける記録
+- .reviewcompass/specs/evaluation/requirements.md: Requirement 1／3／6／9 で受ける記録
+- .reviewcompass/specs/conformance-evaluation/requirements.md: Requirement 1／3／5／9 で受ける記録
+- .reviewcompass/specs/analysis/requirements.md: Requirement 1／2／4／5 で受ける記録
+- .reviewcompass/specs/workflow-management/requirements.md: Requirement 2／4／6／8 で受ける記録
+- .reviewcompass/specs/self-improvement/requirements.md: Requirement 1／2／3／7 で受ける記録
+requirements_triad_review_run: .reviewcompass/specs/_cross_feature/reviews/2026-06-09-requirements-reopen-triad-review-run
+requirements_triad_review_result: primary 8件、adversarial 0件、judgment 3件。所見は主に target の証拠不足、direct impact 4 feature の本文引用不足、drafting 完了判定の根拠不足。requirements.md 本体の即時修正までは確定していない。
+requirements_triad_review_triage_summary: .reviewcompass/specs/_cross_feature/reviews/2026-06-09-requirements-reopen-triad-review-run/raw-review-triage-summary.md
+requirements_triad_review_triage_approval_source: 2026-06-09 利用者発言「承認」
+requirements_triad_review_triage_approval_scope: requirements.md 修正不要の確定ではなく、direct impact 4 feature の既存 Requirement 本文引用と差分評価を補強し、その後に requirements.md 修正要否を判定する方針の承認。
+requirements_triad_review_evidence_supplement: .reviewcompass/specs/_cross_feature/reviews/2026-06-09-requirements-reopen-triad-review-run/evidence-supplement.md
+requirements_triad_review_evidence_supplement_result: direct impact 4 feature の requirements 本文を確認し、foundation／runtime／evaluation／conformance-evaluation とも requirements.md 本体への追加修正は不要と判定。runtime の LLM 非決定論的挙動は Requirement 3／4／6、conformance-evaluation の逆方向推定影響は Requirement 1／3／5 の範囲で受ける。
+requirements_triad_review_evidence_supplement_approval_source: 2026-06-09 利用者発言「承認」
+requirements_triad_review_evidence_supplement_approval_scope: direct impact 4 feature の根拠補強により、requirements.md 本体の追加修正不要として扱うことの承認。
+next_step: 第3過程停止点コミット：requirements triad-review 根拠補強結果の承認まで完了
+current_blocker: null

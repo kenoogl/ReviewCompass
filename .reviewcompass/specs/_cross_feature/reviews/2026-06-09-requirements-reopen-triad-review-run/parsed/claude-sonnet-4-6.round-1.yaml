@@ -1,0 +1,52 @@
+role: primary
+provider: anthropic-api
+model: claude-sonnet-4-6
+attempts: 1
+duration_seconds: 35.416
+findings:
+- severity: WARN
+  target_location: '## 現在の requirements 判定'
+  description: 「既存 Requirement で受ける記録を既に持つ」という判定根拠が循環的であり、独立検証が困難
+  rationale: 各 feature の requirements.md が「2026-06-08 intent 追加を受ける記録を既に持つ」とされているが、その記録がいつ・どのプロセスで追記されたか、またその追記がトライアド承認を経たものかが本文書から確認できない。triad-review
+    の目的は独立した検証であるにもかかわらず、被レビュー対象と同一の主張が根拠として使われている構造になっており、検証の独立性が担保されていない。
+- severity: ERROR
+  target_location: '## Feature impact 区分 / foundation'
+  description: foundation の Requirement 5「固定パターン依存除外」が新 intent を受けるとされているが、除外対象の範囲定義が既存
+    requirements.md 上で十分に形式化されているか未確認
+  rationale: 新 intent は『規則ファイル照合や固定プロンプトの単純写像ではない』という能動的な否定命題を含む。既存 Requirement 5
+    がこの否定命題を受入基準レベルで明示しているかどうかは、requirements.md 本文の引用なしには判定不能である。本 target 文書はファイルパスを列挙するのみで、該当
+    Requirement の実際の文言を提示していないため、「足りる」という結論の根拠が審査不能な状態にある。must_fix 相当の証拠欠落。
+- severity: ERROR
+  target_location: '## Feature impact 区分 / runtime'
+  description: runtime の Requirement 10「パターン定義依存除外」について、除外が実装契約として requirements に記述されているか未提示
+  rationale: foundation と同様に、Requirement 10 の実際の受入基準文言が引用されていない。runtime は direct impact
+    に分類されており、LLM 判断への委譲がプロンプト解決・版追跡（Requirement 3）や構造化証拠出力（Requirement 4）にどう影響するかの具体的な差分評価が欠落している。既存テキストで新
+    intent を網羅できるかの判断材料が不足しており、drafting 再実施不要の結論を triad-review が採択する根拠として不十分。
+- severity: ERROR
+  target_location: '## Feature impact 区分 / evaluation'
+  description: evaluation の Requirement 9「レビューモード区別」が、LLM 判断ベースの発見と固定写像の区別を既にカバーしているかが未検証
+  rationale: 新 intent の核心は『写像でなく判断』という実行モデルの変更であり、evaluation における有効・無効実行の分離（Requirement
+    1）やメトリクス抽出（Requirement 3）の前提が変わりうる。Requirement 9 がこの変更を吸収できるかは、モード定義の粒度に依存するが、定義の引用がなく判定根拠が示されていない。
+- severity: ERROR
+  target_location: '## Feature impact 区分 / conformance-evaluation'
+  description: conformance-evaluation の Requirement 9「実装由来契約の仕様更新草案」について、新 intent
+    による逆方向推定プロセスへの影響が要件レベルで閉じているか未評価
+  rationale: 逆方向推定（Requirement 1）と二段階照合（Requirement 3）は、推定対象となる実装が固定パターン照合からLLM判断に移行する場合、推定の入力構造自体が変わりうる。この変化が既存
+    Requirement の受入基準の範囲内かどうかについて、本文書は「direct impact」と分類するだけで差分分析を提示していない。
+- severity: WARN
+  target_location: '## レビューで判定してほしいこと / 問4'
+  description: 「受け皿確認が書かれている」ことを drafting 再実施完了とみなすという判断基準が、プロセス規律として確立されているか不明
+  rationale: reopen-procedure-2026-06-09.yaml に drafting 完了条件が定義されているはずであるが、その条件が「確認記録の存在」で充足されるのか「新規受入基準の追記」を要求するのかが本文書から読み取れない。手続き定義ファイルとの整合が示されていないまま完了判定を求めている。
+- severity: WARN
+  target_location: '## レビューで判定してほしいこと / 問5'
+  description: 人間承認待ちにすべき未確定点の候補が本文書内に事前整理されておらず、triad-review に判断負荷を全移譲している
+  rationale: triad-review は判断の検証を行う場であり、未確定点の一次整理はレビュー依頼側が行うべきである。問5 の設問形式は未確定点の候補を提示せず問いだけを置いており、レビュアーが未確定点の発見から行わなければならない構造になっている。これは
+    should_fix 相当の文書品質問題であり、特に direct impact 4 feature に絞った未確定点リストの草案を付記すべきである。
+- severity: INFO
+  target_location: '## レビュー対象ファイル'
+  description: indirect check 3 feature の requirements.md は列挙されているが、本文書内でそれらへの言及深度が
+    direct impact と著しく非対称
+  rationale: analysis・workflow-management・self-improvement の各 feature については「indirect
+    check」の区分理由が説明されていない。新 intent が写像からの脱却を求める場合、workflow-management の Requirement
+    4「不可逆操作直前ゲート」や self-improvement の Requirement 1「workflow 層改善限定」は、改善提案の対象範囲の再解釈を迫る可能性がある。indirect
+    と判断した根拠を一行でも記載することで、triad-review の判断範囲を明確化できる。
