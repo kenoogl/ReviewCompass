@@ -1,0 +1,17 @@
+status: completed
+target_files:
+- docs/experiments/2026-06-09-conformance-evaluation-evidence-report.md
+target_sha256:
+  docs/experiments/2026-06-09-conformance-evaluation-evidence-report.md: b12ae290061412c4442d001a25a8396e183b738d7056ebbb76b08183d0b48a4f
+required_verifiers:
+- llm-local-review
+completed_verifiers:
+- llm-local-review
+unresolved_substantive_findings: 0
+verifications:
+- verifier: llm-local-review
+  target_files:
+  - docs/experiments/2026-06-09-conformance-evaluation-evidence-report.md
+  target_sha256:
+    docs/experiments/2026-06-09-conformance-evaluation-evidence-report.md: b12ae290061412c4442d001a25a8396e183b738d7056ebbb76b08183d0b48a4f
+notes: レポート追記が requirements/design 衝突レビューの実施と結果を反映し、既存項目の意味を変更しない最小修正として記録されていることを確認した。

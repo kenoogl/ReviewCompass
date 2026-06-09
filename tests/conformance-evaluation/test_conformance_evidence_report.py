@@ -27,6 +27,7 @@ def test_conformance_evaluation_evidence_report_links_key_artifacts():
   for path in [
     ".reviewcompass/specs/conformance-evaluation/conformance/2026-06-09-completed-followup-conformance.md",
     ".reviewcompass/specs/conformance-evaluation/conformance/2026-06-09-completed-followup-contract-confirmation.md",
+    ".reviewcompass/specs/conformance-evaluation/reviews/2026-06-09-completed-followup-requirements-design-conflict-review.md",
     ".reviewcompass/specs/conformance-evaluation/requirements.md",
     ".reviewcompass/specs/conformance-evaluation/design.md",
     "docs/notes/2026-06-09-formal-completed-followup-summary.md",
@@ -42,3 +43,13 @@ def test_conformance_evaluation_evidence_report_keeps_claims_bounded():
   assert "implementation-first" in text
   assert "requirements gap: resolved" in text
   assert "design gap: resolved" in text
+
+
+def test_conformance_evaluation_evidence_report_records_conflict_review_result():
+  text = REPORT_PATH.read_text(encoding="utf-8")
+
+  assert "requirements/design 衝突レビュー" in text
+  assert "minor_conflict_found" in text
+  assert "Requirement 11 自体は既存の Requirement 9 / Requirement 10 とコンフリクトしていない" in text
+  assert "design.md §20.3 の `全 10 件` を `全 11 件` に修正" in text
+  assert "既存項目の意味を変更しない最小修正" in text
