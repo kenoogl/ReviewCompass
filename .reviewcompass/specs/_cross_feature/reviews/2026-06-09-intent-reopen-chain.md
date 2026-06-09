@@ -34,7 +34,7 @@ The feature-partitioning decision is not only "no new feature". Since an existin
 | workflow-management | indirect check | indirect check only | `.reviewcompass/specs/_cross_feature/reviews/2026-06-09-intent-feature-reopen-decision.md`, `.reviewcompass/specs/_cross_feature/reviews/2026-06-09-feature-impact-reopen-review-run/review_summary.md` |
 | self-improvement | indirect check | indirect check only | `.reviewcompass/specs/_cross_feature/reviews/2026-06-09-intent-feature-reopen-decision.md`, `.reviewcompass/specs/_cross_feature/reviews/2026-06-09-feature-impact-reopen-review-run/review_summary.md` |
 
-No new feature is created because the intent is covered by the existing feature boundaries. If direct impact review shows that foundation or runtime responsibilities must exceed their current boundaries, feature-partitioning must be reopened again.
+No new feature is created because the intent is covered by the existing feature boundaries. If direct impact review shows that any direct impact feature responsibilities must exceed their current boundaries, feature-partitioning must be reopened again.
 
 ## Gate Results
 
