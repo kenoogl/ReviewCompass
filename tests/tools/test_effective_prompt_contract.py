@@ -56,6 +56,20 @@ def test_workflow_management_tracks_decision_prompt_map_as_canonical_artifact():
     assert "effective prompt" in text
 
 
+def test_workflow_management_documents_effective_prompt_runtime_records():
+  for path in [
+    ".reviewcompass/specs/workflow-management/requirements.md",
+    ".reviewcompass/specs/workflow-management/design.md",
+    ".reviewcompass/specs/workflow-management/tasks.md",
+  ]:
+    text = _read(path)
+
+    assert "effective_prompt_path" in text
+    assert "effective_prompt_sha256" in text
+    assert "effective_prompt_loaded" in text
+    assert "rounds.yaml" in text
+
+
 def test_workflow_discipline_map_catalogs_all_current_decision_points():
   data = _yaml("docs/operations/WORKFLOW_DISCIPLINE_MAP.yaml")
   catalog = data["decision_points"]
