@@ -174,6 +174,21 @@
 4. 本機能は draft-only spec update artifacts を `<対象アプリ>/.reviewcompass/specs/<feature>/conformance/<日付>-spec-update-drafts/` に出力する。草案は `apply_status: draft_only` を持ち、requirements.md, design.md, tasks.md を直接書き換えない。
 5. ownership が不明確な契約、または primary owner が carry_forward の契約は `needs_human_decision: true` とし、人間判断なしに仕様本文へ適用しない。
 
+### Requirement 10：既存システムへの後追い intent 追加時のコード由来差分抽出
+
+**目的**：保守担当者が、既に requirements／design／tasks／implementation が存在するシステムへ intent を後から追加したとき、既存設計との衝突を確認しながら、実装コードから仕様追記候補と実装変更候補を証拠付きで取り出せるようにする。
+
+#### 受入基準
+
+1. 本機能は既存システムを対象に、追加 intent、既存 feature-partitioning、既存 requirements／design／tasks、実装コードを入力として扱う実行モードを持つ。
+2. 本機能は実装コードから、現在の実装が前提にしている requirements 候補、design 候補、tasks または実装上の作業契約候補を抽出し、それぞれにコード参照を付ける。
+3. 本機能は抽出した候補を既存 requirements／design／tasks と比較し、次のいずれに当たるかを分類する：既存仕様で説明済み、仕様追記候補、既存設計との衝突候補、実装変更候補、人間判断が必要。
+4. 本機能は追加 intent と抽出候補の関係を記録する。追加 intent を満たすために、既存仕様追記で足りるのか、既存設計と衝突するのか、実装変更が必要なのかを区別する。
+5. 本機能は固定チェックリストだけで候補を生成しない。コード参照、既存仕様の該当箇所、LLM による推定理由を合わせて記録し、根拠が不足する候補は `needs_human_decision: true` とする。
+6. 本機能は出力として、feature ごとの差分候補一覧、仕様更新草案、実装変更候補、既存設計との衝突候補を含む評価記録を生成する。
+7. 本機能は仕様本文を直接更新しない。仕様更新草案と実装変更候補を提示し、正式な requirements／design／tasks／implementation の更新は `workflow-management` の所定手続きで進める。
+8. 本機能は ReviewCompass 自身を対象にした試行実行を許容し、その結果を workflow 手続き改善の入力として保存できる。
+
 ## Change Intent
 
 本仕様は計画書 §5.10 で第 1 期から含めることを確定した **新規 7 番目機能**で、先行プロジェクトの `v3-plan.md` で future feature として記録されていた「artifact-to-spec conformance evaluation」を独立機能として書き起こした。**2026-05-24 セッション 23 で利用者考察により本筋／傍流の整理と 2 軸 6 criteria への絞り込みを実施**（論点 A・B 対処、計画書 §5.10 改訂と連動）。
@@ -190,7 +205,8 @@ ReviewCompass 固有の構築：
 - 依存関係の連想配列構造を Requirement 7 で定義（§5.10.5 由来、A-005 連動）
 - 実装適合レビューとの分離を Requirement 8 で明示（§5.10.1 由来）
 - 実装由来契約の contract ownership map、spec update proposals、draft-only spec update artifacts を Requirement 9 で明示（2026-06-08 実装由来契約横展開）
-- 2026-06-08 の feature-partitioning 再確認により、intent の「レビュー収集処理を事前設定の写像にしない」意図は新機能追加を要さず、conformance-evaluation では Requirement 1 の下流から上流への逆方向推定、Requirement 3 の二段階照合、Requirement 5 の推定・照合両段階への 3 役レビュー適用、および Requirement 9 の実装由来契約の仕様更新草案で受けることを確認した。
+- 2026-06-08 の feature-partitioning 再確認により、intent の「レビュー収集処理を事前設定の写像にしない」意図は新 feature 追加を要さず、conformance-evaluation では Requirement 1 の下流から上流への逆方向推定、Requirement 3 の二段階照合、Requirement 5 の推定・照合両段階への 3 役レビュー適用、および Requirement 9 の実装由来契約の仕様更新草案で受けることを確認した。
+- 2026-06-09 の再確認により、同 intent は単なる既存要件確認ではなく、既存システムへ後追いで intent を追加した場合に、コード由来の requirements／design／tasks／implementation 差分候補を抽出し、既存設計との衝突を確認しながら仕様駆動開発へ戻す機能追加として Requirement 10 に明示した。
 
 機能横断レビューで対処された所見：
 
@@ -211,3 +227,4 @@ v3-plan §3.3 の扱い（§5.10.6 由来、2026-05-24 セッション 23 改訂
 ## 実装由来契約の波及トレース
 
 - `XDI-CE-001`：cross-feature drift clustering、contract ownership outputs、follow-up implementation decision は、Requirement 9 の contract ownership map／spec update proposals／draft-only artifacts の外部可視要件に含める。詳細な follow-up タスク化は tasks.md T-015 を正本とし、本 requirements.md は要件層から追跡可能であることを示す。
+- `XDI-CE-002`：既存システムに後追いで intent を追加した場合のコード由来仕様差分抽出、既存設計との衝突確認、仕様更新草案と実装変更候補の分離は Requirement 10 の外部可視要件に含める。詳細な設計・タスク化は design／tasks 段で確定する。

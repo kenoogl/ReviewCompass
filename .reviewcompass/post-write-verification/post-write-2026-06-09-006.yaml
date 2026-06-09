@@ -1,0 +1,19 @@
+status: completed
+target_files: &id001
+- docs/reviews/reopen-classification-2026-06-09-existing-system-sdd-code-drift.md
+target_sha256: &id002
+  docs/reviews/reopen-classification-2026-06-09-existing-system-sdd-code-drift.md: 14942590cfdc341ff515cdc43f319e18f4f66d69ebd474980e1035d368c38827
+required_verifiers:
+- local-codex
+completed_verifiers:
+- local-codex
+unresolved_substantive_findings: 0
+verifications:
+- verifier: local-codex
+  provider: local
+  model: codex
+  target_files: *id001
+  target_sha256: *id002
+  result_summary: 既存システムへの後追い intent 追加を仕様駆動開発として扱う分類、conformance-evaluation と workflow-management の reopen、requirements/design/tasks/implementation
+    の差し戻し範囲を確認。未解決の本質的指摘はない。
+note: existing-system SDD and code-derived drift reopen classification post-write verification.

@@ -1,0 +1,88 @@
+process_id: reopen-procedure
+feature:
+  - conformance-evaluation
+  - workflow-management
+classification: N-0
+started_at: '2026-06-09T00:00:00+09:00'
+trigger: 追加 intent の目的を、既存システムに対する仕様駆動開発とコード由来仕様ずれ検出機能の追加として再確認した
+classification_basis: docs/reviews/reopen-classification-2026-06-09-existing-system-sdd-code-drift.md
+completed_steps:
+  - 第1過程：判定とフラグ差し戻し
+  - 第1過程停止点：利用者承認
+  - 第2過程：requirements 正本修正
+step_number: 2
+pending_gates:
+  - stages/requirements.yaml#alignment
+  - stages/requirements.yaml#approval
+  - stages/design.yaml#alignment
+  - stages/design.yaml#approval
+  - stages/tasks.yaml#alignment
+  - stages/tasks.yaml#approval
+  - stages/implementation.yaml#alignment
+  - stages/implementation.yaml#approval
+approval_source: 2026-06-09 利用者発言「次へ」
+requirements_drafting_result: conformance-evaluation Requirement 10 と workflow-management Requirement 9 を追加し、既存システムへの後追い intent 追加を仕様駆動開発として下流再展開する要件を明文化した。
+requirements_drafting_evidence:
+  - .reviewcompass/specs/conformance-evaluation/requirements.md
+  - .reviewcompass/specs/workflow-management/requirements.md
+next_step: 第2過程：停止点コミット
+impacted_downstream_phases:
+  - requirements
+  - design
+  - tasks
+  - implementation
+feature_impact_decisions:
+  - feature: conformance-evaluation
+    decision: reopen_existing_feature
+    impact_basis: implementation_ownership
+    rationale: 実装コードから requirements／design 候補と差分候補を抽出し、既存仕様と照合する機能本体の所有 feature であるため。
+    evidence:
+      - intent/INTENT.md
+      - stages/feature-partitioning/2026-05-24-proposal.md
+      - .reviewcompass/specs/conformance-evaluation/requirements.md
+  - feature: workflow-management
+    decision: reopen_existing_feature
+    impact_basis: contract_ownership
+    rationale: 既存システムに intent を後追い追加した場合も、仕様駆動開発として下流工程へ進める手続きの正本を持つため。
+    evidence:
+      - docs/operations/REOPEN_PROCEDURE.md
+      - .reviewcompass/specs/workflow-management/requirements.md
+      - .reviewcompass/specs/workflow-management/tasks.md
+  - feature: foundation
+    decision: indirect_check_only
+    impact_basis: consumer_or_derivative_only
+    rationale: 証拠区分やメタデータ語彙は参照されるが、今回の主変更は語彙正本そのものではないため。
+    evidence:
+      - .reviewcompass/specs/foundation/requirements.md
+  - feature: runtime
+    decision: indirect_check_only
+    impact_basis: consumer_or_derivative_only
+    rationale: LLM 実行基盤は利用され得るが、今回の主変更はコード由来仕様差分の抽出・手続き化であるため。
+    evidence:
+      - .reviewcompass/specs/runtime/requirements.md
+  - feature: evaluation
+    decision: indirect_check_only
+    impact_basis: consumer_or_derivative_only
+    rationale: 評価結果を参照する可能性はあるが、今回の主変更は評価メトリクス本体ではないため。
+    evidence:
+      - .reviewcompass/specs/evaluation/requirements.md
+  - feature: analysis
+    decision: indirect_check_only
+    impact_basis: consumer_or_derivative_only
+    rationale: conformance-evaluation の出力を後段で読む側であり、今回の所有 feature ではないため。
+    evidence:
+      - .reviewcompass/specs/analysis/requirements.md
+  - feature: self-improvement
+    decision: indirect_check_only
+    impact_basis: consumer_or_derivative_only
+    rationale: ワークフロー改善の入力を読む側であり、今回の所有 feature ではないため。
+    evidence:
+      - .reviewcompass/specs/self-improvement/requirements.md
+new_feature_decision:
+  decision: no_new_feature
+  rationale: 追加 intent は既存の conformance-evaluation と workflow-management の責務境界で扱えるため、新 feature は作成しない。
+  evidence:
+    - stages/feature-partitioning/2026-05-24-proposal.md
+    - docs/reviews/reopen-classification-2026-06-09-existing-system-sdd-code-drift.md
+downstream_impact_decisions: []
+current_blocker: 第2過程停止点。requirements 正本修正内容の確認とコミット待ち。
