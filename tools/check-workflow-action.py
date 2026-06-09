@@ -2209,8 +2209,14 @@ def _impact_decision_gate_set(data):
     else:
       gates.add(gate)
     feature_scope = item.get("feature_scope")
-    if not isinstance(feature_scope, str) or not feature_scope.strip():
-      errors.append(f"{prefix}.feature_scope が必要です")
+    feature_scope_is_string = isinstance(feature_scope, str) and feature_scope.strip()
+    feature_scope_is_list = (
+      isinstance(feature_scope, list)
+      and bool(feature_scope)
+      and all(isinstance(v, str) and v.strip() for v in feature_scope)
+    )
+    if not feature_scope_is_string and not feature_scope_is_list:
+      errors.append(f"{prefix}.feature_scope は文字列または空でない文字列 list が必要です")
     decision = item.get("decision")
     if decision not in allowed_decisions:
       errors.append(
@@ -2332,6 +2338,16 @@ def _validate_feature_impact_decisions(data):
   return errors
 
 
+def _validate_reopen_gate_list(data, field_name, filepath):
+  """reopen gate list の形式を検査する"""
+  value = data.get(field_name, [])
+  if value is None:
+    value = []
+  if not isinstance(value, list) or not all(isinstance(v, str) for v in value):
+    return [], [f"{filepath}.{field_name} は文字列 list が必要です"]
+  return value, []
+
+
 def validate_reopen_completion_impact_decisions(cwd, staged_files):
   """reopen 完了時に下流影響判定表があるか検査する"""
   errors = []
@@ -2352,10 +2368,27 @@ def validate_reopen_completion_impact_decisions(cwd, staged_files):
     for error in _validate_feature_impact_decisions(data):
       errors.append(f"{filepath}: {error}")
 
-    pending_gates = data.get("pending_gates")
-    if not isinstance(pending_gates, list) or not all(isinstance(v, str) for v in pending_gates):
-      errors.append(f"{filepath}.pending_gates は文字列 list が必要です")
+    pending_gates, gate_errors = _validate_reopen_gate_list(
+      data,
+      "pending_gates",
+      filepath,
+    )
+    completed_gates, completed_gate_errors = _validate_reopen_gate_list(
+      data,
+      "completed_gates",
+      filepath,
+    )
+    required_gate_trace, required_gate_errors = _validate_reopen_gate_list(
+      data,
+      "required_gates",
+      filepath,
+    )
+    errors.extend(gate_errors)
+    errors.extend(completed_gate_errors)
+    errors.extend(required_gate_errors)
+    if gate_errors or completed_gate_errors or required_gate_errors:
       continue
+    gate_trace = set(pending_gates) | set(completed_gates) | set(required_gate_trace)
 
     changed_phases = _staged_canonical_spec_phases(staged_files)
     required_gates = []
@@ -2363,11 +2396,11 @@ def validate_reopen_completion_impact_decisions(cwd, staged_files):
       required_gates.extend(_full_reopen_gates_for_changed_phase(phase))
     missing_required_gates = [
       gate for gate in required_gates
-      if gate not in pending_gates
+      if gate not in gate_trace
     ]
     if missing_required_gates:
       errors.append(
-        f"{filepath}.pending_gates は正本変更済み phase の review gate を含む必要があります: "
+        f"{filepath}.pending_gates/completed_gates/required_gates は正本変更済み phase の review gate を含む必要があります: "
         + ", ".join(missing_required_gates)
       )
 
@@ -2387,10 +2420,11 @@ def validate_reopen_completion_impact_decisions(cwd, staged_files):
     if decision_gates is None:
       continue
 
-    missing = [gate for gate in pending_gates if gate not in decision_gates]
+    decision_required_gates = sorted(gate_trace)
+    missing = [gate for gate in decision_required_gates if gate not in decision_gates]
     if missing:
       errors.append(
-        f"{filepath}.downstream_impact_decisions に pending_gates の判定が不足しています: "
+        f"{filepath}.downstream_impact_decisions に pending_gates/completed_gates/required_gates の判定が不足しています: "
         + ", ".join(missing)
       )
 

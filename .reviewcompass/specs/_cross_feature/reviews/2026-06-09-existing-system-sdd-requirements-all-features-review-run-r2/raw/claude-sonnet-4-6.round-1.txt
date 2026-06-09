@@ -1,0 +1,25 @@
+findings:
+  - severity: INFO
+    target_location: "conformance-evaluation Requirement 10, Acceptance Criteria 1-2"
+    description: "CE Requirement 10 now explicitly states that tasks are a reference input for downstream impact confirmation only, and that tasks.md inference and task decomposition are outside CE scope."
+    rationale: "leave-as-is: The must-fix finding from the prior run is resolved. The text 'tasks.md 本体の推定やタスク分解の確定は本機能の責務外とし' clearly removes direct task responsibility from CE. No further requirements change needed."
+
+  - severity: INFO
+    target_location: "conformance-evaluation Requirement 10, Acceptance Criteria 3 and 6"
+    description: "CE output fields are now enumerated: feature, phase, classification, code_refs, existing_spec_refs, reasoning_summary, needs_human_decision. Classification values are listed as an enumerated set. AC 6 names six output artifact types."
+    rationale: "leave-as-is: The should-fix finding about vague candidate classification and output fields is resolved at the requirements stage. Sufficient structure exists for design and test authoring to proceed. Schema detail is appropriately deferred to design stage."
+
+  - severity: INFO
+    target_location: "workflow-management Requirement 9, Acceptance Criteria 3 and 4"
+    description: "WM Requirement 9 now defines conflict stop conditions: when a conflict candidate is found, the reopen record's current_blocker is set to awaiting human approval or the phase approval gate stops. Release requires recording gate, feature scope, decision, reason, evidence, and decision-maker in downstream_impact_decisions. CE-to-WM handoff is defined by AC 4, which specifies the minimum fields the received evaluation record must contain."
+    rationale: "leave-as-is: The should-fix finding about vague conflict stop conditions and CE-to-WM handoff is resolved. Both the stop trigger and the release condition are now externally visible contracts at the requirements stage."
+
+  - severity: INFO
+    target_location: "Indirect features: foundation, runtime, evaluation, analysis, self-improvement"
+    description: "No requirements body changes were made to the five indirect features. The reopen record's indirect impact decisions cover these features without requiring new acceptance criteria."
+    rationale: "leave-as-is: Consistent with the prior run's finding 4. Indirect features do not need requirements body changes. Recorded checks in the reopen procedure are sufficient."
+
+  - severity: INFO
+    target_location: "Overall requirements triad-review completion assessment"
+    description: "All must-fix and should-fix findings from the prior all-feature run are addressed by the post-fix revisions to CE Requirement 10 and WM Requirement 9. No new blocking gaps were found."
+    rationale: "leave-as-is: Requirements triad-review can be considered complete after this post-fix check. No additional requirements edits are needed before advancing to the next stage."

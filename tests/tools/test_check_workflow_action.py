@@ -4005,6 +4005,135 @@ class CommitExitCodeTests(unittest.TestCase):
     _assert_script_invoked(self, result)
     self.assertEqual(result.returncode, 0, result.stdout)
 
+  def test_commit_blocks_completed_reopen_missing_completed_gate_decision(self):
+    """完了済み gate は pending_gates から外れていても判定表で覆う必要がある"""
+    _set_pending_findings(self.pending_file, unresolved_count=0)
+    feature_impact_decisions = "".join(
+      f"  - feature: {feature}\n"
+      "    decision: reopen_existing_feature\n"
+      "    impact_basis: implementation_ownership\n"
+      "    rationale: 既存 feature で受けるため reopen 対象にする。\n"
+      "    evidence:\n"
+      f"      - .reviewcompass/specs/{feature}/requirements.md\n"
+      for feature in FEATURE_ORDER
+    )
+    completed_path = (
+      Path(self.tmpdir)
+      / "stages"
+      / "completed"
+      / "reopen-procedure-2026-06-09.yaml"
+    )
+    completed_path.parent.mkdir(parents=True)
+    completed_path.write_text(
+      "process_id: reopen-procedure\n"
+      "step_number: 4\n"
+      "pending_gates: []\n"
+      "completed_gates:\n"
+      "  - stages/requirements.yaml#triad-review\n"
+      "impacted_downstream_phases:\n"
+      "  - requirements\n"
+      "feature_impact_decisions:\n"
+      f"{feature_impact_decisions}"
+      "new_feature_decision:\n"
+      "  decision: no_new_feature\n"
+      "  rationale: 既存 feature で受けられる。\n"
+      "  evidence:\n"
+      "    - stages/feature-partitioning/2026-05-24-proposal.md\n"
+      "downstream_impact_decisions: []\n"
+      "next_step: 完了\n",
+      encoding="utf-8",
+    )
+    subprocess.run(
+      ["git", "add", "stages/completed/reopen-procedure-2026-06-09.yaml"],
+      cwd=str(self.tmpdir),
+      check=True,
+      capture_output=True,
+    )
+    _write_commit_approval(
+      self.tmpdir,
+      ["stages/completed/reopen-procedure-2026-06-09.yaml"],
+    )
+
+    result = run_script(
+      ["commit", "--rationale", "reopen 完了済み gate 判定欠落テスト"],
+      cwd=self.tmpdir,
+    )
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 2, result.stdout)
+    self.assertIn("completed_gates", result.stdout)
+    self.assertIn("stages/requirements.yaml#triad-review", result.stdout)
+
+  def test_commit_allows_completed_reopen_with_completed_gate_decisions(self):
+    """完了済み gate の判定表があれば pending_gates が空でも通過する"""
+    _set_pending_findings(self.pending_file, unresolved_count=0)
+    feature_impact_decisions = "".join(
+      f"  - feature: {feature}\n"
+      "    decision: reopen_existing_feature\n"
+      "    impact_basis: implementation_ownership\n"
+      "    rationale: 既存 feature で受けるため reopen 対象にする。\n"
+      "    evidence:\n"
+      f"      - .reviewcompass/specs/{feature}/requirements.md\n"
+      for feature in FEATURE_ORDER
+    )
+    completed_path = (
+      Path(self.tmpdir)
+      / "stages"
+      / "completed"
+      / "reopen-procedure-2026-06-09.yaml"
+    )
+    completed_path.parent.mkdir(parents=True)
+    completed_path.write_text(
+      "process_id: reopen-procedure\n"
+      "step_number: 4\n"
+      "pending_gates: []\n"
+      "completed_gates:\n"
+      "  - stages/requirements.yaml#triad-review\n"
+      "impacted_downstream_phases:\n"
+      "  - requirements\n"
+      "feature_impact_decisions:\n"
+      f"{feature_impact_decisions}"
+      "new_feature_decision:\n"
+      "  decision: no_new_feature\n"
+      "  rationale: 既存 feature で受けられる。\n"
+      "  evidence:\n"
+      "    - stages/feature-partitioning/2026-05-24-proposal.md\n"
+      "downstream_impact_decisions:\n"
+      "  - gate: stages/requirements.yaml#triad-review\n"
+      "    feature_scope:\n"
+      "      - foundation\n"
+      "      - runtime\n"
+      "      - evaluation\n"
+      "      - analysis\n"
+      "      - workflow-management\n"
+      "      - self-improvement\n"
+      "      - conformance-evaluation\n"
+      "    decision: approved\n"
+      "    rationale: triad-review 判定を承認した。\n"
+      "    evidence:\n"
+      "      - .reviewcompass/specs/_cross_feature/reviews/summary.md\n"
+      "next_step: 完了\n",
+      encoding="utf-8",
+    )
+    subprocess.run(
+      ["git", "add", "stages/completed/reopen-procedure-2026-06-09.yaml"],
+      cwd=str(self.tmpdir),
+      check=True,
+      capture_output=True,
+    )
+    _write_commit_approval(
+      self.tmpdir,
+      ["stages/completed/reopen-procedure-2026-06-09.yaml"],
+    )
+
+    result = run_script(
+      ["commit", "--rationale", "reopen 完了済み gate 判定ありテスト"],
+      cwd=self.tmpdir,
+    )
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 0, result.stdout)
+
   def test_commit_blocks_completed_reopen_missing_review_gates_after_canonical_change(self):
     """正本変更済み phase の reopen 完了は review 系 gate 不足を遮断する"""
     _set_pending_findings(self.pending_file, unresolved_count=0)

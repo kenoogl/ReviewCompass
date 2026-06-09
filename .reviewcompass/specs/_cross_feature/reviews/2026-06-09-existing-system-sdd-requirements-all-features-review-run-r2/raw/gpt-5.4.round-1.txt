@@ -1,0 +1,21 @@
+findings:
+  - severity: INFO
+    target_location: "Updated conformance-evaluation Requirement 10"
+    description: "Requirement 10 now clearly excludes tasks.md inference and task decomposition from conformance-evaluation responsibility, treating tasks only as reference input and delegating formal tasks updates to workflow-management."
+    rationale: "leave-as-is: This resolves the prior must-fix about CE scope drift. Acceptance criteria 1, 2, and 7 consistently state that tasks are reference-only and that formal downstream updates proceed through workflow-management, which is sufficient for requirements triad-review completion."
+  - severity: INFO
+    target_location: "Updated conformance-evaluation Requirement 10"
+    description: "Requirement 10 now defines a workable minimum external output contract for extracted candidates, including feature, phase, classification, code_refs, existing_spec_refs, reasoning_summary, and needs_human_decision."
+    rationale: "leave-as-is: This adequately addresses the prior should-fix on candidate classification and output vagueness at requirements stage. The allowed classification set and evidence expectations are specific enough for downstream design/tests while still leaving schema refinement to design."
+  - severity: INFO
+    target_location: "Updated workflow-management Requirement 9"
+    description: "Requirement 9 now defines conflict handling and CE-to-WM handoff with sufficient specificity for requirements stage, including when to stop, where to record blockers, what approvals are needed, and the minimum CE evaluation fields WM consumes."
+    rationale: "leave-as-is: This resolves the prior should-fix about vague stop conditions and handoff semantics. Acceptance criteria 3, 4, and 5 establish actionable reopening, blocking, approval, and recording behavior without overcommitting design-level details."
+  - severity: INFO
+    target_location: "Current Feature Scope / Review Purpose"
+    description: "The document preserves the earlier decision that indirect features are in scope for recorded impact review, but do not require requirements body changes in this reopen unless direct drift is found."
+    rationale: "leave-as-is: No new contradiction is introduced for foundation, runtime, evaluation, analysis, or self-improvement. The review target remains aligned with the earlier approved scope decision."
+  - severity: INFO
+    target_location: "Overall document"
+    description: "The post-fix requirements updates appear sufficient to complete requirements triad-review for this reopen chain without additional requirements edits."
+    rationale: "leave-as-is: The prior must-fix and should-fix items called out in the review purpose are addressed at an appropriate requirements-level granularity, and no new blocking inconsistency is evident in the revised CE and WM requirements."

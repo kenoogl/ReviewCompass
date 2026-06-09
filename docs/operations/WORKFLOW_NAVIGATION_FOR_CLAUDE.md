@@ -37,7 +37,9 @@ reopen は遡及手戻りの処理である。通常の feature / phase / stage 
 - `file`：進行中状態ファイル
 - `next_step`：reopen 4 過程の現在位置
 - `completed_steps`：完了済み過程
-- `pending_gates`：再実施すべき alignment / approval
+- `pending_gates`：これから再実施すべき残 gate。正本本文を修正した phase では triad-review／review-wave／alignment／approval を含み得る
+- `completed_gates`：再実施済み gate。完了済み gate は `downstream_impact_decisions` に判定を残す
+- `required_gates`：任意。監査用に再実施対象 gate の全体集合を固定したい場合に使う
 - `current_blocker`：人間承認待ちなどの停止理由
 - `required_action`：Claude が次に取るべき行動
 
@@ -45,7 +47,7 @@ reopen は遡及手戻りの処理である。通常の feature / phase / stage 
 
 - `classify_and_rollback_flags`：第1過程。種別判定、根拠記録、進行中ファイル発行、spec.json フラグ差し戻しを扱う。
 - `repair_canonical_documents`：第2過程。上流フェーズの正本文書を修正する。
-- `rerun_alignment_approval_chain`：第3過程。`pending_gates` に従って alignment / approval の連鎖再実施を行う。
+- `rerun_alignment_approval_chain`：第3過程。`pending_gates` に従って残 gate の連鎖再実施を行う。正本本文を修正した phase は triad-review → review-wave → alignment → approval の順に進める。
 - `wait_for_human_approval`：人間承認待ち。`current_blocker` を報告し、承認なしに進めない。
 - `finalize_reopen`：第4過程。最終確認、recheck クリア、in-progress の完了処理を行う。
 - `reopen_completed`：reopen 手続きは完了済み。状態ファイルの扱いを確認する。
@@ -53,7 +55,7 @@ reopen は遡及手戻りの処理である。通常の feature / phase / stage 
 
 `required_action` が `wait_for_human_approval` の場合、Claude は approval を完了扱いにしてはいけない。`current_blocker` をそのまま利用者へ報告し、承認または指示を待つ。
 
-`required_action` が `rerun_alignment_approval_chain` の場合、`pending_gates` の順序を崩してはいけない。actor=human の approval に到達したら停止する。
+`required_action` が `rerun_alignment_approval_chain` または `run_reopen_pending_gate` の場合、`pending_gates` の順序を崩してはいけない。完了した gate は `completed_gates` と `downstream_impact_decisions` に記録し、`pending_gates` から外す。actor=human の approval、または人間判断が必要な blocker に到達したら停止する。
 
 `required_action` が `inspect_reopen_state` の場合、推測で処理を進めてはいけない。進行中ファイルの内容、判定不能の理由、必要な利用者判断を報告する。
 
@@ -344,7 +346,7 @@ unresolved_substantive_findings: 1
 2. next_step / completed_steps / pending_gates / current_blocker を確認する
 3. required_action に従って次作業を決める
 4. wait_for_human_approval なら承認待ちとして利用者へ報告する
-5. rerun_alignment_approval_chain なら pending_gates の順序で進める
+5. rerun_alignment_approval_chain または run_reopen_pending_gate なら pending_gates の順序で進める
 6. inspect_reopen_state なら推測で進めず、判定不能として報告する
 ```
 

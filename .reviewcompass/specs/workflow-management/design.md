@@ -572,10 +572,12 @@ trigger_source: design/triad-review で発見した要件段の不整合
 |---|---|---|
 | 1：判定とフラグ差し戻し | 種別判定 → trigger_map で再実施対象決定 → 根拠記録 → 進行中ファイル発行 → spec.json のフラグ差し戻し（reopened／recheck、上流・下流の対象段を false に） | フラグ差し戻しを人が承認（コミットなし） |
 | 2：正本修正 | 上流フェーズの正本を修正 | コミット（第1過程＋第2過程をまとめて） |
-| 3：連鎖再実施 | 依存順に上流→下流で alignment（波及チェック）→ 波及あれば triad-review、なければ approval | 各 approval、全完了後にコミット |
+| 3：連鎖再実施 | 依存順に上流→下流で再実施対象 gate を処理する。正本本文を実質修正した phase は triad-review → review-wave → alignment → approval の順に再実施し、正本本文を修正していない phase は trigger_map の pending gate に従って再確認する。各 gate の完了判定は `downstream_impact_decisions` に記録する | actor=human の approval、または人間判断が必要な blocker。全完了後にコミット |
 | 4：完了 | 整合性の最終確認 → recheck クリア → 進行中ファイルを completed へ | コミット |
 
 spec.json の `reopened`／`recheck` の更新の詳細は §機能依存マップモデルでなく計画書 §5.24.8.1 を正本参照する。`reopened` は 6 フェーズ（intent／feature-partitioning／requirements／design／tasks／implementation）を対象とする。
+
+第3過程の進行中状態では、`pending_gates` は「これから処理する残 gate」として扱う。完了した gate は `pending_gates` から外し、`completed_gates` と `downstream_impact_decisions` に記録する。監査用に全体集合を固定したい場合は `required_gates` を併記できる。reopen 完了時の機械検査は `pending_gates`、`completed_gates`、`required_gates` の和集合を対象に、各 gate が `downstream_impact_decisions` で覆われていることを確認する。
 
 **`reopen-procedure.yaml` への反映**：本 4 過程構成を `stages/reopen-procedure.yaml` の段集合として静的列挙する（tasks 段 T-003／T-007 の実装対象）。素材由来の「10 ステップ」という数え方ではなく、現行の 4 過程構成を正とする。trigger_map（§2）は本構成の第3過程（連鎖再実施）で参照される。
 

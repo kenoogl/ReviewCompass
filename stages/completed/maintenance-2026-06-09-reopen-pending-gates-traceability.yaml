@@ -1,0 +1,37 @@
+process_id: maintenance
+title: reopen pending gates traceability repair
+started_at: '2026-06-09T00:00:00+09:00'
+completed_at: '2026-06-09T00:00:00+09:00'
+trigger: reopen 手続きで pending_gates を残 gate として運用している一方、正本と完了時検査に全 gate 前提の古い記述が残っていたため。
+mainline_blocked_by: stages/in-progress/reopen-procedure-2026-06-09-existing-system-sdd-code-drift.yaml
+blocked_normal_workflow: true
+allowed_scope:
+  - workflow-management design/navigation/precheck 正本の reopen gate 記述修正
+  - reopen 完了時の gate 網羅検査を pending_gates ではなく completed/required gate 記録で機械判定できるようにする
+allowed_files:
+  - .reviewcompass/specs/workflow-management/design.md
+  - docs/operations/WORKFLOW_NAVIGATION_FOR_CLAUDE.md
+  - docs/operations/WORKFLOW_PRECHECK.md
+  - tools/check-workflow-action.py
+  - tests/tools/test_check_workflow_action.py
+  - .reviewcompass/post-write-verification/post-write-2026-06-09-008.yaml
+  - stages/in-progress/maintenance-2026-06-09-reopen-pending-gates-traceability.yaml
+  - stages/completed/maintenance-2026-06-09-reopen-pending-gates-traceability.yaml
+completion_conditions:
+  - 正本が triad-review/review-wave/alignment/approval の再実施順を説明する
+  - pending_gates が残 gate であることを正本に明記する
+  - 完了時の機械検査が completed_gates または required_gates で全 gate の downstream_impact_decisions を検査する
+  - 関連テストが通過する
+completed_actions:
+  - workflow-management design.md の reopen 第3過程説明を triad-review → review-wave → alignment → approval に更新した
+  - WORKFLOW_NAVIGATION_FOR_CLAUDE.md に pending_gates / completed_gates / required_gates の役割を追記した
+  - WORKFLOW_PRECHECK.md に reopen 完了時の gate 網羅検査対象を pending_gates / completed_gates / required_gates の和集合として明記した
+  - tools/check-workflow-action.py の reopen 完了時検査を completed_gates / required_gates と list 形式 feature_scope に対応させた
+  - tests/tools/test_check_workflow_action.py に完了済み gate の判定漏れ検出と list feature_scope の正常系を追加した
+  - post-write-verification manifest を追加し、運用文書 2 件の書き込み後検証を完了した
+verification:
+  - command: .venv/bin/python3 -m unittest tests.tools.test_check_workflow_action
+    result: 138 tests passed
+  - command: .venv/bin/python3 tools/check-workflow-action.py next --json
+    result: maintenance_in_progress を返し、post-write policy violation は解消済み
+current_blocker: null

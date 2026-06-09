@@ -11,9 +11,14 @@ completed_steps:
   - 第1過程停止点：利用者承認
   - 第2過程：requirements 正本修正
   - 第2過程停止点：コミット完了
+  - 第3過程：requirements triad-review 全 feature レビュー実施
+  - 第3過程：requirements triad-review トリアージ承認
+  - 第3過程：requirements triad-review must-fix/should-fix 反映
+  - 第3過程：requirements triad-review 修正後再レビュー実施
+  - 第3過程停止点：requirements triad-review 完了承認
+  - 第3過程：requirements review-wave 実施
 step_number: 3
 pending_gates:
-  - stages/requirements.yaml#triad-review
   - stages/requirements.yaml#review-wave
   - stages/requirements.yaml#alignment
   - stages/requirements.yaml#approval
@@ -29,15 +34,33 @@ pending_gates:
   - stages/implementation.yaml#review-wave
   - stages/implementation.yaml#alignment
   - stages/implementation.yaml#approval
+completed_gates:
+  - stages/requirements.yaml#triad-review
 approval_source: 2026-06-09 利用者発言「次へ」
 requirements_drafting_result: conformance-evaluation Requirement 10 と workflow-management Requirement 9 を追加し、既存システムへの後追い intent 追加を仕様駆動開発として下流再展開する要件を明文化した。
 requirements_drafting_evidence:
   - .reviewcompass/specs/conformance-evaluation/requirements.md
   - .reviewcompass/specs/workflow-management/requirements.md
+requirements_triad_review_result: 全 feature 対象の requirements triad-review で、CE Requirement 10 の tasks 責務境界、CE 出力候補構造、WM の衝突時停止点と handoff 記録を修正した。
+requirements_triad_review_evidence:
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-09-existing-system-sdd-requirements-all-features-review-run/raw-review-triage-summary.md
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-09-existing-system-sdd-requirements-all-features-review-run-r2/raw-review-triage-summary.md
+  - .reviewcompass/specs/conformance-evaluation/requirements.md
+  - .reviewcompass/specs/workflow-management/requirements.md
+requirements_triad_review_postfix_result: 修正後 r2 review-run で must-fix/should-fix が解消し、全所見が leave-as-is または no findings となった。
+requirements_triad_review_approval_source: 2026-06-09 利用者発言「承認」
+requirements_review_wave_result: 全 feature 対象の requirements review-wave で、CE Requirement 10 と WM Requirement 9 は相補的であり、間接 feature 5 件には requirements 本体変更不要と判断した。
+requirements_review_wave_evidence:
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-09-existing-system-sdd-requirements-review-wave.md
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-09-existing-system-sdd-requirements-all-features-review-run-r2/raw-review-triage-summary.md
+  - .reviewcompass/specs/conformance-evaluation/requirements.md
+  - .reviewcompass/specs/workflow-management/requirements.md
 requirements_chain_correction: requirements 正本を実質修正したため、alignment へ直行せず、requirements triad-review と review-wave を再実施してから alignment / approval に進む。
-next_step: 第3過程：stages/requirements.yaml#triad-review 再実施
+next_step: 第3過程：stages/requirements.yaml#review-wave 再実施
 superseded_partial_review_run: .reviewcompass/specs/_cross_feature/reviews/2026-06-09-existing-system-sdd-requirements-review-run
 planned_review_run: .reviewcompass/specs/_cross_feature/reviews/2026-06-09-existing-system-sdd-requirements-all-features-review-run
+active_review_run: .reviewcompass/specs/_cross_feature/reviews/2026-06-09-existing-system-sdd-requirements-all-features-review-run-r2
+active_review_summary: .reviewcompass/specs/_cross_feature/reviews/2026-06-09-existing-system-sdd-requirements-all-features-review-run-r2/raw-review-triage-summary.md
 impacted_downstream_phases:
   - requirements
   - design
@@ -96,5 +119,23 @@ new_feature_decision:
   evidence:
     - stages/feature-partitioning/2026-05-24-proposal.md
     - docs/reviews/reopen-classification-2026-06-09-existing-system-sdd-code-drift.md
-downstream_impact_decisions: []
-current_blocker: null
+downstream_impact_decisions:
+  - gate: stages/requirements.yaml#triad-review
+    feature_scope:
+      - foundation
+      - runtime
+      - evaluation
+      - analysis
+      - workflow-management
+      - self-improvement
+      - conformance-evaluation
+    decision: approved
+    rationale: 修正後 r2 review-run で must-fix/should-fix が解消し、利用者が requirements triad-review 完了を承認したため。
+    evidence:
+      - .reviewcompass/specs/_cross_feature/reviews/2026-06-09-existing-system-sdd-requirements-all-features-review-run-r2/raw-review-triage-summary.md
+      - .reviewcompass/specs/_cross_feature/reviews/2026-06-09-existing-system-sdd-requirements-all-features-review-run-r2/triage.yaml
+      - .reviewcompass/specs/conformance-evaluation/requirements.md
+      - .reviewcompass/specs/workflow-management/requirements.md
+    decision_actor: human
+    decision_source: 2026-06-09 利用者発言「承認」
+current_blocker: requirements review-wave の実施結果を利用者へ提示し、spec.json の requirements.review-wave 完了反映と pending_gates 更新の承認を得る。
