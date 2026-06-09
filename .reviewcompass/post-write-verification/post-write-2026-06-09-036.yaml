@@ -1,0 +1,84 @@
+status: completed
+target_files:
+- docs/experiments/2026-06-09-conformance-evaluation-evidence-report.md
+- docs/experiments/review-runs/postwrite-conformance-evaluation-evidence-report-2026-06-09-r1/model-result-summary.yaml
+- docs/experiments/review-runs/postwrite-conformance-evaluation-evidence-report-2026-06-09-r1/parsed/gemini-3.5-flash.round-1.yaml
+- docs/experiments/review-runs/postwrite-conformance-evaluation-evidence-report-2026-06-09-r1/raw/gemini-3.5-flash.round-1.txt
+- docs/experiments/review-runs/postwrite-conformance-evaluation-evidence-report-2026-06-09-r1/review_summary.md
+- docs/experiments/review-runs/postwrite-conformance-evaluation-evidence-report-2026-06-09-r1/rounds.yaml
+- docs/experiments/review-runs/postwrite-conformance-evaluation-evidence-report-2026-06-09-r1/target-manifest.yaml
+- docs/experiments/review-runs/postwrite-conformance-evaluation-evidence-report-2026-06-09-r1/triage.yaml
+- docs/experiments/review-runs/postwrite-conformance-evaluation-evidence-report-2026-06-09-r2/model-result-summary.yaml
+- docs/experiments/review-runs/postwrite-conformance-evaluation-evidence-report-2026-06-09-r2/parsed/gemini-3.5-flash.round-1.yaml
+- docs/experiments/review-runs/postwrite-conformance-evaluation-evidence-report-2026-06-09-r2/raw/gemini-3.5-flash.round-1.txt
+- docs/experiments/review-runs/postwrite-conformance-evaluation-evidence-report-2026-06-09-r2/review_summary.md
+- docs/experiments/review-runs/postwrite-conformance-evaluation-evidence-report-2026-06-09-r2/rounds.yaml
+- docs/experiments/review-runs/postwrite-conformance-evaluation-evidence-report-2026-06-09-r2/target-manifest.yaml
+- docs/experiments/review-runs/postwrite-conformance-evaluation-evidence-report-2026-06-09-r2/triage.yaml
+target_sha256:
+  docs/experiments/2026-06-09-conformance-evaluation-evidence-report.md: 5afd15cc792dfb240888009cce7bb081938c5d16490e960a056d805c8470d303
+  docs/experiments/review-runs/postwrite-conformance-evaluation-evidence-report-2026-06-09-r1/model-result-summary.yaml: 7e9c284fe568133ad971deb2712e1b8a06bba51673b2aa12f1727fb5c5d87573
+  ? docs/experiments/review-runs/postwrite-conformance-evaluation-evidence-report-2026-06-09-r1/parsed/gemini-3.5-flash.round-1.yaml
+  : c7adafbd42c42f4f9a4107c6cbb820ecdb2d909fc45e6e651b8bfe0bd54409da
+  ? docs/experiments/review-runs/postwrite-conformance-evaluation-evidence-report-2026-06-09-r1/raw/gemini-3.5-flash.round-1.txt
+  : ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+  docs/experiments/review-runs/postwrite-conformance-evaluation-evidence-report-2026-06-09-r1/review_summary.md: 1da84f0e1876668914ad968d8f6dcff8685d17f2cb3a6b48eeea08d93cb363ae
+  docs/experiments/review-runs/postwrite-conformance-evaluation-evidence-report-2026-06-09-r1/rounds.yaml: 890b566966238cbb3a08eabbbd1d35adc0cc953f9377d832bda36651e9a617ba
+  docs/experiments/review-runs/postwrite-conformance-evaluation-evidence-report-2026-06-09-r1/target-manifest.yaml: 8d39c59dbc440daf74dc7e91936ed5a9751fd99ec80411e0aa60763c4f5d9e2f
+  docs/experiments/review-runs/postwrite-conformance-evaluation-evidence-report-2026-06-09-r1/triage.yaml: 5b559615d75d0b4789c51b19782326291edc0a98cb5dcc17633cad22ffc695da
+  docs/experiments/review-runs/postwrite-conformance-evaluation-evidence-report-2026-06-09-r2/model-result-summary.yaml: 669d3ee66aeb000fd098edeb712e707dcdc0ab3b8943efeef1056663369a8ea4
+  ? docs/experiments/review-runs/postwrite-conformance-evaluation-evidence-report-2026-06-09-r2/parsed/gemini-3.5-flash.round-1.yaml
+  : b41a8da74585df139b55663165118e5b81461fababd16021a0611a91c9b2d835
+  ? docs/experiments/review-runs/postwrite-conformance-evaluation-evidence-report-2026-06-09-r2/raw/gemini-3.5-flash.round-1.txt
+  : ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+  docs/experiments/review-runs/postwrite-conformance-evaluation-evidence-report-2026-06-09-r2/review_summary.md: 028007483f552a85b9844a097daeac71bf2767d7f1afe36bdd7b10fd85bb2aa9
+  docs/experiments/review-runs/postwrite-conformance-evaluation-evidence-report-2026-06-09-r2/rounds.yaml: 4f82ae2ff44c541794264b0801656490b1182bbeb7efba18c07298982384718f
+  docs/experiments/review-runs/postwrite-conformance-evaluation-evidence-report-2026-06-09-r2/target-manifest.yaml: 8c67e14e914a27e6c36d80eecc73a21ab87a51ac414cf5cc1f429b8c08b0c756
+  docs/experiments/review-runs/postwrite-conformance-evaluation-evidence-report-2026-06-09-r2/triage.yaml: 11aa6257c5a156af3189a72d44aa3475d964b0a5ec88d98c619ef297b7e295c3
+required_verifiers: &id001
+- gemini-3.5-flash
+completed_verifiers: *id001
+unresolved_substantive_findings: 0
+verifications:
+- verifier: gemini-3.5-flash
+  target_files:
+  - docs/experiments/2026-06-09-conformance-evaluation-evidence-report.md
+  - docs/experiments/review-runs/postwrite-conformance-evaluation-evidence-report-2026-06-09-r1/model-result-summary.yaml
+  - docs/experiments/review-runs/postwrite-conformance-evaluation-evidence-report-2026-06-09-r1/parsed/gemini-3.5-flash.round-1.yaml
+  - docs/experiments/review-runs/postwrite-conformance-evaluation-evidence-report-2026-06-09-r1/raw/gemini-3.5-flash.round-1.txt
+  - docs/experiments/review-runs/postwrite-conformance-evaluation-evidence-report-2026-06-09-r1/review_summary.md
+  - docs/experiments/review-runs/postwrite-conformance-evaluation-evidence-report-2026-06-09-r1/rounds.yaml
+  - docs/experiments/review-runs/postwrite-conformance-evaluation-evidence-report-2026-06-09-r1/target-manifest.yaml
+  - docs/experiments/review-runs/postwrite-conformance-evaluation-evidence-report-2026-06-09-r1/triage.yaml
+  - docs/experiments/review-runs/postwrite-conformance-evaluation-evidence-report-2026-06-09-r2/model-result-summary.yaml
+  - docs/experiments/review-runs/postwrite-conformance-evaluation-evidence-report-2026-06-09-r2/parsed/gemini-3.5-flash.round-1.yaml
+  - docs/experiments/review-runs/postwrite-conformance-evaluation-evidence-report-2026-06-09-r2/raw/gemini-3.5-flash.round-1.txt
+  - docs/experiments/review-runs/postwrite-conformance-evaluation-evidence-report-2026-06-09-r2/review_summary.md
+  - docs/experiments/review-runs/postwrite-conformance-evaluation-evidence-report-2026-06-09-r2/rounds.yaml
+  - docs/experiments/review-runs/postwrite-conformance-evaluation-evidence-report-2026-06-09-r2/target-manifest.yaml
+  - docs/experiments/review-runs/postwrite-conformance-evaluation-evidence-report-2026-06-09-r2/triage.yaml
+  target_sha256:
+    docs/experiments/2026-06-09-conformance-evaluation-evidence-report.md: 5afd15cc792dfb240888009cce7bb081938c5d16490e960a056d805c8470d303
+    docs/experiments/review-runs/postwrite-conformance-evaluation-evidence-report-2026-06-09-r1/model-result-summary.yaml: 7e9c284fe568133ad971deb2712e1b8a06bba51673b2aa12f1727fb5c5d87573
+    ? docs/experiments/review-runs/postwrite-conformance-evaluation-evidence-report-2026-06-09-r1/parsed/gemini-3.5-flash.round-1.yaml
+    : c7adafbd42c42f4f9a4107c6cbb820ecdb2d909fc45e6e651b8bfe0bd54409da
+    ? docs/experiments/review-runs/postwrite-conformance-evaluation-evidence-report-2026-06-09-r1/raw/gemini-3.5-flash.round-1.txt
+    : ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/experiments/review-runs/postwrite-conformance-evaluation-evidence-report-2026-06-09-r1/review_summary.md: 1da84f0e1876668914ad968d8f6dcff8685d17f2cb3a6b48eeea08d93cb363ae
+    docs/experiments/review-runs/postwrite-conformance-evaluation-evidence-report-2026-06-09-r1/rounds.yaml: 890b566966238cbb3a08eabbbd1d35adc0cc953f9377d832bda36651e9a617ba
+    docs/experiments/review-runs/postwrite-conformance-evaluation-evidence-report-2026-06-09-r1/target-manifest.yaml: 8d39c59dbc440daf74dc7e91936ed5a9751fd99ec80411e0aa60763c4f5d9e2f
+    docs/experiments/review-runs/postwrite-conformance-evaluation-evidence-report-2026-06-09-r1/triage.yaml: 5b559615d75d0b4789c51b19782326291edc0a98cb5dcc17633cad22ffc695da
+    docs/experiments/review-runs/postwrite-conformance-evaluation-evidence-report-2026-06-09-r2/model-result-summary.yaml: 669d3ee66aeb000fd098edeb712e707dcdc0ab3b8943efeef1056663369a8ea4
+    ? docs/experiments/review-runs/postwrite-conformance-evaluation-evidence-report-2026-06-09-r2/parsed/gemini-3.5-flash.round-1.yaml
+    : b41a8da74585df139b55663165118e5b81461fababd16021a0611a91c9b2d835
+    ? docs/experiments/review-runs/postwrite-conformance-evaluation-evidence-report-2026-06-09-r2/raw/gemini-3.5-flash.round-1.txt
+    : ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/experiments/review-runs/postwrite-conformance-evaluation-evidence-report-2026-06-09-r2/review_summary.md: 028007483f552a85b9844a097daeac71bf2767d7f1afe36bdd7b10fd85bb2aa9
+    docs/experiments/review-runs/postwrite-conformance-evaluation-evidence-report-2026-06-09-r2/rounds.yaml: 4f82ae2ff44c541794264b0801656490b1182bbeb7efba18c07298982384718f
+    docs/experiments/review-runs/postwrite-conformance-evaluation-evidence-report-2026-06-09-r2/target-manifest.yaml: 8c67e14e914a27e6c36d80eecc73a21ab87a51ac414cf5cc1f429b8c08b0c756
+    docs/experiments/review-runs/postwrite-conformance-evaluation-evidence-report-2026-06-09-r2/triage.yaml: 11aa6257c5a156af3189a72d44aa3475d964b0a5ec88d98c619ef297b7e295c3
+review_run:
+  path: docs/experiments/review-runs/postwrite-conformance-evaluation-evidence-report-2026-06-09-r2
+  summary_path: docs/experiments/review-runs/postwrite-conformance-evaluation-evidence-report-2026-06-09-r2/model-result-summary.yaml
+notes: Generated template; verify target_files cover current post-write targets before
+  use.

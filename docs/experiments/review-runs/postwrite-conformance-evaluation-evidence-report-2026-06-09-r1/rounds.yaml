@@ -1,0 +1,26 @@
+round_id: round-1
+purpose: post_write_verification
+invocation_timestamp: '2026-06-09T09:47:49.034616+00:00'
+target_files:
+- path: docs/experiments/2026-06-09-conformance-evaluation-evidence-report.md
+  sha256: b7e33a12ba5919f6cc6d058d821e847067b9b4f5e1922dc5d2db43a8e65b65b1
+criteria: conformance_evaluation_paper_evidence_report_scope
+prompt_sha256: 12f65c1dfd526536009cc40bd102557c23bc054bc0cf7dc5b8cc3200bbc37cf1
+model_results:
+- model_id: gemini-3.5-flash
+  provider: gemini-api
+  role: primary
+  treatment: primary
+  invocation_path: api
+  raw_path: raw/gemini-3.5-flash.round-1.txt
+  raw_sha256: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+  parsed_path: parsed/gemini-3.5-flash.round-1.yaml
+  parsed_sha256: c7adafbd42c42f4f9a4107c6cbb820ecdb2d909fc45e6e651b8bfe0bd54409da
+  parse_status: parsed
+  formatted_by: parser
+  formatted_by_actor_type: orchestrator
+  formatted_by_actor: run_role.py
+  formatted_at: '2026-06-09T09:47:49.034616+00:00'
+  follow_up_action: triage
+  attempts: 1
+  duration_seconds: 6.039
