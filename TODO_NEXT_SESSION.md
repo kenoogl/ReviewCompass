@@ -1,6 +1,6 @@
 # 次セッション継続用メモ
 
-最終更新：2026-06-04。正本は `tools/check-workflow-action.py next --json` と各 feature の `spec.json`。この TODO は入口メモであり、作業順序の正本ではない。
+最終更新：2026-06-09。正本は `tools/check-workflow-action.py next --json` と各 feature の `spec.json`。この TODO は入口メモであり、作業順序の正本ではない。
 
 作業ディレクトリ：`/Users/Daily/Development/ReviewCompass/`
 リポジトリ：`git@github.com:kenoogl/ReviewCompass.git`（main ブランチ）
@@ -60,10 +60,15 @@ Python 実行は、必要に応じて venv を使う：
 
 直近 commit：
 
-- `2e06307 Approve implementation workflow`
-- `43b216b Treat draft triage as unresolved`
-- `5a5b226 Advance implementation to approval gate`
-- `4733ecd Resolve implementation review wave blockers`
+- `64de32c Record post-hoc intent diff real-data trial`
+- `a038cdf Complete existing-system SDD reopen`
+- `6c89ece Guard reopen drafting before review`
+- `9d6c3b5 Approve requirements approval gate`
+- `5d740f2 Approve requirements alignment gate`
+
+直近 push：
+
+- `main` は `origin/main` と同期済み（`64de32c`）。
 
 ## 4. 次作業
 
@@ -74,12 +79,17 @@ Python 実行は、必要に応じて venv を使う：
 候補タスク：
 
 1. completed 到達後の全体サマリを作る。
-2. 必要なら `git push` する。
+2. `post_hoc_intent_diff` の実データ試行結果を、将来の fixture または回帰確認に使うか判断する。
 3. 運用・リリース・追加改善の計画を新しく切る。
 4. review-wave 改善メモに残した follow-up candidates を、次の改善候補として扱う。
 
 ## 5. 直近の完了事項
 
+- 既存システムへの後追い intent 追加に対し、仕様駆動開発の reopen 手続きを実施し、requirements／design／tasks／implementation の再確認連鎖を完了。
+- `conformance-evaluation` に `post_hoc_intent_diff` を追加し、既存仕様・実装コードから後追い intent の差分候補を抽出できるようにした。
+- `post_hoc_intent_diff` を ReviewCompass の実データで追加試行し、記録 `.reviewcompass/specs/conformance-evaluation/conformance/2026-06-09-real-data-r2-post-hoc-intent-diff.md` を保存。
+- workflow-management に、後追い intent／上流正本変更時の reopen 分類、feature impact 判定、downstream impact 判定、drafting-before-review 防止、commit 代行判定の機械ガードを反映。
+- 一連の変更を `main` に push 済み。
 - 全 7 feature の implementation review-wave、alignment、approval を完了。
 - `implementation.approval=true` を全 feature に設定し、`next --json` が `kind: completed` を返す状態にした。
 - workflow-management の draft triage 残りを未解決扱いするように `review_triage.py` を修正し、回帰テストを追加。
