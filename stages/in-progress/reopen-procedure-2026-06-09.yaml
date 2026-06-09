@@ -16,6 +16,8 @@ completed_steps:
 - 第3過程：stages/requirements.yaml#drafting 再実施
 - 第3過程：stages/requirements.yaml#triad-review review-run 実行
 - 第3過程：requirements triad-review 根拠補強結果 承認
+- 第3過程：stages/requirements.yaml#alignment 再実施
+- 第3過程：stages/requirements.yaml#approval 承認
 step_number: 3
 pending_gates: []
 approval_source: 2026-06-09 利用者発言「承認」
@@ -40,5 +42,9 @@ requirements_triad_review_evidence_supplement: .reviewcompass/specs/_cross_featu
 requirements_triad_review_evidence_supplement_result: direct impact 4 feature の requirements 本文を確認し、foundation／runtime／evaluation／conformance-evaluation とも requirements.md 本体への追加修正は不要と判定。runtime の LLM 非決定論的挙動は Requirement 3／4／6、conformance-evaluation の逆方向推定影響は Requirement 1／3／5 の範囲で受ける。
 requirements_triad_review_evidence_supplement_approval_source: 2026-06-09 利用者発言「承認」
 requirements_triad_review_evidence_supplement_approval_scope: direct impact 4 feature の根拠補強により、requirements.md 本体の追加修正不要として扱うことの承認。
-next_step: 第3過程停止点コミット：requirements triad-review 根拠補強結果の承認まで完了
+requirements_alignment_result: requirements alignment は pass。7 feature 間の requirements 受け皿、direct/indirect 区分、triad-review 所見解消、依存関係に矛盾なし。
+requirements_alignment_artifact: .reviewcompass/specs/_cross_feature/reviews/2026-06-09-requirements-reopen-alignment.md
+requirements_approval_source: 2026-06-09 利用者発言「承認」
+requirements_approval_scope: requirements alignment pass と、requirements.md 本体の追加修正不要として approval 通過することの承認。
+next_step: 第3過程停止点コミット：requirements alignment／approval 完了
 current_blocker: null
