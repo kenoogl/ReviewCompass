@@ -1,0 +1,24 @@
+status: completed
+target_files:
+- .reviewcompass/specs/workflow-management/design.md
+- docs/operations/SESSION_WORKFLOW_GUIDE.md
+target_sha256:
+  .reviewcompass/specs/workflow-management/design.md: d719fef2f02f2a3a2788b6163a702c3cd8635678e3aa51ee3d5ab168f43dc9c1
+  docs/operations/SESSION_WORKFLOW_GUIDE.md: 0c862b3d7f0878d589876c4a454b5cb39118fa17319802148413736a3f5cdc58
+required_verifiers:
+- codex-local-postwrite-check
+completed_verifiers:
+- codex-local-postwrite-check
+unresolved_substantive_findings: 0
+verifications:
+- verifier: codex-local-postwrite-check
+  target_files:
+  - .reviewcompass/specs/workflow-management/design.md
+  - docs/operations/SESSION_WORKFLOW_GUIDE.md
+  target_sha256:
+    .reviewcompass/specs/workflow-management/design.md: d719fef2f02f2a3a2788b6163a702c3cd8635678e3aa51ee3d5ab168f43dc9c1
+    docs/operations/SESSION_WORKFLOW_GUIDE.md: 0c862b3d7f0878d589876c4a454b5cb39118fa17319802148413736a3f5cdc58
+  result: pass
+  checked_at: '2026-06-10T07:12:54.715230+00:00'
+  notes: 'Local post-write check: document_link_lint, deployment_independence_lint,
+    and reference-source grep passed for session guide and reopen reference cleanup.'

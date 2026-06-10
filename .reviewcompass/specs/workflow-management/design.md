@@ -568,9 +568,9 @@ trigger_source: design/triad-review で発見した要件段の不整合
 
 判定が後で誤りと分かった場合、reopen 自体をやり直す（`stages/in-progress/` ファイルを新しいものに置き換え、旧ファイルは削除せず証跡として保全）。
 
-### 5. 再オープン手続きの 4 過程構成（A-001 対処、2026-05-28 セッション 37）
+### 5. 再オープン手続きの 4 過程構成
 
-本機能が管理する再オープン手続きの全体構成を、現在の 5 段ワークフロー（drafting → triad-review → review-wave → alignment → approval）に合わせて 4 つの過程で定義する。正本は計画書 §5.6.1、運用手順は `docs/operations/REOPEN_PROCEDURE.md`。素材（先行プロジェクトの `workflow-repair-procedure.md`）の 10 ステップは旧ワークフロー前提だったため、現行構造に再構成した。各過程は「停止せず連続実行できる作業の単位」とし、人の承認点で締める。
+本機能が管理する再オープン手続きの全体構成を、現在の 5 段ワークフロー（drafting → triad-review → review-wave → alignment → approval）に合わせて 4 つの過程で定義する。運用時の入口は `docs/operations/REOPEN_PROCEDURE.md` とし、本節は workflow-management 側の状態管理・機械判定契約を定める。各過程は「停止せず連続実行できる作業の単位」とし、人の承認点または commit 停止点で締める。
 
 | 過程 | 作業 | 停止点 |
 |---|---|---|
@@ -579,15 +579,13 @@ trigger_source: design/triad-review で発見した要件段の不整合
 | 3：連鎖再実施 | 依存順に上流→下流で再実施対象 gate を処理する。正本本文を実質修正した phase は triad-review → review-wave → alignment → approval の順に再実施し、正本本文を修正していない phase は trigger_map の pending gate に従って再確認する。各 gate の完了判定は `downstream_impact_decisions` に記録する | actor=human の approval、または人間判断が必要な blocker。全完了後にコミット |
 | 4：完了 | 整合性の最終確認 → recheck クリア → 進行中ファイルを completed へ | コミット |
 
-spec.json の `reopened`／`recheck` の更新の詳細は §機能依存マップモデルでなく計画書 §5.24.8.1 を正本参照する。`reopened` は 6 フェーズ（intent／feature-partitioning／requirements／design／tasks／implementation）を対象とする。
+spec.json の `reopened`／`recheck` の更新は、`docs/operations/REOPEN_PROCEDURE.md` と commit 前検査の reopen 契約に従う。`reopened` は 6 フェーズ（intent／feature-partitioning／requirements／design／tasks／implementation）を対象とする。
 
 第3過程の進行中状態では、`pending_gates` は「これから処理する残 gate」として扱う。完了した gate は `pending_gates` から外し、`completed_gates` と `downstream_impact_decisions` に記録する。監査用に全体集合を固定したい場合は `required_gates` を併記できる。reopen 完了時の機械検査は `pending_gates`、`completed_gates`、`required_gates` の和集合を対象に、各 gate が `downstream_impact_decisions` で覆われていることを確認する。
 
-**`reopen-procedure.yaml` への反映**：本 4 過程構成を `stages/reopen-procedure.yaml` の段集合として静的列挙する（tasks 段 T-003／T-007 の実装対象）。素材由来の「10 ステップ」という数え方ではなく、現行の 4 過程構成を正とする。trigger_map（§2）は本構成の第3過程（連鎖再実施）で参照される。
+**`reopen-procedure.yaml` への反映**：本 4 過程構成を `stages/reopen-procedure.yaml` の段集合として静的列挙する（tasks 段 T-003／T-007 の実装対象）。trigger_map（§2）は本構成の第3過程（連鎖再実施）で参照される。
 
-**暫定版**：本構成は計画書 §5.6.1 と同じく暫定版で、dogfooding の運用で見直す。
-
-**A-001（再オープン手続きが design 未定義）の対処状況**：本節の追加により、tasks.md T-003／T-007 が参照する再オープン手続きの段集合が design.md に明示された。tasks.md 側の「10 ステップ静的列挙」という記述、および design.md 本文に残っていた「第 7 段／第 6 ステップ」等の旧表記は、本手続き（種別 A-2）を用いた再オープン処理で「4 過程構成」に統一済み（2026-05-28、第2過程）。
+本節により、tasks.md T-003／T-007 が参照する再オープン手続きの段集合を design.md に明示する。
 
 ### 6. 後追い intent の下流再展開モデル（Req 9）
 
