@@ -1,0 +1,40 @@
+status: completed
+target_files:
+- docs/operations/ANALYSIS.md
+- docs/operations/CONFORMANCE_EVALUATION.md
+- docs/operations/EVALUATION.md
+- docs/operations/REOPEN_PROCEDURE.md
+- docs/operations/SELF_IMPROVEMENT.md
+- docs/operations/SESSION_WORKFLOW_GUIDE.md
+target_sha256:
+  docs/operations/ANALYSIS.md: f26dd9b3e9a9125577fe0560b667b4f68b64cf775bd93a1bee7d5098f84b5f46
+  docs/operations/CONFORMANCE_EVALUATION.md: b2487dda26f430a691c05527882f5ef67235936996fe5cd0b7bab2a8e8498f37
+  docs/operations/EVALUATION.md: b4226154de8140ff266febde612dfea46f146b47d0d25d38e1b9acbd780831f6
+  docs/operations/REOPEN_PROCEDURE.md: e44f43dfac92e1e00f2872981d6d42269ca317b38c88de126ee9d027255e3e1a
+  docs/operations/SELF_IMPROVEMENT.md: 45f835fac50382ea04b42dcb848bb5dbab544022ab5cc88ce8a0a815a3d6374f
+  docs/operations/SESSION_WORKFLOW_GUIDE.md: a8a41d9eb31fbc9065566c71a31f3712fbf6279af8b9ffd52734f5dafa89bb15
+required_verifiers:
+- codex-local-postwrite-check
+completed_verifiers:
+- codex-local-postwrite-check
+unresolved_substantive_findings: 0
+verifications:
+- verifier: codex-local-postwrite-check
+  target_files:
+  - docs/operations/ANALYSIS.md
+  - docs/operations/CONFORMANCE_EVALUATION.md
+  - docs/operations/EVALUATION.md
+  - docs/operations/REOPEN_PROCEDURE.md
+  - docs/operations/SELF_IMPROVEMENT.md
+  - docs/operations/SESSION_WORKFLOW_GUIDE.md
+  target_sha256:
+    docs/operations/ANALYSIS.md: f26dd9b3e9a9125577fe0560b667b4f68b64cf775bd93a1bee7d5098f84b5f46
+    docs/operations/CONFORMANCE_EVALUATION.md: b2487dda26f430a691c05527882f5ef67235936996fe5cd0b7bab2a8e8498f37
+    docs/operations/EVALUATION.md: b4226154de8140ff266febde612dfea46f146b47d0d25d38e1b9acbd780831f6
+    docs/operations/REOPEN_PROCEDURE.md: e44f43dfac92e1e00f2872981d6d42269ca317b38c88de126ee9d027255e3e1a
+    docs/operations/SELF_IMPROVEMENT.md: 45f835fac50382ea04b42dcb848bb5dbab544022ab5cc88ce8a0a815a3d6374f
+    docs/operations/SESSION_WORKFLOW_GUIDE.md: a8a41d9eb31fbc9065566c71a31f3712fbf6279af8b9ffd52734f5dafa89bb15
+  result: pass
+  checked_at: '2026-06-10T06:47:24.356997+00:00'
+  notes: 'Local post-write check: document_link_lint, deployment_independence_lint,
+    and old-reference grep passed for staged operations document cleanup.'

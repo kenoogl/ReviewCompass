@@ -266,9 +266,9 @@ variant が未確定、または role 割当が曖昧な場合は review-run を
 #### (c) 遡及（上流フェーズへの影響）
 
 - **発見されるタイミング**：任意の下流段（triad-review／review-wave／alignment／approval のいずれか）
-- **処理方法**：**reopen 手続き（10 ステップ、§5.6）** を起動。当該段の作業を停止し、上流フェーズに戻る
+- **処理方法**：[REOPEN_PROCEDURE.md](REOPEN_PROCEDURE.md) の 4 過程手順を起動。当該段の作業を停止し、上流フェーズに戻る
 - **手戻り種別判定**：N（intent）／R（requirements）／D（design）／A（tasks）／I（implementation）× 深さ 0〜4 の二次元表記で判定
-- **再実施対象決定**：第 7 ステップで `stages/reopen-procedure.yaml` の trigger_map（再実施対象段の決定表）を参照して機械決定。actor=human の段（approval 等）に来たら作業を止めて承認待ち
+- **再実施対象決定**：第1過程で trigger_map（再実施対象段の決定表）を参照して決める。actor=human の段（approval 等）に来たら作業を止めて承認待ち
 - **記録先**：種別判定の根拠を `docs/reviews/reopen-classification-<日付>.md` に残す、機能単位 spec.json の `reopened` 履歴と `recheck` フラグを更新
 
 #### (d) 遡及 ＋ 波及の組合せ

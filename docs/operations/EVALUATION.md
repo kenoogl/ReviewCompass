@@ -72,7 +72,7 @@
 - **`subagent_mediated`**：別集団。同様に独立した別スライスとして扱う（計画書 §5.23.12.6 のフェーズ 4 段階移行と整合）
 - **`api_mediated`**：別集団。独立 API 経由の triad-review 証拠として、標準 `runtime_mediated` 比較セットには黙示的に混ぜない
 
-ReviewCompass では先行プロジェクトと異なり、手動 dogfooding は「Phase 1 限定」ではなく恒久運用（§5.23 由来）。
+手動 dogfooding は「Phase 1 限定」ではなく恒久運用として扱う。
 現時点の標準比較セットは `runtime_mediated` のみを中核とする。将来 `subagent_mediated` を
 標準集団へ昇格させる場合は、本節と §6 の標準比較条件を同時に改訂する。
 

@@ -6,7 +6,7 @@
 
 ## 1. 役割
 
-`conformance-evaluation` は **下流（実装コード）から上流文書（intent／requirements／design／tasks）を推定または照合する逆方向の機能**である。先行プロジェクトの `v3-plan.md` で future feature として記録されていた「artifact-to-spec conformance evaluation」を、ReviewCompass の独立機能として第 1 期から含めることを計画書 §5.10 で確定した。
+`conformance-evaluation` は **下流（実装コード）から上流文書（intent／requirements／design／tasks）を推定または照合する逆方向の機能**である。ReviewCompass では、既存コードベースへの導入と、実装中の意図ずれ・文書連携不足の検出を担う独立機能として扱う。
 
 主な性格：
 
@@ -202,6 +202,5 @@ phase_order の最後に位置付ける。
 - 計画書 §5.10：[conformance-evaluation 機能の組み込み](../plan/reconstruction-plan-2026-05-21.md)
 - 計画書 §5.9：レビュー方法（流用元）
 - 計画書 §5.20.2 conformance-evaluation 行：[抽出対応表](../extraction-mapping.md)
-- 元計画：素材リポジトリ `.kiro/methodology/dual-reviewer-spec-driven-paper/v3-plan.md`
 - 機能横断波及所見：正本 [reviewcompass-import.yaml](../../learning/workflow/carry-forward-register/reviewcompass-import.yaml)、履歴 source [reviewcompass-pending-cross-feature-findings.md](../../learning/workflow/carry-forward-register/sources/reviewcompass-pending-cross-feature-findings.md)
 - 隣接機能：[foundation](FOUNDATION.md)、[runtime](RUNTIME.md)、[evaluation](EVALUATION.md)、[analysis](ANALYSIS.md)、[workflow-management](WORKFLOW_MANAGEMENT.md)、[self-improvement](SELF_IMPROVEMENT.md)

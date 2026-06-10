@@ -6,7 +6,7 @@
 
 ## 1. 役割
 
-`self-improvement` は ReviewCompass の改善機能だが、第 1 期では **workflow 層改善のみ**を担う（計画書 §7、§5.16）。先行プロジェクトの自己改善仕様（8 要件、主に runtime 層改善向け）は workflow 改善の性格に合わないため、計画書 §5.16 で全面書き直し済み。
+`self-improvement` は ReviewCompass の改善機能だが、第 1 期では **workflow 層改善のみ**を担う。runtime 層改善、prompt 改善、policy 改善、schema 改善は別計画として扱う。
 
 workflow 改善は次を中核責務とする。`self-improvement` は **提案権のみ**を持ち、`docs/disciplines/discipline_*.md` の実体変更は workflow-management 経由で行う：
 
