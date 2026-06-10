@@ -1,0 +1,26 @@
+run_id: 2026-06-10-initial-deployment-user-guide-llm-postwrite-r3
+triage_status: decided
+generated_at: '2026-06-10T08:47:35.967993+00:00'
+decision_actor: null
+decision_actor_type: human
+items:
+- finding_id: 2026-06-10-initial-deployment-user-guide-llm-postwrite-r3-gemini-3.5-flash-primary-001
+  run_id: 2026-06-10-initial-deployment-user-guide-llm-postwrite-r3
+  source_model: gemini-3.5-flash
+  source_round: round-1
+  source_raw_path: raw/gemini-3.5-flash.round-1.txt
+  source_parsed_path: parsed/gemini-3.5-flash.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: 7. 外部アプリ root smoke
+  plain_language_summary: The guide instructs the LLM to use '相当の処理' (equivalent processing)
+    for the smoke test instead of providing the exact command line invocation details.
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-10T08:48:06.037475+00:00'
+  decision_reason: 利用者にターミナル実行を求めない前提は維持しつつ、LLM が内部で使う正確な tools/build-deploy-package.py
+    と --clean、--verify、--smoke-external-app-root の指定を明記したため。
+  applied_files: []
+  superseded_by: null

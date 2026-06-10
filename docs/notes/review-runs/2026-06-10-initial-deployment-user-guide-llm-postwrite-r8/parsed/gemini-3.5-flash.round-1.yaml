@@ -1,0 +1,15 @@
+role: primary
+provider: gemini-api
+model: gemini-3.5-flash
+attempts: 1
+duration_seconds: 10.373
+findings:
+- severity: WARN
+  target_location: docs/operations/INITIAL_DEPLOYMENT_USER_GUIDE.md
+  description: The guide lacks explicit instructions for the deployment lifecycle
+    stages of 'updating' (when bug fixes/improvements are made during the pilot) and
+    'decommissioning/cleanup' (after the pilot/verification is completed).
+  rationale: For a complete deployment lifecycle, users need to know how to safely
+    update the deployed files when they modify ReviewCompass to fix bugs found during
+    the pilot, and how to cleanly remove the deployed package and temporary target-side
+    files (.reviewcompass/) once the verification is finished.

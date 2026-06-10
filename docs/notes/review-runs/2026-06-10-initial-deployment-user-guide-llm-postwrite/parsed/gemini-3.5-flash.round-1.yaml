@@ -1,0 +1,14 @@
+role: primary
+provider: gemini-api
+model: gemini-3.5-flash
+attempts: 1
+duration_seconds: 14.65
+findings:
+- severity: WARN
+  target_location: 5. 事前条件
+  description: 対象アプリ側のLLM環境におけるPython実行環境や依存パッケージ、PYTHONPATHの設定に関する指示・前提条件が不足しています。
+  rationale: LLMが配布済みのReviewCompassツール群（Pythonスクリプト群）を別ディレクトリ（対象アプリ側）から実行する際、依存ライブラリが未インストールであったり、PYTHONPATHが正しく通っていなかったりすると、LLMが実行エラーに直面し、検証が中断するリスクがあります。
+- severity: INFO
+  target_location: 7. 外部アプリ root smoke
+  description: スモークテストの対象となる具体的な検証用ファイル（対象文書）の準備についての言及がありません。
+  rationale: review-runを動作させるにはレビュー対象となるファイルが必要ですが、対象アプリ側に事前準備すべきデモ用ファイルや、スモークテストで何を対象としてレビューを実行すべきかの指示が曖昧なため、LLMが処理に迷う可能性があります。

@@ -1,0 +1,25 @@
+run_id: 2026-06-10-initial-deployment-user-guide-llm-postwrite-r4
+triage_status: decided
+generated_at: '2026-06-10T08:48:39.982969+00:00'
+decision_actor: null
+decision_actor_type: human
+items:
+- finding_id: 2026-06-10-initial-deployment-user-guide-llm-postwrite-r4-gemini-3.5-flash-primary-001
+  run_id: 2026-06-10-initial-deployment-user-guide-llm-postwrite-r4
+  source_model: gemini-3.5-flash
+  source_round: round-1
+  source_raw_path: raw/gemini-3.5-flash.round-1.txt
+  source_parsed_path: parsed/gemini-3.5-flash.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: docs/operations/INITIAL_DEPLOYMENT_USER_GUIDE.md#7-外部アプリ-root-smoke
+  plain_language_summary: スモークテストのLLM起動方法（invocation）における、開発側リポジトリと配布物パッケージ側の実行ツールの境界線が曖昧です。
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-10T08:49:19.558291+00:00'
+  decision_reason: build-deploy-package.py は ReviewCompass 開発リポジトリ側で使う配布前検査ツールであり、対象アプリ側
+    LLM の日常運用では配布物に含まれる run_review.py や check-workflow-action.py を使う、と文書上で分離したため。
+  applied_files: []
+  superseded_by: null

@@ -1,0 +1,10 @@
+role: primary
+provider: gemini-api
+model: gemini-3.5-flash
+attempts: 1
+duration_seconds: 14.293
+findings:
+- severity: WARN
+  target_location: '## 16. 実アプリ pilot 前のチェックリスト'
+  description: チェックリストにおける「配布前smokeの確認」と「対象アプリ側でのLLMセッション立ち上げ」の並び順が、実際の作業フロー（プレフライトから日常運用への移行）と前後しています。
+  rationale: 配布前smoke testはReviewCompass開発リポジトリ側のLLMセッションで実施するプレフライト検証（セクション7）ですが、チェックリストでは「対象アプリ側でのLLMセッション立ち上げ（4番目）」の後に「smokeの確認（5番目）」が並んでいるため、作業主体の混同や、対象アプリ側LLMでsmokeを走らせようとする誤解を招くリスクがあります。

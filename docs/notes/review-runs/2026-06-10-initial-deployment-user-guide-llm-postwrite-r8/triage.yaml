@@ -1,0 +1,27 @@
+run_id: 2026-06-10-initial-deployment-user-guide-llm-postwrite-r8
+triage_status: decided
+generated_at: '2026-06-10T08:55:07.850034+00:00'
+decision_actor: null
+decision_actor_type: human
+items:
+- finding_id: 2026-06-10-initial-deployment-user-guide-llm-postwrite-r8-gemini-3.5-flash-primary-001
+  run_id: 2026-06-10-initial-deployment-user-guide-llm-postwrite-r8
+  source_model: gemini-3.5-flash
+  source_round: round-1
+  source_raw_path: raw/gemini-3.5-flash.round-1.txt
+  source_parsed_path: parsed/gemini-3.5-flash.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: docs/operations/INITIAL_DEPLOYMENT_USER_GUIDE.md
+  plain_language_summary: The guide lacks explicit instructions for the deployment
+    lifecycle stages of 'updating' (when bug fixes/improvements are made during the
+    pilot) and 'decommissioning/cleanup' (after the pilot/verification is completed).
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-10T08:55:35.517248+00:00'
+  decision_reason: pilot 中に ReviewCompass 側を修正した場合は配布物を作り直して再 smoke 後に差し替えること、pilot
+    終了後は smoke 用記録や app.md を対象アプリ側判断で片付けることを追記したため。
+  applied_files: []
+  superseded_by: null

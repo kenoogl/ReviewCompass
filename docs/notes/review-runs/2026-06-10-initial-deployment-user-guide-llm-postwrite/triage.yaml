@@ -1,0 +1,43 @@
+run_id: 2026-06-10-initial-deployment-user-guide-llm-postwrite
+triage_status: decided
+generated_at: '2026-06-10T08:45:42.819255+00:00'
+decision_actor: null
+decision_actor_type: human
+items:
+- finding_id: 2026-06-10-initial-deployment-user-guide-llm-postwrite-gemini-3.5-flash-primary-001
+  run_id: 2026-06-10-initial-deployment-user-guide-llm-postwrite
+  source_model: gemini-3.5-flash
+  source_round: round-1
+  source_raw_path: raw/gemini-3.5-flash.round-1.txt
+  source_parsed_path: parsed/gemini-3.5-flash.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: 5. 事前条件
+  plain_language_summary: 対象アプリ側のLLM環境におけるPython実行環境や依存パッケージ、PYTHONPATHの設定に関する指示・前提条件が不足しています。
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-10T08:46:15.960245+00:00'
+  decision_reason: 利用者はターミナルで直接実行しないが、LLM が ReviewCompass の Python ツールを実行できる環境と配布物配置の参照が必要であるため、事前条件に追記した。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-10-initial-deployment-user-guide-llm-postwrite-gemini-3.5-flash-primary-002
+  run_id: 2026-06-10-initial-deployment-user-guide-llm-postwrite
+  source_model: gemini-3.5-flash
+  source_round: round-1
+  source_raw_path: raw/gemini-3.5-flash.round-1.txt
+  source_parsed_path: parsed/gemini-3.5-flash.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: 7. 外部アプリ root smoke
+  plain_language_summary: スモークテストの対象となる具体的な検証用ファイル（対象文書）の準備についての言及がありません。
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-10T08:46:24.356918+00:00'
+  decision_reason: 現行 smoke test が対象アプリ root に検証用 app.md を用意し、そのファイルを対象に review-run
+    記録を書き込むことを追記したため。
+  applied_files: []
+  superseded_by: null

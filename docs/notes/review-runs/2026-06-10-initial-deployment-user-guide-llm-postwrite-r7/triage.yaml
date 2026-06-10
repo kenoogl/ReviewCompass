@@ -1,0 +1,43 @@
+run_id: 2026-06-10-initial-deployment-user-guide-llm-postwrite-r7
+triage_status: decided
+generated_at: '2026-06-10T08:51:55.974391+00:00'
+decision_actor: null
+decision_actor_type: human
+items:
+- finding_id: 2026-06-10-initial-deployment-user-guide-llm-postwrite-r7-gemini-3.5-flash-primary-001
+  run_id: 2026-06-10-initial-deployment-user-guide-llm-postwrite-r7
+  source_model: gemini-3.5-flash
+  source_round: round-1
+  source_raw_path: raw/gemini-3.5-flash.round-1.txt
+  source_parsed_path: parsed/gemini-3.5-flash.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: docs/operations/INITIAL_DEPLOYMENT_USER_GUIDE.md (第9章〜第11章)
+  plain_language_summary: ガイド内でのツール説明の並び順が、実際の開発/レビューライフサイクル（workflow-management ->
+    review-run -> conformance-evaluation）と逆になっています。
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-10T08:52:47.847013+00:00'
+  decision_reason: workflow-management の次に review-run、conformance-evaluation の順へ章を再構成したため。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-10-initial-deployment-user-guide-llm-postwrite-r7-gemini-3.5-flash-primary-002
+  run_id: 2026-06-10-initial-deployment-user-guide-llm-postwrite-r7
+  source_model: gemini-3.5-flash
+  source_round: round-1
+  source_raw_path: raw/gemini-3.5-flash.round-1.txt
+  source_parsed_path: parsed/gemini-3.5-flash.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: docs/operations/INITIAL_DEPLOYMENT_USER_GUIDE.md (第7章と第9章の間)
+  plain_language_summary: 検証済み配布物を最終的な配置先（配布済みパス）にコピー・移動する「デプロイ実行」のステップがライフサイクルから抜け落ちています。
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-10T08:54:47.532545+00:00'
+  decision_reason: 配布前 smoke 後に、対象アプリ側 LLM が参照できる別ディレクトリへ検証済み配布物を配置する手順を追加し、チェックリストにも反映したため。
+  applied_files: []
+  superseded_by: null

@@ -1,0 +1,304 @@
+status: completed
+target_files:
+- docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r2/model-result-summary.yaml
+- docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r2/parsed/gemini-3.5-flash.round-1.yaml
+- docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r2/raw/gemini-3.5-flash.round-1.txt
+- docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r2/review_summary.md
+- docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r2/rounds.yaml
+- docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r2/target-manifest.yaml
+- docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r2/triage.yaml
+- docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r3/model-result-summary.yaml
+- docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r3/parsed/gemini-3.5-flash.round-1.yaml
+- docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r3/raw/gemini-3.5-flash.round-1.txt
+- docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r3/review_summary.md
+- docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r3/rounds.yaml
+- docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r3/target-manifest.yaml
+- docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r3/triage.yaml
+- docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r4/model-result-summary.yaml
+- docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r4/parsed/gemini-3.5-flash.round-1.yaml
+- docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r4/raw/gemini-3.5-flash.round-1.txt
+- docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r4/review_summary.md
+- docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r4/rounds.yaml
+- docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r4/target-manifest.yaml
+- docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r4/triage.yaml
+- docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r5/model-result-summary.yaml
+- docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r5/parsed/gemini-3.5-flash.round-1.yaml
+- docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r5/raw/gemini-3.5-flash.round-1.txt
+- docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r5/review_summary.md
+- docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r5/rounds.yaml
+- docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r5/target-manifest.yaml
+- docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r5/triage.yaml
+- docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r6/model-result-summary.yaml
+- docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r6/parsed/gemini-3.5-flash.round-1.yaml
+- docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r6/raw/gemini-3.5-flash.round-1.txt
+- docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r6/review_summary.md
+- docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r6/rounds.yaml
+- docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r6/target-manifest.yaml
+- docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r6/triage.yaml
+- docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r7/approval.yaml
+- docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r7/model-result-summary.yaml
+- docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r7/parsed/gemini-3.5-flash.round-1.yaml
+- docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r7/raw/gemini-3.5-flash.round-1.txt
+- docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r7/review_summary.md
+- docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r7/rounds.yaml
+- docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r7/target-manifest.yaml
+- docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r7/triage.yaml
+- docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r8/model-result-summary.yaml
+- docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r8/parsed/gemini-3.5-flash.round-1.yaml
+- docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r8/raw/gemini-3.5-flash.round-1.txt
+- docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r8/review_summary.md
+- docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r8/rounds.yaml
+- docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r8/target-manifest.yaml
+- docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r8/triage.yaml
+- docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r9/model-result-summary.yaml
+- docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r9/parsed/gemini-3.5-flash.round-1.yaml
+- docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r9/raw/gemini-3.5-flash.round-1.txt
+- docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r9/review_summary.md
+- docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r9/rounds.yaml
+- docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r9/target-manifest.yaml
+- docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r9/triage.yaml
+- docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite/model-result-summary.yaml
+- docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite/parsed/gemini-3.5-flash.round-1.yaml
+- docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite/raw/gemini-3.5-flash.round-1.txt
+- docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite/review_summary.md
+- docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite/rounds.yaml
+- docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite/target-manifest.yaml
+- docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite/triage.yaml
+- docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-postwrite/model-result-summary.yaml
+- docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-postwrite/parsed/gemini-3.5-flash.round-1.yaml
+- docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-postwrite/raw/gemini-3.5-flash.round-1.txt
+- docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-postwrite/review_summary.md
+- docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-postwrite/rounds.yaml
+- docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-postwrite/target-manifest.yaml
+- docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-postwrite/triage.yaml
+- docs/operations/INITIAL_DEPLOYMENT_USER_GUIDE.md
+target_sha256:
+  docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r2/model-result-summary.yaml: 50a0a1bf5ba92e7204c75ff5e7e111448522bc76e6de19467222134c9068b910
+  docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r2/parsed/gemini-3.5-flash.round-1.yaml: 81e1ff8fe83c156e5ace5ad1a312c02f3e500ac9cdace87dd9cb62b9edf94357
+  docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r2/raw/gemini-3.5-flash.round-1.txt: 32b9d09229ca1aeef27138a20584fe8cd2e50f6e719dc5e45efaaa32adc1f2fb
+  docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r2/review_summary.md: 19bccaff87d20c21af2f4e7837941ea5ea4531e841fc7b074895714d87b47297
+  docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r2/rounds.yaml: c7cb653ca09450a95e5843dbaad22579937a0a56bb24614438441adad98bb94b
+  docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r2/target-manifest.yaml: ad2d7a85991314420ebd2235e96ad4d12a9b3ffb093194a59391edb6d0f0fde4
+  docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r2/triage.yaml: 5b5eacdda9660c33e59e985aa19a024c3601289dcd5fe289d063472415ff10a1
+  docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r3/model-result-summary.yaml: 3df8fc963034e5f979583a169891dc520eb8bd7db75acf4d43935395437a6c84
+  docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r3/parsed/gemini-3.5-flash.round-1.yaml: 5c98df5f401c38901e243889cbd18c1b636baf3a585b3b7ba2fef71baf65f389
+  docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r3/raw/gemini-3.5-flash.round-1.txt: ce03b4ac03bac5bf4f182285a7f2d9a3f4ae2f30278edb2aef1074925ecb0497
+  docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r3/review_summary.md: da42116f06a4c92e2043f621bdfe6eb82a9280312715ae2d073861a100070e15
+  docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r3/rounds.yaml: b17535e4af534523d78dbbf2b51e51e50a8ec1b780c2c7ff34024893d952dbc1
+  docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r3/target-manifest.yaml: 937b604cb9bd3c6b81202400a0f4e9ebcb4fd59b0ae1ab0380a08aa70964869b
+  docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r3/triage.yaml: 8853dff61b60c1ddda1602fdf713bf54928fda58151459869845f0bf41232607
+  docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r4/model-result-summary.yaml: 48c37e6850086c9e6bf7c5d282f3533405a7ae4e46f61a010c6807d7e59a29d0
+  docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r4/parsed/gemini-3.5-flash.round-1.yaml: f1e445f317493b3b3eea63504937877e3f94329e94c231c1859698e7efe44d09
+  docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r4/raw/gemini-3.5-flash.round-1.txt: 0def3e003147079739c0a2c543cc7ecb52c76f91ce9ca750ead2eb027174723e
+  docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r4/review_summary.md: 66153084c9fdb0cdeefac8dc1549745deff5fb1cdc45d2e6a97ea02b8e9d3d3f
+  docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r4/rounds.yaml: 111bac0bda3b3dbe5f3d1bae68c2a601b8af679a8fa817bca3aa2b4016ccb510
+  docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r4/target-manifest.yaml: 68bb094c25ce36ffdb607faebd34243c55e770aaeea31446e03aa8edcfb2270b
+  docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r4/triage.yaml: 0904558e56690cab9517f9060ecc422d190dabe5e1f8e08105e03b7b54ce5ba5
+  docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r5/model-result-summary.yaml: ce39af5c878a8b6bce860abdd3de0e92e5dec6d864dc848ff29e067b9a1991a9
+  docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r5/parsed/gemini-3.5-flash.round-1.yaml: e62cfe02487c503bb38f025789fc7a372cc4fedabd93cf42273edd493ec3cd1e
+  docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r5/raw/gemini-3.5-flash.round-1.txt: 07f0e88565fb18d0ec374e46cdb53dbce6a740650d6589b7df865c0ab32bd952
+  docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r5/review_summary.md: bacb1f1b5194494b6b718c87364a3033513e1eba88864523fe2784e9e93e6272
+  docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r5/rounds.yaml: dcf357cbfcd3d9cd0095b87a7c801f08374d97cacf91126677a9ee6d5c16cdb2
+  docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r5/target-manifest.yaml: 26e3bc7cb0ba41f3b7a497880081364b6229c2e4de5a189682bab9e44998e38a
+  docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r5/triage.yaml: d44c71f2eb5500dcb1df58d147cda4151d4422361d9b09d7f4bb6c1ad0adde5e
+  docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r6/model-result-summary.yaml: d7832977549ce95b53a3da71438aa02b4f9114c12f2149868db0c744f03fde27
+  docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r6/parsed/gemini-3.5-flash.round-1.yaml: 8f7747dbfe26cec0e22951ae2c1a28f2221fa67f095698227354d57022a361fd
+  docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r6/raw/gemini-3.5-flash.round-1.txt: 5a45e4ddffe67d23522aedc42a32463acd7f6f3f4acc0e6419d6e475c246a125
+  docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r6/review_summary.md: 07eb2ac47e319b846f45bac5a2a61b32afd1dd5160ae365a5ee58784c83cf694
+  docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r6/rounds.yaml: c0b2d3b33dd73d3872bf16f620573da1f6201dc66a7c7fdc7c9a63254e924b25
+  docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r6/target-manifest.yaml: adc65bb463016f77bb306a9f86fb2ee1b45edb6941866a528dc96d52d7aa50d2
+  docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r6/triage.yaml: 38d83765e86793b971715c7810ea40dc3533f75d12811252a5875345181483ff
+  docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r7/approval.yaml: 7b9491d63550bee57c44e92658ac3cfb6c40833af9dc9c17d131d4df31b90b2a
+  docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r7/model-result-summary.yaml: 86ca0e1dd19217d77e04bdfb7c05e58d5116f895766e2a7cb98adb07bcac49da
+  docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r7/parsed/gemini-3.5-flash.round-1.yaml: 8e3e34cc517a8b5351ceec8faacd11496f2ed28d60c2e90a23d22bf21fb00186
+  docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r7/raw/gemini-3.5-flash.round-1.txt: 3179c047cc71eea65481a2cd7ea63bafa6bcd423ac1c266539d984e2a1977e82
+  docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r7/review_summary.md: 01864b11163826226cd2709206cff55593305247b0e0b03e632ebddf1fe2cb8e
+  docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r7/rounds.yaml: b11e221600735d11f4aa218e473943e2f374a915e493b8033b5365b149113ccf
+  docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r7/target-manifest.yaml: fb350d401877660e38030cd6f1bda19b179550008563d0f61438a5dc8e3366c5
+  docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r7/triage.yaml: 46da7b37ec0dbc22e54a89a05e4759d0034ce274772e0e3ff987a808bf7cbec6
+  docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r8/model-result-summary.yaml: 094a9dda4618c066c89e12b4d2b17ffaaf27ddf2b22abf343a23bd654b4f9126
+  docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r8/parsed/gemini-3.5-flash.round-1.yaml: 14a6d80f4a6a946ac0c4bbc55c18783292c977ae7ec34e2a6ceeaf6e90c6cccc
+  docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r8/raw/gemini-3.5-flash.round-1.txt: e235019289e240a964a3a3f6ad230c7e201130b9f5682daa80782cc3a5f578e7
+  docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r8/review_summary.md: 1837f31449dfab9c6a98b7404cf439b0572debbbd908fea73e05f29ed74b3388
+  docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r8/rounds.yaml: c1f3fefe6f7d67c636031029a3a73ff346443eb3d5e29a72b01800bb5e8d2cc7
+  docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r8/target-manifest.yaml: ddc90ebd6172317eac8d5ebb35c98367ab2f76ca44a733bca23cf3063bf00d84
+  docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r8/triage.yaml: 96ce4dc95114294ab04fdf9c407c28b33c867ca04ac9b83201dccdc51fe1fd1d
+  docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r9/model-result-summary.yaml: a5f06d0d186368eedd27b0ae3c08ad383623bc161446454846f749c54dc67113
+  docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r9/parsed/gemini-3.5-flash.round-1.yaml: ef54be2d9f3d871ae46452992c7303b449406bfbf14562e889de130fe9336712
+  docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r9/raw/gemini-3.5-flash.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+  docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r9/review_summary.md: da1f8aad8e4468acec9c480d63b7c0f08d3bdfdeaa8da72dce143d0b068815d6
+  docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r9/rounds.yaml: 7b411b054f2a1d6f671b25e632b1ea7a5fa4eaae5355f65112317c037b768be9
+  docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r9/target-manifest.yaml: 095441c49515eb248c904ce73d3be132580b6bddd6f0348ec589074855360967
+  docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r9/triage.yaml: e50c19d6a8226af97d4b43bbbaf9b90a941e78929a7c18e91322e41ea29ac202
+  docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite/model-result-summary.yaml: c9a6aa58328f72ed8ed3e734797e03fdf60cdca71431b5abcf414d9c20790672
+  docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite/parsed/gemini-3.5-flash.round-1.yaml: ee1f5e092ece3001b7da273f4fc485e6c55537b781ff7b9ae2d8e187190157dd
+  docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite/raw/gemini-3.5-flash.round-1.txt: e39fef2a85608b1588c0d09ea476cc44e539e5d6532d36b68de35699b92fc618
+  docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite/review_summary.md: 0de7eb45e79b6152f8637df7009321837ad7793f87484b2b7bfee9cd18e5fbbd
+  docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite/rounds.yaml: 018c0b52e3026f38ff5c4bf919b80109d6d9052bd483971eaf52f896a3e101f3
+  docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite/target-manifest.yaml: a49eaf1a46c0e497e9073c84f7cba58e4f6faf2fd833792c76ec0092f108b93f
+  docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite/triage.yaml: d49569843efce2e7723aba37b5fb759603784a8d0e27e3bd61c1b983d751b715
+  docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-postwrite/model-result-summary.yaml: d878e23fcaa3c64e6113ecee8541316ac098b452622ce6512d55a44213f55163
+  docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-postwrite/parsed/gemini-3.5-flash.round-1.yaml: a5502f3a2092754908cca1c35cfd9472b9154c135e7e563dca7d07536aede7e1
+  docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-postwrite/raw/gemini-3.5-flash.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+  docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-postwrite/review_summary.md: 2a04fcd6a56a213851612512b1d81a647a924781c9271187933c547d67809980
+  docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-postwrite/rounds.yaml: 531c062a2d56a1df1627502dac05956f6f9b3e52a7dff7531aa94af200ea1634
+  docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-postwrite/target-manifest.yaml: 988cca5e6480bf035ec383ad0c63ea1f5bfe121fb4635e70ed46538584fcf163
+  docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-postwrite/triage.yaml: 1cdeb81cf96cdeefc41c9b7b5e24c77d4d8b55c64fcf92a7c26748209b460d25
+  docs/operations/INITIAL_DEPLOYMENT_USER_GUIDE.md: 8f5bbc37345da06fdc842a8e784b3f4507e4bc0f2b83db98a34d3371a52588bb
+required_verifiers: &id001
+- gemini-3.5-flash
+completed_verifiers: *id001
+unresolved_substantive_findings: 0
+verifications:
+- verifier: gemini-3.5-flash
+  target_files:
+  - docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r2/model-result-summary.yaml
+  - docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r2/parsed/gemini-3.5-flash.round-1.yaml
+  - docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r2/raw/gemini-3.5-flash.round-1.txt
+  - docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r2/review_summary.md
+  - docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r2/rounds.yaml
+  - docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r2/target-manifest.yaml
+  - docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r2/triage.yaml
+  - docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r3/model-result-summary.yaml
+  - docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r3/parsed/gemini-3.5-flash.round-1.yaml
+  - docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r3/raw/gemini-3.5-flash.round-1.txt
+  - docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r3/review_summary.md
+  - docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r3/rounds.yaml
+  - docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r3/target-manifest.yaml
+  - docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r3/triage.yaml
+  - docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r4/model-result-summary.yaml
+  - docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r4/parsed/gemini-3.5-flash.round-1.yaml
+  - docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r4/raw/gemini-3.5-flash.round-1.txt
+  - docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r4/review_summary.md
+  - docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r4/rounds.yaml
+  - docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r4/target-manifest.yaml
+  - docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r4/triage.yaml
+  - docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r5/model-result-summary.yaml
+  - docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r5/parsed/gemini-3.5-flash.round-1.yaml
+  - docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r5/raw/gemini-3.5-flash.round-1.txt
+  - docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r5/review_summary.md
+  - docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r5/rounds.yaml
+  - docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r5/target-manifest.yaml
+  - docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r5/triage.yaml
+  - docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r6/model-result-summary.yaml
+  - docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r6/parsed/gemini-3.5-flash.round-1.yaml
+  - docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r6/raw/gemini-3.5-flash.round-1.txt
+  - docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r6/review_summary.md
+  - docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r6/rounds.yaml
+  - docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r6/target-manifest.yaml
+  - docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r6/triage.yaml
+  - docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r7/approval.yaml
+  - docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r7/model-result-summary.yaml
+  - docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r7/parsed/gemini-3.5-flash.round-1.yaml
+  - docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r7/raw/gemini-3.5-flash.round-1.txt
+  - docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r7/review_summary.md
+  - docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r7/rounds.yaml
+  - docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r7/target-manifest.yaml
+  - docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r7/triage.yaml
+  - docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r8/model-result-summary.yaml
+  - docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r8/parsed/gemini-3.5-flash.round-1.yaml
+  - docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r8/raw/gemini-3.5-flash.round-1.txt
+  - docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r8/review_summary.md
+  - docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r8/rounds.yaml
+  - docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r8/target-manifest.yaml
+  - docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r8/triage.yaml
+  - docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r9/model-result-summary.yaml
+  - docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r9/parsed/gemini-3.5-flash.round-1.yaml
+  - docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r9/raw/gemini-3.5-flash.round-1.txt
+  - docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r9/review_summary.md
+  - docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r9/rounds.yaml
+  - docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r9/target-manifest.yaml
+  - docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r9/triage.yaml
+  - docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite/model-result-summary.yaml
+  - docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite/parsed/gemini-3.5-flash.round-1.yaml
+  - docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite/raw/gemini-3.5-flash.round-1.txt
+  - docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite/review_summary.md
+  - docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite/rounds.yaml
+  - docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite/target-manifest.yaml
+  - docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite/triage.yaml
+  - docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-postwrite/model-result-summary.yaml
+  - docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-postwrite/parsed/gemini-3.5-flash.round-1.yaml
+  - docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-postwrite/raw/gemini-3.5-flash.round-1.txt
+  - docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-postwrite/review_summary.md
+  - docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-postwrite/rounds.yaml
+  - docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-postwrite/target-manifest.yaml
+  - docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-postwrite/triage.yaml
+  - docs/operations/INITIAL_DEPLOYMENT_USER_GUIDE.md
+  target_sha256:
+    docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r2/model-result-summary.yaml: 50a0a1bf5ba92e7204c75ff5e7e111448522bc76e6de19467222134c9068b910
+    docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r2/parsed/gemini-3.5-flash.round-1.yaml: 81e1ff8fe83c156e5ace5ad1a312c02f3e500ac9cdace87dd9cb62b9edf94357
+    docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r2/raw/gemini-3.5-flash.round-1.txt: 32b9d09229ca1aeef27138a20584fe8cd2e50f6e719dc5e45efaaa32adc1f2fb
+    docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r2/review_summary.md: 19bccaff87d20c21af2f4e7837941ea5ea4531e841fc7b074895714d87b47297
+    docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r2/rounds.yaml: c7cb653ca09450a95e5843dbaad22579937a0a56bb24614438441adad98bb94b
+    docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r2/target-manifest.yaml: ad2d7a85991314420ebd2235e96ad4d12a9b3ffb093194a59391edb6d0f0fde4
+    docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r2/triage.yaml: 5b5eacdda9660c33e59e985aa19a024c3601289dcd5fe289d063472415ff10a1
+    docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r3/model-result-summary.yaml: 3df8fc963034e5f979583a169891dc520eb8bd7db75acf4d43935395437a6c84
+    docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r3/parsed/gemini-3.5-flash.round-1.yaml: 5c98df5f401c38901e243889cbd18c1b636baf3a585b3b7ba2fef71baf65f389
+    docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r3/raw/gemini-3.5-flash.round-1.txt: ce03b4ac03bac5bf4f182285a7f2d9a3f4ae2f30278edb2aef1074925ecb0497
+    docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r3/review_summary.md: da42116f06a4c92e2043f621bdfe6eb82a9280312715ae2d073861a100070e15
+    docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r3/rounds.yaml: b17535e4af534523d78dbbf2b51e51e50a8ec1b780c2c7ff34024893d952dbc1
+    docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r3/target-manifest.yaml: 937b604cb9bd3c6b81202400a0f4e9ebcb4fd59b0ae1ab0380a08aa70964869b
+    docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r3/triage.yaml: 8853dff61b60c1ddda1602fdf713bf54928fda58151459869845f0bf41232607
+    docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r4/model-result-summary.yaml: 48c37e6850086c9e6bf7c5d282f3533405a7ae4e46f61a010c6807d7e59a29d0
+    docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r4/parsed/gemini-3.5-flash.round-1.yaml: f1e445f317493b3b3eea63504937877e3f94329e94c231c1859698e7efe44d09
+    docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r4/raw/gemini-3.5-flash.round-1.txt: 0def3e003147079739c0a2c543cc7ecb52c76f91ce9ca750ead2eb027174723e
+    docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r4/review_summary.md: 66153084c9fdb0cdeefac8dc1549745deff5fb1cdc45d2e6a97ea02b8e9d3d3f
+    docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r4/rounds.yaml: 111bac0bda3b3dbe5f3d1bae68c2a601b8af679a8fa817bca3aa2b4016ccb510
+    docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r4/target-manifest.yaml: 68bb094c25ce36ffdb607faebd34243c55e770aaeea31446e03aa8edcfb2270b
+    docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r4/triage.yaml: 0904558e56690cab9517f9060ecc422d190dabe5e1f8e08105e03b7b54ce5ba5
+    docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r5/model-result-summary.yaml: ce39af5c878a8b6bce860abdd3de0e92e5dec6d864dc848ff29e067b9a1991a9
+    docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r5/parsed/gemini-3.5-flash.round-1.yaml: e62cfe02487c503bb38f025789fc7a372cc4fedabd93cf42273edd493ec3cd1e
+    docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r5/raw/gemini-3.5-flash.round-1.txt: 07f0e88565fb18d0ec374e46cdb53dbce6a740650d6589b7df865c0ab32bd952
+    docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r5/review_summary.md: bacb1f1b5194494b6b718c87364a3033513e1eba88864523fe2784e9e93e6272
+    docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r5/rounds.yaml: dcf357cbfcd3d9cd0095b87a7c801f08374d97cacf91126677a9ee6d5c16cdb2
+    docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r5/target-manifest.yaml: 26e3bc7cb0ba41f3b7a497880081364b6229c2e4de5a189682bab9e44998e38a
+    docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r5/triage.yaml: d44c71f2eb5500dcb1df58d147cda4151d4422361d9b09d7f4bb6c1ad0adde5e
+    docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r6/model-result-summary.yaml: d7832977549ce95b53a3da71438aa02b4f9114c12f2149868db0c744f03fde27
+    docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r6/parsed/gemini-3.5-flash.round-1.yaml: 8f7747dbfe26cec0e22951ae2c1a28f2221fa67f095698227354d57022a361fd
+    docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r6/raw/gemini-3.5-flash.round-1.txt: 5a45e4ddffe67d23522aedc42a32463acd7f6f3f4acc0e6419d6e475c246a125
+    docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r6/review_summary.md: 07eb2ac47e319b846f45bac5a2a61b32afd1dd5160ae365a5ee58784c83cf694
+    docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r6/rounds.yaml: c0b2d3b33dd73d3872bf16f620573da1f6201dc66a7c7fdc7c9a63254e924b25
+    docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r6/target-manifest.yaml: adc65bb463016f77bb306a9f86fb2ee1b45edb6941866a528dc96d52d7aa50d2
+    docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r6/triage.yaml: 38d83765e86793b971715c7810ea40dc3533f75d12811252a5875345181483ff
+    docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r7/approval.yaml: 7b9491d63550bee57c44e92658ac3cfb6c40833af9dc9c17d131d4df31b90b2a
+    docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r7/model-result-summary.yaml: 86ca0e1dd19217d77e04bdfb7c05e58d5116f895766e2a7cb98adb07bcac49da
+    docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r7/parsed/gemini-3.5-flash.round-1.yaml: 8e3e34cc517a8b5351ceec8faacd11496f2ed28d60c2e90a23d22bf21fb00186
+    docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r7/raw/gemini-3.5-flash.round-1.txt: 3179c047cc71eea65481a2cd7ea63bafa6bcd423ac1c266539d984e2a1977e82
+    docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r7/review_summary.md: 01864b11163826226cd2709206cff55593305247b0e0b03e632ebddf1fe2cb8e
+    docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r7/rounds.yaml: b11e221600735d11f4aa218e473943e2f374a915e493b8033b5365b149113ccf
+    docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r7/target-manifest.yaml: fb350d401877660e38030cd6f1bda19b179550008563d0f61438a5dc8e3366c5
+    docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r7/triage.yaml: 46da7b37ec0dbc22e54a89a05e4759d0034ce274772e0e3ff987a808bf7cbec6
+    docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r8/model-result-summary.yaml: 094a9dda4618c066c89e12b4d2b17ffaaf27ddf2b22abf343a23bd654b4f9126
+    docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r8/parsed/gemini-3.5-flash.round-1.yaml: 14a6d80f4a6a946ac0c4bbc55c18783292c977ae7ec34e2a6ceeaf6e90c6cccc
+    docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r8/raw/gemini-3.5-flash.round-1.txt: e235019289e240a964a3a3f6ad230c7e201130b9f5682daa80782cc3a5f578e7
+    docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r8/review_summary.md: 1837f31449dfab9c6a98b7404cf439b0572debbbd908fea73e05f29ed74b3388
+    docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r8/rounds.yaml: c1f3fefe6f7d67c636031029a3a73ff346443eb3d5e29a72b01800bb5e8d2cc7
+    docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r8/target-manifest.yaml: ddc90ebd6172317eac8d5ebb35c98367ab2f76ca44a733bca23cf3063bf00d84
+    docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r8/triage.yaml: 96ce4dc95114294ab04fdf9c407c28b33c867ca04ac9b83201dccdc51fe1fd1d
+    docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r9/model-result-summary.yaml: a5f06d0d186368eedd27b0ae3c08ad383623bc161446454846f749c54dc67113
+    docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r9/parsed/gemini-3.5-flash.round-1.yaml: ef54be2d9f3d871ae46452992c7303b449406bfbf14562e889de130fe9336712
+    docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r9/raw/gemini-3.5-flash.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r9/review_summary.md: da1f8aad8e4468acec9c480d63b7c0f08d3bdfdeaa8da72dce143d0b068815d6
+    docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r9/rounds.yaml: 7b411b054f2a1d6f671b25e632b1ea7a5fa4eaae5355f65112317c037b768be9
+    docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r9/target-manifest.yaml: 095441c49515eb248c904ce73d3be132580b6bddd6f0348ec589074855360967
+    docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r9/triage.yaml: e50c19d6a8226af97d4b43bbbaf9b90a941e78929a7c18e91322e41ea29ac202
+    docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite/model-result-summary.yaml: c9a6aa58328f72ed8ed3e734797e03fdf60cdca71431b5abcf414d9c20790672
+    docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite/parsed/gemini-3.5-flash.round-1.yaml: ee1f5e092ece3001b7da273f4fc485e6c55537b781ff7b9ae2d8e187190157dd
+    docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite/raw/gemini-3.5-flash.round-1.txt: e39fef2a85608b1588c0d09ea476cc44e539e5d6532d36b68de35699b92fc618
+    docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite/review_summary.md: 0de7eb45e79b6152f8637df7009321837ad7793f87484b2b7bfee9cd18e5fbbd
+    docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite/rounds.yaml: 018c0b52e3026f38ff5c4bf919b80109d6d9052bd483971eaf52f896a3e101f3
+    docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite/target-manifest.yaml: a49eaf1a46c0e497e9073c84f7cba58e4f6faf2fd833792c76ec0092f108b93f
+    docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite/triage.yaml: d49569843efce2e7723aba37b5fb759603784a8d0e27e3bd61c1b983d751b715
+    docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-postwrite/model-result-summary.yaml: d878e23fcaa3c64e6113ecee8541316ac098b452622ce6512d55a44213f55163
+    docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-postwrite/parsed/gemini-3.5-flash.round-1.yaml: a5502f3a2092754908cca1c35cfd9472b9154c135e7e563dca7d07536aede7e1
+    docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-postwrite/raw/gemini-3.5-flash.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-postwrite/review_summary.md: 2a04fcd6a56a213851612512b1d81a647a924781c9271187933c547d67809980
+    docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-postwrite/rounds.yaml: 531c062a2d56a1df1627502dac05956f6f9b3e52a7dff7531aa94af200ea1634
+    docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-postwrite/target-manifest.yaml: 988cca5e6480bf035ec383ad0c63ea1f5bfe121fb4635e70ed46538584fcf163
+    docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-postwrite/triage.yaml: 1cdeb81cf96cdeefc41c9b7b5e24c77d4d8b55c64fcf92a7c26748209b460d25
+    docs/operations/INITIAL_DEPLOYMENT_USER_GUIDE.md: 8f5bbc37345da06fdc842a8e784b3f4507e4bc0f2b83db98a34d3371a52588bb
+review_run:
+  path: docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r9
+  summary_path: docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-llm-postwrite-r9/model-result-summary.yaml
+notes: Generated template; verify target_files cover current post-write targets before
+  use.

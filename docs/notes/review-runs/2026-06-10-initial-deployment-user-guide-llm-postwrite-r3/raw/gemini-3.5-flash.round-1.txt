@@ -1,0 +1,5 @@
+findings:
+  - severity: WARN
+    target_location: "7. 外部アプリ root smoke"
+    description: "The guide instructs the LLM to use '相当の処理' (equivalent processing) for the smoke test instead of providing the exact command line invocation details."
+    rationale: "Since the guide is designed for LLMs to execute the actions directly, using abstract phrasing like '相当の処理' can cause the LLM to hallucinate arguments or attempt to implement custom logic. Providing the exact CLI command syntax (e.g., `python tools/build-deploy-package.py --smoke-external-app-root <target_path>`) ensures reliable execution."

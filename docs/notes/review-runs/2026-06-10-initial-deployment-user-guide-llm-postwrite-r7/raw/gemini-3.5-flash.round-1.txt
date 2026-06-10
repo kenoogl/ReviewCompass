@@ -1,0 +1,9 @@
+findings:
+  - severity: WARN
+    target_location: "docs/operations/INITIAL_DEPLOYMENT_USER_GUIDE.md (第9章〜第11章)"
+    description: "ガイド内でのツール説明の並び順が、実際の開発/レビューライフサイクル（workflow-management -> review-run -> conformance-evaluation）と逆になっています。"
+    rationale: "各ドキュメントやコードに対してレビューを実行する「review-run」は、それらの整合性をチェックする「conformance-evaluation」よりも先行する基礎的なライフサイクルフェーズです。第10章に conformance-evaluation、第11章に review-run が配置されているのは、ライフサイクルの順序として不自然であり、読者の理解を妨げます。"
+  - severity: ERROR
+    target_location: "docs/operations/INITIAL_DEPLOYMENT_USER_GUIDE.md (第7章と第9章の間)"
+    description: "検証済み配布物を最終的な配置先（配布済みパス）にコピー・移動する「デプロイ実行」のステップがライフサイクルから抜け落ちています。"
+    rationale: "第6章で一時ディレクトリに配布物を作成し、第7章で開発リポジトリ側から smoke test を実施していますが、それを対象アプリの LLM が参照可能な「配布済み」のパスへ配置する手順がありません。第9章以降で「配布済み ReviewCompass」を利用する前提となっているため、デプロイ（配置）ライフサイクルが途切れています。"

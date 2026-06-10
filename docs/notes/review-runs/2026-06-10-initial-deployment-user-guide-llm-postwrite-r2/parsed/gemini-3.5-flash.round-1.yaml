@@ -1,0 +1,11 @@
+role: primary
+provider: gemini-api
+model: gemini-3.5-flash
+attempts: 1
+duration_seconds: 12.168
+findings:
+- severity: WARN
+  target_location: 7. 外部アプリ root smoke
+  description: スモークテストを実行するための具体的なスクリプト名やオプション（--smoke-external-app-rootなど）の指定方法、および検証用ファイル（app.md）の準備手順が不明確です。
+  rationale: LLMに対して単に「smoke testを実行してください」と指示するだけでは、配布物内のどのスクリプトをどのようなパラメータで起動すればよいかLLMが正しく判断できない可能性があります。また、検証用
+    `app.md` の作成方法（手動で用意するのか、スクリプトが自動生成するのか）を明記する必要があります。

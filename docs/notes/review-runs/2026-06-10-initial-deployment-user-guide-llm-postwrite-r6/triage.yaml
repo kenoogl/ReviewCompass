@@ -1,0 +1,26 @@
+run_id: 2026-06-10-initial-deployment-user-guide-llm-postwrite-r6
+triage_status: decided
+generated_at: '2026-06-10T08:50:31.132768+00:00'
+decision_actor: null
+decision_actor_type: human
+items:
+- finding_id: 2026-06-10-initial-deployment-user-guide-llm-postwrite-r6-gemini-3.5-flash-primary-001
+  run_id: 2026-06-10-initial-deployment-user-guide-llm-postwrite-r6
+  source_model: gemini-3.5-flash
+  source_round: round-1
+  source_raw_path: raw/gemini-3.5-flash.round-1.txt
+  source_parsed_path: parsed/gemini-3.5-flash.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: '## 9. review-run の基本 〜 ## 13. analysis / evaluation の基本'
+  plain_language_summary: ReviewCompassの機能説明セクションの順序が、推奨されるLLMワークフローの実行ライフサイクル順（workflow-management
+    -> conformance-evaluation -> review-run -> evaluation / analysis -> self-improvement）と一致していません。
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-10T08:51:26.029456+00:00'
+  decision_reason: 対象アプリ側 LLM の実運用順に合わせ、workflow-management、conformance-evaluation、review-run、analysis/evaluation、self-improvement
+    の順へ章を並べ替えたため。
+  applied_files: []
+  superseded_by: null

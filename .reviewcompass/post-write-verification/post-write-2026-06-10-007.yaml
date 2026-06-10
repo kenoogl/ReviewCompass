@@ -1,0 +1,48 @@
+status: completed
+target_files:
+- docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-postwrite/model-result-summary.yaml
+- docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-postwrite/parsed/gemini-3.5-flash.round-1.yaml
+- docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-postwrite/raw/gemini-3.5-flash.round-1.txt
+- docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-postwrite/review_summary.md
+- docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-postwrite/rounds.yaml
+- docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-postwrite/target-manifest.yaml
+- docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-postwrite/triage.yaml
+- docs/operations/INITIAL_DEPLOYMENT_USER_GUIDE.md
+target_sha256:
+  docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-postwrite/model-result-summary.yaml: d878e23fcaa3c64e6113ecee8541316ac098b452622ce6512d55a44213f55163
+  docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-postwrite/parsed/gemini-3.5-flash.round-1.yaml: a5502f3a2092754908cca1c35cfd9472b9154c135e7e563dca7d07536aede7e1
+  docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-postwrite/raw/gemini-3.5-flash.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+  docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-postwrite/review_summary.md: 2a04fcd6a56a213851612512b1d81a647a924781c9271187933c547d67809980
+  docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-postwrite/rounds.yaml: 531c062a2d56a1df1627502dac05956f6f9b3e52a7dff7531aa94af200ea1634
+  docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-postwrite/target-manifest.yaml: 988cca5e6480bf035ec383ad0c63ea1f5bfe121fb4635e70ed46538584fcf163
+  docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-postwrite/triage.yaml: 1cdeb81cf96cdeefc41c9b7b5e24c77d4d8b55c64fcf92a7c26748209b460d25
+  docs/operations/INITIAL_DEPLOYMENT_USER_GUIDE.md: b21dd1e7a0e9ab70463d144850c6668408804055175cf1a048f6ea052f50f6d6
+required_verifiers: &id001
+- gemini-3.5-flash
+completed_verifiers: *id001
+unresolved_substantive_findings: 0
+verifications:
+- verifier: gemini-3.5-flash
+  target_files:
+  - docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-postwrite/model-result-summary.yaml
+  - docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-postwrite/parsed/gemini-3.5-flash.round-1.yaml
+  - docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-postwrite/raw/gemini-3.5-flash.round-1.txt
+  - docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-postwrite/review_summary.md
+  - docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-postwrite/rounds.yaml
+  - docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-postwrite/target-manifest.yaml
+  - docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-postwrite/triage.yaml
+  - docs/operations/INITIAL_DEPLOYMENT_USER_GUIDE.md
+  target_sha256:
+    docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-postwrite/model-result-summary.yaml: d878e23fcaa3c64e6113ecee8541316ac098b452622ce6512d55a44213f55163
+    docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-postwrite/parsed/gemini-3.5-flash.round-1.yaml: a5502f3a2092754908cca1c35cfd9472b9154c135e7e563dca7d07536aede7e1
+    docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-postwrite/raw/gemini-3.5-flash.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-postwrite/review_summary.md: 2a04fcd6a56a213851612512b1d81a647a924781c9271187933c547d67809980
+    docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-postwrite/rounds.yaml: 531c062a2d56a1df1627502dac05956f6f9b3e52a7dff7531aa94af200ea1634
+    docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-postwrite/target-manifest.yaml: 988cca5e6480bf035ec383ad0c63ea1f5bfe121fb4635e70ed46538584fcf163
+    docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-postwrite/triage.yaml: 1cdeb81cf96cdeefc41c9b7b5e24c77d4d8b55c64fcf92a7c26748209b460d25
+    docs/operations/INITIAL_DEPLOYMENT_USER_GUIDE.md: b21dd1e7a0e9ab70463d144850c6668408804055175cf1a048f6ea052f50f6d6
+review_run:
+  path: docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-postwrite
+  summary_path: docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-postwrite/model-result-summary.yaml
+notes: Generated template; verify target_files cover current post-write targets before
+  use.

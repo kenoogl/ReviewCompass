@@ -1,0 +1,4 @@
+run_id: 2026-06-10-initial-deployment-user-guide-llm-postwrite-r9
+target_files:
+- path: docs/operations/INITIAL_DEPLOYMENT_USER_GUIDE.md
+  sha256: 8f5bbc37345da06fdc842a8e784b3f4507e4bc0f2b83db98a34d3371a52588bb

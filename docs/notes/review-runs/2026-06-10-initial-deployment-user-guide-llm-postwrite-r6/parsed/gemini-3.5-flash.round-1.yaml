@@ -1,0 +1,11 @@
+role: primary
+provider: gemini-api
+model: gemini-3.5-flash
+attempts: 1
+duration_seconds: 12.139
+findings:
+- severity: WARN
+  target_location: '## 9. review-run の基本 〜 ## 13. analysis / evaluation の基本'
+  description: ReviewCompassの機能説明セクションの順序が、推奨されるLLMワークフローの実行ライフサイクル順（workflow-management
+    -> conformance-evaluation -> review-run -> evaluation / analysis -> self-improvement）と一致していません。
+  rationale: ReviewCompassはLLMが自律的または主導的にツールを呼び出して動作する前提であり、実作業はまず「workflow-management」でNextアクションを確認することから開始されます。説明の順番が実際のワークフローの依存関係や実行順と異なっていると、初期導入ユーザーが実行手順を誤解したり混乱したりするリスクがあります。実運用ライフサイクルに沿った順番に章を再構成すべきです。

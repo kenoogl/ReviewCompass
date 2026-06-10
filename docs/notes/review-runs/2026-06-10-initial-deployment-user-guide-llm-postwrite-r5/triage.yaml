@@ -1,0 +1,25 @@
+run_id: 2026-06-10-initial-deployment-user-guide-llm-postwrite-r5
+triage_status: decided
+generated_at: '2026-06-10T08:49:42.733310+00:00'
+decision_actor: null
+decision_actor_type: human
+items:
+- finding_id: 2026-06-10-initial-deployment-user-guide-llm-postwrite-r5-gemini-3.5-flash-primary-001
+  run_id: 2026-06-10-initial-deployment-user-guide-llm-postwrite-r5
+  source_model: gemini-3.5-flash
+  source_round: round-1
+  source_raw_path: raw/gemini-3.5-flash.round-1.txt
+  source_parsed_path: parsed/gemini-3.5-flash.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: '## 16. 実アプリ pilot 前のチェックリスト'
+  plain_language_summary: チェックリストにおける「配布前smokeの確認」と「対象アプリ側でのLLMセッション立ち上げ」の並び順が、実際の作業フロー（プレフライトから日常運用への移行）と前後しています。
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-10T08:50:10.249084+00:00'
+  decision_reason: チェックリストで、ReviewCompass 開発リポジトリ側 LLM による配布物生成と配布前 smoke を先に置き、その後に対象アプリ側
+    LLM セッションを立ち上げる順序へ修正したため。
+  applied_files: []
+  superseded_by: null
