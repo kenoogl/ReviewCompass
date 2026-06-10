@@ -61,3 +61,30 @@ def test_build_package_rejects_cleaning_repository_root():
       output_dir=REPO_ROOT,
       clean=True,
     )
+
+
+def test_verify_package_contents_detects_unexpected_and_excluded_files(tmp_path):
+  module = _load_module()
+  output_dir = tmp_path / "ReviewCompass"
+  module.build_package(
+    repo_root=REPO_ROOT,
+    manifest_path=MANIFEST_PATH,
+    output_dir=output_dir,
+    clean=True,
+  )
+
+  unexpected_file = output_dir / "local-only.txt"
+  unexpected_file.write_text("must not ship\n", encoding="utf-8")
+  excluded_file = output_dir / "docs/notes/internal-note.md"
+  excluded_file.parent.mkdir(parents=True)
+  excluded_file.write_text("must not ship\n", encoding="utf-8")
+
+  result = module.verify_package_contents(
+    repo_root=REPO_ROOT,
+    manifest_path=MANIFEST_PATH,
+    package_dir=output_dir,
+  )
+
+  assert result["ok"] is False
+  assert result["unexpected_files"] == ["local-only.txt"]
+  assert result["excluded_files"] == ["docs/notes/internal-note.md"]

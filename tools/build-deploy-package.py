@@ -73,26 +73,7 @@ def _clean_output_directory(repo_root: Path, output_dir: Path) -> None:
     shutil.rmtree(output_dir)
 
 
-def build_package(
-  *,
-  repo_root: Path,
-  manifest_path: Path,
-  output_dir: Path | None = None,
-  clean: bool = False,
-) -> dict:
-  repo_root = repo_root.resolve()
-  manifest_path = manifest_path.resolve()
-  manifest = _load_manifest(manifest_path)
-
-  if output_dir is None:
-    output_dir = repo_root / manifest["output"]["default_directory"]
-  output_dir = output_dir.resolve()
-
-  if clean:
-    _clean_output_directory(repo_root, output_dir)
-  else:
-    _assert_safe_output_directory(repo_root, output_dir)
-
+def _select_manifest_files(repo_root: Path, manifest: dict) -> tuple[dict[str, Path], list[dict], list[str]]:
   include_patterns = [entry["path"] for entry in manifest.get("include", [])]
   exclude_patterns = [entry["path"] for entry in manifest.get("exclude", [])]
   for pattern in [*include_patterns, *exclude_patterns]:
@@ -113,6 +94,42 @@ def build_package(
         excluded.append({"path": relative_path})
         continue
       selected[relative_path] = source_path
+
+  return selected, excluded, unresolved
+
+
+def _package_files(package_dir: Path) -> list[str]:
+  if not package_dir.exists():
+    return []
+  return sorted(
+    path.relative_to(package_dir).as_posix()
+    for path in package_dir.rglob("*")
+    if path.is_file()
+  )
+
+
+def build_package(
+  *,
+  repo_root: Path,
+  manifest_path: Path,
+  output_dir: Path | None = None,
+  clean: bool = False,
+) -> dict:
+  repo_root = repo_root.resolve()
+  manifest_path = manifest_path.resolve()
+  manifest = _load_manifest(manifest_path)
+
+  if output_dir is None:
+    output_dir = repo_root / manifest["output"]["default_directory"]
+  output_dir = output_dir.resolve()
+
+  if clean:
+    _clean_output_directory(repo_root, output_dir)
+  else:
+    _assert_safe_output_directory(repo_root, output_dir)
+
+  exclude_patterns = [entry["path"] for entry in manifest.get("exclude", [])]
+  selected, excluded, unresolved = _select_manifest_files(repo_root, manifest)
 
   if unresolved:
     raise FileNotFoundError(
@@ -135,6 +152,47 @@ def build_package(
   }
 
 
+def verify_package_contents(
+  *,
+  repo_root: Path,
+  manifest_path: Path,
+  package_dir: Path,
+) -> dict:
+  repo_root = repo_root.resolve()
+  manifest = _load_manifest(manifest_path.resolve())
+  selected, _excluded_during_selection, unresolved = _select_manifest_files(
+    repo_root,
+    manifest,
+  )
+  exclude_patterns = [entry["path"] for entry in manifest.get("exclude", [])]
+  actual_files = _package_files(package_dir.resolve())
+  expected_files = set(selected)
+
+  excluded_files = [
+    path
+    for path in actual_files
+    if _matches_any(path, exclude_patterns)
+  ]
+  unexpected_files = [
+    path
+    for path in actual_files
+    if path not in expected_files and path not in excluded_files
+  ]
+  missing_files = [
+    path
+    for path in sorted(expected_files)
+    if not (package_dir / path).is_file()
+  ]
+
+  return {
+    "ok": not unresolved and not excluded_files and not unexpected_files and not missing_files,
+    "unresolved_includes": sorted(unresolved),
+    "excluded_files": sorted(excluded_files),
+    "unexpected_files": sorted(unexpected_files),
+    "missing_files": missing_files,
+  }
+
+
 def _parse_args() -> argparse.Namespace:
   parser = argparse.ArgumentParser(
     description="Build a ReviewCompass deployment package from deploy-manifest.yaml.",
@@ -153,6 +211,11 @@ def _parse_args() -> argparse.Namespace:
     action="store_true",
     help="Remove the output directory before copying files.",
   )
+  parser.add_argument(
+    "--verify",
+    action="store_true",
+    help="Verify package contents after copying.",
+  )
   return parser.parse_args()
 
 
@@ -166,6 +229,19 @@ def main() -> int:
     clean=args.clean,
   )
   print(f"copied {len(result['copied'])} files to {result['output_dir']}")
+  if args.verify:
+    verification = verify_package_contents(
+      repo_root=repo_root,
+      manifest_path=repo_root / args.manifest,
+      package_dir=Path(result["output_dir"]),
+    )
+    if not verification["ok"]:
+      print("package verification failed")
+      for key in ("unresolved_includes", "excluded_files", "unexpected_files", "missing_files"):
+        if verification[key]:
+          print(f"{key}: {', '.join(verification[key])}")
+      return 1
+    print("package verification passed")
   return 0
 
 
