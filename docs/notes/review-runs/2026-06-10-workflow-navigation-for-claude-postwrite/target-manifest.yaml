@@ -1,0 +1,4 @@
+run_id: 2026-06-10-workflow-navigation-for-claude-postwrite
+target_files:
+- path: docs/notes/review-runs/2026-06-10-workflow-navigation-for-claude-postwrite/review-target.md
+  sha256: 54500744461d005cffdf8ed1dfe5e88c9928508ebac86c6942c648085f6c4496

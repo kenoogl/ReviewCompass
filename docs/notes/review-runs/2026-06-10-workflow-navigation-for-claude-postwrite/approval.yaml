@@ -1,0 +1,25 @@
+approved_action: review_run_triage
+approved_by: user
+approval_statement: 2026-06-10 利用者発言「承認」（まとまり A・B を should-fix として提示文案で修正、まとまり C と INFO 4 件を leave-as-is とする提示への明示承認）
+review_run_id: 2026-06-10-workflow-navigation-for-claude-postwrite
+summary_presented_to_user: true
+triage_presented_to_user: true
+approved_finding_ids:
+  - 2026-06-10-workflow-navigation-for-claude-postwrite-claude-sonnet-4-6-primary-001
+  - 2026-06-10-workflow-navigation-for-claude-postwrite-claude-sonnet-4-6-primary-002
+  - 2026-06-10-workflow-navigation-for-claude-postwrite-claude-sonnet-4-6-primary-003
+  - 2026-06-10-workflow-navigation-for-claude-postwrite-claude-sonnet-4-6-primary-004
+  - 2026-06-10-workflow-navigation-for-claude-postwrite-claude-sonnet-4-6-primary-005
+  - 2026-06-10-workflow-navigation-for-claude-postwrite-gpt-5.4-adversarial-001
+  - 2026-06-10-workflow-navigation-for-claude-postwrite-gpt-5.4-adversarial-002
+  - 2026-06-10-workflow-navigation-for-claude-postwrite-gpt-5.4-adversarial-003
+approved_final_labels:
+  2026-06-10-workflow-navigation-for-claude-postwrite-claude-sonnet-4-6-primary-001: leave-as-is
+  2026-06-10-workflow-navigation-for-claude-postwrite-claude-sonnet-4-6-primary-002: leave-as-is
+  2026-06-10-workflow-navigation-for-claude-postwrite-claude-sonnet-4-6-primary-003: should-fix
+  2026-06-10-workflow-navigation-for-claude-postwrite-claude-sonnet-4-6-primary-004: leave-as-is
+  2026-06-10-workflow-navigation-for-claude-postwrite-claude-sonnet-4-6-primary-005: leave-as-is
+  2026-06-10-workflow-navigation-for-claude-postwrite-gpt-5.4-adversarial-001: should-fix
+  2026-06-10-workflow-navigation-for-claude-postwrite-gpt-5.4-adversarial-002: should-fix
+  2026-06-10-workflow-navigation-for-claude-postwrite-gpt-5.4-adversarial-003: leave-as-is
+consumed: false

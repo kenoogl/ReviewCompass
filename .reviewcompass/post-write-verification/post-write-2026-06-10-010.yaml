@@ -1,0 +1,136 @@
+status: completed
+target_files:
+- docs/notes/review-runs/2026-06-10-workflow-navigation-for-claude-postwrite/approval.yaml
+- docs/notes/review-runs/2026-06-10-workflow-navigation-for-claude-postwrite/model-result-summary.yaml
+- docs/notes/review-runs/2026-06-10-workflow-navigation-for-claude-postwrite/parsed/claude-sonnet-4-6.round-1.yaml
+- docs/notes/review-runs/2026-06-10-workflow-navigation-for-claude-postwrite/parsed/gemini-3.1-pro-preview.round-1.yaml
+- docs/notes/review-runs/2026-06-10-workflow-navigation-for-claude-postwrite/parsed/gpt-5.4.round-1.yaml
+- docs/notes/review-runs/2026-06-10-workflow-navigation-for-claude-postwrite/raw/claude-sonnet-4-6.round-1.txt
+- docs/notes/review-runs/2026-06-10-workflow-navigation-for-claude-postwrite/raw/gemini-3.1-pro-preview.round-1.txt
+- docs/notes/review-runs/2026-06-10-workflow-navigation-for-claude-postwrite/raw/gpt-5.4.round-1.txt
+- docs/notes/review-runs/2026-06-10-workflow-navigation-for-claude-postwrite/review-target.md
+- docs/notes/review-runs/2026-06-10-workflow-navigation-for-claude-postwrite/review_summary.md
+- docs/notes/review-runs/2026-06-10-workflow-navigation-for-claude-postwrite/rounds.yaml
+- docs/notes/review-runs/2026-06-10-workflow-navigation-for-claude-postwrite/target-manifest.yaml
+- docs/notes/review-runs/2026-06-10-workflow-navigation-for-claude-postwrite/triage.yaml
+- docs/operations/WORKFLOW_NAVIGATION_FOR_CLAUDE.md
+target_sha256:
+  docs/notes/review-runs/2026-06-10-workflow-navigation-for-claude-postwrite/approval.yaml: 3707a6eec5eb017bbaa253f18bddc276c18f38f1d6436dd64b5e54f3cc4bdea7
+  docs/notes/review-runs/2026-06-10-workflow-navigation-for-claude-postwrite/model-result-summary.yaml: 0daf56edc49a999ed65bf5e99f84baefe5f561898e2fead6d10f1f4c95445c45
+  docs/notes/review-runs/2026-06-10-workflow-navigation-for-claude-postwrite/parsed/claude-sonnet-4-6.round-1.yaml: 4e4376d33f8a7451c623bf5cffd0f0eaa33cb40b5748f2203adb607d84479586
+  docs/notes/review-runs/2026-06-10-workflow-navigation-for-claude-postwrite/parsed/gemini-3.1-pro-preview.round-1.yaml: 4fed54e3730d83a786b9e5c9cef6b5278d8d7961256e2edfd3467a759e9ebf70
+  docs/notes/review-runs/2026-06-10-workflow-navigation-for-claude-postwrite/parsed/gpt-5.4.round-1.yaml: 0607d0430b1207e04c3aed630ae561d92860355fc0856d2336d040e29d7331dd
+  docs/notes/review-runs/2026-06-10-workflow-navigation-for-claude-postwrite/raw/claude-sonnet-4-6.round-1.txt: 66b408fc4fb332a1de7783387cb7d0796479d16718b96e1154bd094161fca560
+  docs/notes/review-runs/2026-06-10-workflow-navigation-for-claude-postwrite/raw/gemini-3.1-pro-preview.round-1.txt: 67f20b5f2a77ca36c12b6b153ce451a10d7c0026c9147c2eb86f0e1d33ea4fb1
+  docs/notes/review-runs/2026-06-10-workflow-navigation-for-claude-postwrite/raw/gpt-5.4.round-1.txt: ffa808c44dea5fca1154b8929c04c9aa4decdf7ecb16f30a684876ef7cf9fb71
+  docs/notes/review-runs/2026-06-10-workflow-navigation-for-claude-postwrite/review-target.md: 54500744461d005cffdf8ed1dfe5e88c9928508ebac86c6942c648085f6c4496
+  docs/notes/review-runs/2026-06-10-workflow-navigation-for-claude-postwrite/review_summary.md: e666e97831fd2c0faf7a5c049a195e1164c223553ee10b2a39b19bd2a73425ff
+  docs/notes/review-runs/2026-06-10-workflow-navigation-for-claude-postwrite/rounds.yaml: e56f057f51093ba894fdce29a899095b62f793b685666bd7c2c588a5e31ad5a2
+  docs/notes/review-runs/2026-06-10-workflow-navigation-for-claude-postwrite/target-manifest.yaml: cf644661b0112d6f5b56e45eb10766100c195096c5c2dbbb7a38cf7da57bdecf
+  docs/notes/review-runs/2026-06-10-workflow-navigation-for-claude-postwrite/triage.yaml: a8cfa5fb2a5819d3bbd85f2c6b98a9f70c537f46d96086a21e2189149459e34d
+  docs/operations/WORKFLOW_NAVIGATION_FOR_CLAUDE.md: 6005f5a165b499aef0be4da7ec78387ced483dadf97be3b2bc680999d1bf82c1
+required_verifiers: &id001
+- claude-sonnet-4-6
+- gpt-5.4
+- gemini-3.1-pro-preview
+completed_verifiers: *id001
+unresolved_substantive_findings: 0
+verifications:
+- verifier: claude-sonnet-4-6
+  target_files:
+  - docs/notes/review-runs/2026-06-10-workflow-navigation-for-claude-postwrite/approval.yaml
+  - docs/notes/review-runs/2026-06-10-workflow-navigation-for-claude-postwrite/model-result-summary.yaml
+  - docs/notes/review-runs/2026-06-10-workflow-navigation-for-claude-postwrite/parsed/claude-sonnet-4-6.round-1.yaml
+  - docs/notes/review-runs/2026-06-10-workflow-navigation-for-claude-postwrite/parsed/gemini-3.1-pro-preview.round-1.yaml
+  - docs/notes/review-runs/2026-06-10-workflow-navigation-for-claude-postwrite/parsed/gpt-5.4.round-1.yaml
+  - docs/notes/review-runs/2026-06-10-workflow-navigation-for-claude-postwrite/raw/claude-sonnet-4-6.round-1.txt
+  - docs/notes/review-runs/2026-06-10-workflow-navigation-for-claude-postwrite/raw/gemini-3.1-pro-preview.round-1.txt
+  - docs/notes/review-runs/2026-06-10-workflow-navigation-for-claude-postwrite/raw/gpt-5.4.round-1.txt
+  - docs/notes/review-runs/2026-06-10-workflow-navigation-for-claude-postwrite/review-target.md
+  - docs/notes/review-runs/2026-06-10-workflow-navigation-for-claude-postwrite/review_summary.md
+  - docs/notes/review-runs/2026-06-10-workflow-navigation-for-claude-postwrite/rounds.yaml
+  - docs/notes/review-runs/2026-06-10-workflow-navigation-for-claude-postwrite/target-manifest.yaml
+  - docs/notes/review-runs/2026-06-10-workflow-navigation-for-claude-postwrite/triage.yaml
+  - docs/operations/WORKFLOW_NAVIGATION_FOR_CLAUDE.md
+  target_sha256:
+    docs/notes/review-runs/2026-06-10-workflow-navigation-for-claude-postwrite/approval.yaml: 3707a6eec5eb017bbaa253f18bddc276c18f38f1d6436dd64b5e54f3cc4bdea7
+    docs/notes/review-runs/2026-06-10-workflow-navigation-for-claude-postwrite/model-result-summary.yaml: 0daf56edc49a999ed65bf5e99f84baefe5f561898e2fead6d10f1f4c95445c45
+    docs/notes/review-runs/2026-06-10-workflow-navigation-for-claude-postwrite/parsed/claude-sonnet-4-6.round-1.yaml: 4e4376d33f8a7451c623bf5cffd0f0eaa33cb40b5748f2203adb607d84479586
+    docs/notes/review-runs/2026-06-10-workflow-navigation-for-claude-postwrite/parsed/gemini-3.1-pro-preview.round-1.yaml: 4fed54e3730d83a786b9e5c9cef6b5278d8d7961256e2edfd3467a759e9ebf70
+    docs/notes/review-runs/2026-06-10-workflow-navigation-for-claude-postwrite/parsed/gpt-5.4.round-1.yaml: 0607d0430b1207e04c3aed630ae561d92860355fc0856d2336d040e29d7331dd
+    docs/notes/review-runs/2026-06-10-workflow-navigation-for-claude-postwrite/raw/claude-sonnet-4-6.round-1.txt: 66b408fc4fb332a1de7783387cb7d0796479d16718b96e1154bd094161fca560
+    docs/notes/review-runs/2026-06-10-workflow-navigation-for-claude-postwrite/raw/gemini-3.1-pro-preview.round-1.txt: 67f20b5f2a77ca36c12b6b153ce451a10d7c0026c9147c2eb86f0e1d33ea4fb1
+    docs/notes/review-runs/2026-06-10-workflow-navigation-for-claude-postwrite/raw/gpt-5.4.round-1.txt: ffa808c44dea5fca1154b8929c04c9aa4decdf7ecb16f30a684876ef7cf9fb71
+    docs/notes/review-runs/2026-06-10-workflow-navigation-for-claude-postwrite/review-target.md: 54500744461d005cffdf8ed1dfe5e88c9928508ebac86c6942c648085f6c4496
+    docs/notes/review-runs/2026-06-10-workflow-navigation-for-claude-postwrite/review_summary.md: e666e97831fd2c0faf7a5c049a195e1164c223553ee10b2a39b19bd2a73425ff
+    docs/notes/review-runs/2026-06-10-workflow-navigation-for-claude-postwrite/rounds.yaml: e56f057f51093ba894fdce29a899095b62f793b685666bd7c2c588a5e31ad5a2
+    docs/notes/review-runs/2026-06-10-workflow-navigation-for-claude-postwrite/target-manifest.yaml: cf644661b0112d6f5b56e45eb10766100c195096c5c2dbbb7a38cf7da57bdecf
+    docs/notes/review-runs/2026-06-10-workflow-navigation-for-claude-postwrite/triage.yaml: a8cfa5fb2a5819d3bbd85f2c6b98a9f70c537f46d96086a21e2189149459e34d
+    docs/operations/WORKFLOW_NAVIGATION_FOR_CLAUDE.md: 6005f5a165b499aef0be4da7ec78387ced483dadf97be3b2bc680999d1bf82c1
+- verifier: gpt-5.4
+  target_files:
+  - docs/notes/review-runs/2026-06-10-workflow-navigation-for-claude-postwrite/approval.yaml
+  - docs/notes/review-runs/2026-06-10-workflow-navigation-for-claude-postwrite/model-result-summary.yaml
+  - docs/notes/review-runs/2026-06-10-workflow-navigation-for-claude-postwrite/parsed/claude-sonnet-4-6.round-1.yaml
+  - docs/notes/review-runs/2026-06-10-workflow-navigation-for-claude-postwrite/parsed/gemini-3.1-pro-preview.round-1.yaml
+  - docs/notes/review-runs/2026-06-10-workflow-navigation-for-claude-postwrite/parsed/gpt-5.4.round-1.yaml
+  - docs/notes/review-runs/2026-06-10-workflow-navigation-for-claude-postwrite/raw/claude-sonnet-4-6.round-1.txt
+  - docs/notes/review-runs/2026-06-10-workflow-navigation-for-claude-postwrite/raw/gemini-3.1-pro-preview.round-1.txt
+  - docs/notes/review-runs/2026-06-10-workflow-navigation-for-claude-postwrite/raw/gpt-5.4.round-1.txt
+  - docs/notes/review-runs/2026-06-10-workflow-navigation-for-claude-postwrite/review-target.md
+  - docs/notes/review-runs/2026-06-10-workflow-navigation-for-claude-postwrite/review_summary.md
+  - docs/notes/review-runs/2026-06-10-workflow-navigation-for-claude-postwrite/rounds.yaml
+  - docs/notes/review-runs/2026-06-10-workflow-navigation-for-claude-postwrite/target-manifest.yaml
+  - docs/notes/review-runs/2026-06-10-workflow-navigation-for-claude-postwrite/triage.yaml
+  - docs/operations/WORKFLOW_NAVIGATION_FOR_CLAUDE.md
+  target_sha256:
+    docs/notes/review-runs/2026-06-10-workflow-navigation-for-claude-postwrite/approval.yaml: 3707a6eec5eb017bbaa253f18bddc276c18f38f1d6436dd64b5e54f3cc4bdea7
+    docs/notes/review-runs/2026-06-10-workflow-navigation-for-claude-postwrite/model-result-summary.yaml: 0daf56edc49a999ed65bf5e99f84baefe5f561898e2fead6d10f1f4c95445c45
+    docs/notes/review-runs/2026-06-10-workflow-navigation-for-claude-postwrite/parsed/claude-sonnet-4-6.round-1.yaml: 4e4376d33f8a7451c623bf5cffd0f0eaa33cb40b5748f2203adb607d84479586
+    docs/notes/review-runs/2026-06-10-workflow-navigation-for-claude-postwrite/parsed/gemini-3.1-pro-preview.round-1.yaml: 4fed54e3730d83a786b9e5c9cef6b5278d8d7961256e2edfd3467a759e9ebf70
+    docs/notes/review-runs/2026-06-10-workflow-navigation-for-claude-postwrite/parsed/gpt-5.4.round-1.yaml: 0607d0430b1207e04c3aed630ae561d92860355fc0856d2336d040e29d7331dd
+    docs/notes/review-runs/2026-06-10-workflow-navigation-for-claude-postwrite/raw/claude-sonnet-4-6.round-1.txt: 66b408fc4fb332a1de7783387cb7d0796479d16718b96e1154bd094161fca560
+    docs/notes/review-runs/2026-06-10-workflow-navigation-for-claude-postwrite/raw/gemini-3.1-pro-preview.round-1.txt: 67f20b5f2a77ca36c12b6b153ce451a10d7c0026c9147c2eb86f0e1d33ea4fb1
+    docs/notes/review-runs/2026-06-10-workflow-navigation-for-claude-postwrite/raw/gpt-5.4.round-1.txt: ffa808c44dea5fca1154b8929c04c9aa4decdf7ecb16f30a684876ef7cf9fb71
+    docs/notes/review-runs/2026-06-10-workflow-navigation-for-claude-postwrite/review-target.md: 54500744461d005cffdf8ed1dfe5e88c9928508ebac86c6942c648085f6c4496
+    docs/notes/review-runs/2026-06-10-workflow-navigation-for-claude-postwrite/review_summary.md: e666e97831fd2c0faf7a5c049a195e1164c223553ee10b2a39b19bd2a73425ff
+    docs/notes/review-runs/2026-06-10-workflow-navigation-for-claude-postwrite/rounds.yaml: e56f057f51093ba894fdce29a899095b62f793b685666bd7c2c588a5e31ad5a2
+    docs/notes/review-runs/2026-06-10-workflow-navigation-for-claude-postwrite/target-manifest.yaml: cf644661b0112d6f5b56e45eb10766100c195096c5c2dbbb7a38cf7da57bdecf
+    docs/notes/review-runs/2026-06-10-workflow-navigation-for-claude-postwrite/triage.yaml: a8cfa5fb2a5819d3bbd85f2c6b98a9f70c537f46d96086a21e2189149459e34d
+    docs/operations/WORKFLOW_NAVIGATION_FOR_CLAUDE.md: 6005f5a165b499aef0be4da7ec78387ced483dadf97be3b2bc680999d1bf82c1
+- verifier: gemini-3.1-pro-preview
+  target_files:
+  - docs/notes/review-runs/2026-06-10-workflow-navigation-for-claude-postwrite/approval.yaml
+  - docs/notes/review-runs/2026-06-10-workflow-navigation-for-claude-postwrite/model-result-summary.yaml
+  - docs/notes/review-runs/2026-06-10-workflow-navigation-for-claude-postwrite/parsed/claude-sonnet-4-6.round-1.yaml
+  - docs/notes/review-runs/2026-06-10-workflow-navigation-for-claude-postwrite/parsed/gemini-3.1-pro-preview.round-1.yaml
+  - docs/notes/review-runs/2026-06-10-workflow-navigation-for-claude-postwrite/parsed/gpt-5.4.round-1.yaml
+  - docs/notes/review-runs/2026-06-10-workflow-navigation-for-claude-postwrite/raw/claude-sonnet-4-6.round-1.txt
+  - docs/notes/review-runs/2026-06-10-workflow-navigation-for-claude-postwrite/raw/gemini-3.1-pro-preview.round-1.txt
+  - docs/notes/review-runs/2026-06-10-workflow-navigation-for-claude-postwrite/raw/gpt-5.4.round-1.txt
+  - docs/notes/review-runs/2026-06-10-workflow-navigation-for-claude-postwrite/review-target.md
+  - docs/notes/review-runs/2026-06-10-workflow-navigation-for-claude-postwrite/review_summary.md
+  - docs/notes/review-runs/2026-06-10-workflow-navigation-for-claude-postwrite/rounds.yaml
+  - docs/notes/review-runs/2026-06-10-workflow-navigation-for-claude-postwrite/target-manifest.yaml
+  - docs/notes/review-runs/2026-06-10-workflow-navigation-for-claude-postwrite/triage.yaml
+  - docs/operations/WORKFLOW_NAVIGATION_FOR_CLAUDE.md
+  target_sha256:
+    docs/notes/review-runs/2026-06-10-workflow-navigation-for-claude-postwrite/approval.yaml: 3707a6eec5eb017bbaa253f18bddc276c18f38f1d6436dd64b5e54f3cc4bdea7
+    docs/notes/review-runs/2026-06-10-workflow-navigation-for-claude-postwrite/model-result-summary.yaml: 0daf56edc49a999ed65bf5e99f84baefe5f561898e2fead6d10f1f4c95445c45
+    docs/notes/review-runs/2026-06-10-workflow-navigation-for-claude-postwrite/parsed/claude-sonnet-4-6.round-1.yaml: 4e4376d33f8a7451c623bf5cffd0f0eaa33cb40b5748f2203adb607d84479586
+    docs/notes/review-runs/2026-06-10-workflow-navigation-for-claude-postwrite/parsed/gemini-3.1-pro-preview.round-1.yaml: 4fed54e3730d83a786b9e5c9cef6b5278d8d7961256e2edfd3467a759e9ebf70
+    docs/notes/review-runs/2026-06-10-workflow-navigation-for-claude-postwrite/parsed/gpt-5.4.round-1.yaml: 0607d0430b1207e04c3aed630ae561d92860355fc0856d2336d040e29d7331dd
+    docs/notes/review-runs/2026-06-10-workflow-navigation-for-claude-postwrite/raw/claude-sonnet-4-6.round-1.txt: 66b408fc4fb332a1de7783387cb7d0796479d16718b96e1154bd094161fca560
+    docs/notes/review-runs/2026-06-10-workflow-navigation-for-claude-postwrite/raw/gemini-3.1-pro-preview.round-1.txt: 67f20b5f2a77ca36c12b6b153ce451a10d7c0026c9147c2eb86f0e1d33ea4fb1
+    docs/notes/review-runs/2026-06-10-workflow-navigation-for-claude-postwrite/raw/gpt-5.4.round-1.txt: ffa808c44dea5fca1154b8929c04c9aa4decdf7ecb16f30a684876ef7cf9fb71
+    docs/notes/review-runs/2026-06-10-workflow-navigation-for-claude-postwrite/review-target.md: 54500744461d005cffdf8ed1dfe5e88c9928508ebac86c6942c648085f6c4496
+    docs/notes/review-runs/2026-06-10-workflow-navigation-for-claude-postwrite/review_summary.md: e666e97831fd2c0faf7a5c049a195e1164c223553ee10b2a39b19bd2a73425ff
+    docs/notes/review-runs/2026-06-10-workflow-navigation-for-claude-postwrite/rounds.yaml: e56f057f51093ba894fdce29a899095b62f793b685666bd7c2c588a5e31ad5a2
+    docs/notes/review-runs/2026-06-10-workflow-navigation-for-claude-postwrite/target-manifest.yaml: cf644661b0112d6f5b56e45eb10766100c195096c5c2dbbb7a38cf7da57bdecf
+    docs/notes/review-runs/2026-06-10-workflow-navigation-for-claude-postwrite/triage.yaml: a8cfa5fb2a5819d3bbd85f2c6b98a9f70c537f46d96086a21e2189149459e34d
+    docs/operations/WORKFLOW_NAVIGATION_FOR_CLAUDE.md: 6005f5a165b499aef0be4da7ec78387ced483dadf97be3b2bc680999d1bf82c1
+review_run:
+  path: docs/notes/review-runs/2026-06-10-workflow-navigation-for-claude-postwrite
+  summary_path: docs/notes/review-runs/2026-06-10-workflow-navigation-for-claude-postwrite/model-result-summary.yaml
+notes: Generated template; verify target_files cover current post-write targets before
+  use.

@@ -5,6 +5,7 @@
 # 設計：
 #   - stdin から PreToolUse の JSON ペイロードを読み、tool_input.command を取得
 #   - git commit／git push を検出した場合のみ tools/check-workflow-action.py を呼ぶ
+#   - git commit は .reviewcompass/approvals/commit-approval.json がない場合 deny される
 #   - check スクリプトの exit 2（DEVIATION）のときのみ deny を返す
 #   - それ以外は exit 0 で通過（exit 1 WARN は警告だが通過、stage 1 規律が判断を担う）
 #

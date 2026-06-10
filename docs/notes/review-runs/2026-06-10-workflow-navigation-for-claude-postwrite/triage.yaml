@@ -1,0 +1,169 @@
+run_id: 2026-06-10-workflow-navigation-for-claude-postwrite
+triage_status: decided
+generated_at: '2026-06-10T10:00:28.608847+00:00'
+decision_actor: null
+decision_actor_type: human
+items:
+- finding_id: 2026-06-10-workflow-navigation-for-claude-postwrite-claude-sonnet-4-6-primary-001
+  run_id: 2026-06-10-workflow-navigation-for-claude-postwrite
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: 'docs/operations/WORKFLOW_NAVIGATION_FOR_CLAUDE.md ## 2. Claude
+    固有の作業規則 規則1'
+  plain_language_summary: CLAUDE.md の正本は AGENTS.md と記述されているが、合意では CLAUDE.md は AGENTS.md
+    を『取り込む入口』とされており、AGENTS.md が入口規律の正本であるという表現が正確かどうか微妙である。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-10T10:04:43.554509+00:00'
+  decision_reason: 『AGENTS.md を入口規律の正本とする』は承認済み方針（2026-06-10 利用者発言「Aとア」による柱1承認）に出典があり、解釈の拡張ではない。利用者承認
+    2026-06-10「承認」
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-10-workflow-navigation-for-claude-postwrite-claude-sonnet-4-6-primary-002
+  run_id: 2026-06-10-workflow-navigation-for-claude-postwrite
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: 'docs/operations/WORKFLOW_NAVIGATION_FOR_CLAUDE.md ## 2. Claude
+    固有の作業規則 規則9'
+  plain_language_summary: フック本体の同一性検査テストファイルが `tests/hooks/test_claude_hook_repository.py`
+    と記載されているが、合意の決定事項にあるファイル名と一致している。ただし Codex 版（参照）の規則9にはテスト検査への言及がなく、Claude 版にのみ追加されている点が
+    adapter 形式の非対称性として現れている。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-10T10:04:52.256656+00:00'
+  decision_reason: テスト言及の非対称性は意図的（claude 側の複製同一性検査は claude 側 adapter の責務）。検証者自身も問題なしと評価。利用者承認
+    2026-06-10「承認」
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-10-workflow-navigation-for-claude-postwrite-claude-sonnet-4-6-primary-003
+  run_id: 2026-06-10-workflow-navigation-for-claude-postwrite
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: 'docs/operations/WORKFLOW_NAVIGATION_FOR_CLAUDE.md ## 2. Claude
+    固有の作業規則 規則9'
+  plain_language_summary: 『フック本体 pre-bash-precheck.sh は .codex/hooks/ の複製と同一内容を保ち』と記述されているが、合意では『.claude/hooks/
+    と .codex/hooks/ の両複製を同一内容に保ち』とされており、主体が逆転している。Claude 版の文書では Claude 側（.claude/hooks/）を主体として書くべきであり、『.codex/hooks/
+    の複製』という表現は方向性が逆である。
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-10T10:04:29.013090+00:00'
+  decision_reason: 規則9を『.claude/hooks/ と .codex/hooks/ の両複製を同一内容に保つ』という対等表現へ修正適用。利用者承認
+    2026-06-10「承認」
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-10-workflow-navigation-for-claude-postwrite-claude-sonnet-4-6-primary-004
+  run_id: 2026-06-10-workflow-navigation-for-claude-postwrite
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: 'docs/operations/WORKFLOW_NAVIGATION_FOR_CLAUDE.md ## 4. Codex
+    固有資産の扱い'
+  plain_language_summary: Codex 版（参照）の対応セクション（## 4. Claude 固有資産の扱い）では adapter 資産の保全理由として『Claude
+    Code で再検証・比較実行するための』と具体的な用途を示しているのに対し、Claude 版では『Codex で再検証・比較実行するための adapter
+    資産として残す』と対称的に記述されており、整合している。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-10T10:04:58.562162+00:00'
+  decision_reason: §4 の対称性が取れているという確認報告であり修正対象なし。利用者承認 2026-06-10「承認」
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-10-workflow-navigation-for-claude-postwrite-claude-sonnet-4-6-primary-005
+  run_id: 2026-06-10-workflow-navigation-for-claude-postwrite
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: 'docs/operations/WORKFLOW_NAVIGATION_FOR_CLAUDE.md ## 4. Codex
+    固有資産の扱い 第2段落'
+  plain_language_summary: 『Claude 作業時も、triad-review のモデル名としての gpt-*／gemini-* や、過去セッション記録内の
+    Codex 記述は履歴・モデル識別子として扱う』という記述は、Codex 版の対応する記述（claude-* を履歴・モデル識別子として扱う）と対称的であり整合している。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-10T10:05:06.598076+00:00'
+  decision_reason: §4 第2段落の対称性が取れているという確認報告であり修正対象なし。利用者承認 2026-06-10「承認」
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-10-workflow-navigation-for-claude-postwrite-gpt-5.4-adversarial-001
+  run_id: 2026-06-10-workflow-navigation-for-claude-postwrite
+  source_model: gpt-5.4
+  source_round: round-1
+  source_raw_path: raw/gpt-5.4.round-1.txt
+  source_parsed_path: parsed/gpt-5.4.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: docs/operations/WORKFLOW_NAVIGATION_FOR_CLAUDE.md §2 rule 4
+  plain_language_summary: Claude 側の権限制約の説明が Codex 版との対応関係を崩しており、Claude 固有の用語か共通ルールかが曖昧です。
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-10T10:04:21.336375+00:00'
+  decision_reason: 規則4の用語の指し先（.claude/settings.json・settings.local.json の allow／deny
+    と Claude Code の承認モード）を本文に明示する修正を適用。利用者承認 2026-06-10「承認」
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-10-workflow-navigation-for-claude-postwrite-gpt-5.4-adversarial-002
+  run_id: 2026-06-10-workflow-navigation-for-claude-postwrite
+  source_model: gpt-5.4
+  source_round: round-1
+  source_raw_path: raw/gpt-5.4.round-1.txt
+  source_parsed_path: parsed/gpt-5.4.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: docs/operations/WORKFLOW_NAVIGATION_FOR_CLAUDE.md §2 rule 9
+  plain_language_summary: フック同一性の説明が合意内容を十分に反映しておらず、`.claude/hooks/` と `.codex/hooks/`
+    の『両複製を同一内容に保つ』という対称性が弱く表現されています。
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-10T10:04:35.360206+00:00'
+  decision_reason: 規則9の対等表現への修正（claude-sonnet-4-6-primary-003 と同根）。修正適用済み。利用者承認 2026-06-10「承認」
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-10-workflow-navigation-for-claude-postwrite-gpt-5.4-adversarial-003
+  run_id: 2026-06-10-workflow-navigation-for-claude-postwrite
+  source_model: gpt-5.4
+  source_round: round-1
+  source_raw_path: raw/gpt-5.4.round-1.txt
+  source_parsed_path: parsed/gpt-5.4.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: docs/operations/WORKFLOW_NAVIGATION_FOR_CLAUDE.md 全体
+  plain_language_summary: 薄い adapter 化、`CLAUDE.md` の入口化、Claude project memory を正本にしない方針、commit/side
+    track/review-run ゲートの Codex 版踏襲など、主要な合意事項は概ね反映されています。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-10T10:05:15.627081+00:00'
+  decision_reason: 主要合意事項は反映済みという全体確認の報告であり修正対象なし。利用者承認 2026-06-10「承認」
+  applied_files: []
+  superseded_by: null
