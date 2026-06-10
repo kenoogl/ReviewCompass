@@ -173,10 +173,10 @@ ReviewCompass の開発リポジトリには、実行に必要なファイル、
 想定する流れは次の通り。
 
 1. `deploy-manifest.yaml` を読む。
-2. 許可されたファイルだけを `build/deploy/ReviewCompass/` などへコピーする。
-3. 配布物ディレクトリ内で smoke test を実行する。
-4. 配布物に非配布対象が混入していないことを機械検査する。
-5. 外部アプリ pilot は、この配布物を使って実施する。
+2. `tools/build-deploy-package.py --clean --verify` で、許可されたファイルだけを `build/deploy/ReviewCompass/` などへコピーする。
+3. `--verify` で、allowlist 外ファイル、exclude 対象ファイル、欠落ファイルがないことを機械検査する。
+4. `--smoke-external-app-root <外部アプリroot>` で、配布物だけを使って外部アプリ root の `.reviewcompass/specs/<feature>/reviews/` へ review-run 成果物を書けることを確認する。
+5. 実アプリ pilot は、この生成済み配布物を使って実施する。
 
 配布物生成時に、開発リポジトリ側の workflow state や仕様状態を変更してはならない。
 
@@ -232,15 +232,14 @@ ReviewCompass 本体を改変したい場合は、第3者の対象アプリ repo
 - 配布物だけで最小 smoke test が通ること。
 - 外部アプリ root の `.reviewcompass/specs/` を読み書きできること。
 
-既存の `tools/deployment_independence_lint.py` は、絶対パスや配置非依存性の検査に使える。今後は、配布 manifest と組み合わせて、配布物そのものの混入検査にも拡張する。
+`tools/deployment_independence_lint.py` は、絶対パスや配置非依存性の検査に使う。`tools/build-deploy-package.py --verify` は、配布 manifest と組み合わせて、配布物そのものの混入検査を行う。
 
 ## 10. 当面の次作業
 
-1. 初期デプロイ配布物 v0 の内容を `deploy-manifest.yaml` に転記する。
-2. 第3者配布用の API 設定テンプレートを作成する。
-3. manifest に基づく配布物生成スクリプトを作る。
-4. 非配布対象の混入を検出するテストを追加する。
-5. 配布物だけで外部アプリ root に対する smoke test を実行する。
-6. 実アプリ pilot では、開発リポジトリではなく生成済み配布物を使う。
+1. 第3者配布用の API 設定テンプレートを作成する。
+2. 実アプリ pilot で使う外部アプリ root を決める。
+3. `tools/build-deploy-package.py --clean --verify --smoke-external-app-root <外部アプリroot>` を実アプリ用の一時 root で実行する。
+4. 実アプリ pilot では、開発リポジトリではなく生成済み配布物を使う。
+5. pilot で見つかった ReviewCompass 開発リポジトリ固有依存を、第3者配布前の修正候補として記録する。
 
 この順序により、開発リポジトリの研究証跡を失わずに、外部アプリへ渡す ReviewCompass を小さく、説明可能で、検査可能な状態にする。

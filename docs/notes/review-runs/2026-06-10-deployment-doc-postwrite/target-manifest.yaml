@@ -1,0 +1,4 @@
+run_id: 2026-06-10-deployment-doc-postwrite
+target_files:
+- path: docs/operations/DEPLOYMENT.md
+  sha256: 6156a8e51fb7cc133ffa8e66c0a86defc6498c76f851db779a01882eb697826a

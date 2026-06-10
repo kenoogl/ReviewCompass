@@ -1,0 +1,48 @@
+status: completed
+target_files:
+- docs/notes/review-runs/2026-06-10-deployment-doc-postwrite/model-result-summary.yaml
+- docs/notes/review-runs/2026-06-10-deployment-doc-postwrite/parsed/gemini-3.5-flash.round-1.yaml
+- docs/notes/review-runs/2026-06-10-deployment-doc-postwrite/raw/gemini-3.5-flash.round-1.txt
+- docs/notes/review-runs/2026-06-10-deployment-doc-postwrite/review_summary.md
+- docs/notes/review-runs/2026-06-10-deployment-doc-postwrite/rounds.yaml
+- docs/notes/review-runs/2026-06-10-deployment-doc-postwrite/target-manifest.yaml
+- docs/notes/review-runs/2026-06-10-deployment-doc-postwrite/triage.yaml
+- docs/operations/DEPLOYMENT.md
+target_sha256:
+  docs/notes/review-runs/2026-06-10-deployment-doc-postwrite/model-result-summary.yaml: 34a03a8cb3987fd06694b674f3c6fd410b6dc1cbd1e540c56d6576b0221ea97c
+  docs/notes/review-runs/2026-06-10-deployment-doc-postwrite/parsed/gemini-3.5-flash.round-1.yaml: d10afd8c0ab5c91d8898d8bbb89f6c7efedb4a0eaf60cb1ff13288ab9e3e1047
+  docs/notes/review-runs/2026-06-10-deployment-doc-postwrite/raw/gemini-3.5-flash.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+  docs/notes/review-runs/2026-06-10-deployment-doc-postwrite/review_summary.md: 4aa99fc1ee4738863ab7d2b2d155719142f57645e1e7bb3f80ddfe447ee1b4e8
+  docs/notes/review-runs/2026-06-10-deployment-doc-postwrite/rounds.yaml: dffc6fc9a2a1722f450fa012f0ae91fe1ae3e16e81f1057875eaff94dc7ddaeb
+  docs/notes/review-runs/2026-06-10-deployment-doc-postwrite/target-manifest.yaml: f6d9b66b39f2d6eb501dfa3e2552a7f8519decd5613206c8f8a383427283fada
+  docs/notes/review-runs/2026-06-10-deployment-doc-postwrite/triage.yaml: 7c518baf7a24241b219f9b82924e44e79fce546b763c263b8559a37239b779d2
+  docs/operations/DEPLOYMENT.md: 6156a8e51fb7cc133ffa8e66c0a86defc6498c76f851db779a01882eb697826a
+required_verifiers: &id001
+- gemini-3.5-flash
+completed_verifiers: *id001
+unresolved_substantive_findings: 0
+verifications:
+- verifier: gemini-3.5-flash
+  target_files:
+  - docs/notes/review-runs/2026-06-10-deployment-doc-postwrite/model-result-summary.yaml
+  - docs/notes/review-runs/2026-06-10-deployment-doc-postwrite/parsed/gemini-3.5-flash.round-1.yaml
+  - docs/notes/review-runs/2026-06-10-deployment-doc-postwrite/raw/gemini-3.5-flash.round-1.txt
+  - docs/notes/review-runs/2026-06-10-deployment-doc-postwrite/review_summary.md
+  - docs/notes/review-runs/2026-06-10-deployment-doc-postwrite/rounds.yaml
+  - docs/notes/review-runs/2026-06-10-deployment-doc-postwrite/target-manifest.yaml
+  - docs/notes/review-runs/2026-06-10-deployment-doc-postwrite/triage.yaml
+  - docs/operations/DEPLOYMENT.md
+  target_sha256:
+    docs/notes/review-runs/2026-06-10-deployment-doc-postwrite/model-result-summary.yaml: 34a03a8cb3987fd06694b674f3c6fd410b6dc1cbd1e540c56d6576b0221ea97c
+    docs/notes/review-runs/2026-06-10-deployment-doc-postwrite/parsed/gemini-3.5-flash.round-1.yaml: d10afd8c0ab5c91d8898d8bbb89f6c7efedb4a0eaf60cb1ff13288ab9e3e1047
+    docs/notes/review-runs/2026-06-10-deployment-doc-postwrite/raw/gemini-3.5-flash.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/2026-06-10-deployment-doc-postwrite/review_summary.md: 4aa99fc1ee4738863ab7d2b2d155719142f57645e1e7bb3f80ddfe447ee1b4e8
+    docs/notes/review-runs/2026-06-10-deployment-doc-postwrite/rounds.yaml: dffc6fc9a2a1722f450fa012f0ae91fe1ae3e16e81f1057875eaff94dc7ddaeb
+    docs/notes/review-runs/2026-06-10-deployment-doc-postwrite/target-manifest.yaml: f6d9b66b39f2d6eb501dfa3e2552a7f8519decd5613206c8f8a383427283fada
+    docs/notes/review-runs/2026-06-10-deployment-doc-postwrite/triage.yaml: 7c518baf7a24241b219f9b82924e44e79fce546b763c263b8559a37239b779d2
+    docs/operations/DEPLOYMENT.md: 6156a8e51fb7cc133ffa8e66c0a86defc6498c76f851db779a01882eb697826a
+review_run:
+  path: docs/notes/review-runs/2026-06-10-deployment-doc-postwrite
+  summary_path: docs/notes/review-runs/2026-06-10-deployment-doc-postwrite/model-result-summary.yaml
+notes: Generated template; verify target_files cover current post-write targets before
+  use.
