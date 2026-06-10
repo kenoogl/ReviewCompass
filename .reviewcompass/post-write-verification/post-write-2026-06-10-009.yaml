@@ -1,0 +1,56 @@
+status: completed
+target_files:
+- docs/notes/review-runs/2026-06-10-initial-setup-llm-guide-postwrite/model-result-summary.yaml
+- docs/notes/review-runs/2026-06-10-initial-setup-llm-guide-postwrite/parsed/gemini-3.5-flash.round-1.yaml
+- docs/notes/review-runs/2026-06-10-initial-setup-llm-guide-postwrite/raw/gemini-3.5-flash.round-1.txt
+- docs/notes/review-runs/2026-06-10-initial-setup-llm-guide-postwrite/review-target.md
+- docs/notes/review-runs/2026-06-10-initial-setup-llm-guide-postwrite/review_summary.md
+- docs/notes/review-runs/2026-06-10-initial-setup-llm-guide-postwrite/rounds.yaml
+- docs/notes/review-runs/2026-06-10-initial-setup-llm-guide-postwrite/target-manifest.yaml
+- docs/notes/review-runs/2026-06-10-initial-setup-llm-guide-postwrite/triage.yaml
+- docs/operations/INITIAL_DEPLOYMENT_USER_GUIDE.md
+- docs/operations/INITIAL_SETUP_LLM_GUIDE.md
+target_sha256:
+  docs/notes/review-runs/2026-06-10-initial-setup-llm-guide-postwrite/model-result-summary.yaml: 1ca03fa24695819aa3c3d0781586a84b08358b87b2603c2bbfcc0275cfb2e6d6
+  docs/notes/review-runs/2026-06-10-initial-setup-llm-guide-postwrite/parsed/gemini-3.5-flash.round-1.yaml: ccd9ae5e069a3b5316c7b24cd2fdb4c18c2b780db99bc26199c0d874a0bc8968
+  docs/notes/review-runs/2026-06-10-initial-setup-llm-guide-postwrite/raw/gemini-3.5-flash.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+  docs/notes/review-runs/2026-06-10-initial-setup-llm-guide-postwrite/review-target.md: 0eee9f595188bc1f3116e132ccdbf136c6366f68e48b7e00c841652540f48026
+  docs/notes/review-runs/2026-06-10-initial-setup-llm-guide-postwrite/review_summary.md: dd8fedb4dfc16d199568c72ff25832f5278dd15e6e654b092b4a3c8cef5da21c
+  docs/notes/review-runs/2026-06-10-initial-setup-llm-guide-postwrite/rounds.yaml: 6fca8871d39c5622289a6bd58075b402e675a8092f9aa0ce3ec05cf2bf3d790b
+  docs/notes/review-runs/2026-06-10-initial-setup-llm-guide-postwrite/target-manifest.yaml: a9655102ba9a7b9e6c9c16a85e7022c794a6a004e950e366b2c8940493cb3e56
+  docs/notes/review-runs/2026-06-10-initial-setup-llm-guide-postwrite/triage.yaml: 25dfd073dff2fa211671d66d79c729bdece6e8ba694415f6507fac46f6da0196
+  docs/operations/INITIAL_DEPLOYMENT_USER_GUIDE.md: 2a5937edd76b093c9c6c52f7c9aa1fa9d97b6757f568d7a4187c770219c5a7e2
+  docs/operations/INITIAL_SETUP_LLM_GUIDE.md: 42ff9801a2c3882741321908df42d045d8483ce1431569f26fd30877a6290e4d
+required_verifiers: &id001
+- gemini-3.5-flash
+completed_verifiers: *id001
+unresolved_substantive_findings: 0
+verifications:
+- verifier: gemini-3.5-flash
+  target_files:
+  - docs/notes/review-runs/2026-06-10-initial-setup-llm-guide-postwrite/model-result-summary.yaml
+  - docs/notes/review-runs/2026-06-10-initial-setup-llm-guide-postwrite/parsed/gemini-3.5-flash.round-1.yaml
+  - docs/notes/review-runs/2026-06-10-initial-setup-llm-guide-postwrite/raw/gemini-3.5-flash.round-1.txt
+  - docs/notes/review-runs/2026-06-10-initial-setup-llm-guide-postwrite/review-target.md
+  - docs/notes/review-runs/2026-06-10-initial-setup-llm-guide-postwrite/review_summary.md
+  - docs/notes/review-runs/2026-06-10-initial-setup-llm-guide-postwrite/rounds.yaml
+  - docs/notes/review-runs/2026-06-10-initial-setup-llm-guide-postwrite/target-manifest.yaml
+  - docs/notes/review-runs/2026-06-10-initial-setup-llm-guide-postwrite/triage.yaml
+  - docs/operations/INITIAL_DEPLOYMENT_USER_GUIDE.md
+  - docs/operations/INITIAL_SETUP_LLM_GUIDE.md
+  target_sha256:
+    docs/notes/review-runs/2026-06-10-initial-setup-llm-guide-postwrite/model-result-summary.yaml: 1ca03fa24695819aa3c3d0781586a84b08358b87b2603c2bbfcc0275cfb2e6d6
+    docs/notes/review-runs/2026-06-10-initial-setup-llm-guide-postwrite/parsed/gemini-3.5-flash.round-1.yaml: ccd9ae5e069a3b5316c7b24cd2fdb4c18c2b780db99bc26199c0d874a0bc8968
+    docs/notes/review-runs/2026-06-10-initial-setup-llm-guide-postwrite/raw/gemini-3.5-flash.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/2026-06-10-initial-setup-llm-guide-postwrite/review-target.md: 0eee9f595188bc1f3116e132ccdbf136c6366f68e48b7e00c841652540f48026
+    docs/notes/review-runs/2026-06-10-initial-setup-llm-guide-postwrite/review_summary.md: dd8fedb4dfc16d199568c72ff25832f5278dd15e6e654b092b4a3c8cef5da21c
+    docs/notes/review-runs/2026-06-10-initial-setup-llm-guide-postwrite/rounds.yaml: 6fca8871d39c5622289a6bd58075b402e675a8092f9aa0ce3ec05cf2bf3d790b
+    docs/notes/review-runs/2026-06-10-initial-setup-llm-guide-postwrite/target-manifest.yaml: a9655102ba9a7b9e6c9c16a85e7022c794a6a004e950e366b2c8940493cb3e56
+    docs/notes/review-runs/2026-06-10-initial-setup-llm-guide-postwrite/triage.yaml: 25dfd073dff2fa211671d66d79c729bdece6e8ba694415f6507fac46f6da0196
+    docs/operations/INITIAL_DEPLOYMENT_USER_GUIDE.md: 2a5937edd76b093c9c6c52f7c9aa1fa9d97b6757f568d7a4187c770219c5a7e2
+    docs/operations/INITIAL_SETUP_LLM_GUIDE.md: 42ff9801a2c3882741321908df42d045d8483ce1431569f26fd30877a6290e4d
+review_run:
+  path: docs/notes/review-runs/2026-06-10-initial-setup-llm-guide-postwrite
+  summary_path: docs/notes/review-runs/2026-06-10-initial-setup-llm-guide-postwrite/model-result-summary.yaml
+notes: Generated template; verify target_files cover current post-write targets before
+  use.

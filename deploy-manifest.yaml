@@ -106,6 +106,10 @@ include:
     reason: Reopen procedure.
   - path: docs/operations/SESSION_WORKFLOW_GUIDE.md
     reason: Session completion and review-run handling guide.
+  - path: docs/operations/INITIAL_DEPLOYMENT_USER_GUIDE.md
+    reason: Initial owner-operated deployment guide.
+  - path: docs/operations/INITIAL_SETUP_LLM_GUIDE.md
+    reason: LLM-facing initial setup guide.
   - path: docs/disciplines/discipline_*.md
     reason: Workflow-management discipline prompts.
   - path: .reviewcompass/specs/workflow-management/post-write-verification-spec.yaml

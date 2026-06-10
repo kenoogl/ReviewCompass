@@ -1,0 +1,4 @@
+run_id: 2026-06-10-initial-setup-llm-guide-postwrite
+target_files:
+- path: docs/notes/review-runs/2026-06-10-initial-setup-llm-guide-postwrite/review-target.md
+  sha256: 0eee9f595188bc1f3116e132ccdbf136c6366f68e48b7e00c841652540f48026
