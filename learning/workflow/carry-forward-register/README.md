@@ -6,7 +6,7 @@ The register is the canonical structured form for unresolved cross-scope items t
 
 ## Files
 
-- `reviewcompass-import.yaml`: initial dogfooding import generated from the ReviewCompass Markdown ledger.
+- `reviewcompass-import.yaml`: initial import generated from the ReviewCompass Markdown ledger.
 - `sources/reviewcompass-pending-cross-feature-findings.md`: historical Markdown import source. This is not the canonical register.
 - `../schemas/carry-forward-register.schema.json`: canonical schema for register entries.
 

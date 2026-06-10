@@ -1,5 +1,5 @@
 # learning/backtests
 
-第 1 期空置き、所有権はフェーズ 4 完了後に確定。
+改善案の有効性を後から再評価するための backtest 記録を置く場所。
 
-他 4 層改善で活用予定の backtests 置き場であり、workflow 層 self-improvement の第 1 期では使用しない。
+workflow 改善以外の改善領域でも利用できる共通の検証記録置き場として扱う。
