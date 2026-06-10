@@ -1,0 +1,59 @@
+status: completed
+target_files:
+- docs/operations/DEPLOYMENT.md
+- docs/operations/FOUNDATION.md
+- runtime/config/README.md
+- runtime/prompts/README.md
+- runtime/prompts/adversarial_review/adversarial_reviewer.prompt.md
+- runtime/prompts/judgment/judgment_reviewer.prompt.md
+- runtime/prompts/primary_detection/primary_reviewer.prompt.md
+- runtime/validators/contracts/README.md
+- templates/review/manual_dogfooding_review_template.md
+- tools/README.md
+target_sha256:
+  docs/operations/DEPLOYMENT.md: 56e092f8813f7e03e86a6839058b188e28dd004f8489aa0301d8597cabc8f74d
+  docs/operations/FOUNDATION.md: 18878f5fdf4fba276efccefa17013590664cd422c89ba435db3657bcba4f3ce4
+  runtime/config/README.md: 04567198018dd6904a8bd058a430230ff33e3afea5c49df252189028c070599d
+  runtime/prompts/README.md: 83c06e754ebad53846309bb06d8197295db68c1e0fa8a564a456d2a9606082f1
+  runtime/prompts/adversarial_review/adversarial_reviewer.prompt.md: 4828b2e8b9772556fc97b314cd83397f9b800840212da4977b3cef107241b514
+  runtime/prompts/judgment/judgment_reviewer.prompt.md: 543819cb70a94454a1efed957171e124854f6f5c1541c452b498a5fc201200e7
+  runtime/prompts/primary_detection/primary_reviewer.prompt.md: b386b8dc2599787f4815d89e23b5672d9eb7e3734f8ac0ade937e9b0d3b6f65f
+  runtime/validators/contracts/README.md: 4817eeb2f5fc509182ace126e02e35256be006f78713725e98007c86c642bccb
+  templates/review/manual_dogfooding_review_template.md: bad78fc06e134691932e44ade99bccb13e0db7b05daba6c58cb6550829237eed
+  tools/README.md: 96488165b7ea3350962fe4be175c1cf46d3ca4ad1d46b38df8b05dece2d6c58b
+required_verifiers:
+- codex-local-postwrite-check
+completed_verifiers:
+- codex-local-postwrite-check
+unresolved_substantive_findings: 0
+verifications:
+- verifier: codex-local-postwrite-check
+  target_files:
+  - docs/operations/DEPLOYMENT.md
+  - docs/operations/FOUNDATION.md
+  - runtime/config/README.md
+  - runtime/prompts/README.md
+  - runtime/prompts/adversarial_review/adversarial_reviewer.prompt.md
+  - runtime/prompts/judgment/judgment_reviewer.prompt.md
+  - runtime/prompts/primary_detection/primary_reviewer.prompt.md
+  - runtime/validators/contracts/README.md
+  - templates/review/manual_dogfooding_review_template.md
+  - tools/README.md
+  target_sha256:
+    docs/operations/DEPLOYMENT.md: 56e092f8813f7e03e86a6839058b188e28dd004f8489aa0301d8597cabc8f74d
+    docs/operations/FOUNDATION.md: 18878f5fdf4fba276efccefa17013590664cd422c89ba435db3657bcba4f3ce4
+    runtime/config/README.md: 04567198018dd6904a8bd058a430230ff33e3afea5c49df252189028c070599d
+    runtime/prompts/README.md: 83c06e754ebad53846309bb06d8197295db68c1e0fa8a564a456d2a9606082f1
+    runtime/prompts/adversarial_review/adversarial_reviewer.prompt.md: 4828b2e8b9772556fc97b314cd83397f9b800840212da4977b3cef107241b514
+    runtime/prompts/judgment/judgment_reviewer.prompt.md: 543819cb70a94454a1efed957171e124854f6f5c1541c452b498a5fc201200e7
+    runtime/prompts/primary_detection/primary_reviewer.prompt.md: b386b8dc2599787f4815d89e23b5672d9eb7e3734f8ac0ade937e9b0d3b6f65f
+    runtime/validators/contracts/README.md: 4817eeb2f5fc509182ace126e02e35256be006f78713725e98007c86c642bccb
+    templates/review/manual_dogfooding_review_template.md: bad78fc06e134691932e44ade99bccb13e0db7b05daba6c58cb6550829237eed
+    tools/README.md: 96488165b7ea3350962fe4be175c1cf46d3ca4ad1d46b38df8b05dece2d6c58b
+  result: pass
+  checked_at: '2026-06-10T00:00:00+00:00'
+  notes: 'User retroactively approved treating the mixed deployment documentation,
+    runtime/tools Markdown cleanup, and reference corrections as one verification
+    unit. Local checks passed: document_link_lint, deployment_independence_lint,
+    targeted runtime/tools wording grep, reference-source review, and pytest for
+    prompt frontmatter and review triage references.'

@@ -4,7 +4,7 @@ version: B1.0
 role: judgment_reviewer
 step: judgment
 language: ja
-source_ref: .reviewcompass/specs/foundation/design.md#6-プロンプト成果物モデル
+source_ref: runtime/prompts/README.md
 ---
 
 # 判定プロンプト（Step C：judgment）
@@ -13,5 +13,5 @@ source_ref: .reviewcompass/specs/foundation/design.md#6-プロンプト成果物
 (1) 修正必要性（must-fix／should-fix／leave-as-is）と (2) 波及種別（機能内対処／波及／遡及／
 延期）を判定してください。利用者と議論すべき重要な所見を明示してください。
 
-注：本文はフェーズ 4 で整備する最小雛形です（計画書 §5.23.12.3）。本機能（foundation）は
-プロンプトの正本配置と識別規則のみを固定し、本文の作り込みは runtime 実装段で行います。
+本プロンプトは配布時の既定雛形です。対象アプリで独自の観点や出力形式が必要な場合は、
+設定で別プロンプトに差し替えてください。

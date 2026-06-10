@@ -5,7 +5,7 @@
 ## 配置されるファイル（設定 2 層モデル、T-007）
 
 - `reviewcompass.yaml`：ツール本体の既定値を保持する正本（2 層モデル下層）
-- `config.yaml.template`：アプリ側 `<対象アプリ>/.reviewcompass/config.yaml` を生成する雛形（2 層モデル上層の素材）
+- `config.yaml.template`：アプリ側 `<対象アプリ>/.reviewcompass/config.yaml` を生成する雛形（2 層モデル上層の入力）
 - `terminology.yaml.template`：用語集の最小契約雛形
 
 ## 2 層モデルのマージ規則

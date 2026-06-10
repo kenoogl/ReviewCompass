@@ -11,19 +11,19 @@ primary:
   model: <レビュー者名>            # 例：keno（人間レビュー者の名前）
   attempts: 1
   duration_minutes: <分>
-  prompt_artifact_path: templates/prompts/primary_detection/primary_reviewer.prompt.md
+  prompt_artifact_path: runtime/prompts/primary_detection/primary_reviewer.prompt.md
   prompt_artifact_hash: <sha256>  # プロンプト本体のハッシュ。雛形が未整備の場合は <未整備> と記入
 adversarial:
   provider: human_manual
   model: <レビュー者名>            # 主役と異なる人間が望ましい、同じ場合は manual_dogfooding_caveats に明示
   duration_minutes: <分>
-  prompt_artifact_path: templates/prompts/adversarial_review/adversarial_reviewer.prompt.md
+  prompt_artifact_path: runtime/prompts/adversarial_review/adversarial_reviewer.prompt.md
   prompt_artifact_hash: <sha256>
 judgment:
   provider: human_manual
   model: <レビュー者名>
   duration_minutes: <分>
-  prompt_artifact_path: templates/prompts/judgment/judgment_reviewer.prompt.md
+  prompt_artifact_path: runtime/prompts/judgment/judgment_reviewer.prompt.md
   prompt_artifact_hash: <sha256>
 findings_by_method:
   primary:

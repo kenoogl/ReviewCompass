@@ -4,7 +4,7 @@ version: B1.0
 role: adversarial_reviewer
 step: adversarial_review
 language: ja
-source_ref: .reviewcompass/specs/foundation/design.md#6-プロンプト成果物モデル
+source_ref: runtime/prompts/README.md
 ---
 
 # 敵対レビュープロンプト（Step B：adversarial_review）
@@ -14,5 +14,5 @@ source_ref: .reviewcompass/specs/foundation/design.md#6-プロンプト成果物
 します。最終的に同意する場合でも「反証なし」を意図的結果として記録してください。さらに、
 主役が見落とした観点を独立に発見し、追加の所見として挙げてください。
 
-注：本文はフェーズ 4 で整備する最小雛形です（計画書 §5.23.12.3）。本機能（foundation）は
-プロンプトの正本配置と識別規則のみを固定し、本文の作り込みは runtime 実装段で行います。
+本プロンプトは配布時の既定雛形です。対象アプリで独自の観点や出力形式が必要な場合は、
+設定で別プロンプトに差し替えてください。

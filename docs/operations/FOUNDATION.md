@@ -98,7 +98,7 @@ foundation はレビュー実行を持たず、他機能の土台になる：
 
 - 設計の詳細：[design.md](../../.reviewcompass/specs/foundation/design.md)
 - 各スキーマのフィールド構造：`runtime/schemas/` ／ `runtime/validators/contracts/` の各 `*.schema.json`
-- プロンプト雛形の配置と識別規則：`runtime/prompts/`（本文の整備はフェーズ 4 対象、計画書 §5.23.12.3）
+- プロンプト雛形の配置と識別規則：`runtime/prompts/`
 - 検証器の動作：`tools/foundation_validators/`（符号化規約検証 `check_encoding_convention.py`・完成判定 `check_completion.py`）
 
 2026-06-08 の tasks 再確認への対応として、intent の「レビュー収集処理を事前設定の写像にしない」意図は、既存の T-001 パターン定義依存除外、T-003 実行メタデータ契約、T-004 証拠スキーマ、T-005 検証・無効化成果物分離で受けられることを確認した。実装済み成果物は固定パターン写像ではなく、メタデータ・証拠・検証成果物の契約を提供するため、追加の実装変更は不要。

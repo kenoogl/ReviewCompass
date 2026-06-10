@@ -1,6 +1,6 @@
 # DEPLOYMENT：クリーン配布方針
 
-最終更新：2026-06-09（開発証跡と配布対象が混在した現状から、クリーンな配布物を生成する方針を記録）
+最終更新：2026-06-10（初期デプロイを自己テスト用の全機能検証セットとして定義）
 
 本文書は ReviewCompass を外部アプリへ配置する前に、開発リポジトリ内の成果物をどのように整理し、配布対象をどう扱うかを定める運用方針である。現時点では、配布対象を開発リポジトリから削って作るのではなく、配布対象を明示して切り出す方式を採用する。
 
@@ -13,61 +13,160 @@ ReviewCompass の開発リポジトリには、実行に必要なファイル、
 - **開発リポジトリ**：研究証跡、レビュー履歴、実験結果、作業メモを保持する。
 - **配布物**：外部アプリで ReviewCompass を実行するために必要な最小ファイルだけを含む。
 
-## 2. 配布対象の定義
+## 2. 初期デプロイ配布物 v0 の定義
 
-配布対象は、将来 `deploy-manifest.yaml` のような機械可読 manifest で明示する。manifest には、配布物へ含めるパスを allowlist として列挙する。
+初期デプロイ配布物 v0 は、第3者配布用の最小セットではなく、利用者本人がテスターとして実アプリに適用し、ReviewCompass の全機能を確認するための検証用セットとする。開発リポジトリ内にあるファイルを暗黙に含めず、配布 manifest で明示した allowlist のみを配布対象にする。
 
-現時点で配布対象は未確定である。以下は確定リストではなく、精査を始めるための分類である。`runtime/`、`schemas/`、`templates/`、`config/`、`docs/operations/` のようなディレクトリ全体を、そのまま配布対象にしてはならない。
+初期デプロイ配布物 v0 に含めるものは次の通り。
 
-### 2.1 最小コア候補
+### 2.1 プロジェクト定義
 
-最小コア候補は、外部アプリ root を読んで、対象アプリ側 `.reviewcompass/` を扱うために直接必要となる可能性が高いものに限定する。
+| 配布パス | 理由 |
+| --- | --- |
+| `pyproject.toml` | Python 依存関係と最小プロジェクト情報を示すため。 |
 
-- workflow navigation の実行入口。
-- 対象アプリ側 `.reviewcompass/specs/` を読むための最小コード。
-- 対象アプリ側 `.reviewcompass/config.yaml` を読むための最小設定雛形。
-- 実行時に必須となる最小 schema。
+### 2.2 runtime コア
 
-### 2.2 要審査候補
+| 配布パス | 理由 |
+| --- | --- |
+| `runtime/config/config.yaml.template` | 対象アプリ側 `.reviewcompass/config.yaml` の雛形。 |
+| `runtime/config/terminology.yaml.template` | 対象アプリ側の用語設定雛形。 |
+| `runtime/config/reviewcompass.yaml` | ReviewCompass 本体側の既定設定。 |
+| `runtime/foundation/layer1_framework.yaml` | ReviewCompass 共通の評価軸定義。 |
+| `runtime/foundation/metadata_contract.yaml` | 実行記録の共通メタデータ契約。 |
+| `runtime/prompts/primary_detection/primary_reviewer.prompt.md` | 主役レビューの既定プロンプト。 |
+| `runtime/prompts/adversarial_review/adversarial_reviewer.prompt.md` | 敵対役レビューの既定プロンプト。 |
+| `runtime/prompts/judgment/judgment_reviewer.prompt.md` | 判定役レビューの既定プロンプト。 |
+| `runtime/runtime_core/**/*.py` | review-run の実行、記録、検証、プロンプト解決に使う本体コード。 |
+| `runtime/runtime_core/**/*.yaml` | runtime_core が参照する語彙、配置、スキーマ定義。 |
+| `runtime/schemas/*.schema.json` | runtime の出力・観測記録の JSON Schema。 |
+| `runtime/validators/contracts/*.schema.json` | validator 結果などの検証契約。 |
 
-次は配布対象に含める可能性はあるが、ファイル単位で必要性を確認してから allowlist に入れる。
+### 2.3 review-run API 実行部
 
-- `tools/api_providers/` のうち、第3者配布時に実行される入口と依存モジュール。
-- `tools/conformance_evaluation/` のうち、外部アプリで必要なサブコマンドに直結するもの。
-- `runtime/` のうち、プロンプト解決、設定解決、schema 参照に必要なもの。
-- `.reviewcompass/specs/` 配下のうち、動作仕様として実行時に参照される YAML。
-- `docs/operations/` のうち、配布後の利用者が読む最小運用文書。
+| 配布パス | 理由 |
+| --- | --- |
+| `tools/api_providers/__init__.py` | Python package として読み込むため。 |
+| `tools/api_providers/config_loader.py` | API 設定の読み込みに必要。 |
+| `tools/api_providers/providers.py` | 各 provider 呼び出しに必要。 |
+| `tools/api_providers/response_formatter.py` | レビュー応答の整形に必要。 |
+| `tools/api_providers/review_triage.py` | review-run の所見整理に必要。 |
+| `tools/api_providers/run_review.py` | review-run の CLI 入口。 |
+| `tools/api_providers/run_role.py` | 役単位の CLI 入口。 |
+| `tools/api_providers/prompt_templates/*.md` | provider 別の API 呼び出しプロンプト。 |
+| `config/api-settings.yaml` | 利用者本人の初期デプロイ検証で、既存の API / CLI 経路設定をそのまま確認するため。 |
 
-### 2.3 原則除外
+`config/api-settings.yaml` は初期デプロイ検証では含める。ただし第3者配布では、経緯コメントや検証用 variant を除いた API 設定テンプレートを別途作成し、そのテンプレートへ差し替える。
 
-次は、明示的な例外判断がない限り配布対象に含めない。
+### 2.4 conformance-evaluation
 
-- ディレクトリ全体としての `docs/operations/`
-- ディレクトリ全体としての `runtime/`
-- ディレクトリ全体としての `schemas/`
-- ディレクトリ全体としての `templates/`
-- ディレクトリ全体としての `config/`
+| 配布パス | 理由 |
+| --- | --- |
+| `tools/conformance-evaluation-check.py` | conformance-evaluation の CLI 入口。 |
+| `tools/conformance-evaluation-cross-feature.py` | 機能横断 conformance-evaluation の CLI 入口。 |
+| `tools/conformance_evaluation/*.py` | conformance-evaluation の本体コード。 |
+| `tools/conformance_evaluation/schemas/*.schema.json` | evaluation record と intent diff の検証に必要。 |
+| `schemas/review-criteria/conformance_evaluation.yaml` | conformance-evaluation の評価基準。 |
 
-配布対象は allowlist で決める。開発リポジトリに存在するファイルを、暗黙に配布対象とはみなさない。allowlist に入れる各ファイルには、配布時に必要な理由を記録する。
+### 2.5 workflow-management
 
-## 3. 非配布対象の分類
+| 配布パス | 理由 |
+| --- | --- |
+| `tools/check-workflow-action.py` | workflow state と不可逆操作前検査の CLI 入口。 |
+| `tools/document_link_lint.py` | 正本文書・規律文書の参照検査に必要。 |
+| `tools/deployment_independence_lint.py` | 配置非依存性の検査に必要。 |
+| `tools/guarded-git-commit.py` | commit 操作を workflow-management の検査に通すため。 |
+| `docs/operations/WORKFLOW_DISCIPLINE_MAP.yaml` | 判定点ごとの必読プロンプト対応を機械判定するため。 |
+| `docs/operations/WORKFLOW_NAVIGATION.md` | workflow navigation の正本手順。 |
+| `docs/operations/WORKFLOW_PRECHECK.md` | 事前検査の運用手順。 |
+| `docs/operations/WORKFLOW_PRECHECK_DETAILS.md` | 事前検査の詳細仕様。 |
+| `docs/operations/REOPEN_PROCEDURE.md` | reopen 手続きの正本手順。 |
+| `docs/operations/SESSION_WORKFLOW_GUIDE.md` | 作業完了時レポート契約と review-run 処理手順。 |
+| `docs/disciplines/discipline_*.md` | workflow-management が判定時に読む規律文書。 |
+| `.reviewcompass/specs/workflow-management/post-write-verification-spec.yaml` | 書き込み後検証の動作仕様。 |
+| `.reviewcompass/specs/workflow-management/yaml-audit-spec.yaml` | YAML 監査の動作仕様。 |
 
-次のファイル群は、原則として配布物へ含めない。
+`tools/check-workflow-action.py` には ReviewCompass 開発リポジトリ自身の feature order や carry-forward register 依存が残っている。そのため初期デプロイでは、汎用配布物としてではなく、利用者本人による実アプリ検証で依存箇所を発見する対象として含める。
 
+### 2.6 self-improvement
+
+| 配布パス | 理由 |
+| --- | --- |
+| `tools/self-improvement-check.py` | self-improvement の機械検査 CLI 入口。 |
+| `tools/self_improvement/*.py` | 改善提案、carry-forward、承認済み更新の検査に必要。 |
+| `tools/self_improvement/schemas/*.schema.json` | self-improvement 記録の検証に必要。 |
+| `learning/workflow/schemas/*.schema.json` | self-improvement が読む workflow 改善用の正本 schema。 |
+| `learning/workflow/proposals/README.md` | 改善提案の配置先を初期デプロイで確認するため。 |
+| `learning/workflow/approved-updates/README.md` | 承認済み改善の配置先を初期デプロイで確認するため。 |
+| `learning/workflow/rejected-updates/README.md` | 却下済み改善の配置先を初期デプロイで確認するため。 |
+| `learning/workflow/rollback/README.md` | ロールバック記録の配置先を初期デプロイで確認するため。 |
+| `learning/workflow/metrics/README.md` | 効果測定記録の配置先を初期デプロイで確認するため。 |
+| `learning/workflow/carry-forward-register/README.md` | 持ち越し台帳の配置先を初期デプロイで確認するため。 |
+| `learning/workflow/carry-forward-register/reviewcompass-import.yaml` | 現行の持ち越し台帳処理を検証するため。 |
+
+### 2.7 analysis / evaluation
+
+| 配布パス | 理由 |
+| --- | --- |
+| `analysis/` | ReviewCompass の分析機能を実アプリ上で確認するため。 |
+| `evaluation/` | ReviewCompass の評価機能を実アプリ上で確認するため。 |
+
+### 2.8 対象アプリ側生成テンプレート
+
+| 配布パス | 理由 |
+| --- | --- |
+| `templates/specs/spec.json.template` | 対象アプリ側 `.reviewcompass/specs/<feature>/spec.json` の雛形。 |
+| `templates/review/manual_dogfooding_review_template.md` | 初期デプロイで手動 review-run を記録するため。 |
+| `templates/todo/TODO_NEXT_SESSION.template.md` | 初期デプロイ中のセッション引き継ぎを確認するため。 |
+
+## 3. 初期デプロイ配布物 v0 に含めないもの
+
+次のファイル群は、初期デプロイ配布物 v0 に含めない。
+
+- `AGENTS.md`
+- `.codex/`
+- `.claude/`
+- `.reviewcompass/post-write-verification/`
+- `.reviewcompass/effective-prompts/`
+- `.reviewcompass/approvals/`
+- `.reviewcompass/specs/*/reviews/`
+- `.reviewcompass/specs/*/conformance/`
+- `.reviewcompass/specs/_cross_feature/`
 - `docs/notes/`
 - `docs/archive/`
 - `docs/plan/`
-- 現行の `docs/operations/WORKFLOW_PRECHECK.md`
-- 現行の `docs/operations/SESSION_WORKFLOW_GUIDE.md`
+- `docs/sessions/`
+- `docs/reviews/`
+- `docs/experiments/`
+- `docs/logs/`
+- `docs/discipline-compliance-reports/`
 - `tools/experiments/`
+- `tools/**/tests/`
+- `tests/`
+- `learning/workflow/carry-forward-register/sources/`
+- `learning/workflow/deployment-readiness/`
+- `learning/workflow/replication-pilots/`
 - `logs/`
-- `.reviewcompass/post-write-verification/`
-- 過去の review-run の raw / parsed / triage 記録
-- 論文用、dogfooding 用、開発検証用の証跡
+- `SES26/`
+
+`.reviewcompass/specs/` は、初期デプロイ配布物には workflow-management の動作仕様 YAML だけを含める。ReviewCompass 自身の要件、設計、タスク、レビュー記録、conformance 証跡は、対象アプリ側へ持ち込まない。
+
+`learning/workflow/` は、初期デプロイ配布物には self-improvement の実行に必要な配置先 README、schema、現行 carry-forward register だけを含める。deployment-readiness、replication-pilots、carry-forward register の source 文書は開発証跡として除外する。
 
 これらは不要物として直ちに削除するのではなく、研究証跡または開発履歴として開発リポジトリに保持する。削除、別リポジトリ分離、アーカイブ移動は、配布 manifest と配布物生成が安定した後に判断する。
 
-## 4. 配布物生成
+## 4. 第3者配布で再検討するもの
+
+初期デプロイ配布物 v0 は利用者本人の検証用であり、第3者配布用の最終形ではない。第3者配布時には、次の配布単位を再検討する。
+
+| 配布単位 | 候補 | 条件 |
+| --- | --- | --- |
+| workflow-management 汎用実行部 | `check-workflow-action.py` 相当、`WORKFLOW_DISCIPLINE_MAP.yaml` 相当、規律文書 | 初期デプロイで発見した ReviewCompass 開発リポジトリ固有依存を外す。 |
+| Codex アダプタ | `.codex/hooks/`、`docs/operations/WORKFLOW_NAVIGATION_FOR_CODEX.md` | Codex 固有の実行環境向け配布として分ける。 |
+| 開発者向け検査 | `tools/document_link_lint.py`、`tools/deployment_independence_lint.py` | 配布物生成側の CI または開発者向け pack として追加する。 |
+| 第3者向け最小コア | runtime、review-run、conformance-evaluation の最小セット | 全機能検証後、不要機能を除いて再定義する。 |
+
+## 5. 配布物生成
 
 外部アプリ pilot や本格デプロイでは、開発リポジトリをそのまま使わない。manifest で許可されたファイルだけを、一時的な配布ディレクトリにコピーして使う。
 
@@ -81,7 +180,7 @@ ReviewCompass の開発リポジトリには、実行に必要なファイル、
 
 配布物生成時に、開発リポジトリ側の workflow state や仕様状態を変更してはならない。
 
-## 5. 外部アプリ側の扱い
+## 6. 外部アプリ側の扱い
 
 外部アプリの git リポジトリには、アプリ側状態だけを置く。
 
@@ -96,7 +195,7 @@ ReviewCompass の開発リポジトリには、実行に必要なファイル、
 
 これらは対象アプリの仕様、状態、レビュー記録であり、対象アプリ側 git リポジトリの変更として扱う。ReviewCompass 側の開発証跡、実験ログ、過去 review-run 記録は対象アプリ側へ持ち込まない。
 
-## 6. 第3者への配布
+## 7. 第3者への配布
 
 第3者へ ReviewCompass を配布するときは、対象アプリごとに GitHub 上で ReviewCompass リポジトリを fork させる方式を標準にしない。標準は、ReviewCompass 開発リポジトリから生成したクリーン配布物を渡す方式とする。
 
@@ -112,7 +211,7 @@ ReviewCompass の開発リポジトリには、実行に必要なファイル、
 
 ReviewCompass 本体を改変したい場合は、第3者の対象アプリ repo 内で個別 fork を増やすのではなく、ReviewCompass 開発リポジトリに対する issue / pull request / patch 提案として扱う。
 
-## 7. 2 つの git リポジトリの責務
+## 8. 2 つの git リポジトリの責務
 
 デプロイ時は、ReviewCompass 側リポジトリと対象アプリ側リポジトリを分けて扱う。
 
@@ -123,7 +222,7 @@ ReviewCompass 本体を改変したい場合は、第3者の対象アプリ repo
 
 対象アプリで ReviewCompass を実行しても、ReviewCompass 側リポジトリの workflow state を暗黙に変更しない。対象アプリ側に生成された `.reviewcompass/` 配下の変更を commit / push するかは、対象アプリ側の運用判断として扱う。
 
-## 8. 機械チェック
+## 9. 機械チェック
 
 配布物には、次の機械チェックを設ける。
 
@@ -135,14 +234,13 @@ ReviewCompass 本体を改変したい場合は、第3者の対象アプリ repo
 
 既存の `tools/deployment_independence_lint.py` は、絶対パスや配置非依存性の検査に使える。今後は、配布 manifest と組み合わせて、配布物そのものの混入検査にも拡張する。
 
-## 9. 当面の次作業
+## 10. 当面の次作業
 
-1. `deploy-manifest.yaml` の形式を決める。
-2. 最小コア候補と要審査候補をファイル単位で棚卸しする。
-3. 各ファイルについて、配布時に必要な理由を manifest に記録する。
-4. manifest に基づく配布物生成スクリプトを作る。
-5. 非配布対象の混入を検出するテストを追加する。
-6. 配布物だけで外部アプリ root に対する smoke test を実行する。
-7. 実アプリ pilot では、開発リポジトリではなく生成済み配布物を使う。
+1. 初期デプロイ配布物 v0 の内容を `deploy-manifest.yaml` に転記する。
+2. 第3者配布用の API 設定テンプレートを作成する。
+3. manifest に基づく配布物生成スクリプトを作る。
+4. 非配布対象の混入を検出するテストを追加する。
+5. 配布物だけで外部アプリ root に対する smoke test を実行する。
+6. 実アプリ pilot では、開発リポジトリではなく生成済み配布物を使う。
 
 この順序により、開発リポジトリの研究証跡を失わずに、外部アプリへ渡す ReviewCompass を小さく、説明可能で、検査可能な状態にする。

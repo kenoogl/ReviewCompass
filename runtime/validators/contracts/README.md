@@ -9,4 +9,4 @@
 
 ## 関連
 
-- 設計：[.reviewcompass/specs/foundation/design.md](../../.reviewcompass/specs/foundation/design.md) §8 検証と無効化のモデル
+- 設計：[.reviewcompass/specs/foundation/design.md](../../../.reviewcompass/specs/foundation/design.md) §8 検証と無効化のモデル
