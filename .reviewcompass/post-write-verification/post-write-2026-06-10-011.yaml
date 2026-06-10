@@ -1,0 +1,76 @@
+status: completed
+target_files:
+- docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-venv-postwrite-r2/model-result-summary.yaml
+- docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-venv-postwrite-r2/parsed/gemini-3.5-flash.round-1.yaml
+- docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-venv-postwrite-r2/raw/gemini-3.5-flash.round-1.txt
+- docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-venv-postwrite-r2/review_summary.md
+- docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-venv-postwrite-r2/rounds.yaml
+- docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-venv-postwrite-r2/target-manifest.yaml
+- docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-venv-postwrite-r2/triage.yaml
+- docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-venv-postwrite/model-result-summary.yaml
+- docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-venv-postwrite/parsed/gemini-3.5-flash.round-1.yaml
+- docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-venv-postwrite/raw/gemini-3.5-flash.round-1.txt
+- docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-venv-postwrite/review_summary.md
+- docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-venv-postwrite/rounds.yaml
+- docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-venv-postwrite/target-manifest.yaml
+- docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-venv-postwrite/triage.yaml
+- docs/operations/INITIAL_DEPLOYMENT_USER_GUIDE.md
+target_sha256:
+  docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-venv-postwrite-r2/model-result-summary.yaml: faa3932a75774234340b82abb4fb299b3a8e1775fb499c687e0438a767bed507
+  docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-venv-postwrite-r2/parsed/gemini-3.5-flash.round-1.yaml: 381fcba856accc5db6b8cf3e5b87d9ac92f29925aebda319f53a1a121825c43f
+  docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-venv-postwrite-r2/raw/gemini-3.5-flash.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+  docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-venv-postwrite-r2/review_summary.md: 10b3c17c5b146e8747e257fe0fdf6daed24c10bdf9bf4ecd3e140e70fba30a87
+  docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-venv-postwrite-r2/rounds.yaml: 71fd37fba48b7fc90852511cd71427c9892ec15898c860df32791558a07b8def
+  docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-venv-postwrite-r2/target-manifest.yaml: ff7d4b3f0a7cb3a1274d9f56a9aa42c008768520efebcbd5a66c6560c912721f
+  docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-venv-postwrite-r2/triage.yaml: d8ae00a686c75c37d61cafd14e1d5b5862daa241eee0fae419da1de73d901de4
+  docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-venv-postwrite/model-result-summary.yaml: 80a0f6d6e3dc784efb4e3502d397acdda44d175c067fe4e57b26025ce1caece6
+  docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-venv-postwrite/parsed/gemini-3.5-flash.round-1.yaml: d0284e9e64c18bed32e4ee314a3e71fb3de2a44ba57ca3ae1b8f638b40fc084f
+  docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-venv-postwrite/raw/gemini-3.5-flash.round-1.txt: 80b06692b502f36fa44e8d5e80f14670b4bc1c8485099bfea5e3727f7ba48731
+  docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-venv-postwrite/review_summary.md: 7fb9e855c6de9343e6e8b50fae4bfb72333f646455aa21592608c22526296caf
+  docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-venv-postwrite/rounds.yaml: 16e457d8089902adc5efca7070d17f32fba58971fdc290a16899ec3aa47ed1ff
+  docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-venv-postwrite/target-manifest.yaml: 07d17d2e21acb58dbf7d6cce2be648da42126ab8eeb3461343a3dece3085b0fd
+  docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-venv-postwrite/triage.yaml: f2958f2831c813ec18db8b8ff57fd5292d436f04ef1fb36c43a54dbd8a7b00a5
+  docs/operations/INITIAL_DEPLOYMENT_USER_GUIDE.md: e1c56fe25e982eab9bad872cf3b6a901b88d55d126a29759273a383f3619ea12
+required_verifiers: &id001
+- gemini-3.5-flash
+completed_verifiers: *id001
+unresolved_substantive_findings: 0
+verifications:
+- verifier: gemini-3.5-flash
+  target_files:
+  - docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-venv-postwrite-r2/model-result-summary.yaml
+  - docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-venv-postwrite-r2/parsed/gemini-3.5-flash.round-1.yaml
+  - docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-venv-postwrite-r2/raw/gemini-3.5-flash.round-1.txt
+  - docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-venv-postwrite-r2/review_summary.md
+  - docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-venv-postwrite-r2/rounds.yaml
+  - docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-venv-postwrite-r2/target-manifest.yaml
+  - docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-venv-postwrite-r2/triage.yaml
+  - docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-venv-postwrite/model-result-summary.yaml
+  - docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-venv-postwrite/parsed/gemini-3.5-flash.round-1.yaml
+  - docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-venv-postwrite/raw/gemini-3.5-flash.round-1.txt
+  - docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-venv-postwrite/review_summary.md
+  - docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-venv-postwrite/rounds.yaml
+  - docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-venv-postwrite/target-manifest.yaml
+  - docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-venv-postwrite/triage.yaml
+  - docs/operations/INITIAL_DEPLOYMENT_USER_GUIDE.md
+  target_sha256:
+    docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-venv-postwrite-r2/model-result-summary.yaml: faa3932a75774234340b82abb4fb299b3a8e1775fb499c687e0438a767bed507
+    docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-venv-postwrite-r2/parsed/gemini-3.5-flash.round-1.yaml: 381fcba856accc5db6b8cf3e5b87d9ac92f29925aebda319f53a1a121825c43f
+    docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-venv-postwrite-r2/raw/gemini-3.5-flash.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-venv-postwrite-r2/review_summary.md: 10b3c17c5b146e8747e257fe0fdf6daed24c10bdf9bf4ecd3e140e70fba30a87
+    docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-venv-postwrite-r2/rounds.yaml: 71fd37fba48b7fc90852511cd71427c9892ec15898c860df32791558a07b8def
+    docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-venv-postwrite-r2/target-manifest.yaml: ff7d4b3f0a7cb3a1274d9f56a9aa42c008768520efebcbd5a66c6560c912721f
+    docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-venv-postwrite-r2/triage.yaml: d8ae00a686c75c37d61cafd14e1d5b5862daa241eee0fae419da1de73d901de4
+    docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-venv-postwrite/model-result-summary.yaml: 80a0f6d6e3dc784efb4e3502d397acdda44d175c067fe4e57b26025ce1caece6
+    docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-venv-postwrite/parsed/gemini-3.5-flash.round-1.yaml: d0284e9e64c18bed32e4ee314a3e71fb3de2a44ba57ca3ae1b8f638b40fc084f
+    docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-venv-postwrite/raw/gemini-3.5-flash.round-1.txt: 80b06692b502f36fa44e8d5e80f14670b4bc1c8485099bfea5e3727f7ba48731
+    docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-venv-postwrite/review_summary.md: 7fb9e855c6de9343e6e8b50fae4bfb72333f646455aa21592608c22526296caf
+    docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-venv-postwrite/rounds.yaml: 16e457d8089902adc5efca7070d17f32fba58971fdc290a16899ec3aa47ed1ff
+    docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-venv-postwrite/target-manifest.yaml: 07d17d2e21acb58dbf7d6cce2be648da42126ab8eeb3461343a3dece3085b0fd
+    docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-venv-postwrite/triage.yaml: f2958f2831c813ec18db8b8ff57fd5292d436f04ef1fb36c43a54dbd8a7b00a5
+    docs/operations/INITIAL_DEPLOYMENT_USER_GUIDE.md: e1c56fe25e982eab9bad872cf3b6a901b88d55d126a29759273a383f3619ea12
+review_run:
+  path: docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-venv-postwrite-r2
+  summary_path: docs/notes/review-runs/2026-06-10-initial-deployment-user-guide-venv-postwrite-r2/model-result-summary.yaml
+notes: Generated template; verify target_files cover current post-write targets before
+  use.

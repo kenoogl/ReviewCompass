@@ -1,0 +1,4 @@
+run_id: 2026-06-10-initial-deployment-user-guide-venv-postwrite-r2
+target_files:
+- path: docs/operations/INITIAL_DEPLOYMENT_USER_GUIDE.md
+  sha256: e1c56fe25e982eab9bad872cf3b6a901b88d55d126a29759273a383f3619ea12

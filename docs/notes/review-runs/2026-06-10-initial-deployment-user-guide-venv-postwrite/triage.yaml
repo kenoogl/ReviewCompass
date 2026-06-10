@@ -1,0 +1,24 @@
+run_id: 2026-06-10-initial-deployment-user-guide-venv-postwrite
+triage_status: decided
+generated_at: '2026-06-10T10:44:22.857228+00:00'
+decision_actor: null
+decision_actor_type: human
+items:
+- finding_id: 2026-06-10-initial-deployment-user-guide-venv-postwrite-gemini-3.5-flash-primary-001
+  run_id: 2026-06-10-initial-deployment-user-guide-venv-postwrite
+  source_model: gemini-3.5-flash
+  source_round: round-1
+  source_raw_path: raw/gemini-3.5-flash.round-1.txt
+  source_parsed_path: parsed/gemini-3.5-flash.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: '## 8. 配布前 smoke'
+  plain_language_summary: LLMへの依頼例（プロンプト例）において、仮想環境（.venv/bin/python3）を使用する指示が不足しています。
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-10T10:47:32.915993+00:00'
+  decision_reason: 利用者が修正案の適用を承認。第 8 節の依頼例に、依存導入済みの .venv/bin/python3 を使う指示を 1 行追記して反映した。
+  applied_files: []
+  superseded_by: null
