@@ -103,8 +103,17 @@ def _setup_git_repo_with_script(tmpdir):
   tools_dir = Path(tmpdir) / "tools"
   tools_dir.mkdir()
   shutil.copy(REPO_ROOT / "tools" / "check-workflow-action.py", tools_dir)
+  # check-workflow-action.py が同階層から import する lint 部品も併せてコピーする
+  shutil.copy(REPO_ROOT / "tools" / "deployment_independence_lint.py", tools_dir)
+  shutil.copy(REPO_ROOT / "tools" / "document_link_lint.py", tools_dir)
   subprocess.run(
-    ["git", "add", "tools/check-workflow-action.py"],
+    [
+      "git",
+      "add",
+      "tools/check-workflow-action.py",
+      "tools/deployment_independence_lint.py",
+      "tools/document_link_lint.py",
+    ],
     cwd=str(tmpdir), check=True, capture_output=True,
   )
   subprocess.run(
@@ -150,6 +159,14 @@ def _write_commit_approval(tmpdir, target_files, consumed=False):
         "rationale": "人がコミットを明示承認",
         "target_files": target_files,
         "target_sha256": target_sha256,
+        # 段階 2 は execution_actor=llm のとき実行代行の明示承認を要求する
+        "execution_delegation": {
+          "delegated_to": "llm",
+          "approved_by": "user",
+          "approved_at": "2026-06-03T00:00:00+09:00",
+          "explicit_instruction": "コミット",
+          "rationale": "人が単発 commit 実行を明示承認",
+        },
         "expires_after_commit": True,
         "consumed": consumed,
       },
