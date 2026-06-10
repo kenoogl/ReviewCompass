@@ -1,0 +1,43 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://reviewcompass/runtime/schemas/failure_observation.schema.json",
+  "title": "failure_observation",
+  "description": "レビューの見落としや役間不一致の構造を表すスキーマ。self-improvement の再演／後追検証で重要。finding と分離した独立成果物とし、review_case には埋め込まない（review_case の不変性を保つ）。run_ref で review_case.run_id を一方向参照する。",
+  "type": "object",
+  "x-deferred": "failure_type の詳細分類体系やメトリクス導出方法は deferred とし、self-improvement / evaluation に委譲する。",
+  "properties": {
+    "observation_id": {
+      "type": "string",
+      "description": "失敗観測の識別子"
+    },
+    "run_ref": {
+      "type": "string",
+      "description": "観測元実行の識別子（review_case.run_id を一方向参照）"
+    },
+    "related_finding_ref": {
+      "type": "string",
+      "description": "関連 finding の識別子"
+    },
+    "failure_type": {
+      "type": "string",
+      "description": "失敗モードの分類区分。詳細分類体系は deferred とし self-improvement / evaluation に委譲（x-deferred 参照）"
+    },
+    "missed_by_role": {
+      "type": "string",
+      "description": "見落とした役"
+    },
+    "detected_at_step": {
+      "type": "string",
+      "description": "検出された段"
+    }
+  },
+  "required": [
+    "observation_id",
+    "run_ref",
+    "related_finding_ref",
+    "failure_type",
+    "missed_by_role",
+    "detected_at_step"
+  ],
+  "additionalProperties": true
+}

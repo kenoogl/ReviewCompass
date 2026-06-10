@@ -1,0 +1,63 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://reviewcompass/runtime/schemas/review_case.schema.json",
+  "title": "review_case",
+  "description": "実行レベルの包絡構造。Step D（integration、統合）の出力である統合レビュー記録の正本スキーマも兼ねる（要件 1 受入 7）。failure_observation は埋め込まず独立成果物とし、review_case の不変性を保つ。",
+  "type": "object",
+  "properties": {
+    "run_id": {
+      "type": "string",
+      "description": "実行の安定識別子（§3 実行メタデータ契約と一致）"
+    },
+    "target_id": {
+      "type": "string",
+      "description": "レビュー対象識別子（§3 と一致）"
+    },
+    "run_metadata_ref": {
+      "description": "§3 で定義された実行メタデータ集合への参照。保持方法（埋め込み object か別ファイル参照か）は runtime 設計に委ねる"
+    },
+    "step_records": {
+      "type": "array",
+      "description": "段別記録の集合。各要素は §5 段別再演モデルの段別識別子を保持する。保持方法は runtime 設計に委ねる",
+      "items": {
+        "type": "object"
+      }
+    },
+    "findings": {
+      "type": "array",
+      "description": "finding の集合。各要素は finding スキーマに準拠。finding.step_id を介して step_records と紐付く",
+      "items": {
+        "type": "object"
+      }
+    },
+    "validator_result_refs": {
+      "type": "array",
+      "description": "本実行に対する検証器結果への参照の配列。複数回検証実行に対応する",
+      "items": {
+        "type": "string"
+      }
+    },
+    "invalidation_marker_refs": {
+      "type": "array",
+      "description": "本実行に対する無効化標識への参照の配列。空配列は無効化なしを意味する",
+      "items": {
+        "type": "string"
+      }
+    },
+    "integration_summary": {
+      "type": "string",
+      "description": "Step D が生成する統合レビュー記録の本体（フリーテキスト）。追加 LLM 呼び出しを伴わず、Step A/B/C の出力を機械的に統合する"
+    }
+  },
+  "required": [
+    "run_id",
+    "target_id",
+    "run_metadata_ref",
+    "step_records",
+    "findings",
+    "validator_result_refs",
+    "invalidation_marker_refs",
+    "integration_summary"
+  ],
+  "additionalProperties": true
+}

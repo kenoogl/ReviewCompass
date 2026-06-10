@@ -1,0 +1,57 @@
+{
+  "feature_name": "<機能名、stages/feature-dependency.yaml の features キーと一致>",
+  "language": "ja",
+  "created_at": "<ISO 8601 形式の作成日時、例：2026-05-24T00:00:00+09:00>",
+  "updated_at": "<ISO 8601 形式の更新日時>",
+  "workflow_state": {
+    "intent": {
+      "drafting": false,
+      "review": false,
+      "approval": false,
+      "reference": "stages/intent.yaml"
+    },
+    "feature-partitioning": {
+      "candidate-proposal": false,
+      "approval": false,
+      "reference": "stages/feature-partitioning/<日付>-proposal.md"
+    },
+    "requirements": {
+      "drafting": false,
+      "triad-review": false,
+      "review-wave": false,
+      "alignment": false,
+      "approval": false
+    },
+    "design": {
+      "drafting": false,
+      "triad-review": false,
+      "review-wave": false,
+      "alignment": false,
+      "approval": false
+    },
+    "tasks": {
+      "drafting": false,
+      "triad-review": false,
+      "review-wave": false,
+      "alignment": false,
+      "approval": false
+    },
+    "implementation": {
+      "drafting": false,
+      "triad-review": false,
+      "review-wave": false,
+      "alignment": false,
+      "approval": false
+    }
+  },
+  "reopened": {
+    "requirements": false,
+    "design": false,
+    "tasks": false,
+    "implementation": false
+  },
+  "recheck": {
+    "upstream_change_pending": false,
+    "impacted_downstream_phases": []
+  }
+}

@@ -1,0 +1,221 @@
+# config/api-settings.yaml
+# ReviewCompass の API 設定ファイル。
+# 役単位の経路（cli / api）、プロバイダー、モデルを指定する。
+# デプロイ時は default のみ使用、パイロット段階は variants で複数バリエーションを切替。
+# 起動時に --variant <名前> で variants から選択、既定は default。
+#
+# 出典：計画書 §5.9.7.1（API 経路先取り実装、2026-05-26 セッション 29 確定）。
+# モデル名は実装後に利用者が yaml で書き換える前提（コミット 2380879 承認）。
+
+connection:                          # 共通既定値（接続パラメータ）
+  timeout_seconds: 60
+  max_retries: 1
+
+# 3 役の応答可用性（必要な独立系統が揃わない場合の扱い、セッション49 追加）。
+# post-write-verification-spec.yaml#verifier_availability と同趣旨（実行時ルールの統一）。
+role_availability:
+  applies_to_context: triad_review                    # レビュー本体用。post-write / yaml-audit は各規律側のルールを使う
+  applies_to_variant_type: triad                      # 3 役 variant のみに適用
+  applies_when_any_role_path: api                     # API 経路を含む variant に適用
+  on_incomplete_responses: escalate_to_human          # 一部の役の API が応答しない場合は人へエスカレート
+  same_family_substitute: requires_explicit_approval  # 同一系統内代替は既定で不可、明示承認時のみ
+  description: >
+    api_mediated の 3 役 triad-review で、必要な役（主役・敵対役・判定役）のうち一部の
+    API が応答を返さない（API エラー・クォータ超過・タイムアウト等で揃わない）場合、
+    揃った少数の役だけでレビューを収束・確定させない。人にエスカレートし、(a) 原因確認の
+    うえ再試行、(b) 別の独立モデルで代替、(c) 揃った範囲の扱い、の判断を仰ぐ。
+  rationale: >
+    セッション49（2026-06-02）で OpenAI が残高不足（insufficient_quota／HTTP 429）で
+    応答しなかった事例（post-write-verification で発生）を踏まえ、triad-review の実行時
+    ルールにも同じフォールバックを明示する。
+
+default:                             # 本番運用想定の単一設定
+  context: triad_review
+  variant_type: triad
+  required_roles: [primary, adversarial, judgment]
+  provider_constraint: allow_shared_provider
+  primary:
+    path: cli
+    provider: claude-code-cli
+    model: claude-opus-4-7
+  adversarial:
+    path: cli
+    provider: claude-code-cli
+    model: claude-sonnet-4-6
+  judgment:
+    path: cli
+    provider: claude-code-cli
+    model: claude-opus-4-7
+
+variants:                            # パイロット時のみ、名前付き複数設定
+  baseline_claude_cli:               # 3 役すべて CLI Claude（既存方式）
+    context: triad_review
+    variant_type: triad
+    required_roles: [primary, adversarial, judgment]
+    provider_constraint: allow_shared_provider
+    primary:
+      path: cli
+      provider: claude-code-cli
+      model: claude-opus-4-7
+    adversarial:
+      path: cli
+      provider: claude-code-cli
+      model: claude-sonnet-4-6
+    judgment:
+      path: cli
+      provider: claude-code-cli
+      model: claude-opus-4-7
+
+  claude_with_openai_adversarial:    # 敵対役だけ OpenAI API
+    context: triad_review
+    variant_type: triad
+    required_roles: [primary, adversarial, judgment]
+    provider_constraint: allow_mixed_provider
+    primary:
+      path: cli
+      provider: claude-code-cli
+      model: claude-sonnet-4-6
+    adversarial:
+      path: api
+      provider: openai-api
+      model: gpt-5.5
+      timeout_seconds: 300           # 役レベルで connection 既定をフラット上書き
+    judgment:
+      path: cli
+      provider: claude-code-cli
+      model: claude-opus-4-7
+
+  all_openai_api:                    # 3 役すべて OpenAI API
+    context: triad_review
+    variant_type: triad
+    required_roles: [primary, adversarial, judgment]
+    provider_constraint: allow_shared_provider
+    primary:
+      path: api
+      provider: openai-api
+      model: gpt-5.5
+      timeout_seconds: 300
+    adversarial:
+      path: api
+      provider: openai-api
+      model: gpt-5.4                 # primary と異なるモデル名を指定（モデル能力配分規律）
+      timeout_seconds: 300
+    judgment:
+      path: api
+      provider: openai-api
+      model: gpt-5.5
+      timeout_seconds: 300
+
+  all_anthropic_api:                 # 3 役すべて Anthropic API
+    context: triad_review
+    variant_type: triad
+    required_roles: [primary, adversarial, judgment]
+    provider_constraint: allow_shared_provider
+    primary:
+      path: api
+      provider: anthropic-api
+      model: claude-opus-4-7
+      timeout_seconds: 300
+    adversarial:
+      path: api
+      provider: anthropic-api
+      model: claude-sonnet-4-6
+      timeout_seconds: 300
+    judgment:
+      path: api
+      provider: anthropic-api
+      model: claude-opus-4-7
+      timeout_seconds: 300
+
+  post_write_verification_google:    # 書き込み後検証（小規模）用 Google Gemini 単体
+    context: post_write_verification
+    variant_type: single_role
+    required_roles: [primary]
+    primary:
+      path: api
+      provider: gemini-api
+      model: gemini-3.5-flash
+      timeout_seconds: 300
+
+  post_write_verification_openai_55: # 書き込み後検証用 OpenAI GPT-5.5 単体
+    context: post_write_verification
+    variant_type: single_role
+    required_roles: [primary]
+    primary:
+      path: api
+      provider: openai-api
+      model: gpt-5.5
+      timeout_seconds: 300
+
+  post_write_verification_openai_54: # 書き込み後検証用 OpenAI GPT-5.4 単体
+    context: post_write_verification
+    variant_type: single_role
+    required_roles: [primary]
+    primary:
+      path: api
+      provider: openai-api
+      model: gpt-5.4
+      timeout_seconds: 300
+
+  post_write_verification_independent_3way: # 書き込み後検証用、claude-sonnet-4-6／gpt-5.4／gemini-3.1-pro-preview
+    context: post_write_verification
+    variant_type: triad
+    required_roles: [primary, adversarial, judgment]
+    provider_constraint: all_roles_distinct
+    primary:
+      path: api
+      provider: anthropic-api
+      model: claude-sonnet-4-6
+      timeout_seconds: 300
+    adversarial:
+      path: api
+      provider: openai-api
+      model: gpt-5.4
+      timeout_seconds: 300
+    judgment:
+      path: api
+      provider: gemini-api
+      model: gemini-3.1-pro-preview
+      timeout_seconds: 300
+
+  yaml_audit_independent_3way:        # YAML 監査用、claude-sonnet-4-6／gpt-5.4／gemini-3.1-pro-preview
+    context: yaml_audit
+    variant_type: triad
+    required_roles: [primary, adversarial, judgment]
+    provider_constraint: all_roles_distinct
+    primary:
+      path: api
+      provider: anthropic-api
+      model: claude-sonnet-4-6
+      timeout_seconds: 300
+    adversarial:
+      path: api
+      provider: openai-api
+      model: gpt-5.4
+      timeout_seconds: 300
+    judgment:
+      path: api
+      provider: gemini-api
+      model: gemini-3.1-pro-preview
+      timeout_seconds: 300
+
+  implementation_review_independent_3way: # implementation triad-review 用、claude-sonnet-4-6／gpt-5.4／gemini-3.1-pro-preview
+    context: triad_review
+    variant_type: triad
+    required_roles: [primary, adversarial, judgment]
+    provider_constraint: all_roles_distinct
+    primary:
+      path: api
+      provider: anthropic-api
+      model: claude-sonnet-4-6
+      timeout_seconds: 300
+    adversarial:
+      path: api
+      provider: openai-api
+      model: gpt-5.4
+      timeout_seconds: 300
+    judgment:
+      path: api
+      provider: gemini-api
+      model: gemini-3.1-pro-preview
+      timeout_seconds: 300

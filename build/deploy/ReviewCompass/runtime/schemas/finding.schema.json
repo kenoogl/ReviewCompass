@@ -1,0 +1,80 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://reviewcompass/runtime/schemas/finding.schema.json",
+  "title": "finding",
+  "description": "最小レビュー証拠単位。要件 3 受入 5（由来表示／重大度／反証連結／判定連結／人間決定連結／反証状態）を満たすため全項目省略不可。",
+  "type": "object",
+  "x-deferred": "severity の語彙将来拡張（例 HINT 追加）は evaluation に委譲する。フェーズ 3 時点で deferred とする finding 拡張点は他にない。",
+  "properties": {
+    "finding_id": {
+      "type": "string",
+      "description": "所見の識別子"
+    },
+    "step_id": {
+      "type": "string",
+      "description": "所見が属する段の識別子（step_records と紐付く）"
+    },
+    "source_role": {
+      "type": "string",
+      "description": "所見の由来役（primary_reviewer / adversarial_reviewer / judgment_reviewer）"
+    },
+    "severity": {
+      "type": "string",
+      "description": "所見の重大度。初版 4 値。将来拡張（例 HINT）は deferred とし evaluation に委譲する（x-deferred 参照）",
+      "enum": ["CRITICAL", "ERROR", "WARN", "INFO"]
+    },
+    "summary": {
+      "type": "string",
+      "description": "所見の要約"
+    },
+    "source_refs": {
+      "type": "array",
+      "description": "由来となる出典の参照",
+      "items": {
+        "type": "string"
+      }
+    },
+    "counter_evidence_refs": {
+      "type": "array",
+      "description": "反証の参照。空配列だけでは不在の意図を区別できないため counter_status で担保する",
+      "items": {
+        "type": "string"
+      }
+    },
+    "judgment_ref": {
+      "type": "string",
+      "description": "対応する necessity_judgment への参照"
+    },
+    "decision_unit_id": {
+      "type": "string",
+      "description": "判定単位の識別子"
+    },
+    "human_decision_ref": {
+      "type": "string",
+      "description": "人間決定への参照"
+    },
+    "counter_status": {
+      "type": "string",
+      "description": "Step B 敵対役の反証有無を意図的結果として記録する（要件 1 受入 4）。本機能が所有する正本語彙、下流は再定義禁止",
+      "enum": [
+        "counter_evidence_raised",
+        "no_counter_evidence_after_challenge",
+        "not_assessed"
+      ]
+    }
+  },
+  "required": [
+    "finding_id",
+    "step_id",
+    "source_role",
+    "severity",
+    "summary",
+    "source_refs",
+    "counter_evidence_refs",
+    "judgment_ref",
+    "decision_unit_id",
+    "human_decision_ref",
+    "counter_status"
+  ],
+  "additionalProperties": true
+}

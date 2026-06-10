@@ -1,0 +1,138 @@
+run_id: 2026-06-10-todo-next-session-update-postwrite-r2
+triage_status: decided
+generated_at: '2026-06-10T11:22:26.229768+00:00'
+decision_actor: null
+decision_actor_type: human
+items:
+- finding_id: 2026-06-10-todo-next-session-update-postwrite-r2-claude-sonnet-4-6-primary-001
+  run_id: 2026-06-10-todo-next-session-update-postwrite-r2
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: '## 3. 現在位置 — 直近 push'
+  plain_language_summary: 未 push の 13 コミットが明記されているが、具体的な先頭コミット SHA（df5bf66）と末尾 SHA（b6fdf9f）の対応関係が本文中で一箇所のみ記載されており、§4
+    候補タスク 1 との整合は取れている。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-10T11:23:57.382630+00:00'
+  decision_reason: 所見自身が現状の記載で十分と述べている。push 実施時の §3 更新は通常の状態更新運用で担保されるため、現状維持。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-10-todo-next-session-update-postwrite-r2-claude-sonnet-4-6-primary-002
+  run_id: 2026-06-10-todo-next-session-update-postwrite-r2
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: '## 3. 現在位置 — 作業ツリー'
+  plain_language_summary: 未追跡の build/ が残っている旨が記載されているが、.gitignore 追加か削除かの決定が §4 候補タスク
+    2 に委ねられたままである。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-10T11:23:57.438764+00:00'
+  decision_reason: build/ の決定を §4 候補タスクとして次セッションへ引き継ぐのは TODO の役割どおり。所見自身も INFO 扱いで問題ないと述べている。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-10-todo-next-session-update-postwrite-r2-claude-sonnet-4-6-primary-003
+  run_id: 2026-06-10-todo-next-session-update-postwrite-r2
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: '## 1. 起動時に必ず行うこと — ステップ 4'
+  plain_language_summary: post_write_verification が返った場合は通常作業へ進まないと明記されているが、直近 commit
+    b6fdf9f の post-write manifest（post-write-2026-06-10-011.yaml）が completed 扱いになっているかどうかの確認手順が起動チェックリストに含まれていない。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-10T11:23:57.491637+00:00'
+  decision_reason: §1 を毎セッション共通の定型節とする判断は round-1 クラスタ C で利用者承認済みであり同根。manifest と
+    SHA の整合は next 判定と commit guard の機械検査で担保される。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-10-todo-next-session-update-postwrite-r2-claude-sonnet-4-6-primary-004
+  run_id: 2026-06-10-todo-next-session-update-postwrite-r2
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: '## 4. 次作業 — 候補タスク 3'
+  plain_language_summary: INITIAL_DEPLOYMENT_USER_GUIDE.md 第 9 節以降に従い配布物配置と実アプリ pilot
+    を開始する、と記載されているが、pilot 実施に必要な前提条件（push 完了、build/ 確定）が候補タスク 1・2 の完了に依存することが明示されていない。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-10T11:23:57.544694+00:00'
+  decision_reason: §4 冒頭で push 判断と build/ の扱いを先に決める順序は明示済み。タスク間依存の補記は将来の改善候補として本記録に留める。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-10-todo-next-session-update-postwrite-r2-gpt-5.4-adversarial-001
+  run_id: 2026-06-10-todo-next-session-update-postwrite-r2
+  source_model: gpt-5.4
+  source_round: round-1
+  source_raw_path: raw/gpt-5.4.round-1.txt
+  source_parsed_path: parsed/gpt-5.4.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: '## 3. 現在位置 / 直近 push'
+  plain_language_summary: '`origin/main` が `64de32c` のまま、`main` が 13 コミット先行という状態記述が日付依存のスナップショットであり、次回更新時に実態と食い違う可能性がある。'
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-10T11:23:57.597620+00:00'
+  decision_reason: 本文冒頭で TODO は入口メモであり正本は next --json と spec.json だと明記済み。確認時点（2026-06-10）も記載しており、スナップショット性は文書の前提。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-10-todo-next-session-update-postwrite-r2-gpt-5.4-adversarial-002
+  run_id: 2026-06-10-todo-next-session-update-postwrite-r2
+  source_model: gpt-5.4
+  source_round: round-1
+  source_raw_path: raw/gpt-5.4.round-1.txt
+  source_parsed_path: parsed/gpt-5.4.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: '## 4. 次作業'
+  plain_language_summary: '候補タスク 3〜6 が並んでいるが、`kind: completed` 状態における優先順位・着手条件・承認要否が十分に更新されていない。'
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-10T11:23:57.650052+00:00'
+  decision_reason: 不可逆操作の承認要否は §2 に明記済みで、候補 1・2 は §4 冒頭の先行判断へ格上げ済み。さらなる優先順位の構造化は将来の改善候補として本記録に留める。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-10-todo-next-session-update-postwrite-r2-gpt-5.4-adversarial-003
+  run_id: 2026-06-10-todo-next-session-update-postwrite-r2
+  source_model: gpt-5.4
+  source_round: round-1
+  source_raw_path: raw/gpt-5.4.round-1.txt
+  source_parsed_path: parsed/gpt-5.4.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: '## 3. 現在位置 / 作業ツリー'
+  plain_language_summary: '`build/` が未追跡で残っている旨は記載されているが、再生成可能な一時生成物なのか、検証証跡として保持すべきものなのかが明示されていない。'
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-10T11:23:57.703265+00:00'
+  decision_reason: build/ が再生成可能な生成物である旨の補記は将来の改善候補として本記録に留める。性質判断は次セッションの候補タスク 2
+    で扱う。
+  applied_files: []
+  superseded_by: null

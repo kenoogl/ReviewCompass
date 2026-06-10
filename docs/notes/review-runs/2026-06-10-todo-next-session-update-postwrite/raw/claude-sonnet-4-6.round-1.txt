@@ -1,0 +1,17 @@
+findings:
+  - severity: INFO
+    target_location: "セクション 3「現在位置」— 直近 push"
+    description: "origin/main は 64de32c のままで、main は 13 コミット分先行し未 push の状態が記録されている。"
+    rationale: "次セッション開始時に push 判断が必要な未解決事項として明示されており、状態の記録としては正確だが、セクション 4 の候補タスク 1 と重複して存在する。重複自体は問題ではないが、優先度が曖昧なため見落とされるリスクがある。"
+  - severity: WARN
+    target_location: "セクション 4「次作業」— 候補タスク 1"
+    description: "未 push の 13 コミット（df5bf66〜b6fdf9f）を push するかどうかの判断が「候補タスク」扱いのままであり、必須アクションとして昇格していない。"
+    rationale: "origin/main との乖離が 13 コミットに達しており、長期放置すると conflict リスクや他者との同期問題が生じる。次セッション開始直後の git status 確認後に優先的に判断すべき事項であることを、候補ではなく明示的な確認事項として記載する方が安全。"
+  - severity: WARN
+    target_location: "セクション 4「次作業」— 候補タスク 2"
+    description: "build/ ディレクトリ（未追跡の生成済み配布物）の .gitignore 追加または削除が候補タスクのままで、次セッションへ持ち越されている。"
+    rationale: "未追跡ファイルが git status に混入し続けると、guarded-git-commit の staged 内容検査や post-write manifest の SHA 一致確認で誤検知が発生しうる。早期に解消すべき規律リスクであり、候補ではなく優先確認項目として位置づけるべき。"
+  - severity: INFO
+    target_location: "セクション 1「起動時に必ず行うこと」"
+    description: "起動時手順は明確に記載されているが、未 push 状態や未追跡ファイルの確認ステップ（git status で build/ を認識する手順）が明示されていない。"
+    rationale: "現在の未解決状態（13 コミット未 push、build/ 未追跡）を次セッション冒頭で確実に認識するため、git status の出力を起動時確認の文脈で解釈する補足があると見落とし防止になる。"

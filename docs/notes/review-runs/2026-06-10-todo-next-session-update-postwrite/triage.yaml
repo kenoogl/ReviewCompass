@@ -1,0 +1,121 @@
+run_id: 2026-06-10-todo-next-session-update-postwrite
+triage_status: decided
+generated_at: '2026-06-10T10:58:47.112504+00:00'
+decision_actor: null
+decision_actor_type: human
+items:
+- finding_id: 2026-06-10-todo-next-session-update-postwrite-claude-sonnet-4-6-primary-001
+  run_id: 2026-06-10-todo-next-session-update-postwrite
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: セクション 3「現在位置」— 直近 push
+  plain_language_summary: origin/main は 64de32c のままで、main は 13 コミット分先行し未 push の状態が記録されている。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-10T11:21:36.834342+00:00'
+  decision_reason: §3 は状態記録、§4 は作業候補という役割分担による重複であり、利用者承認のもと現状維持とする（クラスタ C）。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-10-todo-next-session-update-postwrite-claude-sonnet-4-6-primary-002
+  run_id: 2026-06-10-todo-next-session-update-postwrite
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: セクション 4「次作業」— 候補タスク 1
+  plain_language_summary: 未 push の 13 コミット（df5bf66〜b6fdf9f）を push するかどうかの判断が「候補タスク」扱いのままであり、必須アクションとして昇格していない。
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-10T11:21:36.886422+00:00'
+  decision_reason: 利用者承認のもと、§4 冒頭の確認文に未 push 13 コミットの判断を先に行う旨を明示して反映した（クラスタ B）。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-10-todo-next-session-update-postwrite-claude-sonnet-4-6-primary-003
+  run_id: 2026-06-10-todo-next-session-update-postwrite
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: セクション 4「次作業」— 候補タスク 2
+  plain_language_summary: build/ ディレクトリ（未追跡の生成済み配布物）の .gitignore 追加または削除が候補タスクのままで、次セッションへ持ち越されている。
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-10T11:21:36.934408+00:00'
+  decision_reason: 利用者承認のもと、§4 冒頭の確認文に未追跡 build/ の扱いの判断を明示し、§3 に作業ツリーの事実を 1 行追記して反映した（クラスタ
+    B）。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-10-todo-next-session-update-postwrite-claude-sonnet-4-6-primary-004
+  run_id: 2026-06-10-todo-next-session-update-postwrite
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: セクション 1「起動時に必ず行うこと」
+  plain_language_summary: 起動時手順は明確に記載されているが、未 push 状態や未追跡ファイルの確認ステップ（git status で
+    build/ を認識する手順）が明示されていない。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-10T11:21:36.983413+00:00'
+  decision_reason: §1 は毎セッション共通の定型節であり、一時的な状態は §3・§4 に記載する構成のため、利用者承認のもと変更しない（クラスタ
+    C）。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-10-todo-next-session-update-postwrite-gpt-5.4-adversarial-001
+  run_id: 2026-06-10-todo-next-session-update-postwrite
+  source_model: gpt-5.4
+  source_round: round-1
+  source_raw_path: raw/gpt-5.4.round-1.txt
+  source_parsed_path: parsed/gpt-5.4.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: 'TODO_NEXT_SESSION.md: 5. 直近の完了事項'
+  plain_language_summary: push 状態の記述が相互に矛盾している。『直近 push：origin/main は 64de32c のまま。main
+    は…未 push』とある一方で、『一連の変更を main に push 済み。』とも記載されている。
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-10T11:21:37.031442+00:00'
+  decision_reason: 利用者承認のもと、§5 の旧記述を『64de32c までの一連の変更を main に push 済み』と限定し、§3 の未 push
+    記述との矛盾を解消した（クラスタ A）。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-10-todo-next-session-update-postwrite-gpt-5.4-adversarial-002
+  run_id: 2026-06-10-todo-next-session-update-postwrite
+  source_model: gpt-5.4
+  source_round: round-1
+  source_raw_path: raw/gpt-5.4.round-1.txt
+  source_parsed_path: parsed/gpt-5.4.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: 'TODO_NEXT_SESSION.md: 3. 現在位置 / 4. 次作業'
+  plain_language_summary: 『直近確認では』『次セッションでは、まず…確認する』とあるが、未 push 13 コミットや未追跡 build/
+    の有無など、現在のワーキングツリー／ブランチ状態の確定値が本文内で更新し切れていない。
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-10T11:21:37.079305+00:00'
+  decision_reason: 利用者承認のもと、§3 に未追跡 build/ の存在と確認時点（2026-06-10）を明記し、現在状態の確定値を本文へ反映した（クラスタ
+    B）。
+  applied_files: []
+  superseded_by: null

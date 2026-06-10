@@ -1,0 +1,13 @@
+version: "1.0"
+required_fields:
+  - run_id
+  - target_id
+  - source_repository_id
+  - source_revision
+  - phase_profile
+  - treatment
+  - review_mode
+  - protocol_version
+  - runtime_version
+  - prompt_set_version
+  - evidence_class

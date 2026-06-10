@@ -1,0 +1,9 @@
+version: "1.0"
+metric_layers:
+  run_level:
+    - finding_count
+  finding_level:
+    - by_severity
+    - counter_status_counts
+  treatment_level:
+    - counter_evidence_rate

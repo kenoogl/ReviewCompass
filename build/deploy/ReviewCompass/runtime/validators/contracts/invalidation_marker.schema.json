@@ -1,0 +1,44 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://reviewcompass/runtime/validators/contracts/invalidation_marker.schema.json",
+  "title": "invalidation_marker",
+  "description": "無効化理由と適用範囲。生証拠を改変せず実行記録へ付与する（要件 6 受入 3）。全部無効化と部分無効化を同じ成果物形式で扱う。無効化の付与は下流派生成果物への陳腐化伝播義務を伴う（要件 6 受入 9、伝播手段は evaluation／analysis に委譲）。",
+  "type": "object",
+  "x-staleness-propagation": "無効化標識の付与は、その実行を参照していた下流の派生成果物への陳腐化伝播義務を伴う（要件 6 受入 9）。本機能は伝播義務の存在を契約として固定し、具体的な陳腐化フラグ付与や再導出手段は evaluation／analysis の設計に委ねる（x-deferred の代替注記、design.md §4 符号化規約で許容）。",
+  "properties": {
+    "run_id": {
+      "type": "string",
+      "description": "無効化対象実行の識別子"
+    },
+    "reason_code": {
+      "type": "string",
+      "description": "無効化理由のコード"
+    },
+    "reason_detail": {
+      "type": "string",
+      "description": "無効化理由の詳細"
+    },
+    "scope": {
+      "type": "string",
+      "description": "無効化の適用範囲。全部無効化と部分無効化を同じ形式で扱う",
+      "enum": ["run", "step", "finding"]
+    },
+    "issued_by": {
+      "type": "string",
+      "description": "無効化標識の発行者（検証器または明示的な人間プロセス）"
+    },
+    "issued_at": {
+      "type": "string",
+      "description": "無効化標識の発行時刻"
+    }
+  },
+  "required": [
+    "run_id",
+    "reason_code",
+    "reason_detail",
+    "scope",
+    "issued_by",
+    "issued_at"
+  ],
+  "additionalProperties": true
+}

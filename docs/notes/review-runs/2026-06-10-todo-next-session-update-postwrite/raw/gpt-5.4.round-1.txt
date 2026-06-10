@@ -1,0 +1,10 @@
+findings:
+  - severity: WARN
+    target_location: "TODO_NEXT_SESSION.md: 5. 直近の完了事項"
+    description: "push 状態の記述が相互に矛盾している。『直近 push：origin/main は 64de32c のまま。main は…未 push』とある一方で、『一連の変更を main に push 済み。』とも記載されている。"
+    rationale: "次セッションの状態確認メモとして、push 済み／未 push の認識は重要な作業分岐になる。矛盾したままだと、誤って重複確認や不要な push 判断を行う恐れがあるため、最新状態に一本化すべき。"
+
+  - severity: WARN
+    target_location: "TODO_NEXT_SESSION.md: 3. 現在位置 / 4. 次作業"
+    description: "『直近確認では』『次セッションでは、まず…確認する』とあるが、未 push 13 コミットや未追跡 build/ の有無など、現在のワーキングツリー／ブランチ状態の確定値が本文内で更新し切れていない。"
+    rationale: "この文書は次セッション用の状態引き継ぎメモであり、現時点の repo 状態が曖昧だと起動時判断のノイズになる。少なくとも未 push の有無、build/ の存在、確認時点の根拠を最新の観測結果に合わせて更新すると、状態メモとしての信頼性が上がる。"

@@ -1,0 +1,208 @@
+status: completed
+target_files:
+- TODO_NEXT_SESSION.md
+- docs/notes/review-runs/2026-06-10-todo-next-session-update-postwrite-r2/model-result-summary.yaml
+- docs/notes/review-runs/2026-06-10-todo-next-session-update-postwrite-r2/parsed/claude-sonnet-4-6.round-1.yaml
+- docs/notes/review-runs/2026-06-10-todo-next-session-update-postwrite-r2/parsed/gemini-3.1-pro-preview.round-1.yaml
+- docs/notes/review-runs/2026-06-10-todo-next-session-update-postwrite-r2/parsed/gpt-5.4.round-1.yaml
+- docs/notes/review-runs/2026-06-10-todo-next-session-update-postwrite-r2/raw/claude-sonnet-4-6.round-1.txt
+- docs/notes/review-runs/2026-06-10-todo-next-session-update-postwrite-r2/raw/gemini-3.1-pro-preview.round-1.txt
+- docs/notes/review-runs/2026-06-10-todo-next-session-update-postwrite-r2/raw/gpt-5.4.round-1.txt
+- docs/notes/review-runs/2026-06-10-todo-next-session-update-postwrite-r2/review_summary.md
+- docs/notes/review-runs/2026-06-10-todo-next-session-update-postwrite-r2/rounds.yaml
+- docs/notes/review-runs/2026-06-10-todo-next-session-update-postwrite-r2/target-manifest.yaml
+- docs/notes/review-runs/2026-06-10-todo-next-session-update-postwrite-r2/triage.yaml
+- docs/notes/review-runs/2026-06-10-todo-next-session-update-postwrite/model-result-summary.yaml
+- docs/notes/review-runs/2026-06-10-todo-next-session-update-postwrite/parsed/claude-sonnet-4-6.round-1.yaml
+- docs/notes/review-runs/2026-06-10-todo-next-session-update-postwrite/parsed/gemini-3.1-pro-preview.round-1.yaml
+- docs/notes/review-runs/2026-06-10-todo-next-session-update-postwrite/parsed/gpt-5.4.round-1.yaml
+- docs/notes/review-runs/2026-06-10-todo-next-session-update-postwrite/raw/claude-sonnet-4-6.round-1.txt
+- docs/notes/review-runs/2026-06-10-todo-next-session-update-postwrite/raw/gemini-3.1-pro-preview.round-1.txt
+- docs/notes/review-runs/2026-06-10-todo-next-session-update-postwrite/raw/gpt-5.4.round-1.txt
+- docs/notes/review-runs/2026-06-10-todo-next-session-update-postwrite/review_summary.md
+- docs/notes/review-runs/2026-06-10-todo-next-session-update-postwrite/rounds.yaml
+- docs/notes/review-runs/2026-06-10-todo-next-session-update-postwrite/target-manifest.yaml
+- docs/notes/review-runs/2026-06-10-todo-next-session-update-postwrite/triage.yaml
+target_sha256:
+  TODO_NEXT_SESSION.md: 3970ec791dd477a0070fd91c9fe74a5f8b04710ae88f53bdabd9d5e003b1a6b0
+  docs/notes/review-runs/2026-06-10-todo-next-session-update-postwrite-r2/model-result-summary.yaml: c2f679ae43c0b9a0aa8d559e459f2c9ee0a083a22ff3e5c9882dadc265345009
+  docs/notes/review-runs/2026-06-10-todo-next-session-update-postwrite-r2/parsed/claude-sonnet-4-6.round-1.yaml: da5c8bc2372fbe867c23fd6c28f5bd18f71f7d780c5f0ce386520126cafe6edf
+  docs/notes/review-runs/2026-06-10-todo-next-session-update-postwrite-r2/parsed/gemini-3.1-pro-preview.round-1.yaml: 854e802cc2586cc32f1c7e95a3f330ccc6d199f017efcfca621ec41cb796f9a1
+  docs/notes/review-runs/2026-06-10-todo-next-session-update-postwrite-r2/parsed/gpt-5.4.round-1.yaml: d1fad200fc8410019b7f11dedff901bf36dcbe7d058e086cc639f01a56a2b648
+  docs/notes/review-runs/2026-06-10-todo-next-session-update-postwrite-r2/raw/claude-sonnet-4-6.round-1.txt: 2ad4f8b44e8b2580460534cbdab55736fac96590cb1959ba1e88f4451846cff2
+  docs/notes/review-runs/2026-06-10-todo-next-session-update-postwrite-r2/raw/gemini-3.1-pro-preview.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+  docs/notes/review-runs/2026-06-10-todo-next-session-update-postwrite-r2/raw/gpt-5.4.round-1.txt: 764c4ad347b9e70d3acefda02ea18628f129440fe4b32d4ac3fac04608c73b24
+  docs/notes/review-runs/2026-06-10-todo-next-session-update-postwrite-r2/review_summary.md: 1623382074df67f4f15d884e93f49932de803f6328d11463106e70c451b8817e
+  docs/notes/review-runs/2026-06-10-todo-next-session-update-postwrite-r2/rounds.yaml: 37584269021815eb6201135257276cdddc7f95c4ab492df1fbb2183b309d26bc
+  docs/notes/review-runs/2026-06-10-todo-next-session-update-postwrite-r2/target-manifest.yaml: bfa7242345c5f5698b860e67f08a4008e49f37ee8227050e61552156a376ebed
+  docs/notes/review-runs/2026-06-10-todo-next-session-update-postwrite-r2/triage.yaml: 903efe3172918a036f8ca493bc617783ec572e6bddaa477bedbb9360f2ee3977
+  docs/notes/review-runs/2026-06-10-todo-next-session-update-postwrite/model-result-summary.yaml: b77ba5175114241fec46706570895ab42b95aa313f8e2a0c6ef1c8dd581cd497
+  docs/notes/review-runs/2026-06-10-todo-next-session-update-postwrite/parsed/claude-sonnet-4-6.round-1.yaml: 5c2d114958d8d89320c3cf5d7d0db63a1a91776786646fea370af6e6ec29a3ad
+  docs/notes/review-runs/2026-06-10-todo-next-session-update-postwrite/parsed/gemini-3.1-pro-preview.round-1.yaml: d00f1135351ed8af03b571ddb1657940e2a1f6cd54b3fae69f07431b0007c70f
+  docs/notes/review-runs/2026-06-10-todo-next-session-update-postwrite/parsed/gpt-5.4.round-1.yaml: 85cc5c13639fddc0bdec6b5f6ad9b49b882661f3bf80e96e255e491f3b2b7f43
+  docs/notes/review-runs/2026-06-10-todo-next-session-update-postwrite/raw/claude-sonnet-4-6.round-1.txt: 555ba765c0b2d628e71ff40333f224fac3e027cd0b5655efcbc455c64b0568ba
+  docs/notes/review-runs/2026-06-10-todo-next-session-update-postwrite/raw/gemini-3.1-pro-preview.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+  docs/notes/review-runs/2026-06-10-todo-next-session-update-postwrite/raw/gpt-5.4.round-1.txt: a415ac5c17f627cefcd127900c444edb3b0456c6b524b91cf98d617ad2d0eba1
+  docs/notes/review-runs/2026-06-10-todo-next-session-update-postwrite/review_summary.md: 562c55a189123fd270d2e09cdbb75742d4b4029670f6ca7dab8d3f53969df539
+  docs/notes/review-runs/2026-06-10-todo-next-session-update-postwrite/rounds.yaml: 98b997d249d4092a3dd1194d63894e6d2e709676bbd94ac2670640f325a3df2a
+  docs/notes/review-runs/2026-06-10-todo-next-session-update-postwrite/target-manifest.yaml: 6c5773a36bf377a6d215cbe64cf1f0f8671a72bce3cad93d88865c627c5a0f5f
+  docs/notes/review-runs/2026-06-10-todo-next-session-update-postwrite/triage.yaml: 475f974e012a060efee60af5e20467f911378f8a105d5c62f04c724f20024d11
+required_verifiers: &id001
+- claude-sonnet-4-6
+- gpt-5.4
+- gemini-3.1-pro-preview
+completed_verifiers: *id001
+unresolved_substantive_findings: 0
+verifications:
+- verifier: claude-sonnet-4-6
+  target_files:
+  - TODO_NEXT_SESSION.md
+  - docs/notes/review-runs/2026-06-10-todo-next-session-update-postwrite-r2/model-result-summary.yaml
+  - docs/notes/review-runs/2026-06-10-todo-next-session-update-postwrite-r2/parsed/claude-sonnet-4-6.round-1.yaml
+  - docs/notes/review-runs/2026-06-10-todo-next-session-update-postwrite-r2/parsed/gemini-3.1-pro-preview.round-1.yaml
+  - docs/notes/review-runs/2026-06-10-todo-next-session-update-postwrite-r2/parsed/gpt-5.4.round-1.yaml
+  - docs/notes/review-runs/2026-06-10-todo-next-session-update-postwrite-r2/raw/claude-sonnet-4-6.round-1.txt
+  - docs/notes/review-runs/2026-06-10-todo-next-session-update-postwrite-r2/raw/gemini-3.1-pro-preview.round-1.txt
+  - docs/notes/review-runs/2026-06-10-todo-next-session-update-postwrite-r2/raw/gpt-5.4.round-1.txt
+  - docs/notes/review-runs/2026-06-10-todo-next-session-update-postwrite-r2/review_summary.md
+  - docs/notes/review-runs/2026-06-10-todo-next-session-update-postwrite-r2/rounds.yaml
+  - docs/notes/review-runs/2026-06-10-todo-next-session-update-postwrite-r2/target-manifest.yaml
+  - docs/notes/review-runs/2026-06-10-todo-next-session-update-postwrite-r2/triage.yaml
+  - docs/notes/review-runs/2026-06-10-todo-next-session-update-postwrite/model-result-summary.yaml
+  - docs/notes/review-runs/2026-06-10-todo-next-session-update-postwrite/parsed/claude-sonnet-4-6.round-1.yaml
+  - docs/notes/review-runs/2026-06-10-todo-next-session-update-postwrite/parsed/gemini-3.1-pro-preview.round-1.yaml
+  - docs/notes/review-runs/2026-06-10-todo-next-session-update-postwrite/parsed/gpt-5.4.round-1.yaml
+  - docs/notes/review-runs/2026-06-10-todo-next-session-update-postwrite/raw/claude-sonnet-4-6.round-1.txt
+  - docs/notes/review-runs/2026-06-10-todo-next-session-update-postwrite/raw/gemini-3.1-pro-preview.round-1.txt
+  - docs/notes/review-runs/2026-06-10-todo-next-session-update-postwrite/raw/gpt-5.4.round-1.txt
+  - docs/notes/review-runs/2026-06-10-todo-next-session-update-postwrite/review_summary.md
+  - docs/notes/review-runs/2026-06-10-todo-next-session-update-postwrite/rounds.yaml
+  - docs/notes/review-runs/2026-06-10-todo-next-session-update-postwrite/target-manifest.yaml
+  - docs/notes/review-runs/2026-06-10-todo-next-session-update-postwrite/triage.yaml
+  target_sha256:
+    TODO_NEXT_SESSION.md: 3970ec791dd477a0070fd91c9fe74a5f8b04710ae88f53bdabd9d5e003b1a6b0
+    docs/notes/review-runs/2026-06-10-todo-next-session-update-postwrite-r2/model-result-summary.yaml: c2f679ae43c0b9a0aa8d559e459f2c9ee0a083a22ff3e5c9882dadc265345009
+    docs/notes/review-runs/2026-06-10-todo-next-session-update-postwrite-r2/parsed/claude-sonnet-4-6.round-1.yaml: da5c8bc2372fbe867c23fd6c28f5bd18f71f7d780c5f0ce386520126cafe6edf
+    docs/notes/review-runs/2026-06-10-todo-next-session-update-postwrite-r2/parsed/gemini-3.1-pro-preview.round-1.yaml: 854e802cc2586cc32f1c7e95a3f330ccc6d199f017efcfca621ec41cb796f9a1
+    docs/notes/review-runs/2026-06-10-todo-next-session-update-postwrite-r2/parsed/gpt-5.4.round-1.yaml: d1fad200fc8410019b7f11dedff901bf36dcbe7d058e086cc639f01a56a2b648
+    docs/notes/review-runs/2026-06-10-todo-next-session-update-postwrite-r2/raw/claude-sonnet-4-6.round-1.txt: 2ad4f8b44e8b2580460534cbdab55736fac96590cb1959ba1e88f4451846cff2
+    docs/notes/review-runs/2026-06-10-todo-next-session-update-postwrite-r2/raw/gemini-3.1-pro-preview.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/2026-06-10-todo-next-session-update-postwrite-r2/raw/gpt-5.4.round-1.txt: 764c4ad347b9e70d3acefda02ea18628f129440fe4b32d4ac3fac04608c73b24
+    docs/notes/review-runs/2026-06-10-todo-next-session-update-postwrite-r2/review_summary.md: 1623382074df67f4f15d884e93f49932de803f6328d11463106e70c451b8817e
+    docs/notes/review-runs/2026-06-10-todo-next-session-update-postwrite-r2/rounds.yaml: 37584269021815eb6201135257276cdddc7f95c4ab492df1fbb2183b309d26bc
+    docs/notes/review-runs/2026-06-10-todo-next-session-update-postwrite-r2/target-manifest.yaml: bfa7242345c5f5698b860e67f08a4008e49f37ee8227050e61552156a376ebed
+    docs/notes/review-runs/2026-06-10-todo-next-session-update-postwrite-r2/triage.yaml: 903efe3172918a036f8ca493bc617783ec572e6bddaa477bedbb9360f2ee3977
+    docs/notes/review-runs/2026-06-10-todo-next-session-update-postwrite/model-result-summary.yaml: b77ba5175114241fec46706570895ab42b95aa313f8e2a0c6ef1c8dd581cd497
+    docs/notes/review-runs/2026-06-10-todo-next-session-update-postwrite/parsed/claude-sonnet-4-6.round-1.yaml: 5c2d114958d8d89320c3cf5d7d0db63a1a91776786646fea370af6e6ec29a3ad
+    docs/notes/review-runs/2026-06-10-todo-next-session-update-postwrite/parsed/gemini-3.1-pro-preview.round-1.yaml: d00f1135351ed8af03b571ddb1657940e2a1f6cd54b3fae69f07431b0007c70f
+    docs/notes/review-runs/2026-06-10-todo-next-session-update-postwrite/parsed/gpt-5.4.round-1.yaml: 85cc5c13639fddc0bdec6b5f6ad9b49b882661f3bf80e96e255e491f3b2b7f43
+    docs/notes/review-runs/2026-06-10-todo-next-session-update-postwrite/raw/claude-sonnet-4-6.round-1.txt: 555ba765c0b2d628e71ff40333f224fac3e027cd0b5655efcbc455c64b0568ba
+    docs/notes/review-runs/2026-06-10-todo-next-session-update-postwrite/raw/gemini-3.1-pro-preview.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/2026-06-10-todo-next-session-update-postwrite/raw/gpt-5.4.round-1.txt: a415ac5c17f627cefcd127900c444edb3b0456c6b524b91cf98d617ad2d0eba1
+    docs/notes/review-runs/2026-06-10-todo-next-session-update-postwrite/review_summary.md: 562c55a189123fd270d2e09cdbb75742d4b4029670f6ca7dab8d3f53969df539
+    docs/notes/review-runs/2026-06-10-todo-next-session-update-postwrite/rounds.yaml: 98b997d249d4092a3dd1194d63894e6d2e709676bbd94ac2670640f325a3df2a
+    docs/notes/review-runs/2026-06-10-todo-next-session-update-postwrite/target-manifest.yaml: 6c5773a36bf377a6d215cbe64cf1f0f8671a72bce3cad93d88865c627c5a0f5f
+    docs/notes/review-runs/2026-06-10-todo-next-session-update-postwrite/triage.yaml: 475f974e012a060efee60af5e20467f911378f8a105d5c62f04c724f20024d11
+- verifier: gpt-5.4
+  target_files:
+  - TODO_NEXT_SESSION.md
+  - docs/notes/review-runs/2026-06-10-todo-next-session-update-postwrite-r2/model-result-summary.yaml
+  - docs/notes/review-runs/2026-06-10-todo-next-session-update-postwrite-r2/parsed/claude-sonnet-4-6.round-1.yaml
+  - docs/notes/review-runs/2026-06-10-todo-next-session-update-postwrite-r2/parsed/gemini-3.1-pro-preview.round-1.yaml
+  - docs/notes/review-runs/2026-06-10-todo-next-session-update-postwrite-r2/parsed/gpt-5.4.round-1.yaml
+  - docs/notes/review-runs/2026-06-10-todo-next-session-update-postwrite-r2/raw/claude-sonnet-4-6.round-1.txt
+  - docs/notes/review-runs/2026-06-10-todo-next-session-update-postwrite-r2/raw/gemini-3.1-pro-preview.round-1.txt
+  - docs/notes/review-runs/2026-06-10-todo-next-session-update-postwrite-r2/raw/gpt-5.4.round-1.txt
+  - docs/notes/review-runs/2026-06-10-todo-next-session-update-postwrite-r2/review_summary.md
+  - docs/notes/review-runs/2026-06-10-todo-next-session-update-postwrite-r2/rounds.yaml
+  - docs/notes/review-runs/2026-06-10-todo-next-session-update-postwrite-r2/target-manifest.yaml
+  - docs/notes/review-runs/2026-06-10-todo-next-session-update-postwrite-r2/triage.yaml
+  - docs/notes/review-runs/2026-06-10-todo-next-session-update-postwrite/model-result-summary.yaml
+  - docs/notes/review-runs/2026-06-10-todo-next-session-update-postwrite/parsed/claude-sonnet-4-6.round-1.yaml
+  - docs/notes/review-runs/2026-06-10-todo-next-session-update-postwrite/parsed/gemini-3.1-pro-preview.round-1.yaml
+  - docs/notes/review-runs/2026-06-10-todo-next-session-update-postwrite/parsed/gpt-5.4.round-1.yaml
+  - docs/notes/review-runs/2026-06-10-todo-next-session-update-postwrite/raw/claude-sonnet-4-6.round-1.txt
+  - docs/notes/review-runs/2026-06-10-todo-next-session-update-postwrite/raw/gemini-3.1-pro-preview.round-1.txt
+  - docs/notes/review-runs/2026-06-10-todo-next-session-update-postwrite/raw/gpt-5.4.round-1.txt
+  - docs/notes/review-runs/2026-06-10-todo-next-session-update-postwrite/review_summary.md
+  - docs/notes/review-runs/2026-06-10-todo-next-session-update-postwrite/rounds.yaml
+  - docs/notes/review-runs/2026-06-10-todo-next-session-update-postwrite/target-manifest.yaml
+  - docs/notes/review-runs/2026-06-10-todo-next-session-update-postwrite/triage.yaml
+  target_sha256:
+    TODO_NEXT_SESSION.md: 3970ec791dd477a0070fd91c9fe74a5f8b04710ae88f53bdabd9d5e003b1a6b0
+    docs/notes/review-runs/2026-06-10-todo-next-session-update-postwrite-r2/model-result-summary.yaml: c2f679ae43c0b9a0aa8d559e459f2c9ee0a083a22ff3e5c9882dadc265345009
+    docs/notes/review-runs/2026-06-10-todo-next-session-update-postwrite-r2/parsed/claude-sonnet-4-6.round-1.yaml: da5c8bc2372fbe867c23fd6c28f5bd18f71f7d780c5f0ce386520126cafe6edf
+    docs/notes/review-runs/2026-06-10-todo-next-session-update-postwrite-r2/parsed/gemini-3.1-pro-preview.round-1.yaml: 854e802cc2586cc32f1c7e95a3f330ccc6d199f017efcfca621ec41cb796f9a1
+    docs/notes/review-runs/2026-06-10-todo-next-session-update-postwrite-r2/parsed/gpt-5.4.round-1.yaml: d1fad200fc8410019b7f11dedff901bf36dcbe7d058e086cc639f01a56a2b648
+    docs/notes/review-runs/2026-06-10-todo-next-session-update-postwrite-r2/raw/claude-sonnet-4-6.round-1.txt: 2ad4f8b44e8b2580460534cbdab55736fac96590cb1959ba1e88f4451846cff2
+    docs/notes/review-runs/2026-06-10-todo-next-session-update-postwrite-r2/raw/gemini-3.1-pro-preview.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/2026-06-10-todo-next-session-update-postwrite-r2/raw/gpt-5.4.round-1.txt: 764c4ad347b9e70d3acefda02ea18628f129440fe4b32d4ac3fac04608c73b24
+    docs/notes/review-runs/2026-06-10-todo-next-session-update-postwrite-r2/review_summary.md: 1623382074df67f4f15d884e93f49932de803f6328d11463106e70c451b8817e
+    docs/notes/review-runs/2026-06-10-todo-next-session-update-postwrite-r2/rounds.yaml: 37584269021815eb6201135257276cdddc7f95c4ab492df1fbb2183b309d26bc
+    docs/notes/review-runs/2026-06-10-todo-next-session-update-postwrite-r2/target-manifest.yaml: bfa7242345c5f5698b860e67f08a4008e49f37ee8227050e61552156a376ebed
+    docs/notes/review-runs/2026-06-10-todo-next-session-update-postwrite-r2/triage.yaml: 903efe3172918a036f8ca493bc617783ec572e6bddaa477bedbb9360f2ee3977
+    docs/notes/review-runs/2026-06-10-todo-next-session-update-postwrite/model-result-summary.yaml: b77ba5175114241fec46706570895ab42b95aa313f8e2a0c6ef1c8dd581cd497
+    docs/notes/review-runs/2026-06-10-todo-next-session-update-postwrite/parsed/claude-sonnet-4-6.round-1.yaml: 5c2d114958d8d89320c3cf5d7d0db63a1a91776786646fea370af6e6ec29a3ad
+    docs/notes/review-runs/2026-06-10-todo-next-session-update-postwrite/parsed/gemini-3.1-pro-preview.round-1.yaml: d00f1135351ed8af03b571ddb1657940e2a1f6cd54b3fae69f07431b0007c70f
+    docs/notes/review-runs/2026-06-10-todo-next-session-update-postwrite/parsed/gpt-5.4.round-1.yaml: 85cc5c13639fddc0bdec6b5f6ad9b49b882661f3bf80e96e255e491f3b2b7f43
+    docs/notes/review-runs/2026-06-10-todo-next-session-update-postwrite/raw/claude-sonnet-4-6.round-1.txt: 555ba765c0b2d628e71ff40333f224fac3e027cd0b5655efcbc455c64b0568ba
+    docs/notes/review-runs/2026-06-10-todo-next-session-update-postwrite/raw/gemini-3.1-pro-preview.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/2026-06-10-todo-next-session-update-postwrite/raw/gpt-5.4.round-1.txt: a415ac5c17f627cefcd127900c444edb3b0456c6b524b91cf98d617ad2d0eba1
+    docs/notes/review-runs/2026-06-10-todo-next-session-update-postwrite/review_summary.md: 562c55a189123fd270d2e09cdbb75742d4b4029670f6ca7dab8d3f53969df539
+    docs/notes/review-runs/2026-06-10-todo-next-session-update-postwrite/rounds.yaml: 98b997d249d4092a3dd1194d63894e6d2e709676bbd94ac2670640f325a3df2a
+    docs/notes/review-runs/2026-06-10-todo-next-session-update-postwrite/target-manifest.yaml: 6c5773a36bf377a6d215cbe64cf1f0f8671a72bce3cad93d88865c627c5a0f5f
+    docs/notes/review-runs/2026-06-10-todo-next-session-update-postwrite/triage.yaml: 475f974e012a060efee60af5e20467f911378f8a105d5c62f04c724f20024d11
+- verifier: gemini-3.1-pro-preview
+  target_files:
+  - TODO_NEXT_SESSION.md
+  - docs/notes/review-runs/2026-06-10-todo-next-session-update-postwrite-r2/model-result-summary.yaml
+  - docs/notes/review-runs/2026-06-10-todo-next-session-update-postwrite-r2/parsed/claude-sonnet-4-6.round-1.yaml
+  - docs/notes/review-runs/2026-06-10-todo-next-session-update-postwrite-r2/parsed/gemini-3.1-pro-preview.round-1.yaml
+  - docs/notes/review-runs/2026-06-10-todo-next-session-update-postwrite-r2/parsed/gpt-5.4.round-1.yaml
+  - docs/notes/review-runs/2026-06-10-todo-next-session-update-postwrite-r2/raw/claude-sonnet-4-6.round-1.txt
+  - docs/notes/review-runs/2026-06-10-todo-next-session-update-postwrite-r2/raw/gemini-3.1-pro-preview.round-1.txt
+  - docs/notes/review-runs/2026-06-10-todo-next-session-update-postwrite-r2/raw/gpt-5.4.round-1.txt
+  - docs/notes/review-runs/2026-06-10-todo-next-session-update-postwrite-r2/review_summary.md
+  - docs/notes/review-runs/2026-06-10-todo-next-session-update-postwrite-r2/rounds.yaml
+  - docs/notes/review-runs/2026-06-10-todo-next-session-update-postwrite-r2/target-manifest.yaml
+  - docs/notes/review-runs/2026-06-10-todo-next-session-update-postwrite-r2/triage.yaml
+  - docs/notes/review-runs/2026-06-10-todo-next-session-update-postwrite/model-result-summary.yaml
+  - docs/notes/review-runs/2026-06-10-todo-next-session-update-postwrite/parsed/claude-sonnet-4-6.round-1.yaml
+  - docs/notes/review-runs/2026-06-10-todo-next-session-update-postwrite/parsed/gemini-3.1-pro-preview.round-1.yaml
+  - docs/notes/review-runs/2026-06-10-todo-next-session-update-postwrite/parsed/gpt-5.4.round-1.yaml
+  - docs/notes/review-runs/2026-06-10-todo-next-session-update-postwrite/raw/claude-sonnet-4-6.round-1.txt
+  - docs/notes/review-runs/2026-06-10-todo-next-session-update-postwrite/raw/gemini-3.1-pro-preview.round-1.txt
+  - docs/notes/review-runs/2026-06-10-todo-next-session-update-postwrite/raw/gpt-5.4.round-1.txt
+  - docs/notes/review-runs/2026-06-10-todo-next-session-update-postwrite/review_summary.md
+  - docs/notes/review-runs/2026-06-10-todo-next-session-update-postwrite/rounds.yaml
+  - docs/notes/review-runs/2026-06-10-todo-next-session-update-postwrite/target-manifest.yaml
+  - docs/notes/review-runs/2026-06-10-todo-next-session-update-postwrite/triage.yaml
+  target_sha256:
+    TODO_NEXT_SESSION.md: 3970ec791dd477a0070fd91c9fe74a5f8b04710ae88f53bdabd9d5e003b1a6b0
+    docs/notes/review-runs/2026-06-10-todo-next-session-update-postwrite-r2/model-result-summary.yaml: c2f679ae43c0b9a0aa8d559e459f2c9ee0a083a22ff3e5c9882dadc265345009
+    docs/notes/review-runs/2026-06-10-todo-next-session-update-postwrite-r2/parsed/claude-sonnet-4-6.round-1.yaml: da5c8bc2372fbe867c23fd6c28f5bd18f71f7d780c5f0ce386520126cafe6edf
+    docs/notes/review-runs/2026-06-10-todo-next-session-update-postwrite-r2/parsed/gemini-3.1-pro-preview.round-1.yaml: 854e802cc2586cc32f1c7e95a3f330ccc6d199f017efcfca621ec41cb796f9a1
+    docs/notes/review-runs/2026-06-10-todo-next-session-update-postwrite-r2/parsed/gpt-5.4.round-1.yaml: d1fad200fc8410019b7f11dedff901bf36dcbe7d058e086cc639f01a56a2b648
+    docs/notes/review-runs/2026-06-10-todo-next-session-update-postwrite-r2/raw/claude-sonnet-4-6.round-1.txt: 2ad4f8b44e8b2580460534cbdab55736fac96590cb1959ba1e88f4451846cff2
+    docs/notes/review-runs/2026-06-10-todo-next-session-update-postwrite-r2/raw/gemini-3.1-pro-preview.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/2026-06-10-todo-next-session-update-postwrite-r2/raw/gpt-5.4.round-1.txt: 764c4ad347b9e70d3acefda02ea18628f129440fe4b32d4ac3fac04608c73b24
+    docs/notes/review-runs/2026-06-10-todo-next-session-update-postwrite-r2/review_summary.md: 1623382074df67f4f15d884e93f49932de803f6328d11463106e70c451b8817e
+    docs/notes/review-runs/2026-06-10-todo-next-session-update-postwrite-r2/rounds.yaml: 37584269021815eb6201135257276cdddc7f95c4ab492df1fbb2183b309d26bc
+    docs/notes/review-runs/2026-06-10-todo-next-session-update-postwrite-r2/target-manifest.yaml: bfa7242345c5f5698b860e67f08a4008e49f37ee8227050e61552156a376ebed
+    docs/notes/review-runs/2026-06-10-todo-next-session-update-postwrite-r2/triage.yaml: 903efe3172918a036f8ca493bc617783ec572e6bddaa477bedbb9360f2ee3977
+    docs/notes/review-runs/2026-06-10-todo-next-session-update-postwrite/model-result-summary.yaml: b77ba5175114241fec46706570895ab42b95aa313f8e2a0c6ef1c8dd581cd497
+    docs/notes/review-runs/2026-06-10-todo-next-session-update-postwrite/parsed/claude-sonnet-4-6.round-1.yaml: 5c2d114958d8d89320c3cf5d7d0db63a1a91776786646fea370af6e6ec29a3ad
+    docs/notes/review-runs/2026-06-10-todo-next-session-update-postwrite/parsed/gemini-3.1-pro-preview.round-1.yaml: d00f1135351ed8af03b571ddb1657940e2a1f6cd54b3fae69f07431b0007c70f
+    docs/notes/review-runs/2026-06-10-todo-next-session-update-postwrite/parsed/gpt-5.4.round-1.yaml: 85cc5c13639fddc0bdec6b5f6ad9b49b882661f3bf80e96e255e491f3b2b7f43
+    docs/notes/review-runs/2026-06-10-todo-next-session-update-postwrite/raw/claude-sonnet-4-6.round-1.txt: 555ba765c0b2d628e71ff40333f224fac3e027cd0b5655efcbc455c64b0568ba
+    docs/notes/review-runs/2026-06-10-todo-next-session-update-postwrite/raw/gemini-3.1-pro-preview.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/2026-06-10-todo-next-session-update-postwrite/raw/gpt-5.4.round-1.txt: a415ac5c17f627cefcd127900c444edb3b0456c6b524b91cf98d617ad2d0eba1
+    docs/notes/review-runs/2026-06-10-todo-next-session-update-postwrite/review_summary.md: 562c55a189123fd270d2e09cdbb75742d4b4029670f6ca7dab8d3f53969df539
+    docs/notes/review-runs/2026-06-10-todo-next-session-update-postwrite/rounds.yaml: 98b997d249d4092a3dd1194d63894e6d2e709676bbd94ac2670640f325a3df2a
+    docs/notes/review-runs/2026-06-10-todo-next-session-update-postwrite/target-manifest.yaml: 6c5773a36bf377a6d215cbe64cf1f0f8671a72bce3cad93d88865c627c5a0f5f
+    docs/notes/review-runs/2026-06-10-todo-next-session-update-postwrite/triage.yaml: 475f974e012a060efee60af5e20467f911378f8a105d5c62f04c724f20024d11
+review_run:
+  path: docs/notes/review-runs/2026-06-10-todo-next-session-update-postwrite-r2
+  summary_path: docs/notes/review-runs/2026-06-10-todo-next-session-update-postwrite-r2/model-result-summary.yaml
+notes: Generated template; verify target_files cover current post-write targets before
+  use.

@@ -1,0 +1,215 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://reviewcompass.local/schemas/self-improvement/proposal.schema.json",
+  "title": "Self Improvement Workflow Proposal",
+  "type": "object",
+  "additionalProperties": true,
+  "required": [
+    "proposal_id",
+    "proposal_type",
+    "target_discipline_path",
+    "motivating_evidence",
+    "proposed_change",
+    "expected_effect",
+    "status"
+  ],
+  "properties": {
+    "proposal_id": {
+      "type": "string",
+      "pattern": "^(WP|RB)-[0-9]{3,}$"
+    },
+    "proposal_type": {
+      "type": "string",
+      "enum": [
+        "new_discipline",
+        "update",
+        "status_change",
+        "archive",
+        "consolidation"
+      ]
+    },
+    "target_discipline_path": {
+      "type": "string",
+      "pattern": "^docs/disciplines/discipline_.*\\.md$"
+    },
+    "source_discipline_paths": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^docs/disciplines/(archive/.*/)?discipline_.*\\.md$"
+      }
+    },
+    "motivating_evidence": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": [
+          "source",
+          "location",
+          "observation"
+        ],
+        "properties": {
+          "source": {
+            "type": "string"
+          },
+          "location": {
+            "type": "string"
+          },
+          "observation": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "proposed_change": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "expected_effect": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "approved",
+        "rejected",
+        "superseded"
+      ]
+    },
+    "statistical_evidence": {
+      "type": "object"
+    },
+    "depends_on": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "superseded_by": {
+      "type": "string"
+    },
+    "superseded_at": {
+      "type": "string"
+    },
+    "reopen_reason": {
+      "type": "string"
+    },
+    "materialized_at": {
+      "type": "string"
+    },
+    "materialization_commit_hash": {
+      "type": [
+        "string",
+        "null"
+      ]
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "proposal_type": {
+            "const": "new_discipline"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "proposed_change": {
+            "required": [
+              "draft_discipline",
+              "relationship_notes",
+              "related_disciplines"
+            ],
+            "properties": {
+              "related_disciplines": {
+                "type": "array",
+                "minItems": 1,
+                "items": {
+                  "type": "string",
+                  "pattern": "^docs/disciplines/discipline_.*\\.md$"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "proposal_type": {
+            "const": "update"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "proposed_change": {
+            "required": [
+              "change_diff"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "proposal_type": {
+            "const": "status_change"
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "statistical_evidence"
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "proposal_type": {
+            "const": "archive"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "proposed_change": {
+            "required": [
+              "archive_readme_path"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "proposal_type": {
+            "const": "consolidation"
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "source_discipline_paths"
+        ],
+        "properties": {
+          "proposed_change": {
+            "required": [
+              "mapping_table"
+            ]
+          },
+          "source_discipline_paths": {
+            "minItems": 1
+          }
+        }
+      }
+    }
+  ]
+}

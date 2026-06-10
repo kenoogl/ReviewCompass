@@ -1,0 +1,59 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "conformance_run_ref",
+    "assessment_summary",
+    "violation_findings",
+    "compliance_rate",
+    "included_disciplines",
+    "intake_at"
+  ],
+  "properties": {
+    "conformance_run_ref": {
+      "$ref": "#/$defs/artifact_ref"
+    },
+    "assessment_summary": {
+      "type": "object"
+    },
+    "violation_findings": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "compliance_rate": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1
+    },
+    "included_disciplines": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "intake_at": {
+      "type": "string"
+    }
+  },
+  "$defs": {
+    "artifact_ref": {
+      "type": "object",
+      "additionalProperties": true,
+      "required": ["ref_type", "target_path", "target_id"],
+      "properties": {
+        "ref_type": {
+          "type": "string"
+        },
+        "target_path": {
+          "type": "string"
+        },
+        "target_id": {
+          "type": ["string", "null"]
+        }
+      }
+    }
+  }
+}

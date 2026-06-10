@@ -1,0 +1,39 @@
+# reviewcompass.yaml
+# 設定 2 層モデルの下層：ツール本体の既定値（design.md §10）。
+# アプリ側 <対象アプリ>/.reviewcompass/config.yaml が項目別に上書きする。
+# 実効設定（下層＋上層の結合）の版とハッシュは実行メタデータ config_version／config_hash に記録される。
+#
+# 対応設計節：design.md §10 設定と雛形のモデル
+# 対応要件：Requirement 2（役と設定の抽象化）、Requirement 7 受入 3
+
+version: "B1.0"
+
+# 役ごとの既定モデル割り当て（具体モデル名はここに退避し、枠組み定義・スキーマには出さない）
+role_models:
+  primary_reviewer: ""        # 既定未設定（アプリ側または運用で指定）
+  adversarial_reviewer: ""
+  judgment_reviewer: ""
+
+# 既定パス
+paths:
+  schemas: runtime/schemas/
+  validator_contracts: runtime/validators/contracts/
+  prompts: runtime/prompts/
+  evidence_output_dir: ".reviewcompass/evidence/"
+
+# 既定の対象アプリ言語
+project_language: ja
+
+# 規約版（プロトコル逸脱防止）
+protocol_version: "B1.0"
+
+# 既定の phase および profile（値語彙は runtime 所有、本機能は既定値の枠のみ）
+default_phase_profile: ""
+
+# 代役機構の既定方針
+human_proxy:
+  enabled: false
+
+# 通知の既定
+notification:
+  enabled: false

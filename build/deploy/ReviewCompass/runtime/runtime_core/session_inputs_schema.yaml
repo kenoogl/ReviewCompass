@@ -1,0 +1,41 @@
+# session_inputs_schema.yaml
+# セッション入力の必須項目集合（runtime tasks.md T-002）。
+#
+# 実行開始時に session controller が固定する入力の正本。
+# design.md §セッションモデル §2 セッション入力（14 項目）と一致する。
+# Reference-Free Runtime Entry Principle：特定事例の暗黙既定値を入口で受けず、
+# 必須入力はすべて明示提供されることを要求する。
+#
+# 対応設計節：design.md §セッションモデル §2 セッション入力、
+#           §Reference-Free Runtime Entry Principle
+# 対応要件：Requirement 1 受入 5、Requirement 7
+
+version: "1.0"
+
+# 必須セッション入力 14 項目（design.md §2）。
+# 値語彙のうち phase_profile と treatment は runtime 所有（T-003 で正本確定）、
+# review_mode は foundation 正本語彙から選択（runtime 自身の実行では runtime_mediated）。
+required_inputs:
+  - target_id              # レビュー対象識別子
+  - target_artifact_hash   # 対象固定のためのハッシュ
+  - source_repository_id   # 証拠採取元リポジトリ識別子
+  - source_revision        # 証拠採取時の改訂版識別子
+  - phase_profile          # フェーズ・プロファイル（runtime 所有 4 値、T-003）
+  - treatment              # 処理方式（runtime 所有 3 値、T-003）
+  - review_mode            # レビューモード（foundation 正本語彙を参照）
+  - protocol_version       # 規約版
+  - runtime_version        # 実行時挙動追跡
+  - prompt_set_version     # プロンプト群整合追跡
+  - schema_set_version     # スキーマ群整合追跡
+  - config_version         # 実効設定の版
+  - config_hash            # 実効設定のハッシュ
+  - operator_id            # 運用者識別子（operator identity）
+
+# controller が開始時に固定する項目（セッション入力ではないが run_manifest に書き込む）。
+controller_fixed:
+  - run_id      # 実行の安定識別子
+  - started_at  # 実行開始時刻
+
+# run_manifest.yaml の開始時固定フィールド総数（完了条件 1）。
+# = 14 セッション入力 ＋ 2 controller_fixed
+start_fixed_field_count: 16

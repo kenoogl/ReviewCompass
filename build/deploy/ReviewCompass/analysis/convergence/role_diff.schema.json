@@ -1,0 +1,121 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["entries"],
+  "$defs": {
+    "count_map": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "integer",
+        "minimum": 0
+      }
+    },
+    "findings_summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["by_severity"],
+      "properties": {
+        "total": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "by_severity": {
+          "$ref": "#/$defs/count_map"
+        },
+        "by_final_label": {
+          "$ref": "#/$defs/count_map"
+        },
+        "by_counter_status": {
+          "$ref": "#/$defs/count_map"
+        }
+      }
+    },
+    "artifact_ref": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["ref_type", "target_path"],
+      "properties": {
+        "ref_type": {
+          "type": "string"
+        },
+        "target_path": {
+          "type": "string"
+        },
+        "target_id": {
+          "type": ["string", "null"]
+        }
+      }
+    },
+    "entry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["feature", "role", "findings_summary", "target"],
+      "properties": {
+        "feature": {
+          "type": "string"
+        },
+        "role": {
+          "type": "string",
+          "enum": ["primary", "adversarial", "judgment"]
+        },
+        "findings_summary": {
+          "$ref": "#/$defs/findings_summary"
+        },
+        "target": {
+          "type": "string"
+        },
+        "evidence_refs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/artifact_ref"
+          }
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "role": {
+                "const": "judgment"
+              }
+            },
+            "required": ["role"]
+          },
+          "then": {
+            "properties": {
+              "findings_summary": {
+                "required": ["by_final_label"]
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "role": {
+                "const": "adversarial"
+              }
+            },
+            "required": ["role"]
+          },
+          "then": {
+            "properties": {
+              "findings_summary": {
+                "required": ["by_counter_status"]
+              }
+            }
+          }
+        }
+      ]
+    }
+  },
+  "properties": {
+    "entries": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/entry"
+      }
+    }
+  }
+}

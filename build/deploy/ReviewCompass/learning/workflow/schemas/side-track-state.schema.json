@@ -1,0 +1,115 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://reviewcompass.local/schemas/workflow/side-track-state.schema.json",
+  "title": "Side Track State",
+  "description": "post-write verification、sandbox trial、maintenance などの例外作業を通常 workflow へ復帰可能な状態として表す schema。",
+  "type": "object",
+  "additionalProperties": false,
+  "$defs": {
+    "relativePath": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^(?!/)(?![A-Za-z]:).+"
+    }
+  },
+  "required": [
+    "active_track",
+    "track_kind",
+    "reason",
+    "target_files",
+    "manifest_status",
+    "policy_violations",
+    "return_to",
+    "required_action"
+  ],
+  "properties": {
+    "active_track": {
+      "type": "string",
+      "minLength": 1
+    },
+    "track_kind": {
+      "type": "string",
+      "enum": [
+        "main_track",
+        "side_track",
+        "inner_workflow"
+      ]
+    },
+    "reason": {
+      "type": "string",
+      "minLength": 1
+    },
+    "target_files": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/relativePath"
+      }
+    },
+    "manifest_status": {
+      "type": "string",
+      "enum": [
+        "not_applicable",
+        "pending",
+        "completed",
+        "human_decision_required",
+        "policy_violation",
+        "blocked"
+      ]
+    },
+    "policy_violations": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "path",
+          "violation_type",
+          "required_action"
+        ],
+        "properties": {
+          "path": {
+            "$ref": "#/$defs/relativePath"
+          },
+          "violation_type": {
+            "type": "string",
+            "minLength": 1
+          },
+          "required_action": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    "return_to": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "outer_node",
+        "inner_node"
+      ],
+      "properties": {
+        "outer_node": {
+          "type": "string",
+          "minLength": 1
+        },
+        "inner_node": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "next_action_kind": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    },
+    "required_action": {
+      "type": "string",
+      "minLength": 1
+    }
+  }
+}

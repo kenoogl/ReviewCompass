@@ -1,0 +1,31 @@
+# override_paths.yaml
+# runtime 所有のプロンプト上書きパス規約（runtime tasks.md T-006）。
+#
+# foundation は「上書き拡張点が枠組みのどこに位置するか」のみを固定する
+# （layer1_framework.yaml の override_extension_point.location = runtime/prompts/）。
+# 上書きの選択順序・優先規則・適用条件は runtime 責務であり、本ファイルが正本。
+#
+# 対応設計節：design.md §プロンプト解決モデル §解決順序、§役と段の対応、
+#           §フェーズ対応レビュープロファイル §プロンプト上書きの選択
+# 対応要件：Requirement 3、Requirement 8 受入 6
+
+version: "1.0"
+
+# 役と段の対応（design.md §役と段の対応）。
+# Step D（integration）は言語モデル非依存のためレビュアー役を持たず、ここに含めない。
+role_step_map:
+  primary_reviewer: primary_detection
+  adversarial_reviewer: adversarial_review
+  judgment_reviewer: judgment
+
+# foundation 正本プロンプトのパスパターン（prompts_root からの相対）。
+base_path_pattern: "{step_dir}/{role}.prompt.md"
+
+# runtime 所有のフェーズ上書きパスパターン（prompts_root からの相対）。
+override_path_pattern: "{step_dir}/overrides/{phase_profile}/{role}.prompt.md"
+
+# 複数候補時の選択方針（要件 8 受入 6）：先頭から順に最初に実在する候補を採る。
+# override（フェーズ上書き）を base（foundation 正本）より優先する。
+precedence:
+  - override
+  - base

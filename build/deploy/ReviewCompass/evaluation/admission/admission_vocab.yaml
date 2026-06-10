@@ -1,0 +1,9 @@
+version: "1.0"
+values:
+  - admitted_standard
+  - admitted_exploratory
+  - rejected
+definitions:
+  admitted_standard: 標準比較母集団に入れられる取り込み証拠。
+  admitted_exploratory: 探索分析には使えるが標準比較母集団には入れない取り込み証拠。
+  rejected: 母集団に入れない取り込み証拠。
