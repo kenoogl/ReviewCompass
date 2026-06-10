@@ -170,6 +170,8 @@ triad-review 段で判定役が must-fix と判定した所見の対処は、起
 
 本規律の出典：2026-05-25 セッション 25 の foundation／design must-fix 対処での手順違反事例（利用者の問いかけ「foundationのmust_fixについては、議論しなくて良いのか」と「(イ)で後段に問題発生はないか」「一連の提案は、表層的で深掘りされていない。先ほどの指摘がなければ、下流でreopen案件になっていた」）。詳細は当該セッションのレビュー記録 [.reviewcompass/specs/foundation/reviews/2026-05-25-design-triad-review.md](../../.reviewcompass/specs/foundation/reviews/2026-05-25-design-triad-review.md) を参照。
 
+<a id="3.3-a-2"></a>
+
 ##### (a-2) review-run 後の proxy_model 判断代行手順
 
 API 経由の review-run 後に、人間の個別判断を proxy_model が代行する場合も、メインセッション LLM が重要件を独自に確定して実装へ進むことを禁ずる。proxy_model 代行は「人間判断を省略する」ものではなく、判断主体を別モデルへ移す運用である。

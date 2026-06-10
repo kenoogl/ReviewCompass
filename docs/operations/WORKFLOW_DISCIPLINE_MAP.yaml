@@ -70,11 +70,13 @@ decision_points:
     - id: reopen_started
       prompt_source_refs:
         - docs/operations/WORKFLOW_PRECHECK.md#reopen-start
+        - docs/operations/WORKFLOW_PRECHECK_DETAILS.md#commit
         - docs/operations/REOPEN_PROCEDURE.md
       effective_prompt_policy: one_effective_prompt_per_decision_point
     - id: reopen_start_failed
       prompt_source_refs:
         - docs/operations/WORKFLOW_PRECHECK.md#reopen-start
+        - docs/operations/WORKFLOW_PRECHECK_DETAILS.md#commit
         - docs/operations/REOPEN_PROCEDURE.md
       effective_prompt_policy: one_effective_prompt_per_decision_point
   workflow_stage:
@@ -114,40 +116,49 @@ decision_points:
       prompt_source_refs:
         - docs/operations/WORKFLOW_NAVIGATION.md
         - docs/operations/WORKFLOW_PRECHECK.md#spec-set
+        - docs/operations/WORKFLOW_PRECHECK_DETAILS.md#spec-set
         - docs/disciplines/discipline_approval_operation.md
       effective_prompt_policy: one_effective_prompt_per_decision_point
   precheck_subcommand:
     - id: spec-set
       prompt_source_refs:
         - docs/operations/WORKFLOW_PRECHECK.md#spec-set
+        - docs/operations/WORKFLOW_PRECHECK_DETAILS.md#spec-set
       effective_prompt_policy: one_effective_prompt_per_decision_point
     - id: commit
       prompt_source_refs:
         - docs/operations/WORKFLOW_PRECHECK.md#commit
+        - docs/operations/WORKFLOW_PRECHECK_DETAILS.md#commit
       effective_prompt_policy: one_effective_prompt_per_decision_point
     - id: push
       prompt_source_refs:
         - docs/operations/WORKFLOW_PRECHECK.md#push
+        - docs/operations/WORKFLOW_PRECHECK_DETAILS.md#push
       effective_prompt_policy: one_effective_prompt_per_decision_point
     - id: autonomous-plan
       prompt_source_refs:
         - docs/operations/WORKFLOW_PRECHECK.md
+        - docs/operations/WORKFLOW_PRECHECK_DETAILS.md#autonomous-plan
       effective_prompt_policy: one_effective_prompt_per_decision_point
     - id: autonomous-plan-template
       prompt_source_refs:
         - docs/operations/WORKFLOW_PRECHECK.md
+        - docs/operations/WORKFLOW_PRECHECK_DETAILS.md#autonomous-plan-template
       effective_prompt_policy: one_effective_prompt_per_decision_point
     - id: autonomous-plan-record-integration
       prompt_source_refs:
         - docs/operations/WORKFLOW_PRECHECK.md
+        - docs/operations/WORKFLOW_PRECHECK_DETAILS.md#autonomous-plan-record-integration
       effective_prompt_policy: one_effective_prompt_per_decision_point
     - id: autonomous-ledger-audit
       prompt_source_refs:
         - docs/operations/WORKFLOW_PRECHECK.md
+        - docs/operations/WORKFLOW_PRECHECK_DETAILS.md#autonomous-ledger-audit
       effective_prompt_policy: one_effective_prompt_per_decision_point
     - id: audit-commit
       prompt_source_refs:
         - docs/operations/WORKFLOW_PRECHECK.md#audit-commit
+        - docs/operations/WORKFLOW_PRECHECK_DETAILS.md#audit-commit
       effective_prompt_policy: one_effective_prompt_per_decision_point
     - id: next
       prompt_source_refs:
@@ -157,6 +168,7 @@ decision_points:
     - id: reopen-start
       prompt_source_refs:
         - docs/operations/WORKFLOW_PRECHECK.md#reopen-start
+        - docs/operations/WORKFLOW_PRECHECK_DETAILS.md#commit
         - docs/operations/REOPEN_PROCEDURE.md
       effective_prompt_policy: one_effective_prompt_per_decision_point
   reopen_required_action:
@@ -334,6 +346,7 @@ by_stage:
   approval:
     - docs/disciplines/discipline_approval_operation.md
     - docs/operations/WORKFLOW_PRECHECK.md#spec-set
+    - docs/operations/WORKFLOW_PRECHECK_DETAILS.md#spec-set
 required_inputs:
   by_stage:
     drafting:

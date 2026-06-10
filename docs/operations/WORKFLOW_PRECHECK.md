@@ -1,645 +1,160 @@
-# WORKFLOW_PRECHECK：ワークフロー事前検査スクリプトの正本仕様
+# WORKFLOW_PRECHECK：ワークフロー事前検査の運用契約
 
-最終更新：2026-06-04（自律・並列実行計画 `autonomous-plan` と履歴台帳ガードを追加）／2026-06-03（commit 時 post-write-verification 監査と audit-commit 追加、commit 承認レコードガード追加。Codex adapter migration：段階 3 hook 記述を実行環境 adapter 方針へ整理）／2026-05-25 セッション 24（新設、補助層 C 段階 2 の仕様確定）
-位置付け：運用文書（`docs/operations/` 配下）、計画書 §5.8 補助層 C の段階 2 の正本仕様
+本文書は `tools/check-workflow-action.py` と関連ラッパーの運用契約を定める。詳細な引数、判定条件、出力構造、テスト観点は [WORKFLOW_PRECHECK_DETAILS.md](WORKFLOW_PRECHECK_DETAILS.md) を参照する。仕様の変更には人の明示承認が必要である。
 
-本文書は計画書 §5.8 補助層 C 共存モデルの **段階 2（外部スクリプトによる機械的判定）** の仕様を定める。段階 2 の実装は本文書を入力として進める。仕様の変更には利用者明示承認が必要（規律 §0.2 計画書方針変更に準じる）。
+## 1. 目的
 
-## 採用承認の出典
+ワークフロー事前検査は、不可逆操作の直前に現在のワークフロー状態との整合を機械判定するための仕組みである。
 
-- 「共存モデルの採用」（2026-05-25 セッション 24、補助層 C 共存モデルの採用、計画書方針変更）
-- 「A から順に進める」（2026-05-25 セッション 24、文書反映の着手順序指示）
-- 「次に進む」（2026-05-25 セッション 24、段階 2 仕様策定への着手）
-- 「範囲案 2」（2026-05-25 セッション 24、対象範囲を spec.json ＋ commit ＋ push に確定）
-- 「論点 A は、実装テスト段階でも効果測定やデバッグで必要になるのではないか？」（2026-05-25 セッション 24、実行ログ取得を MVP 必須として位置付け）
-- 「論点 B は、渡す」（2026-05-25 セッション 24、`--rationale` 引数の採用）
-- 「論点 C は別文書」（2026-05-25 セッション 24、本文書の独立新設）
-- 「ア」（2026-05-25 セッション 24、派生論点の中間案採用と本文書起草の承認）
+対象となる不可逆操作：
 
-## 1. 概要と位置付け
+1. spec.json の `workflow_state` 変更
+2. git commit
+3. git push
 
-### 1.1 何のための仕様か
+## 2. 役割分担
 
-ワークフロー事前検査スクリプト（以降「本スクリプト」）は、私（LLM、メインセッション）が ReviewCompass の開発作業を進めるとき、不可逆操作（spec.json 修正・git commit・git push）の **直前に呼び出して、当該操作が現在のワークフロー状態と整合するかを機械的に判定する** ためのコマンドラインツール。
+ワークフロー事前検査は、次の 3 段階で扱う。
 
-### 1.2 共存モデル全体での位置付け
+- **段階 1**：LLM または作業者が、不可逆操作の直前に本スクリプトを呼び出し、結果を解釈する
+- **段階 2**：本スクリプトが、状態を読み取り、判定結果を返す
+- **段階 3**：実行環境の hook 連携が、呼び忘れを機械的に遮断する
 
-計画書 §5.8 補助層 C 共存モデルは 3 段階の役割分担で構成される：
+段階 2 は判定だけを行う。承認取得、状態変更、人への問い合わせ、強制遮断は行わない。
 
-- **段階 1（LLM 規律、恒久層）**：これから何をするかを応答内で明示、本スクリプトを呼び、出力を解釈して次の行動を決める
-- **段階 2（外部スクリプト、本仕様の対象）**：spec.json／git／規律ファイル／持ち越し所見を読み、引数の処理が現状で適切かを判定して返す
-- **段階 3（実行環境別 hook adapter）**：ツール呼び出し（Edit／Write／Bash 等）の前に段階 2 を自動で走らせ、逸脱なら遮断
+## 3. 適用範囲
 
-本スクリプトは段階 2 の本体。段階 1 と段階 3 の両方から呼ばれ得る。
+本スクリプトは次を対象とする。
 
-### 1.3 関連文書
+- `spec-set`：spec.json の workflow_state 変更前検査
+- `commit`：commit 前検査
+- `push`：push 前検査
+- `audit-commit`：commit 済み変更に対する post-write-verification 監査
+- `autonomous-plan`：自律・並列実行計画の開始前検査
+- `autonomous-plan-template`：自律・並列実行計画テンプレート生成
+- `autonomous-plan-record-integration`：自律・並列実行の統合結果記録
+- `guarded-git-commit.py`：commit 前検査つき git commit ラッパー
 
-- 計画書 §5.8 補助層 C（採用方針の正本）
-- 議論メモ：[docs/notes/2026-05-25-workflow-pre-check-and-discipline-consolidation.md](../notes/2026-05-25-workflow-pre-check-and-discipline-consolidation.md)（議論経緯）
-- TODO §3 セクション D（残作業の管理）
-- spec.json 正本スキーマ：計画書 §5.24
-- 運営ガイド：[docs/operations/SESSION_WORKFLOW_GUIDE.md](SESSION_WORKFLOW_GUIDE.md)
+対象外：
 
-## 2. 共存モデルにおける段階 2 の役割
+- 仕様文書ファイルの編集前検査
+- 計画文書の編集前検査
+- 応答テキストだけの妥当性判定
 
-### 2.1 単一責任
+適用範囲を拡張する場合は、本文書を改訂して人の明示承認を受ける。
 
-段階 2 は **判定のみ** を行う。承認や合意の取得、状態の書き換え、エスカレーションは行わない。
+## 4. 呼び出し契約
 
-具体的に：
+基本形：
 
-- **行う**：状態を読み、判定して結果を返す、判定履歴をログに残す
-- **行わない**：spec.json の書き換え（それは段階 1 が承認後に行う）、利用者への問い合わせ（それは段階 1 の役割）、強制遮断（それは段階 3 のフック設定の役割）
-
-### 2.2 段階間のインターフェース
-
-```
-段階 1（LLM）：意図宣言
-  ↓ 引数を渡してスクリプトを呼び出す
-段階 2（本スクリプト）
-  ↓ 終了コード ＋ 標準出力（人間可読 or JSON）
-段階 1（LLM）：出力を解釈して処理続行可否を判断
-```
-
-段階 3 導入後は、段階 1 が呼び忘れた場合に各実行環境の hook adapter が同じスクリプトを自動発動する。
-
-## 3. 適用範囲（範囲案 2）
-
-### 3.1 対象とする処理
-
-3 つの不可逆操作を対象とする：
-
-1. **spec.json の `workflow_state` 修正**：機能単位 spec.json の段の真偽値を変更する操作
-2. **git commit**：作業ツリーの変更を確定する操作
-3. **git push**：ローカルコミットを `origin` に送る操作
-
-### 3.2 適用範囲外（将来拡張の候補）
-
-範囲案 2 では次は対象としない（範囲案 3 への拡張時に検討）：
-
-- 仕様文書ファイル（`design.md`／`requirements.md`／`tasks.md`／`implementation.md` 等）の編集前検査
-- 計画書（`docs/plan/`）の編集前検査
-- 応答テキストのみの判断（例：「完了」「承認済」の断定）は段階 2 では機械判定不可、段階 1 規律の責務
-
-### 3.3 拡張時の責務
-
-将来の範囲案 3 への拡張は、本文書を改訂して仕様を追加する（規律 §0.2 計画書方針変更に該当、利用者明示承認必須）。
-
-## 4. サブコマンド体系
-
-3 つのサブコマンドを持つ：
-
-```
-check-workflow-action.py spec-set <feature> <phase> <stage> <new-value> [--rationale "<理由>"]
-check-workflow-action.py commit --rationale "<理由>"
-check-workflow-action.py push --rationale "<理由>"
-check-workflow-action.py autonomous-plan <plan.yaml>
-check-workflow-action.py autonomous-plan-template --run-id <run-id> --out <plan.yaml>
-check-workflow-action.py autonomous-plan-record-integration --ledger <ledger.yaml> --status <status> --tests "<tests>" --decision "<decision>"
-check-workflow-action.py audit-commit <commit-ish>
-guarded-git-commit.py -m "<commit message>" --rationale "<理由>"
+```bash
+tools/check-workflow-action.py spec-set <feature> <phase> <stage> <new-value> [--rationale "<理由>"]
+tools/check-workflow-action.py commit --rationale "<理由>" [--execution-actor llm|human]
+tools/check-workflow-action.py push --rationale "<理由>"
+tools/check-workflow-action.py audit-commit <commit-ish>
+tools/check-workflow-action.py autonomous-plan <plan.yaml>
+tools/check-workflow-action.py autonomous-plan-template --run-id <run-id> --out <plan.yaml>
+tools/check-workflow-action.py autonomous-plan-record-integration --ledger <ledger.yaml> --status <status> --tests "<tests>" --decision "<decision>"
+tools/guarded-git-commit.py -m "<commit message>" --rationale "<理由>"
 ```
 
 共通オプション：
 
-- `--json`：機械可読の JSON 出力に切り替え（未指定時は人間可読）
-- `--log-path <path>`：ログ書き出し先の上書き（既定 `docs/logs/workflow-precheck.log`）
-- `--help`：使い方表示
+- `--json`：機械可読 JSON を出力する
+- `--log-path <path>`：判定ログの出力先を上書きする
+- `--help`：使い方を表示する
 
-## 5. 引数仕様
+commit は人の職掌範囲である。`--execution-actor llm` の場合、通常の commit 内容承認とは別に、LLM による実行代行の明示承認を必要とする。実行時は直接 `git commit` ではなく、原則として `tools/guarded-git-commit.py` を使う。
 
-### 5.1 `spec-set` サブコマンド
+<a id="spec-set"></a>
 
-```
-check-workflow-action.py spec-set <feature> <phase> <stage> <new-value> [--rationale "<理由>"]
-```
+### 4.1 spec-set
 
-引数：
+`spec-set` は、spec.json の `workflow_state` を変更する直前に呼び出す。段順序、上流フェーズ完了、reopen pending、機能横断段の整合を検査する。詳細は [WORKFLOW_PRECHECK_DETAILS.md](WORKFLOW_PRECHECK_DETAILS.md#spec-set) を参照する。
 
-| 引数 | 必須 | 値の例 | 説明 |
-|---|---|---|---|
-| `<feature>` | 必須 | `foundation`／`runtime`／…／`conformance-evaluation` | 対象機能名、`stages/feature-dependency.yaml` の `features` キーと一致 |
-| `<phase>` | 必須 | `intent`／`feature-partitioning`／`requirements`／`design`／`tasks`／`implementation` | 対象フェーズ |
-| `<stage>` | 必須 | `drafting`／`triad-review`／`review-wave`／`alignment`／`approval` 等 | 対象段、フェーズにより値が異なる（計画書 §5.5） |
-| `<new-value>` | 必須 | `true`／`false` | 設定したい新しい真偽値 |
-| `--rationale` | 任意 | 自由文字列 | この変更を行う理由（ログ記録用、判定には影響しない） |
+<a id="commit"></a>
 
-`--rationale` を任意とする理由：`spec-set` は機械的整合判定が中心、理由を渡しても判定そのものは変わらない。ただしログ記録のため渡すことを推奨。
+### 4.2 commit
 
-### 5.2 `commit` サブコマンド
+`commit` は、git commit の直前に呼び出す。承認レコード、post-write-verification 完了、reopen 手続き記録、持ち越し所見、staged ファイル分類、staged 文書のリンク整合を検査する。詳細は [WORKFLOW_PRECHECK_DETAILS.md](WORKFLOW_PRECHECK_DETAILS.md#commit) を参照する。
 
-```
-check-workflow-action.py commit --rationale "<理由>" [--execution-actor llm|human]
-```
+<a id="push"></a>
 
-引数：
+### 4.3 push
 
-| 引数 | 必須 | 説明 |
-|---|---|---|
-| `--rationale` | **必須** | このコミットを行う理由、利用者承認の発言出典を含めることを推奨 |
-| `--execution-actor` | 任意 | commit 実行主体。既定は `llm`。`llm` の場合は、通常の commit 内容承認とは別に、LLM による実行代行の明示承認を要求する。人間が自分で commit する前の事前検査だけを行う場合は `human` を指定する |
+`push` は、git push の直前に呼び出す。作業ツリーの clean 性、ローカル先行コミット数、push 先を検査する。詳細は [WORKFLOW_PRECHECK_DETAILS.md](WORKFLOW_PRECHECK_DETAILS.md#push) を参照する。
 
-`--rationale` を必須とする理由：commit は不可逆操作のため、なぜ実行するかの根拠を残すべき。
+<a id="audit-commit"></a>
 
-commit は利用者の職掌範囲であり、「次のコミットまで自律実行」のような指示では、LLM は commit 停止点で必ず止まる。停止点到達後に利用者が単に「コミット」と指示した場合は、その 1 回の commit 実行代行を許可されたものとして扱う。最初から全自動で進める場合は、「コミット代行も含めて自律実行」のように commit 実行代行を含むことを明示する。機械判定では、`--rationale` に加えて `.reviewcompass/approvals/commit-approval.json` のユーザ承認レコードを必須とする。
+### 4.4 audit-commit
 
-`--execution-actor llm` の場合、承認レコードには通常の commit 内容承認とは別に `execution_delegation` を含める。`「次のコミットまで」`、`「次のコミットまで自律実行」`、`「進めて」` は停止点到達指示として扱い、LLM による commit 実行代行承認とはみなさない。停止点での `「コミット」`、または `「コミット代行も含めて自律実行」` は commit 実行代行承認として扱う。
+`audit-commit` は、指定 commit に含まれる post-write-verification 対象と completed manifest の対応を監査する。詳細は [WORKFLOW_PRECHECK_DETAILS.md](WORKFLOW_PRECHECK_DETAILS.md#audit-commit) を参照する。
 
-承認レコードの最小形：
+<a id="reopen-start"></a>
 
-```json
-{
-  "approved_action": "commit",
-  "approved_by": "user",
-  "approved_at": "2026-06-03T00:00:00+09:00",
-  "rationale": "利用者がコミットを明示承認",
-  "target_files": ["path/to/file.md"],
-  "execution_delegation": {
-    "delegated_to": "llm",
-    "approved_by": "user",
-    "approved_at": "2026-06-03T00:00:00+09:00",
-    "explicit_instruction": "コミット",
-    "rationale": "利用者が単発 commit 実行を明示指示"
-  },
-  "expires_after_commit": true,
-  "consumed": false
-}
-```
+### 4.5 reopen-start
 
-`target_files` は staged ファイルの許可範囲。`"*"` を含む場合は全 staged ファイルを許可する。`consumed: true` は消費済みとして逸脱扱いにする。`execution_delegation` は LLM 実行時だけ必須であり、人間が自分で commit する場合の内容承認レコードには不要。
+reopen 開始時は、上流正本変更の影響範囲を分類し、必要な reopen 手続き記録を作成してから通常ワークフローへ戻す。commit 時には、reopen 手続き記録と spec.json の recheck 状態の整合を検査する。詳細は [REOPEN_PROCEDURE.md](REOPEN_PROCEDURE.md) と [WORKFLOW_PRECHECK_DETAILS.md](WORKFLOW_PRECHECK_DETAILS.md#commit) を参照する。
 
-実行時は直接 `git commit` ではなく、次のラッパーを使う：
+## 5. 判定契約
 
-```
-tools/guarded-git-commit.py -m "<commit message>" --rationale "<理由>"
-```
+終了コード：
 
-このラッパーは `check-workflow-action.py commit --execution-actor llm` を先に実行し、exit 2 なら遮断する。exit 1（WARN）は既定では停止し、利用者判断で続行する場合だけ `--allow-warn` を付ける。commit 成功後、`expires_after_commit` が false でない承認レコードは `consumed: true` に更新する。
+- `0`：問題なし。処理続行可
+- `1`：警告あり。呼び出し側の判断で続行可
+- `2`：逸脱検出。呼び出し側は停止する
 
-限界：repo 内スクリプトだけでは「承認レコードを誰が作成したか」を完全には保証できない。強い保証には、段階 3 hook adapter または実行環境側で、承認レコードの発行・更新を利用者操作に限定する必要がある。
+主要な判定対象：
 
-また、commit 対象の staged ファイルに post-write-verification 対象（`docs/operations/`、`TODO_NEXT_SESSION.md` 等）が含まれる場合、対象ファイル群の現在 sha256 を覆う completed manifest を必須とする。manifest がない、sha256 が一致しない、coverage matrix が不足する、未解決本質的指摘がある場合は exit 2 とする。
+- `spec-set` は、段順序、上流フェーズ完了、reopen pending、機能横断段の整合を検査する
+- `commit` は、承認レコード、post-write-verification 完了、reopen 手続き記録、持ち越し所見、staged ファイル分類、staged 文書のリンク整合を検査する
+- `push` は、作業ツリーの clean 性、ローカル先行コミット数、push 先を検査する
+- `audit-commit` は、指定 commit に含まれる post-write-verification 対象と completed manifest の対応を検査する
+- `autonomous-plan` は、承認、作業境界、停止条件、統合ゲート、履歴台帳方針を検査する
 
-### 5.3 `push` サブコマンド
+## 6. 出力とログ
 
-```
-check-workflow-action.py push --rationale "<理由>"
-```
+既定出力は人間可読形式とし、少なくとも次を含める。
 
-引数：
+- 判定結果
+- 対象サブコマンド
+- 判定理由
+- 必要な現在状態の要約
 
-| 引数 | 必須 | 説明 |
-|---|---|---|
-| `--rationale` | **必須** | この push を行う理由、利用者承認の発言出典を含めることを推奨 |
+`--json` 指定時は、機械処理向けに同等の情報を構造化して出力する。
 
-`--rationale` を必須とする理由：push は origin に影響する不可逆操作、なぜ実行するかの根拠を残すべき。
+判定ログは JSON Lines 形式で記録する。既定パスは `docs/logs/workflow-precheck.log` とし、`--log-path` で上書きできる。
 
-### 5.4 `audit-commit` サブコマンド
+## 7. テスト契約
 
-```
-check-workflow-action.py audit-commit <commit-ish>
-```
+主要な判定条件は `tests/tools/test_check_workflow_action.py` で検証する。実装変更時は、期待される入出力に基づくテストを先に用意し、失敗確認後に実装を更新する。
 
-指定 commit の変更ファイルを読み、post-write-verification 対象が含まれる場合に completed manifest が存在するかを遡及監査する。`<commit-ish>` は `HEAD` や commit hash を指定できる。root commit も監査対象に含める。
+最低限、次の系統を覆う。
 
-commit 済みの見落とし検出用であり、通常は commit 直前の `commit` precheck が主経路。`audit-commit` は commit 内の対象ファイル内容を `git show <commit-ish>:<path>` で読み、その sha256 と現在リポジトリ内に存在する manifest の `target_sha256` を照合する。
+- `spec-set` の正常系、reopen 警告、段順序逸脱
+- `commit` の承認レコード、post-write-verification、reopen 手続き、危険変更の検査
+- `push` の clean 性検査
+- `audit-commit` の manifest 対応検査
+- `guarded-git-commit.py` の commit 遮断と承認レコード消費
+- `autonomous-plan` 系サブコマンドの構造検査
 
-この監査は「対象 commit 時点に manifest が存在したか」を証明する時点監査ではなく、「現在のリポジトリ状態で、その commit 内容に対応する検証記録が存在するか」を確認する是正監査である。したがって、見落とし後に追加した manifest による是正完了を認める。
+## 8. 配置
 
-`<commit-ish>` が解決できない場合は逸脱（exit 2）とする。
+主要ファイル：
 
-### 5.5 `autonomous-plan` サブコマンド
+- `tools/check-workflow-action.py`
+- `tools/guarded-git-commit.py`
+- `tests/tools/test_check_workflow_action.py`
+- `docs/operations/WORKFLOW_PRECHECK.md`
 
-```
-check-workflow-action.py autonomous-plan <plan.yaml>
-```
+補助モジュールを分割する場合は `tools/workflow_precheck/` 配下に置く。
 
-自律・並列モードで実装作業を始める前に、実行計画 YAML を検査する。目的は、並列化できる作業だけを切り出し、重要判断の停止条件と統合時の確認点を明示し、後から判断履歴を追える台帳を残すこと。
+## 9. 段階 1・段階 3 との接続
 
-計画 YAML は最低限、次を持つ。
+段階 1 は、不可逆操作の直前に本スクリプトを呼び出す。
 
-- `mode: autonomous_parallel`
-- `run_id`
-- `authorization`：`approved_by`、`approval_record_path`、`summary_presented_to_user`、`triage_presented_to_user`
-- `tasks[]`：`task_id`、`source_finding_ids`、`assignee`、`allowed_paths`、`depends_on`、`expected_tests`、`stop_conditions`
-- `integration_gate`：メインセッション確認、差分範囲確認、テスト確認、判断根拠確認
-- `outputs_policy`：実装差分、検証結果、判断根拠、作業ノイズの扱い
-- `history`：`ledger_path`、`record_task_assignments`、`record_decision_basis`、`record_integration_result`、`retention`
+- spec.json の `workflow_state` 変更直前：`spec-set`
+- git commit 直前：`commit` または `guarded-git-commit.py`
+- git push 直前：`push`
 
-`history.ledger_path` は `docs/logs/autonomous-parallel/` 配下とする。`autonomous-plan` は検査結果をこの台帳へ YAML として書き出し、後から `run_id`、task ID、承認根拠、統合ゲート、出力分類、判定結果を確認できるようにする。
-
-### 5.6 `autonomous-plan-template` サブコマンド
-
-```
-check-workflow-action.py autonomous-plan-template --run-id <run-id> --out <plan.yaml>
-```
-
-自律・並列モード実行計画の最小テンプレートを生成する。生成物は `autonomous-plan` の必須フィールドをすべて含み、そのまま検査可能である。実作業では、生成後に `tasks[]` の `source_finding_ids`、`allowed_paths`、`expected_tests` を実対象へ差し替える。
-
-### 5.7 `autonomous-plan-record-integration` サブコマンド
-
-```
-check-workflow-action.py autonomous-plan-record-integration --ledger <ledger.yaml> --status <status> --tests "<tests>" --decision "<decision>"
-```
-
-自律・並列モードの統合後に、既存の履歴台帳へ `integration_result` を追記する。`status` は `completed`、`blocked`、`rejected` のいずれか。`tests` には実行したテストまたは未実行理由、`decision` にはメインセッション LLM による統合判断の要約を記録する。
-
-## 6. 判定ロジック
-
-### 6.1 `spec-set` の判定
-
-対象機能の spec.json（`.reviewcompass/specs/<feature>/spec.json`）を読み、次を機械判定：
-
-#### `<new-value>` が `true` の場合（段を通過済みにする）
-
-- **段の依存チェック**：同フェーズ内で当該段より前の段がすべて `true` か
-  - 例：`requirements approval true` → `requirements alignment` が `true` か
-  - 例：`design drafting true` → `requirements approval` が `true` か
-- **フェーズの依存チェック**：上流フェーズの最終段（`approval`）が `true` か
-  - 例：`design drafting true` → `requirements approval` が `true`、`feature-partitioning approval` が `true`、`intent approval` が `true`
-- **recheck pending の遮断**：`recheck.upstream_change_pending=true` かつ対象 `<phase>` が `recheck.impacted_downstream_phases` に含まれる場合、`true` 化は逸脱（exit 2）。reopen 手続きの feature impact 判定と下流影響判定を完了せず、影響対象 phase を完了扱いに戻してはならない
-- **機能横断段の整合**：`intent`／`feature-partitioning` は全機能で同じ値を持つべき（計画書 §5.24.4）。当該機能の値だけを変えると不整合
-- **承認発言の有無は判定しない**：それは段階 1 規律の責務
-
-#### `<new-value>` が `false` の場合（reopen に相当）
-
-- 一般に許容（reopen 手続きの一部）
-- ただし当該段が `true` だった場合は警告：「reopen を実施しています、reopen 手続き（計画書 §5.6）に従っていますか」
-- 当該段より後ろの同フェーズ段、または下流フェーズの段が `true` のまま残っていても、それだけでは逸脱にしない。影響なし／間接確認のみの可能性があるため、完了 commit 時の `feature_impact_decisions` と `downstream_impact_decisions` で機械検査する
-- 複数段を実際に差し戻す場合は、下流側から上流側へ `false` にすると作業状態を読みやすい。影響なしと判定した段は `true` のまま残してよい
-
-### 6.2 `commit` の判定
-
-`git status` と `git diff --cached` を読み、次を機械判定：
-
-- **ユーザ承認レコードの確認**：`.reviewcompass/approvals/commit-approval.json` を読み、`approved_action=commit`、`approved_by=user`、未消費、かつ staged ファイルが `target_files` の範囲内であることを確認
-  - レコードなし、形式不正、消費済み、承認対象外ファイルがある場合：逸脱（exit 2）、commit を遮断推奨
-- **post-write-verification 対象の完了確認**：staged ファイルに post-write-verification 対象が含まれる場合、対象ファイル群と現在 sha256 を覆う completed manifest があることを確認
-  - manifest なし、sha256 不一致、coverage matrix 不足、未解決本質的指摘ありの場合：逸脱（exit 2）、commit を遮断推奨
-- **reopen 印付き spec.json の手続き確認**：staged された `spec.json` に `recheck.upstream_change_pending=true` または空でない `recheck.impacted_downstream_phases` がある場合、同じ commit に `stages/in-progress/reopen-procedure-*.yaml` または `stages/completed/reopen-procedure-*.yaml` を含める。手続きファイルがない場合は逸脱（exit 2）
-- **reopen 完了時の feature impact 判定確認**：`stages/completed/reopen-procedure-*.yaml` が staged されている場合、`feature_impact_decisions` と `new_feature_decision` を必須とする。任意フェーズの上流変更について、既存 feature に受け皿があるなら該当 feature を reopen 対象にするか、影響なし／間接確認のみとするかを記録する。判定の主軸は文書内の挿入箇所ではなく実装上の所有責務であり、各 `feature_impact_decisions[]` は `impact_basis` として `implementation_ownership`、`contract_ownership`、`consumer_or_derivative_only`、`no_implementation_impact`、`new_feature_boundary` のいずれかを持つ。`feature_impact_decisions` は現在の既存 feature 全件を覆う必要があり、未記録 feature や `impact_basis` 欠落がある場合は逸脱（exit 2）。受け皿がなければ新 feature 必要として記録する
-- **reopen 完了時の下流影響判定確認**：`stages/completed/reopen-procedure-*.yaml` が staged されている場合、`pending_gates`、`completed_gates`、`required_gates` の和集合に含まれる各 gate を覆う `downstream_impact_decisions` を必須とする。`pending_gates` は残 gate、`completed_gates` は完了済み gate、`required_gates` は任意の監査用全体集合である。各判定は `gate`、`feature_scope`、`decision`、`rationale`、`evidence` を持つ。`feature_scope` は文字列または空でない文字列 list を許容する。上流変更に対して下流修正が不要な場合も、`existing_sufficient` または `no_impact` として理由と証跡を記録する
-- **reopen 完了時の影響フェーズ網羅確認**：`stages/completed/reopen-procedure-*.yaml` には `impacted_downstream_phases` を記録する。commit 判定では、その各フェーズに対応する `downstream_impact_decisions[].gate` が少なくとも 1 件あることを確認する。影響フェーズに対応する gate 判定がない場合は逸脱（exit 2）
-- **持ち越し所見の確認**：`learning/workflow/carry-forward-register/reviewcompass-import.yaml` を読み、未消化所見の件数を出力
-  - 未消化所見が 1 件以上ある場合：警告（exit 1）、commit は可能だが要注意
-  - 0 件の場合：OK（exit 0）
-- **対象ファイルの分類**：staged されたファイルを次の 3 群に分類して出力
-  - 通常変更：仕様文書（`*.md`）、ソースコード（`*.py` 等）
-  - 要注意変更：`spec.json`、`docs/plan/` 配下、計画書、規律ファイル
-  - 危険変更：`.git/` 内、`secrets`／`credentials` を含むファイル名
-- **要注意変更がある場合**：警告（exit 1）、根拠の確認を促す
-- **危険変更がある場合**：逸脱（exit 2）、commit を遮断推奨
-
-### 6.3 `push` の判定
-
-`git status` と `git log` を読み、次を機械判定：
-
-- **作業ツリーの clean 性**：未コミット変更がある場合は逸脱（exit 2）
-- **ローカル先行コミット数**：`origin/main` から進んでいるコミット数を出力
-- **直近 5 コミットの題名要約**：利用者が push 前に確認しやすい形で出力
-- **push 先**：`origin/main` 以外への push が要求されていれば警告（exit 1）
-
-### 6.4 `audit-commit` の判定
-
-`git diff-tree --root --no-commit-id --name-only -r <commit-ish>` で指定 commit の変更ファイルを取得し、post-write-verification 対象だけを抽出する。
-
-- 対象なし：OK（exit 0）
-- 対象あり、かつ commit 内ファイル内容 sha256 を覆う completed manifest がある：OK（exit 0）
-- 対象あり、manifest がない／sha256 不一致／coverage matrix 不足／未解決本質的指摘あり：逸脱（exit 2）
-- `<commit-ish>` が解決できない：逸脱（exit 2）
-
-### 6.5 `autonomous-plan` の判定
-
-実行計画 YAML を読み、次を fail-closed で判定する。
-
-- `mode` が `autonomous_parallel` である
-- `run_id` がある
-- `authorization.approved_by` が `user` または `proxy_model` である
-- レビュー結果サマリと三段階トリアージが提示済みである
-- 各 task に `source_finding_ids`、`allowed_paths`、`expected_tests`、`important_decision_requires_approval` 停止条件がある
-- 別スレッドまたはサブ担当の task は `assignee.worktree_policy: separate_worktree` である
-- 依存関係のない並列 task 同士で `allowed_paths` が衝突しない
-- `integration_gate` の 4 条件がすべて `true` である
-- `outputs_policy.work_noise` が `exclude` であり、作業ノイズを本線 repo に取り込まない
-- `history` が台帳パス、タスク割当記録、判断根拠記録、統合結果記録、保存方針を持つ
-
-検査に通った場合も、通らなかった場合も、`history.ledger_path` が妥当なら台帳を生成する。これにより、自律実行の開始可否、止まった理由、並列 task の境界、統合時の確認点を後から追跡できる。
-
-## 7. 出力形式
-
-### 7.1 終了コード体系
-
-- `0`：問題なし、処理続行可
-- `1`：警告あり、呼び出し側の判断で続行可
-- `2`：逸脱検出、呼び出し側が遮断推奨
-
-### 7.2 人間可読出力（既定）
-
-標準出力に次の構造：
-
-```
-[VERDICT] OK / WARN / DEVIATION（exit <code>）
-[ACTION] <サブコマンド名 ＋ 引数の要約>
-[REASON]
-  - <理由 1>
-  - <理由 2>
-[CURRENT STATE]
-  <現状の要約、複数行可>
-```
-
-例（spec-set 逸脱の場合）：
-
-```
-[VERDICT] DEVIATION（exit 2）
-[ACTION] spec-set foundation requirements approval true
-[REASON]
-  - workflow_state.requirements.alignment が false です（approval の前提が満たされていません）
-[CURRENT STATE]
-  foundation.requirements:
-    drafting: true
-    triad-review: true
-    review-wave: true
-    alignment: false  ← 問題箇所
-    approval: false
-```
-
-### 7.3 JSON 出力（`--json` 指定時）
-
-機械処理向けの構造化出力。段階 3 フック導入時に使う想定：
-
-```json
-{
-  "verdict": "DEVIATION",
-  "exit_code": 2,
-  "action": {
-    "subcommand": "spec-set",
-    "args": {
-      "feature": "foundation",
-      "phase": "requirements",
-      "stage": "approval",
-      "new_value": true,
-      "rationale": "..."
-    }
-  },
-  "reasons": [
-    "workflow_state.requirements.alignment が false です（approval の前提が満たされていません）"
-  ],
-  "current_state": {
-    "foundation": {
-      "requirements": {
-        "drafting": true,
-        "triad-review": true,
-        "review-wave": true,
-        "alignment": false,
-        "approval": false
-      }
-    }
-  }
-}
-```
-
-## 8. ログ取得（MVP 必須）
-
-### 8.1 書式
-
-JSON Lines 形式（1 行 ＝ 1 判定）。`--json` 出力と同じ構造に `timestamp` を追加：
-
-```json
-{"timestamp":"2026-05-25T15:30:00+09:00","action":{"subcommand":"spec-set","args":{...,"rationale":"..."}},"verdict":"OK","exit_code":0,"reasons":[],"current_state":{...}}
-```
-
-### 8.2 配置
-
-- 既定パス：`docs/logs/workflow-precheck.log`
-- `--log-path` で上書き可（テスト時の隔離用）
-
-### 8.3 取得方針（MVP）
-
-- 毎回の判定を 1 行追記
-- ローテーションは MVP では実装しない（将来検討、計画書 §5.8 第 5 層「処理表面積の抑制」と整合）
-- 削除は手動操作のみ
-
-### 8.4 ログの活用先
-
-- テスト失敗時のデバッグ
-- 規律遵守率の事後計測（議論メモ §「派生論点」、self-improvement の効果測定指標と接続）
-- 誤判定の事後追跡
-
-## 9. テスト方針
-
-### 9.1 テストの種類
-
-- **ユニットテスト**：Python 標準の `unittest` で実装
-- **対象**：各サブコマンドの正常系・異常系
-- **配置**：`tests/tools/test_check_workflow_action.py`
-
-### 9.2 fixture 構造
-
-```
-tests/fixtures/spec-json-cases/
-├── all-true/                  # すべての段が true の状態
-│   └── spec.json
-├── requirements-alignment-false/  # alignment が false の状態
-│   └── spec.json
-├── design-drafting-blocked/   # requirements.approval が false の状態
-│   └── spec.json
-└── …
-```
-
-### 9.3 必須テストケース
-
-- **正常系**：
-  - `spec-set foundation requirements approval true` ＋ alignment=true → exit 0
-  - `commit --execution-actor llm` ＋ pending 所見 0 件 ＋ 通常変更のみ ＋ 有効なユーザ承認レコード ＋ LLM 実行代行承認 → exit 0
-  - `commit --execution-actor human` ＋ pending 所見 0 件 ＋ 通常変更のみ ＋ 有効なユーザ承認レコード → exit 0
-  - `commit` ＋ post-write 対象文書 ＋ 有効なユーザ承認レコード ＋ LLM 実行代行承認 ＋ completed manifest → exit 0
-  - `audit-commit HEAD` ＋ post-write 対象文書 ＋ matching completed manifest → exit 0
-  - `guarded-git-commit` ＋ 有効なユーザ承認レコード ＋ LLM 実行代行承認 → commit 実行、承認レコード消費済み
-  - `push` ＋ 作業ツリー clean ＋ 先行 1 コミット → exit 0
-- **警告系**：
-  - `commit` ＋ pending 所見 1 件以上 → exit 1
-  - `commit` ＋ spec.json 変更含む → exit 1
-  - `spec-set <stage> false` ＋ 現状 true ＋ 下流段に true なし → exit 1（reopen 警告）
-- **逸脱系**：
-  - `spec-set foundation requirements approval true` ＋ alignment=false → exit 2
-  - `spec-set foundation design drafting true` ＋ requirements.approval=false → exit 2
-  - `spec-set <impacted-phase> <stage> true` ＋ `recheck.upstream_change_pending=true` ＋ `<impacted-phase>` が `impacted_downstream_phases` に含まれる → exit 2
-  - `push` ＋ 作業ツリー dirty → exit 2
-  - `commit` ＋ ユーザ承認レコードなし／消費済み／承認対象外 staged ファイルあり → exit 2
-  - `commit --execution-actor llm` ＋ LLM 実行代行承認なし → exit 2
-  - `commit` ＋ post-write 対象文書 ＋ completed manifest なし → exit 2
-  - `commit` ＋ reopen 印付き `spec.json` ＋ `stages/in-progress/reopen-procedure-*.yaml` または `stages/completed/reopen-procedure-*.yaml` なし → exit 2
-  - `commit` ＋ `stages/completed/reopen-procedure-*.yaml` ＋ `feature_impact_decisions`／`new_feature_decision` 欠落、`impact_basis` 欠落、または既存 feature 未網羅 → exit 2
-  - `commit` ＋ `stages/completed/reopen-procedure-*.yaml` ＋ `impacted_downstream_phases` 欠落／未網羅 → exit 2
-  - `commit` ＋ `stages/completed/reopen-procedure-*.yaml` ＋ `pending_gates`／`completed_gates`／`required_gates` の対象を覆う `downstream_impact_decisions` 欠落／不足 → exit 2
-  - `audit-commit HEAD` ＋ post-write 対象文書 ＋ completed manifest なし → exit 2
-  - `guarded-git-commit` ＋ ユーザ承認レコードなし／LLM 実行代行承認なし → commit しない
-  - `commit` ＋ `.git/` 内ファイル含む → exit 2
-
-### 9.4 TDD の遵守（入口規律）
-
-実装は次の順序で進める：
-
-1. 期待される入出力に基づきテストを作成（実装コードは書かない）
-2. テストを実行し、失敗を確認
-3. テストが正しいことを確認できた段階でコミット
-4. テストをパスさせる実装を進める
-5. 実装中はテストを変更せず、コードを修正し続ける
-6. すべてのテストが通過するまで繰り返す
-
-## 10. 配置場所とディレクトリ構造
-
-```
-tools/
-├── check-workflow-action.py        # スクリプト本体（実行ファイル、shebang あり）
-├── guarded-git-commit.py           # commit 承認レコード検査つき git commit ラッパー
-└── workflow_precheck/              # 補助モジュール（必要に応じて分割）
-    ├── __init__.py
-    ├── spec_loader.py              # spec.json 読み込み
-    ├── git_reader.py               # git status／diff 読み込み（subprocess 経由）
-    ├── pending_findings.py         # carry-forward register 読み込み
-    ├── judges.py                   # 判定ロジック（spec_set／commit／push）
-    ├── output.py                   # 人間可読／JSON 出力の整形
-    └── logger.py                   # ログ書き出し
-
-tests/
-├── tools/
-│   └── test_check_workflow_action.py
-└── fixtures/
-    └── spec-json-cases/
-
-docs/
-├── logs/
-│   └── workflow-precheck.log       # 実行ログ（自動生成、gitignore 候補）
-└── operations/
-    └── WORKFLOW_PRECHECK.md        # 本文書
-```
-
-ログファイル `docs/logs/workflow-precheck.log` は実行時に増え続けるため、`.gitignore` への追加を検討（個別判断、利用者と相談）。
-
-## 11. 段階 1 規律との接続
-
-### 11.1 段階 1 が本スクリプトをいつ呼ぶか
-
-段階 1（LLM）の規律として、不可逆操作の **直前に必ず** 本スクリプトを呼ぶ：
-
-- spec.json の `workflow_state` を変更する Edit／Write の直前 → `spec-set` 呼び出し
-- `git commit` の直前 → `commit --execution-actor llm` 呼び出し。実行は原則 `guarded-git-commit.py` 経由。LLM 実行代行承認がなければ停止する
-- `git push` の直前 → `push` 呼び出し
-
-### 11.2 出力の解釈と次の行動
-
-- exit 0：処理続行
-- exit 1：警告内容を応答に明示、利用者に判断を求めるか自律続行かを規律で決める
-- exit 2：処理を止めて利用者に報告
-
-### 11.3 段階 1 規律の文書化（残作業）
-
-段階 1 規律の具体的な文言（`AGENTS.md`、`CLAUDE.md`、または規律ファイルに追加する文）は、本仕様確定後の **項目 3：段階 1 の規律化** で起草する（TODO §3 D 残作業項目 3、利用者明示承認必須）。Codex では `AGENTS.md`、Claude Code では `CLAUDE.md` が入口規律になる。
-
-## 12. 段階 3 フック導入時の拡張余地
-
-### 12.1 発動条件
-
-各実行環境の hook adapter（ツール呼び出し前のフック）で、次のとき本スクリプトを自動発動：
-
-- **Edit／Write** で対象パスが `spec.json` を含む → `spec-set` 自動呼び出し
-- **Bash** で commit 系コマンドを含む → `commit` 自動呼び出し
-- **Bash** で push 系コマンドを含む → `push` 自動呼び出し
-
-### 12.2 引数の取得方法
-
-hook adapter は、ツール呼び出しの引数を受け取る。Edit の `file_path`、Bash の `command` 文字列から、本スクリプトの引数を自動構築：
-
-- 例：Edit `file_path` が `.reviewcompass/specs/foundation/spec.json` → `spec-set` の `<feature>` を `foundation` に
-- 例：Bash `command` が `git commit ...` → `commit` を呼ぶ
-
-引数の自動抽出ロジックは各 adapter の hook 側スクリプトに実装する。Claude Code では `.claude/hooks/pre-tool-use.sh` 等、Codex では `.codex/hooks/` と `.codex/hooks.json` 等の配置に従う。
-
-### 12.3 fail-closed の実現
-
-- フック側で本スクリプトの exit code を見て、`exit code ≥ 2` ならツール呼び出しを遮断
-- exit 1 は警告だけ表示してツール呼び出しを通す
-- exit 0 はそのまま通す
-
-### 12.4 段階 3 導入の前提
-
-- 段階 2 のスクリプトが安定動作している（小規模運用の実測完了）
-- 段階 1 規律が確立されている
-- 段階 3 導入は利用者明示承認必須（規律 §0.2、フェーズ 4 以降）
-
-## 13. 実測結果（段階 2 小規模運用、2026-05-25 セッション 24）
-
-本節は仕様確定後の段階 2 スクリプト実装と動作確認の実測結果を記録する。仕様 §14 残作業項目 2「段階 2 の小規模運用による実測」の成果。
-
-### 13.1 実測の範囲
-
-- 実 `.reviewcompass/specs/<feature>/spec.json` に対する spec-set サブコマンド
-- 一時 git リポジトリでの commit／push サブコマンド（実 repo は汚さない）
-- 引数妥当性検査の挙動
-
-### 13.2 実測シナリオと結果
-
-14 シナリオを実行、すべて想定どおりの判定（OK／WARN／DEVIATION）：
-
-| 番号 | 種別 | 入力概要 | 想定 | 実測 |
-|---|---|---|---|---|
-| 1 | spec-set | foundation design drafting true | OK | OK |
-| 2 | spec-set | foundation tasks drafting true（design 未承認） | DEVIATION | DEVIATION |
-| 3 | spec-set | foundation requirements alignment false（reopen） | WARN | WARN |
-| 4 | spec-set --json | foundation design drafting true | OK の JSON 出力 | OK の JSON |
-| 5 | commit | 実 repo、staged 0、未消化 0 | OK | OK |
-| 6 | push | 実 repo、tree clean、ahead 0 | OK | OK |
-| 7 | spec-set | conformance-evaluation design drafting true | OK | OK |
-| 8 | spec-set | foundation intent approval true（機能横断段） | OK | OK |
-| 9 | spec-set | foundation requirements drafting false（reopen） | WARN | WARN |
-| 10 | spec-set 引数 | foundation nonexistent-phase | 非 0 ＋ エラー | 非 0、有効値列挙 |
-| 11 | commit | 未消化所見 1 件 | WARN | WARN |
-| 12 | commit | spec.json 変更含む | WARN | WARN |
-| 13 | commit | credentials.json 含む（危険変更） | DEVIATION | DEVIATION |
-| 14 | push | dirty tree | DEVIATION | DEVIATION |
-
-### 13.3 確認できた仕様準拠
-
-- spec-set の判定（仕様 §6.1）：同フェーズ前段依存・上流フェーズ approval 依存・reopen 警告がすべて期待どおり動作
-- commit の分類（仕様 §6.2）：通常／要注意（spec.json／docs/plan/）／危険（credentials／secret）の 3 分類が機能
-- push の clean 性検査（仕様 §6.3）：未追跡ファイル 1 件でも dirty 検知、origin 未設定時も処理続行
-- 終了コード体系（仕様 §7.1）：0／1／2 が想定どおり
-- ログ取得（仕様 §8）：JSON Lines 形式で全シナリオの判定が追記される
-- 引数妥当性検査（仕様 §5.1）：無効な値で適切なエラーメッセージと有効値の列挙
-
-### 13.4 実測中に発見・是正した小さな問題
-
-- 人間可読出力の真偽値表記が Python 慣習の "True/False" だったため、仕様 §7.2 サンプル準拠の小文字 "true/false" に統一（コミット `662bffb` で対処）
-- `docs/logs/workflow-precheck.log` を `.gitignore` に追加（仕様 §10 の利用者と相談事項を確定、コミット `662bffb`）
-
-### 13.5 観察事項（修正不要）
-
-- `origin/main` 未設定時の push：「(リモート origin/main が未設定または取得失敗)」と表記して処理続行、実用上問題なし
-- commit で staged ファイル 0 件の場合：OK 判定だが、実際の git commit はファイルなしで失敗するため、スクリプトとしては問題なし
-- 直近 5 コミットの表示：commit メッセージが長くても折り返さずに 1 行表示（情報密度を優先）
-
-### 13.6 結論
-
-段階 2 スクリプトは仕様 §1〜§9 のとおり動作することを実測で確認。次の残作業項目（§14、旧 §13）に進める前提条件は揃った。
-
-## 14. 仕様確定後の作業順序
-
-本文書の正本化後、TODO §3 D の残作業を次の順で進める：
-
-1. **段階 2 のスクリプト実装**（TDD で実装、tests／tools 配下に成果物）
-2. **段階 2 の小規模運用による実測**（コスト・効果の数値検証）
-3. **段階 1 の規律化**（`AGENTS.md`、`CLAUDE.md`、または規律ファイルに薄く追加、利用者明示承認）
-4. **規律統廃合の本格議論**（実測データを踏まえて、active 規律 18 件 → 12 件程度、利用者明示承認）
-5. **段階 3 のフック導入**（仕様調査、対象ツールの絞り込み、フェーズ 4 以降、利用者明示承認）
-
-## 15. 本仕様の改訂規律
-
-- 本仕様の変更は規律 §0.2 計画書方針変更に準じる（利用者明示承認必須）
-- 改訂時は最終更新日付を更新、改訂履歴を末尾に追記
-- 範囲拡張（範囲案 3 への移行など）は §3.3 に従う
-
-## 16. 改訂履歴
-
-- 2026-05-25 セッション 24：新設（採用承認の出典は冒頭「採用承認の出典」節を参照）
-- 2026-05-25 セッション 24：§13 実測結果を追加、既存 §13〜§15 を §14〜§16 に繰り下げ（14 シナリオの実測完了に伴う追記）
+段階 3 の hook 連携は、同じ判定を実行環境側で自動発動する。導入時は人の明示承認を必須とする。

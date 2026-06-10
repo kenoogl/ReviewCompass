@@ -30,6 +30,7 @@ from pathlib import Path
 import yaml
 
 from deployment_independence_lint import lint_text
+from document_link_lint import lint_path_texts as lint_document_link_texts
 
 
 # 既定のログファイルパス（呼び出し時の cwd 相対、仕様 §8.2）
@@ -51,6 +52,13 @@ DEPLOYMENT_INDEPENDENCE_GUARD_PREFIXES = (
   "learning/workflow/schemas/",
 )
 DEPLOYMENT_INDEPENDENCE_GUARD_SUFFIXES = (".md", ".yaml", ".yml", ".json")
+DOCUMENT_LINK_GUARD_PREFIXES = (
+  ".reviewcompass/specs/",
+  "docs/disciplines/",
+  "docs/operations/",
+  "docs/notes/",
+)
+DOCUMENT_LINK_GUARD_SUFFIXES = (".md", ".yaml", ".yml")
 
 # 各フェーズの段集合（計画書 §5.5 と §5.24.4 と整合）
 PHASE_STAGES = {
@@ -2354,6 +2362,52 @@ def validate_deployment_independence_for_staged_files(cwd, staged_files):
   return state, errors
 
 
+def is_document_link_guard_target(filepath):
+  """commit guard で文書リンク lint の対象 staged artifact かを返す"""
+  return (
+    filepath.endswith(DOCUMENT_LINK_GUARD_SUFFIXES)
+    and filepath.startswith(DOCUMENT_LINK_GUARD_PREFIXES)
+  )
+
+
+def validate_document_links_for_staged_files(cwd, staged_files):
+  """staged 文書のリンク存在・アンカー・既知の意味的組み合わせを検査する"""
+  target_files = [
+    filepath for filepath in staged_files
+    if is_document_link_guard_target(filepath)
+  ]
+  path_texts = {}
+  errors = []
+  for filepath in target_files:
+    text = _staged_text(cwd, filepath)
+    if text is None:
+      errors.append(f"文書リンク lint 対象の staged 内容を読めません: {filepath}")
+      continue
+    path_texts[Path(filepath)] = text
+  findings = lint_document_link_texts(path_texts, root=Path(cwd))
+  state = {
+    "target_files": target_files,
+    "findings": findings,
+  }
+  for finding in findings:
+    suffix = ""
+    if "anchor" in finding:
+      suffix += f"#{finding['anchor']}"
+    if "expected" in finding:
+      suffix += f" expected={finding['expected']}"
+    errors.append(
+      "文書リンク lint 違反: {path}:{line}: {kind}: {ref} -> {target}{suffix}".format(
+        path=finding["path"],
+        line=finding["line"],
+        kind=finding["kind"],
+        ref=finding["ref"],
+        target=finding["target"],
+        suffix=suffix,
+      )
+    )
+  return state, errors
+
+
 def commit_file_text(cwd, commitish, path):
   """指定 commit 内のファイル内容を text として返す"""
   result = subprocess.run(
@@ -2906,6 +2960,9 @@ def cmd_commit(args):
   deployment_lint_state, deployment_lint_errors = (
     validate_deployment_independence_for_staged_files(cwd, staged_files)
   )
+  document_link_lint_state, document_link_lint_errors = (
+    validate_document_links_for_staged_files(cwd, staged_files)
+  )
 
   # 判定（仕様 §6.2）
   reasons = []
@@ -2934,6 +2991,8 @@ def cmd_commit(args):
     deviation_reasons.extend(post_write_errors)
   if deployment_lint_errors:
     deviation_reasons.extend(deployment_lint_errors)
+  if document_link_lint_errors:
+    deviation_reasons.extend(document_link_lint_errors)
 
   if deviation_reasons:
     reasons.extend(deviation_reasons)
@@ -2963,7 +3022,9 @@ def cmd_commit(args):
     f"post-write-verification 対象: {len(post_write_state['target_files'])} 件\n"
     f"post-write-verification 状態: {post_write_state['manifest_status']}\n"
     f"配置非依存 lint 対象: {len(deployment_lint_state['target_files'])} 件\n"
-    f"配置非依存 lint 所見: {len(deployment_lint_state['findings'])} 件"
+    f"配置非依存 lint 所見: {len(deployment_lint_state['findings'])} 件\n"
+    f"文書リンク lint 対象: {len(document_link_lint_state['target_files'])} 件\n"
+    f"文書リンク lint 所見: {len(document_link_lint_state['findings'])} 件"
   )
   current_state_dict = {
     "pending_unresolved_count": unresolved_count,
@@ -2977,6 +3038,7 @@ def cmd_commit(args):
     "execution_actor": args.execution_actor,
     "post_write_verification": post_write_state,
     "deployment_independence_lint": deployment_lint_state,
+    "document_link_lint": document_link_lint_state,
   }
   action_str = f"commit (rationale='{rationale}')"
   action_dict = {

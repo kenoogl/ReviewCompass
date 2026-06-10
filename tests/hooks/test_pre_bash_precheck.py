@@ -1,6 +1,6 @@
 """段階 3 フックスクリプト .codex/hooks/pre-bash-precheck.sh の単体テスト
 
-対象仕様：docs/operations/WORKFLOW_PRECHECK.md §12
+対象仕様：docs/operations/WORKFLOW_PRECHECK.md「段階 1・段階 3 との接続」
 対象範囲：Bash の git commit／git push を検出して check-workflow-action.py を呼ぶ MVP
 
 TDD 規律（AGENTS.md 入口規律）に従い、本テストはフックスクリプト実装前に作成。
@@ -147,7 +147,7 @@ def _write_commit_approval(tmpdir, target_files, consumed=False):
         "approved_action": "commit",
         "approved_by": "user",
         "approved_at": "2026-06-03T00:00:00+09:00",
-        "rationale": "利用者がコミットを明示承認",
+        "rationale": "人がコミットを明示承認",
         "target_files": target_files,
         "target_sha256": target_sha256,
         "expires_after_commit": True,
@@ -161,7 +161,7 @@ def _write_commit_approval(tmpdir, target_files, consumed=False):
 
 
 class HookPassThroughTests(unittest.TestCase):
-  """フックが非 git／読み取り専用 git コマンドを通過させる（仕様 §12.1）"""
+  """フックが非 git／読み取り専用 git コマンドを通過させる"""
 
   def setUp(self):
     self.tmpdir = tempfile.mkdtemp()
@@ -192,7 +192,7 @@ class HookPassThroughTests(unittest.TestCase):
 
 
 class HookCommitTests(unittest.TestCase):
-  """git commit のフック検査（仕様 §12.1 ＋ §6.2）"""
+  """git commit のフック検査"""
 
   def setUp(self):
     self.tmpdir = tempfile.mkdtemp()
@@ -236,7 +236,7 @@ class HookCommitTests(unittest.TestCase):
     self.assertEqual(decision, "deny")
 
   def test_dangerous_file_denies_commit(self):
-    """credentials.json を含む commit は承認済みでも deny（仕様 §6.2 危険変更）"""
+    """credentials.json を含む commit は承認済みでも deny"""
     _stage_file(self.tmpdir, "credentials.json", '{"key":"dummy"}')
     _write_commit_approval(self.tmpdir, ["credentials.json"])
     result = run_hook(
@@ -257,7 +257,7 @@ class HookCommitTests(unittest.TestCase):
 
 
 class HookPushTests(unittest.TestCase):
-  """git push のフック検査（仕様 §12.1 ＋ §6.3）"""
+  """git push のフック検査"""
 
   def setUp(self):
     self.tmpdir = tempfile.mkdtemp()
@@ -281,7 +281,7 @@ class HookPushTests(unittest.TestCase):
         pass
 
   def test_dirty_push_denies(self):
-    """dirty な状態の git push は deny（仕様 §6.3）"""
+    """dirty な状態の git push は deny"""
     (Path(self.tmpdir) / "untracked.md").write_text("test")
     result = run_hook(
       {"command": "git push origin main"},

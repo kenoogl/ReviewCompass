@@ -30,10 +30,10 @@ protocol_version: "B1.0"
 # 既定の phase および profile（値語彙は runtime 所有、本機能は既定値の枠のみ）
 default_phase_profile: ""
 
-# 代役機構の既定方針（詳細は計画書 §5.12、フェーズ 4 で本実装）
+# 代役機構の既定方針
 human_proxy:
   enabled: false
 
-# 通知の既定（詳細は計画書 §5.13、フェーズ 4 で本実装）
+# 通知の既定
 notification:
   enabled: false

@@ -11,7 +11,7 @@ triad-review 段で判定役が must-fix と判定した所見の対処は、起
 
 **How to apply**：
 
-- 正本手順：運営ガイド [docs/operations/SESSION_WORKFLOW_GUIDE.md](docs/operations/SESSION_WORKFLOW_GUIDE.md) §3.3 (a-1) must-fix 所見の対処手順 を参照する。本 memory は参照リンクのみで、規律本体は運営ガイドが正本
+- 正本手順：運営ガイド [docs/operations/SESSION_WORKFLOW_GUIDE.md](../operations/SESSION_WORKFLOW_GUIDE.md) §3.3 (a-1) must-fix 所見の対処手順 を参照する。本 memory は参照リンクのみで、規律本体は運営ガイドが正本
 - triad-review 完了後、must-fix 所見を 1 件ずつ取り上げ、利用者と議論しながら平易な日本語で対処方針を提案する
 - 各推奨案には必ず後段影響の深掘り（下流仕様・対象アプリ配置・機械検証・実装運用・将来拡張）を含める
 - 「現状維持を推奨」する場合も、現状維持の弱点を検証してから示す

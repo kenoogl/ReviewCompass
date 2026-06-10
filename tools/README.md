@@ -37,3 +37,13 @@ ReviewCompass の補助スクリプトを置く場所。
 ```bash
 .venv/bin/python3 tools/deployment_independence_lint.py --json docs/operations learning/workflow/schemas config
 ```
+
+## document links
+
+`tools/document_link_lint.py` は Markdown リンクと `docs/operations/WORKFLOW_DISCIPLINE_MAP.yaml` の `prompt_source_refs` を検査する。ファイル不存在、アンカー不存在に加え、`WORKFLOW_PRECHECK.md` の薄い運用契約を読む判定点が詳細仕様 `WORKFLOW_PRECHECK_DETAILS.md` を併読していない場合を検出する。`tools/check-workflow-action.py commit` は staged 文書に対してこの検査を実行し、所見があれば DEVIATION とする。
+
+実行例:
+
+```bash
+.venv/bin/python3 tools/document_link_lint.py --json docs/operations docs/disciplines .reviewcompass/specs/workflow-management/design.md .reviewcompass/specs/workflow-management/tasks.md
+```

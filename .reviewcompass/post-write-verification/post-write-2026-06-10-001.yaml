@@ -1,0 +1,44 @@
+status: completed
+target_files: &id001
+- docs/disciplines/discipline_approval_operation.md
+- docs/disciplines/discipline_must_fix_discussion_obligation.md
+- docs/disciplines/discipline_post_write_verification.md
+- docs/disciplines/discipline_workflow_precheck_invocation.md
+- docs/disciplines/discipline_workflow_state_truth_source.md
+- docs/disciplines/discipline_yaml_audit.md
+- docs/notes/2026-06-10-workflow-precheck-history.md
+- docs/operations/DEPLOYMENT.md
+- docs/operations/SESSION_WORKFLOW_GUIDE.md
+- docs/operations/WORKFLOW_DISCIPLINE_MAP.yaml
+- docs/operations/WORKFLOW_MANAGEMENT.md
+- docs/operations/WORKFLOW_NAVIGATION.md
+- docs/operations/WORKFLOW_PRECHECK.md
+- docs/operations/WORKFLOW_PRECHECK_DETAILS.md
+target_sha256: &id002
+  docs/disciplines/discipline_approval_operation.md: 4c73b6421818b592dd106147d636c1bc56902594fea37fd6a4be29de96df4340
+  docs/disciplines/discipline_must_fix_discussion_obligation.md: 39d91b1c61c9e15b16520a2a9dc611fa93ef9f896a11fb95fcf49ea891c45aad
+  docs/disciplines/discipline_post_write_verification.md: bf5f5fe96c18f930493c7ea9f766ef551f50a22c0c69fb5e66f7158c48f9b0cb
+  docs/disciplines/discipline_workflow_precheck_invocation.md: 97f3c009cb69c86325c77bb363bc17bfcf897a0477163c5bad9606621f583570
+  docs/disciplines/discipline_workflow_state_truth_source.md: 705e1b0ce4ed9a19f0df9210514580578e95d523a35ba7f33bd7458d6a6d43cd
+  docs/disciplines/discipline_yaml_audit.md: 7c9a1bab865a55c5e749192a285dd4bef886ad0593634d7387e70efe8c0dd1d0
+  docs/notes/2026-06-10-workflow-precheck-history.md: 6107be3e0f4d53b31451f28a96ff1168283c2f876befd91e7e61d372fe0079c9
+  docs/operations/DEPLOYMENT.md: 71baa088e20a124db48950daeebd69fa27d3806b197a7f09b03b659b99230c0f
+  docs/operations/SESSION_WORKFLOW_GUIDE.md: fef5b52f29b38946c84cad9c14313d640a5a7f13ebcdbdfcd684b072fdf5123a
+  docs/operations/WORKFLOW_DISCIPLINE_MAP.yaml: ec67d9b8e0d8d8bb2403d25a2f259b497fffc801c17c33dee2c5c9cf2eb65ef7
+  docs/operations/WORKFLOW_MANAGEMENT.md: d6c89ff6d355e535f89610411c81973b72e548b68b757a13d74cbf373f8ce10b
+  docs/operations/WORKFLOW_NAVIGATION.md: fc6e7deb8d6752747854907d5119796de4a39e3bb5a02ac8ffa2ff9b97e31f10
+  docs/operations/WORKFLOW_PRECHECK.md: 1dc7d38eb7d452767680bee0df44cd888693df87bf996262a67e961f93b87515
+  docs/operations/WORKFLOW_PRECHECK_DETAILS.md: 468a400659476740cec7c3e5bfc309da56371c51a852cec032a011a9f96707b2
+required_verifiers:
+- codex-local-postwrite-check
+completed_verifiers:
+- codex-local-postwrite-check
+unresolved_substantive_findings: 0
+verifications:
+- verifier: codex-local-postwrite-check
+  target_files: *id001
+  target_sha256: *id002
+  result: pass
+  checked_at: '2026-06-10T06:35:34.094120+00:00'
+  notes: 'Local post-write check: document_link_lint, deployment_independence_lint,
+    and focused workflow commit tests passed for staged document updates.'

@@ -108,7 +108,8 @@ language: ja
   - `tools/check_workflow_action/yaml_loader.py`（YAML 読み込み ＋ パースエラー fail-closed）
   - `tools/check_workflow_action/output_formatter.py`（4 ブロック大括弧付きラベル形式 ／ JSON 形式）
   - `docs/operations/WORKFLOW_DISCIPLINE_MAP.yaml`（判定点ごとの `required_disciplines`、`required_inputs`、effective prompt 元資料マップ）
-  - `docs/operations/WORKFLOW_PRECHECK.md`（補助層 C 段階 2 正本仕様：§5 サブコマンド引数 ／ §7 出力形式 ／ §8 ログ）
+  - `docs/operations/WORKFLOW_PRECHECK.md`（ワークフロー事前検査の運用契約）
+  - `docs/operations/WORKFLOW_PRECHECK_DETAILS.md`（サブコマンド引数 ／ 出力形式 ／ ログの詳細仕様）
 - **完了条件**：
   1. 3 サブコマンドと `next` サブコマンドが exit code 0 ／ 1 ／ 2 を正しく返す
   2. 述語 7 値すべてが正常系で OK、異常系（証跡欠落 ／ 必須節欠落 ／ 異名不成立 等）で DEVIATION を返す
@@ -133,7 +134,7 @@ language: ja
 - **成果物**：
   - `tools/check_workflow_action/front_matter_checker.py`（3 点判定ロジック）
   - `tools/check_workflow_action/front_matter_schema.json`（必須フィールド：type ／ target ／ target_commit ／ target_content_hash ／ date ／ mode ／ author ／ reviewer、author/reviewer の必須サブフィールド：identity ／ model ／ role、reviewer.separation_from_author=true 必須）
-  - `docs/operations/WORKFLOW_PRECHECK.md` §front-matter 検査節
+  - `docs/operations/WORKFLOW_PRECHECK_DETAILS.md`（関連する判定詳細を必要に応じて更新）
 - **完了条件**：
   1. 3 点判定が機械検証で確実に発火する（異名のみ／同名／separation_from_author=false の 3 ケース）
   2. `subagent_mediated` の複合役（`drafter_and_primary_reviewer`）が許容される
@@ -185,7 +186,7 @@ language: ja
 - **成果物**：
   - `tools/check_workflow_action/in_progress_manager.py`（発行 ／ 読み込み ／ 完了時移動）
   - `stages/in-progress.schema.json`（必須 6 フィールド ＋ 任意フィールド。命名をディレクトリ名 `in-progress/` に合わせハイフン統一、design 配置ツリーにも追記、F-018 対処 案 1 2026-05-28）
-  - `docs/operations/WORKFLOW_PRECHECK.md` §session 跨ぎ状態管理節
+  - `docs/operations/WORKFLOW_PRECHECK.md`（段階 1・段階 3 との接続）
   - `docs/operations/SESSION_WORKFLOW_GUIDE.md` §セッション記録の作成規律
 - **完了条件**：
   1. `in-progress.schema.json` が JSON Schema として meta-schema 検証を通る、必須 6 フィールドが確定（F-018 対処 命名統一）
@@ -201,17 +202,16 @@ language: ja
 
 - **対応設計節**：design.md §多層防御の位置付けモデル §1〜§5、§主要な設計判断（全般）
 - **対応要件**：Requirement 7 受入 1〜4
-- **責務**：第 1 層の限界（中身の空疎 ／ 検査呼び出し依存 ／ in-progress 自己申告性 ／ 文脈圧力下での規律低下）を運用文書 `docs/operations/WORKFLOW_PRECHECK.md` に明示。第 2〜5 層（git フック ／ 利用者監査 ／ 定期事後監査 ／ 処理表面積の抑制）と補助層 A／B／C の位置付けを記述。第 5 層運用ルール「新規規律を追加するときは既存規律 1 つ以上を統廃合する」を本機能の運用ルールに反映（フェーズ 4 まで利用者の意識に依拠、機械強制は第 5 層導入時に検討）。自律・並列実行の安全契約として自律 plan と履歴 ledger を運用文書に明示し、依存順、recheck 対象、許可パス、期待テスト、統合判断、未解決 blocker を追跡できるようにする。本タスクは実装ではなく運用文書の整備が主、機械検査の対象ではない。規律変更ゲート（T-010 が実装）の説明追記も本タスクが担い、T-010 の実装内容を参照して `WORKFLOW_PRECHECK.md` に記述する（運用文書の所有を T-009 に一本化、F-004 対処 案 2 2026-05-28）
+- **責務**：ワークフロー事前検査の呼び出し責務、対象操作、判定結果の扱いを `docs/operations/WORKFLOW_PRECHECK.md` に置き、サブコマンド引数、判定条件、出力形式、ログ、テスト観点の詳細を `docs/operations/WORKFLOW_PRECHECK_DETAILS.md` に置く。自律・並列実行の安全契約として自律 plan と履歴 ledger を運用文書に明示し、依存順、recheck 対象、許可パス、期待テスト、統合判断、未解決 blocker を追跡できるようにする。本タスクは実装ではなく運用文書の整備が主、機械検査の対象ではない。
 - **前提タスク**：T-004、T-005、T-006、T-007、T-008
 - **成果物**：
-  - `docs/operations/WORKFLOW_PRECHECK.md`（§第 1 層の限界 ／ §第 2〜5 層の宿題 ／ §補助層 A／B／C ／ §第 5 層運用ルール）
+  - `docs/operations/WORKFLOW_PRECHECK.md`（ワークフロー事前検査の運用契約）
+  - `docs/operations/WORKFLOW_PRECHECK_DETAILS.md`（ワークフロー事前検査の詳細仕様）
   - `docs/operations/WORKFLOW_MANAGEMENT.md` の §多層防御位置付け節
 - **完了条件**：
-  1. 第 1 層の限界 4 点が運用文書に明示される
-  2. 第 2〜5 層と補助層 A／B／C の位置付けが運用文書に記述される
-  3. 第 5 層運用ルールが本機能の運用ルールとして反映される（フェーズ 4 まで利用者の意識に依拠の旨を明示）
-  4. 自律 plan と履歴 ledger の必須目的が運用文書に明示される
-- **テスト要件**：運用文書の必須節検査（4 節すべての存在）。本タスクの「実装ではなく運用文書の整備が主、機械検査の対象ではない」位置づけ（責務記述）と整合させ、文書内容の grep キーワード検査は完了条件・テスト要件から外す（自己矛盾の解消、F-011 対処 案 2 2026-05-28）
+  1. 運用契約と詳細仕様の分離が明示される
+  2. 自律 plan と履歴 ledger の必須目的が運用文書に明示される
+- **テスト要件**：本タスクの「実装ではなく運用文書の整備が主、機械検査の対象ではない」位置づけ（責務記述）と整合させ、文書内容の grep キーワード検査は完了条件・テスト要件から外す
 
 ### T-010：規律変更の所定手続き経由実体変更（A-007 案 2、A-012 連動）
 

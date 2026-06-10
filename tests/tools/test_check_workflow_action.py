@@ -156,6 +156,17 @@ def _sha256_file(path):
   return hashlib.sha256(Path(path).read_bytes()).hexdigest()
 
 
+def _staged_sha256_file(cwd, path):
+  """staged blob 内容の sha256 を返す"""
+  result = subprocess.run(
+    ["git", "show", f":{path}"],
+    cwd=str(cwd),
+    check=True,
+    capture_output=True,
+  )
+  return hashlib.sha256(result.stdout).hexdigest()
+
+
 def _write_review_run(cwd, run_id, models, omit_summary=False, omit_triage_model=None):
   """post-write review run の最小成果物を作る"""
   run_dir = Path(cwd) / "docs" / "notes" / "review-runs" / run_id
@@ -4905,6 +4916,75 @@ class CommitExitCodeTests(unittest.TestCase):
     )
     _assert_script_invoked(self, result)
     self.assertEqual(result.returncode, 0, result.stdout)
+
+  def test_commit_blocks_operations_doc_with_wrong_anchor_link(self):
+    """文書リンクのアンカー誤りがある staged 文書は exit 2"""
+    _set_pending_findings(self.pending_file, unresolved_count=0)
+    source_path = "docs/operations/link-source.md"
+    target_path = "docs/operations/link-target.md"
+    _stage_file(
+      self.tmpdir,
+      source_path,
+      "# Link Source\n\n[対象](link-target.md#missing-anchor)\n",
+    )
+    _stage_file(
+      self.tmpdir,
+      target_path,
+      "# Existing Anchor\n",
+    )
+    _write_completed_post_write_manifest(self.tmpdir, [source_path, target_path])
+    _write_commit_approval(self.tmpdir, [source_path, target_path])
+
+    result = run_script(
+      ["commit", "--rationale", "文書リンク検査の commit gate テスト"],
+      cwd=self.tmpdir,
+    )
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 2, result.stdout)
+    self.assertIn("文書リンク lint", result.stdout)
+    self.assertIn("missing_anchor", result.stdout)
+
+  def test_commit_checks_staged_document_link_content(self):
+    """worktree が修正済みでも staged 文書にリンク誤りがあれば exit 2"""
+    _set_pending_findings(self.pending_file, unresolved_count=0)
+    source_path = "docs/operations/link-source.md"
+    target_path = "docs/operations/link-target.md"
+    _stage_file(
+      self.tmpdir,
+      source_path,
+      "# Link Source\n\n[対象](link-target.md#missing-anchor)\n",
+    )
+    _stage_file(
+      self.tmpdir,
+      target_path,
+      "# Existing Anchor\n",
+    )
+    source = Path(self.tmpdir) / source_path
+    source.write_text(
+      "# Link Source\n\n[対象](link-target.md#existing-anchor)\n",
+      encoding="utf-8",
+    )
+    _write_completed_post_write_manifest(self.tmpdir, [source_path, target_path])
+    staged_hash = {
+      source_path: _staged_sha256_file(self.tmpdir, source_path),
+      target_path: _staged_sha256_file(self.tmpdir, target_path),
+    }
+    _write_commit_approval(
+      self.tmpdir,
+      [source_path, target_path],
+      target_sha256=staged_hash,
+    )
+
+    result = run_script(
+      ["commit", "--rationale", "staged 文書リンク検査のテスト"],
+      cwd=self.tmpdir,
+    )
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 2, result.stdout)
+    self.assertIn("文書リンク lint", result.stdout)
+    self.assertIn("missing_anchor", result.stdout)
 
   def test_commit_rationale_is_required(self):
     """commit に --rationale なし → 非 0 終了（仕様 §5.2 必須）"""
