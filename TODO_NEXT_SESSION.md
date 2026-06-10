@@ -60,40 +60,39 @@ Python 実行は、必要に応じて venv を使う：
 
 直近 commit：
 
+- `be9aa4f Ignore generated deploy package output`
+- `06c86c2 Track deploy package and update session TODO`
 - `b6fdf9f Document venv dependency for deployment smoke`
 - `fde83df Fix hook test fixtures for stage-2 imports`
 - `305614e Align Claude adapter with Codex setup`
-- `9a035cc Add initial setup LLM guide`
-- `37daf2a Draft initial deployment user guide`
 
 直近 push：
 
-- `origin/main` は `64de32c` のまま。`main` は初期デプロイ関連の 13 コミット分先行しており、未 push。
+- 2026-06-10 に、初期デプロイ関連一式から本 TODO 更新までを push し、`main` と `origin/main` を同期。push 前の `origin/main` は `45df25e` だった（本 TODO の旧記載 `64de32c` は不正確だったため訂正）。
 
 作業ツリー：
 
-- 配布前 smoke が生成した `build/`（生成済み配布物）が未追跡で残っている（2026-06-10 時点）。
+- `build/`（生成済み配布物）は生成物として追跡解除し、`.gitignore` に登録済み（`be9aa4f`）。実体は `build/deploy/ReviewCompass/` に残してあり、配布物として使える。
 
 ## 4. 次作業
 
 通常ワークフロー上の未完了タスクはない。
 
-次セッションでは、まず `next --json` で `kind: completed` が維持されていることを確認し、`git status --short` で未 push の 13 コミットと未追跡の `build/` を認識したうえで、push 判断と `build/` の扱いを先に決める。
+次セッションでは、まず `next --json` で `kind: completed` が維持されていることと、`git status --short` が clean であることを確認する。
 
 候補タスク：
 
-1. 未 push の初期デプロイ関連 13 コミット（`df5bf66`〜`b6fdf9f`）を push するか判断する。
-2. 配布前 smoke が生成した未追跡の `build/`（生成済み配布物）の扱いを決める。`.gitignore` へ追加するか、不要なら削除する。
-3. `docs/operations/INITIAL_DEPLOYMENT_USER_GUIDE.md` 第 9 節以降に従い、配布物の配置と実アプリ pilot を開始する。
-4. completed 到達後の全体サマリを作る。
-5. `post_hoc_intent_diff` の実データ試行結果を、将来の fixture または回帰確認に使うか判断する。
-6. review-wave 改善メモに残した follow-up candidates を、次の改善候補として扱う。
+1. `docs/operations/INITIAL_DEPLOYMENT_USER_GUIDE.md` 第 9 節以降に従い、配布物の配置と実アプリ pilot を開始する。
+2. completed 到達後の全体サマリを作る。
+3. `post_hoc_intent_diff` の実データ試行結果を、将来の fixture または回帰確認に使うか判断する。
+4. review-wave 改善メモに残した follow-up candidates を、次の改善候補として扱う。
 
 ## 5. 直近の完了事項
 
+- 2026-06-10：初期デプロイ関連の未 push コミット群を `origin/main` へ push。`build/` はいったん追跡したのち、生成物のため追跡解除して `.gitignore` へ登録（`06c86c2`→`be9aa4f`）。本 TODO の状態記述（push 状態、`build/` の扱い、`origin/main` の位置）を修正。この TODO 修正は利用者明示指示により独立検証なしとし、人間検証者代替を manifest に記録。
 - 2026-06-10：配布前 smoke を実施し合格。`tools/build-deploy-package.py --clean --verify --smoke-external-app-root <一時root>` で配布物 262 ファイルの生成・検査と、一時 root への review-run 記録書き込みを確認。システムの python3 では `httpx` 不足で失敗するため、`.venv/bin/python3` での実行が必要と判明。
 - 2026-06-10：`docs/operations/INITIAL_DEPLOYMENT_USER_GUIDE.md` 第 8 節へ smoke の `.venv` 依存を追記（本文の依存説明＋依頼例の 1 行）。post-write 検証は Gemini 1 体で 2 巡（round-1 の should-fix を利用者承認で適用 → r2 所見ゼロ）、manifest `post-write-2026-06-10-011.yaml` を生成し、`b6fdf9f` として commit（guarded-git-commit 経由、利用者指示）。
-- 2026-06-09〜06-10：初期デプロイ一式を整備（deploy manifest、配布物生成ツール、配布物検査、外部アプリ root smoke、初期導入利用者ガイド、初期設定 LLM ガイド、Claude adapter の Codex 整合、hook テスト fixture 修正）。`df5bf66`〜`fde83df` の未 push コミット群。
+- 2026-06-09〜06-10：初期デプロイ一式を整備（deploy manifest、配布物生成ツール、配布物検査、外部アプリ root smoke、初期導入利用者ガイド、初期設定 LLM ガイド、Claude adapter の Codex 整合、hook テスト fixture 修正）。`df5bf66`〜`fde83df`（2026-06-10 push 済み）。
 - 既存システムへの後追い intent 追加に対し、仕様駆動開発の reopen 手続きを実施し、requirements／design／tasks／implementation の再確認連鎖を完了。
 - `conformance-evaluation` に `post_hoc_intent_diff` を追加し、既存仕様・実装コードから後追い intent の差分候補を抽出できるようにした。
 - `post_hoc_intent_diff` を ReviewCompass の実データで追加試行し、記録 `.reviewcompass/specs/conformance-evaluation/conformance/2026-06-09-real-data-r2-post-hoc-intent-diff.md` を保存。

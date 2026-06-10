@@ -1,0 +1,20 @@
+status: completed
+target_files:
+- TODO_NEXT_SESSION.md
+target_sha256:
+  TODO_NEXT_SESSION.md: 36638a8ffa019e06f26df908ccfccf7596efa433b3fffb254461cfd5e8444500
+required_verifiers:
+- user
+completed_verifiers:
+- user
+unresolved_substantive_findings: 0
+verifications:
+- verifier: user
+  verifier_type: human
+  target_files:
+  - TODO_NEXT_SESSION.md
+  target_sha256:
+    TODO_NEXT_SESSION.md: 36638a8ffa019e06f26df908ccfccf7596efa433b3fffb254461cfd5e8444500
+notes: 利用者明示指示『TODO更新は修正して、独立検証なし。その後コミット、プッシュ』（2026-06-10）に基づき、独立 LLM 検証を省略し、人間（利用者）を検証者とする例外適用を記録する。根拠：docs/disciplines/discipline_post_write_verification.md
+  のフォールバック条項（人が個別事案ごとに明示承認した場合に限り例外的に代替可、記録に残す）。修正内容：push 完了の反映、build/ の ignore 化の反映、origin/main
+  旧記載（64de32c）の訂正（実際は 45df25e）。
