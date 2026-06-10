@@ -56,7 +56,7 @@ ReviewCompass の開発リポジトリには、実行に必要なファイル、
 | `tools/api_providers/prompt_templates/*.md` | provider 別の API 呼び出しプロンプト。 |
 | `config/api-settings.yaml` | 利用者本人の初期デプロイ検証で、既存の API / CLI 経路設定をそのまま確認するため。 |
 
-`config/api-settings.yaml` は初期デプロイ検証では含める。ただし第3者配布では、経緯コメントや検証用 variant を除いた API 設定テンプレートを別途作成し、そのテンプレートへ差し替える。
+`config/api-settings.yaml` は初期デプロイ検証では含める。ただし、同ファイルには API key、token、password などの秘密値を置かず、秘密値は実行環境の環境変数など配布物外で扱う。第3者配布では、経緯コメントや検証用 variant を除いた API 設定テンプレートを別途作成し、そのテンプレートへ差し替える。
 
 ### 2.4 conformance-evaluation
 
@@ -164,6 +164,7 @@ ReviewCompass の開発リポジトリには、実行に必要なファイル、
 | workflow-management 汎用実行部 | `check-workflow-action.py` 相当、`WORKFLOW_DISCIPLINE_MAP.yaml` 相当、規律文書 | 初期デプロイで発見した ReviewCompass 開発リポジトリ固有依存を外す。 |
 | Codex アダプタ | `.codex/hooks/`、`docs/operations/WORKFLOW_NAVIGATION_FOR_CODEX.md` | Codex 固有の実行環境向け配布として分ける。 |
 | 開発者向け検査 | `tools/document_link_lint.py`、`tools/deployment_independence_lint.py` | 配布物生成側の CI または開発者向け pack として追加する。 |
+| 第3者配布用 API 設定テンプレート | `config/api-settings.yaml` から経緯コメントや検証用 variant を除いたテンプレート | 初期デプロイ検証では現行 `config/api-settings.yaml` を使い、第3者配布時に差し替える。 |
 | 第3者向け最小コア | runtime、review-run、conformance-evaluation の最小セット | 全機能検証後、不要機能を除いて再定義する。 |
 
 ## 5. 配布物生成
@@ -236,8 +237,8 @@ ReviewCompass 本体を改変したい場合は、第3者の対象アプリ repo
 
 ## 10. 当面の次作業
 
-1. 第3者配布用の API 設定テンプレートを作成する。
-2. 実アプリ pilot で使う外部アプリ root を決める。
+1. 実アプリ pilot で使う外部アプリ root を決める。
+2. `config/api-settings.yaml` に秘密値が含まれていないことを確認する。
 3. `tools/build-deploy-package.py --clean --verify --smoke-external-app-root <外部アプリroot>` を実アプリ用の一時 root で実行する。
 4. 実アプリ pilot では、開発リポジトリではなく生成済み配布物を使う。
 5. pilot で見つかった ReviewCompass 開発リポジトリ固有依存を、第3者配布前の修正候補として記録する。

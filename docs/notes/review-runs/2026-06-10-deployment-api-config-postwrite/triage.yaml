@@ -1,0 +1,44 @@
+run_id: 2026-06-10-deployment-api-config-postwrite
+triage_status: decided
+generated_at: '2026-06-10T08:19:45.844998+00:00'
+decision_actor: null
+decision_actor_type: human
+items:
+- finding_id: 2026-06-10-deployment-api-config-postwrite-gemini-3.5-flash-primary-001
+  run_id: 2026-06-10-deployment-api-config-postwrite
+  source_model: gemini-3.5-flash
+  source_round: round-1
+  source_raw_path: raw/gemini-3.5-flash.round-1.txt
+  source_parsed_path: parsed/gemini-3.5-flash.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: 2.3 review-run API 実行部
+  plain_language_summary: 初期デプロイ検証用として `config/api-settings.yaml` を配布対象に含めているが、個人用のAPIキーやトークンなどの機密情報が混入・流出するリスクに対する防止策が明記されていない。
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-10T08:20:34.759819+00:00'
+  decision_reason: 初期検証では現行 config/api-settings.yaml を使う方針は維持しつつ、秘密値を同ファイルに置かず環境変数など配布物外で扱う条件を
+    DEPLOYMENT.md に追記したため。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-10-deployment-api-config-postwrite-gemini-3.5-flash-primary-002
+  run_id: 2026-06-10-deployment-api-config-postwrite
+  source_model: gemini-3.5-flash
+  source_round: round-1
+  source_raw_path: raw/gemini-3.5-flash.round-1.txt
+  source_parsed_path: parsed/gemini-3.5-flash.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: 10. 当面の次作業
+  plain_language_summary: API設定ファイルの機密情報漏洩を防ぐための事前チェックや、第3者配布用テンプレート作成に向けたタスクが「当面の次作業」に含まれていない。
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-10T08:20:42.443372+00:00'
+  decision_reason: 当面の次作業に config/api-settings.yaml に秘密値が含まれていないことを確認する手順を追加したため。第3者配布用テンプレート作成は初期
+    pilot 前の必須作業ではなく、第3者配布時の再検討事項として残した。
+  applied_files: []
+  superseded_by: null

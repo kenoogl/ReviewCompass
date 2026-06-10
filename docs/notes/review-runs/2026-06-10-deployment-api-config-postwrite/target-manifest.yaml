@@ -1,0 +1,4 @@
+run_id: 2026-06-10-deployment-api-config-postwrite
+target_files:
+- path: docs/operations/DEPLOYMENT.md
+  sha256: 0d428284802bbce362372830f42802b8b7411701b6bc15dacb3b83b7154f47cc

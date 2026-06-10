@@ -1,0 +1,76 @@
+status: completed
+target_files:
+- docs/notes/review-runs/2026-06-10-deployment-api-config-postwrite-r2/model-result-summary.yaml
+- docs/notes/review-runs/2026-06-10-deployment-api-config-postwrite-r2/parsed/gemini-3.5-flash.round-1.yaml
+- docs/notes/review-runs/2026-06-10-deployment-api-config-postwrite-r2/raw/gemini-3.5-flash.round-1.txt
+- docs/notes/review-runs/2026-06-10-deployment-api-config-postwrite-r2/review_summary.md
+- docs/notes/review-runs/2026-06-10-deployment-api-config-postwrite-r2/rounds.yaml
+- docs/notes/review-runs/2026-06-10-deployment-api-config-postwrite-r2/target-manifest.yaml
+- docs/notes/review-runs/2026-06-10-deployment-api-config-postwrite-r2/triage.yaml
+- docs/notes/review-runs/2026-06-10-deployment-api-config-postwrite/model-result-summary.yaml
+- docs/notes/review-runs/2026-06-10-deployment-api-config-postwrite/parsed/gemini-3.5-flash.round-1.yaml
+- docs/notes/review-runs/2026-06-10-deployment-api-config-postwrite/raw/gemini-3.5-flash.round-1.txt
+- docs/notes/review-runs/2026-06-10-deployment-api-config-postwrite/review_summary.md
+- docs/notes/review-runs/2026-06-10-deployment-api-config-postwrite/rounds.yaml
+- docs/notes/review-runs/2026-06-10-deployment-api-config-postwrite/target-manifest.yaml
+- docs/notes/review-runs/2026-06-10-deployment-api-config-postwrite/triage.yaml
+- docs/operations/DEPLOYMENT.md
+target_sha256:
+  docs/notes/review-runs/2026-06-10-deployment-api-config-postwrite-r2/model-result-summary.yaml: f92f2ec8337174a0902b3d85f98cc5ecf322e4461057685be5eecf4ff41cc6e1
+  docs/notes/review-runs/2026-06-10-deployment-api-config-postwrite-r2/parsed/gemini-3.5-flash.round-1.yaml: a5d94a35014a825763d5e840bec70151cbcb382046d0b577572b6ed2bf18a76f
+  docs/notes/review-runs/2026-06-10-deployment-api-config-postwrite-r2/raw/gemini-3.5-flash.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+  docs/notes/review-runs/2026-06-10-deployment-api-config-postwrite-r2/review_summary.md: cc66ecb956acaf9b5cce51fc30f9c070c251e31075d606399b6f0e818f7721ee
+  docs/notes/review-runs/2026-06-10-deployment-api-config-postwrite-r2/rounds.yaml: fc4d505b015b6748a0ac228ad567824a0ff507528cabbb50ad2b26713a2581e4
+  docs/notes/review-runs/2026-06-10-deployment-api-config-postwrite-r2/target-manifest.yaml: e3f6ee01509b2948567cf5de94c7732f08cc83dd4eec01a8d97e10f5e8382aba
+  docs/notes/review-runs/2026-06-10-deployment-api-config-postwrite-r2/triage.yaml: 0a8fa7ae8062be5575c897906d37b05264670b66703c5954e0fe9ff807cdc003
+  docs/notes/review-runs/2026-06-10-deployment-api-config-postwrite/model-result-summary.yaml: af597fb93f73432067709b676f457cd8ec0f96a31bb41bb027e9052305a964bb
+  docs/notes/review-runs/2026-06-10-deployment-api-config-postwrite/parsed/gemini-3.5-flash.round-1.yaml: c23433ba3373c557dee584fba0d3d93113133fe690b6f175bdeaaeddb5c235cf
+  docs/notes/review-runs/2026-06-10-deployment-api-config-postwrite/raw/gemini-3.5-flash.round-1.txt: 544e49918b8dbfdea2471f343855d1bad0a5ab203b1a5a841665922b3ce13071
+  docs/notes/review-runs/2026-06-10-deployment-api-config-postwrite/review_summary.md: f1e571c6e31c68b638cd1354e0900993fb55769d8522d930d69317237fa38db3
+  docs/notes/review-runs/2026-06-10-deployment-api-config-postwrite/rounds.yaml: f3d32eb77479d0c8796a553c967783bfa0c17e91a06672dccec2dcd2d2975072
+  docs/notes/review-runs/2026-06-10-deployment-api-config-postwrite/target-manifest.yaml: 0dc1e1011a220942860a5c01eb7102bcaf195941635070e323f31c563cf61403
+  docs/notes/review-runs/2026-06-10-deployment-api-config-postwrite/triage.yaml: e6d45ecba29f298d4902be4b2f418f97e3e96e018cedafb24aa8b0dd841d067c
+  docs/operations/DEPLOYMENT.md: 10ee9bd65c584d1276f64e6339616954e987659581568bb4f5d9633457d2a116
+required_verifiers: &id001
+- gemini-3.5-flash
+completed_verifiers: *id001
+unresolved_substantive_findings: 0
+verifications:
+- verifier: gemini-3.5-flash
+  target_files:
+  - docs/notes/review-runs/2026-06-10-deployment-api-config-postwrite-r2/model-result-summary.yaml
+  - docs/notes/review-runs/2026-06-10-deployment-api-config-postwrite-r2/parsed/gemini-3.5-flash.round-1.yaml
+  - docs/notes/review-runs/2026-06-10-deployment-api-config-postwrite-r2/raw/gemini-3.5-flash.round-1.txt
+  - docs/notes/review-runs/2026-06-10-deployment-api-config-postwrite-r2/review_summary.md
+  - docs/notes/review-runs/2026-06-10-deployment-api-config-postwrite-r2/rounds.yaml
+  - docs/notes/review-runs/2026-06-10-deployment-api-config-postwrite-r2/target-manifest.yaml
+  - docs/notes/review-runs/2026-06-10-deployment-api-config-postwrite-r2/triage.yaml
+  - docs/notes/review-runs/2026-06-10-deployment-api-config-postwrite/model-result-summary.yaml
+  - docs/notes/review-runs/2026-06-10-deployment-api-config-postwrite/parsed/gemini-3.5-flash.round-1.yaml
+  - docs/notes/review-runs/2026-06-10-deployment-api-config-postwrite/raw/gemini-3.5-flash.round-1.txt
+  - docs/notes/review-runs/2026-06-10-deployment-api-config-postwrite/review_summary.md
+  - docs/notes/review-runs/2026-06-10-deployment-api-config-postwrite/rounds.yaml
+  - docs/notes/review-runs/2026-06-10-deployment-api-config-postwrite/target-manifest.yaml
+  - docs/notes/review-runs/2026-06-10-deployment-api-config-postwrite/triage.yaml
+  - docs/operations/DEPLOYMENT.md
+  target_sha256:
+    docs/notes/review-runs/2026-06-10-deployment-api-config-postwrite-r2/model-result-summary.yaml: f92f2ec8337174a0902b3d85f98cc5ecf322e4461057685be5eecf4ff41cc6e1
+    docs/notes/review-runs/2026-06-10-deployment-api-config-postwrite-r2/parsed/gemini-3.5-flash.round-1.yaml: a5d94a35014a825763d5e840bec70151cbcb382046d0b577572b6ed2bf18a76f
+    docs/notes/review-runs/2026-06-10-deployment-api-config-postwrite-r2/raw/gemini-3.5-flash.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/2026-06-10-deployment-api-config-postwrite-r2/review_summary.md: cc66ecb956acaf9b5cce51fc30f9c070c251e31075d606399b6f0e818f7721ee
+    docs/notes/review-runs/2026-06-10-deployment-api-config-postwrite-r2/rounds.yaml: fc4d505b015b6748a0ac228ad567824a0ff507528cabbb50ad2b26713a2581e4
+    docs/notes/review-runs/2026-06-10-deployment-api-config-postwrite-r2/target-manifest.yaml: e3f6ee01509b2948567cf5de94c7732f08cc83dd4eec01a8d97e10f5e8382aba
+    docs/notes/review-runs/2026-06-10-deployment-api-config-postwrite-r2/triage.yaml: 0a8fa7ae8062be5575c897906d37b05264670b66703c5954e0fe9ff807cdc003
+    docs/notes/review-runs/2026-06-10-deployment-api-config-postwrite/model-result-summary.yaml: af597fb93f73432067709b676f457cd8ec0f96a31bb41bb027e9052305a964bb
+    docs/notes/review-runs/2026-06-10-deployment-api-config-postwrite/parsed/gemini-3.5-flash.round-1.yaml: c23433ba3373c557dee584fba0d3d93113133fe690b6f175bdeaaeddb5c235cf
+    docs/notes/review-runs/2026-06-10-deployment-api-config-postwrite/raw/gemini-3.5-flash.round-1.txt: 544e49918b8dbfdea2471f343855d1bad0a5ab203b1a5a841665922b3ce13071
+    docs/notes/review-runs/2026-06-10-deployment-api-config-postwrite/review_summary.md: f1e571c6e31c68b638cd1354e0900993fb55769d8522d930d69317237fa38db3
+    docs/notes/review-runs/2026-06-10-deployment-api-config-postwrite/rounds.yaml: f3d32eb77479d0c8796a553c967783bfa0c17e91a06672dccec2dcd2d2975072
+    docs/notes/review-runs/2026-06-10-deployment-api-config-postwrite/target-manifest.yaml: 0dc1e1011a220942860a5c01eb7102bcaf195941635070e323f31c563cf61403
+    docs/notes/review-runs/2026-06-10-deployment-api-config-postwrite/triage.yaml: e6d45ecba29f298d4902be4b2f418f97e3e96e018cedafb24aa8b0dd841d067c
+    docs/operations/DEPLOYMENT.md: 10ee9bd65c584d1276f64e6339616954e987659581568bb4f5d9633457d2a116
+review_run:
+  path: docs/notes/review-runs/2026-06-10-deployment-api-config-postwrite-r2
+  summary_path: docs/notes/review-runs/2026-06-10-deployment-api-config-postwrite-r2/model-result-summary.yaml
+notes: Generated template; verify target_files cover current post-write targets before
+  use.
