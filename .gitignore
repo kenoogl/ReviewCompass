@@ -33,3 +33,7 @@ tools/experiments/logs/
 
 # SES シンポジウム論文テンプレート一式（利用者の論文執筆素材、ReviewCompass 本体とは別管理、2026-05-28 セッション 37）
 SES26/
+
+# 配布物生成の出力先。tools/build-deploy-package.py --clean で再生成できる生成物のため、
+# リポジトリでは管理しない（2026-06-10 利用者指示）。
+build/

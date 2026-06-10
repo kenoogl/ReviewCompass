@@ -1,2 +1,0 @@
-"""analysis intake package."""
-

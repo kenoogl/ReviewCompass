@@ -1,1 +1,0 @@
-"""Traceability completion guards."""
