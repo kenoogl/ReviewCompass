@@ -2,8 +2,12 @@
 from __future__ import annotations
 
 import argparse
+import json
+import os
 import fnmatch
 import shutil
+import subprocess
+import sys
 from pathlib import Path
 
 import yaml
@@ -193,6 +197,81 @@ def verify_package_contents(
   }
 
 
+def smoke_test_external_app_root(
+  *,
+  package_dir: Path,
+  app_root: Path,
+) -> dict:
+  package_dir = package_dir.resolve()
+  app_root = app_root.resolve()
+  if not package_dir.is_dir():
+    raise FileNotFoundError(f"package directory does not exist: {package_dir}")
+  app_root.mkdir(parents=True, exist_ok=True)
+
+  script = r"""
+import json
+from pathlib import Path
+
+import yaml
+
+from tools.api_providers.run_role import update_review_run_artifacts
+
+app_root = Path.cwd()
+target = app_root / "app.md"
+target.write_text("small external app\n", encoding="utf-8")
+review_run_dir = app_root / ".reviewcompass" / "specs" / "demo" / "reviews" / "smoke-run"
+formatted_output = yaml.safe_dump(
+  {
+    "role": "primary",
+    "model": "smoke-model",
+    "findings": [],
+  },
+  allow_unicode=True,
+  sort_keys=False,
+)
+update_review_run_artifacts(
+  str(review_run_dir),
+  round_id="round-1",
+  target_path=str(target),
+  phase="implementation",
+  criteria="deployment_smoke",
+  role="primary",
+  provider="smoke-provider",
+  model="smoke-model",
+  prompt="deployment smoke prompt",
+  response_text="findings: []\n",
+  attempts=1,
+  duration_seconds=0.0,
+  parse_status="parsed",
+  findings=[],
+  formatted_output=formatted_output,
+)
+print(json.dumps({"ok": True, "review_run_dir": str(review_run_dir)}))
+"""
+  env = dict(os.environ)
+  env["PYTHONPATH"] = str(package_dir)
+  result = subprocess.run(
+    [sys.executable, "-c", script],
+    cwd=str(app_root),
+    env=env,
+    capture_output=True,
+    text=True,
+    timeout=15,
+  )
+  if result.returncode != 0:
+    return {
+      "ok": False,
+      "review_run_dir": str(app_root / ".reviewcompass/specs/demo/reviews/smoke-run"),
+      "stdout": result.stdout,
+      "stderr": result.stderr,
+    }
+  payload = json.loads(result.stdout)
+  return {
+    "ok": payload.get("ok") is True,
+    "review_run_dir": payload["review_run_dir"],
+  }
+
+
 def _parse_args() -> argparse.Namespace:
   parser = argparse.ArgumentParser(
     description="Build a ReviewCompass deployment package from deploy-manifest.yaml.",
@@ -215,6 +294,10 @@ def _parse_args() -> argparse.Namespace:
     "--verify",
     action="store_true",
     help="Verify package contents after copying.",
+  )
+  parser.add_argument(
+    "--smoke-external-app-root",
+    help="Run a package-only smoke test against this external app root.",
   )
   return parser.parse_args()
 
@@ -242,6 +325,17 @@ def main() -> int:
           print(f"{key}: {', '.join(verification[key])}")
       return 1
     print("package verification passed")
+  if args.smoke_external_app_root:
+    smoke_result = smoke_test_external_app_root(
+      package_dir=Path(result["output_dir"]),
+      app_root=Path(args.smoke_external_app_root),
+    )
+    if not smoke_result["ok"]:
+      print("external app smoke failed")
+      if smoke_result.get("stderr"):
+        print(smoke_result["stderr"])
+      return 1
+    print(f"external app smoke passed: {smoke_result['review_run_dir']}")
   return 0
 
 
