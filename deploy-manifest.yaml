@@ -1,0 +1,209 @@
+name: reviewcompass-initial-self-test
+version: 1
+distribution_type: initial_self_test
+description: >
+  Initial deployment package for the ReviewCompass owner to test all features
+  against a real external application. This is not the third-party minimal
+  distribution.
+source_policy:
+  mode: allowlist
+  root: repository
+output:
+  default_directory: build/deploy/ReviewCompass
+include:
+  - path: pyproject.toml
+    reason: Python dependency and project metadata.
+
+  - path: config/api-settings.yaml
+    reason: Existing API / CLI route configuration for owner-operated initial tests.
+
+  - path: runtime/config/README.md
+    reason: Runtime configuration directory explanation.
+  - path: runtime/config/config.yaml.template
+    reason: Target app .reviewcompass/config.yaml template.
+  - path: runtime/config/terminology.yaml.template
+    reason: Target app terminology configuration template.
+  - path: runtime/config/reviewcompass.yaml
+    reason: ReviewCompass default runtime configuration.
+  - path: runtime/foundation/README.md
+    reason: Foundation runtime assets explanation.
+  - path: runtime/foundation/layer1_framework.yaml
+    reason: Common review stage and role framework.
+  - path: runtime/foundation/metadata_contract.yaml
+    reason: Shared execution metadata contract.
+  - path: runtime/prompts/README.md
+    reason: Prompt asset layout explanation.
+  - path: runtime/prompts/primary_detection/primary_reviewer.prompt.md
+    reason: Default primary reviewer prompt.
+  - path: runtime/prompts/adversarial_review/adversarial_reviewer.prompt.md
+    reason: Default adversarial reviewer prompt.
+  - path: runtime/prompts/judgment/judgment_reviewer.prompt.md
+    reason: Default judgment reviewer prompt.
+  - path: runtime/runtime_core/**/*.py
+    reason: Runtime execution, evidence writing, validation, and prompt resolution code.
+  - path: runtime/runtime_core/**/*.yaml
+    reason: Runtime vocabularies, layout, projection, and schema assets.
+  - path: runtime/runtime_core/run_layout/README.md
+    reason: Runtime run layout explanation.
+  - path: runtime/schemas/README.md
+    reason: Runtime schema directory explanation.
+  - path: runtime/schemas/*.schema.json
+    reason: Runtime output and evidence JSON schemas.
+  - path: runtime/validators/contracts/README.md
+    reason: Validator contract directory explanation.
+  - path: runtime/validators/contracts/*.schema.json
+    reason: Validator result and invalidation marker contracts.
+
+  - path: tools/README.md
+    reason: Tool namespace and CLI naming explanation.
+  - path: tools/api_providers/__init__.py
+    reason: API provider package marker.
+  - path: tools/api_providers/config_loader.py
+    reason: API provider configuration loading.
+  - path: tools/api_providers/providers.py
+    reason: Provider invocation implementation.
+  - path: tools/api_providers/response_formatter.py
+    reason: Review response formatting.
+  - path: tools/api_providers/review_triage.py
+    reason: Review-run finding triage.
+  - path: tools/api_providers/run_review.py
+    reason: Review-run CLI entry point.
+  - path: tools/api_providers/run_role.py
+    reason: Role-level review CLI entry point.
+  - path: tools/api_providers/prompt_templates/*.md
+    reason: Provider-specific API prompt templates.
+
+  - path: tools/foundation_validators/*.py
+    reason: Foundation validation helpers for all-feature self-test.
+  - path: tools/conformance-evaluation-check.py
+    reason: Conformance-evaluation CLI entry point.
+  - path: tools/conformance-evaluation-cross-feature.py
+    reason: Cross-feature conformance-evaluation CLI entry point.
+  - path: tools/conformance_evaluation/*.py
+    reason: Conformance-evaluation implementation package.
+  - path: tools/conformance_evaluation/schemas/*.schema.json
+    reason: Conformance-evaluation record and intent diff schemas.
+  - path: schemas/review-criteria/conformance_evaluation.yaml
+    reason: Conformance-evaluation review criteria.
+
+  - path: tools/check-workflow-action.py
+    reason: Workflow state and irreversible-action guard CLI.
+  - path: tools/document_link_lint.py
+    reason: Document link and prompt-source reference lint.
+  - path: tools/deployment_independence_lint.py
+    reason: Deployment independence lint.
+  - path: tools/guarded-git-commit.py
+    reason: Commit wrapper that enforces workflow-management checks.
+  - path: docs/operations/WORKFLOW_DISCIPLINE_MAP.yaml
+    reason: Machine-readable decision-point to prompt-source map.
+  - path: docs/operations/WORKFLOW_NAVIGATION.md
+    reason: Workflow navigation contract.
+  - path: docs/operations/WORKFLOW_PRECHECK.md
+    reason: Precheck operational contract.
+  - path: docs/operations/WORKFLOW_PRECHECK_DETAILS.md
+    reason: Detailed precheck specification.
+  - path: docs/operations/REOPEN_PROCEDURE.md
+    reason: Reopen procedure.
+  - path: docs/operations/SESSION_WORKFLOW_GUIDE.md
+    reason: Session completion and review-run handling guide.
+  - path: docs/disciplines/discipline_*.md
+    reason: Workflow-management discipline prompts.
+  - path: .reviewcompass/specs/workflow-management/post-write-verification-spec.yaml
+    reason: Post-write verification behavior contract.
+  - path: .reviewcompass/specs/workflow-management/yaml-audit-spec.yaml
+    reason: YAML audit behavior contract.
+
+  - path: tools/self-improvement-check.py
+    reason: Self-improvement machine verification CLI.
+  - path: tools/self_improvement/*.py
+    reason: Self-improvement implementation package.
+  - path: tools/self_improvement/schemas/*.schema.json
+    reason: Self-improvement intermediate schemas.
+  - path: learning/workflow/schemas/*.schema.json
+    reason: Canonical workflow learning schemas.
+  - path: learning/workflow/proposals/README.md
+    reason: Proposal output location explanation.
+  - path: learning/workflow/approved-updates/README.md
+    reason: Approved update location explanation.
+  - path: learning/workflow/rejected-updates/README.md
+    reason: Rejected update location explanation.
+  - path: learning/workflow/rollback/README.md
+    reason: Rollback record location explanation.
+  - path: learning/workflow/metrics/README.md
+    reason: Metrics record location explanation.
+  - path: learning/workflow/carry-forward-register/README.md
+    reason: Carry-forward register location explanation.
+  - path: learning/workflow/carry-forward-register/reviewcompass-import.yaml
+    reason: Current carry-forward register used by workflow checks.
+
+  - path: analysis/**
+    reason: Analysis feature package for full initial self-test.
+  - path: evaluation/**
+    reason: Evaluation feature package for full initial self-test.
+
+  - path: templates/specs/spec.json.template
+    reason: Target app spec.json template.
+  - path: templates/review/manual_dogfooding_review_template.md
+    reason: Manual review-run record template for initial tests.
+  - path: templates/todo/TODO_NEXT_SESSION.template.md
+    reason: Session handoff template for initial tests.
+exclude:
+  - path: AGENTS.md
+    reason: Local agent instructions, not a deployable runtime asset.
+  - path: .codex/**
+    reason: Local Codex configuration.
+  - path: .claude/**
+    reason: Local Claude configuration.
+  - path: .reviewcompass/post-write-verification/**
+    reason: Development post-write verification evidence.
+  - path: .reviewcompass/effective-prompts/**
+    reason: Generated effective prompts.
+  - path: .reviewcompass/approvals/**
+    reason: Local approval records.
+  - path: .reviewcompass/specs/*/reviews/**
+    reason: ReviewCompass development review evidence.
+  - path: .reviewcompass/specs/*/conformance/**
+    reason: ReviewCompass development conformance evidence.
+  - path: .reviewcompass/specs/_cross_feature/**
+    reason: ReviewCompass internal cross-feature evidence.
+  - path: docs/notes/**
+    reason: Development notes and evidence.
+  - path: docs/archive/**
+    reason: Archived development material.
+  - path: docs/plan/**
+    reason: Historical planning material.
+  - path: docs/sessions/**
+    reason: Session records.
+  - path: docs/reviews/**
+    reason: Development review records.
+  - path: docs/experiments/**
+    reason: Experiment records.
+  - path: docs/logs/**
+    reason: Development logs.
+  - path: docs/discipline-compliance-reports/**
+    reason: Internal compliance evidence.
+  - path: tools/experiments/**
+    reason: Experiment tooling and outputs.
+  - path: tools/**/tests/**
+    reason: Tool test suites are not part of the deployed runtime.
+  - path: tests/**
+    reason: Repository test suites are not part of the deployed runtime.
+  - path: learning/workflow/carry-forward-register/sources/**
+    reason: Historical Markdown import sources.
+  - path: learning/workflow/deployment-readiness/**
+    reason: Development deployment-readiness evidence.
+  - path: learning/workflow/replication-pilots/**
+    reason: Replication pilot evidence.
+  - path: logs/**
+    reason: Local logs.
+  - path: SES26/**
+    reason: Local session material.
+checks:
+  - name: allowlist_only
+    description: Generated package must contain only include entries after excludes.
+  - name: no_development_evidence
+    description: Generated package must not contain excluded evidence directories.
+  - name: deployment_independence_lint
+    description: Distributed Markdown / YAML / JSON assets must avoid local absolute paths.
+  - name: smoke_test_external_app_root
+    description: Package must run against an external application root and read/write target .reviewcompass state.
