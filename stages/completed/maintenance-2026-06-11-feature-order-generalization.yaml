@@ -1,0 +1,41 @@
+process_id: maintenance
+title: Feature order generalization for deployed apps
+started_at: 2026-06-11 00:00:00+09:00
+status: completed
+trigger: 配布物の check-workflow-action.py が FEATURE_ORDER 直書きのため、対象アプリ独自の feature 構成で
+  next が機能しないことを模擬実験で確認した（docs/notes/2026-06-10-deployment-multi-llm-entry-design.md
+  §2-4）
+required_action: continue_maintenance
+mainline_blocked_by: なし（全 workflow_state は completed。本記録は next 判定ツール改修のための side track
+  であり、利用者指示によりアドホック開発で進める）
+side_track_scope:
+- feature 一覧・順序のソース直書きをやめ、feature-dependency.yaml の feature_order キーから読む（探索順：.reviewcompass/
+  → stages/ → 直下）
+- feature_order 未定義時に intent／feature-partitioning の実施を案内する立ち上げ挙動
+- feature_order と depends_on の整合検査（依存される機能が先、循環依存の検出）
+- 開発リポジトリ stages/feature-dependency.yaml への feature_order 追記と回帰担保
+allowed_scope:
+- check-workflow-action.py の feature 一覧取得・立ち上げ案内・整合検査の実装とテスト
+- 開発リポジトリの feature-dependency.yaml への feature_order キー追記
+allowed_files:
+- tools/check-workflow-action.py
+- tests/tools/test_check_workflow_action.py
+- stages/feature-dependency.yaml
+- stages/in-progress/maintenance-2026-06-11-feature-order-generalization.yaml
+- stages/completed/maintenance-2026-06-11-feature-order-generalization.yaml
+out_of_scope_note: テンプレート群の作成、ガイド更新、配布物再生成、入口正本テンプレートは本記録の範囲外（next 判定ツールの改修のみを扱う）。実装完了後の
+  conformance-evaluation 起動と仕様反映は TODO_NEXT_SESSION.md §4 に記録した別義務。
+completion_conditions:
+- 新規テスト（feature_order 外出し・立ち上げ案内・整合検査・対象アプリ独自 feature 構成での next 動作）が追加され、全テストが通る
+- 開発リポジトリで next --json の判定が改修前と同一であること（回帰なし）
+- 完了時に本ファイルを stages/completed/ へ移す
+completed_at: '2026-06-11T00:00:00+09:00'
+completed_steps:
+- feature_order 外出し・探索順・立ち上げ案内・整合検査の失敗テスト 10 件を追加（TDD テスト先行、9 件失敗を確認）
+- resolve_feature_order／validate_feature_order_consistency／feature_definition_next_state
+  を実装し cmd_next へ統合
+- stages/feature-dependency.yaml に開発リポジトリ 7 機能の feature_order を追記
+- テスト fixture を追随修正（共通ヘルパーの依存ファイル生成、mkdir の exist_ok 化。期待値は不変更）
+- tools 155 件・pytest 全群 599 件・hooks/self-improvement 108 件・他 119 件で回帰なしを確認
+completion_note: tests/self-improvement/test_t001_layout.py の 1 件は 15eea6d 起因の既存失敗であり、本改修と無関係（変更退避で確認済み）。利用者承認（案
+  1、2026-06-11）により別件として TODO_NEXT_SESSION.md 候補タスク 0 へ記録し、本 side track の完了条件は「本改修起因の失敗ゼロ」をもって充足とする。

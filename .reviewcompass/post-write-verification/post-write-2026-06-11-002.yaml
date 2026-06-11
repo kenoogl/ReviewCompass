@@ -1,0 +1,48 @@
+status: completed
+target_files:
+- TODO_NEXT_SESSION.md
+- docs/notes/review-runs/2026-06-11-todo-adhoc-obligation-postwrite/model-result-summary.yaml
+- docs/notes/review-runs/2026-06-11-todo-adhoc-obligation-postwrite/parsed/gemini-3.5-flash.round-1.yaml
+- docs/notes/review-runs/2026-06-11-todo-adhoc-obligation-postwrite/raw/gemini-3.5-flash.round-1.txt
+- docs/notes/review-runs/2026-06-11-todo-adhoc-obligation-postwrite/review_summary.md
+- docs/notes/review-runs/2026-06-11-todo-adhoc-obligation-postwrite/rounds.yaml
+- docs/notes/review-runs/2026-06-11-todo-adhoc-obligation-postwrite/target-manifest.yaml
+- docs/notes/review-runs/2026-06-11-todo-adhoc-obligation-postwrite/triage.yaml
+target_sha256:
+  TODO_NEXT_SESSION.md: 88e172b03995034cdb21afe99d76a9b013eeba1d1d531886edcfe4b970f4aca9
+  docs/notes/review-runs/2026-06-11-todo-adhoc-obligation-postwrite/model-result-summary.yaml: e1b6c371a152e8acec662fc82d9cb4cd27e1c0fb3f94e03349fbc63a144b0dc5
+  docs/notes/review-runs/2026-06-11-todo-adhoc-obligation-postwrite/parsed/gemini-3.5-flash.round-1.yaml: 046220fc4daecb8ff8dd49fb6c3a4ed9c46dc474e38ace5160bb41d2f6e253af
+  docs/notes/review-runs/2026-06-11-todo-adhoc-obligation-postwrite/raw/gemini-3.5-flash.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+  docs/notes/review-runs/2026-06-11-todo-adhoc-obligation-postwrite/review_summary.md: aa12c82cd31bf0fe880b31fc482ba2852407134728029cebe19fc072ca04e216
+  docs/notes/review-runs/2026-06-11-todo-adhoc-obligation-postwrite/rounds.yaml: eee38502048853ac1c7f3b0dad033f5652f226973491c8badb4d806fedbb8773
+  docs/notes/review-runs/2026-06-11-todo-adhoc-obligation-postwrite/target-manifest.yaml: 7f1c39d1ae4d5549beb8a74d7ab9100b7efd01033239e4f8590a1edda0337eed
+  docs/notes/review-runs/2026-06-11-todo-adhoc-obligation-postwrite/triage.yaml: baebe3212ac17542d297dc6ff34ad58e6eb9d02dd7ae7f8be5f6eb5f1eb5ec81
+required_verifiers: &id001
+- gemini-3.5-flash
+completed_verifiers: *id001
+unresolved_substantive_findings: 0
+verifications:
+- verifier: gemini-3.5-flash
+  target_files:
+  - TODO_NEXT_SESSION.md
+  - docs/notes/review-runs/2026-06-11-todo-adhoc-obligation-postwrite/model-result-summary.yaml
+  - docs/notes/review-runs/2026-06-11-todo-adhoc-obligation-postwrite/parsed/gemini-3.5-flash.round-1.yaml
+  - docs/notes/review-runs/2026-06-11-todo-adhoc-obligation-postwrite/raw/gemini-3.5-flash.round-1.txt
+  - docs/notes/review-runs/2026-06-11-todo-adhoc-obligation-postwrite/review_summary.md
+  - docs/notes/review-runs/2026-06-11-todo-adhoc-obligation-postwrite/rounds.yaml
+  - docs/notes/review-runs/2026-06-11-todo-adhoc-obligation-postwrite/target-manifest.yaml
+  - docs/notes/review-runs/2026-06-11-todo-adhoc-obligation-postwrite/triage.yaml
+  target_sha256:
+    TODO_NEXT_SESSION.md: 88e172b03995034cdb21afe99d76a9b013eeba1d1d531886edcfe4b970f4aca9
+    docs/notes/review-runs/2026-06-11-todo-adhoc-obligation-postwrite/model-result-summary.yaml: e1b6c371a152e8acec662fc82d9cb4cd27e1c0fb3f94e03349fbc63a144b0dc5
+    docs/notes/review-runs/2026-06-11-todo-adhoc-obligation-postwrite/parsed/gemini-3.5-flash.round-1.yaml: 046220fc4daecb8ff8dd49fb6c3a4ed9c46dc474e38ace5160bb41d2f6e253af
+    docs/notes/review-runs/2026-06-11-todo-adhoc-obligation-postwrite/raw/gemini-3.5-flash.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/2026-06-11-todo-adhoc-obligation-postwrite/review_summary.md: aa12c82cd31bf0fe880b31fc482ba2852407134728029cebe19fc072ca04e216
+    docs/notes/review-runs/2026-06-11-todo-adhoc-obligation-postwrite/rounds.yaml: eee38502048853ac1c7f3b0dad033f5652f226973491c8badb4d806fedbb8773
+    docs/notes/review-runs/2026-06-11-todo-adhoc-obligation-postwrite/target-manifest.yaml: 7f1c39d1ae4d5549beb8a74d7ab9100b7efd01033239e4f8590a1edda0337eed
+    docs/notes/review-runs/2026-06-11-todo-adhoc-obligation-postwrite/triage.yaml: baebe3212ac17542d297dc6ff34ad58e6eb9d02dd7ae7f8be5f6eb5f1eb5ec81
+review_run:
+  path: docs/notes/review-runs/2026-06-11-todo-adhoc-obligation-postwrite
+  summary_path: docs/notes/review-runs/2026-06-11-todo-adhoc-obligation-postwrite/model-result-summary.yaml
+notes: Generated template; verify target_files cover current post-write targets before
+  use.

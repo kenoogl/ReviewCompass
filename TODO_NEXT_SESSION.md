@@ -1,6 +1,6 @@
 # 次セッション継続用メモ
 
-最終更新：2026-06-10。正本は `tools/check-workflow-action.py next --json` と各 feature の `spec.json`。この TODO は入口メモであり、作業順序の正本ではない。
+最終更新：2026-06-11。正本は `tools/check-workflow-action.py next --json` と各 feature の `spec.json`。この TODO は入口メモであり、作業順序の正本ではない。
 
 作業ディレクトリ：`/Users/Daily/Development/ReviewCompass/`
 リポジトリ：`git@github.com:kenoogl/ReviewCompass.git`（main ブランチ）
@@ -78,10 +78,13 @@ Python 実行は、必要に応じて venv を使う：
 
 通常ワークフロー上の未完了タスクはない。
 
+例外として、配布側複数 LLM 入口整備（設計記録：`docs/notes/2026-06-10-deployment-multi-llm-entry-design.md`）をアドホック開発で進めている。実装完了後に conformance-evaluation を起動し、差分を仕様へ反映するまでがこの作業の完了条件である（未完了の義務、忘れないこと）。
+
 次セッションでは、まず `next --json` で `kind: completed` が維持されていることと、`git status --short` が clean であることを確認する。
 
 候補タスク：
 
+0. 既存の失敗テストの修正方針を決める：`tests/self-improvement/test_t001_layout.py` の 1 件が、`15eea6d Clean learning deployment docs` による `learning/findings/README.md` の文言削除（「第 1 期空置き」マーカー）以降失敗している。README へ文言を戻すか、テスト側を改訂するかの判断が必要（2026-06-11 の feature 一覧一般化作業中に発見、当該作業とは無関係の既存問題）。
 1. `docs/operations/INITIAL_DEPLOYMENT_USER_GUIDE.md` 第 9 節以降に従い、配布物の配置と実アプリ pilot を開始する。
 2. completed 到達後の全体サマリを作る。
 3. `post_hoc_intent_diff` の実データ試行結果を、将来の fixture または回帰確認に使うか判断する。

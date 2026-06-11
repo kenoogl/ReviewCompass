@@ -104,6 +104,11 @@ def _write_specs_for_next(cwd, states_by_feature):
     "alignment": False,
     "approval": False,
   }
+  _write_feature_dependency(
+    cwd,
+    "stages/feature-dependency.yaml",
+    feature_order=list(FEATURE_ORDER),
+  )
   for feature in FEATURE_ORDER:
     _write_spec(cwd, feature, states_by_feature.get(feature, untouched))
 
@@ -1306,7 +1311,7 @@ class SpecSetExitCodeTests(unittest.TestCase):
       encoding="utf-8",
     )
     stages_dir = cwd / "stages"
-    stages_dir.mkdir(parents=True)
+    stages_dir.mkdir(parents=True, exist_ok=True)
     (stages_dir / "requirements.yaml").write_text(
       yaml.safe_dump(
         {
@@ -1341,7 +1346,7 @@ class SpecSetExitCodeTests(unittest.TestCase):
     cwd.mkdir()
     _write_specs_for_next(cwd, {})
     stages_dir = cwd / "stages"
-    stages_dir.mkdir(parents=True)
+    stages_dir.mkdir(parents=True, exist_ok=True)
     (stages_dir / "requirements.yaml").write_text(
       yaml.safe_dump(
         {
@@ -5264,6 +5269,250 @@ class CommitPushOutputTests(unittest.TestCase):
       data["action"]["subcommand"], "push",
       "JSON 出力の action.subcommand は 'push' であるべき",
     )
+
+
+def _write_feature_dependency(cwd, relative_path, feature_order=None, features=None):
+  """feature-dependency.yaml を指定パスに作る"""
+  path = Path(cwd) / relative_path
+  path.parent.mkdir(parents=True, exist_ok=True)
+  data = {}
+  if feature_order is not None:
+    data["feature_order"] = feature_order
+  if features is not None:
+    data["features"] = features
+  path.write_text(
+    yaml.safe_dump(data, allow_unicode=True, sort_keys=False),
+    encoding="utf-8",
+  )
+
+
+def _write_app_spec(cwd, feature, requirements_drafting=False):
+  """対象アプリ想定の最小 spec.json（intent と feature-partitioning のみ完了）を作る"""
+  spec_dir = Path(cwd) / ".reviewcompass" / "specs" / feature
+  spec_dir.mkdir(parents=True, exist_ok=True)
+  untouched_five_stage = {
+    "drafting": requirements_drafting,
+    "triad-review": False,
+    "review-wave": False,
+    "alignment": False,
+    "approval": False,
+  }
+  untouched_rest = {
+    "drafting": False,
+    "triad-review": False,
+    "review-wave": False,
+    "alignment": False,
+    "approval": False,
+  }
+  spec = {
+    "feature_name": feature,
+    "language": "ja",
+    "created_at": "2026-06-11T00:00:00+09:00",
+    "updated_at": "2026-06-11T00:00:00+09:00",
+    "workflow_state": {
+      "intent": {
+        "drafting": True,
+        "review": True,
+        "approval": True,
+        "reference": "stages/intent.yaml",
+      },
+      "feature-partitioning": {
+        "candidate-proposal": True,
+        "approval": True,
+        "reference": "stages/feature-partitioning/2026-06-11-proposal.md",
+      },
+      "requirements": dict(untouched_five_stage),
+      "design": dict(untouched_rest),
+      "tasks": dict(untouched_rest),
+      "implementation": dict(untouched_rest),
+    },
+    "reopened": {},
+    "recheck": {
+      "upstream_change_pending": False,
+      "impacted_downstream_phases": [],
+    },
+  }
+  (spec_dir / "spec.json").write_text(
+    json.dumps(spec, ensure_ascii=False, indent=2),
+    encoding="utf-8",
+  )
+
+
+class FeatureOrderGeneralizationTests(unittest.TestCase):
+  """feature 一覧の外出し（feature-dependency.yaml の feature_order キー）
+
+  設計記録：docs/notes/2026-06-10-deployment-multi-llm-entry-design.md §3.5
+  side track 記録：stages/in-progress/maintenance-2026-06-11-feature-order-generalization.yaml
+  TDD 規律に従い、実装前に作成。
+  """
+
+  def setUp(self):
+    self.tmpdir = tempfile.mkdtemp()
+    self.addCleanup(shutil.rmtree, self.tmpdir)
+
+  def _next_json(self):
+    result = run_script(["next", "--json"], cwd=self.tmpdir)
+    self.assertNotEqual(result.stdout.strip(), "", f"stderr: {result.stderr}")
+    return result, json.loads(result.stdout)
+
+  def test_next_uses_feature_order_from_reviewcompass_dir(self):
+    """対象アプリ独自の feature 構成を .reviewcompass/feature-dependency.yaml から読む"""
+    cwd = Path(self.tmpdir)
+    _write_feature_dependency(
+      cwd,
+      ".reviewcompass/feature-dependency.yaml",
+      feature_order=["appfeat-a", "appfeat-b"],
+    )
+    _write_app_spec(cwd, "appfeat-a")
+    _write_app_spec(cwd, "appfeat-b")
+    result, data = self._next_json()
+    self.assertEqual(data["verdict"], "OK")
+    self.assertEqual(result.returncode, 0)
+    self.assertEqual(data["next_action"]["kind"], "stage")
+    self.assertEqual(data["next_action"]["feature"], "appfeat-a")
+    self.assertEqual(data["next_action"]["phase"], "requirements")
+    self.assertEqual(data["next_action"]["stage"], "drafting")
+    self.assertEqual(
+      data["current_state"]["feature_order"], ["appfeat-a", "appfeat-b"],
+    )
+
+  def test_reviewcompass_dir_takes_priority_over_stages(self):
+    """.reviewcompass/ の定義が stages/ より優先される"""
+    cwd = Path(self.tmpdir)
+    _write_feature_dependency(
+      cwd,
+      ".reviewcompass/feature-dependency.yaml",
+      feature_order=["appfeat-a"],
+    )
+    _write_feature_dependency(
+      cwd,
+      "stages/feature-dependency.yaml",
+      feature_order=["other-feat"],
+    )
+    _write_app_spec(cwd, "appfeat-a")
+    result, data = self._next_json()
+    self.assertEqual(data["next_action"]["feature"], "appfeat-a")
+    self.assertEqual(data["current_state"]["feature_order"], ["appfeat-a"])
+
+  def test_stages_fallback_is_used_without_reviewcompass_file(self):
+    """.reviewcompass/ になければ stages/feature-dependency.yaml を使う（開発リポジトリ互換）"""
+    cwd = Path(self.tmpdir)
+    _write_feature_dependency(
+      cwd,
+      "stages/feature-dependency.yaml",
+      feature_order=["appfeat-a"],
+    )
+    _write_app_spec(cwd, "appfeat-a")
+    result, data = self._next_json()
+    self.assertEqual(data["next_action"]["feature"], "appfeat-a")
+
+  def test_root_fallback_is_used_without_stages_file(self):
+    """stages/ にもなければ直下の feature-dependency.yaml を使う"""
+    cwd = Path(self.tmpdir)
+    _write_feature_dependency(
+      cwd,
+      "feature-dependency.yaml",
+      feature_order=["appfeat-a"],
+    )
+    _write_app_spec(cwd, "appfeat-a")
+    result, data = self._next_json()
+    self.assertEqual(data["next_action"]["feature"], "appfeat-a")
+
+  def test_missing_file_returns_bootstrap_guidance(self):
+    """feature-dependency.yaml がない場合は立ち上げ案内を返す（エラーにしない）"""
+    result, data = self._next_json()
+    self.assertEqual(data["verdict"], "OK")
+    self.assertEqual(result.returncode, 0)
+    self.assertEqual(data["next_action"]["kind"], "feature_definition_required")
+    reason = data["next_action"]["reason"]
+    self.assertIn("feature-dependency.yaml が見つかりません", reason)
+    self.assertIn("intent", reason)
+    self.assertIn("feature-partitioning", reason)
+    self.assertIn(".reviewcompass/feature-dependency.yaml", reason)
+
+  def test_missing_key_returns_bootstrap_guidance_with_distinct_reason(self):
+    """ファイルはあるが feature_order キーがない場合は、理由を区別して案内する"""
+    cwd = Path(self.tmpdir)
+    _write_feature_dependency(
+      cwd,
+      "stages/feature-dependency.yaml",
+      features={"appfeat-b": {"depends_on": {"appfeat-a": "hard"}}},
+    )
+    result, data = self._next_json()
+    self.assertEqual(data["verdict"], "OK")
+    self.assertEqual(result.returncode, 0)
+    self.assertEqual(data["next_action"]["kind"], "feature_definition_required")
+    reason = data["next_action"]["reason"]
+    self.assertIn("feature_order", reason)
+    self.assertIn("定義されていません", reason)
+    self.assertNotIn("見つかりません", reason)
+
+  def test_order_contradicting_dependency_is_deviation(self):
+    """依存される機能が後ろに並ぶ feature_order は逸脱として理由つきで指摘する"""
+    cwd = Path(self.tmpdir)
+    _write_feature_dependency(
+      cwd,
+      ".reviewcompass/feature-dependency.yaml",
+      feature_order=["appfeat-b", "appfeat-a"],
+      features={"appfeat-b": {"depends_on": {"appfeat-a": "hard"}}},
+    )
+    _write_app_spec(cwd, "appfeat-a")
+    _write_app_spec(cwd, "appfeat-b")
+    result, data = self._next_json()
+    self.assertEqual(data["verdict"], "DEVIATION")
+    self.assertEqual(result.returncode, 2)
+    self.assertEqual(data["next_action"]["kind"], "unknown")
+    reasons = " ".join(data["reasons"])
+    self.assertIn("feature_order が depends_on と矛盾", reasons)
+    self.assertIn("appfeat-a", reasons)
+    self.assertIn("appfeat-b", reasons)
+
+  def test_cyclic_dependency_is_deviation(self):
+    """depends_on の循環依存は逸脱として検出する"""
+    cwd = Path(self.tmpdir)
+    _write_feature_dependency(
+      cwd,
+      ".reviewcompass/feature-dependency.yaml",
+      feature_order=["appfeat-a", "appfeat-b"],
+      features={
+        "appfeat-a": {"depends_on": {"appfeat-b": "hard"}},
+        "appfeat-b": {"depends_on": {"appfeat-a": "hard"}},
+      },
+    )
+    _write_app_spec(cwd, "appfeat-a")
+    _write_app_spec(cwd, "appfeat-b")
+    result, data = self._next_json()
+    self.assertEqual(data["verdict"], "DEVIATION")
+    self.assertEqual(result.returncode, 2)
+    reasons = " ".join(data["reasons"])
+    self.assertIn("循環", reasons)
+
+  def test_dev_repo_stages_file_defines_seven_features(self):
+    """開発リポジトリの stages/feature-dependency.yaml が 7 機能の feature_order を持つ"""
+    data = yaml.safe_load(
+      (REPO_ROOT / "stages" / "feature-dependency.yaml").read_text(encoding="utf-8"),
+    )
+    self.assertEqual(data.get("feature_order"), FEATURE_ORDER)
+
+  def test_completed_state_is_preserved_with_file_based_order(self):
+    """ファイル由来の feature_order でも全機能完了の判定は従来どおり completed"""
+    cwd = Path(self.tmpdir)
+    complete = {
+      "drafting": True,
+      "triad-review": True,
+      "review-wave": True,
+      "alignment": True,
+      "approval": True,
+    }
+    _write_specs_for_next(cwd, {feature: dict(complete) for feature in FEATURE_ORDER})
+    _write_feature_dependency(
+      cwd,
+      "stages/feature-dependency.yaml",
+      feature_order=list(FEATURE_ORDER),
+    )
+    result, data = self._next_json()
+    self.assertEqual(data["verdict"], "OK")
+    self.assertEqual(data["next_action"]["kind"], "completed")
 
 
 if __name__ == "__main__":

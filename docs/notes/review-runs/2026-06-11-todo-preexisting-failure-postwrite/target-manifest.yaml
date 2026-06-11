@@ -1,0 +1,4 @@
+run_id: 2026-06-11-todo-preexisting-failure-postwrite
+target_files:
+- path: TODO_NEXT_SESSION.md
+  sha256: a0f71da205c93b0ad8f10f52744aab41436593102ae7a0fb0380076f77b5b2d8

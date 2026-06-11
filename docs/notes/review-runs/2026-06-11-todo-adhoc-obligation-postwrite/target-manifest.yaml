@@ -1,0 +1,4 @@
+run_id: 2026-06-11-todo-adhoc-obligation-postwrite
+target_files:
+- path: TODO_NEXT_SESSION.md
+  sha256: 88e172b03995034cdb21afe99d76a9b013eeba1d1d531886edcfe4b970f4aca9

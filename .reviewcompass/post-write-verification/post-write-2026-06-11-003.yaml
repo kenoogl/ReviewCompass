@@ -1,0 +1,104 @@
+status: completed
+target_files:
+- TODO_NEXT_SESSION.md
+- docs/notes/review-runs/2026-06-11-todo-adhoc-obligation-postwrite/model-result-summary.yaml
+- docs/notes/review-runs/2026-06-11-todo-adhoc-obligation-postwrite/parsed/gemini-3.5-flash.round-1.yaml
+- docs/notes/review-runs/2026-06-11-todo-adhoc-obligation-postwrite/raw/gemini-3.5-flash.round-1.txt
+- docs/notes/review-runs/2026-06-11-todo-adhoc-obligation-postwrite/review_summary.md
+- docs/notes/review-runs/2026-06-11-todo-adhoc-obligation-postwrite/rounds.yaml
+- docs/notes/review-runs/2026-06-11-todo-adhoc-obligation-postwrite/target-manifest.yaml
+- docs/notes/review-runs/2026-06-11-todo-adhoc-obligation-postwrite/triage.yaml
+- docs/notes/review-runs/2026-06-11-todo-preexisting-failure-postwrite-r2/model-result-summary.yaml
+- docs/notes/review-runs/2026-06-11-todo-preexisting-failure-postwrite-r2/parsed/gemini-3.5-flash.round-1.yaml
+- docs/notes/review-runs/2026-06-11-todo-preexisting-failure-postwrite-r2/raw/gemini-3.5-flash.round-1.txt
+- docs/notes/review-runs/2026-06-11-todo-preexisting-failure-postwrite-r2/review_summary.md
+- docs/notes/review-runs/2026-06-11-todo-preexisting-failure-postwrite-r2/rounds.yaml
+- docs/notes/review-runs/2026-06-11-todo-preexisting-failure-postwrite-r2/target-manifest.yaml
+- docs/notes/review-runs/2026-06-11-todo-preexisting-failure-postwrite-r2/triage.yaml
+- docs/notes/review-runs/2026-06-11-todo-preexisting-failure-postwrite/model-result-summary.yaml
+- docs/notes/review-runs/2026-06-11-todo-preexisting-failure-postwrite/parsed/gemini-3.5-flash.round-1.yaml
+- docs/notes/review-runs/2026-06-11-todo-preexisting-failure-postwrite/raw/gemini-3.5-flash.round-1.txt
+- docs/notes/review-runs/2026-06-11-todo-preexisting-failure-postwrite/review_summary.md
+- docs/notes/review-runs/2026-06-11-todo-preexisting-failure-postwrite/rounds.yaml
+- docs/notes/review-runs/2026-06-11-todo-preexisting-failure-postwrite/target-manifest.yaml
+- docs/notes/review-runs/2026-06-11-todo-preexisting-failure-postwrite/triage.yaml
+target_sha256:
+  TODO_NEXT_SESSION.md: 24dacc1beac0d74dc1ac5a459fbf187c1299824607923946dd7c7914756c0c1d
+  docs/notes/review-runs/2026-06-11-todo-adhoc-obligation-postwrite/model-result-summary.yaml: e1b6c371a152e8acec662fc82d9cb4cd27e1c0fb3f94e03349fbc63a144b0dc5
+  docs/notes/review-runs/2026-06-11-todo-adhoc-obligation-postwrite/parsed/gemini-3.5-flash.round-1.yaml: 046220fc4daecb8ff8dd49fb6c3a4ed9c46dc474e38ace5160bb41d2f6e253af
+  docs/notes/review-runs/2026-06-11-todo-adhoc-obligation-postwrite/raw/gemini-3.5-flash.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+  docs/notes/review-runs/2026-06-11-todo-adhoc-obligation-postwrite/review_summary.md: aa12c82cd31bf0fe880b31fc482ba2852407134728029cebe19fc072ca04e216
+  docs/notes/review-runs/2026-06-11-todo-adhoc-obligation-postwrite/rounds.yaml: eee38502048853ac1c7f3b0dad033f5652f226973491c8badb4d806fedbb8773
+  docs/notes/review-runs/2026-06-11-todo-adhoc-obligation-postwrite/target-manifest.yaml: 7f1c39d1ae4d5549beb8a74d7ab9100b7efd01033239e4f8590a1edda0337eed
+  docs/notes/review-runs/2026-06-11-todo-adhoc-obligation-postwrite/triage.yaml: baebe3212ac17542d297dc6ff34ad58e6eb9d02dd7ae7f8be5f6eb5f1eb5ec81
+  docs/notes/review-runs/2026-06-11-todo-preexisting-failure-postwrite-r2/model-result-summary.yaml: bf756aa814e244a8142995fcc72465d1edb751bfa96cb4015c4dc2f8c5d31caf
+  docs/notes/review-runs/2026-06-11-todo-preexisting-failure-postwrite-r2/parsed/gemini-3.5-flash.round-1.yaml: 0d5443fbc713faf25dc569af1f19515c91a18f2bd61525906aaad043022159cb
+  docs/notes/review-runs/2026-06-11-todo-preexisting-failure-postwrite-r2/raw/gemini-3.5-flash.round-1.txt: 19114973e4b1a5d2e012c4e359474ca7d4d90df6c50d9d4a1eb184f0fc5d0184
+  docs/notes/review-runs/2026-06-11-todo-preexisting-failure-postwrite-r2/review_summary.md: af95d2e7d37d8642bbc9d55efadb8dbac3dda2b67bc9677f559570336177990f
+  docs/notes/review-runs/2026-06-11-todo-preexisting-failure-postwrite-r2/rounds.yaml: 7afbbafe32bc7efb3853d47e8110b000981f0ad9faa2e6d710a0620f2b7b934a
+  docs/notes/review-runs/2026-06-11-todo-preexisting-failure-postwrite-r2/target-manifest.yaml: de1333fc39ac58eb9c5fe580210db5c4a006ce6b2a95169383067f2476832abb
+  docs/notes/review-runs/2026-06-11-todo-preexisting-failure-postwrite-r2/triage.yaml: e58872262ca9ca2eeb32af5f97e43cdef3c0cee428fece3df457db09518c3515
+  docs/notes/review-runs/2026-06-11-todo-preexisting-failure-postwrite/model-result-summary.yaml: 61a84b2433c64a2998ff0cd56803d0b7cf0ceb2487c336ecc50977b7d7d76634
+  docs/notes/review-runs/2026-06-11-todo-preexisting-failure-postwrite/parsed/gemini-3.5-flash.round-1.yaml: 6fc25ebc59ae3822294da0592454e431df8861b5167d31b1ec4a1455d04f64ef
+  docs/notes/review-runs/2026-06-11-todo-preexisting-failure-postwrite/raw/gemini-3.5-flash.round-1.txt: 861b54433db158035bf661f0be9b44178275fa3715431de447a3c5d4015d27d5
+  docs/notes/review-runs/2026-06-11-todo-preexisting-failure-postwrite/review_summary.md: 884dffa0497ecab5b05bbc4ba1bdbb7f94779df0b4e0e096976497953f52ab18
+  docs/notes/review-runs/2026-06-11-todo-preexisting-failure-postwrite/rounds.yaml: e163415ce732a12e0ab957ab0e06d9ab2f03fa2a40e45b39775eab17b1d91de9
+  docs/notes/review-runs/2026-06-11-todo-preexisting-failure-postwrite/target-manifest.yaml: cab63d874a4c59c8e193ca4ac2eec1771236ee2c54f545437eafd79cbad9187f
+  docs/notes/review-runs/2026-06-11-todo-preexisting-failure-postwrite/triage.yaml: 87b0f237f96a2b4ceb13069edc7484ded175243b42ffe9ac6b0d7b64f49887de
+required_verifiers: &id001
+- gemini-3.5-flash
+completed_verifiers: *id001
+unresolved_substantive_findings: 0
+verifications:
+- verifier: gemini-3.5-flash
+  target_files:
+  - TODO_NEXT_SESSION.md
+  - docs/notes/review-runs/2026-06-11-todo-adhoc-obligation-postwrite/model-result-summary.yaml
+  - docs/notes/review-runs/2026-06-11-todo-adhoc-obligation-postwrite/parsed/gemini-3.5-flash.round-1.yaml
+  - docs/notes/review-runs/2026-06-11-todo-adhoc-obligation-postwrite/raw/gemini-3.5-flash.round-1.txt
+  - docs/notes/review-runs/2026-06-11-todo-adhoc-obligation-postwrite/review_summary.md
+  - docs/notes/review-runs/2026-06-11-todo-adhoc-obligation-postwrite/rounds.yaml
+  - docs/notes/review-runs/2026-06-11-todo-adhoc-obligation-postwrite/target-manifest.yaml
+  - docs/notes/review-runs/2026-06-11-todo-adhoc-obligation-postwrite/triage.yaml
+  - docs/notes/review-runs/2026-06-11-todo-preexisting-failure-postwrite-r2/model-result-summary.yaml
+  - docs/notes/review-runs/2026-06-11-todo-preexisting-failure-postwrite-r2/parsed/gemini-3.5-flash.round-1.yaml
+  - docs/notes/review-runs/2026-06-11-todo-preexisting-failure-postwrite-r2/raw/gemini-3.5-flash.round-1.txt
+  - docs/notes/review-runs/2026-06-11-todo-preexisting-failure-postwrite-r2/review_summary.md
+  - docs/notes/review-runs/2026-06-11-todo-preexisting-failure-postwrite-r2/rounds.yaml
+  - docs/notes/review-runs/2026-06-11-todo-preexisting-failure-postwrite-r2/target-manifest.yaml
+  - docs/notes/review-runs/2026-06-11-todo-preexisting-failure-postwrite-r2/triage.yaml
+  - docs/notes/review-runs/2026-06-11-todo-preexisting-failure-postwrite/model-result-summary.yaml
+  - docs/notes/review-runs/2026-06-11-todo-preexisting-failure-postwrite/parsed/gemini-3.5-flash.round-1.yaml
+  - docs/notes/review-runs/2026-06-11-todo-preexisting-failure-postwrite/raw/gemini-3.5-flash.round-1.txt
+  - docs/notes/review-runs/2026-06-11-todo-preexisting-failure-postwrite/review_summary.md
+  - docs/notes/review-runs/2026-06-11-todo-preexisting-failure-postwrite/rounds.yaml
+  - docs/notes/review-runs/2026-06-11-todo-preexisting-failure-postwrite/target-manifest.yaml
+  - docs/notes/review-runs/2026-06-11-todo-preexisting-failure-postwrite/triage.yaml
+  target_sha256:
+    TODO_NEXT_SESSION.md: 24dacc1beac0d74dc1ac5a459fbf187c1299824607923946dd7c7914756c0c1d
+    docs/notes/review-runs/2026-06-11-todo-adhoc-obligation-postwrite/model-result-summary.yaml: e1b6c371a152e8acec662fc82d9cb4cd27e1c0fb3f94e03349fbc63a144b0dc5
+    docs/notes/review-runs/2026-06-11-todo-adhoc-obligation-postwrite/parsed/gemini-3.5-flash.round-1.yaml: 046220fc4daecb8ff8dd49fb6c3a4ed9c46dc474e38ace5160bb41d2f6e253af
+    docs/notes/review-runs/2026-06-11-todo-adhoc-obligation-postwrite/raw/gemini-3.5-flash.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/2026-06-11-todo-adhoc-obligation-postwrite/review_summary.md: aa12c82cd31bf0fe880b31fc482ba2852407134728029cebe19fc072ca04e216
+    docs/notes/review-runs/2026-06-11-todo-adhoc-obligation-postwrite/rounds.yaml: eee38502048853ac1c7f3b0dad033f5652f226973491c8badb4d806fedbb8773
+    docs/notes/review-runs/2026-06-11-todo-adhoc-obligation-postwrite/target-manifest.yaml: 7f1c39d1ae4d5549beb8a74d7ab9100b7efd01033239e4f8590a1edda0337eed
+    docs/notes/review-runs/2026-06-11-todo-adhoc-obligation-postwrite/triage.yaml: baebe3212ac17542d297dc6ff34ad58e6eb9d02dd7ae7f8be5f6eb5f1eb5ec81
+    docs/notes/review-runs/2026-06-11-todo-preexisting-failure-postwrite-r2/model-result-summary.yaml: bf756aa814e244a8142995fcc72465d1edb751bfa96cb4015c4dc2f8c5d31caf
+    docs/notes/review-runs/2026-06-11-todo-preexisting-failure-postwrite-r2/parsed/gemini-3.5-flash.round-1.yaml: 0d5443fbc713faf25dc569af1f19515c91a18f2bd61525906aaad043022159cb
+    docs/notes/review-runs/2026-06-11-todo-preexisting-failure-postwrite-r2/raw/gemini-3.5-flash.round-1.txt: 19114973e4b1a5d2e012c4e359474ca7d4d90df6c50d9d4a1eb184f0fc5d0184
+    docs/notes/review-runs/2026-06-11-todo-preexisting-failure-postwrite-r2/review_summary.md: af95d2e7d37d8642bbc9d55efadb8dbac3dda2b67bc9677f559570336177990f
+    docs/notes/review-runs/2026-06-11-todo-preexisting-failure-postwrite-r2/rounds.yaml: 7afbbafe32bc7efb3853d47e8110b000981f0ad9faa2e6d710a0620f2b7b934a
+    docs/notes/review-runs/2026-06-11-todo-preexisting-failure-postwrite-r2/target-manifest.yaml: de1333fc39ac58eb9c5fe580210db5c4a006ce6b2a95169383067f2476832abb
+    docs/notes/review-runs/2026-06-11-todo-preexisting-failure-postwrite-r2/triage.yaml: e58872262ca9ca2eeb32af5f97e43cdef3c0cee428fece3df457db09518c3515
+    docs/notes/review-runs/2026-06-11-todo-preexisting-failure-postwrite/model-result-summary.yaml: 61a84b2433c64a2998ff0cd56803d0b7cf0ceb2487c336ecc50977b7d7d76634
+    docs/notes/review-runs/2026-06-11-todo-preexisting-failure-postwrite/parsed/gemini-3.5-flash.round-1.yaml: 6fc25ebc59ae3822294da0592454e431df8861b5167d31b1ec4a1455d04f64ef
+    docs/notes/review-runs/2026-06-11-todo-preexisting-failure-postwrite/raw/gemini-3.5-flash.round-1.txt: 861b54433db158035bf661f0be9b44178275fa3715431de447a3c5d4015d27d5
+    docs/notes/review-runs/2026-06-11-todo-preexisting-failure-postwrite/review_summary.md: 884dffa0497ecab5b05bbc4ba1bdbb7f94779df0b4e0e096976497953f52ab18
+    docs/notes/review-runs/2026-06-11-todo-preexisting-failure-postwrite/rounds.yaml: e163415ce732a12e0ab957ab0e06d9ab2f03fa2a40e45b39775eab17b1d91de9
+    docs/notes/review-runs/2026-06-11-todo-preexisting-failure-postwrite/target-manifest.yaml: cab63d874a4c59c8e193ca4ac2eec1771236ee2c54f545437eafd79cbad9187f
+    docs/notes/review-runs/2026-06-11-todo-preexisting-failure-postwrite/triage.yaml: 87b0f237f96a2b4ceb13069edc7484ded175243b42ffe9ac6b0d7b64f49887de
+review_run:
+  path: docs/notes/review-runs/2026-06-11-todo-preexisting-failure-postwrite-r2
+  summary_path: docs/notes/review-runs/2026-06-11-todo-preexisting-failure-postwrite-r2/model-result-summary.yaml
+notes: Generated template; verify target_files cover current post-write targets before
+  use.

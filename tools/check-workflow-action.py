@@ -83,7 +83,10 @@ PHASE_ORDER = [
 # 機能横断段（全機能で同じ値を持つフェーズ、計画書 §5.24.4）
 CROSS_FEATURE_PHASES = ("intent", "feature-partitioning")
 
-# ReviewCompass 現行 dogfooding 用の機能順（stages/feature-partitioning/2026-05-24-proposal.md と整合）
+# 既定の機能順（ReviewCompass 開発リポジトリの feature-partitioning 成果物と整合）。
+# next サブコマンドでは resolve_feature_order が feature-dependency.yaml の
+# feature_order キーから解決した一覧で上書きする（設計記録
+# docs/notes/2026-06-10-deployment-multi-llm-entry-design.md §3.5）。
 FEATURE_ORDER = [
   "foundation",
   "runtime",
@@ -93,6 +96,166 @@ FEATURE_ORDER = [
   "self-improvement",
   "conformance-evaluation",
 ]
+
+# feature-dependency.yaml の探索順（対象アプリは .reviewcompass/ に閉じる）
+FEATURE_DEPENDENCY_SEARCH_PATHS = (
+  ".reviewcompass/feature-dependency.yaml",
+  "stages/feature-dependency.yaml",
+  "feature-dependency.yaml",
+)
+
+
+def load_feature_dependency(cwd):
+  """feature-dependency.yaml を探索順に従って読む。(data, relative_path) を返す"""
+  for relative_path in FEATURE_DEPENDENCY_SEARCH_PATHS:
+    path = Path(cwd) / relative_path
+    if path.is_file():
+      try:
+        data = yaml.safe_load(path.read_text(encoding="utf-8"))
+      except (OSError, yaml.YAMLError):
+        data = None
+      return (data if isinstance(data, dict) else {}), relative_path
+  return None, None
+
+
+def _feature_dependency_map(features):
+  """features 定義から feature → 依存先リストの対応を作る"""
+  dependency_map = {}
+  if not isinstance(features, dict):
+    return dependency_map
+  for feature, value in features.items():
+    depends_on = value.get("depends_on") if isinstance(value, dict) else None
+    if isinstance(depends_on, dict):
+      dependency_map[feature] = [dep for dep in depends_on if isinstance(dep, str)]
+    elif isinstance(depends_on, list):
+      dependency_map[feature] = [dep for dep in depends_on if isinstance(dep, str)]
+  return dependency_map
+
+
+def validate_feature_order_consistency(feature_order, features):
+  """feature_order と depends_on の整合（依存先行・循環なし）を調べる"""
+  reasons = []
+  index_by_feature = {feature: i for i, feature in enumerate(feature_order)}
+  dependency_map = _feature_dependency_map(features)
+
+  for feature, deps in dependency_map.items():
+    if feature not in index_by_feature:
+      continue
+    for dep in deps:
+      if dep not in index_by_feature:
+        reasons.append(
+          f"feature_order が depends_on と矛盾しています: {feature} は {dep} に"
+          f"依存しますが、{dep} が feature_order にありません"
+        )
+      elif index_by_feature[dep] > index_by_feature[feature]:
+        reasons.append(
+          f"feature_order が depends_on と矛盾しています: {feature} は {dep} に"
+          f"依存しますが、{dep} が後に並んでいます"
+        )
+
+  state = {}
+
+  def _visit(node, stack):
+    state[node] = "visiting"
+    stack.append(node)
+    for dep in dependency_map.get(node, []):
+      if state.get(dep) == "visiting":
+        cycle = stack[stack.index(dep):] + [dep]
+        reasons.append("depends_on に循環依存があります: " + " → ".join(cycle))
+      elif state.get(dep) is None:
+        _visit(dep, stack)
+    stack.pop()
+    state[node] = "done"
+
+  for node in list(dependency_map):
+    if state.get(node) is None:
+      _visit(node, [])
+
+  return reasons
+
+
+def resolve_feature_order(cwd):
+  """feature 一覧を feature-dependency.yaml から解決する
+
+  戻り値 dict：feature_order（解決失敗時 None）、source_path、
+  guidance_reason（立ち上げ案内が必要な場合）、consistency_reasons（整合違反）
+  """
+  data, source_path = load_feature_dependency(cwd)
+  if data is None:
+    return {
+      "feature_order": None,
+      "source_path": None,
+      "guidance_reason": (
+        "feature-dependency.yaml が見つかりません。intent と feature-partitioning を"
+        "実施し、承認された分割結果（依存の根拠と順序の導出を含む）を "
+        ".reviewcompass/feature-dependency.yaml の feature_order に記録してください"
+      ),
+      "consistency_reasons": [],
+    }
+
+  feature_order = data.get("feature_order")
+  if (
+    not isinstance(feature_order, list)
+    or not feature_order
+    or not all(isinstance(feature, str) for feature in feature_order)
+  ):
+    return {
+      "feature_order": None,
+      "source_path": source_path,
+      "guidance_reason": (
+        f"{source_path} に feature_order が定義されていません。"
+        "feature-partitioning の承認結果（依存の根拠と順序の導出を含む）を "
+        "feature_order キーに記録してください"
+      ),
+      "consistency_reasons": [],
+    }
+
+  return {
+    "feature_order": feature_order,
+    "source_path": source_path,
+    "guidance_reason": None,
+    "consistency_reasons": validate_feature_order_consistency(
+      feature_order,
+      data.get("features"),
+    ),
+  }
+
+
+def feature_definition_next_state(feature_resolution):
+  """feature 一覧が解決できない場合の next 判定一式を返す（解決済みなら None）"""
+  if feature_resolution["guidance_reason"]:
+    next_action = {
+      "kind": "feature_definition_required",
+      "feature": None,
+      "phase": None,
+      "stage": None,
+      "reason": feature_resolution["guidance_reason"],
+    }
+    current_state = {
+      "feature_dependency_source": feature_resolution["source_path"],
+    }
+    return next_action, current_state, [], "OK", 0
+
+  if feature_resolution["consistency_reasons"]:
+    next_action = {
+      "kind": "unknown",
+      "feature": None,
+      "phase": None,
+      "stage": None,
+      "reason": "feature_order と depends_on の整合に問題があります",
+    }
+    current_state = {
+      "feature_dependency_source": feature_resolution["source_path"],
+    }
+    return (
+      next_action,
+      current_state,
+      list(feature_resolution["consistency_reasons"]),
+      "DEVIATION",
+      2,
+    )
+
+  return None
 
 POST_WRITE_VERIFICATION_DIR_PREFIXES = (
   "docs/plan/",
@@ -4421,7 +4584,11 @@ def format_next_human_output(verdict, exit_code, next_action, reasons, current_s
 
 def cmd_next(args):
   """next サブコマンドのエントリポイント"""
+  global FEATURE_ORDER
   cwd = Path.cwd()
+  feature_resolution = resolve_feature_order(cwd)
+  if feature_resolution["feature_order"] is not None:
+    FEATURE_ORDER = feature_resolution["feature_order"]
   in_progress_files = list_in_progress_files(cwd)
   maintenance_action = None
 
@@ -4449,34 +4616,39 @@ def cmd_next(args):
           reasons = []
           verdict, exit_code = "OK", 0
         else:
-          specs, missing = load_all_feature_specs(cwd)
-          if missing:
-            next_action = {
-              "kind": "unknown",
-              "feature": None,
-              "phase": None,
-              "stage": None,
-              "reason": "必要な spec.json が不足しています",
-            }
-            current_state = {"missing_features": missing, "manifest": manifest}
-            reasons = [f"{feature} の spec.json が見つかりません" for feature in missing]
-            verdict, exit_code = "DEVIATION", 2
+          feature_state = feature_definition_next_state(feature_resolution)
+          if feature_state:
+            next_action, current_state, reasons, verdict, exit_code = feature_state
+            current_state["post_write_manifest"] = manifest.get("_path")
           else:
-            resolved_action = resolve_next_action(specs)
-            if resolved_action.get("kind") == "completed":
-              resolved_action = resolve_upstream_recheck_action(cwd) or resolved_action
-            next_action = augment_cross_feature_next_action(
-              cwd,
-              specs,
-              resolved_action,
-            )
-            current_state = {
-              "feature_order": FEATURE_ORDER,
-              "workflow_state": summarize_workflow_state(specs),
-              "post_write_manifest": manifest.get("_path"),
-            }
-            reasons = []
-            verdict, exit_code = "OK", 0
+            specs, missing = load_all_feature_specs(cwd)
+            if missing:
+              next_action = {
+                "kind": "unknown",
+                "feature": None,
+                "phase": None,
+                "stage": None,
+                "reason": "必要な spec.json が不足しています",
+              }
+              current_state = {"missing_features": missing, "manifest": manifest}
+              reasons = [f"{feature} の spec.json が見つかりません" for feature in missing]
+              verdict, exit_code = "DEVIATION", 2
+            else:
+              resolved_action = resolve_next_action(specs)
+              if resolved_action.get("kind") == "completed":
+                resolved_action = resolve_upstream_recheck_action(cwd) or resolved_action
+              next_action = augment_cross_feature_next_action(
+                cwd,
+                specs,
+                resolved_action,
+              )
+              current_state = {
+                "feature_order": FEATURE_ORDER,
+                "workflow_state": summarize_workflow_state(specs),
+                "post_write_manifest": manifest.get("_path"),
+              }
+              reasons = []
+              verdict, exit_code = "OK", 0
       else:
         forbidden_files = list_forbidden_post_write_pending_changes(cwd, verification_targets)
         if forbidden_files:
@@ -4539,33 +4711,37 @@ def cmd_next(args):
         reasons = []
         verdict, exit_code = "OK", 0
       else:
-        specs, missing = load_all_feature_specs(cwd)
-        if missing:
-          next_action = {
-            "kind": "unknown",
-            "feature": None,
-            "phase": None,
-            "stage": None,
-            "reason": "必要な spec.json が不足しています",
-          }
-          current_state = {"missing_features": missing}
-          reasons = [f"{feature} の spec.json が見つかりません" for feature in missing]
-          verdict, exit_code = "DEVIATION", 2
+        feature_state = feature_definition_next_state(feature_resolution)
+        if feature_state:
+          next_action, current_state, reasons, verdict, exit_code = feature_state
         else:
-          resolved_action = resolve_next_action(specs)
-          if resolved_action.get("kind") == "completed":
-            resolved_action = resolve_upstream_recheck_action(cwd) or resolved_action
-          next_action = augment_cross_feature_next_action(
-            cwd,
-            specs,
-            resolved_action,
-          )
-          current_state = {
-            "feature_order": FEATURE_ORDER,
-            "workflow_state": summarize_workflow_state(specs),
-          }
-          reasons = []
-          verdict, exit_code = "OK", 0
+          specs, missing = load_all_feature_specs(cwd)
+          if missing:
+            next_action = {
+              "kind": "unknown",
+              "feature": None,
+              "phase": None,
+              "stage": None,
+              "reason": "必要な spec.json が不足しています",
+            }
+            current_state = {"missing_features": missing}
+            reasons = [f"{feature} の spec.json が見つかりません" for feature in missing]
+            verdict, exit_code = "DEVIATION", 2
+          else:
+            resolved_action = resolve_next_action(specs)
+            if resolved_action.get("kind") == "completed":
+              resolved_action = resolve_upstream_recheck_action(cwd) or resolved_action
+            next_action = augment_cross_feature_next_action(
+              cwd,
+              specs,
+              resolved_action,
+            )
+            current_state = {
+              "feature_order": FEATURE_ORDER,
+              "workflow_state": summarize_workflow_state(specs),
+            }
+            reasons = []
+            verdict, exit_code = "OK", 0
 
   next_action = attach_required_context(cwd, next_action)
   effective_prompt = next_action.get("effective_prompt")

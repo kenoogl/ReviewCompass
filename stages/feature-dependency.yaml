@@ -1,3 +1,14 @@
+# feature 一覧と開発順（feature-partitioning 成果物
+# stages/feature-partitioning/2026-05-24-proposal.md と整合。依存される機能を先に並べる）
+feature_order:
+  - foundation
+  - runtime
+  - evaluation
+  - analysis
+  - workflow-management
+  - self-improvement
+  - conformance-evaluation
+
 features:
   conformance-evaluation:
     depends_on:

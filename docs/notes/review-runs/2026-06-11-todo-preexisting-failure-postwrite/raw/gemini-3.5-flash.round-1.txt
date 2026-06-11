@@ -1,0 +1,5 @@
+findings:
+  - severity: WARN
+    target_location: "TODO_NEXT_SESSION.md"
+    description: "Chronological inconsistency between the document's Last Updated date and the recorded test failure discovery date."
+    rationale: "The document header states '最終更新：2026-06-10', but Section 4, item 0 references a test failure discovered on '2026-06-11'. This inconsistency in dates compromises the reliability of the session tracking and should be corrected to maintain an accurate audit trail."

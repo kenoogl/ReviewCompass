@@ -1,0 +1,26 @@
+run_id: 2026-06-11-todo-preexisting-failure-postwrite-r2
+triage_status: decided
+generated_at: '2026-06-11T12:25:37.791081+00:00'
+decision_actor: null
+decision_actor_type: human
+items:
+- finding_id: 2026-06-11-todo-preexisting-failure-postwrite-r2-gemini-3.5-flash-primary-001
+  run_id: 2026-06-11-todo-preexisting-failure-postwrite-r2
+  source_model: gemini-3.5-flash
+  source_round: round-1
+  source_raw_path: raw/gemini-3.5-flash.round-1.txt
+  source_parsed_path: parsed/gemini-3.5-flash.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: TODO_NEXT_SESSION.md (Section 4, Item 0)
+  plain_language_summary: A pre-existing test failure in `tests/self-improvement/test_t001_layout.py`
+    is recorded, which conflicts with the 'completed' workflow state.
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-11T12:26:07.645245+00:00'
+  decision_reason: 利用者承認済みの案 1（既存失敗は別件として候補タスク 0 に記録し、修正方針は後で決める）どおりの記述であり、本文は合意を正確に反映している。pilot
+    前に解消すべきという指摘は候補タスク 0 の扱いで対応する。
+  applied_files: []
+  superseded_by: null
