@@ -1,0 +1,120 @@
+run_id: 2026-06-10-deployment-multi-llm-entry-design-postwrite
+triage_status: decided
+generated_at: '2026-06-11T10:44:25.072700+00:00'
+decision_actor: null
+decision_actor_type: human
+items:
+- finding_id: 2026-06-10-deployment-multi-llm-entry-design-postwrite-claude-sonnet-4-6-primary-001
+  run_id: 2026-06-10-deployment-multi-llm-entry-design-postwrite
+  source_model: claude-sonnet-4-6
+  source_round: round-2
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: '## 3.5 ツール一般化（案 A-1、補強込み）'
+  plain_language_summary: feature-dependency.yaml の `feature_order` キー新設と既存 `depends_on`
+    との整合検査の詳細仕様（キー名、型、必須／任意の区別）がこの設計記録単体では確認できない。
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-11T10:44:47.556510+00:00'
+  decision_reason: 利用者承認（クラスタA）。§3.5 に『詳細仕様は workflow-management 再オープンの成果物で確定し本記録はその入力』と参照を追記して反映。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-10-deployment-multi-llm-entry-design-postwrite-claude-sonnet-4-6-primary-002
+  run_id: 2026-06-10-deployment-multi-llm-entry-design-postwrite
+  source_model: claude-sonnet-4-6
+  source_round: round-2
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: '## 3.3 論点 3：hook の配布方針'
+  plain_language_summary: テンプレートのプレースホルダ名（「検査ツールの場所」「Python 実行系の場所」）の具体的な識別子（例：`{{TOOL_PATH}}`、`{{PYTHON_BIN}}`）が記録されていない。
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-11T10:44:47.606970+00:00'
+  decision_reason: 利用者承認（クラスタB）。プレースホルダ識別子 {{REVIEWCOMPASS_DIR}}・{{REVIEWCOMPASS_PYTHON}}
+    を §3.3 に明記して反映。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-10-deployment-multi-llm-entry-design-postwrite-claude-sonnet-4-6-primary-003
+  run_id: 2026-06-10-deployment-multi-llm-entry-design-postwrite
+  source_model: claude-sonnet-4-6
+  source_round: round-2
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: '## 4. 実装計画 ステップ 5'
+  plain_language_summary: 模擬対象アプリでの smoke 実験の成功基準（`next` が `DEVIATION` を返さず、対象アプリの
+    feature 構成で正常動作すること）は文中に示されているが、実験スクリプトや手順の保存場所が指定されていない。
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-11T10:44:47.652773+00:00'
+  decision_reason: 利用者承認（クラスタC）。§4-5 に実験を再オープンの TDD テストとして tests/ に固定化する旨を追記して反映。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-10-deployment-multi-llm-entry-design-postwrite-gpt-5.4-adversarial-001
+  run_id: 2026-06-10-deployment-multi-llm-entry-design-postwrite
+  source_model: gpt-5.4
+  source_round: round-2
+  source_raw_path: raw/gpt-5.4.round-2.txt
+  source_parsed_path: parsed/gpt-5.4.round-2.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: '## 3.5 ツール一般化（案 A-1、補強込み）'
+  plain_language_summary: feature_order の読み込み元を対象アプリ側へ一般化する決定はあるが、配布側で新規配布すると明記した
+    feature-dependency.yaml テンプレートの配置先・deploy-manifest 収載先・初期状態の生成契約が本文中で一意に定まっていない。
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-11T10:44:47.697853+00:00'
+  decision_reason: 利用者承認（クラスタA・案A-甲）。探索順の先頭に .reviewcompass/feature-dependency.yaml
+    を新設、テンプレートは templates/specs/ 配置、manifest 追加、という配置契約を §3.5 に明記して反映。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-10-deployment-multi-llm-entry-design-postwrite-gpt-5.4-adversarial-002
+  run_id: 2026-06-10-deployment-multi-llm-entry-design-postwrite
+  source_model: gpt-5.4
+  source_round: round-2
+  source_raw_path: raw/gpt-5.4.round-2.txt
+  source_parsed_path: parsed/gpt-5.4.round-2.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: '## 3.3 論点 3：hook の配布方針'
+  plain_language_summary: hook テンプレートのプレースホルダとして『検査ツールの場所』『Python 実行系の場所』を置換する方針はあるが、パス解決の基準点と許容値が定義されていない。
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-11T10:44:47.743249+00:00'
+  decision_reason: 利用者承認（クラスタB）。絶対パス必須の記入規則と、未置換トークン・ツール存在の起動時自己診断（不備時は明確な理由で fail-closed
+    拒否）を §3.3 に明記して反映。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-10-deployment-multi-llm-entry-design-postwrite-gpt-5.4-adversarial-003
+  run_id: 2026-06-10-deployment-multi-llm-entry-design-postwrite
+  source_model: gpt-5.4
+  source_round: round-2
+  source_raw_path: raw/gpt-5.4.round-2.txt
+  source_parsed_path: parsed/gpt-5.4.round-2.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: '## 4. 実装計画'
+  plain_language_summary: post-write 検証対象であるにもかかわらず、本記録自身に対する検証観点や完了条件が実装計画 1 に具体化されていない。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-11T10:44:47.789143+00:00'
+  decision_reason: 利用者承認（クラスタD）。post-write 検証の検査観点 4 項目が確認の枠組みとして機能しており、記録側への重複追加はしない。
+  applied_files: []
+  superseded_by: null

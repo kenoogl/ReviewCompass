@@ -1,0 +1,138 @@
+run_id: 2026-06-10-deployment-multi-llm-entry-design-postwrite-r2
+triage_status: decided
+generated_at: '2026-06-11T10:45:44.648691+00:00'
+decision_actor: null
+decision_actor_type: human
+items:
+- finding_id: 2026-06-10-deployment-multi-llm-entry-design-postwrite-r2-claude-sonnet-4-6-primary-001
+  run_id: 2026-06-10-deployment-multi-llm-entry-design-postwrite-r2
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: '## 3.5 ツール一般化（案 A-1、補強込み）'
+  plain_language_summary: feature-dependency.yaml の詳細仕様（キー名・型・必須／任意の区別）は workflow-management
+    再オープンの成果物で確定するとされており、本記録はその入力と位置付けられている。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-11T10:50:28.566321+00:00'
+  decision_reason: 利用者承認。feature_order の記入例を含む詳細仕様は workflow-management 再オープンの成果物で確定すると本文に明記済みであり、本所見は再オープンへの入力として記録に留める。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-10-deployment-multi-llm-entry-design-postwrite-r2-claude-sonnet-4-6-primary-002
+  run_id: 2026-06-10-deployment-multi-llm-entry-design-postwrite-r2
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: '## 3.3 論点 3：hook の配布方針'
+  plain_language_summary: プレースホルダ置換の検証が自己診断（実行時チェック）のみに依存しており、初期設定完了時点での静的チェック手順が記載されていない。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-11T10:50:28.621898+00:00'
+  decision_reason: 利用者承認。置換後の静的チェック手順は実装計画 4 の INITIAL_SETUP_LLM_GUIDE.md 更新で具体化する。ガイド実装時に反映する。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-10-deployment-multi-llm-entry-design-postwrite-r2-claude-sonnet-4-6-primary-003
+  run_id: 2026-06-10-deployment-multi-llm-entry-design-postwrite-r2
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: '## 3.1 論点 1：入口正本の汎用版'
+  plain_language_summary: AGENT_ENTRY.md テンプレート内の「配布物の場所の記入欄」に対して、記入欄の形式・記入例・バリデーション方法が本記録に記載されていない。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-11T10:50:28.673325+00:00'
+  decision_reason: 利用者承認。記入欄の形式は hook プレースホルダと同じ絶対パス必須の制約をテンプレート実装時に適用する。実装で吸収する。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-10-deployment-multi-llm-entry-design-postwrite-r2-gpt-5.4-adversarial-001
+  run_id: 2026-06-10-deployment-multi-llm-entry-design-postwrite-r2
+  source_model: gpt-5.4
+  source_round: round-1
+  source_raw_path: raw/gpt-5.4.round-1.txt
+  source_parsed_path: parsed/gpt-5.4.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: '## 3.3 論点 3：hook の配布方針'
+  plain_language_summary: 同一 hook を `.claude/hooks/` と `.codex/hooks/` に複製するとしていますが、両者で想定される
+    hook の起動契約や入出力仕様の差異を吸収する設計が明示されていません。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-11T10:50:28.724626+00:00'
+  decision_reason: 利用者承認。開発リポジトリで .claude/hooks/ と .codex/hooks/ に同一スクリプトを複製運用してきた実績があり（同一性は
+    tests/hooks で機械検査済み）、両環境の起動契約互換は検証済みの既存事実。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-10-deployment-multi-llm-entry-design-postwrite-r2-gpt-5.4-adversarial-002
+  run_id: 2026-06-10-deployment-multi-llm-entry-design-postwrite-r2
+  source_model: gpt-5.4
+  source_round: round-1
+  source_raw_path: raw/gpt-5.4.round-1.txt
+  source_parsed_path: parsed/gpt-5.4.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: '## 3.4 論点 4：既存入口との合流'
+  plain_language_summary: 既存の `CLAUDE.md` / `AGENTS.md` へ末尾 1 行追記する方針は示されていますが、既存ファイル内の強い指示や矛盾する運用規約がある場合の優先順位・衝突解決方針が記録されていません。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-11T10:50:28.775366+00:00'
+  decision_reason: 利用者承認。衝突時の解釈を本記録の正本判断として残す：既存入口文書の規律と AGENT_ENTRY の規律が衝突した場合、自動的な優先順位は定めない。LLM
+    は衝突を検出したら作業を進めず利用者へ提示し、利用者判断で AGENT_ENTRY 側の該当節を調整する（§3.1 の『合わない節は利用者判断で調整可』の含意）。本文修正は行わずこの理由欄を解釈の記録とする。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-10-deployment-multi-llm-entry-design-postwrite-r2-gpt-5.4-adversarial-003
+  run_id: 2026-06-10-deployment-multi-llm-entry-design-postwrite-r2
+  source_model: gpt-5.4
+  source_round: round-1
+  source_raw_path: raw/gpt-5.4.round-1.txt
+  source_parsed_path: parsed/gpt-5.4.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: '## 3.5 ツール一般化（案 A-1、補強込み）'
+  plain_language_summary: '`feature_order` の探索順・整合検査・未定義時挙動は記載されていますが、`feature-dependency.yaml`
+    自体が存在しない場合と、存在するが `feature_order` だけ欠ける場合の扱いの差が明文化されていません。'
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-11T10:50:28.826335+00:00'
+  decision_reason: 利用者承認。ファイル不在と feature_order キー欠落の診断差は、再オープンの TDD で期待値として確定する実装詳細。再オープンへの入力として記録に留める。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-10-deployment-multi-llm-entry-design-postwrite-r2-gpt-5.4-adversarial-004
+  run_id: 2026-06-10-deployment-multi-llm-entry-design-postwrite-r2
+  source_model: gpt-5.4
+  source_round: round-1
+  source_raw_path: raw/gpt-5.4.round-1.txt
+  source_parsed_path: parsed/gpt-5.4.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: '## 4. 実装計画'
+  plain_language_summary: 配布前 smoke と模擬対象アプリ実験は計画されていますが、入口合流（`CLAUDE.md` / `AGENTS.md`
+    追記）と hook テンプレート置換後の end-to-end 検証項目が実装計画上で独立して列挙されていません。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-11T10:50:28.877694+00:00'
+  decision_reason: 利用者承認。入口合流と hook 置換の end-to-end 検証項目は、実装計画 5 の確認範囲としてガイド・テスト実装時に反映する。
+  applied_files: []
+  superseded_by: null

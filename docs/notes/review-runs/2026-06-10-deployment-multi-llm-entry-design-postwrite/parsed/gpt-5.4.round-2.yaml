@@ -1,0 +1,24 @@
+role: adversarial
+provider: openai-api
+model: gpt-5.4
+attempts: 1
+duration_seconds: 11.942
+findings:
+- severity: WARN
+  target_location: '## 3.5 ツール一般化（案 A-1、補強込み）'
+  description: feature_order の読み込み元を対象アプリ側へ一般化する決定はあるが、配布側で新規配布すると明記した feature-dependency.yaml
+    テンプレートの配置先・deploy-manifest 収載先・初期状態の生成契約が本文中で一意に定まっていない。
+  rationale: 本記録は配布側の入口設計記録であり、マルチ LLM 入口だけでなく workflow-management が対象アプリで成立するための同梱設計も含んでいる。読み込み先は
+    "stages/feature-dependency.yaml（フォールバック：直下）" と定義されている一方、実装計画では "feature-dependency.yaml
+    テンプレート" とだけあり、どこへ配布し初期配置するかが不明確なため、実装者ごとに stages 配下配置・直下配置・未配置案に分岐しうる。結果として初期設定ガイド、deploy-manifest、smoke
+    手順の整合が崩れる恐れがある。
+- severity: WARN
+  target_location: '## 3.3 論点 3：hook の配布方針'
+  description: hook テンプレートのプレースホルダとして『検査ツールの場所』『Python 実行系の場所』を置換する方針はあるが、パス解決の基準点と許容値が定義されていない。
+  rationale: 調査で相対パス起因の誤拒否が問題化しており、ここは再発防止の設計上重要点である。にもかかわらず、対象アプリ root 基準か hook ファイル基準か、絶対パス必須か、シンボリックリンクや
+    venv Python を許容するかが未記載で、初期設定 LLM が環境ごとに異なる置換を行う余地が大きい。配布先の Claude/Codex 両方で同一内容複製を意図するなら、基準点と記入規則を明文化した方が運用事故を防げる。
+- severity: INFO
+  target_location: '## 4. 実装計画'
+  description: post-write 検証対象であるにもかかわらず、本記録自身に対する検証観点や完了条件が実装計画 1 に具体化されていない。
+  rationale: 本フェーズの品質担保上、少なくとも設計記録として確認すべき項目（配布物追加物の列挙、既存ガイド更新点、再オープン対象、smoke で確認する期待結果など）があると、後続の実装前確認が容易になる。現状でも大枠は読めるが、verification
+    記録としては確認チェックリストがなく、レビュー時の観点漏れを招きやすい。

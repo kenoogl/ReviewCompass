@@ -1,0 +1,28 @@
+role: adversarial
+provider: openai-api
+model: gpt-5.4
+attempts: 1
+duration_seconds: 11.915
+findings:
+- severity: WARN
+  target_location: '## 3.3 論点 3：hook の配布方針'
+  description: 同一 hook を `.claude/hooks/` と `.codex/hooks/` に複製するとしていますが、両者で想定される
+    hook の起動契約や入出力仕様の差異を吸収する設計が明示されていません。
+  rationale: 『同一内容で複製』という方針だけでは、各 LLM ツールの hook 実行タイミング、環境変数、標準入出力、終了コード解釈が本当に同一前提で扱えるか不明です。ここが未定義だと、片方では正常でも他方では常時失敗・常時スキップになる恐れがあり、配布設計記録としては互換条件または差分吸収方針を明記した方が安全です。
+- severity: WARN
+  target_location: '## 3.4 論点 4：既存入口との合流'
+  description: 既存の `CLAUDE.md` / `AGENTS.md` へ末尾 1 行追記する方針は示されていますが、既存ファイル内の強い指示や矛盾する運用規約がある場合の優先順位・衝突解決方針が記録されていません。
+  rationale: 対象アプリ側には既存の入口文書が存在し得るため、単純追記だけでは『どちらを優先するか』が曖昧なまま残ります。入口文書同士の衝突は運用時の解釈ぶれを生みやすく、特に不可逆操作承認や
+    repo 外記録禁止などの強い規律は競合時の扱いを設計段階で定めておく必要があります。
+- severity: INFO
+  target_location: '## 3.5 ツール一般化（案 A-1、補強込み）'
+  description: '`feature_order` の探索順・整合検査・未定義時挙動は記載されていますが、`feature-dependency.yaml`
+    自体が存在しない場合と、存在するが `feature_order` だけ欠ける場合の扱いの差が明文化されていません。'
+  rationale: 実装時に両ケースを同一扱いにするのか、診断文言や案内内容を分けるのかで UX とテスト期待値が変わります。記録の内容だけでも実装は可能ですが、post-write
+    検証の観点では診断契約をより明確にしておくと再オープン先での解釈差を減らせます。
+- severity: INFO
+  target_location: '## 4. 実装計画'
+  description: 配布前 smoke と模擬対象アプリ実験は計画されていますが、入口合流（`CLAUDE.md` / `AGENTS.md` 追記）と
+    hook テンプレート置換後の end-to-end 検証項目が実装計画上で独立して列挙されていません。
+  rationale: 今回の設計変更の主要リスクはツール一般化だけでなく、配布後の入口接続と hook 導入にもあります。検証観点が計画に明示されていないと、実装後の確認が
+    feature-order 問題の解消に偏り、入口・hook の配布不整合を見落とす可能性があります。

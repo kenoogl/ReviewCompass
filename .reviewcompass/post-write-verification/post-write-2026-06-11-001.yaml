@@ -1,0 +1,220 @@
+status: completed
+target_files:
+- docs/notes/2026-06-10-deployment-multi-llm-entry-design.md
+- docs/notes/review-runs/2026-06-10-deployment-multi-llm-entry-design-postwrite-r2/model-result-summary.yaml
+- docs/notes/review-runs/2026-06-10-deployment-multi-llm-entry-design-postwrite-r2/parsed/claude-sonnet-4-6.round-1.yaml
+- docs/notes/review-runs/2026-06-10-deployment-multi-llm-entry-design-postwrite-r2/parsed/gemini-3.1-pro-preview.round-1.yaml
+- docs/notes/review-runs/2026-06-10-deployment-multi-llm-entry-design-postwrite-r2/parsed/gpt-5.4.round-1.yaml
+- docs/notes/review-runs/2026-06-10-deployment-multi-llm-entry-design-postwrite-r2/raw/claude-sonnet-4-6.round-1.txt
+- docs/notes/review-runs/2026-06-10-deployment-multi-llm-entry-design-postwrite-r2/raw/gemini-3.1-pro-preview.round-1.txt
+- docs/notes/review-runs/2026-06-10-deployment-multi-llm-entry-design-postwrite-r2/raw/gpt-5.4.round-1.txt
+- docs/notes/review-runs/2026-06-10-deployment-multi-llm-entry-design-postwrite-r2/review_summary.md
+- docs/notes/review-runs/2026-06-10-deployment-multi-llm-entry-design-postwrite-r2/rounds.yaml
+- docs/notes/review-runs/2026-06-10-deployment-multi-llm-entry-design-postwrite-r2/target-manifest.yaml
+- docs/notes/review-runs/2026-06-10-deployment-multi-llm-entry-design-postwrite-r2/triage.yaml
+- docs/notes/review-runs/2026-06-10-deployment-multi-llm-entry-design-postwrite/model-result-summary.yaml
+- docs/notes/review-runs/2026-06-10-deployment-multi-llm-entry-design-postwrite/parsed/claude-sonnet-4-6.round-1.yaml
+- docs/notes/review-runs/2026-06-10-deployment-multi-llm-entry-design-postwrite/parsed/gemini-3.1-pro-preview.round-1.yaml
+- docs/notes/review-runs/2026-06-10-deployment-multi-llm-entry-design-postwrite/parsed/gpt-5.4.round-2.yaml
+- docs/notes/review-runs/2026-06-10-deployment-multi-llm-entry-design-postwrite/raw/claude-sonnet-4-6.round-1.txt
+- docs/notes/review-runs/2026-06-10-deployment-multi-llm-entry-design-postwrite/raw/gemini-3.1-pro-preview.round-1.txt
+- docs/notes/review-runs/2026-06-10-deployment-multi-llm-entry-design-postwrite/raw/gpt-5.4.round-1.txt
+- docs/notes/review-runs/2026-06-10-deployment-multi-llm-entry-design-postwrite/raw/gpt-5.4.round-2.txt
+- docs/notes/review-runs/2026-06-10-deployment-multi-llm-entry-design-postwrite/review_summary.md
+- docs/notes/review-runs/2026-06-10-deployment-multi-llm-entry-design-postwrite/rounds.yaml
+- docs/notes/review-runs/2026-06-10-deployment-multi-llm-entry-design-postwrite/target-manifest.yaml
+- docs/notes/review-runs/2026-06-10-deployment-multi-llm-entry-design-postwrite/triage.yaml
+target_sha256:
+  docs/notes/2026-06-10-deployment-multi-llm-entry-design.md: 906c942a6cd1ed206d77790da98a049d1debed7565b9748be9cd8ee69b93da63
+  docs/notes/review-runs/2026-06-10-deployment-multi-llm-entry-design-postwrite-r2/model-result-summary.yaml: b893aa940e3073aaa5555d9ddd45cae324ac53bf89a8b03a1bc170dadd876a42
+  docs/notes/review-runs/2026-06-10-deployment-multi-llm-entry-design-postwrite-r2/parsed/claude-sonnet-4-6.round-1.yaml: 87aafe6eb27fe0ddd45d466ad7fce9bbf094cf47487284c7355d981205f4cf07
+  ? docs/notes/review-runs/2026-06-10-deployment-multi-llm-entry-design-postwrite-r2/parsed/gemini-3.1-pro-preview.round-1.yaml
+  : ad8f5db660a1993f700fbcc9cd80b3ca70e7ff2b63cf345c66e51a14a453631e
+  docs/notes/review-runs/2026-06-10-deployment-multi-llm-entry-design-postwrite-r2/parsed/gpt-5.4.round-1.yaml: 45d12232622384648adb9091ef34dbc66348df1f00cb41bcf6aba10c01e56b16
+  docs/notes/review-runs/2026-06-10-deployment-multi-llm-entry-design-postwrite-r2/raw/claude-sonnet-4-6.round-1.txt: 7b17d2174b095d701a7e3a36dcbc4b862818599f4453673668612ceea8a62dfa
+  docs/notes/review-runs/2026-06-10-deployment-multi-llm-entry-design-postwrite-r2/raw/gemini-3.1-pro-preview.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+  docs/notes/review-runs/2026-06-10-deployment-multi-llm-entry-design-postwrite-r2/raw/gpt-5.4.round-1.txt: 603dec19d1a84fd3dfb60c4110b8ee6018fc8aab98cfa98360afae22bba14e89
+  docs/notes/review-runs/2026-06-10-deployment-multi-llm-entry-design-postwrite-r2/review_summary.md: cb92a68b74e1fc2075b450fd6c8c46fd472a2080ab598ec96c63cf612cddd97c
+  docs/notes/review-runs/2026-06-10-deployment-multi-llm-entry-design-postwrite-r2/rounds.yaml: 32a7b5ad147a71773c6abd70a33519bc07e5efa2145ba88755c3017bd927166f
+  docs/notes/review-runs/2026-06-10-deployment-multi-llm-entry-design-postwrite-r2/target-manifest.yaml: f445dbbcef34dc9b8383ca26a30cddee4883e83bb23e07eb4f229a483b37c1c5
+  docs/notes/review-runs/2026-06-10-deployment-multi-llm-entry-design-postwrite-r2/triage.yaml: a60c4e8abc7fca6243df4160756d532e75b0536d09f1615e2ebce66512b1fddb
+  docs/notes/review-runs/2026-06-10-deployment-multi-llm-entry-design-postwrite/model-result-summary.yaml: f3304f7c36d8a7e66714d83be0103ebe06f6a0e89b166e1d41e690a3aad01bce
+  docs/notes/review-runs/2026-06-10-deployment-multi-llm-entry-design-postwrite/parsed/claude-sonnet-4-6.round-1.yaml: a60e9a6182776607b0663b48985f5370f4390b0ce9594e8527d96f9005dbe8f5
+  docs/notes/review-runs/2026-06-10-deployment-multi-llm-entry-design-postwrite/parsed/gemini-3.1-pro-preview.round-1.yaml: 2c3a1fc39f2f774685bb269b70e6cce0a339845fded714abfa7ae06ec5496da4
+  docs/notes/review-runs/2026-06-10-deployment-multi-llm-entry-design-postwrite/parsed/gpt-5.4.round-2.yaml: 23da578e21407458b27b65b4e8390b4c3fd40c8b8361479f5633527238561b8a
+  docs/notes/review-runs/2026-06-10-deployment-multi-llm-entry-design-postwrite/raw/claude-sonnet-4-6.round-1.txt: f4c77a91cc6ca3e8d1910fde17703b9cc7cec0b3b2a1554e35caba437a1860f9
+  docs/notes/review-runs/2026-06-10-deployment-multi-llm-entry-design-postwrite/raw/gemini-3.1-pro-preview.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+  docs/notes/review-runs/2026-06-10-deployment-multi-llm-entry-design-postwrite/raw/gpt-5.4.round-1.txt: e770bfd0a979165b01264860c15bdc21d3e710e12de92b4acc104ed0939bec49
+  docs/notes/review-runs/2026-06-10-deployment-multi-llm-entry-design-postwrite/raw/gpt-5.4.round-2.txt: 0d93472932af3e5d37eb2a06c75091d56d63634fc1f6612b81e6d09a2637c176
+  docs/notes/review-runs/2026-06-10-deployment-multi-llm-entry-design-postwrite/review_summary.md: 6594c2c2080f9dec20c54d3652e1496c98945e444b07d500d087f3a5246981f5
+  docs/notes/review-runs/2026-06-10-deployment-multi-llm-entry-design-postwrite/rounds.yaml: 12ad14f80cc9108d134d95cd8423948556be766f322dedeca20e9a50db3a5dda
+  docs/notes/review-runs/2026-06-10-deployment-multi-llm-entry-design-postwrite/target-manifest.yaml: 780611fc42f5a589441a4fde8eb65f8f19d59d271157d17930405131edb3f13a
+  docs/notes/review-runs/2026-06-10-deployment-multi-llm-entry-design-postwrite/triage.yaml: 130a481a312251ff9948e9543f888c548fd64601fa8fae637ab6e598f8f994f0
+required_verifiers: &id001
+- claude-sonnet-4-6
+- gpt-5.4
+- gemini-3.1-pro-preview
+completed_verifiers: *id001
+unresolved_substantive_findings: 0
+verifications:
+- verifier: claude-sonnet-4-6
+  target_files:
+  - docs/notes/2026-06-10-deployment-multi-llm-entry-design.md
+  - docs/notes/review-runs/2026-06-10-deployment-multi-llm-entry-design-postwrite-r2/model-result-summary.yaml
+  - docs/notes/review-runs/2026-06-10-deployment-multi-llm-entry-design-postwrite-r2/parsed/claude-sonnet-4-6.round-1.yaml
+  - docs/notes/review-runs/2026-06-10-deployment-multi-llm-entry-design-postwrite-r2/parsed/gemini-3.1-pro-preview.round-1.yaml
+  - docs/notes/review-runs/2026-06-10-deployment-multi-llm-entry-design-postwrite-r2/parsed/gpt-5.4.round-1.yaml
+  - docs/notes/review-runs/2026-06-10-deployment-multi-llm-entry-design-postwrite-r2/raw/claude-sonnet-4-6.round-1.txt
+  - docs/notes/review-runs/2026-06-10-deployment-multi-llm-entry-design-postwrite-r2/raw/gemini-3.1-pro-preview.round-1.txt
+  - docs/notes/review-runs/2026-06-10-deployment-multi-llm-entry-design-postwrite-r2/raw/gpt-5.4.round-1.txt
+  - docs/notes/review-runs/2026-06-10-deployment-multi-llm-entry-design-postwrite-r2/review_summary.md
+  - docs/notes/review-runs/2026-06-10-deployment-multi-llm-entry-design-postwrite-r2/rounds.yaml
+  - docs/notes/review-runs/2026-06-10-deployment-multi-llm-entry-design-postwrite-r2/target-manifest.yaml
+  - docs/notes/review-runs/2026-06-10-deployment-multi-llm-entry-design-postwrite-r2/triage.yaml
+  - docs/notes/review-runs/2026-06-10-deployment-multi-llm-entry-design-postwrite/model-result-summary.yaml
+  - docs/notes/review-runs/2026-06-10-deployment-multi-llm-entry-design-postwrite/parsed/claude-sonnet-4-6.round-1.yaml
+  - docs/notes/review-runs/2026-06-10-deployment-multi-llm-entry-design-postwrite/parsed/gemini-3.1-pro-preview.round-1.yaml
+  - docs/notes/review-runs/2026-06-10-deployment-multi-llm-entry-design-postwrite/parsed/gpt-5.4.round-2.yaml
+  - docs/notes/review-runs/2026-06-10-deployment-multi-llm-entry-design-postwrite/raw/claude-sonnet-4-6.round-1.txt
+  - docs/notes/review-runs/2026-06-10-deployment-multi-llm-entry-design-postwrite/raw/gemini-3.1-pro-preview.round-1.txt
+  - docs/notes/review-runs/2026-06-10-deployment-multi-llm-entry-design-postwrite/raw/gpt-5.4.round-1.txt
+  - docs/notes/review-runs/2026-06-10-deployment-multi-llm-entry-design-postwrite/raw/gpt-5.4.round-2.txt
+  - docs/notes/review-runs/2026-06-10-deployment-multi-llm-entry-design-postwrite/review_summary.md
+  - docs/notes/review-runs/2026-06-10-deployment-multi-llm-entry-design-postwrite/rounds.yaml
+  - docs/notes/review-runs/2026-06-10-deployment-multi-llm-entry-design-postwrite/target-manifest.yaml
+  - docs/notes/review-runs/2026-06-10-deployment-multi-llm-entry-design-postwrite/triage.yaml
+  target_sha256:
+    docs/notes/2026-06-10-deployment-multi-llm-entry-design.md: 906c942a6cd1ed206d77790da98a049d1debed7565b9748be9cd8ee69b93da63
+    docs/notes/review-runs/2026-06-10-deployment-multi-llm-entry-design-postwrite-r2/model-result-summary.yaml: b893aa940e3073aaa5555d9ddd45cae324ac53bf89a8b03a1bc170dadd876a42
+    docs/notes/review-runs/2026-06-10-deployment-multi-llm-entry-design-postwrite-r2/parsed/claude-sonnet-4-6.round-1.yaml: 87aafe6eb27fe0ddd45d466ad7fce9bbf094cf47487284c7355d981205f4cf07
+    ? docs/notes/review-runs/2026-06-10-deployment-multi-llm-entry-design-postwrite-r2/parsed/gemini-3.1-pro-preview.round-1.yaml
+    : ad8f5db660a1993f700fbcc9cd80b3ca70e7ff2b63cf345c66e51a14a453631e
+    docs/notes/review-runs/2026-06-10-deployment-multi-llm-entry-design-postwrite-r2/parsed/gpt-5.4.round-1.yaml: 45d12232622384648adb9091ef34dbc66348df1f00cb41bcf6aba10c01e56b16
+    docs/notes/review-runs/2026-06-10-deployment-multi-llm-entry-design-postwrite-r2/raw/claude-sonnet-4-6.round-1.txt: 7b17d2174b095d701a7e3a36dcbc4b862818599f4453673668612ceea8a62dfa
+    docs/notes/review-runs/2026-06-10-deployment-multi-llm-entry-design-postwrite-r2/raw/gemini-3.1-pro-preview.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/2026-06-10-deployment-multi-llm-entry-design-postwrite-r2/raw/gpt-5.4.round-1.txt: 603dec19d1a84fd3dfb60c4110b8ee6018fc8aab98cfa98360afae22bba14e89
+    docs/notes/review-runs/2026-06-10-deployment-multi-llm-entry-design-postwrite-r2/review_summary.md: cb92a68b74e1fc2075b450fd6c8c46fd472a2080ab598ec96c63cf612cddd97c
+    docs/notes/review-runs/2026-06-10-deployment-multi-llm-entry-design-postwrite-r2/rounds.yaml: 32a7b5ad147a71773c6abd70a33519bc07e5efa2145ba88755c3017bd927166f
+    docs/notes/review-runs/2026-06-10-deployment-multi-llm-entry-design-postwrite-r2/target-manifest.yaml: f445dbbcef34dc9b8383ca26a30cddee4883e83bb23e07eb4f229a483b37c1c5
+    docs/notes/review-runs/2026-06-10-deployment-multi-llm-entry-design-postwrite-r2/triage.yaml: a60c4e8abc7fca6243df4160756d532e75b0536d09f1615e2ebce66512b1fddb
+    docs/notes/review-runs/2026-06-10-deployment-multi-llm-entry-design-postwrite/model-result-summary.yaml: f3304f7c36d8a7e66714d83be0103ebe06f6a0e89b166e1d41e690a3aad01bce
+    docs/notes/review-runs/2026-06-10-deployment-multi-llm-entry-design-postwrite/parsed/claude-sonnet-4-6.round-1.yaml: a60e9a6182776607b0663b48985f5370f4390b0ce9594e8527d96f9005dbe8f5
+    docs/notes/review-runs/2026-06-10-deployment-multi-llm-entry-design-postwrite/parsed/gemini-3.1-pro-preview.round-1.yaml: 2c3a1fc39f2f774685bb269b70e6cce0a339845fded714abfa7ae06ec5496da4
+    docs/notes/review-runs/2026-06-10-deployment-multi-llm-entry-design-postwrite/parsed/gpt-5.4.round-2.yaml: 23da578e21407458b27b65b4e8390b4c3fd40c8b8361479f5633527238561b8a
+    docs/notes/review-runs/2026-06-10-deployment-multi-llm-entry-design-postwrite/raw/claude-sonnet-4-6.round-1.txt: f4c77a91cc6ca3e8d1910fde17703b9cc7cec0b3b2a1554e35caba437a1860f9
+    docs/notes/review-runs/2026-06-10-deployment-multi-llm-entry-design-postwrite/raw/gemini-3.1-pro-preview.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/2026-06-10-deployment-multi-llm-entry-design-postwrite/raw/gpt-5.4.round-1.txt: e770bfd0a979165b01264860c15bdc21d3e710e12de92b4acc104ed0939bec49
+    docs/notes/review-runs/2026-06-10-deployment-multi-llm-entry-design-postwrite/raw/gpt-5.4.round-2.txt: 0d93472932af3e5d37eb2a06c75091d56d63634fc1f6612b81e6d09a2637c176
+    docs/notes/review-runs/2026-06-10-deployment-multi-llm-entry-design-postwrite/review_summary.md: 6594c2c2080f9dec20c54d3652e1496c98945e444b07d500d087f3a5246981f5
+    docs/notes/review-runs/2026-06-10-deployment-multi-llm-entry-design-postwrite/rounds.yaml: 12ad14f80cc9108d134d95cd8423948556be766f322dedeca20e9a50db3a5dda
+    docs/notes/review-runs/2026-06-10-deployment-multi-llm-entry-design-postwrite/target-manifest.yaml: 780611fc42f5a589441a4fde8eb65f8f19d59d271157d17930405131edb3f13a
+    docs/notes/review-runs/2026-06-10-deployment-multi-llm-entry-design-postwrite/triage.yaml: 130a481a312251ff9948e9543f888c548fd64601fa8fae637ab6e598f8f994f0
+- verifier: gpt-5.4
+  target_files:
+  - docs/notes/2026-06-10-deployment-multi-llm-entry-design.md
+  - docs/notes/review-runs/2026-06-10-deployment-multi-llm-entry-design-postwrite-r2/model-result-summary.yaml
+  - docs/notes/review-runs/2026-06-10-deployment-multi-llm-entry-design-postwrite-r2/parsed/claude-sonnet-4-6.round-1.yaml
+  - docs/notes/review-runs/2026-06-10-deployment-multi-llm-entry-design-postwrite-r2/parsed/gemini-3.1-pro-preview.round-1.yaml
+  - docs/notes/review-runs/2026-06-10-deployment-multi-llm-entry-design-postwrite-r2/parsed/gpt-5.4.round-1.yaml
+  - docs/notes/review-runs/2026-06-10-deployment-multi-llm-entry-design-postwrite-r2/raw/claude-sonnet-4-6.round-1.txt
+  - docs/notes/review-runs/2026-06-10-deployment-multi-llm-entry-design-postwrite-r2/raw/gemini-3.1-pro-preview.round-1.txt
+  - docs/notes/review-runs/2026-06-10-deployment-multi-llm-entry-design-postwrite-r2/raw/gpt-5.4.round-1.txt
+  - docs/notes/review-runs/2026-06-10-deployment-multi-llm-entry-design-postwrite-r2/review_summary.md
+  - docs/notes/review-runs/2026-06-10-deployment-multi-llm-entry-design-postwrite-r2/rounds.yaml
+  - docs/notes/review-runs/2026-06-10-deployment-multi-llm-entry-design-postwrite-r2/target-manifest.yaml
+  - docs/notes/review-runs/2026-06-10-deployment-multi-llm-entry-design-postwrite-r2/triage.yaml
+  - docs/notes/review-runs/2026-06-10-deployment-multi-llm-entry-design-postwrite/model-result-summary.yaml
+  - docs/notes/review-runs/2026-06-10-deployment-multi-llm-entry-design-postwrite/parsed/claude-sonnet-4-6.round-1.yaml
+  - docs/notes/review-runs/2026-06-10-deployment-multi-llm-entry-design-postwrite/parsed/gemini-3.1-pro-preview.round-1.yaml
+  - docs/notes/review-runs/2026-06-10-deployment-multi-llm-entry-design-postwrite/parsed/gpt-5.4.round-2.yaml
+  - docs/notes/review-runs/2026-06-10-deployment-multi-llm-entry-design-postwrite/raw/claude-sonnet-4-6.round-1.txt
+  - docs/notes/review-runs/2026-06-10-deployment-multi-llm-entry-design-postwrite/raw/gemini-3.1-pro-preview.round-1.txt
+  - docs/notes/review-runs/2026-06-10-deployment-multi-llm-entry-design-postwrite/raw/gpt-5.4.round-1.txt
+  - docs/notes/review-runs/2026-06-10-deployment-multi-llm-entry-design-postwrite/raw/gpt-5.4.round-2.txt
+  - docs/notes/review-runs/2026-06-10-deployment-multi-llm-entry-design-postwrite/review_summary.md
+  - docs/notes/review-runs/2026-06-10-deployment-multi-llm-entry-design-postwrite/rounds.yaml
+  - docs/notes/review-runs/2026-06-10-deployment-multi-llm-entry-design-postwrite/target-manifest.yaml
+  - docs/notes/review-runs/2026-06-10-deployment-multi-llm-entry-design-postwrite/triage.yaml
+  target_sha256:
+    docs/notes/2026-06-10-deployment-multi-llm-entry-design.md: 906c942a6cd1ed206d77790da98a049d1debed7565b9748be9cd8ee69b93da63
+    docs/notes/review-runs/2026-06-10-deployment-multi-llm-entry-design-postwrite-r2/model-result-summary.yaml: b893aa940e3073aaa5555d9ddd45cae324ac53bf89a8b03a1bc170dadd876a42
+    docs/notes/review-runs/2026-06-10-deployment-multi-llm-entry-design-postwrite-r2/parsed/claude-sonnet-4-6.round-1.yaml: 87aafe6eb27fe0ddd45d466ad7fce9bbf094cf47487284c7355d981205f4cf07
+    ? docs/notes/review-runs/2026-06-10-deployment-multi-llm-entry-design-postwrite-r2/parsed/gemini-3.1-pro-preview.round-1.yaml
+    : ad8f5db660a1993f700fbcc9cd80b3ca70e7ff2b63cf345c66e51a14a453631e
+    docs/notes/review-runs/2026-06-10-deployment-multi-llm-entry-design-postwrite-r2/parsed/gpt-5.4.round-1.yaml: 45d12232622384648adb9091ef34dbc66348df1f00cb41bcf6aba10c01e56b16
+    docs/notes/review-runs/2026-06-10-deployment-multi-llm-entry-design-postwrite-r2/raw/claude-sonnet-4-6.round-1.txt: 7b17d2174b095d701a7e3a36dcbc4b862818599f4453673668612ceea8a62dfa
+    docs/notes/review-runs/2026-06-10-deployment-multi-llm-entry-design-postwrite-r2/raw/gemini-3.1-pro-preview.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/2026-06-10-deployment-multi-llm-entry-design-postwrite-r2/raw/gpt-5.4.round-1.txt: 603dec19d1a84fd3dfb60c4110b8ee6018fc8aab98cfa98360afae22bba14e89
+    docs/notes/review-runs/2026-06-10-deployment-multi-llm-entry-design-postwrite-r2/review_summary.md: cb92a68b74e1fc2075b450fd6c8c46fd472a2080ab598ec96c63cf612cddd97c
+    docs/notes/review-runs/2026-06-10-deployment-multi-llm-entry-design-postwrite-r2/rounds.yaml: 32a7b5ad147a71773c6abd70a33519bc07e5efa2145ba88755c3017bd927166f
+    docs/notes/review-runs/2026-06-10-deployment-multi-llm-entry-design-postwrite-r2/target-manifest.yaml: f445dbbcef34dc9b8383ca26a30cddee4883e83bb23e07eb4f229a483b37c1c5
+    docs/notes/review-runs/2026-06-10-deployment-multi-llm-entry-design-postwrite-r2/triage.yaml: a60c4e8abc7fca6243df4160756d532e75b0536d09f1615e2ebce66512b1fddb
+    docs/notes/review-runs/2026-06-10-deployment-multi-llm-entry-design-postwrite/model-result-summary.yaml: f3304f7c36d8a7e66714d83be0103ebe06f6a0e89b166e1d41e690a3aad01bce
+    docs/notes/review-runs/2026-06-10-deployment-multi-llm-entry-design-postwrite/parsed/claude-sonnet-4-6.round-1.yaml: a60e9a6182776607b0663b48985f5370f4390b0ce9594e8527d96f9005dbe8f5
+    docs/notes/review-runs/2026-06-10-deployment-multi-llm-entry-design-postwrite/parsed/gemini-3.1-pro-preview.round-1.yaml: 2c3a1fc39f2f774685bb269b70e6cce0a339845fded714abfa7ae06ec5496da4
+    docs/notes/review-runs/2026-06-10-deployment-multi-llm-entry-design-postwrite/parsed/gpt-5.4.round-2.yaml: 23da578e21407458b27b65b4e8390b4c3fd40c8b8361479f5633527238561b8a
+    docs/notes/review-runs/2026-06-10-deployment-multi-llm-entry-design-postwrite/raw/claude-sonnet-4-6.round-1.txt: f4c77a91cc6ca3e8d1910fde17703b9cc7cec0b3b2a1554e35caba437a1860f9
+    docs/notes/review-runs/2026-06-10-deployment-multi-llm-entry-design-postwrite/raw/gemini-3.1-pro-preview.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/2026-06-10-deployment-multi-llm-entry-design-postwrite/raw/gpt-5.4.round-1.txt: e770bfd0a979165b01264860c15bdc21d3e710e12de92b4acc104ed0939bec49
+    docs/notes/review-runs/2026-06-10-deployment-multi-llm-entry-design-postwrite/raw/gpt-5.4.round-2.txt: 0d93472932af3e5d37eb2a06c75091d56d63634fc1f6612b81e6d09a2637c176
+    docs/notes/review-runs/2026-06-10-deployment-multi-llm-entry-design-postwrite/review_summary.md: 6594c2c2080f9dec20c54d3652e1496c98945e444b07d500d087f3a5246981f5
+    docs/notes/review-runs/2026-06-10-deployment-multi-llm-entry-design-postwrite/rounds.yaml: 12ad14f80cc9108d134d95cd8423948556be766f322dedeca20e9a50db3a5dda
+    docs/notes/review-runs/2026-06-10-deployment-multi-llm-entry-design-postwrite/target-manifest.yaml: 780611fc42f5a589441a4fde8eb65f8f19d59d271157d17930405131edb3f13a
+    docs/notes/review-runs/2026-06-10-deployment-multi-llm-entry-design-postwrite/triage.yaml: 130a481a312251ff9948e9543f888c548fd64601fa8fae637ab6e598f8f994f0
+- verifier: gemini-3.1-pro-preview
+  target_files:
+  - docs/notes/2026-06-10-deployment-multi-llm-entry-design.md
+  - docs/notes/review-runs/2026-06-10-deployment-multi-llm-entry-design-postwrite-r2/model-result-summary.yaml
+  - docs/notes/review-runs/2026-06-10-deployment-multi-llm-entry-design-postwrite-r2/parsed/claude-sonnet-4-6.round-1.yaml
+  - docs/notes/review-runs/2026-06-10-deployment-multi-llm-entry-design-postwrite-r2/parsed/gemini-3.1-pro-preview.round-1.yaml
+  - docs/notes/review-runs/2026-06-10-deployment-multi-llm-entry-design-postwrite-r2/parsed/gpt-5.4.round-1.yaml
+  - docs/notes/review-runs/2026-06-10-deployment-multi-llm-entry-design-postwrite-r2/raw/claude-sonnet-4-6.round-1.txt
+  - docs/notes/review-runs/2026-06-10-deployment-multi-llm-entry-design-postwrite-r2/raw/gemini-3.1-pro-preview.round-1.txt
+  - docs/notes/review-runs/2026-06-10-deployment-multi-llm-entry-design-postwrite-r2/raw/gpt-5.4.round-1.txt
+  - docs/notes/review-runs/2026-06-10-deployment-multi-llm-entry-design-postwrite-r2/review_summary.md
+  - docs/notes/review-runs/2026-06-10-deployment-multi-llm-entry-design-postwrite-r2/rounds.yaml
+  - docs/notes/review-runs/2026-06-10-deployment-multi-llm-entry-design-postwrite-r2/target-manifest.yaml
+  - docs/notes/review-runs/2026-06-10-deployment-multi-llm-entry-design-postwrite-r2/triage.yaml
+  - docs/notes/review-runs/2026-06-10-deployment-multi-llm-entry-design-postwrite/model-result-summary.yaml
+  - docs/notes/review-runs/2026-06-10-deployment-multi-llm-entry-design-postwrite/parsed/claude-sonnet-4-6.round-1.yaml
+  - docs/notes/review-runs/2026-06-10-deployment-multi-llm-entry-design-postwrite/parsed/gemini-3.1-pro-preview.round-1.yaml
+  - docs/notes/review-runs/2026-06-10-deployment-multi-llm-entry-design-postwrite/parsed/gpt-5.4.round-2.yaml
+  - docs/notes/review-runs/2026-06-10-deployment-multi-llm-entry-design-postwrite/raw/claude-sonnet-4-6.round-1.txt
+  - docs/notes/review-runs/2026-06-10-deployment-multi-llm-entry-design-postwrite/raw/gemini-3.1-pro-preview.round-1.txt
+  - docs/notes/review-runs/2026-06-10-deployment-multi-llm-entry-design-postwrite/raw/gpt-5.4.round-1.txt
+  - docs/notes/review-runs/2026-06-10-deployment-multi-llm-entry-design-postwrite/raw/gpt-5.4.round-2.txt
+  - docs/notes/review-runs/2026-06-10-deployment-multi-llm-entry-design-postwrite/review_summary.md
+  - docs/notes/review-runs/2026-06-10-deployment-multi-llm-entry-design-postwrite/rounds.yaml
+  - docs/notes/review-runs/2026-06-10-deployment-multi-llm-entry-design-postwrite/target-manifest.yaml
+  - docs/notes/review-runs/2026-06-10-deployment-multi-llm-entry-design-postwrite/triage.yaml
+  target_sha256:
+    docs/notes/2026-06-10-deployment-multi-llm-entry-design.md: 906c942a6cd1ed206d77790da98a049d1debed7565b9748be9cd8ee69b93da63
+    docs/notes/review-runs/2026-06-10-deployment-multi-llm-entry-design-postwrite-r2/model-result-summary.yaml: b893aa940e3073aaa5555d9ddd45cae324ac53bf89a8b03a1bc170dadd876a42
+    docs/notes/review-runs/2026-06-10-deployment-multi-llm-entry-design-postwrite-r2/parsed/claude-sonnet-4-6.round-1.yaml: 87aafe6eb27fe0ddd45d466ad7fce9bbf094cf47487284c7355d981205f4cf07
+    ? docs/notes/review-runs/2026-06-10-deployment-multi-llm-entry-design-postwrite-r2/parsed/gemini-3.1-pro-preview.round-1.yaml
+    : ad8f5db660a1993f700fbcc9cd80b3ca70e7ff2b63cf345c66e51a14a453631e
+    docs/notes/review-runs/2026-06-10-deployment-multi-llm-entry-design-postwrite-r2/parsed/gpt-5.4.round-1.yaml: 45d12232622384648adb9091ef34dbc66348df1f00cb41bcf6aba10c01e56b16
+    docs/notes/review-runs/2026-06-10-deployment-multi-llm-entry-design-postwrite-r2/raw/claude-sonnet-4-6.round-1.txt: 7b17d2174b095d701a7e3a36dcbc4b862818599f4453673668612ceea8a62dfa
+    docs/notes/review-runs/2026-06-10-deployment-multi-llm-entry-design-postwrite-r2/raw/gemini-3.1-pro-preview.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/2026-06-10-deployment-multi-llm-entry-design-postwrite-r2/raw/gpt-5.4.round-1.txt: 603dec19d1a84fd3dfb60c4110b8ee6018fc8aab98cfa98360afae22bba14e89
+    docs/notes/review-runs/2026-06-10-deployment-multi-llm-entry-design-postwrite-r2/review_summary.md: cb92a68b74e1fc2075b450fd6c8c46fd472a2080ab598ec96c63cf612cddd97c
+    docs/notes/review-runs/2026-06-10-deployment-multi-llm-entry-design-postwrite-r2/rounds.yaml: 32a7b5ad147a71773c6abd70a33519bc07e5efa2145ba88755c3017bd927166f
+    docs/notes/review-runs/2026-06-10-deployment-multi-llm-entry-design-postwrite-r2/target-manifest.yaml: f445dbbcef34dc9b8383ca26a30cddee4883e83bb23e07eb4f229a483b37c1c5
+    docs/notes/review-runs/2026-06-10-deployment-multi-llm-entry-design-postwrite-r2/triage.yaml: a60c4e8abc7fca6243df4160756d532e75b0536d09f1615e2ebce66512b1fddb
+    docs/notes/review-runs/2026-06-10-deployment-multi-llm-entry-design-postwrite/model-result-summary.yaml: f3304f7c36d8a7e66714d83be0103ebe06f6a0e89b166e1d41e690a3aad01bce
+    docs/notes/review-runs/2026-06-10-deployment-multi-llm-entry-design-postwrite/parsed/claude-sonnet-4-6.round-1.yaml: a60e9a6182776607b0663b48985f5370f4390b0ce9594e8527d96f9005dbe8f5
+    docs/notes/review-runs/2026-06-10-deployment-multi-llm-entry-design-postwrite/parsed/gemini-3.1-pro-preview.round-1.yaml: 2c3a1fc39f2f774685bb269b70e6cce0a339845fded714abfa7ae06ec5496da4
+    docs/notes/review-runs/2026-06-10-deployment-multi-llm-entry-design-postwrite/parsed/gpt-5.4.round-2.yaml: 23da578e21407458b27b65b4e8390b4c3fd40c8b8361479f5633527238561b8a
+    docs/notes/review-runs/2026-06-10-deployment-multi-llm-entry-design-postwrite/raw/claude-sonnet-4-6.round-1.txt: f4c77a91cc6ca3e8d1910fde17703b9cc7cec0b3b2a1554e35caba437a1860f9
+    docs/notes/review-runs/2026-06-10-deployment-multi-llm-entry-design-postwrite/raw/gemini-3.1-pro-preview.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/2026-06-10-deployment-multi-llm-entry-design-postwrite/raw/gpt-5.4.round-1.txt: e770bfd0a979165b01264860c15bdc21d3e710e12de92b4acc104ed0939bec49
+    docs/notes/review-runs/2026-06-10-deployment-multi-llm-entry-design-postwrite/raw/gpt-5.4.round-2.txt: 0d93472932af3e5d37eb2a06c75091d56d63634fc1f6612b81e6d09a2637c176
+    docs/notes/review-runs/2026-06-10-deployment-multi-llm-entry-design-postwrite/review_summary.md: 6594c2c2080f9dec20c54d3652e1496c98945e444b07d500d087f3a5246981f5
+    docs/notes/review-runs/2026-06-10-deployment-multi-llm-entry-design-postwrite/rounds.yaml: 12ad14f80cc9108d134d95cd8423948556be766f322dedeca20e9a50db3a5dda
+    docs/notes/review-runs/2026-06-10-deployment-multi-llm-entry-design-postwrite/target-manifest.yaml: 780611fc42f5a589441a4fde8eb65f8f19d59d271157d17930405131edb3f13a
+    docs/notes/review-runs/2026-06-10-deployment-multi-llm-entry-design-postwrite/triage.yaml: 130a481a312251ff9948e9543f888c548fd64601fa8fae637ab6e598f8f994f0
+review_run:
+  path: docs/notes/review-runs/2026-06-10-deployment-multi-llm-entry-design-postwrite-r2
+  summary_path: docs/notes/review-runs/2026-06-10-deployment-multi-llm-entry-design-postwrite-r2/model-result-summary.yaml
+notes: Generated template; verify target_files cover current post-write targets before
+  use.

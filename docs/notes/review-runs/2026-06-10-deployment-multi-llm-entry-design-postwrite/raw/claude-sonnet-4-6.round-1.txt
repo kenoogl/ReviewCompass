@@ -1,0 +1,15 @@
+findings:
+  - severity: INFO
+    target_location: "## 3.5 ツール一般化（案 A-1、補強込み）"
+    description: "feature-dependency.yaml の `feature_order` キー新設と既存 `depends_on` との整合検査の詳細仕様（キー名、型、必須／任意の区別）がこの設計記録単体では確認できない。"
+    rationale: "実装者が workflow-management 再オープン時に参照すべき仕様が分散すると、TDD のテスト設計で齟齬が生じるリスクがある。別途 workflow-management タスク仕様に明記されるなら問題ないが、本記録にも参照先を示しておくと追跡容易性が向上する。"
+
+  - severity: INFO
+    target_location: "## 3.3 論点 3：hook の配布方針"
+    description: "テンプレートのプレースホルダ名（「検査ツールの場所」「Python 実行系の場所」）の具体的な識別子（例：`{{TOOL_PATH}}`、`{{PYTHON_BIN}}`）が記録されていない。"
+    rationale: "初期設定時に LLM が置換する際の操作根拠が記録に残らないため、将来の検証や再デプロイ時に置換漏れの確認が困難になる可能性がある。プレースホルダの命名規則か具体名を記録しておくことで、自動検査スクリプトの作成も容易になる。"
+
+  - severity: INFO
+    target_location: "## 4. 実装計画 ステップ 5"
+    description: "模擬対象アプリでの smoke 実験の成功基準（`next` が `DEVIATION` を返さず、対象アプリの feature 構成で正常動作すること）は文中に示されているが、実験スクリプトや手順の保存場所が指定されていない。"
+    rationale: "§2 の調査で行った実験の再現確認を求めているが、再現手順が明文化されていないと、次セッションの担当者（LLM を含む）が「何をもって確認完了とするか」を独自解釈するリスクがある。実験手順ファイルへの参照か、手順の概略を本記録か TODO に残すことが望ましい。"
