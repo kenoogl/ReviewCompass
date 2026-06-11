@@ -1,0 +1,84 @@
+run_id: 2026-06-11-entry-design-topic5-postwrite-r2
+triage_status: decided
+generated_at: '2026-06-11T13:25:40.944790+00:00'
+decision_actor: null
+decision_actor_type: human
+items:
+- finding_id: 2026-06-11-entry-design-topic5-postwrite-r2-claude-sonnet-4-6-primary-001
+  run_id: 2026-06-11-entry-design-topic5-postwrite-r2
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: §3.6 論点5：操縦LLM別のAPI既定設定
+  plain_language_summary: gpt-5.4、gpt-5.5、claude-opus-4-8、gemini-3.1-pro-preview 等の具体的モデル識別子が記録されているが、これらは2026-06-10時点の想定モデル名であり、実際の提供名称・バージョンと乖離するリスクがある。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-11T13:28:55.372890+00:00'
+  decision_reason: モデル識別子は作成時点の正式名（claude-api リファレンスで確認済み）であり、設計記録は日付つきスナップショット。現行の正本は
+    config/api-settings.yaml 側にあるため、乖離が生じた場合は config を更新する運用で足りる。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-11-entry-design-topic5-postwrite-r2-claude-sonnet-4-6-primary-002
+  run_id: 2026-06-11-entry-design-topic5-postwrite-r2
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: §3.5 ツール一般化、探索順の記述
+  plain_language_summary: feature-dependency.yaml の探索順として `.reviewcompass/feature-dependency.yaml`
+    → `stages/feature-dependency.yaml` → 直下の `feature-dependency.yaml` の3段が定義されているが、「直下の
+    `feature-dependency.yaml`」が指す基準ディレクトリ（実行場所か配布物rootか）が本文中で明示されていない。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-11T13:28:55.421786+00:00'
+  decision_reason: 探索順は cde1f5c の TDD テスト（tests/tools/test_check_workflow_action.py
+    の FeatureOrderGeneralizationTests）で機械的に固定済みであり、実装とテストが正本。記録への再掲は重複になる。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-11-entry-design-topic5-postwrite-r2-claude-sonnet-4-6-primary-003
+  run_id: 2026-06-11-entry-design-topic5-postwrite-r2
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: §3.3 論点3：hookの配布方針
+  plain_language_summary: '`.codex/hooks.json` の雛形を配布するとあるが、Codex CLI における hooks.json
+    の仕様（キー名・実行タイミング・失敗時の挙動）への参照や注記が本記録内にない。'
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-11T13:28:55.468457+00:00'
+  decision_reason: .codex/hooks.json の仕様は開発リポジトリで同形式の設定が稼働中（複製同一性はテストで担保）であり、配布テンプレートはその実績の写し。仕様参照の追記は将来の第3者配布時の文書化で扱う。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-11-entry-design-topic5-postwrite-r2-claude-sonnet-4-6-primary-004
+  run_id: 2026-06-11-entry-design-topic5-postwrite-r2
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: §4 実装計画 ステップ2
+  plain_language_summary: 「workflow-management の再オープン手続き（変更分類 → 上流影響判定）」と記載されているが、再オープン手続きの開始条件・承認者・完了判定の基準が本記録内で参照されていない。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-11T13:28:55.514841+00:00'
+  decision_reason: 実装計画 2 の再オープン手続きは、その後の利用者指示によりアドホック開発へ変更され、経緯は maintenance 記録（stages/completed/）と
+    TODO §4 の未完了義務に記録済み。本記録は作成時点の計画として保全する。
+  applied_files: []
+  superseded_by: null

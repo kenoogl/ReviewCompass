@@ -1,0 +1,216 @@
+status: completed
+target_files:
+- docs/notes/2026-06-10-deployment-multi-llm-entry-design.md
+- docs/notes/review-runs/2026-06-11-entry-design-topic5-postwrite-r2/model-result-summary.yaml
+- docs/notes/review-runs/2026-06-11-entry-design-topic5-postwrite-r2/parsed/claude-sonnet-4-6.round-1.yaml
+- docs/notes/review-runs/2026-06-11-entry-design-topic5-postwrite-r2/parsed/gemini-3.1-pro-preview.round-1.yaml
+- docs/notes/review-runs/2026-06-11-entry-design-topic5-postwrite-r2/parsed/gpt-5.5.round-1.yaml
+- docs/notes/review-runs/2026-06-11-entry-design-topic5-postwrite-r2/raw/claude-sonnet-4-6.round-1.txt
+- docs/notes/review-runs/2026-06-11-entry-design-topic5-postwrite-r2/raw/gemini-3.1-pro-preview.round-1.txt
+- docs/notes/review-runs/2026-06-11-entry-design-topic5-postwrite-r2/raw/gpt-5.5.round-1.txt
+- docs/notes/review-runs/2026-06-11-entry-design-topic5-postwrite-r2/review_summary.md
+- docs/notes/review-runs/2026-06-11-entry-design-topic5-postwrite-r2/rounds.yaml
+- docs/notes/review-runs/2026-06-11-entry-design-topic5-postwrite-r2/target-manifest.yaml
+- docs/notes/review-runs/2026-06-11-entry-design-topic5-postwrite-r2/triage.yaml
+- docs/notes/review-runs/2026-06-11-entry-design-topic5-postwrite/model-result-summary.yaml
+- docs/notes/review-runs/2026-06-11-entry-design-topic5-postwrite/parsed/claude-sonnet-4-6.round-1.yaml
+- docs/notes/review-runs/2026-06-11-entry-design-topic5-postwrite/parsed/gemini-3.1-pro-preview.round-1.yaml
+- docs/notes/review-runs/2026-06-11-entry-design-topic5-postwrite/parsed/gpt-5.5.round-1.yaml
+- docs/notes/review-runs/2026-06-11-entry-design-topic5-postwrite/raw/claude-sonnet-4-6.round-1.txt
+- docs/notes/review-runs/2026-06-11-entry-design-topic5-postwrite/raw/gemini-3.1-pro-preview.round-1.txt
+- docs/notes/review-runs/2026-06-11-entry-design-topic5-postwrite/raw/gpt-5.5.round-1.txt
+- docs/notes/review-runs/2026-06-11-entry-design-topic5-postwrite/review_summary.md
+- docs/notes/review-runs/2026-06-11-entry-design-topic5-postwrite/rounds.yaml
+- docs/notes/review-runs/2026-06-11-entry-design-topic5-postwrite/target-manifest.yaml
+- docs/notes/review-runs/2026-06-11-entry-design-topic5-postwrite/triage.yaml
+- templates/entry/AGENT_ENTRY.template.md
+target_sha256:
+  docs/notes/2026-06-10-deployment-multi-llm-entry-design.md: adeb52f28a98fb9a3e0d5f48bfa318d7fa662de768f564e798c21c3d40f0f2bd
+  docs/notes/review-runs/2026-06-11-entry-design-topic5-postwrite-r2/model-result-summary.yaml: 4146ffabaf920cabc59c050db52e23e033c97579c0ba036912c672f8458765dd
+  docs/notes/review-runs/2026-06-11-entry-design-topic5-postwrite-r2/parsed/claude-sonnet-4-6.round-1.yaml: a0fef4ce15685014fca3b933a02f2bb07129a6f33b36ea112a7c8922dd7f4712
+  docs/notes/review-runs/2026-06-11-entry-design-topic5-postwrite-r2/parsed/gemini-3.1-pro-preview.round-1.yaml: 1087890dca27c9e420a80fd57bfd3786d307e21069ccff799bcd3b9f19d34c2a
+  docs/notes/review-runs/2026-06-11-entry-design-topic5-postwrite-r2/parsed/gpt-5.5.round-1.yaml: 7e3559c14413977fe1f2fa00c757c0b2e138b421e46e5ae4f53d03cb6135b303
+  docs/notes/review-runs/2026-06-11-entry-design-topic5-postwrite-r2/raw/claude-sonnet-4-6.round-1.txt: c8c4c73aae0f00335277c8e6df39ace074b53e08fa0d20abafb4d36c7150e729
+  docs/notes/review-runs/2026-06-11-entry-design-topic5-postwrite-r2/raw/gemini-3.1-pro-preview.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+  docs/notes/review-runs/2026-06-11-entry-design-topic5-postwrite-r2/raw/gpt-5.5.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+  docs/notes/review-runs/2026-06-11-entry-design-topic5-postwrite-r2/review_summary.md: 4273cbb7c0b3694df6d427f816077b44e721e4b2e2bf0d404edbcb33e75928f8
+  docs/notes/review-runs/2026-06-11-entry-design-topic5-postwrite-r2/rounds.yaml: 8d47e3035c7235ce923e29383871c99bd7aec87f82bf75422294b69fcc8216ad
+  docs/notes/review-runs/2026-06-11-entry-design-topic5-postwrite-r2/target-manifest.yaml: 69a789b15e0424b91057bc3edec6d8c0bc230a7f4243fb090e7ade0314138b57
+  docs/notes/review-runs/2026-06-11-entry-design-topic5-postwrite-r2/triage.yaml: 194f277d990b6feef2a52029486ec446fe65ff7dc066adfbf250bb167da60289
+  docs/notes/review-runs/2026-06-11-entry-design-topic5-postwrite/model-result-summary.yaml: 56eb55eebab94998b211d6cf6fd2c1e50bb0b1f70444319e2994169f61cdf841
+  docs/notes/review-runs/2026-06-11-entry-design-topic5-postwrite/parsed/claude-sonnet-4-6.round-1.yaml: b52b933ff4bb949b335640b2619f897f474ab197a7f50f25278b954a21d92f84
+  docs/notes/review-runs/2026-06-11-entry-design-topic5-postwrite/parsed/gemini-3.1-pro-preview.round-1.yaml: 640493b5c70eae4f94a1f75626699d2b3cb6d9172992dfaa4e7f9ef0eb7535cd
+  docs/notes/review-runs/2026-06-11-entry-design-topic5-postwrite/parsed/gpt-5.5.round-1.yaml: 075513f54c6ebe82ec881a437f59483c9946acdc212cd13b0b4a5332fe57f7d3
+  docs/notes/review-runs/2026-06-11-entry-design-topic5-postwrite/raw/claude-sonnet-4-6.round-1.txt: e191692fcaa1bd3b1b63c94e999a9f018d51d431fa974bf5350052eec7ea229f
+  docs/notes/review-runs/2026-06-11-entry-design-topic5-postwrite/raw/gemini-3.1-pro-preview.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+  docs/notes/review-runs/2026-06-11-entry-design-topic5-postwrite/raw/gpt-5.5.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+  docs/notes/review-runs/2026-06-11-entry-design-topic5-postwrite/review_summary.md: 6936269da8760b4c46e9d6ba018bb1ccd45dff3811e61d9837946394e1fea075
+  docs/notes/review-runs/2026-06-11-entry-design-topic5-postwrite/rounds.yaml: 82f01f789834bc14cb799e30401721e1d97cb90d0fedd8780b1be07799307e74
+  docs/notes/review-runs/2026-06-11-entry-design-topic5-postwrite/target-manifest.yaml: bcdca7700eae7b6149ff255a6ab9ccddfbb7886085f5cc9e9e3888f60de9a54d
+  docs/notes/review-runs/2026-06-11-entry-design-topic5-postwrite/triage.yaml: d22d21b128af2d02510598270fa984b406490f3f832e64c904ee038b8e7cb816
+  templates/entry/AGENT_ENTRY.template.md: f7e7eef98a5d66e375cd18cb87fe86a9dad2e12f8accb831977acd9679457d74
+required_verifiers: &id001
+- claude-sonnet-4-6
+- gpt-5.5
+- gemini-3.1-pro-preview
+completed_verifiers: *id001
+unresolved_substantive_findings: 0
+verifications:
+- verifier: claude-sonnet-4-6
+  target_files:
+  - docs/notes/2026-06-10-deployment-multi-llm-entry-design.md
+  - docs/notes/review-runs/2026-06-11-entry-design-topic5-postwrite-r2/model-result-summary.yaml
+  - docs/notes/review-runs/2026-06-11-entry-design-topic5-postwrite-r2/parsed/claude-sonnet-4-6.round-1.yaml
+  - docs/notes/review-runs/2026-06-11-entry-design-topic5-postwrite-r2/parsed/gemini-3.1-pro-preview.round-1.yaml
+  - docs/notes/review-runs/2026-06-11-entry-design-topic5-postwrite-r2/parsed/gpt-5.5.round-1.yaml
+  - docs/notes/review-runs/2026-06-11-entry-design-topic5-postwrite-r2/raw/claude-sonnet-4-6.round-1.txt
+  - docs/notes/review-runs/2026-06-11-entry-design-topic5-postwrite-r2/raw/gemini-3.1-pro-preview.round-1.txt
+  - docs/notes/review-runs/2026-06-11-entry-design-topic5-postwrite-r2/raw/gpt-5.5.round-1.txt
+  - docs/notes/review-runs/2026-06-11-entry-design-topic5-postwrite-r2/review_summary.md
+  - docs/notes/review-runs/2026-06-11-entry-design-topic5-postwrite-r2/rounds.yaml
+  - docs/notes/review-runs/2026-06-11-entry-design-topic5-postwrite-r2/target-manifest.yaml
+  - docs/notes/review-runs/2026-06-11-entry-design-topic5-postwrite-r2/triage.yaml
+  - docs/notes/review-runs/2026-06-11-entry-design-topic5-postwrite/model-result-summary.yaml
+  - docs/notes/review-runs/2026-06-11-entry-design-topic5-postwrite/parsed/claude-sonnet-4-6.round-1.yaml
+  - docs/notes/review-runs/2026-06-11-entry-design-topic5-postwrite/parsed/gemini-3.1-pro-preview.round-1.yaml
+  - docs/notes/review-runs/2026-06-11-entry-design-topic5-postwrite/parsed/gpt-5.5.round-1.yaml
+  - docs/notes/review-runs/2026-06-11-entry-design-topic5-postwrite/raw/claude-sonnet-4-6.round-1.txt
+  - docs/notes/review-runs/2026-06-11-entry-design-topic5-postwrite/raw/gemini-3.1-pro-preview.round-1.txt
+  - docs/notes/review-runs/2026-06-11-entry-design-topic5-postwrite/raw/gpt-5.5.round-1.txt
+  - docs/notes/review-runs/2026-06-11-entry-design-topic5-postwrite/review_summary.md
+  - docs/notes/review-runs/2026-06-11-entry-design-topic5-postwrite/rounds.yaml
+  - docs/notes/review-runs/2026-06-11-entry-design-topic5-postwrite/target-manifest.yaml
+  - docs/notes/review-runs/2026-06-11-entry-design-topic5-postwrite/triage.yaml
+  - templates/entry/AGENT_ENTRY.template.md
+  target_sha256:
+    docs/notes/2026-06-10-deployment-multi-llm-entry-design.md: adeb52f28a98fb9a3e0d5f48bfa318d7fa662de768f564e798c21c3d40f0f2bd
+    docs/notes/review-runs/2026-06-11-entry-design-topic5-postwrite-r2/model-result-summary.yaml: 4146ffabaf920cabc59c050db52e23e033c97579c0ba036912c672f8458765dd
+    docs/notes/review-runs/2026-06-11-entry-design-topic5-postwrite-r2/parsed/claude-sonnet-4-6.round-1.yaml: a0fef4ce15685014fca3b933a02f2bb07129a6f33b36ea112a7c8922dd7f4712
+    docs/notes/review-runs/2026-06-11-entry-design-topic5-postwrite-r2/parsed/gemini-3.1-pro-preview.round-1.yaml: 1087890dca27c9e420a80fd57bfd3786d307e21069ccff799bcd3b9f19d34c2a
+    docs/notes/review-runs/2026-06-11-entry-design-topic5-postwrite-r2/parsed/gpt-5.5.round-1.yaml: 7e3559c14413977fe1f2fa00c757c0b2e138b421e46e5ae4f53d03cb6135b303
+    docs/notes/review-runs/2026-06-11-entry-design-topic5-postwrite-r2/raw/claude-sonnet-4-6.round-1.txt: c8c4c73aae0f00335277c8e6df39ace074b53e08fa0d20abafb4d36c7150e729
+    docs/notes/review-runs/2026-06-11-entry-design-topic5-postwrite-r2/raw/gemini-3.1-pro-preview.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/2026-06-11-entry-design-topic5-postwrite-r2/raw/gpt-5.5.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/2026-06-11-entry-design-topic5-postwrite-r2/review_summary.md: 4273cbb7c0b3694df6d427f816077b44e721e4b2e2bf0d404edbcb33e75928f8
+    docs/notes/review-runs/2026-06-11-entry-design-topic5-postwrite-r2/rounds.yaml: 8d47e3035c7235ce923e29383871c99bd7aec87f82bf75422294b69fcc8216ad
+    docs/notes/review-runs/2026-06-11-entry-design-topic5-postwrite-r2/target-manifest.yaml: 69a789b15e0424b91057bc3edec6d8c0bc230a7f4243fb090e7ade0314138b57
+    docs/notes/review-runs/2026-06-11-entry-design-topic5-postwrite-r2/triage.yaml: 194f277d990b6feef2a52029486ec446fe65ff7dc066adfbf250bb167da60289
+    docs/notes/review-runs/2026-06-11-entry-design-topic5-postwrite/model-result-summary.yaml: 56eb55eebab94998b211d6cf6fd2c1e50bb0b1f70444319e2994169f61cdf841
+    docs/notes/review-runs/2026-06-11-entry-design-topic5-postwrite/parsed/claude-sonnet-4-6.round-1.yaml: b52b933ff4bb949b335640b2619f897f474ab197a7f50f25278b954a21d92f84
+    docs/notes/review-runs/2026-06-11-entry-design-topic5-postwrite/parsed/gemini-3.1-pro-preview.round-1.yaml: 640493b5c70eae4f94a1f75626699d2b3cb6d9172992dfaa4e7f9ef0eb7535cd
+    docs/notes/review-runs/2026-06-11-entry-design-topic5-postwrite/parsed/gpt-5.5.round-1.yaml: 075513f54c6ebe82ec881a437f59483c9946acdc212cd13b0b4a5332fe57f7d3
+    docs/notes/review-runs/2026-06-11-entry-design-topic5-postwrite/raw/claude-sonnet-4-6.round-1.txt: e191692fcaa1bd3b1b63c94e999a9f018d51d431fa974bf5350052eec7ea229f
+    docs/notes/review-runs/2026-06-11-entry-design-topic5-postwrite/raw/gemini-3.1-pro-preview.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/2026-06-11-entry-design-topic5-postwrite/raw/gpt-5.5.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/2026-06-11-entry-design-topic5-postwrite/review_summary.md: 6936269da8760b4c46e9d6ba018bb1ccd45dff3811e61d9837946394e1fea075
+    docs/notes/review-runs/2026-06-11-entry-design-topic5-postwrite/rounds.yaml: 82f01f789834bc14cb799e30401721e1d97cb90d0fedd8780b1be07799307e74
+    docs/notes/review-runs/2026-06-11-entry-design-topic5-postwrite/target-manifest.yaml: bcdca7700eae7b6149ff255a6ab9ccddfbb7886085f5cc9e9e3888f60de9a54d
+    docs/notes/review-runs/2026-06-11-entry-design-topic5-postwrite/triage.yaml: d22d21b128af2d02510598270fa984b406490f3f832e64c904ee038b8e7cb816
+    templates/entry/AGENT_ENTRY.template.md: f7e7eef98a5d66e375cd18cb87fe86a9dad2e12f8accb831977acd9679457d74
+- verifier: gpt-5.5
+  target_files:
+  - docs/notes/2026-06-10-deployment-multi-llm-entry-design.md
+  - docs/notes/review-runs/2026-06-11-entry-design-topic5-postwrite-r2/model-result-summary.yaml
+  - docs/notes/review-runs/2026-06-11-entry-design-topic5-postwrite-r2/parsed/claude-sonnet-4-6.round-1.yaml
+  - docs/notes/review-runs/2026-06-11-entry-design-topic5-postwrite-r2/parsed/gemini-3.1-pro-preview.round-1.yaml
+  - docs/notes/review-runs/2026-06-11-entry-design-topic5-postwrite-r2/parsed/gpt-5.5.round-1.yaml
+  - docs/notes/review-runs/2026-06-11-entry-design-topic5-postwrite-r2/raw/claude-sonnet-4-6.round-1.txt
+  - docs/notes/review-runs/2026-06-11-entry-design-topic5-postwrite-r2/raw/gemini-3.1-pro-preview.round-1.txt
+  - docs/notes/review-runs/2026-06-11-entry-design-topic5-postwrite-r2/raw/gpt-5.5.round-1.txt
+  - docs/notes/review-runs/2026-06-11-entry-design-topic5-postwrite-r2/review_summary.md
+  - docs/notes/review-runs/2026-06-11-entry-design-topic5-postwrite-r2/rounds.yaml
+  - docs/notes/review-runs/2026-06-11-entry-design-topic5-postwrite-r2/target-manifest.yaml
+  - docs/notes/review-runs/2026-06-11-entry-design-topic5-postwrite-r2/triage.yaml
+  - docs/notes/review-runs/2026-06-11-entry-design-topic5-postwrite/model-result-summary.yaml
+  - docs/notes/review-runs/2026-06-11-entry-design-topic5-postwrite/parsed/claude-sonnet-4-6.round-1.yaml
+  - docs/notes/review-runs/2026-06-11-entry-design-topic5-postwrite/parsed/gemini-3.1-pro-preview.round-1.yaml
+  - docs/notes/review-runs/2026-06-11-entry-design-topic5-postwrite/parsed/gpt-5.5.round-1.yaml
+  - docs/notes/review-runs/2026-06-11-entry-design-topic5-postwrite/raw/claude-sonnet-4-6.round-1.txt
+  - docs/notes/review-runs/2026-06-11-entry-design-topic5-postwrite/raw/gemini-3.1-pro-preview.round-1.txt
+  - docs/notes/review-runs/2026-06-11-entry-design-topic5-postwrite/raw/gpt-5.5.round-1.txt
+  - docs/notes/review-runs/2026-06-11-entry-design-topic5-postwrite/review_summary.md
+  - docs/notes/review-runs/2026-06-11-entry-design-topic5-postwrite/rounds.yaml
+  - docs/notes/review-runs/2026-06-11-entry-design-topic5-postwrite/target-manifest.yaml
+  - docs/notes/review-runs/2026-06-11-entry-design-topic5-postwrite/triage.yaml
+  - templates/entry/AGENT_ENTRY.template.md
+  target_sha256:
+    docs/notes/2026-06-10-deployment-multi-llm-entry-design.md: adeb52f28a98fb9a3e0d5f48bfa318d7fa662de768f564e798c21c3d40f0f2bd
+    docs/notes/review-runs/2026-06-11-entry-design-topic5-postwrite-r2/model-result-summary.yaml: 4146ffabaf920cabc59c050db52e23e033c97579c0ba036912c672f8458765dd
+    docs/notes/review-runs/2026-06-11-entry-design-topic5-postwrite-r2/parsed/claude-sonnet-4-6.round-1.yaml: a0fef4ce15685014fca3b933a02f2bb07129a6f33b36ea112a7c8922dd7f4712
+    docs/notes/review-runs/2026-06-11-entry-design-topic5-postwrite-r2/parsed/gemini-3.1-pro-preview.round-1.yaml: 1087890dca27c9e420a80fd57bfd3786d307e21069ccff799bcd3b9f19d34c2a
+    docs/notes/review-runs/2026-06-11-entry-design-topic5-postwrite-r2/parsed/gpt-5.5.round-1.yaml: 7e3559c14413977fe1f2fa00c757c0b2e138b421e46e5ae4f53d03cb6135b303
+    docs/notes/review-runs/2026-06-11-entry-design-topic5-postwrite-r2/raw/claude-sonnet-4-6.round-1.txt: c8c4c73aae0f00335277c8e6df39ace074b53e08fa0d20abafb4d36c7150e729
+    docs/notes/review-runs/2026-06-11-entry-design-topic5-postwrite-r2/raw/gemini-3.1-pro-preview.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/2026-06-11-entry-design-topic5-postwrite-r2/raw/gpt-5.5.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/2026-06-11-entry-design-topic5-postwrite-r2/review_summary.md: 4273cbb7c0b3694df6d427f816077b44e721e4b2e2bf0d404edbcb33e75928f8
+    docs/notes/review-runs/2026-06-11-entry-design-topic5-postwrite-r2/rounds.yaml: 8d47e3035c7235ce923e29383871c99bd7aec87f82bf75422294b69fcc8216ad
+    docs/notes/review-runs/2026-06-11-entry-design-topic5-postwrite-r2/target-manifest.yaml: 69a789b15e0424b91057bc3edec6d8c0bc230a7f4243fb090e7ade0314138b57
+    docs/notes/review-runs/2026-06-11-entry-design-topic5-postwrite-r2/triage.yaml: 194f277d990b6feef2a52029486ec446fe65ff7dc066adfbf250bb167da60289
+    docs/notes/review-runs/2026-06-11-entry-design-topic5-postwrite/model-result-summary.yaml: 56eb55eebab94998b211d6cf6fd2c1e50bb0b1f70444319e2994169f61cdf841
+    docs/notes/review-runs/2026-06-11-entry-design-topic5-postwrite/parsed/claude-sonnet-4-6.round-1.yaml: b52b933ff4bb949b335640b2619f897f474ab197a7f50f25278b954a21d92f84
+    docs/notes/review-runs/2026-06-11-entry-design-topic5-postwrite/parsed/gemini-3.1-pro-preview.round-1.yaml: 640493b5c70eae4f94a1f75626699d2b3cb6d9172992dfaa4e7f9ef0eb7535cd
+    docs/notes/review-runs/2026-06-11-entry-design-topic5-postwrite/parsed/gpt-5.5.round-1.yaml: 075513f54c6ebe82ec881a437f59483c9946acdc212cd13b0b4a5332fe57f7d3
+    docs/notes/review-runs/2026-06-11-entry-design-topic5-postwrite/raw/claude-sonnet-4-6.round-1.txt: e191692fcaa1bd3b1b63c94e999a9f018d51d431fa974bf5350052eec7ea229f
+    docs/notes/review-runs/2026-06-11-entry-design-topic5-postwrite/raw/gemini-3.1-pro-preview.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/2026-06-11-entry-design-topic5-postwrite/raw/gpt-5.5.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/2026-06-11-entry-design-topic5-postwrite/review_summary.md: 6936269da8760b4c46e9d6ba018bb1ccd45dff3811e61d9837946394e1fea075
+    docs/notes/review-runs/2026-06-11-entry-design-topic5-postwrite/rounds.yaml: 82f01f789834bc14cb799e30401721e1d97cb90d0fedd8780b1be07799307e74
+    docs/notes/review-runs/2026-06-11-entry-design-topic5-postwrite/target-manifest.yaml: bcdca7700eae7b6149ff255a6ab9ccddfbb7886085f5cc9e9e3888f60de9a54d
+    docs/notes/review-runs/2026-06-11-entry-design-topic5-postwrite/triage.yaml: d22d21b128af2d02510598270fa984b406490f3f832e64c904ee038b8e7cb816
+    templates/entry/AGENT_ENTRY.template.md: f7e7eef98a5d66e375cd18cb87fe86a9dad2e12f8accb831977acd9679457d74
+- verifier: gemini-3.1-pro-preview
+  target_files:
+  - docs/notes/2026-06-10-deployment-multi-llm-entry-design.md
+  - docs/notes/review-runs/2026-06-11-entry-design-topic5-postwrite-r2/model-result-summary.yaml
+  - docs/notes/review-runs/2026-06-11-entry-design-topic5-postwrite-r2/parsed/claude-sonnet-4-6.round-1.yaml
+  - docs/notes/review-runs/2026-06-11-entry-design-topic5-postwrite-r2/parsed/gemini-3.1-pro-preview.round-1.yaml
+  - docs/notes/review-runs/2026-06-11-entry-design-topic5-postwrite-r2/parsed/gpt-5.5.round-1.yaml
+  - docs/notes/review-runs/2026-06-11-entry-design-topic5-postwrite-r2/raw/claude-sonnet-4-6.round-1.txt
+  - docs/notes/review-runs/2026-06-11-entry-design-topic5-postwrite-r2/raw/gemini-3.1-pro-preview.round-1.txt
+  - docs/notes/review-runs/2026-06-11-entry-design-topic5-postwrite-r2/raw/gpt-5.5.round-1.txt
+  - docs/notes/review-runs/2026-06-11-entry-design-topic5-postwrite-r2/review_summary.md
+  - docs/notes/review-runs/2026-06-11-entry-design-topic5-postwrite-r2/rounds.yaml
+  - docs/notes/review-runs/2026-06-11-entry-design-topic5-postwrite-r2/target-manifest.yaml
+  - docs/notes/review-runs/2026-06-11-entry-design-topic5-postwrite-r2/triage.yaml
+  - docs/notes/review-runs/2026-06-11-entry-design-topic5-postwrite/model-result-summary.yaml
+  - docs/notes/review-runs/2026-06-11-entry-design-topic5-postwrite/parsed/claude-sonnet-4-6.round-1.yaml
+  - docs/notes/review-runs/2026-06-11-entry-design-topic5-postwrite/parsed/gemini-3.1-pro-preview.round-1.yaml
+  - docs/notes/review-runs/2026-06-11-entry-design-topic5-postwrite/parsed/gpt-5.5.round-1.yaml
+  - docs/notes/review-runs/2026-06-11-entry-design-topic5-postwrite/raw/claude-sonnet-4-6.round-1.txt
+  - docs/notes/review-runs/2026-06-11-entry-design-topic5-postwrite/raw/gemini-3.1-pro-preview.round-1.txt
+  - docs/notes/review-runs/2026-06-11-entry-design-topic5-postwrite/raw/gpt-5.5.round-1.txt
+  - docs/notes/review-runs/2026-06-11-entry-design-topic5-postwrite/review_summary.md
+  - docs/notes/review-runs/2026-06-11-entry-design-topic5-postwrite/rounds.yaml
+  - docs/notes/review-runs/2026-06-11-entry-design-topic5-postwrite/target-manifest.yaml
+  - docs/notes/review-runs/2026-06-11-entry-design-topic5-postwrite/triage.yaml
+  - templates/entry/AGENT_ENTRY.template.md
+  target_sha256:
+    docs/notes/2026-06-10-deployment-multi-llm-entry-design.md: adeb52f28a98fb9a3e0d5f48bfa318d7fa662de768f564e798c21c3d40f0f2bd
+    docs/notes/review-runs/2026-06-11-entry-design-topic5-postwrite-r2/model-result-summary.yaml: 4146ffabaf920cabc59c050db52e23e033c97579c0ba036912c672f8458765dd
+    docs/notes/review-runs/2026-06-11-entry-design-topic5-postwrite-r2/parsed/claude-sonnet-4-6.round-1.yaml: a0fef4ce15685014fca3b933a02f2bb07129a6f33b36ea112a7c8922dd7f4712
+    docs/notes/review-runs/2026-06-11-entry-design-topic5-postwrite-r2/parsed/gemini-3.1-pro-preview.round-1.yaml: 1087890dca27c9e420a80fd57bfd3786d307e21069ccff799bcd3b9f19d34c2a
+    docs/notes/review-runs/2026-06-11-entry-design-topic5-postwrite-r2/parsed/gpt-5.5.round-1.yaml: 7e3559c14413977fe1f2fa00c757c0b2e138b421e46e5ae4f53d03cb6135b303
+    docs/notes/review-runs/2026-06-11-entry-design-topic5-postwrite-r2/raw/claude-sonnet-4-6.round-1.txt: c8c4c73aae0f00335277c8e6df39ace074b53e08fa0d20abafb4d36c7150e729
+    docs/notes/review-runs/2026-06-11-entry-design-topic5-postwrite-r2/raw/gemini-3.1-pro-preview.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/2026-06-11-entry-design-topic5-postwrite-r2/raw/gpt-5.5.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/2026-06-11-entry-design-topic5-postwrite-r2/review_summary.md: 4273cbb7c0b3694df6d427f816077b44e721e4b2e2bf0d404edbcb33e75928f8
+    docs/notes/review-runs/2026-06-11-entry-design-topic5-postwrite-r2/rounds.yaml: 8d47e3035c7235ce923e29383871c99bd7aec87f82bf75422294b69fcc8216ad
+    docs/notes/review-runs/2026-06-11-entry-design-topic5-postwrite-r2/target-manifest.yaml: 69a789b15e0424b91057bc3edec6d8c0bc230a7f4243fb090e7ade0314138b57
+    docs/notes/review-runs/2026-06-11-entry-design-topic5-postwrite-r2/triage.yaml: 194f277d990b6feef2a52029486ec446fe65ff7dc066adfbf250bb167da60289
+    docs/notes/review-runs/2026-06-11-entry-design-topic5-postwrite/model-result-summary.yaml: 56eb55eebab94998b211d6cf6fd2c1e50bb0b1f70444319e2994169f61cdf841
+    docs/notes/review-runs/2026-06-11-entry-design-topic5-postwrite/parsed/claude-sonnet-4-6.round-1.yaml: b52b933ff4bb949b335640b2619f897f474ab197a7f50f25278b954a21d92f84
+    docs/notes/review-runs/2026-06-11-entry-design-topic5-postwrite/parsed/gemini-3.1-pro-preview.round-1.yaml: 640493b5c70eae4f94a1f75626699d2b3cb6d9172992dfaa4e7f9ef0eb7535cd
+    docs/notes/review-runs/2026-06-11-entry-design-topic5-postwrite/parsed/gpt-5.5.round-1.yaml: 075513f54c6ebe82ec881a437f59483c9946acdc212cd13b0b4a5332fe57f7d3
+    docs/notes/review-runs/2026-06-11-entry-design-topic5-postwrite/raw/claude-sonnet-4-6.round-1.txt: e191692fcaa1bd3b1b63c94e999a9f018d51d431fa974bf5350052eec7ea229f
+    docs/notes/review-runs/2026-06-11-entry-design-topic5-postwrite/raw/gemini-3.1-pro-preview.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/2026-06-11-entry-design-topic5-postwrite/raw/gpt-5.5.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/2026-06-11-entry-design-topic5-postwrite/review_summary.md: 6936269da8760b4c46e9d6ba018bb1ccd45dff3811e61d9837946394e1fea075
+    docs/notes/review-runs/2026-06-11-entry-design-topic5-postwrite/rounds.yaml: 82f01f789834bc14cb799e30401721e1d97cb90d0fedd8780b1be07799307e74
+    docs/notes/review-runs/2026-06-11-entry-design-topic5-postwrite/target-manifest.yaml: bcdca7700eae7b6149ff255a6ab9ccddfbb7886085f5cc9e9e3888f60de9a54d
+    docs/notes/review-runs/2026-06-11-entry-design-topic5-postwrite/triage.yaml: d22d21b128af2d02510598270fa984b406490f3f832e64c904ee038b8e7cb816
+    templates/entry/AGENT_ENTRY.template.md: f7e7eef98a5d66e375cd18cb87fe86a9dad2e12f8accb831977acd9679457d74
+review_run:
+  path: docs/notes/review-runs/2026-06-11-entry-design-topic5-postwrite-r2
+  summary_path: docs/notes/review-runs/2026-06-11-entry-design-topic5-postwrite-r2/model-result-summary.yaml
+notes: Generated template; verify target_files cover current post-write targets before
+  use.

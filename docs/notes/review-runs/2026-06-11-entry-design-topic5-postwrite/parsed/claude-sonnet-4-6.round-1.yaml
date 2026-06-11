@@ -1,0 +1,21 @@
+role: primary
+provider: anthropic-api
+model: claude-sonnet-4-6
+attempts: 1
+duration_seconds: 14.089
+findings:
+- severity: INFO
+  target_location: §3.6 論点5：操縦LLM別のAPI既定設定 — 既定variant構成
+  description: adversarial モデルが gpt-5.4 から gpt-5.5 へ変更されたと記載されているが、変更理由が記録されていない。
+  rationale: 設計記録として変更の根拠（性能差、安定性、可用性等）が残っていないと、後から判断の妥当性を検証できない。将来の再オープン時に根拠が失われるリスクがある。
+- severity: INFO
+  target_location: §3.6 論点5 — proxy_model の扱い
+  description: proxy_model は設定ファイル上の既定キーが現状存在しないため『利用時の選択規則として扱う』とされているが、その選択規則の具体的な記述先（ガイド、テンプレート等）が実装計画
+    4 以外に明示されていない。
+  rationale: 設定キーが存在しない状態で原則だけを記録しても、LLM が初期設定時に正しく適用できない可能性がある。実装計画 4 の対象ファイルに proxy_model
+    選択規則の記述が含まれるか確認が必要。
+- severity: INFO
+  target_location: §3.6 論点5 — Gemini 操縦時の扱い
+  description: Gemini が操縦する場合は『今回は variant を追加しない』とされているが、Gemini 操縦時の暫定ガイダンスがどこにも記録されていない。
+  rationale: AGENT_ENTRY.template.md §10 に Claude と Codex の既定のみ記載された場合、将来 Gemini で操縦した利用者が判断根拠を持てない。DEPLOYMENT.md
+    §4 の再検討リストへの明示的な追記が望ましい。

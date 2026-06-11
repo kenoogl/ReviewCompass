@@ -1,0 +1,20 @@
+findings:
+  - severity: INFO
+    target_location: "§3.6 論点5：操縦LLM別のAPI既定設定"
+    description: "gpt-5.4、gpt-5.5、claude-opus-4-8、gemini-3.1-pro-preview 等の具体的モデル識別子が記録されているが、これらは2026-06-10時点の想定モデル名であり、実際の提供名称・バージョンと乖離するリスクがある。"
+    rationale: "設計記録が将来の実装・レビューの正本となるため、モデル識別子が実態と合わない場合に設定ファイルとの齟齬が生じ、トレーサビリティが損なわれる。記録作成時点での確認済み識別子である旨を明示するか、config/api-settings.yaml を正本として本記録は例示に留める旨を補記することが望ましい。"
+
+  - severity: INFO
+    target_location: "§3.5 ツール一般化、探索順の記述"
+    description: "feature-dependency.yaml の探索順として `.reviewcompass/feature-dependency.yaml` → `stages/feature-dependency.yaml` → 直下の `feature-dependency.yaml` の3段が定義されているが、「直下の `feature-dependency.yaml`」が指す基準ディレクトリ（実行場所か配布物rootか）が本文中で明示されていない。"
+    rationale: "実装者が探索ロジックを記述する際、第3候補の基準点が曖昧なままだと挙動が不定になるリスクがある。「実行場所直下」または「配布物root直下」のいずれかを明記することで設計の完全性が高まる。"
+
+  - severity: INFO
+    target_location: "§3.3 論点3：hookの配布方針"
+    description: "`.codex/hooks.json` の雛形を配布するとあるが、Codex CLI における hooks.json の仕様（キー名・実行タイミング・失敗時の挙動）への参照や注記が本記録内にない。"
+    rationale: "Claude 用の `.claude/settings.json` に関しては hook 登録断片という記述があり対称性に欠ける。将来の実装者やレビュワーが Codex 側の設定根拠を本記録から追えないため、仕様参照先または簡易説明の追記が望ましい。"
+
+  - severity: INFO
+    target_location: "§4 実装計画 ステップ2"
+    description: "「workflow-management の再オープン手続き（変更分類 → 上流影響判定）」と記載されているが、再オープン手続きの開始条件・承認者・完了判定の基準が本記録内で参照されていない。"
+    rationale: "設計記録は実装の入力文書と位置付けられているため、手続き起動のトリガーと完了基準を関連記録（workflow-management 機能の既存定義）へのポインタとして補記することで、実装フェーズでの手戻りを防ぎやすくなる。"

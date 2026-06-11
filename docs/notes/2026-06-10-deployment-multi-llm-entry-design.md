@@ -59,12 +59,27 @@
 - 開発リポジトリの `stages/feature-dependency.yaml` に 7 機能の `feature_order` を追記し、既存挙動を回帰テストで担保する。
 - workflow-management の完了済み仕様に触れるため、再オープン手続き＋TDD（テスト先行）で実施する。
 
+### 3.6 論点 5：操縦 LLM 別の API 既定設定（2026-06-11 追補）
+
+- 背景：従来の 3 役 variant 構成は「操縦（セッションを動かし起草する）LLM＝Claude」を暗黙の前提にしており、Codex（GPT 系）が操縦すると adversarial（反証役）が起草者と同系列になり独立性が下がる。利用者の指摘により論点 5 として検討し、各項目を個別承認した。
+- 独立性の原則：
+  1. 単独検証役（1 体での post-write 検証など）は、操縦 LLM と別系列を必須とする。
+  2. 3 役構成の adversarial と judgment は、操縦 LLM と別系列を必須とする。
+  3. 3 役構成の primary（検出役）は、操縦 LLM と同系列を許容する（最終判定を持たず、残り 2 役の独立で全体の独立性が保たれるため。開発実績と同型）。
+  4. proxy_model（人の判断の代行）は、操縦 LLM と別系列を必須とする。設定ファイル上の既定キーは現状存在しないため、利用時の選択規則として扱い、AGENT_ENTRY テンプレート §10 の共通節に明記する。
+- 既定 variant の構成（`config/api-settings.yaml` 反映済み）：
+  - 接尾辞なしの `*_independent_3way` 系（post_write_verification／yaml_audit／implementation_review）＝ **Claude Code 操縦時の既定**。adversarial を gpt-5.4 から gpt-5.5 へ変更（利用者判断。反証役へより強いモデルを充てるため。Codex 操縦既定の adversarial に claude-opus-4-8 を充てたのと同趣旨）。構成：primary=anthropic-api/claude-sonnet-4-6、adversarial=openai-api/gpt-5.5、judgment=gemini-api/gemini-3.1-pro-preview。
+  - 新設の `*_independent_3way_codex_operator` 系（同 3 用途）＝ **Codex CLI 操縦時の既定**。構成：primary=openai-api/gpt-5.4、adversarial=anthropic-api/claude-opus-4-8、judgment=gemini-api/gemini-3.1-pro-preview。
+  - judgment（gemini-3.1-pro-preview）と小規模 1 体検証（`post_write_verification_google`＝gemini-3.5-flash）は両操縦で共用し、操縦を切り替えても判定基準の連続性を保つ。
+  - 既存 variant の改名は行わない（規律文書・過去 run 記録・spec からの参照を保全するため）。Gemini が操縦する場合（将来）は同じ原則で役を回転して対応し、今回は variant を追加しない。
+- 反映先：`config/api-settings.yaml`（実施済み）、`templates/entry/AGENT_ENTRY.template.md` §10 への操縦 LLM 別既定の案内（実施済み）、初期設定ガイドへの操縦 LLM 確認手順（実装計画 4 で実施）。
+
 ## 4. 実装計画
 
 1. 本設計記録の作成と post-write 検証（本ファイル）。
 2. ツール一般化：workflow-management の再オープン手続き（変更分類 → 上流影響判定）→ TDD テスト作成 → 実装 → 全テスト通過。
 3. テンプレート群の作成：`templates/entry/AGENT_ENTRY.template.md`、`templates/hooks/` 3 点、feature-dependency.yaml テンプレート、`deploy-manifest.yaml` への追加。
-4. ガイド更新：`INITIAL_SETUP_LLM_GUIDE.md`（入口合流手順、hook 導入強推奨、feature 立ち上げ）、`INITIAL_DEPLOYMENT_USER_GUIDE.md`（利用者向け説明）、`DEPLOYMENT.md` §4（「Codex アダプタ」行を「LLM 別 adapter 一式」へ拡張）。
+4. ガイド更新：`INITIAL_SETUP_LLM_GUIDE.md`（入口合流手順、hook 導入強推奨、feature 立ち上げ、操縦 LLM の確認と既定 variant の案内）、`INITIAL_DEPLOYMENT_USER_GUIDE.md`（利用者向け説明）、`DEPLOYMENT.md` §4（「Codex アダプタ」行を「LLM 別 adapter 一式」へ拡張）。
 5. 配布物の再生成 → 配布前 smoke → 模擬対象アプリで「対象アプリ独自の feature 構成で `next` が機能する」ことの実験確認（§2-4 の実験の再現による解消確認）。§2-4 の実験は再オープンの TDD テストとして `tests/` に固定化し、成功基準（対象アプリ独自 feature 構成で `next` が DEVIATION にならず stage 判定を返すこと）もテストで表現する。
 6. TODO_NEXT_SESSION.md の更新。
 

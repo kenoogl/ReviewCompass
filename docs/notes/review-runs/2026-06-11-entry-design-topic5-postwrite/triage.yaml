@@ -1,0 +1,64 @@
+run_id: 2026-06-11-entry-design-topic5-postwrite
+triage_status: decided
+generated_at: '2026-06-11T13:09:39.810902+00:00'
+decision_actor: null
+decision_actor_type: human
+items:
+- finding_id: 2026-06-11-entry-design-topic5-postwrite-claude-sonnet-4-6-primary-001
+  run_id: 2026-06-11-entry-design-topic5-postwrite
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: §3.6 論点5：操縦LLM別のAPI既定設定 — 既定variant構成
+  plain_language_summary: adversarial モデルが gpt-5.4 から gpt-5.5 へ変更されたと記載されているが、変更理由が記録されていない。
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-11T13:24:22.063736+00:00'
+  decision_reason: 利用者承認。gpt-5.5 への変更理由（利用者判断、反証役の強化、Codex 操縦既定の opus-4-8 と同趣旨）を §3.6
+    に追記して反映。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-11-entry-design-topic5-postwrite-claude-sonnet-4-6-primary-002
+  run_id: 2026-06-11-entry-design-topic5-postwrite
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: §3.6 論点5 — proxy_model の扱い
+  plain_language_summary: proxy_model は設定ファイル上の既定キーが現状存在しないため『利用時の選択規則として扱う』とされているが、その選択規則の具体的な記述先（ガイド、テンプレート等）が実装計画
+    4 以外に明示されていない。
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-11T13:24:22.111040+00:00'
+  decision_reason: 利用者承認。AGENT_ENTRY テンプレート §10 共通節に proxy_model の別系列選択を 1 行追加し、§3.6
+    に記述先を明記して反映。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-11-entry-design-topic5-postwrite-claude-sonnet-4-6-primary-003
+  run_id: 2026-06-11-entry-design-topic5-postwrite
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: §3.6 論点5 — Gemini 操縦時の扱い
+  plain_language_summary: Gemini が操縦する場合は『今回は variant を追加しない』とされているが、Gemini 操縦時の暫定ガイダンスがどこにも記録されていない。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-11T13:24:22.155352+00:00'
+  decision_reason: 利用者承認。役の回転という原則は §3.6 に記録済みであり、Gemini 操縦の再検討リスト掲載は実装計画 4 の DEPLOYMENT.md
+    §4 拡張で扱う。
+  applied_files: []
+  superseded_by: null
