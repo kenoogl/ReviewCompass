@@ -1,0 +1,4 @@
+run_id: 2026-06-11-agentic-flow-adoption-plan-postwrite
+target_files:
+- path: docs/notes/2026-06-11-agentic-flow-adoption-plan.md
+  sha256: 2754005a6a8b3df8ee736a24ce54ce5952b8a774ea3c24dedade2cfde5a35fe6

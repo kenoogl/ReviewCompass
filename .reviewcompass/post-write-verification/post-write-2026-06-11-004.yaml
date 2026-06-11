@@ -1,0 +1,48 @@
+status: completed
+target_files:
+- docs/notes/2026-06-11-agentic-flow-adoption-plan.md
+- docs/notes/review-runs/2026-06-11-agentic-flow-adoption-plan-postwrite/model-result-summary.yaml
+- docs/notes/review-runs/2026-06-11-agentic-flow-adoption-plan-postwrite/parsed/gemini-3.5-flash.round-1.yaml
+- docs/notes/review-runs/2026-06-11-agentic-flow-adoption-plan-postwrite/raw/gemini-3.5-flash.round-1.txt
+- docs/notes/review-runs/2026-06-11-agentic-flow-adoption-plan-postwrite/review_summary.md
+- docs/notes/review-runs/2026-06-11-agentic-flow-adoption-plan-postwrite/rounds.yaml
+- docs/notes/review-runs/2026-06-11-agentic-flow-adoption-plan-postwrite/target-manifest.yaml
+- docs/notes/review-runs/2026-06-11-agentic-flow-adoption-plan-postwrite/triage.yaml
+target_sha256:
+  docs/notes/2026-06-11-agentic-flow-adoption-plan.md: 2754005a6a8b3df8ee736a24ce54ce5952b8a774ea3c24dedade2cfde5a35fe6
+  docs/notes/review-runs/2026-06-11-agentic-flow-adoption-plan-postwrite/model-result-summary.yaml: e0e014ab865a6a614dc4cdb91b939a7a2957633ea364e0c6ba39a48869c39c40
+  docs/notes/review-runs/2026-06-11-agentic-flow-adoption-plan-postwrite/parsed/gemini-3.5-flash.round-1.yaml: 9a114b639194dd196d0d257f1cd63d1bda5187caa9c87cde69c05dde20043ec8
+  docs/notes/review-runs/2026-06-11-agentic-flow-adoption-plan-postwrite/raw/gemini-3.5-flash.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+  docs/notes/review-runs/2026-06-11-agentic-flow-adoption-plan-postwrite/review_summary.md: ee416a2e0e5d3f2e4ee72c3aa10d98b57b58c062d7d95b2b1b40f435ef130605
+  docs/notes/review-runs/2026-06-11-agentic-flow-adoption-plan-postwrite/rounds.yaml: dcf55cd4c5a92d0b83325a8b633824677e322149ae197942fac339f525addfac
+  docs/notes/review-runs/2026-06-11-agentic-flow-adoption-plan-postwrite/target-manifest.yaml: ae935cb68ba8c9a31e37b0b4bd9f4671f01c88d90ab80fc569248ac5fa535601
+  docs/notes/review-runs/2026-06-11-agentic-flow-adoption-plan-postwrite/triage.yaml: cb9a99068976fe3e570c1b9ec9b0a67ac7d9125b78b57d42b743f9fa3cc284cd
+required_verifiers: &id001
+- gemini-3.5-flash
+completed_verifiers: *id001
+unresolved_substantive_findings: 0
+verifications:
+- verifier: gemini-3.5-flash
+  target_files:
+  - docs/notes/2026-06-11-agentic-flow-adoption-plan.md
+  - docs/notes/review-runs/2026-06-11-agentic-flow-adoption-plan-postwrite/model-result-summary.yaml
+  - docs/notes/review-runs/2026-06-11-agentic-flow-adoption-plan-postwrite/parsed/gemini-3.5-flash.round-1.yaml
+  - docs/notes/review-runs/2026-06-11-agentic-flow-adoption-plan-postwrite/raw/gemini-3.5-flash.round-1.txt
+  - docs/notes/review-runs/2026-06-11-agentic-flow-adoption-plan-postwrite/review_summary.md
+  - docs/notes/review-runs/2026-06-11-agentic-flow-adoption-plan-postwrite/rounds.yaml
+  - docs/notes/review-runs/2026-06-11-agentic-flow-adoption-plan-postwrite/target-manifest.yaml
+  - docs/notes/review-runs/2026-06-11-agentic-flow-adoption-plan-postwrite/triage.yaml
+  target_sha256:
+    docs/notes/2026-06-11-agentic-flow-adoption-plan.md: 2754005a6a8b3df8ee736a24ce54ce5952b8a774ea3c24dedade2cfde5a35fe6
+    docs/notes/review-runs/2026-06-11-agentic-flow-adoption-plan-postwrite/model-result-summary.yaml: e0e014ab865a6a614dc4cdb91b939a7a2957633ea364e0c6ba39a48869c39c40
+    docs/notes/review-runs/2026-06-11-agentic-flow-adoption-plan-postwrite/parsed/gemini-3.5-flash.round-1.yaml: 9a114b639194dd196d0d257f1cd63d1bda5187caa9c87cde69c05dde20043ec8
+    docs/notes/review-runs/2026-06-11-agentic-flow-adoption-plan-postwrite/raw/gemini-3.5-flash.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/2026-06-11-agentic-flow-adoption-plan-postwrite/review_summary.md: ee416a2e0e5d3f2e4ee72c3aa10d98b57b58c062d7d95b2b1b40f435ef130605
+    docs/notes/review-runs/2026-06-11-agentic-flow-adoption-plan-postwrite/rounds.yaml: dcf55cd4c5a92d0b83325a8b633824677e322149ae197942fac339f525addfac
+    docs/notes/review-runs/2026-06-11-agentic-flow-adoption-plan-postwrite/target-manifest.yaml: ae935cb68ba8c9a31e37b0b4bd9f4671f01c88d90ab80fc569248ac5fa535601
+    docs/notes/review-runs/2026-06-11-agentic-flow-adoption-plan-postwrite/triage.yaml: cb9a99068976fe3e570c1b9ec9b0a67ac7d9125b78b57d42b743f9fa3cc284cd
+review_run:
+  path: docs/notes/review-runs/2026-06-11-agentic-flow-adoption-plan-postwrite
+  summary_path: docs/notes/review-runs/2026-06-11-agentic-flow-adoption-plan-postwrite/model-result-summary.yaml
+notes: Generated template; verify target_files cover current post-write targets before
+  use.
