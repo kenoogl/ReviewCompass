@@ -1,0 +1,90 @@
+# Reopen handoff package（conformance-evaluation Requirement 12／design.md §13.9）
+# 本パッケージは draft-only の引き渡し単位であり、正本仕様を直接書き換えない。
+# reopen の起動は利用者の明示承認を必要とする。
+source_conformance_record: .reviewcompass/specs/conformance-evaluation/conformance/2026-06-12-completed-followup-conformance.md
+change_policy: minimal_existing_spec_change
+next_task_prompt_refs:
+  - .reviewcompass/specs/conformance-evaluation/requirements.md
+  - .reviewcompass/specs/conformance-evaluation/design.md
+  - docs/operations/WORKFLOW_NAVIGATION.md
+  - .reviewcompass/specs/conformance-evaluation/conformance/2026-06-12-spec-update-drafts/
+effective_next_task_prompt_path: .reviewcompass/specs/conformance-evaluation/conformance/2026-06-12-reopen-handoff-next-task.prompt.md
+effective_next_task_prompt_sha256: 1fc665b15a15e8fcfc315edd6e3febdfb97f1daadd4f95797a0a36ea85eeb68a
+effective_next_task_prompt_loaded: true
+
+packages:
+  - package_id: MLE-HANDOFF-001
+    gap_ids: [MLE-GAP-001, MLE-GAP-002, MLE-GAP-003]
+    target_feature: workflow-management
+    target_phase: requirements
+    target_documents:
+      - .reviewcompass/specs/workflow-management/requirements.md
+    proposed_update_refs:
+      - 2026-06-12-spec-update-drafts/workflow-management-requirements.draft.md
+    change_type: semantic_change  # MLE-GAP-003 の語彙調停を含むため。GAP-001/002 単体は additive
+    existing_contract_changed: true
+    human_escalation_required: true
+    needs_human_decision: true  # 調停案 A／B／C の選択
+    downstream_reopen_required: true
+    downstream_reopen_phases: [design, tasks]
+
+  - package_id: MLE-HANDOFF-002
+    gap_ids: [MLE-GAP-001, MLE-GAP-002, MLE-GAP-004]
+    target_feature: workflow-management
+    target_phase: design
+    target_documents:
+      - .reviewcompass/specs/workflow-management/design.md
+    proposed_update_refs:
+      - 2026-06-12-spec-update-drafts/workflow-management-design.draft.md
+    change_type: additive
+    existing_contract_changed: false
+    human_escalation_required: false
+    needs_human_decision: true  # 配布テンプレート契約（MLE-C-005・C-006）の所有者確定
+    downstream_reopen_required: false
+    downstream_reopen_phases: []
+
+  - package_id: MLE-HANDOFF-003
+    gap_ids: [MLE-GAP-001, MLE-GAP-003, MLE-GAP-006]
+    target_feature: workflow-management
+    target_phase: tasks
+    target_documents:
+      - .reviewcompass/specs/workflow-management/tasks.md
+    proposed_update_refs:
+      - 2026-06-12-spec-update-drafts/workflow-management-tasks.draft.md
+    change_type: semantic_change  # T-002 の phase_order／schema 契約の現実化を含むため
+    existing_contract_changed: true
+    human_escalation_required: true
+    needs_human_decision: true  # tasks.md の反映要否と形は reopen 手続きで判断（Req 12 受入 5）
+    downstream_reopen_required: true
+    downstream_reopen_phases: [implementation]  # MLE-GAP-006 の根本対応を実施する場合
+
+  - package_id: MLE-HANDOFF-004
+    gap_ids: [MLE-GAP-005]
+    target_feature: evaluation
+    target_phase: requirements
+    target_documents:
+      - .reviewcompass/specs/evaluation/requirements.md
+      - .reviewcompass/specs/evaluation/design.md
+    proposed_update_refs:
+      - 2026-06-12-spec-update-drafts/evaluation-requirements.draft.md
+    change_type: additive
+    existing_contract_changed: false
+    human_escalation_required: false
+    needs_human_decision: true  # evaluation 仕様へ昇格するか、運用規律文書へ留めるかの判断
+    downstream_reopen_required: false
+    downstream_reopen_phases: []
+
+# 参考：reopen 対象外の関連更新（運用文書。post-write 検証を伴う通常更新）
+non_reopen_followups:
+  - target_documents:
+      - docs/operations/WORKFLOW_NAVIGATION.md
+      - docs/operations/WORKFLOW_DISCIPLINE_MAP.yaml
+    gap_ids: [MLE-GAP-001]
+    proposed_update_refs:
+      - 2026-06-12-spec-update-drafts/operations-docs.draft.md
+    needs_human_decision: false
+  - target_documents:
+      - tools/conformance_evaluation/schemas/evaluation_record.schema.json
+    note: mode_internal enum が completed_followup_conformance を許容しない（付随観察）。
+      tools/ 配下のため実装作業として別途扱う。
+    needs_human_decision: true
