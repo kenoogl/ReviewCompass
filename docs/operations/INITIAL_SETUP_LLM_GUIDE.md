@@ -154,6 +154,13 @@ API key は設定ファイルに書かず、環境変数など配布物外の方
    ```
 3. 入口ファイルが存在しない場合は、その 1 行だけの新規ファイルを作る（これも承認のうえ）。同じ行が既にある場合は何もしない。既存の記述は変更しない。
 4. 既存入口の規律と AGENT_ENTRY の規律が衝突している場合（例：既存入口が「commit は自動で実行してよい」と指示しているが、AGENT_ENTRY §5 は利用者の明示承認を求める、というように両立しない指示）は、作業を進めず利用者へ提示する。優先順位は自動で決めず、利用者判断で AGENT_ENTRY 側を調整する。
+5. 対象アプリの `.gitignore` へ、ReviewCompass ツールの実行時生成物の除外 3 行を利用者承認のうえ追記する（除外がないと、2 回目以降の `next` がツール自身の実行記録を未検証の文書変更として誤検出し、`post_write_verification` を返し続ける）。
+
+   ```text
+   docs/logs/workflow-precheck.log
+   .reviewcompass/effective-prompts/
+   .reviewcompass/approvals/commit-approval.json
+   ```
 
 ## 9. feature 一覧の立ち上げ
 

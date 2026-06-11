@@ -1,0 +1,4 @@
+run_id: 2026-06-12-setup-guide-gitignore-postwrite
+target_files:
+- path: docs/operations/INITIAL_SETUP_LLM_GUIDE.md
+  sha256: 19c91da3eea3328625d5c2ad1918b7f16c13dd91bc0676cbb4aa913882c308a0

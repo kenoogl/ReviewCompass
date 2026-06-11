@@ -1,0 +1,48 @@
+status: completed
+target_files:
+- docs/notes/review-runs/2026-06-12-setup-guide-gitignore-postwrite/model-result-summary.yaml
+- docs/notes/review-runs/2026-06-12-setup-guide-gitignore-postwrite/parsed/gemini-3.5-flash.round-1.yaml
+- docs/notes/review-runs/2026-06-12-setup-guide-gitignore-postwrite/raw/gemini-3.5-flash.round-1.txt
+- docs/notes/review-runs/2026-06-12-setup-guide-gitignore-postwrite/review_summary.md
+- docs/notes/review-runs/2026-06-12-setup-guide-gitignore-postwrite/rounds.yaml
+- docs/notes/review-runs/2026-06-12-setup-guide-gitignore-postwrite/target-manifest.yaml
+- docs/notes/review-runs/2026-06-12-setup-guide-gitignore-postwrite/triage.yaml
+- docs/operations/INITIAL_SETUP_LLM_GUIDE.md
+target_sha256:
+  docs/notes/review-runs/2026-06-12-setup-guide-gitignore-postwrite/model-result-summary.yaml: f68bfabd39f64e4b399305eb748d92b8e6c66f7e24ea9ff711efc9cb112f2ddc
+  docs/notes/review-runs/2026-06-12-setup-guide-gitignore-postwrite/parsed/gemini-3.5-flash.round-1.yaml: 7568712858ac7f6a6162a79f712831193060ff1643e0726e8834ce5dc18b1fb3
+  docs/notes/review-runs/2026-06-12-setup-guide-gitignore-postwrite/raw/gemini-3.5-flash.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+  docs/notes/review-runs/2026-06-12-setup-guide-gitignore-postwrite/review_summary.md: 4218ef216b66cb78a9e5558b00d7a41e712e63d0a70bae309629740416c74c80
+  docs/notes/review-runs/2026-06-12-setup-guide-gitignore-postwrite/rounds.yaml: 412af0f770d5e02df0b651e65ba6abbb6ba0a5f827dd732ca86966e5aa20087a
+  docs/notes/review-runs/2026-06-12-setup-guide-gitignore-postwrite/target-manifest.yaml: ea02911017fcb82be27e7ec44291b633ac4f783a790c15d1df730dfbcdfe7cd8
+  docs/notes/review-runs/2026-06-12-setup-guide-gitignore-postwrite/triage.yaml: 50ba836062546a437650319b93f9de99d05a743c1b4706532b713a1b4cb68a48
+  docs/operations/INITIAL_SETUP_LLM_GUIDE.md: 19c91da3eea3328625d5c2ad1918b7f16c13dd91bc0676cbb4aa913882c308a0
+required_verifiers: &id001
+- gemini-3.5-flash
+completed_verifiers: *id001
+unresolved_substantive_findings: 0
+verifications:
+- verifier: gemini-3.5-flash
+  target_files:
+  - docs/notes/review-runs/2026-06-12-setup-guide-gitignore-postwrite/model-result-summary.yaml
+  - docs/notes/review-runs/2026-06-12-setup-guide-gitignore-postwrite/parsed/gemini-3.5-flash.round-1.yaml
+  - docs/notes/review-runs/2026-06-12-setup-guide-gitignore-postwrite/raw/gemini-3.5-flash.round-1.txt
+  - docs/notes/review-runs/2026-06-12-setup-guide-gitignore-postwrite/review_summary.md
+  - docs/notes/review-runs/2026-06-12-setup-guide-gitignore-postwrite/rounds.yaml
+  - docs/notes/review-runs/2026-06-12-setup-guide-gitignore-postwrite/target-manifest.yaml
+  - docs/notes/review-runs/2026-06-12-setup-guide-gitignore-postwrite/triage.yaml
+  - docs/operations/INITIAL_SETUP_LLM_GUIDE.md
+  target_sha256:
+    docs/notes/review-runs/2026-06-12-setup-guide-gitignore-postwrite/model-result-summary.yaml: f68bfabd39f64e4b399305eb748d92b8e6c66f7e24ea9ff711efc9cb112f2ddc
+    docs/notes/review-runs/2026-06-12-setup-guide-gitignore-postwrite/parsed/gemini-3.5-flash.round-1.yaml: 7568712858ac7f6a6162a79f712831193060ff1643e0726e8834ce5dc18b1fb3
+    docs/notes/review-runs/2026-06-12-setup-guide-gitignore-postwrite/raw/gemini-3.5-flash.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/2026-06-12-setup-guide-gitignore-postwrite/review_summary.md: 4218ef216b66cb78a9e5558b00d7a41e712e63d0a70bae309629740416c74c80
+    docs/notes/review-runs/2026-06-12-setup-guide-gitignore-postwrite/rounds.yaml: 412af0f770d5e02df0b651e65ba6abbb6ba0a5f827dd732ca86966e5aa20087a
+    docs/notes/review-runs/2026-06-12-setup-guide-gitignore-postwrite/target-manifest.yaml: ea02911017fcb82be27e7ec44291b633ac4f783a790c15d1df730dfbcdfe7cd8
+    docs/notes/review-runs/2026-06-12-setup-guide-gitignore-postwrite/triage.yaml: 50ba836062546a437650319b93f9de99d05a743c1b4706532b713a1b4cb68a48
+    docs/operations/INITIAL_SETUP_LLM_GUIDE.md: 19c91da3eea3328625d5c2ad1918b7f16c13dd91bc0676cbb4aa913882c308a0
+review_run:
+  path: docs/notes/review-runs/2026-06-12-setup-guide-gitignore-postwrite
+  summary_path: docs/notes/review-runs/2026-06-12-setup-guide-gitignore-postwrite/model-result-summary.yaml
+notes: Generated template; verify target_files cover current post-write targets before
+  use.
