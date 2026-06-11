@@ -1,0 +1,82 @@
+run_id: 2026-06-12-todo-step6-postwrite
+triage_status: decided
+generated_at: '2026-06-11T21:22:25.555371+00:00'
+decision_actor: null
+decision_actor_type: human
+items:
+- finding_id: 2026-06-12-todo-step6-postwrite-claude-sonnet-4-6-primary-001
+  run_id: 2026-06-12-todo-step6-postwrite
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: '## 3. 現在位置（2026-06-12 時点）'
+  plain_language_summary: '現在位置セクションは適切に更新されており、next --json の kind: completed 状態、git
+    同期状態、および直近の完了作業（ステップ 1〜5）が記録されている。'
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-11T21:23:15.855743+00:00'
+  decision_reason: 肯定評価（現在位置の更新が適切）であり修正対象なし。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-12-todo-step6-postwrite-claude-sonnet-4-6-primary-002
+  run_id: 2026-06-12-todo-step6-postwrite
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: '## 4. 次作業'
+  plain_language_summary: 未完了義務（conformance-evaluation 起動、ツール自己除外の根本対応、WP-001 の記録）と候補タスクが分離して記載されており、スリム化の観点で整理されている。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-11T21:23:15.903651+00:00'
+  decision_reason: 肯定評価（義務と候補の分離が適切）であり修正対象なし。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-12-todo-step6-postwrite-claude-sonnet-4-6-primary-003
+  run_id: 2026-06-12-todo-step6-postwrite
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: '## 4. 次作業 — 未完了の義務 2.'
+  plain_language_summary: 改修候補として記載されている「ツールが自己実行時生成物を post-write 検証対象から除外する根本対応」は、現状
+    .gitignore 追記での回避のみで根本対応未着手とされているが、これが義務タスクなのか候補タスクなのか位置づけが曖昧。conformance-evaluation
+    の一部として扱うのか、独立タスクとして扱うのかが不明瞭。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-11T21:23:15.948595+00:00'
+  decision_reason: 義務 2 の冒頭『その際の改修候補』は義務 1（conformance-evaluation）の実施時に扱うことを示しており、独立起票は不要という位置づけを既に表現している。次回
+    TODO 更新時の表現改善候補として記録に留める。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-12-todo-step6-postwrite-claude-sonnet-4-6-primary-004
+  run_id: 2026-06-12-todo-step6-postwrite
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: '## 5. 参照'
+  plain_language_summary: 参照リンクは必要最小限に絞られており、過去の完了事項の詳細は git log と docs/notes/ に委譲されている。スリム化の方針と合致している。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-11T21:23:15.993311+00:00'
+  decision_reason: 肯定評価（参照の絞り込みが適切）であり修正対象なし。
+  applied_files: []
+  superseded_by: null
