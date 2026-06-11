@@ -1,0 +1,48 @@
+proposal_id: WP-001
+proposal_type: new_discipline
+target_discipline_path: docs/disciplines/discipline_finding_cause_attribution.md
+status: pending
+created_at: "2026-06-10"
+motivating_evidence:
+  - source: >-
+      河口怜央・林香織・佐藤博之・小林展英・竹内広宜「生成AIを用いた仕様書とコード間の
+      整合性確認手法の提案と評価」第40回人工知能学会全国大会（JSAI 2026）5J2-OS-31a-06
+    location: 5.3節「偽陰性の分析」および表4（偽陰性発生箇所の分析結果）
+    observation: >-
+      誤判定を発生工程別に帰属させた結果、手法起因ゼロ・仕様書の記述形式起因79%
+      （特に画像のみのUI仕様）・残りは生成AIの解釈能力起因と判明し、改善先が
+      「AIが解釈しやすい仕様記述指針の整理」に機械的に定まった。
+      原因帰属の分類軸が改善先の判断を属人化させずに決める実例である。
+  - source: ReviewCompass の評価実験と review-run 記録
+    location: tools/experiments/results/（7モデル比較）、docs/notes/review-runs/
+    observation: >-
+      raw・整形済み・三段階トリアージは保存しているが、外れ所見
+      （leave-as-is 判定・誤報・見逃し）の原因を記録する欄がなく、
+      「規律を直すのか、プロンプトを直すのか、モデル割当を変えるのか」の判断が
+      セッションごとの人間の解釈に依存している。
+proposed_change:
+  draft_discipline: >-
+    外れ所見（トリアージで leave-as-is とされた所見、誤報、見逃し）には原因分類
+    （cause_attribution）を記録する。分類値は
+    prompt（レビュー観点・プロンプト起因）／document_format（対象文書の書式起因。
+    画像のみの仕様・機械可読でない表など）／model_capability（モデル能力起因）／
+    method（手法・手順起因）／unclassified（未分類）とする。
+    分類は raw 参照を根拠として付け、conformance-evaluation・評価実験・
+    review-run トリアージの記録に cause_attribution 欄を設ける。
+    self-improvement の信号抽出はこの分類を入力とし、prompt → プロンプト修正、
+    document_format → 規律・テンプレート・記述指針の修正、
+    model_capability → モデル割当の変更、というように改善先へ機械的に振り分ける。
+  relationship_notes: >-
+    facts_vs_interpretation と相補的。原因分類は raw 事実に基づく解釈であるため、
+    分類には根拠となる raw 参照を必須とし、事実（所見・判定）と解釈（原因帰属）を
+    分けて記録する。記録は YAML で持ち、yaml_audit の機械検査の対象に含められる
+    形式とする。
+  related_disciplines:
+    - docs/disciplines/discipline_facts_vs_interpretation.md
+    - docs/disciplines/discipline_yaml_audit.md
+expected_effect: >-
+  外れ所見の原因帰属が記録として残ることで、改善先の振り分け
+  （規律・テンプレートを直す／プロンプトを直す／モデル割当を変える）が
+  機械的になり、self-improvement の信号抽出の入力品質が上がる。
+  また蓄積された分類比率から、入力文書の記述指針整備など優先度の高い
+  改善領域を定量的に特定できる。
