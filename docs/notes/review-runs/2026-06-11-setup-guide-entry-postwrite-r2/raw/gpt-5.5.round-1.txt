@@ -1,0 +1,9 @@
+findings:
+  - severity: ERROR
+    target_location: "docs/operations/INITIAL_SETUP_LLM_GUIDE.md §10 hook 導入"
+    description: "既存の `.codex/hooks.json`、`.claude/hooks/pre-bash-precheck.sh`、`.codex/hooks/pre-bash-precheck.sh` がある場合の確認・退避・マージ手順が明記されていない。"
+    rationale: "本文書の基本規律では対象アプリの既存ファイルを不用意に変更しないことを求めているが、§10 は Claude の `settings.json` だけ既存時の合流に触れ、Codex 側 hooks 設定や hook script は作成・複製とだけ指示している。既存のユーザー設定や hook を上書きするリスクがあり、multi-LLM 導入手順として安全性が不足している。"
+  - severity: WARN
+    target_location: "docs/operations/INITIAL_SETUP_LLM_GUIDE.md §3.1, §3.2, §3.3"
+    description: "初期確認で multi-LLM 入口・hook 導入に必要なテンプレートの存在確認が不足している。"
+    rationale: "後続の §8 と §10 は `templates/entry/AGENT_ENTRY.template.md`、`templates/hooks/pre-bash-precheck.sh.template`、`templates/hooks/claude-settings.json.template`、`templates/hooks/codex-hooks.json.template` に依存しているが、パターン別の配布物確認では `tools/`、`runtime/`、`config/api-settings.yaml` などしか確認していない。配布物単体確認や対象アプリ設定の早い段階で欠落を検出できず、入口合流または hook 導入の途中で失敗する可能性がある。"

@@ -1,0 +1,5 @@
+findings:
+  - severity: WARN
+    target_location: "docs/operations/DEPLOYMENT.md §7 第3者への配布"
+    description: "第3者側の導入手順に `.reviewcompass/AGENT_ENTRY.md` の生成、`CLAUDE.md` / `AGENTS.md` からの参照追記、Claude/Codex hook テンプレートの適用が含まれていない。"
+    rationale: "§2.8 と §6 では複数 LLM 共通入口と Claude/Codex hook を配布・生成対象として定義しているが、実際の導入手順が config/specs 生成までに留まっているため、第3者配布時に multi-LLM entry guide のセットアップが抜ける可能性がある。"

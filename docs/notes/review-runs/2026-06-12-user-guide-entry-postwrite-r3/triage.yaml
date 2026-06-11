@@ -1,0 +1,120 @@
+run_id: 2026-06-12-user-guide-entry-postwrite-r3
+triage_status: decided
+generated_at: '2026-06-11T15:40:58.992524+00:00'
+decision_actor: null
+decision_actor_type: human
+items:
+- finding_id: 2026-06-12-user-guide-entry-postwrite-r3-claude-sonnet-4-6-primary-001
+  run_id: 2026-06-12-user-guide-entry-postwrite-r3
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: §4（LLM セッションの起動パターン）冒頭
+  plain_language_summary: パターン表の「対象アプリの扱い」列の記述が非対称で、パターン 1 は『LLM に対象アプリ root を伝える』、パターン
+    2 は『LLM に ReviewCompass 配布物ディレクトリを伝える』と書かれているが、パターン 3 の同列が空欄になっている。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-11T16:05:16.267586+00:00'
+  decision_reason: 利用者承認。パターン表の列構成は既存構造で今回の変更範囲外。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-12-user-guide-entry-postwrite-r3-claude-sonnet-4-6-primary-002
+  run_id: 2026-06-12-user-guide-entry-postwrite-r3
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: §8（配布前 smoke）依頼例コードブロック
+  plain_language_summary: 依頼例中の '--smoke-external-app-root <対象アプリroot>' のプレースホルダーが山括弧形式で記載されているが、§4.1
+    の依頼例では '<対象アプリroot>' と半角スペースなしの形式が混在している。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-11T16:05:16.317265+00:00'
+  decision_reason: 利用者承認。プレースホルダ表記の揺れは既存記述で実害なし。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-12-user-guide-entry-postwrite-r3-claude-sonnet-4-6-primary-003
+  run_id: 2026-06-12-user-guide-entry-postwrite-r3
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: §10（対象アプリ側に作られるもの）末尾段落
+  plain_language_summary: variant と役ごとのモデルが『レビュー実行前に必ず利用者へ提示される』と説明されているが、その提示がどの画面・出力で行われるかの参照先が示されていない。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-11T16:05:16.366591+00:00'
+  decision_reason: 利用者承認。variant 提示は review-run 実行時の標準出力で行われ、利用者は LLM の報告として受け取る。参照先の特定は不要。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-12-user-guide-entry-postwrite-r3-claude-sonnet-4-6-primary-004
+  run_id: 2026-06-12-user-guide-entry-postwrite-r3
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: §17（トラブルシュート）テーブル全体
+  plain_language_summary: smoke test が失敗する行の「確認すること」に Python 依存（httpx, PyYAML）不足によるエラーへの言及がない。§8
+    本文では ModuleNotFoundError の具体例が説明されているが、トラブルシュート表にその対応項目がない。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-11T16:05:16.415583+00:00'
+  decision_reason: 利用者承認。Python 依存の不足は §8 本文に症状と対処を記載済み。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-12-user-guide-entry-postwrite-r3-gpt-5.5-adversarial-001
+  run_id: 2026-06-12-user-guide-entry-postwrite-r3
+  source_model: gpt-5.5
+  source_round: round-1
+  source_raw_path: raw/gpt-5.5.round-1.txt
+  source_parsed_path: parsed/gpt-5.5.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: §6 事前条件（項目1〜2） / §4 LLM セッションの起動パターン / §8 配布前 smoke
+  plain_language_summary: 事前条件では「生成後の初期検証と日常運用」は対象アプリリポジトリの LLM セッションに依頼すると固定している一方、§4
+    では配布物ディレクトリ起動のパターンを許容し、§8 では配布前 smoke を ReviewCompass 開発リポジトリ側の LLM に依頼するとしている。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-11T16:05:16.465228+00:00'
+  decision_reason: 利用者承認。r1・r2 で確定済みの同根 3 回目（§6 は生成後運用、§4・§8 は初期設定・配布前検査の場面）。表現改善は将来候補として記録済み。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-12-user-guide-entry-postwrite-r3-gpt-5.5-adversarial-002
+  run_id: 2026-06-12-user-guide-entry-postwrite-r3
+  source_model: gpt-5.5
+  source_round: round-1
+  source_raw_path: raw/gpt-5.5.round-1.txt
+  source_parsed_path: parsed/gpt-5.5.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: §10 対象アプリ側に作られるもの（CLAUDE.md／AGENTS.md への参照 1 行）
+  plain_language_summary: 既存の CLAUDE.md / AGENTS.md に参照行を追記する説明はあるが、既存記述が `.reviewcompass/AGENT_ENTRY.md`
+    の入口規律と競合する場合の確認・扱いが本文書内では明示されていない。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-11T16:05:16.515120+00:00'
+  decision_reason: 利用者承認。競合時の停止と利用者提示は LLM 側手引き（INITIAL_SETUP_LLM_GUIDE §8 手順 4）が規定。利用者向けには追記の承認が必要なことを
+    §10 で記載済み。
+  applied_files: []
+  superseded_by: null

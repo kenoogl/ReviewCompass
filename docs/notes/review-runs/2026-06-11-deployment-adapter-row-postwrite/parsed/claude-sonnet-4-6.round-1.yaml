@@ -1,0 +1,24 @@
+role: primary
+provider: anthropic-api
+model: claude-sonnet-4-6
+attempts: 1
+duration_seconds: 16.2
+findings:
+- severity: WARN
+  target_location: 'セクション 4, 表: LLM 別 adapter 一式, 条件列'
+  description: 設計記録 `docs/notes/2026-06-10-deployment-multi-llm-entry-design.md` への参照が本文に埋め込まれているが、このファイルはセクション
+    3 の除外リスト `docs/notes/` に含まれるため配布物には含まれない。
+  rationale: 配布物から除外されるファイルへの内部参照は、配布物を受け取った利用者にとって参照不能なリンクとなる。参照先が開発証跡であることを明記するか、第3者配布時には参照を削除または別資産へ誘導する旨を注記すべきである。
+- severity: WARN
+  target_location: 'セクション 4, 表: LLM 別 adapter 一式, 条件列'
+  description: '`templates/entry/` および `templates/hooks/` が第3者配布の候補として記載されているが、セクション
+    2 の配布物 v0 の allowlist にこれらのパスが存在しない。'
+  rationale: 初期デプロイ配布物 v0 の allowlist と第3者配布候補リストの対応関係が不明確であり、`templates/entry/` や
+    `templates/hooks/` が現時点で開発リポジトリに存在するかどうか、また v0 では意図的に除外しているのかが判断できない。将来の配布物との対応を明示するか、v0
+    に含まれない理由を補足する必要がある。
+- severity: INFO
+  target_location: 'セクション 4, 表: LLM 別 adapter 一式, 条件列'
+  description: multi_llm_entry の設計詳細（Gemini 操縦時の variant、`WORKFLOW_NAVIGATION_FOR_CLAUDE.md`／`FOR_CODEX.md`
+    の扱い）は第3者配布時の再検討事項として列挙されているが、各 LLM 向けエントリガイドの現状（存在するか否か、v0 に含まれるか否か）が本文書内で確認できない。
+  rationale: multi_llm_entry_guide_updates の観点から、各 LLM 向けエントリガイドファイルの配布物 v0 における位置づけが明示されていないと、後続の第3者配布対応時に判断基準が不明確になる。現状の対応状況（Claude
+    Code 対応済み、Codex CLI 対応済み、Gemini 未対応）を配布物 allowlist と対応付けて記載することが望ましい。

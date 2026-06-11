@@ -1,0 +1,5 @@
+findings:
+  - severity: WARN
+    target_location: "8. 入口の合流（AGENT_ENTRY の実体化と参照 1 行）"
+    description: "CLAUDE.md に追記する文字列として提示されている「@.reviewcompass/AGENT_ENTRY.md（取り込み行）」について、LLMが「（取り込み行）」という説明書きまで含めてそのままファイルに追記してしまう恐れがある。"
+    rationale: "LLM向けの指示書において、書き込むべきリテラル文字列と補足説明の境界が不明確であるため、意図しない日本語文字列が設定ファイルに混入し、ファイルパス解決や取り込み機能が正常に動作しなくなるリスクがある。"

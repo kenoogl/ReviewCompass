@@ -1,0 +1,17 @@
+findings:
+  - severity: WARN
+    target_location: "セクション 4（第3者配布で再検討するもの）、LLM 別 adapter 一式の行"
+    description: "設計記録への参照パス `docs/notes/2026-06-10-deployment-multi-llm-entry-design.md` が、セクション 3 の「含めないもの」リストで除外される `docs/notes/` 配下のファイルを指している。"
+    rationale: "配布物に含めないと明示されたディレクトリ内のファイルを、配布物の記述内で normative な根拠として参照すると、配布先の第3者や自動チェックツールがそのファイルに依存できるかどうか混乱する。参照先が開発リポジトリ専用であることを注記するか、参照自体を配布物の記述から分離する必要がある。"
+  - severity: WARN
+    target_location: "セクション 2.7（analysis / evaluation）"
+    description: "`analysis/` および `evaluation/` がディレクトリ全体として一括列挙されており、allowlist の粒度が他のセクションと一致していない。"
+    rationale: "他のセクションはファイル単位またはグロブパターンで配布対象を明示しているが、ここだけディレクトリ全体を許可している。配布物生成・機械チェック時に混入検査の対象が曖昧になり、非配布対象が意図せず混入するリスクがある。サブディレクトリ構造か、少なくとも除外すべきサブパスを補記することが望ましい。"
+  - severity: INFO
+    target_location: "セクション 2.8（対象アプリ側生成テンプレート）、`templates/entry/AGENT_ENTRY.template.md` の行"
+    description: "セクション 6 では外部アプリ側に `AGENT_ENTRY.md` を「複数 LLM 共通の入口規律」として生成する旨が記されているが、セクション 2.8 の理由欄には「複数 LLM 共通」の説明がなく、単に雛形として記載されている。"
+    rationale: "multi_llm_entry_guide_updates の観点から、このテンプレートが複数 LLM（Claude Code・Codex CLI 等）に対応する共通入口である旨を理由欄に明記しておくと、配布物の意図と第4節・第6節の記述との一貫性が高まる。"
+  - severity: INFO
+    target_location: "セクション 3（含めないもの）、`WORKFLOW_NAVIGATION_FOR_CLAUDE.md`・`WORKFLOW_NAVIGATION_FOR_CODEX.md` の項"
+    description: "除外理由として「対象アプリ側の入口は `templates/entry/` から実体化する AGENT_ENTRY が担うため」と記されているが、LLM 別の手引きファイルが将来追加された場合（例：Gemini 操縦用）の扱いについて言及がない。"
+    rationale: "セクション 4 では Gemini 操縦時の variant 追加が候補として挙げられているが、セクション 3 の除外ルールは既存 2 ファイル名を固定列挙しているため、新規 LLM 別ファイルの扱いが不明確になる。除外パターンをファイル名ではなくパスパターン（例：`WORKFLOW_NAVIGATION_FOR_*.md`）で記述することを検討する余地がある。"

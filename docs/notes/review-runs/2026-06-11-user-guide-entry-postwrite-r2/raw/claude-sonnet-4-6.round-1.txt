@@ -1,0 +1,17 @@
+findings:
+  - severity: INFO
+    target_location: "§4 LLMセッションの起動パターン（パターン表および各サブセクション）"
+    description: "複数LLMエントリ（Claude Code／Codex CLI）に関する共通入口規律の説明が§4末尾に1文あるが、パターン別サブセクション内には言及がなく、どのパターンでもAGENT_ENTRY.mdへの合流が保証される旨が明示されていない。"
+    rationale: "利用者がパターン1〜3のどれを選んでも同じ入口規律に収束することは、multi-LLMエントリの一貫性保証として重要な情報であり、各パターンの説明内にも簡潔な注記があると誤解を防ぎやすい。"
+  - severity: INFO
+    target_location: "§10 対象アプリ側に作られるもの"
+    description: "AGENT_ENTRY.mdのテンプレート実体化と、CLAUDE.md／AGENTS.md への参照追記が説明されているが、両LLMエージェント（Claude CodeとCodex CLI）が同一セッション内で同時稼働する場合の排他制御や競合回避の説明が存在しない。"
+    rationale: "multi-LLMエントリガイドとして、複数エージェントが同一の.reviewcompass/を同時に読み書きする際の想定動作または注意点を明示しないと、初期検証中に不整合が生じるリスクがある。"
+  - severity: WARN
+    target_location: "§10 対象アプリ側に作られるもの（variantの既定説明）"
+    description: "「Claude Code操縦時とCodex CLI操縦時で起草者と検証者が同系列にならないよう役割を入れ替えてある」と述べているが、その具体的な役割割り当て（どのモデルが起草者でどのモデルが検証者か）への参照先がない。"
+    rationale: "multi-LLMエントリの要件として、利用者がレビューモデル構成を理解・確認できることが重要である。現状では「AGENT_ENTRYが指示する」とだけ書かれており、初期検証時に利用者が構成の正しさを独立して判断できる情報が欠けている。"
+  - severity: INFO
+    target_location: "§19 実アプリpilot前のチェックリスト"
+    description: "チェックリストに「複数LLMエージェント（Claude Code、Codex CLI）それぞれでAGENT_ENTRY.mdへの合流を確認した」という項目がない。"
+    rationale: "multi-LLMエントリガイドとして、Claude CodeとCodex CLIの双方が同じ入口規律に到達できることの動作確認をチェックリストに含めることで、片方だけが正しく設定された状態でpilotが進むリスクを低減できる。"

@@ -1,0 +1,25 @@
+role: primary
+provider: anthropic-api
+model: claude-sonnet-4-6
+attempts: 1
+duration_seconds: 21.795
+findings:
+- severity: INFO
+  target_location: §4（LLM セッションの起動パターン）冒頭
+  description: パターン表の「対象アプリの扱い」列の記述が非対称で、パターン 1 は『LLM に対象アプリ root を伝える』、パターン 2 は『LLM
+    に ReviewCompass 配布物ディレクトリを伝える』と書かれているが、パターン 3 の同列が空欄になっている。
+  rationale: 読者がパターン 3 を選択する際に、対象アプリの扱いを表から直接確認できない。§4.3 本文を読めば分かるが、表だけで判断しようとすると情報が欠落している。
+- severity: INFO
+  target_location: §8（配布前 smoke）依頼例コードブロック
+  description: 依頼例中の '--smoke-external-app-root <対象アプリroot>' のプレースホルダーが山括弧形式で記載されているが、§4.1
+    の依頼例では '<対象アプリroot>' と半角スペースなしの形式が混在している。
+  rationale: プレースホルダー表記のゆらぎはわずかだが、利用者が依頼テキストをそのままコピーして使う場面では誤入力を招く可能性がある。表記を統一することで可読性が向上する。
+- severity: INFO
+  target_location: §10（対象アプリ側に作られるもの）末尾段落
+  description: variant と役ごとのモデルが『レビュー実行前に必ず利用者へ提示される』と説明されているが、その提示がどの画面・出力で行われるかの参照先が示されていない。
+  rationale: 利用者がこの提示を見逃した場合の対処や確認手順が不明なため、初期 pilot での混乱を防ぐために参照先または確認方法を補記することが望ましい。
+- severity: INFO
+  target_location: §17（トラブルシュート）テーブル全体
+  description: smoke test が失敗する行の「確認すること」に Python 依存（httpx, PyYAML）不足によるエラーへの言及がない。§8
+    本文では ModuleNotFoundError の具体例が説明されているが、トラブルシュート表にその対応項目がない。
+  rationale: 利用者が smoke 失敗時にトラブルシュート表を参照した場合、依存不足の原因に気づかないまま作業が止まるリスクがある。§8 の説明と表を対応させることで案内の一貫性が高まる。

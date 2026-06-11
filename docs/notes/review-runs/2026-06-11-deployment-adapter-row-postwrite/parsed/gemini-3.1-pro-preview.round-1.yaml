@@ -1,0 +1,11 @@
+role: judgment
+provider: gemini-api
+model: gemini-3.1-pro-preview
+attempts: 1
+duration_seconds: 23.032
+findings:
+- severity: WARN
+  target_location: 2. 初期デプロイ配布物 v0 の定義 (2.5 workflow-management および 2.8 対象アプリ側生成テンプレート)
+  description: マルチLLMエントリ用のテンプレート群（`templates/entry/`, `templates/hooks/`）とLLM別操作手引き（`WORKFLOW_NAVIGATION_FOR_CLAUDE.md`,
+    `FOR_CODEX.md`など）がallowlistに記載されていない。
+  rationale: 第4章において「初期デプロイ版は Claude Code と Codex CLI に対応済み」と記載されているが、第2章の明示的な配布リスト（allowlist）からこれらのファイルが漏れている。ホワイトリスト方式を採用しているため、このままでは初期デプロイパッケージにLLM別アダプターや手引きが含まれず、実アプリ上でマルチLLMエントリ機能の検証ができなくなるため。

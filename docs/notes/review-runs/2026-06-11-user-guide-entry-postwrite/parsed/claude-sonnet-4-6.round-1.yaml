@@ -1,0 +1,42 @@
+role: primary
+provider: anthropic-api
+model: claude-sonnet-4-6
+attempts: 1
+duration_seconds: 28.216
+findings:
+- severity: INFO
+  target_location: セクション 4（LLM セッションの起動パターン）
+  description: パターン 1〜3 の説明で参照先として INITIAL_SETUP_LLM_GUIDE.md が挙げられているが、そのファイルの具体的なセクション番号（§8〜§11
+    など）へのリンクは本文中に明示されていない箇所がある。セクション 10 では §8〜§11 への参照が記載されているが、セクション 4 内では未言及。
+  rationale: 利用者が各パターンを選んだ後に INITIAL_SETUP_LLM_GUIDE.md のどこを参照すればよいかが不明確になる可能性があるが、実害は低いため
+    INFO とする。
+- severity: INFO
+  target_location: セクション 8（配布前 smoke）
+  description: smoke test の依頼例に `.venv/bin/python3` を使う旨が明記されているが、smoke test のオプション（--smoke-external-app-root）が
+    build-deploy-package.py のものであると説明本文には書かれているものの、依頼例テキストボックス内と本文の説明が一部重複している。
+  rationale: 情報の重複は読みやすさに影響するが、誤解を招くものではなく実害は低い。
+- severity: WARN
+  target_location: セクション 6（事前条件）、セクション 19（チェックリスト）
+  description: 事前条件のリストに「LLM が複数プロバイダー（Claude Code・Codex CLI など）を切り替える場合の認証情報管理」についての明示的な記述がない。セクション
+    10 では Claude Code と Codex CLI を同じ規律で使う旨が説明されているが、それぞれに必要な環境変数の種類や確認手順がチェックリストに含まれていない。
+  rationale: multi_llm_entry_guide_updates の観点から、複数 LLM を扱う際の API 認証情報管理はデプロイ前チェックの重要項目であり、漏れると
+    pilot 中に認証エラーが発生するリスクがある。
+- severity: WARN
+  target_location: セクション 10（対象アプリ側に作られるもの）
+  description: Claude Code と Codex CLI の variant（起草者・検証者の役割入れ替え）について「LLM が自動で適切な既定を選ぶ」と記載されているが、LLM
+    がどのようにして「操縦している LLM の種類」を識別する仕組みかについての説明がない。利用者が手動で設定を確認・上書きする方法も記載されていない。
+  rationale: multi_llm_entry_guide_updates の観点から、複数 LLM エントリーを扱うガイドとして、自動選択の失敗ケースや手動override
+    の手順が明示されていないと、異常系で利用者が対処できないリスクがある。
+- severity: ERROR
+  target_location: セクション 4（LLM セッションの起動パターン）全体
+  description: パターン 1〜3 の説明において、Claude Code と Codex CLI という具体的な LLM ツールを使い分ける際の起動コマンドや設定の差異（例：CLAUDE.md
+    と AGENTS.md のどちらが優先されるかなど）が記載されていない。セクション 10 で CLAUDE.md／AGENTS.md への言及があるが、各
+    LLM の起動パターンとの対応関係が欠如している。
+  rationale: multi_llm_entry_guide_updates のクライテリアに照らして、複数 LLM の入口ガイドとして、LLM 種別ごとの起動設定ファイルの対応関係は必須情報である。この情報がないと、利用者が誤ったエントリーファイルを参照させた状態で
+    LLM を起動するリスクがある。
+- severity: WARN
+  target_location: セクション 19（実アプリ pilot 前のチェックリスト）
+  description: チェックリストに「Claude Code 用と Codex CLI 用のそれぞれのエントリーファイル（CLAUDE.md、AGENTS.md）が正しく設定されたことを確認した」という項目が存在しない。セクション
+    10 で両ファイルへの追記が行われると説明されているが、チェックリストで確認を促す項目が抜けている。
+  rationale: multi_llm_entry_guide_updates の観点から、複数 LLM のエントリー設定が正しく完了しているかをチェックリストで確認できることは、pilot
+    前の品質担保として重要である。

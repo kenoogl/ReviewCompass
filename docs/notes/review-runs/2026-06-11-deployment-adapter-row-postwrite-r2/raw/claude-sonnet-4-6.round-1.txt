@@ -1,0 +1,15 @@
+findings:
+  - severity: WARN
+    target_location: "セクション 4 第3者配布で再検討するもの - LLM 別 adapter 一式"
+    description: "設計記録への参照パス `docs/notes/2026-06-10-deployment-multi-llm-entry-design.md` が本文書内に埋め込まれているが、セクション 3 の除外対象リストに `docs/notes/` 全体が含まれている。"
+    rationale: "配布物除外対象として明示された `docs/notes/` 配下にある設計記録を本文書が正規の参照先として引用しているため、配布後の読者はそのファイルにアクセスできない。参照先が配布物外であることを明示するか、当該設計記録を配布対象に昇格させるか、あるいは参照を削除する必要がある。"
+
+  - severity: INFO
+    target_location: "セクション 2.8 対象アプリ側生成テンプレート - `templates/entry/AGENT_ENTRY.template.md`"
+    description: "テンプレートの説明に「複数 LLM 共通のセッション入口規律」と記載されているが、セクション 3 の除外対象には `WORKFLOW_NAVIGATION_FOR_CLAUDE.md` と `WORKFLOW_NAVIGATION_FOR_CODEX.md` の代替となることが明記されており、このテンプレートが複数 LLM に対してどの程度汎用化されているかの詳細が本文書内にない。"
+    rationale: "criteria である multi_llm_entry_guide_updates の観点から、単一テンプレートが複数 LLM に対応していることの根拠や制約（サポート対象 LLM のリスト等）が本文書に記載されていないと、将来の保守担当者や第3者配布時の利用者が対応範囲を判断できない。注記程度の補足があると明確性が上がる。"
+
+  - severity: INFO
+    target_location: "セクション 4 第3者配布で再検討するもの - LLM 別 adapter 一式"
+    description: "「初期デプロイ版は Claude Code と Codex CLI に対応済み」と記載されているが、対応済みの根拠や確認方法への参照が設計記録のみであり、本文書単体では検証できない。"
+    rationale: "multi_llm_entry_guide_updates の観点では、現時点でサポート済みの LLM と将来追加予定の LLM（例：Gemini）の区分が本文書内に簡潔にでも示されていると、デプロイ担当者が判断しやすい。現状は配布物として除外された設計記録に依存しているため、本文書の自己完結性が低い。"

@@ -1,0 +1,129 @@
+run_id: 2026-06-11-deployment-adapter-row-postwrite
+triage_status: decided
+generated_at: '2026-06-11T14:52:13.649916+00:00'
+decision_actor: null
+decision_actor_type: human
+items:
+- finding_id: 2026-06-11-deployment-adapter-row-postwrite-claude-sonnet-4-6-primary-001
+  run_id: 2026-06-11-deployment-adapter-row-postwrite
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: 'セクション 4, 表: LLM 別 adapter 一式, 条件列'
+  plain_language_summary: 設計記録 `docs/notes/2026-06-10-deployment-multi-llm-entry-design.md`
+    への参照が本文に埋め込まれているが、このファイルはセクション 3 の除外リスト `docs/notes/` に含まれるため配布物には含まれない。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-11T15:22:45.338788+00:00'
+  decision_reason: 利用者承認（クラスタE）。DEPLOYMENT.md 自体が配布物に含まれない開発リポジトリ専用文書のため、配布先で参照不能になる状況は生じない。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-11-deployment-adapter-row-postwrite-claude-sonnet-4-6-primary-002
+  run_id: 2026-06-11-deployment-adapter-row-postwrite
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: 'セクション 4, 表: LLM 別 adapter 一式, 条件列'
+  plain_language_summary: '`templates/entry/` および `templates/hooks/` が第3者配布の候補として記載されているが、セクション
+    2 の配布物 v0 の allowlist にこれらのパスが存在しない。'
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-11T15:22:45.394697+00:00'
+  decision_reason: 利用者承認（クラスタA）。§2.8 に新テンプレート 5 件を追記し、機械側 allowlist（deploy-manifest.yaml、生成済み
+    267 ファイルで検証済み）と文書を一致させて対応。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-11-deployment-adapter-row-postwrite-claude-sonnet-4-6-primary-003
+  run_id: 2026-06-11-deployment-adapter-row-postwrite
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: 'セクション 4, 表: LLM 別 adapter 一式, 条件列'
+  plain_language_summary: multi_llm_entry の設計詳細（Gemini 操縦時の variant、`WORKFLOW_NAVIGATION_FOR_CLAUDE.md`／`FOR_CODEX.md`
+    の扱い）は第3者配布時の再検討事項として列挙されているが、各 LLM 向けエントリガイドの現状（存在するか否か、v0 に含まれるか否か）が本文書内で確認できない。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-11T15:22:45.449699+00:00'
+  decision_reason: 利用者承認（クラスタE）。対応状況（Claude Code・Codex CLI 対応済み、Gemini は第3者配布時）は §4
+    の行に記載済み。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-11-deployment-adapter-row-postwrite-gpt-5.5-adversarial-001
+  run_id: 2026-06-11-deployment-adapter-row-postwrite
+  source_model: gpt-5.5
+  source_round: round-1
+  source_raw_path: raw/gpt-5.5.round-1.txt
+  source_parsed_path: parsed/gpt-5.5.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: Section 2 vs Section 4, row 'LLM 別 adapter 一式'
+  plain_language_summary: Initial deploy v0 is defined as an all-function verification
+    package, and Section 4 says the initial version already supports Claude Code and
+    Codex CLI, but the v0 allowlist does not include the multi-LLM entry assets such
+    as `templates/entry/`, `templates/hooks/`, or LLM-specific workflow navigation
+    guides.
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-11T15:24:00.949224+00:00'
+  decision_reason: 利用者承認（クラスタA、重要件）。実体の配布物には manifest 経由でテンプレートが含まれており（--verify 合格済み）、文書
+    §2.8 の追随漏れが原因。§2.8 追記で解消。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-11-deployment-adapter-row-postwrite-gpt-5.5-adversarial-002
+  run_id: 2026-06-11-deployment-adapter-row-postwrite
+  source_model: gpt-5.5
+  source_round: round-1
+  source_raw_path: raw/gpt-5.5.round-1.txt
+  source_parsed_path: parsed/gpt-5.5.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: Section 4, row 'LLM 別 adapter 一式'
+  plain_language_summary: The handling of `WORKFLOW_NAVIGATION_FOR_CLAUDE.md` and
+    `WORKFLOW_NAVIGATION_FOR_CODEX.md` is deferred to third-party distribution, but
+    the document does not state whether these guides are intentionally excluded from
+    initial deployment or replaced by another packaged guide.
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-11T15:22:45.599103+00:00'
+  decision_reason: 利用者承認（クラスタA）。§3 に開発リポジトリ用手引きを意図的に配布しない旨と、対象アプリ入口は AGENT_ENTRY が担う旨を明示して対応。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-11-deployment-adapter-row-postwrite-gemini-3.1-pro-preview-judgment-001
+  run_id: 2026-06-11-deployment-adapter-row-postwrite
+  source_model: gemini-3.1-pro-preview
+  source_round: round-1
+  source_raw_path: raw/gemini-3.1-pro-preview.round-1.txt
+  source_parsed_path: parsed/gemini-3.1-pro-preview.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: 2. 初期デプロイ配布物 v0 の定義 (2.5 workflow-management および 2.8 対象アプリ側生成テンプレート)
+  plain_language_summary: マルチLLMエントリ用のテンプレート群（`templates/entry/`, `templates/hooks/`）とLLM別操作手引き（`WORKFLOW_NAVIGATION_FOR_CLAUDE.md`,
+    `FOR_CODEX.md`など）がallowlistに記載されていない。
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-11T15:22:45.503020+00:00'
+  decision_reason: 利用者承認（クラスタA）。claude-002 と同根。§2.8 への 5 件追記と §3 への FOR_CLAUDE/FOR_CODEX
+    非配布の明示で対応。
+  applied_files: []
+  superseded_by: null

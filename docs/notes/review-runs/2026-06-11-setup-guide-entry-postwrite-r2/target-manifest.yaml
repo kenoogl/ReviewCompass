@@ -1,0 +1,4 @@
+run_id: 2026-06-11-setup-guide-entry-postwrite-r2
+target_files:
+- path: docs/operations/INITIAL_SETUP_LLM_GUIDE.md
+  sha256: 51b8381e36e6bedc5253d8a337433cf505387e5cfce83c99f65e862d8f7d96f7

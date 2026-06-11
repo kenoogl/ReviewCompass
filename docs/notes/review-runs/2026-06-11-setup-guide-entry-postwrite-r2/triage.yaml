@@ -1,0 +1,136 @@
+run_id: 2026-06-11-setup-guide-entry-postwrite-r2
+triage_status: decided
+generated_at: '2026-06-11T15:26:11.015452+00:00'
+decision_actor: null
+decision_actor_type: human
+items:
+- finding_id: 2026-06-11-setup-guide-entry-postwrite-r2-claude-sonnet-4-6-primary-001
+  run_id: 2026-06-11-setup-guide-entry-postwrite-r2
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: '## 2. 最初に確認すること（表：操縦 LLM 行）'
+  plain_language_summary: 操縦 LLM の選択肢として「Claude Code か Codex CLI か」と列挙されているが、§11 では「上記以外の
+    LLM で操縦する場合」への言及もある。表中の確認内容が二択として読めるため、第三の LLM を使う利用者が選択肢の存在に気づかない可能性がある。
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-11T15:32:40.833162+00:00'
+  decision_reason: 利用者承認。§2 の確認内容に『それ以外の LLM は §11 のフォールバックに従う』を追記して反映。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-11-setup-guide-entry-postwrite-r2-claude-sonnet-4-6-primary-002
+  run_id: 2026-06-11-setup-guide-entry-postwrite-r2
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: '## 10. hook 導入（強く推奨）、手順 3'
+  plain_language_summary: '`.claude/settings.json` について「既存があれば hooks キーだけ合流」と書かれているが、`.codex/hooks.json`
+    側には同様の合流指示がなく、上書き扱いかどうかが不明確。'
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-11T15:32:40.885414+00:00'
+  decision_reason: 利用者承認。§10 手順 3 を『いずれも既存があれば上書きせず hooks キーのみ合流、書き込み前に提示』へ書き換えて反映。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-11-setup-guide-entry-postwrite-r2-claude-sonnet-4-6-primary-003
+  run_id: 2026-06-11-setup-guide-entry-postwrite-r2
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: '## 8. 入口の合流、手順 4'
+  plain_language_summary: 「既存入口の規律と AGENT_ENTRY の規律が衝突している場合は、作業を進めず利用者へ提示する」とあるが、衝突の判断基準や例が示されていない。LLM
+    が何を衝突とみなすかの定義が曖昧である。
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-11T15:32:40.936421+00:00'
+  decision_reason: 利用者承認。§8 手順 4 に衝突の具体例（自動 commit 指示と承認必須の両立不能）を追記して反映。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-11-setup-guide-entry-postwrite-r2-claude-sonnet-4-6-primary-004
+  run_id: 2026-06-11-setup-guide-entry-postwrite-r2
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: '## 3.3 パターン 3、最終段落'
+  plain_language_summary: 「対象アプリが決まったら、対象アプリ root で新しい LLM セッションを立ち上げ、パターン 2 として初期設定を続ける」とあるが、セッションを新規に立ち上げる理由（コンテキスト汚染の防止など）が説明されていない。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-11T15:32:40.987849+00:00'
+  decision_reason: 利用者承認。新セッションを立てる理由の説明は動作に影響しない補足であり、手順の簡潔さを優先する。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-11-setup-guide-entry-postwrite-r2-claude-sonnet-4-6-primary-005
+  run_id: 2026-06-11-setup-guide-entry-postwrite-r2
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: '## 6. 初期確認の最小セット、項目 6'
+  plain_language_summary: '`feature_definition_required` の案内が返ることを「確認する」とあるが、確認の操作方法（どのコマンドで確認するか）が示されていない。'
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-11T15:32:41.039640+00:00'
+  decision_reason: 利用者承認。確認コマンド（next --json）は §3.2 手順 7 に記載済みで、§6 は最小セットの列挙という役割。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-11-setup-guide-entry-postwrite-r2-gpt-5.5-adversarial-001
+  run_id: 2026-06-11-setup-guide-entry-postwrite-r2
+  source_model: gpt-5.5
+  source_round: round-1
+  source_raw_path: raw/gpt-5.5.round-1.txt
+  source_parsed_path: parsed/gpt-5.5.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: docs/operations/INITIAL_SETUP_LLM_GUIDE.md §10 hook 導入
+  plain_language_summary: 既存の `.codex/hooks.json`、`.claude/hooks/pre-bash-precheck.sh`、`.codex/hooks/pre-bash-precheck.sh`
+    がある場合の確認・退避・マージ手順が明記されていない。
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-11T15:32:41.091425+00:00'
+  decision_reason: 利用者承認（重要件）。§10 手順 2・3 に既存ファイルの非上書き・利用者提示・hooks キーのみ合流を明記し、『既存ファイルを不用意に変更しない』原則との矛盾を解消。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-11-setup-guide-entry-postwrite-r2-gpt-5.5-adversarial-002
+  run_id: 2026-06-11-setup-guide-entry-postwrite-r2
+  source_model: gpt-5.5
+  source_round: round-1
+  source_raw_path: raw/gpt-5.5.round-1.txt
+  source_parsed_path: parsed/gpt-5.5.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: docs/operations/INITIAL_SETUP_LLM_GUIDE.md §3.1, §3.2, §3.3
+  plain_language_summary: 初期確認で multi-LLM 入口・hook 導入に必要なテンプレートの存在確認が不足している。
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-11T15:32:41.143170+00:00'
+  decision_reason: 利用者承認。§3 の配布物確認 3 箇所へ templates/（入口・hook・feature-dependency の雛形）を追加して反映。
+  applied_files: []
+  superseded_by: null

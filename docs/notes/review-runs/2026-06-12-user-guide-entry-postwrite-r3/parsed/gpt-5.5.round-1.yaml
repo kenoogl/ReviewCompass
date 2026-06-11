@@ -1,0 +1,18 @@
+role: adversarial
+provider: openai-api
+model: gpt-5.5
+attempts: 1
+duration_seconds: 151.242
+findings:
+- severity: WARN
+  target_location: §6 事前条件（項目1〜2） / §4 LLM セッションの起動パターン / §8 配布前 smoke
+  description: 事前条件では「生成後の初期検証と日常運用」は対象アプリリポジトリの LLM セッションに依頼すると固定している一方、§4 では配布物ディレクトリ起動のパターンを許容し、§8
+    では配布前 smoke を ReviewCompass 開発リポジトリ側の LLM に依頼するとしている。
+  rationale: multi-LLM entry の導入手順では、どの場所でどの LLM セッションを起動するかが重要である。事前条件が後続セクションより狭く読めるため、利用者や
+    LLM が Pattern 1/3 や配布前 smoke を誤って禁止事項と解釈するおそれがある。
+- severity: WARN
+  target_location: §10 対象アプリ側に作られるもの（CLAUDE.md／AGENTS.md への参照 1 行）
+  description: 既存の CLAUDE.md / AGENTS.md に参照行を追記する説明はあるが、既存記述が `.reviewcompass/AGENT_ENTRY.md`
+    の入口規律と競合する場合の確認・扱いが本文書内では明示されていない。
+  rationale: 既存のエージェント指示が AGENT_ENTRY と矛盾していると、Claude Code と Codex CLI が同じ入口規律へ合流するという目的が実現しない可能性がある。少なくとも競合確認、利用者への提示、解消または記録の方針を明記すると、multi-LLM
+    entry の運用信頼性が上がる。

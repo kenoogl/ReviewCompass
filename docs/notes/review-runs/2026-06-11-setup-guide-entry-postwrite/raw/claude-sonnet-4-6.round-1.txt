@@ -1,0 +1,25 @@
+findings:
+  - severity: WARN
+    target_location: "§2 確認表 - 操縦 LLM 行"
+    description: "操縦 LLM の選択肢として「Claude Code か Codex CLI か」のみ列挙されているが、§11 の表も同様に2種のみ。将来的に他の LLM が追加された場合の拡張指示が欠如している。"
+    rationale: "Multi-LLM entry guide として本文書が機能するには、新規 LLM 追加時の更新手順または「上記以外の場合は利用者に確認する」などのフォールバック指示があるべき。現状では Claude Code / Codex CLI 以外が接続した際の動作が未定義になる。"
+
+  - severity: WARN
+    target_location: "§8 入口の合流 - ステップ2"
+    description: "CLAUDE.md への取り込み行として `@.reviewcompass/AGENT_ENTRY.md` を、AGENTS.md へは自然言語の参照文を追記する指示になっているが、他の LLM クライアント（例：将来追加される LLM）の入口ファイル名や書式については記述がない。"
+    rationale: "Multi-LLM 対応ガイドとして、現在サポートする LLM の入口ファイルのみを列挙している。新規 LLM 追加時に本節が更新されないとサポート対象外の LLM は入口合流ができなくなる。少なくとも「他の LLM クライアントが存在する場合は利用者へ確認する」旨を明記すべき。"
+
+  - severity: WARN
+    target_location: "§10 hook 導入 - ステップ2"
+    description: "hook ファイルの複製先として `.claude/hooks/` と `.codex/hooks/` の2箇所のみが挙げられており、将来追加される LLM クライアントの hook ディレクトリが考慮されていない。"
+    rationale: "Multi-LLM 対応の観点から、新規 LLM が追加された場合に hook の保護が機能しない。複製先が固定列挙のみで、拡張指示または「他のクライアントが存在する場合は利用者に追加先を確認する」という指示が欠けている。"
+
+  - severity: INFO
+    target_location: "§11 操縦 LLM 別の既定 variant - 表"
+    description: "proxy_model の選択基準として「操縦 LLM と別系列のモデルを選ぶ」と記載されているが、具体的なモデル名や選択例が示されていない。"
+    rationale: "操縦 LLM が Claude Code の場合に proxy_model として何を選ぶべきか、具体例がないと LLM が適切に案内できない可能性がある。§11 の表に proxy_model の列または推奨例を追加すると一貫性が高まる。"
+
+  - severity: INFO
+    target_location: "§3.3 パターン 3 - 末尾"
+    description: "「対象アプリが決まったら、対象アプリ root で新しい LLM セッションを立ち上げ、パターン 2 として初期設定を続ける」と記載されているが、その際に操縦 LLM が変わる可能性についての案内がない。"
+    rationale: "Multi-LLM 運用では、パターン 3 から後続のパターン 2 へ移行する際に異なる LLM を使うことがある。その場合の引き継ぎ情報（配布物パス、選択した設定など）を整理しておくべき事項として言及があると利用者の混乱を防げる。"

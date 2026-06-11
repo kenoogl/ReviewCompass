@@ -116,8 +116,13 @@ ReviewCompass の開発リポジトリには、実行に必要なファイル、
 | 配布パス | 理由 |
 | --- | --- |
 | `templates/specs/spec.json.template` | 対象アプリ側 `.reviewcompass/specs/<feature>/spec.json` の雛形。 |
+| `templates/specs/feature-dependency.yaml.template` | 対象アプリ側 `.reviewcompass/feature-dependency.yaml`（feature 一覧・開発順・依存）の雛形。 |
 | `templates/review/manual_dogfooding_review_template.md` | 初期デプロイで手動 review-run を記録するため。 |
 | `templates/todo/TODO_NEXT_SESSION.template.md` | 初期デプロイ中のセッション引き継ぎを確認するため。 |
+| `templates/entry/AGENT_ENTRY.template.md` | 対象アプリ側 `.reviewcompass/AGENT_ENTRY.md`（複数 LLM 共通のセッション入口規律）の雛形。 |
+| `templates/hooks/pre-bash-precheck.sh.template` | 対象アプリ側 commit／push 事前検査 hook の雛形（初期設定時に絶対パスへ置換）。 |
+| `templates/hooks/claude-settings.json.template` | 対象アプリ側 `.claude/settings.json` への hook 登録の雛形。 |
+| `templates/hooks/codex-hooks.json.template` | 対象アプリ側 `.codex/hooks.json` の雛形。 |
 
 ## 3. 初期デプロイ配布物 v0 に含めないもの
 
@@ -126,6 +131,7 @@ ReviewCompass の開発リポジトリには、実行に必要なファイル、
 - `AGENTS.md`
 - `.codex/`
 - `.claude/`
+- `docs/operations/WORKFLOW_NAVIGATION_FOR_CLAUDE.md`・`WORKFLOW_NAVIGATION_FOR_CODEX.md`（開発リポジトリ専用の手引き。対象アプリ側の入口は `templates/entry/` から実体化する AGENT_ENTRY が担うため、意図的に配布しない）
 - `.reviewcompass/post-write-verification/`
 - `.reviewcompass/effective-prompts/`
 - `.reviewcompass/approvals/`
@@ -162,7 +168,7 @@ ReviewCompass の開発リポジトリには、実行に必要なファイル、
 | 配布単位 | 候補 | 条件 |
 | --- | --- | --- |
 | workflow-management 汎用実行部 | `check-workflow-action.py` 相当、`WORKFLOW_DISCIPLINE_MAP.yaml` 相当、規律文書 | 初期デプロイで発見した ReviewCompass 開発リポジトリ固有依存を外す。 |
-| Codex アダプタ | `.codex/hooks/`、`docs/operations/WORKFLOW_NAVIGATION_FOR_CODEX.md` | Codex 固有の実行環境向け配布として分ける。 |
+| LLM 別 adapter 一式 | 入口正本テンプレート（`templates/entry/`）、hook テンプレート（`templates/hooks/`）、操縦 LLM 別の API 既定 variant（`config/api-settings.yaml` の `*_codex_operator` 系等） | 初期デプロイ版は Claude Code と Codex CLI に対応済み（設計記録 `docs/notes/2026-06-10-deployment-multi-llm-entry-design.md`）。第3者配布では、操縦 LLM の追加（例：Gemini 操縦時の variant）、LLM 別注意のファイル分離、開発リポジトリ用手引き（`WORKFLOW_NAVIGATION_FOR_CLAUDE.md`／`FOR_CODEX.md`）の扱いを再検討する。 |
 | 開発者向け検査 | `tools/document_link_lint.py`、`tools/deployment_independence_lint.py` | 配布物生成側の CI または開発者向け pack として追加する。 |
 | 第3者配布用 API 設定テンプレート | `config/api-settings.yaml` から経緯コメントや検証用 variant を除いたテンプレート | 初期デプロイ検証では現行 `config/api-settings.yaml` を使い、第3者配布時に差し替える。 |
 | 第3者向け最小コア | runtime、review-run、conformance-evaluation の最小セット | 全機能検証後、不要機能を除いて再定義する。 |
@@ -188,11 +194,16 @@ ReviewCompass の開発リポジトリには、実行に必要なファイル、
 外部アプリ側に生成または更新される候補は次の通り。
 
 - `<対象アプリ>/.reviewcompass/config.yaml`
+- `<対象アプリ>/.reviewcompass/AGENT_ENTRY.md`（複数 LLM 共通の入口規律。テンプレートから実体化）
+- `<対象アプリ>/.reviewcompass/feature-dependency.yaml`（feature 一覧・開発順・依存）
 - `<対象アプリ>/.reviewcompass/specs/<feature>/requirements.md`
 - `<対象アプリ>/.reviewcompass/specs/<feature>/design.md`
 - `<対象アプリ>/.reviewcompass/specs/<feature>/tasks.md`
 - `<対象アプリ>/.reviewcompass/specs/<feature>/spec.json`
 - `<対象アプリ>/.reviewcompass/specs/<feature>/reviews/`
+- `<対象アプリ>/CLAUDE.md`・`AGENTS.md`（入口への参照 1 行の追記）
+- `<対象アプリ>/.claude/settings.json`・`.claude/hooks/`（commit／push 事前検査 hook）
+- `<対象アプリ>/.codex/hooks.json`・`.codex/hooks/`（同上）
 
 これらは対象アプリの仕様、状態、レビュー記録であり、対象アプリ側 git リポジトリの変更として扱う。ReviewCompass 側の開発証跡、実験ログ、過去 review-run 記録は対象アプリ側へ持ち込まない。
 

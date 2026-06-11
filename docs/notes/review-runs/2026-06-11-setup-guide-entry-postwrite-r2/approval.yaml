@@ -1,0 +1,10 @@
+approved_action: review_run_triage
+approved_by: user
+review_run_id: 2026-06-11-setup-guide-entry-postwrite-r2
+summary_presented_to_user: true
+triage_presented_to_user: true
+approved_finding_ids:
+- 2026-06-11-setup-guide-entry-postwrite-r2-gpt-5.5-adversarial-001
+approved_final_labels:
+  2026-06-11-setup-guide-entry-postwrite-r2-gpt-5.5-adversarial-001: should-fix
+approval_quote: 利用者発言『了解』（2026-06-12。既存 hook ファイルの上書き危険を should-fix とする振り分け提示後）

@@ -1,0 +1,118 @@
+run_id: 2026-06-11-setup-guide-entry-postwrite
+triage_status: decided
+generated_at: '2026-06-11T14:49:23.148345+00:00'
+decision_actor: null
+decision_actor_type: human
+items:
+- finding_id: 2026-06-11-setup-guide-entry-postwrite-claude-sonnet-4-6-primary-001
+  run_id: 2026-06-11-setup-guide-entry-postwrite
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: §2 確認表 - 操縦 LLM 行
+  plain_language_summary: 操縦 LLM の選択肢として「Claude Code か Codex CLI か」のみ列挙されているが、§11
+    の表も同様に2種のみ。将来的に他の LLM が追加された場合の拡張指示が欠如している。
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-11T15:22:44.599402+00:00'
+  decision_reason: 利用者承認（クラスタC）。§11 に他 LLM のフォールバック（利用者確認＋独立性の原則）を追記して対応。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-11-setup-guide-entry-postwrite-claude-sonnet-4-6-primary-002
+  run_id: 2026-06-11-setup-guide-entry-postwrite
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: §8 入口の合流 - ステップ2
+  plain_language_summary: CLAUDE.md への取り込み行として `@.reviewcompass/AGENT_ENTRY.md` を、AGENTS.md
+    へは自然言語の参照文を追記する指示になっているが、他の LLM クライアント（例：将来追加される LLM）の入口ファイル名や書式については記述がない。
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-11T15:22:44.653693+00:00'
+  decision_reason: 利用者承認（クラスタC）。同上のフォールバック追記で対応（入口ファイルの個別列挙は現対応 2 LLM に限定し、追加は第3者配布時の再検討事項）。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-11-setup-guide-entry-postwrite-claude-sonnet-4-6-primary-003
+  run_id: 2026-06-11-setup-guide-entry-postwrite
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: §10 hook 導入 - ステップ2
+  plain_language_summary: hook ファイルの複製先として `.claude/hooks/` と `.codex/hooks/` の2箇所のみが挙げられており、将来追加される
+    LLM クライアントの hook ディレクトリが考慮されていない。
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-11T15:22:44.706976+00:00'
+  decision_reason: 利用者承認（クラスタC）。同上のフォールバック追記で対応。hook 複製先の追加は操縦 LLM 追加時の再検討に含める。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-11-setup-guide-entry-postwrite-claude-sonnet-4-6-primary-004
+  run_id: 2026-06-11-setup-guide-entry-postwrite
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: §11 操縦 LLM 別の既定 variant - 表
+  plain_language_summary: proxy_model の選択基準として「操縦 LLM と別系列のモデルを選ぶ」と記載されているが、具体的なモデル名や選択例が示されていない。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-11T15:22:44.761193+00:00'
+  decision_reason: 利用者承認（クラスタE）。proxy_model の具体モデルは config/api-settings.yaml が正本であり、ガイドには原則（別系列選択）のみを置く。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-11-setup-guide-entry-postwrite-claude-sonnet-4-6-primary-005
+  run_id: 2026-06-11-setup-guide-entry-postwrite
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: §3.3 パターン 3 - 末尾
+  plain_language_summary: 「対象アプリが決まったら、対象アプリ root で新しい LLM セッションを立ち上げ、パターン 2 として初期設定を続ける」と記載されているが、その際に操縦
+    LLM が変わる可能性についての案内がない。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-11T15:22:44.814096+00:00'
+  decision_reason: 利用者承認（クラスタE）。パターン 3→2 の引き継ぎ情報は §2 の確認表（配布物パス・操縦 LLM 等）で再確認される設計。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-11-setup-guide-entry-postwrite-gemini-3.1-pro-preview-judgment-001
+  run_id: 2026-06-11-setup-guide-entry-postwrite
+  source_model: gemini-3.1-pro-preview
+  source_round: round-1
+  source_raw_path: raw/gemini-3.1-pro-preview.round-1.txt
+  source_parsed_path: parsed/gemini-3.1-pro-preview.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: 8. 入口の合流（AGENT_ENTRY の実体化と参照 1 行）
+  plain_language_summary: CLAUDE.md に追記する文字列として提示されている「@.reviewcompass/AGENT_ENTRY.md（取り込み行）」について、LLMが「（取り込み行）」という説明書きまで含めてそのままファイルに追記してしまう恐れがある。
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-11T15:22:44.865437+00:00'
+  decision_reason: 利用者承認（クラスタB）。挿入文字列を独立コードブロックにし、『枠内の文字列だけを書き込む』と明記して誤転記リスクを解消。
+  applied_files: []
+  superseded_by: null

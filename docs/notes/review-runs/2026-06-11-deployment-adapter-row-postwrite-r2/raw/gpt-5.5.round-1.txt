@@ -1,0 +1,5 @@
+findings:
+  - severity: WARN
+    target_location: "docs/operations/DEPLOYMENT.md §6 外部アプリ側の扱い"
+    description: "外部アプリ側に生成または更新される候補に、`.reviewcompass/AGENT_ENTRY.md`、`.claude/settings.json`、`.codex/hooks.json`、hook 実体などの複数 LLM 入口・hook 関連ファイルが含まれていない。"
+    rationale: "§2.8 では `templates/entry/AGENT_ENTRY.template.md` と Claude/Codex 向け hook テンプレートを配布対象としているため、外部アプリ側でそれらを実体化する運用も §6 の責務整理に反映されている必要がある。現状のままだと、複数 LLM 共通入口ガイドの生成物が対象アプリ側 git で管理すべき変更なのか不明確になる。"

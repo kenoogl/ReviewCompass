@@ -1,0 +1,103 @@
+run_id: 2026-06-12-deployment-adapter-row-postwrite-r3
+triage_status: decided
+generated_at: '2026-06-11T15:54:36.512542+00:00'
+decision_actor: null
+decision_actor_type: human
+items:
+- finding_id: 2026-06-12-deployment-adapter-row-postwrite-r3-claude-sonnet-4-6-primary-001
+  run_id: 2026-06-12-deployment-adapter-row-postwrite-r3
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: セクション 4（第3者配布で再検討するもの）、LLM 別 adapter 一式の行
+  plain_language_summary: 設計記録への参照パス `docs/notes/2026-06-10-deployment-multi-llm-entry-design.md`
+    が、セクション 3 の「含めないもの」リストで除外される `docs/notes/` 配下のファイルを指している。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-11T16:05:16.564193+00:00'
+  decision_reason: 利用者承認。r1・r2 で確定済みの同根 3 回目。本文書自体が配布物外。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-12-deployment-adapter-row-postwrite-r3-claude-sonnet-4-6-primary-002
+  run_id: 2026-06-12-deployment-adapter-row-postwrite-r3
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: セクション 2.7（analysis / evaluation）
+  plain_language_summary: '`analysis/` および `evaluation/` がディレクトリ全体として一括列挙されており、allowlist
+    の粒度が他のセクションと一致していない。'
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-11T16:05:16.612450+00:00'
+  decision_reason: 利用者承認。§2.7 の粒度は既存構造で今回の変更範囲外。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-12-deployment-adapter-row-postwrite-r3-claude-sonnet-4-6-primary-003
+  run_id: 2026-06-12-deployment-adapter-row-postwrite-r3
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: セクション 2.8（対象アプリ側生成テンプレート）、`templates/entry/AGENT_ENTRY.template.md`
+    の行
+  plain_language_summary: セクション 6 では外部アプリ側に `AGENT_ENTRY.md` を「複数 LLM 共通の入口規律」として生成する旨が記されているが、セクション
+    2.8 の理由欄には「複数 LLM 共通」の説明がなく、単に雛形として記載されている。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-11T16:05:16.660467+00:00'
+  decision_reason: 利用者承認。§2.8 の理由欄に『複数 LLM 共通のセッション入口規律』と記載済みであり、指摘は現状と不一致。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-12-deployment-adapter-row-postwrite-r3-claude-sonnet-4-6-primary-004
+  run_id: 2026-06-12-deployment-adapter-row-postwrite-r3
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: セクション 3（含めないもの）、`WORKFLOW_NAVIGATION_FOR_CLAUDE.md`・`WORKFLOW_NAVIGATION_FOR_CODEX.md`
+    の項
+  plain_language_summary: 除外理由として「対象アプリ側の入口は `templates/entry/` から実体化する AGENT_ENTRY
+    が担うため」と記されているが、LLM 別の手引きファイルが将来追加された場合（例：Gemini 操縦用）の扱いについて言及がない。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-11T16:05:16.708548+00:00'
+  decision_reason: 利用者承認。将来の LLM 追加時の扱いは §4 の再検討リスト（LLM 別 adapter 一式の行）に記載済み。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-12-deployment-adapter-row-postwrite-r3-gpt-5.5-adversarial-001
+  run_id: 2026-06-12-deployment-adapter-row-postwrite-r3
+  source_model: gpt-5.5
+  source_round: round-1
+  source_raw_path: raw/gpt-5.5.round-1.txt
+  source_parsed_path: parsed/gpt-5.5.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: docs/operations/DEPLOYMENT.md §7 第3者への配布
+  plain_language_summary: 第3者側の導入手順に `.reviewcompass/AGENT_ENTRY.md` の生成、`CLAUDE.md`
+    / `AGENTS.md` からの参照追記、Claude/Codex hook テンプレートの適用が含まれていない。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-11T16:05:16.755996+00:00'
+  decision_reason: 利用者承認。§7 は第3者配布の将来形であり、入口一式の配布手順の具体化は §4 の再検討事項とセットで行う。
+  applied_files: []
+  superseded_by: null

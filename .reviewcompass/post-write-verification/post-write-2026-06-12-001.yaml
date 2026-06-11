@@ -1,0 +1,864 @@
+status: completed
+target_files:
+- docs/notes/review-runs/2026-06-11-deployment-adapter-row-postwrite-r2/model-result-summary.yaml
+- docs/notes/review-runs/2026-06-11-deployment-adapter-row-postwrite-r2/parsed/claude-sonnet-4-6.round-1.yaml
+- docs/notes/review-runs/2026-06-11-deployment-adapter-row-postwrite-r2/parsed/gemini-3.1-pro-preview.round-1.yaml
+- docs/notes/review-runs/2026-06-11-deployment-adapter-row-postwrite-r2/parsed/gpt-5.5.round-1.yaml
+- docs/notes/review-runs/2026-06-11-deployment-adapter-row-postwrite-r2/raw/claude-sonnet-4-6.round-1.txt
+- docs/notes/review-runs/2026-06-11-deployment-adapter-row-postwrite-r2/raw/gemini-3.1-pro-preview.round-1.txt
+- docs/notes/review-runs/2026-06-11-deployment-adapter-row-postwrite-r2/raw/gpt-5.5.round-1.txt
+- docs/notes/review-runs/2026-06-11-deployment-adapter-row-postwrite-r2/review_summary.md
+- docs/notes/review-runs/2026-06-11-deployment-adapter-row-postwrite-r2/rounds.yaml
+- docs/notes/review-runs/2026-06-11-deployment-adapter-row-postwrite-r2/target-manifest.yaml
+- docs/notes/review-runs/2026-06-11-deployment-adapter-row-postwrite-r2/triage.yaml
+- docs/notes/review-runs/2026-06-11-deployment-adapter-row-postwrite/approval.yaml
+- docs/notes/review-runs/2026-06-11-deployment-adapter-row-postwrite/model-result-summary.yaml
+- docs/notes/review-runs/2026-06-11-deployment-adapter-row-postwrite/parsed/claude-sonnet-4-6.round-1.yaml
+- docs/notes/review-runs/2026-06-11-deployment-adapter-row-postwrite/parsed/gemini-3.1-pro-preview.round-1.yaml
+- docs/notes/review-runs/2026-06-11-deployment-adapter-row-postwrite/parsed/gpt-5.5.round-1.yaml
+- docs/notes/review-runs/2026-06-11-deployment-adapter-row-postwrite/raw/claude-sonnet-4-6.round-1.txt
+- docs/notes/review-runs/2026-06-11-deployment-adapter-row-postwrite/raw/gemini-3.1-pro-preview.round-1.txt
+- docs/notes/review-runs/2026-06-11-deployment-adapter-row-postwrite/raw/gpt-5.5.round-1.txt
+- docs/notes/review-runs/2026-06-11-deployment-adapter-row-postwrite/review_summary.md
+- docs/notes/review-runs/2026-06-11-deployment-adapter-row-postwrite/rounds.yaml
+- docs/notes/review-runs/2026-06-11-deployment-adapter-row-postwrite/target-manifest.yaml
+- docs/notes/review-runs/2026-06-11-deployment-adapter-row-postwrite/triage.yaml
+- docs/notes/review-runs/2026-06-11-setup-guide-entry-postwrite-r2/approval.yaml
+- docs/notes/review-runs/2026-06-11-setup-guide-entry-postwrite-r2/model-result-summary.yaml
+- docs/notes/review-runs/2026-06-11-setup-guide-entry-postwrite-r2/parsed/claude-sonnet-4-6.round-1.yaml
+- docs/notes/review-runs/2026-06-11-setup-guide-entry-postwrite-r2/parsed/gemini-3.1-pro-preview.round-1.yaml
+- docs/notes/review-runs/2026-06-11-setup-guide-entry-postwrite-r2/parsed/gpt-5.5.round-1.yaml
+- docs/notes/review-runs/2026-06-11-setup-guide-entry-postwrite-r2/raw/claude-sonnet-4-6.round-1.txt
+- docs/notes/review-runs/2026-06-11-setup-guide-entry-postwrite-r2/raw/gemini-3.1-pro-preview.round-1.txt
+- docs/notes/review-runs/2026-06-11-setup-guide-entry-postwrite-r2/raw/gpt-5.5.round-1.txt
+- docs/notes/review-runs/2026-06-11-setup-guide-entry-postwrite-r2/review_summary.md
+- docs/notes/review-runs/2026-06-11-setup-guide-entry-postwrite-r2/rounds.yaml
+- docs/notes/review-runs/2026-06-11-setup-guide-entry-postwrite-r2/target-manifest.yaml
+- docs/notes/review-runs/2026-06-11-setup-guide-entry-postwrite-r2/triage.yaml
+- docs/notes/review-runs/2026-06-11-setup-guide-entry-postwrite/model-result-summary.yaml
+- docs/notes/review-runs/2026-06-11-setup-guide-entry-postwrite/parsed/claude-sonnet-4-6.round-1.yaml
+- docs/notes/review-runs/2026-06-11-setup-guide-entry-postwrite/parsed/gemini-3.1-pro-preview.round-1.yaml
+- docs/notes/review-runs/2026-06-11-setup-guide-entry-postwrite/parsed/gpt-5.5.round-1.yaml
+- docs/notes/review-runs/2026-06-11-setup-guide-entry-postwrite/raw/claude-sonnet-4-6.round-1.txt
+- docs/notes/review-runs/2026-06-11-setup-guide-entry-postwrite/raw/gemini-3.1-pro-preview.round-1.txt
+- docs/notes/review-runs/2026-06-11-setup-guide-entry-postwrite/raw/gpt-5.5.round-1.txt
+- docs/notes/review-runs/2026-06-11-setup-guide-entry-postwrite/review_summary.md
+- docs/notes/review-runs/2026-06-11-setup-guide-entry-postwrite/rounds.yaml
+- docs/notes/review-runs/2026-06-11-setup-guide-entry-postwrite/target-manifest.yaml
+- docs/notes/review-runs/2026-06-11-setup-guide-entry-postwrite/triage.yaml
+- docs/notes/review-runs/2026-06-11-user-guide-entry-postwrite-r2/model-result-summary.yaml
+- docs/notes/review-runs/2026-06-11-user-guide-entry-postwrite-r2/parsed/claude-sonnet-4-6.round-1.yaml
+- docs/notes/review-runs/2026-06-11-user-guide-entry-postwrite-r2/parsed/gemini-3.1-pro-preview.round-1.yaml
+- docs/notes/review-runs/2026-06-11-user-guide-entry-postwrite-r2/parsed/gpt-5.5.round-1.yaml
+- docs/notes/review-runs/2026-06-11-user-guide-entry-postwrite-r2/raw/claude-sonnet-4-6.round-1.txt
+- docs/notes/review-runs/2026-06-11-user-guide-entry-postwrite-r2/raw/gemini-3.1-pro-preview.round-1.txt
+- docs/notes/review-runs/2026-06-11-user-guide-entry-postwrite-r2/raw/gpt-5.5.round-1.txt
+- docs/notes/review-runs/2026-06-11-user-guide-entry-postwrite-r2/review_summary.md
+- docs/notes/review-runs/2026-06-11-user-guide-entry-postwrite-r2/rounds.yaml
+- docs/notes/review-runs/2026-06-11-user-guide-entry-postwrite-r2/target-manifest.yaml
+- docs/notes/review-runs/2026-06-11-user-guide-entry-postwrite-r2/triage.yaml
+- docs/notes/review-runs/2026-06-11-user-guide-entry-postwrite/approval.yaml
+- docs/notes/review-runs/2026-06-11-user-guide-entry-postwrite/model-result-summary.yaml
+- docs/notes/review-runs/2026-06-11-user-guide-entry-postwrite/parsed/claude-sonnet-4-6.round-1.yaml
+- docs/notes/review-runs/2026-06-11-user-guide-entry-postwrite/parsed/gemini-3.1-pro-preview.round-1.yaml
+- docs/notes/review-runs/2026-06-11-user-guide-entry-postwrite/parsed/gpt-5.5.round-1.yaml
+- docs/notes/review-runs/2026-06-11-user-guide-entry-postwrite/raw/claude-sonnet-4-6.round-1.txt
+- docs/notes/review-runs/2026-06-11-user-guide-entry-postwrite/raw/gemini-3.1-pro-preview.round-1.txt
+- docs/notes/review-runs/2026-06-11-user-guide-entry-postwrite/raw/gpt-5.5.round-1.txt
+- docs/notes/review-runs/2026-06-11-user-guide-entry-postwrite/review_summary.md
+- docs/notes/review-runs/2026-06-11-user-guide-entry-postwrite/rounds.yaml
+- docs/notes/review-runs/2026-06-11-user-guide-entry-postwrite/target-manifest.yaml
+- docs/notes/review-runs/2026-06-11-user-guide-entry-postwrite/triage.yaml
+- docs/notes/review-runs/2026-06-12-deployment-adapter-row-postwrite-r3/model-result-summary.yaml
+- docs/notes/review-runs/2026-06-12-deployment-adapter-row-postwrite-r3/parsed/claude-sonnet-4-6.round-1.yaml
+- docs/notes/review-runs/2026-06-12-deployment-adapter-row-postwrite-r3/parsed/gemini-3.1-pro-preview.round-1.yaml
+- docs/notes/review-runs/2026-06-12-deployment-adapter-row-postwrite-r3/parsed/gpt-5.5.round-1.yaml
+- docs/notes/review-runs/2026-06-12-deployment-adapter-row-postwrite-r3/raw/claude-sonnet-4-6.round-1.txt
+- docs/notes/review-runs/2026-06-12-deployment-adapter-row-postwrite-r3/raw/gemini-3.1-pro-preview.round-1.txt
+- docs/notes/review-runs/2026-06-12-deployment-adapter-row-postwrite-r3/raw/gpt-5.5.round-1.txt
+- docs/notes/review-runs/2026-06-12-deployment-adapter-row-postwrite-r3/review_summary.md
+- docs/notes/review-runs/2026-06-12-deployment-adapter-row-postwrite-r3/rounds.yaml
+- docs/notes/review-runs/2026-06-12-deployment-adapter-row-postwrite-r3/target-manifest.yaml
+- docs/notes/review-runs/2026-06-12-deployment-adapter-row-postwrite-r3/triage.yaml
+- docs/notes/review-runs/2026-06-12-setup-guide-entry-postwrite-r3/model-result-summary.yaml
+- docs/notes/review-runs/2026-06-12-setup-guide-entry-postwrite-r3/parsed/claude-sonnet-4-6.round-1.yaml
+- docs/notes/review-runs/2026-06-12-setup-guide-entry-postwrite-r3/parsed/gemini-3.1-pro-preview.round-1.yaml
+- docs/notes/review-runs/2026-06-12-setup-guide-entry-postwrite-r3/parsed/gpt-5.5.round-1.yaml
+- docs/notes/review-runs/2026-06-12-setup-guide-entry-postwrite-r3/raw/claude-sonnet-4-6.round-1.txt
+- docs/notes/review-runs/2026-06-12-setup-guide-entry-postwrite-r3/raw/gemini-3.1-pro-preview.round-1.txt
+- docs/notes/review-runs/2026-06-12-setup-guide-entry-postwrite-r3/raw/gpt-5.5.round-1.txt
+- docs/notes/review-runs/2026-06-12-setup-guide-entry-postwrite-r3/review_summary.md
+- docs/notes/review-runs/2026-06-12-setup-guide-entry-postwrite-r3/rounds.yaml
+- docs/notes/review-runs/2026-06-12-setup-guide-entry-postwrite-r3/target-manifest.yaml
+- docs/notes/review-runs/2026-06-12-setup-guide-entry-postwrite-r3/triage.yaml
+- docs/notes/review-runs/2026-06-12-user-guide-entry-postwrite-r3/model-result-summary.yaml
+- docs/notes/review-runs/2026-06-12-user-guide-entry-postwrite-r3/parsed/claude-sonnet-4-6.round-1.yaml
+- docs/notes/review-runs/2026-06-12-user-guide-entry-postwrite-r3/parsed/gemini-3.1-pro-preview.round-1.yaml
+- docs/notes/review-runs/2026-06-12-user-guide-entry-postwrite-r3/parsed/gpt-5.5.round-1.yaml
+- docs/notes/review-runs/2026-06-12-user-guide-entry-postwrite-r3/raw/claude-sonnet-4-6.round-1.txt
+- docs/notes/review-runs/2026-06-12-user-guide-entry-postwrite-r3/raw/gemini-3.1-pro-preview.round-1.txt
+- docs/notes/review-runs/2026-06-12-user-guide-entry-postwrite-r3/raw/gpt-5.5.round-1.txt
+- docs/notes/review-runs/2026-06-12-user-guide-entry-postwrite-r3/review_summary.md
+- docs/notes/review-runs/2026-06-12-user-guide-entry-postwrite-r3/rounds.yaml
+- docs/notes/review-runs/2026-06-12-user-guide-entry-postwrite-r3/target-manifest.yaml
+- docs/notes/review-runs/2026-06-12-user-guide-entry-postwrite-r3/triage.yaml
+- docs/operations/DEPLOYMENT.md
+- docs/operations/INITIAL_DEPLOYMENT_USER_GUIDE.md
+- docs/operations/INITIAL_SETUP_LLM_GUIDE.md
+target_sha256:
+  docs/notes/review-runs/2026-06-11-deployment-adapter-row-postwrite-r2/model-result-summary.yaml: 2ed910a2fd825b2e35c90bfe67bbebce48eeeb26cbd7e122d52a0f40b3b50704
+  docs/notes/review-runs/2026-06-11-deployment-adapter-row-postwrite-r2/parsed/claude-sonnet-4-6.round-1.yaml: 0be735827cae467654fe14ed8605cadab3ebec2007d7fa4bb0635d754e2ce95a
+  docs/notes/review-runs/2026-06-11-deployment-adapter-row-postwrite-r2/parsed/gemini-3.1-pro-preview.round-1.yaml: fe79e6b4a4b2a4e710a7bb801df00bef5bb2e5e299d9983ffed3b76653cf5fb2
+  docs/notes/review-runs/2026-06-11-deployment-adapter-row-postwrite-r2/parsed/gpt-5.5.round-1.yaml: 9d282a28a64392d672503b8da08245b6144826e218a1d07a2bd0f4e7b27f8b73
+  docs/notes/review-runs/2026-06-11-deployment-adapter-row-postwrite-r2/raw/claude-sonnet-4-6.round-1.txt: fea8203d933e5e453f08251719d41cfed35c002b292e1223b14ed8c75221277d
+  docs/notes/review-runs/2026-06-11-deployment-adapter-row-postwrite-r2/raw/gemini-3.1-pro-preview.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+  docs/notes/review-runs/2026-06-11-deployment-adapter-row-postwrite-r2/raw/gpt-5.5.round-1.txt: 889732eefdd84ec88708377e081856ee910617ec562f642fa520b964c949ddec
+  docs/notes/review-runs/2026-06-11-deployment-adapter-row-postwrite-r2/review_summary.md: ed6060472a81cdbd7a3d9c92c068a1ae96a48983797539abb3fcfd464f4cf798
+  docs/notes/review-runs/2026-06-11-deployment-adapter-row-postwrite-r2/rounds.yaml: f6d1eb7620abf92295a1318143bbc149639894c3d7782afb450c69b2c992e67b
+  docs/notes/review-runs/2026-06-11-deployment-adapter-row-postwrite-r2/target-manifest.yaml: ae422287d52fa9f65932fe193ee6e13b115e2d4b2ef5587bd2f66b0000d676aa
+  docs/notes/review-runs/2026-06-11-deployment-adapter-row-postwrite-r2/triage.yaml: f1ca38e78eef8f2b99612f897ba68385d448ca69f39f170af6823eb0061b0dc6
+  docs/notes/review-runs/2026-06-11-deployment-adapter-row-postwrite/approval.yaml: 3fee2265c901244fbf9e95ee8b0df3cd2c58de899a02b2c54313207a7bb3c491
+  docs/notes/review-runs/2026-06-11-deployment-adapter-row-postwrite/model-result-summary.yaml: df5285a2b90147a90c540b71eea76b19be2d72c0acb771ab21c302cb7c9028fb
+  docs/notes/review-runs/2026-06-11-deployment-adapter-row-postwrite/parsed/claude-sonnet-4-6.round-1.yaml: 86b0a414d5ec99b76841b29e00b665d2a626f6a41796f907747329c7118e51dd
+  docs/notes/review-runs/2026-06-11-deployment-adapter-row-postwrite/parsed/gemini-3.1-pro-preview.round-1.yaml: c4fdb2cb2fa7626c9c6cf38fe7e779786ea0c976da2d9d120d3e1952d1f4d454
+  docs/notes/review-runs/2026-06-11-deployment-adapter-row-postwrite/parsed/gpt-5.5.round-1.yaml: e63ac05a69a90138a8ae96fd12d6d2f9a19274ec8f0986b4501803ddf46b7cd3
+  docs/notes/review-runs/2026-06-11-deployment-adapter-row-postwrite/raw/claude-sonnet-4-6.round-1.txt: 5a600170e3822fad06430e7705a269fa19fec93ef8dfccdeca9ac85cb4813f59
+  docs/notes/review-runs/2026-06-11-deployment-adapter-row-postwrite/raw/gemini-3.1-pro-preview.round-1.txt: 12a71e44ee28939bd2628666be69702cb88f33e425d964cac0f97b95494b94e8
+  docs/notes/review-runs/2026-06-11-deployment-adapter-row-postwrite/raw/gpt-5.5.round-1.txt: 27f1ec35ead27bb20ae5aadf905b236e59c3e110c2f7fad7c19d245689134808
+  docs/notes/review-runs/2026-06-11-deployment-adapter-row-postwrite/review_summary.md: 0379f893f04b4ea93e42e9f19c8007998a58618fc883c7a00a3d6f843b68721d
+  docs/notes/review-runs/2026-06-11-deployment-adapter-row-postwrite/rounds.yaml: 0eb6919e737fbf57a3712b8b435ac2bbad42a52794c88f8320c2aa3c54fd6e02
+  docs/notes/review-runs/2026-06-11-deployment-adapter-row-postwrite/target-manifest.yaml: ba38c76b39c0a52225e0f5486b0ffb4fab73aa6965085532f464c51ae8ee5fa2
+  docs/notes/review-runs/2026-06-11-deployment-adapter-row-postwrite/triage.yaml: aab5de8b9a918e0a07dee65f9e208dde99f50e9d55d42cec56f9e7292cd212ad
+  docs/notes/review-runs/2026-06-11-setup-guide-entry-postwrite-r2/approval.yaml: ef55fe7ecdbd7e0cdfc37fb183c066cbd8f3768d4f00d4509b66a57f3c01f894
+  docs/notes/review-runs/2026-06-11-setup-guide-entry-postwrite-r2/model-result-summary.yaml: aadfdce9587e2a782b2e5dea36e201c278a0ea06468fb07a769890bfa9662303
+  docs/notes/review-runs/2026-06-11-setup-guide-entry-postwrite-r2/parsed/claude-sonnet-4-6.round-1.yaml: dbee58242ab37a5bbc4d344e2927b6ff4e436185bfd53510890f7eb40cd9d809
+  docs/notes/review-runs/2026-06-11-setup-guide-entry-postwrite-r2/parsed/gemini-3.1-pro-preview.round-1.yaml: 533c3de0dc9793ca1f54ef891ff32bc49d73c80b6937f55e8dbaf03b07156a12
+  docs/notes/review-runs/2026-06-11-setup-guide-entry-postwrite-r2/parsed/gpt-5.5.round-1.yaml: 880b4558f3f9a416e082bdd1398d2602e10bdf895d8510e0e7bd9708ccbf1b5b
+  docs/notes/review-runs/2026-06-11-setup-guide-entry-postwrite-r2/raw/claude-sonnet-4-6.round-1.txt: 303ddde6b202727e623fea9b1b4dacaef7a4762b986f16ce919a96194d571d29
+  docs/notes/review-runs/2026-06-11-setup-guide-entry-postwrite-r2/raw/gemini-3.1-pro-preview.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+  docs/notes/review-runs/2026-06-11-setup-guide-entry-postwrite-r2/raw/gpt-5.5.round-1.txt: 6178e5739b1106f3d9b5baf09d2a9c8713efa65b55be041e40f3cf9c01179196
+  docs/notes/review-runs/2026-06-11-setup-guide-entry-postwrite-r2/review_summary.md: b4a1679381bf34ac8732190ae3916694ab8261329039e08d13c3c677477dd18f
+  docs/notes/review-runs/2026-06-11-setup-guide-entry-postwrite-r2/rounds.yaml: 21dbe74f9792dc93a9ae8bbdd74bb1609a520c4e1397670ce5a764f2b6f7bc93
+  docs/notes/review-runs/2026-06-11-setup-guide-entry-postwrite-r2/target-manifest.yaml: 8a4feca3df55a9eda528c4f2f27d1ca35446605f767294ee1954fca5bbd0255a
+  docs/notes/review-runs/2026-06-11-setup-guide-entry-postwrite-r2/triage.yaml: a041b0c7d964851d1ce7759a63f83767e821f51944dde1bc1d5380e449edb290
+  docs/notes/review-runs/2026-06-11-setup-guide-entry-postwrite/model-result-summary.yaml: 00482ea3827108208554085c09e7666d065d3b2db6872b13fac544d9379a0c35
+  docs/notes/review-runs/2026-06-11-setup-guide-entry-postwrite/parsed/claude-sonnet-4-6.round-1.yaml: 641fd1876f2a6af3426f30d1ae5cc2d23940d96de2039209276d6ce5470ca391
+  docs/notes/review-runs/2026-06-11-setup-guide-entry-postwrite/parsed/gemini-3.1-pro-preview.round-1.yaml: deaead132a39d53aa508566edebc96008fdfcc3421efd9a57f980d9959d0402d
+  docs/notes/review-runs/2026-06-11-setup-guide-entry-postwrite/parsed/gpt-5.5.round-1.yaml: eb7c1e818a3c05f85abd80450f5b73d825afac8fea9c690ff8fd9b3672a7ccaa
+  docs/notes/review-runs/2026-06-11-setup-guide-entry-postwrite/raw/claude-sonnet-4-6.round-1.txt: 081dabe7c83d6f2c8fc8d9a71f6c24deac677c71f44c732c7c29c10e1c21b123
+  docs/notes/review-runs/2026-06-11-setup-guide-entry-postwrite/raw/gemini-3.1-pro-preview.round-1.txt: bc1f4366edd8ffaec31a9ac7a8391dab7dda17fb504d5e9666f9969147d07caf
+  docs/notes/review-runs/2026-06-11-setup-guide-entry-postwrite/raw/gpt-5.5.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+  docs/notes/review-runs/2026-06-11-setup-guide-entry-postwrite/review_summary.md: 972a324c9dcf5b83ea447fbbe47708b68ae3c0519fe403d6ffdd86b78395ef90
+  docs/notes/review-runs/2026-06-11-setup-guide-entry-postwrite/rounds.yaml: a49ff58009e65521fe7df8fd2144aaba3707ae27c5e64913f3d226e4c2830c1d
+  docs/notes/review-runs/2026-06-11-setup-guide-entry-postwrite/target-manifest.yaml: 6567d5991d1c9f71368ce87f9f8e91aef244f0a078f75be0234b12308c03c591
+  docs/notes/review-runs/2026-06-11-setup-guide-entry-postwrite/triage.yaml: f052af349a1bef3789fab8c991c65ef132676b781c0e519c09a7cc870067abdb
+  docs/notes/review-runs/2026-06-11-user-guide-entry-postwrite-r2/model-result-summary.yaml: 2e1fb68552f354e4c41462931c6fc0cab71a8791fe12872892ac64d6de4f0aea
+  docs/notes/review-runs/2026-06-11-user-guide-entry-postwrite-r2/parsed/claude-sonnet-4-6.round-1.yaml: e239baf9455c451952b2e08ef24b6f6bb774d05558889286dae199635e5bc676
+  docs/notes/review-runs/2026-06-11-user-guide-entry-postwrite-r2/parsed/gemini-3.1-pro-preview.round-1.yaml: ab50b22b8d9e9402d997a22d1eec074018bf660e477d7ab317e124172a774da1
+  docs/notes/review-runs/2026-06-11-user-guide-entry-postwrite-r2/parsed/gpt-5.5.round-1.yaml: 332288fd91be47b96f93544d2f2de33162139865fb9e8530241e98ab6fbe5dd6
+  docs/notes/review-runs/2026-06-11-user-guide-entry-postwrite-r2/raw/claude-sonnet-4-6.round-1.txt: e29644c39493864e141fddcd52f3c1f1f2b185acd1f1f4d225394026ee3b2800
+  docs/notes/review-runs/2026-06-11-user-guide-entry-postwrite-r2/raw/gemini-3.1-pro-preview.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+  docs/notes/review-runs/2026-06-11-user-guide-entry-postwrite-r2/raw/gpt-5.5.round-1.txt: aad26281a0dad6ec26be4d55dd9bd00edd9c02296504099a51037b895fd5c67d
+  docs/notes/review-runs/2026-06-11-user-guide-entry-postwrite-r2/review_summary.md: 526aaa6b9c4db8445e0ca214b74f0cc0c74973c075e0e652b8f2346638a6ee5b
+  docs/notes/review-runs/2026-06-11-user-guide-entry-postwrite-r2/rounds.yaml: 932d21a4506f9f5c1c9b2a7dde22b0ff127805228719e4d9138a0c49417ac0a3
+  docs/notes/review-runs/2026-06-11-user-guide-entry-postwrite-r2/target-manifest.yaml: e3c8360eee08bcb61d0c4e9106521b43119b66e1e55d7a5fc004bb979ba9260d
+  docs/notes/review-runs/2026-06-11-user-guide-entry-postwrite-r2/triage.yaml: f721a9aeb526a36ecb17a1f2f50ef106a80f22af47abfacce34c181fd027ae9a
+  docs/notes/review-runs/2026-06-11-user-guide-entry-postwrite/approval.yaml: 43b4be5d76d209f27a98fca072df278c1c37a777c1ec4e55396d40d8aaa29c17
+  docs/notes/review-runs/2026-06-11-user-guide-entry-postwrite/model-result-summary.yaml: 11760e5d805c3d215f589f264c9f443adc5120397c61bee56bf2f363cc1ea125
+  docs/notes/review-runs/2026-06-11-user-guide-entry-postwrite/parsed/claude-sonnet-4-6.round-1.yaml: 1c1b8885628b514b87ddc218f7674ca31c014def99193a0e164c27655a2efdca
+  docs/notes/review-runs/2026-06-11-user-guide-entry-postwrite/parsed/gemini-3.1-pro-preview.round-1.yaml: 50081f2cd83a896186716c04bf81bb4de31154f3c91a584e32319a8b4631aa4a
+  docs/notes/review-runs/2026-06-11-user-guide-entry-postwrite/parsed/gpt-5.5.round-1.yaml: a3a801e78d0e3e453ca8c6d1469a0afd93b63198cb4c506ad8fc973e8903968a
+  docs/notes/review-runs/2026-06-11-user-guide-entry-postwrite/raw/claude-sonnet-4-6.round-1.txt: 5e45b01d877f94a1dfef4ab844c2ad3d37b292b494c33e0e700749e61406cdba
+  docs/notes/review-runs/2026-06-11-user-guide-entry-postwrite/raw/gemini-3.1-pro-preview.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+  docs/notes/review-runs/2026-06-11-user-guide-entry-postwrite/raw/gpt-5.5.round-1.txt: 65156b6da7270177c28d24d180c357f20ff77180c2a0498570e26a295cdc22c5
+  docs/notes/review-runs/2026-06-11-user-guide-entry-postwrite/review_summary.md: a637f001f9640e9747d7209a21d6298cf56a990867a225a17930f9c1de0ac0df
+  docs/notes/review-runs/2026-06-11-user-guide-entry-postwrite/rounds.yaml: 230fd9c0ef3be0ef3e39357ffb747948393359f3e40667ff0dd53ddaf4e53698
+  docs/notes/review-runs/2026-06-11-user-guide-entry-postwrite/target-manifest.yaml: b02ca35127c346ad404cacd1c7fa38abcbd19f4f17b1382dadbb8cf28ecbe397
+  docs/notes/review-runs/2026-06-11-user-guide-entry-postwrite/triage.yaml: f99463e6dcee96b8926a3a347d1f364409bfff0783148601623e37ee82cb59f0
+  docs/notes/review-runs/2026-06-12-deployment-adapter-row-postwrite-r3/model-result-summary.yaml: e36570fd212c17a8aea8dfcb8929ffc4b76719055ee498482aa98f851fcfa13c
+  docs/notes/review-runs/2026-06-12-deployment-adapter-row-postwrite-r3/parsed/claude-sonnet-4-6.round-1.yaml: aa699c90264e260624acb56cc68b07422a3eecc6b9be599ed2d7db598aed5f1f
+  docs/notes/review-runs/2026-06-12-deployment-adapter-row-postwrite-r3/parsed/gemini-3.1-pro-preview.round-1.yaml: 0f42626bdbde555bbdb4cdd4f019ba8a6333da3b808a884097f1625fb6a95372
+  docs/notes/review-runs/2026-06-12-deployment-adapter-row-postwrite-r3/parsed/gpt-5.5.round-1.yaml: 888bdde75ee46da929ed1ae596175bf7160e5b20d5f3dc5e3b35875c5d5f5aa3
+  docs/notes/review-runs/2026-06-12-deployment-adapter-row-postwrite-r3/raw/claude-sonnet-4-6.round-1.txt: abd9aa7fd42aa79b81be46bcec42bcdd80f4049137cd26167871318370f07e42
+  docs/notes/review-runs/2026-06-12-deployment-adapter-row-postwrite-r3/raw/gemini-3.1-pro-preview.round-1.txt: 67f20b5f2a77ca36c12b6b153ce451a10d7c0026c9147c2eb86f0e1d33ea4fb1
+  docs/notes/review-runs/2026-06-12-deployment-adapter-row-postwrite-r3/raw/gpt-5.5.round-1.txt: 3ab3f820173407c99c65026a73a4b11025b6e2a95f278805d3a37561728ad8f4
+  docs/notes/review-runs/2026-06-12-deployment-adapter-row-postwrite-r3/review_summary.md: dc9d1d88e97775ba0305dd3e3f6b2100fa40315cdade6ed0803c21c127fe32a5
+  docs/notes/review-runs/2026-06-12-deployment-adapter-row-postwrite-r3/rounds.yaml: 775c6622ad7e63f9204d1c8055f784b243f7e66abe91bfb60d7530528380161e
+  docs/notes/review-runs/2026-06-12-deployment-adapter-row-postwrite-r3/target-manifest.yaml: a374dc830832a7c8adc869d5b351684701570a4d212523926aedc98a4dfad468
+  docs/notes/review-runs/2026-06-12-deployment-adapter-row-postwrite-r3/triage.yaml: 79baeb6a5a7c580ed8de02905477d40b638714b11593a864d3731968787d347d
+  docs/notes/review-runs/2026-06-12-setup-guide-entry-postwrite-r3/model-result-summary.yaml: e24f2d29185a1284ca83586bf7f9a8dec64d7b50140627edab4cdb48419d1960
+  docs/notes/review-runs/2026-06-12-setup-guide-entry-postwrite-r3/parsed/claude-sonnet-4-6.round-1.yaml: c94cf021b0bfd47ab819618c03b2be0c0c29f647975a308bcd61c66defb07cd5
+  docs/notes/review-runs/2026-06-12-setup-guide-entry-postwrite-r3/parsed/gemini-3.1-pro-preview.round-1.yaml: 74ebcc8225671791d18720c7a774b946e2619a2a31d2e06689a9c8a4110196c6
+  docs/notes/review-runs/2026-06-12-setup-guide-entry-postwrite-r3/parsed/gpt-5.5.round-1.yaml: 4101218cbba5474df5613e07f4a97cb928f6cb00be717dc78bd68ba0dc8002f2
+  docs/notes/review-runs/2026-06-12-setup-guide-entry-postwrite-r3/raw/claude-sonnet-4-6.round-1.txt: a2db80bfb36d85a2488b2dca0675b47f90ff3fdfcbc7490e54eb8dcfd0403eb0
+  docs/notes/review-runs/2026-06-12-setup-guide-entry-postwrite-r3/raw/gemini-3.1-pro-preview.round-1.txt: 6a68bdeb4861dc0628281acebf98732a461fc53d5c8992e7cc97aa86b3831e49
+  docs/notes/review-runs/2026-06-12-setup-guide-entry-postwrite-r3/raw/gpt-5.5.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+  docs/notes/review-runs/2026-06-12-setup-guide-entry-postwrite-r3/review_summary.md: 66d5a5ac5c668f9f637be82be84c3b1c1ba3649667783f36147d54c72c70b9b1
+  docs/notes/review-runs/2026-06-12-setup-guide-entry-postwrite-r3/rounds.yaml: e76ab46279e8a8b3675eb9ff5de7e3c5d8dbaf5b11a6f91e415a5d120dbced78
+  docs/notes/review-runs/2026-06-12-setup-guide-entry-postwrite-r3/target-manifest.yaml: c8e9ba6b3e89d26fdb918d8415405b164a247892a623df990d374a278b054dbc
+  docs/notes/review-runs/2026-06-12-setup-guide-entry-postwrite-r3/triage.yaml: 8f74283abadfe1b807833834d345866b8b2a192eb74b79399b2596ca951027ad
+  docs/notes/review-runs/2026-06-12-user-guide-entry-postwrite-r3/model-result-summary.yaml: 6e991d4f80479a05cd951877346410d4b82da2a81a1ad11846dbf6e20893ab46
+  docs/notes/review-runs/2026-06-12-user-guide-entry-postwrite-r3/parsed/claude-sonnet-4-6.round-1.yaml: 62b1f872d4da2e94f23096cac6ec67f22034eb4ed5693aa6ded6f8ac6f9a713d
+  docs/notes/review-runs/2026-06-12-user-guide-entry-postwrite-r3/parsed/gemini-3.1-pro-preview.round-1.yaml: 9ae4d8c4cefb244a88b040b3d2770d72c719f0861895fde7d90d95a224b40bf1
+  docs/notes/review-runs/2026-06-12-user-guide-entry-postwrite-r3/parsed/gpt-5.5.round-1.yaml: fd59646fa2876f8031d19c8b9a113e8ec36f4d0980db5792a99f558cf3d40aa1
+  docs/notes/review-runs/2026-06-12-user-guide-entry-postwrite-r3/raw/claude-sonnet-4-6.round-1.txt: dfe82051e1c390e8bdd36f66dbe705b06edcaa08d2c536605d7643d38862cc26
+  docs/notes/review-runs/2026-06-12-user-guide-entry-postwrite-r3/raw/gemini-3.1-pro-preview.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+  docs/notes/review-runs/2026-06-12-user-guide-entry-postwrite-r3/raw/gpt-5.5.round-1.txt: 13bd1c495d1d0138f5f47267fa70f5731bcd3c7ab35f398ea845cde459a4d5b1
+  docs/notes/review-runs/2026-06-12-user-guide-entry-postwrite-r3/review_summary.md: f3de602d4ebe34b7c037975e3c31729c851fe88da1c1ee0462490a3665e90050
+  docs/notes/review-runs/2026-06-12-user-guide-entry-postwrite-r3/rounds.yaml: e4db8915289e95ec37c9081bb10e6d8e4b4dd110ec06eeb4b65155182742babc
+  docs/notes/review-runs/2026-06-12-user-guide-entry-postwrite-r3/target-manifest.yaml: 6b4906cae34ba9db6a672b844b184315c503d3035a558ea769607df97e6c8970
+  docs/notes/review-runs/2026-06-12-user-guide-entry-postwrite-r3/triage.yaml: 4fe88758914550a5a0adce1748b6685f938a7069f6cc702ffdd53ce164e1d4ac
+  docs/operations/DEPLOYMENT.md: cc7df9d191fec7f35e56c6728ade94f2ba1318ba332dde5d45210aaa30f2222e
+  docs/operations/INITIAL_DEPLOYMENT_USER_GUIDE.md: 64e1697143da663c55ec973fa5abfb04bf81a506f68adc01388d543bcb07783b
+  docs/operations/INITIAL_SETUP_LLM_GUIDE.md: 211f68493f092ef380113ba20c4ce43580847725a569102f970fbe005d10e7d4
+required_verifiers: &id001
+- claude-sonnet-4-6
+- gpt-5.5
+- gemini-3.1-pro-preview
+completed_verifiers: *id001
+unresolved_substantive_findings: 0
+verifications:
+- verifier: claude-sonnet-4-6
+  target_files:
+  - docs/notes/review-runs/2026-06-11-deployment-adapter-row-postwrite-r2/model-result-summary.yaml
+  - docs/notes/review-runs/2026-06-11-deployment-adapter-row-postwrite-r2/parsed/claude-sonnet-4-6.round-1.yaml
+  - docs/notes/review-runs/2026-06-11-deployment-adapter-row-postwrite-r2/parsed/gemini-3.1-pro-preview.round-1.yaml
+  - docs/notes/review-runs/2026-06-11-deployment-adapter-row-postwrite-r2/parsed/gpt-5.5.round-1.yaml
+  - docs/notes/review-runs/2026-06-11-deployment-adapter-row-postwrite-r2/raw/claude-sonnet-4-6.round-1.txt
+  - docs/notes/review-runs/2026-06-11-deployment-adapter-row-postwrite-r2/raw/gemini-3.1-pro-preview.round-1.txt
+  - docs/notes/review-runs/2026-06-11-deployment-adapter-row-postwrite-r2/raw/gpt-5.5.round-1.txt
+  - docs/notes/review-runs/2026-06-11-deployment-adapter-row-postwrite-r2/review_summary.md
+  - docs/notes/review-runs/2026-06-11-deployment-adapter-row-postwrite-r2/rounds.yaml
+  - docs/notes/review-runs/2026-06-11-deployment-adapter-row-postwrite-r2/target-manifest.yaml
+  - docs/notes/review-runs/2026-06-11-deployment-adapter-row-postwrite-r2/triage.yaml
+  - docs/notes/review-runs/2026-06-11-deployment-adapter-row-postwrite/approval.yaml
+  - docs/notes/review-runs/2026-06-11-deployment-adapter-row-postwrite/model-result-summary.yaml
+  - docs/notes/review-runs/2026-06-11-deployment-adapter-row-postwrite/parsed/claude-sonnet-4-6.round-1.yaml
+  - docs/notes/review-runs/2026-06-11-deployment-adapter-row-postwrite/parsed/gemini-3.1-pro-preview.round-1.yaml
+  - docs/notes/review-runs/2026-06-11-deployment-adapter-row-postwrite/parsed/gpt-5.5.round-1.yaml
+  - docs/notes/review-runs/2026-06-11-deployment-adapter-row-postwrite/raw/claude-sonnet-4-6.round-1.txt
+  - docs/notes/review-runs/2026-06-11-deployment-adapter-row-postwrite/raw/gemini-3.1-pro-preview.round-1.txt
+  - docs/notes/review-runs/2026-06-11-deployment-adapter-row-postwrite/raw/gpt-5.5.round-1.txt
+  - docs/notes/review-runs/2026-06-11-deployment-adapter-row-postwrite/review_summary.md
+  - docs/notes/review-runs/2026-06-11-deployment-adapter-row-postwrite/rounds.yaml
+  - docs/notes/review-runs/2026-06-11-deployment-adapter-row-postwrite/target-manifest.yaml
+  - docs/notes/review-runs/2026-06-11-deployment-adapter-row-postwrite/triage.yaml
+  - docs/notes/review-runs/2026-06-11-setup-guide-entry-postwrite-r2/approval.yaml
+  - docs/notes/review-runs/2026-06-11-setup-guide-entry-postwrite-r2/model-result-summary.yaml
+  - docs/notes/review-runs/2026-06-11-setup-guide-entry-postwrite-r2/parsed/claude-sonnet-4-6.round-1.yaml
+  - docs/notes/review-runs/2026-06-11-setup-guide-entry-postwrite-r2/parsed/gemini-3.1-pro-preview.round-1.yaml
+  - docs/notes/review-runs/2026-06-11-setup-guide-entry-postwrite-r2/parsed/gpt-5.5.round-1.yaml
+  - docs/notes/review-runs/2026-06-11-setup-guide-entry-postwrite-r2/raw/claude-sonnet-4-6.round-1.txt
+  - docs/notes/review-runs/2026-06-11-setup-guide-entry-postwrite-r2/raw/gemini-3.1-pro-preview.round-1.txt
+  - docs/notes/review-runs/2026-06-11-setup-guide-entry-postwrite-r2/raw/gpt-5.5.round-1.txt
+  - docs/notes/review-runs/2026-06-11-setup-guide-entry-postwrite-r2/review_summary.md
+  - docs/notes/review-runs/2026-06-11-setup-guide-entry-postwrite-r2/rounds.yaml
+  - docs/notes/review-runs/2026-06-11-setup-guide-entry-postwrite-r2/target-manifest.yaml
+  - docs/notes/review-runs/2026-06-11-setup-guide-entry-postwrite-r2/triage.yaml
+  - docs/notes/review-runs/2026-06-11-setup-guide-entry-postwrite/model-result-summary.yaml
+  - docs/notes/review-runs/2026-06-11-setup-guide-entry-postwrite/parsed/claude-sonnet-4-6.round-1.yaml
+  - docs/notes/review-runs/2026-06-11-setup-guide-entry-postwrite/parsed/gemini-3.1-pro-preview.round-1.yaml
+  - docs/notes/review-runs/2026-06-11-setup-guide-entry-postwrite/parsed/gpt-5.5.round-1.yaml
+  - docs/notes/review-runs/2026-06-11-setup-guide-entry-postwrite/raw/claude-sonnet-4-6.round-1.txt
+  - docs/notes/review-runs/2026-06-11-setup-guide-entry-postwrite/raw/gemini-3.1-pro-preview.round-1.txt
+  - docs/notes/review-runs/2026-06-11-setup-guide-entry-postwrite/raw/gpt-5.5.round-1.txt
+  - docs/notes/review-runs/2026-06-11-setup-guide-entry-postwrite/review_summary.md
+  - docs/notes/review-runs/2026-06-11-setup-guide-entry-postwrite/rounds.yaml
+  - docs/notes/review-runs/2026-06-11-setup-guide-entry-postwrite/target-manifest.yaml
+  - docs/notes/review-runs/2026-06-11-setup-guide-entry-postwrite/triage.yaml
+  - docs/notes/review-runs/2026-06-11-user-guide-entry-postwrite-r2/model-result-summary.yaml
+  - docs/notes/review-runs/2026-06-11-user-guide-entry-postwrite-r2/parsed/claude-sonnet-4-6.round-1.yaml
+  - docs/notes/review-runs/2026-06-11-user-guide-entry-postwrite-r2/parsed/gemini-3.1-pro-preview.round-1.yaml
+  - docs/notes/review-runs/2026-06-11-user-guide-entry-postwrite-r2/parsed/gpt-5.5.round-1.yaml
+  - docs/notes/review-runs/2026-06-11-user-guide-entry-postwrite-r2/raw/claude-sonnet-4-6.round-1.txt
+  - docs/notes/review-runs/2026-06-11-user-guide-entry-postwrite-r2/raw/gemini-3.1-pro-preview.round-1.txt
+  - docs/notes/review-runs/2026-06-11-user-guide-entry-postwrite-r2/raw/gpt-5.5.round-1.txt
+  - docs/notes/review-runs/2026-06-11-user-guide-entry-postwrite-r2/review_summary.md
+  - docs/notes/review-runs/2026-06-11-user-guide-entry-postwrite-r2/rounds.yaml
+  - docs/notes/review-runs/2026-06-11-user-guide-entry-postwrite-r2/target-manifest.yaml
+  - docs/notes/review-runs/2026-06-11-user-guide-entry-postwrite-r2/triage.yaml
+  - docs/notes/review-runs/2026-06-11-user-guide-entry-postwrite/approval.yaml
+  - docs/notes/review-runs/2026-06-11-user-guide-entry-postwrite/model-result-summary.yaml
+  - docs/notes/review-runs/2026-06-11-user-guide-entry-postwrite/parsed/claude-sonnet-4-6.round-1.yaml
+  - docs/notes/review-runs/2026-06-11-user-guide-entry-postwrite/parsed/gemini-3.1-pro-preview.round-1.yaml
+  - docs/notes/review-runs/2026-06-11-user-guide-entry-postwrite/parsed/gpt-5.5.round-1.yaml
+  - docs/notes/review-runs/2026-06-11-user-guide-entry-postwrite/raw/claude-sonnet-4-6.round-1.txt
+  - docs/notes/review-runs/2026-06-11-user-guide-entry-postwrite/raw/gemini-3.1-pro-preview.round-1.txt
+  - docs/notes/review-runs/2026-06-11-user-guide-entry-postwrite/raw/gpt-5.5.round-1.txt
+  - docs/notes/review-runs/2026-06-11-user-guide-entry-postwrite/review_summary.md
+  - docs/notes/review-runs/2026-06-11-user-guide-entry-postwrite/rounds.yaml
+  - docs/notes/review-runs/2026-06-11-user-guide-entry-postwrite/target-manifest.yaml
+  - docs/notes/review-runs/2026-06-11-user-guide-entry-postwrite/triage.yaml
+  - docs/notes/review-runs/2026-06-12-deployment-adapter-row-postwrite-r3/model-result-summary.yaml
+  - docs/notes/review-runs/2026-06-12-deployment-adapter-row-postwrite-r3/parsed/claude-sonnet-4-6.round-1.yaml
+  - docs/notes/review-runs/2026-06-12-deployment-adapter-row-postwrite-r3/parsed/gemini-3.1-pro-preview.round-1.yaml
+  - docs/notes/review-runs/2026-06-12-deployment-adapter-row-postwrite-r3/parsed/gpt-5.5.round-1.yaml
+  - docs/notes/review-runs/2026-06-12-deployment-adapter-row-postwrite-r3/raw/claude-sonnet-4-6.round-1.txt
+  - docs/notes/review-runs/2026-06-12-deployment-adapter-row-postwrite-r3/raw/gemini-3.1-pro-preview.round-1.txt
+  - docs/notes/review-runs/2026-06-12-deployment-adapter-row-postwrite-r3/raw/gpt-5.5.round-1.txt
+  - docs/notes/review-runs/2026-06-12-deployment-adapter-row-postwrite-r3/review_summary.md
+  - docs/notes/review-runs/2026-06-12-deployment-adapter-row-postwrite-r3/rounds.yaml
+  - docs/notes/review-runs/2026-06-12-deployment-adapter-row-postwrite-r3/target-manifest.yaml
+  - docs/notes/review-runs/2026-06-12-deployment-adapter-row-postwrite-r3/triage.yaml
+  - docs/notes/review-runs/2026-06-12-setup-guide-entry-postwrite-r3/model-result-summary.yaml
+  - docs/notes/review-runs/2026-06-12-setup-guide-entry-postwrite-r3/parsed/claude-sonnet-4-6.round-1.yaml
+  - docs/notes/review-runs/2026-06-12-setup-guide-entry-postwrite-r3/parsed/gemini-3.1-pro-preview.round-1.yaml
+  - docs/notes/review-runs/2026-06-12-setup-guide-entry-postwrite-r3/parsed/gpt-5.5.round-1.yaml
+  - docs/notes/review-runs/2026-06-12-setup-guide-entry-postwrite-r3/raw/claude-sonnet-4-6.round-1.txt
+  - docs/notes/review-runs/2026-06-12-setup-guide-entry-postwrite-r3/raw/gemini-3.1-pro-preview.round-1.txt
+  - docs/notes/review-runs/2026-06-12-setup-guide-entry-postwrite-r3/raw/gpt-5.5.round-1.txt
+  - docs/notes/review-runs/2026-06-12-setup-guide-entry-postwrite-r3/review_summary.md
+  - docs/notes/review-runs/2026-06-12-setup-guide-entry-postwrite-r3/rounds.yaml
+  - docs/notes/review-runs/2026-06-12-setup-guide-entry-postwrite-r3/target-manifest.yaml
+  - docs/notes/review-runs/2026-06-12-setup-guide-entry-postwrite-r3/triage.yaml
+  - docs/notes/review-runs/2026-06-12-user-guide-entry-postwrite-r3/model-result-summary.yaml
+  - docs/notes/review-runs/2026-06-12-user-guide-entry-postwrite-r3/parsed/claude-sonnet-4-6.round-1.yaml
+  - docs/notes/review-runs/2026-06-12-user-guide-entry-postwrite-r3/parsed/gemini-3.1-pro-preview.round-1.yaml
+  - docs/notes/review-runs/2026-06-12-user-guide-entry-postwrite-r3/parsed/gpt-5.5.round-1.yaml
+  - docs/notes/review-runs/2026-06-12-user-guide-entry-postwrite-r3/raw/claude-sonnet-4-6.round-1.txt
+  - docs/notes/review-runs/2026-06-12-user-guide-entry-postwrite-r3/raw/gemini-3.1-pro-preview.round-1.txt
+  - docs/notes/review-runs/2026-06-12-user-guide-entry-postwrite-r3/raw/gpt-5.5.round-1.txt
+  - docs/notes/review-runs/2026-06-12-user-guide-entry-postwrite-r3/review_summary.md
+  - docs/notes/review-runs/2026-06-12-user-guide-entry-postwrite-r3/rounds.yaml
+  - docs/notes/review-runs/2026-06-12-user-guide-entry-postwrite-r3/target-manifest.yaml
+  - docs/notes/review-runs/2026-06-12-user-guide-entry-postwrite-r3/triage.yaml
+  - docs/operations/DEPLOYMENT.md
+  - docs/operations/INITIAL_DEPLOYMENT_USER_GUIDE.md
+  - docs/operations/INITIAL_SETUP_LLM_GUIDE.md
+  target_sha256:
+    docs/notes/review-runs/2026-06-11-deployment-adapter-row-postwrite-r2/model-result-summary.yaml: 2ed910a2fd825b2e35c90bfe67bbebce48eeeb26cbd7e122d52a0f40b3b50704
+    docs/notes/review-runs/2026-06-11-deployment-adapter-row-postwrite-r2/parsed/claude-sonnet-4-6.round-1.yaml: 0be735827cae467654fe14ed8605cadab3ebec2007d7fa4bb0635d754e2ce95a
+    docs/notes/review-runs/2026-06-11-deployment-adapter-row-postwrite-r2/parsed/gemini-3.1-pro-preview.round-1.yaml: fe79e6b4a4b2a4e710a7bb801df00bef5bb2e5e299d9983ffed3b76653cf5fb2
+    docs/notes/review-runs/2026-06-11-deployment-adapter-row-postwrite-r2/parsed/gpt-5.5.round-1.yaml: 9d282a28a64392d672503b8da08245b6144826e218a1d07a2bd0f4e7b27f8b73
+    docs/notes/review-runs/2026-06-11-deployment-adapter-row-postwrite-r2/raw/claude-sonnet-4-6.round-1.txt: fea8203d933e5e453f08251719d41cfed35c002b292e1223b14ed8c75221277d
+    docs/notes/review-runs/2026-06-11-deployment-adapter-row-postwrite-r2/raw/gemini-3.1-pro-preview.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/2026-06-11-deployment-adapter-row-postwrite-r2/raw/gpt-5.5.round-1.txt: 889732eefdd84ec88708377e081856ee910617ec562f642fa520b964c949ddec
+    docs/notes/review-runs/2026-06-11-deployment-adapter-row-postwrite-r2/review_summary.md: ed6060472a81cdbd7a3d9c92c068a1ae96a48983797539abb3fcfd464f4cf798
+    docs/notes/review-runs/2026-06-11-deployment-adapter-row-postwrite-r2/rounds.yaml: f6d1eb7620abf92295a1318143bbc149639894c3d7782afb450c69b2c992e67b
+    docs/notes/review-runs/2026-06-11-deployment-adapter-row-postwrite-r2/target-manifest.yaml: ae422287d52fa9f65932fe193ee6e13b115e2d4b2ef5587bd2f66b0000d676aa
+    docs/notes/review-runs/2026-06-11-deployment-adapter-row-postwrite-r2/triage.yaml: f1ca38e78eef8f2b99612f897ba68385d448ca69f39f170af6823eb0061b0dc6
+    docs/notes/review-runs/2026-06-11-deployment-adapter-row-postwrite/approval.yaml: 3fee2265c901244fbf9e95ee8b0df3cd2c58de899a02b2c54313207a7bb3c491
+    docs/notes/review-runs/2026-06-11-deployment-adapter-row-postwrite/model-result-summary.yaml: df5285a2b90147a90c540b71eea76b19be2d72c0acb771ab21c302cb7c9028fb
+    docs/notes/review-runs/2026-06-11-deployment-adapter-row-postwrite/parsed/claude-sonnet-4-6.round-1.yaml: 86b0a414d5ec99b76841b29e00b665d2a626f6a41796f907747329c7118e51dd
+    docs/notes/review-runs/2026-06-11-deployment-adapter-row-postwrite/parsed/gemini-3.1-pro-preview.round-1.yaml: c4fdb2cb2fa7626c9c6cf38fe7e779786ea0c976da2d9d120d3e1952d1f4d454
+    docs/notes/review-runs/2026-06-11-deployment-adapter-row-postwrite/parsed/gpt-5.5.round-1.yaml: e63ac05a69a90138a8ae96fd12d6d2f9a19274ec8f0986b4501803ddf46b7cd3
+    docs/notes/review-runs/2026-06-11-deployment-adapter-row-postwrite/raw/claude-sonnet-4-6.round-1.txt: 5a600170e3822fad06430e7705a269fa19fec93ef8dfccdeca9ac85cb4813f59
+    docs/notes/review-runs/2026-06-11-deployment-adapter-row-postwrite/raw/gemini-3.1-pro-preview.round-1.txt: 12a71e44ee28939bd2628666be69702cb88f33e425d964cac0f97b95494b94e8
+    docs/notes/review-runs/2026-06-11-deployment-adapter-row-postwrite/raw/gpt-5.5.round-1.txt: 27f1ec35ead27bb20ae5aadf905b236e59c3e110c2f7fad7c19d245689134808
+    docs/notes/review-runs/2026-06-11-deployment-adapter-row-postwrite/review_summary.md: 0379f893f04b4ea93e42e9f19c8007998a58618fc883c7a00a3d6f843b68721d
+    docs/notes/review-runs/2026-06-11-deployment-adapter-row-postwrite/rounds.yaml: 0eb6919e737fbf57a3712b8b435ac2bbad42a52794c88f8320c2aa3c54fd6e02
+    docs/notes/review-runs/2026-06-11-deployment-adapter-row-postwrite/target-manifest.yaml: ba38c76b39c0a52225e0f5486b0ffb4fab73aa6965085532f464c51ae8ee5fa2
+    docs/notes/review-runs/2026-06-11-deployment-adapter-row-postwrite/triage.yaml: aab5de8b9a918e0a07dee65f9e208dde99f50e9d55d42cec56f9e7292cd212ad
+    docs/notes/review-runs/2026-06-11-setup-guide-entry-postwrite-r2/approval.yaml: ef55fe7ecdbd7e0cdfc37fb183c066cbd8f3768d4f00d4509b66a57f3c01f894
+    docs/notes/review-runs/2026-06-11-setup-guide-entry-postwrite-r2/model-result-summary.yaml: aadfdce9587e2a782b2e5dea36e201c278a0ea06468fb07a769890bfa9662303
+    docs/notes/review-runs/2026-06-11-setup-guide-entry-postwrite-r2/parsed/claude-sonnet-4-6.round-1.yaml: dbee58242ab37a5bbc4d344e2927b6ff4e436185bfd53510890f7eb40cd9d809
+    docs/notes/review-runs/2026-06-11-setup-guide-entry-postwrite-r2/parsed/gemini-3.1-pro-preview.round-1.yaml: 533c3de0dc9793ca1f54ef891ff32bc49d73c80b6937f55e8dbaf03b07156a12
+    docs/notes/review-runs/2026-06-11-setup-guide-entry-postwrite-r2/parsed/gpt-5.5.round-1.yaml: 880b4558f3f9a416e082bdd1398d2602e10bdf895d8510e0e7bd9708ccbf1b5b
+    docs/notes/review-runs/2026-06-11-setup-guide-entry-postwrite-r2/raw/claude-sonnet-4-6.round-1.txt: 303ddde6b202727e623fea9b1b4dacaef7a4762b986f16ce919a96194d571d29
+    docs/notes/review-runs/2026-06-11-setup-guide-entry-postwrite-r2/raw/gemini-3.1-pro-preview.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/2026-06-11-setup-guide-entry-postwrite-r2/raw/gpt-5.5.round-1.txt: 6178e5739b1106f3d9b5baf09d2a9c8713efa65b55be041e40f3cf9c01179196
+    docs/notes/review-runs/2026-06-11-setup-guide-entry-postwrite-r2/review_summary.md: b4a1679381bf34ac8732190ae3916694ab8261329039e08d13c3c677477dd18f
+    docs/notes/review-runs/2026-06-11-setup-guide-entry-postwrite-r2/rounds.yaml: 21dbe74f9792dc93a9ae8bbdd74bb1609a520c4e1397670ce5a764f2b6f7bc93
+    docs/notes/review-runs/2026-06-11-setup-guide-entry-postwrite-r2/target-manifest.yaml: 8a4feca3df55a9eda528c4f2f27d1ca35446605f767294ee1954fca5bbd0255a
+    docs/notes/review-runs/2026-06-11-setup-guide-entry-postwrite-r2/triage.yaml: a041b0c7d964851d1ce7759a63f83767e821f51944dde1bc1d5380e449edb290
+    docs/notes/review-runs/2026-06-11-setup-guide-entry-postwrite/model-result-summary.yaml: 00482ea3827108208554085c09e7666d065d3b2db6872b13fac544d9379a0c35
+    docs/notes/review-runs/2026-06-11-setup-guide-entry-postwrite/parsed/claude-sonnet-4-6.round-1.yaml: 641fd1876f2a6af3426f30d1ae5cc2d23940d96de2039209276d6ce5470ca391
+    docs/notes/review-runs/2026-06-11-setup-guide-entry-postwrite/parsed/gemini-3.1-pro-preview.round-1.yaml: deaead132a39d53aa508566edebc96008fdfcc3421efd9a57f980d9959d0402d
+    docs/notes/review-runs/2026-06-11-setup-guide-entry-postwrite/parsed/gpt-5.5.round-1.yaml: eb7c1e818a3c05f85abd80450f5b73d825afac8fea9c690ff8fd9b3672a7ccaa
+    docs/notes/review-runs/2026-06-11-setup-guide-entry-postwrite/raw/claude-sonnet-4-6.round-1.txt: 081dabe7c83d6f2c8fc8d9a71f6c24deac677c71f44c732c7c29c10e1c21b123
+    docs/notes/review-runs/2026-06-11-setup-guide-entry-postwrite/raw/gemini-3.1-pro-preview.round-1.txt: bc1f4366edd8ffaec31a9ac7a8391dab7dda17fb504d5e9666f9969147d07caf
+    docs/notes/review-runs/2026-06-11-setup-guide-entry-postwrite/raw/gpt-5.5.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/2026-06-11-setup-guide-entry-postwrite/review_summary.md: 972a324c9dcf5b83ea447fbbe47708b68ae3c0519fe403d6ffdd86b78395ef90
+    docs/notes/review-runs/2026-06-11-setup-guide-entry-postwrite/rounds.yaml: a49ff58009e65521fe7df8fd2144aaba3707ae27c5e64913f3d226e4c2830c1d
+    docs/notes/review-runs/2026-06-11-setup-guide-entry-postwrite/target-manifest.yaml: 6567d5991d1c9f71368ce87f9f8e91aef244f0a078f75be0234b12308c03c591
+    docs/notes/review-runs/2026-06-11-setup-guide-entry-postwrite/triage.yaml: f052af349a1bef3789fab8c991c65ef132676b781c0e519c09a7cc870067abdb
+    docs/notes/review-runs/2026-06-11-user-guide-entry-postwrite-r2/model-result-summary.yaml: 2e1fb68552f354e4c41462931c6fc0cab71a8791fe12872892ac64d6de4f0aea
+    docs/notes/review-runs/2026-06-11-user-guide-entry-postwrite-r2/parsed/claude-sonnet-4-6.round-1.yaml: e239baf9455c451952b2e08ef24b6f6bb774d05558889286dae199635e5bc676
+    docs/notes/review-runs/2026-06-11-user-guide-entry-postwrite-r2/parsed/gemini-3.1-pro-preview.round-1.yaml: ab50b22b8d9e9402d997a22d1eec074018bf660e477d7ab317e124172a774da1
+    docs/notes/review-runs/2026-06-11-user-guide-entry-postwrite-r2/parsed/gpt-5.5.round-1.yaml: 332288fd91be47b96f93544d2f2de33162139865fb9e8530241e98ab6fbe5dd6
+    docs/notes/review-runs/2026-06-11-user-guide-entry-postwrite-r2/raw/claude-sonnet-4-6.round-1.txt: e29644c39493864e141fddcd52f3c1f1f2b185acd1f1f4d225394026ee3b2800
+    docs/notes/review-runs/2026-06-11-user-guide-entry-postwrite-r2/raw/gemini-3.1-pro-preview.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/2026-06-11-user-guide-entry-postwrite-r2/raw/gpt-5.5.round-1.txt: aad26281a0dad6ec26be4d55dd9bd00edd9c02296504099a51037b895fd5c67d
+    docs/notes/review-runs/2026-06-11-user-guide-entry-postwrite-r2/review_summary.md: 526aaa6b9c4db8445e0ca214b74f0cc0c74973c075e0e652b8f2346638a6ee5b
+    docs/notes/review-runs/2026-06-11-user-guide-entry-postwrite-r2/rounds.yaml: 932d21a4506f9f5c1c9b2a7dde22b0ff127805228719e4d9138a0c49417ac0a3
+    docs/notes/review-runs/2026-06-11-user-guide-entry-postwrite-r2/target-manifest.yaml: e3c8360eee08bcb61d0c4e9106521b43119b66e1e55d7a5fc004bb979ba9260d
+    docs/notes/review-runs/2026-06-11-user-guide-entry-postwrite-r2/triage.yaml: f721a9aeb526a36ecb17a1f2f50ef106a80f22af47abfacce34c181fd027ae9a
+    docs/notes/review-runs/2026-06-11-user-guide-entry-postwrite/approval.yaml: 43b4be5d76d209f27a98fca072df278c1c37a777c1ec4e55396d40d8aaa29c17
+    docs/notes/review-runs/2026-06-11-user-guide-entry-postwrite/model-result-summary.yaml: 11760e5d805c3d215f589f264c9f443adc5120397c61bee56bf2f363cc1ea125
+    docs/notes/review-runs/2026-06-11-user-guide-entry-postwrite/parsed/claude-sonnet-4-6.round-1.yaml: 1c1b8885628b514b87ddc218f7674ca31c014def99193a0e164c27655a2efdca
+    docs/notes/review-runs/2026-06-11-user-guide-entry-postwrite/parsed/gemini-3.1-pro-preview.round-1.yaml: 50081f2cd83a896186716c04bf81bb4de31154f3c91a584e32319a8b4631aa4a
+    docs/notes/review-runs/2026-06-11-user-guide-entry-postwrite/parsed/gpt-5.5.round-1.yaml: a3a801e78d0e3e453ca8c6d1469a0afd93b63198cb4c506ad8fc973e8903968a
+    docs/notes/review-runs/2026-06-11-user-guide-entry-postwrite/raw/claude-sonnet-4-6.round-1.txt: 5e45b01d877f94a1dfef4ab844c2ad3d37b292b494c33e0e700749e61406cdba
+    docs/notes/review-runs/2026-06-11-user-guide-entry-postwrite/raw/gemini-3.1-pro-preview.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/2026-06-11-user-guide-entry-postwrite/raw/gpt-5.5.round-1.txt: 65156b6da7270177c28d24d180c357f20ff77180c2a0498570e26a295cdc22c5
+    docs/notes/review-runs/2026-06-11-user-guide-entry-postwrite/review_summary.md: a637f001f9640e9747d7209a21d6298cf56a990867a225a17930f9c1de0ac0df
+    docs/notes/review-runs/2026-06-11-user-guide-entry-postwrite/rounds.yaml: 230fd9c0ef3be0ef3e39357ffb747948393359f3e40667ff0dd53ddaf4e53698
+    docs/notes/review-runs/2026-06-11-user-guide-entry-postwrite/target-manifest.yaml: b02ca35127c346ad404cacd1c7fa38abcbd19f4f17b1382dadbb8cf28ecbe397
+    docs/notes/review-runs/2026-06-11-user-guide-entry-postwrite/triage.yaml: f99463e6dcee96b8926a3a347d1f364409bfff0783148601623e37ee82cb59f0
+    docs/notes/review-runs/2026-06-12-deployment-adapter-row-postwrite-r3/model-result-summary.yaml: e36570fd212c17a8aea8dfcb8929ffc4b76719055ee498482aa98f851fcfa13c
+    docs/notes/review-runs/2026-06-12-deployment-adapter-row-postwrite-r3/parsed/claude-sonnet-4-6.round-1.yaml: aa699c90264e260624acb56cc68b07422a3eecc6b9be599ed2d7db598aed5f1f
+    docs/notes/review-runs/2026-06-12-deployment-adapter-row-postwrite-r3/parsed/gemini-3.1-pro-preview.round-1.yaml: 0f42626bdbde555bbdb4cdd4f019ba8a6333da3b808a884097f1625fb6a95372
+    docs/notes/review-runs/2026-06-12-deployment-adapter-row-postwrite-r3/parsed/gpt-5.5.round-1.yaml: 888bdde75ee46da929ed1ae596175bf7160e5b20d5f3dc5e3b35875c5d5f5aa3
+    docs/notes/review-runs/2026-06-12-deployment-adapter-row-postwrite-r3/raw/claude-sonnet-4-6.round-1.txt: abd9aa7fd42aa79b81be46bcec42bcdd80f4049137cd26167871318370f07e42
+    docs/notes/review-runs/2026-06-12-deployment-adapter-row-postwrite-r3/raw/gemini-3.1-pro-preview.round-1.txt: 67f20b5f2a77ca36c12b6b153ce451a10d7c0026c9147c2eb86f0e1d33ea4fb1
+    docs/notes/review-runs/2026-06-12-deployment-adapter-row-postwrite-r3/raw/gpt-5.5.round-1.txt: 3ab3f820173407c99c65026a73a4b11025b6e2a95f278805d3a37561728ad8f4
+    docs/notes/review-runs/2026-06-12-deployment-adapter-row-postwrite-r3/review_summary.md: dc9d1d88e97775ba0305dd3e3f6b2100fa40315cdade6ed0803c21c127fe32a5
+    docs/notes/review-runs/2026-06-12-deployment-adapter-row-postwrite-r3/rounds.yaml: 775c6622ad7e63f9204d1c8055f784b243f7e66abe91bfb60d7530528380161e
+    docs/notes/review-runs/2026-06-12-deployment-adapter-row-postwrite-r3/target-manifest.yaml: a374dc830832a7c8adc869d5b351684701570a4d212523926aedc98a4dfad468
+    docs/notes/review-runs/2026-06-12-deployment-adapter-row-postwrite-r3/triage.yaml: 79baeb6a5a7c580ed8de02905477d40b638714b11593a864d3731968787d347d
+    docs/notes/review-runs/2026-06-12-setup-guide-entry-postwrite-r3/model-result-summary.yaml: e24f2d29185a1284ca83586bf7f9a8dec64d7b50140627edab4cdb48419d1960
+    docs/notes/review-runs/2026-06-12-setup-guide-entry-postwrite-r3/parsed/claude-sonnet-4-6.round-1.yaml: c94cf021b0bfd47ab819618c03b2be0c0c29f647975a308bcd61c66defb07cd5
+    docs/notes/review-runs/2026-06-12-setup-guide-entry-postwrite-r3/parsed/gemini-3.1-pro-preview.round-1.yaml: 74ebcc8225671791d18720c7a774b946e2619a2a31d2e06689a9c8a4110196c6
+    docs/notes/review-runs/2026-06-12-setup-guide-entry-postwrite-r3/parsed/gpt-5.5.round-1.yaml: 4101218cbba5474df5613e07f4a97cb928f6cb00be717dc78bd68ba0dc8002f2
+    docs/notes/review-runs/2026-06-12-setup-guide-entry-postwrite-r3/raw/claude-sonnet-4-6.round-1.txt: a2db80bfb36d85a2488b2dca0675b47f90ff3fdfcbc7490e54eb8dcfd0403eb0
+    docs/notes/review-runs/2026-06-12-setup-guide-entry-postwrite-r3/raw/gemini-3.1-pro-preview.round-1.txt: 6a68bdeb4861dc0628281acebf98732a461fc53d5c8992e7cc97aa86b3831e49
+    docs/notes/review-runs/2026-06-12-setup-guide-entry-postwrite-r3/raw/gpt-5.5.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/2026-06-12-setup-guide-entry-postwrite-r3/review_summary.md: 66d5a5ac5c668f9f637be82be84c3b1c1ba3649667783f36147d54c72c70b9b1
+    docs/notes/review-runs/2026-06-12-setup-guide-entry-postwrite-r3/rounds.yaml: e76ab46279e8a8b3675eb9ff5de7e3c5d8dbaf5b11a6f91e415a5d120dbced78
+    docs/notes/review-runs/2026-06-12-setup-guide-entry-postwrite-r3/target-manifest.yaml: c8e9ba6b3e89d26fdb918d8415405b164a247892a623df990d374a278b054dbc
+    docs/notes/review-runs/2026-06-12-setup-guide-entry-postwrite-r3/triage.yaml: 8f74283abadfe1b807833834d345866b8b2a192eb74b79399b2596ca951027ad
+    docs/notes/review-runs/2026-06-12-user-guide-entry-postwrite-r3/model-result-summary.yaml: 6e991d4f80479a05cd951877346410d4b82da2a81a1ad11846dbf6e20893ab46
+    docs/notes/review-runs/2026-06-12-user-guide-entry-postwrite-r3/parsed/claude-sonnet-4-6.round-1.yaml: 62b1f872d4da2e94f23096cac6ec67f22034eb4ed5693aa6ded6f8ac6f9a713d
+    docs/notes/review-runs/2026-06-12-user-guide-entry-postwrite-r3/parsed/gemini-3.1-pro-preview.round-1.yaml: 9ae4d8c4cefb244a88b040b3d2770d72c719f0861895fde7d90d95a224b40bf1
+    docs/notes/review-runs/2026-06-12-user-guide-entry-postwrite-r3/parsed/gpt-5.5.round-1.yaml: fd59646fa2876f8031d19c8b9a113e8ec36f4d0980db5792a99f558cf3d40aa1
+    docs/notes/review-runs/2026-06-12-user-guide-entry-postwrite-r3/raw/claude-sonnet-4-6.round-1.txt: dfe82051e1c390e8bdd36f66dbe705b06edcaa08d2c536605d7643d38862cc26
+    docs/notes/review-runs/2026-06-12-user-guide-entry-postwrite-r3/raw/gemini-3.1-pro-preview.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/2026-06-12-user-guide-entry-postwrite-r3/raw/gpt-5.5.round-1.txt: 13bd1c495d1d0138f5f47267fa70f5731bcd3c7ab35f398ea845cde459a4d5b1
+    docs/notes/review-runs/2026-06-12-user-guide-entry-postwrite-r3/review_summary.md: f3de602d4ebe34b7c037975e3c31729c851fe88da1c1ee0462490a3665e90050
+    docs/notes/review-runs/2026-06-12-user-guide-entry-postwrite-r3/rounds.yaml: e4db8915289e95ec37c9081bb10e6d8e4b4dd110ec06eeb4b65155182742babc
+    docs/notes/review-runs/2026-06-12-user-guide-entry-postwrite-r3/target-manifest.yaml: 6b4906cae34ba9db6a672b844b184315c503d3035a558ea769607df97e6c8970
+    docs/notes/review-runs/2026-06-12-user-guide-entry-postwrite-r3/triage.yaml: 4fe88758914550a5a0adce1748b6685f938a7069f6cc702ffdd53ce164e1d4ac
+    docs/operations/DEPLOYMENT.md: cc7df9d191fec7f35e56c6728ade94f2ba1318ba332dde5d45210aaa30f2222e
+    docs/operations/INITIAL_DEPLOYMENT_USER_GUIDE.md: 64e1697143da663c55ec973fa5abfb04bf81a506f68adc01388d543bcb07783b
+    docs/operations/INITIAL_SETUP_LLM_GUIDE.md: 211f68493f092ef380113ba20c4ce43580847725a569102f970fbe005d10e7d4
+- verifier: gpt-5.5
+  target_files:
+  - docs/notes/review-runs/2026-06-11-deployment-adapter-row-postwrite-r2/model-result-summary.yaml
+  - docs/notes/review-runs/2026-06-11-deployment-adapter-row-postwrite-r2/parsed/claude-sonnet-4-6.round-1.yaml
+  - docs/notes/review-runs/2026-06-11-deployment-adapter-row-postwrite-r2/parsed/gemini-3.1-pro-preview.round-1.yaml
+  - docs/notes/review-runs/2026-06-11-deployment-adapter-row-postwrite-r2/parsed/gpt-5.5.round-1.yaml
+  - docs/notes/review-runs/2026-06-11-deployment-adapter-row-postwrite-r2/raw/claude-sonnet-4-6.round-1.txt
+  - docs/notes/review-runs/2026-06-11-deployment-adapter-row-postwrite-r2/raw/gemini-3.1-pro-preview.round-1.txt
+  - docs/notes/review-runs/2026-06-11-deployment-adapter-row-postwrite-r2/raw/gpt-5.5.round-1.txt
+  - docs/notes/review-runs/2026-06-11-deployment-adapter-row-postwrite-r2/review_summary.md
+  - docs/notes/review-runs/2026-06-11-deployment-adapter-row-postwrite-r2/rounds.yaml
+  - docs/notes/review-runs/2026-06-11-deployment-adapter-row-postwrite-r2/target-manifest.yaml
+  - docs/notes/review-runs/2026-06-11-deployment-adapter-row-postwrite-r2/triage.yaml
+  - docs/notes/review-runs/2026-06-11-deployment-adapter-row-postwrite/approval.yaml
+  - docs/notes/review-runs/2026-06-11-deployment-adapter-row-postwrite/model-result-summary.yaml
+  - docs/notes/review-runs/2026-06-11-deployment-adapter-row-postwrite/parsed/claude-sonnet-4-6.round-1.yaml
+  - docs/notes/review-runs/2026-06-11-deployment-adapter-row-postwrite/parsed/gemini-3.1-pro-preview.round-1.yaml
+  - docs/notes/review-runs/2026-06-11-deployment-adapter-row-postwrite/parsed/gpt-5.5.round-1.yaml
+  - docs/notes/review-runs/2026-06-11-deployment-adapter-row-postwrite/raw/claude-sonnet-4-6.round-1.txt
+  - docs/notes/review-runs/2026-06-11-deployment-adapter-row-postwrite/raw/gemini-3.1-pro-preview.round-1.txt
+  - docs/notes/review-runs/2026-06-11-deployment-adapter-row-postwrite/raw/gpt-5.5.round-1.txt
+  - docs/notes/review-runs/2026-06-11-deployment-adapter-row-postwrite/review_summary.md
+  - docs/notes/review-runs/2026-06-11-deployment-adapter-row-postwrite/rounds.yaml
+  - docs/notes/review-runs/2026-06-11-deployment-adapter-row-postwrite/target-manifest.yaml
+  - docs/notes/review-runs/2026-06-11-deployment-adapter-row-postwrite/triage.yaml
+  - docs/notes/review-runs/2026-06-11-setup-guide-entry-postwrite-r2/approval.yaml
+  - docs/notes/review-runs/2026-06-11-setup-guide-entry-postwrite-r2/model-result-summary.yaml
+  - docs/notes/review-runs/2026-06-11-setup-guide-entry-postwrite-r2/parsed/claude-sonnet-4-6.round-1.yaml
+  - docs/notes/review-runs/2026-06-11-setup-guide-entry-postwrite-r2/parsed/gemini-3.1-pro-preview.round-1.yaml
+  - docs/notes/review-runs/2026-06-11-setup-guide-entry-postwrite-r2/parsed/gpt-5.5.round-1.yaml
+  - docs/notes/review-runs/2026-06-11-setup-guide-entry-postwrite-r2/raw/claude-sonnet-4-6.round-1.txt
+  - docs/notes/review-runs/2026-06-11-setup-guide-entry-postwrite-r2/raw/gemini-3.1-pro-preview.round-1.txt
+  - docs/notes/review-runs/2026-06-11-setup-guide-entry-postwrite-r2/raw/gpt-5.5.round-1.txt
+  - docs/notes/review-runs/2026-06-11-setup-guide-entry-postwrite-r2/review_summary.md
+  - docs/notes/review-runs/2026-06-11-setup-guide-entry-postwrite-r2/rounds.yaml
+  - docs/notes/review-runs/2026-06-11-setup-guide-entry-postwrite-r2/target-manifest.yaml
+  - docs/notes/review-runs/2026-06-11-setup-guide-entry-postwrite-r2/triage.yaml
+  - docs/notes/review-runs/2026-06-11-setup-guide-entry-postwrite/model-result-summary.yaml
+  - docs/notes/review-runs/2026-06-11-setup-guide-entry-postwrite/parsed/claude-sonnet-4-6.round-1.yaml
+  - docs/notes/review-runs/2026-06-11-setup-guide-entry-postwrite/parsed/gemini-3.1-pro-preview.round-1.yaml
+  - docs/notes/review-runs/2026-06-11-setup-guide-entry-postwrite/parsed/gpt-5.5.round-1.yaml
+  - docs/notes/review-runs/2026-06-11-setup-guide-entry-postwrite/raw/claude-sonnet-4-6.round-1.txt
+  - docs/notes/review-runs/2026-06-11-setup-guide-entry-postwrite/raw/gemini-3.1-pro-preview.round-1.txt
+  - docs/notes/review-runs/2026-06-11-setup-guide-entry-postwrite/raw/gpt-5.5.round-1.txt
+  - docs/notes/review-runs/2026-06-11-setup-guide-entry-postwrite/review_summary.md
+  - docs/notes/review-runs/2026-06-11-setup-guide-entry-postwrite/rounds.yaml
+  - docs/notes/review-runs/2026-06-11-setup-guide-entry-postwrite/target-manifest.yaml
+  - docs/notes/review-runs/2026-06-11-setup-guide-entry-postwrite/triage.yaml
+  - docs/notes/review-runs/2026-06-11-user-guide-entry-postwrite-r2/model-result-summary.yaml
+  - docs/notes/review-runs/2026-06-11-user-guide-entry-postwrite-r2/parsed/claude-sonnet-4-6.round-1.yaml
+  - docs/notes/review-runs/2026-06-11-user-guide-entry-postwrite-r2/parsed/gemini-3.1-pro-preview.round-1.yaml
+  - docs/notes/review-runs/2026-06-11-user-guide-entry-postwrite-r2/parsed/gpt-5.5.round-1.yaml
+  - docs/notes/review-runs/2026-06-11-user-guide-entry-postwrite-r2/raw/claude-sonnet-4-6.round-1.txt
+  - docs/notes/review-runs/2026-06-11-user-guide-entry-postwrite-r2/raw/gemini-3.1-pro-preview.round-1.txt
+  - docs/notes/review-runs/2026-06-11-user-guide-entry-postwrite-r2/raw/gpt-5.5.round-1.txt
+  - docs/notes/review-runs/2026-06-11-user-guide-entry-postwrite-r2/review_summary.md
+  - docs/notes/review-runs/2026-06-11-user-guide-entry-postwrite-r2/rounds.yaml
+  - docs/notes/review-runs/2026-06-11-user-guide-entry-postwrite-r2/target-manifest.yaml
+  - docs/notes/review-runs/2026-06-11-user-guide-entry-postwrite-r2/triage.yaml
+  - docs/notes/review-runs/2026-06-11-user-guide-entry-postwrite/approval.yaml
+  - docs/notes/review-runs/2026-06-11-user-guide-entry-postwrite/model-result-summary.yaml
+  - docs/notes/review-runs/2026-06-11-user-guide-entry-postwrite/parsed/claude-sonnet-4-6.round-1.yaml
+  - docs/notes/review-runs/2026-06-11-user-guide-entry-postwrite/parsed/gemini-3.1-pro-preview.round-1.yaml
+  - docs/notes/review-runs/2026-06-11-user-guide-entry-postwrite/parsed/gpt-5.5.round-1.yaml
+  - docs/notes/review-runs/2026-06-11-user-guide-entry-postwrite/raw/claude-sonnet-4-6.round-1.txt
+  - docs/notes/review-runs/2026-06-11-user-guide-entry-postwrite/raw/gemini-3.1-pro-preview.round-1.txt
+  - docs/notes/review-runs/2026-06-11-user-guide-entry-postwrite/raw/gpt-5.5.round-1.txt
+  - docs/notes/review-runs/2026-06-11-user-guide-entry-postwrite/review_summary.md
+  - docs/notes/review-runs/2026-06-11-user-guide-entry-postwrite/rounds.yaml
+  - docs/notes/review-runs/2026-06-11-user-guide-entry-postwrite/target-manifest.yaml
+  - docs/notes/review-runs/2026-06-11-user-guide-entry-postwrite/triage.yaml
+  - docs/notes/review-runs/2026-06-12-deployment-adapter-row-postwrite-r3/model-result-summary.yaml
+  - docs/notes/review-runs/2026-06-12-deployment-adapter-row-postwrite-r3/parsed/claude-sonnet-4-6.round-1.yaml
+  - docs/notes/review-runs/2026-06-12-deployment-adapter-row-postwrite-r3/parsed/gemini-3.1-pro-preview.round-1.yaml
+  - docs/notes/review-runs/2026-06-12-deployment-adapter-row-postwrite-r3/parsed/gpt-5.5.round-1.yaml
+  - docs/notes/review-runs/2026-06-12-deployment-adapter-row-postwrite-r3/raw/claude-sonnet-4-6.round-1.txt
+  - docs/notes/review-runs/2026-06-12-deployment-adapter-row-postwrite-r3/raw/gemini-3.1-pro-preview.round-1.txt
+  - docs/notes/review-runs/2026-06-12-deployment-adapter-row-postwrite-r3/raw/gpt-5.5.round-1.txt
+  - docs/notes/review-runs/2026-06-12-deployment-adapter-row-postwrite-r3/review_summary.md
+  - docs/notes/review-runs/2026-06-12-deployment-adapter-row-postwrite-r3/rounds.yaml
+  - docs/notes/review-runs/2026-06-12-deployment-adapter-row-postwrite-r3/target-manifest.yaml
+  - docs/notes/review-runs/2026-06-12-deployment-adapter-row-postwrite-r3/triage.yaml
+  - docs/notes/review-runs/2026-06-12-setup-guide-entry-postwrite-r3/model-result-summary.yaml
+  - docs/notes/review-runs/2026-06-12-setup-guide-entry-postwrite-r3/parsed/claude-sonnet-4-6.round-1.yaml
+  - docs/notes/review-runs/2026-06-12-setup-guide-entry-postwrite-r3/parsed/gemini-3.1-pro-preview.round-1.yaml
+  - docs/notes/review-runs/2026-06-12-setup-guide-entry-postwrite-r3/parsed/gpt-5.5.round-1.yaml
+  - docs/notes/review-runs/2026-06-12-setup-guide-entry-postwrite-r3/raw/claude-sonnet-4-6.round-1.txt
+  - docs/notes/review-runs/2026-06-12-setup-guide-entry-postwrite-r3/raw/gemini-3.1-pro-preview.round-1.txt
+  - docs/notes/review-runs/2026-06-12-setup-guide-entry-postwrite-r3/raw/gpt-5.5.round-1.txt
+  - docs/notes/review-runs/2026-06-12-setup-guide-entry-postwrite-r3/review_summary.md
+  - docs/notes/review-runs/2026-06-12-setup-guide-entry-postwrite-r3/rounds.yaml
+  - docs/notes/review-runs/2026-06-12-setup-guide-entry-postwrite-r3/target-manifest.yaml
+  - docs/notes/review-runs/2026-06-12-setup-guide-entry-postwrite-r3/triage.yaml
+  - docs/notes/review-runs/2026-06-12-user-guide-entry-postwrite-r3/model-result-summary.yaml
+  - docs/notes/review-runs/2026-06-12-user-guide-entry-postwrite-r3/parsed/claude-sonnet-4-6.round-1.yaml
+  - docs/notes/review-runs/2026-06-12-user-guide-entry-postwrite-r3/parsed/gemini-3.1-pro-preview.round-1.yaml
+  - docs/notes/review-runs/2026-06-12-user-guide-entry-postwrite-r3/parsed/gpt-5.5.round-1.yaml
+  - docs/notes/review-runs/2026-06-12-user-guide-entry-postwrite-r3/raw/claude-sonnet-4-6.round-1.txt
+  - docs/notes/review-runs/2026-06-12-user-guide-entry-postwrite-r3/raw/gemini-3.1-pro-preview.round-1.txt
+  - docs/notes/review-runs/2026-06-12-user-guide-entry-postwrite-r3/raw/gpt-5.5.round-1.txt
+  - docs/notes/review-runs/2026-06-12-user-guide-entry-postwrite-r3/review_summary.md
+  - docs/notes/review-runs/2026-06-12-user-guide-entry-postwrite-r3/rounds.yaml
+  - docs/notes/review-runs/2026-06-12-user-guide-entry-postwrite-r3/target-manifest.yaml
+  - docs/notes/review-runs/2026-06-12-user-guide-entry-postwrite-r3/triage.yaml
+  - docs/operations/DEPLOYMENT.md
+  - docs/operations/INITIAL_DEPLOYMENT_USER_GUIDE.md
+  - docs/operations/INITIAL_SETUP_LLM_GUIDE.md
+  target_sha256:
+    docs/notes/review-runs/2026-06-11-deployment-adapter-row-postwrite-r2/model-result-summary.yaml: 2ed910a2fd825b2e35c90bfe67bbebce48eeeb26cbd7e122d52a0f40b3b50704
+    docs/notes/review-runs/2026-06-11-deployment-adapter-row-postwrite-r2/parsed/claude-sonnet-4-6.round-1.yaml: 0be735827cae467654fe14ed8605cadab3ebec2007d7fa4bb0635d754e2ce95a
+    docs/notes/review-runs/2026-06-11-deployment-adapter-row-postwrite-r2/parsed/gemini-3.1-pro-preview.round-1.yaml: fe79e6b4a4b2a4e710a7bb801df00bef5bb2e5e299d9983ffed3b76653cf5fb2
+    docs/notes/review-runs/2026-06-11-deployment-adapter-row-postwrite-r2/parsed/gpt-5.5.round-1.yaml: 9d282a28a64392d672503b8da08245b6144826e218a1d07a2bd0f4e7b27f8b73
+    docs/notes/review-runs/2026-06-11-deployment-adapter-row-postwrite-r2/raw/claude-sonnet-4-6.round-1.txt: fea8203d933e5e453f08251719d41cfed35c002b292e1223b14ed8c75221277d
+    docs/notes/review-runs/2026-06-11-deployment-adapter-row-postwrite-r2/raw/gemini-3.1-pro-preview.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/2026-06-11-deployment-adapter-row-postwrite-r2/raw/gpt-5.5.round-1.txt: 889732eefdd84ec88708377e081856ee910617ec562f642fa520b964c949ddec
+    docs/notes/review-runs/2026-06-11-deployment-adapter-row-postwrite-r2/review_summary.md: ed6060472a81cdbd7a3d9c92c068a1ae96a48983797539abb3fcfd464f4cf798
+    docs/notes/review-runs/2026-06-11-deployment-adapter-row-postwrite-r2/rounds.yaml: f6d1eb7620abf92295a1318143bbc149639894c3d7782afb450c69b2c992e67b
+    docs/notes/review-runs/2026-06-11-deployment-adapter-row-postwrite-r2/target-manifest.yaml: ae422287d52fa9f65932fe193ee6e13b115e2d4b2ef5587bd2f66b0000d676aa
+    docs/notes/review-runs/2026-06-11-deployment-adapter-row-postwrite-r2/triage.yaml: f1ca38e78eef8f2b99612f897ba68385d448ca69f39f170af6823eb0061b0dc6
+    docs/notes/review-runs/2026-06-11-deployment-adapter-row-postwrite/approval.yaml: 3fee2265c901244fbf9e95ee8b0df3cd2c58de899a02b2c54313207a7bb3c491
+    docs/notes/review-runs/2026-06-11-deployment-adapter-row-postwrite/model-result-summary.yaml: df5285a2b90147a90c540b71eea76b19be2d72c0acb771ab21c302cb7c9028fb
+    docs/notes/review-runs/2026-06-11-deployment-adapter-row-postwrite/parsed/claude-sonnet-4-6.round-1.yaml: 86b0a414d5ec99b76841b29e00b665d2a626f6a41796f907747329c7118e51dd
+    docs/notes/review-runs/2026-06-11-deployment-adapter-row-postwrite/parsed/gemini-3.1-pro-preview.round-1.yaml: c4fdb2cb2fa7626c9c6cf38fe7e779786ea0c976da2d9d120d3e1952d1f4d454
+    docs/notes/review-runs/2026-06-11-deployment-adapter-row-postwrite/parsed/gpt-5.5.round-1.yaml: e63ac05a69a90138a8ae96fd12d6d2f9a19274ec8f0986b4501803ddf46b7cd3
+    docs/notes/review-runs/2026-06-11-deployment-adapter-row-postwrite/raw/claude-sonnet-4-6.round-1.txt: 5a600170e3822fad06430e7705a269fa19fec93ef8dfccdeca9ac85cb4813f59
+    docs/notes/review-runs/2026-06-11-deployment-adapter-row-postwrite/raw/gemini-3.1-pro-preview.round-1.txt: 12a71e44ee28939bd2628666be69702cb88f33e425d964cac0f97b95494b94e8
+    docs/notes/review-runs/2026-06-11-deployment-adapter-row-postwrite/raw/gpt-5.5.round-1.txt: 27f1ec35ead27bb20ae5aadf905b236e59c3e110c2f7fad7c19d245689134808
+    docs/notes/review-runs/2026-06-11-deployment-adapter-row-postwrite/review_summary.md: 0379f893f04b4ea93e42e9f19c8007998a58618fc883c7a00a3d6f843b68721d
+    docs/notes/review-runs/2026-06-11-deployment-adapter-row-postwrite/rounds.yaml: 0eb6919e737fbf57a3712b8b435ac2bbad42a52794c88f8320c2aa3c54fd6e02
+    docs/notes/review-runs/2026-06-11-deployment-adapter-row-postwrite/target-manifest.yaml: ba38c76b39c0a52225e0f5486b0ffb4fab73aa6965085532f464c51ae8ee5fa2
+    docs/notes/review-runs/2026-06-11-deployment-adapter-row-postwrite/triage.yaml: aab5de8b9a918e0a07dee65f9e208dde99f50e9d55d42cec56f9e7292cd212ad
+    docs/notes/review-runs/2026-06-11-setup-guide-entry-postwrite-r2/approval.yaml: ef55fe7ecdbd7e0cdfc37fb183c066cbd8f3768d4f00d4509b66a57f3c01f894
+    docs/notes/review-runs/2026-06-11-setup-guide-entry-postwrite-r2/model-result-summary.yaml: aadfdce9587e2a782b2e5dea36e201c278a0ea06468fb07a769890bfa9662303
+    docs/notes/review-runs/2026-06-11-setup-guide-entry-postwrite-r2/parsed/claude-sonnet-4-6.round-1.yaml: dbee58242ab37a5bbc4d344e2927b6ff4e436185bfd53510890f7eb40cd9d809
+    docs/notes/review-runs/2026-06-11-setup-guide-entry-postwrite-r2/parsed/gemini-3.1-pro-preview.round-1.yaml: 533c3de0dc9793ca1f54ef891ff32bc49d73c80b6937f55e8dbaf03b07156a12
+    docs/notes/review-runs/2026-06-11-setup-guide-entry-postwrite-r2/parsed/gpt-5.5.round-1.yaml: 880b4558f3f9a416e082bdd1398d2602e10bdf895d8510e0e7bd9708ccbf1b5b
+    docs/notes/review-runs/2026-06-11-setup-guide-entry-postwrite-r2/raw/claude-sonnet-4-6.round-1.txt: 303ddde6b202727e623fea9b1b4dacaef7a4762b986f16ce919a96194d571d29
+    docs/notes/review-runs/2026-06-11-setup-guide-entry-postwrite-r2/raw/gemini-3.1-pro-preview.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/2026-06-11-setup-guide-entry-postwrite-r2/raw/gpt-5.5.round-1.txt: 6178e5739b1106f3d9b5baf09d2a9c8713efa65b55be041e40f3cf9c01179196
+    docs/notes/review-runs/2026-06-11-setup-guide-entry-postwrite-r2/review_summary.md: b4a1679381bf34ac8732190ae3916694ab8261329039e08d13c3c677477dd18f
+    docs/notes/review-runs/2026-06-11-setup-guide-entry-postwrite-r2/rounds.yaml: 21dbe74f9792dc93a9ae8bbdd74bb1609a520c4e1397670ce5a764f2b6f7bc93
+    docs/notes/review-runs/2026-06-11-setup-guide-entry-postwrite-r2/target-manifest.yaml: 8a4feca3df55a9eda528c4f2f27d1ca35446605f767294ee1954fca5bbd0255a
+    docs/notes/review-runs/2026-06-11-setup-guide-entry-postwrite-r2/triage.yaml: a041b0c7d964851d1ce7759a63f83767e821f51944dde1bc1d5380e449edb290
+    docs/notes/review-runs/2026-06-11-setup-guide-entry-postwrite/model-result-summary.yaml: 00482ea3827108208554085c09e7666d065d3b2db6872b13fac544d9379a0c35
+    docs/notes/review-runs/2026-06-11-setup-guide-entry-postwrite/parsed/claude-sonnet-4-6.round-1.yaml: 641fd1876f2a6af3426f30d1ae5cc2d23940d96de2039209276d6ce5470ca391
+    docs/notes/review-runs/2026-06-11-setup-guide-entry-postwrite/parsed/gemini-3.1-pro-preview.round-1.yaml: deaead132a39d53aa508566edebc96008fdfcc3421efd9a57f980d9959d0402d
+    docs/notes/review-runs/2026-06-11-setup-guide-entry-postwrite/parsed/gpt-5.5.round-1.yaml: eb7c1e818a3c05f85abd80450f5b73d825afac8fea9c690ff8fd9b3672a7ccaa
+    docs/notes/review-runs/2026-06-11-setup-guide-entry-postwrite/raw/claude-sonnet-4-6.round-1.txt: 081dabe7c83d6f2c8fc8d9a71f6c24deac677c71f44c732c7c29c10e1c21b123
+    docs/notes/review-runs/2026-06-11-setup-guide-entry-postwrite/raw/gemini-3.1-pro-preview.round-1.txt: bc1f4366edd8ffaec31a9ac7a8391dab7dda17fb504d5e9666f9969147d07caf
+    docs/notes/review-runs/2026-06-11-setup-guide-entry-postwrite/raw/gpt-5.5.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/2026-06-11-setup-guide-entry-postwrite/review_summary.md: 972a324c9dcf5b83ea447fbbe47708b68ae3c0519fe403d6ffdd86b78395ef90
+    docs/notes/review-runs/2026-06-11-setup-guide-entry-postwrite/rounds.yaml: a49ff58009e65521fe7df8fd2144aaba3707ae27c5e64913f3d226e4c2830c1d
+    docs/notes/review-runs/2026-06-11-setup-guide-entry-postwrite/target-manifest.yaml: 6567d5991d1c9f71368ce87f9f8e91aef244f0a078f75be0234b12308c03c591
+    docs/notes/review-runs/2026-06-11-setup-guide-entry-postwrite/triage.yaml: f052af349a1bef3789fab8c991c65ef132676b781c0e519c09a7cc870067abdb
+    docs/notes/review-runs/2026-06-11-user-guide-entry-postwrite-r2/model-result-summary.yaml: 2e1fb68552f354e4c41462931c6fc0cab71a8791fe12872892ac64d6de4f0aea
+    docs/notes/review-runs/2026-06-11-user-guide-entry-postwrite-r2/parsed/claude-sonnet-4-6.round-1.yaml: e239baf9455c451952b2e08ef24b6f6bb774d05558889286dae199635e5bc676
+    docs/notes/review-runs/2026-06-11-user-guide-entry-postwrite-r2/parsed/gemini-3.1-pro-preview.round-1.yaml: ab50b22b8d9e9402d997a22d1eec074018bf660e477d7ab317e124172a774da1
+    docs/notes/review-runs/2026-06-11-user-guide-entry-postwrite-r2/parsed/gpt-5.5.round-1.yaml: 332288fd91be47b96f93544d2f2de33162139865fb9e8530241e98ab6fbe5dd6
+    docs/notes/review-runs/2026-06-11-user-guide-entry-postwrite-r2/raw/claude-sonnet-4-6.round-1.txt: e29644c39493864e141fddcd52f3c1f1f2b185acd1f1f4d225394026ee3b2800
+    docs/notes/review-runs/2026-06-11-user-guide-entry-postwrite-r2/raw/gemini-3.1-pro-preview.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/2026-06-11-user-guide-entry-postwrite-r2/raw/gpt-5.5.round-1.txt: aad26281a0dad6ec26be4d55dd9bd00edd9c02296504099a51037b895fd5c67d
+    docs/notes/review-runs/2026-06-11-user-guide-entry-postwrite-r2/review_summary.md: 526aaa6b9c4db8445e0ca214b74f0cc0c74973c075e0e652b8f2346638a6ee5b
+    docs/notes/review-runs/2026-06-11-user-guide-entry-postwrite-r2/rounds.yaml: 932d21a4506f9f5c1c9b2a7dde22b0ff127805228719e4d9138a0c49417ac0a3
+    docs/notes/review-runs/2026-06-11-user-guide-entry-postwrite-r2/target-manifest.yaml: e3c8360eee08bcb61d0c4e9106521b43119b66e1e55d7a5fc004bb979ba9260d
+    docs/notes/review-runs/2026-06-11-user-guide-entry-postwrite-r2/triage.yaml: f721a9aeb526a36ecb17a1f2f50ef106a80f22af47abfacce34c181fd027ae9a
+    docs/notes/review-runs/2026-06-11-user-guide-entry-postwrite/approval.yaml: 43b4be5d76d209f27a98fca072df278c1c37a777c1ec4e55396d40d8aaa29c17
+    docs/notes/review-runs/2026-06-11-user-guide-entry-postwrite/model-result-summary.yaml: 11760e5d805c3d215f589f264c9f443adc5120397c61bee56bf2f363cc1ea125
+    docs/notes/review-runs/2026-06-11-user-guide-entry-postwrite/parsed/claude-sonnet-4-6.round-1.yaml: 1c1b8885628b514b87ddc218f7674ca31c014def99193a0e164c27655a2efdca
+    docs/notes/review-runs/2026-06-11-user-guide-entry-postwrite/parsed/gemini-3.1-pro-preview.round-1.yaml: 50081f2cd83a896186716c04bf81bb4de31154f3c91a584e32319a8b4631aa4a
+    docs/notes/review-runs/2026-06-11-user-guide-entry-postwrite/parsed/gpt-5.5.round-1.yaml: a3a801e78d0e3e453ca8c6d1469a0afd93b63198cb4c506ad8fc973e8903968a
+    docs/notes/review-runs/2026-06-11-user-guide-entry-postwrite/raw/claude-sonnet-4-6.round-1.txt: 5e45b01d877f94a1dfef4ab844c2ad3d37b292b494c33e0e700749e61406cdba
+    docs/notes/review-runs/2026-06-11-user-guide-entry-postwrite/raw/gemini-3.1-pro-preview.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/2026-06-11-user-guide-entry-postwrite/raw/gpt-5.5.round-1.txt: 65156b6da7270177c28d24d180c357f20ff77180c2a0498570e26a295cdc22c5
+    docs/notes/review-runs/2026-06-11-user-guide-entry-postwrite/review_summary.md: a637f001f9640e9747d7209a21d6298cf56a990867a225a17930f9c1de0ac0df
+    docs/notes/review-runs/2026-06-11-user-guide-entry-postwrite/rounds.yaml: 230fd9c0ef3be0ef3e39357ffb747948393359f3e40667ff0dd53ddaf4e53698
+    docs/notes/review-runs/2026-06-11-user-guide-entry-postwrite/target-manifest.yaml: b02ca35127c346ad404cacd1c7fa38abcbd19f4f17b1382dadbb8cf28ecbe397
+    docs/notes/review-runs/2026-06-11-user-guide-entry-postwrite/triage.yaml: f99463e6dcee96b8926a3a347d1f364409bfff0783148601623e37ee82cb59f0
+    docs/notes/review-runs/2026-06-12-deployment-adapter-row-postwrite-r3/model-result-summary.yaml: e36570fd212c17a8aea8dfcb8929ffc4b76719055ee498482aa98f851fcfa13c
+    docs/notes/review-runs/2026-06-12-deployment-adapter-row-postwrite-r3/parsed/claude-sonnet-4-6.round-1.yaml: aa699c90264e260624acb56cc68b07422a3eecc6b9be599ed2d7db598aed5f1f
+    docs/notes/review-runs/2026-06-12-deployment-adapter-row-postwrite-r3/parsed/gemini-3.1-pro-preview.round-1.yaml: 0f42626bdbde555bbdb4cdd4f019ba8a6333da3b808a884097f1625fb6a95372
+    docs/notes/review-runs/2026-06-12-deployment-adapter-row-postwrite-r3/parsed/gpt-5.5.round-1.yaml: 888bdde75ee46da929ed1ae596175bf7160e5b20d5f3dc5e3b35875c5d5f5aa3
+    docs/notes/review-runs/2026-06-12-deployment-adapter-row-postwrite-r3/raw/claude-sonnet-4-6.round-1.txt: abd9aa7fd42aa79b81be46bcec42bcdd80f4049137cd26167871318370f07e42
+    docs/notes/review-runs/2026-06-12-deployment-adapter-row-postwrite-r3/raw/gemini-3.1-pro-preview.round-1.txt: 67f20b5f2a77ca36c12b6b153ce451a10d7c0026c9147c2eb86f0e1d33ea4fb1
+    docs/notes/review-runs/2026-06-12-deployment-adapter-row-postwrite-r3/raw/gpt-5.5.round-1.txt: 3ab3f820173407c99c65026a73a4b11025b6e2a95f278805d3a37561728ad8f4
+    docs/notes/review-runs/2026-06-12-deployment-adapter-row-postwrite-r3/review_summary.md: dc9d1d88e97775ba0305dd3e3f6b2100fa40315cdade6ed0803c21c127fe32a5
+    docs/notes/review-runs/2026-06-12-deployment-adapter-row-postwrite-r3/rounds.yaml: 775c6622ad7e63f9204d1c8055f784b243f7e66abe91bfb60d7530528380161e
+    docs/notes/review-runs/2026-06-12-deployment-adapter-row-postwrite-r3/target-manifest.yaml: a374dc830832a7c8adc869d5b351684701570a4d212523926aedc98a4dfad468
+    docs/notes/review-runs/2026-06-12-deployment-adapter-row-postwrite-r3/triage.yaml: 79baeb6a5a7c580ed8de02905477d40b638714b11593a864d3731968787d347d
+    docs/notes/review-runs/2026-06-12-setup-guide-entry-postwrite-r3/model-result-summary.yaml: e24f2d29185a1284ca83586bf7f9a8dec64d7b50140627edab4cdb48419d1960
+    docs/notes/review-runs/2026-06-12-setup-guide-entry-postwrite-r3/parsed/claude-sonnet-4-6.round-1.yaml: c94cf021b0bfd47ab819618c03b2be0c0c29f647975a308bcd61c66defb07cd5
+    docs/notes/review-runs/2026-06-12-setup-guide-entry-postwrite-r3/parsed/gemini-3.1-pro-preview.round-1.yaml: 74ebcc8225671791d18720c7a774b946e2619a2a31d2e06689a9c8a4110196c6
+    docs/notes/review-runs/2026-06-12-setup-guide-entry-postwrite-r3/parsed/gpt-5.5.round-1.yaml: 4101218cbba5474df5613e07f4a97cb928f6cb00be717dc78bd68ba0dc8002f2
+    docs/notes/review-runs/2026-06-12-setup-guide-entry-postwrite-r3/raw/claude-sonnet-4-6.round-1.txt: a2db80bfb36d85a2488b2dca0675b47f90ff3fdfcbc7490e54eb8dcfd0403eb0
+    docs/notes/review-runs/2026-06-12-setup-guide-entry-postwrite-r3/raw/gemini-3.1-pro-preview.round-1.txt: 6a68bdeb4861dc0628281acebf98732a461fc53d5c8992e7cc97aa86b3831e49
+    docs/notes/review-runs/2026-06-12-setup-guide-entry-postwrite-r3/raw/gpt-5.5.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/2026-06-12-setup-guide-entry-postwrite-r3/review_summary.md: 66d5a5ac5c668f9f637be82be84c3b1c1ba3649667783f36147d54c72c70b9b1
+    docs/notes/review-runs/2026-06-12-setup-guide-entry-postwrite-r3/rounds.yaml: e76ab46279e8a8b3675eb9ff5de7e3c5d8dbaf5b11a6f91e415a5d120dbced78
+    docs/notes/review-runs/2026-06-12-setup-guide-entry-postwrite-r3/target-manifest.yaml: c8e9ba6b3e89d26fdb918d8415405b164a247892a623df990d374a278b054dbc
+    docs/notes/review-runs/2026-06-12-setup-guide-entry-postwrite-r3/triage.yaml: 8f74283abadfe1b807833834d345866b8b2a192eb74b79399b2596ca951027ad
+    docs/notes/review-runs/2026-06-12-user-guide-entry-postwrite-r3/model-result-summary.yaml: 6e991d4f80479a05cd951877346410d4b82da2a81a1ad11846dbf6e20893ab46
+    docs/notes/review-runs/2026-06-12-user-guide-entry-postwrite-r3/parsed/claude-sonnet-4-6.round-1.yaml: 62b1f872d4da2e94f23096cac6ec67f22034eb4ed5693aa6ded6f8ac6f9a713d
+    docs/notes/review-runs/2026-06-12-user-guide-entry-postwrite-r3/parsed/gemini-3.1-pro-preview.round-1.yaml: 9ae4d8c4cefb244a88b040b3d2770d72c719f0861895fde7d90d95a224b40bf1
+    docs/notes/review-runs/2026-06-12-user-guide-entry-postwrite-r3/parsed/gpt-5.5.round-1.yaml: fd59646fa2876f8031d19c8b9a113e8ec36f4d0980db5792a99f558cf3d40aa1
+    docs/notes/review-runs/2026-06-12-user-guide-entry-postwrite-r3/raw/claude-sonnet-4-6.round-1.txt: dfe82051e1c390e8bdd36f66dbe705b06edcaa08d2c536605d7643d38862cc26
+    docs/notes/review-runs/2026-06-12-user-guide-entry-postwrite-r3/raw/gemini-3.1-pro-preview.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/2026-06-12-user-guide-entry-postwrite-r3/raw/gpt-5.5.round-1.txt: 13bd1c495d1d0138f5f47267fa70f5731bcd3c7ab35f398ea845cde459a4d5b1
+    docs/notes/review-runs/2026-06-12-user-guide-entry-postwrite-r3/review_summary.md: f3de602d4ebe34b7c037975e3c31729c851fe88da1c1ee0462490a3665e90050
+    docs/notes/review-runs/2026-06-12-user-guide-entry-postwrite-r3/rounds.yaml: e4db8915289e95ec37c9081bb10e6d8e4b4dd110ec06eeb4b65155182742babc
+    docs/notes/review-runs/2026-06-12-user-guide-entry-postwrite-r3/target-manifest.yaml: 6b4906cae34ba9db6a672b844b184315c503d3035a558ea769607df97e6c8970
+    docs/notes/review-runs/2026-06-12-user-guide-entry-postwrite-r3/triage.yaml: 4fe88758914550a5a0adce1748b6685f938a7069f6cc702ffdd53ce164e1d4ac
+    docs/operations/DEPLOYMENT.md: cc7df9d191fec7f35e56c6728ade94f2ba1318ba332dde5d45210aaa30f2222e
+    docs/operations/INITIAL_DEPLOYMENT_USER_GUIDE.md: 64e1697143da663c55ec973fa5abfb04bf81a506f68adc01388d543bcb07783b
+    docs/operations/INITIAL_SETUP_LLM_GUIDE.md: 211f68493f092ef380113ba20c4ce43580847725a569102f970fbe005d10e7d4
+- verifier: gemini-3.1-pro-preview
+  target_files:
+  - docs/notes/review-runs/2026-06-11-deployment-adapter-row-postwrite-r2/model-result-summary.yaml
+  - docs/notes/review-runs/2026-06-11-deployment-adapter-row-postwrite-r2/parsed/claude-sonnet-4-6.round-1.yaml
+  - docs/notes/review-runs/2026-06-11-deployment-adapter-row-postwrite-r2/parsed/gemini-3.1-pro-preview.round-1.yaml
+  - docs/notes/review-runs/2026-06-11-deployment-adapter-row-postwrite-r2/parsed/gpt-5.5.round-1.yaml
+  - docs/notes/review-runs/2026-06-11-deployment-adapter-row-postwrite-r2/raw/claude-sonnet-4-6.round-1.txt
+  - docs/notes/review-runs/2026-06-11-deployment-adapter-row-postwrite-r2/raw/gemini-3.1-pro-preview.round-1.txt
+  - docs/notes/review-runs/2026-06-11-deployment-adapter-row-postwrite-r2/raw/gpt-5.5.round-1.txt
+  - docs/notes/review-runs/2026-06-11-deployment-adapter-row-postwrite-r2/review_summary.md
+  - docs/notes/review-runs/2026-06-11-deployment-adapter-row-postwrite-r2/rounds.yaml
+  - docs/notes/review-runs/2026-06-11-deployment-adapter-row-postwrite-r2/target-manifest.yaml
+  - docs/notes/review-runs/2026-06-11-deployment-adapter-row-postwrite-r2/triage.yaml
+  - docs/notes/review-runs/2026-06-11-deployment-adapter-row-postwrite/approval.yaml
+  - docs/notes/review-runs/2026-06-11-deployment-adapter-row-postwrite/model-result-summary.yaml
+  - docs/notes/review-runs/2026-06-11-deployment-adapter-row-postwrite/parsed/claude-sonnet-4-6.round-1.yaml
+  - docs/notes/review-runs/2026-06-11-deployment-adapter-row-postwrite/parsed/gemini-3.1-pro-preview.round-1.yaml
+  - docs/notes/review-runs/2026-06-11-deployment-adapter-row-postwrite/parsed/gpt-5.5.round-1.yaml
+  - docs/notes/review-runs/2026-06-11-deployment-adapter-row-postwrite/raw/claude-sonnet-4-6.round-1.txt
+  - docs/notes/review-runs/2026-06-11-deployment-adapter-row-postwrite/raw/gemini-3.1-pro-preview.round-1.txt
+  - docs/notes/review-runs/2026-06-11-deployment-adapter-row-postwrite/raw/gpt-5.5.round-1.txt
+  - docs/notes/review-runs/2026-06-11-deployment-adapter-row-postwrite/review_summary.md
+  - docs/notes/review-runs/2026-06-11-deployment-adapter-row-postwrite/rounds.yaml
+  - docs/notes/review-runs/2026-06-11-deployment-adapter-row-postwrite/target-manifest.yaml
+  - docs/notes/review-runs/2026-06-11-deployment-adapter-row-postwrite/triage.yaml
+  - docs/notes/review-runs/2026-06-11-setup-guide-entry-postwrite-r2/approval.yaml
+  - docs/notes/review-runs/2026-06-11-setup-guide-entry-postwrite-r2/model-result-summary.yaml
+  - docs/notes/review-runs/2026-06-11-setup-guide-entry-postwrite-r2/parsed/claude-sonnet-4-6.round-1.yaml
+  - docs/notes/review-runs/2026-06-11-setup-guide-entry-postwrite-r2/parsed/gemini-3.1-pro-preview.round-1.yaml
+  - docs/notes/review-runs/2026-06-11-setup-guide-entry-postwrite-r2/parsed/gpt-5.5.round-1.yaml
+  - docs/notes/review-runs/2026-06-11-setup-guide-entry-postwrite-r2/raw/claude-sonnet-4-6.round-1.txt
+  - docs/notes/review-runs/2026-06-11-setup-guide-entry-postwrite-r2/raw/gemini-3.1-pro-preview.round-1.txt
+  - docs/notes/review-runs/2026-06-11-setup-guide-entry-postwrite-r2/raw/gpt-5.5.round-1.txt
+  - docs/notes/review-runs/2026-06-11-setup-guide-entry-postwrite-r2/review_summary.md
+  - docs/notes/review-runs/2026-06-11-setup-guide-entry-postwrite-r2/rounds.yaml
+  - docs/notes/review-runs/2026-06-11-setup-guide-entry-postwrite-r2/target-manifest.yaml
+  - docs/notes/review-runs/2026-06-11-setup-guide-entry-postwrite-r2/triage.yaml
+  - docs/notes/review-runs/2026-06-11-setup-guide-entry-postwrite/model-result-summary.yaml
+  - docs/notes/review-runs/2026-06-11-setup-guide-entry-postwrite/parsed/claude-sonnet-4-6.round-1.yaml
+  - docs/notes/review-runs/2026-06-11-setup-guide-entry-postwrite/parsed/gemini-3.1-pro-preview.round-1.yaml
+  - docs/notes/review-runs/2026-06-11-setup-guide-entry-postwrite/parsed/gpt-5.5.round-1.yaml
+  - docs/notes/review-runs/2026-06-11-setup-guide-entry-postwrite/raw/claude-sonnet-4-6.round-1.txt
+  - docs/notes/review-runs/2026-06-11-setup-guide-entry-postwrite/raw/gemini-3.1-pro-preview.round-1.txt
+  - docs/notes/review-runs/2026-06-11-setup-guide-entry-postwrite/raw/gpt-5.5.round-1.txt
+  - docs/notes/review-runs/2026-06-11-setup-guide-entry-postwrite/review_summary.md
+  - docs/notes/review-runs/2026-06-11-setup-guide-entry-postwrite/rounds.yaml
+  - docs/notes/review-runs/2026-06-11-setup-guide-entry-postwrite/target-manifest.yaml
+  - docs/notes/review-runs/2026-06-11-setup-guide-entry-postwrite/triage.yaml
+  - docs/notes/review-runs/2026-06-11-user-guide-entry-postwrite-r2/model-result-summary.yaml
+  - docs/notes/review-runs/2026-06-11-user-guide-entry-postwrite-r2/parsed/claude-sonnet-4-6.round-1.yaml
+  - docs/notes/review-runs/2026-06-11-user-guide-entry-postwrite-r2/parsed/gemini-3.1-pro-preview.round-1.yaml
+  - docs/notes/review-runs/2026-06-11-user-guide-entry-postwrite-r2/parsed/gpt-5.5.round-1.yaml
+  - docs/notes/review-runs/2026-06-11-user-guide-entry-postwrite-r2/raw/claude-sonnet-4-6.round-1.txt
+  - docs/notes/review-runs/2026-06-11-user-guide-entry-postwrite-r2/raw/gemini-3.1-pro-preview.round-1.txt
+  - docs/notes/review-runs/2026-06-11-user-guide-entry-postwrite-r2/raw/gpt-5.5.round-1.txt
+  - docs/notes/review-runs/2026-06-11-user-guide-entry-postwrite-r2/review_summary.md
+  - docs/notes/review-runs/2026-06-11-user-guide-entry-postwrite-r2/rounds.yaml
+  - docs/notes/review-runs/2026-06-11-user-guide-entry-postwrite-r2/target-manifest.yaml
+  - docs/notes/review-runs/2026-06-11-user-guide-entry-postwrite-r2/triage.yaml
+  - docs/notes/review-runs/2026-06-11-user-guide-entry-postwrite/approval.yaml
+  - docs/notes/review-runs/2026-06-11-user-guide-entry-postwrite/model-result-summary.yaml
+  - docs/notes/review-runs/2026-06-11-user-guide-entry-postwrite/parsed/claude-sonnet-4-6.round-1.yaml
+  - docs/notes/review-runs/2026-06-11-user-guide-entry-postwrite/parsed/gemini-3.1-pro-preview.round-1.yaml
+  - docs/notes/review-runs/2026-06-11-user-guide-entry-postwrite/parsed/gpt-5.5.round-1.yaml
+  - docs/notes/review-runs/2026-06-11-user-guide-entry-postwrite/raw/claude-sonnet-4-6.round-1.txt
+  - docs/notes/review-runs/2026-06-11-user-guide-entry-postwrite/raw/gemini-3.1-pro-preview.round-1.txt
+  - docs/notes/review-runs/2026-06-11-user-guide-entry-postwrite/raw/gpt-5.5.round-1.txt
+  - docs/notes/review-runs/2026-06-11-user-guide-entry-postwrite/review_summary.md
+  - docs/notes/review-runs/2026-06-11-user-guide-entry-postwrite/rounds.yaml
+  - docs/notes/review-runs/2026-06-11-user-guide-entry-postwrite/target-manifest.yaml
+  - docs/notes/review-runs/2026-06-11-user-guide-entry-postwrite/triage.yaml
+  - docs/notes/review-runs/2026-06-12-deployment-adapter-row-postwrite-r3/model-result-summary.yaml
+  - docs/notes/review-runs/2026-06-12-deployment-adapter-row-postwrite-r3/parsed/claude-sonnet-4-6.round-1.yaml
+  - docs/notes/review-runs/2026-06-12-deployment-adapter-row-postwrite-r3/parsed/gemini-3.1-pro-preview.round-1.yaml
+  - docs/notes/review-runs/2026-06-12-deployment-adapter-row-postwrite-r3/parsed/gpt-5.5.round-1.yaml
+  - docs/notes/review-runs/2026-06-12-deployment-adapter-row-postwrite-r3/raw/claude-sonnet-4-6.round-1.txt
+  - docs/notes/review-runs/2026-06-12-deployment-adapter-row-postwrite-r3/raw/gemini-3.1-pro-preview.round-1.txt
+  - docs/notes/review-runs/2026-06-12-deployment-adapter-row-postwrite-r3/raw/gpt-5.5.round-1.txt
+  - docs/notes/review-runs/2026-06-12-deployment-adapter-row-postwrite-r3/review_summary.md
+  - docs/notes/review-runs/2026-06-12-deployment-adapter-row-postwrite-r3/rounds.yaml
+  - docs/notes/review-runs/2026-06-12-deployment-adapter-row-postwrite-r3/target-manifest.yaml
+  - docs/notes/review-runs/2026-06-12-deployment-adapter-row-postwrite-r3/triage.yaml
+  - docs/notes/review-runs/2026-06-12-setup-guide-entry-postwrite-r3/model-result-summary.yaml
+  - docs/notes/review-runs/2026-06-12-setup-guide-entry-postwrite-r3/parsed/claude-sonnet-4-6.round-1.yaml
+  - docs/notes/review-runs/2026-06-12-setup-guide-entry-postwrite-r3/parsed/gemini-3.1-pro-preview.round-1.yaml
+  - docs/notes/review-runs/2026-06-12-setup-guide-entry-postwrite-r3/parsed/gpt-5.5.round-1.yaml
+  - docs/notes/review-runs/2026-06-12-setup-guide-entry-postwrite-r3/raw/claude-sonnet-4-6.round-1.txt
+  - docs/notes/review-runs/2026-06-12-setup-guide-entry-postwrite-r3/raw/gemini-3.1-pro-preview.round-1.txt
+  - docs/notes/review-runs/2026-06-12-setup-guide-entry-postwrite-r3/raw/gpt-5.5.round-1.txt
+  - docs/notes/review-runs/2026-06-12-setup-guide-entry-postwrite-r3/review_summary.md
+  - docs/notes/review-runs/2026-06-12-setup-guide-entry-postwrite-r3/rounds.yaml
+  - docs/notes/review-runs/2026-06-12-setup-guide-entry-postwrite-r3/target-manifest.yaml
+  - docs/notes/review-runs/2026-06-12-setup-guide-entry-postwrite-r3/triage.yaml
+  - docs/notes/review-runs/2026-06-12-user-guide-entry-postwrite-r3/model-result-summary.yaml
+  - docs/notes/review-runs/2026-06-12-user-guide-entry-postwrite-r3/parsed/claude-sonnet-4-6.round-1.yaml
+  - docs/notes/review-runs/2026-06-12-user-guide-entry-postwrite-r3/parsed/gemini-3.1-pro-preview.round-1.yaml
+  - docs/notes/review-runs/2026-06-12-user-guide-entry-postwrite-r3/parsed/gpt-5.5.round-1.yaml
+  - docs/notes/review-runs/2026-06-12-user-guide-entry-postwrite-r3/raw/claude-sonnet-4-6.round-1.txt
+  - docs/notes/review-runs/2026-06-12-user-guide-entry-postwrite-r3/raw/gemini-3.1-pro-preview.round-1.txt
+  - docs/notes/review-runs/2026-06-12-user-guide-entry-postwrite-r3/raw/gpt-5.5.round-1.txt
+  - docs/notes/review-runs/2026-06-12-user-guide-entry-postwrite-r3/review_summary.md
+  - docs/notes/review-runs/2026-06-12-user-guide-entry-postwrite-r3/rounds.yaml
+  - docs/notes/review-runs/2026-06-12-user-guide-entry-postwrite-r3/target-manifest.yaml
+  - docs/notes/review-runs/2026-06-12-user-guide-entry-postwrite-r3/triage.yaml
+  - docs/operations/DEPLOYMENT.md
+  - docs/operations/INITIAL_DEPLOYMENT_USER_GUIDE.md
+  - docs/operations/INITIAL_SETUP_LLM_GUIDE.md
+  target_sha256:
+    docs/notes/review-runs/2026-06-11-deployment-adapter-row-postwrite-r2/model-result-summary.yaml: 2ed910a2fd825b2e35c90bfe67bbebce48eeeb26cbd7e122d52a0f40b3b50704
+    docs/notes/review-runs/2026-06-11-deployment-adapter-row-postwrite-r2/parsed/claude-sonnet-4-6.round-1.yaml: 0be735827cae467654fe14ed8605cadab3ebec2007d7fa4bb0635d754e2ce95a
+    docs/notes/review-runs/2026-06-11-deployment-adapter-row-postwrite-r2/parsed/gemini-3.1-pro-preview.round-1.yaml: fe79e6b4a4b2a4e710a7bb801df00bef5bb2e5e299d9983ffed3b76653cf5fb2
+    docs/notes/review-runs/2026-06-11-deployment-adapter-row-postwrite-r2/parsed/gpt-5.5.round-1.yaml: 9d282a28a64392d672503b8da08245b6144826e218a1d07a2bd0f4e7b27f8b73
+    docs/notes/review-runs/2026-06-11-deployment-adapter-row-postwrite-r2/raw/claude-sonnet-4-6.round-1.txt: fea8203d933e5e453f08251719d41cfed35c002b292e1223b14ed8c75221277d
+    docs/notes/review-runs/2026-06-11-deployment-adapter-row-postwrite-r2/raw/gemini-3.1-pro-preview.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/2026-06-11-deployment-adapter-row-postwrite-r2/raw/gpt-5.5.round-1.txt: 889732eefdd84ec88708377e081856ee910617ec562f642fa520b964c949ddec
+    docs/notes/review-runs/2026-06-11-deployment-adapter-row-postwrite-r2/review_summary.md: ed6060472a81cdbd7a3d9c92c068a1ae96a48983797539abb3fcfd464f4cf798
+    docs/notes/review-runs/2026-06-11-deployment-adapter-row-postwrite-r2/rounds.yaml: f6d1eb7620abf92295a1318143bbc149639894c3d7782afb450c69b2c992e67b
+    docs/notes/review-runs/2026-06-11-deployment-adapter-row-postwrite-r2/target-manifest.yaml: ae422287d52fa9f65932fe193ee6e13b115e2d4b2ef5587bd2f66b0000d676aa
+    docs/notes/review-runs/2026-06-11-deployment-adapter-row-postwrite-r2/triage.yaml: f1ca38e78eef8f2b99612f897ba68385d448ca69f39f170af6823eb0061b0dc6
+    docs/notes/review-runs/2026-06-11-deployment-adapter-row-postwrite/approval.yaml: 3fee2265c901244fbf9e95ee8b0df3cd2c58de899a02b2c54313207a7bb3c491
+    docs/notes/review-runs/2026-06-11-deployment-adapter-row-postwrite/model-result-summary.yaml: df5285a2b90147a90c540b71eea76b19be2d72c0acb771ab21c302cb7c9028fb
+    docs/notes/review-runs/2026-06-11-deployment-adapter-row-postwrite/parsed/claude-sonnet-4-6.round-1.yaml: 86b0a414d5ec99b76841b29e00b665d2a626f6a41796f907747329c7118e51dd
+    docs/notes/review-runs/2026-06-11-deployment-adapter-row-postwrite/parsed/gemini-3.1-pro-preview.round-1.yaml: c4fdb2cb2fa7626c9c6cf38fe7e779786ea0c976da2d9d120d3e1952d1f4d454
+    docs/notes/review-runs/2026-06-11-deployment-adapter-row-postwrite/parsed/gpt-5.5.round-1.yaml: e63ac05a69a90138a8ae96fd12d6d2f9a19274ec8f0986b4501803ddf46b7cd3
+    docs/notes/review-runs/2026-06-11-deployment-adapter-row-postwrite/raw/claude-sonnet-4-6.round-1.txt: 5a600170e3822fad06430e7705a269fa19fec93ef8dfccdeca9ac85cb4813f59
+    docs/notes/review-runs/2026-06-11-deployment-adapter-row-postwrite/raw/gemini-3.1-pro-preview.round-1.txt: 12a71e44ee28939bd2628666be69702cb88f33e425d964cac0f97b95494b94e8
+    docs/notes/review-runs/2026-06-11-deployment-adapter-row-postwrite/raw/gpt-5.5.round-1.txt: 27f1ec35ead27bb20ae5aadf905b236e59c3e110c2f7fad7c19d245689134808
+    docs/notes/review-runs/2026-06-11-deployment-adapter-row-postwrite/review_summary.md: 0379f893f04b4ea93e42e9f19c8007998a58618fc883c7a00a3d6f843b68721d
+    docs/notes/review-runs/2026-06-11-deployment-adapter-row-postwrite/rounds.yaml: 0eb6919e737fbf57a3712b8b435ac2bbad42a52794c88f8320c2aa3c54fd6e02
+    docs/notes/review-runs/2026-06-11-deployment-adapter-row-postwrite/target-manifest.yaml: ba38c76b39c0a52225e0f5486b0ffb4fab73aa6965085532f464c51ae8ee5fa2
+    docs/notes/review-runs/2026-06-11-deployment-adapter-row-postwrite/triage.yaml: aab5de8b9a918e0a07dee65f9e208dde99f50e9d55d42cec56f9e7292cd212ad
+    docs/notes/review-runs/2026-06-11-setup-guide-entry-postwrite-r2/approval.yaml: ef55fe7ecdbd7e0cdfc37fb183c066cbd8f3768d4f00d4509b66a57f3c01f894
+    docs/notes/review-runs/2026-06-11-setup-guide-entry-postwrite-r2/model-result-summary.yaml: aadfdce9587e2a782b2e5dea36e201c278a0ea06468fb07a769890bfa9662303
+    docs/notes/review-runs/2026-06-11-setup-guide-entry-postwrite-r2/parsed/claude-sonnet-4-6.round-1.yaml: dbee58242ab37a5bbc4d344e2927b6ff4e436185bfd53510890f7eb40cd9d809
+    docs/notes/review-runs/2026-06-11-setup-guide-entry-postwrite-r2/parsed/gemini-3.1-pro-preview.round-1.yaml: 533c3de0dc9793ca1f54ef891ff32bc49d73c80b6937f55e8dbaf03b07156a12
+    docs/notes/review-runs/2026-06-11-setup-guide-entry-postwrite-r2/parsed/gpt-5.5.round-1.yaml: 880b4558f3f9a416e082bdd1398d2602e10bdf895d8510e0e7bd9708ccbf1b5b
+    docs/notes/review-runs/2026-06-11-setup-guide-entry-postwrite-r2/raw/claude-sonnet-4-6.round-1.txt: 303ddde6b202727e623fea9b1b4dacaef7a4762b986f16ce919a96194d571d29
+    docs/notes/review-runs/2026-06-11-setup-guide-entry-postwrite-r2/raw/gemini-3.1-pro-preview.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/2026-06-11-setup-guide-entry-postwrite-r2/raw/gpt-5.5.round-1.txt: 6178e5739b1106f3d9b5baf09d2a9c8713efa65b55be041e40f3cf9c01179196
+    docs/notes/review-runs/2026-06-11-setup-guide-entry-postwrite-r2/review_summary.md: b4a1679381bf34ac8732190ae3916694ab8261329039e08d13c3c677477dd18f
+    docs/notes/review-runs/2026-06-11-setup-guide-entry-postwrite-r2/rounds.yaml: 21dbe74f9792dc93a9ae8bbdd74bb1609a520c4e1397670ce5a764f2b6f7bc93
+    docs/notes/review-runs/2026-06-11-setup-guide-entry-postwrite-r2/target-manifest.yaml: 8a4feca3df55a9eda528c4f2f27d1ca35446605f767294ee1954fca5bbd0255a
+    docs/notes/review-runs/2026-06-11-setup-guide-entry-postwrite-r2/triage.yaml: a041b0c7d964851d1ce7759a63f83767e821f51944dde1bc1d5380e449edb290
+    docs/notes/review-runs/2026-06-11-setup-guide-entry-postwrite/model-result-summary.yaml: 00482ea3827108208554085c09e7666d065d3b2db6872b13fac544d9379a0c35
+    docs/notes/review-runs/2026-06-11-setup-guide-entry-postwrite/parsed/claude-sonnet-4-6.round-1.yaml: 641fd1876f2a6af3426f30d1ae5cc2d23940d96de2039209276d6ce5470ca391
+    docs/notes/review-runs/2026-06-11-setup-guide-entry-postwrite/parsed/gemini-3.1-pro-preview.round-1.yaml: deaead132a39d53aa508566edebc96008fdfcc3421efd9a57f980d9959d0402d
+    docs/notes/review-runs/2026-06-11-setup-guide-entry-postwrite/parsed/gpt-5.5.round-1.yaml: eb7c1e818a3c05f85abd80450f5b73d825afac8fea9c690ff8fd9b3672a7ccaa
+    docs/notes/review-runs/2026-06-11-setup-guide-entry-postwrite/raw/claude-sonnet-4-6.round-1.txt: 081dabe7c83d6f2c8fc8d9a71f6c24deac677c71f44c732c7c29c10e1c21b123
+    docs/notes/review-runs/2026-06-11-setup-guide-entry-postwrite/raw/gemini-3.1-pro-preview.round-1.txt: bc1f4366edd8ffaec31a9ac7a8391dab7dda17fb504d5e9666f9969147d07caf
+    docs/notes/review-runs/2026-06-11-setup-guide-entry-postwrite/raw/gpt-5.5.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/2026-06-11-setup-guide-entry-postwrite/review_summary.md: 972a324c9dcf5b83ea447fbbe47708b68ae3c0519fe403d6ffdd86b78395ef90
+    docs/notes/review-runs/2026-06-11-setup-guide-entry-postwrite/rounds.yaml: a49ff58009e65521fe7df8fd2144aaba3707ae27c5e64913f3d226e4c2830c1d
+    docs/notes/review-runs/2026-06-11-setup-guide-entry-postwrite/target-manifest.yaml: 6567d5991d1c9f71368ce87f9f8e91aef244f0a078f75be0234b12308c03c591
+    docs/notes/review-runs/2026-06-11-setup-guide-entry-postwrite/triage.yaml: f052af349a1bef3789fab8c991c65ef132676b781c0e519c09a7cc870067abdb
+    docs/notes/review-runs/2026-06-11-user-guide-entry-postwrite-r2/model-result-summary.yaml: 2e1fb68552f354e4c41462931c6fc0cab71a8791fe12872892ac64d6de4f0aea
+    docs/notes/review-runs/2026-06-11-user-guide-entry-postwrite-r2/parsed/claude-sonnet-4-6.round-1.yaml: e239baf9455c451952b2e08ef24b6f6bb774d05558889286dae199635e5bc676
+    docs/notes/review-runs/2026-06-11-user-guide-entry-postwrite-r2/parsed/gemini-3.1-pro-preview.round-1.yaml: ab50b22b8d9e9402d997a22d1eec074018bf660e477d7ab317e124172a774da1
+    docs/notes/review-runs/2026-06-11-user-guide-entry-postwrite-r2/parsed/gpt-5.5.round-1.yaml: 332288fd91be47b96f93544d2f2de33162139865fb9e8530241e98ab6fbe5dd6
+    docs/notes/review-runs/2026-06-11-user-guide-entry-postwrite-r2/raw/claude-sonnet-4-6.round-1.txt: e29644c39493864e141fddcd52f3c1f1f2b185acd1f1f4d225394026ee3b2800
+    docs/notes/review-runs/2026-06-11-user-guide-entry-postwrite-r2/raw/gemini-3.1-pro-preview.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/2026-06-11-user-guide-entry-postwrite-r2/raw/gpt-5.5.round-1.txt: aad26281a0dad6ec26be4d55dd9bd00edd9c02296504099a51037b895fd5c67d
+    docs/notes/review-runs/2026-06-11-user-guide-entry-postwrite-r2/review_summary.md: 526aaa6b9c4db8445e0ca214b74f0cc0c74973c075e0e652b8f2346638a6ee5b
+    docs/notes/review-runs/2026-06-11-user-guide-entry-postwrite-r2/rounds.yaml: 932d21a4506f9f5c1c9b2a7dde22b0ff127805228719e4d9138a0c49417ac0a3
+    docs/notes/review-runs/2026-06-11-user-guide-entry-postwrite-r2/target-manifest.yaml: e3c8360eee08bcb61d0c4e9106521b43119b66e1e55d7a5fc004bb979ba9260d
+    docs/notes/review-runs/2026-06-11-user-guide-entry-postwrite-r2/triage.yaml: f721a9aeb526a36ecb17a1f2f50ef106a80f22af47abfacce34c181fd027ae9a
+    docs/notes/review-runs/2026-06-11-user-guide-entry-postwrite/approval.yaml: 43b4be5d76d209f27a98fca072df278c1c37a777c1ec4e55396d40d8aaa29c17
+    docs/notes/review-runs/2026-06-11-user-guide-entry-postwrite/model-result-summary.yaml: 11760e5d805c3d215f589f264c9f443adc5120397c61bee56bf2f363cc1ea125
+    docs/notes/review-runs/2026-06-11-user-guide-entry-postwrite/parsed/claude-sonnet-4-6.round-1.yaml: 1c1b8885628b514b87ddc218f7674ca31c014def99193a0e164c27655a2efdca
+    docs/notes/review-runs/2026-06-11-user-guide-entry-postwrite/parsed/gemini-3.1-pro-preview.round-1.yaml: 50081f2cd83a896186716c04bf81bb4de31154f3c91a584e32319a8b4631aa4a
+    docs/notes/review-runs/2026-06-11-user-guide-entry-postwrite/parsed/gpt-5.5.round-1.yaml: a3a801e78d0e3e453ca8c6d1469a0afd93b63198cb4c506ad8fc973e8903968a
+    docs/notes/review-runs/2026-06-11-user-guide-entry-postwrite/raw/claude-sonnet-4-6.round-1.txt: 5e45b01d877f94a1dfef4ab844c2ad3d37b292b494c33e0e700749e61406cdba
+    docs/notes/review-runs/2026-06-11-user-guide-entry-postwrite/raw/gemini-3.1-pro-preview.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/2026-06-11-user-guide-entry-postwrite/raw/gpt-5.5.round-1.txt: 65156b6da7270177c28d24d180c357f20ff77180c2a0498570e26a295cdc22c5
+    docs/notes/review-runs/2026-06-11-user-guide-entry-postwrite/review_summary.md: a637f001f9640e9747d7209a21d6298cf56a990867a225a17930f9c1de0ac0df
+    docs/notes/review-runs/2026-06-11-user-guide-entry-postwrite/rounds.yaml: 230fd9c0ef3be0ef3e39357ffb747948393359f3e40667ff0dd53ddaf4e53698
+    docs/notes/review-runs/2026-06-11-user-guide-entry-postwrite/target-manifest.yaml: b02ca35127c346ad404cacd1c7fa38abcbd19f4f17b1382dadbb8cf28ecbe397
+    docs/notes/review-runs/2026-06-11-user-guide-entry-postwrite/triage.yaml: f99463e6dcee96b8926a3a347d1f364409bfff0783148601623e37ee82cb59f0
+    docs/notes/review-runs/2026-06-12-deployment-adapter-row-postwrite-r3/model-result-summary.yaml: e36570fd212c17a8aea8dfcb8929ffc4b76719055ee498482aa98f851fcfa13c
+    docs/notes/review-runs/2026-06-12-deployment-adapter-row-postwrite-r3/parsed/claude-sonnet-4-6.round-1.yaml: aa699c90264e260624acb56cc68b07422a3eecc6b9be599ed2d7db598aed5f1f
+    docs/notes/review-runs/2026-06-12-deployment-adapter-row-postwrite-r3/parsed/gemini-3.1-pro-preview.round-1.yaml: 0f42626bdbde555bbdb4cdd4f019ba8a6333da3b808a884097f1625fb6a95372
+    docs/notes/review-runs/2026-06-12-deployment-adapter-row-postwrite-r3/parsed/gpt-5.5.round-1.yaml: 888bdde75ee46da929ed1ae596175bf7160e5b20d5f3dc5e3b35875c5d5f5aa3
+    docs/notes/review-runs/2026-06-12-deployment-adapter-row-postwrite-r3/raw/claude-sonnet-4-6.round-1.txt: abd9aa7fd42aa79b81be46bcec42bcdd80f4049137cd26167871318370f07e42
+    docs/notes/review-runs/2026-06-12-deployment-adapter-row-postwrite-r3/raw/gemini-3.1-pro-preview.round-1.txt: 67f20b5f2a77ca36c12b6b153ce451a10d7c0026c9147c2eb86f0e1d33ea4fb1
+    docs/notes/review-runs/2026-06-12-deployment-adapter-row-postwrite-r3/raw/gpt-5.5.round-1.txt: 3ab3f820173407c99c65026a73a4b11025b6e2a95f278805d3a37561728ad8f4
+    docs/notes/review-runs/2026-06-12-deployment-adapter-row-postwrite-r3/review_summary.md: dc9d1d88e97775ba0305dd3e3f6b2100fa40315cdade6ed0803c21c127fe32a5
+    docs/notes/review-runs/2026-06-12-deployment-adapter-row-postwrite-r3/rounds.yaml: 775c6622ad7e63f9204d1c8055f784b243f7e66abe91bfb60d7530528380161e
+    docs/notes/review-runs/2026-06-12-deployment-adapter-row-postwrite-r3/target-manifest.yaml: a374dc830832a7c8adc869d5b351684701570a4d212523926aedc98a4dfad468
+    docs/notes/review-runs/2026-06-12-deployment-adapter-row-postwrite-r3/triage.yaml: 79baeb6a5a7c580ed8de02905477d40b638714b11593a864d3731968787d347d
+    docs/notes/review-runs/2026-06-12-setup-guide-entry-postwrite-r3/model-result-summary.yaml: e24f2d29185a1284ca83586bf7f9a8dec64d7b50140627edab4cdb48419d1960
+    docs/notes/review-runs/2026-06-12-setup-guide-entry-postwrite-r3/parsed/claude-sonnet-4-6.round-1.yaml: c94cf021b0bfd47ab819618c03b2be0c0c29f647975a308bcd61c66defb07cd5
+    docs/notes/review-runs/2026-06-12-setup-guide-entry-postwrite-r3/parsed/gemini-3.1-pro-preview.round-1.yaml: 74ebcc8225671791d18720c7a774b946e2619a2a31d2e06689a9c8a4110196c6
+    docs/notes/review-runs/2026-06-12-setup-guide-entry-postwrite-r3/parsed/gpt-5.5.round-1.yaml: 4101218cbba5474df5613e07f4a97cb928f6cb00be717dc78bd68ba0dc8002f2
+    docs/notes/review-runs/2026-06-12-setup-guide-entry-postwrite-r3/raw/claude-sonnet-4-6.round-1.txt: a2db80bfb36d85a2488b2dca0675b47f90ff3fdfcbc7490e54eb8dcfd0403eb0
+    docs/notes/review-runs/2026-06-12-setup-guide-entry-postwrite-r3/raw/gemini-3.1-pro-preview.round-1.txt: 6a68bdeb4861dc0628281acebf98732a461fc53d5c8992e7cc97aa86b3831e49
+    docs/notes/review-runs/2026-06-12-setup-guide-entry-postwrite-r3/raw/gpt-5.5.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/2026-06-12-setup-guide-entry-postwrite-r3/review_summary.md: 66d5a5ac5c668f9f637be82be84c3b1c1ba3649667783f36147d54c72c70b9b1
+    docs/notes/review-runs/2026-06-12-setup-guide-entry-postwrite-r3/rounds.yaml: e76ab46279e8a8b3675eb9ff5de7e3c5d8dbaf5b11a6f91e415a5d120dbced78
+    docs/notes/review-runs/2026-06-12-setup-guide-entry-postwrite-r3/target-manifest.yaml: c8e9ba6b3e89d26fdb918d8415405b164a247892a623df990d374a278b054dbc
+    docs/notes/review-runs/2026-06-12-setup-guide-entry-postwrite-r3/triage.yaml: 8f74283abadfe1b807833834d345866b8b2a192eb74b79399b2596ca951027ad
+    docs/notes/review-runs/2026-06-12-user-guide-entry-postwrite-r3/model-result-summary.yaml: 6e991d4f80479a05cd951877346410d4b82da2a81a1ad11846dbf6e20893ab46
+    docs/notes/review-runs/2026-06-12-user-guide-entry-postwrite-r3/parsed/claude-sonnet-4-6.round-1.yaml: 62b1f872d4da2e94f23096cac6ec67f22034eb4ed5693aa6ded6f8ac6f9a713d
+    docs/notes/review-runs/2026-06-12-user-guide-entry-postwrite-r3/parsed/gemini-3.1-pro-preview.round-1.yaml: 9ae4d8c4cefb244a88b040b3d2770d72c719f0861895fde7d90d95a224b40bf1
+    docs/notes/review-runs/2026-06-12-user-guide-entry-postwrite-r3/parsed/gpt-5.5.round-1.yaml: fd59646fa2876f8031d19c8b9a113e8ec36f4d0980db5792a99f558cf3d40aa1
+    docs/notes/review-runs/2026-06-12-user-guide-entry-postwrite-r3/raw/claude-sonnet-4-6.round-1.txt: dfe82051e1c390e8bdd36f66dbe705b06edcaa08d2c536605d7643d38862cc26
+    docs/notes/review-runs/2026-06-12-user-guide-entry-postwrite-r3/raw/gemini-3.1-pro-preview.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/2026-06-12-user-guide-entry-postwrite-r3/raw/gpt-5.5.round-1.txt: 13bd1c495d1d0138f5f47267fa70f5731bcd3c7ab35f398ea845cde459a4d5b1
+    docs/notes/review-runs/2026-06-12-user-guide-entry-postwrite-r3/review_summary.md: f3de602d4ebe34b7c037975e3c31729c851fe88da1c1ee0462490a3665e90050
+    docs/notes/review-runs/2026-06-12-user-guide-entry-postwrite-r3/rounds.yaml: e4db8915289e95ec37c9081bb10e6d8e4b4dd110ec06eeb4b65155182742babc
+    docs/notes/review-runs/2026-06-12-user-guide-entry-postwrite-r3/target-manifest.yaml: 6b4906cae34ba9db6a672b844b184315c503d3035a558ea769607df97e6c8970
+    docs/notes/review-runs/2026-06-12-user-guide-entry-postwrite-r3/triage.yaml: 4fe88758914550a5a0adce1748b6685f938a7069f6cc702ffdd53ce164e1d4ac
+    docs/operations/DEPLOYMENT.md: cc7df9d191fec7f35e56c6728ade94f2ba1318ba332dde5d45210aaa30f2222e
+    docs/operations/INITIAL_DEPLOYMENT_USER_GUIDE.md: 64e1697143da663c55ec973fa5abfb04bf81a506f68adc01388d543bcb07783b
+    docs/operations/INITIAL_SETUP_LLM_GUIDE.md: 211f68493f092ef380113ba20c4ce43580847725a569102f970fbe005d10e7d4
+review_run:
+  path: docs/notes/review-runs/2026-06-12-deployment-adapter-row-postwrite-r3
+  summary_path: docs/notes/review-runs/2026-06-12-deployment-adapter-row-postwrite-r3/model-result-summary.yaml
+notes: Generated template; verify target_files cover current post-write targets before
+  use.

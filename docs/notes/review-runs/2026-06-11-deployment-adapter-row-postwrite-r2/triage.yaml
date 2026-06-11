@@ -1,0 +1,82 @@
+run_id: 2026-06-11-deployment-adapter-row-postwrite-r2
+triage_status: decided
+generated_at: '2026-06-11T15:28:18.194562+00:00'
+decision_actor: null
+decision_actor_type: human
+items:
+- finding_id: 2026-06-11-deployment-adapter-row-postwrite-r2-claude-sonnet-4-6-primary-001
+  run_id: 2026-06-11-deployment-adapter-row-postwrite-r2
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: セクション 4 第3者配布で再検討するもの - LLM 別 adapter 一式
+  plain_language_summary: 設計記録への参照パス `docs/notes/2026-06-10-deployment-multi-llm-entry-design.md`
+    が本文書内に埋め込まれているが、セクション 3 の除外対象リストに `docs/notes/` 全体が含まれている。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-11T15:32:41.490579+00:00'
+  decision_reason: 利用者承認。r1 で確定済みの同根。DEPLOYMENT.md 自体が配布物外の開発文書のため参照不能は生じない。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-11-deployment-adapter-row-postwrite-r2-claude-sonnet-4-6-primary-002
+  run_id: 2026-06-11-deployment-adapter-row-postwrite-r2
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: セクション 2.8 対象アプリ側生成テンプレート - `templates/entry/AGENT_ENTRY.template.md`
+  plain_language_summary: テンプレートの説明に「複数 LLM 共通のセッション入口規律」と記載されているが、セクション 3 の除外対象には
+    `WORKFLOW_NAVIGATION_FOR_CLAUDE.md` と `WORKFLOW_NAVIGATION_FOR_CODEX.md` の代替となることが明記されており、このテンプレートが複数
+    LLM に対してどの程度汎用化されているかの詳細が本文書内にない。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-11T15:32:41.536978+00:00'
+  decision_reason: 利用者承認。AGENT_ENTRY が開発用手引きの代替である旨は §3 の除外注記に記載済み。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-11-deployment-adapter-row-postwrite-r2-claude-sonnet-4-6-primary-003
+  run_id: 2026-06-11-deployment-adapter-row-postwrite-r2
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: セクション 4 第3者配布で再検討するもの - LLM 別 adapter 一式
+  plain_language_summary: 「初期デプロイ版は Claude Code と Codex CLI に対応済み」と記載されているが、対応済みの根拠や確認方法への参照が設計記録のみであり、本文書単体では検証できない。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-11T15:32:41.582366+00:00'
+  decision_reason: 利用者承認。開発リポジトリ専用文書として設計記録への参照は適切。検証方法は配布物の --verify と smoke が担う。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-11-deployment-adapter-row-postwrite-r2-gpt-5.5-adversarial-001
+  run_id: 2026-06-11-deployment-adapter-row-postwrite-r2
+  source_model: gpt-5.5
+  source_round: round-1
+  source_raw_path: raw/gpt-5.5.round-1.txt
+  source_parsed_path: parsed/gpt-5.5.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: docs/operations/DEPLOYMENT.md §6 外部アプリ側の扱い
+  plain_language_summary: 外部アプリ側に生成または更新される候補に、`.reviewcompass/AGENT_ENTRY.md`、`.claude/settings.json`、`.codex/hooks.json`、hook
+    実体などの複数 LLM 入口・hook 関連ファイルが含まれていない。
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-11T15:32:41.628593+00:00'
+  decision_reason: 利用者承認。§6 の生成候補一覧へ入口・hook 関連 5 項目を追加して反映。
+  applied_files: []
+  superseded_by: null

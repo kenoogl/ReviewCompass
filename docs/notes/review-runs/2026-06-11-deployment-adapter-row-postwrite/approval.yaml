@@ -1,0 +1,10 @@
+approved_by: user
+review_run_id: 2026-06-11-deployment-adapter-row-postwrite
+summary_presented_to_user: true
+triage_presented_to_user: true
+approval_quote: 利用者発言『承認』（2026-06-12。クラスタ A〜D should-fix・E leave-as-is・ERROR への承認レコード作成を含む振り分け提示後）
+approved_finding_ids:
+- 2026-06-11-deployment-adapter-row-postwrite-gpt-5.5-adversarial-001
+approved_final_labels:
+  2026-06-11-deployment-adapter-row-postwrite-gpt-5.5-adversarial-001: should-fix
+approved_action: review_run_triage

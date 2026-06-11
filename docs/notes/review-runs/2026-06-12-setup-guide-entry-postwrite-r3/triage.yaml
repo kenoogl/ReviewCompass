@@ -1,0 +1,118 @@
+run_id: 2026-06-12-setup-guide-entry-postwrite-r3
+triage_status: decided
+generated_at: '2026-06-11T15:34:51.450428+00:00'
+decision_actor: null
+decision_actor_type: human
+items:
+- finding_id: 2026-06-12-setup-guide-entry-postwrite-r3-claude-sonnet-4-6-primary-001
+  run_id: 2026-06-12-setup-guide-entry-postwrite-r3
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: §2 確認項目表「操縦 LLM」行
+  plain_language_summary: Claude Code と Codex CLI 以外の LLM を使う場合の案内が §11 への参照のみで、§2
+    の表内には「それ以外の LLM の場合は §11 のフォールバックに従う」という括弧書きがあるが、§11 の見出しは「操縦 LLM 別の既定 variant」であり、フォールバック手順として読むには見出しと内容のミスマッチが生じている。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-11T16:05:15.968564+00:00'
+  decision_reason: 利用者承認。§2 から §11 への参照は r2 対応で追加済みであり、見出し表現の調整は実益が小さい。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-12-setup-guide-entry-postwrite-r3-claude-sonnet-4-6-primary-002
+  run_id: 2026-06-12-setup-guide-entry-postwrite-r3
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: §3.1 手順 6 および §3.2 手順 6
+  plain_language_summary: パターン 1・2 の進め方に「hook 導入（§10、強く推奨）」が列挙されているが、§10 の手順 1〜5 の中で実施前に利用者承認を明示求めるステップが記されていない。§4
+    の表では `.claude/`／`.codex/` に書き込む旨が記載されているが、hook 導入自体の承認取得タイミングが不明確である。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-11T16:05:16.020854+00:00'
+  decision_reason: 利用者承認。書き込み前の利用者説明は §1 の原則 2 が全手順に適用され、hook 導入の意思確認は §2 の確認表、既存ファイル時の提示は
+    §10 手順 2・3 が規定済み。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-12-setup-guide-entry-postwrite-r3-claude-sonnet-4-6-primary-003
+  run_id: 2026-06-12-setup-guide-entry-postwrite-r3
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: §8 手順 1
+  plain_language_summary: AGENT_ENTRY.md の実体化手順で「冒頭の記入欄（実体化日、実体化元の配布物）と §2 の『配布物の場所』（絶対パス）を記入する」とあるが、テンプレート内の
+    §2 という表現が配布物テンプレート内の節番号なのか本文書の §2 なのかが一読では判別しにくい。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-11T16:05:16.070654+00:00'
+  decision_reason: 利用者承認。『冒頭の記入欄と §2』はテンプレートの節を指し、実体化の作業文脈では対象が一意に定まる。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-12-setup-guide-entry-postwrite-r3-claude-sonnet-4-6-primary-004
+  run_id: 2026-06-12-setup-guide-entry-postwrite-r3
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: §10 手順 3
+  plain_language_summary: 「hooks キーだけを既存へ合流させる」という操作の具体的な方法（JSON のマージ方針、配列の重複除去など）が記載されていない。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-11T16:05:16.119768+00:00'
+  decision_reason: 利用者承認。合流の詳細は実装判断であり、書き込み前の利用者提示（手順 3）が安全網として機能する。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-12-setup-guide-entry-postwrite-r3-gemini-3.1-pro-preview-judgment-001
+  run_id: 2026-06-12-setup-guide-entry-postwrite-r3
+  source_model: gemini-3.1-pro-preview
+  source_round: round-1
+  source_raw_path: raw/gemini-3.1-pro-preview.round-1.txt
+  source_parsed_path: parsed/gemini-3.1-pro-preview.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: §10 hook 導入（強く推奨）
+  plain_language_summary: 事前検査 hook スクリプトに対する実行権限（chmod +x）の付与指示が欠落している
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-11T16:05:16.169067+00:00'
+  decision_reason: '利用者承認。hook は設定ファイルから bash 経由で起動する（command: bash ...）ため実行権限の付与は不要。テンプレートの設定雛形がその起動形を規定している。'
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-12-setup-guide-entry-postwrite-r3-gemini-3.1-pro-preview-judgment-002
+  run_id: 2026-06-12-setup-guide-entry-postwrite-r3
+  source_model: gemini-3.1-pro-preview
+  source_round: round-1
+  source_raw_path: raw/gemini-3.1-pro-preview.round-1.txt
+  source_parsed_path: parsed/gemini-3.1-pro-preview.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: §8 入口の合流, §10 hook 導入
+  plain_language_summary: Claude Code, Codex CLI 以外の LLM（フォールバック時）における固有ファイル・ディレクトリの扱いが定義されていない
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-11T16:05:16.217970+00:00'
+  decision_reason: 利用者承認。Claude・Codex 以外の LLM の固有ファイルの扱いは §11 のフォールバック（利用者に確認）に含まれ、既定の追加は第3者配布時の再検討事項。
+  applied_files: []
+  superseded_by: null

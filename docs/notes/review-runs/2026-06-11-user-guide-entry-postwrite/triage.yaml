@@ -1,0 +1,161 @@
+run_id: 2026-06-11-user-guide-entry-postwrite
+triage_status: decided
+generated_at: '2026-06-11T14:50:46.036049+00:00'
+decision_actor: null
+decision_actor_type: human
+items:
+- finding_id: 2026-06-11-user-guide-entry-postwrite-claude-sonnet-4-6-primary-001
+  run_id: 2026-06-11-user-guide-entry-postwrite
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: セクション 4（LLM セッションの起動パターン）
+  plain_language_summary: パターン 1〜3 の説明で参照先として INITIAL_SETUP_LLM_GUIDE.md が挙げられているが、そのファイルの具体的なセクション番号（§8〜§11
+    など）へのリンクは本文中に明示されていない箇所がある。セクション 10 では §8〜§11 への参照が記載されているが、セクション 4 内では未言及。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-11T15:22:44.919913+00:00'
+  decision_reason: 利用者承認（クラスタE）。§4 には今回クラスタ D の対応で入口の対応関係と §10 への参照を追記済み。節番号の網羅的な相互参照は過剰。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-11-user-guide-entry-postwrite-claude-sonnet-4-6-primary-002
+  run_id: 2026-06-11-user-guide-entry-postwrite
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: セクション 8（配布前 smoke）
+  plain_language_summary: smoke test の依頼例に `.venv/bin/python3` を使う旨が明記されているが、smoke
+    test のオプション（--smoke-external-app-root）が build-deploy-package.py のものであると説明本文には書かれているものの、依頼例テキストボックス内と本文の説明が一部重複している。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-11T15:22:44.979570+00:00'
+  decision_reason: 利用者承認（クラスタE）。依頼例と本文の情報重複は読み手の利便のためで誤解は生まない（検証者自身も実害低と評価）。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-11-user-guide-entry-postwrite-claude-sonnet-4-6-primary-003
+  run_id: 2026-06-11-user-guide-entry-postwrite
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: セクション 6（事前条件）、セクション 19（チェックリスト）
+  plain_language_summary: 事前条件のリストに「LLM が複数プロバイダー（Claude Code・Codex CLI など）を切り替える場合の認証情報管理」についての明示的な記述がない。セクション
+    10 では Claude Code と Codex CLI を同じ規律で使う旨が説明されているが、それぞれに必要な環境変数の種類や確認手順がチェックリストに含まれていない。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-11T15:22:45.035589+00:00'
+  decision_reason: 利用者承認（クラスタE）。API 秘密値の渡し方は §6 事前条件と SETUP §5 に規定済み。必要な提供元の内訳は config/api-settings.yaml
+    が正本。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-11-user-guide-entry-postwrite-claude-sonnet-4-6-primary-004
+  run_id: 2026-06-11-user-guide-entry-postwrite
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: セクション 10（対象アプリ側に作られるもの）
+  plain_language_summary: Claude Code と Codex CLI の variant（起草者・検証者の役割入れ替え）について「LLM
+    が自動で適切な既定を選ぶ」と記載されているが、LLM がどのようにして「操縦している LLM の種類」を識別する仕組みかについての説明がない。利用者が手動で設定を確認・上書きする方法も記載されていない。
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-11T15:22:45.091273+00:00'
+  decision_reason: 利用者承認（クラスタD）。§10 を『入口規律が操縦 LLM 別の既定を指示し、実行前提示で利用者が上書きできる』という仕組みと安全網の記述へ書き換えて対応。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-11-user-guide-entry-postwrite-claude-sonnet-4-6-primary-005
+  run_id: 2026-06-11-user-guide-entry-postwrite
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: セクション 4（LLM セッションの起動パターン）全体
+  plain_language_summary: パターン 1〜3 の説明において、Claude Code と Codex CLI という具体的な LLM ツールを使い分ける際の起動コマンドや設定の差異（例：CLAUDE.md
+    と AGENTS.md のどちらが優先されるかなど）が記載されていない。セクション 10 で CLAUDE.md／AGENTS.md への言及があるが、各
+    LLM の起動パターンとの対応関係が欠如している。
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-11T15:24:00.841961+00:00'
+  decision_reason: 利用者承認（クラスタD、重要件）。§4 に LLM 別入口ファイルの対応関係（CLAUDE.md／AGENTS.md→AGENT_ENTRY）の
+    1 文を追記して対応。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-11-user-guide-entry-postwrite-claude-sonnet-4-6-primary-006
+  run_id: 2026-06-11-user-guide-entry-postwrite
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: セクション 19（実アプリ pilot 前のチェックリスト）
+  plain_language_summary: チェックリストに「Claude Code 用と Codex CLI 用のそれぞれのエントリーファイル（CLAUDE.md、AGENTS.md）が正しく設定されたことを確認した」という項目が存在しない。セクション
+    10 で両ファイルへの追記が行われると説明されているが、チェックリストで確認を促す項目が抜けている。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-11T15:22:45.188525+00:00'
+  decision_reason: 利用者承認（クラスタE）。§19 に今回追加した『入口の合流を承認した』項目が入口ファイル設定の確認を担保する。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-11-user-guide-entry-postwrite-gpt-5.5-adversarial-001
+  run_id: 2026-06-11-user-guide-entry-postwrite
+  source_model: gpt-5.5
+  source_round: round-1
+  source_raw_path: raw/gpt-5.5.round-1.txt
+  source_parsed_path: parsed/gpt-5.5.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: §4 LLM セッションの起動パターン / §6 事前条件
+  plain_language_summary: §4 では配布物ディレクトリで LLM を起動して対象アプリ初期設定を行うパターン 1 を許容している一方、§6
+    の事前条件 2 は「生成後の初期検証と日常運用」を対象アプリリポジトリで起動した LLM セッションに依頼すると断定している。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-11T15:24:00.896423+00:00'
+  decision_reason: 利用者承認（クラスタE、重要件）。§4 は初期設定の起動場所、§6 は生成後の運用の起動場所で対象フェーズが異なり矛盾ではない。誤読しやすい表現である点は将来の改善候補として記録。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-11-user-guide-entry-postwrite-gpt-5.5-adversarial-002
+  run_id: 2026-06-11-user-guide-entry-postwrite
+  source_model: gpt-5.5
+  source_round: round-1
+  source_raw_path: raw/gpt-5.5.round-1.txt
+  source_parsed_path: parsed/gpt-5.5.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: §19 実アプリ pilot 前のチェックリスト
+  plain_language_summary: チェックリストが「対象アプリ側で LLM セッションを立ち上げ、配布済み ReviewCompass の場所を伝えた」と一律に書いており、§4
+    で説明したパターン 1・パターン 3 の分岐を反映していない。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-11T15:22:45.285059+00:00'
+  decision_reason: 利用者承認（クラスタE）。チェックリストは基本経路（パターン 2）の確認線で、パターン選択自体が項目にあり分岐は §4 で説明済み。
+  applied_files: []
+  superseded_by: null

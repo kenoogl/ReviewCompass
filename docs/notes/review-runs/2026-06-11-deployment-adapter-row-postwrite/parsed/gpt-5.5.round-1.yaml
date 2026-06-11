@@ -1,0 +1,27 @@
+role: adversarial
+provider: openai-api
+model: gpt-5.5
+attempts: 1
+duration_seconds: 48.215
+findings:
+- severity: ERROR
+  target_location: Section 2 vs Section 4, row 'LLM 別 adapter 一式'
+  description: Initial deploy v0 is defined as an all-function verification package,
+    and Section 4 says the initial version already supports Claude Code and Codex
+    CLI, but the v0 allowlist does not include the multi-LLM entry assets such as
+    `templates/entry/`, `templates/hooks/`, or LLM-specific workflow navigation guides.
+  rationale: If multi-LLM entry guidance is part of the updated capability, the generated
+    deployment package cannot actually verify that capability unless the required
+    entry templates, hook templates, or guide files are included or explicitly declared
+    out of scope for v0. The current text creates a mismatch between the support claim
+    and the deployable contents.
+- severity: WARN
+  target_location: Section 4, row 'LLM 別 adapter 一式'
+  description: The handling of `WORKFLOW_NAVIGATION_FOR_CLAUDE.md` and `WORKFLOW_NAVIGATION_FOR_CODEX.md`
+    is deferred to third-party distribution, but the document does not state whether
+    these guides are intentionally excluded from initial deployment or replaced by
+    another packaged guide.
+  rationale: Multi-LLM entry guide updates need an unambiguous deployment policy.
+    Without an explicit include/exclude decision for the LLM-specific guides, manifest
+    authors may omit necessary operator documentation or package development-repository-only
+    guidance by mistake.

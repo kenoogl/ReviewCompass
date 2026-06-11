@@ -1,0 +1,119 @@
+run_id: 2026-06-11-user-guide-entry-postwrite-r2
+triage_status: decided
+generated_at: '2026-06-11T15:27:21.351701+00:00'
+decision_actor: null
+decision_actor_type: human
+items:
+- finding_id: 2026-06-11-user-guide-entry-postwrite-r2-claude-sonnet-4-6-primary-001
+  run_id: 2026-06-11-user-guide-entry-postwrite-r2
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: §4 LLMセッションの起動パターン（パターン表および各サブセクション）
+  plain_language_summary: 複数LLMエントリ（Claude Code／Codex CLI）に関する共通入口規律の説明が§4末尾に1文あるが、パターン別サブセクション内には言及がなく、どのパターンでもAGENT_ENTRY.mdへの合流が保証される旨が明示されていない。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-11T15:32:41.193641+00:00'
+  decision_reason: 利用者承認。§4 末尾の共通説明で足り、パターン別小節への重複記載は冗長。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-11-user-guide-entry-postwrite-r2-claude-sonnet-4-6-primary-002
+  run_id: 2026-06-11-user-guide-entry-postwrite-r2
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: §10 対象アプリ側に作られるもの
+  plain_language_summary: AGENT_ENTRY.mdのテンプレート実体化と、CLAUDE.md／AGENTS.md への参照追記が説明されているが、両LLMエージェント（Claude
+    CodeとCodex CLI）が同一セッション内で同時稼働する場合の排他制御や競合回避の説明が存在しない。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-11T15:32:41.243550+00:00'
+  decision_reason: 利用者承認。複数 LLM の同時稼働は現設計の想定外運用で、git と承認ゲートが実質の直列化として働く。将来の検討課題として記録。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-11-user-guide-entry-postwrite-r2-claude-sonnet-4-6-primary-003
+  run_id: 2026-06-11-user-guide-entry-postwrite-r2
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: §10 対象アプリ側に作られるもの（variantの既定説明）
+  plain_language_summary: 「Claude Code操縦時とCodex CLI操縦時で起草者と検証者が同系列にならないよう役割を入れ替えてある」と述べているが、その具体的な役割割り当て（どのモデルが起草者でどのモデルが検証者か）への参照先がない。
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-11T15:32:41.293250+00:00'
+  decision_reason: 利用者承認。§10 に『役ごとの具体的なモデルは配布物の config/api-settings.yaml が正本』を追記して反映。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-11-user-guide-entry-postwrite-r2-claude-sonnet-4-6-primary-004
+  run_id: 2026-06-11-user-guide-entry-postwrite-r2
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: §19 実アプリpilot前のチェックリスト
+  plain_language_summary: チェックリストに「複数LLMエージェント（Claude Code、Codex CLI）それぞれでAGENT_ENTRY.mdへの合流を確認した」という項目がない。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-11T15:32:41.342923+00:00'
+  decision_reason: 利用者承認。§19 の『入口の合流を承認した』項目が AGENT_ENTRY への合流確認を担保し、両 LLM 分の内訳は §10
+    が示す。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-11-user-guide-entry-postwrite-r2-gpt-5.5-adversarial-001
+  run_id: 2026-06-11-user-guide-entry-postwrite-r2
+  source_model: gpt-5.5
+  source_round: round-1
+  source_raw_path: raw/gpt-5.5.round-1.txt
+  source_parsed_path: parsed/gpt-5.5.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: docs/operations/INITIAL_DEPLOYMENT_USER_GUIDE.md §4, §6
+  plain_language_summary: LLM セッションの起動場所について、§4 では配布物ディレクトリ起動のパターン 1/3 を許容している一方、§6
+    では生成後の初期検証と日常運用は対象アプリリポジトリで立ち上げた LLM セッションに依頼すると断定しており、案内が揺れている。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-11T15:32:41.392598+00:00'
+  decision_reason: 利用者承認。r1 で確定済みの同根（§4 は初期設定、§6 は生成後運用の起動場所で場面が異なる）。表現改善は将来候補として記録済み。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-11-user-guide-entry-postwrite-r2-gpt-5.5-adversarial-002
+  run_id: 2026-06-11-user-guide-entry-postwrite-r2
+  source_model: gpt-5.5
+  source_round: round-1
+  source_raw_path: raw/gpt-5.5.round-1.txt
+  source_parsed_path: parsed/gpt-5.5.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: docs/operations/INITIAL_DEPLOYMENT_USER_GUIDE.md §4
+  plain_language_summary: 「どのパターン・どの LLM で起動しても」対象アプリの CLAUDE.md/AGENTS.md から AGENT_ENTRY.md
+    へたどり着くと説明しているが、配布物ディレクトリで起動するパターン 1 やパターン 3 の前半では、LLM は対象アプリ側の CLAUDE.md/AGENTS.md
+    を自動的には読まない。
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-11T15:32:41.442069+00:00'
+  decision_reason: 利用者承認。§4 の共通入口の説明に『初期設定が済んだ後の対象アプリでの運用時』という限定を加え、配布物側起動の場面との混同を防止。
+  applied_files: []
+  superseded_by: null

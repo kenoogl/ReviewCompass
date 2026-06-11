@@ -1,0 +1,9 @@
+findings:
+  - severity: WARN
+    target_location: "§10 hook 導入（強く推奨）"
+    description: "事前検査 hook スクリプトに対する実行権限（chmod +x）の付与指示が欠落している"
+    rationale: "LLM がファイル操作ツール等で新規作成・複製を行った場合、実行権限（+x）が自動で付与されないことが多く、そのままでは実行時に権限エラーとなって事前検査 hook が正常に機能しないリスクがあるため。"
+  - severity: WARN
+    target_location: "§8 入口の合流, §10 hook 導入"
+    description: "Claude Code, Codex CLI 以外の LLM（フォールバック時）における固有ファイル・ディレクトリの扱いが定義されていない"
+    rationale: "§2 や §11 では「それ以外の LLM」の利用を想定しているにもかかわらず、§8 や §10 は `.claude`、`.codex`、`CLAUDE.md`、`AGENTS.md` といった特定の対象に限定されている。その他の LLM が選択された際に、LLM が不要なファイルを作成するか処理に詰まる可能性があるため、スキップやユーザーへの代替パス確認などの手順を明記すべきである。"

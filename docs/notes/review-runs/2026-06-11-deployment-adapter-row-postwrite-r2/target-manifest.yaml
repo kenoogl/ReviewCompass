@@ -1,0 +1,4 @@
+run_id: 2026-06-11-deployment-adapter-row-postwrite-r2
+target_files:
+- path: docs/operations/DEPLOYMENT.md
+  sha256: c123e12ba65c4e2c0c2a38caab271862755a366e2b93727d298f459f5fa3e5c9

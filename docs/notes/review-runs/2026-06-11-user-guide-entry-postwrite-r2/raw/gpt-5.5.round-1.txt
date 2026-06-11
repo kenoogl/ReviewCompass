@@ -1,0 +1,9 @@
+findings:
+  - severity: WARN
+    target_location: "docs/operations/INITIAL_DEPLOYMENT_USER_GUIDE.md §4, §6"
+    description: "LLM セッションの起動場所について、§4 では配布物ディレクトリ起動のパターン 1/3 を許容している一方、§6 では生成後の初期検証と日常運用は対象アプリリポジトリで立ち上げた LLM セッションに依頼すると断定しており、案内が揺れている。"
+    rationale: "multi-LLM entry の導入では、Claude Code/Codex CLI がどのリポジトリの入口ファイルを読むかが重要になる。起動場所の原則と例外が整理されていないと、利用者が配布物側・対象アプリ側のどちらで AGENT_ENTRY 合流や初期設定を進めるべきか誤解する可能性がある。"
+  - severity: WARN
+    target_location: "docs/operations/INITIAL_DEPLOYMENT_USER_GUIDE.md §4"
+    description: "「どのパターン・どの LLM で起動しても」対象アプリの CLAUDE.md/AGENTS.md から AGENT_ENTRY.md へたどり着くと説明しているが、配布物ディレクトリで起動するパターン 1 やパターン 3 の前半では、LLM は対象アプリ側の CLAUDE.md/AGENTS.md を自動的には読まない。"
+    rationale: "入口の仕組み自体は対象アプリ側セッションで有効だが、配布物側で起動したセッションでは INITIAL_SETUP_LLM_GUIDE.md を明示的に読ませる運用になる。ここを区別しないと、multi-LLM entry がすべての起動パターンで自動適用されるように見え、初期設定時の期待動作と実際の動作がずれる。"

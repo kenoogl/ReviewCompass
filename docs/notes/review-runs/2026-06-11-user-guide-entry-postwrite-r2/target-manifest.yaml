@@ -1,0 +1,4 @@
+run_id: 2026-06-11-user-guide-entry-postwrite-r2
+target_files:
+- path: docs/operations/INITIAL_DEPLOYMENT_USER_GUIDE.md
+  sha256: 078eff6ccb574d813e9cba28c142b35bf1b19f9df2c20dab2c7743b232437907
