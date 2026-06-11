@@ -1,0 +1,90 @@
+#!/bin/bash
+# 対象アプリ用：Bash の git commit／git push を実行前に検査する PreToolUse フック
+#
+# 本ファイルは ReviewCompass 配布物のテンプレートである。初期設定時に、
+# 次の 2 つのプレースホルダを**絶対パス**へ置換し（venv の Python や
+# シンボリックリンクは可）、対象アプリの .claude/hooks/ と .codex/hooks/ の
+# 両方へ同一内容で複製する。
+#
+#   {{REVIEWCOMPASS_PYTHON}} : 依存（PyYAML 等）導入済みの Python 実行系の絶対パス
+#   {{REVIEWCOMPASS_DIR}}    : 配布された ReviewCompass root の絶対パス
+#
+# 前提：jq コマンドが利用できること。
+# 自己診断：git commit／push を検出した時点で、プレースホルダの未置換・
+# 検査ツールの不在・Python 実行系の不在を確認し、不備がある場合は
+# 「hook 設定不備」という明確な理由で実行を拒否する（fail-closed）。
+# 復旧手順は配布物の docs/operations/INITIAL_SETUP_LLM_GUIDE.md を参照。
+
+REVIEWCOMPASS_PYTHON="{{REVIEWCOMPASS_PYTHON}}"
+REVIEWCOMPASS_DIR="{{REVIEWCOMPASS_DIR}}"
+
+# 入力 JSON を読む
+INPUT=$(cat)
+
+# deny 出力（jq に依存しない素の JSON）
+deny() {
+  printf '{"hookSpecificOutput":{"hookEventName":"PreToolUse","permissionDecision":"deny","permissionDecisionReason":"%s"}}\n' "$1"
+  exit 0
+}
+
+# tool_name が Bash でなければ通過
+TOOL_NAME=$(echo "$INPUT" | jq -r '.tool_name // empty' 2>/dev/null)
+if [ "$TOOL_NAME" != "Bash" ]; then
+  exit 0
+fi
+
+# tool_input.command を取得
+COMMAND=$(echo "$INPUT" | jq -r '.tool_input.command // empty' 2>/dev/null)
+if [ -z "$COMMAND" ]; then
+  exit 0
+fi
+
+# git commit／git push の検出（パイプや &&、; のあとに続くケースも検出）
+SUBCOMMAND=""
+if echo "$COMMAND" | grep -qE '(^|[;&|][[:space:]]*)git[[:space:]]+commit'; then
+  SUBCOMMAND="commit"
+elif echo "$COMMAND" | grep -qE '(^|[;&|][[:space:]]*)git[[:space:]]+push'; then
+  SUBCOMMAND="push"
+fi
+
+# 対象外（読み取り専用 git や git 以外）は通過
+if [ -z "$SUBCOMMAND" ]; then
+  exit 0
+fi
+
+# ---- 自己診断（git commit／push のときだけ確認する）----
+case "${REVIEWCOMPASS_PYTHON}${REVIEWCOMPASS_DIR}" in
+  *'{{'*)
+    deny "hook 設定不備：プレースホルダが未置換です。初期設定の手順に従い REVIEWCOMPASS_PYTHON と REVIEWCOMPASS_DIR を絶対パスへ置換してください"
+    ;;
+esac
+if [ ! -f "$REVIEWCOMPASS_DIR/tools/check-workflow-action.py" ]; then
+  deny "hook 設定不備：$REVIEWCOMPASS_DIR/tools/check-workflow-action.py が見つかりません。REVIEWCOMPASS_DIR の置換値を確認してください"
+fi
+if [ ! -x "$REVIEWCOMPASS_PYTHON" ]; then
+  deny "hook 設定不備：Python 実行系 $REVIEWCOMPASS_PYTHON が見つかりません。REVIEWCOMPASS_PYTHON の置換値を確認してください"
+fi
+
+# 事前検査スクリプトを呼び出す（実行場所は対象アプリ root のまま）
+RESULT=$("$REVIEWCOMPASS_PYTHON" "$REVIEWCOMPASS_DIR/tools/check-workflow-action.py" "$SUBCOMMAND" \
+  --rationale "[stage-3 hook auto-invocation] $COMMAND" --json 2>&1)
+EXIT_CODE=$?
+
+# exit 2（DEVIATION）のみ deny。exit 0／1 は allow
+if [ "$EXIT_CODE" -eq 2 ]; then
+  REASONS=$(echo "$RESULT" | jq -r '.reasons | join("; ")' 2>/dev/null)
+  if [ -z "$REASONS" ] || [ "$REASONS" = "null" ]; then
+    REASONS="DEVIATION 検出（詳細は検査スクリプト出力参照）"
+  fi
+  jq -n --arg reason "段階 3 フック：DEVIATION 検出（$REASONS）" \
+    '{
+      hookSpecificOutput: {
+        hookEventName: "PreToolUse",
+        permissionDecision: "deny",
+        permissionDecisionReason: $reason
+      }
+    }'
+  exit 0
+fi
+
+exit 0

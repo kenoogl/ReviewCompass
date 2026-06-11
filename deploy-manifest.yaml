@@ -147,10 +147,20 @@ include:
 
   - path: templates/specs/spec.json.template
     reason: Target app spec.json template.
+  - path: templates/specs/feature-dependency.yaml.template
+    reason: Target app feature order and dependency definition template.
   - path: templates/review/manual_dogfooding_review_template.md
     reason: Manual review-run record template for initial tests.
   - path: templates/todo/TODO_NEXT_SESSION.template.md
     reason: Session handoff template for initial tests.
+  - path: templates/entry/AGENT_ENTRY.template.md
+    reason: Target app multi-LLM agent entry discipline template.
+  - path: templates/hooks/pre-bash-precheck.sh.template
+    reason: Target app commit/push precheck hook template (placeholder substitution at setup).
+  - path: templates/hooks/claude-settings.json.template
+    reason: Claude Code hook registration template for target apps.
+  - path: templates/hooks/codex-hooks.json.template
+    reason: Codex CLI hook registration template for target apps.
 exclude:
   - path: AGENTS.md
     reason: Local agent instructions, not a deployable runtime asset.

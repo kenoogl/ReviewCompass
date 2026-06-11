@@ -1,0 +1,17 @@
+{
+  "_comment": "対象アプリの .claude/settings.json に取り込む hook 登録の雛形。既存の settings.json がある場合は hooks キーだけを合流させる。",
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/pre-bash-precheck.sh",
+            "timeout": 30
+          }
+        ]
+      }
+    ]
+  }
+}

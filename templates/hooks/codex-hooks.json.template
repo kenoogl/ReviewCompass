@@ -1,0 +1,17 @@
+{
+  "_comment": "対象アプリの .codex/hooks.json の雛形。スクリプト本体は .claude/hooks/ と同一内容を .codex/hooks/ に複製する。",
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash '.codex/hooks/pre-bash-precheck.sh'",
+            "timeout": 30
+          }
+        ]
+      }
+    ]
+  }
+}

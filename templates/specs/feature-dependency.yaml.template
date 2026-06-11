@@ -1,0 +1,27 @@
+# feature-dependency.yaml.template
+# 対象アプリの feature 一覧・開発順・依存関係を定義する。
+# feature-partitioning の承認後（または初期設定時）に、
+# <対象アプリ>/.reviewcompass/feature-dependency.yaml として実体化する。
+#
+# 記入規則：
+# - feature_order には feature-partitioning 段で承認された分割結果を記録する。
+#   依存される機能を先に並べる。順序の根拠（依存の主張と理由、順序の導出）は
+#   partitioning 提案文書に必須節として記す。
+# - feature_order が depends_on と矛盾する場合（依存先が後ろに並ぶ、依存先が
+#   一覧にない、循環依存がある）、next 判定は理由つきの逸脱を返す。
+# - 本ファイルが無い、または feature_order が未定義の間、next は
+#   feature_definition_required を返し、intent／feature-partitioning の実施を案内する。
+#
+# 探索順：ツールは .reviewcompass/feature-dependency.yaml →
+# stages/feature-dependency.yaml → 直下 feature-dependency.yaml の順で探す。
+
+feature_order:
+  - "<最初に開発する機能名>"
+  - "<次に開発する機能名>"
+
+# 依存がある機能だけ記載する。値は hard（成果物を直接使う）または
+# review（整合確認が必要）。
+features:
+  "<依存を持つ機能名>":
+    depends_on:
+      "<依存先の機能名>": hard
