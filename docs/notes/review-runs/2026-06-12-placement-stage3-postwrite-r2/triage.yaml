@@ -1,0 +1,44 @@
+run_id: 2026-06-12-placement-stage3-postwrite-r2
+triage_status: decided
+generated_at: '2026-06-12T09:12:57.860015+00:00'
+decision_actor: null
+decision_actor_type: human
+items:
+- finding_id: 2026-06-12-placement-stage3-postwrite-r2-gemini-3.5-flash-primary-001
+  run_id: 2026-06-12-placement-stage3-postwrite-r2
+  source_model: gemini-3.5-flash
+  source_round: round-1
+  source_raw_path: raw/gemini-3.5-flash.round-1.txt
+  source_parsed_path: parsed/gemini-3.5-flash.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: §4. 書き込み後検証の対象定義の再定義（論点 12）
+  plain_language_summary: 最終形（P3）移行時における『書き込み後検証』判定ツールの実装変更要否の記述に曖昧さがあります。
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: llm
+  decision_actor_type: agent
+  decision_at: '2026-06-12T09:13:35.905819+00:00'
+  decision_reason: 記述の明確化として妥当（§4 の実装変更不要は当面形限定であることを明示、§2 ツリーの feature-dependency.yaml
+    に文脈注記を追加）。WARN／INFO で重要件に該当しないため操縦 LLM 判断で適用済み
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-12-placement-stage3-postwrite-r2-gemini-3.5-flash-primary-002
+  run_id: 2026-06-12-placement-stage3-postwrite-r2
+  source_model: gemini-3.5-flash
+  source_round: round-1
+  source_raw_path: raw/gemini-3.5-flash.round-1.txt
+  source_parsed_path: parsed/gemini-3.5-flash.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: §2. evidence／runtime 区画の内部構造
+  plain_language_summary: 構造ツリーに示されている `feature-dependency.yaml` の位置づけ（当面形と最終形の差異）が曖昧です。
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: llm
+  decision_actor_type: agent
+  decision_at: '2026-06-12T09:13:35.943726+00:00'
+  decision_reason: 記述の明確化として妥当（§4 の実装変更不要は当面形限定であることを明示、§2 ツリーの feature-dependency.yaml
+    に文脈注記を追加）。WARN／INFO で重要件に該当しないため操縦 LLM 判断で適用済み
+  applied_files: []
+  superseded_by: null

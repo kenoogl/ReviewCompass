@@ -1,0 +1,9 @@
+findings:
+  - severity: WARN
+    target_location: "§4. 書き込み後検証の対象定義の再定義（論点 12）"
+    description: "最終形（P3）移行時における『書き込み後検証』判定ツールの実装変更要否の記述に曖昧さがあります。"
+    rationale: "本文では「実装変更は不要（fail-closed 維持）」とされていますが、最終形（P3）において規律・運用文書が `.reviewcompass/` 配下に移行すると、それらを検証対象に含めるために判定ツールの実装変更（検証対象パスの追加など）が必要になるはずです。当面形（P1）において変更が不要であることと、最終形（P3）移行時に必要となる変更を区別して記述すべきです。"
+  - severity: INFO
+    target_location: "§2. evidence／runtime 区画の内部構造"
+    description: "構造ツリーに示されている `feature-dependency.yaml` の位置づけ（当面形と最終形の差異）が曖昧です。"
+    rationale: "§1.2によると、開発リポジトリの当面形では `feature-dependency.yaml` は `stages/` 配下に維持される計画ですが、§2のツリーでは `.reviewcompass/` 直下に配置されています。これが対象アプリのみのルールなのか、開発リポジトリの最終形でのみ適用されるのかを明確にするため、ツリー内の該当行に注記を追加するなどの配慮が望まれます。"

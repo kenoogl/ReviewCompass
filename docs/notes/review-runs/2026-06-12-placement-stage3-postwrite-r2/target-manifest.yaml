@@ -1,0 +1,4 @@
+run_id: 2026-06-12-placement-stage3-postwrite-r2
+target_files:
+- path: docs/notes/2026-06-12-document-placement-target-design.md
+  sha256: 8c85e2ec2230ec312581014309006c12509d189e78c85c1fe640d6922ae5a83c

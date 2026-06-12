@@ -1,0 +1,25 @@
+run_id: 2026-06-12-placement-stage3-postwrite
+triage_status: decided
+generated_at: '2026-06-12T09:11:38.374728+00:00'
+decision_actor: null
+decision_actor_type: human
+items:
+- finding_id: 2026-06-12-placement-stage3-postwrite-gemini-3.5-flash-primary-001
+  run_id: 2026-06-12-placement-stage3-postwrite
+  source_model: gemini-3.5-flash
+  source_round: round-1
+  source_raw_path: raw/gemini-3.5-flash.round-1.txt
+  source_parsed_path: parsed/gemini-3.5-flash.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: docs/notes/2026-06-12-document-placement-target-design.md#31-当面形p1で変更が必要な契約
+  plain_language_summary: 表「当面形（P1）で変更が必要な契約」の一部の変更内容において、ルートの `.reviewcompass/` プレフィックスが脱落しています。
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: llm
+  decision_actor_type: agent
+  decision_at: '2026-06-12T09:12:35.488472+00:00'
+  decision_reason: §3.1 の表のパス表記に .reviewcompass/ 接頭辞が欠けており実装時の誤解リスクがあるとの指摘は妥当。WARN
+    で重要件に該当しないため操縦 LLM 判断で 6 箇所に接頭辞を補い適用済み
+  applied_files: []
+  superseded_by: null

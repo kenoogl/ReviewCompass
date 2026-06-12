@@ -1,0 +1,5 @@
+findings:
+  - severity: WARN
+    target_location: "docs/notes/2026-06-12-document-placement-target-design.md#31-当面形p1で変更が必要な契約"
+    description: "表「当面形（P1）で変更が必要な契約」の一部の変更内容において、ルートの `.reviewcompass/` プレフィックスが脱落しています。"
+    rationale: "1.1や2などの他セクションでは `.reviewcompass/evidence/` や `.reviewcompass/runtime/` のように、プレフィックスを含めた正確な相対パスが提示されています。3.1において `evidence/` や `runtime/` と単体で記述されていると、リポジトリ直下に新たなディレクトリを作るような設計変更と誤解される、もしくは実装時のパス指定を誤る危険性があります。"
