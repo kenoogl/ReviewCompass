@@ -1,0 +1,4 @@
+run_id: 2026-06-12-placement-inventory-postwrite-r2
+target_files:
+- path: docs/notes/2026-06-12-document-placement-inventory.md
+  sha256: 6022f34225fe29f3e54f483612200fc1c18381295f96226af14a2ad2a39e9cee

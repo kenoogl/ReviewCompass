@@ -1,0 +1,48 @@
+status: completed
+target_files:
+- docs/notes/2026-06-12-document-placement-inventory.md
+- docs/notes/review-runs/2026-06-12-placement-inventory-postwrite/model-result-summary.yaml
+- docs/notes/review-runs/2026-06-12-placement-inventory-postwrite/parsed/gemini-3.5-flash.round-1.yaml
+- docs/notes/review-runs/2026-06-12-placement-inventory-postwrite/raw/gemini-3.5-flash.round-1.txt
+- docs/notes/review-runs/2026-06-12-placement-inventory-postwrite/review_summary.md
+- docs/notes/review-runs/2026-06-12-placement-inventory-postwrite/rounds.yaml
+- docs/notes/review-runs/2026-06-12-placement-inventory-postwrite/target-manifest.yaml
+- docs/notes/review-runs/2026-06-12-placement-inventory-postwrite/triage.yaml
+target_sha256:
+  docs/notes/2026-06-12-document-placement-inventory.md: 4df77bc480771c4127260fe93ba76319456c01a49a6ec091fdf6516c882b1b54
+  docs/notes/review-runs/2026-06-12-placement-inventory-postwrite/model-result-summary.yaml: 617f040698945df742a820a935d4559e2407ca40e644e04e38e74912f5dfa825
+  docs/notes/review-runs/2026-06-12-placement-inventory-postwrite/parsed/gemini-3.5-flash.round-1.yaml: fcc56fc99327a671784a318a51f760640bde23d9da8ada9e883eeb268b09c095
+  docs/notes/review-runs/2026-06-12-placement-inventory-postwrite/raw/gemini-3.5-flash.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+  docs/notes/review-runs/2026-06-12-placement-inventory-postwrite/review_summary.md: 36d8922c6d4bab000a546301fba399ee33fb7c7cd366641e2c616b1f679a6a4c
+  docs/notes/review-runs/2026-06-12-placement-inventory-postwrite/rounds.yaml: 5713082a9a7acc38c8e56f34c427d26973d5081653c349db1aecbe788da85024
+  docs/notes/review-runs/2026-06-12-placement-inventory-postwrite/target-manifest.yaml: 43b5e7103c631e06209dc34d9125ba961ff1f129cbc8f9bf3ae1cccf727f1659
+  docs/notes/review-runs/2026-06-12-placement-inventory-postwrite/triage.yaml: fcf400d5505683496028b36ee822069f37c01d6205c3d635789409014aec9659
+required_verifiers: &id001
+- gemini-3.5-flash
+completed_verifiers: *id001
+unresolved_substantive_findings: 0
+verifications:
+- verifier: gemini-3.5-flash
+  target_files:
+  - docs/notes/2026-06-12-document-placement-inventory.md
+  - docs/notes/review-runs/2026-06-12-placement-inventory-postwrite/model-result-summary.yaml
+  - docs/notes/review-runs/2026-06-12-placement-inventory-postwrite/parsed/gemini-3.5-flash.round-1.yaml
+  - docs/notes/review-runs/2026-06-12-placement-inventory-postwrite/raw/gemini-3.5-flash.round-1.txt
+  - docs/notes/review-runs/2026-06-12-placement-inventory-postwrite/review_summary.md
+  - docs/notes/review-runs/2026-06-12-placement-inventory-postwrite/rounds.yaml
+  - docs/notes/review-runs/2026-06-12-placement-inventory-postwrite/target-manifest.yaml
+  - docs/notes/review-runs/2026-06-12-placement-inventory-postwrite/triage.yaml
+  target_sha256:
+    docs/notes/2026-06-12-document-placement-inventory.md: 4df77bc480771c4127260fe93ba76319456c01a49a6ec091fdf6516c882b1b54
+    docs/notes/review-runs/2026-06-12-placement-inventory-postwrite/model-result-summary.yaml: 617f040698945df742a820a935d4559e2407ca40e644e04e38e74912f5dfa825
+    docs/notes/review-runs/2026-06-12-placement-inventory-postwrite/parsed/gemini-3.5-flash.round-1.yaml: fcc56fc99327a671784a318a51f760640bde23d9da8ada9e883eeb268b09c095
+    docs/notes/review-runs/2026-06-12-placement-inventory-postwrite/raw/gemini-3.5-flash.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/2026-06-12-placement-inventory-postwrite/review_summary.md: 36d8922c6d4bab000a546301fba399ee33fb7c7cd366641e2c616b1f679a6a4c
+    docs/notes/review-runs/2026-06-12-placement-inventory-postwrite/rounds.yaml: 5713082a9a7acc38c8e56f34c427d26973d5081653c349db1aecbe788da85024
+    docs/notes/review-runs/2026-06-12-placement-inventory-postwrite/target-manifest.yaml: 43b5e7103c631e06209dc34d9125ba961ff1f129cbc8f9bf3ae1cccf727f1659
+    docs/notes/review-runs/2026-06-12-placement-inventory-postwrite/triage.yaml: fcf400d5505683496028b36ee822069f37c01d6205c3d635789409014aec9659
+review_run:
+  path: docs/notes/review-runs/2026-06-12-placement-inventory-postwrite
+  summary_path: docs/notes/review-runs/2026-06-12-placement-inventory-postwrite/model-result-summary.yaml
+notes: Generated template; verify target_files cover current post-write targets before
+  use.
