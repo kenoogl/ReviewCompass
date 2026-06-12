@@ -1,0 +1,43 @@
+run_id: 2026-06-12-design-parse-error-reopen-triad-review-run
+triage_status: decided
+generated_at: '2026-06-12T03:59:22.989887+00:00'
+decision_actor: null
+decision_actor_type: human
+items:
+- finding_id: 2026-06-12-design-parse-error-reopen-triad-review-run-claude-sonnet-4-6-primary-001
+  run_id: 2026-06-12-design-parse-error-reopen-triad-review-run
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: §2.2 パース不能の遮断
+  plain_language_summary: 空ファイルの遮断理由メッセージが二重括弧で条件分岐を示しているが、実装者への伝達として曖昧さが残る
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-12T04:00:28.893598+00:00'
+  decision_reason: INFO。理由メッセージの正確な文言は implementation 段の TDD テストで固定される。設計層は意図の伝達で足りる。利用者発言『承認』2026-06-12
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-12-design-parse-error-reopen-triad-review-run-claude-sonnet-4-6-primary-002
+  run_id: 2026-06-12-design-parse-error-reopen-triad-review-run
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: §2.2 パース不能の遮断 / §2.3 整合検査の挙動分け更新
+  plain_language_summary: unknown kind を整合検査と共有する設計判断の根拠が design 内に明示されていない
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-12T04:00:28.940140+00:00'
+  decision_reason: INFO。kind 語彙の最小化（新種別は運用文書・判定点マップの拡張を伴う）と既存 unknown の意味への合致が根拠で、requirements
+    受入 9 の「既存の判定種別」記載から読み取れる。利用者発言『承認』2026-06-12
+  applied_files: []
+  superseded_by: null

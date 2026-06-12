@@ -1,0 +1,4 @@
+run_id: 2026-06-12-implementation-parse-error-reopen-triad-review-run
+target_files:
+- path: .reviewcompass/specs/_cross_feature/reviews/2026-06-12-implementation-parse-error-reopen-triad-review-run/target.md
+  sha256: ffe3cbbfeae9719833cc05271f71f6564f4c5e30d2de72798127aa18e8da014b

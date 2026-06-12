@@ -1,0 +1,20 @@
+role: adversarial
+provider: openai-api
+model: gpt-5.5
+attempts: 1
+duration_seconds: 72.378
+findings:
+- severity: ERROR
+  target_location: §2.1 load_feature_dependency の変更
+  description: unreadable 判定の例外範囲が OSError／YAMLError に限定されており、テキストデコード失敗が fail-closed
+    化されない可能性があります。
+  rationale: 破損した feature-dependency.yaml が不正な文字エンコーディングを含む場合、実装がファイル内容をテキストとして読んでから
+    yaml.safe_load していると UnicodeDecodeError は OSError でも YAMLError でもないため捕捉されません。その場合、承認済み仕様が求める
+    DEVIATION・exit 2・理由提示の遮断経路ではなく未処理例外になり得ます。UnicodeError/UnicodeDecodeError も unreadable
+    として扱う、または YAML パーサに bytes を渡して YAMLError として捕捉されることを明示・テストする必要があります。
+- severity: WARN
+  target_location: §3 テスト（tests/tools/test_check_workflow_action.py）
+  description: unreadable 系のテストが壊れた YAML のみで、OSError 系の読み取り失敗を直接検証していません。
+  rationale: 実装仕様では OSError／YAMLError を unreadable に分類するとされていますが、記載された TDD テストは YAMLError
+    相当の構文破損だけを確認しています。権限エラー、ディレクトリ誤配置、I/O エラーなどの OSError が DEVIATION・exit 2・理由提示になることを
+    mock 等で検証しないと、例外処理範囲の回帰を検出しにくくなります。

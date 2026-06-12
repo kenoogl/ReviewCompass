@@ -1,0 +1,4 @@
+run_id: 2026-06-12-tasks-parse-error-reopen-triad-review-run
+target_files:
+- path: .reviewcompass/specs/_cross_feature/reviews/2026-06-12-tasks-parse-error-reopen-triad-review-run/target.md
+  sha256: ccea0a48ce0b805d7910a1cd18fe7b3aa1efff2e9bc098a0835af8196018beee

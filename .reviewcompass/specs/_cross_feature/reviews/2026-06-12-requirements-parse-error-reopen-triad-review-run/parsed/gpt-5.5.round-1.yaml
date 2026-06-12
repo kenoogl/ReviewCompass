@@ -1,0 +1,11 @@
+role: adversarial
+provider: openai-api
+model: gpt-5.5
+attempts: 1
+duration_seconds: 25.969
+findings:
+- severity: WARN
+  target_location: 2.2 受入 9 / 3. 根拠と証跡
+  description: 受入 9 の遮断対象が、探索順で最初に発見された feature-dependency.yaml に限定されるのか、探索先のいずれかに存在する破損ファイルすべてを指すのかが本文だけではやや曖昧です。
+  rationale: 受入 6 との整合先として「探索順・最初の 1 ファイル」は挙げられていますが、受入 9 の規定文自体は単に「ファイルは存在するが」と書かれているため、上位探索先に破損ファイル、下位探索先に正常ファイルがある場合などの期待挙動が実装者・テスト作成者間でぶれる可能性があります。
+    fail-closed の仕様としては、探索順で選択された最初のファイルがパース不能なら遮断する、など明示すると検証可能性が高まります。

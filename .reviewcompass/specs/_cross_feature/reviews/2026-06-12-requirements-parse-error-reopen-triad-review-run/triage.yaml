@@ -1,0 +1,118 @@
+run_id: 2026-06-12-requirements-parse-error-reopen-triad-review-run
+triage_status: decided
+generated_at: '2026-06-12T03:50:56.315960+00:00'
+decision_actor: null
+decision_actor_type: human
+items:
+- finding_id: 2026-06-12-requirements-parse-error-reopen-triad-review-run-claude-sonnet-4-6-primary-001
+  run_id: 2026-06-12-requirements-parse-error-reopen-triad-review-run
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: 2.2 受入 9 — 「最上位が連想配列でない」の扱い
+  plain_language_summary: 受入 9 の遮断条件として「パース不能」と「最上位が連想配列でない」の 2 ケースを列挙しているが、後者（型違反）が受入
+    7 の「整合違反」と重複する可能性がある。整合違反とは別に型違反を受入 9 に含める根拠と、適用優先順が明示されていない。
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-12T03:53:46.773733+00:00'
+  decision_reason: 受入 9 に「ファイルそのものの構造異常であり受入 7（値の整合検査）とは別、判定は受入 9 が先」を明記。利用者発言『承諾』2026-06-12
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-12-requirements-parse-error-reopen-triad-review-run-claude-sonnet-4-6-primary-002
+  run_id: 2026-06-12-requirements-parse-error-reopen-triad-review-run
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: '2.2 受入 9 — next_action.kind: unknown'
+  plain_language_summary: 遮断時の kind 値として `unknown` を指定しているが、この値がスキーマ上の正式な列挙値として定義済みかどうかが
+    target.md 内で確認できない。受入 7 の出力規定に使われる kind 値との対応も示されていない。
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-12T03:53:46.826926+00:00'
+  decision_reason: 受入 9 に「unknown は既存の判定種別で受入 7 と同じ kind、判定点マップ登録済み」を付記。利用者発言『承諾』2026-06-12
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-12-requirements-parse-error-reopen-triad-review-run-claude-sonnet-4-6-primary-003
+  run_id: 2026-06-12-requirements-parse-error-reopen-triad-review-run
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: 2.2 受入 9 — reasons 配列の必須項目
+  plain_language_summary: '`reasons` 配列に「破損ファイルのパスと内容確認を促す理由を列挙する」と規定されているが、最低限含めるべき要素（例：ファイルパス・エラー種別・推奨アクション）の構造が定義されていない。'
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-12T03:53:46.978719+00:00'
+  decision_reason: INFO。reasons の最低要素（破損パス・確認促し）は design §7 の正本に記載済み。要件層での構造定義は過剰。利用者発言『承諾』2026-06-12
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-12-requirements-parse-error-reopen-triad-review-run-claude-sonnet-4-6-primary-004
+  run_id: 2026-06-12-requirements-parse-error-reopen-triad-review-run
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: 1. レビューの位置付け — 仕様と実装の一時的不一致
+  plain_language_summary: 「現時点で実装は旧挙動のまま（意図的）」との記述は明確だが、この不一致が解消される条件（implementation
+    フェーズ完了・TDD の全テスト通過）が本文書に書かれていない。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-12T03:53:47.029178+00:00'
+  decision_reason: INFO。仕様と実装の一時不一致の解消条件は reopen 進行記録と tasks T-004 テスト要件に記載済み。利用者発言『承諾』2026-06-12
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-12-requirements-parse-error-reopen-triad-review-run-gpt-5.5-adversarial-001
+  run_id: 2026-06-12-requirements-parse-error-reopen-triad-review-run
+  source_model: gpt-5.5
+  source_round: round-1
+  source_raw_path: raw/gpt-5.5.round-1.txt
+  source_parsed_path: parsed/gpt-5.5.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: 2.2 受入 9 / 3. 根拠と証跡
+  plain_language_summary: 受入 9 の遮断対象が、探索順で最初に発見された feature-dependency.yaml に限定されるのか、探索先のいずれかに存在する破損ファイルすべてを指すのかが本文だけではやや曖昧です。
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-12T03:53:46.877270+00:00'
+  decision_reason: 受入 9 に「遮断対象は受入 6 の探索で選ばれた（最初に存在した）1 ファイル」を明記。利用者発言『承諾』2026-06-12
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-12-requirements-parse-error-reopen-triad-review-run-gemini-3.1-pro-preview-judgment-001
+  run_id: 2026-06-12-requirements-parse-error-reopen-triad-review-run
+  source_model: gemini-3.1-pro-preview
+  source_round: round-1
+  source_raw_path: raw/gemini-3.1-pro-preview.round-1.txt
+  source_parsed_path: parsed/gemini-3.1-pro-preview.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: 2.2 受入 9 の新設（パース不能の遮断）
+  plain_language_summary: 空ファイル（0バイト）がパース不能・フォーマット違反として遮断対象（DEVIATION）となる挙動の意図確認
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-12T03:53:46.928999+00:00'
+  decision_reason: 空ファイル（0 バイト・内容なし）も遮断に含めると明記し、理由文で feature_order の記録を促す。規則の一貫性と
+    fail-closed を優先。利用者発言『承諾』2026-06-12
+  applied_files: []
+  superseded_by: null

@@ -1,0 +1,21 @@
+approved_by: user
+review_run_id: 2026-06-12-requirements-parse-error-reopen-triad-review-run
+summary_presented_to_user: true
+triage_presented_to_user: true
+approval_quote: 利用者発言『承諾』（2026-06-12。should-fix 4 件を受入 9 の文言精密化で対処——空ファイルは遮断に含める、leave-as-is 2 件のトリアージ案提示後）
+approved_finding_ids:
+- 2026-06-12-requirements-parse-error-reopen-triad-review-run-claude-sonnet-4-6-primary-001
+- 2026-06-12-requirements-parse-error-reopen-triad-review-run-claude-sonnet-4-6-primary-002
+- 2026-06-12-requirements-parse-error-reopen-triad-review-run-claude-sonnet-4-6-primary-003
+- 2026-06-12-requirements-parse-error-reopen-triad-review-run-claude-sonnet-4-6-primary-004
+- 2026-06-12-requirements-parse-error-reopen-triad-review-run-gpt-5.5-adversarial-001
+- 2026-06-12-requirements-parse-error-reopen-triad-review-run-gemini-3.1-pro-preview-judgment-001
+approved_final_labels:
+  2026-06-12-requirements-parse-error-reopen-triad-review-run-claude-sonnet-4-6-primary-001: should-fix
+  2026-06-12-requirements-parse-error-reopen-triad-review-run-claude-sonnet-4-6-primary-002: should-fix
+  2026-06-12-requirements-parse-error-reopen-triad-review-run-claude-sonnet-4-6-primary-003: leave-as-is
+  2026-06-12-requirements-parse-error-reopen-triad-review-run-claude-sonnet-4-6-primary-004: leave-as-is
+  2026-06-12-requirements-parse-error-reopen-triad-review-run-gpt-5.5-adversarial-001: should-fix
+  2026-06-12-requirements-parse-error-reopen-triad-review-run-gemini-3.1-pro-preview-judgment-001: should-fix
+approved_action: review_run_triage
+notes: 空ファイル（0 バイト）は遮断に含める（理由文で feature_order の記録を促す）。判定順は受入 9（読み込み時）が受入 7（読み込み後の整合検査）より先。

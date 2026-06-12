@@ -1,0 +1,4 @@
+run_id: 2026-06-12-requirements-parse-error-reopen-triad-review-run
+target_files:
+- path: .reviewcompass/specs/_cross_feature/reviews/2026-06-12-requirements-parse-error-reopen-triad-review-run/target.md
+  sha256: 6c5fef255611e7624ba481a158515e28ef9419296a3afe8448cb24bf136f944e

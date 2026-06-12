@@ -106,16 +106,26 @@ FEATURE_DEPENDENCY_SEARCH_PATHS = (
 
 
 def load_feature_dependency(cwd):
-  """feature-dependency.yaml を探索順に従って読む。(data, relative_path) を返す"""
+  """feature-dependency.yaml を探索順に従って読む。(data, relative_path, load_error) を返す
+
+  load_error は破損・構造異常の種別（unreadable／empty／not_mapping、正常時は None）。
+  破損を立ち上げ案内で覆い隠さないため、未定義（キー欠落）と区別する（Req 8 受入 9、MLE-DEC-005）。
+  """
   for relative_path in FEATURE_DEPENDENCY_SEARCH_PATHS:
     path = Path(cwd) / relative_path
     if path.is_file():
       try:
         data = yaml.safe_load(path.read_text(encoding="utf-8"))
-      except (OSError, yaml.YAMLError):
-        data = None
-      return (data if isinstance(data, dict) else {}), relative_path
-  return None, None
+      except (OSError, yaml.YAMLError, UnicodeDecodeError):
+        # UnicodeDecodeError は OSError ではないため明示的に捕捉する
+        # （非 UTF-8 ファイルもクラッシュではなく遮断へ倒す。triad-review gpt-001 対処）
+        return None, relative_path, "unreadable"
+      if data is None:
+        return None, relative_path, "empty"
+      if not isinstance(data, dict):
+        return None, relative_path, "not_mapping"
+      return data, relative_path, None
+  return None, None, None
 
 
 def _feature_dependency_map(features):
@@ -180,7 +190,32 @@ def resolve_feature_order(cwd):
   戻り値 dict：feature_order（解決失敗時 None）、source_path、
   guidance_reason（立ち上げ案内が必要な場合）、consistency_reasons（整合違反）
   """
-  data, source_path = load_feature_dependency(cwd)
+  data, source_path, load_error = load_feature_dependency(cwd)
+  if load_error:
+    # 破損・構造異常は未定義と区別して遮断する（Req 8 受入 9、MLE-DEC-005）
+    if load_error == "empty":
+      reason = (
+        f"{source_path} が空です。feature-partitioning の承認結果"
+        "（依存の根拠と順序の導出を含む）を feature_order キーに記録してください"
+      )
+    elif load_error == "not_mapping":
+      reason = (
+        f"{source_path} の最上位が連想配列ではありません。"
+        "ファイルの内容を確認してください"
+      )
+    else:
+      reason = (
+        f"{source_path} を YAML として読めません（破損の可能性）。"
+        "ファイルの内容を確認してください"
+      )
+    return {
+      "feature_order": None,
+      "source_path": source_path,
+      "guidance_reason": None,
+      "consistency_reasons": [reason],
+      "load_error": load_error,
+    }
+
   if data is None:
     return {
       "feature_order": None,
@@ -237,12 +272,16 @@ def feature_definition_next_state(feature_resolution):
     return next_action, current_state, [], "OK", 0
 
   if feature_resolution["consistency_reasons"]:
+    if feature_resolution.get("load_error"):
+      reason = "feature-dependency.yaml が読めません（破損または内容不正の可能性）"
+    else:
+      reason = "feature_order と depends_on の整合に問題があります"
     next_action = {
       "kind": "unknown",
       "feature": None,
       "phase": None,
       "stage": None,
-      "reason": "feature_order と depends_on の整合に問題があります",
+      "reason": reason,
     }
     current_state = {
       "feature_dependency_source": feature_resolution["source_path"],

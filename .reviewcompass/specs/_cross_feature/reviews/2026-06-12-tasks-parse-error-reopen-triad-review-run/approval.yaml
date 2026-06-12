@@ -1,0 +1,23 @@
+approved_by: user
+review_run_id: 2026-06-12-tasks-parse-error-reopen-triad-review-run
+summary_presented_to_user: true
+triage_presented_to_user: true
+approval_quote: 利用者発言『承認』（2026-06-12。3 モデル同根の WARN 4 件＝テスト要件の検証粒度を 1 文の精密化で一括対処、INFO 3 件 leave-as-is の案提示後）
+approved_finding_ids:
+- 2026-06-12-tasks-parse-error-reopen-triad-review-run-claude-sonnet-4-6-primary-001
+- 2026-06-12-tasks-parse-error-reopen-triad-review-run-claude-sonnet-4-6-primary-002
+- 2026-06-12-tasks-parse-error-reopen-triad-review-run-claude-sonnet-4-6-primary-003
+- 2026-06-12-tasks-parse-error-reopen-triad-review-run-claude-sonnet-4-6-primary-004
+- 2026-06-12-tasks-parse-error-reopen-triad-review-run-gpt-5.5-adversarial-001
+- 2026-06-12-tasks-parse-error-reopen-triad-review-run-gpt-5.5-adversarial-002
+- 2026-06-12-tasks-parse-error-reopen-triad-review-run-gemini-3.1-pro-preview-judgment-001
+approved_final_labels:
+  2026-06-12-tasks-parse-error-reopen-triad-review-run-claude-sonnet-4-6-primary-001: leave-as-is
+  2026-06-12-tasks-parse-error-reopen-triad-review-run-claude-sonnet-4-6-primary-002: leave-as-is
+  2026-06-12-tasks-parse-error-reopen-triad-review-run-claude-sonnet-4-6-primary-003: should-fix
+  2026-06-12-tasks-parse-error-reopen-triad-review-run-claude-sonnet-4-6-primary-004: leave-as-is
+  2026-06-12-tasks-parse-error-reopen-triad-review-run-gpt-5.5-adversarial-001: should-fix
+  2026-06-12-tasks-parse-error-reopen-triad-review-run-gpt-5.5-adversarial-002: should-fix
+  2026-06-12-tasks-parse-error-reopen-triad-review-run-gemini-3.1-pro-preview-judgment-001: should-fix
+approved_action: review_run_triage
+notes: 3 モデル同根（テスト要件の検証粒度）のため重要件として承認記録を作成。

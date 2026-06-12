@@ -5480,6 +5480,64 @@ class FeatureOrderGeneralizationTests(unittest.TestCase):
     self.assertIn("定義されていません", reason)
     self.assertNotIn("見つかりません", reason)
 
+  def test_unreadable_file_is_deviation(self):
+    """ファイルはあるが YAML として読めない場合は案内ではなく遮断する（Req 8 受入 9、MLE-DEC-005）"""
+    cwd = Path(self.tmpdir)
+    broken = cwd / "stages" / "feature-dependency.yaml"
+    broken.parent.mkdir(parents=True, exist_ok=True)
+    broken.write_text("feature_order: [unclosed\n", encoding="utf-8")
+    result, data = self._next_json()
+    self.assertEqual(data["verdict"], "DEVIATION")
+    self.assertEqual(result.returncode, 2)
+    self.assertEqual(data["next_action"]["kind"], "unknown")
+    reasons = " ".join(data["reasons"])
+    self.assertIn("stages/feature-dependency.yaml", reasons)
+    self.assertIn("内容を確認", reasons)
+
+  def test_empty_file_is_deviation_with_record_prompting_reason(self):
+    """空ファイルは遮断し、理由で feature_order の記録を促す（Req 8 受入 9、MLE-DEC-005）"""
+    cwd = Path(self.tmpdir)
+    empty = cwd / "stages" / "feature-dependency.yaml"
+    empty.parent.mkdir(parents=True, exist_ok=True)
+    empty.write_text("", encoding="utf-8")
+    result, data = self._next_json()
+    self.assertEqual(data["verdict"], "DEVIATION")
+    self.assertEqual(result.returncode, 2)
+    self.assertEqual(data["next_action"]["kind"], "unknown")
+    reasons = " ".join(data["reasons"])
+    self.assertIn("stages/feature-dependency.yaml", reasons)
+    self.assertIn("空", reasons)
+    self.assertIn("feature_order", reasons)
+    self.assertIn("記録", reasons)
+
+  def test_undecodable_file_is_deviation(self):
+    """UTF-8 として読めないファイルも遮断する（Req 8 受入 9、MLE-DEC-005。デコード失敗の fail-closed）"""
+    cwd = Path(self.tmpdir)
+    binary = cwd / "stages" / "feature-dependency.yaml"
+    binary.parent.mkdir(parents=True, exist_ok=True)
+    binary.write_bytes(b"\xff\xfe\x00broken\x80binary")
+    result, data = self._next_json()
+    self.assertEqual(data["verdict"], "DEVIATION")
+    self.assertEqual(result.returncode, 2)
+    self.assertEqual(data["next_action"]["kind"], "unknown")
+    reasons = " ".join(data["reasons"])
+    self.assertIn("stages/feature-dependency.yaml", reasons)
+    self.assertIn("内容を確認", reasons)
+
+  def test_non_mapping_top_level_is_deviation(self):
+    """最上位が連想配列でないファイルは遮断する（Req 8 受入 9、MLE-DEC-005）"""
+    cwd = Path(self.tmpdir)
+    bad = cwd / "stages" / "feature-dependency.yaml"
+    bad.parent.mkdir(parents=True, exist_ok=True)
+    bad.write_text("- foundation\n- runtime\n", encoding="utf-8")
+    result, data = self._next_json()
+    self.assertEqual(data["verdict"], "DEVIATION")
+    self.assertEqual(result.returncode, 2)
+    self.assertEqual(data["next_action"]["kind"], "unknown")
+    reasons = " ".join(data["reasons"])
+    self.assertIn("stages/feature-dependency.yaml", reasons)
+    self.assertIn("内容を確認", reasons)
+
   def test_order_contradicting_dependency_is_deviation(self):
     """依存される機能が後ろに並ぶ feature_order は逸脱として理由つきで指摘する"""
     cwd = Path(self.tmpdir)

@@ -1,0 +1,10 @@
+role: judgment
+provider: gemini-api
+model: gemini-3.1-pro-preview
+attempts: 1
+duration_seconds: 31.348
+findings:
+- severity: WARN
+  target_location: 2.1 契約文言（責務記述）の更新 および 2.2 テスト要件の更新
+  description: 最上位が連想配列でない場合（非連想配列）に遮断する際の `reasons` に含めるべき具体的内容が明記されていません。
+  rationale: 本ドキュメントは次フェーズ（TDDでの実装）の作業指示となります。パース不能や空の場合の理由文は指定されていますが、非連想配列の場合の期待値が欠落していると、開発者がテストのアサーション内容を推測しなければならず、実装のブレや手戻りの原因となります。

@@ -1,0 +1,157 @@
+run_id: 2026-06-12-implementation-parse-error-reopen-triad-review-run
+triage_status: decided
+generated_at: '2026-06-12T04:17:25.875571+00:00'
+decision_actor: null
+decision_actor_type: human
+items:
+- finding_id: 2026-06-12-implementation-parse-error-reopen-triad-review-run-claude-sonnet-4-6-primary-001
+  run_id: 2026-06-12-implementation-parse-error-reopen-triad-review-run
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: section 2.1 load_feature_dependency
+  plain_language_summary: load_error の分類順序（unreadable → empty → not_mapping）が明示されており、判定順の一意性は確保されているように見えるが、None
+    チェックと型チェックの評価順が実装コードに依存するため、target.md だけでは確認できない。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-12T04:22:22.290053+00:00'
+  decision_reason: INFO。分類順序は実装で一意（例外捕捉→None→型）。利用者発言『承認』2026-06-12
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-12-implementation-parse-error-reopen-triad-review-run-claude-sonnet-4-6-primary-002
+  run_id: 2026-06-12-implementation-parse-error-reopen-triad-review-run
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: section 2.1 load_feature_dependency — 探索ロジック
+  plain_language_summary: 「探索で最初に存在した 1 ファイルについて」と記載されており、複数候補ファイルが存在する場合は最初の 1 件のみを対象とする仕様が明確。ただし「存在した」の判定（os.path.exists
+    等）と open/parse の間に TOCTOU が生じる可能性がある。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-12T04:22:22.347321+00:00'
+  decision_reason: INFO。存在確認と読み取りの間の競合は理論的で、発生時も例外捕捉により遮断へ倒れる。利用者発言『承認』2026-06-12
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-12-implementation-parse-error-reopen-triad-review-run-claude-sonnet-4-6-primary-003
+  run_id: 2026-06-12-implementation-parse-error-reopen-triad-review-run
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: section 2.2 resolve_feature_order — empty の reason 文言
+  plain_language_summary: empty の場合の reason 文言に「feature-partitioning の承認結果（依存の根拠と順序の導出を含む）を
+    feature_order キーに記録してください」という操作案内が含まれており、他の遮断理由（unreadable・not_mapping）と比べて案内密度が高い。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-12T04:22:22.234528+00:00'
+  decision_reason: 空ファイルの理由文の案内密度は受入 9 の明示要求（記録を促す理由）どおり。利用者発言『承認』2026-06-12
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-12-implementation-parse-error-reopen-triad-review-run-claude-sonnet-4-6-primary-004
+  run_id: 2026-06-12-implementation-parse-error-reopen-triad-review-run
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: section 3 — test_empty_file_is_deviation_with_record_guidance_reason
+  plain_language_summary: テスト名に 'guidance_reason' が含まれているが、このテストは DEVIATION（exit 2）を検証する遮断系テストである。テスト名と検証内容の意味論的ずれが将来のメンテナンス時に混乱を招く可能性がある。
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-12T04:22:22.179813+00:00'
+  decision_reason: テスト名の guidance_reason を record_prompting_reason へ改名（遮断系テストである意味論に合わせる）。利用者発言『承認』2026-06-12
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-12-implementation-parse-error-reopen-triad-review-run-claude-sonnet-4-6-primary-005
+  run_id: 2026-06-12-implementation-parse-error-reopen-triad-review-run
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: section 2.3 feature_definition_next_state
+  plain_language_summary: reason 文言「feature-dependency.yaml が読めません（破損または内容不正の可能性）」は
+    unreadable・empty・not_mapping の全ケースに共通で使用されており、遮断理由の詳細（どのエラー種別か）は reasons 列挙で補完される設計になっている。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-12T04:22:22.403242+00:00'
+  decision_reason: INFO。reason と reasons の役割分担の設計確認（肯定的）。利用者発言『承認』2026-06-12
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-12-implementation-parse-error-reopen-triad-review-run-claude-sonnet-4-6-primary-006
+  run_id: 2026-06-12-implementation-parse-error-reopen-triad-review-run
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: section 3 — 既存テスト維持
+  plain_language_summary: 不在・未定義の立ち上げ案内テスト（test_missing_file_returns_bootstrap_guidance・test_missing_key_returns_bootstrap_guidance_with_distinct_reason）が無変更で通過していることが明記されており、OK
+    パスの非破壊は担保されている。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-12T04:22:22.459723+00:00'
+  decision_reason: INFO。案内維持の担保確認（肯定的）。利用者発言『承認』2026-06-12
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-12-implementation-parse-error-reopen-triad-review-run-gpt-5.5-adversarial-001
+  run_id: 2026-06-12-implementation-parse-error-reopen-triad-review-run
+  source_model: gpt-5.5
+  source_round: round-1
+  source_raw_path: raw/gpt-5.5.round-1.txt
+  source_parsed_path: parsed/gpt-5.5.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: §2.1 load_feature_dependency の変更
+  plain_language_summary: unreadable 判定の例外範囲が OSError／YAMLError に限定されており、テキストデコード失敗が
+    fail-closed 化されない可能性があります。
+  final_label: must-fix
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-12T04:22:22.068264+00:00'
+  decision_reason: 実装欠陥。UTF-8 として読めないファイルで UnicodeDecodeError が未捕捉となりクラッシュする（fail-closed
+    にならない）。捕捉対象へ追加し TDD で修正。利用者発言『承認』2026-06-12
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-12-implementation-parse-error-reopen-triad-review-run-gpt-5.5-adversarial-002
+  run_id: 2026-06-12-implementation-parse-error-reopen-triad-review-run
+  source_model: gpt-5.5
+  source_round: round-1
+  source_raw_path: raw/gpt-5.5.round-1.txt
+  source_parsed_path: parsed/gpt-5.5.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: §3 テスト（tests/tools/test_check_workflow_action.py）
+  plain_language_summary: unreadable 系のテストが壊れた YAML のみで、OSError 系の読み取り失敗を直接検証していません。
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-12T04:22:22.125388+00:00'
+  decision_reason: 非 UTF-8 ファイルの遮断テストを失敗確認つきで追加。利用者発言『承認』2026-06-12
+  applied_files: []
+  superseded_by: null

@@ -1,0 +1,30 @@
+findings:
+  - severity: INFO
+    target_location: "section 2.1 load_feature_dependency"
+    description: "load_error の分類順序（unreadable → empty → not_mapping）が明示されており、判定順の一意性は確保されているように見えるが、None チェックと型チェックの評価順が実装コードに依存するため、target.md だけでは確認できない。"
+    rationale: "受入条件 9 に「判定順」が明示されている。target.md はその順序を記述しているが、実際のコードで OSError/YAMLError キャッチ → None チェック → isinstance チェックの順が保証されているかはコード本体を参照しないと検証不能。設計書としての記述は十分だが、implementation review としては実装コードの提示が望ましい。"
+
+  - severity: INFO
+    target_location: "section 2.1 load_feature_dependency — 探索ロジック"
+    description: "「探索で最初に存在した 1 ファイルについて」と記載されており、複数候補ファイルが存在する場合は最初の 1 件のみを対象とする仕様が明確。ただし「存在した」の判定（os.path.exists 等）と open/parse の間に TOCTOU が生じる可能性がある。"
+    rationale: "CI 環境では通常問題にならないが、ファイルシステムの競合状態で open 時に OSError が発生した場合は unreadable に分類されるため実害はない。ただし、仕様書への明示はない。"
+
+  - severity: WARN
+    target_location: "section 2.2 resolve_feature_order — empty の reason 文言"
+    description: "empty の場合の reason 文言に「feature-partitioning の承認結果（依存の根拠と順序の導出を含む）を feature_order キーに記録してください」という操作案内が含まれており、他の遮断理由（unreadable・not_mapping）と比べて案内密度が高い。"
+    rationale: "受入条件 9 の「理由の最低要素」として empty に追加案内を含めることは設計 §7 に記載があれば適切だが、target.md 内で設計への参照が明示されていない。不在・未定義の立ち上げ案内（OK）と混同されるリスクがある。テスト test_empty_file_is_deviation_with_record_guidance_reason の命名に『guidance_reason』が含まれており、遮断系（DEVIATION）でありながらテスト名が案内系のニュアンスを持つ点は可読性の観点で注意を要する。"
+
+  - severity: WARN
+    target_location: "section 3 — test_empty_file_is_deviation_with_record_guidance_reason"
+    description: "テスト名に 'guidance_reason' が含まれているが、このテストは DEVIATION（exit 2）を検証する遮断系テストである。テスト名と検証内容の意味論的ずれが将来のメンテナンス時に混乱を招く可能性がある。"
+    rationale: "T-004 テスト要件の記述としては kind・verdict・exit code・理由文の内容検証が網羅されているが、命名規則の一貫性が欠けると regression 追加時に分類を誤るリスクがある。"
+
+  - severity: INFO
+    target_location: "section 2.3 feature_definition_next_state"
+    description: "reason 文言「feature-dependency.yaml が読めません（破損または内容不正の可能性）」は unreadable・empty・not_mapping の全ケースに共通で使用されており、遮断理由の詳細（どのエラー種別か）は reasons 列挙で補完される設計になっている。"
+    rationale: "受入条件 9 の「理由の最低要素」への適合は reasons 列挙に依存しているが、target.md では reasons の具体的な要素が section 2.2 の consistency_reasons と対応していることが読み取れる。整合は取れているが、feature_definition_next_state と resolve_feature_order の reasons が同一内容であることの明示があると検証精度が上がる。"
+
+  - severity: INFO
+    target_location: "section 3 — 既存テスト維持"
+    description: "不在・未定義の立ち上げ案内テスト（test_missing_file_returns_bootstrap_guidance・test_missing_key_returns_bootstrap_guidance_with_distinct_reason）が無変更で通過していることが明記されており、OK パスの非破壊は担保されている。"
+    rationale: "レビュー観点 2（案内維持の担保）に対する回答として十分。全テスト 876 件通過の記録も回帰なしの証跡として適切。"

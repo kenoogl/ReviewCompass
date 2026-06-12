@@ -1,0 +1,135 @@
+run_id: 2026-06-12-tasks-parse-error-reopen-triad-review-run
+triage_status: decided
+generated_at: '2026-06-12T04:07:03.981878+00:00'
+decision_actor: null
+decision_actor_type: human
+items:
+- finding_id: 2026-06-12-tasks-parse-error-reopen-triad-review-run-claude-sonnet-4-6-primary-001
+  run_id: 2026-06-12-tasks-parse-error-reopen-triad-review-run
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: セクション 2.1 契約文言
+  plain_language_summary: 契約文言は承認済み requirements 受入 8・9 および design §7 と意味的に整合している。fail-closed
+    の既定、パース不能・空・非連想配列の遮断（DEVIATION・exit 2）、不在・未定義の案内（OK・exit 0）の分離が明確に記述されている。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-12T04:08:32.281853+00:00'
+  decision_reason: INFO。仕様一致・TDD 指示の十分性・境界内であることの肯定的確認。利用者発言『承認』2026-06-12
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-12-tasks-parse-error-reopen-triad-review-run-claude-sonnet-4-6-primary-002
+  run_id: 2026-06-12-tasks-parse-error-reopen-triad-review-run
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: セクション 2.2 テスト要件
+  plain_language_summary: 遮断 3 ケース（パース不能・空・非連想配列）と案内維持 2 ケース（不在・未定義）が明示されており、理由文の内容確認（破損ファイルパス・記録促し）も含まれている。TDD
+    の失敗テスト→実装→全テスト通過の作業指示として必要な情報が揃っている。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-12T04:08:32.333339+00:00'
+  decision_reason: INFO。仕様一致・TDD 指示の十分性・境界内であることの肯定的確認。利用者発言『承認』2026-06-12
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-12-tasks-parse-error-reopen-triad-review-run-claude-sonnet-4-6-primary-003
+  run_id: 2026-06-12-tasks-parse-error-reopen-triad-review-run
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: セクション 2.2 テスト要件
+  plain_language_summary: 「feature-dependency.yaml パース不能・空・非連想配列の遮断」テストにおいて、遮断時の reasons
+    に含める具体的な文言（例：ファイルパスの形式、「記録を促す理由」の最低限の内容要件）が定性的な記述に留まっており、TDD 実装者が判断を要する余地がある。
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-12T04:08:32.072162+00:00'
+  decision_reason: 同根クラスタ（テスト要件の検証粒度）。理由文の最低要件を含めてテスト要件を精密化。利用者発言『承認』2026-06-12
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-12-tasks-parse-error-reopen-triad-review-run-claude-sonnet-4-6-primary-004
+  run_id: 2026-06-12-tasks-parse-error-reopen-triad-review-run
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: セクション 1・セクション 3
+  plain_language_summary: 本変更が既存 T-004 の契約文言とテスト要件の更新のみであり、タスク分解の再構成（境界外の行為）には該当しないことが明示されている。実装は旧挙動のままとする意図も記録されている。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-12T04:08:32.384604+00:00'
+  decision_reason: INFO。仕様一致・TDD 指示の十分性・境界内であることの肯定的確認。利用者発言『承認』2026-06-12
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-12-tasks-parse-error-reopen-triad-review-run-gpt-5.5-adversarial-001
+  run_id: 2026-06-12-tasks-parse-error-reopen-triad-review-run
+  source_model: gpt-5.5
+  source_round: round-1
+  source_raw_path: raw/gpt-5.5.round-1.txt
+  source_parsed_path: parsed/gpt-5.5.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: §2.2 テスト要件の更新
+  plain_language_summary: 遮断ケース／案内維持ケースのテスト要件に next_action.kind と exit status の明示的な検証が含まれていない
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-12T04:08:32.126548+00:00'
+  decision_reason: 同根クラスタ。kind・verdict・exit code の明示検証をテスト要件に追加。利用者発言『承認』2026-06-12
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-12-tasks-parse-error-reopen-triad-review-run-gpt-5.5-adversarial-002
+  run_id: 2026-06-12-tasks-parse-error-reopen-triad-review-run
+  source_model: gpt-5.5
+  source_round: round-1
+  source_raw_path: raw/gpt-5.5.round-1.txt
+  source_parsed_path: parsed/gpt-5.5.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: §2.2 テスト要件の更新
+  plain_language_summary: 理由文の確認内容が契約文言よりやや弱く、パース不能時の「内容確認を促す理由」まで検証対象として明示されていない
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-12T04:08:32.179383+00:00'
+  decision_reason: 同根クラスタ。パース不能時の内容確認促し文言を検証対象に明記。利用者発言『承認』2026-06-12
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-12-tasks-parse-error-reopen-triad-review-run-gemini-3.1-pro-preview-judgment-001
+  run_id: 2026-06-12-tasks-parse-error-reopen-triad-review-run
+  source_model: gemini-3.1-pro-preview
+  source_round: round-1
+  source_raw_path: raw/gemini-3.1-pro-preview.round-1.txt
+  source_parsed_path: parsed/gemini-3.1-pro-preview.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: 2.1 契約文言（責務記述）の更新 および 2.2 テスト要件の更新
+  plain_language_summary: 最上位が連想配列でない場合（非連想配列）に遮断する際の `reasons` に含めるべき具体的内容が明記されていません。
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-12T04:08:32.230740+00:00'
+  decision_reason: 同根クラスタ。非連想配列時の理由文（内容確認促し）を検証対象に明記。利用者発言『承認』2026-06-12
+  applied_files: []
+  superseded_by: null

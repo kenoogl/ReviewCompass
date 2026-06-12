@@ -1,0 +1,9 @@
+findings:
+  - severity: INFO
+    target_location: "§2.2 パース不能の遮断"
+    description: "空ファイルの遮断理由メッセージが二重括弧で条件分岐を示しているが、実装者への伝達として曖昧さが残る"
+    rationale: "「空の場合は feature_order の記録を促す理由」という括弧書きが、遮断（DEVIATION）とすることと、立ち上げ案内（OK）との境界を実装者が混同するリスクがある。空ファイルは明確に DEVIATION であることは本文に記載されているが、reasons の文言指針として空ファイル専用の記述が括弧内に留まっており、設計書としての明確性がやや低い。"
+  - severity: INFO
+    target_location: "§2.2 パース不能の遮断 / §2.3 整合検査の挙動分け更新"
+    description: "unknown kind を整合検査と共有する設計判断の根拠が design 内に明示されていない"
+    rationale: "§2.2 では既存の判定種別として unknown を使用することが記載され、§2.3 でパース不能と整合違反がともに DEVIATION となることが示されているが、両者が同一 kind を返す設計上の理由（例：呼び出し元の処理統一、将来の分離可能性など）が design 文書内で言及されていない。実装者が kind の共有を意図的選択として理解できるよう、一文の補足があると implementation 段の誤解を防げる。"

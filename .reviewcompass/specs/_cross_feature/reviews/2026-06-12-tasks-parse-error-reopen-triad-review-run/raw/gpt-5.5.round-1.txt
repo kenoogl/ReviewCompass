@@ -1,0 +1,9 @@
+findings:
+  - severity: WARN
+    target_location: "§2.2 テスト要件の更新"
+    description: "遮断ケース／案内維持ケースのテスト要件に next_action.kind と exit status の明示的な検証が含まれていない"
+    rationale: "§2.1 の契約では、パース不能・空・非連想配列は next_action.kind: unknown かつ DEVIATION exit 2、不在・未定義は next_action.kind: feature_definition_required かつ OK exit 0 と定義している。テスト要件が DEVIATION や案内維持の確認に留まると、fail-closed と立ち上げ案内の分岐を TDD で十分に固定できない。"
+  - severity: WARN
+    target_location: "§2.2 テスト要件の更新"
+    description: "理由文の確認内容が契約文言よりやや弱く、パース不能時の「内容確認を促す理由」まで検証対象として明示されていない"
+    rationale: "§2.1 はパース不能について破損ファイルのパスに加えて内容確認を促す理由を含めるとしているが、§2.2 は理由に破損ファイルパスを含めることと、空の場合の記録促しのみを明示している。承認済み仕様の利用者誘導を実装テストで固定するには、理由文の期待要素を契約どおり明示した方がよい。"
