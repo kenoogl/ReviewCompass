@@ -1,0 +1,32 @@
+approved_action: review_run_triage
+approved_by: proxy_model
+proxy_model_id: gemini-3.1-pro-preview
+review_run_id: 2026-06-12-wm-implementation-placement-p1-reopen-triad-review-run
+round_id: round-3
+summary_presented_to_user: true
+triage_presented_to_user: true
+autonomous_execution_authorization:
+  approved_by: user
+  approval_record_path: conversation:2026-06-12:user-proxy-autonomous-execution
+  quote: proxy_modelで自律実行
+  scope: round-3 の所見判断と round-4 要否判定を proxy_model に委任して自律実行する。不可逆操作は人間の明示承認を要する。
+approved_finding_ids:
+- 2026-06-12-wm-implementation-placement-p1-reopen-triad-review-run-claude-sonnet-4-6-primary-001
+- 2026-06-12-wm-implementation-placement-p1-reopen-triad-review-run-claude-sonnet-4-6-primary-002
+- 2026-06-12-wm-implementation-placement-p1-reopen-triad-review-run-claude-sonnet-4-6-primary-003
+- 2026-06-12-wm-implementation-placement-p1-reopen-triad-review-run-gpt-5.5-adversarial-001
+approved_final_labels:
+  2026-06-12-wm-implementation-placement-p1-reopen-triad-review-run-gpt-5.5-adversarial-001: must-fix
+  2026-06-12-wm-implementation-placement-p1-reopen-triad-review-run-claude-sonnet-4-6-primary-001: must-fix
+  2026-06-12-wm-implementation-placement-p1-reopen-triad-review-run-claude-sonnet-4-6-primary-002: leave-as-is
+  2026-06-12-wm-implementation-placement-p1-reopen-triad-review-run-claude-sonnet-4-6-primary-003: leave-as-is
+proxy_decisions:
+  2026-06-12-wm-implementation-placement-p1-reopen-triad-review-run-gpt-5.5-adversarial-001: proxy-decisions/round-3/2026-06-12-wm-implementation-placement-p1-reopen-triad-review-run-gpt-5.5-adversarial-001.decision.yaml
+  2026-06-12-wm-implementation-placement-p1-reopen-triad-review-run-claude-sonnet-4-6-primary-001: proxy-decisions/round-3/2026-06-12-wm-implementation-placement-p1-reopen-triad-review-run-claude-sonnet-4-6-primary-001.decision.yaml
+  2026-06-12-wm-implementation-placement-p1-reopen-triad-review-run-claude-sonnet-4-6-primary-002: proxy-decisions/round-3/2026-06-12-wm-implementation-placement-p1-reopen-triad-review-run-claude-sonnet-4-6-primary-002.decision.yaml
+  2026-06-12-wm-implementation-placement-p1-reopen-triad-review-run-claude-sonnet-4-6-primary-003: proxy-decisions/round-3/2026-06-12-wm-implementation-placement-p1-reopen-triad-review-run-claude-sonnet-4-6-primary-003.decision.yaml
+round_4_decision:
+  selected_option: R4-A
+  rationale: N1の修正は実挙動の変更とテスト追加を伴う重要な must-fix 案件である。適用後に再度 round-4 を実行して、リグレッションの有無と収束を安全に確認する必要があるため。
+notes: N1（ERROR＋同根 INFO）＝must-fix 案 A（resolver 双方向対応＋境界テスト）。N3・N4＝leave-as-is。round-4
+  は R4-A（実行する）。

@@ -1,0 +1,4 @@
+run_id: 2026-06-12-wm-design-placement-p1-reopen-triad-review-run
+target_files:
+- path: .reviewcompass/evidence/review-runs/2026-06-12-wm-design-placement-p1-reopen-triad-review-run/target.md
+  sha256: 8d45bd982e26bb69263afc4a6ee2cfe236c47daac1a7316430bfd639dedcb3be

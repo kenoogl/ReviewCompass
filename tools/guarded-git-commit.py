@@ -9,15 +9,25 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 
-DEFAULT_COMMIT_APPROVAL_PATH = ".reviewcompass/approvals/commit-approval.json"
+# 実行時生成物の runtime 区画集約（2026-06-12 配置規約 P1）。旧配置は凍結・読み取り互換のみ P3 まで。
+# 定数と読み取り解決の正本は check_workflow_action/runtime_paths.py
+from check_workflow_action.runtime_paths import (
+  DEFAULT_COMMIT_APPROVAL_PATH,
+  resolve_commit_approval_path,
+)
+
 DEFAULT_LAST_COMMIT_PRECHECK_PATH = ".git/reviewcompass/last-commit-precheck.json"
 
 
 def consume_commit_approval(cwd):
-  """commit 成功後に承認レコードを消費済みにする"""
-  approval_path = Path(cwd) / DEFAULT_COMMIT_APPROVAL_PATH
+  """commit 成功後に承認レコードを消費済みにする
+
+  読み取りは新→旧の順のフォールバック。書き込みは常に新配置へ行い、
+  凍結済み旧記録は変更しない（wm design §実行時生成物の凍結期（P3 まで）の扱い）。
+  """
+  read_path = Path(cwd) / resolve_commit_approval_path(cwd)
   try:
-    approval = json.loads(approval_path.read_text(encoding="utf-8"))
+    approval = json.loads(read_path.read_text(encoding="utf-8"))
   except (OSError, json.JSONDecodeError) as e:
     print(f"warning: 承認レコードの消費済み記録に失敗しました: {e}", file=sys.stderr)
     return
@@ -31,8 +41,10 @@ def consume_commit_approval(cwd):
 
   approval["consumed"] = True
   approval["consumed_at"] = datetime.now(timezone.utc).isoformat()
+  write_path = Path(cwd) / DEFAULT_COMMIT_APPROVAL_PATH
   try:
-    approval_path.write_text(
+    write_path.parent.mkdir(parents=True, exist_ok=True)
+    write_path.write_text(
       json.dumps(approval, ensure_ascii=False, indent=2) + "\n",
       encoding="utf-8",
     )

@@ -1,0 +1,4 @@
+run_id: 2026-06-12-wm-tasks-placement-p1-reopen-triad-review-run
+target_files:
+- path: .reviewcompass/evidence/review-runs/2026-06-12-wm-tasks-placement-p1-reopen-triad-review-run/target.md
+  sha256: 690a57a5b82d2ba4fa1de77f588372bbc77764724bbf0154fd5322fdeee8cfa0

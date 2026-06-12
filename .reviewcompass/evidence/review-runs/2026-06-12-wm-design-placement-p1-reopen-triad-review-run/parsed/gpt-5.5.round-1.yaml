@@ -1,0 +1,28 @@
+role: adversarial
+provider: openai-api
+model: gpt-5.5
+attempts: 1
+duration_seconds: 50.751
+findings:
+- severity: ERROR
+  target_location: '.reviewcompass/specs/workflow-management/design.md: paragraph
+    beginning `docs/operations/WORKFLOW_DISCIPLINE_MAP.yaml`'
+  description: effective prompt の runtime 移動について、旧 `.reviewcompass/effective-prompts/`
+    の読み取り互換を P3 まで維持する契約が design 本文に明記されていない
+  rationale: レビュー対象の前提では 3 パスすべてで旧パス読み取り互換を P3 まで維持するとしているが、effective prompt の変更箇所だけ互換期間が欠落している。implementation
+    段で既存の `rounds.yaml` や証跡が参照する旧 `effective_prompt_path` を読めなくする実装になり得るため、P1 の runtime
+    path contract として不完全。
+- severity: ERROR
+  target_location: '.reviewcompass/specs/workflow-management/design.md: runtime path
+    changes for workflow-precheck.log, effective-prompts, commit-approval.json'
+  description: 旧置き場の既存生成物を凍結する契約が design 差分内に明記されていない
+  rationale: レビュー対象の説明では「既存分は旧置き場で凍結」としているが、design の変更行には凍結の効力発生時点や、旧パス上の既存ファイルを移動・上書き・追記しないことが記録されていない。正本
+    design にない場合、implementation や運用で旧ログ・旧承認記録・旧 effective prompt を変更対象にしてしまい、過去証跡の不変性を損なう。
+- severity: WARN
+  target_location: '.reviewcompass/specs/workflow-management/design.md: effective
+    prompt and commit approval provenance annotations'
+  description: 配置規約の由来注記が path 種別間で不一致で、effective prompt と commit approval では PLC-DEC-005
+    が参照されていない
+  rationale: レビュー対象の趣旨は PLC-DEC-004〜005・009〜011 の反映だが、workflow-precheck.log だけ PLC-DEC-004〜005・009〜011
+    を参照し、effective prompt と commit approval は PLC-DEC-004・009〜011 に留まっている。PLC-DEC-005
+    が非適用である理由がない限り、後続レビューや実装でどの決定に基づく runtime 配置変更か追跡しにくくなる。

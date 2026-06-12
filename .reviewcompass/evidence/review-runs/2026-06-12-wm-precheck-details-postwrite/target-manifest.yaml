@@ -1,0 +1,4 @@
+run_id: 2026-06-12-wm-precheck-details-postwrite
+target_files:
+- path: docs/operations/WORKFLOW_PRECHECK_DETAILS.md
+  sha256: f4bed56db1a8c24163081aec20a2d924973d3d2300bc86582a8aeea51d9a5569

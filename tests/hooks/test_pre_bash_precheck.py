@@ -106,6 +106,12 @@ def _setup_git_repo_with_script(tmpdir):
   # check-workflow-action.py が同階層から import する lint 部品も併せてコピーする
   shutil.copy(REPO_ROOT / "tools" / "deployment_independence_lint.py", tools_dir)
   shutil.copy(REPO_ROOT / "tools" / "document_link_lint.py", tools_dir)
+  # 実行時生成物パスの定数・読み取り解決（check_workflow_action パッケージ）も併せてコピーする
+  package_dir = tools_dir / "check_workflow_action"
+  package_dir.mkdir()
+  shutil.copy(
+    REPO_ROOT / "tools" / "check_workflow_action" / "runtime_paths.py", package_dir
+  )
   subprocess.run(
     [
       "git",
@@ -113,6 +119,7 @@ def _setup_git_repo_with_script(tmpdir):
       "tools/check-workflow-action.py",
       "tools/deployment_independence_lint.py",
       "tools/document_link_lint.py",
+      "tools/check_workflow_action/runtime_paths.py",
     ],
     cwd=str(tmpdir), check=True, capture_output=True,
   )

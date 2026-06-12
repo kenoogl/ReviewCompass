@@ -1,0 +1,19 @@
+approved_by: proxy_model
+finding_id: 2026-06-12-wm-tasks-placement-p1-reopen-triad-review-run-gpt-5.5-adversarial-001
+cluster_id: Y1
+round_id: round-2
+proxy_model_id: gemini-3.1-pro-preview
+decision_prompt_path: proxy-decision-prompts/WM-TASKS-P1-placement-round-2.prompt.md
+selected_option: A
+final_label: should-fix
+rationale: 観点(2)や(3)で実質的に担保されている内容ではあるが、境界条件（効力発生時点での旧書き込み不在、暗黙のフォールバック無効化の禁止）を1文追記することで、テスト実装時の検証意図の解釈ずれを確実かつ低コストに防げるため。
+implementation_policy: テスト要件の凍結期挙動テストへ境界条件の明示を 1 文追記（観点(2)が効力発生時点の検証を兼ねる・観点(3)の互換が暗黙無効化されないことの検証）。
+raw_response_path: proxy-decisions/round-2/WM-TASKS-P1-placement-round-2.raw.txt
+candidate_options:
+- A
+- B
+source_raw_paths:
+- raw/gpt-5.5.round-2.txt
+- raw/claude-sonnet-4-6.round-2.txt
+rejected_options:
+  B: 実質担保されているとはいえ、明示しないことで実装者が境界条件のテストを漏らすリスクを残してしまうため。

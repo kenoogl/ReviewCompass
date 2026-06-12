@@ -1,0 +1,30 @@
+approved_action: review_run_triage
+approved_by: proxy_model
+proxy_model_id: gemini-3.1-pro-preview
+review_run_id: 2026-06-12-wm-tasks-placement-p1-reopen-triad-review-run
+round_id: round-3
+summary_presented_to_user: true
+triage_presented_to_user: true
+autonomous_execution_authorization:
+  approved_by: user
+  approval_record_path: conversation:2026-06-12:user-proxy-autonomous-execution
+  quote: proxy_modelで自律実行
+  scope: wm tasks triad-review round-3 の所見判断を proxy_model に委任して自律実行する。不可逆操作は人間の明示承認を要する。
+approved_finding_ids:
+- 2026-06-12-wm-tasks-placement-p1-reopen-triad-review-run-gemini-3.1-pro-preview-judgment-001
+- 2026-06-12-wm-tasks-placement-p1-reopen-triad-review-run-gemini-3.1-pro-preview-judgment-002
+- 2026-06-12-wm-tasks-placement-p1-reopen-triad-review-run-gpt-5.5-adversarial-001
+- 2026-06-12-wm-tasks-placement-p1-reopen-triad-review-run-gpt-5.5-adversarial-002
+approved_final_labels:
+  2026-06-12-wm-tasks-placement-p1-reopen-triad-review-run-gpt-5.5-adversarial-001: must-fix
+  2026-06-12-wm-tasks-placement-p1-reopen-triad-review-run-gemini-3.1-pro-preview-judgment-001: must-fix
+  2026-06-12-wm-tasks-placement-p1-reopen-triad-review-run-gpt-5.5-adversarial-002: should-fix
+  2026-06-12-wm-tasks-placement-p1-reopen-triad-review-run-gemini-3.1-pro-preview-judgment-002: should-fix
+proxy_decisions:
+  2026-06-12-wm-tasks-placement-p1-reopen-triad-review-run-gpt-5.5-adversarial-001: proxy-decisions/round-3/2026-06-12-wm-tasks-placement-p1-reopen-triad-review-run-gpt-5.5-adversarial-001.decision.yaml
+  2026-06-12-wm-tasks-placement-p1-reopen-triad-review-run-gemini-3.1-pro-preview-judgment-001: proxy-decisions/round-3/2026-06-12-wm-tasks-placement-p1-reopen-triad-review-run-gemini-3.1-pro-preview-judgment-001.decision.yaml
+  2026-06-12-wm-tasks-placement-p1-reopen-triad-review-run-gpt-5.5-adversarial-002: proxy-decisions/round-3/2026-06-12-wm-tasks-placement-p1-reopen-triad-review-run-gpt-5.5-adversarial-002.decision.yaml
+  2026-06-12-wm-tasks-placement-p1-reopen-triad-review-run-gemini-3.1-pro-preview-judgment-002: proxy-decisions/round-3/2026-06-12-wm-tasks-placement-p1-reopen-triad-review-run-gemini-3.1-pro-preview-judgment-002.decision.yaml
+notes: round-3：主役所見ゼロ。敵対役・判定役の同根 2 クラスタ。T1（ERROR×2）＝must-fix 案 A（観点 4＝新旧競合時の新配置優先テスト）。T2（WARN×2）＝should-fix
+  案 A（観点 5＝凍結済み旧成果物の不変性検証）。なお round-3 の判定役応答は中断により欠落していたため、run_role.py で判定役のみ正規再実行して完成させた（主役・敵対役の
+  round-3 raw は中断前の正規応答を保持）。

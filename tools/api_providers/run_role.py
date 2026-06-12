@@ -403,12 +403,19 @@ def _parse_argv(argv: Optional[List[str]]) -> argparse.Namespace:
 
 
 def _resolve_effective_prompt_sha256(path_value: Optional[str], sha_value: Optional[str]) -> Optional[str]:
-  """effective prompt sha256 を明示値またはファイル内容から返す。"""
+  """effective prompt sha256 を明示値またはファイル内容から返す。
+
+  凍結期（P3 まで）は読み取りを新→旧の順でフォールバックする
+  （正本は check_workflow_action/runtime_paths.py）。
+  """
   if sha_value:
     return sha_value
   if not path_value:
     return None
-  path = Path(path_value)
+  from tools.check_workflow_action.runtime_paths import resolve_effective_prompt_read_path
+
+  resolved = resolve_effective_prompt_read_path(Path.cwd(), path_value)
+  path = Path(resolved)
   if not path.is_file():
     return None
   return _sha256_file(path)

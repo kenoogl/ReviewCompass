@@ -1,0 +1,20 @@
+approved_by: proxy_model
+finding_id: 2026-06-12-wm-implementation-placement-p1-reopen-triad-review-run-claude-sonnet-4-6-primary-003
+cluster_id: K5
+round_id: round-1
+proxy_model_id: gemini-3.1-pro-preview
+decision_prompt_path: proxy-decision-prompts/WM-IMPL-P1-placement-round-1.prompt.md
+selected_option: A
+final_label: should-fix
+rationale: 変更と削除が同一ラベルで報告されると、設計仕様における違反種別の意味論と乖離してしまうため。専用の種別を導入し、テストの期待値も明確に分離する。
+implementation_policy: deleted_after_freeze の専用種別を導入し、削除テストを専用種別の期待値へ更新。
+raw_response_path: proxy-decisions/WM-IMPL-P1-placement-round-1.raw.txt
+candidate_options:
+- A
+- B
+source_raw_paths:
+- raw/claude-sonnet-4-6.round-1.txt
+- raw/gpt-5.5.round-1.txt
+- raw/gemini-3.1-pro-preview.round-1.txt
+rejected_options:
+  B: 削除の意図が曖昧なままになり、将来の保守において誤認を誘発するリスクがあるため棄却。

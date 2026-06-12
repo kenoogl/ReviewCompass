@@ -1,0 +1,20 @@
+approved_by: proxy_model
+finding_id: 2026-06-12-wm-implementation-placement-p1-reopen-triad-review-run-claude-sonnet-4-6-primary-002
+cluster_id: N3
+round_id: round-3
+proxy_model_id: gemini-3.1-pro-preview
+decision_prompt_path: proxy-decision-prompts/WM-IMPL-P1-placement-round-3.prompt.md
+selected_option: A
+final_label: leave-as-is
+rationale: フックテストにおけるファイル複製は実際のimport依存のみを対象とする方針であり、現状で依存関係のない placement_freeze.py
+  を含めなくても実害はないため。
+implementation_policy: 変更なし（フック複製は実 import 依存の最小コピー方針）。
+raw_response_path: proxy-decisions/round-3/WM-IMPL-P1-placement-round-3.raw.txt
+candidate_options:
+- A
+- B
+source_raw_paths:
+- raw/claude-sonnet-4-6.round-3.txt
+- raw/gpt-5.5.round-3.txt
+rejected_options:
+  B: 現状では使用されないファイルまでコピーの対象に含めるのは、最小限の依存解決という方針にそぐわないため。

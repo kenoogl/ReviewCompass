@@ -1,0 +1,20 @@
+approved_by: proxy_model
+finding_id: 2026-06-12-wm-tasks-placement-p1-reopen-triad-review-run-gpt-5.5-adversarial-002
+cluster_id: T2
+round_id: round-3
+proxy_model_id: gemini-3.1-pro-preview
+decision_prompt_path: proxy-decision-prompts/WM-TASKS-P1-placement-round-3.prompt.md
+selected_option: A
+final_label: should-fix
+rationale: designの不変性契約を文書上の約束に留めず、先行のce事例と対称になるようgit追跡履歴による機械検証要件を明示して監査証跡を保全すべきだから。
+implementation_policy: T-004 の凍結期挙動テストへ観点 5「凍結済み旧成果物の不変性（git 追跡履歴による変更・削除検出、ce と同一判定規則）」を追加し、完了条件
+  5 を追従する。
+raw_response_path: proxy-decisions/round-3/WM-TASKS-P1-placement-round-3.raw.txt
+candidate_options:
+- A
+- B
+source_raw_paths:
+- raw/gpt-5.5.round-3.txt
+- raw/gemini-3.1-pro-preview.round-3.txt
+rejected_options:
+  B: 既存旧成果物の変更や削除を許す実装の欠陥をテストで検出できず、旧パス読み取り互換や保全要件が損なわれるリスクが残るため。

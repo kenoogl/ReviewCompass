@@ -1,0 +1,20 @@
+approved_by: proxy_model
+finding_id: 2026-06-12-wm-implementation-placement-p1-reopen-triad-review-run-gemini-3.1-pro-preview-judgment-001
+cluster_id: K3
+round_id: round-1
+proxy_model_id: gemini-3.1-pro-preview
+decision_prompt_path: proxy-decision-prompts/WM-IMPL-P1-placement-round-1.prompt.md
+selected_option: A
+final_label: must-fix
+rationale: exclude-standardオプションが欠如していると、無視対象の既存ファイルが誤検知され異常終了を引き起こすため。先行ceとの前提差異を文書化しつつ、正しい検出動作に修正する。
+implementation_policy: 検出器の未追跡列挙に --exclude-standard を付与し、ce との規則差を docstring に明記。
+raw_response_path: proxy-decisions/WM-IMPL-P1-placement-round-1.raw.txt
+candidate_options:
+- A
+- B
+source_raw_paths:
+- raw/claude-sonnet-4-6.round-1.txt
+- raw/gpt-5.5.round-1.txt
+- raw/gemini-3.1-pro-preview.round-1.txt
+rejected_options:
+  B: 誤検知により正常な処理実行が阻害される致命的な不具合を放置することになるため棄却。

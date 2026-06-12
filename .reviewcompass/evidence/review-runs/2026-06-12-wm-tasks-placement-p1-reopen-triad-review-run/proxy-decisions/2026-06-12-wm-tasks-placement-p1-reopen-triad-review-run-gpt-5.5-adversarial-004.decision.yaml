@@ -1,0 +1,23 @@
+approved_by: proxy_model
+finding_id: 2026-06-12-wm-tasks-placement-p1-reopen-triad-review-run-gpt-5.5-adversarial-004
+cluster_id: X1
+round_id: round-1
+proxy_model_id: gemini-3.1-pro-preview
+decision_prompt_path: proxy-decision-prompts/WM-TASKS-P1-placement-round-1.prompt.md
+selected_option: A
+final_label: must-fix
+rationale: レビュー観点で求められた例外系・境界条件のうち、旧パスのみに記録が存在する場合の読み取りテストが3パス共通になっていない点を指摘しており妥当。案A（計9観点のテスト要求明示）で解消する。
+implementation_policy: T-004 の責務とテスト要件へ凍結期契約を一括追記（3 パスの常時新配置・旧配置への新規書き込み禁止・効力発生時点・暗黙終了なし・新→旧読み取り互換・凍結期挙動テスト
+  9 観点）。
+raw_response_path: proxy-decisions/WM-TASKS-P1-placement-round-1.raw.txt
+candidate_options:
+- A
+- B
+- C
+source_raw_paths:
+- raw/claude-sonnet-4-6.round-1.txt
+- raw/gpt-5.5.round-1.txt
+- raw/gemini-3.1-pro-preview.round-1.txt
+rejected_options:
+  B: テスト要件の拡充に加えて、責務側にも3パス共通の契約であることを明記する先行事例の形式に揃えるべきであるため。
+  C: 一部のパスでフォールバック挙動の検証が漏れ、読み取り互換性が損なわれるため。

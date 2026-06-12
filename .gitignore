@@ -5,6 +5,10 @@ __pycache__/
 .pytest_cache/
 *.egg-info/
 
+# 実行時生成物の runtime 区画（検査ログ・effective prompt・commit 承認レコード。
+# 2026-06-12 配置規約 PLC-DEC-004：原則 git 無視。旧配置の個別エントリは凍結期（P3 まで）保持）
+.reviewcompass/runtime/
+
 # 補助層 C 段階 2 スクリプトの判定ログ（実行ごとに増えるため、リポジトリでは管理しない）
 # 仕様：docs/operations/WORKFLOW_PRECHECK.md §8
 docs/logs/workflow-precheck.log

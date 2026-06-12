@@ -1,0 +1,18 @@
+approved_by: proxy_model
+finding_id: 2026-06-12-wm-design-placement-p1-reopen-triad-review-run-claude-sonnet-4-6-primary-003
+cluster_id: V3
+round_id: round-2
+proxy_model_id: gemini-3.1-pro-preview
+decision_prompt_path: proxy-decision-prompts/WM-DESIGN-P1-placement-round-2.prompt.md
+selected_option: A
+final_label: leave-as-is
+rationale: effective promptの注記にある互換文言はround-1の採用案に基づいた意図的な補記であり、共通契約節が正本として機能しているため実害はなく、修正は不要であるため。
+implementation_policy: 変更なし（意図的な粒度差、共通契約節が正本）。
+raw_response_path: proxy-decisions/round-2/WM-DESIGN-P1-placement-round-2.raw.txt
+candidate_options:
+- A
+- B
+source_raw_paths:
+- raw/claude-sonnet-4-6.round-2.txt
+rejected_options:
+  B: 意図的に設けられた粒度差であり、すべての文言を完全に揃える必然性は薄いため棄却。

@@ -1,0 +1,4 @@
+run_id: 2026-06-12-wm-implementation-placement-p1-reopen-triad-review-run
+target_files:
+- path: .reviewcompass/evidence/review-runs/2026-06-12-wm-implementation-placement-p1-reopen-triad-review-run/target.md
+  sha256: 3414f72343623f9683a2eefbb4c2d32cacdb8d2a5a9cdc3eb3f46dcc8989d796

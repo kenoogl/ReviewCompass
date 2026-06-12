@@ -1,0 +1,28 @@
+role: adversarial
+provider: openai-api
+model: gpt-5.5
+attempts: 1
+duration_seconds: 37.57
+findings:
+- severity: ERROR
+  target_location: .reviewcompass/specs/workflow-management/tasks.md T-004 テスト要件 5
+  description: テスト要件が runtime/logs のログ追記に偏っており、effective prompt と commit 承認記録の新配置書き込みを機械検証する要求がない
+  rationale: design 確定契約は `.reviewcompass/runtime/logs/`、`.reviewcompass/runtime/effective-prompts/`、`.reviewcompass/runtime/approvals/commit-approval.json`
+    の 3 パスすべてを P1 で新配置へ書き込む契約としている。現行のテスト要件 5 はログだけを明示しているため、implementation で effective
+    prompt や commit 承認記録が旧パスへ書かれ続けても tasks 上の受入で検出できない。
+- severity: ERROR
+  target_location: .reviewcompass/specs/workflow-management/tasks.md T-004 責務およびテスト要件
+    5
+  description: 旧配置への新規書き込み禁止と既存旧配置の凍結保全を検証するタスク／テスト要件が不足している
+  rationale: design の凍結期共通契約は、P1 実装反映コミット以後は常時新配置へ書き、既存旧配置は凍結し、旧配置への新規書き込みを許さないことを含む。tasks
+    では『既存配置は凍結保全』『旧パス読み取り互換』への言及はあるが、旧パスに新規作成・追記・更新しないこと、旧ファイルの内容・mtime 等を保全すること、違反時の扱いを機械検証する要求が明示されていない。
+- severity: ERROR
+  target_location: .reviewcompass/specs/workflow-management/tasks.md T-004 責務
+  description: 旧パス読み取り互換の探索順が design 契約の『新→旧』として明記されていない
+  rationale: 凍結期の読み取り互換は 3 パスとも P3 まで維持するだけでなく、新配置を優先し、存在しない場合に旧配置へフォールバックする『新→旧』順が契約である。tasks
+    では『旧パス読み取り互換は P3 まで維持』との記載に留まり、旧パスが新パスを上書き・優先してしまう実装を排除できない。
+- severity: WARN
+  target_location: .reviewcompass/specs/workflow-management/tasks.md T-004 テスト要件 5
+  description: 旧パスにしか記録がない場合の読み取り互換テストがログに限定され、3 パス共通の境界条件として定義されていない
+  rationale: レビュー観点では『旧パスにしか記録がない場合の読み取り』が例外系・境界条件として求められている。現行のテスト要件はログの旧パス読み取り互換のみを示しており、effective
+    prompt と commit 承認記録について同じフォールバック挙動を保証できない。

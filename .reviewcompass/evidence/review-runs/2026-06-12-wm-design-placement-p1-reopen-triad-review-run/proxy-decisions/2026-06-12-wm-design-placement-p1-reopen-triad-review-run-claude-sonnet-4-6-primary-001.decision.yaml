@@ -1,0 +1,23 @@
+approved_by: proxy_model
+finding_id: 2026-06-12-wm-design-placement-p1-reopen-triad-review-run-claude-sonnet-4-6-primary-001
+cluster_id: W1
+round_id: round-1
+proxy_model_id: gemini-3.1-pro-preview
+decision_prompt_path: proxy-decision-prompts/WM-DESIGN-P1-placement-round-1.prompt.md
+selected_option: A
+final_label: must-fix
+rationale: 他パスと扱いが揃っていない点を修正し、P3到達時の廃止判断における揺れを防止する観点から共通契約による解決が必須なため。
+implementation_policy: design に凍結期の共通契約（凍結・効力発生時点・追加変更禁止・3 パスの P3 読み取り互換・暗黙終了なし）を
+  1 箇所新設し、3 箇所の注記から参照。effective prompt 注記に互換文言を補う。
+raw_response_path: proxy-decisions/WM-DESIGN-P1-placement-round-1.raw.txt
+candidate_options:
+- A
+- B
+- C
+source_raw_paths:
+- raw/claude-sonnet-4-6.round-1.txt
+- raw/gpt-5.5.round-1.txt
+- raw/gemini-3.1-pro-preview.round-1.txt
+rejected_options:
+  B: 冗長性を生み、文書管理の観点から最適ではないため。
+  C: 一貫性の欠如が放置され、将来の移行処理に悪影響を及ぼすため。

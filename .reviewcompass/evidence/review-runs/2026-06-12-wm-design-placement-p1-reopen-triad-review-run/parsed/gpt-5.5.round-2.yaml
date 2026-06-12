@@ -1,0 +1,6 @@
+role: adversarial
+provider: openai-api
+model: gpt-5.5
+attempts: 1
+duration_seconds: 76.743
+findings: []

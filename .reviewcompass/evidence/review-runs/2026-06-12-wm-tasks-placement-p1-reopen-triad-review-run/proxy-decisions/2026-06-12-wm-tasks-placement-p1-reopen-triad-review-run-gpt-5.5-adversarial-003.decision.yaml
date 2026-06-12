@@ -1,0 +1,23 @@
+approved_by: proxy_model
+finding_id: 2026-06-12-wm-tasks-placement-p1-reopen-triad-review-run-gpt-5.5-adversarial-003
+cluster_id: X1
+round_id: round-1
+proxy_model_id: gemini-3.1-pro-preview
+decision_prompt_path: proxy-decision-prompts/WM-TASKS-P1-placement-round-1.prompt.md
+selected_option: A
+final_label: must-fix
+rationale: 読み取り互換における「新→旧」のフォールバック順序はdesign契約の重要要素である。この探索順の明記漏れを捉えた本指摘は妥当であり、案Aによる責務・テスト要件の一括更新によって解消する。
+implementation_policy: T-004 の責務とテスト要件へ凍結期契約を一括追記（3 パスの常時新配置・旧配置への新規書き込み禁止・効力発生時点・暗黙終了なし・新→旧読み取り互換・凍結期挙動テスト
+  9 観点）。
+raw_response_path: proxy-decisions/WM-TASKS-P1-placement-round-1.raw.txt
+candidate_options:
+- A
+- B
+- C
+source_raw_paths:
+- raw/claude-sonnet-4-6.round-1.txt
+- raw/gpt-5.5.round-1.txt
+- raw/gemini-3.1-pro-preview.round-1.txt
+rejected_options:
+  B: 探索順序はシステムの挙動を規定する責務の一部であり、テスト側のみに記載するのは不適切であるため。
+  C: 古い仕様のままでは、旧パスの内容が新パスを上書きするような誤実装を招くため。

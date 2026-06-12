@@ -1,0 +1,28 @@
+status: completed
+target_files:
+- .reviewcompass/specs/workflow-management/design.md
+- .reviewcompass/specs/workflow-management/tasks.md
+- docs/operations/WORKFLOW_PRECHECK_DETAILS.md
+target_sha256:
+  .reviewcompass/specs/workflow-management/design.md: 46af6b8194ef4d4e37d395b601d338e6aef0b82f777d6bafb16a32e1aa35ce6c
+  .reviewcompass/specs/workflow-management/tasks.md: 5f4d89e468a24cdd524c644d2694e79f4dde21ed308005ac06874aac9a4b2181
+  docs/operations/WORKFLOW_PRECHECK_DETAILS.md: f4bed56db1a8c24163081aec20a2d924973d3d2300bc86582a8aeea51d9a5569
+required_verifiers: &id001
+- gemini-3.5-flash
+completed_verifiers: *id001
+unresolved_substantive_findings: 0
+verifications:
+- verifier: gemini-3.5-flash
+  target_files:
+  - .reviewcompass/specs/workflow-management/design.md
+  - .reviewcompass/specs/workflow-management/tasks.md
+  - docs/operations/WORKFLOW_PRECHECK_DETAILS.md
+  target_sha256:
+    .reviewcompass/specs/workflow-management/design.md: 46af6b8194ef4d4e37d395b601d338e6aef0b82f777d6bafb16a32e1aa35ce6c
+    .reviewcompass/specs/workflow-management/tasks.md: 5f4d89e468a24cdd524c644d2694e79f4dde21ed308005ac06874aac9a4b2181
+    docs/operations/WORKFLOW_PRECHECK_DETAILS.md: f4bed56db1a8c24163081aec20a2d924973d3d2300bc86582a8aeea51d9a5569
+review_run:
+  path: .reviewcompass/evidence/review-runs/2026-06-12-wm-precheck-details-postwrite
+  summary_path: .reviewcompass/evidence/review-runs/2026-06-12-wm-precheck-details-postwrite/model-result-summary.yaml
+notes: Generated template; verify target_files cover current post-write targets before
+  use.

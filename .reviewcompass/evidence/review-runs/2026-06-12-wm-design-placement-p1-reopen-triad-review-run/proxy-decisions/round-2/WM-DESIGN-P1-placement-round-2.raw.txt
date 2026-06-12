@@ -1,0 +1,26 @@
+```yaml
+decisions:
+  - finding_id: 2026-06-12-wm-design-placement-p1-reopen-triad-review-run-claude-sonnet-4-6-primary-001
+    cluster_id: V1
+    selected_option: A
+    final_label: leave-as-is
+    rationale: W1対応が設計文書内で完結したことの収束確認を記録した所見であり、設計への追加対処は不要であるため。
+    rejected_options:
+      B: 収束が確認されており、これ以上の変更を行う理由がないため棄却。
+
+  - finding_id: 2026-06-12-wm-design-placement-p1-reopen-triad-review-run-claude-sonnet-4-6-primary-002
+    cluster_id: V2
+    selected_option: A
+    final_label: should-fix
+    rationale: 凍結契約の対象（旧配置）とログファイル自体の再生成可否のスコープの違いを明確にすることで、実装やTDD設計時の誤解や混乱のリスクを軽微な追記で未然に防げるため。
+    rejected_options:
+      B: 共通契約節が正本とはいえ、語義の干渉による実装時の混乱リスクを残すことは得策ではないため棄却。
+
+  - finding_id: 2026-06-12-wm-design-placement-p1-reopen-triad-review-run-claude-sonnet-4-6-primary-003
+    cluster_id: V3
+    selected_option: A
+    final_label: leave-as-is
+    rationale: effective promptの注記にある互換文言はround-1の採用案に基づいた意図的な補記であり、共通契約節が正本として機能しているため実害はなく、修正は不要であるため。
+    rejected_options:
+      B: 意図的に設けられた粒度差であり、すべての文言を完全に揃える必然性は薄いため棄却。
+```

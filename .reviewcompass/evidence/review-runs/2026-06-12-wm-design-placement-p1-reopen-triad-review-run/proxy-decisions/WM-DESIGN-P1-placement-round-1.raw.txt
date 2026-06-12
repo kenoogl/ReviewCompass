@@ -1,0 +1,63 @@
+```yaml
+decisions:
+  - finding_id: 2026-06-12-wm-design-placement-p1-reopen-triad-review-run-gpt-5.5-adversarial-001
+    cluster_id: W1
+    selected_option: A
+    final_label: must-fix
+    rationale: 実装や運用で旧証跡を変更し得る致命的な欠落であり、共通箇所への明記で確実かつ保守性の高い解決が可能なため。
+    rejected_options:
+      B: 3箇所への複製は冗長であり、将来の改訂時に同期漏れのリスクを生むため。
+      C: 互換性維持の契約不備という重大な指摘が未解決のまま残るため。
+
+  - finding_id: 2026-06-12-wm-design-placement-p1-reopen-triad-review-run-gpt-5.5-adversarial-002
+    cluster_id: W1
+    selected_option: A
+    final_label: must-fix
+    rationale: 既存生成物の凍結契約が正本にないことは旧証跡の不変性を損なうERROR事項であり、共通箇所での契約新設が最も一貫性を保てるため。
+    rejected_options:
+      B: 各注記に完全な文言を複製すると記述が冗長化し保守性を下げるため。
+      C: レビューでの重大な指摘事項が解決されないままとなるため。
+
+  - finding_id: 2026-06-12-wm-design-placement-p1-reopen-triad-review-run-gemini-3.1-pro-preview-judgment-001
+    cluster_id: W1
+    selected_option: A
+    final_label: must-fix
+    rationale: 凍結と読み取り互換の明記は要件漏れを防ぐために不可欠であり、先行事例に倣った共通契約の新設が最適解であるため。
+    rejected_options:
+      B: 同一の制約事項を複数箇所に重複して記述することは可読性および保守性の観点から劣るため。
+      C: 実装時の要件漏れや運用時の混乱を招くリスクが放置されるため。
+
+  - finding_id: 2026-06-12-wm-design-placement-p1-reopen-triad-review-run-claude-sonnet-4-6-primary-001
+    cluster_id: W1
+    selected_option: A
+    final_label: must-fix
+    rationale: 他パスと扱いが揃っていない点を修正し、P3到達時の廃止判断における揺れを防止する観点から共通契約による解決が必須なため。
+    rejected_options:
+      B: 冗長性を生み、文書管理の観点から最適ではないため。
+      C: 一貫性の欠如が放置され、将来の移行処理に悪影響を及ぼすため。
+
+  - finding_id: 2026-06-12-wm-design-placement-p1-reopen-triad-review-run-claude-sonnet-4-6-primary-003
+    cluster_id: W1
+    selected_option: A
+    final_label: must-fix
+    rationale: INFOレベルの指摘だが、W1クラスタ全体の共通解決策として凍結期の共通契約を新設する際に自然と組み込まれて解決されるため。
+    rejected_options:
+      B: 重複記述を増やすだけであり、一貫したルール管理には不適なため。
+      C: 明示終了に関する積極的な意図が欠落したままとなり、P3完了時のミスを誘発する懸念が残るため。
+
+  - finding_id: 2026-06-12-wm-design-placement-p1-reopen-triad-review-run-gpt-5.5-adversarial-003
+    cluster_id: W2
+    selected_option: A
+    final_label: leave-as-is
+    rationale: 事実確認により現在の決定番号引用が正しいことが判明しており、PLC-DEC-005は実行時ログ専用で適用対象外であるため。
+    rejected_options:
+      B: 決定台帳と矛盾する誤った引用を行うことになり、設計の追跡性をかえって損なってしまうため。
+
+  - finding_id: 2026-06-12-wm-design-placement-p1-reopen-triad-review-run-claude-sonnet-4-6-primary-002
+    cluster_id: W3
+    selected_option: A
+    final_label: leave-as-is
+    rationale: フローチャート等の図解は情報密度の低い形式であり、本文の由来注記が正本として機能していれば運用上問題ないため。
+    rejected_options:
+      B: 図のラベルに冗長な注記を追加することは可読性を下げるだけであり、得られる恩恵が乏しいため。
+```

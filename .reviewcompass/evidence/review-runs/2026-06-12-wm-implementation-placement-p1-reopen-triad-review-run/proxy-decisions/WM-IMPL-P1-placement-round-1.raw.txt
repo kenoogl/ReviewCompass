@@ -1,0 +1,67 @@
+```yaml
+decisions:
+  - finding_id: 2026-06-12-wm-implementation-placement-p1-reopen-triad-review-run-gpt-5.5-adversarial-001
+    cluster_id: K1
+    selected_option: A
+    final_label: must-fix
+    rationale: 実運用経路で有効なプロンプトが読み取れないとP1凍結期の互換契約を満たせないため。共有モジュールへの集約とフォールバックの接続により、二重定義を解消しつつ確実な解決を実現する。
+    rejected_options:
+      B: 未接続のままでは旧配置の成果物が運用で無視され明確な契約違反となるため棄却。
+
+  - finding_id: 2026-06-12-wm-implementation-placement-p1-reopen-triad-review-run-gpt-5.5-adversarial-002
+    cluster_id: K2
+    selected_option: B
+    final_label: should-fix
+    rationale: 要件は15観点の機械検証でありゲートへの自動統合までは要求されていないため。自動化によるフェーズ方針からの逸脱を避け、手動実行手順を運用文書に記載するアプローチを採用する。
+    rejected_options:
+      A: 自動統合はfreezeコミットの自動解決など要求以上の複雑化を招くため棄却。
+      C: 手順が文書化されないと検証機能が運用で利用されないリスクが残るため棄却。
+
+  - finding_id: 2026-06-12-wm-implementation-placement-p1-reopen-triad-review-run-gpt-5.5-adversarial-003
+    cluster_id: K4
+    selected_option: A
+    final_label: should-fix
+    rationale: 契約上の凍結対象は特定のファイル単体であり、ディレクトリ全体への適用は過検出リスクを伴うため。対象ファイルを厳密に限定して配置契約との整合性を確保する。
+    rejected_options:
+      B: 同一ディレクトリ内の別用途ファイルまで凍結違反として誤検知する可能性があるため棄却。
+
+  - finding_id: 2026-06-12-wm-implementation-placement-p1-reopen-triad-review-run-gemini-3.1-pro-preview-judgment-001
+    cluster_id: K3
+    selected_option: A
+    final_label: must-fix
+    rationale: exclude-standardオプションが欠如していると、無視対象の既存ファイルが誤検知され異常終了を引き起こすため。先行ceとの前提差異を文書化しつつ、正しい検出動作に修正する。
+    rejected_options:
+      B: 誤検知により正常な処理実行が阻害される致命的な不具合を放置することになるため棄却。
+
+  - finding_id: 2026-06-12-wm-implementation-placement-p1-reopen-triad-review-run-claude-sonnet-4-6-primary-001
+    cluster_id: K6
+    selected_option: A
+    final_label: leave-as-is
+    rationale: 新から旧の順序で読み取り解決されるため、新配置に消費記録が作成されれば旧配置の未消費記録は恒久的に遮蔽される。構造上、誤った再承認を許すリスクは発生しない。
+    rejected_options:
+      B: 再承認の構造的リスクが存在しないため、運用文書への追記は不要な警告を増やすだけであり棄却。
+
+  - finding_id: 2026-06-12-wm-implementation-placement-p1-reopen-triad-review-run-claude-sonnet-4-6-primary-002
+    cluster_id: K5
+    selected_option: A
+    final_label: should-fix
+    rationale: 削除が変更と同一のラベルで扱われているのは事実であり、違反種別の意味論的な曖昧さを解消すべきであるため。なお削除が検出されないという指摘自体は事実誤認として棄却する。
+    rejected_options:
+      B: 削除と変更の区別がつかない状態は将来の保守やツール連携において混乱を招くため棄却。
+
+  - finding_id: 2026-06-12-wm-implementation-placement-p1-reopen-triad-review-run-claude-sonnet-4-6-primary-003
+    cluster_id: K5
+    selected_option: A
+    final_label: should-fix
+    rationale: 変更と削除が同一ラベルで報告されると、設計仕様における違反種別の意味論と乖離してしまうため。専用の種別を導入し、テストの期待値も明確に分離する。
+    rejected_options:
+      B: 削除の意図が曖昧なままになり、将来の保守において誤認を誘発するリスクがあるため棄却。
+
+  - finding_id: 2026-06-12-wm-implementation-placement-p1-reopen-triad-review-run-claude-sonnet-4-6-primary-004
+    cluster_id: K7
+    selected_option: A
+    final_label: should-fix
+    rationale: 関数シグネチャに入力前提を明記することで、将来のコード変更時に旧配置パスなどが誤って渡されるサイレントな誤動作を未然に防げるため。
+    rejected_options:
+      B: 現状で実害はないものの、前提条件の暗黙化は中長期的な技術的負債となるため棄却。
+```

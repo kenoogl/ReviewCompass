@@ -1,0 +1,20 @@
+approved_by: proxy_model
+finding_id: 2026-06-12-wm-implementation-placement-p1-reopen-triad-review-run-gpt-5.5-adversarial-003
+cluster_id: K4
+round_id: round-1
+proxy_model_id: gemini-3.1-pro-preview
+decision_prompt_path: proxy-decision-prompts/WM-IMPL-P1-placement-round-1.prompt.md
+selected_option: A
+final_label: should-fix
+rationale: 契約上の凍結対象は特定のファイル単体であり、ディレクトリ全体への適用は過検出リスクを伴うため。対象ファイルを厳密に限定して配置契約との整合性を確保する。
+implementation_policy: approvals の凍結対象パターンを commit-approval.json 単体へ限定。
+raw_response_path: proxy-decisions/WM-IMPL-P1-placement-round-1.raw.txt
+candidate_options:
+- A
+- B
+source_raw_paths:
+- raw/claude-sonnet-4-6.round-1.txt
+- raw/gpt-5.5.round-1.txt
+- raw/gemini-3.1-pro-preview.round-1.txt
+rejected_options:
+  B: 同一ディレクトリ内の別用途ファイルまで凍結違反として誤検知する可能性があるため棄却。

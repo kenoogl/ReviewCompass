@@ -1,0 +1,18 @@
+approved_by: proxy_model
+finding_id: 2026-06-12-wm-implementation-placement-p1-reopen-triad-review-run-claude-sonnet-4-6-primary-002
+cluster_id: P2
+round_id: round-4
+proxy_model_id: gemini-3.1-pro-preview
+decision_prompt_path: proxy-decision-prompts/WM-IMPL-P1-placement-round-4.prompt.md
+selected_option: A
+final_label: leave-as-is
+rationale: 実テストでステージ前の削除も正しく検出されることが確認（green）されており、ファイル実体の現存判定でカバーできているため。
+implementation_policy: 変更なし。
+raw_response_path: proxy-decisions/round-4/WM-IMPL-P1-placement-round-4.raw.txt
+candidate_options:
+- A
+- B
+source_raw_paths:
+- raw/claude-sonnet-4-6.round-4.txt
+rejected_options:
+  B: すでに実環境でテストが通過しており、脆さの可能性という推測のみでテストを追加する実益に乏しいため。

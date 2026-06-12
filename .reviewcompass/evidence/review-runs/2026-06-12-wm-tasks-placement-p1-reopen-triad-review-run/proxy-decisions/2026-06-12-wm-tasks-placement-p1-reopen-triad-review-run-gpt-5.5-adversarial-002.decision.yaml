@@ -1,0 +1,23 @@
+approved_by: proxy_model
+finding_id: 2026-06-12-wm-tasks-placement-p1-reopen-triad-review-run-gpt-5.5-adversarial-002
+cluster_id: X1
+round_id: round-1
+proxy_model_id: gemini-3.1-pro-preview
+decision_prompt_path: proxy-decision-prompts/WM-TASKS-P1-placement-round-1.prompt.md
+selected_option: A
+final_label: must-fix
+rationale: 先行事例に倣い、designの凍結契約はtasksへ完全に反映されるべきである。旧配置への新規書き込み禁止という核心的な責務とテスト要件の欠落を的確に指摘しており、案Aを採用して一括で追記・解消する。
+implementation_policy: T-004 の責務とテスト要件へ凍結期契約を一括追記（3 パスの常時新配置・旧配置への新規書き込み禁止・効力発生時点・暗黙終了なし・新→旧読み取り互換・凍結期挙動テスト
+  9 観点）。
+raw_response_path: proxy-decisions/WM-TASKS-P1-placement-round-1.raw.txt
+candidate_options:
+- A
+- B
+- C
+source_raw_paths:
+- raw/claude-sonnet-4-6.round-1.txt
+- raw/gpt-5.5.round-1.txt
+- raw/gemini-3.1-pro-preview.round-1.txt
+rejected_options:
+  B: 旧配置への書き込み禁止は責務として明記されるべきであり、テスト要件の拡張のみでは仕様の定義が不足するため。
+  C: 旧配置への書き込み禁止機構の実装および検証が漏れるリスクがあるため。

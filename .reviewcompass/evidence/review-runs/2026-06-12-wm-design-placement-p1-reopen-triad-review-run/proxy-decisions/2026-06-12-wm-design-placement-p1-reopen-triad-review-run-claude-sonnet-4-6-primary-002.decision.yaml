@@ -1,0 +1,20 @@
+approved_by: proxy_model
+finding_id: 2026-06-12-wm-design-placement-p1-reopen-triad-review-run-claude-sonnet-4-6-primary-002
+cluster_id: W3
+round_id: round-1
+proxy_model_id: gemini-3.1-pro-preview
+decision_prompt_path: proxy-decision-prompts/WM-DESIGN-P1-placement-round-1.prompt.md
+selected_option: A
+final_label: leave-as-is
+rationale: フローチャート等の図解は情報密度の低い形式であり、本文の由来注記が正本として機能していれば運用上問題ないため。
+implementation_policy: 変更なし（leave-as-is）。由来注記は本文注記を正本とする。
+raw_response_path: proxy-decisions/WM-DESIGN-P1-placement-round-1.raw.txt
+candidate_options:
+- A
+- B
+source_raw_paths:
+- raw/claude-sonnet-4-6.round-1.txt
+- raw/gpt-5.5.round-1.txt
+- raw/gemini-3.1-pro-preview.round-1.txt
+rejected_options:
+  B: 図のラベルに冗長な注記を追加することは可読性を下げるだけであり、得られる恩恵が乏しいため。

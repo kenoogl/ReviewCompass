@@ -1,0 +1,33 @@
+role: adversarial
+provider: openai-api
+model: gpt-5.5
+attempts: 1
+duration_seconds: 118.048
+findings:
+- severity: ERROR
+  target_location: tools/api_providers/run_role.py::_resolve_effective_prompt_sha256
+  description: The effective-prompt fallback import uses `from tools.check_workflow_action.runtime_paths
+    ...`, but the added test masks direct-script import behavior by injecting the
+    repository root into `sys.path`.
+  rationale: If `run_role.py` is invoked as a script path such as `python tools/api_providers/run_role.py`,
+    the repository root is not guaranteed to be importable as the top-level `tools`
+    package. In that mode, path-based SHA resolution can raise `ModuleNotFoundError`
+    before applying the required new→old fallback, breaking the P1 runtime-path read-compatibility
+    contract on an operational API-provider path.
+- severity: WARN
+  target_location: tools/check_workflow_action/runtime_paths.py; tests/tools/test_runtime_placement_freeze.py::PrecheckLogPlacementTests
+  description: The shared runtime path module does not provide a new→old read resolver
+    for `workflow-precheck.log`, and the log tests only verify write placement/preservation
+    rather than log read fallback.
+  rationale: The upstream contract describes all three runtime artifacts as reading
+    new→old with new winning on conflict. Commit approvals and effective prompts have
+    explicit read resolution, but the precheck log path has no equivalent implementation
+    or test coverage. Any consumer that needs to read historical legacy logs after
+    P1 would miss `docs/logs/workflow-precheck.log`.
+- severity: WARN
+  target_location: tools/guarded-git-commit.py::consume_commit_approval
+  description: Commit-approval read fallback is still hand-coded in `guarded-git-commit.py`
+    instead of using the shared `resolve_commit_approval_path` resolver.
+  rationale: Round-2 K1 states that constants and read resolution are centralized
+    in `runtime_paths.py`. Duplicating the new→old fallback logic creates drift risk,
+    especially for the P3 compatibility-removal transition or future path changes.

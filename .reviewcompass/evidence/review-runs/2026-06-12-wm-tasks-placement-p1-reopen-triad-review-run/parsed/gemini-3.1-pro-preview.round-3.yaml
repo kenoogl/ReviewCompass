@@ -1,0 +1,15 @@
+role: judgment
+provider: gemini-api
+model: gemini-3.1-pro-preview
+attempts: 1
+duration_seconds: 20.542
+findings:
+- severity: ERROR
+  target_location: .reviewcompass/specs/workflow-management/tasks.md T-004 完了条件 5
+    / テスト要件
+  description: 新旧双方に記録が存在する場合に新配置が優先されることを確認するテスト要件が欠落している
+  rationale: 責務には「新配置優先・旧配置フォールバック（新→旧の順）」と明記されているが、完了条件とテスト要件の記述が「旧パスにしか記録がない場合の新→旧フォールバック読み取り」に留まっている。これでは実装が旧配置を優先して読み取る誤った挙動になっていてもテストを通過する可能性があり、designの上流契約である「新→旧の順」を機械検証で担保できない。
+- severity: WARN
+  target_location: .reviewcompass/specs/workflow-management/tasks.md T-004 テスト要件
+  description: 旧配置の凍結保全において、既存ファイルの不変性（削除・変更の禁止）を検証する粒度が不足している
+  rationale: テスト要件では「旧配置への新規書き込みが発生しないこと」の検証のみが求められており、既存の旧成果物が削除、移動、または内容変更（truncate等）されないことの確認（チェックサムや存在確認など）が明示されていない。既存証跡の不変性がTDDで担保されなければ、旧パスの読み取り互換や監査上の保全要件が損なわれるリスクがある。

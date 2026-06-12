@@ -1,0 +1,30 @@
+role: primary
+provider: anthropic-api
+model: claude-sonnet-4-6
+attempts: 1
+duration_seconds: 23.181
+findings:
+- severity: WARN
+  target_location: T-004 責務（diff +行）commit 承認記録の旧パス読み取り互換
+  description: commit 承認記録（`.reviewcompass/runtime/approvals/commit-approval.json`）の旧パス読み取り互換について「旧パス読み取り互換は
+    P3 まで維持」と記述されているが、旧パスが何であるかが明示されていない。effective prompt（旧 `.reviewcompass/effective-prompts/`）と
+    workflow-precheck.log（旧 `docs/logs/`）は旧パスが括弧内に明記されているのに対し、commit 承認記録のみ旧パスの記述が欠落している。
+  rationale: design 確定契約（凍結期共通契約）は「旧パス読み取り互換は 3 パスとも P3 まで維持」と規定している。テスト要件や実装者が旧パスを特定できない場合、互換実装が不完全になるリスクがある。3
+    パス一貫した旧パス明記がレビュー観点 §2 の変更漏れ検査にも関わる。
+- severity: WARN
+  target_location: T-004 テスト要件 5（diff +行）
+  description: テスト要件 5 は「旧パスの読み取り互換を確認するテストを含む」と記載されているが、commit 承認記録（`.reviewcompass/runtime/approvals/commit-approval.json`）の旧パス読み取り互換テストが明示されていない。ログパスの読み取り互換テストのみ言及されており、3
+    パスの互換テストが揃っていない。
+  rationale: design 契約では 3 パス全て（検査ログ・effective prompt・commit 承認記録）の読み取り互換が P3 まで必須とされている。テスト要件
+    5 が commit 承認記録の旧パス互換テストをカバーしていない場合、TDD による互換実装の検証が不完全となる。ce reopen での C7 先行事例（レビュー観点
+    §2）と同種の翻訳漏れに相当する可能性がある。
+- severity: INFO
+  target_location: T-004 テスト要件 5（diff +行）
+  description: 「旧パスの読み取り互換を確認するテスト」が新配置への書き込み後に旧パスには新規書き込みを行わない（書き込み禁止）ことの機械検証を含むかどうかが不明瞭である。凍結違反（旧パスへの新規書き込み）を検出するテストの要否が記述されていない。
+  rationale: design 凍結期共通契約は「書き込み常時新配置」と「既存分は旧置き場で凍結」を両立する契約であり、旧パスへの新規書き込みは凍結違反となる。テスト要件がこの禁止側の検証を要求しているか明確でないと、implementation
+    段で凍결違反の検出が漏れる可能性がある。
+- severity: INFO
+  target_location: T-004 責務（diff +行）凍結効力発生時点
+  description: 凍結の効力発生時点（「P1 実装反映コミット＝書き込み先切替と同時」）が tasks 責務・テスト要件のどこにも明示されていない。design
+    確定契約では効力発生タイミングが境界条件として規定されているが、tasks への翻訳が省略されている。
+  rationale: レビュー観点 §5（例外系・境界条件）として「凍結の効力発生時点」が明示的に挙げられている。implementation 者がこの境界条件を把握しないと、コミット前後の動作切り替えロジックを誤実装するリスクがある。テスト要件として境界コミット時点の挙動を機械検証可能な形で要求することが望ましい。

@@ -1,0 +1,12 @@
+role: adversarial
+provider: openai-api
+model: gpt-5.5
+attempts: 1
+duration_seconds: 126.226
+findings:
+- severity: ERROR
+  target_location: tools/check_workflow_action/runtime_paths.py:resolve_effective_prompt_read_path
+  description: effective prompt の resolver が、新配置形式の相対パスに対してのみ新→旧フォールバックを適用しており、旧配置形式のパスを渡された場合は新配置を確認せず旧配置を返す。
+  rationale: P1 の確定契約は、3 パスの読み取りを新→旧順とし、新旧競合時は新配置を採用することを求めている。P1 前の記録や互換読み取り経路が `.reviewcompass/effective-prompts/...`
+    形式の旧パスを保持している場合、runtime 側に同名 prompt が存在しても旧 prompt の sha を計算・採用し得るため、run_role
+    の実運用読み取りで契約違反になる。旧配置形式も対応する新配置へ正規化してから新優先で存在確認する必要がある。

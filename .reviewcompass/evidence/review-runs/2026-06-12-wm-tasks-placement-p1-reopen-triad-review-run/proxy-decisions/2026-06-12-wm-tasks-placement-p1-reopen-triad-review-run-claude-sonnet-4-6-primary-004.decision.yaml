@@ -1,0 +1,23 @@
+approved_by: proxy_model
+finding_id: 2026-06-12-wm-tasks-placement-p1-reopen-triad-review-run-claude-sonnet-4-6-primary-004
+cluster_id: X1
+round_id: round-1
+proxy_model_id: gemini-3.1-pro-preview
+decision_prompt_path: proxy-decision-prompts/WM-TASKS-P1-placement-round-1.prompt.md
+selected_option: A
+final_label: must-fix
+rationale: designの確定契約である「効力発生タイミング」の境界条件が翻訳省略されている点を的確に捉えている。案Aを採用し、責務内にP1実装反映コミット時点での効力発生を明記することで対応する。
+implementation_policy: T-004 の責務とテスト要件へ凍結期契約を一括追記（3 パスの常時新配置・旧配置への新規書き込み禁止・効力発生時点・暗黙終了なし・新→旧読み取り互換・凍結期挙動テスト
+  9 観点）。
+raw_response_path: proxy-decisions/WM-TASKS-P1-placement-round-1.raw.txt
+candidate_options:
+- A
+- B
+- C
+source_raw_paths:
+- raw/claude-sonnet-4-6.round-1.txt
+- raw/gpt-5.5.round-1.txt
+- raw/gemini-3.1-pro-preview.round-1.txt
+rejected_options:
+  B: 境界条件はテスト要件のみならず、責務（システムとしての契約事項）として明記されるべきであるため。
+  C: implementation者がコミット前後の動作切り替えロジックを誤実装するリスクを放置することになるため。

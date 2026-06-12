@@ -1,0 +1,5 @@
+findings:
+  - severity: ERROR
+    target_location: "tools/check_workflow_action/placement_freeze.py"
+    description: "untracked ファイルの取得に `--exclude-standard` が指定されておらず、.gitignore 対象の既存ファイルが違反として誤検知される"
+    rationale: "`git ls-files --others` はデフォルトで `.gitignore` の指定を無視して全ての未追跡ファイルを出力します。仕様（冒頭注記）では「未追跡の旧成果物の凍結はテストで担保」としていますが、現在の実装では無視対象である既存の旧成果物（ローカルに残っている旧ログなど）が `untracked` に含まれてしまい、`added_after_freeze` として誤検知され凍結違反で異常終了する原因となります。"

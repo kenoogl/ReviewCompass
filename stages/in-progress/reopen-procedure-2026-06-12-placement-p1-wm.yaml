@@ -9,27 +9,232 @@ completed_steps:
   の alignment・approval を false、recheck 設定。差し戻し内容は利用者承認済み 2026-06-12「承認」）
 - 第2過程：正本修正（design 5 箇所・tasks 4 箇所のパス契約を .reviewcompass/runtime/ 配下へ変更、
   由来注記と凍結・読み取り互換の明記付き）
-next_step: ce reopen（placement-p1-ce）第4過程完了の停止点コミットに同伴（本手続き自身の第2過程の停止点コミットは 41720094 で完了済み。次は本手続きの第3過程＝design の gate 連鎖〔triad-review から〕）
-step_number: 2
+- 第3過程：stages/design.yaml#triad-review 実施（run=.reviewcompass/evidence/review-runs/2026-06-12-wm-design-placement-p1-reopen-triad-review-run、3 round。
+  variant=implementation_review_independent_3way（利用者承認 2026-06-12「承認承認」）。所見判断は proxy_model
+  （gemini-3.1-pro-preview）へ委任（利用者発言「proxy_modelで自律実行」）。
+  round-1：claude WARN1/INFO2・gpt ERROR2/WARN1・gemini ERROR1。同根 W1（凍結・読み取り互換の契約が design 本文で
+  不揃い／欠落、5 件）＝must-fix 案 A 適用：§全体構造へ「実行時生成物の凍結期（P3 まで）の扱い」を新設し 3 パス共通契約
+  （書き込み常時新配置・既存分凍結・効力発生＝P1 実装反映コミットと同時・P3 読み取り互換・暗黙終了なし）を正本化、
+  3 箇所の由来注記から参照。W2（PLC-DEC-005 引用不一致）＝leave-as-is（決定台帳の事実確認により現行引用が正しい）。
+  W3（図ラベル注記）＝leave-as-is。
+  round-2：gpt 0・gemini 0・claude INFO3。V2＝should-fix（「上書き可能」の語義分離補足）、V1・V3＝leave-as-is。
+  round-3：gemini 0・claude 収束確認 INFO3（leave-as-is）・gpt WARN1＝U1 should-fix（旧 commit 承認記録のファイルパス明示）適用。
+  round-4 は proxy 判断 R4-A で省略（判定役 2 round 連続ゼロ・U1 は逐語修正で完結）。
+  証跡=proxy-decisions/（round 別）・approval-proxy-2026-06-12{,-round-2,-round-3}.yaml、triage 全件 decided）
+- 第3過程：stages/design.yaml#review-wave 実施（no_impact。全 7 機能 3 文書で旧 3 パスの現役参照 0 件、追加設計は本機能の
+  実行時生成物に閉じる。運用文書追従は implementation 段と既計画 P1 残作業 7 番の範囲。持ち越し 0 件。
+  記録=.reviewcompass/evidence/cross-feature/reviews/2026-06-12-wm-design-placement-p1-review-wave.md）
+- 第3過程：stages/design.yaml#alignment 実施（existing_sufficient。requirements 不変・配置規約整合（決定番号の適用範囲含む）・
+  凍結期契約の一貫性（ce 確定形式と同型）・実装ガイダンス充足の 4 点確認。
+  記録=.reviewcompass/evidence/cross-feature/reviews/2026-06-12-wm-design-placement-p1-alignment.md）
+- 第3過程：stages/design.yaml#approval 完了（利用者発言「承認」2026-06-12。確定本文＝凍結期共通契約節の新設＋3 注記の参照化＋
+  「上書き可能」の語義分離補足＋旧 commit 承認記録のファイルパス明示を提示のうえ承認。
+  spec.json の design alignment・approval を true へ復帰（spec-set precheck 記録済み。進行中ファイル・recheck 印による
+  DEVIATION は reopen 進行中の想定内条件で ce reopen と同一の扱い））
+- 第3過程：stages/tasks.yaml#triad-review 実施（run=.reviewcompass/evidence/review-runs/2026-06-12-wm-tasks-placement-p1-reopen-triad-review-run、4 round。
+  variant=implementation_review_independent_3way。所見判断は proxy_model（gemini-3.1-pro-preview）へ委任（利用者発言「proxy_modelで自律実行」）。
+  round-1：同根 X1（design 凍結期共通契約の tasks 翻訳欠落、ERROR5/WARN4/INFO2 の 11 件）＝全件 must-fix 案 A 適用：
+  T-004 責務へ凍結期責務（3 パスの書き込み常時新配置・旧パス明記の新規書き込み禁止・効力発生＝P1 実装反映コミットと同時・
+  互換終了＝P3 専用 reopen・新→旧読み取り順）、完了条件 5 と凍結期挙動テスト（3 パス × 3 観点）を追記。
+  round-2：判定役ゼロ、Y1・Y2＝should-fix 適用（境界条件の明示・新旧とも記録なし時は既存挙動不変）、Y3＝leave-as-is。
+  round-3：主役ゼロ、敵対役・判定役の同根 2 クラスタ。T1（ERROR×2）＝must-fix 案 A：観点 4「新旧競合時の新配置優先」
+  （design 契約「新→旧の順」の直接検証）を追加。T2（WARN×2）＝should-fix 案 A：観点 5「凍結済み旧成果物の不変性
+  （git 追跡履歴判定、ce と同一規則）」を追加。テストは 3 パス × 5 観点＝計 15 観点へ。
+  なお round-3 は実行中断により判定役応答が欠落していたため、run_role.py で判定役のみ正規再実行して完成させた
+  （主役・敵対役の round-3 raw は中断前の正規応答を保持。判断材料に前段 2 役の parsed を投入）。
+  round-4：3 役すべて所見ゼロの完全収束。
+  証跡=proxy-decisions/（round 別）・approval-proxy-2026-06-12{,-round-2,-round-3}.yaml、triage 全件 decided）
+- 第3過程：stages/tasks.yaml#review-wave 実施（no_impact。全 7 機能 3 文書で旧 3 パスの現役参照 0 件、追加タスクは本機能の
+  ツール実装に閉じる。観点 5 の判定規則は ce の凍結違反検出と同一で機能間対称。持ち越し 0 件。
+  記録=.reviewcompass/evidence/cross-feature/reviews/2026-06-12-wm-tasks-placement-p1-review-wave.md）
+- 第3過程：stages/tasks.yaml#alignment 実施（existing_sufficient。design 凍結期契約の翻訳網羅・requirements 不変・
+  責務分担の一意性・テスト要件網羅（5 観点 × 3 パス＋境界条件）の 4 点確認。
+  記録=.reviewcompass/evidence/cross-feature/reviews/2026-06-12-wm-tasks-placement-p1-alignment.md）
+- 第3過程：stages/tasks.yaml#approval 完了（利用者発言「承認」2026-06-12。確定本文＝T-004 への凍結期責務・完了条件 5
+  （5 観点）・凍結期挙動テスト（3 パス × 5 観点＝15 観点）の追記一式を提示のうえ承認。
+  spec.json の tasks alignment・approval を true へ復帰（spec-set precheck 記録済み、reopen 進行中の想定内 DEVIATION は従前同様））
+- 第3過程：stages/implementation.yaml#drafting 実施（tasks 確定本文どおり TDD 実装。赤フェーズ＝凍結期挙動テスト 12 件
+  （tests/tools/test_runtime_placement_freeze.py、3 パス × 5 観点＋凍結違反検出器）の失敗確認（11 失敗・1 件は現行でも
+  成立する旧フォールバック）→ 緑フェーズ＝実装。
+  実装内容：check-workflow-action.py の既定 3 パスを runtime 区画へ切替（DEFAULT_LOG_PATH・DEFAULT_COMMIT_APPROVAL_PATH・
+  DEFAULT_EFFECTIVE_PROMPT_DIR、旧パスは LEGACY_ 定数で凍結保持）、承認レコードの新→旧読み取り解決
+  resolve_commit_approval_path、effective prompt の読み取り互換 resolve_effective_prompt_read_path（競合時は新を正）、
+  guarded-git-commit.py の消費書き込みを常に新配置へ（凍結済み旧記録は不変）、凍結違反検出器
+  tools/check_workflow_action/placement_freeze.py（git 追跡履歴判定、ce と同一規則。ReviewCompass 自身では旧 3 パスが
+  gitignore 対象のため git で立証できるのは追跡構成に限る旨を注記）、.gitignore へ .reviewcompass/runtime/ を追加
+  （PLC-DEC-004 原則 git 無視）、post-write 対象除外を新旧ログ両対応。
+  実装中の手戻り記録：緑フェーズで tests/tools/test_guarded_git_commit.py の消費テスト 1 件が失敗
+  →原因はテストヘルパー _write_commit_approval が旧配置へ承認レコードを書いていたことで、契約変更（書き込み常時新配置）
+  どおりヘルパーを新配置へ更新して解消。
+  検証：全テスト green（tools 212 件含むディレクトリ別 計 912 件 pass）。実機で next 実行し effective prompt・検査ログが
+  runtime 区画へ生成され gitignore が効くことを確認）
+- 第3過程：stages/implementation.yaml#triad-review 実施（run=.reviewcompass/evidence/review-runs/2026-06-12-wm-implementation-placement-p1-reopen-triad-review-run、4 round。
+  variant=implementation_review_independent_3way。所見判断は proxy_model（gemini-3.1-pro-preview）へ委任。
+  round-1：claude WARN1/INFO3・gpt ERROR2/WARN1・gemini ERROR1（6 クラスタ）。K1 must-fix＝runtime_paths 共有モジュール新設と
+  run_role の sha 解決（実運用読み取り経路）への新→旧フォールバック接続。K3 must-fix＝検出器に --exclude-standard を付与し
+  ignored 既存成果物の誤検知排除（ce との規則差＝前提差を docstring 明記）。K2 should-fix＝ゲート統合見送り・
+  WORKFLOW_PRECHECK_DETAILS.md §8.1 へ手動手順記載（ce C7-B 同型）。K4 should-fix＝approvals 凍結対象を
+  commit-approval.json 単体へ限定。K5 should-fix＝deleted_after_freeze 専用種別（「削除が検出されない」主張は事実誤認と注記）。
+  K6 leave-as-is（新→旧解決順により再承認リスクは構造上なし）。K7 should-fix＝resolver 入力前提の明記。
+  round-2：gemini 0。gpt ERROR1（M1＝スクリプト実行で import 不能の主張）は実証検査（リポジトリ外 cwd で旧配置 sha を
+  正しく解決）により反証し leave-as-is。M3 must-fix＝guarded の消費読み取りを共有 resolver へ置換。
+  M2 should-fix＝検査ログの読み取り resolver 追加。M4・M5 should-fix（型契約明記・git 失敗の平易化）。M6 leave-as-is。
+  追従＝フックテスト複製へ runtime_paths を追加、deploy-manifest.yaml へ tools/check_workflow_action/** を追加。
+  round-3：gemini 0・claude INFO3。gpt ERROR1（N1）＝must-fix：resolver を双方向対応へ（旧形式パス入力を正規化し新優先）、
+  境界テスト 3 件追加。round-4 実行は proxy 判定 R4-A。
+  round-4：gpt 0・gemini 0・claude INFO3（P1 should-fix＝戻り値の str 統一を適用、P2・P3 leave-as-is）。
+  round-5 は proxy 判定 R5-A で省略（敵対役・判定役ゼロ、P1 は挙動不変の型正規化）。収束。
+  証跡=proxy-decisions/（round 別）・approval-proxy-2026-06-12{,-round-2,-round-3,-round-4}.yaml、triage 全件 decided。
+  各 round 適用は TDD、全テスト計 920 件 pass）
+- 第3過程：stages/implementation.yaml#review-wave 実施（no_impact。他機能コードからの旧 3 パス現役参照 0 件
+  （残存は凍結済み実験記録の引用のみ）。配布 manifest・gitignore 追従済み、凍結判定規則の機能間差は意図的（docstring 明記）。
+  持ち越し 0 件。記録=.reviewcompass/evidence/cross-feature/reviews/2026-06-12-wm-implementation-placement-p1-review-wave.md）
+- 第3過程：stages/implementation.yaml#alignment 実施（existing_sufficient。design 凍結期契約との一致・tasks 15 観点の
+  機械検証（テスト 20 件）・fail-closed 例外系・運用/配布整合の 4 点確認。
+  記録=.reviewcompass/evidence/cross-feature/reviews/2026-06-12-wm-implementation-placement-p1-alignment.md）
+- 第3過程：stages/implementation.yaml#approval 完了（利用者発言「承認」2026-06-12。確定内容＝実行時生成物 3 パスの
+  runtime 区画切替の TDD 実装一式〔runtime_paths 共有モジュール・placement_freeze 検出器・テスト 20 件・
+  運用文書 §8/§8.1・gitignore・配布 manifest 追従〕を提示のうえ承認。
+  spec.json の implementation alignment・approval を true へ復帰（spec-set precheck 記録済み、reopen 進行中の
+  想定内 DEVIATION は従前同様）。第3過程はこれで全フェーズ完了）
+- 第4過程：整合性最終確認（全テスト計 920 件 pass・実機 next で runtime 区画書き込みと gitignore を確認・
+  旧 3 パスの現役参照 0 件）。完了記録（feature_impact_decisions 7 件・new_feature_decision・
+  downstream_impact_decisions 12 gate 分）を整備し、spec.json の recheck をクリア
+  （upstream_change_pending=false・impacted_downstream_phases=[]、reopened は履歴として true 維持）。
+  本ファイルを stages/completed/ へ移動
+next_step: 第4過程完了。残りは完了の停止点コミット（利用者の「コミット」指示待ち）
+step_number: 4
 drafting_completed_gates:
 - stages/design.yaml#drafting
 - stages/tasks.yaml#drafting
-pending_gates:
-- stages/design.yaml#triad-review
-- stages/design.yaml#review-wave
-- stages/design.yaml#alignment
-- stages/design.yaml#approval
-- stages/tasks.yaml#triad-review
-- stages/tasks.yaml#review-wave
-- stages/tasks.yaml#alignment
-- stages/tasks.yaml#approval
-- stages/implementation.yaml#triad-review
-- stages/implementation.yaml#review-wave
-- stages/implementation.yaml#alignment
-- stages/implementation.yaml#approval
+- stages/implementation.yaml#drafting
+pending_gates: []
 pending_gates_note: D-0 基線（design の alignment／approval）に、REOPEN_PROCEDURE.md §3「正本本文を修正した
   phase は triad-review／review-wave／alignment／approval を再実施」を適用し、正本修正のある design・tasks と、
   実装変更（ツールの書き込み先変更＋旧パス読み取り互換、TDD）を行う implementation の全 review 系 gate を加えた。
   implementation の drafting（コード変更）は tasks approval 後に TDD で実施するため未記録。requirements は
   3 パスのいずれにも言及せず不変（分類記録のとおり）。
 current_blocker: null
+feature_impact_decisions:
+- feature: workflow-management
+  decision: reopen_existing_feature
+  impact_basis: contract_ownership
+  rationale: effective prompt・commit 承認記録・検査ログのパス契約（design・tasks T-004）と検査ツール実装を所有するため。
+  evidence: &id001
+  - docs/reviews/reopen-classification-2026-06-12-placement-p1-path-contracts.md
+- feature: conformance-evaluation
+  decision: reopen_existing_feature
+  impact_basis: contract_ownership
+  rationale: 評価記録・推定ログの配置契約と該当ツール実装を所有するため（別手続き reopen-procedure-2026-06-12-placement-p1-ce.yaml で完了済み、コミット 289cc00c）。
+  evidence: *id001
+- feature: foundation
+  decision: no_reopen_existing_feature
+  impact_basis: no_implementation_impact
+  rationale: 共通語彙・状態入力に変更なし。
+  evidence: *id001
+- feature: runtime
+  decision: no_reopen_existing_feature
+  impact_basis: no_implementation_impact
+  rationale: review-run の置き場はツールの CLI 引数渡しで、仕様は特定パスを契約しない。接合面不変。
+  evidence: *id001
+- feature: evaluation
+  decision: no_reopen_existing_feature
+  impact_basis: no_implementation_impact
+  rationale: run ディレクトリは引数渡しで、variant・トリアージ契約に変更なし。
+  evidence: *id001
+- feature: analysis
+  decision: no_reopen_existing_feature
+  impact_basis: consumer_or_derivative_only
+  rationale: 記録の読み手であり、読み取りは新旧両置き場を対象にできる。
+  evidence: *id001
+- feature: self-improvement
+  decision: no_reopen_existing_feature
+  impact_basis: consumer_or_derivative_only
+  rationale: 学習資産の置き場（learning/）は当面不変（PLC-DEC-008 の当面形）。
+  evidence: *id001
+new_feature_decision:
+  decision: no_new_feature
+  rationale: 配置契約の変更は workflow-management・conformance-evaluation の既存契約所有の範囲で受けられ、新 feature の責務境界は不要。
+  evidence: *id001
+impacted_downstream_phases:
+- tasks
+- implementation
+downstream_impact_decisions:
+- gate: stages/design.yaml#triad-review
+  feature_scope: workflow-management
+  decision: affected_update_required
+  rationale: 配置契約の正本修正（5 箇所）に凍結期共通契約節の新設ほかを 3 round の 3 役レビューで適用した（round-4 は proxy 判定で省略）。
+  evidence:
+  - .reviewcompass/evidence/review-runs/2026-06-12-wm-design-placement-p1-reopen-triad-review-run/triage.yaml
+  - .reviewcompass/evidence/review-runs/2026-06-12-wm-design-placement-p1-reopen-triad-review-run/approval-proxy-2026-06-12.yaml
+- gate: stages/design.yaml#review-wave
+  feature_scope: all_features
+  decision: no_impact
+  rationale: 全 7 機能 3 文書で旧 3 パスの現役参照 0 件、持ち越し 0 件。
+  evidence:
+  - .reviewcompass/evidence/cross-feature/reviews/2026-06-12-wm-design-placement-p1-review-wave.md
+- gate: stages/design.yaml#alignment
+  feature_scope: workflow-management
+  decision: existing_sufficient
+  rationale: requirements 不変・配置規約整合・凍結期契約の一貫性・実装ガイダンス充足の 4 点確認。
+  evidence:
+  - .reviewcompass/evidence/cross-feature/reviews/2026-06-12-wm-design-placement-p1-alignment.md
+- gate: stages/design.yaml#approval
+  feature_scope: workflow-management
+  decision: approved
+  rationale: 利用者発言「承認」（2026-06-12）。spec.json の design alignment・approval を true へ復帰。
+  evidence:
+  - .reviewcompass/specs/workflow-management/spec.json
+- gate: stages/tasks.yaml#triad-review
+  feature_scope: workflow-management
+  decision: affected_update_required
+  rationale: 凍結期責務のタスク翻訳（完了条件 5・凍結期挙動テスト 3 パス × 5 観点）を 4 round の 3 役レビューで適用した（round-4 は 3 役所見ゼロ）。
+  evidence:
+  - .reviewcompass/evidence/review-runs/2026-06-12-wm-tasks-placement-p1-reopen-triad-review-run/triage.yaml
+  - .reviewcompass/evidence/review-runs/2026-06-12-wm-tasks-placement-p1-reopen-triad-review-run/approval-proxy-2026-06-12-round-3.yaml
+- gate: stages/tasks.yaml#review-wave
+  feature_scope: all_features
+  decision: no_impact
+  rationale: 旧 3 パスの現役参照 0 件、追加タスクは本機能のツール実装に閉じる。持ち越し 0 件。
+  evidence:
+  - .reviewcompass/evidence/cross-feature/reviews/2026-06-12-wm-tasks-placement-p1-review-wave.md
+- gate: stages/tasks.yaml#alignment
+  feature_scope: workflow-management
+  decision: existing_sufficient
+  rationale: design 凍結期契約の翻訳網羅・requirements 不変・責務分担の一意性・テスト要件網羅の 4 点確認。
+  evidence:
+  - .reviewcompass/evidence/cross-feature/reviews/2026-06-12-wm-tasks-placement-p1-alignment.md
+- gate: stages/tasks.yaml#approval
+  feature_scope: workflow-management
+  decision: approved
+  rationale: 利用者発言「承認」（2026-06-12）。spec.json の tasks alignment・approval を true へ復帰。
+  evidence:
+  - .reviewcompass/specs/workflow-management/spec.json
+- gate: stages/implementation.yaml#triad-review
+  feature_scope: workflow-management
+  decision: affected_update_required
+  rationale: TDD 実装差分（runtime 区画切替）を 4 round の 3 役レビューで検証し must-fix 4・should-fix 7 を適用、round-5 は proxy 判定で省略（収束）。
+  evidence:
+  - .reviewcompass/evidence/review-runs/2026-06-12-wm-implementation-placement-p1-reopen-triad-review-run/triage.yaml
+  - .reviewcompass/evidence/review-runs/2026-06-12-wm-implementation-placement-p1-reopen-triad-review-run/approval-proxy-2026-06-12.yaml
+  - .reviewcompass/evidence/review-runs/2026-06-12-wm-implementation-placement-p1-reopen-triad-review-run/approval-proxy-2026-06-12-round-2.yaml
+  - .reviewcompass/evidence/review-runs/2026-06-12-wm-implementation-placement-p1-reopen-triad-review-run/approval-proxy-2026-06-12-round-3.yaml
+  - .reviewcompass/evidence/review-runs/2026-06-12-wm-implementation-placement-p1-reopen-triad-review-run/approval-proxy-2026-06-12-round-4.yaml
+- gate: stages/implementation.yaml#review-wave
+  feature_scope: all_features
+  decision: no_impact
+  rationale: 他機能コードからの旧 3 パス現役参照 0 件。配布 manifest・gitignore 追従済み。持ち越し 0 件。
+  evidence:
+  - .reviewcompass/evidence/cross-feature/reviews/2026-06-12-wm-implementation-placement-p1-review-wave.md
+- gate: stages/implementation.yaml#alignment
+  feature_scope: workflow-management
+  decision: existing_sufficient
+  rationale: design 凍結期契約との一致・tasks 15 観点の機械検証・fail-closed 例外系・運用/配布整合の 4 点確認。
+  evidence:
+  - .reviewcompass/evidence/cross-feature/reviews/2026-06-12-wm-implementation-placement-p1-alignment.md
+- gate: stages/implementation.yaml#approval
+  feature_scope: workflow-management
+  decision: approved
+  rationale: 利用者発言「承認」（2026-06-12）。spec.json の implementation alignment・approval を true へ復帰。
+  evidence:
+  - .reviewcompass/specs/workflow-management/spec.json

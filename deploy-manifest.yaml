@@ -88,6 +88,8 @@ include:
 
   - path: tools/check-workflow-action.py
     reason: Workflow state and irreversible-action guard CLI.
+  - path: tools/check_workflow_action/**
+    reason: Runtime placement constants, read resolvers, and freeze checker imported by the guard CLI.
   - path: tools/document_link_lint.py
     reason: Document link and prompt-source reference lint.
   - path: tools/deployment_independence_lint.py

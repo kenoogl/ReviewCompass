@@ -1,0 +1,34 @@
+```yaml
+decisions:
+  - finding_id: 2026-06-12-wm-implementation-placement-p1-reopen-triad-review-run-gpt-5.5-adversarial-001
+    cluster_id: N1
+    selected_option: A
+    final_label: must-fix
+    rationale: 旧形式の入力時に新配置が無視される挙動は、P1で確定した「新旧競合時は新配置を優先する」という契約への明白な違反であり、実運用において誤った旧promptのshaが採用される実害リスクがあるため。
+    rejected_options:
+      B: 契約違反の挙動を放置し、互換読み取り経路における障害の根本原因を残すことになるため。
+  - finding_id: 2026-06-12-wm-implementation-placement-p1-reopen-triad-review-run-claude-sonnet-4-6-primary-001
+    cluster_id: N1
+    selected_option: A
+    final_label: must-fix
+    rationale: N1の挙動変更（旧形式パスの入力受付と双方向の正規化）に伴い、境界条件となる新・旧・絶対パスそれぞれのテスト追加とdocstringの更新が安全な保守において不可欠なため。
+    rejected_options:
+      B: 挙動の変更に対してテストが追従せず、将来的な誤利用のリスクを招くため。
+  - finding_id: 2026-06-12-wm-implementation-placement-p1-reopen-triad-review-run-claude-sonnet-4-6-primary-002
+    cluster_id: N3
+    selected_option: A
+    final_label: leave-as-is
+    rationale: フックテストにおけるファイル複製は実際のimport依存のみを対象とする方針であり、現状で依存関係のない placement_freeze.py を含めなくても実害はないため。
+    rejected_options:
+      B: 現状では使用されないファイルまでコピーの対象に含めるのは、最小限の依存解決という方針にそぐわないため。
+  - finding_id: 2026-06-12-wm-implementation-placement-p1-reopen-triad-review-run-claude-sonnet-4-6-primary-003
+    cluster_id: N4
+    selected_option: A
+    final_label: leave-as-is
+    rationale: 例外発生時の平易なメッセージ再送出（M5対応）はすでにコード内で実装されており、運用手順書に例外の出力例を追加するのは任意の改善に留まるため。
+    rejected_options:
+      B: 現状の実装で十分に必要な例外メッセージの伝播が行われており、ドキュメントの過剰な細分化は不要なため。
+round_4:
+  selected_option: R4-A
+  rationale: N1の修正は実挙動の変更とテスト追加を伴う重要な must-fix 案件である。適用後に再度 round-4 を実行して、リグレッションの有無と収束を安全に確認する必要があるため。
+```

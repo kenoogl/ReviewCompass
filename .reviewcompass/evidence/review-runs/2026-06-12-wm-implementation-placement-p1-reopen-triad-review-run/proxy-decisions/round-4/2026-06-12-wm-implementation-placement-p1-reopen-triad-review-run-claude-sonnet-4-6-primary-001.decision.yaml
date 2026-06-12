@@ -1,0 +1,18 @@
+approved_by: proxy_model
+finding_id: 2026-06-12-wm-implementation-placement-p1-reopen-triad-review-run-claude-sonnet-4-6-primary-001
+cluster_id: P1
+round_id: round-4
+proxy_model_id: gemini-3.1-pro-preview
+decision_prompt_path: proxy-decision-prompts/WM-IMPL-P1-placement-round-4.prompt.md
+selected_option: A
+final_label: should-fix
+rationale: 呼び出し元でPathに包んでおり実害はないが、わずか1行の修正で戻り値の型をstrに統一でき、将来の潜在的な混乱を防げるため。
+implementation_policy: resolver の戻り値を常に str に揃える（素通し分岐も str 化）。
+raw_response_path: proxy-decisions/round-4/WM-IMPL-P1-placement-round-4.raw.txt
+candidate_options:
+- A
+- B
+source_raw_paths:
+- raw/claude-sonnet-4-6.round-4.txt
+rejected_options:
+  B: 戻り値の型が引数に依存して揺れる状態を放置するのは、ドキュメントとの乖離や将来のバグの温床となるため。

@@ -1,0 +1,23 @@
+role: primary
+provider: anthropic-api
+model: claude-sonnet-4-6
+attempts: 1
+duration_seconds: 14.81
+findings:
+- severity: INFO
+  target_location: 'tools/check_workflow_action/runtime_paths.py: resolve_effective_prompt_read_path'
+  description: relative_path の型が str と Path の両方を受け入れるが、型注釈・docstring には str を想定するとのみ記載されており、Path
+    オブジェクトが渡された場合の str() 変換は実装内で行われているが明示されていない。
+  rationale: run_role.py では Path(path_value) で渡す可能性があり、startswith の引数が Path オブジェクトだと意図どおり動作しない。実際は
+    str(relative_path) で変換しているため動作上の問題はないが、呼び出し側の型契約が不明確なため将来の誤用リスクがある。
+- severity: INFO
+  target_location: 'tools/check_workflow_action/placement_freeze.py: _matching 関数'
+  description: subprocess.run に check=True を指定しているため、freeze_commit が無効なコミットハッシュの場合（初回実行・浅いクローン等）に
+    CalledProcessError が捕捉されず呼び出し元で未処理の例外となる。
+  rationale: WORKFLOW_PRECHECK_DETAILS.md §8.1 の手動実行手順では freeze_commit を利用者が直接指定するため、入力ミス時のエラーメッセージが
+    git の生エラーのまま表示される。ユーザビリティ上の懸念であり、凍結違反の検出精度には影響しない。
+- severity: INFO
+  target_location: 'tests/tools/test_runtime_placement_freeze.py: RunRoleEffectivePromptFallbackTests.test_sha_resolution_falls_back_to_legacy_prompt'
+  description: os.chdir で作業ディレクトリを変更しており、テスト失敗時に finally が実行される前に例外が発生した場合でも os.chdir(previous)
+    は finally で保護されているため問題ないが、並列テスト実行（pytest-xdist 等）では同一プロセス内の他テストに影響する可能性がある。
+  rationale: 現行のテスト実行構成（912 件の通常実行）では影響なし。並列実行を将来導入する際の潜在的な干渉リスクとして記録する。

@@ -1,0 +1,26 @@
+```yaml
+decisions:
+  - finding_id: 2026-06-12-wm-tasks-placement-p1-reopen-triad-review-run-gpt-5.5-adversarial-001
+    cluster_id: Y1
+    selected_option: A
+    final_label: should-fix
+    rationale: 観点(2)や(3)で実質的に担保されている内容ではあるが、境界条件（効力発生時点での旧書き込み不在、暗黙のフォールバック無効化の禁止）を1文追記することで、テスト実装時の検証意図の解釈ずれを確実かつ低コストに防げるため。
+    rejected_options:
+      B: 実質担保されているとはいえ、明示しないことで実装者が境界条件のテストを漏らすリスクを残してしまうため。
+
+  - finding_id: 2026-06-12-wm-tasks-placement-p1-reopen-triad-review-run-claude-sonnet-4-6-primary-001
+    cluster_id: Y2
+    selected_option: A
+    final_label: should-fix
+    rationale: 両方に記録がない場合は既存挙動（初回作成やfail-closed等）に従うという事実を1文明記することで、実装者が推測に頼ったり独自解釈を混入させたりする余地を塞ぐことができるため。
+    rejected_options:
+      B: 最小の変更で済むものの、実装者が既存挙動の維持を推測で判断する余地を残すことは安全側の実装において望ましくないため。
+
+  - finding_id: 2026-06-12-wm-tasks-placement-p1-reopen-triad-review-run-claude-sonnet-4-6-primary-002
+    cluster_id: Y3
+    selected_option: A
+    final_label: leave-as-is
+    rationale: 同一タスク内の責務本文に完全なパス名が明記されており、近接参照で容易に特定可能であるため。パス名を重複記載すると、将来のパス変更時などに同期漏れのリスクや維持コストを生む。
+    rejected_options:
+      B: 致命的でない参照の手間を省くために、無用な重複記載による改訂時の同期コストを抱え込むことは不合理であるため。
+```

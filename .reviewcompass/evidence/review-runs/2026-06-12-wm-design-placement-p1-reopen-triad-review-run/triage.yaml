@@ -1,0 +1,82 @@
+run_id: 2026-06-12-wm-design-placement-p1-reopen-triad-review-run
+triage_status: decided
+generated_at: '2026-06-12T14:33:52.436914+00:00'
+decision_actor: null
+decision_actor_type: human
+items:
+- finding_id: 2026-06-12-wm-design-placement-p1-reopen-triad-review-run-claude-sonnet-4-6-primary-001
+  run_id: 2026-06-12-wm-design-placement-p1-reopen-triad-review-run
+  source_model: claude-sonnet-4-6
+  source_round: round-3
+  source_raw_path: raw/claude-sonnet-4-6.round-3.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-3.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: design.md §実行時生成物の凍結期（P3 まで）の扱い
+  plain_language_summary: 凍結期共通契約の新設節は3パスの新旧パス対応・効力発生条件・互換終了条件を明記しており、round-1 W1 案A適用の意図に沿っている。各由来注記からの正本参照も一貫している。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: proxy_model
+  decision_actor_type: agent
+  decision_at: '2026-06-12T14:35:42.845561+00:00'
+  decision_reason: round-3 収束確認の記録（proxy 判断 leave-as-is）
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-12-wm-design-placement-p1-reopen-triad-review-run-claude-sonnet-4-6-primary-002
+  run_id: 2026-06-12-wm-design-placement-p1-reopen-triad-review-run
+  source_model: claude-sonnet-4-6
+  source_round: round-3
+  source_raw_path: raw/claude-sonnet-4-6.round-3.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-3.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: design.md 出力形式の記述（ログ追記箇所）
+  plain_language_summary: 「上書き可能＝ログファイル自体の再生成可否を指す。旧配置を対象とする凍結契約とはスコープが異なる」の補足文は round-3
+    V2 適用に対応しており、語義の混同を防ぐ説明として機能している。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: proxy_model
+  decision_actor_type: agent
+  decision_at: '2026-06-12T14:35:42.890774+00:00'
+  decision_reason: round-3 収束確認の記録（proxy 判断 leave-as-is）
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-12-wm-design-placement-p1-reopen-triad-review-run-claude-sonnet-4-6-primary-003
+  run_id: 2026-06-12-wm-design-placement-p1-reopen-triad-review-run
+  source_model: claude-sonnet-4-6
+  source_round: round-3
+  source_raw_path: raw/claude-sonnet-4-6.round-3.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-3.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: design.md §effective-prompt パス変更記述
+  plain_language_summary: PLC-DEC-005 非引用（effective prompt・commit 承認記録は PLC-DEC-004・009〜011
+    のみ引用）は round-1 W2 leave-as-is 判断と整合しており、決定番号の引用範囲に不整合はない。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: proxy_model
+  decision_actor_type: agent
+  decision_at: '2026-06-12T14:35:42.936368+00:00'
+  decision_reason: round-3 収束確認の記録（proxy 判断 leave-as-is）
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-12-wm-design-placement-p1-reopen-triad-review-run-gpt-5.5-adversarial-001
+  run_id: 2026-06-12-wm-design-placement-p1-reopen-triad-review-run
+  source_model: gpt-5.5
+  source_round: round-3
+  source_raw_path: raw/gpt-5.5.round-3.txt
+  source_parsed_path: parsed/gpt-5.5.round-3.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: .reviewcompass/specs/workflow-management/design.md §実行時生成物の凍結期（P3
+    まで）の扱い / §13.5 commit approval bullet
+  plain_language_summary: commit 承認記録の旧配置が `.reviewcompass/approvals/` とディレクトリ単位で記載されており、旧ファイルパス
+    `.reviewcompass/approvals/commit-approval.json` が凍結・読み取り互換契約の正本箇所で明示されていない。
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: proxy_model
+  decision_actor_type: agent
+  decision_at: '2026-06-12T14:35:42.800139+00:00'
+  decision_reason: U1（proxy 採用案 A）：旧 commit 承認記録をファイルパスまで明示
+  applied_files: []
+  superseded_by: null

@@ -1,0 +1,15 @@
+findings:
+  - severity: WARN
+    target_location: "design.md § effective-prompts パス変更箇所（行 +323付近）"
+    description: "effective-prompts の旧パス読み取り互換（P3 まで維持）の明記が欠落している。commit-approval（行 +1064）とworkflow-precheck.log（行 +61）には『旧パス読み取り互換は P3 まで維持』が明記されているが、effective-prompts の変更注記には『実行時生成物の runtime 区画集約』のみで互換維持期間の記述がない。"
+    rationale: "3 パスの扱いは統一された契約（ce reopen で確定した形式）に従うべきであり、effective-prompts だけ互換維持の終了条件が明示されないと、P3 到達時の廃止判断・移行処理で扱いが揺れるリスクがある。レビュー観点 2（由来注記・凍結・読み取り互換の一貫性）への抵触。"
+
+  - severity: INFO
+    target_location: "design.md §フローチャート（Pass → Log ノード、行 +85付近）"
+    description: "フローチャートの Log ノードは新パスへ更新済みだが、WARN/DEVIATION 経路の Block → Log も同一ノードを参照するため変更は最小限で正しい。ただし Log ノードのラベルに由来注記が含まれておらず、差分の他 2 箇所と記述粒度が異なる。"
+    rationale: "フローチャートはテキスト注記より情報密度が低い形式であり、由来注記がない点は許容範囲だが、一貫性を好む立場からは補足余地がある。重大な欠陥ではないため INFO。"
+
+  - severity: INFO
+    target_location: "design.md §凍結・旧パス読み取り互換の終了条件（レビュー観点 5）"
+    description: "読み取り互換の終了条件として『P3 まで維持（暗黙の終了はない）』と target.md §1 に記述されているが、design.md 本文には『P3 まで維持』のみで『暗黙の終了はない（明示終了が必要）』という積極的な意図が書かれていない。"
+    rationale: "将来の P3 完了時に明示終了処理を省略するミスを防ぐ観点では、design に終了条件の明示方法（誰が・何をもって終了とするか）を一文添えることが望ましい。現状は欠如というより省略であり INFO 扱い。"

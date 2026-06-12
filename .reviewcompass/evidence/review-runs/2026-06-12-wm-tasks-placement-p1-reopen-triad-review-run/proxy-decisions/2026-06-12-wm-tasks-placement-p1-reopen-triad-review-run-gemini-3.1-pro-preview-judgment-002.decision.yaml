@@ -1,0 +1,23 @@
+approved_by: proxy_model
+finding_id: 2026-06-12-wm-tasks-placement-p1-reopen-triad-review-run-gemini-3.1-pro-preview-judgment-002
+cluster_id: X1
+round_id: round-1
+proxy_model_id: gemini-3.1-pro-preview
+decision_prompt_path: proxy-decision-prompts/WM-TASKS-P1-placement-round-1.prompt.md
+selected_option: A
+final_label: must-fix
+rationale: design契約では3パス全てについて読み取り互換維持を求めているが、テスト要求がログのみに偏っているという指摘は妥当である。案Aを採用し、3パス全量に対する互換性検証要件を追記する。
+implementation_policy: T-004 の責務とテスト要件へ凍結期契約を一括追記（3 パスの常時新配置・旧配置への新規書き込み禁止・効力発生時点・暗黙終了なし・新→旧読み取り互換・凍結期挙動テスト
+  9 観点）。
+raw_response_path: proxy-decisions/WM-TASKS-P1-placement-round-1.raw.txt
+candidate_options:
+- A
+- B
+- C
+source_raw_paths:
+- raw/claude-sonnet-4-6.round-1.txt
+- raw/gpt-5.5.round-1.txt
+- raw/gemini-3.1-pro-preview.round-1.txt
+rejected_options:
+  B: 責務側においても3パス全ての扱い（新配置への書き込み・互換）を一貫して明記し、先行事例の形式を踏襲する必要があるため。
+  C: effective promptやcommit承認記録の互換性検証が実装漏れとなるリスクがあるため。

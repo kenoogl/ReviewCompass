@@ -1,0 +1,77 @@
+run_id: 2026-06-12-wm-implementation-placement-p1-reopen-triad-review-run
+triage_status: decided
+generated_at: '2026-06-12T23:28:05.104555+00:00'
+decision_actor: null
+decision_actor_type: human
+items:
+- finding_id: 2026-06-12-wm-implementation-placement-p1-reopen-triad-review-run-claude-sonnet-4-6-primary-001
+  run_id: 2026-06-12-wm-implementation-placement-p1-reopen-triad-review-run
+  source_model: claude-sonnet-4-6
+  source_round: round-4
+  source_raw_path: raw/claude-sonnet-4-6.round-4.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-4.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: 'tools/check_workflow_action/runtime_paths.py: resolve_effective_prompt_read_path'
+  plain_language_summary: The function returns the original `relative_path` argument
+    (which may be a Path object) unchanged in the fallback case, but the return type
+    is inconsistently str or Path depending on the code path. When both runtime and
+    legacy exist the function returns a str; when neither exists or the path is not
+    a recognised prefix it returns whatever type was passed in.
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: proxy_model
+  decision_actor_type: agent
+  decision_at: '2026-06-12T23:29:28.017949+00:00'
+  decision_reason: P1（proxy 採用案 A）：resolver の戻り値を常に str へ統一
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-12-wm-implementation-placement-p1-reopen-triad-review-run-claude-sonnet-4-6-primary-002
+  run_id: 2026-06-12-wm-implementation-placement-p1-reopen-triad-review-run
+  source_model: claude-sonnet-4-6
+  source_round: round-4
+  source_raw_path: raw/claude-sonnet-4-6.round-4.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-4.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: 'tests/tools/test_runtime_placement_freeze.py: RuntimePlacementFreezeCheckerTests.test_changes_deletions_and_additions_are_violations'
+  plain_language_summary: The deletion violation test unlinks LEGACY_LOG but does
+    not stage/commit the deletion before calling check_runtime_placement_freeze. The
+    detection of deleted files relies on `git diff --name-only <freeze_commit>` showing
+    the file and `Path.exists()` returning False. In an unclean working tree where
+    the file is simply deleted on disk but not staged, `git diff` against a prior
+    commit compares the index (which still has the file) with the working tree only
+    when `--cached` is omitted—so the diff output depends on git diff's working-tree
+    comparison mode. This is implementation-correct but the test does not explicitly
+    validate that the git invocation used (`diff --name-only`) will surface an unstaged
+    deletion, which could make the test fragile under certain git configurations.
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: proxy_model
+  decision_actor_type: agent
+  decision_at: '2026-06-12T23:29:28.062580+00:00'
+  decision_reason: P2（proxy 判断）：実装はファイル実体で現存判定、テスト green
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-12-wm-implementation-placement-p1-reopen-triad-review-run-claude-sonnet-4-6-primary-003
+  run_id: 2026-06-12-wm-implementation-placement-p1-reopen-triad-review-run
+  source_model: claude-sonnet-4-6
+  source_round: round-4
+  source_raw_path: raw/claude-sonnet-4-6.round-4.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-4.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: 'tests/hooks/test_pre_bash_precheck.py: _setup_git_repo_with_script'
+  plain_language_summary: The hook test copies only runtime_paths.py from the check_workflow_action
+    package into the temporary repository's tools/check_workflow_action/ directory,
+    but does not create an __init__.py. If check-workflow-action.py imports from check_workflow_action
+    as a package (which requires __init__.py in Python), the integration test could
+    fail with an ImportError in environments that do not tolerate namespace packages.
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: proxy_model
+  decision_actor_type: agent
+  decision_at: '2026-06-12T23:29:28.105138+00:00'
+  decision_reason: P3（proxy 判断）：名前空間パッケージで動作、テスト green
+  applied_files: []
+  superseded_by: null

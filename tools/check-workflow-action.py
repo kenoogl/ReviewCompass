@@ -34,11 +34,22 @@ from document_link_lint import lint_path_texts as lint_document_link_texts
 
 
 # 既定のログファイルパス（呼び出し時の cwd 相対、仕様 §8.2）
-DEFAULT_LOG_PATH = "docs/logs/workflow-precheck.log"
-DEFAULT_COMMIT_APPROVAL_PATH = ".reviewcompass/approvals/commit-approval.json"
+# 実行時生成物 3 パスは runtime 区画へ集約（2026-06-12 配置規約 P1。
+# 旧配置は凍結・読み取り互換のみ P3 まで。定数と読み取り解決の正本は
+# check_workflow_action/runtime_paths.py、契約の正本は wm design §実行時生成物の凍結期（P3 まで）の扱い）
+from check_workflow_action.runtime_paths import (
+  DEFAULT_LOG_PATH,
+  LEGACY_LOG_PATH,
+  DEFAULT_COMMIT_APPROVAL_PATH,
+  LEGACY_COMMIT_APPROVAL_PATH,
+  DEFAULT_EFFECTIVE_PROMPT_DIR,
+  LEGACY_EFFECTIVE_PROMPT_DIR,
+  resolve_commit_approval_path,
+  resolve_effective_prompt_read_path,
+)
+
 DEFAULT_LAST_COMMIT_PRECHECK_PATH = ".git/reviewcompass/last-commit-precheck.json"
 DEFAULT_DISCIPLINE_MAP_PATH = "docs/operations/WORKFLOW_DISCIPLINE_MAP.yaml"
-DEFAULT_EFFECTIVE_PROMPT_DIR = ".reviewcompass/effective-prompts"
 DEFAULT_CARRY_FORWARD_REGISTER_PATH = "learning/workflow/carry-forward-register/reviewcompass-import.yaml"
 DEFAULT_CARRY_FORWARD_SOURCE_PATH = (
   "learning/workflow/carry-forward-register/sources/"
@@ -2391,9 +2402,10 @@ def staged_file_sha256(cwd, filepath):
 
 def validate_commit_approval(cwd, staged_files):
   """commit 用ユーザ承認レコードを検査する"""
-  approval_path = Path(cwd) / DEFAULT_COMMIT_APPROVAL_PATH
+  resolved_relative = resolve_commit_approval_path(cwd)
+  approval_path = Path(cwd) / resolved_relative
   approval_state = {
-    "path": DEFAULT_COMMIT_APPROVAL_PATH,
+    "path": resolved_relative,
     "exists": approval_path.exists(),
     "valid": False,
     "target_files": [],
@@ -3856,8 +3868,9 @@ def is_post_write_verification_target(path):
     return False
   # ツール自身の実行ログは正本文書ではないため対象外
   # （discipline_post_write_verification.md の対象定義「正本文書」に実装を合わせる。
-  #   docs/logs/ 配下の他ファイル（autonomous-parallel の計画記録等）は対象のまま）
-  if path == DEFAULT_LOG_PATH:
+  #   docs/logs/ 配下の他ファイル（autonomous-parallel の計画記録等）は対象のまま。
+  #   凍結済み旧ログも引き続き対象外）
+  if path in (DEFAULT_LOG_PATH, LEGACY_LOG_PATH):
     return False
   if path == "TODO_NEXT_SESSION.md":
     return True

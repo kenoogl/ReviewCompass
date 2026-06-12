@@ -3763,8 +3763,8 @@ def _write_commit_approval(
   include_execution_delegation=True,
   execution_instruction="コミット",
 ):
-  """commit 事前検査用のユーザ承認レコードを書く"""
-  approval_dir = Path(tmpdir) / ".reviewcompass" / "approvals"
+  """commit 事前検査用のユーザ承認レコードを書く（書き込みは常に新配置＝runtime 区画）"""
+  approval_dir = Path(tmpdir) / ".reviewcompass" / "runtime" / "approvals"
   approval_dir.mkdir(parents=True, exist_ok=True)
   approval_path = approval_dir / "commit-approval.json"
   if target_sha256 is None:

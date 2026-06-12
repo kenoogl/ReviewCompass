@@ -1,0 +1,19 @@
+approved_by: proxy_model
+finding_id: 2026-06-12-wm-design-placement-p1-reopen-triad-review-run-gpt-5.5-adversarial-001
+cluster_id: U1
+round_id: round-3
+proxy_model_id: gemini-3.1-pro-preview
+decision_prompt_path: proxy-decision-prompts/WM-DESIGN-P1-placement-round-3.prompt.md
+selected_option: A
+final_label: should-fix
+rationale: 実装・テストにおける互換対象（ファイルかディレクトリ配下全体か）の解釈ずれを未然に防ぎ、新旧パスの明示粒度を統一するための最小修正として妥当なため。
+implementation_policy: 共通契約節の旧 commit 承認記録をファイルパスまで明示する（.reviewcompass/approvals/commit-approval.json）。
+raw_response_path: proxy-decisions/round-3/WM-DESIGN-P1-placement-round-3.raw.txt
+candidate_options:
+- A
+- B
+source_raw_paths:
+- raw/gpt-5.5.round-3.txt
+- raw/claude-sonnet-4-6.round-3.txt
+rejected_options:
+  B: 旧パスのみディレクトリ表記とすることは不整合であり、読み取り互換の実装時に曖昧さを残すリスクがあるため棄却。

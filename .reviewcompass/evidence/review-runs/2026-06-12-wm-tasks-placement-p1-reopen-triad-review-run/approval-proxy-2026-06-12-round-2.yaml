@@ -1,0 +1,25 @@
+approved_action: review_run_triage
+approved_by: proxy_model
+proxy_model_id: gemini-3.1-pro-preview
+review_run_id: 2026-06-12-wm-tasks-placement-p1-reopen-triad-review-run
+round_id: round-2
+summary_presented_to_user: true
+triage_presented_to_user: true
+autonomous_execution_authorization:
+  approved_by: user
+  approval_record_path: conversation:2026-06-12:user-proxy-autonomous-execution
+  quote: proxy_modelで自律実行（wm reopen の開始承認は「承認承認」、design approval は「承認」2026-06-12）
+  scope: round-2 の所見判断を proxy_model に委任して自律実行する。不可逆操作は人間の明示承認を要する。
+approved_finding_ids:
+- 2026-06-12-wm-tasks-placement-p1-reopen-triad-review-run-claude-sonnet-4-6-primary-001
+- 2026-06-12-wm-tasks-placement-p1-reopen-triad-review-run-claude-sonnet-4-6-primary-002
+- 2026-06-12-wm-tasks-placement-p1-reopen-triad-review-run-gpt-5.5-adversarial-001
+approved_final_labels:
+  2026-06-12-wm-tasks-placement-p1-reopen-triad-review-run-gpt-5.5-adversarial-001: should-fix
+  2026-06-12-wm-tasks-placement-p1-reopen-triad-review-run-claude-sonnet-4-6-primary-001: should-fix
+  2026-06-12-wm-tasks-placement-p1-reopen-triad-review-run-claude-sonnet-4-6-primary-002: leave-as-is
+proxy_decisions:
+  2026-06-12-wm-tasks-placement-p1-reopen-triad-review-run-gpt-5.5-adversarial-001: proxy-decisions/round-2/2026-06-12-wm-tasks-placement-p1-reopen-triad-review-run-gpt-5.5-adversarial-001.decision.yaml
+  2026-06-12-wm-tasks-placement-p1-reopen-triad-review-run-claude-sonnet-4-6-primary-001: proxy-decisions/round-2/2026-06-12-wm-tasks-placement-p1-reopen-triad-review-run-claude-sonnet-4-6-primary-001.decision.yaml
+  2026-06-12-wm-tasks-placement-p1-reopen-triad-review-run-claude-sonnet-4-6-primary-002: proxy-decisions/round-2/2026-06-12-wm-tasks-placement-p1-reopen-triad-review-run-claude-sonnet-4-6-primary-002.decision.yaml
+notes: Y1・Y2＝should-fix（境界条件の検証明示・両不在時挙動の 1 文追記）。Y3＝leave-as-is。判定役は round-2 所見ゼロ。

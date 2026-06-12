@@ -1,0 +1,23 @@
+approved_by: proxy_model
+finding_id: 2026-06-12-wm-tasks-placement-p1-reopen-triad-review-run-gemini-3.1-pro-preview-judgment-003
+cluster_id: X1
+round_id: round-1
+proxy_model_id: gemini-3.1-pro-preview
+decision_prompt_path: proxy-decision-prompts/WM-TASKS-P1-placement-round-1.prompt.md
+selected_option: A
+final_label: must-fix
+rationale: 凍結の効力発生時点や互換終了の条件といった重要な境界条件の翻訳漏れを捉えている。案Aを採用し、責務内にP1実装反映コミット時の効力発生と暗黙終了なしの規定を明記することで対応する。
+implementation_policy: T-004 の責務とテスト要件へ凍結期契約を一括追記（3 パスの常時新配置・旧配置への新規書き込み禁止・効力発生時点・暗黙終了なし・新→旧読み取り互換・凍結期挙動テスト
+  9 観点）。
+raw_response_path: proxy-decisions/WM-TASKS-P1-placement-round-1.raw.txt
+candidate_options:
+- A
+- B
+- C
+source_raw_paths:
+- raw/claude-sonnet-4-6.round-1.txt
+- raw/gpt-5.5.round-1.txt
+- raw/gemini-3.1-pro-preview.round-1.txt
+rejected_options:
+  B: ライフサイクルや状態遷移の境界条件はシステムの責務に関わる規定であり、テスト要件の拡張だけでは解決しないため。
+  C: 効力発生のタイミングを誤認したり、将来のフェーズで互換コードが早期削除されるリスクを排除できないため。

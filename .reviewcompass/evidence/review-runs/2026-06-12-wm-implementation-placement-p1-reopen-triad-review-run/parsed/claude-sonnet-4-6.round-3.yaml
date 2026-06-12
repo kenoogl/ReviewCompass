@@ -1,0 +1,25 @@
+role: primary
+provider: anthropic-api
+model: claude-sonnet-4-6
+attempts: 1
+duration_seconds: 16.349
+findings:
+- severity: INFO
+  target_location: 'tools/check_workflow_action/runtime_paths.py: resolve_effective_prompt_read_path'
+  description: resolve_effective_prompt_read_path は入力が新配置形式（DEFAULT_EFFECTIVE_PROMPT_DIR
+    + '/' 始まり）でない場合にそのまま返すと docstring に明記されているが、旧配置形式のパスや絶対パスが渡された場合の挙動についてテストが存在しない。
+  rationale: 境界条件カバレッジとして軽微な欠落。契約上の主要パスは全てカバーされており障害リスクは低いが、将来の利用者が誤った前提でこの関数を呼び出すリスクを低減するためにテストの追加が望ましい。
+- severity: INFO
+  target_location: 'tests/hooks/test_pre_bash_precheck.py: _setup_git_repo_with_script'
+  description: フックテストの一時リポジトリへコピーされるのは runtime_paths.py のみで、placement_freeze.py は含まれていない。現時点でフックテストが
+    placement_freeze を直接 import しないなら問題ないが、将来的に check-workflow-action.py が placement_freeze
+    を参照する場合に ModuleNotFoundError が発生する可能性がある。
+  rationale: 現時点では check-workflow-action.py は placement_freeze を import していないため実害はない。ただし
+    deploy-manifest.yaml で tools/check_workflow_action/** を追加済みであることと対称性が保たれておらず、保守上の注意点として記録する。
+- severity: INFO
+  target_location: 'tools/check_workflow_action/placement_freeze.py: _matching'
+  description: _matching は git コマンドの戻り値が returncode != 0 の場合に ValueError を送出するが、check_runtime_placement_freeze
+    の呼び出し元へ伝播する例外を catch している箇所がない。WORKFLOW_PRECHECK_DETAILS.md §8.1 の手動実行手順でも例外が素通りになる。M5
+    対応（git 失敗を平易なメッセージで再送出）は placement_freeze.py 内に実装済みで規約どおりだが、上位での catch に関する記述がドキュメント手順に無い。
+  rationale: 運用手順書に例外伝播の注意（例：freeze_commit 指定誤りの場合の出力例）を一行追加すると利用者体験が向上する。機能的な誤りではないため
+    INFO とする。

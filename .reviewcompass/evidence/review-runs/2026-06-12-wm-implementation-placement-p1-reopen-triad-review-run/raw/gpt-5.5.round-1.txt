@@ -1,0 +1,13 @@
+findings:
+  - severity: ERROR
+    target_location: "tools/check-workflow-action.py / effective prompt read fallback"
+    description: "effective prompt の旧配置フォールバック用関数が追加されているが、実際の読み取り経路に接続されていない"
+    rationale: "P1 凍結期契約では effective prompt も読み取り時に新配置→旧配置の順でフォールバックし、新旧競合時は新配置を採用する必要がある。しかし差分上は resolve_effective_prompt_read_path() の追加と単体テストのみで、production のファイル読み取り箇所をこの解決関数へ切り替えた変更が確認できない。このままだと旧配置にのみ存在する effective prompt を実運用で読めず、P3 までの互換契約を満たさない可能性がある。"
+  - severity: ERROR
+    target_location: "tools/check_workflow_action/placement_freeze.py / check-workflow-action integration"
+    description: "旧配置凍結違反検出器が通常の workflow precheck 実行経路に統合されていない"
+    rationale: "凍結済み旧成果物の不変性は design/tasks 上の実装契約であり、旧配置への追加・変更・削除を検出できる必要がある。新規モジュール check_runtime_placement_freeze() と直接呼び出しテストは追加されているが、tools/check-workflow-action.py などの実行時検査経路から呼ばれる変更が示されていないため、実際の workflow-management 実行では凍結違反を見逃す可能性がある。"
+  - severity: WARN
+    target_location: "tools/check_workflow_action/placement_freeze.py: LEGACY_RUNTIME_PATTERNS"
+    description: "commit 承認記録の旧配置パターンが .reviewcompass/approvals/ 配下全体を対象にしている"
+    rationale: "上流契約で凍結対象として明示されている旧 commit 承認記録は .reviewcompass/approvals/commit-approval.json であり、ディレクトリ配下全体ではない。現実に同ディレクトリへ別用途のファイルが存在する構成では、契約対象外のファイル追加・変更まで凍結違反として扱う過検出になり得るため、対象を commit-approval.json に限定する方が配置契約と整合する。"

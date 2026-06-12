@@ -1,0 +1,23 @@
+approved_by: proxy_model
+finding_id: 2026-06-12-wm-design-placement-p1-reopen-triad-review-run-gemini-3.1-pro-preview-judgment-001
+cluster_id: W1
+round_id: round-1
+proxy_model_id: gemini-3.1-pro-preview
+decision_prompt_path: proxy-decision-prompts/WM-DESIGN-P1-placement-round-1.prompt.md
+selected_option: A
+final_label: must-fix
+rationale: 凍結と読み取り互換の明記は要件漏れを防ぐために不可欠であり、先行事例に倣った共通契約の新設が最適解であるため。
+implementation_policy: design に凍結期の共通契約（凍結・効力発生時点・追加変更禁止・3 パスの P3 読み取り互換・暗黙終了なし）を
+  1 箇所新設し、3 箇所の注記から参照。effective prompt 注記に互換文言を補う。
+raw_response_path: proxy-decisions/WM-DESIGN-P1-placement-round-1.raw.txt
+candidate_options:
+- A
+- B
+- C
+source_raw_paths:
+- raw/claude-sonnet-4-6.round-1.txt
+- raw/gpt-5.5.round-1.txt
+- raw/gemini-3.1-pro-preview.round-1.txt
+rejected_options:
+  B: 同一の制約事項を複数箇所に重複して記述することは可読性および保守性の観点から劣るため。
+  C: 実装時の要件漏れや運用時の混乱を招くリスクが放置されるため。

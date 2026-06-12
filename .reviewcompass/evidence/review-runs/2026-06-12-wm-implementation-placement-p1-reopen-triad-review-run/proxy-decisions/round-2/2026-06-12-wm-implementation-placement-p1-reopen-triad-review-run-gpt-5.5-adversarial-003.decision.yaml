@@ -1,0 +1,19 @@
+approved_by: proxy_model
+finding_id: 2026-06-12-wm-implementation-placement-p1-reopen-triad-review-run-gpt-5.5-adversarial-003
+cluster_id: M3
+round_id: round-2
+proxy_model_id: gemini-3.1-pro-preview
+decision_prompt_path: proxy-decision-prompts/WM-IMPL-P1-placement-round-2.prompt.md
+selected_option: A
+final_label: must-fix
+rationale: K1のロジック集約方針に従い、手書きのフォールバック処理を共有のresolve_commit_approval_pathへ置換するため。論理の重複を排除し、将来のパス変更に伴う乖離リスクを防ぐ。
+implementation_policy: guarded-git-commit の消費読み取りを共有 resolver（resolve_commit_approval_path）へ置換。
+raw_response_path: proxy-decisions/round-2/WM-IMPL-P1-placement-round-2.raw.txt
+candidate_options:
+- A
+- B
+source_raw_paths:
+- raw/claude-sonnet-4-6.round-2.txt
+- raw/gpt-5.5.round-2.txt
+rejected_options:
+  B: ロジックの重複を残すことは、P3フェーズでの互換性削除や将来的なパス変更時に修正漏れを引き起こすリスクとなるため。

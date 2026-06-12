@@ -1,0 +1,19 @@
+role: primary
+provider: anthropic-api
+model: claude-sonnet-4-6
+attempts: 1
+duration_seconds: 21.378
+findings:
+- severity: INFO
+  target_location: §実行時生成物の凍結期（P3 まで）の扱い
+  description: 凍結期共通契約節が新設され、3パスの旧→新変更・凍結効力発生タイミング・P3までの読み取り互換・暗黙終了禁止がすべて明記されている。round-1
+    W1（案A）の適用内容と一致しており、収束を確認した。
+  rationale: round-2の主目的であるround-1適用後の収束確認として、W1対応の正本化が設計文書内で完結していることをINFOとして記録する。
+- severity: INFO
+  target_location: §3 出力形式・ログ形式の段落（.reviewcompass/runtime/logs/workflow-precheck.log、上書き可能）
+  description: ログパスは新配置へ更新済みだが、括弧内の「上書き可能」という注記が、凍結期共通契約節の「書き込みは常に新配置」・「既存分は旧置き場で凍結」という契約と語義的に干渉しないか確認が必要。ログは追記であり上書きではないため、表現上の混乱リスクがある。
+  rationale: 「上書き可能」は旧パス時代から存在した注記で、ログファイル自体の上書き可否（rotate等）を指す意図と読めるが、凍結契約の「上書き・追記をしない」とのスコープ差異が文書内で明示されていない。実装時に誤解が生じるリスクをINFOとして記録する。致命的ではないが、implementation段のTDD設計前に語義を統一しておくことが望ましい。
+- severity: INFO
+  target_location: diff §effective-prompts段落（旧パス読み取り互換の注記）
+  description: effective promptの由来注記内で「旧パス読み取り互換はP3まで維持し」と記載されているが、「新→旧の順」という探索順序の明記が、検査ログ・commit承認記録の由来注記には含まれておらず、3パス間で注記の粒度に差異がある。凍結期共通契約節が正本であるため実害はないが、各由来注記の記述水準が不均一である。
+  rationale: round-1 W1で「3箇所の由来注記から本節を参照する」方針が採用されており、詳細は凍結期共通契約節に集約する設計は正しい。ただし由来注記の粒度差はレビュアーの読み取り負荷を高める可能性があるため、参考情報としてINFOに記録する。

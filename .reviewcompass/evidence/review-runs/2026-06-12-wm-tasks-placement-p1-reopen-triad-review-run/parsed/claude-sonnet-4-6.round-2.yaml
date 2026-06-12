@@ -1,0 +1,18 @@
+role: primary
+provider: anthropic-api
+model: claude-sonnet-4-6
+attempts: 1
+duration_seconds: 15.611
+findings:
+- severity: INFO
+  target_location: T-004 責務（diff +行）凍結期責務末尾
+  description: 凍結期責務の記述で「読み取りは新配置優先・旧配置フォールバック（新→旧の順、3 パスとも P3 まで）」と書かれているが、旧パスにしか記録がない場合の挙動（フォールバック読み取り）については責務文中に明示されているものの、「新配置にも旧配置にも記録がない場合」の挙動（エラー・fail-closed
+    等）が責務本文に言及されていない。
+  rationale: テスト要件 5 および凍結期挙動テストでは「旧パスにしか記録がない場合の新→旧フォールバック」は機械検証対象に含まれているが、両方に記録がない場合の境界条件が責務に未定義のままでは、実装者が独自解釈を行うリスクがある。設計上流に明示がなければ
+    INFO 止まりだが、実装契約の網羅性として指摘しておく。
+- severity: INFO
+  target_location: T-004 テスト要件（diff +行）凍結期挙動テスト記述
+  description: 凍結期挙動テストは「3 パス × 3 観点＝計 9 観点」と明記されており、3 観点の内容（書き込み・旧配置新規書き込み禁止・フォールバック読み取り）も列挙されているが、3
+    パスの具体的なパス名（`.reviewcompass/runtime/logs/workflow-precheck.log`・`.reviewcompass/runtime/effective-prompts/`・`.reviewcompass/runtime/approvals/commit-approval.json`）がテスト要件の凍結期挙動テスト記述内に明示されていない（責務本文には明示あり）。テスト実装者がテスト要件のみを参照した場合、パス名の特定に責務本文の参照が必要となる。
+  rationale: 機械検証可能な粒度という観点では、テスト要件節が自己完結的であることが望ましい。ただし同一タスク内の責務との参照関係は近接しており、致命的ではないため
+    INFO とする。

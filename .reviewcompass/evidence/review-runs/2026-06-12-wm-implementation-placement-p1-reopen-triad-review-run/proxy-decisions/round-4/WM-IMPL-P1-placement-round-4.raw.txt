@@ -1,0 +1,26 @@
+```yaml
+decisions:
+  - finding_id: 2026-06-12-wm-implementation-placement-p1-reopen-triad-review-run-claude-sonnet-4-6-primary-001
+    cluster_id: P1
+    selected_option: A
+    final_label: should-fix
+    rationale: 呼び出し元でPathに包んでおり実害はないが、わずか1行の修正で戻り値の型をstrに統一でき、将来の潜在的な混乱を防げるため。
+    rejected_options:
+      B: 戻り値の型が引数に依存して揺れる状態を放置するのは、ドキュメントとの乖離や将来のバグの温床となるため。
+
+  - finding_id: 2026-06-12-wm-implementation-placement-p1-reopen-triad-review-run-claude-sonnet-4-6-primary-002
+    cluster_id: P2
+    selected_option: A
+    final_label: leave-as-is
+    rationale: 実テストでステージ前の削除も正しく検出されることが確認（green）されており、ファイル実体の現存判定でカバーできているため。
+    rejected_options:
+      B: すでに実環境でテストが通過しており、脆さの可能性という推測のみでテストを追加する実益に乏しいため。
+
+  - finding_id: 2026-06-12-wm-implementation-placement-p1-reopen-triad-review-run-claude-sonnet-4-6-primary-003
+    cluster_id: P3
+    selected_option: A
+    final_label: leave-as-is
+    rationale: Python 3の名前空間パッケージの仕様により動作は保証されており、実テスト17件でも問題なくgreenとなっているため。
+    rejected_options:
+      B: 実運用およびテストにおいて__init__.pyが不要であることが実証されており、冗長なファイル追加となるため。
+```

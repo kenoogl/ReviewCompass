@@ -1,0 +1,23 @@
+approved_by: proxy_model
+finding_id: 2026-06-12-wm-design-placement-p1-reopen-triad-review-run-gpt-5.5-adversarial-002
+cluster_id: W1
+round_id: round-1
+proxy_model_id: gemini-3.1-pro-preview
+decision_prompt_path: proxy-decision-prompts/WM-DESIGN-P1-placement-round-1.prompt.md
+selected_option: A
+final_label: must-fix
+rationale: 既存生成物の凍結契約が正本にないことは旧証跡の不変性を損なうERROR事項であり、共通箇所での契約新設が最も一貫性を保てるため。
+implementation_policy: design に凍結期の共通契約（凍結・効力発生時点・追加変更禁止・3 パスの P3 読み取り互換・暗黙終了なし）を
+  1 箇所新設し、3 箇所の注記から参照。effective prompt 注記に互換文言を補う。
+raw_response_path: proxy-decisions/WM-DESIGN-P1-placement-round-1.raw.txt
+candidate_options:
+- A
+- B
+- C
+source_raw_paths:
+- raw/claude-sonnet-4-6.round-1.txt
+- raw/gpt-5.5.round-1.txt
+- raw/gemini-3.1-pro-preview.round-1.txt
+rejected_options:
+  B: 各注記に完全な文言を複製すると記述が冗長化し保守性を下げるため。
+  C: レビューでの重大な指摘事項が解決されないままとなるため。

@@ -1,0 +1,5 @@
+findings:
+  - severity: WARN
+    target_location: ".reviewcompass/specs/workflow-management/design.md §実行時生成物の凍結期（P3 まで）の扱い / §13.5 commit approval bullet"
+    description: "commit 承認記録の旧配置が `.reviewcompass/approvals/` とディレクトリ単位で記載されており、旧ファイルパス `.reviewcompass/approvals/commit-approval.json` が凍結・読み取り互換契約の正本箇所で明示されていない。"
+    rationale: "本変更は 3 パスの配置契約変更であり、P1 実装では書き込み先切替と旧パス読み取り互換を TDD で実装する前提である。旧配置をディレクトリだけで表すと、commit approval の互換対象がファイル単位なのかディレクトリ配下全体なのかが曖昧になり、実装・テスト・P3 終了条件の解釈ずれを招く可能性がある。凍結契約の正本箇所では新旧とも完全なファイルパスを明示するのが安全である。"

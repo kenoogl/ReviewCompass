@@ -1,0 +1,18 @@
+approved_by: proxy_model
+finding_id: 2026-06-12-wm-design-placement-p1-reopen-triad-review-run-claude-sonnet-4-6-primary-002
+cluster_id: V2
+round_id: round-2
+proxy_model_id: gemini-3.1-pro-preview
+decision_prompt_path: proxy-decision-prompts/WM-DESIGN-P1-placement-round-2.prompt.md
+selected_option: A
+final_label: should-fix
+rationale: 凍結契約の対象（旧配置）とログファイル自体の再生成可否のスコープの違いを明確にすることで、実装やTDD設計時の誤解や混乱のリスクを軽微な追記で未然に防げるため。
+implementation_policy: 検査ログの「上書き可能」注記に語義分離の一言を補足する（ログ自体の再生成可否と凍結契約のスコープを分離）。
+raw_response_path: proxy-decisions/round-2/WM-DESIGN-P1-placement-round-2.raw.txt
+candidate_options:
+- A
+- B
+source_raw_paths:
+- raw/claude-sonnet-4-6.round-2.txt
+rejected_options:
+  B: 共通契約節が正本とはいえ、語義の干渉による実装時の混乱リスクを残すことは得策ではないため棄却。

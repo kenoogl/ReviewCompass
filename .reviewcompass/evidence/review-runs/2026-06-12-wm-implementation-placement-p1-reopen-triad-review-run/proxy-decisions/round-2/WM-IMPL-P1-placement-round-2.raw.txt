@@ -1,0 +1,50 @@
+```yaml
+decisions:
+  - finding_id: 2026-06-12-wm-implementation-placement-p1-reopen-triad-review-run-gpt-5.5-adversarial-001
+    cluster_id: M1
+    selected_option: A
+    final_label: leave-as-is
+    rationale: 操縦LLMの事実確認により、スクリプト冒頭のsys.path挿入が機能しており、ModuleNotFoundErrorのシナリオは実機で再現しないことが実証されたため。検証手順は記録に留める。
+    rejected_options:
+      B: 実際には発生しないエラーに対する過剰な防御であり、不要な重複ロジックの追加がK1の集約方針と逆行するため。
+
+  - finding_id: 2026-06-12-wm-implementation-placement-p1-reopen-triad-review-run-gpt-5.5-adversarial-002
+    cluster_id: M2
+    selected_option: A
+    final_label: should-fix
+    rationale: ツール自身は追記のみの利用であっても、「3パスとも読み取り新→旧」という契約の一貫性を担保するため。人間や外部ツール向けに明示的なresolverとテストを提供すべきである。
+    rejected_options:
+      B: precheck logだけが契約に沿った読み取りフォールバックを欠くことになり、APIとしての一貫性が損なわれるため。
+
+  - finding_id: 2026-06-12-wm-implementation-placement-p1-reopen-triad-review-run-gpt-5.5-adversarial-003
+    cluster_id: M3
+    selected_option: A
+    final_label: must-fix
+    rationale: K1のロジック集約方針に従い、手書きのフォールバック処理を共有のresolve_commit_approval_pathへ置換するため。論理の重複を排除し、将来のパス変更に伴う乖離リスクを防ぐ。
+    rejected_options:
+      B: ロジックの重複を残すことは、P3フェーズでの互換性削除や将来的なパス変更時に修正漏れを引き起こすリスクとなるため。
+
+  - finding_id: 2026-06-12-wm-implementation-placement-p1-reopen-triad-review-run-claude-sonnet-4-6-primary-001
+    cluster_id: M4
+    selected_option: A
+    final_label: should-fix
+    rationale: 内部でstr変換している実装実態に合わせて型注釈やdocstringを明確化し、呼び出し側の誤用リスクを低減するため。将来の保守性の観点から有用な改善である。
+    rejected_options:
+      B: 動作上の実害はないものの、型契約が不明確なままでは将来の拡張や保守時に不要な混乱を招く恐れがあるため。
+
+  - finding_id: 2026-06-12-wm-implementation-placement-p1-reopen-triad-review-run-claude-sonnet-4-6-primary-002
+    cluster_id: M5
+    selected_option: A
+    final_label: should-fix
+    rationale: 手動実行時の入力ミスによるエラーに対して、gitの生エラーではなく平易なメッセージを返すことでユーザビリティを向上させるため。
+    rejected_options:
+      B: 自動化フローには影響しないものの、利用者が直接操作する際のエラー体験を改善する機会を逃すため。
+
+  - finding_id: 2026-06-12-wm-implementation-placement-p1-reopen-triad-review-run-claude-sonnet-4-6-primary-003
+    cluster_id: M6
+    selected_option: A
+    final_label: leave-as-is
+    rationale: 現行の直列テスト実行構成では実害がなく、所見自体も将来並列化する際のリスク記録を目的としているため。現状での対応は不要と判断する。
+    rejected_options:
+      B: 現状の実行環境では干渉の影響がなく、いますぐテストコードを書き換える必要性が低いため。
+```

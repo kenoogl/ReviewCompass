@@ -1,0 +1,23 @@
+approved_by: proxy_model
+finding_id: 2026-06-12-wm-design-placement-p1-reopen-triad-review-run-gpt-5.5-adversarial-001
+cluster_id: W1
+round_id: round-1
+proxy_model_id: gemini-3.1-pro-preview
+decision_prompt_path: proxy-decision-prompts/WM-DESIGN-P1-placement-round-1.prompt.md
+selected_option: A
+final_label: must-fix
+rationale: 実装や運用で旧証跡を変更し得る致命的な欠落であり、共通箇所への明記で確実かつ保守性の高い解決が可能なため。
+implementation_policy: design に凍結期の共通契約（凍結・効力発生時点・追加変更禁止・3 パスの P3 読み取り互換・暗黙終了なし）を
+  1 箇所新設し、3 箇所の注記から参照。effective prompt 注記に互換文言を補う。
+raw_response_path: proxy-decisions/WM-DESIGN-P1-placement-round-1.raw.txt
+candidate_options:
+- A
+- B
+- C
+source_raw_paths:
+- raw/claude-sonnet-4-6.round-1.txt
+- raw/gpt-5.5.round-1.txt
+- raw/gemini-3.1-pro-preview.round-1.txt
+rejected_options:
+  B: 3箇所への複製は冗長であり、将来の改訂時に同期漏れのリスクを生むため。
+  C: 互換性維持の契約不備という重大な指摘が未解決のまま残るため。

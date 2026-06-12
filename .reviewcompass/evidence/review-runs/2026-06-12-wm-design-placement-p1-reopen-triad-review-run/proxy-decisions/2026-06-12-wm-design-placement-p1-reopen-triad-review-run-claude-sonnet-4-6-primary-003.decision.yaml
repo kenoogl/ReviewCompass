@@ -1,0 +1,23 @@
+approved_by: proxy_model
+finding_id: 2026-06-12-wm-design-placement-p1-reopen-triad-review-run-claude-sonnet-4-6-primary-003
+cluster_id: W1
+round_id: round-1
+proxy_model_id: gemini-3.1-pro-preview
+decision_prompt_path: proxy-decision-prompts/WM-DESIGN-P1-placement-round-1.prompt.md
+selected_option: A
+final_label: must-fix
+rationale: INFOレベルの指摘だが、W1クラスタ全体の共通解決策として凍結期の共通契約を新設する際に自然と組み込まれて解決されるため。
+implementation_policy: design に凍結期の共通契約（凍結・効力発生時点・追加変更禁止・3 パスの P3 読み取り互換・暗黙終了なし）を
+  1 箇所新設し、3 箇所の注記から参照。effective prompt 注記に互換文言を補う。
+raw_response_path: proxy-decisions/WM-DESIGN-P1-placement-round-1.raw.txt
+candidate_options:
+- A
+- B
+- C
+source_raw_paths:
+- raw/claude-sonnet-4-6.round-1.txt
+- raw/gpt-5.5.round-1.txt
+- raw/gemini-3.1-pro-preview.round-1.txt
+rejected_options:
+  B: 重複記述を増やすだけであり、一貫したルール管理には不適なため。
+  C: 明示終了に関する積極的な意図が欠落したままとなり、P3完了時のミスを誘発する懸念が残るため。

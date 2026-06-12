@@ -182,9 +182,40 @@ JSON 出力は、少なくとも次のキーを含む。
 
 既定パス：
 
-- `docs/logs/workflow-precheck.log`
+- `.reviewcompass/runtime/logs/workflow-precheck.log`（旧 `docs/logs/workflow-precheck.log` からの変更は
+  2026-06-12 配置規約 PLC-DEC-004〜005・009〜011 反映。旧ログは凍結、読み取り互換は P3 まで）
 
 `--log-path` でテスト用の隔離パスへ上書きできる。
+
+### 8.1 実行時生成物の凍結期（P3 まで）の扱い
+
+検査ログ・effective prompt（`.reviewcompass/runtime/effective-prompts/`、旧 `.reviewcompass/effective-prompts/`）・
+commit 承認レコード（`.reviewcompass/runtime/approvals/commit-approval.json`、旧 `.reviewcompass/approvals/commit-approval.json`）の
+3 パスは、書き込みを常に新配置（runtime 区画、原則 git 無視）へ行い、読み取りは新→旧の順でフォールバックする
+（新旧競合時は新配置を正とする）。契約の正本は workflow-management design §実行時生成物の凍結期（P3 まで）の扱い。
+定数と読み取り解決の実装正本は `tools/check_workflow_action/runtime_paths.py`。
+
+凍結検査の手動実行手順（ゲートへの自動統合は行わず、手動運用とする）：
+
+1. 凍結境界（P1 実装反映コミット＝書き込み先切替のコミット）を特定する。例：
+
+   ```bash
+   git log --reverse --format=%H -S "runtime/logs/workflow-precheck" -- tools/check_workflow_action/runtime_paths.py | head -1
+   ```
+
+2. 旧 3 パスへの凍結違反（追加・変更・削除）を検出する。例：
+
+   ```bash
+   PYTHONPATH=. .venv/bin/python3 -c "
+   from tools.check_workflow_action.placement_freeze import check_runtime_placement_freeze
+   for v in check_runtime_placement_freeze('.', '<freeze-commit>'):
+     print(v)
+   "
+   ```
+
+   注記：ReviewCompass 自身では旧 3 パスは gitignore 対象（未追跡）のため、git 履歴で不変性を立証できるのは
+   旧配置を追跡している構成（対象アプリ等）に限る。未追跡の旧成果物の凍結は書き込み経路のテスト
+   （`tests/tools/test_runtime_placement_freeze.py`）で担保する。
 
 ## 9. テスト観点
 

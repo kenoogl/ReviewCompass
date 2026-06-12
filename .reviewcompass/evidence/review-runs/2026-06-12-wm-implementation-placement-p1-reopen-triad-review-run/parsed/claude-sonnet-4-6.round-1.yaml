@@ -1,0 +1,35 @@
+role: primary
+provider: anthropic-api
+model: claude-sonnet-4-6
+attempts: 1
+duration_seconds: 28.953
+findings:
+- severity: INFO
+  target_location: 'tools/guarded-git-commit.py: consume_commit_approval()'
+  description: 旧配置にのみ承認レコードが存在する場合、read_path は旧配置を指すが write_path は常に新配置 (DEFAULT_COMMIT_APPROVAL_PATH)
+    へ固定される。この非対称動作は設計契約（書き込みは常に新配置）に完全準拠しているが、旧配置から読んだレコードの consumed 状態が新配置へ書き出された後も、旧配置の未消費レコードが残り続ける。運用上の二重起動ガード等への影響は
+    P3 完了後に旧配置を削除するまで潜在する。
+  rationale: 契約上は許容された挙動であり違反ではないが、凍結期中に同一セッションで旧レコードを再読取りする経路が残る場合、consumed フラグの不一致が誤った再承認を許可するリスクがある。tasks
+    T-004 の完了条件観点 3（フォールバック読み取り）と観点 1（書き込み常時新配置）の組み合わせ挙動として、運用注意事項として明示しておく価値がある。
+- severity: INFO
+  target_location: 'tools/check_workflow_action/placement_freeze.py: _matching() /
+    check_runtime_placement_freeze()'
+  description: deleted（freeze_commit 時点で存在したが現在 git 追跡から消えたファイル）の検出が violations に含まれない。現実装は
+    added（frozen に無くて現在ある）と modified（frozen にあり diff あり）を検出するが、frozen に存在し tracked
+    にも untracked にも無いファイル（削除ケース）は無視される。
+  rationale: design 契約『凍結済み旧成果物の不変性』には削除も違反に含まれる（追加・変更・削除）と tasks 観点 5 に明記されている。テスト
+    test_changes_deletions_and_additions_are_violations では LEGACY_LOG を unlink しているが、violations
+    検出のアサートは workflow-precheck.log について frozen_file_changed のみ確認しており deleted ケースの検出アサートは存在しない。実装とテストの双方でこの観点がカバーされていない可能性がある。
+- severity: WARN
+  target_location: 'tests/tools/test_runtime_placement_freeze.py: test_changes_deletions_and_additions_are_violations()'
+  description: LEGACY_LOG を unlink() した後の violations アサートが frozen_file_changed を期待しているが、ファイルが削除された場合
+    git diff --name-only <freeze_commit> は当該ファイルを出力するため changed に含まれ、changed & frozen
+    により frozen_file_changed として検出される。一方、ls-files も ls-files --others も削除済みファイルを返さないため
+    tracked にも untracked にも含まれず added にはならない。この動作は偶発的に正しいが、『削除 = frozen_file_changed』という解釈は変更と削除を区別しない曖昧な命名であり、削除専用の違反種別（deleted_after_freeze
+    等）が存在しない点は将来の保守で混乱を招く可能性がある。
+  rationale: tasks T-004 観点 5 は追加・変更・削除を明示的に列挙している。実装が削除を変更と同一ラベル（frozen_file_changed）で報告する場合、違反種別の意味論が設計仕様と乖離し、違反レポートを受け取るツールや人間が削除違反を正確に識別できない。
+- severity: INFO
+  target_location: 'tools/check-workflow-action.py: resolve_effective_prompt_read_path()'
+  description: 引数 relative_path が新配置形式（DEFAULT_EFFECTIVE_PROMPT_DIR + '/' で始まる）でない場合（例：絶対パス、旧配置パスを直接渡す等）、フォールバック分岐をスキップして
+    relative_path をそのまま返す。呼び出し側が旧配置パスを渡した場合は新配置へのマッピングが行われない。
+  rationale: 現在の呼び出し元が新配置パスのみを渡すことが実装上保証されていれば実害はないが、関数シグネチャと docstring には前提条件の制約が明示されていない。将来の変更で旧配置パスが渡された場合のサイレントな誤動作を防ぐため、入力前提条件の明示またはアサーションの追加が望ましい。

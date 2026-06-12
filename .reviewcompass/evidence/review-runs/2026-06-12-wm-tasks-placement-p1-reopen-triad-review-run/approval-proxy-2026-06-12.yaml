@@ -1,0 +1,49 @@
+approved_action: review_run_triage
+approved_by: proxy_model
+proxy_model_id: gemini-3.1-pro-preview
+review_run_id: 2026-06-12-wm-tasks-placement-p1-reopen-triad-review-run
+round_id: round-1
+summary_presented_to_user: true
+triage_presented_to_user: true
+autonomous_execution_authorization:
+  approved_by: user
+  approval_record_path: conversation:2026-06-12:user-proxy-autonomous-execution
+  quote: proxy_modelで自律実行（wm reopen の開始承認は「承認承認」、design approval は「承認」2026-06-12）
+  scope: wm tasks triad-review の所見判断を proxy_model に委任して自律実行する。不可逆操作は人間の明示承認を要する。
+approved_finding_ids:
+- 2026-06-12-wm-tasks-placement-p1-reopen-triad-review-run-claude-sonnet-4-6-primary-001
+- 2026-06-12-wm-tasks-placement-p1-reopen-triad-review-run-claude-sonnet-4-6-primary-002
+- 2026-06-12-wm-tasks-placement-p1-reopen-triad-review-run-claude-sonnet-4-6-primary-003
+- 2026-06-12-wm-tasks-placement-p1-reopen-triad-review-run-claude-sonnet-4-6-primary-004
+- 2026-06-12-wm-tasks-placement-p1-reopen-triad-review-run-gemini-3.1-pro-preview-judgment-001
+- 2026-06-12-wm-tasks-placement-p1-reopen-triad-review-run-gemini-3.1-pro-preview-judgment-002
+- 2026-06-12-wm-tasks-placement-p1-reopen-triad-review-run-gemini-3.1-pro-preview-judgment-003
+- 2026-06-12-wm-tasks-placement-p1-reopen-triad-review-run-gpt-5.5-adversarial-001
+- 2026-06-12-wm-tasks-placement-p1-reopen-triad-review-run-gpt-5.5-adversarial-002
+- 2026-06-12-wm-tasks-placement-p1-reopen-triad-review-run-gpt-5.5-adversarial-003
+- 2026-06-12-wm-tasks-placement-p1-reopen-triad-review-run-gpt-5.5-adversarial-004
+approved_final_labels:
+  2026-06-12-wm-tasks-placement-p1-reopen-triad-review-run-gpt-5.5-adversarial-001: must-fix
+  2026-06-12-wm-tasks-placement-p1-reopen-triad-review-run-gpt-5.5-adversarial-002: must-fix
+  2026-06-12-wm-tasks-placement-p1-reopen-triad-review-run-gpt-5.5-adversarial-003: must-fix
+  2026-06-12-wm-tasks-placement-p1-reopen-triad-review-run-gpt-5.5-adversarial-004: must-fix
+  2026-06-12-wm-tasks-placement-p1-reopen-triad-review-run-gemini-3.1-pro-preview-judgment-001: must-fix
+  2026-06-12-wm-tasks-placement-p1-reopen-triad-review-run-gemini-3.1-pro-preview-judgment-002: must-fix
+  2026-06-12-wm-tasks-placement-p1-reopen-triad-review-run-gemini-3.1-pro-preview-judgment-003: must-fix
+  2026-06-12-wm-tasks-placement-p1-reopen-triad-review-run-claude-sonnet-4-6-primary-001: must-fix
+  2026-06-12-wm-tasks-placement-p1-reopen-triad-review-run-claude-sonnet-4-6-primary-002: must-fix
+  2026-06-12-wm-tasks-placement-p1-reopen-triad-review-run-claude-sonnet-4-6-primary-003: must-fix
+  2026-06-12-wm-tasks-placement-p1-reopen-triad-review-run-claude-sonnet-4-6-primary-004: must-fix
+proxy_decisions:
+  2026-06-12-wm-tasks-placement-p1-reopen-triad-review-run-gpt-5.5-adversarial-001: proxy-decisions/2026-06-12-wm-tasks-placement-p1-reopen-triad-review-run-gpt-5.5-adversarial-001.decision.yaml
+  2026-06-12-wm-tasks-placement-p1-reopen-triad-review-run-gpt-5.5-adversarial-002: proxy-decisions/2026-06-12-wm-tasks-placement-p1-reopen-triad-review-run-gpt-5.5-adversarial-002.decision.yaml
+  2026-06-12-wm-tasks-placement-p1-reopen-triad-review-run-gpt-5.5-adversarial-003: proxy-decisions/2026-06-12-wm-tasks-placement-p1-reopen-triad-review-run-gpt-5.5-adversarial-003.decision.yaml
+  2026-06-12-wm-tasks-placement-p1-reopen-triad-review-run-gpt-5.5-adversarial-004: proxy-decisions/2026-06-12-wm-tasks-placement-p1-reopen-triad-review-run-gpt-5.5-adversarial-004.decision.yaml
+  2026-06-12-wm-tasks-placement-p1-reopen-triad-review-run-gemini-3.1-pro-preview-judgment-001: proxy-decisions/2026-06-12-wm-tasks-placement-p1-reopen-triad-review-run-gemini-3.1-pro-preview-judgment-001.decision.yaml
+  2026-06-12-wm-tasks-placement-p1-reopen-triad-review-run-gemini-3.1-pro-preview-judgment-002: proxy-decisions/2026-06-12-wm-tasks-placement-p1-reopen-triad-review-run-gemini-3.1-pro-preview-judgment-002.decision.yaml
+  2026-06-12-wm-tasks-placement-p1-reopen-triad-review-run-gemini-3.1-pro-preview-judgment-003: proxy-decisions/2026-06-12-wm-tasks-placement-p1-reopen-triad-review-run-gemini-3.1-pro-preview-judgment-003.decision.yaml
+  2026-06-12-wm-tasks-placement-p1-reopen-triad-review-run-claude-sonnet-4-6-primary-001: proxy-decisions/2026-06-12-wm-tasks-placement-p1-reopen-triad-review-run-claude-sonnet-4-6-primary-001.decision.yaml
+  2026-06-12-wm-tasks-placement-p1-reopen-triad-review-run-claude-sonnet-4-6-primary-002: proxy-decisions/2026-06-12-wm-tasks-placement-p1-reopen-triad-review-run-claude-sonnet-4-6-primary-002.decision.yaml
+  2026-06-12-wm-tasks-placement-p1-reopen-triad-review-run-claude-sonnet-4-6-primary-003: proxy-decisions/2026-06-12-wm-tasks-placement-p1-reopen-triad-review-run-claude-sonnet-4-6-primary-003.decision.yaml
+  2026-06-12-wm-tasks-placement-p1-reopen-triad-review-run-claude-sonnet-4-6-primary-004: proxy-decisions/2026-06-12-wm-tasks-placement-p1-reopen-triad-review-run-claude-sonnet-4-6-primary-004.decision.yaml
+notes: X1（同根 11 件、design 凍結期契約の tasks 翻訳欠落）＝案 A 採用。ce reopen C7 と同型の対処。

@@ -1,0 +1,20 @@
+approved_by: proxy_model
+finding_id: 2026-06-12-wm-implementation-placement-p1-reopen-triad-review-run-gpt-5.5-adversarial-001
+cluster_id: N1
+round_id: round-3
+proxy_model_id: gemini-3.1-pro-preview
+decision_prompt_path: proxy-decision-prompts/WM-IMPL-P1-placement-round-3.prompt.md
+selected_option: A
+final_label: must-fix
+rationale: 旧形式の入力時に新配置が無視される挙動は、P1で確定した「新旧競合時は新配置を優先する」という契約への明白な違反であり、実運用において誤った旧promptのshaが採用される実害リスクがあるため。
+implementation_policy: resolver を双方向対応へ：旧形式入力を新形式へ正規化して新→旧の順で存在確認。新形式・旧形式・絶対パスの境界テストを追加し
+  docstring を追従。
+raw_response_path: proxy-decisions/round-3/WM-IMPL-P1-placement-round-3.raw.txt
+candidate_options:
+- A
+- B
+source_raw_paths:
+- raw/claude-sonnet-4-6.round-3.txt
+- raw/gpt-5.5.round-3.txt
+rejected_options:
+  B: 契約違反の挙動を放置し、互換読み取り経路における障害の根本原因を残すことになるため。

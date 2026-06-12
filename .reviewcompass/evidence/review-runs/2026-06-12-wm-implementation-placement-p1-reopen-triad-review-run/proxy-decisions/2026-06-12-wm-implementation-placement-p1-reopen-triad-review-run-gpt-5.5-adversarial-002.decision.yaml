@@ -1,0 +1,23 @@
+approved_by: proxy_model
+finding_id: 2026-06-12-wm-implementation-placement-p1-reopen-triad-review-run-gpt-5.5-adversarial-002
+cluster_id: K2
+round_id: round-1
+proxy_model_id: gemini-3.1-pro-preview
+decision_prompt_path: proxy-decision-prompts/WM-IMPL-P1-placement-round-1.prompt.md
+selected_option: B
+final_label: should-fix
+rationale: 要件は15観点の機械検証でありゲートへの自動統合までは要求されていないため。自動化によるフェーズ方針からの逸脱を避け、手動実行手順を運用文書に記載するアプローチを採用する。
+implementation_policy: WORKFLOW_PRECHECK_DETAILS.md へ凍結検査の手動実行手順を記載（ゲート統合は見送り、ce C7-B
+  と同型）。
+raw_response_path: proxy-decisions/WM-IMPL-P1-placement-round-1.raw.txt
+candidate_options:
+- A
+- B
+- C
+source_raw_paths:
+- raw/claude-sonnet-4-6.round-1.txt
+- raw/gpt-5.5.round-1.txt
+- raw/gemini-3.1-pro-preview.round-1.txt
+rejected_options:
+  A: 自動統合はfreezeコミットの自動解決など要求以上の複雑化を招くため棄却。
+  C: 手順が文書化されないと検証機能が運用で利用されないリスクが残るため棄却。

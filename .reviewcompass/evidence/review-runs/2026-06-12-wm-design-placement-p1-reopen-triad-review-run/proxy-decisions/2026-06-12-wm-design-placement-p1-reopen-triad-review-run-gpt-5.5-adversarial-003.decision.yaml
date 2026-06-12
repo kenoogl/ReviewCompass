@@ -1,0 +1,20 @@
+approved_by: proxy_model
+finding_id: 2026-06-12-wm-design-placement-p1-reopen-triad-review-run-gpt-5.5-adversarial-003
+cluster_id: W2
+round_id: round-1
+proxy_model_id: gemini-3.1-pro-preview
+decision_prompt_path: proxy-decision-prompts/WM-DESIGN-P1-placement-round-1.prompt.md
+selected_option: A
+final_label: leave-as-is
+rationale: 事実確認により現在の決定番号引用が正しいことが判明しており、PLC-DEC-005は実行時ログ専用で適用対象外であるため。
+implementation_policy: 変更なし（leave-as-is）。決定台帳の定義により現行の決定番号引用が正しい（DEC-005 は実行時ログ専用）。
+raw_response_path: proxy-decisions/WM-DESIGN-P1-placement-round-1.raw.txt
+candidate_options:
+- A
+- B
+source_raw_paths:
+- raw/claude-sonnet-4-6.round-1.txt
+- raw/gpt-5.5.round-1.txt
+- raw/gemini-3.1-pro-preview.round-1.txt
+rejected_options:
+  B: 決定台帳と矛盾する誤った引用を行うことになり、設計の追跡性をかえって損なってしまうため。

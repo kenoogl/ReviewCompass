@@ -1,0 +1,101 @@
+```yaml
+decisions:
+  - finding_id: 2026-06-12-wm-tasks-placement-p1-reopen-triad-review-run-gpt-5.5-adversarial-001
+    cluster_id: X1
+    selected_option: A
+    final_label: must-fix
+    rationale: 先行事例（ce reopenでの同型指摘）と同様に、designで確定した凍結期共通契約はtasksの責務とテスト要件の双方へ明記する必要がある。本指摘はeffective promptやcommit承認記録のテスト要求の欠落を捉えており、案Aの一括追記で解消する。
+    rejected_options:
+      B: テスト要件のみの拡張では責務（仕様）としての合意事項が不明確となり、先行事例の確定形式と乖離するため。
+      C: design契約のタスク翻訳欠落を放置すれば、TDDにおける実装・機械検証漏れに直結するため。
+
+  - finding_id: 2026-06-12-wm-tasks-placement-p1-reopen-triad-review-run-gpt-5.5-adversarial-002
+    cluster_id: X1
+    selected_option: A
+    final_label: must-fix
+    rationale: 先行事例に倣い、designの凍結契約はtasksへ完全に反映されるべきである。旧配置への新規書き込み禁止という核心的な責務とテスト要件の欠落を的確に指摘しており、案Aを採用して一括で追記・解消する。
+    rejected_options:
+      B: 旧配置への書き込み禁止は責務として明記されるべきであり、テスト要件の拡張のみでは仕様の定義が不足するため。
+      C: 旧配置への書き込み禁止機構の実装および検証が漏れるリスクがあるため。
+
+  - finding_id: 2026-06-12-wm-tasks-placement-p1-reopen-triad-review-run-gpt-5.5-adversarial-003
+    cluster_id: X1
+    selected_option: A
+    final_label: must-fix
+    rationale: 読み取り互換における「新→旧」のフォールバック順序はdesign契約の重要要素である。この探索順の明記漏れを捉えた本指摘は妥当であり、案Aによる責務・テスト要件の一括更新によって解消する。
+    rejected_options:
+      B: 探索順序はシステムの挙動を規定する責務の一部であり、テスト側のみに記載するのは不適切であるため。
+      C: 古い仕様のままでは、旧パスの内容が新パスを上書きするような誤実装を招くため。
+
+  - finding_id: 2026-06-12-wm-tasks-placement-p1-reopen-triad-review-run-gpt-5.5-adversarial-004
+    cluster_id: X1
+    selected_option: A
+    final_label: must-fix
+    rationale: レビュー観点で求められた例外系・境界条件のうち、旧パスのみに記録が存在する場合の読み取りテストが3パス共通になっていない点を指摘しており妥当。案A（計9観点のテスト要求明示）で解消する。
+    rejected_options:
+      B: テスト要件の拡充に加えて、責務側にも3パス共通の契約であることを明記する先行事例の形式に揃えるべきであるため。
+      C: 一部のパスでフォールバック挙動の検証が漏れ、読み取り互換性が損なわれるため。
+
+  - finding_id: 2026-06-12-wm-tasks-placement-p1-reopen-triad-review-run-gemini-3.1-pro-preview-judgment-001
+    cluster_id: X1
+    selected_option: A
+    final_label: must-fix
+    rationale: design上の新機構の核心である「書き込み遮断」と「新→旧読み取り」の責務・テスト要件への翻訳漏れを的確に指摘している。先行事例に倣い、案Aで責務とテスト要件の両方に確定形式を追記し解消する。
+    rejected_options:
+      B: 新機構の核心的振る舞いはテストだけでなく、タスクの責務として明確に定義されなければならないため。
+      C: 実装者が設計意図を把握できず、凍結契約の機械検証が実装されない原因となるため。
+
+  - finding_id: 2026-06-12-wm-tasks-placement-p1-reopen-triad-review-run-gemini-3.1-pro-preview-judgment-002
+    cluster_id: X1
+    selected_option: A
+    final_label: must-fix
+    rationale: design契約では3パス全てについて読み取り互換維持を求めているが、テスト要求がログのみに偏っているという指摘は妥当である。案Aを採用し、3パス全量に対する互換性検証要件を追記する。
+    rejected_options:
+      B: 責務側においても3パス全ての扱い（新配置への書き込み・互換）を一貫して明記し、先行事例の形式を踏襲する必要があるため。
+      C: effective promptやcommit承認記録の互換性検証が実装漏れとなるリスクがあるため。
+
+  - finding_id: 2026-06-12-wm-tasks-placement-p1-reopen-triad-review-run-gemini-3.1-pro-preview-judgment-003
+    cluster_id: X1
+    selected_option: A
+    final_label: must-fix
+    rationale: 凍結の効力発生時点や互換終了の条件といった重要な境界条件の翻訳漏れを捉えている。案Aを採用し、責務内にP1実装反映コミット時の効力発生と暗黙終了なしの規定を明記することで対応する。
+    rejected_options:
+      B: ライフサイクルや状態遷移の境界条件はシステムの責務に関わる規定であり、テスト要件の拡張だけでは解決しないため。
+      C: 効力発生のタイミングを誤認したり、将来のフェーズで互換コードが早期削除されるリスクを排除できないため。
+
+  - finding_id: 2026-06-12-wm-tasks-placement-p1-reopen-triad-review-run-claude-sonnet-4-6-primary-001
+    cluster_id: X1
+    selected_option: A
+    final_label: must-fix
+    rationale: commit承認記録のみ旧パスの明示が欠落しているという指摘は、3パス一貫性の観点から妥当である。案Aによる責務とテスト要件の全面的な再定義・追記を行うことで、パスの明示を含めて一括解消する。
+    rejected_options:
+      B: 責務側の記述の不備（旧パスの不完全な明示）を指摘しており、テスト要件側の変更だけでは本質的な解決にならないため。
+      C: 実装者が対象となる旧パスを特定できず、互換実装が不完全になる恐れがあるため。
+
+  - finding_id: 2026-06-12-wm-tasks-placement-p1-reopen-triad-review-run-claude-sonnet-4-6-primary-002
+    cluster_id: X1
+    selected_option: A
+    final_label: must-fix
+    rationale: テスト要件5においてcommit承認記録の旧パス互換テストがカバーされていないという翻訳漏れの指摘。先行事例と同様にmust-fixとし、案Aで3パスそれぞれに対する計9観点のテスト要求を明示する。
+    rejected_options:
+      B: テスト要件の拡充に留まらず、責務側にも3パス一括での凍結契約を明示的に反映させることが先行事例の基準であるため。
+      C: TDDによる互換実装の検証が不完全なままとなり、品質を担保できないため。
+
+  - finding_id: 2026-06-12-wm-tasks-placement-p1-reopen-triad-review-run-claude-sonnet-4-6-primary-003
+    cluster_id: X1
+    selected_option: A
+    final_label: must-fix
+    rationale: 旧パスへの新規書き込み禁止（凍結違反）の検証要求がテスト要件において不明瞭であるとの指摘は妥当。案Aを採用し、書き込みが発生しないことの動作検証を3パスすべてについて要求する。
+    rejected_options:
+      B: 違反検出だけでなく、責務として書き込み禁止契約自体をtasks上で明確に定義する必要があるため。
+      C: 禁止側の検証が要求されないままでは、implementationで旧パスへの書き込みが残存する凍結違反を見逃すため。
+
+  - finding_id: 2026-06-12-wm-tasks-placement-p1-reopen-triad-review-run-claude-sonnet-4-6-primary-004
+    cluster_id: X1
+    selected_option: A
+    final_label: must-fix
+    rationale: designの確定契約である「効力発生タイミング」の境界条件が翻訳省略されている点を的確に捉えている。案Aを採用し、責務内にP1実装反映コミット時点での効力発生を明記することで対応する。
+    rejected_options:
+      B: 境界条件はテスト要件のみならず、責務（システムとしての契約事項）として明記されるべきであるため。
+      C: implementation者がコミット前後の動作切り替えロジックを誤実装するリスクを放置することになるため。
+```

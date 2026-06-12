@@ -1,0 +1,19 @@
+approved_by: proxy_model
+finding_id: 2026-06-12-wm-implementation-placement-p1-reopen-triad-review-run-gpt-5.5-adversarial-001
+cluster_id: M1
+round_id: round-2
+proxy_model_id: gemini-3.1-pro-preview
+decision_prompt_path: proxy-decision-prompts/WM-IMPL-P1-placement-round-2.prompt.md
+selected_option: A
+final_label: leave-as-is
+rationale: 操縦LLMの事実確認により、スクリプト冒頭のsys.path挿入が機能しており、ModuleNotFoundErrorのシナリオは実機で再現しないことが実証されたため。検証手順は記録に留める。
+implementation_policy: 変更なし（leave-as-is）。実証検査（リポジトリ外 cwd・スクリプト実行で旧配置 sha を正しく解決）を記録。
+raw_response_path: proxy-decisions/round-2/WM-IMPL-P1-placement-round-2.raw.txt
+candidate_options:
+- A
+- B
+source_raw_paths:
+- raw/claude-sonnet-4-6.round-2.txt
+- raw/gpt-5.5.round-2.txt
+rejected_options:
+  B: 実際には発生しないエラーに対する過剰な防御であり、不要な重複ロジックの追加がK1の集約方針と逆行するため。

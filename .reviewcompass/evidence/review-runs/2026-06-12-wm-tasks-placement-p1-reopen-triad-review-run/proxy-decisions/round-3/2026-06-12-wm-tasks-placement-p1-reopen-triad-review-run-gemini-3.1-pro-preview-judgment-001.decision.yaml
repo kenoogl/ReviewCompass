@@ -1,0 +1,19 @@
+approved_by: proxy_model
+finding_id: 2026-06-12-wm-tasks-placement-p1-reopen-triad-review-run-gemini-3.1-pro-preview-judgment-001
+cluster_id: T1
+round_id: round-3
+proxy_model_id: gemini-3.1-pro-preview
+decision_prompt_path: proxy-decision-prompts/WM-TASKS-P1-placement-round-3.prompt.md
+selected_option: A
+final_label: must-fix
+rationale: designで確定済みの新配置優先契約を確実に機械検証するため、観点4を追加し先行のce事例と同等のTDD要件を担保する必要があるから。
+implementation_policy: T-004 の凍結期挙動テストへ観点 4「新旧競合時の新配置優先」を追加し、完了条件 5 を 4 観点へ拡張する。
+raw_response_path: proxy-decisions/round-3/WM-TASKS-P1-placement-round-3.raw.txt
+candidate_options:
+- A
+- B
+source_raw_paths:
+- raw/gpt-5.5.round-3.txt
+- raw/gemini-3.1-pro-preview.round-3.txt
+rejected_options:
+  B: 実装が旧配置を優先する誤った挙動になっていてもテストを通過してしまう致命的な検出漏れを残すため。

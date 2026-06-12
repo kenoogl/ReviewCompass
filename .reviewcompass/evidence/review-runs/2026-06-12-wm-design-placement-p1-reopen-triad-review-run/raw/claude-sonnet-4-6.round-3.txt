@@ -1,0 +1,15 @@
+findings:
+  - severity: INFO
+    target_location: "design.md §実行時生成物の凍結期（P3 まで）の扱い"
+    description: "凍結期共通契約の新設節は3パスの新旧パス対応・効力発生条件・互換終了条件を明記しており、round-1 W1 案A適用の意図に沿っている。各由来注記からの正本参照も一貫している。"
+    rationale: "round-2・round-3 適用後の収束確認として、新設節の内容・参照構造に重大な欠落は認められない。INFO レベルの観察として記録する。"
+
+  - severity: INFO
+    target_location: "design.md 出力形式の記述（ログ追記箇所）"
+    description: "「上書き可能＝ログファイル自体の再生成可否を指す。旧配置を対象とする凍結契約とはスコープが異なる」の補足文は round-3 V2 適用に対応しており、語義の混同を防ぐ説明として機能している。"
+    rationale: "V2 should-fix の適用が意図どおり反映されていることを確認。機能上の問題はないが、round-3 収束確認の記録として残す。"
+
+  - severity: INFO
+    target_location: "design.md §effective-prompt パス変更記述"
+    description: "PLC-DEC-005 非引用（effective prompt・commit 承認記録は PLC-DEC-004・009〜011 のみ引用）は round-1 W2 leave-as-is 判断と整合しており、決定番号の引用範囲に不整合はない。"
+    rationale: "W2 leave-as-is の判断が正しく保持されていることを確認。変更不要の状態が維持されている。"

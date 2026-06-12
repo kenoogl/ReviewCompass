@@ -1,0 +1,19 @@
+approved_by: proxy_model
+finding_id: 2026-06-12-wm-tasks-placement-p1-reopen-triad-review-run-claude-sonnet-4-6-primary-002
+cluster_id: Y3
+round_id: round-2
+proxy_model_id: gemini-3.1-pro-preview
+decision_prompt_path: proxy-decision-prompts/WM-TASKS-P1-placement-round-2.prompt.md
+selected_option: A
+final_label: leave-as-is
+rationale: 同一タスク内の責務本文に完全なパス名が明記されており、近接参照で容易に特定可能であるため。パス名を重複記載すると、将来のパス変更時などに同期漏れのリスクや維持コストを生む。
+implementation_policy: 変更なし（責務本文の近接参照で足りる）。
+raw_response_path: proxy-decisions/round-2/WM-TASKS-P1-placement-round-2.raw.txt
+candidate_options:
+- A
+- B
+source_raw_paths:
+- raw/gpt-5.5.round-2.txt
+- raw/claude-sonnet-4-6.round-2.txt
+rejected_options:
+  B: 致命的でない参照の手間を省くために、無用な重複記載による改訂時の同期コストを抱え込むことは不合理であるため。

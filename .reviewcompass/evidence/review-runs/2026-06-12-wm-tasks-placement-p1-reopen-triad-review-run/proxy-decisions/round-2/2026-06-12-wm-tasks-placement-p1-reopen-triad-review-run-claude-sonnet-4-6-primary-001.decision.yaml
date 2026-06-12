@@ -1,0 +1,19 @@
+approved_by: proxy_model
+finding_id: 2026-06-12-wm-tasks-placement-p1-reopen-triad-review-run-claude-sonnet-4-6-primary-001
+cluster_id: Y2
+round_id: round-2
+proxy_model_id: gemini-3.1-pro-preview
+decision_prompt_path: proxy-decision-prompts/WM-TASKS-P1-placement-round-2.prompt.md
+selected_option: A
+final_label: should-fix
+rationale: 両方に記録がない場合は既存挙動（初回作成やfail-closed等）に従うという事実を1文明記することで、実装者が推測に頼ったり独自解釈を混入させたりする余地を塞ぐことができるため。
+implementation_policy: T-004 責務へ「新旧いずれにも記録がない場合は各ツールの既存挙動に従い本変更はそれを変えない」を 1 文追記。
+raw_response_path: proxy-decisions/round-2/WM-TASKS-P1-placement-round-2.raw.txt
+candidate_options:
+- A
+- B
+source_raw_paths:
+- raw/gpt-5.5.round-2.txt
+- raw/claude-sonnet-4-6.round-2.txt
+rejected_options:
+  B: 最小の変更で済むものの、実装者が既存挙動の維持を推測で判断する余地を残すことは安全側の実装において望ましくないため。

@@ -1,0 +1,25 @@
+approved_action: review_run_triage
+approved_by: proxy_model
+proxy_model_id: gemini-3.1-pro-preview
+review_run_id: 2026-06-12-wm-design-placement-p1-reopen-triad-review-run
+round_id: round-2
+summary_presented_to_user: true
+triage_presented_to_user: true
+autonomous_execution_authorization:
+  approved_by: user
+  approval_record_path: conversation:2026-06-12:user-proxy-autonomous-execution
+  quote: proxy_modelで自律実行（wm design triad-review の開始承認は「承認承認」2026-06-12）
+  scope: round-2 の所見判断を proxy_model に委任して自律実行する。不可逆操作は人間の明示承認を要する。
+approved_finding_ids:
+- 2026-06-12-wm-design-placement-p1-reopen-triad-review-run-claude-sonnet-4-6-primary-001
+- 2026-06-12-wm-design-placement-p1-reopen-triad-review-run-claude-sonnet-4-6-primary-002
+- 2026-06-12-wm-design-placement-p1-reopen-triad-review-run-claude-sonnet-4-6-primary-003
+approved_final_labels:
+  2026-06-12-wm-design-placement-p1-reopen-triad-review-run-claude-sonnet-4-6-primary-001: leave-as-is
+  2026-06-12-wm-design-placement-p1-reopen-triad-review-run-claude-sonnet-4-6-primary-002: should-fix
+  2026-06-12-wm-design-placement-p1-reopen-triad-review-run-claude-sonnet-4-6-primary-003: leave-as-is
+proxy_decisions:
+  2026-06-12-wm-design-placement-p1-reopen-triad-review-run-claude-sonnet-4-6-primary-001: proxy-decisions/round-2/2026-06-12-wm-design-placement-p1-reopen-triad-review-run-claude-sonnet-4-6-primary-001.decision.yaml
+  2026-06-12-wm-design-placement-p1-reopen-triad-review-run-claude-sonnet-4-6-primary-002: proxy-decisions/round-2/2026-06-12-wm-design-placement-p1-reopen-triad-review-run-claude-sonnet-4-6-primary-002.decision.yaml
+  2026-06-12-wm-design-placement-p1-reopen-triad-review-run-claude-sonnet-4-6-primary-003: proxy-decisions/round-2/2026-06-12-wm-design-placement-p1-reopen-triad-review-run-claude-sonnet-4-6-primary-003.decision.yaml
+notes: V2＝should-fix（「上書き可能」の語義分離の補足）。V1・V3＝leave-as-is。敵対役・判定役は round-2 所見ゼロ。
