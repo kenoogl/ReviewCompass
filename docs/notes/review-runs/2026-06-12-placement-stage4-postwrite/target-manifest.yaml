@@ -1,0 +1,4 @@
+run_id: 2026-06-12-placement-stage4-postwrite
+target_files:
+- path: docs/notes/2026-06-12-document-placement-stage4-migration.md
+  sha256: ebc91197492165a918326458cdd10a178e96112febd9452113ffc7095d1f1b95
