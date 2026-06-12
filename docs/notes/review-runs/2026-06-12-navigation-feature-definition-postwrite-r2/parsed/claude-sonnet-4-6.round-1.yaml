@@ -1,0 +1,12 @@
+role: primary
+provider: anthropic-api
+model: claude-sonnet-4-6
+attempts: 1
+duration_seconds: 6.449
+findings:
+- severity: INFO
+  target_location: docs/operations/WORKFLOW_NAVIGATION.md セクション2 `feature_definition_required`
+  description: '`feature_definition_required` ブランチの説明は存在し、anchor `<a id="feature_definition_required"></a>`
+    も付与されている。内容は feature-dependency.yaml の探索順、feature_order キーの未定義ケース、初期手順への誘導を含む。'
+  rationale: criteria `navigation_feature_definition_required_branch` が要求する `feature_definition_required`
+    分岐の定義が文書内に存在することを確認した。重大な欠落・誤記は検出されなかった。

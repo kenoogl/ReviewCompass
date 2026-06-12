@@ -26,7 +26,7 @@
    - 判定の主軸は、文書内の挿入箇所ではなく、実装上の所有責務である。変更が実装責務または契約正本を変え得る feature は direct impact として扱い、出力を読むだけ、派生物を作るだけ、手続きを確認するだけの feature は indirect check として扱う
    - 各 feature impact 判定には `impact_basis` を記録する。値は `implementation_ownership`、`contract_ownership`、`consumer_or_derivative_only`、`no_implementation_impact`、`new_feature_boundary` のいずれかとする
    - 判定が重要、曖昧、広範囲の場合は 3 役レビューに送る
-4. trigger_map で再実施対象の段を決定する（依存順＝`feature-dependency.yaml#phase_order`）
+4. trigger_map で再実施対象の段を決定する（依存順＝`feature-dependency.yaml#feature_order`。旧称 phase_order）
 5. 種別判定と feature impact 判定の根拠を `docs/reviews/reopen-classification-<日付>.md` に記録する。形式は既存の `docs/reviews/reopen-classification-*.md` の記録例に合わせる
 6. 進行中状態ファイル `stages/in-progress/reopen-procedure-<日付>.yaml` を発行する
 7. spec.json のフラグを差し戻す：

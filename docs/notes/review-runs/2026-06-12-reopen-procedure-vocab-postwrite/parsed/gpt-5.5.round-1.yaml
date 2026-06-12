@@ -1,0 +1,12 @@
+role: adversarial
+provider: openai-api
+model: gpt-5.5
+attempts: 1
+duration_seconds: 28.836
+findings:
+- severity: WARN
+  target_location: docs/operations/REOPEN_PROCEDURE.md 第1過程 step 4
+  description: Deprecated vocabulary `phase_order` is still mentioned as an old name.
+  rationale: The procedure now anchors dependency ordering to `feature-dependency.yaml#feature_order`.
+    Retaining `phase_order` in the operational wording can cause users or automation
+    authors to search for or rely on a non-current key name.

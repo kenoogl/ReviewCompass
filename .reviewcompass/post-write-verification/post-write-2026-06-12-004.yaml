@@ -1,0 +1,676 @@
+status: completed
+target_files:
+- .reviewcompass/specs/conformance-evaluation/conformance/2026-06-12-spec-update-drafts/workflow-management-requirements.draft.md
+- .reviewcompass/specs/conformance-evaluation/conformance/2026-06-12-spec-update-drafts/workflow-management-tasks.draft.md
+- .reviewcompass/specs/conformance-evaluation/design.md
+- .reviewcompass/specs/conformance-evaluation/requirements.md
+- .reviewcompass/specs/conformance-evaluation/tasks.md
+- .reviewcompass/specs/workflow-management/design.md
+- .reviewcompass/specs/workflow-management/requirements.md
+- .reviewcompass/specs/workflow-management/tasks.md
+- docs/notes/review-runs/2026-06-12-conformance-evaluation-doc-vocab-postwrite/model-result-summary.yaml
+- docs/notes/review-runs/2026-06-12-conformance-evaluation-doc-vocab-postwrite/parsed/claude-sonnet-4-6.round-1.yaml
+- docs/notes/review-runs/2026-06-12-conformance-evaluation-doc-vocab-postwrite/parsed/gemini-3.1-pro-preview.round-1.yaml
+- docs/notes/review-runs/2026-06-12-conformance-evaluation-doc-vocab-postwrite/parsed/gpt-5.5.round-1.yaml
+- docs/notes/review-runs/2026-06-12-conformance-evaluation-doc-vocab-postwrite/raw/claude-sonnet-4-6.round-1.txt
+- docs/notes/review-runs/2026-06-12-conformance-evaluation-doc-vocab-postwrite/raw/gemini-3.1-pro-preview.round-1.txt
+- docs/notes/review-runs/2026-06-12-conformance-evaluation-doc-vocab-postwrite/raw/gpt-5.5.round-1.txt
+- docs/notes/review-runs/2026-06-12-conformance-evaluation-doc-vocab-postwrite/review_summary.md
+- docs/notes/review-runs/2026-06-12-conformance-evaluation-doc-vocab-postwrite/rounds.yaml
+- docs/notes/review-runs/2026-06-12-conformance-evaluation-doc-vocab-postwrite/target-manifest.yaml
+- docs/notes/review-runs/2026-06-12-conformance-evaluation-doc-vocab-postwrite/triage.yaml
+- docs/notes/review-runs/2026-06-12-discipline-map-feature-definition-postwrite/approval.yaml
+- docs/notes/review-runs/2026-06-12-discipline-map-feature-definition-postwrite/model-result-summary.yaml
+- docs/notes/review-runs/2026-06-12-discipline-map-feature-definition-postwrite/parsed/claude-sonnet-4-6.round-1.yaml
+- docs/notes/review-runs/2026-06-12-discipline-map-feature-definition-postwrite/parsed/gemini-3.1-pro-preview.round-1.yaml
+- docs/notes/review-runs/2026-06-12-discipline-map-feature-definition-postwrite/parsed/gpt-5.5.round-1.yaml
+- docs/notes/review-runs/2026-06-12-discipline-map-feature-definition-postwrite/raw/claude-sonnet-4-6.round-1.txt
+- docs/notes/review-runs/2026-06-12-discipline-map-feature-definition-postwrite/raw/gemini-3.1-pro-preview.round-1.txt
+- docs/notes/review-runs/2026-06-12-discipline-map-feature-definition-postwrite/raw/gpt-5.5.round-1.txt
+- docs/notes/review-runs/2026-06-12-discipline-map-feature-definition-postwrite/review_summary.md
+- docs/notes/review-runs/2026-06-12-discipline-map-feature-definition-postwrite/rounds.yaml
+- docs/notes/review-runs/2026-06-12-discipline-map-feature-definition-postwrite/target-manifest.yaml
+- docs/notes/review-runs/2026-06-12-discipline-map-feature-definition-postwrite/triage.yaml
+- docs/notes/review-runs/2026-06-12-navigation-feature-definition-postwrite-r2/model-result-summary.yaml
+- docs/notes/review-runs/2026-06-12-navigation-feature-definition-postwrite-r2/parsed/claude-sonnet-4-6.round-1.yaml
+- docs/notes/review-runs/2026-06-12-navigation-feature-definition-postwrite-r2/parsed/gemini-3.1-pro-preview.round-1.yaml
+- docs/notes/review-runs/2026-06-12-navigation-feature-definition-postwrite-r2/parsed/gpt-5.5.round-1.yaml
+- docs/notes/review-runs/2026-06-12-navigation-feature-definition-postwrite-r2/raw/claude-sonnet-4-6.round-1.txt
+- docs/notes/review-runs/2026-06-12-navigation-feature-definition-postwrite-r2/raw/gemini-3.1-pro-preview.round-1.txt
+- docs/notes/review-runs/2026-06-12-navigation-feature-definition-postwrite-r2/raw/gpt-5.5.round-1.txt
+- docs/notes/review-runs/2026-06-12-navigation-feature-definition-postwrite-r2/review_summary.md
+- docs/notes/review-runs/2026-06-12-navigation-feature-definition-postwrite-r2/rounds.yaml
+- docs/notes/review-runs/2026-06-12-navigation-feature-definition-postwrite-r2/target-manifest.yaml
+- docs/notes/review-runs/2026-06-12-navigation-feature-definition-postwrite-r2/triage.yaml
+- docs/notes/review-runs/2026-06-12-navigation-feature-definition-postwrite/approval.yaml
+- docs/notes/review-runs/2026-06-12-navigation-feature-definition-postwrite/model-result-summary.yaml
+- docs/notes/review-runs/2026-06-12-navigation-feature-definition-postwrite/parsed/claude-sonnet-4-6.round-1.yaml
+- docs/notes/review-runs/2026-06-12-navigation-feature-definition-postwrite/parsed/gemini-3.1-pro-preview.round-1.yaml
+- docs/notes/review-runs/2026-06-12-navigation-feature-definition-postwrite/parsed/gpt-5.5.round-1.yaml
+- docs/notes/review-runs/2026-06-12-navigation-feature-definition-postwrite/raw/claude-sonnet-4-6.round-1.txt
+- docs/notes/review-runs/2026-06-12-navigation-feature-definition-postwrite/raw/gemini-3.1-pro-preview.round-1.txt
+- docs/notes/review-runs/2026-06-12-navigation-feature-definition-postwrite/raw/gpt-5.5.round-1.txt
+- docs/notes/review-runs/2026-06-12-navigation-feature-definition-postwrite/review_summary.md
+- docs/notes/review-runs/2026-06-12-navigation-feature-definition-postwrite/rounds.yaml
+- docs/notes/review-runs/2026-06-12-navigation-feature-definition-postwrite/target-manifest.yaml
+- docs/notes/review-runs/2026-06-12-navigation-feature-definition-postwrite/triage.yaml
+- docs/notes/review-runs/2026-06-12-reopen-classification-postwrite/model-result-summary.yaml
+- docs/notes/review-runs/2026-06-12-reopen-classification-postwrite/parsed/claude-sonnet-4-6.round-1.yaml
+- docs/notes/review-runs/2026-06-12-reopen-classification-postwrite/parsed/gemini-3.1-pro-preview.round-1.yaml
+- docs/notes/review-runs/2026-06-12-reopen-classification-postwrite/parsed/gpt-5.5.round-1.yaml
+- docs/notes/review-runs/2026-06-12-reopen-classification-postwrite/raw/claude-sonnet-4-6.round-1.txt
+- docs/notes/review-runs/2026-06-12-reopen-classification-postwrite/raw/gemini-3.1-pro-preview.round-1.txt
+- docs/notes/review-runs/2026-06-12-reopen-classification-postwrite/raw/gpt-5.5.round-1.txt
+- docs/notes/review-runs/2026-06-12-reopen-classification-postwrite/review_summary.md
+- docs/notes/review-runs/2026-06-12-reopen-classification-postwrite/rounds.yaml
+- docs/notes/review-runs/2026-06-12-reopen-classification-postwrite/target-manifest.yaml
+- docs/notes/review-runs/2026-06-12-reopen-classification-postwrite/triage.yaml
+- docs/notes/review-runs/2026-06-12-reopen-procedure-vocab-postwrite/model-result-summary.yaml
+- docs/notes/review-runs/2026-06-12-reopen-procedure-vocab-postwrite/parsed/claude-sonnet-4-6.round-1.yaml
+- docs/notes/review-runs/2026-06-12-reopen-procedure-vocab-postwrite/parsed/gemini-3.1-pro-preview.round-1.yaml
+- docs/notes/review-runs/2026-06-12-reopen-procedure-vocab-postwrite/parsed/gpt-5.5.round-1.yaml
+- docs/notes/review-runs/2026-06-12-reopen-procedure-vocab-postwrite/raw/claude-sonnet-4-6.round-1.txt
+- docs/notes/review-runs/2026-06-12-reopen-procedure-vocab-postwrite/raw/gemini-3.1-pro-preview.round-1.txt
+- docs/notes/review-runs/2026-06-12-reopen-procedure-vocab-postwrite/raw/gpt-5.5.round-1.txt
+- docs/notes/review-runs/2026-06-12-reopen-procedure-vocab-postwrite/review_summary.md
+- docs/notes/review-runs/2026-06-12-reopen-procedure-vocab-postwrite/rounds.yaml
+- docs/notes/review-runs/2026-06-12-reopen-procedure-vocab-postwrite/target-manifest.yaml
+- docs/notes/review-runs/2026-06-12-reopen-procedure-vocab-postwrite/triage.yaml
+- docs/operations/CONFORMANCE_EVALUATION.md
+- docs/operations/REOPEN_PROCEDURE.md
+- docs/operations/WORKFLOW_DISCIPLINE_MAP.yaml
+- docs/operations/WORKFLOW_NAVIGATION.md
+- docs/reviews/reopen-classification-2026-06-12-multi-llm-entry-spec-reflection.md
+target_sha256:
+  ? .reviewcompass/specs/conformance-evaluation/conformance/2026-06-12-spec-update-drafts/workflow-management-requirements.draft.md
+  : 5506cd10df5f8f11b66a12322b967bff6a32fd82584c6548235e4e4ca5501397
+  .reviewcompass/specs/conformance-evaluation/conformance/2026-06-12-spec-update-drafts/workflow-management-tasks.draft.md: 3715467f1bb7717248553e44ffaf6b825e563c4961023fdd5cd050a1520e7b3a
+  .reviewcompass/specs/conformance-evaluation/design.md: 951ada44c86c571ca9f3d2f5a1066cd2fe73915ca80db81276cfaeb28b09f8d8
+  .reviewcompass/specs/conformance-evaluation/requirements.md: 24b4d6df87c3ac942f081810d8e9fec7b233bb352f95648b524cdc26d302213a
+  .reviewcompass/specs/conformance-evaluation/tasks.md: 734ce83d46c1249a2a2f52f7b5df57db310d8d0f8a59e74863a900e8cc4cdc16
+  .reviewcompass/specs/workflow-management/design.md: 449d4fa7806f3e3a6d9069ebd4b220b42d72e2bdc69630cf715bc91fca291d88
+  .reviewcompass/specs/workflow-management/requirements.md: 0ba9a13a5fee90b2bfd64277a96bad2f0642032ef43e45d5e7a8452cc8566c4e
+  .reviewcompass/specs/workflow-management/tasks.md: d342b22479eac205d56eb591d365593a83b278467b5f1bd94b9aeaa17cca6ebe
+  docs/notes/review-runs/2026-06-12-conformance-evaluation-doc-vocab-postwrite/model-result-summary.yaml: a86448a3f45a12593f01bc2b2020dc303fda719667016cef150b01e246208150
+  docs/notes/review-runs/2026-06-12-conformance-evaluation-doc-vocab-postwrite/parsed/claude-sonnet-4-6.round-1.yaml: 4cf6ab46a716b84ec498e3a571d4fe4508b0f91fb1d2cb6cb2a0683bbe5c1acd
+  docs/notes/review-runs/2026-06-12-conformance-evaluation-doc-vocab-postwrite/parsed/gemini-3.1-pro-preview.round-1.yaml: 23a16c07a69ec2b65a01378047a97cb8d288989dd47eb799834109cc3bee6eb9
+  docs/notes/review-runs/2026-06-12-conformance-evaluation-doc-vocab-postwrite/parsed/gpt-5.5.round-1.yaml: 21d898641f493f84a50a82e8a7d9c0bab0887a50706b968cd4b823462df43b6f
+  docs/notes/review-runs/2026-06-12-conformance-evaluation-doc-vocab-postwrite/raw/claude-sonnet-4-6.round-1.txt: 822d6d418a6a0a9d0b546424234a224f7369f0963e59c594b2ce5d67c85ac840
+  docs/notes/review-runs/2026-06-12-conformance-evaluation-doc-vocab-postwrite/raw/gemini-3.1-pro-preview.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+  docs/notes/review-runs/2026-06-12-conformance-evaluation-doc-vocab-postwrite/raw/gpt-5.5.round-1.txt: e8ed3b46da0f4567542a5f9127d3edf6b282c1f4a621e8bdf5d280a0c31462f8
+  docs/notes/review-runs/2026-06-12-conformance-evaluation-doc-vocab-postwrite/review_summary.md: 365834a57f907450c960c45f98328d5445f44ec344fbcbae780ce7a4fb5b922d
+  docs/notes/review-runs/2026-06-12-conformance-evaluation-doc-vocab-postwrite/rounds.yaml: fe2da6d056d38baa3bc901fba1eafb053f2daf4aa549b2e35f0eb7d9afa84244
+  docs/notes/review-runs/2026-06-12-conformance-evaluation-doc-vocab-postwrite/target-manifest.yaml: e1878acbbbba99dbbadc9cbb030a7356f9e6e1717bd9ec8bd16076ed21c93733
+  docs/notes/review-runs/2026-06-12-conformance-evaluation-doc-vocab-postwrite/triage.yaml: 4ac8565fed772c45e5d5d8f3f6b288262e95e2a8d88dd74348c9ed64136643dc
+  docs/notes/review-runs/2026-06-12-discipline-map-feature-definition-postwrite/approval.yaml: 6f3ba39ee5a79b11d639ddcd0aaec4089995945b1c2f649fb76f1d0d7a33c726
+  docs/notes/review-runs/2026-06-12-discipline-map-feature-definition-postwrite/model-result-summary.yaml: 0245047f2078ae4bb925b7d92f72114f503ec749b4b120f198f1793012853f7b
+  docs/notes/review-runs/2026-06-12-discipline-map-feature-definition-postwrite/parsed/claude-sonnet-4-6.round-1.yaml: f27d5ef85d747d860a625bb9ea11167746855b4b7b07cce54a3569818ae708fa
+  docs/notes/review-runs/2026-06-12-discipline-map-feature-definition-postwrite/parsed/gemini-3.1-pro-preview.round-1.yaml: baee4e7015d057360e44d43eb4159e99d73bea263e5d141344c6d7cf9a2fe5dc
+  docs/notes/review-runs/2026-06-12-discipline-map-feature-definition-postwrite/parsed/gpt-5.5.round-1.yaml: 0e55f2259d91bc5544331e3d608802110c6511742d84b1da713b65331336ba3e
+  docs/notes/review-runs/2026-06-12-discipline-map-feature-definition-postwrite/raw/claude-sonnet-4-6.round-1.txt: a79ddcf98b7fb871508b4ff2c44599a2d2d336e91ba0b119c567f59a29b509a4
+  docs/notes/review-runs/2026-06-12-discipline-map-feature-definition-postwrite/raw/gemini-3.1-pro-preview.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+  docs/notes/review-runs/2026-06-12-discipline-map-feature-definition-postwrite/raw/gpt-5.5.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+  docs/notes/review-runs/2026-06-12-discipline-map-feature-definition-postwrite/review_summary.md: b9ff01f13e8ab9e9310cb5a119930fea6f3b0ce88952e11f01c07bf52302a97a
+  docs/notes/review-runs/2026-06-12-discipline-map-feature-definition-postwrite/rounds.yaml: 226feaecc8ad19ec26886d5cf1e7fc56fa1d166be7b87ccf3cb12ede8efafd50
+  docs/notes/review-runs/2026-06-12-discipline-map-feature-definition-postwrite/target-manifest.yaml: 6f505b9f4c36cc1faaa4dc577578075948f087e5ed3db1841fc9434a51bb0df7
+  docs/notes/review-runs/2026-06-12-discipline-map-feature-definition-postwrite/triage.yaml: a829208ae11e6caba97d6ebff97955e507d1e3377ceb6dc533af10c51914753c
+  docs/notes/review-runs/2026-06-12-navigation-feature-definition-postwrite-r2/model-result-summary.yaml: c818a897e78a564019a4022236633299e6490674aab0303d0f2b623f8f3385db
+  docs/notes/review-runs/2026-06-12-navigation-feature-definition-postwrite-r2/parsed/claude-sonnet-4-6.round-1.yaml: fccf39d85c405c82e4c96aeba709b9fbbae055d71efd1eaddd918c0c917a46fa
+  docs/notes/review-runs/2026-06-12-navigation-feature-definition-postwrite-r2/parsed/gemini-3.1-pro-preview.round-1.yaml: 1b4d4010c1c2ef7bb71e5f9e5d43184f309ddd2e43f759908ee6008368cb0281
+  docs/notes/review-runs/2026-06-12-navigation-feature-definition-postwrite-r2/parsed/gpt-5.5.round-1.yaml: 8f2f4da5cb3639d7107e77cd86e5ef393f165675cf6d885fc7a3a499c62f969f
+  docs/notes/review-runs/2026-06-12-navigation-feature-definition-postwrite-r2/raw/claude-sonnet-4-6.round-1.txt: e14efabb1636cdfd95175c7b080e34d287a71f3aacb474a5c159317a3ca3a353
+  docs/notes/review-runs/2026-06-12-navigation-feature-definition-postwrite-r2/raw/gemini-3.1-pro-preview.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+  docs/notes/review-runs/2026-06-12-navigation-feature-definition-postwrite-r2/raw/gpt-5.5.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+  docs/notes/review-runs/2026-06-12-navigation-feature-definition-postwrite-r2/review_summary.md: 7c40ad5f567a2d81803b1a07eb376f0d47f1d8d834bcbb91cfc9bb8678a6867e
+  docs/notes/review-runs/2026-06-12-navigation-feature-definition-postwrite-r2/rounds.yaml: c7fb9b09ca3008706695ab9aaaaf3b95f666d5cc3289e79af518d8341218a1d5
+  docs/notes/review-runs/2026-06-12-navigation-feature-definition-postwrite-r2/target-manifest.yaml: 2a6bc8304a48ff10aab6f1567c595cac0233fb78d38bcf596dc9a110c8988e76
+  docs/notes/review-runs/2026-06-12-navigation-feature-definition-postwrite-r2/triage.yaml: 4af734eb3248b96d3f6ddcde3a51679a816d8e49f711e5232a0780de90e3bb7e
+  docs/notes/review-runs/2026-06-12-navigation-feature-definition-postwrite/approval.yaml: ce1034c0549d2f1076596a4c0a3fedd1046ab652a38d9f5506d075b49d092efe
+  docs/notes/review-runs/2026-06-12-navigation-feature-definition-postwrite/model-result-summary.yaml: fd7199429e34b0e880f819905c60ed930bb93f3f6e662610180c44fcf6a8f5b7
+  docs/notes/review-runs/2026-06-12-navigation-feature-definition-postwrite/parsed/claude-sonnet-4-6.round-1.yaml: d4a5ef6df6fbb712ffb2d5b96d00bc6eda668fca770b2037dd37747abb7c5f9e
+  docs/notes/review-runs/2026-06-12-navigation-feature-definition-postwrite/parsed/gemini-3.1-pro-preview.round-1.yaml: 1dcbd4d262e57563b038bdf5f391af650c3eae516707e0520bf6a40d90110b80
+  docs/notes/review-runs/2026-06-12-navigation-feature-definition-postwrite/parsed/gpt-5.5.round-1.yaml: 5288f5accf2cd4d7b781f6782627adfa09707dc8978fcfa6645291d003be6e07
+  docs/notes/review-runs/2026-06-12-navigation-feature-definition-postwrite/raw/claude-sonnet-4-6.round-1.txt: 8e83b8350369ce954393c6579afc374f173a3b077b5ee6d1ea7483395a6244ab
+  docs/notes/review-runs/2026-06-12-navigation-feature-definition-postwrite/raw/gemini-3.1-pro-preview.round-1.txt: a2b10fa6b800171f7a3698162bb847bef279ab11b59f6dc4898def1167186371
+  docs/notes/review-runs/2026-06-12-navigation-feature-definition-postwrite/raw/gpt-5.5.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+  docs/notes/review-runs/2026-06-12-navigation-feature-definition-postwrite/review_summary.md: 3682e12d8cc64d6f9041feca3e5166172f2add5536e94fe36506697c9d1fb48b
+  docs/notes/review-runs/2026-06-12-navigation-feature-definition-postwrite/rounds.yaml: 0d5465f663ccd2e8e49f8c32e6ec9415abb20c859efbc2692ab9c1248cda8fb7
+  docs/notes/review-runs/2026-06-12-navigation-feature-definition-postwrite/target-manifest.yaml: 159e9ac86fbda027e9018e28ec1271e879710a61dd40f91fab2a132aae5cecbf
+  docs/notes/review-runs/2026-06-12-navigation-feature-definition-postwrite/triage.yaml: 41330131c2ff73015c501185b2018fb1280bcdb0d190a1fdd18e575638c5286a
+  docs/notes/review-runs/2026-06-12-reopen-classification-postwrite/model-result-summary.yaml: 6c3ed375c034ad97ac466fa0c60df18e8da0dee4ecef5897fc8f0c727f5a49a8
+  docs/notes/review-runs/2026-06-12-reopen-classification-postwrite/parsed/claude-sonnet-4-6.round-1.yaml: 3fb93462a2a62fbbbab8baceb6c5874d020fac602d57bae658268a44680e151f
+  docs/notes/review-runs/2026-06-12-reopen-classification-postwrite/parsed/gemini-3.1-pro-preview.round-1.yaml: d8598386f3f467676b3ac5a5eb40da580f9080dd707d064db621ff9e6ba01761
+  docs/notes/review-runs/2026-06-12-reopen-classification-postwrite/parsed/gpt-5.5.round-1.yaml: 2b3408b6bcf00824b36e4296b34b07bc3c32ec9d5db0974b2b60e6a0fc63bdba
+  docs/notes/review-runs/2026-06-12-reopen-classification-postwrite/raw/claude-sonnet-4-6.round-1.txt: 7cb2aa094c28e4b23fcb0d665a5921683adb33cef3655ed3542703c58bf087b4
+  docs/notes/review-runs/2026-06-12-reopen-classification-postwrite/raw/gemini-3.1-pro-preview.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+  docs/notes/review-runs/2026-06-12-reopen-classification-postwrite/raw/gpt-5.5.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+  docs/notes/review-runs/2026-06-12-reopen-classification-postwrite/review_summary.md: 67f177740148e6d94be3d8260659cd142ea5799f54e5de764fcd043ca507e537
+  docs/notes/review-runs/2026-06-12-reopen-classification-postwrite/rounds.yaml: 8812d277d9fdb7459772c271b03dc5d56081e2df5cffc4f2cc63c3ca1ff0e3f4
+  docs/notes/review-runs/2026-06-12-reopen-classification-postwrite/target-manifest.yaml: 5fdee8bce97e3e691a0adac9feb4b97eee6b65c16140939f3e60290677b7907c
+  docs/notes/review-runs/2026-06-12-reopen-classification-postwrite/triage.yaml: ef58160d2a05c476b3ab81281e3b342541a7dc27776efa16fb52b19debe8a5ba
+  docs/notes/review-runs/2026-06-12-reopen-procedure-vocab-postwrite/model-result-summary.yaml: 6b02540dec426d23a28522eb3f69efcbc41f1442f8d8803ee4d37325ea31378a
+  docs/notes/review-runs/2026-06-12-reopen-procedure-vocab-postwrite/parsed/claude-sonnet-4-6.round-1.yaml: 0459be5722072e99e2bf28d560e87c3b633d35ccf3fec25466267a76347b564c
+  docs/notes/review-runs/2026-06-12-reopen-procedure-vocab-postwrite/parsed/gemini-3.1-pro-preview.round-1.yaml: 68e403ba1254d4967db16273708f6da23a1551b2a8a4035d49bc3fd073cf50f3
+  docs/notes/review-runs/2026-06-12-reopen-procedure-vocab-postwrite/parsed/gpt-5.5.round-1.yaml: 66d56a3e4cfa830deabd74ede72ce27a3f70b04848f328241328475f16d2cd42
+  docs/notes/review-runs/2026-06-12-reopen-procedure-vocab-postwrite/raw/claude-sonnet-4-6.round-1.txt: 7e6aab4e08008a7315aa30808eb81ef35648fe0490c55aaf536ac2223a0769c3
+  docs/notes/review-runs/2026-06-12-reopen-procedure-vocab-postwrite/raw/gemini-3.1-pro-preview.round-1.txt: 67f20b5f2a77ca36c12b6b153ce451a10d7c0026c9147c2eb86f0e1d33ea4fb1
+  docs/notes/review-runs/2026-06-12-reopen-procedure-vocab-postwrite/raw/gpt-5.5.round-1.txt: f0e31a769128c2df3249c5ce09b776329d0b2891cd5aea6535b9f2d23019226b
+  docs/notes/review-runs/2026-06-12-reopen-procedure-vocab-postwrite/review_summary.md: 19a974576d3b5f3d58e95dc305e214494413abadb6645aedbf2cd37adedaeeaf
+  docs/notes/review-runs/2026-06-12-reopen-procedure-vocab-postwrite/rounds.yaml: 476c95dbfd4b680c757d704a2115fec62651e62cf95574d4e7ce1236052b9699
+  docs/notes/review-runs/2026-06-12-reopen-procedure-vocab-postwrite/target-manifest.yaml: 4ce5d71086a56184f20fa3d7d9626ad29af8d2c84376c78e2880df562eb9173d
+  docs/notes/review-runs/2026-06-12-reopen-procedure-vocab-postwrite/triage.yaml: b66dfd3aea1311ac85f2e705fb7cc8aad9e165395af5f4d0bff1a1c940eee1f2
+  docs/operations/CONFORMANCE_EVALUATION.md: 0b51308a7ff5cf23ea80d2b58d6540ceb8df7a8c051a945eac09e43e670c5a8e
+  docs/operations/REOPEN_PROCEDURE.md: 3baaec29972cc471e31e0590464a454b5b671476f1c0bcbbaa0ec5c473ebb8fb
+  docs/operations/WORKFLOW_DISCIPLINE_MAP.yaml: cbdbf3fd73ded18de9b3a897a0ee1a4192081a31a80b8c63a59815e8596686cf
+  docs/operations/WORKFLOW_NAVIGATION.md: a32b5fc8bc298a33f1c0d4c2a8700d83fce2d24f844c0f2afc8c88fe29497edb
+  docs/reviews/reopen-classification-2026-06-12-multi-llm-entry-spec-reflection.md: 7cb6a0733431d36b27a4301293447933f5cfff601c775315e85113a546e387d8
+required_verifiers: &id001
+- claude-sonnet-4-6
+- gpt-5.5
+- gemini-3.1-pro-preview
+completed_verifiers: *id001
+unresolved_substantive_findings: 0
+verifications:
+- verifier: claude-sonnet-4-6
+  target_files:
+  - .reviewcompass/specs/conformance-evaluation/conformance/2026-06-12-spec-update-drafts/workflow-management-requirements.draft.md
+  - .reviewcompass/specs/conformance-evaluation/conformance/2026-06-12-spec-update-drafts/workflow-management-tasks.draft.md
+  - .reviewcompass/specs/conformance-evaluation/design.md
+  - .reviewcompass/specs/conformance-evaluation/requirements.md
+  - .reviewcompass/specs/conformance-evaluation/tasks.md
+  - .reviewcompass/specs/workflow-management/design.md
+  - .reviewcompass/specs/workflow-management/requirements.md
+  - .reviewcompass/specs/workflow-management/tasks.md
+  - docs/notes/review-runs/2026-06-12-conformance-evaluation-doc-vocab-postwrite/model-result-summary.yaml
+  - docs/notes/review-runs/2026-06-12-conformance-evaluation-doc-vocab-postwrite/parsed/claude-sonnet-4-6.round-1.yaml
+  - docs/notes/review-runs/2026-06-12-conformance-evaluation-doc-vocab-postwrite/parsed/gemini-3.1-pro-preview.round-1.yaml
+  - docs/notes/review-runs/2026-06-12-conformance-evaluation-doc-vocab-postwrite/parsed/gpt-5.5.round-1.yaml
+  - docs/notes/review-runs/2026-06-12-conformance-evaluation-doc-vocab-postwrite/raw/claude-sonnet-4-6.round-1.txt
+  - docs/notes/review-runs/2026-06-12-conformance-evaluation-doc-vocab-postwrite/raw/gemini-3.1-pro-preview.round-1.txt
+  - docs/notes/review-runs/2026-06-12-conformance-evaluation-doc-vocab-postwrite/raw/gpt-5.5.round-1.txt
+  - docs/notes/review-runs/2026-06-12-conformance-evaluation-doc-vocab-postwrite/review_summary.md
+  - docs/notes/review-runs/2026-06-12-conformance-evaluation-doc-vocab-postwrite/rounds.yaml
+  - docs/notes/review-runs/2026-06-12-conformance-evaluation-doc-vocab-postwrite/target-manifest.yaml
+  - docs/notes/review-runs/2026-06-12-conformance-evaluation-doc-vocab-postwrite/triage.yaml
+  - docs/notes/review-runs/2026-06-12-discipline-map-feature-definition-postwrite/approval.yaml
+  - docs/notes/review-runs/2026-06-12-discipline-map-feature-definition-postwrite/model-result-summary.yaml
+  - docs/notes/review-runs/2026-06-12-discipline-map-feature-definition-postwrite/parsed/claude-sonnet-4-6.round-1.yaml
+  - docs/notes/review-runs/2026-06-12-discipline-map-feature-definition-postwrite/parsed/gemini-3.1-pro-preview.round-1.yaml
+  - docs/notes/review-runs/2026-06-12-discipline-map-feature-definition-postwrite/parsed/gpt-5.5.round-1.yaml
+  - docs/notes/review-runs/2026-06-12-discipline-map-feature-definition-postwrite/raw/claude-sonnet-4-6.round-1.txt
+  - docs/notes/review-runs/2026-06-12-discipline-map-feature-definition-postwrite/raw/gemini-3.1-pro-preview.round-1.txt
+  - docs/notes/review-runs/2026-06-12-discipline-map-feature-definition-postwrite/raw/gpt-5.5.round-1.txt
+  - docs/notes/review-runs/2026-06-12-discipline-map-feature-definition-postwrite/review_summary.md
+  - docs/notes/review-runs/2026-06-12-discipline-map-feature-definition-postwrite/rounds.yaml
+  - docs/notes/review-runs/2026-06-12-discipline-map-feature-definition-postwrite/target-manifest.yaml
+  - docs/notes/review-runs/2026-06-12-discipline-map-feature-definition-postwrite/triage.yaml
+  - docs/notes/review-runs/2026-06-12-navigation-feature-definition-postwrite-r2/model-result-summary.yaml
+  - docs/notes/review-runs/2026-06-12-navigation-feature-definition-postwrite-r2/parsed/claude-sonnet-4-6.round-1.yaml
+  - docs/notes/review-runs/2026-06-12-navigation-feature-definition-postwrite-r2/parsed/gemini-3.1-pro-preview.round-1.yaml
+  - docs/notes/review-runs/2026-06-12-navigation-feature-definition-postwrite-r2/parsed/gpt-5.5.round-1.yaml
+  - docs/notes/review-runs/2026-06-12-navigation-feature-definition-postwrite-r2/raw/claude-sonnet-4-6.round-1.txt
+  - docs/notes/review-runs/2026-06-12-navigation-feature-definition-postwrite-r2/raw/gemini-3.1-pro-preview.round-1.txt
+  - docs/notes/review-runs/2026-06-12-navigation-feature-definition-postwrite-r2/raw/gpt-5.5.round-1.txt
+  - docs/notes/review-runs/2026-06-12-navigation-feature-definition-postwrite-r2/review_summary.md
+  - docs/notes/review-runs/2026-06-12-navigation-feature-definition-postwrite-r2/rounds.yaml
+  - docs/notes/review-runs/2026-06-12-navigation-feature-definition-postwrite-r2/target-manifest.yaml
+  - docs/notes/review-runs/2026-06-12-navigation-feature-definition-postwrite-r2/triage.yaml
+  - docs/notes/review-runs/2026-06-12-navigation-feature-definition-postwrite/approval.yaml
+  - docs/notes/review-runs/2026-06-12-navigation-feature-definition-postwrite/model-result-summary.yaml
+  - docs/notes/review-runs/2026-06-12-navigation-feature-definition-postwrite/parsed/claude-sonnet-4-6.round-1.yaml
+  - docs/notes/review-runs/2026-06-12-navigation-feature-definition-postwrite/parsed/gemini-3.1-pro-preview.round-1.yaml
+  - docs/notes/review-runs/2026-06-12-navigation-feature-definition-postwrite/parsed/gpt-5.5.round-1.yaml
+  - docs/notes/review-runs/2026-06-12-navigation-feature-definition-postwrite/raw/claude-sonnet-4-6.round-1.txt
+  - docs/notes/review-runs/2026-06-12-navigation-feature-definition-postwrite/raw/gemini-3.1-pro-preview.round-1.txt
+  - docs/notes/review-runs/2026-06-12-navigation-feature-definition-postwrite/raw/gpt-5.5.round-1.txt
+  - docs/notes/review-runs/2026-06-12-navigation-feature-definition-postwrite/review_summary.md
+  - docs/notes/review-runs/2026-06-12-navigation-feature-definition-postwrite/rounds.yaml
+  - docs/notes/review-runs/2026-06-12-navigation-feature-definition-postwrite/target-manifest.yaml
+  - docs/notes/review-runs/2026-06-12-navigation-feature-definition-postwrite/triage.yaml
+  - docs/notes/review-runs/2026-06-12-reopen-classification-postwrite/model-result-summary.yaml
+  - docs/notes/review-runs/2026-06-12-reopen-classification-postwrite/parsed/claude-sonnet-4-6.round-1.yaml
+  - docs/notes/review-runs/2026-06-12-reopen-classification-postwrite/parsed/gemini-3.1-pro-preview.round-1.yaml
+  - docs/notes/review-runs/2026-06-12-reopen-classification-postwrite/parsed/gpt-5.5.round-1.yaml
+  - docs/notes/review-runs/2026-06-12-reopen-classification-postwrite/raw/claude-sonnet-4-6.round-1.txt
+  - docs/notes/review-runs/2026-06-12-reopen-classification-postwrite/raw/gemini-3.1-pro-preview.round-1.txt
+  - docs/notes/review-runs/2026-06-12-reopen-classification-postwrite/raw/gpt-5.5.round-1.txt
+  - docs/notes/review-runs/2026-06-12-reopen-classification-postwrite/review_summary.md
+  - docs/notes/review-runs/2026-06-12-reopen-classification-postwrite/rounds.yaml
+  - docs/notes/review-runs/2026-06-12-reopen-classification-postwrite/target-manifest.yaml
+  - docs/notes/review-runs/2026-06-12-reopen-classification-postwrite/triage.yaml
+  - docs/notes/review-runs/2026-06-12-reopen-procedure-vocab-postwrite/model-result-summary.yaml
+  - docs/notes/review-runs/2026-06-12-reopen-procedure-vocab-postwrite/parsed/claude-sonnet-4-6.round-1.yaml
+  - docs/notes/review-runs/2026-06-12-reopen-procedure-vocab-postwrite/parsed/gemini-3.1-pro-preview.round-1.yaml
+  - docs/notes/review-runs/2026-06-12-reopen-procedure-vocab-postwrite/parsed/gpt-5.5.round-1.yaml
+  - docs/notes/review-runs/2026-06-12-reopen-procedure-vocab-postwrite/raw/claude-sonnet-4-6.round-1.txt
+  - docs/notes/review-runs/2026-06-12-reopen-procedure-vocab-postwrite/raw/gemini-3.1-pro-preview.round-1.txt
+  - docs/notes/review-runs/2026-06-12-reopen-procedure-vocab-postwrite/raw/gpt-5.5.round-1.txt
+  - docs/notes/review-runs/2026-06-12-reopen-procedure-vocab-postwrite/review_summary.md
+  - docs/notes/review-runs/2026-06-12-reopen-procedure-vocab-postwrite/rounds.yaml
+  - docs/notes/review-runs/2026-06-12-reopen-procedure-vocab-postwrite/target-manifest.yaml
+  - docs/notes/review-runs/2026-06-12-reopen-procedure-vocab-postwrite/triage.yaml
+  - docs/operations/CONFORMANCE_EVALUATION.md
+  - docs/operations/REOPEN_PROCEDURE.md
+  - docs/operations/WORKFLOW_DISCIPLINE_MAP.yaml
+  - docs/operations/WORKFLOW_NAVIGATION.md
+  - docs/reviews/reopen-classification-2026-06-12-multi-llm-entry-spec-reflection.md
+  target_sha256:
+    ? .reviewcompass/specs/conformance-evaluation/conformance/2026-06-12-spec-update-drafts/workflow-management-requirements.draft.md
+    : 5506cd10df5f8f11b66a12322b967bff6a32fd82584c6548235e4e4ca5501397
+    .reviewcompass/specs/conformance-evaluation/conformance/2026-06-12-spec-update-drafts/workflow-management-tasks.draft.md: 3715467f1bb7717248553e44ffaf6b825e563c4961023fdd5cd050a1520e7b3a
+    .reviewcompass/specs/conformance-evaluation/design.md: 951ada44c86c571ca9f3d2f5a1066cd2fe73915ca80db81276cfaeb28b09f8d8
+    .reviewcompass/specs/conformance-evaluation/requirements.md: 24b4d6df87c3ac942f081810d8e9fec7b233bb352f95648b524cdc26d302213a
+    .reviewcompass/specs/conformance-evaluation/tasks.md: 734ce83d46c1249a2a2f52f7b5df57db310d8d0f8a59e74863a900e8cc4cdc16
+    .reviewcompass/specs/workflow-management/design.md: 449d4fa7806f3e3a6d9069ebd4b220b42d72e2bdc69630cf715bc91fca291d88
+    .reviewcompass/specs/workflow-management/requirements.md: 0ba9a13a5fee90b2bfd64277a96bad2f0642032ef43e45d5e7a8452cc8566c4e
+    .reviewcompass/specs/workflow-management/tasks.md: d342b22479eac205d56eb591d365593a83b278467b5f1bd94b9aeaa17cca6ebe
+    docs/notes/review-runs/2026-06-12-conformance-evaluation-doc-vocab-postwrite/model-result-summary.yaml: a86448a3f45a12593f01bc2b2020dc303fda719667016cef150b01e246208150
+    docs/notes/review-runs/2026-06-12-conformance-evaluation-doc-vocab-postwrite/parsed/claude-sonnet-4-6.round-1.yaml: 4cf6ab46a716b84ec498e3a571d4fe4508b0f91fb1d2cb6cb2a0683bbe5c1acd
+    docs/notes/review-runs/2026-06-12-conformance-evaluation-doc-vocab-postwrite/parsed/gemini-3.1-pro-preview.round-1.yaml: 23a16c07a69ec2b65a01378047a97cb8d288989dd47eb799834109cc3bee6eb9
+    docs/notes/review-runs/2026-06-12-conformance-evaluation-doc-vocab-postwrite/parsed/gpt-5.5.round-1.yaml: 21d898641f493f84a50a82e8a7d9c0bab0887a50706b968cd4b823462df43b6f
+    docs/notes/review-runs/2026-06-12-conformance-evaluation-doc-vocab-postwrite/raw/claude-sonnet-4-6.round-1.txt: 822d6d418a6a0a9d0b546424234a224f7369f0963e59c594b2ce5d67c85ac840
+    docs/notes/review-runs/2026-06-12-conformance-evaluation-doc-vocab-postwrite/raw/gemini-3.1-pro-preview.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/2026-06-12-conformance-evaluation-doc-vocab-postwrite/raw/gpt-5.5.round-1.txt: e8ed3b46da0f4567542a5f9127d3edf6b282c1f4a621e8bdf5d280a0c31462f8
+    docs/notes/review-runs/2026-06-12-conformance-evaluation-doc-vocab-postwrite/review_summary.md: 365834a57f907450c960c45f98328d5445f44ec344fbcbae780ce7a4fb5b922d
+    docs/notes/review-runs/2026-06-12-conformance-evaluation-doc-vocab-postwrite/rounds.yaml: fe2da6d056d38baa3bc901fba1eafb053f2daf4aa549b2e35f0eb7d9afa84244
+    docs/notes/review-runs/2026-06-12-conformance-evaluation-doc-vocab-postwrite/target-manifest.yaml: e1878acbbbba99dbbadc9cbb030a7356f9e6e1717bd9ec8bd16076ed21c93733
+    docs/notes/review-runs/2026-06-12-conformance-evaluation-doc-vocab-postwrite/triage.yaml: 4ac8565fed772c45e5d5d8f3f6b288262e95e2a8d88dd74348c9ed64136643dc
+    docs/notes/review-runs/2026-06-12-discipline-map-feature-definition-postwrite/approval.yaml: 6f3ba39ee5a79b11d639ddcd0aaec4089995945b1c2f649fb76f1d0d7a33c726
+    docs/notes/review-runs/2026-06-12-discipline-map-feature-definition-postwrite/model-result-summary.yaml: 0245047f2078ae4bb925b7d92f72114f503ec749b4b120f198f1793012853f7b
+    docs/notes/review-runs/2026-06-12-discipline-map-feature-definition-postwrite/parsed/claude-sonnet-4-6.round-1.yaml: f27d5ef85d747d860a625bb9ea11167746855b4b7b07cce54a3569818ae708fa
+    docs/notes/review-runs/2026-06-12-discipline-map-feature-definition-postwrite/parsed/gemini-3.1-pro-preview.round-1.yaml: baee4e7015d057360e44d43eb4159e99d73bea263e5d141344c6d7cf9a2fe5dc
+    docs/notes/review-runs/2026-06-12-discipline-map-feature-definition-postwrite/parsed/gpt-5.5.round-1.yaml: 0e55f2259d91bc5544331e3d608802110c6511742d84b1da713b65331336ba3e
+    docs/notes/review-runs/2026-06-12-discipline-map-feature-definition-postwrite/raw/claude-sonnet-4-6.round-1.txt: a79ddcf98b7fb871508b4ff2c44599a2d2d336e91ba0b119c567f59a29b509a4
+    docs/notes/review-runs/2026-06-12-discipline-map-feature-definition-postwrite/raw/gemini-3.1-pro-preview.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/2026-06-12-discipline-map-feature-definition-postwrite/raw/gpt-5.5.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/2026-06-12-discipline-map-feature-definition-postwrite/review_summary.md: b9ff01f13e8ab9e9310cb5a119930fea6f3b0ce88952e11f01c07bf52302a97a
+    docs/notes/review-runs/2026-06-12-discipline-map-feature-definition-postwrite/rounds.yaml: 226feaecc8ad19ec26886d5cf1e7fc56fa1d166be7b87ccf3cb12ede8efafd50
+    docs/notes/review-runs/2026-06-12-discipline-map-feature-definition-postwrite/target-manifest.yaml: 6f505b9f4c36cc1faaa4dc577578075948f087e5ed3db1841fc9434a51bb0df7
+    docs/notes/review-runs/2026-06-12-discipline-map-feature-definition-postwrite/triage.yaml: a829208ae11e6caba97d6ebff97955e507d1e3377ceb6dc533af10c51914753c
+    docs/notes/review-runs/2026-06-12-navigation-feature-definition-postwrite-r2/model-result-summary.yaml: c818a897e78a564019a4022236633299e6490674aab0303d0f2b623f8f3385db
+    docs/notes/review-runs/2026-06-12-navigation-feature-definition-postwrite-r2/parsed/claude-sonnet-4-6.round-1.yaml: fccf39d85c405c82e4c96aeba709b9fbbae055d71efd1eaddd918c0c917a46fa
+    docs/notes/review-runs/2026-06-12-navigation-feature-definition-postwrite-r2/parsed/gemini-3.1-pro-preview.round-1.yaml: 1b4d4010c1c2ef7bb71e5f9e5d43184f309ddd2e43f759908ee6008368cb0281
+    docs/notes/review-runs/2026-06-12-navigation-feature-definition-postwrite-r2/parsed/gpt-5.5.round-1.yaml: 8f2f4da5cb3639d7107e77cd86e5ef393f165675cf6d885fc7a3a499c62f969f
+    docs/notes/review-runs/2026-06-12-navigation-feature-definition-postwrite-r2/raw/claude-sonnet-4-6.round-1.txt: e14efabb1636cdfd95175c7b080e34d287a71f3aacb474a5c159317a3ca3a353
+    docs/notes/review-runs/2026-06-12-navigation-feature-definition-postwrite-r2/raw/gemini-3.1-pro-preview.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/2026-06-12-navigation-feature-definition-postwrite-r2/raw/gpt-5.5.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/2026-06-12-navigation-feature-definition-postwrite-r2/review_summary.md: 7c40ad5f567a2d81803b1a07eb376f0d47f1d8d834bcbb91cfc9bb8678a6867e
+    docs/notes/review-runs/2026-06-12-navigation-feature-definition-postwrite-r2/rounds.yaml: c7fb9b09ca3008706695ab9aaaaf3b95f666d5cc3289e79af518d8341218a1d5
+    docs/notes/review-runs/2026-06-12-navigation-feature-definition-postwrite-r2/target-manifest.yaml: 2a6bc8304a48ff10aab6f1567c595cac0233fb78d38bcf596dc9a110c8988e76
+    docs/notes/review-runs/2026-06-12-navigation-feature-definition-postwrite-r2/triage.yaml: 4af734eb3248b96d3f6ddcde3a51679a816d8e49f711e5232a0780de90e3bb7e
+    docs/notes/review-runs/2026-06-12-navigation-feature-definition-postwrite/approval.yaml: ce1034c0549d2f1076596a4c0a3fedd1046ab652a38d9f5506d075b49d092efe
+    docs/notes/review-runs/2026-06-12-navigation-feature-definition-postwrite/model-result-summary.yaml: fd7199429e34b0e880f819905c60ed930bb93f3f6e662610180c44fcf6a8f5b7
+    docs/notes/review-runs/2026-06-12-navigation-feature-definition-postwrite/parsed/claude-sonnet-4-6.round-1.yaml: d4a5ef6df6fbb712ffb2d5b96d00bc6eda668fca770b2037dd37747abb7c5f9e
+    docs/notes/review-runs/2026-06-12-navigation-feature-definition-postwrite/parsed/gemini-3.1-pro-preview.round-1.yaml: 1dcbd4d262e57563b038bdf5f391af650c3eae516707e0520bf6a40d90110b80
+    docs/notes/review-runs/2026-06-12-navigation-feature-definition-postwrite/parsed/gpt-5.5.round-1.yaml: 5288f5accf2cd4d7b781f6782627adfa09707dc8978fcfa6645291d003be6e07
+    docs/notes/review-runs/2026-06-12-navigation-feature-definition-postwrite/raw/claude-sonnet-4-6.round-1.txt: 8e83b8350369ce954393c6579afc374f173a3b077b5ee6d1ea7483395a6244ab
+    docs/notes/review-runs/2026-06-12-navigation-feature-definition-postwrite/raw/gemini-3.1-pro-preview.round-1.txt: a2b10fa6b800171f7a3698162bb847bef279ab11b59f6dc4898def1167186371
+    docs/notes/review-runs/2026-06-12-navigation-feature-definition-postwrite/raw/gpt-5.5.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/2026-06-12-navigation-feature-definition-postwrite/review_summary.md: 3682e12d8cc64d6f9041feca3e5166172f2add5536e94fe36506697c9d1fb48b
+    docs/notes/review-runs/2026-06-12-navigation-feature-definition-postwrite/rounds.yaml: 0d5465f663ccd2e8e49f8c32e6ec9415abb20c859efbc2692ab9c1248cda8fb7
+    docs/notes/review-runs/2026-06-12-navigation-feature-definition-postwrite/target-manifest.yaml: 159e9ac86fbda027e9018e28ec1271e879710a61dd40f91fab2a132aae5cecbf
+    docs/notes/review-runs/2026-06-12-navigation-feature-definition-postwrite/triage.yaml: 41330131c2ff73015c501185b2018fb1280bcdb0d190a1fdd18e575638c5286a
+    docs/notes/review-runs/2026-06-12-reopen-classification-postwrite/model-result-summary.yaml: 6c3ed375c034ad97ac466fa0c60df18e8da0dee4ecef5897fc8f0c727f5a49a8
+    docs/notes/review-runs/2026-06-12-reopen-classification-postwrite/parsed/claude-sonnet-4-6.round-1.yaml: 3fb93462a2a62fbbbab8baceb6c5874d020fac602d57bae658268a44680e151f
+    docs/notes/review-runs/2026-06-12-reopen-classification-postwrite/parsed/gemini-3.1-pro-preview.round-1.yaml: d8598386f3f467676b3ac5a5eb40da580f9080dd707d064db621ff9e6ba01761
+    docs/notes/review-runs/2026-06-12-reopen-classification-postwrite/parsed/gpt-5.5.round-1.yaml: 2b3408b6bcf00824b36e4296b34b07bc3c32ec9d5db0974b2b60e6a0fc63bdba
+    docs/notes/review-runs/2026-06-12-reopen-classification-postwrite/raw/claude-sonnet-4-6.round-1.txt: 7cb2aa094c28e4b23fcb0d665a5921683adb33cef3655ed3542703c58bf087b4
+    docs/notes/review-runs/2026-06-12-reopen-classification-postwrite/raw/gemini-3.1-pro-preview.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/2026-06-12-reopen-classification-postwrite/raw/gpt-5.5.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/2026-06-12-reopen-classification-postwrite/review_summary.md: 67f177740148e6d94be3d8260659cd142ea5799f54e5de764fcd043ca507e537
+    docs/notes/review-runs/2026-06-12-reopen-classification-postwrite/rounds.yaml: 8812d277d9fdb7459772c271b03dc5d56081e2df5cffc4f2cc63c3ca1ff0e3f4
+    docs/notes/review-runs/2026-06-12-reopen-classification-postwrite/target-manifest.yaml: 5fdee8bce97e3e691a0adac9feb4b97eee6b65c16140939f3e60290677b7907c
+    docs/notes/review-runs/2026-06-12-reopen-classification-postwrite/triage.yaml: ef58160d2a05c476b3ab81281e3b342541a7dc27776efa16fb52b19debe8a5ba
+    docs/notes/review-runs/2026-06-12-reopen-procedure-vocab-postwrite/model-result-summary.yaml: 6b02540dec426d23a28522eb3f69efcbc41f1442f8d8803ee4d37325ea31378a
+    docs/notes/review-runs/2026-06-12-reopen-procedure-vocab-postwrite/parsed/claude-sonnet-4-6.round-1.yaml: 0459be5722072e99e2bf28d560e87c3b633d35ccf3fec25466267a76347b564c
+    docs/notes/review-runs/2026-06-12-reopen-procedure-vocab-postwrite/parsed/gemini-3.1-pro-preview.round-1.yaml: 68e403ba1254d4967db16273708f6da23a1551b2a8a4035d49bc3fd073cf50f3
+    docs/notes/review-runs/2026-06-12-reopen-procedure-vocab-postwrite/parsed/gpt-5.5.round-1.yaml: 66d56a3e4cfa830deabd74ede72ce27a3f70b04848f328241328475f16d2cd42
+    docs/notes/review-runs/2026-06-12-reopen-procedure-vocab-postwrite/raw/claude-sonnet-4-6.round-1.txt: 7e6aab4e08008a7315aa30808eb81ef35648fe0490c55aaf536ac2223a0769c3
+    docs/notes/review-runs/2026-06-12-reopen-procedure-vocab-postwrite/raw/gemini-3.1-pro-preview.round-1.txt: 67f20b5f2a77ca36c12b6b153ce451a10d7c0026c9147c2eb86f0e1d33ea4fb1
+    docs/notes/review-runs/2026-06-12-reopen-procedure-vocab-postwrite/raw/gpt-5.5.round-1.txt: f0e31a769128c2df3249c5ce09b776329d0b2891cd5aea6535b9f2d23019226b
+    docs/notes/review-runs/2026-06-12-reopen-procedure-vocab-postwrite/review_summary.md: 19a974576d3b5f3d58e95dc305e214494413abadb6645aedbf2cd37adedaeeaf
+    docs/notes/review-runs/2026-06-12-reopen-procedure-vocab-postwrite/rounds.yaml: 476c95dbfd4b680c757d704a2115fec62651e62cf95574d4e7ce1236052b9699
+    docs/notes/review-runs/2026-06-12-reopen-procedure-vocab-postwrite/target-manifest.yaml: 4ce5d71086a56184f20fa3d7d9626ad29af8d2c84376c78e2880df562eb9173d
+    docs/notes/review-runs/2026-06-12-reopen-procedure-vocab-postwrite/triage.yaml: b66dfd3aea1311ac85f2e705fb7cc8aad9e165395af5f4d0bff1a1c940eee1f2
+    docs/operations/CONFORMANCE_EVALUATION.md: 0b51308a7ff5cf23ea80d2b58d6540ceb8df7a8c051a945eac09e43e670c5a8e
+    docs/operations/REOPEN_PROCEDURE.md: 3baaec29972cc471e31e0590464a454b5b671476f1c0bcbbaa0ec5c473ebb8fb
+    docs/operations/WORKFLOW_DISCIPLINE_MAP.yaml: cbdbf3fd73ded18de9b3a897a0ee1a4192081a31a80b8c63a59815e8596686cf
+    docs/operations/WORKFLOW_NAVIGATION.md: a32b5fc8bc298a33f1c0d4c2a8700d83fce2d24f844c0f2afc8c88fe29497edb
+    docs/reviews/reopen-classification-2026-06-12-multi-llm-entry-spec-reflection.md: 7cb6a0733431d36b27a4301293447933f5cfff601c775315e85113a546e387d8
+- verifier: gpt-5.5
+  target_files:
+  - .reviewcompass/specs/conformance-evaluation/conformance/2026-06-12-spec-update-drafts/workflow-management-requirements.draft.md
+  - .reviewcompass/specs/conformance-evaluation/conformance/2026-06-12-spec-update-drafts/workflow-management-tasks.draft.md
+  - .reviewcompass/specs/conformance-evaluation/design.md
+  - .reviewcompass/specs/conformance-evaluation/requirements.md
+  - .reviewcompass/specs/conformance-evaluation/tasks.md
+  - .reviewcompass/specs/workflow-management/design.md
+  - .reviewcompass/specs/workflow-management/requirements.md
+  - .reviewcompass/specs/workflow-management/tasks.md
+  - docs/notes/review-runs/2026-06-12-conformance-evaluation-doc-vocab-postwrite/model-result-summary.yaml
+  - docs/notes/review-runs/2026-06-12-conformance-evaluation-doc-vocab-postwrite/parsed/claude-sonnet-4-6.round-1.yaml
+  - docs/notes/review-runs/2026-06-12-conformance-evaluation-doc-vocab-postwrite/parsed/gemini-3.1-pro-preview.round-1.yaml
+  - docs/notes/review-runs/2026-06-12-conformance-evaluation-doc-vocab-postwrite/parsed/gpt-5.5.round-1.yaml
+  - docs/notes/review-runs/2026-06-12-conformance-evaluation-doc-vocab-postwrite/raw/claude-sonnet-4-6.round-1.txt
+  - docs/notes/review-runs/2026-06-12-conformance-evaluation-doc-vocab-postwrite/raw/gemini-3.1-pro-preview.round-1.txt
+  - docs/notes/review-runs/2026-06-12-conformance-evaluation-doc-vocab-postwrite/raw/gpt-5.5.round-1.txt
+  - docs/notes/review-runs/2026-06-12-conformance-evaluation-doc-vocab-postwrite/review_summary.md
+  - docs/notes/review-runs/2026-06-12-conformance-evaluation-doc-vocab-postwrite/rounds.yaml
+  - docs/notes/review-runs/2026-06-12-conformance-evaluation-doc-vocab-postwrite/target-manifest.yaml
+  - docs/notes/review-runs/2026-06-12-conformance-evaluation-doc-vocab-postwrite/triage.yaml
+  - docs/notes/review-runs/2026-06-12-discipline-map-feature-definition-postwrite/approval.yaml
+  - docs/notes/review-runs/2026-06-12-discipline-map-feature-definition-postwrite/model-result-summary.yaml
+  - docs/notes/review-runs/2026-06-12-discipline-map-feature-definition-postwrite/parsed/claude-sonnet-4-6.round-1.yaml
+  - docs/notes/review-runs/2026-06-12-discipline-map-feature-definition-postwrite/parsed/gemini-3.1-pro-preview.round-1.yaml
+  - docs/notes/review-runs/2026-06-12-discipline-map-feature-definition-postwrite/parsed/gpt-5.5.round-1.yaml
+  - docs/notes/review-runs/2026-06-12-discipline-map-feature-definition-postwrite/raw/claude-sonnet-4-6.round-1.txt
+  - docs/notes/review-runs/2026-06-12-discipline-map-feature-definition-postwrite/raw/gemini-3.1-pro-preview.round-1.txt
+  - docs/notes/review-runs/2026-06-12-discipline-map-feature-definition-postwrite/raw/gpt-5.5.round-1.txt
+  - docs/notes/review-runs/2026-06-12-discipline-map-feature-definition-postwrite/review_summary.md
+  - docs/notes/review-runs/2026-06-12-discipline-map-feature-definition-postwrite/rounds.yaml
+  - docs/notes/review-runs/2026-06-12-discipline-map-feature-definition-postwrite/target-manifest.yaml
+  - docs/notes/review-runs/2026-06-12-discipline-map-feature-definition-postwrite/triage.yaml
+  - docs/notes/review-runs/2026-06-12-navigation-feature-definition-postwrite-r2/model-result-summary.yaml
+  - docs/notes/review-runs/2026-06-12-navigation-feature-definition-postwrite-r2/parsed/claude-sonnet-4-6.round-1.yaml
+  - docs/notes/review-runs/2026-06-12-navigation-feature-definition-postwrite-r2/parsed/gemini-3.1-pro-preview.round-1.yaml
+  - docs/notes/review-runs/2026-06-12-navigation-feature-definition-postwrite-r2/parsed/gpt-5.5.round-1.yaml
+  - docs/notes/review-runs/2026-06-12-navigation-feature-definition-postwrite-r2/raw/claude-sonnet-4-6.round-1.txt
+  - docs/notes/review-runs/2026-06-12-navigation-feature-definition-postwrite-r2/raw/gemini-3.1-pro-preview.round-1.txt
+  - docs/notes/review-runs/2026-06-12-navigation-feature-definition-postwrite-r2/raw/gpt-5.5.round-1.txt
+  - docs/notes/review-runs/2026-06-12-navigation-feature-definition-postwrite-r2/review_summary.md
+  - docs/notes/review-runs/2026-06-12-navigation-feature-definition-postwrite-r2/rounds.yaml
+  - docs/notes/review-runs/2026-06-12-navigation-feature-definition-postwrite-r2/target-manifest.yaml
+  - docs/notes/review-runs/2026-06-12-navigation-feature-definition-postwrite-r2/triage.yaml
+  - docs/notes/review-runs/2026-06-12-navigation-feature-definition-postwrite/approval.yaml
+  - docs/notes/review-runs/2026-06-12-navigation-feature-definition-postwrite/model-result-summary.yaml
+  - docs/notes/review-runs/2026-06-12-navigation-feature-definition-postwrite/parsed/claude-sonnet-4-6.round-1.yaml
+  - docs/notes/review-runs/2026-06-12-navigation-feature-definition-postwrite/parsed/gemini-3.1-pro-preview.round-1.yaml
+  - docs/notes/review-runs/2026-06-12-navigation-feature-definition-postwrite/parsed/gpt-5.5.round-1.yaml
+  - docs/notes/review-runs/2026-06-12-navigation-feature-definition-postwrite/raw/claude-sonnet-4-6.round-1.txt
+  - docs/notes/review-runs/2026-06-12-navigation-feature-definition-postwrite/raw/gemini-3.1-pro-preview.round-1.txt
+  - docs/notes/review-runs/2026-06-12-navigation-feature-definition-postwrite/raw/gpt-5.5.round-1.txt
+  - docs/notes/review-runs/2026-06-12-navigation-feature-definition-postwrite/review_summary.md
+  - docs/notes/review-runs/2026-06-12-navigation-feature-definition-postwrite/rounds.yaml
+  - docs/notes/review-runs/2026-06-12-navigation-feature-definition-postwrite/target-manifest.yaml
+  - docs/notes/review-runs/2026-06-12-navigation-feature-definition-postwrite/triage.yaml
+  - docs/notes/review-runs/2026-06-12-reopen-classification-postwrite/model-result-summary.yaml
+  - docs/notes/review-runs/2026-06-12-reopen-classification-postwrite/parsed/claude-sonnet-4-6.round-1.yaml
+  - docs/notes/review-runs/2026-06-12-reopen-classification-postwrite/parsed/gemini-3.1-pro-preview.round-1.yaml
+  - docs/notes/review-runs/2026-06-12-reopen-classification-postwrite/parsed/gpt-5.5.round-1.yaml
+  - docs/notes/review-runs/2026-06-12-reopen-classification-postwrite/raw/claude-sonnet-4-6.round-1.txt
+  - docs/notes/review-runs/2026-06-12-reopen-classification-postwrite/raw/gemini-3.1-pro-preview.round-1.txt
+  - docs/notes/review-runs/2026-06-12-reopen-classification-postwrite/raw/gpt-5.5.round-1.txt
+  - docs/notes/review-runs/2026-06-12-reopen-classification-postwrite/review_summary.md
+  - docs/notes/review-runs/2026-06-12-reopen-classification-postwrite/rounds.yaml
+  - docs/notes/review-runs/2026-06-12-reopen-classification-postwrite/target-manifest.yaml
+  - docs/notes/review-runs/2026-06-12-reopen-classification-postwrite/triage.yaml
+  - docs/notes/review-runs/2026-06-12-reopen-procedure-vocab-postwrite/model-result-summary.yaml
+  - docs/notes/review-runs/2026-06-12-reopen-procedure-vocab-postwrite/parsed/claude-sonnet-4-6.round-1.yaml
+  - docs/notes/review-runs/2026-06-12-reopen-procedure-vocab-postwrite/parsed/gemini-3.1-pro-preview.round-1.yaml
+  - docs/notes/review-runs/2026-06-12-reopen-procedure-vocab-postwrite/parsed/gpt-5.5.round-1.yaml
+  - docs/notes/review-runs/2026-06-12-reopen-procedure-vocab-postwrite/raw/claude-sonnet-4-6.round-1.txt
+  - docs/notes/review-runs/2026-06-12-reopen-procedure-vocab-postwrite/raw/gemini-3.1-pro-preview.round-1.txt
+  - docs/notes/review-runs/2026-06-12-reopen-procedure-vocab-postwrite/raw/gpt-5.5.round-1.txt
+  - docs/notes/review-runs/2026-06-12-reopen-procedure-vocab-postwrite/review_summary.md
+  - docs/notes/review-runs/2026-06-12-reopen-procedure-vocab-postwrite/rounds.yaml
+  - docs/notes/review-runs/2026-06-12-reopen-procedure-vocab-postwrite/target-manifest.yaml
+  - docs/notes/review-runs/2026-06-12-reopen-procedure-vocab-postwrite/triage.yaml
+  - docs/operations/CONFORMANCE_EVALUATION.md
+  - docs/operations/REOPEN_PROCEDURE.md
+  - docs/operations/WORKFLOW_DISCIPLINE_MAP.yaml
+  - docs/operations/WORKFLOW_NAVIGATION.md
+  - docs/reviews/reopen-classification-2026-06-12-multi-llm-entry-spec-reflection.md
+  target_sha256:
+    ? .reviewcompass/specs/conformance-evaluation/conformance/2026-06-12-spec-update-drafts/workflow-management-requirements.draft.md
+    : 5506cd10df5f8f11b66a12322b967bff6a32fd82584c6548235e4e4ca5501397
+    .reviewcompass/specs/conformance-evaluation/conformance/2026-06-12-spec-update-drafts/workflow-management-tasks.draft.md: 3715467f1bb7717248553e44ffaf6b825e563c4961023fdd5cd050a1520e7b3a
+    .reviewcompass/specs/conformance-evaluation/design.md: 951ada44c86c571ca9f3d2f5a1066cd2fe73915ca80db81276cfaeb28b09f8d8
+    .reviewcompass/specs/conformance-evaluation/requirements.md: 24b4d6df87c3ac942f081810d8e9fec7b233bb352f95648b524cdc26d302213a
+    .reviewcompass/specs/conformance-evaluation/tasks.md: 734ce83d46c1249a2a2f52f7b5df57db310d8d0f8a59e74863a900e8cc4cdc16
+    .reviewcompass/specs/workflow-management/design.md: 449d4fa7806f3e3a6d9069ebd4b220b42d72e2bdc69630cf715bc91fca291d88
+    .reviewcompass/specs/workflow-management/requirements.md: 0ba9a13a5fee90b2bfd64277a96bad2f0642032ef43e45d5e7a8452cc8566c4e
+    .reviewcompass/specs/workflow-management/tasks.md: d342b22479eac205d56eb591d365593a83b278467b5f1bd94b9aeaa17cca6ebe
+    docs/notes/review-runs/2026-06-12-conformance-evaluation-doc-vocab-postwrite/model-result-summary.yaml: a86448a3f45a12593f01bc2b2020dc303fda719667016cef150b01e246208150
+    docs/notes/review-runs/2026-06-12-conformance-evaluation-doc-vocab-postwrite/parsed/claude-sonnet-4-6.round-1.yaml: 4cf6ab46a716b84ec498e3a571d4fe4508b0f91fb1d2cb6cb2a0683bbe5c1acd
+    docs/notes/review-runs/2026-06-12-conformance-evaluation-doc-vocab-postwrite/parsed/gemini-3.1-pro-preview.round-1.yaml: 23a16c07a69ec2b65a01378047a97cb8d288989dd47eb799834109cc3bee6eb9
+    docs/notes/review-runs/2026-06-12-conformance-evaluation-doc-vocab-postwrite/parsed/gpt-5.5.round-1.yaml: 21d898641f493f84a50a82e8a7d9c0bab0887a50706b968cd4b823462df43b6f
+    docs/notes/review-runs/2026-06-12-conformance-evaluation-doc-vocab-postwrite/raw/claude-sonnet-4-6.round-1.txt: 822d6d418a6a0a9d0b546424234a224f7369f0963e59c594b2ce5d67c85ac840
+    docs/notes/review-runs/2026-06-12-conformance-evaluation-doc-vocab-postwrite/raw/gemini-3.1-pro-preview.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/2026-06-12-conformance-evaluation-doc-vocab-postwrite/raw/gpt-5.5.round-1.txt: e8ed3b46da0f4567542a5f9127d3edf6b282c1f4a621e8bdf5d280a0c31462f8
+    docs/notes/review-runs/2026-06-12-conformance-evaluation-doc-vocab-postwrite/review_summary.md: 365834a57f907450c960c45f98328d5445f44ec344fbcbae780ce7a4fb5b922d
+    docs/notes/review-runs/2026-06-12-conformance-evaluation-doc-vocab-postwrite/rounds.yaml: fe2da6d056d38baa3bc901fba1eafb053f2daf4aa549b2e35f0eb7d9afa84244
+    docs/notes/review-runs/2026-06-12-conformance-evaluation-doc-vocab-postwrite/target-manifest.yaml: e1878acbbbba99dbbadc9cbb030a7356f9e6e1717bd9ec8bd16076ed21c93733
+    docs/notes/review-runs/2026-06-12-conformance-evaluation-doc-vocab-postwrite/triage.yaml: 4ac8565fed772c45e5d5d8f3f6b288262e95e2a8d88dd74348c9ed64136643dc
+    docs/notes/review-runs/2026-06-12-discipline-map-feature-definition-postwrite/approval.yaml: 6f3ba39ee5a79b11d639ddcd0aaec4089995945b1c2f649fb76f1d0d7a33c726
+    docs/notes/review-runs/2026-06-12-discipline-map-feature-definition-postwrite/model-result-summary.yaml: 0245047f2078ae4bb925b7d92f72114f503ec749b4b120f198f1793012853f7b
+    docs/notes/review-runs/2026-06-12-discipline-map-feature-definition-postwrite/parsed/claude-sonnet-4-6.round-1.yaml: f27d5ef85d747d860a625bb9ea11167746855b4b7b07cce54a3569818ae708fa
+    docs/notes/review-runs/2026-06-12-discipline-map-feature-definition-postwrite/parsed/gemini-3.1-pro-preview.round-1.yaml: baee4e7015d057360e44d43eb4159e99d73bea263e5d141344c6d7cf9a2fe5dc
+    docs/notes/review-runs/2026-06-12-discipline-map-feature-definition-postwrite/parsed/gpt-5.5.round-1.yaml: 0e55f2259d91bc5544331e3d608802110c6511742d84b1da713b65331336ba3e
+    docs/notes/review-runs/2026-06-12-discipline-map-feature-definition-postwrite/raw/claude-sonnet-4-6.round-1.txt: a79ddcf98b7fb871508b4ff2c44599a2d2d336e91ba0b119c567f59a29b509a4
+    docs/notes/review-runs/2026-06-12-discipline-map-feature-definition-postwrite/raw/gemini-3.1-pro-preview.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/2026-06-12-discipline-map-feature-definition-postwrite/raw/gpt-5.5.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/2026-06-12-discipline-map-feature-definition-postwrite/review_summary.md: b9ff01f13e8ab9e9310cb5a119930fea6f3b0ce88952e11f01c07bf52302a97a
+    docs/notes/review-runs/2026-06-12-discipline-map-feature-definition-postwrite/rounds.yaml: 226feaecc8ad19ec26886d5cf1e7fc56fa1d166be7b87ccf3cb12ede8efafd50
+    docs/notes/review-runs/2026-06-12-discipline-map-feature-definition-postwrite/target-manifest.yaml: 6f505b9f4c36cc1faaa4dc577578075948f087e5ed3db1841fc9434a51bb0df7
+    docs/notes/review-runs/2026-06-12-discipline-map-feature-definition-postwrite/triage.yaml: a829208ae11e6caba97d6ebff97955e507d1e3377ceb6dc533af10c51914753c
+    docs/notes/review-runs/2026-06-12-navigation-feature-definition-postwrite-r2/model-result-summary.yaml: c818a897e78a564019a4022236633299e6490674aab0303d0f2b623f8f3385db
+    docs/notes/review-runs/2026-06-12-navigation-feature-definition-postwrite-r2/parsed/claude-sonnet-4-6.round-1.yaml: fccf39d85c405c82e4c96aeba709b9fbbae055d71efd1eaddd918c0c917a46fa
+    docs/notes/review-runs/2026-06-12-navigation-feature-definition-postwrite-r2/parsed/gemini-3.1-pro-preview.round-1.yaml: 1b4d4010c1c2ef7bb71e5f9e5d43184f309ddd2e43f759908ee6008368cb0281
+    docs/notes/review-runs/2026-06-12-navigation-feature-definition-postwrite-r2/parsed/gpt-5.5.round-1.yaml: 8f2f4da5cb3639d7107e77cd86e5ef393f165675cf6d885fc7a3a499c62f969f
+    docs/notes/review-runs/2026-06-12-navigation-feature-definition-postwrite-r2/raw/claude-sonnet-4-6.round-1.txt: e14efabb1636cdfd95175c7b080e34d287a71f3aacb474a5c159317a3ca3a353
+    docs/notes/review-runs/2026-06-12-navigation-feature-definition-postwrite-r2/raw/gemini-3.1-pro-preview.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/2026-06-12-navigation-feature-definition-postwrite-r2/raw/gpt-5.5.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/2026-06-12-navigation-feature-definition-postwrite-r2/review_summary.md: 7c40ad5f567a2d81803b1a07eb376f0d47f1d8d834bcbb91cfc9bb8678a6867e
+    docs/notes/review-runs/2026-06-12-navigation-feature-definition-postwrite-r2/rounds.yaml: c7fb9b09ca3008706695ab9aaaaf3b95f666d5cc3289e79af518d8341218a1d5
+    docs/notes/review-runs/2026-06-12-navigation-feature-definition-postwrite-r2/target-manifest.yaml: 2a6bc8304a48ff10aab6f1567c595cac0233fb78d38bcf596dc9a110c8988e76
+    docs/notes/review-runs/2026-06-12-navigation-feature-definition-postwrite-r2/triage.yaml: 4af734eb3248b96d3f6ddcde3a51679a816d8e49f711e5232a0780de90e3bb7e
+    docs/notes/review-runs/2026-06-12-navigation-feature-definition-postwrite/approval.yaml: ce1034c0549d2f1076596a4c0a3fedd1046ab652a38d9f5506d075b49d092efe
+    docs/notes/review-runs/2026-06-12-navigation-feature-definition-postwrite/model-result-summary.yaml: fd7199429e34b0e880f819905c60ed930bb93f3f6e662610180c44fcf6a8f5b7
+    docs/notes/review-runs/2026-06-12-navigation-feature-definition-postwrite/parsed/claude-sonnet-4-6.round-1.yaml: d4a5ef6df6fbb712ffb2d5b96d00bc6eda668fca770b2037dd37747abb7c5f9e
+    docs/notes/review-runs/2026-06-12-navigation-feature-definition-postwrite/parsed/gemini-3.1-pro-preview.round-1.yaml: 1dcbd4d262e57563b038bdf5f391af650c3eae516707e0520bf6a40d90110b80
+    docs/notes/review-runs/2026-06-12-navigation-feature-definition-postwrite/parsed/gpt-5.5.round-1.yaml: 5288f5accf2cd4d7b781f6782627adfa09707dc8978fcfa6645291d003be6e07
+    docs/notes/review-runs/2026-06-12-navigation-feature-definition-postwrite/raw/claude-sonnet-4-6.round-1.txt: 8e83b8350369ce954393c6579afc374f173a3b077b5ee6d1ea7483395a6244ab
+    docs/notes/review-runs/2026-06-12-navigation-feature-definition-postwrite/raw/gemini-3.1-pro-preview.round-1.txt: a2b10fa6b800171f7a3698162bb847bef279ab11b59f6dc4898def1167186371
+    docs/notes/review-runs/2026-06-12-navigation-feature-definition-postwrite/raw/gpt-5.5.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/2026-06-12-navigation-feature-definition-postwrite/review_summary.md: 3682e12d8cc64d6f9041feca3e5166172f2add5536e94fe36506697c9d1fb48b
+    docs/notes/review-runs/2026-06-12-navigation-feature-definition-postwrite/rounds.yaml: 0d5465f663ccd2e8e49f8c32e6ec9415abb20c859efbc2692ab9c1248cda8fb7
+    docs/notes/review-runs/2026-06-12-navigation-feature-definition-postwrite/target-manifest.yaml: 159e9ac86fbda027e9018e28ec1271e879710a61dd40f91fab2a132aae5cecbf
+    docs/notes/review-runs/2026-06-12-navigation-feature-definition-postwrite/triage.yaml: 41330131c2ff73015c501185b2018fb1280bcdb0d190a1fdd18e575638c5286a
+    docs/notes/review-runs/2026-06-12-reopen-classification-postwrite/model-result-summary.yaml: 6c3ed375c034ad97ac466fa0c60df18e8da0dee4ecef5897fc8f0c727f5a49a8
+    docs/notes/review-runs/2026-06-12-reopen-classification-postwrite/parsed/claude-sonnet-4-6.round-1.yaml: 3fb93462a2a62fbbbab8baceb6c5874d020fac602d57bae658268a44680e151f
+    docs/notes/review-runs/2026-06-12-reopen-classification-postwrite/parsed/gemini-3.1-pro-preview.round-1.yaml: d8598386f3f467676b3ac5a5eb40da580f9080dd707d064db621ff9e6ba01761
+    docs/notes/review-runs/2026-06-12-reopen-classification-postwrite/parsed/gpt-5.5.round-1.yaml: 2b3408b6bcf00824b36e4296b34b07bc3c32ec9d5db0974b2b60e6a0fc63bdba
+    docs/notes/review-runs/2026-06-12-reopen-classification-postwrite/raw/claude-sonnet-4-6.round-1.txt: 7cb2aa094c28e4b23fcb0d665a5921683adb33cef3655ed3542703c58bf087b4
+    docs/notes/review-runs/2026-06-12-reopen-classification-postwrite/raw/gemini-3.1-pro-preview.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/2026-06-12-reopen-classification-postwrite/raw/gpt-5.5.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/2026-06-12-reopen-classification-postwrite/review_summary.md: 67f177740148e6d94be3d8260659cd142ea5799f54e5de764fcd043ca507e537
+    docs/notes/review-runs/2026-06-12-reopen-classification-postwrite/rounds.yaml: 8812d277d9fdb7459772c271b03dc5d56081e2df5cffc4f2cc63c3ca1ff0e3f4
+    docs/notes/review-runs/2026-06-12-reopen-classification-postwrite/target-manifest.yaml: 5fdee8bce97e3e691a0adac9feb4b97eee6b65c16140939f3e60290677b7907c
+    docs/notes/review-runs/2026-06-12-reopen-classification-postwrite/triage.yaml: ef58160d2a05c476b3ab81281e3b342541a7dc27776efa16fb52b19debe8a5ba
+    docs/notes/review-runs/2026-06-12-reopen-procedure-vocab-postwrite/model-result-summary.yaml: 6b02540dec426d23a28522eb3f69efcbc41f1442f8d8803ee4d37325ea31378a
+    docs/notes/review-runs/2026-06-12-reopen-procedure-vocab-postwrite/parsed/claude-sonnet-4-6.round-1.yaml: 0459be5722072e99e2bf28d560e87c3b633d35ccf3fec25466267a76347b564c
+    docs/notes/review-runs/2026-06-12-reopen-procedure-vocab-postwrite/parsed/gemini-3.1-pro-preview.round-1.yaml: 68e403ba1254d4967db16273708f6da23a1551b2a8a4035d49bc3fd073cf50f3
+    docs/notes/review-runs/2026-06-12-reopen-procedure-vocab-postwrite/parsed/gpt-5.5.round-1.yaml: 66d56a3e4cfa830deabd74ede72ce27a3f70b04848f328241328475f16d2cd42
+    docs/notes/review-runs/2026-06-12-reopen-procedure-vocab-postwrite/raw/claude-sonnet-4-6.round-1.txt: 7e6aab4e08008a7315aa30808eb81ef35648fe0490c55aaf536ac2223a0769c3
+    docs/notes/review-runs/2026-06-12-reopen-procedure-vocab-postwrite/raw/gemini-3.1-pro-preview.round-1.txt: 67f20b5f2a77ca36c12b6b153ce451a10d7c0026c9147c2eb86f0e1d33ea4fb1
+    docs/notes/review-runs/2026-06-12-reopen-procedure-vocab-postwrite/raw/gpt-5.5.round-1.txt: f0e31a769128c2df3249c5ce09b776329d0b2891cd5aea6535b9f2d23019226b
+    docs/notes/review-runs/2026-06-12-reopen-procedure-vocab-postwrite/review_summary.md: 19a974576d3b5f3d58e95dc305e214494413abadb6645aedbf2cd37adedaeeaf
+    docs/notes/review-runs/2026-06-12-reopen-procedure-vocab-postwrite/rounds.yaml: 476c95dbfd4b680c757d704a2115fec62651e62cf95574d4e7ce1236052b9699
+    docs/notes/review-runs/2026-06-12-reopen-procedure-vocab-postwrite/target-manifest.yaml: 4ce5d71086a56184f20fa3d7d9626ad29af8d2c84376c78e2880df562eb9173d
+    docs/notes/review-runs/2026-06-12-reopen-procedure-vocab-postwrite/triage.yaml: b66dfd3aea1311ac85f2e705fb7cc8aad9e165395af5f4d0bff1a1c940eee1f2
+    docs/operations/CONFORMANCE_EVALUATION.md: 0b51308a7ff5cf23ea80d2b58d6540ceb8df7a8c051a945eac09e43e670c5a8e
+    docs/operations/REOPEN_PROCEDURE.md: 3baaec29972cc471e31e0590464a454b5b671476f1c0bcbbaa0ec5c473ebb8fb
+    docs/operations/WORKFLOW_DISCIPLINE_MAP.yaml: cbdbf3fd73ded18de9b3a897a0ee1a4192081a31a80b8c63a59815e8596686cf
+    docs/operations/WORKFLOW_NAVIGATION.md: a32b5fc8bc298a33f1c0d4c2a8700d83fce2d24f844c0f2afc8c88fe29497edb
+    docs/reviews/reopen-classification-2026-06-12-multi-llm-entry-spec-reflection.md: 7cb6a0733431d36b27a4301293447933f5cfff601c775315e85113a546e387d8
+- verifier: gemini-3.1-pro-preview
+  target_files:
+  - .reviewcompass/specs/conformance-evaluation/conformance/2026-06-12-spec-update-drafts/workflow-management-requirements.draft.md
+  - .reviewcompass/specs/conformance-evaluation/conformance/2026-06-12-spec-update-drafts/workflow-management-tasks.draft.md
+  - .reviewcompass/specs/conformance-evaluation/design.md
+  - .reviewcompass/specs/conformance-evaluation/requirements.md
+  - .reviewcompass/specs/conformance-evaluation/tasks.md
+  - .reviewcompass/specs/workflow-management/design.md
+  - .reviewcompass/specs/workflow-management/requirements.md
+  - .reviewcompass/specs/workflow-management/tasks.md
+  - docs/notes/review-runs/2026-06-12-conformance-evaluation-doc-vocab-postwrite/model-result-summary.yaml
+  - docs/notes/review-runs/2026-06-12-conformance-evaluation-doc-vocab-postwrite/parsed/claude-sonnet-4-6.round-1.yaml
+  - docs/notes/review-runs/2026-06-12-conformance-evaluation-doc-vocab-postwrite/parsed/gemini-3.1-pro-preview.round-1.yaml
+  - docs/notes/review-runs/2026-06-12-conformance-evaluation-doc-vocab-postwrite/parsed/gpt-5.5.round-1.yaml
+  - docs/notes/review-runs/2026-06-12-conformance-evaluation-doc-vocab-postwrite/raw/claude-sonnet-4-6.round-1.txt
+  - docs/notes/review-runs/2026-06-12-conformance-evaluation-doc-vocab-postwrite/raw/gemini-3.1-pro-preview.round-1.txt
+  - docs/notes/review-runs/2026-06-12-conformance-evaluation-doc-vocab-postwrite/raw/gpt-5.5.round-1.txt
+  - docs/notes/review-runs/2026-06-12-conformance-evaluation-doc-vocab-postwrite/review_summary.md
+  - docs/notes/review-runs/2026-06-12-conformance-evaluation-doc-vocab-postwrite/rounds.yaml
+  - docs/notes/review-runs/2026-06-12-conformance-evaluation-doc-vocab-postwrite/target-manifest.yaml
+  - docs/notes/review-runs/2026-06-12-conformance-evaluation-doc-vocab-postwrite/triage.yaml
+  - docs/notes/review-runs/2026-06-12-discipline-map-feature-definition-postwrite/approval.yaml
+  - docs/notes/review-runs/2026-06-12-discipline-map-feature-definition-postwrite/model-result-summary.yaml
+  - docs/notes/review-runs/2026-06-12-discipline-map-feature-definition-postwrite/parsed/claude-sonnet-4-6.round-1.yaml
+  - docs/notes/review-runs/2026-06-12-discipline-map-feature-definition-postwrite/parsed/gemini-3.1-pro-preview.round-1.yaml
+  - docs/notes/review-runs/2026-06-12-discipline-map-feature-definition-postwrite/parsed/gpt-5.5.round-1.yaml
+  - docs/notes/review-runs/2026-06-12-discipline-map-feature-definition-postwrite/raw/claude-sonnet-4-6.round-1.txt
+  - docs/notes/review-runs/2026-06-12-discipline-map-feature-definition-postwrite/raw/gemini-3.1-pro-preview.round-1.txt
+  - docs/notes/review-runs/2026-06-12-discipline-map-feature-definition-postwrite/raw/gpt-5.5.round-1.txt
+  - docs/notes/review-runs/2026-06-12-discipline-map-feature-definition-postwrite/review_summary.md
+  - docs/notes/review-runs/2026-06-12-discipline-map-feature-definition-postwrite/rounds.yaml
+  - docs/notes/review-runs/2026-06-12-discipline-map-feature-definition-postwrite/target-manifest.yaml
+  - docs/notes/review-runs/2026-06-12-discipline-map-feature-definition-postwrite/triage.yaml
+  - docs/notes/review-runs/2026-06-12-navigation-feature-definition-postwrite-r2/model-result-summary.yaml
+  - docs/notes/review-runs/2026-06-12-navigation-feature-definition-postwrite-r2/parsed/claude-sonnet-4-6.round-1.yaml
+  - docs/notes/review-runs/2026-06-12-navigation-feature-definition-postwrite-r2/parsed/gemini-3.1-pro-preview.round-1.yaml
+  - docs/notes/review-runs/2026-06-12-navigation-feature-definition-postwrite-r2/parsed/gpt-5.5.round-1.yaml
+  - docs/notes/review-runs/2026-06-12-navigation-feature-definition-postwrite-r2/raw/claude-sonnet-4-6.round-1.txt
+  - docs/notes/review-runs/2026-06-12-navigation-feature-definition-postwrite-r2/raw/gemini-3.1-pro-preview.round-1.txt
+  - docs/notes/review-runs/2026-06-12-navigation-feature-definition-postwrite-r2/raw/gpt-5.5.round-1.txt
+  - docs/notes/review-runs/2026-06-12-navigation-feature-definition-postwrite-r2/review_summary.md
+  - docs/notes/review-runs/2026-06-12-navigation-feature-definition-postwrite-r2/rounds.yaml
+  - docs/notes/review-runs/2026-06-12-navigation-feature-definition-postwrite-r2/target-manifest.yaml
+  - docs/notes/review-runs/2026-06-12-navigation-feature-definition-postwrite-r2/triage.yaml
+  - docs/notes/review-runs/2026-06-12-navigation-feature-definition-postwrite/approval.yaml
+  - docs/notes/review-runs/2026-06-12-navigation-feature-definition-postwrite/model-result-summary.yaml
+  - docs/notes/review-runs/2026-06-12-navigation-feature-definition-postwrite/parsed/claude-sonnet-4-6.round-1.yaml
+  - docs/notes/review-runs/2026-06-12-navigation-feature-definition-postwrite/parsed/gemini-3.1-pro-preview.round-1.yaml
+  - docs/notes/review-runs/2026-06-12-navigation-feature-definition-postwrite/parsed/gpt-5.5.round-1.yaml
+  - docs/notes/review-runs/2026-06-12-navigation-feature-definition-postwrite/raw/claude-sonnet-4-6.round-1.txt
+  - docs/notes/review-runs/2026-06-12-navigation-feature-definition-postwrite/raw/gemini-3.1-pro-preview.round-1.txt
+  - docs/notes/review-runs/2026-06-12-navigation-feature-definition-postwrite/raw/gpt-5.5.round-1.txt
+  - docs/notes/review-runs/2026-06-12-navigation-feature-definition-postwrite/review_summary.md
+  - docs/notes/review-runs/2026-06-12-navigation-feature-definition-postwrite/rounds.yaml
+  - docs/notes/review-runs/2026-06-12-navigation-feature-definition-postwrite/target-manifest.yaml
+  - docs/notes/review-runs/2026-06-12-navigation-feature-definition-postwrite/triage.yaml
+  - docs/notes/review-runs/2026-06-12-reopen-classification-postwrite/model-result-summary.yaml
+  - docs/notes/review-runs/2026-06-12-reopen-classification-postwrite/parsed/claude-sonnet-4-6.round-1.yaml
+  - docs/notes/review-runs/2026-06-12-reopen-classification-postwrite/parsed/gemini-3.1-pro-preview.round-1.yaml
+  - docs/notes/review-runs/2026-06-12-reopen-classification-postwrite/parsed/gpt-5.5.round-1.yaml
+  - docs/notes/review-runs/2026-06-12-reopen-classification-postwrite/raw/claude-sonnet-4-6.round-1.txt
+  - docs/notes/review-runs/2026-06-12-reopen-classification-postwrite/raw/gemini-3.1-pro-preview.round-1.txt
+  - docs/notes/review-runs/2026-06-12-reopen-classification-postwrite/raw/gpt-5.5.round-1.txt
+  - docs/notes/review-runs/2026-06-12-reopen-classification-postwrite/review_summary.md
+  - docs/notes/review-runs/2026-06-12-reopen-classification-postwrite/rounds.yaml
+  - docs/notes/review-runs/2026-06-12-reopen-classification-postwrite/target-manifest.yaml
+  - docs/notes/review-runs/2026-06-12-reopen-classification-postwrite/triage.yaml
+  - docs/notes/review-runs/2026-06-12-reopen-procedure-vocab-postwrite/model-result-summary.yaml
+  - docs/notes/review-runs/2026-06-12-reopen-procedure-vocab-postwrite/parsed/claude-sonnet-4-6.round-1.yaml
+  - docs/notes/review-runs/2026-06-12-reopen-procedure-vocab-postwrite/parsed/gemini-3.1-pro-preview.round-1.yaml
+  - docs/notes/review-runs/2026-06-12-reopen-procedure-vocab-postwrite/parsed/gpt-5.5.round-1.yaml
+  - docs/notes/review-runs/2026-06-12-reopen-procedure-vocab-postwrite/raw/claude-sonnet-4-6.round-1.txt
+  - docs/notes/review-runs/2026-06-12-reopen-procedure-vocab-postwrite/raw/gemini-3.1-pro-preview.round-1.txt
+  - docs/notes/review-runs/2026-06-12-reopen-procedure-vocab-postwrite/raw/gpt-5.5.round-1.txt
+  - docs/notes/review-runs/2026-06-12-reopen-procedure-vocab-postwrite/review_summary.md
+  - docs/notes/review-runs/2026-06-12-reopen-procedure-vocab-postwrite/rounds.yaml
+  - docs/notes/review-runs/2026-06-12-reopen-procedure-vocab-postwrite/target-manifest.yaml
+  - docs/notes/review-runs/2026-06-12-reopen-procedure-vocab-postwrite/triage.yaml
+  - docs/operations/CONFORMANCE_EVALUATION.md
+  - docs/operations/REOPEN_PROCEDURE.md
+  - docs/operations/WORKFLOW_DISCIPLINE_MAP.yaml
+  - docs/operations/WORKFLOW_NAVIGATION.md
+  - docs/reviews/reopen-classification-2026-06-12-multi-llm-entry-spec-reflection.md
+  target_sha256:
+    ? .reviewcompass/specs/conformance-evaluation/conformance/2026-06-12-spec-update-drafts/workflow-management-requirements.draft.md
+    : 5506cd10df5f8f11b66a12322b967bff6a32fd82584c6548235e4e4ca5501397
+    .reviewcompass/specs/conformance-evaluation/conformance/2026-06-12-spec-update-drafts/workflow-management-tasks.draft.md: 3715467f1bb7717248553e44ffaf6b825e563c4961023fdd5cd050a1520e7b3a
+    .reviewcompass/specs/conformance-evaluation/design.md: 951ada44c86c571ca9f3d2f5a1066cd2fe73915ca80db81276cfaeb28b09f8d8
+    .reviewcompass/specs/conformance-evaluation/requirements.md: 24b4d6df87c3ac942f081810d8e9fec7b233bb352f95648b524cdc26d302213a
+    .reviewcompass/specs/conformance-evaluation/tasks.md: 734ce83d46c1249a2a2f52f7b5df57db310d8d0f8a59e74863a900e8cc4cdc16
+    .reviewcompass/specs/workflow-management/design.md: 449d4fa7806f3e3a6d9069ebd4b220b42d72e2bdc69630cf715bc91fca291d88
+    .reviewcompass/specs/workflow-management/requirements.md: 0ba9a13a5fee90b2bfd64277a96bad2f0642032ef43e45d5e7a8452cc8566c4e
+    .reviewcompass/specs/workflow-management/tasks.md: d342b22479eac205d56eb591d365593a83b278467b5f1bd94b9aeaa17cca6ebe
+    docs/notes/review-runs/2026-06-12-conformance-evaluation-doc-vocab-postwrite/model-result-summary.yaml: a86448a3f45a12593f01bc2b2020dc303fda719667016cef150b01e246208150
+    docs/notes/review-runs/2026-06-12-conformance-evaluation-doc-vocab-postwrite/parsed/claude-sonnet-4-6.round-1.yaml: 4cf6ab46a716b84ec498e3a571d4fe4508b0f91fb1d2cb6cb2a0683bbe5c1acd
+    docs/notes/review-runs/2026-06-12-conformance-evaluation-doc-vocab-postwrite/parsed/gemini-3.1-pro-preview.round-1.yaml: 23a16c07a69ec2b65a01378047a97cb8d288989dd47eb799834109cc3bee6eb9
+    docs/notes/review-runs/2026-06-12-conformance-evaluation-doc-vocab-postwrite/parsed/gpt-5.5.round-1.yaml: 21d898641f493f84a50a82e8a7d9c0bab0887a50706b968cd4b823462df43b6f
+    docs/notes/review-runs/2026-06-12-conformance-evaluation-doc-vocab-postwrite/raw/claude-sonnet-4-6.round-1.txt: 822d6d418a6a0a9d0b546424234a224f7369f0963e59c594b2ce5d67c85ac840
+    docs/notes/review-runs/2026-06-12-conformance-evaluation-doc-vocab-postwrite/raw/gemini-3.1-pro-preview.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/2026-06-12-conformance-evaluation-doc-vocab-postwrite/raw/gpt-5.5.round-1.txt: e8ed3b46da0f4567542a5f9127d3edf6b282c1f4a621e8bdf5d280a0c31462f8
+    docs/notes/review-runs/2026-06-12-conformance-evaluation-doc-vocab-postwrite/review_summary.md: 365834a57f907450c960c45f98328d5445f44ec344fbcbae780ce7a4fb5b922d
+    docs/notes/review-runs/2026-06-12-conformance-evaluation-doc-vocab-postwrite/rounds.yaml: fe2da6d056d38baa3bc901fba1eafb053f2daf4aa549b2e35f0eb7d9afa84244
+    docs/notes/review-runs/2026-06-12-conformance-evaluation-doc-vocab-postwrite/target-manifest.yaml: e1878acbbbba99dbbadc9cbb030a7356f9e6e1717bd9ec8bd16076ed21c93733
+    docs/notes/review-runs/2026-06-12-conformance-evaluation-doc-vocab-postwrite/triage.yaml: 4ac8565fed772c45e5d5d8f3f6b288262e95e2a8d88dd74348c9ed64136643dc
+    docs/notes/review-runs/2026-06-12-discipline-map-feature-definition-postwrite/approval.yaml: 6f3ba39ee5a79b11d639ddcd0aaec4089995945b1c2f649fb76f1d0d7a33c726
+    docs/notes/review-runs/2026-06-12-discipline-map-feature-definition-postwrite/model-result-summary.yaml: 0245047f2078ae4bb925b7d92f72114f503ec749b4b120f198f1793012853f7b
+    docs/notes/review-runs/2026-06-12-discipline-map-feature-definition-postwrite/parsed/claude-sonnet-4-6.round-1.yaml: f27d5ef85d747d860a625bb9ea11167746855b4b7b07cce54a3569818ae708fa
+    docs/notes/review-runs/2026-06-12-discipline-map-feature-definition-postwrite/parsed/gemini-3.1-pro-preview.round-1.yaml: baee4e7015d057360e44d43eb4159e99d73bea263e5d141344c6d7cf9a2fe5dc
+    docs/notes/review-runs/2026-06-12-discipline-map-feature-definition-postwrite/parsed/gpt-5.5.round-1.yaml: 0e55f2259d91bc5544331e3d608802110c6511742d84b1da713b65331336ba3e
+    docs/notes/review-runs/2026-06-12-discipline-map-feature-definition-postwrite/raw/claude-sonnet-4-6.round-1.txt: a79ddcf98b7fb871508b4ff2c44599a2d2d336e91ba0b119c567f59a29b509a4
+    docs/notes/review-runs/2026-06-12-discipline-map-feature-definition-postwrite/raw/gemini-3.1-pro-preview.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/2026-06-12-discipline-map-feature-definition-postwrite/raw/gpt-5.5.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/2026-06-12-discipline-map-feature-definition-postwrite/review_summary.md: b9ff01f13e8ab9e9310cb5a119930fea6f3b0ce88952e11f01c07bf52302a97a
+    docs/notes/review-runs/2026-06-12-discipline-map-feature-definition-postwrite/rounds.yaml: 226feaecc8ad19ec26886d5cf1e7fc56fa1d166be7b87ccf3cb12ede8efafd50
+    docs/notes/review-runs/2026-06-12-discipline-map-feature-definition-postwrite/target-manifest.yaml: 6f505b9f4c36cc1faaa4dc577578075948f087e5ed3db1841fc9434a51bb0df7
+    docs/notes/review-runs/2026-06-12-discipline-map-feature-definition-postwrite/triage.yaml: a829208ae11e6caba97d6ebff97955e507d1e3377ceb6dc533af10c51914753c
+    docs/notes/review-runs/2026-06-12-navigation-feature-definition-postwrite-r2/model-result-summary.yaml: c818a897e78a564019a4022236633299e6490674aab0303d0f2b623f8f3385db
+    docs/notes/review-runs/2026-06-12-navigation-feature-definition-postwrite-r2/parsed/claude-sonnet-4-6.round-1.yaml: fccf39d85c405c82e4c96aeba709b9fbbae055d71efd1eaddd918c0c917a46fa
+    docs/notes/review-runs/2026-06-12-navigation-feature-definition-postwrite-r2/parsed/gemini-3.1-pro-preview.round-1.yaml: 1b4d4010c1c2ef7bb71e5f9e5d43184f309ddd2e43f759908ee6008368cb0281
+    docs/notes/review-runs/2026-06-12-navigation-feature-definition-postwrite-r2/parsed/gpt-5.5.round-1.yaml: 8f2f4da5cb3639d7107e77cd86e5ef393f165675cf6d885fc7a3a499c62f969f
+    docs/notes/review-runs/2026-06-12-navigation-feature-definition-postwrite-r2/raw/claude-sonnet-4-6.round-1.txt: e14efabb1636cdfd95175c7b080e34d287a71f3aacb474a5c159317a3ca3a353
+    docs/notes/review-runs/2026-06-12-navigation-feature-definition-postwrite-r2/raw/gemini-3.1-pro-preview.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/2026-06-12-navigation-feature-definition-postwrite-r2/raw/gpt-5.5.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/2026-06-12-navigation-feature-definition-postwrite-r2/review_summary.md: 7c40ad5f567a2d81803b1a07eb376f0d47f1d8d834bcbb91cfc9bb8678a6867e
+    docs/notes/review-runs/2026-06-12-navigation-feature-definition-postwrite-r2/rounds.yaml: c7fb9b09ca3008706695ab9aaaaf3b95f666d5cc3289e79af518d8341218a1d5
+    docs/notes/review-runs/2026-06-12-navigation-feature-definition-postwrite-r2/target-manifest.yaml: 2a6bc8304a48ff10aab6f1567c595cac0233fb78d38bcf596dc9a110c8988e76
+    docs/notes/review-runs/2026-06-12-navigation-feature-definition-postwrite-r2/triage.yaml: 4af734eb3248b96d3f6ddcde3a51679a816d8e49f711e5232a0780de90e3bb7e
+    docs/notes/review-runs/2026-06-12-navigation-feature-definition-postwrite/approval.yaml: ce1034c0549d2f1076596a4c0a3fedd1046ab652a38d9f5506d075b49d092efe
+    docs/notes/review-runs/2026-06-12-navigation-feature-definition-postwrite/model-result-summary.yaml: fd7199429e34b0e880f819905c60ed930bb93f3f6e662610180c44fcf6a8f5b7
+    docs/notes/review-runs/2026-06-12-navigation-feature-definition-postwrite/parsed/claude-sonnet-4-6.round-1.yaml: d4a5ef6df6fbb712ffb2d5b96d00bc6eda668fca770b2037dd37747abb7c5f9e
+    docs/notes/review-runs/2026-06-12-navigation-feature-definition-postwrite/parsed/gemini-3.1-pro-preview.round-1.yaml: 1dcbd4d262e57563b038bdf5f391af650c3eae516707e0520bf6a40d90110b80
+    docs/notes/review-runs/2026-06-12-navigation-feature-definition-postwrite/parsed/gpt-5.5.round-1.yaml: 5288f5accf2cd4d7b781f6782627adfa09707dc8978fcfa6645291d003be6e07
+    docs/notes/review-runs/2026-06-12-navigation-feature-definition-postwrite/raw/claude-sonnet-4-6.round-1.txt: 8e83b8350369ce954393c6579afc374f173a3b077b5ee6d1ea7483395a6244ab
+    docs/notes/review-runs/2026-06-12-navigation-feature-definition-postwrite/raw/gemini-3.1-pro-preview.round-1.txt: a2b10fa6b800171f7a3698162bb847bef279ab11b59f6dc4898def1167186371
+    docs/notes/review-runs/2026-06-12-navigation-feature-definition-postwrite/raw/gpt-5.5.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/2026-06-12-navigation-feature-definition-postwrite/review_summary.md: 3682e12d8cc64d6f9041feca3e5166172f2add5536e94fe36506697c9d1fb48b
+    docs/notes/review-runs/2026-06-12-navigation-feature-definition-postwrite/rounds.yaml: 0d5465f663ccd2e8e49f8c32e6ec9415abb20c859efbc2692ab9c1248cda8fb7
+    docs/notes/review-runs/2026-06-12-navigation-feature-definition-postwrite/target-manifest.yaml: 159e9ac86fbda027e9018e28ec1271e879710a61dd40f91fab2a132aae5cecbf
+    docs/notes/review-runs/2026-06-12-navigation-feature-definition-postwrite/triage.yaml: 41330131c2ff73015c501185b2018fb1280bcdb0d190a1fdd18e575638c5286a
+    docs/notes/review-runs/2026-06-12-reopen-classification-postwrite/model-result-summary.yaml: 6c3ed375c034ad97ac466fa0c60df18e8da0dee4ecef5897fc8f0c727f5a49a8
+    docs/notes/review-runs/2026-06-12-reopen-classification-postwrite/parsed/claude-sonnet-4-6.round-1.yaml: 3fb93462a2a62fbbbab8baceb6c5874d020fac602d57bae658268a44680e151f
+    docs/notes/review-runs/2026-06-12-reopen-classification-postwrite/parsed/gemini-3.1-pro-preview.round-1.yaml: d8598386f3f467676b3ac5a5eb40da580f9080dd707d064db621ff9e6ba01761
+    docs/notes/review-runs/2026-06-12-reopen-classification-postwrite/parsed/gpt-5.5.round-1.yaml: 2b3408b6bcf00824b36e4296b34b07bc3c32ec9d5db0974b2b60e6a0fc63bdba
+    docs/notes/review-runs/2026-06-12-reopen-classification-postwrite/raw/claude-sonnet-4-6.round-1.txt: 7cb2aa094c28e4b23fcb0d665a5921683adb33cef3655ed3542703c58bf087b4
+    docs/notes/review-runs/2026-06-12-reopen-classification-postwrite/raw/gemini-3.1-pro-preview.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/2026-06-12-reopen-classification-postwrite/raw/gpt-5.5.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/2026-06-12-reopen-classification-postwrite/review_summary.md: 67f177740148e6d94be3d8260659cd142ea5799f54e5de764fcd043ca507e537
+    docs/notes/review-runs/2026-06-12-reopen-classification-postwrite/rounds.yaml: 8812d277d9fdb7459772c271b03dc5d56081e2df5cffc4f2cc63c3ca1ff0e3f4
+    docs/notes/review-runs/2026-06-12-reopen-classification-postwrite/target-manifest.yaml: 5fdee8bce97e3e691a0adac9feb4b97eee6b65c16140939f3e60290677b7907c
+    docs/notes/review-runs/2026-06-12-reopen-classification-postwrite/triage.yaml: ef58160d2a05c476b3ab81281e3b342541a7dc27776efa16fb52b19debe8a5ba
+    docs/notes/review-runs/2026-06-12-reopen-procedure-vocab-postwrite/model-result-summary.yaml: 6b02540dec426d23a28522eb3f69efcbc41f1442f8d8803ee4d37325ea31378a
+    docs/notes/review-runs/2026-06-12-reopen-procedure-vocab-postwrite/parsed/claude-sonnet-4-6.round-1.yaml: 0459be5722072e99e2bf28d560e87c3b633d35ccf3fec25466267a76347b564c
+    docs/notes/review-runs/2026-06-12-reopen-procedure-vocab-postwrite/parsed/gemini-3.1-pro-preview.round-1.yaml: 68e403ba1254d4967db16273708f6da23a1551b2a8a4035d49bc3fd073cf50f3
+    docs/notes/review-runs/2026-06-12-reopen-procedure-vocab-postwrite/parsed/gpt-5.5.round-1.yaml: 66d56a3e4cfa830deabd74ede72ce27a3f70b04848f328241328475f16d2cd42
+    docs/notes/review-runs/2026-06-12-reopen-procedure-vocab-postwrite/raw/claude-sonnet-4-6.round-1.txt: 7e6aab4e08008a7315aa30808eb81ef35648fe0490c55aaf536ac2223a0769c3
+    docs/notes/review-runs/2026-06-12-reopen-procedure-vocab-postwrite/raw/gemini-3.1-pro-preview.round-1.txt: 67f20b5f2a77ca36c12b6b153ce451a10d7c0026c9147c2eb86f0e1d33ea4fb1
+    docs/notes/review-runs/2026-06-12-reopen-procedure-vocab-postwrite/raw/gpt-5.5.round-1.txt: f0e31a769128c2df3249c5ce09b776329d0b2891cd5aea6535b9f2d23019226b
+    docs/notes/review-runs/2026-06-12-reopen-procedure-vocab-postwrite/review_summary.md: 19a974576d3b5f3d58e95dc305e214494413abadb6645aedbf2cd37adedaeeaf
+    docs/notes/review-runs/2026-06-12-reopen-procedure-vocab-postwrite/rounds.yaml: 476c95dbfd4b680c757d704a2115fec62651e62cf95574d4e7ce1236052b9699
+    docs/notes/review-runs/2026-06-12-reopen-procedure-vocab-postwrite/target-manifest.yaml: 4ce5d71086a56184f20fa3d7d9626ad29af8d2c84376c78e2880df562eb9173d
+    docs/notes/review-runs/2026-06-12-reopen-procedure-vocab-postwrite/triage.yaml: b66dfd3aea1311ac85f2e705fb7cc8aad9e165395af5f4d0bff1a1c940eee1f2
+    docs/operations/CONFORMANCE_EVALUATION.md: 0b51308a7ff5cf23ea80d2b58d6540ceb8df7a8c051a945eac09e43e670c5a8e
+    docs/operations/REOPEN_PROCEDURE.md: 3baaec29972cc471e31e0590464a454b5b671476f1c0bcbbaa0ec5c473ebb8fb
+    docs/operations/WORKFLOW_DISCIPLINE_MAP.yaml: cbdbf3fd73ded18de9b3a897a0ee1a4192081a31a80b8c63a59815e8596686cf
+    docs/operations/WORKFLOW_NAVIGATION.md: a32b5fc8bc298a33f1c0d4c2a8700d83fce2d24f844c0f2afc8c88fe29497edb
+    docs/reviews/reopen-classification-2026-06-12-multi-llm-entry-spec-reflection.md: 7cb6a0733431d36b27a4301293447933f5cfff601c775315e85113a546e387d8
+review_run:
+  path: docs/notes/review-runs/2026-06-12-navigation-feature-definition-postwrite-r2
+  summary_path: docs/notes/review-runs/2026-06-12-navigation-feature-definition-postwrite-r2/model-result-summary.yaml
+notes: Generated template; verify target_files cover current post-write targets before
+  use.

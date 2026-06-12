@@ -1,0 +1,28 @@
+role: primary
+provider: anthropic-api
+model: claude-sonnet-4-6
+attempts: 1
+duration_seconds: 21.006
+findings:
+- severity: WARN
+  target_location: セクション 2、第3過程（ステップ9）、pending_gates の説明
+  description: '`pending_gates` の説明で「review 系 gate（triad-review／review-wave／alignment／approval）の処理順を表す」と記述されているが、drafting
+    を条件付きで先行実施することが述べられており、pending_gates の定義範囲（review 系 gate のみ）と drafting の扱いの関係が曖昧になっている。'
+  rationale: drafting は pending_gates に含まれないのに「先頭 gate が triad-review の場合、triad-review
+    の前に drafting を実施する」と述べられると、drafting の位置づけ（pending_gates の外側で管理）が初読者に伝わりにくい。drafting_completed_gates
+    への記録が求められることとの接続も、説明の順序上やや唐突に感じる。
+- severity: WARN
+  target_location: セクション 2、第4過程の完了 commit の要件説明（末尾段落）
+  description: 第4過程の完了 commit 要件を説明する段落が、本文中では第4過程の手順（ステップ10〜11）の直後に置かれているが、量・密度ともに第3過程の
+    pending_gates 仕様と重複する情報を含んでおり、どちらが正本かの優先関係が不明確である。
+  rationale: 完了 commit 要件（feature_impact_decisions の構造、downstream_impact_decisions
+    の必須キー等）の詳細はセクション2の末尾段落と第3過程の記述の両方に分散している。どちらかに正規化するか、「詳細はセクション末尾参照」のように参照関係を明示すると保守性が上がる。
+- severity: INFO
+  target_location: セクション 3（手戻り種別と trigger_map）
+  description: 「trigger_map（全 15 種）」と記載されているが、trigger_map 本体（15 種の対応表）はこの文書に記載されておらず、参照先も明示されていない。
+  rationale: 15 種という具体的な数が示されているにもかかわらず内容が見えないため、実際の判断時に参照先を探す手間が発生する。設計文書または別紙への明示的なリンクを追加すると運用文書としての完結性が高まる。
+- severity: INFO
+  target_location: セクション 1（いつ使うか）および セクション 2 第1過程 ステップ4
+  description: ステップ4で「依存順＝`feature-dependency.yaml#feature_order`。旧称 phase_order」と注記されているが、セクション1では依存順への言及がなく、旧称の注記もセクション1に対応する説明がない。
+  rationale: 旧称注記はステップ4のみに出てくるため、他の箇所（例：セクション3の trigger_map 説明）で feature_order と phase_order
+    が混在した場合に混乱の原因になりうる。旧称注記を文書の最初（セクション0または用語節）にまとめるか、セクション3にも補記すると一貫性が保たれる。

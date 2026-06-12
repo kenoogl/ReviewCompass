@@ -1,0 +1,4 @@
+run_id: 2026-06-12-navigation-feature-definition-postwrite-r2
+target_files:
+- path: docs/operations/WORKFLOW_NAVIGATION.md
+  sha256: a32b5fc8bc298a33f1c0d4c2a8700d83fce2d24f844c0f2afc8c88fe29497edb

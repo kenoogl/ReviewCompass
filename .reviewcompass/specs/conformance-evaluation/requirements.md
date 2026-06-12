@@ -149,7 +149,7 @@
    - **`review`**：本機能が当該機能の出力を読む依存。必須ではないが活用する（例：`runtime: review`、`evaluation: review`、`workflow-management: review`）
 3. 本機能の依存記述は計画書 §5.10.5 行 1075〜1080 に確定済み：`foundation: hard`／`runtime: review`／`evaluation: review`／`workflow-management: review`。
 4. 本機能は `workflow-management` Requirement 8 受入 2 のスキーマ拡張（連想配列構造の許容）と整合する。
-5. 本機能は phase_order の最後に位置付ける（依存先がすべて先に完了する前提）。
+5. 本機能は feature_order（機能間処理順。旧称 phase_order、workflow-management Requirement 8 受入 2 の由来注記参照）の最後に位置付ける（依存先がすべて先に完了する前提）。
 
 ### Requirement 8：実装適合レビューとの分離
 
@@ -239,6 +239,7 @@ ReviewCompass 固有の構築：
 - 2026-06-09 の completed follow-up conformance により、D-021 / D-004 / D-005 / D-025 / D-027 / D-008 / D-019 / D-020 / D-023 は completed follow-up prerequisite set として正式化した。formal completed follow-up outputs の handoff summary は `docs/notes/2026-06-09-formal-completed-followup-summary.md` とする。
 - 2026-06-09 の reopen 方針確認により、conformance-evaluation で見つかった gap を正本更新で解消する場合は、requirements.md, design.md, tasks.md を直接書き換えない。`workflow-management` の reopen 手続きへ渡し、`triad-review / review-wave / alignment / approval` によって整合確認する。tasks は `phase: tasks` の候補として出力できるが、tasks.md 本体の推定・再作成やタスク分解の確定は行わない。
 - 2026-06-09 の既存項目変更方針確認により、reopen handoff package は `change_policy: minimal_existing_spec_change` を持つ。更新候補は原則 `additive` とし、既存契約の意味変更が必要な場合は `semantic_change`、`existing_contract_changed: true`、`human_escalation_required: true`、`downstream_reopen_required` を明示する。機械判定時には判定点ごとに 1 本の次タスク effective prompt を読み込むため、元資料として `next_task_prompt_refs`、実際に読ませた統合プロンプトとして `effective_next_task_prompt_path`、`effective_next_task_prompt_sha256`、`effective_next_task_prompt_loaded` を保持する。
+- 2026-06-12 の reopen R-0（conformance 評価 `2026-06-12-completed-followup-conformance.md` の gap 反映、語彙調停 案 A・MLE-DEC-001）により、機能間処理順の語彙を `feature_order` へ統一した（Requirement 7 受入 5 の文言追従、意味不変。旧称 `phase_order` は workflow-management Requirement 8 受入 2 の由来注記で読み解く）。
 
 機能横断レビューで対処された所見：
 

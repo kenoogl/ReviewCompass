@@ -82,6 +82,7 @@ def test_workflow_discipline_map_catalogs_all_current_decision_points():
       "reopen_classification_required",
       "completed",
       "unknown",
+      "feature_definition_required",
       "post_write_verification",
       "post_write_policy_violation",
       "post_write_human_decision_required",

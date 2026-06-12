@@ -1,0 +1,4 @@
+run_id: 2026-06-12-reopen-procedure-vocab-postwrite
+target_files:
+- path: docs/operations/REOPEN_PROCEDURE.md
+  sha256: 3baaec29972cc471e31e0590464a454b5b671476f1c0bcbbaa0ec5c473ebb8fb

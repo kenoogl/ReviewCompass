@@ -9,11 +9,24 @@ feature_order:
   - self-improvement
   - conformance-evaluation
 
+# 依存関係は分割提案書 §3（計画書 §3.1 から転記）と整合
+# （MLE-DEC-003、2026-06-12 利用者決定で 7 機能分を実体化）
 features:
+  foundation:
+    depends_on: []
+  runtime:
+    depends_on: [foundation]
+  evaluation:
+    depends_on: [foundation, runtime]
+  analysis:
+    depends_on: [foundation, evaluation]
+  workflow-management:
+    depends_on: [foundation, runtime, evaluation, analysis]
+  self-improvement:
+    depends_on: [foundation, workflow-management]
   conformance-evaluation:
     depends_on:
       foundation: hard
       runtime: review
       evaluation: review
       workflow-management: review
-

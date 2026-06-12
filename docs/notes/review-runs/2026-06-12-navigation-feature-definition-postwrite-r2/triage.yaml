@@ -1,0 +1,25 @@
+run_id: 2026-06-12-navigation-feature-definition-postwrite-r2
+triage_status: decided
+generated_at: '2026-06-11T23:51:44.372177+00:00'
+decision_actor: null
+decision_actor_type: human
+items:
+- finding_id: 2026-06-12-navigation-feature-definition-postwrite-r2-claude-sonnet-4-6-primary-001
+  run_id: 2026-06-12-navigation-feature-definition-postwrite-r2
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: docs/operations/WORKFLOW_NAVIGATION.md セクション2 `feature_definition_required`
+  plain_language_summary: '`feature_definition_required` ブランチの説明は存在し、anchor `<a id="feature_definition_required"></a>`
+    も付与されている。内容は feature-dependency.yaml の探索順、feature_order キーの未定義ケース、初期手順への誘導を含む。'
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-11T23:52:13.575620+00:00'
+  decision_reason: INFO。修正内容が反映済みであることの確認所見であり、対処不要。利用者承認済みトリアージ方針（2026-06-12）の範囲内
+  applied_files: []
+  superseded_by: null

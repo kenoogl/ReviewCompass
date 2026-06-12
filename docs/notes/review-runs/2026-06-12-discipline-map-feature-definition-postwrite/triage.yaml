@@ -1,0 +1,47 @@
+run_id: 2026-06-12-discipline-map-feature-definition-postwrite
+triage_status: decided
+generated_at: '2026-06-11T23:36:41.354087+00:00'
+decision_actor: null
+decision_actor_type: human
+items:
+- finding_id: 2026-06-12-discipline-map-feature-definition-postwrite-claude-sonnet-4-6-primary-001
+  run_id: 2026-06-12-discipline-map-feature-definition-postwrite
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: by_kind.feature_definition_required
+  plain_language_summary: The by_kind entry for feature_definition_required does not
+    include docs/disciplines/discipline_feature_definition.md (or equivalent feature-definition
+    discipline file).
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-11T23:50:37.823448+00:00'
+  decision_reason: 指摘された discipline_feature_definition.md は存在しない。WORKFLOW_NAVIGATION.md
+    の該当節＋初期設定ガイドを正本とする構成は maintenance_in_progress 等と同型で妥当。新規律ファイル作成は本 reopen の範囲外。利用者承認
+    2026-06-12
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-12-discipline-map-feature-definition-postwrite-claude-sonnet-4-6-primary-002
+  run_id: 2026-06-12-discipline-map-feature-definition-postwrite
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: decision_points.next_action_kind[id=feature_definition_required].prompt_source_refs
+  plain_language_summary: The decision_points entry for feature_definition_required
+    also lacks a docs/disciplines/ reference, mirroring the by_kind gap.
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-11T23:50:37.866995+00:00'
+  decision_reason: primary-001 と同根。利用者承認 2026-06-12
+  applied_files: []
+  superseded_by: null

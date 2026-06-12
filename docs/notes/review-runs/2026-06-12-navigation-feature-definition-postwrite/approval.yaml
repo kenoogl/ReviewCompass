@@ -1,0 +1,14 @@
+approved_by: user
+review_run_id: 2026-06-12-navigation-feature-definition-postwrite
+summary_presented_to_user: true
+triage_presented_to_user: true
+approval_quote: 利用者発言『承認』（2026-06-12。1 件 should-fix 修正＋再検証、ERROR 2 件を含む 11 件 leave-as-is のトリアージ案提示後）
+approved_finding_ids:
+- 2026-06-12-navigation-feature-definition-postwrite-claude-sonnet-4-6-primary-001
+- 2026-06-12-navigation-feature-definition-postwrite-claude-sonnet-4-6-primary-002
+- 2026-06-12-navigation-feature-definition-postwrite-gemini-3.1-pro-preview-judgment-001
+approved_final_labels:
+  2026-06-12-navigation-feature-definition-postwrite-claude-sonnet-4-6-primary-001: should-fix
+  2026-06-12-navigation-feature-definition-postwrite-claude-sonnet-4-6-primary-002: should-fix
+  2026-06-12-navigation-feature-definition-postwrite-gemini-3.1-pro-preview-judgment-001: leave-as-is
+approved_action: review_run_triage

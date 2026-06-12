@@ -187,7 +187,7 @@ language: ja
 
 - **対応設計節**：design.md §13.1〜§13.5
 - **対応要件**：Requirement 7 受入 1〜5
-- **責務**：`stages/feature-dependency.yaml` における本機能の依存記述を**連想配列構造**（`depends_on: {feature_name: dependency_type}`）で表現（§13.1、他機能の単純リストと異なる）。依存種別 2 値（`hard` ／ `review`、§13.2）。依存記述の確定値（§13.3）：`foundation: hard` ／ `runtime: review` ／ `evaluation: review` ／ `workflow-management: review`。**workflow-management のスキーマ拡張（連想配列許容、Req 8 受入 2）との整合（§13.4）**。phase_order の最後（§13.5、依存先がすべて先に完了）
+- **責務**：`stages/feature-dependency.yaml` における本機能の依存記述を**連想配列構造**（`depends_on: {feature_name: dependency_type}`）で表現（§13.1、他機能の単純リストと異なる）。依存種別 2 値（`hard` ／ `review`、§13.2）。依存記述の確定値（§13.3）：`foundation: hard` ／ `runtime: review` ／ `evaluation: review` ／ `workflow-management: review`。**workflow-management のスキーマ拡張（連想配列許容、Req 8 受入 2）との整合（§13.4）**。feature_order の最後（§13.5、依存先がすべて先に完了）
 - **前提タスク**：T-001
 - **成果物**：
   - `stages/feature-dependency.yaml` への本機能の連想配列構造エントリ（または design 参照先の確定記述）
@@ -196,8 +196,8 @@ language: ja
   2. 依存種別が `hard` ／ `review` の 2 値で区別される（未知値は fail-closed）
   3. 確定値（foundation: hard ／ runtime: review ／ evaluation: review ／ workflow-management: review）と一致する
   4. workflow-management のスキーマ拡張（Req 8 受入 2 の連想配列許容）と整合する（DVT-C002 解除済 2026-05-29：workflow-management T-002 の feature-dependency.schema.json／完了条件2 と仕様レベルで完全一致を確認）
-  5. phase_order の最後に位置付けられる
-- **テスト要件**：連想配列構造解釈テスト、hard ／ review 区別テスト、確定値整合テスト、workflow-management スキーマ整合テスト（consumer 側、producer 側 workflow-management は機能横断段で対をなす）、phase_order テスト
+  5. feature_order の最後に位置付けられる
+- **テスト要件**：連想配列構造解釈テスト、hard ／ review 区別テスト、確定値整合テスト、workflow-management スキーマ整合テスト（consumer 側、producer 側 workflow-management は機能横断段で対をなす）、feature_order テスト
 
 ### T-011：他機能との接合面（Interfaces with Other Features）
 
@@ -373,7 +373,7 @@ language: ja
 | Requirement 7 受入 2：hard／review | T-010 |
 | Requirement 7 受入 3：依存記述確定値 | T-010 |
 | Requirement 7 受入 4：workflow-management スキーマ整合 | T-010（DVT-C002） |
-| Requirement 7 受入 5：phase_order 最後 | T-010 |
+| Requirement 7 受入 5：feature_order 最後 | T-010 |
 | Requirement 8 受入 1：実装適合レビュー責務なし | T-011 ＋スコープ前提 |
 | Requirement 8 受入 2：実装適合は §5.9／runtime に残る | T-011（§14.2） |
 | Requirement 8 受入 3：3 軸性格差 | スコープ前提（概要章） |

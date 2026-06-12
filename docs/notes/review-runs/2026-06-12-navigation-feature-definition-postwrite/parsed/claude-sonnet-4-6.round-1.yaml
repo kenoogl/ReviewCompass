@@ -1,0 +1,19 @@
+role: primary
+provider: anthropic-api
+model: claude-sonnet-4-6
+attempts: 1
+duration_seconds: 11.133
+findings:
+- severity: ERROR
+  target_location: '## 2. 判定結果の共通分岐 / `feature_definition_required` セクション'
+  description: '`feature_definition_required` の説明が navigation branch として不完全である。このセクションは
+    `navigation_feature_definition_required_branch` 基準の対象であるが、`next_action` フィールドのうち
+    `file`、`required_disciplines`、`required_inputs` への言及がなく、他の branch と比較して読み込むべき入力情報の記述が欠落している。'
+  rationale: '他の branch（例: `reopen_in_progress`、`maintenance_in_progress`）は `next_action`
+    の参照すべきフィールドを列挙しているが、`feature_definition_required` は手順のみを記述し、`next_action` から読み取るべき具体フィールドを示していない。ナビゲーション手引きとして利用者または
+    LLM がこの branch に到達したとき、`next_action` の何を確認すべきかが不明確であり、誤った行動につながる可能性がある。'
+- severity: WARN
+  target_location: '## 2. 判定結果の共通分岐 / `feature_definition_required` セクション'
+  description: '`feature_definition_required` branch において、`feature-dependency.yaml`
+    が存在するが `feature_order` キーのみ未定義の場合と、ファイル自体が存在しない場合の操作上の違いが説明されていない。'
+  rationale: 両ケースで取るべき行動（ファイル新規作成 vs. 既存ファイルへのキー追加）は異なるが、現行記述では区別がない。ナビゲーション手引きとして具体的な分岐を示すことで、誤操作リスクを低減できる。

@@ -37,6 +37,11 @@ decision_points:
       prompt_source_refs:
         - docs/operations/WORKFLOW_NAVIGATION.md
       effective_prompt_policy: one_effective_prompt_per_decision_point
+    - id: feature_definition_required
+      prompt_source_refs:
+        - docs/operations/WORKFLOW_NAVIGATION.md#feature_definition_required
+        - docs/operations/INITIAL_SETUP_LLM_GUIDE.md
+      effective_prompt_policy: one_effective_prompt_per_decision_point
     - id: post_write_verification
       prompt_source_refs:
         - docs/operations/WORKFLOW_NAVIGATION.md#post_write_verification
@@ -333,6 +338,9 @@ by_kind:
     - docs/operations/WORKFLOW_NAVIGATION.md#maintenance_in_progress
   resume_in_progress:
     - docs/operations/WORKFLOW_NAVIGATION.md#resume_in_progress
+  feature_definition_required:
+    - docs/operations/WORKFLOW_NAVIGATION.md#feature_definition_required
+    - docs/operations/INITIAL_SETUP_LLM_GUIDE.md
 by_stage:
   drafting:
     - docs/operations/REOPEN_PROCEDURE.md

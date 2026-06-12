@@ -1,0 +1,4 @@
+run_id: 2026-06-12-conformance-evaluation-doc-vocab-postwrite
+target_files:
+- path: docs/operations/CONFORMANCE_EVALUATION.md
+  sha256: 0b51308a7ff5cf23ea80d2b58d6540ceb8df7a8c051a945eac09e43e670c5a8e

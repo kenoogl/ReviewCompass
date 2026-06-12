@@ -27,9 +27,9 @@ T-004 の責務記述へ次を追加する。
 
 T-002 は `phase_order` キー・`stages/feature-dependency.schema.json`・7 機能の `features` 列挙を
 要求するが、いずれも現行リポジトリに実体がない（本アドホック開発以前からの既存 gap）。
-requirements 草案 §3 の語彙調停（案 A／B／C）と連動して、次を決める。
+語彙は案 A（MLE-DEC-001、2026-06-12 利用者決定）により `feature_order` への一本化で確定。
+残る判断は次の 2 点。
 
-- `phase_order` の扱い：`feature_order` への一本化（案 A）か、実体化（案 B）か、併存規則（案 C）か。
 - schema の扱い：`feature_order` キー（文字列配列、必須／任意）を含む schema を新規作成するか、
   schema 契約自体を T-004 の実装検査（`resolve_feature_order`・`validate_feature_order_consistency`）
   へ置き換えるか。

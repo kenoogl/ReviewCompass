@@ -12,6 +12,29 @@ effective_next_task_prompt_path: .reviewcompass/specs/conformance-evaluation/con
 effective_next_task_prompt_sha256: 1fc665b15a15e8fcfc315edd6e3febdfb97f1daadd4f95797a0a36ea85eeb68a
 effective_next_task_prompt_loaded: true
 
+human_decisions:
+  - decision_id: MLE-DEC-001
+    date: 2026-06-12
+    decided_by: user
+    subject: MLE-GAP-003 の語彙調停（feature_order ／ phase_order）
+    decision: 案 A を採用。仕様側を実装語彙 feature_order へ寄せる。実装・テスト・テンプレート・配布物は改名しない。
+    notes:
+      - Requirement 8 に旧称 phase_order（計画書 §5.5・stages/feature-partitioning/2026-05-24-proposal.md の表記）の由来注記を 1 文残す。
+      - 過去記録（レビュー記録・分割提案書・計画書）は書き換えない。
+      - 段集合 YAML の参照フィールド名 feature_order は参照先キーと同名で一致するため、feature_order_ref への改名案は不要となり破棄。
+      - 文言追従の対象は workflow-management 仕様に加え、conformance-evaluation 仕様（約 9 箇所）と
+        運用文書 2 件（REOPEN_PROCEDURE.md、CONFORMANCE_EVALUATION.md）に及ぶ（2026-06-12 議論で確定）。
+  - decision_id: MLE-DEC-002
+    date: 2026-06-12
+    decided_by: user
+    subject: T-002 のスキーマ契約（feature-dependency.schema.json、未実体化）の扱い
+    decision: 実装検査で代替する。仕様を「パース仕様の正本はツールの解決・整合検査の実装（resolve_feature_order・validate_feature_order_consistency）とテスト」へ改める。スキーマの新規作成は行わない。
+  - decision_id: MLE-DEC-003
+    date: 2026-06-12
+    decided_by: user
+    subject: feature-dependency.yaml の features 列挙（現状 1 機能分のみ）の扱い
+    decision: 承認済み分割提案書（stages/feature-partitioning/2026-05-24-proposal.md）の依存をそのまま転記し、7 機能分を実体化する。これにより新設の整合検査が全機能を覆う。
+
 packages:
   - package_id: MLE-HANDOFF-001
     gap_ids: [MLE-GAP-001, MLE-GAP-002, MLE-GAP-003]
@@ -24,7 +47,7 @@ packages:
     change_type: semantic_change  # MLE-GAP-003 の語彙調停を含むため。GAP-001/002 単体は additive
     existing_contract_changed: true
     human_escalation_required: true
-    needs_human_decision: true  # 調停案 A／B／C の選択
+    needs_human_decision: false  # 調停は MLE-DEC-001（案 A）で決定済み。reopen の停止点承認は手続き側で担保
     downstream_reopen_required: true
     downstream_reopen_phases: [design, tasks]
 
@@ -74,6 +97,52 @@ packages:
     downstream_reopen_required: false
     downstream_reopen_phases: []
 
+  # MLE-DEC-001（案 A）に伴う文言追従（意味不変。phase_order → feature_order）
+  - package_id: MLE-HANDOFF-005
+    gap_ids: [MLE-GAP-003]
+    target_feature: conformance-evaluation
+    target_phase: requirements
+    target_documents:
+      - .reviewcompass/specs/conformance-evaluation/requirements.md  # Requirement 7 受入 5
+    proposed_update_refs:
+      - human_decisions/MLE-DEC-001
+    change_type: additive
+    existing_contract_changed: false
+    human_escalation_required: false
+    needs_human_decision: false
+    downstream_reopen_required: false
+    downstream_reopen_phases: []
+
+  - package_id: MLE-HANDOFF-006
+    gap_ids: [MLE-GAP-003]
+    target_feature: conformance-evaluation
+    target_phase: design
+    target_documents:
+      - .reviewcompass/specs/conformance-evaluation/design.md  # §13.5 ほか 4 箇所
+    proposed_update_refs:
+      - human_decisions/MLE-DEC-001
+    change_type: additive
+    existing_contract_changed: false
+    human_escalation_required: false
+    needs_human_decision: false
+    downstream_reopen_required: false
+    downstream_reopen_phases: []
+
+  - package_id: MLE-HANDOFF-007
+    gap_ids: [MLE-GAP-003]
+    target_feature: conformance-evaluation
+    target_phase: tasks
+    target_documents:
+      - .reviewcompass/specs/conformance-evaluation/tasks.md  # T-010 ほか 4 箇所
+    proposed_update_refs:
+      - human_decisions/MLE-DEC-001
+    change_type: additive
+    existing_contract_changed: false
+    human_escalation_required: false
+    needs_human_decision: false
+    downstream_reopen_required: false
+    downstream_reopen_phases: []
+
 # 参考：reopen 対象外の関連更新（運用文書。post-write 検証を伴う通常更新）
 non_reopen_followups:
   - target_documents:
@@ -82,6 +151,14 @@ non_reopen_followups:
     gap_ids: [MLE-GAP-001]
     proposed_update_refs:
       - 2026-06-12-spec-update-drafts/operations-docs.draft.md
+    needs_human_decision: false
+  - target_documents:
+      - docs/operations/REOPEN_PROCEDURE.md  # §2 第1過程 4 の feature-dependency.yaml#phase_order 参照
+      - docs/operations/CONFORMANCE_EVALUATION.md  # Requirement 7 対応表と本文の 2 箇所
+    gap_ids: [MLE-GAP-003]
+    proposed_update_refs:
+      - human_decisions/MLE-DEC-001
+    note: MLE-DEC-001（案 A）に伴う文言追従（phase_order → feature_order、意味不変）。
     needs_human_decision: false
   - target_documents:
       - tools/conformance_evaluation/schemas/evaluation_record.schema.json

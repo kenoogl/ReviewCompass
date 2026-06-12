@@ -1,0 +1,4 @@
+run_id: 2026-06-12-discipline-map-feature-definition-postwrite
+target_files:
+- path: docs/operations/WORKFLOW_DISCIPLINE_MAP.yaml
+  sha256: cbdbf3fd73ded18de9b3a897a0ee1a4192081a31a80b8c63a59815e8596686cf

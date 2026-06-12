@@ -1,0 +1,11 @@
+role: adversarial
+provider: openai-api
+model: gpt-5.5
+attempts: 1
+duration_seconds: 17.255
+findings:
+- severity: WARN
+  target_location: §7 依存関係の特殊構造（Requirement 7）
+  description: 旧語彙 `phase_order` が本文中に残っている。
+  rationale: 本 criteria は feature_order 語彙への統一確認であり、括弧書きの旧称であっても `phase_order` が残ると、正本語彙の検索・機械検査・読者理解で揺れが生じる可能性がある。`feature_order`
+    のみで説明するか、移行注記が必要な場合は別の履歴文書に分離するのが望ましい。

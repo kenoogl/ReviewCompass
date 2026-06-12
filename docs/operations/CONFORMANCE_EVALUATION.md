@@ -33,7 +33,7 @@
 | Requirement 4 | 6 criteria の検査構造 | 2 上流フェーズ × 3 criteria（requirements／design 各 3、intent は参考情報、feature-partitioning と tasks は対象外、2026-05-24 セッション 23 改訂） |
 | Requirement 5 | 3 役レビュー機構の流用 | 主役 → 敵対役 → 判定役、§5.9 規律全般を適用 |
 | Requirement 6 | 評価記録の type 値と配置 | `conformance_evaluation` type、`conformance/` ディレクトリ |
-| Requirement 7 | 依存関係の連想配列構造 | `hard`／`review` の依存種別、phase_order の最後 |
+| Requirement 7 | 依存関係の連想配列構造 | `hard`／`review` の依存種別、feature_order の最後 |
 | Requirement 8 | 実装適合レビューとの分離 | 方向・前提・実施時期の違い、責務分担 |
 
 各要件の受入基準の詳細は [.reviewcompass/specs/conformance-evaluation/requirements.md](../../.reviewcompass/specs/conformance-evaluation/requirements.md) を参照。
@@ -141,7 +141,7 @@ conformance-evaluation:
     workflow-management: review  # 読む依存
 ```
 
-phase_order の最後に位置付ける。
+feature_order（機能間処理順。旧称 phase_order）の最後に位置付ける。
 
 ## 8. 実装適合レビューとの分離（Requirement 8）
 

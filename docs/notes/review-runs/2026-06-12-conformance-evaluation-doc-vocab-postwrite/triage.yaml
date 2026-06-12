@@ -1,0 +1,105 @@
+run_id: 2026-06-12-conformance-evaluation-doc-vocab-postwrite
+triage_status: decided
+generated_at: '2026-06-11T23:38:35.121576+00:00'
+decision_actor: null
+decision_actor_type: human
+items:
+- finding_id: 2026-06-12-conformance-evaluation-doc-vocab-postwrite-claude-sonnet-4-6-primary-001
+  run_id: 2026-06-12-conformance-evaluation-doc-vocab-postwrite
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: §7 依存関係の特殊構造（Requirement 7）
+  plain_language_summary: feature_order における conformance-evaluation の位置付けが「最後」とだけ記載されており、具体的な順序値または隣接機能との相対順序が明示されていない。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-11T23:50:53.683408+00:00'
+  decision_reason: 今回の差分（語彙 2 箇所修正）ではなく既存本文の性質への指摘、または由来注記として意図的に残した旧称への指摘。本 reopen
+    の範囲外。利用者承認 2026-06-12
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-12-conformance-evaluation-doc-vocab-postwrite-claude-sonnet-4-6-primary-002
+  run_id: 2026-06-12-conformance-evaluation-doc-vocab-postwrite
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: §4 6 criteria の検査構造（Requirement 4）
+  plain_language_summary: 照合対象から除外する階層として feature-partitioning・intent・tasks を列挙しているが、intent
+    が「参考情報として推察」と§4 本文で言及されているのに対し、§5 文書生成モードでは intent-reference.md の生成が示されており、「対象外」と「推察生成」の扱いに揺れがある。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-11T23:50:53.731582+00:00'
+  decision_reason: 今回の差分（語彙 2 箇所修正）ではなく既存本文の性質への指摘、または由来注記として意図的に残した旧称への指摘。本 reopen
+    の範囲外。利用者承認 2026-06-12
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-12-conformance-evaluation-doc-vocab-postwrite-claude-sonnet-4-6-primary-003
+  run_id: 2026-06-12-conformance-evaluation-doc-vocab-postwrite
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: §6 評価記録の配置（Requirement 6）および §9.1 cross-feature drift workflow
+  plain_language_summary: §6 のパス規則では評価記録を `<対象アプリ>/.reviewcompass/specs/<feature>/conformance/`
+    以下に置くと定義しているが、§9.1 では `_cross_feature` の check record を `.reviewcompass/specs/_cross_feature/conformance/`
+    に保存するとしており、通常 feature と cross-feature の配置規則が同一文書内に分散記載されている。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-11T23:50:53.780183+00:00'
+  decision_reason: 今回の差分（語彙 2 箇所修正）ではなく既存本文の性質への指摘、または由来注記として意図的に残した旧称への指摘。本 reopen
+    の範囲外。利用者承認 2026-06-12
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-12-conformance-evaluation-doc-vocab-postwrite-claude-sonnet-4-6-primary-004
+  run_id: 2026-06-12-conformance-evaluation-doc-vocab-postwrite
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: §6.1 機械検査 MV-6
+  plain_language_summary: MV-6 の検査条件として「既存上流文書パス（例 intent.md、requirements.md、design.md）の不在確認」と記載されているが、tasks.md
+    や feature-partitioning 関連ファイルが例示に含まれていない。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-11T23:50:53.828661+00:00'
+  decision_reason: 今回の差分（語彙 2 箇所修正）ではなく既存本文の性質への指摘、または由来注記として意図的に残した旧称への指摘。本 reopen
+    の範囲外。利用者承認 2026-06-12
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-12-conformance-evaluation-doc-vocab-postwrite-gpt-5.5-adversarial-001
+  run_id: 2026-06-12-conformance-evaluation-doc-vocab-postwrite
+  source_model: gpt-5.5
+  source_round: round-1
+  source_raw_path: raw/gpt-5.5.round-1.txt
+  source_parsed_path: parsed/gpt-5.5.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: §7 依存関係の特殊構造（Requirement 7）
+  plain_language_summary: 旧語彙 `phase_order` が本文中に残っている。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-11T23:50:53.877392+00:00'
+  decision_reason: 今回の差分（語彙 2 箇所修正）ではなく既存本文の性質への指摘、または由来注記として意図的に残した旧称への指摘。本 reopen
+    の範囲外。利用者承認 2026-06-12
+  applied_files: []
+  superseded_by: null

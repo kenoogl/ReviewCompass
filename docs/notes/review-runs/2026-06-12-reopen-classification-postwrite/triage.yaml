@@ -1,0 +1,45 @@
+run_id: 2026-06-12-reopen-classification-postwrite
+triage_status: decided
+generated_at: '2026-06-11T23:35:28.957032+00:00'
+decision_actor: null
+decision_actor_type: human
+items:
+- finding_id: 2026-06-12-reopen-classification-postwrite-claude-sonnet-4-6-primary-001
+  run_id: 2026-06-12-reopen-classification-postwrite
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: '## 分類根拠 > feature-partitioning の扱い'
+  plain_language_summary: feature-partitioning が対象外とされる根拠として『意味は不変、変わるのは保管キー名と探索順だけ』と記述されているが、この判断の検証可能な参照先（例：stages/feature-partitioning/2026-05-24-proposal.md
+    の該当箇所）がこの文書内にリンクとして明示されていない。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-11T23:50:53.351518+00:00'
+  decision_reason: INFO。分類記録は分割提案書と進行中ファイルを参照済みで、承認の記録先は reopen 進行中ファイル（approval_source）が担う。利用者承認
+    2026-06-12
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-12-reopen-classification-postwrite-claude-sonnet-4-6-primary-002
+  run_id: 2026-06-12-reopen-classification-postwrite
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: '## 停止点'
+  plain_language_summary: 『この時点ではコミットしない』という制約が記載されているが、コミット禁止が解除される条件（利用者承認の具体的な形式・記録先）がこの文書内に明示されていない。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-11T23:50:53.396900+00:00'
+  decision_reason: INFO。分類記録は分割提案書と進行中ファイルを参照済みで、承認の記録先は reopen 進行中ファイル（approval_source）が担う。利用者承認
+    2026-06-12
+  applied_files: []
+  superseded_by: null

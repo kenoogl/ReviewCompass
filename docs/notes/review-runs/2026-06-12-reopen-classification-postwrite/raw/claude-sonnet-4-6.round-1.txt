@@ -1,0 +1,9 @@
+findings:
+  - severity: INFO
+    target_location: "## 分類根拠 > feature-partitioning の扱い"
+    description: "feature-partitioning が対象外とされる根拠として『意味は不変、変わるのは保管キー名と探索順だけ』と記述されているが、この判断の検証可能な参照先（例：stages/feature-partitioning/2026-05-24-proposal.md の該当箇所）がこの文書内にリンクとして明示されていない。"
+    rationale: "他の feature 除外判定（runtime, evaluation 等）は設計記録セクション番号や契約名を具体的に示しているのに対し、feature-partitioning だけは括弧内の補足説明のみで終わっており、後続レビューワーが独立して検証する際の一貫性が若干低い。重大な誤りではないが、記録の均質性として指摘する。"
+  - severity: INFO
+    target_location: "## 停止点"
+    description: "『この時点ではコミットしない』という制約が記載されているが、コミット禁止が解除される条件（利用者承認の具体的な形式・記録先）がこの文書内に明示されていない。"
+    rationale: "reopen 分類文書としての完結性の観点から、承認完了の記録場所（例：in-progress ファイルへの追記、spec.json のフラグ復元タイミング）を明示することで、後続手順との接合が明確になる。手続きの抜け穴を生じさせる可能性は低いが、REOPEN_PROCEDURE.md との対応が追跡しやすくなる。"

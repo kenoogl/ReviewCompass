@@ -717,12 +717,12 @@ requirements.md Req 7 受入 4 に対応。
 - スキーマ拡張の所有者は `workflow-management`、本機能は仕様への適合者
 - 相互参照証跡：workflow-management/design.md の該当節（依存関係 model）と本機能 design.md §13.3／§13.4 で双方向参照（次セッション以降の design レビュー波段で確定）
 
-### 13.5 phase_order の最後
+### 13.5 feature_order の最後
 
 requirements.md Req 7 受入 5 に対応。
 
-- 本機能は `phase_order` の最後に位置付ける（依存先がすべて先に完了する前提）
-- 計画書 §5.5 ／ §5.10.5 の正本 phase_order は self-improvement を含まない 6 機能体制だが、workflow-management/design.md（利用者明示承認 2026-05-25 セッション 26、7 機能採用）と整合する 7 機能 phase_order：`foundation → runtime → evaluation → analysis → workflow-management → self-improvement → conformance-evaluation`
+- 本機能は `feature_order`（機能間処理順。旧称 `phase_order`、語彙調停 案 A・MLE-DEC-001・2026-06-12 利用者決定。workflow-management requirements.md Requirement 8 受入 2 の由来注記参照）の最後に位置付ける（依存先がすべて先に完了する前提）
+- 計画書 §5.5 ／ §5.10.5 の正本 phase_order は self-improvement を含まない 6 機能体制だが、workflow-management/design.md（利用者明示承認 2026-05-25 セッション 26、7 機能採用）と整合する 7 機能の feature_order：`foundation → runtime → evaluation → analysis → workflow-management → self-improvement → conformance-evaluation`
 - 計画書 §5.5 構造例の self-improvement 記載漏れは workflow-management 側 TODO で別途追跡
 
 ### 13.6 契約所有候補と仕様更新草案（Contract Ownership and Spec Update Drafts）
@@ -889,7 +889,7 @@ tasks の扱いは境界を固定する。tasks は照合対象外であり、ta
 | Req 7 | 受入 2（hard／review） | §13.2 |
 | Req 7 | 受入 3（依存記述確定値） | §13.3 |
 | Req 7 | 受入 4（workflow-management スキーマ整合） | §13.4 |
-| Req 7 | 受入 5（phase_order 最後） | §13.5 |
+| Req 7 | 受入 5（feature_order 最後） | §13.5 |
 | Req 8 実装適合分離 | 受入 1（実装適合レビュー責務を持たない） | 「範囲外」章 |
 | Req 8 | 受入 2（実装適合レビューは §5.9／runtime に残る） | 「範囲外」章／§14.2 |
 | Req 8 | 受入 3（方向・前提・実施時期の 3 軸性格差） | 「概要」章／「設計の前提」章 |

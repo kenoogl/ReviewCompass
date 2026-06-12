@@ -1,0 +1,5 @@
+findings:
+  - severity: ERROR
+    target_location: "### `feature_definition_required`"
+    description: "feature-dependency.yaml の保存先パスが `.reviewcompass/feature-dependency.yaml` と誤記されている"
+    rationale: "同文書内の `cross_feature_stage` セクションでは `stages/feature-dependency.yaml` と正しく記載されており、パスの矛盾が発生している。誤ったディレクトリ（.reviewcompass/）に機能定義を作成すると、検査ツールが定義を認識できずワークフローが進行不能に陥るため。"

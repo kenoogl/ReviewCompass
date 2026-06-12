@@ -1,0 +1,4 @@
+run_id: 2026-06-12-reopen-classification-postwrite
+target_files:
+- path: docs/reviews/reopen-classification-2026-06-12-multi-llm-entry-spec-reflection.md
+  sha256: 7cb6a0733431d36b27a4301293447933f5cfff601c775315e85113a546e387d8

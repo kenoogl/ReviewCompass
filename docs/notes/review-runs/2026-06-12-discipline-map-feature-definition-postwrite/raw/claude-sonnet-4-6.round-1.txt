@@ -1,0 +1,9 @@
+findings:
+  - severity: ERROR
+    target_location: "by_kind.feature_definition_required"
+    description: "The by_kind entry for feature_definition_required does not include docs/disciplines/discipline_feature_definition.md (or equivalent feature-definition discipline file)."
+    rationale: "The criteria discipline_map_feature_definition_required_entry requires that the feature_definition_required key in by_kind references a dedicated feature-definition discipline document. The current entry only lists WORKFLOW_NAVIGATION.md#feature_definition_required and INITIAL_SETUP_LLM_GUIDE.md, neither of which is a discipline file. Other by_kind entries for workflow states (e.g., post_write_verification, reopen_in_progress) each include at least one docs/disciplines/ path alongside navigation refs. The absence of a discipline-level reference for feature_definition_required is structurally inconsistent and means the required discipline is not mapped."
+  - severity: WARN
+    target_location: "decision_points.next_action_kind[id=feature_definition_required].prompt_source_refs"
+    description: "The decision_points entry for feature_definition_required also lacks a docs/disciplines/ reference, mirroring the by_kind gap."
+    rationale: "Every other decision point that has a corresponding by_kind entry (e.g., post_write_verification, reopen_in_progress, post_write_human_decision_required) includes at least one docs/disciplines/ path in its prompt_source_refs. Consistency requires the same pattern for feature_definition_required so that the machine-readable catalog aligns with the runtime discipline map."

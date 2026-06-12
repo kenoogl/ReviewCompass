@@ -1,0 +1,66 @@
+run_id: 2026-06-12-navigation-feature-definition-postwrite
+triage_status: decided
+generated_at: '2026-06-11T23:36:15.339463+00:00'
+decision_actor: null
+decision_actor_type: human
+items:
+- finding_id: 2026-06-12-navigation-feature-definition-postwrite-claude-sonnet-4-6-primary-001
+  run_id: 2026-06-12-navigation-feature-definition-postwrite
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: '## 2. 判定結果の共通分岐 / `feature_definition_required` セクション'
+  plain_language_summary: '`feature_definition_required` の説明が navigation branch として不完全である。このセクションは
+    `navigation_feature_definition_required_branch` 基準の対象であるが、`next_action` フィールドのうち
+    `file`、`required_disciplines`、`required_inputs` への言及がなく、他の branch と比較して読み込むべき入力情報の記述が欠落している。'
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-11T23:50:37.685403+00:00'
+  decision_reason: 他分岐と同様に next_action から読むべきフィールド（current_state.feature_dependency_source
+    等）を列挙する追記で対処。利用者承認 2026-06-12
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-12-navigation-feature-definition-postwrite-claude-sonnet-4-6-primary-002
+  run_id: 2026-06-12-navigation-feature-definition-postwrite
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: '## 2. 判定結果の共通分岐 / `feature_definition_required` セクション'
+  plain_language_summary: '`feature_definition_required` branch において、`feature-dependency.yaml`
+    が存在するが `feature_order` キーのみ未定義の場合と、ファイル自体が存在しない場合の操作上の違いが説明されていない。'
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-11T23:50:37.733313+00:00'
+  decision_reason: primary-001 と同根。ファイル不在とキー未定義の区別（解決元の見え方）を同じ追記で対処。利用者承認 2026-06-12
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-12-navigation-feature-definition-postwrite-gemini-3.1-pro-preview-judgment-001
+  run_id: 2026-06-12-navigation-feature-definition-postwrite
+  source_model: gemini-3.1-pro-preview
+  source_round: round-1
+  source_raw_path: raw/gemini-3.1-pro-preview.round-1.txt
+  source_parsed_path: parsed/gemini-3.1-pro-preview.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: '### `feature_definition_required`'
+  plain_language_summary: feature-dependency.yaml の保存先パスが `.reviewcompass/feature-dependency.yaml`
+    と誤記されている
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-11T23:50:37.778660+00:00'
+  decision_reason: 外れ所見。本分岐は対象アプリの初期状態で発生し、対象アプリの正しい記録先は .reviewcompass/feature-dependency.yaml（ツールの案内文・初期設定ガイドと一致）。開発リポジトリの
+    stages/ 配置との取り違え。利用者承認 2026-06-12
+  applied_files: []
+  superseded_by: null

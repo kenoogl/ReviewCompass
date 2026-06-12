@@ -1,0 +1,104 @@
+run_id: 2026-06-12-reopen-procedure-vocab-postwrite
+triage_status: decided
+generated_at: '2026-06-11T23:37:48.938128+00:00'
+decision_actor: null
+decision_actor_type: human
+items:
+- finding_id: 2026-06-12-reopen-procedure-vocab-postwrite-claude-sonnet-4-6-primary-001
+  run_id: 2026-06-12-reopen-procedure-vocab-postwrite
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: セクション 2、第3過程（ステップ9）、pending_gates の説明
+  plain_language_summary: '`pending_gates` の説明で「review 系 gate（triad-review／review-wave／alignment／approval）の処理順を表す」と記述されているが、drafting
+    を条件付きで先行実施することが述べられており、pending_gates の定義範囲（review 系 gate のみ）と drafting の扱いの関係が曖昧になっている。'
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-11T23:50:53.441827+00:00'
+  decision_reason: 今回の差分（語彙 1 行修正）ではなく既存本文の性質への指摘、または由来注記として意図的に残した旧称への指摘。本 reopen
+    の範囲外。利用者承認 2026-06-12
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-12-reopen-procedure-vocab-postwrite-claude-sonnet-4-6-primary-002
+  run_id: 2026-06-12-reopen-procedure-vocab-postwrite
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: セクション 2、第4過程の完了 commit の要件説明（末尾段落）
+  plain_language_summary: 第4過程の完了 commit 要件を説明する段落が、本文中では第4過程の手順（ステップ10〜11）の直後に置かれているが、量・密度ともに第3過程の
+    pending_gates 仕様と重複する情報を含んでおり、どちらが正本かの優先関係が不明確である。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-11T23:50:53.490477+00:00'
+  decision_reason: 今回の差分（語彙 1 行修正）ではなく既存本文の性質への指摘、または由来注記として意図的に残した旧称への指摘。本 reopen
+    の範囲外。利用者承認 2026-06-12
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-12-reopen-procedure-vocab-postwrite-claude-sonnet-4-6-primary-003
+  run_id: 2026-06-12-reopen-procedure-vocab-postwrite
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: セクション 3（手戻り種別と trigger_map）
+  plain_language_summary: 「trigger_map（全 15 種）」と記載されているが、trigger_map 本体（15 種の対応表）はこの文書に記載されておらず、参照先も明示されていない。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-11T23:50:53.538684+00:00'
+  decision_reason: 今回の差分（語彙 1 行修正）ではなく既存本文の性質への指摘、または由来注記として意図的に残した旧称への指摘。本 reopen
+    の範囲外。利用者承認 2026-06-12
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-12-reopen-procedure-vocab-postwrite-claude-sonnet-4-6-primary-004
+  run_id: 2026-06-12-reopen-procedure-vocab-postwrite
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: セクション 1（いつ使うか）および セクション 2 第1過程 ステップ4
+  plain_language_summary: ステップ4で「依存順＝`feature-dependency.yaml#feature_order`。旧称 phase_order」と注記されているが、セクション1では依存順への言及がなく、旧称の注記もセクション1に対応する説明がない。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-11T23:50:53.587247+00:00'
+  decision_reason: 今回の差分（語彙 1 行修正）ではなく既存本文の性質への指摘、または由来注記として意図的に残した旧称への指摘。本 reopen
+    の範囲外。利用者承認 2026-06-12
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-12-reopen-procedure-vocab-postwrite-gpt-5.5-adversarial-001
+  run_id: 2026-06-12-reopen-procedure-vocab-postwrite
+  source_model: gpt-5.5
+  source_round: round-1
+  source_raw_path: raw/gpt-5.5.round-1.txt
+  source_parsed_path: parsed/gpt-5.5.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: docs/operations/REOPEN_PROCEDURE.md 第1過程 step 4
+  plain_language_summary: Deprecated vocabulary `phase_order` is still mentioned as
+    an old name.
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-11T23:50:53.635679+00:00'
+  decision_reason: 今回の差分（語彙 1 行修正）ではなく既存本文の性質への指摘、または由来注記として意図的に残した旧称への指摘。本 reopen
+    の範囲外。利用者承認 2026-06-12
+  applied_files: []
+  superseded_by: null
