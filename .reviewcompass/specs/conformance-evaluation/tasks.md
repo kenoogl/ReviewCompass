@@ -38,7 +38,7 @@ language: ja
 
 - **対応設計節**：design.md §6.3 ／ §7 ／ §12.2 配置先、§18.2 検査スクリプト所在
 - **対応要件**：Requirement 6 受入 2（評価記録の配置）、Requirement 8 受入 4（ディレクトリ分離）
-- **責務**：本機能の成果物の物理配置を新設する。評価記録の配置先 `<対象アプリ>/.reviewcompass/evidence/features/<feature>/conformance/`（`reviews/` とは別ディレクトリ、Req 8 受入 4。旧配置 `specs/<feature>/conformance/` からの変更は 2026-06-12 配置規約 PLC-DEC-003〜005・009〜011 反映、既存記録は旧置き場で凍結・旧パス読み取り互換は P3 まで維持）、文書生成モードの推定出力先 `<対象アプリ>/.reviewcompass/conformance/inferred/<日付>/`（feature-partitioning-candidates.md ／ intent-reference.md ／ specs/<feature>/）、6 criteria 検査仕様の配置先 `schemas/review-criteria/`、検査スクリプト配置先 `tools/`、テスト配置先 `tests/conformance-evaluation/` を新設し、各ディレクトリに配置目的を記す README を置く。空ディレクトリは `.gitkeep` で Git 追跡可能にする（self-improvement T-001 の方針継承）
+- **責務**：本機能の成果物の物理配置を新設する。評価記録の配置先 `<対象アプリ>/.reviewcompass/evidence/features/<feature>/conformance/`（配置ルート契約は Req 6 受入 2、`reviews/` とは別ディレクトリの分離契約は Req 8 受入 4。旧配置 `specs/<feature>/conformance/` からの変更は 2026-06-12 配置規約 PLC-DEC-003〜005・009〜011 反映、既存記録は旧置き場で凍結・旧パス読み取り互換は P3 まで維持。**書き込み・読み取りの挙動は T-009 を正本とする**）、文書生成モードの推定出力先 `<対象アプリ>/.reviewcompass/conformance/inferred/<日付>/`（feature-partitioning-candidates.md ／ intent-reference.md ／ specs/<feature>/）、6 criteria 検査仕様の配置先 `schemas/review-criteria/`、検査スクリプト配置先 `tools/`、テスト配置先 `tests/conformance-evaluation/` を新設し、各ディレクトリに配置目的を記す README を置く。空ディレクトリは `.gitkeep` で Git 追跡可能にする（self-improvement T-001 の方針継承）
 - **前提タスク**：なし（起点）
 - **成果物**：
   - `tools/conformance_evaluation/` パッケージのディレクトリ＋`.gitkeep`（命名規約：import 対象パッケージはアンダースコア、単独 CLI スクリプト `tools/conformance-evaluation-check.py` はハイフン。self-improvement topic-105 と同方針）
@@ -146,8 +146,8 @@ language: ja
   1. 3 対応関係（節有無 ／ 主張対応 ／ コード言及齟齬）が判定され、いずれかの不整合で食い違いと記録される（Req 3 受入 2）
   2. 比較対象粒度が 6 criteria の各 criterion 単位である（T-005 連動）
   3. intent の差異が所見メタとして記録され must-fix 対象外であることが機械検証される（Req 3 受入 3）
-  4. finding_id（CF-NNN）／ judgment_id（JD-NNN）の発番が §10.7 の規則どおり機能する（採番衝突がない。self-improvement topic-99 の教訓に倣い、移動・分散があっても重複しない走査範囲を確認）
-- **テスト要件**：3 対応関係判定テスト、criterion 単位粒度テスト、intent 差異記録テスト（must-fix 対象外、`reference_axis` フィールドへの記録、topic-111 連動）、CF-NNN ／ JD-NNN 発番テスト（衝突回避＋**最初の採番（CF-001）・3 桁 → 4 桁拡張（999 → 1000）の境界、topic-118／F-011 対処**）、既存上流文書ありサンプルアプリでの照合受入テスト
+  4. finding_id（CF-NNN）／ judgment_id（JD-NNN）の発番が §10.7 の規則どおり機能する（採番衝突がない。self-improvement topic-99 の教訓に倣い、移動・分散があっても重複しない走査範囲を確認。**凍結期（P3 まで）は新旧両配置〔`evidence/features/<feature>/conformance/` と凍結された `specs/<feature>/conformance/`〕を合算した走査範囲で最大番号を統合算出し、旧凍結記録との ID 重複・リセットを防ぐ。design §比較結果の採番手順、2026-06-12 配置規約反映**）
+- **テスト要件**：3 対応関係判定テスト、criterion 単位粒度テスト、intent 差異記録テスト（must-fix 対象外、`reference_axis` フィールドへの記録、topic-111 連動）、CF-NNN ／ JD-NNN 発番テスト（衝突回避＋**最初の採番（CF-001）・3 桁 → 4 桁拡張（999 → 1000）の境界、topic-118／F-011 対処**＋**凍結期の新旧合算採番テスト〔旧凍結記録に CF-007 がある状態で新規が CF-008 になること〕**）、既存上流文書ありサンプルアプリでの照合受入テスト
 
 ### T-008：3 役レビュー機構の適用（Triad Review Application）
 
@@ -169,7 +169,7 @@ language: ja
 
 - **対応設計節**：design.md §12.1〜§12.4
 - **対応要件**：Requirement 6 受入 1〜5
-- **責務**：評価記録の `type` 値を `conformance_evaluation` に統合（§12.1、生成／照合の区別は内部フィールド）。配置先 `conformance/<日付>-<mode>.md`（§12.2、`reviews/` と別、Req 8 受入 4）。front-matter の構造（§12.3）：`mode_internal: generation` ／ `check`、`author` ／ `reviewer`（§5.4 規律、異名必須）、**`target_commit`（conformance-evaluation 所有）と `materialization_commit_hash`（self-improvement 所有）の整合ルール（G10 対処、A-016 対処済み、§12.3）**。関連実行記録への参照（§12.4、runtime ／ evaluation ／ workflow-management、Req 6 受入 5）
+- **責務**：評価記録の `type` 値を `conformance_evaluation` に統合（§12.1、生成／照合の区別は内部フィールド）。配置先 `conformance/<日付>-<mode>.md`（§12.2、`reviews/` と別、Req 8 受入 4）。**書き込みは常に新配置（`evidence/features/<feature>/conformance/`）とし、旧配置 `specs/<feature>/conformance/` への新規書き込みを行わない（凍結契約、design §12.2、2026-06-12 配置規約反映）。読み取りは新配置優先・旧配置フォールバック（P3 まで。両方に同名記録がある場合は新配置を正とし警告を報告）**。front-matter の構造（§12.3）：`mode_internal: generation` ／ `check`、`author` ／ `reviewer`（§5.4 規律、異名必須）、**`target_commit`（conformance-evaluation 所有）と `materialization_commit_hash`（self-improvement 所有）の整合ルール（G10 対処、A-016 対処済み、§12.3）**。関連実行記録への参照（§12.4、runtime ／ evaluation ／ workflow-management、Req 6 受入 5）
 - **前提タスク（硬い依存と緩い依存を区別、topic-114／F-002 対処、2026-05-29 セッション 39）**：硬い依存（着手前提）＝T-003、T-004。緩い依存（完了検証前提＝起草は先行可だが完了条件のクローズ前に成果物が必要）＝T-006（推定、finding_id ／ axis ／ criterion_id の形式）、T-007（比較、judgment_id の形式）。self-improvement の硬い／緩い依存区別を流用
 - **成果物**：
   - `tools/conformance_evaluation/evaluation_record.py`（type 統合 ＋ front-matter ＋ 関連参照）
@@ -181,7 +181,7 @@ language: ja
   4. `author` ／ `reviewer` が §5.4 規律に従い異名で明示される
   5. `target_commit`（本機能所有）と `materialization_commit_hash`（self-improvement 所有）の独立性・整合ルールが §12.3 と整合する（A-016 対処済み）
   6. runtime ／ evaluation ／ workflow-management の関連実行記録への参照が保持される
-- **テスト要件**：type 統合テスト（MV-1）、mode_internal テスト（MV-2）、ディレクトリ分離テスト（MV-3）、author／reviewer 異名テスト、commit hash 整合テスト、関連参照テスト
+- **テスト要件**：type 統合テスト（MV-1）、mode_internal テスト（MV-2）、ディレクトリ分離テスト（MV-3）、author／reviewer 異名テスト、commit hash 整合テスト、関連参照テスト、**凍結期挙動テスト 4 件（新配置への書き込み／旧配置のフォールバック読み取り／新旧同名時の新配置優先と警告／旧配置への新規書き込みが発生しないこと。2026-06-12 配置規約反映、TDD 先行）**
 
 ### T-010：依存関係の連想配列構造（Associative Dependency Structure）
 
@@ -220,7 +220,7 @@ language: ja
 
 - **対応設計節**：design.md §18.1〜§18.4
 - **対応要件**：Requirement 6（評価記録の機械検査）、Requirement 8 受入 4（ディレクトリ分離検査）
-- **責務**：7 つの機械検査ポイント（§18.1）を実装。**MV-1**：`type: conformance_evaluation` 設定（grep）。**MV-2**：`mode_internal` が check ／ generation（grep ＋値照合）。**MV-3**：`conformance/` と `reviews/` のディレクトリ分離（find ＋照合）。**MV-4**：推定文書の必須 3 節（grep）。**MV-5**：推定根拠の実装コード参照（grep ＋形式照合）。**MV-6**：既存上流文書遮断の事前検査（推定役プロンプトに既存上流文書混入なし＋自律探索禁止条項、grep ＋プロンプトログ）。**MV-7**：foundation 受入番号照合（G9 対処、本機能の `foundation Requirement N 受入 M` 記述が foundation requirements.md と一致、grep ＋機械照合）。**fail-closed の粒度別適用（§18.3）**：遮断必須＝MV-6 ／ 遮断推奨＝MV-1・MV-2・MV-3 ／ 警告続行可＝MV-4・MV-5・MV-7。第 1 期は手動 grep ／ find、フェーズ 4 で段階自動化（§18.4、DVT-C003）。**MV-6 の第 1 期最小仕様（topic-116／F-007 対処、2026-05-29 セッション 39、Sonnet API 別案＝段階的具体化を採用）**：推定役プロンプトログの必須フィールド（時刻 ／ 実行 ID ／ プロンプト全文）、格納先ディレクトリ命名規則（例 `.reviewcompass/evidence/estimation/<run_id>/prompt.log`。旧 `logs/estimation/` からの変更は 2026-06-12 配置規約 PLC-DEC-005・009 反映、既存ログは旧置き場で凍結）、MV-6 実行用 grep 雛形 2 条件（(a) 既存上流文書パスの不在確認 (b) 自律探索禁止条項の存在確認）を tasks に記述する。技術手段の詳細確定（プロセス隔離等）は DVT-C004（フェーズ 4 第 2 サイクル）連動で予約
+- **責務**：7 つの機械検査ポイント（§18.1）を実装。**MV-1**：`type: conformance_evaluation` 設定（grep）。**MV-2**：`mode_internal` が check ／ generation（grep ＋値照合）。**MV-3**：`conformance/` と `reviews/` のディレクトリ分離（find ＋照合）。**MV-4**：推定文書の必須 3 節（grep）。**MV-5**：推定根拠の実装コード参照（grep ＋形式照合）。**MV-6**：既存上流文書遮断の事前検査（推定役プロンプトに既存上流文書混入なし＋自律探索禁止条項、grep ＋プロンプトログ）。**MV-7**：foundation 受入番号照合（G9 対処、本機能の `foundation Requirement N 受入 M` 記述が foundation requirements.md と一致、grep ＋機械照合）。**fail-closed の粒度別適用（§18.3）**：遮断必須＝MV-6 ／ 遮断推奨＝MV-1・MV-2・MV-3 ／ 警告続行可＝MV-4・MV-5・MV-7。第 1 期は手動 grep ／ find、フェーズ 4 で段階自動化（§18.4、DVT-C003）。**MV-6 の第 1 期最小仕様（topic-116／F-007 対処、2026-05-29 セッション 39、Sonnet API 別案＝段階的具体化を採用）**：推定役プロンプトログの必須フィールド（時刻 ／ 実行 ID ／ プロンプト全文）、格納先の命名規則（ディレクトリは `<run_id>`、ファイル名は `prompt.log` 固定。完全パス例 `.reviewcompass/evidence/estimation/<run_id>/prompt.log`。旧 `logs/estimation/` からの変更は 2026-06-12 配置規約 PLC-DEC-005・009 反映、既存ログは旧置き場で凍結）、MV-6 実行用 grep 雛形 2 条件（(a) 既存上流文書パスの不在確認 (b) 自律探索禁止条項の存在確認）を tasks に記述する。技術手段の詳細確定（プロセス隔離等）は DVT-C004（フェーズ 4 第 2 サイクル）連動で予約。**凍結期（P3 まで）の検査範囲（design §18、2026-06-12 配置規約反映）**：MV-1〜MV-3 の検査ルートは新配置 `evidence/features/<feature>/conformance/` を正とし、旧配置の凍結済み既存記録も検査対象に含める。**新規記録が旧配置に現れた場合は違反として検出する**（凍結集合の判定は git 追跡履歴が正本：P1 実装反映コミット時点で旧配置に存在したファイルが凍結集合、以降の追加・変更は違反。効力発生は実装切替と同時）。凍結済み旧推定ログ（`logs/estimation/`）も MV-6 の読み取り対象に含める。**推定ログの書き込みは常に新配置 `evidence/estimation/<run_id>/` とし、旧 `logs/estimation/` への新規書き込みを行わない。旧ルートへの新規追加は凍結違反として検出する（判定規則は評価記録と同一＝P1 実装反映コミット以降の git 追跡履歴を正本とする）**
 - **前提タスク（硬い依存と緩い依存を区別、topic-114／F-002 対処）**：硬い依存（着手前提）＝T-003、T-004、T-009。緩い依存（完了検証前提）＝T-006（MV-5 の推定根拠形式の検査対象 ／ MV-7 の foundation 参照記述の検査対象）
 - **成果物**：
   - `tools/conformance-evaluation-check.py`（MV-1〜MV-7 の検査。第 1 期は手動 grep の補助、自動化はフェーズ 4 第 1〜2 サイクル）
@@ -232,7 +232,7 @@ language: ja
   4. MV-7 が foundation requirements.md の最新受入番号と本機能の参照を機械照合する（foundation 改訂追従）
   5. 検査結果が評価記録本文の「機械検査結果」節に記録される
   6. workflow-management の `check-workflow-action.py` との責務分担（§18.2）が運用文書に明示される
-- **テスト要件**：MV-1〜MV-7 の各検査テスト（正常系 ／ 異常系）、fail-closed 粒度別テスト（遮断必須 ／ 推奨 ／ 警告続行）、MV-6 混入検知テスト、MV-7 番号照合テスト、責務分担の文書検査
+- **テスト要件**：MV-1〜MV-7 の各検査テスト（正常系 ／ 異常系）、fail-closed 粒度別テスト（遮断必須 ／ 推奨 ／ 警告続行）、MV-6 混入検知テスト、MV-7 番号照合テスト、責務分担の文書検査、**凍結違反検出テスト（正常系＝凍結集合内のファイルは違反としない ／ 異常系＝P1 実装反映コミット後に旧配置へ追加されたファイルを違反として検出。2026-06-12 配置規約反映）**、**推定ログの凍結期テスト 2 件（新配置 `evidence/estimation/<run_id>/` への書き込み ／ 旧 `logs/estimation/` への新規追加を違反として検出）**
 
 ### T-013：テスト戦略全体の整備（Test Strategy）
 

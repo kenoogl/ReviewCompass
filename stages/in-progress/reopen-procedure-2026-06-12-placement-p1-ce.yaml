@@ -9,25 +9,44 @@ completed_steps:
   の alignment・approval を false、recheck 設定。差し戻し内容は利用者承認済み 2026-06-12「承認」）
 - 第2過程：正本修正（requirements 5 箇所・design 12 箇所・tasks 6 箇所の配置契約を
   evidence/features/<feature>/conformance/ および evidence/estimation/ へ変更、由来注記と凍結・読み取り互換の明記付き）
-next_step: 第2過程の停止点コミット（フラグ差し戻しと正本修正をまとめて 1 コミット、利用者指示済み 2026-06-12「コミット」）
-step_number: 2
+- 第3過程：stages/requirements.yaml#triad-review 実施（run=.reviewcompass/evidence/review-runs/2026-06-12-requirements-placement-p1-reopen-triad-review-run。
+  round-1：claude WARN2/INFO2・gpt-5.5 ERROR1・gemini 0。must-fix 1＝受入 2 のルート契約化（案 a）、should-fix 1＝互換終了の明記、
+  leave-as-is 3。round-2：WARN3・INFO4。should-fix 2（同根）＝名前形式の参照先精密化、leave-as-is 5。いずれも利用者承認
+  2026-06-12「承認」×2、round-3 は利用者承諾で省略。新配置 evidence/review-runs/ の最初の適用例）
+- 第3過程：stages/requirements.yaml#review-wave 実施（no_impact。全 7 機能の 3 文書 grep で旧パス参照 0 件、持ち越し 0 件。
+  記録=.reviewcompass/evidence/cross-feature/reviews/2026-06-12-requirements-placement-p1-review-wave.md）
+- 第3過程：stages/requirements.yaml#alignment 実施（existing_sufficient。受入間整合・分離契約・配置規約・fail-closed の 4 点確認。
+  記録=.reviewcompass/evidence/cross-feature/reviews/2026-06-12-requirements-placement-p1-alignment.md）
+- 第3過程：stages/requirements.yaml#approval 完了（利用者発言「承認」2026-06-12。確定本文＝受入 2 のルート契約＋追従 4 箇所を提示のうえ承認。
+  spec.json の requirements alignment・approval を true へ復帰）
+- 第3過程：stages/design.yaml#triad-review 実施（run=.reviewcompass/evidence/review-runs/2026-06-12-design-placement-p1-reopen-triad-review-run、3 round。
+  round-1：must-fix 1＝MV 検査の凍結期スコープ・should-fix 4＝読み取り互換挙動／handoff 配置／同根 2 件。
+  round-2：must-fix 2＝採番の新旧統合算出・凍結集合の git 履歴判定基準、should-fix 1。
+  round-3：should-fix 1＝凍結効力発生時点の明文化、判定役 gemini 所見ゼロで収束。各 round 利用者承認「承認」、round-4 は利用者承諾で省略）
+- 第3過程：stages/design.yaml#review-wave 実施（no_impact。旧パス参照は全機能 0 件、追加設計は本機能の実装に閉じる。持ち越し 0 件。
+  記録=.reviewcompass/evidence/cross-feature/reviews/2026-06-12-design-placement-p1-review-wave.md）
+- 第3過程：stages/design.yaml#alignment 実施（existing_sufficient。requirements 整合・機械検査の意味保全・ID 一意性・実装ガイダンス充足の 4 点確認。
+  記録=.reviewcompass/evidence/cross-feature/reviews/2026-06-12-design-placement-p1-alignment.md）
+- 第3過程：stages/design.yaml#approval 完了（利用者発言「承認」2026-06-12。確定本文＝置換 12 箇所＋設計追加 5 項を提示のうえ承認。
+  spec.json の design alignment・approval を true へ復帰）
+- 第3過程：stages/tasks.yaml#triad-review 実施（run=.reviewcompass/evidence/review-runs/2026-06-12-tasks-placement-p1-reopen-triad-review-run、3 round。
+  round-1：must-fix 3＝design 新機構のタスク翻訳欠落（C7、T-009 書き込み切替・T-007 採番合算・T-012 凍結違反検出を追記）・should-fix 4。
+  round-2：must-fix 1＝推定ログの凍結期契約（C8、T-012 へ追記）・should-fix 3（うちトレース併記 T-001）。
+  round-3：should-fix 1＝命名規則の表現明確化（変更前からの軽微問題、LLM 判断）、gpt-5.5 所見ゼロ・claude 適合確認のみで収束。
+  round-1・2 は利用者承認「承認」「shouninn（承認）」）
+- 第3過程：stages/tasks.yaml#review-wave 実施（no_impact。旧パス参照は全機能 0 件、追加タスクは本機能のツールに閉じる。持ち越し 0 件。
+  記録=.reviewcompass/evidence/cross-feature/reviews/2026-06-12-tasks-placement-p1-review-wave.md）
+- 第3過程：stages/tasks.yaml#alignment 実施（existing_sufficient。上流整合・責務分担の一意性・テスト要件網羅・配置規約整合の 4 点確認。
+  記録=.reviewcompass/evidence/cross-feature/reviews/2026-06-12-tasks-placement-p1-alignment.md）
+- 第3過程：stages/tasks.yaml#approval 完了（利用者発言「コミット」2026-06-12＝approval 提示〔置換 6 箇所＋4 タスクへの凍結期責務・テスト要件追加〕への応答として承認。
+  spec.json の tasks alignment・approval を true へ復帰）
+next_step: 第3過程の停止点コミット（requirements〜tasks の仕様確定分を確定。tasks approval は利用者発言「コミット」2026-06-12〔approval 提示への応答〕で承認。次は implementation の gate 連鎖＝TDD 実装）
+step_number: 3
 drafting_completed_gates:
 - stages/requirements.yaml#drafting
 - stages/design.yaml#drafting
 - stages/tasks.yaml#drafting
 pending_gates:
-- stages/requirements.yaml#triad-review
-- stages/requirements.yaml#review-wave
-- stages/requirements.yaml#alignment
-- stages/requirements.yaml#approval
-- stages/design.yaml#triad-review
-- stages/design.yaml#review-wave
-- stages/design.yaml#alignment
-- stages/design.yaml#approval
-- stages/tasks.yaml#triad-review
-- stages/tasks.yaml#review-wave
-- stages/tasks.yaml#alignment
-- stages/tasks.yaml#approval
 - stages/implementation.yaml#triad-review
 - stages/implementation.yaml#review-wave
 - stages/implementation.yaml#alignment

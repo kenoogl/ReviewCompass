@@ -1,0 +1,10 @@
+role: judgment
+provider: gemini-api
+model: gemini-3.1-pro-preview
+attempts: 1
+duration_seconds: 27.942
+findings:
+- severity: ERROR
+  target_location: 2. 変更内容（conformance-evaluation tasks.md、6 箇所）
+  description: MV-1〜MV-3の機械検査仕様（凍結違反検出）および所見ID採番統合に関するタスク定義が欠落している
+  rationale: セクション1で確定済みの要件・設計として「MV-1〜MV-3による新規の旧配置出現の違反検出」および「所見IDの新旧合算スコープでの統合算出」が明記されていますが、セクション2の変更内容にはこれらに関するタスク・テスト要件の追加・更新が含まれていません。この状態では、実装フェーズのTDDに必要なタスクレベルの情報が不足しており、レビュー観点3（実装タスクへの翻訳可能性）および観点4（テスト要件の整合）に違反します。

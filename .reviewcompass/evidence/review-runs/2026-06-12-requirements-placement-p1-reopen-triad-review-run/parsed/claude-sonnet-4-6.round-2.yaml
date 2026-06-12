@@ -1,0 +1,41 @@
+role: primary
+provider: anthropic-api
+model: claude-sonnet-4-6
+attempts: 1
+duration_seconds: 28.249
+findings:
+- severity: INFO
+  target_location: 2.4 Requirement 6 受入 2（配置の正本）
+  description: 受入 2 の文言は conformance 成果物のルート契約として機能しており、Requirement 2・3・12 および Boundary
+    Context の 4 箇所が「配置の正本は Requirement 6 受入 2」へ明示的に委譲している。集約構造として一貫している。
+  rationale: 単一の正本への集約は将来の変更コストを下げる設計として適切。矛盾・重複は検出されなかった。
+- severity: INFO
+  target_location: 2.4 Requirement 6 受入 2 — `reviews/` 分離契約の記述
+  description: '`reviews/` ディレクトリとは別ディレクトリ（分離契約は `evidence/features/<feature>/` 配下でも維持）という括弧書きにより、evidence
+    配下に移動後も MV-3 の分離契約が継続することが明示されている。'
+  rationale: Requirement 8 受入 4・MV-3 を明示参照していないが、文言として意味保全は読み取れる。参照を補完すれば実装者の確認コストがさらに下がるが、現状でも契約破綻はない。
+- severity: WARN
+  target_location: 2.4 Requirement 6 受入 2 — 互換終了条件
+  description: 「互換の終了は P3 の専用 reopen における本仕様の改訂として扱う（暗黙の終了はない）」と明記されているが、P3 の専用 reopen
+    が存在しない・遅延した場合の安全弁（例：P3 完了後に互換を自動終了させる条件や期限）は規定されていない。
+  rationale: 「暗黙の終了はない」という強い表現は意図的だが、P3 reopen が未着手のまま旧パス読み取りコードが残存し続けるリスクを生む。設計上の抜け穴とまでは言えないが、下流の
+    tasks/implementation フェーズで P3 reopen の起票を明示的なゲートとして設けることが望ましい。requirements 側の文言で「P3
+    reopen を起票する義務」を示唆するか、design フェーズへの波及事項として明記することを推奨する。
+- severity: WARN
+  target_location: 2.5 Requirement 12 受入 4 および 2.2 Requirement 2 受入 7・2.3 Requirement
+    3 受入 8
+  description: 各受入が「配置の正本は Requirement 6 受入 2」と委譲しているが、Requirement 6 受入 2 の本文にある `<日付>-<mode>.md`
+    というファイル名形式が、Requirement 12 受入 4 の `<日付>-spec-update-drafts/`（ディレクトリ）や将来の追加成果物と形式的に競合しないかの注釈がない。
+  rationale: '`<mode>` が `spec-update-drafts` のようなサブディレクトリ名を含む場合、`<日付>-<mode>.md`
+    というファイル形式規定はファイルとディレクトリが混在するルートに対して曖昧さを生む。Requirement 6 受入 2 で「評価記録のファイル名形式は `<日付>-<mode>.md`、その他の成果物のファイル・ディレクトリ名形式は各
+    Requirement が定める」と既に分けているため致命的ではないが、読み手が混同しやすい。`<日付>-<mode>.md` の適用範囲を「評価記録に限定」と太字で強調するか、例示を追加することを推奨する。'
+- severity: INFO
+  target_location: 2.1 Boundary Context（行 19）および全体
+  description: '`<対象アプリ>/` 前置の表記は全 5 箇所で統一されており、開発リポジトリと対象アプリリポジトリの文脈分離の責任を呼び出し側に委ねる設計として一貫している。requirements
+    層での表記として破綻は検出されなかった。'
+  rationale: 二重基準の問題は design・tasks フェーズでリポジトリ決定ロジックとして具体化される性質であり、requirements 段での抽象表記は適切。
+- severity: INFO
+  target_location: 2.6 Change Intent への追記
+  description: Change Intent の改訂注記は変更の全体像（5 箇所＋正本集約・凍結・互換・正順手続き）を網羅しており、下流フェーズへの波及事項として
+    TDD による実装を明示している。requirements 側からの漏れは検出されなかった。
+  rationale: 実装先行禁止の明示は、現時点で実装が旧パスへ書く挙動のままであることを正当化する根拠として機能しており、レビュアー・実装者双方への誤解防止に寄与している。

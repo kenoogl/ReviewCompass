@@ -1,0 +1,25 @@
+findings:
+  - severity: INFO
+    target_location: "§2.1 一括置換（11箇所）"
+    description: "11箇所の一括置換は確定済み requirements（受入2ルート契約）と一致しており、取りこぼしは確認されない。"
+    rationale: "照合チェック・文書生成両モードのデータフロー図、採番手順、MV-1対象パス、§12.2配置先、draft-only出力先、Boundary Context対応表の全列挙が新パス `evidence/features/<feature>/conformance/` に統一されている。旧パスを前提とする記述の残存は本 target 内で検出されない。"
+
+  - severity: INFO
+    target_location: "§2.3 読み取り互換の挙動"
+    description: "読み取り優先順（新→旧フォールバック）・書き込み常時新配置・同名衝突時の警告・互換終了条件（暗黙終了なし）がすべて明文化されており、TDD 実装に必要な挙動仕様は充足している。"
+    rationale: "実装ガイダンスの十分性（観点4）について、書き込み先変更と旧パス読み取り互換の挙動が設計本文に定義されているため、implementation 段で別途仕様を推定する必要がない。"
+
+  - severity: INFO
+    target_location: "§2.3 凍結期の検査範囲 / §2.4 凍結集合の判定基準"
+    description: "MV-1〜MV-3 の検査対象パス変更後も、新旧両配置の走査・違反検出・新旧二重カウント区別が明記され、検査の意味（type値確認・ディレクトリ分離）は保たれている。凍結集合の正本を git 追跡履歴とする判定基準も追加済み。"
+    rationale: "観点3（MV-1/MV-3整合）および round-2 must-fix 適用の収束確認として、設計上の論理的欠缺は見当たらない。"
+
+  - severity: WARN
+    target_location: "§2.3 handoff の物理配置（§13.9）"
+    description: "handoff ファイル名形式の権威参照先が「tasks の成果物定義」とされているが、該当 tasks 文書の識別子・パスが design.md 本文内で明示されているか、本 target からは確認できない。"
+    rationale: "実装者が tasks 成果物定義を一意に特定できない場合、`<日付>-reopen-handoff.yaml` / `<日付>-reopen-handoff.prompt.md` のファイル名形式が実装時に参照できないリスクがある。design 本文が tasks 文書へのパスまたは識別子を明記しているか、実装フェーズ前に確認が望ましい。"
+
+  - severity: INFO
+    target_location: "§2.2 由来注記"
+    description: "PLC-DEC-003〜005・009〜011 の決定番号が由来注記に記載されており、上流追従の traceability は確保されている。"
+    rationale: "観点1（上流追従の完全性）について、変更根拠が機械可読な決定番号で紐付けられているため、後続フェーズでの検証が可能。"

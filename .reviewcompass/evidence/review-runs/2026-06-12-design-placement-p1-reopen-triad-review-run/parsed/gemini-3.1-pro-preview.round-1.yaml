@@ -1,0 +1,15 @@
+role: judgment
+provider: gemini-api
+model: gemini-3.1-pro-preview
+attempts: 1
+duration_seconds: 21.141
+findings:
+- severity: ERROR
+  target_location: 2.1 一括置換
+  description: 置換対象リストに機械検査 MV-3 の対象パス・ルール更新が含まれていない。
+  rationale: レビュー観点3（MV-1／MV-3 検査の整合）にてMV-3の整合性が問われているが、2.1節の変更対象には「機械検査 MV-1 の対象パス」しか挙げられていない。上流要件の「`conformance/`／`reviews/`
+    の分離契約は evidence 配下でも維持」を機械検査するMV-3についても、検査対象を旧`specs`配下から`evidence`配下へ変更する設計追従が漏れている。
+- severity: WARN
+  target_location: 2.2 由来注記
+  description: 旧パス読み取り互換の具体的なフォールバックロジック（検索順序等の振る舞い）の設計が不足している。
+  rationale: レビュー観点4（実装ガイダンスの十分性）を満たすには、実装フェーズでのTDDに向けて「新パス（evidence配下）を優先検索し、存在しない場合に旧パス（specs配下）へフォールバックする」といった具体的な読み取り順序や挙動を設計情報として定義する必要がある。「P3まで維持」という方針の記載だけでは、実装者の解釈ブレや実装漏れを招く恐れがある。

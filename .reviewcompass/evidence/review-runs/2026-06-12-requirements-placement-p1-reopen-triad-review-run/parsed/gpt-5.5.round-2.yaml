@@ -1,0 +1,12 @@
+role: adversarial
+provider: openai-api
+model: gpt-5.5
+attempts: 1
+duration_seconds: 15.645
+findings:
+- severity: WARN
+  target_location: 2.4 Requirement 6 受入 2
+  description: reopen handoff 成果物の具体的なファイル・ディレクトリ名形式の参照先が曖昧です。
+  rationale: Requirement 6 受入 2 は conformance 成果物に「reopen handoff 成果物」を含めていますが、名前形式は「Requirement
+    2 受入 7・Requirement 3 受入 8・Requirement 12 受入 4 ほか」が定めるとしており、reopen handoff 成果物の正確な定義箇所が本文上特定できません。実装・tasks
+    追従時に、handoff 成果物を evidence/features/<feature>/conformance/ 配下のどの名前で生成すべきか解釈差が生じるおそれがあります。

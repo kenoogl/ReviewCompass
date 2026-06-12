@@ -1,0 +1,4 @@
+run_id: 2026-06-12-requirements-placement-p1-reopen-triad-review-run
+target_files:
+- path: .reviewcompass/evidence/review-runs/2026-06-12-requirements-placement-p1-reopen-triad-review-run/target.md
+  sha256: 9e4fcdaf14576df49e462f3493487bbeb5bc54597b970e2837a1f271fadbc4d3

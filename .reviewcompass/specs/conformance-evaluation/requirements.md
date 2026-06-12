@@ -132,7 +132,7 @@
 #### 受入基準
 
 1. 本機能は評価記録の `type` 値を `conformance_evaluation` として統合する（生成モード／照合モードの区別は内部フィールドで識別）。
-2. 本機能は評価記録の配置先を `<対象アプリ>/.reviewcompass/evidence/features/<feature>/conformance/<日付>-<mode>.md` とする。`reviews/` ディレクトリとは別ディレクトリ（分離契約は `evidence/features/<feature>/` 配下でも維持）。**由来注記**：旧配置 `specs/<feature>/conformance/` は 2026-06-12 の配置規約（PLC-DEC-003・004・009、`docs/notes/2026-06-12-document-placement-stage2-decisions.md`）により evidence 区画へ変更。既存記録は旧置き場で凍結保全し、新規生成分から適用する。旧パスの読み取り互換は最終形移行（P3、PLC-DEC-011）まで維持する。
+2. 本機能は conformance 成果物（評価記録・spec update 草案・reopen handoff 成果物）の配置**ルート契約**を `<対象アプリ>/.reviewcompass/evidence/features/<feature>/conformance/` とする。評価記録のファイル名形式は本受入の `<日付>-<mode>.md`（**評価記録に限る**）、spec update 草案は Requirement 12 受入 4 の `<日付>-spec-update-drafts/`（ディレクトリ）、reopen handoff 成果物は Requirement 12 と tasks の成果物定義（`<日付>-reopen-handoff.yaml`・`<日付>-reopen-handoff.prompt.md`）が定める。`reviews/` ディレクトリとは別ディレクトリ（分離契約は `evidence/features/<feature>/` 配下でも維持）。**由来注記**：旧配置 `specs/<feature>/conformance/` は 2026-06-12 の配置規約（PLC-DEC-003・004・009、`docs/notes/2026-06-12-document-placement-stage2-decisions.md`）により evidence 区画へ変更。既存記録は旧置き場で凍結保全し、新規生成分から適用する。旧パスの読み取り互換は最終形移行（P3、PLC-DEC-011）まで維持し、互換の終了は P3 の専用 reopen における本仕様の改訂として扱う（暗黙の終了はない）。
 3. 本機能は評価記録の front-matter に `mode_internal: generation` または `mode_internal: check` を含め、生成モードと照合モードを区別する。
 4. 本機能は評価記録の `author` と `reviewer` を §5.4 規律に従って明示する（`workflow-management` Requirement 3 と整合）。
 5. 本機能は評価記録から `runtime`／`evaluation`／`workflow-management` の関連実行記録への参照を保持する。

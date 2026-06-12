@@ -1,0 +1,18 @@
+role: adversarial
+provider: openai-api
+model: gpt-5.5
+attempts: 1
+duration_seconds: 48.723
+findings:
+- severity: ERROR
+  target_location: §2.3 MV-6 の推定ログ命名規則 / §2.4 T-012・T-014 関連
+  description: 推定独立性ログについて、旧 `logs/estimation/` の既存ログを読むことは記載されているが、P1 実装反映後に旧ルートへ新規ログを書かないこと、および旧ルートへの新規追加を違反として検出するテスト要件が明示されていない。
+  rationale: 上流契約では推定独立性ログの正配置が `.reviewcompass/evidence/estimation/<run_id>/prompt.log`
+    に変更され、既存ログは旧置き場で凍結される。tasks に新規書き込み禁止・凍結違反検出・TDD テストが落ちていないと、implementation 段で
+    `logs/estimation/` への継続書き込みを見逃し、配置ルート契約と MV-6 の検査仕様が不完全になる。
+- severity: WARN
+  target_location: §2.1 T-001 物理配置の責務 / §3 レビュー観点 1
+  description: 配置ルート契約の要求トレースが §2.1 では `Req 8 受入 4`、§3 では `requirements（受入 2 のルート契約）`
+    と記載されており、参照先が一致していない。
+  rationale: パス変更自体の内容は新配置に追従しているが、上流要求へのトレースが不一致だと、後続レビューや実装者がどの承認済み契約を正本として確認すべきか曖昧になる。正しい
+    requirements 受入番号に統一することで、上流追従の検証可能性が上がる。

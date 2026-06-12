@@ -1,0 +1,35 @@
+approved_action: review_run_triage
+approved_by: user
+review_run_id: 2026-06-12-design-placement-p1-reopen-triad-review-run
+summary_presented_to_user: true
+triage_presented_to_user: true
+approved_finding_ids:
+- 2026-06-12-design-placement-p1-reopen-triad-review-run-claude-sonnet-4-6-primary-001
+- 2026-06-12-design-placement-p1-reopen-triad-review-run-claude-sonnet-4-6-primary-002
+- 2026-06-12-design-placement-p1-reopen-triad-review-run-claude-sonnet-4-6-primary-003
+- 2026-06-12-design-placement-p1-reopen-triad-review-run-claude-sonnet-4-6-primary-004
+- 2026-06-12-design-placement-p1-reopen-triad-review-run-claude-sonnet-4-6-primary-005
+- 2026-06-12-design-placement-p1-reopen-triad-review-run-gpt-5.5-adversarial-001
+approved_final_labels:
+  2026-06-12-design-placement-p1-reopen-triad-review-run-claude-sonnet-4-6-primary-001: leave-as-is
+  2026-06-12-design-placement-p1-reopen-triad-review-run-claude-sonnet-4-6-primary-002: leave-as-is
+  2026-06-12-design-placement-p1-reopen-triad-review-run-claude-sonnet-4-6-primary-003: leave-as-is
+  2026-06-12-design-placement-p1-reopen-triad-review-run-claude-sonnet-4-6-primary-004: leave-as-is
+  2026-06-12-design-placement-p1-reopen-triad-review-run-claude-sonnet-4-6-primary-005: leave-as-is
+  2026-06-12-design-placement-p1-reopen-triad-review-run-gpt-5.5-adversarial-001: should-fix
+approval_source: 利用者発言「承認」（2026-06-12、round-3 提示後。gpt ERROR=should-fix〔凍結効力発生時点の意図を 1 文で明文化、適用済み〕、claude WARN・INFO 計 5 件 leave-as-is〔承認済み表現との一貫性・適合確認〕。round-4
+  省略の承諾を含む。判定役 gemini は round-3 所見ゼロで収束）
+notes: 'round-1 の判断（利用者発言「承認」、本ファイルの前版に記録）：gemini-001 ERROR=must-fix（MV 検査の
+
+  凍結期スコープ→§18 へ明記）、gemini-002・claude-003 should-fix（読み取り互換挙動→§12.2 へ明記）、
+
+  gpt-001 should-fix（handoff 配置→§13.9 へ明記）、claude-004 should-fix（MV-1 スコープ、C1 同根）、
+
+  claude-001/002/005 leave-as-is（適合確認）。
+
+  round-2 の適用：採番手順へ凍結期の新旧統合算出を明記（C4）、§18 凍結期段落へ git 履歴による
+
+  凍結集合判定基準を明記（C5）。round-3 で収束確認する（2 round 連続で実質指摘が出たため省略しない）。
+
+
+  round-3 の適用：凍結判定基準へ効力発生時点（P1 実装反映コミットと同時、それ以前の旧配置書き込みは正規動作）を明文化。round-4 は利用者承諾のうえ省略。'

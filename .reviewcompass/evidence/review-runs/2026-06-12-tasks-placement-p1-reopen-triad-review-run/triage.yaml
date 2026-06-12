@@ -1,0 +1,82 @@
+run_id: 2026-06-12-tasks-placement-p1-reopen-triad-review-run
+triage_status: decided
+generated_at: '2026-06-12T11:57:51.581774+00:00'
+decision_actor: null
+decision_actor_type: human
+items:
+- finding_id: 2026-06-12-tasks-placement-p1-reopen-triad-review-run-claude-sonnet-4-6-primary-001
+  run_id: 2026-06-12-tasks-placement-p1-reopen-triad-review-run
+  source_model: claude-sonnet-4-6
+  source_round: round-3
+  source_raw_path: raw/claude-sonnet-4-6.round-3.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-3.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: §2.2 成果物パスの追従（4箇所）
+  plain_language_summary: 4箇所の一括置換対象として列挙された成果物パスは具体的なファイル名パターンで記載されているが、tasks.md
+    本文中に他の成果物パス（例：評価スコアシート、機械検査レポート出力先など）が存在する場合、本 target.md の記述だけでは網羅性を検証できない。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: llm
+  decision_actor_type: agent
+  decision_at: '2026-06-12T11:58:44.874204+00:00'
+  decision_reason: 適合確認の所見（round-2 適用の T-012・T-001 追記が適切に機能している旨の確認）であり対処不要
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-12-tasks-placement-p1-reopen-triad-review-run-claude-sonnet-4-6-primary-002
+  run_id: 2026-06-12-tasks-placement-p1-reopen-triad-review-run
+  source_model: claude-sonnet-4-6
+  source_round: round-3
+  source_raw_path: raw/claude-sonnet-4-6.round-3.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-3.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: §2.4 round-2 注記 T-001 追記
+  plain_language_summary: 「T-001 へ：書き込み・読み取りの挙動は T-009 を正本とする（1句追加）」とあるが、T-001 が T-009
+    を参照する形になると、T-001 の独立した責務記述と T-009 への委任の境界が曖昧になる可能性がある。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: llm
+  decision_actor_type: agent
+  decision_at: '2026-06-12T11:58:44.920477+00:00'
+  decision_reason: 適合確認の所見（round-2 適用の T-012・T-001 追記が適切に機能している旨の確認）であり対処不要
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-12-tasks-placement-p1-reopen-triad-review-run-claude-sonnet-4-6-primary-003
+  run_id: 2026-06-12-tasks-placement-p1-reopen-triad-review-run
+  source_model: claude-sonnet-4-6
+  source_round: round-3
+  source_raw_path: raw/claude-sonnet-4-6.round-3.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-3.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: §2.5 round-3 注記 T-001 要求トレース補正
+  plain_language_summary: Req 6 受入 2（配置ルート契約）と Req 8 受入 4（`reviews/` 分離契約）の両契約を併記する補正が行われているが、§1
+    の「上流契約の要点」では「配置ルート契約＝…（Req 8 受入 4）」とのみ記載されており、Req 6 受入 2 への言及がない。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: llm
+  decision_actor_type: agent
+  decision_at: '2026-06-12T11:58:44.966061+00:00'
+  decision_reason: 適合確認の所見（round-2 適用の T-012・T-001 追記が適切に機能している旨の確認）であり対処不要
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-12-tasks-placement-p1-reopen-triad-review-run-gemini-3.1-pro-preview-judgment-001
+  run_id: 2026-06-12-tasks-placement-p1-reopen-triad-review-run
+  source_model: gemini-3.1-pro-preview
+  source_round: round-3
+  source_raw_path: raw/gemini-3.1-pro-preview.round-3.txt
+  source_parsed_path: parsed/gemini-3.1-pro-preview.round-3.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: 2.3 MV-6 の推定ログ命名規則
+  plain_language_summary: 「格納先ディレクトリ命名規則」と記載されているにもかかわらず、例示がファイルパス（`prompt.log`まで）となっており、ディレクトリとファイルのスコープが混同されている
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: llm
+  decision_actor_type: agent
+  decision_at: '2026-06-12T11:58:44.824942+00:00'
+  decision_reason: 変更前から存在した表現の問題（命名規則の例示がディレクトリとファイルを混同）で契約変更を伴わない軽微な明確化。ディレクトリ=<run_id>・ファイル名=prompt.log
+    固定と分けて明記し適用済み。重要件非該当のため操縦 LLM 判断
+  applied_files: []
+  superseded_by: null

@@ -1,0 +1,28 @@
+approved_action: review_run_triage
+approved_by: user
+review_run_id: 2026-06-12-tasks-placement-p1-reopen-triad-review-run
+summary_presented_to_user: true
+triage_presented_to_user: true
+approved_finding_ids:
+- 2026-06-12-tasks-placement-p1-reopen-triad-review-run-claude-sonnet-4-6-primary-001
+- 2026-06-12-tasks-placement-p1-reopen-triad-review-run-claude-sonnet-4-6-primary-002
+- 2026-06-12-tasks-placement-p1-reopen-triad-review-run-claude-sonnet-4-6-primary-003
+- 2026-06-12-tasks-placement-p1-reopen-triad-review-run-claude-sonnet-4-6-primary-004
+- 2026-06-12-tasks-placement-p1-reopen-triad-review-run-gpt-5.5-adversarial-001
+- 2026-06-12-tasks-placement-p1-reopen-triad-review-run-gpt-5.5-adversarial-002
+- 2026-06-12-tasks-placement-p1-reopen-triad-review-run-gemini-3.1-pro-preview-judgment-001
+approved_final_labels:
+  2026-06-12-tasks-placement-p1-reopen-triad-review-run-claude-sonnet-4-6-primary-001: should-fix
+  2026-06-12-tasks-placement-p1-reopen-triad-review-run-claude-sonnet-4-6-primary-002: leave-as-is
+  2026-06-12-tasks-placement-p1-reopen-triad-review-run-claude-sonnet-4-6-primary-003: leave-as-is
+  2026-06-12-tasks-placement-p1-reopen-triad-review-run-claude-sonnet-4-6-primary-004: leave-as-is
+  2026-06-12-tasks-placement-p1-reopen-triad-review-run-gpt-5.5-adversarial-001: must-fix
+  2026-06-12-tasks-placement-p1-reopen-triad-review-run-gpt-5.5-adversarial-002: should-fix
+  2026-06-12-tasks-placement-p1-reopen-triad-review-run-gemini-3.1-pro-preview-judgment-001: should-fix
+approval_source: 利用者発言「shouninn（承認）」（2026-06-12、round-2 提示後。C8=gpt ERROR must-fix・gemini WARN・claude WARN should-fix 同根〔推定ログの凍結期契約の欠落→T-012
+  へ書き込み常時新配置・旧ルート新規追加の違反検出・テスト 2 件を追記〕、gpt WARN should-fix〔T-001 の要求トレースに Req 6 受入 2 を併記〕、claude INFO leave-as-is。round-3
+  実施の承認を含む）
+notes: '適用内容：T-009=書き込み常時新配置・旧配置への新規書き込み禁止・新→旧フォールバック・同名警告＋凍結期挙動テスト 4 件。T-007=発番走査範囲の新旧合算＋採番テスト。T-012=MV-1〜3 の凍結期検査範囲（git
+  履歴判定の違反検出）・MV-6 の旧ログ読み取り＋凍結違反検出テスト。T-001=挙動の正本は T-009 と明記。
+
+  round-2 の適用：T-012 へ推定ログの凍結期契約（新配置書き込み・旧ルート違反検出・テスト 2 件）、T-001 の要求トレース補正（Req 6 受入 2 ルート契約＋Req 8 受入 4 分離契約の併記）。'

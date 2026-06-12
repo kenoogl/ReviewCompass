@@ -1,0 +1,5 @@
+findings:
+  - severity: WARN
+    target_location: "§2.1 変更内容（一括置換の対象節一覧）"
+    description: "上流契約に含まれる reopen handoff 成果物の配置先変更が、12 箇所の変更対象として明示されていない"
+    rationale: "確定済み requirements は、評価記録・spec update 草案・reopen handoff 成果物の配置ルートを `<対象アプリ>/.reviewcompass/evidence/features/<feature>/conformance/` としている。一方、変更対象一覧では評価記録と draft-only spec update artifacts は明記されているが、reopen handoff 成果物が明示されていないため、design 内に旧パス前提が残る、または implementation 段で書き込み先変更の対象から漏れるリスクがある。"

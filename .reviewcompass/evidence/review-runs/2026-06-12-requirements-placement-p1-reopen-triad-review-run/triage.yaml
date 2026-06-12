@@ -1,0 +1,142 @@
+run_id: 2026-06-12-requirements-placement-p1-reopen-triad-review-run
+triage_status: decided
+generated_at: '2026-06-12T10:53:49.298949+00:00'
+decision_actor: null
+decision_actor_type: human
+items:
+- finding_id: 2026-06-12-requirements-placement-p1-reopen-triad-review-run-claude-sonnet-4-6-primary-001
+  run_id: 2026-06-12-requirements-placement-p1-reopen-triad-review-run
+  source_model: claude-sonnet-4-6
+  source_round: round-2
+  source_raw_path: raw/claude-sonnet-4-6.round-2.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-2.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: 2.4 Requirement 6 受入 2（配置の正本）
+  plain_language_summary: 受入 2 の文言は conformance 成果物のルート契約として機能しており、Requirement 2・3・12
+    および Boundary Context の 4 箇所が「配置の正本は Requirement 6 受入 2」へ明示的に委譲している。集約構造として一貫している。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-12T11:04:16.710163+00:00'
+  decision_reason: 適合確認の所見（正本集約・分離契約・対象アプリ表記・Change Intent 網羅が適切に機能している旨の確認）であり対処不要
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-12-requirements-placement-p1-reopen-triad-review-run-claude-sonnet-4-6-primary-002
+  run_id: 2026-06-12-requirements-placement-p1-reopen-triad-review-run
+  source_model: claude-sonnet-4-6
+  source_round: round-2
+  source_raw_path: raw/claude-sonnet-4-6.round-2.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-2.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: 2.4 Requirement 6 受入 2 — `reviews/` 分離契約の記述
+  plain_language_summary: '`reviews/` ディレクトリとは別ディレクトリ（分離契約は `evidence/features/<feature>/`
+    配下でも維持）という括弧書きにより、evidence 配下に移動後も MV-3 の分離契約が継続することが明示されている。'
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-12T11:04:16.761612+00:00'
+  decision_reason: 適合確認の所見（正本集約・分離契約・対象アプリ表記・Change Intent 網羅が適切に機能している旨の確認）であり対処不要
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-12-requirements-placement-p1-reopen-triad-review-run-claude-sonnet-4-6-primary-003
+  run_id: 2026-06-12-requirements-placement-p1-reopen-triad-review-run
+  source_model: claude-sonnet-4-6
+  source_round: round-2
+  source_raw_path: raw/claude-sonnet-4-6.round-2.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-2.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: 2.4 Requirement 6 受入 2 — 互換終了条件
+  plain_language_summary: 「互換の終了は P3 の専用 reopen における本仕様の改訂として扱う（暗黙の終了はない）」と明記されているが、P3
+    の専用 reopen が存在しない・遅延した場合の安全弁（例：P3 完了後に互換を自動終了させる条件や期限）は規定されていない。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-12T11:04:16.551525+00:00'
+  decision_reason: 暗黙終了を持たないことが PLC-DEC-011 の決定意図。期限式の自動終了は読み取り互換を不意に壊す側に働き fail-closed
+    と整合しない
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-12-requirements-placement-p1-reopen-triad-review-run-claude-sonnet-4-6-primary-004
+  run_id: 2026-06-12-requirements-placement-p1-reopen-triad-review-run
+  source_model: claude-sonnet-4-6
+  source_round: round-2
+  source_raw_path: raw/claude-sonnet-4-6.round-2.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-2.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: 2.5 Requirement 12 受入 4 および 2.2 Requirement 2 受入 7・2.3 Requirement
+    3 受入 8
+  plain_language_summary: 各受入が「配置の正本は Requirement 6 受入 2」と委譲しているが、Requirement 6 受入
+    2 の本文にある `<日付>-<mode>.md` というファイル名形式が、Requirement 12 受入 4 の `<日付>-spec-update-drafts/`（ディレクトリ）や将来の追加成果物と形式的に競合しないかの注釈がない。
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-12T11:04:16.606727+00:00'
+  decision_reason: W3（gpt-5.5）と同根。受入 2 の 2 文目を精密化（評価記録限定の強調、草案=Requirement 12 受入 4、handoff=Requirement
+    12 と tasks の成果物定義）で適用済み
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-12-requirements-placement-p1-reopen-triad-review-run-claude-sonnet-4-6-primary-005
+  run_id: 2026-06-12-requirements-placement-p1-reopen-triad-review-run
+  source_model: claude-sonnet-4-6
+  source_round: round-2
+  source_raw_path: raw/claude-sonnet-4-6.round-2.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-2.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: 2.1 Boundary Context（行 19）および全体
+  plain_language_summary: '`<対象アプリ>/` 前置の表記は全 5 箇所で統一されており、開発リポジトリと対象アプリリポジトリの文脈分離の責任を呼び出し側に委ねる設計として一貫している。requirements
+    層での表記として破綻は検出されなかった。'
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-12T11:04:16.812948+00:00'
+  decision_reason: 適合確認の所見（正本集約・分離契約・対象アプリ表記・Change Intent 網羅が適切に機能している旨の確認）であり対処不要
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-12-requirements-placement-p1-reopen-triad-review-run-claude-sonnet-4-6-primary-006
+  run_id: 2026-06-12-requirements-placement-p1-reopen-triad-review-run
+  source_model: claude-sonnet-4-6
+  source_round: round-2
+  source_raw_path: raw/claude-sonnet-4-6.round-2.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-2.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: 2.6 Change Intent への追記
+  plain_language_summary: Change Intent の改訂注記は変更の全体像（5 箇所＋正本集約・凍結・互換・正順手続き）を網羅しており、下流フェーズへの波及事項として
+    TDD による実装を明示している。requirements 側からの漏れは検出されなかった。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-12T11:04:16.863701+00:00'
+  decision_reason: 適合確認の所見（正本集約・分離契約・対象アプリ表記・Change Intent 網羅が適切に機能している旨の確認）であり対処不要
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-12-requirements-placement-p1-reopen-triad-review-run-gpt-5.5-adversarial-001
+  run_id: 2026-06-12-requirements-placement-p1-reopen-triad-review-run
+  source_model: gpt-5.5
+  source_round: round-2
+  source_raw_path: raw/gpt-5.5.round-2.txt
+  source_parsed_path: parsed/gpt-5.5.round-2.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: 2.4 Requirement 6 受入 2
+  plain_language_summary: reopen handoff 成果物の具体的なファイル・ディレクトリ名形式の参照先が曖昧です。
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-12T11:04:16.658538+00:00'
+  decision_reason: W2（claude-004）と同根。handoff 成果物の名前形式の参照先（Requirement 12 と tasks の成果物定義、ファイル名
+    2 種）を受入 2 に明記して適用済み
+  applied_files: []
+  superseded_by: null

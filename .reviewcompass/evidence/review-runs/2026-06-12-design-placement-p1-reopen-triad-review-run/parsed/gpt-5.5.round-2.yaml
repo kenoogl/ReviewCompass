@@ -1,0 +1,22 @@
+role: adversarial
+provider: openai-api
+model: gpt-5.5
+attempts: 1
+duration_seconds: 45.137
+findings:
+- severity: ERROR
+  target_location: target.md §2.3「凍結期（P3 まで）の検査範囲」
+  description: 旧配置に現れた「新規記録」を違反として検出するとしているが、凍結済み既存記録の判定基準が定義されていない。
+  rationale: 旧パス読み取り互換を維持しつつ旧配置への新規書き込みを禁止するには、凍結時点のファイル一覧、許容される既存記録の manifest、または
+    cutoff 判定方法が必要である。これがないと MV-1〜MV-3 の機械検査で、旧配置のファイルが既存凍結物なのか違反の新規生成物なのかを再現可能に判定できない。
+- severity: WARN
+  target_location: target.md §2.1「所見 ID の採番手順（配下の最大番号＋1）」および §2.3「読み取り互換の挙動」
+  description: 所見 ID 採番の探索範囲が新配置のみなのか、P3 まで読み取り互換対象となる旧配置も含むのかが不明確である。
+  rationale: 一括置換により採番手順が新配置配下の最大番号を参照する形になる一方、P3 までは旧配置の凍結済み記録も読み取り対象に含まれる。ID の一意性スコープを明示しないと、新旧配置間で同一
+    ID が再利用され、比較結果、handoff、評価記録の参照が曖昧になる可能性がある。
+- severity: WARN
+  target_location: target.md §2.3「handoff の物理配置」
+  description: handoff 成果物の物理配置について、追加文がファイル名形式を示す一方で完全な出力パスを明示していない。
+  rationale: 上流契約では reopen handoff 成果物も `<対象アプリ>/.reviewcompass/evidence/features/<feature>/conformance/`
+    配下に置く必要がある。設計本文でディレクトリまで明示しないと、implementation 段で tasks 側の成果物定義や旧配置の前提に引きずられ、handoff
+    だけ配置契約から逸脱するリスクが残る。

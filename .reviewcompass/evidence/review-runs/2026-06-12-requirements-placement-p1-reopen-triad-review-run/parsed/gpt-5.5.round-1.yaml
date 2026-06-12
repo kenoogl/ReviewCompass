@@ -1,0 +1,13 @@
+role: adversarial
+provider: openai-api
+model: gpt-5.5
+attempts: 1
+duration_seconds: 31.32
+findings:
+- severity: ERROR
+  target_location: 2.5 Requirement 12 受入 4 / 2.4 Requirement 6 受入 2
+  description: draft-only 草案の配置について、Requirement 12 が「配置の正本は Requirement 6 受入 2」としている一方、Requirement
+    6 受入 2 は `<日付>-<mode>.md` という評価記録ファイルの配置だけを定義しており、`<日付>-spec-update-drafts/` ディレクトリ形式の草案配置を正本として包含していない。
+  rationale: このままだと、草案成果物にも Requirement 6 のファイル形式契約を適用すべきなのか、Requirement 12 のディレクトリ契約を優先すべきなのかが曖昧になる。下流の
+    design・tasks・implementation で draft-only 出力先の実装方針が分岐する恐れがあるため、Requirement 6 側を
+    conformance artifacts 全体の配置ルート契約として拡張するか、Requirement 12 側を独立した正本配置として明記する必要がある。

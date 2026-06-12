@@ -1,0 +1,10 @@
+role: judgment
+provider: gemini-api
+model: gemini-3.1-pro-preview
+attempts: 1
+duration_seconds: 29.398
+findings:
+- severity: WARN
+  target_location: 2.4 round-2 注記：round-1 所見の適用 (T-012)
+  description: MV-6（推定ログ）における旧配置への新規追加に対する凍結違反検出およびテスト要件が明示されていない
+  rationale: MV-1〜MV-3（評価記録）については旧配置への新規記録を凍結違反として検出する旨とそのテスト要件（正常系/異常系）が明記されていますが、MV-6（推定ログ）については旧配置（`logs/estimation/`）を「読み取り対象に含める」ことのみが記載されています。旧推定ログディレクトリへの誤出力も同様に凍結違反として検出すべきであり、実装（TDD）時のテスト要件として明示しないと異常系の実装・検査漏れにつながるリスクがあります。

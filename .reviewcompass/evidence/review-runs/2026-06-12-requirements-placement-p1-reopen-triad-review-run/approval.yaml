@@ -1,0 +1,29 @@
+approved_action: review_run_triage
+approved_by: user
+review_run_id: 2026-06-12-requirements-placement-p1-reopen-triad-review-run
+summary_presented_to_user: true
+triage_presented_to_user: true
+approved_finding_ids:
+  - 2026-06-12-requirements-placement-p1-reopen-triad-review-run-claude-sonnet-4-6-primary-001
+  - 2026-06-12-requirements-placement-p1-reopen-triad-review-run-claude-sonnet-4-6-primary-002
+  - 2026-06-12-requirements-placement-p1-reopen-triad-review-run-claude-sonnet-4-6-primary-003
+  - 2026-06-12-requirements-placement-p1-reopen-triad-review-run-claude-sonnet-4-6-primary-004
+  - 2026-06-12-requirements-placement-p1-reopen-triad-review-run-claude-sonnet-4-6-primary-005
+  - 2026-06-12-requirements-placement-p1-reopen-triad-review-run-claude-sonnet-4-6-primary-006
+  - 2026-06-12-requirements-placement-p1-reopen-triad-review-run-gpt-5.5-adversarial-001
+approved_final_labels:
+  2026-06-12-requirements-placement-p1-reopen-triad-review-run-claude-sonnet-4-6-primary-001: leave-as-is
+  2026-06-12-requirements-placement-p1-reopen-triad-review-run-claude-sonnet-4-6-primary-002: leave-as-is
+  2026-06-12-requirements-placement-p1-reopen-triad-review-run-claude-sonnet-4-6-primary-003: leave-as-is
+  2026-06-12-requirements-placement-p1-reopen-triad-review-run-claude-sonnet-4-6-primary-004: should-fix
+  2026-06-12-requirements-placement-p1-reopen-triad-review-run-claude-sonnet-4-6-primary-005: leave-as-is
+  2026-06-12-requirements-placement-p1-reopen-triad-review-run-claude-sonnet-4-6-primary-006: leave-as-is
+  2026-06-12-requirements-placement-p1-reopen-triad-review-run-gpt-5.5-adversarial-001: should-fix
+approval_source: 利用者発言「承認」（2026-06-12、round-2 提示後。W1=claude-003 leave-as-is／W2=claude-004・W3=gpt-001 同根 should-fix 適用／INFO 4 件 leave-as-is、round-3 省略の承諾を含む）
+notes: |
+  round-1 の判断（利用者発言「承認」、本ファイルの前版に記録）：gpt-5.5-adversarial-001（ERROR）＝must-fix
+  （受入 2 を conformance 成果物全体の配置ルート契約へ拡張、案 a）、claude-001（WARN）＝should-fix
+  （互換終了は P3 の専用 reopen における仕様改訂と明記）、claude-002〜004＝leave-as-is。
+  round-2 実行で triage 台帳が最新 round の所見で再生成されたため、本版は round-2 の 7 件を対象とする。
+  round-2 の should-fix 2 件（同根）は受入 2 の 2 文目を精密化（評価記録限定の強調・草案と handoff の
+  名前形式の参照先特定）で適用済み。round-3 は利用者承諾のうえ省略（先例：parse-error reopen）。

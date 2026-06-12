@@ -1,0 +1,21 @@
+role: primary
+provider: anthropic-api
+model: claude-sonnet-4-6
+attempts: 1
+duration_seconds: 11.755
+findings:
+- severity: INFO
+  target_location: セクション 2.1 T-001
+  description: 凍結効力発生タイミングの明示
+  rationale: 「凍結の効力発生は P1 実装反映コミットと同時」とセクション 1 に記載されているが、T-001 の注記には「旧パス読み取り互換は P3
+    まで維持」とのみ記述され、凍結効力発生タイミングへの参照が省かれている。実装者が T-001 単独を参照した場合、書き込み先切替と凍結発効の同時性を見落とすリスクがある。
+- severity: INFO
+  target_location: セクション 2.2 成果物パス 4 箇所
+  description: 新→旧フォールバック読み取り挙動のタスク記述への明示
+  rationale: セクション 1 では「読み取りは新→旧フォールバック（P3 まで）」と確定しているが、2.2 の成果物パス変更箇所にはフォールバック挙動への言及がない。TDD
+    で失敗テストを書く際、読み取り系テスト要件が成果物パス記述から直接導けないため、実装タスクへの翻訳可能性（観点 3）の面でやや不足している。
+- severity: INFO
+  target_location: セクション 2.3 MV-6
+  description: 推定独立性ログの既存ログ凍結後の読み取り互換有無が未記載
+  rationale: 評価記録・草案・handoff については P3 までの旧パス読み取り互換が明示されているが、MV-6 の推定ログ（`evidence/estimation/<run_id>/prompt.log`）については「既存ログは旧置き場で凍結」と記載されるのみで、旧パスフォールバック読み取りの適用可否が記述されていない。テスト要件の整合（観点
+    4）として、MV-6 が旧ログを参照する場合の検査挙動を tasks に明記すべきかを確認することを推奨する。

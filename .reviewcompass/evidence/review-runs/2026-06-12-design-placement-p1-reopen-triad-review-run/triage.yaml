@@ -1,0 +1,124 @@
+run_id: 2026-06-12-design-placement-p1-reopen-triad-review-run
+triage_status: decided
+generated_at: '2026-06-12T11:29:29.161208+00:00'
+decision_actor: null
+decision_actor_type: human
+items:
+- finding_id: 2026-06-12-design-placement-p1-reopen-triad-review-run-claude-sonnet-4-6-primary-001
+  run_id: 2026-06-12-design-placement-p1-reopen-triad-review-run
+  source_model: claude-sonnet-4-6
+  source_round: round-3
+  source_raw_path: raw/claude-sonnet-4-6.round-3.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-3.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: §2.1 一括置換（11箇所）
+  plain_language_summary: 11箇所の一括置換は確定済み requirements（受入2ルート契約）と一致しており、取りこぼしは確認されない。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-12T11:35:18.597714+00:00'
+  decision_reason: INFO は適合確認。WARN（tasks 参照先の明示）は同一 feature の仕様 3 文書相互参照という確立した慣行で一意であり、requirements
+    受入 2 の承認済み表現との一貫性を優先
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-12-design-placement-p1-reopen-triad-review-run-claude-sonnet-4-6-primary-002
+  run_id: 2026-06-12-design-placement-p1-reopen-triad-review-run
+  source_model: claude-sonnet-4-6
+  source_round: round-3
+  source_raw_path: raw/claude-sonnet-4-6.round-3.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-3.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: §2.3 読み取り互換の挙動
+  plain_language_summary: 読み取り優先順（新→旧フォールバック）・書き込み常時新配置・同名衝突時の警告・互換終了条件（暗黙終了なし）がすべて明文化されており、TDD
+    実装に必要な挙動仕様は充足している。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-12T11:35:18.643648+00:00'
+  decision_reason: INFO は適合確認。WARN（tasks 参照先の明示）は同一 feature の仕様 3 文書相互参照という確立した慣行で一意であり、requirements
+    受入 2 の承認済み表現との一貫性を優先
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-12-design-placement-p1-reopen-triad-review-run-claude-sonnet-4-6-primary-003
+  run_id: 2026-06-12-design-placement-p1-reopen-triad-review-run
+  source_model: claude-sonnet-4-6
+  source_round: round-3
+  source_raw_path: raw/claude-sonnet-4-6.round-3.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-3.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: §2.3 凍結期の検査範囲 / §2.4 凍結集合の判定基準
+  plain_language_summary: MV-1〜MV-3 の検査対象パス変更後も、新旧両配置の走査・違反検出・新旧二重カウント区別が明記され、検査の意味（type値確認・ディレクトリ分離）は保たれている。凍結集合の正本を
+    git 追跡履歴とする判定基準も追加済み。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-12T11:35:18.688856+00:00'
+  decision_reason: INFO は適合確認。WARN（tasks 参照先の明示）は同一 feature の仕様 3 文書相互参照という確立した慣行で一意であり、requirements
+    受入 2 の承認済み表現との一貫性を優先
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-12-design-placement-p1-reopen-triad-review-run-claude-sonnet-4-6-primary-004
+  run_id: 2026-06-12-design-placement-p1-reopen-triad-review-run
+  source_model: claude-sonnet-4-6
+  source_round: round-3
+  source_raw_path: raw/claude-sonnet-4-6.round-3.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-3.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: §2.3 handoff の物理配置（§13.9）
+  plain_language_summary: handoff ファイル名形式の権威参照先が「tasks の成果物定義」とされているが、該当 tasks 文書の識別子・パスが
+    design.md 本文内で明示されているか、本 target からは確認できない。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-12T11:35:18.734356+00:00'
+  decision_reason: INFO は適合確認。WARN（tasks 参照先の明示）は同一 feature の仕様 3 文書相互参照という確立した慣行で一意であり、requirements
+    受入 2 の承認済み表現との一貫性を優先
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-12-design-placement-p1-reopen-triad-review-run-claude-sonnet-4-6-primary-005
+  run_id: 2026-06-12-design-placement-p1-reopen-triad-review-run
+  source_model: claude-sonnet-4-6
+  source_round: round-3
+  source_raw_path: raw/claude-sonnet-4-6.round-3.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-3.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: §2.2 由来注記
+  plain_language_summary: PLC-DEC-003〜005・009〜011 の決定番号が由来注記に記載されており、上流追従の traceability
+    は確保されている。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-12T11:35:18.780074+00:00'
+  decision_reason: INFO は適合確認。WARN（tasks 参照先の明示）は同一 feature の仕様 3 文書相互参照という確立した慣行で一意であり、requirements
+    受入 2 の承認済み表現との一貫性を優先
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-12-design-placement-p1-reopen-triad-review-run-gpt-5.5-adversarial-001
+  run_id: 2026-06-12-design-placement-p1-reopen-triad-review-run
+  source_model: gpt-5.5
+  source_round: round-3
+  source_raw_path: raw/gpt-5.5.round-3.txt
+  source_parsed_path: parsed/gpt-5.5.round-3.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: §2.4 round-3 注記 / 凍結集合の判定基準
+  plain_language_summary: 旧配置の凍結集合を「P1 実装反映コミット時点」に固定しており、上流契約の「既存記録は凍結」「新規記録が旧配置に現れた場合は違反」と時点がずれる。
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-12T11:35:18.547522+00:00'
+  decision_reason: 凍結効力の発生時点が本文で暗黙だったため誤読を招いた。効力発生＝P1 実装反映コミット（書き込み先切替）と同時、それ以前の旧配置書き込みは現行実装の正規動作である旨を
+    1 文で明文化して適用済み
+  applied_files: []
+  superseded_by: null

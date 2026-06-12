@@ -1,0 +1,29 @@
+role: primary
+provider: anthropic-api
+model: claude-sonnet-4-6
+attempts: 1
+duration_seconds: 17.742
+findings:
+- severity: WARN
+  target_location: 2.4 Requirement 6 受入 2（配置の正本）
+  description: 旧パスの読み取り互換について「P3（PLC-DEC-011）まで維持」と明記されているが、P3 移行のトリガー条件・完了判定基準が requirements
+    内に記載されていない。
+  rationale: 実装者が互換終了のタイミングを判断できず、P3 移行タスクが暗黙の前提として残る。requirements は完了条件を参照可能な形で示すべきであり、外部ノートへの参照だけでは要件として不完全になるリスクがある。
+- severity: WARN
+  target_location: 2.1 Boundary Context（行 19）および 2.4 Requirement 6 受入 2
+  description: '`<対象アプリ>/` 前置の表記について、reviewcompass 自身がレビュー対象アプリでもある場合（自己適用ケース）のパス解釈が
+    requirements 内で明確化されていない。'
+  rationale: 本 run 自体が `.reviewcompass/` 以下に出力されており、自己適用時に `<対象アプリ>/.reviewcompass/`
+    が何を指すかが読み手によって解釈が分かれうる。レビュー観点 4（対象アプリ二重基準）が指摘するリスクに対して、requirements 文言がそのリスクを解消していない。
+- severity: INFO
+  target_location: 2.2 Requirement 2 受入 7、2.3 Requirement 3 受入 8、2.5 Requirement 12
+    受入 4
+  description: 各受入に「配置の正本は Requirement 6 受入 2」と記載されており、正本への集約は適切に行われている。ただし、正本が変更された際に追従箇所が
+    4 か所あることが要件内で明示されておらず、変更管理上の注意点が暗黙化している。
+  rationale: 正本集約のパターンは整合性を高めるが、追従必要箇所のリストが requirements 内または Change Intent に一覧化されていないと、将来の改訂時に追従漏れが生じやすい。重大ではないが、保守性の観点から記録しておく価値がある。
+- severity: INFO
+  target_location: 2.6 Change Intent への追記（改訂注記）
+  description: 「仕様確定後に TDD で実装する正順の手続きである」という記述は経緯説明として有用だが、requirements 文書の Change
+    Intent として適切な粒度かどうか境界が曖昧である。
+  rationale: 手続きの正当性の説明は reopen 分類記録や run の目的文書に置くほうが適切であり、requirements の Change Intent
+    に混在させると、要件変更の記録と手続き記録が混同されるおそれがある。軽微な整理の問題であり、要件の意味は損なわれていない。

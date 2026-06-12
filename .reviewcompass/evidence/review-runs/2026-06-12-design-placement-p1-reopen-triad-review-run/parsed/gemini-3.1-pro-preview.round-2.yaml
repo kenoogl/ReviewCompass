@@ -1,0 +1,10 @@
+role: judgment
+provider: gemini-api
+model: gemini-3.1-pro-preview
+attempts: 1
+duration_seconds: 19.947
+findings:
+- severity: ERROR
+  target_location: 2.1 一括置換（所見 ID の採番手順） および 2.3 round-2 注記（読み取り互換の挙動）
+  description: 所見IDの採番手順（配下の最大番号＋1）において、旧配置の凍結記録を考慮した最大番号算出の設計が漏れている
+  rationale: 一括置換により採番の参照先が新配置（evidence/.../conformance/）へ変更されますが、既存の評価記録は旧配置（specs/.../conformance/）に凍結されています。新配置のディレクトリのみを参照して「配下の最大番号＋1」を計算すると、旧配置のIDと重複する（または1からリセットされる）不具合が発生します。P3の読み取り互換期間中は、実装が新旧両方のディレクトリを走査して最大IDを統合算出するよう、実装ガイダンスとして設計に明記する必要があります。

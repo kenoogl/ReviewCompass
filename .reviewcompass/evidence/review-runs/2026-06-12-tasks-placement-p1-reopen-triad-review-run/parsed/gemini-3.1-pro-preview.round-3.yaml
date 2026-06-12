@@ -1,0 +1,10 @@
+role: judgment
+provider: gemini-api
+model: gemini-3.1-pro-preview
+attempts: 1
+duration_seconds: 8.367
+findings:
+- severity: WARN
+  target_location: 2.3 MV-6 の推定ログ命名規則
+  description: 「格納先ディレクトリ命名規則」と記載されているにもかかわらず、例示がファイルパス（`prompt.log`まで）となっており、ディレクトリとファイルのスコープが混同されている
+  rationale: 実装段（implementation）のTDDにおいて、MV-6が検査すべき命名規則の対象がディレクトリ（`<run_id>`）なのか、ファイル（`prompt.log`）なのかが曖昧になり、テスト要件およびタスク翻訳時に混乱を招く恐れがあるため。
