@@ -1,0 +1,240 @@
+status: completed
+target_files:
+- .reviewcompass/specs/workflow-management/design.md
+- .reviewcompass/specs/workflow-management/requirements.md
+- .reviewcompass/specs/workflow-management/tasks.md
+- docs/notes/review-runs/2026-06-12-reopen-classification-parse-error-postwrite/model-result-summary.yaml
+- docs/notes/review-runs/2026-06-12-reopen-classification-parse-error-postwrite/parsed/claude-sonnet-4-6.round-1.yaml
+- docs/notes/review-runs/2026-06-12-reopen-classification-parse-error-postwrite/parsed/gemini-3.1-pro-preview.round-1.yaml
+- docs/notes/review-runs/2026-06-12-reopen-classification-parse-error-postwrite/parsed/gpt-5.5.round-1.yaml
+- docs/notes/review-runs/2026-06-12-reopen-classification-parse-error-postwrite/raw/claude-sonnet-4-6.round-1.txt
+- docs/notes/review-runs/2026-06-12-reopen-classification-parse-error-postwrite/raw/gemini-3.1-pro-preview.round-1.txt
+- docs/notes/review-runs/2026-06-12-reopen-classification-parse-error-postwrite/raw/gpt-5.5.round-1.txt
+- docs/notes/review-runs/2026-06-12-reopen-classification-parse-error-postwrite/review_summary.md
+- docs/notes/review-runs/2026-06-12-reopen-classification-parse-error-postwrite/rounds.yaml
+- docs/notes/review-runs/2026-06-12-reopen-classification-parse-error-postwrite/target-manifest.yaml
+- docs/notes/review-runs/2026-06-12-reopen-classification-parse-error-postwrite/triage.yaml
+- docs/notes/review-runs/2026-06-12-session-guide-variant-postwrite/model-result-summary.yaml
+- docs/notes/review-runs/2026-06-12-session-guide-variant-postwrite/parsed/claude-sonnet-4-6.round-1.yaml
+- docs/notes/review-runs/2026-06-12-session-guide-variant-postwrite/parsed/gemini-3.1-pro-preview.round-1.yaml
+- docs/notes/review-runs/2026-06-12-session-guide-variant-postwrite/parsed/gpt-5.5.round-1.yaml
+- docs/notes/review-runs/2026-06-12-session-guide-variant-postwrite/raw/claude-sonnet-4-6.round-1.txt
+- docs/notes/review-runs/2026-06-12-session-guide-variant-postwrite/raw/gemini-3.1-pro-preview.round-1.txt
+- docs/notes/review-runs/2026-06-12-session-guide-variant-postwrite/raw/gpt-5.5.round-1.txt
+- docs/notes/review-runs/2026-06-12-session-guide-variant-postwrite/review_summary.md
+- docs/notes/review-runs/2026-06-12-session-guide-variant-postwrite/rounds.yaml
+- docs/notes/review-runs/2026-06-12-session-guide-variant-postwrite/target-manifest.yaml
+- docs/notes/review-runs/2026-06-12-session-guide-variant-postwrite/triage.yaml
+- docs/operations/SESSION_WORKFLOW_GUIDE.md
+- docs/reviews/reopen-classification-2026-06-12-parse-error-failclosed.md
+target_sha256:
+  .reviewcompass/specs/workflow-management/design.md: 5c4567295d906372685e991e64334481350835fc768e6c4c752636210b9c2313
+  .reviewcompass/specs/workflow-management/requirements.md: 5a36a0ebd8b274ffaaa884cfad27e5dcad311ac11d7f66b9a029d4061fd56037
+  .reviewcompass/specs/workflow-management/tasks.md: ffb82bfc040525cd255606ffcd93a8566eebc6346ce742d264efcd9b5187dca5
+  docs/notes/review-runs/2026-06-12-reopen-classification-parse-error-postwrite/model-result-summary.yaml: e222b397bdb3961ab9804917bf396ba244e37f4dfd83cf51dba3d8fa1731cf93
+  docs/notes/review-runs/2026-06-12-reopen-classification-parse-error-postwrite/parsed/claude-sonnet-4-6.round-1.yaml: 0b738aa5a126f652c8028c04b4eae492c35ca8b5bbeb9b29b101eef0121a82d2
+  docs/notes/review-runs/2026-06-12-reopen-classification-parse-error-postwrite/parsed/gemini-3.1-pro-preview.round-1.yaml: fed4a2b8ac45f3905c3a2db500dfcb6b744b5a5199d01528a551110882703fbf
+  docs/notes/review-runs/2026-06-12-reopen-classification-parse-error-postwrite/parsed/gpt-5.5.round-1.yaml: 6a21047706a595bf743a552ab7f885c95ad473a2971557e3eee4f85369fa60bf
+  docs/notes/review-runs/2026-06-12-reopen-classification-parse-error-postwrite/raw/claude-sonnet-4-6.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+  docs/notes/review-runs/2026-06-12-reopen-classification-parse-error-postwrite/raw/gemini-3.1-pro-preview.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+  docs/notes/review-runs/2026-06-12-reopen-classification-parse-error-postwrite/raw/gpt-5.5.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+  docs/notes/review-runs/2026-06-12-reopen-classification-parse-error-postwrite/review_summary.md: 10971c420f3424c786d6c0395e3c45d1904b4c3960297b239f8c445aa81dac6e
+  docs/notes/review-runs/2026-06-12-reopen-classification-parse-error-postwrite/rounds.yaml: 4e99e61d87db0252f75340da56a9b8c6812f12a999a841f0299bb094525c1742
+  docs/notes/review-runs/2026-06-12-reopen-classification-parse-error-postwrite/target-manifest.yaml: 5c4acda0eaef1e889f27c3f97f97a2343a34648d3fa4c97279aabf6b1e1bf2c6
+  docs/notes/review-runs/2026-06-12-reopen-classification-parse-error-postwrite/triage.yaml: 719004806a9d17a39da49af0db7173fccdfdd62ad8a9bf57a6bd9c08fb2cbffb
+  docs/notes/review-runs/2026-06-12-session-guide-variant-postwrite/model-result-summary.yaml: 57766982827d321e8f3085cc634d32b3783602771648e73dc818348d5a401f0e
+  docs/notes/review-runs/2026-06-12-session-guide-variant-postwrite/parsed/claude-sonnet-4-6.round-1.yaml: b5d5ebfcdaa9458c83d9b44c113fd7a12422e2838f841162fc8d1619f0890341
+  docs/notes/review-runs/2026-06-12-session-guide-variant-postwrite/parsed/gemini-3.1-pro-preview.round-1.yaml: bc1537a329af96d3a2220a71f321ad87a4960609be9f79b02244645ad110e6e2
+  docs/notes/review-runs/2026-06-12-session-guide-variant-postwrite/parsed/gpt-5.5.round-1.yaml: e83316c3f03d58d3a0c8f2e7712b606b3e3aa971c26b04031872a587f06cc026
+  docs/notes/review-runs/2026-06-12-session-guide-variant-postwrite/raw/claude-sonnet-4-6.round-1.txt: e8cb189bdf538ca812e3d93a2a42af02681d430f01793f444de1bc9873488cf2
+  docs/notes/review-runs/2026-06-12-session-guide-variant-postwrite/raw/gemini-3.1-pro-preview.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+  docs/notes/review-runs/2026-06-12-session-guide-variant-postwrite/raw/gpt-5.5.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+  docs/notes/review-runs/2026-06-12-session-guide-variant-postwrite/review_summary.md: 4a5ff82d20535579f66b25c213893c75053a112985619d1e0819ecbf89304433
+  docs/notes/review-runs/2026-06-12-session-guide-variant-postwrite/rounds.yaml: b66cf4a6c6bc4f651fed5f1e238829122f459e9b7e3f4c304706fa85d41c513f
+  docs/notes/review-runs/2026-06-12-session-guide-variant-postwrite/target-manifest.yaml: 7eff8abca67b9581939bf40031ae6ddcdacdd5e781bd9fe9c64c563a3850838f
+  docs/notes/review-runs/2026-06-12-session-guide-variant-postwrite/triage.yaml: 1d50c2d9fe4f26bcb5f48762bbbd7aa8d6f543e613fa29f368067316fccfd39a
+  docs/operations/SESSION_WORKFLOW_GUIDE.md: af7de0c27b1448edfe12c6ee2911e797a2b4d1d694a9f38e252f657f2cb771c1
+  docs/reviews/reopen-classification-2026-06-12-parse-error-failclosed.md: 74f23a284e1791f1b0931c39f27d92bee6673f3edca958ff525ab1bfe87c3036
+required_verifiers: &id001
+- claude-sonnet-4-6
+- gpt-5.5
+- gemini-3.1-pro-preview
+completed_verifiers: *id001
+unresolved_substantive_findings: 0
+verifications:
+- verifier: claude-sonnet-4-6
+  target_files:
+  - .reviewcompass/specs/workflow-management/design.md
+  - .reviewcompass/specs/workflow-management/requirements.md
+  - .reviewcompass/specs/workflow-management/tasks.md
+  - docs/notes/review-runs/2026-06-12-reopen-classification-parse-error-postwrite/model-result-summary.yaml
+  - docs/notes/review-runs/2026-06-12-reopen-classification-parse-error-postwrite/parsed/claude-sonnet-4-6.round-1.yaml
+  - docs/notes/review-runs/2026-06-12-reopen-classification-parse-error-postwrite/parsed/gemini-3.1-pro-preview.round-1.yaml
+  - docs/notes/review-runs/2026-06-12-reopen-classification-parse-error-postwrite/parsed/gpt-5.5.round-1.yaml
+  - docs/notes/review-runs/2026-06-12-reopen-classification-parse-error-postwrite/raw/claude-sonnet-4-6.round-1.txt
+  - docs/notes/review-runs/2026-06-12-reopen-classification-parse-error-postwrite/raw/gemini-3.1-pro-preview.round-1.txt
+  - docs/notes/review-runs/2026-06-12-reopen-classification-parse-error-postwrite/raw/gpt-5.5.round-1.txt
+  - docs/notes/review-runs/2026-06-12-reopen-classification-parse-error-postwrite/review_summary.md
+  - docs/notes/review-runs/2026-06-12-reopen-classification-parse-error-postwrite/rounds.yaml
+  - docs/notes/review-runs/2026-06-12-reopen-classification-parse-error-postwrite/target-manifest.yaml
+  - docs/notes/review-runs/2026-06-12-reopen-classification-parse-error-postwrite/triage.yaml
+  - docs/notes/review-runs/2026-06-12-session-guide-variant-postwrite/model-result-summary.yaml
+  - docs/notes/review-runs/2026-06-12-session-guide-variant-postwrite/parsed/claude-sonnet-4-6.round-1.yaml
+  - docs/notes/review-runs/2026-06-12-session-guide-variant-postwrite/parsed/gemini-3.1-pro-preview.round-1.yaml
+  - docs/notes/review-runs/2026-06-12-session-guide-variant-postwrite/parsed/gpt-5.5.round-1.yaml
+  - docs/notes/review-runs/2026-06-12-session-guide-variant-postwrite/raw/claude-sonnet-4-6.round-1.txt
+  - docs/notes/review-runs/2026-06-12-session-guide-variant-postwrite/raw/gemini-3.1-pro-preview.round-1.txt
+  - docs/notes/review-runs/2026-06-12-session-guide-variant-postwrite/raw/gpt-5.5.round-1.txt
+  - docs/notes/review-runs/2026-06-12-session-guide-variant-postwrite/review_summary.md
+  - docs/notes/review-runs/2026-06-12-session-guide-variant-postwrite/rounds.yaml
+  - docs/notes/review-runs/2026-06-12-session-guide-variant-postwrite/target-manifest.yaml
+  - docs/notes/review-runs/2026-06-12-session-guide-variant-postwrite/triage.yaml
+  - docs/operations/SESSION_WORKFLOW_GUIDE.md
+  - docs/reviews/reopen-classification-2026-06-12-parse-error-failclosed.md
+  target_sha256:
+    .reviewcompass/specs/workflow-management/design.md: 5c4567295d906372685e991e64334481350835fc768e6c4c752636210b9c2313
+    .reviewcompass/specs/workflow-management/requirements.md: 5a36a0ebd8b274ffaaa884cfad27e5dcad311ac11d7f66b9a029d4061fd56037
+    .reviewcompass/specs/workflow-management/tasks.md: ffb82bfc040525cd255606ffcd93a8566eebc6346ce742d264efcd9b5187dca5
+    docs/notes/review-runs/2026-06-12-reopen-classification-parse-error-postwrite/model-result-summary.yaml: e222b397bdb3961ab9804917bf396ba244e37f4dfd83cf51dba3d8fa1731cf93
+    docs/notes/review-runs/2026-06-12-reopen-classification-parse-error-postwrite/parsed/claude-sonnet-4-6.round-1.yaml: 0b738aa5a126f652c8028c04b4eae492c35ca8b5bbeb9b29b101eef0121a82d2
+    docs/notes/review-runs/2026-06-12-reopen-classification-parse-error-postwrite/parsed/gemini-3.1-pro-preview.round-1.yaml: fed4a2b8ac45f3905c3a2db500dfcb6b744b5a5199d01528a551110882703fbf
+    docs/notes/review-runs/2026-06-12-reopen-classification-parse-error-postwrite/parsed/gpt-5.5.round-1.yaml: 6a21047706a595bf743a552ab7f885c95ad473a2971557e3eee4f85369fa60bf
+    docs/notes/review-runs/2026-06-12-reopen-classification-parse-error-postwrite/raw/claude-sonnet-4-6.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/2026-06-12-reopen-classification-parse-error-postwrite/raw/gemini-3.1-pro-preview.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/2026-06-12-reopen-classification-parse-error-postwrite/raw/gpt-5.5.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/2026-06-12-reopen-classification-parse-error-postwrite/review_summary.md: 10971c420f3424c786d6c0395e3c45d1904b4c3960297b239f8c445aa81dac6e
+    docs/notes/review-runs/2026-06-12-reopen-classification-parse-error-postwrite/rounds.yaml: 4e99e61d87db0252f75340da56a9b8c6812f12a999a841f0299bb094525c1742
+    docs/notes/review-runs/2026-06-12-reopen-classification-parse-error-postwrite/target-manifest.yaml: 5c4acda0eaef1e889f27c3f97f97a2343a34648d3fa4c97279aabf6b1e1bf2c6
+    docs/notes/review-runs/2026-06-12-reopen-classification-parse-error-postwrite/triage.yaml: 719004806a9d17a39da49af0db7173fccdfdd62ad8a9bf57a6bd9c08fb2cbffb
+    docs/notes/review-runs/2026-06-12-session-guide-variant-postwrite/model-result-summary.yaml: 57766982827d321e8f3085cc634d32b3783602771648e73dc818348d5a401f0e
+    docs/notes/review-runs/2026-06-12-session-guide-variant-postwrite/parsed/claude-sonnet-4-6.round-1.yaml: b5d5ebfcdaa9458c83d9b44c113fd7a12422e2838f841162fc8d1619f0890341
+    docs/notes/review-runs/2026-06-12-session-guide-variant-postwrite/parsed/gemini-3.1-pro-preview.round-1.yaml: bc1537a329af96d3a2220a71f321ad87a4960609be9f79b02244645ad110e6e2
+    docs/notes/review-runs/2026-06-12-session-guide-variant-postwrite/parsed/gpt-5.5.round-1.yaml: e83316c3f03d58d3a0c8f2e7712b606b3e3aa971c26b04031872a587f06cc026
+    docs/notes/review-runs/2026-06-12-session-guide-variant-postwrite/raw/claude-sonnet-4-6.round-1.txt: e8cb189bdf538ca812e3d93a2a42af02681d430f01793f444de1bc9873488cf2
+    docs/notes/review-runs/2026-06-12-session-guide-variant-postwrite/raw/gemini-3.1-pro-preview.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/2026-06-12-session-guide-variant-postwrite/raw/gpt-5.5.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/2026-06-12-session-guide-variant-postwrite/review_summary.md: 4a5ff82d20535579f66b25c213893c75053a112985619d1e0819ecbf89304433
+    docs/notes/review-runs/2026-06-12-session-guide-variant-postwrite/rounds.yaml: b66cf4a6c6bc4f651fed5f1e238829122f459e9b7e3f4c304706fa85d41c513f
+    docs/notes/review-runs/2026-06-12-session-guide-variant-postwrite/target-manifest.yaml: 7eff8abca67b9581939bf40031ae6ddcdacdd5e781bd9fe9c64c563a3850838f
+    docs/notes/review-runs/2026-06-12-session-guide-variant-postwrite/triage.yaml: 1d50c2d9fe4f26bcb5f48762bbbd7aa8d6f543e613fa29f368067316fccfd39a
+    docs/operations/SESSION_WORKFLOW_GUIDE.md: af7de0c27b1448edfe12c6ee2911e797a2b4d1d694a9f38e252f657f2cb771c1
+    docs/reviews/reopen-classification-2026-06-12-parse-error-failclosed.md: 74f23a284e1791f1b0931c39f27d92bee6673f3edca958ff525ab1bfe87c3036
+- verifier: gpt-5.5
+  target_files:
+  - .reviewcompass/specs/workflow-management/design.md
+  - .reviewcompass/specs/workflow-management/requirements.md
+  - .reviewcompass/specs/workflow-management/tasks.md
+  - docs/notes/review-runs/2026-06-12-reopen-classification-parse-error-postwrite/model-result-summary.yaml
+  - docs/notes/review-runs/2026-06-12-reopen-classification-parse-error-postwrite/parsed/claude-sonnet-4-6.round-1.yaml
+  - docs/notes/review-runs/2026-06-12-reopen-classification-parse-error-postwrite/parsed/gemini-3.1-pro-preview.round-1.yaml
+  - docs/notes/review-runs/2026-06-12-reopen-classification-parse-error-postwrite/parsed/gpt-5.5.round-1.yaml
+  - docs/notes/review-runs/2026-06-12-reopen-classification-parse-error-postwrite/raw/claude-sonnet-4-6.round-1.txt
+  - docs/notes/review-runs/2026-06-12-reopen-classification-parse-error-postwrite/raw/gemini-3.1-pro-preview.round-1.txt
+  - docs/notes/review-runs/2026-06-12-reopen-classification-parse-error-postwrite/raw/gpt-5.5.round-1.txt
+  - docs/notes/review-runs/2026-06-12-reopen-classification-parse-error-postwrite/review_summary.md
+  - docs/notes/review-runs/2026-06-12-reopen-classification-parse-error-postwrite/rounds.yaml
+  - docs/notes/review-runs/2026-06-12-reopen-classification-parse-error-postwrite/target-manifest.yaml
+  - docs/notes/review-runs/2026-06-12-reopen-classification-parse-error-postwrite/triage.yaml
+  - docs/notes/review-runs/2026-06-12-session-guide-variant-postwrite/model-result-summary.yaml
+  - docs/notes/review-runs/2026-06-12-session-guide-variant-postwrite/parsed/claude-sonnet-4-6.round-1.yaml
+  - docs/notes/review-runs/2026-06-12-session-guide-variant-postwrite/parsed/gemini-3.1-pro-preview.round-1.yaml
+  - docs/notes/review-runs/2026-06-12-session-guide-variant-postwrite/parsed/gpt-5.5.round-1.yaml
+  - docs/notes/review-runs/2026-06-12-session-guide-variant-postwrite/raw/claude-sonnet-4-6.round-1.txt
+  - docs/notes/review-runs/2026-06-12-session-guide-variant-postwrite/raw/gemini-3.1-pro-preview.round-1.txt
+  - docs/notes/review-runs/2026-06-12-session-guide-variant-postwrite/raw/gpt-5.5.round-1.txt
+  - docs/notes/review-runs/2026-06-12-session-guide-variant-postwrite/review_summary.md
+  - docs/notes/review-runs/2026-06-12-session-guide-variant-postwrite/rounds.yaml
+  - docs/notes/review-runs/2026-06-12-session-guide-variant-postwrite/target-manifest.yaml
+  - docs/notes/review-runs/2026-06-12-session-guide-variant-postwrite/triage.yaml
+  - docs/operations/SESSION_WORKFLOW_GUIDE.md
+  - docs/reviews/reopen-classification-2026-06-12-parse-error-failclosed.md
+  target_sha256:
+    .reviewcompass/specs/workflow-management/design.md: 5c4567295d906372685e991e64334481350835fc768e6c4c752636210b9c2313
+    .reviewcompass/specs/workflow-management/requirements.md: 5a36a0ebd8b274ffaaa884cfad27e5dcad311ac11d7f66b9a029d4061fd56037
+    .reviewcompass/specs/workflow-management/tasks.md: ffb82bfc040525cd255606ffcd93a8566eebc6346ce742d264efcd9b5187dca5
+    docs/notes/review-runs/2026-06-12-reopen-classification-parse-error-postwrite/model-result-summary.yaml: e222b397bdb3961ab9804917bf396ba244e37f4dfd83cf51dba3d8fa1731cf93
+    docs/notes/review-runs/2026-06-12-reopen-classification-parse-error-postwrite/parsed/claude-sonnet-4-6.round-1.yaml: 0b738aa5a126f652c8028c04b4eae492c35ca8b5bbeb9b29b101eef0121a82d2
+    docs/notes/review-runs/2026-06-12-reopen-classification-parse-error-postwrite/parsed/gemini-3.1-pro-preview.round-1.yaml: fed4a2b8ac45f3905c3a2db500dfcb6b744b5a5199d01528a551110882703fbf
+    docs/notes/review-runs/2026-06-12-reopen-classification-parse-error-postwrite/parsed/gpt-5.5.round-1.yaml: 6a21047706a595bf743a552ab7f885c95ad473a2971557e3eee4f85369fa60bf
+    docs/notes/review-runs/2026-06-12-reopen-classification-parse-error-postwrite/raw/claude-sonnet-4-6.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/2026-06-12-reopen-classification-parse-error-postwrite/raw/gemini-3.1-pro-preview.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/2026-06-12-reopen-classification-parse-error-postwrite/raw/gpt-5.5.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/2026-06-12-reopen-classification-parse-error-postwrite/review_summary.md: 10971c420f3424c786d6c0395e3c45d1904b4c3960297b239f8c445aa81dac6e
+    docs/notes/review-runs/2026-06-12-reopen-classification-parse-error-postwrite/rounds.yaml: 4e99e61d87db0252f75340da56a9b8c6812f12a999a841f0299bb094525c1742
+    docs/notes/review-runs/2026-06-12-reopen-classification-parse-error-postwrite/target-manifest.yaml: 5c4acda0eaef1e889f27c3f97f97a2343a34648d3fa4c97279aabf6b1e1bf2c6
+    docs/notes/review-runs/2026-06-12-reopen-classification-parse-error-postwrite/triage.yaml: 719004806a9d17a39da49af0db7173fccdfdd62ad8a9bf57a6bd9c08fb2cbffb
+    docs/notes/review-runs/2026-06-12-session-guide-variant-postwrite/model-result-summary.yaml: 57766982827d321e8f3085cc634d32b3783602771648e73dc818348d5a401f0e
+    docs/notes/review-runs/2026-06-12-session-guide-variant-postwrite/parsed/claude-sonnet-4-6.round-1.yaml: b5d5ebfcdaa9458c83d9b44c113fd7a12422e2838f841162fc8d1619f0890341
+    docs/notes/review-runs/2026-06-12-session-guide-variant-postwrite/parsed/gemini-3.1-pro-preview.round-1.yaml: bc1537a329af96d3a2220a71f321ad87a4960609be9f79b02244645ad110e6e2
+    docs/notes/review-runs/2026-06-12-session-guide-variant-postwrite/parsed/gpt-5.5.round-1.yaml: e83316c3f03d58d3a0c8f2e7712b606b3e3aa971c26b04031872a587f06cc026
+    docs/notes/review-runs/2026-06-12-session-guide-variant-postwrite/raw/claude-sonnet-4-6.round-1.txt: e8cb189bdf538ca812e3d93a2a42af02681d430f01793f444de1bc9873488cf2
+    docs/notes/review-runs/2026-06-12-session-guide-variant-postwrite/raw/gemini-3.1-pro-preview.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/2026-06-12-session-guide-variant-postwrite/raw/gpt-5.5.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/2026-06-12-session-guide-variant-postwrite/review_summary.md: 4a5ff82d20535579f66b25c213893c75053a112985619d1e0819ecbf89304433
+    docs/notes/review-runs/2026-06-12-session-guide-variant-postwrite/rounds.yaml: b66cf4a6c6bc4f651fed5f1e238829122f459e9b7e3f4c304706fa85d41c513f
+    docs/notes/review-runs/2026-06-12-session-guide-variant-postwrite/target-manifest.yaml: 7eff8abca67b9581939bf40031ae6ddcdacdd5e781bd9fe9c64c563a3850838f
+    docs/notes/review-runs/2026-06-12-session-guide-variant-postwrite/triage.yaml: 1d50c2d9fe4f26bcb5f48762bbbd7aa8d6f543e613fa29f368067316fccfd39a
+    docs/operations/SESSION_WORKFLOW_GUIDE.md: af7de0c27b1448edfe12c6ee2911e797a2b4d1d694a9f38e252f657f2cb771c1
+    docs/reviews/reopen-classification-2026-06-12-parse-error-failclosed.md: 74f23a284e1791f1b0931c39f27d92bee6673f3edca958ff525ab1bfe87c3036
+- verifier: gemini-3.1-pro-preview
+  target_files:
+  - .reviewcompass/specs/workflow-management/design.md
+  - .reviewcompass/specs/workflow-management/requirements.md
+  - .reviewcompass/specs/workflow-management/tasks.md
+  - docs/notes/review-runs/2026-06-12-reopen-classification-parse-error-postwrite/model-result-summary.yaml
+  - docs/notes/review-runs/2026-06-12-reopen-classification-parse-error-postwrite/parsed/claude-sonnet-4-6.round-1.yaml
+  - docs/notes/review-runs/2026-06-12-reopen-classification-parse-error-postwrite/parsed/gemini-3.1-pro-preview.round-1.yaml
+  - docs/notes/review-runs/2026-06-12-reopen-classification-parse-error-postwrite/parsed/gpt-5.5.round-1.yaml
+  - docs/notes/review-runs/2026-06-12-reopen-classification-parse-error-postwrite/raw/claude-sonnet-4-6.round-1.txt
+  - docs/notes/review-runs/2026-06-12-reopen-classification-parse-error-postwrite/raw/gemini-3.1-pro-preview.round-1.txt
+  - docs/notes/review-runs/2026-06-12-reopen-classification-parse-error-postwrite/raw/gpt-5.5.round-1.txt
+  - docs/notes/review-runs/2026-06-12-reopen-classification-parse-error-postwrite/review_summary.md
+  - docs/notes/review-runs/2026-06-12-reopen-classification-parse-error-postwrite/rounds.yaml
+  - docs/notes/review-runs/2026-06-12-reopen-classification-parse-error-postwrite/target-manifest.yaml
+  - docs/notes/review-runs/2026-06-12-reopen-classification-parse-error-postwrite/triage.yaml
+  - docs/notes/review-runs/2026-06-12-session-guide-variant-postwrite/model-result-summary.yaml
+  - docs/notes/review-runs/2026-06-12-session-guide-variant-postwrite/parsed/claude-sonnet-4-6.round-1.yaml
+  - docs/notes/review-runs/2026-06-12-session-guide-variant-postwrite/parsed/gemini-3.1-pro-preview.round-1.yaml
+  - docs/notes/review-runs/2026-06-12-session-guide-variant-postwrite/parsed/gpt-5.5.round-1.yaml
+  - docs/notes/review-runs/2026-06-12-session-guide-variant-postwrite/raw/claude-sonnet-4-6.round-1.txt
+  - docs/notes/review-runs/2026-06-12-session-guide-variant-postwrite/raw/gemini-3.1-pro-preview.round-1.txt
+  - docs/notes/review-runs/2026-06-12-session-guide-variant-postwrite/raw/gpt-5.5.round-1.txt
+  - docs/notes/review-runs/2026-06-12-session-guide-variant-postwrite/review_summary.md
+  - docs/notes/review-runs/2026-06-12-session-guide-variant-postwrite/rounds.yaml
+  - docs/notes/review-runs/2026-06-12-session-guide-variant-postwrite/target-manifest.yaml
+  - docs/notes/review-runs/2026-06-12-session-guide-variant-postwrite/triage.yaml
+  - docs/operations/SESSION_WORKFLOW_GUIDE.md
+  - docs/reviews/reopen-classification-2026-06-12-parse-error-failclosed.md
+  target_sha256:
+    .reviewcompass/specs/workflow-management/design.md: 5c4567295d906372685e991e64334481350835fc768e6c4c752636210b9c2313
+    .reviewcompass/specs/workflow-management/requirements.md: 5a36a0ebd8b274ffaaa884cfad27e5dcad311ac11d7f66b9a029d4061fd56037
+    .reviewcompass/specs/workflow-management/tasks.md: ffb82bfc040525cd255606ffcd93a8566eebc6346ce742d264efcd9b5187dca5
+    docs/notes/review-runs/2026-06-12-reopen-classification-parse-error-postwrite/model-result-summary.yaml: e222b397bdb3961ab9804917bf396ba244e37f4dfd83cf51dba3d8fa1731cf93
+    docs/notes/review-runs/2026-06-12-reopen-classification-parse-error-postwrite/parsed/claude-sonnet-4-6.round-1.yaml: 0b738aa5a126f652c8028c04b4eae492c35ca8b5bbeb9b29b101eef0121a82d2
+    docs/notes/review-runs/2026-06-12-reopen-classification-parse-error-postwrite/parsed/gemini-3.1-pro-preview.round-1.yaml: fed4a2b8ac45f3905c3a2db500dfcb6b744b5a5199d01528a551110882703fbf
+    docs/notes/review-runs/2026-06-12-reopen-classification-parse-error-postwrite/parsed/gpt-5.5.round-1.yaml: 6a21047706a595bf743a552ab7f885c95ad473a2971557e3eee4f85369fa60bf
+    docs/notes/review-runs/2026-06-12-reopen-classification-parse-error-postwrite/raw/claude-sonnet-4-6.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/2026-06-12-reopen-classification-parse-error-postwrite/raw/gemini-3.1-pro-preview.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/2026-06-12-reopen-classification-parse-error-postwrite/raw/gpt-5.5.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/2026-06-12-reopen-classification-parse-error-postwrite/review_summary.md: 10971c420f3424c786d6c0395e3c45d1904b4c3960297b239f8c445aa81dac6e
+    docs/notes/review-runs/2026-06-12-reopen-classification-parse-error-postwrite/rounds.yaml: 4e99e61d87db0252f75340da56a9b8c6812f12a999a841f0299bb094525c1742
+    docs/notes/review-runs/2026-06-12-reopen-classification-parse-error-postwrite/target-manifest.yaml: 5c4acda0eaef1e889f27c3f97f97a2343a34648d3fa4c97279aabf6b1e1bf2c6
+    docs/notes/review-runs/2026-06-12-reopen-classification-parse-error-postwrite/triage.yaml: 719004806a9d17a39da49af0db7173fccdfdd62ad8a9bf57a6bd9c08fb2cbffb
+    docs/notes/review-runs/2026-06-12-session-guide-variant-postwrite/model-result-summary.yaml: 57766982827d321e8f3085cc634d32b3783602771648e73dc818348d5a401f0e
+    docs/notes/review-runs/2026-06-12-session-guide-variant-postwrite/parsed/claude-sonnet-4-6.round-1.yaml: b5d5ebfcdaa9458c83d9b44c113fd7a12422e2838f841162fc8d1619f0890341
+    docs/notes/review-runs/2026-06-12-session-guide-variant-postwrite/parsed/gemini-3.1-pro-preview.round-1.yaml: bc1537a329af96d3a2220a71f321ad87a4960609be9f79b02244645ad110e6e2
+    docs/notes/review-runs/2026-06-12-session-guide-variant-postwrite/parsed/gpt-5.5.round-1.yaml: e83316c3f03d58d3a0c8f2e7712b606b3e3aa971c26b04031872a587f06cc026
+    docs/notes/review-runs/2026-06-12-session-guide-variant-postwrite/raw/claude-sonnet-4-6.round-1.txt: e8cb189bdf538ca812e3d93a2a42af02681d430f01793f444de1bc9873488cf2
+    docs/notes/review-runs/2026-06-12-session-guide-variant-postwrite/raw/gemini-3.1-pro-preview.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/2026-06-12-session-guide-variant-postwrite/raw/gpt-5.5.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/2026-06-12-session-guide-variant-postwrite/review_summary.md: 4a5ff82d20535579f66b25c213893c75053a112985619d1e0819ecbf89304433
+    docs/notes/review-runs/2026-06-12-session-guide-variant-postwrite/rounds.yaml: b66cf4a6c6bc4f651fed5f1e238829122f459e9b7e3f4c304706fa85d41c513f
+    docs/notes/review-runs/2026-06-12-session-guide-variant-postwrite/target-manifest.yaml: 7eff8abca67b9581939bf40031ae6ddcdacdd5e781bd9fe9c64c563a3850838f
+    docs/notes/review-runs/2026-06-12-session-guide-variant-postwrite/triage.yaml: 1d50c2d9fe4f26bcb5f48762bbbd7aa8d6f543e613fa29f368067316fccfd39a
+    docs/operations/SESSION_WORKFLOW_GUIDE.md: af7de0c27b1448edfe12c6ee2911e797a2b4d1d694a9f38e252f657f2cb771c1
+    docs/reviews/reopen-classification-2026-06-12-parse-error-failclosed.md: 74f23a284e1791f1b0931c39f27d92bee6673f3edca958ff525ab1bfe87c3036
+review_run:
+  path: docs/notes/review-runs/2026-06-12-reopen-classification-parse-error-postwrite
+  summary_path: docs/notes/review-runs/2026-06-12-reopen-classification-parse-error-postwrite/model-result-summary.yaml
+notes: Generated template; verify target_files cover current post-write targets before
+  use.

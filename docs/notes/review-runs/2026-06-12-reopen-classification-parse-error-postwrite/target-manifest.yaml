@@ -1,0 +1,4 @@
+run_id: 2026-06-12-reopen-classification-parse-error-postwrite
+target_files:
+- path: docs/reviews/reopen-classification-2026-06-12-parse-error-failclosed.md
+  sha256: 74f23a284e1791f1b0931c39f27d92bee6673f3edca958ff525ab1bfe87c3036

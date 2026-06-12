@@ -1,0 +1,4 @@
+run_id: 2026-06-12-session-guide-variant-postwrite
+target_files:
+- path: docs/operations/SESSION_WORKFLOW_GUIDE.md
+  sha256: af7de0c27b1448edfe12c6ee2911e797a2b4d1d694a9f38e252f657f2cb771c1

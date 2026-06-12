@@ -1,0 +1,30 @@
+process_id: maintenance
+title: Exclude tool's own precheck log from post-write targets
+started_at: '2026-06-12T00:00:00+09:00'
+status: completed
+trigger: 対象アプリでは検査ツールの実行ログ（docs/logs/workflow-precheck.log）が post-write 検証対象に拾われ、 ツールを動かしただけで作業が止まる（2026-06-12 ステップ 5 実験で発見、TODO
+  義務 2、conformance 評価 MLE-GAP-006）。現状はガイド §8 の gitignore 追記で回避。利用者決定（2026-06-12「案 a」）により根本対応を実施。
+required_action: continue_maintenance
+mainline_blocked_by: なし（全 workflow_state は completed。利用者指示による小規模改修の side track）
+side_track_scope:
+- is_post_write_verification_target から、ツール自身の実行ログ（DEFAULT_LOG_PATH＝docs/logs/workflow-precheck.log の正確な 1 パス）を除外する
+- docs/logs/ 配下の他ファイル（autonomous-parallel の計画記録等）は対象のまま維持する（既存テストの対象一覧で担保）
+- 規律文書の変更は不要（discipline_post_write_verification.md の対象定義は「正本文書」であり、実行ログは 本来対象外。本改修は実装を規律の意図に合わせるもの）
+allowed_scope:
+- 対象判定関数の除外 1 件の実装とテスト
+allowed_files:
+- tools/check-workflow-action.py
+- tests/tools/test_check_workflow_action.py
+- stages/in-progress/maintenance-2026-06-12-postwrite-log-exclusion.yaml
+- stages/completed/maintenance-2026-06-12-postwrite-log-exclusion.yaml
+out_of_scope_note: 初期設定ガイド §8 の gitignore 手順の扱い（残すか簡素化するか）と、effective-prompts/ の生成物運用は、利用者が後から予定している関連議論で扱う。本改修では触れない。
+completion_conditions:
+- 新規テスト（実行ログが post-write 対象に含まれないこと、実行ログ単独の変更では post-write 判定にならないこと）が 追加され、改修前に失敗・改修後に通過する
+- 既存の対象一覧テスト（docs/logs/autonomous-parallel/ が対象のまま）を含む全テストが通る
+- 完了時に本ファイルを stages/completed/ へ移す
+completed_at: '2026-06-12T00:00:00+09:00'
+completed_steps:
+- 失敗テスト 2 件を追加（実行ログが post-write 対象に含まれない／ログ単独変更で post-write 判定にならない）、改修前の失敗を確認（TDD テスト先行）
+- is_post_write_verification_target へ DEFAULT_LOG_PATH（docs/logs/workflow-precheck.log）の正確な 1 パス除外を実装
+- 新テスト 2 件通過、既存の対象一覧テスト（docs/logs/autonomous-parallel/ は対象のまま）を含む tools 157 件・全群 873 件で回帰なし
+completion_note: 初期設定ガイド §8 の gitignore 手順の扱いと effective-prompts/ の生成物運用は、利用者が後から予定している関連議論で扱う（out_of_scope_note のとおり本改修では未変更）。

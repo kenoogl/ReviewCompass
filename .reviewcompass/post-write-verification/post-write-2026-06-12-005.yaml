@@ -1,0 +1,120 @@
+status: completed
+target_files:
+- docs/notes/review-runs/2026-06-12-session-guide-variant-postwrite/model-result-summary.yaml
+- docs/notes/review-runs/2026-06-12-session-guide-variant-postwrite/parsed/claude-sonnet-4-6.round-1.yaml
+- docs/notes/review-runs/2026-06-12-session-guide-variant-postwrite/parsed/gemini-3.1-pro-preview.round-1.yaml
+- docs/notes/review-runs/2026-06-12-session-guide-variant-postwrite/parsed/gpt-5.5.round-1.yaml
+- docs/notes/review-runs/2026-06-12-session-guide-variant-postwrite/raw/claude-sonnet-4-6.round-1.txt
+- docs/notes/review-runs/2026-06-12-session-guide-variant-postwrite/raw/gemini-3.1-pro-preview.round-1.txt
+- docs/notes/review-runs/2026-06-12-session-guide-variant-postwrite/raw/gpt-5.5.round-1.txt
+- docs/notes/review-runs/2026-06-12-session-guide-variant-postwrite/review_summary.md
+- docs/notes/review-runs/2026-06-12-session-guide-variant-postwrite/rounds.yaml
+- docs/notes/review-runs/2026-06-12-session-guide-variant-postwrite/target-manifest.yaml
+- docs/notes/review-runs/2026-06-12-session-guide-variant-postwrite/triage.yaml
+- docs/operations/SESSION_WORKFLOW_GUIDE.md
+target_sha256:
+  docs/notes/review-runs/2026-06-12-session-guide-variant-postwrite/model-result-summary.yaml: 57766982827d321e8f3085cc634d32b3783602771648e73dc818348d5a401f0e
+  docs/notes/review-runs/2026-06-12-session-guide-variant-postwrite/parsed/claude-sonnet-4-6.round-1.yaml: b5d5ebfcdaa9458c83d9b44c113fd7a12422e2838f841162fc8d1619f0890341
+  docs/notes/review-runs/2026-06-12-session-guide-variant-postwrite/parsed/gemini-3.1-pro-preview.round-1.yaml: bc1537a329af96d3a2220a71f321ad87a4960609be9f79b02244645ad110e6e2
+  docs/notes/review-runs/2026-06-12-session-guide-variant-postwrite/parsed/gpt-5.5.round-1.yaml: e83316c3f03d58d3a0c8f2e7712b606b3e3aa971c26b04031872a587f06cc026
+  docs/notes/review-runs/2026-06-12-session-guide-variant-postwrite/raw/claude-sonnet-4-6.round-1.txt: e8cb189bdf538ca812e3d93a2a42af02681d430f01793f444de1bc9873488cf2
+  docs/notes/review-runs/2026-06-12-session-guide-variant-postwrite/raw/gemini-3.1-pro-preview.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+  docs/notes/review-runs/2026-06-12-session-guide-variant-postwrite/raw/gpt-5.5.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+  docs/notes/review-runs/2026-06-12-session-guide-variant-postwrite/review_summary.md: 4a5ff82d20535579f66b25c213893c75053a112985619d1e0819ecbf89304433
+  docs/notes/review-runs/2026-06-12-session-guide-variant-postwrite/rounds.yaml: b66cf4a6c6bc4f651fed5f1e238829122f459e9b7e3f4c304706fa85d41c513f
+  docs/notes/review-runs/2026-06-12-session-guide-variant-postwrite/target-manifest.yaml: 7eff8abca67b9581939bf40031ae6ddcdacdd5e781bd9fe9c64c563a3850838f
+  docs/notes/review-runs/2026-06-12-session-guide-variant-postwrite/triage.yaml: 1d50c2d9fe4f26bcb5f48762bbbd7aa8d6f543e613fa29f368067316fccfd39a
+  docs/operations/SESSION_WORKFLOW_GUIDE.md: af7de0c27b1448edfe12c6ee2911e797a2b4d1d694a9f38e252f657f2cb771c1
+required_verifiers: &id001
+- claude-sonnet-4-6
+- gpt-5.5
+- gemini-3.1-pro-preview
+completed_verifiers: *id001
+unresolved_substantive_findings: 0
+verifications:
+- verifier: claude-sonnet-4-6
+  target_files:
+  - docs/notes/review-runs/2026-06-12-session-guide-variant-postwrite/model-result-summary.yaml
+  - docs/notes/review-runs/2026-06-12-session-guide-variant-postwrite/parsed/claude-sonnet-4-6.round-1.yaml
+  - docs/notes/review-runs/2026-06-12-session-guide-variant-postwrite/parsed/gemini-3.1-pro-preview.round-1.yaml
+  - docs/notes/review-runs/2026-06-12-session-guide-variant-postwrite/parsed/gpt-5.5.round-1.yaml
+  - docs/notes/review-runs/2026-06-12-session-guide-variant-postwrite/raw/claude-sonnet-4-6.round-1.txt
+  - docs/notes/review-runs/2026-06-12-session-guide-variant-postwrite/raw/gemini-3.1-pro-preview.round-1.txt
+  - docs/notes/review-runs/2026-06-12-session-guide-variant-postwrite/raw/gpt-5.5.round-1.txt
+  - docs/notes/review-runs/2026-06-12-session-guide-variant-postwrite/review_summary.md
+  - docs/notes/review-runs/2026-06-12-session-guide-variant-postwrite/rounds.yaml
+  - docs/notes/review-runs/2026-06-12-session-guide-variant-postwrite/target-manifest.yaml
+  - docs/notes/review-runs/2026-06-12-session-guide-variant-postwrite/triage.yaml
+  - docs/operations/SESSION_WORKFLOW_GUIDE.md
+  target_sha256:
+    docs/notes/review-runs/2026-06-12-session-guide-variant-postwrite/model-result-summary.yaml: 57766982827d321e8f3085cc634d32b3783602771648e73dc818348d5a401f0e
+    docs/notes/review-runs/2026-06-12-session-guide-variant-postwrite/parsed/claude-sonnet-4-6.round-1.yaml: b5d5ebfcdaa9458c83d9b44c113fd7a12422e2838f841162fc8d1619f0890341
+    docs/notes/review-runs/2026-06-12-session-guide-variant-postwrite/parsed/gemini-3.1-pro-preview.round-1.yaml: bc1537a329af96d3a2220a71f321ad87a4960609be9f79b02244645ad110e6e2
+    docs/notes/review-runs/2026-06-12-session-guide-variant-postwrite/parsed/gpt-5.5.round-1.yaml: e83316c3f03d58d3a0c8f2e7712b606b3e3aa971c26b04031872a587f06cc026
+    docs/notes/review-runs/2026-06-12-session-guide-variant-postwrite/raw/claude-sonnet-4-6.round-1.txt: e8cb189bdf538ca812e3d93a2a42af02681d430f01793f444de1bc9873488cf2
+    docs/notes/review-runs/2026-06-12-session-guide-variant-postwrite/raw/gemini-3.1-pro-preview.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/2026-06-12-session-guide-variant-postwrite/raw/gpt-5.5.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/2026-06-12-session-guide-variant-postwrite/review_summary.md: 4a5ff82d20535579f66b25c213893c75053a112985619d1e0819ecbf89304433
+    docs/notes/review-runs/2026-06-12-session-guide-variant-postwrite/rounds.yaml: b66cf4a6c6bc4f651fed5f1e238829122f459e9b7e3f4c304706fa85d41c513f
+    docs/notes/review-runs/2026-06-12-session-guide-variant-postwrite/target-manifest.yaml: 7eff8abca67b9581939bf40031ae6ddcdacdd5e781bd9fe9c64c563a3850838f
+    docs/notes/review-runs/2026-06-12-session-guide-variant-postwrite/triage.yaml: 1d50c2d9fe4f26bcb5f48762bbbd7aa8d6f543e613fa29f368067316fccfd39a
+    docs/operations/SESSION_WORKFLOW_GUIDE.md: af7de0c27b1448edfe12c6ee2911e797a2b4d1d694a9f38e252f657f2cb771c1
+- verifier: gpt-5.5
+  target_files:
+  - docs/notes/review-runs/2026-06-12-session-guide-variant-postwrite/model-result-summary.yaml
+  - docs/notes/review-runs/2026-06-12-session-guide-variant-postwrite/parsed/claude-sonnet-4-6.round-1.yaml
+  - docs/notes/review-runs/2026-06-12-session-guide-variant-postwrite/parsed/gemini-3.1-pro-preview.round-1.yaml
+  - docs/notes/review-runs/2026-06-12-session-guide-variant-postwrite/parsed/gpt-5.5.round-1.yaml
+  - docs/notes/review-runs/2026-06-12-session-guide-variant-postwrite/raw/claude-sonnet-4-6.round-1.txt
+  - docs/notes/review-runs/2026-06-12-session-guide-variant-postwrite/raw/gemini-3.1-pro-preview.round-1.txt
+  - docs/notes/review-runs/2026-06-12-session-guide-variant-postwrite/raw/gpt-5.5.round-1.txt
+  - docs/notes/review-runs/2026-06-12-session-guide-variant-postwrite/review_summary.md
+  - docs/notes/review-runs/2026-06-12-session-guide-variant-postwrite/rounds.yaml
+  - docs/notes/review-runs/2026-06-12-session-guide-variant-postwrite/target-manifest.yaml
+  - docs/notes/review-runs/2026-06-12-session-guide-variant-postwrite/triage.yaml
+  - docs/operations/SESSION_WORKFLOW_GUIDE.md
+  target_sha256:
+    docs/notes/review-runs/2026-06-12-session-guide-variant-postwrite/model-result-summary.yaml: 57766982827d321e8f3085cc634d32b3783602771648e73dc818348d5a401f0e
+    docs/notes/review-runs/2026-06-12-session-guide-variant-postwrite/parsed/claude-sonnet-4-6.round-1.yaml: b5d5ebfcdaa9458c83d9b44c113fd7a12422e2838f841162fc8d1619f0890341
+    docs/notes/review-runs/2026-06-12-session-guide-variant-postwrite/parsed/gemini-3.1-pro-preview.round-1.yaml: bc1537a329af96d3a2220a71f321ad87a4960609be9f79b02244645ad110e6e2
+    docs/notes/review-runs/2026-06-12-session-guide-variant-postwrite/parsed/gpt-5.5.round-1.yaml: e83316c3f03d58d3a0c8f2e7712b606b3e3aa971c26b04031872a587f06cc026
+    docs/notes/review-runs/2026-06-12-session-guide-variant-postwrite/raw/claude-sonnet-4-6.round-1.txt: e8cb189bdf538ca812e3d93a2a42af02681d430f01793f444de1bc9873488cf2
+    docs/notes/review-runs/2026-06-12-session-guide-variant-postwrite/raw/gemini-3.1-pro-preview.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/2026-06-12-session-guide-variant-postwrite/raw/gpt-5.5.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/2026-06-12-session-guide-variant-postwrite/review_summary.md: 4a5ff82d20535579f66b25c213893c75053a112985619d1e0819ecbf89304433
+    docs/notes/review-runs/2026-06-12-session-guide-variant-postwrite/rounds.yaml: b66cf4a6c6bc4f651fed5f1e238829122f459e9b7e3f4c304706fa85d41c513f
+    docs/notes/review-runs/2026-06-12-session-guide-variant-postwrite/target-manifest.yaml: 7eff8abca67b9581939bf40031ae6ddcdacdd5e781bd9fe9c64c563a3850838f
+    docs/notes/review-runs/2026-06-12-session-guide-variant-postwrite/triage.yaml: 1d50c2d9fe4f26bcb5f48762bbbd7aa8d6f543e613fa29f368067316fccfd39a
+    docs/operations/SESSION_WORKFLOW_GUIDE.md: af7de0c27b1448edfe12c6ee2911e797a2b4d1d694a9f38e252f657f2cb771c1
+- verifier: gemini-3.1-pro-preview
+  target_files:
+  - docs/notes/review-runs/2026-06-12-session-guide-variant-postwrite/model-result-summary.yaml
+  - docs/notes/review-runs/2026-06-12-session-guide-variant-postwrite/parsed/claude-sonnet-4-6.round-1.yaml
+  - docs/notes/review-runs/2026-06-12-session-guide-variant-postwrite/parsed/gemini-3.1-pro-preview.round-1.yaml
+  - docs/notes/review-runs/2026-06-12-session-guide-variant-postwrite/parsed/gpt-5.5.round-1.yaml
+  - docs/notes/review-runs/2026-06-12-session-guide-variant-postwrite/raw/claude-sonnet-4-6.round-1.txt
+  - docs/notes/review-runs/2026-06-12-session-guide-variant-postwrite/raw/gemini-3.1-pro-preview.round-1.txt
+  - docs/notes/review-runs/2026-06-12-session-guide-variant-postwrite/raw/gpt-5.5.round-1.txt
+  - docs/notes/review-runs/2026-06-12-session-guide-variant-postwrite/review_summary.md
+  - docs/notes/review-runs/2026-06-12-session-guide-variant-postwrite/rounds.yaml
+  - docs/notes/review-runs/2026-06-12-session-guide-variant-postwrite/target-manifest.yaml
+  - docs/notes/review-runs/2026-06-12-session-guide-variant-postwrite/triage.yaml
+  - docs/operations/SESSION_WORKFLOW_GUIDE.md
+  target_sha256:
+    docs/notes/review-runs/2026-06-12-session-guide-variant-postwrite/model-result-summary.yaml: 57766982827d321e8f3085cc634d32b3783602771648e73dc818348d5a401f0e
+    docs/notes/review-runs/2026-06-12-session-guide-variant-postwrite/parsed/claude-sonnet-4-6.round-1.yaml: b5d5ebfcdaa9458c83d9b44c113fd7a12422e2838f841162fc8d1619f0890341
+    docs/notes/review-runs/2026-06-12-session-guide-variant-postwrite/parsed/gemini-3.1-pro-preview.round-1.yaml: bc1537a329af96d3a2220a71f321ad87a4960609be9f79b02244645ad110e6e2
+    docs/notes/review-runs/2026-06-12-session-guide-variant-postwrite/parsed/gpt-5.5.round-1.yaml: e83316c3f03d58d3a0c8f2e7712b606b3e3aa971c26b04031872a587f06cc026
+    docs/notes/review-runs/2026-06-12-session-guide-variant-postwrite/raw/claude-sonnet-4-6.round-1.txt: e8cb189bdf538ca812e3d93a2a42af02681d430f01793f444de1bc9873488cf2
+    docs/notes/review-runs/2026-06-12-session-guide-variant-postwrite/raw/gemini-3.1-pro-preview.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/2026-06-12-session-guide-variant-postwrite/raw/gpt-5.5.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/2026-06-12-session-guide-variant-postwrite/review_summary.md: 4a5ff82d20535579f66b25c213893c75053a112985619d1e0819ecbf89304433
+    docs/notes/review-runs/2026-06-12-session-guide-variant-postwrite/rounds.yaml: b66cf4a6c6bc4f651fed5f1e238829122f459e9b7e3f4c304706fa85d41c513f
+    docs/notes/review-runs/2026-06-12-session-guide-variant-postwrite/target-manifest.yaml: 7eff8abca67b9581939bf40031ae6ddcdacdd5e781bd9fe9c64c563a3850838f
+    docs/notes/review-runs/2026-06-12-session-guide-variant-postwrite/triage.yaml: 1d50c2d9fe4f26bcb5f48762bbbd7aa8d6f543e613fa29f368067316fccfd39a
+    docs/operations/SESSION_WORKFLOW_GUIDE.md: af7de0c27b1448edfe12c6ee2911e797a2b4d1d694a9f38e252f657f2cb771c1
+review_run:
+  path: docs/notes/review-runs/2026-06-12-session-guide-variant-postwrite
+  summary_path: docs/notes/review-runs/2026-06-12-session-guide-variant-postwrite/model-result-summary.yaml
+notes: Generated template; verify target_files cover current post-write targets before
+  use.

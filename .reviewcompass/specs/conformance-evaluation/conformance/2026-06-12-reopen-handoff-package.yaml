@@ -34,6 +34,19 @@ human_decisions:
     decided_by: user
     subject: feature-dependency.yaml の features 列挙（現状 1 機能分のみ）の扱い
     decision: 承認済み分割提案書（stages/feature-partitioning/2026-05-24-proposal.md）の依存をそのまま転記し、7 機能分を実体化する。これにより新設の整合検査が全機能を覆う。
+  - decision_id: MLE-DEC-004
+    date: 2026-06-12
+    decided_by: user
+    subject: MLE-HANDOFF-004（操縦 LLM 別 variant 既定の evaluation 仕様への昇格要否）
+    decision: 案 a を採用。evaluation 仕様へは昇格せず、docs/operations/SESSION_WORKFLOW_GUIDE.md §3.3 (a-3) を独立性原則と既定 variant 選択規則の正本とする（利用者発言「案 a」）。仕様への昇格は実アプリ pilot 後に再検討する。
+    resolves:
+      - package: MLE-HANDOFF-004
+        note: reopen は実施しない（needs_human_decision の解消）。
+  - decision_id: MLE-DEC-005
+    date: 2026-06-12
+    decided_by: user
+    subject: FUP-2026-06-12-001（feature-dependency.yaml パース不能の遮断分離）の実施判断
+    decision: 案 b を採用。パース不能（ファイルはあるが YAML として読めない）を立ち上げ案内（OK）から遮断（DEVIATION、fail-closed）へ分離する根本対策を実施する。利用者発言「私の判断がまちがっていた。コストはかかるが案ｂが根本対策と考える」（2026-06-12。triad-review r2 F4 の案 a 決定を利用者自身が改めたもの）。仕様 3 文書（requirements 受入 8・design §7・tasks T-004）の意味変更を伴うため、workflow-management の reopen 手続きで実施し、実装は仕様確定後に TDD で行う。
 
 packages:
   - package_id: MLE-HANDOFF-001

@@ -242,6 +242,41 @@ variant が未確定、または role 割当が曖昧な場合は review-run を
 - 作業ノイズは本線 repo に取り込まない。作業ログ、一時メモ、途中のテスト出力、失敗パッチ案は原則としてサブ worktree 側に閉じる
 - 本線へ戻す標準単位は、パッチ、テスト結果サマリ、未解決事項の 3 点とする
 
+<a id="3.3-a-3"></a>
+
+##### (a-3) 操縦 LLM 別の API 既定 variant と独立性原則（本節を正本とする）
+
+セッションを操縦（起草・修正）する LLM と、その成果物を検証する LLM の系列を分離する。
+自己レビューによる独立性低下を防ぐための原則であり、利用者承認済み
+（設計記録 `docs/notes/2026-06-10-deployment-multi-llm-entry-design.md` §3.6、2026-06-11 個別承認）。
+本節がこの原則と既定 variant 選択規則の正本である（仕様への昇格は実アプリ pilot 後に再検討、
+MLE-DEC-004、2026-06-12 利用者決定）。
+
+**独立性の原則**：
+
+1. 単独検証役（1 体での post-write 検証など）は、操縦 LLM と別系列を必須とする
+2. 3 役構成の adversarial（反証役）と judgment（判定役）は、操縦 LLM と別系列を必須とする
+3. 3 役構成の primary（検出役）は、操縦 LLM と同系列を許容する（最終判定を持たず、
+   残り 2 役の独立で全体の独立性が保たれるため）
+4. proxy_model（人の判断の代行）は、操縦 LLM と別系列を必須とする
+
+**操縦 LLM 別の既定 variant**（実体は `config/api-settings.yaml`）：
+
+- **Claude Code 操縦時**：接尾辞なしの `*_independent_3way` 系
+  （post_write_verification／yaml_audit／implementation_review の 3 用途。
+  primary=anthropic/claude-sonnet-4-6、adversarial=openai/gpt-5.5、
+  judgment=gemini/gemini-3.1-pro-preview）
+- **Codex CLI 操縦時**：`*_independent_3way_codex_operator` 系
+  （primary=openai/gpt-5.4、adversarial=anthropic/claude-opus-4-8、
+  judgment=gemini/gemini-3.1-pro-preview）
+- judgment（gemini-3.1-pro-preview）と小規模 1 体検証（`post_write_verification_google`）は
+  両操縦で共用し、操縦を切り替えても判定基準の連続性を保つ
+- 既存 variant の改名は行わない（規律文書・過去 run 記録・spec からの参照保全）。
+  別の LLM が操縦する場合（将来）は同じ原則で役を回転して対応する
+
+対象アプリ向けの同内容の案内は `templates/entry/AGENT_ENTRY.template.md` §10 と
+`docs/operations/INITIAL_SETUP_LLM_GUIDE.md` にあり、本節と整合させて保守する。
+
 #### (b) 波及（同フェーズ・他機能への影響）
 
 - **発見されるタイミング**：triad-review 段（3 役が他機能との不整合に気づく）／ review-wave 段（機能横断レビュー）

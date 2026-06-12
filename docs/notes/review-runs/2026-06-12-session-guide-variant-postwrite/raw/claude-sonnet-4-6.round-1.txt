@@ -1,0 +1,20 @@
+findings:
+  - severity: WARN
+    target_location: "§3.3(a-3) 操縦 LLM 別の API 既定 variant と独立性原則"
+    description: "Section references a specific model 'gemini-3.1-pro-preview' and 'gpt-5.5', 'gpt-5.4', 'claude-opus-4-8' as concrete defaults, but these model identifiers appear speculative or non-existent as of the document's stated date (2026-06-10)."
+    rationale: "Canonical sections that serve as the authoritative source for variant and model selection rules must reference verifiable, real model identifiers. Phantom or aspirational model IDs reduce the operational trustworthiness of the section and may cause misconfiguration when operators follow the guide literally."
+
+  - severity: WARN
+    target_location: "§3.3(a-3) — 'config/api-settings.yaml' reference"
+    description: "The section states '実体は config/api-settings.yaml' but no cross-check or file-existence verification is noted. If that file is absent or has a different path, this canonical section silently becomes authoritative text pointing to a missing source of truth."
+    rationale: "A canonical section that delegates authority to an external config file must at minimum note how to verify that file exists and is current, or the canonical claim is unverifiable."
+
+  - severity: INFO
+    target_location: "§3.3(a-3) — cross-reference to AGENT_ENTRY.template.md and INITIAL_SETUP_LLM_GUIDE.md"
+    description: "The section states these two files must be kept consistent with §3.3(a-3), but no mechanism or checklist step is defined to enforce that consistency. The obligation is stated but no workflow gate enforces it."
+    rationale: "For a self-declared canonical section, consistency maintenance obligations should be backed by at least a review checklist step or a machine-checkable invariant, otherwise the canonical claim degrades over time."
+
+  - severity: INFO
+    target_location: "§1.1 必読 5 件 — item 4 carry-forward-register path"
+    description: "The path 'learning/workflow/carry-forward-register/reviewcompass-import.yaml' is listed in §1.1 without the relative prefix used in §9 ('../../learning/...'). The inconsistency in path notation between sections may cause confusion about the document's own location."
+    rationale: "Consistent path notation within a single guide reduces operator error when navigating the repository manually."

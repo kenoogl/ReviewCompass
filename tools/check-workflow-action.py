@@ -3815,6 +3815,11 @@ def is_post_write_verification_target(path):
   """post-write-verification 規律の対象ファイルかを判定する"""
   if path.startswith("docs/archive/"):
     return False
+  # ツール自身の実行ログは正本文書ではないため対象外
+  # （discipline_post_write_verification.md の対象定義「正本文書」に実装を合わせる。
+  #   docs/logs/ 配下の他ファイル（autonomous-parallel の計画記録等）は対象のまま）
+  if path == DEFAULT_LOG_PATH:
+    return False
   if path == "TODO_NEXT_SESSION.md":
     return True
   if path.startswith("docs/reviews/"):

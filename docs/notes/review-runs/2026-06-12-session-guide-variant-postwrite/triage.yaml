@@ -1,0 +1,90 @@
+run_id: 2026-06-12-session-guide-variant-postwrite
+triage_status: decided
+generated_at: '2026-06-12T03:13:31.880437+00:00'
+decision_actor: null
+decision_actor_type: human
+items:
+- finding_id: 2026-06-12-session-guide-variant-postwrite-claude-sonnet-4-6-primary-001
+  run_id: 2026-06-12-session-guide-variant-postwrite
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: §3.3(a-3) 操縦 LLM 別の API 既定 variant と独立性原則
+  plain_language_summary: Section references a specific model 'gemini-3.1-pro-preview'
+    and 'gpt-5.5', 'gpt-5.4', 'claude-opus-4-8' as concrete defaults, but these model
+    identifiers appear speculative or non-existent as of the document's stated date
+    (2026-06-10).
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-12T03:14:11.555582+00:00'
+  decision_reason: 外れ所見。記載モデル（gpt-5.5・gemini-3.1-pro-preview 等）は config/api-settings.yaml
+    に実在し、本検証 run 自体がこれらのモデルで実行されている。レビュー担当モデルの知識切れ起因の誤検出
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-12-session-guide-variant-postwrite-claude-sonnet-4-6-primary-002
+  run_id: 2026-06-12-session-guide-variant-postwrite
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: §3.3(a-3) — 'config/api-settings.yaml' reference
+  plain_language_summary: The section states '実体は config/api-settings.yaml' but no
+    cross-check or file-existence verification is noted. If that file is absent or
+    has a different path, this canonical section silently becomes authoritative text
+    pointing to a missing source of truth.
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-12T03:14:11.602740+00:00'
+  decision_reason: config/api-settings.yaml は長期運用中の実在ファイルで、参照先欠落時はツールが明示的に失敗する。文書からの存在検証機構の追加は過剰
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-12-session-guide-variant-postwrite-claude-sonnet-4-6-primary-003
+  run_id: 2026-06-12-session-guide-variant-postwrite
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: §3.3(a-3) — cross-reference to AGENT_ENTRY.template.md and INITIAL_SETUP_LLM_GUIDE.md
+  plain_language_summary: The section states these two files must be kept consistent
+    with §3.3(a-3), but no mechanism or checklist step is defined to enforce that
+    consistency. The obligation is stated but no workflow gate enforces it.
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-12T03:14:11.646202+00:00'
+  decision_reason: 整合は人手で取る前提が設計判断（workflow-management design 判断 1）として確立済み。強制ゲートの新設は本変更の範囲外
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-12-session-guide-variant-postwrite-claude-sonnet-4-6-primary-004
+  run_id: 2026-06-12-session-guide-variant-postwrite
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: §1.1 必読 5 件 — item 4 carry-forward-register path
+  plain_language_summary: The path 'learning/workflow/carry-forward-register/reviewcompass-import.yaml'
+    is listed in §1.1 without the relative prefix used in §9 ('../../learning/...').
+    The inconsistency in path notation between sections may cause confusion about
+    the document's own location.
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-12T03:14:11.689240+00:00'
+  decision_reason: 今回の差分ではない既存の表記揺れへの指摘（§1.1 と §9 のパス表記）。範囲外
+  applied_files: []
+  superseded_by: null

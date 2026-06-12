@@ -2821,6 +2821,39 @@ class NextNavigationTests(unittest.TestCase):
     self.assertEqual(data["next_action"]["kind"], "post_write_verification")
     self.assertEqual(data["next_action"]["target_files"], sorted(target_paths))
 
+  def test_next_excludes_own_precheck_log_from_post_write_targets(self):
+    """ツール自身の実行ログ（docs/logs/workflow-precheck.log）は post-write 対象にしない"""
+    cwd = Path(self.tmpdir)
+    _init_git_repo(cwd)
+    _write_specs_for_next(cwd, {})
+    for path in ["docs/logs/workflow-precheck.log", "docs/notes/foo.md"]:
+      file_path = cwd / path
+      file_path.parent.mkdir(parents=True, exist_ok=True)
+      file_path.write_text(f"{path}\n", encoding="utf-8")
+
+    result = run_script(["next", "--json"], cwd=cwd)
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 0, result.stderr)
+    data = json.loads(result.stdout)
+    self.assertEqual(data["next_action"]["kind"], "post_write_verification")
+    self.assertEqual(data["next_action"]["target_files"], ["docs/notes/foo.md"])
+
+  def test_next_with_only_precheck_log_change_skips_post_write(self):
+    """実行ログ単独の未コミット変更では post-write 判定にしない"""
+    cwd = Path(self.tmpdir)
+    _init_git_repo(cwd)
+    _write_specs_for_next(cwd, {})
+    log_path = cwd / "docs" / "logs" / "workflow-precheck.log"
+    log_path.parent.mkdir(parents=True, exist_ok=True)
+    log_path.write_text("log\n", encoding="utf-8")
+
+    result = run_script(["next", "--json"], cwd=cwd)
+
+    _assert_script_invoked(self, result)
+    data = json.loads(result.stdout)
+    self.assertNotEqual(data["next_action"]["kind"], "post_write_verification")
+
   def test_next_uses_completed_post_write_manifest_to_return_to_workflow(self):
     """完了 manifest が対象ファイルを覆う場合は通常 workflow に戻る"""
     cwd = Path(self.tmpdir)
