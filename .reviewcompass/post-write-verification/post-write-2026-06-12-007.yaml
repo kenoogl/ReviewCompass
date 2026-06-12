@@ -1,0 +1,48 @@
+status: completed
+target_files:
+- TODO_NEXT_SESSION.md
+- docs/notes/review-runs/2026-06-12-todo-pending-decisions-postwrite/model-result-summary.yaml
+- docs/notes/review-runs/2026-06-12-todo-pending-decisions-postwrite/parsed/gemini-3.5-flash.round-1.yaml
+- docs/notes/review-runs/2026-06-12-todo-pending-decisions-postwrite/raw/gemini-3.5-flash.round-1.txt
+- docs/notes/review-runs/2026-06-12-todo-pending-decisions-postwrite/review_summary.md
+- docs/notes/review-runs/2026-06-12-todo-pending-decisions-postwrite/rounds.yaml
+- docs/notes/review-runs/2026-06-12-todo-pending-decisions-postwrite/target-manifest.yaml
+- docs/notes/review-runs/2026-06-12-todo-pending-decisions-postwrite/triage.yaml
+target_sha256:
+  TODO_NEXT_SESSION.md: 5edeebf4979d7a8cdfaba3c2dcd028332d5e94d4b2c99829dd9bf02c00e9efe4
+  docs/notes/review-runs/2026-06-12-todo-pending-decisions-postwrite/model-result-summary.yaml: b2a7a74014dcb2ea81e012e2b169b7dbd5d2ecea9211b98a26d7caa1f0c51d6d
+  docs/notes/review-runs/2026-06-12-todo-pending-decisions-postwrite/parsed/gemini-3.5-flash.round-1.yaml: 730e97e61155b9595453634b037b513533673ff2c5932ff44c35498ce57e09a0
+  docs/notes/review-runs/2026-06-12-todo-pending-decisions-postwrite/raw/gemini-3.5-flash.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+  docs/notes/review-runs/2026-06-12-todo-pending-decisions-postwrite/review_summary.md: 65b58749d075cc9aa3b7cdb5b3f4c595ef2cf9df2ed3b58dbd63aadcc69e68da
+  docs/notes/review-runs/2026-06-12-todo-pending-decisions-postwrite/rounds.yaml: 6e92654aaa27fc3e301addd01f6b8089609b4b19aef196d1910fe5dafa960c57
+  docs/notes/review-runs/2026-06-12-todo-pending-decisions-postwrite/target-manifest.yaml: fbe4030a2c2a7f39148559b85f28b8735c4ea882cc2c9d690d51ce659677d99c
+  docs/notes/review-runs/2026-06-12-todo-pending-decisions-postwrite/triage.yaml: a67ded35a58beec6a44428c4fcab220a9ca64a99230f315bab6f79f6b640bbb7
+required_verifiers: &id001
+- gemini-3.5-flash
+completed_verifiers: *id001
+unresolved_substantive_findings: 0
+verifications:
+- verifier: gemini-3.5-flash
+  target_files:
+  - TODO_NEXT_SESSION.md
+  - docs/notes/review-runs/2026-06-12-todo-pending-decisions-postwrite/model-result-summary.yaml
+  - docs/notes/review-runs/2026-06-12-todo-pending-decisions-postwrite/parsed/gemini-3.5-flash.round-1.yaml
+  - docs/notes/review-runs/2026-06-12-todo-pending-decisions-postwrite/raw/gemini-3.5-flash.round-1.txt
+  - docs/notes/review-runs/2026-06-12-todo-pending-decisions-postwrite/review_summary.md
+  - docs/notes/review-runs/2026-06-12-todo-pending-decisions-postwrite/rounds.yaml
+  - docs/notes/review-runs/2026-06-12-todo-pending-decisions-postwrite/target-manifest.yaml
+  - docs/notes/review-runs/2026-06-12-todo-pending-decisions-postwrite/triage.yaml
+  target_sha256:
+    TODO_NEXT_SESSION.md: 5edeebf4979d7a8cdfaba3c2dcd028332d5e94d4b2c99829dd9bf02c00e9efe4
+    docs/notes/review-runs/2026-06-12-todo-pending-decisions-postwrite/model-result-summary.yaml: b2a7a74014dcb2ea81e012e2b169b7dbd5d2ecea9211b98a26d7caa1f0c51d6d
+    docs/notes/review-runs/2026-06-12-todo-pending-decisions-postwrite/parsed/gemini-3.5-flash.round-1.yaml: 730e97e61155b9595453634b037b513533673ff2c5932ff44c35498ce57e09a0
+    docs/notes/review-runs/2026-06-12-todo-pending-decisions-postwrite/raw/gemini-3.5-flash.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/2026-06-12-todo-pending-decisions-postwrite/review_summary.md: 65b58749d075cc9aa3b7cdb5b3f4c595ef2cf9df2ed3b58dbd63aadcc69e68da
+    docs/notes/review-runs/2026-06-12-todo-pending-decisions-postwrite/rounds.yaml: 6e92654aaa27fc3e301addd01f6b8089609b4b19aef196d1910fe5dafa960c57
+    docs/notes/review-runs/2026-06-12-todo-pending-decisions-postwrite/target-manifest.yaml: fbe4030a2c2a7f39148559b85f28b8735c4ea882cc2c9d690d51ce659677d99c
+    docs/notes/review-runs/2026-06-12-todo-pending-decisions-postwrite/triage.yaml: a67ded35a58beec6a44428c4fcab220a9ca64a99230f315bab6f79f6b640bbb7
+review_run:
+  path: docs/notes/review-runs/2026-06-12-todo-pending-decisions-postwrite
+  summary_path: docs/notes/review-runs/2026-06-12-todo-pending-decisions-postwrite/model-result-summary.yaml
+notes: Generated template; verify target_files cover current post-write targets before
+  use.

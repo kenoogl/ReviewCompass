@@ -1,0 +1,4 @@
+run_id: 2026-06-12-todo-pending-decisions-postwrite
+target_files:
+- path: TODO_NEXT_SESSION.md
+  sha256: 5edeebf4979d7a8cdfaba3c2dcd028332d5e94d4b2c99829dd9bf02c00e9efe4
