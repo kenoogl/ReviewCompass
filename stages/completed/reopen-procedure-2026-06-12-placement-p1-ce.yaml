@@ -76,8 +76,8 @@ completed_steps:
   〔書き込み先切替・読み取り互換・新旧合算採番・凍結違反検出＋triad-review 3 round の適用分〕を提示のうえ承認。
   spec.json の implementation alignment・approval を true へ復帰（spec-set precheck 記録済み。進行中ファイル・recheck 印による
   DEVIATION は reopen 進行中の想定内条件で、requirements・design・tasks 復帰時と同一の扱い）。第3過程はこれで全フェーズ完了）
-next_step: 第3過程完了の停止点コミット（利用者の「コミット」指示待ち）。その後第4過程：整合性最終確認・feature_impact_decisions
-  等の完了記録整備・recheck クリア・stages/completed/ への移動・完了コミット
+next_step: 第4過程完了（第3過程の停止点コミットは dc5708fa。整合性最終確認・完了記録整備・recheck クリア・stages/completed/ への
+  移動済み）。残りは完了の停止点コミット（利用者の「コミット」指示待ち）
 step_number: 4
 drafting_completed_gates:
 - stages/requirements.yaml#drafting
@@ -90,3 +90,159 @@ pending_gates_note: R-0 基線（requirements の alignment／approval）に、R
   と、実装変更（ツールの書き込み先変更＋旧パス読み取り互換、TDD）を行う implementation の全 review 系 gate を加えた。
   implementation の drafting（コード変更）は tasks approval 後に TDD で実施するため未記録。
 current_blocker: null
+feature_impact_decisions:
+- feature: conformance-evaluation
+  decision: reopen_existing_feature
+  impact_basis: contract_ownership
+  rationale: 評価記録・推定ログの配置契約（requirements 受入・design 配置図・tasks T-001／MV-6）と該当ツール実装を所有するため。
+  evidence:
+  - docs/reviews/reopen-classification-2026-06-12-placement-p1-path-contracts.md
+- feature: workflow-management
+  decision: reopen_existing_feature
+  impact_basis: contract_ownership
+  rationale: effective prompt・commit 承認記録・検査ログのパス契約（design・tasks T-004）と検査ツール実装を所有するため（別手続き
+    reopen-procedure-2026-06-12-placement-p1-wm.yaml で実施）。
+  evidence:
+  - docs/reviews/reopen-classification-2026-06-12-placement-p1-path-contracts.md
+- feature: foundation
+  decision: no_reopen_existing_feature
+  impact_basis: no_implementation_impact
+  rationale: 共通語彙・状態入力に変更なし。
+  evidence:
+  - docs/reviews/reopen-classification-2026-06-12-placement-p1-path-contracts.md
+- feature: runtime
+  decision: no_reopen_existing_feature
+  impact_basis: no_implementation_impact
+  rationale: review-run の置き場はツールの CLI 引数渡しで、仕様は特定パスを契約しない。接合面不変。
+  evidence:
+  - docs/reviews/reopen-classification-2026-06-12-placement-p1-path-contracts.md
+- feature: evaluation
+  decision: no_reopen_existing_feature
+  impact_basis: no_implementation_impact
+  rationale: run ディレクトリは引数渡しで、variant・トリアージ契約に変更なし。
+  evidence:
+  - docs/reviews/reopen-classification-2026-06-12-placement-p1-path-contracts.md
+- feature: analysis
+  decision: no_reopen_existing_feature
+  impact_basis: consumer_or_derivative_only
+  rationale: 記録の読み手であり、読み取りは新旧両置き場を対象にできる。
+  evidence:
+  - docs/reviews/reopen-classification-2026-06-12-placement-p1-path-contracts.md
+- feature: self-improvement
+  decision: no_reopen_existing_feature
+  impact_basis: consumer_or_derivative_only
+  rationale: 学習資産の置き場（learning/）は当面不変（PLC-DEC-008 の当面形）。
+  evidence:
+  - docs/reviews/reopen-classification-2026-06-12-placement-p1-path-contracts.md
+new_feature_decision:
+  decision: no_new_feature
+  rationale: 配置契約の変更は conformance-evaluation・workflow-management の既存契約所有の範囲で受けられ、新 feature の責務境界は不要。
+  evidence:
+  - docs/reviews/reopen-classification-2026-06-12-placement-p1-path-contracts.md
+impacted_downstream_phases:
+- design
+- tasks
+- implementation
+downstream_impact_decisions:
+- gate: stages/requirements.yaml#triad-review
+  feature_scope: conformance-evaluation
+  decision: affected_update_required
+  rationale: 配置契約の正本修正（5 箇所）を 2 round の 3 役レビューで検証し、must-fix 1・should-fix 3 を適用した。
+  evidence:
+  - .reviewcompass/evidence/review-runs/2026-06-12-requirements-placement-p1-reopen-triad-review-run/triage.yaml
+- gate: stages/requirements.yaml#review-wave
+  feature_scope: all_features
+  decision: no_impact
+  rationale: 全 7 機能の 3 文書 grep で旧パス参照 0 件、持ち越し 0 件。
+  evidence:
+  - .reviewcompass/evidence/cross-feature/reviews/2026-06-12-requirements-placement-p1-review-wave.md
+- gate: stages/requirements.yaml#alignment
+  feature_scope: conformance-evaluation
+  decision: existing_sufficient
+  rationale: 受入間整合・分離契約・配置規約・fail-closed の 4 点を確認した。
+  evidence:
+  - .reviewcompass/evidence/cross-feature/reviews/2026-06-12-requirements-placement-p1-alignment.md
+- gate: stages/requirements.yaml#approval
+  feature_scope: conformance-evaluation
+  decision: approved
+  rationale: 利用者発言「承認」（2026-06-12）。spec.json の requirements alignment・approval を true へ復帰。
+  evidence:
+  - .reviewcompass/specs/conformance-evaluation/spec.json
+- gate: stages/design.yaml#triad-review
+  feature_scope: conformance-evaluation
+  decision: affected_update_required
+  rationale: 配置契約の正本修正（12 箇所＋設計追加 5 項）を 3 round の 3 役レビューで検証し、must-fix 3・should-fix 6 を適用した。
+  evidence:
+  - .reviewcompass/evidence/review-runs/2026-06-12-design-placement-p1-reopen-triad-review-run/triage.yaml
+- gate: stages/design.yaml#review-wave
+  feature_scope: all_features
+  decision: no_impact
+  rationale: 旧パス参照は全機能 0 件、追加設計は本機能の実装に閉じる。持ち越し 0 件。
+  evidence:
+  - .reviewcompass/evidence/cross-feature/reviews/2026-06-12-design-placement-p1-review-wave.md
+- gate: stages/design.yaml#alignment
+  feature_scope: conformance-evaluation
+  decision: existing_sufficient
+  rationale: requirements 整合・機械検査の意味保全・ID 一意性・実装ガイダンス充足の 4 点を確認した。
+  evidence:
+  - .reviewcompass/evidence/cross-feature/reviews/2026-06-12-design-placement-p1-alignment.md
+- gate: stages/design.yaml#approval
+  feature_scope: conformance-evaluation
+  decision: approved
+  rationale: 利用者発言「承認」（2026-06-12）。spec.json の design alignment・approval を true へ復帰。
+  evidence:
+  - .reviewcompass/specs/conformance-evaluation/spec.json
+- gate: stages/tasks.yaml#triad-review
+  feature_scope: conformance-evaluation
+  decision: affected_update_required
+  rationale: 配置契約の正本修正（置換 6 箇所＋4 タスクへの凍結期責務・テスト要件追加）を 3 round の 3 役レビューで検証し適用した。
+  evidence:
+  - .reviewcompass/evidence/review-runs/2026-06-12-tasks-placement-p1-reopen-triad-review-run/triage.yaml
+- gate: stages/tasks.yaml#review-wave
+  feature_scope: all_features
+  decision: no_impact
+  rationale: 旧パス参照は全機能 0 件、追加タスクは本機能のツールに閉じる。持ち越し 0 件。
+  evidence:
+  - .reviewcompass/evidence/cross-feature/reviews/2026-06-12-tasks-placement-p1-review-wave.md
+- gate: stages/tasks.yaml#alignment
+  feature_scope: conformance-evaluation
+  decision: existing_sufficient
+  rationale: 上流整合・責務分担の一意性・テスト要件網羅・配置規約整合の 4 点を確認した。
+  evidence:
+  - .reviewcompass/evidence/cross-feature/reviews/2026-06-12-tasks-placement-p1-alignment.md
+- gate: stages/tasks.yaml#approval
+  feature_scope: conformance-evaluation
+  decision: approved
+  rationale: 利用者発言「コミット」（2026-06-12、approval 提示への応答として承認）。spec.json の tasks alignment・approval を true へ復帰。
+  evidence:
+  - .reviewcompass/specs/conformance-evaluation/spec.json
+- gate: stages/implementation.yaml#triad-review
+  feature_scope: conformance-evaluation
+  decision: affected_update_required
+  rationale: 凍結期契約の TDD 実装差分を 3 round の 3 役レビューで検証。所見判断は proxy_model（gemini-3.1-pro-preview）へ委任
+    （利用者発言「proxy_modelで自律実行」2026-06-12）し、must-fix 2・should-fix 5 を適用して収束した。
+  evidence:
+  - .reviewcompass/evidence/review-runs/2026-06-12-implementation-placement-p1-reopen-triad-review-run/triage.yaml
+  - .reviewcompass/evidence/review-runs/2026-06-12-implementation-placement-p1-reopen-triad-review-run/approval-proxy-2026-06-12.yaml
+  - .reviewcompass/evidence/review-runs/2026-06-12-implementation-placement-p1-reopen-triad-review-run/approval-proxy-2026-06-12-round-2.yaml
+  - .reviewcompass/evidence/review-runs/2026-06-12-implementation-placement-p1-reopen-triad-review-run/approval-proxy-2026-06-12-round-3.yaml
+- gate: stages/implementation.yaml#review-wave
+  feature_scope: all_features
+  decision: no_impact
+  rationale: 他機能コードからの旧パス参照 0 件・全機能 3 文書の現役参照 0 件。配布 manifest の evidence 除外追加は既計画の
+    P1 残作業 9 番（配布物再生成＋smoke）へ経路付け、新規持ち越し 0 件。
+  evidence:
+  - .reviewcompass/evidence/cross-feature/reviews/2026-06-12-implementation-placement-p1-review-wave.md
+- gate: stages/implementation.yaml#alignment
+  feature_scope: conformance-evaluation
+  decision: existing_sufficient
+  rationale: requirements ルート契約・design 凍結期契約（採番合算・読み書き・git 履歴判定）・tasks テスト要件・fail-closed 粒度の
+    4 点を確認した。全テスト 900 件 pass。
+  evidence:
+  - .reviewcompass/evidence/cross-feature/reviews/2026-06-12-implementation-placement-p1-alignment.md
+- gate: stages/implementation.yaml#approval
+  feature_scope: conformance-evaluation
+  decision: approved
+  rationale: 利用者発言「承認」（2026-06-12）。spec.json の implementation alignment・approval を true へ復帰。
+  evidence:
+  - .reviewcompass/specs/conformance-evaluation/spec.json
