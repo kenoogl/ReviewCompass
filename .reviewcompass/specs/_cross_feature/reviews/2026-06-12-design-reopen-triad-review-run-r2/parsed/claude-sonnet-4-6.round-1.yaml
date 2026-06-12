@@ -1,0 +1,42 @@
+role: primary
+provider: anthropic-api
+model: claude-sonnet-4-6
+attempts: 1
+duration_seconds: 32.441
+findings:
+- severity: INFO
+  target_location: §2.3 §7 立ち上げ案内 — 判断3との両立説明
+  description: fail-closed 両立の説明は論理的に整合している。「作業を進ませない（操作を許可しない）」という安全側の性質が保たれることを明示し、fail-closed
+    が守る対象（不可逆操作の誤許可）に抵触しないと述べている。飛躍・検証不能な主張は見当たらない。
+  rationale: round-2 観点1への評価。FUP-2026-06-12-001 による残課題（パース不能と未定義の区別不能）も明示的に認識・登録されており、設計判断として妥当な水準に達している。
+- severity: INFO
+  target_location: §2.5 §XDI-WM-003 — hook 自己診断の契約
+  description: hook 自己診断の契約は「主体＝hook スクリプト自身」「タイミング＝hook 起動時」「拒否動作＝非0終了」「実体正本＝テンプレート本体」の4要素が明示されており、設計契約として完結している。登録雛形の実体化先（.claude/settings.json・.codex/hooks.json）と検証責務の所在（INITIAL_SETUP_LLM_GUIDE.md
+    正本）も明確。
+  rationale: round-2 観点2への評価。導入見送り時の記録義務も規定されており、有効化確認の責務が曖昧になるリスクへの手当てがある。
+- severity: INFO
+  target_location: §2.3 §7 — 遡上根拠の記述
+  description: 遡上探索を行わない根拠（入れ子・一時ディレクトリからの実行で意図しないファイルを拾う恐れ、解決元の予測可能性優先）が明文化されており、一義に読める。
+  rationale: round-2 観点3への評価。3パスに限定する設計判断の理由が明示されているため、実装者・レビュア双方にとって解釈の余地がない。
+- severity: INFO
+  target_location: §2.3 §7 — 判定点登録状態
+  description: feature_definition_required の WORKFLOW_DISCIPLINE_MAP.yaml への登録、書き込み後検証3系統通過、manifest
+    post-write-2026-06-12-004 の記録が明示されており、判定点登録の完了状態が追跡可能。
+  rationale: round-2 観点3への評価。証跡参照が具体的で設計と実装の対応が確認できる。
+- severity: INFO
+  target_location: §4 根拠と証跡 — requirements 受入との整合
+  description: 設計の挙動規定（探索順・立ち上げ案内・整合検査・fail-closed）は Requirement 8 受入1〜3・6〜8 と意味で一致している。受入6（整合違反遮断）・受入7（案内返却）・受入8（判定点登録）に対応する設計要素が
+    §7 に明確に存在する。
+  rationale: round-2 観点4への評価。conformance-evaluation design.md の §13.5 見出し変更も意味不変で追従されており、語彙統一（phase_order
+    → feature_order）は6箇所で整合が取れている。
+- severity: WARN
+  target_location: §2.5 §XDI-WM-003 — hook 配布 プレースホルダ置換の実施主体と検証タイミング
+  description: 「初期設定時に LLM が実パスへ置換し」と記述されているが、置換が正しく完了したことをいつ・どの手段で検証するかの設計契約が §XDI-WM-003
+    本体に明示されていない。自己診断は hook 起動時に未置換を検出するが、それは初期設定後の最初の commit/push まで遅延する。
+  rationale: 設定誤りが初回 commit/push まで表面化しない期間が存在し、その間に手動で push を実行するパスでは hook が存在しても起動しない可能性がある。INITIAL_SETUP_LLM_GUIDE.md
+    を正本とすることは明記されているが、設計文書レベルで「置換直後に動作確認を行う手順がある」旨の参照が欠けている点は軽微な記述の不完全性。必須修正ではなく次ラウンドまたは実装ガイド整備で解消可能。
+- severity: WARN
+  target_location: §2.3 §7 — FEATURE_DEPENDENCY_SEARCH_PATHS の定義参照先
+  description: '`FEATURE_DEPENDENCY_SEARCH_PATHS` という識別子がインライン参照されているが、この定数の定義先（実装コード・設定ファイル・別仕様文書のどこか）へのクロスリファレンスが設計文書内に存在しない。'
+  rationale: 設計文書の読者が当該定数の実体を独立に確認できないため、設計と実装の対応確認に追加調査が必要になる。実装が先行しているとの記述があるが、設計文書として
+    self-contained であるためには参照先の明示が望ましい。重大な欠落ではないが、保守時の混乱リスクがある。

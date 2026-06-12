@@ -1,0 +1,4 @@
+run_id: 2026-06-12-requirements-reopen-triad-review-run
+target_files:
+- path: .reviewcompass/specs/_cross_feature/reviews/2026-06-12-requirements-reopen-triad-review-run/target.md
+  sha256: 5dec5ea22c39f5310292296b59defb761ffa8f3fc32e2c7fb7c267e24034f5c6

@@ -1,0 +1,4 @@
+run_id: 2026-06-12-design-reopen-triad-review-run-r2
+target_files:
+- path: .reviewcompass/specs/_cross_feature/reviews/2026-06-12-design-reopen-triad-review-run/target.md
+  sha256: 7c397370ccdb0829897445dc73604ad4cd8a01a70422ba535122506707a7a705

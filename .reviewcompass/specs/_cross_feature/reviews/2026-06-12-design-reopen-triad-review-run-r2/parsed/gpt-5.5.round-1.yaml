@@ -1,0 +1,16 @@
+role: adversarial
+provider: openai-api
+model: gpt-5.5
+attempts: 1
+duration_seconds: 47.578
+findings:
+- severity: WARN
+  target_location: §2.5 §XDI-WM-003（対象アプリ入口規律）
+  description: 既存入口（CLAUDE.md／AGENTS.md）へ追記する「1 行」の正本内容が、この設計契約内で明示されていない。
+  rationale: 書き込み先・挿入行・挿入位置を利用者へ提示する手順は定義されているが、冪等判定の基準になる行文字列自体が明文化されていないため、導入者や
+    LLM ごとに異なる参照文が生成される余地がある。同じ行が既にあれば何もしないという契約も、正本行が一意でないと判定が揺れる。
+- severity: WARN
+  target_location: §2.5 §XDI-WM-003（hook 配布／登録雛形）
+  description: hook の fail-closed 性質は hook 起動後に限定されており、登録を見送った場合や登録漏れの場合の保護境界が設計上明確に分離されていない。
+  rationale: 自己診断は hook スクリプト自身が起動時に行うため、hook が未登録または無効な状態では commit／push を拒否できない。一方で登録は「強推奨」で、見送りも利用者判断として許容されているため、配布契約として保証する
+    fail-closed と、初期設定完了報告でのみ担保する運用上の任意性の境界を明示しておくと誤解を防げる。

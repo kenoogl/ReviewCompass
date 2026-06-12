@@ -1,0 +1,47 @@
+approved_by: user
+review_run_id: 2026-06-12-requirements-reopen-triad-review-run
+summary_presented_to_user: true
+triage_presented_to_user: true
+approval_quote: 利用者発言『承認』（2026-06-12。クラスタ A must-fix 案 1・B/C/D should-fix・E と INFO 3 件 leave-as-is のトリアージ案提示後）
+approved_finding_ids:
+- 2026-06-12-requirements-reopen-triad-review-run-claude-sonnet-4-6-primary-001
+- 2026-06-12-requirements-reopen-triad-review-run-claude-sonnet-4-6-primary-002
+- 2026-06-12-requirements-reopen-triad-review-run-claude-sonnet-4-6-primary-003
+- 2026-06-12-requirements-reopen-triad-review-run-claude-sonnet-4-6-primary-004
+- 2026-06-12-requirements-reopen-triad-review-run-claude-sonnet-4-6-primary-005
+- 2026-06-12-requirements-reopen-triad-review-run-gpt-5.5-adversarial-001
+- 2026-06-12-requirements-reopen-triad-review-run-gpt-5.5-adversarial-002
+- 2026-06-12-requirements-reopen-triad-review-run-gpt-5.5-adversarial-003
+- 2026-06-12-requirements-reopen-triad-review-run-gpt-5.5-adversarial-004
+- 2026-06-12-requirements-reopen-triad-review-run-gemini-3.1-pro-preview-judgment-001
+- 2026-06-12-requirements-reopen-triad-review-run-gemini-3.1-pro-preview-judgment-002
+approved_final_labels:
+  2026-06-12-requirements-reopen-triad-review-run-claude-sonnet-4-6-primary-001: must-fix
+  2026-06-12-requirements-reopen-triad-review-run-claude-sonnet-4-6-primary-002: should-fix
+  2026-06-12-requirements-reopen-triad-review-run-claude-sonnet-4-6-primary-003: should-fix
+  2026-06-12-requirements-reopen-triad-review-run-claude-sonnet-4-6-primary-004: leave-as-is
+  2026-06-12-requirements-reopen-triad-review-run-claude-sonnet-4-6-primary-005: leave-as-is
+  2026-06-12-requirements-reopen-triad-review-run-gpt-5.5-adversarial-001: must-fix
+  2026-06-12-requirements-reopen-triad-review-run-gpt-5.5-adversarial-002: should-fix
+  2026-06-12-requirements-reopen-triad-review-run-gpt-5.5-adversarial-003: should-fix
+  2026-06-12-requirements-reopen-triad-review-run-gpt-5.5-adversarial-004: leave-as-is
+  2026-06-12-requirements-reopen-triad-review-run-gemini-3.1-pro-preview-judgment-001: leave-as-is
+  2026-06-12-requirements-reopen-triad-review-run-gemini-3.1-pro-preview-judgment-002: must-fix
+approved_action: review_run_triage
+clusters:
+  A_search_base_ambiguity:
+    label: must-fix
+    finding_ids: [claude-sonnet-4-6-primary-001, gpt-5.5-adversarial-001, gemini-3.1-pro-preview-judgment-002]
+    note: 3 モデル同根。探索基準をツール実行時のカレントディレクトリ基準・遡上なしと精密化（案 1）
+  B_output_field_precision:
+    label: should-fix
+    finding_ids: [claude-sonnet-4-6-primary-003, gpt-5.5-adversarial-002]
+  C_single_source_meaning:
+    label: should-fix
+    finding_ids: [claude-sonnet-4-6-primary-002]
+  D_dependency_order_reading:
+    label: should-fix
+    finding_ids: [gpt-5.5-adversarial-003]
+  E_requirement_cohesion:
+    label: leave-as-is
+    finding_ids: [gemini-3.1-pro-preview-judgment-001]

@@ -1,0 +1,9 @@
+findings:
+  - severity: WARN
+    target_location: "§2.1 Requirement 8 受入 1 / §2.3 Requirement 8 受入 6"
+    description: "保管先の列挙と探索契約の間で、ルート直下 `feature-dependency.yaml` の位置付けが未定義です。"
+    rationale: "受入 1 は開発リポジトリでは `stages/feature-dependency.yaml`、対象アプリでは `.reviewcompass/feature-dependency.yaml` と規定していますが、受入 6 の探索順には `feature-dependency.yaml` も含まれています。最初に存在した 1 ファイルだけを読む契約である以上、ルート直下ファイルも権威ある入力になり得ます。これが互換用フォールバックなのか、第三の正規保管先なのかを明記しないと、「一元保管先」の解釈と実行時挙動が読み手により分かれます。"
+  - severity: WARN
+    target_location: "§2.3 Requirement 8 受入 7〜8"
+    description: "`feature-dependency.yaml` が存在するが内容が不正な場合の verdict／exit code／next_action の扱いが境界事例として残っています。"
+    rationale: "受入 8 はファイル不在または `feature_order` 未定義を `feature_definition_required`・OK・exit 0 とし、受入 7 は依存順矛盾と循環依存を DEVIATION・exit 2 としています。一方で、YAML パース不能、`feature_order` が配列でない、重複 feature、`depends_on` が未知 feature を参照する、といった解決不能と整合違反の中間的ケースの分類が明示されていません。隣接ケースについて厳密な出力契約を置いているため、ここも少なくとも実装挙動に合わせた分類を明記しないと、テストや運用時の期待が分岐する可能性があります。"

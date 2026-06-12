@@ -1,0 +1,18 @@
+role: adversarial
+provider: openai-api
+model: gpt-5.5
+attempts: 1
+duration_seconds: 80.477
+findings:
+- severity: WARN
+  target_location: §2.1 T-002（機能依存マップ）の契約変更
+  description: JSON Schema 廃止後の正本が「実装とテスト」とされている一方、無効な depends_on 値などの期待結果がタスク契約上で十分に固定されていません。
+  rationale: MLE-DEC-002 により JSON Schema を廃する判断自体は記録されていますが、同等の検証可能性を維持するには、実装名だけでなくテストが保証すべき入力・期待出力・失敗モードがタスク上で安定して読める必要があります。特に「それ以外は結論不能」が
+    next_action、verdict、exit code のどれに対応するかが曖昧だと、将来の実装変更が自己参照的に正本扱いされ、契約としての検証力が弱まります。
+- severity: WARN
+  target_location: §2.3 T-004（検査スクリプト本体）の契約追記
+  description: feature-dependency.yaml の YAML パース不能を file 不在・feature_order 未定義と同じ
+    OK/exit 0 の立ち上げ案内に含める例外が、fail-closed 方針との境界として目立ちにくいです。
+  rationale: 既存設計上の意図的な例外として記載されていますが、壊れた feature-dependency.yaml が存在する場合もワークフロー遮断ではなく
+    feature_definition_required になるため、設定ミスを初期未定義状態として扱うリスクがあります。タスク契約では、この扱いが暫定例外であること、対象範囲、テストで固定する期待挙動をより明示しないと、Requirement
+    8 の feature 一覧解決・整合検査の検証境界が不明確になります。

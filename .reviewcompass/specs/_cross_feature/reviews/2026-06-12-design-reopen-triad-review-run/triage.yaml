@@ -1,0 +1,192 @@
+run_id: 2026-06-12-design-reopen-triad-review-run
+triage_status: decided
+generated_at: '2026-06-12T00:40:47.469692+00:00'
+decision_actor: null
+decision_actor_type: human
+items:
+- finding_id: 2026-06-12-design-reopen-triad-review-run-claude-sonnet-4-6-primary-001
+  run_id: 2026-06-12-design-reopen-triad-review-run
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: §2.3 §機能依存マップモデル §7 新設 — 立ち上げ案内
+  plain_language_summary: 「パース不能は未定義と同様に扱う」という挙動が、設計判断3（fail-closed全面採用）と表面上矛盾しており、両立の説明が括弧内の一文（FUP-2026-06-12-001への先送り言及）にとどまっている。
+  final_label: must-fix
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-12T00:50:33.549948+00:00'
+  decision_reason: クラスタ G（3 モデル同根）。判断 3 との両立説明を design §7 へ明文化。利用者発言『了承』2026-06-12
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-12-design-reopen-triad-review-run-claude-sonnet-4-6-primary-002
+  run_id: 2026-06-12-design-reopen-triad-review-run
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: §2.5 §XDI-WM-003 新設 — hook配布・絶対パス必須
+  plain_language_summary: プレースホルダ2値が「絶対パス必須」とされているが、未置換・欠落時の自己診断とfail-closedの動作仕様（どのexit
+    codeを返すか、エラーメッセージの形式・出力先）が設計記述に明示されていない。
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-12T00:50:33.717583+00:00'
+  decision_reason: クラスタ H。XDI-WM-003 へ自己診断の主体（hook 自身）・タイミング（起動時）・拒否動作（hook 設定不備の明確な理由で
+    deny）を追記。利用者発言『了承』2026-06-12
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-12-design-reopen-triad-review-run-claude-sonnet-4-6-primary-003
+  run_id: 2026-06-12-design-reopen-triad-review-run
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: §2.3 §機能依存マップモデル §7 — 探索順・親ディレクトリ遡上なし
+  plain_language_summary: 「親ディレクトリへの遡上探索は行わない」という制約の設計根拠が本文に記述されていない。
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-12T00:50:33.927361+00:00'
+  decision_reason: 遡上探索しない根拠（入れ子・一時ディレクトリで意図しないファイルを拾わない解決元の予測可能性）を §7 へ追記。利用者発言『了承』2026-06-12
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-12-design-reopen-triad-review-run-claude-sonnet-4-6-primary-004
+  run_id: 2026-06-12-design-reopen-triad-review-run
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: §2.2 §機能依存マップモデル §2 — キー名変更の後方互換注記
+  plain_language_summary: 「過去記録・計画書・分割提案書のphase_order表記は書き換えず」という方針が設計文書に記載されているが、どの文書群が対象かの範囲が明示されていない。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-12T00:50:34.031446+00:00'
+  decision_reason: INFO。過去記録の範囲は requirements Requirement 8 受入 2 の由来注記に列挙済みで、design
+    は参照で足りる。利用者発言『了承』2026-06-12
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-12-design-reopen-triad-review-run-claude-sonnet-4-6-primary-005
+  run_id: 2026-06-12-design-reopen-triad-review-run
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: §2.3 §機能依存マップモデル §7 — WORKFLOW_DISCIPLINE_MAP.yaml登録
+  plain_language_summary: feature_definition_requiredをWORKFLOW_DISCIPLINE_MAP.yamlのnext_action_kind判定点として登録するという記述があるが、その登録変更自体が本変更セットに含まれているかどうかが明示されていない。
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-12T00:50:33.979324+00:00'
+  decision_reason: 判定点登録は本変更セットで実施済み（WORKFLOW_DISCIPLINE_MAP.yaml、post-write 検証済み）である旨を
+    §7 に付記。利用者発言『了承』2026-06-12
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-12-design-reopen-triad-review-run-gpt-5.5-adversarial-001
+  run_id: 2026-06-12-design-reopen-triad-review-run
+  source_model: gpt-5.5
+  source_round: round-1
+  source_raw_path: raw/gpt-5.5.round-1.txt
+  source_parsed_path: parsed/gpt-5.5.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: §2.3 §機能依存マップモデル §7 / §5 レビュー観点 5
+  plain_language_summary: YAML パース不能を feature_definition_required の OK/exit 0 として扱う設計が、既存の
+    fail-closed 判断と十分に整合していません。
+  final_label: must-fix
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-12T00:50:33.607543+00:00'
+  decision_reason: クラスタ G（3 モデル同根）。同上。実装変更は利用者決定済み案 a（FUP-2026-06-12-001 登録）を維持。利用者発言『了承』2026-06-12
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-12-design-reopen-triad-review-run-gpt-5.5-adversarial-002
+  run_id: 2026-06-12-design-reopen-triad-review-run
+  source_model: gpt-5.5
+  source_round: round-1
+  source_raw_path: raw/gpt-5.5.round-1.txt
+  source_parsed_path: parsed/gpt-5.5.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: §2.5 §XDI-WM-003 新設（配布側複数 LLM 入口の配布契約）
+  plain_language_summary: 複数 LLM 入口を有効化するための入口ファイル／既存入口への合流条件が設計契約としてまだ曖昧です。
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-12T00:50:33.874875+00:00'
+  decision_reason: 合流条件（既にあれば何もしない・なければ承認のうえ 1 行のみ新規作成・既存記述は変更しない、設計記録 §3.4 承認済み決定）を
+    XDI-WM-003 へ転記。利用者発言『了承』2026-06-12
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-12-design-reopen-triad-review-run-gpt-5.5-adversarial-003
+  run_id: 2026-06-12-design-reopen-triad-review-run
+  source_model: gpt-5.5
+  source_round: round-1
+  source_raw_path: raw/gpt-5.5.round-1.txt
+  source_parsed_path: parsed/gpt-5.5.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: §2.5 §XDI-WM-003 新設（hook 配布・登録雛形）
+  plain_language_summary: hook 本体の複製先は示されていますが、登録雛形の実体化先・有効化確認・検証責務が設計上十分に規定されていません。
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-12T00:50:33.770572+00:00'
+  decision_reason: クラスタ H。登録雛形の実体化先・有効化確認・検証責務（初期設定ガイドが正本、見送りは完了報告に記録）を追記。利用者発言『了承』2026-06-12
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-12-design-reopen-triad-review-run-gemini-3.1-pro-preview-judgment-001
+  run_id: 2026-06-12-design-reopen-triad-review-run
+  source_model: gemini-3.1-pro-preview
+  source_round: round-1
+  source_raw_path: raw/gemini-3.1-pro-preview.round-1.txt
+  source_parsed_path: parsed/gemini-3.1-pro-preview.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: 2.3 §機能依存マップモデル §7 新設（feature 一覧の解決と立ち上げ案内）
+  plain_language_summary: YAMLパース不能を「案内（OK）」として扱う仕様が、フェイルクローズド原則（判断3）と両立する理由の説明が欠落している
+  final_label: must-fix
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-12T00:50:33.662641+00:00'
+  decision_reason: クラスタ G（3 モデル同根）。同上。利用者発言『了承』2026-06-12
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-12-design-reopen-triad-review-run-gemini-3.1-pro-preview-judgment-002
+  run_id: 2026-06-12-design-reopen-triad-review-run
+  source_model: gemini-3.1-pro-preview
+  source_round: round-1
+  source_raw_path: raw/gemini-3.1-pro-preview.round-1.txt
+  source_parsed_path: parsed/gemini-3.1-pro-preview.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: 2.5 §XDI-WM-003 新設（配布側複数 LLM 入口の配布契約）
+  plain_language_summary: 「欠落の自己診断」の主体と実行タイミングの曖昧さ
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-12T00:50:33.823147+00:00'
+  decision_reason: クラスタ H。自己診断の主体と実行タイミングを明記。利用者発言『了承』2026-06-12
+  applied_files: []
+  superseded_by: null

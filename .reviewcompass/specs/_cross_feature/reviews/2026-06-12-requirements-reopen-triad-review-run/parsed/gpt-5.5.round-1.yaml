@@ -1,0 +1,27 @@
+role: adversarial
+provider: openai-api
+model: gpt-5.5
+attempts: 1
+duration_seconds: 53.032
+findings:
+- severity: ERROR
+  target_location: §2.3 Requirement 8 受入 6
+  description: feature-dependency.yaml の探索基準が「実行場所基準」とだけ記述されており、リポジトリルート基準・カレントディレクトリ基準・親ディレクトリ探索の有無が一義に定まらない。
+  rationale: 配布先の対象アプリでは検査ツールがどのディレクトリから実行されるかが入口によって変わり得るため、探索基準が曖昧だと .reviewcompass/feature-dependency.yaml
+    を見つけられる場合と見つけられない場合が発生し、同じ状態に対して next 判定が変わるおそれがある。要件として検証可能にするには、基準ディレクトリと探索範囲を明記する必要がある。
+- severity: WARN
+  target_location: §2.3 Requirement 8 受入 7〜8
+  description: 出力フィールド名の表記が `next`、`kind`、`next_action.kind` の間で揺れており、DEVIATION もどのフィールドの値か明確でない。
+  rationale: '受入 7 は「`next` は `kind: unknown`／DEVIATION」と記述する一方、受入 8 は `next_action.kind:
+    feature_definition_required` と記述している。実装契約を requirements に反映する変更であるため、期待される出力を
+    `verdict: DEVIATION` と `next_action.kind: unknown` のように正規のフィールド名で統一しないと、テスト・利用者文書・後続
+    design/tasks で解釈差が生じる。'
+- severity: WARN
+  target_location: §2.3 Requirement 8 受入 7
+  description: '`depends_on` と矛盾しない順序の説明で「依存される機能が先」と記述されており、依存元と依存先のどちらを指すか誤読の余地がある。'
+  rationale: conformance-evaluation 側の §3.1 では「依存先がすべて先に完了する」と表現されており、こちらの方が依存関係の向きを明確に示している。Requirement
+    8 は機械検査の根拠になるため、「depends_on に列挙された依存先が、それに依存する機能より前に現れる」のように向きを明示した方が一義的である。
+- severity: INFO
+  target_location: §1 および §4
+  description: 回帰テスト通過数が §1 では 871 件、§4 では 981 件と記載されている。
+  rationale: 要件本文そのものの矛盾ではないが、実装先行の追認であることを支える証跡の数値が一致していないため、レビュー記録としての信頼性を下げる。どちらが正しい実行結果か、または別々の回帰セットを指すのかを明記するとよい。

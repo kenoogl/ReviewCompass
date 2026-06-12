@@ -1,0 +1,37 @@
+approved_by: user
+review_run_id: 2026-06-12-requirements-reopen-triad-review-run-r2
+summary_presented_to_user: true
+triage_presented_to_user: true
+approval_quote: 利用者発言『提案どおり』（2026-06-12。should-fix 3 件の文言修正と、境界事例（パース不能ファイル）は案 a＝現挙動の仕様化＋実装改善候補の記録、というトリアージ案提示後）
+approved_finding_ids:
+- 2026-06-12-requirements-reopen-triad-review-run-r2-claude-sonnet-4-6-primary-001
+- 2026-06-12-requirements-reopen-triad-review-run-r2-claude-sonnet-4-6-primary-002
+- 2026-06-12-requirements-reopen-triad-review-run-r2-claude-sonnet-4-6-primary-003
+- 2026-06-12-requirements-reopen-triad-review-run-r2-claude-sonnet-4-6-primary-004
+- 2026-06-12-requirements-reopen-triad-review-run-r2-claude-sonnet-4-6-primary-005
+- 2026-06-12-requirements-reopen-triad-review-run-r2-gpt-5.5-adversarial-001
+- 2026-06-12-requirements-reopen-triad-review-run-r2-gpt-5.5-adversarial-002
+approved_final_labels:
+  2026-06-12-requirements-reopen-triad-review-run-r2-claude-sonnet-4-6-primary-001: should-fix
+  2026-06-12-requirements-reopen-triad-review-run-r2-claude-sonnet-4-6-primary-002: should-fix
+  2026-06-12-requirements-reopen-triad-review-run-r2-claude-sonnet-4-6-primary-003: should-fix
+  2026-06-12-requirements-reopen-triad-review-run-r2-claude-sonnet-4-6-primary-004: leave-as-is
+  2026-06-12-requirements-reopen-triad-review-run-r2-claude-sonnet-4-6-primary-005: leave-as-is
+  2026-06-12-requirements-reopen-triad-review-run-r2-gpt-5.5-adversarial-001: should-fix
+  2026-06-12-requirements-reopen-triad-review-run-r2-gpt-5.5-adversarial-002: should-fix
+approved_action: review_run_triage
+clusters:
+  F1_third_search_path_positioning:
+    label: should-fix
+    finding_ids: [claude-sonnet-4-6-primary-001, gpt-5.5-adversarial-001]
+    note: 同根。直下の feature-dependency.yaml は標準 2 配置に該当しない場合の後方互換の受け皿と明記
+  F2_default_order_referent:
+    label: should-fix
+    finding_ids: [claude-sonnet-4-6-primary-002]
+  F3_dependency_direction_wording:
+    label: should-fix
+    finding_ids: [claude-sonnet-4-6-primary-003]
+  F4_malformed_file_boundary:
+    label: should-fix
+    finding_ids: [gpt-5.5-adversarial-002]
+    note: 案 a。現挙動（パース不能も立ち上げ案内へ倒す）を受入 8 に明記し、パース不能の遮断分離は実装改善候補として記録

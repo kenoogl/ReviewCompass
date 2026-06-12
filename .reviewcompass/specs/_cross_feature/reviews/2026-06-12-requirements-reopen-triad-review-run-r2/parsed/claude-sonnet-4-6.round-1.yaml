@@ -1,0 +1,37 @@
+role: primary
+provider: anthropic-api
+model: claude-sonnet-4-6
+attempts: 1
+duration_seconds: 31.053
+findings:
+- severity: WARN
+  target_location: §2.3 受入 6 — 探索順の記述
+  description: 探索順として `.reviewcompass/feature-dependency.yaml` → `stages/feature-dependency.yaml`
+    → `feature-dependency.yaml` の3段階が定義されているが、3番目の `feature-dependency.yaml`（相対パス＝カレントディレクトリ直下）が存在する実行文脈（例：リポジトリルートから直接実行した場合）については、「開発リポジトリでは
+    `stages/feature-dependency.yaml`」という受入 1 の規定と選択されるファイルが異なりうる。受入 1 との優先関係が仕様として明示されていない。
+  rationale: 要件の読み手が『開発リポジトリの正規パスは stages/ 配下』と理解した後、受入 6 の探索リストの3番目がどの文脈で選ばれるかを推論する必要が生じる。検証可能性の観点から、探索3番目が有効になる具体的な文脈（例：feature-dependency.yaml
+    をプロジェクトルートに置く構成）を注記するか、または不要であれば除外する根拠を示すことが望ましい。
+- severity: WARN
+  target_location: §2.3 受入 6 — 「ソース直書きの既定機能順は next 判定では解決結果で上書きされる」
+  description: 「ソース直書きの既定機能順」が何を指すかが受入 6 単独では特定できない。実装コード内に埋め込まれたフォールバックリストを指すと推測されるが、その存在・構造・フォールバックが発動する条件が
+    requirements.md 内のどこにも参照先なしに言及されている。
+  rationale: 要件文書として独立して読んだ場合、「ソース直書き」の意味が実装知識なしには不明であり検証不能。受入 8（feature_definition_required
+    を返す場合）との境界——つまり『既定順がある場合』と『feature_order 未定義で受入 8 が適用される場合』の排他条件——が明確化されていないと、実装との整合確認ができない。
+- severity: WARN
+  target_location: §2.3 受入 7 — 「依存元の機能より依存先の機能が先に並ぶ」という括弧内の補足説明
+  description: 括弧内例示「runtime が foundation に依存する場合、foundation を runtime より先に置く」は正しいが、本文の「依存元より依存先が先」という表現は依存方向の定義に慣れていない読み手には逆方向に解釈されうる（『A
+    が B に depends_on している』ときの『元』と『先』の直感的解釈は揺れる）。
+  rationale: 受入 7 は機械検査の合否を決める契約条件であるため、一義性が特に重要。例示で補完されているものの、「依存元」「依存先」の語義を本文でも明示（例：『A
+    depends_on B のとき B を A より前に置く』と直接記述）することで誤読リスクを排除できる。
+- severity: INFO
+  target_location: §2.3 受入 8 — verdict OK / exit code 0 の設計判断
+  description: feature-dependency.yaml 不在または feature_order 未定義の場合を『エラーではなく verdict
+    OK・exit code 0』とする設計が要件として明記されているが、この判断の根拠（フェーズ初期段階では未定義が正常状態である、という前提）が要件本文には記載されていない。
+  rationale: CI 統合や他ツールが exit code 0 を成功と読んで次処理を続行するリスクがある。設計意図が記録された利用者決定（MLE-DEC-002）への参照は
+    §4 にあるが、受入条件の本文にもワンライナーで根拠を示しておくと、要件単体での検証可能性が高まる。severity を INFO としたのは、§4 の証跡で補完されているため誤りではないと判断したため。
+- severity: INFO
+  target_location: §2.2 由来注記 — 「過去記録は書き換えず本注記で読み解く」方針
+  description: 語彙調停 案 A の方針は要件として一義に読めており、Requirement 1 受入 4・Requirement 8 受入 3 との整合も取れている。ただし、注記の管理主体・更新トリガー（将来
+    feature_order が再改称された場合に由来注記をどこで更新するか）が要件レベルでは規定されていない。
+  rationale: 現時点での整合性に問題はないが、長期保守の観点で由来注記の更新責任が不明瞭なままだと、次の語彙変更時に同種の gap が再発しうる。設計記録または
+    Change Intent へ一行追記する程度で対処可能な軽微事項として記録する。

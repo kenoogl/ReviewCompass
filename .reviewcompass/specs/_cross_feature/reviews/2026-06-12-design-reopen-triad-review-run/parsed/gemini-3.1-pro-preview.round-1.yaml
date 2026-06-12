@@ -1,0 +1,15 @@
+role: judgment
+provider: gemini-api
+model: gemini-3.1-pro-preview
+attempts: 1
+duration_seconds: 32.477
+findings:
+- severity: WARN
+  target_location: 2.3 §機能依存マップモデル §7 新設（feature 一覧の解決と立ち上げ案内）
+  description: YAMLパース不能を「案内（OK）」として扱う仕様が、フェイルクローズド原則（判断3）と両立する理由の説明が欠落している
+  rationale: レビュー観点5において「パース不能→案内（OK）が判断3とどう両立するかの説明妥当性」の確認が求められているが、本文（2.3節）では「実装改善候補
+    FUP-2026-06-12-001」として将来の課題にしている事実が書かれているのみで、現在の設計においてフェイルクローズドの例外とすることがなぜ妥当なのか（両立する理由）が説明されていないため。
+- severity: INFO
+  target_location: 2.5 §XDI-WM-003 新設（配布側複数 LLM 入口の配布契約）
+  description: 「欠落の自己診断」の主体と実行タイミングの曖昧さ
+  rationale: 「hook 配布：... 未置換・欠落の自己診断と fail-closed」とあるが、hookスクリプト自体が未インストール（欠落）である場合、hook自身は実行されないため自己診断が不可能となる。検査スクリプト側で欠落を検知するのか、hook内で別ファイルの欠落を検知するのか、設計境界における検証責務の所在（レビュー観点2）をより明確に記述することが望ましい。

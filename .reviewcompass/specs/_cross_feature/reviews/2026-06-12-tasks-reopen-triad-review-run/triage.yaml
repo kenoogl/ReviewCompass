@@ -1,0 +1,137 @@
+run_id: 2026-06-12-tasks-reopen-triad-review-run
+triage_status: decided
+generated_at: '2026-06-12T02:25:42.153703+00:00'
+decision_actor: null
+decision_actor_type: human
+items:
+- finding_id: 2026-06-12-tasks-reopen-triad-review-run-claude-sonnet-4-6-primary-001
+  run_id: 2026-06-12-tasks-reopen-triad-review-run
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: '## 2.1 T-002（機能依存マップ）の契約変更'
+  plain_language_summary: MLE-DEC-002によるスキーマ契約の実装検査への代替は、検証可能性の観点から妥当と判断できる。JSON Schemaを廃止する代わりに、`resolve_feature_order`・`validate_feature_order_consistency`・`depends_on`解釈の実装とテスト（155件＋全群871件）が正本として機能しており、機械検証の担保は維持されている。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-12T02:33:16.665746+00:00'
+  decision_reason: INFO。変更の妥当性・整合・境界内であることの肯定的確認であり、対処不要。利用者発言『OK』2026-06-12
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-12-tasks-reopen-triad-review-run-claude-sonnet-4-6-primary-002
+  run_id: 2026-06-12-tasks-reopen-triad-review-run
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: '## 2.3 T-004（検査スクリプト本体）の契約追記 — FUP-2026-06-12-001'
+  plain_language_summary: 「パース不能の遮断分離は実装改善候補 FUP-2026-06-12-001」と明示されており、feature-dependency.yamlがYAMLとして読めない場合のふるまい（現状：立ち上げ案内としてOK）が、fail-closed原則と例外的な位置付けにある。この例外がタスク完了条件として明示的に追跡されていない。
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-12T02:33:16.503536+00:00'
+  decision_reason: 同根（gpt-002）。fail-closed 例外の追跡を T-004 契約へ明示（FUP-2026-06-12-001 の追跡と解消時の文言更新義務を
+    1 文追記）。利用者発言『OK』2026-06-12
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-12-tasks-reopen-triad-review-run-claude-sonnet-4-6-primary-003
+  run_id: 2026-06-12-tasks-reopen-triad-review-run
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: '## 2.3 T-004 — `feature_definition_required` の探索順定義'
+  plain_language_summary: 探索順（`.reviewcompass/feature-dependency.yaml` → `stages/feature-dependency.yaml`
+    → `feature-dependency.yaml`）がT-004の契約追記に記載されており、design §7・requirements受入6〜8の文言と整合していることが確認できる。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-12T02:33:16.718160+00:00'
+  decision_reason: INFO。変更の妥当性・整合・境界内であることの肯定的確認であり、対処不要。利用者発言『OK』2026-06-12
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-12-tasks-reopen-triad-review-run-claude-sonnet-4-6-primary-004
+  run_id: 2026-06-12-tasks-reopen-triad-review-run
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: '## 3. conformance-evaluation tasks.md — T-010 文言追従'
+  plain_language_summary: '`phase_order`→`feature_order`への4箇所の文言追従は意味不変であり、承認済みdesignの語彙統一と整合している。タスク分解の再構成には該当せず、conformance-evaluation
+    Requirement 12 受入5の境界内に収まっていると判断できる。'
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-12T02:33:16.769959+00:00'
+  decision_reason: INFO。変更の妥当性・整合・境界内であることの肯定的確認であり、対処不要。利用者発言『OK』2026-06-12
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-12-tasks-reopen-triad-review-run-claude-sonnet-4-6-primary-005
+  run_id: 2026-06-12-tasks-reopen-triad-review-run
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: '## 1. レビューの位置付け — 「実装先行の追認」'
+  plain_language_summary: 文書内で「実装先行の追認」と明示されており、TDD失敗テスト10件先行という記載と組み合わせると、テストは実装に先行しているが、タスク契約は実装に追従する形となっている。この順序関係は本変更の性質を正確に表現しているが、今後のタスクにおける「契約→実装」の順序原則との整合を維持するよう注意が必要。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-12T02:33:16.821220+00:00'
+  decision_reason: INFO。変更の妥当性・整合・境界内であることの肯定的確認であり、対処不要。利用者発言『OK』2026-06-12
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-12-tasks-reopen-triad-review-run-gpt-5.5-adversarial-001
+  run_id: 2026-06-12-tasks-reopen-triad-review-run
+  source_model: gpt-5.5
+  source_round: round-1
+  source_raw_path: raw/gpt-5.5.round-1.txt
+  source_parsed_path: parsed/gpt-5.5.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: §2.1 T-002（機能依存マップ）の契約変更
+  plain_language_summary: JSON Schema 廃止後の正本が「実装とテスト」とされている一方、無効な depends_on 値などの期待結果がタスク契約上で十分に固定されていません。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-12T02:33:16.614219+00:00'
+  decision_reason: 期待結果は固定済み。T-002 テスト要件の値域テスト 5 ケース（hard／review／不正値／空文字／null）と design
+    §6 パース仕様（結論不能＝DEVIATION）が正本。レビュー対象抜粋に含まれなかったための見落とし。利用者発言『OK』2026-06-12
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-12-tasks-reopen-triad-review-run-gpt-5.5-adversarial-002
+  run_id: 2026-06-12-tasks-reopen-triad-review-run
+  source_model: gpt-5.5
+  source_round: round-1
+  source_raw_path: raw/gpt-5.5.round-1.txt
+  source_parsed_path: parsed/gpt-5.5.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: §2.3 T-004（検査スクリプト本体）の契約追記
+  plain_language_summary: feature-dependency.yaml の YAML パース不能を file 不在・feature_order
+    未定義と同じ OK/exit 0 の立ち上げ案内に含める例外が、fail-closed 方針との境界として目立ちにくいです。
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-12T02:33:16.561484+00:00'
+  decision_reason: 同根（claude-002）。同上。利用者発言『OK』2026-06-12
+  applied_files: []
+  superseded_by: null

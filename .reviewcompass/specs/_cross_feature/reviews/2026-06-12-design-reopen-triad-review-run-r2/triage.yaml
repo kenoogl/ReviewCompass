@@ -1,0 +1,174 @@
+run_id: 2026-06-12-design-reopen-triad-review-run-r2
+triage_status: decided
+generated_at: '2026-06-12T00:54:15.603890+00:00'
+decision_actor: null
+decision_actor_type: human
+items:
+- finding_id: 2026-06-12-design-reopen-triad-review-run-r2-claude-sonnet-4-6-primary-001
+  run_id: 2026-06-12-design-reopen-triad-review-run-r2
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: §2.3 §7 立ち上げ案内 — 判断3との両立説明
+  plain_language_summary: fail-closed 両立の説明は論理的に整合している。「作業を進ませない（操作を許可しない）」という安全側の性質が保たれることを明示し、fail-closed
+    が守る対象（不可逆操作の誤許可）に抵触しないと述べている。飛躍・検証不能な主張は見当たらない。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-12T01:02:18.067373+00:00'
+  decision_reason: INFO。round-1 対処の完結を確認する肯定的所見であり、対処不要。利用者発言『承認』2026-06-12
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-12-design-reopen-triad-review-run-r2-claude-sonnet-4-6-primary-002
+  run_id: 2026-06-12-design-reopen-triad-review-run-r2
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: §2.5 §XDI-WM-003 — hook 自己診断の契約
+  plain_language_summary: hook 自己診断の契約は「主体＝hook スクリプト自身」「タイミング＝hook 起動時」「拒否動作＝非0終了」「実体正本＝テンプレート本体」の4要素が明示されており、設計契約として完結している。登録雛形の実体化先（.claude/settings.json・.codex/hooks.json）と検証責務の所在（INITIAL_SETUP_LLM_GUIDE.md
+    正本）も明確。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-12T01:02:18.122289+00:00'
+  decision_reason: INFO。round-1 対処の完結を確認する肯定的所見であり、対処不要。利用者発言『承認』2026-06-12
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-12-design-reopen-triad-review-run-r2-claude-sonnet-4-6-primary-003
+  run_id: 2026-06-12-design-reopen-triad-review-run-r2
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: §2.3 §7 — 遡上根拠の記述
+  plain_language_summary: 遡上探索を行わない根拠（入れ子・一時ディレクトリからの実行で意図しないファイルを拾う恐れ、解決元の予測可能性優先）が明文化されており、一義に読める。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-12T01:02:18.174701+00:00'
+  decision_reason: INFO。round-1 対処の完結を確認する肯定的所見であり、対処不要。利用者発言『承認』2026-06-12
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-12-design-reopen-triad-review-run-r2-claude-sonnet-4-6-primary-004
+  run_id: 2026-06-12-design-reopen-triad-review-run-r2
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: §2.3 §7 — 判定点登録状態
+  plain_language_summary: feature_definition_required の WORKFLOW_DISCIPLINE_MAP.yaml
+    への登録、書き込み後検証3系統通過、manifest post-write-2026-06-12-004 の記録が明示されており、判定点登録の完了状態が追跡可能。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-12T01:02:18.226407+00:00'
+  decision_reason: INFO。round-1 対処の完結を確認する肯定的所見であり、対処不要。利用者発言『承認』2026-06-12
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-12-design-reopen-triad-review-run-r2-claude-sonnet-4-6-primary-005
+  run_id: 2026-06-12-design-reopen-triad-review-run-r2
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: §4 根拠と証跡 — requirements 受入との整合
+  plain_language_summary: 設計の挙動規定（探索順・立ち上げ案内・整合検査・fail-closed）は Requirement 8 受入1〜3・6〜8
+    と意味で一致している。受入6（整合違反遮断）・受入7（案内返却）・受入8（判定点登録）に対応する設計要素が §7 に明確に存在する。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-12T01:02:18.277069+00:00'
+  decision_reason: INFO。round-1 対処の完結を確認する肯定的所見であり、対処不要。利用者発言『承認』2026-06-12
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-12-design-reopen-triad-review-run-r2-claude-sonnet-4-6-primary-006
+  run_id: 2026-06-12-design-reopen-triad-review-run-r2
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: §2.5 §XDI-WM-003 — hook 配布 プレースホルダ置換の実施主体と検証タイミング
+  plain_language_summary: 「初期設定時に LLM が実パスへ置換し」と記述されているが、置換が正しく完了したことをいつ・どの手段で検証するかの設計契約が
+    §XDI-WM-003 本体に明示されていない。自己診断は hook 起動時に未置換を検出するが、それは初期設定後の最初の commit/push まで遅延する。
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-12T01:02:18.329994+00:00'
+  decision_reason: 置換完了の検証は初期設定完了時の有効化確認（正本＝初期設定ガイド）に含まれる旨を XDI-WM-003 へ追記。利用者発言『承認』2026-06-12
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-12-design-reopen-triad-review-run-r2-claude-sonnet-4-6-primary-007
+  run_id: 2026-06-12-design-reopen-triad-review-run-r2
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: §2.3 §7 — FEATURE_DEPENDENCY_SEARCH_PATHS の定義参照先
+  plain_language_summary: '`FEATURE_DEPENDENCY_SEARCH_PATHS` という識別子がインライン参照されているが、この定数の定義先（実装コード・設定ファイル・別仕様文書のどこか）へのクロスリファレンスが設計文書内に存在しない。'
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-12T01:02:18.381542+00:00'
+  decision_reason: FEATURE_DEPENDENCY_SEARCH_PATHS の定義先（tools/check-workflow-action.py
+    内の定数）を付記。利用者発言『承認』2026-06-12
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-12-design-reopen-triad-review-run-r2-gpt-5.5-adversarial-001
+  run_id: 2026-06-12-design-reopen-triad-review-run-r2
+  source_model: gpt-5.5
+  source_round: round-1
+  source_raw_path: raw/gpt-5.5.round-1.txt
+  source_parsed_path: parsed/gpt-5.5.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: §2.5 §XDI-WM-003（対象アプリ入口規律）
+  plain_language_summary: 既存入口（CLAUDE.md／AGENTS.md）へ追記する「1 行」の正本内容が、この設計契約内で明示されていない。
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-12T01:02:18.433558+00:00'
+  decision_reason: 合流 1 行の正本（AGENT_ENTRY テンプレート §11 の定型文）を付記。利用者発言『承認』2026-06-12
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-12-design-reopen-triad-review-run-r2-gpt-5.5-adversarial-002
+  run_id: 2026-06-12-design-reopen-triad-review-run-r2
+  source_model: gpt-5.5
+  source_round: round-1
+  source_raw_path: raw/gpt-5.5.round-1.txt
+  source_parsed_path: parsed/gpt-5.5.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: §2.5 §XDI-WM-003（hook 配布／登録雛形）
+  plain_language_summary: hook の fail-closed 性質は hook 起動後に限定されており、登録を見送った場合や登録漏れの場合の保護境界が設計上明確に分離されていない。
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-12T01:02:18.485956+00:00'
+  decision_reason: hook 未登録・見送り時は機械ガード第 1 層が存在しない状態であり、利用者明示判断による受容リスクとして完了報告に記録する旨を追記。利用者発言『承認』2026-06-12
+  applied_files: []
+  superseded_by: null

@@ -1,0 +1,26 @@
+approved_by: user
+review_run_id: 2026-06-12-design-reopen-triad-review-run-r2
+summary_presented_to_user: true
+triage_presented_to_user: true
+approval_quote: 利用者発言『承認』（2026-06-12。WARN 4 件 should-fix 追記・INFO 5 件 leave-as-is・r3 なしで review-wave／alignment へ進む案の提示後）
+approved_finding_ids:
+- 2026-06-12-design-reopen-triad-review-run-r2-claude-sonnet-4-6-primary-001
+- 2026-06-12-design-reopen-triad-review-run-r2-claude-sonnet-4-6-primary-002
+- 2026-06-12-design-reopen-triad-review-run-r2-claude-sonnet-4-6-primary-003
+- 2026-06-12-design-reopen-triad-review-run-r2-claude-sonnet-4-6-primary-004
+- 2026-06-12-design-reopen-triad-review-run-r2-claude-sonnet-4-6-primary-005
+- 2026-06-12-design-reopen-triad-review-run-r2-claude-sonnet-4-6-primary-006
+- 2026-06-12-design-reopen-triad-review-run-r2-claude-sonnet-4-6-primary-007
+- 2026-06-12-design-reopen-triad-review-run-r2-gpt-5.5-adversarial-001
+- 2026-06-12-design-reopen-triad-review-run-r2-gpt-5.5-adversarial-002
+approved_final_labels:
+  2026-06-12-design-reopen-triad-review-run-r2-claude-sonnet-4-6-primary-001: leave-as-is
+  2026-06-12-design-reopen-triad-review-run-r2-claude-sonnet-4-6-primary-002: leave-as-is
+  2026-06-12-design-reopen-triad-review-run-r2-claude-sonnet-4-6-primary-003: leave-as-is
+  2026-06-12-design-reopen-triad-review-run-r2-claude-sonnet-4-6-primary-004: leave-as-is
+  2026-06-12-design-reopen-triad-review-run-r2-claude-sonnet-4-6-primary-005: leave-as-is
+  2026-06-12-design-reopen-triad-review-run-r2-claude-sonnet-4-6-primary-006: should-fix
+  2026-06-12-design-reopen-triad-review-run-r2-claude-sonnet-4-6-primary-007: should-fix
+  2026-06-12-design-reopen-triad-review-run-r2-gpt-5.5-adversarial-001: should-fix
+  2026-06-12-design-reopen-triad-review-run-r2-gpt-5.5-adversarial-002: should-fix
+approved_action: review_run_triage

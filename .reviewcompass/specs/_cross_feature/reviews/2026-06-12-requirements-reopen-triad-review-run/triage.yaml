@@ -1,0 +1,212 @@
+run_id: 2026-06-12-requirements-reopen-triad-review-run
+triage_status: decided
+generated_at: '2026-06-12T00:15:43.548037+00:00'
+decision_actor: null
+decision_actor_type: human
+items:
+- finding_id: 2026-06-12-requirements-reopen-triad-review-run-claude-sonnet-4-6-primary-001
+  run_id: 2026-06-12-requirements-reopen-triad-review-run
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: §2.3 Requirement 8 受入 6 — 探索順の記述
+  plain_language_summary: 探索順が3段階（.reviewcompass/feature-dependency.yaml → stages/feature-dependency.yaml
+    → feature-dependency.yaml）と規定されているが、3番目の 'feature-dependency.yaml'（パス修飾なし）の基準ディレクトリ（カレントディレクトリ？リポジトリルート？）が明記されていない。
+  final_label: must-fix
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-12T00:20:44.348292+00:00'
+  decision_reason: クラスタ A（3 モデル同根）。受入 6 を『ツール実行時のカレントディレクトリ基準・遡上なし・最初の 1 ファイルのみ』へ精密化（案
+    1）。利用者承認 2026-06-12
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-12-requirements-reopen-triad-review-run-claude-sonnet-4-6-primary-002
+  run_id: 2026-06-12-requirements-reopen-triad-review-run
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: §2.1 Requirement 8 受入 1 — 二重規定と『一元保管先』の整合
+  plain_language_summary: 受入1は『機能間処理順と依存関係の一元保管先』と述べつつ、開発リポジトリ（stages/feature-dependency.yaml）と対象アプリ（.reviewcompass/feature-dependency.yaml）の二箇所にファイルが存在しうる旨を規定している。『一元』の意味が『単一の論理的な保管先スキーマ』なのか『実行時に参照する単一のファイル』なのかが文言から判断しにくい。
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-12T00:20:44.654811+00:00'
+  decision_reason: クラスタ C。『一元保管先』＝探索で選ばれる実行文脈ごとの単一ファイルである旨を受入 6 に明記。利用者承認 2026-06-12
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-12-requirements-reopen-triad-review-run-claude-sonnet-4-6-primary-003
+  run_id: 2026-06-12-requirements-reopen-triad-review-run
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: §2.3 Requirement 8 受入 7 — 『矛盾時』の挙動定義
+  plain_language_summary: '受入7は feature_order と depends_on が矛盾する場合に ''next'' が ''kind:
+    unknown／DEVIATION（fail-closed）を返す'' と規定しているが、''理由つきで指摘し'' という文言の出力先・形式（stderr／stdout／構造化フィールド）が明記されていない。'
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-12T00:20:44.536229+00:00'
+  decision_reason: クラスタ B。受入 7 を next_action.kind／reasons 配列／verdict・exit code の構造化フィールドで規定。利用者承認
+    2026-06-12
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-12-requirements-reopen-triad-review-run-claude-sonnet-4-6-primary-004
+  run_id: 2026-06-12-requirements-reopen-triad-review-run
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: §2.2 Requirement 8 受入 2 — 由来注記方式の適用範囲
+  plain_language_summary: 由来注記は『過去記録（レビュー記録・分割提案書・計画書）は書き換えない』と明記しているが、同注記を読むべき対象読者やタイミング（新規開発者のオンボーディング時、レビュー記録参照時など）についての案内がない。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-12T00:20:44.832478+00:00'
+  decision_reason: INFO。由来注記の読者案内は運用文書の役割で、要件本文には不要。利用者承認 2026-06-12
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-12-requirements-reopen-triad-review-run-claude-sonnet-4-6-primary-005
+  run_id: 2026-06-12-requirements-reopen-triad-review-run
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: §3.1 conformance-evaluation Requirement 7 受入 5
+  plain_language_summary: 文言追従として意味不変と説明されているが、旧文言が記録されていないため、差分の意味不変性を要件文書内で直接確認できない。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-12T00:20:44.891395+00:00'
+  decision_reason: INFO。旧文言は git 履歴と由来注記で追跡可能。要件文書内への旧文言併記は冗長。利用者承認 2026-06-12
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-12-requirements-reopen-triad-review-run-gpt-5.5-adversarial-001
+  run_id: 2026-06-12-requirements-reopen-triad-review-run
+  source_model: gpt-5.5
+  source_round: round-1
+  source_raw_path: raw/gpt-5.5.round-1.txt
+  source_parsed_path: parsed/gpt-5.5.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: §2.3 Requirement 8 受入 6
+  plain_language_summary: feature-dependency.yaml の探索基準が「実行場所基準」とだけ記述されており、リポジトリルート基準・カレントディレクトリ基準・親ディレクトリ探索の有無が一義に定まらない。
+  final_label: must-fix
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-12T00:20:44.413304+00:00'
+  decision_reason: クラスタ A（3 モデル同根）。同上。利用者承認 2026-06-12
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-12-requirements-reopen-triad-review-run-gpt-5.5-adversarial-002
+  run_id: 2026-06-12-requirements-reopen-triad-review-run
+  source_model: gpt-5.5
+  source_round: round-1
+  source_raw_path: raw/gpt-5.5.round-1.txt
+  source_parsed_path: parsed/gpt-5.5.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: §2.3 Requirement 8 受入 7〜8
+  plain_language_summary: 出力フィールド名の表記が `next`、`kind`、`next_action.kind` の間で揺れており、DEVIATION
+    もどのフィールドの値か明確でない。
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-12T00:20:44.595426+00:00'
+  decision_reason: クラスタ B。同上、受入 6〜8 の表記を統一。利用者承認 2026-06-12
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-12-requirements-reopen-triad-review-run-gpt-5.5-adversarial-003
+  run_id: 2026-06-12-requirements-reopen-triad-review-run
+  source_model: gpt-5.5
+  source_round: round-1
+  source_raw_path: raw/gpt-5.5.round-1.txt
+  source_parsed_path: parsed/gpt-5.5.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: §2.3 Requirement 8 受入 7
+  plain_language_summary: '`depends_on` と矛盾しない順序の説明で「依存される機能が先」と記述されており、依存元と依存先のどちらを指すか誤読の余地がある。'
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-12T00:20:44.714125+00:00'
+  decision_reason: クラスタ D。依存先行の意味を例（runtime が foundation に依存する場合、foundation が先）で明確化。利用者承認
+    2026-06-12
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-12-requirements-reopen-triad-review-run-gpt-5.5-adversarial-004
+  run_id: 2026-06-12-requirements-reopen-triad-review-run
+  source_model: gpt-5.5
+  source_round: round-1
+  source_raw_path: raw/gpt-5.5.round-1.txt
+  source_parsed_path: parsed/gpt-5.5.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: §1 および §4
+  plain_language_summary: 回帰テスト通過数が §1 では 871 件、§4 では 981 件と記載されている。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-12T00:20:44.950337+00:00'
+  decision_reason: INFO。レビュー対象文書（target.md）の記載への指摘。871 件は今回の pytest tests/ 全群、981
+    件は 2026-06-11 保守記録の別母集合の合計で、誤りではない。r2 target で表記を明確化。利用者承認 2026-06-12
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-12-requirements-reopen-triad-review-run-gemini-3.1-pro-preview-judgment-001
+  run_id: 2026-06-12-requirements-reopen-triad-review-run
+  source_model: gemini-3.1-pro-preview
+  source_round: round-1
+  source_raw_path: raw/gemini-3.1-pro-preview.round-1.txt
+  source_parsed_path: parsed/gemini-3.1-pro-preview.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: 2.3 Requirement 8 受入 6〜8 の新設（実装契約の追認）
+  plain_language_summary: 検査ツール（Requirement 2）の挙動に関する規定が、ファイル要件である Requirement 8 に追加されており、要件の凝集度が低下している。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-12T00:20:44.773468+00:00'
+  decision_reason: クラスタ E。受入 6〜8 は『検査ツール（Requirement 2）は』と相互参照済み。要件の移設は minimal_existing_spec_change
+    方針に反し、既存参照の再配線リスクが利点を上回る。利用者承認 2026-06-12
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-12-requirements-reopen-triad-review-run-gemini-3.1-pro-preview-judgment-002
+  run_id: 2026-06-12-requirements-reopen-triad-review-run
+  source_model: gemini-3.1-pro-preview
+  source_round: round-1
+  source_raw_path: raw/gemini-3.1-pro-preview.round-1.txt
+  source_parsed_path: parsed/gemini-3.1-pro-preview.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: 2.3 Requirement 8 受入 6（探索順の定義）
+  plain_language_summary: ファイルの探索パス基準が「実行場所基準」と記述されており、実装の挙動を正確かつ一義に規定できていない（あるいは実装自体が脆弱である）可能性がある。
+  final_label: must-fix
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-12T00:20:44.475127+00:00'
+  decision_reason: クラスタ A（3 モデル同根）。同上。実装変更（ルート自動検出）は本 reopen の方向に反するため採らない。利用者承認 2026-06-12
+  applied_files: []
+  superseded_by: null

@@ -1,0 +1,27 @@
+approved_by: user
+review_run_id: 2026-06-12-tasks-reopen-triad-review-run
+summary_presented_to_user: true
+triage_presented_to_user: true
+approval_quote: 利用者発言『OK』（2026-06-12。同根 2 件 should-fix＝パース不能例外の追跡明示 1 文追記、leave-as-is 5 件、r2 省略のトリアージ案提示後）
+approved_finding_ids:
+- 2026-06-12-tasks-reopen-triad-review-run-claude-sonnet-4-6-primary-001
+- 2026-06-12-tasks-reopen-triad-review-run-claude-sonnet-4-6-primary-002
+- 2026-06-12-tasks-reopen-triad-review-run-claude-sonnet-4-6-primary-003
+- 2026-06-12-tasks-reopen-triad-review-run-claude-sonnet-4-6-primary-004
+- 2026-06-12-tasks-reopen-triad-review-run-claude-sonnet-4-6-primary-005
+- 2026-06-12-tasks-reopen-triad-review-run-gpt-5.5-adversarial-001
+- 2026-06-12-tasks-reopen-triad-review-run-gpt-5.5-adversarial-002
+approved_final_labels:
+  2026-06-12-tasks-reopen-triad-review-run-claude-sonnet-4-6-primary-001: leave-as-is
+  2026-06-12-tasks-reopen-triad-review-run-claude-sonnet-4-6-primary-002: should-fix
+  2026-06-12-tasks-reopen-triad-review-run-claude-sonnet-4-6-primary-003: leave-as-is
+  2026-06-12-tasks-reopen-triad-review-run-claude-sonnet-4-6-primary-004: leave-as-is
+  2026-06-12-tasks-reopen-triad-review-run-claude-sonnet-4-6-primary-005: leave-as-is
+  2026-06-12-tasks-reopen-triad-review-run-gpt-5.5-adversarial-001: leave-as-is
+  2026-06-12-tasks-reopen-triad-review-run-gpt-5.5-adversarial-002: should-fix
+approved_action: review_run_triage
+clusters:
+  parse_error_exception_tracking:
+    label: should-fix
+    finding_ids: [claude-sonnet-4-6-primary-002, gpt-5.5-adversarial-002]
+    note: 同根。fail-closed 例外（パース不能→案内 OK）の追跡を T-004 契約に明示し、FUP-2026-06-12-001 解消時の文言更新義務を 1 文追記

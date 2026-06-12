@@ -1,0 +1,249 @@
+process_id: reopen-procedure
+feature: workflow-management
+classification: R-0
+started_at: '2026-06-12T00:00:00+09:00'
+trigger: conformance 評価 2026-06-12（gap_found）に基づく実装由来契約の仕様反映。語彙調停は案 A（MLE-DEC-001）で利用者決定済み、reopen 起動は 2026-06-12 利用者発言「承認」
+classification_basis: docs/reviews/reopen-classification-2026-06-12-multi-llm-entry-spec-reflection.md
+completed_steps:
+- 第1過程：判定とフラグ差し戻し（分類記録の作成、reopen-start、spec-set 事前検査 12 件 WARN 通過、workflow-management・conformance-evaluation の requirements／design／tasks
+  の alignment・approval を false、recheck 設定）
+- 第1過程停止点：利用者承認（2026-06-12 利用者発言「承認」。手戻り種別 R-0・再実施範囲・フラグ差し戻しを承認）
+- 第2過程：正本修正。workflow-management の requirements（Req 8 受入 6〜8 追加・語彙統一・由来注記）／design（§機能依存マップモデル §7 新設・XDI-WM-003 配布契約・語彙統一）／tasks（T-002
+  スキーマ契約を実装検査で代替 MLE-DEC-002・T-004 契約追記・語彙統一）、conformance-evaluation の requirements／design／tasks（feature_order 文言追従・意味不変）、運用文書
+  4 件（WORKFLOW_NAVIGATION.md へ feature_definition_required 分岐追加、WORKFLOW_DISCIPLINE_MAP.yaml へ判定点登録、REOPEN_PROCEDURE.md・CONFORMANCE_EVALUATION.md
+  語彙追従）、stages/feature-dependency.yaml の 7 機能実体化（MLE-DEC-003）、判定点カタログテストの期待一覧更新。テスト 871＋145 件通過（既知の test_t001_layout 収集エラーは
+  2026-06-11 保守記録済みの本件無関係）
+- 第2過程停止点：コミット完了（cf41eb7、利用者指示「コミット」2026-06-12。push は reopen 完了後）
+- 第3過程：stages/requirements.yaml#triad-review 実施。run=.reviewcompass/specs/_cross_feature/reviews/2026-06-12-requirements-reopen-triad-review-run（round-1：所見
+  11 件、クラスタ A must-fix・B/C/D should-fix・E と INFO 3 件 leave-as-is、利用者発言「承認」）および同 -r2（round-2：所見 7 件、F1〜F4 should-fix・INFO 2
+  件 leave-as-is、利用者発言「提案どおり」。judgment は所見なしで must-fix 解消確認）。修正は requirements.md Requirement 8 受入 6〜8 に反映済み
+- 第3過程：stages/requirements.yaml#review-wave 実施（機能横断確認 pass。記録=.reviewcompass/specs/_cross_feature/reviews/2026-06-12-requirements-review-wave.md。持ち越し
+  0 件、他 5 機能への語彙・kind 波及なし）
+- 第3過程：stages/requirements.yaml#alignment 実施（整合チェック pass。記録=.reviewcompass/specs/_cross_feature/reviews/2026-06-12-requirements-reopen-alignment.md。未処理所見
+  0 件、実装との整合確認済み）
+- 第3過程：stages/requirements.yaml#approval 承認（2026-06-12 利用者発言「承認」。spec.json の requirements alignment・approval を両 feature で
+  true へ復帰、spec-set 事前検査 OK）
+- 第3過程：stages/design.yaml#triad-review 実施。run=.reviewcompass/specs/_cross_feature/reviews/2026-06-12-design-reopen-triad-review-run（round-1：所見
+  10 件、クラスタ G must-fix＝判断 3 との両立説明を明文化・should-fix 4 件・leave-as-is 1 件、利用者発言「了承」）および同 -r2（round-2：所見 9 件、肯定的確認 INFO 5 件 leave-as-is・should-fix
+  4 件追記、利用者発言「承認」。judgment 所見なしで must-fix 解消確認。r3 は利用者承認のうえ省略）
+- 第3過程：stages/design.yaml#review-wave 実施（機能横断確認 pass。記録=.reviewcompass/specs/_cross_feature/reviews/2026-06-12-design-review-wave.md。持ち越し
+  0 件、他 5 機能の design への波及なし）
+- 第3過程：stages/design.yaml#alignment 実施（整合チェック pass。記録=.reviewcompass/specs/_cross_feature/reviews/2026-06-12-design-reopen-alignment.md。未処理所見
+  0 件、requirements・設計判断・実体との整合確認済み）
+- 第3過程：stages/design.yaml#approval 承認（2026-06-12 利用者発言「承認」。下流影響判定 8 件を記録し、spec.json の recheck から design を消化のうえ、design alignment・approval
+  を両 feature で true へ復帰、spec-set 事前検査 OK。注記：直前に検査 DEVIATION のまま一度書き込む手順誤りがあり、即時 false へ差し戻して正規手順でやり直した）
+- 第3過程：stages/tasks.yaml#triad-review 実施。run=.reviewcompass/specs/_cross_feature/reviews/2026-06-12-tasks-reopen-triad-review-run（所見
+  7 件：同根 2 件 should-fix＝fail-closed 例外の追跡明示を T-004 へ 1 文追記、leave-as-is 5 件うち INFO 4 件は肯定的確認。judgment 所見なし、must-fix なし。r2 は利用者承認のうえ省略、利用者発言「OK」）
+- 第3過程：stages/tasks.yaml#review-wave 実施（機能横断確認 pass。記録=.reviewcompass/specs/_cross_feature/reviews/2026-06-12-tasks-review-wave.md。持ち越し
+  0 件、他 5 機能の tasks への波及なし、DVT-C002 参照整合を確認）
+- 第3過程：stages/tasks.yaml#alignment 実施（整合チェック pass。記録=.reviewcompass/specs/_cross_feature/reviews/2026-06-12-tasks-reopen-alignment.md。未処理所見
+  0 件、テスト 871 件通過）
+- 第3過程：stages/tasks.yaml#approval 承認（2026-06-12 利用者発言「承認」。spec.json の recheck から tasks を消化、tasks alignment・approval を両 feature
+  で true へ復帰、spec-set 事前検査 OK）
+- 第3過程：stages/implementation.yaml#alignment 実施（確認のみ pass。記録=.reviewcompass/specs/_cross_feature/reviews/2026-06-12-implementation-reopen-alignment.md。実装・テストとも第3過程で変更なし、全テスト
+  871＋194 件通過、実装変更不要を確認）
+- 第3過程：stages/implementation.yaml#approval 承認（2026-06-12 利用者発言「承認」。実装変更不要・確認のみ pass の判定）
+- 第4過程：整合性の最終確認（全テスト 871＋194 件通過、next 判定正常）、recheck クリア（両 feature の upstream_change_pending=false・impacted_downstream_phases=[]、reopened
+  は履歴として true 維持）、進行中ファイルを stages/completed/ へ移動
+completed_gates:
+- stages/requirements.yaml#triad-review
+- stages/requirements.yaml#review-wave
+- stages/requirements.yaml#alignment
+- stages/requirements.yaml#approval
+- stages/design.yaml#triad-review
+- stages/design.yaml#review-wave
+- stages/design.yaml#alignment
+- stages/design.yaml#approval
+- stages/tasks.yaml#triad-review
+- stages/tasks.yaml#review-wave
+- stages/tasks.yaml#alignment
+- stages/tasks.yaml#approval
+- stages/implementation.yaml#alignment
+- stages/implementation.yaml#approval
+drafting_completed_gates:
+- stages/requirements.yaml#drafting
+- stages/design.yaml#drafting
+- stages/tasks.yaml#drafting
+human_decisions_in_phase2:
+- MLE-DEC-002（スキーマ契約は実装検査で代替、2026-06-12 利用者発言「推奨案」）
+- MLE-DEC-003（features 7 機能分を実体化、2026-06-12 利用者発言「推奨案」）
+- 書き込み後検証は post_write_verification_independent_3way（3 系統、2026-06-12 利用者発言「推奨案」）
+- requirements triad-review のトリアージ（round-1「承認」、round-2「提案どおり」、2026-06-12）
+- design triad-review のトリアージ（round-1「了承」、round-2「承認」、2026-06-12）
+- tasks triad-review のトリアージ（「OK」、2026-06-12）
+next_step: （完了。第4過程の停止点コミットと push を残すのみ）
+step_number: 4
+approval_source: 2026-06-12 利用者発言「承認」（第1過程停止点）
+pending_gates: []
+pending_gates_note: R-0 基線（requirements の alignment／approval）に、REOPEN_PROCEDURE.md §3「正本本文を修正した phase は triad-review／review-wave／alignment／approval
+  を再実施対象に加える」に従い requirements・design・tasks の全 review 系 gate を追加。implementation は正本修正なし（実装先行のため確認のみ）として alignment／approval
+  の再確認を加えた。
+current_blocker: null
+required_feature_scope:
+- workflow-management
+- conformance-evaluation
+reopen_handoff_package: .reviewcompass/specs/conformance-evaluation/conformance/2026-06-12-reopen-handoff-package.yaml
+human_decision: MLE-DEC-001（語彙調停 案 A、2026-06-12 利用者決定）
+proposed_update_refs:
+- .reviewcompass/specs/conformance-evaluation/conformance/2026-06-12-spec-update-drafts/workflow-management-requirements.draft.md
+- .reviewcompass/specs/conformance-evaluation/conformance/2026-06-12-spec-update-drafts/workflow-management-design.draft.md
+- .reviewcompass/specs/conformance-evaluation/conformance/2026-06-12-spec-update-drafts/workflow-management-tasks.draft.md
+- .reviewcompass/specs/conformance-evaluation/conformance/2026-06-12-spec-update-drafts/operations-docs.draft.md
+impacted_downstream_phases:
+- design
+- tasks
+- implementation
+feature_impact_decisions:
+- feature: workflow-management
+  decision: reopen_existing_feature
+  impact_basis: contract_ownership
+  rationale: feature 一覧解決・next 判定種別・配布テンプレート契約の正本（requirements・design・tasks）を所有し、直接修正するため。
+  evidence:
+  - .reviewcompass/specs/conformance-evaluation/conformance/2026-06-12-completed-followup-conformance.md
+  - docs/notes/2026-06-10-deployment-multi-llm-entry-design.md
+  - stages/completed/maintenance-2026-06-11-feature-order-generalization.yaml
+- feature: conformance-evaluation
+  decision: reopen_existing_feature
+  impact_basis: contract_ownership
+  rationale: 自仕様（Requirement 7 受入 5、design §13.5、tasks T-010 ほか）の phase_order 表記が、MLE-DEC-001 の語彙確定により意味不変の文言追従を要するため。
+  evidence:
+  - .reviewcompass/specs/conformance-evaluation/requirements.md
+  - .reviewcompass/specs/conformance-evaluation/conformance/2026-06-12-reopen-handoff-package.yaml
+- feature: evaluation
+  decision: no_reopen_existing_feature
+  impact_basis: no_implementation_impact
+  rationale: 本 reopen の変更（語彙・探索順・判定種別・テンプレート契約）は evaluation の契約を変えない。MLE-HANDOFF-004（variant 既定の仕様昇格）は利用者判断待ちで、判断後に必要なら別手続きとする。
+  evidence:
+  - .reviewcompass/specs/conformance-evaluation/conformance/2026-06-12-reopen-handoff-package.yaml
+- feature: foundation
+  decision: no_reopen_existing_feature
+  impact_basis: no_implementation_impact
+  rationale: next_action の kind 語彙は foundation が所有する共有語彙に含まれず、workflow-management T-004 の契約である。
+  evidence:
+  - .reviewcompass/specs/foundation/requirements.md
+- feature: runtime
+  decision: no_reopen_existing_feature
+  impact_basis: no_implementation_impact
+  rationale: 入口テンプレートは配布物の場所を記入欄方式で扱い、runtime 承認済みの config.yaml 必須 5 項目契約に触れない（設計記録 §3.1 で再オープン回避を確認済み）。
+  evidence:
+  - docs/notes/2026-06-10-deployment-multi-llm-entry-design.md
+- feature: analysis
+  decision: no_reopen_existing_feature
+  impact_basis: consumer_or_derivative_only
+  rationale: conformance 出力の読み手であり、6 criteria の接合面は不変のため。
+  evidence:
+  - .reviewcompass/specs/analysis/requirements.md
+- feature: self-improvement
+  decision: no_reopen_existing_feature
+  impact_basis: consumer_or_derivative_only
+  rationale: 規律改善の入力として読む側であり、接合面は不変。WP-001 は提案のまま仕様化しない。
+  evidence:
+  - learning/workflow/proposals/WP-001-finding-cause-attribution.yaml
+follow_up_candidates:
+- id: FUP-2026-06-12-001
+  source: 2026-06-12-requirements-reopen-triad-review-run-r2 の F4（gpt-5.5-adversarial-002、利用者承認 案 a）
+  candidate: feature-dependency.yaml が YAML として読めない場合を、立ち上げ案内（feature_definition_required／OK）から遮断（DEVIATION、fail-closed）へ分離する実装改修。実施時は
+    maintenance side track ＋ TDD
+new_feature_decision:
+  decision: no_new_feature
+  rationale: すべて既存 feature（workflow-management・conformance-evaluation）の責務境界で受けられるため。
+  evidence:
+  - docs/reviews/reopen-classification-2026-06-12-multi-llm-entry-spec-reflection.md
+requirements_approval_source: 2026-06-12 利用者発言「承認」
+downstream_impact_decisions:
+- gate: stages/requirements.yaml#triad-review
+  feature_scope: workflow-management, conformance-evaluation
+  decision: affected_update_required
+  rationale: 実装由来契約の仕様反映として requirements 正本の修正が必要。修正を実施し三役レビュー 2 巡（must-fix クラスタ A 解消）で検証した。
+  evidence:
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-12-requirements-reopen-triad-review-run/triage.yaml
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-12-requirements-reopen-triad-review-run-r2/triage.yaml
+- gate: stages/requirements.yaml#review-wave
+  feature_scope: all_features
+  decision: no_impact
+  rationale: 他 5 機能の requirements に語彙・判定種別の波及なし。持ち越し 0 件。
+  evidence:
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-12-requirements-review-wave.md
+- gate: stages/requirements.yaml#alignment
+  feature_scope: all_features
+  decision: existing_sufficient
+  rationale: 要件内・feature 間・実装との整合を確認し、追加修正は不要。
+  evidence:
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-12-requirements-reopen-alignment.md
+- gate: stages/requirements.yaml#approval
+  feature_scope: workflow-management, conformance-evaluation
+  decision: approved
+  rationale: 利用者が requirements フェーズの approval を承認した。
+  evidence:
+  - 2026-06-12 利用者発言「承認」
+  - stages/in-progress/reopen-procedure-2026-06-12.yaml
+- gate: stages/design.yaml#triad-review
+  feature_scope: workflow-management, conformance-evaluation
+  decision: affected_update_required
+  rationale: requirements 変更の design 反映が必要。§機能依存マップモデル §7・XDI-WM-003 ほかを修正し三役レビュー 2 巡（must-fix クラスタ G 解消）で検証した。
+  evidence:
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-12-design-reopen-triad-review-run/triage.yaml
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-12-design-reopen-triad-review-run-r2/triage.yaml
+- gate: stages/design.yaml#review-wave
+  feature_scope: all_features
+  decision: no_impact
+  rationale: 他 5 機能の design に語彙・配布契約の波及なし。持ち越し 0 件。
+  evidence:
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-12-design-review-wave.md
+- gate: stages/design.yaml#alignment
+  feature_scope: all_features
+  decision: existing_sufficient
+  rationale: requirements・設計判断・実体との整合を確認し、追加修正は不要。
+  evidence:
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-12-design-reopen-alignment.md
+- gate: stages/design.yaml#approval
+  feature_scope: workflow-management, conformance-evaluation
+  decision: approved
+  rationale: 利用者が design フェーズの approval を承認した。
+  evidence:
+  - 2026-06-12 利用者発言「承認」
+  - stages/in-progress/reopen-procedure-2026-06-12.yaml
+- gate: stages/tasks.yaml#triad-review
+  feature_scope: workflow-management, conformance-evaluation
+  decision: affected_update_required
+  rationale: requirements・design 変更の tasks 反映が必要。T-002 スキーマ契約の実装検査代替（MLE-DEC-002）・T-004 契約追記・語彙統一を実施し三役レビューで検証した。
+  evidence:
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-12-tasks-reopen-triad-review-run/triage.yaml
+- gate: stages/tasks.yaml#review-wave
+  feature_scope: all_features
+  decision: no_impact
+  rationale: 他 5 機能の tasks に語彙・スキーマ契約の波及なし。DVT-C002 の参照整合を確認。持ち越し 0 件。
+  evidence:
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-12-tasks-review-wave.md
+- gate: stages/tasks.yaml#alignment
+  feature_scope: all_features
+  decision: existing_sufficient
+  rationale: requirements・design・実体・テストとの整合を確認し、追加修正は不要。
+  evidence:
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-12-tasks-reopen-alignment.md
+- gate: stages/tasks.yaml#approval
+  feature_scope: workflow-management, conformance-evaluation
+  decision: approved
+  rationale: 利用者が tasks フェーズの approval を承認した。
+  evidence:
+  - 2026-06-12 利用者発言「承認」
+  - stages/in-progress/reopen-procedure-2026-06-12.yaml
+- gate: stages/implementation.yaml#alignment
+  feature_scope: workflow-management, conformance-evaluation
+  decision: no_impact
+  rationale: 実装先行の仕様追認であり、第3過程を通じて実装コード・テストに変更なし。仕様の確定文言はすべて実装の実挙動の追認で、実装変更を要する規定はない。
+  evidence:
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-12-implementation-reopen-alignment.md
+- gate: stages/implementation.yaml#approval
+  feature_scope: workflow-management, conformance-evaluation
+  decision: approved
+  rationale: 利用者が implementation フェーズの approval（実装変更不要・確認のみ pass）を承認した。
+  evidence:
+  - 2026-06-12 利用者発言「承認」
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-12-implementation-reopen-alignment.md
+design_approval_source: 2026-06-12 利用者発言「承認」
+tasks_approval_source: 2026-06-12 利用者発言「承認」
+implementation_approval_source: 2026-06-12 利用者発言「承認」
+recheck_clear_result: 両 feature（workflow-management・conformance-evaluation）の recheck.upstream_change_pending を false、impacted_downstream_phases
+  を空に戻した。reopened は履歴として true のまま維持。
+completed_at: '2026-06-12T00:00:00+09:00'

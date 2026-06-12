@@ -1,0 +1,46 @@
+approved_by: user
+review_run_id: 2026-06-12-design-reopen-triad-review-run
+summary_presented_to_user: true
+triage_presented_to_user: true
+approval_quote: 利用者発言『了承』（2026-06-12。クラスタ G must-fix＝判断 3 との両立説明の明文化、should-fix 4 件、leave-as-is 1 件のトリアージ案提示後）
+approved_finding_ids:
+- 2026-06-12-design-reopen-triad-review-run-claude-sonnet-4-6-primary-001
+- 2026-06-12-design-reopen-triad-review-run-claude-sonnet-4-6-primary-002
+- 2026-06-12-design-reopen-triad-review-run-claude-sonnet-4-6-primary-003
+- 2026-06-12-design-reopen-triad-review-run-claude-sonnet-4-6-primary-004
+- 2026-06-12-design-reopen-triad-review-run-claude-sonnet-4-6-primary-005
+- 2026-06-12-design-reopen-triad-review-run-gpt-5.5-adversarial-001
+- 2026-06-12-design-reopen-triad-review-run-gpt-5.5-adversarial-002
+- 2026-06-12-design-reopen-triad-review-run-gpt-5.5-adversarial-003
+- 2026-06-12-design-reopen-triad-review-run-gemini-3.1-pro-preview-judgment-001
+- 2026-06-12-design-reopen-triad-review-run-gemini-3.1-pro-preview-judgment-002
+approved_final_labels:
+  2026-06-12-design-reopen-triad-review-run-claude-sonnet-4-6-primary-001: must-fix
+  2026-06-12-design-reopen-triad-review-run-claude-sonnet-4-6-primary-002: should-fix
+  2026-06-12-design-reopen-triad-review-run-claude-sonnet-4-6-primary-003: should-fix
+  2026-06-12-design-reopen-triad-review-run-claude-sonnet-4-6-primary-004: leave-as-is
+  2026-06-12-design-reopen-triad-review-run-claude-sonnet-4-6-primary-005: should-fix
+  2026-06-12-design-reopen-triad-review-run-gpt-5.5-adversarial-001: must-fix
+  2026-06-12-design-reopen-triad-review-run-gpt-5.5-adversarial-002: should-fix
+  2026-06-12-design-reopen-triad-review-run-gpt-5.5-adversarial-003: should-fix
+  2026-06-12-design-reopen-triad-review-run-gemini-3.1-pro-preview-judgment-001: must-fix
+  2026-06-12-design-reopen-triad-review-run-gemini-3.1-pro-preview-judgment-002: should-fix
+approved_action: review_run_triage
+clusters:
+  G_failclosed_compatibility:
+    label: must-fix
+    finding_ids: [claude-sonnet-4-6-primary-001, gpt-5.5-adversarial-001, gemini-3.1-pro-preview-judgment-001]
+    note: 3 モデル同根。設計の矛盾ではなく説明不足。判断 3（fail-closed＝不可逆操作を誤って許可しない原則）と立ち上げ案内（何も許可しない・進ませない）の両立説明を design §7 へ明文化。実装変更は利用者決定済みの案 a を維持
+  H_hook_contract_detail:
+    label: should-fix
+    finding_ids: [claude-sonnet-4-6-primary-002, gpt-5.5-adversarial-003, gemini-3.1-pro-preview-judgment-002]
+    note: XDI-WM-003 へ自己診断の主体・タイミング・拒否動作・登録雛形の実体化先・有効化確認と検証責務を追記
+  entry_merge_condition:
+    label: should-fix
+    finding_ids: [gpt-5.5-adversarial-002]
+  no_parent_traversal_rationale:
+    label: should-fix
+    finding_ids: [claude-sonnet-4-6-primary-003]
+  map_registration_status:
+    label: should-fix
+    finding_ids: [claude-sonnet-4-6-primary-005]

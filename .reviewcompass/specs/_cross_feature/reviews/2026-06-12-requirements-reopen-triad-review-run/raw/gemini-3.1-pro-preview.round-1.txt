@@ -1,0 +1,9 @@
+findings:
+  - severity: WARN
+    target_location: "2.3 Requirement 8 受入 6〜8 の新設（実装契約の追認）"
+    description: "検査ツール（Requirement 2）の挙動に関する規定が、ファイル要件である Requirement 8 に追加されており、要件の凝集度が低下している。"
+    rationale: "レビュー観点5の懸念の通り、検査ツールがファイルをどう処理し具体的な戻り値（`next_action.kind` や `DEVIATION`）を決定するかは、Requirement 2 の責務である。Requirement 8（ファイルの保管先や構造の定義）にツールの判定ロジックを混在させると、将来の仕様変更時に Requirement 2 との間で矛盾や見落としが発生しやすくなる。"
+  - severity: WARN
+    target_location: "2.3 Requirement 8 受入 6（探索順の定義）"
+    description: "ファイルの探索パス基準が「実行場所基準」と記述されており、実装の挙動を正確かつ一義に規定できていない（あるいは実装自体が脆弱である）可能性がある。"
+    rationale: "レビュー観点1に関連し、「実行場所基準」がカレントディレクトリ（`$PWD`）を指す場合、サブディレクトリからツールを実行した際に正しくファイルを解決できず、誤って受入8の案内（`feature_definition_required`）へ分岐する原因となる。通常は「リポジトリルート」または「プロジェクトルート」を基準とすべきであり、実装がそれに従っている場合はドキュメントの表現が不正確となるため、見直しが必要である。"

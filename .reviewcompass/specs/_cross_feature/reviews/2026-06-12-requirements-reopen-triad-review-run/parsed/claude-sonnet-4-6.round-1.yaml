@@ -1,0 +1,31 @@
+role: primary
+provider: anthropic-api
+model: claude-sonnet-4-6
+attempts: 1
+duration_seconds: 27.785
+findings:
+- severity: WARN
+  target_location: §2.3 Requirement 8 受入 6 — 探索順の記述
+  description: 探索順が3段階（.reviewcompass/feature-dependency.yaml → stages/feature-dependency.yaml
+    → feature-dependency.yaml）と規定されているが、3番目の 'feature-dependency.yaml'（パス修飾なし）の基準ディレクトリ（カレントディレクトリ？リポジトリルート？）が明記されていない。
+  rationale: 要件は実装の実挙動を正確かつ検証可能に記述することが求められているが（レビュー観点1）、パス解決の起点が曖昧なままでは、実装と要件の一致を機械的に検証できない。将来の実装差し替え時に解釈揺れが生じるリスクがある。
+- severity: WARN
+  target_location: §2.1 Requirement 8 受入 1 — 二重規定と『一元保管先』の整合
+  description: 受入1は『機能間処理順と依存関係の一元保管先』と述べつつ、開発リポジトリ（stages/feature-dependency.yaml）と対象アプリ（.reviewcompass/feature-dependency.yaml）の二箇所にファイルが存在しうる旨を規定している。『一元』の意味が『単一の論理的な保管先スキーマ』なのか『実行時に参照する単一のファイル』なのかが文言から判断しにくい。
+  rationale: レビュー観点2に直結する。二重規定自体は受入6の探索順で整合が取れているとも読めるが、『一元保管先』という語と二ファイル並存の記述が同一受入内で共存することで、後続の設計・実装担当者が誤読する可能性がある。意味が一元（スキーマ的な意味）であるならば、その旨を明示する1文を補うことで曖昧さが解消できる。
+- severity: WARN
+  target_location: §2.3 Requirement 8 受入 7 — 『矛盾時』の挙動定義
+  description: '受入7は feature_order と depends_on が矛盾する場合に ''next'' が ''kind: unknown／DEVIATION（fail-closed）を返す''
+    と規定しているが、''理由つきで指摘し'' という文言の出力先・形式（stderr／stdout／構造化フィールド）が明記されていない。'
+  rationale: レビュー観点1・5に関わる。実装の validate_feature_order_consistency が具体的な出力形式を持つ場合、要件と実装の間に検証可能な対応関係を保つためには出力媒体の最低限の記述が必要。Requirement
+    2 の next 判定責務との重複確認においても、'指摘' の形式が Requirement 2 の既存契約と整合しているかを判断する情報が要件文中にない。
+- severity: INFO
+  target_location: §2.2 Requirement 8 受入 2 — 由来注記方式の適用範囲
+  description: 由来注記は『過去記録（レビュー記録・分割提案書・計画書）は書き換えない』と明記しているが、同注記を読むべき対象読者やタイミング（新規開発者のオンボーディング時、レビュー記録参照時など）についての案内がない。
+  rationale: レビュー観点3に関わる。要件としての一義性は確保されているが、実運用上 phase_order という旧称を含む過去記録を参照した際に本注記の存在に気づかない読者がいる可能性がある。WORKFLOW_NAVIGATION.md
+    や WORKFLOW_DISCIPLINE_MAP.yaml にも注記への誘導が追加されているか否かを確認し、もし未追加であれば要件または運用文書への参照追記を検討することが望ましい。
+- severity: INFO
+  target_location: §3.1 conformance-evaluation Requirement 7 受入 5
+  description: 文言追従として意味不変と説明されているが、旧文言が記録されていないため、差分の意味不変性を要件文書内で直接確認できない。
+  rationale: レビュー観点4に関わる。conformance 評価記録（MLE-GAP-001〜003）を参照すれば追跡可能とは言えるが、要件文書単体でのトレーサビリティを高めるために、Change
+    Intent 追記の中に旧文言の一節を引用する形を取ると、後日の再レビュー時の工数が削減できる。severity は INFO であり必須対応ではないが改善を推奨する。

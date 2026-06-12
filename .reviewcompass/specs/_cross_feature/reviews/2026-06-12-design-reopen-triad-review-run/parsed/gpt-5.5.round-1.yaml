@@ -1,0 +1,24 @@
+role: adversarial
+provider: openai-api
+model: gpt-5.5
+attempts: 1
+duration_seconds: 39.177
+findings:
+- severity: ERROR
+  target_location: §2.3 §機能依存マップモデル §7 / §5 レビュー観点 5
+  description: YAML パース不能を feature_definition_required の OK/exit 0 として扱う設計が、既存の fail-closed
+    判断と十分に整合していません。
+  rationale: feature-dependency.yaml が存在するが壊れている場合は、未作成の初期状態ではなく、既存の機能依存マップが検査不能な状態です。これを
+    OK として案内に落とすと、依存順・循環検査を迂回でき、判断 3 の fail-closed 全面採用と衝突します。FUP に分離しただけでは、design
+    フェーズの契約として矛盾が解消されていません。
+- severity: WARN
+  target_location: §2.5 §XDI-WM-003 新設（配布側複数 LLM 入口の配布契約）
+  description: 複数 LLM 入口を有効化するための入口ファイル／既存入口への合流条件が設計契約としてまだ曖昧です。
+  rationale: .reviewcompass/AGENT_ENTRY.md の配布先は示されていますが、各 LLM が実際に読む既存入口へどの条件で 1
+    行追記するのか、未承認・未合流時にどう検出するのか、どの状態を配布完了とみなすのかが設計境界で明確ではありません。入口が配置されても LLM から参照されなければ、配布側複数
+    LLM 入口契約として実効性が不足します。
+- severity: WARN
+  target_location: §2.5 §XDI-WM-003 新設（hook 配布・登録雛形）
+  description: hook 本体の複製先は示されていますが、登録雛形の実体化先・有効化確認・検証責務が設計上十分に規定されていません。
+  rationale: pre-bash-precheck.sh.template が .claude/hooks/ と .codex/hooks/ に置かれても、claude-settings.json.template／codex-hooks.json.template
+    が正しい場所に展開され、各 LLM ランタイムで hook が実際に起動されることを確認しなければ fail-closed は機能しません。配布契約として、登録ファイルの対象パス、必須性、未登録時の検出方法、検証担当を明確にする必要があります。

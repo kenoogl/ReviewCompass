@@ -1,0 +1,4 @@
+run_id: 2026-06-12-tasks-reopen-triad-review-run
+target_files:
+- path: .reviewcompass/specs/_cross_feature/reviews/2026-06-12-tasks-reopen-triad-review-run/target.md
+  sha256: 1a8d1ef1093167b1936a836172fdf2d589b8c4a5990a4846a68a1a7eba2b9abc
