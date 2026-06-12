@@ -1,0 +1,5 @@
+findings:
+  - severity: INFO
+    target_location: "front matter (related)"
+    description: "front matter の related に 2026-06-12-document-placement-stage2-decisions.md が含まれていません。"
+    rationale: "本文中の「5 段階の進め方」において、第2段階が既に「完了」ステータスとなっており、成果物として『2026-06-12-document-placement-stage2-decisions.md』が明記されています。フロントマターの related 属性にもこれを含めることで、関連文書へのアクセス性とトレーサビリティが向上します。"

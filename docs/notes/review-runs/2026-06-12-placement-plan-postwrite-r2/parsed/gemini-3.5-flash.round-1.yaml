@@ -1,0 +1,11 @@
+role: primary
+provider: gemini-api
+model: gemini-3.5-flash
+attempts: 1
+duration_seconds: 5.49
+findings:
+- severity: ERROR
+  target_location: '## 再開方法（次セッション向け） の 2'
+  description: 次の作業として指定されている段階の整合性エラー
+  rationale: 「5 段階の進め方」の表において、「段階 2」は「完了」ステータスであり、「段階 3」が「未着手（次の作業）」と定義されています。しかし、「再開方法」の2番目の手順では「「次の作業」（現時点では段階
+    2）を確認し」と記載されており、矛盾が生じています。次の作業は「段階 3」となるべきです。

@@ -1,0 +1,4 @@
+run_id: 2026-06-12-placement-plan-postwrite-r4
+target_files:
+- path: docs/notes/2026-06-12-document-placement-plan.md
+  sha256: 1d5e10e1f2e40d2fb822cf09a58785666677eab0a36eaadb761ebc39d4c3875e

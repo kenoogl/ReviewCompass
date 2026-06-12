@@ -1,0 +1,26 @@
+run_id: 2026-06-12-placement-plan-postwrite-r3
+triage_status: decided
+generated_at: '2026-06-12T08:38:17.091761+00:00'
+decision_actor: null
+decision_actor_type: human
+items:
+- finding_id: 2026-06-12-placement-plan-postwrite-r3-gemini-3.5-flash-primary-001
+  run_id: 2026-06-12-placement-plan-postwrite-r3
+  source_model: gemini-3.5-flash
+  source_round: round-1
+  source_raw_path: raw/gemini-3.5-flash.round-1.txt
+  source_parsed_path: parsed/gemini-3.5-flash.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: front matter (related)
+  plain_language_summary: front matter の related に 2026-06-12-document-placement-stage2-decisions.md
+    が含まれていません。
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: llm
+  decision_actor_type: agent
+  decision_at: '2026-06-12T08:39:12.159596+00:00'
+  decision_reason: related への決定記録の追加は参照性を高める妥当な改善。INFO で重要件に該当しないため操縦 LLM 判断で適用済み（1
+    行追記）
+  applied_files: []
+  superseded_by: null

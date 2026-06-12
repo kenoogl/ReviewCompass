@@ -1,0 +1,4 @@
+run_id: 2026-06-12-placement-stage2-postwrite
+target_files:
+- path: docs/notes/2026-06-12-document-placement-stage2-decisions.md
+  sha256: 6d8c43714df1090a8d4000ead14e06561a283242b432174058a5f2c5d9426a6f

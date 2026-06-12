@@ -1,0 +1,140 @@
+status: completed
+target_files:
+- docs/notes/2026-06-12-document-placement-plan.md
+- docs/notes/2026-06-12-document-placement-stage2-decisions.md
+- docs/notes/review-runs/2026-06-12-placement-plan-postwrite-r2/approval.yaml
+- docs/notes/review-runs/2026-06-12-placement-plan-postwrite-r2/model-result-summary.yaml
+- docs/notes/review-runs/2026-06-12-placement-plan-postwrite-r2/parsed/gemini-3.5-flash.round-1.yaml
+- docs/notes/review-runs/2026-06-12-placement-plan-postwrite-r2/raw/gemini-3.5-flash.round-1.txt
+- docs/notes/review-runs/2026-06-12-placement-plan-postwrite-r2/review_summary.md
+- docs/notes/review-runs/2026-06-12-placement-plan-postwrite-r2/rounds.yaml
+- docs/notes/review-runs/2026-06-12-placement-plan-postwrite-r2/target-manifest.yaml
+- docs/notes/review-runs/2026-06-12-placement-plan-postwrite-r2/triage.yaml
+- docs/notes/review-runs/2026-06-12-placement-plan-postwrite-r3/model-result-summary.yaml
+- docs/notes/review-runs/2026-06-12-placement-plan-postwrite-r3/parsed/gemini-3.5-flash.round-1.yaml
+- docs/notes/review-runs/2026-06-12-placement-plan-postwrite-r3/raw/gemini-3.5-flash.round-1.txt
+- docs/notes/review-runs/2026-06-12-placement-plan-postwrite-r3/review_summary.md
+- docs/notes/review-runs/2026-06-12-placement-plan-postwrite-r3/rounds.yaml
+- docs/notes/review-runs/2026-06-12-placement-plan-postwrite-r3/target-manifest.yaml
+- docs/notes/review-runs/2026-06-12-placement-plan-postwrite-r3/triage.yaml
+- docs/notes/review-runs/2026-06-12-placement-plan-postwrite-r4/model-result-summary.yaml
+- docs/notes/review-runs/2026-06-12-placement-plan-postwrite-r4/parsed/gemini-3.5-flash.round-1.yaml
+- docs/notes/review-runs/2026-06-12-placement-plan-postwrite-r4/raw/gemini-3.5-flash.round-1.txt
+- docs/notes/review-runs/2026-06-12-placement-plan-postwrite-r4/review_summary.md
+- docs/notes/review-runs/2026-06-12-placement-plan-postwrite-r4/rounds.yaml
+- docs/notes/review-runs/2026-06-12-placement-plan-postwrite-r4/target-manifest.yaml
+- docs/notes/review-runs/2026-06-12-placement-plan-postwrite-r4/triage.yaml
+- docs/notes/review-runs/2026-06-12-placement-stage2-postwrite/model-result-summary.yaml
+- docs/notes/review-runs/2026-06-12-placement-stage2-postwrite/parsed/gemini-3.5-flash.round-1.yaml
+- docs/notes/review-runs/2026-06-12-placement-stage2-postwrite/raw/gemini-3.5-flash.round-1.txt
+- docs/notes/review-runs/2026-06-12-placement-stage2-postwrite/review_summary.md
+- docs/notes/review-runs/2026-06-12-placement-stage2-postwrite/rounds.yaml
+- docs/notes/review-runs/2026-06-12-placement-stage2-postwrite/target-manifest.yaml
+- docs/notes/review-runs/2026-06-12-placement-stage2-postwrite/triage.yaml
+target_sha256:
+  docs/notes/2026-06-12-document-placement-plan.md: 1d5e10e1f2e40d2fb822cf09a58785666677eab0a36eaadb761ebc39d4c3875e
+  docs/notes/2026-06-12-document-placement-stage2-decisions.md: 6d8c43714df1090a8d4000ead14e06561a283242b432174058a5f2c5d9426a6f
+  docs/notes/review-runs/2026-06-12-placement-plan-postwrite-r2/approval.yaml: 852982dec204f3e5b6e9ac247f6bf5c59b9203c66dd294fe30ce3a866c62574d
+  docs/notes/review-runs/2026-06-12-placement-plan-postwrite-r2/model-result-summary.yaml: a20f0323297a4170b2b3e7daa067bbaa649abe03f28ba16420b58c2d58e8ad99
+  docs/notes/review-runs/2026-06-12-placement-plan-postwrite-r2/parsed/gemini-3.5-flash.round-1.yaml: 8806faed73b084331008dd777fd84f59f8ac64d05561149e85d4627c1a637b72
+  docs/notes/review-runs/2026-06-12-placement-plan-postwrite-r2/raw/gemini-3.5-flash.round-1.txt: da7d25780c87e6b835737979de47c4f6470d41576d776980ae2bd7fa78ef117a
+  docs/notes/review-runs/2026-06-12-placement-plan-postwrite-r2/review_summary.md: daa338c54638e4557465756fc356ce296042d5e8bc6fd2c838d67655e33fe37e
+  docs/notes/review-runs/2026-06-12-placement-plan-postwrite-r2/rounds.yaml: a1419f3a1aad2307afe14cb1e8701d717d05dda2e6034994d4f268c5382e478d
+  docs/notes/review-runs/2026-06-12-placement-plan-postwrite-r2/target-manifest.yaml: b7b0f886ab85a3a7c3e8394a664654fe77b43f68583056745b3a29893371c3ef
+  docs/notes/review-runs/2026-06-12-placement-plan-postwrite-r2/triage.yaml: fa5c902599d7a76b14998e589ff348d543d6b973106cfd187a8ade6c95427322
+  docs/notes/review-runs/2026-06-12-placement-plan-postwrite-r3/model-result-summary.yaml: b3d1548fa8bb9cffc27b44f631fba4b2f2fc0ff26a42df65f8aa6da8fa2f5a42
+  docs/notes/review-runs/2026-06-12-placement-plan-postwrite-r3/parsed/gemini-3.5-flash.round-1.yaml: 8110184c95ca9ed83f1a6ef8539a772b329378213e4f4db47f6fc46203908298
+  docs/notes/review-runs/2026-06-12-placement-plan-postwrite-r3/raw/gemini-3.5-flash.round-1.txt: 2320986cee236bba63e8365ce98b3cda3f0f8823d535aae1183f5ac976e950c6
+  docs/notes/review-runs/2026-06-12-placement-plan-postwrite-r3/review_summary.md: 18094604e175bbe5fde2c260ca002769d617d840deb4e491e9da6255471a6d2e
+  docs/notes/review-runs/2026-06-12-placement-plan-postwrite-r3/rounds.yaml: c664b0c980a304bf0f4c6c5e8bef878fe4466ea05566a6e655d1d97080468e2f
+  docs/notes/review-runs/2026-06-12-placement-plan-postwrite-r3/target-manifest.yaml: 49435ef9bc466df25616c1893d241e5dc1330263bd654cee02c6e60d1dedd04b
+  docs/notes/review-runs/2026-06-12-placement-plan-postwrite-r3/triage.yaml: d15ce2a4a11e8aede1cfba6175efa67501989f23fa23b8baba5ca03888011027
+  docs/notes/review-runs/2026-06-12-placement-plan-postwrite-r4/model-result-summary.yaml: 37f05943a5c3b27a51c684c3391322770af93c5606cc7c6ea6e7f4ec0039ada3
+  docs/notes/review-runs/2026-06-12-placement-plan-postwrite-r4/parsed/gemini-3.5-flash.round-1.yaml: ac345fd7248c53ab572cc5b472528a687ad0f9247132e8ac6dd901c0bcd8a6a1
+  docs/notes/review-runs/2026-06-12-placement-plan-postwrite-r4/raw/gemini-3.5-flash.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+  docs/notes/review-runs/2026-06-12-placement-plan-postwrite-r4/review_summary.md: 8bdd6cb1e241184ce35e97f2bb7e87f1bd1600cb2ccc3028f2609e8048399cc6
+  docs/notes/review-runs/2026-06-12-placement-plan-postwrite-r4/rounds.yaml: 4c2aaf38eb48e2e551f574eb8c3f0628ed663cdf43a8038651c5832254a8123a
+  docs/notes/review-runs/2026-06-12-placement-plan-postwrite-r4/target-manifest.yaml: 9f754bc20bb21d138cab90c8aa49e912f02e1450c5109e2e1cdef3a8bb27a0b2
+  docs/notes/review-runs/2026-06-12-placement-plan-postwrite-r4/triage.yaml: e6759300f018222ea4b871218d77cb11f225d6b3e70f5dbf7f120c589fa9e389
+  docs/notes/review-runs/2026-06-12-placement-stage2-postwrite/model-result-summary.yaml: 2a66d4c25f73ce741f38dadc1b1b635b8a212de9af24e782a4074d3ff0862760
+  docs/notes/review-runs/2026-06-12-placement-stage2-postwrite/parsed/gemini-3.5-flash.round-1.yaml: 2fdb1be4915e4293c39cde554705f7da687e30cfebc3e2c2b14c338715dda3e6
+  docs/notes/review-runs/2026-06-12-placement-stage2-postwrite/raw/gemini-3.5-flash.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+  docs/notes/review-runs/2026-06-12-placement-stage2-postwrite/review_summary.md: fa23265cf558c90b74dfd157c990213caa477818d3c6ccbfd4f1732aea236d6c
+  docs/notes/review-runs/2026-06-12-placement-stage2-postwrite/rounds.yaml: cd04cd7c5710a369c3873c94c3b34968b04b4a2976deaaa405c984755fec7f25
+  docs/notes/review-runs/2026-06-12-placement-stage2-postwrite/target-manifest.yaml: be9ec6c6b479497fa34a7a4b3ac967dfaafa6a7e1f76e8d0bff1ef0de32eef4e
+  docs/notes/review-runs/2026-06-12-placement-stage2-postwrite/triage.yaml: 5bc917e09f384f26c52d9e3135fd886570efdc133c9f0004c87ca1f9d4047d9a
+required_verifiers: &id001
+- gemini-3.5-flash
+completed_verifiers: *id001
+unresolved_substantive_findings: 0
+verifications:
+- verifier: gemini-3.5-flash
+  target_files:
+  - docs/notes/2026-06-12-document-placement-plan.md
+  - docs/notes/2026-06-12-document-placement-stage2-decisions.md
+  - docs/notes/review-runs/2026-06-12-placement-plan-postwrite-r2/approval.yaml
+  - docs/notes/review-runs/2026-06-12-placement-plan-postwrite-r2/model-result-summary.yaml
+  - docs/notes/review-runs/2026-06-12-placement-plan-postwrite-r2/parsed/gemini-3.5-flash.round-1.yaml
+  - docs/notes/review-runs/2026-06-12-placement-plan-postwrite-r2/raw/gemini-3.5-flash.round-1.txt
+  - docs/notes/review-runs/2026-06-12-placement-plan-postwrite-r2/review_summary.md
+  - docs/notes/review-runs/2026-06-12-placement-plan-postwrite-r2/rounds.yaml
+  - docs/notes/review-runs/2026-06-12-placement-plan-postwrite-r2/target-manifest.yaml
+  - docs/notes/review-runs/2026-06-12-placement-plan-postwrite-r2/triage.yaml
+  - docs/notes/review-runs/2026-06-12-placement-plan-postwrite-r3/model-result-summary.yaml
+  - docs/notes/review-runs/2026-06-12-placement-plan-postwrite-r3/parsed/gemini-3.5-flash.round-1.yaml
+  - docs/notes/review-runs/2026-06-12-placement-plan-postwrite-r3/raw/gemini-3.5-flash.round-1.txt
+  - docs/notes/review-runs/2026-06-12-placement-plan-postwrite-r3/review_summary.md
+  - docs/notes/review-runs/2026-06-12-placement-plan-postwrite-r3/rounds.yaml
+  - docs/notes/review-runs/2026-06-12-placement-plan-postwrite-r3/target-manifest.yaml
+  - docs/notes/review-runs/2026-06-12-placement-plan-postwrite-r3/triage.yaml
+  - docs/notes/review-runs/2026-06-12-placement-plan-postwrite-r4/model-result-summary.yaml
+  - docs/notes/review-runs/2026-06-12-placement-plan-postwrite-r4/parsed/gemini-3.5-flash.round-1.yaml
+  - docs/notes/review-runs/2026-06-12-placement-plan-postwrite-r4/raw/gemini-3.5-flash.round-1.txt
+  - docs/notes/review-runs/2026-06-12-placement-plan-postwrite-r4/review_summary.md
+  - docs/notes/review-runs/2026-06-12-placement-plan-postwrite-r4/rounds.yaml
+  - docs/notes/review-runs/2026-06-12-placement-plan-postwrite-r4/target-manifest.yaml
+  - docs/notes/review-runs/2026-06-12-placement-plan-postwrite-r4/triage.yaml
+  - docs/notes/review-runs/2026-06-12-placement-stage2-postwrite/model-result-summary.yaml
+  - docs/notes/review-runs/2026-06-12-placement-stage2-postwrite/parsed/gemini-3.5-flash.round-1.yaml
+  - docs/notes/review-runs/2026-06-12-placement-stage2-postwrite/raw/gemini-3.5-flash.round-1.txt
+  - docs/notes/review-runs/2026-06-12-placement-stage2-postwrite/review_summary.md
+  - docs/notes/review-runs/2026-06-12-placement-stage2-postwrite/rounds.yaml
+  - docs/notes/review-runs/2026-06-12-placement-stage2-postwrite/target-manifest.yaml
+  - docs/notes/review-runs/2026-06-12-placement-stage2-postwrite/triage.yaml
+  target_sha256:
+    docs/notes/2026-06-12-document-placement-plan.md: 1d5e10e1f2e40d2fb822cf09a58785666677eab0a36eaadb761ebc39d4c3875e
+    docs/notes/2026-06-12-document-placement-stage2-decisions.md: 6d8c43714df1090a8d4000ead14e06561a283242b432174058a5f2c5d9426a6f
+    docs/notes/review-runs/2026-06-12-placement-plan-postwrite-r2/approval.yaml: 852982dec204f3e5b6e9ac247f6bf5c59b9203c66dd294fe30ce3a866c62574d
+    docs/notes/review-runs/2026-06-12-placement-plan-postwrite-r2/model-result-summary.yaml: a20f0323297a4170b2b3e7daa067bbaa649abe03f28ba16420b58c2d58e8ad99
+    docs/notes/review-runs/2026-06-12-placement-plan-postwrite-r2/parsed/gemini-3.5-flash.round-1.yaml: 8806faed73b084331008dd777fd84f59f8ac64d05561149e85d4627c1a637b72
+    docs/notes/review-runs/2026-06-12-placement-plan-postwrite-r2/raw/gemini-3.5-flash.round-1.txt: da7d25780c87e6b835737979de47c4f6470d41576d776980ae2bd7fa78ef117a
+    docs/notes/review-runs/2026-06-12-placement-plan-postwrite-r2/review_summary.md: daa338c54638e4557465756fc356ce296042d5e8bc6fd2c838d67655e33fe37e
+    docs/notes/review-runs/2026-06-12-placement-plan-postwrite-r2/rounds.yaml: a1419f3a1aad2307afe14cb1e8701d717d05dda2e6034994d4f268c5382e478d
+    docs/notes/review-runs/2026-06-12-placement-plan-postwrite-r2/target-manifest.yaml: b7b0f886ab85a3a7c3e8394a664654fe77b43f68583056745b3a29893371c3ef
+    docs/notes/review-runs/2026-06-12-placement-plan-postwrite-r2/triage.yaml: fa5c902599d7a76b14998e589ff348d543d6b973106cfd187a8ade6c95427322
+    docs/notes/review-runs/2026-06-12-placement-plan-postwrite-r3/model-result-summary.yaml: b3d1548fa8bb9cffc27b44f631fba4b2f2fc0ff26a42df65f8aa6da8fa2f5a42
+    docs/notes/review-runs/2026-06-12-placement-plan-postwrite-r3/parsed/gemini-3.5-flash.round-1.yaml: 8110184c95ca9ed83f1a6ef8539a772b329378213e4f4db47f6fc46203908298
+    docs/notes/review-runs/2026-06-12-placement-plan-postwrite-r3/raw/gemini-3.5-flash.round-1.txt: 2320986cee236bba63e8365ce98b3cda3f0f8823d535aae1183f5ac976e950c6
+    docs/notes/review-runs/2026-06-12-placement-plan-postwrite-r3/review_summary.md: 18094604e175bbe5fde2c260ca002769d617d840deb4e491e9da6255471a6d2e
+    docs/notes/review-runs/2026-06-12-placement-plan-postwrite-r3/rounds.yaml: c664b0c980a304bf0f4c6c5e8bef878fe4466ea05566a6e655d1d97080468e2f
+    docs/notes/review-runs/2026-06-12-placement-plan-postwrite-r3/target-manifest.yaml: 49435ef9bc466df25616c1893d241e5dc1330263bd654cee02c6e60d1dedd04b
+    docs/notes/review-runs/2026-06-12-placement-plan-postwrite-r3/triage.yaml: d15ce2a4a11e8aede1cfba6175efa67501989f23fa23b8baba5ca03888011027
+    docs/notes/review-runs/2026-06-12-placement-plan-postwrite-r4/model-result-summary.yaml: 37f05943a5c3b27a51c684c3391322770af93c5606cc7c6ea6e7f4ec0039ada3
+    docs/notes/review-runs/2026-06-12-placement-plan-postwrite-r4/parsed/gemini-3.5-flash.round-1.yaml: ac345fd7248c53ab572cc5b472528a687ad0f9247132e8ac6dd901c0bcd8a6a1
+    docs/notes/review-runs/2026-06-12-placement-plan-postwrite-r4/raw/gemini-3.5-flash.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/2026-06-12-placement-plan-postwrite-r4/review_summary.md: 8bdd6cb1e241184ce35e97f2bb7e87f1bd1600cb2ccc3028f2609e8048399cc6
+    docs/notes/review-runs/2026-06-12-placement-plan-postwrite-r4/rounds.yaml: 4c2aaf38eb48e2e551f574eb8c3f0628ed663cdf43a8038651c5832254a8123a
+    docs/notes/review-runs/2026-06-12-placement-plan-postwrite-r4/target-manifest.yaml: 9f754bc20bb21d138cab90c8aa49e912f02e1450c5109e2e1cdef3a8bb27a0b2
+    docs/notes/review-runs/2026-06-12-placement-plan-postwrite-r4/triage.yaml: e6759300f018222ea4b871218d77cb11f225d6b3e70f5dbf7f120c589fa9e389
+    docs/notes/review-runs/2026-06-12-placement-stage2-postwrite/model-result-summary.yaml: 2a66d4c25f73ce741f38dadc1b1b635b8a212de9af24e782a4074d3ff0862760
+    docs/notes/review-runs/2026-06-12-placement-stage2-postwrite/parsed/gemini-3.5-flash.round-1.yaml: 2fdb1be4915e4293c39cde554705f7da687e30cfebc3e2c2b14c338715dda3e6
+    docs/notes/review-runs/2026-06-12-placement-stage2-postwrite/raw/gemini-3.5-flash.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/2026-06-12-placement-stage2-postwrite/review_summary.md: fa23265cf558c90b74dfd157c990213caa477818d3c6ccbfd4f1732aea236d6c
+    docs/notes/review-runs/2026-06-12-placement-stage2-postwrite/rounds.yaml: cd04cd7c5710a369c3873c94c3b34968b04b4a2976deaaa405c984755fec7f25
+    docs/notes/review-runs/2026-06-12-placement-stage2-postwrite/target-manifest.yaml: be9ec6c6b479497fa34a7a4b3ac967dfaafa6a7e1f76e8d0bff1ef0de32eef4e
+    docs/notes/review-runs/2026-06-12-placement-stage2-postwrite/triage.yaml: 5bc917e09f384f26c52d9e3135fd886570efdc133c9f0004c87ca1f9d4047d9a
+review_run:
+  path: docs/notes/review-runs/2026-06-12-placement-plan-postwrite-r4
+  summary_path: docs/notes/review-runs/2026-06-12-placement-plan-postwrite-r4/model-result-summary.yaml
+notes: Generated template; verify target_files cover current post-write targets before
+  use.

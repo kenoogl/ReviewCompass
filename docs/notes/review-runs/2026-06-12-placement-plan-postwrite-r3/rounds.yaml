@@ -1,0 +1,26 @@
+round_id: round-1
+purpose: post_write_verification
+invocation_timestamp: '2026-06-12T08:38:17.086623+00:00'
+target_files:
+- path: docs/notes/2026-06-12-document-placement-plan.md
+  sha256: d272d81d323f718d89151f79861389e9690b821ad742d6372e8be6253d512f26
+criteria: post_write_verification
+prompt_sha256: 39dee3bd63e0518107441a1fcd04638ceb8056d489200b8c3dcb6ebe93c1fae6
+model_results:
+- model_id: gemini-3.5-flash
+  provider: gemini-api
+  role: primary
+  treatment: primary
+  invocation_path: api
+  raw_path: raw/gemini-3.5-flash.round-1.txt
+  raw_sha256: 2320986cee236bba63e8365ce98b3cda3f0f8823d535aae1183f5ac976e950c6
+  parsed_path: parsed/gemini-3.5-flash.round-1.yaml
+  parsed_sha256: 8110184c95ca9ed83f1a6ef8539a772b329378213e4f4db47f6fc46203908298
+  parse_status: parsed
+  formatted_by: parser
+  formatted_by_actor_type: orchestrator
+  formatted_by_actor: run_role.py
+  formatted_at: '2026-06-12T08:38:17.086623+00:00'
+  follow_up_action: triage
+  attempts: 1
+  duration_seconds: 7.184

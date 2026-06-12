@@ -1,0 +1,24 @@
+run_id: 2026-06-12-placement-plan-postwrite-r2
+triage_status: decided
+generated_at: '2026-06-12T07:59:30.351998+00:00'
+decision_actor: null
+decision_actor_type: human
+items:
+- finding_id: 2026-06-12-placement-plan-postwrite-r2-gemini-3.5-flash-primary-001
+  run_id: 2026-06-12-placement-plan-postwrite-r2
+  source_model: gemini-3.5-flash
+  source_round: round-1
+  source_raw_path: raw/gemini-3.5-flash.round-1.txt
+  source_parsed_path: parsed/gemini-3.5-flash.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: '## 再開方法（次セッション向け） の 2'
+  plain_language_summary: 次の作業として指定されている段階の整合性エラー
+  final_label: must-fix
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-12T08:37:59.760363+00:00'
+  decision_reason: 表の更新時に再開手順の括弧書き（現時点では段階 2）を直し忘れた実質的な文書内矛盾。利用者承認の案 2 により、現在値の併記をやめ計画表の状態欄を唯一の正とする修正を適用済み
+  applied_files: []
+  superseded_by: null
