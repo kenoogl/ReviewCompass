@@ -1,0 +1,18 @@
+approved_by: proxy_model
+finding_id: 2026-06-12-implementation-placement-p1-reopen-triad-review-run-claude-sonnet-4-6-primary-004
+cluster_id: C5
+proxy_model_id: gemini-3.1-pro-preview
+decision_prompt_path: proxy-decision-prompts/CE-IMPL-P1-placement-all.prompt.md
+selected_option: A
+final_label: should-fix
+rationale: 実装が凍結ファイルの削除を正しく違反として検出していることは操縦LLMによって実証されたが、それがテストで保護されていない。契約の「変更」に削除が含まれることをテストで固定し、仕様を明確化すべき。
+implementation_policy: 凍結ファイルの削除が frozen_file_changed として検出されることを固定するテストを追加する。
+raw_response_path: proxy-decisions/CE-IMPL-P1-placement-all.raw.txt
+candidate_options:
+- A
+- B
+source_raw_paths:
+- raw/claude-sonnet-4-6.round-1.txt
+- raw/gpt-5.5.round-1.txt
+rejected_options:
+  B: 削除が違反であるという重要な仕様がテストの保護外に置かれたままになり、後任者が意図を誤解する恐れがあるため。

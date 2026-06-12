@@ -1,0 +1,4 @@
+run_id: 2026-06-12-conformance-evaluation-ops-doc-postwrite
+target_files:
+- path: docs/operations/CONFORMANCE_EVALUATION.md
+  sha256: e9c75dc4a6a445da5989f80165927399b2b68bdc770f54d7aca0a201c61488f4

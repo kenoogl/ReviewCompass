@@ -40,17 +40,51 @@ completed_steps:
   記録=.reviewcompass/evidence/cross-feature/reviews/2026-06-12-tasks-placement-p1-alignment.md）
 - 第3過程：stages/tasks.yaml#approval 完了（利用者発言「コミット」2026-06-12＝approval 提示〔置換 6 箇所＋4 タスクへの凍結期責務・テスト要件追加〕への応答として承認。
   spec.json の tasks alignment・approval を true へ復帰）
-next_step: セッション引き継ぎの TODO 更新（検証済み・manifest 020）を利用者指示で停止点コミットとして実施。その後は第3過程：implementation の gate 連鎖（tasks 確定本文どおり TDD 実装から）
-step_number: 3
+- 第3過程：stages/implementation.yaml#drafting 実施（tasks 確定本文どおり TDD 実装。赤フェーズ＝凍結期契約テスト 12 件の失敗確認 → 緑フェーズ＝実装。
+  T-009：評価記録の書き込み常時新配置 evidence/features/<feature>/conformance/・旧配置への新規書き込みなし・読み取り新→旧フォールバック・同名は新を正とし警告（テスト 4 件）。
+  T-007：CF-NNN／JD-NNN の凍結期新旧合算採番 ComparisonModel.for_feature（旧凍結 CF-007 → 新規 CF-008 の境界テスト）。
+  T-012：推定ログの書き込み常時新配置 evidence/estimation/<run_id>/・MV-1〜3 凍結違反検出と推定ログ凍結違反検出を git 追跡履歴判定で実装
+  check_record_freeze／check_estimation_log_freeze（テスト 3 件）。
+  追従：spec update 草案・post-hoc 記録の書き込み先切替（_cross_feature は specs 配下のまま T-015）、CONFORMANCE_EVALUATION.md の配置記述。
+  全テスト green（ディレクトリ別 計 894 件 pass、回帰なし）。コミットは利用者指示待ち。
+  実装中の手戻り記録（2026-06-12 利用者問いかけで追記）：
+  (1) 凍結違反検出の初版を git ls-tree のパス指定ワイルドカード前提で実装したが、ls-tree はワイルドカードを解釈せず凍結集合が空になり
+  正常系テストが失敗（旧配置の凍結済みファイルを違反と誤検出）。木全体を列挙して Python 側で正規表現絞り込みする方式へ修正。
+  (2) 赤フェーズで contract_ownership の check 記録読み取り 2 テストの新配置更新が漏れ、緑フェーズで失敗として発見し追従。
+  (3) _cross_feature の specs 配下維持を当初 SpecUpdateDraftWriter 内の分岐で実装したが、check 記録側でも同じ例外が必要と
+  cross_feature_workflow テストの失敗で判明し、配置リゾルバ conformance_dir へ例外を集約し直した。
+  いずれも同一セッション内で解消、最終状態は全テスト green）
+- 第3過程：stages/implementation.yaml#triad-review 実施（run=.reviewcompass/evidence/review-runs/2026-06-12-implementation-placement-p1-reopen-triad-review-run、3 round。
+  variant=implementation_review_independent_3way（利用者承認 2026-06-12「承認」）。
+  round-1：claude WARN1/INFO4・gpt-5.5 ERROR2/WARN1・gemini 0。同根 6 クラスタ。利用者発言「proxy_modelで自律実行」により
+  以後の所見判断を proxy_model（gemini-3.1-pro-preview、操縦 LLM と別系列・round-1 所見ゼロ役）へ委任。
+  must-fix 2＝C1 ignore された旧配置追加の検出漏れ（--exclude-standard 撤去）・C4 凍結済み旧推定ログの MV-6 内容検査欠落
+  （check_existing_prompt_logs 新設）、should-fix 3＝C2 コミット済み変更検出テスト・C3 _cross_feature の source 専用値と
+  パス成分一致・C5 凍結削除テスト、leave-as-is 1。
+  round-2：gpt WARN1（新検査の CLI 未接続）→ proxy は操縦推薦の案 A を棄却し案 B 採用（DVT-C003 のフェーズ 4 方針に従い
+  CLI 接続見送り・運用文書へ手動実行手順を記載、should-fix）、claude INFO3＝should-fix 1（コミット済み削除テスト）・leave-as-is 2。
+  round-3：gpt 0・gemini 0・claude INFO3 全件 leave-as-is で収束。
+  証跡=proxy-decisions/（round 別）・approval-proxy-2026-06-12{,-round-2,-round-3}.yaml、triage 全件 decided。
+  各 round 適用は TDD（赤 4 件確認→緑）、全テスト計 900 件 pass）
+- 第3過程：stages/implementation.yaml#review-wave 実施（no_impact。他機能コードからの旧パス参照 0 件・全機能 3 文書の現役参照 0 件。
+  deploy-manifest.yaml への .reviewcompass/evidence/** 除外追加は既計画の P1 残作業 9 番（配布物再生成＋smoke）へ経路付け、新規持ち越し 0 件。
+  記録=.reviewcompass/evidence/cross-feature/reviews/2026-06-12-implementation-placement-p1-review-wave.md）
+- 第3過程：stages/implementation.yaml#alignment 実施（existing_sufficient。requirements ルート契約・design 凍結期契約（採番合算・
+  読み書き・git 履歴判定）・tasks テスト要件・fail-closed 粒度の 4 点確認。
+  記録=.reviewcompass/evidence/cross-feature/reviews/2026-06-12-implementation-placement-p1-alignment.md）
+- 第3過程：stages/implementation.yaml#approval 完了（利用者発言「承認」2026-06-12。確定内容＝TDD 実装差分一式
+  〔書き込み先切替・読み取り互換・新旧合算採番・凍結違反検出＋triad-review 3 round の適用分〕を提示のうえ承認。
+  spec.json の implementation alignment・approval を true へ復帰（spec-set precheck 記録済み。進行中ファイル・recheck 印による
+  DEVIATION は reopen 進行中の想定内条件で、requirements・design・tasks 復帰時と同一の扱い）。第3過程はこれで全フェーズ完了）
+next_step: 第3過程完了の停止点コミット（利用者の「コミット」指示待ち）。その後第4過程：整合性最終確認・feature_impact_decisions
+  等の完了記録整備・recheck クリア・stages/completed/ への移動・完了コミット
+step_number: 4
 drafting_completed_gates:
 - stages/requirements.yaml#drafting
 - stages/design.yaml#drafting
 - stages/tasks.yaml#drafting
-pending_gates:
-- stages/implementation.yaml#triad-review
-- stages/implementation.yaml#review-wave
-- stages/implementation.yaml#alignment
-- stages/implementation.yaml#approval
+- stages/implementation.yaml#drafting
+pending_gates: []
 pending_gates_note: R-0 基線（requirements の alignment／approval）に、REOPEN_PROCEDURE.md §3「正本本文を修正した
   phase は triad-review／review-wave／alignment／approval を再実施」を適用し、正本修正のある requirements・design・tasks
   と、実装変更（ツールの書き込み先変更＋旧パス読み取り互換、TDD）を行う implementation の全 review 系 gate を加えた。

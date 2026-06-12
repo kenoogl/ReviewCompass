@@ -1,0 +1,26 @@
+```yaml
+decisions:
+  - finding_id: 2026-06-12-implementation-placement-p1-reopen-triad-review-run-claude-sonnet-4-6-primary-001
+    cluster_id: C11
+    selected_option: A
+    final_label: leave-as-is
+    rationale: 動作が正しいことが確認されており、round-2 C8の判断と同様に既存のテストで前提の変化を検出できるため修正は不要です。
+    rejected_options:
+      B: 明示的な分岐への書き換えは現状の正確な動作に対して過剰な対応であり、不要な差分を生むため棄却します。
+
+  - finding_id: 2026-06-12-implementation-placement-p1-reopen-triad-review-run-claude-sonnet-4-6-primary-002
+    cluster_id: C12
+    selected_option: A
+    final_label: leave-as-is
+    rationale: 削除検出の仕様は既存のテストによって完全に固定されており、内部表現に関する文書化はround-2 C10での判断と同様に不要です。
+    rejected_options:
+      B: 内部表現の文書化はメンテナンスコストを微増させるだけで実質的な価値がないため棄却します。
+
+  - finding_id: 2026-06-12-implementation-placement-p1-reopen-triad-review-run-claude-sonnet-4-6-primary-003
+    cluster_id: C13
+    selected_option: A
+    final_label: leave-as-is
+    rationale: 現行のテストは順序非依存のany検査を行っており、所見自身も影響が小さいと認めているため修正の必要はありません。
+    rejected_options:
+      B: 統合ソートへの変更は現在の要件において意味を持たず、実利のないコード変更となるため棄却します。
+```

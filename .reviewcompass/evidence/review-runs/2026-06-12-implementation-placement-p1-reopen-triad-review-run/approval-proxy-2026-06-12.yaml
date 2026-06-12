@@ -1,0 +1,42 @@
+approved_action: review_run_triage
+approved_by: proxy_model
+proxy_model_id: gemini-3.1-pro-preview
+review_run_id: 2026-06-12-implementation-placement-p1-reopen-triad-review-run
+summary_presented_to_user: true
+triage_presented_to_user: true
+autonomous_execution_authorization:
+  approved_by: user
+  approval_record_path: conversation:2026-06-12:user-proxy-autonomous-execution
+  quote: proxy_modelで自律実行
+  scope: round-1 提示ゲート（variant・役割・raw 概要・同根クラスタ・三段階トリアージ案・must-fix 候補の説明）を利用者へ提示済み。以後の所見判断を
+    proxy_model に委任し自律実行する。コミット・プッシュ・spec.json 更新・フェーズ移行は引き続き人間の明示承認を要する。
+approved_finding_ids:
+- 2026-06-12-implementation-placement-p1-reopen-triad-review-run-claude-sonnet-4-6-primary-001
+- 2026-06-12-implementation-placement-p1-reopen-triad-review-run-claude-sonnet-4-6-primary-002
+- 2026-06-12-implementation-placement-p1-reopen-triad-review-run-claude-sonnet-4-6-primary-003
+- 2026-06-12-implementation-placement-p1-reopen-triad-review-run-claude-sonnet-4-6-primary-004
+- 2026-06-12-implementation-placement-p1-reopen-triad-review-run-claude-sonnet-4-6-primary-005
+- 2026-06-12-implementation-placement-p1-reopen-triad-review-run-gpt-5.5-adversarial-001
+- 2026-06-12-implementation-placement-p1-reopen-triad-review-run-gpt-5.5-adversarial-002
+- 2026-06-12-implementation-placement-p1-reopen-triad-review-run-gpt-5.5-adversarial-003
+approved_final_labels:
+  2026-06-12-implementation-placement-p1-reopen-triad-review-run-gpt-5.5-adversarial-001: must-fix
+  2026-06-12-implementation-placement-p1-reopen-triad-review-run-claude-sonnet-4-6-primary-001: must-fix
+  2026-06-12-implementation-placement-p1-reopen-triad-review-run-claude-sonnet-4-6-primary-002: should-fix
+  2026-06-12-implementation-placement-p1-reopen-triad-review-run-gpt-5.5-adversarial-003: should-fix
+  2026-06-12-implementation-placement-p1-reopen-triad-review-run-claude-sonnet-4-6-primary-003: should-fix
+  2026-06-12-implementation-placement-p1-reopen-triad-review-run-gpt-5.5-adversarial-002: must-fix
+  2026-06-12-implementation-placement-p1-reopen-triad-review-run-claude-sonnet-4-6-primary-004: should-fix
+  2026-06-12-implementation-placement-p1-reopen-triad-review-run-claude-sonnet-4-6-primary-005: leave-as-is
+proxy_decisions:
+  2026-06-12-implementation-placement-p1-reopen-triad-review-run-gpt-5.5-adversarial-001: proxy-decisions/2026-06-12-implementation-placement-p1-reopen-triad-review-run-gpt-5.5-adversarial-001.decision.yaml
+  2026-06-12-implementation-placement-p1-reopen-triad-review-run-claude-sonnet-4-6-primary-001: proxy-decisions/2026-06-12-implementation-placement-p1-reopen-triad-review-run-claude-sonnet-4-6-primary-001.decision.yaml
+  2026-06-12-implementation-placement-p1-reopen-triad-review-run-claude-sonnet-4-6-primary-002: proxy-decisions/2026-06-12-implementation-placement-p1-reopen-triad-review-run-claude-sonnet-4-6-primary-002.decision.yaml
+  2026-06-12-implementation-placement-p1-reopen-triad-review-run-gpt-5.5-adversarial-003: proxy-decisions/2026-06-12-implementation-placement-p1-reopen-triad-review-run-gpt-5.5-adversarial-003.decision.yaml
+  2026-06-12-implementation-placement-p1-reopen-triad-review-run-claude-sonnet-4-6-primary-003: proxy-decisions/2026-06-12-implementation-placement-p1-reopen-triad-review-run-claude-sonnet-4-6-primary-003.decision.yaml
+  2026-06-12-implementation-placement-p1-reopen-triad-review-run-gpt-5.5-adversarial-002: proxy-decisions/2026-06-12-implementation-placement-p1-reopen-triad-review-run-gpt-5.5-adversarial-002.decision.yaml
+  2026-06-12-implementation-placement-p1-reopen-triad-review-run-claude-sonnet-4-6-primary-004: proxy-decisions/2026-06-12-implementation-placement-p1-reopen-triad-review-run-claude-sonnet-4-6-primary-004.decision.yaml
+  2026-06-12-implementation-placement-p1-reopen-triad-review-run-claude-sonnet-4-6-primary-005: proxy-decisions/2026-06-12-implementation-placement-p1-reopen-triad-review-run-claude-sonnet-4-6-primary-005.decision.yaml
+notes: 採用内容：C1=--exclude-standard 撤去＋ignored 検出テスト（must-fix）。C4=既存 prompt.log の新旧両配置走査による
+  MV-6 検査メソッド＋テスト（must-fix）。C2=作業ツリー比較維持＋コミット済み変更検出テスト（should-fix）。C3=_cross_feature
+  の source 専用値＋パス成分一致＋テスト（should-fix）。C5=凍結ファイル削除検出の固定テスト（should-fix）。C6=leave-as-is。

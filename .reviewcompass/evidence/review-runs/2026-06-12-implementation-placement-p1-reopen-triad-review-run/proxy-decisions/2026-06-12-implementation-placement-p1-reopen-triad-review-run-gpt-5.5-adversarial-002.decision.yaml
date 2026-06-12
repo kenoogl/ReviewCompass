@@ -1,0 +1,20 @@
+approved_by: proxy_model
+finding_id: 2026-06-12-implementation-placement-p1-reopen-triad-review-run-gpt-5.5-adversarial-002
+cluster_id: C4
+proxy_model_id: gemini-3.1-pro-preview
+decision_prompt_path: proxy-decision-prompts/CE-IMPL-P1-placement-all.prompt.md
+selected_option: A
+final_label: must-fix
+rationale: タスク T-012 の契約において「凍結済み旧推定ログも MV-6 の読み取り対象に含める」ことが明記されており、これを満たす機械検証は必須である。手動運用に頼らず、実装で保証すべきである。
+implementation_policy: 新旧両配置の既存 prompt.log を走査して MV-6 の 2 条件を検査するメソッドを追加し、テストを付ける。
+raw_response_path: proxy-decisions/CE-IMPL-P1-placement-all.raw.txt
+candidate_options:
+- A
+- B
+- C
+source_raw_paths:
+- raw/claude-sonnet-4-6.round-1.txt
+- raw/gpt-5.5.round-1.txt
+rejected_options:
+  B: 契約が文書上の約束に留まり、継続的インテグレーションでの自動保証が得られないため。
+  C: 上流契約（T-012）の要件を明確に満たしていない状態が放置されるため。

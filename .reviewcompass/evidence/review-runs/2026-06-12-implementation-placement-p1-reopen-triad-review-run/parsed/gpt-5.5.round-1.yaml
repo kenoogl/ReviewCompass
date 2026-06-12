@@ -1,0 +1,26 @@
+role: adversarial
+provider: openai-api
+model: gpt-5.5
+attempts: 1
+duration_seconds: 98.185
+findings:
+- severity: ERROR
+  target_location: tools/conformance_evaluation/machine_verification.py::_legacy_violations
+  description: 旧配置への未追跡追加を `git ls-files --others --exclude-standard` で検出しているため、ignore
+    対象の旧配置ファイルが凍結違反から漏れる
+  rationale: 凍結契約は旧 `specs/<feature>/conformance/` および旧 `logs/estimation/` への P1 以降の追加を違反として検出することを要求している。特に
+    `logs/` は ignore 対象になりやすく、`--exclude-standard` を付けると ignored な未追跡ログが検査対象から除外され、旧ルートへの新規書き込みを見逃す。未追跡・ignored
+    を含むファイルシステム走査、または ignore を無視した git 走査が必要。
+- severity: ERROR
+  target_location: tools/conformance_evaluation/machine_verification.py::check_prompt_isolation
+    / check_estimation_log_freeze
+  description: 凍結済み旧 `logs/estimation/` を MV-6 のプロンプト内容検査対象に含める実装がない
+  rationale: 上流契約では、推定ログの書き込み先は新配置へ切り替えつつ、凍結済み旧推定ログは MV-6 の読み取り対象に含める必要がある。現在の `check_prompt_isolation`
+    は渡された prompt を新配置へ書き込んでその prompt だけを検査し、`check_estimation_log_freeze` は旧ログの追加・変更検出だけを行うため、既存の旧ログに
+    forbidden path や自律探索禁止条項欠落があっても MV-6 として検出されない。
+- severity: WARN
+  target_location: tools/conformance_evaluation/evaluation_record.py::EvaluationRecordModel.read_record
+  description: '`_cross_feature` の読み取り結果が specs 配下の例外配置でも `source: evidence` と報告される'
+  rationale: '`_cross_feature` は実 feature ではないため配置を `specs/_cross_feature/conformance/`
+    のまま維持する契約になっている。`conformance_dir()` が `_cross_feature` では旧配置と同一パスを返すため読み取り自体は可能だが、`read_record()`
+    は新配置扱いの分岐に入り `source: evidence` を返す。運用・診断・警告表示で cross-feature 例外を evidence 移行済みと誤認させるおそれがある。'

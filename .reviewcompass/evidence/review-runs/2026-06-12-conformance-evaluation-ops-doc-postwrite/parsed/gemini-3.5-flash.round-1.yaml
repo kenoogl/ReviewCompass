@@ -1,0 +1,11 @@
+role: primary
+provider: gemini-api
+model: gemini-3.5-flash
+attempts: 1
+duration_seconds: 7.546
+findings:
+- severity: WARN
+  target_location: 冒頭の「最終更新：2026-05-22」
+  description: 最終更新日と本文内の改訂・反映日の記述が不整合となっています。
+  rationale: 最終更新日が「2026-05-22」と記載されていますが、本文の「4. 6 criteria の検査構造」には「2026-05-24 改訂」とあり、さらに「6.
+    評価記録の配置」等には「2026-06-12 反映」という記述があります。ドキュメントの最終更新日を最新の改訂日に合わせて更新する必要があります。

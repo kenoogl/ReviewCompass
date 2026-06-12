@@ -1,0 +1,32 @@
+role: primary
+provider: anthropic-api
+model: claude-sonnet-4-6
+attempts: 1
+duration_seconds: 21.673
+findings:
+- severity: INFO
+  target_location: 'tools/conformance_evaluation/evaluation_record.py: read_record()
+    の source 判定ロジック'
+  description: _cross_feature の source が 'cross_feature_namespace' として返されるのは新配置パスが存在する場合のみ。legacy_path
+    にしか存在しない _cross_feature 記録は 'legacy_frozen' として返される。テスト test_t009_cross_feature_read_reports_namespace_source
+    は namespace_dir（旧配置）にのみ記録を置いているが、conformance_dir('_cross_feature') は旧配置と同一パスを返すため
+    new_path == legacy_path となり結果的に pass する。ただし将来 _cross_feature の conformance_dir
+    が変更された場合、この同値前提が崩れてフォールバック分岐が legacy_frozen を返す可能性がある。
+  rationale: _cross_feature の source 値が 'cross_feature_namespace' になるか 'legacy_frozen'
+    になるかは conformance_dir の返値と新配置ファイルの存在に依存しており、テストがその依存を明示していない。現時点では動作するが実装の意図が不明瞭で保守リスクがある。
+- severity: INFO
+  target_location: 'tools/conformance_evaluation/machine_verification.py: _legacy_violations()
+    の changed 計算'
+  description: modified の計算に使われる changed は 'diff --name-only freeze_commit' であり、作業ツリーとの差分（コミット済み変更を含む）を返す。一方
+    frozen は ls-tree の出力（freeze_commit 時点の追跡ファイル）。frozen に含まれるファイルが freeze 後にコミットで削除された場合、tracked
+    にも untracked にも現れないため added にも modified にも含まれず、検出が 'diff' のみに依存する。テスト test_t012_frozen_record_deletion_is_detected
+    は作業ツリー削除（コミット前）のケースのみを検証しており、コミット済み削除のケースは test_t012_committed_changes_after_freeze_are_violations
+    が変更（編集）を対象としているが削除（git rm）後コミットのケースは明示的にカバーされていない。
+  rationale: 凍結集合の削除はデータ消失に相当し、凍結違反の重大ケースの一つ。コミット済み削除の検出が diff ベースで正しく機能するかテストで明示されていない点は保守上のリスクになり得る。
+- severity: INFO
+  target_location: 'tools/conformance_evaluation/machine_verification.py: check_existing_prompt_logs()
+    の log_path 表現'
+  description: check_existing_prompt_logs のエラーメッセージに含まれる log_path は Path オブジェクトの str
+    表現（絶対パス）であり、テスト test_t012_existing_prompt_logs_content_check では 'bad-run' という
+    run_id の部分文字列マッチで確認している。運用文書（CONFORMANCE_EVALUATION.md）や design では理由フォーマットの規定がなく、将来パス表現が変わった場合にテストが脆弱になる。
+  rationale: 厳密な問題ではないが、reason フォーマットの明示的な規約がないと regression が起きやすい。

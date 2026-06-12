@@ -9,7 +9,7 @@ completed_steps:
   の alignment・approval を false、recheck 設定。差し戻し内容は利用者承認済み 2026-06-12「承認」）
 - 第2過程：正本修正（design 5 箇所・tasks 4 箇所のパス契約を .reviewcompass/runtime/ 配下へ変更、
   由来注記と凍結・読み取り互換の明記付き）
-next_step: セッション引き継ぎの TODO 更新の停止点コミットに同伴（本手続き自身の第2過程の停止点コミットは 41720094 で完了済み。次は本手続きの第3過程＝design の gate 連鎖〔triad-review から〕）
+next_step: ce reopen（placement-p1-ce）第3過程完了の停止点コミットに同伴（本手続き自身の第2過程の停止点コミットは 41720094 で完了済み。次は本手続きの第3過程＝design の gate 連鎖〔triad-review から〕）
 step_number: 2
 drafting_completed_gates:
 - stages/design.yaml#drafting

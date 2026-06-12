@@ -1,0 +1,18 @@
+approved_by: proxy_model
+finding_id: 2026-06-12-implementation-placement-p1-reopen-triad-review-run-claude-sonnet-4-6-primary-005
+cluster_id: C6
+proxy_model_id: gemini-3.1-pro-preview
+decision_prompt_path: proxy-decision-prompts/CE-IMPL-P1-placement-all.prompt.md
+selected_option: A
+final_label: leave-as-is
+rationale: P3未実施時の扱いや期限管理は配置規約計画（PLC-DEC-011）側の責務であり、本実装の運用文書に記載すべきではない。責務境界を守り、正本の分散を避けるのが適切である。
+implementation_policy: 変更なし（leave-as-is）。互換終了の正本は配置規約 PLC-DEC-011 とする。
+raw_response_path: proxy-decisions/CE-IMPL-P1-placement-all.raw.txt
+candidate_options:
+- A
+- B
+source_raw_paths:
+- raw/claude-sonnet-4-6.round-1.txt
+- raw/gpt-5.5.round-1.txt
+rejected_options:
+  B: 本実装の責務範囲を超え、配置規約に関する情報の二重管理・正本の分散を招くため。

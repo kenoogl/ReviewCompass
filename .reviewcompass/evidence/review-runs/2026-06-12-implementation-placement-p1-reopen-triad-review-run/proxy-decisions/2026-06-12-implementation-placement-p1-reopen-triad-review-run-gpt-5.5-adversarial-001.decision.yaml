@@ -1,0 +1,22 @@
+approved_by: proxy_model
+finding_id: 2026-06-12-implementation-placement-p1-reopen-triad-review-run-gpt-5.5-adversarial-001
+cluster_id: C1
+proxy_model_id: gemini-3.1-pro-preview
+decision_prompt_path: proxy-decision-prompts/CE-IMPL-P1-placement-all.prompt.md
+selected_option: A
+final_label: must-fix
+rationale: 旧配置への新規ファイル追加は、ignore設定の有無によらずすべて凍結違反として検出する必要があるため。`--exclude-standard`
+  を外すことで漏れを確実に防ぎ、契約と実装の乖離を解消できる。
+implementation_policy: machine_verification の未追跡走査から --exclude-standard を外し、ignore
+  対象の旧配置追加も凍結違反として検出する。ignored ファイルの検出テストを追加する。
+raw_response_path: proxy-decisions/CE-IMPL-P1-placement-all.raw.txt
+candidate_options:
+- A
+- B
+- C
+source_raw_paths:
+- raw/claude-sonnet-4-6.round-1.txt
+- raw/gpt-5.5.round-1.txt
+rejected_options:
+  B: '"git 追跡履歴が正本"という基本設計と矛盾し、システムに二重基準を持ち込むことになるため。'
+  C: アプリケーション構成上、logs/ などのディレクトリが ignore 対象となり、深刻な違反見逃しの実害が生じるため。

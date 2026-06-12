@@ -1,0 +1,19 @@
+approved_by: proxy_model
+finding_id: 2026-06-12-implementation-placement-p1-reopen-triad-review-run-claude-sonnet-4-6-primary-003
+cluster_id: C10
+round_id: round-2
+proxy_model_id: gemini-3.1-pro-preview
+decision_prompt_path: proxy-decision-prompts/CE-IMPL-P1-placement-round-2.prompt.md
+selected_option: A
+final_label: leave-as-is
+rationale: 検査理由はプログラムの内部表現であり既存のテストも部分一致によって柔軟に対応しています。理由文字列のフォーマットを文書で厳密に規定するとかえって将来の改善の妨げになります。
+implementation_policy: 変更なし（leave-as-is）。理由文字列は内部表現とする。
+raw_response_path: proxy-decisions/round-2/CE-IMPL-P1-placement-round-2.raw.txt
+candidate_options:
+- A
+- B
+source_raw_paths:
+- raw/claude-sonnet-4-6.round-2.txt
+- raw/gpt-5.5.round-2.txt
+rejected_options:
+  B: 保守対象の文書を無駄に増やし内部表現の変更自由度を不必要に下げるため。

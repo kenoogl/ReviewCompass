@@ -1,0 +1,72 @@
+```yaml
+decisions:
+  - finding_id: 2026-06-12-implementation-placement-p1-reopen-triad-review-run-gpt-5.5-adversarial-001
+    cluster_id: C1
+    selected_option: A
+    final_label: must-fix
+    rationale: 旧配置への新規ファイル追加は、ignore設定の有無によらずすべて凍結違反として検出する必要があるため。`--exclude-standard` を外すことで漏れを確実に防ぎ、契約と実装の乖離を解消できる。
+    rejected_options:
+      B: "git 追跡履歴が正本"という基本設計と矛盾し、システムに二重基準を持ち込むことになるため。
+      C: アプリケーション構成上、logs/ などのディレクトリが ignore 対象となり、深刻な違反見逃しの実害が生じるため。
+
+  - finding_id: 2026-06-12-implementation-placement-p1-reopen-triad-review-run-claude-sonnet-4-6-primary-001
+    cluster_id: C1
+    selected_option: A
+    final_label: must-fix
+    rationale: gpt-5.5-adversarial-001と同根。未追跡ファイルの扱いに関する境界条件の不備であり、`--exclude-standard` を外すことで一時ファイル等の意図せぬ追加もすべて凍結違反として適切に捕捉できる。
+    rejected_options:
+      B: ファイルシステム走査の併用は、git 追跡履歴を正本とする設計思想に反するため。
+      C: 境界条件が曖昧なままとなり、将来的な検出漏れや解釈のブレが生じるリスクが残るため。
+
+  - finding_id: 2026-06-12-implementation-placement-p1-reopen-triad-review-run-claude-sonnet-4-6-primary-002
+    cluster_id: C2
+    selected_option: A
+    final_label: should-fix
+    rationale: コミット前の違反も作業ツリー比較でフェイルファストに検出する現在の挙動は、開発プロセスにおいて安全側であり有用である。この望ましい挙動を仕様として固定するため、明示的なテストを追加すべき。
+    rejected_options:
+      B: 未コミットの違反を見逃すようになり、開発・TDD中の安全性が低下するため。
+      C: 意図した挙動がテストで保護されず、将来の変更で意図せず壊れるリスクがあるため。
+
+  - finding_id: 2026-06-12-implementation-placement-p1-reopen-triad-review-run-gpt-5.5-adversarial-003
+    cluster_id: C3
+    selected_option: A
+    final_label: should-fix
+    rationale: `_cross_feature` の読み取り結果が誤認を招く可能性があり、運用上の混乱を防ぐために専用の `source` 値で正確に報告すべきである。除外判定の強化により理論的な誤認リスクも確実に排除できる。
+    rejected_options:
+      B: 文書での注記だけでは、自動ツールや運用スクリプトによる誤判定を防げないため。
+      C: 移行済みとの誤認や、部分文字列一致による理論的な誤除外の脆弱性がそのまま残るため。
+
+  - finding_id: 2026-06-12-implementation-placement-p1-reopen-triad-review-run-claude-sonnet-4-6-primary-003
+    cluster_id: C3
+    selected_option: A
+    final_label: should-fix
+    rationale: gpt-5.5-adversarial-003と同根。部分文字列一致（`/_cross_feature/`）では、将来の機能追加時に誤除外を引き起こす理論的リスクがあるため、パス成分としての完全一致に強化すべきである。
+    rejected_options:
+      B: 実装のロジック上の脆弱性を残したまま、文書の運用でカバーするのは不適当であるため。
+      C: 理論的とはいえ明確なバグの種がコード内に残存するため。
+
+  - finding_id: 2026-06-12-implementation-placement-p1-reopen-triad-review-run-gpt-5.5-adversarial-002
+    cluster_id: C4
+    selected_option: A
+    final_label: must-fix
+    rationale: タスク T-012 の契約において「凍結済み旧推定ログも MV-6 の読み取り対象に含める」ことが明記されており、これを満たす機械検証は必須である。手動運用に頼らず、実装で保証すべきである。
+    rejected_options:
+      B: 契約が文書上の約束に留まり、継続的インテグレーションでの自動保証が得られないため。
+      C: 上流契約（T-012）の要件を明確に満たしていない状態が放置されるため。
+
+  - finding_id: 2026-06-12-implementation-placement-p1-reopen-triad-review-run-claude-sonnet-4-6-primary-004
+    cluster_id: C5
+    selected_option: A
+    final_label: should-fix
+    rationale: 実装が凍結ファイルの削除を正しく違反として検出していることは操縦LLMによって実証されたが、それがテストで保護されていない。契約の「変更」に削除が含まれることをテストで固定し、仕様を明確化すべき。
+    rejected_options:
+      B: 削除が違反であるという重要な仕様がテストの保護外に置かれたままになり、後任者が意図を誤解する恐れがあるため。
+
+  - finding_id: 2026-06-12-implementation-placement-p1-reopen-triad-review-run-claude-sonnet-4-6-primary-005
+    cluster_id: C6
+    selected_option: A
+    final_label: leave-as-is
+    rationale: P3未実施時の扱いや期限管理は配置規約計画（PLC-DEC-011）側の責務であり、本実装の運用文書に記載すべきではない。責務境界を守り、正本の分散を避けるのが適切である。
+    rejected_options:
+      B: 本実装の責務範囲を超え、配置規約に関する情報の二重管理・正本の分散を招くため。
+```

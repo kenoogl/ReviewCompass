@@ -1,6 +1,8 @@
 """Post-hoc intent difference extraction for existing systems."""
 from pathlib import Path
 
+from tools.conformance_evaluation.evaluation_record import conformance_dir
+
 
 class PostHocIntentDiffError(ValueError):
   """Raised when post-hoc intent diff input or output is invalid."""
@@ -198,14 +200,7 @@ class PostHocIntentDiff:
     feature_partitioning: str,
     candidates: list,
   ) -> Path:
-    path = (
-      self.root
-      / ".reviewcompass"
-      / "specs"
-      / "conformance-evaluation"
-      / "conformance"
-      / f"{run_date}-post-hoc-intent-diff.md"
-    )
+    path = conformance_dir(self.root, "conformance-evaluation") / f"{run_date}-post-hoc-intent-diff.md"
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(
       self._record_text(

@@ -1,0 +1,25 @@
+findings:
+  - severity: INFO
+    target_location: "tools/conformance_evaluation/machine_verification.py: _legacy_violations メソッド"
+    description: "untracked ファイル（ls-files --others）を凍結違反の「追加」候補に含めているが、git 追跡されていないファイルは freeze_commit 時点の ls-tree にも ls-files にも現れないため、凍結集合外への新規追加と同様に扱われる。これ自体は design §18 の「効力発生は実装切替と同時」という契約と整合するが、git add 前の一時ファイルや IDE 生成ファイルが誤検出を引き起こすリスクがある。テスト (test_t012_record_freeze_violations_detected_from_git_history) では untracked ファイルのシナリオを直接検証していないため、契約の境界条件として文書化または専用テストで明示すべき。"
+    rationale: "凍結違反検出の誤検出抑制は運用上の信頼性に直結する。design §18 は「git 追跡履歴が正本」と規定しているが、untracked ファイルの扱いが明示されていないため、実装の意図が契約から読み取れない。WARN 未満の情報所見として記録する。"
+
+  - severity: WARN
+    target_location: "tools/conformance_evaluation/machine_verification.py: _legacy_violations メソッド、changed の取得"
+    description: "`changed` は `git diff --name-only <freeze_commit>` で取得しているが、このコマンドはワーキングツリーと freeze_commit の差分（ステージ済み＋未ステージ）を返す。HEAD と freeze_commit が一致しない状況（freeze_commit が過去のコミットで、その後に別の変更コミットが存在する場合）では、凍結後のコミット済み変更も `changed` に含まれるため `modified` として正しく検出されるが、ステージ済みの一時的な変更も含まれてしまう。設計 §18 の「git 追跡履歴が正本」という規定に照らすと `git diff --name-only <freeze_commit> HEAD` の方が追跡履歴の比較として意図に近い可能性がある。テストは `_git_commit_all` で変更後のファイルをコミットせずにワーキングツリーのまま検査しているため、現テストではこの差異が顕在化しない。"
+    rationale: "凍結違反の誤検出または検出漏れは、遮断推奨の MV-3 チェックの信頼性を損ない、運用者の判断を誤らせる。テスト設計と実装コマンドの乖離は契約の弱体化に相当する（レビュー観点4）。"
+
+  - severity: INFO
+    target_location: "tools/conformance_evaluation/machine_verification.py: check_record_freeze、_cross_feature 除外"
+    description: "_cross_feature 除外を `'/_cross_feature/' not in reason` という文字列マッチで実装しているが、reason 文字列は `'added_after_freeze: .reviewcompass/specs/_cross_feature/conformance/...'` 形式であり、パス区切りが `/` なのでスラッシュ囲みの `/_cross_feature/` では `.reviewcompass/specs/_cross_feature/conformance/` の `specs/` と `conformance/` の間の部分を捉える。パスが `specs/_cross_feature` で始まる場合、`/_cross_feature/` は `s/_cross_feature/` の後ろにあるため実際に含まれる。一方 `conformance_dir` の `_cross_feature` 分岐（evaluation_record.py）では `feature == '_cross_feature'` で正確に比較しており、文字列含有チェックは feature 名に `_cross_feature` を部分文字列として含む別の feature（例: `billing__cross_feature`）があった場合に誤除外する理論的リスクがある。現実的影響は低いが、`LEGACY_RECORD_PATTERN` で既に `.reviewcompass/specs/<feature>/conformance/` を捕捉しているため、パス要素として `== '_cross_feature'` で比較する方が堅牢。"
+    rationale: "tasks T-015 の _cross_feature 例外は凍結対象外という明示的な契約であり、誤除外・誤検出の両方を避ける正確な実装が求められる（レビュー観点5）。"
+
+  - severity: INFO
+    target_location: "tests/conformance-evaluation/test_conformance_evaluation.py: test_t012_record_freeze_violations_detected_from_git_history"
+    description: "テストは freeze_commit 後に unlink してファイルを削除するシナリオ（凍結済みファイルの削除）を検証していない。design §18 の凍結契約は「追加・変更」を違反として明示しているが、削除の扱い（違反か否か）がテストでカバーされておらず、実装の `_legacy_violations` も削除を violations に含めていない。仕様が削除を凍結違反としない意図であれば、その根拠をコメントまたは設計文書に記載すべき。"
+    rationale: "凍結集合の完全性検証としてテスト網羅が不十分な可能性がある（レビュー観点4・5）。仕様の明示的な記述がない場合、将来の実装者が削除を許容してよいか判断できない。"
+
+  - severity: INFO
+    target_location: "docs/operations/CONFORMANCE_EVALUATION.md: §6.0 凍結期の扱い"
+    description: "「互換の終了は P3 の専用 reopen における仕様改訂として扱う（暗黙の終了はない）」という記述は実装の設計意図と整合しているが、P3 reopen が実施されなかった場合の取り扱い（永続的フォールバック継続の可否）については言及がない。運用リスクは低いが、P3 期限の明示または未実施時の継続可否を簡記すると運用文書の完全性が向上する。"
+    rationale: "運用文書と実装の整合確認（レビュー観点6）として、将来の運用者への情報提供の観点から記録する。"

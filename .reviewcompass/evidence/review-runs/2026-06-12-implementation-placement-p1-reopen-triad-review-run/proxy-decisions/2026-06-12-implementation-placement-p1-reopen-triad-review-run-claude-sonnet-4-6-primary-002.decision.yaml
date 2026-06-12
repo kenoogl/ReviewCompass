@@ -1,0 +1,20 @@
+approved_by: proxy_model
+finding_id: 2026-06-12-implementation-placement-p1-reopen-triad-review-run-claude-sonnet-4-6-primary-002
+cluster_id: C2
+proxy_model_id: gemini-3.1-pro-preview
+decision_prompt_path: proxy-decision-prompts/CE-IMPL-P1-placement-all.prompt.md
+selected_option: A
+final_label: should-fix
+rationale: コミット前の違反も作業ツリー比較でフェイルファストに検出する現在の挙動は、開発プロセスにおいて安全側であり有用である。この望ましい挙動を仕様として固定するため、明示的なテストを追加すべき。
+implementation_policy: 作業ツリー比較の現挙動は維持し、freeze 後にコミット済みの変更も検出されることを固定するテストを追加する。
+raw_response_path: proxy-decisions/CE-IMPL-P1-placement-all.raw.txt
+candidate_options:
+- A
+- B
+- C
+source_raw_paths:
+- raw/claude-sonnet-4-6.round-1.txt
+- raw/gpt-5.5.round-1.txt
+rejected_options:
+  B: 未コミットの違反を見逃すようになり、開発・TDD中の安全性が低下するため。
+  C: 意図した挙動がテストで保護されず、将来の変更で意図せず壊れるリスクがあるため。

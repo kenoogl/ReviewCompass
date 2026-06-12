@@ -1,6 +1,7 @@
 from pathlib import Path
 import json
 import re
+import subprocess
 
 import pytest
 import yaml
@@ -22,6 +23,27 @@ from tools.conformance_evaluation.triad_review import TriadReviewPolicy
 
 
 ROOT = Path(__file__).resolve().parents[2]
+
+
+def _git(repo: Path, *args: str) -> str:
+  result = subprocess.run(
+    ["git", "-C", str(repo), *args],
+    capture_output=True,
+    text=True,
+    check=True,
+  )
+  return result.stdout.strip()
+
+
+def _git_commit_all(repo: Path, message: str) -> str:
+  _git(repo, "add", "-A")
+  _git(
+    repo,
+    "-c", "user.name=test",
+    "-c", "user.email=test@example.com",
+    "commit", "-m", message,
+  )
+  return _git(repo, "rev-parse", "HEAD")
 
 
 def test_t001_layout_and_operation_docs_are_present():
@@ -67,7 +89,9 @@ def test_t003_generation_outputs_human_reviewable_documents(tmp_path):
     assert "Requirements" in text
     assert "src/billing.py:1-20" in text
     assert "human_review_required: true" in text
-  assert (tmp_path / ".reviewcompass" / "specs" / "billing" / "conformance" / "2026-06-04-generation.md").is_file()
+  assert (
+    tmp_path / ".reviewcompass" / "evidence" / "features" / "billing" / "conformance" / "2026-06-04-generation.md"
+  ).is_file()
 
 
 def test_t004_check_mode_enforces_two_stage_isolation(tmp_path):
@@ -84,7 +108,9 @@ def test_t004_check_mode_enforces_two_stage_isolation(tmp_path):
   assert result["intent_policy"] == "reference_only"
   assert result["partitioning_check"] == "standard_disabled"
   assert result["findings"][0]["severity"] == "INFO"
-  record_path = tmp_path / ".reviewcompass" / "specs" / "billing" / "conformance" / "2026-06-04-check.md"
+  record_path = (
+    tmp_path / ".reviewcompass" / "evidence" / "features" / "billing" / "conformance" / "2026-06-04-check.md"
+  )
   assert record_path.is_file()
   record_text = record_path.read_text(encoding="utf-8")
   assert "## 食い違い所見" in record_text
@@ -176,6 +202,38 @@ def test_t007_comparison_records_mismatches_and_ids():
   )["finding_id"] == "CF-1000"
 
 
+def test_t007_frozen_period_numbering_merges_legacy_and_new_scopes(tmp_path):
+  legacy_dir = tmp_path / ".reviewcompass" / "specs" / "billing" / "conformance"
+  legacy_dir.mkdir(parents=True)
+  (legacy_dir / "2026-06-01-check.md").write_text(
+    "finding_id: CF-007\njudgment_id: JD-007\n",
+    encoding="utf-8",
+  )
+  model = ComparisonModel.for_feature(tmp_path, "billing")
+  finding = model.compare_one(
+    criterion_id="criterion-1",
+    existing={"section": "A", "claim": "x", "code_refs": ["src/a.py:1"]},
+    inferred={"section": "B", "claim": "x", "code_refs": ["src/a.py:1"]},
+  )
+  assert finding["finding_id"] == "CF-008"
+  assert finding["judgment_id"] == "JD-008"
+
+  new_dir = tmp_path / ".reviewcompass" / "evidence" / "features" / "billing" / "conformance"
+  new_dir.mkdir(parents=True)
+  (new_dir / "2026-06-12-check.md").write_text(
+    "finding_id: CF-012\njudgment_id: JD-008\n",
+    encoding="utf-8",
+  )
+  merged_model = ComparisonModel.for_feature(tmp_path, "billing")
+  merged_finding = merged_model.compare_one(
+    criterion_id="criterion-1",
+    existing={"section": "A", "claim": "x", "code_refs": ["src/a.py:1"]},
+    inferred={"section": "B", "claim": "x", "code_refs": ["src/a.py:1"]},
+  )
+  assert merged_finding["finding_id"] == "CF-013"
+  assert merged_finding["judgment_id"] == "JD-009"
+
+
 def test_t008_triad_review_policy_applies_stage_and_intensity():
   policy = TriadReviewPolicy()
   assert policy.intensity_for("requirements_estimation") == "full"
@@ -223,6 +281,74 @@ def test_t009_evaluation_record_front_matter_and_placement(tmp_path):
     )
 
 
+def _write_minimal_record(model, *, feature: str, run_date: str) -> Path:
+  return model.write_record(
+    feature=feature,
+    mode_internal="check",
+    run_date=run_date,
+    author="primary",
+    reviewer="judgment",
+    target_commit="abc123",
+    materialization_commit_hash=None,
+    related_records=[],
+    body="## 機械検査結果\nOK\n",
+  )
+
+
+def test_t009_record_write_targets_new_evidence_placement(tmp_path):
+  model = EvaluationRecordModel(tmp_path)
+  path = _write_minimal_record(model, feature="billing", run_date="2026-06-12")
+  assert path == (
+    tmp_path / ".reviewcompass" / "evidence" / "features" / "billing" / "conformance" / "2026-06-12-check.md"
+  )
+  assert path.is_file()
+
+
+def test_t009_record_write_never_creates_legacy_placement(tmp_path):
+  model = EvaluationRecordModel(tmp_path)
+  _write_minimal_record(model, feature="billing", run_date="2026-06-12")
+  assert not (tmp_path / ".reviewcompass" / "specs" / "billing" / "conformance").exists()
+
+
+def test_t009_record_read_falls_back_to_frozen_legacy(tmp_path):
+  legacy_dir = tmp_path / ".reviewcompass" / "specs" / "billing" / "conformance"
+  legacy_dir.mkdir(parents=True)
+  (legacy_dir / "2026-06-01-check.md").write_text("legacy body\n", encoding="utf-8")
+  model = EvaluationRecordModel(tmp_path)
+  record = model.read_record(feature="billing", file_name="2026-06-01-check.md")
+  assert record["source"] == "legacy_frozen"
+  assert record["text"] == "legacy body\n"
+  assert record["path"] == legacy_dir / "2026-06-01-check.md"
+  assert record["warnings"] == []
+
+
+def test_t009_cross_feature_read_reports_namespace_source(tmp_path):
+  namespace_dir = tmp_path / ".reviewcompass" / "specs" / "_cross_feature" / "conformance"
+  namespace_dir.mkdir(parents=True)
+  (namespace_dir / "2026-06-12-check.md").write_text("cross feature body\n", encoding="utf-8")
+  model = EvaluationRecordModel(tmp_path)
+  record = model.read_record(feature="_cross_feature", file_name="2026-06-12-check.md")
+  assert record["source"] == "cross_feature_namespace"
+  assert record["path"] == namespace_dir / "2026-06-12-check.md"
+  assert record["warnings"] == []
+
+
+def test_t009_record_read_prefers_new_and_warns_on_duplicate(tmp_path):
+  legacy_dir = tmp_path / ".reviewcompass" / "specs" / "billing" / "conformance"
+  legacy_dir.mkdir(parents=True)
+  (legacy_dir / "2026-06-12-check.md").write_text("legacy body\n", encoding="utf-8")
+  new_dir = tmp_path / ".reviewcompass" / "evidence" / "features" / "billing" / "conformance"
+  new_dir.mkdir(parents=True)
+  (new_dir / "2026-06-12-check.md").write_text("evidence body\n", encoding="utf-8")
+  model = EvaluationRecordModel(tmp_path)
+  record = model.read_record(feature="billing", file_name="2026-06-12-check.md")
+  assert record["source"] == "evidence"
+  assert record["text"] == "evidence body\n"
+  assert record["path"] == new_dir / "2026-06-12-check.md"
+  assert len(record["warnings"]) == 1
+  assert "specs/billing/conformance" in record["warnings"][0]
+
+
 def test_t010_dependency_shape_matches_feature_dependency():
   import yaml
 
@@ -255,8 +381,9 @@ def test_t012_machine_verification_mv6_is_blocking(tmp_path):
     run_id="run-001",
   )
   assert ok.status == VerificationStatus.OK
-  prompt_log = tmp_path / "logs" / "estimation" / "run-001" / "prompt.log"
+  prompt_log = tmp_path / ".reviewcompass" / "evidence" / "estimation" / "run-001" / "prompt.log"
   assert prompt_log.is_file()
+  assert not (tmp_path / "logs" / "estimation").exists()
   log_text = prompt_log.read_text(encoding="utf-8")
   assert "run_id: run-001" in log_text
   assert "prompt_text:" in log_text
@@ -268,6 +395,172 @@ def test_t012_machine_verification_mv6_is_blocking(tmp_path):
   )
   assert bad.status == VerificationStatus.DEVIATION
   assert bad.fail_closed == "blocking"
+
+
+def test_t012_record_freeze_violations_detected_from_git_history(tmp_path):
+  legacy_dir = tmp_path / ".reviewcompass" / "specs" / "billing" / "conformance"
+  legacy_dir.mkdir(parents=True)
+  frozen_record = legacy_dir / "2026-06-01-check.md"
+  frozen_record.write_text("type: conformance_evaluation\n", encoding="utf-8")
+  _git(tmp_path, "init")
+  freeze_commit = _git_commit_all(tmp_path, "P1 placement switch")
+
+  verifier = MachineVerification(tmp_path)
+  ok = verifier.check_record_freeze(freeze_commit=freeze_commit)
+  assert ok.check_id == "MV-3"
+  assert ok.status == VerificationStatus.OK
+  assert ok.fail_closed == "recommended"
+
+  (legacy_dir / "2026-06-13-check.md").write_text("type: conformance_evaluation\n", encoding="utf-8")
+  added = verifier.check_record_freeze(freeze_commit=freeze_commit)
+  assert added.status == VerificationStatus.DEVIATION
+  assert any("2026-06-13-check.md" in reason for reason in added.reasons)
+  assert all("2026-06-01-check.md" not in reason for reason in added.reasons)
+
+  (legacy_dir / "2026-06-13-check.md").unlink()
+  frozen_record.write_text("type: conformance_evaluation\nedited: true\n", encoding="utf-8")
+  modified = verifier.check_record_freeze(freeze_commit=freeze_commit)
+  assert modified.status == VerificationStatus.DEVIATION
+  assert any("2026-06-01-check.md" in reason for reason in modified.reasons)
+
+
+def test_t012_estimation_log_freeze_contract(tmp_path):
+  legacy_log_dir = tmp_path / "logs" / "estimation" / "frozen-run"
+  legacy_log_dir.mkdir(parents=True)
+  (legacy_log_dir / "prompt.log").write_text("frozen\n", encoding="utf-8")
+  _git(tmp_path, "init")
+  freeze_commit = _git_commit_all(tmp_path, "P1 placement switch")
+
+  verifier = MachineVerification(tmp_path)
+  verifier.check_prompt_isolation(
+    prompt_text="Implementation only. 自律探索禁止: existing upstream docs must not be read.",
+    forbidden_paths=["requirements.md", "design.md", "intent.md"],
+    run_id="run-101",
+  )
+  assert (tmp_path / ".reviewcompass" / "evidence" / "estimation" / "run-101" / "prompt.log").is_file()
+  ok = verifier.check_estimation_log_freeze(freeze_commit=freeze_commit)
+  assert ok.status == VerificationStatus.OK
+
+  new_legacy_dir = tmp_path / "logs" / "estimation" / "new-run"
+  new_legacy_dir.mkdir(parents=True)
+  (new_legacy_dir / "prompt.log").write_text("violation\n", encoding="utf-8")
+  bad = verifier.check_estimation_log_freeze(freeze_commit=freeze_commit)
+  assert bad.status == VerificationStatus.DEVIATION
+  assert any("new-run" in reason for reason in bad.reasons)
+  assert bad.fail_closed == "recommended"
+
+
+def test_t012_ignored_legacy_additions_are_freeze_violations(tmp_path):
+  legacy_log_dir = tmp_path / "logs" / "estimation" / "frozen-run"
+  legacy_log_dir.mkdir(parents=True)
+  (legacy_log_dir / "prompt.log").write_text("frozen\n", encoding="utf-8")
+  _git(tmp_path, "init")
+  freeze_commit = _git_commit_all(tmp_path, "P1 placement switch")
+
+  (tmp_path / ".gitignore").write_text("ignored-run/\n", encoding="utf-8")
+  ignored_dir = tmp_path / "logs" / "estimation" / "ignored-run"
+  ignored_dir.mkdir(parents=True)
+  (ignored_dir / "prompt.log").write_text("violation\n", encoding="utf-8")
+
+  verifier = MachineVerification(tmp_path)
+  result = verifier.check_estimation_log_freeze(freeze_commit=freeze_commit)
+  assert result.status == VerificationStatus.DEVIATION
+  assert any("ignored-run" in reason for reason in result.reasons)
+
+
+def test_t012_committed_changes_after_freeze_are_violations(tmp_path):
+  legacy_dir = tmp_path / ".reviewcompass" / "specs" / "billing" / "conformance"
+  legacy_dir.mkdir(parents=True)
+  frozen_record = legacy_dir / "2026-06-01-check.md"
+  frozen_record.write_text("type: conformance_evaluation\n", encoding="utf-8")
+  _git(tmp_path, "init")
+  freeze_commit = _git_commit_all(tmp_path, "P1 placement switch")
+
+  frozen_record.write_text("type: conformance_evaluation\nedited: true\n", encoding="utf-8")
+  _git_commit_all(tmp_path, "edit frozen record after freeze")
+
+  verifier = MachineVerification(tmp_path)
+  result = verifier.check_record_freeze(freeze_commit=freeze_commit)
+  assert result.status == VerificationStatus.DEVIATION
+  assert any(reason.startswith("frozen_file_changed:") for reason in result.reasons)
+
+
+def test_t012_frozen_record_deletion_is_detected(tmp_path):
+  legacy_dir = tmp_path / ".reviewcompass" / "specs" / "billing" / "conformance"
+  legacy_dir.mkdir(parents=True)
+  frozen_record = legacy_dir / "2026-06-01-check.md"
+  frozen_record.write_text("type: conformance_evaluation\n", encoding="utf-8")
+  _git(tmp_path, "init")
+  freeze_commit = _git_commit_all(tmp_path, "P1 placement switch")
+
+  frozen_record.unlink()
+
+  verifier = MachineVerification(tmp_path)
+  result = verifier.check_record_freeze(freeze_commit=freeze_commit)
+  assert result.status == VerificationStatus.DEVIATION
+  assert any("frozen_file_changed: " in reason and "2026-06-01-check.md" in reason for reason in result.reasons)
+
+  _git_commit_all(tmp_path, "delete frozen record after freeze")
+  committed = verifier.check_record_freeze(freeze_commit=freeze_commit)
+  assert committed.status == VerificationStatus.DEVIATION
+  assert any("frozen_file_changed: " in reason and "2026-06-01-check.md" in reason for reason in committed.reasons)
+
+
+def test_t012_cross_feature_exclusion_uses_path_components(tmp_path):
+  namespace_dir = tmp_path / ".reviewcompass" / "specs" / "_cross_feature" / "conformance"
+  namespace_dir.mkdir(parents=True)
+  (namespace_dir / "2026-06-01-check.md").write_text("cross feature\n", encoding="utf-8")
+  _git(tmp_path, "init")
+  freeze_commit = _git_commit_all(tmp_path, "P1 placement switch")
+
+  (namespace_dir / "2026-06-13-check.md").write_text("namespace ok\n", encoding="utf-8")
+  evil_dir = tmp_path / ".reviewcompass" / "specs" / "billing" / "conformance" / "_cross_feature"
+  evil_dir.mkdir(parents=True)
+  (evil_dir / "evil.md").write_text("violation\n", encoding="utf-8")
+
+  verifier = MachineVerification(tmp_path)
+  result = verifier.check_record_freeze(freeze_commit=freeze_commit)
+  assert result.status == VerificationStatus.DEVIATION
+  assert any("billing/conformance/_cross_feature/evil.md" in reason for reason in result.reasons)
+  assert all("specs/_cross_feature/conformance" not in reason for reason in result.reasons)
+
+
+def test_t012_existing_prompt_logs_content_check(tmp_path):
+  frozen_dir = tmp_path / "logs" / "estimation" / "frozen-run"
+  frozen_dir.mkdir(parents=True)
+  (frozen_dir / "prompt.log").write_text(
+    "run_id: frozen-run\n"
+    "timestamp: 2026-06-08T00:00:00+00:00\n"
+    "prompt_text:\n"
+    "Implementation only. Do not read existing upstream documents.\n"
+    "forbidden_paths:\n"
+    "- requirements.md\n"
+    "status: OK\n",
+    encoding="utf-8",
+  )
+  verifier = MachineVerification(tmp_path)
+  clean = verifier.check_existing_prompt_logs(forbidden_paths=["requirements.md", "design.md"])
+  assert clean.check_id == "MV-6"
+  assert clean.status == VerificationStatus.OK
+  assert clean.fail_closed == "blocking"
+
+  bad_dir = tmp_path / ".reviewcompass" / "evidence" / "estimation" / "bad-run"
+  bad_dir.mkdir(parents=True)
+  (bad_dir / "prompt.log").write_text(
+    "run_id: bad-run\n"
+    "timestamp: 2026-06-12T00:00:00+00:00\n"
+    "prompt_text:\n"
+    "Please read requirements.md before estimating.\n"
+    "forbidden_paths:\n"
+    "- requirements.md\n"
+    "status: OK\n",
+    encoding="utf-8",
+  )
+  bad = verifier.check_existing_prompt_logs(forbidden_paths=["requirements.md", "design.md"])
+  assert bad.status == VerificationStatus.DEVIATION
+  assert any("bad-run" in reason and "requirements.md" in reason for reason in bad.reasons)
+  assert any("missing autonomous exploration prohibition" in reason and "bad-run" in reason for reason in bad.reasons)
+  assert all("frozen-run" not in reason for reason in bad.reasons)
 
 
 def test_t013_traceability_smoke():

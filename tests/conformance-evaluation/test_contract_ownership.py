@@ -277,7 +277,8 @@ def test_spec_update_draft_writer_materializes_markdown_without_applying(tmp_pat
   expected_path = (
     tmp_path
     / ".reviewcompass"
-    / "specs"
+    / "evidence"
+    / "features"
     / "workflow-management"
     / "conformance"
     / "2026-06-08-spec-update-drafts"
@@ -507,7 +508,8 @@ def test_check_pipeline_can_emit_contract_ownership_candidates(tmp_path):
   record_path = (
     tmp_path
     / ".reviewcompass"
-    / "specs"
+    / "evidence"
+    / "features"
     / "workflow-management"
     / "conformance"
     / "2026-06-08-check.md"
@@ -596,7 +598,8 @@ def test_check_pipeline_includes_spec_update_proposals(tmp_path):
   record_path = (
     tmp_path
     / ".reviewcompass"
-    / "specs"
+    / "evidence"
+    / "features"
     / "workflow-management"
     / "conformance"
     / "2026-06-08-check.md"
@@ -629,7 +632,7 @@ def test_check_pipeline_can_materialize_spec_update_draft_files(tmp_path):
 
   draft_result = result["contract_ownership"]["spec_update_draft_files"]
   assert draft_result["draft_dir"].endswith(
-    ".reviewcompass/specs/workflow-management/conformance/2026-06-08-spec-update-drafts"
+    ".reviewcompass/evidence/features/workflow-management/conformance/2026-06-08-spec-update-drafts"
   )
   assert len(draft_result["draft_files"]) == 1
   draft_path = Path(draft_result["draft_files"][0])

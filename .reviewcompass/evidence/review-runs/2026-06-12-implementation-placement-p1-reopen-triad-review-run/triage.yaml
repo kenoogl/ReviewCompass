@@ -1,0 +1,70 @@
+run_id: 2026-06-12-implementation-placement-p1-reopen-triad-review-run
+triage_status: decided
+generated_at: '2026-06-12T13:29:14.134963+00:00'
+decision_actor: null
+decision_actor_type: human
+items:
+- finding_id: 2026-06-12-implementation-placement-p1-reopen-triad-review-run-claude-sonnet-4-6-primary-001
+  run_id: 2026-06-12-implementation-placement-p1-reopen-triad-review-run
+  source_model: claude-sonnet-4-6
+  source_round: round-3
+  source_raw_path: raw/claude-sonnet-4-6.round-3.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-3.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: 'tools/conformance_evaluation/evaluation_record.py: read_record(),
+    _cross_feature 判定'
+  plain_language_summary: _cross_feature の source 値が新配置ファイルが存在する場合のみ 'cross_feature_namespace'
+    を返す。新配置に存在しない場合（旧配置からのフォールバック）は 'legacy_frozen' を返す。設計では _cross_feature は specs
+    配下のまま（新配置は存在しない）であるため、read_record が _cross_feature 向けに 'evidence' を返すコードパスは実行不能だが、将来の誤解を招く可能性がある。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: proxy_model
+  decision_actor_type: agent
+  decision_at: '2026-06-12T13:30:58.533098+00:00'
+  decision_reason: round-3 収束確認の注釈（proxy 判断 leave-as-is、approval-proxy-2026-06-12-round-3.yaml）
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-12-implementation-placement-p1-reopen-triad-review-run-claude-sonnet-4-6-primary-002
+  run_id: 2026-06-12-implementation-placement-p1-reopen-triad-review-run
+  source_model: claude-sonnet-4-6
+  source_round: round-3
+  source_raw_path: raw/claude-sonnet-4-6.round-3.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-3.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: 'tools/conformance_evaluation/machine_verification.py: _legacy_violations(),
+    diff --name-only'
+  plain_language_summary: git diff --name-only <freeze_commit> は作業ツリーと freeze_commit
+    を比較し、freeze 後にコミット済みの変更も検出する。ただし git diff は削除されたファイルも changed に含めるため、frozen_file_changed
+    として正しく報告される（テスト test_t012_frozen_record_deletion_is_detected で確認済み）。凍結集合からの削除が
+    'frozen_file_changed' という名称で報告されることは semantics 上やや不正確だが、テストで固定されており、設計内で合意済み（round-1
+    C5 leave確認）。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: proxy_model
+  decision_actor_type: agent
+  decision_at: '2026-06-12T13:30:58.578911+00:00'
+  decision_reason: round-3 収束確認の注釈（proxy 判断 leave-as-is、approval-proxy-2026-06-12-round-3.yaml）
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-12-implementation-placement-p1-reopen-triad-review-run-claude-sonnet-4-6-primary-003
+  run_id: 2026-06-12-implementation-placement-p1-reopen-triad-review-run
+  source_model: claude-sonnet-4-6
+  source_round: round-3
+  source_raw_path: raw/claude-sonnet-4-6.round-3.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-3.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: 'tools/conformance_evaluation/machine_verification.py: check_existing_prompt_logs(),
+    log_path 列挙順'
+  plain_language_summary: sorted(log_root.rglob('prompt.log')) はファイルシステム依存の順序に sorted
+    を適用するが、両ルートにわたる統合ソートではなく、ルートごとにソートされる。テストは順序依存ではないが、理由文字列の順序が環境によって異なりうる。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: proxy_model
+  decision_actor_type: agent
+  decision_at: '2026-06-12T13:30:58.623403+00:00'
+  decision_reason: round-3 収束確認の注釈（proxy 判断 leave-as-is、approval-proxy-2026-06-12-round-3.yaml）
+  applied_files: []
+  superseded_by: null

@@ -38,7 +38,7 @@ class CheckPipeline:
     if isolation.status == VerificationStatus.DEVIATION:
       raise ValueError("; ".join(isolation.reasons))
     estimate = EstimationModel().estimate(implementation_refs)
-    comparison = ComparisonModel().compare_one(
+    comparison = ComparisonModel.for_feature(self.root, feature).compare_one(
       criterion_id="criterion-1",
       existing={"section": "placeholder", "claim": "placeholder", "code_refs": implementation_refs},
       inferred={"section": "placeholder", "claim": "placeholder", "code_refs": implementation_refs},

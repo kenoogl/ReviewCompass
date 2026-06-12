@@ -1,6 +1,6 @@
 # CONFORMANCE_EVALUATION：適合性評価機能の運用文書
 
-最終更新：2026-05-22（フェーズ 1 抽出、requirements 部分のみの骨子。design 部分は後続セッションで追加）
+最終更新：2026-06-12（配置規約 P1 反映：評価記録・草案の配置ルートを evidence 区画へ変更、凍結期の新旧配置の扱いと凍結検査の手動実行手順を追記）
 
 本文書は ReviewCompass の `conformance-evaluation`（適合性評価機能、新規 7 番目機能）の運用上の役割と契約を解説する。形式仕様は [.reviewcompass/specs/conformance-evaluation/requirements.md](../../.reviewcompass/specs/conformance-evaluation/requirements.md) を参照する。
 
@@ -79,23 +79,30 @@
 
 ## 6. 評価記録の配置（Requirement 6）
 
+conformance 成果物（評価記録・spec update 草案・reopen handoff 成果物）の配置ルート契約は `<対象アプリ>/.reviewcompass/evidence/features/<feature>/conformance/` とする（2026-06-12 配置規約 PLC-DEC-003〜005・009〜011 反映）。
+
 ```
-<対象アプリ>/.reviewcompass/specs/<feature>/
-├── intent.md           （仕様文書）
-├── requirements.md
-├── design.md
-├── tasks.md
-├── spec.json
-├── reviews/            （仕様駆動レビューの記録）
-│   └── <日付>-<種別>.md
+<対象アプリ>/.reviewcompass/evidence/features/<feature>/
 └── conformance/        （本機能の評価記録、reviews/ とは別）
     ├── <日付>-generation.md   （文書生成モード）
-    └── <日付>-check.md         （照合チェックモード）
+    ├── <日付>-check.md         （照合チェックモード）
+    └── <日付>-spec-update-drafts/   （仕様更新草案）
 ```
 
 評価記録の `type` 値は `conformance_evaluation` に統合し、`mode_internal` フィールドで `generation` と `check` を区別する。
 
-評価記録は必ず `conformance/<日付>-<mode>.md` のパス規則に従い、`reviews/` とは別に保管する。`reviews/` は仕様駆動レビューの記録、`conformance/` は本機能の下流 → 上流評価記録であり、混在させない。
+評価記録は必ず `conformance/<日付>-<mode>.md` のパス規則に従い、`reviews/` とは別に保管する。`reviews/` は仕様駆動レビューの記録、`conformance/` は本機能の下流 → 上流評価記録であり、分離契約は evidence 配下でも維持する。
+
+### 6.0 凍結期（P3 まで）の新旧配置の扱い
+
+旧配置 `<対象アプリ>/.reviewcompass/specs/<feature>/conformance/` の既存記録は旧置き場で凍結保全する（移動しない）。挙動は次のとおり。
+
+- **書き込みは常に新配置**。旧配置への新規書き込みは行わない（凍結契約）
+- **読み取りは新配置優先・旧配置フォールバック**（新 → 旧の順、P3 まで）。両方に同名記録がある場合は新配置を正とし、警告を報告する
+- **採番（CF-NNN ／ JD-NNN）は新旧合算スコープ**で最大番号を統合算出し、旧凍結記録との ID 重複・リセットを防ぐ
+- **凍結集合の判定は git 追跡履歴が正本**：P1 実装反映コミット（書き込み先切替のコミット）時点で旧配置に存在したファイルが凍結集合であり、それ以降の旧配置への追加・変更は凍結違反として検出する（`MachineVerification.check_record_freeze`、遮断推奨）
+- `_cross_feature` は実 feature ではない横断名前空間で、配置は `specs/_cross_feature/conformance/` のまま（凍結対象外、tasks T-015）
+- 互換の終了は P3 の専用 reopen における仕様改訂として扱う（暗黙の終了はない）
 
 文書生成モードの推定出力先は次のとおりとする。
 
@@ -124,7 +131,33 @@
 | MV-6 | 推定役プロンプトに既存上流文書パスが混入せず、自律探索禁止条項がある | 遮断必須 |
 | MV-7 | foundation 受入番号参照が foundation requirements.md と一致する | 警告続行可 |
 
-MV-6 の第 1 期最小仕様では、推定役プロンプトログに時刻、実行 ID、プロンプト全文を残し、`logs/estimation/<run_id>/prompt.log` 相当の場所に保存する。検査は、既存上流文書パス（例 `intent.md`、`requirements.md`、`design.md`）の不在確認と、自律探索禁止条項の存在確認の 2 条件で行う。
+MV-6 の第 1 期最小仕様では、推定役プロンプトログに時刻、実行 ID、プロンプト全文を残し、`<対象アプリ>/.reviewcompass/evidence/estimation/<run_id>/prompt.log` に保存する（旧 `logs/estimation/` からの変更は 2026-06-12 配置規約 PLC-DEC-005・009 反映）。検査は、既存上流文書パス（例 `intent.md`、`requirements.md`、`design.md`）の不在確認と、自律探索禁止条項の存在確認の 2 条件で行う。
+
+凍結期（P3 まで）の推定ログ：既存ログは旧 `logs/estimation/` で凍結し、MV-6 の読み取り対象に含める。書き込みは常に新配置とし、旧ルートへの新規追加は凍結違反として検出する（`MachineVerification.check_estimation_log_freeze`、判定規則は評価記録と同一＝P1 実装反映コミット以降の git 追跡履歴を正本とする）。
+
+凍結検査の手動実行手順（第 1 期。CLI への自動組み込みは DVT-C003 によりフェーズ 4 で扱う）：
+
+1. 凍結境界（P1 実装反映コミット＝書き込み先切替のコミット）を特定する。例：
+
+   ```bash
+   git log --reverse --format=%H -S "evidence/features" -- tools/conformance_evaluation/evaluation_record.py | head -1
+   ```
+
+2. 凍結違反検出（評価記録・推定ログ）と既存推定ログの MV-6 内容検査を実行する。例：
+
+   ```bash
+   PYTHONPATH=. .venv/bin/python3 -c "
+   from tools.conformance_evaluation.machine_verification import MachineVerification
+   mv = MachineVerification('.')
+   fc = '<freeze-commit>'
+   for result in (
+     mv.check_record_freeze(freeze_commit=fc),
+     mv.check_estimation_log_freeze(freeze_commit=fc),
+     mv.check_existing_prompt_logs(forbidden_paths=['intent.md', 'requirements.md', 'design.md']),
+   ):
+     print(result.check_id, result.status.value, result.reasons)
+   "
+   ```
 
 `tools/conformance-evaluation-check.py` は conformance-evaluation 固有の評価記録・遮断・推定根拠を検査する。workflow-management の `tools/check-workflow-action.py` は workflow_state や不可逆操作の順序を検査するため、責務は異なる。
 

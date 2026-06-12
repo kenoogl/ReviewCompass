@@ -2,6 +2,8 @@
 from pathlib import Path
 import yaml
 
+from tools.conformance_evaluation.evaluation_record import conformance_dir
+
 
 class ContractOwnershipMapError(ValueError):
   """Raised when a contract ownership entry violates the local vocabulary."""
@@ -183,14 +185,7 @@ class SpecUpdateDraftWriter:
     self.root = Path(root)
 
   def write(self, *, feature: str, run_date: str, drafts: list) -> dict:
-    draft_dir = (
-      self.root
-      / ".reviewcompass"
-      / "specs"
-      / feature
-      / "conformance"
-      / f"{run_date}-spec-update-drafts"
-    )
+    draft_dir = conformance_dir(self.root, feature) / f"{run_date}-spec-update-drafts"
     draft_dir.mkdir(parents=True, exist_ok=True)
     draft_files = []
     for draft in drafts:

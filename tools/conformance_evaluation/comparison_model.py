@@ -1,11 +1,46 @@
 """Comparison model for inferred and existing upstream documents."""
+import re
+from pathlib import Path
+
 from tools.conformance_evaluation.criteria import criterion_by_id
+from tools.conformance_evaluation.evaluation_record import (
+  conformance_dir,
+  legacy_conformance_dir,
+)
 
 
 class ComparisonModel:
   def __init__(self):
     self.finding_counter = 0
     self.judgment_counter = 0
+
+  @classmethod
+  def for_feature(cls, root: Path, feature: str) -> "ComparisonModel":
+    """既存記録の最大番号から採番を継続する（design §10.7）。
+
+    凍結期（P3 まで）は新配置と凍結された旧配置を合算した走査範囲で
+    最大番号を統合算出し、旧凍結記録との ID 重複・リセットを防ぐ。
+    """
+    model = cls()
+    scan_roots = {
+      conformance_dir(root, feature),
+      legacy_conformance_dir(root, feature),
+    }
+    for scan_root in scan_roots:
+      if not scan_root.is_dir():
+        continue
+      for path in scan_root.rglob("*"):
+        if not path.is_file():
+          continue
+        try:
+          text = path.read_text(encoding="utf-8")
+        except UnicodeDecodeError:
+          continue
+        for match in re.finditer(r"\bCF-(\d+)\b", text):
+          model.finding_counter = max(model.finding_counter, int(match.group(1)))
+        for match in re.finditer(r"\bJD-(\d+)\b", text):
+          model.judgment_counter = max(model.judgment_counter, int(match.group(1)))
+    return model
 
   @staticmethod
   def format_next_id(prefix: str, number: int) -> str:

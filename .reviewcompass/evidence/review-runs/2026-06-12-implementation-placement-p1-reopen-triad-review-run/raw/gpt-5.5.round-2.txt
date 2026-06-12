@@ -1,0 +1,5 @@
+findings:
+  - severity: WARN
+    target_location: "tools/conformance_evaluation/machine_verification.py / tools/conformance-evaluation-check.py"
+    description: "新規追加された凍結検査・既存 prompt.log 検査が通常の機械検査実行経路へ接続された証跡がない"
+    rationale: "check_record_freeze、check_estimation_log_freeze、check_existing_prompt_logs は追加され、単体テストでは直接呼び出されているが、diff 上では tools/conformance-evaluation-check.py などの通常実行エントリポイントへの組み込みが示されていない。配置 P1 契約では旧配置への追加・変更検出、および新旧 prompt.log の MV-6 遮断検査が運用上検出される必要があるため、ヘルパー実装だけでは通常実行時に違反を見逃すリスクが残る。"

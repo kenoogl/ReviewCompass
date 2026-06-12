@@ -1,0 +1,20 @@
+approved_by: proxy_model
+finding_id: 2026-06-12-implementation-placement-p1-reopen-triad-review-run-claude-sonnet-4-6-primary-003
+cluster_id: C3
+proxy_model_id: gemini-3.1-pro-preview
+decision_prompt_path: proxy-decision-prompts/CE-IMPL-P1-placement-all.prompt.md
+selected_option: A
+final_label: should-fix
+rationale: gpt-5.5-adversarial-003と同根。部分文字列一致（`/_cross_feature/`）では、将来の機能追加時に誤除外を引き起こす理論的リスクがあるため、パス成分としての完全一致に強化すべきである。
+implementation_policy: read_record の source を _cross_feature 専用値で報告し、凍結検査の除外判定をパス成分一致へ強化する。双方のテストを追加する。
+raw_response_path: proxy-decisions/CE-IMPL-P1-placement-all.raw.txt
+candidate_options:
+- A
+- B
+- C
+source_raw_paths:
+- raw/claude-sonnet-4-6.round-1.txt
+- raw/gpt-5.5.round-1.txt
+rejected_options:
+  B: 実装のロジック上の脆弱性を残したまま、文書の運用でカバーするのは不適当であるため。
+  C: 理論的とはいえ明確なバグの種がコード内に残存するため。

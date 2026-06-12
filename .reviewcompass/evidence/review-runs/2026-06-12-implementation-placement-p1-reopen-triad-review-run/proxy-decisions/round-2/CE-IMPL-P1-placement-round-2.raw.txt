@@ -1,0 +1,32 @@
+```yaml
+decisions:
+  - finding_id: 2026-06-12-implementation-placement-p1-reopen-triad-review-run-gpt-5.5-adversarial-001
+    cluster_id: C7
+    selected_option: B
+    final_label: should-fix
+    rationale: DVT-C003の段階導入方針において第1期は手動grepやfindの運用と確定しているため、CLIへの自動組み込みはフェーズ4のスコープとして見送るのが妥当です。一方でWARN指摘への対応として、運用文書に手動実行手順を記載して検出経路を明確化します。
+    rejected_options:
+      A: MV検査の本格自動化をフェーズ4へ延期するというDVT-C003の確定方針と矛盾するため。
+      C: 実行経路が不明瞭なままとなり運用上の見逃しリスクが残るというWARNの指摘が未解決になるため。
+  - finding_id: 2026-06-12-implementation-placement-p1-reopen-triad-review-run-claude-sonnet-4-6-primary-001
+    cluster_id: C8
+    selected_option: B
+    final_label: leave-as-is
+    rationale: 同値前提が崩れるような将来のパス変更が生じた場合、既存のテストが失敗することで判断を強制できるため、安全網は既に機能しています。仮定上の変更に備えて意図的な分岐を現時点で追加する必要はありません。
+    rejected_options:
+      A: 既存のテストで安全網が確保されており不確実な将来の変更に対する事前のコード追加は保守上不要であるため。
+  - finding_id: 2026-06-12-implementation-placement-p1-reopen-triad-review-run-claude-sonnet-4-6-primary-002
+    cluster_id: C9
+    selected_option: A
+    final_label: should-fix
+    rationale: 凍結ファイルの削除はデータ消失に直結する重大な違反です。現実装で正しく検出可能であることは実証済みですが、テストで明示的にカバーしておくことで将来のリグレッションを確実に防ぐことができます。
+    rejected_options:
+      B: 重大なデータ消失ケースに対する安全網が欠落したままとなりテストの保守的価値を損なうため。
+  - finding_id: 2026-06-12-implementation-placement-p1-reopen-triad-review-run-claude-sonnet-4-6-primary-003
+    cluster_id: C10
+    selected_option: A
+    final_label: leave-as-is
+    rationale: 検査理由はプログラムの内部表現であり既存のテストも部分一致によって柔軟に対応しています。理由文字列のフォーマットを文書で厳密に規定するとかえって将来の改善の妨げになります。
+    rejected_options:
+      B: 保守対象の文書を無駄に増やし内部表現の変更自由度を不必要に下げるため。
+```
