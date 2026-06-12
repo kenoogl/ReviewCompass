@@ -1,0 +1,21 @@
+# post_hoc_intent_diff 実データ試行 r2（2026-06-09）の再生入力。
+# added_intent と feature_partitioning は実記録の本文と同一。
+# existing_specs と implementation_refs の実試行時の値は記録に残っていないため、
+# 現行の正本仕様ファイルパスを用いる（記録本文の同一性には影響しない）。
+added_intent: レビューの収集処理は、規則ファイル照合や固定プロンプトの単純写像ではなく、実際の大規模言語モデルの判断に基づいて発見と判断を生成する。プロンプトや規則ファイルなどの事前設定は、収集対象や入力範囲の固定には使ってよいが、観測結果（発見の件数・内容・構造）を縛ってはならない。
+feature_partitioning: stages/feature-partitioning/2026-05-24-proposal.md は、conformance-evaluation を規律遵守検査、workflow-management を所定手続き・reopen・整合ゲート管理の責務として定義している。
+run_date: '2026-06-09-real-data-r2'
+existing_specs:
+  conformance-evaluation:
+    requirements: .reviewcompass/specs/conformance-evaluation/requirements.md
+    design: .reviewcompass/specs/conformance-evaluation/design.md
+    tasks: .reviewcompass/specs/conformance-evaluation/tasks.md
+  workflow-management:
+    requirements: .reviewcompass/specs/workflow-management/requirements.md
+    design: .reviewcompass/specs/workflow-management/design.md
+    tasks: .reviewcompass/specs/workflow-management/tasks.md
+implementation_refs:
+  - path: tools/conformance_evaluation/post_hoc_intent_diff.py
+    symbol: PostHocIntentDiff.extract
+  - path: tools/check-workflow-action.py
+    symbol: build_in_progress_next_action

@@ -1,0 +1,41 @@
+process_id: maintenance
+title: Pin post_hoc_intent_diff real-data trials as fixtures and regression tests
+started_at: '2026-06-12T00:00:00+09:00'
+status: completed
+trigger: TODO §4 候補 4。2026-06-09 の post_hoc_intent_diff 実データ試行 2 件（r1=後追い intent の下流展開、
+  r2=LLM 判断に基づくレビュー収集）の結果を、将来の fixture または回帰確認に使うかの利用者判断が保留されていた。
+  利用者決定「案 a」（2026-06-12）により、実データ 2 件を fixture として固定し再生テストを追加する。
+required_action: continue_maintenance
+mainline_blocked_by: なし（全 workflow_state は completed。利用者指示による小規模テスト追加の side track）
+side_track_scope:
+- 実記録 2 件の入力（added_intent・feature_partitioning・run_date）と期待記録本文を tests/fixtures/ に固定する
+- 一時ディレクトリを root として PostHocIntentDiff.extract を再生し、生成記録が期待記録とバイト一致することを検証する
+  回帰テストを追加する（ツールは LLM を呼ばない決定的処理のため再生は安定）
+- tools/ 配下の実装は変更しない（テストと fixture の追加のみ）
+- 正本記録（.reviewcompass/specs/conformance-evaluation/conformance/ の実記録 2 件）は変更しない
+allowed_scope:
+- fixture 4 ファイルと再生テスト 1 ファイルの追加
+allowed_files:
+- tests/fixtures/conformance-evaluation/post-hoc-intent-diff/real-data-r1/input.yaml
+- tests/fixtures/conformance-evaluation/post-hoc-intent-diff/real-data-r1/expected-record.md
+- tests/fixtures/conformance-evaluation/post-hoc-intent-diff/real-data-r2/input.yaml
+- tests/fixtures/conformance-evaluation/post-hoc-intent-diff/real-data-r2/expected-record.md
+- tests/conformance-evaluation/test_post_hoc_intent_diff_real_data.py
+- stages/in-progress/maintenance-2026-06-12-phid-real-data-fixture.yaml
+- stages/completed/maintenance-2026-06-12-phid-real-data-fixture.yaml
+out_of_scope_note: existing_specs／implementation_refs の実試行時の入力値は実記録に保存されていないため、
+  現行の正本仕様ファイルパスを fixture 入力として用いる（記録本文は added_intent と feature_partitioning
+  だけから決まるため期待記録の同一性に影響しない）。post_hoc_intent_diff 本体の挙動変更は扱わない。
+completion_conditions:
+- 再生テストが fixture 追加前に失敗し（fixture 欠落）、追加後に通過する（TDD テスト先行）
+- 期待記録が実記録 2 件とバイト一致する fixture として保存される
+- 既存テストを含む全テストが通る
+- 完了時に本ファイルを stages/completed/ へ移す
+completed_at: '2026-06-12T00:00:00+09:00'
+completed_steps:
+- 再生テスト 4 件（再生 2 件＋ fixture と正本記録の一致自己検査 2 件）を先に追加し、fixture 欠落での失敗を確認（TDD テスト先行）
+- 期待記録 2 件を正本記録から複製（バイト一致）、再生入力 2 件（added_intent・feature_partitioning・run_date は実記録と同一、
+  existing_specs／implementation_refs は現行正本パス）を tests/fixtures/conformance-evaluation/post-hoc-intent-diff/ に固定
+- 新テスト 4 件通過、全テスト群で回帰なし（既定 testpaths 599 件＋ conformance-evaluation 69・deployment 8・hooks 17・
+  learning 39・operations 8・self-improvement 92・tools 200 件、計 1032 件通過）
+- tools/ 配下の実装と正本記録は未変更（side_track_scope のとおりテストと fixture の追加のみ）
