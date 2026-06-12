@@ -1,0 +1,48 @@
+status: completed
+target_files:
+- docs/notes/2026-06-12-document-placement-plan.md
+- docs/notes/review-runs/2026-06-12-placement-plan-postwrite/model-result-summary.yaml
+- docs/notes/review-runs/2026-06-12-placement-plan-postwrite/parsed/gemini-3.5-flash.round-1.yaml
+- docs/notes/review-runs/2026-06-12-placement-plan-postwrite/raw/gemini-3.5-flash.round-1.txt
+- docs/notes/review-runs/2026-06-12-placement-plan-postwrite/review_summary.md
+- docs/notes/review-runs/2026-06-12-placement-plan-postwrite/rounds.yaml
+- docs/notes/review-runs/2026-06-12-placement-plan-postwrite/target-manifest.yaml
+- docs/notes/review-runs/2026-06-12-placement-plan-postwrite/triage.yaml
+target_sha256:
+  docs/notes/2026-06-12-document-placement-plan.md: 2972c0fcb6050969c9ebea365f0226c67c471b518b70b1666970d249a1608b3c
+  docs/notes/review-runs/2026-06-12-placement-plan-postwrite/model-result-summary.yaml: 3f695c200feb668024eebbbfd802f80ee3c4ad2808b2ed64f9537f72ad5a2f31
+  docs/notes/review-runs/2026-06-12-placement-plan-postwrite/parsed/gemini-3.5-flash.round-1.yaml: ef9d692bc9640f35648ed8136d9ca3de2a6998c39cda0885896ea5bf0e2eb59b
+  docs/notes/review-runs/2026-06-12-placement-plan-postwrite/raw/gemini-3.5-flash.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+  docs/notes/review-runs/2026-06-12-placement-plan-postwrite/review_summary.md: 501c0a0357daae7409905a63e21597516a51264b4ec213bdceb8890e872741e8
+  docs/notes/review-runs/2026-06-12-placement-plan-postwrite/rounds.yaml: 6ed17aea5e818b3bde800b5a642573bf0dcce4c27c274221a1a00adaec9fc866
+  docs/notes/review-runs/2026-06-12-placement-plan-postwrite/target-manifest.yaml: 331a9a91c3d0d95326f33c1b54d37acb27dd68164037573bd33f20bb188b123f
+  docs/notes/review-runs/2026-06-12-placement-plan-postwrite/triage.yaml: 7f8757eb1f29c91b6a43ae3adc186ac517278f624a86eb640ff50b72dc27ec2c
+required_verifiers: &id001
+- gemini-3.5-flash
+completed_verifiers: *id001
+unresolved_substantive_findings: 0
+verifications:
+- verifier: gemini-3.5-flash
+  target_files:
+  - docs/notes/2026-06-12-document-placement-plan.md
+  - docs/notes/review-runs/2026-06-12-placement-plan-postwrite/model-result-summary.yaml
+  - docs/notes/review-runs/2026-06-12-placement-plan-postwrite/parsed/gemini-3.5-flash.round-1.yaml
+  - docs/notes/review-runs/2026-06-12-placement-plan-postwrite/raw/gemini-3.5-flash.round-1.txt
+  - docs/notes/review-runs/2026-06-12-placement-plan-postwrite/review_summary.md
+  - docs/notes/review-runs/2026-06-12-placement-plan-postwrite/rounds.yaml
+  - docs/notes/review-runs/2026-06-12-placement-plan-postwrite/target-manifest.yaml
+  - docs/notes/review-runs/2026-06-12-placement-plan-postwrite/triage.yaml
+  target_sha256:
+    docs/notes/2026-06-12-document-placement-plan.md: 2972c0fcb6050969c9ebea365f0226c67c471b518b70b1666970d249a1608b3c
+    docs/notes/review-runs/2026-06-12-placement-plan-postwrite/model-result-summary.yaml: 3f695c200feb668024eebbbfd802f80ee3c4ad2808b2ed64f9537f72ad5a2f31
+    docs/notes/review-runs/2026-06-12-placement-plan-postwrite/parsed/gemini-3.5-flash.round-1.yaml: ef9d692bc9640f35648ed8136d9ca3de2a6998c39cda0885896ea5bf0e2eb59b
+    docs/notes/review-runs/2026-06-12-placement-plan-postwrite/raw/gemini-3.5-flash.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/2026-06-12-placement-plan-postwrite/review_summary.md: 501c0a0357daae7409905a63e21597516a51264b4ec213bdceb8890e872741e8
+    docs/notes/review-runs/2026-06-12-placement-plan-postwrite/rounds.yaml: 6ed17aea5e818b3bde800b5a642573bf0dcce4c27c274221a1a00adaec9fc866
+    docs/notes/review-runs/2026-06-12-placement-plan-postwrite/target-manifest.yaml: 331a9a91c3d0d95326f33c1b54d37acb27dd68164037573bd33f20bb188b123f
+    docs/notes/review-runs/2026-06-12-placement-plan-postwrite/triage.yaml: 7f8757eb1f29c91b6a43ae3adc186ac517278f624a86eb640ff50b72dc27ec2c
+review_run:
+  path: docs/notes/review-runs/2026-06-12-placement-plan-postwrite
+  summary_path: docs/notes/review-runs/2026-06-12-placement-plan-postwrite/model-result-summary.yaml
+notes: Generated template; verify target_files cover current post-write targets before
+  use.
