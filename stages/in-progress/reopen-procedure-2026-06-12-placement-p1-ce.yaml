@@ -40,7 +40,7 @@ completed_steps:
   記録=.reviewcompass/evidence/cross-feature/reviews/2026-06-12-tasks-placement-p1-alignment.md）
 - 第3過程：stages/tasks.yaml#approval 完了（利用者発言「コミット」2026-06-12＝approval 提示〔置換 6 箇所＋4 タスクへの凍結期責務・テスト要件追加〕への応答として承認。
   spec.json の tasks alignment・approval を true へ復帰）
-next_step: 第3過程の停止点コミット（requirements〜tasks の仕様確定分を確定。tasks approval は利用者発言「コミット」2026-06-12〔approval 提示への応答〕で承認。次は implementation の gate 連鎖＝TDD 実装）
+next_step: セッション引き継ぎの TODO 更新（検証済み・manifest 020）を利用者指示で停止点コミットとして実施。その後は第3過程：implementation の gate 連鎖（tasks 確定本文どおり TDD 実装から）
 step_number: 3
 drafting_completed_gates:
 - stages/requirements.yaml#drafting

@@ -1,0 +1,48 @@
+status: completed
+target_files:
+- TODO_NEXT_SESSION.md
+- docs/notes/review-runs/2026-06-12-todo-placement-p1-handoff-postwrite/model-result-summary.yaml
+- docs/notes/review-runs/2026-06-12-todo-placement-p1-handoff-postwrite/parsed/gemini-3.5-flash.round-1.yaml
+- docs/notes/review-runs/2026-06-12-todo-placement-p1-handoff-postwrite/raw/gemini-3.5-flash.round-1.txt
+- docs/notes/review-runs/2026-06-12-todo-placement-p1-handoff-postwrite/review_summary.md
+- docs/notes/review-runs/2026-06-12-todo-placement-p1-handoff-postwrite/rounds.yaml
+- docs/notes/review-runs/2026-06-12-todo-placement-p1-handoff-postwrite/target-manifest.yaml
+- docs/notes/review-runs/2026-06-12-todo-placement-p1-handoff-postwrite/triage.yaml
+target_sha256:
+  TODO_NEXT_SESSION.md: 35d6c0450504a1c26cedd7880ee2fe7c954cfe9fd1effa64468df8979e0b139d
+  docs/notes/review-runs/2026-06-12-todo-placement-p1-handoff-postwrite/model-result-summary.yaml: 07d8e9a3b8719af5a136616a188d805f4038a8d2ac66847b814641499948e673
+  docs/notes/review-runs/2026-06-12-todo-placement-p1-handoff-postwrite/parsed/gemini-3.5-flash.round-1.yaml: 4a2b23de8200da670eba95f5525fa079fdda9f3420af3f3c301f4e7670087f22
+  docs/notes/review-runs/2026-06-12-todo-placement-p1-handoff-postwrite/raw/gemini-3.5-flash.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+  docs/notes/review-runs/2026-06-12-todo-placement-p1-handoff-postwrite/review_summary.md: 70bf425292ca22b45211edf4582f111eff5117c2526a30bc284f70b471027fa5
+  docs/notes/review-runs/2026-06-12-todo-placement-p1-handoff-postwrite/rounds.yaml: e2db6ba53423137864137c44e5ba6d17651b52f01f8f9cd126fa0c5290dc5bd0
+  docs/notes/review-runs/2026-06-12-todo-placement-p1-handoff-postwrite/target-manifest.yaml: 509c7ae7cc0b2cd4344fc853bedf5a06c7d768851c3c5b2085b02de2be68d513
+  docs/notes/review-runs/2026-06-12-todo-placement-p1-handoff-postwrite/triage.yaml: a891196408f4e93582884c4e167b7ac2bbcfe4704664aafea2f7f3cac65bdc72
+required_verifiers: &id001
+- gemini-3.5-flash
+completed_verifiers: *id001
+unresolved_substantive_findings: 0
+verifications:
+- verifier: gemini-3.5-flash
+  target_files:
+  - TODO_NEXT_SESSION.md
+  - docs/notes/review-runs/2026-06-12-todo-placement-p1-handoff-postwrite/model-result-summary.yaml
+  - docs/notes/review-runs/2026-06-12-todo-placement-p1-handoff-postwrite/parsed/gemini-3.5-flash.round-1.yaml
+  - docs/notes/review-runs/2026-06-12-todo-placement-p1-handoff-postwrite/raw/gemini-3.5-flash.round-1.txt
+  - docs/notes/review-runs/2026-06-12-todo-placement-p1-handoff-postwrite/review_summary.md
+  - docs/notes/review-runs/2026-06-12-todo-placement-p1-handoff-postwrite/rounds.yaml
+  - docs/notes/review-runs/2026-06-12-todo-placement-p1-handoff-postwrite/target-manifest.yaml
+  - docs/notes/review-runs/2026-06-12-todo-placement-p1-handoff-postwrite/triage.yaml
+  target_sha256:
+    TODO_NEXT_SESSION.md: 35d6c0450504a1c26cedd7880ee2fe7c954cfe9fd1effa64468df8979e0b139d
+    docs/notes/review-runs/2026-06-12-todo-placement-p1-handoff-postwrite/model-result-summary.yaml: 07d8e9a3b8719af5a136616a188d805f4038a8d2ac66847b814641499948e673
+    docs/notes/review-runs/2026-06-12-todo-placement-p1-handoff-postwrite/parsed/gemini-3.5-flash.round-1.yaml: 4a2b23de8200da670eba95f5525fa079fdda9f3420af3f3c301f4e7670087f22
+    docs/notes/review-runs/2026-06-12-todo-placement-p1-handoff-postwrite/raw/gemini-3.5-flash.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/2026-06-12-todo-placement-p1-handoff-postwrite/review_summary.md: 70bf425292ca22b45211edf4582f111eff5117c2526a30bc284f70b471027fa5
+    docs/notes/review-runs/2026-06-12-todo-placement-p1-handoff-postwrite/rounds.yaml: e2db6ba53423137864137c44e5ba6d17651b52f01f8f9cd126fa0c5290dc5bd0
+    docs/notes/review-runs/2026-06-12-todo-placement-p1-handoff-postwrite/target-manifest.yaml: 509c7ae7cc0b2cd4344fc853bedf5a06c7d768851c3c5b2085b02de2be68d513
+    docs/notes/review-runs/2026-06-12-todo-placement-p1-handoff-postwrite/triage.yaml: a891196408f4e93582884c4e167b7ac2bbcfe4704664aafea2f7f3cac65bdc72
+review_run:
+  path: docs/notes/review-runs/2026-06-12-todo-placement-p1-handoff-postwrite
+  summary_path: docs/notes/review-runs/2026-06-12-todo-placement-p1-handoff-postwrite/model-result-summary.yaml
+notes: Generated template; verify target_files cover current post-write targets before
+  use.

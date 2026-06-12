@@ -1,0 +1,4 @@
+run_id: 2026-06-12-todo-placement-p1-handoff-postwrite
+target_files:
+- path: TODO_NEXT_SESSION.md
+  sha256: 35d6c0450504a1c26cedd7880ee2fe7c954cfe9fd1effa64468df8979e0b139d
