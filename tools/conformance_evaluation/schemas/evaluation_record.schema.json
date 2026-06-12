@@ -15,7 +15,13 @@
       "const": "conformance_evaluation"
     },
     "mode_internal": {
-      "enum": ["generation", "check"]
+      "enum": [
+        "generation",
+        "check",
+        "post_hoc_intent_diff",
+        "completed_followup_conformance",
+        "completed_followup_contract_confirmation"
+      ]
     },
     "author": {
       "type": ["string", "object"]

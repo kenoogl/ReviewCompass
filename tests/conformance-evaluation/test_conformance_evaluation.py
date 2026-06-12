@@ -392,6 +392,19 @@ def test_t016_post_hoc_intent_diff_schema_tracks_classification_contract():
   assert "needs_human_decision" in schema["required"]
 
 
+def test_evaluation_record_schema_mode_internal_tracks_established_record_modes():
+  schema_path = ROOT / "tools" / "conformance_evaluation" / "schemas" / "evaluation_record.schema.json"
+  schema = json.loads(schema_path.read_text(encoding="utf-8"))
+
+  assert set(schema["properties"]["mode_internal"]["enum"]) == {
+    "generation",
+    "check",
+    "post_hoc_intent_diff",
+    "completed_followup_conformance",
+    "completed_followup_contract_confirmation",
+  }
+
+
 def test_conformance_evaluation_specs_track_contract_ownership_and_spec_update_drafts():
   requirements = (ROOT / ".reviewcompass" / "specs" / "conformance-evaluation" / "requirements.md").read_text(encoding="utf-8")
   design = (ROOT / ".reviewcompass" / "specs" / "conformance-evaluation" / "design.md").read_text(encoding="utf-8")

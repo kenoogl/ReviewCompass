@@ -1,0 +1,36 @@
+process_id: maintenance
+title: Track established mode_internal values in evaluation_record.schema.json
+started_at: '2026-06-12T00:00:00+09:00'
+status: completed
+trigger: conformance 評価記録 2026-06-12-completed-followup-conformance.md の付随観察。evaluation_record.schema.json
+  の mode_internal は generation／check の 2 値 enum だが、正式化済みの実記録には completed_followup_conformance（2 件）、
+  completed_followup_contract_confirmation（1 件）、post_hoc_intent_diff（2 件）が存在し、スキーマが先例記録を許容しない。
+  Requirement 11 が先例記録を正式化済みのため、スキーマ側の追従が必要（TODO §4 候補 6、利用者指示 2026-06-12「候補1，5，6を順にやりましょう」）。
+required_action: continue_maintenance
+mainline_blocked_by: なし（全 workflow_state は completed。利用者指示による小規模改修の side track）
+side_track_scope:
+- evaluation_record.schema.json の mode_internal enum へ、実記録で正式化済みの 3 値（post_hoc_intent_diff、
+  completed_followup_conformance、completed_followup_contract_confirmation）を追加する
+- evaluation_record.py の write 側検証（generation／check の 2 値集合）は変更しない。同関数は generation／check
+  記録の書き込み専用であり、他 3 値の記録は別経路（post_hoc_intent_diff.py、手作業記録）で作られるため
+allowed_scope:
+- スキーマ enum の追加 1 件とテスト
+allowed_files:
+- tools/conformance_evaluation/schemas/evaluation_record.schema.json
+- tests/conformance-evaluation/test_conformance_evaluation.py
+- stages/in-progress/maintenance-2026-06-12-evaluation-record-mode-enum.yaml
+- stages/completed/maintenance-2026-06-12-evaluation-record-mode-enum.yaml
+out_of_scope_note: mode_internal の値ごとの記録様式（必須節など）の仕様化、および evaluation_record.py の書き込み経路の
+  一般化は本改修では扱わない。必要になれば conformance-evaluation 仕様側の判断として別途扱う。
+completion_conditions:
+- 新規テスト（mode_internal enum が実記録の 5 値を網羅すること）が追加され、改修前に失敗・改修後に通過する
+- 既存テストを含む全テストが通る
+- 完了時に本ファイルを stages/completed/ へ移す
+completed_at: '2026-06-12T00:00:00+09:00'
+completed_steps:
+- 失敗テスト 1 件を追加（mode_internal enum が実記録 5 値を網羅すること）、改修前の失敗を確認（TDD テスト先行）
+- evaluation_record.schema.json の mode_internal enum へ 3 値（post_hoc_intent_diff、completed_followup_conformance、
+  completed_followup_contract_confirmation）を追加
+- 新テスト通過、全テスト群で回帰なし（既定 testpaths 599 件＋ conformance-evaluation 65・deployment 8・hooks 17・
+  learning 39・operations 8・self-improvement 92・tools 200 件、いずれも通過）
+- evaluation_record.py の write 側検証は side_track_scope のとおり未変更（generation／check 書き込み専用のため）
