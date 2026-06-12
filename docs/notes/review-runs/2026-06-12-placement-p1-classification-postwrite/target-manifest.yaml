@@ -1,0 +1,4 @@
+run_id: 2026-06-12-placement-p1-classification-postwrite
+target_files:
+- path: docs/reviews/reopen-classification-2026-06-12-placement-p1-path-contracts.md
+  sha256: b5082f77bbaac2494b195c3e49279412e8db3f4639fc4c629de490deebad85b3

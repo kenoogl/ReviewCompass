@@ -1,0 +1,26 @@
+round_id: round-1
+purpose: post_write_verification
+invocation_timestamp: '2026-06-12T09:46:52.772585+00:00'
+target_files:
+- path: docs/reviews/reopen-classification-2026-06-12-placement-p1-path-contracts.md
+  sha256: b5082f77bbaac2494b195c3e49279412e8db3f4639fc4c629de490deebad85b3
+criteria: post_write_verification
+prompt_sha256: 2108d907db4e8d2ad6d36c532803e8bf0d2984c091c9adcaa0ea77e032c269ff
+model_results:
+- model_id: gemini-3.5-flash
+  provider: gemini-api
+  role: primary
+  treatment: primary
+  invocation_path: api
+  raw_path: raw/gemini-3.5-flash.round-1.txt
+  raw_sha256: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+  parsed_path: parsed/gemini-3.5-flash.round-1.yaml
+  parsed_sha256: 88869610c0ead4241aa1154eb91ef0efa13573eac80f90eacb57f1a653d58e8a
+  parse_status: parsed
+  formatted_by: parser
+  formatted_by_actor_type: orchestrator
+  formatted_by_actor: run_role.py
+  formatted_at: '2026-06-12T09:46:52.772585+00:00'
+  follow_up_action: triage
+  attempts: 1
+  duration_seconds: 4.29

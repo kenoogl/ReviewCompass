@@ -38,7 +38,7 @@ language: ja
 
 - **対応設計節**：design.md §6.3 ／ §7 ／ §12.2 配置先、§18.2 検査スクリプト所在
 - **対応要件**：Requirement 6 受入 2（評価記録の配置）、Requirement 8 受入 4（ディレクトリ分離）
-- **責務**：本機能の成果物の物理配置を新設する。評価記録の配置先 `<対象アプリ>/.reviewcompass/specs/<feature>/conformance/`（`reviews/` とは別ディレクトリ、Req 8 受入 4）、文書生成モードの推定出力先 `<対象アプリ>/.reviewcompass/conformance/inferred/<日付>/`（feature-partitioning-candidates.md ／ intent-reference.md ／ specs/<feature>/）、6 criteria 検査仕様の配置先 `schemas/review-criteria/`、検査スクリプト配置先 `tools/`、テスト配置先 `tests/conformance-evaluation/` を新設し、各ディレクトリに配置目的を記す README を置く。空ディレクトリは `.gitkeep` で Git 追跡可能にする（self-improvement T-001 の方針継承）
+- **責務**：本機能の成果物の物理配置を新設する。評価記録の配置先 `<対象アプリ>/.reviewcompass/evidence/features/<feature>/conformance/`（`reviews/` とは別ディレクトリ、Req 8 受入 4。旧配置 `specs/<feature>/conformance/` からの変更は 2026-06-12 配置規約 PLC-DEC-003〜005・009〜011 反映、既存記録は旧置き場で凍結・旧パス読み取り互換は P3 まで維持）、文書生成モードの推定出力先 `<対象アプリ>/.reviewcompass/conformance/inferred/<日付>/`（feature-partitioning-candidates.md ／ intent-reference.md ／ specs/<feature>/）、6 criteria 検査仕様の配置先 `schemas/review-criteria/`、検査スクリプト配置先 `tools/`、テスト配置先 `tests/conformance-evaluation/` を新設し、各ディレクトリに配置目的を記す README を置く。空ディレクトリは `.gitkeep` で Git 追跡可能にする（self-improvement T-001 の方針継承）
 - **前提タスク**：なし（起点）
 - **成果物**：
   - `tools/conformance_evaluation/` パッケージのディレクトリ＋`.gitkeep`（命名規約：import 対象パッケージはアンダースコア、単独 CLI スクリプト `tools/conformance-evaluation-check.py` はハイフン。self-improvement topic-105 と同方針）
@@ -220,7 +220,7 @@ language: ja
 
 - **対応設計節**：design.md §18.1〜§18.4
 - **対応要件**：Requirement 6（評価記録の機械検査）、Requirement 8 受入 4（ディレクトリ分離検査）
-- **責務**：7 つの機械検査ポイント（§18.1）を実装。**MV-1**：`type: conformance_evaluation` 設定（grep）。**MV-2**：`mode_internal` が check ／ generation（grep ＋値照合）。**MV-3**：`conformance/` と `reviews/` のディレクトリ分離（find ＋照合）。**MV-4**：推定文書の必須 3 節（grep）。**MV-5**：推定根拠の実装コード参照（grep ＋形式照合）。**MV-6**：既存上流文書遮断の事前検査（推定役プロンプトに既存上流文書混入なし＋自律探索禁止条項、grep ＋プロンプトログ）。**MV-7**：foundation 受入番号照合（G9 対処、本機能の `foundation Requirement N 受入 M` 記述が foundation requirements.md と一致、grep ＋機械照合）。**fail-closed の粒度別適用（§18.3）**：遮断必須＝MV-6 ／ 遮断推奨＝MV-1・MV-2・MV-3 ／ 警告続行可＝MV-4・MV-5・MV-7。第 1 期は手動 grep ／ find、フェーズ 4 で段階自動化（§18.4、DVT-C003）。**MV-6 の第 1 期最小仕様（topic-116／F-007 対処、2026-05-29 セッション 39、Sonnet API 別案＝段階的具体化を採用）**：推定役プロンプトログの必須フィールド（時刻 ／ 実行 ID ／ プロンプト全文）、格納先ディレクトリ命名規則（例 `logs/estimation/<run_id>/prompt.log`）、MV-6 実行用 grep 雛形 2 条件（(a) 既存上流文書パスの不在確認 (b) 自律探索禁止条項の存在確認）を tasks に記述する。技術手段の詳細確定（プロセス隔離等）は DVT-C004（フェーズ 4 第 2 サイクル）連動で予約
+- **責務**：7 つの機械検査ポイント（§18.1）を実装。**MV-1**：`type: conformance_evaluation` 設定（grep）。**MV-2**：`mode_internal` が check ／ generation（grep ＋値照合）。**MV-3**：`conformance/` と `reviews/` のディレクトリ分離（find ＋照合）。**MV-4**：推定文書の必須 3 節（grep）。**MV-5**：推定根拠の実装コード参照（grep ＋形式照合）。**MV-6**：既存上流文書遮断の事前検査（推定役プロンプトに既存上流文書混入なし＋自律探索禁止条項、grep ＋プロンプトログ）。**MV-7**：foundation 受入番号照合（G9 対処、本機能の `foundation Requirement N 受入 M` 記述が foundation requirements.md と一致、grep ＋機械照合）。**fail-closed の粒度別適用（§18.3）**：遮断必須＝MV-6 ／ 遮断推奨＝MV-1・MV-2・MV-3 ／ 警告続行可＝MV-4・MV-5・MV-7。第 1 期は手動 grep ／ find、フェーズ 4 で段階自動化（§18.4、DVT-C003）。**MV-6 の第 1 期最小仕様（topic-116／F-007 対処、2026-05-29 セッション 39、Sonnet API 別案＝段階的具体化を採用）**：推定役プロンプトログの必須フィールド（時刻 ／ 実行 ID ／ プロンプト全文）、格納先ディレクトリ命名規則（例 `.reviewcompass/evidence/estimation/<run_id>/prompt.log`。旧 `logs/estimation/` からの変更は 2026-06-12 配置規約 PLC-DEC-005・009 反映、既存ログは旧置き場で凍結）、MV-6 実行用 grep 雛形 2 条件（(a) 既存上流文書パスの不在確認 (b) 自律探索禁止条項の存在確認）を tasks に記述する。技術手段の詳細確定（プロセス隔離等）は DVT-C004（フェーズ 4 第 2 サイクル）連動で予約
 - **前提タスク（硬い依存と緩い依存を区別、topic-114／F-002 対処）**：硬い依存（着手前提）＝T-003、T-004、T-009。緩い依存（完了検証前提）＝T-006（MV-5 の推定根拠形式の検査対象 ／ MV-7 の foundation 参照記述の検査対象）
 - **成果物**：
   - `tools/conformance-evaluation-check.py`（MV-1〜MV-7 の検査。第 1 期は手動 grep の補助、自動化はフェーズ 4 第 1〜2 サイクル）
@@ -253,7 +253,7 @@ language: ja
 - **成果物**：
   - `tools/conformance_evaluation/contract_ownership.py`（contract ownership map、spec update proposals、draft-only spec update artifacts）
   - `tests/fixtures/conformance-evaluation/*contract-ownership.yaml`（代表 fixture）
-  - `.reviewcompass/specs/<feature>/conformance/<日付>-spec-update-drafts/*.md`（必要時に生成される草案）
+  - `.reviewcompass/evidence/features/<feature>/conformance/<日付>-spec-update-drafts/*.md`（必要時に生成される草案）
 - **完了条件**：
   1. contract ownership map が契約 ID、所有候補、証跡参照、関連クラスタを保持する
   2. primary owner に応じて requirements.md, design.md, tasks.md の更新候補へ分類できる
@@ -297,7 +297,7 @@ language: ja
   - `tools/conformance_evaluation/post_hoc_intent_diff.py`（既存システム差分候補抽出）
   - `tools/conformance_evaluation/schemas/post_hoc_intent_diff.schema.json`（候補フィールドと classification 値域）
   - `tests/fixtures/conformance-evaluation/post-hoc-intent-diff.yaml`（代表 fixture）
-  - `.reviewcompass/specs/<feature>/conformance/<日付>-post-hoc-intent-diff.md`（必要時に生成される評価記録）
+  - `.reviewcompass/evidence/features/<feature>/conformance/<日付>-post-hoc-intent-diff.md`（必要時に生成される評価記録）
 - **完了条件**：
   1. 追加 intent、既存 feature-partitioning、既存 requirements／design／tasks、実装コードを入力として受け取れる
   2. requirements 候補、design 候補、下流影響候補、実装変更候補をコード参照付きで抽出できる
@@ -319,8 +319,8 @@ language: ja
   - `tools/conformance_evaluation/reopen_handoff.py`（reopen handoff package 生成・検査）
   - `tools/conformance_evaluation/schemas/reopen_handoff.schema.json`（最低フィールド、phase 値域、change_type 値域、human escalation フィールド、次タスクプロンプトの元資料参照、effective prompt パス、sha256）
   - `tests/fixtures/conformance-evaluation/reopen-handoff.yaml`（representative fixture）
-  - `.reviewcompass/specs/<feature>/conformance/<日付>-reopen-handoff.prompt.md`（必要時に読み込む次タスクプロンプト）
-  - `.reviewcompass/specs/<feature>/conformance/<日付>-reopen-handoff.yaml`（必要時に生成される引き渡し package）
+  - `.reviewcompass/evidence/features/<feature>/conformance/<日付>-reopen-handoff.prompt.md`（必要時に読み込む次タスクプロンプト）
+  - `.reviewcompass/evidence/features/<feature>/conformance/<日付>-reopen-handoff.yaml`（必要時に生成される引き渡し package）
 - **完了条件**：
   1. conformance gap から reopen handoff package を生成できる
   2. package が必須 7 フィールドを保持し、`target_phase` が requirements / design / tasks / implementation のいずれかに限定される

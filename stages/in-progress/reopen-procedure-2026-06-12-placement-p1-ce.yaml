@@ -1,0 +1,39 @@
+process_id: reopen-procedure
+feature: conformance-evaluation
+classification: R-0
+started_at: '2026-06-12T00:00:00+09:00'
+trigger: 配置規約 P1：conformance 記録・推定ログの配置契約を evidence 区画へ変更（PLC-DEC-003〜005・009〜010）
+classification_basis: docs/reviews/reopen-classification-2026-06-12-placement-p1-path-contracts.md
+completed_steps:
+- 第1過程：判定とフラグ差し戻し（種別 R-0、feature impact 判定 7 feature、spec.json の requirements／design／tasks／implementation
+  の alignment・approval を false、recheck 設定。差し戻し内容は利用者承認済み 2026-06-12「承認」）
+- 第2過程：正本修正（requirements 5 箇所・design 12 箇所・tasks 6 箇所の配置契約を
+  evidence/features/<feature>/conformance/ および evidence/estimation/ へ変更、由来注記と凍結・読み取り互換の明記付き）
+next_step: 第2過程の停止点コミット（フラグ差し戻しと正本修正をまとめて 1 コミット、利用者指示済み 2026-06-12「コミット」）
+step_number: 2
+drafting_completed_gates:
+- stages/requirements.yaml#drafting
+- stages/design.yaml#drafting
+- stages/tasks.yaml#drafting
+pending_gates:
+- stages/requirements.yaml#triad-review
+- stages/requirements.yaml#review-wave
+- stages/requirements.yaml#alignment
+- stages/requirements.yaml#approval
+- stages/design.yaml#triad-review
+- stages/design.yaml#review-wave
+- stages/design.yaml#alignment
+- stages/design.yaml#approval
+- stages/tasks.yaml#triad-review
+- stages/tasks.yaml#review-wave
+- stages/tasks.yaml#alignment
+- stages/tasks.yaml#approval
+- stages/implementation.yaml#triad-review
+- stages/implementation.yaml#review-wave
+- stages/implementation.yaml#alignment
+- stages/implementation.yaml#approval
+pending_gates_note: R-0 基線（requirements の alignment／approval）に、REOPEN_PROCEDURE.md §3「正本本文を修正した
+  phase は triad-review／review-wave／alignment／approval を再実施」を適用し、正本修正のある requirements・design・tasks
+  と、実装変更（ツールの書き込み先変更＋旧パス読み取り互換、TDD）を行う implementation の全 review 系 gate を加えた。
+  implementation の drafting（コード変更）は tasks approval 後に TDD で実施するため未記録。
+current_blocker: null

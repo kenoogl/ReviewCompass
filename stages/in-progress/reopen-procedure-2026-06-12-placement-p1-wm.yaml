@@ -1,0 +1,35 @@
+process_id: reopen-procedure
+feature: workflow-management
+classification: D-0
+started_at: '2026-06-12T00:00:00+09:00'
+trigger: 配置規約 P1：effective prompt・commit 承認記録・検査ログのパス契約を runtime 区画へ変更（PLC-DEC-004〜005・009〜010）
+classification_basis: docs/reviews/reopen-classification-2026-06-12-placement-p1-path-contracts.md
+completed_steps:
+- 第1過程：判定とフラグ差し戻し（種別 D-0、feature impact 判定 7 feature、spec.json の design／tasks／implementation
+  の alignment・approval を false、recheck 設定。差し戻し内容は利用者承認済み 2026-06-12「承認」）
+- 第2過程：正本修正（design 5 箇所・tasks 4 箇所のパス契約を .reviewcompass/runtime/ 配下へ変更、
+  由来注記と凍結・読み取り互換の明記付き）
+next_step: 第2過程の停止点コミット（フラグ差し戻しと正本修正をまとめて 1 コミット、利用者指示済み 2026-06-12「コミット」）
+step_number: 2
+drafting_completed_gates:
+- stages/design.yaml#drafting
+- stages/tasks.yaml#drafting
+pending_gates:
+- stages/design.yaml#triad-review
+- stages/design.yaml#review-wave
+- stages/design.yaml#alignment
+- stages/design.yaml#approval
+- stages/tasks.yaml#triad-review
+- stages/tasks.yaml#review-wave
+- stages/tasks.yaml#alignment
+- stages/tasks.yaml#approval
+- stages/implementation.yaml#triad-review
+- stages/implementation.yaml#review-wave
+- stages/implementation.yaml#alignment
+- stages/implementation.yaml#approval
+pending_gates_note: D-0 基線（design の alignment／approval）に、REOPEN_PROCEDURE.md §3「正本本文を修正した
+  phase は triad-review／review-wave／alignment／approval を再実施」を適用し、正本修正のある design・tasks と、
+  実装変更（ツールの書き込み先変更＋旧パス読み取り互換、TDD）を行う implementation の全 review 系 gate を加えた。
+  implementation の drafting（コード変更）は tasks approval 後に TDD で実施するため未記録。requirements は
+  3 パスのいずれにも言及せず不変（分類記録のとおり）。
+current_blocker: null

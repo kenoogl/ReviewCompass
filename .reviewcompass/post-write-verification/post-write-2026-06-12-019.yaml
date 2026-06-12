@@ -1,0 +1,48 @@
+status: completed
+target_files:
+- docs/notes/review-runs/2026-06-12-placement-p1-classification-postwrite/model-result-summary.yaml
+- docs/notes/review-runs/2026-06-12-placement-p1-classification-postwrite/parsed/gemini-3.5-flash.round-1.yaml
+- docs/notes/review-runs/2026-06-12-placement-p1-classification-postwrite/raw/gemini-3.5-flash.round-1.txt
+- docs/notes/review-runs/2026-06-12-placement-p1-classification-postwrite/review_summary.md
+- docs/notes/review-runs/2026-06-12-placement-p1-classification-postwrite/rounds.yaml
+- docs/notes/review-runs/2026-06-12-placement-p1-classification-postwrite/target-manifest.yaml
+- docs/notes/review-runs/2026-06-12-placement-p1-classification-postwrite/triage.yaml
+- docs/reviews/reopen-classification-2026-06-12-placement-p1-path-contracts.md
+target_sha256:
+  docs/notes/review-runs/2026-06-12-placement-p1-classification-postwrite/model-result-summary.yaml: 6094f73ebde3e688596638f7501d5823c5d70900b9bfe0bc6848257b36cefd1f
+  docs/notes/review-runs/2026-06-12-placement-p1-classification-postwrite/parsed/gemini-3.5-flash.round-1.yaml: 88869610c0ead4241aa1154eb91ef0efa13573eac80f90eacb57f1a653d58e8a
+  docs/notes/review-runs/2026-06-12-placement-p1-classification-postwrite/raw/gemini-3.5-flash.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+  docs/notes/review-runs/2026-06-12-placement-p1-classification-postwrite/review_summary.md: c0a2d93028e17a1d2e9f15522a753182372a43c91408e172221e38f02bb0e953
+  docs/notes/review-runs/2026-06-12-placement-p1-classification-postwrite/rounds.yaml: 0e4f2efa2ae0217ad2dd4d8ba33788f299e0a15ee685aa007c9f84e8178e7e62
+  docs/notes/review-runs/2026-06-12-placement-p1-classification-postwrite/target-manifest.yaml: 23da9b7d5a18e8a1d9236f99a53813742e567cf32e3f00d8cd240d368ef2b64a
+  docs/notes/review-runs/2026-06-12-placement-p1-classification-postwrite/triage.yaml: 7e8f1935d8e0292d023e44cf25d1e3856ae2d6beead2b4dcd7dd7a7838054973
+  docs/reviews/reopen-classification-2026-06-12-placement-p1-path-contracts.md: b5082f77bbaac2494b195c3e49279412e8db3f4639fc4c629de490deebad85b3
+required_verifiers: &id001
+- gemini-3.5-flash
+completed_verifiers: *id001
+unresolved_substantive_findings: 0
+verifications:
+- verifier: gemini-3.5-flash
+  target_files:
+  - docs/notes/review-runs/2026-06-12-placement-p1-classification-postwrite/model-result-summary.yaml
+  - docs/notes/review-runs/2026-06-12-placement-p1-classification-postwrite/parsed/gemini-3.5-flash.round-1.yaml
+  - docs/notes/review-runs/2026-06-12-placement-p1-classification-postwrite/raw/gemini-3.5-flash.round-1.txt
+  - docs/notes/review-runs/2026-06-12-placement-p1-classification-postwrite/review_summary.md
+  - docs/notes/review-runs/2026-06-12-placement-p1-classification-postwrite/rounds.yaml
+  - docs/notes/review-runs/2026-06-12-placement-p1-classification-postwrite/target-manifest.yaml
+  - docs/notes/review-runs/2026-06-12-placement-p1-classification-postwrite/triage.yaml
+  - docs/reviews/reopen-classification-2026-06-12-placement-p1-path-contracts.md
+  target_sha256:
+    docs/notes/review-runs/2026-06-12-placement-p1-classification-postwrite/model-result-summary.yaml: 6094f73ebde3e688596638f7501d5823c5d70900b9bfe0bc6848257b36cefd1f
+    docs/notes/review-runs/2026-06-12-placement-p1-classification-postwrite/parsed/gemini-3.5-flash.round-1.yaml: 88869610c0ead4241aa1154eb91ef0efa13573eac80f90eacb57f1a653d58e8a
+    docs/notes/review-runs/2026-06-12-placement-p1-classification-postwrite/raw/gemini-3.5-flash.round-1.txt: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+    docs/notes/review-runs/2026-06-12-placement-p1-classification-postwrite/review_summary.md: c0a2d93028e17a1d2e9f15522a753182372a43c91408e172221e38f02bb0e953
+    docs/notes/review-runs/2026-06-12-placement-p1-classification-postwrite/rounds.yaml: 0e4f2efa2ae0217ad2dd4d8ba33788f299e0a15ee685aa007c9f84e8178e7e62
+    docs/notes/review-runs/2026-06-12-placement-p1-classification-postwrite/target-manifest.yaml: 23da9b7d5a18e8a1d9236f99a53813742e567cf32e3f00d8cd240d368ef2b64a
+    docs/notes/review-runs/2026-06-12-placement-p1-classification-postwrite/triage.yaml: 7e8f1935d8e0292d023e44cf25d1e3856ae2d6beead2b4dcd7dd7a7838054973
+    docs/reviews/reopen-classification-2026-06-12-placement-p1-path-contracts.md: b5082f77bbaac2494b195c3e49279412e8db3f4639fc4c629de490deebad85b3
+review_run:
+  path: docs/notes/review-runs/2026-06-12-placement-p1-classification-postwrite
+  summary_path: docs/notes/review-runs/2026-06-12-placement-p1-classification-postwrite/model-result-summary.yaml
+notes: Generated template; verify target_files cover current post-write targets before
+  use.

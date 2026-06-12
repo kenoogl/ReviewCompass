@@ -16,7 +16,7 @@
   - **6 criteria の検査構造**（requirements／design の 2 軸 × 3 criteria、計画書 §5.10.2 由来、2026-05-24 セッション 23 改訂）
   - 推定段階と照合段階の両方への 3 役レビュー機構の適用（主役 → 敵対役 → 判定役、§5.9 規律全般、§5.10.10 由来）
   - モード別の既存文書扱いルール（照合チェックモードでは既存 feature-partitioning を推定時入力、他は遮断。文書生成モードは人協働、§5.10.9 由来）
-  - 評価記録の出力（`<対象アプリ>/.reviewcompass/specs/<feature>/conformance/`）
+  - 評価記録の出力（`<対象アプリ>/.reviewcompass/evidence/features/<feature>/conformance/`。2026-06-12 配置規約 PLC-DEC-003・004 反映）
   - v3-plan §3.3 のうち「文書レベルの戻し（本筋：requirements ／ design、参考：intent、計画書 §5.10.6）」
 
 - **Out of scope（範囲外）**
@@ -67,7 +67,7 @@
 4. 本機能は推定の根拠（実装コードのどの部分から推定したか）を実行記録に保持する。
 5. 本機能は推定結果に対する **人間判断の必要性を明示**する（推定はあくまで初版、人間が修正する前提、特に機能分割と intent は人間が主導）。
 6. 本機能は各推定段階に 3 役レビュー機構を適用する（計画書 §5.10.10 由来）。各段階の解釈余地に応じた軽量／本格の使い分けは Requirement 5 ＋ 計画書 §5.10.10 に従う。
-7. 本機能は文書生成モードの実行記録を `<対象アプリ>/.reviewcompass/specs/<feature>/conformance/<日付>-generation.md` として保管する。
+7. 本機能は文書生成モードの実行記録を `<対象アプリ>/.reviewcompass/evidence/features/<feature>/conformance/<日付>-generation.md` として保管する（配置の正本は Requirement 6 受入 2）。
 
 ### Requirement 3：照合チェックモード（本筋、2026-05-24 セッション 23 全面改訂）
 
@@ -86,7 +86,7 @@
 5. 本機能は食い違いごとに 4 段重大度（CRITICAL／ERROR／WARN／INFO、`foundation` Requirement 6 受入 6 由来）を付与する。
 6. 本機能は食い違いの妥当性を 3 役レビュー機構（Requirement 5）で検証する。推定段階と照合段階の両方に triad-review を適用する（計画書 §5.10.10 由来）。
 7. 本機能は判定役の判定値（must-fix／should-fix／leave-as-is、`foundation` 仕様の規律由来）を保持する。
-8. 本機能は照合チェックモードの実行記録を `<対象アプリ>/.reviewcompass/specs/<feature>/conformance/<日付>-check.md` として保管する。
+8. 本機能は照合チェックモードの実行記録を `<対象アプリ>/.reviewcompass/evidence/features/<feature>/conformance/<日付>-check.md` として保管する（配置の正本は Requirement 6 受入 2）。
 
 ### Requirement 4：6 criteria の検査構造（2026-05-24 セッション 23 改訂、案 Y）
 
@@ -132,7 +132,7 @@
 #### 受入基準
 
 1. 本機能は評価記録の `type` 値を `conformance_evaluation` として統合する（生成モード／照合モードの区別は内部フィールドで識別）。
-2. 本機能は評価記録の配置先を `<対象アプリ>/.reviewcompass/specs/<feature>/conformance/<日付>-<mode>.md` とする。`reviews/` ディレクトリとは別ディレクトリ。
+2. 本機能は評価記録の配置先を `<対象アプリ>/.reviewcompass/evidence/features/<feature>/conformance/<日付>-<mode>.md` とする。`reviews/` ディレクトリとは別ディレクトリ（分離契約は `evidence/features/<feature>/` 配下でも維持）。**由来注記**：旧配置 `specs/<feature>/conformance/` は 2026-06-12 の配置規約（PLC-DEC-003・004・009、`docs/notes/2026-06-12-document-placement-stage2-decisions.md`）により evidence 区画へ変更。既存記録は旧置き場で凍結保全し、新規生成分から適用する。旧パスの読み取り互換は最終形移行（P3、PLC-DEC-011）まで維持する。
 3. 本機能は評価記録の front-matter に `mode_internal: generation` または `mode_internal: check` を含め、生成モードと照合モードを区別する。
 4. 本機能は評価記録の `author` と `reviewer` を §5.4 規律に従って明示する（`workflow-management` Requirement 3 と整合）。
 5. 本機能は評価記録から `runtime`／`evaluation`／`workflow-management` の関連実行記録への参照を保持する。
@@ -171,7 +171,7 @@
 1. 本機能は contract ownership map を作成し、各実装由来契約について `contract_id`、対象 feature、claim、classification、primary_owner_candidate、secondary_owner_candidate、contract_refs、evidence_refs、related_clusters、source_refs を保持する。
 2. 本機能は ownership 候補の primary owner に基づき、requirements.md, design.md, tasks.md のいずれを仕様更新候補にするかを分類する。requirements owner は requirements.md、design owner は design.md、carry_forward／test_contract／tool_contract owner は tasks.md を主な反映候補とする。
 3. 本機能は spec update proposals を評価記録に含め、対象ファイルごとに contract_ids、claims、needs_human_decision をまとめる。
-4. 本機能は draft-only spec update artifacts を `<対象アプリ>/.reviewcompass/specs/<feature>/conformance/<日付>-spec-update-drafts/` に出力する。草案は `apply_status: draft_only` を持ち、requirements.md, design.md, tasks.md を直接書き換えない。
+4. 本機能は draft-only spec update artifacts を `<対象アプリ>/.reviewcompass/evidence/features/<feature>/conformance/<日付>-spec-update-drafts/` に出力する（配置の正本は Requirement 6 受入 2）。草案は `apply_status: draft_only` を持ち、requirements.md, design.md, tasks.md を直接書き換えない。
 5. ownership が不明確な契約、または primary owner が carry_forward の契約は `needs_human_decision: true` とし、人間判断なしに仕様本文へ適用しない。
 
 ### Requirement 10：既存システムへの後追い intent 追加時のコード由来差分抽出
@@ -240,6 +240,7 @@ ReviewCompass 固有の構築：
 - 2026-06-09 の reopen 方針確認により、conformance-evaluation で見つかった gap を正本更新で解消する場合は、requirements.md, design.md, tasks.md を直接書き換えない。`workflow-management` の reopen 手続きへ渡し、`triad-review / review-wave / alignment / approval` によって整合確認する。tasks は `phase: tasks` の候補として出力できるが、tasks.md 本体の推定・再作成やタスク分解の確定は行わない。
 - 2026-06-09 の既存項目変更方針確認により、reopen handoff package は `change_policy: minimal_existing_spec_change` を持つ。更新候補は原則 `additive` とし、既存契約の意味変更が必要な場合は `semantic_change`、`existing_contract_changed: true`、`human_escalation_required: true`、`downstream_reopen_required` を明示する。機械判定時には判定点ごとに 1 本の次タスク effective prompt を読み込むため、元資料として `next_task_prompt_refs`、実際に読ませた統合プロンプトとして `effective_next_task_prompt_path`、`effective_next_task_prompt_sha256`、`effective_next_task_prompt_loaded` を保持する。
 - 2026-06-12 の reopen R-0（conformance 評価 `2026-06-12-completed-followup-conformance.md` の gap 反映、語彙調停 案 A・MLE-DEC-001）により、機能間処理順の語彙を `feature_order` へ統一した（Requirement 7 受入 5 の文言追従、意味不変。旧称 `phase_order` は workflow-management Requirement 8 受入 2 の由来注記で読み解く）。
+- 2026-06-12 の reopen R-0（placement-p1-path-contracts、配置規約 PLC-DEC-003〜005・009〜011）により、評価記録・草案・実行記録の配置先を `specs/<feature>/conformance/` から `evidence/features/<feature>/conformance/` へ変更した（Requirement 6 受入 2 の由来注記を正本とし、Requirement 2 受入 7・Requirement 3 受入 8・Requirement 12 受入 4・Boundary Context を追従）。既存記録は旧置き場で凍結保全、新規生成分から適用、旧パスの読み取り互換は P3 まで維持。本改訂は実装先行ではなく、仕様確定後に TDD で実装する正順の手続きである。
 
 機能横断レビューで対処された所見：
 
