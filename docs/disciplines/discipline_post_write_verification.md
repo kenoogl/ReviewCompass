@@ -12,6 +12,7 @@ metadata:
 - 対象：運用文書、規律文書、作業メモ、監査記録、再オープン記録など、通常ワークフロー段の成果物ではない正本文書
 - 対象外：`.reviewcompass/specs/`（ワークフロー段で検証）、spec.json 状態変更（workflow precheck で検証）、`docs/archive/`、テスト用一時ファイル
 - 対象外（性質ベース）：**機械生成され引用元を明記した派生記録**（front-matter に `generated_by: session-record-extractor` 等の来歴を持つもの）。独自の主張を持たず引用元からの決定論的な派生であり、独立検証が想定する「合意の取り違え・参照誤り・既存記述との矛盾」を持たないため対象外とする。これらは独立検証ではなく「**来歴の刻印＋引用元からの再生成突き合わせ（再現性）**」で担保する（取り込み時に引用元から再生成して 1 バイト一致を確認し、来歴〔引用元のハッシュ・ツール版・機微除去ルール版〕を刻む）。判定はディレクトリでなく来歴マーカーで行う
+- 対象外（性質ベース）：**機械が吐く捕捉物**（API 生出力・parsed・triage の review-run 一式、自律並列の走行台帳、書き込み後検証の API 結果ログ）。これらも独自の主張ではなく走行・実行の忠実な捕捉であり、独立検証ではなく**走行・再実行・再生成**で担保する。台帳の `authorization` 等の埋め込み値は、承認レコードや autonomous-plan 検査など別の層で守られる。新規分は `.reviewcompass/evidence/` 配下へ置かれ docs 配下に出ない。docs 配下の凍結旧配置はディレクトリ単位で対象外とする（`**/review-runs/**`、`docs/logs/autonomous-parallel/`、`docs/notes/post-write-verification-review/`）。なお**監査・計測記録**（例：`docs/discipline-compliance-reports/`）は主張を含むため対象に残す
 - 新規ディレクトリ：判定に迷えば対象側に倒す
 
 **検証者の要件：**

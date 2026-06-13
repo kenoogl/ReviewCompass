@@ -1,0 +1,24 @@
+status: completed
+target_files:
+- .reviewcompass/evidence/review-runs/2026-06-13-postwrite-pwv-captures/target.md
+- docs/disciplines/discipline_post_write_verification.md
+target_sha256:
+  .reviewcompass/evidence/review-runs/2026-06-13-postwrite-pwv-captures/target.md: 6af96c80f29aafaa8db1d7080acfc2de667a4c2a77293ed0a7d162181673e4a2
+  docs/disciplines/discipline_post_write_verification.md: b5db5b8a11c57304976fd13a03e15fd39cbc44cb7b6f206b579065b0f62a10e2
+required_verifiers: &id001
+- gemini-3.5-flash
+completed_verifiers: *id001
+unresolved_substantive_findings: 0
+verifications:
+- verifier: gemini-3.5-flash
+  target_files:
+  - .reviewcompass/evidence/review-runs/2026-06-13-postwrite-pwv-captures/target.md
+  - docs/disciplines/discipline_post_write_verification.md
+  target_sha256:
+    .reviewcompass/evidence/review-runs/2026-06-13-postwrite-pwv-captures/target.md: 6af96c80f29aafaa8db1d7080acfc2de667a4c2a77293ed0a7d162181673e4a2
+    docs/disciplines/discipline_post_write_verification.md: b5db5b8a11c57304976fd13a03e15fd39cbc44cb7b6f206b579065b0f62a10e2
+review_run:
+  path: .reviewcompass/evidence/review-runs/2026-06-13-postwrite-pwv-captures
+  summary_path: .reviewcompass/evidence/review-runs/2026-06-13-postwrite-pwv-captures/model-result-summary.yaml
+notes: Generated template; verify target_files cover current post-write targets before
+  use.
