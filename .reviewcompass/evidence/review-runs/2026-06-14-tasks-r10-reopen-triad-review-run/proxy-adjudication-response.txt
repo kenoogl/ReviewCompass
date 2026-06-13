@@ -1,0 +1,27 @@
+```yaml
+decisions:
+  - n: 1
+    final_label: should-fix
+    reason: 状態の欠落や解析不能パターンのテストは状態管理の堅牢性担保に必要。
+  - n: 2
+    final_label: should-fix
+    reason: JSON出力の安定性担保はCLI要件として重要でありテスト化すべき。
+  - n: 3
+    final_label: leave-as-is
+    reason: tasks.mdで担保されているため、target単体での明記は不要。
+  - n: 4
+    final_label: should-fix
+    reason: 解析不能時の異常系（exit 2）仕様のテストはTDDにおいて不可欠。
+  - n: 5
+    final_label: should-fix
+    reason: ファイル出力・保存オプションの正常系テストは機能網羅に必須。
+  - n: 6
+    final_label: leave-as-is
+    reason: 設計フェーズで既存関数の再利用が明記されているため、タスクでの重複言及は不要。
+  - n: 7
+    final_label: leave-as-is
+    reason: design参照で補完可能であり、tasks上の省略は許容範囲。
+  - n: 8
+    final_label: leave-as-is
+    reason: targetの体裁上の問題であり、タスク内容の欠陥ではないため。
+```

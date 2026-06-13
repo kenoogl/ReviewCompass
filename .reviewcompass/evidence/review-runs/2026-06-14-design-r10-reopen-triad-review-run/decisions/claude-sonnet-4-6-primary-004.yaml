@@ -1,0 +1,17 @@
+approved_by: proxy_model
+finding_id: 2026-06-14-design-r10-reopen-triad-review-run-claude-sonnet-4-6-primary-004
+proxy_model_id: gemini-3.1-pro-preview
+decision_prompt_path: proxy-adjudication-prompt.md
+selected_option: must-fix
+final_label: must-fix
+rationale: status(ok/insufficient) の判定基準は fail-closed の根幹で design 確定必須
+raw_response_path: proxy-adjudication-response.txt
+candidate_options:
+- must-fix
+- should-fix
+- leave-as-is
+rejected_options:
+  should-fix: 判定基準なしでは ok/insufficient が実装依存になり不足
+  leave-as-is: 基準欠如は fail-closed を崩すため対処要
+source_raw_paths:
+- raw/claude-sonnet-4-6.round-1.txt

@@ -1,0 +1,17 @@
+approved_by: proxy_model
+finding_id: 2026-06-14-design-r10-reopen-triad-review-run-gpt-5.5-adversarial-002
+proxy_model_id: gemini-3.1-pro-preview
+decision_prompt_path: proxy-adjudication-prompt.md
+selected_option: should-fix
+final_label: should-fix
+rationale: fail-closed 対象の欠落・解析不能の範囲は design で列挙すれば一意になる（Req8受入9 と同型）
+raw_response_path: proxy-adjudication-response.txt
+candidate_options:
+- must-fix
+- should-fix
+- leave-as-is
+rejected_options:
+  must-fix: 範囲列挙で足り設計欠陥ではないため must ではない
+  leave-as-is: 範囲未確定では実装が分かれるため対処要
+source_raw_paths:
+- raw/gpt-5.5.round-1.txt

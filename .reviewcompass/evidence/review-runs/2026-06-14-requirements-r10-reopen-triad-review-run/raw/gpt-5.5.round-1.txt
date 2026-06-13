@@ -1,0 +1,17 @@
+findings:
+  - severity: ERROR
+    target_location: "§2.1 Requirement 10 受入基準 1-2"
+    description: "集計元と集計定義が一部未規定で、機械生成結果を検証可能にするには不足している"
+    rationale: "受入基準は `workflow_state`、`stages/in-progress/`、recheck、`feature_order`、機能横断持ち越し所見記録を読むとするが、triage の unresolved/draft/human_required 件数の正本、carry-forward 記録のパス・形式、feature coverage の到達状況判定、未充足依存の判定条件が明文化されていない。実装者が異なるファイルや状態解釈で集計しても要件上は排除しにくく、D-001 の目的である再現可能な横断確認指標にならない。"
+  - severity: ERROR
+    target_location: "§2.1 Requirement 10 受入基準 3"
+    description: "JSON 出力の安定スキーマまたは必須フィールド名を要求していない"
+    rationale: "受入基準 3 は Markdown と JSON の双方提供を求めるのみで、JSON が機械処理用として安定したキー、型、欠落時表現、Markdown との情報同等性を持つことを要求していない。これでは下流の design/tasks/implementation で互換性のない任意 JSON が成立し、機械生成・再利用可能な summary command という要件を十分に検証できない。"
+  - severity: ERROR
+    target_location: "§2.1 Requirement 10 受入基準 4"
+    description: "結論不能時の fail-closed 挙動が出力内容以外に規定されていない"
+    rationale: "受入基準 4 は不能であることの明示を求めているが、終了コード、JSON 上の機械可読な status、部分集計値の扱い、Markdown で完了と誤読されない表現などを要求していない。自動化で利用する場合、成功終了しつつ本文にだけ不能と書く実装でも受入可能になり、Requirement 2 受入 4・Requirement 7 の fail-closed と整合しない可能性がある。"
+  - severity: WARN
+    target_location: "§2.1 Requirement 10 受入基準 5"
+    description: "読み取り専用責務と出力保存の許容範囲の境界が曖昧である"
+    rationale: "受入基準 5 は『集計（読み取り）に徹し』かつ `spec.json`・フェーズ状態・トリアージ判断を書き換えないとする一方で、出力は `.reviewcompass/specs/_cross_feature/reviews/` に保存できる形式とする。コマンド自身がその配下にファイルを書き込んでよいのか、stdout のみで利用者が保存するのか、許可される書き込み先が summary 出力に限定されるのかが不明確で、Requirement 3/4 の非代行・不可逆操作禁止との責務境界を実装時に誤解する余地がある。"

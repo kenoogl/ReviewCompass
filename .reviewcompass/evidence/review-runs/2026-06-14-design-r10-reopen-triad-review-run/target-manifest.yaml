@@ -1,0 +1,4 @@
+run_id: 2026-06-14-design-r10-reopen-triad-review-run
+target_files:
+- path: .reviewcompass/evidence/review-runs/2026-06-14-design-r10-reopen-triad-review-run/target-round-4.md
+  sha256: 664e84c6509ab39c105851158cceaefd91d17686f5b03125471031cf36982d0e

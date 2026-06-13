@@ -1,0 +1,11 @@
+role: judgment
+provider: gemini-api
+model: gemini-3.1-pro-preview
+attempts: 1
+duration_seconds: 17.289
+findings:
+- severity: WARN
+  target_location: 1. 更新後 T-012（tasks.md より） > テスト要件 (7)
+  description: 要約出力の既定保存先がレガシーパス（_cross_feature/reviews/）としてテスト要件に指定されている
+  rationale: 責務の定義欄で「evidence/review-runs/ 優先・旧 _cross_feature/reviews/ 互換」と記載されている通り、_cross_feature/reviews/
+    は後方互換用の古いパスです。新機能である review-wave 要約コマンドのデフォルトの出力保存先を旧パスとしてテスト（および実装）することは、今後のディレクトリ構成の方針と矛盾する可能性が高いため、新パスを既定とするよう修正することが推奨されます。

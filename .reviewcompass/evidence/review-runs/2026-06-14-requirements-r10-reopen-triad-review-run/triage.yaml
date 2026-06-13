@@ -1,0 +1,79 @@
+run_id: 2026-06-14-requirements-r10-reopen-triad-review-run
+triage_status: decided
+generated_at: '2026-06-13T21:55:07.369409+00:00'
+decision_actor: null
+decision_actor_type: human
+items:
+- finding_id: 2026-06-14-requirements-r10-reopen-triad-review-run-claude-sonnet-4-6-primary-001
+  run_id: 2026-06-14-requirements-r10-reopen-triad-review-run
+  source_model: claude-sonnet-4-6
+  source_round: round-2
+  source_raw_path: raw/claude-sonnet-4-6.round-2.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-2.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: Section 2, 受入基準 1
+  plain_language_summary: 読み取り元のリストに carry-forward register のパスが明記されているが、他のソース（spec.json、stages/in-progress/、feature_order、triage.yaml）にはパスが明記されていない。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: proxy_model
+  decision_actor_type: agent
+  decision_at: '2026-06-13T21:57:25.963313+00:00'
+  decision_reason: proxy(gemini-3.1-pro):round-2 収束確認の INFO。design 委譲済みの軽微な観察、対処不要
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-14-requirements-r10-reopen-triad-review-run-claude-sonnet-4-6-primary-002
+  run_id: 2026-06-14-requirements-r10-reopen-triad-review-run
+  source_model: claude-sonnet-4-6
+  source_round: round-2
+  source_raw_path: raw/claude-sonnet-4-6.round-2.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-2.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: Section 2, 受入基準 3
+  plain_language_summary: 「JSON は安定スキーマ（詳細は design）」という記述で、スキーマ詳細が設計フェーズへ委譲されている。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: proxy_model
+  decision_actor_type: agent
+  decision_at: '2026-06-13T21:57:41.117989+00:00'
+  decision_reason: proxy(gemini-3.1-pro):round-2 収束確認の INFO。対処不要（design 委譲済み／反映確認）
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-14-requirements-r10-reopen-triad-review-run-claude-sonnet-4-6-primary-003
+  run_id: 2026-06-14-requirements-r10-reopen-triad-review-run
+  source_model: claude-sonnet-4-6
+  source_round: round-2
+  source_raw_path: raw/claude-sonnet-4-6.round-2.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-2.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: Section 2, 受入基準 4
+  plain_language_summary: 「非ゼロ終了コード＋JSON の機械可読 status＋Markdown 明示」が明記され、「部分集計を完了扱いしない」も記載されている。Requirement
+    2 受入 4・Requirement 7 との整合も明示されている。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: proxy_model
+  decision_actor_type: agent
+  decision_at: '2026-06-13T21:57:41.163289+00:00'
+  decision_reason: proxy(gemini-3.1-pro):round-2 収束確認の INFO。対処不要（design 委譲済み／反映確認）
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-14-requirements-r10-reopen-triad-review-run-claude-sonnet-4-6-primary-004
+  run_id: 2026-06-14-requirements-r10-reopen-triad-review-run
+  source_model: claude-sonnet-4-6
+  source_round: round-2
+  source_raw_path: raw/claude-sonnet-4-6.round-2.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-2.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: Section 2, 受入基準 5
+  plain_language_summary: 「集計（読み取り）に徹し spec.json・フェーズ状態・トリアージを書き換えない」「書き出しは自身の要約出力に限る」「既定は標準出力、保存はオプション」「状態変更でない」がすべて記載されている。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: proxy_model
+  decision_actor_type: agent
+  decision_at: '2026-06-13T21:57:41.204302+00:00'
+  decision_reason: proxy(gemini-3.1-pro):round-2 収束確認の INFO。対処不要（design 委譲済み／反映確認）
+  applied_files: []
+  superseded_by: null

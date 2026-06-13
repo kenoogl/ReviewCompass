@@ -1,0 +1,38 @@
+role: primary
+provider: anthropic-api
+model: claude-sonnet-4-6
+attempts: 1
+duration_seconds: 28.163
+findings:
+- severity: INFO
+  target_location: §2.1 aggregate_triage_for_summary — run_id 重複排除ロジック
+  description: evidence/review-runs/ 優先・旧 _cross_feature/reviews/ 互換の重複排除において、同一 run_id
+    が両パスに存在する場合に evidence 側を優先する実装が正しく機能するかどうか、テストケースの記述（「run_id 重複排除（evidence 優先）」）からは確認できるが、実装コード自体がターゲット文書に含まれていないため独立検証不可。
+  rationale: 重複排除の優先ロジックは triage 集計の正確性に直結する。テスト名から挙動は担保されているが、実装詳細が文書に示されないため、レビュアーが設計契約との一致を直接確認できない。実装コードの参照先を明示すると透明性が高まる。
+- severity: INFO
+  target_location: §2.1 aggregate_triage_for_summary — 任意記録「存在して解析不能」の扱い
+  description: 任意記録（triage.yaml 群）が存在して解析不能な場合は insufficient とする旨が記載されている。一方で必須記録欠落も
+    insufficient＋exit 2 となる。両者を同一 status/exit_code で扱うことの設計意図（fail-closed 統一）は設計 §1〜§5
+    準拠として妥当だが、errors フィールドへの区別記録（必須欠落 vs 任意解析失敗）が JSON スキーマ上で行われるかどうかが文書から明示されていない。
+  rationale: エラー種別が errors[] に区別記録されない場合、呼び出し側がデバッグ時に原因を特定しにくくなる。設計契約上の要件であれば明記が望ましい。
+- severity: WARN
+  target_location: §2.3 テスト — TDD 赤→緑の証跡
+  description: 「赤（invalid choice）→ 実装 → 緑（10/10 pass）」と記載されているが、赤フェーズの失敗内容が『invalid
+    choice』のみである。設計契約の各軸（fail-closed、読み取り専用、スキーマ検証、終了コード等）に対応する先行失敗テストが個別に存在したかどうかが確認できない。invalid
+    choice はサブコマンド未登録による一括失敗であり、各テストが設計契約を独立して検証する TDD になっているか判断できない。
+  rationale: TDD の価値は『各契約に対応する失敗テストが先に書かれること』にある。invalid choice による一括赤は CLI 登録前の自然な状態であり、それのみをもって各契約のテストファースト実施の証跡とはみなしにくい。設計
+    §1〜§5 の契約単位で先行失敗が確認できる記録があれば信頼性が高まる。
+- severity: WARN
+  target_location: §2.1 — 例外時の fail-closed 挙動
+  description: design §1〜§5 では fail-closed が要件とされているが、ターゲット文書は「必須記録欠落・解析不能で insufficient＋exit
+    2」の正常系エラーパスのみ記述し、予期しない例外（ファイルシステムエラー、パーミッション拒否、YAML パーサの未捕捉例外等）発生時に exit 2 を保証するか、あるいは
+    exit 1 や例外スタックトレースで終了するかが明示されていない。
+  rationale: fail-closed 原則では予期しない障害時も ok 判定を返してはならない。例外が未捕捉のまま exit 1 で終了する場合、呼び出し側スクリプトが
+    exit 2 のみを insufficient シグナルとして扱うと障害を見逃す可能性がある。テスト 10 件の中に例外パスのカバレッジが含まれるか確認が必要。
+- severity: INFO
+  target_location: §2.2 CLI 登録 — --save フラグの保存対象明確化
+  description: 「保存（--out/--save）は自身の要約出力のみ。spec.json・triage・phase は不変」と記載されており読み取り専用契約は明確。ただし
+    --save のデフォルト保存先パスが文書に示されていない。設計 §5 に規定があると思われるが、文書内で参照されていない。
+  rationale: 'デフォルト保存先が不明だと、CI/CD パイプラインでの利用時にファイルの出力場所が予測できず、意図しないパスへの書き込みリスクがある。軽微だが明示があると望ましい。
+
+    '

@@ -1,0 +1,21 @@
+role: adversarial
+provider: openai-api
+model: gpt-5.5
+attempts: 1
+duration_seconds: 17.707
+findings:
+- severity: WARN
+  target_location: 2.1 新設タスク T-012 / 責務・テスト要件
+  description: carry-forward register と stages/in-progress/ の欠落時・解析不能時の扱いが明示されていない
+  rationale: T-012 は読み取り元として carry-forward register と stages/in-progress/ を挙げていますが、fail-closed
+    の必須記録には spec.json・feature-dependency.yaml のみが明記され、任意記録の範囲も具体化されていません。実装時に、これらを必須扱いにするか、任意の
+    0 件扱いにするか、解析不能時に exit 2 とするかが曖昧になり、design §1〜§6 の契約と異なる挙動になるリスクがあります。
+- severity: WARN
+  target_location: 2.1 新設タスク T-012 / テスト要件
+  description: 安定 JSON スキーマの具体的な固定検証がテスト要件として弱い
+  rationale: テスト要件に「JSON スキーマ・status 判定」は含まれていますが、design §3 の安定スキーマについて、必須キー、型、配列要素構造、欠損時の表現、将来互換の扱いなどを固定するテストが必要であることまでは明示されていません。要約コマンドは機械可読出力を契約として提供するため、スキーマ退行を防ぐ検証可能な完了条件にしておくことが重要です。
+- severity: INFO
+  target_location: 2.2 要件追跡表
+  description: Req 10 受入 1〜5 と T-012 の双方向追跡は記述上は意図されているが、各受入条件ごとの対応内容はこのレビュー対象内では確認できない
+  rationale: 本文には「Req 10 受入 1〜5 → T-012 の 5 行追加」とありますが、各受入条件が T-012 のどの責務・完了条件・テスト要件で満たされるかの明細は示されていません。実際の
+    tasks.md に 5 行があり、各行が T-012 に接続されていれば問題ありませんが、レビュー証跡としては受入条件単位の対応が確認しづらい状態です。

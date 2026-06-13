@@ -1,0 +1,9 @@
+findings:
+  - severity: WARN
+    target_location: "§2.3 テスト（TDD、先に失敗テスト → 実装で緑）"
+    description: "保存オプションのうち `--save` の挙動を検証するテストが明記されていない"
+    rationale: "§2.2 では `--out <path>` と `--save` の両方を CLI 契約として追加しており、レビュー観点にも保存動作が含まれている。一方、テスト一覧では `--out 保存＋読み取り専用` のみが挙げられており、`--save` が要約出力のみを保存し、spec.json・triage・phase を変更しないことを確認できない。"
+  - severity: WARN
+    target_location: "§2.3 テスト（TDD、先に失敗テスト → 実装で緑）"
+    description: "dependencies、carry_forward、recheck の算出契約に対する明示的なテストが不足している"
+    rationale: "§2.1 では feature_order、未充足依存、carry_forward の未解決件数、features[].recheck が JSON 安定スキーマの一部として定義されているが、テスト一覧にはこれらの値を具体的に検証するケースが示されていない。design §1〜§5 の算出定義を満たすことを保証するには、依存関係の list/dict 両形式、上流未承認時の unmet 判定、carry-forward の status≠resolved 集計、recheck 出力を直接検証する必要がある。"

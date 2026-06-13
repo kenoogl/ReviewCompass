@@ -1,0 +1,24 @@
+role: primary
+provider: anthropic-api
+model: claude-sonnet-4-6
+attempts: 1
+duration_seconds: 13.278
+findings:
+- severity: INFO
+  target_location: T-012 前提タスク
+  description: 前提タスクとして T-002・T-003・T-004 が指定されているが、T-012 が依存する既存関数（load_all_feature_specs・feature_order
+    解決・collect_recheck_items・review_triage 集計）がどのタスクで実装されているか明示されていない。
+  rationale: 実装時に依存関係の追跡可能性を高めるため、各再利用関数の実装タスクと T-012 の関係を明確にしておくと実装フェーズでの混乱を防げる。ただし
+    design §参照と合わせて読めば特定可能な範囲であり、ブロッカーではない。
+- severity: INFO
+  target_location: T-012 テスト要件 (6)
+  description: テスト要件 (6) では『draft は run 単位・unresolved/human_required は item 単位』と記載されているが、design
+    §2 の集計定義との対応が tasks.md 上では省略されており、実装者が design を参照しないと集計軸の意味を把握しにくい。
+  rationale: TDD の失敗テストを先に書く際に集計軸の誤解が生じるリスクがある。tasks.md 内に簡潔な集計軸の定義または design §2 への明示的なポインタを追加すると実装精度が向上する。重大な欠落ではなく参照先（design
+    §2）は存在するため INFO。
+- severity: INFO
+  target_location: 2.2 要件追跡表
+  description: 要件追跡表に Req 10 受入 1〜5 → T-012 の 5 行追加と記載されているが、target.md 上では追跡表の具体的な内容が引用されておらず、双方向整合の検証が
+    target.md 単体では完結しない。
+  rationale: レビュー観点 5（双方向整合）の確認のために tasks.md 本体の追跡表を参照する必要がある。target.md はサマリー文書のため省略は自然だが、レビュー読者が
+    tasks.md を別途確認する必要がある点を注記しておく価値がある。

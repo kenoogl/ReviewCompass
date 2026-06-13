@@ -1,0 +1,35 @@
+role: primary
+provider: anthropic-api
+model: claude-sonnet-4-6
+attempts: 1
+duration_seconds: 22.92
+findings:
+- severity: WARN
+  target_location: §2.1 節4 fail-closed（Req 10 受入 4）
+  description: 非ゼロ終了コードの値が「既定 2」と記載されているが、他のサブコマンド（next/spec-set/commit）の終了コード規約との整合性が設計文書内で確認できない。
+  rationale: 既存サブコマンドが終了コード 1 を使用している場合、2 という値が一貫性を欠く可能性がある。tasks/implementation フェーズで混乱を招かないよう、終了コード体系の根拠または参照先を設計に明記すべき。
+- severity: WARN
+  target_location: §2.1 節2 読み取り元と指標の算出定義（triage 集計）
+  description: triage.yaml の走査パスとして `evidence/review-runs/*/triage.yaml` と旧パス `_cross_feature/reviews/*/triage.yaml`
+    の両方を列挙しているが、両パスに同一レビューランが存在する場合の重複排除ロジックが設計に記載されていない。
+  rationale: 移行期や並存期に双方のパスに同一データが存在すると、集計値が二重にカウントされる恐れがある。実装者が判断に迷わないよう、重複時の優先順位または排他条件を設計段階で明示する必要がある。
+- severity: WARN
+  target_location: §2.1 節3 出力形式とスキーマ（Req 10 受入 3）
+  description: JSON スキーマの `features[].phases` フィールドの型・構造が未定義。phase 名をキーとするオブジェクトなのか、phase
+    オブジェクトの配列なのかが不明。
+  rationale: キー名・型は固定と宣言しているにもかかわらず、phases の内部構造が曖昧なままでは機械処理の安定性が保証できない。tasks フェーズへの引き渡し前にスキーマの完全な型定義（ネスト構造を含む）を確定すべき。
+- severity: WARN
+  target_location: §2.1 節3 出力形式とスキーマ（Req 10 受入 3）
+  description: '`status(ok/insufficient)` の判定基準（どの条件が揃えば ok になるか）が設計に記載されていない。'
+  rationale: fail-closed 原則（節4）では errors[] があれば insufficient とする趣旨だが、errors が空でも指標が部分的に取得できない場合の扱いが不明確。実装者がテストケースを書けるよう、ok/insufficient
+    の判定ロジックを設計に明示する必要がある。
+- severity: INFO
+  target_location: §2.1 節5 保存（Req 10 受入 5）
+  description: --save/--out オプション指定時の出力先ファイル名の命名規則（タイムスタンプ形式・拡張子など）が設計に記載されていない。
+  rationale: 現時点では実装の裁量に委ねられるが、他のレビューアーティファクトの命名規則と揃えることで一貫性が保たれる。tasks フェーズの受け入れ基準として命名規則を明示しておくことが望ましい。
+- severity: INFO
+  target_location: §2.1 節2 読み取り元と指標の算出定義（carry-forward）
+  description: '`learning/workflow/carry-forward-register/*.yaml` の status フィールドが
+    `resolved` 以外の値（例：in_progress, deferred など）をとる場合、それらすべてが「未消化」として集計されることが設計から読み取れるが、その解釈で正しいかの確認が必要。'
+  rationale: resolved 以外をすべて unresolved とみなすのか、特定ステータスのみを集計対象とするのかによって数値の意味が変わる。要件上の意図と一致しているかを
+    tasks フェーズ開始前に明確化しておくことが望ましい。

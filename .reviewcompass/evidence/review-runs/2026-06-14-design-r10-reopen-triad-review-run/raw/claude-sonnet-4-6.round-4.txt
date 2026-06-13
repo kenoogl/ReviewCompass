@@ -1,0 +1,15 @@
+findings:
+  - severity: INFO
+    target_location: "§3 JSON schema — `features[].phases` key contract"
+    description: "The phases field uses phase names as keys, but the set of valid phase names is described only in prose (§3 bullet after the schema block). No normative enumeration or reference to a single authoritative source for valid phase names is given in the schema contract itself."
+    rationale: "For a schema declared 'fixed by this design,' the key space of a dynamic-keyed object being defined only in adjacent prose creates a mild ambiguity. An implementer must cross-reference the prose to know which phase names are permissible. This is not a must-fix blocker for convergence, but it is worth noting for traceability."
+
+  - severity: INFO
+    target_location: "§5 — `--save` default naming and §6 — delegation to implementation"
+    description: "§5 states that when `generated_at` is omitted the naming method is 'to be confirmed in implementation,' and §6 repeats this delegation. The collision behavior (overwrite vs. error) is also delegated. This is intentional and explicitly scoped, so it is not an unresolved ambiguity at the design level."
+    rationale: "The delegation boundary is clearly stated and consistent between §5 and §6. No action needed; recorded for audit completeness."
+
+  - severity: INFO
+    target_location: "§2 補足 — unresolved / human_required overlap note"
+    description: "The rule 'unresolved は human_required を内包しうる（合計は取らない）' correctly forbids summing the two. The Markdown output requirement to explicitly flag the different aggregation axes (item-level vs. run-level) for draft is stated but the exact wording is delegated to implementation. This is acceptable but reviewers of the Markdown output should verify the axis distinction is surfaced."
+    rationale: "The design-level intent is unambiguous. The prose 'Markdown でも明示する' is a clear instruction to implementation. No design defect."

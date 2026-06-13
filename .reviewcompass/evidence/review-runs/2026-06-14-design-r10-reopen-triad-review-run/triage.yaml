@@ -1,0 +1,73 @@
+run_id: 2026-06-14-design-r10-reopen-triad-review-run
+triage_status: decided
+generated_at: '2026-06-13T22:30:00.250150+00:00'
+decision_actor: null
+decision_actor_type: human
+items:
+- finding_id: 2026-06-14-design-r10-reopen-triad-review-run-claude-sonnet-4-6-primary-001
+  run_id: 2026-06-14-design-r10-reopen-triad-review-run
+  source_model: claude-sonnet-4-6
+  source_round: round-4
+  source_raw_path: raw/claude-sonnet-4-6.round-4.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-4.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: §3 JSON schema — `features[].phases` key contract
+  plain_language_summary: The phases field uses phase names as keys, but the set of
+    valid phase names is described only in prose (§3 bullet after the schema block).
+    No normative enumeration or reference to a single authoritative source for valid
+    phase names is given in the schema contract itself.
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: proxy_model
+  decision_actor_type: agent
+  decision_at: '2026-06-13T22:30:40.197481+00:00'
+  decision_reason: proxy(gemini-3.1-pro):round-4 収束後の INFO。design 確定済みまたは implementation
+    委譲済みで対処不要
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-14-design-r10-reopen-triad-review-run-claude-sonnet-4-6-primary-002
+  run_id: 2026-06-14-design-r10-reopen-triad-review-run
+  source_model: claude-sonnet-4-6
+  source_round: round-4
+  source_raw_path: raw/claude-sonnet-4-6.round-4.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-4.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: §5 — `--save` default naming and §6 — delegation to implementation
+  plain_language_summary: §5 states that when `generated_at` is omitted the naming
+    method is 'to be confirmed in implementation,' and §6 repeats this delegation.
+    The collision behavior (overwrite vs. error) is also delegated. This is intentional
+    and explicitly scoped, so it is not an unresolved ambiguity at the design level.
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: proxy_model
+  decision_actor_type: agent
+  decision_at: '2026-06-13T22:30:40.242414+00:00'
+  decision_reason: proxy(gemini-3.1-pro):round-4 収束後の INFO。design 確定済みまたは implementation
+    委譲済みで対処不要
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-14-design-r10-reopen-triad-review-run-claude-sonnet-4-6-primary-003
+  run_id: 2026-06-14-design-r10-reopen-triad-review-run
+  source_model: claude-sonnet-4-6
+  source_round: round-4
+  source_raw_path: raw/claude-sonnet-4-6.round-4.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-4.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: §2 補足 — unresolved / human_required overlap note
+  plain_language_summary: The rule 'unresolved は human_required を内包しうる（合計は取らない）' correctly
+    forbids summing the two. The Markdown output requirement to explicitly flag the
+    different aggregation axes (item-level vs. run-level) for draft is stated but
+    the exact wording is delegated to implementation. This is acceptable but reviewers
+    of the Markdown output should verify the axis distinction is surfaced.
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: proxy_model
+  decision_actor_type: agent
+  decision_at: '2026-06-13T22:30:40.283940+00:00'
+  decision_reason: proxy(gemini-3.1-pro):round-4 収束後の INFO。design 確定済みまたは implementation
+    委譲済みで対処不要
+  applied_files: []
+  superseded_by: null

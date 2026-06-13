@@ -1,0 +1,17 @@
+approved_by: proxy_model
+finding_id: 2026-06-14-design-r10-reopen-triad-review-run-claude-sonnet-4-6-primary-003
+proxy_model_id: gemini-3.1-pro-preview
+decision_prompt_path: proxy-adjudication-prompt.md
+selected_option: must-fix
+final_label: must-fix
+rationale: features[].phases の型・構造は機械処理契約の核であり design で確定必須
+raw_response_path: proxy-adjudication-response.txt
+candidate_options:
+- must-fix
+- should-fix
+- leave-as-is
+rejected_options:
+  should-fix: 型未定義のままでは機械処理契約が成立せず改善では不足
+  leave-as-is: 未定義は実装分岐を招くため対処要
+source_raw_paths:
+- raw/claude-sonnet-4-6.round-1.txt

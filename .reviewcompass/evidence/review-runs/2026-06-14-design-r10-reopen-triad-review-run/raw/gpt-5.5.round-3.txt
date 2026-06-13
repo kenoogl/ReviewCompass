@@ -1,0 +1,13 @@
+findings:
+  - severity: ERROR
+    target_location: "§3 出力形式とスキーマ / §6 implementation へ委譲する未確定事項"
+    description: "JSON スキーマを安定・固定としながら、§6 で「JSON 各フィールドの最終的なキー名の細部」を implementation 段へ委譲しており、規範が衝突している。"
+    rationale: "round-1 must-fix の主対象である JSON 安定スキーマのキー名・型の確定が、本文内で再び未確定扱いになっている。実装者が §3 のキーを固定契約と見るべきか、§6 に従って変更可能と見るべきか一意に判断できない。"
+  - severity: ERROR
+    target_location: "§2 読み取り元と指標の算出定義 / 補足（集計規則） triage 件数の判定規則"
+    description: "triage の draft 件数定義が一意でない。表では「triage_status: draft または item の draft」とし、補足では item ごとに run 全体の `triage_status: draft` を見る定義になっている。"
+    rationale: "draft を run 単位で 1 件数えるのか、draft run 配下の item 数として数えるのか、item 側の draft 表現も見るのかが確定していない。これは round-1 must-fix の triage 判定規則の収束条件に反し、実装結果が分岐する。"
+  - severity: ERROR
+    target_location: "§3 status の判定基準 / §4 fail-closed"
+    description: "insufficient 判定の対象範囲が不整合。§3 は triage.yaml 群と carry-forward register も必要記録に含めるが、§4 の欠落例は spec.json と feature-dependency.yaml のみを明示している。"
+    rationale: "triage.yaml や carry-forward register が 0 件、ディレクトリ欠落、一部パース不能の場合に `ok` として 0 件集計するのか、`insufficient` として非ゼロ終了するのかが一意でない。fail-closed の対象範囲が曖昧なため、収束確認基準を満たしていない。"

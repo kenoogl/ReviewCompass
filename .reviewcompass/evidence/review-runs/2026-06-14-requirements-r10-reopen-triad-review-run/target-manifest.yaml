@@ -1,0 +1,4 @@
+run_id: 2026-06-14-requirements-r10-reopen-triad-review-run
+target_files:
+- path: .reviewcompass/evidence/review-runs/2026-06-14-requirements-r10-reopen-triad-review-run/target-round-2.md
+  sha256: ede36649e1e3d0cdb0a1a11eb31a76a4abd45215cc7c2184eab6095011e4bbe5

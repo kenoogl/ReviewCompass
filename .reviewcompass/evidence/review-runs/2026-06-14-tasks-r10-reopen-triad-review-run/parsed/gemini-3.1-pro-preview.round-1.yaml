@@ -1,0 +1,14 @@
+role: judgment
+provider: gemini-api
+model: gemini-3.1-pro-preview
+attempts: 1
+duration_seconds: 20.366
+findings:
+- severity: WARN
+  target_location: 2.1 新設タスク T-012 / テスト要件
+  description: テスト要件(4)のfail-closed検証項目に、ファイルの「解析不能（パースエラー）」時の異常終了（exit 2）が含まれていない
+  rationale: 責務欄には「必須記録の欠落/解析不能・任意記録の解析不能で...非ゼロ終了コード 2」と明記されている。テスト要件にパースエラー（不正なJSON/YAML等）時の挙動を含めないと、TDDにおいてパースエラーを握り潰す実装（fail-open）を許容してしまうリスクがある。
+- severity: INFO
+  target_location: 2.1 新設タスク T-012 / テスト要件
+  description: '`--out`/`--save` オプションを使用したファイル保存の正常系テストが明記されていない'
+  rationale: 責務において「保存は --out/--save で自身の出力のみ」と定義されている。読み取り専用であることの確認（テスト要件5）に加えて、指定したパスへ期待通りにMarkdown/JSONが出力されることの検証もテスト要件として明記することが望ましい。

@@ -1,0 +1,25 @@
+approved_action: review_triage_decide
+approved_by: proxy_model
+review_run_id: 2026-06-14-design-r10-reopen-triad-review-run
+summary_presented_to_user: true
+triage_presented_to_user: true
+consumed: false
+approved_finding_ids:
+- 2026-06-14-design-r10-reopen-triad-review-run-claude-sonnet-4-6-primary-003
+- 2026-06-14-design-r10-reopen-triad-review-run-claude-sonnet-4-6-primary-004
+- 2026-06-14-design-r10-reopen-triad-review-run-gpt-5.5-adversarial-001
+- 2026-06-14-design-r10-reopen-triad-review-run-gpt-5.5-adversarial-002
+- 2026-06-14-design-r10-reopen-triad-review-run-gpt-5.5-adversarial-003
+approved_final_labels:
+  2026-06-14-design-r10-reopen-triad-review-run-claude-sonnet-4-6-primary-003: must-fix
+  2026-06-14-design-r10-reopen-triad-review-run-claude-sonnet-4-6-primary-004: must-fix
+  2026-06-14-design-r10-reopen-triad-review-run-gpt-5.5-adversarial-001: must-fix
+  2026-06-14-design-r10-reopen-triad-review-run-gpt-5.5-adversarial-002: should-fix
+  2026-06-14-design-r10-reopen-triad-review-run-gpt-5.5-adversarial-003: must-fix
+proxy_model_id: gemini-3.1-pro-preview
+proxy_decisions:
+  2026-06-14-design-r10-reopen-triad-review-run-claude-sonnet-4-6-primary-003: decisions/claude-sonnet-4-6-primary-003.yaml
+  2026-06-14-design-r10-reopen-triad-review-run-claude-sonnet-4-6-primary-004: decisions/claude-sonnet-4-6-primary-004.yaml
+  2026-06-14-design-r10-reopen-triad-review-run-gpt-5.5-adversarial-001: decisions/gpt-5.5-adversarial-001.yaml
+  2026-06-14-design-r10-reopen-triad-review-run-gpt-5.5-adversarial-002: decisions/gpt-5.5-adversarial-002.yaml
+  2026-06-14-design-r10-reopen-triad-review-run-gpt-5.5-adversarial-003: decisions/gpt-5.5-adversarial-003.yaml

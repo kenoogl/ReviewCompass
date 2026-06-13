@@ -1,0 +1,17 @@
+approved_by: proxy_model
+finding_id: 2026-06-14-requirements-r10-reopen-triad-review-run-gpt-5.5-adversarial-003
+proxy_model_id: gemini-3.1-pro-preview
+decision_prompt_path: proxy-adjudication-prompt.md
+selected_option: must-fix
+final_label: must-fix
+rationale: 結論不能時に非ゼロ終了コードと JSON 上の機械可読 status を返す契約は fail-closed の確実な動作に直結し、要件段で必須
+raw_response_path: proxy-adjudication-response.txt
+candidate_options:
+- must-fix
+- should-fix
+- leave-as-is
+rejected_options:
+  should-fix: 自動化での fail-closed 担保に直結する契約のため改善では不足、必須とする
+  leave-as-is: 本文明示のみでは成功終了しつつ不能を見落とす実装が許容され fail-closed が崩れる
+source_raw_paths:
+- raw/gpt-5.5.round-1.txt

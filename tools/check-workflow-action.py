@@ -4941,6 +4941,233 @@ def cmd_reopen_start(args):
   return exit_code
 
 
+def _feature_all_approved(specs, feature):
+  """feature の全 phase で approval=true かを返す（review-wave-summary 用、Req 10）"""
+  ws = specs.get(feature, {}).get("workflow_state", {})
+  approvals = [
+    v.get("approval")
+    for v in ws.values()
+    if isinstance(v, dict) and "approval" in v
+  ]
+  return bool(approvals) and all(bool(a) for a in approvals)
+
+
+def aggregate_triage_for_summary(cwd):
+  """triage.yaml 群を走査し件数を集計する（Req 10、design §2 集計規則）
+
+  戻り値：(unresolved, draft, human_required, errors)
+  - unresolved／human_required は item 単位、draft は run 単位。
+  - 重複排除は run_id（＝ディレクトリ名）単位で、新パス（evidence）を優先。
+  - 任意記録の非在（glob ゼロ件）は 0 件として正常。存在して解析不能なら errors に積む。
+  """
+  cwd = Path(cwd)
+  search_bases = [
+    cwd / ".reviewcompass" / "evidence" / "review-runs",
+    cwd / ".reviewcompass" / "specs" / "_cross_feature" / "reviews",
+  ]
+  by_run = {}
+  for base in search_bases:
+    if not base.is_dir():
+      continue
+    for tpath in sorted(base.glob("*/triage.yaml")):
+      run_id = tpath.parent.name
+      if run_id not in by_run:
+        by_run[run_id] = tpath
+  unresolved = human_required = draft = 0
+  errors = []
+  for run_id in sorted(by_run):
+    tpath = by_run[run_id]
+    try:
+      data = yaml.safe_load(tpath.read_text(encoding="utf-8"))
+    except (OSError, yaml.YAMLError, UnicodeDecodeError):
+      errors.append(f"任意記録の解析不能: {tpath.relative_to(cwd)}")
+      continue
+    if not isinstance(data, dict):
+      errors.append(f"任意記録の構造異常: {tpath.relative_to(cwd)}")
+      continue
+    if data.get("triage_status") == "draft":
+      draft += 1
+    items = data.get("items") or []
+    if isinstance(items, list):
+      for item in items:
+        if not isinstance(item, dict):
+          continue
+        decision_status = item.get("decision_status")
+        if decision_status != "decided":
+          unresolved += 1
+        if decision_status == "human_required":
+          human_required += 1
+  return unresolved, draft, human_required, errors
+
+
+def build_review_wave_summary(cwd):
+  """review-wave 横断確認の要約データを構築する（Req 10、design §1〜§5）
+
+  戻り値：(summary_dict, exit_code)。exit_code は 0（ok）／2（insufficient）。
+  読み取りに徹し、spec.json・triage・phase を書き換えない。
+  """
+  cwd = Path(cwd)
+  errors = []
+
+  # 必須記録：全 feature の spec.json
+  specs, missing = load_all_feature_specs(cwd)
+  for feature in missing:
+    errors.append(f"必須記録の欠落: {feature}/spec.json")
+
+  # 必須記録：feature-dependency.yaml
+  dep_data, dep_path, dep_error = load_feature_dependency(cwd)
+  if dep_error:
+    errors.append(f"必須記録の解析不能: feature-dependency.yaml ({dep_error})")
+    feature_order = []
+    features_dep = {}
+  elif dep_data is None:
+    errors.append("必須記録の欠落: feature-dependency.yaml")
+    feature_order = []
+    features_dep = {}
+  else:
+    feature_order = dep_data.get("feature_order") or []
+    features_dep = dep_data.get("features") or {}
+
+  # features[]：coverage・phases・recheck
+  features = []
+  for feature in FEATURE_ORDER:
+    ws = specs.get(feature, {}).get("workflow_state", {})
+    total = 0
+    completed = 0
+    phases = {}
+    for phase, stages in ws.items():
+      if not isinstance(stages, dict):
+        continue
+      phase_stages = {}
+      for stage, value in stages.items():
+        if stage == "reference":
+          continue
+        flag = bool(value)
+        phase_stages[stage] = flag
+        total += 1
+        if flag:
+          completed += 1
+      phases[phase] = phase_stages
+    recheck = specs.get(feature, {}).get("recheck", {}) or {}
+    features.append({
+      "name": feature,
+      "coverage": {
+        "completed": completed,
+        "total": total,
+        "all_approved": _feature_all_approved(specs, feature),
+      },
+      "phases": phases,
+      "recheck": {
+        "upstream_change_pending": bool(recheck.get("upstream_change_pending", False)),
+        "impacted_downstream_phases": list(recheck.get("impacted_downstream_phases", []) or []),
+      },
+    })
+
+  # triage 件数
+  unresolved, draft, human_required, triage_errors = aggregate_triage_for_summary(cwd)
+  errors.extend(triage_errors)
+
+  # 依存状況（未充足依存＝上流が all_approved でない）
+  unmet = []
+  for feature in feature_order:
+    entry = features_dep.get(feature, {})
+    deps = entry.get("depends_on", []) if isinstance(entry, dict) else []
+    dep_names = list(deps.keys()) if isinstance(deps, dict) else list(deps or [])
+    for dep in dep_names:
+      if not _feature_all_approved(specs, dep):
+        unmet.append({"feature": feature, "depends_on": dep})
+
+  # carry-forward 未消化
+  carry = count_unresolved_carry_forward_items(cwd / DEFAULT_CARRY_FORWARD_REGISTER_PATH)
+
+  status = "ok" if not errors else "insufficient"
+  summary = {
+    "schema_version": 1,
+    "generated_at": None,
+    "status": status,
+    "features": features,
+    "triage": {
+      "unresolved": unresolved,
+      "draft": draft,
+      "human_required": human_required,
+    },
+    "dependencies": {"feature_order": list(feature_order), "unmet": unmet},
+    "carry_forward": {"unresolved": carry},
+    "errors": errors,
+  }
+  return summary, (0 if status == "ok" else 2)
+
+
+def render_review_wave_summary_markdown(summary):
+  """review-wave 要約を Markdown で描画する（JSON と情報同等、Req 10 受入 3）"""
+  triage = summary["triage"]
+  deps = summary["dependencies"]
+  lines = ["# review-wave 横断確認サマリ", ""]
+  lines.append(f"- status: {summary['status']}")
+  lines.append(
+    f"- triage: unresolved={triage['unresolved']} / draft(run)={triage['draft']}"
+    f" / human_required={triage['human_required']}"
+    "（unresolved・human_required は item 単位、draft は run 単位）"
+  )
+  lines.append(f"- carry-forward 未消化: {summary['carry_forward']['unresolved']}")
+  lines.append(f"- feature_order: {', '.join(deps['feature_order']) if deps['feature_order'] else '(未解決)'}")
+  if deps["unmet"]:
+    lines.append("- 未充足依存: " + ", ".join(f"{u['feature']}←{u['depends_on']}" for u in deps["unmet"]))
+  else:
+    lines.append("- 未充足依存: なし")
+  lines.append("")
+  lines.append("## feature coverage")
+  lines.append("")
+  lines.append("| feature | completed/total | all_approved | recheck |")
+  lines.append("| --- | --- | --- | --- |")
+  for f in summary["features"]:
+    cov = f["coverage"]
+    rc = f["recheck"]
+    if rc["upstream_change_pending"]:
+      pending = "pending(" + ",".join(rc["impacted_downstream_phases"]) + ")"
+    else:
+      pending = "clear"
+    lines.append(f"| {f['name']} | {cov['completed']}/{cov['total']} | {cov['all_approved']} | {pending} |")
+  if summary["status"] != "ok":
+    lines.append("")
+    lines.append("## ⚠ 不完全（insufficient）— 完了として扱わないこと")
+    for e in summary["errors"]:
+      lines.append(f"- {e}")
+  return "\n".join(lines) + "\n"
+
+
+def cmd_review_wave_summary(args):
+  """review-wave-summary サブコマンドのエントリポイント（Req 10）"""
+  cwd = Path.cwd()
+  summary, exit_code = build_review_wave_summary(cwd)
+  if args.json:
+    output = json.dumps(summary, ensure_ascii=False, indent=2)
+  else:
+    output = render_review_wave_summary_markdown(summary)
+  print(output)
+
+  out_path = None
+  if getattr(args, "out", None):
+    out_path = Path(args.out)
+  elif getattr(args, "save", False):
+    ext = "json" if args.json else "md"
+    out_path = (
+      cwd / ".reviewcompass" / "specs" / "_cross_feature" / "reviews"
+      / f"review-wave-summary.{ext}"
+    )
+  if out_path is not None:
+    try:
+      out_path.parent.mkdir(parents=True, exist_ok=True)
+      out_path.write_text(
+        output if output.endswith("\n") else output + "\n",
+        encoding="utf-8",
+      )
+    except OSError as e:
+      print(f"warning: 要約出力の保存に失敗しました: {e}", file=sys.stderr)
+
+  return exit_code
+
+
 def main():
   # 共通オプション（サブコマンドの前後どちらでも受け取れるよう親パーサに集約、仕様 §4 共通オプション）
   common_parser = argparse.ArgumentParser(add_help=False)
@@ -5070,6 +5297,18 @@ def main():
   rs.add_argument("--date", required=True, help="in-progress ファイル名に使う日付（YYYY-MM-DD）")
   rs.add_argument("--trigger", required=True, help="reopen 起動理由")
 
+  rws = sub.add_parser(
+    "review-wave-summary",
+    help="review-wave 横断確認の指標を集計して出力する（Req 10）",
+    parents=[common_parser],
+  )
+  rws.add_argument("--out", default=None, help="要約出力の書き出し先パス（自身の出力のみ。状態は書き換えない）")
+  rws.add_argument(
+    "--save",
+    action="store_true",
+    help="既定保存先 .reviewcompass/specs/_cross_feature/reviews/ へ書き出す",
+  )
+
   args = parser.parse_args()
 
   if args.subcommand == "spec-set":
@@ -5092,6 +5331,8 @@ def main():
     sys.exit(cmd_next(args))
   elif args.subcommand == "reopen-start":
     sys.exit(cmd_reopen_start(args))
+  elif args.subcommand == "review-wave-summary":
+    sys.exit(cmd_review_wave_summary(args))
   else:
     parser.print_help(sys.stderr)
     sys.exit(2)

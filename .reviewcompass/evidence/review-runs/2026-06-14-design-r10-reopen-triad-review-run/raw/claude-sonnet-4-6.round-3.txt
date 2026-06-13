@@ -1,0 +1,13 @@
+findings:
+  - severity: INFO
+    target_location: "§2 triage 件数の判定規則"
+    description: "draft カウントの定義が二重の表現を持つ：表では「triage_status: draft または item の draft」とあり、補足では「triage.yaml の triage_status: draft（その run に未決 item が残る状態）」と絞り込まれている。"
+    rationale: "両記述が微妙に異なるため、実装者が item レベルの draft フラグを集計に含めるかどうか判断が分かれる可能性がある。設計として情報同等を要求しているため、どちらが正規の定義かを明示すると実装の曖昧さが解消される。ただし must-fix 相当の矛盾ではなく、補足の記述が優先されると読める。"
+  - severity: INFO
+    target_location: "§5 保存 --save 命名規則"
+    description: "generated_at 省略時の命名（連番・日付付与）が implementation 委譲とされており、design では未確定のまま。"
+    rationale: "§6 で明示的に委譲済みであり、設計として意図的な未確定事項。ただし --save 利用時にファイル名衝突が起きた場合の振る舞い（上書き／エラー）もimplementation 委譲の範囲に含まれるかどうかが明示されていない。実害は少ないが、呼び出し側が保存先の一意性を保証する責務があるかを設計コメントとして補足すると親切。"
+  - severity: INFO
+    target_location: "§3 status 判定基準"
+    description: "triage.yaml が走査対象ゼロ件（レビューラン未生成）の場合の status 扱いが明示されていない。ファイルが「見つからない」のか「存在するが空」なのかで fail-closed の適用が変わりうる。"
+    rationale: "現行の定義は『走査対象の triage.yaml 群』が欠落すると insufficient としているが、グロブ結果がゼロ件のケース（ランが一度も走っていない初期状態）を欠落と同一視するかは実装者の解釈次第。設計として「ゼロ件は正常（triage=0 として ok）」か「不完全（insufficient）」かを明示すると収束度が上がる。"

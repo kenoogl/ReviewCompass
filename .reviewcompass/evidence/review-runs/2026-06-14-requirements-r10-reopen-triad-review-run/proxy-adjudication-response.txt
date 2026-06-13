@@ -1,0 +1,13 @@
+```yaml
+decisions:
+  - n: 8
+    final_label: should-fix
+    reason: 集計定義の再現性確保のため、読み取り元の参照やdesignへの委譲を明記すべき
+  - n: 9
+    final_label: should-fix
+    reason: 機械可読な連携の契約として、安定スキーマの要求を要件に含めることが望ましい
+  - n: 10
+    final_label: must-fix
+    reason: fail-closedの確実な動作を担保するため、エラーシグナル（終了コード等）の要求は要件フェーズで必須
+```
+（注：本ファイルは proxy_model 裁定の生応答抜粋。全 11 件の裁定は proxy-adjudication-prompt.md への応答として取得し、ERROR 3 件〔#8=adversarial-001, #9=adversarial-002, #10=adversarial-003〕分を本決定の根拠とする。）

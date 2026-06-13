@@ -1,0 +1,18 @@
+approved_by: proxy_model
+finding_id: 2026-06-14-requirements-r10-reopen-triad-review-run-gpt-5.5-adversarial-001
+proxy_model_id: gemini-3.1-pro-preview
+decision_prompt_path: proxy-adjudication-prompt.md
+selected_option: should-fix
+final_label: should-fix
+rationale: 再現性のため読み取り元（Requirement 2 トリアージ構造・Requirement 8 feature_order・carry-forward
+  register）の参照と詳細の design 委譲を要件で明記すれば足り、要件段での欠陥ではない
+raw_response_path: proxy-adjudication-response.txt
+candidate_options:
+- must-fix
+- should-fix
+- leave-as-is
+rejected_options:
+  must-fix: 詳細な集計定義は design で確定でき、要件では読み取り元の参照で再現性を担保できるため must ではない
+  leave-as-is: 読み取り元未参照のままでは再現性が確保できないため対処は要る
+source_raw_paths:
+- raw/gpt-5.5.round-1.txt

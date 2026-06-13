@@ -1,0 +1,29 @@
+role: adversarial
+provider: openai-api
+model: gpt-5.5
+attempts: 1
+duration_seconds: 27.433
+findings:
+- severity: ERROR
+  target_location: §2.1 3. 出力形式とスキーマ（Req 10 受入 3）
+  description: JSON安定スキーマのネスト要素のキー・型が未定義で、機械処理に十分な契約になっていない
+  rationale: トップレベルキーは列挙されているが、features[].coverage が数値なのかオブジェクトなのか、phases のphase/stage表現、recheck
+    の構造、dependencies.unmet の要素形、errors[] のコード・メッセージ形式が定義されていない。Req 10受入3およびレビュー観点3・6の『安定スキーマ』『キー名・型は固定』『tasks/implementationへ渡す未確定事項の明示』を満たすには、少なくとも各ネスト要素の固定キーと型を設計で確定する必要がある。
+- severity: ERROR
+  target_location: §2.1 4. fail-closed（Req 10 受入 4）
+  description: fail-closed対象となる欠落・解析不能入力の範囲が設計内で一意に確定していない
+  rationale: '『範囲は Req 2 受入 4』への参照のみで、review-wave-summaryが必須入力として扱う spec.json、feature-dependency.yaml、triage.yaml、carry-forward-register、recheck
+    のうち、どの欠落を status: insufficient と非ゼロ終了にするかがこの設計から判定できない。例えば triage.yaml が存在しない場合を0件として扱うのか欠落として扱うのかが不明で、実装により
+    fail-closed の挙動が分岐する。Req 10受入4の機械可読 fail-closed シグナルを安定させるには、入力種別ごとの必須/任意とエラーコード化方針を明記する必要がある。'
+- severity: WARN
+  target_location: §2.1 2. 読み取り元と指標の算出定義（triage 未解決／draft／human_required）
+  description: triage集計の重複排除と draft/human_required の判定規則が曖昧
+  rationale: 新パス evidence/review-runs/*/triage.yaml と互換旧パス _cross_feature/reviews/*/triage.yaml
+    を両方走査すると、同一review-runが移行・複製されている場合に二重計上される可能性がある。また unresolved は decision_status
+    != decided と定義されている一方、draft と human_required を decision_status の値で数えるのか、別フィールドやフラグで数えるのかが明記されていない。指標の算出定義を一意にするため、run識別子によるdedupe方針と各カウンタの判定条件を固定すべき。
+- severity: WARN
+  target_location: §2.1 5. 保存（Req 10 受入 5）
+  description: --save と --out の意味および出力先制約が未定義
+  rationale: 『--save/--out 指定時のみ _cross_feature/reviews/ へ自身の要約出力を書き出す』とあるが、--out
+    が任意パス指定なのかファイル名指定なのか、--save と同時指定した場合の優先順位、既存ファイル上書き可否、パストラバーサルや _cross_feature/reviews/
+    外指定の扱いが不明である。読み取り専用の責務境界を保つには、保存オプションが状態ファイルや任意パスを変更できないことを設計で明確にする必要がある。

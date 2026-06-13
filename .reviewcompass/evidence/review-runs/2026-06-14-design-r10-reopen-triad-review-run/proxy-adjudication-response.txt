@@ -1,0 +1,39 @@
+```yaml
+decisions:
+  - n: 1
+    final_label: should-fix
+    reason: 終了コードの規約整合性は設計で確認・明記すべき
+  - n: 2
+    final_label: should-fix
+    reason: 重複排除の基本ロジックは設計で方針を示すべき
+  - n: 3
+    final_label: must-fix
+    reason: データスキーマの型・構造は設計フェーズで確定必須
+  - n: 4
+    final_label: must-fix
+    reason: statusの判定基準は設計フェーズで確定必須
+  - n: 5
+    final_label: should-fix
+    reason: 出力ファイルの命名規則は設計で定義すべき
+  - n: 6
+    final_label: should-fix
+    reason: 要件の解釈方針は設計ドキュメント上で明確化すべき
+  - n: 7
+    final_label: must-fix
+    reason: JSON安定スキーマの詳細は設計フェーズで確定必須
+  - n: 8
+    final_label: should-fix
+    reason: fail-closedの対象範囲は設計で列挙しておくべき
+  - n: 9
+    final_label: must-fix
+    reason: draft等の判定規則は設計フェーズで確定必須
+  - n: 10
+    final_label: should-fix
+    reason: コマンドオプションの仕様と制約は設計で定義すべき
+  - n: 11
+    final_label: leave-as-is
+    reason: 承認済み要件で合意された事項に対する誤検知のため対処不要
+  - n: 12
+    final_label: should-fix
+    reason: 実装フェーズへの委譲事項（境界）を明示して手戻りを防ぐべき
+```

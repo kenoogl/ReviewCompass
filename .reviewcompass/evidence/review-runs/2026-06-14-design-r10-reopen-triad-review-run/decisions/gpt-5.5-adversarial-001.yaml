@@ -1,0 +1,17 @@
+approved_by: proxy_model
+finding_id: 2026-06-14-design-r10-reopen-triad-review-run-gpt-5.5-adversarial-001
+proxy_model_id: gemini-3.1-pro-preview
+decision_prompt_path: proxy-adjudication-prompt.md
+selected_option: must-fix
+final_label: must-fix
+rationale: JSON 安定スキーマのネスト要素のキー・型は要件が design へ委譲した確定事項
+raw_response_path: proxy-adjudication-response.txt
+candidate_options:
+- must-fix
+- should-fix
+- leave-as-is
+rejected_options:
+  should-fix: ネスト未定義では安定スキーマ要件を満たさず不足
+  leave-as-is: 未定義は後方互換契約を崩すため対処要
+source_raw_paths:
+- raw/gpt-5.5.round-1.txt

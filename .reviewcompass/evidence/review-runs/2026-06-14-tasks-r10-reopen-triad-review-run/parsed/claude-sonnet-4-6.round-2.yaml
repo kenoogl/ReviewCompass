@@ -1,0 +1,34 @@
+role: primary
+provider: anthropic-api
+model: claude-sonnet-4-6
+attempts: 1
+duration_seconds: 14.833
+findings:
+- severity: INFO
+  target_location: T-012 テスト要件 (2)
+  description: round-1 should-fix「JSON安定スキーマのキー名・型を固定値として表明検証」が反映済み
+  rationale: design §3 のトップレベル・ネスト構造と一致させる旨が明示され、検証可能な形で記述されている。収束確認として適切。
+- severity: INFO
+  target_location: T-012 テスト要件 (4)
+  description: round-1 should-fix「必須/任意記録の欠落・解析不能の区別」が反映済み
+  rationale: '必須記録の欠落と解析不能でstatus: insufficient＋exit 2、任意記録の非在はok・0件、存在して解析不能ならinsufficient＋exit
+    2 という三段階の区別が明示されており、design §4 の契約を網羅的に検証可能。'
+- severity: INFO
+  target_location: T-012 テスト要件 (7)
+  description: round-1 should-fix「--out/--save 保存正常系」が反映済み
+  rationale: 指定パスおよび既定保存先への書き込み確認と、spec.json・triage・phaseの不変確認の両面が明記されており、保存正常系の検証要件として十分。
+- severity: INFO
+  target_location: T-012 テスト要件 (6)
+  description: draft は run 単位・unresolved/human_required は item 単位という集計軸の区別が追加されている
+  rationale: round-1 で指摘された集計粒度の曖昧さが解消されており、テストコードでの表明が可能な記述になっている。
+- severity: WARN
+  target_location: T-012 完了条件・テスト要件 (7)
+  description: 保存正常系テストで「既定保存先 _cross_feature/reviews/」への書き込みパスが完了条件に明示されているが、design
+    §5 との整合性確認が記述されていない
+  rationale: テスト要件 (7) は保存先パスを具体的に示しているが、完了条件の記述ではdesign §5 への参照のみで保存先パスが省略されている。テスト実装時に完了条件とテスト要件で解釈が乖離するリスクがある。記述の統一が望ましいが、must-fix
+    級ではない。
+- severity: WARN
+  target_location: T-012 テスト要件 (3)
+  description: 「Markdown と JSON の情報同等」の検証基準が定量的に記述されていない
+  rationale: 情報同等性の検証として「同一の数値・フィールドが両出力に含まれること」等の具体的な表明方法が示されていない。テスト実装者が独自解釈する余地があるが、design
+    §3 を参照すれば補完可能なため must-fix ではない。

@@ -1,0 +1,17 @@
+approved_by: proxy_model
+finding_id: 2026-06-14-requirements-r10-reopen-triad-review-run-gpt-5.5-adversarial-002
+proxy_model_id: gemini-3.1-pro-preview
+decision_prompt_path: proxy-adjudication-prompt.md
+selected_option: should-fix
+final_label: should-fix
+rationale: JSON の安定スキーマ要求を要件に入れ、キー・型の詳細は design で確定する旨を明記すれば足りる
+raw_response_path: proxy-adjudication-response.txt
+candidate_options:
+- must-fix
+- should-fix
+- leave-as-is
+rejected_options:
+  must-fix: スキーマ詳細は design 確定で足り、要件では安定スキーマ要求の明記で十分
+  leave-as-is: 安定スキーマ未要求では機械連携契約が崩れるため対処は要る
+source_raw_paths:
+- raw/gpt-5.5.round-1.txt

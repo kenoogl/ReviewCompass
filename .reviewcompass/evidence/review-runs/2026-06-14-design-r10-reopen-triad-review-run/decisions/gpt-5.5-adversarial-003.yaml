@@ -1,0 +1,17 @@
+approved_by: proxy_model
+finding_id: 2026-06-14-design-r10-reopen-triad-review-run-gpt-5.5-adversarial-003
+proxy_model_id: gemini-3.1-pro-preview
+decision_prompt_path: proxy-adjudication-prompt.md
+selected_option: must-fix
+final_label: must-fix
+rationale: triage の重複排除（run_id 単位）と draft/human_required 判定規則は集計の正しさに直結、design 確定必須
+raw_response_path: proxy-adjudication-response.txt
+candidate_options:
+- must-fix
+- should-fix
+- leave-as-is
+rejected_options:
+  should-fix: 判定規則なしでは件数が実装依存になり不足
+  leave-as-is: 重複・誤判定を招くため対処要
+source_raw_paths:
+- raw/gpt-5.5.round-1.txt

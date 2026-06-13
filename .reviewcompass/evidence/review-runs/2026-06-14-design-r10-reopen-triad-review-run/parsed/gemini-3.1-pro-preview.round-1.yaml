@@ -1,0 +1,15 @@
+role: judgment
+provider: gemini-api
+model: gemini-3.1-pro-preview
+attempts: 1
+duration_seconds: 25.526
+findings:
+- severity: WARN
+  target_location: 2.1 新設：§review-wave 要約コマンドモデル（Req 10） > 5. 保存（Req 10 受入 5）
+  description: 要約出力の保存先が旧ディレクトリ構造（`_cross_feature/reviews/`）に指定されている
+  rationale: 2項の読み取り定義では新しいディレクトリ構造（`evidence/review-runs/`）を正として旧パスを互換扱いとしているにもかかわらず、新規保存先が旧パスに固定されています。evidence
+    配下の適切なディレクトリへ出力するか、実装時に保存先パスを決定するよう明示的な修正・調整が必要です。
+- severity: INFO
+  target_location: 2.1 新設：§review-wave 要約コマンドモデル（Req 10） > 3. 出力形式とスキーマ / 5. 保存
+  description: tasks／implementation フェーズへ委譲する未確定事項の明示が不足している
+  rationale: レビュー観点6で求められている「未確定事項の明示」に関して、CLIのオプション名（`--save/--out` のどちらを採用するか）や保存時の具体的なファイル命名規則、スキーマの詳細な内部構造など、設計で固定せず実装時に委ねる事項が明記されていません。後続フェーズへの引き継ぎを確実にするため、明示的に実装へ委譲する旨を記載することが推奨されます。

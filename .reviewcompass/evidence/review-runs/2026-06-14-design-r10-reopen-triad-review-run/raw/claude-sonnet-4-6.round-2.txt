@@ -1,0 +1,20 @@
+findings:
+  - severity: INFO
+    target_location: "§2 triage 重複排除・判定規則"
+    description: "The document states that triage deduplication is performed on a run_id basis, and unresolved/draft/human_required judgment rules are described, but the precise precedence order when a single item has multiple conflicting statuses across runs is not explicitly enumerated."
+    rationale: "While this is likely sufficient for implementation, specifying the precedence rule (e.g., latest run_id wins, or most severe status wins) would eliminate any remaining ambiguity in edge cases where the same finding appears in multiple runs with differing statuses."
+
+  - severity: INFO
+    target_location: "§3 JSON 安定スキーマ — status 判定基準"
+    description: "The status judgment criterion is defined as 'all necessary records are readable = ok', but the document does not enumerate what constitutes 'necessary records' for each status value (e.g., what fields must be present for status=resolved vs. status=unresolved)."
+    rationale: "For a machine-processing contract to be fully unambiguous, the minimum required fields per status value should be listed. The current phrasing is sufficient for human understanding but leaves marginal ambiguity for automated parsers."
+
+  - severity: INFO
+    target_location: "§4 fail-closed — 終了コード規約"
+    description: "Exit codes 0=ok and 2=insufficient are specified with note of alignment to existing subcommands, but exit code 1 (general error / unexpected exception) is not explicitly addressed, leaving a minor gap in the exit code contract."
+    rationale: "Completeness of the exit code table matters for callers scripting against the command. Exit code 1 behavior (unhandled exception vs. parse error vs. missing file) should be at minimum referenced or noted as delegated to §6 implementation."
+
+  - severity: INFO
+    target_location: "§6 implementation 委譲事項"
+    description: "§6 is newly added to address should-fix items by delegating implementation details, but the document does not confirm whether §6 itself was reviewed by the proxy model as part of the round-1 must-fix resolution or is entirely new scope introduced in round-2."
+    rationale: "If §6 is new scope introduced in round-2 without proxy model review, it may contain unchecked decisions. Clarifying its review lineage would ensure triad accountability is complete."

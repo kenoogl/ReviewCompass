@@ -1,0 +1,133 @@
+run_id: 2026-06-14-tasks-r10-reopen-triad-review-run
+triage_status: decided
+generated_at: '2026-06-13T22:38:54.476385+00:00'
+decision_actor: null
+decision_actor_type: human
+items:
+- finding_id: 2026-06-14-tasks-r10-reopen-triad-review-run-claude-sonnet-4-6-primary-001
+  run_id: 2026-06-14-tasks-r10-reopen-triad-review-run
+  source_model: claude-sonnet-4-6
+  source_round: round-2
+  source_raw_path: raw/claude-sonnet-4-6.round-2.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-2.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: T-012 テスト要件 (2)
+  plain_language_summary: round-1 should-fix「JSON安定スキーマのキー名・型を固定値として表明検証」が反映済み
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: proxy_model
+  decision_actor_type: agent
+  decision_at: '2026-06-13T22:39:32.022411+00:00'
+  decision_reason: proxy(gemini-3.1-pro):round-2 収束後の軽微。情報同等の定量化は実装時テスト設計、保存先は承認済み要件受入5の現行置き場（誤検知）。対処不要
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-14-tasks-r10-reopen-triad-review-run-claude-sonnet-4-6-primary-002
+  run_id: 2026-06-14-tasks-r10-reopen-triad-review-run
+  source_model: claude-sonnet-4-6
+  source_round: round-2
+  source_raw_path: raw/claude-sonnet-4-6.round-2.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-2.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: T-012 テスト要件 (4)
+  plain_language_summary: round-1 should-fix「必須/任意記録の欠落・解析不能の区別」が反映済み
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: proxy_model
+  decision_actor_type: agent
+  decision_at: '2026-06-13T22:39:32.073988+00:00'
+  decision_reason: proxy(gemini-3.1-pro):round-2 収束後の軽微。情報同等の定量化は実装時テスト設計、保存先は承認済み要件受入5の現行置き場（誤検知）。対処不要
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-14-tasks-r10-reopen-triad-review-run-claude-sonnet-4-6-primary-003
+  run_id: 2026-06-14-tasks-r10-reopen-triad-review-run
+  source_model: claude-sonnet-4-6
+  source_round: round-2
+  source_raw_path: raw/claude-sonnet-4-6.round-2.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-2.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: T-012 テスト要件 (7)
+  plain_language_summary: round-1 should-fix「--out/--save 保存正常系」が反映済み
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: proxy_model
+  decision_actor_type: agent
+  decision_at: '2026-06-13T22:39:32.121203+00:00'
+  decision_reason: proxy(gemini-3.1-pro):round-2 収束後の軽微。情報同等の定量化は実装時テスト設計、保存先は承認済み要件受入5の現行置き場（誤検知）。対処不要
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-14-tasks-r10-reopen-triad-review-run-claude-sonnet-4-6-primary-004
+  run_id: 2026-06-14-tasks-r10-reopen-triad-review-run
+  source_model: claude-sonnet-4-6
+  source_round: round-2
+  source_raw_path: raw/claude-sonnet-4-6.round-2.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-2.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: T-012 テスト要件 (6)
+  plain_language_summary: draft は run 単位・unresolved/human_required は item 単位という集計軸の区別が追加されている
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: proxy_model
+  decision_actor_type: agent
+  decision_at: '2026-06-13T22:39:32.169328+00:00'
+  decision_reason: proxy(gemini-3.1-pro):round-2 収束後の軽微。情報同等の定量化は実装時テスト設計、保存先は承認済み要件受入5の現行置き場（誤検知）。対処不要
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-14-tasks-r10-reopen-triad-review-run-claude-sonnet-4-6-primary-005
+  run_id: 2026-06-14-tasks-r10-reopen-triad-review-run
+  source_model: claude-sonnet-4-6
+  source_round: round-2
+  source_raw_path: raw/claude-sonnet-4-6.round-2.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-2.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: T-012 完了条件・テスト要件 (7)
+  plain_language_summary: 保存正常系テストで「既定保存先 _cross_feature/reviews/」への書き込みパスが完了条件に明示されているが、design
+    §5 との整合性確認が記述されていない
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: proxy_model
+  decision_actor_type: agent
+  decision_at: '2026-06-13T22:39:32.217219+00:00'
+  decision_reason: proxy(gemini-3.1-pro):round-2 収束後の軽微。情報同等の定量化は実装時テスト設計、保存先は承認済み要件受入5の現行置き場（誤検知）。対処不要
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-14-tasks-r10-reopen-triad-review-run-claude-sonnet-4-6-primary-006
+  run_id: 2026-06-14-tasks-r10-reopen-triad-review-run
+  source_model: claude-sonnet-4-6
+  source_round: round-2
+  source_raw_path: raw/claude-sonnet-4-6.round-2.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-2.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: T-012 テスト要件 (3)
+  plain_language_summary: 「Markdown と JSON の情報同等」の検証基準が定量的に記述されていない
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: proxy_model
+  decision_actor_type: agent
+  decision_at: '2026-06-13T22:39:32.265151+00:00'
+  decision_reason: proxy(gemini-3.1-pro):round-2 収束後の軽微。情報同等の定量化は実装時テスト設計、保存先は承認済み要件受入5の現行置き場（誤検知）。対処不要
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-14-tasks-r10-reopen-triad-review-run-gemini-3.1-pro-preview-judgment-001
+  run_id: 2026-06-14-tasks-r10-reopen-triad-review-run
+  source_model: gemini-3.1-pro-preview
+  source_round: round-2
+  source_raw_path: raw/gemini-3.1-pro-preview.round-2.txt
+  source_parsed_path: parsed/gemini-3.1-pro-preview.round-2.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: 1. 更新後 T-012（tasks.md より） > テスト要件 (7)
+  plain_language_summary: 要約出力の既定保存先がレガシーパス（_cross_feature/reviews/）としてテスト要件に指定されている
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: proxy_model
+  decision_actor_type: agent
+  decision_at: '2026-06-13T22:39:32.312502+00:00'
+  decision_reason: proxy(gemini-3.1-pro):round-2 収束後の軽微。情報同等の定量化は実装時テスト設計、保存先は承認済み要件受入5の現行置き場（誤検知）。対処不要
+  applied_files: []
+  superseded_by: null

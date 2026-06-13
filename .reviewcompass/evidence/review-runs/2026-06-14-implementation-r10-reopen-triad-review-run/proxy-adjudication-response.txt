@@ -1,0 +1,24 @@
+```yaml
+decisions:
+  - n: 1
+    final_label: leave-as-is
+    reason: 該当テストが既に存在し問題ないため
+  - n: 2
+    final_label: leave-as-is
+    reason: 設計段階で意図された仕様であり実装上妥当なため
+  - n: 3
+    final_label: leave-as-is
+    reason: TDDの赤フェーズの失敗理由として正当であり網羅性も担保されているため
+  - n: 4
+    final_label: leave-as-is
+    reason: 設計の規定により例外時は非ゼロ終了（exit 1）でfail-closedとなるため
+  - n: 5
+    final_label: leave-as-is
+    reason: 設計書に規定済みであり実装の動作に支障はないため
+  - n: 6
+    final_label: should-fix
+    reason: 状態保存の挙動テストは重要でありテストの追加が妥当なため
+  - n: 7
+    final_label: should-fix
+    reason: コアとなる算出ロジックのテストは不可欠であり追加が妥当なため
+```

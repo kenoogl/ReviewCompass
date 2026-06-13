@@ -1,0 +1,27 @@
+role: adversarial
+provider: openai-api
+model: gpt-5.5
+attempts: 1
+duration_seconds: 41.145
+findings:
+- severity: ERROR
+  target_location: target-round-2.md §1-§2
+  description: 収束確認の対象として参照されている適用後本文（設計 §1〜§6）の規範的な内容が本文中に含まれておらず、要約と『明記』『確定』という主張だけになっている。
+  rationale: criteria は round-1 must-fix が機械処理契約として一意に反映されたかを確認することを求めているが、この文書だけでは実際の
+    JSON スキーマ、判定規則、fail-closed 条件、保存先規約を検証できない。収束確認用のレビュー対象としては、適用後本文または差分の規範テキストを含める必要がある。
+- severity: ERROR
+  target_location: §1 must-fix bullet / §3 JSON 安定スキーマ
+  description: '`features[].phases` の型説明が「phase 名キーのオブジェクト→`{stage: bool}`」に留まり、stage
+    キーの集合、ネスト構造、bool の意味、欠落時の扱いが一意に定義されていない。'
+  rationale: 'round-1 must-fix の対象である JSON ネストスキーマと phases 型は、実装者と利用者が同じ構造を機械的に生成・検証できる必要がある。現記述では
+    `{stage: bool}` がリテラルキーなのか任意 stage 名の写像なのかも読み分けられ、安定スキーマとして不十分である。'
+- severity: ERROR
+  target_location: §1 must-fix bullet / §2 triage 重複排除・判定規則
+  description: triage の run_id 単位重複排除と unresolved/draft/human_required 判定規則について、要約では『明記』と述べるのみで、重複時の採用順序、競合時の優先順位、各状態の入力条件が示されていない。
+  rationale: triage 規則は round-1 must-fix の一つであり、同じ入力から同じ集計結果を得るために決定的な tie-break と状態判定条件が必要である。これが本文に現れていないため、実装間で件数や
+    status が分岐する余地が残る。
+- severity: WARN
+  target_location: §1 should-fix bullet / §4 fail-closed
+  description: fail-closed 時に JSON/Markdown 出力を生成するのか、部分出力を禁止するのか、`status` フィールドをどの値にするのかが要約上は明確でない。
+  rationale: 終了コード 2=insufficient は示されているが、機械利用者は失敗時の stdout/stderr と保存ファイルの有無にも依存する。status
+    判定基準と fail-closed 動作の接続が不明確だと、自動処理が失敗を正常な要約として取り込む可能性がある。
