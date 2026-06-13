@@ -1,0 +1,32 @@
+status: completed
+target_files:
+- .reviewcompass/evidence/review-runs/2026-06-13-plc-dec-007-correction-postwrite/target.md
+- TODO_NEXT_SESSION.md
+- docs/notes/2026-06-12-document-placement-stage2-decisions.md
+- docs/notes/2026-06-12-document-placement-stage4-migration.md
+target_sha256:
+  .reviewcompass/evidence/review-runs/2026-06-13-plc-dec-007-correction-postwrite/target.md: d21b78cf4280ca31d054b1d487bc4c048411d28b6deadfe8dbd459d9d837f7cd
+  TODO_NEXT_SESSION.md: d886e5eab2bbe22e6b8ba972e184010927fcc5d3f800421c0416fd759a0cb498
+  docs/notes/2026-06-12-document-placement-stage2-decisions.md: 586613cb72a9c4b35149021f463a513e6eca95f13239ac9408909da0e1d48f38
+  docs/notes/2026-06-12-document-placement-stage4-migration.md: 16a5648e0ebf5febf06836f4a175d206399e3ab9ac5d36562b49abd2cb53a7c0
+required_verifiers: &id001
+- gemini-3.5-flash
+completed_verifiers: *id001
+unresolved_substantive_findings: 0
+verifications:
+- verifier: gemini-3.5-flash
+  target_files:
+  - .reviewcompass/evidence/review-runs/2026-06-13-plc-dec-007-correction-postwrite/target.md
+  - TODO_NEXT_SESSION.md
+  - docs/notes/2026-06-12-document-placement-stage2-decisions.md
+  - docs/notes/2026-06-12-document-placement-stage4-migration.md
+  target_sha256:
+    .reviewcompass/evidence/review-runs/2026-06-13-plc-dec-007-correction-postwrite/target.md: d21b78cf4280ca31d054b1d487bc4c048411d28b6deadfe8dbd459d9d837f7cd
+    TODO_NEXT_SESSION.md: d886e5eab2bbe22e6b8ba972e184010927fcc5d3f800421c0416fd759a0cb498
+    docs/notes/2026-06-12-document-placement-stage2-decisions.md: 586613cb72a9c4b35149021f463a513e6eca95f13239ac9408909da0e1d48f38
+    docs/notes/2026-06-12-document-placement-stage4-migration.md: 16a5648e0ebf5febf06836f4a175d206399e3ab9ac5d36562b49abd2cb53a7c0
+review_run:
+  path: .reviewcompass/evidence/review-runs/2026-06-13-plc-dec-007-correction-postwrite
+  summary_path: .reviewcompass/evidence/review-runs/2026-06-13-plc-dec-007-correction-postwrite/model-result-summary.yaml
+notes: Generated template; verify target_files cover current post-write targets before
+  use.

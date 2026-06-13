@@ -76,3 +76,5 @@ P1 移行計画 #1〜9 を全消化し、P1 完了条件 5 項目の充足を確
 | 5. 旧置き場 6 箇所に凍結案内 README | 充足 | `docs/notes/review-runs/`・`.reviewcompass/post-write-review-runs/`・`.reviewcompass/specs/{conformance-evaluation,workflow-management}/conformance/`・`logs/estimation/`・`docs/logs/`（コミット `cb022e92`） |
 
 経路の記録：#4（仕様 reopen）は ce＝R-0（`stages/completed/reopen-procedure-2026-06-12-placement-p1-ce.yaml`）・wm＝D-0（同 `-wm.yaml`）として完了。#2・3・5 のツール改修は各 reopen の implementation 段（TDD）で実施。#1 は区画新設済み（`.reviewcompass/evidence/README.md`）。本判定の反映により段階 5＝完了（計画文書の状態欄を更新）。
+
+繰り越し注記（2026-06-13 追記）：段階 5 の当初課題のうち本作業分解（#1〜9）に含めなかった未実施分は 2 件——(1) 配置規約の 1 本の正本文書化（計画文書の状態欄に記載どおり P3 計画時に再評価）、(2) **セッション記録の機械抽出ツール**（PLC-DEC-007 が段階 5 の実装課題としたが #1〜9 に含まれず未実施。引き継ぎ先＝PLC-DEC-007 の 2026-06-13 訂正・追補と TODO 次作業候補。本注記は完了判定時の記載漏れの補正）。

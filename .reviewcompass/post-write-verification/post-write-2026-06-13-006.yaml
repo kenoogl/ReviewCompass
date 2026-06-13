@@ -1,0 +1,28 @@
+status: completed
+target_files:
+- .reviewcompass/evidence/review-runs/2026-06-13-plc-dec-007-correction-postwrite/target.md
+- TODO_NEXT_SESSION.md
+- docs/notes/2026-06-12-document-placement-stage2-decisions.md
+target_sha256:
+  .reviewcompass/evidence/review-runs/2026-06-13-plc-dec-007-correction-postwrite/target.md: 96b05baf8a0a84f8e1081b5671a9d7b0203898fbe55c7b4a1a4ad07ef4dbac9a
+  TODO_NEXT_SESSION.md: d0dad74a476d29c8db1a00fe5c9eab4237a07eb56464169061398cdf7f508d76
+  docs/notes/2026-06-12-document-placement-stage2-decisions.md: cc3e57ddce701b4f4ce41987d73998c437a5a150b4d7e609e1142beba806b56f
+required_verifiers: &id001
+- gemini-3.5-flash
+completed_verifiers: *id001
+unresolved_substantive_findings: 0
+verifications:
+- verifier: gemini-3.5-flash
+  target_files:
+  - .reviewcompass/evidence/review-runs/2026-06-13-plc-dec-007-correction-postwrite/target.md
+  - TODO_NEXT_SESSION.md
+  - docs/notes/2026-06-12-document-placement-stage2-decisions.md
+  target_sha256:
+    .reviewcompass/evidence/review-runs/2026-06-13-plc-dec-007-correction-postwrite/target.md: 96b05baf8a0a84f8e1081b5671a9d7b0203898fbe55c7b4a1a4ad07ef4dbac9a
+    TODO_NEXT_SESSION.md: d0dad74a476d29c8db1a00fe5c9eab4237a07eb56464169061398cdf7f508d76
+    docs/notes/2026-06-12-document-placement-stage2-decisions.md: cc3e57ddce701b4f4ce41987d73998c437a5a150b4d7e609e1142beba806b56f
+review_run:
+  path: .reviewcompass/evidence/review-runs/2026-06-13-plc-dec-007-correction-postwrite
+  summary_path: .reviewcompass/evidence/review-runs/2026-06-13-plc-dec-007-correction-postwrite/model-result-summary.yaml
+notes: Generated template; verify target_files cover current post-write targets before
+  use.
