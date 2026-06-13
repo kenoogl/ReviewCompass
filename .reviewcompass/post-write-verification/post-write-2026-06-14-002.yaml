@@ -1,0 +1,24 @@
+status: completed
+target_files:
+- .reviewcompass/evidence/review-runs/2026-06-14-postwrite-todo-r10-done/target.md
+- TODO_NEXT_SESSION.md
+target_sha256:
+  .reviewcompass/evidence/review-runs/2026-06-14-postwrite-todo-r10-done/target.md: c0579866fcf5abf3adda40d47c6aa4d3d10dc56b352f5f922955c3dda9093f6c
+  TODO_NEXT_SESSION.md: 18dae2f9e1401a8f0df73513cf9c8372725d8b56bdb387d0aa7be911076f93d9
+required_verifiers:
+- gemini-3.5-flash
+completed_verifiers:
+- gemini-3.5-flash
+unresolved_substantive_findings: 0
+verifications:
+- verifier: gemini-3.5-flash
+  target_files:
+  - .reviewcompass/evidence/review-runs/2026-06-14-postwrite-todo-r10-done/target.md
+  - TODO_NEXT_SESSION.md
+  target_sha256:
+    .reviewcompass/evidence/review-runs/2026-06-14-postwrite-todo-r10-done/target.md: c0579866fcf5abf3adda40d47c6aa4d3d10dc56b352f5f922955c3dda9093f6c
+    TODO_NEXT_SESSION.md: 18dae2f9e1401a8f0df73513cf9c8372725d8b56bdb387d0aa7be911076f93d9
+review_run:
+  path: .reviewcompass/evidence/review-runs/2026-06-14-postwrite-todo-r10-done
+  summary_path: .reviewcompass/evidence/review-runs/2026-06-14-postwrite-todo-r10-done/model-result-summary.yaml
+notes: TODO_NEXT_SESSION.md の候補2完了反映の書き込み後検証。gemini-3.5-flash 1 体、所見0件。
