@@ -1,0 +1,4 @@
+run_id: 2026-06-13-todo-final-handoff-postwrite
+target_files:
+- path: TODO_NEXT_SESSION.md
+  sha256: ffcbe61c401096d1913b3bf6833f928d5a8367e9952edb8b1971e9636e4dfcca
