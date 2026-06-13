@@ -74,3 +74,38 @@ def test_default_cwd_keeps_backward_compatible_signature(tmp_path):
   cwa = _load_cwa()
   assert cwa.is_post_write_verification_target("docs/notes/nonexistent.md") is True
   assert cwa.is_post_write_verification_target("README.md") is False
+
+
+# (い) 機械が吐く捕捉物（ディレクトリ単位の対象外）
+
+def test_review_run_captures_are_not_target():
+  cwa = _load_cwa()
+  assert cwa.is_post_write_verification_target(
+    "docs/notes/review-runs/some-run/raw/gemini.round-1.txt") is False
+  assert cwa.is_post_write_verification_target(
+    "docs/experiments/review-runs/some-run/triage.yaml") is False
+
+
+def test_autonomous_parallel_ledger_is_not_target():
+  cwa = _load_cwa()
+  assert cwa.is_post_write_verification_target(
+    "docs/logs/autonomous-parallel/2026-06-04-trial.yaml") is False
+
+
+def test_post_write_verification_review_results_are_not_target():
+  cwa = _load_cwa()
+  assert cwa.is_post_write_verification_target(
+    "docs/notes/post-write-verification-review/result-google-gemini-r1.yaml") is False
+
+
+def test_compliance_reports_remain_target():
+  # G2 は監査記録として対象に残す（迷えば対象側）
+  cwa = _load_cwa()
+  assert cwa.is_post_write_verification_target(
+    "docs/discipline-compliance-reports/options-precheck-log.md") is True
+
+
+def test_design_notes_remain_target():
+  cwa = _load_cwa()
+  assert cwa.is_post_write_verification_target(
+    "docs/notes/2026-06-12-document-placement-plan.md") is True

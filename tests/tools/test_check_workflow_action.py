@@ -2794,7 +2794,6 @@ class NextNavigationTests(unittest.TestCase):
     target_paths = [
       "TODO_NEXT_SESSION.md",
       "docs/experiments/foo.md",
-      "docs/logs/autonomous-parallel/run.yaml",
       "docs/notes/foo.md",
       "docs/operations/foo.md",
       "docs/plan/foo.md",
@@ -2807,6 +2806,10 @@ class NextNavigationTests(unittest.TestCase):
       "docs/archive/foo.md",
       "docs/reviews/2026-06-02-impl-triad-review.md",
       "docs/reviews/audit-summary.md",
+      # (い) 機械が吐く捕捉物はディレクトリ単位で対象外（走行・再実行・再生成で担保）
+      "docs/logs/autonomous-parallel/run.yaml",
+      "docs/notes/review-runs/r1/raw/gemini.round-1.txt",
+      "docs/notes/post-write-verification-review/result-google-r1.yaml",
     ]
     for path in target_paths + non_target_paths:
       file_path = cwd / path

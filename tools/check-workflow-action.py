@@ -3887,6 +3887,15 @@ def is_post_write_verification_target(path, cwd="."):
   # 機械生成・出所明記の派生記録は性質上、独立検証ではなく再現性で担保するため対象外
   if _is_machine_generated_record(cwd, path):
     return False
+  # 機械が吐く捕捉物（API 生出力・parsed・triage、走行台帳、検証結果ログ）は、独立検証
+  # ではなく走行・再実行・再生成で担保するため対象外（性質ベース・ディレクトリ単位）。
+  # 新規分は .reviewcompass/evidence/ 配下へ置かれる（docs 配下は凍結旧配置）。
+  if (
+    "/review-runs/" in path
+    or path.startswith("docs/logs/autonomous-parallel/")
+    or path.startswith("docs/notes/post-write-verification-review/")
+  ):
+    return False
   if path.startswith("docs/archive/"):
     return False
   # ツール自身の実行ログは正本文書ではないため対象外
