@@ -525,6 +525,25 @@ def test_t012_cross_feature_exclusion_uses_path_components(tmp_path):
   assert all("specs/_cross_feature/conformance" not in reason for reason in result.reasons)
 
 
+def test_t012_freeze_guidance_readme_is_not_a_violation(tmp_path):
+  """凍結案内 README（P1 計画 8 番、PLC-DEC-009）は「記録」ではなく凍結違反としない"""
+  legacy_dir = tmp_path / ".reviewcompass" / "specs" / "billing" / "conformance"
+  legacy_dir.mkdir(parents=True)
+  (legacy_dir / "2026-06-01-check.md").write_text("type: conformance_evaluation\n", encoding="utf-8")
+  legacy_log_dir = tmp_path / "logs" / "estimation" / "frozen-run"
+  legacy_log_dir.mkdir(parents=True)
+  (legacy_log_dir / "prompt.log").write_text("frozen\n", encoding="utf-8")
+  _git(tmp_path, "init")
+  freeze_commit = _git_commit_all(tmp_path, "P1 placement switch")
+
+  (legacy_dir / "README.md").write_text("凍結案内\n", encoding="utf-8")
+  (tmp_path / "logs" / "estimation" / "README.md").write_text("凍結案内\n", encoding="utf-8")
+
+  verifier = MachineVerification(tmp_path)
+  assert verifier.check_record_freeze(freeze_commit=freeze_commit).status == VerificationStatus.OK
+  assert verifier.check_estimation_log_freeze(freeze_commit=freeze_commit).status == VerificationStatus.OK
+
+
 def test_t012_existing_prompt_logs_content_check(tmp_path):
   frozen_dir = tmp_path / "logs" / "estimation" / "frozen-run"
   frozen_dir.mkdir(parents=True)

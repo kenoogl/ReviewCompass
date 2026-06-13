@@ -1,0 +1,407 @@
+# 書き込み後検証対象（配置規約 P1 残作業 6〜8 番の文書変更、4 ファイル束。round-1 所見＝最終更新日の修正適用後）
+
+
+---
+
+## 対象ファイル: docs/logs/README.md
+
+# 凍結案内（この置き場への新規追加は行わない）
+
+- **凍結日**：2026-06-13（配置規約 P1 実装反映と同時。決定は PLC-DEC-009、2026-06-12）
+- **対象**：workflow 事前検査の判定ログ（workflow-precheck.log、gitignore 対象）
+- **新しい置き場**：`.reviewcompass/runtime/logs/workflow-precheck.log`
+- **凍結理由**：文書配置規約（`docs/notes/2026-06-12-document-placement-stage2-decisions.md`・
+  `docs/notes/2026-06-12-document-placement-stage4-migration.md`）により、証跡は evidence 区画・
+  実行時生成物は runtime 区画へ集約した。既存分はリンク切れを避けるため移動せず、この置き場で凍結保全する
+  （PLC-DEC-009「既存証跡は動かさない」）。
+- **読み取り互換**：旧パスの読み取りは最終形移行（P3、PLC-DEC-011）まで維持される。互換の終了は P3 の
+  専用 reopen で明示的に扱う（暗黙の終了はない）。
+- **検査**：この置き場への新規追加・変更は凍結違反として機械検出の対象になる（本 README 自身は凍結案内として対象外）。
+
+
+---
+
+## 対象ファイル: docs/notes/review-runs/README.md
+
+# 凍結案内（この置き場への新規追加は行わない）
+
+- **凍結日**：2026-06-13（配置規約 P1 実装反映と同時。決定は PLC-DEC-009、2026-06-12）
+- **対象**：API review-run の証跡（raw・parsed・triage・approval 等）
+- **新しい置き場**：`.reviewcompass/evidence/review-runs/<run-id>/`
+- **凍結理由**：文書配置規約（`docs/notes/2026-06-12-document-placement-stage2-decisions.md`・
+  `docs/notes/2026-06-12-document-placement-stage4-migration.md`）により、証跡は evidence 区画・
+  実行時生成物は runtime 区画へ集約した。既存分はリンク切れを避けるため移動せず、この置き場で凍結保全する
+  （PLC-DEC-009「既存証跡は動かさない」）。
+- **読み取り互換**：旧パスの読み取りは最終形移行（P3、PLC-DEC-011）まで維持される。互換の終了は P3 の
+  専用 reopen で明示的に扱う（暗黙の終了はない）。
+- **検査**：この置き場への新規追加・変更は凍結違反として機械検出の対象になる（本 README 自身は凍結案内として対象外）。
+
+
+---
+
+## 対象ファイル: docs/operations/INITIAL_SETUP_LLM_GUIDE.md
+
+# 初期設定 LLM 指示書
+
+最終更新：2026-06-13（§8 手順 5 の gitignore 除外を `.reviewcompass/runtime/` の 1 行へ簡素化。配置規約 P1 反映）
+
+本文書は、ReviewCompass 配布物を使って初期設定を行う LLM のための指示書である。利用者がターミナルで Python コマンドを直接実行する前提ではなく、LLM が必要な確認と設定を案内または代行する。
+
+関連する利用者向け説明は [INITIAL_DEPLOYMENT_USER_GUIDE.md](INITIAL_DEPLOYMENT_USER_GUIDE.md) を参照する。
+
+## 1. 役割
+
+あなたは ReviewCompass 初期設定を支援する LLM である。利用者に確認すべき点を平易に説明し、必要なファイル確認、設定作成、ReviewCompass ツール実行を代行する。
+
+初期設定では、次を守る。
+
+1. 対象アプリの既存ファイルを不用意に変更しない。
+2. 対象アプリに書き込む前に、書き込み先を利用者へ説明する。
+3. ReviewCompass 配布物ディレクトリと対象アプリ root を混同しない。
+4. API key、token、password などの秘密値をファイルへ書き込まない。
+5. 実行した確認、作成したファイル、残タスクを最後に報告する。
+
+## 2. 最初に確認すること
+
+利用者から次を確認する。
+
+| 項目 | 確認内容 |
+| --- | --- |
+| 起動パターン | パターン 1、2、3 のどれで進めるか。 |
+| 操縦 LLM | この設定作業と以後の運用をどの LLM で行うか（Claude Code か Codex CLI か。それ以外の LLM の場合は §11 のフォールバックに従う）。review-run の既定 variant 選択（§11）に使う。 |
+| ReviewCompass 配布物ディレクトリ | ReviewCompass の配布物が置かれている場所（絶対パス）。 |
+| 対象アプリ root | ReviewCompass を適用する対象アプリの root。未定なら対象アプリへは書き込まない。 |
+| 初期設定の範囲 | 配布物単体確認までか、対象アプリ側設定まで行うか。 |
+| API 秘密値の渡し方 | 環境変数など、配布物外の方法で渡すこと。 |
+| hook 導入 | commit／push の事前検査 hook を導入するか（強く推奨、§10）。見送る場合は利用者の明示判断として完了報告に記録する。 |
+
+不足している情報がある場合は、推測で進めず、利用者に確認する。
+
+## 3. パターン別の進め方
+
+### 3.1 パターン 1：ReviewCompass 配布物側で起動して対象アプリも設定する
+
+このパターンでは、現在の作業ディレクトリが ReviewCompass 配布物ディレクトリであることを確認する。対象アプリ root は利用者から指定される。
+
+進め方：
+
+1. ReviewCompass 配布物に `tools/`、`runtime/`、`templates/`、`config/api-settings.yaml` があることを確認する。
+2. 対象アプリ root が存在することを確認する。
+3. 対象アプリ root に `.reviewcompass/` があるか確認する。
+4. `.reviewcompass/` がなければ、作成前に利用者へ説明する。
+5. 対象アプリ側の設定テンプレートを作成または確認する。
+6. 入口の合流（§8）と hook 導入（§10、強く推奨）を行う。
+7. workflow next、review-run smoke、conformance-evaluation など、利用者が選んだ初期確認へ進む。
+
+### 3.2 パターン 2：対象アプリ側で起動して ReviewCompass 配布物を指定する
+
+このパターンでは、現在の作業ディレクトリが対象アプリ root であることを確認する。ReviewCompass 配布物ディレクトリは利用者から指定される。
+
+進め方：
+
+1. 現在のディレクトリが対象アプリ root か確認する。
+2. ReviewCompass 配布物ディレクトリに `tools/`、`runtime/`、`templates/`、`config/api-settings.yaml` があることを確認する。
+3. 対象アプリ root に `.reviewcompass/` があるか確認する。
+4. `.reviewcompass/` がなければ、作成前に利用者へ説明する。
+5. 対象アプリ側の `.reviewcompass/config.yaml` を作成または確認する。
+6. 入口の合流（§8）と hook 導入（§10、強く推奨）を行う。
+7. 配布済み ReviewCompass のツールを使い、対象アプリ側の workflow next を確認する（feature 未確定なら `feature_definition_required` の案内が返る。§9）。
+
+通常利用を始める場合は、このパターンを基本とする。
+
+### 3.3 パターン 3：配布物側だけ先に確認し、対象アプリ側設定は後で行う
+
+このパターンでは、まず ReviewCompass 配布物ディレクトリだけを確認する。対象アプリ root が未定、または利用者がまだ対象アプリへ書き込みたくない場合は、この範囲で止める。
+
+配布物側で確認すること：
+
+1. `tools/`、`runtime/`、`templates/`（入口・hook・feature-dependency の雛形を含む）、`config/api-settings.yaml` があること。
+2. `config/api-settings.yaml` に秘密値が含まれていないこと。
+3. `runtime/config/config.yaml.template` があること。
+4. `docs/operations/INITIAL_DEPLOYMENT_USER_GUIDE.md` と本文書があること。
+5. ReviewCompass の Python ツールを実行できる環境か確認すること。
+
+対象アプリが決まったら、対象アプリ root で新しい LLM セッションを立ち上げ、パターン 2 として初期設定を続ける。
+
+## 4. 対象アプリ側に作成または確認するもの
+
+対象アプリ側では、次を確認する。
+
+| パス | 扱い |
+| --- | --- |
+| `.reviewcompass/` | 対象アプリ側の ReviewCompass 作業領域。なければ作成候補。 |
+| `.reviewcompass/config.yaml` | 対象アプリ固有の設定。テンプレートから作成候補。 |
+| `.reviewcompass/specs/` | 仕様、設計、タスク、review-run 記録の置き場。 |
+| `.reviewcompass/AGENT_ENTRY.md` | LLM セッションの入口規律。テンプレートから実体化する（§8）。 |
+| `.reviewcompass/feature-dependency.yaml` | feature 一覧・開発順・依存の定義。feature-partitioning 承認後に作成する（§9）。 |
+| `CLAUDE.md`／`AGENTS.md` | 既存入口ファイルへの参照 1 行の追記（§8）。 |
+| `.claude/`／`.codex/` | commit／push 事前検査 hook と設定（§10、強く推奨）。 |
+
+既存の `.reviewcompass/` がある場合は、上書きせず、内容を確認してから進める。
+
+## 5. 秘密値の扱い
+
+`config/api-settings.yaml` や対象アプリ側の `.reviewcompass/config.yaml` に API key、token、password などを書き込まない。
+
+秘密値が必要な場合は、利用者に次のように説明する。
+
+```text
+API key は設定ファイルに書かず、環境変数など配布物外の方法で渡してください。
+この初期設定では、秘密値そのものは表示・保存しません。
+```
+
+## 6. 初期確認の最小セット
+
+対象アプリ側まで設定する場合は、最低限次を確認する。
+
+1. ReviewCompass 配布物ディレクトリを参照できる。
+2. 対象アプリ root に書き込みできる。
+3. 対象アプリ側の `.reviewcompass/` の作成または既存確認が済んでいる。
+4. 対象アプリ側の `.reviewcompass/config.yaml` の作成または既存確認が済んでいる。
+5. 入口の合流（§8）が済んでいる。
+6. workflow next を確認できる（feature 未確定の段階では `feature_definition_required` の案内が返ることを確認する）。
+7. review-run 記録の出力先を対象アプリ側に指定できる。
+
+## 7. 完了報告
+
+初期設定が終わったら、利用者へ次を報告する。
+
+1. 選択した起動パターンと操縦 LLM。
+2. ReviewCompass 配布物ディレクトリ。
+3. 対象アプリ root。
+4. 作成または変更した対象アプリ側ファイル。
+5. hook 導入の有無（見送った場合は、利用者の明示判断であることと理由）。
+6. 実行した確認。
+7. 未実施の確認。
+8. 次に行うべき作業。
+
+対象アプリへ何も書き込んでいない場合は、そのことを明示する。
+
+## 8. 入口の合流（AGENT_ENTRY の実体化と参照 1 行）
+
+対象アプリで複数の LLM（Claude Code、Codex CLI）を同じ規律で使うための入口を作る。
+
+1. 配布物の `templates/entry/AGENT_ENTRY.template.md` を、対象アプリの `.reviewcompass/AGENT_ENTRY.md` として実体化する。冒頭の記入欄（実体化日、実体化元の配布物）と §2 の「配布物の場所」（**絶対パス**）を記入する。
+2. 既存の入口ファイルへ、利用者承認のうえ参照 1 行を末尾に追記する。追記の前に、書き込み先・挿入する行・挿入位置を利用者へ提示する。書き込むのは次の枠内の文字列**だけ**である（枠外の説明文を書き込まない）。
+
+   `CLAUDE.md` へ追記する 1 行：
+
+   ```text
+   @.reviewcompass/AGENT_ENTRY.md
+   ```
+
+   `AGENTS.md` へ追記する 1 行：
+
+   ```text
+   ReviewCompass を使う作業では、最初に `.reviewcompass/AGENT_ENTRY.md` を読み、その規律に従う。
+   ```
+3. 入口ファイルが存在しない場合は、その 1 行だけの新規ファイルを作る（これも承認のうえ）。同じ行が既にある場合は何もしない。既存の記述は変更しない。
+4. 既存入口の規律と AGENT_ENTRY の規律が衝突している場合（例：既存入口が「commit は自動で実行してよい」と指示しているが、AGENT_ENTRY §5 は利用者の明示承認を求める、というように両立しない指示）は、作業を進めず利用者へ提示する。優先順位は自動で決めず、利用者判断で AGENT_ENTRY 側を調整する。
+5. 対象アプリの `.gitignore` へ、ReviewCompass ツールの実行時生成物の除外 1 行を利用者承認のうえ追記する（除外がないと、2 回目以降の `next` がツール自身の実行記録を未検証の文書変更として誤検出し、`post_write_verification` を返し続ける）。実行時生成物（検査ログ・effective prompt・commit 承認レコード）は `.reviewcompass/runtime/` 区画に集約されている（2026-06-12 配置規約 PLC-DEC-004 反映。旧 3 パスの個別除外は不要になった）。
+
+   ```text
+   .reviewcompass/runtime/
+   ```
+
+## 9. feature 一覧の立ち上げ
+
+対象アプリの workflow 管理は、`.reviewcompass/feature-dependency.yaml` の `feature_order` キーに基づいて動く。
+
+1. feature 一覧が未確定の段階では、`next` は `feature_definition_required` を返し、intent と feature-partitioning の実施を案内する。これはエラーではなく正常な立ち上げ状態である。
+2. feature-partitioning の提案には、機能ごとの依存の主張と理由、順序の導出を必須で含める（人が根拠を検討できるようにする）。
+3. 承認された分割結果を、配布物の `templates/specs/feature-dependency.yaml.template` から実体化した `.reviewcompass/feature-dependency.yaml` に記録する。依存される機能を先に並べる。
+4. `feature_order` が `depends_on` と矛盾する場合（依存先が後ろ、依存先が一覧にない、循環依存）、`next` は理由つきの逸脱を返す。
+
+## 10. hook 導入（強く推奨）
+
+commit／push の事前検査 hook を対象アプリへ導入する。LLM が規律を読み忘れても、不可逆操作だけは機械が止める防衛線になる。初期設定の標準手順として導入し、見送る場合は利用者の明示判断として完了報告に記録する。
+
+1. 配布物の `templates/hooks/pre-bash-precheck.sh.template` の 2 つのプレースホルダを**絶対パス**へ置換する。
+   - `{{REVIEWCOMPASS_PYTHON}}`：依存（PyYAML 等）導入済みの Python 実行系
+   - `{{REVIEWCOMPASS_DIR}}`：配布物 root
+2. 置換後のファイルを、対象アプリの `.claude/hooks/pre-bash-precheck.sh` と `.codex/hooks/pre-bash-precheck.sh` の両方へ同一内容で複製する。同名の既存ファイルがある場合は上書きせず、既存内容と置換後の内容を利用者へ提示して扱いを確認する。
+3. `templates/hooks/claude-settings.json.template` と `templates/hooks/codex-hooks.json.template` から、`.claude/settings.json` と `.codex/hooks.json` を作る。いずれも既存ファイルがある場合は上書きせず、hooks キーだけを既存へ合流させる（合流して書き込む内容を、書き込み前に利用者へ提示する）。
+4. 静的チェック：複製した 2 ファイルに未置換トークン（`{{`）が残っていないこと、置換先のパスが実在することを確認する。
+5. 復旧手順：hook が「hook 設定不備」を理由に拒否する場合は、プレースホルダの置換値を確認して再置換する（テンプレートから作り直してよい）。
+
+## 11. 操縦 LLM 別の既定 variant
+
+review-run の variant（モデルの組）は、起草者（操縦 LLM）と検証者の独立を保つため、操縦 LLM に応じた既定を使う。
+
+| 操縦 LLM | 3 役 review-run の既定 | 小規模 1 体検証の既定 |
+| --- | --- | --- |
+| Claude Code | 接尾辞なしの `*_independent_3way` 系 | `post_write_verification_google`（共通） |
+| Codex CLI | `*_independent_3way_codex_operator` 系 | 同上（共通） |
+
+proxy_model（人の判断を代行させる場合のモデル）も、操縦 LLM と別系列のモデルを選ぶ。
+
+上記以外の LLM で操縦する場合は、独断で進めず利用者に確認し、「起草者（操縦 LLM）と同系列のモデルを反証役・判定役・単独検証役に置かない」という独立性の原則に従って variant を選ぶ。その操縦 LLM 向けの既定 variant の追加は、第3者配布時の再検討事項とする。
+
+
+---
+
+## 対象ファイル: docs/operations/WORKFLOW_NAVIGATION.md
+
+# ReviewCompass ワークフローナビゲータ共通手引き
+
+この文書は、`tools/check-workflow-action.py next --json` の読み方を定める共通手引きである。
+
+## 1. 最初に実行するコマンド
+
+作業を始める前、または次に何をするかを提案する前に、必ず次を実行する。
+
+```bash
+python3 tools/check-workflow-action.py next --json
+```
+
+出力 JSON の `next_action.kind` を、現在の作業順序・優先順位の正本として扱う。記憶、要約、TODO の候補欄だけを段取りの根拠にしない。
+
+`next_action.required_disciplines` がある場合は、作業直前にそのファイルだけを読む。セッション開始時に長い規律群を一括で読んで記憶に頼るのではなく、機械判定された場面ごとの短い規律セットで挙動を調整する。対応表は `docs/operations/WORKFLOW_DISCIPLINE_MAP.yaml` を正本とし、`next --json` はその内容を機械可読に展開する。
+
+`next_action.required_inputs` がある場合は、規律ではなく作業対象ごとの状態入力として扱う。`id`、`source_type`、`read_policy` を確認し、`path` がある場合でもファイル名そのものを一般規律に昇格しない。たとえば持ち越し台帳は、配布先プロジェクトごとに別ファイル、外部台帳、または未配置になり得るため、`unresolved_cross_scope_items` のような抽象入力として扱う。
+
+機械可読な判定点では、判定点ごとに 1 本の effective prompt を読む。複数の元資料を直接ばらばらに読ませるのではなく、判定点に必要な規律・入力・次タスク方針を 1 本へ束ねた effective prompt を作り、その本文を LLM に読ませる。元資料は `prompt_source_refs` として保持し、実際に読ませた統合プロンプトは `effective_prompt_path`、`effective_prompt_sha256`、`effective_prompt_loaded` で記録する。全判定点で同じ巨大な共通プロンプトを使わず、各判定点に必要な短い effective prompt を使う。
+
+## 2. 判定結果の共通分岐
+
+<a id="resume_in_progress"></a>
+
+### `resume_in_progress`
+
+`stages/in-progress/` に進行中手続きがある。新しい作業を始めず、`next_action.file` に示された進行中ファイルを読む。
+
+<a id="reopen_in_progress"></a>
+
+### `reopen_in_progress`
+
+reopen 手続きが進行中である。通常ワークフローや post-write-verification より優先する。`next_action.file`、`next_step`、`completed_steps`、`pending_gates`、`current_blocker`、`required_action` を確認し、`required_action` に従う。
+
+代表的な `required_action`：
+
+- `classify_and_rollback_flags`：第1過程。種別判定、根拠記録、進行中ファイル発行、spec.json フラグ差し戻し。
+- `repair_canonical_documents`：第2過程。上流フェーズの正本文書修正。
+- `rerun_alignment_approval_chain`：第3過程。`pending_gates` に従う alignment / approval の連鎖再実施。
+- `run_reopen_drafting`：第3過程。`next_pending_gate` が triad-review でも、同じ phase の drafting 完了が `drafting_completed_gates` または `completed_gates` に記録されていないため、先に正本文書を更新する。`next_drafting_gate`、`phase`、`stage: drafting`、`required_feature_scope` を確認し、レビューを開始しない。
+- `run_reopen_pending_gate`：第3過程。drafting 完了記録がある、または次 gate が triad-review 以外であるため、`next_pending_gate` の gate を実行する。
+- `wait_for_human_approval`：人間承認待ち。承認なしに進めない。
+- `finalize_reopen`：第4過程。最終確認、recheck クリア、in-progress の完了処理。
+- `inspect_reopen_state`：判定不能。推測で進めず利用者へ報告する。
+
+<a id="maintenance_in_progress"></a>
+
+### `maintenance_in_progress`
+
+通常ワークフローではなく、ワークフロー制御・運用規律・検査器などの保守作業が進行中である。`next_action.file` を読み、`required_action`、`allowed_scope`、`completion_conditions` に従う。通常の `stage` や `upstream_recheck` へ戻るのは、maintenance の完了条件を満たし、進行中ファイルを `stages/completed/` へ移してからである。
+
+`next_action` と異なる作業へ入る場合、または `next` 判定自体の欠陥を直す場合は、ファイル編集前に `stages/in-progress/maintenance-<日付>-<短い名前>.yaml` を作成する。少なくとも `trigger`、`mainline_blocked_by`、`allowed_scope`、`allowed_files`、`completion_conditions` を記録し、side track であることを明示する。これを省略すると、本筋の作業順序を守るための修復作業自体が、記録されない手順逸脱になる。
+
+### `reopen_classification_required`
+
+完了済み workflow で、`intent`、feature-partitioning、`requirements`、`design`、`tasks` などの上流正本が後続成果物より新しい。単なる再確認として下流へ進めず、意味変更の有無と reopen 種別を分類する。`next_action.reopen_trigger` が候補を示す場合も、分類根拠を保存して `reopen-start` へ進む。
+
+<a id="post_write_verification"></a>
+
+### `post_write_verification`
+
+書き込み後検証の対象となる未コミット変更がある。通常ワークフローへ進まず、`next_action.target_files` 全体を対象として検証する。
+
+検証 manifest は `.reviewcompass/post-write-verification/*.yaml` に置く。`target_files`、`target_sha256`、`required_verifiers`、`completed_verifiers`、`unresolved_substantive_findings` を記録する。`verifications[]` がある場合、各 verifier は `target_files` 全体と対応する `target_sha256` を単一エントリで覆る必要がある。ファイルごとの分業は独立多重チェックではない。
+
+API 経由の複数モデル検証を行う場合の標準手順：
+
+```bash
+python3 tools/api_providers/run_review.py \
+  --variant post_write_verification_google \
+  --target <target-file> \
+  --phase post_write_verification \
+  --criteria <criteria-id> \
+  --review-run-dir .reviewcompass/evidence/review-runs/<run-id>
+
+python3 tools/api_providers/review_triage.py list-pending \
+  --review-run-dir .reviewcompass/evidence/review-runs/<run-id>
+
+python3 tools/api_providers/review_triage.py decide \
+  --review-run-dir .reviewcompass/evidence/review-runs/<run-id> \
+  --finding-id <finding-id> \
+  --final-label must-fix \
+  --decision-reason "<reason>" \
+  --decision-actor human \
+  --approval-record .reviewcompass/evidence/review-runs/<run-id>/approval.yaml
+
+python3 tools/api_providers/review_triage.py write-manifest \
+  --review-run-dir .reviewcompass/evidence/review-runs/<run-id> \
+  --out auto \
+  --approval-record .reviewcompass/evidence/review-runs/<run-id>/approval.yaml
+
+python3 tools/check-workflow-action.py next --json
+```
+
+`post_write_verification` では API 経路の variant を明示する。小規模既定は `--variant post_write_verification_google`、大規模または 3 系統検証が必要な場合は `--variant <post-write-api-variant>` として、`config/api-settings.yaml` の `context: post_write_verification` かつ API provider だけで構成された variant を選ぶ。CLI 経路を含む default variant に暗黙フォールバックしてはいけない。
+
+API レビュー結果を得た場合は、raw 参照、モデル別要約、三段階トリアージ（`must-fix`／`should-fix`／`leave-as-is`）を利用者へまとめて提示する。`ERROR`／`CRITICAL` または最終判断 `must-fix` の重要件を `decide` する場合、または重要件を含む run から manifest を生成する場合は、承認を記録した `--approval-record` が必須である。承認レコードには `approved_by: user` または `approved_by: proxy_model`、`review_run_id`、`summary_presented_to_user: true`、`triage_presented_to_user: true`、`approved_finding_ids`、必要に応じて `approved_final_labels` を含める。`approved_by: proxy_model` の場合は、`proxy_model_id` と finding ごとの `proxy_decisions` を含め、各 decision file が raw response、候補案、採用案、判断理由、最終ラベルを保持する。
+
+`write-manifest --out auto` は `.reviewcompass/post-write-verification/post-write-YYYY-MM-DD-NNN.yaml` の次番号を作る。`triage.yaml` に `decision_status: human_required` が残る場合、または重要件の利用者承認が確認できない場合は manifest を生成しない。
+
+<a id="post_write_policy_violation"></a>
+
+### `post_write_policy_violation`
+
+post-write-verification pending 中に禁止変更がある。通常ワークフローへ進まず、`next_action.forbidden_files` を報告して停止する。禁止ファイルを勝手に削除・修正してはいけない。
+
+現行実装では、post-write-verification 対象ファイルが未コミット変更に含まれる状態で、`tools/*.py`、`templates/`、または他の post-write 対象と混ざった `docs/disciplines/` 配下の変更があると逸脱になる。
+
+<a id="post_write_human_decision_required"></a>
+
+### `post_write_human_decision_required`
+
+manifest に未解決の本質的指摘がある。通常ワークフローへ戻らず、`next_action.target_files` と `next_action.manifest` を確認し、利用者判断を待つ。
+
+### `stage`
+
+通常ワークフロー上の次タスクが決まっている。`feature`、`phase`、`stage` の示す作業だけを扱う。
+
+`stage` が `triad-review` の場合、review-run の開始前に使用 variant と role ごとの path／provider／model を確定し、曖昧なまま開始しない。API review-run 完了後は、proxy_model 判断依頼、実装修正、spec.json 更新、フェーズ移行のいずれにも進む前に、raw 参照、モデル別要約、同根所見クラスタ、`must-fix`／`should-fix`／`leave-as-is` の三段階トリアージ案、重要件の平易な説明を利用者へ提示して停止する。詳細手順は `docs/operations/SESSION_WORKFLOW_GUIDE.md#3.3-a-2` を正本とする。
+
+### `cross_feature_stage`
+
+機能横断段に進む。`feature` は `all_features` になる。`recheck_items` がある場合は上流変更の織り込みを含める。`required_inputs` に `unresolved_cross_scope_items` があり、`unresolved_count` が 0 より大きい場合は、`read_policy` に従って未消化の持ち越し所見だけを確認する。ReviewCompass では互換情報として `pending_cross_feature_findings` も返るが、一般化された判断根拠は `required_inputs` とする。
+
+自律・並列で機能横断段を試行する場合は、通常の review-wave 完了判定に入る前に `autonomous-plan` を作成し、`tools/check-workflow-action.py autonomous-plan <plan.yaml>` で検査する。計画には `recheck_items` と `stages/feature-dependency.yaml` から分かる依存を明示し、上流 recheck 対象を下流判断より先に置く。同じ worktree で並列化してよいのは読取調査または差分を残さない確認に限る。新しい依存、暗黙依存、未記録依存、または上流 recheck の下流反映が必要だと分かった場合、その作業単位は停止し、機能横断段の実施記録に blocked として記録してから統合判断へ戻す。
+
+機能横断段の実施記録は、単一 feature 配下に置かず `.reviewcompass/specs/_cross_feature/reviews/` に置く。標準ファイル名は `.reviewcompass/specs/_cross_feature/reviews/{date}-{phase}-{stage}.md` とし、`feature: all_features`、対象 phase/stage、確認した feature 範囲、持ち越し件数、recheck 結果、実行した検証コマンド、判断結果を記録する。`_cross_feature` は実 feature ではなく、横断段成果物だけの名前空間である。
+
+### `upstream_recheck`
+
+完了済み workflow であっても、上流成果物が下流成果物より新しいため、下流へ進む前に再確認が必要である。`upstream_phase`、`phase`、`stage` を確認し、`phase.stage` に示された作業を次作業として扱う。たとえば intent 更新後は feature-partitioning の確認、requirements 更新後は design の再確認、tasks 更新後は implementation の再確認を先に行う。
+
+この kind が返った場合、記憶や直前の会話から requirements、design、tasks、implementation へ飛ばない。必ず `next_action.phase` と `next_action.stage` に従い、上流から下流へ順に反映する。
+
+<a id="feature_definition_required"></a>
+
+### `feature_definition_required`
+
+feature 一覧が解決できない（`feature-dependency.yaml` が見つからない、または `feature_order` キーが未定義）。対象アプリの初期状態で発生する。エラーではない（verdict OK）。
+
+`next_action.reason`（立ち上げ案内の本文）と `current_state.feature_dependency_source`（解決元）を確認する。`feature_dependency_source` が null ならファイル自体が探索順（`.reviewcompass/feature-dependency.yaml` → `stages/feature-dependency.yaml` → `feature-dependency.yaml`）のどこにも存在せず、ファイルパスが入っていればそのファイルはあるが `feature_order` キーが未定義または不正である。前者は分割結果の記録から、後者は既存ファイルへの `feature_order` キーの追記から始める。
+
+新しい作業を始めず、intent と feature-partitioning を実施し、承認された分割結果（機能ごとの依存の主張と理由、順序の導出を含む）を `.reviewcompass/feature-dependency.yaml` の `feature_order` キーに記録する。記録後に `next` を再実行する。feature 立ち上げの手順は `docs/operations/INITIAL_SETUP_LLM_GUIDE.md` を正本とする。
+
+なお、`feature_order` と `depends_on` の整合違反（依存される機能が先に並んでいない、循環依存がある）は本 kind ではなく `unknown`／DEVIATION（fail-closed）になる。理由に従って `feature-dependency.yaml` を修正する。
+
+### `completed`
+
+全 workflow_state が完了している。通常の次タスクはない。
+
+### `unknown`
+
+状態判定できない。推測で進めず、`reasons` と `current_state` を利用者へ報告する。
+
+## 3. 共通禁止事項
+
+- `next` を実行せずに次作業を提案しない。
+- `resume_in_progress`、`reopen_in_progress`、`post_write_verification`、`post_write_policy_violation`、`post_write_human_decision_required` を通常ワークフローより後回しにしない。
+- `reopen_classification_required` を「再確認で足りる」と独断して下流成果物を更新しない。
+- `next_action` と異なる side track に入る場合、または `next` 判定自体を修復する場合は、maintenance in-progress を作らずに編集を始めない。
+- spec.json の workflow_state 変更、commit、push は不可逆操作として扱い、対応する precheck サブコマンドを実行する。
+- 検証者は `target_files` 全体を見る。ファイルごとの分業を独立多重チェックとして扱わない。
+- 本質的指摘を独断で逐語的指摘に落とさない。迷う場合は利用者へ上げる。

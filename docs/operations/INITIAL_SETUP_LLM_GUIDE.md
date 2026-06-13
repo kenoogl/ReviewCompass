@@ -1,6 +1,6 @@
 # 初期設定 LLM 指示書
 
-最終更新：2026-06-10（初期デプロイ時に LLM へ渡す指示）
+最終更新：2026-06-13（§8 手順 5 の gitignore 除外を `.reviewcompass/runtime/` の 1 行へ簡素化。配置規約 P1 反映）
 
 本文書は、ReviewCompass 配布物を使って初期設定を行う LLM のための指示書である。利用者がターミナルで Python コマンドを直接実行する前提ではなく、LLM が必要な確認と設定を案内または代行する。
 
@@ -154,12 +154,10 @@ API key は設定ファイルに書かず、環境変数など配布物外の方
    ```
 3. 入口ファイルが存在しない場合は、その 1 行だけの新規ファイルを作る（これも承認のうえ）。同じ行が既にある場合は何もしない。既存の記述は変更しない。
 4. 既存入口の規律と AGENT_ENTRY の規律が衝突している場合（例：既存入口が「commit は自動で実行してよい」と指示しているが、AGENT_ENTRY §5 は利用者の明示承認を求める、というように両立しない指示）は、作業を進めず利用者へ提示する。優先順位は自動で決めず、利用者判断で AGENT_ENTRY 側を調整する。
-5. 対象アプリの `.gitignore` へ、ReviewCompass ツールの実行時生成物の除外 3 行を利用者承認のうえ追記する（除外がないと、2 回目以降の `next` がツール自身の実行記録を未検証の文書変更として誤検出し、`post_write_verification` を返し続ける）。
+5. 対象アプリの `.gitignore` へ、ReviewCompass ツールの実行時生成物の除外 1 行を利用者承認のうえ追記する（除外がないと、2 回目以降の `next` がツール自身の実行記録を未検証の文書変更として誤検出し、`post_write_verification` を返し続ける）。実行時生成物（検査ログ・effective prompt・commit 承認レコード）は `.reviewcompass/runtime/` 区画に集約されている（2026-06-12 配置規約 PLC-DEC-004 反映。旧 3 パスの個別除外は不要になった）。
 
    ```text
-   docs/logs/workflow-precheck.log
-   .reviewcompass/effective-prompts/
-   .reviewcompass/approvals/commit-approval.json
+   .reviewcompass/runtime/
    ```
 
 ## 9. feature 一覧の立ち上げ

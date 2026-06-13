@@ -180,6 +180,10 @@ exclude:
     reason: ReviewCompass development review evidence.
   - path: .reviewcompass/specs/*/conformance/**
     reason: ReviewCompass development conformance evidence.
+  - path: .reviewcompass/evidence/**
+    reason: ReviewCompass development evidence compartment (review runs, conformance records, estimation logs).
+  - path: .reviewcompass/runtime/**
+    reason: Runtime artifacts compartment (precheck log, effective prompts, commit approval record).
   - path: .reviewcompass/specs/_cross_feature/**
     reason: ReviewCompass internal cross-feature evidence.
   - path: docs/notes/**

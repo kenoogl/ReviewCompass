@@ -1,0 +1,44 @@
+status: completed
+target_files:
+- .reviewcompass/evidence/review-runs/2026-06-13-p1-remaining-docs-postwrite/target.md
+- .reviewcompass/specs/conformance-evaluation/conformance/README.md
+- .reviewcompass/specs/workflow-management/conformance/README.md
+- docs/logs/README.md
+- docs/notes/review-runs/README.md
+- docs/operations/INITIAL_SETUP_LLM_GUIDE.md
+- docs/operations/WORKFLOW_NAVIGATION.md
+target_sha256:
+  .reviewcompass/evidence/review-runs/2026-06-13-p1-remaining-docs-postwrite/target.md: c86680b90154ce1fb1806ec4b66c15e52dee9516da569ab99665365db56daa89
+  .reviewcompass/specs/conformance-evaluation/conformance/README.md: 01d95d9433aadf3ab22ffbae2d85892a95408697d7a83c45645aa5e783391976
+  .reviewcompass/specs/workflow-management/conformance/README.md: 7261569e592f2700835e86fc9776c8213cc012a874d8aa171ef532813f4dd9be
+  docs/logs/README.md: ea4c97ca7d9b01721eadd7efc0ba5ead0e0a77567fac7fb6fc20990920af141e
+  docs/notes/review-runs/README.md: a0b84d9ab2b92e2c3a7f4fcc4cca49e11d87c34373be73bb7d1d09be0e12d13a
+  docs/operations/INITIAL_SETUP_LLM_GUIDE.md: b708286eff555808a50db7a1de5b6a7bc5d5e8150ef4f3f9bffe2f819e6ae960
+  docs/operations/WORKFLOW_NAVIGATION.md: 1091e2458174647ed4bf935257df7d1c0e8f94858be25948679f76c38f25dd8b
+required_verifiers: &id001
+- gemini-3.5-flash
+completed_verifiers: *id001
+unresolved_substantive_findings: 0
+verifications:
+- verifier: gemini-3.5-flash
+  target_files:
+  - .reviewcompass/evidence/review-runs/2026-06-13-p1-remaining-docs-postwrite/target.md
+  - .reviewcompass/specs/conformance-evaluation/conformance/README.md
+  - .reviewcompass/specs/workflow-management/conformance/README.md
+  - docs/logs/README.md
+  - docs/notes/review-runs/README.md
+  - docs/operations/INITIAL_SETUP_LLM_GUIDE.md
+  - docs/operations/WORKFLOW_NAVIGATION.md
+  target_sha256:
+    .reviewcompass/evidence/review-runs/2026-06-13-p1-remaining-docs-postwrite/target.md: c86680b90154ce1fb1806ec4b66c15e52dee9516da569ab99665365db56daa89
+    .reviewcompass/specs/conformance-evaluation/conformance/README.md: 01d95d9433aadf3ab22ffbae2d85892a95408697d7a83c45645aa5e783391976
+    .reviewcompass/specs/workflow-management/conformance/README.md: 7261569e592f2700835e86fc9776c8213cc012a874d8aa171ef532813f4dd9be
+    docs/logs/README.md: ea4c97ca7d9b01721eadd7efc0ba5ead0e0a77567fac7fb6fc20990920af141e
+    docs/notes/review-runs/README.md: a0b84d9ab2b92e2c3a7f4fcc4cca49e11d87c34373be73bb7d1d09be0e12d13a
+    docs/operations/INITIAL_SETUP_LLM_GUIDE.md: b708286eff555808a50db7a1de5b6a7bc5d5e8150ef4f3f9bffe2f819e6ae960
+    docs/operations/WORKFLOW_NAVIGATION.md: 1091e2458174647ed4bf935257df7d1c0e8f94858be25948679f76c38f25dd8b
+review_run:
+  path: .reviewcompass/evidence/review-runs/2026-06-13-p1-remaining-docs-postwrite
+  summary_path: .reviewcompass/evidence/review-runs/2026-06-13-p1-remaining-docs-postwrite/model-result-summary.yaml
+notes: Generated template; verify target_files cover current post-write targets before
+  use.

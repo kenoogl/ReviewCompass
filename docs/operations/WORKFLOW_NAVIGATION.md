@@ -71,23 +71,23 @@ python3 tools/api_providers/run_review.py \
   --target <target-file> \
   --phase post_write_verification \
   --criteria <criteria-id> \
-  --review-run-dir docs/notes/review-runs/<run-id>
+  --review-run-dir .reviewcompass/evidence/review-runs/<run-id>
 
 python3 tools/api_providers/review_triage.py list-pending \
-  --review-run-dir docs/notes/review-runs/<run-id>
+  --review-run-dir .reviewcompass/evidence/review-runs/<run-id>
 
 python3 tools/api_providers/review_triage.py decide \
-  --review-run-dir docs/notes/review-runs/<run-id> \
+  --review-run-dir .reviewcompass/evidence/review-runs/<run-id> \
   --finding-id <finding-id> \
   --final-label must-fix \
   --decision-reason "<reason>" \
   --decision-actor human \
-  --approval-record docs/notes/review-runs/<run-id>/approval.yaml
+  --approval-record .reviewcompass/evidence/review-runs/<run-id>/approval.yaml
 
 python3 tools/api_providers/review_triage.py write-manifest \
-  --review-run-dir docs/notes/review-runs/<run-id> \
+  --review-run-dir .reviewcompass/evidence/review-runs/<run-id> \
   --out auto \
-  --approval-record docs/notes/review-runs/<run-id>/approval.yaml
+  --approval-record .reviewcompass/evidence/review-runs/<run-id>/approval.yaml
 
 python3 tools/check-workflow-action.py next --json
 ```

@@ -142,6 +142,7 @@ class MachineVerification:
 
     git ls-tree はワイルドカードを解釈しないため、木全体を列挙して Python 側で絞り込む。
     未追跡の列挙に --exclude-standard を付けない（ignore された旧配置追加も凍結違反として検出する）。
+    凍結案内 README（P1 計画 8 番、PLC-DEC-009）は「記録」ではないため検出対象外とする。
     """
     frozen = self._matching(pattern, "ls-tree", "-r", "--name-only", freeze_commit)
     tracked = self._matching(pattern, "ls-files")
@@ -155,7 +156,11 @@ class MachineVerification:
     )
 
   def _matching(self, pattern: re.Pattern, *args) -> set:
-    return {line for line in self._git_lines(*args) if pattern.match(line)}
+    return {
+      line
+      for line in self._git_lines(*args)
+      if pattern.match(line) and not line.endswith("/README.md")
+    }
 
   def _git_lines(self, *args) -> list:
     result = subprocess.run(

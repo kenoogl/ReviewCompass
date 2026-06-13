@@ -28,6 +28,8 @@ REQUIRED_EXCLUDES = {
   ".reviewcompass/approvals/**",
   ".reviewcompass/specs/*/reviews/**",
   ".reviewcompass/specs/*/conformance/**",
+  ".reviewcompass/evidence/**",
+  ".reviewcompass/runtime/**",
   "docs/notes/**",
   "tools/experiments/**",
   "tools/**/tests/**",
