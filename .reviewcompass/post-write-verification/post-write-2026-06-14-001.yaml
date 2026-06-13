@@ -1,0 +1,23 @@
+status: completed
+target_files:
+- .reviewcompass/evidence/review-runs/2026-06-14-postwrite-reopen-classification-r10/target.md
+- docs/reviews/reopen-classification-2026-06-14-wm-review-wave-summary-command.md
+target_sha256:
+  .reviewcompass/evidence/review-runs/2026-06-14-postwrite-reopen-classification-r10/target.md: 7810aec93f5b6ab546f54bc826a108000a585edb909fdaeafdfc43473e8ca8dc
+  docs/reviews/reopen-classification-2026-06-14-wm-review-wave-summary-command.md: 72c05d0ea94db81a6d4f106b8c0952919da0c98bd754ecafc8221f407988191a
+required_verifiers: &id001
+- gemini-3.5-flash
+completed_verifiers: *id001
+unresolved_substantive_findings: 0
+verifications:
+- verifier: gemini-3.5-flash
+  target_files:
+  - .reviewcompass/evidence/review-runs/2026-06-14-postwrite-reopen-classification-r10/target.md
+  - docs/reviews/reopen-classification-2026-06-14-wm-review-wave-summary-command.md
+  target_sha256:
+    .reviewcompass/evidence/review-runs/2026-06-14-postwrite-reopen-classification-r10/target.md: 7810aec93f5b6ab546f54bc826a108000a585edb909fdaeafdfc43473e8ca8dc
+    docs/reviews/reopen-classification-2026-06-14-wm-review-wave-summary-command.md: 72c05d0ea94db81a6d4f106b8c0952919da0c98bd754ecafc8221f407988191a
+review_run:
+  path: .reviewcompass/evidence/review-runs/2026-06-14-postwrite-reopen-classification-r10
+  summary_path: .reviewcompass/evidence/review-runs/2026-06-14-postwrite-reopen-classification-r10/model-result-summary.yaml
+notes: reopen 分類記録（R-0、review-wave 要約コマンド）の書き込み後検証。variant post_write_verification_google、gemini-3.5-flash 1 体。所見0件（no_findings）。

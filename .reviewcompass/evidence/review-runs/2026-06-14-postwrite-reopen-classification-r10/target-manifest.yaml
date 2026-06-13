@@ -1,0 +1,4 @@
+run_id: 2026-06-14-postwrite-reopen-classification-r10
+target_files:
+- path: .reviewcompass/evidence/review-runs/2026-06-14-postwrite-reopen-classification-r10/target.md
+  sha256: 7810aec93f5b6ab546f54bc826a108000a585edb909fdaeafdfc43473e8ca8dc
