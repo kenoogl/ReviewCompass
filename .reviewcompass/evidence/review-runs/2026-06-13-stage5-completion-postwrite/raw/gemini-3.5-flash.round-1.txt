@@ -1,0 +1,9 @@
+findings:
+  - severity: WARN
+    target_location: "docs/notes/2026-06-12-document-placement-plan.md"
+    description: "ドキュメントのフロントマターにおける 'status' が 'in_progress' のまま更新されていません。"
+    rationale: "計画の第5段階（最終段階）が本文中で「完了」に更新され、他ファイルでも段階5の完了が宣言されているため、計画書全体のステータスも完了を示す値（'completed' など）に更新されるべきです。"
+  - severity: INFO
+    target_location: "TODO_NEXT_SESSION.md"
+    description: "配布前 smoke コマンドの引数にプレースホルダー '<root>' が残っています。"
+    rationale: "「--smoke-external-app-root <root>」と表記されていますが、検証に使用した具体的なパスを記述するか、あるいは汎用的な例示であることを明記する方が親切です。"

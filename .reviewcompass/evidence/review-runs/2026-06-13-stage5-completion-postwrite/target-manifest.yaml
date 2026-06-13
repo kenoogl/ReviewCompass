@@ -1,0 +1,4 @@
+run_id: 2026-06-13-stage5-completion-postwrite
+target_files:
+- path: .reviewcompass/evidence/review-runs/2026-06-13-stage5-completion-postwrite/target.md
+  sha256: 40b964e70509b7cf0f2a3dea0ce93b0a7796a66e4d9bd645c1ddf5c18bf9b57f
