@@ -20,6 +20,17 @@
           }
         ]
       }
+    ],
+    "SessionEnd": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/session-record-capture.sh",
+            "timeout": 60
+          }
+        ]
+      }
     ]
   }
 }

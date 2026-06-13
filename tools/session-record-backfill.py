@@ -17,6 +17,7 @@
   python3 tools/session-record-backfill.py --dry-run  # 生成せず対象と件数だけ表示
 """
 import argparse
+import json
 import os
 import subprocess
 import sys
@@ -62,6 +63,23 @@ def _tool_version():
     return "unknown"
 
 
+def _detect_source(lines):
+  """先頭の解析可能な行から claude / codex を判定する（--session の auto 用）。"""
+  for line in lines:
+    line = line.strip()
+    if not line:
+      continue
+    try:
+      obj = json.loads(line)
+    except json.JSONDecodeError:
+      continue
+    if obj.get("type") in ("session_meta", "response_item", "event_msg", "turn_context"):
+      return "codex"
+    if obj.get("type") in ("user", "assistant", "system", "summary"):
+      return "claude"
+  return "claude"
+
+
 def _process(path, source, lines, tool_version):
   if source == "codex":
     meta, events = parse_codex_session(lines)
@@ -94,20 +112,46 @@ def main():
   parser.add_argument("--claude-dir", default=DEFAULT_CLAUDE_DIR)
   parser.add_argument("--codex-root", default=DEFAULT_CODEX_ROOT)
   parser.add_argument("--repo-path", default=DEFAULT_REPO_PATH)
+  parser.add_argument("--session",
+                      help="単一セッションのみ取り込む（jsonl パス）。"
+                           "利用時フックからの going-forward 取り込みに使う")
+  parser.add_argument("--source", choices=["auto", "claude", "codex"], default="auto",
+                      help="--session のソース種別（既定 auto で自動判定）")
+  parser.add_argument("--evidence-dir", default=str(EVIDENCE_SESSIONS),
+                      help="層1（整形済み転写）の出力先ディレクトリ")
+  parser.add_argument("--docs-dir", default=str(DOCS_SESSIONS),
+                      help="層2（人が読む記録）の出力先ディレクトリ")
   parser.add_argument("--dry-run", action="store_true",
                       help="生成せず対象と件数だけ表示する")
   args = parser.parse_args()
 
-  claude = [("claude", p) for p in discover_claude_sessions(args.claude_dir)]
-  codex = [("codex", p) for p in discover_codex_sessions(args.codex_root, args.repo_path)]
-  targets = claude + codex
-  print(f"対象: Claude {len(claude)} 件・Codex {len(codex)} 件・計 {len(targets)} 件")
+  evidence_dir = Path(args.evidence_dir)
+  docs_dir = Path(args.docs_dir)
+
+  if args.session:
+    spath = Path(args.session)
+    if not spath.exists():
+      print(f"エラー: 入力が存在しません: {spath}", file=sys.stderr)
+      return 1
+    with open(spath, encoding="utf-8", errors="replace") as f:
+      head = f.readlines()
+    source = args.source if args.source != "auto" else _detect_source(head)
+    targets = [(source, spath)]
+    # 再現性チェックは当該セッションが置かれたディレクトリを引用元として探す
+    src_dirs = [str(spath.parent)]
+    print(f"対象: 単一セッション 1 件（source={source}）")
+  else:
+    claude = [("claude", p) for p in discover_claude_sessions(args.claude_dir)]
+    codex = [("codex", p) for p in discover_codex_sessions(args.codex_root, args.repo_path)]
+    targets = claude + codex
+    src_dirs = [args.claude_dir, args.codex_root]
+    print(f"対象: Claude {len(claude)} 件・Codex {len(codex)} 件・計 {len(targets)} 件")
 
   if args.dry_run:
     return 0
 
-  EVIDENCE_SESSIONS.mkdir(parents=True, exist_ok=True)
-  DOCS_SESSIONS.mkdir(parents=True, exist_ok=True)
+  evidence_dir.mkdir(parents=True, exist_ok=True)
+  docs_dir.mkdir(parents=True, exist_ok=True)
   tool_version = _tool_version()
 
   written = 0
@@ -122,8 +166,8 @@ def main():
       skipped.append((Path(path).name, findings[:3]))
       continue
     base = f"{date}-{source}-{uid}"
-    tpath = EVIDENCE_SESSIONS / f"{base}.md"
-    rpath = DOCS_SESSIONS / f"auto-{base}.md"
+    tpath = evidence_dir / f"{base}.md"
+    rpath = docs_dir / f"auto-{base}.md"
     tpath.write_text(transcript, encoding="utf-8")
     rpath.write_text(record, encoding="utf-8")
     written_files += [tpath, rpath]
@@ -134,7 +178,6 @@ def main():
     print(f"  飛ばし: {name} :: {fs}")
 
   # 再現性チェック：引用元から再生成して 1 バイト一致を確認する
-  src_dirs = [args.claude_dir, args.codex_root]
   counts = {"ok": 0, "mismatch": 0, "source_unavailable": 0, "no_provenance": 0}
   bad = []
   for fp in written_files:

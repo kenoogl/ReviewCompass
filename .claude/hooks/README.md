@@ -45,6 +45,32 @@ Claude Code のフック機構（PreToolUse 等）に登録するスクリプト
 
 **登録**：`.claude/settings.json` の `hooks.PreToolUse` セクションに matcher = `"Bash"` で登録済み。
 
+### `session-record-capture.sh`（会話ログ自動保持、SessionEnd hook）
+
+**役割**：Claude のセッション終了時に発火し、当該セッションの会話ログ（jsonl）を 2 層のセッション記録（層1＝整形済み転写 `.reviewcompass/evidence/sessions/`、層2＝人が読む記録 `docs/sessions/auto-*.md`）へ自動取り込みする。PLC-DEC-007 候補5（会話転写を一次ソースとし機械抽出で記録を生成）の going-forward 取り込み。「利用する LLM が、利用時の自分のログを残す」方針に基づく Claude 専用フック。
+
+**入力**：標準入力で SessionEnd の JSON ペイロードを受け取る。
+
+```json
+{"hook_event_name":"SessionEnd","session_id":"<id>","transcript_path":"/.../<id>.jsonl","cwd":"/path/to/repo","reason":"clear"}
+```
+
+**動作**：
+
+1. `transcript_path` があればそれを使う。無ければ `session_id` と `cwd` から `$HOME/.claude/projects/<cwd の / を - に置換>/<session_id>.jsonl` を復元する
+2. 当該 jsonl が存在すれば `python3 tools/session-record-backfill.py --session <path> --source claude` を呼び、1 セッション分だけ取り込む（来歴刻印・再現性チェック・機微の fail-closed はツール側が担保）
+3. 取り込めるログが無い場合も含め常に exit 0（セッション終了を妨げない）
+
+**出力先の差し替え**：既定は repo の正規置き場。テスト時は環境変数 `RC_SESSION_EVIDENCE_DIR`（層1）／`RC_SESSION_DOCS_DIR`（層2）で temp に差し替える。
+
+**取りこぼしの安全網**：クラッシュ等で SessionEnd が発火しなかったセッションは、オフラインの一括バックフィル（`python3 tools/session-record-backfill.py`）で後から取り込む（PLC-DEC-007 追補：過去分はベストエフォート）。
+
+**Codex 複製はしない**：本フックは Claude 専用（利用する LLM ごとに自分のログを残す方針）。`pre-bash-precheck.sh` のような `.codex/` との同一性対象には含めない。Codex 側は Codex の機構で別途対応する。
+
+**依存**：bash、jq、python3、tools/session-record-backfill.py
+
+**登録**：`.claude/settings.json` の `hooks.SessionEnd` セクションに matcher なし（全終了理由）で登録済み。
+
 ## Codex 複製との同一性
 
 フック本体 `pre-bash-precheck.sh` は `.claude/hooks/` と `.codex/hooks/` の両複製を同一内容に保つ。同一性は `tests/hooks/test_claude_hook_repository.py` の parity テストで機械検査する。本体を変更する場合は両複製へ同時に反映する。
