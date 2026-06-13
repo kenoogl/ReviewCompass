@@ -1,0 +1,32 @@
+# セッション記録 機械抽出の機微除去ルール（PLC-DEC-007 候補 5・決定 C）
+#
+# 既定の除去規則は tools/session_record_extractor/redact.py に常駐する（設定ファイルが
+# 無くても fail-closed の安全側で動く）。本ファイルは「追加規則」を版管理で持つための
+# 置き場であり、実際の鍵の値は決して書かない（正規表現だけを置く）。
+#
+# 使い方:
+#   python3 tools/session-record-extractor.py <input> --rules .reviewcompass/session-extraction/redaction-rules.yaml ...
+#
+# 既定で除去するもの（コード側。参考）:
+#   - 秘密鍵ブロック（-----BEGIN ... PRIVATE KEY-----）
+#   - 固有プレフィックスの鍵（sk-ant-… / sk-proj-… / AIza… / ghp_… / AKIA…）。
+#     先頭だけ伏せた指紋（例: sk-ant-api03...）も含めて消す。
+#   - 汎用 sk- で始まる 16 文字以上の本体（risk-based 等の語は壊さない）
+#   - Bearer トークン
+#   - ◯◯_API_KEY / TOKEN / SECRET / PASSWORD = 値（値だけを除去）
+#   - ホームディレクトリ /Users/<名前> → ~（利用者名を消す）
+#   - メールアドレス → [除去:メール]
+#
+# 第 3 段（書き込み前スキャン）でも上記パターンの残存と、鍵らしい高エントロピー文字列
+# （大文字小文字＋数字混在の 40 文字以上の連続塊）を検出し、見つかれば書き込みを止める。
+
+# 追加で消したい秘密パターン（任意）。label は除去後の表示種別。
+extra_secret_patterns: []
+  # - label: 社内トークン
+  #   regex: "ZZZ-[A-Za-z0-9]{20,}"
+
+# ホーム正規化の上書き（任意。既定は /Users/<名前>）
+# home_dir_regex: "/Users/[^/\\s\"']+"
+
+# メール検出の上書き（任意）
+# email_regex: "[A-Za-z0-9._%+\\-]+@[A-Za-z0-9.\\-]+\\.[A-Za-z]{2,}"
