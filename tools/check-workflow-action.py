@@ -3432,7 +3432,7 @@ def cmd_audit_commit(args):
   post_write_targets = [
     path
     for path in changed_files
-    if is_post_write_verification_target(path)
+    if is_post_write_verification_target(path, cwd)
   ]
   commit_hashes = {
     target: commit_file_sha256(cwd, commitish, target)
@@ -3862,8 +3862,31 @@ def list_untracked_files(cwd):
   return sorted(set(paths))
 
 
-def is_post_write_verification_target(path):
+def _is_machine_generated_record(cwd, path):
+  """機械生成・出所明記の派生記録（来歴マーカー付き）かを判定する。
+
+  PLC-DEC-007 候補5・書き込み後検証ポリシー：機械生成記録は独立検証ではなく
+  「来歴の刻印＋引用元からの再生成突き合わせ（再現性）」で担保するため、
+  書き込み後検証の対象外とする。判定は front-matter の generated_by マーカーで行う。
+  """
+  try:
+    full = Path(cwd) / path
+    with full.open(encoding="utf-8", errors="replace") as f:
+      head = f.read(1000)
+  except OSError:
+    return False
+  if not head.startswith("---\n"):
+    return False
+  end = head.find("\n---\n", 4)
+  block = head[4:end] if end != -1 else head
+  return "generated_by: session-record-extractor" in block
+
+
+def is_post_write_verification_target(path, cwd="."):
   """post-write-verification 規律の対象ファイルかを判定する"""
+  # 機械生成・出所明記の派生記録は性質上、独立検証ではなく再現性で担保するため対象外
+  if _is_machine_generated_record(cwd, path):
+    return False
   if path.startswith("docs/archive/"):
     return False
   # ツール自身の実行ログは正本文書ではないため対象外
@@ -3892,7 +3915,7 @@ def list_post_write_verification_targets(cwd):
   return [
     path
     for path in list_changed_files(cwd)
-    if is_post_write_verification_target(path)
+    if is_post_write_verification_target(path, cwd)
   ]
 
 
@@ -4211,7 +4234,7 @@ def validate_post_write_completion_for_targets(cwd, target_files, actual_hashes=
   post_write_targets = [
     path
     for path in target_files
-    if is_post_write_verification_target(path)
+    if is_post_write_verification_target(path, cwd)
   ]
   state = {
     "target_files": post_write_targets,

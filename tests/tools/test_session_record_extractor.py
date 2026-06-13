@@ -25,6 +25,7 @@ from tools.session_record_extractor.record import (
 from tools.session_record_extractor.sources import (
   codex_cwd,
   discover_codex_sessions,
+  session_uid,
 )
 
 
@@ -392,3 +393,20 @@ class TestCodexSources:
     p.write_text("壊れた行\n", encoding="utf-8")
     found = discover_codex_sessions(tmp_path, "/Users/Daily/Development/ReviewCompass")
     assert found == []
+
+
+class TestSessionUid:
+  def test_claude_uses_full_filename_uuid(self):
+    p = "/x/5a17b7c4-ece9-4258-951d-1b21907803e5.jsonl"
+    assert session_uid("claude", p) == "5a17b7c4-ece9-4258-951d-1b21907803e5"
+
+  def test_codex_uses_full_uuid_from_filename(self):
+    # uuidv7 は先頭が時刻由来で近接起動セッションが衝突するため完全形を使う
+    p = "/x/rollout-2026-06-10T18-18-12-019eb0d3-359e-7fc3-964b-4a21a64a40e3.jsonl"
+    assert session_uid("codex", p) == "019eb0d3-359e-7fc3-964b-4a21a64a40e3"
+
+  def test_codex_distinct_files_same_prefix_are_unique(self):
+    # 同一秒に起動した 2 セッション（先頭 8 文字が同じ）でも別の id になる
+    a = "/x/rollout-2026-05-28T07-14-45-019e6b81-219f-71d3-9c71-5d6201a1d098.jsonl"
+    b = "/x/rollout-2026-05-28T07-14-45-019e6b81-21c5-7e51-b98d-a1d4e9930159.jsonl"
+    assert session_uid("codex", a) != session_uid("codex", b)

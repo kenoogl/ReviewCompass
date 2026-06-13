@@ -32,6 +32,11 @@ _SYSTEM_REMINDER = re.compile(r"<system-reminder>.*?</system-reminder>", re.DOTA
 _FILE_TOOLS = {"Edit", "Write", "Read", "NotebookEdit"}
 
 
+def _normalize_newlines(text):
+  """改行を \n に統一する（\r\n → \n、孤立 \r → \n）。"""
+  return text.replace("\r\n", "\n").replace("\r", "\n")
+
+
 def strip_system_reminders(text):
   """<system-reminder>...</system-reminder> ブロックを除去する。"""
   if not text:
@@ -236,8 +241,15 @@ _LABELS = {
 }
 
 
-def render_transcript(events, meta=None, rules=None):
-  """Event 列を整形済み Markdown 転写へ描画する（機微除去を適用）。"""
+def render_transcript(events, meta=None, rules=None, front_matter=None):
+  """Event 列を整形済み Markdown 転写へ描画する（機微除去を適用）。
+
+  front_matter を渡すと先頭に来歴ブロックを付す（本文は付さない場合と同一＝決定論）。
+  """
+  prefix = ""
+  if front_matter:
+    from .provenance import render_front_matter
+    prefix = render_front_matter(front_matter)
   out = []
   if meta:
     out.append("<!-- session meta -->")
@@ -253,4 +265,6 @@ def render_transcript(events, meta=None, rules=None):
     out.append("")
     out.append(body)
     out.append("")
-  return "\n".join(out).rstrip() + "\n"
+  # テキスト文書として改行を \n に統一する（CR が混じると書き戻し時に正規化され
+  # 再生成と食い違うため。決定論・再現性のために必須）
+  return _normalize_newlines(prefix + "\n".join(out).rstrip() + "\n")

@@ -50,3 +50,23 @@ def discover_claude_sessions(claude_project_dir):
   """Claude プロジェクトディレクトリ配下の *.jsonl を列挙する（絞り込み不要）。"""
   root = Path(claude_project_dir)
   return sorted(root.glob("*.jsonl"))
+
+
+def session_uid(source, path, meta=None):
+  """出力ファイル名に使う一意な識別子（完全な uuid）を返す。
+
+  ファイル名由来の uuid を使う。理由:
+    - Codex の uuid は時刻順（uuidv7）で先頭が時刻由来のため、近接起動の
+      セッションは先頭が一致してしまう（先頭数文字では一意にならない）。
+    - 再開したセッションは session_meta.id を共有するため meta.id も一意でない。
+  Claude はファイル名 stem がそのままセッション uuid。Codex は rollout ファイル名
+  `rollout-<時刻>-<uuid>` の末尾 5 セグメントが uuid。
+  """
+  stem = Path(path).stem
+  if source == "codex":
+    parts = stem.split("-")
+    if len(parts) >= 5:
+      uid = "-".join(parts[-5:])
+      if len(uid.split("-")[0]) == 8:
+        return uid
+  return stem

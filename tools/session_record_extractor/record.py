@@ -67,8 +67,15 @@ def _first_line(text):
   return lines[0] if lines else ""
 
 
-def render_record(record, session_label=None, rules=None):
-  """層 2 の素材を Markdown へ描画する（機微除去を適用）。"""
+def render_record(record, session_label=None, rules=None, front_matter=None):
+  """層 2 の素材を Markdown へ描画する（機微除去を適用）。
+
+  front_matter を渡すと先頭に来歴ブロックを付す（本文は付さない場合と同一＝決定論）。
+  """
+  prefix = ""
+  if front_matter:
+    from .provenance import render_front_matter
+    prefix = render_front_matter(front_matter)
   out = []
   out.append(f"# セッション記録（{record.get('date', '')}）")
   if session_label:
@@ -111,4 +118,5 @@ def render_record(record, session_label=None, rules=None):
     out.append("（なし）")
   out.append("")
 
-  return "\n".join(out).rstrip() + "\n"
+  from .transcript import _normalize_newlines
+  return _normalize_newlines(prefix + "\n".join(out).rstrip() + "\n")
