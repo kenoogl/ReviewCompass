@@ -1,0 +1,20 @@
+status: completed
+target_files:
+- TODO_NEXT_SESSION.md
+target_sha256:
+  TODO_NEXT_SESSION.md: fd4ee3bcceef9ba7e81575ed3b96b56728ceb58bce24cbe6399e25f0fda26d1b
+required_verifiers: &id001
+- gemini-3.5-flash
+completed_verifiers: *id001
+unresolved_substantive_findings: 0
+verifications:
+- verifier: gemini-3.5-flash
+  target_files:
+  - TODO_NEXT_SESSION.md
+  target_sha256:
+    TODO_NEXT_SESSION.md: fd4ee3bcceef9ba7e81575ed3b96b56728ceb58bce24cbe6399e25f0fda26d1b
+review_run:
+  path: .reviewcompass/evidence/review-runs/2026-06-14-postwrite-todo-capture-rewording
+  summary_path: .reviewcompass/evidence/review-runs/2026-06-14-postwrite-todo-capture-rewording/model-result-summary.yaml
+notes: TODO_NEXT_SESSION.md の会話ログ取り込み記述の是正（フック自動記録が正・手動 backfill は予備、b5bd051e はフック導入前の唯一の取りこぼしで記録済み）の書き込み後検証。gemini-3.5-flash
+  1体、所見0で収束。

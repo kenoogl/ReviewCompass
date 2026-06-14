@@ -1,0 +1,4 @@
+run_id: 2026-06-14-postwrite-todo-capture-rewording
+target_files:
+- path: TODO_NEXT_SESSION.md
+  sha256: fd4ee3bcceef9ba7e81575ed3b96b56728ceb58bce24cbe6399e25f0fda26d1b
