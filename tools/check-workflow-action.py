@@ -2709,6 +2709,31 @@ def validate_no_in_progress_session_records(cwd, staged_files):
   return {"in_progress_records": offenders}, errors
 
 
+def _porcelain_path(line):
+  """git status --porcelain の 1 行からパスを取り出す（リネームは新側）"""
+  body = line[3:] if len(line) > 3 else ""
+  if " -> " in body:
+    body = body.split(" -> ", 1)[1]
+  return body.strip().strip('"')
+
+
+def _status_line_is_in_progress_record(line, cwd):
+  """porcelain の 1 行が、進行中セッションの記録（コミット対象外）かを返す。
+
+  進行中の記録は「コミットしない」のが正なので、push 前検査の作業ツリー clean 判定
+  でも汚れに数えない。終了済みの記録や通常ファイルは数える（False を返す）。
+  """
+  path = _porcelain_path(line)
+  if not _is_session_record_path(path):
+    return False
+  target = Path(cwd) / path
+  try:
+    text = target.read_text(encoding="utf-8")
+  except OSError:
+    return False
+  return _session_record_source_changed(text, cwd)
+
+
 def validate_deployment_independence_for_commit(cwd, commitish):
   """D-023 配置非依存 lint を commit 内容に対して実行する"""
   try:
@@ -3372,7 +3397,9 @@ def cmd_push(args):
   # 作業ツリーの clean 性
   in_progress_files = list_in_progress_files(cwd)
   status_result = subprocess.run(
-    ["git", "status", "--porcelain"],
+    # 未追跡はファイル単位で列挙する（-uall）。新規ディレクトリだとディレクトリ単位で
+    # まとまり、進行中セッション記録の個別判定ができなくなるのを防ぐ。
+    ["git", "status", "--porcelain", "-uall"],
     cwd=str(cwd),
     capture_output=True,
     text=True,
@@ -3381,7 +3408,13 @@ def cmd_push(args):
     print(f"error: git status 失敗: {status_result.stderr}", file=sys.stderr)
     return 2
 
-  is_dirty = bool(status_result.stdout.strip())
+  # 進行中セッションの記録（コミット対象外）は作業ツリーの汚れに数えない。
+  # 「進行中はコミットしない」（コミット側の歯止め）と push 前の clean 要求の矛盾を解く。
+  dirty_lines = [
+    line for line in status_result.stdout.splitlines()
+    if line.strip() and not _status_line_is_in_progress_record(line, cwd)
+  ]
+  is_dirty = bool(dirty_lines)
 
   # 直近 5 コミット
   log_result = subprocess.run(
