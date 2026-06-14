@@ -1,0 +1,24 @@
+status: completed
+target_files:
+- .reviewcompass/evidence/review-runs/2026-06-14-postwrite-todo-session-log-hook/target.md
+- TODO_NEXT_SESSION.md
+target_sha256:
+  .reviewcompass/evidence/review-runs/2026-06-14-postwrite-todo-session-log-hook/target.md: 3a92d19f36be28f13b9fe19f21cdd3eae7282fb82c167ffd74575b2ac7e6fe41
+  TODO_NEXT_SESSION.md: e23ad87e985e38855b6ba3b95a74ef34e2af9c1b7d3b4a0e5cecafb304d08112
+required_verifiers:
+- gemini-3.5-flash
+completed_verifiers:
+- gemini-3.5-flash
+unresolved_substantive_findings: 0
+verifications:
+- verifier: gemini-3.5-flash
+  target_files:
+  - .reviewcompass/evidence/review-runs/2026-06-14-postwrite-todo-session-log-hook/target.md
+  - TODO_NEXT_SESSION.md
+  target_sha256:
+    .reviewcompass/evidence/review-runs/2026-06-14-postwrite-todo-session-log-hook/target.md: 3a92d19f36be28f13b9fe19f21cdd3eae7282fb82c167ffd74575b2ac7e6fe41
+    TODO_NEXT_SESSION.md: e23ad87e985e38855b6ba3b95a74ef34e2af9c1b7d3b4a0e5cecafb304d08112
+review_run:
+  path: .reviewcompass/evidence/review-runs/2026-06-14-postwrite-todo-session-log-hook
+  summary_path: .reviewcompass/evidence/review-runs/2026-06-14-postwrite-todo-session-log-hook/model-result-summary.yaml
+notes: TODO_NEXT_SESSION.md の会話ログ自動保持反映の書き込み後検証。gemini-3.5-flash 1 体、所見0件。

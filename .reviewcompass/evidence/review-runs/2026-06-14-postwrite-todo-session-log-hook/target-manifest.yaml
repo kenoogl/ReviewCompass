@@ -1,0 +1,4 @@
+run_id: 2026-06-14-postwrite-todo-session-log-hook
+target_files:
+- path: .reviewcompass/evidence/review-runs/2026-06-14-postwrite-todo-session-log-hook/target.md
+  sha256: 3a92d19f36be28f13b9fe19f21cdd3eae7282fb82c167ffd74575b2ac7e6fe41
