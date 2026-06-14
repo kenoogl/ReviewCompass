@@ -1,0 +1,4 @@
+run_id: 2026-06-14-postwrite-todo-bulk-guard
+target_files:
+- path: TODO_NEXT_SESSION.md
+  sha256: 8bce17c74accb4dce4c878c3b5e0a3fb4ed0469b350d1eafc5a52ecfdcbac3b8

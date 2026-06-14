@@ -1,0 +1,21 @@
+status: completed
+target_files:
+- TODO_NEXT_SESSION.md
+target_sha256:
+  TODO_NEXT_SESSION.md: 8bce17c74accb4dce4c878c3b5e0a3fb4ed0469b350d1eafc5a52ecfdcbac3b8
+required_verifiers: &id001
+- gemini-3.5-flash
+completed_verifiers: *id001
+unresolved_substantive_findings: 0
+verifications:
+- verifier: gemini-3.5-flash
+  target_files:
+  - TODO_NEXT_SESSION.md
+  target_sha256:
+    TODO_NEXT_SESSION.md: 8bce17c74accb4dce4c878c3b5e0a3fb4ed0469b350d1eafc5a52ecfdcbac3b8
+review_run:
+  path: .reviewcompass/evidence/review-runs/2026-06-14-postwrite-todo-bulk-guard
+  summary_path: .reviewcompass/evidence/review-runs/2026-06-14-postwrite-todo-bulk-guard/model-result-summary.yaml
+notes: TODO 是正（churn 根本対応：一括 backfill を既定無効化＝作る側／進行中セッション記録のコミット遮断＝コミット側の両輪）の書き込み後検証。gemini-3.5-flash
+  1体、所見0で収束。コード（session-record-backfill.py の歯止め・check-workflow-action.py の進行中遮断）と新規テストは検証対象外＝TDD
+  のテストで担保（tests/tools 323件・hooks 21件 pass）。

@@ -2635,6 +2635,80 @@ def commit_file_text(cwd, commitish, path):
   return result.stdout
 
 
+def _front_matter_from_text(text):
+  """文字列先頭の YAML front matter を dict として読む（staged 内容の判定用）"""
+  lines = text.splitlines()
+  if not lines or lines[0].strip() != "---":
+    return None
+  for index in range(1, len(lines)):
+    if lines[index].strip() == "---":
+      try:
+        data = yaml.safe_load("\n".join(lines[1:index]))
+      except yaml.YAMLError:
+        return None
+      return data if isinstance(data, dict) else None
+  return None
+
+
+def _is_session_record_path(path):
+  """会話ログの2層記録（層1＝evidence/sessions、層2＝docs/sessions）かを返す"""
+  return path.endswith(".md") and (
+    path.startswith(".reviewcompass/evidence/sessions/")
+    or path.startswith("docs/sessions/")
+  )
+
+
+def _session_record_source_changed(record_text, cwd):
+  """セッション記録の元ログが生成時から変化していれば True（＝まだ進行中）。
+
+  判定は frontmatter の source_sha256（生成時の元ログのハッシュ）と、いまの元ログの
+  ハッシュの一致で行う。判定不能（frontmatter 無し・source 欄欠落・元ログ無し）は
+  False を返し、過剰遮断しない。
+  """
+  fm = _front_matter_from_text(record_text)
+  if not isinstance(fm, dict):
+    return False
+  source_path = fm.get("source_path")
+  stored = fm.get("source_sha256")
+  if not source_path or not stored:
+    return False
+  expanded = Path(str(source_path)).expanduser()
+  if not expanded.is_absolute():
+    expanded = Path(cwd) / expanded
+  if not expanded.exists():
+    return False
+  try:
+    current = hashlib.sha256(expanded.read_bytes()).hexdigest()
+  except OSError:
+    return False
+  return current != stored
+
+
+def validate_no_in_progress_session_records(cwd, staged_files):
+  """進行中セッション（元ログが生成時から変化）の記録が staged にあれば弾く。
+
+  会話ログの記録は終了済みセッションについてだけコミットする。手作業の除外に頼ると
+  守り忘れの温床になるため、コミット前検査で機械的に止める歯止め。
+  """
+  offenders = []
+  for path in staged_files:
+    if not _is_session_record_path(path):
+      continue
+    text = commit_file_text(cwd, "", path)
+    if text is None:
+      continue
+    if _session_record_source_changed(text, cwd):
+      offenders.append(path)
+  errors = []
+  if offenders:
+    errors.append(
+      "進行中セッションの記録はコミットできません"
+      "（元の会話ログが生成時から変化＝まだ進行中。終了後に取り込み直すと churn）: "
+      + ", ".join(offenders)
+    )
+  return {"in_progress_records": offenders}, errors
+
+
 def validate_deployment_independence_for_commit(cwd, commitish):
   """D-023 配置非依存 lint を commit 内容に対して実行する"""
   try:
@@ -3177,6 +3251,9 @@ def cmd_commit(args):
   document_link_lint_state, document_link_lint_errors = (
     validate_document_links_for_staged_files(cwd, staged_files)
   )
+  in_progress_record_state, in_progress_record_errors = (
+    validate_no_in_progress_session_records(cwd, staged_files)
+  )
 
   # 判定（仕様 §6.2）
   reasons = []
@@ -3207,6 +3284,8 @@ def cmd_commit(args):
     deviation_reasons.extend(deployment_lint_errors)
   if document_link_lint_errors:
     deviation_reasons.extend(document_link_lint_errors)
+  if in_progress_record_errors:
+    deviation_reasons.extend(in_progress_record_errors)
 
   if deviation_reasons:
     reasons.extend(deviation_reasons)
@@ -3238,7 +3317,8 @@ def cmd_commit(args):
     f"配置非依存 lint 対象: {len(deployment_lint_state['target_files'])} 件\n"
     f"配置非依存 lint 所見: {len(deployment_lint_state['findings'])} 件\n"
     f"文書リンク lint 対象: {len(document_link_lint_state['target_files'])} 件\n"
-    f"文書リンク lint 所見: {len(document_link_lint_state['findings'])} 件"
+    f"文書リンク lint 所見: {len(document_link_lint_state['findings'])} 件\n"
+    f"進行中セッション記録: {len(in_progress_record_state['in_progress_records'])} 件"
   )
   current_state_dict = {
     "pending_unresolved_count": unresolved_count,
@@ -3253,6 +3333,7 @@ def cmd_commit(args):
     "post_write_verification": post_write_state,
     "deployment_independence_lint": deployment_lint_state,
     "document_link_lint": document_link_lint_state,
+    "in_progress_session_records": in_progress_record_state,
   }
   action_str = f"commit (rationale='{rationale}')"
   action_dict = {

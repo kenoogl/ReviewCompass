@@ -124,6 +124,11 @@ def main():
                       help="層2（人が読む記録）の出力先ディレクトリ")
   parser.add_argument("--dry-run", action="store_true",
                       help="生成せず対象と件数だけ表示する")
+  parser.add_argument("--historical-import", action="store_true",
+                      help="一括スキャン（--session なし）を明示的に許可する。通常は使わない。"
+                           "going-forward は SessionEnd フックの単一取り込み（--session）が担い、"
+                           "過去ログの一括取り込みは完了済み。進行中セッションを掴み churn を生む"
+                           "恐れがあるため、一度きりの過去ログ取り込み専用。")
   args = parser.parse_args()
 
   evidence_dir = Path(args.evidence_dir)
@@ -142,6 +147,16 @@ def main():
     src_dirs = [str(spath.parent)]
     print(f"対象: 単一セッション 1 件（source={source}）")
   else:
+    if not args.historical_import:
+      print(
+        "エラー: 一括 backfill（--session なし）は既定で無効です。\n"
+        "  これからの会話ログ取り込みは SessionEnd フックの単一取り込み（--session）が担います。\n"
+        "  過去ログの一括取り込みは完了済みです。\n"
+        "  終了済みセッション 1 件を回収するときは --session <jsonl> を使ってください。\n"
+        "  どうしても一括が必要なときだけ --historical-import を付けてください"
+        "（進行中セッションを掴み churn を生む恐れがあります）。",
+        file=sys.stderr)
+      return 2
     claude = [("claude", p) for p in discover_claude_sessions(args.claude_dir)]
     codex = [("codex", p) for p in discover_codex_sessions(args.codex_root, args.repo_path)]
     targets = claude + codex
