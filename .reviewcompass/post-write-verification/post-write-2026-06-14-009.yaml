@@ -1,0 +1,20 @@
+status: completed
+target_files:
+- TODO_NEXT_SESSION.md
+target_sha256:
+  TODO_NEXT_SESSION.md: 4886de7d3ee1809ba2615a9247f76814dd785eca11eb5e732334d314e7ce16d0
+required_verifiers: &id001
+- gemini-3.5-flash
+completed_verifiers: *id001
+unresolved_substantive_findings: 0
+verifications:
+- verifier: gemini-3.5-flash
+  target_files:
+  - TODO_NEXT_SESSION.md
+  target_sha256:
+    TODO_NEXT_SESSION.md: 4886de7d3ee1809ba2615a9247f76814dd785eca11eb5e732334d314e7ce16d0
+review_run:
+  path: .reviewcompass/evidence/review-runs/2026-06-14-postwrite-todo-discipline-finding
+  summary_path: .reviewcompass/evidence/review-runs/2026-06-14-postwrite-todo-discipline-finding/model-result-summary.yaml
+notes: TODO §4-7 への結論追記（コード強制済みルールは規律化不要＝(C)(D) はこの範囲で不要）の書き込み後検証。gemini-3.5-flash
+  1体。WARN 1件（§3 のテスト件数のばらつき）は leave-as-is で収束（利用者決定 案あ。各件数は別作業の時点記録で正しく、本変更は §3 を編集していない）。

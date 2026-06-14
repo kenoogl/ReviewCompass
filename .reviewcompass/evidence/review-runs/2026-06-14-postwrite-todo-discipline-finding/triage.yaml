@@ -1,0 +1,24 @@
+run_id: 2026-06-14-postwrite-todo-discipline-finding
+triage_status: decided
+generated_at: '2026-06-14T23:46:32.235456+00:00'
+decision_actor: user
+decision_actor_type: human
+items:
+- finding_id: 2026-06-14-postwrite-todo-discipline-finding-gemini-3.5-flash-primary-001
+  run_id: 2026-06-14-postwrite-todo-discipline-finding
+  source_model: gemini-3.5-flash
+  source_round: round-1
+  source_raw_path: raw/gemini-3.5-flash.round-1.txt
+  source_parsed_path: parsed/gemini-3.5-flash.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: '## 3. 現在位置（2026-06-14 時点）'
+  plain_language_summary: テスト件数（tests/tools 等）の記述に 316 件、301 件、209 件、202 件のバラつきがあり、現在の正確なテスト総数が不明瞭です。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: user
+  decision_actor_type: human
+  decision_at: '2026-06-14T23:48:18+00:00'
+  decision_reason: leave-as-is（利用者決定 2026-06-14「案あ」）。§3 の 316/301/209/202 は各別作業の「その時点の件数」で、各行は書かれた時点で正しい履歴記録であり「現在の総数」ではない。統一はかえって時点情報を失う。本変更（§4-7 への結論追記）は §3 を編集していない。指摘は誤検出として保全。
+  applied_files: []
+  superseded_by: null

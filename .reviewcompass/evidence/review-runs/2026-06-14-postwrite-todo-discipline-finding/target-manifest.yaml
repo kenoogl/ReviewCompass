@@ -1,0 +1,4 @@
+run_id: 2026-06-14-postwrite-todo-discipline-finding
+target_files:
+- path: TODO_NEXT_SESSION.md
+  sha256: 4886de7d3ee1809ba2615a9247f76814dd785eca11eb5e732334d314e7ce16d0
