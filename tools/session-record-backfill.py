@@ -42,6 +42,7 @@ from tools.session_record_extractor.transcript import (
   parse_codex_session,
   render_transcript,
 )
+from tools.session_record_extractor.merge import classify_update
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_CLAUDE_DIR = os.path.expanduser(
@@ -154,8 +155,11 @@ def main():
   docs_dir.mkdir(parents=True, exist_ok=True)
   tool_version = _tool_version()
 
-  written = 0
-  skipped = []
+  written = 0       # 新規生成
+  updated = 0       # 既存を拡張更新（増えた分を反映）
+  unchanged = 0     # 既存と同一で書き込みなし
+  preserved = []    # 縮小検出で保全（既存を残し上書きしない）
+  skipped = []      # 残存検出で飛ばし
   written_files = []
   for source, path in targets:
     with open(path, encoding="utf-8", errors="replace") as f:
@@ -168,12 +172,30 @@ def main():
     base = f"{date}-{source}-{uid}"
     tpath = evidence_dir / f"{base}.md"
     rpath = docs_dir / f"auto-{base}.md"
+    # 追記専用マージ：既存があれば層1（転写）の包含で判定し、層1・層2を一括で
+    # 書く／保全する／スキップする（消さずに足す。元ログが縮んでも既存を失わない）
+    existed = tpath.exists() and rpath.exists()
+    if existed:
+      cls = classify_update(
+        tpath.read_text(encoding="utf-8", errors="replace"), transcript)
+      if cls == "same":
+        unchanged += 1
+        continue
+      if cls == "shrink":
+        preserved.append(Path(path).name)
+        continue
     tpath.write_text(transcript, encoding="utf-8")
     rpath.write_text(record, encoding="utf-8")
     written_files += [tpath, rpath]
-    written += 1
+    if existed:
+      updated += 1
+    else:
+      written += 1
 
-  print(f"生成: {written} 件 / 飛ばし（残存検出）: {len(skipped)} 件")
+  print(f"生成: {written} 件 / 更新: {updated} 件 / 更新なし: {unchanged} 件 / "
+        f"保全（縮小検出）: {len(preserved)} 件 / 飛ばし（残存検出）: {len(skipped)} 件")
+  for name in preserved:
+    print(f"  保全（縮小検出）: {name}（既存記録を残し上書きしない）")
   for name, fs in skipped:
     print(f"  飛ばし: {name} :: {fs}")
 

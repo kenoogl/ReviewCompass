@@ -1,0 +1,43 @@
+process_id: maintenance
+title: Append-only merge for session-record writes (no data loss on shrink)
+started_at: '2026-06-14T00:00:00+09:00'
+status: completed
+trigger: 利用者との議論（2026-06-14）で、現状の session-record 取り込み（tools/session-record-backfill.py の
+  一括 backfill と --session 単発）が出力を丸ごと上書きするため、元ログ（jsonl）が何らかの理由で縮んだ場合に取り込み済み記録が
+  失われ得ることを確認した。会話ログは追記型（過去行は不変。コンテキスト要約でもファイルは縮まない＝Claude
+  公式ドキュメントと実ファイル観察で確認、ただし手元 51 件に summary 行は 0 件のため要約版の直接確認は未）であることを踏まえ、
+  利用者決定「追記専用マージを唯一の方針で進める」により、消さずに足す（既存保全＋増分反映）方式へ改める。
+required_action: continue_maintenance
+mainline_blocked_by: なし（全 workflow_state は completed。利用者指示による小規模改修の side track）
+side_track_scope:
+- 既存出力ファイルがある場合、新たに生成した内容が既存内容を「すべて含む（増えただけ＝拡張）」ことを確認してから書き込む（追記専用マージ＝消さずに足す）
+- 既存内容が新内容に含まれない（消える方向＝異常時のみ）場合は書き込まず既存を保全し、警告一覧に出す
+- 既存と新が同一の場合は書き込みをスキップする（冪等。毎回全件を丸ごと上書きする無駄をなくす）
+- 一括 backfill と --session 単発の両経路、Claude / Codex の両ソースに同じ判定を効かせる
+- 「含む（包含）」判定は層 1（整形済み転写）の本文（front-matter を除く）の行を順序保存で比較して行う。層 2 は同一ソースから生成されるため、層 1 が拡張なら層 2 も情報を失わない。よって層 1 の判定に層 1・層 2 双方の書き込み／保全を従わせる（層 2 の「（なし）→実データ」の空欄置換を縮小と誤判定しないため）
+allowed_scope:
+- 追記専用マージ（同一スキップ／拡張は反映／縮小は保全）の判定と実装、テスト
+allowed_files:
+- tools/session-record-backfill.py
+- tools/session_record_extractor/
+- tests/tools/test_session_record_append_merge.py
+- tests/tools/test_session_record_single_capture.py
+- tests/tools/test_session_record_contract.py
+- stages/in-progress/maintenance-2026-06-14-session-record-append-merge.yaml
+- stages/completed/maintenance-2026-06-14-session-record-append-merge.yaml
+out_of_scope_note: 終了時フック（.claude/hooks/session-record-capture.sh）のシェル本体は、取り込みの実体が
+  backfill 側の --session 経路にあるため原則変更しない（判定は backfill 側で効く）。元ログが縮む異常要因（手編集・障害・ログ自動削除）
+  の根絶や、退避して両版を残す方式（議論で取り下げた案 (い)）は本改修では扱わない。正本仕様（requirements / design）の文言追加は、
+  書き込み方針が実装の細部であり仕様の意味を変えないため行わない。
+completion_conditions:
+- 新規テスト（(1) 既存と同一なら書き込みが起きない、(2) 元ログが伸びたら拡張と判定し増分が反映される、(3) 元ログが縮んだら縮小と判定し
+  既存が保全される＝上書きされず警告に出る）が追加され、改修前に失敗・改修後に通過する
+- 既存テスト（test_session_record_contract.py・test_session_record_single_capture.py・tests/hooks/test_session_record_capture.py）
+  を含む関連ディレクトリの全テストが通る
+- 完了時に本ファイルを stages/completed/ へ移す
+completed_at: '2026-06-14T00:00:00+09:00'
+completed_steps:
+- 失敗テスト 4 件を追加（同一は書かない／伸びたら拡張反映／縮んだら保全／空欄→実データは拡張）、改修前の失敗（赤）を確認（TDD テスト先行）
+- 判定モジュール tools/session_record_extractor/merge.py（classify_update・is_subsequence）を追加し、backfill を追記専用マージ（same=書き込みなし／extend=更新／shrink=保全して警告）へ改修
+- 新テスト 4 件通過、既存テスト（contract・single_capture・hooks capture）を含む tests/tools 316 件・tests/hooks 21 件で回帰なし
+completion_note: 書き込み後検証は利用者決定（2026-06-14）によりテスト通過で完了とした（小規模 maintenance。前例 maintenance-2026-06-12-postwrite-log-exclusion と同様、多モデル API レビューは行わない）。判定は層 1（整形済み転写）の本文包含で行い、層 2 は同一ソースから生成されるため層 1 に従わせる。実運用での一括取り込みはセッション終了後に行う（going-forward 方針。進行中セッションを半端に記録しない）。
