@@ -1,0 +1,20 @@
+status: completed
+target_files:
+- TODO_NEXT_SESSION.md
+target_sha256:
+  TODO_NEXT_SESSION.md: 2c16b664a7e956bae2be4d07fb384f0520aa740f9aec720b813bde64e0329ec5
+required_verifiers: &id001
+- gemini-3.5-flash
+completed_verifiers: *id001
+unresolved_substantive_findings: 0
+verifications:
+- verifier: gemini-3.5-flash
+  target_files:
+  - TODO_NEXT_SESSION.md
+  target_sha256:
+    TODO_NEXT_SESSION.md: 2c16b664a7e956bae2be4d07fb384f0520aa740f9aec720b813bde64e0329ec5
+review_run:
+  path: .reviewcompass/evidence/review-runs/2026-06-14-postwrite-todo-codex-memo
+  summary_path: .reviewcompass/evidence/review-runs/2026-06-14-postwrite-todo-codex-memo/model-result-summary.yaml
+notes: TODO に『Codex 操縦時の going-forward 自動記録の経路が無い（Codex 自身が直すメモ）』を追記したことの書き込み後検証。gemini-3.5-flash
+  1体、所見0で収束。

@@ -1,0 +1,4 @@
+run_id: 2026-06-14-postwrite-todo-codex-memo
+target_files:
+- path: TODO_NEXT_SESSION.md
+  sha256: 2c16b664a7e956bae2be4d07fb384f0520aa740f9aec720b813bde64e0329ec5
