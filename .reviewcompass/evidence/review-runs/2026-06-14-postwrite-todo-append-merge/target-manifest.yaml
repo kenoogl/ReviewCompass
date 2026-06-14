@@ -1,0 +1,4 @@
+run_id: 2026-06-14-postwrite-todo-append-merge
+target_files:
+- path: TODO_NEXT_SESSION.md
+  sha256: 3f857b5613e3867803c5ef52343c66ea443618ccac429be3bf33c7631918e8ea

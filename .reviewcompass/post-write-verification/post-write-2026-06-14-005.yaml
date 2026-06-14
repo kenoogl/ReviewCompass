@@ -1,0 +1,19 @@
+status: completed
+target_files:
+- TODO_NEXT_SESSION.md
+target_sha256:
+  TODO_NEXT_SESSION.md: 3f857b5613e3867803c5ef52343c66ea443618ccac429be3bf33c7631918e8ea
+required_verifiers: &id001
+- gemini-3.5-flash
+completed_verifiers: *id001
+unresolved_substantive_findings: 0
+verifications:
+- verifier: gemini-3.5-flash
+  target_files:
+  - TODO_NEXT_SESSION.md
+  target_sha256:
+    TODO_NEXT_SESSION.md: 3f857b5613e3867803c5ef52343c66ea443618ccac429be3bf33c7631918e8ea
+review_run:
+  path: .reviewcompass/evidence/review-runs/2026-06-14-postwrite-todo-append-merge
+  summary_path: .reviewcompass/evidence/review-runs/2026-06-14-postwrite-todo-append-merge/model-result-summary.yaml
+notes: TODO 更新（追記専用マージ化 完了反映・次セッション会話ログ取り込み段取り）の書き込み後検証。gemini-3.5-flash 1体、所見0で収束。
