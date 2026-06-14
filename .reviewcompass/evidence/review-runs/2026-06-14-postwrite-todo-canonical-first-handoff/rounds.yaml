@@ -1,0 +1,26 @@
+round_id: round-1
+purpose: post_write_verification
+invocation_timestamp: '2026-06-14T01:09:45.615371+00:00'
+target_files:
+- path: .reviewcompass/evidence/review-runs/2026-06-14-postwrite-todo-canonical-first-handoff/target.md
+  sha256: 5ab973e7c245a3f378b65fb5017bb5d69d50ef9f0c7ec3959eddea59b75dd688
+criteria: post_write_verification
+prompt_sha256: 85c9a6d1053f5e592603b8952b1b019a33e19935f00448c0bc602af039bef048
+model_results:
+- model_id: gemini-3.5-flash
+  provider: gemini-api
+  role: primary
+  treatment: primary
+  invocation_path: api
+  raw_path: raw/gemini-3.5-flash.round-1.txt
+  raw_sha256: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+  parsed_path: parsed/gemini-3.5-flash.round-1.yaml
+  parsed_sha256: c9cbf00acb9a78dd0da197f830de8ee7b2a46db6cc8d978813b3decf7611a3ec
+  parse_status: parsed
+  formatted_by: parser
+  formatted_by_actor_type: orchestrator
+  formatted_by_actor: run_role.py
+  formatted_at: '2026-06-14T01:09:45.615371+00:00'
+  follow_up_action: triage
+  attempts: 1
+  duration_seconds: 3.94

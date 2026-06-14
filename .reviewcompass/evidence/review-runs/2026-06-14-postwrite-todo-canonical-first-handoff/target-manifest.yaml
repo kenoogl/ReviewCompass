@@ -1,0 +1,4 @@
+run_id: 2026-06-14-postwrite-todo-canonical-first-handoff
+target_files:
+- path: .reviewcompass/evidence/review-runs/2026-06-14-postwrite-todo-canonical-first-handoff/target.md
+  sha256: 5ab973e7c245a3f378b65fb5017bb5d69d50ef9f0c7ec3959eddea59b75dd688

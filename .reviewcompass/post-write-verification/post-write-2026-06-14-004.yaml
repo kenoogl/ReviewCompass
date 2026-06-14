@@ -1,0 +1,20 @@
+status: completed
+target_files:
+- TODO_NEXT_SESSION.md
+target_sha256:
+  TODO_NEXT_SESSION.md: 2d9fcdadadc9e598221413119af363b2fe7dd23355c972b7f7ea681c0a1997e9
+required_verifiers: &id001
+- gemini-3.5-flash
+completed_verifiers: *id001
+unresolved_substantive_findings: 0
+verifications:
+- verifier: gemini-3.5-flash
+  target_files:
+  - TODO_NEXT_SESSION.md
+  target_sha256:
+    TODO_NEXT_SESSION.md: 2d9fcdadadc9e598221413119af363b2fe7dd23355c972b7f7ea681c0a1997e9
+review_run:
+  path: .reviewcompass/evidence/review-runs/2026-06-14-postwrite-todo-canonical-first-handoff
+  summary_path: .reviewcompass/evidence/review-runs/2026-06-14-postwrite-todo-canonical-first-handoff/model-result-summary.yaml
+notes: TODO_NEXT_SESSION.md の正本優先・案2 完了反映と検討項目（C/D/拡大）引き継ぎの書き込み後検証。gemini-3.5-flash
+  1 体、所見0件。
