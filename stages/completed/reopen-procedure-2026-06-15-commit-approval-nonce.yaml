@@ -4,6 +4,61 @@ classification: R-0
 started_at: 2026-06-15T00:00:00+09:00
 trigger: commit 承認レコードを staged 内容に束縛した nonce 承認方式へ強化する
 classification_basis: docs/reviews/reopen-classification-2026-06-15-wm-commit-approval-nonce.md
+feature_impact_decisions:
+- feature: foundation
+  decision: no_reopen_existing_feature
+  impact_basis: no_implementation_impact
+  rationale: commit 承認 nonce は workflow-management 所有の不可逆操作直前ゲート実装であり、foundation 所有の語彙・共有契約を変更しない。
+  evidence:
+  - docs/reviews/reopen-classification-2026-06-15-wm-commit-approval-nonce.md
+- feature: runtime
+  decision: no_reopen_existing_feature
+  impact_basis: no_implementation_impact
+  rationale: commit 承認 nonce は workflow-management の検査スクリプトと commit gate の強化であり、runtime の実行時責務を変更しない。
+  evidence:
+  - docs/reviews/reopen-classification-2026-06-15-wm-commit-approval-nonce.md
+- feature: evaluation
+  decision: no_reopen_existing_feature
+  impact_basis: no_implementation_impact
+  rationale: commit 承認 nonce は評価ロジックや評価成果物の契約を変更しない。
+  evidence:
+  - docs/reviews/reopen-classification-2026-06-15-wm-commit-approval-nonce.md
+- feature: analysis
+  decision: no_reopen_existing_feature
+  impact_basis: no_implementation_impact
+  rationale: commit 承認 nonce は分析機能の入力・出力契約を変更しない。
+  evidence:
+  - docs/reviews/reopen-classification-2026-06-15-wm-commit-approval-nonce.md
+- feature: workflow-management
+  decision: reopen_existing_feature
+  impact_basis: implementation_ownership
+  rationale: commit 承認 nonce は workflow-management が所有する不可逆操作直前ゲート、検査スクリプト、commit approval runtime 状態の実装責務に直接影響する。
+  evidence:
+  - docs/reviews/reopen-classification-2026-06-15-wm-commit-approval-nonce.md
+  - .reviewcompass/specs/workflow-management/requirements.md
+  - .reviewcompass/specs/workflow-management/design.md
+  - .reviewcompass/specs/workflow-management/tasks.md
+- feature: self-improvement
+  decision: no_reopen_existing_feature
+  impact_basis: no_implementation_impact
+  rationale: commit 承認 nonce は self-improvement の規律変更提案や改善ループの契約を変更しない。
+  evidence:
+  - docs/reviews/reopen-classification-2026-06-15-wm-commit-approval-nonce.md
+- feature: conformance-evaluation
+  decision: indirect_check_only
+  impact_basis: consumer_or_derivative_only
+  rationale: conformance-evaluation は workflow-management の gate 契約を確認対象として参照し得るが、本 reopen で実装所有責務は変わらない。
+  evidence:
+  - docs/reviews/reopen-classification-2026-06-15-wm-commit-approval-nonce.md
+new_feature_decision:
+  decision: no_new_feature
+  rationale: commit 承認 nonce は既存 workflow-management の不可逆操作直前ゲート強化として受けられ、新 feature 境界は不要。
+  evidence:
+  - docs/reviews/reopen-classification-2026-06-15-wm-commit-approval-nonce.md
+impacted_downstream_phases:
+- design
+- tasks
+- implementation
 completed_steps:
 - 第1過程：判定とフラグ差し戻し（利用者承認済み：2026-06-15「承認」）
 - 第2過程：正本修正（requirements.md Requirement 4 受入 6〜7 追記）
@@ -31,15 +86,17 @@ completed_steps:
 - 第3過程：implementation triad-review recheck R1〜R5 人間判断完了（R1/R3 対応、R2/R4/R5 leave-as-is）
 - 第3過程：implementation triad-review recheck R1/R3 TDD 対応完了
 - 第3過程：commit 前 staging helper 追加（進行中セッション記録を stage 前に機械除外）
-next_step: 第3過程：implementation triad-review
-step_number: 3
-commit_stop_point: true
-commit_stop_point_reason: implementation drafting 完了時点の利用者指示「コミット」による停止点 commit。commit 後の次 action は implementation triad-review。
-pending_gates:
-- stages/implementation.yaml#triad-review
-- stages/implementation.yaml#review-wave
-- stages/implementation.yaml#alignment
-- stages/implementation.yaml#approval
+- 第3過程：implementation triad-review gate 完了（利用者承認により review-wave へ進行）
+- "第3過程：implementation review-wave summary 実行（status: ok）"
+- 第3過程：implementation alignment 実施（commit 承認 nonce 実装は上流要件・設計・タスクと整合）
+- 第3過程：implementation approval 承認（利用者発言「承認」）
+- 第4過程：最終確認・recheck クリア・進行中状態ファイル完了処理
+next_step: 完了
+step_number: 4
+completed_at: 2026-06-15T13:55:00Z
+commit_stop_point: false
+commit_stop_point_reason: null
+pending_gates: []
 current_blocker: null
 completed_gates:
 - stages/requirements.yaml#alignment
@@ -52,6 +109,10 @@ completed_gates:
 - stages/tasks.yaml#review-wave
 - stages/tasks.yaml#alignment
 - stages/tasks.yaml#approval
+- stages/implementation.yaml#triad-review
+- stages/implementation.yaml#review-wave
+- stages/implementation.yaml#alignment
+- stages/implementation.yaml#approval
 drafting_completed_gates:
 - stages/design.yaml#drafting
 - stages/tasks.yaml#drafting
@@ -80,7 +141,7 @@ implementation_drafting_tests:
 - .venv/bin/python3 -m unittest tests.tools.test_check_workflow_action.CommitExitCodeTests tests.tools.test_guarded_git_commit tests.tools.test_runtime_placement_freeze.CommitApprovalPlacementTests -v
 implementation_triad_review_run: .reviewcompass/specs/workflow-management/reviews/2026-06-15-workflow-management-implementation-commit-approval-nonce-review-run
 implementation_triad_review_summary: .reviewcompass/specs/workflow-management/reviews/2026-06-15-workflow-management-implementation-commit-approval-nonce-review-run/raw-review-triage-summary.md
-implementation_triad_review_status: findings_addressed_recheck_pending
+implementation_triad_review_status: completed
 implementation_triad_review_proxy_decision:
   decided_at: 2026-06-15T20:32:14+09:00
   proxy_model_id: gemini-3.1-pro-preview
@@ -183,7 +244,7 @@ implementation_triad_review_should_fix_resolution:
   - C8 normal git execution failure conditional retry is follow-up / leave-as-is for this gate
 implementation_triad_review_recheck_run: .reviewcompass/specs/workflow-management/reviews/2026-06-15-workflow-management-implementation-commit-approval-nonce-recheck-review-run
 implementation_triad_review_recheck_summary: .reviewcompass/specs/workflow-management/reviews/2026-06-15-workflow-management-implementation-commit-approval-nonce-recheck-review-run/raw-review-triage-summary.md
-implementation_triad_review_recheck_status: findings_addressed_commit_pending
+implementation_triad_review_recheck_status: completed
 implementation_triad_review_recheck_decision:
   decided_at: 2026-06-15T12:38:00Z
   decision_actor: user
@@ -216,7 +277,7 @@ implementation_triad_review_recheck_clusters:
   summary: hardcoded stop-point shape は脆さもあるが、広い bypass を避けるため this gate では現状維持が妥当。
 implementation_triad_review_recheck_resolution:
   completed_at: 2026-06-15T12:38:00Z
-  status: addressed_verified_commit_pending
+  status: addressed_verified_committed
   addressed_clusters:
   - cluster: R1
     summary: guarded commit 成功後の消費順序を challenge → approval に変更し、approval 書き込み失敗時にも nonce challenge の再利用を拒否できるようにした。
@@ -240,7 +301,7 @@ implementation_triad_review_recheck_resolution:
   - .venv/bin/python3 tools/check-workflow-action.py next --json
 implementation_triad_review_stage_helper_resolution:
   completed_at: 2026-06-15T13:02:20Z
-  status: addressed_verified_commit_pending
+  status: addressed_verified_committed
   trigger: guarded commit 前に進行中セッション記録を一度 stage してしまったため、同じ進行中セッション判定を stage 前にも適用する必要があると確認した。
   summary: tools/check-workflow-action.py stage を追加し、git add 候補から進行中セッション記録を機械的に除外してから残りだけ stage するようにした。
   files:
@@ -433,7 +494,7 @@ downstream_impact_decisions:
   - .reviewcompass/specs/workflow-management/reviews/2026-06-15-workflow-management-design-review-run/proxy-approval.yaml
 - gate: stages/design.yaml#review-wave
   feature_scope: all_features
-  decision: review_wave_ok
+  decision: existing_sufficient
   rationale: "review-wave-summary の再実行で status: ok を確認した。workflow-management は upstream_change_pending=true のまま design/tasks/implementation recheck を継続する。"
   evidence:
   - .reviewcompass/specs/_cross_feature/reviews/2026-06-15-design-commit-approval-nonce-review-wave.md
@@ -460,7 +521,7 @@ downstream_impact_decisions:
   - .reviewcompass/specs/workflow-management/reviews/2026-06-15-workflow-management-tasks-review-run/raw-review-triage-summary.md
 - gate: stages/tasks.yaml#review-wave
   feature_scope: all_features
-  decision: review_wave_ok
+  decision: existing_sufficient
   rationale: "review-wave-summary の実行で status: ok を確認した。workflow-management は upstream_change_pending=true のまま tasks/implementation recheck を継続する。"
   evidence:
   - .reviewcompass/specs/_cross_feature/reviews/2026-06-15-tasks-commit-approval-nonce-review-wave.md
@@ -476,6 +537,37 @@ downstream_impact_decisions:
   rationale: 利用者が tasks フェーズの approval を承認した。implementation recheck は維持する。
   evidence:
   - .reviewcompass/specs/_cross_feature/reviews/2026-06-15-tasks-commit-approval-nonce-approval.md
+  - 2026-06-15 利用者発言「承認」
+- gate: stages/implementation.yaml#triad-review
+  feature_scope: workflow-management
+  decision: approved
+  rationale: implementation triad-review の C1〜C8 は proxy_model 判断に基づいて C1〜C7 を対処し、C8 を leave-as-is/follow-up とした。recheck R1〜R5 は利用者判断に基づいて R1/R3 を対処し、R2/R4/R5 を leave-as-is とした。追加で発生した staging helper 改善も TDD と guarded commit 済みで、未決 finding はない。
+  evidence:
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-15-workflow-management-implementation-commit-approval-nonce-review-run/triage.yaml
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-15-workflow-management-implementation-commit-approval-nonce-review-run/raw-review-triage-summary.md
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-15-workflow-management-implementation-commit-approval-nonce-review-run/proxy-approval.yaml
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-15-workflow-management-implementation-commit-approval-nonce-recheck-review-run/triage.yaml
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-15-workflow-management-implementation-commit-approval-nonce-recheck-review-run/raw-review-triage-summary.md
+  - c63fa523 Harden commit approval nonce handling
+  - 1ffec2e1 Add guarded staging helper
+- gate: stages/implementation.yaml#review-wave
+  feature_scope: all_features
+  decision: existing_sufficient
+  rationale: "review-wave-summary の実行で status: ok を確認した。carry_forward unresolved は 0 件で、feature dependency unmet もない。workflow-management の upstream_change_pending は approval 完了まで維持する。"
+  evidence:
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-15-implementation-commit-approval-nonce-review-wave.md
+- gate: stages/implementation.yaml#alignment
+  feature_scope: workflow-management
+  decision: existing_sufficient
+  rationale: Requirement 4 受入 6〜7、design.md §不可逆操作の直前ゲートモデル §2.1、tasks.md T-004／T-006／T-011 に対し、commit-approval nonce 実装、triad-review 対応、recheck 対応、staging helper 改善が整合している。追加の implementation 改訂は不要。
+  evidence:
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-15-implementation-commit-approval-nonce-reopen-alignment.md
+- gate: stages/implementation.yaml#approval
+  feature_scope: workflow-management
+  decision: approved
+  rationale: 利用者が implementation フェーズの approval を承認した。commit-approval nonce 実装は alignment 済みで、reopen 第4過程の最終確認へ進む。
+  evidence:
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-15-implementation-commit-approval-nonce-approval.md
   - 2026-06-15 利用者発言「承認」
 approval_attempts:
 - gate: stages/design.yaml#approval
@@ -494,6 +586,13 @@ approval_attempts:
   - .reviewcompass/specs/workflow-management/reviews/2026-06-15-workflow-management-design-review-run/proxy-decision-prompts/design-approval.prompt.md
   - .reviewcompass/specs/workflow-management/reviews/2026-06-15-workflow-management-design-review-run/proxy-decisions/design-approval.raw.yaml
   - .reviewcompass/specs/_cross_feature/reviews/2026-06-15-design-commit-approval-nonce-approval.md
+- gate: stages/implementation.yaml#approval
+  attempted_at: 2026-06-15T13:45:00Z
+  actor: user
+  result: approved
+  evidence:
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-15-implementation-commit-approval-nonce-approval.md
+  - 2026-06-15 利用者発言「承認」
 review_wave_attempts:
 - gate: stages/design.yaml#review-wave
   attempted_at: 2026-06-15T18:28:00+09:00
@@ -508,5 +607,11 @@ review_wave_attempts:
   result: ok
   output:
   - .reviewcompass/specs/_cross_feature/reviews/2026-06-15-design-commit-approval-nonce-review-wave.md
+- gate: stages/implementation.yaml#review-wave
+  attempted_at: 2026-06-15T13:20:00Z
+  command: .venv/bin/python3 tools/check-workflow-action.py review-wave-summary --out .reviewcompass/specs/_cross_feature/reviews/2026-06-15-implementation-commit-approval-nonce-review-wave.md --json
+  result: ok
+  output:
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-15-implementation-commit-approval-nonce-review-wave.md
 workaround_notes:
 - 2026-06-15 requirements alignment 進行時、通常の spec-set は stages/in-progress があるため fail-closed で遮断された。reopen 中の pending gate 完了更新専用コマンドが無いため、alignment 記録・spec.json・pending_gates・completed_gates・downstream_impact_decisions・current_blocker を手編集で同期した。次作業として TODO_NEXT_SESSION.md §4 項目10に `reopen-advance-gate` 相当の追加を登録済み。
