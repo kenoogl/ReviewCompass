@@ -1,0 +1,28 @@
+status: completed
+target_files:
+- TODO_NEXT_SESSION.md
+- docs/sessions/auto-2026-06-15-claude-f60e655d-9216-440a-8dac-cf7437fa9d1a.md
+- docs/sessions/auto-2026-06-15-codex-019ec9d9-2908-7241-817b-a189147c8e97.md
+target_sha256:
+  TODO_NEXT_SESSION.md: d5998cbfab22bfbfd9c6fc78e57bfe9b98b590196b76ed1de77c766aedbbc081
+  docs/sessions/auto-2026-06-15-claude-f60e655d-9216-440a-8dac-cf7437fa9d1a.md: 800830441d71bc433166f661466792f64bf92f8b8913fad62cf72d1f6622b38b
+  docs/sessions/auto-2026-06-15-codex-019ec9d9-2908-7241-817b-a189147c8e97.md: a48f99d9ff6f98dbf749d2b0f56be1be0b4814a447cac57ba6275c5b53167d95
+required_verifiers: &id001
+- gemini-3.5-flash
+completed_verifiers: *id001
+unresolved_substantive_findings: 0
+verifications:
+- verifier: gemini-3.5-flash
+  target_files:
+  - TODO_NEXT_SESSION.md
+  - docs/sessions/auto-2026-06-15-claude-f60e655d-9216-440a-8dac-cf7437fa9d1a.md
+  - docs/sessions/auto-2026-06-15-codex-019ec9d9-2908-7241-817b-a189147c8e97.md
+  target_sha256:
+    TODO_NEXT_SESSION.md: d5998cbfab22bfbfd9c6fc78e57bfe9b98b590196b76ed1de77c766aedbbc081
+    docs/sessions/auto-2026-06-15-claude-f60e655d-9216-440a-8dac-cf7437fa9d1a.md: 800830441d71bc433166f661466792f64bf92f8b8913fad62cf72d1f6622b38b
+    docs/sessions/auto-2026-06-15-codex-019ec9d9-2908-7241-817b-a189147c8e97.md: a48f99d9ff6f98dbf749d2b0f56be1be0b4814a447cac57ba6275c5b53167d95
+review_run:
+  path: .reviewcompass/evidence/review-runs/2026-06-15-todo-hook-backfill-postwrite
+  summary_path: .reviewcompass/evidence/review-runs/2026-06-15-todo-hook-backfill-postwrite/model-result-summary.yaml
+notes: Generated template; verify target_files cover current post-write targets before
+  use.

@@ -30,6 +30,7 @@ from tools.session_record_extractor.redact import find_residual_secrets, redact_
 from tools.session_record_extractor.provenance import (
   PROVENANCE_MARKER,
   file_sha256,
+  split_front_matter,
   verify_reproducible,
 )
 from tools.session_record_extractor.sources import (
@@ -106,6 +107,22 @@ def _process(path, source, lines, tool_version):
     record_data, session_label=label, front_matter=dict(base_fm, layer="record"))
   findings = find_residual_secrets(transcript) + find_residual_secrets(record)
   return record_data, uid, date, transcript, record, findings
+
+
+def _source_sha(text):
+  """生成済み記録の frontmatter から source_sha256 を取り出す。"""
+  meta, _ = split_front_matter(text)
+  if not isinstance(meta, dict):
+    return ""
+  return meta.get("source_sha256", "")
+
+
+def _needs_provenance_refresh(existing_texts, new_texts):
+  """本文同一でも、引用元 hash が古ければ frontmatter を更新する。"""
+  for existing, new in zip(existing_texts, new_texts):
+    if _source_sha(existing) != _source_sha(new):
+      return True
+  return False
 
 
 def main():
@@ -191,11 +208,15 @@ def main():
     # 書く／保全する／スキップする（消さずに足す。元ログが縮んでも既存を失わない）
     existed = tpath.exists() and rpath.exists()
     if existed:
-      cls = classify_update(
-        tpath.read_text(encoding="utf-8", errors="replace"), transcript)
+      existing_transcript = tpath.read_text(encoding="utf-8", errors="replace")
+      existing_record = rpath.read_text(encoding="utf-8", errors="replace")
+      cls = classify_update(existing_transcript, transcript)
       if cls == "same":
-        unchanged += 1
-        continue
+        if not _needs_provenance_refresh(
+          (existing_transcript, existing_record), (transcript, record)
+        ):
+          unchanged += 1
+          continue
       if cls == "shrink":
         preserved.append(Path(path).name)
         continue

@@ -16,6 +16,8 @@ TDD 規律（AGENTS.md 入口規律）に従い、本テストは実装前に作
 """
 
 import json
+import hashlib
+import re
 import shutil
 import subprocess
 import sys
@@ -93,6 +95,37 @@ class AppendOnlyMergeTests(unittest.TestCase):
     self.assertEqual(r2.returncode, 0, f"2回目 stdout={r2.stdout}\nstderr={r2.stderr}")
     self.assertIn("更新なし: 1", r2.stdout,
                   f"同一は更新なしと報告するはず。stdout={r2.stdout}")
+
+  def test_same_body_refreshes_stale_frontmatter_hash(self):
+    """本文が同一でも source_sha256 が古ければ frontmatter だけ更新する。"""
+    stem = "mergehash-0001"
+    sess = self.tmp / f"{stem}.jsonl"
+    _write_fixture(sess, _objs(["最初の指示"]))
+    r1 = _run_session(sess, self.evidence, self.docs)
+    self.assertEqual(r1.returncode, 0, f"1回目 stdout={r1.stdout}\nstderr={r1.stderr}")
+
+    # parser が本文へ出さない summary を足し、記録本文は同一のまま source hash だけ変える。
+    original = sess.read_text(encoding="utf-8")
+    sess.write_text(
+      original + json.dumps({"type": "summary", "summary": "ignored"}, ensure_ascii=False) + "\n",
+      encoding="utf-8",
+    )
+    r2 = _run_session(sess, self.evidence, self.docs)
+    self.assertEqual(r2.returncode, 0, f"2回目 stdout={r2.stdout}\nstderr={r2.stderr}")
+    self.assertIn("更新: 1", r2.stdout,
+                  f"frontmatter だけ古い場合も更新として報告するはず。stdout={r2.stdout}")
+
+    tpath = self.evidence / f"2026-06-14-claude-{stem}.md"
+    rpath = self._record_path(stem)
+    source_sha = hashlib.sha256(sess.read_bytes()).hexdigest()
+    for path in (tpath, rpath):
+      text = path.read_text(encoding="utf-8")
+      self.assertIn(f"source_sha256: {source_sha}", text,
+                    f"{path} の source_sha256 が最新であること")
+      self.assertEqual(1, len(re.findall(r"最初の指示", text)),
+                       f"{path} の本文は追記重複しないこと")
+    self.assertIn("再現性チェック: ok 2", r2.stdout,
+                  f"frontmatter 更新後は再現性 ok のはず。stdout={r2.stdout}")
 
   def test_grown_log_extends_record(self):
     """元ログが伸びたら拡張と判定し、増分が反映される。"""
