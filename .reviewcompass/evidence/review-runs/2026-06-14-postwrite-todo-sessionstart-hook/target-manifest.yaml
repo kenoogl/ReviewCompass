@@ -1,0 +1,4 @@
+run_id: 2026-06-14-postwrite-todo-sessionstart-hook
+target_files:
+- path: TODO_NEXT_SESSION.md
+  sha256: 38772d585ec225347500f10e9a3167e13421eb444f1e4ad755cd309827619b0d

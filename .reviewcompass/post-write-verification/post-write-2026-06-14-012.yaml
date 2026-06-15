@@ -1,0 +1,20 @@
+status: completed
+target_files:
+- TODO_NEXT_SESSION.md
+target_sha256:
+  TODO_NEXT_SESSION.md: 38772d585ec225347500f10e9a3167e13421eb444f1e4ad755cd309827619b0d
+required_verifiers: &id001
+- gemini-3.5-flash
+completed_verifiers: *id001
+unresolved_substantive_findings: 0
+verifications:
+- verifier: gemini-3.5-flash
+  target_files:
+  - TODO_NEXT_SESSION.md
+  target_sha256:
+    TODO_NEXT_SESSION.md: 38772d585ec225347500f10e9a3167e13421eb444f1e4ad755cd309827619b0d
+review_run:
+  path: .reviewcompass/evidence/review-runs/2026-06-14-postwrite-todo-sessionstart-hook
+  summary_path: .reviewcompass/evidence/review-runs/2026-06-14-postwrite-todo-sessionstart-hook/model-result-summary.yaml
+notes: TODO §1 を「必須化」から「SessionStart フックによる自動取り込み」へ是正したことの書き込み後検証。前セッションのログを自動で単一取り込みするフックを追加。gemini-3.5-flash
+  1体、所見0で収束。
