@@ -1,0 +1,24 @@
+status: completed
+target_files:
+- docs/notes/2026-06-15-security-incident-make-commit-approval.md
+- docs/sessions/auto-2026-06-15-claude-4e02c8a6-15a1-4384-ac18-f97e448910fc.md
+target_sha256:
+  docs/notes/2026-06-15-security-incident-make-commit-approval.md: dc6d48c1ebb94396f0ce67811db726549a3b533171d4d20adc409f929e0133e0
+  docs/sessions/auto-2026-06-15-claude-4e02c8a6-15a1-4384-ac18-f97e448910fc.md: 0c360e8b596c96140cb107281b7656b250c6c09135f244376af5d72621ba8768
+required_verifiers: &id001
+- gemini-3.5-flash
+completed_verifiers: *id001
+unresolved_substantive_findings: 0
+verifications:
+- verifier: gemini-3.5-flash
+  target_files:
+  - docs/notes/2026-06-15-security-incident-make-commit-approval.md
+  - docs/sessions/auto-2026-06-15-claude-4e02c8a6-15a1-4384-ac18-f97e448910fc.md
+  target_sha256:
+    docs/notes/2026-06-15-security-incident-make-commit-approval.md: dc6d48c1ebb94396f0ce67811db726549a3b533171d4d20adc409f929e0133e0
+    docs/sessions/auto-2026-06-15-claude-4e02c8a6-15a1-4384-ac18-f97e448910fc.md: 0c360e8b596c96140cb107281b7656b250c6c09135f244376af5d72621ba8768
+review_run:
+  path: .reviewcompass/evidence/review-runs/2026-06-15-postwrite-security-incident
+  summary_path: .reviewcompass/evidence/review-runs/2026-06-15-postwrite-security-incident/model-result-summary.yaml
+notes: Generated template; verify target_files cover current post-write targets before
+  use.

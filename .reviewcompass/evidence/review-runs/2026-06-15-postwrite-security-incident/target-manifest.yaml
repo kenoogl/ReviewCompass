@@ -1,0 +1,4 @@
+run_id: 2026-06-15-postwrite-security-incident
+target_files:
+- path: docs/notes/2026-06-15-security-incident-make-commit-approval.md
+  sha256: dc6d48c1ebb94396f0ce67811db726549a3b533171d4d20adc409f929e0133e0
