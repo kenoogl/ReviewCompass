@@ -112,6 +112,10 @@ def _setup_git_repo_with_script(tmpdir):
   shutil.copy(
     REPO_ROOT / "tools" / "check_workflow_action" / "runtime_paths.py", package_dir
   )
+  shutil.copy(
+    REPO_ROOT / "tools" / "check_workflow_action" / "decision_source_lint.py",
+    package_dir,
+  )
   subprocess.run(
     [
       "git",
@@ -119,6 +123,7 @@ def _setup_git_repo_with_script(tmpdir):
       "tools/check-workflow-action.py",
       "tools/deployment_independence_lint.py",
       "tools/document_link_lint.py",
+      "tools/check_workflow_action/decision_source_lint.py",
       "tools/check_workflow_action/runtime_paths.py",
     ],
     cwd=str(tmpdir), check=True, capture_output=True,

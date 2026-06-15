@@ -12,6 +12,7 @@ CODEX_HOOK_FILES = [
   ".codex/hooks.json",
   ".codex/hooks/README.md",
   ".codex/hooks/pre-bash-precheck.sh",
+  ".codex/hooks/session-record-capture-previous.sh",
 ]
 
 
@@ -52,6 +53,18 @@ class CodexHookRepositoryTests(unittest.TestCase):
       ".codex/hooks/pre-bash-precheck.sh",
       command,
       "hooks.json は repo 相対の Codex hook を呼び出す必要がある",
+    )
+
+  def test_codex_session_start_capture_hook_is_registered(self):
+    hooks_config = json.loads((REPO_ROOT / ".codex/hooks.json").read_text())
+    commands = [
+      hook["command"]
+      for group in hooks_config["hooks"].get("SessionStart", [])
+      for hook in group.get("hooks", [])
+    ]
+    self.assertTrue(
+      any(".codex/hooks/session-record-capture-previous.sh" in c for c in commands),
+      "Codex SessionStart で前セッション取り込み hook を登録する必要がある",
     )
 
 

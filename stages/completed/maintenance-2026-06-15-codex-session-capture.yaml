@@ -1,0 +1,42 @@
+process_id: maintenance
+title: Codex going-forward session capture via SessionStart hook
+started_at: '2026-06-15T00:00:00+09:00'
+status: completed
+trigger: 利用者指示「Codex going-forward 自動記録について調べて」「実装開始」。Claude には SessionEnd
+  / SessionStart による単一取り込み経路がある一方、Codex には repo-local hooks が PreToolUse のみで、
+  Codex セッションの going-forward 自動記録経路が欠けている。
+required_action: continue_maintenance
+mainline_blocked_by: なし（全 workflow_state は completed。利用者指示による小規模改修の side track）
+allowed_scope:
+- Codex の SessionStart hook で、現セッション以外の最新 Codex rollout 1 件だけを単一取り込みする
+- 取り込み対象は session_meta.cwd がこの repo と一致または配下の Codex rollout に限る
+- 一括 backfill は再有効化しない
+- Stop hook で進行中セッションを毎ターン取り込む経路は作らない
+allowed_files:
+- .gitignore
+- .codex/hooks.json
+- .codex/hooks/README.md
+- .codex/hooks/session-record-capture-previous.sh
+- tests/hooks/test_codex_hook_repository.py
+- tests/hooks/test_codex_session_record_capture_previous.py
+- tests/hooks/test_pre_bash_precheck.py
+- stages/in-progress/maintenance-2026-06-15-codex-session-capture.yaml
+- stages/completed/maintenance-2026-06-15-codex-session-capture.yaml
+completion_conditions:
+- Codex SessionStart 用の失敗テストを先に追加し、実装前に失敗を確認する
+- .codex/hooks/session-record-capture-previous.sh が現セッション以外の最新 Codex rollout 1 件だけを取り込む
+- .codex/hooks.json に SessionStart hook が登録される
+- 関連 hooks テストが通る
+- 完了時に本ファイルを stages/completed/ へ移す
+completed_at: '2026-06-15T00:00:00+09:00'
+completed_steps:
+- Codex SessionStart 用の失敗テスト 3 件を追加し、hook 未作成の赤を確認した
+- Codex hook repository テストに新 hook の追跡対象化と SessionStart 登録確認を追加し、未登録の赤を確認した
+- .codex/hooks/session-record-capture-previous.sh を追加し、同一 repo の現セッション以外で mtime 最新の rollout 1 件だけを
+  tools/session-record-backfill.py --session --source codex で取り込むようにした
+- .codex/hooks.json に SessionStart hook を登録し、.gitignore の Codex hook allowlist に新 hook を追加した
+- test_pre_bash_precheck.py の temp repo fixture に decision_source_lint.py のコピー漏れを補い、既存 pre-bash hook
+  テストの import 失敗を解消した
+- 追加テスト、Codex hook repository テスト、tests/hooks 全体、session-record 単一取り込み・一括抑止テストが通過した
+completion_note: Codex 公式 manual では Stop は turn scope、SessionStart は thread/subagent-start scope とされるため、
+  Stop で進行中ログを毎ターン取り込む実装は避け、次セッション開始時に前回分を 1 件だけ回収する方式にした。
