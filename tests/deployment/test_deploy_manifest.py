@@ -23,7 +23,7 @@ REQUIRED_ALLOWLIST = {
   "analysis/**",
   "evaluation/**",
   "templates/specs/spec.json.template",
-  "templates/hooks/session-record-capture-previous.sh.template",
+  "templates/hooks/session-record-capture-current-on-todo.sh.template",
 }
 
 REQUIRED_EXCLUDES = {

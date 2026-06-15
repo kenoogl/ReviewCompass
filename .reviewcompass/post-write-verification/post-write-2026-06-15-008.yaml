@@ -1,0 +1,32 @@
+status: completed
+target_files:
+- /private/tmp/reviewcompass-postwrite-codex-current-todo-target.md
+- TODO_NEXT_SESSION.md
+- docs/operations/INITIAL_SETUP_LLM_GUIDE.md
+- docs/sessions/auto-2026-06-15-claude-f60e655d-9216-440a-8dac-cf7437fa9d1a.md
+target_sha256:
+  /private/tmp/reviewcompass-postwrite-codex-current-todo-target.md: 3f62c9107aa52454aaefdf1b022ed11a5c17e28262460e47c71a5bb57e73c285
+  TODO_NEXT_SESSION.md: d7845fe3c7641aa517ccf8a1edad6efe669bca1fe3a01d4a3efff1c3681cd9f6
+  docs/operations/INITIAL_SETUP_LLM_GUIDE.md: 5639a978cae230a39fe63830b59a3884cb7eccf543fc1a7184240c3b5fcc4dae
+  docs/sessions/auto-2026-06-15-claude-f60e655d-9216-440a-8dac-cf7437fa9d1a.md: 01fce70df367f0c8443b2ef9f8cb9640ad90c6656d6240570294196d41f3490a
+required_verifiers: &id001
+- gemini-3.5-flash
+completed_verifiers: *id001
+unresolved_substantive_findings: 0
+verifications:
+- verifier: gemini-3.5-flash
+  target_files:
+  - /private/tmp/reviewcompass-postwrite-codex-current-todo-target.md
+  - TODO_NEXT_SESSION.md
+  - docs/operations/INITIAL_SETUP_LLM_GUIDE.md
+  - docs/sessions/auto-2026-06-15-claude-f60e655d-9216-440a-8dac-cf7437fa9d1a.md
+  target_sha256:
+    /private/tmp/reviewcompass-postwrite-codex-current-todo-target.md: 3f62c9107aa52454aaefdf1b022ed11a5c17e28262460e47c71a5bb57e73c285
+    TODO_NEXT_SESSION.md: d7845fe3c7641aa517ccf8a1edad6efe669bca1fe3a01d4a3efff1c3681cd9f6
+    docs/operations/INITIAL_SETUP_LLM_GUIDE.md: 5639a978cae230a39fe63830b59a3884cb7eccf543fc1a7184240c3b5fcc4dae
+    docs/sessions/auto-2026-06-15-claude-f60e655d-9216-440a-8dac-cf7437fa9d1a.md: 01fce70df367f0c8443b2ef9f8cb9640ad90c6656d6240570294196d41f3490a
+review_run:
+  path: .reviewcompass/evidence/review-runs/2026-06-15-postwrite-codex-current-todo-hook
+  summary_path: .reviewcompass/evidence/review-runs/2026-06-15-postwrite-codex-current-todo-hook/model-result-summary.yaml
+notes: Generated template; verify target_files cover current post-write targets before
+  use.

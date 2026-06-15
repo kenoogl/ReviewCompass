@@ -1,23 +1,12 @@
 {
-  "_comment": "対象アプリの .codex/hooks.json の雛形。スクリプト本体は .claude/hooks/ と同一内容を .codex/hooks/ に複製する。",
+  "_comment": "対象アプリの .codex/hooks.json の雛形。pre-bash-precheck は Claude/Codex 共通、session-record-capture-current-on-todo は Codex 専用。",
   "hooks": {
-    "SessionStart": [
+    "PostToolUse": [
       {
         "hooks": [
           {
             "type": "command",
-            "command": "bash '.codex/hooks/session-record-capture-previous.sh'",
-            "timeout": 60
-          }
-        ]
-      }
-    ],
-    "UserPromptSubmit": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "bash '.codex/hooks/session-record-capture-previous.sh'",
+            "command": "bash '.codex/hooks/session-record-capture-current-on-todo.sh'",
             "timeout": 60
           }
         ]

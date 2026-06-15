@@ -165,7 +165,7 @@ include:
     reason: Target app multi-LLM agent entry discipline template.
   - path: templates/hooks/pre-bash-precheck.sh.template
     reason: Target app commit/push precheck hook template (placeholder substitution at setup).
-  - path: templates/hooks/session-record-capture-previous.sh.template
+  - path: templates/hooks/session-record-capture-current-on-todo.sh.template
     reason: Target app Codex previous-session capture hook template (placeholder substitution at setup).
   - path: templates/hooks/claude-settings.json.template
     reason: Claude Code hook registration template for target apps.

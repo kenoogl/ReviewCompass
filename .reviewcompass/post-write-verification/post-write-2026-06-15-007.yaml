@@ -1,0 +1,28 @@
+status: completed
+target_files:
+- /private/tmp/reviewcompass-postwrite-hook-misfire-target.md
+- TODO_NEXT_SESSION.md
+- docs/operations/INITIAL_SETUP_LLM_GUIDE.md
+target_sha256:
+  /private/tmp/reviewcompass-postwrite-hook-misfire-target.md: 80ab906bef40a0a3ad713804572ff2e77abed86093bbdb410ed27e3f9b6511a0
+  TODO_NEXT_SESSION.md: 6d2207ec0652dafd689f4f19ce067ac2d22d6f9d46651c9558bc5f0608662dc5
+  docs/operations/INITIAL_SETUP_LLM_GUIDE.md: fbfe91e43c3c6150e5cced5c858466ca279501b4d74c9a83bd5a0b02f774ddd9
+required_verifiers: &id001
+- gemini-3.5-flash
+completed_verifiers: *id001
+unresolved_substantive_findings: 0
+verifications:
+- verifier: gemini-3.5-flash
+  target_files:
+  - /private/tmp/reviewcompass-postwrite-hook-misfire-target.md
+  - TODO_NEXT_SESSION.md
+  - docs/operations/INITIAL_SETUP_LLM_GUIDE.md
+  target_sha256:
+    /private/tmp/reviewcompass-postwrite-hook-misfire-target.md: 80ab906bef40a0a3ad713804572ff2e77abed86093bbdb410ed27e3f9b6511a0
+    TODO_NEXT_SESSION.md: 6d2207ec0652dafd689f4f19ce067ac2d22d6f9d46651c9558bc5f0608662dc5
+    docs/operations/INITIAL_SETUP_LLM_GUIDE.md: fbfe91e43c3c6150e5cced5c858466ca279501b4d74c9a83bd5a0b02f774ddd9
+review_run:
+  path: .reviewcompass/evidence/review-runs/2026-06-15-postwrite-codex-hook-misfire-correction
+  summary_path: .reviewcompass/evidence/review-runs/2026-06-15-postwrite-codex-hook-misfire-correction/model-result-summary.yaml
+notes: Generated template; verify target_files cover current post-write targets before
+  use.

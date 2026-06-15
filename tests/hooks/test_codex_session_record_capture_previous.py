@@ -1,14 +1,8 @@
-"""Codex SessionStart フック .codex/hooks/session-record-capture-previous.sh の単体テスト。
+"""Codex TODO 更新 hook .codex/hooks/session-record-capture-current-on-todo.sh の単体テスト。
 
-Codex には Claude の SessionEnd 相当イベントが無いため、SessionStart 時に
-**現セッション以外で最新の Codex rollout（cwd が repo に一致するもの）を 1 件だけ**
-単一取り込みする。
-
-TDD 規律（AGENTS.md 入口規律）に従い、本テストは実装前に作成する。
-出力先・HOME は temp に差し替えてテスト汚染を避ける。
-実行：
-  cd /Users/Daily/Development/ReviewCompass
-  python3 -m unittest tests.hooks.test_codex_session_record_capture_previous -v
+Codex では UserPromptSubmit を使わず、TODO_NEXT_SESSION.md の更新を合図に
+現セッション rollout を単一取り込みする。TODO は 1 セッション内で複数回更新されるため、
+内容 hash が変わるたびに再取り込みし、追記専用マージで伸びた分だけ反映する。
 """
 
 import json
@@ -21,11 +15,12 @@ from pathlib import Path
 
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
-HOOK = REPO_ROOT / ".codex" / "hooks" / "session-record-capture-previous.sh"
+HOOK = REPO_ROOT / ".codex" / "hooks" / "session-record-capture-current-on-todo.sh"
 
 
 def _codex_fixture(path, session_id, cwd, text, mtime):
   path.parent.mkdir(parents=True, exist_ok=True)
+  texts = text if isinstance(text, list) else [text]
   rows = [
     {
       "timestamp": "2026-06-15T10:00:00.000Z",
@@ -36,16 +31,17 @@ def _codex_fixture(path, session_id, cwd, text, mtime):
         "cwd": cwd,
       },
     },
-    {
+  ]
+  for index, item in enumerate(texts, start=1):
+    rows.append({
       "timestamp": "2026-06-15T10:00:01.000Z",
       "type": "response_item",
       "payload": {
         "type": "message",
         "role": "user",
-        "content": [{"type": "input_text", "text": text}],
+        "content": [{"type": "input_text", "text": item}],
       },
-    },
-  ]
+    })
   body = "\n".join(json.dumps(o, ensure_ascii=False) for o in rows) + "\n"
   path.write_text(body, encoding="utf-8")
   os.utime(path, (mtime, mtime))
@@ -70,15 +66,24 @@ def _run_hook(payload, evidence_dir, docs_dir, home):
   )
 
 
+def _events(path):
+  return [
+    json.loads(line)
+    for line in path.read_text(encoding="utf-8").splitlines()
+    if line.strip()
+  ]
+
+
 def _assert_invoked(testcase, result):
   for marker in ("No such file or directory", "command not found"):
     testcase.assertNotIn(
-      marker, result.stderr,
+      marker,
+      result.stderr,
       f"フック未起動（実装前か）。stderr={result.stderr}",
     )
 
 
-class CodexCapturePreviousTests(unittest.TestCase):
+class CodexCaptureCurrentOnTodoTests(unittest.TestCase):
   def setUp(self):
     self.tmp = Path(tempfile.mkdtemp())
     self.addCleanup(shutil.rmtree, self.tmp)
@@ -86,17 +91,35 @@ class CodexCapturePreviousTests(unittest.TestCase):
     self.docs = self.tmp / "dc"
     self.log = self.tmp / "hook.log.jsonl"
     self.home = self.tmp / "home"
-    self.cwd = "/Users/Daily/Development/ReviewCompass"
+    self.cwd = str(self.tmp / "repo")
+    self.repo = Path(self.cwd)
+    self.repo.mkdir()
+    self.todo = self.repo / "TODO_NEXT_SESSION.md"
     self.sessions = self.home / ".codex" / "sessions" / "2026" / "06" / "15"
+    self.session_id = "cccccccc-1111-2222-3333-444444444444"
+    self.rollout = (
+      self.sessions
+      / "rollout-2026-06-15T12-00-00-cccccccc-1111-2222-3333-444444444444.jsonl"
+    )
 
-  def test_captures_latest_previous_for_same_repo_only(self):
-    """現セッション以外で、同じ repo の最新 Codex rollout だけを取り込む。"""
+  def _payload(self, tool_name="Edit", file_path="TODO_NEXT_SESSION.md", session_id=None):
+    return {
+      "hook_event_name": "PostToolUse",
+      "tool_name": tool_name,
+      "tool_input": {"file_path": str(self.repo / file_path)},
+      "session_id": session_id or self.session_id,
+      "cwd": self.cwd,
+    }
+
+  def test_captures_current_session_when_todo_update_is_observed(self):
+    """TODO 更新を合図に、前セッションではなく現セッションを取り込む。"""
+    self.todo.write_text("handoff v1\n", encoding="utf-8")
     _codex_fixture(
-      self.sessions / "rollout-2026-06-15T10-00-00-aaaaaaaa-1111-2222-3333-444444444444.jsonl",
-      "aaaaaaaa-1111-2222-3333-444444444444",
+      self.rollout,
+      self.session_id,
       self.cwd,
-      "古い Codex セッション",
-      mtime=1000,
+      "現 Codex セッション",
+      mtime=3000,
     )
     _codex_fixture(
       self.sessions / "rollout-2026-06-15T11-00-00-bbbbbbbb-1111-2222-3333-444444444444.jsonl",
@@ -105,143 +128,102 @@ class CodexCapturePreviousTests(unittest.TestCase):
       "前 Codex セッション",
       mtime=2000,
     )
-    _codex_fixture(
-      self.sessions / "rollout-2026-06-15T12-00-00-cccccccc-1111-2222-3333-444444444444.jsonl",
-      "cccccccc-1111-2222-3333-444444444444",
-      self.cwd,
-      "現 Codex セッション",
-      mtime=3000,
-    )
-    _codex_fixture(
-      self.sessions / "rollout-2026-06-15T13-00-00-dddddddd-1111-2222-3333-444444444444.jsonl",
-      "dddddddd-1111-2222-3333-444444444444",
-      "/Users/Daily/Development/OtherRepo",
-      "別 repo の Codex セッション",
-      mtime=4000,
-    )
 
-    payload = {
-      "hook_event_name": "SessionStart",
-      "session_id": "cccccccc-1111-2222-3333-444444444444",
-      "cwd": self.cwd,
-      "source": "startup",
-    }
-    r = _run_hook(payload, self.evidence, self.docs, self.home)
-    _assert_invoked(self, r)
-    self.assertEqual(r.returncode, 0, f"stdout={r.stdout}\nstderr={r.stderr}")
+    result = _run_hook(self._payload(), self.evidence, self.docs, self.home)
+
+    _assert_invoked(self, result)
+    self.assertEqual(result.returncode, 0, f"stdout={result.stdout}\nstderr={result.stderr}")
     self.assertTrue(
-      (self.evidence / "2026-06-15-codex-bbbbbbbb-1111-2222-3333-444444444444.md").exists(),
-      f"同じ repo の前 Codex セッションを取り込むべき。stdout={r.stdout} stderr={r.stderr}",
-    )
-    self.assertFalse(
-      (self.evidence / "2026-06-15-codex-aaaaaaaa-1111-2222-3333-444444444444.md").exists(),
-      "前より古い Codex セッションは取り込まない",
-    )
-    self.assertFalse(
       (self.evidence / "2026-06-15-codex-cccccccc-1111-2222-3333-444444444444.md").exists(),
-      "現 Codex セッションは取り込まない",
+      "現セッションを取り込む必要がある",
     )
     self.assertFalse(
-      (self.evidence / "2026-06-15-codex-dddddddd-1111-2222-3333-444444444444.md").exists(),
-      "別 repo の Codex セッションは取り込まない",
-    )
-    events = [
-      json.loads(line)
-      for line in self.log.read_text(encoding="utf-8").splitlines()
-      if line.strip()
-    ]
-    self.assertEqual(
-      ["start", "selected", "captured"],
-      [event["event"] for event in events],
-      "診断ログには呼び出し開始・対象選択・取り込み完了を残す",
+      (self.evidence / "2026-06-15-codex-bbbbbbbb-1111-2222-3333-444444444444.md").exists(),
+      "TODO 更新 hook は前セッションを取り込まない",
     )
     self.assertEqual(
-      "bbbbbbbb-1111-2222-3333-444444444444",
-      events[-1]["selected_session_id"],
-      "取り込んだ前セッション ID を診断できる必要がある",
+      ["todo_changed", "selected", "captured"],
+      [event["event"] for event in _events(self.log)],
     )
 
-  def test_only_current_no_capture(self):
-    """現セッションしか無ければ何も取り込まず exit 0。"""
+  def test_todo_changes_are_captured_each_time(self):
+    """TODO が複数回更新されたら、そのたび現セッションを再取り込みする。"""
+    self.todo.write_text("handoff v1\n", encoding="utf-8")
+    _codex_fixture(self.rollout, self.session_id, self.cwd, "現 Codex セッション v1", 3000)
+
+    first = _run_hook(self._payload(), self.evidence, self.docs, self.home)
+    self.todo.write_text("handoff v2\n", encoding="utf-8")
     _codex_fixture(
-      self.sessions / "rollout-2026-06-15T12-00-00-eeeeeeee-1111-2222-3333-444444444444.jsonl",
-      "eeeeeeee-1111-2222-3333-444444444444",
+      self.rollout,
+      self.session_id,
       self.cwd,
-      "現 Codex セッションのみ",
-      mtime=3000,
+      ["現 Codex セッション v1", "現 Codex セッション v2"],
+      4000,
     )
-    payload = {
-      "hook_event_name": "SessionStart",
-      "session_id": "eeeeeeee-1111-2222-3333-444444444444",
-      "cwd": self.cwd,
-    }
-    r = _run_hook(payload, self.evidence, self.docs, self.home)
-    _assert_invoked(self, r)
-    self.assertEqual(r.returncode, 0, f"stderr={r.stderr}")
-    self.assertFalse(
-      self.evidence.exists() and any(self.evidence.iterdir()),
-      "前セッションが無いときは何も書かない",
-    )
-    events = [
-      json.loads(line)
-      for line in self.log.read_text(encoding="utf-8").splitlines()
-      if line.strip()
-    ]
-    self.assertEqual(
-      ["start", "no_previous_session"],
-      [event["event"] for event in events],
-      "前セッション無しも、未発火と区別できるよう診断ログに残す",
-    )
-
-  def test_no_cwd_exits_zero(self):
-    """cwd が無ければ何もせず exit 0（起動を妨げない）。"""
-    payload = {"hook_event_name": "SessionStart", "session_id": "x"}
-    r = _run_hook(payload, self.evidence, self.docs, self.home)
-    _assert_invoked(self, r)
-    self.assertEqual(r.returncode, 0, f"stderr={r.stderr}")
-    events = [
-      json.loads(line)
-      for line in self.log.read_text(encoding="utf-8").splitlines()
-      if line.strip()
-    ]
-    self.assertEqual(
-      ["start", "no_cwd"],
-      [event["event"] for event in events],
-      "cwd 欠落も、未発火と区別できるよう診断ログに残す",
-    )
-
-  def test_same_session_and_cwd_are_checked_only_once(self):
-    """UserPromptSubmit fallback で毎 turn 呼ばれても、同一 session は 1 回だけ処理する。"""
-    _codex_fixture(
-      self.sessions / "rollout-2026-06-15T11-00-00-ffffffff-1111-2222-3333-444444444444.jsonl",
-      "ffffffff-1111-2222-3333-444444444444",
-      self.cwd,
-      "前 Codex セッション",
-      mtime=2000,
-    )
-    payload = {
-      "hook_event_name": "UserPromptSubmit",
-      "session_id": "current-session-for-fallback",
-      "cwd": self.cwd,
-    }
-
-    first = _run_hook(payload, self.evidence, self.docs, self.home)
-    second = _run_hook(payload, self.evidence, self.docs, self.home)
+    second = _run_hook(self._payload(), self.evidence, self.docs, self.home)
 
     _assert_invoked(self, first)
     _assert_invoked(self, second)
     self.assertEqual(first.returncode, 0, f"stderr={first.stderr}")
     self.assertEqual(second.returncode, 0, f"stderr={second.stderr}")
-    events = [
-      json.loads(line)
-      for line in self.log.read_text(encoding="utf-8").splitlines()
-      if line.strip()
-    ]
+    transcript = (
+      self.evidence / "2026-06-15-codex-cccccccc-1111-2222-3333-444444444444.md"
+    ).read_text(encoding="utf-8")
+    self.assertIn("現 Codex セッション v2", transcript)
     self.assertEqual(
-      ["start", "selected", "captured", "start", "already_checked"],
-      [event["event"] for event in events],
-      "同じ Codex session の再呼び出しは取り込みを繰り返さない",
+      ["todo_changed", "selected", "captured", "todo_changed", "selected", "captured"],
+      [event["event"] for event in _events(self.log)],
     )
+
+  def test_first_non_todo_tool_only_records_baseline(self):
+    """初回に TODO 更新の痕跡が無い場合、dirty な TODO を誤回収せず baseline だけ残す。"""
+    self.todo.write_text("already dirty before hook\n", encoding="utf-8")
+    _codex_fixture(self.rollout, self.session_id, self.cwd, "現 Codex セッション", 3000)
+
+    first = _run_hook(self._payload(tool_name="Bash", file_path="README.md"), self.evidence, self.docs, self.home)
+    second = _run_hook(self._payload(tool_name="Bash", file_path="README.md"), self.evidence, self.docs, self.home)
+
+    _assert_invoked(self, first)
+    _assert_invoked(self, second)
+    self.assertFalse(
+      self.evidence.exists() and any(self.evidence.iterdir()),
+      "既に dirty な TODO を初回の無関係 tool で誤回収しない",
+    )
+    self.assertEqual(
+      ["baseline_recorded", "todo_unchanged"],
+      [event["event"] for event in _events(self.log)],
+    )
+
+  def test_user_prompt_submit_is_ignored_even_if_todo_is_dirty(self):
+    """UserPromptSubmit は使用禁止。TODO が dirty でも回収しない。"""
+    self.todo.write_text("handoff v1\n", encoding="utf-8")
+    _codex_fixture(self.rollout, self.session_id, self.cwd, "現 Codex セッション", 3000)
+    payload = {
+      "hook_event_name": "UserPromptSubmit",
+      "session_id": self.session_id,
+      "cwd": self.cwd,
+    }
+
+    result = _run_hook(payload, self.evidence, self.docs, self.home)
+
+    _assert_invoked(self, result)
+    self.assertEqual(result.returncode, 0, f"stderr={result.stderr}")
+    self.assertFalse(self.evidence.exists() and any(self.evidence.iterdir()))
+    self.assertEqual(["ignored_event"], [event["event"] for event in _events(self.log)])
+
+  def test_missing_session_id_does_not_guess_current_session(self):
+    """並行セッション誤回収を避けるため、session_id 無しでは最新 rollout を推測しない。"""
+    self.todo.write_text("handoff v1\n", encoding="utf-8")
+    _codex_fixture(self.rollout, self.session_id, self.cwd, "現 Codex セッション", 3000)
+    payload = self._payload(session_id="")
+    payload["session_id"] = ""
+
+    result = _run_hook(payload, self.evidence, self.docs, self.home)
+
+    _assert_invoked(self, result)
+    self.assertEqual(result.returncode, 0, f"stderr={result.stderr}")
+    self.assertFalse(self.evidence.exists() and any(self.evidence.iterdir()))
+    self.assertEqual(["todo_changed", "no_session_id"], [event["event"] for event in _events(self.log)])
 
 
 if __name__ == "__main__":

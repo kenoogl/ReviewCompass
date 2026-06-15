@@ -1,12 +1,9 @@
 #!/bin/bash
-# Target app template: capture the previous Codex rollout into session records.
+# Target app template: capture the current Codex rollout when TODO_NEXT_SESSION.md changes.
 #
 # Replace these placeholders during initial setup:
 #   {{REVIEWCOMPASS_PYTHON}} : absolute path to Python with ReviewCompass deps
 #   {{REVIEWCOMPASS_DIR}}    : absolute path to the deployed ReviewCompass root
-#
-# The target app root is taken from the Codex hook payload cwd. This keeps the
-# template deployable across repositories and avoids hard-coded developer paths.
 
 set -u
 
@@ -15,6 +12,7 @@ REVIEWCOMPASS_DIR="{{REVIEWCOMPASS_DIR}}"
 
 INPUT=$(cat 2>/dev/null || true)
 
+HOOK_EVENT_NAME=$(printf '%s' "$INPUT" | jq -r '.hook_event_name // empty' 2>/dev/null)
 SESSION_ID=$(printf '%s' "$INPUT" | jq -r '.session_id // empty' 2>/dev/null)
 CWD=$(printf '%s' "$INPUT" | jq -r '.cwd // empty' 2>/dev/null)
 
@@ -29,8 +27,8 @@ esac
 [ ! -x "$REVIEWCOMPASS_PYTHON" ] && exit 0
 [ ! -f "$REVIEWCOMPASS_DIR/tools/session-record-backfill.py" ] && exit 0
 
-LOG_PATH="${RC_SESSION_HOOK_LOG:-$CWD/.reviewcompass/runtime/session-record-capture-previous.jsonl}"
-STATE_DIR="${RC_SESSION_HOOK_STATE_DIR:-$CWD/.reviewcompass/runtime/session-record-capture-previous-state}"
+LOG_PATH="${RC_SESSION_HOOK_LOG:-$CWD/.reviewcompass/runtime/session-record-capture-current-on-todo.jsonl}"
+STATE_DIR="${RC_SESSION_HOOK_STATE_DIR:-$CWD/.reviewcompass/runtime/session-record-capture-current-on-todo-state}"
 
 log_event() {
   EVENT="$1"
@@ -38,6 +36,7 @@ log_event() {
   SELECTED_SESSION_ID="${3:-}"
   mkdir -p "$(dirname "$LOG_PATH")" 2>/dev/null || true
   EVENT="$EVENT" \
+  HOOK_EVENT_NAME="$HOOK_EVENT_NAME" \
   SESSION_ID="$SESSION_ID" \
   CWD="$CWD" \
   SELECTED_PATH="$SELECTED_PATH" \
@@ -49,7 +48,8 @@ from datetime import datetime, timezone
 
 row = {
   "timestamp": datetime.now(timezone.utc).isoformat().replace("+00:00", "Z"),
-  "hook": "codex_session_record_capture_previous",
+  "hook": "codex_session_record_capture_current_on_todo",
+  "hook_event_name": os.environ.get("HOOK_EVENT_NAME", ""),
   "event": os.environ.get("EVENT", ""),
   "session_id": os.environ.get("SESSION_ID", ""),
   "cwd": os.environ.get("CWD", ""),
@@ -64,33 +64,61 @@ print(json.dumps(row, ensure_ascii=False, sort_keys=True))
 PY
 }
 
-log_event "start"
+[ "$HOOK_EVENT_NAME" != "PostToolUse" ] && { log_event "ignored_event"; exit 0; }
 
-if [ -n "$SESSION_ID" ]; then
-  SESSION_KEY=$(
-    SESSION_ID="$SESSION_ID" CWD="$CWD" "$REVIEWCOMPASS_PYTHON" - <<'PY'
+TODO_PATH="$CWD/TODO_NEXT_SESSION.md"
+[ ! -f "$TODO_PATH" ] && { log_event "no_todo"; exit 0; }
+
+TODO_HASH=$(
+  TODO_PATH="$TODO_PATH" "$REVIEWCOMPASS_PYTHON" - <<'PY'
+import hashlib
+import os
+from pathlib import Path
+
+print(hashlib.sha256(Path(os.environ["TODO_PATH"]).read_bytes()).hexdigest())
+PY
+)
+[ -z "$TODO_HASH" ] && { log_event "no_todo_hash"; exit 0; }
+
+SESSION_KEY=$(
+  SESSION_ID="$SESSION_ID" CWD="$CWD" "$REVIEWCOMPASS_PYTHON" - <<'PY'
 import hashlib
 import os
 
 payload = (os.environ.get("SESSION_ID", "") + "\n" + os.environ.get("CWD", "")).encode("utf-8")
 print(hashlib.sha256(payload).hexdigest())
 PY
-  )
-  if [ -n "$SESSION_KEY" ]; then
-    mkdir -p "$STATE_DIR" 2>/dev/null || true
-    STATE_FILE="$STATE_DIR/$SESSION_KEY.checked"
-    if [ -f "$STATE_FILE" ]; then
-      log_event "already_checked"
-      exit 0
-    fi
-    printf '%s\n' "$SESSION_ID" >"$STATE_FILE" 2>/dev/null || true
+)
+mkdir -p "$STATE_DIR" 2>/dev/null || true
+STATE_FILE="$STATE_DIR/$SESSION_KEY.todo.sha256"
+
+TODO_HINT=0
+if printf '%s' "$INPUT" | grep -q 'TODO_NEXT_SESSION.md'; then
+  TODO_HINT=1
+fi
+
+if [ ! -f "$STATE_FILE" ]; then
+  if [ "$TODO_HINT" -ne 1 ]; then
+    printf '%s\n' "$TODO_HASH" >"$STATE_FILE" 2>/dev/null || true
+    log_event "baseline_recorded"
+    exit 0
+  fi
+else
+  PREV_HASH=$(cat "$STATE_FILE" 2>/dev/null || true)
+  if [ "$PREV_HASH" = "$TODO_HASH" ]; then
+    log_event "todo_unchanged"
+    exit 0
   fi
 fi
+
+log_event "todo_changed"
+
+[ -z "$SESSION_ID" ] && { log_event "no_session_id"; exit 0; }
 
 CODEX_ROOT="${CODEX_SESSIONS_ROOT:-$HOME/.codex/sessions}"
 [ ! -d "$CODEX_ROOT" ] && { log_event "no_codex_root"; exit 0; }
 
-PREV_INFO=$(
+CURRENT_INFO=$(
   CODEX_ROOT="$CODEX_ROOT" SESSION_ID="$SESSION_ID" CWD="$CWD" "$REVIEWCOMPASS_PYTHON" - <<'PY'
 import json
 import os
@@ -122,12 +150,10 @@ def read_meta(path):
 best = None
 for path in root.rglob("rollout-*.jsonl"):
   meta = read_meta(path)
+  if meta.get("id") != current_id:
+    continue
   cwd = str(meta.get("cwd") or "").rstrip("/")
-  if not cwd:
-    continue
   if cwd != repo and not cwd.startswith(repo + "/"):
-    continue
-  if current_id and meta.get("id") == current_id:
     continue
   try:
     mtime = path.stat().st_mtime
@@ -141,22 +167,23 @@ if best is not None:
 PY
 )
 
-[ -z "$PREV_INFO" ] && { log_event "no_previous_session"; exit 0; }
-PREV=$(printf '%s' "$PREV_INFO" | jq -r '.path // empty')
-PREV_SESSION_ID=$(printf '%s' "$PREV_INFO" | jq -r '.session_id // empty')
-[ -z "$PREV" ] && { log_event "no_previous_session"; exit 0; }
-[ ! -f "$PREV" ] && { log_event "selected_missing" "$PREV" "$PREV_SESSION_ID"; exit 0; }
-log_event "selected" "$PREV" "$PREV_SESSION_ID"
+[ -z "$CURRENT_INFO" ] && { log_event "no_current_session"; exit 0; }
+CURRENT=$(printf '%s' "$CURRENT_INFO" | jq -r '.path // empty')
+CURRENT_SESSION_ID=$(printf '%s' "$CURRENT_INFO" | jq -r '.session_id // empty')
+[ -z "$CURRENT" ] && { log_event "no_current_session"; exit 0; }
+[ ! -f "$CURRENT" ] && { log_event "selected_missing" "$CURRENT" "$CURRENT_SESSION_ID"; exit 0; }
+log_event "selected" "$CURRENT" "$CURRENT_SESSION_ID"
 
 EVIDENCE_DIR="${RC_SESSION_EVIDENCE_DIR:-$CWD/.reviewcompass/evidence/sessions}"
 DOCS_DIR="${RC_SESSION_DOCS_DIR:-$CWD/docs/sessions}"
 
 if cd "$CWD" && "$REVIEWCOMPASS_PYTHON" "$REVIEWCOMPASS_DIR/tools/session-record-backfill.py" \
-  --session "$PREV" --source codex \
+  --session "$CURRENT" --source codex \
   --evidence-dir "$EVIDENCE_DIR" --docs-dir "$DOCS_DIR" >/dev/null 2>&1; then
-  log_event "captured" "$PREV" "$PREV_SESSION_ID"
+  printf '%s\n' "$TODO_HASH" >"$STATE_FILE" 2>/dev/null || true
+  log_event "captured" "$CURRENT" "$CURRENT_SESSION_ID"
 else
-  log_event "capture_failed" "$PREV" "$PREV_SESSION_ID"
+  log_event "capture_failed" "$CURRENT" "$CURRENT_SESSION_ID"
 fi
 
 exit 0

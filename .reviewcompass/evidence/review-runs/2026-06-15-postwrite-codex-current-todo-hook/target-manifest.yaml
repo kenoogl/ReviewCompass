@@ -1,0 +1,4 @@
+run_id: 2026-06-15-postwrite-codex-current-todo-hook
+target_files:
+- path: /private/tmp/reviewcompass-postwrite-codex-current-todo-target.md
+  sha256: 3f62c9107aa52454aaefdf1b022ed11a5c17e28262460e47c71a5bb57e73c285

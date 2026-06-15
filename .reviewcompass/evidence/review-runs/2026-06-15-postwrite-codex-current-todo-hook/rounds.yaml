@@ -1,0 +1,26 @@
+round_id: round-1
+purpose: post_write_verification
+invocation_timestamp: '2026-06-15T07:53:35.208868+00:00'
+target_files:
+- path: /private/tmp/reviewcompass-postwrite-codex-current-todo-target.md
+  sha256: 3f62c9107aa52454aaefdf1b022ed11a5c17e28262460e47c71a5bb57e73c285
+criteria: codex_current_session_todo_hook_operational_correction
+prompt_sha256: e714dbff3aba7fcc0cc2c3ab7485c334e57d1bd9c2bf3e2c3d3ea950f2b775da
+model_results:
+- model_id: gemini-3.5-flash
+  provider: gemini-api
+  role: primary
+  treatment: primary
+  invocation_path: api
+  raw_path: raw/gemini-3.5-flash.round-1.txt
+  raw_sha256: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+  parsed_path: parsed/gemini-3.5-flash.round-1.yaml
+  parsed_sha256: fa6cc81e83bf344b055494463bc5634baca342b8f28ef9fa7b5a4a5abc6e6644
+  parse_status: parsed
+  formatted_by: parser
+  formatted_by_actor_type: orchestrator
+  formatted_by_actor: run_role.py
+  formatted_at: '2026-06-15T07:53:35.208868+00:00'
+  follow_up_action: triage
+  attempts: 1
+  duration_seconds: 13.507

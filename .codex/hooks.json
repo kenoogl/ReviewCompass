@@ -1,22 +1,11 @@
 {
   "hooks": {
-    "SessionStart": [
+    "PostToolUse": [
       {
         "hooks": [
           {
             "type": "command",
-            "command": "bash '.codex/hooks/session-record-capture-previous.sh'",
-            "timeout": 60
-          }
-        ]
-      }
-    ],
-    "UserPromptSubmit": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "bash '.codex/hooks/session-record-capture-previous.sh'",
+            "command": "bash '.codex/hooks/session-record-capture-current-on-todo.sh'",
             "timeout": 60
           }
         ]

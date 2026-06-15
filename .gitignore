@@ -28,7 +28,7 @@ tools/experiments/logs/
 .codex/hooks/*
 !.codex/hooks/README.md
 !.codex/hooks/pre-bash-precheck.sh
-!.codex/hooks/session-record-capture-previous.sh
+!.codex/hooks/session-record-capture-current-on-todo.sh
 
 # SES シンポジウム論文テンプレート一式（利用者の論文執筆素材、ReviewCompass 本体とは別管理、2026-05-28 セッション 37）
 SES26/
