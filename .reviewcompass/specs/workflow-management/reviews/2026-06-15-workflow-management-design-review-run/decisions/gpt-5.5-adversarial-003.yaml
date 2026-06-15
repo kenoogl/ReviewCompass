@@ -1,0 +1,18 @@
+approved_by: proxy_model
+finding_id: 2026-06-15-workflow-management-design-review-run-gpt-5.5-adversarial-003
+proxy_model_id: gpt-5.5
+decision_prompt_path: proxy-decision-prompts/C5-C8.prompt.md
+selected_option: A
+final_label: must-fix
+rationale: C5 proxy decision selected option A. The committed index must match the
+  validated staged set; index change after validation requires fresh approval.
+raw_response_path: proxy-decisions/C5-C8.raw.yaml
+candidate_options:
+- A
+- B
+- C
+rejected_options:
+  B: Safe but unnecessarily disruptive for transient non-security git failures.
+  C: Leaves index-race behavior undefined.
+source_raw_paths:
+- raw/gpt-5.5.round-1.txt

@@ -1,0 +1,13 @@
+provider: openai-api
+model: gpt-5.5
+turn_number: 1
+duration_seconds: 3.018
+sent_messages_count: 1
+response_text: 'decision: approve
+
+  final_label: approved
+
+  rationale: "Design drafting, triad-review, review-wave, and alignment are complete;
+  no unresolved design-level blocker or must-fix/should-fix finding remains."
+
+  conditions: []'

@@ -1,0 +1,94 @@
+proxy_model_id: gpt-5.5
+decision_prompt_path: proxy-decision-prompts/C5-C8.prompt.md
+raw_response_path: proxy-decisions/C5-C8.raw.yaml
+decisions:
+- finding_id: 2026-06-15-workflow-management-design-review-run-claude-sonnet-4-6-primary-002
+  final_label: must-fix
+  rationale: C5 proxy decision selected option A. Validate in the commit path against the exact index, invalidate challenge/approval on security validation failure, allow retry only for ordinary git execution failure with unchanged index and still-valid approval state, and reject approval/challenge after consume persistence failure.
+  candidate_options:
+  - A
+  - B
+  - C
+  rejected_options:
+    B: Safe but unnecessarily disruptive for transient non-security git failures.
+    C: Leaves race and consumption behavior undefined.
+- finding_id: 2026-06-15-workflow-management-design-review-run-gpt-5.5-adversarial-003
+  final_label: must-fix
+  rationale: C5 proxy decision selected option A. The committed index must match the validated staged set; index change after validation requires fresh approval.
+  candidate_options:
+  - A
+  - B
+  - C
+  rejected_options:
+    B: Safe but unnecessarily disruptive for transient non-security git failures.
+    C: Leaves index-race behavior undefined.
+- finding_id: 2026-06-15-workflow-management-design-review-run-gpt-5.5-adversarial-004
+  final_label: must-fix
+  rationale: C5 proxy decision selected option A. Consumption failure after successful commit must make subsequent gates reject the approval/challenge until fresh approval is made.
+  candidate_options:
+  - A
+  - B
+  - C
+  rejected_options:
+    B: Safe but unnecessarily disruptive for transient non-security git failures.
+    C: Leaves replay risk after consume failure.
+- finding_id: 2026-06-15-workflow-management-design-review-run-gemini-3.1-pro-preview-judgment-002
+  final_label: must-fix
+  rationale: C5 proxy decision selected option A. Validation failures are security failures and must invalidate challenge/approval rather than leave stale active approval state.
+  candidate_options:
+  - A
+  - B
+  - C
+  rejected_options:
+    B: Safe but unnecessarily disruptive for transient non-security git failures.
+    C: Leaves stale challenge/approval active after validation failure.
+- finding_id: 2026-06-15-workflow-management-design-review-run-claude-sonnet-4-6-primary-004
+  final_label: must-fix
+  rationale: C6 proxy decision selected option A. The design must bind source redaction to the existing secret-removal implementation and use a closed omission schema.
+  candidate_options:
+  - A
+  - B
+  - C
+  rejected_options:
+    B: Generic reference leaves redaction and omission semantics implementation-dependent.
+    C: Removing source persistence entirely is broader than necessary.
+- finding_id: 2026-06-15-workflow-management-design-review-run-claude-sonnet-4-6-primary-005
+  final_label: must-fix
+  rationale: C7 proxy decision selected option A. Singleton challenge paths are acceptable only if prepare fails closed when an unconsumed challenge exists unless explicit invalidation occurs first.
+  candidate_options:
+  - A
+  - B
+  - C
+  rejected_options:
+    B: Multiple concurrent challenge IDs add complexity not required for the current design.
+    C: Undefined singleton overwrite behavior can confuse active challenge/approval state.
+- finding_id: 2026-06-15-workflow-management-design-review-run-claude-sonnet-4-6-primary-001
+  final_label: should-fix
+  rationale: C8 proxy decision selected option A. Source text needs deterministic UTF-8 and size limits.
+  candidate_options:
+  - A
+  - B
+  - C
+  rejected_options:
+    B: Prose-only guidance leaves room for schema drift.
+    C: Omitting audit semantics makes the boundary less machine-readable.
+- finding_id: 2026-06-15-workflow-management-design-review-run-claude-sonnet-4-6-primary-006
+  final_label: should-fix
+  rationale: C8 proxy decision selected option A. LLM/provider/model non-dependence should be structurally enforced by schema.
+  candidate_options:
+  - A
+  - B
+  - C
+  rejected_options:
+    B: Prose-only guidance leaves room for accidental dependence on provider/model metadata.
+    C: Omitting schema guardrails makes the boundary less enforceable.
+- finding_id: 2026-06-15-workflow-management-design-review-run-claude-sonnet-4-6-primary-007
+  final_label: should-fix
+  rationale: C8 proxy decision selected option A. Records should state the guarantee boundary in machine-readable fields.
+  candidate_options:
+  - A
+  - B
+  - C
+  rejected_options:
+    B: Prose-only guidance leaves room for misinterpretation.
+    C: Omitting audit semantics makes the guarantee boundary easier to overclaim.

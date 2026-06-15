@@ -1,0 +1,361 @@
+run_id: 2026-06-15-workflow-management-tasks-review-run
+triage_status: decided
+generated_at: '2026-06-15T09:47:58.727029+00:00'
+decision_actor: user
+decision_actor_type: human
+items:
+- finding_id: 2026-06-15-workflow-management-tasks-review-run-claude-sonnet-4-6-primary-001
+  run_id: 2026-06-15-workflow-management-tasks-review-run
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: tasks.md T-006 validation coverage
+  plain_language_summary: T-006 validation list does not explicitly mention clock
+    rollback fail-closed behavior or now_utc test injection as a required test coverage
+    item.
+  final_label: must-fix
+  decision_status: decided
+  decision_actor: user
+  decision_actor_type: human
+  decision_at: '2026-06-15T18:58:00+09:00'
+  decision_reason: 'C1 user-approved: add time contract, now_utc injection, clock
+    rollback fail-closed, and canonical digest coverage to tasks.md.'
+  applied_files:
+  - .reviewcompass/specs/workflow-management/tasks.md
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-15-workflow-management-tasks-review-run/raw-review-triage-summary.md
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-15-workflow-management-tasks-review-run/triage.yaml
+  superseded_by: null
+- finding_id: 2026-06-15-workflow-management-tasks-review-run-claude-sonnet-4-6-primary-002
+  run_id: 2026-06-15-workflow-management-tasks-review-run
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: tasks.md T-006 validation coverage
+  plain_language_summary: T-006 coverage list does not explicitly name consume persistence
+    failure as a testable condition (i.e., the case where writing the consumed state
+    fails and later reuse must still be rejected).
+  final_label: must-fix
+  decision_status: decided
+  decision_actor: user
+  decision_actor_type: human
+  decision_at: '2026-06-15T18:58:00+09:00'
+  decision_reason: 'C2 user-approved: add malformed-state, invalidation, consume,
+    and consume-persistence failure coverage to tasks.md.'
+  applied_files:
+  - .reviewcompass/specs/workflow-management/tasks.md
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-15-workflow-management-tasks-review-run/raw-review-triage-summary.md
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-15-workflow-management-tasks-review-run/triage.yaml
+  superseded_by: null
+- finding_id: 2026-06-15-workflow-management-tasks-review-run-claude-sonnet-4-6-primary-003
+  run_id: 2026-06-15-workflow-management-tasks-review-run
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: tasks.md T-006 validation coverage
+  plain_language_summary: T-006 coverage does not explicitly list 'approval/challenge
+    target digest match' (i.e., the check that the digest stored in the approval record
+    matches the digest stored in the challenge) as a named validation step.
+  final_label: must-fix
+  decision_status: decided
+  decision_actor: user
+  decision_actor_type: human
+  decision_at: '2026-06-15T18:58:00+09:00'
+  decision_reason: 'C1/C2 user-approved: make approval/challenge target digest comparison
+    explicit in tasks.md.'
+  applied_files:
+  - .reviewcompass/specs/workflow-management/tasks.md
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-15-workflow-management-tasks-review-run/raw-review-triage-summary.md
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-15-workflow-management-tasks-review-run/triage.yaml
+  superseded_by: null
+- finding_id: 2026-06-15-workflow-management-tasks-review-run-claude-sonnet-4-6-primary-004
+  run_id: 2026-06-15-workflow-management-tasks-review-run
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: tasks.md T-006 validation coverage
+  plain_language_summary: T-006 coverage does not explicitly enumerate all source_omission_reason
+    enum values (source_not_provided, unsafe_source_omitted, redaction_failed, residual_secret_detected)
+    as distinct test cases.
+  final_label: must-fix
+  decision_status: decided
+  decision_actor: user
+  decision_actor_type: human
+  decision_at: '2026-06-15T18:58:00+09:00'
+  decision_reason: 'C3 user-approved: enumerate source_omission_reason values and
+    redaction/residual-secret behavior in tasks.md.'
+  applied_files:
+  - .reviewcompass/specs/workflow-management/tasks.md
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-15-workflow-management-tasks-review-run/raw-review-triage-summary.md
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-15-workflow-management-tasks-review-run/triage.yaml
+  superseded_by: null
+- finding_id: 2026-06-15-workflow-management-tasks-review-run-claude-sonnet-4-6-primary-005
+  run_id: 2026-06-15-workflow-management-tasks-review-run
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: tasks.md requirements traceability
+  plain_language_summary: The traceability entry maps Requirement 4 acceptance 5,
+    6, and 7 to T-004 / T-006 / T-011, but the review-target does not state which
+    acceptance criterion maps to which task, leaving the mapping ambiguous.
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: user
+  decision_actor_type: human
+  decision_at: '2026-06-15T18:58:00+09:00'
+  decision_reason: 'C6 user-approved: improve traceability granularity for Requirement
+    4 acceptance 5-7.'
+  applied_files:
+  - .reviewcompass/specs/workflow-management/tasks.md
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-15-workflow-management-tasks-review-run/raw-review-triage-summary.md
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-15-workflow-management-tasks-review-run/triage.yaml
+  superseded_by: null
+- finding_id: 2026-06-15-workflow-management-tasks-review-run-claude-sonnet-4-6-primary-006
+  run_id: 2026-06-15-workflow-management-tasks-review-run
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: tasks.md T-004 subcommand list
+  plain_language_summary: T-004 lists the four commit-approval subcommands but does
+    not mention the --json flag behavior contract (e.g., that all output must be machine-readable
+    JSON and that human-readable text is forbidden on the happy path).
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: user
+  decision_actor_type: human
+  decision_at: '2026-06-15T18:58:00+09:00'
+  decision_reason: 'C6 user-approved: add machine-readable --json output contract
+    for commit-approval subcommands.'
+  applied_files:
+  - .reviewcompass/specs/workflow-management/tasks.md
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-15-workflow-management-tasks-review-run/raw-review-triage-summary.md
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-15-workflow-management-tasks-review-run/triage.yaml
+  superseded_by: null
+- finding_id: 2026-06-15-workflow-management-tasks-review-run-claude-sonnet-4-6-primary-007
+  run_id: 2026-06-15-workflow-management-tasks-review-run
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: tasks.md change intent / XDI-WM-001
+  plain_language_summary: The review-target confirms that change intent and XDI-WM-001
+    now mention commit-approval-nonce, but does not specify whether the XDI note records
+    the non-LLM-dependency guarantee (Requirement 4 acceptance 7) as a cross-cutting
+    design invariant.
+  final_label: must-fix
+  decision_status: decided
+  decision_actor: user
+  decision_actor_type: human
+  decision_at: '2026-06-15T18:58:00+09:00'
+  decision_reason: 'C4 user-approved: record LLM-independent guarantee as an XDI invariant.'
+  applied_files:
+  - .reviewcompass/specs/workflow-management/tasks.md
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-15-workflow-management-tasks-review-run/raw-review-triage-summary.md
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-15-workflow-management-tasks-review-run/triage.yaml
+  superseded_by: null
+- finding_id: 2026-06-15-workflow-management-tasks-review-run-gpt-5.5-adversarial-001
+  run_id: 2026-06-15-workflow-management-tasks-review-run
+  source_model: gpt-5.5
+  source_round: round-1
+  source_raw_path: raw/gpt-5.5.round-1.txt
+  source_parsed_path: parsed/gpt-5.5.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: .reviewcompass/specs/workflow-management/tasks.md / T-006 commit
+    approval validation responsibilities
+  plain_language_summary: 'must-fix: T-006 does not explicitly carry several required
+    challenge timing and digest-version responsibilities.'
+  final_label: must-fix
+  decision_status: decided
+  decision_actor: user
+  decision_actor_type: human
+  decision_at: '2026-06-15T18:58:00+09:00'
+  decision_reason: 'C1 user-approved: add timing, TTL, now_utc, clock rollback, and
+    digest-version responsibilities.'
+  applied_files:
+  - .reviewcompass/specs/workflow-management/tasks.md
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-15-workflow-management-tasks-review-run/raw-review-triage-summary.md
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-15-workflow-management-tasks-review-run/triage.yaml
+  superseded_by: null
+- finding_id: 2026-06-15-workflow-management-tasks-review-run-gpt-5.5-adversarial-002
+  run_id: 2026-06-15-workflow-management-tasks-review-run
+  source_model: gpt-5.5
+  source_round: round-1
+  source_raw_path: raw/gpt-5.5.round-1.txt
+  source_parsed_path: parsed/gpt-5.5.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: .reviewcompass/specs/workflow-management/tasks.md / T-006 fail-closed
+    and persistence behavior
+  plain_language_summary: 'must-fix: malformed-state, security-failure invalidation,
+    and consume-persistence failure behavior are not sufficiently explicit.'
+  final_label: must-fix
+  decision_status: decided
+  decision_actor: user
+  decision_actor_type: human
+  decision_at: '2026-06-15T18:58:00+09:00'
+  decision_reason: 'C2 user-approved: add malformed-state, security-failure invalidation,
+    and consume-persistence failure responsibilities.'
+  applied_files:
+  - .reviewcompass/specs/workflow-management/tasks.md
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-15-workflow-management-tasks-review-run/raw-review-triage-summary.md
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-15-workflow-management-tasks-review-run/triage.yaml
+  superseded_by: null
+- finding_id: 2026-06-15-workflow-management-tasks-review-run-gpt-5.5-adversarial-003
+  run_id: 2026-06-15-workflow-management-tasks-review-run
+  source_model: gpt-5.5
+  source_round: round-1
+  source_raw_path: raw/gpt-5.5.round-1.txt
+  source_parsed_path: parsed/gpt-5.5.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: .reviewcompass/specs/workflow-management/tasks.md / T-004 and T-006
+    approval source-text handling
+  plain_language_summary: 'must-fix: approval source-text redaction and omission requirements
+    are incompletely translated.'
+  final_label: must-fix
+  decision_status: decided
+  decision_actor: user
+  decision_actor_type: human
+  decision_at: '2026-06-15T18:58:00+09:00'
+  decision_reason: 'C3 user-approved: add specific redaction helper, residual secret
+    detector, and omission enum behavior.'
+  applied_files:
+  - .reviewcompass/specs/workflow-management/tasks.md
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-15-workflow-management-tasks-review-run/raw-review-triage-summary.md
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-15-workflow-management-tasks-review-run/triage.yaml
+  superseded_by: null
+- finding_id: 2026-06-15-workflow-management-tasks-review-run-gpt-5.5-adversarial-004
+  run_id: 2026-06-15-workflow-management-tasks-review-run
+  source_model: gpt-5.5
+  source_round: round-1
+  source_raw_path: raw/gpt-5.5.round-1.txt
+  source_parsed_path: parsed/gpt-5.5.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: .reviewcompass/specs/workflow-management/tasks.md / T-006 approval
+    record schema and guarantee fields
+  plain_language_summary: 'must-fix: required model-independence attestation fields
+    are missing from task responsibilities.'
+  final_label: must-fix
+  decision_status: decided
+  decision_actor: user
+  decision_actor_type: human
+  decision_at: '2026-06-15T18:58:00+09:00'
+  decision_reason: 'C4 user-approved: add attestation_type and guarantee_scope requirements.'
+  applied_files:
+  - .reviewcompass/specs/workflow-management/tasks.md
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-15-workflow-management-tasks-review-run/raw-review-triage-summary.md
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-15-workflow-management-tasks-review-run/triage.yaml
+  superseded_by: null
+- finding_id: 2026-06-15-workflow-management-tasks-review-run-gpt-5.5-adversarial-005
+  run_id: 2026-06-15-workflow-management-tasks-review-run
+  source_model: gpt-5.5
+  source_round: round-1
+  source_raw_path: raw/gpt-5.5.round-1.txt
+  source_parsed_path: parsed/gpt-5.5.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: .reviewcompass/specs/workflow-management/tasks.md / T-006 commit
+    path validation
+  plain_language_summary: 'should-fix: exact-index validation is not stated distinctly
+    from staged file/content matching.'
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: user
+  decision_actor_type: human
+  decision_at: '2026-06-15T18:58:00+09:00'
+  decision_reason: 'C5 user-approved: make exact-index validation explicit.'
+  applied_files:
+  - .reviewcompass/specs/workflow-management/tasks.md
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-15-workflow-management-tasks-review-run/raw-review-triage-summary.md
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-15-workflow-management-tasks-review-run/triage.yaml
+  superseded_by: null
+- finding_id: 2026-06-15-workflow-management-tasks-review-run-gemini-3.1-pro-preview-judgment-001
+  run_id: 2026-06-15-workflow-management-tasks-review-run
+  source_model: gemini-3.1-pro-preview
+  source_round: round-1
+  source_raw_path: raw/gemini-3.1-pro-preview.round-1.txt
+  source_parsed_path: parsed/gemini-3.1-pro-preview.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: Tasks Drafting Changes To Review (T-006)
+  plain_language_summary: T-006 validation scope omits residual secret detection and
+    the `source_omission_reason` enum.
+  final_label: must-fix
+  decision_status: decided
+  decision_actor: user
+  decision_actor_type: human
+  decision_at: '2026-06-15T18:58:00+09:00'
+  decision_reason: 'C3 user-approved: add residual secret detection and source_omission_reason
+    enum coverage.'
+  applied_files:
+  - .reviewcompass/specs/workflow-management/tasks.md
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-15-workflow-management-tasks-review-run/raw-review-triage-summary.md
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-15-workflow-management-tasks-review-run/triage.yaml
+  superseded_by: null
+- finding_id: 2026-06-15-workflow-management-tasks-review-run-gemini-3.1-pro-preview-judgment-002
+  run_id: 2026-06-15-workflow-management-tasks-review-run
+  source_model: gemini-3.1-pro-preview
+  source_round: round-1
+  source_raw_path: raw/gemini-3.1-pro-preview.round-1.txt
+  source_parsed_path: parsed/gemini-3.1-pro-preview.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: Tasks Drafting Changes To Review (T-006)
+  plain_language_summary: T-006 validation and testing scope omits clock rollback
+    fail-closed handling and `now_utc` injection.
+  final_label: must-fix
+  decision_status: decided
+  decision_actor: user
+  decision_actor_type: human
+  decision_at: '2026-06-15T18:58:00+09:00'
+  decision_reason: 'C1 user-approved: add clock rollback fail-closed handling and
+    now_utc injection coverage.'
+  applied_files:
+  - .reviewcompass/specs/workflow-management/tasks.md
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-15-workflow-management-tasks-review-run/raw-review-triage-summary.md
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-15-workflow-management-tasks-review-run/triage.yaml
+  superseded_by: null
+- finding_id: 2026-06-15-workflow-management-tasks-review-run-gemini-3.1-pro-preview-judgment-003
+  run_id: 2026-06-15-workflow-management-tasks-review-run
+  source_model: gemini-3.1-pro-preview
+  source_round: round-1
+  source_raw_path: raw/gemini-3.1-pro-preview.round-1.txt
+  source_parsed_path: parsed/gemini-3.1-pro-preview.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: Tasks Drafting Changes To Review (T-004 / T-006)
+  plain_language_summary: Missing explicit task coverage for the canonical digest
+    format and strict metadata constants.
+  final_label: must-fix
+  decision_status: decided
+  decision_actor: user
+  decision_actor_type: human
+  decision_at: '2026-06-15T18:58:00+09:00'
+  decision_reason: 'C1/C4 user-approved: add canonical digest format and strict metadata
+    constants.'
+  applied_files:
+  - .reviewcompass/specs/workflow-management/tasks.md
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-15-workflow-management-tasks-review-run/raw-review-triage-summary.md
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-15-workflow-management-tasks-review-run/triage.yaml
+  superseded_by: null

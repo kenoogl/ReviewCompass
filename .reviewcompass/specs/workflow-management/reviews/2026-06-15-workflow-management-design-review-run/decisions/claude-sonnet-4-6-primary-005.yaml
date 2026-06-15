@@ -1,0 +1,21 @@
+approved_by: proxy_model
+finding_id: 2026-06-15-workflow-management-design-review-run-claude-sonnet-4-6-primary-005
+proxy_model_id: gpt-5.5
+decision_prompt_path: proxy-decision-prompts/C5-C8.prompt.md
+selected_option: A
+final_label: must-fix
+rationale: C7 proxy decision selected option A. Singleton challenge paths are acceptable
+  only if prepare fails closed when an unconsumed challenge exists unless explicit
+  invalidation occurs first.
+raw_response_path: proxy-decisions/C5-C8.raw.yaml
+candidate_options:
+- A
+- B
+- C
+rejected_options:
+  B: Multiple concurrent challenge IDs add complexity not required for the current
+    design.
+  C: Undefined singleton overwrite behavior can confuse active challenge/approval
+    state.
+source_raw_paths:
+- raw/claude-sonnet-4-6.round-1.txt

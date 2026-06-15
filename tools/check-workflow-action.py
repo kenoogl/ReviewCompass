@@ -47,6 +47,7 @@ from check_workflow_action.runtime_paths import (
   resolve_commit_approval_path,
   resolve_effective_prompt_read_path,
 )
+from check_workflow_action import commit_approval
 
 DEFAULT_LAST_COMMIT_PRECHECK_PATH = ".git/reviewcompass/last-commit-precheck.json"
 DEFAULT_DISCIPLINE_MAP_PATH = "docs/operations/WORKFLOW_DISCIPLINE_MAP.yaml"
@@ -2435,6 +2436,10 @@ def validate_commit_approval(cwd, staged_files):
   approval_state["target_sha256"] = target_sha256 if isinstance(target_sha256, dict) else {}
   approval_state["consumed"] = approval.get("consumed")
   approval_state["execution_delegation"] = approval.get("execution_delegation")
+  if isinstance(approval.get("target_digest"), dict):
+    approval_state["target_digest"] = approval.get("target_digest")
+  if approval.get("nonce"):
+    approval_state["nonce"] = approval.get("nonce")
 
   errors = []
   if approval.get("approved_action") != "commit":
@@ -2476,8 +2481,55 @@ def validate_commit_approval(cwd, staged_files):
                 f"{filepath}"
               )
 
+  if approval.get("nonce"):
+    errors.extend(commit_approval.validate(cwd, approval))
+
   approval_state["valid"] = not errors
   return approval_state, errors
+
+
+def _print_commit_approval_result(args, payload):
+  if args.json:
+    print(json.dumps(payload, ensure_ascii=False, sort_keys=True))
+  else:
+    print(payload["status"])
+
+
+def cmd_commit_approval(args):
+  """commit-approval サブコマンドのエントリポイント"""
+  cwd = Path.cwd()
+  try:
+    if args.commit_approval_command == "prepare":
+      payload = commit_approval.prepare(cwd)
+    elif args.commit_approval_command == "record":
+      if args.source_text_stdin:
+        source_text = sys.stdin.read()
+      else:
+        source_text = None
+      payload = commit_approval.record(
+        cwd,
+        args.nonce,
+        source_text=source_text,
+        no_source_text=args.no_source_text,
+      )
+    elif args.commit_approval_command == "invalidate":
+      payload = commit_approval.invalidate(cwd)
+    else:
+      return 2
+  except (OSError, RuntimeError, ValueError) as e:
+    if args.json:
+      print(
+        json.dumps(
+          {"status": "error", "error": str(e)},
+          ensure_ascii=False,
+          sort_keys=True,
+        )
+      )
+    else:
+      print(f"error: {e}", file=sys.stderr)
+    return 2
+  _print_commit_approval_result(args, payload)
+  return 0
 
 
 def validate_commit_execution_delegation(approval_state, execution_actor):
@@ -3642,7 +3694,7 @@ def is_reopen_stop_point_commit_allowed(cwd, in_progress_files, staged_files):
     if data.get("process_id") != "reopen-procedure":
       return False
     next_step = data.get("next_step") or ""
-    if "停止点コミット" not in next_step:
+    if "停止点コミット" not in next_step and data.get("commit_stop_point") is not True:
       return False
   return True
 
@@ -5476,6 +5528,33 @@ def main():
     help="既定保存先 .reviewcompass/specs/_cross_feature/reviews/ へ書き出す",
   )
 
+  cap = sub.add_parser(
+    "commit-approval",
+    help="commit 承認 nonce challenge を作成・記録・無効化する",
+  )
+  cap_sub = cap.add_subparsers(
+    dest="commit_approval_command",
+    required=True,
+  )
+  cap_prepare = cap_sub.add_parser("prepare", help="staged 内容に束縛した challenge を作成する")
+  cap_prepare.add_argument("--json", action="store_true", help="JSON のみを出力する")
+  cap_record = cap_sub.add_parser("record", help="nonce に対応する承認レコードを保存する")
+  cap_record.add_argument("--nonce", required=True, help="prepare が出力した nonce")
+  source_group = cap_record.add_mutually_exclusive_group(required=True)
+  source_group.add_argument(
+    "--source-text-stdin",
+    action="store_true",
+    help="承認本文を stdin から読み、redaction 後に保存する",
+  )
+  source_group.add_argument(
+    "--no-source-text",
+    action="store_true",
+    help="承認本文を保存しない no-store mode",
+  )
+  cap_record.add_argument("--json", action="store_true", help="JSON のみを出力する")
+  cap_invalidate = cap_sub.add_parser("invalidate", help="challenge と承認レコードを無効化する")
+  cap_invalidate.add_argument("--json", action="store_true", help="JSON のみを出力する")
+
   # decision-source-lint サブコマンド（Req 11）
   dsl = sub.add_parser(
     "decision-source-lint",
@@ -5528,6 +5607,8 @@ def main():
     sys.exit(cmd_reopen_start(args))
   elif args.subcommand == "review-wave-summary":
     sys.exit(cmd_review_wave_summary(args))
+  elif args.subcommand == "commit-approval":
+    sys.exit(cmd_commit_approval(args))
   elif args.subcommand == "decision-source-lint":
     sys.exit(cmd_decision_source_lint(args))
   else:

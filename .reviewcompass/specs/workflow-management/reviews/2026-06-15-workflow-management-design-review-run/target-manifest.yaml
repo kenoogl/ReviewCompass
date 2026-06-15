@@ -1,0 +1,4 @@
+run_id: 2026-06-15-workflow-management-design-review-run
+target_files:
+- path: .reviewcompass/specs/workflow-management/reviews/2026-06-15-workflow-management-design-review-run/review-target.md
+  sha256: f84c279bc78bed3074fea91a6a93aca19cdbb38ff1a83a5e015d2fb57ec62405

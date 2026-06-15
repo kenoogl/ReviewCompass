@@ -1,0 +1,9 @@
+findings:
+  - severity: ERROR
+    target_location: "Design Delta (Record command)"
+    description: "Accepting source text via a CLI argument exposes potentially sensitive data to the OS process list."
+    rationale: "The design specifies the command `tools/check-workflow-action.py commit-approval record ... --source-text <user text>`. Passing user-generated text via command-line arguments (`argv`) makes it visible to system utilities like `ps`, process monitors, and system audit logs. If the user text inadvertently contains secrets, this exposes them raw in system logs before the application's sensitive-information removal policy can process them. The source text should be passed via STDIN to preserve the secret redaction policy."
+  - severity: WARN
+    target_location: "Design Delta (Challenge consumption on failure)"
+    description: "Not consuming the challenge and approval record on commit failure could weaken the fail-closed guarantee."
+    rationale: "The design explicitly states 'commit failure does not consume them'. While retaining the approval is useful for retrying downstream git failures (e.g., GPG signing errors or transient pre-commit hook issues), retaining it when the commit gate *fails validation* (e.g., due to a staged content mismatch or malformed record) leaves a stale or potentially tampered approval active until its expiry. The design should specify that security and validation failures immediately consume or invalidate the challenge to enforce strict fail-closed behavior."

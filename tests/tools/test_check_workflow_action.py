@@ -16,6 +16,7 @@ import shutil
 import subprocess
 import tempfile
 import unittest
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 import yaml
@@ -3802,6 +3803,52 @@ def _write_commit_approval(
   return approval_path
 
 
+def _read_commit_approval(tmpdir):
+  """runtime 区画の commit 承認レコードを読む"""
+  approval_path = (
+    Path(tmpdir)
+    / ".reviewcompass"
+    / "runtime"
+    / "approvals"
+    / "commit-approval.json"
+  )
+  return json.loads(approval_path.read_text(encoding="utf-8"))
+
+
+def _prepare_commit_approval(tmpdir):
+  """commit-approval prepare を実行して JSON を返す"""
+  result = run_script(["commit-approval", "prepare", "--json"], cwd=tmpdir)
+  if result.returncode != 0:
+    raise AssertionError(result.stdout + result.stderr)
+  return json.loads(result.stdout)
+
+
+def _record_commit_approval(tmpdir, nonce, source_text=None, extra_args=None):
+  """commit-approval record を実行して JSON を返す"""
+  args = [
+    "commit-approval",
+    "record",
+    "--nonce", nonce,
+    "--json",
+  ]
+  input_text = None
+  if source_text is None:
+    args.append("--no-source-text")
+  else:
+    args.append("--source-text-stdin")
+    input_text = source_text
+  if extra_args:
+    args.extend(extra_args)
+  return subprocess.run(
+    ["python3", str(SCRIPT)] + args,
+    cwd=str(tmpdir),
+    input=input_text,
+    capture_output=True,
+    text=True,
+    timeout=10,
+  )
+
+
 def _write_completed_post_write_manifest(tmpdir, target_files):
   """対象ファイルを覆う完了 post-write manifest を書く"""
   target_sha256 = {
@@ -3973,6 +4020,178 @@ class CommitExitCodeTests(unittest.TestCase):
     _assert_script_invoked(self, result)
     self.assertEqual(result.returncode, 0, result.stdout)
 
+  def test_commit_approval_prepare_outputs_nonce_challenge_json(self):
+    """commit-approval prepare は staged 内容に束縛した challenge JSON を出力する"""
+    _set_pending_findings(self.pending_file, unresolved_count=0, resolved_count=2)
+    _stage_file(self.tmpdir, "notes.md", "# nonce 対象")
+
+    result = run_script(["commit-approval", "prepare", "--json"], cwd=self.tmpdir)
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 0, result.stderr)
+    payload = json.loads(result.stdout)
+    self.assertEqual(payload["status"], "prepared")
+    self.assertEqual(payload["target_files"], ["notes.md"])
+    self.assertRegex(payload["nonce"], r"^[0-9a-f]{32,}$")
+    self.assertEqual(payload["target_digest"]["algorithm"], "commit-approval-v1")
+
+  def test_commit_approval_record_no_source_json_validates_for_commit(self):
+    """prepare→record --no-source-text は commit 検査で通る nonce 承認を作る"""
+    _set_pending_findings(self.pending_file, unresolved_count=0, resolved_count=2)
+    _stage_file(self.tmpdir, "notes.md", "# nonce 対象")
+    challenge = _prepare_commit_approval(self.tmpdir)
+
+    record_result = _record_commit_approval(
+      self.tmpdir,
+      challenge["nonce"],
+      source_text=None,
+    )
+    _assert_script_invoked(self, record_result)
+    self.assertEqual(record_result.returncode, 0, record_result.stderr)
+    record_payload = json.loads(record_result.stdout)
+    self.assertEqual(record_payload["status"], "recorded")
+    approval = _read_commit_approval(self.tmpdir)
+    self.assertEqual(approval["source_omission_reason"], "source_not_provided")
+    self.assertEqual(approval["attestation_type"], "staged_content_nonce_binding")
+    self.assertEqual(
+      approval["guarantee_scope"],
+      "staged_content_binding_not_ui_utterance_proof",
+    )
+
+    result = run_script(
+      ["commit", "--rationale", "nonce 承認の commit 検査"],
+      cwd=self.tmpdir,
+    )
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 0, result.stdout)
+
+  def test_commit_approval_record_source_text_is_redacted(self):
+    """stdin 承認本文は機微情報除去後に保存される"""
+    _set_pending_findings(self.pending_file, unresolved_count=0, resolved_count=2)
+    _stage_file(self.tmpdir, "notes.md", "# nonce 対象")
+    challenge = _prepare_commit_approval(self.tmpdir)
+
+    record_result = _record_commit_approval(
+      self.tmpdir,
+      challenge["nonce"],
+      source_text="承認します OPENAI_API_KEY=sk-proj-SECRET1234567890abcdef",
+    )
+
+    _assert_script_invoked(self, record_result)
+    self.assertEqual(record_result.returncode, 0, record_result.stderr)
+    approval = _read_commit_approval(self.tmpdir)
+    self.assertIn("source_text_redacted", approval)
+    self.assertNotIn("sk-proj-", approval["source_text_redacted"])
+    self.assertIn("[除去:", approval["source_text_redacted"])
+
+    result = run_script(
+      ["commit", "--rationale", "redacted source 付き nonce 承認の commit 検査"],
+      cwd=self.tmpdir,
+    )
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 0, result.stdout)
+
+  def test_commit_approval_record_residual_secret_omits_source(self):
+    """redaction 後に秘密候補が残る場合は承認本文を保存しない"""
+    _set_pending_findings(self.pending_file, unresolved_count=0, resolved_count=2)
+    _stage_file(self.tmpdir, "notes.md", "# nonce 対象")
+    challenge = _prepare_commit_approval(self.tmpdir)
+
+    record_result = _record_commit_approval(
+      self.tmpdir,
+      challenge["nonce"],
+      source_text="Aa0" * 20,
+    )
+
+    _assert_script_invoked(self, record_result)
+    self.assertEqual(record_result.returncode, 0, record_result.stderr)
+    approval = _read_commit_approval(self.tmpdir)
+    self.assertEqual(approval["source_omission_reason"], "residual_secret_detected")
+    self.assertNotIn("source_text_redacted", approval)
+    self.assertIn("redaction_findings", approval)
+
+  def test_commit_approval_rejects_staged_change_after_record(self):
+    """record 後に staged 内容が変わったら nonce 承認は使えない"""
+    _set_pending_findings(self.pending_file, unresolved_count=0, resolved_count=2)
+    _stage_file(self.tmpdir, "notes.md", "# nonce 承認時点")
+    challenge = _prepare_commit_approval(self.tmpdir)
+    record_result = _record_commit_approval(self.tmpdir, challenge["nonce"])
+    self.assertEqual(record_result.returncode, 0, record_result.stderr)
+    _stage_file(self.tmpdir, "notes.md", "# commit 実行時点")
+
+    result = run_script(
+      ["commit", "--rationale", "nonce 承認後の差分変更遮断"],
+      cwd=self.tmpdir,
+    )
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 2, result.stdout)
+    self.assertIn("commit-approval", result.stdout)
+
+  def test_commit_approval_rejects_expired_record(self):
+    """expires_at を過ぎた nonce 承認は使えない"""
+    _set_pending_findings(self.pending_file, unresolved_count=0, resolved_count=2)
+    _stage_file(self.tmpdir, "notes.md", "# nonce 対象")
+    challenge = _prepare_commit_approval(self.tmpdir)
+    record_result = _record_commit_approval(self.tmpdir, challenge["nonce"])
+    self.assertEqual(record_result.returncode, 0, record_result.stderr)
+    approval_path = (
+      Path(self.tmpdir)
+      / ".reviewcompass"
+      / "runtime"
+      / "approvals"
+      / "commit-approval.json"
+    )
+    approval = json.loads(approval_path.read_text(encoding="utf-8"))
+    approval["expires_at"] = (
+      datetime.now(timezone.utc) - timedelta(seconds=1)
+    ).isoformat()
+    approval_path.write_text(
+      json.dumps(approval, ensure_ascii=False, indent=2) + "\n",
+      encoding="utf-8",
+    )
+
+    result = run_script(
+      ["commit", "--rationale", "期限切れ nonce 承認遮断"],
+      cwd=self.tmpdir,
+    )
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 2, result.stdout)
+    self.assertIn("期限切れ", result.stdout)
+
+  def test_commit_approval_rejects_llm_metadata_fields(self):
+    """nonce 承認 record に LLM/provider/model 系フィールドがあれば遮断する"""
+    _set_pending_findings(self.pending_file, unresolved_count=0, resolved_count=2)
+    _stage_file(self.tmpdir, "notes.md", "# nonce 対象")
+    challenge = _prepare_commit_approval(self.tmpdir)
+    record_result = _record_commit_approval(self.tmpdir, challenge["nonce"])
+    self.assertEqual(record_result.returncode, 0, record_result.stderr)
+    approval_path = (
+      Path(self.tmpdir)
+      / ".reviewcompass"
+      / "runtime"
+      / "approvals"
+      / "commit-approval.json"
+    )
+    approval = json.loads(approval_path.read_text(encoding="utf-8"))
+    approval["model"] = "gpt-test"
+    approval_path.write_text(
+      json.dumps(approval, ensure_ascii=False, indent=2) + "\n",
+      encoding="utf-8",
+    )
+
+    result = run_script(
+      ["commit", "--rationale", "LLM メタデータ混入遮断"],
+      cwd=self.tmpdir,
+    )
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 2, result.stdout)
+    self.assertIn("model", result.stdout)
+
   def test_commit_blocks_when_in_progress_file_exists(self):
     """stages/in-progress が非空なら commit は exit 2"""
     _set_pending_findings(self.pending_file, unresolved_count=0)
@@ -4088,6 +4307,47 @@ class CommitExitCodeTests(unittest.TestCase):
 
     result = run_script(
       ["commit", "--rationale", "reopen 停止点 commit"],
+      cwd=self.tmpdir,
+    )
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 0, result.stdout)
+
+  def test_commit_allows_reopen_explicit_commit_stop_point_field(self):
+    """next_step を壊さず commit_stop_point=true で reopen 停止点 commit を許可する"""
+    _set_pending_findings(self.pending_file, unresolved_count=0)
+    _stage_file(self.tmpdir, "notes.md", "# reopen 停止点の記録")
+    in_progress_path = (
+      Path(self.tmpdir)
+      / "stages"
+      / "in-progress"
+      / "reopen-procedure-2026-06-15.yaml"
+    )
+    in_progress_path.parent.mkdir(parents=True)
+    in_progress_path.write_text(
+      "process_id: reopen-procedure\n"
+      "next_step: 第3過程：implementation triad-review\n"
+      "step_number: 3\n"
+      "commit_stop_point: true\n"
+      "commit_stop_point_reason: implementation drafting 完了時点の停止点\n",
+      encoding="utf-8",
+    )
+    subprocess.run(
+      ["git", "add", "stages/in-progress/reopen-procedure-2026-06-15.yaml"],
+      cwd=str(self.tmpdir),
+      check=True,
+      capture_output=True,
+    )
+    _write_commit_approval(
+      self.tmpdir,
+      [
+        "notes.md",
+        "stages/in-progress/reopen-procedure-2026-06-15.yaml",
+      ],
+    )
+
+    result = run_script(
+      ["commit", "--rationale", "reopen 明示 commit_stop_point commit"],
       cwd=self.tmpdir,
     )
 

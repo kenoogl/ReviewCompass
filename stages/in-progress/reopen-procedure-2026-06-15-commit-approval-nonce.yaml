@@ -7,13 +7,228 @@ classification_basis: docs/reviews/reopen-classification-2026-06-15-wm-commit-ap
 completed_steps:
 - 第1過程：判定とフラグ差し戻し（利用者承認済み：2026-06-15「承認」）
 - 第2過程：正本修正（requirements.md Requirement 4 受入 6〜7 追記）
-next_step: 第3過程：requirements approval（人間承認待ち・停止点コミット）
+- 第3過程：design drafting（design.md に commit 承認 nonce challenge 設計を追記）
+- 第3過程：design triad-review review-run 実行（利用者提示ゲートで停止）
+- 第3過程：design triad-review 所見 C1〜C8 裁定・反映完了
+- 第3過程：design review-wave summary 実行（既存 triage 解析不能で insufficient）
+- 第3過程：design review-wave blocker 解消（既存 triage YAML のクォート不備を意味変更なしで修正）
+- "第3過程：design review-wave summary 再実行（status: ok）"
+- 第3過程：design alignment 実施（commit 承認 nonce challenge 設計は既存設計節と整合）
+- 第3過程：design approval proxy 判定準備（外部 API 送信は個別明示承認が必要なため未実行）
+- 第3過程：design approval proxy 判定取得（approved）
+- 第3過程：tasks drafting（tasks.md の T-004／T-006／T-011 に commit 承認 nonce 実装タスクを展開）
+- 第3過程：tasks triad-review review-run 実行（利用者提示ゲートで停止）
+- 第3過程：tasks triad-review 所見 C1〜C6 裁定・反映完了
+- "第3過程：tasks review-wave summary 実行（status: ok）"
+- 第3過程：tasks alignment 実施（commit 承認 nonce 実装タスクは上流要件・設計と整合）
+- 第3過程：tasks approval 承認（利用者発言「承認」）
+- 第3過程：implementation drafting（commit-approval nonce challenge を TDD 実装し、implementation-drafting.md に棚卸しを追記）
+next_step: 第3過程：implementation triad-review
 step_number: 3
+commit_stop_point: true
+commit_stop_point_reason: implementation drafting 完了時点の利用者指示「コミット」による停止点 commit。commit 後の次 action は implementation triad-review。
 pending_gates:
-- stages/requirements.yaml#approval
-current_blocker: stages/requirements.yaml#approval（人間承認待ち）
+- stages/implementation.yaml#triad-review
+- stages/implementation.yaml#review-wave
+- stages/implementation.yaml#alignment
+- stages/implementation.yaml#approval
+current_blocker: null
 completed_gates:
 - stages/requirements.yaml#alignment
+- stages/requirements.yaml#approval
+- stages/design.yaml#triad-review
+- stages/design.yaml#review-wave
+- stages/design.yaml#alignment
+- stages/design.yaml#approval
+- stages/tasks.yaml#triad-review
+- stages/tasks.yaml#review-wave
+- stages/tasks.yaml#alignment
+- stages/tasks.yaml#approval
+drafting_completed_gates:
+- stages/design.yaml#drafting
+- stages/tasks.yaml#drafting
+- stages/implementation.yaml#drafting
+design_drafting_result: workflow-management design.md に commit 承認 nonce challenge、承認レコード照合、consume、LLM 非依存、機微情報除去後の出典保存方針を追加した。
+design_drafting_evidence:
+- .reviewcompass/specs/workflow-management/design.md
+design_triad_review_run: .reviewcompass/specs/workflow-management/reviews/2026-06-15-workflow-management-design-review-run
+design_triad_review_summary: .reviewcompass/specs/workflow-management/reviews/2026-06-15-workflow-management-design-review-run/raw-review-triage-summary.md
+design_triad_review_status: user_visible_triage_gate
+tasks_drafting_result: workflow-management tasks.md の既存 T-004／T-006／T-011 に commit-approval nonce challenge の CLI、validation、consume、redaction、LLM 非依存 schema、統合テスト責務を追記した。新タスクは増やさず、既存 commit 直前ゲート領域の強化として扱う。
+tasks_drafting_evidence:
+- .reviewcompass/specs/workflow-management/tasks.md
+tasks_triad_review_run: .reviewcompass/specs/workflow-management/reviews/2026-06-15-workflow-management-tasks-review-run
+tasks_triad_review_summary: .reviewcompass/specs/workflow-management/reviews/2026-06-15-workflow-management-tasks-review-run/raw-review-triage-summary.md
+tasks_triad_review_status: user_visible_triage_gate
+implementation_drafting_result: commit-approval-v1 canonical digest、nonce challenge、record、invalidate、commit validation、stdin/no-store 承認本文処理、redaction/residual secret omission を TDD で実装した。旧 target_sha256 承認レコード互換は維持し、nonce record がある場合だけ厳格検査を追加した。
+implementation_drafting_evidence:
+- tools/check_workflow_action/commit_approval.py
+- tools/check-workflow-action.py
+- tests/tools/test_check_workflow_action.py
+- .reviewcompass/specs/workflow-management/implementation-drafting.md
+implementation_drafting_tests:
+- .venv/bin/python3 -m unittest tests.tools.test_check_workflow_action.CommitExitCodeTests.test_commit_approval_prepare_outputs_nonce_challenge_json tests.tools.test_check_workflow_action.CommitExitCodeTests.test_commit_approval_record_no_source_json_validates_for_commit tests.tools.test_check_workflow_action.CommitExitCodeTests.test_commit_approval_rejects_staged_change_after_record tests.tools.test_check_workflow_action.CommitExitCodeTests.test_commit_approval_rejects_expired_record tests.tools.test_check_workflow_action.CommitExitCodeTests.test_commit_approval_rejects_llm_metadata_fields -v
+- .venv/bin/python3 -m unittest tests.tools.test_check_workflow_action.CommitExitCodeTests.test_commit_approval_record_source_text_is_redacted tests.tools.test_check_workflow_action.CommitExitCodeTests.test_commit_approval_record_residual_secret_omits_source -v
+- .venv/bin/python3 -m unittest tests.tools.test_check_workflow_action.CommitExitCodeTests tests.tools.test_guarded_git_commit tests.tools.test_runtime_placement_freeze.CommitApprovalPlacementTests -v
+tasks_triad_review_clusters:
+- cluster: C1 time and canonical digest coverage
+  proposed_label: must-fix
+  summary: UTC ISO-8601、TTL 10分、now_utc 注入、clock rollback fail-closed、commit-approval-v1 canonical digest を T-006 の完了条件・テストへ明示する。
+- cluster: C2 malformed invalidation and consume persistence
+  proposed_label: must-fix
+  summary: malformed no partial inference、security validation failure invalidation、consume persistence failure 後の再利用拒否を明示する。
+- cluster: C3 redaction and source omission enum
+  proposed_label: must-fix
+  summary: redact_text、find_residual_secrets、source_omission_reason 4値を T-004/T-006 の責務・テストへ明示する。
+- cluster: C4 LLM independent attestation fields
+  proposed_label: must-fix
+  summary: attestation_type と guarantee_scope を T-006 と XDI invariant に明示する。
+- cluster: C5 exact index validation
+  proposed_label: should-fix
+  summary: commit path 内で実際に commit される exact index を検証することを明示する。
+- cluster: C6 JSON output and traceability granularity
+  proposed_label: should-fix
+  summary: commit-approval --json output 契約と Req 4 受入 5〜7 のタスク分担を明確化する。
+tasks_triad_review_user_decisions:
+- cluster: C1 time and canonical digest coverage
+  decision: approved_and_applied
+  final_label: must-fix
+  decided_at: 2026-06-15T18:58:00+09:00
+  rationale: 利用者が tasks triad-review 提示後に「承認」と明示したため、時刻契約、now_utc、clock rollback、commit-approval-v1 canonical digest を tasks.md に反映した。
+  applied_files:
+  - .reviewcompass/specs/workflow-management/tasks.md
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-15-workflow-management-tasks-review-run/triage.yaml
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-15-workflow-management-tasks-review-run/raw-review-triage-summary.md
+- cluster: C2 malformed invalidation and consume persistence
+  decision: approved_and_applied
+  final_label: must-fix
+  decided_at: 2026-06-15T18:58:00+09:00
+  rationale: 利用者が承認したため、malformed no partial inference、security validation failure invalidation、consume 永続化失敗後の再利用拒否を tasks.md に反映した。
+  applied_files:
+  - .reviewcompass/specs/workflow-management/tasks.md
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-15-workflow-management-tasks-review-run/triage.yaml
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-15-workflow-management-tasks-review-run/raw-review-triage-summary.md
+- cluster: C3 redaction and source omission enum
+  decision: approved_and_applied
+  final_label: must-fix
+  decided_at: 2026-06-15T18:58:00+09:00
+  rationale: 利用者が承認したため、redact_text、find_residual_secrets、source_omission_reason 4値を tasks.md に反映した。
+  applied_files:
+  - .reviewcompass/specs/workflow-management/tasks.md
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-15-workflow-management-tasks-review-run/triage.yaml
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-15-workflow-management-tasks-review-run/raw-review-triage-summary.md
+- cluster: C4 LLM independent attestation fields
+  decision: approved_and_applied
+  final_label: must-fix
+  decided_at: 2026-06-15T18:58:00+09:00
+  rationale: 利用者が承認したため、attestation_type、guarantee_scope、LLM/provider/model 非依存 invariant を tasks.md に反映した。
+  applied_files:
+  - .reviewcompass/specs/workflow-management/tasks.md
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-15-workflow-management-tasks-review-run/triage.yaml
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-15-workflow-management-tasks-review-run/raw-review-triage-summary.md
+- cluster: C5 exact index validation
+  decision: approved_and_applied
+  final_label: should-fix
+  decided_at: 2026-06-15T18:58:00+09:00
+  rationale: 利用者が承認したため、commit path 内で実際に commit される exact index を検証する旨を tasks.md に明示した。
+  applied_files:
+  - .reviewcompass/specs/workflow-management/tasks.md
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-15-workflow-management-tasks-review-run/triage.yaml
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-15-workflow-management-tasks-review-run/raw-review-triage-summary.md
+- cluster: C6 JSON output and traceability granularity
+  decision: approved_and_applied
+  final_label: should-fix
+  decided_at: 2026-06-15T18:58:00+09:00
+  rationale: 利用者が承認したため、commit-approval --json output 契約と Req 4 受入 5〜7 のタスク分担を tasks.md に明示した。
+  applied_files:
+  - .reviewcompass/specs/workflow-management/tasks.md
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-15-workflow-management-tasks-review-run/triage.yaml
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-15-workflow-management-tasks-review-run/raw-review-triage-summary.md
+design_triad_review_user_decisions:
+- cluster: C1 source text input channel
+  decision: approved_and_applied
+  decided_at: 2026-06-15T18:11:55+09:00
+  rationale: 利用者が C1 推奨案（stdin 経由＋no-store mode 併設）を承認したため、design.md と review-run triage 記録へ反映した。
+  applied_files:
+  - .reviewcompass/specs/workflow-management/design.md
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-15-workflow-management-design-review-run/raw-review-triage-summary.md
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-15-workflow-management-design-review-run/triage.yaml
+- cluster: C2 expiry and clock contract
+  decision: approved_and_applied
+  decided_at: 2026-06-15T18:13:54+09:00
+  rationale: 利用者が C2 推奨案（UTC ISO-8601 created_at/expires_at、TTL 10分、now_utc 注入、時計巻き戻り fail-closed）を承認したため、design.md と review-run triage 記録へ反映した。
+  applied_files:
+  - .reviewcompass/specs/workflow-management/design.md
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-15-workflow-management-design-review-run/raw-review-triage-summary.md
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-15-workflow-management-design-review-run/triage.yaml
+- cluster: C3 malformed runtime state
+  decision: approved_and_applied
+  decided_at: 2026-06-15T18:15:43+09:00
+  rationale: 利用者が C3 案A（壊れた challenge／approval record は補完せず fail-closed）を承認したため、design.md と review-run triage 記録へ反映した。
+  applied_files:
+  - .reviewcompass/specs/workflow-management/design.md
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-15-workflow-management-design-review-run/raw-review-triage-summary.md
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-15-workflow-management-design-review-run/triage.yaml
+- cluster: C4 canonical target digest
+  decision: approved_and_applied
+  decided_at: 2026-06-15T18:17:47+09:00
+  rationale: 利用者が C4 案A（versioned canonical digest format 固定）を承認したため、design.md と review-run triage 記録へ反映した。
+  applied_files:
+  - .reviewcompass/specs/workflow-management/design.md
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-15-workflow-management-design-review-run/raw-review-triage-summary.md
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-15-workflow-management-design-review-run/triage.yaml
+- cluster: C5 validation/commit race and consumption
+  decision: proxy_approved_and_applied
+  decided_at: 2026-06-15T18:24:04+09:00
+  proxy_model_id: gpt-5.5
+  rationale: proxy_model が C5 案A（commit path 内で exact index を検証、security validation failure は invalidated、通常 git execution failure は条件付き retry、consume 永続化失敗後は再利用拒否）を採用したため、design.md と review-run triage 記録へ反映した。
+  evidence:
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-15-workflow-management-design-review-run/proxy-decision-prompts/C5-C8.prompt.md
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-15-workflow-management-design-review-run/proxy-decisions/C5-C8.raw.yaml
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-15-workflow-management-design-review-run/proxy-approval.yaml
+  applied_files:
+  - .reviewcompass/specs/workflow-management/design.md
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-15-workflow-management-design-review-run/raw-review-triage-summary.md
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-15-workflow-management-design-review-run/triage.yaml
+- cluster: C6 redaction reference and omission schema
+  decision: proxy_approved_and_applied
+  decided_at: 2026-06-15T18:24:04+09:00
+  proxy_model_id: gpt-5.5
+  rationale: proxy_model が C6 案A（既存 redaction helper の具体参照と source_omission_reason enum 固定）を採用したため、design.md と review-run triage 記録へ反映した。
+  evidence:
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-15-workflow-management-design-review-run/proxy-decision-prompts/C5-C8.prompt.md
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-15-workflow-management-design-review-run/proxy-decisions/C5-C8.raw.yaml
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-15-workflow-management-design-review-run/proxy-approval.yaml
+  applied_files:
+  - .reviewcompass/specs/workflow-management/design.md
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-15-workflow-management-design-review-run/raw-review-triage-summary.md
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-15-workflow-management-design-review-run/triage.yaml
+- cluster: C7 singleton challenge concurrency
+  decision: proxy_approved_and_applied
+  decided_at: 2026-06-15T18:24:04+09:00
+  proxy_model_id: gpt-5.5
+  rationale: proxy_model が C7 案A（singleton 維持、未消費 challenge がある prepare は fail-closed、明示 invalidate 経由で置換）を採用したため、design.md と review-run triage 記録へ反映した。
+  evidence:
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-15-workflow-management-design-review-run/proxy-decision-prompts/C5-C8.prompt.md
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-15-workflow-management-design-review-run/proxy-decisions/C5-C8.raw.yaml
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-15-workflow-management-design-review-run/proxy-approval.yaml
+  applied_files:
+  - .reviewcompass/specs/workflow-management/design.md
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-15-workflow-management-design-review-run/raw-review-triage-summary.md
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-15-workflow-management-design-review-run/triage.yaml
+- cluster: C8 schema guardrails and audit semantics
+  decision: proxy_approved_and_applied
+  decided_at: 2026-06-15T18:24:04+09:00
+  proxy_model_id: gpt-5.5
+  rationale: proxy_model が C8 案A（UTF-8/4096 bytes、LLM/provider/model fields 禁止、attestation_type と guarantee_scope 追加）を採用したため、design.md と review-run triage 記録へ反映した。
+  evidence:
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-15-workflow-management-design-review-run/proxy-decision-prompts/C5-C8.prompt.md
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-15-workflow-management-design-review-run/proxy-decisions/C5-C8.raw.yaml
+  applied_files:
+  - .reviewcompass/specs/workflow-management/design.md
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-15-workflow-management-design-review-run/raw-review-triage-summary.md
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-15-workflow-management-design-review-run/triage.yaml
+next_design_triad_review_cluster: null
 downstream_impact_decisions:
 - gate: stages/requirements.yaml#alignment
   feature_scope: all_features
@@ -21,5 +236,96 @@ downstream_impact_decisions:
   rationale: Requirement 4 受入 6〜7 は既存不可逆操作直前ゲートの commit 承認レコード強化であり、既存 Requirement 1〜11 と矛盾しない。design／tasks／implementation の recheck は維持する。
   evidence:
   - .reviewcompass/specs/_cross_feature/reviews/2026-06-15-requirements-commit-approval-nonce-reopen-alignment.md
+- gate: stages/requirements.yaml#approval
+  feature_scope: workflow-management
+  decision: approved
+  rationale: 利用者が「推奨は 案B → 案A」と明示し、案A（requirements approval を承認して本線を進める）を承認した。Requirement 4 受入 6〜7 は alignment 済みで、下流 design／tasks／implementation の recheck は維持する。
+  evidence:
+  - 2026-06-15 利用者発言「推奨は 案B → 案A」
+- gate: stages/design.yaml#triad-review
+  feature_scope: workflow-management
+  decision: proxy_approved
+  rationale: design triad-review review-run の C1〜C4 は利用者判断で、C5〜C8 は利用者指示「proxyモードで進めて」に基づく proxy_model 判断で裁定し、すべて design.md と review-run 記録へ反映済み。未決 finding はない。
+  evidence:
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-15-workflow-management-design-review-run/triage.yaml
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-15-workflow-management-design-review-run/raw-review-triage-summary.md
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-15-workflow-management-design-review-run/proxy-approval.yaml
+- gate: stages/design.yaml#review-wave
+  feature_scope: all_features
+  decision: review_wave_ok
+  rationale: "review-wave-summary の再実行で status: ok を確認した。workflow-management は upstream_change_pending=true のまま design/tasks/implementation recheck を継続する。"
+  evidence:
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-15-design-commit-approval-nonce-review-wave.md
+- gate: stages/design.yaml#alignment
+  feature_scope: workflow-management
+  decision: existing_sufficient
+  rationale: Requirement 4 受入 6〜7 は design.md §不可逆操作の直前ゲートモデル §2.1 と要件追跡表に展開済みで、既存設計節と矛盾しない。tasks／implementation の recheck は維持する。
+  evidence:
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-15-design-commit-approval-nonce-reopen-alignment.md
+- gate: stages/design.yaml#approval
+  feature_scope: workflow-management
+  decision: proxy_approved
+  rationale: proxy_model が design drafting、triad-review、review-wave、alignment の完了と未解決 design-level blocker 不在を確認し、approval を承認した。
+  evidence:
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-15-design-commit-approval-nonce-approval.md
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-15-workflow-management-design-review-run/proxy-decision-prompts/design-approval.prompt.md
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-15-workflow-management-design-review-run/proxy-decisions/design-approval.raw.yaml
+- gate: stages/tasks.yaml#triad-review
+  feature_scope: workflow-management
+  decision: approved
+  rationale: tasks triad-review review-run の C1〜C6 を利用者承認に基づき裁定し、すべて tasks.md と review-run 記録へ反映済み。未決 finding はない。
+  evidence:
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-15-workflow-management-tasks-review-run/triage.yaml
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-15-workflow-management-tasks-review-run/raw-review-triage-summary.md
+- gate: stages/tasks.yaml#review-wave
+  feature_scope: all_features
+  decision: review_wave_ok
+  rationale: "review-wave-summary の実行で status: ok を確認した。workflow-management は upstream_change_pending=true のまま tasks/implementation recheck を継続する。"
+  evidence:
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-15-tasks-commit-approval-nonce-review-wave.md
+- gate: stages/tasks.yaml#alignment
+  feature_scope: workflow-management
+  decision: existing_sufficient
+  rationale: tasks.md の T-004／T-006／T-011 追記は Requirement 4 受入 6〜7 と design.md §不可逆操作の直前ゲートモデル §2.1 に整合し、implementation recheck を残している。
+  evidence:
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-15-tasks-commit-approval-nonce-reopen-alignment.md
+- gate: stages/tasks.yaml#approval
+  feature_scope: workflow-management
+  decision: approved
+  rationale: 利用者が tasks フェーズの approval を承認した。implementation recheck は維持する。
+  evidence:
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-15-tasks-commit-approval-nonce-approval.md
+  - 2026-06-15 利用者発言「承認」
+approval_attempts:
+- gate: stages/design.yaml#approval
+  attempted_at: 2026-06-15T18:36:00+09:00
+  actor: proxy_model
+  result: blocked_before_external_submission
+  blocker: 外部 API へ design approval prompt を送信するには個別の明示承認が必要
+  evidence:
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-15-workflow-management-design-review-run/proxy-decision-prompts/design-approval.prompt.md
+- gate: stages/design.yaml#approval
+  attempted_at: 2026-06-15T18:42:00+09:00
+  actor: proxy_model
+  proxy_model_id: gpt-5.5
+  result: approved
+  evidence:
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-15-workflow-management-design-review-run/proxy-decision-prompts/design-approval.prompt.md
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-15-workflow-management-design-review-run/proxy-decisions/design-approval.raw.yaml
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-15-design-commit-approval-nonce-approval.md
+review_wave_attempts:
+- gate: stages/design.yaml#review-wave
+  attempted_at: 2026-06-15T18:28:00+09:00
+  command: .venv/bin/python3 tools/check-workflow-action.py review-wave-summary --out .reviewcompass/specs/_cross_feature/reviews/2026-06-15-design-commit-approval-nonce-review-wave.md --json
+  result: insufficient
+  blocker: "任意記録の解析不能: .reviewcompass/evidence/review-runs/2026-06-15-implementation-r11-reopen-triad-review-run/triage.yaml"
+  output:
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-15-design-commit-approval-nonce-review-wave.md
+- gate: stages/design.yaml#review-wave
+  attempted_at: 2026-06-15T18:31:00+09:00
+  command: .venv/bin/python3 tools/check-workflow-action.py review-wave-summary --out .reviewcompass/specs/_cross_feature/reviews/2026-06-15-design-commit-approval-nonce-review-wave.md --json
+  result: ok
+  output:
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-15-design-commit-approval-nonce-review-wave.md
 workaround_notes:
 - 2026-06-15 requirements alignment 進行時、通常の spec-set は stages/in-progress があるため fail-closed で遮断された。reopen 中の pending gate 完了更新専用コマンドが無いため、alignment 記録・spec.json・pending_gates・completed_gates・downstream_impact_decisions・current_blocker を手編集で同期した。次作業として TODO_NEXT_SESSION.md §4 項目10に `reopen-advance-gate` 相当の追加を登録済み。

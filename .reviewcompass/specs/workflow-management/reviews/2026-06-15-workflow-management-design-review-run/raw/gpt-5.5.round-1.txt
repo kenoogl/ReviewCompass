@@ -1,0 +1,25 @@
+findings:
+  - severity: ERROR
+    target_location: "Design Delta / §不可逆操作の直前ゲートモデル §2.1 commit 承認 nonce challenge"
+    description: "Malformed challenge and malformed approval-record handling are not explicitly specified as fail-closed cases."
+    rationale: "The requirements delta requires missing, malformed, expired, mismatched, or consumed state to fail closed. The design summary names existence, nonce, expiry, consumed state, digest, staged file set, and staged content checks, but does not state that invalid JSON, missing required fields, wrong field types, duplicate/unknown-invalid path entries, or malformed approval records are rejected at both record creation and commit gate. Without this, implementation could treat partial or unparsable runtime state inconsistently."
+
+  - severity: WARN
+    target_location: "Design Delta / target digest computation"
+    description: "The canonical encoding for the whole-target digest is underspecified."
+    rationale: "The design says the target digest is computed from normalized staged paths and staged blob hashes in stable order, but does not define the exact byte serialization, separators, escaping, path normalization rules, file-mode/submodule handling if applicable, or digest domain/version. Ambiguity here can cause prepare, record, and gate implementations to compute different digests, weakening the staged-content binding guarantee."
+
+  - severity: WARN
+    target_location: "Design Delta / commit gate and commit success consumption"
+    description: "The design does not address the race between gate validation and the actual commit operation."
+    rationale: "The stated guarantee depends on the committed index matching the validated staged file set and blob hashes. If the index can change after the commit gate validates but before the commit executes, approval may no longer be bound to the committed content. The design should specify that validation occurs inside the immediate pre-commit path against the exact index being committed, or otherwise use locking/snapshot semantics."
+
+  - severity: WARN
+    target_location: "Design Delta / commit success consumes challenge and approval record"
+    description: "Consumption failure after a successful commit is not defined."
+    rationale: "The design says commit success consumes the challenge and approval record, but does not define what happens if persisting that consumed state fails after the irreversible commit has already completed. Leaving an unconsumed, unexpired approval can permit replay for the same staged content. The design should specify fail-safe cleanup, deletion, invalidation, or subsequent gate refusal when post-commit consumption cannot be recorded."
+
+  - severity: WARN
+    target_location: "Design Delta / record command --source-text <user text>"
+    description: "Passing approval source text as a command-line argument can expose raw sensitive text outside the redaction path."
+    rationale: "Although the design preserves redaction before storing approval source text, `--source-text <user text>` may leak raw secrets through shell history, process listings, terminal logs, or command tracing before sanitization. To better preserve the existing secret-handling policy, the design should prefer stdin, a protected temporary file, or an explicit no-store input channel for source text."

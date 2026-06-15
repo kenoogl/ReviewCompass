@@ -1,0 +1,20 @@
+approved_by: proxy_model
+finding_id: 2026-06-15-workflow-management-design-review-run-claude-sonnet-4-6-primary-002
+proxy_model_id: gpt-5.5
+decision_prompt_path: proxy-decision-prompts/C5-C8.prompt.md
+selected_option: A
+final_label: must-fix
+rationale: C5 proxy decision selected option A. Validate in the commit path against
+  the exact index, invalidate challenge/approval on security validation failure, allow
+  retry only for ordinary git execution failure with unchanged index and still-valid
+  approval state, and reject approval/challenge after consume persistence failure.
+raw_response_path: proxy-decisions/C5-C8.raw.yaml
+candidate_options:
+- A
+- B
+- C
+rejected_options:
+  B: Safe but unnecessarily disruptive for transient non-security git failures.
+  C: Leaves race and consumption behavior undefined.
+source_raw_paths:
+- raw/claude-sonnet-4-6.round-1.txt

@@ -12,8 +12,8 @@ findings:
     sources: [A-001]
     severity: must-fix
     status: resolved
-    summary: current_state_text に decision-source-lint の状態が含まれていない
-    resolution: current_state_text に「decision-source-lint 判定: {verdict}（{件数} 件）」を追加
+    summary: "current_state_text に decision-source-lint の状態が含まれていない"
+    resolution: "current_state_text に「decision-source-lint 判定: {verdict}（{件数} 件）」を追加"
   - id: C2
     sources: [F-002, A-002]
     severity: should-fix

@@ -1,0 +1,40 @@
+findings:
+  - severity: INFO
+    target_location: "§2.1 commit 承認 nonce challenge — Record command surface"
+    description: "The `--source-text` parameter accepts user-supplied free text, but the design does not specify maximum length, encoding constraints, or behavior when the input exceeds limits."
+    rationale: "Without a length or encoding bound, implementations may diverge on truncation vs. rejection, making TDD contract ambiguous. This is non-blocking but should be clarified before task decomposition."
+
+  - severity: WARN
+    target_location: "§2.1 — Commit failure non-consumption clause"
+    description: "The design states that commit failure does not consume the challenge or approval record, but does not define what constitutes 'commit failure' vs. a partial-write scenario (e.g., some files written, process killed mid-commit)."
+    rationale: "A partial-write that leaves staged content partially applied could allow a re-attempt with a now-stale target digest. The fail-closed guarantee relies on the staged file set and blob hashes being unchanged at gate time, but if the working tree is partially mutated, the challenge may be unconsumed yet the content it was bound to no longer matches reality. The design should explicitly state that any partial mutation of staged files is treated as a mismatch (fail-closed) even if the challenge is unconsumed."
+
+  - severity: WARN
+    target_location: "§2.1 — Target digest computation (normalized stable order)"
+    description: "The design says the target digest is computed from 'normalized staged paths and staged blob hashes in stable order' but does not specify the normalization rule (e.g., POSIX path separator, lowercase, absolute vs. repo-relative) or the sort key (lexicographic on normalized path, byte order, etc.)."
+    rationale: "If two implementations apply different normalization or sort orders, they will produce different digests for the same logical staged set, causing spurious gate failures or, worse, allowing a digest collision between different staged sets. This must be pinned before TDD begins."
+
+  - severity: WARN
+    target_location: "§2.1 — Sensitive-information removal policy for source-text"
+    description: "The design defers to 'the existing sensitive-information removal policy' without citing it by section or document reference. The omission-reason field is mentioned but its schema and allowed values are not defined."
+    rationale: "Reviewers and implementers cannot verify compliance with Requirement 4 acceptance 5 (no raw secrets in logs/records) without a pointer to the referenced policy. The omission-reason field's absence of a schema creates inconsistent audit trail entries. At minimum, a cross-reference (document + section) and a closed enum for omission reasons should be added."
+
+  - severity: INFO
+    target_location: "§2.1 — Challenge path and approval record path"
+    description: "Both paths are fixed singletons (`.reviewcompass/runtime/approvals/commit-approval-challenge.json` and `commit-approval.json`). The design does not address concurrent or interleaved commit approval workflows."
+    rationale: "If the tooling is ever invoked in parallel (e.g., two open sessions), a second `prepare` call would silently overwrite the first challenge. This is an out-of-scope scenario for the current reopen, but the design should at least state that concurrent invocation is not supported and that `prepare` should fail or warn if an unconsumed challenge already exists."
+
+  - severity: INFO
+    target_location: "§2.1 — LLM/provider/model non-dependence"
+    description: "The design asserts that validation does not depend on LLM/provider/model but does not specify a test-observable mechanism that enforces this (e.g., no such fields in challenge or approval record schema, or a schema that explicitly rejects unknown fields)."
+    rationale: "Without a structural enforcement mechanism in the schema, a future implementer could accidentally include model metadata as an informational field that later gets promoted to a validation input. Explicitly excluding these fields from both schemas, or adding a schema-level comment, would make the non-dependence enforceable rather than merely stated."
+
+  - severity: INFO
+    target_location: "§2.1 — Guarantee boundary statement"
+    description: "The design correctly scopes the guarantee: it binds approval to staged content but does not cryptographically prove a UI utterance. This boundary is stated but is not surfaced in the approval record itself (e.g., as a `guarantee_scope` field)."
+    rationale: "Downstream consumers of the approval record (audit tooling, policy checkers) may misinterpret the record as a stronger cryptographic proof than it provides. Adding a `guarantee_scope` or `attestation_type` field with a fixed value would make the boundary machine-readable and reduce misinterpretation risk."
+
+  - severity: ERROR
+    target_location: "§2.1 — Expiry definition and clock source"
+    description: "The design references 'nonce expiry' and 'challenge not expired' as a gate condition but does not define the expiry duration, the clock source (wall clock, monotonic, UTC), or how clock skew or system clock manipulation is handled."
+    rationale: "Without a defined expiry window and authoritative clock source, the expiry check is unimplementable in a deterministic, test-verifiable way. An implementation that reads local system time with no bounds on skew could allow a replay attack if the clock is set backward, violating the fail-closed requirement for expired nonces. This must be specified before TDD can produce a passing test for the expiry gate condition."

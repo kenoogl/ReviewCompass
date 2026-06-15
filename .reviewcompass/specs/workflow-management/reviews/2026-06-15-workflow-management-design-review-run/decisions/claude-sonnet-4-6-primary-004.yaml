@@ -1,0 +1,18 @@
+approved_by: proxy_model
+finding_id: 2026-06-15-workflow-management-design-review-run-claude-sonnet-4-6-primary-004
+proxy_model_id: gpt-5.5
+decision_prompt_path: proxy-decision-prompts/C5-C8.prompt.md
+selected_option: A
+final_label: must-fix
+rationale: C6 proxy decision selected option A. The design must bind source redaction
+  to the existing secret-removal implementation and use a closed omission schema.
+raw_response_path: proxy-decisions/C5-C8.raw.yaml
+candidate_options:
+- A
+- B
+- C
+rejected_options:
+  B: Generic reference leaves redaction and omission semantics implementation-dependent.
+  C: Removing source persistence entirely is broader than necessary.
+source_raw_paths:
+- raw/claude-sonnet-4-6.round-1.txt

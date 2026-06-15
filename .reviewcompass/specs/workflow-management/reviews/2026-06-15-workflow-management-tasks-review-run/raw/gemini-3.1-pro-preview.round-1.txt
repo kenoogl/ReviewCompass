@@ -1,0 +1,13 @@
+findings:
+  - severity: ERROR
+    target_location: "Tasks Drafting Changes To Review (T-006)"
+    description: "T-006 validation scope omits residual secret detection and the `source_omission_reason` enum."
+    rationale: "The design basis explicitly requires checking for residual secrets via `find_residual_secrets` and handling a specific `source_omission_reason` enum (`unsafe_source_omitted`, `redaction_failed`, `residual_secret_detected`). Only mentioning 'redaction' in T-006 risks omitting the required secondary security gate for approval records."
+  - severity: ERROR
+    target_location: "Tasks Drafting Changes To Review (T-006)"
+    description: "T-006 validation and testing scope omits clock rollback fail-closed handling and `now_utc` injection."
+    rationale: "The design requires strict TTL management (10 minutes), clock rollback fail-closed logic, and `now_utc` test injection for predictability. Listing 'expiry' broadly in T-006 is insufficient; the task must explicitly mandate the implementation and testing of these specific time-based security controls."
+  - severity: WARN
+    target_location: "Tasks Drafting Changes To Review (T-004 / T-006)"
+    description: "Missing explicit task coverage for the canonical digest format and strict metadata constants."
+    rationale: "The design dictates the canonical digest format (`commit-approval-v1`), `attestation_type=staged_content_nonce_binding`, and `guarantee_scope=staged_content_binding_not_ui_utterance_proof`. These constants are critical for Requirement 4 acceptance 7 compliance and must be explicitly assigned to task completion conditions to ensure the generated schema matches the design."

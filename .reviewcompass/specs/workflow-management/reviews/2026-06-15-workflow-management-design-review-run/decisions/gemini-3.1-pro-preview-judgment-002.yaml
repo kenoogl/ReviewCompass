@@ -1,0 +1,18 @@
+approved_by: proxy_model
+finding_id: 2026-06-15-workflow-management-design-review-run-gemini-3.1-pro-preview-judgment-002
+proxy_model_id: gpt-5.5
+decision_prompt_path: proxy-decision-prompts/C5-C8.prompt.md
+selected_option: A
+final_label: must-fix
+rationale: C5 proxy decision selected option A. Validation failures are security failures
+  and must invalidate challenge/approval rather than leave stale active approval state.
+raw_response_path: proxy-decisions/C5-C8.raw.yaml
+candidate_options:
+- A
+- B
+- C
+rejected_options:
+  B: Safe but unnecessarily disruptive for transient non-security git failures.
+  C: Leaves stale challenge/approval active after validation failure.
+source_raw_paths:
+- raw/gemini-3.1-pro-preview.round-1.txt

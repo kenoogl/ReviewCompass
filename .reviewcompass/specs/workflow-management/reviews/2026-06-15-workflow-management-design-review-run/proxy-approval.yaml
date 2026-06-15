@@ -1,0 +1,28 @@
+approved_action: review_triage_decide
+approved_by: proxy_model
+review_run_id: 2026-06-15-workflow-management-design-review-run
+summary_presented_to_user: true
+triage_presented_to_user: true
+consumed: false
+approved_finding_ids:
+- 2026-06-15-workflow-management-design-review-run-claude-sonnet-4-6-primary-002
+- 2026-06-15-workflow-management-design-review-run-gpt-5.5-adversarial-003
+- 2026-06-15-workflow-management-design-review-run-gpt-5.5-adversarial-004
+- 2026-06-15-workflow-management-design-review-run-gemini-3.1-pro-preview-judgment-002
+- 2026-06-15-workflow-management-design-review-run-claude-sonnet-4-6-primary-004
+- 2026-06-15-workflow-management-design-review-run-claude-sonnet-4-6-primary-005
+approved_final_labels:
+  2026-06-15-workflow-management-design-review-run-claude-sonnet-4-6-primary-002: must-fix
+  2026-06-15-workflow-management-design-review-run-gpt-5.5-adversarial-003: must-fix
+  2026-06-15-workflow-management-design-review-run-gpt-5.5-adversarial-004: must-fix
+  2026-06-15-workflow-management-design-review-run-gemini-3.1-pro-preview-judgment-002: must-fix
+  2026-06-15-workflow-management-design-review-run-claude-sonnet-4-6-primary-004: must-fix
+  2026-06-15-workflow-management-design-review-run-claude-sonnet-4-6-primary-005: must-fix
+proxy_model_id: gpt-5.5
+proxy_decisions:
+  2026-06-15-workflow-management-design-review-run-claude-sonnet-4-6-primary-002: decisions/claude-sonnet-4-6-primary-002.yaml
+  2026-06-15-workflow-management-design-review-run-gpt-5.5-adversarial-003: decisions/gpt-5.5-adversarial-003.yaml
+  2026-06-15-workflow-management-design-review-run-gpt-5.5-adversarial-004: decisions/gpt-5.5-adversarial-004.yaml
+  2026-06-15-workflow-management-design-review-run-gemini-3.1-pro-preview-judgment-002: decisions/gemini-3.1-pro-preview-judgment-002.yaml
+  2026-06-15-workflow-management-design-review-run-claude-sonnet-4-6-primary-004: decisions/claude-sonnet-4-6-primary-004.yaml
+  2026-06-15-workflow-management-design-review-run-claude-sonnet-4-6-primary-005: decisions/claude-sonnet-4-6-primary-005.yaml

@@ -1,0 +1,63 @@
+role: adversarial
+provider: openai-api
+model: gpt-5.5
+attempts: 1
+duration_seconds: 39.501
+findings:
+- severity: ERROR
+  target_location: .reviewcompass/specs/workflow-management/tasks.md / T-006 commit
+    approval validation responsibilities
+  description: 'must-fix: T-006 does not explicitly carry several required challenge
+    timing and digest-version responsibilities.'
+  rationale: The design basis requires canonical digest version `commit-approval-v1`,
+    UTC ISO-8601 `created_at` and `expires_at`, a 10-minute TTL, `now_utc` test injection,
+    and clock rollback fail-closed behavior. The described T-006 coverage mentions
+    nonce, expiry, consumed state, staged content, and target digest, but not these
+    implementable details or their tests. Without explicit task ownership, Requirement
+    4 acceptance 6 is only partially translated.
+- severity: ERROR
+  target_location: .reviewcompass/specs/workflow-management/tasks.md / T-006 fail-closed
+    and persistence behavior
+  description: 'must-fix: malformed-state, security-failure invalidation, and consume-persistence
+    failure behavior are not sufficiently explicit.'
+  rationale: The design requires malformed challenge or approval records to fail closed
+    with no partial inference, security validation failures to invalidate challenge/approval
+    state, successful commits to consume challenge/approval, and consume persistence
+    failures to reject later reuse. The draft summary references challenge/approval
+    read, invalidation, consume, and retry behavior, but does not make these exact
+    failure modes and completion tests explicit. These are central to preventing nonce
+    reuse or bypass.
+- severity: ERROR
+  target_location: .reviewcompass/specs/workflow-management/tasks.md / T-004 and T-006
+    approval source-text handling
+  description: 'must-fix: approval source-text redaction and omission requirements
+    are incompletely translated.'
+  rationale: The design requires source text only via stdin or no-store mode, no argv
+    source text, redaction with `tools.session_record_extractor.redact.redact_text`,
+    residual secret detection with `find_residual_secrets`, and the `source_omission_reason`
+    enum values `source_not_provided`, `unsafe_source_omitted`, `redaction_failed`,
+    and `residual_secret_detected`. The task changes mention stdin/no-source/no argv
+    and redaction, but not the specific redaction component, residual secret detector,
+    or omission enum behavior. This leaves required security behavior unowned and
+    undertested.
+- severity: ERROR
+  target_location: .reviewcompass/specs/workflow-management/tasks.md / T-006 approval
+    record schema and guarantee fields
+  description: 'must-fix: required model-independence attestation fields are missing
+    from task responsibilities.'
+  rationale: Requirement 4 acceptance 7 and the design require judgment not to depend
+    on LLM/provider/model identity, schema rejection for `llm`, `provider`, `model`,
+    `model_id`, and `proxy_model_id`, plus explicit `attestation_type=staged_content_nonce_binding`
+    and `guarantee_scope=staged_content_binding_not_ui_utterance_proof`. The draft
+    mentions rejecting model/provider fields but does not state the required attestation
+    and guarantee fields. Without them, the implementation may not preserve the approved
+    design evidence or communicate the intended security guarantee.
+- severity: WARN
+  target_location: .reviewcompass/specs/workflow-management/tasks.md / T-006 commit
+    path validation
+  description: 'should-fix: exact-index validation is not stated distinctly from staged
+    file/content matching.'
+  rationale: The design says the commit path validates the exact index. The draft
+    mentions staged file set/content matching, which is close, but exact index validation
+    should be explicit because commit gating must bind to the actual index being committed
+    rather than a reconstructed or partially inferred file set.

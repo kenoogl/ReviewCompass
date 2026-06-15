@@ -1,0 +1,35 @@
+findings:
+  - severity: WARN
+    target_location: "tasks.md T-006 validation coverage"
+    description: "T-006 validation list does not explicitly mention clock rollback fail-closed behavior or now_utc test injection as a required test coverage item."
+    rationale: "design.md §2.1 explicitly specifies UTC ISO-8601 timestamps, TTL 10 minutes, now_utc test injection, and clock rollback fail-closed. If T-006 completion conditions or tests do not enumerate clock rollback as a distinct failure path, implementers may omit it. The review-target document lists expiry in T-006 coverage but does not separately call out clock rollback or the test injection hook, which are distinct design mandates."
+
+  - severity: WARN
+    target_location: "tasks.md T-006 validation coverage"
+    description: "T-006 coverage list does not explicitly name consume persistence failure as a testable condition (i.e., the case where writing the consumed state fails and later reuse must still be rejected)."
+    rationale: "design.md §2.1 states 'Consume persistence failure rejects later reuse.' This is a distinct failure mode from ordinary consumed-state checking. The review-target mentions 'consume' and 'retry behavior' in T-006 coverage, but consume persistence failure is a separate, non-obvious edge case that requires an explicit test. Omitting it risks an incomplete implementation."
+
+  - severity: WARN
+    target_location: "tasks.md T-006 validation coverage"
+    description: "T-006 coverage does not explicitly list 'approval/challenge target digest match' (i.e., the check that the digest stored in the approval record matches the digest stored in the challenge) as a named validation step."
+    rationale: "Requirement 4 acceptance 6 enumerates this as a required gate: 'approval/challenge target digest match.' The review-target document lists 'target digest' generically in T-006 coverage, but does not distinguish the cross-document digest comparison from the per-file sha256 / whole-target digest checks. An implementer reading the task list could satisfy 'target digest' by checking only one side of the comparison."
+
+  - severity: WARN
+    target_location: "tasks.md T-006 validation coverage"
+    description: "T-006 coverage does not explicitly enumerate all source_omission_reason enum values (source_not_provided, unsafe_source_omitted, redaction_failed, residual_secret_detected) as distinct test cases."
+    rationale: "design.md §2.1 names four source_omission_reason values. The review-target mentions redaction and residual secret detection as coverage items, but does not enumerate the four enum branches. Without explicit enumeration, the completion condition for T-006 is ambiguous about whether all four paths must be tested, risking partial coverage."
+
+  - severity: INFO
+    target_location: "tasks.md requirements traceability"
+    description: "The traceability entry maps Requirement 4 acceptance 5, 6, and 7 to T-004 / T-006 / T-011, but the review-target does not state which acceptance criterion maps to which task, leaving the mapping ambiguous."
+    rationale: "Good traceability tables show per-criterion task ownership. A combined mapping hides whether T-011 owns any part of acceptance 6 or 7, or only acceptance 5. This is not a blocking issue but reduces auditability and may cause confusion during verification."
+
+  - severity: INFO
+    target_location: "tasks.md T-004 subcommand list"
+    description: "T-004 lists the four commit-approval subcommands but does not mention the --json flag behavior contract (e.g., that all output must be machine-readable JSON and that human-readable text is forbidden on the happy path)."
+    rationale: "design.md §2.1 consistently appends --json to every subcommand, implying a structured output contract. If T-004 completion conditions do not include a test that the --json flag produces valid parseable JSON and suppresses free-form prose, the CLI contract may be inconsistently implemented."
+
+  - severity: INFO
+    target_location: "tasks.md change intent / XDI-WM-001"
+    description: "The review-target confirms that change intent and XDI-WM-001 now mention commit-approval-nonce, but does not specify whether the XDI note records the non-LLM-dependency guarantee (Requirement 4 acceptance 7) as a cross-cutting design invariant."
+    rationale: "Requirement 4 acceptance 7 is an architectural constraint (judgment must not depend on controlling LLM/provider/model). Recording this in XDI-WM-001 as a named invariant, not merely as a mention, would help future reviews detect regressions. This is advisory only."
