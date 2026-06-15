@@ -67,6 +67,18 @@ class CodexHookRepositoryTests(unittest.TestCase):
       "Codex SessionStart で前セッション取り込み hook を登録する必要がある",
     )
 
+  def test_codex_user_prompt_capture_fallback_hook_is_registered(self):
+    hooks_config = json.loads((REPO_ROOT / ".codex/hooks.json").read_text())
+    commands = [
+      hook["command"]
+      for group in hooks_config["hooks"].get("UserPromptSubmit", [])
+      for hook in group.get("hooks", [])
+    ]
+    self.assertTrue(
+      any(".codex/hooks/session-record-capture-previous.sh" in c for c in commands),
+      "Codex Desktop で SessionStart が発火しない場合に備え、UserPromptSubmit fallback でも登録する必要がある",
+    )
+
 
 if __name__ == "__main__":
   unittest.main()

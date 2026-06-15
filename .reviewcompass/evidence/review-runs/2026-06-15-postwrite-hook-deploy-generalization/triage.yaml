@@ -1,0 +1,26 @@
+run_id: 2026-06-15-postwrite-hook-deploy-generalization
+triage_status: draft
+generated_at: '2026-06-15T07:17:43.389591+00:00'
+decision_actor: null
+decision_actor_type: human
+items:
+- finding_id: 2026-06-15-postwrite-hook-deploy-generalization-gemini-3.5-flash-primary-001
+  run_id: 2026-06-15-postwrite-hook-deploy-generalization
+  source_model: gemini-3.5-flash
+  source_round: round-1
+  source_raw_path: raw/gemini-3.5-flash.round-1.txt
+  source_parsed_path: parsed/gemini-3.5-flash.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: docs/operations/INITIAL_SETUP_LLM_GUIDE.md#10-hook-導入（強く推奨）
+  plain_language_summary: Codexのグローバルhookラッパーに関する設定手順および一般化のための説明が不足しています。
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: TODO_NEXT_SESSION.mdの記述によると、Codex Desktop環境においてワークスペースローカルな `.codex/hooks.json`
+    が正常に発火しない問題への対策として、ホームディレクトリ配下のグローバル設定（`~/.codex/hooks.json`）にcwd判定付きのラッパーを登録する回避策がとられています。しかし、INITIAL_SETUP_LLM_GUIDE.mdの「10.
+    hook 導入」では対象アプリ内の `.codex/hooks.json` を作成する手順しか記載されておらず、このグローバルラッパーの必要性や、cwdを用いたパス一般化の設定手順が説明されていません。このため、他環境への導入時にCodexのフックが全く起動しない可能性があります。
+  applied_files: []
+  superseded_by: null

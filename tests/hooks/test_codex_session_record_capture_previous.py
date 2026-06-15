@@ -55,6 +55,8 @@ def _run_hook(payload, evidence_dir, docs_dir, home):
   env = dict(os.environ)
   env["RC_SESSION_EVIDENCE_DIR"] = str(evidence_dir)
   env["RC_SESSION_DOCS_DIR"] = str(docs_dir)
+  env["RC_SESSION_HOOK_LOG"] = str(evidence_dir.parent / "hook.log.jsonl")
+  env["RC_SESSION_HOOK_STATE_DIR"] = str(evidence_dir.parent / "state")
   env["HOME"] = str(home)
   return subprocess.run(
     ["bash", str(HOOK)],
@@ -82,6 +84,7 @@ class CodexCapturePreviousTests(unittest.TestCase):
     self.addCleanup(shutil.rmtree, self.tmp)
     self.evidence = self.tmp / "ev"
     self.docs = self.tmp / "dc"
+    self.log = self.tmp / "hook.log.jsonl"
     self.home = self.tmp / "home"
     self.cwd = "/Users/Daily/Development/ReviewCompass"
     self.sessions = self.home / ".codex" / "sessions" / "2026" / "06" / "15"
@@ -142,6 +145,21 @@ class CodexCapturePreviousTests(unittest.TestCase):
       (self.evidence / "2026-06-15-codex-dddddddd-1111-2222-3333-444444444444.md").exists(),
       "別 repo の Codex セッションは取り込まない",
     )
+    events = [
+      json.loads(line)
+      for line in self.log.read_text(encoding="utf-8").splitlines()
+      if line.strip()
+    ]
+    self.assertEqual(
+      ["start", "selected", "captured"],
+      [event["event"] for event in events],
+      "診断ログには呼び出し開始・対象選択・取り込み完了を残す",
+    )
+    self.assertEqual(
+      "bbbbbbbb-1111-2222-3333-444444444444",
+      events[-1]["selected_session_id"],
+      "取り込んだ前セッション ID を診断できる必要がある",
+    )
 
   def test_only_current_no_capture(self):
     """現セッションしか無ければ何も取り込まず exit 0。"""
@@ -164,6 +182,16 @@ class CodexCapturePreviousTests(unittest.TestCase):
       self.evidence.exists() and any(self.evidence.iterdir()),
       "前セッションが無いときは何も書かない",
     )
+    events = [
+      json.loads(line)
+      for line in self.log.read_text(encoding="utf-8").splitlines()
+      if line.strip()
+    ]
+    self.assertEqual(
+      ["start", "no_previous_session"],
+      [event["event"] for event in events],
+      "前セッション無しも、未発火と区別できるよう診断ログに残す",
+    )
 
   def test_no_cwd_exits_zero(self):
     """cwd が無ければ何もせず exit 0（起動を妨げない）。"""
@@ -171,6 +199,49 @@ class CodexCapturePreviousTests(unittest.TestCase):
     r = _run_hook(payload, self.evidence, self.docs, self.home)
     _assert_invoked(self, r)
     self.assertEqual(r.returncode, 0, f"stderr={r.stderr}")
+    events = [
+      json.loads(line)
+      for line in self.log.read_text(encoding="utf-8").splitlines()
+      if line.strip()
+    ]
+    self.assertEqual(
+      ["start", "no_cwd"],
+      [event["event"] for event in events],
+      "cwd 欠落も、未発火と区別できるよう診断ログに残す",
+    )
+
+  def test_same_session_and_cwd_are_checked_only_once(self):
+    """UserPromptSubmit fallback で毎 turn 呼ばれても、同一 session は 1 回だけ処理する。"""
+    _codex_fixture(
+      self.sessions / "rollout-2026-06-15T11-00-00-ffffffff-1111-2222-3333-444444444444.jsonl",
+      "ffffffff-1111-2222-3333-444444444444",
+      self.cwd,
+      "前 Codex セッション",
+      mtime=2000,
+    )
+    payload = {
+      "hook_event_name": "UserPromptSubmit",
+      "session_id": "current-session-for-fallback",
+      "cwd": self.cwd,
+    }
+
+    first = _run_hook(payload, self.evidence, self.docs, self.home)
+    second = _run_hook(payload, self.evidence, self.docs, self.home)
+
+    _assert_invoked(self, first)
+    _assert_invoked(self, second)
+    self.assertEqual(first.returncode, 0, f"stderr={first.stderr}")
+    self.assertEqual(second.returncode, 0, f"stderr={second.stderr}")
+    events = [
+      json.loads(line)
+      for line in self.log.read_text(encoding="utf-8").splitlines()
+      if line.strip()
+    ]
+    self.assertEqual(
+      ["start", "selected", "captured", "start", "already_checked"],
+      [event["event"] for event in events],
+      "同じ Codex session の再呼び出しは取り込みを繰り返さない",
+    )
 
 
 if __name__ == "__main__":

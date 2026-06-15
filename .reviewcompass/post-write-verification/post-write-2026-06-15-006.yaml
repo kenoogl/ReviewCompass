@@ -1,0 +1,24 @@
+status: completed
+target_files:
+- TODO_NEXT_SESSION.md
+- docs/operations/INITIAL_SETUP_LLM_GUIDE.md
+target_sha256:
+  TODO_NEXT_SESSION.md: 1c524e50edae93b43e6dbc3c6fbda1a748bdf6a913539090a21c5d147ff2a201
+  docs/operations/INITIAL_SETUP_LLM_GUIDE.md: c2b9855c7560a22e94027dcd3a208181d8e5d4195d0186beeebb8e917163ef87
+required_verifiers: &id001
+- gemini-3.5-flash
+completed_verifiers: *id001
+unresolved_substantive_findings: 0
+verifications:
+- verifier: gemini-3.5-flash
+  target_files:
+  - TODO_NEXT_SESSION.md
+  - docs/operations/INITIAL_SETUP_LLM_GUIDE.md
+  target_sha256:
+    TODO_NEXT_SESSION.md: 1c524e50edae93b43e6dbc3c6fbda1a748bdf6a913539090a21c5d147ff2a201
+    docs/operations/INITIAL_SETUP_LLM_GUIDE.md: c2b9855c7560a22e94027dcd3a208181d8e5d4195d0186beeebb8e917163ef87
+review_run:
+  path: .reviewcompass/evidence/review-runs/2026-06-15-postwrite-hook-deploy-generalization-r2
+  summary_path: .reviewcompass/evidence/review-runs/2026-06-15-postwrite-hook-deploy-generalization-r2/model-result-summary.yaml
+notes: Codex hook deployment generalization docs post-write verification; Gemini no
+  findings on r2.

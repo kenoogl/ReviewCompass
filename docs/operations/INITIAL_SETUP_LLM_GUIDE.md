@@ -173,13 +173,15 @@ API key は設定ファイルに書かず、環境変数など配布物外の方
 
 commit／push の事前検査 hook を対象アプリへ導入する。LLM が規律を読み忘れても、不可逆操作だけは機械が止める防衛線になる。初期設定の標準手順として導入し、見送る場合は利用者の明示判断として完了報告に記録する。
 
-1. 配布物の `templates/hooks/pre-bash-precheck.sh.template` の 2 つのプレースホルダを**絶対パス**へ置換する。
+1. 配布物の `templates/hooks/pre-bash-precheck.sh.template` と `templates/hooks/session-record-capture-previous.sh.template` の 2 つのプレースホルダを**絶対パス**へ置換する。
    - `{{REVIEWCOMPASS_PYTHON}}`：依存（PyYAML 等）導入済みの Python 実行系
    - `{{REVIEWCOMPASS_DIR}}`：配布物 root
 2. 置換後のファイルを、対象アプリの `.claude/hooks/pre-bash-precheck.sh` と `.codex/hooks/pre-bash-precheck.sh` の両方へ同一内容で複製する。同名の既存ファイルがある場合は上書きせず、既存内容と置換後の内容を利用者へ提示して扱いを確認する。
-3. `templates/hooks/claude-settings.json.template` と `templates/hooks/codex-hooks.json.template` から、`.claude/settings.json` と `.codex/hooks.json` を作る。いずれも既存ファイルがある場合は上書きせず、hooks キーだけを既存へ合流させる（合流して書き込む内容を、書き込み前に利用者へ提示する）。
-4. 静的チェック：複製した 2 ファイルに未置換トークン（`{{`）が残っていないこと、置換先のパスが実在することを確認する。
-5. 復旧手順：hook が「hook 設定不備」を理由に拒否する場合は、プレースホルダの置換値を確認して再置換する（テンプレートから作り直してよい）。
+3. 置換後の `session-record-capture-previous.sh.template` は、対象アプリの `.codex/hooks/session-record-capture-previous.sh` に配置する。同名の既存ファイルがある場合は上書きせず、既存内容と置換後の内容を利用者へ提示して扱いを確認する。
+4. `templates/hooks/claude-settings.json.template` と `templates/hooks/codex-hooks.json.template` から、`.claude/settings.json` と `.codex/hooks.json` を作る。いずれも既存ファイルがある場合は上書きせず、hooks キーだけを既存へ合流させる（合流して書き込む内容を、書き込み前に利用者へ提示する）。
+5. 静的チェック：複製した hook ファイルに未置換トークン（`{{`）が残っていないこと、置換先のパスが実在することを確認する。
+6. Codex のセッション取り込み hook は `SessionStart` と `UserPromptSubmit` の両方に登録される。`UserPromptSubmit` は fallback であり、同一 `session_id` + `cwd` は 1 回だけ処理する。動作確認では、対象アプリの `.reviewcompass/runtime/session-record-capture-previous.jsonl` に `start`、`selected`、`captured`、`already_checked` などが出るかを見る。
+7. 復旧手順：hook が「hook 設定不備」を理由に拒否する場合は、プレースホルダの置換値を確認して再置換する（テンプレートから作り直してよい）。
 
 ## 11. 操縦 LLM 別の既定 variant
 

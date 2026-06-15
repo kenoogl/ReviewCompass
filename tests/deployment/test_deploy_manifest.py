@@ -13,6 +13,9 @@ REQUIRED_ALLOWLIST = {
   "runtime/runtime_core/**/*.yaml",
   "tools/api_providers/run_review.py",
   "tools/api_providers/run_role.py",
+  "tools/session-record-backfill.py",
+  "tools/session-record-extractor.py",
+  "tools/session_record_extractor/*.py",
   "tools/conformance-evaluation-check.py",
   "tools/check-workflow-action.py",
   "tools/self-improvement-check.py",
@@ -20,6 +23,7 @@ REQUIRED_ALLOWLIST = {
   "analysis/**",
   "evaluation/**",
   "templates/specs/spec.json.template",
+  "templates/hooks/session-record-capture-previous.sh.template",
 }
 
 REQUIRED_EXCLUDES = {

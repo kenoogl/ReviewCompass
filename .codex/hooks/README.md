@@ -45,13 +45,14 @@ Codex の hook 設定で呼び出すスクリプトを置く。
 
 **登録**：`.codex/hooks.json` の `hooks.PreToolUse` セクションに matcher = `"Bash"` で登録済み。
 
-### `session-record-capture-previous.sh`（SessionStart hook）
+### `session-record-capture-previous.sh`（SessionStart hook／UserPromptSubmit fallback）
 
 **役割**：Codex の新セッション開始時に、現セッション以外で最新の同一 repo Codex rollout を 1 件だけ、2 層セッション記録へ単一取り込みする。
 
 Codex の hook では `Stop` が turn scope であり、Claude の `SessionEnd` 相当としては使わない。進行中ログの毎ターン取り込みを避けるため、`SessionStart` で前回分だけを回収する。
+Codex Desktop 環境で `SessionStart` が発火しない場合に備え、`UserPromptSubmit` にも fallback として登録する。fallback は user prompt ごとに呼ばれ得るため、同一 `session_id` + `cwd` は `.reviewcompass/runtime/session-record-capture-previous-state/` の状態ファイルで 1 回だけ処理する。
 
-**入力**：標準入力で Codex の SessionStart JSON ペイロードを受け取る。
+**入力**：標準入力で Codex の SessionStart または UserPromptSubmit JSON ペイロードを受け取る。
 
 ```json
 {"hook_event_name":"SessionStart","session_id":"<id>","cwd":"/path/to/repo","source":"startup"}
@@ -68,7 +69,10 @@ Codex の hook では `Stop` が turn scope であり、Claude の `SessionEnd` 
 
 **出力先**：既定は `.reviewcompass/evidence/sessions/` と `docs/sessions/`。テスト用に `RC_SESSION_EVIDENCE_DIR`／`RC_SESSION_DOCS_DIR` で差し替え可能。
 
-**登録**：`.codex/hooks.json` の `hooks.SessionStart` セクションに登録済み。
+**診断ログ**：hook が呼ばれたか、どの理由で通過したかを後から確認できるよう、既定で `.reviewcompass/runtime/session-record-capture-previous.jsonl` に JSON Lines を追記する。テスト用に `RC_SESSION_HOOK_LOG` で差し替え可能。主な `event` は `start`、`no_cwd`、`no_codex_root`、`no_previous_session`、`selected`、`captured`、`capture_failed`。
+同一 session の fallback 再呼び出しは `already_checked` として記録する。状態ディレクトリはテスト用に `RC_SESSION_HOOK_STATE_DIR` で差し替え可能。
+
+**登録**：`.codex/hooks.json` の `hooks.SessionStart` と `hooks.UserPromptSubmit` セクションに登録済み。
 
 ## テスト
 

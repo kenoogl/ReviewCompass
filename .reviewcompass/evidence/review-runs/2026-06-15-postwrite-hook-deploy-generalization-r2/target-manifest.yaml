@@ -1,0 +1,4 @@
+run_id: 2026-06-15-postwrite-hook-deploy-generalization-r2
+target_files:
+- path: .reviewcompass/evidence/review-runs/2026-06-15-postwrite-hook-deploy-generalization-r2/review-target.md
+  sha256: 1b0f0a613578b3d1098038b176b7fc7b0c8a5932eb2ed0edacecd39fb7659442
