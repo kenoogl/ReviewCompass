@@ -14,6 +14,7 @@ TDD 規律（AGENTS.md 入口規律）に従い、本テストは実装前に作
 """
 
 import hashlib
+import json
 import shutil
 import tempfile
 import unittest
@@ -99,6 +100,25 @@ class CommitInProgressSessionGuardTests(unittest.TestCase):
                    cwd=self.tmpdir)
     self.assertNotIn(GUARD_MSG, r.stdout,
                      f"判定不能は弾かない。stdout={r.stdout}")
+
+  def test_stage_command_excludes_in_progress_record(self):
+    """stage helper は進行中セッション記録を最初から stage 対象から外す。"""
+    record_path = Path(self.tmpdir) / self.record_rel
+    record_path.parent.mkdir(parents=True, exist_ok=True)
+    record_path.write_text(_record_text(str(self.src), self.src_sha))
+    with open(self.src, "ab") as f:
+      f.write(b'{"type":"assistant","content":"more"}\n')
+    normal_path = Path(self.tmpdir) / "notes.md"
+    normal_path.write_text("# 通常ファイル\n")
+
+    r = run_script(["stage", ".", "--json"], cwd=self.tmpdir)
+
+    self.assertEqual(r.returncode, 0, f"stage helper should pass. stdout={r.stdout}")
+    payload = json.loads(r.stdout)
+    self.assertIn("notes.md", payload["staged"])
+    self.assertIn(self.record_rel, payload["excluded_in_progress_records"])
+    staged = run_script(["commit", "--rationale", "stage helper 結果確認"], cwd=self.tmpdir)
+    self.assertNotIn(GUARD_MSG, staged.stdout)
 
 
 if __name__ == "__main__":

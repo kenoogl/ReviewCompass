@@ -30,6 +30,7 @@ completed_steps:
 - 第3過程：implementation triad-review recheck review-run 実行（利用者提示ゲートで停止）
 - 第3過程：implementation triad-review recheck R1〜R5 人間判断完了（R1/R3 対応、R2/R4/R5 leave-as-is）
 - 第3過程：implementation triad-review recheck R1/R3 TDD 対応完了
+- 第3過程：commit 前 staging helper 追加（進行中セッション記録を stage 前に機械除外）
 next_step: 第3過程：implementation triad-review
 step_number: 3
 commit_stop_point: true
@@ -237,6 +238,19 @@ implementation_triad_review_recheck_resolution:
   - git diff --check
   - yaml parse check for reopen in-progress and recheck triage.yaml
   - .venv/bin/python3 tools/check-workflow-action.py next --json
+implementation_triad_review_stage_helper_resolution:
+  completed_at: 2026-06-15T13:02:20Z
+  status: addressed_verified_commit_pending
+  trigger: guarded commit 前に進行中セッション記録を一度 stage してしまったため、同じ進行中セッション判定を stage 前にも適用する必要があると確認した。
+  summary: tools/check-workflow-action.py stage を追加し、git add 候補から進行中セッション記録を機械的に除外してから残りだけ stage するようにした。
+  files:
+  - tools/check-workflow-action.py
+  - tests/tools/test_commit_in_progress_session_guard.py
+  tests:
+  - .venv/bin/python3 -m unittest tests.tools.test_commit_in_progress_session_guard.CommitInProgressSessionGuardTests.test_stage_command_excludes_in_progress_record -v
+  - .venv/bin/python3 -m unittest tests.tools.test_commit_in_progress_session_guard tests.tools.test_push_ignores_in_progress_records -v
+  - git diff --check
+  - .venv/bin/python3 tools/check-workflow-action.py stage . --json
 tasks_triad_review_clusters:
 - cluster: C1 time and canonical digest coverage
   proposed_label: must-fix

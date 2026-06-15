@@ -2792,6 +2792,91 @@ def _status_line_is_in_progress_record(line, cwd):
   return _session_record_source_changed(text, cwd)
 
 
+def _unique_preserving_order(items):
+  seen = set()
+  result = []
+  for item in items:
+    if item in seen:
+      continue
+    seen.add(item)
+    result.append(item)
+  return result
+
+
+def cmd_stage(args):
+  """git add の前段で、進行中セッション記録だけを機械的に除外する。"""
+  cwd = Path.cwd()
+  pathspecs = args.paths or ["."]
+  status = subprocess.run(
+    ["git", "status", "--porcelain", "-uall", "--"] + list(pathspecs),
+    cwd=str(cwd),
+    capture_output=True,
+    text=True,
+  )
+  if status.returncode != 0:
+    payload = {
+      "status": "error",
+      "staged": [],
+      "excluded_in_progress_records": [],
+      "error": status.stderr.strip(),
+    }
+    if args.json:
+      print(json.dumps(payload, ensure_ascii=False, sort_keys=True))
+    else:
+      print(f"[VERDICT] DEVIATION（exit 2）\n[REASON]\n  - {payload['error']}")
+    return 2
+
+  staged = []
+  excluded = []
+  for line in status.stdout.splitlines():
+    if not line.strip():
+      continue
+    path = _porcelain_path(line)
+    if not path:
+      continue
+    if _status_line_is_in_progress_record(line, cwd):
+      excluded.append(path)
+    else:
+      staged.append(path)
+  staged = _unique_preserving_order(staged)
+  excluded = _unique_preserving_order(excluded)
+
+  if staged:
+    add_result = subprocess.run(
+      ["git", "add", "--"] + staged,
+      cwd=str(cwd),
+      capture_output=True,
+      text=True,
+    )
+    if add_result.returncode != 0:
+      payload = {
+        "status": "error",
+        "staged": staged,
+        "excluded_in_progress_records": excluded,
+        "error": add_result.stderr.strip(),
+      }
+      if args.json:
+        print(json.dumps(payload, ensure_ascii=False, sort_keys=True))
+      else:
+        print(f"[VERDICT] DEVIATION（exit 2）\n[REASON]\n  - {payload['error']}")
+      return 2
+
+  payload = {
+    "status": "staged",
+    "staged": staged,
+    "excluded_in_progress_records": excluded,
+  }
+  if args.json:
+    print(json.dumps(payload, ensure_ascii=False, sort_keys=True))
+  else:
+    print("[VERDICT] OK（exit 0）")
+    if staged:
+      print("[STAGED]\n  - " + "\n  - ".join(staged))
+    if excluded:
+      print("[EXCLUDED IN-PROGRESS SESSION RECORDS]\n  - " + "\n  - ".join(excluded))
+  return 0
+
+
 def validate_deployment_independence_for_commit(cwd, commitish):
   """D-023 配置非依存 lint を commit 内容に対して実行する"""
   try:
@@ -5469,6 +5554,18 @@ def main():
     help="この push を行う理由（必須、利用者承認の出典を含めることを推奨、仕様 §5.3）",
   )
 
+  st = sub.add_parser(
+    "stage",
+    help="進行中セッション記録を除外して git add する",
+    parents=[common_parser],
+  )
+  st.add_argument(
+    "paths",
+    nargs="*",
+    default=["."],
+    help="stage 対象 pathspec（省略時は .）",
+  )
+
   ap = sub.add_parser(
     "autonomous-plan",
     help="自律・並列モード実行計画の事前検査を行う",
@@ -5596,6 +5693,8 @@ def main():
 
   if args.subcommand == "spec-set":
     sys.exit(cmd_spec_set(args))
+  elif args.subcommand == "stage":
+    sys.exit(cmd_stage(args))
   elif args.subcommand == "commit":
     sys.exit(cmd_commit(args))
   elif args.subcommand == "push":
