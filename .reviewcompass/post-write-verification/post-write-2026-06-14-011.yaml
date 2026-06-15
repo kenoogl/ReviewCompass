@@ -1,0 +1,20 @@
+status: completed
+target_files:
+- TODO_NEXT_SESSION.md
+target_sha256:
+  TODO_NEXT_SESSION.md: 35ec0190fea820f8fdbb6e9563fc53034fb9f99203350083acde8f5fe02e46cf
+required_verifiers: &id001
+- gemini-3.5-flash
+completed_verifiers: *id001
+unresolved_substantive_findings: 0
+verifications:
+- verifier: gemini-3.5-flash
+  target_files:
+  - TODO_NEXT_SESSION.md
+  target_sha256:
+    TODO_NEXT_SESSION.md: 35ec0190fea820f8fdbb6e9563fc53034fb9f99203350083acde8f5fe02e46cf
+review_run:
+  path: .reviewcompass/evidence/review-runs/2026-06-14-postwrite-todo-prev-session-capture
+  summary_path: .reviewcompass/evidence/review-runs/2026-06-14-postwrite-todo-prev-session-capture/model-result-summary.yaml
+notes: TODO §1 に「前セッションのログを単一取り込み（必須）」を追加したことの書き込み後検証。ログを開いたまま運用すると SessionEnd フックが効かない設計の穴を、起動時の単一取り込みで補う措置。gemini-3.5-flash
+  1体、所見0で収束。

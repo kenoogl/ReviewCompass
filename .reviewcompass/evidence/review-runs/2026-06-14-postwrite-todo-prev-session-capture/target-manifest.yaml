@@ -1,0 +1,4 @@
+run_id: 2026-06-14-postwrite-todo-prev-session-capture
+target_files:
+- path: TODO_NEXT_SESSION.md
+  sha256: 35ec0190fea820f8fdbb6e9563fc53034fb9f99203350083acde8f5fe02e46cf
