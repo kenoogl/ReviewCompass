@@ -48,6 +48,36 @@ def _load_yaml(path):
     return None
 
 
+def _diagnose_summary_sync(run_dir):
+  """model-result-summary の triage_status が triage 由来と食い違うモデルを返す。
+
+  戻り値：[(model_id, summary の値, triage から導出した値), ...]。空なら不一致なし。
+  「正本判定が completed にならない」原因が summary と triage の同期漏れのときに、
+  分かりやすい案内を出すための診断。
+  """
+  triage = _load_yaml(run_dir / "triage.yaml") or {}
+  summary = _load_yaml(run_dir / "model-result-summary.yaml") or {}
+  by_model = {}
+  for it in triage.get("items") or []:
+    if isinstance(it, dict):
+      by_model.setdefault(it.get("source_model"), []).append(it)
+  mismatches = []
+  for model in summary.get("models") or []:
+    if not isinstance(model, dict):
+      continue
+    items = by_model.get(model.get("model_id"), [])
+    if not items:
+      derived = "no_findings"
+    elif all(it.get("decision_status") == "decided" for it in items):
+      derived = "triaged"
+    else:
+      derived = "triage_pending"
+    actual = model.get("triage_status")
+    if actual != derived:
+      mismatches.append((model.get("model_id"), actual, derived))
+  return mismatches
+
+
 def main():
   parser = argparse.ArgumentParser(
     description="書き込み後検証 manifest を review-run から正本準拠で生成する")
@@ -138,8 +168,18 @@ def main():
     print(f"manifest 生成: {out}（status={manifest['status']}）")
     return 3
   if status != "completed":
-    print(f"エラー: 生成 manifest が正本で completed になりません（判定: {status}）。"
-          "review-run の整合を確認してください。", file=sys.stderr)
+    mismatches = _diagnose_summary_sync(run_dir)
+    if mismatches:
+      detail = "; ".join(
+        f"{mid}: summary={actual} / triage 由来={derived}"
+        for mid, actual, derived in mismatches)
+      print(
+        f"エラー: review-run の model-result-summary が triage と不一致です（{detail}）。"
+        "tools/make-triage-decision.py でトリアージ決定を記録し直すと、summary が "
+        "triage から再計算されて整合します。", file=sys.stderr)
+    else:
+      print(f"エラー: 生成 manifest が正本で completed になりません（判定: {status}）。"
+            "review-run の整合を確認してください。", file=sys.stderr)
     return 3
 
   print(f"manifest 生成: {out}（検証者 {len(verifiers)} 体、正本判定 completed）")

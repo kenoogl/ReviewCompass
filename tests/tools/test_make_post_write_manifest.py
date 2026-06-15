@@ -134,6 +134,34 @@ class MakePostWriteManifestTests(unittest.TestCase):
                   "--out", ".reviewcompass/post-write-verification/x.yaml")
     self.assertNotEqual(r.returncode, 0, f"stdout={r.stdout}\nstderr={r.stderr}")
 
+  def test_summary_out_of_sync_gives_actionable_message(self):
+    """triage は decided なのに summary.triage_status が古いと、make-triage-decision
+    での再生成を促す分かりやすい案内を出す（『pending』で放り出さない）。"""
+    rundir = Path(self.tmp) / ".reviewcompass/evidence/review-runs/run4"
+    _build_review_run(rundir, triage_items=[{
+      "source_model": "gemini-3.5-flash",
+      "source_raw_path": "raw/gemini-3.5-flash.round-1.txt",
+      "decision_status": "decided",
+      "final_label": "leave-as-is",
+    }])
+    # summary を古いまま（triage_pending）に上書きして triage との不一致を作る
+    _dump(rundir / "model-result-summary.yaml", {
+      "run_id": "run4",
+      "models": [{"model_id": "gemini-3.5-flash",
+                  "triage_status": "triage_pending", "findings_count": 1}],
+    })
+    (Path(self.tmp) / "doc4.md").write_text("# 文書4\n", encoding="utf-8")
+    r = _run_tool(self.tmp,
+                  "--review-run-dir", ".reviewcompass/evidence/review-runs/run4",
+                  "--target", "doc4.md",
+                  "--out", ".reviewcompass/post-write-verification/post-write-test-004.yaml")
+    self.assertNotEqual(r.returncode, 0,
+                        f"不一致なら非ゼロ。stdout={r.stdout}\nstderr={r.stderr}")
+    msg = r.stdout + r.stderr
+    self.assertIn("make-triage-decision", msg,
+                  f"再生成ツールへの案内が必要。msg={msg}")
+    self.assertIn("triage", msg, f"triage との不一致である旨が必要。msg={msg}")
+
 
 if __name__ == "__main__":
   unittest.main()
