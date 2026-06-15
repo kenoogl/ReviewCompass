@@ -1,0 +1,25 @@
+findings:
+  - severity: ERROR
+    target_location: "Requirement 11 Acceptance Criteria 1"
+    description: "構造化記録の最低項目に、重要種別および出典発言を一意に特定するロケータが含まれていない。"
+    rationale: "決定 ID・決定文言・引用・セッション ID・単一/共有区分だけでは、その決定が不可逆操作・規律変更・仕様/計画変更のどれに該当するかを機械判定できず、同一セッション内に同一または類似の発言が複数ある場合に出典発言を一意に特定できない。束ね検出や逐語照合を安定して実装するには、少なくとも重要種別と発言/turn/message 位置を design で追加可能な任意事項ではなく必須情報として要求する必要がある。"
+  - severity: ERROR
+    target_location: "Requirement 11 Acceptance Criteria 7"
+    description: "接続点が「Requirement 2 のサブコマンドとして提供し、かつ／または Requirement 4 の直前ゲートへ組み込む」とされており、必須達成条件が一意に定まらない。"
+    rationale: "and/or のままでは、サブコマンドだけ実装して直前ゲートへ組み込まない実装、または直前ゲートだけに組み込んで通常検査から呼べない実装のいずれも受入可能になり、Requirement 2 の検査スクリプト責務および Requirement 4 の不可逆操作直前ゲート責務との境界を検証できない。requirements 段では最低限必須の統合先を明確化し、詳細なコマンド名や発火条件のみ design に委ねるべきである。"
+  - severity: WARN
+    target_location: "Requirement 11 Acceptance Criteria 1"
+    description: "「仕様／計画変更」の範囲が広く、重要決定に該当する境界が要件上で判定可能になっていない。"
+    rationale: "requirements、design、tasks、実装方針、レビュー計画、作業順序変更などのどこまでを「仕様／計画変更」とみなすかが未定義のため、記録対象に含めるべき決定を実装者や運用者が一貫して判定できない。対象漏れがあると lint は記録済み決定だけを検査して合格してしまい、裁定負荷対策として不十分になる。"
+  - severity: ERROR
+    target_location: "Requirement 11 Acceptance Criteria 3 and 5"
+    description: "会話転写が repo に取り込み済みでない新規決定をどう扱うかのワークフロー要件が不足している。"
+    rationale: "逐語照合対象を `.reviewcompass/evidence/sessions/` の層 1 転写に限定し、欠落時は fail-closed としているが、重要決定の発生から転写取り込みまでの順序・前提・待機状態が定義されていない。そのため、新規重要決定は転写取り込み前に常に失敗するのか、取り込みを必須の前段ゲートにするのかが不明で、Requirement 2 の next/fail-closed 運用や Requirement 4 の直前ゲートに組み込んだ際の実行可能性に影響する。"
+  - severity: WARN
+    target_location: "Requirement 11 Acceptance Criteria 2"
+    description: "束ね検出は fail-closed としながら、「束ねが避けられない場合」の扱いを design に委ねており、例外の可否が要件上で曖昧である。"
+    rationale: "本要件の目的は重要承認を 1 件ずつ裁定させる既存規律の機械強制であるため、同一承認発言に複数重要決定が含まれる場合の例外を許すのか、許すならどの条件で許すのかは requirements 段で方針を固定する必要がある。例外設計を design に委ねると、fail-closed の強度や discipline_plain_explanation_each_step との整合が下流で変わり得る。"
+  - severity: WARN
+    target_location: "Requirement 11 Acceptance Criteria 1"
+    description: "going-forward 適用の開始点が明確でない。"
+    rationale: "「going-forward の新規重要決定から適用」とある一方で、本変更は requirements 段であり実装は未着手と明記されている。仕様確定時点、design/tasks 確定時点、lint 実装完了時点、または運用開始宣言時点のどこから新形式を必須にするかが不明だと、下流で過去散文台帳の遡及移行禁止と新規決定の記録義務の境界を誤って解釈する可能性がある。"

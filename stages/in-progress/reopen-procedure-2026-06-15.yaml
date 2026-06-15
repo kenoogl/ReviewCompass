@@ -14,8 +14,18 @@ completed_steps:
   completed）。review-run .reviewcompass/evidence/review-runs/2026-06-15-postwrite-reopen-classification-decision-source-lint。利用者承認「承認」（2026-06-15）
 - 第1過程停止点：利用者承認済み。R-0・再実施範囲（requirements の alignment〜approval＋下流 design／tasks／implementation）・フラグ差し戻しは
   2026-06-15 利用者「提案の方針でOK」＋「承認」で取得。停止点コミットは 2026-06-15 利用者「コミット」明示
-next_step: 第1過程停止点コミット（第1過程一式を1コミット）。コミット後に第2過程＝requirements drafting（新 Requirement 11 起草）へ進む
-step_number: 1
+- 第1過程停止点：コミット 7610a0d8 完了（第1過程一式を1コミット、利用者「コミット」2026-06-15）。push は
+  reopen 進行中のため push 事前検査で遮断され、手続き完了（第4過程で進行中ファイルを completed へ移動）後にまとめて行う
+- 第2過程：正本修正。requirements.md に Requirement 11 を新設（重要決定の出典検査＝束ね検出・逐語照合・内容性＋構造化した重要決定の記録形式。受入
+  1〜7＋目的＋由来）。Change Intent に 2026-06-15 reopen R-0 の由来 1 行を追加。実装は未着手（第3過程以降で
+  TDD）
+- 第3過程：stages/requirements.yaml#triad-review round-1 実施（利用者「実行」2026-06-15）。run=.reviewcompass/evidence/review-runs/2026-06-15-requirements-r11-reopen-triad-review-run。variant=implementation_review_independent_3way。所見
+  13 件（claude 5〔WARN3・INFO2〕・gpt-5.5 6〔ERROR3・WARN3〕・gemini 2〔WARN1・INFO1〕）。同根 7 クラスタを利用者提示。最重要＝取り込み前／現セッション決定の順序依存（逐語照合とコミット直前ゲートのデッドロック）
+- 側道（完了）：proxy 裁定レコードの生成ツールが無く前例頼りだったため、make-proxy-approval.py を TDD 新設（利用者決定「生成ツール作成を実施し、ここに戻ってくる」2026-06-15）。stages/completed/maintenance-2026-06-15-proxy-approval-generator.yaml。tests/tools
+  334 件 pass
+next_step: 第3過程：round-1 所見を proxy_model（gemini-3.1-pro-preview）裁定（make-proxy-approval.py
+  使用）→ must-fix を Requirement 11 へ反映 → round-2 収束確認。利用者「A（proxy 委任）」2026-06-15
+step_number: 3
 pending_gates:
 - stages/requirements.yaml#alignment
 - stages/requirements.yaml#approval

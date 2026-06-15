@@ -1,0 +1,32 @@
+process_id: maintenance
+title: proxy 裁定レコード生成ツール make-proxy-approval.py の新設
+started_at: 2026-06-15 00:00:00+09:00
+status: completed
+required_action: complete_maintenance
+completed_steps:
+- TDD：失敗テスト先行（tests/tools/test_make_proxy_approval.py、ツール不在で赤）→ 実装 → 緑 4/4
+- make-proxy-approval.py 新設。重要件（severity ERROR/CRITICAL または must-fix）ごとに decisions/*.yaml、proxy-approval.yaml
+  を生成し、正本 review_triage._approval_errors で自己検証して fail-closed
+- tests/tools 334 件 pass（回帰なし）
+completed_at: 2026-06-15 00:00:00+09:00
+trigger: reopen R-0（decision-source-lint）の requirements triad-review で proxy_model 裁定レコード（proxy-approval.yaml・decisions/*.yaml）を作る段になり、commit
+  承認・manifest・triage 決定には生成ツールがあるのに proxy 裁定だけ手組みで、前例の yaml を写す運用になっていた。「事例より正本」（候補7・生成ツールの横展開）に反し、見通し・認識負荷が悪化する。正本（_proxy_decision_errors／_approval_errors）から生成し自己検証するツールを先に整える（利用者決定
+  2026-06-15「生成ツール作成を実施し、ここに戻ってくる」）。
+mainline_blocked_by: stages/in-progress/reopen-procedure-2026-06-15.yaml
+side_track_scope:
+- proxy_model 裁定の proxy-approval.yaml と decisions/*.yaml を、正本（review_triage._proxy_decision_errors／_approval_errors）が受け入れる形で生成する単体ツールの新設
+- 生成物を正本検証へ通して fail-closed する（commit 承認・manifest・triage 決定の各生成ツールと同方針）
+- TDD（失敗テスト先行→実装→全テスト通過。テストは固定期待文字列でなく正本の検証関数で判定）
+allowed_scope:
+- make-proxy-approval.py の実装とテスト
+- 正本検証関数の読み取り（変更しない）
+allowed_files:
+- tools/make-proxy-approval.py
+- tests/tools/test_make_proxy_approval.py
+- stages/in-progress/maintenance-2026-06-15-proxy-approval-generator.yaml
+- stages/completed/maintenance-2026-06-15-proxy-approval-generator.yaml
+out_of_scope_note: 正本（review_triage.py・check-workflow-action.py）の挙動変更は範囲外（既存検証関数を満たす生成のみ）。reopen
+  本線の proxy 裁定の実行（gemini 呼び出し・Req 11 への must-fix 反映）は side track 完了後に本線へ戻って行う。
+completion_conditions:
+- tools/make-proxy-approval.py が新設され、生成した proxy-approval.yaml・decisions/*.yaml が正本（_approval_errors／_proxy_decision_errors）で合格する
+- 専用テスト tests/tools/test_make_proxy_approval.py が追加され、tests/tools が全て pass（回帰なし）
