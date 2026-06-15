@@ -1,0 +1,63 @@
+run_id: 2026-06-15-postwrite-commit-approval-nonce-reopen-classification
+triage_status: draft
+generated_at: '2026-06-15T08:12:41.542947+00:00'
+decision_actor: null
+decision_actor_type: human
+items:
+- finding_id: 2026-06-15-postwrite-commit-approval-nonce-reopen-classification-claude-opus-4-8-adversarial-001
+  run_id: 2026-06-15-postwrite-commit-approval-nonce-reopen-classification
+  source_model: claude-opus-4-8
+  source_round: round-1
+  source_raw_path: raw/claude-opus-4-8.round-1.txt
+  source_parsed_path: parsed/claude-opus-4-8.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: 全体
+  plain_language_summary: 再オープン分類文書として、分類根拠・事実・feature impact 判定・再実施対象・停止点が整合して記述されており、R-0
+    分類と nonce 承認方式の対象が一貫している。
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: post-write 検証で重大な不整合は検出されなかった。記録として妥当な構成である。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-15-postwrite-commit-approval-nonce-reopen-classification-claude-opus-4-8-adversarial-002
+  run_id: 2026-06-15-postwrite-commit-approval-nonce-reopen-classification
+  source_model: claude-opus-4-8
+  source_round: round-1
+  source_raw_path: raw/claude-opus-4-8.round-1.txt
+  source_parsed_path: parsed/claude-opus-4-8.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: 停止点 / spec.json フラグ差し戻し
+  plain_language_summary: spec.json への差し戻し（alignment・approval を false、recheck=upstream_change_pending、impacted_downstream_phases）が文章で宣言されているが、実際の
+    spec.json 反映と reopen-start による in-progress ファイル発行が完了しているかは本文書から確認できない。
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: post-write 検証では、宣言した状態変更が実ファイルに反映されたことの裏付けが望ましい。差し戻し未反映のまま停止点に進むと、後続フェーズのゲートが正しく機能しない恐れがある。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-15-postwrite-commit-approval-nonce-reopen-classification-claude-opus-4-8-adversarial-003
+  run_id: 2026-06-15-postwrite-commit-approval-nonce-reopen-classification
+  source_model: claude-opus-4-8
+  source_round: round-1
+  source_raw_path: raw/claude-opus-4-8.round-1.txt
+  source_parsed_path: parsed/claude-opus-4-8.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: 再実施対象 / impacted_downstream_phases
+  plain_language_summary: 再実施対象セクションの impacted_downstream_phases（design／tasks／implementation）と
+    feature impact 表の reopen_existing_feature 判定が整合している。
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: 再オープン範囲と下流影響フェーズの整合は分類精度の根拠となるため、確認した。
+  applied_files: []
+  superseded_by: null

@@ -1,0 +1,15 @@
+process_id: reopen-procedure
+feature: workflow-management
+classification: R-0
+started_at: 2026-06-15T00:00:00+09:00
+trigger: commit 承認レコードを staged 内容に束縛した nonce 承認方式へ強化する
+classification_basis: docs/reviews/reopen-classification-2026-06-15-wm-commit-approval-nonce.md
+completed_steps:
+- 第1過程：判定とフラグ差し戻し（利用者承認済み：2026-06-15「承認」）
+- 第2過程：正本修正（requirements.md Requirement 4 受入 6〜7 追記）
+next_step: 第2過程：停止点コミット
+step_number: 2
+pending_gates:
+- stages/requirements.yaml#alignment
+- stages/requirements.yaml#approval
+current_blocker: null

@@ -1,0 +1,4 @@
+run_id: 2026-06-15-postwrite-commit-approval-nonce-reopen-classification-after-fix
+target_files:
+- path: docs/reviews/reopen-classification-2026-06-15-wm-commit-approval-nonce.md
+  sha256: 989f6b426bb862024663bc19e8b76d239ec6f2f93f75c08f70140f3c6d0d3d5f

@@ -1,0 +1,9 @@
+findings:
+  - severity: INFO
+    target_location: "## 事実 - LLM 非依存方針"
+    description: "LLM 非依存方針が明記され、nonce 生成・challenge 保存・approval record 作成・commit gate 判定・consume の各処理は staged ファイル集合・staged blob hash・target digest・nonce・expiry・consumed 状態のみを入力とし、model 名や provider 名を判定条件に含めないと宣言されている。"
+    rationale: "commit_approval_nonce_llm_independence の観点で、承認・ゲート判定が特定 LLM/provider/model に依存しない CLI/file contract として設計される方針が明示的に文書化されている。post-write 検証として整合している。"
+  - severity: INFO
+    target_location: "## 事実 - 保証範囲"
+    description: "本方式は利用者が UI 上で nonce を発話したことを暗号的に証明するものではなく、承認を staged 内容に束縛し古い承認・別対象の承認・対象差し替え後 commit を fail-closed で防ぐことを保証範囲とする旨が明記されている。"
+    rationale: "LLM 独立性に関する過剰主張を避け、保証範囲を限定している点は post-write 検証で問題ない。判定条件が staged 内容束縛に限定され LLM 識別子を含まないことと整合する。"

@@ -1,0 +1,34 @@
+run_id: 2026-06-15-postwrite-commit-approval-nonce-reopen-classification
+models:
+- model_id: gpt-5.4
+  raw_path: raw/gpt-5.4.round-1.txt
+  parse_status: parsed
+  triage_status: no_findings
+  findings_count: 0
+  findings_count_by_severity: {}
+  must_fix_count: 0
+  should_fix_count: 0
+  leave_as_is_count: 0
+  human_required_count: 0
+- model_id: claude-opus-4-8
+  raw_path: raw/claude-opus-4-8.round-1.txt
+  parse_status: parsed
+  triage_status: triage_pending
+  findings_count: 3
+  findings_count_by_severity:
+    INFO: 2
+    WARN: 1
+  must_fix_count: 0
+  should_fix_count: 0
+  leave_as_is_count: 0
+  human_required_count: 0
+- model_id: gemini-3.1-pro-preview
+  raw_path: raw/gemini-3.1-pro-preview.round-1.txt
+  parse_status: parsed
+  triage_status: no_findings
+  findings_count: 0
+  findings_count_by_severity: {}
+  must_fix_count: 0
+  should_fix_count: 0
+  leave_as_is_count: 0
+  human_required_count: 0

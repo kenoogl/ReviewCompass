@@ -1,0 +1,40 @@
+status: completed
+target_files:
+- docs/notes/2026-06-15-commit-approval-nonce-sdd-plan.md
+- docs/reviews/reopen-classification-2026-06-15-wm-commit-approval-nonce.md
+target_sha256:
+  docs/notes/2026-06-15-commit-approval-nonce-sdd-plan.md: 9a03a0c16a5d1ea1800a062ee9e26e3b666be93bce3de90bd13c4442956cbd33
+  docs/reviews/reopen-classification-2026-06-15-wm-commit-approval-nonce.md: 96802e30952968b6740c131a7e22b9bf4a32d667be71ac0e45b9f998b3d90774
+required_verifiers: &id001
+- gpt-5.4
+- claude-opus-4-8
+- gemini-3.1-pro-preview
+completed_verifiers: *id001
+unresolved_substantive_findings: 0
+verifications:
+- verifier: gpt-5.4
+  target_files:
+  - docs/notes/2026-06-15-commit-approval-nonce-sdd-plan.md
+  - docs/reviews/reopen-classification-2026-06-15-wm-commit-approval-nonce.md
+  target_sha256:
+    docs/notes/2026-06-15-commit-approval-nonce-sdd-plan.md: 9a03a0c16a5d1ea1800a062ee9e26e3b666be93bce3de90bd13c4442956cbd33
+    docs/reviews/reopen-classification-2026-06-15-wm-commit-approval-nonce.md: 96802e30952968b6740c131a7e22b9bf4a32d667be71ac0e45b9f998b3d90774
+- verifier: claude-opus-4-8
+  target_files:
+  - docs/notes/2026-06-15-commit-approval-nonce-sdd-plan.md
+  - docs/reviews/reopen-classification-2026-06-15-wm-commit-approval-nonce.md
+  target_sha256:
+    docs/notes/2026-06-15-commit-approval-nonce-sdd-plan.md: 9a03a0c16a5d1ea1800a062ee9e26e3b666be93bce3de90bd13c4442956cbd33
+    docs/reviews/reopen-classification-2026-06-15-wm-commit-approval-nonce.md: 96802e30952968b6740c131a7e22b9bf4a32d667be71ac0e45b9f998b3d90774
+- verifier: gemini-3.1-pro-preview
+  target_files:
+  - docs/notes/2026-06-15-commit-approval-nonce-sdd-plan.md
+  - docs/reviews/reopen-classification-2026-06-15-wm-commit-approval-nonce.md
+  target_sha256:
+    docs/notes/2026-06-15-commit-approval-nonce-sdd-plan.md: 9a03a0c16a5d1ea1800a062ee9e26e3b666be93bce3de90bd13c4442956cbd33
+    docs/reviews/reopen-classification-2026-06-15-wm-commit-approval-nonce.md: 96802e30952968b6740c131a7e22b9bf4a32d667be71ac0e45b9f998b3d90774
+review_run:
+  path: .reviewcompass/evidence/review-runs/2026-06-15-postwrite-commit-approval-nonce-llm-independence
+  summary_path: .reviewcompass/evidence/review-runs/2026-06-15-postwrite-commit-approval-nonce-llm-independence/model-result-summary.yaml
+notes: Generated template; verify target_files cover current post-write targets before
+  use.

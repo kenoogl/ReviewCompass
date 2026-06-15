@@ -1,0 +1,44 @@
+run_id: 2026-06-15-postwrite-commit-approval-nonce-reopen-classification-after-fix
+triage_status: decided
+generated_at: '2026-06-15T08:13:43.587956+00:00'
+decision_actor: null
+decision_actor_type: human
+items:
+- finding_id: 2026-06-15-postwrite-commit-approval-nonce-reopen-classification-after-fix-claude-opus-4-8-adversarial-001
+  run_id: 2026-06-15-postwrite-commit-approval-nonce-reopen-classification-after-fix
+  source_model: claude-opus-4-8
+  source_round: round-1
+  source_raw_path: raw/claude-opus-4-8.round-1.txt
+  source_parsed_path: parsed/claude-opus-4-8.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: 全体
+  plain_language_summary: 再分類文書は R-0（workflow-management）として一貫しており、intent/feature-partitioning
+    へ遡らない根拠、feature impact 判定、再実施対象、停止点が整合している。post-write 検証で矛盾は検出されなかった。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: codex_main_session
+  decision_actor_type: agent
+  decision_at: '2026-06-15T08:14:09.213401+00:00'
+  decision_reason: INFO の整合確認であり、本質的な修正要求ではないため。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-15-postwrite-commit-approval-nonce-reopen-classification-after-fix-claude-opus-4-8-adversarial-002
+  run_id: 2026-06-15-postwrite-commit-approval-nonce-reopen-classification-after-fix
+  source_model: claude-opus-4-8
+  source_round: round-1
+  source_raw_path: raw/claude-opus-4-8.round-1.txt
+  source_parsed_path: parsed/claude-opus-4-8.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: 第1過程の実施記録
+  plain_language_summary: spec.json の差し戻し状態（alignment=false, approval=false, upstream_change_pending=true,
+    impacted_downstream_phases=[design,tasks,implementation]）が停止点セクションの記述と一致している。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: codex_main_session
+  decision_actor_type: agent
+  decision_at: '2026-06-15T08:14:09.324031+00:00'
+  decision_reason: INFO の整合確認であり、差し戻し状態との一致確認なので修正不要。
+  applied_files: []
+  superseded_by: null

@@ -1,0 +1,4 @@
+run_id: 2026-06-15-postwrite-commit-approval-nonce-llm-independence
+target_files:
+- path: docs/reviews/reopen-classification-2026-06-15-wm-commit-approval-nonce.md
+  sha256: 96802e30952968b6740c131a7e22b9bf4a32d667be71ac0e45b9f998b3d90774
