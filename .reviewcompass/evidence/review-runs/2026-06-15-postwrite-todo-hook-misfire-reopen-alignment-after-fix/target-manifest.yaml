@@ -1,0 +1,4 @@
+run_id: 2026-06-15-postwrite-todo-hook-misfire-reopen-alignment-after-fix
+target_files:
+- path: .reviewcompass/specs/_cross_feature/reviews/2026-06-15-requirements-commit-approval-nonce-reopen-alignment.md
+  sha256: aee2b000544f016a5ef61ace03e83307d7bb43dcf8b972279fec39b6cf01d63c

@@ -1,0 +1,4 @@
+run_id: 2026-06-15-postwrite-todo-reopen-advance-gate-workaround
+target_files:
+- path: TODO_NEXT_SESSION.md
+  sha256: 9e262de5fe0923ef37b5a98cf1ed74790df2314b8f9e3da62e9ffa2da2645f9c

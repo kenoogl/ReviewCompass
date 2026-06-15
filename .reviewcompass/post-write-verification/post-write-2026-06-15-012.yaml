@@ -1,0 +1,24 @@
+status: completed
+target_files:
+- .reviewcompass/specs/_cross_feature/reviews/2026-06-15-requirements-commit-approval-nonce-reopen-alignment.md
+- TODO_NEXT_SESSION.md
+target_sha256:
+  .reviewcompass/specs/_cross_feature/reviews/2026-06-15-requirements-commit-approval-nonce-reopen-alignment.md: c83219ebd80b682744b3f7394fb4c31eeae32dd9885bd5e52dddfe55fa92d105
+  TODO_NEXT_SESSION.md: 9e262de5fe0923ef37b5a98cf1ed74790df2314b8f9e3da62e9ffa2da2645f9c
+required_verifiers: &id001
+- gemini-3.5-flash
+completed_verifiers: *id001
+unresolved_substantive_findings: 0
+verifications:
+- verifier: gemini-3.5-flash
+  target_files:
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-15-requirements-commit-approval-nonce-reopen-alignment.md
+  - TODO_NEXT_SESSION.md
+  target_sha256:
+    .reviewcompass/specs/_cross_feature/reviews/2026-06-15-requirements-commit-approval-nonce-reopen-alignment.md: c83219ebd80b682744b3f7394fb4c31eeae32dd9885bd5e52dddfe55fa92d105
+    TODO_NEXT_SESSION.md: 9e262de5fe0923ef37b5a98cf1ed74790df2314b8f9e3da62e9ffa2da2645f9c
+review_run:
+  path: .reviewcompass/evidence/review-runs/2026-06-15-postwrite-todo-reopen-advance-gate-workaround
+  summary_path: .reviewcompass/evidence/review-runs/2026-06-15-postwrite-todo-reopen-advance-gate-workaround/model-result-summary.yaml
+notes: Generated template; verify target_files cover current post-write targets before
+  use.

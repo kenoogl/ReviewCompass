@@ -1,0 +1,32 @@
+status: completed
+target_files:
+- .reviewcompass/specs/_cross_feature/reviews/2026-06-15-requirements-commit-approval-nonce-reopen-alignment.md
+- TODO_NEXT_SESSION.md
+- docs/sessions/auto-2026-06-15-claude-f60e655d-9216-440a-8dac-cf7437fa9d1a.md
+- docs/sessions/auto-2026-06-15-codex-019eca0c-e1c6-78f2-9060-0e546196fc12.md
+target_sha256:
+  .reviewcompass/specs/_cross_feature/reviews/2026-06-15-requirements-commit-approval-nonce-reopen-alignment.md: aee2b000544f016a5ef61ace03e83307d7bb43dcf8b972279fec39b6cf01d63c
+  TODO_NEXT_SESSION.md: 1146deb9cb3fa230473b9c0a5ea51fd07e34a3c029ebe334f6a2dab86291f645
+  docs/sessions/auto-2026-06-15-claude-f60e655d-9216-440a-8dac-cf7437fa9d1a.md: 2ad0f2f17a05d1f8dc7525b1f2a155b13522faadf8a8b118b0bf124f923e4b02
+  docs/sessions/auto-2026-06-15-codex-019eca0c-e1c6-78f2-9060-0e546196fc12.md: 9c75486c4dd6e02ec70718e7e3772a9c825462bffcae629fa257831a149c4266
+required_verifiers: &id001
+- gemini-3.5-flash
+completed_verifiers: *id001
+unresolved_substantive_findings: 0
+verifications:
+- verifier: gemini-3.5-flash
+  target_files:
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-15-requirements-commit-approval-nonce-reopen-alignment.md
+  - TODO_NEXT_SESSION.md
+  - docs/sessions/auto-2026-06-15-claude-f60e655d-9216-440a-8dac-cf7437fa9d1a.md
+  - docs/sessions/auto-2026-06-15-codex-019eca0c-e1c6-78f2-9060-0e546196fc12.md
+  target_sha256:
+    .reviewcompass/specs/_cross_feature/reviews/2026-06-15-requirements-commit-approval-nonce-reopen-alignment.md: aee2b000544f016a5ef61ace03e83307d7bb43dcf8b972279fec39b6cf01d63c
+    TODO_NEXT_SESSION.md: 1146deb9cb3fa230473b9c0a5ea51fd07e34a3c029ebe334f6a2dab86291f645
+    docs/sessions/auto-2026-06-15-claude-f60e655d-9216-440a-8dac-cf7437fa9d1a.md: 2ad0f2f17a05d1f8dc7525b1f2a155b13522faadf8a8b118b0bf124f923e4b02
+    docs/sessions/auto-2026-06-15-codex-019eca0c-e1c6-78f2-9060-0e546196fc12.md: 9c75486c4dd6e02ec70718e7e3772a9c825462bffcae629fa257831a149c4266
+review_run:
+  path: .reviewcompass/evidence/review-runs/2026-06-15-postwrite-todo-hook-misfire-reopen-alignment-after-fix
+  summary_path: .reviewcompass/evidence/review-runs/2026-06-15-postwrite-todo-hook-misfire-reopen-alignment-after-fix/model-result-summary.yaml
+notes: Generated template; verify target_files cover current post-write targets before
+  use.

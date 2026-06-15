@@ -1,0 +1,5 @@
+findings:
+  - severity: ERROR
+    target_location: "metadata.reopen"
+    description: "The 'reopen' field value contains full-width Japanese parentheses: 'R-0（commit-approval-nonce）'."
+    rationale: "Automated TODO hooks and reopen tracking scripts typically expect strict ASCII identifier formats (e.g., 'R-0'). Using full-width characters or descriptive suffixes inside the ID field can cause parser misfires, leading to failure in detecting and automatically resolving the reopen alignment state."

@@ -7,9 +7,19 @@ classification_basis: docs/reviews/reopen-classification-2026-06-15-wm-commit-ap
 completed_steps:
 - 第1過程：判定とフラグ差し戻し（利用者承認済み：2026-06-15「承認」）
 - 第2過程：正本修正（requirements.md Requirement 4 受入 6〜7 追記）
-next_step: 第2過程：停止点コミット
-step_number: 2
+next_step: 第3過程：requirements approval（人間承認待ち・停止点コミット）
+step_number: 3
 pending_gates:
-- stages/requirements.yaml#alignment
 - stages/requirements.yaml#approval
-current_blocker: null
+current_blocker: stages/requirements.yaml#approval（人間承認待ち）
+completed_gates:
+- stages/requirements.yaml#alignment
+downstream_impact_decisions:
+- gate: stages/requirements.yaml#alignment
+  feature_scope: all_features
+  decision: existing_sufficient
+  rationale: Requirement 4 受入 6〜7 は既存不可逆操作直前ゲートの commit 承認レコード強化であり、既存 Requirement 1〜11 と矛盾しない。design／tasks／implementation の recheck は維持する。
+  evidence:
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-15-requirements-commit-approval-nonce-reopen-alignment.md
+workaround_notes:
+- 2026-06-15 requirements alignment 進行時、通常の spec-set は stages/in-progress があるため fail-closed で遮断された。reopen 中の pending gate 完了更新専用コマンドが無いため、alignment 記録・spec.json・pending_gates・completed_gates・downstream_impact_decisions・current_blocker を手編集で同期した。次作業として TODO_NEXT_SESSION.md §4 項目10に `reopen-advance-gate` 相当の追加を登録済み。

@@ -1,0 +1,28 @@
+run_id: 2026-06-15-postwrite-todo-hook-misfire-reopen-alignment
+triage_status: draft
+generated_at: '2026-06-15T08:39:00.443031+00:00'
+decision_actor: null
+decision_actor_type: human
+items:
+- finding_id: 2026-06-15-postwrite-todo-hook-misfire-reopen-alignment-gemini-3.5-flash-primary-001
+  run_id: 2026-06-15-postwrite-todo-hook-misfire-reopen-alignment
+  source_model: gemini-3.5-flash
+  source_round: round-1
+  source_raw_path: raw/gemini-3.5-flash.round-1.txt
+  source_parsed_path: parsed/gemini-3.5-flash.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: metadata.reopen
+  plain_language_summary: 'The ''reopen'' field value contains full-width Japanese
+    parentheses: ''R-0（commit-approval-nonce）''.'
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: Automated TODO hooks and reopen tracking scripts typically expect
+    strict ASCII identifier formats (e.g., 'R-0'). Using full-width characters or
+    descriptive suffixes inside the ID field can cause parser misfires, leading to
+    failure in detecting and automatically resolving the reopen alignment state.
+  applied_files: []
+  superseded_by: null
