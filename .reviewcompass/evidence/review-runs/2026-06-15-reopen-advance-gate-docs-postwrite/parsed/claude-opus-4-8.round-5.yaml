@@ -1,0 +1,41 @@
+role: adversarial
+provider: anthropic-api
+model: claude-opus-4-8
+attempts: 1
+duration_seconds: 29.371
+findings:
+- severity: ERROR
+  target_location: WORKFLOW_PRECHECK_DETAILS.md 6. reopen-advance-gate 判定と更新 / tools/check-workflow-action.py
+    cmd_reopen_advance_gate
+  description: ドキュメントは「`--gate` は `pending_gates` の先頭文字列と完全一致する必要がある。…先頭文字列との不一致は逸脱とする」と記すが、実装は不一致時に
+    verdict=DEVIATION（exit 2）で出力するものの、テスト（test_reopen_advance_gate_blocks_nonleading_pending_gate）は
+    exit code 2 と「先頭」文字列のみを確認しており、ドキュメントの逸脱種別表記（DEVIATION）と実コードの一致は確認できるが、非先頭 gate
+    拒否のエラーメッセージが「先頭」と曖昧で、途中 gate を飛ばすケースと末尾 gate を指定するケースの区別がドキュメントの記述（途中を飛ばす更新／先頭不一致）どおりに識別できない。
+  rationale: ドキュメントは2つの逸脱条件（途中 gate を飛ばす／先頭不一致）を列挙しているが、実装は単一の「先頭一致」チェックのみで両者を区別していない。記述粒度と実装の対応がずれており、利用者が逸脱理由を取り違える。
+- severity: WARN
+  target_location: tests/tools/test_check_workflow_action.py ReopenAdvanceGateTests
+    / WORKFLOW_PRECHECK.md 判定契約・WORKFLOW_PRECHECK_DETAILS.md 10. テスト観点
+  description: ドキュメント（テスト観点）は「根拠なし更新を拒否する」「`--evidence` が 1 件も無い更新は逸脱とする」と明記し、WORKFLOW_PRECHECK.md
+    も「根拠なし更新を拒否する」と書くが、実装には evidence 空チェックがあるものの、それを検証する単体テストが提示された証跡内に存在しない（先頭 gate
+    拒否と正常更新の2件のみ）。
+  rationale: ドキュメントが約束する判定契約（根拠必須）に対応するテストが証跡上欠落しており、TDD で追加したという完了記録の主張と提示テスト範囲が一致しない。回帰防止が担保されていない。
+- severity: WARN
+  target_location: WORKFLOW_PRECHECK_DETAILS.md 6. reopen-advance-gate 判定と更新 / cmd_reopen_advance_gate
+  description: 'ドキュメントは「対象 YAML が存在し、`process_id: reopen-procedure` であることを要求する」と記すが、実装はこれを満たさない場合の
+    verdict を DEVIATION として返す一方、ドキュメントの判定契約（WORKFLOW_PRECHECK.md 判定契約節）には reopen-advance-gate
+    の終了コードと verdict 対応（OK/DEVIATION）が明示されていない。'
+  rationale: 他サブコマンドの判定契約が列挙される節に reopen-advance-gate の成功/逸脱時の終了コードが書かれておらず、機械判定の契約が文書化不足。利用者がスクリプトで分岐する際の根拠が不足する。
+- severity: INFO
+  target_location: TODO_NEXT_SESSION.md 項目12 / WORKFLOW_PRECHECK_DETAILS.md 6. reopen-advance-gate
+  description: TODO 項目12 は approval gate の `current_blocker` 構造化を未実装の派生課題とするが、実装の
+    cmd_reopen_advance_gate は更新時に常に `data["current_blocker"] = None` を設定する。これは approval
+    gate を進める際にも blocker を無条件で消す挙動であり、ドキュメント本文には current_blocker の更新挙動が記載されていない。
+  rationale: current_blocker を None に上書きする副作用が文書化されておらず、approval gate の blocker 構造化を別タスクとする方針と、コマンドが
+    blocker を消す現挙動の関係が読者に伝わらない。
+- severity: INFO
+  target_location: TODO_NEXT_SESSION.md 3. 現在位置 / 項目10
+  description: 現在位置の `next --json` 行は「reopen pending gate 更新コマンド追加まで completed」と更新され直近コミットを
+    `96112385` とするが、項目10 の完了表記は「`96112385`」、項目9 は依然 `b16a021a` を push 済み最新として参照しており、現在位置行の
+    `b16a021a` 記述削除と整合する一方、push 状態（96112385 が push 済みか）は本差分内で明示されていない。
+  rationale: 完了記録 yaml の deferred_reason により文書反映は別コミット単位とされるため、96112385 自体に本ドキュメント差分が含まれるか、push
+    済みかが TODO 上で曖昧。読者がリポジトリ状態を誤認する可能性がある。

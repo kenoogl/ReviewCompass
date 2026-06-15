@@ -1,0 +1,33 @@
+role: adversarial
+provider: anthropic-api
+model: claude-opus-4-8
+attempts: 1
+duration_seconds: 24.551
+findings:
+- severity: WARN
+  target_location: docs/operations/WORKFLOW_PRECHECK_DETAILS.md §6 reopen-advance-gate
+    判定と更新（`--gate` 例）／実装 `_next_step_for_pending_gate`
+  description: ドキュメントは `--gate` の標準形式を `stages/<phase>.yaml#<stage>`（例 `stages/requirements.yaml#alignment`）と定める。実装の
+    `_next_step_for_pending_gate` は `_parse_stage_gate(gate)` を呼び `(phase, stage)`
+    を得て `f"第3過程：{phase} {stage}"` を生成するが、`_parse_stage_gate` が `stages/requirements.yaml#alignment`
+    を `phase=requirements, stage=alignment` として正しく分解する保証が本差分内では確認できない。テストでは `next_step`
+    が `第3過程：requirements approval` になることを検証しているので動作はしているが、`_parse_stage_gate` の入力前提（拡張子
+    `.yaml` 付きパスを受けるか単純な `phase#stage` を受けるか）がドキュメントの gate 文字列形式と一致しているかが本差分だけでは検証できない。
+  rationale: ドキュメントが約束する gate 文字列形式と実装の解析関数の入力前提が乖離していると、標準形式の gate を渡したときに `next_step`
+    生成や DEVIATION 判定が想定外挙動になり得る。文書化済み挙動と実装の整合を確認できる証跡が必要。
+- severity: INFO
+  target_location: docs/operations/WORKFLOW_PRECHECK_DETAILS.md §6（gate 完了後の `current_blocker`
+    を null にする）／実装 `data["current_blocker"] = None`
+  description: ドキュメントは「gate 完了後は `current_blocker` を `null` にする」と記載し、実装も無条件で `data["current_blocker"]
+    = None` を設定する。一方 TODO_NEXT_SESSION.md 項目12 は approval gate での actor=human / proxy_model
+    の承認待ち blocker 構造化が未実装と明記している。つまり approval gate を進めても blocker は無条件で null 化される。この挙動自体はドキュメントと一致するが、承認待ちが必要な
+    gate でも blocker が消える点は文書の §6 にも明示されておらず、運用上の落とし穴になり得る。
+  rationale: ドキュメント（§6）と実装は一致しているため矛盾ではないが、approval gate 特有の承認待ち状態が無条件 null 化で失われる旨が文書に注記されていない。派生課題（項目12）として
+    TODO には残っているので軽微だが、§6 に一言補足があると誤運用を防げる。
+- severity: INFO
+  target_location: TODO_NEXT_SESSION.md §4 項目13／実装 `--evidence` 拒否ロジック
+  description: 'TODO 項目13 は「`96112385` 時点の専用テストは正常更新と非先頭 gate 拒否に限られ、根拠なし更新の exit
+    2 を追加テストする」と派生課題化している。実装は `if not evidence: raise ValueError` で根拠なし更新を DEVIATION
+    化しており、ドキュメント（§6・WORKFLOW_PRECHECK.md 判定契約）も「根拠なし更新を拒否する」と記載済み。文書とコードと TODO の記述は整合しており、未テスト分が派生課題として正しく繰り越されている。'
+  rationale: post-write 検証として、文書化された拒否挙動（根拠なし更新）と実装の整合、および未カバーテストの繰り越し記録が一致していることを確認できた。問題ではないが、ドキュメントが主張する拒否挙動の一部がテスト未カバーである点は
+    traceability 上記録に値する。

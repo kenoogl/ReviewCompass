@@ -1,0 +1,17 @@
+findings:
+  - severity: ERROR
+    target_location: "docs/operations/WORKFLOW_PRECHECK_DETAILS.md §6 reopen-advance-gate 判定と更新 / tools/check-workflow-action.py cmd_reopen_advance_gate"
+    description: "文書は「--gate は pending_gates の先頭文字列と完全一致する必要がある」「通常の gate 文字列は stages/<phase>.yaml#<stage> 形式。例：stages/requirements.yaml#alignment」と記すが、実装の例示は `--gate stages/design.yaml#alignment` で、内部の `_next_step_for_pending_gate` は `_parse_stage_gate(gate)` で gate を phase/stage に分解する。文書の引数表は `--gate` を「pending_gates 内と同じ文字列で指定する」と説明する一方、実装は next_step 生成のため `_parse_stage_gate` で `stages/<phase>.yaml#<stage>` 形式に依存している。pending_gates の文字列がこの形式でない場合の挙動（例外・逸脱判定）が文書に明示されていない。"
+    rationale: "残る pending gate が `stages/<phase>.yaml#<stage>` 形式でないと `_next_step_for_pending_gate` 内の `_parse_stage_gate` が失敗し得るが、文書は gate 形式の前提を「通常の」と弱く述べるだけで、形式外時の判定結果（OK/DEVIATION）が利用者に伝わらない。書き込み後の文書が実装挙動を正確に反映していない。"
+  - severity: WARN
+    target_location: "docs/operations/WORKFLOW_PRECHECK_DETAILS.md §6 判定と更新「対象 YAML が存在し、process_id: reopen-procedure であることを要求する」/ tools/check-workflow-action.py cmd_reopen_advance_gate の DEVIATION 経路"
+    description: "実装は不存在・YAML parse 失敗・process_id 不一致・pending_gates 形式不正・先頭不一致・evidence なし・set-spec 不正など複数の失敗で verdict=DEVIATION・exit 2 を返すが、文書は exit code の対応（OK=0 / DEVIATION=2）を §6 内で明示していない。WORKFLOW_PRECHECK.md 5章の判定契約には reopen-advance-gate の終了コード説明が追記されていない（『根拠なし更新を拒否する』のみ）。"
+    rationale: "他サブコマンドは判定契約に終了コードの枠組みがあるが、新コマンドの DEVIATION→exit 2 の対応が文書側で明示されず、利用者が CI 等で扱う際の根拠が薄い。"
+  - severity: WARN
+    target_location: "TODO_NEXT_SESSION.md 項目10 完了記述 / stages/completed/maintenance-2026-06-15-reopen-advance-gate.yaml completion_conditions"
+    description: "TODO 項目10は完了とし「pending gate 完了時に spec.json、pending_gates、completed_gates、downstream_impact_decisions、completed_steps が機械更新される」を満たすとするが、completed.yaml の completion_conditions には `current_blocker` の機械更新が条件に含まれていない。実装は `data['current_blocker'] = None` を行い文書 §6 にも『gate 完了後は current_blocker を null にする』と記載があるため、完了記録の条件記述が実装・文書よりやや不足している。"
+    rationale: "完了記録の completion_conditions が実装・運用文書でカバーされる範囲を網羅していないと、後続の監査で『何をもって完了か』の照合に齟齬を生む。"
+  - severity: INFO
+    target_location: "TODO_NEXT_SESSION.md 項目13 / tests/tools/test_check_workflow_action.py ReopenAdvanceGateTests"
+    description: "項目13は『96112385 時点の専用テストは正常更新と非先頭 gate 拒否に限られ、根拠なし更新の exit 2 を追加テストする』と派生課題化しているが、実装には evidence なし時の `--evidence は 1 件以上必要です` 逸脱経路が存在し、文書 §6 にも『--evidence が 1 件も無い更新は逸脱とする』と明記済みである。文書と TODO の整合は取れている（テスト不足を正しく派生課題として開いている）。"
+    rationale: "派生課題が正しく記録されており文書間の不整合はないが、テスト未カバーの判定経路が運用文書に記載されている点を確認のため記録する。"

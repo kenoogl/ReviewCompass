@@ -1,0 +1,29 @@
+findings:
+  - severity: INFO
+    target_location: "TODO_NEXT_SESSION.md §3 現在位置"
+    description: "コミットハッシュの更新（b16a021a → 96112385）と reopen-advance-gate 追加の記述が、§4 項目10 の完了記述および新規 §3 行と整合している。"
+    rationale: "post-write 検証として、文書間のコミット参照と完了状態の主張が一貫していることを確認。"
+  - severity: INFO
+    target_location: "TODO_NEXT_SESSION.md §4 項目10"
+    description: "項目10 が取消線＋『完了（2026-06-15、96112385）』へ正しく更新され、approval gate の blocker 構造化を今後タスクとして明示的に scope 外へ繰り延べている。元の改善案（feature_scope, decision, rationale, evidence, spec.json 更新）と実装記述が対応している。"
+    rationale: "要対処項目を完了へ転記する際、未実施部分（approval gate blocker 構造化）が漏れなく残タスク化されているかは検証の要点。記述上は整合。"
+  - severity: WARN
+    target_location: "TODO_NEXT_SESSION.md §4 項目10 / WORKFLOW_PRECHECK_DETAILS.md §6"
+    description: "TODO は『reopen-advance-gate を追加し…validate_reopen_completion_impact_decisions が受け入れる形に機械更新できるようにした』と主張するが、本 diff には対応する実装コード（check-workflow-action.py / decision_source_lint 等）やテスト（test_check_workflow_action.py への reopen-advance-gate ケース追加）が含まれていない。文書のみの diff で実装・テスト・完了記録 YAML（stages/completed/maintenance-2026-06-15-reopen-advance-gate.yaml）は target に現れていない。"
+    rationale: "post-write 検証は、文書化された主張（コマンド追加・テスト 4 観点・完了記録）が実体（コミット 96112385 内のコード/テスト/記録）に裏付けられることを確認する必要がある。本 diff 単独では、文書の主張が実装と一致するかを独立検証できない。レビュー対象スコープが文書差分のみであるなら、実装側の証跡が別途検証済みであることの確認が望ましい。"
+  - severity: INFO
+    target_location: "WORKFLOW_PRECHECK_DETAILS.md §6〜§10 見出し番号"
+    description: "新規 §6 reopen-advance-gate 挿入に伴う後続見出しの再採番（旧§6→§7、§7→§8、§8→§9、§8.1→§9.1、§9→§10）が連続して正しく行われている。"
+    rationale: "見出し番号のずれは内部参照（#anchor 以外の番号参照）破綻の原因になるため、再採番の連続性を確認。番号は整合している。"
+  - severity: INFO
+    target_location: "WORKFLOW_PRECHECK.md §4.6 / WORKFLOW_PRECHECK_DETAILS.md §6 アンカー"
+    description: "両文書に <a id=\"reopen-advance-gate\"></a> アンカーが設置され、WORKFLOW_PRECHECK.md からの相互リンク [WORKFLOW_PRECHECK_DETAILS.md](WORKFLOW_PRECHECK_DETAILS.md#reopen-advance-gate) が対応している。"
+    rationale: "文書間リンクの解決可能性は commit 検査の文書リンク整合観点に関わるため確認。アンカーとリンクは対応している。"
+  - severity: INFO
+    target_location: "WORKFLOW_PRECHECK.md コマンド一覧 / 引数行 / 判定契約"
+    description: "reopen-advance-gate がコマンド一覧・使用例・判定契約（先頭 pending gate のみ進める／根拠なし更新拒否）の各節へ漏れなく追記され、DETAILS の引数表（--file/--gate/--decision/--feature-scope/--rationale/--evidence/--completed-step/--set-spec）と一致している。"
+    rationale: "概要文書と詳細文書の引数・判定記述の不一致は誤運用を招く。両者は整合している。"
+  - severity: WARN
+    target_location: "WORKFLOW_PRECHECK_DETAILS.md §6 判定と更新（gate 形式の表記揺れ）"
+    description: "引数表の --gate 例は `stages/requirements.yaml#alignment`、判定説明では『stages/<phase>.yaml#<stage> 形式でない gate は逸脱』とある一方、TODO §3 では『pending_gates の先頭 gate』、§10 テスト観点では『先頭 gate 更新／非先頭 gate 拒否』と表現が分散している。gate 一致が文字列完全一致なのか形式検証＋先頭一致の二段なのか、文書だけからは挙動の細部（例：phase 名と pending_gates 記載形式の一致条件）が一意に読み取りづらい。"
+    rationale: "fail-closed コマンドの受理条件は誤運用防止の中核であり、表記の分散は利用者が正しい --gate 値を組み立てる際の誤りを誘発しうる。実装の実挙動と文書記述の一致を確認するか、§6 で gate 照合規則を一文で明示するのが望ましい。"

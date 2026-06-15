@@ -9,6 +9,7 @@ tools/check-workflow-action.py spec-set <feature> <phase> <stage> <new-value> [-
 tools/check-workflow-action.py commit --rationale "<理由>" [--execution-actor llm|human]
 tools/check-workflow-action.py push --rationale "<理由>"
 tools/check-workflow-action.py audit-commit <commit-ish>
+tools/check-workflow-action.py reopen-advance-gate --file <path> --gate stages/<phase>.yaml#<stage> --decision <decision> --feature-scope <feature> --rationale "<理由>" --evidence <path> [--evidence <path> ...] [--completed-step "<説明>"] [--set-spec FEATURE PHASE STAGE VALUE]
 tools/check-workflow-action.py autonomous-plan <plan.yaml>
 tools/check-workflow-action.py autonomous-plan-template --run-id <run-id> --out <plan.yaml>
 tools/check-workflow-action.py autonomous-plan-record-integration --ledger <ledger.yaml> --status <status> --tests "<tests>" --decision "<decision>"
@@ -128,12 +129,45 @@ tools/guarded-git-commit.py -m "<commit message>" --rationale "<理由>"
 
 この監査は、対象 commit 時点に manifest が存在したことを証明するものではない。現在のリポジトリ状態で、その commit 内容に対応する検証記録が存在するかを確認する是正監査である。
 
+<a id="reopen-advance-gate"></a>
+
+## 6. reopen-advance-gate
+
+`reopen-advance-gate` は、reopen 手続きファイルの `pending_gates` を 1 件進める更新コマンドである。`spec-set` は in-progress reopen が存在する状態を通常作業として遮断するため、reopen 第3過程の gate 完了更新では本コマンドを使う。
+
+引数：
+
+| 引数 | 必須 | 説明 |
+|---|---|---|
+| `--file` | 必須 | 対象の reopen 手続き YAML |
+| `--gate` | 必須 | 完了扱いにする gate。`pending_gates` 内と同じ文字列で指定する。標準の gate 文字列は `stages/<phase>.yaml#<stage>` 形式。例：`stages/requirements.yaml#alignment` |
+| `--decision` | 必須 | 下流影響判断 |
+| `--feature-scope` | 必須 | 判断対象の feature |
+| `--rationale` | 必須 | 判断理由 |
+| `--evidence` | 必須 | 判断根拠。複数指定可 |
+| `--completed-step` | 任意 | `completed_steps` に追記する完了ステップ |
+| `--set-spec` | 任意 | `FEATURE PHASE STAGE VALUE` の 4 値で `spec.json` も同時更新する。指定は 1 回のみ。`VALUE` は `true` または `false` |
+
+判定と更新：
+
+- 対象 YAML が存在し、`process_id: reopen-procedure` であることを要求する
+- `--gate` は `pending_gates` の先頭文字列と完全一致する必要がある。先頭文字列との不一致は逸脱とする
+- `pending_gates` 自体は、`reopen-start` 等が作る標準の `stages/<phase>.yaml#<stage>` 形式を前提とする。既存 YAML 内の gate 文字列を追加検証する正規化処理は本コマンドの対象外である
+- `--evidence` が 1 件も無い更新は逸脱とする
+- 完了した gate を `pending_gates` から除去し、`completed_gates` へ追加する
+- `downstream_impact_decisions` に `gate`、`feature_scope`、`decision`、`rationale`、`evidence` を追記する
+- `--completed-step` があれば `completed_steps` へ追記する
+- `--set-spec` があれば、対象 feature の `spec.json` の該当 workflow_state を同時更新する
+- gate 完了後は `current_blocker` を `null` にする。本コマンドは approval gate の承認待ち blocker を新規作成しない
+- 残る pending gate があれば `step_number: 3` を維持し、`next_step` を次 gate に更新する。無ければ `step_number: 4` と `next_step: 第4過程：完了` へ進める
+- 成功時は exit 0、上記の前提違反や入力不正は DEVIATION として exit 2 を返す
+
 <a id="autonomous-plan"></a>
 <a id="autonomous-plan-template"></a>
 <a id="autonomous-plan-record-integration"></a>
 <a id="autonomous-ledger-audit"></a>
 
-## 6. autonomous-plan 系
+## 7. autonomous-plan 系
 
 `autonomous-plan` は実行計画 YAML を fail-closed で検査する。最低限、次を確認する。
 
@@ -151,7 +185,7 @@ tools/guarded-git-commit.py -m "<commit message>" --rationale "<理由>"
 
 `autonomous-plan-template` は最小テンプレートを生成する。`autonomous-plan-record-integration` は統合後に既存の履歴台帳へ `integration_result` を追記する。
 
-## 7. 出力形式
+## 8. 出力形式
 
 終了コード：
 
@@ -176,7 +210,7 @@ JSON 出力は、少なくとも次のキーを含む。
 }
 ```
 
-## 8. ログ
+## 9. ログ
 
 判定ログは JSON Lines 形式で記録する。`--json` 出力と同等の構造に `timestamp` を追加する。
 
@@ -187,7 +221,7 @@ JSON 出力は、少なくとも次のキーを含む。
 
 `--log-path` でテスト用の隔離パスへ上書きできる。
 
-### 8.1 実行時生成物の凍結期（P3 まで）の扱い
+### 9.1 実行時生成物の凍結期（P3 まで）の扱い
 
 検査ログ・effective prompt（`.reviewcompass/runtime/effective-prompts/`、旧 `.reviewcompass/effective-prompts/`）・
 commit 承認レコード（`.reviewcompass/runtime/approvals/commit-approval.json`、旧 `.reviewcompass/approvals/commit-approval.json`）の
@@ -217,7 +251,7 @@ commit 承認レコード（`.reviewcompass/runtime/approvals/commit-approval.js
    旧配置を追跡している構成（対象アプリ等）に限る。未追跡の旧成果物の凍結は書き込み経路のテスト
    （`tests/tools/test_runtime_placement_freeze.py`）で担保する。
 
-## 9. テスト観点
+## 10. テスト観点
 
 主要な判定条件は `tests/tools/test_check_workflow_action.py` で検証する。最低限、次を覆う。
 
@@ -225,6 +259,7 @@ commit 承認レコード（`.reviewcompass/runtime/approvals/commit-approval.js
 - `commit` の承認レコード、post-write-verification、reopen 手続き、危険変更、文書リンクの検査
 - `push` の clean 性検査
 - `audit-commit` の manifest 対応検査
+- `reopen-advance-gate` の先頭 gate 更新、spec.json 同時更新、非先頭 gate 拒否
 - `guarded-git-commit.py` の commit 遮断と承認レコード消費
 - `autonomous-plan` 系サブコマンドの構造検査
 

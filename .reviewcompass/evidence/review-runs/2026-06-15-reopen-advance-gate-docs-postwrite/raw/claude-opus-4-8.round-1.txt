@@ -1,0 +1,29 @@
+findings:
+  - severity: INFO
+    target_location: "TODO_NEXT_SESSION.md §3 現在位置"
+    description: "§3 で直近作業コミットを `96112385` に更新し、reopen pending gate 更新コマンド追加を completed 状態として明記している。新コマンド追加の事実記述と整合している。"
+    rationale: "post-write 検証として、書き込まれた現在位置の記述が今回追加機能（reopen-advance-gate）と一致することを確認した。"
+  - severity: INFO
+    target_location: "TODO_NEXT_SESSION.md §4 項目10"
+    description: "従来「要対処」だった項目10を取り消し線＋『完了（2026-06-15、`96112385`）』へ更新し、scope を pending gate 前進に絞った旨と、approval gate の blocker 構造化は別タスクに回す旨を記述している。"
+    rationale: "改善課題の完了反映が実装内容（先頭 pending gate 前進・spec.json 同時更新）と整合し、未対応部分（approval gate blocker 構造化）も明示されているため、過大主張になっていない。"
+  - severity: WARN
+    target_location: "TODO_NEXT_SESSION.md §4 項目10（完了記述）と項目9（旧コミット参照）"
+    description: "§3 では「直近作業コミットは `96112385`」と更新する一方、§4 項目9 では `make-commit-approval.py` 削除を `b16a021a` と記載し、§3 旧記述にあった『`b16a021a` まで push 済み』は削除された。新コミット `96112385` が push 済みかどうかが §3・項目10 のいずれにも明記されていない。"
+    rationale: "他の完了項目（例：項目9 は『push 済み』、会話ログ項目は『push 済み』）が push 状態を明示しているのに対し、今回の `96112385` だけ push 状態が不記載で、reopen 完了更新が共有済みかどうかが読者に判断できない。post-write 検証として完了記録の一貫性に欠ける。"
+  - severity: INFO
+    target_location: "docs/operations/WORKFLOW_PRECHECK.md §4.6 / §3 サブコマンド一覧 / §5 判定契約"
+    description: "サブコマンド一覧・コマンド構文・新節 §4.6・判定契約（先頭 pending gate のみ前進・根拠なし拒否）へ reopen-advance-gate を追加しており、4 箇所で整合した記述になっている。"
+    rationale: "概要ドキュメントの追記が相互に矛盾なく、詳細仕様（DETAILS）の判定内容とも一致することを確認した。"
+  - severity: INFO
+    target_location: "docs/operations/WORKFLOW_PRECHECK_DETAILS.md §6 reopen-advance-gate"
+    description: "新節で引数表（--file/--gate/--decision/--feature-scope/--rationale/--evidence 必須、--completed-step/--set-spec 任意）と判定・更新仕様を定義し、以降の節番号（6→7→8→9→10、8.1→9.1）を繰り上げ、テスト観点に reopen-advance-gate を追加している。"
+    rationale: "詳細仕様・節番号繰り上げ・テスト観点が一貫して更新されており、概要側の記述（先頭 gate のみ・根拠必須・spec.json 同時更新）と矛盾しない。"
+  - severity: WARN
+    target_location: "docs/operations/WORKFLOW_PRECHECK_DETAILS.md §6 引数表の --gate と判定節"
+    description: "引数表では `--gate` の例を `requirements/alignment` とし、本文も「`pending_gates` の先頭と一致する必要がある」と述べるが、TODO §3 や項目10 では gate を `phase/stage`（requirements alignment）と表現する一方、PRECHECK.md のコマンド構文は `--gate <phase>/<stage>` としている。`pending_gates` 内の各 gate がどのキー（phase/stage 連結文字列か構造体か）で先頭一致判定されるかの正本的定義が DETAILS に明記されていない。"
+    rationale: "先頭一致を逸脱判定する中核仕様にもかかわらず、比較対象となる pending_gate のデータ表現が文書から一意に定まらず、利用者が `--gate` の正しい書式を誤る余地がある。fail-closed 判定の運用説明としては照合キーの定義を明示すべき。"
+  - severity: INFO
+    target_location: "docs/operations/WORKFLOW_PRECHECK_DETAILS.md §6 process_id 要件"
+    description: "「対象 YAML が存在し `process_id: reopen-procedure` であることを要求する」と前提条件を明記しており、誤ったファイルへの適用を fail-closed で防ぐ意図が記述されている。"
+    rationale: "post-write 検証として、新コマンドの適用対象を限定する安全側の記述が含まれていることを確認した。"

@@ -1,0 +1,13 @@
+findings:
+  - severity: INFO
+    target_location: "docs/operations/WORKFLOW_PRECHECK_DETAILS.md §6 引数表"
+    description: "引数表で `--gate` の形式を `stages/<phase>.yaml#<stage>` と説明し、例も `stages/requirements.yaml#alignment` としているが、WORKFLOW_PRECHECK.md と DETAILS.md の usage 行では `--gate stages/<phase>.yaml#<stage>` で一貫しており整合している。TODO_NEXT_SESSION.md 項目10 完了記述も同一コミット `96112385` と整合する。文書間の記述は整合している。"
+    rationale: "post-write 検証として、新規追加した reopen-advance-gate の文書記述が usage 行・引数表・判定契約・テスト観点で相互に一貫していることを確認した。矛盾は検出されない。"
+  - severity: INFO
+    target_location: "docs/operations/WORKFLOW_PRECHECK.md 4.6 / DETAILS.md §6"
+    description: "PRECHECK.md は `--completed-step` `--set-spec` の任意引数に言及せず簡潔な要約に留まる一方、DETAILS.md がそれらを網羅している。PRECHECK が概要・DETAILS が詳細という両ファイルの役割分担に沿っており、欠落ではない。"
+    rationale: "概要文書と詳細文書の粒度差は意図された構成であり、後者が前者を補完しているため整合性の欠陥には当たらない。"
+  - severity: INFO
+    target_location: "TODO_NEXT_SESSION.md §3 現在位置"
+    description: "直近作業コミットを旧 `b16a021a` から `96112385` へ更新し、reopen-advance-gate 追加を completed 記述に反映している。§4 項目10 を完了（取り消し線）化し、完了記録 `stages/completed/maintenance-2026-06-15-reopen-advance-gate.yaml` を明示しており、状態記述は一貫している。"
+    rationale: "TODO の現在位置・残タスク・完了記録の記述が互いに矛盾なく更新されていることを確認した。"

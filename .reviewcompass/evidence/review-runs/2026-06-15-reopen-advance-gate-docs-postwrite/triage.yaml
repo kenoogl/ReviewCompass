@@ -1,0 +1,95 @@
+run_id: 2026-06-15-reopen-advance-gate-docs-postwrite
+triage_status: decided
+generated_at: '2026-06-15T13:58:17.666962+00:00'
+decision_actor: null
+decision_actor_type: human
+items:
+- finding_id: 2026-06-15-reopen-advance-gate-docs-postwrite-gpt-5.4-primary-001
+  run_id: 2026-06-15-reopen-advance-gate-docs-postwrite
+  source_model: gpt-5.4
+  source_round: round-7
+  source_raw_path: raw/gpt-5.4.round-7.txt
+  source_parsed_path: parsed/gpt-5.4.round-7.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: TODO_NEXT_SESSION.md §4 item 13 / tests/tools/test_check_workflow_action.py
+  plain_language_summary: Documentation explicitly states that missing-evidence rejection
+    for `reopen-advance-gate` is untested, while the post-write update presents the
+    command as completed and reflected in operations docs.
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: llm
+  decision_actor_type: agent
+  decision_at: '2026-06-15T13:59:01.350970+00:00'
+  decision_reason: 根拠なし更新拒否のテスト不足は TODO_NEXT_SESSION.md 項目13に明示済みで、文書は完了範囲と残課題を分けているため未解決本質ではない
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-15-reopen-advance-gate-docs-postwrite-claude-opus-4-8-adversarial-001
+  run_id: 2026-06-15-reopen-advance-gate-docs-postwrite
+  source_model: claude-opus-4-8
+  source_round: round-7
+  source_raw_path: raw/claude-opus-4-8.round-7.txt
+  source_parsed_path: parsed/claude-opus-4-8.round-7.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: docs/operations/WORKFLOW_PRECHECK_DETAILS.md §6 reopen-advance-gate
+    判定と更新（`--gate` 例）／実装 `_next_step_for_pending_gate`
+  plain_language_summary: ドキュメントは `--gate` の標準形式を `stages/<phase>.yaml#<stage>`（例
+    `stages/requirements.yaml#alignment`）と定める。実装の `_next_step_for_pending_gate` は
+    `_parse_stage_gate(gate)` を呼び `(phase, stage)` を得て `f"第3過程：{phase} {stage}"` を生成するが、`_parse_stage_gate`
+    が `stages/requirements.yaml#alignment` を `phase=requirements, stage=alignment`
+    として正しく分解する保証が本差分内では確認できない。テストでは `next_step` が `第3過程：requirements approval` になることを検証しているので動作はしているが、`_parse_stage_gate`
+    の入力前提（拡張子 `.yaml` 付きパスを受けるか単純な `phase#stage` を受けるか）がドキュメントの gate 文字列形式と一致しているかが本差分だけでは検証できない。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: llm
+  decision_actor_type: agent
+  decision_at: '2026-06-15T13:59:11.897408+00:00'
+  decision_reason: 標準 gate 形式は文書化済みで、実装証跡には標準形式から next_step を生成するテストが含まれる。追加の既存YAML正規化検査は
+    TODO_NEXT_SESSION.md 項目14に派生課題として記録済み
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-15-reopen-advance-gate-docs-postwrite-claude-opus-4-8-adversarial-002
+  run_id: 2026-06-15-reopen-advance-gate-docs-postwrite
+  source_model: claude-opus-4-8
+  source_round: round-7
+  source_raw_path: raw/claude-opus-4-8.round-7.txt
+  source_parsed_path: parsed/claude-opus-4-8.round-7.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: docs/operations/WORKFLOW_PRECHECK_DETAILS.md §6（gate 完了後の `current_blocker`
+    を null にする）／実装 `data["current_blocker"] = None`
+  plain_language_summary: ドキュメントは「gate 完了後は `current_blocker` を `null` にする」と記載し、実装も無条件で
+    `data["current_blocker"] = None` を設定する。一方 TODO_NEXT_SESSION.md 項目12 は approval
+    gate での actor=human / proxy_model の承認待ち blocker 構造化が未実装と明記している。つまり approval gate
+    を進めても blocker は無条件で null 化される。この挙動自体はドキュメントと一致するが、承認待ちが必要な gate でも blocker が消える点は文書の
+    §6 にも明示されておらず、運用上の落とし穴になり得る。
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: llm
+  decision_actor_type: agent
+  decision_at: '2026-06-15T13:59:20.909024+00:00'
+  decision_reason: approval gate blocker を新規作成しない旨を WORKFLOW_PRECHECK_DETAILS.md §6
+    に追記し、誤運用を避ける補足を反映済み
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-15-reopen-advance-gate-docs-postwrite-claude-opus-4-8-adversarial-003
+  run_id: 2026-06-15-reopen-advance-gate-docs-postwrite
+  source_model: claude-opus-4-8
+  source_round: round-7
+  source_raw_path: raw/claude-opus-4-8.round-7.txt
+  source_parsed_path: parsed/claude-opus-4-8.round-7.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: TODO_NEXT_SESSION.md §4 項目13／実装 `--evidence` 拒否ロジック
+  plain_language_summary: 'TODO 項目13 は「`96112385` 時点の専用テストは正常更新と非先頭 gate 拒否に限られ、根拠なし更新の
+    exit 2 を追加テストする」と派生課題化している。実装は `if not evidence: raise ValueError` で根拠なし更新を DEVIATION
+    化しており、ドキュメント（§6・WORKFLOW_PRECHECK.md 判定契約）も「根拠なし更新を拒否する」と記載済み。文書とコードと TODO の記述は整合しており、未テスト分が派生課題として正しく繰り越されている。'
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: llm
+  decision_actor_type: agent
+  decision_at: '2026-06-15T13:59:30.739221+00:00'
+  decision_reason: 文書化された拒否挙動、実装、未カバーテストの繰り越し記録が整合しているという確認指摘であり、追加修正は不要
+  applied_files: []
+  superseded_by: null

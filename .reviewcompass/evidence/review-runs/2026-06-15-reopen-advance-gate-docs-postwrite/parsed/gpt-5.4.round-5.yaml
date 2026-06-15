@@ -1,0 +1,25 @@
+role: primary
+provider: openai-api
+model: gpt-5.4
+attempts: 1
+duration_seconds: 4.786
+findings:
+- severity: ERROR
+  target_location: docs/operations/WORKFLOW_PRECHECK.md / docs/operations/WORKFLOW_PRECHECK_DETAILS.md
+    / tools/check-workflow-action.py (reopen-advance-gate)
+  description: Documentation states that `--gate` must be a '正規の gate 文字列' in `stages/<phase>.yaml#<stage>`
+    form, but the implementation does not validate this format and only checks equality
+    with the first `pending_gates` entry.
+  rationale: This is a post-write verification mismatch between documented contract
+    and actual behavior. Users may rely on format validation that does not exist,
+    and malformed gate strings already present in the YAML would still be accepted
+    if they match the first pending entry.
+- severity: WARN
+  target_location: docs/operations/WORKFLOW_PRECHECK_DETAILS.md §6 reopen-advance-gate
+  description: The docs say `--set-spec` '指定は 1 回のみ', but the CLI help and parser
+    do not explicitly enforce or explain duplicate-use behavior beyond argparse's
+    default handling.
+  rationale: The operational documentation presents a precise invocation contract;
+    if a caller supplies `--set-spec` multiple times, behavior depends on argparse
+    rather than a documented tool-level validation rule. This can cause avoidable
+    confusion in automation or operator use.

@@ -1,0 +1,16 @@
+role: primary
+provider: openai-api
+model: gpt-5.4
+attempts: 1
+duration_seconds: 3.1
+findings:
+- severity: WARN
+  target_location: TODO_NEXT_SESSION.md §4 item 13 / tests/tools/test_check_workflow_action.py
+  description: Documentation explicitly states that missing-evidence rejection for
+    `reopen-advance-gate` is untested, while the post-write update presents the command
+    as completed and reflected in operations docs.
+  rationale: For an advance-gate helper that mutates both reopen state and optionally
+    `spec.json`, documenting completion without corresponding regression coverage
+    for one of the stated fail-closed guarantees leaves the documented operational
+    contract only partially verified. This is not necessarily wrong, but it is a notable
+    residual gap for post-write verification.

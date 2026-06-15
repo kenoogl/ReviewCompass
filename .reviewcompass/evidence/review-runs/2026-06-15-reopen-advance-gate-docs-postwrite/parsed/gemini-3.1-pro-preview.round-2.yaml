@@ -1,0 +1,14 @@
+role: judgment
+provider: gemini-api
+model: gemini-3.1-pro-preview
+attempts: 1
+duration_seconds: 19.027
+findings:
+- severity: WARN
+  target_location: docs/operations/WORKFLOW_PRECHECK.md and docs/operations/WORKFLOW_PRECHECK_DETAILS.md
+  description: The command synopsis for `reopen-advance-gate` omits the optional arguments
+    `--completed-step` and `--set-spec`.
+  rationale: While `--completed-step` and `--set-spec` are correctly explained in
+    the argument details table in `WORKFLOW_PRECHECK_DETAILS.md`, missing them in
+    the command synopsis line makes the quick reference incomplete and may obscure
+    available features from users.

@@ -1,0 +1,48 @@
+status: completed
+target_files:
+- TODO_NEXT_SESSION.md
+- docs/operations/WORKFLOW_PRECHECK.md
+- docs/operations/WORKFLOW_PRECHECK_DETAILS.md
+target_sha256:
+  TODO_NEXT_SESSION.md: 2717c7c26ebfd677a27d83eca496191059cd38bf8b15dd2e0ee05889292c481a
+  docs/operations/WORKFLOW_PRECHECK.md: b94b0c56e95d7257ffe31057ffe615ec802ad354afd510e597eba95c87d8a8da
+  docs/operations/WORKFLOW_PRECHECK_DETAILS.md: 70e8772566d3ec8cb3681c10b210d0e71094df3bbc1773e8b01c12e4d0ca96dc
+required_verifiers: &id001
+- claude-opus-4-8
+- gemini-3.1-pro-preview
+- gpt-5.4
+completed_verifiers: *id001
+unresolved_substantive_findings: 0
+verifications:
+- verifier: claude-opus-4-8
+  target_files:
+  - TODO_NEXT_SESSION.md
+  - docs/operations/WORKFLOW_PRECHECK.md
+  - docs/operations/WORKFLOW_PRECHECK_DETAILS.md
+  target_sha256:
+    TODO_NEXT_SESSION.md: 2717c7c26ebfd677a27d83eca496191059cd38bf8b15dd2e0ee05889292c481a
+    docs/operations/WORKFLOW_PRECHECK.md: b94b0c56e95d7257ffe31057ffe615ec802ad354afd510e597eba95c87d8a8da
+    docs/operations/WORKFLOW_PRECHECK_DETAILS.md: 70e8772566d3ec8cb3681c10b210d0e71094df3bbc1773e8b01c12e4d0ca96dc
+- verifier: gemini-3.1-pro-preview
+  target_files:
+  - TODO_NEXT_SESSION.md
+  - docs/operations/WORKFLOW_PRECHECK.md
+  - docs/operations/WORKFLOW_PRECHECK_DETAILS.md
+  target_sha256:
+    TODO_NEXT_SESSION.md: 2717c7c26ebfd677a27d83eca496191059cd38bf8b15dd2e0ee05889292c481a
+    docs/operations/WORKFLOW_PRECHECK.md: b94b0c56e95d7257ffe31057ffe615ec802ad354afd510e597eba95c87d8a8da
+    docs/operations/WORKFLOW_PRECHECK_DETAILS.md: 70e8772566d3ec8cb3681c10b210d0e71094df3bbc1773e8b01c12e4d0ca96dc
+- verifier: gpt-5.4
+  target_files:
+  - TODO_NEXT_SESSION.md
+  - docs/operations/WORKFLOW_PRECHECK.md
+  - docs/operations/WORKFLOW_PRECHECK_DETAILS.md
+  target_sha256:
+    TODO_NEXT_SESSION.md: 2717c7c26ebfd677a27d83eca496191059cd38bf8b15dd2e0ee05889292c481a
+    docs/operations/WORKFLOW_PRECHECK.md: b94b0c56e95d7257ffe31057ffe615ec802ad354afd510e597eba95c87d8a8da
+    docs/operations/WORKFLOW_PRECHECK_DETAILS.md: 70e8772566d3ec8cb3681c10b210d0e71094df3bbc1773e8b01c12e4d0ca96dc
+review_run:
+  path: .reviewcompass/evidence/review-runs/2026-06-15-reopen-advance-gate-docs-postwrite
+  summary_path: .reviewcompass/evidence/review-runs/2026-06-15-reopen-advance-gate-docs-postwrite/model-result-summary.yaml
+notes: reopen-advance-gate 文書反映の post-write verification。round-7 で未解決本質指摘なし、残課題は TODO
+  に繰り越し。

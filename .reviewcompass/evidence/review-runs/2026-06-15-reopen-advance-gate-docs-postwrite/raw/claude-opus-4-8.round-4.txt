@@ -1,0 +1,17 @@
+findings:
+  - severity: ERROR
+    target_location: "docs/operations/WORKFLOW_PRECHECK_DETAILS.md §6 reopen-advance-gate 引数表 / `--gate` 行"
+    description: "ドキュメントは `--gate` の形式を一貫して `stages/<phase>.yaml#<stage>`（例 `stages/requirements.yaml#alignment`）と記述するが、実装の判定は `pending_gates[0] != args.gate` の完全文字列一致のみで、`stages/<phase>.yaml#<stage>` 形式の解釈・検証は行っていない（_parse_stage_gate は next_step 生成にしか使われない）。ドキュメントの『まず stages/<phase>.yaml#<stage> 形式として解釈できること、次に pending_gates の先頭文字列と完全一致することを要求する』という記述は実装と乖離している。"
+    rationale: "書き込み後検証では文書の記述が実装挙動と一致している必要がある。形式検証があると書いてあるのに無いと、形式不正な gate でも先頭文字列さえ一致すれば受理されうるため、文書が誤った安全性を約束する。"
+  - severity: WARN
+    target_location: "docs/operations/WORKFLOW_PRECHECK_DETAILS.md §6 判定と更新『残る pending gate があれば next_step を次 gate に更新し、無ければ第4過程へ進める』"
+    description: "実装では remaining gate がある場合 step_number=3 を維持し next_step を更新、無ければ step_number=4・next_step='第4過程：完了' に進める。文書は step_number の遷移に言及していないが、TODO_NEXT_SESSION.md §4 項目10 の改善案では『step_number（構造化された過程番号）へ移す』という関連課題が別途存在する。文書に step_number 更新の記述がないため、機械更新される構造化フィールドの一部が文書化されていない。"
+    rationale: "reopen 手続きファイルの構造化フィールドのうち実装が更新するもの（step_number）が文書に明記されないと、利用者が出力 YAML を検証する際の期待が不完全になる。"
+  - severity: INFO
+    target_location: "docs/operations/WORKFLOW_PRECHECK_DETAILS.md §6 / WORKFLOW_PRECHECK.md §4.6 終了コード記述"
+    description: "実装は失敗時 verdict='DEVIATION'・exit_code=2 を返すが、PRECHECK_DETAILS の §6 本文には終了コード（OK=0 / DEVIATION=2）の明示がない。WORKFLOW_PRECHECK.md §5 判定契約には reopen-advance-gate の検査内容のみ追加され、他サブコマンド同様 §7 出力形式の終了コード表に依存する構成。整合性は取れているが、reopen-advance-gate 固有の OK/DEVIATION 対応は明示されていない。"
+    rationale: "他サブコマンドと同等の記述粒度であり致命的ではないが、fail-closed の挙動（根拠なし・非先頭 gate が DEVIATION）を文書で終了コードと結びつけて示すとより明確になる。"
+  - severity: INFO
+    target_location: "stages/completed/maintenance-2026-06-15-reopen-advance-gate.yaml completion_evidence"
+    description: "completion_evidence は tools/check-workflow-action.py と tests のみで、文書（WORKFLOW_PRECHECK.md / WORKFLOW_PRECHECK_DETAILS.md / TODO_NEXT_SESSION.md）は deferred_follow_up に分離されている。deferred_reason に『post-write-verification 対象文書と tools 変更を同一未コミット差分に混在させると policy violation』と記載があり、本レビューはその deferred 文書を対象としている。完了記録自体は整合的。"
+    rationale: "完了記録の分離理由が明記され、本 post-write 検証が deferred 文書を対象にしている構成と矛盾しない。記録として妥当であることの確認。"

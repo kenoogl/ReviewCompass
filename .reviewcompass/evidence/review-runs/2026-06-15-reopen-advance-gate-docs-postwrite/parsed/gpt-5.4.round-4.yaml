@@ -1,0 +1,16 @@
+role: primary
+provider: openai-api
+model: gpt-5.4
+attempts: 1
+duration_seconds: 5.975
+findings:
+- severity: WARN
+  target_location: stages/completed/maintenance-2026-06-15-reopen-advance-gate.yaml
+  description: 完了記録が completion_evidence に文書更新を含めておらず、deferred_follow_up として後回し扱いにしている一方、今回の文書差分では既に
+    WORKFLOW_PRECHECK 系と TODO_NEXT_SESSION.md を『反映済み』として更新している。
+  rationale: post-write verification の観点では、完了記録と実際の反映状態の整合が重要。現状だと完了記録は『文書反映は別単位』と述べるが、対象ドキュメントでは同じ変更セットの成果として文書反映済みと説明しており、証跡の時系列・単位境界が曖昧になる。少なくとも完了記録側の
+    deferred 状態を解消する追記、または文書側で別単位反映であることの明示が必要。
+- severity: INFO
+  target_location: TODO_NEXT_SESSION.md §4 項目10
+  description: 未完了課題を完了表記へ更新した際、旧ワークアラウンド実施内容や hand-edit 発生の記述が削除され、結果だけが残っている。
+  rationale: 誤りではないが、reopen-advance-gate 導入の必要性を示した具体的事例が薄くなり、後日の監査で『何を解消したのか』の追跡性が少し下がる。必要なら完了項目内に『従前は手編集ワークアラウンドだった』旨を短く残すと、改善の因果関係がより明確になる。

@@ -1,0 +1,30 @@
+role: primary
+provider: openai-api
+model: gpt-5.4
+attempts: 1
+duration_seconds: 4.908
+findings:
+- severity: WARN
+  target_location: docs/operations/WORKFLOW_PRECHECK.md:53
+  description: The documented command synopsis for `reopen-advance-gate` uses a shell-unsafe
+    `--set-spec <feature> <phase> <stage> <true|false>` placeholder without grouping
+    or repetition notation.
+  rationale: As written, readers may misinterpret `--set-spec` as taking one value
+    rather than four positional values, which can lead to incorrect invocation. This
+    is a documentation clarity issue for an operational command reference.
+- severity: WARN
+  target_location: docs/operations/WORKFLOW_PRECHECK_DETAILS.md:146-147
+  description: The `--set-spec` argument description says it takes '4 値' but does
+    not state whether the option may be supplied multiple times or only once.
+  rationale: The surrounding text says '必要な `spec.json` 更新' and the command is presented
+    as supporting spec updates during gate advancement, but the multiplicity contract
+    is not explicit. Operators may be unsure whether multiple workflow state updates
+    in one invocation are supported.
+- severity: INFO
+  target_location: TODO_NEXT_SESSION.md:68-71
+  description: Item 10 is marked completed, but the adjacent future-work note about
+    approval-gate blocker structuring remains only inside the strikethrough replacement
+    text and is not surfaced as a standalone follow-up task.
+  rationale: This is not inconsistent, but it makes the remaining gap easier to miss
+    during next-session planning because the original deficiency is shown as resolved
+    while the deferred sub-scope is buried in completion prose.

@@ -1,0 +1,5 @@
+findings:
+  - severity: WARN
+    target_location: "TODO_NEXT_SESSION.md §4 項目13"
+    description: "追加テスト不足を派生課題として明記しており、今回の文書では『完了』としつつ根拠なし更新拒否のテスト未実施を自認している。"
+    rationale: "post_write_verification の観点では、文書化された完了主張が実装証跡と整合しているかが重要であり、対象差分の docs でも『拒否する』契約を追加している一方、実装証跡上の専用テストは正常系と非先頭 gate 拒否のみで、根拠なし更新拒否は未確認のままである。完了主張自体を直ちに否定するほどではないが、advance gate docs の信頼性には留保が必要。

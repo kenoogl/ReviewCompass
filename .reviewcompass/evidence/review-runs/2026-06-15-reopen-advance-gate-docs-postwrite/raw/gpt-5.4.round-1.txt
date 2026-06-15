@@ -1,0 +1,15 @@
+findings:
+  - severity: WARN
+    target_location: "TODO_NEXT_SESSION.md §3 / docs/operations/WORKFLOW_PRECHECK.md / docs/operations/WORKFLOW_PRECHECK_DETAILS.md"
+    description: "新規コマンド `reopen-advance-gate` を『追加・完了』として記載している一方、この差分には実装本体・テスト・完了記録ファイルの追加が含まれていません。"
+    rationale: "post-write verification の観点では、運用文書が実装済み事実を主張する場合、同一変更集合内で少なくともコード・テスト・証跡への整合が確認できるのが望ましいです。現状の diff だけでは『文書先行更新』に見え、記載内容の実在確認ができません。"
+
+  - severity: INFO
+    target_location: "docs/operations/WORKFLOW_PRECHECK.md usage example for `reopen-advance-gate`"
+    description: "使用例では `--evidence <path>` を単数で示していますが、詳細文書では『複数指定可』と説明されています。"
+    rationale: "矛盾ではありませんが、利用者が単一指定専用と誤解する余地があります。CLI の繰り返し指定例を追記すると運用時の迷いを減らせます。"
+
+  - severity: INFO
+    target_location: "TODO_NEXT_SESSION.md §3 reopened gate item"
+    description: "『運用説明は ... に反映中』としつつ、同一差分では実際に該当 2 文書へ追記が入っています。"
+    rationale: "内容上は大きな問題ではありませんが、現状反映済みなのか未完了なのかが文面上やや曖昧です。ステータス表現を『反映済み』または『追記済み』に揃えると記録の整合性が上がります。"}
