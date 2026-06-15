@@ -1,0 +1,20 @@
+status: completed
+target_files:
+- TODO_NEXT_SESSION.md
+target_sha256:
+  TODO_NEXT_SESSION.md: 663b0bb6ff81d4d3eec8578e11a833bd2cc0debafec7ec78f079b3d97b552d23
+required_verifiers: &id001
+- gemini-3.5-flash
+completed_verifiers: *id001
+unresolved_substantive_findings: 0
+verifications:
+- verifier: gemini-3.5-flash
+  target_files:
+  - TODO_NEXT_SESSION.md
+  target_sha256:
+    TODO_NEXT_SESSION.md: 663b0bb6ff81d4d3eec8578e11a833bd2cc0debafec7ec78f079b3d97b552d23
+review_run:
+  path: .reviewcompass/evidence/review-runs/2026-06-14-postwrite-todo-adjudication-policy
+  summary_path: .reviewcompass/evidence/review-runs/2026-06-14-postwrite-todo-adjudication-policy/model-result-summary.yaml
+notes: TODO §4-5（裁定負荷対策）に方針確定を追記したことの書き込み後検証。束ね検出＋逐語照合＋内容性の lint（重要種別限定）、意味一致は人/判定役、実装は次セッション集中。gemini-3.5-flash
+  1体、所見0で収束。

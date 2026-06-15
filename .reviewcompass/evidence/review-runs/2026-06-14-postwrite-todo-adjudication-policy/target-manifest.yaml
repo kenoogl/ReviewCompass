@@ -1,0 +1,4 @@
+run_id: 2026-06-14-postwrite-todo-adjudication-policy
+target_files:
+- path: TODO_NEXT_SESSION.md
+  sha256: 663b0bb6ff81d4d3eec8578e11a833bd2cc0debafec7ec78f079b3d97b552d23
