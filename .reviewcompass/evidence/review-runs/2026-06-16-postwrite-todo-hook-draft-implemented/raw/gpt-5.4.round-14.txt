@@ -1,0 +1,5 @@
+findings:
+  - severity: WARN
+    target_location: "TODO_NEXT_SESSION.md §4 item 11 / docs/notes/2026-06-10-deployment-multi-llm-entry-design.md §3.7 / .codex/hooks/README.md"
+    description: "現行文書は Codex TODO hook の runtime 下書き化を『実装済み』としている一方で、2026-06-15 に repo 内 `.codex/hooks.json` の PostToolUse 登録が実環境で発火しなかった事実の解消確認が記載されていない。"
+    rationale: "今回の更新は hook の保存先と昇格方式を変更した説明に集中しているが、利用者運用上の最大リスクは『設計どおり hook が呼ばれるか』である。旧 TODO では未発火の実確認と改善案が明示されていたのに対し、更新後はその未解決事項が完了扱いに置き換わっているため、実装と運用確認の区別が曖昧になり、ドキュメント整合性を損ねる。"

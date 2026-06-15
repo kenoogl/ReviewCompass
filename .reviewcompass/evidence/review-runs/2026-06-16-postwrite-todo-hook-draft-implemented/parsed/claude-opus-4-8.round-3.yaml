@@ -1,0 +1,33 @@
+role: adversarial
+provider: anthropic-api
+model: claude-opus-4-8
+attempts: 1
+duration_seconds: 28.22
+findings:
+- severity: INFO
+  target_location: .codex/hooks/README.md — 手順9 / docs/notes/2026-06-10... 実装変更対象
+  description: README の手順9 は hook が `tools/session-record-draft.py` を呼ぶと記載し、設計記録（追補3.7
+    実装反映）も `tools/session-record-draft.py` を下書き helper として明記しており、TODO §4 項目11・候補5
+    とも `session-record-draft.py`／`session-record-promote-draft.py` の二分割で一貫している。ドキュメント間の
+    CLI 名・event 名・出力先の整合は取れている。
+  rationale: ドラフト→実装の整合確認として、主要ファイル間で記述が揃っていることを確認した（指摘ではなく整合の記録）。
+- severity: WARN
+  target_location: docs/notes/2026-06-10-deployment-multi-llm-entry-design.md §3.7
+    実装変更対象の箇条書き
+  description: 実装変更対象として `tools/session-record-backfill.py または新規 helper：下書き生成と正式昇格を分離する`
+    と記し、直後に `2026-06-16 実装では、下書き生成 helper と昇格 helper を分ける方式を採用した` と補足するが、`session-record-backfill.py`
+    自体が下書き機能を持つ改修だったのか、別 helper 新設のみだったのかが両義的に読める。実際の実装（`session-record-draft.py`
+    新設）と照らすと `backfill.py` は終了済み明示回収のまま据え置きで、下書き機能は付与していないはずである。
+  rationale: 後続セッションが `backfill.py` に下書き機能があると誤読すると、誤った CLI 呼び出しや不要な改修を招く。実装結果に合わせ「backfill
+    には下書き機能を付けず、新規 helper に分離した」と明示するのが安全。
+- severity: INFO
+  target_location: .codex/hooks/README.md 手順9 と INITIAL_SETUP_LLM_GUIDE.md §10 手順6
+  description: README 手順9 は環境変数 `RC_SESSION_DRAFT_DIR` と `--draft-dir` 引数で下書き先を差し替える旨を明記するが、INITIAL_SETUP_LLM_GUIDE.md
+    §10 手順6 には `RC_SESSION_DRAFT_DIR` の差し替え可否への言及がない。配布先での動作確認・デバッグ時にテスト用差し替えが必要になり得るが、ガイド側は既定挙動の確認手順に限定されている。
+  rationale: 初期設定ガイドは配布先 LLM 向けの一次手順であり、テスト用差し替え変数の存在を欠いても致命ではないが、README との情報粒度差として記録する。実装契約上の不整合ではない。
+- severity: WARN
+  target_location: TODO_NEXT_SESSION.md §4 項目11（完了化された記述）
+  description: 項目11 完了記述は「今回既に生成された未追跡 2 件（evidence/docs の codex-019eca0c...）は正式扱いせずコミットしない。元
+    rollout が残っていれば削除してよい」とするが、同 §3 の実装済みツール一覧やバックフィル記録ではこの 2 件の最終的な処理結果（削除済みか残置か）が確定記述されていない。完了マークと未確定の後処理が同居している。
+  rationale: 下書き化方針の実装完了と、旧方式で生成された残存正式記録の後始末は別事項である。後始末未完のまま「完了」とマークされると、次セッションがコミット対象判断を誤る恐れがある。残存
+    2 件の最終処理を明記するか、別 follow-up として切り出すのが望ましい。

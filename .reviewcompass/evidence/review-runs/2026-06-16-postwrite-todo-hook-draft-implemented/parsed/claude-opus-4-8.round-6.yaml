@@ -1,0 +1,23 @@
+role: adversarial
+provider: anthropic-api
+model: claude-opus-4-8
+attempts: 1
+duration_seconds: 20.973
+findings:
+- severity: INFO
+  target_location: .codex/hooks/README.md - 手順9
+  description: 手順9で `RC_SESSION_DRAFT_DIR`（未指定なら既定 runtime 下書き先）を `tools/session-record-draft.py`
+    へ渡すと記載されているが、出力先の節では既定が `.reviewcompass/runtime/session-record-drafts/codex-<session_id>.md`
+    とファイルパス形式で書かれている。`--draft-dir` はディレクトリを受け取る引数のため、ファイルパスとディレクトリの区別が手順説明と環境変数の対応で曖昧。実装上の
+    `RC_SESSION_DRAFT_DIR` がディレクトリを指す前提と、出力先のファイル名生成規則の関係を読者が取り違える恐れがある。
+  rationale: ドキュメント間で引数の意味（ディレクトリ vs ファイル）が一貫して読み取れることは、利用者が hook やテストで `RC_SESSION_DRAFT_DIR`
+    を設定する際の誤設定を防ぐために重要。
+- severity: INFO
+  target_location: docs/notes/2026-06-10-deployment-multi-llm-entry-design.md §3.7
+  description: §3.7 の見出しは「2026-06-15 設計、2026-06-16 実装」とあり、本文冒頭の背景説明も「現行設計は...直接生成するため」と現在形で旧方式を記述しているが、同節末尾に「実装反映（2026-06-16）」が追記されている。設計記録としての時系列（旧設計→変更→実装反映）は読み取れるものの、背景段落の現在形記述が実装完了後に読むと既に過去の状態を指すため、時制が混在している。
+  rationale: 設計ノートは将来の読者が経緯を追う一次資料であり、現在形・過去形の混在は『現行』がいつ時点を指すか曖昧にする。ただし日付付き追補で実装完了が明記されているため軽微。
+- severity: INFO
+  target_location: TODO_NEXT_SESSION.md §3 現在位置 / §4 項目11-12
+  description: §3 と §4 項目11・12 で hook の下書き化が完了・実装済みと記載される一方、§3 の『現在位置』先頭の `next --json`
+    状態説明や直近コミット `96112385`（2026-06-15）はそのまま残り、2026-06-16 の hook 実装に対応する新規コミットハッシュが本文中に明示されていない。他の完了項目（例：`a287684a`、`96112385`、`b16a021a`）はコミットハッシュ付きで記録されているのに対し、今回の下書き化実装のコミット参照が欠落している。
+  rationale: 完了記録の正本性・追跡性を保つため、他項目と同様にコミットハッシュを残すことが望ましい。push 前の段階であれば未確定だが、ドキュメント上の一貫性として指摘する。

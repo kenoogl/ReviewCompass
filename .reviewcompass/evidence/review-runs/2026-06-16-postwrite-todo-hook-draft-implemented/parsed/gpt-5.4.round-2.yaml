@@ -1,0 +1,15 @@
+role: primary
+provider: openai-api
+model: gpt-5.4
+attempts: 1
+duration_seconds: 5.274
+findings:
+- severity: WARN
+  target_location: TODO_NEXT_SESSION.md §4 item 11
+  description: 実装済み項目が『未コミット』と明記されている一方で、文書全体では実装反映済みとして恒久運用ルールのように記述されている。
+  rationale: post_write_verification の観点では、未コミット実装を既成事実として運用文書へ反映すると、実際のリポジトリ状態と手順書が一時的に不一致になる。特に次セッション向け
+    TODO は正本的に参照されやすく、未コミットである旨だけでは利用者が現物確認なしに新 CLI や hook 挙動を前提化するおそれがある。
+- severity: INFO
+  target_location: docs/notes/2026-06-10-deployment-multi-llm-entry-design.md §3.7
+  description: 節見出しでは『2026-06-15 設計』とあるが、本文の変更対象には 2026-06-16 実装済みファイル・テスト名まで含まれている。
+  rationale: 内容としては整合しているが、設計記録なのか実装反映記録なのかが見出しだけだとやや曖昧で、後から追跡する際に設計時点と実装時点の境界が読み取りにくい。見出しや導入文で『設計＋実装反映』を明示すると追跡性が上がる。

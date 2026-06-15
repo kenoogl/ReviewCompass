@@ -1,0 +1,13 @@
+findings:
+  - severity: INFO
+    target_location: ".codex/hooks/README.md - 取り込み手順 step 9"
+    description: "README step 9 では hook が `RC_SESSION_DRAFT_DIR` を `tools/session-record-draft.py --session <jsonl> --source codex --draft-dir <draft-dir>` へ渡すと記述しているが、設計記録（3.7 実装反映）と TODO §3 では hook 本体が呼ぶ helper は `session-record-draft.py` とだけ示され、`--draft-dir` 引数や `RC_SESSION_DRAFT_DIR` の受け渡し方式は README にのみ詳述される。文書間で CLI 引数仕様の粒度が揃っていないが矛盾はない。"
+    rationale: "実装詳細の記載粒度差は将来の不整合の温床になり得るため、helper の引数契約を設計記録側にも一行で固定しておくと整合維持が容易になる。"
+  - severity: INFO
+    target_location: "TODO_NEXT_SESSION.md §4 項目11 と項目12"
+    description: "項目11 は旧方式で生成された未追跡 2 件を「正式扱いせずコミットしない。削除は別 follow-up（次項）」とし、項目12 がその後始末を担う。一方 §3 の現在位置記述や README には、この 2 件の暫定状態（未追跡のまま残置）への言及がない。"
+    rationale: "未追跡ファイルの残置は次セッションで `git status` 確認時に混乱を生みやすい。TODO 内で follow-up 化されている点は整合しているが、現在位置（§3）にも一言あると到達点把握が容易。重大度は低い。"
+  - severity: INFO
+    target_location: "docs/notes/2026-06-10-deployment-multi-llm-entry-design.md §3.7 実装変更対象 / 新規 helper"
+    description: "設計記録の『実装変更対象』では `.codex/hooks/README.md` の更新を列挙しているが、列挙中の hook 本体記述は『`tools/session-record-backfill.py` の正式出力先を直接使わず runtime 下書き出力へ切り替える』とあり、最終的に hook は `session-record-draft.py` を呼ぶ実装（同節末尾の実装反映で確定）と表現が異なる。節内で前段の計画記述と末尾の実装反映で helper 名が異なるが、実装反映行が後勝ちで整合は取れている。"
+    rationale: "同一設計記録内で計画時表現（backfill 出力先切替）と実装結果（draft helper 分離）が併存するため、読み手が一読で誤解する可能性がある。末尾の実装反映で明示されており実害は小さい。"

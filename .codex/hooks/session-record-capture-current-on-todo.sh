@@ -1,10 +1,10 @@
 #!/bin/bash
 # PostToolUse フック：TODO_NEXT_SESSION.md 更新を合図に、現 Codex セッションを
-# 2 層のセッション記録へ単一取り込みする。
+# runtime 下書きへ保存する。
 #
 # 設計：
 #   - UserPromptSubmit は使わない（発話ごとに誤発火し得るため）
-#   - TODO_NEXT_SESSION.md の内容 hash が前回記録時から変わった時だけ取り込む
+#   - TODO_NEXT_SESSION.md の内容 hash が前回記録時から変わった時だけ保存する
 #   - 初回に TODO 更新の痕跡が無い場合は baseline だけ記録し、既存 dirty を誤回収しない
 #   - session_id が無い場合は並行セッション誤回収を避けるため推測しない
 #   - 取り込めない場合も含め常に exit 0（作業を妨げない）
@@ -21,6 +21,7 @@ SESSION_ID=$(printf '%s' "$INPUT" | jq -r '.session_id // empty')
 CWD=$(printf '%s' "$INPUT" | jq -r '.cwd // empty')
 LOG_PATH="${RC_SESSION_HOOK_LOG:-$REPO_ROOT/.reviewcompass/runtime/session-record-capture-current-on-todo.jsonl}"
 STATE_DIR="${RC_SESSION_HOOK_STATE_DIR:-$REPO_ROOT/.reviewcompass/runtime/session-record-capture-current-on-todo-state}"
+DRAFT_DIR="${RC_SESSION_DRAFT_DIR:-$REPO_ROOT/.reviewcompass/runtime/session-record-drafts}"
 
 log_event() {
   EVENT="$1"
@@ -167,17 +168,14 @@ CURRENT_SESSION_ID=$(printf '%s' "$CURRENT_INFO" | jq -r '.session_id // empty')
 [ ! -f "$CURRENT" ] && { log_event "selected_missing" "$CURRENT" "$CURRENT_SESSION_ID"; exit 0; }
 log_event "selected" "$CURRENT" "$CURRENT_SESSION_ID"
 
-EVIDENCE_DIR="${RC_SESSION_EVIDENCE_DIR:-$REPO_ROOT/.reviewcompass/evidence/sessions}"
-DOCS_DIR="${RC_SESSION_DOCS_DIR:-$REPO_ROOT/docs/sessions}"
-
 cd "$REPO_ROOT" || exit 0
-if python3 tools/session-record-backfill.py \
+if python3 tools/session-record-draft.py \
   --session "$CURRENT" --source codex \
-  --evidence-dir "$EVIDENCE_DIR" --docs-dir "$DOCS_DIR" >/dev/null 2>&1; then
+  --draft-dir "$DRAFT_DIR" >/dev/null 2>&1; then
   printf '%s\n' "$TODO_HASH" >"$STATE_FILE" 2>/dev/null || true
-  log_event "captured" "$CURRENT" "$CURRENT_SESSION_ID"
+  log_event "drafted" "$CURRENT" "$CURRENT_SESSION_ID"
 else
-  log_event "capture_failed" "$CURRENT" "$CURRENT_SESSION_ID"
+  log_event "draft_failed" "$CURRENT" "$CURRENT_SESSION_ID"
 fi
 
 exit 0

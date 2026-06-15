@@ -1,0 +1,5 @@
+findings:
+  - severity: ERROR
+    target_location: ".reviewcompass/runtime/postwrite-todo-hook-draft-implemented-target.md"
+    description: "Target document content is missing."
+    rationale: "Post-write verification for TODO/hook/draft/implementation/docs consistency cannot be performed because the specified file has no provided content to review. This blocks validation of whether draft notes, TODOs, implementation state, and documentation are aligned."

@@ -1,0 +1,4 @@
+run_id: 2026-06-16-postwrite-todo-hook-draft-implemented
+target_files:
+- path: .reviewcompass/runtime/postwrite-todo-hook-draft-implemented-target.md
+  sha256: 6cc8b9d62b9b813ec8453875d3020a5881aca3749f2b3d6da371f6723f27bbb0

@@ -1,0 +1,25 @@
+findings:
+  - severity: INFO
+    target_location: ".codex/hooks/README.md - 取り込み手順 step 9"
+    description: "README step 9 では hook が `tools/session-record-draft.py` を呼ぶと記載されているが、設計記録（docs/notes 追補）と TODO 項目11では下書き生成 helper を `tools/session-record-draft.py`、昇格 helper を `tools/session-record-promote-draft.py` として分離した旨が一貫している。README・INITIAL_SETUP・TODO・設計記録の間で CLI 名（`session-record-draft.py` / `session-record-promote-draft.py`）は整合している。"
+    rationale: "実装反映後の文書群で 2 つの helper 名が一致しているか確認したが矛盾は検出されなかったため、整合確認の記録として残す。"
+  - severity: WARN
+    target_location: ".codex/hooks/README.md - 『2026-06-16 実装反映』段落および『出力先』段落"
+    description: "README『出力先』には『正式な 2 層記録は終了済みセッションを対象にした昇格操作または明示 backfill で作る』とあり、昇格対象が終了済みセッションであることを明示している。一方、診断ログから取得する `selected_session_id` は『今セッションで TODO 更新 hook を一度走らせた後』の現セッション ID を指し、昇格 helper はその current ID と対象 ID の同一を拒否する。current ID を昇格対象 ID として誤用しない旨は『昇格時の current 確認』段落で補足されているが、`<current-id>` 取得元の `selected`/`drafted` event の `selected_session_id` が『今セッションの ID』であることと、昇格対象 `<id>` が『終了済みセッションの ID』であることの区別が、README 本文の流れだけでは取り違えやすい。"
+    rationale: "下書き保存と昇格の two-step 運用において、`--session-id`（終了済み対象）と `--current-session-id`（実行中の自セッション）を取り違えると昇格 helper が exit 2 で拒否するか、誤ったセッションを昇格する。文書間で運用は整合しているが、誤用防止のため両 ID の役割対比を一箇所で明示すると安全。"
+  - severity: INFO
+    target_location: "TODO_NEXT_SESSION.md §3 現在位置 / §4 項目11-12 と docs/notes 追補 §3.7"
+    description: "TODO §3 の『Codex TODO 更新 hook による現セッション下書き保存 実装済み（2026-06-16）』、§4 項目11・12 の完了打ち消し、docs/notes §3.7『実装反映（2026-06-16）』、README『2026-06-16 実装反映』、INITIAL_SETUP 最終更新 2026-06-16 が、いずれも下書き保存方式・昇格 helper・`drafted`/`draft_failed` event・current ID 拒否という同一仕様で一致している。日付（2026-06-16）も全文書で揃っている。"
+    rationale: "draft 実装から各実装文書への反映が日付・仕様・CLI 名のレベルで一貫していることを確認した整合記録。"
+  - severity: WARN
+    target_location: "TODO_NEXT_SESSION.md §4 項目11 末尾の『（次項）』参照"
+    description: "項目11 末尾は『終了済み rollout の明示 backfill により正式 2 層記録として作り直し済み（次項）』とし、項目12 で 2 件後始末の完了を述べている。項目11・12 はともに打ち消し線付きで『完了（2026-06-16）』とされており参照は機能している。ただし項目12 では旧生成物の削除と backfill 再生成を『session-record-backfill.py --session』で行ったと記すのに対し、項目11 では同 2 件の作り直しを『終了済み rollout の明示 backfill により』とだけ述べ、項目11 本文前半が説明する新方式（promote-draft）とは別経路（backfill）で後始末した点が項目11 単独では読み取りにくい。"
+    rationale: "新方式（下書き→昇格）と後始末（旧生成物削除→明示 backfill 再生成）が異なる経路であることは項目12 を読めば整合するが、項目11 内の『次項』前後で経路が切り替わる点を取り違えると、後始末も promote-draft で行ったと誤解しうる。"
+  - severity: INFO
+    target_location: "docs/notes/2026-06-10-...md §3.7『実装変更対象』の helper 記述"
+    description: "§3.7 実装変更対象の『新規 helper』項では『2026-06-16 実装では、下書き生成 helper と昇格 helper を分ける方式を採用した』とし、直後の『実装反映（2026-06-16）』で `tools/session-record-draft.py` と `tools/session-record-promote-draft.py` の 2 分割を明記している。README step 9・INITIAL_SETUP step 6・TODO 項目11 の記述と CLI 名・分割方針が一致している。"
+    rationale: "設計記録の追補が実装後の helper 分割（draft 生成 / promote 昇格）を正しく反映し、他文書と CLI 名レベルで整合していることを確認した記録。"
+  - severity: INFO
+    target_location: "全文書の診断 event 名（drafted/draft_failed と旧 captured/capture_failed）"
+    description: "README『診断ログ』、TODO §3・§4 項目11、INITIAL_SETUP step 6、docs/notes §3.7 はいずれも成功 event を `drafted`、失敗 event を `draft_failed` に統一しており、旧 `captured`/`capture_failed` は実装反映文書から除去されている。event 名一覧（ignored_event/baseline_recorded/todo_unchanged/todo_changed/no_session_id/no_codex_root/no_current_session/selected/drafted/draft_failed）も README で更新済み。"
+    rationale: "実装の event 名変更が全関連文書へ漏れなく反映され、旧 event 名が混在していないことを確認した整合記録。"

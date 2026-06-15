@@ -74,6 +74,20 @@
   - 既存 variant の改名は行わない（規律文書・過去 run 記録・spec からの参照を保全するため）。Gemini が操縦する場合（将来）は同じ原則で役を回転して対応し、今回は variant を追加しない。
 - 反映先：`config/api-settings.yaml`（実施済み）、`templates/entry/AGENT_ENTRY.template.md` §10 への操縦 LLM 別既定の案内（実施済み）、初期設定ガイドへの操縦 LLM 確認手順（実装計画 4 で実施）。
 
+### 3.7 追補：Codex TODO hook の下書き化と正式記録への昇格（2026-06-15 設計、2026-06-16 実装）
+
+- 背景：Codex には Claude の `SessionEnd` 相当がなく、TODO 更新を合図に現セッション rollout を保存する設計自体は維持する。ただし、2026-06-15 時点で実装・運用していた方式では `PostToolUse` hook が現セッションの途中記録を `.reviewcompass/evidence/sessions/` と `docs/sessions/` に直接生成していたため、セッション中ずっと `git status` に未追跡ファイルとして出続けた。commit guard は進行中セッション記録を除外できるが、正式証跡置き場へ途中版を出すことがノイズと誤運用の原因になるため、2026-06-16 実装では runtime 下書き方式へ変更した。
+- 設計変更：TODO 更新 hook は、現セッションを正式記録へ直接書かず、`.reviewcompass/runtime/session-record-drafts/` 配下の下書き領域へ保存する。runtime は git 管理対象外であり、作業中に TODO を複数回更新しても正式証跡の dirty を増やさない。下書きは `codex-<session_id>.md` とし、`session_id` ごとに 1 件を更新対象とする。TODO が 1 セッション内で複数回更新された場合は同じ下書きを追記専用マージで伸ばす。下書きは正式昇格後に削除してよく、必要なら元 rollout から再生成する。
+- 正式化：Codex には SessionStart 相当も無いため、自動昇格は前提にしない。次セッション冒頭または利用者が明示した時点で、下書きまたは元 rollout を `.reviewcompass/evidence/sessions/` と `docs/sessions/` へ昇格する専用操作を呼ぶ。実装済み CLI は `tools/session-record-promote-draft.py --session-id <id> --source codex --current-session-id <current-id>` である。契約は「対象 `session_id` 明示」「現在実行中の `session_id` を明示できること」「対象が現在実行中の `session_id` と同一なら拒否」「終了済みセッションだけを正式記録にする」の 4 点とする。current `session_id` は、今セッションで TODO 更新 hook を一度走らせた後の診断ログにある最新 `selected` event の `selected_session_id` で確認する。current `session_id` を取得できない場合は安全側に倒し、昇格せず明示 backfill 手順へ戻す。
+- 既存ルールとの関係：`UserPromptSubmit` を使わない方針、`session_id` が無い場合に推測しない方針、TODO を更新しないセッションや hook 失敗時は明示 `--session` backfill に倒す方針は維持する。変更するのは「現セッションをどこに書くか」と「正式記録へ昇格する時点」である。
+- 実装変更対象：
+  - `.codex/hooks/session-record-capture-current-on-todo.sh`：`tools/session-record-backfill.py` の正式出力先を直接使わず、runtime 下書き出力へ切り替える。診断ログは `captured`／`capture_failed` ではなく `drafted`／`draft_failed` へ改め、正式記録と区別できる event 名にする。
+  - `templates/hooks/session-record-capture-current-on-todo.sh.template`：配布先でも同じ runtime 下書き方式へ変更する。
+  - `.codex/hooks/README.md`、`docs/operations/INITIAL_SETUP_LLM_GUIDE.md`、`TODO_NEXT_SESSION.md`：hook が現セッションを下書き保存し、正式記録は昇格操作で作ることを明記する。
+  - 新規 helper：下書き生成と正式昇格を分離する。既存の `tools/session-record-backfill.py` は終了済みセッションの明示回収として据え置き、下書き機能は付けない。2026-06-16 実装では、下書き生成 helper と昇格 helper を分ける方式を採用した。
+  - `tests/hooks/test_codex_session_record_capture_current_on_todo.py`、`tests/tools/test_session_record_promote_draft.py`、`tests/deployment/test_hook_templates.py` 等：TODO 更新時に evidence/docs へ直接生成しないこと、hook 経由で `tools/session-record-draft.py` が呼ばれ runtime 下書きが更新されること、現 `session_id` の昇格が拒否されることを TDD で固定する。
+- 実装反映（2026-06-16）：下書き生成 helper は `tools/session-record-draft.py`、正式昇格 helper は `tools/session-record-promote-draft.py` として分離した。hook 本体と配布テンプレートは `session-record-draft.py` を呼び、成功 event は `drafted`、失敗 event は `draft_failed` とする。昇格 helper は `--current-session-id` が対象 `--session-id` と同じ場合に exit 2 で拒否する。
+
 ## 4. 実装計画
 
 1. 本設計記録の作成と post-write 検証（本ファイル）。

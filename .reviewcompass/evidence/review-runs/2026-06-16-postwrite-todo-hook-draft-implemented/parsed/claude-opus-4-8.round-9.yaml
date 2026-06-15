@@ -1,0 +1,39 @@
+role: adversarial
+provider: anthropic-api
+model: claude-opus-4-8
+attempts: 1
+duration_seconds: 20.368
+findings:
+- severity: INFO
+  target_location: .codex/hooks/README.md - session-record-capture-current-on-todo.sh
+    実装手順 9
+  description: README 手順 9 では hook が `python3 tools/session-record-draft.py` を呼ぶと記載されているが、設計記録（3.7）と
+    TODO §4 項目11／§3 では下書き生成 helper を `tools/session-record-draft.py`、昇格 helper を `tools/session-record-promote-draft.py`
+    と二分割する方針で一致している。ツール名は全文書で整合している。
+  rationale: 下書き生成 helper 名が README・設計記録・TODO の三者で一致していることを確認した結果であり、不整合はない。
+- severity: INFO
+  target_location: docs/notes/2026-06-10-deployment-multi-llm-entry-design.md §3.7
+    実装変更対象
+  description: 設計記録の §3.7「実装変更対象」が hook 本体・テンプレート・README・INITIAL_SETUP_LLM_GUIDE・TODO・新規
+    helper・テスト群を列挙し、本 diff の各変更（README 改訂、INITIAL_SETUP §10 手順6/7、TODO §3/§4、hook
+    出力先と event 名変更）と対応している。
+  rationale: 設計の実装変更対象リストと実際の文書改訂が整合していることを確認した結果であり、不整合はない。
+- severity: WARN
+  target_location: .codex/hooks/README.md - 実装反映ブロックおよび手順9／INITIAL_SETUP_LLM_GUIDE.md
+    §10 手順6
+  description: README 実装反映ブロックと INITIAL_SETUP_LLM_GUIDE は current ID 確認元を「最新の `selected`
+    または `drafted` event の `selected_session_id`」とするが、TODO §3／§4 項目11 と設計記録 §3.7 正式化節は「最新の
+    `selected_session_id`」または「最新の `selected` event」とのみ記し、`drafted` event を current
+    ID 取得元として明示していない。診断ログ上 `selected` と `drafted` のどちらに `selected_session_id` フィールドが含まれるかの記述が文書間で揺れている。
+  rationale: current ID の取得元 event の指定が文書間で揺れていると、利用者が実際に診断ログのどの event を参照すべきか判断できず、昇格手順で誤った
+    current ID を渡すリスクがある。どの event に `selected_session_id` が出るかを一意に定義すべき。
+- severity: INFO
+  target_location: TODO_NEXT_SESSION.md §4 項目11・項目12
+  description: TODO §4 項目11（hook 下書き化）と項目12（旧方式 2 件の後始末）はいずれも完了マークされ、旧 §4 項目11（2026-06-15
+    の未発火確認・手動 backfill 実施）から再生成への移行経緯と再現性チェック結果（ok 2、残存検出 0）が記載され、§3 現在位置の記述とも一致する。
+  rationale: 完了記録と現在位置記述の整合を確認した結果であり、不整合はない。
+- severity: INFO
+  target_location: 全文書の日付更新
+  description: TODO 最終更新・現在位置見出し（2026-06-16）、INITIAL_SETUP_LLM_GUIDE 最終更新（2026-06-16）、設計記録
+    §3.7 見出し（2026-06-15 設計、2026-06-16 実装）が実装反映日と整合している。
+  rationale: 日付メタデータが文書間で整合していることを確認した結果であり、不整合はない。

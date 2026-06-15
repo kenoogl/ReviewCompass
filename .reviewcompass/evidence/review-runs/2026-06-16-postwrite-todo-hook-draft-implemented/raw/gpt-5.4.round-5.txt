@@ -1,0 +1,10 @@
+findings:
+  - severity: WARN
+    target_location: "TODO_NEXT_SESSION.md §4 item 12"
+    description: "旧方式で生成された 2 件のセッション記録を『削除は別 follow-up』として残しており、今回の『実装済み』説明と整合しない未解決 TODO が文書内に残っている。"
+    rationale: "post_write_verification の観点では、方針変更後に正式扱いしない生成物が残存しているなら、削除済みか、明確に未完了タスクとして別管理されている必要がある。現状の記述は実装完了を強く打ち出しつつ、後始末が未完了であることを示しており、運用者がその 2 件を誤って正式証跡として扱う余地を残す。"
+
+  - severity: INFO
+    target_location: ".codex/hooks/README.md / docs/operations/INITIAL_SETUP_LLM_GUIDE.md / TODO_NEXT_SESSION.md"
+    description: "Codex TODO hook の説明は、runtime 下書き保存・`drafted`/`draft_failed` event・`session-record-promote-draft.py` による明示昇格へ概ね一貫して更新されている。"
+    rationale: "要求された docs consistency の観点では主要文書間の整合は取れており、大きな不一致は見当たらない。確認結果として記録しておく価値がある。"

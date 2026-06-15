@@ -1,0 +1,15 @@
+role: primary
+provider: openai-api
+model: gpt-5.4
+attempts: 1
+duration_seconds: 5.677
+findings:
+- severity: WARN
+  target_location: docs/notes/2026-06-10-deployment-multi-llm-entry-design.md §3.7
+    見出し
+  description: 追補セクションの見出し日付が本文の実装反映日とずれている。
+  rationale: 見出しは「2026-06-15」だが、同セクション本文と他文書では実装反映を「2026-06-16」と記している。設計記録の日付不整合は、どの日付時点の決定かを追跡しづらくし、実装・運用文書との対応確認を難しくする。
+- severity: INFO
+  target_location: TODO_NEXT_SESSION.md §4 項目11
+  description: 「未コミット」と明記された実装完了メモが残っている。
+  rationale: 本差分の対象は post_write_verification であり、TODO 文書内に「完了（2026-06-16・未コミット）」という一時的状態が残っていると、後続セッションで状態が古くなった際に誤解を招きやすい。ただし他文書との直接矛盾までは示されていないため情報レベル。

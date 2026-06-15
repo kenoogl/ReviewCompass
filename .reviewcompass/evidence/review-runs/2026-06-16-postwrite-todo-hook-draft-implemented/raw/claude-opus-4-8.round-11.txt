@@ -1,0 +1,13 @@
+findings:
+  - severity: INFO
+    target_location: ".codex/hooks/README.md - 取り込み手順 step 9"
+    description: "Step 9 で hook 本体が呼ぶ CLI は `tools/session-record-draft.py` と記載され、設計記録（docs/notes 3.7 実装反映）でも下書き生成 helper が `tools/session-record-draft.py` と一致している。一方で TODO_NEXT_SESSION.md §4 完了項目11 や README の昇格説明では `session-record-promote-draft.py` のみ参照され、`session-record-draft.py` の名称は一部文書に登場しない。文書間で下書き helper 名の露出が不均一。"
+    rationale: "hook 本体・README step9・設計記録は draft helper 名で一致しているため整合性上は問題ないが、利用者向け運用文書（TODO/INITIAL_SETUP）では draft helper 名が省かれており、読み手が下書き生成 CLI を独立に認識しにくい。重大ではないが文書横断の網羅性として記録。"
+  - severity: INFO
+    target_location: "TODO_NEXT_SESSION.md §3 現在位置 / §4 完了項目11・12"
+    description: "§4 項目12 で旧方式の未追跡 2 件を削除後に明示 backfill で再生成済みと記載されているが、§3 現在位置の Codex 関連項目は下書き保存実装の記述のみで、旧生成物の後始末完了への言及がない。状態記述としては §4 で完結しているため矛盾はないが、現在位置サマリと完了履歴の粒度差がある。"
+    rationale: "情報の重複・矛盾はなく、§4 が詳細の正本として機能している。文書整合性の観点で問題なしと判断できるが、現在位置と完了項目の対応を確認した結果として記録する。"
+  - severity: INFO
+    target_location: "docs/notes/2026-06-10... §3.7 実装変更対象 / 実装反映"
+    description: "§3.7『実装変更対象』の new helper 箇条では「下書き生成 helper と昇格 helper を分ける方式を採用した」と記し、末尾『実装反映（2026-06-16）』で `tools/session-record-draft.py` と `tools/session-record-promote-draft.py` の具体名を確定している。設計→実装反映の流れは一貫しており、README step9・hook 本体・テストファイル名（test_session_record_promote_draft.py）とも整合する。"
+    rationale: "設計記録・README・TODO・INITIAL_SETUP 間で『下書き保存先（runtime/session-record-drafts/codex-<session_id>.md）』『昇格 CLI 名と --current-session-id 拒否契約』『drafted/draft_failed event』『current-id 取得手順（最新 selected event の selected_session_id）』が一致して記述されており、todo_hook_draft_implementation の文書整合性は満たされている。指摘事項なしの確認結果として記録。"

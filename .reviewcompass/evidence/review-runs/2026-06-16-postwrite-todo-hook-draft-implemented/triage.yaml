@@ -1,0 +1,131 @@
+run_id: 2026-06-16-postwrite-todo-hook-draft-implemented
+triage_status: decided
+generated_at: '2026-06-15T20:12:39.353876+00:00'
+decision_actor: null
+decision_actor_type: human
+items:
+- finding_id: 2026-06-16-postwrite-todo-hook-draft-implemented-gpt-5.4-primary-001
+  run_id: 2026-06-16-postwrite-todo-hook-draft-implemented
+  source_model: gpt-5.4
+  source_round: round-14
+  source_raw_path: raw/gpt-5.4.round-14.txt
+  source_parsed_path: parsed/gpt-5.4.round-14.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: TODO_NEXT_SESSION.md §4 item 11 / docs/notes/2026-06-10-deployment-multi-llm-entry-design.md
+    §3.7 / .codex/hooks/README.md
+  plain_language_summary: 現行文書は Codex TODO hook の runtime 下書き化を『実装済み』としている一方で、2026-06-15
+    に repo 内 `.codex/hooks.json` の PostToolUse 登録が実環境で発火しなかった事実の解消確認が記載されていない。
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: agent
+  decision_actor_type: agent
+  decision_at: '2026-06-15T20:13:56.300481+00:00'
+  decision_reason: 実装完了範囲と実環境 PostToolUse 発火確認未了を TODO_NEXT_SESSION.md に分離して追記済み。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-16-postwrite-todo-hook-draft-implemented-claude-opus-4-8-adversarial-001
+  run_id: 2026-06-16-postwrite-todo-hook-draft-implemented
+  source_model: claude-opus-4-8
+  source_round: round-14
+  source_raw_path: raw/claude-opus-4-8.round-14.txt
+  source_parsed_path: parsed/claude-opus-4-8.round-14.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: .codex/hooks/README.md - session-record-capture-current-on-todo.sh
+    手順 9
+  plain_language_summary: 手順 9 では hook が `tools/session-record-draft.py` を呼ぶと記載しているが、設計記録（docs/notes/2026-06-10
+    §3.7 実装変更対象）でも `session-record-draft.py` を呼ぶとあり、両者は一致している。下書き生成 helper（session-record-draft.py）と昇格
+    helper（session-record-promote-draft.py）の分離は全文書で整合している。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: agent
+  decision_actor_type: agent
+  decision_at: '2026-06-15T20:14:04.388245+00:00'
+  decision_reason: 下書き helper と昇格 helper の分離が全文書で整合しているという確認 INFO であり、追加対応は不要。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-16-postwrite-todo-hook-draft-implemented-claude-opus-4-8-adversarial-002
+  run_id: 2026-06-16-postwrite-todo-hook-draft-implemented
+  source_model: claude-opus-4-8
+  source_round: round-14
+  source_raw_path: raw/claude-opus-4-8.round-14.txt
+  source_parsed_path: parsed/claude-opus-4-8.round-14.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: .codex/hooks/README.md - 出力先 / docs/operations/INITIAL_SETUP_LLM_GUIDE.md
+    §10 手順 6
+  plain_language_summary: README の「出力先」と診断ログ説明では下書き保存に `tools/session-record-draft.py
+    --draft-dir <draft-dir>` を使い `RC_SESSION_DRAFT_DIR` で差し替えると記載されている。一方、設計記録 §3.7
+    では下書き生成 helper を `tools/session-record-draft.py` と明記している。CLI 引数 `--draft-dir`
+    と環境変数 `RC_SESSION_DRAFT_DIR` の対応関係（hook が env を CLI 引数へ渡す）は README 手順 9 でのみ説明され、INITIAL_SETUP_LLM_GUIDE
+    では `RC_SESSION_DRAFT_DIR` のみ言及して `--draft-dir` には触れていない。文書間で抽象度は異なるが矛盾はない。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: agent
+  decision_actor_type: agent
+  decision_at: '2026-06-15T20:14:12.002571+00:00'
+  decision_reason: README は hook 内部の env-to-CLI 受け渡し、初期設定ガイドは利用者向けの環境変数を説明しており抽象度差は意図的。矛盾はないため追加対応なし。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-16-postwrite-todo-hook-draft-implemented-claude-opus-4-8-adversarial-003
+  run_id: 2026-06-16-postwrite-todo-hook-draft-implemented
+  source_model: claude-opus-4-8
+  source_round: round-14
+  source_raw_path: raw/claude-opus-4-8.round-14.txt
+  source_parsed_path: parsed/claude-opus-4-8.round-14.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: TODO_NEXT_SESSION.md §3 / §4 項目11 / docs/notes/2026-06-10 §3.7
+    実装反映
+  plain_language_summary: current-id 取得手順（TODO 更新 hook 実行後の診断ログ最新 `selected` event
+    の `selected_session_id`）、昇格 helper が current `session_id` 一致時に exit 2 で拒否する点、current
+    取得不能時は昇格しない点が、README・INITIAL_SETUP_LLM_GUIDE・設計記録・TODO の 4 文書で一貫して記載されている。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: agent
+  decision_actor_type: agent
+  decision_at: '2026-06-15T20:14:19.225485+00:00'
+  decision_reason: current-id 取得手順と昇格拒否契約が4文書で一貫しているという確認 INFO であり、追加対応は不要。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-16-postwrite-todo-hook-draft-implemented-claude-opus-4-8-adversarial-004
+  run_id: 2026-06-16-postwrite-todo-hook-draft-implemented
+  source_model: claude-opus-4-8
+  source_round: round-14
+  source_raw_path: raw/claude-opus-4-8.round-14.txt
+  source_parsed_path: parsed/claude-opus-4-8.round-14.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: TODO_NEXT_SESSION.md §4 項目11・項目12 / docs/notes/2026-06-10 §3.7
+  plain_language_summary: 旧方式で生成された 2 件（evidence/sessions と docs/sessions の codex-019eca0c...
+    ファイル）が guard により進行中セッション記録と判定され削除済みであること、必要なら終了後に backfill --session で再回収する旨が
+    TODO 項目11・項目12 で整合的に記載されている。設計記録の「途中版を正式置き場に出すノイズ」という変更動機とも符合する。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: agent
+  decision_actor_type: agent
+  decision_at: '2026-06-15T20:14:25.994186+00:00'
+  decision_reason: 旧方式2件の削除と終了後 backfill 方針が TODO と設計動機に整合しているという確認 INFO であり、追加対応は不要。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-16-postwrite-todo-hook-draft-implemented-claude-opus-4-8-adversarial-005
+  run_id: 2026-06-16-postwrite-todo-hook-draft-implemented
+  source_model: claude-opus-4-8
+  source_round: round-14
+  source_raw_path: raw/claude-opus-4-8.round-14.txt
+  source_parsed_path: parsed/claude-opus-4-8.round-14.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: 全文書の event 名（drafted / draft_failed）
+  plain_language_summary: 診断ログ event 名が旧 `captured`／`capture_failed` から `drafted`／`draft_failed`
+    へ変更されたことが、README 診断ログ節・TODO §3・INITIAL_SETUP_LLM_GUIDE 手順6・設計記録 §3.7 で一貫して反映されている。`selected`
+    event の役割（current-id 確認源）も整合。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: agent
+  decision_actor_type: agent
+  decision_at: '2026-06-15T20:14:33.364486+00:00'
+  decision_reason: event 名変更が全文書で一貫しているという確認 INFO であり、追加対応は不要。
+  applied_files: []
+  superseded_by: null

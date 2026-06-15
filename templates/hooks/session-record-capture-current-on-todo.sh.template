@@ -1,5 +1,5 @@
 #!/bin/bash
-# Target app template: capture the current Codex rollout when TODO_NEXT_SESSION.md changes.
+# Target app template: draft the current Codex rollout when TODO_NEXT_SESSION.md changes.
 #
 # Replace these placeholders during initial setup:
 #   {{REVIEWCOMPASS_PYTHON}} : absolute path to Python with ReviewCompass deps
@@ -25,10 +25,11 @@ esac
 [ -z "$CWD" ] && exit 0
 [ ! -d "$CWD" ] && exit 0
 [ ! -x "$REVIEWCOMPASS_PYTHON" ] && exit 0
-[ ! -f "$REVIEWCOMPASS_DIR/tools/session-record-backfill.py" ] && exit 0
+[ ! -f "$REVIEWCOMPASS_DIR/tools/session-record-draft.py" ] && exit 0
 
 LOG_PATH="${RC_SESSION_HOOK_LOG:-$CWD/.reviewcompass/runtime/session-record-capture-current-on-todo.jsonl}"
 STATE_DIR="${RC_SESSION_HOOK_STATE_DIR:-$CWD/.reviewcompass/runtime/session-record-capture-current-on-todo-state}"
+DRAFT_DIR="${RC_SESSION_DRAFT_DIR:-$CWD/.reviewcompass/runtime/session-record-drafts}"
 
 log_event() {
   EVENT="$1"
@@ -174,16 +175,13 @@ CURRENT_SESSION_ID=$(printf '%s' "$CURRENT_INFO" | jq -r '.session_id // empty')
 [ ! -f "$CURRENT" ] && { log_event "selected_missing" "$CURRENT" "$CURRENT_SESSION_ID"; exit 0; }
 log_event "selected" "$CURRENT" "$CURRENT_SESSION_ID"
 
-EVIDENCE_DIR="${RC_SESSION_EVIDENCE_DIR:-$CWD/.reviewcompass/evidence/sessions}"
-DOCS_DIR="${RC_SESSION_DOCS_DIR:-$CWD/docs/sessions}"
-
-if cd "$CWD" && "$REVIEWCOMPASS_PYTHON" "$REVIEWCOMPASS_DIR/tools/session-record-backfill.py" \
+if cd "$CWD" && "$REVIEWCOMPASS_PYTHON" "$REVIEWCOMPASS_DIR/tools/session-record-draft.py" \
   --session "$CURRENT" --source codex \
-  --evidence-dir "$EVIDENCE_DIR" --docs-dir "$DOCS_DIR" >/dev/null 2>&1; then
+  --draft-dir "$DRAFT_DIR" >/dev/null 2>&1; then
   printf '%s\n' "$TODO_HASH" >"$STATE_FILE" 2>/dev/null || true
-  log_event "captured" "$CURRENT" "$CURRENT_SESSION_ID"
+  log_event "drafted" "$CURRENT" "$CURRENT_SESSION_ID"
 else
-  log_event "capture_failed" "$CURRENT" "$CURRENT_SESSION_ID"
+  log_event "draft_failed" "$CURRENT" "$CURRENT_SESSION_ID"
 fi
 
 exit 0

@@ -1,0 +1,21 @@
+findings:
+  - severity: INFO
+    target_location: ".codex/hooks/README.md - session-record-capture-current-on-todo.sh 手順 9"
+    description: "手順 9 では hook が `tools/session-record-draft.py` を呼ぶと記載しているが、設計記録（docs/notes/2026-06-10 §3.7 実装変更対象）でも `session-record-draft.py` を呼ぶとあり、両者は一致している。下書き生成 helper（session-record-draft.py）と昇格 helper（session-record-promote-draft.py）の分離は全文書で整合している。"
+    rationale: "ツール名の整合確認。問題なし。"
+  - severity: WARN
+    target_location: ".codex/hooks/README.md - 出力先 / docs/operations/INITIAL_SETUP_LLM_GUIDE.md §10 手順 6"
+    description: "README の「出力先」と診断ログ説明では下書き保存に `tools/session-record-draft.py --draft-dir <draft-dir>` を使い `RC_SESSION_DRAFT_DIR` で差し替えると記載されている。一方、設計記録 §3.7 では下書き生成 helper を `tools/session-record-draft.py` と明記している。CLI 引数 `--draft-dir` と環境変数 `RC_SESSION_DRAFT_DIR` の対応関係（hook が env を CLI 引数へ渡す）は README 手順 9 でのみ説明され、INITIAL_SETUP_LLM_GUIDE では `RC_SESSION_DRAFT_DIR` のみ言及して `--draft-dir` には触れていない。文書間で抽象度は異なるが矛盾はない。"
+    rationale: "ガイド文書ごとに env と CLI 引数の説明粒度が異なるが、実装の同一対象を指しており整合は取れている。読者が env と引数の関係を誤解する余地はわずかにある。"
+  - severity: INFO
+    target_location: "TODO_NEXT_SESSION.md §3 / §4 項目11 / docs/notes/2026-06-10 §3.7 実装反映"
+    description: "current-id 取得手順（TODO 更新 hook 実行後の診断ログ最新 `selected` event の `selected_session_id`）、昇格 helper が current `session_id` 一致時に exit 2 で拒否する点、current 取得不能時は昇格しない点が、README・INITIAL_SETUP_LLM_GUIDE・設計記録・TODO の 4 文書で一貫して記載されている。"
+    rationale: "下書き化・昇格方式の中核契約が文書間で整合している。問題なし。"
+  - severity: INFO
+    target_location: "TODO_NEXT_SESSION.md §4 項目11・項目12 / docs/notes/2026-06-10 §3.7"
+    description: "旧方式で生成された 2 件（evidence/sessions と docs/sessions の codex-019eca0c... ファイル）が guard により進行中セッション記録と判定され削除済みであること、必要なら終了後に backfill --session で再回収する旨が TODO 項目11・項目12 で整合的に記載されている。設計記録の「途中版を正式置き場に出すノイズ」という変更動機とも符合する。"
+    rationale: "後始末の記述が完了マーク・削除事実・再回収手順まで一貫しており整合している。"
+  - severity: INFO
+    target_location: "全文書の event 名（drafted / draft_failed）"
+    description: "診断ログ event 名が旧 `captured`／`capture_failed` から `drafted`／`draft_failed` へ変更されたことが、README 診断ログ節・TODO §3・INITIAL_SETUP_LLM_GUIDE 手順6・設計記録 §3.7 で一貫して反映されている。`selected` event の役割（current-id 確認源）も整合。"
+    rationale: "event 名のリネームが全文書で漏れなく反映されており整合している。"

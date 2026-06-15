@@ -1,0 +1,10 @@
+findings:
+  - severity: WARN
+    target_location: "TODO_NEXT_SESSION.md §3 item 11"
+    description: "新方式では現セッションを runtime 下書きにのみ保存すると説明している一方で、2026-06-15 に生成された `.reviewcompass/evidence/sessions/...` と `docs/sessions/...` の既存ファイルを『削除してよい』とだけ記しており、実際に削除済みか未削除かが不明なまま残置を許容している。"
+    rationale: "post_write_verification の観点では、実装済みドキュメントが『正式扱いしない・コミットしない』と述べる生成物が作業木に残っていると、TODO・hook 実装・運用説明の整合が曖昧になる。少なくとも削除完了か、必ず削除する明示手順のどちらかに統一した方が一貫する。"
+
+  - severity: INFO
+    target_location: "docs/notes/2026-06-10-deployment-multi-llm-entry-design.md §3.7"
+    description: "節見出しでは『2026-06-15 設計、2026-06-16 実装』とあるが、節内の箇条書き冒頭は『2026-06-15 設計』ではなく一般論から始まり、日付付きの設計決定と実装反映の境界がやや追いにくい。"
+    rationale: "内容自体は整合しているが、TODO・README・初期設定ガイドがすでに『2026-06-16 実装反映』として明快に書かれているため、設計ノート側も設計日と実装日を段落単位で明示すると、実装反映済み文書群との対応確認がしやすい。"

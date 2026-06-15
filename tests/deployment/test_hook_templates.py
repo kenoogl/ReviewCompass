@@ -50,10 +50,12 @@ def test_session_capture_template_is_deployable_without_local_user_paths():
   assert "{{REVIEWCOMPASS_DIR}}" in text
   assert "/Users/keno" not in text
   assert "/Users/Daily/Development/ReviewCompass" not in text
-  assert re.search(r"tools/session-record-backfill\.py", text)
+  assert re.search(r"tools/session-record-draft\.py", text)
+  assert ".reviewcompass/runtime/session-record-drafts" in text
   assert ".reviewcompass/runtime/session-record-capture-current-on-todo.jsonl" in text
   assert "hook_event_name" in text
   assert "ignored_event" in text
   assert "TODO_NEXT_SESSION.md" in text
   assert "todo_changed" in text
+  assert "drafted" in text
   assert "baseline_recorded" in text

@@ -1,0 +1,26 @@
+role: adversarial
+provider: anthropic-api
+model: claude-opus-4-8
+attempts: 1
+duration_seconds: 16.197
+findings:
+- severity: INFO
+  target_location: .codex/hooks/README.md - session-record-capture-current-on-todo.sh
+    出力先/手順
+  description: README は hook の出力先・手順・診断 event・昇格 CLI を一貫して runtime 下書き方式（session-record-draft.py
+    / drafted・draft_failed / session-record-promote-draft.py）へ更新しており、TODO_NEXT_SESSION.md
+    §3・§4・項目11/12、INITIAL_SETUP_LLM_GUIDE.md §10 手順6/7、deployment-multi-llm-entry-design.md
+    §3.7 と整合している。
+  rationale: ドキュメント間で hook の挙動・event 名・昇格手段の記述が一致しており、実装反映後の参照不整合は確認されなかった。
+- severity: INFO
+  target_location: docs/notes/2026-06-10-deployment-multi-llm-entry-design.md §3.7
+    実装変更対象
+  description: §3.7 は hook 本体が tools/session-record-backfill.py の正式出力先を直接使わず runtime
+    下書きへ切り替えると記す一方、実装反映行では hook が session-record-draft.py を呼ぶと明記しており、README 手順9（session-record-draft.py
+    --draft-dir）と整合する。設計記述（backfill から切替）と実装記述（draft.py 採用）の両方が併記され矛盾しない。
+  rationale: 設計時点の表現と実装時点の helper 分離が両方残るが、実装反映パラグラフが最終形を明示しているため誤読リスクは低い。
+- severity: INFO
+  target_location: TODO_NEXT_SESSION.md §4 項目番号の再採番（11〜15）
+  description: 旧項目11（hook 未発火確認）が完了化され、新項目11（下書き化と昇格方式）・項目12（旧生成物後始末）が追加され、以降の派生課題が
+    13〜15 へ繰り下げられている。§3 の現在位置記述および項目12 の再生成記録（同一 evidence/docs パス、再現性チェック ok 2）とも整合する。
+  rationale: 再採番後の参照や完了マークが本文内で一貫しており、番号ずれによる参照崩れは見当たらない。

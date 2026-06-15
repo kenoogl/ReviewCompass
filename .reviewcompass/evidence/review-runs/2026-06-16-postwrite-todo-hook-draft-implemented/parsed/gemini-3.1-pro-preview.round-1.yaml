@@ -1,0 +1,10 @@
+role: judgment
+provider: gemini-api
+model: gemini-3.1-pro-preview
+attempts: 1
+duration_seconds: 65.73
+findings:
+- severity: WARN
+  target_location: TODO_NEXT_SESSION.md, 11番の項目
+  description: 進行中セッション記録の扱いに関する矛盾した記述：「そのまま正式扱いしてコミットしない」
+  rationale: 「正式扱いして」という記述は、直後の「コミットしない」および「削除してよく」という指示と論理的に矛盾しています。新しい draft 設計では、進行中のセッション途中版は下書きであり正式記録として扱わないため、「正式扱いせず（コミットしない）」の誤記である可能性が高いです。

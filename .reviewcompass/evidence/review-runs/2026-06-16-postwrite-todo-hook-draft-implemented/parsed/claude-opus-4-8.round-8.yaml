@@ -1,0 +1,42 @@
+role: adversarial
+provider: anthropic-api
+model: claude-opus-4-8
+attempts: 1
+duration_seconds: 28.503
+findings:
+- severity: INFO
+  target_location: .codex/hooks/README.md セクション session-record-capture-current-on-todo.sh
+    / 手順 9
+  description: 手順 9 で `RC_SESSION_DRAFT_DIR`（未指定なら既定 runtime 下書き先）を `tools/session-record-draft.py
+    --draft-dir <draft-dir>` へ渡すと記載。出力先・診断ログ・設計記録・TODO・INITIAL_SETUP_LLM_GUIDE のいずれも下書き
+    helper を `session-record-draft.py`、昇格 helper を `session-record-promote-draft.py`
+    として一貫して呼んでおり整合している。
+  rationale: ツール名の対応関係が全文書で一致していることを確認。問題なし。
+- severity: INFO
+  target_location: '全文書: 診断 event 名'
+  description: diff 全体で旧 event `captured`／`capture_failed` が新 event `drafted`／`draft_failed`
+    へ置換されている。README 診断ログ、TODO 手順3・§3 項11・§4・項11、INITIAL_SETUP_LLM_GUIDE 手順6、設計記録 3.7
+    のいずれも `drafted`／`draft_failed` で統一されており、旧 event 名の取り残しは見当たらない。
+  rationale: 実装反映に伴う event 名変更が文書横断で一貫していることを確認。
+- severity: INFO
+  target_location: TODO_NEXT_SESSION.md §4 項11-12 と設計記録 3.7 実装反映
+  description: 後始末項目（旧方式生成物 2 件の削除と再 backfill）の rollout ID・生成先パスが §4 項12 と整合し、再現性チェック
+    ok 2・残存検出 0 まで記載。下書き化実装の完了記述（項11）と昇格 helper の current-session 拒否契約も設計記録 3.7 の契約
+    4 点と一致している。
+  rationale: 実装完了の記述が draft/promote 設計の契約と矛盾なく対応していることを確認。
+- severity: WARN
+  target_location: docs/notes/2026-06-10-deployment-multi-llm-entry-design.md §3.7
+    タイトルおよび本文
+  description: §3.7 のタイトルは「2026-06-15 設計、2026-06-16 実装」とするが、本文冒頭の背景は「現行設計は…直接生成するため」と現在形で旧挙動を述べる一方、末尾の実装反映（2026-06-16）で完了を宣言している。設計記録としては設計時点と実装時点が混在し、読み手が現状（既に下書き化済み）を旧設計の説明と取り違える恐れがある。
+  rationale: 設計→実装で状態が変わった記録に時制の混在が残ると、実装後の読者が未実装と誤認しうる。完了済みである旨を背景部にも明示すると整合性が高い。
+- severity: INFO
+  target_location: docs/operations/INITIAL_SETUP_LLM_GUIDE.md 最終更新行と手順6・7
+  description: 最終更新を 2026-06-16 へ更新し、手順6を下書き保存＋昇格方式、手順7を「終了済みの対象 rollout」明示 backfill
+    へ改めている。README・TODO・設計記録の方式説明（runtime 下書き、`RC_SESSION_DRAFT_DIR`、`selected_session_id`
+    による current 確認、自動昇格しない）と一致している。
+  rationale: 初期設定ガイドが実装反映後の運用と整合していることを確認。
+- severity: INFO
+  target_location: TODO_NEXT_SESSION.md §4 番号繰り上げ（旧11→削除、新11-15）
+  description: 旧項目11（hook 未発火の実確認）が完了系項目へ置換され、後続の派生課題が 12-15 へ繰り上げられている。reopen-advance-gate
+    関連 3 項目（blocker 構造化・追加テスト・gate 正規化検査）の内容は保持されたまま番号のみ変化しており、欠落・重複は見られない。
+  rationale: 番号繰り上げに伴う項目の取りこぼしや重複がないことを確認。

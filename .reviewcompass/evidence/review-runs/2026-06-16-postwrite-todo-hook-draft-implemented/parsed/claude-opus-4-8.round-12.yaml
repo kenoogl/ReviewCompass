@@ -1,0 +1,43 @@
+role: adversarial
+provider: anthropic-api
+model: claude-opus-4-8
+attempts: 1
+duration_seconds: 31.522
+findings:
+- severity: INFO
+  target_location: .codex/hooks/README.md セクション session-record-capture-current-on-todo.sh
+    の手順 9
+  description: 手順9でhookが呼び出すツールを `tools/session-record-draft.py --session <jsonl>
+    --source codex --draft-dir <draft-dir>` と記載しているが、設計記録（docs/notes/...§3.7 実装反映）でも下書き生成
+    helper を `tools/session-record-draft.py` としており整合している。一方でREADMEの手順9は `RC_SESSION_DRAFT_DIR`（未指定なら既定
+    runtime 下書き先）を渡すと述べ、出力先節では `RC_SESSION_DRAFT_DIR` で差し替え可能と記載。これらは一貫しているが、`session-record-draft.py`
+    のCLIオプションが `--draft-dir` であることが他文書（INITIAL_SETUP_LLM_GUIDE.md 手順6）では明示されない。文書間でオプション名の言及粒度に差がある点を確認すること。
+  rationale: 実装と複数ドキュメント間でツール名・出力先・環境変数は整合しているが、CLIオプション名（--draft-dir）の記載がREADMEのみに現れ、設定ガイドには出てこないため、設定ガイドだけを読むLLMがオプション名を取り違える余地がある。
+- severity: INFO
+  target_location: TODO_NEXT_SESSION.md §4 項目11 と §3 の Codex hook 記述
+  description: 項目11（完了）とREADME・設計記録の3者で、hookの下書き先パス `.reviewcompass/runtime/session-record-drafts/codex-<session_id>.md`、昇格CLI
+    `tools/session-record-promote-draft.py --session-id <id> --source codex --current-session-id
+    <current-id>`、current ID の取得方法（最新 `selected` event の `selected_session_id`）、current
+    不取得時は昇格しない方針、診断 event `drafted`/`draft_failed` の各点が一致している。
+  rationale: TODO・hook README・設計記録・初期設定ガイドの主要な実装事実（パス・CLI 名・引数・event 名・current 確認手順）が相互に一致しており、ドラフト/実装/ドキュメント間の重大な不整合は認められない。
+- severity: WARN
+  target_location: docs/notes/2026-06-10-deployment-multi-llm-entry-design.md §3.7
+    実装変更対象の箇条書きと実装反映
+  description: '§3.7の『実装変更対象』では新規 helper について『下書き生成 helper と昇格 helper を分ける方式を採用した』とし、『実装反映（2026-06-16）』で下書き生成
+    helper=`tools/session-record-draft.py`、昇格 helper=`tools/session-record-promote-draft.py`
+    と明記。テスト名も `tests/tools/test_session_record_promote_draft.py` 等を挙げている。一方、下書き生成
+    helper のテストファイル名（例: test_session_record_draft.py 相当）は文書に明示されておらず、hookテスト `tests/hooks/test_codex_session_record_capture_current_on_todo.py`
+    と昇格テストのみが列挙される。下書き生成 helper 単体のテスト固定が文書上の TDD 記述から欠けている。'
+  rationale: 設計記録は『TDDで固定する』としつつ、下書き生成 helper（session-record-draft.py）の単体テストへの言及が無く、実装が分離された2
+    helperのうち一方のテスト裏付けがドキュメント上で追跡できない。実装とテスト記述の網羅性に齟齬がないか確認が必要。
+- severity: INFO
+  target_location: TODO_NEXT_SESSION.md §4 項目11 と項目12
+  description: 項目11が旧方式未追跡2件の後始末を『下書き昇格方式の成果物ではないため…削除したうえで…明示 backfill により正式 2 層記録として作り直し済み（次項）』と述べ、項目12がその詳細（元
+    rollout 確認・削除・backfill による再生成・再現性チェック ok 2・残存検出 0）を記載しており、両項目間で経緯が整合している。
+  rationale: 旧成果物の処理経緯が項目11と12で矛盾なく接続されており、実装後の後始末の記述に内部不整合はない。
+- severity: INFO
+  target_location: .codex/hooks/README.md 手順10・出力先・登録節と TODO §1 手順3
+  description: READMEは hook が『保存できない場合も含め常に exit 0』『正式記録は終了済みセッション対象の昇格または明示 backfill
+    で作る』とし、TODO §1 手順3も『Codex hook は…下書き保存し、正式 2 層へは直接書かない』『正式 2 層記録が必要な終了済み Codex
+    rollout は promote-draft.py または終了済み rollout を指定した backfill.py で明示回収』と一致している。
+  rationale: hook の非ブロッキング動作（exit 0）と正式記録生成経路（昇格/明示backfillのみ）がREADMEとTODOで一貫しており、ドラフト/実装/ドキュメント間の方針整合が保たれている。

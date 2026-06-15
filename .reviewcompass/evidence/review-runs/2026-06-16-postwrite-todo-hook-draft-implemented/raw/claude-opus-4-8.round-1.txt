@@ -1,0 +1,25 @@
+findings:
+  - severity: INFO
+    target_location: ".codex/hooks/README.md — 取り込みフロー手順 9"
+    description: "手順9でhookが呼ぶツールが `tools/session-record-draft.py --session <jsonl> --source codex --draft-dir <draft-dir>` と記載されているが、設計記録（3.7追補）では下書き生成helperを `tools/session-record-draft.py` として分離したと記述しており、README・設計記録・TODO の三者で `session-record-draft.py`（下書き）と `session-record-promote-draft.py`（昇格）の役割分担は一貫している。"
+    rationale: "三文書間でツール名・役割の分担が整合していることを確認。矛盾なし。"
+  - severity: WARN
+    target_location: ".codex/hooks/README.md — 出力先 / 診断ログ節"
+    description: "README 本文（実装反映ブロック・出力先・診断ログ）は draft 出力先 `RC_SESSION_DRAFT_DIR`／`drafted`／`draft_failed` へ更新されているが、手順9で hook が渡す引数を `--draft-dir <draft-dir>` と記す一方、出力先節では差し替え環境変数を `RC_SESSION_DRAFT_DIR` と説明している。hook が `RC_SESSION_DRAFT_DIR` を `--draft-dir` へ橋渡しする旨の明示がなく、CLI 引数名と環境変数名の対応関係が読者に伝わりにくい。"
+    rationale: "実装詳細（環境変数→CLI 引数の受け渡し）が文書間で暗黙のままだと、運用者がテスト用差し替えを正しく設定できない恐れがある。"
+  - severity: INFO
+    target_location: "TODO_NEXT_SESSION.md §4 項目11 / §3 候補項目 / docs/notes 3.7追補"
+    description: "項目11・候補項目・設計追補・README・INITIAL_SETUP_LLM_GUIDE のいずれも、hook が現セッションを `.reviewcompass/runtime/session-record-drafts/codex-<session_id>.md` へ下書き保存し、正式昇格は `tools/session-record-promote-draft.py --session-id <id> --source codex --current-session-id <current-id>` で行い、current session_id と同一の場合は拒否（exit 2）する、という記述が一貫している。"
+    rationale: "下書き化・昇格方式の中核仕様が全文書で一致していることを確認。矛盾なし。"
+  - severity: WARN
+    target_location: "docs/notes/2026-06-10... 3.7追補「実装変更対象」末尾の bullet と「実装反映（2026-06-16）」"
+    description: "実装変更対象の bullet では `tools/session-record-backfill.py` または新規 helper の候補として「下書き生成 helper と昇格 helper を分ける方式」「backfill に draft/promote mode を追加する方式」を SDD で確定するとしているが、直後の「実装反映」で前者（draft.py / promote-draft.py 分離）に確定したと記している。一方、テスト対象 bullet では新規テストファイル名を `tests/hooks/test_codex_session_record_capture_current_on_todo.py（新規または同等）`、`tests/deployment/test_hook_templates.py` と挙げるのみで、確定後に追加した昇格 helper 専用テストや draft helper テストの実体名が実装反映ブロックに反映されていない。"
+    rationale: "計画 bullet が未確定の表現のまま残り、実装反映ブロックがテスト面の最終形を補っていないため、計画と実装の対応がテスト観点で追跡しにくい。"
+  - severity: INFO
+    target_location: "docs/operations/INITIAL_SETUP_LLM_GUIDE.md 冒頭 最終更新 / §10 手順6-7"
+    description: "最終更新日が 2026-06-16 に更新され、§10 手順6が runtime 下書き保存＋昇格方式、手順7が「終了済みの対象 rollout を指定」へ改訂されており、README・TODO・設計追補の記述と整合している。診断 event 群（drafted/draft_failed 追加）も一致。"
+    rationale: "セットアップガイドの更新が他文書と同期していることを確認。矛盾なし。"
+  - severity: INFO
+    target_location: "TODO_NEXT_SESSION.md §4 項目11 / §3 候補項目（未追跡 2 件の扱い）"
+    description: "項目11は既存未追跡 2 件（2026-06-15-codex-019eca0c...）を正式扱いせずコミットしない、元 rollout が残れば削除可、と記す。一方 §3 の旧記録では同 2 件を手動 backfill で「生成済み（再現性チェック ok）」と記載しており、新方針（下書き化）導入前に正式置き場へ出した産物が宙に浮いた状態である点が複数箇所に分散している。"
+    rationale: "過去経緯と新方針の橋渡しは記述されているが、未追跡産物の最終処理が文書をまたいで散在しており、次セッションでの取り扱い判断に一貫した単一参照が無い。実害は低いが追跡性の観点で記録。"

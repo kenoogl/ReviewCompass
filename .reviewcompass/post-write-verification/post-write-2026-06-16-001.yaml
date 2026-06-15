@@ -1,0 +1,56 @@
+status: completed
+target_files:
+- .reviewcompass/runtime/postwrite-todo-hook-draft-implemented-target.md
+- TODO_NEXT_SESSION.md
+- docs/notes/2026-06-10-deployment-multi-llm-entry-design.md
+- docs/operations/INITIAL_SETUP_LLM_GUIDE.md
+target_sha256:
+  .reviewcompass/runtime/postwrite-todo-hook-draft-implemented-target.md: fc5a091840e11a4ee6fe1940443643831473f7b222ad3e047a54cb015924e9f7
+  TODO_NEXT_SESSION.md: 09daebbaedd1dea6dcc610ce9da1f3d7193797fa8171d5902f490f8525f1ad74
+  docs/notes/2026-06-10-deployment-multi-llm-entry-design.md: b27fc2671228a848f5bfa897bf9b88223487aa44f874ccac58170469bd92dc85
+  docs/operations/INITIAL_SETUP_LLM_GUIDE.md: 949acfbe568b155776f8044fc6a50ac390e74a2cd2f5c3190c22cedef3a41e17
+required_verifiers: &id001
+- gpt-5.4
+- claude-opus-4-8
+- gemini-3.1-pro-preview
+completed_verifiers: *id001
+unresolved_substantive_findings: 0
+verifications:
+- verifier: gpt-5.4
+  target_files:
+  - .reviewcompass/runtime/postwrite-todo-hook-draft-implemented-target.md
+  - TODO_NEXT_SESSION.md
+  - docs/notes/2026-06-10-deployment-multi-llm-entry-design.md
+  - docs/operations/INITIAL_SETUP_LLM_GUIDE.md
+  target_sha256:
+    .reviewcompass/runtime/postwrite-todo-hook-draft-implemented-target.md: fc5a091840e11a4ee6fe1940443643831473f7b222ad3e047a54cb015924e9f7
+    TODO_NEXT_SESSION.md: 09daebbaedd1dea6dcc610ce9da1f3d7193797fa8171d5902f490f8525f1ad74
+    docs/notes/2026-06-10-deployment-multi-llm-entry-design.md: b27fc2671228a848f5bfa897bf9b88223487aa44f874ccac58170469bd92dc85
+    docs/operations/INITIAL_SETUP_LLM_GUIDE.md: 949acfbe568b155776f8044fc6a50ac390e74a2cd2f5c3190c22cedef3a41e17
+- verifier: claude-opus-4-8
+  target_files:
+  - .reviewcompass/runtime/postwrite-todo-hook-draft-implemented-target.md
+  - TODO_NEXT_SESSION.md
+  - docs/notes/2026-06-10-deployment-multi-llm-entry-design.md
+  - docs/operations/INITIAL_SETUP_LLM_GUIDE.md
+  target_sha256:
+    .reviewcompass/runtime/postwrite-todo-hook-draft-implemented-target.md: fc5a091840e11a4ee6fe1940443643831473f7b222ad3e047a54cb015924e9f7
+    TODO_NEXT_SESSION.md: 09daebbaedd1dea6dcc610ce9da1f3d7193797fa8171d5902f490f8525f1ad74
+    docs/notes/2026-06-10-deployment-multi-llm-entry-design.md: b27fc2671228a848f5bfa897bf9b88223487aa44f874ccac58170469bd92dc85
+    docs/operations/INITIAL_SETUP_LLM_GUIDE.md: 949acfbe568b155776f8044fc6a50ac390e74a2cd2f5c3190c22cedef3a41e17
+- verifier: gemini-3.1-pro-preview
+  target_files:
+  - .reviewcompass/runtime/postwrite-todo-hook-draft-implemented-target.md
+  - TODO_NEXT_SESSION.md
+  - docs/notes/2026-06-10-deployment-multi-llm-entry-design.md
+  - docs/operations/INITIAL_SETUP_LLM_GUIDE.md
+  target_sha256:
+    .reviewcompass/runtime/postwrite-todo-hook-draft-implemented-target.md: fc5a091840e11a4ee6fe1940443643831473f7b222ad3e047a54cb015924e9f7
+    TODO_NEXT_SESSION.md: 09daebbaedd1dea6dcc610ce9da1f3d7193797fa8171d5902f490f8525f1ad74
+    docs/notes/2026-06-10-deployment-multi-llm-entry-design.md: b27fc2671228a848f5bfa897bf9b88223487aa44f874ccac58170469bd92dc85
+    docs/operations/INITIAL_SETUP_LLM_GUIDE.md: 949acfbe568b155776f8044fc6a50ac390e74a2cd2f5c3190c22cedef3a41e17
+review_run:
+  path: .reviewcompass/evidence/review-runs/2026-06-16-postwrite-todo-hook-draft-implemented
+  summary_path: .reviewcompass/evidence/review-runs/2026-06-16-postwrite-todo-hook-draft-implemented/model-result-summary.yaml
+notes: Generated template; verify target_files cover current post-write targets before
+  use.

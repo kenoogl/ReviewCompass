@@ -1,0 +1,10 @@
+findings:
+  - severity: WARN
+    target_location: "TODO_NEXT_SESSION.md §4 item 11 / docs/notes/2026-06-10-deployment-multi-llm-entry-design.md §3.7"
+    description: "『昇格 helper は current session_id を取得できない場合は昇格しない』という新運用を記した一方で、実際に current-session-id をどう取得するかの手順や参照先が文書中に示されていない。"
+    rationale: "下書き化から正式記録への運用で最も重要な安全条件が current session_id の照合であるため、取得方法が未記載だと利用者や次セッション担当者が昇格手順を再現できず、誤って unsafe な手動運用や backfill への逸脱を招きやすい。"
+
+  - severity: INFO
+    target_location: "TODO_NEXT_SESSION.md §3 and §4 item 12"
+    description: "旧方式で生成された Codex セッション記録 2 件を『正式扱いせずコミットしない』『利用者承認を得て削除する』と整理しているが、対象ファイルが未追跡のまま残る前提であることを明示しており、次セッションでの作業ノイズになりうる。"
+    rationale: "文書間の整合性自体は取れているが、runtime 下書き方式へ移行した後も旧成果物が作業木に残るため、運用上は早めに整理しないと『hook がまだ正式 2 層へ書いているのでは』という誤解を誘発する。

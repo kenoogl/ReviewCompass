@@ -1,0 +1,11 @@
+role: judgment
+provider: gemini-api
+model: gemini-3.1-pro-preview
+attempts: 1
+duration_seconds: 8.611
+findings:
+- severity: ERROR
+  target_location: Entire document
+  description: The provided target document is empty.
+  rationale: Cannot verify todo_hook_draft_implementation_docs_consistency because
+    there is no content to evaluate.

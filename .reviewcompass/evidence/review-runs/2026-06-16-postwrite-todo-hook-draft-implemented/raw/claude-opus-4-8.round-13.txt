@@ -1,0 +1,9 @@
+I notice that the task references a target document path (`.reviewcompass/runtime/postwrite-todo-hook-draft-implemented-target.md`), but the actual content of that document was not provided in the prompt — the "Target document" section is empty.
+
+Without the document content, I cannot perform the requested review of its consistency between the TODO hook draft, implementation, and documentation.
+
+findings:
+  - severity: ERROR
+    target_location: ".reviewcompass/runtime/postwrite-todo-hook-draft-implemented-target.md"
+    description: "Target document content was not provided; the 'Target document' section of the review request is empty."
+    rationale: "The post_write_verification review for todo_hook_draft_implementation_docs_consistency cannot be performed without the document content. No consistency assessment between draft, implementation, and docs is possible against an empty target, so no substantive findings can be produced."

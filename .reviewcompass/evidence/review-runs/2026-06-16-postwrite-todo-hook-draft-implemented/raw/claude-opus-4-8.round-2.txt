@@ -1,0 +1,25 @@
+findings:
+  - severity: WARN
+    target_location: "docs/notes/2026-06-10-deployment-multi-llm-entry-design.md §3.7 実装変更対象 / tests"
+    description: "設計追補のテスト一覧に `tests/hooks/test_codex_session_record_capture_previous.py`（current hook 専用挙動を同ファイルで更新）とあるが、ファイル名は前セッション補完（previous）を示しており、本件の current hook 下書き化テストの実体と命名が整合していない。README『テスト』節やTODOの記載とも対応が取りにくい。"
+    rationale: "テストファイルの所在・命名が設計記述と曖昧に対応していると、後続セッションが実装済みテストを追跡・再実行しづらく、ドキュメントと実装の一致確認が破れる。"
+  - severity: INFO
+    target_location: ".codex/hooks/README.md 手順9 / docs/operations/INITIAL_SETUP_LLM_GUIDE.md §10 手順6"
+    description: "README 手順9 では hook が `RC_SESSION_DRAFT_DIR` を `tools/session-record-draft.py --draft-dir <draft-dir>` に渡すと明記されるが、INITIAL_SETUP_LLM_GUIDE 側は draft 保存先パスのみ記載し draft helper 名や `RC_SESSION_DRAFT_DIR` の差し替え可否に触れていない。記述粒度が文書間で揃っていない。"
+    rationale: "二文書とも『hook が現セッションを下書き保存する』同一動作を説明する正本だが、helper 名・環境変数の有無が片側だけにあると、設定確認時の参照先で得られる情報量が異なり運用差異を生む。"
+  - severity: INFO
+    target_location: "TODO_NEXT_SESSION.md §4 項目11 / docs/notes ...§3.7"
+    description: "TODO 項目11 と設計追補はいずれも『current session_id が同一なら拒否』を述べるが、TODO では exit code を明記せず、README・設計追補・GUIDE では `exit 2` と明示される。拒否の機械的契約（exit 2）が TODO 側だけ抜けている。"
+    rationale: "昇格 helper の拒否契約は機械保護の要点であり、正本群で exit code の明記有無が揃わないと、次セッションが挙動を検証する際の期待値がぶれる。"
+  - severity: INFO
+    target_location: ".codex/hooks/README.md 出力先 / 2026-06-16 実装反映段落"
+    description: "実装反映段落は『正式昇格は session-record-promote-draft.py により作る』とし backfill にも触れるが、hook 本体が呼ぶ下書き生成 helper が `tools/session-record-draft.py` である旨は手順9でのみ言及され、冒頭の実装反映段落では helper 名が省かれている。"
+    rationale: "同一文書内で下書き生成 helper 名の言及位置が分散すると、読み手が hook の実際の呼び出し対象を把握しづらく、ドキュメント整合の確認コストが上がる。"
+  - severity: INFO
+    target_location: "TODO_NEXT_SESSION.md 全体（複数項目の完了マーク）"
+    description: "項目11・§3 候補・選択肢項目が『完了（2026-06-16・未コミット）』と記すが、INITIAL_SETUP_LLM_GUIDE は『最終更新 2026-06-16』として確定形で記載される。未コミット状態と公開済み文書の更新日表現が併存しており、コミット前後の状態整合がドキュメント上で曖昧。"
+    rationale: "『未コミット』の実装と『最終更新済み』の指示書が同一変更セットに混在すると、レビュー時にどこまでが確定済みかの判断が難しくなる。"
+  - severity: INFO
+    target_location: "TODO_NEXT_SESSION.md §4 項目11 既存未追跡2件の扱い"
+    description: "項目11 は既存未追跡 2 件（2026-06-15 codex 019eca0c）を『正式扱いせずコミットしない・削除してよい』とするが、§3 のバックフィル実績やセッション記録の保全方針（会話記録は重要証跡）との関係で、削除許容の前提（元 rollout 残存確認）が一文に圧縮されている。"
+    rationale: "証跡保全を重視する方針と『削除してよい』の併記は、前提条件の見落としで証跡喪失を招きうるため、削除可否の条件が明確に追跡できる形が望ましい。"

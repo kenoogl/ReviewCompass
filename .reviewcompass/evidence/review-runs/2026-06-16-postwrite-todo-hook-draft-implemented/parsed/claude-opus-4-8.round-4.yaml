@@ -1,0 +1,30 @@
+role: adversarial
+provider: anthropic-api
+model: claude-opus-4-8
+attempts: 1
+duration_seconds: 19.955
+findings:
+- severity: INFO
+  target_location: .codex/hooks/README.md - 手順 9
+  description: 手順 9 で hook が呼ぶスクリプトを `tools/session-record-draft.py` と記述しているが、引数に
+    `--draft-dir <draft-dir>` を渡す形になっている。一方で設計記録（3.7）と TODO 項目11は `RC_SESSION_DRAFT_DIR`
+    環境変数による差し替えに言及している。README 手順 9 のみ `--draft-dir` フラグ渡しと `RC_SESSION_DRAFT_DIR`
+    環境変数の両方を併記しているが、出力先節（同 README）と INITIAL_SETUP_LLM_GUIDE は `RC_SESSION_DRAFT_DIR`
+    のみ記述。差し替え手段の記述粒度が文書間で揺れている。
+  rationale: 下書き先の差し替え手段（環境変数か CLI フラグか）が文書間で一貫していないと、配布先 LLM や保守者がどちらを使うべきか判断できず誤設定の温床になる。
+- severity: INFO
+  target_location: docs/notes/2026-06-10-deployment-multi-llm-entry-design.md §3.7
+    実装変更対象 / 実装反映
+  description: §3.7 の『実装変更対象』では『新規 helper：下書き生成と正式昇格を分離する』とし、『実装反映（2026-06-16）』で `tools/session-record-draft.py`
+    と `tools/session-record-promote-draft.py` の 2 ツールに分離したと明記している。一方 .codex/hooks/README.md
+    と INITIAL_SETUP_LLM_GUIDE は hook が `tools/session-record-draft.py` を呼ぶ点・昇格は `tools/session-record-promote-draft.py`
+    を使う点で整合している。TODO_NEXT_SESSION.md §4 項目11では昇格ツール名は出るが下書き生成ツール `session-record-draft.py`
+    の名は項目11本文に明示されず、§3 の完了記述側にのみ出る。ツール名の登場箇所に偏りがあるが矛盾はない。
+  rationale: ツール名の参照に偏りがあると、TODO 単独を読む保守者が下書き生成ツールの存在を見落とす可能性がある。実害は小さいが網羅性の観点で記録する。
+- severity: INFO
+  target_location: TODO_NEXT_SESSION.md §3 現在位置の最終更新日 / docs/operations/INITIAL_SETUP_LLM_GUIDE.md
+    最終更新
+  description: 実装日を 2026-06-16 として各所（README の実装反映、TODO §3/§4、設計記録 §3.7 実装反映、INITIAL_SETUP_LLM_GUIDE
+    最終更新）に一貫して反映している。ドラフト実装と各ドキュメントの記述（下書き先パス `codex-<session_id>.md`、event 名 `drafted`/`draft_failed`、昇格
+    CLI の `--current-session-id` による同一 session 拒否、exit 2）は文書横断で整合している。矛盾は検出されない。
+  rationale: ドラフト実装とドキュメントの主要契約（パス・event 名・拒否条件）が一貫していることの確認記録。後続レビューの基準点として残す。

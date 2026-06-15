@@ -1,0 +1,5 @@
+findings:
+  - severity: WARN
+    target_location: "TODO_NEXT_SESSION.md §4 項目11"
+    description: "完了項目の説明で『今セッションで TODO 更新後に診断ログの最新 selected_session_id で確認する』としているが、現セッションで hook がまだ一度も走っていない場合は current-session-id を取得できない制約が埋もれている。"
+    rationale: "他箇所では current session_id を取得できない場合は昇格しないと明記しているが、この完了項目だけ読むと常に selected_session_id が得られるように見える。運用メモとしては取得失敗時の扱いも同じ粒度で添えておく方が、TODO/README/初期設定ガイド間の整合が保たれる。"

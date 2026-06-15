@@ -1,8 +1,8 @@
 """Codex TODO 更新 hook .codex/hooks/session-record-capture-current-on-todo.sh の単体テスト。
 
 Codex では UserPromptSubmit を使わず、TODO_NEXT_SESSION.md の更新を合図に
-現セッション rollout を単一取り込みする。TODO は 1 セッション内で複数回更新されるため、
-内容 hash が変わるたびに再取り込みし、追記専用マージで伸びた分だけ反映する。
+現セッション rollout を runtime 下書きへ保存する。TODO は 1 セッション内で複数回更新
+されるため、内容 hash が変わるたびに同じ下書きを更新し、伸びた分だけ反映する。
 """
 
 import json
@@ -47,10 +47,11 @@ def _codex_fixture(path, session_id, cwd, text, mtime):
   os.utime(path, (mtime, mtime))
 
 
-def _run_hook(payload, evidence_dir, docs_dir, home):
+def _run_hook(payload, evidence_dir, docs_dir, draft_dir, home):
   env = dict(os.environ)
   env["RC_SESSION_EVIDENCE_DIR"] = str(evidence_dir)
   env["RC_SESSION_DOCS_DIR"] = str(docs_dir)
+  env["RC_SESSION_DRAFT_DIR"] = str(draft_dir)
   env["RC_SESSION_HOOK_LOG"] = str(evidence_dir.parent / "hook.log.jsonl")
   env["RC_SESSION_HOOK_STATE_DIR"] = str(evidence_dir.parent / "state")
   env["HOME"] = str(home)
@@ -89,6 +90,7 @@ class CodexCaptureCurrentOnTodoTests(unittest.TestCase):
     self.addCleanup(shutil.rmtree, self.tmp)
     self.evidence = self.tmp / "ev"
     self.docs = self.tmp / "dc"
+    self.drafts = self.tmp / "drafts"
     self.log = self.tmp / "hook.log.jsonl"
     self.home = self.tmp / "home"
     self.cwd = str(self.tmp / "repo")
@@ -111,8 +113,8 @@ class CodexCaptureCurrentOnTodoTests(unittest.TestCase):
       "cwd": self.cwd,
     }
 
-  def test_captures_current_session_when_todo_update_is_observed(self):
-    """TODO 更新を合図に、前セッションではなく現セッションを取り込む。"""
+  def test_drafts_current_session_when_todo_update_is_observed(self):
+    """TODO 更新を合図に、前セッションではなく現セッションを下書き保存する。"""
     self.todo.write_text("handoff v1\n", encoding="utf-8")
     _codex_fixture(
       self.rollout,
@@ -129,20 +131,24 @@ class CodexCaptureCurrentOnTodoTests(unittest.TestCase):
       mtime=2000,
     )
 
-    result = _run_hook(self._payload(), self.evidence, self.docs, self.home)
+    result = _run_hook(self._payload(), self.evidence, self.docs, self.drafts, self.home)
 
     _assert_invoked(self, result)
     self.assertEqual(result.returncode, 0, f"stdout={result.stdout}\nstderr={result.stderr}")
     self.assertTrue(
-      (self.evidence / "2026-06-15-codex-cccccccc-1111-2222-3333-444444444444.md").exists(),
-      "現セッションを取り込む必要がある",
+      (self.drafts / "codex-cccccccc-1111-2222-3333-444444444444.md").exists(),
+      "現セッションを runtime 下書きへ保存する必要がある",
     )
     self.assertFalse(
-      (self.evidence / "2026-06-15-codex-bbbbbbbb-1111-2222-3333-444444444444.md").exists(),
-      "TODO 更新 hook は前セッションを取り込まない",
+      self.evidence.exists() and any(self.evidence.iterdir()),
+      "TODO 更新 hook は正式 evidence を直接生成しない",
+    )
+    self.assertFalse(
+      self.docs.exists() and any(self.docs.iterdir()),
+      "TODO 更新 hook は docs/sessions を直接生成しない",
     )
     self.assertEqual(
-      ["todo_changed", "selected", "captured"],
+      ["todo_changed", "selected", "drafted"],
       [event["event"] for event in _events(self.log)],
     )
 
@@ -151,7 +157,7 @@ class CodexCaptureCurrentOnTodoTests(unittest.TestCase):
     self.todo.write_text("handoff v1\n", encoding="utf-8")
     _codex_fixture(self.rollout, self.session_id, self.cwd, "現 Codex セッション v1", 3000)
 
-    first = _run_hook(self._payload(), self.evidence, self.docs, self.home)
+    first = _run_hook(self._payload(), self.evidence, self.docs, self.drafts, self.home)
     self.todo.write_text("handoff v2\n", encoding="utf-8")
     _codex_fixture(
       self.rollout,
@@ -160,18 +166,18 @@ class CodexCaptureCurrentOnTodoTests(unittest.TestCase):
       ["現 Codex セッション v1", "現 Codex セッション v2"],
       4000,
     )
-    second = _run_hook(self._payload(), self.evidence, self.docs, self.home)
+    second = _run_hook(self._payload(), self.evidence, self.docs, self.drafts, self.home)
 
     _assert_invoked(self, first)
     _assert_invoked(self, second)
     self.assertEqual(first.returncode, 0, f"stderr={first.stderr}")
     self.assertEqual(second.returncode, 0, f"stderr={second.stderr}")
     transcript = (
-      self.evidence / "2026-06-15-codex-cccccccc-1111-2222-3333-444444444444.md"
+      self.drafts / "codex-cccccccc-1111-2222-3333-444444444444.md"
     ).read_text(encoding="utf-8")
     self.assertIn("現 Codex セッション v2", transcript)
     self.assertEqual(
-      ["todo_changed", "selected", "captured", "todo_changed", "selected", "captured"],
+      ["todo_changed", "selected", "drafted", "todo_changed", "selected", "drafted"],
       [event["event"] for event in _events(self.log)],
     )
 
@@ -180,8 +186,20 @@ class CodexCaptureCurrentOnTodoTests(unittest.TestCase):
     self.todo.write_text("already dirty before hook\n", encoding="utf-8")
     _codex_fixture(self.rollout, self.session_id, self.cwd, "現 Codex セッション", 3000)
 
-    first = _run_hook(self._payload(tool_name="Bash", file_path="README.md"), self.evidence, self.docs, self.home)
-    second = _run_hook(self._payload(tool_name="Bash", file_path="README.md"), self.evidence, self.docs, self.home)
+    first = _run_hook(
+      self._payload(tool_name="Bash", file_path="README.md"),
+      self.evidence,
+      self.docs,
+      self.drafts,
+      self.home,
+    )
+    second = _run_hook(
+      self._payload(tool_name="Bash", file_path="README.md"),
+      self.evidence,
+      self.docs,
+      self.drafts,
+      self.home,
+    )
 
     _assert_invoked(self, first)
     _assert_invoked(self, second)
@@ -204,7 +222,7 @@ class CodexCaptureCurrentOnTodoTests(unittest.TestCase):
       "cwd": self.cwd,
     }
 
-    result = _run_hook(payload, self.evidence, self.docs, self.home)
+    result = _run_hook(payload, self.evidence, self.docs, self.drafts, self.home)
 
     _assert_invoked(self, result)
     self.assertEqual(result.returncode, 0, f"stderr={result.stderr}")
@@ -218,7 +236,7 @@ class CodexCaptureCurrentOnTodoTests(unittest.TestCase):
     payload = self._payload(session_id="")
     payload["session_id"] = ""
 
-    result = _run_hook(payload, self.evidence, self.docs, self.home)
+    result = _run_hook(payload, self.evidence, self.docs, self.drafts, self.home)
 
     _assert_invoked(self, result)
     self.assertEqual(result.returncode, 0, f"stderr={result.stderr}")

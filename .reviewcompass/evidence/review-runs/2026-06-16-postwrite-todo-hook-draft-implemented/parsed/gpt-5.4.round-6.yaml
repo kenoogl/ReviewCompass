@@ -1,0 +1,16 @@
+role: primary
+provider: openai-api
+model: gpt-5.4
+attempts: 1
+duration_seconds: 6.073
+findings:
+- severity: WARN
+  target_location: TODO_NEXT_SESSION.md §4 項目11-12
+  description: 旧方式で生成された Codex セッション記録 2 件の後始末を『完了』として記録している一方、再生成手順を次セッション以降に委ねており、会話記録の正式
+    2 層記録が現時点では未存在のままになっている。
+  rationale: TODO・README・初期設定ガイド全体では『会話記録を失わないことを優先し、必要なら明示 backfill/昇格で正式記録を作る』方針が強調されている。削除済みで未再生成の状態を『完了』と表現すると、証跡保全が済んだと誤認されやすく、実際には正式記録が未整備である点との整合が弱い。
+- severity: INFO
+  target_location: docs/notes/2026-06-10-deployment-multi-llm-entry-design.md §3.7
+  description: 節見出しに『2026-06-15 設計、2026-06-16 実装』とあるが、本文の設計変更説明は現時制で『実装済み CLI』『2026-06-16
+    実装では…』が混在しており、設計記録と実装反映の境界がやや読み取りにくい。
+  rationale: 本レビュー観点は draft/implementation/docs の整合性であり、内容自体は他文書と概ね一致している。ただし設計時点の決定と後日の実装反映を同一節で扱うため、読者が『どこまでが設計でどこからが実装確定か』を誤解する余地がある。
