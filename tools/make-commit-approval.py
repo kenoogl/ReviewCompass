@@ -49,6 +49,18 @@ def _staged_files(cwd):
   return [line for line in out.splitlines() if line.strip()]
 
 
+def _deleted_staged_files(cwd):
+  """git diff --cached --name-status から削除ファイルのセットを返す"""
+  out = subprocess.run(
+    ["git", "diff", "--cached", "--name-status"],
+    cwd=str(cwd), capture_output=True, text=True, check=True).stdout
+  deleted = set()
+  for line in out.splitlines():
+    if line.startswith("D\t"):
+      deleted.add(line[2:].strip())
+  return deleted
+
+
 def main():
   parser = argparse.ArgumentParser(
     description="commit 承認レコードを正本準拠で生成する")
@@ -77,13 +89,17 @@ def main():
           file=sys.stderr)
     return 1
 
+  deleted = _deleted_staged_files(cwd)
   target_sha256 = {}
   for f in staged:
-    h = cwa.staged_file_sha256(str(cwd), f)
-    if not h:
-      print(f"エラー: staged 内容のハッシュ取得に失敗しました: {f}", file=sys.stderr)
-      return 1
-    target_sha256[f] = h
+    if f in deleted:
+      target_sha256[f] = "DELETED"
+    else:
+      h = cwa.staged_file_sha256(str(cwd), f)
+      if not h:
+        print(f"エラー: staged 内容のハッシュ取得に失敗しました: {f}", file=sys.stderr)
+        return 1
+      target_sha256[f] = h
 
   approval = {
     "approved_action": "commit",

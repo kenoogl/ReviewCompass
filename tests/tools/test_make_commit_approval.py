@@ -100,6 +100,27 @@ class MakeCommitApprovalTests(unittest.TestCase):
     r = _run_tool(self.tmp, "--explicit-instruction", "コミット", "--rationale", "x")
     self.assertNotEqual(r.returncode, 0, f"stdout={r.stdout}\nstderr={r.stderr}")
 
+  def test_deleted_file_passes_canonical_validators(self):
+    """削除ファイルを含む staged で正本検証を通る。"""
+    # ファイルを作成してコミット済みにする
+    _stage(self.tmp, "delete_me.md", "# 削除予定")
+    subprocess.run(
+      ["git", "commit", "-qm", "add", "--allow-empty-message"],
+      cwd=self.tmp, check=True, capture_output=True,
+    )
+    # ファイルを削除してステージ
+    subprocess.run(
+      ["git", "rm", "-q", "delete_me.md"],
+      cwd=self.tmp, check=True, capture_output=True,
+    )
+    r = _run_tool(self.tmp, "--explicit-instruction", "コミット", "--rationale", "削除テスト")
+    self.assertEqual(r.returncode, 0,
+                     f"削除ファイルがある staged でも承認レコードを生成できるはず\n"
+                     f"stdout={r.stdout}\nstderr={r.stderr}")
+    state, errors = self.cwa.validate_commit_approval(self.tmp, ["delete_me.md"])
+    self.assertEqual(errors, [],
+                     f"正本 validate_commit_approval が不合格: {errors}\n{r.stdout}")
+
 
 if __name__ == "__main__":
   unittest.main()

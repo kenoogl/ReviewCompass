@@ -2464,6 +2464,12 @@ def validate_commit_approval(cwd, staged_files):
               errors.append(
                 f"ユーザ承認レコードの target_sha256 に {filepath} がありません"
               )
+            elif expected_sha == "DELETED":
+              if actual_sha is not None:
+                errors.append(
+                  f"ユーザ承認レコードの target_sha256 が DELETED ですが、ファイルが削除されていません: "
+                  f"{filepath}"
+                )
             elif actual_sha != expected_sha:
               errors.append(
                 f"ユーザ承認レコードの target_sha256 が staged 内容と一致しません: "

@@ -4908,6 +4908,59 @@ class CommitExitCodeTests(unittest.TestCase):
     self.assertEqual(result.returncode, 2)
     self.assertIn("sha256", result.stdout)
 
+  def test_commit_with_deleted_file_and_deleted_sentinel_passes(self):
+    """削除ファイルが staged で、承認レコードが "DELETED" sentinel を使えば exit 0"""
+    _set_pending_findings(self.pending_file, unresolved_count=0)
+    # ファイルを作成してコミット済みにする
+    _stage_file(self.tmpdir, "delete_me.md", "# 削除予定ファイル")
+    subprocess.run(
+      ["git", "commit", "-qm", "add delete_me.md"],
+      cwd=self.tmpdir, check=True, capture_output=True,
+    )
+    # ファイルを削除してステージ
+    subprocess.run(
+      ["git", "rm", "-q", "delete_me.md"],
+      cwd=self.tmpdir, check=True, capture_output=True,
+    )
+    # "DELETED" sentinel を使った承認レコード
+    _write_commit_approval(
+      self.tmpdir,
+      ["delete_me.md"],
+      target_sha256={"delete_me.md": "DELETED"},
+    )
+    result = run_script(
+      ["commit", "--rationale", "削除ファイルを含むコミットのテスト"],
+      cwd=self.tmpdir,
+    )
+    _assert_script_invoked(self, result)
+    self.assertNotEqual(result.returncode, 2,
+                        f"削除ファイル + DELETED sentinel は exit 2 にならないはず\n{result.stdout}")
+
+  def test_commit_with_deleted_file_without_deleted_sentinel_returns_two(self):
+    """削除ファイルに "DELETED" でない sha256 が指定されていれば exit 2"""
+    _set_pending_findings(self.pending_file, unresolved_count=0)
+    _stage_file(self.tmpdir, "delete_me.md", "# 削除予定ファイル")
+    subprocess.run(
+      ["git", "commit", "-qm", "add delete_me.md"],
+      cwd=self.tmpdir, check=True, capture_output=True,
+    )
+    subprocess.run(
+      ["git", "rm", "-q", "delete_me.md"],
+      cwd=self.tmpdir, check=True, capture_output=True,
+    )
+    # 意図的に "DELETED" でないハッシュを指定
+    _write_commit_approval(
+      self.tmpdir,
+      ["delete_me.md"],
+      target_sha256={"delete_me.md": "not_the_deleted_sentinel"},
+    )
+    result = run_script(
+      ["commit", "--rationale", "削除ファイル sha256 不一致のテスト"],
+      cwd=self.tmpdir,
+    )
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 2)
+
   def test_commit_with_post_write_target_without_manifest_returns_two(self):
     """post-write 対象文書が staged され、完了 manifest がなければ exit 2"""
     _set_pending_findings(self.pending_file, unresolved_count=0)
