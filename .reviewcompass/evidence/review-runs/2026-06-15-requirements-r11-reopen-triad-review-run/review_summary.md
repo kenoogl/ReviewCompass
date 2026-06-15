@@ -14,9 +14,9 @@ variant: implementation_review_independent_3way
 
 | model_id | parse_status | triage_status | findings | severity | raw |
 | --- | --- | --- | ---: | --- | --- |
-| claude-sonnet-4-6 | parsed | triage_pending | 5 | INFO:2, WARN:3 | raw/claude-sonnet-4-6.round-1.txt |
-| gpt-5.5 | parsed | triage_pending | 6 | ERROR:3, WARN:3 | raw/gpt-5.5.round-1.txt |
-| gemini-3.1-pro-preview | parsed | triage_pending | 2 | INFO:1, WARN:1 | raw/gemini-3.1-pro-preview.round-1.txt |
+| claude-sonnet-4-6 | parsed | triage_pending | 3 | INFO:3 | raw/claude-sonnet-4-6.round-3.txt |
+| gpt-5.5 | parsed | no_findings | 0 | - | raw/gpt-5.5.round-3.txt |
+| gemini-3.1-pro-preview | parsed | no_findings | 0 | - | raw/gemini-3.1-pro-preview.round-3.txt |
 
 ## Next steps
 

@@ -136,15 +136,17 @@ def main():
 
     suffix = _finding_suffix(fid, run_id)
     decision_ref = f"decisions/{suffix}.yaml"
+    # 各 decision は自身のラウンドの裁定プロンプト・応答を指せる（複数ラウンド対応）。
+    # 個別指定が無ければ入力の既定（トップレベル）にフォールバックする。
     decision = {
       "approved_by": "proxy_model",
       "finding_id": fid,
       "proxy_model_id": proxy_model_id,
-      "decision_prompt_path": decision_prompt_path,
+      "decision_prompt_path": dec.get("decision_prompt_path") or decision_prompt_path,
       "selected_option": final_label,
       "final_label": final_label,
       "rationale": dec.get("rationale"),
-      "raw_response_path": raw_response_path,
+      "raw_response_path": dec.get("raw_response_path") or raw_response_path,
       "candidate_options": dec.get("candidate_options") or list(DEFAULT_CANDIDATE_OPTIONS),
       "rejected_options": dec.get("rejected_options"),
       "source_raw_paths": [item.get("source_raw_path")],

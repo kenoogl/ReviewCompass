@@ -1,37 +1,32 @@
 run_id: 2026-06-15-requirements-r11-reopen-triad-review-run
 models:
 - model_id: claude-sonnet-4-6
-  raw_path: raw/claude-sonnet-4-6.round-1.txt
+  raw_path: raw/claude-sonnet-4-6.round-3.txt
   parse_status: parsed
-  triage_status: triage_pending
-  findings_count: 5
+  triage_status: triaged
+  findings_count: 3
   findings_count_by_severity:
-    WARN: 3
-    INFO: 2
+    INFO: 3
   must_fix_count: 0
   should_fix_count: 0
-  leave_as_is_count: 0
+  leave_as_is_count: 3
   human_required_count: 0
 - model_id: gpt-5.5
-  raw_path: raw/gpt-5.5.round-1.txt
+  raw_path: raw/gpt-5.5.round-3.txt
   parse_status: parsed
-  triage_status: triage_pending
-  findings_count: 6
-  findings_count_by_severity:
-    ERROR: 3
-    WARN: 3
+  triage_status: no_findings
+  findings_count: 0
+  findings_count_by_severity: {}
   must_fix_count: 0
   should_fix_count: 0
   leave_as_is_count: 0
   human_required_count: 0
 - model_id: gemini-3.1-pro-preview
-  raw_path: raw/gemini-3.1-pro-preview.round-1.txt
+  raw_path: raw/gemini-3.1-pro-preview.round-3.txt
   parse_status: parsed
-  triage_status: triage_pending
-  findings_count: 2
-  findings_count_by_severity:
-    WARN: 1
-    INFO: 1
+  triage_status: no_findings
+  findings_count: 0
+  findings_count_by_severity: {}
   must_fix_count: 0
   should_fix_count: 0
   leave_as_is_count: 0

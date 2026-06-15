@@ -1,0 +1,17 @@
+approved_by: proxy_model
+finding_id: 2026-06-15-requirements-r11-reopen-triad-review-run-gpt-5.5-adversarial-002
+proxy_model_id: gemini-3.1-pro-preview
+decision_prompt_path: proxy-adjudication-prompt.md
+selected_option: must-fix
+final_label: must-fix
+rationale: 接続点が曖昧なままでは必須達成条件や要件間の責務境界が定まらないため。
+raw_response_path: proxy-adjudication-response.txt
+candidate_options:
+- must-fix
+- should-fix
+- leave-as-is
+rejected_options:
+  should-fix: 実装時の必須契約事項であるため単なる推奨では不十分。
+  leave-as-is: 検査発動の動作タイミングが不明確になり要件破綻するため不可。
+source_raw_paths:
+- raw/gpt-5.5.round-1.txt

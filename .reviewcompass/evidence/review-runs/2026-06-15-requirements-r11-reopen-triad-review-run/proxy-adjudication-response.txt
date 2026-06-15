@@ -1,0 +1,61 @@
+decisions:
+  - finding_id: claude-sonnet-4-6-primary-001
+    final_label: must-fix
+    rationale: 例外を許容するか否かのポリシーは契約に関わるため要件での定義が必須。
+    rejected_options:
+      should-fix: 例外基準をdesignに委ねるとフェイルセーフの担保がブレるため不可。
+      leave-as-is: 束ねの扱いを放置すると検証回避の抜け道となるため不可。
+  - finding_id: claude-sonnet-4-6-primary-002
+    final_label: must-fix
+    rationale: 決定と転写の順序依存によるデッドロックはワークフローの重大な欠陥。
+    rejected_options:
+      should-fix: 放置すれば実運用で確定操作が失敗し続けるため不可。
+      leave-as-is: システムの正常な進行を妨げる論理的欠陥であるため不可。
+  - finding_id: claude-sonnet-4-6-primary-003
+    final_label: must-fix
+    rationale: 検査の実施タイミング（and/or）が定まらず受入テスト不能となるため。
+    rejected_options:
+      should-fix: 検査ゲートの確実性が担保できなくなるため不可。
+      leave-as-is: ゲートキーパーとしての責務の曖昧さを残すべきでないため不可。
+  - finding_id: claude-sonnet-4-6-primary-004
+    final_label: leave-as-is
+    rationale: リスト拡張の手続きや承認経路は運用マニュアルまたは保守フェーズで定めるべき詳細事項。
+  - finding_id: claude-sonnet-4-6-primary-005
+    final_label: should-fix
+    rationale: 判断の属人性を減らすため既存要件へのポインタ等で重要種別の境界を示すことが望ましい。
+  - finding_id: gpt-5.5-adversarial-001
+    final_label: should-fix
+    rationale: 引用とセッションIDで一意性は概ね担保できるが検索性向上のための種別追加は推奨される。
+  - finding_id: gpt-5.5-adversarial-002
+    final_label: must-fix
+    rationale: 接続点が曖昧なままでは必須達成条件や要件間の責務境界が定まらないため。
+    rejected_options:
+      should-fix: 実装時の必須契約事項であるため単なる推奨では不十分。
+      leave-as-is: 検査発動の動作タイミングが不明確になり要件破綻するため不可。
+  - finding_id: gpt-5.5-adversarial-003
+    final_label: should-fix
+    rationale: 境界の曖昧さは運用上の摩擦を生むためガイドライン的な追記が望ましい。
+  - finding_id: gpt-5.5-adversarial-004
+    final_label: must-fix
+    rationale: 転写未完了の決定を扱う際の順序依存はシステムがスタックする致命的欠陥。
+    rejected_options:
+      should-fix: 正常系フローが完遂できなくなる論理的欠陥であるため必須修正。
+      leave-as-is: ワークフロー自体が破綻するため放置不可。
+  - finding_id: gpt-5.5-adversarial-005
+    final_label: must-fix
+    rationale: 束ね検出の例外適用可否は要件レベルでの厳格な契約であるため。
+    rejected_options:
+      should-fix: 例外の許可基準を要件で縛らないと形骸化を招くため。
+      leave-as-is: fail-closedの原則と矛盾する状態を放置できないため不可。
+  - finding_id: gpt-5.5-adversarial-006
+    final_label: leave-as-is
+    rationale: 本要件が実装・デプロイされた時点から開始されるのは自明であるため対処不要。
+  - finding_id: gemini-3.1-pro-preview-judgment-001
+    final_label: must-fix
+    rationale: セッション中の未転写決定の扱いはデッドロックを招くため解決が必須。
+    rejected_options:
+      should-fix: 実装設計前に要件レベルで解決すべきワークフローの矛盾であるため。
+      leave-as-is: 確定操作が必ずエラー終了してしまうため不可。
+  - finding_id: gemini-3.1-pro-preview-judgment-002
+    final_label: should-fix
+    rationale: 軽微なタスクとの線引きを明確にすることは運用上のブレを防ぐため推奨される。

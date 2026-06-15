@@ -1,0 +1,17 @@
+approved_by: proxy_model
+finding_id: 2026-06-15-requirements-r11-reopen-triad-review-run-claude-sonnet-4-6-primary-001
+proxy_model_id: gemini-3.1-pro-preview
+decision_prompt_path: proxy-adjudication-prompt.md
+selected_option: must-fix
+final_label: must-fix
+rationale: 例外を許容するか否かのポリシーは契約に関わるため要件での定義が必須。
+raw_response_path: proxy-adjudication-response.txt
+candidate_options:
+- must-fix
+- should-fix
+- leave-as-is
+rejected_options:
+  should-fix: 例外基準をdesignに委ねるとフェイルセーフの担保がブレるため不可。
+  leave-as-is: 束ねの扱いを放置すると検証回避の抜け道となるため不可。
+source_raw_paths:
+- raw/claude-sonnet-4-6.round-1.txt

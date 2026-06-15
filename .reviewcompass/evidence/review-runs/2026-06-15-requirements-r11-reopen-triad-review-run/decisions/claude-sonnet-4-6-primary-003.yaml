@@ -1,0 +1,17 @@
+approved_by: proxy_model
+finding_id: 2026-06-15-requirements-r11-reopen-triad-review-run-claude-sonnet-4-6-primary-003
+proxy_model_id: gemini-3.1-pro-preview
+decision_prompt_path: proxy-adjudication-prompt.md
+selected_option: must-fix
+final_label: must-fix
+rationale: 検査の実施タイミング（and/or）が定まらず受入テスト不能となるため。
+raw_response_path: proxy-adjudication-response.txt
+candidate_options:
+- must-fix
+- should-fix
+- leave-as-is
+rejected_options:
+  should-fix: 検査ゲートの確実性が担保できなくなるため不可。
+  leave-as-is: ゲートキーパーとしての責務の曖昧さを残すべきでないため不可。
+source_raw_paths:
+- raw/claude-sonnet-4-6.round-1.txt

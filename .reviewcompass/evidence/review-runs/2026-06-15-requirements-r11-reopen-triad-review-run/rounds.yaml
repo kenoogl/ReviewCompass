@@ -1,60 +1,60 @@
-round_id: round-1
+round_id: round-3
 purpose: requirements
-invocation_timestamp: '2026-06-15T02:25:32.872704+00:00'
+invocation_timestamp: '2026-06-15T03:09:34.157010+00:00'
 target_files:
-- path: .reviewcompass/evidence/review-runs/2026-06-15-requirements-r11-reopen-triad-review-run/target.md
-  sha256: e5d4e86abbd2b2b5615192b07d0a0a38ce3957a9721bf607f0375b3d27a11bba
-criteria: requirements_r11_decision_source_lint
-prompt_sha256: 518024ffdcd7fef48a05a4d86d946942529dfbcb4c69c9814bf6319c49871884
+- path: .reviewcompass/evidence/review-runs/2026-06-15-requirements-r11-reopen-triad-review-run/target-round-3.md
+  sha256: e50379ebb02479e1821d57883823db0f74533396e1c1cf650d8d3a50c08ecfc4
+criteria: requirements_r11_round3_convergence
+prompt_sha256: 2633c14bcf0a634df7842954f7984411b3170cd4a60316f34ee3e77595ee29e7
 model_results:
 - model_id: claude-sonnet-4-6
   provider: anthropic-api
   role: primary
   treatment: primary
   invocation_path: api
-  raw_path: raw/claude-sonnet-4-6.round-1.txt
-  raw_sha256: 453ba45fc47a87d8552ecbfb8eda70fe37e028be6920928c58ef85a7cf0d62c6
-  parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
-  parsed_sha256: dd4784ab518adbf9518508867491281caab5a62a3d446043a791045addbc5307
+  raw_path: raw/claude-sonnet-4-6.round-3.txt
+  raw_sha256: 0c202303f10462bb6f04cd87c694f38ae425fa419794d8810eccf059b954e591
+  parsed_path: parsed/claude-sonnet-4-6.round-3.yaml
+  parsed_sha256: e4c999d45860013c80038546e5579254acdc360cd2134c08f8b52a0fefc551c8
   parse_status: parsed
   formatted_by: parser
   formatted_by_actor_type: orchestrator
   formatted_by_actor: run_role.py
-  formatted_at: '2026-06-15T02:24:30.765658+00:00'
+  formatted_at: '2026-06-15T03:08:37.968666+00:00'
   follow_up_action: triage
   attempts: 1
-  duration_seconds: 27.228
+  duration_seconds: 10.967
 - model_id: gpt-5.5
   provider: openai-api
   role: adversarial
   treatment: adversarial
   invocation_path: api
-  raw_path: raw/gpt-5.5.round-1.txt
-  raw_sha256: 4cc4a5827aa8698e88b1084ac3cdc3688371a09b29e20714e3fc64b4d984d044
-  parsed_path: parsed/gpt-5.5.round-1.yaml
-  parsed_sha256: 1772d30b3a4889da3b8b4f00489101ff75993814d00d074cddd79fb4e5b2a316
+  raw_path: raw/gpt-5.5.round-3.txt
+  raw_sha256: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+  parsed_path: parsed/gpt-5.5.round-3.yaml
+  parsed_sha256: c68afd00b6ba72b6ac80bbc0aed2f47a94d7de6d47eca617aace78e710aa53e3
   parse_status: parsed
   formatted_by: parser
   formatted_by_actor_type: orchestrator
   formatted_by_actor: run_role.py
-  formatted_at: '2026-06-15T02:25:08.480535+00:00'
+  formatted_at: '2026-06-15T03:09:11.712349+00:00'
   follow_up_action: triage
   attempts: 1
-  duration_seconds: 37.702
+  duration_seconds: 33.733
 - model_id: gemini-3.1-pro-preview
   provider: gemini-api
   role: judgment
   treatment: judgment
   invocation_path: api
-  raw_path: raw/gemini-3.1-pro-preview.round-1.txt
-  raw_sha256: b81cd279f64bdfc5f206fa02131df1482d8447fffc3a03b77bab627ceb6a49e9
-  parsed_path: parsed/gemini-3.1-pro-preview.round-1.yaml
-  parsed_sha256: 42c566f9788fe8eaf87face825261752a96b1c92985c588a98ce62122eb5d371
+  raw_path: raw/gemini-3.1-pro-preview.round-3.txt
+  raw_sha256: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+  parsed_path: parsed/gemini-3.1-pro-preview.round-3.yaml
+  parsed_sha256: 0c9bfe972f60d89ee76c94ff62200ceab9ebb7d31f36ff7f77d39636ce5c35f0
   parse_status: parsed
   formatted_by: parser
   formatted_by_actor_type: orchestrator
   formatted_by_actor: run_role.py
-  formatted_at: '2026-06-15T02:25:32.872704+00:00'
+  formatted_at: '2026-06-15T03:09:34.157010+00:00'
   follow_up_action: triage
   attempts: 1
-  duration_seconds: 24.38
+  duration_seconds: 22.427

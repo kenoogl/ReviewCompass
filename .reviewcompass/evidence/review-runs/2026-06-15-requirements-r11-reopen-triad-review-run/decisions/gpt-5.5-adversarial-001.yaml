@@ -1,0 +1,17 @@
+approved_by: proxy_model
+finding_id: 2026-06-15-requirements-r11-reopen-triad-review-run-gpt-5.5-adversarial-001
+proxy_model_id: gemini-3.1-pro-preview
+decision_prompt_path: proxy-adjudication-prompt.md
+selected_option: should-fix
+final_label: should-fix
+rationale: 引用とセッションIDで一意性は概ね担保できるが検索性向上のための種別追加は推奨される。
+raw_response_path: proxy-adjudication-response.txt
+candidate_options:
+- must-fix
+- should-fix
+- leave-as-is
+rejected_options:
+  must-fix: 引用とセッションIDで出典の一意特定は概ね担保でき、要件の欠陥とまでは言えないため必須ではない（proxy 理由に基づく）。
+  leave-as-is: 重要種別の付与は検索性・検証性を高めるため反映が望ましく、無対処は不可（proxy 理由に基づく）。
+source_raw_paths:
+- raw/gpt-5.5.round-1.txt

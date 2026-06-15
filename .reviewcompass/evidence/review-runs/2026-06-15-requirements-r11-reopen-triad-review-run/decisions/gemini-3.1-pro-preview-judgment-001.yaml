@@ -1,0 +1,17 @@
+approved_by: proxy_model
+finding_id: 2026-06-15-requirements-r11-reopen-triad-review-run-gemini-3.1-pro-preview-judgment-001
+proxy_model_id: gemini-3.1-pro-preview
+decision_prompt_path: proxy-adjudication-prompt.md
+selected_option: must-fix
+final_label: must-fix
+rationale: セッション中の未転写決定の扱いはデッドロックを招くため解決が必須。
+raw_response_path: proxy-adjudication-response.txt
+candidate_options:
+- must-fix
+- should-fix
+- leave-as-is
+rejected_options:
+  should-fix: 実装設計前に要件レベルで解決すべきワークフローの矛盾であるため。
+  leave-as-is: 確定操作が必ずエラー終了してしまうため不可。
+source_raw_paths:
+- raw/gemini-3.1-pro-preview.round-1.txt

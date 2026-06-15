@@ -1,0 +1,17 @@
+approved_by: proxy_model
+finding_id: 2026-06-15-requirements-r11-reopen-triad-review-run-claude-sonnet-4-6-primary-002
+proxy_model_id: gemini-3.1-pro-preview
+decision_prompt_path: proxy-adjudication-prompt.md
+selected_option: must-fix
+final_label: must-fix
+rationale: 決定と転写の順序依存によるデッドロックはワークフローの重大な欠陥。
+raw_response_path: proxy-adjudication-response.txt
+candidate_options:
+- must-fix
+- should-fix
+- leave-as-is
+rejected_options:
+  should-fix: 放置すれば実運用で確定操作が失敗し続けるため不可。
+  leave-as-is: システムの正常な進行を妨げる論理的欠陥であるため不可。
+source_raw_paths:
+- raw/claude-sonnet-4-6.round-1.txt

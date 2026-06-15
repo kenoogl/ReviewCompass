@@ -23,8 +23,16 @@ completed_steps:
   13 件（claude 5〔WARN3・INFO2〕・gpt-5.5 6〔ERROR3・WARN3〕・gemini 2〔WARN1・INFO1〕）。同根 7 クラスタを利用者提示。最重要＝取り込み前／現セッション決定の順序依存（逐語照合とコミット直前ゲートのデッドロック）
 - 側道（完了）：proxy 裁定レコードの生成ツールが無く前例頼りだったため、make-proxy-approval.py を TDD 新設（利用者決定「生成ツール作成を実施し、ここに戻ってくる」2026-06-15）。stages/completed/maintenance-2026-06-15-proxy-approval-generator.yaml。tests/tools
   334 件 pass
-next_step: 第3過程：round-1 所見を proxy_model（gemini-3.1-pro-preview）裁定（make-proxy-approval.py
-  使用）→ must-fix を Requirement 11 へ反映 → round-2 収束確認。利用者「A（proxy 委任）」2026-06-15
+- 第3過程：stages/requirements.yaml#triad-review 収束（round-1→3、利用者委任「A」proxy 裁定）。round-1
+  所見13件→proxy 裁定 must-fix7・should-fix4・leave-as-is2（make-proxy-approval.py で proxy-approval・decisions
+  生成、正本自己検証 OK）→Req 11 へ反映。round-2 所見6件→must-fix1（私の round-1 デッドロック修正『保留』が
+  fail-closed 抜け道と gemini が ERROR 指摘）＋should-fix3→受入3 を「保留＝確定済みとして扱わない・後続根拠に用いない・タイムアウト昇格なし」に書換、受入1/2
+  も補強→round-3。round-3 所見：gpt-5.5/gemini 0 件・claude INFO3（design 細目、leave-as-is）＝収束（must-fix
+  0）。proxy 裁定プロンプト/応答は round 別に保存（proxy-adjudication-*-round-2 等）
+- 側道（追補・完了）：make-proxy-approval.py を per-decision の裁定プロンプト/応答パス対応に小拡張（複数ラウンド対応、テスト追加で計5件）。tests/tools
+  335 件 pass
+next_step: 第3過程停止点コミット（triad-review 収束まで）。コミット後、requirements の review-wave→alignment→approval、続いて
+  design／tasks／implementation を連鎖再実施
 step_number: 3
 pending_gates:
 - stages/requirements.yaml#alignment

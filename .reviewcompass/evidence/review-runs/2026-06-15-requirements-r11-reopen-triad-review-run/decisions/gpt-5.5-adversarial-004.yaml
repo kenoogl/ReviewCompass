@@ -1,0 +1,17 @@
+approved_by: proxy_model
+finding_id: 2026-06-15-requirements-r11-reopen-triad-review-run-gpt-5.5-adversarial-004
+proxy_model_id: gemini-3.1-pro-preview
+decision_prompt_path: proxy-adjudication-prompt.md
+selected_option: must-fix
+final_label: must-fix
+rationale: 転写未完了の決定を扱う際の順序依存はシステムがスタックする致命的欠陥。
+raw_response_path: proxy-adjudication-response.txt
+candidate_options:
+- must-fix
+- should-fix
+- leave-as-is
+rejected_options:
+  should-fix: 正常系フローが完遂できなくなる論理的欠陥であるため必須修正。
+  leave-as-is: ワークフロー自体が破綻するため放置不可。
+source_raw_paths:
+- raw/gpt-5.5.round-1.txt

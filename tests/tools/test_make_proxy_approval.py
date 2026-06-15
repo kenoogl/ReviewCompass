@@ -189,6 +189,33 @@ class MakeProxyApprovalTests(unittest.TestCase):
     self.assertNotIn(info_fid, approval["approved_finding_ids"])
     self._assert_truth_passes({err_fid: "must-fix"})
 
+  def test_per_decision_prompt_response_path_override(self):
+    """decision ごとに裁定プロンプト・応答パスを上書きでき、正本検証も通る（複数ラウンド対応）。"""
+    ids = _build_run(self.rundir, [{"suffix": "gemini-3.1-pro-preview-judgment-001",
+                                    "source_model": "gemini-3.1-pro-preview", "severity": "ERROR"}])
+    fid = next(iter(ids))
+    # round-2 用の別プロンプト・応答を用意
+    (self.rundir / "proxy-adjudication-prompt-round-2.md").write_text("# r2\n", encoding="utf-8")
+    (self.rundir / "proxy-adjudication-response-round-2.txt").write_text("r2応答\n", encoding="utf-8")
+    _dump(Path(self.tmp) / "dec.yaml", {
+      "proxy_model_id": PROXY_MODEL,
+      "decision_prompt_path": "proxy-adjudication-prompt.md",
+      "raw_response_path": "proxy-adjudication-response.txt",
+      "decisions": [{
+        "finding_id": fid, "final_label": "must-fix", "rationale": "必須",
+        "decision_prompt_path": "proxy-adjudication-prompt-round-2.md",
+        "raw_response_path": "proxy-adjudication-response-round-2.txt",
+        "rejected_options": {"should-fix": "不足", "leave-as-is": "不可"}}]})
+    (self.rundir / "proxy-adjudication-prompt.md").write_text("# r1\n", encoding="utf-8")
+    (self.rundir / "proxy-adjudication-response.txt").write_text("r1応答\n", encoding="utf-8")
+    res = _run_tool(self.tmp, "--review-run-dir", RUN_REL, "--decisions", "dec.yaml")
+    self.assertEqual(res.returncode, 0, res.stderr)
+    suffix = "gemini-3.1-pro-preview-judgment-001"
+    dec = yaml.safe_load((self.rundir / "decisions" / f"{suffix}.yaml").read_text(encoding="utf-8"))
+    self.assertEqual(dec["decision_prompt_path"], "proxy-adjudication-prompt-round-2.md")
+    self.assertEqual(dec["raw_response_path"], "proxy-adjudication-response-round-2.txt")
+    self._assert_truth_passes({fid: "must-fix"})
+
   def test_important_finding_without_rejected_options_fails_closed(self):
     """重要件で rejected_options を欠くと正本検証が落ちるため、ツールは非ゼロで止まる。"""
     ids = _build_run(self.rundir, [{"suffix": "gpt-5.5-adversarial-001",

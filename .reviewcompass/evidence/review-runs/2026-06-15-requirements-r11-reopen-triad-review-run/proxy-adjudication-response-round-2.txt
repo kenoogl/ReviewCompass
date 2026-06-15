@@ -1,0 +1,22 @@
+decisions:
+  - finding_id: gemini-3.1-pro-preview-judgment-001
+    final_label: must-fix
+    rationale: 照合保留によるゲート通過が不可逆操作の検証を無力化し、フェーズ内で担保すべきfail-closed原則に直接違反する重大な欠陥であるため。
+    rejected_options:
+      should-fix: データの整合性と安全性を根本から損なう抜け道であり、任意対応では不十分なため。
+      leave-as-is: 原則違反の放置は許容できず、設計・実装への委譲で解決できる問題ではないため。
+  - finding_id: claude-sonnet-4-6-primary-001
+    final_label: should-fix
+    rationale: 保留中の決定の安全性保証やタイムアウト処理は、所見1の抜け道封鎖を補強する具体的なライフサイクル要件として反映することが望ましいため。
+  - finding_id: claude-sonnet-4-6-primary-002
+    final_label: leave-as-is
+    rationale: 出典ロケータの具体的な粒度や形式は、本フェーズ（requirements）の対象外であり、次フェーズ（design）への委譲事項であるため。
+  - finding_id: claude-sonnet-4-6-primary-003
+    final_label: should-fix
+    rationale: 「軽微なタスク状態更新」の定義を補足し、仕様変更との境界を明確にすることは、要件の解釈ブレを防ぐ改善として有益であるため。
+  - finding_id: claude-sonnet-4-6-primary-004
+    final_label: should-fix
+    rationale: 束ね例外における判定の主体（機械か人か）を要件レベルで明記することは、責任境界を明確にする上で望ましいため。
+  - finding_id: claude-sonnet-4-6-primary-005
+    final_label: leave-as-is
+    rationale: 全体の収束状況を確認したメタ所見であり、要件文書への直接的な修正アクションを必要としないため。

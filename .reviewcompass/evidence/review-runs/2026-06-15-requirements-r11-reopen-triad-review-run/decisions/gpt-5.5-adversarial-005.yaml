@@ -1,0 +1,17 @@
+approved_by: proxy_model
+finding_id: 2026-06-15-requirements-r11-reopen-triad-review-run-gpt-5.5-adversarial-005
+proxy_model_id: gemini-3.1-pro-preview
+decision_prompt_path: proxy-adjudication-prompt.md
+selected_option: must-fix
+final_label: must-fix
+rationale: 束ね検出の例外適用可否は要件レベルでの厳格な契約であるため。
+raw_response_path: proxy-adjudication-response.txt
+candidate_options:
+- must-fix
+- should-fix
+- leave-as-is
+rejected_options:
+  should-fix: 例外の許可基準を要件で縛らないと形骸化を招くため。
+  leave-as-is: fail-closedの原則と矛盾する状態を放置できないため不可。
+source_raw_paths:
+- raw/gpt-5.5.round-1.txt
