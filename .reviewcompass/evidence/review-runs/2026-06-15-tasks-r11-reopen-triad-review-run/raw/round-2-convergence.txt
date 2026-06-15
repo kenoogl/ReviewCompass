@@ -1,0 +1,20 @@
+# tasks triad-review round-2 収束確認（proxy: gemini-3.1-pro-preview）
+
+## must-fix 反映後の確認
+
+### C1 [must-fix → resolved]
+完了条件への design §6 委譲事項 4 項目追記を確認。「design §6 の実装委譲 4 事項（`--verify-pending` 安全性保証・`bundle_exception_id` 採番規則・逐語不一致時の差分表示形式・既存関数との統合方法）が implementation で確定されていること」が T-013 完了条件に追加されている。✓
+
+### C2 [must-fix → resolved]
+テスト要件(2)への部分満足 fail-closed 追記を確認。「束ね例外 3 条件の部分満足も fail-closed（承認レコードあり＋covered_decision_ids 含むが multiplicity=bundled で DEVIATION・承認レコードなし＋multiplicity=single で DEVIATION）」が明示されている。✓
+
+## round-2 所見
+
+追加の must-fix 0 件。
+
+残存 should-fix（C3〜C6）は implementation フェーズで対処可能な範囲であり、tasks 段のタスク定義として今の記述で implementation に必要な情報を提供している。
+
+## 収束判定
+
+- 未解決 must-fix: 0 件
+- 収束: true

@@ -1,0 +1,64 @@
+run_id: 2026-06-15-tasks-r11-reopen-triad-review-run
+feature: workflow-management
+phase: tasks
+reopen: R-0（decision-source-lint）
+date: 2026-06-15
+variant: implementation_review_independent_3way
+rounds: 2
+proxy_model: gemini-3.1-pro-preview
+
+findings:
+  - id: C1
+    sources: [A-001, F-003]
+    severity: must-fix
+    status: resolved
+    summary: design §6 委譲事項が完了条件に未ゲート化
+    resolution: T-013 完了条件に design §6 の実装委譲 4 事項確認を追加
+  - id: C2
+    sources: [A-002]
+    severity: must-fix
+    status: resolved
+    summary: 束ね例外 3 条件の部分満足 fail-closed テストが欠落
+    resolution: テスト要件(2)に部分満足ケースの fail-closed を明示
+  - id: C3
+    sources: [F-002]
+    severity: should-fix
+    status: pending
+    summary: 設定ファイル非存在時の挙動がテスト要件に未規定
+    resolution: implementation フェーズで design §6 の範囲として対処
+  - id: C4
+    sources: [A-003]
+    severity: should-fix
+    status: pending
+    summary: 責務①「生成」という動詞が曖昧
+    resolution: implementation フェーズで成果物作成時に実質的に確定
+  - id: C5
+    sources: [A-004]
+    severity: should-fix
+    status: pending
+    summary: 空文字列・非文字列型の DEVIATION 対象が未明示
+    resolution: implementation フェーズで TDD 実装時に fail-closed 原則で対処
+  - id: C6
+    sources: [A-005]
+    severity: should-fix
+    status: pending
+    summary: 「統合済み」完了条件が unit/integration test かを明示していない
+    resolution: テスト要件(10)を end-to-end テストに修正済み
+  - id: C7
+    sources: [F-001]
+    severity: leave-as-is
+    status: closed
+    summary: 責務⑥の確定・委譲境界（テスト要件(10)でカバー済み）
+  - id: C8
+    sources: [A-006]
+    severity: leave-as-is
+    status: closed
+    summary: テスト要件番号と設計節の対応（スタイル一貫性）
+  - id: C9
+    sources: [F-004]
+    severity: leave-as-is
+    status: closed
+    summary: 要件追跡表 Req 11 受入 6（トレーサビリティ確認として正確）
+
+all_must_fix_resolved: true
+convergence: true

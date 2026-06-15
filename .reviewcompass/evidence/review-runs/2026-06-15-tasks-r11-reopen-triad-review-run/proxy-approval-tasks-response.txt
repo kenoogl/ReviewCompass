@@ -1,0 +1,15 @@
+# tasks フェーズ approval proxy 裁定応答
+# proxy_model: gemini-3.1-pro-preview（利用者委任「自律実施」2026-06-15）
+
+approved: true
+rationale: >
+  triad-review（round-1 must-fix 2 全解消、round-2 で must-fix 0 確認）、
+  review-wave（no_impact、carry-forward 未消化 0）、alignment（existing_sufficient）
+  の全ゲートを未解決 must-fix 0 でクリアしているため。
+  T-013 タスク定義は Req 11 受入 1〜7 を網羅し、design §1〜§6 との対応が要件追跡表で確認済み。
+  完了条件に design §6 の委譲事項 4 項目ゲートが追加されており、
+  implementation 段での確定が tasks レベルで要求されている。
+residual_risks: >
+  should-fix C3〜C6（設定ファイル非存在時の挙動・責務①表現精度・空文字列型処理・end-to-end テスト範囲）は
+  implementation フェーズで TDD 実装時に具体化される事項であり、
+  tasks 段のタスク定義として今の記述で実装者に必要な情報を提供している。設計上の欠陥ではない。

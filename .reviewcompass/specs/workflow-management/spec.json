@@ -55,7 +55,6 @@
   "recheck": {
     "upstream_change_pending": true,
     "impacted_downstream_phases": [
-      "tasks",
       "implementation"
     ]
   }

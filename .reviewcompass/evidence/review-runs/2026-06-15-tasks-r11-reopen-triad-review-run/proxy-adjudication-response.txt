@@ -1,0 +1,62 @@
+# tasks triad-review proxy 裁定応答（round-1）
+# proxy_model: gemini-3.1-pro-preview（利用者委任「自律実施」2026-06-15）
+
+## クラスタ別判定
+
+### C1 [must-fix] design §6 委譲事項が完了条件に未ゲート化
+所見: A-001 (ERROR) + F-003 (WARN)
+判定: must-fix
+理由: design §6 で明示した「implementation で確定する 4 事項」のうち少なくとも安全性保証（並行書き込み・不完全書き込み防止）は完了条件でゲート化すべきである。tasks の完了条件が implementation 段の確定事項を包含しないと、T-013 完了後に §6 事項が確認されない空白が生じる。
+対処: T-013 完了条件に「design §6 の実装委譲 4 事項（--verify-pending 安全性保証・bundle_exception_id 採番・差分表示形式・既存関数統合方法）が implementation で確定されていること」を追加する。
+
+### C2 [must-fix] 束ね例外 3 条件の部分満足 fail-closed テストが欠落
+所見: A-002 (ERROR)
+判定: must-fix
+理由: 「3 条件すべて満たす場合のみ通過」という要件の本質は「1 条件でも欠けたら fail-closed」である。正常系テストだけでは、条件 b・c が揃っているが承認レコードがない場合などのバグを捕捉できない。
+対処: テスト要件(2)に「部分満足ケースの fail-closed」を明示する（承認レコードあり+covered_decision_ids 含むが multiplicity=bundled で DEVIATION、承認レコードなし+multiplicity=single で DEVIATION 等）。
+
+### C3 [should-fix] 設定ファイル非存在時の挙動がテスト要件に未規定
+所見: F-002 (WARN)
+判定: should-fix
+理由: 設定ファイル非存在時に fail-closed か内蔵デフォルト使用かが仕様として未確定であり、implementation に委ねることになる。tasks でテスト要件として表明することで implementation の自由度を適切に制限できる。
+対処: テスト要件(11)に「設定ファイル非存在時は内蔵デフォルト（design §4 の初期リスト 11 件相当）を使用 or fail-closed のどちらかを確定してテスト」を追記する。ただし implementation フェーズで design §6 の範囲で確定するとも言えるため should-fix とする。
+
+### C4 [should-fix] 責務①「生成」という動詞が曖昧
+所見: A-003 (WARN)
+判定: should-fix
+理由: tasks 段での記述は implementation が実施する行為を規定するものであり、「生成」（runtime 生成かファイル配置かが曖昧）より「配置する」のほうが意図が明確。ただし成果物として「`stages/decision-source-lint-config.yaml`（初期内容なし語リスト）」と明記されているため致命的ではない。
+対処: 責務①の「生成」を「配置する（implementation が初期内容なし語リスト 11 件を含む設定ファイルを stages/decision-source-lint-config.yaml として作成する）」に修正する。
+
+### C5 [should-fix] 空文字列・非文字列型の DEVIATION 対象が未明示
+所見: A-004 (WARN)
+判定: should-fix
+理由: fail-closed 方針から「決定できない場合は DEVIATION」が原則であり、空文字列・非文字列型も DEVIATION 対象であることをテスト要件に含めることで、実装者の解釈余地を減らせる。
+対処: テスト要件(1)に「decision_id・statement・source.excerpt が空文字列の場合も DEVIATION」「category・multiplicity・verification_status が非文字列型の場合も DEVIATION」を追記する。
+
+### C6 [should-fix] 「統合済み」完了条件が unit/integration test かを明示していない
+所見: A-005 (WARN)
+判定: should-fix
+理由: commit フロー全体を通した動作確認（integration test）が不十分だと実際の運用でバグが発見される。完了条件として「end-to-end（`python3 check-workflow-action.py commit` コマンドレベル）での確認」と明示することが望ましい。
+対処: 完了条件「commit 直前ゲートへの統合済み」に「end-to-end テスト（`python3 check-workflow-action.py commit` 実行で decision-source-lint 判定が DEVIATION/WARN に反映されること）で確認済み」を追加する。
+
+### C7 [leave-as-is] 責務⑥の確定・委譲境界
+所見: F-001 (INFO)
+判定: leave-as-is
+理由: テスト要件(10)で「commit ゲート統合（`cmd_commit` が `decision-source-lint --all` を呼び出し...）」が明示されており、design §5 の確定事項（組み込む・pending=WARN・unverifiable=DEVIATION）はタスク完了条件でカバーされている。§6 の委譲事項（統合方法の実装細部）は C1 の対処で完了条件に追加される。
+
+### C8 [leave-as-is] テスト要件番号と設計節の対応
+所見: A-006 (INFO)
+判定: leave-as-is
+理由: T-011・T-012 等の既存タスクも同様の線形番号を採用しており、スタイルの一貫性がある。設計節との対応は target.md の「レビュー観点」で追跡可能。
+
+### C9 [leave-as-is] 要件追跡表 Req 11 受入 6
+所見: F-004 (INFO)
+判定: leave-as-is
+理由: T-013 が受入 6 の実装責務（unverifiable 判定の機械強制）を担うことは正確。design §1 での確定と tasks での実装対応は正しく分離されている。
+
+## 要約
+
+- must-fix: 2 クラスタ（C1・C2）
+- should-fix: 4 クラスタ（C3・C4・C5・C6）
+- leave-as-is: 3 クラスタ（C7・C8・C9）
+- all_must_fix_resolved: false（反映後に round-2 で確認）

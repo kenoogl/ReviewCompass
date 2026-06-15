@@ -59,8 +59,22 @@ completed_steps:
   判断 approved=true（全ゲート未解決 must-fix 0 でクリア。残存リスク＝round-2 INFO〔実装委譲事項〕を implementation フェーズで対処）。recheck
   から design を消化〔impacted_downstream_phases=[tasks, implementation]〕、design alignment・approval
   は true 維持。proxy 判断記録＝.reviewcompass/evidence/review-runs/2026-06-15-design-r11-reopen-triad-review-run/proxy-approval-design-{prompt.md,response.txt}
+- 第3過程（downstream tasks 開始）：tasks.md に T-013（重要決定の出典検査 decision-source-lint サブコマンド）を追記。Req
+  11 受入 1〜7 の要件追跡表 7 行・変更意図 Req 11 追記・完成判定基準 T-001〜T-013 更新。updated_at=2026-06-15
+- 第3過程：stages/tasks.yaml#triad-review 実施（round-1→2 収束、自律実施・proxy 裁定）。run=.reviewcompass/evidence/review-runs/2026-06-15-tasks-r11-reopen-triad-review-run。round-1
+  所見 10 件（primary 4〔WARN2・INFO2〕・adversarial 6〔ERROR2・WARN3・INFO1〕）→ proxy_model（gemini-3.1-pro-preview、自律委任）裁定で
+  must-fix 2・should-fix 4・leave-as-is 3。反映＝完了条件に design §6 委譲事項 4 項目ゲート追加・テスト要件(2)に束ね例外部分満足 fail-closed 追記・テスト要件(10)を end-to-end テスト表現に修正。round-2
+  所見＝must-fix 0（収束）
+- 第3過程：stages/tasks.yaml#review-wave 実施（decision=no_impact）。T-013 は workflow-management
+  内部に閉じ、他 6 機能の契約・スキーマに変更なし。carry-forward 未消化 0 件。記録＝.reviewcompass/specs/_cross_feature/reviews/2026-06-15-tasks-r11-review-wave.md
+- 第3過程：stages/tasks.yaml#alignment 実施（decision=existing_sufficient）。T-013 は既存 T-001〜T-012
+  と整合し既存タスクの改訂不要。要件追跡の双方向整合確認済み。記録＝.reviewcompass/specs/_cross_feature/reviews/2026-06-15-tasks-r11-reopen-alignment.md
+- 第3過程：stages/tasks.yaml#approval 承認（proxy_model=gemini-3.1-pro-preview 代行、自律委任 2026-06-15）。proxy
+  判断 approved=true（全ゲート未解決 must-fix 0 でクリア。残存リスク＝should-fix C3〜C6 は implementation
+  フェーズで TDD 実装時に具体化）。recheck から tasks を消化〔impacted_downstream_phases=[implementation]〕。proxy
+  判断記録＝.reviewcompass/evidence/review-runs/2026-06-15-tasks-r11-reopen-triad-review-run/proxy-approval-tasks-{prompt.md,response.txt}
 next_step: |
-  停止点コミット（design フェーズ再実施完了）→ tasks フェーズ再実施（impacted_downstream_phases: tasks）へ。tasks.md に Req 11 の実装タスクを追記、triad-review→review-wave→alignment→approval の後、implementation へ
+  停止点コミット（tasks フェーズ再実施完了）→ implementation フェーズ再実施（impacted_downstream_phases: implementation）へ。TDD で decision-source-lint サブコマンドを実装する
 step_number: 3
 pending_gates: []
 current_blocker: null
