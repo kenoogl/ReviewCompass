@@ -2,7 +2,7 @@
   "feature_name": "workflow-management",
   "language": "ja",
   "created_at": "2026-05-24T00:00:00+09:00",
-  "updated_at": "2026-06-14T00:00:00+09:00",
+  "updated_at": "2026-06-15T00:00:00+09:00",
   "workflow_state": {
     "intent": {
       "drafting": true,
@@ -19,8 +19,8 @@
       "drafting": true,
       "triad-review": true,
       "review-wave": true,
-      "alignment": true,
-      "approval": true
+      "alignment": false,
+      "approval": false
     },
     "design": {
       "drafting": true,
@@ -53,7 +53,11 @@
     "implementation": true
   },
   "recheck": {
-    "upstream_change_pending": false,
-    "impacted_downstream_phases": []
+    "upstream_change_pending": true,
+    "impacted_downstream_phases": [
+      "design",
+      "tasks",
+      "implementation"
+    ]
   }
 }

@@ -1,0 +1,28 @@
+process_id: reopen-procedure
+feature: workflow-management
+classification: R-0
+started_at: '2026-06-15T00:00:00+09:00'
+trigger: 裁定負荷対策 lint（重要決定の出典検査・束ね検出・逐語照合・内容性）と構造化した重要決定の記録形式の新設（TODO §4 候補5）
+classification_basis: docs/reviews/reopen-classification-2026-06-15-wm-decision-source-lint.md
+completed_steps:
+- 第1過程：判定とフラグ差し戻し（分類記録作成、reopen-start、spec.json 差し戻し〔workflow-management の requirements
+  alignment・approval を false、recheck＝upstream_change_pending=true・impacted_downstream_phases=[design,
+  tasks, implementation]、updated_at=2026-06-15〕、spec-set 事前検査 2 件 OK）
+- 第1過程 根拠記録の独立検証：分類記録の書き込み後検証を 3 体で実施（variant post_write_verification_independent_3way、primary=claude-sonnet-4-6・adversarial=gpt-5.5・judgment=gemini-3.1-pro-preview）。
+  所見 4 件＝must-fix 2（gpt-5.5・gemini が同根で指摘した「過去台帳の扱いを未決事項として下流送り」と確定済み「遡及移行しない」の矛盾。利用者承認のうえ事実節から削除し確定を明示して解消）、leave-as-is
+  2（claude の逐語的・範囲外 INFO）。収束（未解決の本質的指摘 0）。manifest .reviewcompass/post-write-verification/post-write-2026-06-15-001.yaml（正本判定
+  completed）。review-run .reviewcompass/evidence/review-runs/2026-06-15-postwrite-reopen-classification-decision-source-lint。利用者承認「承認」（2026-06-15）
+- 第1過程停止点：利用者承認済み。R-0・再実施範囲（requirements の alignment〜approval＋下流 design／tasks／implementation）・フラグ差し戻しは
+  2026-06-15 利用者「提案の方針でOK」＋「承認」で取得。停止点コミットは 2026-06-15 利用者「コミット」明示
+next_step: 第1過程停止点コミット（第1過程一式を1コミット）。コミット後に第2過程＝requirements drafting（新 Requirement 11 起草）へ進む
+step_number: 1
+pending_gates:
+- stages/requirements.yaml#alignment
+- stages/requirements.yaml#approval
+current_blocker: null
+human_decision: 2026-06-15 利用者決定。分類 R-0 採用（「提案の方針でOK」）、spec.json 差し戻し承認（「承認」）、第1過程停止点コミット指示（「コミット」）。
+approval_source: 2026-06-15 利用者発言「提案の方針でOK」（R-0・再実施範囲）＋「承認」（フラグ差し戻し）
+impacted_downstream_phases:
+- design
+- tasks
+- implementation

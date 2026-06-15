@@ -1,0 +1,4 @@
+run_id: 2026-06-15-postwrite-reopen-classification-decision-source-lint
+target_files:
+- path: .reviewcompass/evidence/review-runs/2026-06-15-postwrite-reopen-classification-decision-source-lint/target.md
+  sha256: 3dbba9f70cf094820ab2017ff61d486002c71cda481bb72b5c0e867be01055e3

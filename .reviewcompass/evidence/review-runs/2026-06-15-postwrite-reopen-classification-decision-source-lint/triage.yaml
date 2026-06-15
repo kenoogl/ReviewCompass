@@ -1,0 +1,82 @@
+run_id: 2026-06-15-postwrite-reopen-classification-decision-source-lint
+triage_status: decided
+generated_at: '2026-06-15T01:20:38.657020+00:00'
+decision_actor: user
+decision_actor_type: human
+items:
+- finding_id: 2026-06-15-postwrite-reopen-classification-decision-source-lint-claude-sonnet-4-6-primary-001
+  run_id: 2026-06-15-postwrite-reopen-classification-decision-source-lint
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: '## 合意内容（決定） - 検査方針の確定日付'
+  plain_language_summary: 合意内容では検査方針の確定を「2026-06-14 利用者決定」と記述しているが、書き込み結果の trigger_source
+    でも同日付が記載されており整合している。ただし本文中に「2026-06-13 利用者決定『(b) で対応』」という別の決定日付も登場しており、3日分の決定（2026-06-13、2026-06-14、2026-06-15）の関係性が合意内容セクションには明示されていない。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: user
+  decision_actor_type: human
+  decision_at: '2026-06-15T01:28:28.292302+00:00'
+  decision_reason: 逐語的指摘。検証者へ渡す合意内容は最小化要約であり 2026-06-13『(b)で対応』決定の省略は許容範囲。書き込み結果（trigger_source）に記載済みで矛盾なし。記録自体の欠陥ではない。利用者は本トリアージ方針を承認（2026-06-15）。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-15-postwrite-reopen-classification-decision-source-lint-claude-sonnet-4-6-primary-002
+  run_id: 2026-06-15-postwrite-reopen-classification-decision-source-lint
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: '## 書き込み結果 - 停止点'
+  plain_language_summary: 停止点の記述に「コミットしない」と明記されており、書き込み結果ファイルが実際にコミットされているかどうかを本検証文書から確認できない。書き込み結果のファイルパス（docs/reviews/reopen-classification-2026-06-15-wm-decision-source-lint.md）は示されているが、そのファイルの実在・内容の機械的確認は本文書の範囲外となっている。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: user
+  decision_actor_type: human
+  decision_at: '2026-06-15T01:28:28.333566+00:00'
+  decision_reason: 逐語的・範囲外。『コミットしない』停止条件下でのコミット済み確認は本検証文書の範囲外で、コミット前検査（別層）が担保。記録自体の欠陥ではない。利用者は本トリアージ方針を承認（2026-06-15）。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-15-postwrite-reopen-classification-decision-source-lint-gpt-5.5-adversarial-001
+  run_id: 2026-06-15-postwrite-reopen-classification-decision-source-lint
+  source_model: gpt-5.5
+  source_round: round-1
+  source_raw_path: raw/gpt-5.5.round-1.txt
+  source_parsed_path: parsed/gpt-5.5.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: 書き込み結果（docs/reviews/reopen-classification-2026-06-15-wm-decision-source-lint.md）/本文の主な記述/事実
+  plain_language_summary: 過去台帳の扱いを「requirements／design で確定」としており、合意済みの「過去の散文台帳は遡及移行しない」と整合していない。
+  final_label: must-fix
+  decision_status: decided
+  decision_actor: user
+  decision_actor_type: human
+  decision_at: '2026-06-15T01:28:28.211936+00:00'
+  decision_reason: 本質的指摘。利用者承認（2026-06-15『承認』）のうえ、事実節の未決リストから『過去散文台帳の扱い』を削り、遡及移行しない方針が確定済みである旨を明示して内部矛盾を解消（docs/reviews/reopen-classification-2026-06-15-wm-decision-source-lint.md
+    を修正済み）。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-15-postwrite-reopen-classification-decision-source-lint-gemini-3.1-pro-preview-judgment-001
+  run_id: 2026-06-15-postwrite-reopen-classification-decision-source-lint
+  source_model: gemini-3.1-pro-preview
+  source_round: round-1
+  source_raw_path: raw/gemini-3.1-pro-preview.round-1.txt
+  source_parsed_path: parsed/gemini-3.1-pro-preview.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: 書き込み結果（本文の主な記述：事実）
+  plain_language_summary: 合意内容で「過去の散文台帳は遡及移行しない」と決定済みであるが、書き込み結果では「過去台帳の扱いは requirements／design
+    で確定」と未決定（後続フェーズで決定）の扱いになっている。
+  final_label: must-fix
+  decision_status: decided
+  decision_actor: user
+  decision_actor_type: human
+  decision_at: '2026-06-15T01:28:28.252584+00:00'
+  decision_reason: gpt-5.5-adversarial-001 と同根。同一修正（事実節から『過去散文台帳の扱い』削除＋遡及移行しない確定の明示）で解消。利用者承認
+    2026-06-15『承認』。
+  applied_files: []
+  superseded_by: null

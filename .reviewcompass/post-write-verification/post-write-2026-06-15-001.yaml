@@ -1,0 +1,32 @@
+status: completed
+target_files:
+- docs/reviews/reopen-classification-2026-06-15-wm-decision-source-lint.md
+target_sha256:
+  docs/reviews/reopen-classification-2026-06-15-wm-decision-source-lint.md: 2ea1abe92c075066b4fd09f9a1f0b55aa571043c4dccf29db82508d8845309c1
+required_verifiers: &id001
+- claude-sonnet-4-6
+- gemini-3.1-pro-preview
+- gpt-5.5
+completed_verifiers: *id001
+unresolved_substantive_findings: 0
+verifications:
+- verifier: claude-sonnet-4-6
+  target_files:
+  - docs/reviews/reopen-classification-2026-06-15-wm-decision-source-lint.md
+  target_sha256:
+    docs/reviews/reopen-classification-2026-06-15-wm-decision-source-lint.md: 2ea1abe92c075066b4fd09f9a1f0b55aa571043c4dccf29db82508d8845309c1
+- verifier: gemini-3.1-pro-preview
+  target_files:
+  - docs/reviews/reopen-classification-2026-06-15-wm-decision-source-lint.md
+  target_sha256:
+    docs/reviews/reopen-classification-2026-06-15-wm-decision-source-lint.md: 2ea1abe92c075066b4fd09f9a1f0b55aa571043c4dccf29db82508d8845309c1
+- verifier: gpt-5.5
+  target_files:
+  - docs/reviews/reopen-classification-2026-06-15-wm-decision-source-lint.md
+  target_sha256:
+    docs/reviews/reopen-classification-2026-06-15-wm-decision-source-lint.md: 2ea1abe92c075066b4fd09f9a1f0b55aa571043c4dccf29db82508d8845309c1
+review_run:
+  path: .reviewcompass/evidence/review-runs/2026-06-15-postwrite-reopen-classification-decision-source-lint
+  summary_path: .reviewcompass/evidence/review-runs/2026-06-15-postwrite-reopen-classification-decision-source-lint/model-result-summary.yaml
+notes: 裁定負荷対策 lint の reopen 分類記録（R-0, workflow-management）の書き込み後検証。3 体（claude-sonnet-4-6/gpt-5.5/gemini-3.1-pro-preview）。must-fix
+  2（同根・過去台帳矛盾、利用者承認のうえ修正済み）、leave-as-is 2（逐語的・範囲外）。利用者承認 2026-06-15『承認』。

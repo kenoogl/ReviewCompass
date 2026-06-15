@@ -1,0 +1,10 @@
+role: adversarial
+provider: openai-api
+model: gpt-5.5
+attempts: 1
+duration_seconds: 24.668
+findings:
+- severity: ERROR
+  target_location: 書き込み結果（docs/reviews/reopen-classification-2026-06-15-wm-decision-source-lint.md）/本文の主な記述/事実
+  description: 過去台帳の扱いを「requirements／design で確定」としており、合意済みの「過去の散文台帳は遡及移行しない」と整合していない。
+  rationale: 適用範囲と遡及移行しない方針は 2026-06-14 の利用者決定として既に確定しているため、未確定事項として下流工程へ送ると、R-0 の起点や実装範囲が誤って拡張されるおそれがある。
