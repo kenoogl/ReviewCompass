@@ -1,0 +1,61 @@
+## 所見
+
+### [A-001] `--verify-pending` による決定ファイル書き換えが受入 5「読み取り専用」と正面衝突している
+- **severity**: ERROR
+- **location**: §3 保留状態の管理（ステップ 5）、§5 サブコマンドと接続点、Requirements 受入 5
+- **description**: requirements 受入 5 は「決定記録そのものを書き換えない」と明示している。ところが design §5 は `--verify-pending` を「ファイルを書き換える唯一の合法的な経路」と記述し、`verification_status: pending → verified`・`verified_at` への書き込みを積極的に行う。矛盾が論理的に解消されておらず、どちらが正しいか実装者は判断できない。
+- **suggested_fix**: （a）受入 5 の「決定記録そのものを書き換えない」を「`verification_status` の pending→verified 更新は例外とする」と明示改訂する、または（b）`--verify-pending` の書き込みを別コマンド（例: `decision-verify-apply`）として分離し、`decision-source-lint` は読み取り専用に留める。いずれにせよ受入と design の間で明示的合意を取り、トレーサビリティ表の対応節を修正する。
+
+### [A-002] `--verify-pending` で逐語照合が不合格だった場合の遷移先が未定義
+- **severity**: ERROR
+- **location**: §3 ステップ 5・6、§5 `--verify-pending` 説明
+- **description**: design は「合格すれば `verified` へ更新する」とのみ記述し、不合格（excerpt と転写が一致しない）だった場合の挙動を一切定めていない。実装者が好き勝手に決めた場合、意図せず `pending` がサイレントに残留するか、`unverifiable` へ誤昇格してコミットを遮断し続ける事態が起きる。これは §6 の implementation 委譲事項に列挙されていないため、§1〜5 の「本 design で固定する契約」に穴が存在する。
+- **suggested_fix**: §3 ステップ 5 に「不合格の場合は `verification_status` を変更せず（`pending` のまま）、差分表示と非ゼロ終了のみを行う」と明示する。
+
+### [A-003] bundle-exceptions 承認レコードのスキーマが未定義のため lint の「包含確認」が実装不能
+- **severity**: ERROR
+- **location**: §2 束ね例外の扱いと記録（ステップ 3）
+- **description**: lint は「承認レコードが存在し、対象の `decision_id` リストに当該決定が含まれる場合にのみ通過とする」と記述している。しかし承認レコード `.reviewcompass/decisions/bundle-exceptions/{bundle_exception_id}.yaml` のスキーマが一切定義されていない。実装者はフィールド名を自由に決めることになり、lint 側のパーサと承認レコードの書式が一致しない危険性が高い。これは §6 の「実装委譲事項」にも含まれていない。
+- **suggested_fix**: §2 に承認レコードの最低限スキーマを追記する。例: `bundle_exception_id: string`、`approved_by: string`、`approved_at: ISO 8601`、`covered_decision_ids: list[string]`、`rationale: string`。lint はこのスキーマを前提に `covered_decision_ids` リストを検索する旨を明示する。
+
+### [A-004] `locator` の「ターン番号」の定義がない
+- **severity**: ERROR
+- **location**: §1 スキーマ `source.locator`
+- **description**: `locator: "{転写ファイルパス}:{ターン番号}"` と定義しているが、「ターン番号」が転写ファイル内の何番目の単位（`##` セクション・利用者発言のみ・行番号等）を指すのかが未定義。また lint が逐語照合にロケータを使うかどうかも不明（§3 は全文検索と記述）。ロケータの目的と使用方法が曖昧なまま。
+- **suggested_fix**: ターン番号の数え方（例：「`##` セクションを順に 1 から数えた順序番号」）を §1 に明示する。§3 に「逐語照合はロケータを使わず全文検索し、ロケータは人向け位置情報として記録するのみ」と明記する。
+
+### [A-005] `--all` フラグが `bundle-exceptions/` サブディレクトリ内の YAML を誤って検査する可能性
+- **severity**: WARN
+- **location**: §5 `--all` 説明
+- **description**: `--all` は「`.reviewcompass/decisions/` 配下の全 YAML ファイルを検査」と記述しており、bundle-exceptions 承認レコード（`.reviewcompass/decisions/bundle-exceptions/`）も検査対象に含まれてしまう。承認レコードは decision と異なるスキーマを持つため、必須フィールド欠落として unverifiable → DEVIATION となり、commit が遮断される誤動作が起きる可能性がある。
+- **suggested_fix**: `--all` の検査対象を「`.reviewcompass/decisions/` 直下の YAML のみ（サブディレクトリ除外）」と明記する。
+
+### [A-006] `category` の「境界の細目は design で確定」が実際には確定されていない
+- **severity**: WARN
+- **location**: §1 スキーマ `category` フィールド、requirements 受入 1
+- **description**: requirements 受入 1 は「仕様／計画変更は…境界の細目は design で確定」と明示しているが、design §1 の `category` 定義には `3 値 enum のみ` とあるだけで、`spec_plan_change` と「軽微な状態更新」の境界が一切記載されていない。これは requirements が明示的に委ねた事項であり、現時点で宙吊りになっている。
+- **suggested_fix**: §1 `category` フィールド説明の直下に「種別判定基準」の箇条書きを追加する。最低限、`spec_plan_change` の対象例（requirements.md の内容追加、design.md の新節追加）と除外例（stages/in-progress/ への作業ログ追記、spec.json の段フラグ更新のみ）を列挙する。
+
+### [A-007] `session_id`（拡張子なし）と `locator`（フルパス＋拡張子）で同一ファイルを二重参照
+- **severity**: WARN
+- **location**: §1 スキーマ `source.session_id` と `source.locator`
+- **description**: `session_id` は転写ファイルのベース名（拡張子なし）、`locator` はフルパス形式で同一ファイルを参照している。ファイル移動・改名時に両フィールドが不一致になった場合どちらを正本とするかが不明。実際の転写ファイル名が UUID サフィックス付き（例：`2026-06-15-claude-4e02c8a6-15a1-4384-ac18-f97e448910fc.md`）の場合、`session_id` フィールドとの一致が曖昧になる可能性がある。
+- **suggested_fix**: §1 または §3 に「`locator` のパス部分を正本とし、`session_id` はインデックス用補助のみ」と明示する。
+
+### [A-008] `verification_status: unverifiable` の設定主体が定義されていない
+- **severity**: WARN
+- **location**: §1 スキーマ `verification_status`、§5 commit ゲート説明
+- **description**: スキーマは 3 値を定義しているが、`unverifiable` を誰が・いつ・どのような条件で設定するかが記述されていない。lint が「解析できなかった結果として外側から unverifiable 扱いにする」のか、「記録者が事前に手書きするフィールド」なのかが区別されていない。保留管理フロー（§3 ステップ 1〜6）には `unverifiable` への遷移経路が存在しない。
+- **suggested_fix**: §1 の `verification_status` 型制約に「`unverifiable`：逐語照合対象の転写ファイルが取得不能・解析不能、または必須フィールド欠落で機械が照合を完了できない状態。lint が判定出力として扱い、記録者が初期値として設定する場合は出典が原則取得不能なケースに限る」を追記する。
+
+### [A-009] 内容なし語リストの判定に複合語・記号のエッジケースが未定義
+- **severity**: INFO
+- **location**: §4 判定ロジック
+- **description**: 「語のみで構成される」の判定方法が未定義であり、「OK OK」（繰り返し）、「OK。」（語＋句読点）、「承認します」（接尾辞あり）などがどう扱われるかが実装者依存。
+- **suggested_fix**: §4 判定ロジックに「トークン化方法」と「記号の扱い」を明示する。例：「正規化後の excerpt をスペース区切りでトークン化し、句読点・記号（。、！？）を除去後、全トークンが empty_content_words リストに存在する場合 fail-closed」。
+
+### [A-010] `--verify-pending` が「唯一の合法的な経路」とありながら並行書き込み防止を implementation 委譲している非対称性
+- **severity**: INFO
+- **location**: §5（1081 行目）・§6（1094 行目）
+- **description**: design は `--verify-pending` を「唯一の合法的な書き込み経路」と強調しながら、安全性保証（並行書き込み防止）を実装段に委譲している。インターロックの方針を §6 に追記することで実装が誤った安全設計を選ぶリスクを下げられる。
+- **suggested_fix**: §6 の「並行書き込みの防止」に「推奨：POSIX `flock` またはアトミック rename（書き込み後 `os.replace`）を使う。ファイルロックが取れない場合は非ゼロ終了し、決定ファイルを変更しない」等の指針を追記する。

@@ -1,0 +1,43 @@
+## 所見
+
+### [F-001] 受入 2「個別出典なしには確定させない」との整合
+- **severity**: ERROR
+- **location**: §2 束ね例外の扱いと記録
+- **description**: Req 11 受入 2 の要件文は「束ね例外の場合も各決定が個別の出典・ロケータ・区分を持つことを確定の必要条件とする」と明示している。しかし §2 の設計では、例外承認レコード（`bundle-exceptions/{id}.yaml`）が存在し `decision_id` リストに含まれれば lint を通過させると定めており、例外承認後でも `multiplicity: bundled`（＝共有出典）のまま `verified` になる経路を許している。つまり「個別の出典・ロケータ・区分を持つ」という必要条件が機械強制されていない。
+- **suggested_fix**: 選択肢 A（要件準拠）：束ね例外承認後、各決定に個別の `source.excerpt`・`source.locator` を付与して `multiplicity: single` に更新することを例外承認手順のステップ 4 に追加し、lint は `bundle_exception_id` の有無に加え `multiplicity: single` であることも確認する。選択肢 B（設計判断として要件を緩和）：承認レコード存在を十分条件とする場合、受入 2 の必要条件をこの例外に限り design で明示的に緩和し、要件文の対応箇所を改訂したうえで人承認を記録する。
+
+### [F-002] `--verify-pending` の「読み取り専用」原則との整合
+- **severity**: WARN
+- **location**: §5 サブコマンドと接続点、および Req 11 受入 5
+- **description**: 受入 5 は「本機能は検査（読み取り）に徹し、決定記録そのものを書き換えない」と規定している。一方 §5 の設計では `--verify-pending` が `verification_status` と `verified_at` を書き換える「ファイルを書き換える唯一の合法的な経路」と明記されており、読み取り専用原則の例外となっている。設計文書にこの例外の根拠が書かれていない。
+- **suggested_fix**: §5 の `--verify-pending` 説明に「Req 11 受入 5 の読み取り専用例外として design で明示的に認める。書き換えられるフィールドは `verification_status` および `verified_at` の 2 フィールドに限定し、`statement`・`source`・`category` は書き換えない」旨を 1 文追記する。
+
+### [F-003] `unverifiable` の定義が §1 スキーマに明記されていない
+- **severity**: WARN
+- **location**: §1 重要決定の記録スキーマ、§5 commit ゲート
+- **description**: §5 のゲートは `unverifiable`（記録が解析不能・必須フィールド欠落）を DEVIATION として扱うと記述しているが、§1 のスキーマと型制約には `unverifiable` の定義条件が書かれていない。
+- **suggested_fix**: §1 の型制約ブロックに「`verification_status: unverifiable`：逐語照合対象の転写ファイルが取得不能・解析不能、または必須フィールドが欠落しており機械が照合を完了できない状態。原則として人が記録に記入するのではなく、lint が内部エラー検出時に判定結果として扱う状態」を追記する。
+
+### [F-004] 内容なし語リスト判定の「のみで構成される」の機械的定義が曖昧
+- **severity**: WARN
+- **location**: §4 内容なし語リスト
+- **description**: 「語のみで構成される」のトークナイズ方法が未定義。「OK 承認」（2 語）、「承認します」（接尾辞あり）などがどう扱われるかが実装者依存。
+- **suggested_fix**: 判定ロジックを明確化する。例：「正規化後の excerpt をスペースで分割したトークン全てがリスト語に含まれる場合 fail-closed」または「スペース区切りトークン化 + 句読点除去後にリスト語のみで構成される場合」のどちらかを設計で確定する。
+
+### [F-005] テスト戦略に Req 11 のケースが追加されていない
+- **severity**: WARN
+- **location**: §テスト戦略（Test Strategy）
+- **description**: §テスト戦略節は Req 1〜10 相当のテストを列挙しているが、Req 11 用のテストケースが追加されていない。
+- **suggested_fix**: §テスト戦略に Req 11 向けの追記を行う。最低限、単体テスト「`empty_content_words` リストのみからなる excerpt の reject」「逐語照合合格・不合格」「`multiplicity: bundled` 検出の fail-closed」、統合テスト「`--verify-pending` 実行後の `verification_status` 更新」「commit ゲートでの pending=WARN・unverifiable=DEVIATION」を追記する。
+
+### [F-006] `source.excerpt` と `source.locator` の組み合わせ整合検査の不明確さ
+- **severity**: INFO
+- **location**: §3 逐語照合
+- **description**: §3 の照合対象範囲は全文検索と定められているが、locator（ターン番号）を使った絞り込みをするかしないかが明示されていない。
+- **suggested_fix**: §3 の照合説明に「`source.locator` のターン番号での絞り込みは行わず、転写ファイル全文を照合対象とする（ターン番号の正確性は人の責任）」と 1 行明記する。
+
+### [F-007] `bundle_exception_id` の命名則が §2 本文にしかなく §1 スキーマに記載がない
+- **severity**: INFO
+- **location**: §1 スキーマ、§2 束ね例外
+- **description**: `bundle_exception_id` フィールドは §1 の YAML スキーマブロックに登場せず、§2 の手順説明の中にのみ登場する。
+- **suggested_fix**: §1 の YAML スキーマブロックに `bundle_exception_id: string # optional。multiplicity: bundled かつ例外承認済みの場合のみ。命名則: BEX-{機能略称}-{連番3桁}` をコメント付きで追加する。

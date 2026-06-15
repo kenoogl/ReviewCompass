@@ -1,0 +1,131 @@
+run_id: 2026-06-15-design-r11-reopen-triad-review-run
+round: 1
+feature: workflow-management
+phase: design
+reopen: R-0（decision-source-lint）
+variant: implementation_review_independent_3way
+date: "2026-06-15"
+proxy_adjudication:
+  delegated_by: 利用者委任「自律実施」2026-06-15
+  proxy_model: gemini-3.1-pro-preview
+  prompt: proxy-adjudication-prompt.md
+  response: proxy-adjudication-response.txt
+
+findings:
+  - id: C1
+    source_ids: [F-002, A-001]
+    title: "--verify-pending と受入 5「読み取り専用」の矛盾"
+    max_severity: ERROR
+    label: must-fix
+    decision: applied
+    applied_to:
+      - requirements.md: Req 11 受入 5 に例外明示（--verify-pending は例外、2 フィールドのみ書き換え）
+      - design.md §5: 読み取り専用例外の根拠を明示
+
+  - id: C2
+    source_ids: [F-001]
+    title: 束ね例外後も multiplicity が bundled のままになる問題
+    max_severity: ERROR
+    label: must-fix
+    decision: applied
+    applied_to:
+      - design.md §2: 例外承認手順を改訂（承認後に multiplicity を single に更新、lint が 3 条件を確認）
+
+  - id: C3
+    source_ids: [A-002]
+    title: 照合不合格時の遷移先（--verify-pending の不合格ケース）未定義
+    max_severity: ERROR
+    label: must-fix
+    decision: applied
+    applied_to:
+      - design.md §3: ステップ 5b「不合格は pending のまま、差分表示+非ゼロ終了」を追記
+
+  - id: C4
+    source_ids: [A-003, F-007]
+    title: bundle-exceptions 承認レコードのスキーマ未定義
+    max_severity: ERROR
+    label: must-fix
+    decision: applied
+    applied_to:
+      - design.md §2: 承認レコードの最低限スキーマ（5 フィールド）を追記
+      - design.md §1: bundle_exception_id を optional フィールドとしてスキーマに追記
+
+  - id: C5
+    source_ids: [A-004, F-006]
+    title: locator のターン番号定義・逐語照合でのロケータ使用有無が不明
+    max_severity: ERROR
+    label: must-fix
+    decision: applied
+    applied_to:
+      - design.md §1: ターン番号を「## セクションを 1 から数えた順序番号」と定義
+      - design.md §3: 逐語照合はロケータを使わず全文検索、ロケータは人向け位置情報と明示
+
+  - id: C6
+    source_ids: [A-005]
+    title: --all が bundle-exceptions/ サブディレクトリを誤検査する問題
+    max_severity: WARN
+    label: must-fix
+    decision: applied
+    applied_to:
+      - design.md §5: --all は decisions/ 直下のみ・bundle-exceptions/ 除外を明示
+
+  - id: C7
+    source_ids: [A-006]
+    title: category 境界の細目が design で未確定
+    max_severity: WARN
+    label: should-fix
+    decision: applied
+    applied_to:
+      - design.md §1: category 種別判定基準の表（対象例・除外例）を追記
+
+  - id: C8
+    source_ids: [A-007]
+    title: session_id と locator の正本関係が未明示
+    max_severity: WARN
+    label: should-fix
+    decision: applied
+    applied_to:
+      - design.md §1: locator のパス部分を正本、session_id は補助と明示
+
+  - id: C9
+    source_ids: [F-003, A-008]
+    title: unverifiable の定義・設定主体が未記載
+    max_severity: WARN
+    label: should-fix
+    decision: applied
+    applied_to:
+      - design.md §1: verification_status の型制約に unverifiable の定義・設定主体を追記
+
+  - id: C10
+    source_ids: [F-004, A-009]
+    title: 内容なし語の判定ロジック（トークン化方法）が曖昧
+    max_severity: WARN
+    label: should-fix
+    decision: applied
+    applied_to:
+      - design.md §4: 句読点除去→スペーストークン化→全トークンリスト確認の手順を明示
+
+  - id: C11
+    source_ids: [F-005]
+    title: テスト戦略に Req 11 のケース未追加
+    max_severity: WARN
+    label: leave-as-is
+    decision: deferred
+    rationale: tasks フェーズでテスト計画（T-NNN）として対処する。design のテスト戦略節は今回更新しない
+
+  - id: C13
+    source_ids: [A-010]
+    title: --verify-pending の並行書き込み防止ヒントを §6 に追記
+    max_severity: INFO
+    label: leave-as-is
+    decision: deferred
+    rationale: §6 で「並行書き込みの防止」として既に implementation に委譲済み。implementation で決定する
+
+summary:
+  total: 12
+  must_fix: 6
+  should_fix: 4
+  leave_as_is: 2
+  all_must_fix_resolved: true
+  convergence: true
+  round: 1

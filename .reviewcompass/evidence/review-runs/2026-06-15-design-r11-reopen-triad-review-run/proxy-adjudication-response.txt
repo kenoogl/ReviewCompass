@@ -1,0 +1,53 @@
+# design triad-review round-1 proxy 裁定応答
+# proxy_model: gemini-3.1-pro-preview（利用者委任「自律実施」2026-06-15）
+
+## 裁定結果
+
+### クラスタ 1（--verify-pending vs 受入 5）→ **must-fix**
+受入 5 との矛盾は設計の整合性欠如。requirements 受入 5 に「--verify-pending による verification_status・verified_at の更新のみ例外とする（本 design で明示）」と 1 文追記し、design §5 に例外の根拠を明示する。requirements 受入 5 への微細な追記は既存 reopen R-0 の requirements フェーズ内の補完として処理する（追加 reopen は不要）。
+
+### クラスタ 2（束ね例外後の multiplicity 問題）→ **must-fix**
+受入 2「個別出典なしには確定させない」の機械強制漏れ。design §2 に「例外承認後、各決定の multiplicity を単一（single）に更新することを必要条件とし、lint は bundle_exception_id の有無に加え multiplicity=single であることを確認する」旨を追記する。
+
+### クラスタ 3（照合不合格時の遷移先）→ **must-fix**
+§1〜5 の「design で固定する契約」の穴。design §3 に「不合格は verification_status を変更せず pending のまま、差分表示と非ゼロ終了」を追記する。
+
+### クラスタ 4（bundle-exceptions スキーマ未定義）→ **must-fix**
+lint 実装に必要な情報が欠けている。design §2 に承認レコードの最低限スキーマ（bundle_exception_id・approved_by・approved_at・covered_decision_ids・rationale の 5 フィールド）を追記する。
+
+### クラスタ 5（locator ターン番号定義）→ **should-fix**
+逐語照合は全文検索なのでロケータは人向け位置情報に過ぎないが、記録の信頼性のために定義が必要。design §1 に「ターン番号は転写内の `##` セクションを 1 から数えた順序番号」と定義し、design §3 に「逐語照合はロケータを使わず転写全文を照合対象とする（ロケータは人向け位置情報）」を追記する。
+
+### クラスタ 6（--all のサブディレクトリ問題）→ **must-fix**
+誤動作（commit 遮断）が設計の欠陥から発生する。design §5 に「--all は .reviewcompass/decisions/ 直下の YAML のみを対象とし、bundle-exceptions/ サブディレクトリは除外する」を追記する。
+
+### クラスタ 7（category 境界の細目）→ **should-fix**
+requirements が design への明示的委任事項。design §1 に spec_plan_change の対象例（requirements.md/design.md の内容追加等）と除外例（stages/in-progress/ 作業ログ追記・spec.json 段フラグ更新のみ）を追記する。
+
+### クラスタ 8（session_id と locator の正本関係）→ **should-fix**
+ファイル移動・改名時の混乱を防ぐため、§1 に「locator のパス部分を正本とし、session_id は索引・メタデータ用補助のみ」と明示する。
+
+### クラスタ 9（unverifiable の定義）→ **should-fix**（クラスタ 3 の対処で併せて対処）
+design §1 に「unverifiable は lint が内部エラー検出時に判定する状態。記録者が初期値として設定するのは出典が原則取得不能（口頭合意等）なケースに限る」を追記する。
+
+### クラスタ 10（内容なし語の判定ロジック）→ **should-fix**
+設計で確定すべき境界。design §4 に「正規化後の excerpt をスペース区切りでトークン化し、句読点・記号（。、、！？）を除去後、全トークンが empty_content_words リストに含まれる場合 fail-closed」と明示する。
+
+### クラスタ 11（テスト戦略）→ **leave-as-is**
+tasks フェーズで T-NNN としてテスト実装を計画する。design のテスト戦略節は Req 11 の追記なしでよい（tasks フェーズで対処するため）。
+
+### クラスタ 12（F-007）→ **leave-as-is**（クラスタ 4 の対処に包含）
+クラスタ 4 で bundle-exceptions スキーマを §2 に追記する際に、§1 の YAML スキーマへの bundle_exception_id optional フィールド追記も行う。
+
+### クラスタ 13（並行書き込みヒント）→ **leave-as-is**
+§6 で「並行書き込みの防止」として委譲済み。実装指針のヒント追記は nice-to-have であり、今回のスコープ外。
+
+## 修正一覧
+
+must-fix（6 件）：クラスタ 1・2・3・4・6 + requirements 受入 5 への追記
+should-fix（5 件）：クラスタ 5・7・8・9・10
+leave-as-is（2 件）：クラスタ 11・13（クラスタ 12 は包含）
+
+## residual_risks
+- クラスタ 5（ターン番号定義）は should-fix だが、実際の転写ファイル形式（`##` セクション vs 行番号）を implementation で確認する段階で再検討が必要な場合がある。
+- bundle-exceptions 承認フローは「人が手動で承認 YAML を作成する」前提だが、生成ツール（make-proxy-approval.py 相当）が将来必要になる可能性がある（tasks フェーズで検討）。
