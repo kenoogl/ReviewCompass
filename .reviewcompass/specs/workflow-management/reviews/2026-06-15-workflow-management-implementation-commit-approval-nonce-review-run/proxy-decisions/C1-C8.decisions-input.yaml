@@ -1,0 +1,184 @@
+proxy_model_id: gemini-3.1-pro-preview
+decision_prompt_path: proxy-decision-prompts/C1-C8.prompt.md
+raw_response_path: proxy-decisions/C1-C8.raw.yaml
+decisions:
+- finding_id: 2026-06-15-workflow-management-implementation-commit-approval-nonce-review-run-gpt-5.4-primary-001
+  final_label: must-fix
+  rationale: C1 proxy decision selected option A. Replay risk violates the core single-use nonce guarantee; both challenge and approval records must be durably consumed to preserve fail-closed semantics and prevent inconsistent state.
+  candidate_options:
+  - A
+  - B
+  - C
+  rejected_options:
+    B: Making the approval record solely authoritative leaves challenge records dangling.
+    C: Leaving as-is fails to meet the single-use nonce requirement.
+- finding_id: 2026-06-15-workflow-management-implementation-commit-approval-nonce-review-run-claude-opus-4-8-adversarial-001
+  final_label: must-fix
+  rationale: C1 proxy decision selected option A. A nonce challenge that is not durably consumed after successful commit remains replayable and blocks implementation approval.
+  candidate_options:
+  - A
+  - B
+  - C
+  rejected_options:
+    B: Sole approval-record authority leaves the challenge state inconsistent.
+    C: Documentation alone does not enforce one-shot nonce semantics.
+- finding_id: 2026-06-15-workflow-management-implementation-commit-approval-nonce-review-run-claude-opus-4-8-adversarial-002
+  final_label: must-fix
+  rationale: C1 proxy decision selected option A. Consume persistence failure after commit must fail closed so replayable authorization state cannot remain active.
+  candidate_options:
+  - A
+  - B
+  - C
+  rejected_options:
+    B: It does not directly prove durable challenge consumption after commit.
+    C: Leaving as-is leaves replay risk after consume persistence failure.
+- finding_id: 2026-06-15-workflow-management-implementation-commit-approval-nonce-review-run-gemini-3.1-pro-preview-judgment-002
+  final_label: must-fix
+  rationale: C1 proxy decision selected option A. Persisted challenge consumption is required to keep approval and challenge state consistent after successful commit.
+  candidate_options:
+  - A
+  - B
+  - C
+  rejected_options:
+    B: Removing challenge reuse paths is broader and still needs explicit state migration.
+    C: Approval-only consumption is insufficient for the nonce guarantee.
+- finding_id: 2026-06-15-workflow-management-implementation-commit-approval-nonce-review-run-gpt-5.4-primary-002
+  final_label: must-fix
+  rationale: C2 proxy decision selected option A. Default LLM execution delegation conflates staged-content approval with execution mechanics and violates LLM/provider/model independence.
+  candidate_options:
+  - A
+  - B
+  - C
+  rejected_options:
+    B: Optional delegation still embeds execution-delegation concepts in the authorization schema.
+    C: Leaving as-is preserves an LLM-dependent attestation boundary.
+- finding_id: 2026-06-15-workflow-management-implementation-commit-approval-nonce-review-run-claude-opus-4-8-adversarial-003
+  final_label: must-fix
+  rationale: C2 proxy decision selected option A. The nonce approval record must not default to an LLM delegation directive.
+  candidate_options:
+  - A
+  - B
+  - C
+  rejected_options:
+    B: Making the field optional is safer than the current behavior but still couples unrelated concerns.
+    C: The current default contradicts the LLM-independent validation requirement.
+- finding_id: 2026-06-15-workflow-management-implementation-commit-approval-nonce-review-run-gemini-3.1-pro-preview-judgment-001
+  final_label: must-fix
+  rationale: C2 proxy decision selected option A. Authorization validation must be independent from the actor or model executing git.
+  candidate_options:
+  - A
+  - B
+  - C
+  rejected_options:
+    B: Optional delegation leaves ambiguity in the approval schema.
+    C: Hardcoded LLM delegation remains out of scope for nonce approval.
+- finding_id: 2026-06-15-workflow-management-implementation-commit-approval-nonce-review-run-gpt-5.4-primary-003
+  final_label: must-fix
+  rationale: C3/C4 proxy decisions selected option A. The implementation needs nonce-specific exact-index edge-case tests and malformed/no-partial-inference tests to prove staged-content binding and fail-closed behavior.
+  candidate_options:
+  - A
+  - B
+  - C
+  rejected_options:
+    B: Partial testing or premature canonicalization changes can miss parser and malformed-record gaps.
+    C: Deferring leaves core staged-content binding and malformed-record rejection insufficiently proven.
+- finding_id: 2026-06-15-workflow-management-implementation-commit-approval-nonce-review-run-claude-opus-4-8-adversarial-004
+  final_label: must-fix
+  rationale: C3 proxy decision selected option A. Rename, copy, mode, submodule, and unusual-path behavior must be tested before the implementation can safely proceed.
+  candidate_options:
+  - A
+  - B
+  - C
+  rejected_options:
+    B: Changing canonicalization without red tests first may hide the actual parser fragility.
+    C: Deferral leaves a possible digest bypass in edge git index states.
+- finding_id: 2026-06-15-workflow-management-implementation-commit-approval-nonce-review-run-gemini-3.1-pro-preview-judgment-003
+  final_label: must-fix
+  rationale: C3 proxy decision selected option A. Rename/copy `--name-status -z` parsing must be covered by nonce-specific tests.
+  candidate_options:
+  - A
+  - B
+  - C
+  rejected_options:
+    B: A different canonical source may be appropriate only after failing tests expose the exact issue.
+    C: Current tests do not prove the exact-index binding across rename/copy cases.
+- finding_id: 2026-06-15-workflow-management-implementation-commit-approval-nonce-review-run-claude-opus-4-8-adversarial-008
+  final_label: must-fix
+  rationale: C4 proxy decision selected option A. Malformed challenge and approval records must fail closed without partial inference.
+  candidate_options:
+  - A
+  - B
+  - C
+  rejected_options:
+    B: Testing only currently used fields leaves structural injection cases unproven.
+    C: Existing JSON parsing is not enough evidence for security-sensitive validation.
+- finding_id: 2026-06-15-workflow-management-implementation-commit-approval-nonce-review-run-gemini-3.1-pro-preview-judgment-005
+  final_label: must-fix
+  rationale: C4 proxy decision selected option A. Comprehensive malformed-record tests are required to prove machine validation fails closed.
+  candidate_options:
+  - A
+  - B
+  - C
+  rejected_options:
+    B: Narrow tests leave partial validity and wrong-type cases uncovered.
+    C: Relying on parser behavior alone is insufficient for the nonce gate.
+- finding_id: 2026-06-15-workflow-management-implementation-commit-approval-nonce-review-run-claude-opus-4-8-adversarial-006
+  final_label: should-fix
+  rationale: C5 proxy decision selected option A. Omitting `source_omission_reason` when source text is stored keeps the omission enum unambiguous.
+  candidate_options:
+  - A
+  - B
+  - C
+  rejected_options:
+    B: A stored-source value contradicts an omission-reason enum.
+    C: Documenting null relies on out-of-band convention.
+- finding_id: 2026-06-15-workflow-management-implementation-commit-approval-nonce-review-run-gemini-3.1-pro-preview-judgment-004
+  final_label: should-fix
+  rationale: C5 proxy decision selected option A. A strict schema should omit the omission-reason key when nothing was omitted.
+  candidate_options:
+  - A
+  - B
+  - C
+  rejected_options:
+    B: Adding a stored value muddies the enum.
+    C: Keeping null can break strict schema validation and auditing.
+- finding_id: 2026-06-15-workflow-management-implementation-commit-approval-nonce-review-run-gpt-5.4-primary-004
+  final_label: should-fix
+  rationale: C6 proxy decision selected option A. Regression tests should prove nonce invalidation does not mutate frozen legacy records or leave failed records reusable.
+  candidate_options:
+  - A
+  - B
+  - C
+  rejected_options:
+    B: Removing legacy fallback is broader than this implementation gate.
+    C: Leaving the interaction untested preserves deployment compatibility risk.
+- finding_id: 2026-06-15-workflow-management-implementation-commit-approval-nonce-review-run-claude-opus-4-8-adversarial-005
+  final_label: should-fix
+  rationale: C6 proxy decision selected option A. Legacy fallback invalidation behavior needs explicit regression coverage before broader rollout.
+  candidate_options:
+  - A
+  - B
+  - C
+  rejected_options:
+    B: It may unnecessarily break valid existing workflows.
+    C: It leaves unknown mutation or reuse behavior after security failure.
+- finding_id: 2026-06-15-workflow-management-implementation-commit-approval-nonce-review-run-claude-opus-4-8-adversarial-007
+  final_label: should-fix
+  rationale: C7 proxy decision selected option A. `commit_stop_point` needs negative tests and documentation so it cannot become a nonce-gate bypass.
+  candidate_options:
+  - A
+  - B
+  - C
+  rejected_options:
+    B: The field has workflow utility when tightly scoped.
+    C: The current allow-path-only evidence is insufficient.
+- finding_id: 2026-06-15-workflow-management-implementation-commit-approval-nonce-review-run-claude-opus-4-8-adversarial-009
+  final_label: leave-as-is
+  rationale: C8 proxy decision selected option B. Conditional retry is a valid follow-up, but this gate should focus on the nonce security blockers C1-C4.
+  candidate_options:
+  - A
+  - B
+  - C
+  rejected_options:
+    A: Implementing this now expands scope away from the core security blockers.
+    C: Permanent abandonment would lose a valid operational improvement.

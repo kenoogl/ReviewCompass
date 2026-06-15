@@ -1,14 +1,18 @@
 """tools/guarded-git-commit.py の単体テスト"""
 
 import json
+import importlib.util
 import shutil
 import subprocess
+import sys
 import tempfile
 import unittest
 from pathlib import Path
 
 from tests.tools.test_check_workflow_action import (
   _init_git_repo,
+  _prepare_commit_approval,
+  _record_commit_approval,
   _stage_file,
   _write_commit_approval,
 )
@@ -16,6 +20,15 @@ from tests.tools.test_check_workflow_action import (
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 SCRIPT = REPO_ROOT / "tools" / "guarded-git-commit.py"
+
+
+def load_guarded_module():
+  """guarded-git-commit.py を直接呼び出せる形で読み込む"""
+  spec = importlib.util.spec_from_file_location("guarded_git_commit_under_test", SCRIPT)
+  module = importlib.util.module_from_spec(spec)
+  sys.path.insert(0, str(REPO_ROOT / "tools"))
+  spec.loader.exec_module(module)
+  return module
 
 
 def run_guarded_commit(args, cwd):
@@ -93,6 +106,85 @@ class GuardedGitCommitTests(unittest.TestCase):
     self.assertEqual(latest_commit_subject(self.tmpdir), "guarded commit")
     approval = json.loads(approval_path.read_text(encoding="utf-8"))
     self.assertTrue(approval["consumed"])
+
+  def test_guarded_commit_consumes_nonce_challenge_after_success(self):
+    """nonce 承認 commit 成功後は approval と challenge の両方を消費済みにする"""
+    _stage_file(self.tmpdir, "notes.md", "# nonce commit")
+    challenge = _prepare_commit_approval(self.tmpdir)
+    record_result = _record_commit_approval(self.tmpdir, challenge["nonce"])
+    self.assertEqual(record_result.returncode, 0, record_result.stderr)
+
+    approval_path = (
+      Path(self.tmpdir)
+      / ".reviewcompass"
+      / "runtime"
+      / "approvals"
+      / "commit-approval.json"
+    )
+    approval = json.loads(approval_path.read_text(encoding="utf-8"))
+    approval["execution_delegation"] = {
+      "delegated_to": "llm",
+      "approved_by": "user",
+      "approved_at": "2026-06-03T00:00:00+09:00",
+      "explicit_instruction": "コミット代行も含めて自律実行",
+      "rationale": "利用者が LLM によるコミット実行代行を明示承認",
+    }
+    approval_path.write_text(
+      json.dumps(approval, ensure_ascii=False, indent=2) + "\n",
+      encoding="utf-8",
+    )
+
+    result = run_guarded_commit(
+      [
+        "-m", "guarded nonce commit",
+        "--rationale", "利用者が LLM によるコミット実行代行を明示承認",
+      ],
+      cwd=self.tmpdir,
+    )
+
+    self.assertEqual(result.returncode, 0, result.stderr)
+    approval = json.loads(approval_path.read_text(encoding="utf-8"))
+    challenge_path = (
+      Path(self.tmpdir)
+      / ".reviewcompass"
+      / "runtime"
+      / "approvals"
+      / "commit-approval-challenge.json"
+    )
+    consumed_challenge = json.loads(challenge_path.read_text(encoding="utf-8"))
+    self.assertTrue(approval["consumed"])
+    self.assertTrue(consumed_challenge["consumed"])
+
+  def test_guarded_commit_consumes_nonce_challenge_before_approval(self):
+    """nonce 承認は challenge を先に消費し、再利用可能な challenge を残さない"""
+    _stage_file(self.tmpdir, "notes.md", "# nonce consumption order")
+    challenge = _prepare_commit_approval(self.tmpdir)
+    record_result = _record_commit_approval(self.tmpdir, challenge["nonce"])
+    self.assertEqual(record_result.returncode, 0, record_result.stderr)
+
+    approval_path = (
+      Path(self.tmpdir)
+      / ".reviewcompass"
+      / "runtime"
+      / "approvals"
+      / "commit-approval.json"
+    )
+    guarded = load_guarded_module()
+    original_mark_consumed = guarded._mark_consumed
+    observed = {}
+
+    def spy_mark_consumed(path, consumed_at):
+      approval = json.loads(approval_path.read_text(encoding="utf-8"))
+      observed["approval_consumed_before_challenge"] = approval.get("consumed") is True
+      return original_mark_consumed(path, consumed_at)
+
+    guarded._mark_consumed = spy_mark_consumed
+    try:
+      self.assertTrue(guarded.consume_commit_approval(self.tmpdir))
+    finally:
+      guarded._mark_consumed = original_mark_consumed
+
+    self.assertFalse(observed["approval_consumed_before_challenge"])
 
 
 if __name__ == "__main__":

@@ -1,0 +1,19 @@
+approved_by: proxy_model
+finding_id: 2026-06-15-workflow-management-implementation-commit-approval-nonce-review-run-claude-opus-4-8-adversarial-004
+proxy_model_id: gemini-3.1-pro-preview
+decision_prompt_path: proxy-decision-prompts/C1-C8.prompt.md
+selected_option: must-fix
+final_label: must-fix
+rationale: C3 proxy decision selected option A. Rename, copy, mode, submodule, and
+  unusual-path behavior must be tested before the implementation can safely proceed.
+raw_response_path: proxy-decisions/C1-C8.raw.yaml
+candidate_options:
+- A
+- B
+- C
+rejected_options:
+  B: Changing canonicalization without red tests first may hide the actual parser
+    fragility.
+  C: Deferral leaves a possible digest bypass in edge git index states.
+source_raw_paths:
+- raw/claude-opus-4-8.round-1.txt

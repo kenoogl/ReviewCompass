@@ -1,0 +1,21 @@
+approved_by: proxy_model
+finding_id: 2026-06-15-workflow-management-implementation-commit-approval-nonce-review-run-gpt-5.4-primary-003
+proxy_model_id: gemini-3.1-pro-preview
+decision_prompt_path: proxy-decision-prompts/C1-C8.prompt.md
+selected_option: must-fix
+final_label: must-fix
+rationale: C3/C4 proxy decisions selected option A. The implementation needs nonce-specific
+  exact-index edge-case tests and malformed/no-partial-inference tests to prove staged-content
+  binding and fail-closed behavior.
+raw_response_path: proxy-decisions/C1-C8.raw.yaml
+candidate_options:
+- A
+- B
+- C
+rejected_options:
+  B: Partial testing or premature canonicalization changes can miss parser and malformed-record
+    gaps.
+  C: Deferring leaves core staged-content binding and malformed-record rejection insufficiently
+    proven.
+source_raw_paths:
+- raw/gpt-5.4.round-1.txt

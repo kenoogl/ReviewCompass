@@ -1,0 +1,19 @@
+approved_by: proxy_model
+finding_id: 2026-06-15-workflow-management-implementation-commit-approval-nonce-review-run-claude-opus-4-8-adversarial-003
+proxy_model_id: gemini-3.1-pro-preview
+decision_prompt_path: proxy-decision-prompts/C1-C8.prompt.md
+selected_option: must-fix
+final_label: must-fix
+rationale: C2 proxy decision selected option A. The nonce approval record must not
+  default to an LLM delegation directive.
+raw_response_path: proxy-decisions/C1-C8.raw.yaml
+candidate_options:
+- A
+- B
+- C
+rejected_options:
+  B: Making the field optional is safer than the current behavior but still couples
+    unrelated concerns.
+  C: The current default contradicts the LLM-independent validation requirement.
+source_raw_paths:
+- raw/claude-opus-4-8.round-1.txt

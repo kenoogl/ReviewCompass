@@ -1,0 +1,18 @@
+approved_by: proxy_model
+finding_id: 2026-06-15-workflow-management-implementation-commit-approval-nonce-review-run-gemini-3.1-pro-preview-judgment-002
+proxy_model_id: gemini-3.1-pro-preview
+decision_prompt_path: proxy-decision-prompts/C1-C8.prompt.md
+selected_option: must-fix
+final_label: must-fix
+rationale: C1 proxy decision selected option A. Persisted challenge consumption is
+  required to keep approval and challenge state consistent after successful commit.
+raw_response_path: proxy-decisions/C1-C8.raw.yaml
+candidate_options:
+- A
+- B
+- C
+rejected_options:
+  B: Removing challenge reuse paths is broader and still needs explicit state migration.
+  C: Approval-only consumption is insufficient for the nonce guarantee.
+source_raw_paths:
+- raw/gemini-3.1-pro-preview.round-1.txt

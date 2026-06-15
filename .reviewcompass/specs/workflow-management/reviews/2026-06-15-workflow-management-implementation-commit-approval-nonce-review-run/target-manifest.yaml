@@ -1,0 +1,4 @@
+run_id: 2026-06-15-workflow-management-implementation-commit-approval-nonce-review-run
+target_files:
+- path: .reviewcompass/specs/workflow-management/reviews/2026-06-15-workflow-management-implementation-commit-approval-nonce-review-run/review-target.md
+  sha256: 8865df8ca9716dc925b94670f6cc14a5770e2c4824569805391210f60c99f532

@@ -4059,12 +4059,29 @@ class CommitExitCodeTests(unittest.TestCase):
     )
 
     result = run_script(
-      ["commit", "--rationale", "nonce 承認の commit 検査"],
+      [
+        "commit",
+        "--rationale", "nonce 承認の commit 検査",
+        "--execution-actor", "human",
+      ],
       cwd=self.tmpdir,
     )
 
     _assert_script_invoked(self, result)
     self.assertEqual(result.returncode, 0, result.stdout)
+
+  def test_commit_approval_record_does_not_embed_execution_delegation_by_default(self):
+    """nonce 承認 record は staged 内容承認だけを保存し、実行代行承認を既定で混ぜない"""
+    _set_pending_findings(self.pending_file, unresolved_count=0, resolved_count=2)
+    _stage_file(self.tmpdir, "notes.md", "# nonce 対象")
+    challenge = _prepare_commit_approval(self.tmpdir)
+
+    record_result = _record_commit_approval(self.tmpdir, challenge["nonce"])
+
+    _assert_script_invoked(self, record_result)
+    self.assertEqual(record_result.returncode, 0, record_result.stderr)
+    approval = _read_commit_approval(self.tmpdir)
+    self.assertNotIn("execution_delegation", approval)
 
   def test_commit_approval_record_source_text_is_redacted(self):
     """stdin 承認本文は機微情報除去後に保存される"""
@@ -4082,11 +4099,16 @@ class CommitExitCodeTests(unittest.TestCase):
     self.assertEqual(record_result.returncode, 0, record_result.stderr)
     approval = _read_commit_approval(self.tmpdir)
     self.assertIn("source_text_redacted", approval)
+    self.assertNotIn("source_omission_reason", approval)
     self.assertNotIn("sk-proj-", approval["source_text_redacted"])
     self.assertIn("[除去:", approval["source_text_redacted"])
 
     result = run_script(
-      ["commit", "--rationale", "redacted source 付き nonce 承認の commit 検査"],
+      [
+        "commit",
+        "--rationale", "redacted source 付き nonce 承認の commit 検査",
+        "--execution-actor", "human",
+      ],
       cwd=self.tmpdir,
     )
 
@@ -4112,6 +4134,56 @@ class CommitExitCodeTests(unittest.TestCase):
     self.assertNotIn("source_text_redacted", approval)
     self.assertIn("redaction_findings", approval)
 
+  def test_commit_approval_record_rejects_malformed_challenge_target_files(self):
+    """challenge の target_files が文字列配列でなければ補完せず fail-closed"""
+    _set_pending_findings(self.pending_file, unresolved_count=0, resolved_count=2)
+    _stage_file(self.tmpdir, "notes.md", "# nonce 対象")
+    challenge = _prepare_commit_approval(self.tmpdir)
+    challenge_path = (
+      Path(self.tmpdir)
+      / ".reviewcompass"
+      / "runtime"
+      / "approvals"
+      / "commit-approval-challenge.json"
+    )
+    challenge_record = json.loads(challenge_path.read_text(encoding="utf-8"))
+    challenge_record["target_files"] = "notes.md"
+    challenge_path.write_text(
+      json.dumps(challenge_record, ensure_ascii=False, indent=2) + "\n",
+      encoding="utf-8",
+    )
+
+    record_result = _record_commit_approval(self.tmpdir, challenge["nonce"])
+
+    _assert_script_invoked(self, record_result)
+    self.assertEqual(record_result.returncode, 2, record_result.stdout)
+    self.assertIn("target_files", record_result.stdout)
+
+  def test_commit_approval_record_rejects_uppercase_challenge_target_digest(self):
+    """challenge target_digest は小文字 hex の正規形だけを受け付ける"""
+    _set_pending_findings(self.pending_file, unresolved_count=0, resolved_count=2)
+    _stage_file(self.tmpdir, "notes.md", "# nonce 対象")
+    challenge = _prepare_commit_approval(self.tmpdir)
+    challenge_path = (
+      Path(self.tmpdir)
+      / ".reviewcompass"
+      / "runtime"
+      / "approvals"
+      / "commit-approval-challenge.json"
+    )
+    challenge_record = json.loads(challenge_path.read_text(encoding="utf-8"))
+    challenge_record["target_digest"]["digest"] = "A" * 64
+    challenge_path.write_text(
+      json.dumps(challenge_record, ensure_ascii=False, indent=2) + "\n",
+      encoding="utf-8",
+    )
+
+    record_result = _record_commit_approval(self.tmpdir, challenge["nonce"])
+
+    _assert_script_invoked(self, record_result)
+    self.assertEqual(record_result.returncode, 2, record_result.stdout)
+    self.assertIn("target_digest digest", record_result.stdout)
+
   def test_commit_approval_rejects_staged_change_after_record(self):
     """record 後に staged 内容が変わったら nonce 承認は使えない"""
     _set_pending_findings(self.pending_file, unresolved_count=0, resolved_count=2)
@@ -4129,6 +4201,55 @@ class CommitExitCodeTests(unittest.TestCase):
     _assert_script_invoked(self, result)
     self.assertEqual(result.returncode, 2, result.stdout)
     self.assertIn("commit-approval", result.stdout)
+
+  def test_commit_approval_invalidates_runtime_copy_when_legacy_nonce_fails(self):
+    """legacy fallback の nonce 承認が失敗しても旧記録は凍結し runtime 側だけ invalidated にする"""
+    _set_pending_findings(self.pending_file, unresolved_count=0, resolved_count=2)
+    _stage_file(self.tmpdir, "notes.md", "# nonce 承認時点")
+    challenge = _prepare_commit_approval(self.tmpdir)
+    record_result = _record_commit_approval(self.tmpdir, challenge["nonce"])
+    self.assertEqual(record_result.returncode, 0, record_result.stderr)
+    runtime_approval_path = (
+      Path(self.tmpdir)
+      / ".reviewcompass"
+      / "runtime"
+      / "approvals"
+      / "commit-approval.json"
+    )
+    legacy_approval_path = (
+      Path(self.tmpdir)
+      / ".reviewcompass"
+      / "approvals"
+      / "commit-approval.json"
+    )
+    legacy_approval_path.parent.mkdir(parents=True)
+    legacy_approval_path.write_text(
+      runtime_approval_path.read_text(encoding="utf-8"),
+      encoding="utf-8",
+    )
+    legacy_before = legacy_approval_path.read_text(encoding="utf-8")
+    runtime_approval_path.unlink()
+    _stage_file(self.tmpdir, "notes.md", "# commit 実行時点")
+
+    result = run_script(
+      ["commit", "--rationale", "legacy nonce fallback invalidation"],
+      cwd=self.tmpdir,
+    )
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 2, result.stdout)
+    self.assertEqual(legacy_approval_path.read_text(encoding="utf-8"), legacy_before)
+    runtime_approval = json.loads(runtime_approval_path.read_text(encoding="utf-8"))
+    self.assertTrue(runtime_approval["invalidated"])
+    challenge_path = (
+      Path(self.tmpdir)
+      / ".reviewcompass"
+      / "runtime"
+      / "approvals"
+      / "commit-approval-challenge.json"
+    )
+    challenge_record = json.loads(challenge_path.read_text(encoding="utf-8"))
+    self.assertTrue(challenge_record["invalidated"])
 
   def test_commit_approval_rejects_expired_record(self):
     """expires_at を過ぎた nonce 承認は使えない"""
@@ -4191,6 +4312,79 @@ class CommitExitCodeTests(unittest.TestCase):
     _assert_script_invoked(self, result)
     self.assertEqual(result.returncode, 2, result.stdout)
     self.assertIn("model", result.stdout)
+
+  def test_commit_approval_prepare_preserves_staged_gitlink_entry(self):
+    """gitlink は削除扱いにせず mode/object_id を canonical target に残す"""
+    _set_pending_findings(self.pending_file, unresolved_count=0, resolved_count=2)
+    head = subprocess.run(
+      ["git", "rev-parse", "HEAD"],
+      cwd=str(self.tmpdir),
+      check=True,
+      capture_output=True,
+      text=True,
+    ).stdout.strip()
+    subprocess.run(
+      ["git", "update-index", "--add", "--cacheinfo", f"160000,{head},vendor/lib"],
+      cwd=str(self.tmpdir),
+      check=True,
+      capture_output=True,
+      text=True,
+    )
+
+    challenge = _prepare_commit_approval(self.tmpdir)
+
+    challenge_path = (
+      Path(self.tmpdir)
+      / ".reviewcompass"
+      / "runtime"
+      / "approvals"
+      / "commit-approval-challenge.json"
+    )
+    challenge_record = json.loads(challenge_path.read_text(encoding="utf-8"))
+    entries = challenge_record["target"]["entries"]
+    self.assertEqual(challenge["target_files"], ["vendor/lib"])
+    self.assertEqual(entries[0]["path"], "vendor/lib")
+    self.assertEqual(entries[0]["mode"], "160000")
+    self.assertEqual(entries[0]["object_id"], head)
+    self.assertNotEqual(entries[0]["sha256"], "DELETED")
+
+  def test_commit_approval_prepare_includes_rename_source_deletion(self):
+    """rename は destination だけでなく source deletion も canonical target に含める"""
+    _set_pending_findings(self.pending_file, unresolved_count=0, resolved_count=2)
+    _stage_file(self.tmpdir, "old.md", "# old name")
+    subprocess.run(
+      ["git", "commit", "-qm", "add old.md"],
+      cwd=str(self.tmpdir),
+      check=True,
+      capture_output=True,
+      text=True,
+    )
+    subprocess.run(
+      ["git", "mv", "old.md", "new.md"],
+      cwd=str(self.tmpdir),
+      check=True,
+      capture_output=True,
+      text=True,
+    )
+
+    challenge = _prepare_commit_approval(self.tmpdir)
+
+    challenge_path = (
+      Path(self.tmpdir)
+      / ".reviewcompass"
+      / "runtime"
+      / "approvals"
+      / "commit-approval-challenge.json"
+    )
+    challenge_record = json.loads(challenge_path.read_text(encoding="utf-8"))
+    entries_by_path = {
+      entry["path"]: entry
+      for entry in challenge_record["target"]["entries"]
+    }
+    self.assertEqual(challenge["target_files"], ["new.md", "old.md"])
+    self.assertEqual(entries_by_path["old.md"]["status"], "D")
+    self.assertEqual(entries_by_path["old.md"]["object_id"], "DELETED")
+    self.assertEqual(entries_by_path["new.md"]["status"], "R")
 
   def test_commit_blocks_when_in_progress_file_exists(self):
     """stages/in-progress が非空なら commit は exit 2"""
@@ -4353,6 +4547,48 @@ class CommitExitCodeTests(unittest.TestCase):
 
     _assert_script_invoked(self, result)
     self.assertEqual(result.returncode, 0, result.stdout)
+
+  def test_commit_blocks_reopen_commit_stop_point_with_unscoped_reason(self):
+    """commit_stop_point=true でも正当な implementation drafting 停止点でなければ遮断する"""
+    _set_pending_findings(self.pending_file, unresolved_count=0)
+    _stage_file(self.tmpdir, "notes.md", "# reopen 停止点の記録")
+    in_progress_path = (
+      Path(self.tmpdir)
+      / "stages"
+      / "in-progress"
+      / "reopen-procedure-2026-06-15.yaml"
+    )
+    in_progress_path.parent.mkdir(parents=True)
+    in_progress_path.write_text(
+      "process_id: reopen-procedure\n"
+      "next_step: 第3過程：implementation triad-review\n"
+      "step_number: 3\n"
+      "commit_stop_point: true\n"
+      "commit_stop_point_reason: 手順外の停止点\n",
+      encoding="utf-8",
+    )
+    subprocess.run(
+      ["git", "add", "stages/in-progress/reopen-procedure-2026-06-15.yaml"],
+      cwd=str(self.tmpdir),
+      check=True,
+      capture_output=True,
+    )
+    _write_commit_approval(
+      self.tmpdir,
+      [
+        "notes.md",
+        "stages/in-progress/reopen-procedure-2026-06-15.yaml",
+      ],
+    )
+
+    result = run_script(
+      ["commit", "--rationale", "不正な commit_stop_point commit"],
+      cwd=self.tmpdir,
+    )
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 2, result.stdout)
+    self.assertIn("stages/in-progress", result.stdout)
 
   def test_commit_blocks_completed_reopen_without_impact_decisions(self):
     """reopen 完了 commit は下流影響判定表がなければ遮断する"""

@@ -1,0 +1,19 @@
+approved_by: proxy_model
+finding_id: 2026-06-15-workflow-management-implementation-commit-approval-nonce-review-run-gpt-5.4-primary-001
+proxy_model_id: gemini-3.1-pro-preview
+decision_prompt_path: proxy-decision-prompts/C1-C8.prompt.md
+selected_option: must-fix
+final_label: must-fix
+rationale: C1 proxy decision selected option A. Replay risk violates the core single-use
+  nonce guarantee; both challenge and approval records must be durably consumed to
+  preserve fail-closed semantics and prevent inconsistent state.
+raw_response_path: proxy-decisions/C1-C8.raw.yaml
+candidate_options:
+- A
+- B
+- C
+rejected_options:
+  B: Making the approval record solely authoritative leaves challenge records dangling.
+  C: Leaving as-is fails to meet the single-use nonce requirement.
+source_raw_paths:
+- raw/gpt-5.4.round-1.txt

@@ -1,0 +1,21 @@
+findings:
+  - severity: ERROR
+    target_location: "tools/check_workflow_action/commit_approval.py (Important Code Shape)"
+    description: "The approval record automatically embeds hardcoded 'execution_delegation' fields including 'delegated_to: llm' and 'explicit_instruction'."
+    rationale: "This inappropriately conflates the user's cryptographic approval of the staged content (the nonce binding) with the mechanism of executing the commit. The approval record must strictly satisfy Requirement 4 acceptance 6 by validating the staged content independently, without assuming or hardcoding the actor executing the git command."
+  - severity: ERROR
+    target_location: "tools/check-workflow-action.py commit (Known Concerns To Review)"
+    description: "Challenge consumption is incomplete and may not be persisted after a commit."
+    rationale: "If the guarded commit consumes the approval record but fails to persist the 'consumed=true' state on the underlying challenge, the challenge nonce could theoretically be reused or left in an inconsistent state, weakening the irreversible-operation gate."
+  - severity: WARN
+    target_location: "tools/check_workflow_action/commit_approval.py (Important Code Shape - Git diff parsing)"
+    description: "The staged index canonicalization using 'git diff --cached --name-status -z' lacks explicit handling for Rename (R) and Copy (C) output formats."
+    rationale: "When '-z' is used, rename and copy statuses output three null-terminated fields (status, source path, destination path) instead of two. If the parser assumes a strict sequence of [status, path], encountering a rename will misalign the parsing sequence, resulting in a corrupted canonical index digest."
+  - severity: WARN
+    target_location: "tools/check_workflow_action/commit_approval.py (Behavior Implemented)"
+    description: "Emitting 'source_omission_reason: null' when redacted source text is stored."
+    rationale: "Explicitly setting an enum-constrained field to null is an anti-pattern that often breaks strict JSON schema validation. If the source text is included, the 'source_omission_reason' key should be completely omitted rather than set to null."
+  - severity: WARN
+    target_location: "tests/tools/test_check_workflow_action.py (Known Concerns To Review)"
+    description: "Incomplete test coverage for rejecting malformed records without partial inference."
+    rationale: "Machine validation (Requirement 4 acceptance 7) must strictly reject malformed JSON or structurally invalid records. Without comprehensive test coverage, a lenient parser might allow an LLM to bypass security controls by generating a partially valid payload that evaluates as a successful nonce challenge."

@@ -145,6 +145,74 @@ TDD 実施結果：
 - consume 永続化失敗後の再利用拒否、通常 git execution failure 後の条件付き retry、malformed record の網羅、削除 staged／path 順非依存の nonce 専用回帰は追加確認が必要である
 - 実装は LLM/provider/model に依存しない record schema と機械検査で構成される。proxy_model や利用 LLM は承認判断の運用主体であり、nonce validation の入力 field ではない
 
+## 2026-06-15 implementation triad-review must-fix 対応
+
+proxy_model 裁定後、implementation triad-review の C1〜C4 must-fix に TDD で対応した。
+
+対応内容：
+
+- C1：guarded commit 成功後に approval record と nonce challenge の両方を `consumed=true` として永続化する。消費永続化に失敗した場合、guarded commit wrapper は成功扱いにしない。
+- C2：`commit-approval record` は `execution_delegation` を既定で保存しない。staged content approval と LLM commit 実行代行承認を分離した。
+- C3：rename の source deletion を canonical target に含めるよう、staged file collection を status map 基準へ変更した。gitlink の mode/object_id 保存も回帰テストで確認した。
+- C4：challenge の `target_files` は文字列配列かつ重複なしであること、`target_digest` は algorithm と 64 桁 hex digest を満たすこと、`target_files` が現在の canonical staged entries と一致することを record 作成前に検査する。
+
+追加・更新テスト：
+
+- `tests.tools.test_guarded_git_commit.GuardedGitCommitTests.test_guarded_commit_consumes_nonce_challenge_after_success`
+- `tests.tools.test_check_workflow_action.CommitExitCodeTests.test_commit_approval_record_does_not_embed_execution_delegation_by_default`
+- `tests.tools.test_check_workflow_action.CommitExitCodeTests.test_commit_approval_record_rejects_malformed_challenge_target_files`
+- `tests.tools.test_check_workflow_action.CommitExitCodeTests.test_commit_approval_prepare_includes_rename_source_deletion`
+- `tests.tools.test_check_workflow_action.CommitExitCodeTests.test_commit_approval_prepare_preserves_staged_gitlink_entry`
+
+実行済み：
+
+- `.venv/bin/python3 -m unittest tests.tools.test_guarded_git_commit.GuardedGitCommitTests.test_guarded_commit_consumes_nonce_challenge_after_success tests.tools.test_check_workflow_action.CommitExitCodeTests.test_commit_approval_record_does_not_embed_execution_delegation_by_default tests.tools.test_check_workflow_action.CommitExitCodeTests.test_commit_approval_record_rejects_malformed_challenge_target_files tests.tools.test_check_workflow_action.CommitExitCodeTests.test_commit_approval_prepare_preserves_staged_gitlink_entry tests.tools.test_check_workflow_action.CommitExitCodeTests.test_commit_approval_prepare_includes_rename_source_deletion -v`：red から green
+- `.venv/bin/python3 -m unittest tests.tools.test_check_workflow_action.CommitExitCodeTests tests.tools.test_guarded_git_commit -v`：pass
+
+## 2026-06-15 implementation triad-review should-fix 対応
+
+must-fix 対応に続き、C5〜C7 should-fix に TDD で対応した。
+
+対応内容：
+
+- C5：redaction 後の source text を保存する場合、`source_omission_reason` key を出さないようにした。source を保存しない場合だけ omission reason enum を使う。
+- C6：legacy fallback で読まれた nonce approval が security validation failure になった場合、凍結済み legacy record は変更せず、runtime 側に invalidated copy を作る。runtime challenge も invalidated にする。
+- C7：`commit_stop_point=true` は `step_number=3`、`next_step=第3過程：implementation triad-review`、`commit_stop_point_reason` に `implementation drafting 完了` を含む場合だけ、`停止点コミット` 文字列なしの reopen stop point として許可する。
+
+追加・更新テスト：
+
+- `tests.tools.test_check_workflow_action.CommitExitCodeTests.test_commit_approval_record_source_text_is_redacted`
+- `tests.tools.test_check_workflow_action.CommitExitCodeTests.test_commit_approval_invalidates_runtime_copy_when_legacy_nonce_fails`
+- `tests.tools.test_check_workflow_action.CommitExitCodeTests.test_commit_blocks_reopen_commit_stop_point_with_unscoped_reason`
+
+実行済み：
+
+- `.venv/bin/python3 -m unittest tests.tools.test_check_workflow_action.CommitExitCodeTests.test_commit_approval_record_source_text_is_redacted tests.tools.test_check_workflow_action.CommitExitCodeTests.test_commit_approval_invalidates_runtime_copy_when_legacy_nonce_fails tests.tools.test_check_workflow_action.CommitExitCodeTests.test_commit_blocks_reopen_commit_stop_point_with_unscoped_reason -v`：red から green
+- `.venv/bin/python3 -m unittest tests.tools.test_check_workflow_action.CommitExitCodeTests tests.tools.test_guarded_git_commit tests.tools.test_runtime_placement_freeze.CommitApprovalPlacementTests -v`：pass
+
+残タスク：
+
+- C8：normal git execution failure conditional retry は proxy_model 判断どおり this gate では leave-as-is / follow-up とする。
+- implementation triad-review gate 完了前に、C1〜C7 対応後の recheck が必要である。
+
+## 2026-06-15 implementation triad-review recheck 対応
+
+recheck review-run の R1〜R5 について、人間判断で R1 は must-fix、R3 は should-fix、R2/R4/R5 は leave-as-is とした。
+
+対応内容：
+
+- R1：nonce approval の消費順序を challenge → approval に変更した。approval consumed 書き込みに失敗しても、先に challenge が consumed になっているため nonce challenge の再利用を拒否できる。
+- R3：`target_digest.digest` は小文字 `0-9a-f` の 64 桁だけを正規形として受け付ける。大文字 hex は内容不一致ではなく malformed digest として拒否する。
+
+追加・更新テスト：
+
+- `tests.tools.test_guarded_git_commit.GuardedGitCommitTests.test_guarded_commit_consumes_nonce_challenge_before_approval`
+- `tests.tools.test_check_workflow_action.CommitExitCodeTests.test_commit_approval_record_rejects_uppercase_challenge_target_digest`
+
+実行済み：
+
+- `.venv/bin/python3 -m unittest tests.tools.test_guarded_git_commit.GuardedGitCommitTests.test_guarded_commit_consumes_nonce_challenge_before_approval tests.tools.test_check_workflow_action.CommitExitCodeTests.test_commit_approval_record_rejects_uppercase_challenge_target_digest -v`：red から green
+
 ## 検証
 
 実行済み：

@@ -82,14 +82,7 @@ def _json_digest(data):
 
 def staged_files(cwd):
   """staged ファイル一覧を git index から取得する。"""
-  result = _run_git(cwd, ["diff", "--cached", "--name-only", "-z"], text=False)
-  if result.returncode != 0:
-    raise RuntimeError(result.stderr.decode("utf-8", errors="replace"))
-  return [
-    item.decode("utf-8")
-    for item in result.stdout.split(b"\0")
-    if item
-  ]
+  return sorted(_staged_status_map(cwd))
 
 
 def _staged_status_map(cwd):
@@ -101,11 +94,15 @@ def _staged_status_map(cwd):
   i = 0
   while i < len(parts):
     code = parts[i]
-    if code.startswith(("R", "C")) and i + 2 < len(parts):
+    if code.startswith("R") and i + 2 < len(parts):
       old_path = parts[i + 1]
       new_path = parts[i + 2]
       status[old_path] = "D"
-      status[new_path] = code[0]
+      status[new_path] = "R"
+      i += 3
+    elif code.startswith("C") and i + 2 < len(parts):
+      new_path = parts[i + 2]
+      status[new_path] = "C"
       i += 3
     elif i + 1 < len(parts):
       status[parts[i + 1]] = code[0]
@@ -245,6 +242,33 @@ def _redact_source(source_text):
   return redacted, None, []
 
 
+def _require_string_list(value, label):
+  if not isinstance(value, list) or not all(isinstance(item, str) for item in value):
+    raise ValueError(f"{label} は文字列配列である必要があります")
+  if len(value) != len(set(value)):
+    raise ValueError(f"{label} に重複があります")
+  return value
+
+
+def _is_canonical_digest_text(value):
+  return (
+    isinstance(value, str)
+    and len(value) == 64
+    and all(char in "0123456789abcdef" for char in value)
+  )
+
+
+def _require_target_digest(value, label):
+  if not isinstance(value, dict):
+    raise ValueError(f"{label} target_digest が不正です")
+  if value.get("algorithm") != CANONICAL_DIGEST_ALGORITHM:
+    raise ValueError(f"{label} target_digest algorithm が不正です")
+  digest = value.get("digest")
+  if not _is_canonical_digest_text(digest):
+    raise ValueError(f"{label} target_digest digest が不正です")
+  return value
+
+
 def record(cwd, nonce, source_text=None, no_source_text=False):
   """challenge nonce に対応する承認レコードを保存する。"""
   challenge = _load_json_object(challenge_path(cwd), "commit approval challenge")
@@ -254,6 +278,10 @@ def record(cwd, nonce, source_text=None, no_source_text=False):
     raise ValueError("challenge は invalidated です")
   if challenge.get("consumed") is True:
     raise ValueError("challenge は consumed です")
+  challenge_target_files = _require_string_list(
+    challenge.get("target_files"),
+    "challenge target_files",
+  )
 
   now = utc_now()
   created_at = _parse_datetime(challenge.get("created_at"))
@@ -266,13 +294,17 @@ def record(cwd, nonce, source_text=None, no_source_text=False):
     raise ValueError("challenge は期限切れです")
 
   current = canonical_target(cwd)
-  challenge_digest = challenge.get("target_digest")
-  if not isinstance(challenge_digest, dict):
-    raise ValueError("challenge target_digest が不正です")
-  if challenge_digest.get("algorithm") != CANONICAL_DIGEST_ALGORITHM:
-    raise ValueError("challenge target_digest algorithm が不正です")
+  challenge_digest = _require_target_digest(
+    challenge.get("target_digest"),
+    "challenge",
+  )
   if challenge_digest.get("digest") != current["digest"]:
     raise ValueError("staged 内容が challenge と一致しません")
+  if challenge_target_files != [
+    entry["path"]
+    for entry in current["target"]["entries"]
+  ]:
+    raise ValueError("challenge target_files が staged exact index と一致しません")
 
   redacted_source = None
   source_omission_reason = None
@@ -308,18 +340,12 @@ def record(cwd, nonce, source_text=None, no_source_text=False):
     },
     "attestation_type": ATTESTATION_TYPE,
     "guarantee_scope": GUARANTEE_SCOPE,
-    "source_omission_reason": source_omission_reason,
     "expires_after_commit": True,
     "consumed": False,
     "invalidated": False,
-    "execution_delegation": {
-      "delegated_to": "llm",
-      "approved_by": "user",
-      "approved_at": _isoformat(now),
-      "explicit_instruction": "コミット代行も含めて自律実行",
-      "rationale": "利用者が LLM によるコミット実行代行を明示承認",
-    },
   }
+  if source_omission_reason is not None:
+    approval["source_omission_reason"] = source_omission_reason
   if redacted_source is not None:
     approval["source_text_redacted"] = redacted_source
   if residual_findings:
@@ -365,9 +391,27 @@ def invalidate(cwd):
   }
 
 
-def _invalidate_runtime_records(cwd):
+def _write_runtime_invalidated_approval(cwd, approval, invalidated_at):
+  if not isinstance(approval, dict) or not approval.get("nonce"):
+    return
+  path = approval_path(cwd)
+  if path.exists():
+    return
+  data = dict(approval)
+  data["invalidated"] = True
+  data["invalidated_at"] = invalidated_at
+  path.parent.mkdir(parents=True, exist_ok=True)
+  path.write_text(
+    json.dumps(data, ensure_ascii=False, indent=2) + "\n",
+    encoding="utf-8",
+  )
+
+
+def _invalidate_runtime_records(cwd, approval=None):
   try:
+    invalidated_at = _isoformat(utc_now())
     invalidate(cwd)
+    _write_runtime_invalidated_approval(cwd, approval, invalidated_at)
   except OSError:
     pass
 
@@ -434,6 +478,8 @@ def validate(cwd, approval):
     errors.append("commit-approval target_digest が不正です")
   elif approval_digest.get("algorithm") != CANONICAL_DIGEST_ALGORITHM:
     errors.append("commit-approval target_digest algorithm が不正です")
+  elif not _is_canonical_digest_text(approval_digest.get("digest")):
+    errors.append("commit-approval target_digest digest が不正です")
   elif approval_digest.get("digest") != current["digest"]:
     errors.append("commit-approval target_digest が staged exact index と一致しません")
 
@@ -441,11 +487,13 @@ def validate(cwd, approval):
     challenge_digest = challenge.get("target_digest")
     if not isinstance(challenge_digest, dict):
       errors.append("commit-approval challenge target_digest が不正です")
+    elif not _is_canonical_digest_text(challenge_digest.get("digest")):
+      errors.append("commit-approval challenge target_digest digest が不正です")
     elif challenge_digest.get("digest") != current["digest"]:
       errors.append("commit-approval challenge target_digest が staged exact index と一致しません")
     elif isinstance(approval_digest, dict) and challenge_digest.get("digest") != approval_digest.get("digest"):
       errors.append("commit-approval approval/challenge target_digest が一致しません")
 
   if errors:
-    _invalidate_runtime_records(cwd)
+    _invalidate_runtime_records(cwd, approval)
   return errors

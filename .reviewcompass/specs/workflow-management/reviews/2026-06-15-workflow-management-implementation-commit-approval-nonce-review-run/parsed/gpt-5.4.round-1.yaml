@@ -1,0 +1,55 @@
+role: primary
+provider: openai-api
+model: gpt-5.4
+attempts: 1
+duration_seconds: 8.689
+findings:
+- severity: ERROR
+  target_location: tools/check-workflow-action.py / commit approval consume path
+  description: 'Challenge consumption persistence appears incomplete: the review target
+    states guarded commit consumes the approval record, but challenge consumption
+    may not be durably persisted after successful commit.'
+  rationale: Requirement 4 acceptance 6 and the irreversible-operation gate model
+    depend on a nonce challenge being single-use. If only the approval record is consumed
+    while the challenge remains reusable or unmarked on disk after commit, the same
+    nonce-bound authorization can be replayed against the same staged state within
+    TTL. The target document itself flags this as a known concern and does not cite
+    tests proving durable challenge consumption, so implementation approval should
+    not complete without confirming and testing one-time nonce enforcement.
+- severity: WARN
+  target_location: tools/check_workflow_action/commit_approval.py / commit-approval
+    record output schema
+  description: Approval records are described as always embedding execution_delegation
+    delegated_to=llm by default, which conflates nonce approval capture with delegation
+    to a specific execution mode.
+  rationale: The reviewed requirement is about recording user commit approval through
+    a nonce bound to staged content, independent of controlling LLM/provider/model.
+    Automatically asserting execution delegation to an LLM in every recorded approval
+    weakens that separation of concerns and can make the approval record semantically
+    broader than the user's nonce acknowledgment. This does not necessarily break
+    machine validation, but it creates avoidable ambiguity in the attestation boundary
+    and should be narrowed or explicitly justified.
+- severity: WARN
+  target_location: tests/tools/test_check_workflow_action.py / nonce-specific coverage
+  description: Nonce-specific regression coverage appears incomplete for malformed-record
+    rejection and exact-index edge cases such as renames, mode changes, submodules,
+    and path-order independence.
+  rationale: The implementation relies on a canonical staged-index digest for security-sensitive
+    approval validation. The review target explicitly notes incomplete malformed-record
+    no-partial-inference coverage and limited nonce-specific coverage for deletion/path-order
+    behavior. Without dedicated tests for these cases, there is insufficient evidence
+    that the validator safely rejects malformed challenge/approval structures and
+    that the digest is stable across the full set of git index states required by
+    design/tasks.
+- severity: INFO
+  target_location: tools/check-workflow-action.py / legacy compatibility validation
+    path
+  description: Validation reportedly invalidates records on security failure while
+    still accepting legacy target_sha256 approval records as compatibility input;
+    this interaction should be confirmed to avoid mutating fallback records unexpectedly.
+  rationale: If the validator writes invalidation state back through a legacy fallback
+    path or against records not created under the nonce protocol, it could create
+    surprising state transitions or backward-compatibility issues. The review target
+    raises this as a concern, but the provided summary is insufficient to show an
+    actual defect. It merits explicit confirmation and a regression test before broader
+    rollout.

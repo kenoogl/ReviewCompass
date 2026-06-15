@@ -1,0 +1,18 @@
+approved_by: proxy_model
+finding_id: 2026-06-15-workflow-management-implementation-commit-approval-nonce-review-run-claude-opus-4-8-adversarial-001
+proxy_model_id: gemini-3.1-pro-preview
+decision_prompt_path: proxy-decision-prompts/C1-C8.prompt.md
+selected_option: must-fix
+final_label: must-fix
+rationale: C1 proxy decision selected option A. A nonce challenge that is not durably
+  consumed after successful commit remains replayable and blocks implementation approval.
+raw_response_path: proxy-decisions/C1-C8.raw.yaml
+candidate_options:
+- A
+- B
+- C
+rejected_options:
+  B: Sole approval-record authority leaves the challenge state inconsistent.
+  C: Documentation alone does not enforce one-shot nonce semantics.
+source_raw_paths:
+- raw/claude-opus-4-8.round-1.txt

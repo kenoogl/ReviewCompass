@@ -23,6 +23,13 @@ completed_steps:
 - 第3過程：tasks alignment 実施（commit 承認 nonce 実装タスクは上流要件・設計と整合）
 - 第3過程：tasks approval 承認（利用者発言「承認」）
 - 第3過程：implementation drafting（commit-approval nonce challenge を TDD 実装し、implementation-drafting.md に棚卸しを追記）
+- 第3過程：implementation triad-review review-run 実行（利用者提示ゲートで停止）
+- 第3過程：implementation triad-review proxy_model 裁定完了（must-fix 未対応のため gate は未完了）
+- 第3過程：implementation triad-review must-fix C1〜C4 TDD 対応完了（should-fix C5〜C7 は未対応）
+- 第3過程：implementation triad-review should-fix C5〜C7 TDD 対応完了（C8 は follow-up）
+- 第3過程：implementation triad-review recheck review-run 実行（利用者提示ゲートで停止）
+- 第3過程：implementation triad-review recheck R1〜R5 人間判断完了（R1/R3 対応、R2/R4/R5 leave-as-is）
+- 第3過程：implementation triad-review recheck R1/R3 TDD 対応完了
 next_step: 第3過程：implementation triad-review
 step_number: 3
 commit_stop_point: true
@@ -70,6 +77,166 @@ implementation_drafting_tests:
 - .venv/bin/python3 -m unittest tests.tools.test_check_workflow_action.CommitExitCodeTests.test_commit_approval_prepare_outputs_nonce_challenge_json tests.tools.test_check_workflow_action.CommitExitCodeTests.test_commit_approval_record_no_source_json_validates_for_commit tests.tools.test_check_workflow_action.CommitExitCodeTests.test_commit_approval_rejects_staged_change_after_record tests.tools.test_check_workflow_action.CommitExitCodeTests.test_commit_approval_rejects_expired_record tests.tools.test_check_workflow_action.CommitExitCodeTests.test_commit_approval_rejects_llm_metadata_fields -v
 - .venv/bin/python3 -m unittest tests.tools.test_check_workflow_action.CommitExitCodeTests.test_commit_approval_record_source_text_is_redacted tests.tools.test_check_workflow_action.CommitExitCodeTests.test_commit_approval_record_residual_secret_omits_source -v
 - .venv/bin/python3 -m unittest tests.tools.test_check_workflow_action.CommitExitCodeTests tests.tools.test_guarded_git_commit tests.tools.test_runtime_placement_freeze.CommitApprovalPlacementTests -v
+implementation_triad_review_run: .reviewcompass/specs/workflow-management/reviews/2026-06-15-workflow-management-implementation-commit-approval-nonce-review-run
+implementation_triad_review_summary: .reviewcompass/specs/workflow-management/reviews/2026-06-15-workflow-management-implementation-commit-approval-nonce-review-run/raw-review-triage-summary.md
+implementation_triad_review_status: findings_addressed_recheck_pending
+implementation_triad_review_proxy_decision:
+  decided_at: 2026-06-15T20:32:14+09:00
+  proxy_model_id: gemini-3.1-pro-preview
+  prompt: .reviewcompass/specs/workflow-management/reviews/2026-06-15-workflow-management-implementation-commit-approval-nonce-review-run/proxy-decision-prompts/C1-C8.prompt.md
+  raw_response: .reviewcompass/specs/workflow-management/reviews/2026-06-15-workflow-management-implementation-commit-approval-nonce-review-run/proxy-decisions/C1-C8.raw.yaml
+  decisions_input: .reviewcompass/specs/workflow-management/reviews/2026-06-15-workflow-management-implementation-commit-approval-nonce-review-run/proxy-decisions/C1-C8.decisions-input.yaml
+  approval_record: .reviewcompass/specs/workflow-management/reviews/2026-06-15-workflow-management-implementation-commit-approval-nonce-review-run/proxy-approval.yaml
+  canonical_validation: passed
+  important_findings: 12
+  triage_items_decided: 18
+  final_labels:
+    must_fix:
+    - C1
+    - C2
+    - C3
+    - C4
+    should_fix:
+    - C5
+    - C6
+    - C7
+    leave_as_is:
+    - C8
+implementation_triad_review_clusters:
+- cluster: C1 challenge consumption is incomplete
+  proposed_label: must-fix
+  summary: successful commit consumes approval record only; challenge record is not durably consumed, weakening single-use nonce semantics.
+- cluster: C2 execution_delegation is embedded by default in nonce approval records
+  proposed_label: must-fix
+  summary: commit-approval record currently writes LLM execution delegation by default, conflating staged-content approval with execution delegation.
+- cluster: C3 exact-index digest edge cases are under-tested and may be incomplete
+  proposed_label: must-fix
+  summary: rename/copy/mode/submodule/unusual path behavior and nonce-specific path-order coverage are insufficient.
+- cluster: C4 malformed/no-partial-inference coverage is insufficient
+  proposed_label: must-fix
+  summary: malformed challenge/approval structures need fail-closed tests and behavior confirmation.
+- cluster: C5 source_omission_reason null is ambiguous
+  proposed_label: should-fix
+  summary: storing redacted source text with source_omission_reason null is ambiguous for the omission enum contract.
+- cluster: C6 legacy fallback invalidation interaction is unclear
+  proposed_label: should-fix
+  summary: nonce invalidation should not mutate frozen legacy approval records or leave failed records reusable.
+- cluster: C7 commit_stop_point is under-constrained
+  proposed_label: should-fix
+  summary: commit_stop_point=true needs negative tests and documentation to avoid becoming a broad bypass.
+- cluster: C8 normal git execution failure conditional retry
+  proposed_label: leave-as-is
+  summary: lower-priority follow-up unless approval criteria require full retry semantics now.
+implementation_triad_review_must_fix_resolution:
+  completed_at: 2026-06-15T20:43:15+09:00
+  status: addressed_pending_recheck
+  addressed_clusters:
+  - cluster: C1
+    summary: guarded commit 成功後に approval record と nonce challenge の両方を consumed として永続化するよう修正した。
+    files:
+    - tools/guarded-git-commit.py
+    - tests/tools/test_guarded_git_commit.py
+  - cluster: C2
+    summary: commit-approval record から既定 execution_delegation を削除し、内容承認と LLM commit 実行代行承認を分離した。
+    files:
+    - tools/check_workflow_action/commit_approval.py
+    - tests/tools/test_check_workflow_action.py
+  - cluster: C3
+    summary: rename source deletion を canonical target に含め、gitlink mode/object_id 保存をテストした。
+    files:
+    - tools/check_workflow_action/commit_approval.py
+    - tests/tools/test_check_workflow_action.py
+  - cluster: C4
+    summary: malformed challenge target_files/target_digest を record 前に fail-closed で拒否する検査を追加した。
+    files:
+    - tools/check_workflow_action/commit_approval.py
+    - tests/tools/test_check_workflow_action.py
+  tests:
+  - .venv/bin/python3 -m unittest tests.tools.test_guarded_git_commit.GuardedGitCommitTests.test_guarded_commit_consumes_nonce_challenge_after_success tests.tools.test_check_workflow_action.CommitExitCodeTests.test_commit_approval_record_does_not_embed_execution_delegation_by_default tests.tools.test_check_workflow_action.CommitExitCodeTests.test_commit_approval_record_rejects_malformed_challenge_target_files tests.tools.test_check_workflow_action.CommitExitCodeTests.test_commit_approval_prepare_preserves_staged_gitlink_entry tests.tools.test_check_workflow_action.CommitExitCodeTests.test_commit_approval_prepare_includes_rename_source_deletion -v
+  - .venv/bin/python3 -m unittest tests.tools.test_check_workflow_action.CommitExitCodeTests tests.tools.test_guarded_git_commit -v
+  remaining_clusters:
+  - C8 normal git execution failure conditional retry is follow-up / leave-as-is for this gate
+implementation_triad_review_should_fix_resolution:
+  completed_at: 2026-06-15T20:43:15+09:00
+  status: addressed_pending_recheck
+  addressed_clusters:
+  - cluster: C5
+    summary: source text 保存時は source_omission_reason key を省略し、source omission enum を omission 時だけ使うよう修正した。
+    files:
+    - tools/check_workflow_action/commit_approval.py
+    - tests/tools/test_check_workflow_action.py
+  - cluster: C6
+    summary: legacy fallback nonce approval の validation failure 時、legacy record を凍結したまま runtime invalidated copy と challenge invalidation を残す regression を追加した。
+    files:
+    - tools/check_workflow_action/commit_approval.py
+    - tests/tools/test_check_workflow_action.py
+  - cluster: C7
+    summary: commit_stop_point=true を implementation drafting 完了停止点の形に限定し、手順外 reason の負例を追加した。
+    files:
+    - tools/check-workflow-action.py
+    - tests/tools/test_check_workflow_action.py
+  tests:
+  - .venv/bin/python3 -m unittest tests.tools.test_check_workflow_action.CommitExitCodeTests.test_commit_approval_record_source_text_is_redacted tests.tools.test_check_workflow_action.CommitExitCodeTests.test_commit_approval_invalidates_runtime_copy_when_legacy_nonce_fails tests.tools.test_check_workflow_action.CommitExitCodeTests.test_commit_blocks_reopen_commit_stop_point_with_unscoped_reason -v
+  - .venv/bin/python3 -m unittest tests.tools.test_check_workflow_action.CommitExitCodeTests tests.tools.test_guarded_git_commit tests.tools.test_runtime_placement_freeze.CommitApprovalPlacementTests -v
+  remaining_clusters:
+  - C8 normal git execution failure conditional retry is follow-up / leave-as-is for this gate
+implementation_triad_review_recheck_run: .reviewcompass/specs/workflow-management/reviews/2026-06-15-workflow-management-implementation-commit-approval-nonce-recheck-review-run
+implementation_triad_review_recheck_summary: .reviewcompass/specs/workflow-management/reviews/2026-06-15-workflow-management-implementation-commit-approval-nonce-recheck-review-run/raw-review-triage-summary.md
+implementation_triad_review_recheck_status: findings_addressed_commit_pending
+implementation_triad_review_recheck_decision:
+  decided_at: 2026-06-15T12:38:00Z
+  decision_actor: user
+  proxy_model_attempted: true
+  proxy_model_status: blocked_by_environment_policy
+  final_labels:
+    must_fix:
+    - R1
+    should_fix:
+    - R3
+    leave_as_is:
+    - R2
+    - R4
+    - R5
+implementation_triad_review_recheck_clusters:
+- cluster: R1 consumption is still not fail-closed enough
+  proposed_label: must-fix
+  summary: approval を先に consumed 保存した後で challenge consume が失敗すると、commit 後に approval/challenge 状態が不整合になり、未消費 challenge の再利用余地が残る。
+- cluster: R2 rename/copy trailing-entry concern appears false positive
+  proposed_label: leave-as-is
+  summary: Python の境界条件 `i + 2 < len(parts)` は i+2 が末尾 index の場合に true であり、既存の単独 rename test も通過している。
+- cluster: R3 digest lowercase canonical diagnostic can be stricter
+  proposed_label: should-fix
+  summary: uppercase hex は後続 digest mismatch で fail-closed になるが、canonical lowercase digest として malformed 扱いにした方が明確。
+- cluster: R4 runtime invalidated-copy early return appears false positive
+  proposed_label: leave-as-is
+  summary: runtime approval が既にある場合は直前の invalidate(cwd) が invalidated にする。legacy fallback では runtime approval がないため helper が copy を作る。
+- cluster: R5 commit_stop_point constraint is intentionally narrow
+  proposed_label: leave-as-is
+  summary: hardcoded stop-point shape は脆さもあるが、広い bypass を避けるため this gate では現状維持が妥当。
+implementation_triad_review_recheck_resolution:
+  completed_at: 2026-06-15T12:38:00Z
+  status: addressed_verified_commit_pending
+  addressed_clusters:
+  - cluster: R1
+    summary: guarded commit 成功後の消費順序を challenge → approval に変更し、approval 書き込み失敗時にも nonce challenge の再利用を拒否できるようにした。
+    files:
+    - tools/guarded-git-commit.py
+    - tests/tools/test_guarded_git_commit.py
+  - cluster: R3
+    summary: target_digest.digest を小文字 64 桁 hex の正規形だけ許可し、大文字 hex を malformed digest として拒否するようにした。
+    files:
+    - tools/check_workflow_action/commit_approval.py
+    - tests/tools/test_check_workflow_action.py
+  leave_as_is_clusters:
+  - R2
+  - R4
+  - R5
+  tests:
+  - .venv/bin/python3 -m unittest tests.tools.test_guarded_git_commit.GuardedGitCommitTests.test_guarded_commit_consumes_nonce_challenge_before_approval tests.tools.test_check_workflow_action.CommitExitCodeTests.test_commit_approval_record_rejects_uppercase_challenge_target_digest -v
+  - .venv/bin/python3 -m unittest tests.tools.test_check_workflow_action tests.tools.test_guarded_git_commit tests.tools.test_runtime_placement_freeze.CommitApprovalPlacementTests -v
+  - git diff --check
+  - yaml parse check for reopen in-progress and recheck triage.yaml
+  - .venv/bin/python3 tools/check-workflow-action.py next --json
 tasks_triad_review_clusters:
 - cluster: C1 time and canonical digest coverage
   proposed_label: must-fix

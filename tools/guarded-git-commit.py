@@ -19,29 +19,63 @@ from check_workflow_action.runtime_paths import (
 DEFAULT_LAST_COMMIT_PRECHECK_PATH = ".git/reviewcompass/last-commit-precheck.json"
 
 
-def consume_commit_approval(cwd):
-  """commit 成功後に承認レコードを消費済みにする
+def _mark_consumed(path, consumed_at):
+  """JSON object record を consumed として永続化する。"""
+  try:
+    record = json.loads(path.read_text(encoding="utf-8"))
+  except (OSError, json.JSONDecodeError) as e:
+    return False, f"{path}: {e}"
 
-  読み取りは新→旧の順のフォールバック。書き込みは常に新配置へ行い、
+  if not isinstance(record, dict):
+    return False, f"{path}: record is not an object"
+
+  record["consumed"] = True
+  record["consumed_at"] = consumed_at
+  try:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(
+      json.dumps(record, ensure_ascii=False, indent=2) + "\n",
+      encoding="utf-8",
+    )
+  except OSError as e:
+    return False, f"{path}: {e}"
+  return True, record
+
+
+def consume_commit_approval(cwd):
+  """commit 成功後に承認レコードと nonce challenge を消費済みにする。
+
+  読み取りは新→旧の順のフォールバック。承認レコードの書き込みは常に新配置へ行い、
   凍結済み旧記録は変更しない（wm design §実行時生成物の凍結期（P3 まで）の扱い）。
   """
   read_path = Path(cwd) / resolve_commit_approval_path(cwd)
   try:
     approval = json.loads(read_path.read_text(encoding="utf-8"))
   except (OSError, json.JSONDecodeError) as e:
-    print(f"warning: 承認レコードの消費済み記録に失敗しました: {e}", file=sys.stderr)
-    return
-
+    print(f"error: 承認レコードの消費済み記録に失敗しました: {e}", file=sys.stderr)
+    return False
   if not isinstance(approval, dict):
-    print("warning: 承認レコードが object ではないため消費済みにできません", file=sys.stderr)
-    return
+    print("error: 承認レコードが object ではないため消費済みにできません", file=sys.stderr)
+    return False
 
   if approval.get("expires_after_commit") is False:
-    return
+    return True
 
-  approval["consumed"] = True
-  approval["consumed_at"] = datetime.now(timezone.utc).isoformat()
+  consumed_at = datetime.now(timezone.utc).isoformat()
+  if approval.get("nonce"):
+    challenge_ref = approval.get("challenge_path")
+    if not isinstance(challenge_ref, str) or not challenge_ref:
+      print("error: nonce 承認の challenge_path がありません", file=sys.stderr)
+      return False
+    challenge_path = Path(cwd) / challenge_ref
+    ok, result = _mark_consumed(challenge_path, consumed_at)
+    if not ok:
+      print(f"error: challenge の消費済み記録に失敗しました: {result}", file=sys.stderr)
+      return False
+
   write_path = Path(cwd) / DEFAULT_COMMIT_APPROVAL_PATH
+  approval["consumed"] = True
+  approval["consumed_at"] = consumed_at
   try:
     write_path.parent.mkdir(parents=True, exist_ok=True)
     write_path.write_text(
@@ -49,7 +83,10 @@ def consume_commit_approval(cwd):
       encoding="utf-8",
     )
   except OSError as e:
-    print(f"warning: 承認レコードの消費済み記録に失敗しました: {e}", file=sys.stderr)
+    print(f"error: 承認レコードの消費済み記録に失敗しました: {e}", file=sys.stderr)
+    return False
+
+  return True
 
 
 def run_precheck(cwd, rationale):
@@ -164,7 +201,8 @@ def main(argv=None):
     return result.returncode
 
   record_last_commit_precheck(cwd, precheck)
-  consume_commit_approval(cwd)
+  if not consume_commit_approval(cwd):
+    return 2
   return 0
 
 

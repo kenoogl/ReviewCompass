@@ -3694,7 +3694,16 @@ def is_reopen_stop_point_commit_allowed(cwd, in_progress_files, staged_files):
     if data.get("process_id") != "reopen-procedure":
       return False
     next_step = data.get("next_step") or ""
-    if "停止点コミット" not in next_step and data.get("commit_stop_point") is not True:
+    if "停止点コミット" in next_step:
+      continue
+    if data.get("commit_stop_point") is not True:
+      return False
+    reason = data.get("commit_stop_point_reason") or ""
+    if data.get("step_number") != 3:
+      return False
+    if next_step != "第3過程：implementation triad-review":
+      return False
+    if "implementation drafting 完了" not in reason:
       return False
   return True
 

@@ -1,0 +1,19 @@
+approved_by: proxy_model
+finding_id: 2026-06-15-workflow-management-implementation-commit-approval-nonce-review-run-gemini-3.1-pro-preview-judgment-003
+proxy_model_id: gemini-3.1-pro-preview
+decision_prompt_path: proxy-decision-prompts/C1-C8.prompt.md
+selected_option: must-fix
+final_label: must-fix
+rationale: C3 proxy decision selected option A. Rename/copy `--name-status -z` parsing
+  must be covered by nonce-specific tests.
+raw_response_path: proxy-decisions/C1-C8.raw.yaml
+candidate_options:
+- A
+- B
+- C
+rejected_options:
+  B: A different canonical source may be appropriate only after failing tests expose
+    the exact issue.
+  C: Current tests do not prove the exact-index binding across rename/copy cases.
+source_raw_paths:
+- raw/gemini-3.1-pro-preview.round-1.txt
