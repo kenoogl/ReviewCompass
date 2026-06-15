@@ -3653,6 +3653,144 @@ class ReopenStartTests(unittest.TestCase):
     self.assertEqual(data["verdict"], "DEVIATION")
 
 
+class ReopenAdvanceGateTests(unittest.TestCase):
+  """reopen-advance-gate サブコマンドの進行中 gate 更新"""
+
+  def setUp(self):
+    self.tmpdir = tempfile.mkdtemp()
+    self.addCleanup(shutil.rmtree, self.tmpdir)
+
+  def _write_spec(self):
+    spec_path = (
+      Path(self.tmpdir)
+      / ".reviewcompass"
+      / "specs"
+      / "workflow-management"
+      / "spec.json"
+    )
+    spec_path.parent.mkdir(parents=True)
+    spec_path.write_text(
+      json.dumps(
+        {
+          "feature_name": "workflow-management",
+          "workflow_state": {
+            "requirements": {
+              "drafting": True,
+              "triad-review": True,
+              "review-wave": True,
+              "alignment": False,
+              "approval": False,
+            }
+          },
+        },
+        ensure_ascii=False,
+        indent=2,
+      )
+      + "\n",
+      encoding="utf-8",
+    )
+    return spec_path
+
+  def test_reopen_advance_gate_updates_spec_and_in_progress_state(self):
+    """pending gate 完了時の spec.json と reopen YAML 更新を機械処理する"""
+    spec_path = self._write_spec()
+    in_progress = (
+      Path(self.tmpdir)
+      / "stages"
+      / "in-progress"
+      / "reopen-procedure-2026-06-15.yaml"
+    )
+    in_progress.parent.mkdir(parents=True)
+    in_progress.write_text(
+      "process_id: reopen-procedure\n"
+      "feature: workflow-management\n"
+      "step_number: 3\n"
+      "next_step: 第3過程：requirements alignment\n"
+      "completed_steps: []\n"
+      "pending_gates:\n"
+      "  - stages/requirements.yaml#alignment\n"
+      "  - stages/requirements.yaml#approval\n"
+      "completed_gates: []\n"
+      "downstream_impact_decisions: []\n"
+      "current_blocker: null\n",
+      encoding="utf-8",
+    )
+
+    result = run_script(
+      [
+        "reopen-advance-gate",
+        "--file", "stages/in-progress/reopen-procedure-2026-06-15.yaml",
+        "--gate", "stages/requirements.yaml#alignment",
+        "--decision", "existing_sufficient",
+        "--feature-scope", "workflow-management",
+        "--rationale", "requirements alignment は既存で受けられる。",
+        "--evidence", ".reviewcompass/specs/_cross_feature/reviews/alignment.md",
+        "--completed-step", "第3過程：requirements alignment 実施",
+        "--set-spec", "workflow-management", "requirements", "alignment", "true",
+        "--json",
+      ],
+      cwd=self.tmpdir,
+    )
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 0, result.stdout)
+    data = json.loads(result.stdout)
+    self.assertEqual(data["verdict"], "OK")
+    spec = json.loads(spec_path.read_text(encoding="utf-8"))
+    self.assertTrue(spec["workflow_state"]["requirements"]["alignment"])
+    state = yaml.safe_load(in_progress.read_text(encoding="utf-8"))
+    self.assertEqual(state["pending_gates"], ["stages/requirements.yaml#approval"])
+    self.assertEqual(state["completed_gates"], ["stages/requirements.yaml#alignment"])
+    self.assertEqual(
+      state["downstream_impact_decisions"][0]["gate"],
+      "stages/requirements.yaml#alignment",
+    )
+    self.assertEqual(state["next_step"], "第3過程：requirements approval")
+
+  def test_reopen_advance_gate_blocks_nonleading_pending_gate(self):
+    """pending_gates の先頭以外を飛ばして完了できない"""
+    self._write_spec()
+    in_progress = (
+      Path(self.tmpdir)
+      / "stages"
+      / "in-progress"
+      / "reopen-procedure-2026-06-15.yaml"
+    )
+    in_progress.parent.mkdir(parents=True)
+    in_progress.write_text(
+      "process_id: reopen-procedure\n"
+      "feature: workflow-management\n"
+      "step_number: 3\n"
+      "next_step: 第3過程：requirements alignment\n"
+      "completed_steps: []\n"
+      "pending_gates:\n"
+      "  - stages/requirements.yaml#alignment\n"
+      "  - stages/requirements.yaml#approval\n"
+      "completed_gates: []\n"
+      "downstream_impact_decisions: []\n"
+      "current_blocker: null\n",
+      encoding="utf-8",
+    )
+
+    result = run_script(
+      [
+        "reopen-advance-gate",
+        "--file", "stages/in-progress/reopen-procedure-2026-06-15.yaml",
+        "--gate", "stages/requirements.yaml#approval",
+        "--decision", "approved",
+        "--feature-scope", "workflow-management",
+        "--rationale", "approval を先に進める。",
+        "--evidence", "approval.md",
+        "--json",
+      ],
+      cwd=self.tmpdir,
+    )
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 2, result.stdout)
+    self.assertIn("先頭", result.stdout)
+
+
 def _init_git_repo(tmpdir):
   """temp dir に git リポジトリを初期化し、初回コミットと .reviewcompass 構造を準備する
 

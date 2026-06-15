@@ -1,0 +1,28 @@
+process_id: maintenance
+started_at: 2026-06-15T14:05:00Z
+title: reopen advance gate helper
+trigger: reopen 第3過程で pending gate 完了時の証跡・spec.json・in-progress 状態更新を手編集しており、YAML 破損や必須項目漏れの原因になった。
+mainline_blocked_by: completed workflow has no required next action
+allowed_scope:
+- workflow-management maintenance
+allowed_files:
+- tools/check-workflow-action.py
+- tests/tools/test_check_workflow_action.py
+- docs/operations/WORKFLOW_PRECHECK.md
+- docs/operations/WORKFLOW_PRECHECK_DETAILS.md
+- TODO_NEXT_SESSION.md
+- stages/in-progress/maintenance-2026-06-15-reopen-advance-gate.yaml
+completion_conditions:
+- reopen-advance-gate 相当のコマンドが TDD で追加される。
+- pending gate 完了時に spec.json、pending_gates、completed_gates、downstream_impact_decisions、completed_steps が機械更新される。
+- YAML parse、対象 unittest、git diff --check、next --json が通過する。
+current_status: completed
+completed_at: 2026-06-15T14:15:00Z
+completion_evidence:
+- tools/check-workflow-action.py
+- tests/tools/test_check_workflow_action.py
+deferred_follow_up:
+- docs/operations/WORKFLOW_PRECHECK.md
+- docs/operations/WORKFLOW_PRECHECK_DETAILS.md
+- TODO_NEXT_SESSION.md
+deferred_reason: post-write-verification 対象文書と tools 変更を同一未コミット差分に混在させると policy violation になるため、文書反映は別単位で扱う。

@@ -5222,6 +5222,156 @@ def cmd_reopen_start(args):
   return exit_code
 
 
+def _write_json_file(path, data):
+  """JSON ファイルを安定した形式で書き戻す"""
+  path.write_text(
+    json.dumps(data, ensure_ascii=False, indent=2) + "\n",
+    encoding="utf-8",
+  )
+
+
+def _load_reopen_advance_state(cwd, relpath):
+  """reopen-advance-gate の対象 YAML を読む"""
+  path = Path(cwd) / relpath
+  if not path.exists():
+    raise ValueError(f"{relpath} が見つかりません")
+  try:
+    data = yaml.safe_load(path.read_text(encoding="utf-8"))
+  except yaml.YAMLError as e:
+    raise ValueError(f"{relpath} を YAML として読めません: {e}") from e
+  if not isinstance(data, dict):
+    raise ValueError(f"{relpath} は YAML object が必要です")
+  if data.get("process_id") != "reopen-procedure":
+    raise ValueError("process_id が reopen-procedure ではありません")
+  return path, data
+
+
+def _update_reopen_advance_spec(cwd, set_spec):
+  """--set-spec 指定があれば spec.json の workflow_state を更新する"""
+  if not set_spec:
+    return None
+  feature, phase, stage, value_text = set_spec
+  if value_text not in ("true", "false"):
+    raise ValueError("--set-spec の値は true または false が必要です")
+  if phase not in PHASE_STAGES or stage not in PHASE_STAGES[phase]:
+    raise ValueError("--set-spec の phase/stage が不正です")
+  spec_path = Path(cwd) / ".reviewcompass" / "specs" / feature / "spec.json"
+  if not spec_path.exists():
+    raise ValueError(f"{spec_path.relative_to(cwd)} が見つかりません")
+  data = json.loads(spec_path.read_text(encoding="utf-8"))
+  workflow_state = data.setdefault("workflow_state", {})
+  phase_state = workflow_state.setdefault(phase, {})
+  phase_state[stage] = (value_text == "true")
+  _write_json_file(spec_path, data)
+  return str(spec_path.relative_to(cwd))
+
+
+def _next_step_for_pending_gate(gate):
+  """pending gate から人間向け next_step を作る"""
+  phase, stage = _parse_stage_gate(gate)
+  return f"第3過程：{phase} {stage}"
+
+
+def cmd_reopen_advance_gate(args):
+  """reopen 第3過程の pending gate 完了更新を機械処理する"""
+  cwd = Path.cwd()
+  reasons = []
+  try:
+    path, data = _load_reopen_advance_state(cwd, args.file)
+    pending_gates = data.get("pending_gates")
+    if not isinstance(pending_gates, list) or not all(isinstance(v, str) for v in pending_gates):
+      raise ValueError("pending_gates は文字列 list が必要です")
+    if not pending_gates or pending_gates[0] != args.gate:
+      raise ValueError("指定 gate は pending_gates の先頭である必要があります")
+    evidence = args.evidence or []
+    if not evidence:
+      raise ValueError("--evidence は 1 件以上必要です")
+
+    spec_path = _update_reopen_advance_spec(cwd, args.set_spec)
+
+    remaining_gates = pending_gates[1:]
+    data["pending_gates"] = remaining_gates
+    completed_gates = data.get("completed_gates")
+    if completed_gates is None:
+      completed_gates = []
+    if not isinstance(completed_gates, list):
+      raise ValueError("completed_gates は list が必要です")
+    if args.gate not in completed_gates:
+      completed_gates.append(args.gate)
+    data["completed_gates"] = completed_gates
+
+    completed_steps = data.get("completed_steps")
+    if completed_steps is None:
+      completed_steps = []
+    if not isinstance(completed_steps, list):
+      raise ValueError("completed_steps は list が必要です")
+    if args.completed_step and args.completed_step not in completed_steps:
+      completed_steps.append(args.completed_step)
+    data["completed_steps"] = completed_steps
+
+    decisions = data.get("downstream_impact_decisions")
+    if decisions is None:
+      decisions = []
+    if not isinstance(decisions, list):
+      raise ValueError("downstream_impact_decisions は list が必要です")
+    decisions.append(
+      {
+        "gate": args.gate,
+        "feature_scope": args.feature_scope,
+        "decision": args.decision,
+        "rationale": args.rationale,
+        "evidence": evidence,
+      }
+    )
+    data["downstream_impact_decisions"] = decisions
+    data["current_blocker"] = None
+    if remaining_gates:
+      data["next_step"] = _next_step_for_pending_gate(remaining_gates[0])
+      data["step_number"] = 3
+    else:
+      data["next_step"] = "第4過程：完了"
+      data["step_number"] = 4
+
+    path.write_text(
+      yaml.safe_dump(data, allow_unicode=True, sort_keys=False),
+      encoding="utf-8",
+    )
+    verdict, exit_code = "OK", 0
+    next_action = {
+      "kind": "reopen_gate_advanced",
+      "file": args.file,
+      "gate": args.gate,
+      "remaining_gates": remaining_gates,
+      "phase": None,
+      "stage": None,
+      "reason": "reopen pending gate を更新しました",
+    }
+    current_state = {
+      "file": args.file,
+      "updated_spec": spec_path,
+      "pending_gates": remaining_gates,
+      "completed_gates": completed_gates,
+    }
+  except (OSError, ValueError, json.JSONDecodeError) as e:
+    verdict, exit_code = "DEVIATION", 2
+    reasons = [str(e)]
+    next_action = {
+      "kind": "reopen_advance_gate_failed",
+      "file": args.file,
+      "gate": args.gate,
+      "phase": None,
+      "stage": None,
+      "reason": "reopen pending gate を更新できません",
+    }
+    current_state = {}
+
+  if args.json:
+    print(format_next_json_output(verdict, exit_code, next_action, reasons, current_state))
+  else:
+    print(format_next_human_output(verdict, exit_code, next_action, reasons, current_state))
+  return exit_code
+
+
 def _feature_all_approved(specs, feature):
   """feature の全 phase で approval=true かを返す（review-wave-summary 用、Req 10）"""
   ws = specs.get(feature, {}).get("workflow_state", {})
@@ -5622,6 +5772,25 @@ def main():
   rs.add_argument("--date", required=True, help="in-progress ファイル名に使う日付（YYYY-MM-DD）")
   rs.add_argument("--trigger", required=True, help="reopen 起動理由")
 
+  rag = sub.add_parser(
+    "reopen-advance-gate",
+    help="reopen 第3過程の pending gate 完了更新を機械処理する",
+    parents=[common_parser],
+  )
+  rag.add_argument("--file", required=True, help="更新対象の reopen in-progress YAML")
+  rag.add_argument("--gate", required=True, help="完了する gate（例: stages/design.yaml#alignment）")
+  rag.add_argument("--decision", required=True, help="downstream_impact_decisions に記録する decision")
+  rag.add_argument("--feature-scope", required=True, help="downstream_impact_decisions に記録する feature_scope")
+  rag.add_argument("--rationale", required=True, help="判断理由")
+  rag.add_argument("--evidence", action="append", default=[], help="判断証跡。複数指定可")
+  rag.add_argument("--completed-step", default=None, help="completed_steps に追加する説明")
+  rag.add_argument(
+    "--set-spec",
+    nargs=4,
+    metavar=("FEATURE", "PHASE", "STAGE", "VALUE"),
+    help="spec.json の workflow_state を同時更新する",
+  )
+
   rws = sub.add_parser(
     "review-wave-summary",
     help="review-wave 横断確認の指標を集計して出力する（Req 10）",
@@ -5713,6 +5882,8 @@ def main():
     sys.exit(cmd_next(args))
   elif args.subcommand == "reopen-start":
     sys.exit(cmd_reopen_start(args))
+  elif args.subcommand == "reopen-advance-gate":
+    sys.exit(cmd_reopen_advance_gate(args))
   elif args.subcommand == "review-wave-summary":
     sys.exit(cmd_review_wave_summary(args))
   elif args.subcommand == "commit-approval":
