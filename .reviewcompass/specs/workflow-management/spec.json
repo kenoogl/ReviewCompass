@@ -53,9 +53,7 @@
     "implementation": true
   },
   "recheck": {
-    "upstream_change_pending": true,
-    "impacted_downstream_phases": [
-      "implementation"
-    ]
+    "upstream_change_pending": false,
+    "impacted_downstream_phases": []
   }
 }

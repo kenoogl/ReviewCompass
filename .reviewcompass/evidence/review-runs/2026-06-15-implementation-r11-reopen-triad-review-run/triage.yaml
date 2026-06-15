@@ -1,0 +1,35 @@
+run_id: 2026-06-15-implementation-r11-reopen-triad-review-run
+feature: workflow-management
+phase: implementation
+reopen: R-0（decision-source-lint）
+date: 2026-06-15
+variant: implementation_review_independent_3way
+rounds: 2
+proxy_model: gemini-3.1-pro-preview
+
+findings:
+  - id: C1
+    sources: [A-001]
+    severity: must-fix
+    status: resolved
+    summary: current_state_text に decision-source-lint の状態が含まれていない
+    resolution: current_state_text に「decision-source-lint 判定: {verdict}（{件数} 件）」を追加
+  - id: C2
+    sources: [F-002, A-002]
+    severity: should-fix
+    status: resolved
+    summary: 差分表示が最小限・unverifiable テストが欠落
+    resolution: unverifiable を変更しないテストを追加（62 件 pass）
+  - id: C3
+    sources: [A-003]
+    severity: leave-as-is
+    status: closed
+    summary: 句読点パターンの記号カバレッジ（✓ はリスト一致で捕捉されるため実用上問題なし）
+  - id: C4
+    sources: [F-001, F-003, F-004, A-004, A-005]
+    severity: leave-as-is
+    status: closed
+    summary: INFO / 設計通りの挙動
+
+all_must_fix_resolved: true
+convergence: true

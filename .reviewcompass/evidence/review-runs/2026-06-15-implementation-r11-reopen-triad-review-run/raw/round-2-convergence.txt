@@ -1,0 +1,18 @@
+# implementation triad-review round-2 収束確認（proxy: gemini-3.1-pro-preview）
+
+## must-fix 反映後の確認
+
+### C1 [must-fix → resolved]
+current_state_text に「decision-source-lint 判定: {verdict}（{件数} 件）」が追加されている。✓
+
+## C2 [should-fix → resolved]
+test_verify_pending_does_not_modify_unverifiable テストを追加（62 件 pass）。✓
+
+## round-2 所見
+
+追加の must-fix 0 件。
+
+## 収束判定
+
+- 未解決 must-fix: 0 件
+- 収束: true

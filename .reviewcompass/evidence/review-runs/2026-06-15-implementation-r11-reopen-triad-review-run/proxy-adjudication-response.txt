@@ -1,0 +1,33 @@
+# implementation triad-review proxy 裁定応答（round-1）
+# proxy_model: gemini-3.1-pro-preview（利用者委任「自律実施」2026-06-15）
+
+## クラスタ別判定
+
+### C1 [must-fix] current_state_text に dsl 状態が含まれていない
+所見: A-001 (ERROR)
+判定: must-fix
+理由: 他の検査（post-write-verification・deployment-lint・document-link-lint）はすべて current_state_text に結果件数・状態が含まれており、decision-source-lint だけ欠落しているのは一貫性違反。ユーザーが commit 状態を確認する際に dsl の状態が見えないのは運用上の問題。
+対処: current_state_text に「decision-source-lint 判定: {verdict}（{件数} 件）」を追加する。
+
+### C2 [should-fix] 差分表示の最小限さと unverifiable テスト欠落
+所見: F-002 + A-002
+判定: should-fix
+理由: design §6 委譲事項の範囲内であり、現在の実装は最低限の情報を提供している。unverifiable の --verify-pending での非変更テストは追加すべきだが、既存の `test_verify_pending_does_not_modify_non_pending` で verified のファイルを変更しないことは確認済みであり、unverifiable についても同じロジックが適用される（verification_status != "pending" なら skip）。
+対処: `test_verify_pending_does_not_modify_non_pending` を `unverifiable` でも実施するテストを追加する（差分表示の改善は implementation §6 の範囲で次回改善対象とする）。
+
+### C3 [leave-as-is] 句読点パターンの記号カバレッジ
+所見: A-003
+判定: leave-as-is
+理由: ✓ 等の特殊記号は `empty_content_words` リストに直接含まれており、句読点除去パターンで除去しなくてもトークン一致で検出される。実用上問題なし。
+
+### C4 [leave-as-is] INFO / 設計通りの挙動
+所見: F-001 + F-003 + F-004 + A-004 + A-005
+判定: leave-as-is
+理由: いずれも設計通りの挙動またはテストで確認済みの正常動作。
+
+## 要約
+
+- must-fix: 1 クラスタ（C1）
+- should-fix: 1 クラスタ（C2）
+- leave-as-is: 2 クラスタ（C3・C4）
+- all_must_fix_resolved: false（反映後に round-2 で確認）

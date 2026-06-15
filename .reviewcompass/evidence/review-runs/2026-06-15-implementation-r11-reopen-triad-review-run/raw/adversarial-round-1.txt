@@ -1,0 +1,61 @@
+# implementation triad-review adversarial（gpt-5.5）round-1
+
+## A-001 [ERROR] `cmd_commit` の current_state_text / current_state_dict に decision-source-lint の状態が含まれていない
+
+**場所**: `tools/check-workflow-action.py:cmd_commit()` の current_state_text 組み立て部分
+
+**問題**: `cmd_commit` は `dsl_result` を計算して verdict に統合しているが、`current_state_text` の組み立て（ユーザーへの状態出力）に decision-source-lint の件数（pending 件数・DEVIATION 件数）が含まれていない。他の検査（post-write-verification・deployment-lint・document-link-lint）はすべて `current_state_text` に結果件数が含まれているが、decision-source-lint は含まれていない。
+
+**影響**: ユーザーが `commit` コマンドを実行した際に decision-source-lint の詳細状態（何件 pending/DEVIATION か）が `current_state_text` から確認できない。ログにも記録されない。DEVIATION 理由は `deviation_reasons` として出力されるが、正常時の状態情報（例：「decision-source-lint: 0 件（正常）」）が見えない。
+
+**分類**: ERROR
+
+---
+
+## A-002 [WARN] `run_verify_pending` が転写ファイルを直接書き換えるが、ファイルが転写ファイルのケースをテストしていない
+
+**場所**: `tools/check_workflow_action/decision_source_lint.py:run_verify_pending()` とテスト
+
+**問題**: `run_verify_pending` のテストは `decisions/` 内の YAML ファイルの書き込みをテストしているが、転写ファイル（session_file）が存在する場合のテストは `setup_method` でセットアップしている。ただし `test_verify_pending_does_not_modify_non_pending` が「verified のファイルは変更しない」を検証しているが、「unverifiable のファイルは変更しない」のテストがない。
+
+**影響**: unverifiable の決定が --verify-pending で誤って変更される可能性を検証していない。
+
+**分類**: WARN
+
+---
+
+## A-003 [WARN] `is_empty_content` の句読点除去パターンが半角記号のみ（全角記号の一部が欠落）
+
+**場所**: `tools/check_workflow_action/decision_source_lint.py:PUNCTUATION_PATTERN`
+
+**問題**: `PUNCTUATION_PATTERN = re.compile(r"[。、！？!?,\.。，！？]")` において、全角感嘆符（！）・疑問符（？）・コンマ（，）が含まれているが、`✓`・`◯`・`○`（内容なし語リストに含まれる）が記号パターンに含まれていない。design §4 では「句読点・記号（。、！？）を除去する」とあるが、絵文字・特殊記号（✓）の扱いが設計で明示されていない。
+
+実際の使用では `✓` がリストに含まれているため、正規化後に `✓` がそのまま残っても `is_empty_content` ではリスト一致で検出される（パターン除去が不要）。したがって実用上問題ない。
+
+**影響**: 設計上の曖昧さ。記号の扱いは implementation 委譲事項（design §6 には含まれていないが、句読点除去の精度の細部として対処可能）。
+
+**分類**: WARN
+
+---
+
+## A-004 [INFO] テスト `test_empty_string` が空文字列を `is_empty_content == True` とする
+
+**場所**: `tests/tools/test_decision_source_lint.py:TestIsEmptyContent.test_empty_string`
+
+**問題**: 空文字列は `tokens = []` となり `all(...)` が `True` を返すため `is_empty_content == True`（fail-closed）。これは fail-closed 原則に沿っているが、空文字列は `validate_decision_schema` でも既に「excerpt が空文字列でエラー」として捕捉される。二重チェックになっているが、防御的実装として許容範囲。
+
+**影響**: 二重チェックは問題なし。`lint_decision_file` のフロー上、スキーマ検査が先に走るため空文字列 excerpt は `is_empty_content` に到達しない。
+
+**分類**: INFO
+
+---
+
+## A-005 [WARN] `cmd_decision_source_lint` が `--all` フラグを使っておらず、引数なし時に `--all` と同じ挙動かが不明確
+
+**場所**: `tools/check-workflow-action.py:cmd_decision_source_lint()`
+
+**問題**: `cmd_decision_source_lint` の実装は `args.verify_pending` → `args.decision_file` → `run_decision_source_lint_all(cwd)` の順で分岐している。引数なし（`decision_file=None`・`all_decisions=False`・`verify_pending=False`）の場合も `run_decision_source_lint_all()` が実行される。これは設計「引数なし or --all：全件検査」と一致しているが、コードが `args.all_decisions` フラグを明示的にチェックしていないため、`--all` フラグが冗長に見える。
+
+**影響**: 動作は正しいが、`--all` フラグが実質的に引数なしと同じで区別されていない。設計では「引数なし or --all」を等価に扱っているため、実装は正しい。
+
+**分類**: WARN → leave-as-is（設計通り）

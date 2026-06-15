@@ -1,0 +1,280 @@
+process_id: reopen-procedure
+feature: workflow-management
+classification: R-0
+started_at: '2026-06-15T00:00:00+09:00'
+trigger: 裁定負荷対策 lint（重要決定の出典検査・束ね検出・逐語照合・内容性）と構造化した重要決定の記録形式の新設（TODO §4 候補5）
+classification_basis: docs/reviews/reopen-classification-2026-06-15-wm-decision-source-lint.md
+completed_steps:
+- 第1過程：判定とフラグ差し戻し（分類記録作成、reopen-start、spec.json 差し戻し〔workflow-management の requirements
+  alignment・approval を false、recheck＝upstream_change_pending=true・impacted_downstream_phases=[design,
+  tasks, implementation]、updated_at=2026-06-15〕、spec-set 事前検査 2 件 OK）
+- 第1過程 根拠記録の独立検証：分類記録の書き込み後検証を 3 体で実施（variant post_write_verification_independent_3way、primary=claude-sonnet-4-6・adversarial=gpt-5.5・judgment=gemini-3.1-pro-preview）。
+  所見 4 件＝must-fix 2（gpt-5.5・gemini が同根で指摘した「過去台帳の扱いを未決事項として下流送り」と確定済み「遡及移行しない」の矛盾。利用者承認のうえ事実節から削除し確定を明示して解消）、leave-as-is
+  2（claude の逐語的・範囲外 INFO）。収束（未解決の本質的指摘 0）。manifest .reviewcompass/post-write-verification/post-write-2026-06-15-001.yaml（正本判定
+  completed）。review-run .reviewcompass/evidence/review-runs/2026-06-15-postwrite-reopen-classification-decision-source-lint。利用者承認「承認」（2026-06-15）
+- 第1過程停止点：利用者承認済み。R-0・再実施範囲（requirements の alignment〜approval＋下流 design／tasks／implementation）・フラグ差し戻しは
+  2026-06-15 利用者「提案の方針でOK」＋「承認」で取得。停止点コミットは 2026-06-15 利用者「コミット」明示
+- 第1過程停止点：コミット 7610a0d8 完了（第1過程一式を1コミット、利用者「コミット」2026-06-15）。push は
+  reopen 進行中のため push 事前検査で遮断され、手続き完了（第4過程で進行中ファイルを completed へ移動）後にまとめて行う
+- 第2過程：正本修正。requirements.md に Requirement 11 を新設（重要決定の出典検査＝束ね検出・逐語照合・内容性＋構造化した重要決定の記録形式。受入
+  1〜7＋目的＋由来）。Change Intent に 2026-06-15 reopen R-0 の由来 1 行を追加。実装は未着手（第3過程以降で
+  TDD）
+- 第3過程：stages/requirements.yaml#triad-review round-1 実施（利用者「実行」2026-06-15）。run=.reviewcompass/evidence/review-runs/2026-06-15-requirements-r11-reopen-triad-review-run。variant=implementation_review_independent_3way。所見
+  13 件（claude 5〔WARN3・INFO2〕・gpt-5.5 6〔ERROR3・WARN3〕・gemini 2〔WARN1・INFO1〕）。同根 7 クラスタを利用者提示。最重要＝取り込み前／現セッション決定の順序依存（逐語照合とコミット直前ゲートのデッドロック）
+- 側道（完了）：proxy 裁定レコードの生成ツールが無く前例頼りだったため、make-proxy-approval.py を TDD 新設（利用者決定「生成ツール作成を実施し、ここに戻ってくる」2026-06-15）。stages/completed/maintenance-2026-06-15-proxy-approval-generator.yaml。tests/tools
+  334 件 pass
+- 第3過程：stages/requirements.yaml#triad-review 収束（round-1→3、利用者委任「A」proxy 裁定）。round-1
+  所見13件→proxy 裁定 must-fix7・should-fix4・leave-as-is2（make-proxy-approval.py で proxy-approval・decisions
+  生成、正本自己検証 OK）→Req 11 へ反映。round-2 所見6件→must-fix1（私の round-1 デッドロック修正『保留』が
+  fail-closed 抜け道と gemini が ERROR 指摘）＋should-fix3→受入3 を「保留＝確定済みとして扱わない・後続根拠に用いない・タイムアウト昇格なし」に書換、受入1/2
+  も補強→round-3。round-3 所見：gpt-5.5/gemini 0 件・claude INFO3（design 細目、leave-as-is）＝収束（must-fix
+  0）。proxy 裁定プロンプト/応答は round 別に保存（proxy-adjudication-*-round-2 等）
+- 側道（追補・完了）：make-proxy-approval.py を per-decision の裁定プロンプト/応答パス対応に小拡張（複数ラウンド対応、テスト追加で計5件）。tests/tools
+  335 件 pass
+- 第3過程停止点コミット完了（8680777e、利用者「コミット」2026-06-15、triad-review 収束まで）
+- 第3過程：stages/requirements.yaml#review-wave 実施（decision=no_impact）。新 Requirement 11 は workflow-management
+  内部の静的検査・機械強制で他 6 機能の契約・スキーマに変更なし。持ち越し台帳（reviewcompass-import.yaml）は全17件
+  resolved＝未消化0件。記録＝.reviewcompass/specs/_cross_feature/reviews/2026-06-15-requirements-r11-review-wave.md
+- 第3過程：stages/requirements.yaml#alignment 実施（decision=existing_sufficient）。Requirement 11
+  は既存 Requirement 1〜10 と整合し既存要件の改訂不要。受入基準間も「未検証の決定を確定済みと扱わない」原則で一貫。未処理整合所見なし。記録＝.reviewcompass/specs/_cross_feature/reviews/2026-06-15-requirements-r11-reopen-alignment.md
+- 第3過程：stages/requirements.yaml#approval 承認（proxy_model=gemini-3.1-pro-preview 代行、利用者委任「B」2026-06-15）。proxy
+  判断 approved=true（triad-review・review-wave・alignment の全ゲートを未解決 must-fix 0 でクリア。残存リスク＝round-3
+  INFO〔design 細目〕を design フェーズで適切に具体化）。spec.json の requirements alignment・approval を true
+  へ復帰済み（recheck は design／tasks／implementation 残、updated_at=2026-06-15）。spec-set 2 件 OK。proxy
+  判断記録＝.reviewcompass/evidence/review-runs/2026-06-15-requirements-r11-reopen-triad-review-run/proxy-approval-requirements-{prompt.md,response.txt}
+- 第3過程（downstream design 開始）：Req 10 reopen 前例に従い design フラグは差し戻さず（alignment・approval
+  は true 維持のまま）、design.md に Req 11 設計節（§Req 11 設計モデル）を追加。確定事項＝記録スキーマ（フィールド名・型・配置先
+  .reviewcompass/decisions/{decision_id}.yaml）・ロケータ表現（{転写パス}:{ターン番号}）・正規化規則（NFC・連続空白→1空白・前後除去）・保留管理（pending→転写取り込み→verify-pending
+  再照合→verified）・内容なし語リスト初期値（stages/decision-source-lint-config.yaml）・サブコマンド名（decision-source-lint）・commit
+  ゲート組み込み（組み込む、pending は WARN・unverifiable は DEVIATION）。要件対応表に Req 11 7 行追加。変更意図に追記。更新日を 2026-06-15 へ
+- 第3過程：stages/design.yaml#triad-review 実施（round-1→2 収束、自律実施・proxy 裁定）。run=.reviewcompass/evidence/review-runs/2026-06-15-design-r11-reopen-triad-review-run。round-1
+  所見 12 件（primary 7〔ERROR1・WARN4・INFO2〕・adversarial 10〔ERROR4・WARN4・INFO2〕）→ proxy_model（gemini-3.1-pro-preview、自律委任）裁定で
+  must-fix 6・should-fix 4・leave-as-is 2。反映＝requirements 受入 5 に --verify-pending 例外明示、bundle-exceptions
+  スキーマ・束ね例外後 multiplicity=single 更新必要条件・照合不合格時 pending 維持・ロケータ全文検索・--all サブディレクトリ除外・category
+  判定基準表・session_id 補助位置付け・unverifiable 定義・トークン化手順。round-2 所見＝must-fix 0（INFO 2 件のみ）＝収束
+- 第3過程：stages/design.yaml#review-wave 実施（decision=no_impact）。新 §Req 11 設計モデルは workflow-management
+  内部に閉じ、他 6 機能の契約・スキーマに変更なし。carry-forward 未消化 0 件。記録＝.reviewcompass/specs/_cross_feature/reviews/2026-06-15-design-r11-review-wave.md
+- 第3過程：stages/design.yaml#alignment 実施（decision=existing_sufficient）。§Req 11 設計モデルは既存設計節と整合し改訂不要。fail-closed・保留管理・読み取り専用例外の一貫性が確認された。記録＝.reviewcompass/specs/_cross_feature/reviews/2026-06-15-design-r11-reopen-alignment.md
+- 第3過程：stages/design.yaml#approval 承認（proxy_model=gemini-3.1-pro-preview 代行、自律委任 2026-06-15）。proxy
+  判断 approved=true（全ゲート未解決 must-fix 0 でクリア。残存リスク＝round-2 INFO〔実装委譲事項〕を implementation フェーズで対処）。recheck
+  から design を消化〔impacted_downstream_phases=[tasks, implementation]〕、design alignment・approval
+  は true 維持。proxy 判断記録＝.reviewcompass/evidence/review-runs/2026-06-15-design-r11-reopen-triad-review-run/proxy-approval-design-{prompt.md,response.txt}
+- 第3過程（downstream tasks 開始）：tasks.md に T-013（重要決定の出典検査 decision-source-lint サブコマンド）を追記。Req
+  11 受入 1〜7 の要件追跡表 7 行・変更意図 Req 11 追記・完成判定基準 T-001〜T-013 更新。updated_at=2026-06-15
+- 第3過程：stages/tasks.yaml#triad-review 実施（round-1→2 収束、自律実施・proxy 裁定）。run=.reviewcompass/evidence/review-runs/2026-06-15-tasks-r11-reopen-triad-review-run。round-1
+  所見 10 件（primary 4〔WARN2・INFO2〕・adversarial 6〔ERROR2・WARN3・INFO1〕）→ proxy_model（gemini-3.1-pro-preview、自律委任）裁定で
+  must-fix 2・should-fix 4・leave-as-is 3。反映＝完了条件に design §6 委譲事項 4 項目ゲート追加・テスト要件(2)に束ね例外部分満足 fail-closed 追記・テスト要件(10)を end-to-end テスト表現に修正。round-2
+  所見＝must-fix 0（収束）
+- 第3過程：stages/tasks.yaml#review-wave 実施（decision=no_impact）。T-013 は workflow-management
+  内部に閉じ、他 6 機能の契約・スキーマに変更なし。carry-forward 未消化 0 件。記録＝.reviewcompass/specs/_cross_feature/reviews/2026-06-15-tasks-r11-review-wave.md
+- 第3過程：stages/tasks.yaml#alignment 実施（decision=existing_sufficient）。T-013 は既存 T-001〜T-012
+  と整合し既存タスクの改訂不要。要件追跡の双方向整合確認済み。記録＝.reviewcompass/specs/_cross_feature/reviews/2026-06-15-tasks-r11-reopen-alignment.md
+- 第3過程：stages/tasks.yaml#approval 承認（proxy_model=gemini-3.1-pro-preview 代行、自律委任 2026-06-15）。proxy
+  判断 approved=true（全ゲート未解決 must-fix 0 でクリア。残存リスク＝should-fix C3〜C6 は implementation
+  フェーズで TDD 実装時に具体化）。recheck から tasks を消化〔impacted_downstream_phases=[implementation]〕。proxy
+  判断記録＝.reviewcompass/evidence/review-runs/2026-06-15-tasks-r11-reopen-triad-review-run/proxy-approval-tasks-{prompt.md,response.txt}
+- 第3過程（downstream implementation 開始）：TDD で T-013 decision-source-lint サブコマンドを実装。成果物：tools/check_workflow_action/decision_source_lint.py（コアロジック
+  10 関数）・check-workflow-action.py に decision-source-lint サブコマンド登録と cmd_commit 統合（pending=WARN・unverifiable=DEVIATION）・stages/decision-source-lint-config.yaml（初期内容なし語リスト
+  11 件）・tests/tools/test_decision_source_lint.py（62 件テスト全 pass、395 件全テスト回帰なし）
+- 第3過程：stages/implementation.yaml#triad-review 実施（round-1→2 収束、自律実施・proxy 裁定）。run=.reviewcompass/evidence/review-runs/2026-06-15-implementation-r11-reopen-triad-review-run。round-1
+  所見 9 件（primary 4〔WARN2・INFO2〕・adversarial 5〔ERROR1・WARN3・INFO1〕）→ proxy_model（gemini-3.1-pro-preview、自律委任）裁定で
+  must-fix 1（current_state_text に dsl 状態追加）・should-fix 1（unverifiable テスト追加）・leave-as-is
+  2。round-2 所見＝must-fix 0（収束）
+- 第3過程：stages/implementation.yaml#review-wave 実施（decision=no_impact）。実装は workflow-management
+  内部に閉じ、他 6 機能の契約・スキーマに変更なし。carry-forward 未消化 0 件。記録＝.reviewcompass/specs/_cross_feature/reviews/2026-06-15-implementation-r11-review-wave.md
+- 第3過程：stages/implementation.yaml#alignment 実施（decision=existing_sufficient）。実装は design
+  §1〜§6 と整合し T-013 完了条件（design §6 委譲事項 4 項目を含む）をすべて満たす。記録＝.reviewcompass/specs/_cross_feature/reviews/2026-06-15-implementation-r11-reopen-alignment.md
+- 第3過程：stages/implementation.yaml#approval 承認（proxy_model=gemini-3.1-pro-preview 代行、自律委任
+  2026-06-15）。proxy 判断 approved=true（全ゲート未解決 must-fix 0 でクリア。62 件テスト全 pass・395 件回帰なし・design
+  §1〜§6 整合・T-013 完了条件充足）。recheck から implementation を消化・upstream_change_pending=false〔impacted_downstream_phases=[]〕。proxy
+  判断記録＝.reviewcompass/evidence/review-runs/2026-06-15-implementation-r11-reopen-triad-review-run/proxy-approval-implementation-{prompt.md,response.txt}
+- 第4過程：reopen 完了。in-progress ファイルを completed へ移動し、reopen 手続き終了
+next_step: |
+  第4過程：stages/in-progress/reopen-procedure-2026-06-15.yaml を stages/completed/ へ移動してコミット。push は別途実施
+step_number: 3
+pending_gates: []
+current_blocker: null
+human_decision: 2026-06-15 利用者決定。分類 R-0 採用（「提案の方針でOK」）、spec.json 差し戻し承認（「承認」）、第1過程停止点コミット指示（「コミット」）。
+approval_source: 2026-06-15 利用者発言「提案の方針でOK」（R-0・再実施範囲）＋「承認」（フラグ差し戻し）
+impacted_downstream_phases:
+- design
+- tasks
+- implementation
+completed_gates:
+- stages/requirements.yaml#triad-review
+- stages/requirements.yaml#review-wave
+- stages/requirements.yaml#alignment
+- stages/requirements.yaml#approval
+- stages/design.yaml#triad-review
+- stages/design.yaml#review-wave
+- stages/design.yaml#alignment
+- stages/design.yaml#approval
+- stages/tasks.yaml#triad-review
+- stages/tasks.yaml#review-wave
+- stages/tasks.yaml#alignment
+- stages/tasks.yaml#approval
+- stages/implementation.yaml#triad-review
+- stages/implementation.yaml#review-wave
+- stages/implementation.yaml#alignment
+- stages/implementation.yaml#approval
+downstream_impact_decisions:
+- gate: stages/requirements.yaml#triad-review
+  feature_scope: workflow-management
+  decision: affected_update_required
+  rationale: Requirement 11 の requirements 正本本文を新設・改訂し三役レビューで検証。proxy_model（gemini-3.1-pro-preview、利用者委任「A」）裁定で
+    round-1→3 収束（must-fix 解消、round-3 で gpt-5.5・gemini 0 件）。
+  evidence:
+  - .reviewcompass/evidence/review-runs/2026-06-15-requirements-r11-reopen-triad-review-run/triage.yaml
+- gate: stages/requirements.yaml#review-wave
+  feature_scope: all_features
+  decision: no_impact
+  rationale: 他 6 機能へ波及なし（Requirement 11 は workflow-management 内部の静的検査・機械強制、契約・スキーマ変更なし）。持ち越し台帳は全件
+    resolved＝未消化 0 件。
+  evidence:
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-15-requirements-r11-review-wave.md
+- gate: stages/requirements.yaml#alignment
+  feature_scope: all_features
+  decision: existing_sufficient
+  rationale: Requirement 11 は既存 Requirement 1〜10 と整合し既存要件の改訂不要。受入基準間も一貫、未処理整合所見なし。
+  evidence:
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-15-requirements-r11-reopen-alignment.md
+- gate: stages/requirements.yaml#approval
+  feature_scope: workflow-management
+  decision: proxy_approved
+  rationale: proxy_model（gemini-3.1-pro-preview、利用者委任「B」2026-06-15）承認。全ゲート未解決 must-fix 0 でクリア。残存リスク＝design
+    細目を design フェーズで具体化。spec.json requirements alignment・approval を true へ復帰済み。
+  evidence:
+  - .reviewcompass/evidence/review-runs/2026-06-15-requirements-r11-reopen-triad-review-run/proxy-approval-requirements-prompt.md
+  - .reviewcompass/evidence/review-runs/2026-06-15-requirements-r11-reopen-triad-review-run/proxy-approval-requirements-response.txt
+- gate: stages/design.yaml#triad-review
+  feature_scope: workflow-management
+  decision: affected_update_required
+  rationale: Requirement 11 の設計（§Req 11 設計モデル）を新設し三役レビューで検証。proxy_model（gemini-3.1-pro-preview、自律委任）裁定で
+    round-1→2 収束（must-fix 6 全解消、round-2 で must-fix 0）。
+  evidence:
+  - .reviewcompass/evidence/review-runs/2026-06-15-design-r11-reopen-triad-review-run/triage.yaml
+- gate: stages/design.yaml#review-wave
+  feature_scope: all_features
+  decision: no_impact
+  rationale: 他 6 機能へ波及なし（§Req 11 設計モデルは workflow-management 内部に閉じ、契約・スキーマ変更なし）。carry-forward
+    未消化 0 件。
+  evidence:
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-15-design-r11-review-wave.md
+- gate: stages/design.yaml#alignment
+  feature_scope: all_features
+  decision: existing_sufficient
+  rationale: §Req 11 設計モデルは既存設計節と整合し改訂不要。fail-closed・保留管理・読み取り専用例外の一貫性が確認。未処理整合所見なし。
+  evidence:
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-15-design-r11-reopen-alignment.md
+- gate: stages/design.yaml#approval
+  feature_scope: workflow-management
+  decision: proxy_approved
+  rationale: proxy_model（gemini-3.1-pro-preview、自律委任 2026-06-15）承認。全ゲート未解決 must-fix 0 でクリア。残存リスク＝round-2
+    INFO〔実装委譲事項〕を implementation フェーズで対処。recheck から design を消化。
+  evidence:
+  - .reviewcompass/evidence/review-runs/2026-06-15-design-r11-reopen-triad-review-run/proxy-approval-design-prompt.md
+  - .reviewcompass/evidence/review-runs/2026-06-15-design-r11-reopen-triad-review-run/proxy-approval-design-response.txt
+- gate: stages/tasks.yaml#triad-review
+  feature_scope: workflow-management
+  decision: affected_update_required
+  rationale: T-013（decision-source-lint サブコマンド）を tasks.md に追記し三役レビューで検証。proxy_model（gemini-3.1-pro-preview、自律委任）裁定で
+    round-1→2 収束（must-fix 2 全解消）。
+  evidence:
+  - .reviewcompass/evidence/review-runs/2026-06-15-tasks-r11-reopen-triad-review-run/triage.yaml
+- gate: stages/tasks.yaml#review-wave
+  feature_scope: all_features
+  decision: no_impact
+  rationale: 他 6 機能へ波及なし（T-013 は workflow-management 内部に閉じ、契約・スキーマ変更なし）。carry-forward 未消化 0 件。
+  evidence:
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-15-tasks-r11-review-wave.md
+- gate: stages/tasks.yaml#alignment
+  feature_scope: all_features
+  decision: existing_sufficient
+  rationale: T-013 は既存 T-001〜T-012 と整合し既存タスクの改訂不要。要件追跡の双方向整合確認済み。
+  evidence:
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-15-tasks-r11-reopen-alignment.md
+- gate: stages/tasks.yaml#approval
+  feature_scope: workflow-management
+  decision: proxy_approved
+  rationale: proxy_model（gemini-3.1-pro-preview、自律委任 2026-06-15）承認。全ゲート未解決 must-fix 0 でクリア。残存リスク＝should-fix
+    を implementation フェーズで TDD 実装時に具体化。recheck から tasks を消化。
+  evidence:
+  - .reviewcompass/evidence/review-runs/2026-06-15-tasks-r11-reopen-triad-review-run/proxy-approval-tasks-prompt.md
+  - .reviewcompass/evidence/review-runs/2026-06-15-tasks-r11-reopen-triad-review-run/proxy-approval-tasks-response.txt
+- gate: stages/implementation.yaml#triad-review
+  feature_scope: workflow-management
+  decision: affected_update_required
+  rationale: T-013 の TDD 実装（decision_source_lint.py・decision-source-lint サブコマンド・cmd_commit
+    統合）を三役レビューで検証。proxy_model（gemini-3.1-pro-preview、自律委任）裁定で round-1→2 収束（must-fix
+    1 全解消）。62 件テスト全 pass・395 件回帰なし。
+  evidence:
+  - .reviewcompass/evidence/review-runs/2026-06-15-implementation-r11-reopen-triad-review-run/triage.yaml
+- gate: stages/implementation.yaml#review-wave
+  feature_scope: all_features
+  decision: no_impact
+  rationale: 他 6 機能へ波及なし（実装は workflow-management 内部に閉じ、契約・スキーマ変更なし）。carry-forward 未消化 0 件。
+  evidence:
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-15-implementation-r11-review-wave.md
+- gate: stages/implementation.yaml#alignment
+  feature_scope: all_features
+  decision: existing_sufficient
+  rationale: 実装は design §1〜§6 と整合し T-013 完了条件（design §6 委譲事項 4 項目を含む）をすべて満たす。未処理整合所見なし。
+  evidence:
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-15-implementation-r11-reopen-alignment.md
+- gate: stages/implementation.yaml#approval
+  feature_scope: workflow-management
+  decision: proxy_approved
+  rationale: proxy_model（gemini-3.1-pro-preview、自律委任 2026-06-15）承認。全ゲート未解決 must-fix 0 でクリア。62 件テスト全
+    pass・395 件回帰なし・design §1〜§6 整合・T-013 完了条件充足。recheck から implementation を消化・upstream_change_pending=false。
+  evidence:
+  - .reviewcompass/evidence/review-runs/2026-06-15-implementation-r11-reopen-triad-review-run/proxy-approval-implementation-prompt.md
+  - .reviewcompass/evidence/review-runs/2026-06-15-implementation-r11-reopen-triad-review-run/proxy-approval-implementation-response.txt
+feature_impact_decisions:
+- feature: foundation
+  decision: no_reopen_existing_feature
+  impact_basis: no_implementation_impact
+  rationale: 共通契約・スキーマに変更なし。
+  evidence:
+  - docs/reviews/reopen-classification-2026-06-15-wm-decision-source-lint.md
+- feature: runtime
+  decision: no_reopen_existing_feature
+  impact_basis: no_implementation_impact
+  rationale: 実行契約に変更なし。
+  evidence:
+  - docs/reviews/reopen-classification-2026-06-15-wm-decision-source-lint.md
+- feature: evaluation
+  decision: no_reopen_existing_feature
+  impact_basis: no_implementation_impact
+  rationale: 評価契約に変更なし。
+  evidence:
+  - docs/reviews/reopen-classification-2026-06-15-wm-decision-source-lint.md
+- feature: analysis
+  decision: no_reopen_existing_feature
+  impact_basis: no_implementation_impact
+  rationale: 横断分析は複数実行の二次分析であり、1 件の決定記録に対する静的検査である本 lint とは別。
+  evidence:
+  - docs/reviews/reopen-classification-2026-06-15-wm-decision-source-lint.md
+- feature: workflow-management
+  decision: reopen_existing_feature
+  impact_basis: contract_ownership
+  rationale: 段集合 YAML による静的検査・修復手続きの機械強制・不可逆操作の直前ゲート（Requirement 4）を所有。新要件（重要決定の出典検査
+    lint と記録形式）の要件・設計・実装を所有するため。
+  evidence:
+  - docs/reviews/reopen-classification-2026-06-15-wm-decision-source-lint.md
+- feature: self-improvement
+  decision: no_reopen_existing_feature
+  impact_basis: no_implementation_impact
+  rationale: self-improvement は規律の提案権を持つが、決定記録の出典・束ね・逐語照合の機械強制は workflow-management の責務。規律本文や同期範囲に変更なし。
+  evidence:
+  - docs/reviews/reopen-classification-2026-06-15-wm-decision-source-lint.md
+- feature: conformance-evaluation
+  decision: no_reopen_existing_feature
+  impact_basis: no_implementation_impact
+  rationale: 実装推定・照合に変更なし。
+  evidence:
+  - docs/reviews/reopen-classification-2026-06-15-wm-decision-source-lint.md
+new_feature_decision:
+  decision: no_new_feature
+  rationale: workflow-management の責務境界（静的検査・修復手続きの機械強制）で受けられるため。
+  evidence:
+  - docs/reviews/reopen-classification-2026-06-15-wm-decision-source-lint.md

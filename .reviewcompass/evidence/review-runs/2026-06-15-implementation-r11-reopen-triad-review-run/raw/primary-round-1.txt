@@ -1,0 +1,49 @@
+# implementation triad-review primary（claude-sonnet-4-6）round-1
+
+## F-001 [INFO] check_bundle_exception が single + bundle_exception_id ありのケースでエラーを返す
+
+**場所**: `tools/check_workflow_action/decision_source_lint.py:check_bundle_exception()`
+
+**問題**: `multiplicity: single` かつ `bundle_exception_id` が設定されている場合、現在の実装は「承認レコードが存在するかチェック」を行い存在しない場合にエラーを返す。しかし design §2 のフローは「bundle_exception_id あり + multiplicity=single」が束ね例外処理後の最終状態として正常である。
+
+テスト `test_all_three_conditions_met_passes` では `multiplicity=single + bundle_exception_id=BEX-WM-001` で通過することを確認しており、実装がこれをサポートしている。実装コードの single 分岐で承認レコード確認を行っているが、これは design §2 の「3 条件をすべて満たす場合のみ通過」の確認と同じなので問題ない。
+
+**影響**: なし（テストが通過しており正常動作）
+
+**分類**: INFO
+
+---
+
+## F-002 [WARN] `run_verify_pending` の差分表示が `excerpt=xxx` だけで人が確認しにくい
+
+**場所**: `tools/check_workflow_action/decision_source_lint.py:run_verify_pending()`
+
+**問題**: design §3「差分表示と非ゼロ終了のみを行う」では不一致時に「差分表示」が期待されているが、現在の実装は `excerpt=norm_excerpt` のみを表示し、実際の照合対象テキスト（転写ファイルの該当箇所）との比較が出力されない。
+
+**影響**: 照合不合格の原因を人が特定しにくい。design §6 では「逐語不一致時の差分表示形式（どこが一致しなかったかの人向け出力。情報を含む範囲で形式を選ぶ）」が実装委譲事項として listed されており、現在の実装は最低限の情報を出力しているが改善の余地がある。
+
+**分類**: WARN（design §6 委譲事項として implementation で対処可能）
+
+---
+
+## F-003 [INFO] `lint_decision_file` 関数の戻り値が bundle-exceptions/ 除外を実施しない
+
+**場所**: `tools/check_workflow_action/decision_source_lint.py:lint_decision_file()` と `collect_decision_files()`
+
+**問題**: `collect_decision_files()` が bundle-exceptions/ を除外しており、`run_decision_source_lint_all()` がこれを使用している。単体ファイル指定（positional 引数）の場合は `collect_decision_files()` を使わず直接ファイルを渡すため、bundle-exceptions/ 内のファイルを直接指定することは可能。ただし design §5「`<decision_file>`：指定ファイルのみ検査」は単体指定が設計で許可されている。
+
+**影響**: 設計上の意図した挙動。bundle-exceptions/ ファイルをスキーマ検査した場合はパース失敗（必須フィールド欠落）で DEVIATION を返す。実用上問題なし。
+
+**分類**: INFO
+
+---
+
+## F-004 [WARN] `check_bundle_exception` の `single + no bundle_exception_id` ケースで `bundle_exception_id` が `data.get()` で None を返すが if not bex_id でスキップされる
+
+**場所**: `tools/check_workflow_action/decision_source_lint.py:check_bundle_exception()`
+
+**問題**: `multiplicity=single` で `bundle_exception_id` が存在しない場合（通常ケース）、`bex_id = data.get("bundle_exception_id")` は None を返し、`if bex_id:` で False になってスキップされ `[]` を返す。これは正しい挙動だが、テスト `test_single_without_exception_id_passes` で確認済み。実装は正しい。
+
+**影響**: なし
+
+**分類**: WARN → leave-as-is（実装は正しく、テストで確認済み）

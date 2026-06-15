@@ -3280,6 +3280,10 @@ def cmd_commit(args):
     validate_no_in_progress_session_records(cwd, staged_files)
   )
 
+  # decision-source-lint 統合（Req 11 受入 7）
+  from check_workflow_action.decision_source_lint import run_decision_source_lint_all
+  dsl_result = run_decision_source_lint_all(cwd)
+
   # 判定（仕様 §6.2）
   reasons = []
   deviation_reasons = []
@@ -3312,10 +3316,16 @@ def cmd_commit(args):
   if in_progress_record_errors:
     deviation_reasons.extend(in_progress_record_errors)
 
+  # decision-source-lint の DEVIATION 判定を統合
+  if dsl_result.exit_code == 2:
+    deviation_reasons.extend(
+      [f"decision-source-lint: {m}" for m in dsl_result.messages]
+    )
+
   if deviation_reasons:
     reasons.extend(deviation_reasons)
     verdict, exit_code = "DEVIATION", 2
-  elif unresolved_count > 0 or caution:
+  elif unresolved_count > 0 or caution or dsl_result.exit_code == 1:
     if unresolved_count > 0:
       reasons.append(
         f"未消化所見が {unresolved_count} 件あります"
@@ -3323,6 +3333,10 @@ def cmd_commit(args):
       )
     for f in caution:
       reasons.append(f"要注意変更: {f}（変更根拠を確認してください）")
+    if dsl_result.exit_code == 1:
+      reasons.extend(
+        [f"decision-source-lint: {m}" for m in dsl_result.messages]
+      )
     verdict, exit_code = "WARN", 1
   else:
     verdict, exit_code = "OK", 0
@@ -3343,7 +3357,8 @@ def cmd_commit(args):
     f"配置非依存 lint 所見: {len(deployment_lint_state['findings'])} 件\n"
     f"文書リンク lint 対象: {len(document_link_lint_state['target_files'])} 件\n"
     f"文書リンク lint 所見: {len(document_link_lint_state['findings'])} 件\n"
-    f"進行中セッション記録: {len(in_progress_record_state['in_progress_records'])} 件"
+    f"進行中セッション記録: {len(in_progress_record_state['in_progress_records'])} 件\n"
+    f"decision-source-lint 判定: {dsl_result.verdict}（{len(dsl_result.messages)} 件）"
   )
   current_state_dict = {
     "pending_unresolved_count": unresolved_count,
@@ -5250,6 +5265,38 @@ def render_review_wave_summary_markdown(summary):
   return "\n".join(lines) + "\n"
 
 
+def cmd_decision_source_lint(args):
+  """decision-source-lint サブコマンドのエントリポイント（Req 11）"""
+  from check_workflow_action.decision_source_lint import (
+    run_decision_source_lint_all,
+    run_verify_pending,
+    lint_decision_file,
+    load_decision_source_lint_config,
+  )
+  cwd = Path.cwd()
+
+  if getattr(args, "verify_pending", False):
+    result = run_verify_pending(cwd)
+    for msg in result.messages:
+      print(msg)
+    return result.exit_code
+
+  if getattr(args, "decision_file", None):
+    config = load_decision_source_lint_config(cwd)
+    path = Path(args.decision_file)
+    if not path.is_absolute():
+      path = cwd / path
+    result = lint_decision_file(path, cwd, config)
+    for msg in result.messages:
+      print(msg)
+    return result.exit_code
+
+  result = run_decision_source_lint_all(cwd)
+  for msg in result.messages:
+    print(msg)
+  return result.exit_code
+
+
 def cmd_review_wave_summary(args):
   """review-wave-summary サブコマンドのエントリポイント（Req 10）"""
   cwd = Path.cwd()
@@ -5423,6 +5470,34 @@ def main():
     help="既定保存先 .reviewcompass/specs/_cross_feature/reviews/ へ書き出す",
   )
 
+  # decision-source-lint サブコマンド（Req 11）
+  dsl = sub.add_parser(
+    "decision-source-lint",
+    help="重要決定の出典検査を行う（Req 11）",
+    parents=[common_parser],
+  )
+  dsl_group = dsl.add_mutually_exclusive_group()
+  dsl_group.add_argument(
+    "--all",
+    dest="all_decisions",
+    action="store_true",
+    default=False,
+    help="decisions/ 直下の全決定記録を検査する（bundle-exceptions/ は除外）",
+  )
+  dsl_group.add_argument(
+    "--verify-pending",
+    dest="verify_pending",
+    action="store_true",
+    default=False,
+    help="verification_status: pending の決定を再照合し、合格すれば verified に更新する",
+  )
+  dsl_group.add_argument(
+    "decision_file",
+    nargs="?",
+    default=None,
+    help="指定ファイルのみ検査（省略または --all で全件検査）",
+  )
+
   args = parser.parse_args()
 
   if args.subcommand == "spec-set":
@@ -5447,6 +5522,8 @@ def main():
     sys.exit(cmd_reopen_start(args))
   elif args.subcommand == "review-wave-summary":
     sys.exit(cmd_review_wave_summary(args))
+  elif args.subcommand == "decision-source-lint":
+    sys.exit(cmd_decision_source_lint(args))
   else:
     parser.print_help(sys.stderr)
     sys.exit(2)
