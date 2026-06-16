@@ -1,0 +1,39 @@
+approved_action: review_run_triage
+approved_by: user
+approval_statement: 2026-06-16 利用者発言「進める」（raw-review-triage-summary.md の推奨どおり、C1-C3 must-fix、C4 should-fix、C5-C6 leave-as-is として対処する承認）
+review_run_id: 2026-06-16-workflow-management-implementation-operation-registry-preflight-review-run
+summary_presented_to_user: true
+triage_presented_to_user: true
+approved_finding_ids:
+  - 2026-06-16-workflow-management-implementation-operation-registry-preflight-review-run-gpt-5.4-primary-001
+  - 2026-06-16-workflow-management-implementation-operation-registry-preflight-review-run-gpt-5.4-primary-002
+  - 2026-06-16-workflow-management-implementation-operation-registry-preflight-review-run-gpt-5.4-primary-003
+  - 2026-06-16-workflow-management-implementation-operation-registry-preflight-review-run-gpt-5.4-primary-004
+  - 2026-06-16-workflow-management-implementation-operation-registry-preflight-review-run-claude-opus-4-8-adversarial-001
+  - 2026-06-16-workflow-management-implementation-operation-registry-preflight-review-run-claude-opus-4-8-adversarial-002
+  - 2026-06-16-workflow-management-implementation-operation-registry-preflight-review-run-claude-opus-4-8-adversarial-003
+  - 2026-06-16-workflow-management-implementation-operation-registry-preflight-review-run-claude-opus-4-8-adversarial-004
+  - 2026-06-16-workflow-management-implementation-operation-registry-preflight-review-run-claude-opus-4-8-adversarial-005
+  - 2026-06-16-workflow-management-implementation-operation-registry-preflight-review-run-claude-opus-4-8-adversarial-006
+  - 2026-06-16-workflow-management-implementation-operation-registry-preflight-review-run-claude-opus-4-8-adversarial-007
+  - 2026-06-16-workflow-management-implementation-operation-registry-preflight-review-run-claude-opus-4-8-adversarial-008
+  - 2026-06-16-workflow-management-implementation-operation-registry-preflight-review-run-gemini-3.1-pro-preview-judgment-001
+  - 2026-06-16-workflow-management-implementation-operation-registry-preflight-review-run-gemini-3.1-pro-preview-judgment-002
+  - 2026-06-16-workflow-management-implementation-operation-registry-preflight-review-run-gemini-3.1-pro-preview-judgment-003
+approved_final_labels:
+  2026-06-16-workflow-management-implementation-operation-registry-preflight-review-run-gpt-5.4-primary-001: must-fix
+  2026-06-16-workflow-management-implementation-operation-registry-preflight-review-run-gpt-5.4-primary-002: must-fix
+  2026-06-16-workflow-management-implementation-operation-registry-preflight-review-run-gpt-5.4-primary-003: must-fix
+  2026-06-16-workflow-management-implementation-operation-registry-preflight-review-run-gpt-5.4-primary-004: leave-as-is
+  2026-06-16-workflow-management-implementation-operation-registry-preflight-review-run-claude-opus-4-8-adversarial-001: must-fix
+  2026-06-16-workflow-management-implementation-operation-registry-preflight-review-run-claude-opus-4-8-adversarial-002: must-fix
+  2026-06-16-workflow-management-implementation-operation-registry-preflight-review-run-claude-opus-4-8-adversarial-003: must-fix
+  2026-06-16-workflow-management-implementation-operation-registry-preflight-review-run-claude-opus-4-8-adversarial-004: must-fix
+  2026-06-16-workflow-management-implementation-operation-registry-preflight-review-run-claude-opus-4-8-adversarial-005: should-fix
+  2026-06-16-workflow-management-implementation-operation-registry-preflight-review-run-claude-opus-4-8-adversarial-006: must-fix
+  2026-06-16-workflow-management-implementation-operation-registry-preflight-review-run-claude-opus-4-8-adversarial-007: leave-as-is
+  2026-06-16-workflow-management-implementation-operation-registry-preflight-review-run-claude-opus-4-8-adversarial-008: leave-as-is
+  2026-06-16-workflow-management-implementation-operation-registry-preflight-review-run-gemini-3.1-pro-preview-judgment-001: must-fix
+  2026-06-16-workflow-management-implementation-operation-registry-preflight-review-run-gemini-3.1-pro-preview-judgment-002: must-fix
+  2026-06-16-workflow-management-implementation-operation-registry-preflight-review-run-gemini-3.1-pro-preview-judgment-003: should-fix
+consumed: false

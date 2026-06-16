@@ -1,0 +1,49 @@
+role: primary
+provider: openai-api
+model: gpt-5.4
+attempts: 1
+duration_seconds: 10.844
+findings:
+- severity: WARN
+  target_location: 'Design Excerpt: Preflight Response / state_refs.next_action'
+  description: The preflight response exposes workflow-state dimensions inside `state_refs.next_action`,
+    but the schema does not normatively define the shape or required fields of that
+    object.
+  rationale: Requirement 12 acceptance items 11 and 13 depend on uniquely and traceably
+    distinguishing `reopen_scope`, `impact_review_scope`, gates, and other active-state
+    dimensions. Leaving `next_action` as an untyped `object | null` makes interoperability
+    and completeness verification ambiguous at design level.
+- severity: WARN
+  target_location: 'Design Excerpt: Fail-Closed Conditions'
+  description: The design says certain conditions are made 'at least DEVIATION', but
+    it does not specify whether any listed condition must instead be a mandatory hard-stop
+    category distinct from warnable deviations.
+  rationale: The phase boundary states execution in Phase 2 is allowed only after
+    `OK` or explicitly permitted `WARN`. If serious issues such as approval-chain
+    mismatches, current-session formal record requests, or workflow-binding mismatches
+    are only described as `DEVIATION` without explicit execution prohibition semantics,
+    the fail-closed contract is underspecified.
+- severity: WARN
+  target_location: 'Design Excerpt: Specific Operation Families / Operation Contract'
+  description: The registry contract does not define how operation family entries
+    express family-specific required checks or invariants beyond generic policy strings.
+  rationale: Requirement 12 acceptance criteria 6 and 10 require distinct coverage
+    for review artifacts, bundles, manifests, approval records, document-type/criteria
+    checks, and deployment/export conflicts. With only unconstrained fields like `worktree_policy`,
+    `pending_conflict_policy`, and `artifact_policy`, the design risks inconsistent
+    registry entries and incomplete preflight coverage across operation families.
+- severity: INFO
+  target_location: 'Design Excerpt: `next` State Uniqueness'
+  description: Ownership separation between Requirement 2 and Requirement 12 is stated
+    clearly, but the document would benefit from an explicit normative statement that
+    Requirement 12 cannot redefine `next --json` semantics beyond additional fields
+    needed for preflight identity.
+  rationale: The current text is directionally correct and likely sufficient, yet
+    making the non-ownership boundary explicit would reduce future drift when extending
+    state fields for preflight consumers.
+- severity: INFO
+  target_location: 'Design Excerpt: Traceability And XDI'
+  description: Traceability alignment and XDI numbering appear coherent, with `XDI-WM-004`
+    avoiding collision with existing `XDI-WM-003`.
+  rationale: This is a positive design property relevant to review question 9 and
+    indicates requirements/design linkage was considered during the reopen update.

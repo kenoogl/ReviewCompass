@@ -1,0 +1,25 @@
+findings:
+  - severity: WARN
+    target_location: "Requirements Delta / Acceptance Criterion 1"
+    description: "The registry schema does not require an explicit phase/stage or gate linkage for each operation."
+    rationale: "This review scope requires operation registry and preflight to be a cross-cutting workflow-management contract, and the document emphasizes machine-readable workflow state and next pending gate consistency. Without requiring each registry entry to identify the workflow phase/stage or gate it belongs to, tooling cannot reliably relate canonical operations to the active workflow state or detect wrong-entrypoint / wrong-stage handbacks before execution."
+
+  - severity: WARN
+    target_location: "Requirements Delta / Acceptance Criterion 2"
+    description: "The read-only preflight output does not explicitly require reporting the active workflow state dimensions needed to verify consistency with `next --json`."
+    rationale: "Criterion 13 requires uniqueness for current mainline, required action, phase, stage, reopen scope, impact review scope, direct features, indirect features, flag policy, and next pending gate, but Criterion 2 only lists availability, conflicts, outputs, canonical commands, sequence mode, and next human-readable step. If preflight does not expose the state dimensions it checked, consumers cannot verify that operation availability is consistent with the unique active state contract."
+
+  - severity: WARN
+    target_location: "Requirements Delta / Acceptance Criterion 5"
+    description: "The stale commit approval check is listed only as a worktree/pending-conflict example rather than as a broader approval-chain integrity requirement."
+    rationale: "The smell inventory includes approval record gaps and serial approval chain parallelization, but Criterion 5 frames stale commit approvals inside worktree mixing checks. That risks underspecifying fail-closed preflight behavior for cases where the worktree is clean but approval records are missing, outdated, or inconsistent with the intended target, which are distinct blocker conditions before irreversible operations."
+
+  - severity: WARN
+    target_location: "Requirements Delta / Acceptance Criterion 6"
+    description: "Review artifact preflight scope mentions approval record preflight but does not clearly include review-target/manifest alignment and artifact overwrite or drift checks across all review artifacts."
+    rationale: "The stated handback patterns include manifest/review target coverage drift and approval record gaps. While Criterion 6 covers post-write manifest coverage and approval record preflight, the acceptance text does not explicitly require cross-artifact consistency checks among review target, manifest, criteria/doc-type selection, and any already-existing review artifacts. A stronger requirement is needed to fail closed on drift before creating or updating review-run related artifacts."
+
+  - severity: INFO
+    target_location: "Review Scope / Existing Context / Requirements Delta"
+    description: "The target document appropriately preserves reopen scoping and prior-review supersession context."
+    rationale: "It clearly states that workflow-management is the direct reopen owner at this phase, all features remain in impact review scope, and prior approvals preserved in `superseded_*` fields must not be treated as current evidence. This is aligned with the reopen review objective and helps avoid ambiguous reuse of obsolete approval state."

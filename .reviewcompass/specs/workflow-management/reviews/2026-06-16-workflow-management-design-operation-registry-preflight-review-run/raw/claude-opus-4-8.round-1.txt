@@ -1,0 +1,25 @@
+findings:
+  - severity: WARN
+    target_location: "Design Delta (target document)"
+    description: "The review-target summarizes the design delta in prose but does not quote the actual normative design text (response schema fields, verdict enums, registry contract fields). A reviewer cannot verify whether design.md correctly implements Requirement 12 acceptance criteria 1-13 from this target alone; the target only asserts that the sections exist."
+    rationale: "A triad-review target should make the artifact under review independently verifiable. Without the concrete schema/field definitions, findings about coverage, uniqueness, and fail-closed behavior cannot be grounded and the review risks rubber-stamping section headings."
+  - severity: WARN
+    target_location: "Review Scope / Design Delta — reopen_scope vs impact_review_scope"
+    description: "The target states reopen_scope and impact_review_scope must be 'distinct and machine-readable' and references item 12, but provides no design-level definition of the two fields, their value domains, or the rule that determines flag false/true. Review Question 5 asks for traceability that the target itself does not supply."
+    rationale: "If the distinguishing rule is not shown, the reviewer cannot determine whether the design actually makes the two scopes distinct and machine-readable, which is one of the explicitly approved requirements."
+  - severity: WARN
+    target_location: "Review Scope — 'next --json must uniquely identify the active reopen state'"
+    description: "The target lists next --json uniqueness as a key requirement and Review Question 4 asks whether Requirement 2 ownership is preserved, but the target does not show how the design encodes the unique identifier (e.g., field name, run_id, scope key) on the next --json output."
+    rationale: "State uniqueness is a correctness-critical claim. Without the design's actual mechanism shown, the reviewer cannot confirm uniqueness or that it extends rather than competes with Requirement 2's next source of truth."
+  - severity: INFO
+    target_location: "Source Documents"
+    description: "Six source documents are listed but none are excerpted or line-referenced. The reviewer must independently open each file, and there is no indication of which sections within requirements.md and design.md are the relevant deltas."
+    rationale: "Pointing to anchors or sections reduces the chance that the review and the authored design diverge on what 'Requirement 12 r2' actually contains."
+  - severity: INFO
+    target_location: "Design Delta — XDI-WM-004 / XDI-WM-003"
+    description: "The target asserts XDI-WM-004 avoids collision with existing XDI-WM-003 but does not show the new identifier in context or confirm the requirements/design cross-reference was updated symmetrically."
+    rationale: "Review Question 9 depends on verifying both sides of the traceability link; the target provides only the design-side assertion."
+  - severity: INFO
+    target_location: "Review Scope — Phase 1 read-only constraints"
+    description: "The Phase 1 prohibited-side-effects list (no review-run directories, manifests, approval records, session records, commits, deployment/export outputs) is stated as a requirement but the target does not indicate where the design enforces read-only behavior or how it is testable without runner execution."
+    rationale: "The read-only/runner-enabled split (Review Question 3) is central; surfacing the enforcement mechanism in the target would let the reviewer judge whether the boundary is design-complete versus deferred to tasks."

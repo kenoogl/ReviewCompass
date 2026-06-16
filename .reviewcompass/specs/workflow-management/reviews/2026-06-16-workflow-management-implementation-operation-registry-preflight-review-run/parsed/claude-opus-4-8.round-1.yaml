@@ -1,0 +1,108 @@
+role: adversarial
+provider: anthropic-api
+model: claude-opus-4-8
+attempts: 1
+duration_seconds: 33.229
+findings:
+- severity: ERROR
+  target_location: tools/check_workflow_action/operation_preflight.py KNOWN_INVOCATIONS
+  description: The known-invocation registry hard-codes per-script option sets (e.g.
+    `next`, `review-run create`, `decide`, deployment export) in a second source of
+    truth that is fully decoupled from the actual argparse parsers defined in check-workflow-action.py
+    and the api_providers tools. There is no test or mechanism asserting that KNOWN_INVOCATIONS
+    stays in sync with the real parsers, so any flag added/renamed/removed in the
+    real CLI silently diverges, causing the preflight to report false DEVIATION (or
+    false OK) on correct invocations.
+  rationale: 'Review Question 4 explicitly asks whether this creates a brittle second
+    parser that can drift from the real parser. As implemented it does exactly that:
+    the option sets are duplicated by hand with no reconciliation. This undermines
+    the stated goal of reducing command/path mistakes because the preflight can itself
+    become the source of incorrect guidance once the real parsers evolve. A drift-detection
+    test (introspecting argparse actions) or generating KNOWN_INVOCATIONS from the
+    parsers is needed before broad deployment.'
+- severity: ERROR
+  target_location: tools/check_workflow_action/operation_preflight.py _build_response
+    (state_refs.next_action / workflow_state_files)
+  description: '`_build_response` accesses `next_action.get("state_files")` only when
+    `next_action` is a dict, but the default path passes `next_action=None` for DEVIATION/missing-operation
+    responses, and for non-workflow_cli families (review_artifact, commit_approval_chain,
+    session_record_capture, deployment_export, nested_issue_control) the response
+    is constructed without ever populating `next_action`. There is no shown code path
+    that adapts `next --json` for any operation other than workflow next, so for the
+    other five families `state_refs.next_action` is null and several declared dimensions
+    are never produced. The Test Evidence only demonstrates the dimension set for
+    `workflow_next_preflight`.'
+  rationale: Review Question 3 asks whether the response schema is generic enough
+    for review-run, triage, commit approval, session capture, nested issue, and deployment/export.
+    The excerpts and tests only exercise workflow_next_preflight for the rich next_action
+    dimensions; the other families appear to return a skeletal response with empty
+    checks/next_action. Without evidence that family-specific checks (FAMILY_REQUIRED_CHECKS)
+    are actually evaluated at preflight time rather than merely declared in the registry,
+    the claim of generic coverage is unsubstantiated and likely partial.
+- severity: ERROR
+  target_location: tools/check_workflow_action/operation_preflight.py FAMILY_REQUIRED_CHECKS
+    vs _build_response checks
+  description: 'FAMILY_REQUIRED_CHECKS declares rich per-family check names (e.g.
+    target_manifest_alignment, staged_content_approval_digest, current_session_formal_output_forbidden,
+    nesting_depth), but the only check-producing logic shown is _validate_deployment_boundary,
+    and _build_response emits a single generic checks entry `[{"status": ..., "reasons":
+    reasons}]`. There is no visible code that evaluates the declared family_required_checks
+    and reports per-check pass/fail status.'
+  rationale: Declaring required checks in the registry without executing them gives
+    a false sense of preflight coverage. A reviewer cannot confirm that the implementation
+    actually prevents the target handback class (Req 12 / T-014) for review-artifact,
+    commit-approval, session, or nested-issue operations. The gap between declared
+    and executed checks is the core risk for Review Questions 1 and 3.
+- severity: WARN
+  target_location: tools/check_workflow_action/operation_preflight.py _validate_deployment_boundary
+  description: The deployment boundary check only flags absolute paths in planned_outputs
+    and otherwise asserts read-only behavior. It does not verify the external_output_root
+    / target_app_root family_required_checks against the actual --out/--target-app-root
+    invocation, nor does it confirm overwrite_policy. Relative-path planned_outputs
+    that escape the project via `..` are not detected by the is_absolute() test.
+  rationale: Review Question 2 (truly read-only) and Question 3 (generic deployment
+    boundary) require the boundary enforcement to cover the declared deployment_export
+    checks. A `..`-based traversal or missing external_output_root would pass the
+    current check, weakening the boundary guarantee even though no path probing occurs.
+- severity: WARN
+  target_location: tools/check-workflow-action.py cmd_operation_preflight exit codes
+  description: Exit codes map OK->0, WARN->1, DEVIATION->2, but ALLOWED_VERDICTS /
+    allowed_verdicts is referenced without being shown, and a verdict outside {OK,
+    WARN, DEVIATION} falls through to return 2 (treated as DEVIATION). There is no
+    explicit handling/validation that response['verdict'] is one of the allowed values
+    before mapping.
+  rationale: An unexpected or future verdict value silently collapses into the DEVIATION
+    exit code, which can mask schema evolution and make CI gating behave incorrectly.
+    Explicitly validating verdict against allowed_verdicts would make the contract
+    robust.
+- severity: WARN
+  target_location: Section 7 Test Evidence (6 tests)
+  description: Test coverage is summarized as 6 tests covering schema requirements,
+    next state dimensions, command option mismatch, review-artifact checks, deployment
+    boundary, and LLM-provider independence — roughly one test per concern. The rich
+    next_action dimension verification is only demonstrated manually for workflow_next_preflight,
+    and there is no shown automated assertion that the other five families produce
+    their family_required_checks results or correct verdicts.
+  rationale: Review Questions 1 and 3 hinge on demonstrated genericity. One test per
+    family-class (and only manual evidence for the next dimensions) is thin relative
+    to the breadth of FAMILY_REQUIRED_CHECKS being claimed, increasing the risk that
+    declared-but-unexecuted checks go unnoticed.
+- severity: INFO
+  target_location: tools/check_workflow_action/operation_registry.py FORBIDDEN_LLM_FIELDS
+    / validate_operation
+  description: LLM/provider/model independence is enforced structurally via FORBIDDEN_LLM_FIELDS
+    and _contains_forbidden_field, and the test suite includes an LLM-provider independence
+    case. This is a positive, verifiable safeguard for Review Question 6.
+  rationale: Worth noting as a correctly designed control; the forbidden-field set
+    covers the common provider/model identifiers and is checked at validation time
+    rather than relying on convention.
+- severity: INFO
+  target_location: Section 7.2 regression evidence (189 + 20 tests OK, git diff --check
+    OK)
+  description: Existing workflow CLI regression risk (Review Question 7) is addressed
+    by running the full test_check_workflow_action suite (189 tests) plus adjacent
+    suites and git diff --check, all passing. The new subcommand is additive (new
+    parser, new dispatch branch).
+  rationale: The additive nature of the change plus the passing legacy suite gives
+    reasonable confidence that existing CLI behavior does not regress, though it does
+    not substitute for the genericity gaps noted above.

@@ -1,0 +1,230 @@
+run_id: 2026-06-16-workflow-management-tasks-operation-registry-preflight-review-run
+triage_status: decided
+generated_at: '2026-06-16T05:52:49.645463+00:00'
+decision_actor: null
+decision_actor_type: human
+items:
+- finding_id: 2026-06-16-workflow-management-tasks-operation-registry-preflight-review-run-gpt-5.4-primary-001
+  run_id: 2026-06-16-workflow-management-tasks-operation-registry-preflight-review-run
+  source_model: gpt-5.4
+  source_round: round-1
+  source_raw_path: raw/gpt-5.4.round-1.txt
+  source_parsed_path: parsed/gpt-5.4.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: '## Tasks 変更抜粋 / T-014 成果物 / tests/workflow-management/test_operation_preflight.py'
+  plain_language_summary: T-014 は単一の preflight テストファイルしか成果物に挙げておらず、受入 6〜10 の複数ドメイン別検査をどの粒度で分離して担保するかが不明瞭。
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: user-approved-codex
+  decision_actor_type: agent
+  decision_at: '2026-06-16T06:00:34.286622+00:00'
+  decision_reason: 利用者が tasks triad-review 推奨 triage を承認。TDD 粒度、operation_family 割当、外部境界、artifact
+    検査、vocabulary_refs の明確化により implementation 手戻りを減らすため反映する。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-16-workflow-management-tasks-operation-registry-preflight-review-run-gpt-5.4-primary-002
+  run_id: 2026-06-16-workflow-management-tasks-operation-registry-preflight-review-run
+  source_model: gpt-5.4
+  source_round: round-1
+  source_raw_path: raw/gpt-5.4.round-1.txt
+  source_parsed_path: parsed/gpt-5.4.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: '## T-014 完了条件 / 6'
+  plain_language_summary: review artifact 系 operation の事前検査対象が広範に列挙されている一方で、どの operation_family
+    にどの検査が必須なのかの割当が明記されていない。
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: user-approved-codex
+  decision_actor_type: agent
+  decision_at: '2026-06-16T06:00:34.347582+00:00'
+  decision_reason: 利用者が tasks triad-review 推奨 triage を承認。TDD 粒度、operation_family 割当、外部境界、artifact
+    検査、vocabulary_refs の明確化により implementation 手戻りを減らすため反映する。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-16-workflow-management-tasks-operation-registry-preflight-review-run-gpt-5.4-primary-003
+  run_id: 2026-06-16-workflow-management-tasks-operation-registry-preflight-review-run
+  source_model: gpt-5.4
+  source_round: round-1
+  source_raw_path: raw/gpt-5.4.round-1.txt
+  source_parsed_path: parsed/gpt-5.4.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: '## T-014 完了条件 / 10'
+  plain_language_summary: deployment / export preflight の完了条件に『既存成果物』『外部 app root』『既存
+    bundle / smoke-run / app file 衝突』があるが、read-only preflight がどの外部境界まで観測してよいかの制約が示されていない。
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: user-approved-codex
+  decision_actor_type: agent
+  decision_at: '2026-06-16T06:00:34.410847+00:00'
+  decision_reason: 利用者が tasks triad-review 推奨 triage を承認。TDD 粒度、operation_family 割当、外部境界、artifact
+    検査、vocabulary_refs の明確化により implementation 手戻りを減らすため反映する。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-16-workflow-management-tasks-operation-registry-preflight-review-run-gpt-5.4-primary-004
+  run_id: 2026-06-16-workflow-management-tasks-operation-registry-preflight-review-run
+  source_model: gpt-5.4
+  source_round: round-1
+  source_raw_path: raw/gpt-5.4.round-1.txt
+  source_parsed_path: parsed/gpt-5.4.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: '## 要件追跡と XDI'
+  plain_language_summary: Requirement 12 の受入 1〜13 が T-014 の責務・完了条件・テスト要件まで一通り追跡されており、Phase
+    1 を read-only preflight に限定する境界も明確。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: user-approved-codex
+  decision_actor_type: agent
+  decision_at: '2026-06-16T06:00:34.471494+00:00'
+  decision_reason: 利用者が tasks triad-review 推奨 triage を承認。肯定的 INFO であり追加修正は不要。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-16-workflow-management-tasks-operation-registry-preflight-review-run-claude-opus-4-8-adversarial-001
+  run_id: 2026-06-16-workflow-management-tasks-operation-registry-preflight-review-run
+  source_model: claude-opus-4-8
+  source_round: round-1
+  source_raw_path: raw/claude-opus-4-8.round-1.txt
+  source_parsed_path: parsed/claude-opus-4-8.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: T-014 完了条件 §11 / テスト要件 §4 / 要件追跡
+  plain_language_summary: Requirement 12 受入 13（Requirement 2 所有の next --json 状態一意性拡張）が、完了条件・テスト要件・XDI
+    へ実質的に追跡されていない。完了条件には §1〜§13 のうち §11 が reopen_scope と impact_review_scope 区別、§13
+    が read-only 不変性に割り当てられており、受入 13（next --json 状態一意性）に正対する完了条件・テスト項目が存在しない。「Requirement
+    12 受入 1〜13 はすべて T-014 に追跡されている」という主張が成立していない。
+  final_label: must-fix
+  decision_status: decided
+  decision_actor: user-approved-codex
+  decision_actor_type: agent
+  decision_at: '2026-06-16T06:00:34.532273+00:00'
+  decision_reason: 利用者が tasks triad-review 推奨 triage を承認。Requirement 12 の必須追跡・state
+    dimensions 固定検証が不足しており、tasks gate 完了前に反映が必要。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-16-workflow-management-tasks-operation-registry-preflight-review-run-claude-opus-4-8-adversarial-002
+  run_id: 2026-06-16-workflow-management-tasks-operation-registry-preflight-review-run
+  source_model: claude-opus-4-8
+  source_round: round-1
+  source_raw_path: raw/claude-opus-4-8.round-1.txt
+  source_parsed_path: parsed/claude-opus-4-8.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: T-014 テスト要件（全12項目）vs 完了条件（全13項目）
+  plain_language_summary: 完了条件は 13 項目だがテスト要件は 12 項目で、受入・完了条件とテスト要件の対応が 1 件分ズレている。特に完了条件
+    §3（next --json active state dimensions の state_refs.next_action 返却）に正対する独立テスト項目が、テスト
+    §4（取り込みと不整合検出）に部分的に吸収される形になっており、最低限含めるべき state dimensions（current mainline、required_action、phase、stage、reopen_scope、impact_review_scope、direct/indirect
+    features、flag policy、next_pending_gate、next_drafting_gate、pending_gates、completed_gates、superseded
+    gate、参照 state files）が必須キーとして揃っているかを固定検証するテストが存在しない。
+  final_label: must-fix
+  decision_status: decided
+  decision_actor: user-approved-codex
+  decision_actor_type: agent
+  decision_at: '2026-06-16T06:00:34.595890+00:00'
+  decision_reason: 利用者が tasks triad-review 推奨 triage を承認。Requirement 12 の必須追跡・state
+    dimensions 固定検証が不足しており、tasks gate 完了前に反映が必要。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-16-workflow-management-tasks-operation-registry-preflight-review-run-claude-opus-4-8-adversarial-003
+  run_id: 2026-06-16-workflow-management-tasks-operation-registry-preflight-review-run
+  source_model: claude-opus-4-8
+  source_round: round-1
+  source_raw_path: raw/claude-opus-4-8.round-1.txt
+  source_parsed_path: parsed/claude-opus-4-8.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: T-014 前提タスク
+  plain_language_summary: 前提タスクに T-002、T-003、T-004、T-006、T-007、T-008、T-012、T-013 が列挙されているが、レビュー目的で責務境界確認対象に挙げられた
+    T-011 が前提から欠落している。T-011 が preflight の検査対象（review artifact / approval / bundle
+    等）と関係する場合、前提依存の欠落か、または無関係であることの明示が必要。
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: user-approved-codex
+  decision_actor_type: agent
+  decision_at: '2026-06-16T06:00:34.658012+00:00'
+  decision_reason: 利用者が tasks triad-review 推奨 triage を承認。TDD 粒度、operation_family 割当、外部境界、artifact
+    検査、vocabulary_refs の明確化により implementation 手戻りを減らすため反映する。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-16-workflow-management-tasks-operation-registry-preflight-review-run-claude-opus-4-8-adversarial-004
+  run_id: 2026-06-16-workflow-management-tasks-operation-registry-preflight-review-run
+  source_model: claude-opus-4-8
+  source_round: round-1
+  source_raw_path: raw/claude-opus-4-8.round-1.txt
+  source_parsed_path: parsed/claude-opus-4-8.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: T-014 完了条件 §6 / テスト要件 §6
+  plain_language_summary: 完了条件 §6 は review artifact 系で document-type / criteria /
+    staged / unstaged 対象選択まで列挙するが、対応するテスト要件 §6 は target / manifest / bundle / approval.yaml
+    / existing artifact drift に縮約され、criteria / document-type 一致と staged/unstaged 対象選択の検証が明示されていない。
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: user-approved-codex
+  decision_actor_type: agent
+  decision_at: '2026-06-16T06:00:34.718750+00:00'
+  decision_reason: 利用者が tasks triad-review 推奨 triage を承認。TDD 粒度、operation_family 割当、外部境界、artifact
+    検査、vocabulary_refs の明確化により implementation 手戻りを減らすため反映する。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-16-workflow-management-tasks-operation-registry-preflight-review-run-claude-opus-4-8-adversarial-005
+  run_id: 2026-06-16-workflow-management-tasks-operation-registry-preflight-review-run
+  source_model: claude-opus-4-8
+  source_round: round-1
+  source_raw_path: raw/claude-opus-4-8.round-1.txt
+  source_parsed_path: parsed/claude-opus-4-8.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: T-014 責務 / 完了条件 §13 / テスト要件 §11
+  plain_language_summary: Phase 1 read-only preflight と Phase 2 runner-enabled operation
+    の分離が、責務・完了条件 §13・テスト要件 §11（read-only 不変性）で一貫して表明されており、artifact 非作成リストも具体的に列挙されている。Phase
+    混在は認められない。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: user-approved-codex
+  decision_actor_type: agent
+  decision_at: '2026-06-16T06:00:34.780022+00:00'
+  decision_reason: 利用者が tasks triad-review 推奨 triage を承認。肯定的 INFO であり追加修正は不要。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-16-workflow-management-tasks-operation-registry-preflight-review-run-claude-opus-4-8-adversarial-006
+  run_id: 2026-06-16-workflow-management-tasks-operation-registry-preflight-review-run
+  source_model: claude-opus-4-8
+  source_round: round-1
+  source_raw_path: raw/claude-opus-4-8.round-1.txt
+  source_parsed_path: parsed/claude-opus-4-8.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: T-014 完了条件 §12 / テスト要件 §12
+  plain_language_summary: LLM / provider / model 非依存が完了条件 §12 とテスト要件 §12（系 field 非依存・禁止
+    field 検査）の双方に落ちており、タスク粒度でも provider 非依存が維持されている。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: user-approved-codex
+  decision_actor_type: agent
+  decision_at: '2026-06-16T06:00:34.840664+00:00'
+  decision_reason: 利用者が tasks triad-review 推奨 triage を承認。肯定的 INFO であり追加修正は不要。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-16-workflow-management-tasks-operation-registry-preflight-review-run-gemini-3.1-pro-preview-judgment-001
+  run_id: 2026-06-16-workflow-management-tasks-operation-registry-preflight-review-run
+  source_model: gemini-3.1-pro-preview
+  source_round: round-1
+  source_raw_path: raw/gemini-3.1-pro-preview.round-1.txt
+  source_parsed_path: parsed/gemini-3.1-pro-preview.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: T-014 完了条件 / T-014 テスト要件
+  plain_language_summary: Design 抜粋に記載のある operation contract の `vocabulary_refs` が、完了条件
+    1 およびテスト要件 1 の明示的なリストから漏れています。
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: user-approved-codex
+  decision_actor_type: agent
+  decision_at: '2026-06-16T06:00:34.901420+00:00'
+  decision_reason: 利用者が tasks triad-review 推奨 triage を承認。TDD 粒度、operation_family 割当、外部境界、artifact
+    検査、vocabulary_refs の明確化により implementation 手戻りを減らすため反映する。
+  applied_files: []
+  superseded_by: null

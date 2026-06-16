@@ -1,0 +1,325 @@
+run_id: 2026-06-16-workflow-management-requirements-operation-registry-preflight-review-run
+triage_status: decided
+generated_at: '2026-06-16T03:58:59.868034+00:00'
+decision_actor: null
+decision_actor_type: human
+items:
+- finding_id: 2026-06-16-workflow-management-requirements-operation-registry-preflight-review-run-gpt-5.4-primary-001
+  run_id: 2026-06-16-workflow-management-requirements-operation-registry-preflight-review-run
+  source_model: gpt-5.4
+  source_round: round-1
+  source_raw_path: raw/gpt-5.4.round-1.txt
+  source_parsed_path: parsed/gpt-5.4.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: Requirements Delta / Acceptance criteria
+  plain_language_summary: Deployment/export-related operations are called out in the
+    review scope but are not represented in the listed Requirement 12 acceptance criteria.
+  final_label: must-fix
+  decision_status: decided
+  decision_actor: user
+  decision_actor_type: agent
+  decision_at: '2026-06-16T05:01:49.955251+00:00'
+  decision_reason: deployment/export operation coverage is explicitly in scope and
+    must be represented in Requirement 12 acceptance criteria.
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-16-workflow-management-requirements-operation-registry-preflight-review-run-gpt-5.4-primary-002
+  run_id: 2026-06-16-workflow-management-requirements-operation-registry-preflight-review-run
+  source_model: gpt-5.4
+  source_round: round-1
+  source_raw_path: raw/gpt-5.4.round-1.txt
+  source_parsed_path: parsed/gpt-5.4.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: Requirements Delta / Acceptance criterion 1
+  plain_language_summary: Registry metadata does not explicitly require authoritative
+    invocation identity beyond 'canonical command', leaving room for wrong script
+    path or wrong executable entrypoint ambiguity.
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: user
+  decision_actor_type: agent
+  decision_at: '2026-06-16T05:01:50.038358+00:00'
+  decision_reason: canonical invocation identity should be stronger than a loose command
+    string to prevent wrong entrypoints.
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-16-workflow-management-requirements-operation-registry-preflight-review-run-gpt-5.4-primary-003
+  run_id: 2026-06-16-workflow-management-requirements-operation-registry-preflight-review-run
+  source_model: gpt-5.4
+  source_round: round-1
+  source_raw_path: raw/gpt-5.4.round-1.txt
+  source_parsed_path: parsed/gpt-5.4.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: Requirements Delta / Acceptance criterion 2
+  plain_language_summary: The read-only preflight requirement says it 'creates no
+    artifacts' but does not explicitly fail closed on operations whose safety or applicability
+    cannot be determined.
+  final_label: must-fix
+  decision_status: decided
+  decision_actor: user
+  decision_actor_type: agent
+  decision_at: '2026-06-16T05:01:50.113126+00:00'
+  decision_reason: preflight verdicts must enforce fail-closed behavior and must not
+    allow unknown safety conditions to return OK.
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-16-workflow-management-requirements-operation-registry-preflight-review-run-gpt-5.4-primary-004
+  run_id: 2026-06-16-workflow-management-requirements-operation-registry-preflight-review-run
+  source_model: gpt-5.4
+  source_round: round-1
+  source_raw_path: raw/gpt-5.4.round-1.txt
+  source_parsed_path: parsed/gpt-5.4.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: Requirements Delta / Acceptance criterion 6
+  plain_language_summary: Review artifact preflight scope does not explicitly mention
+    approval-record completeness or bundle/export coverage, despite those being part
+    of the documented smell set and review questions.
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: user
+  decision_actor_type: agent
+  decision_at: '2026-06-16T05:01:50.190703+00:00'
+  decision_reason: approval record completeness and bundle coverage should be explicit
+    preflight checks.
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-16-workflow-management-requirements-operation-registry-preflight-review-run-gpt-5.4-primary-005
+  run_id: 2026-06-16-workflow-management-requirements-operation-registry-preflight-review-run
+  source_model: gpt-5.4
+  source_round: round-1
+  source_raw_path: raw/gpt-5.4.round-1.txt
+  source_parsed_path: parsed/gpt-5.4.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: Existing Context / ownership framing
+  plain_language_summary: The review target consistently preserves workflow-management
+    as direct owner while keeping other features in impact review scope.
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: user
+  decision_actor_type: agent
+  decision_at: '2026-06-16T05:01:50.263455+00:00'
+  decision_reason: positive ownership framing observation; no corrective action required.
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-16-workflow-management-requirements-operation-registry-preflight-review-run-claude-opus-4-8-adversarial-001
+  run_id: 2026-06-16-workflow-management-requirements-operation-registry-preflight-review-run
+  source_model: claude-opus-4-8
+  source_round: round-1
+  source_raw_path: raw/claude-opus-4-8.round-1.txt
+  source_parsed_path: parsed/claude-opus-4-8.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: Requirement 12, Acceptance criterion 6 (Review artifact preflight)
+  plain_language_summary: The review scope lists 'deployment / export related artifacts'
+    as required preflight coverage, and Review Question 9 explicitly asks whether
+    deployment/export operations are adequately included, but none of the ten acceptance
+    criteria mention deployment or export. The criteria stop at review/manifest/triage/session/nested-issue.
+    Deployment/export coverage is silently dropped from the requirements delta.
+  final_label: must-fix
+  decision_status: decided
+  decision_actor: user
+  decision_actor_type: agent
+  decision_at: '2026-06-16T05:01:50.336390+00:00'
+  decision_reason: deployment/export operation coverage is explicitly in scope and
+    must be represented in Requirement 12 acceptance criteria.
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-16-workflow-management-requirements-operation-registry-preflight-review-run-claude-opus-4-8-adversarial-002
+  run_id: 2026-06-16-workflow-management-requirements-operation-registry-preflight-review-run
+  source_model: claude-opus-4-8
+  source_round: round-1
+  source_raw_path: raw/claude-opus-4-8.round-1.txt
+  source_parsed_path: parsed/claude-opus-4-8.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: Requirement 12, Acceptance criterion 3 (preflight response shape)
+  plain_language_summary: The response shape defines OK / WARN / DEVIATION verdicts
+    but no acceptance criterion specifies fail-closed behavior — i.e. which verdicts
+    block the operation and which proceed. Review Question 10 asks for missing fail-closed
+    cases. Without a stated mapping from verdict to allow/block, preflight could return
+    DEVIATION yet permit the operation, defeating the purpose.
+  final_label: must-fix
+  decision_status: decided
+  decision_actor: user
+  decision_actor_type: agent
+  decision_at: '2026-06-16T05:01:50.411687+00:00'
+  decision_reason: preflight verdicts must define which results block operation start.
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-16-workflow-management-requirements-operation-registry-preflight-review-run-claude-opus-4-8-adversarial-003
+  run_id: 2026-06-16-workflow-management-requirements-operation-registry-preflight-review-run
+  source_model: claude-opus-4-8
+  source_round: round-1
+  source_raw_path: raw/claude-opus-4-8.round-1.txt
+  source_parsed_path: parsed/claude-opus-4-8.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: Requirement 12, Acceptance criterion 2 (read-only preflight)
+  plain_language_summary: The criterion says preflight 'creates no artifacts' but
+    does not state observable verification that no write occurred (e.g. no review-run
+    directory, no session record, no commit). 'Creates no artifacts' is asserted rather
+    than made checkable.
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: user
+  decision_actor_type: agent
+  decision_at: '2026-06-16T05:01:50.491990+00:00'
+  decision_reason: read-only preflight must state observable artifact classes it does
+    not create or update.
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-16-workflow-management-requirements-operation-registry-preflight-review-run-claude-opus-4-8-adversarial-004
+  run_id: 2026-06-16-workflow-management-requirements-operation-registry-preflight-review-run
+  source_model: claude-opus-4-8
+  source_round: round-1
+  source_raw_path: raw/claude-opus-4-8.round-1.txt
+  source_parsed_path: parsed/claude-opus-4-8.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: Requirement 12, Acceptance criterion 4 (command validation)
+  plain_language_summary: Command validation lists checks (entrypoint, subcommand,
+    option, required option, positional argument) but does not require validation
+    against the registry's canonical command field, nor rejection of abbreviated/aliased
+    command names. The smell inventory explicitly records 'guessed commands' and 'abbreviated
+    command names' (per the requirement intent paragraph) as handback drivers.
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: user
+  decision_actor_type: agent
+  decision_at: '2026-06-16T05:01:50.567977+00:00'
+  decision_reason: command validation should reject abbreviated or non-canonical command
+    forms.
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-16-workflow-management-requirements-operation-registry-preflight-review-run-claude-opus-4-8-adversarial-005
+  run_id: 2026-06-16-workflow-management-requirements-operation-registry-preflight-review-run
+  source_model: claude-opus-4-8
+  source_round: round-1
+  source_raw_path: raw/claude-opus-4-8.round-1.txt
+  source_parsed_path: parsed/claude-opus-4-8.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: Requirement 12, Acceptance criterion 7 (serial-only commit approval
+    chain)
+  plain_language_summary: The criterion mandates serial-only handling for commit approval
+    chain operations but does not address the 'serial approval chain parallelization'
+    smell at the preflight level — i.e. preflight should detect and refuse an attempt
+    to parallelize the chain, not merely declare the chain serial.
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: user
+  decision_actor_type: agent
+  decision_at: '2026-06-16T05:01:50.641010+00:00'
+  decision_reason: serial-only operation preflight should detect and refuse parallelization
+    attempts.
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-16-workflow-management-requirements-operation-registry-preflight-review-run-claude-opus-4-8-adversarial-006
+  run_id: 2026-06-16-workflow-management-requirements-operation-registry-preflight-review-run
+  source_model: claude-opus-4-8
+  source_round: round-1
+  source_raw_path: raw/claude-opus-4-8.round-1.txt
+  source_parsed_path: parsed/claude-opus-4-8.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: Requirement 12, Acceptance criterion 1 (registry fields)
+  plain_language_summary: The registry field list includes 'pending conflicts' as
+    an entry attribute, while criterion 5 separately covers worktree/pending conflict
+    checks at runtime. It is unclear whether 'pending conflicts' in criterion 1 is
+    a static declared policy or runtime state, which risks overlap with criterion
+    5.
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: user
+  decision_actor_type: agent
+  decision_at: '2026-06-16T05:01:50.715419+00:00'
+  decision_reason: static pending conflict policy and runtime observed state should
+    be distinguished.
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-16-workflow-management-requirements-operation-registry-preflight-review-run-claude-opus-4-8-adversarial-007
+  run_id: 2026-06-16-workflow-management-requirements-operation-registry-preflight-review-run
+  source_model: claude-opus-4-8
+  source_round: round-1
+  source_raw_path: raw/claude-opus-4-8.round-1.txt
+  source_parsed_path: parsed/claude-opus-4-8.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: Requirement 12, intro and Acceptance criterion 9 (nested issue
+    handling)
+  plain_language_summary: Nested issue handling is included as a preflight target
+    (criterion 9) and Review Question 6 cautions against overfitting to one incident.
+    The criterion does not describe the general detection condition (nested issue
+    scope drift) independent of the specific 2026-06-16 incident.
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: user
+  decision_actor_type: agent
+  decision_at: '2026-06-16T05:01:50.790191+00:00'
+  decision_reason: nested issue handling should be generalized as scope drift rather
+    than tied only to one incident.
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-16-workflow-management-requirements-operation-registry-preflight-review-run-gemini-3.1-pro-preview-judgment-001
+  run_id: 2026-06-16-workflow-management-requirements-operation-registry-preflight-review-run
+  source_model: gemini-3.1-pro-preview
+  source_round: round-1
+  source_raw_path: raw/gemini-3.1-pro-preview.round-1.txt
+  source_parsed_path: parsed/gemini-3.1-pro-preview.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: Requirements Delta
+  plain_language_summary: Acceptance criteria omit coverage for deployment and export
+    operations.
+  final_label: must-fix
+  decision_status: decided
+  decision_actor: user
+  decision_actor_type: agent
+  decision_at: '2026-06-16T05:01:50.864803+00:00'
+  decision_reason: deployment/export operation coverage is explicitly in scope and
+    must be represented in Requirement 12 acceptance criteria.
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-16-workflow-management-requirements-operation-registry-preflight-review-run-gemini-3.1-pro-preview-judgment-002
+  run_id: 2026-06-16-workflow-management-requirements-operation-registry-preflight-review-run
+  source_model: gemini-3.1-pro-preview
+  source_round: round-1
+  source_raw_path: raw/gemini-3.1-pro-preview.round-1.txt
+  source_parsed_path: parsed/gemini-3.1-pro-preview.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: Requirements Delta
+  plain_language_summary: Missing explicit preflight check for 'approval record gaps'.
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: user
+  decision_actor_type: agent
+  decision_at: '2026-06-16T05:01:50.940650+00:00'
+  decision_reason: approval record gaps should be explicitly covered by preflight.
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-16-workflow-management-requirements-operation-registry-preflight-review-run-gemini-3.1-pro-preview-judgment-003
+  run_id: 2026-06-16-workflow-management-requirements-operation-registry-preflight-review-run
+  source_model: gemini-3.1-pro-preview
+  source_round: round-1
+  source_raw_path: raw/gemini-3.1-pro-preview.round-1.txt
+  source_parsed_path: parsed/gemini-3.1-pro-preview.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: Requirements Delta
+  plain_language_summary: Impact review scope constraint is not explicitly captured
+    in the Requirement 12 delta.
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: user
+  decision_actor_type: agent
+  decision_at: '2026-06-16T05:01:51.013841+00:00'
+  decision_reason: all-feature impact review scope should be explicit in the operation
+    preflight requirement.
+  applied_files: []
+  superseded_by: null

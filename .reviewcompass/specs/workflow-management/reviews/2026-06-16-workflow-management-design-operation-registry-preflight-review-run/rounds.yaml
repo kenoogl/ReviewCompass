@@ -1,0 +1,62 @@
+round_id: round-1
+purpose: design
+invocation_timestamp: '2026-06-16T05:34:20.234654+00:00'
+target_files:
+- path: .reviewcompass/specs/workflow-management/reviews/2026-06-16-workflow-management-design-operation-registry-preflight-review-run/review-target.md
+  sha256: 8befedd24734bdf4e91d5cecf4e8427071e5db95dfb4e01515b7c8ccc7efa940
+criteria: workflow_management_operation_registry_preflight_design_reopen_triad_review
+prompt_sha256: 2f992b0cf11acbd7e855de14c47101b1dc803c40f96949c5a97367cec9bbe996
+model_results:
+- model_id: gpt-5.4
+  provider: openai-api
+  role: primary
+  treatment: primary
+  invocation_path: api
+  raw_path: raw/gpt-5.4.round-1.txt
+  raw_sha256: e5efb9e20db6ba5ae2b3405ff706d3ebdb1a66223d019162feb3becbd314bad5
+  parsed_path: parsed/gpt-5.4.round-1.yaml
+  parsed_sha256: 05f2ae8a9be8464b1cce50755e0364700b256d94bef348e3d571f6f7251bb0ce
+  parse_status: parsed
+  formatted_by: parser
+  formatted_by_actor_type: orchestrator
+  formatted_by_actor: run_role.py
+  formatted_at: '2026-06-16T05:33:27.503051+00:00'
+  follow_up_action: triage
+  attempts: 1
+  duration_seconds: 6.983
+- model_id: claude-opus-4-8
+  provider: anthropic-api
+  role: adversarial
+  treatment: adversarial
+  invocation_path: api
+  raw_path: raw/claude-opus-4-8.round-1.txt
+  raw_sha256: 46b2804daeff795bdf6ddbe96f27ce2b6a687a2cef4aa8a780ed51f31af73f41
+  parsed_path: parsed/claude-opus-4-8.round-1.yaml
+  parsed_sha256: 1b262d70c084d1fca37522650b460c0a4e0eb9225c4e5f2c9857ef66bb10ab95
+  parse_status: parsed
+  formatted_by: parser
+  formatted_by_actor_type: orchestrator
+  formatted_by_actor: run_role.py
+  formatted_at: '2026-06-16T05:33:44.705677+00:00'
+  follow_up_action: triage
+  attempts: 1
+  duration_seconds: 17.193
+- model_id: gemini-3.1-pro-preview
+  provider: gemini-api
+  role: judgment
+  treatment: judgment
+  invocation_path: api
+  raw_path: raw/gemini-3.1-pro-preview.round-1.txt
+  raw_sha256: 4c78811ce7f0db7fa68bf029341c6fe1d08a2eb8f817231fd4447eb35599390b
+  parsed_path: parsed/gemini-3.1-pro-preview.round-1.yaml
+  parsed_sha256: 6277aba7aaf05138cb2548dedf6fbaa0d8155fa4c98409848c4213d39334ea51
+  parse_status: parsed
+  formatted_by: parser
+  formatted_by_actor_type: orchestrator
+  formatted_by_actor: run_role.py
+  formatted_at: '2026-06-16T05:34:20.234654+00:00'
+  follow_up_action: triage
+  attempts: 1
+  duration_seconds: 35.518
+effective_prompt_path: .reviewcompass/runtime/effective-prompts/next_action_kind-reopen_in_progress__workflow_stage-triad-review__reopen_required_action-run_reopen_pending_gate.prompt.md
+effective_prompt_sha256: 8b419f08d5790fa112c072b5a95b948e5d1692dea08c3f10671c67156c7bd61a

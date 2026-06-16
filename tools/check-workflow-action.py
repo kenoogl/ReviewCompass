@@ -48,6 +48,7 @@ from check_workflow_action.runtime_paths import (
   resolve_effective_prompt_read_path,
 )
 from check_workflow_action import commit_approval
+from check_workflow_action.operation_preflight import run_preflight
 
 DEFAULT_LAST_COMMIT_PRECHECK_PATH = ".git/reviewcompass/last-commit-precheck.json"
 DEFAULT_DISCIPLINE_MAP_PATH = "docs/operations/WORKFLOW_DISCIPLINE_MAP.yaml"
@@ -5650,6 +5651,29 @@ def cmd_review_wave_summary(args):
   return exit_code
 
 
+def cmd_operation_preflight(args):
+  """operation-preflight サブコマンドのエントリポイント（Req 12）"""
+  response = run_preflight(Path.cwd(), args.operation_id)
+  verdict = response.get("verdict")
+  allowed_verdicts = set(response.get("allowed_verdicts") or [])
+  if verdict not in allowed_verdicts:
+    response.setdefault("reasons", []).append(f"未知の verdict です: {verdict}")
+    response["verdict"] = "DEVIATION"
+    verdict = "DEVIATION"
+  if args.json:
+    print(json.dumps(response, ensure_ascii=False, indent=2))
+  else:
+    print(f"[VERDICT] {verdict}")
+    for reason in response.get("reasons", []):
+      print(f"[REASON] {reason}")
+    print(f"[ACTION] {response.get('next_step')}")
+  if verdict == "OK":
+    return 0
+  if verdict == "WARN":
+    return 1
+  return 2
+
+
 def main():
   # 共通オプション（サブコマンドの前後どちらでも受け取れるよう親パーサに集約、仕様 §4 共通オプション）
   common_parser = argparse.ArgumentParser(add_help=False)
@@ -5822,6 +5846,13 @@ def main():
     help="既定保存先 .reviewcompass/specs/_cross_feature/reviews/ へ書き出す",
   )
 
+  opf = sub.add_parser(
+    "operation-preflight",
+    help="operation registry に基づく read-only preflight を行う（Req 12）",
+    parents=[common_parser],
+  )
+  opf.add_argument("--operation-id", required=True, help="preflight 対象の operation_id")
+
   cap = sub.add_parser(
     "commit-approval",
     help="commit 承認 nonce challenge を作成・記録・無効化する",
@@ -5917,6 +5948,8 @@ def main():
     sys.exit(cmd_reopen_advance_gate(args))
   elif args.subcommand == "review-wave-summary":
     sys.exit(cmd_review_wave_summary(args))
+  elif args.subcommand == "operation-preflight":
+    sys.exit(cmd_operation_preflight(args))
   elif args.subcommand == "commit-approval":
     sys.exit(cmd_commit_approval(args))
   elif args.subcommand == "decision-source-lint":

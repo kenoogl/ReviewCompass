@@ -1,0 +1,38 @@
+role: primary
+provider: openai-api
+model: gpt-5.4
+attempts: 1
+duration_seconds: 7.469
+findings:
+- severity: WARN
+  target_location: Section 5.2 `KNOWN_INVOCATIONS` / Review Question 4
+  description: The implementation appears to maintain a separate hard-coded known-invocation
+    registry instead of deriving command/subcommand/options from the actual CLI parser
+    definitions.
+  rationale: This satisfies some immediate typo/mismatch detection, but it creates
+    a second parser model that can drift from real command behavior over time. The
+    review target itself calls out brittleness risk, and nothing in the provided excerpts
+    indicates synchronization or shared source-of-truth mechanisms.
+- severity: WARN
+  target_location: Section 5.2 `_build_response`
+  description: The preflight response schema leaves several generic contract fields
+    effectively unimplemented, including `missing_inputs`, `template_available`, `worktree_state`,
+    `pending_conflicts`, and `integrity_conflicts`.
+  rationale: Req 12 asks for a generic preflight foundation that reduces mistakes
+    across multiple operation families. Returning fixed empty/default values limits
+    practical validation breadth and suggests the framework is only partially generalized
+    despite exposing a broader response contract.
+- severity: WARN
+  target_location: Section 5.3 `_validate_deployment_boundary`
+  description: Deployment boundary validation only checks for absolute `planned_outputs`
+    and does not appear to reject traversal-style relative paths or validate confinement
+    against declared roots.
+  rationale: A read-only preflight should prevent path mistakes, not just avoid probing
+    them. Relative outputs such as `../export.zip` could still violate intended boundaries
+    while passing this check, leaving an important class of path errors unaddressed.
+- severity: INFO
+  target_location: Sections 3, 5.1, 7
+  description: The implementation explicitly excludes LLM/provider/model fields from
+    the registry and includes tests for LLM-provider independence.
+  rationale: This is aligned with the requirement for an LLM-independent preflight
+    foundation and is a positive implementation signal.

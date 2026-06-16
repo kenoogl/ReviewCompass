@@ -1,0 +1,96 @@
+role: adversarial
+provider: anthropic-api
+model: claude-opus-4-8
+attempts: 1
+duration_seconds: 25.982
+findings:
+- severity: WARN
+  target_location: '§Design Excerpt: Common Response Schema And Verdicts (Preflight
+    Response)'
+  description: 'The preflight response schema includes both `verdict: OK | WARN |
+    DEVIATION` and `allowed_verdicts: [OK, WARN, DEVIATION]`, but the relationship
+    is unspecified. It is unclear whether `allowed_verdicts` can ever be a subset
+    (e.g., an operation that may never WARN), or whether it is always the full triad.
+    If always full, the field is redundant; if it can be restricted, the rules governing
+    it are missing.'
+  rationale: Requirement 12 acceptance criterion 3 covers a common response schema
+    and verdicts. An ambiguous or redundant verdict-constraint field weakens the normative
+    contract that preflight callers depend on for fail-closed decisions.
+- severity: WARN
+  target_location: '§Design Excerpt: `next` State Uniqueness (reopen_scope / impact_review_scope)'
+  description: The design defines reopen_scope and impact_review_scope semantically
+    (reopen vs. flag-maintenance) and requires consistency with feature_impact_decisions,
+    spec.json, pending_gates, drafting_completed_gates, and downstream_impact_decisions,
+    but it does not specify what preflight must do when these sources are mutually
+    inconsistent (e.g., a feature appears in reopen_scope per next but flag is already
+    false in spec.json). The fail-closed verdict for cross-source inconsistency is
+    not stated.
+  rationale: Review question 5 asks whether reopen_scope/impact_review_scope are traceable
+    enough to determine flag false/true behavior. Without a defined verdict for inconsistent
+    sources, the design leaves the most safety-relevant case (flag drift) undetermined,
+    undermining acceptance criterion 13 (state uniqueness).
+- severity: WARN
+  target_location: '§Design Excerpt: Fail-Closed Conditions'
+  description: The fail-closed list maps several conditions to 'at least DEVIATION'
+    but does not define when a condition yields WARN versus DEVIATION. For example,
+    'scope drift without side-track / follow-up / blocker record' is listed, yet the
+    response schema permits WARN; the boundary between a warnable and a deviating
+    drift is unspecified.
+  rationale: Acceptance criterion 3 requires a common verdict model. If the mapping
+    from condition to verdict severity is undefined, two implementations could classify
+    the same state differently, breaking the determinism the operation registry preflight
+    is meant to provide.
+- severity: WARN
+  target_location: '§Design Excerpt: Operation Contract (workflow_binding) and §Specific
+    Operation Families'
+  description: The operation contract defines workflow_binding fields (phase, stage,
+    gate, next_action_kind) and lists review-artifact operations such as `current-session
+    formal record guard` behavior implicitly, but the design does not specify how
+    the current-session formal record guard (acceptance criterion 8) is expressed
+    in the contract or response schema. The fail-closed list mentions 'current-session
+    formal record request' but no field captures session identity or 'current vs.
+    past session'.
+  rationale: Acceptance criterion 8 requires a current-session formal record guard.
+    Without a contract/response field carrying session-identity state, preflight cannot
+    deterministically detect a current-session formal record request, leaving the
+    criterion unverifiable at design level.
+- severity: WARN
+  target_location: '§Design Excerpt: Operation Contract (canonical_invocation) — nested
+    issue handling'
+  description: Acceptance criterion 9 (nested issue handling) is listed in the requirement
+    summary, but the design excerpts contain no contract field, response field, or
+    check describing nested issue detection or resolution behavior. The traceability
+    claim says rows for criteria 1-13 were added, yet the excerpt for criterion 9
+    is absent from the normative text shown.
+  rationale: Review question 1 asks whether all criteria 1-13 are covered. Criterion
+    9 has no visible design realization in the provided normative excerpts, so its
+    coverage cannot be confirmed and may be a gap before design review-wave.
+- severity: INFO
+  target_location: '§Design Excerpt: Specific Operation Families (Review artifact
+    preflight initial operations)'
+  description: The enumerated initial operations (post_write_review, review_run_create,
+    triage_decide, etc.) are concrete operation_ids. At design phase this is borderline
+    implementation-specific, though acceptable as a registry seed list if explicitly
+    marked as non-exhaustive/illustrative.
+  rationale: Review question 10 asks whether any part is too implementation-specific.
+    Naming concrete operation_ids is reasonable for a registry design, but should
+    be flagged as an initial/extensible set to avoid the list being read as a closed
+    normative contract.
+- severity: INFO
+  target_location: '§Design Excerpt: Traceability And XDI'
+  description: XDI-WM-004 is introduced for the operation registry/preflight contract
+    and is asserted to avoid collision with XDI-WM-003, with the requirements document
+    updated to reference it. The collision-avoidance and bidirectional reference are
+    stated but not shown; reviewers cannot verify the requirements-side reference
+    from this target alone.
+  rationale: Review question 9 concerns XDI numbering and requirements/design alignment.
+    The claim appears sound, but the cross-document evidence is summarized rather
+    than excerpted, so alignment is asserted rather than demonstrated in this target.
+- severity: INFO
+  target_location: '§Design Excerpt: Phase Boundary'
+  description: The Phase 1 (read-only preflight) / Phase 2 (runner-enabled) split
+    is clearly stated, and Phase 1 is correctly scoped to produce no artifacts. The
+    boundary is consistent with the read-only preflight statement elsewhere in the
+    design.
+  rationale: Review question 3 asks whether the split is clear enough; it is, and
+    this is recorded as a positive confirmation with no blocker.

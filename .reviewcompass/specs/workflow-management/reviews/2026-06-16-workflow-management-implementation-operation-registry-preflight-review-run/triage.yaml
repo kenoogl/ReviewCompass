@@ -1,0 +1,332 @@
+run_id: 2026-06-16-workflow-management-implementation-operation-registry-preflight-review-run
+triage_status: decided
+generated_at: '2026-06-16T06:15:15.847055+00:00'
+decision_actor: null
+decision_actor_type: human
+items:
+- finding_id: 2026-06-16-workflow-management-implementation-operation-registry-preflight-review-run-gpt-5.4-primary-001
+  run_id: 2026-06-16-workflow-management-implementation-operation-registry-preflight-review-run
+  source_model: gpt-5.4
+  source_round: round-1
+  source_raw_path: raw/gpt-5.4.round-1.txt
+  source_parsed_path: parsed/gpt-5.4.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: Section 5.2 `KNOWN_INVOCATIONS` / Review Question 4
+  plain_language_summary: The implementation appears to maintain a separate hard-coded
+    known-invocation registry instead of deriving command/subcommand/options from
+    the actual CLI parser definitions.
+  final_label: must-fix
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-16T06:19:23.964907+00:00'
+  decision_reason: 'C1: known invocation が第二の正本になり drift するため修正する'
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-16-workflow-management-implementation-operation-registry-preflight-review-run-gpt-5.4-primary-002
+  run_id: 2026-06-16-workflow-management-implementation-operation-registry-preflight-review-run
+  source_model: gpt-5.4
+  source_round: round-1
+  source_raw_path: raw/gpt-5.4.round-1.txt
+  source_parsed_path: parsed/gpt-5.4.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: Section 5.2 `_build_response`
+  plain_language_summary: The preflight response schema leaves several generic contract
+    fields effectively unimplemented, including `missing_inputs`, `template_available`,
+    `worktree_state`, `pending_conflicts`, and `integrity_conflicts`.
+  final_label: must-fix
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-16T06:19:24.046373+00:00'
+  decision_reason: 'C2: generic response fields と family checks が実行されず false coverage
+    になるため修正する'
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-16-workflow-management-implementation-operation-registry-preflight-review-run-gpt-5.4-primary-003
+  run_id: 2026-06-16-workflow-management-implementation-operation-registry-preflight-review-run
+  source_model: gpt-5.4
+  source_round: round-1
+  source_raw_path: raw/gpt-5.4.round-1.txt
+  source_parsed_path: parsed/gpt-5.4.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: Section 5.3 `_validate_deployment_boundary`
+  plain_language_summary: Deployment boundary validation only checks for absolute
+    `planned_outputs` and does not appear to reject traversal-style relative paths
+    or validate confinement against declared roots.
+  final_label: must-fix
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-16T06:19:24.128460+00:00'
+  decision_reason: 'C3: deployment path 境界が相対 traversal を防げないため修正する'
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-16-workflow-management-implementation-operation-registry-preflight-review-run-gpt-5.4-primary-004
+  run_id: 2026-06-16-workflow-management-implementation-operation-registry-preflight-review-run
+  source_model: gpt-5.4
+  source_round: round-1
+  source_raw_path: raw/gpt-5.4.round-1.txt
+  source_parsed_path: parsed/gpt-5.4.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: Sections 3, 5.1, 7
+  plain_language_summary: The implementation explicitly excludes LLM/provider/model
+    fields from the registry and includes tests for LLM-provider independence.
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-16T06:19:24.207129+00:00'
+  decision_reason: 'C5: LLM/provider/model 独立性は実装済みの肯定所見として維持する'
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-16-workflow-management-implementation-operation-registry-preflight-review-run-claude-opus-4-8-adversarial-001
+  run_id: 2026-06-16-workflow-management-implementation-operation-registry-preflight-review-run
+  source_model: claude-opus-4-8
+  source_round: round-1
+  source_raw_path: raw/claude-opus-4-8.round-1.txt
+  source_parsed_path: parsed/claude-opus-4-8.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: tools/check_workflow_action/operation_preflight.py KNOWN_INVOCATIONS
+  plain_language_summary: The known-invocation registry hard-codes per-script option
+    sets (e.g. `next`, `review-run create`, `decide`, deployment export) in a second
+    source of truth that is fully decoupled from the actual argparse parsers defined
+    in check-workflow-action.py and the api_providers tools. There is no test or mechanism
+    asserting that KNOWN_INVOCATIONS stays in sync with the real parsers, so any flag
+    added/renamed/removed in the real CLI silently diverges, causing the preflight
+    to report false DEVIATION (or false OK) on correct invocations.
+  final_label: must-fix
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-16T06:19:24.284015+00:00'
+  decision_reason: 'C1: known invocation と実 parser の drift を防ぐ必要があるため修正する'
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-16-workflow-management-implementation-operation-registry-preflight-review-run-claude-opus-4-8-adversarial-002
+  run_id: 2026-06-16-workflow-management-implementation-operation-registry-preflight-review-run
+  source_model: claude-opus-4-8
+  source_round: round-1
+  source_raw_path: raw/claude-opus-4-8.round-1.txt
+  source_parsed_path: parsed/claude-opus-4-8.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: tools/check_workflow_action/operation_preflight.py _build_response
+    (state_refs.next_action / workflow_state_files)
+  plain_language_summary: '`_build_response` accesses `next_action.get("state_files")`
+    only when `next_action` is a dict, but the default path passes `next_action=None`
+    for DEVIATION/missing-operation responses, and for non-workflow_cli families (review_artifact,
+    commit_approval_chain, session_record_capture, deployment_export, nested_issue_control)
+    the response is constructed without ever populating `next_action`. There is no
+    shown code path that adapts `next --json` for any operation other than workflow
+    next, so for the other five families `state_refs.next_action` is null and several
+    declared dimensions are never produced. The Test Evidence only demonstrates the
+    dimension set for `workflow_next_preflight`.'
+  final_label: must-fix
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-16T06:19:24.361963+00:00'
+  decision_reason: 'C2: workflow_next 以外で next_action 等が skeletal になり generic coverage
+    が不足するため修正する'
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-16-workflow-management-implementation-operation-registry-preflight-review-run-claude-opus-4-8-adversarial-003
+  run_id: 2026-06-16-workflow-management-implementation-operation-registry-preflight-review-run
+  source_model: claude-opus-4-8
+  source_round: round-1
+  source_raw_path: raw/claude-opus-4-8.round-1.txt
+  source_parsed_path: parsed/claude-opus-4-8.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: tools/check_workflow_action/operation_preflight.py FAMILY_REQUIRED_CHECKS
+    vs _build_response checks
+  plain_language_summary: 'FAMILY_REQUIRED_CHECKS declares rich per-family check names
+    (e.g. target_manifest_alignment, staged_content_approval_digest, current_session_formal_output_forbidden,
+    nesting_depth), but the only check-producing logic shown is _validate_deployment_boundary,
+    and _build_response emits a single generic checks entry `[{"status": ..., "reasons":
+    reasons}]`. There is no visible code that evaluates the declared family_required_checks
+    and reports per-check pass/fail status.'
+  final_label: must-fix
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-16T06:19:24.438524+00:00'
+  decision_reason: 'C2: family_required_checks を宣言するだけで実行していないため修正する'
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-16-workflow-management-implementation-operation-registry-preflight-review-run-claude-opus-4-8-adversarial-004
+  run_id: 2026-06-16-workflow-management-implementation-operation-registry-preflight-review-run
+  source_model: claude-opus-4-8
+  source_round: round-1
+  source_raw_path: raw/claude-opus-4-8.round-1.txt
+  source_parsed_path: parsed/claude-opus-4-8.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: tools/check_workflow_action/operation_preflight.py _validate_deployment_boundary
+  plain_language_summary: The deployment boundary check only flags absolute paths
+    in planned_outputs and otherwise asserts read-only behavior. It does not verify
+    the external_output_root / target_app_root family_required_checks against the
+    actual --out/--target-app-root invocation, nor does it confirm overwrite_policy.
+    Relative-path planned_outputs that escape the project via `..` are not detected
+    by the is_absolute() test.
+  final_label: must-fix
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-16T06:19:24.514995+00:00'
+  decision_reason: 'C3: deployment/export の root と traversal 境界を検査する必要があるため修正する'
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-16-workflow-management-implementation-operation-registry-preflight-review-run-claude-opus-4-8-adversarial-005
+  run_id: 2026-06-16-workflow-management-implementation-operation-registry-preflight-review-run
+  source_model: claude-opus-4-8
+  source_round: round-1
+  source_raw_path: raw/claude-opus-4-8.round-1.txt
+  source_parsed_path: parsed/claude-opus-4-8.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: tools/check-workflow-action.py cmd_operation_preflight exit codes
+  plain_language_summary: Exit codes map OK->0, WARN->1, DEVIATION->2, but ALLOWED_VERDICTS
+    / allowed_verdicts is referenced without being shown, and a verdict outside {OK,
+    WARN, DEVIATION} falls through to return 2 (treated as DEVIATION). There is no
+    explicit handling/validation that response['verdict'] is one of the allowed values
+    before mapping.
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-16T06:19:24.591758+00:00'
+  decision_reason: 'C4: verdict と JSON mode の exit-code contract は堅牢化すべきだが主 blocker
+    ではない'
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-16-workflow-management-implementation-operation-registry-preflight-review-run-claude-opus-4-8-adversarial-006
+  run_id: 2026-06-16-workflow-management-implementation-operation-registry-preflight-review-run
+  source_model: claude-opus-4-8
+  source_round: round-1
+  source_raw_path: raw/claude-opus-4-8.round-1.txt
+  source_parsed_path: parsed/claude-opus-4-8.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: Section 7 Test Evidence (6 tests)
+  plain_language_summary: Test coverage is summarized as 6 tests covering schema requirements,
+    next state dimensions, command option mismatch, review-artifact checks, deployment
+    boundary, and LLM-provider independence — roughly one test per concern. The rich
+    next_action dimension verification is only demonstrated manually for workflow_next_preflight,
+    and there is no shown automated assertion that the other five families produce
+    their family_required_checks results or correct verdicts.
+  final_label: must-fix
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-16T06:19:24.666480+00:00'
+  decision_reason: 'C2: family ごとの検証結果を自動テストで確認できる必要があるため修正する'
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-16-workflow-management-implementation-operation-registry-preflight-review-run-claude-opus-4-8-adversarial-007
+  run_id: 2026-06-16-workflow-management-implementation-operation-registry-preflight-review-run
+  source_model: claude-opus-4-8
+  source_round: round-1
+  source_raw_path: raw/claude-opus-4-8.round-1.txt
+  source_parsed_path: parsed/claude-opus-4-8.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: tools/check_workflow_action/operation_registry.py FORBIDDEN_LLM_FIELDS
+    / validate_operation
+  plain_language_summary: LLM/provider/model independence is enforced structurally
+    via FORBIDDEN_LLM_FIELDS and _contains_forbidden_field, and the test suite includes
+    an LLM-provider independence case. This is a positive, verifiable safeguard for
+    Review Question 6.
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-16T06:19:24.744278+00:00'
+  decision_reason: 'C5: LLM/provider/model 独立性は正しい制御として維持する'
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-16-workflow-management-implementation-operation-registry-preflight-review-run-claude-opus-4-8-adversarial-008
+  run_id: 2026-06-16-workflow-management-implementation-operation-registry-preflight-review-run
+  source_model: claude-opus-4-8
+  source_round: round-1
+  source_raw_path: raw/claude-opus-4-8.round-1.txt
+  source_parsed_path: parsed/claude-opus-4-8.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: Section 7.2 regression evidence (189 + 20 tests OK, git diff --check
+    OK)
+  plain_language_summary: Existing workflow CLI regression risk (Review Question 7)
+    is addressed by running the full test_check_workflow_action suite (189 tests)
+    plus adjacent suites and git diff --check, all passing. The new subcommand is
+    additive (new parser, new dispatch branch).
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-16T06:19:24.820843+00:00'
+  decision_reason: 'C6: 既存 CLI 回帰証跡は肯定所見として維持する'
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-16-workflow-management-implementation-operation-registry-preflight-review-run-gemini-3.1-pro-preview-judgment-001
+  run_id: 2026-06-16-workflow-management-implementation-operation-registry-preflight-review-run
+  source_model: gemini-3.1-pro-preview
+  source_round: round-1
+  source_raw_path: raw/gemini-3.1-pro-preview.round-1.txt
+  source_parsed_path: parsed/gemini-3.1-pro-preview.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: 5.2 Known invocation and preflight response / KNOWN_INVOCATIONS
+  plain_language_summary: Hardcoded argument sets in KNOWN_INVOCATIONS create a brittle
+    secondary parser that is prone to drift.
+  final_label: must-fix
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-16T06:19:24.897398+00:00'
+  decision_reason: 'C1: hardcoded option sets の drift risk を防ぐ必要があるため修正する'
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-16-workflow-management-implementation-operation-registry-preflight-review-run-gemini-3.1-pro-preview-judgment-002
+  run_id: 2026-06-16-workflow-management-implementation-operation-registry-preflight-review-run
+  source_model: gemini-3.1-pro-preview
+  source_round: round-1
+  source_raw_path: raw/gemini-3.1-pro-preview.round-1.txt
+  source_parsed_path: parsed/gemini-3.1-pro-preview.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: 5.3 Read-only deployment boundary check / _validate_deployment_boundary
+  plain_language_summary: Deployment boundary validation fails to mitigate relative
+    path traversal.
+  final_label: must-fix
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-16T06:19:24.974412+00:00'
+  decision_reason: 'C3: relative traversal を deployment boundary で防ぐ必要があるため修正する'
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-16-workflow-management-implementation-operation-registry-preflight-review-run-gemini-3.1-pro-preview-judgment-003
+  run_id: 2026-06-16-workflow-management-implementation-operation-registry-preflight-review-run
+  source_model: gemini-3.1-pro-preview
+  source_round: round-1
+  source_raw_path: raw/gemini-3.1-pro-preview.round-1.txt
+  source_parsed_path: parsed/gemini-3.1-pro-preview.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: 4.1 tools/check-workflow-action.py
+  plain_language_summary: Exit codes for `--json` output mode may cause unintended
+    failures in standard CI/CD pipelines.
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-16T06:19:25.050472+00:00'
+  decision_reason: 'C4: JSON mode exit-code contract は明確化すべきだが主 blocker ではない'
+  applied_files: []
+  superseded_by: null

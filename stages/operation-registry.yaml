@@ -1,0 +1,282 @@
+schema_version: operation-registry-v1
+owner: workflow-management
+description: >
+  Read-only operation contracts for operation-preflight. Phase 1 preflight
+  must not create review-runs, manifests, approval records, session records,
+  commits, or deployment/export outputs.
+operations:
+  - operation_id: workflow_next_preflight
+    kind: workflow_state
+    operation_family: workflow_cli
+    canonical_invocation:
+      entrypoint: tools/check-workflow-action.py
+      subcommand: next
+      options:
+        - --json
+      positional_args: []
+      execution_context: repo_root
+    workflow_binding:
+      phase: null
+      stage: null
+      gate: null
+      next_action_kind: null
+    required_inputs:
+      - stages/feature-dependency.yaml
+      - .reviewcompass/specs/{feature}/spec.json
+    target_identity:
+      - workflow_state
+    planned_outputs: []
+    sequence_mode: parallel_ok
+    worktree_policy: allow_dirty_read_only
+    pending_conflict_policy: allow_registered_pending_state
+    artifact_policy: read_only
+    family_required_checks:
+      - parser_invocation
+      - workflow_binding
+      - next_active_state_dimensions
+      - scope_consistency
+    vocabulary_refs:
+      - verdict
+      - sequence_mode
+      - workflow_stage
+
+  - operation_id: review_run_create
+    kind: review_artifact
+    operation_family: review_artifact
+    canonical_invocation:
+      entrypoint: tools/api_providers/run_review.py
+      subcommand: null
+      options:
+        - --target
+        - --phase
+        - --criteria
+        - --review-run-dir
+      positional_args: []
+      execution_context: repo_root
+    workflow_binding:
+      phase: null
+      stage: triad-review
+      gate: null
+      next_action_kind: reopen_in_progress
+    required_inputs:
+      - review-target.md
+      - target-manifest.yaml
+    target_identity:
+      - review_run
+    planned_outputs:
+      - raw/
+      - parsed/
+      - rounds.yaml
+      - model-result-summary.yaml
+      - triage.yaml
+    sequence_mode: serial_only
+    worktree_policy: allow_dirty_read_only
+    pending_conflict_policy: require_matching_review_gate
+    artifact_policy: no_overwrite_without_explicit_run_id
+    family_required_checks:
+      - target_manifest_alignment
+      - bundle_non_empty
+      - criteria_alignment
+      - document-type_alignment
+      - approval_record_alignment
+      - existing_artifact_drift
+      - staged-vs-unstaged_target_selection
+    vocabulary_refs:
+      - severity
+      - final_label
+      - review_mode
+
+  - operation_id: triage_decide
+    kind: review_artifact
+    operation_family: review_artifact
+    canonical_invocation:
+      entrypoint: tools/api_providers/review_triage.py
+      subcommand: decide
+      options:
+        - --review-run-dir
+        - --finding-id
+        - --final-label
+        - --decision-reason
+        - --decision-actor
+        - --approval-record
+      positional_args: []
+      execution_context: repo_root
+    workflow_binding:
+      phase: null
+      stage: triad-review
+      gate: null
+      next_action_kind: reopen_in_progress
+    required_inputs:
+      - triage.yaml
+      - approval.yaml
+    target_identity:
+      - finding_id
+      - final_label
+    planned_outputs:
+      - triage.yaml
+    sequence_mode: serial_only
+    worktree_policy: allow_dirty_read_only
+    pending_conflict_policy: require_matching_review_gate
+    artifact_policy: update_existing_triage_only
+    family_required_checks:
+      - target_manifest_alignment
+      - bundle_non_empty
+      - criteria_alignment
+      - document-type_alignment
+      - approval_record_alignment
+      - existing_artifact_drift
+      - staged-vs-unstaged_target_selection
+    vocabulary_refs:
+      - final_label
+
+  - operation_id: commit_approval_chain_preflight
+    kind: irreversible
+    operation_family: commit_approval_chain
+    canonical_invocation:
+      entrypoint: tools/check-workflow-action.py
+      subcommand: operation-preflight
+      options:
+        - --operation-id
+        - --json
+      positional_args: []
+      execution_context: repo_root
+    workflow_binding:
+      phase: null
+      stage: null
+      gate: null
+      next_action_kind: null
+    required_inputs:
+      - .reviewcompass/runtime/approvals/commit-approval-challenge.json
+      - .reviewcompass/runtime/approvals/commit-approval.json
+      - .reviewcompass/runtime/approvals/commit-execution-delegation.json
+    target_identity:
+      - staged_file_set
+      - target_digest
+    planned_outputs: []
+    sequence_mode: serial_only
+    worktree_policy: require_staged_content_binding
+    pending_conflict_policy: reject_unrelated_in_progress
+    artifact_policy: read_only
+    family_required_checks:
+      - nonce
+      - target_digest
+      - staged_file_set_digest
+      - staged_content_approval_digest
+      - expiry
+      - consume
+      - invalidated
+      - target
+    vocabulary_refs:
+      - verdict
+      - approved_action
+
+  - operation_id: session_record_capture_preflight
+    kind: evidence_capture
+    operation_family: session_record_capture
+    canonical_invocation:
+      entrypoint: tools/check-workflow-action.py
+      subcommand: operation-preflight
+      options:
+        - --operation-id
+        - --json
+      positional_args: []
+      execution_context: repo_root
+    workflow_binding:
+      phase: null
+      stage: null
+      gate: null
+      next_action_kind: null
+    required_inputs:
+      - session_record_mode
+      - current_session_id
+      - target_session_id
+    target_identity:
+      - target_session_id
+    planned_outputs: []
+    sequence_mode: parallel_ok
+    worktree_policy: allow_dirty_read_only
+    pending_conflict_policy: allow_matching_capture
+    artifact_policy: read_only
+    family_required_checks:
+      - session_record_mode
+      - current_session_id
+      - target_session_id
+      - current_session_formal_output_forbidden
+    vocabulary_refs:
+      - session_record_mode
+
+  - operation_id: nested_issue_preflight
+    kind: workflow_state
+    operation_family: nested_issue_control
+    canonical_invocation:
+      entrypoint: tools/check-workflow-action.py
+      subcommand: operation-preflight
+      options:
+        - --operation-id
+        - --json
+      positional_args: []
+      execution_context: repo_root
+    workflow_binding:
+      phase: null
+      stage: null
+      gate: null
+      next_action_kind: null
+    required_inputs:
+      - parent_task
+      - discovered_issue
+      - relation
+      - allowed_files
+      - return_condition
+    target_identity:
+      - parent_task
+      - discovered_issue
+    planned_outputs: []
+    sequence_mode: serial_only
+    worktree_policy: allow_dirty_read_only
+    pending_conflict_policy: require_side_track_or_blocker_record
+    artifact_policy: read_only
+    family_required_checks:
+      - parent_task
+      - discovered_issue
+      - relation
+      - allowed_files
+      - return_condition
+      - nesting_depth
+    vocabulary_refs:
+      - nested_issue_relation
+
+  - operation_id: deployment_export_preflight
+    kind: deployment_export
+    operation_family: deployment_export
+    canonical_invocation:
+      entrypoint: tools/build-deploy-package.py
+      subcommand: null
+      options:
+        - --out
+        - --manifest
+      positional_args: []
+      execution_context: repo_root
+    workflow_binding:
+      phase: null
+      stage: null
+      gate: null
+      next_action_kind: null
+    required_inputs:
+      - planned_outputs
+      - overwrite_policy
+      - external_output_root
+      - target_app_root
+    target_identity:
+      - deployment_package
+    planned_outputs: []
+    sequence_mode: serial_only
+    worktree_policy: allow_dirty_read_only
+    pending_conflict_policy: reject_unrelated_in_progress
+    artifact_policy: read_only
+    family_required_checks:
+      - planned_outputs
+      - overwrite_policy
+      - external_output_root
+      - target_app_root
+    vocabulary_refs:
+      - deployment_target

@@ -1,0 +1,264 @@
+run_id: 2026-06-16-workflow-management-requirements-operation-registry-preflight-review-run-r2
+triage_status: decided
+generated_at: '2026-06-16T05:21:53.817241+00:00'
+decision_actor: null
+decision_actor_type: human
+items:
+- finding_id: 2026-06-16-workflow-management-requirements-operation-registry-preflight-review-run-r2-gpt-5.4-primary-001
+  run_id: 2026-06-16-workflow-management-requirements-operation-registry-preflight-review-run-r2
+  source_model: gpt-5.4
+  source_round: round-1
+  source_raw_path: raw/gpt-5.4.round-1.txt
+  source_parsed_path: parsed/gpt-5.4.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: Requirements Delta / Acceptance Criterion 1
+  plain_language_summary: The registry schema does not require an explicit phase/stage
+    or gate linkage for each operation.
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: user:2026-06-16-承認
+  decision_actor_type: agent
+  decision_at: '2026-06-16T05:24:26.939149+00:00'
+  decision_reason: 利用者が r2 推奨 triage を承認。requirements の外部可視契約を明確化し、design/tasks/implementation
+    の手戻りを減らすため反映する。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-16-workflow-management-requirements-operation-registry-preflight-review-run-r2-gpt-5.4-primary-002
+  run_id: 2026-06-16-workflow-management-requirements-operation-registry-preflight-review-run-r2
+  source_model: gpt-5.4
+  source_round: round-1
+  source_raw_path: raw/gpt-5.4.round-1.txt
+  source_parsed_path: parsed/gpt-5.4.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: Requirements Delta / Acceptance Criterion 2
+  plain_language_summary: The read-only preflight output does not explicitly require
+    reporting the active workflow state dimensions needed to verify consistency with
+    `next --json`.
+  final_label: must-fix
+  decision_status: decided
+  decision_actor: user:2026-06-16-承認
+  decision_actor_type: agent
+  decision_at: '2026-06-16T05:24:27.007778+00:00'
+  decision_reason: 利用者が r2 推奨 triage を承認。next 状態一意性は今回の requirements 差し戻し理由そのものであり、requirements
+    後段へ進む前に反映する。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-16-workflow-management-requirements-operation-registry-preflight-review-run-r2-gpt-5.4-primary-003
+  run_id: 2026-06-16-workflow-management-requirements-operation-registry-preflight-review-run-r2
+  source_model: gpt-5.4
+  source_round: round-1
+  source_raw_path: raw/gpt-5.4.round-1.txt
+  source_parsed_path: parsed/gpt-5.4.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: Requirements Delta / Acceptance Criterion 5
+  plain_language_summary: The stale commit approval check is listed only as a worktree/pending-conflict
+    example rather than as a broader approval-chain integrity requirement.
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: user:2026-06-16-承認
+  decision_actor_type: agent
+  decision_at: '2026-06-16T05:24:27.077568+00:00'
+  decision_reason: 利用者が r2 推奨 triage を承認。requirements の外部可視契約を明確化し、design/tasks/implementation
+    の手戻りを減らすため反映する。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-16-workflow-management-requirements-operation-registry-preflight-review-run-r2-gpt-5.4-primary-004
+  run_id: 2026-06-16-workflow-management-requirements-operation-registry-preflight-review-run-r2
+  source_model: gpt-5.4
+  source_round: round-1
+  source_raw_path: raw/gpt-5.4.round-1.txt
+  source_parsed_path: parsed/gpt-5.4.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: Requirements Delta / Acceptance Criterion 6
+  plain_language_summary: Review artifact preflight scope mentions approval record
+    preflight but does not clearly include review-target/manifest alignment and artifact
+    overwrite or drift checks across all review artifacts.
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: user:2026-06-16-承認
+  decision_actor_type: agent
+  decision_at: '2026-06-16T05:24:27.143273+00:00'
+  decision_reason: 利用者が r2 推奨 triage を承認。requirements の外部可視契約を明確化し、design/tasks/implementation
+    の手戻りを減らすため反映する。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-16-workflow-management-requirements-operation-registry-preflight-review-run-r2-gpt-5.4-primary-005
+  run_id: 2026-06-16-workflow-management-requirements-operation-registry-preflight-review-run-r2
+  source_model: gpt-5.4
+  source_round: round-1
+  source_raw_path: raw/gpt-5.4.round-1.txt
+  source_parsed_path: parsed/gpt-5.4.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: Review Scope / Existing Context / Requirements Delta
+  plain_language_summary: The target document appropriately preserves reopen scoping
+    and prior-review supersession context.
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: user:2026-06-16-承認
+  decision_actor_type: agent
+  decision_at: '2026-06-16T05:24:27.211824+00:00'
+  decision_reason: 利用者が r2 推奨 triage を承認。肯定的 INFO であり、追加修正は不要。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-16-workflow-management-requirements-operation-registry-preflight-review-run-r2-claude-opus-4-8-adversarial-001
+  run_id: 2026-06-16-workflow-management-requirements-operation-registry-preflight-review-run-r2
+  source_model: claude-opus-4-8
+  source_round: round-1
+  source_raw_path: raw/claude-opus-4-8.round-1.txt
+  source_parsed_path: parsed/claude-opus-4-8.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: Requirements Delta — Acceptance Criterion 13
+  plain_language_summary: AC13 (`next` state uniqueness for `reopen_in_progress`)
+    does not enumerate all the fields the Review Scope says must be machine-readable
+    and mutually consistent. The scope lists current mainline, required action, phase,
+    stage, reopen scope, impact review scope, direct features, indirect features,
+    flag policy, and next pending gate, but AC13 only names reopen scope / impact
+    review scope / flag policy consistency. Since AC13 is the sole reason for the
+    r2 reopen, its acceptance text must fully capture the delta it introduces.
+  final_label: must-fix
+  decision_status: decided
+  decision_actor: user:2026-06-16-承認
+  decision_actor_type: agent
+  decision_at: '2026-06-16T05:24:27.277263+00:00'
+  decision_reason: 利用者が r2 推奨 triage を承認。next 状態一意性は今回の requirements 差し戻し理由そのものであり、requirements
+    後段へ進む前に反映する。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-16-workflow-management-requirements-operation-registry-preflight-review-run-r2-claude-opus-4-8-adversarial-002
+  run_id: 2026-06-16-workflow-management-requirements-operation-registry-preflight-review-run-r2
+  source_model: claude-opus-4-8
+  source_round: round-1
+  source_raw_path: raw/claude-opus-4-8.round-1.txt
+  source_parsed_path: parsed/claude-opus-4-8.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: Requirements Delta — Acceptance Criterion 13 vs Existing Context
+    Requirement 2
+  plain_language_summary: AC13 places `next --json` / `next` state-uniqueness behavior
+    inside Requirement 12, but Requirement 2 already owns `next --json`. The document
+    does not state whether AC13 amends Requirement 2 or duplicates a parallel contract
+    in Requirement 12. The reopen record claims AC13 was 'added' but the ownership
+    boundary between R2 and R12 for `next` output is left ambiguous.
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: user:2026-06-16-承認
+  decision_actor_type: agent
+  decision_at: '2026-06-16T05:24:27.344962+00:00'
+  decision_reason: 利用者が r2 推奨 triage を承認。requirements の外部可視契約を明確化し、design/tasks/implementation
+    の手戻りを減らすため反映する。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-16-workflow-management-requirements-operation-registry-preflight-review-run-r2-claude-opus-4-8-adversarial-003
+  run_id: 2026-06-16-workflow-management-requirements-operation-registry-preflight-review-run-r2
+  source_model: claude-opus-4-8
+  source_round: round-1
+  source_raw_path: raw/claude-opus-4-8.round-1.txt
+  source_parsed_path: parsed/claude-opus-4-8.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: Requirements Delta — Acceptance Criterion 11 and Review Scope (ownership)
+  plain_language_summary: The Review Scope states workflow-management is the only
+    reopen scope / direct owner while all features are in impact review scope, but
+    AC11 ('All feature impact review scope as a preflight input') does not encode
+    the distinction between reopen scope (direct) and impact review scope (indirect).
+    The flag false/true traceability called out in Review Question 8 has no corresponding
+    acceptance criterion.
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: user:2026-06-16-承認
+  decision_actor_type: agent
+  decision_at: '2026-06-16T05:24:27.413280+00:00'
+  decision_reason: 利用者が r2 推奨 triage を承認。requirements の外部可視契約を明確化し、design/tasks/implementation
+    の手戻りを減らすため反映する。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-16-workflow-management-requirements-operation-registry-preflight-review-run-r2-claude-opus-4-8-adversarial-004
+  run_id: 2026-06-16-workflow-management-requirements-operation-registry-preflight-review-run-r2
+  source_model: claude-opus-4-8
+  source_round: round-1
+  source_raw_path: raw/claude-opus-4-8.round-1.txt
+  source_parsed_path: parsed/claude-opus-4-8.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: Requirements Delta — Acceptance Criterion 9
+  plain_language_summary: AC9 lists 'Nested issue handling as a preflight target'
+    but gives no fail-closed behavior or scope-drift detection criterion, while the
+    smell inventory references (nested-issue-handling-smell) and Review Question 6
+    emphasize avoiding nested issue scope drift without overfitting to one incident.
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: user:2026-06-16-承認
+  decision_actor_type: agent
+  decision_at: '2026-06-16T05:24:27.478023+00:00'
+  decision_reason: 利用者が r2 推奨 triage を承認。requirements の外部可視契約を明確化し、design/tasks/implementation
+    の手戻りを減らすため反映する。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-16-workflow-management-requirements-operation-registry-preflight-review-run-r2-claude-opus-4-8-adversarial-005
+  run_id: 2026-06-16-workflow-management-requirements-operation-registry-preflight-review-run-r2
+  source_model: claude-opus-4-8
+  source_round: round-1
+  source_raw_path: raw/claude-opus-4-8.round-1.txt
+  source_parsed_path: parsed/claude-opus-4-8.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: Requirements Delta — Acceptance Criteria 7 and 8
+  plain_language_summary: AC7 (serial-only commit approval chain) and AC8 (current-session
+    guard for formal session-record) are stated as single-line constraints without
+    naming the fail-closed verdict (e.g., DEVIATION) that ties them back to AC3's
+    common response shape.
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: user:2026-06-16-承認
+  decision_actor_type: agent
+  decision_at: '2026-06-16T05:24:27.541893+00:00'
+  decision_reason: 利用者が r2 推奨 triage を承認。requirements の外部可視契約を明確化し、design/tasks/implementation
+    の手戻りを減らすため反映する。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-16-workflow-management-requirements-operation-registry-preflight-review-run-r2-gemini-3.1-pro-preview-judgment-001
+  run_id: 2026-06-16-workflow-management-requirements-operation-registry-preflight-review-run-r2
+  source_model: gemini-3.1-pro-preview
+  source_round: round-1
+  source_raw_path: raw/gemini-3.1-pro-preview.round-1.txt
+  source_parsed_path: parsed/gemini-3.1-pro-preview.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: Requirements Delta -> Acceptance Criteria (Criterion 13)
+  plain_language_summary: Acceptance Criterion 13 fails to include all required fields
+    to ensure `next --json` state uniqueness.
+  final_label: must-fix
+  decision_status: decided
+  decision_actor: user:2026-06-16-承認
+  decision_actor_type: agent
+  decision_at: '2026-06-16T05:24:27.605366+00:00'
+  decision_reason: 利用者が r2 推奨 triage を承認。next 状態一意性は今回の requirements 差し戻し理由そのものであり、requirements
+    後段へ進む前に反映する。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-16-workflow-management-requirements-operation-registry-preflight-review-run-r2-gemini-3.1-pro-preview-judgment-002
+  run_id: 2026-06-16-workflow-management-requirements-operation-registry-preflight-review-run-r2
+  source_model: gemini-3.1-pro-preview
+  source_round: round-1
+  source_raw_path: raw/gemini-3.1-pro-preview.round-1.txt
+  source_parsed_path: parsed/gemini-3.1-pro-preview.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: Requirements Delta -> Acceptance Criteria (Criterion 6)
+  plain_language_summary: Acceptance Criterion 6 omits 'bundle' from the list of review
+    artifacts covered by preflight.
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: user:2026-06-16-承認
+  decision_actor_type: agent
+  decision_at: '2026-06-16T05:24:27.675696+00:00'
+  decision_reason: 利用者が r2 推奨 triage を承認。requirements の外部可視契約を明確化し、design/tasks/implementation
+    の手戻りを減らすため反映する。
+  applied_files: []
+  superseded_by: null

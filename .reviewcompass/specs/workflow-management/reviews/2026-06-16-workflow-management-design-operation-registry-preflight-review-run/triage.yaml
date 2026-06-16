@@ -1,0 +1,307 @@
+run_id: 2026-06-16-workflow-management-design-operation-registry-preflight-review-run
+triage_status: draft
+generated_at: '2026-06-16T05:34:20.252637+00:00'
+decision_actor: null
+decision_actor_type: human
+items:
+- finding_id: 2026-06-16-workflow-management-design-operation-registry-preflight-review-run-gpt-5.4-primary-001
+  run_id: 2026-06-16-workflow-management-design-operation-registry-preflight-review-run
+  source_model: gpt-5.4
+  source_round: round-1
+  source_raw_path: raw/gpt-5.4.round-1.txt
+  source_parsed_path: parsed/gpt-5.4.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: .reviewcompass/specs/workflow-management/reviews/2026-06-16-workflow-management-design-operation-registry-preflight-review-run/review-target.md
+  plain_language_summary: The review target references the intended design changes
+    and source documents, but does not include the actual contents of `design.md`,
+    so the triad review cannot verify whether the design truly implements Requirement
+    12.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: The stated review questions require checking coverage, ownership
+    boundaries, schema distinctions, and phase separation in the design itself. This
+    target only summarizes what the design 'now adds' rather than exposing the exact
+    design text, making it impossible to confirm correctness, omissions, or overreach.
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-16-workflow-management-design-operation-registry-preflight-review-run-gpt-5.4-primary-002
+  run_id: 2026-06-16-workflow-management-design-operation-registry-preflight-review-run
+  source_model: gpt-5.4
+  source_round: round-1
+  source_raw_path: raw/gpt-5.4.round-1.txt
+  source_parsed_path: parsed/gpt-5.4.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: '## Design Delta'
+  plain_language_summary: The review target asserts that the design covers acceptance
+    criteria 1-13, but it does not map the listed design additions back to each specific
+    Requirement 12 acceptance criterion.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: A triad review for reopen verification should be able to trace
+    each acceptance criterion to a corresponding design element. Without explicit
+    criterion-by-criterion traceability, reviewers cannot reliably determine whether
+    any requirement is only partially covered or covered in an overbroad way.
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-16-workflow-management-design-operation-registry-preflight-review-run-gpt-5.4-primary-003
+  run_id: 2026-06-16-workflow-management-design-operation-registry-preflight-review-run
+  source_model: gpt-5.4
+  source_round: round-1
+  source_raw_path: raw/gpt-5.4.round-1.txt
+  source_parsed_path: parsed/gpt-5.4.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: '## Design Delta, item 12'
+  plain_language_summary: The summary states that the design addresses `reopen_scope`
+    / `impact_review_scope` and `next` state uniqueness, but it does not show the
+    exact design-level definitions or invariants for those machine-readable fields.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: This reopen specifically depends on preserving Requirement 2 ownership
+    while extending `next --json` to uniquely identify the active reopen state. Without
+    the concrete design definitions, the review cannot validate that the fields are
+    distinct, machine-readable, and non-competing with the existing `next` source
+    of truth.
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-16-workflow-management-design-operation-registry-preflight-review-run-gpt-5.4-primary-004
+  run_id: 2026-06-16-workflow-management-design-operation-registry-preflight-review-run
+  source_model: gpt-5.4
+  source_round: round-1
+  source_raw_path: raw/gpt-5.4.round-1.txt
+  source_parsed_path: parsed/gpt-5.4.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: '## Design Delta, item 14'
+  plain_language_summary: The summary says the design defines a Phase 1 / Phase 2
+    boundary, but it does not provide the explicit negative constraints for Phase
+    1 in the design text under review.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: A core requirement is that Phase 1 remain read-only and must not
+    create review-run directories, manifests, approvals, sessions, commits, deployment
+    outputs, or export outputs. A high-level statement that there is a boundary is
+    not sufficient to verify that the design fail-closes against all prohibited side
+    effects.
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-16-workflow-management-design-operation-registry-preflight-review-run-gpt-5.4-primary-005
+  run_id: 2026-06-16-workflow-management-design-operation-registry-preflight-review-run
+  source_model: gpt-5.4
+  source_round: round-1
+  source_raw_path: raw/gpt-5.4.round-1.txt
+  source_parsed_path: parsed/gpt-5.4.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: '## Design Delta'
+  plain_language_summary: The target appropriately calls out the XDI renumbering from
+    XDI-WM-003 collision risk to XDI-WM-004 as part of the design update.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: This helps reviewers check design-document consistency and avoid
+    identifier ambiguity across requirements and design artifacts, though the actual
+    alignment still depends on the unseen `design.md` content.
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-16-workflow-management-design-operation-registry-preflight-review-run-claude-opus-4-8-adversarial-001
+  run_id: 2026-06-16-workflow-management-design-operation-registry-preflight-review-run
+  source_model: claude-opus-4-8
+  source_round: round-1
+  source_raw_path: raw/claude-opus-4-8.round-1.txt
+  source_parsed_path: parsed/claude-opus-4-8.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: Design Delta (target document)
+  plain_language_summary: The review-target summarizes the design delta in prose but
+    does not quote the actual normative design text (response schema fields, verdict
+    enums, registry contract fields). A reviewer cannot verify whether design.md correctly
+    implements Requirement 12 acceptance criteria 1-13 from this target alone; the
+    target only asserts that the sections exist.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: A triad-review target should make the artifact under review independently
+    verifiable. Without the concrete schema/field definitions, findings about coverage,
+    uniqueness, and fail-closed behavior cannot be grounded and the review risks rubber-stamping
+    section headings.
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-16-workflow-management-design-operation-registry-preflight-review-run-claude-opus-4-8-adversarial-002
+  run_id: 2026-06-16-workflow-management-design-operation-registry-preflight-review-run
+  source_model: claude-opus-4-8
+  source_round: round-1
+  source_raw_path: raw/claude-opus-4-8.round-1.txt
+  source_parsed_path: parsed/claude-opus-4-8.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: Review Scope / Design Delta — reopen_scope vs impact_review_scope
+  plain_language_summary: The target states reopen_scope and impact_review_scope must
+    be 'distinct and machine-readable' and references item 12, but provides no design-level
+    definition of the two fields, their value domains, or the rule that determines
+    flag false/true. Review Question 5 asks for traceability that the target itself
+    does not supply.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: If the distinguishing rule is not shown, the reviewer cannot determine
+    whether the design actually makes the two scopes distinct and machine-readable,
+    which is one of the explicitly approved requirements.
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-16-workflow-management-design-operation-registry-preflight-review-run-claude-opus-4-8-adversarial-003
+  run_id: 2026-06-16-workflow-management-design-operation-registry-preflight-review-run
+  source_model: claude-opus-4-8
+  source_round: round-1
+  source_raw_path: raw/claude-opus-4-8.round-1.txt
+  source_parsed_path: parsed/claude-opus-4-8.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: Review Scope — 'next --json must uniquely identify the active reopen
+    state'
+  plain_language_summary: The target lists next --json uniqueness as a key requirement
+    and Review Question 4 asks whether Requirement 2 ownership is preserved, but the
+    target does not show how the design encodes the unique identifier (e.g., field
+    name, run_id, scope key) on the next --json output.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: State uniqueness is a correctness-critical claim. Without the design's
+    actual mechanism shown, the reviewer cannot confirm uniqueness or that it extends
+    rather than competes with Requirement 2's next source of truth.
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-16-workflow-management-design-operation-registry-preflight-review-run-claude-opus-4-8-adversarial-004
+  run_id: 2026-06-16-workflow-management-design-operation-registry-preflight-review-run
+  source_model: claude-opus-4-8
+  source_round: round-1
+  source_raw_path: raw/claude-opus-4-8.round-1.txt
+  source_parsed_path: parsed/claude-opus-4-8.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: Source Documents
+  plain_language_summary: Six source documents are listed but none are excerpted or
+    line-referenced. The reviewer must independently open each file, and there is
+    no indication of which sections within requirements.md and design.md are the relevant
+    deltas.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: Pointing to anchors or sections reduces the chance that the review
+    and the authored design diverge on what 'Requirement 12 r2' actually contains.
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-16-workflow-management-design-operation-registry-preflight-review-run-claude-opus-4-8-adversarial-005
+  run_id: 2026-06-16-workflow-management-design-operation-registry-preflight-review-run
+  source_model: claude-opus-4-8
+  source_round: round-1
+  source_raw_path: raw/claude-opus-4-8.round-1.txt
+  source_parsed_path: parsed/claude-opus-4-8.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: Design Delta — XDI-WM-004 / XDI-WM-003
+  plain_language_summary: The target asserts XDI-WM-004 avoids collision with existing
+    XDI-WM-003 but does not show the new identifier in context or confirm the requirements/design
+    cross-reference was updated symmetrically.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: Review Question 9 depends on verifying both sides of the traceability
+    link; the target provides only the design-side assertion.
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-16-workflow-management-design-operation-registry-preflight-review-run-claude-opus-4-8-adversarial-006
+  run_id: 2026-06-16-workflow-management-design-operation-registry-preflight-review-run
+  source_model: claude-opus-4-8
+  source_round: round-1
+  source_raw_path: raw/claude-opus-4-8.round-1.txt
+  source_parsed_path: parsed/claude-opus-4-8.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: Review Scope — Phase 1 read-only constraints
+  plain_language_summary: The Phase 1 prohibited-side-effects list (no review-run
+    directories, manifests, approval records, session records, commits, deployment/export
+    outputs) is stated as a requirement but the target does not indicate where the
+    design enforces read-only behavior or how it is testable without runner execution.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: The read-only/runner-enabled split (Review Question 3) is central;
+    surfacing the enforcement mechanism in the target would let the reviewer judge
+    whether the boundary is design-complete versus deferred to tasks.
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-16-workflow-management-design-operation-registry-preflight-review-run-gemini-3.1-pro-preview-judgment-001
+  run_id: 2026-06-16-workflow-management-design-operation-registry-preflight-review-run
+  source_model: gemini-3.1-pro-preview
+  source_round: round-1
+  source_raw_path: raw/gemini-3.1-pro-preview.round-1.txt
+  source_parsed_path: parsed/gemini-3.1-pro-preview.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: '## Design Delta, Item 1'
+  plain_language_summary: Placing the operation registry in 'stages/operation-registry.yaml'
+    violates the workflow-management ownership boundary.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: The 'stages/' directory is dedicated to review pipeline configurations
+    and gates (e.g., 'stages/design.yaml'). Placing a workflow-management-owned operation
+    registry in this global pipeline directory conflates pipeline execution domains
+    with workflow-management domains. The registry should be located in a path clearly
+    owned by workflow-management.
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-16-workflow-management-design-operation-registry-preflight-review-run-gemini-3.1-pro-preview-judgment-002
+  run_id: 2026-06-16-workflow-management-design-operation-registry-preflight-review-run
+  source_model: gemini-3.1-pro-preview
+  source_round: round-1
+  source_raw_path: raw/gemini-3.1-pro-preview.round-1.txt
+  source_parsed_path: parsed/gemini-3.1-pro-preview.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: '## Design Delta, Item 5'
+  plain_language_summary: Specifying 'parser / parser adapter' oversteps into implementation
+    details.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: The review scope explicitly prohibits overstepping into implementation.
+    While 'Command validation' is a valid design-level boundary and behavior, dictating
+    internal software design patterns or components such as a 'parser / parser adapter'
+    dictates how the validation is coded rather than what the validation system must
+    do.
+  applied_files: []
+  superseded_by: null

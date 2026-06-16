@@ -1,0 +1,4 @@
+run_id: 2026-06-16-workflow-management-tasks-operation-registry-preflight-review-run
+target_files:
+- path: .reviewcompass/specs/workflow-management/reviews/2026-06-16-workflow-management-tasks-operation-registry-preflight-review-run/review-target.md
+  sha256: 8fe4a20bb4ae1eddd96f2c6cf6062a9bbc409df66f324e964765bbf80e1aa8d5

@@ -1,0 +1,29 @@
+findings:
+  - severity: ERROR
+    target_location: "Requirement 12, Acceptance criterion 6 (Review artifact preflight)"
+    description: "The review scope lists 'deployment / export related artifacts' as required preflight coverage, and Review Question 9 explicitly asks whether deployment/export operations are adequately included, but none of the ten acceptance criteria mention deployment or export. The criteria stop at review/manifest/triage/session/nested-issue. Deployment/export coverage is silently dropped from the requirements delta."
+    rationale: "The approved requirements delta in the Review Scope section names deployment/export artifacts as in-scope preflight targets. If the acceptance criteria do not cover them, the requirement does not capture the approved delta and a known scope item will be lost before design."
+  - severity: ERROR
+    target_location: "Requirement 12, Acceptance criterion 3 (preflight response shape)"
+    description: "The response shape defines OK / WARN / DEVIATION verdicts but no acceptance criterion specifies fail-closed behavior — i.e. which verdicts block the operation and which proceed. Review Question 10 asks for missing fail-closed cases. Without a stated mapping from verdict to allow/block, preflight could return DEVIATION yet permit the operation, defeating the purpose."
+    rationale: "Preventing handbacks requires that the preflight actually stop unsafe operations. An acceptance criterion that lists verdicts but not their enforcement semantics is not testable as a fail-closed gate and leaves the safety contract underspecified."
+  - severity: WARN
+    target_location: "Requirement 12, Acceptance criterion 2 (read-only preflight)"
+    description: "The criterion says preflight 'creates no artifacts' but does not state observable verification that no write occurred (e.g. no review-run directory, no session record, no commit). 'Creates no artifacts' is asserted rather than made checkable."
+    rationale: "Read-only-ness is a core safety property (Review Question 3 asks what it must not write). An acceptance criterion should be verifiable; a bare 'creates no artifacts' phrasing is hard to test without naming the artifact classes that must remain absent."
+  - severity: WARN
+    target_location: "Requirement 12, Acceptance criterion 4 (command validation)"
+    description: "Command validation lists checks (entrypoint, subcommand, option, required option, positional argument) but does not require validation against the registry's canonical command field, nor rejection of abbreviated/aliased command names. The smell inventory explicitly records 'guessed commands' and 'abbreviated command names' (per the requirement intent paragraph) as handback drivers."
+    rationale: "To prevent the recorded 'guessed commands' / 'abbreviated command names' smell, the criterion must tie validation to the canonical command in the registry and reject non-canonical forms. Listing generic check categories does not close that specific failure mode."
+  - severity: WARN
+    target_location: "Requirement 12, Acceptance criterion 7 (serial-only commit approval chain)"
+    description: "The criterion mandates serial-only handling for commit approval chain operations but does not address the 'serial approval chain parallelization' smell at the preflight level — i.e. preflight should detect and refuse an attempt to parallelize the chain, not merely declare the chain serial."
+    rationale: "The smell inventory names 'serial approval chain parallelization' as a recurrent handback. The requirement should state that preflight detects/blocks parallelization attempts, otherwise the stated serial-only property is a passive declaration rather than an enforced guard."
+  - severity: INFO
+    target_location: "Requirement 12, Acceptance criterion 1 (registry fields)"
+    description: "The registry field list includes 'pending conflicts' as an entry attribute, while criterion 5 separately covers worktree/pending conflict checks at runtime. It is unclear whether 'pending conflicts' in criterion 1 is a static declared policy or runtime state, which risks overlap with criterion 5."
+    rationale: "Clarifying whether the registry stores a conflict policy versus runtime conflict state avoids ambiguity between static contract and dynamic preflight, and prevents duplicated implementation contracts that Requirement 12 is meant to avoid per the Existing Context note."
+  - severity: INFO
+    target_location: "Requirement 12, intro and Acceptance criterion 9 (nested issue handling)"
+    description: "Nested issue handling is included as a preflight target (criterion 9) and Review Question 6 cautions against overfitting to one incident. The criterion does not describe the general detection condition (nested issue scope drift) independent of the specific 2026-06-16 incident."
+    rationale: "Stating the general scope-drift condition rather than the single incident keeps the requirement robust and avoids the overfitting risk the review explicitly flags."

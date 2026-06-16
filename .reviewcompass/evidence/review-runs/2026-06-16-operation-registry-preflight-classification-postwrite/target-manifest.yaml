@@ -1,0 +1,4 @@
+run_id: 2026-06-16-operation-registry-preflight-classification-postwrite
+target_files:
+- path: docs/reviews/reopen-classification-2026-06-16-wm-operation-registry-preflight.md
+  sha256: caafcf9afa66c66de0063589f27944976f0434a6f12b4cc234d5674b263b77e9

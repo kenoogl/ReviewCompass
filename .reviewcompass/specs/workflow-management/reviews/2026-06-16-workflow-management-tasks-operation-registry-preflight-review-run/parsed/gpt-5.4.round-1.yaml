@@ -1,0 +1,29 @@
+role: primary
+provider: openai-api
+model: gpt-5.4
+attempts: 1
+duration_seconds: 7.971
+findings:
+- severity: WARN
+  target_location: '## Tasks 変更抜粋 / T-014 成果物 / tests/workflow-management/test_operation_preflight.py'
+  description: T-014 は単一の preflight テストファイルしか成果物に挙げておらず、受入 6〜10 の複数ドメイン別検査をどの粒度で分離して担保するかが不明瞭。
+  rationale: review artifact、approval chain、current-session guard、nested issue、deployment/export
+    はそれぞれ失敗条件と入力モデルが大きく異なる。1 本の総合テストに集約すると TDD で fail-closed 条件の抜け漏れや既存タスク境界の混線を招きやすく、実装時の責務分離が弱くなる。
+- severity: WARN
+  target_location: '## T-014 完了条件 / 6'
+  description: review artifact 系 operation の事前検査対象が広範に列挙されている一方で、どの operation_family
+    にどの検査が必須なのかの割当が明記されていない。
+  rationale: Requirement 12 受入 6 は artifact 作成前検査の網羅性が重要だが、target/manifest/bundle/criteria/document-type/approval
+    record/existing artifact drift の全項目が review-run、post-write verification、triage、reopen
+    のどれに適用されるかが不明だと、実装者ごとに解釈が分かれ、不要な DEVIATION や検査漏れが発生しやすい。
+- severity: WARN
+  target_location: '## T-014 完了条件 / 10'
+  description: deployment / export preflight の完了条件に『既存成果物』『外部 app root』『既存 bundle
+    / smoke-run / app file 衝突』があるが、read-only preflight がどの外部境界まで観測してよいかの制約が示されていない。
+  rationale: Phase 1 は read-only であることは明確だが、外部 app root や deployment 出力先の探索範囲・存在確認方法・欠如時の
+    verdict 基準が未定義だと、環境依存のテスト不安定化や provider/model 非依存とは別の実行環境依存が入り込みやすい。
+- severity: INFO
+  target_location: '## 要件追跡と XDI'
+  description: Requirement 12 の受入 1〜13 が T-014 の責務・完了条件・テスト要件まで一通り追跡されており、Phase 1
+    を read-only preflight に限定する境界も明確。
+  rationale: 要件追跡上の大きな欠落や Phase 2 runner 実装との混在は見当たらず、tasks としては TDD に落とし込む土台ができている。

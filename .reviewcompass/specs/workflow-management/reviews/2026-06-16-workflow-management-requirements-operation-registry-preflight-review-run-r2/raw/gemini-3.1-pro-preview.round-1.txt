@@ -1,0 +1,9 @@
+findings:
+  - severity: ERROR
+    target_location: "Requirements Delta -> Acceptance Criteria (Criterion 13)"
+    description: "Acceptance Criterion 13 fails to include all required fields to ensure `next --json` state uniqueness."
+    rationale: "The Review Scope explicitly mandates that `next --json` must output 'current mainline, required action, phase, stage, reopen scope, impact review scope, direct features, indirect features, flag policy, and next pending gate' to be mutually consistent. Criterion 13 only specifies 'reopen scope / impact review scope / flag policy consistency', omitting several critical machine-readable fields required to identify the active workflow state."
+  - severity: WARN
+    target_location: "Requirements Delta -> Acceptance Criteria (Criterion 6)"
+    description: "Acceptance Criterion 6 omits 'bundle' from the list of review artifacts covered by preflight."
+    rationale: "Review Question 5 specifically queries whether the preflight scope is broad enough to cover 'bundle' issues. Excluding bundles from the explicit criteria risks gaps in artifact validation, potentially allowing recurrent handback patterns to persist."

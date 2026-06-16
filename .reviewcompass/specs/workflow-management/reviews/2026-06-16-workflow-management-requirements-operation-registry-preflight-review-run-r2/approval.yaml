@@ -1,0 +1,33 @@
+approved_action: review_run_triage
+approved_by: user
+approval_statement: 2026-06-16 利用者発言「承認」（提示した r2 同根クラスタ案に従い、next 状態一意性は must-fix、Requirement 2/12 所有境界・scope 分離・bundle/manifest/approval/drift・phase/stage/gate linkage・approval-chain integrity・fail-closed 明示は should-fix、肯定的 INFO は leave-as-is とする明示承認）
+review_run_id: 2026-06-16-workflow-management-requirements-operation-registry-preflight-review-run-r2
+summary_presented_to_user: true
+triage_presented_to_user: true
+approved_finding_ids:
+  - 2026-06-16-workflow-management-requirements-operation-registry-preflight-review-run-r2-gpt-5.4-primary-001
+  - 2026-06-16-workflow-management-requirements-operation-registry-preflight-review-run-r2-gpt-5.4-primary-002
+  - 2026-06-16-workflow-management-requirements-operation-registry-preflight-review-run-r2-gpt-5.4-primary-003
+  - 2026-06-16-workflow-management-requirements-operation-registry-preflight-review-run-r2-gpt-5.4-primary-004
+  - 2026-06-16-workflow-management-requirements-operation-registry-preflight-review-run-r2-gpt-5.4-primary-005
+  - 2026-06-16-workflow-management-requirements-operation-registry-preflight-review-run-r2-claude-opus-4-8-adversarial-001
+  - 2026-06-16-workflow-management-requirements-operation-registry-preflight-review-run-r2-claude-opus-4-8-adversarial-002
+  - 2026-06-16-workflow-management-requirements-operation-registry-preflight-review-run-r2-claude-opus-4-8-adversarial-003
+  - 2026-06-16-workflow-management-requirements-operation-registry-preflight-review-run-r2-claude-opus-4-8-adversarial-004
+  - 2026-06-16-workflow-management-requirements-operation-registry-preflight-review-run-r2-claude-opus-4-8-adversarial-005
+  - 2026-06-16-workflow-management-requirements-operation-registry-preflight-review-run-r2-gemini-3.1-pro-preview-judgment-001
+  - 2026-06-16-workflow-management-requirements-operation-registry-preflight-review-run-r2-gemini-3.1-pro-preview-judgment-002
+approved_final_labels:
+  2026-06-16-workflow-management-requirements-operation-registry-preflight-review-run-r2-gpt-5.4-primary-001: should-fix
+  2026-06-16-workflow-management-requirements-operation-registry-preflight-review-run-r2-gpt-5.4-primary-002: must-fix
+  2026-06-16-workflow-management-requirements-operation-registry-preflight-review-run-r2-gpt-5.4-primary-003: should-fix
+  2026-06-16-workflow-management-requirements-operation-registry-preflight-review-run-r2-gpt-5.4-primary-004: should-fix
+  2026-06-16-workflow-management-requirements-operation-registry-preflight-review-run-r2-gpt-5.4-primary-005: leave-as-is
+  2026-06-16-workflow-management-requirements-operation-registry-preflight-review-run-r2-claude-opus-4-8-adversarial-001: must-fix
+  2026-06-16-workflow-management-requirements-operation-registry-preflight-review-run-r2-claude-opus-4-8-adversarial-002: should-fix
+  2026-06-16-workflow-management-requirements-operation-registry-preflight-review-run-r2-claude-opus-4-8-adversarial-003: should-fix
+  2026-06-16-workflow-management-requirements-operation-registry-preflight-review-run-r2-claude-opus-4-8-adversarial-004: should-fix
+  2026-06-16-workflow-management-requirements-operation-registry-preflight-review-run-r2-claude-opus-4-8-adversarial-005: should-fix
+  2026-06-16-workflow-management-requirements-operation-registry-preflight-review-run-r2-gemini-3.1-pro-preview-judgment-001: must-fix
+  2026-06-16-workflow-management-requirements-operation-registry-preflight-review-run-r2-gemini-3.1-pro-preview-judgment-002: should-fix
+consumed: false

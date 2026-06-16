@@ -1,0 +1,400 @@
+process_id: reopen-procedure
+feature: workflow-management
+classification: R-0
+started_at: '2026-06-16T00:00:00+09:00'
+trigger: operation-registry-preflight-unified-design
+classification_basis: docs/reviews/reopen-classification-2026-06-16-wm-operation-registry-preflight.md
+scope_separation:
+  reopen_scope:
+  - workflow-management
+  impact_review_scope:
+  - foundation
+  - runtime
+  - evaluation
+  - analysis
+  - workflow-management
+  - self-improvement
+  - conformance-evaluation
+  flag_policy:
+    reopen_existing_feature: 対象 phase 以降の workflow flag を false に戻し、drafting から approval
+      まで再実施する。
+    indirect_check_only: 正本変更が必要と判定されない限り workflow flag を false に戻さず、review-wave または
+      downstream impact decision で変更不要を記録する。
+  rationale: 全 feature を impact review scope に含めることは、全 feature を reopen scope に含めることではない。今回の
+    reopen scope は workflow-management のみであり、他 6 feature は consumer / derivative として契約変更要否を確認する。
+  evidence:
+  - docs/reviews/reopen-classification-2026-06-16-wm-operation-registry-preflight.md
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-16-requirements-operation-registry-preflight-review-wave.md
+feature_impact_decisions:
+- feature: foundation
+  decision: indirect_check_only
+  impact_basis: consumer_or_derivative_only
+  rationale: operation contract の語彙・証跡・安全側停止の考え方を参照し得るため、共通契約の変更要否を確認する。ただし現時点の実装所有は
+    workflow-management。
+  evidence:
+  - docs/reviews/reopen-classification-2026-06-16-wm-operation-registry-preflight.md
+- feature: runtime
+  decision: indirect_check_only
+  impact_basis: consumer_or_derivative_only
+  rationale: session capture、hook、runtime artifact と接続し得るため、実行時契約の変更要否を確認する。ただし本件の主変更は
+    workflow 操作前検査。
+  evidence:
+  - docs/reviews/reopen-classification-2026-06-16-wm-operation-registry-preflight.md
+- feature: evaluation
+  decision: indirect_check_only
+  impact_basis: consumer_or_derivative_only
+  rationale: review-run、post-write verification、triage などの利用側であり、preflight contract
+    の consumer として確認対象にする。
+  evidence:
+  - docs/reviews/reopen-classification-2026-06-16-wm-operation-registry-preflight.md
+- feature: analysis
+  decision: indirect_check_only
+  impact_basis: consumer_or_derivative_only
+  rationale: operation record や review evidence を後段で読む可能性があるため、分析入力契約の変更要否を確認する。
+  evidence:
+  - docs/reviews/reopen-classification-2026-06-16-wm-operation-registry-preflight.md
+- feature: workflow-management
+  decision: reopen_existing_feature
+  impact_basis: contract_ownership
+  rationale: next、post-write verification、commit approval、reopen、review-run、workflow
+    precheck の操作契約と gate を所有するため。
+  evidence:
+  - docs/reviews/reopen-classification-2026-06-16-wm-operation-registry-preflight.md
+  - docs/notes/2026-06-16-operation-registry-preflight-design.md
+  - docs/notes/2026-06-16-workflow-recovery-smell-inventory.md
+- feature: self-improvement
+  decision: indirect_check_only
+  impact_basis: consumer_or_derivative_only
+  rationale: 手戻り削減候補を出す側・読む側として operation registry を参照し得るため、規律改善ループへの影響を確認する。
+  evidence:
+  - docs/reviews/reopen-classification-2026-06-16-wm-operation-registry-preflight.md
+- feature: conformance-evaluation
+  decision: indirect_check_only
+  impact_basis: consumer_or_derivative_only
+  rationale: workflow-management の新しい preflight 契約を検査対象として参照し得るため、照合対象として確認する。ただし実装所有責務は変わらない。
+  evidence:
+  - docs/reviews/reopen-classification-2026-06-16-wm-operation-registry-preflight.md
+new_feature_decision:
+  decision: no_new_feature
+  rationale: operation registry / preflight は既存 workflow-management の操作契約・gate 強化として受けられるため、新
+    feature 境界は不要。
+  evidence:
+  - docs/reviews/reopen-classification-2026-06-16-wm-operation-registry-preflight.md
+impacted_downstream_phases:
+- design
+- tasks
+- implementation
+completed_steps:
+- 第1過程：判定とフラグ差し戻し（reopen scope は workflow-management のみ、全 feature impact review 対象化を利用者承認済み：2026-06-16「OK」）
+- 第1過程：spec.json 差し戻し補正（requirements review-wave/alignment/approval と design/tasks/implementation
+  を未完了化し、recheck に design/tasks/implementation を設定）
+- 第2過程：requirements drafting（Requirement 12 operation registry / preflight を追記）
+- 第3過程：requirements triad-review 所見裁定・反映完了（受入 13 追記前の旧判断。2026-06-16 の next 状態一意性追記により
+  superseded）
+- 第3過程：requirements review-wave 完了（受入 13 追記前の旧判断。2026-06-16 の next 状態一意性追記により superseded）
+- 第3過程：requirements alignment 完了（受入 13 追記前の旧判断。2026-06-16 の next 状態一意性追記により superseded）
+- 第3過程：requirements approval 承認（受入 13 追記前の旧承認。2026-06-16 の next 状態一意性追記により superseded）
+- 第2過程：requirements drafting 補正（受入 13 として next_state_uniqueness を追記し、reopen scope
+  / impact review scope / flag policy が next から一意に読めることを要件化）
+- 第3過程：requirements 後段差し戻し（triad-review / review-wave / alignment / approval を再実施対象へ戻し、旧
+  gate 判断を superseded として保持）
+- 第3過程：requirements triad-review r2 所見裁定・反映完了（next 状態一意性を must-fix、scope 分離・bundle/manifest/approval/drift・phase/stage/gate
+  linkage・approval-chain integrity・fail-closed 明示を should-fix として反映）
+- 第3過程：requirements review-wave r2 完了（受入 13 反映後も他 feature requirements 正本修正なし）
+- 第3過程：requirements alignment r2 完了（Requirement 12 r2 と既存要件・分類・triad-review r2・review-wave
+  r2・recheck 状態の整合確認済み）
+- 第3過程：requirements approval r2 承認（利用者発言「承認」）
+- 第3過程：design drafting 完了（Requirement 12 operation registry / preflight の設計モデル、要件追跡、XDI-WM-004、変更意図を
+  design.md に追記）
+- 第3過程：design triad-review r2 所見裁定・反映完了（operation registry / preflight）
+- 第3過程：design review-wave 完了（他 feature design 正本修正なし）
+- 第3過程：design alignment 完了（Requirement 12 design と review-wave / recheck 状態の整合確認済み）
+- 第3過程：design approval 承認（利用者発言「承認」）
+- 第3過程：tasks drafting 完了（Requirement 12 operation registry / preflight を T-014 として
+  tasks.md に追記）
+- 第3過程：tasks triad-review 所見裁定・反映完了（operation registry / preflight）
+- 第3過程：tasks review-wave 完了（他 feature tasks 正本修正なし）
+- 第3過程：tasks alignment 完了（T-014 と review-wave / implementation recheck 状態の整合確認済み）
+- 第3過程：tasks approval 承認（利用者発言「承認」）
+- 第3過程：implementation drafting 完了（TDD で operation registry / read-only preflight のテスト・実装・初期
+  registry を追加）
+- 第3過程：implementation triad-review 完了（operation registry / read-only preflight の 3
+  役レビュー、triage 決定、TDD 修正、回帰確認済み）
+- 第3過程：implementation review-wave 完了（operation registry / read-only preflight implementation
+  は他 feature 正本修正なし）
+- 第3過程：implementation alignment 完了（Requirement 12 / design / T-014 / triad-review
+  対処 / review-wave / 検証結果の整合確認済み）
+- 第3過程：implementation approval 承認（利用者発言「承認」）
+- 第4過程：最終確認・recheck クリア・進行中状態ファイル完了処理
+next_step: 完了
+step_number: 4
+drafting_completed_gates:
+- stages/requirements.yaml#drafting
+- stages/design.yaml#drafting
+- stages/tasks.yaml#drafting
+- stages/implementation.yaml#drafting
+pending_gates: []
+current_blocker: null
+commit_stop_point: false
+commit_stop_point_reason: null
+completed_at: '2026-06-16T00:00:00+09:00'
+recheck_clear_result: workflow-management の recheck.upstream_change_pending を false、impacted_downstream_phases
+  を空 list に戻した。reopened は履歴として維持した。
+recheck_clear_evidence:
+- .reviewcompass/specs/workflow-management/spec.json
+spec_reopen_correction:
+  corrected_at: 2026-06-16 00:00:00+09:00
+  rationale: reopen-start は requirements alignment/approval の pending gate だけを発行したが、今回の
+    R-0 は requirements 正本を実質変更し、design/tasks/implementation へ連鎖するため、spec.json 側も未完了段と
+    recheck を明示する必要がある。
+  evidence:
+  - docs/reviews/reopen-classification-2026-06-16-wm-operation-registry-preflight.md
+  - .reviewcompass/specs/workflow-management/spec.json
+drafting_state_sync:
+  synced_at: 2026-06-16 00:00:00+09:00
+  gate: stages/design.yaml#drafting
+  rationale: reopen 中の通常 spec-set は in-progress と recheck により DEVIATION で遮断されるため、design
+    drafting 完了を drafting_completed_gates と workflow-management spec.json の design.drafting=true
+    に同期した。triad-review/review-wave/alignment/approval は false のまま維持する。
+  evidence:
+  - .reviewcompass/specs/workflow-management/design.md
+  - .reviewcompass/specs/workflow-management/spec.json
+tasks_drafting_state_sync:
+  synced_at: 2026-06-16 00:00:00+09:00
+  gate: stages/tasks.yaml#drafting
+  rationale: reopen 中の通常 spec-set は in-progress と recheck により DEVIATION で遮断されるため、tasks
+    drafting 完了を drafting_completed_gates と workflow-management spec.json の tasks.drafting=true
+    に同期した。triad-review/review-wave/alignment/approval は false のまま維持する。
+  evidence:
+  - .reviewcompass/specs/workflow-management/tasks.md
+  - .reviewcompass/specs/workflow-management/spec.json
+implementation_drafting_state_sync:
+  synced_at: 2026-06-16 00:00:00+09:00
+  gate: stages/implementation.yaml#drafting
+  rationale: reopen 中の通常 spec-set は in-progress と recheck により DEVIATION で遮断されるため、implementation
+    drafting 完了を drafting_completed_gates と workflow-management spec.json の implementation.drafting=true
+    に同期した。triad-review/review-wave/alignment/approval は false のまま維持する。
+  evidence:
+  - tools/check_workflow_action/operation_registry.py
+  - tools/check_workflow_action/operation_preflight.py
+  - tools/check-workflow-action.py
+  - stages/operation-registry.yaml
+  - tests/tools/test_operation_registry_preflight.py
+  - .reviewcompass/specs/workflow-management/spec.json
+superseded_completed_gates:
+- stages/requirements.yaml#triad-review
+- stages/requirements.yaml#review-wave
+- stages/requirements.yaml#alignment
+- stages/requirements.yaml#approval
+superseded_downstream_impact_decisions:
+- gate: stages/requirements.yaml#triad-review
+  feature_scope: foundation,runtime,evaluation,analysis,workflow-management,self-improvement,conformance-evaluation
+  decision: approved
+  rationale: requirements triad-review findings for operation registry / preflight
+    were presented to the user; user approved the recommended triage; must-fix and
+    should-fix items were reflected in Requirement 12
+  evidence:
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-16-workflow-management-requirements-operation-registry-preflight-review-run/approval.yaml
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-16-workflow-management-requirements-operation-registry-preflight-review-run/triage.yaml
+  - .reviewcompass/specs/workflow-management/requirements.md
+- gate: stages/requirements.yaml#review-wave
+  feature_scope: foundation,runtime,evaluation,analysis,workflow-management,self-improvement,conformance-evaluation
+  decision: no_impact
+  rationale: Requirement 12 is owned by workflow-management operation contracts; all
+    features remain in impact review scope, but no other feature requirements canonical
+    document requires updates at this gate
+  evidence:
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-16-requirements-operation-registry-preflight-review-wave.md
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-16-requirements-operation-registry-preflight-review-wave-summary.md
+- gate: stages/requirements.yaml#alignment
+  feature_scope: foundation,runtime,evaluation,analysis,workflow-management,self-improvement,conformance-evaluation
+  decision: existing_sufficient
+  rationale: Requirement 12 is consistent with existing workflow-management requirements,
+    the R-0 classification, triad-review fixes, review-wave no-impact decision, and
+    downstream recheck state
+  evidence:
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-16-requirements-operation-registry-preflight-reopen-alignment.md
+  - .reviewcompass/specs/workflow-management/requirements.md
+- gate: stages/requirements.yaml#approval
+  feature_scope: foundation,runtime,evaluation,analysis,workflow-management,self-improvement,conformance-evaluation
+  decision: approved
+  rationale: User explicitly approved requirements phase for operation registry /
+    preflight via 2026-06-16 message '承認'; requirements drafting, triad-review, review-wave,
+    and alignment are complete
+  evidence:
+  - .reviewcompass/specs/workflow-management/requirements.md
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-16-requirements-operation-registry-preflight-reopen-alignment.md
+completed_gates:
+- stages/requirements.yaml#triad-review
+- stages/requirements.yaml#review-wave
+- stages/requirements.yaml#alignment
+- stages/requirements.yaml#approval
+- stages/design.yaml#triad-review
+- stages/design.yaml#review-wave
+- stages/design.yaml#alignment
+- stages/design.yaml#approval
+- stages/tasks.yaml#triad-review
+- stages/tasks.yaml#review-wave
+- stages/tasks.yaml#alignment
+- stages/tasks.yaml#approval
+- stages/implementation.yaml#triad-review
+- stages/implementation.yaml#review-wave
+- stages/implementation.yaml#alignment
+- stages/implementation.yaml#approval
+downstream_impact_decisions:
+- gate: stages/requirements.yaml#triad-review
+  feature_scope: foundation,runtime,evaluation,analysis,workflow-management,self-improvement,conformance-evaluation
+  decision: approved
+  rationale: requirements triad-review r2 completed after user approval; must-fix
+    next state uniqueness and should-fix operation registry/preflight contract gaps
+    were reflected in Requirement 12
+  evidence:
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-16-workflow-management-requirements-operation-registry-preflight-review-run-r2/approval.yaml
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-16-workflow-management-requirements-operation-registry-preflight-review-run-r2/triage.yaml
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-16-workflow-management-requirements-operation-registry-preflight-review-run-r2/raw-review-triage-summary.md
+  - .reviewcompass/specs/workflow-management/requirements.md
+- gate: stages/requirements.yaml#review-wave
+  feature_scope: foundation,runtime,evaluation,analysis,workflow-management,self-improvement,conformance-evaluation
+  decision: no_impact
+  rationale: Requirement 12 r2 remains owned by workflow-management operation contracts;
+    all features remain in impact review scope, but no other feature requirements
+    canonical document requires updates after next state uniqueness and scope separation
+    refinements
+  evidence:
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-16-requirements-operation-registry-preflight-review-wave-r2.md
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-16-requirements-operation-registry-preflight-review-wave-r2-summary.md
+  - .reviewcompass/specs/workflow-management/requirements.md
+- gate: stages/requirements.yaml#alignment
+  feature_scope: foundation,runtime,evaluation,analysis,workflow-management,self-improvement,conformance-evaluation
+  decision: existing_sufficient
+  rationale: Requirement 12 r2 is consistent with existing workflow-management requirements,
+    the R-0 classification, triad-review r2 fixes, review-wave r2 no-impact decision,
+    and downstream recheck state
+  evidence:
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-16-requirements-operation-registry-preflight-reopen-alignment-r2.md
+  - .reviewcompass/specs/workflow-management/requirements.md
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-16-requirements-operation-registry-preflight-review-wave-r2.md
+- gate: stages/requirements.yaml#approval
+  feature_scope: foundation,runtime,evaluation,analysis,workflow-management,self-improvement,conformance-evaluation
+  decision: approved
+  rationale: User explicitly approved requirements phase r2 for operation registry
+    / preflight via 2026-06-16 message '承認'; requirements triad-review r2, review-wave
+    r2, and alignment r2 are complete
+  evidence:
+  - .reviewcompass/specs/workflow-management/requirements.md
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-16-requirements-operation-registry-preflight-reopen-alignment-r2.md
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-16-workflow-management-requirements-operation-registry-preflight-review-run-r2/approval.yaml
+- gate: stages/design.yaml#triad-review
+  feature_scope: foundation,runtime,evaluation,analysis,workflow-management,self-improvement,conformance-evaluation
+  decision: approved
+  rationale: design triad-review r2 completed after user approval; should-fix findings
+    were reflected in workflow-management design Requirement 12.
+  evidence:
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-16-workflow-management-design-operation-registry-preflight-review-run-r2/approval.yaml
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-16-workflow-management-design-operation-registry-preflight-review-run-r2/triage.yaml
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-16-workflow-management-design-operation-registry-preflight-review-run-r2/raw-review-triage-summary.md
+  - .reviewcompass/specs/workflow-management/design.md
+- gate: stages/design.yaml#review-wave
+  feature_scope: foundation,runtime,evaluation,analysis,workflow-management,self-improvement,conformance-evaluation
+  decision: no_impact
+  rationale: design review-wave completed; Requirement 12 design changes are owned
+    by workflow-management and do not require other feature design canonical changes.
+  evidence:
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-16-design-operation-registry-preflight-review-wave.md
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-16-design-operation-registry-preflight-review-wave-summary.md
+- gate: stages/design.yaml#alignment
+  feature_scope: foundation,runtime,evaluation,analysis,workflow-management,self-improvement,conformance-evaluation
+  decision: existing_sufficient
+  rationale: design alignment completed; Requirement 12 design, triad-review r2 fixes,
+    review-wave decision, and downstream recheck state are consistent.
+  evidence:
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-16-design-operation-registry-preflight-reopen-alignment.md
+  - .reviewcompass/specs/workflow-management/design.md
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-16-workflow-management-design-operation-registry-preflight-review-run-r2/approval.yaml
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-16-design-operation-registry-preflight-review-wave.md
+- gate: stages/design.yaml#approval
+  feature_scope: foundation,runtime,evaluation,analysis,workflow-management,self-improvement,conformance-evaluation
+  decision: approved
+  rationale: design approval completed by user approval in conversation; Requirement
+    12 operation registry / preflight design is approved for tasks phase.
+  evidence:
+  - .reviewcompass/specs/workflow-management/design.md
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-16-design-operation-registry-preflight-reopen-alignment.md
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-16-design-operation-registry-preflight-review-wave.md
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-16-workflow-management-design-operation-registry-preflight-review-run-r2/approval.yaml
+- gate: stages/tasks.yaml#triad-review
+  feature_scope: foundation,runtime,evaluation,analysis,workflow-management,self-improvement,conformance-evaluation
+  decision: approved
+  rationale: tasks triad-review completed after user approval; must-fix and should-fix
+    findings were reflected in workflow-management tasks T-014.
+  evidence:
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-16-workflow-management-tasks-operation-registry-preflight-review-run/approval.yaml
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-16-workflow-management-tasks-operation-registry-preflight-review-run/triage.yaml
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-16-workflow-management-tasks-operation-registry-preflight-review-run/raw-review-triage-summary.md
+  - .reviewcompass/specs/workflow-management/tasks.md
+- gate: stages/tasks.yaml#review-wave
+  feature_scope: foundation,runtime,evaluation,analysis,workflow-management,self-improvement,conformance-evaluation
+  decision: no_impact
+  rationale: tasks review-wave completed; T-014 is owned by workflow-management and
+    does not require other feature tasks canonical changes.
+  evidence:
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-16-tasks-operation-registry-preflight-review-wave.md
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-16-tasks-operation-registry-preflight-review-wave-summary.md
+- gate: stages/tasks.yaml#alignment
+  feature_scope: foundation,runtime,evaluation,analysis,workflow-management,self-improvement,conformance-evaluation
+  decision: existing_sufficient
+  rationale: tasks alignment completed; T-014 tasks, triad-review fixes, review-wave
+    decision, and downstream implementation recheck state are consistent.
+  evidence:
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-16-tasks-operation-registry-preflight-reopen-alignment.md
+  - .reviewcompass/specs/workflow-management/tasks.md
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-16-workflow-management-tasks-operation-registry-preflight-review-run/approval.yaml
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-16-tasks-operation-registry-preflight-review-wave.md
+- gate: stages/tasks.yaml#approval
+  feature_scope: foundation,runtime,evaluation,analysis,workflow-management,self-improvement,conformance-evaluation
+  decision: approved
+  rationale: tasks approval completed by user approval in conversation; T-014 operation
+    registry / read-only preflight tasks are approved for implementation phase.
+  evidence:
+  - .reviewcompass/specs/workflow-management/tasks.md
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-16-tasks-operation-registry-preflight-reopen-alignment.md
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-16-tasks-operation-registry-preflight-review-wave.md
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-16-workflow-management-tasks-operation-registry-preflight-review-run/approval.yaml
+- gate: stages/implementation.yaml#triad-review
+  feature_scope: foundation,runtime,evaluation,analysis,workflow-management,self-improvement,conformance-evaluation
+  decision: approved
+  rationale: operation registry / read-only preflight の implementation triad-review
+    を実施し、C1-C3 must-fix と C4 should-fix を TDD で対処し、対象・隣接・既存 workflow CLI テストを通過したため
+  evidence:
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-16-workflow-management-implementation-operation-registry-preflight-review-run/review-target.md
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-16-workflow-management-implementation-operation-registry-preflight-review-run/raw-review-triage-summary.md
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-16-workflow-management-implementation-operation-registry-preflight-review-run/triage.yaml
+  - tests/tools/test_operation_registry_preflight.py
+  - tools/check_workflow_action/operation_preflight.py
+- gate: stages/implementation.yaml#review-wave
+  feature_scope: foundation,runtime,evaluation,analysis,workflow-management,self-improvement,conformance-evaluation
+  decision: no_impact
+  rationale: operation registry / read-only preflight implementation は workflow-management
+    が所有する操作前チェック入口であり、他 feature は consumer / derivative として確認対象だが implementation 正本変更は不要と判定したため
+  evidence:
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-16-implementation-operation-registry-preflight-review-wave.md
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-16-implementation-operation-registry-preflight-review-wave-summary.md
+- gate: stages/implementation.yaml#alignment
+  feature_scope: foundation,runtime,evaluation,analysis,workflow-management,self-improvement,conformance-evaluation
+  decision: existing_sufficient
+  rationale: Requirement 12 r2、design、T-014、implementation triad-review 対処、implementation
+    review-wave 判定、検証結果が整合し、他 feature implementation 正本再オープン不要と判定したため
+  evidence:
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-16-implementation-operation-registry-preflight-reopen-alignment.md
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-16-implementation-operation-registry-preflight-review-wave.md
+  - tests/tools/test_operation_registry_preflight.py
+  - tools/check_workflow_action/operation_preflight.py
+- gate: stages/implementation.yaml#approval
+  feature_scope: foundation,runtime,evaluation,analysis,workflow-management,self-improvement,conformance-evaluation
+  decision: approved
+  rationale: operation registry / read-only preflight implementation について、triad-review、review-wave、alignment、検証結果を提示済みで、利用者が本ターンで「承認」と明示したため
+  evidence:
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-16-implementation-operation-registry-preflight-reopen-alignment.md
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-16-workflow-management-implementation-operation-registry-preflight-review-run/triage.yaml
+  - tests/tools/test_operation_registry_preflight.py
+  - tools/check_workflow_action/operation_preflight.py

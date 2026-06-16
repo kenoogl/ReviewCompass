@@ -1,0 +1,12 @@
+role: judgment
+provider: gemini-api
+model: gemini-3.1-pro-preview
+attempts: 1
+duration_seconds: 17.8
+findings:
+- severity: INFO
+  target_location: T-014 完了条件 / T-014 テスト要件
+  description: Design 抜粋に記載のある operation contract の `vocabulary_refs` が、完了条件 1 およびテスト要件
+    1 の明示的なリストから漏れています。
+  rationale: 「各 policy」等の抽象化に含まれている可能性はありますが、機械検査の対象として `vocabulary_refs` がスキーマ定義および
+    TDD の検証から漏れるのを防ぐため、実装時に意識する必要があります。

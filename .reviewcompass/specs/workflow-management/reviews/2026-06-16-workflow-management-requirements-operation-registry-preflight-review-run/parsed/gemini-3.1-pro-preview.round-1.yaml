@@ -1,0 +1,30 @@
+role: judgment
+provider: gemini-api
+model: gemini-3.1-pro-preview
+attempts: 1
+duration_seconds: 17.132
+findings:
+- severity: ERROR
+  target_location: Requirements Delta
+  description: Acceptance criteria omit coverage for deployment and export operations.
+  rationale: The Review Scope explicitly requires the preflight requirements to cover
+    'deployment / export related artifacts'. However, criteria 1-10 in the Requirements
+    Delta completely omit deployment and export operations, failing to address the
+    explicit scope and Review Question 9.
+- severity: WARN
+  target_location: Requirements Delta
+  description: Missing explicit preflight check for 'approval record gaps'.
+  rationale: The Review Scope mandates that requirements must prevent specific recurrent
+    handback patterns recorded in the smell inventory, including 'approval record
+    gaps'. While Criteria 5 mentions 'stale commit approvals' and Criteria 7 mentions
+    'serial-only handling', there is no explicit acceptance criterion to check for
+    or prevent missing/gapped approval records during preflight.
+- severity: INFO
+  target_location: Requirements Delta
+  description: Impact review scope constraint is not explicitly captured in the Requirement
+    12 delta.
+  rationale: The Review Scope notes 'All features are in impact review scope, but
+    workflow-management is the only direct owner at this phase.' While workflow-management
+    ownership is implied, the criteria do not explicitly state that this contract
+    acts as a gate for cross-feature impact review scope, which could lead to isolated
+    implementations.

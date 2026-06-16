@@ -1,0 +1,297 @@
+run_id: 2026-06-16-workflow-management-design-operation-registry-preflight-review-run-r2
+triage_status: decided
+generated_at: '2026-06-16T05:36:31.230462+00:00'
+decision_actor: null
+decision_actor_type: human
+items:
+- finding_id: 2026-06-16-workflow-management-design-operation-registry-preflight-review-run-r2-gpt-5.4-primary-001
+  run_id: 2026-06-16-workflow-management-design-operation-registry-preflight-review-run-r2
+  source_model: gpt-5.4
+  source_round: round-1
+  source_raw_path: raw/gpt-5.4.round-1.txt
+  source_parsed_path: parsed/gpt-5.4.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: 'Design Excerpt: Preflight Response / state_refs.next_action'
+  plain_language_summary: The preflight response exposes workflow-state dimensions
+    inside `state_refs.next_action`, but the schema does not normatively define the
+    shape or required fields of that object.
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: user-approved-codex
+  decision_actor_type: agent
+  decision_at: '2026-06-16T05:41:39.451955+00:00'
+  decision_reason: 利用者が design r2 推奨 triage を承認。design の外部可視契約を明確化し、tasks/implementation
+    の手戻りを減らすため反映する。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-16-workflow-management-design-operation-registry-preflight-review-run-r2-gpt-5.4-primary-002
+  run_id: 2026-06-16-workflow-management-design-operation-registry-preflight-review-run-r2
+  source_model: gpt-5.4
+  source_round: round-1
+  source_raw_path: raw/gpt-5.4.round-1.txt
+  source_parsed_path: parsed/gpt-5.4.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: 'Design Excerpt: Fail-Closed Conditions'
+  plain_language_summary: The design says certain conditions are made 'at least DEVIATION',
+    but it does not specify whether any listed condition must instead be a mandatory
+    hard-stop category distinct from warnable deviations.
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: user-approved-codex
+  decision_actor_type: agent
+  decision_at: '2026-06-16T05:41:39.523500+00:00'
+  decision_reason: 利用者が design r2 推奨 triage を承認。design の外部可視契約を明確化し、tasks/implementation
+    の手戻りを減らすため反映する。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-16-workflow-management-design-operation-registry-preflight-review-run-r2-gpt-5.4-primary-003
+  run_id: 2026-06-16-workflow-management-design-operation-registry-preflight-review-run-r2
+  source_model: gpt-5.4
+  source_round: round-1
+  source_raw_path: raw/gpt-5.4.round-1.txt
+  source_parsed_path: parsed/gpt-5.4.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: 'Design Excerpt: Specific Operation Families / Operation Contract'
+  plain_language_summary: The registry contract does not define how operation family
+    entries express family-specific required checks or invariants beyond generic policy
+    strings.
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: user-approved-codex
+  decision_actor_type: agent
+  decision_at: '2026-06-16T05:41:39.595676+00:00'
+  decision_reason: 利用者が design r2 推奨 triage を承認。design の外部可視契約を明確化し、tasks/implementation
+    の手戻りを減らすため反映する。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-16-workflow-management-design-operation-registry-preflight-review-run-r2-gpt-5.4-primary-004
+  run_id: 2026-06-16-workflow-management-design-operation-registry-preflight-review-run-r2
+  source_model: gpt-5.4
+  source_round: round-1
+  source_raw_path: raw/gpt-5.4.round-1.txt
+  source_parsed_path: parsed/gpt-5.4.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: 'Design Excerpt: `next` State Uniqueness'
+  plain_language_summary: Ownership separation between Requirement 2 and Requirement
+    12 is stated clearly, but the document would benefit from an explicit normative
+    statement that Requirement 12 cannot redefine `next --json` semantics beyond additional
+    fields needed for preflight identity.
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: user-approved-codex
+  decision_actor_type: agent
+  decision_at: '2026-06-16T05:41:39.665611+00:00'
+  decision_reason: 利用者が design r2 推奨 triage を承認。肯定的 INFO または軽微な対象記述であり、追加修正は不要。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-16-workflow-management-design-operation-registry-preflight-review-run-r2-gpt-5.4-primary-005
+  run_id: 2026-06-16-workflow-management-design-operation-registry-preflight-review-run-r2
+  source_model: gpt-5.4
+  source_round: round-1
+  source_raw_path: raw/gpt-5.4.round-1.txt
+  source_parsed_path: parsed/gpt-5.4.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: 'Design Excerpt: Traceability And XDI'
+  plain_language_summary: Traceability alignment and XDI numbering appear coherent,
+    with `XDI-WM-004` avoiding collision with existing `XDI-WM-003`.
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: user-approved-codex
+  decision_actor_type: agent
+  decision_at: '2026-06-16T05:41:39.734934+00:00'
+  decision_reason: 利用者が design r2 推奨 triage を承認。肯定的 INFO または軽微な対象記述であり、追加修正は不要。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-16-workflow-management-design-operation-registry-preflight-review-run-r2-claude-opus-4-8-adversarial-001
+  run_id: 2026-06-16-workflow-management-design-operation-registry-preflight-review-run-r2
+  source_model: claude-opus-4-8
+  source_round: round-1
+  source_raw_path: raw/claude-opus-4-8.round-1.txt
+  source_parsed_path: parsed/claude-opus-4-8.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: '§Design Excerpt: Common Response Schema And Verdicts (Preflight
+    Response)'
+  plain_language_summary: 'The preflight response schema includes both `verdict: OK
+    | WARN | DEVIATION` and `allowed_verdicts: [OK, WARN, DEVIATION]`, but the relationship
+    is unspecified. It is unclear whether `allowed_verdicts` can ever be a subset
+    (e.g., an operation that may never WARN), or whether it is always the full triad.
+    If always full, the field is redundant; if it can be restricted, the rules governing
+    it are missing.'
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: user-approved-codex
+  decision_actor_type: agent
+  decision_at: '2026-06-16T05:41:39.806222+00:00'
+  decision_reason: 利用者が design r2 推奨 triage を承認。design の外部可視契約を明確化し、tasks/implementation
+    の手戻りを減らすため反映する。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-16-workflow-management-design-operation-registry-preflight-review-run-r2-claude-opus-4-8-adversarial-002
+  run_id: 2026-06-16-workflow-management-design-operation-registry-preflight-review-run-r2
+  source_model: claude-opus-4-8
+  source_round: round-1
+  source_raw_path: raw/claude-opus-4-8.round-1.txt
+  source_parsed_path: parsed/claude-opus-4-8.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: '§Design Excerpt: `next` State Uniqueness (reopen_scope / impact_review_scope)'
+  plain_language_summary: The design defines reopen_scope and impact_review_scope
+    semantically (reopen vs. flag-maintenance) and requires consistency with feature_impact_decisions,
+    spec.json, pending_gates, drafting_completed_gates, and downstream_impact_decisions,
+    but it does not specify what preflight must do when these sources are mutually
+    inconsistent (e.g., a feature appears in reopen_scope per next but flag is already
+    false in spec.json). The fail-closed verdict for cross-source inconsistency is
+    not stated.
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: user-approved-codex
+  decision_actor_type: agent
+  decision_at: '2026-06-16T05:41:39.876817+00:00'
+  decision_reason: 利用者が design r2 推奨 triage を承認。design の外部可視契約を明確化し、tasks/implementation
+    の手戻りを減らすため反映する。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-16-workflow-management-design-operation-registry-preflight-review-run-r2-claude-opus-4-8-adversarial-003
+  run_id: 2026-06-16-workflow-management-design-operation-registry-preflight-review-run-r2
+  source_model: claude-opus-4-8
+  source_round: round-1
+  source_raw_path: raw/claude-opus-4-8.round-1.txt
+  source_parsed_path: parsed/claude-opus-4-8.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: '§Design Excerpt: Fail-Closed Conditions'
+  plain_language_summary: The fail-closed list maps several conditions to 'at least
+    DEVIATION' but does not define when a condition yields WARN versus DEVIATION.
+    For example, 'scope drift without side-track / follow-up / blocker record' is
+    listed, yet the response schema permits WARN; the boundary between a warnable
+    and a deviating drift is unspecified.
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: user-approved-codex
+  decision_actor_type: agent
+  decision_at: '2026-06-16T05:41:39.947009+00:00'
+  decision_reason: 利用者が design r2 推奨 triage を承認。design の外部可視契約を明確化し、tasks/implementation
+    の手戻りを減らすため反映する。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-16-workflow-management-design-operation-registry-preflight-review-run-r2-claude-opus-4-8-adversarial-004
+  run_id: 2026-06-16-workflow-management-design-operation-registry-preflight-review-run-r2
+  source_model: claude-opus-4-8
+  source_round: round-1
+  source_raw_path: raw/claude-opus-4-8.round-1.txt
+  source_parsed_path: parsed/claude-opus-4-8.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: '§Design Excerpt: Operation Contract (workflow_binding) and §Specific
+    Operation Families'
+  plain_language_summary: The operation contract defines workflow_binding fields (phase,
+    stage, gate, next_action_kind) and lists review-artifact operations such as `current-session
+    formal record guard` behavior implicitly, but the design does not specify how
+    the current-session formal record guard (acceptance criterion 8) is expressed
+    in the contract or response schema. The fail-closed list mentions 'current-session
+    formal record request' but no field captures session identity or 'current vs.
+    past session'.
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: user-approved-codex
+  decision_actor_type: agent
+  decision_at: '2026-06-16T05:41:40.016194+00:00'
+  decision_reason: 利用者が design r2 推奨 triage を承認。design の外部可視契約を明確化し、tasks/implementation
+    の手戻りを減らすため反映する。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-16-workflow-management-design-operation-registry-preflight-review-run-r2-claude-opus-4-8-adversarial-005
+  run_id: 2026-06-16-workflow-management-design-operation-registry-preflight-review-run-r2
+  source_model: claude-opus-4-8
+  source_round: round-1
+  source_raw_path: raw/claude-opus-4-8.round-1.txt
+  source_parsed_path: parsed/claude-opus-4-8.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: '§Design Excerpt: Operation Contract (canonical_invocation) — nested
+    issue handling'
+  plain_language_summary: Acceptance criterion 9 (nested issue handling) is listed
+    in the requirement summary, but the design excerpts contain no contract field,
+    response field, or check describing nested issue detection or resolution behavior.
+    The traceability claim says rows for criteria 1-13 were added, yet the excerpt
+    for criterion 9 is absent from the normative text shown.
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: user-approved-codex
+  decision_actor_type: agent
+  decision_at: '2026-06-16T05:41:40.085651+00:00'
+  decision_reason: 利用者が design r2 推奨 triage を承認。design の外部可視契約を明確化し、tasks/implementation
+    の手戻りを減らすため反映する。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-16-workflow-management-design-operation-registry-preflight-review-run-r2-claude-opus-4-8-adversarial-006
+  run_id: 2026-06-16-workflow-management-design-operation-registry-preflight-review-run-r2
+  source_model: claude-opus-4-8
+  source_round: round-1
+  source_raw_path: raw/claude-opus-4-8.round-1.txt
+  source_parsed_path: parsed/claude-opus-4-8.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: '§Design Excerpt: Specific Operation Families (Review artifact
+    preflight initial operations)'
+  plain_language_summary: The enumerated initial operations (post_write_review, review_run_create,
+    triage_decide, etc.) are concrete operation_ids. At design phase this is borderline
+    implementation-specific, though acceptable as a registry seed list if explicitly
+    marked as non-exhaustive/illustrative.
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: user-approved-codex
+  decision_actor_type: agent
+  decision_at: '2026-06-16T05:41:40.155666+00:00'
+  decision_reason: 利用者が design r2 推奨 triage を承認。肯定的 INFO または軽微な対象記述であり、追加修正は不要。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-16-workflow-management-design-operation-registry-preflight-review-run-r2-claude-opus-4-8-adversarial-007
+  run_id: 2026-06-16-workflow-management-design-operation-registry-preflight-review-run-r2
+  source_model: claude-opus-4-8
+  source_round: round-1
+  source_raw_path: raw/claude-opus-4-8.round-1.txt
+  source_parsed_path: parsed/claude-opus-4-8.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: '§Design Excerpt: Traceability And XDI'
+  plain_language_summary: XDI-WM-004 is introduced for the operation registry/preflight
+    contract and is asserted to avoid collision with XDI-WM-003, with the requirements
+    document updated to reference it. The collision-avoidance and bidirectional reference
+    are stated but not shown; reviewers cannot verify the requirements-side reference
+    from this target alone.
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: user-approved-codex
+  decision_actor_type: agent
+  decision_at: '2026-06-16T05:41:40.226455+00:00'
+  decision_reason: 利用者が design r2 推奨 triage を承認。肯定的 INFO または軽微な対象記述であり、追加修正は不要。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-16-workflow-management-design-operation-registry-preflight-review-run-r2-claude-opus-4-8-adversarial-008
+  run_id: 2026-06-16-workflow-management-design-operation-registry-preflight-review-run-r2
+  source_model: claude-opus-4-8
+  source_round: round-1
+  source_raw_path: raw/claude-opus-4-8.round-1.txt
+  source_parsed_path: parsed/claude-opus-4-8.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: '§Design Excerpt: Phase Boundary'
+  plain_language_summary: The Phase 1 (read-only preflight) / Phase 2 (runner-enabled)
+    split is clearly stated, and Phase 1 is correctly scoped to produce no artifacts.
+    The boundary is consistent with the read-only preflight statement elsewhere in
+    the design.
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: user-approved-codex
+  decision_actor_type: agent
+  decision_at: '2026-06-16T05:41:40.295733+00:00'
+  decision_reason: 利用者が design r2 推奨 triage を承認。肯定的 INFO または軽微な対象記述であり、追加修正は不要。
+  applied_files: []
+  superseded_by: null

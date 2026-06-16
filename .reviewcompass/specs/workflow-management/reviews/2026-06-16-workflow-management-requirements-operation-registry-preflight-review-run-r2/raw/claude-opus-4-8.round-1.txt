@@ -1,0 +1,21 @@
+findings:
+  - severity: WARN
+    target_location: "Requirements Delta — Acceptance Criterion 13"
+    description: "AC13 (`next` state uniqueness for `reopen_in_progress`) does not enumerate all the fields the Review Scope says must be machine-readable and mutually consistent. The scope lists current mainline, required action, phase, stage, reopen scope, impact review scope, direct features, indirect features, flag policy, and next pending gate, but AC13 only names reopen scope / impact review scope / flag policy consistency. Since AC13 is the sole reason for the r2 reopen, its acceptance text must fully capture the delta it introduces."
+    rationale: "The reopen was triggered specifically by AC13. If AC13's acceptance text is narrower than the Review Scope contract, the new requirement under-specifies the very gap that caused the rollback, allowing the same handback (ambiguous reopen impact scope / next action) to recur."
+  - severity: WARN
+    target_location: "Requirements Delta — Acceptance Criterion 13 vs Existing Context Requirement 2"
+    description: "AC13 places `next --json` / `next` state-uniqueness behavior inside Requirement 12, but Requirement 2 already owns `next --json`. The document does not state whether AC13 amends Requirement 2 or duplicates a parallel contract in Requirement 12. The reopen record claims AC13 was 'added' but the ownership boundary between R2 and R12 for `next` output is left ambiguous."
+    rationale: "Two requirements specifying overlapping `next --json` fields creates a consistency risk and a divergence hazard during design/implementation. The requirements phase must resolve which requirement is the source of truth for `next` state fields, otherwise mutual consistency cannot be verified."
+  - severity: WARN
+    target_location: "Requirements Delta — Acceptance Criterion 11 and Review Scope (ownership)"
+    description: "The Review Scope states workflow-management is the only reopen scope / direct owner while all features are in impact review scope, but AC11 ('All feature impact review scope as a preflight input') does not encode the distinction between reopen scope (direct) and impact review scope (indirect). The flag false/true traceability called out in Review Question 8 has no corresponding acceptance criterion."
+    rationale: "Review Question 8 asks whether reopen scope is separated from impact review scope strongly enough for flag false/true handling to be traceable later. Without an acceptance criterion that records this separation, the requirement cannot satisfy the traceability the reopen procedure depends on."
+  - severity: INFO
+    target_location: "Requirements Delta — Acceptance Criterion 9"
+    description: "AC9 lists 'Nested issue handling as a preflight target' but gives no fail-closed behavior or scope-drift detection criterion, while the smell inventory references (nested-issue-handling-smell) and Review Question 6 emphasize avoiding nested issue scope drift without overfitting to one incident."
+    rationale: "A bare 'preflight target' phrasing risks being untestable. Stating at least the externally visible fail-closed outcome for nested-issue scope drift would make the criterion verifiable at review-wave."
+  - severity: INFO
+    target_location: "Requirements Delta — Acceptance Criteria 7 and 8"
+    description: "AC7 (serial-only commit approval chain) and AC8 (current-session guard for formal session-record) are stated as single-line constraints without naming the fail-closed verdict (e.g., DEVIATION) that ties them back to AC3's common response shape."
+    rationale: "AC3 defines OK/WARN/DEVIATION verdicts and fail-closed handling. Linking AC7/AC8 to that verdict vocabulary would ensure the smell-inventory patterns (serial chain parallelization, current-session formal record creation) map to concrete, testable preflight outcomes."

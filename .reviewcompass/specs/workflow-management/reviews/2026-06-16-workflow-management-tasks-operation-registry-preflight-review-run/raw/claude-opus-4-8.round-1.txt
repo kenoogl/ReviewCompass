@@ -1,0 +1,25 @@
+findings:
+  - severity: ERROR
+    target_location: "T-014 完了条件 §11 / テスト要件 §4 / 要件追跡"
+    description: "Requirement 12 受入 13（Requirement 2 所有の next --json 状態一意性拡張）が、完了条件・テスト要件・XDI へ実質的に追跡されていない。完了条件には §1〜§13 のうち §11 が reopen_scope と impact_review_scope 区別、§13 が read-only 不変性に割り当てられており、受入 13（next --json 状態一意性）に正対する完了条件・テスト項目が存在しない。「Requirement 12 受入 1〜13 はすべて T-014 に追跡されている」という主張が成立していない。"
+    rationale: "受入 13 は Requirement 2 が所有する next --json の状態一意性拡張という所有権境界を持つ要件であり、preflight が state_refs.next_action へ状態次元を取り込む基盤に直結する。完了条件・テストへ落ちていなければ TDD で検証不能となり、状態一意性違反が runner Phase 2 まで検出されないまま手戻りする。所有権境界（Req 2 所有 / Req 12 利用）の明示も欠落しており、責務衝突の温床になる。"
+  - severity: ERROR
+    target_location: "T-014 テスト要件（全12項目）vs 完了条件（全13項目）"
+    description: "完了条件は 13 項目だがテスト要件は 12 項目で、受入・完了条件とテスト要件の対応が 1 件分ズレている。特に完了条件 §3（next --json active state dimensions の state_refs.next_action 返却）に正対する独立テスト項目が、テスト §4（取り込みと不整合検出）に部分的に吸収される形になっており、最低限含めるべき state dimensions（current mainline、required_action、phase、stage、reopen_scope、impact_review_scope、direct/indirect features、flag policy、next_pending_gate、next_drafting_gate、pending_gates、completed_gates、superseded gate、参照 state files）が必須キーとして揃っているかを固定検証するテストが存在しない。"
+    rationale: "design.md は state_refs.next_action に含めるべき state dimensions を列挙しているが、テスト要件がそれを必須セットとして固定していないため、一部 dimension の欠落が fail-closed で検出されず、preflight 利用側が不完全な状態情報で判断する手戻りが起きる。完了条件とテスト要件の項目数不一致は追跡の網羅性主張を弱める。"
+  - severity: WARN
+    target_location: "T-014 前提タスク"
+    description: "前提タスクに T-002、T-003、T-004、T-006、T-007、T-008、T-012、T-013 が列挙されているが、レビュー目的で責務境界確認対象に挙げられた T-011 が前提から欠落している。T-011 が preflight の検査対象（review artifact / approval / bundle 等）と関係する場合、前提依存の欠落か、または無関係であることの明示が必要。"
+    rationale: "レビュー目的に T-011 との責務境界が挙がっているのに前提タスクへ現れないため、依存の取りこぼしか意図的除外かが判別できない。依存欠落であれば実装順序で T-014 が前提未完成のまま着手され手戻りする。"
+  - severity: WARN
+    target_location: "T-014 完了条件 §6 / テスト要件 §6"
+    description: "完了条件 §6 は review artifact 系で document-type / criteria / staged / unstaged 対象選択まで列挙するが、対応するテスト要件 §6 は target / manifest / bundle / approval.yaml / existing artifact drift に縮約され、criteria / document-type 一致と staged/unstaged 対象選択の検証が明示されていない。"
+    rationale: "完了条件で要求された検査項目がテスト要件で網羅されないと、criteria / document-type のミスマッチや staged/unstaged 選択誤りが TDD で捕捉されず、review artifact を作ってから直す典型的手戻りが残る。"
+  - severity: INFO
+    target_location: "T-014 責務 / 完了条件 §13 / テスト要件 §11"
+    description: "Phase 1 read-only preflight と Phase 2 runner-enabled operation の分離が、責務・完了条件 §13・テスト要件 §11（read-only 不変性）で一貫して表明されており、artifact 非作成リストも具体的に列挙されている。Phase 混在は認められない。"
+    rationale: "Phase 1/2 分離の明示と read-only 不変性テストの存在により、preflight が誤って artifact を作る回帰を継続的に防止でき、設計意図と整合している。肯定的所見。"
+  - severity: INFO
+    target_location: "T-014 完了条件 §12 / テスト要件 §12"
+    description: "LLM / provider / model 非依存が完了条件 §12 とテスト要件 §12（系 field 非依存・禁止 field 検査）の双方に落ちており、タスク粒度でも provider 非依存が維持されている。"
+    rationale: "判定が特定 provider/model に依存しないことを fail-closed テストで固定することで、将来の provider 追加・変更時の判定揺れを防げる。要件意図と一致した良い追跡。"

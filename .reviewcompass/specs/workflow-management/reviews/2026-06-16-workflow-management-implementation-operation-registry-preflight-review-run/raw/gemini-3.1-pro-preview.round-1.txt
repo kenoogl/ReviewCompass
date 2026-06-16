@@ -1,0 +1,13 @@
+findings:
+  - severity: WARN
+    target_location: "5.2 Known invocation and preflight response / KNOWN_INVOCATIONS"
+    description: "Hardcoded argument sets in KNOWN_INVOCATIONS create a brittle secondary parser that is prone to drift."
+    rationale: "Explicitly duplicating the valid flags (e.g., `--variant`, `--target`) for external scripts like `run_review.py` or `review_triage.py` introduces a maintenance burden and a high risk of configuration drift. If the primary `argparse` configuration in an external script is updated, the preflight registry will incorrectly reject valid invocations or accept deprecated ones. Extracting valid arguments dynamically via a standard interface (e.g., inspecting the parser or invoking the tool with an `--export-schema` flag) is recommended."
+  - severity: ERROR
+    target_location: "5.3 Read-only deployment boundary check / _validate_deployment_boundary"
+    description: "Deployment boundary validation fails to mitigate relative path traversal."
+    rationale: "The function relies solely on `path.is_absolute()` to determine if a path escapes the intended boundaries. This is insufficient, as it allows relative path traversal (e.g., `../../../outside-directory`). Preflight validation must normalize and resolve paths (e.g., via `path.resolve()`) to ensure that all planned outputs strictly fall within the allowed `target_app_root` or explicitly defined external root."
+  - severity: INFO
+    target_location: "4.1 tools/check-workflow-action.py"
+    description: "Exit codes for `--json` output mode may cause unintended failures in standard CI/CD pipelines."
+    rationale: "The `operation-preflight` CLI returns exit code `1` for `WARN` and `2` for deviations, even when `--json` is supplied. While logically correct, callers executing the tool in JSON mode might treat any non-zero exit code as an execution crash rather than successfully receiving a structured deviation payload. Ensure callers are explicitly configured to tolerate exit codes 1 and 2 when consuming the JSON."

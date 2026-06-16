@@ -1,0 +1,9 @@
+findings:
+  - severity: WARN
+    target_location: "## Design Delta, Item 1"
+    description: "Placing the operation registry in 'stages/operation-registry.yaml' violates the workflow-management ownership boundary."
+    rationale: "The 'stages/' directory is dedicated to review pipeline configurations and gates (e.g., 'stages/design.yaml'). Placing a workflow-management-owned operation registry in this global pipeline directory conflates pipeline execution domains with workflow-management domains. The registry should be located in a path clearly owned by workflow-management."
+  - severity: WARN
+    target_location: "## Design Delta, Item 5"
+    description: "Specifying 'parser / parser adapter' oversteps into implementation details."
+    rationale: "The review scope explicitly prohibits overstepping into implementation. While 'Command validation' is a valid design-level boundary and behavior, dictating internal software design patterns or components such as a 'parser / parser adapter' dictates how the validation is coded rather than what the validation system must do."

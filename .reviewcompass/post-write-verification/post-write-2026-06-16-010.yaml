@@ -1,0 +1,188 @@
+status: completed
+target_files:
+- .reviewcompass/specs/_cross_feature/reviews/2026-06-16-design-operation-registry-preflight-reopen-alignment.md
+- .reviewcompass/specs/_cross_feature/reviews/2026-06-16-design-operation-registry-preflight-review-wave-summary.md
+- .reviewcompass/specs/_cross_feature/reviews/2026-06-16-design-operation-registry-preflight-review-wave.md
+- .reviewcompass/specs/_cross_feature/reviews/2026-06-16-implementation-operation-registry-preflight-reopen-alignment.md
+- .reviewcompass/specs/_cross_feature/reviews/2026-06-16-implementation-operation-registry-preflight-review-wave-summary.md
+- .reviewcompass/specs/_cross_feature/reviews/2026-06-16-implementation-operation-registry-preflight-review-wave.md
+- .reviewcompass/specs/_cross_feature/reviews/2026-06-16-requirements-operation-registry-preflight-reopen-alignment-r2.md
+- .reviewcompass/specs/_cross_feature/reviews/2026-06-16-requirements-operation-registry-preflight-reopen-alignment.md
+- .reviewcompass/specs/_cross_feature/reviews/2026-06-16-requirements-operation-registry-preflight-review-wave-r2-summary.md
+- .reviewcompass/specs/_cross_feature/reviews/2026-06-16-requirements-operation-registry-preflight-review-wave-r2.md
+- .reviewcompass/specs/_cross_feature/reviews/2026-06-16-requirements-operation-registry-preflight-review-wave-summary.md
+- .reviewcompass/specs/_cross_feature/reviews/2026-06-16-requirements-operation-registry-preflight-review-wave.md
+- .reviewcompass/specs/_cross_feature/reviews/2026-06-16-tasks-operation-registry-preflight-reopen-alignment.md
+- .reviewcompass/specs/_cross_feature/reviews/2026-06-16-tasks-operation-registry-preflight-review-wave-summary.md
+- .reviewcompass/specs/_cross_feature/reviews/2026-06-16-tasks-operation-registry-preflight-review-wave.md
+- .reviewcompass/specs/workflow-management/design.md
+- .reviewcompass/specs/workflow-management/requirements.md
+- .reviewcompass/specs/workflow-management/reviews/2026-06-16-workflow-management-design-operation-registry-preflight-review-run-r2/raw-review-triage-summary.md
+- .reviewcompass/specs/workflow-management/reviews/2026-06-16-workflow-management-design-operation-registry-preflight-review-run-r2/review-target.md
+- .reviewcompass/specs/workflow-management/reviews/2026-06-16-workflow-management-design-operation-registry-preflight-review-run-r2/review_summary.md
+- .reviewcompass/specs/workflow-management/reviews/2026-06-16-workflow-management-design-operation-registry-preflight-review-run/review-target.md
+- .reviewcompass/specs/workflow-management/reviews/2026-06-16-workflow-management-design-operation-registry-preflight-review-run/review_summary.md
+- .reviewcompass/specs/workflow-management/reviews/2026-06-16-workflow-management-implementation-operation-registry-preflight-review-run/raw-review-triage-summary.md
+- .reviewcompass/specs/workflow-management/reviews/2026-06-16-workflow-management-implementation-operation-registry-preflight-review-run/review-target.md
+- .reviewcompass/specs/workflow-management/reviews/2026-06-16-workflow-management-implementation-operation-registry-preflight-review-run/review_summary.md
+- .reviewcompass/specs/workflow-management/reviews/2026-06-16-workflow-management-requirements-operation-registry-preflight-review-run-r2/raw-review-triage-summary.md
+- .reviewcompass/specs/workflow-management/reviews/2026-06-16-workflow-management-requirements-operation-registry-preflight-review-run-r2/review-target.md
+- .reviewcompass/specs/workflow-management/reviews/2026-06-16-workflow-management-requirements-operation-registry-preflight-review-run-r2/review_summary.md
+- .reviewcompass/specs/workflow-management/reviews/2026-06-16-workflow-management-requirements-operation-registry-preflight-review-run/review-target.md
+- .reviewcompass/specs/workflow-management/reviews/2026-06-16-workflow-management-requirements-operation-registry-preflight-review-run/review_summary.md
+- .reviewcompass/specs/workflow-management/reviews/2026-06-16-workflow-management-tasks-operation-registry-preflight-review-run/raw-review-triage-summary.md
+- .reviewcompass/specs/workflow-management/reviews/2026-06-16-workflow-management-tasks-operation-registry-preflight-review-run/review-target.md
+- .reviewcompass/specs/workflow-management/reviews/2026-06-16-workflow-management-tasks-operation-registry-preflight-review-run/review_summary.md
+- .reviewcompass/specs/workflow-management/tasks.md
+- docs/reviews/reopen-classification-2026-06-16-wm-operation-registry-preflight.md
+target_sha256:
+  .reviewcompass/specs/_cross_feature/reviews/2026-06-16-design-operation-registry-preflight-reopen-alignment.md: 68efdd49a43b11624c9d5795200341604a44002dff87c11803f68d81f3c3ff0d
+  .reviewcompass/specs/_cross_feature/reviews/2026-06-16-design-operation-registry-preflight-review-wave-summary.md: f7d5c78c6f75d7e69bf83995515951220e405bfe05c1773f6c2873d642d5f22f
+  .reviewcompass/specs/_cross_feature/reviews/2026-06-16-design-operation-registry-preflight-review-wave.md: da54ed430df6c20cc76aee259085e3d83f9bca3e3b4b160aac941f7875909899
+  .reviewcompass/specs/_cross_feature/reviews/2026-06-16-implementation-operation-registry-preflight-reopen-alignment.md: 2637ac099dcef2fb8095ca593d0b8c464259b047f5a4e01f1136d351c9a30801
+  .reviewcompass/specs/_cross_feature/reviews/2026-06-16-implementation-operation-registry-preflight-review-wave-summary.md: 2010dd93135234b4787ccbcbb0de4445fbee1cb29890642e26883f612ae36c01
+  .reviewcompass/specs/_cross_feature/reviews/2026-06-16-implementation-operation-registry-preflight-review-wave.md: 2f4914ab057eb1ec5f8491f520068e1be6f35a571e7b9065134bba500b51b581
+  .reviewcompass/specs/_cross_feature/reviews/2026-06-16-requirements-operation-registry-preflight-reopen-alignment-r2.md: 8086092206772777895391987f7089efec95aedf427c828d1cecd5a0c6d381bb
+  .reviewcompass/specs/_cross_feature/reviews/2026-06-16-requirements-operation-registry-preflight-reopen-alignment.md: 35b10388e258d559fd451afe183e49c8f53df2a2e9c882f6afb5a757056f7677
+  .reviewcompass/specs/_cross_feature/reviews/2026-06-16-requirements-operation-registry-preflight-review-wave-r2-summary.md: 210740d5368a2110ea608957e409af24baf44dd616d9c0dbad10df17e2cd585e
+  .reviewcompass/specs/_cross_feature/reviews/2026-06-16-requirements-operation-registry-preflight-review-wave-r2.md: 0112b78e63df737fb08e423a234362a868619134545e5b0e49c31e26104e4a19
+  .reviewcompass/specs/_cross_feature/reviews/2026-06-16-requirements-operation-registry-preflight-review-wave-summary.md: 210740d5368a2110ea608957e409af24baf44dd616d9c0dbad10df17e2cd585e
+  .reviewcompass/specs/_cross_feature/reviews/2026-06-16-requirements-operation-registry-preflight-review-wave.md: dbdf34a4cb95946db5fe694c7f39b4dd420cdfc83fe8526dc3987e096784cabc
+  .reviewcompass/specs/_cross_feature/reviews/2026-06-16-tasks-operation-registry-preflight-reopen-alignment.md: 4644897f4ca22c866309323072e03ef893606fc24037971a695952ae60b316ae
+  .reviewcompass/specs/_cross_feature/reviews/2026-06-16-tasks-operation-registry-preflight-review-wave-summary.md: 4f447e4ac3e23d000aaa3a369ade1e7265847329fe69baae1a21bcbba201777f
+  .reviewcompass/specs/_cross_feature/reviews/2026-06-16-tasks-operation-registry-preflight-review-wave.md: 3a2ca208f6b8e8e7284c4cd4c8297d541e435c9959ca714195e10b62c1a03a4f
+  .reviewcompass/specs/workflow-management/design.md: da0e73607aa290c66f2954112c2e83d8f26dc8320ba04cef4a32814786f325c9
+  .reviewcompass/specs/workflow-management/requirements.md: 77b7a0996e5a9e5aee60f8540caa184dde85047a0735081787914d37e4ba580e
+  ? .reviewcompass/specs/workflow-management/reviews/2026-06-16-workflow-management-design-operation-registry-preflight-review-run-r2/raw-review-triage-summary.md
+  : 6140f28e304dc9af553942f8f74925344d00d2b978970e23662b38768d647dfc
+  ? .reviewcompass/specs/workflow-management/reviews/2026-06-16-workflow-management-design-operation-registry-preflight-review-run-r2/review-target.md
+  : c70e6aaefd483cb9fa15f23cfbbfb8433f693ce6871a01ae1028a2169b62723f
+  ? .reviewcompass/specs/workflow-management/reviews/2026-06-16-workflow-management-design-operation-registry-preflight-review-run-r2/review_summary.md
+  : 9902e73a7c8f9665dfcf3202e1c19c121ee32fbd5e0baaa2715f78be4bf70dd9
+  ? .reviewcompass/specs/workflow-management/reviews/2026-06-16-workflow-management-design-operation-registry-preflight-review-run/review-target.md
+  : 8befedd24734bdf4e91d5cecf4e8427071e5db95dfb4e01515b7c8ccc7efa940
+  ? .reviewcompass/specs/workflow-management/reviews/2026-06-16-workflow-management-design-operation-registry-preflight-review-run/review_summary.md
+  : af8b6f29bf5da438d8c5df8111ea54ddf46a1ee833ca063e85d7feb61404d652
+  ? .reviewcompass/specs/workflow-management/reviews/2026-06-16-workflow-management-implementation-operation-registry-preflight-review-run/raw-review-triage-summary.md
+  : c93060e1a40064eac18f200aa98e792ea99fce093e6d97fd58fed6d20efe2394
+  ? .reviewcompass/specs/workflow-management/reviews/2026-06-16-workflow-management-implementation-operation-registry-preflight-review-run/review-target.md
+  : 44eecb9f5a20703b58feee737c991000caadb9148b05855969d1e08e18d73a77
+  ? .reviewcompass/specs/workflow-management/reviews/2026-06-16-workflow-management-implementation-operation-registry-preflight-review-run/review_summary.md
+  : 842960dd469a12661845e464d8c21880d59fb8c3696f0a2c8fcc29a7f2a78f78
+  ? .reviewcompass/specs/workflow-management/reviews/2026-06-16-workflow-management-requirements-operation-registry-preflight-review-run-r2/raw-review-triage-summary.md
+  : 4b5aaf25a3a0bc194ea9c3bd20d3d5432a6fa23f54d367cad9fc09975650aea1
+  ? .reviewcompass/specs/workflow-management/reviews/2026-06-16-workflow-management-requirements-operation-registry-preflight-review-run-r2/review-target.md
+  : 201617ec75ff9197f1ce427170f35942ba105a00209bc58d5d26961ab265ab82
+  ? .reviewcompass/specs/workflow-management/reviews/2026-06-16-workflow-management-requirements-operation-registry-preflight-review-run-r2/review_summary.md
+  : 59a2e7f7842d6271d8bf8e715d94b0cbcaf93dc3e9dd7ba37cc5f6b3b23a1c8f
+  ? .reviewcompass/specs/workflow-management/reviews/2026-06-16-workflow-management-requirements-operation-registry-preflight-review-run/review-target.md
+  : 6b526a0c55636e3abb7e65f9ddc5539ddcadb4ed1110f9f642f49370ff202580
+  ? .reviewcompass/specs/workflow-management/reviews/2026-06-16-workflow-management-requirements-operation-registry-preflight-review-run/review_summary.md
+  : 34c8eb852b502aac853fbfd601205271ca53d6a7d39e3da666c6652fc11a1782
+  ? .reviewcompass/specs/workflow-management/reviews/2026-06-16-workflow-management-tasks-operation-registry-preflight-review-run/raw-review-triage-summary.md
+  : 28fc16f738695d6b59597ca74dd5a86ed48528cc4721c752589d81be7be3154d
+  ? .reviewcompass/specs/workflow-management/reviews/2026-06-16-workflow-management-tasks-operation-registry-preflight-review-run/review-target.md
+  : 8fe4a20bb4ae1eddd96f2c6cf6062a9bbc409df66f324e964765bbf80e1aa8d5
+  ? .reviewcompass/specs/workflow-management/reviews/2026-06-16-workflow-management-tasks-operation-registry-preflight-review-run/review_summary.md
+  : eeb98d6ebf450b10bc745de636d4421f924cf9c75a80c47ced156383d9102cfa
+  .reviewcompass/specs/workflow-management/tasks.md: fea5a64bca4f89b21379594932023a7bf181274f3a50624847b3f97a033d2a1a
+  docs/reviews/reopen-classification-2026-06-16-wm-operation-registry-preflight.md: caafcf9afa66c66de0063589f27944976f0434a6f12b4cc234d5674b263b77e9
+required_verifiers: &id001
+- gemini-3.5-flash
+completed_verifiers: *id001
+unresolved_substantive_findings: 0
+verifications:
+- verifier: gemini-3.5-flash
+  target_files:
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-16-design-operation-registry-preflight-reopen-alignment.md
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-16-design-operation-registry-preflight-review-wave-summary.md
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-16-design-operation-registry-preflight-review-wave.md
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-16-implementation-operation-registry-preflight-reopen-alignment.md
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-16-implementation-operation-registry-preflight-review-wave-summary.md
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-16-implementation-operation-registry-preflight-review-wave.md
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-16-requirements-operation-registry-preflight-reopen-alignment-r2.md
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-16-requirements-operation-registry-preflight-reopen-alignment.md
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-16-requirements-operation-registry-preflight-review-wave-r2-summary.md
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-16-requirements-operation-registry-preflight-review-wave-r2.md
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-16-requirements-operation-registry-preflight-review-wave-summary.md
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-16-requirements-operation-registry-preflight-review-wave.md
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-16-tasks-operation-registry-preflight-reopen-alignment.md
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-16-tasks-operation-registry-preflight-review-wave-summary.md
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-16-tasks-operation-registry-preflight-review-wave.md
+  - .reviewcompass/specs/workflow-management/design.md
+  - .reviewcompass/specs/workflow-management/requirements.md
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-16-workflow-management-design-operation-registry-preflight-review-run-r2/raw-review-triage-summary.md
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-16-workflow-management-design-operation-registry-preflight-review-run-r2/review-target.md
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-16-workflow-management-design-operation-registry-preflight-review-run-r2/review_summary.md
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-16-workflow-management-design-operation-registry-preflight-review-run/review-target.md
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-16-workflow-management-design-operation-registry-preflight-review-run/review_summary.md
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-16-workflow-management-implementation-operation-registry-preflight-review-run/raw-review-triage-summary.md
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-16-workflow-management-implementation-operation-registry-preflight-review-run/review-target.md
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-16-workflow-management-implementation-operation-registry-preflight-review-run/review_summary.md
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-16-workflow-management-requirements-operation-registry-preflight-review-run-r2/raw-review-triage-summary.md
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-16-workflow-management-requirements-operation-registry-preflight-review-run-r2/review-target.md
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-16-workflow-management-requirements-operation-registry-preflight-review-run-r2/review_summary.md
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-16-workflow-management-requirements-operation-registry-preflight-review-run/review-target.md
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-16-workflow-management-requirements-operation-registry-preflight-review-run/review_summary.md
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-16-workflow-management-tasks-operation-registry-preflight-review-run/raw-review-triage-summary.md
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-16-workflow-management-tasks-operation-registry-preflight-review-run/review-target.md
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-16-workflow-management-tasks-operation-registry-preflight-review-run/review_summary.md
+  - .reviewcompass/specs/workflow-management/tasks.md
+  - docs/reviews/reopen-classification-2026-06-16-wm-operation-registry-preflight.md
+  target_sha256:
+    .reviewcompass/specs/_cross_feature/reviews/2026-06-16-design-operation-registry-preflight-reopen-alignment.md: 68efdd49a43b11624c9d5795200341604a44002dff87c11803f68d81f3c3ff0d
+    .reviewcompass/specs/_cross_feature/reviews/2026-06-16-design-operation-registry-preflight-review-wave-summary.md: f7d5c78c6f75d7e69bf83995515951220e405bfe05c1773f6c2873d642d5f22f
+    .reviewcompass/specs/_cross_feature/reviews/2026-06-16-design-operation-registry-preflight-review-wave.md: da54ed430df6c20cc76aee259085e3d83f9bca3e3b4b160aac941f7875909899
+    .reviewcompass/specs/_cross_feature/reviews/2026-06-16-implementation-operation-registry-preflight-reopen-alignment.md: 2637ac099dcef2fb8095ca593d0b8c464259b047f5a4e01f1136d351c9a30801
+    .reviewcompass/specs/_cross_feature/reviews/2026-06-16-implementation-operation-registry-preflight-review-wave-summary.md: 2010dd93135234b4787ccbcbb0de4445fbee1cb29890642e26883f612ae36c01
+    .reviewcompass/specs/_cross_feature/reviews/2026-06-16-implementation-operation-registry-preflight-review-wave.md: 2f4914ab057eb1ec5f8491f520068e1be6f35a571e7b9065134bba500b51b581
+    .reviewcompass/specs/_cross_feature/reviews/2026-06-16-requirements-operation-registry-preflight-reopen-alignment-r2.md: 8086092206772777895391987f7089efec95aedf427c828d1cecd5a0c6d381bb
+    .reviewcompass/specs/_cross_feature/reviews/2026-06-16-requirements-operation-registry-preflight-reopen-alignment.md: 35b10388e258d559fd451afe183e49c8f53df2a2e9c882f6afb5a757056f7677
+    .reviewcompass/specs/_cross_feature/reviews/2026-06-16-requirements-operation-registry-preflight-review-wave-r2-summary.md: 210740d5368a2110ea608957e409af24baf44dd616d9c0dbad10df17e2cd585e
+    .reviewcompass/specs/_cross_feature/reviews/2026-06-16-requirements-operation-registry-preflight-review-wave-r2.md: 0112b78e63df737fb08e423a234362a868619134545e5b0e49c31e26104e4a19
+    .reviewcompass/specs/_cross_feature/reviews/2026-06-16-requirements-operation-registry-preflight-review-wave-summary.md: 210740d5368a2110ea608957e409af24baf44dd616d9c0dbad10df17e2cd585e
+    .reviewcompass/specs/_cross_feature/reviews/2026-06-16-requirements-operation-registry-preflight-review-wave.md: dbdf34a4cb95946db5fe694c7f39b4dd420cdfc83fe8526dc3987e096784cabc
+    .reviewcompass/specs/_cross_feature/reviews/2026-06-16-tasks-operation-registry-preflight-reopen-alignment.md: 4644897f4ca22c866309323072e03ef893606fc24037971a695952ae60b316ae
+    .reviewcompass/specs/_cross_feature/reviews/2026-06-16-tasks-operation-registry-preflight-review-wave-summary.md: 4f447e4ac3e23d000aaa3a369ade1e7265847329fe69baae1a21bcbba201777f
+    .reviewcompass/specs/_cross_feature/reviews/2026-06-16-tasks-operation-registry-preflight-review-wave.md: 3a2ca208f6b8e8e7284c4cd4c8297d541e435c9959ca714195e10b62c1a03a4f
+    .reviewcompass/specs/workflow-management/design.md: da0e73607aa290c66f2954112c2e83d8f26dc8320ba04cef4a32814786f325c9
+    .reviewcompass/specs/workflow-management/requirements.md: 77b7a0996e5a9e5aee60f8540caa184dde85047a0735081787914d37e4ba580e
+    ? .reviewcompass/specs/workflow-management/reviews/2026-06-16-workflow-management-design-operation-registry-preflight-review-run-r2/raw-review-triage-summary.md
+    : 6140f28e304dc9af553942f8f74925344d00d2b978970e23662b38768d647dfc
+    ? .reviewcompass/specs/workflow-management/reviews/2026-06-16-workflow-management-design-operation-registry-preflight-review-run-r2/review-target.md
+    : c70e6aaefd483cb9fa15f23cfbbfb8433f693ce6871a01ae1028a2169b62723f
+    ? .reviewcompass/specs/workflow-management/reviews/2026-06-16-workflow-management-design-operation-registry-preflight-review-run-r2/review_summary.md
+    : 9902e73a7c8f9665dfcf3202e1c19c121ee32fbd5e0baaa2715f78be4bf70dd9
+    ? .reviewcompass/specs/workflow-management/reviews/2026-06-16-workflow-management-design-operation-registry-preflight-review-run/review-target.md
+    : 8befedd24734bdf4e91d5cecf4e8427071e5db95dfb4e01515b7c8ccc7efa940
+    ? .reviewcompass/specs/workflow-management/reviews/2026-06-16-workflow-management-design-operation-registry-preflight-review-run/review_summary.md
+    : af8b6f29bf5da438d8c5df8111ea54ddf46a1ee833ca063e85d7feb61404d652
+    ? .reviewcompass/specs/workflow-management/reviews/2026-06-16-workflow-management-implementation-operation-registry-preflight-review-run/raw-review-triage-summary.md
+    : c93060e1a40064eac18f200aa98e792ea99fce093e6d97fd58fed6d20efe2394
+    ? .reviewcompass/specs/workflow-management/reviews/2026-06-16-workflow-management-implementation-operation-registry-preflight-review-run/review-target.md
+    : 44eecb9f5a20703b58feee737c991000caadb9148b05855969d1e08e18d73a77
+    ? .reviewcompass/specs/workflow-management/reviews/2026-06-16-workflow-management-implementation-operation-registry-preflight-review-run/review_summary.md
+    : 842960dd469a12661845e464d8c21880d59fb8c3696f0a2c8fcc29a7f2a78f78
+    ? .reviewcompass/specs/workflow-management/reviews/2026-06-16-workflow-management-requirements-operation-registry-preflight-review-run-r2/raw-review-triage-summary.md
+    : 4b5aaf25a3a0bc194ea9c3bd20d3d5432a6fa23f54d367cad9fc09975650aea1
+    ? .reviewcompass/specs/workflow-management/reviews/2026-06-16-workflow-management-requirements-operation-registry-preflight-review-run-r2/review-target.md
+    : 201617ec75ff9197f1ce427170f35942ba105a00209bc58d5d26961ab265ab82
+    ? .reviewcompass/specs/workflow-management/reviews/2026-06-16-workflow-management-requirements-operation-registry-preflight-review-run-r2/review_summary.md
+    : 59a2e7f7842d6271d8bf8e715d94b0cbcaf93dc3e9dd7ba37cc5f6b3b23a1c8f
+    ? .reviewcompass/specs/workflow-management/reviews/2026-06-16-workflow-management-requirements-operation-registry-preflight-review-run/review-target.md
+    : 6b526a0c55636e3abb7e65f9ddc5539ddcadb4ed1110f9f642f49370ff202580
+    ? .reviewcompass/specs/workflow-management/reviews/2026-06-16-workflow-management-requirements-operation-registry-preflight-review-run/review_summary.md
+    : 34c8eb852b502aac853fbfd601205271ca53d6a7d39e3da666c6652fc11a1782
+    ? .reviewcompass/specs/workflow-management/reviews/2026-06-16-workflow-management-tasks-operation-registry-preflight-review-run/raw-review-triage-summary.md
+    : 28fc16f738695d6b59597ca74dd5a86ed48528cc4721c752589d81be7be3154d
+    ? .reviewcompass/specs/workflow-management/reviews/2026-06-16-workflow-management-tasks-operation-registry-preflight-review-run/review-target.md
+    : 8fe4a20bb4ae1eddd96f2c6cf6062a9bbc409df66f324e964765bbf80e1aa8d5
+    ? .reviewcompass/specs/workflow-management/reviews/2026-06-16-workflow-management-tasks-operation-registry-preflight-review-run/review_summary.md
+    : eeb98d6ebf450b10bc745de636d4421f924cf9c75a80c47ced156383d9102cfa
+    .reviewcompass/specs/workflow-management/tasks.md: fea5a64bca4f89b21379594932023a7bf181274f3a50624847b3f97a033d2a1a
+    docs/reviews/reopen-classification-2026-06-16-wm-operation-registry-preflight.md: caafcf9afa66c66de0063589f27944976f0434a6f12b4cc234d5674b263b77e9
+review_run:
+  path: .reviewcompass/evidence/review-runs/2026-06-16-operation-registry-preflight-classification-postwrite
+  summary_path: .reviewcompass/evidence/review-runs/2026-06-16-operation-registry-preflight-classification-postwrite/model-result-summary.yaml
+notes: Generated template; verify target_files cover current post-write targets before
+  use.

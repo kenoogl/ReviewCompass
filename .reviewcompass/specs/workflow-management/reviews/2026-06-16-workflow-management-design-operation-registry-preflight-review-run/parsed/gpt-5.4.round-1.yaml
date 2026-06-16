@@ -1,0 +1,50 @@
+role: primary
+provider: openai-api
+model: gpt-5.4
+attempts: 1
+duration_seconds: 6.983
+findings:
+- severity: ERROR
+  target_location: .reviewcompass/specs/workflow-management/reviews/2026-06-16-workflow-management-design-operation-registry-preflight-review-run/review-target.md
+  description: The review target references the intended design changes and source
+    documents, but does not include the actual contents of `design.md`, so the triad
+    review cannot verify whether the design truly implements Requirement 12.
+  rationale: The stated review questions require checking coverage, ownership boundaries,
+    schema distinctions, and phase separation in the design itself. This target only
+    summarizes what the design 'now adds' rather than exposing the exact design text,
+    making it impossible to confirm correctness, omissions, or overreach.
+- severity: WARN
+  target_location: '## Design Delta'
+  description: The review target asserts that the design covers acceptance criteria
+    1-13, but it does not map the listed design additions back to each specific Requirement
+    12 acceptance criterion.
+  rationale: A triad review for reopen verification should be able to trace each acceptance
+    criterion to a corresponding design element. Without explicit criterion-by-criterion
+    traceability, reviewers cannot reliably determine whether any requirement is only
+    partially covered or covered in an overbroad way.
+- severity: WARN
+  target_location: '## Design Delta, item 12'
+  description: The summary states that the design addresses `reopen_scope` / `impact_review_scope`
+    and `next` state uniqueness, but it does not show the exact design-level definitions
+    or invariants for those machine-readable fields.
+  rationale: This reopen specifically depends on preserving Requirement 2 ownership
+    while extending `next --json` to uniquely identify the active reopen state. Without
+    the concrete design definitions, the review cannot validate that the fields are
+    distinct, machine-readable, and non-competing with the existing `next` source
+    of truth.
+- severity: WARN
+  target_location: '## Design Delta, item 14'
+  description: The summary says the design defines a Phase 1 / Phase 2 boundary, but
+    it does not provide the explicit negative constraints for Phase 1 in the design
+    text under review.
+  rationale: A core requirement is that Phase 1 remain read-only and must not create
+    review-run directories, manifests, approvals, sessions, commits, deployment outputs,
+    or export outputs. A high-level statement that there is a boundary is not sufficient
+    to verify that the design fail-closes against all prohibited side effects.
+- severity: INFO
+  target_location: '## Design Delta'
+  description: The target appropriately calls out the XDI renumbering from XDI-WM-003
+    collision risk to XDI-WM-004 as part of the design update.
+  rationale: This helps reviewers check design-document consistency and avoid identifier
+    ambiguity across requirements and design artifacts, though the actual alignment
+    still depends on the unseen `design.md` content.
