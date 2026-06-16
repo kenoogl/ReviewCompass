@@ -1,0 +1,45 @@
+process_id: maintenance
+started_at: '2026-06-17T00:00:00+09:00'
+completed_at: '2026-06-17T00:00:00+09:00'
+trigger: next --json が reopen / maintenance / side track を含む現在状態を一意に返せず、LLM 判断や矛盾した completed 状態へ逃げる危険がある
+mainline_blocked_by: D-003 reopen work was rolled back because next --json could report completed while reopen state was semantically unresolved
+allowed_scope:
+- next --json unique current-state selector design from rollback handoff materials
+- workflow-management SDD updates needed to preserve the selector contract
+- check-workflow-action implementation and focused tests for reopen / maintenance / side track state selection
+allowed_files:
+- .reviewcompass/specs/workflow-management/requirements.md
+- .reviewcompass/specs/workflow-management/design.md
+- .reviewcompass/specs/workflow-management/tasks.md
+- docs/notes/2026-06-17-next-json-unique-state-implementation.md
+- tools/check-workflow-action.py
+- tools/check_workflow_action/**
+- tests/tools/**
+- .reviewcompass/evidence/review-runs/2026-06-17-postwrite-next-json-unique-state-implementation/**
+- .reviewcompass/post-write-verification/post-write-2026-06-17-001.yaml
+- stages/in-progress/maintenance-2026-06-17-next-json-unique-state.yaml
+- stages/completed/maintenance-2026-06-17-next-json-unique-state.yaml
+rollback_reference: /private/tmp/reviewcompass-d003-rollback-20260617/README.md
+source_materials:
+- /private/tmp/reviewcompass-d003-rollback-20260617/files/docs/notes/2026-06-16-next-json-unique-state-redesign.md
+- /private/tmp/reviewcompass-d003-rollback-20260617/files/stages/completed/maintenance-2026-06-17-next-json-unique-state-redesign.yaml
+completion_conditions:
+- next --json の required_action / next_action.kind が常に唯一の現在状態として導出される設計を SDD または実装メモに残す
+- reopen / maintenance / side track の選択で LLM 判断に依存しない情報源と優先順位を実装に反映する
+- 現行挙動の穴を再現する focused test を先に追加し、失敗を確認してから実装する
+- 実装後、focused test と既存 next/commit 関連テストが通過する
+changes:
+- maintenance next action now uses required_action=run_maintenance and separates the YAML task name into maintenance_action/action_parameters
+- reopen next action now selects blocker and commit_stop_point before pending gates
+- reopen next action now returns active_gate only for actual drafting or pending gate execution
+- workflow-management SDD and implementation note now record the unique action selector contract
+verification:
+- .venv/bin/python3 -m unittest tests.tools.test_check_workflow_action.NextNavigationTests
+- .venv/bin/python3 -m unittest tests.tools.test_check_workflow_action.NextNavigationTests tests.tools.test_check_workflow_action.CommitExitCodeTests tests.tools.test_guarded_git_commit
+- .venv/bin/python3 tools/api_providers/run_review.py --variant post_write_verification_google --target docs/notes/2026-06-17-next-json-unique-state-implementation.md --phase post_write_verification --criteria next_json_unique_state_implementation_note --review-run-dir .reviewcompass/evidence/review-runs/2026-06-17-postwrite-next-json-unique-state-implementation
+- .venv/bin/python3 tools/api_providers/review_triage.py write-manifest --review-run-dir .reviewcompass/evidence/review-runs/2026-06-17-postwrite-next-json-unique-state-implementation --out auto
+- git diff --check
+post_write_verification:
+- .reviewcompass/evidence/review-runs/2026-06-17-postwrite-next-json-unique-state-implementation/review_summary.md
+- .reviewcompass/post-write-verification/post-write-2026-06-17-001.yaml
+current_status: completed

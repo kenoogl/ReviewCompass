@@ -1,0 +1,32 @@
+status: completed
+target_files:
+- .reviewcompass/specs/workflow-management/design.md
+- .reviewcompass/specs/workflow-management/requirements.md
+- .reviewcompass/specs/workflow-management/tasks.md
+- docs/notes/2026-06-17-next-json-unique-state-implementation.md
+target_sha256:
+  .reviewcompass/specs/workflow-management/design.md: ded2da39f9396aced23d9c470a59d9a68dd5d5ef50f27a0b85a87c55c15fc9ff
+  .reviewcompass/specs/workflow-management/requirements.md: 2a4196113a781fb16ccf811d8dc2978f4a7b4bd1a2536b7bbd9db96fcd4b7ad0
+  .reviewcompass/specs/workflow-management/tasks.md: bdfb2dfbc61d7179a874da2f9eaf9b52d841e0b8a0be28103228733ee5edc0e7
+  docs/notes/2026-06-17-next-json-unique-state-implementation.md: 0a3cb573796f357758ea69fdd9c53eb3973acb2568cbc138f96bba8e36cf2a84
+required_verifiers: &id001
+- gemini-3.5-flash
+completed_verifiers: *id001
+unresolved_substantive_findings: 0
+verifications:
+- verifier: gemini-3.5-flash
+  target_files:
+  - .reviewcompass/specs/workflow-management/design.md
+  - .reviewcompass/specs/workflow-management/requirements.md
+  - .reviewcompass/specs/workflow-management/tasks.md
+  - docs/notes/2026-06-17-next-json-unique-state-implementation.md
+  target_sha256:
+    .reviewcompass/specs/workflow-management/design.md: ded2da39f9396aced23d9c470a59d9a68dd5d5ef50f27a0b85a87c55c15fc9ff
+    .reviewcompass/specs/workflow-management/requirements.md: 2a4196113a781fb16ccf811d8dc2978f4a7b4bd1a2536b7bbd9db96fcd4b7ad0
+    .reviewcompass/specs/workflow-management/tasks.md: bdfb2dfbc61d7179a874da2f9eaf9b52d841e0b8a0be28103228733ee5edc0e7
+    docs/notes/2026-06-17-next-json-unique-state-implementation.md: 0a3cb573796f357758ea69fdd9c53eb3973acb2568cbc138f96bba8e36cf2a84
+review_run:
+  path: .reviewcompass/evidence/review-runs/2026-06-17-postwrite-next-json-unique-state-implementation-r2
+  summary_path: .reviewcompass/evidence/review-runs/2026-06-17-postwrite-next-json-unique-state-implementation-r2/model-result-summary.yaml
+notes: Generated template; verify target_files cover current post-write targets before
+  use.

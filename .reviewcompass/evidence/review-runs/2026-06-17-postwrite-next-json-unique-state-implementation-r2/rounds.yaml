@@ -1,0 +1,26 @@
+round_id: round-1
+purpose: post_write_verification
+invocation_timestamp: '2026-06-16T23:08:46.584323+00:00'
+target_files:
+- path: docs/notes/2026-06-17-next-json-unique-state-implementation.md
+  sha256: 0a3cb573796f357758ea69fdd9c53eb3973acb2568cbc138f96bba8e36cf2a84
+criteria: next_json_unique_state_implementation_note_japanese
+prompt_sha256: d89e9b363c6292f6c02e6d15991e30871b50ee4804da773e5473118df67a5093
+model_results:
+- model_id: gemini-3.5-flash
+  provider: gemini-api
+  role: primary
+  treatment: primary
+  invocation_path: api
+  raw_path: raw/gemini-3.5-flash.round-1.txt
+  raw_sha256: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+  parsed_path: parsed/gemini-3.5-flash.round-1.yaml
+  parsed_sha256: 682c3cfeb907c2f68ae2b17384fc15c10eb85bc1a531b9e6415dfb02665357c8
+  parse_status: parsed
+  formatted_by: parser
+  formatted_by_actor_type: orchestrator
+  formatted_by_actor: run_role.py
+  formatted_at: '2026-06-16T23:08:46.584323+00:00'
+  follow_up_action: triage
+  attempts: 1
+  duration_seconds: 4.412

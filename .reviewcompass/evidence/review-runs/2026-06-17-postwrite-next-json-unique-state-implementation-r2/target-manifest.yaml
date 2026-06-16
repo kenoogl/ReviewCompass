@@ -1,0 +1,4 @@
+run_id: 2026-06-17-postwrite-next-json-unique-state-implementation-r2
+target_files:
+- path: docs/notes/2026-06-17-next-json-unique-state-implementation.md
+  sha256: 0a3cb573796f357758ea69fdd9c53eb3973acb2568cbc138f96bba8e36cf2a84

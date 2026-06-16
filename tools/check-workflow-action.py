@@ -3923,7 +3923,7 @@ def load_in_progress_file(cwd, relative_path):
 def resolve_reopen_required_action(next_step, current_blocker, step_number=None):
   """reopen の next_step/current_blocker から要求アクションを返す"""
   if current_blocker:
-    return "wait_for_human_approval"
+    return "wait_for_human_decision"
   if step_number in (1, "1"):
     return "classify_and_rollback_flags"
   if step_number in (2, "2"):
@@ -4039,6 +4039,7 @@ def _resolve_reopen_next_gate(data, pending_gates, current_blocker):
     return {
       "next_pending_gate": None,
       "next_drafting_gate": None,
+      "active_gate": None,
       "phase": None,
       "stage": None,
       "required_action": None,
@@ -4054,6 +4055,7 @@ def _resolve_reopen_next_gate(data, pending_gates, current_blocker):
     return {
       "next_pending_gate": next_pending_gate,
       "next_drafting_gate": _stage_gate(pending_phase, "drafting"),
+      "active_gate": _stage_gate(pending_phase, "drafting"),
       "phase": pending_phase,
       "stage": "drafting",
       "required_action": "run_reopen_drafting",
@@ -4062,9 +4064,91 @@ def _resolve_reopen_next_gate(data, pending_gates, current_blocker):
   return {
     "next_pending_gate": next_pending_gate,
     "next_drafting_gate": None,
+    "active_gate": next_pending_gate,
     "phase": pending_phase,
     "stage": pending_stage,
     "required_action": "run_reopen_pending_gate",
+  }
+
+
+def _reopen_blocked_by_current_blocker(current_blocker):
+  """current_blocker を next_action の blocked_by に正規化する"""
+  blocked_by = {"type": "current_blocker"}
+  if isinstance(current_blocker, dict):
+    if current_blocker.get("blocker_type"):
+      blocked_by["blocker_type"] = current_blocker.get("blocker_type")
+    if current_blocker.get("gate"):
+      blocked_by["gate"] = current_blocker.get("gate")
+    if current_blocker.get("actor"):
+      blocked_by["actor"] = current_blocker.get("actor")
+    if current_blocker.get("status"):
+      blocked_by["status"] = current_blocker.get("status")
+  return blocked_by
+
+
+def _reopen_commit_stop_point_blocked_by(data):
+  """commit_stop_point を next_action の blocked_by に正規化する"""
+  blocked_by = {
+    "type": "commit_stop_point",
+    "step": data.get("commit_stop_point_step"),
+    "kind": data.get("commit_stop_point_kind"),
+  }
+  if data.get("commit_stop_point_gate"):
+    blocked_by["gate"] = data.get("commit_stop_point_gate")
+  if data.get("commit_stop_point_reason"):
+    blocked_by["reason"] = data.get("commit_stop_point_reason")
+  return blocked_by
+
+
+def select_reopen_next_action_fields(data, pending_gates):
+  """reopen state から唯一の required_action と active gate 情報を選ぶ"""
+  current_blocker = data.get("current_blocker")
+  if current_blocker:
+    return {
+      "required_action": "wait_for_human_decision",
+      "next_pending_gate": None,
+      "next_drafting_gate": None,
+      "active_gate": None,
+      "phase": None,
+      "stage": None,
+      "blocked_by": _reopen_blocked_by_current_blocker(current_blocker),
+    }
+
+  if data.get("commit_stop_point") is True:
+    return {
+      "required_action": "commit_stop_point",
+      "next_pending_gate": None,
+      "next_drafting_gate": None,
+      "active_gate": None,
+      "phase": None,
+      "stage": None,
+      "blocked_by": _reopen_commit_stop_point_blocked_by(data),
+    }
+
+  gate_action = _resolve_reopen_next_gate(data, pending_gates, current_blocker)
+  next_step = data.get("next_step")
+  is_step_three = (
+    data.get("step_number") in (3, "3")
+    or (isinstance(next_step, str) and "第3過程" in next_step)
+  )
+  if is_step_three and gate_action["required_action"]:
+    return {
+      **gate_action,
+      "blocked_by": None,
+    }
+
+  return {
+    "required_action": resolve_reopen_required_action(
+      data.get("next_step"),
+      current_blocker,
+      data.get("step_number"),
+    ),
+    "next_pending_gate": None,
+    "next_drafting_gate": None,
+    "active_gate": None,
+    "phase": None,
+    "stage": None,
+    "blocked_by": None,
   }
 
 
@@ -4073,17 +4157,28 @@ def build_in_progress_next_action(cwd, relative_path):
   data = load_in_progress_file(cwd, relative_path)
   process_id = data.get("process_id")
   if process_id == "maintenance":
+    maintenance_action = data.get("required_action", "continue_maintenance")
     return {
       "kind": "maintenance_in_progress",
       "file": relative_path,
       "process_id": process_id,
       "title": data.get("title"),
-      "required_action": data.get("required_action", "continue_maintenance"),
+      "required_action": "run_maintenance",
+      "maintenance_action": maintenance_action,
       "blocked_normal_workflow": data.get("blocked_normal_workflow", True),
       "mainline_blocked_by": data.get("mainline_blocked_by"),
       "allowed_scope": data.get("allowed_scope", []),
       "allowed_files": data.get("allowed_files", []),
       "completion_conditions": data.get("completion_conditions", []),
+      "action_parameters": {
+        "maintenance_action": maintenance_action,
+        "allowed_scope": data.get("allowed_scope", []),
+        "allowed_files": data.get("allowed_files", []),
+        "completion_conditions": data.get("completion_conditions", []),
+        "active_stack_frame_id": relative_path,
+        "parent_frame_id": data.get("parent_frame_id"),
+      },
+      "active_gate": None,
       "feature": None,
       "phase": None,
       "stage": None,
@@ -4093,43 +4188,32 @@ def build_in_progress_next_action(cwd, relative_path):
       ),
     }
   if process_id == "reopen-procedure":
-    next_step = data.get("next_step")
-    current_blocker = data.get("current_blocker")
     pending_gates = data.get("pending_gates", [])
     if pending_gates is None:
       pending_gates = []
-    gate_action = _resolve_reopen_next_gate(
-      data,
-      pending_gates,
-      current_blocker,
-    )
-    required_action = resolve_reopen_required_action(
-      next_step,
-      current_blocker,
-      data.get("step_number"),
-    )
-    if gate_action["required_action"]:
-      required_action = gate_action["required_action"]
+    action_fields = select_reopen_next_action_fields(data, pending_gates)
     feature_scope = reopen_feature_scope_from_data(data)
     return {
       "kind": "reopen_in_progress",
       "file": relative_path,
       "process_id": process_id,
-      "next_step": next_step,
+      "next_step": data.get("next_step"),
       "step_number": data.get("step_number"),
       "completed_steps": data.get("completed_steps", []),
       "pending_gates": pending_gates,
-      "next_pending_gate": gate_action["next_pending_gate"],
-      "next_drafting_gate": gate_action["next_drafting_gate"],
-      "current_blocker": current_blocker,
-      "required_action": required_action,
+      "next_pending_gate": action_fields["next_pending_gate"],
+      "next_drafting_gate": action_fields["next_drafting_gate"],
+      "active_gate": action_fields["active_gate"],
+      "current_blocker": data.get("current_blocker"),
+      "required_action": action_fields["required_action"],
+      "blocked_by": action_fields["blocked_by"],
       "feature": feature_scope["required_feature_scope"],
       "required_feature_scope": feature_scope["required_feature_scope"],
       "direct_features": feature_scope["direct_features"],
       "indirect_features": feature_scope["indirect_features"],
       "feature_impact_scope_basis": feature_scope["feature_impact_scope_basis"],
-      "phase": gate_action["phase"],
-      "stage": gate_action["stage"],
+      "phase": action_fields["phase"],
+      "stage": action_fields["stage"],
       "reason": "reopen 手続きの進行中状態ファイルがあります",
     }
   return {

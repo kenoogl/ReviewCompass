@@ -2468,10 +2468,6 @@ class NextNavigationTests(unittest.TestCase):
     )
     self.assertEqual(data["next_action"]["process_id"], "maintenance")
     self.assertEqual(data["next_action"]["title"], "Codex adapter migration")
-    self.assertEqual(
-      data["next_action"]["required_action"],
-      "inspect_remaining_claude_assumptions",
-    )
     self.assertTrue(data["next_action"]["blocked_normal_workflow"])
     self.assertEqual(
       data["next_action"]["mainline_blocked_by"],
@@ -2488,6 +2484,15 @@ class NextNavigationTests(unittest.TestCase):
     self.assertEqual(
       data["next_action"]["completion_conditions"],
       ["Codex 新規セッションで TODO から開始できる"],
+    )
+    self.assertEqual(data["next_action"]["required_action"], "run_maintenance")
+    self.assertIsNone(data["next_action"]["active_gate"])
+    self.assertIsNone(data["next_action"]["feature"])
+    self.assertIsNone(data["next_action"]["phase"])
+    self.assertIsNone(data["next_action"]["stage"])
+    self.assertEqual(
+      data["next_action"]["maintenance_action"],
+      "inspect_remaining_claude_assumptions",
     )
 
   def test_next_prioritizes_post_write_over_maintenance(self):
@@ -2593,6 +2598,41 @@ class NextNavigationTests(unittest.TestCase):
     self.assertEqual(data["next_action"]["phase"], "requirements")
     self.assertEqual(data["next_action"]["stage"], "alignment")
 
+  def test_next_reopen_commit_stop_point_blocks_pending_gate(self):
+    """reopen 停止点では pending_gates が残っても commit_stop_point だけを返す"""
+    cwd = Path(self.tmpdir)
+    _write_specs_for_next(cwd, {})
+    in_progress_dir = cwd / "stages" / "in-progress"
+    in_progress_dir.mkdir(parents=True)
+    (in_progress_dir / "reopen-procedure-2026-06-16.yaml").write_text(
+      "process_id: reopen-procedure\n"
+      "next_step: 第2過程：停止点コミット\n"
+      "step_number: 2\n"
+      "pending_gates:\n"
+      "  - stages/requirements.yaml#alignment\n"
+      "  - stages/requirements.yaml#approval\n"
+      "commit_stop_point: true\n"
+      "commit_stop_point_step: 2\n"
+      "commit_stop_point_kind: canonical_update_complete\n"
+      "commit_stop_point_reason: 第2過程の正本修正完了\n"
+      "current_blocker: null\n",
+      encoding="utf-8",
+    )
+
+    result = run_script(["next", "--json"], cwd=cwd)
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 0, result.stderr)
+    data = json.loads(result.stdout)
+    action = data["next_action"]
+    self.assertEqual(action["kind"], "reopen_in_progress")
+    self.assertEqual(action["required_action"], "commit_stop_point")
+    self.assertIsNone(action["active_gate"])
+    self.assertIsNone(action["next_pending_gate"])
+    self.assertIsNone(action["phase"])
+    self.assertIsNone(action["stage"])
+    self.assertEqual(action["blocked_by"]["type"], "commit_stop_point")
+
   def test_next_reopen_reports_first_pending_gate_as_unique_task(self):
     """reopen 第3過程は drafting 完了後に pending_gates 先頭を次タスクとして返す"""
     cwd = Path(self.tmpdir)
@@ -2630,6 +2670,11 @@ class NextNavigationTests(unittest.TestCase):
       data["next_action"]["required_action"],
       "run_reopen_pending_gate",
     )
+    self.assertEqual(
+      data["next_action"]["active_gate"],
+      "stages/requirements.yaml#triad-review",
+    )
+    self.assertIsNone(data["next_action"]["blocked_by"])
 
   def test_next_reopen_requires_drafting_before_triad_review(self):
     """reopen 第3過程は triad-review の前に phase drafting を一意に返す"""
@@ -2660,6 +2705,7 @@ class NextNavigationTests(unittest.TestCase):
     self.assertEqual(action["required_action"], "run_reopen_drafting")
     self.assertEqual(action["next_pending_gate"], "stages/design.yaml#triad-review")
     self.assertEqual(action["next_drafting_gate"], "stages/design.yaml#drafting")
+    self.assertEqual(action["active_gate"], "stages/design.yaml#drafting")
     self.assertEqual(action["phase"], "design")
     self.assertEqual(action["stage"], "drafting")
     required_inputs = {
@@ -2764,7 +2810,12 @@ class NextNavigationTests(unittest.TestCase):
     self.assertEqual(result.returncode, 0, result.stderr)
     data = json.loads(result.stdout)
     self.assertEqual(data["next_action"]["kind"], "reopen_in_progress")
-    self.assertEqual(data["next_action"]["required_action"], "wait_for_human_approval")
+    self.assertEqual(data["next_action"]["required_action"], "wait_for_human_decision")
+    self.assertIsNone(data["next_action"]["active_gate"])
+    self.assertIsNone(data["next_action"]["next_pending_gate"])
+    self.assertIsNone(data["next_action"]["phase"])
+    self.assertIsNone(data["next_action"]["stage"])
+    self.assertEqual(data["next_action"]["blocked_by"]["type"], "current_blocker")
     self.assertEqual(
       data["next_action"]["current_blocker"],
       "stages/requirements.yaml#approval（人間承認待ち）",
@@ -2799,7 +2850,12 @@ class NextNavigationTests(unittest.TestCase):
     data = json.loads(result.stdout)
     action = data["next_action"]
     self.assertEqual(action["kind"], "reopen_in_progress")
-    self.assertEqual(action["required_action"], "wait_for_human_approval")
+    self.assertEqual(action["required_action"], "wait_for_human_decision")
+    self.assertIsNone(action["active_gate"])
+    self.assertIsNone(action["next_pending_gate"])
+    self.assertIsNone(action["phase"])
+    self.assertIsNone(action["stage"])
+    self.assertEqual(action["blocked_by"]["type"], "current_blocker")
     self.assertEqual(
       action["current_blocker"]["gate"],
       "stages/requirements.yaml#approval",
