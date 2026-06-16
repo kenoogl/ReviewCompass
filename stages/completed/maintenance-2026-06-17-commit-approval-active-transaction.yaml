@@ -1,0 +1,30 @@
+process_id: maintenance
+started_at: '2026-06-17T00:00:00+09:00'
+completed_at: '2026-06-17T00:00:00+09:00'
+trigger: commit approval active transaction handling broke after git execution failure and stale runtime records
+mainline_blocked_by: D-003 reopen work was rolled back because commit/reopen/next state work became mixed
+allowed_scope:
+- workflow-management SDD for commit approval active transaction
+- commit approval checker and guarded commit implementation
+- focused tests for stale records and git execution failure retry
+allowed_files:
+- .reviewcompass/specs/workflow-management/requirements.md
+- .reviewcompass/specs/workflow-management/design.md
+- .reviewcompass/specs/workflow-management/tasks.md
+- tools/check_workflow_action/commit_approval.py
+- tests/tools/test_guarded_git_commit.py
+- stages/completed/maintenance-2026-06-17-commit-approval-active-transaction.yaml
+rollback_reference: /private/tmp/reviewcompass-d003-rollback-20260617/README.md
+completion_conditions:
+- SDD records that commit approval is an active transaction for the current staged exact index
+- stale consumed/expired/invalidated/digest-mismatch runtime records do not block challenge creation
+- git commit execution failure after precheck OK does not consume or invalidate approval records
+- tests cover the above behavior and pass
+changes:
+- commit approval record creation now reuses an existing valid approval for the same nonce and staged exact index instead of rewriting it
+- commit execution delegation creation now reuses an existing valid delegation for the same nonce, approval digest, staged exact index, and normalized instruction
+- guarded commit retry after git execution failure can use the same active transaction without breaking staged_content_approval_digest
+verification:
+- .venv/bin/python3 -m unittest tests.tools.test_guarded_git_commit tests.tools.test_check_workflow_action.CommitExitCodeTests
+- git diff --check
+current_status: completed

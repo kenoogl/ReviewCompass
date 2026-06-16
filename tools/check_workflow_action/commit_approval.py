@@ -418,6 +418,7 @@ def delegate_execution(cwd, nonce, source_text):
   if source_omission_reason is not None or findings:
     raise ValueError("source text の redaction に失敗したため実行代行承認を保存しません")
 
+  _, approval = _validate_ready_for_delegation(cwd, nonce)
   existing_path = delegation_path(cwd)
   if existing_path.exists():
     existing = _load_json_object(existing_path, "commit execution delegation")
@@ -427,9 +428,16 @@ def delegate_execution(cwd, nonce, source_text):
       and existing.get("invalidated") is not True
       and (expires_at is None or expires_at > utc_now())
     ):
+      existing_errors = validate_execution_delegation(cwd, approval)
+      if not existing_errors and existing.get("explicit_instruction") == redacted:
+        return {
+          "status": "delegated",
+          "delegation_path": DEFAULT_COMMIT_EXECUTION_DELEGATION_PATH,
+          "target_digest": existing["target_digest"],
+          "staged_file_set_digest": existing["staged_file_set_digest"],
+        }
       raise ValueError("未消費の commit-execution-delegation record が既にあります")
 
-  _, approval = _validate_ready_for_delegation(cwd, nonce)
   current = canonical_target(cwd)
   now = utc_now()
   record_data = {
@@ -519,6 +527,18 @@ def record(cwd, nonce, source_text=None, no_source_text=False):
   ]:
     raise ValueError("challenge target_files が staged exact index と一致しません")
 
+  path = approval_path(cwd)
+  if path.exists():
+    existing = _load_json_object(path, "commit approval record")
+    if existing.get("nonce") == nonce and not validate(cwd, existing):
+      return {
+        "status": "recorded",
+        "approval_path": DEFAULT_COMMIT_APPROVAL_PATH,
+        "target_files": existing["target_files"],
+        "target_digest": existing["target_digest"],
+        "source_omission_reason": existing.get("source_omission_reason"),
+      }
+
   redacted_source = None
   source_omission_reason = None
   residual_findings = []
@@ -564,7 +584,6 @@ def record(cwd, nonce, source_text=None, no_source_text=False):
   if residual_findings:
     approval["redaction_findings"] = residual_findings
 
-  path = approval_path(cwd)
   path.parent.mkdir(parents=True, exist_ok=True)
   path.write_text(
     json.dumps(approval, ensure_ascii=False, indent=2) + "\n",

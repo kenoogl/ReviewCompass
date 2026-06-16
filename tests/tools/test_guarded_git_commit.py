@@ -1,7 +1,9 @@
 """tools/guarded-git-commit.py の単体テスト"""
 
+import io
 import json
 import importlib.util
+import os
 import shutil
 import subprocess
 import sys
@@ -185,6 +187,87 @@ class GuardedGitCommitTests(unittest.TestCase):
     self.assertTrue(approval["consumed"])
     self.assertTrue(delegation["consumed"])
     self.assertEqual(delegation["explicit_instruction"], "承認")
+
+  def test_guarded_commit_line_approval_retry_reuses_active_transaction(self):
+    """commit 実行失敗後の同一 nonce 再実行は active transaction を再利用する"""
+    _stage_file(self.tmpdir, "notes.md", "# retryable commit")
+    challenge = _prepare_commit_approval(self.tmpdir)
+    guarded = load_guarded_module()
+    original_run_git_commit = guarded.run_git_commit
+    original_stdin = guarded.sys.stdin
+    original_cwd = os.getcwd()
+    calls = {"count": 0}
+
+    def fail_then_succeed(cwd, messages):
+      calls["count"] += 1
+      if calls["count"] == 1:
+        return subprocess.CompletedProcess(
+          ["git", "commit"],
+          128,
+          stdout="",
+          stderr="fatal: Unable to create '.git/index.lock': Operation not permitted\n",
+        )
+      return original_run_git_commit(cwd, messages)
+
+    guarded.run_git_commit = fail_then_succeed
+    try:
+      os.chdir(self.tmpdir)
+      guarded.sys.stdin = io.TextIOWrapper(
+        io.BytesIO("承認\n".encode("utf-8")),
+        encoding="utf-8",
+      )
+      first = guarded.main([
+        "-m", "retryable guarded commit",
+        "--rationale", "利用者が提示済み nonce と staged 内容を承認",
+        "--approval-nonce", challenge["nonce"],
+        "--approval-source-text-line-stdin",
+      ])
+      approval_path = (
+        Path(self.tmpdir)
+        / ".reviewcompass"
+        / "runtime"
+        / "approvals"
+        / "commit-approval.json"
+      )
+      challenge_path = (
+        Path(self.tmpdir)
+        / ".reviewcompass"
+        / "runtime"
+        / "approvals"
+        / "commit-approval-challenge.json"
+      )
+      approval_after_failure = json.loads(
+        approval_path.read_text(encoding="utf-8")
+      )
+      challenge_after_failure = json.loads(
+        challenge_path.read_text(encoding="utf-8")
+      )
+      delegation_after_failure = _read_commit_execution_delegation(self.tmpdir)
+
+      guarded.sys.stdin = io.TextIOWrapper(
+        io.BytesIO("承認\n".encode("utf-8")),
+        encoding="utf-8",
+      )
+      second = guarded.main([
+        "-m", "retryable guarded commit",
+        "--rationale", "利用者が提示済み nonce と staged 内容を承認",
+        "--approval-nonce", challenge["nonce"],
+        "--approval-source-text-line-stdin",
+      ])
+    finally:
+      os.chdir(original_cwd)
+      guarded.run_git_commit = original_run_git_commit
+      guarded.sys.stdin = original_stdin
+
+    self.assertEqual(first, 128)
+    self.assertFalse(approval_after_failure["consumed"])
+    self.assertFalse(approval_after_failure["invalidated"])
+    self.assertFalse(challenge_after_failure["consumed"])
+    self.assertFalse(challenge_after_failure["invalidated"])
+    self.assertFalse(delegation_after_failure["consumed"])
+    self.assertFalse(delegation_after_failure["invalidated"])
+    self.assertEqual(second, 0)
+    self.assertEqual(latest_commit_subject(self.tmpdir), "retryable guarded commit")
 
   def test_guarded_commit_consumes_nonce_challenge_before_approval(self):
     """nonce 承認は challenge を先に消費し、再利用可能な challenge を残さない"""
