@@ -1,0 +1,13 @@
+findings:
+  - severity: INFO
+    target_location: "docs/notes/2026-06-16-workflow-recovery-smell-inventory.md (全体)"
+    description: "棚卸しメモとして、主要3件と追加候補(A/B群)、共通構造、既存防止、優先度、追跡方針が一貫して整理されており、各項目に対象パス・問題・後続対応案・完了条件が揃っている。"
+    rationale: "post_write_verification 観点での workflow recovery smell inventory として、再発入口の網羅と止め方の設計意図が追跡可能な形で記録されており、構造的な欠落は認められない。"
+  - severity: INFO
+    target_location: "### 3 正式CLI不足 / 「再利用可能な正式証跡へ昇格しない」段落"
+    description: "runtime承認レコードへ execution_delegation を手作業追記したワークアラウンドについて、本来は fail-closed すべきだった旨と、未消費レコードは正式CLI整備まで commit 根拠に使わず破棄・無効化する方針を明記している。"
+    rationale: "不可逆操作(commit)に関わる承認証跡の扱いを、回復ではなく停止すべきだったと正直に記録し、残存レコードの後始末方針まで示している点は post-write 検証として妥当。"
+  - severity: INFO
+    target_location: "## 追跡方針 / ## 期待する完了条件"
+    description: "本メモが実装正本ではなく棚卸しである旨を明示し、後続対応を TODO_NEXT_SESSION.md 等へ移して1件ずつ SDD 正規手順で扱う方針が記載されている。"
+    rationale: "棚卸し文書がそのまま実装根拠と誤読されることを防ぎ、生成前止めと最後の保険(guard/post-write)を維持する位置づけが明確で、後続作業の境界が適切に分離されている。"

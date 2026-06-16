@@ -1,0 +1,10 @@
+findings:
+  - severity: WARN
+    target_location: "docs/notes/2026-06-16-workflow-recovery-smell-inventory.md / B-2. triage decision の部分書き込み"
+    description: "部分書き込みの懸念として triage.yaml と model-result-summary.yaml のみを挙げているが、正本判定前に他の関連成果物や副作用が発生しない前提が明示されていない。"
+    rationale: "post-write verification の棚卸しとしては、回復漏れの入口を網羅的に洗うことが重要である。この節では rollback/atomic 化の方針を述べている一方、影響範囲の完全性が記述上確認できず、修正時に見落としが残るリスクがある。"
+
+  - severity: INFO
+    target_location: "docs/notes/2026-06-16-workflow-recovery-smell-inventory.md / 後続対応案"
+    description: "多数の対策候補が列挙されているが、各項目に対応する実装正本や追跡先 ID がまだ紐付いていない。"
+    rationale: "文書末尾で TODO_NEXT_SESSION 等へ移して追跡するとしているため矛盾ではないが、post_write_verification 観点では棚卸し結果が後続ワークフローへ確実に回収される導線が明示されていると回復漏れを防ぎやすい。"

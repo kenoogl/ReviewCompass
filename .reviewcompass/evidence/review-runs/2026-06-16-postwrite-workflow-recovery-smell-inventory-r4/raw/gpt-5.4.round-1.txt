@@ -1,0 +1,10 @@
+findings:
+  - severity: WARN
+    target_location: "docs/notes/2026-06-16-workflow-recovery-smell-inventory.md > B-7. 正本コマンド呼び出し前の短縮名・記憶依存"
+    description: "短縮名・記憶依存の問題を smell として挙げているが、他項目と比べて『回復経路』『実害』『再発条件』の記述粒度が弱く、棚卸し基準がやや不均一。"
+    rationale: "この文書は『手戻りで通過した作業導線の棚卸し』として、各入口がどのように生成前防止に失敗し、どの検査や気づきで回復したかを揃えて残すのが目的に見える。B-7 は command not found に留まり成果物破損がなかった点は書かれているが、どの時点で何が回復機構として働いたか、どの種の誤実行が将来の正本汚染につながるかが他節ほど具体化されておらず、後続の優先順位付けや横断分析で比較しづらい。"
+
+  - severity: INFO
+    target_location: "docs/notes/2026-06-16-workflow-recovery-smell-inventory.md > 追跡方針 / 追加分の優先度 / 期待する完了条件"
+    description: "追跡先を『次作業リストまたは TODO_NEXT_SESSION.md』としているが、具体的な転記先や識別子は未記載。"
+    rationale: "ポストライト検証の観点では、このメモ自体は実装正本でなく棚卸しだと明示されており妥当。ただし後続で回収漏れを防ぐには、少なくとも転記先の確定や項目識別子があると、smell inventory から実装タスクへの回復導線がより明確になる。"

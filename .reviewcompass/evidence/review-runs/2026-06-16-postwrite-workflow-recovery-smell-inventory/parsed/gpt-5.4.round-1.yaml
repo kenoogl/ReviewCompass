@@ -1,0 +1,23 @@
+role: primary
+provider: openai-api
+model: gpt-5.4
+attempts: 1
+duration_seconds: 8.405
+findings:
+- severity: WARN
+  target_location: 'docs/notes/2026-06-16-workflow-recovery-smell-inventory.md ::
+    3. commit 承認と LLM 実行代行承認の正式経路不足'
+  description: runtime JSON 手編集を『今回の commit では…追記するワークアラウンドが発生した』と記録している一方で、その場での運用判断として停止すべきだった点が弱く、禁止方針が後段の対応案に留まっている。
+  rationale: post_write_verification の観点では、回復手段として許容してしまった非正式経路を明確に『その時点で止まるべきだった』と整理しておかないと、同種の手編集が再び実務上の許容策として読まれる。特に承認・証跡系は、回復手順の記録だけでなく、どの時点で
+    fail-closed すべきだったかの明示が重要。
+- severity: INFO
+  target_location: 'docs/notes/2026-06-16-workflow-recovery-smell-inventory.md ::
+    追加で気になる点 / 1. 不要な review-run / manifest を作ってから削除した'
+  description: 不要な成果物を『作成し、後で削除した』事象は挙げているが、削除前にどの証跡が一時的に存在したか、どこまで外部参照され得たかの棚卸しは含まれていない。
+  rationale: smell inventory としては問題提起自体は十分だが、post-write verification 後の検証記録としては、一時生成物が
+    review 証跡の正本性に与えた影響範囲まで残しておくと、再発時のリスク評価や cleanup 手順の設計に役立つ。
+- severity: INFO
+  target_location: 'docs/notes/2026-06-16-workflow-recovery-smell-inventory.md ::
+    全体構成'
+  description: 主要 3 件、追加で気になる点、再精査の追加候補が一つの文書に統合されているが、各項目について『実際に今回発生した事象』と『将来起こり得る類似入口』の区別が明示ラベル化されていない。
+  rationale: 文面上は多くが読み分け可能だが、post_write_verification の事後検証としては、発生済み事象と潜在リスクを明確に分離した方が、再発防止の優先順位付けや後続タスク化の際に解釈ぶれを減らせる。

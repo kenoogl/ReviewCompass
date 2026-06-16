@@ -1,0 +1,17 @@
+findings:
+  - severity: INFO
+    target_location: "docs/notes/2026-06-16-workflow-recovery-smell-inventory.md (全体)"
+    description: "棚卸しメモとして、今回の手戻り3件と追加候補が事実ベースで整理されており、各項目に背景・問題・後続対応案・完了条件が一貫した構造で記述されている。"
+    rationale: "post-write verification 観点で、文書の主張と記録された事実（commit guard による除外、staged/unstaged の取り違え、execution_delegation の意図された設計など）が整合しており、誇張や未確認の断定が見られない。"
+  - severity: INFO
+    target_location: "セクション「3. commit 承認と LLM 実行代行承認の正式経路不足」"
+    description: "runtime 承認レコードへの手作業追記を『回復できた処理ではなく、本来 fail-closed すべきだった』と明記し、使用済み一時レコードを正式証跡へ昇格させない方針を述べている。"
+    rationale: "ワークアラウンドを成功事例として正当化せず、安全側の扱いとして記録している点は、証跡正本性の観点で適切。post-write 検証で否定すべき矛盾は見当たらない。"
+  - severity: INFO
+    target_location: "セクション「既に一定の防止がある箇所」"
+    description: "既存の fail-closed 機構（make-post-write-manifest.py の生成後判定、commit-approval prepare/record の nonce/digest 束縛等）を列挙し、本メモの課題が『生成後検証は存在するが生成前 preflight が弱い』点に限定されることを明示している。"
+    rationale: "既存防止と未対応領域を切り分けており、重複対応や既存機能の無視を避けている。記録された設計事実と整合する。"
+  - severity: WARN
+    target_location: "セクション「追加で気になる点」A-4 および「再精査で見つかった追加候補」B-1〜B-7"
+    description: "B-1〜B-7 の各対象ツール（run_review.py、make-triage-decision.py、make-proxy-approval.py、exporter.py 等）の挙動は『〜し得る』『〜余地がある』という推定表現が多く、実際にコードを確認して挙動を検証した形跡が文中で明示されていない。"
+    rationale: "A-4 で『承認・不可逆操作・証跡に関する説明は断定前に既存テストと正本文書を確認すべき』と自ら戒めている。B 系候補が未検証の推定であれば、後続実装時に実コード/テスト確認を前提とする旨を追記しないと、A-4 と同じ早すぎる説明の轍を踏むリスクがある。棚卸しメモとしては推定で許容されるが、追跡方針側で検証ステップを担保する必要がある。"

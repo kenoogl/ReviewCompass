@@ -1,0 +1,101 @@
+run_id: 2026-06-16-postwrite-workflow-recovery-smell-inventory-r3
+triage_status: decided
+generated_at: '2026-06-15T21:26:58.968809+00:00'
+decision_actor: null
+decision_actor_type: human
+items:
+- finding_id: 2026-06-16-postwrite-workflow-recovery-smell-inventory-r3-gpt-5.4-primary-001
+  run_id: 2026-06-16-postwrite-workflow-recovery-smell-inventory-r3
+  source_model: gpt-5.4
+  source_round: round-1
+  source_raw_path: raw/gpt-5.4.round-1.txt
+  source_parsed_path: parsed/gpt-5.4.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: docs/notes/2026-06-16-workflow-recovery-smell-inventory.md / B-2.
+    triage decision の部分書き込み
+  plain_language_summary: 部分書き込みの懸念として triage.yaml と model-result-summary.yaml のみを挙げているが、正本判定前に他の関連成果物や副作用が発生しない前提が明示されていない。
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: user
+  decision_actor_type: agent
+  decision_at: '2026-06-15T21:28:35.201977+00:00'
+  decision_reason: 利用者指示に基づき反映。B-2 の監査対象に triage、model-result-summary、関連 summary、manifest
+    生成有無、approval record 参照を含める旨を追記し、途中失敗で残り得る副作用を限定してから修正する方針を明示した。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-16-postwrite-workflow-recovery-smell-inventory-r3-gpt-5.4-primary-002
+  run_id: 2026-06-16-postwrite-workflow-recovery-smell-inventory-r3
+  source_model: gpt-5.4
+  source_round: round-1
+  source_raw_path: raw/gpt-5.4.round-1.txt
+  source_parsed_path: parsed/gpt-5.4.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: docs/notes/2026-06-16-workflow-recovery-smell-inventory.md / 後続対応案
+  plain_language_summary: 多数の対策候補が列挙されているが、各項目に対応する実装正本や追跡先 ID がまだ紐付いていない。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: user
+  decision_actor_type: agent
+  decision_at: '2026-06-15T21:28:42.329504+00:00'
+  decision_reason: 利用者指示に基づき leave-as-is。本メモは棚卸しであり、追跡先 ID の付与は TODO_NEXT_SESSION
+    等へ移す後続作業で行う。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-16-postwrite-workflow-recovery-smell-inventory-r3-claude-opus-4-8-adversarial-001
+  run_id: 2026-06-16-postwrite-workflow-recovery-smell-inventory-r3
+  source_model: claude-opus-4-8
+  source_round: round-1
+  source_raw_path: raw/claude-opus-4-8.round-1.txt
+  source_parsed_path: parsed/claude-opus-4-8.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: docs/notes/2026-06-16-workflow-recovery-smell-inventory.md (全体)
+  plain_language_summary: 棚卸しメモとして、主要3件と追加候補(A/B群)、共通構造、既存防止、優先度、追跡方針が一貫して整理されており、各項目に対象パス・問題・後続対応案・完了条件が揃っている。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: user
+  decision_actor_type: agent
+  decision_at: '2026-06-15T21:28:49.830320+00:00'
+  decision_reason: 利用者指示に基づき leave-as-is。文書全体の整合性に関する肯定的確認であり、本文修正は不要。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-16-postwrite-workflow-recovery-smell-inventory-r3-claude-opus-4-8-adversarial-002
+  run_id: 2026-06-16-postwrite-workflow-recovery-smell-inventory-r3
+  source_model: claude-opus-4-8
+  source_round: round-1
+  source_raw_path: raw/claude-opus-4-8.round-1.txt
+  source_parsed_path: parsed/claude-opus-4-8.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: '### 3 正式CLI不足 / 「再利用可能な正式証跡へ昇格しない」段落'
+  plain_language_summary: runtime承認レコードへ execution_delegation を手作業追記したワークアラウンドについて、本来は
+    fail-closed すべきだった旨と、未消費レコードは正式CLI整備まで commit 根拠に使わず破棄・無効化する方針を明記している。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: user
+  decision_actor_type: agent
+  decision_at: '2026-06-15T21:28:56.336256+00:00'
+  decision_reason: 利用者指示に基づき leave-as-is。runtime 承認レコードの扱いが明確化されているという肯定的確認であり、本文修正は不要。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-16-postwrite-workflow-recovery-smell-inventory-r3-claude-opus-4-8-adversarial-003
+  run_id: 2026-06-16-postwrite-workflow-recovery-smell-inventory-r3
+  source_model: claude-opus-4-8
+  source_round: round-1
+  source_raw_path: raw/claude-opus-4-8.round-1.txt
+  source_parsed_path: parsed/claude-opus-4-8.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: '## 追跡方針 / ## 期待する完了条件'
+  plain_language_summary: 本メモが実装正本ではなく棚卸しである旨を明示し、後続対応を TODO_NEXT_SESSION.md 等へ移して1件ずつ
+    SDD 正規手順で扱う方針が記載されている。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: user
+  decision_actor_type: agent
+  decision_at: '2026-06-15T21:29:05.165684+00:00'
+  decision_reason: 利用者指示に基づき leave-as-is。本メモの追跡方針が明確であるという肯定的確認であり、本文修正は不要。
+  applied_files: []
+  superseded_by: null

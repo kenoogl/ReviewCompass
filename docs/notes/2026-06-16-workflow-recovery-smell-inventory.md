@@ -1,0 +1,550 @@
+# 手戻りで通過した作業導線の棚卸し
+
+日付：2026-06-16
+
+## 背景
+
+2026-06-16 の Codex TODO hook 対応では、最終的に guard、post-write review、
+手動修正によりコミットまで到達した。一方で、作業途中に複数の手戻りが発生した。
+
+これらは個別のミスに見えるが、共通して「最初から間違えにくい導線」ではなく、
+後段の検査や人間的な気づきで回復している。
+
+このメモは、当初ばらばらに記録した次の 3 件を統合し、追加調査で見つかった
+類似入口もあわせて棚卸しする。
+
+- 現セッション正式記録の生成前防止ギャップ
+- post-write review 差分 bundle の取得元選択ミス
+- commit 承認と LLM 実行代行承認の設計ギャップ
+
+## 今回見つかった主要 3 件
+
+### 1. 現セッション正式記録の生成前防止不足
+
+Codex の TODO 更新 hook は、現セッションを正式な 2 層セッション記録へ直接書かず、
+`.reviewcompass/runtime/session-record-drafts/` の下書きへ保存する設計へ変更した。
+正式な 2 層記録は、セッション終了後に `tools/session-record-promote-draft.py` で
+昇格する。
+
+この設計により、通常の TODO 更新 hook 経路では「今まさに進行中の会話」を
+`.reviewcompass/evidence/sessions/` と `docs/sessions/` へ直接作らない。
+
+しかしコミット前の作業中に、現セッションがまだ継続中であるにもかかわらず、
+手動操作により正式な 2 層セッション記録を再生成してしまった。
+
+生成された 2 件は commit guard により「元 rollout が生成時から変化している」、
+すなわち「進行中セッション記録」と判定され、コミット対象から除外した。
+最終的にコミットへ混入しなかったため、commit guard は最後の検出として機能した。
+一方で、正式記録を「作ってしまうこと」自体は生成前に防げていなかった。
+
+残る穴：
+
+- hook 経路は現セッションを draft にだけ書く
+- しかし手動 backfill や再生成経路では、誤って現セッションを正式 2 層記録として作れる
+- commit guard は混入を止めるが、生成自体は止めない
+- current session id が取得できない環境で、推測や一括処理に戻ると再発し得る
+
+後続対応案：
+
+1. 正式 2 層記録を書ける入口を棚卸しする。
+   - `tools/session-record-backfill.py`
+   - `tools/session-record-promote-draft.py`
+   - hook 経路
+   - bulk / historical import 経路
+   - テスト helper や将来追加される capture helper
+2. current session 判定を共通関数へ寄せる。
+   - 各 CLI が個別に似た判定を書くのではなく、同じ guard を使う
+   - `session_id` が current と一致する場合、正式 2 層出力を拒否する
+3. current session id が取得できない場合は fail-closed にする。
+   - current を確認できないなら、正式昇格しない
+   - 終了済み rollout を明示指定した backfill だけに戻す
+4. 正式出力できる経路を限定する。
+   - 現セッションは runtime draft のみ
+   - 終了済み draft の正式化は promote helper
+   - backfill は終了済みセッション専用
+5. commit guard は維持する。
+   - source hash の変化検出により、生成前防止をすり抜けた場合もコミット混入を止める
+
+期待する完了条件：
+
+- current session を正式 2 層記録へ生成しようとするテストが失敗から始まる
+- 共通 guard 導入後、すべての正式出力入口で current session が拒否される
+- current session id が不明な場合に、正式出力が fail-closed する
+- 終了済みセッションの明示 backfill と draft promote は引き続き通る
+- commit guard の進行中セッション検出は削除せず、最後の保険として残る
+
+### 2. post-write review 差分 bundle の取得元選択ミス
+
+post-write review では、変更内容をレビュー対象へ渡すために差分 bundle を作る。
+この bundle は、実際にレビューしたい変更範囲と一致している必要がある。
+
+Git では差分の置き場所が分かれている。
+
+- `git diff` は未 staged の差分を見る
+- `git diff --cached` は staged 済みの差分を見る
+
+今回、変更はすでに `git add` 済みで、レビューすべき差分は staged 側にあった。
+しかし、差分 bundle を作る際に `git diff` を使ったため、未 staged 側の差分だけを
+見に行ってしまった。
+
+結果として、review 用 bundle が空または空に近い内容になった。その後、差分が
+staged 側にあることに気づき、`git diff --cached` で bundle を作り直して review を
+再実行した。
+
+直接の要因は、bundle 作成前に `git status --short` 等で差分の所在を明示確認せず、
+習慣的に `git diff` を選んだこと。構造的な要因は、post-write review bundle 作成が
+まだ手作業に寄っており、次の判定が機械化されていなかったことである。
+
+- staged 差分があるか
+- unstaged 差分があるか
+- 両方ある場合に自動で混ぜてよいか
+- どちらも無い場合に空 bundle を作らず止まれるか
+- 作成した bundle が review manifest の対象と一致しているか
+
+後続対応案：
+
+1. `git diff --cached --name-only` で staged 差分を確認する。
+2. `git diff --name-only` で unstaged 差分を確認する。
+3. 状態に応じて分岐する。
+   - staged のみ：`git diff --cached` で bundle を作る
+   - unstaged のみ：`git diff` で bundle を作る
+   - staged と unstaged の両方あり：fail-closed し、明示指定を要求する
+   - どちらも無し：fail し、空 bundle を作らない
+4. bundle 作成後、空でないことを検査する。
+5. review manifest の target と bundle の対象ファイルが一致するか検査する。
+
+期待する完了条件：
+
+- staged のみの変更では、自動的に `git diff --cached` が使われる
+- unstaged のみの変更では、自動的に `git diff` が使われる
+- staged / unstaged が混在する場合は、勝手に混ぜず停止する
+- 差分なしの場合は、空 bundle を作らず停止する
+- bundle の対象ファイルと post-write review manifest の対象がずれていれば停止する
+- これらをテストで固定し、LLM の注意力ではなく helper の判定に寄せる
+
+### 3. commit 承認と LLM 実行代行承認の正式経路不足
+
+ReviewCompass の commit guard は、LLM が commit を実行する場合に 2 種類の承認を
+区別して扱う。
+
+- 内容承認：現在 staged されている内容を commit してよい
+- 実行代行承認：LLM が commit コマンドの実行を代行してよい
+
+この分離は安全上必要である。過去に「自律実行」等の指示を広く解釈し、LLM が
+commit 実行まで進める問題があったため、`execution_actor=llm` の場合は
+`execution_delegation` を別途要求する。
+
+一方で、2026-06-15 に導入した nonce 方式の `commit-approval prepare/record` は、
+主に staged 内容への承認を nonce、target digest、TTL に束縛する仕組みである。
+
+今回、利用者が単発で「コミット」と明示指示したため、現在 staged されている内容に対して
+`commit-approval prepare` と `commit-approval record` を実行し、承認レコードを作成した。
+この承認レコードには、ユーザ発話 `コミット` が `source_text_redacted` として保存され、
+staged 内容への nonce / digest 束縛も成立していた。
+
+しかし guard は、LLM が commit を実行するために必要な `execution_delegation` が無いとして
+commit を拒否した。調査したところ、既存テストには「`commit-approval record` は既定で
+`execution_delegation` を埋め込まない」ことが明示されていた。つまり、内容承認と
+実行代行承認を分ける方針自体は意図されたものだった。
+
+ただし、現状の正式 CLI には、ユーザ発話を安全に `execution_delegation` として記録する
+手段が不足していた。そのため、今回の commit では runtime の承認レコードへ
+`execution_delegation` を手作業で追記するワークアラウンドが発生した。
+これは回復できた処理ではなく、本来は正式 CLI が無い時点で fail-closed し、
+commit へ進まず後続設計課題として止めるべきだった。
+今回のように既に使ってしまった一時 runtime 承認レコードは、再利用可能な正式証跡へ
+昇格しない。履歴上の事実としてだけ扱い、未使用・未消費の同種レコードが残る場合は、
+正式 CLI が整うまで commit 実行根拠として使わず、破棄または無効化の対象にする。
+
+問題：
+
+- guard は内容承認と LLM 実行代行承認の両方を要求する
+- `commit-approval record` は内容承認のみを正式に生成する
+- LLM が commit する通常ケースで、正式 CLI だけでは必要フィールドを完結して作れない
+- 結果として runtime JSON 手編集に逃げる余地が生じる
+
+承認まわりで runtime JSON 手編集を前提にすると、何を誰が承認したのかが曖昧になり、
+過去に削除した `make-commit-approval.py` と同種の問題を再導入しかねない。
+
+設計時に考慮すべき点：
+
+1. 内容承認と実行代行承認を記録上も分ける。
+   - `コミット` という 1 つの発話で両方を満たす場合はある
+   - ただし意味は別なので、フィールドも検証も分ける
+2. LLM が勝手に delegation を作れないようにする。
+   - nonce、target digest、TTL、source を通じてユーザ発話と staged 内容に束縛する
+   - LLM が任意文字列で承認を自作できる構造にしない
+3. 発話解釈ルールを明確にする。
+   - `コミット`、`コミットして`、`コミットを実行` は停止点での単発 commit 代行として許可候補
+   - `次のコミットまで` は commit 実行を含まない
+   - `自律実行` だけでは commit 実行代行を含まない
+   - `コミット代行も含めて自律実行` のような明示は許可候補
+4. source の扱いを安全にする。
+   - 保存する場合は redaction 必須
+   - 機微情報が残る場合は保存せず、`source_omission_reason` を記録する
+   - 内容承認 source と delegation source を分けて扱えるようにする
+5. 正式 CLI だけで完結させる。
+   - runtime JSON の手編集を前提にしない
+   - 例：`commit-approval record --nonce ... --source-text-stdin --delegate-execution-to-llm`
+   - 例：`commit-approval delegate-execution --nonce ... --source-text-stdin`
+6. delegation も staged 内容へ束縛する。
+   - 同じ nonce / target digest に紐づける
+   - staged 内容が変わったら、内容承認だけでなく delegation も無効にする
+7. 期限切れ・消費済み・再利用防止を一貫させる。
+   - TTL 内だけ有効
+   - commit 成功後は consumed
+   - 別 commit へ再利用できない
+8. human 実行との違いを保つ。
+   - 人間が自分で commit する場合は execution delegation 不要
+   - LLM が commit する場合だけ必要
+9. 失敗理由を分けて表示する。
+   - 内容承認が無い
+   - 内容承認はあるが LLM 実行代行承認が無い
+   - 発話はあるが delegation 許可として認められない
+   - staged 内容が承認時から変わった
+10. runtime 承認レコードの手編集を運用上禁止する。
+   - 後続実装後は正式 CLI 以外で `execution_delegation` を追記しない
+   - guard / docs / TODO にもその扱いを明記する
+
+期待する完了条件：
+
+- 正式 CLI だけで、内容承認と LLM 実行代行承認を安全に記録できる
+- `コミット` は単発 commit 実行代行として通る
+- `次のコミットまで` や `自律実行` だけでは commit 実行代行として通らない
+- staged 内容が変わると、内容承認と delegation の両方が無効になる
+- source redaction と omission が既存 commit approval 方針に沿う
+- runtime 承認レコードの手編集が不要になる
+
+## 追加で気になる点
+
+### A-1. 不要な review-run / manifest を作ってから削除した
+
+一度、使わない post-write review-run と manifest を作成し、後で削除した。
+
+これは、review-run 作成前に次を機械的に確定する導線が弱いことを示している。
+
+- run id が今回の作業内容と一致しているか
+- target files が正しいか
+- 既存 manifest と競合していないか
+- 作成対象が現行の post-write verification として必要か
+
+作成後に削除すれば最終状態は整うが、review 証跡は正本性が重要なため、
+不要な証跡を作る前に止めるほうが望ましい。
+
+### A-2. 実装完了と実環境発火確認の分離が後から明確になった
+
+Codex TODO hook は、スクリプト、テンプレート、診断ログ、テストまでは実装した。
+しかし、実際の Codex 実行環境で `.codex/hooks.json` から PostToolUse hook が
+発火することは未確認だった。
+
+post-write review の WARN により、この未確認点を TODO へ追記した。
+
+これは正しく回復できたが、本来は実装計画または完了条件の段階で、
+次を分離しておくべきだった。
+
+- コード・テンプレートとして実装済み
+- テスト環境で動作確認済み
+- 実 Codex セッションで hook 発火確認済み
+
+この区別が曖昧だと、実装完了を実運用確認完了と誤読しやすい。
+
+### A-3. commit approval を作るタイミングが stale になりやすい
+
+nonce 方式の commit approval は staged exact index に束縛される。
+これは正しい安全設計だが、approval 作成後に staged 内容が変われば
+承認は stale になる。
+
+今回も、staged 内容の変化や除外作業により承認レコードを作り直す必要があった。
+
+後続対応では、commit approval は次の状態になってから作る導線へ寄せるべきである。
+
+- post-write verification が完了している
+- 進行中セッション記録などの除外が終わっている
+- staged 対象が最終確定している
+- `git diff --cached --name-status` と guard 対象が一致している
+
+approval は早く作るほど stale になりやすい。最終 staged 固定後にだけ作る
+作業導線が望ましい。
+
+### A-4. 調査前の説明が早すぎた
+
+`execution_delegation` について、当初は「commit 承認機構側の小さな不整合」と
+説明した。
+
+しかし既存テストを確認すると、`commit-approval record` が既定で
+`execution_delegation` を埋め込まないことは意図された設計だった。
+
+正しい整理は次である。
+
+- 内容承認と LLM 実行代行承認を分ける設計は意図通り
+- ただし、LLM 実行代行承認を正式 CLI で記録する経路が不足している
+
+このように、調査前の短い説明が後で修正されると、利用者には設計全体が揺れて
+見える。特に承認・不可逆操作・証跡に関する説明では、断定前に既存テストと
+正本文書を確認する必要がある。
+
+## 再精査で見つかった追加候補
+
+2026-06-16 の追加確認で、review-run / manifest / bundle / approval 以外にも、
+同じ「作ってから検査・気づいて回復」になり得る入口が見つかった。
+
+### B-1. review-run 成果物の上書き・混在
+
+対象：
+
+- `tools/api_providers/run_review.py`
+- `tools/api_providers/run_role.py`
+
+`--review-run-dir`、`--round-id`、model stem が同じ状態で再実行すると、raw / parsed /
+rounds / target-manifest / summary を更新・上書きし得る。
+
+意図した再実行なら問題ないが、run id や出力先を間違えると、別作業の review-run に
+成果物を混ぜる可能性がある。作成前に次を確認する必要がある。
+
+- review-run dir が空か、同じ target / phase / criteria / run_id の継続か
+- `target-manifest.yaml` の target と今回の `--target` が一致するか
+- 同一 round / model の raw・parsed を上書きしないか
+- 上書きする場合は明示フラグを要求するか
+
+### B-2. triage decision の部分書き込み
+
+対象：
+
+- `tools/make-triage-decision.py`
+
+このツールは `triage.yaml` と `model-result-summary.yaml` を書いた後、全件 decided の場合に
+正本判定へ通す。最後の正本判定で落ちた場合、既に書き換えたファイルが残る。
+
+後続対応では、書き込み前に新内容をメモリ上で構築して正本判定し、通った場合だけ
+atomic に置き換える。または失敗時に元内容へ rollback する。
+あわせて、対応着手時には既存 review-run の `triage.yaml` と
+`model-result-summary.yaml` を監査し、途中で落ちた decision による不整合や半端な
+判断済み状態が残っていないことを確認する。
+監査対象は少なくとも、triage、model-result-summary、関連 summary、manifest 生成有無、
+approval record 参照まで含め、途中失敗で残り得る副作用を限定してから修正する。
+
+### B-3. proxy approval の既存成果物上書き・削除
+
+対象：
+
+- `tools/make-proxy-approval.py`
+
+このツールは生成後に正本検証し、失敗時は今回書いたファイルを削除する。
+ただし、既存の `proxy-approval.yaml` や `decisions/*.yaml` があった場合、
+上書きしてから失敗し、既存の正しい記録まで消す可能性がある。
+
+後続対応では、既存ファイルがある場合は既定で拒否し、上書きには明示フラグを要求する。
+また、生成は一時ファイルへ行い、正本検証通過後に rename する。
+
+### B-4. runtime bundle export の出力先衝突
+
+対象：
+
+- `runtime/runtime_core/bundle_exporter/exporter.py`
+
+来歴情報の欠落は `MissingProvenanceError` で拒否している。一方、出力先 bundle が既に
+存在する場合の明示 preflight は弱く、`copytree` の失敗に委ねている。
+
+後続対応では、次を事前確認する。
+
+- `exports_base / bundle_id` が存在しないこと
+- 既存 bundle_manifest / checksums / run copy がないこと
+- 上書きや再輸出を許す場合は、別 bundle_id または明示フラグを要求すること
+
+### B-5. deployment smoke の外部 app root 書き込み
+
+対象：
+
+- `tools/build-deploy-package.py --smoke-external-app-root`
+
+smoke test は対象 app root に `app.md` と
+`.reviewcompass/specs/demo/reviews/smoke-run/` を作成する。外部 app root への書き込みで
+あるため、既存 `app.md` や既存 smoke-run を上書きしない事前確認が必要である。
+
+後続対応では、次を確認する。
+
+- `app.md` が既に存在する場合は拒否するか、専用一時ファイル名を使う
+- `smoke-run` が既に存在する場合は拒否する
+- smoke が作るファイル一覧を事前に表示・機械出力できるようにする
+
+### B-6. session-record backfill / promote の終了済み判定
+
+対象：
+
+- `tools/session-record-backfill.py`
+- `tools/session-record-promote-draft.py`
+
+`promote` は current session id を要求し、current と同じ session id の昇格を拒否する。
+一方、`backfill --session` 側にも、終了済み判定または current session guard を共通化する
+余地がある。
+
+後続対応では、formal 2 層記録を書ける全入口で同じ current-session guard を使う。
+
+### B-7. 正本コマンド呼び出し前の短縮名・記憶依存
+
+対象：
+
+- `python3 tools/check-workflow-action.py next --json`
+- `tools/check-workflow-action.py` の各サブコマンド
+- `tools/guarded-git-commit.py`
+- `tools/api_providers/run_review.py`
+- `tools/api_providers/review_triage.py`
+- `tools/session-record-backfill.py`
+- `tools/session-record-promote-draft.py`
+- `tools/make-proxy-approval.py`
+
+post-write-verification の開始時に、正本手順では
+`python3 tools/check-workflow-action.py next --json` を実行すべきところ、
+記憶上の短縮形 `next --json` を先に実行して `command not found` になった。
+成果物は作られていないため直接の破損は無かったが、これは「手順書の照合・
+正本コマンド確認より先に、短縮名や習慣で動く」入口である。
+
+この型は `next` だけに限らない。人間向け文書や会話では `next --json`、
+`commit precheck`、`write-manifest`、`promote` のように短く呼ぶことがあるが、
+実行時には repo 内の正式 CLI パス、サブコマンド、必須引数、対象ファイル、出力先を
+取り違えずに指定する必要がある。
+
+同類として注意すべき入口：
+
+- `next` 判定：略称ではなく `python3 tools/check-workflow-action.py next --json`
+- workflow precheck：`spec-set`、`commit`、`push`、`audit-commit`、
+  `reopen-advance-gate`、`autonomous-plan`
+- commit：直接 `git commit` ではなく `tools/guarded-git-commit.py` 経由
+- post-write review：`run_review.py`、`review_triage.py list-pending / decide /
+  write-manifest` の順序、variant、target、review-run-dir、approval-record
+- session-record：backfill と promote の使い分け、current session と終了済み session
+  の区別
+- autonomous / proxy：plan、承認、記録、proxy approval の作成順序
+
+後続対応では、正本 CLI の呼び出し前に、短縮名を実コマンドへ展開する確認層を置く。
+少なくとも、手順書や effective prompt に書かれた実行コマンドをそのまま使うこと、
+短縮名だけのコマンド実行を避けること、失敗時は成果物未作成を確認してから続行することを
+明示する。
+
+## 共通する問題構造
+
+今回の追加点も含めると、共通する構造は次である。
+
+- 作成前チェックが弱い
+- 対象確定チェックが弱い
+- 空成果物チェックが弱い
+- 正本コマンド呼び出し前に、短縮名や記憶に依存して動くことがある
+- stale 承認を避ける導線が弱い
+- runtime JSON 手編集のようなワークアラウンドが発生し得る
+- review-run / manifest 作成前の妥当性検査が弱い
+- 実装完了と実運用確認完了の境界が曖昧になり得る
+- 調査前の説明が、後で修正を要することがある
+- 生成後検査はあっても、生成前 preflight が弱い
+- 失敗時に既存正本を壊さない atomic 書き込みが弱い
+
+## 既に一定の防止がある箇所
+
+調査時点で、次の防止は既に存在する。
+
+- `tools/make-post-write-manifest.py` は生成後に正本判定へ通す fail-closed を持つ
+- `tools/api_providers/review_triage.py write-manifest` は未解決 triage と重要件 approval を見る
+- `tools/check-workflow-action.py commit-approval prepare/record` は staged exact index への
+  nonce / digest 束縛を持つ
+- `tools/build-deploy-package.py --clean` は危険な出力先を拒否する
+
+ただし、これらは主に生成後検証または一部条件の検査であり、今回の問題構造である
+「生成前 preflight」と「既存正本を壊さない atomic 書き込み」は別途整える必要がある。
+
+## 機械化による効果見込み
+
+これらの対応は、単に不具合を減らすだけでなく、作業時間とトークン数の削減にも効く。
+
+期待できる効果：
+
+- 作業前・生成前に止まれるため、空 bundle 作成、review-run 作り直し、
+  approval 作り直し、誤った session 記録の除外などの往復が減る
+- 原因説明、再調査、再実行報告、利用者への追加確認が減り、会話トークンを削減できる
+- LLM の注意力や記憶ではなく helper の preflight に寄せられるため、
+  自律実行時の品質が安定する
+- 「最終的には guard で止まったが、途中で余計な成果物を作った」という状態を減らし、
+  証跡の正本性を保ちやすくなる
+
+ただし、「手戻りがゼロになる」というより、よくある手戻りを作業前・生成前に
+機械的に止められるようにする、という位置づけである。未知の設計不備や新しい入口は
+残り得るため、guard や post-write verification は最後の保険として維持する。
+
+時間・トークン削減の観点では、次の順に効果が大きい。
+
+1. 正本コマンド呼び出し helper
+2. diff bundle 作成 helper
+3. review-run 作成前 checker
+4. commit approval 作成前 checker
+5. session-record current guard 共通化
+
+## 後続対応案
+
+個別メモの実装に加え、より横断的に次を検討する。
+
+1. post-write review run 作成前 checker
+   - run id、target files、manifest、bundle、現行作業目的の整合を確認する
+2. diff bundle 作成 helper
+   - staged / unstaged を自動判定し、空 bundle を拒否する
+3. commit approval 作成前 checker
+   - staged 対象が最終確定していることを確認してから approval を作る
+4. 実装完了条件の明示テンプレート
+   - 実装済み、テスト済み、実環境確認済み、未確認の残作業を分けて書く
+5. runtime 手編集禁止ルール
+   - 正式 CLI が無い場合は、手編集で通すのではなく後続設計課題として止める
+6. 説明前の確認ルール
+   - 承認・guard・証跡に関する原因説明では、該当テストまたは正本文書を確認してから断定する
+7. 正本コマンド呼び出し helper
+   - `next`、commit、post-write review、reopen、session-record などの正式 CLI を
+     短縮名からではなく機械的に選ぶ
+   - 実行前に対象、出力先、必須引数、既存成果物との衝突を表示・検査する
+   - コマンド失敗時は成果物未作成または部分生成の有無を確認する
+
+## 追跡方針
+
+本メモは棚卸しであり、後続対応の実装正本ではない。ここで列挙した対応は、
+次作業リストまたは `TODO_NEXT_SESSION.md` に移して追跡する。実装へ入る場合は、
+対象を 1 件ずつ選び、SDD の正規手順に沿って計画、テスト、実装、検証、commit の
+単位へ分ける。
+
+追跡時の単位は、少なくとも次に分ける。
+
+- 正本コマンド呼び出し helper
+- diff bundle 作成 helper
+- review-run 作成前 checker
+- commit approval 作成前 checker
+- session-record current guard 共通化
+- proxy approval / triage decision の atomic 書き込み
+- deployment smoke と bundle export の出力先 preflight
+
+## 追加分の優先度
+
+追加候補の中では、次の順で扱うのが妥当である。
+
+1. review-run dir の衝突・混在防止
+2. proxy approval / triage decision の atomic 書き込み
+3. deployment smoke の外部 app root 上書き防止
+4. bundle export の出力先衝突 preflight
+5. session-record backfill / promote の current-session guard 共通化
+6. 正本コマンド呼び出し前の短縮名・記憶依存防止
+
+主要 3 件を含めた全体優先度は、不可逆操作・正本汚染・検証品質の順で考える。
+
+1. commit 承認と LLM 実行代行承認の正式 CLI 化
+2. 現セッション正式記録の生成前防止
+3. review-run dir の衝突・混在防止
+4. diff bundle 作成 helper
+5. 正本コマンド呼び出し helper
+6. proxy approval / triage decision の atomic 書き込み
+7. deployment smoke と bundle export の出力先 preflight
+8. 実装完了条件テンプレートと説明前確認ルール
+
+## 期待する完了条件
+
+- review-run / manifest / bundle は、生成前に対象妥当性を検査できる
+- 空 bundle や対象ずれ bundle が生成されない
+- commit approval は最終 staged 固定後に作る導線になる
+- 正式 CLI だけで、内容承認と LLM 実行代行承認を安全に記録できる
+- current session の正式 2 層記録生成は全入口で fail-closed する
+- 実装完了と実環境確認未完了を完了報告で分けて示せる
+- runtime JSON 手編集を必要としない正式経路が整う
+- 正本 CLI がある作業では、短縮名や記憶ではなく正式コマンドを機械的に選べる
+- 手戻りで通過するのではなく、生成前・実行前に止まる

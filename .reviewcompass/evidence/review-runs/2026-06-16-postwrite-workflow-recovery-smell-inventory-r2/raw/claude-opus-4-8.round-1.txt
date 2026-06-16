@@ -1,0 +1,21 @@
+findings:
+  - severity: INFO
+    target_location: "docs/notes/2026-06-16-workflow-recovery-smell-inventory.md (全体)"
+    description: "本メモは手戻りで通過した作業導線の棚卸しとして、主要3件・追加候補・共通構造・優先度・完了条件を一貫した構成で記録できている。後続対応案と完了条件が各項目で対応しており、棚卸しドキュメントとして整合している。"
+    rationale: "post_write_verification の workflow_recovery_smell_inventory 観点で、回復した手戻りの再発防止導線が網羅的に記録されているかを確認した結果、重大な欠落は見られなかった。"
+  - severity: INFO
+    target_location: "セクション3「commit 承認と LLM 実行代行承認の正式経路不足」"
+    description: "runtime JSON 手編集のワークアラウンドが発生したことについて、本来は fail-closed すべきだったと明記し、回復ではなく禁止すべき逃げ道として正しく分類している。"
+    rationale: "不可逆操作・承認・証跡に関わる手戻りで、誤った回復手段を再発防止対象として明示することは棚卸しの質に直結するため、適切に記録されている点を確認した。"
+  - severity: INFO
+    target_location: "セクション「再精査で見つかった追加候補」B-1〜B-7"
+    description: "主要3件以外にも同種の『作ってから検査・気づいて回復』入口を対象ファイル名付きで列挙し、共通構造へ昇華している。各候補に対象パスと後続対応案が紐づいている。"
+    rationale: "棚卸しの目的は個別ミスではなく構造的入口の網羅であり、追加入口の特定と一般化が行われていることは本観点で望ましい。"
+  - severity: WARN
+    target_location: "セクション「後続対応案」および各セクションの後続対応案・期待する完了条件"
+    description: "多数の後続対応案と完了条件が列挙されているが、これらを追跡する TODO や issue への参照・登録状況が本メモ内に記載されていない。A-2 では post-write review の WARN を TODO へ追記したと述べられている一方、本メモ自体の後続対応群がどこで追跡されるかが不明確である。"
+    rationale: "棚卸しメモで挙げた再発防止策が追跡先に接続されないと、回復で通過した手戻りが将来も生成前防止されないまま残るリスクがある。"
+  - severity: INFO
+    target_location: "セクション「既に一定の防止がある箇所」"
+    description: "既存の fail-closed や生成後検証の所在を列挙し、未整備領域（生成前 preflight・atomic 書き込み）と明確に切り分けている。"
+    rationale: "既存防止と未整備領域の境界を示すことで、重複対応や過剰実装を避けつつ残課題を特定でき、棚卸しの実用性が高まっている。"

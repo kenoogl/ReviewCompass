@@ -1,0 +1,20 @@
+findings:
+  - severity: WARN
+    target_location: "docs/notes/2026-06-16-workflow-recovery-smell-inventory.md#今回見つかった主要-3-件 > 3. commit 承認と LLM 実行代行承認の正式経路不足"
+    description: "runtime JSON 手編集を『本来は禁止・fail-closed にすべきだった』と整理している一方で、当該事案の事後処理方針や既存手編集記録の扱いが未定義。"
+    rationale: "post-write verification としては、再発防止だけでなく今回発生した不正規経路の後始末方針も明確化されている必要がある。既存の手編集済み runtime 承認レコードを無効化・削除・注記のいずれで扱うかが未記載だと、同種事案の運用判断がぶれる。"
+
+  - severity: WARN
+    target_location: "docs/notes/2026-06-16-workflow-recovery-smell-inventory.md#再精査で見つかった追加候補 > B-2. triage decision の部分書き込み"
+    description: "triage decision の部分書き込み問題について、影響範囲は指摘しているが、既存の不整合ファイルが残存していないか確認する事後検証観点が不足している。"
+    rationale: "この文書は手戻り経路の棚卸しであり、生成前防止だけでなく『今回の作業で既に半端な成果物が残っていないか』の確認が重要である。atomic 化の将来対応案だけでは、現時点の repository 健全性確認としては弱い。"
+
+  - severity: INFO
+    target_location: "docs/notes/2026-06-16-workflow-recovery-smell-inventory.md#追加で気になる点 > A-1. 不要な review-run / manifest を作ってから削除した"
+    description: "不要な review-run / manifest を削除したことは記載されているが、削除後に参照整合性や残存痕跡がないことを確認した旨までは書かれていない。"
+    rationale: "証跡系成果物は削除だけでなく、関連 index・summary・参照リンク・履歴整合性の確認まで含めて完了とする方が検証記録として強い。現状でも問題報告としては成立するが、post-write verification の観点では確認内容を一段具体化できる。"
+
+  - severity: INFO
+    target_location: "docs/notes/2026-06-16-workflow-recovery-smell-inventory.md#期待する完了条件"
+    description: "完了条件は網羅的だが、多くが将来状態の記述で、各項目の検証方法や責務主体が明示されていない。"
+    rationale: "棚卸しメモとしては十分だが、post-write verification の出口基準として使うには、『どのテスト/guard/doc 更新で満たしたと判定するか』があると回収漏れを防ぎやすい。"

@@ -1,0 +1,4 @@
+run_id: 2026-06-16-postwrite-workflow-recovery-smell-inventory-r4
+target_files:
+- path: docs/notes/2026-06-16-workflow-recovery-smell-inventory.md
+  sha256: 8c46d64aa271cd039f8e012f167031c3ce687dad28baf82ad4a59bbb4b8481e7

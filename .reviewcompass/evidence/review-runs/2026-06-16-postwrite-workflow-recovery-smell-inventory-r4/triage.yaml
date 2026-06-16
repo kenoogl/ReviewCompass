@@ -1,0 +1,154 @@
+run_id: 2026-06-16-postwrite-workflow-recovery-smell-inventory-r4
+triage_status: decided
+generated_at: '2026-06-15T21:30:22.132226+00:00'
+decision_actor: null
+decision_actor_type: human
+items:
+- finding_id: 2026-06-16-postwrite-workflow-recovery-smell-inventory-r4-gpt-5.4-primary-001
+  run_id: 2026-06-16-postwrite-workflow-recovery-smell-inventory-r4
+  source_model: gpt-5.4
+  source_round: round-1
+  source_raw_path: raw/gpt-5.4.round-1.txt
+  source_parsed_path: parsed/gpt-5.4.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: docs/notes/2026-06-16-workflow-recovery-smell-inventory.md > B-7.
+    正本コマンド呼び出し前の短縮名・記憶依存
+  plain_language_summary: 短縮名・記憶依存の問題を smell として挙げているが、他項目と比べて『回復経路』『実害』『再発条件』の記述粒度が弱く、棚卸し基準がやや不均一。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: user
+  decision_actor_type: agent
+  decision_at: '2026-06-15T21:32:42.590629+00:00'
+  decision_reason: 利用者指示は表記ミス修正のみ。B-7 の粒度追加は今回は採用せず、棚卸しメモとして現状の記述で足りると判断する。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-16-postwrite-workflow-recovery-smell-inventory-r4-gpt-5.4-primary-002
+  run_id: 2026-06-16-postwrite-workflow-recovery-smell-inventory-r4
+  source_model: gpt-5.4
+  source_round: round-1
+  source_raw_path: raw/gpt-5.4.round-1.txt
+  source_parsed_path: parsed/gpt-5.4.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: docs/notes/2026-06-16-workflow-recovery-smell-inventory.md > 追跡方針
+    / 追加分の優先度 / 期待する完了条件
+  plain_language_summary: 追跡先を『次作業リストまたは TODO_NEXT_SESSION.md』としているが、具体的な転記先や識別子は未記載。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: user
+  decision_actor_type: agent
+  decision_at: '2026-06-15T21:32:51.294723+00:00'
+  decision_reason: 利用者指示は表記ミス修正のみ。具体的な転記先や識別子は後続の TODO 転記時に決めるため、今回は leave-as-is。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-16-postwrite-workflow-recovery-smell-inventory-r4-claude-opus-4-8-adversarial-001
+  run_id: 2026-06-16-postwrite-workflow-recovery-smell-inventory-r4
+  source_model: claude-opus-4-8
+  source_round: round-1
+  source_raw_path: raw/claude-opus-4-8.round-1.txt
+  source_parsed_path: parsed/claude-opus-4-8.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: docs/notes/2026-06-16-workflow-recovery-smell-inventory.md (全体)
+  plain_language_summary: 棚卸しメモとして、今回の手戻り3件と追加候補が事実ベースで整理されており、各項目に背景・問題・後続対応案・完了条件が一貫した構造で記述されている。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: user
+  decision_actor_type: agent
+  decision_at: '2026-06-15T21:32:57.312889+00:00'
+  decision_reason: 肯定的確認であり、本文修正は不要。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-16-postwrite-workflow-recovery-smell-inventory-r4-claude-opus-4-8-adversarial-002
+  run_id: 2026-06-16-postwrite-workflow-recovery-smell-inventory-r4
+  source_model: claude-opus-4-8
+  source_round: round-1
+  source_raw_path: raw/claude-opus-4-8.round-1.txt
+  source_parsed_path: parsed/claude-opus-4-8.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: セクション「3. commit 承認と LLM 実行代行承認の正式経路不足」
+  plain_language_summary: runtime 承認レコードへの手作業追記を『回復できた処理ではなく、本来 fail-closed すべきだった』と明記し、使用済み一時レコードを正式証跡へ昇格させない方針を述べている。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: user
+  decision_actor_type: agent
+  decision_at: '2026-06-15T21:33:04.505191+00:00'
+  decision_reason: 肯定的確認であり、本文修正は不要。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-16-postwrite-workflow-recovery-smell-inventory-r4-claude-opus-4-8-adversarial-003
+  run_id: 2026-06-16-postwrite-workflow-recovery-smell-inventory-r4
+  source_model: claude-opus-4-8
+  source_round: round-1
+  source_raw_path: raw/claude-opus-4-8.round-1.txt
+  source_parsed_path: parsed/claude-opus-4-8.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: セクション「既に一定の防止がある箇所」
+  plain_language_summary: 既存の fail-closed 機構（make-post-write-manifest.py の生成後判定、commit-approval
+    prepare/record の nonce/digest 束縛等）を列挙し、本メモの課題が『生成後検証は存在するが生成前 preflight が弱い』点に限定されることを明示している。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: user
+  decision_actor_type: agent
+  decision_at: '2026-06-15T21:33:12.080242+00:00'
+  decision_reason: 肯定的確認であり、本文修正は不要。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-16-postwrite-workflow-recovery-smell-inventory-r4-claude-opus-4-8-adversarial-004
+  run_id: 2026-06-16-postwrite-workflow-recovery-smell-inventory-r4
+  source_model: claude-opus-4-8
+  source_round: round-1
+  source_raw_path: raw/claude-opus-4-8.round-1.txt
+  source_parsed_path: parsed/claude-opus-4-8.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: セクション「追加で気になる点」A-4 および「再精査で見つかった追加候補」B-1〜B-7
+  plain_language_summary: B-1〜B-7 の各対象ツール（run_review.py、make-triage-decision.py、make-proxy-approval.py、exporter.py
+    等）の挙動は『〜し得る』『〜余地がある』という推定表現が多く、実際にコードを確認して挙動を検証した形跡が文中で明示されていない。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: user
+  decision_actor_type: agent
+  decision_at: '2026-06-15T21:33:20.376198+00:00'
+  decision_reason: 利用者指示は表記ミス修正のみ。B 系候補のコード確認明示は後続実装時の SDD 手順で扱うため、今回は leave-as-is。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-16-postwrite-workflow-recovery-smell-inventory-r4-gemini-3.1-pro-preview-judgment-001
+  run_id: 2026-06-16-postwrite-workflow-recovery-smell-inventory-r4
+  source_model: gemini-3.1-pro-preview
+  source_round: round-1
+  source_raw_path: raw/gemini-3.1-pro-preview.round-1.txt
+  source_parsed_path: parsed/gemini-3.1-pro-preview.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: 3. commit 承認と LLM 実行代行承認の正式経路不足
+  plain_language_summary: 「字段」という中国語由来の語彙が混入している
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: user
+  decision_actor_type: agent
+  decision_at: '2026-06-15T21:32:33.944084+00:00'
+  decision_reason: 利用者指示に基づき表記ミスのみ修正。中国語由来の『字段』2 箇所を『フィールド』へ置換した。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-16-postwrite-workflow-recovery-smell-inventory-r4-gemini-3.1-pro-preview-judgment-002
+  run_id: 2026-06-16-postwrite-workflow-recovery-smell-inventory-r4
+  source_model: gemini-3.1-pro-preview
+  source_round: round-1
+  source_raw_path: raw/gemini-3.1-pro-preview.round-1.txt
+  source_parsed_path: parsed/gemini-3.1-pro-preview.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: B-7. 正本コマンド呼び出し前の短縮名・記憶依存 や 後続対応案など全体
+  plain_language_summary: コマンドやCLIに対して「正本」（正本コマンド、正本 CLI）という表現が使われている
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: user
+  decision_actor_type: agent
+  decision_at: '2026-06-15T21:33:28.059477+00:00'
+  decision_reason: 利用者指示は表記ミス修正のみ。『正本コマンド』表現は既存文脈で意味が通るため、今回は leave-as-is。
+  applied_files: []
+  superseded_by: null

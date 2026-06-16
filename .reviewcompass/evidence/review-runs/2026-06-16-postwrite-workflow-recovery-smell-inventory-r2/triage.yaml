@@ -1,0 +1,177 @@
+run_id: 2026-06-16-postwrite-workflow-recovery-smell-inventory-r2
+triage_status: decided
+generated_at: '2026-06-15T21:12:48.318790+00:00'
+decision_actor: null
+decision_actor_type: human
+items:
+- finding_id: 2026-06-16-postwrite-workflow-recovery-smell-inventory-r2-gpt-5.4-primary-001
+  run_id: 2026-06-16-postwrite-workflow-recovery-smell-inventory-r2
+  source_model: gpt-5.4
+  source_round: round-1
+  source_raw_path: raw/gpt-5.4.round-1.txt
+  source_parsed_path: parsed/gpt-5.4.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: docs/notes/2026-06-16-workflow-recovery-smell-inventory.md#今回見つかった主要-3-件
+    > 3. commit 承認と LLM 実行代行承認の正式経路不足
+  plain_language_summary: runtime JSON 手編集を『本来は禁止・fail-closed にすべきだった』と整理している一方で、当該事案の事後処理方針や既存手編集記録の扱いが未定義。
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: user
+  decision_actor_type: agent
+  decision_at: '2026-06-15T21:24:19.906051+00:00'
+  decision_reason: 利用者承認に基づき反映。今回の一時 runtime 承認レコードは正式証跡へ昇格せず、未使用・未消費の同種レコードは正式 CLI
+    が整うまで commit 実行根拠として使わず破棄または無効化対象にする旨を追記した。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-16-postwrite-workflow-recovery-smell-inventory-r2-gpt-5.4-primary-002
+  run_id: 2026-06-16-postwrite-workflow-recovery-smell-inventory-r2
+  source_model: gpt-5.4
+  source_round: round-1
+  source_raw_path: raw/gpt-5.4.round-1.txt
+  source_parsed_path: parsed/gpt-5.4.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: docs/notes/2026-06-16-workflow-recovery-smell-inventory.md#再精査で見つかった追加候補
+    > B-2. triage decision の部分書き込み
+  plain_language_summary: triage decision の部分書き込み問題について、影響範囲は指摘しているが、既存の不整合ファイルが残存していないか確認する事後検証観点が不足している。
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: user
+  decision_actor_type: agent
+  decision_at: '2026-06-15T21:24:27.398010+00:00'
+  decision_reason: 利用者承認に基づき反映。triage decision 対応着手時に既存 review-run の triage.yaml と
+    model-result-summary.yaml を監査し、途中失敗による不整合や半端な判断済み状態が残っていないことを確認する旨を追記した。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-16-postwrite-workflow-recovery-smell-inventory-r2-gpt-5.4-primary-003
+  run_id: 2026-06-16-postwrite-workflow-recovery-smell-inventory-r2
+  source_model: gpt-5.4
+  source_round: round-1
+  source_raw_path: raw/gpt-5.4.round-1.txt
+  source_parsed_path: parsed/gpt-5.4.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: docs/notes/2026-06-16-workflow-recovery-smell-inventory.md#追加で気になる点
+    > A-1. 不要な review-run / manifest を作ってから削除した
+  plain_language_summary: 不要な review-run / manifest を削除したことは記載されているが、削除後に参照整合性や残存痕跡がないことを確認した旨までは書かれていない。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: user
+  decision_actor_type: agent
+  decision_at: '2026-06-15T21:24:46.092709+00:00'
+  decision_reason: 利用者承認に基づき leave-as-is。不要成果物を作る前に止める方針は本文に記録済みで、削除済み成果物の参照整合性の詳細棚卸しは今回メモの必須範囲外とする。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-16-postwrite-workflow-recovery-smell-inventory-r2-gpt-5.4-primary-004
+  run_id: 2026-06-16-postwrite-workflow-recovery-smell-inventory-r2
+  source_model: gpt-5.4
+  source_round: round-1
+  source_raw_path: raw/gpt-5.4.round-1.txt
+  source_parsed_path: parsed/gpt-5.4.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: docs/notes/2026-06-16-workflow-recovery-smell-inventory.md#期待する完了条件
+  plain_language_summary: 完了条件は網羅的だが、多くが将来状態の記述で、各項目の検証方法や責務主体が明示されていない。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: user
+  decision_actor_type: agent
+  decision_at: '2026-06-15T21:24:54.412426+00:00'
+  decision_reason: 利用者承認に基づき leave-as-is。本メモは実装正本ではなく棚卸しであり、各完了条件の詳細な検証方法と責務主体は後続の
+    SDD 計画で定義する。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-16-postwrite-workflow-recovery-smell-inventory-r2-claude-opus-4-8-adversarial-001
+  run_id: 2026-06-16-postwrite-workflow-recovery-smell-inventory-r2
+  source_model: claude-opus-4-8
+  source_round: round-1
+  source_raw_path: raw/claude-opus-4-8.round-1.txt
+  source_parsed_path: parsed/claude-opus-4-8.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: docs/notes/2026-06-16-workflow-recovery-smell-inventory.md (全体)
+  plain_language_summary: 本メモは手戻りで通過した作業導線の棚卸しとして、主要3件・追加候補・共通構造・優先度・完了条件を一貫した構成で記録できている。後続対応案と完了条件が各項目で対応しており、棚卸しドキュメントとして整合している。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: user
+  decision_actor_type: agent
+  decision_at: '2026-06-15T21:25:01.550604+00:00'
+  decision_reason: 利用者承認に基づき leave-as-is。文書全体の整合性に関する肯定的確認であり、本文修正は不要。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-16-postwrite-workflow-recovery-smell-inventory-r2-claude-opus-4-8-adversarial-002
+  run_id: 2026-06-16-postwrite-workflow-recovery-smell-inventory-r2
+  source_model: claude-opus-4-8
+  source_round: round-1
+  source_raw_path: raw/claude-opus-4-8.round-1.txt
+  source_parsed_path: parsed/claude-opus-4-8.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: セクション3「commit 承認と LLM 実行代行承認の正式経路不足」
+  plain_language_summary: runtime JSON 手編集のワークアラウンドが発生したことについて、本来は fail-closed すべきだったと明記し、回復ではなく禁止すべき逃げ道として正しく分類している。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: user
+  decision_actor_type: agent
+  decision_at: '2026-06-15T21:25:13.771447+00:00'
+  decision_reason: 利用者承認に基づき leave-as-is。runtime JSON 手編集を fail-closed 対象として正しく分類しているという肯定的確認であり、本文修正は不要。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-16-postwrite-workflow-recovery-smell-inventory-r2-claude-opus-4-8-adversarial-003
+  run_id: 2026-06-16-postwrite-workflow-recovery-smell-inventory-r2
+  source_model: claude-opus-4-8
+  source_round: round-1
+  source_raw_path: raw/claude-opus-4-8.round-1.txt
+  source_parsed_path: parsed/claude-opus-4-8.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: セクション「再精査で見つかった追加候補」B-1〜B-7
+  plain_language_summary: 主要3件以外にも同種の『作ってから検査・気づいて回復』入口を対象ファイル名付きで列挙し、共通構造へ昇華している。各候補に対象パスと後続対応案が紐づいている。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: user
+  decision_actor_type: agent
+  decision_at: '2026-06-15T21:25:20.714593+00:00'
+  decision_reason: 利用者承認に基づき leave-as-is。追加候補の列挙と共通構造への整理ができているという肯定的確認であり、本文修正は不要。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-16-postwrite-workflow-recovery-smell-inventory-r2-claude-opus-4-8-adversarial-004
+  run_id: 2026-06-16-postwrite-workflow-recovery-smell-inventory-r2
+  source_model: claude-opus-4-8
+  source_round: round-1
+  source_raw_path: raw/claude-opus-4-8.round-1.txt
+  source_parsed_path: parsed/claude-opus-4-8.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: セクション「後続対応案」および各セクションの後続対応案・期待する完了条件
+  plain_language_summary: 多数の後続対応案と完了条件が列挙されているが、これらを追跡する TODO や issue への参照・登録状況が本メモ内に記載されていない。A-2
+    では post-write review の WARN を TODO へ追記したと述べられている一方、本メモ自体の後続対応群がどこで追跡されるかが不明確である。
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: user
+  decision_actor_type: agent
+  decision_at: '2026-06-15T21:24:35.878080+00:00'
+  decision_reason: 利用者承認に基づき反映。本メモは棚卸しであり、後続対応は次作業リストまたは TODO_NEXT_SESSION.md へ移して追跡し、実装時は
+    SDD 正規手順で 1 件ずつ扱う旨を追記した。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-16-postwrite-workflow-recovery-smell-inventory-r2-claude-opus-4-8-adversarial-005
+  run_id: 2026-06-16-postwrite-workflow-recovery-smell-inventory-r2
+  source_model: claude-opus-4-8
+  source_round: round-1
+  source_raw_path: raw/claude-opus-4-8.round-1.txt
+  source_parsed_path: parsed/claude-opus-4-8.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: セクション「既に一定の防止がある箇所」
+  plain_language_summary: 既存の fail-closed や生成後検証の所在を列挙し、未整備領域（生成前 preflight・atomic
+    書き込み）と明確に切り分けている。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: user
+  decision_actor_type: agent
+  decision_at: '2026-06-15T21:25:29.331092+00:00'
+  decision_reason: 利用者承認に基づき leave-as-is。既存防止と未整備領域の切り分けができているという肯定的確認であり、本文修正は不要。
+  applied_files: []
+  superseded_by: null

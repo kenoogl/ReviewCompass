@@ -1,0 +1,62 @@
+round_id: round-1
+purpose: post_write_verification
+invocation_timestamp: '2026-06-15T21:12:48.301328+00:00'
+target_files:
+- path: docs/notes/2026-06-16-workflow-recovery-smell-inventory.md
+  sha256: 09d52eb4f6615227920e68b8462faf5e74786f446710f941e85767629856fa8a
+criteria: workflow_recovery_smell_inventory_postwrite
+prompt_sha256: cf6f9519b7e8f2817471da8389fecbc6984dd96a8b9e99e762ea3a567848b314
+model_results:
+- model_id: gpt-5.4
+  provider: openai-api
+  role: primary
+  treatment: primary
+  invocation_path: api
+  raw_path: raw/gpt-5.4.round-1.txt
+  raw_sha256: 4f488e0850467528094e72a61c736a4480811dd1f4f426ea01b4ffbee252de0c
+  parsed_path: parsed/gpt-5.4.round-1.yaml
+  parsed_sha256: 590068c4a7a689fb971c452287b2c46b8db38ed1c50efa2ad9f9fbe7daa7e71c
+  parse_status: parsed
+  formatted_by: parser
+  formatted_by_actor_type: orchestrator
+  formatted_by_actor: run_role.py
+  formatted_at: '2026-06-15T21:11:54.955875+00:00'
+  follow_up_action: triage
+  attempts: 1
+  duration_seconds: 8.194
+- model_id: claude-opus-4-8
+  provider: anthropic-api
+  role: adversarial
+  treatment: adversarial
+  invocation_path: api
+  raw_path: raw/claude-opus-4-8.round-1.txt
+  raw_sha256: 009abf643acd322559944c6a647094ddef0cd0efa70e5df544cdde8ec6739a97
+  parsed_path: parsed/claude-opus-4-8.round-1.yaml
+  parsed_sha256: 444a07a1a9f91587db90e6a84df52bf8ef5391d8cd22b78238cd3d3fe01f1c15
+  parse_status: parsed
+  formatted_by: parser
+  formatted_by_actor_type: orchestrator
+  formatted_by_actor: run_role.py
+  formatted_at: '2026-06-15T21:12:16.354645+00:00'
+  follow_up_action: triage
+  attempts: 1
+  duration_seconds: 21.388
+- model_id: gemini-3.1-pro-preview
+  provider: gemini-api
+  role: judgment
+  treatment: judgment
+  invocation_path: api
+  raw_path: raw/gemini-3.1-pro-preview.round-1.txt
+  raw_sha256: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+  parsed_path: parsed/gemini-3.1-pro-preview.round-1.yaml
+  parsed_sha256: 5d9e4a1f286be77978a9367cfb54206cf426bec9f9bd7298c5b09050b55c8224
+  parse_status: parsed
+  formatted_by: parser
+  formatted_by_actor_type: orchestrator
+  formatted_by_actor: run_role.py
+  formatted_at: '2026-06-15T21:12:48.301328+00:00'
+  follow_up_action: triage
+  attempts: 1
+  duration_seconds: 31.936
+effective_prompt_path: .reviewcompass/runtime/effective-prompts/next_action_kind-post_write_verification.prompt.md
+effective_prompt_sha256: a0bdde1bdd73ed547a07653ce4264e116b128232b06ada223c85ccb16ff81bca
