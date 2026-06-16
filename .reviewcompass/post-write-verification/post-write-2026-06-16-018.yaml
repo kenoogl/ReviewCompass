@@ -1,0 +1,19 @@
+status: completed
+target_files:
+- docs/operations/WORKFLOW_PRECHECK_DETAILS.md
+target_sha256:
+  docs/operations/WORKFLOW_PRECHECK_DETAILS.md: b033cd00780f82f8fa6041cc08defcf9374cc10327008b93a144a82780f7d8ed
+required_verifiers: &id001
+- gemini-3.5-flash
+completed_verifiers: *id001
+unresolved_substantive_findings: 0
+verifications:
+- verifier: gemini-3.5-flash
+  target_files:
+  - docs/operations/WORKFLOW_PRECHECK_DETAILS.md
+  target_sha256:
+    docs/operations/WORKFLOW_PRECHECK_DETAILS.md: b033cd00780f82f8fa6041cc08defcf9374cc10327008b93a144a82780f7d8ed
+review_run:
+  path: .reviewcompass/evidence/review-runs/2026-06-16-reopen-advance-step-commit-stop-point-postwrite
+  summary_path: .reviewcompass/evidence/review-runs/2026-06-16-reopen-advance-step-commit-stop-point-postwrite/model-result-summary.yaml
+notes: reopen-advance-step commit stop point documentation post-write verification

@@ -1,0 +1,4 @@
+run_id: 2026-06-16-reopen-advance-step-commit-stop-point-postwrite
+target_files:
+- path: .reviewcompass/evidence/review-runs/2026-06-16-reopen-advance-step-commit-stop-point-postwrite/review-target.md
+  sha256: dc7175be239e94ca4fa222cb6c5b6d5d8bbd2e2936560b39ffa243f37a15c39e

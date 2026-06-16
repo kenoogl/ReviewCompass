@@ -3804,6 +3804,10 @@ def is_reopen_stop_point_commit_allowed(cwd, in_progress_files, staged_files):
     if data.get("commit_stop_point") is not True:
       return False
     reason = data.get("commit_stop_point_reason") or ""
+    if data.get("step_number") in (2, "2"):
+      if "第2過程" not in reason or "正本修正完了" not in reason:
+        return False
+      continue
     if data.get("step_number") != 3:
       return False
     if next_step != "第3過程：implementation triad-review":
@@ -5365,7 +5369,9 @@ def cmd_reopen_advance_step(args):
     else:
       data["step_number"] = 2
       data["next_step"] = "第2過程：停止点コミット"
-      data["current_blocker"] = "第2過程の停止点としてコミットが必要"
+      data["current_blocker"] = None
+      data["commit_stop_point"] = True
+      data["commit_stop_point_reason"] = "第2過程の正本修正完了"
 
     path.write_text(
       yaml.safe_dump(data, allow_unicode=True, sort_keys=False),

@@ -4017,7 +4017,9 @@ class ReopenAdvanceStepTests(unittest.TestCase):
     state = yaml.safe_load(in_progress.read_text(encoding="utf-8"))
     self.assertEqual(state["step_number"], 2)
     self.assertEqual(state["next_step"], "第2過程：停止点コミット")
-    self.assertEqual(state["current_blocker"], "第2過程の停止点としてコミットが必要")
+    self.assertIsNone(state["current_blocker"])
+    self.assertIs(state["commit_stop_point"], True)
+    self.assertEqual(state["commit_stop_point_reason"], "第2過程の正本修正完了")
     self.assertIn("第2過程：正本修正完了", state["completed_steps"])
     self.assertEqual(state["reopen_step_records"][0]["from_step"], 2)
 
@@ -5361,7 +5363,7 @@ class CommitExitCodeTests(unittest.TestCase):
     self.assertEqual(result.returncode, 0, result.stdout)
 
   def test_commit_allows_reopen_stop_point_when_in_progress_file_is_staged(self):
-    """reopen 手続きの停止点 commit は in-progress ファイルを含めれば通過する"""
+    """第2過程の commit 停止点は構造フィールドで通過する"""
     _set_pending_findings(self.pending_file, unresolved_count=0)
     _stage_file(self.tmpdir, "notes.md", "# reopen 停止点の記録")
     in_progress_path = (
@@ -5373,9 +5375,11 @@ class CommitExitCodeTests(unittest.TestCase):
     in_progress_path.parent.mkdir(parents=True)
     in_progress_path.write_text(
       "process_id: reopen-procedure\n"
-      "next_step: 第2過程：停止点コミット\n"
+      "next_step: 第2過程：正本修正完了\n"
       "step_number: 2\n"
-      "current_blocker: 第2過程の停止点としてコミットが必要\n",
+      "current_blocker: null\n"
+      "commit_stop_point: true\n"
+      "commit_stop_point_reason: 第2過程の正本修正完了\n",
       encoding="utf-8",
     )
     subprocess.run(
