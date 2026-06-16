@@ -1,0 +1,20 @@
+status: completed
+target_files:
+- docs/notes/2026-06-16-operation-registry-preflight-design.md
+target_sha256:
+  docs/notes/2026-06-16-operation-registry-preflight-design.md: a39b053736064983533e12d17e7abb3205b0ca02e0aa5af883ab54b354425576
+required_verifiers: &id001
+- gemini-3.5-flash
+completed_verifiers: *id001
+unresolved_substantive_findings: 0
+verifications:
+- verifier: gemini-3.5-flash
+  target_files:
+  - docs/notes/2026-06-16-operation-registry-preflight-design.md
+  target_sha256:
+    docs/notes/2026-06-16-operation-registry-preflight-design.md: a39b053736064983533e12d17e7abb3205b0ca02e0aa5af883ab54b354425576
+review_run:
+  path: .reviewcompass/evidence/review-runs/2026-06-16-operation-registry-preflight-design-note-postwrite-r3
+  summary_path: .reviewcompass/evidence/review-runs/2026-06-16-operation-registry-preflight-design-note-postwrite-r3/model-result-summary.yaml
+notes: Generated template; verify target_files cover current post-write targets before
+  use.

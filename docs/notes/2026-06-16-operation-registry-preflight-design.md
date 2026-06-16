@@ -64,6 +64,15 @@ operation registry / command registry が防ぐべき対象例である。
 - decision-source-lint
 
 これは「不可逆操作の operation contract」としてかなり進んでいる。
+ただし、`TODO_NEXT_SESSION.md` のような post-write 対象文書については、
+「対象ファイルが更新された後、対応する post-write verification が未完了のまま
+commit 操作へ進もうとしている」状態を、guard で止まる直前ではなく commit 前
+preflight の早い段階で明示する必要がある。表示内容には、対象ファイル名、必要な
+post-write verification、次に作るべき manifest / review-run の入口を含める。
+ここで `TODO_NEXT_SESSION.md` を例にしているのは、現行の post-write target detection が
+実際に対象として扱う代表例だからである。TODO を毎回重い API 検証に掛け続けるべきかは
+別論点であり、このメモでは「対象判定された文書は commit 前に未検証として明示される」
+という preflight 要件を記録する。運用コストの見直しは、post-write 対象分類の別タスクで扱う。
 
 ### 4. commit approval nonce / delegation
 
@@ -109,6 +118,14 @@ post-write まわりには次の既存部品がある。
 
 既に manifest の target hash、coverage、review-run traceability、未解決本質指摘は
 検査できる。残る穴は、review-run / bundle / approval record を作る前の preflight である。
+代表例として、`TODO_NEXT_SESSION.md` が更新されている場合は、その変更に対応する
+completed manifest / review-run traceability が確認できない限り、commit 系 operation の
+preflight は `post_write_verification` 未完了として止める。これは TODO 固有の特例ではなく、
+post-write target detection の結果に対して同じ判定を適用する一例である。
+ただしこれは「TODO を特別扱いする」という意味ではない。preflight は
+`list_post_write_verification_targets` 相当の機械判定結果を正とし、対象に含まれた文書に
+completed manifest / review-run traceability が無ければ同じ扱いで止める。TODO の頻繁な更新で
+検証コストが高すぎる場合は、post-write target detection 側の分類見直しとして扱う。
 
 ### 7. reopen の機械更新と完了検査
 
@@ -269,11 +286,11 @@ worktree_policy:
   dirty_scope: staged_only
   mixed_staged_unstaged: reject
 pending_conflicts:
-  - next_action_kind: post_write_verification
+  - id: post_write_verification
     scope: any
-  - next_action_kind: reopen_in_progress
+  - id: reopen_in_progress
     scope: unrelated
-  - next_action_kind: maintenance_in_progress
+  - id: maintenance_in_progress
     scope: unrelated
 command_validation:
   command_must_exist: true
@@ -342,6 +359,14 @@ review-run dir、`triage_decide` なら review-run dir / finding id / final labe
 独自の `*_pending` などの別名は作らない。
 この配列には、完了状態を表す語と衝突候補を表す語が同居し得る。意味の違いは
 `pending_conflicts[]` や `checks[]` 側で表現し、`state_refs` 自体は「参照語彙の索引」に留める。
+contract 側の `pending_conflicts[].id` は既存 `next_action.kind` 語彙を参照する識別子であり、
+`pending_conflicts[].scope` は、どの衝突を遮断するかを表す宣言である。
+response 側の `pending_conflicts[].blocking` は、実状態を見た後の遮断結果である。
+初期規則は、`scope: any` は該当 action kind が `present` なら常に `blocking: true`、
+`scope: unrelated` は現在 operation の target identity と pending 側 target が重ならない場合に
+`blocking: true` とする。重なり判定に必要な target identity が取れない場合は `not_checked` とし、
+Phase 1 では `WARN`、runner-enabled operation では `DEVIATION` に倒す。これにより YAML contract の
+`scope` と JSON response の `blocking` は別名ではなく、宣言値と評価結果として対応する。
 `checks` は preflight が実際に確認した項目を列挙する。未実装の検査は空欄や `{}` ではなく、
 `not_checked` と `verdict_on_unknown` を明示する。
 ここで使う `verdict_on_fail` / `verdict_on_unknown` は preflight の返す `verdict` であり、
@@ -641,6 +666,11 @@ Phase 1 の各 operation は、少なくとも次の入力粒度を持つ。
 既存 YAML のように preflight が読み取る値である。`triage_decide` の approval record は
 実行には必要だが、Phase 1 の read-only preflight では無ければ `missing_inputs` と
 `template_available: true` を返す。template 生成は Phase 2 の wrapper 側責務である。
+`post_write_review` の target files は、原則として dirty / staged state から自動検出した
+post-write target set を正とする。明示入力の target files は、対象を上書きするためではなく、
+利用者が想定している対象と自動検出結果を突き合わせるために使う。両者が一致しない場合は
+`DEVIATION` とし、明示入力が無い場合は自動検出結果を target identity に採用する。
+これにより、CLI / YAML の指定と実 worktree 状態の不一致を早い段階で検出する。
 
 ### Phase 2: wrapper 化
 

@@ -1,0 +1,4 @@
+run_id: 2026-06-16-operation-registry-preflight-design-note-postwrite-r3
+target_files:
+- path: docs/notes/2026-06-16-operation-registry-preflight-design.md
+  sha256: a39b053736064983533e12d17e7abb3205b0ca02e0aa5af883ab54b354425576
