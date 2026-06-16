@@ -291,11 +291,48 @@ def _check_staged_vs_unstaged_target_selection(operation, _cwd, _next_action):
   return ["worktree_policy がありません"]
 
 
+def _input_value(operation, name):
+  prefix = f"{name}="
+  for value in operation.get("required_inputs") or []:
+    if isinstance(value, str) and value.startswith(prefix):
+      return value[len(prefix):]
+  return None
+
+
+def _looks_like_repo_file_input(value):
+  if not isinstance(value, str) or not value:
+    return False
+  if "=" in value or "{" in value or "}" in value:
+    return False
+  if value.startswith("--"):
+    return False
+  if "/" in value:
+    return True
+  return Path(value).suffix in (".json", ".yaml", ".yml", ".md", ".txt")
+
+
+def _missing_required_inputs(operation, cwd):
+  missing = []
+  for value in operation.get("required_inputs") or []:
+    if not _looks_like_repo_file_input(value):
+      continue
+    path = Path(value)
+    if path.is_absolute():
+      missing.append(value)
+      continue
+    if not (Path(cwd) / path).exists():
+      missing.append(value)
+  return missing
+
+
 def _check_required_inputs(operation, names):
   required_inputs = set(operation.get("required_inputs") or [])
   target_identity = set(operation.get("target_identity") or [])
   declared = required_inputs | target_identity
-  missing = [name for name in names if name not in declared]
+  missing = [
+    name for name in names
+    if name not in declared and _input_value(operation, name) is None
+  ]
   if missing:
     return ["必須入力宣言が不足しています: " + ", ".join(missing)]
   return []
@@ -305,6 +342,19 @@ def _make_required_inputs_check(*names):
   def _check(operation, _cwd, _next_action):
     return _check_required_inputs(operation, names)
   return _check
+
+
+def _check_current_session_formal_output_forbidden(operation, _cwd, _next_action):
+  mode = _input_value(operation, "session_record_mode")
+  current = _input_value(operation, "current_session_id")
+  target = _input_value(operation, "target_session_id")
+  if mode != "formal":
+    return []
+  if not current or not target:
+    return ["formal session record は current_session_id と target_session_id が必要です"]
+  if current == target:
+    return ["formal session record は current session を対象にできません"]
+  return []
 
 
 CHECK_EXECUTORS = {
@@ -334,7 +384,7 @@ CHECK_EXECUTORS = {
   "session_record_mode": _make_required_inputs_check("session_record_mode"),
   "current_session_id": _make_required_inputs_check("current_session_id"),
   "target_session_id": _make_required_inputs_check("target_session_id"),
-  "current_session_formal_output_forbidden": _make_required_inputs_check("current_session_id"),
+  "current_session_formal_output_forbidden": _check_current_session_formal_output_forbidden,
   "parent_task": _make_required_inputs_check("parent_task"),
   "discovered_issue": _make_required_inputs_check("discovered_issue"),
   "relation": _make_required_inputs_check("relation"),
@@ -372,13 +422,30 @@ def _flatten_check_reasons(checks):
   return reasons
 
 
-def _build_response(operation_id, operation=None, verdict="DEVIATION", reasons=None, next_action=None, checks=None):
+def _session_state_refs(operation):
+  return {
+    "current_session_id": _input_value(operation or {}, "current_session_id"),
+    "target_session_id": _input_value(operation or {}, "target_session_id"),
+    "session_record_mode": _input_value(operation or {}, "session_record_mode"),
+  }
+
+
+def _build_response(
+  operation_id,
+  operation=None,
+  verdict="DEVIATION",
+  reasons=None,
+  next_action=None,
+  checks=None,
+  missing_inputs=None,
+):
   reasons = list(reasons or [])
   checks = list(checks or [])
   if reasons:
     checks.insert(0, {"name": "registry_schema", "status": "failed", "reasons": reasons})
   response_reasons = reasons + _flatten_check_reasons(checks)
   sequence_mode = (operation or {}).get("sequence_mode")
+  session_refs = _session_state_refs(operation)
   return {
     "schema_version": "operation-preflight-v1",
     "operation_id": operation_id,
@@ -389,11 +456,14 @@ def _build_response(operation_id, operation=None, verdict="DEVIATION", reasons=N
     "allowed_sequence_modes": ALLOWED_SEQUENCE_MODES,
     "state_refs": {
       "next_action": next_action,
+      "current_session_id": session_refs["current_session_id"],
+      "target_session_id": session_refs["target_session_id"],
+      "session_record_mode": session_refs["session_record_mode"],
       "workflow_state_files": next_action.get("state_files") if isinstance(next_action, dict) else [],
       "git_index": None,
     },
     "required_inputs": list((operation or {}).get("required_inputs") or []),
-    "missing_inputs": [],
+    "missing_inputs": list(missing_inputs or []),
     "template_available": False,
     "target_identity": list((operation or {}).get("target_identity") or []),
     "worktree_state": {},
@@ -418,6 +488,9 @@ def run_preflight(cwd, operation_id):
 
   validation_reasons = []
   validation_reasons.extend(validate_operation(operation))
+  missing_inputs = _missing_required_inputs(operation, cwd)
+  if missing_inputs:
+    validation_reasons.append("必須入力が欠落しています: " + ", ".join(missing_inputs))
 
   next_data = None
   next_action = None
@@ -437,4 +510,5 @@ def run_preflight(cwd, operation_id):
     reasons=validation_reasons,
     next_action=next_action,
     checks=checks,
+    missing_inputs=missing_inputs,
   )

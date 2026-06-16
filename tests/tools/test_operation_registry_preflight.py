@@ -428,6 +428,60 @@ class OperationRegistryPreflightTests(unittest.TestCase):
     self.assertEqual(data["exit_code_contract"]["WARN"], 1)
     self.assertEqual(data["exit_code_contract"]["DEVIATION"], 2)
 
+  def test_missing_required_input_file_is_deviation_and_reported(self):
+    operation = base_operation(
+      required_inputs=[
+        "stages/in-progress/reopen-procedure-2026-06-16.yaml",
+        "docs/reviews/missing-required-input.md",
+      ],
+    )
+    write_registry(self.tmp, [operation])
+
+    result = run(["operation-preflight", "--operation-id", "workflow_next_preflight", "--json"], self.tmp)
+
+    self.assertEqual(result.returncode, 2)
+    data = json.loads(result.stdout)
+    self.assertEqual(data["verdict"], "DEVIATION")
+    self.assertIn("docs/reviews/missing-required-input.md", data["missing_inputs"])
+    self.assertIn("必須入力", "\n".join(data["reasons"]))
+
+  def test_session_record_formal_current_session_is_deviation(self):
+    operation = base_operation(
+      operation_id="session_record_capture_preflight",
+      kind="evidence_capture",
+      operation_family="session_record_capture",
+      workflow_binding={"phase": None, "stage": None, "gate": None, "next_action_kind": None},
+      required_inputs=[
+        "session_record_mode=formal",
+        "current_session_id=codex-current",
+        "target_session_id=codex-current",
+      ],
+      target_identity=["codex-current"],
+      planned_outputs=[],
+      sequence_mode="serial_only",
+      worktree_policy="allow_dirty_read_only",
+      pending_conflict_policy="allow_matching_capture",
+      artifact_policy="read_only",
+      family_required_checks=[
+        "session_record_mode",
+        "current_session_id",
+        "target_session_id",
+        "current_session_formal_output_forbidden",
+      ],
+      vocabulary_refs=["session_record_mode"],
+    )
+    write_registry(self.tmp, [operation])
+
+    result = run(["operation-preflight", "--operation-id", "session_record_capture_preflight", "--json"], self.tmp)
+
+    self.assertEqual(result.returncode, 2)
+    data = json.loads(result.stdout)
+    self.assertEqual(data["verdict"], "DEVIATION")
+    self.assertEqual(data["state_refs"]["current_session_id"], "codex-current")
+    self.assertEqual(data["state_refs"]["target_session_id"], "codex-current")
+    self.assertEqual(data["state_refs"]["session_record_mode"], "formal")
+    self.assertIn("current session", "\n".join(data["reasons"]))
+
 
 if __name__ == "__main__":
   unittest.main()
