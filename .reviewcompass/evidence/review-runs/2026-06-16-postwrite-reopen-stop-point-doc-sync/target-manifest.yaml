@@ -1,0 +1,6 @@
+run_id: 2026-06-16-postwrite-reopen-stop-point-doc-sync
+target_files:
+- path: TODO_NEXT_SESSION.md
+  sha256: cb4d076a0d02b11c26caf30c50da116a895339fcf8c177607057cad5a6073635
+- path: docs/operations/WORKFLOW_PRECHECK_DETAILS.md
+  sha256: 5faa36baa92906015d46ffd55d343e4cec9c37abb94ed382611437c667cd09ca

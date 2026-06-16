@@ -177,7 +177,7 @@ must-fix 対応に続き、C5〜C7 should-fix に TDD で対応した。
 
 - C5：redaction 後の source text を保存する場合、`source_omission_reason` key を出さないようにした。source を保存しない場合だけ omission reason enum を使う。
 - C6：legacy fallback で読まれた nonce approval が security validation failure になった場合、凍結済み legacy record は変更せず、runtime 側に invalidated copy を作る。runtime challenge も invalidated にする。
-- C7：`commit_stop_point=true` は `step_number=3`、`next_step=第3過程：implementation triad-review`、`commit_stop_point_reason` に `implementation drafting 完了` を含む場合だけ、`停止点コミット` 文字列なしの reopen stop point として許可する。
+- C7：`commit_stop_point=true` は broad bypass にしない。現在は構造化された停止点だけを許可する。第2過程は `step_number=2`、`commit_stop_point_step=2`、`commit_stop_point_kind=canonical_update_complete` の形だけを許可し、第3過程は `step_number=3`、`commit_stop_point_step=3`、`commit_stop_point_kind=drafting_complete`、`commit_stop_point_gate=stages/<phase>.yaml#drafting` の形だけを許可する。`next_step` の「停止点コミット」文字列だけでは許可しない。
 
 追加・更新テスト：
 
