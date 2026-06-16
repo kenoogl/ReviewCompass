@@ -1,0 +1,4 @@
+run_id: 2026-06-17-postwrite-next-json-unique-state-redesign-import
+target_files:
+- path: docs/notes/2026-06-16-next-json-unique-state-redesign.md
+  sha256: 18ad7059d00f86d36eca87a904d0db464f0598ebdf4f95d580b434cecd1dfa36

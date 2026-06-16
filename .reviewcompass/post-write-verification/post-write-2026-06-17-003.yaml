@@ -1,0 +1,20 @@
+status: completed
+target_files:
+- docs/notes/2026-06-16-next-json-unique-state-redesign.md
+target_sha256:
+  docs/notes/2026-06-16-next-json-unique-state-redesign.md: 18ad7059d00f86d36eca87a904d0db464f0598ebdf4f95d580b434cecd1dfa36
+required_verifiers: &id001
+- gemini-3.5-flash
+completed_verifiers: *id001
+unresolved_substantive_findings: 0
+verifications:
+- verifier: gemini-3.5-flash
+  target_files:
+  - docs/notes/2026-06-16-next-json-unique-state-redesign.md
+  target_sha256:
+    docs/notes/2026-06-16-next-json-unique-state-redesign.md: 18ad7059d00f86d36eca87a904d0db464f0598ebdf4f95d580b434cecd1dfa36
+review_run:
+  path: .reviewcompass/evidence/review-runs/2026-06-17-postwrite-next-json-unique-state-redesign-import
+  summary_path: .reviewcompass/evidence/review-runs/2026-06-17-postwrite-next-json-unique-state-redesign-import/model-result-summary.yaml
+notes: Generated template; verify target_files cover current post-write targets before
+  use.
