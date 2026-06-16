@@ -4019,6 +4019,11 @@ class ReopenAdvanceStepTests(unittest.TestCase):
     self.assertEqual(state["next_step"], "第2過程：停止点コミット")
     self.assertIsNone(state["current_blocker"])
     self.assertIs(state["commit_stop_point"], True)
+    self.assertEqual(state["commit_stop_point_step"], 2)
+    self.assertEqual(
+      state["commit_stop_point_kind"],
+      "canonical_update_complete",
+    )
     self.assertEqual(state["commit_stop_point_reason"], "第2過程の正本修正完了")
     self.assertIn("第2過程：正本修正完了", state["completed_steps"])
     self.assertEqual(state["reopen_step_records"][0]["from_step"], 2)
@@ -5379,6 +5384,8 @@ class CommitExitCodeTests(unittest.TestCase):
       "step_number: 2\n"
       "current_blocker: null\n"
       "commit_stop_point: true\n"
+      "commit_stop_point_step: 2\n"
+      "commit_stop_point_kind: canonical_update_complete\n"
       "commit_stop_point_reason: 第2過程の正本修正完了\n",
       encoding="utf-8",
     )
@@ -5404,6 +5411,89 @@ class CommitExitCodeTests(unittest.TestCase):
     _assert_script_invoked(self, result)
     self.assertEqual(result.returncode, 0, result.stdout)
 
+  def test_commit_blocks_reopen_stop_point_text_without_structured_fields(self):
+    """next_step の文言だけでは reopen 停止点 commit を許可しない"""
+    _set_pending_findings(self.pending_file, unresolved_count=0)
+    _stage_file(self.tmpdir, "notes.md", "# reopen 停止点の記録")
+    in_progress_path = (
+      Path(self.tmpdir)
+      / "stages"
+      / "in-progress"
+      / "reopen-procedure-2026-06-08.yaml"
+    )
+    in_progress_path.parent.mkdir(parents=True)
+    in_progress_path.write_text(
+      "process_id: reopen-procedure\n"
+      "next_step: 第2過程：停止点コミット\n"
+      "step_number: 2\n",
+      encoding="utf-8",
+    )
+    subprocess.run(
+      ["git", "add", "stages/in-progress/reopen-procedure-2026-06-08.yaml"],
+      cwd=str(self.tmpdir),
+      check=True,
+      capture_output=True,
+    )
+    _write_commit_approval(
+      self.tmpdir,
+      [
+        "notes.md",
+        "stages/in-progress/reopen-procedure-2026-06-08.yaml",
+      ],
+    )
+
+    result = run_script(
+      ["commit", "--rationale", "旧式 next_step 停止点 commit"],
+      cwd=self.tmpdir,
+    )
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 2, result.stdout)
+    self.assertIn("stages/in-progress", result.stdout)
+
+  def test_commit_blocks_reopen_stop_point_without_structured_kind(self):
+    """commit_stop_point=true でも構造化 kind がなければ遮断する"""
+    _set_pending_findings(self.pending_file, unresolved_count=0)
+    _stage_file(self.tmpdir, "notes.md", "# reopen 停止点の記録")
+    in_progress_path = (
+      Path(self.tmpdir)
+      / "stages"
+      / "in-progress"
+      / "reopen-procedure-2026-06-08.yaml"
+    )
+    in_progress_path.parent.mkdir(parents=True)
+    in_progress_path.write_text(
+      "process_id: reopen-procedure\n"
+      "next_step: 第2過程：停止点コミット\n"
+      "step_number: 2\n"
+      "commit_stop_point: true\n"
+      "commit_stop_point_step: 2\n"
+      "commit_stop_point_reason: 第2過程の正本修正完了\n",
+      encoding="utf-8",
+    )
+    subprocess.run(
+      ["git", "add", "stages/in-progress/reopen-procedure-2026-06-08.yaml"],
+      cwd=str(self.tmpdir),
+      check=True,
+      capture_output=True,
+    )
+    _write_commit_approval(
+      self.tmpdir,
+      [
+        "notes.md",
+        "stages/in-progress/reopen-procedure-2026-06-08.yaml",
+      ],
+    )
+
+    result = run_script(
+      ["commit", "--rationale", "構造化不足の停止点 commit"],
+      cwd=self.tmpdir,
+    )
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 2, result.stdout)
+    self.assertIn("stages/in-progress", result.stdout)
+
   def test_commit_allows_reopen_explicit_commit_stop_point_field(self):
     """next_step を壊さず commit_stop_point=true で reopen 停止点 commit を許可する"""
     _set_pending_findings(self.pending_file, unresolved_count=0)
@@ -5420,7 +5510,10 @@ class CommitExitCodeTests(unittest.TestCase):
       "next_step: 第3過程：implementation triad-review\n"
       "step_number: 3\n"
       "commit_stop_point: true\n"
-      "commit_stop_point_reason: implementation drafting 完了時点の停止点\n",
+      "commit_stop_point_step: 3\n"
+      "commit_stop_point_kind: drafting_complete\n"
+      "commit_stop_point_gate: stages/implementation.yaml#drafting\n"
+      "commit_stop_point_reason: 文言に依存しない人間向け説明\n",
       encoding="utf-8",
     )
     subprocess.run(
@@ -6107,7 +6200,10 @@ class CommitExitCodeTests(unittest.TestCase):
     in_progress_path.write_text(
       "process_id: reopen-procedure\n"
       "step_number: 2\n"
-      "next_step: 第2過程：停止点コミット\n",
+      "next_step: 第2過程：停止点コミット\n"
+      "commit_stop_point: true\n"
+      "commit_stop_point_step: 2\n"
+      "commit_stop_point_kind: canonical_update_complete\n",
       encoding="utf-8",
     )
     relpaths = [

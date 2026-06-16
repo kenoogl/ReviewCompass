@@ -3798,23 +3798,49 @@ def is_reopen_stop_point_commit_allowed(cwd, in_progress_files, staged_files):
     data = load_in_progress_file(cwd, relative_path)
     if data.get("process_id") != "reopen-procedure":
       return False
-    next_step = data.get("next_step") or ""
-    if "停止点コミット" in next_step:
-      continue
     if data.get("commit_stop_point") is not True:
       return False
-    reason = data.get("commit_stop_point_reason") or ""
-    if data.get("step_number") in (2, "2"):
-      if "第2過程" not in reason or "正本修正完了" not in reason:
-        return False
-      continue
-    if data.get("step_number") != 3:
-      return False
-    if next_step != "第3過程：implementation triad-review":
-      return False
-    if "implementation drafting 完了" not in reason:
+    if not _is_structured_reopen_commit_stop_point(data):
       return False
   return True
+
+
+def _int_field(data, name):
+  value = data.get(name)
+  try:
+    return int(value)
+  except (TypeError, ValueError):
+    return None
+
+
+def _is_structured_reopen_commit_stop_point(data):
+  """人間向け文言ではなく構造フィールドで reopen 停止点を判定する"""
+  step_number = _int_field(data, "step_number")
+  stop_point_step = _int_field(data, "commit_stop_point_step")
+  if step_number is None or stop_point_step != step_number:
+    return False
+
+  kind = data.get("commit_stop_point_kind")
+  if step_number == 2:
+    return kind == "canonical_update_complete"
+
+  if step_number == 3:
+    if kind != "drafting_complete":
+      return False
+    gate = data.get("commit_stop_point_gate")
+    if not isinstance(gate, str):
+      return False
+    parts = gate.split("#", 1)
+    if len(parts) != 2:
+      return False
+    stage_file, stage = parts
+    if not stage_file.startswith("stages/") or not stage_file.endswith(".yaml"):
+      return False
+    if stage != "drafting":
+      return False
+    return True
+
+  return False
 
 
 def is_completed_maintenance_commit_allowed(cwd, in_progress_files, staged_files):
@@ -5371,6 +5397,8 @@ def cmd_reopen_advance_step(args):
       data["next_step"] = "第2過程：停止点コミット"
       data["current_blocker"] = None
       data["commit_stop_point"] = True
+      data["commit_stop_point_step"] = 2
+      data["commit_stop_point_kind"] = "canonical_update_complete"
       data["commit_stop_point_reason"] = "第2過程の正本修正完了"
 
     path.write_text(
