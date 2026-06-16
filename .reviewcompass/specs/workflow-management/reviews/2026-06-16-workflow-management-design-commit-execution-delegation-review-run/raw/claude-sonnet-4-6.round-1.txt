@@ -1,0 +1,55 @@
+findings:
+  - severity: ERROR
+    target_location: "Design Delta §2.2 — append to commit-approval.json"
+    description: "Appending execution_delegation to the existing commit-approval.json record conflates staged-content approval and execution delegation into a single mutable document, directly contradicting Requirement 4 acceptance 8 item 1 ('LLM commit execution delegation is separate from staged content approval') and review question 2."
+    rationale: "If both records live in the same JSON file, any reader or validator must inspect a single document to distinguish approval from delegation. Mutation of an already-written approval record undermines the separation guarantee stated in the requirement and makes atomic validation of the approval record impossible after delegation is appended. A separate file (e.g., commit-approval-execution-delegation.json) co-located with or referenced by the approval record would satisfy both the requirement and review question 2."
+
+  - severity: ERROR
+    target_location: "Design Delta §2.2 — invalidation path: commit-approval invalidate + new prepare"
+    description: "The design requires issuing commit-approval invalidate followed by a new prepare in order to replace an abandoned delegation, but the design does not specify what happens to the existing approval record during invalidation. If invalidation consumes or mutates the approval record, a new prepare implies a new challenge cycle, which would break the nonce binding between the original staged-content approval and the new delegation."
+    rationale: "Requirement 4 acceptance 8 item 4 requires that delegation creation requires a valid, unexpired, unconsumed staged-content challenge and staged-content approval record for the same nonce. If invalidation affects the approval record and a new prepare issues a new nonce, the new delegation cannot be bound to the original nonce. The design must clarify whether invalidation targets only the delegation record, and whether a new prepare re-uses the existing nonce or issues a new one."
+
+  - severity: ERROR
+    target_location: "Design Delta §2.2 — fail-closed cases"
+    description: "The fail-closed enumeration does not explicitly cover malformed or partially-written delegation records (e.g., a previous delegate-execution that crashed mid-write), nor does it cover the case where the commit-approval.json itself has been externally modified between approval and delegation. Both are required by review question 4 ('malformed records')."
+    rationale: "Without explicit handling, a partially-written or externally-mutated approval record could pass schema validation while carrying stale or attacker-controlled fields. Failing closed on schema/integrity violations of the approval record prior to delegation is necessary for the guarantee boundary described in review question 7."
+
+  - severity: WARN
+    target_location: "Design Delta §2.2 — stdin payload constraint: no newline"
+    description: "The spec forbids newlines in the stdin payload but does not specify whether the prohibition covers CR (\\r), CRLF (\\r\\n), or only LF (\\n). On Windows-style line endings, a phrase could arrive with \\r appended, pass the LF check, and then fail normalization silently or match incorrectly."
+    rationale: "Requirement 4 acceptance 8 item 6 requires non-UTF-8 and malformed inputs to fail closed. CR-only or CRLF line endings are a common source of normalization drift. The spec should enumerate which byte values constitute a forbidden line-ending character."
+
+  - severity: WARN
+    target_location: "Design Delta §2.2 — normalization: removes one trailing Japanese period"
+    description: "Normalization removes one trailing Japanese full-stop (。) but the design does not specify behavior when multiple trailing periods are present (e.g., 'コミットして。。'). This creates a gap: two trailing periods would leave one period, producing a non-matching normalized form rather than a clean match, which may confuse implementers and TDD test authors."
+    rationale: "The normalization rule must be deterministic and exhaustive for the allowed phrase set. If the intent is that any trailing punctuation cluster fails closed, the spec should say so explicitly. If only a single trailing period is stripped, the spec should confirm that residual punctuation causes a rejection, not an implementation-defined behavior."
+
+  - severity: WARN
+    target_location: "Design Delta §2.2 — delegation expiry equals challenge expiry"
+    description: "The design states that delegation expiry equals the challenge expiry and cannot exceed it, but does not specify the behavior when the challenge expires between the moment delegate-execution begins reading stdin and the moment it writes the delegation record. A time-of-check/time-of-use race is possible."
+    rationale: "Without an atomic expiry check at the point of record creation (not just at invocation start), a delegation record could be written for an already-expired challenge. The design should specify that expiry is evaluated immediately before the write and that a race resulting in expiry fails closed."
+
+  - severity: WARN
+    target_location: "Design Delta §2.2 — commit gate: --execution-actor llm requires execution_delegation"
+    description: "The design requires execution_delegation when --execution-actor llm but does not specify what field or value in the delegation record the commit gate validates to confirm the delegation is still unexpired and unconsumed at gate time. It is unclear whether the gate re-validates expiry, nonce binding, and staged-content match, or only checks presence of the field."
+    rationale: "A delegation record that was valid at creation time may be expired or its staged content may have changed by commit gate time. The gate must re-validate all binding conditions (expiry, nonce, target digest, staged file set) at the moment of gate evaluation, not merely assert field presence. The design should state this explicitly."
+
+  - severity: WARN
+    target_location: "Design Delta §2.2 — allowed phrase list: 'commitして'"
+    description: "The allowed phrase 'commitして' mixes ASCII and Japanese script. The normalization step lowercases English, but the design does not specify whether full-width Latin characters (e.g., 'ｃｏｍｍｉｔして') are normalized to ASCII before matching. If not, a visually similar full-width form would be rejected without a clear error message, which may be confusing but is fail-closed."
+    rationale: "For TDD implementation clarity, the spec should explicitly state whether full-width-to-ASCII normalization is performed. If it is not, the spec should note that full-width variants are rejected by the exact-match rule. Either answer is acceptable but the ambiguity should be resolved before implementation."
+
+  - severity: INFO
+    target_location: "Design Delta §2.2 — LLM/provider/model fields banned from schema"
+    description: "The design bans LLM/provider/model fields from the delegation record schema and states they are not validation inputs. This satisfies Requirement 4 acceptance 6/7 (LLM/provider/model independence). However, the design does not specify how the commit gate enforces the absence of these fields (schema validation vs. key-presence check)."
+    rationale: "For mechanical enforceability (review question 5), the implementation should use schema validation (e.g., additionalProperties: false on the relevant schema object) rather than a runtime key-presence check, which could be bypassed by placing banned fields under a different key. This is non-blocking but should be addressed in the TDD specification."
+
+  - severity: INFO
+    target_location: "Design Delta §2.2 — guarantee scope field"
+    description: "The delegation record includes a 'guarantee scope' field. The design notes this is not cryptographic proof of a UI utterance (review question 7), but does not specify what values guarantee_scope may take or how downstream consumers should interpret it. Without a controlled vocabulary, consumers may over-rely on it."
+    rationale: "Defining an enumerated vocabulary for guarantee_scope (e.g., 'stdin-text-only', 'no-ui-binding') in the design would prevent consumers from inferring stronger guarantees than the record provides and would make the boundary explicit for TDD and audit purposes."
+
+  - severity: INFO
+    target_location: "Review Scope — source document list"
+    description: "The review target lists stages/in-progress/reopen-procedure-2026-06-16.yaml as a source document but the design delta does not reference any procedure-level constraints from that file. If that file contains expiry, ordering, or consumption rules that differ from the design, the discrepancy would not be caught by reviewing the design document alone."
+    rationale: "A cross-reference check between the reopen procedure YAML and the design delta constraints (expiry, nonce binding, consumption) should be performed as part of design sign-off to ensure no contradictions exist between the procedure and the design."

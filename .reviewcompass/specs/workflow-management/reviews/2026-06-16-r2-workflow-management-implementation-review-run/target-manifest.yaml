@@ -1,0 +1,4 @@
+run_id: 2026-06-16-r2-workflow-management-implementation-review-run
+target_files:
+- path: .reviewcompass/specs/workflow-management/reviews/2026-06-16-r2-workflow-management-implementation-review-run/review-target.md
+  sha256: 73bc782566848e9140c8c6d2380be6facaf4caf97c4d8bc5217354c395fd9ec5

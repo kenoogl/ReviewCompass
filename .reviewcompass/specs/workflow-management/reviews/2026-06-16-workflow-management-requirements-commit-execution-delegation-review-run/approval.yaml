@@ -1,0 +1,25 @@
+approved_action: review_run_triage
+approved_by: user
+approval_statement: 2026-06-16 利用者発言「承認」（C1〜C3 を must-fix、C4 を leave-as-is とする提示への明示承認）
+review_run_id: 2026-06-16-workflow-management-requirements-commit-execution-delegation-review-run
+summary_presented_to_user: true
+triage_presented_to_user: true
+approved_finding_ids:
+  - 2026-06-16-workflow-management-requirements-commit-execution-delegation-review-run-claude-sonnet-4-6-primary-001
+  - 2026-06-16-workflow-management-requirements-commit-execution-delegation-review-run-claude-sonnet-4-6-primary-002
+  - 2026-06-16-workflow-management-requirements-commit-execution-delegation-review-run-claude-sonnet-4-6-primary-003
+  - 2026-06-16-workflow-management-requirements-commit-execution-delegation-review-run-claude-sonnet-4-6-primary-004
+  - 2026-06-16-workflow-management-requirements-commit-execution-delegation-review-run-claude-sonnet-4-6-primary-005
+  - 2026-06-16-workflow-management-requirements-commit-execution-delegation-review-run-claude-sonnet-4-6-primary-006
+  - 2026-06-16-workflow-management-requirements-commit-execution-delegation-review-run-gemini-3.1-pro-preview-judgment-001
+  - 2026-06-16-workflow-management-requirements-commit-execution-delegation-review-run-gemini-3.1-pro-preview-judgment-002
+approved_final_labels:
+  2026-06-16-workflow-management-requirements-commit-execution-delegation-review-run-claude-sonnet-4-6-primary-001: leave-as-is
+  2026-06-16-workflow-management-requirements-commit-execution-delegation-review-run-claude-sonnet-4-6-primary-002: must-fix
+  2026-06-16-workflow-management-requirements-commit-execution-delegation-review-run-claude-sonnet-4-6-primary-003: must-fix
+  2026-06-16-workflow-management-requirements-commit-execution-delegation-review-run-claude-sonnet-4-6-primary-004: must-fix
+  2026-06-16-workflow-management-requirements-commit-execution-delegation-review-run-claude-sonnet-4-6-primary-005: must-fix
+  2026-06-16-workflow-management-requirements-commit-execution-delegation-review-run-claude-sonnet-4-6-primary-006: must-fix
+  2026-06-16-workflow-management-requirements-commit-execution-delegation-review-run-gemini-3.1-pro-preview-judgment-001: must-fix
+  2026-06-16-workflow-management-requirements-commit-execution-delegation-review-run-gemini-3.1-pro-preview-judgment-002: must-fix
+consumed: false

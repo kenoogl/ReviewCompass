@@ -1,0 +1,17 @@
+findings:
+  - severity: ERROR
+    target_location: "Design Delta: execution_delegation fields / Req 4 acceptance 8 binding"
+    description: "The delegation record fields do not explicitly bind the delegation to the staged file set."
+    rationale: "Requirement 4 acceptance 8 requires the delegation record to be bound to the same nonce challenge, target digest, staged file set, and expiry as the staged-content approval. The described fields include nonce, target digest, timestamps, normalized instruction, instruction hash, attestation type, and guarantee scope, but do not list a staged file set digest, staged file list, approval-record identifier, or other explicit reference that mechanically binds the delegation to the approved staged content. Relying on co-location inside commit-approval.json is ambiguous unless the design states that the enclosing staged-content approval record is the binding object and that commit-gate validation rechecks it."
+  - severity: WARN
+    target_location: "Design Delta: delegate-execution validation / fail-closed cases"
+    description: "Malformed existing records and duplicate delegation states are not specified as normative fail-closed cases."
+    rationale: "The review scope asks for fail-closed handling of malformed records and replay/ordering cases, and the requirements delta requires existing unexpired delegation records to fail closed. The design says replacement requires invalidate followed by prepare, but it does not explicitly state that malformed commit-approval JSON, malformed staged-content approval records, malformed execution_delegation objects, nonce collisions, or any existing unexpired delegation for the nonce cause delegate-execution and the commit gate to fail closed without repair or overwrite."
+  - severity: WARN
+    target_location: "Design Delta: appending execution_delegation to .reviewcompass/runtime/approvals/commit-approval.json"
+    description: "The append/update semantics need atomicity and revalidation requirements."
+    rationale: "Because delegate-execution mutates an existing approval file after validating the nonce, challenge, target digest, and staged content, the design should require atomic write behavior and validation immediately before write. Without this, concurrent invocations or staged-content changes between validation and write can create partial, stale, or conflicting delegation records. Commit-gate revalidation may catch some cases, but the formal CLI design should still define fail-closed behavior for write races and partially written JSON."
+  - severity: WARN
+    target_location: "Design Delta: attestation type and guarantee scope"
+    description: "The guarantee boundary is under-specified."
+    rationale: "The design mentions attestation type and guarantee scope fields, but does not define their allowed values or require wording that the record is only an attestation over stdin text accepted by the formal CLI, not cryptographic proof of a UI utterance or provider/model behavior. This matters because the reopened requirement is specifically about formal delegation semantics while preserving LLM/provider/model independence and avoiding overclaiming the provenance guarantee."

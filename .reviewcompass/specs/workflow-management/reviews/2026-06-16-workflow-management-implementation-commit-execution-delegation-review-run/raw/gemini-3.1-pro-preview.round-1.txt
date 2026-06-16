@@ -1,0 +1,13 @@
+findings:
+  - severity: WARN
+    target_location: "tools/check_workflow_action/commit_approval.py"
+    description: "Implementation summary does not indicate that the strict schema explicitly rejects unknown fields or LLM/provider/model identity fields."
+    rationale: "Review Question 4 mandates the rejection of unknown fields and LLM identity fields. Failing to actively reject these fields could allow the LLM to embed unauthorized identity assertions into the delegation record, violating the accountability model."
+  - severity: WARN
+    target_location: "tests/tools/test_check_workflow_action.py"
+    description: "Tests for redaction failure and residual secret detection are omitted for the delegate-execution action."
+    rationale: "Review Question 2 explicitly asks if delegate-execution fails closed for redaction failures and residual secrets. Without explicit test coverage, secrets hallucinated or leaked into the JSON delegation payload might bypass the pre-commit gate."
+  - severity: INFO
+    target_location: "tools/check_workflow_action/commit_approval.py"
+    description: "Addition of the 'commit-execution-delegation.json' runtime path does not mention corresponding .gitignore updates."
+    rationale: "Review Question 9 covers deployment and portability concerns. Generating new runtime state files locally can lead to index pollution and accidental commits of workflow state if the path is not explicitly ignored."

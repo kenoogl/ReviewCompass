@@ -1,0 +1,4 @@
+run_id: 2026-06-16-postwrite-commit-execution-delegation-classification
+target_files:
+- path: docs/reviews/reopen-classification-2026-06-16-wm-commit-execution-delegation.md
+  sha256: 663de33071ad06dd029600254eca2c52e3b7739c594a17a062996c766af049b8

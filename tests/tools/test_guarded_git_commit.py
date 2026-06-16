@@ -10,8 +10,10 @@ import unittest
 from pathlib import Path
 
 from tests.tools.test_check_workflow_action import (
+  _delegate_commit_execution,
   _init_git_repo,
   _prepare_commit_approval,
+  _read_commit_execution_delegation,
   _record_commit_approval,
   _stage_file,
   _write_commit_approval,
@@ -108,31 +110,16 @@ class GuardedGitCommitTests(unittest.TestCase):
     self.assertTrue(approval["consumed"])
 
   def test_guarded_commit_consumes_nonce_challenge_after_success(self):
-    """nonce 承認 commit 成功後は approval と challenge の両方を消費済みにする"""
+    """nonce 承認 commit 成功後は approval/challenge/delegation を消費済みにする"""
     _stage_file(self.tmpdir, "notes.md", "# nonce commit")
     challenge = _prepare_commit_approval(self.tmpdir)
     record_result = _record_commit_approval(self.tmpdir, challenge["nonce"])
     self.assertEqual(record_result.returncode, 0, record_result.stderr)
-
-    approval_path = (
-      Path(self.tmpdir)
-      / ".reviewcompass"
-      / "runtime"
-      / "approvals"
-      / "commit-approval.json"
+    delegate_result = _delegate_commit_execution(
+      self.tmpdir,
+      challenge["nonce"],
     )
-    approval = json.loads(approval_path.read_text(encoding="utf-8"))
-    approval["execution_delegation"] = {
-      "delegated_to": "llm",
-      "approved_by": "user",
-      "approved_at": "2026-06-03T00:00:00+09:00",
-      "explicit_instruction": "コミット代行も含めて自律実行",
-      "rationale": "利用者が LLM によるコミット実行代行を明示承認",
-    }
-    approval_path.write_text(
-      json.dumps(approval, ensure_ascii=False, indent=2) + "\n",
-      encoding="utf-8",
-    )
+    self.assertEqual(delegate_result.returncode, 0, delegate_result.stderr)
 
     result = run_guarded_commit(
       [
@@ -143,6 +130,13 @@ class GuardedGitCommitTests(unittest.TestCase):
     )
 
     self.assertEqual(result.returncode, 0, result.stderr)
+    approval_path = (
+      Path(self.tmpdir)
+      / ".reviewcompass"
+      / "runtime"
+      / "approvals"
+      / "commit-approval.json"
+    )
     approval = json.loads(approval_path.read_text(encoding="utf-8"))
     challenge_path = (
       Path(self.tmpdir)
@@ -152,8 +146,10 @@ class GuardedGitCommitTests(unittest.TestCase):
       / "commit-approval-challenge.json"
     )
     consumed_challenge = json.loads(challenge_path.read_text(encoding="utf-8"))
+    delegation = _read_commit_execution_delegation(self.tmpdir)
     self.assertTrue(approval["consumed"])
     self.assertTrue(consumed_challenge["consumed"])
+    self.assertTrue(delegation["consumed"])
 
   def test_guarded_commit_consumes_nonce_challenge_before_approval(self):
     """nonce 承認は challenge を先に消費し、再利用可能な challenge を残さない"""
@@ -161,6 +157,8 @@ class GuardedGitCommitTests(unittest.TestCase):
     challenge = _prepare_commit_approval(self.tmpdir)
     record_result = _record_commit_approval(self.tmpdir, challenge["nonce"])
     self.assertEqual(record_result.returncode, 0, record_result.stderr)
+    delegate_result = _delegate_commit_execution(self.tmpdir, challenge["nonce"])
+    self.assertEqual(delegate_result.returncode, 0, delegate_result.stderr)
 
     approval_path = (
       Path(self.tmpdir)

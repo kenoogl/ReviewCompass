@@ -11,6 +11,7 @@ TDD 規律（AGENTS.md 入口規律）に従い、本テストはスクリプト
 
 import json
 import hashlib
+import importlib
 import os
 import shutil
 import subprocess
@@ -3987,6 +3988,47 @@ def _record_commit_approval(tmpdir, nonce, source_text=None, extra_args=None):
   )
 
 
+def _delegate_commit_execution(tmpdir, nonce, source_text="コミット\n", extra_args=None):
+  """commit-approval delegate-execution を実行して JSON を返す"""
+  args = [
+    "commit-approval",
+    "delegate-execution",
+    "--nonce", nonce,
+    "--source-text-stdin",
+    "--json",
+  ]
+  if extra_args:
+    args.extend(extra_args)
+  return subprocess.run(
+    ["python3", str(SCRIPT)] + args,
+    cwd=str(tmpdir),
+    input=source_text,
+    capture_output=True,
+    text=True,
+    timeout=10,
+  )
+
+
+def _read_commit_execution_delegation(tmpdir):
+  """runtime 区画の commit 実行代行承認レコードを読む"""
+  delegation_path = (
+    Path(tmpdir)
+    / ".reviewcompass"
+    / "runtime"
+    / "approvals"
+    / "commit-execution-delegation.json"
+  )
+  return json.loads(delegation_path.read_text(encoding="utf-8"))
+
+
+def _load_commit_approval_module():
+  """tools/check_workflow_action/commit_approval.py をスクリプト実行時と同じ path で読む"""
+  tools_path = str(REPO_ROOT / "tools")
+  if tools_path not in os.sys.path:
+    os.sys.path.insert(0, tools_path)
+  return importlib.import_module("check_workflow_action.commit_approval")
+
+
 def _write_completed_post_write_manifest(tmpdir, target_files):
   """対象ファイルを覆う完了 post-write manifest を書く"""
   target_sha256 = {
@@ -4220,6 +4262,286 @@ class CommitExitCodeTests(unittest.TestCase):
     self.assertEqual(record_result.returncode, 0, record_result.stderr)
     approval = _read_commit_approval(self.tmpdir)
     self.assertNotIn("execution_delegation", approval)
+
+  def test_commit_approval_delegate_execution_writes_separate_record(self):
+    """実行代行承認は commit-approval とは別ファイルに保存する"""
+    _set_pending_findings(self.pending_file, unresolved_count=0, resolved_count=2)
+    _stage_file(self.tmpdir, "notes.md", "# nonce 対象")
+    challenge = _prepare_commit_approval(self.tmpdir)
+    record_result = _record_commit_approval(self.tmpdir, challenge["nonce"])
+    self.assertEqual(record_result.returncode, 0, record_result.stderr)
+
+    delegate_result = _delegate_commit_execution(self.tmpdir, challenge["nonce"])
+
+    _assert_script_invoked(self, delegate_result)
+    self.assertEqual(delegate_result.returncode, 0, delegate_result.stderr)
+    payload = json.loads(delegate_result.stdout)
+    self.assertEqual(payload["status"], "delegated")
+    self.assertEqual(
+      payload["delegation_path"],
+      ".reviewcompass/runtime/approvals/commit-execution-delegation.json",
+    )
+    approval = _read_commit_approval(self.tmpdir)
+    self.assertNotIn("execution_delegation", approval)
+    delegation = _read_commit_execution_delegation(self.tmpdir)
+    self.assertEqual(delegation["approved_action"], "commit_execution_delegation")
+    self.assertEqual(delegation["delegated_action"], "commit")
+    self.assertEqual(delegation["delegated_to"], "llm")
+    self.assertEqual(delegation["approved_by"], "user")
+    self.assertEqual(delegation["nonce"], challenge["nonce"])
+    self.assertEqual(delegation["explicit_instruction"], "コミット")
+    self.assertRegex(delegation["instruction_sha256"], r"^[0-9a-f]{64}$")
+    self.assertEqual(
+      delegation["attestation_type"],
+      "commit_execution_delegation_nonce_binding",
+    )
+    self.assertEqual(
+      delegation["guarantee_scope"],
+      "stdin_text_instruction_bound_to_commit_approval_not_ui_utterance_proof",
+    )
+    self.assertFalse(delegation["consumed"])
+    self.assertFalse(delegation["invalidated"])
+    self.assertNotIn("llm", delegation)
+    self.assertNotIn("provider", delegation)
+    self.assertNotIn("model", delegation)
+
+  def test_llm_commit_accepts_separate_execution_delegation_record(self):
+    """LLM commit 実行は別ファイルの実行代行承認がある場合だけ通す"""
+    _set_pending_findings(self.pending_file, unresolved_count=0, resolved_count=2)
+    _stage_file(self.tmpdir, "notes.md", "# nonce 対象")
+    challenge = _prepare_commit_approval(self.tmpdir)
+    record_result = _record_commit_approval(self.tmpdir, challenge["nonce"])
+    self.assertEqual(record_result.returncode, 0, record_result.stderr)
+
+    result_without_delegation = run_script(
+      ["commit", "--rationale", "内容承認だけで LLM commit しようとするテスト"],
+      cwd=self.tmpdir,
+    )
+
+    _assert_script_invoked(self, result_without_delegation)
+    self.assertEqual(result_without_delegation.returncode, 2, result_without_delegation.stdout)
+    self.assertIn("commit-execution-delegation", result_without_delegation.stdout)
+
+    delegate_result = _delegate_commit_execution(self.tmpdir, challenge["nonce"])
+    self.assertEqual(delegate_result.returncode, 0, delegate_result.stderr)
+
+    result_with_delegation = run_script(
+      ["commit", "--rationale", "別ファイル実行代行承認付き commit"],
+      cwd=self.tmpdir,
+    )
+
+    _assert_script_invoked(self, result_with_delegation)
+    self.assertEqual(result_with_delegation.returncode, 0, result_with_delegation.stdout)
+
+  def test_commit_approval_delegate_execution_rejects_crlf_instruction(self):
+    """実行代行承認の stdin は CR/CRLF を許容しない"""
+    _set_pending_findings(self.pending_file, unresolved_count=0, resolved_count=2)
+    _stage_file(self.tmpdir, "notes.md", "# nonce 対象")
+    challenge = _prepare_commit_approval(self.tmpdir)
+    record_result = _record_commit_approval(self.tmpdir, challenge["nonce"])
+    self.assertEqual(record_result.returncode, 0, record_result.stderr)
+
+    delegate_result = _delegate_commit_execution(
+      self.tmpdir,
+      challenge["nonce"],
+      source_text="コミット\r\n",
+    )
+
+    _assert_script_invoked(self, delegate_result)
+    self.assertEqual(delegate_result.returncode, 2, delegate_result.stdout)
+    self.assertIn("source text", delegate_result.stdout)
+
+  def test_commit_rejects_tampered_execution_delegation_record(self):
+    """実行代行承認レコードの target_digest が改ざんされていれば遮断する"""
+    _set_pending_findings(self.pending_file, unresolved_count=0, resolved_count=2)
+    _stage_file(self.tmpdir, "notes.md", "# nonce 対象")
+    challenge = _prepare_commit_approval(self.tmpdir)
+    record_result = _record_commit_approval(self.tmpdir, challenge["nonce"])
+    self.assertEqual(record_result.returncode, 0, record_result.stderr)
+    delegate_result = _delegate_commit_execution(self.tmpdir, challenge["nonce"])
+    self.assertEqual(delegate_result.returncode, 0, delegate_result.stderr)
+    delegation_path = (
+      Path(self.tmpdir)
+      / ".reviewcompass"
+      / "runtime"
+      / "approvals"
+      / "commit-execution-delegation.json"
+    )
+    delegation = json.loads(delegation_path.read_text(encoding="utf-8"))
+    delegation["target_digest"]["digest"] = "0" * 64
+    delegation_path.write_text(
+      json.dumps(delegation, ensure_ascii=False, indent=2) + "\n",
+      encoding="utf-8",
+    )
+
+    result = run_script(
+      ["commit", "--rationale", "実行代行承認改ざん遮断"],
+      cwd=self.tmpdir,
+    )
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 2, result.stdout)
+    self.assertIn("commit-execution-delegation", result.stdout)
+
+  def test_commit_approval_delegate_execution_rejects_malformed_existing_delegation(self):
+    """壊れた未消費 delegation record が既にある場合は上書きせず fail-closed"""
+    _set_pending_findings(self.pending_file, unresolved_count=0, resolved_count=2)
+    _stage_file(self.tmpdir, "notes.md", "# nonce 対象")
+    challenge = _prepare_commit_approval(self.tmpdir)
+    record_result = _record_commit_approval(self.tmpdir, challenge["nonce"])
+    self.assertEqual(record_result.returncode, 0, record_result.stderr)
+    delegate_result = _delegate_commit_execution(self.tmpdir, challenge["nonce"])
+    self.assertEqual(delegate_result.returncode, 0, delegate_result.stderr)
+    delegation_path = (
+      Path(self.tmpdir)
+      / ".reviewcompass"
+      / "runtime"
+      / "approvals"
+      / "commit-execution-delegation.json"
+    )
+    delegation = json.loads(delegation_path.read_text(encoding="utf-8"))
+    delegation["expires_at"] = "not-a-timestamp"
+    delegation_path.write_text(
+      json.dumps(delegation, ensure_ascii=False, indent=2) + "\n",
+      encoding="utf-8",
+    )
+
+    duplicate_result = _delegate_commit_execution(self.tmpdir, challenge["nonce"])
+
+    _assert_script_invoked(self, duplicate_result)
+    self.assertEqual(duplicate_result.returncode, 2, duplicate_result.stdout)
+    self.assertIn("commit-execution-delegation", duplicate_result.stdout)
+
+  def test_commit_rejects_execution_delegation_with_unknown_field(self):
+    """delegation record に unknown field が混入したら commit gate で遮断する"""
+    _set_pending_findings(self.pending_file, unresolved_count=0, resolved_count=2)
+    _stage_file(self.tmpdir, "notes.md", "# nonce 対象")
+    challenge = _prepare_commit_approval(self.tmpdir)
+    record_result = _record_commit_approval(self.tmpdir, challenge["nonce"])
+    self.assertEqual(record_result.returncode, 0, record_result.stderr)
+    delegate_result = _delegate_commit_execution(self.tmpdir, challenge["nonce"])
+    self.assertEqual(delegate_result.returncode, 0, delegate_result.stderr)
+    delegation_path = (
+      Path(self.tmpdir)
+      / ".reviewcompass"
+      / "runtime"
+      / "approvals"
+      / "commit-execution-delegation.json"
+    )
+    delegation = json.loads(delegation_path.read_text(encoding="utf-8"))
+    delegation["unexpected_field"] = "unexpected"
+    delegation_path.write_text(
+      json.dumps(delegation, ensure_ascii=False, indent=2) + "\n",
+      encoding="utf-8",
+    )
+
+    result = run_script(
+      ["commit", "--rationale", "実行代行承認 unknown field 遮断"],
+      cwd=self.tmpdir,
+    )
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 2, result.stdout)
+    self.assertIn("不明フィールド", result.stdout)
+
+  def test_commit_rejects_execution_delegation_with_identity_field(self):
+    """delegation record に LLM/provider/model 系 field が混入したら遮断する"""
+    _set_pending_findings(self.pending_file, unresolved_count=0, resolved_count=2)
+    _stage_file(self.tmpdir, "notes.md", "# nonce 対象")
+    challenge = _prepare_commit_approval(self.tmpdir)
+    record_result = _record_commit_approval(self.tmpdir, challenge["nonce"])
+    self.assertEqual(record_result.returncode, 0, record_result.stderr)
+    delegate_result = _delegate_commit_execution(self.tmpdir, challenge["nonce"])
+    self.assertEqual(delegate_result.returncode, 0, delegate_result.stderr)
+    delegation_path = (
+      Path(self.tmpdir)
+      / ".reviewcompass"
+      / "runtime"
+      / "approvals"
+      / "commit-execution-delegation.json"
+    )
+    delegation = json.loads(delegation_path.read_text(encoding="utf-8"))
+    delegation["model"] = "gpt-test"
+    delegation_path.write_text(
+      json.dumps(delegation, ensure_ascii=False, indent=2) + "\n",
+      encoding="utf-8",
+    )
+
+    result = run_script(
+      ["commit", "--rationale", "実行代行承認 identity field 遮断"],
+      cwd=self.tmpdir,
+    )
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 2, result.stdout)
+    self.assertIn("model", result.stdout)
+
+  def test_commit_approval_delegate_execution_redaction_failure_does_not_write_record(self):
+    """delegate_execution の redaction failure は record を作らず fail-closed"""
+    _set_pending_findings(self.pending_file, unresolved_count=0, resolved_count=2)
+    _stage_file(self.tmpdir, "notes.md", "# nonce 対象")
+    challenge = _prepare_commit_approval(self.tmpdir)
+    record_result = _record_commit_approval(self.tmpdir, challenge["nonce"])
+    self.assertEqual(record_result.returncode, 0, record_result.stderr)
+    delegation_path = (
+      Path(self.tmpdir)
+      / ".reviewcompass"
+      / "runtime"
+      / "approvals"
+      / "commit-execution-delegation.json"
+    )
+    commit_approval = _load_commit_approval_module()
+    original_redact_source = commit_approval._redact_source
+
+    def fail_redaction(_source_text):
+      return None, "redaction_failed", ["forced failure"]
+
+    commit_approval._redact_source = fail_redaction
+    try:
+      with self.assertRaisesRegex(ValueError, "redaction"):
+        commit_approval.delegate_execution(
+          Path(self.tmpdir),
+          challenge["nonce"],
+          "コミット\n",
+        )
+    finally:
+      commit_approval._redact_source = original_redact_source
+
+    self.assertFalse(delegation_path.exists())
+
+  def test_nonce_commit_rejects_embedded_execution_delegation_without_separate_record(self):
+    """nonce 承認では embedded execution_delegation があっても別 record なしなら遮断する"""
+    _set_pending_findings(self.pending_file, unresolved_count=0, resolved_count=2)
+    _stage_file(self.tmpdir, "notes.md", "# nonce 対象")
+    challenge = _prepare_commit_approval(self.tmpdir)
+    record_result = _record_commit_approval(self.tmpdir, challenge["nonce"])
+    self.assertEqual(record_result.returncode, 0, record_result.stderr)
+    approval_path = (
+      Path(self.tmpdir)
+      / ".reviewcompass"
+      / "runtime"
+      / "approvals"
+      / "commit-approval.json"
+    )
+    approval = json.loads(approval_path.read_text(encoding="utf-8"))
+    approval["execution_delegation"] = {
+      "delegated_to": "llm",
+      "approved_by": "user",
+      "explicit_instruction": "コミット",
+    }
+    approval_path.write_text(
+      json.dumps(approval, ensure_ascii=False, indent=2) + "\n",
+      encoding="utf-8",
+    )
+
+    result = run_script(
+      ["commit", "--rationale", "nonce 承認 embedded delegation bypass 遮断"],
+      cwd=self.tmpdir,
+    )
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 2, result.stdout)
+    self.assertIn("commit-execution-delegation", result.stdout)
 
   def test_commit_approval_record_source_text_is_redacted(self):
     """stdin 承認本文は機微情報除去後に保存される"""

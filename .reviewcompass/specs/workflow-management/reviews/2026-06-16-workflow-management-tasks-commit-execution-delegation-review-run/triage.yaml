@@ -1,0 +1,275 @@
+run_id: 2026-06-16-workflow-management-tasks-commit-execution-delegation-review-run
+triage_status: decided
+generated_at: '2026-06-15T23:09:47.804525+00:00'
+decision_actor: null
+decision_actor_type: human
+items:
+- finding_id: 2026-06-16-workflow-management-tasks-commit-execution-delegation-review-run-claude-sonnet-4-6-primary-001
+  run_id: 2026-06-16-workflow-management-tasks-commit-execution-delegation-review-run
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: review-target.md § Tasks Drafting Changes To Review — T-006 completion
+    conditions
+  plain_language_summary: The review target lists 'expiry race' as a T-006 test requirement
+    but does not explicitly state that the revalidation-immediately-before-write step
+    (distinct from expiry race handling) is its own test case.
+  final_label: must-fix
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-15T23:12:00.792427+00:00'
+  decision_reason: 'C4: 保存直前再検証を expiry race とは別の完了条件・テスト要件として明示する。'
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-16-workflow-management-tasks-commit-execution-delegation-review-run-claude-sonnet-4-6-primary-002
+  run_id: 2026-06-16-workflow-management-tasks-commit-execution-delegation-review-run
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: review-target.md § Tasks Drafting Changes To Review — T-011 traceability
+  plain_language_summary: The traceability entry maps Requirement 4 acceptance 8 to
+    T-004 / T-006 / T-011, but the review target does not describe what portion of
+    acceptance 8 T-011 is responsible for. T-011's role relative to commit execution
+    delegation is not stated.
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-15T23:12:06.776575+00:00'
+  decision_reason: 'C5: T-011 が Req 4 受入 8 の統合・回帰テストを担うことを明示する。'
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-16-workflow-management-tasks-commit-execution-delegation-review-run-claude-sonnet-4-6-primary-003
+  run_id: 2026-06-16-workflow-management-tasks-commit-execution-delegation-review-run
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: review-target.md § Tasks Drafting Changes To Review — total task
+    count remains 13
+  plain_language_summary: The decision not to add a new task for commit-execution-delegation-formal-cli
+    is noted but the rationale for folding all new work into T-004 and T-006 is not
+    documented in the tasks text itself.
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-15T23:12:13.490502+00:00'
+  decision_reason: 'C6: 新タスクを作らず T-004/T-006/T-011 に畳む理由を tasks.md 内で自己完結させる。'
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-16-workflow-management-tasks-commit-execution-delegation-review-run-claude-sonnet-4-6-primary-004
+  run_id: 2026-06-16-workflow-management-tasks-commit-execution-delegation-review-run
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: review-target.md § Tasks Drafting Changes To Review — stdin normalization
+    test requirements
+  plain_language_summary: The review target lists 'stdin normalization' as a T-006
+    test requirement category but does not enumerate which of the eleven rejection
+    conditions from design.md §2.2 must each have an independent test case.
+  final_label: must-fix
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-15T23:12:20.715145+00:00'
+  decision_reason: 'C2: stdin 正規化・拒否条件・許可文言を個別テスト対象として明示する。'
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-16-workflow-management-tasks-commit-execution-delegation-review-run-claude-sonnet-4-6-primary-005
+  run_id: 2026-06-16-workflow-management-tasks-commit-execution-delegation-review-run
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: review-target.md § Review Questions — Question 7 (contradictions
+    with T-013)
+  plain_language_summary: The review target asks whether the update contradicts decision-source-lint
+    T-013, but the tasks drafting section does not address T-013 at all, leaving this
+    question unanswered by the document under review.
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-15T23:12:26.343627+00:00'
+  decision_reason: 'C7: decision-source-lint T-013 との責務分離を明記し、衝突がないことを記録する。'
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-16-workflow-management-tasks-commit-execution-delegation-review-run-gpt-5.5-adversarial-001
+  run_id: 2026-06-16-workflow-management-tasks-commit-execution-delegation-review-run
+  source_model: gpt-5.5
+  source_round: round-1
+  source_raw_path: raw/gpt-5.5.round-1.txt
+  source_parsed_path: parsed/gpt-5.5.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: .reviewcompass/specs/workflow-management/tasks.md / T-006 delegation
+    record generation and validation
+  plain_language_summary: 'Delegation record requirements appear under-specified:
+    the task summary does not explicitly require all design-mandated binding fields
+    and metadata to be generated and validated.'
+  final_label: must-fix
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-15T23:12:34.788230+00:00'
+  decision_reason: 'C1: delegation record の設計必須フィールドを T-006 の生成・検証・テスト責務へ明示する。'
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-16-workflow-management-tasks-commit-execution-delegation-review-run-gpt-5.5-adversarial-002
+  run_id: 2026-06-16-workflow-management-tasks-commit-execution-delegation-review-run
+  source_model: gpt-5.5
+  source_round: round-1
+  source_raw_path: raw/gpt-5.5.round-1.txt
+  source_parsed_path: parsed/gpt-5.5.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: .reviewcompass/specs/workflow-management/tasks.md / T-006 strict
+    schema and LLM identity independence
+  plain_language_summary: The tasks summary does not explicitly require rejection
+    of LLM/provider/model identity fields or tests proving that delegation judgment
+    is independent of LLM, provider, and model identity.
+  final_label: must-fix
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-15T23:12:40.622828+00:00'
+  decision_reason: 'C3: LLM/provider/model identity field の拒否と、判定非依存性の回帰テストを明示する。'
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-16-workflow-management-tasks-commit-execution-delegation-review-run-gpt-5.5-adversarial-003
+  run_id: 2026-06-16-workflow-management-tasks-commit-execution-delegation-review-run
+  source_model: gpt-5.5
+  source_round: round-1
+  source_raw_path: raw/gpt-5.5.round-1.txt
+  source_parsed_path: parsed/gpt-5.5.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: .reviewcompass/specs/workflow-management/tasks.md / T-004 and T-006
+    stdin normalization and phrase validation
+  plain_language_summary: The task summary refers to stdin edge-case handling and
+    stdin normalization but does not explicitly require the exact allowed phrase set
+    and all specified normalization/rejection rules.
+  final_label: must-fix
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-15T23:12:46.359294+00:00'
+  decision_reason: 'C2: exact allowed phrase set と正規化・拒否規則を実装可能なテスト列として明示する。'
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-16-workflow-management-tasks-commit-execution-delegation-review-run-gpt-5.5-adversarial-004
+  run_id: 2026-06-16-workflow-management-tasks-commit-execution-delegation-review-run
+  source_model: gpt-5.5
+  source_round: round-1
+  source_raw_path: raw/gpt-5.5.round-1.txt
+  source_parsed_path: parsed/gpt-5.5.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: .reviewcompass/specs/workflow-management/tasks.md / T-006 delegation
+    storage and staged content approval separation
+  plain_language_summary: The tasks summary does not explicitly state that `commit-approval.json`
+    must remain staged-content approval only and that execution delegation must be
+    stored separately at `.reviewcompass/runtime/approvals/commit-execution-delegation.json`.
+  final_label: must-fix
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-15T23:12:57.623133+00:00'
+  decision_reason: 'C1: commit-approval.json は staged 内容承認のみ、execution delegation
+    は別ファイル保存と明示する。'
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-16-workflow-management-tasks-commit-execution-delegation-review-run-gpt-5.5-adversarial-005
+  run_id: 2026-06-16-workflow-management-tasks-commit-execution-delegation-review-run
+  source_model: gpt-5.5
+  source_round: round-1
+  source_raw_path: raw/gpt-5.5.round-1.txt
+  source_parsed_path: parsed/gpt-5.5.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: .reviewcompass/specs/workflow-management/tasks.md / T-006 commit
+    gate tests
+  plain_language_summary: The listed T-006 tests do not explicitly include `--execution-actor
+    human` exemption behavior or full `--execution-actor llm` gate revalidation of
+    challenge, staged approval, delegation, and current index.
+  final_label: must-fix
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-15T23:13:08.476155+00:00'
+  decision_reason: 'C4: --execution-actor llm の全再検証と --execution-actor human の delegation
+    不要を明示的なテスト対象にする。'
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-16-workflow-management-tasks-commit-execution-delegation-review-run-gemini-3.1-pro-preview-judgment-001
+  run_id: 2026-06-16-workflow-management-tasks-commit-execution-delegation-review-run
+  source_model: gemini-3.1-pro-preview
+  source_round: round-1
+  source_raw_path: raw/gemini-3.1-pro-preview.round-1.txt
+  source_parsed_path: parsed/gemini-3.1-pro-preview.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: Tasks Drafting Changes To Review > T-006
+  plain_language_summary: Task T-006 completion conditions and test requirements omit
+    the exact-match allowed phrases validation.
+  final_label: must-fix
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-15T23:13:17.615478+00:00'
+  decision_reason: 'C2: exact-match allowed phrases の検証を T-006 完了条件・テスト要件へ明示する。'
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-16-workflow-management-tasks-commit-execution-delegation-review-run-gemini-3.1-pro-preview-judgment-002
+  run_id: 2026-06-16-workflow-management-tasks-commit-execution-delegation-review-run
+  source_model: gemini-3.1-pro-preview
+  source_round: round-1
+  source_raw_path: raw/gemini-3.1-pro-preview.round-1.txt
+  source_parsed_path: parsed/gemini-3.1-pro-preview.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: Tasks Drafting Changes To Review > T-006
+  plain_language_summary: Task T-006 completion conditions omit the 'current index
+    revalidation' requirement at the commit gate.
+  final_label: must-fix
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-15T23:13:29.574416+00:00'
+  decision_reason: 'C4: commit gate で current index を再検証することを T-006 完了条件へ明示する。'
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-16-workflow-management-tasks-commit-execution-delegation-review-run-gemini-3.1-pro-preview-judgment-003
+  run_id: 2026-06-16-workflow-management-tasks-commit-execution-delegation-review-run
+  source_model: gemini-3.1-pro-preview
+  source_round: round-1
+  source_raw_path: raw/gemini-3.1-pro-preview.round-1.txt
+  source_parsed_path: parsed/gemini-3.1-pro-preview.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: Tasks Drafting Changes To Review > T-006
+  plain_language_summary: Task T-006 completion conditions do not explicitly list
+    'revalidation immediately before write'.
+  final_label: must-fix
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-15T23:13:38.202105+00:00'
+  decision_reason: 'C4: delegation record 保存直前の再検証を明示的な完了条件・テスト対象にする。'
+  applied_files: []
+  superseded_by: null

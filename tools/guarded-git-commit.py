@@ -15,6 +15,9 @@ from check_workflow_action.runtime_paths import (
   DEFAULT_COMMIT_APPROVAL_PATH,
   resolve_commit_approval_path,
 )
+from check_workflow_action.commit_approval import (
+  DEFAULT_COMMIT_EXECUTION_DELEGATION_PATH,
+)
 
 DEFAULT_LAST_COMMIT_PRECHECK_PATH = ".git/reviewcompass/last-commit-precheck.json"
 
@@ -71,6 +74,11 @@ def consume_commit_approval(cwd):
     ok, result = _mark_consumed(challenge_path, consumed_at)
     if not ok:
       print(f"error: challenge の消費済み記録に失敗しました: {result}", file=sys.stderr)
+      return False
+    delegation_path = Path(cwd) / DEFAULT_COMMIT_EXECUTION_DELEGATION_PATH
+    ok, result = _mark_consumed(delegation_path, consumed_at)
+    if not ok:
+      print(f"error: commit 実行代行承認の消費済み記録に失敗しました: {result}", file=sys.stderr)
       return False
 
   write_path = Path(cwd) / DEFAULT_COMMIT_APPROVAL_PATH

@@ -1,0 +1,21 @@
+findings:
+  - severity: ERROR
+    target_location: ".reviewcompass/specs/workflow-management/tasks.md / T-006 delegation record generation and validation"
+    description: "Delegation record requirements appear under-specified: the task summary does not explicitly require all design-mandated binding fields and metadata to be generated and validated."
+    rationale: "design.md §2.2 requires the delegation record to bind nonce, target digest, staged file set digest, staged content approval digest, challenge path, approval record path, expiry, instruction hash, attestation_type, and guarantee_scope. The stated task changes mention staged content binding and strict schema generally, but not explicit per-field ownership or tests. Without explicit coverage, an implementation could satisfy the task text while omitting required anti-replay and context-binding guarantees."
+  - severity: ERROR
+    target_location: ".reviewcompass/specs/workflow-management/tasks.md / T-006 strict schema and LLM identity independence"
+    description: "The tasks summary does not explicitly require rejection of LLM/provider/model identity fields or tests proving that delegation judgment is independent of LLM, provider, and model identity."
+    rationale: "Requirement 4 acceptance criterion 8 states that the judgment must not depend on LLM, provider, or model identity, and the design requires strict schema rejection of those identity fields. Generic 'strict schema' coverage may reject unknown fields, but it does not necessarily ensure explicit identity-field rejection or prevent future schema additions that reintroduce identity-dependent behavior."
+  - severity: ERROR
+    target_location: ".reviewcompass/specs/workflow-management/tasks.md / T-004 and T-006 stdin normalization and phrase validation"
+    description: "The task summary refers to stdin edge-case handling and stdin normalization but does not explicitly require the exact allowed phrase set and all specified normalization/rejection rules."
+    rationale: "The design requires exact-match allowed phrases only, one optional trailing POSIX LF, CR/CRLF/internal newline/multiple final LF/NUL/empty/whitespace-only/oversized rejection, ASCII-only lowercasing, one trailing Japanese-period strip, and full-width Latin rejection by exact match failure. These are security-sensitive parser rules; leaving them as generic normalization/edge-case handling risks incomplete implementation or test coverage."
+  - severity: WARN
+    target_location: ".reviewcompass/specs/workflow-management/tasks.md / T-006 delegation storage and staged content approval separation"
+    description: "The tasks summary does not explicitly state that `commit-approval.json` must remain staged-content approval only and that execution delegation must be stored separately at `.reviewcompass/runtime/approvals/commit-execution-delegation.json`."
+    rationale: "A central design decision is separation between staged content approval and LLM execution delegation. If the task text only says 'delegation record generation' without naming the separate file and prohibiting extension of `commit-approval.json`, implementers may accidentally collapse the two approval concepts and violate the reopen decision."
+  - severity: WARN
+    target_location: ".reviewcompass/specs/workflow-management/tasks.md / T-006 commit gate tests"
+    description: "The listed T-006 tests do not explicitly include `--execution-actor human` exemption behavior or full `--execution-actor llm` gate revalidation of challenge, staged approval, delegation, and current index."
+    rationale: "The design requires LLM execution to fail closed unless delegation is present and all related artifacts plus the current index are revalidated, while human execution must not require delegation. Ownership is mentioned, but explicit tests are needed to prevent regressions that either over-restrict human commits or under-gate LLM commit execution."

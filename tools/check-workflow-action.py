@@ -2512,6 +2512,13 @@ def cmd_commit_approval(args):
         source_text=source_text,
         no_source_text=args.no_source_text,
       )
+    elif args.commit_approval_command == "delegate-execution":
+      source_text = sys.stdin.buffer.read()
+      payload = commit_approval.delegate_execution(
+        cwd,
+        args.nonce,
+        source_text,
+      )
     elif args.commit_approval_command == "invalidate":
       payload = commit_approval.invalidate(cwd)
     else:
@@ -2532,16 +2539,27 @@ def cmd_commit_approval(args):
   return 0
 
 
-def validate_commit_execution_delegation(approval_state, execution_actor):
+def validate_commit_execution_delegation(cwd, approval_state, execution_actor):
   """LLM による commit 実行代行が明示承認されているか検査する"""
   if execution_actor == "human":
     return []
+
+  approval_path = Path(cwd) / approval_state.get("path", DEFAULT_COMMIT_APPROVAL_PATH)
+  try:
+    approval = json.loads(approval_path.read_text(encoding="utf-8"))
+  except (OSError, json.JSONDecodeError) as e:
+    return [f"commit 実行代行承認の検査前にユーザ承認レコードを読めません: {e}"]
+  if not isinstance(approval, dict):
+    return ["commit 実行代行承認の検査前にユーザ承認レコードが object ではありません"]
+
+  if approval.get("nonce"):
+    return commit_approval.validate_execution_delegation(cwd, approval)
 
   delegation = approval_state.get("execution_delegation")
   if not isinstance(delegation, dict):
     return [
       "LLM によるコミット実行代行の明示承認がありません"
-      "（execution_delegation が必要）"
+      f"（{commit_approval.DEFAULT_COMMIT_EXECUTION_DELEGATION_PATH} が必要）"
     ]
 
   errors = []
@@ -3398,6 +3416,7 @@ def cmd_commit(args):
   normal = [f for f in staged_files if classify_staged_file(f) == "normal"]
   approval_state, approval_errors = validate_commit_approval(cwd, staged_files)
   execution_delegation_errors = validate_commit_execution_delegation(
+    cwd,
     approval_state,
     args.execution_actor,
   )
@@ -5688,7 +5707,7 @@ def main():
     default="llm",
     help=(
       "commit 実行主体。llm の場合は commit 内容承認とは別に "
-      "execution_delegation が必要"
+      "commit-execution-delegation が必要"
     ),
   )
 
@@ -5827,6 +5846,18 @@ def main():
     help="承認本文を保存しない no-store mode",
   )
   cap_record.add_argument("--json", action="store_true", help="JSON のみを出力する")
+  cap_delegate = cap_sub.add_parser(
+    "delegate-execution",
+    help="nonce に対応する commit 実行代行承認を別レコードに保存する",
+  )
+  cap_delegate.add_argument("--nonce", required=True, help="prepare が出力した nonce")
+  cap_delegate.add_argument(
+    "--source-text-stdin",
+    action="store_true",
+    required=True,
+    help="実行代行承認の明示文言を stdin から読む",
+  )
+  cap_delegate.add_argument("--json", action="store_true", help="JSON のみを出力する")
   cap_invalidate = cap_sub.add_parser("invalidate", help="challenge と承認レコードを無効化する")
   cap_invalidate.add_argument("--json", action="store_true", help="JSON のみを出力する")
 

@@ -1,0 +1,9 @@
+findings:
+  - severity: WARN
+    target_location: "Requirements Delta (Requirement 4 acceptance 8)"
+    description: "Missing fail-closed requirement for stdin physical payload characteristics."
+    rationale: "While semantic fail-closed cases are defined (e.g., rejecting ambiguous phrases), physical boundaries for the stdin payload are missing. Since the input is strictly limited to 'short' phrases, the requirement should explicitly state that the system must fail closed on empty inputs, non-text/binary data, or inputs exceeding a strict byte length limit. This ensures safe handling and prevents resource exhaustion or unexpected behavior before semantic evaluation occurs."
+  - severity: WARN
+    target_location: "Requirements Delta (Requirement 4 acceptance 8)"
+    description: "Ambiguity regarding the delegation approval status when secrets are detected."
+    rationale: "The requirement specifies redacting secrets and omitting the body from storage if residual secrets are detected, but it does not clarify whether the delegation approval itself should succeed or fail in this scenario. Because an input containing a secret inherently violates the constraint of being a 'short explicit commit execution instruction', the requirement should explicitly mandate that detecting a secret causes the approval attempt to fail closed."

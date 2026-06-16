@@ -1,0 +1,36 @@
+run_id: 2026-06-16-workflow-management-requirements-commit-execution-delegation-review-run
+models:
+- model_id: claude-sonnet-4-6
+  raw_path: raw/claude-sonnet-4-6.round-1.txt
+  parse_status: parsed
+  triage_status: triaged
+  findings_count: 6
+  findings_count_by_severity:
+    INFO: 2
+    WARN: 3
+    ERROR: 1
+  must_fix_count: 5
+  should_fix_count: 0
+  leave_as_is_count: 1
+  human_required_count: 0
+- model_id: gpt-5.5
+  raw_path: raw/gpt-5.5.round-1.txt
+  parse_status: parsed
+  triage_status: no_findings
+  findings_count: 0
+  findings_count_by_severity: {}
+  must_fix_count: 0
+  should_fix_count: 0
+  leave_as_is_count: 0
+  human_required_count: 0
+- model_id: gemini-3.1-pro-preview
+  raw_path: raw/gemini-3.1-pro-preview.round-1.txt
+  parse_status: parsed
+  triage_status: triaged
+  findings_count: 2
+  findings_count_by_severity:
+    WARN: 2
+  must_fix_count: 2
+  should_fix_count: 0
+  leave_as_is_count: 0
+  human_required_count: 0

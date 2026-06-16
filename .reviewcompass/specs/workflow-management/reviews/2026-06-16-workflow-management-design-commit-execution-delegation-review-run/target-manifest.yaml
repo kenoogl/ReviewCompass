@@ -1,0 +1,4 @@
+run_id: 2026-06-16-workflow-management-design-commit-execution-delegation-review-run
+target_files:
+- path: .reviewcompass/specs/workflow-management/reviews/2026-06-16-workflow-management-design-commit-execution-delegation-review-run/review-target.md
+  sha256: 7500b03991c751d2f5550941c2cfc8b88cf03ff2c38d7bed9707a431ed67d544

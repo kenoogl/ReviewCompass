@@ -1,0 +1,13 @@
+findings:
+  - severity: WARN
+    target_location: "Design Delta (Stdin payload constraints)"
+    description: "Strict 'no newline' constraint on stdin payload risks rejecting standard CLI pipe inputs."
+    rationale: "Standard shell tools (like `echo`) append a trailing newline (`\\n`) by default. If the payload validation strictly rejects inputs containing any newline before normalization, typical commands like `echo 'commit' | tools/check-workflow-action.py ...` will fail closed unexpectedly. The design should clarify whether a trailing POSIX newline is stripped prior to the 'no newline' validation, or specify 'no internal newlines'."
+  - severity: WARN
+    target_location: "Design Delta (Pre-condition checks)"
+    description: "Missing explicit fail-closed condition for existing unexpired delegation records."
+    rationale: "Requirements Delta item 5 explicitly requires that an 'existing unexpired delegation record fail closed'. The Design Delta mentions that replacement requires `commit-approval invalidate`, but does not explicitly state that `delegate-execution` must fail closed and refuse to overwrite if the `execution_delegation` key is already present in the parent JSON record."
+  - severity: INFO
+    target_location: "Design Delta (execution_delegation fields)"
+    description: "Staged content binding is implicit via parent record co-location rather than explicit in the delegation fields."
+    rationale: "The `execution_delegation` fields include `nonce` and `target digest`, but omit the staged content digest. Because it is appended to the `commit-approval.json` file, it inherits the staged content binding from the parent record. This satisfies the requirement, but explicitly documenting that the delegation relies on the parent's immutable staged content digest would prevent future schema drift or partial invalidation bugs."

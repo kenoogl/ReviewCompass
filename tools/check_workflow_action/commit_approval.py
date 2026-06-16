@@ -21,6 +21,9 @@ from .runtime_paths import DEFAULT_COMMIT_APPROVAL_PATH
 DEFAULT_COMMIT_APPROVAL_CHALLENGE_PATH = (
   ".reviewcompass/runtime/approvals/commit-approval-challenge.json"
 )
+DEFAULT_COMMIT_EXECUTION_DELEGATION_PATH = (
+  ".reviewcompass/runtime/approvals/commit-execution-delegation.json"
+)
 CANONICAL_DIGEST_ALGORITHM = "commit-approval-v1"
 APPROVAL_TTL_SECONDS = 600
 FORBIDDEN_APPROVAL_FIELDS = {
@@ -32,6 +35,17 @@ FORBIDDEN_APPROVAL_FIELDS = {
 }
 ATTESTATION_TYPE = "staged_content_nonce_binding"
 GUARANTEE_SCOPE = "staged_content_binding_not_ui_utterance_proof"
+EXECUTION_DELEGATION_ATTESTATION_TYPE = "commit_execution_delegation_nonce_binding"
+EXECUTION_DELEGATION_GUARANTEE_SCOPE = (
+  "stdin_text_instruction_bound_to_commit_approval_not_ui_utterance_proof"
+)
+ALLOWED_EXECUTION_DELEGATION_INSTRUCTIONS = {
+  "コミット",
+  "コミットして",
+  "コミットを実行",
+  "commit",
+  "commitして",
+}
 SOURCE_OMISSION_REASONS = {
   "source_not_provided",
   "unsafe_source_omitted",
@@ -179,6 +193,37 @@ def approval_path(cwd):
   return Path(cwd) / DEFAULT_COMMIT_APPROVAL_PATH
 
 
+def delegation_path(cwd):
+  return Path(cwd) / DEFAULT_COMMIT_EXECUTION_DELEGATION_PATH
+
+
+def staged_file_set_digest_from_canonical(canonical):
+  """staged ファイル集合（path/status/mode）だけの digest を返す。"""
+  file_set = {
+    "algorithm": CANONICAL_DIGEST_ALGORITHM,
+    "entries": [
+      {
+        "path": entry["path"],
+        "status": entry["status"],
+        "mode": entry["mode"],
+      }
+      for entry in canonical["target"]["entries"]
+    ],
+  }
+  return {
+    "algorithm": CANONICAL_DIGEST_ALGORITHM,
+    "digest": _json_digest(file_set),
+  }
+
+
+def approval_record_digest(approval):
+  """commit-approval.json の canonical digest を返す。"""
+  return {
+    "algorithm": CANONICAL_DIGEST_ALGORITHM,
+    "digest": _json_digest(approval),
+  }
+
+
 def prepare(cwd):
   """nonce challenge を作成する。"""
   now = utc_now()
@@ -267,6 +312,145 @@ def _require_target_digest(value, label):
   if not _is_canonical_digest_text(digest):
     raise ValueError(f"{label} target_digest digest が不正です")
   return value
+
+
+def _atomic_write_json(path, data):
+  path.parent.mkdir(parents=True, exist_ok=True)
+  tmp_path = path.with_name(path.name + ".tmp")
+  tmp_path.write_text(
+    json.dumps(data, ensure_ascii=False, indent=2) + "\n",
+    encoding="utf-8",
+  )
+  tmp_path.replace(path)
+
+
+def _lower_ascii(text):
+  return "".join(
+    chr(ord(char) + 32) if "A" <= char <= "Z" else char
+    for char in text
+  )
+
+
+def normalize_execution_delegation_instruction(source_text):
+  """commit 実行代行承認の stdin を厳密に正規化する。"""
+  if isinstance(source_text, bytes):
+    source_bytes = source_text
+    try:
+      text = source_bytes.decode("utf-8")
+    except UnicodeDecodeError as e:
+      raise ValueError(f"source text は UTF-8 である必要があります: {e}") from e
+  elif isinstance(source_text, str):
+    text = source_text
+    source_bytes = text.encode("utf-8")
+  else:
+    raise ValueError("source text は bytes または str である必要があります")
+
+  if len(source_bytes) > 256:
+    raise ValueError("source text は 256 bytes 以下である必要があります")
+  if "\x00" in text:
+    raise ValueError("source text に NUL は使えません")
+  if "\r" in text:
+    raise ValueError("source text に CR/CRLF は使えません")
+  if text.endswith("\n\n"):
+    raise ValueError("source text の末尾 LF は 1 個までです")
+  if text.endswith("\n"):
+    text = text[:-1]
+  if "\n" in text:
+    raise ValueError("source text に内部改行は使えません")
+
+  normalized = _lower_ascii(text.strip(" \t\f\v\u3000"))
+  if normalized.endswith("。"):
+    normalized = normalized[:-1]
+  normalized = normalized.strip(" \t\f\v\u3000")
+  if not normalized:
+    raise ValueError("source text が空です")
+  if normalized not in ALLOWED_EXECUTION_DELEGATION_INSTRUCTIONS:
+    raise ValueError("source text が commit 実行代行承認の許可文言ではありません")
+  return normalized
+
+
+def _validate_ready_for_delegation(cwd, nonce):
+  challenge = _load_json_object(challenge_path(cwd), "commit approval challenge")
+  approval = _load_json_object(approval_path(cwd), "commit approval record")
+  if challenge.get("nonce") != nonce:
+    raise ValueError("nonce が challenge と一致しません")
+  if approval.get("nonce") != nonce:
+    raise ValueError("nonce が commit approval record と一致しません")
+  errors = validate(cwd, approval)
+  if errors:
+    raise ValueError("; ".join(errors))
+  return challenge, approval
+
+
+def delegate_execution(cwd, nonce, source_text):
+  """commit 実行代行承認を commit-approval とは別レコードに保存する。"""
+  normalized_instruction = normalize_execution_delegation_instruction(source_text)
+  redacted, source_omission_reason, findings = _redact_source(normalized_instruction)
+  if source_omission_reason is not None or findings:
+    raise ValueError("source text の redaction に失敗したため実行代行承認を保存しません")
+
+  existing_path = delegation_path(cwd)
+  if existing_path.exists():
+    existing = _load_json_object(existing_path, "commit execution delegation")
+    expires_at = _parse_datetime(existing.get("expires_at"))
+    if (
+      existing.get("consumed") is not True
+      and existing.get("invalidated") is not True
+      and (expires_at is None or expires_at > utc_now())
+    ):
+      raise ValueError("未消費の commit-execution-delegation record が既にあります")
+
+  _, approval = _validate_ready_for_delegation(cwd, nonce)
+  current = canonical_target(cwd)
+  now = utc_now()
+  record_data = {
+    "schema_version": 1,
+    "approved_action": "commit_execution_delegation",
+    "delegated_action": "commit",
+    "delegated_to": "llm",
+    "approved_by": "user",
+    "nonce": nonce,
+    "target_digest": {
+      "algorithm": CANONICAL_DIGEST_ALGORITHM,
+      "digest": current["digest"],
+    },
+    "staged_file_set_digest": staged_file_set_digest_from_canonical(current),
+    "staged_content_approval_digest": approval_record_digest(approval),
+    "challenge_path": DEFAULT_COMMIT_APPROVAL_CHALLENGE_PATH,
+    "approval_record_path": DEFAULT_COMMIT_APPROVAL_PATH,
+    "created_at": _isoformat(now),
+    "expires_at": approval["expires_at"],
+    "explicit_instruction": redacted,
+    "instruction_sha256": hashlib.sha256(
+      redacted.encode("utf-8")
+    ).hexdigest(),
+    "attestation_type": EXECUTION_DELEGATION_ATTESTATION_TYPE,
+    "guarantee_scope": EXECUTION_DELEGATION_GUARANTEE_SCOPE,
+    "consumed": False,
+    "invalidated": False,
+  }
+
+  _, approval_before_write = _validate_ready_for_delegation(cwd, nonce)
+  if approval_record_digest(approval_before_write) != record_data["staged_content_approval_digest"]:
+    raise ValueError("commit approval record が実行代行承認の保存直前に変化しました")
+  fresh_current = canonical_target(cwd)
+  if fresh_current["digest"] != current["digest"]:
+    raise ValueError("staged 内容が実行代行承認の保存直前に変化しました")
+  record_data["target_digest"] = {
+    "algorithm": CANONICAL_DIGEST_ALGORITHM,
+    "digest": fresh_current["digest"],
+  }
+  record_data["staged_file_set_digest"] = staged_file_set_digest_from_canonical(
+    fresh_current
+  )
+
+  _atomic_write_json(existing_path, record_data)
+  return {
+    "status": "delegated",
+    "delegation_path": DEFAULT_COMMIT_EXECUTION_DELEGATION_PATH,
+    "target_digest": record_data["target_digest"],
+    "staged_file_set_digest": record_data["staged_file_set_digest"],
+  }
 
 
 def record(cwd, nonce, source_text=None, no_source_text=False):
@@ -369,7 +553,7 @@ def record(cwd, nonce, source_text=None, no_source_text=False):
 def invalidate(cwd):
   """challenge と approval を invalidated として保存する。"""
   changed = []
-  for path in (challenge_path(cwd), approval_path(cwd)):
+  for path in (challenge_path(cwd), approval_path(cwd), delegation_path(cwd)):
     if not path.exists():
       continue
     try:
@@ -493,6 +677,118 @@ def validate(cwd, approval):
       errors.append("commit-approval challenge target_digest が staged exact index と一致しません")
     elif isinstance(approval_digest, dict) and challenge_digest.get("digest") != approval_digest.get("digest"):
       errors.append("commit-approval approval/challenge target_digest が一致しません")
+
+  if errors:
+    _invalidate_runtime_records(cwd, approval)
+  return errors
+
+
+def validate_execution_delegation(cwd, approval):
+  """commit 実行代行承認レコードを現在の exact index に対して検証する。"""
+  path = delegation_path(cwd)
+  if not path.exists():
+    return [
+      "LLM によるコミット実行代行の明示承認がありません"
+      f"（{DEFAULT_COMMIT_EXECUTION_DELEGATION_PATH} が必要）"
+    ]
+
+  try:
+    delegation = _load_json_object(path, "commit execution delegation")
+  except ValueError as e:
+    return [str(e)]
+
+  errors = []
+  allowed_fields = {
+    "schema_version",
+    "approved_action",
+    "delegated_action",
+    "delegated_to",
+    "approved_by",
+    "nonce",
+    "target_digest",
+    "staged_file_set_digest",
+    "staged_content_approval_digest",
+    "challenge_path",
+    "approval_record_path",
+    "created_at",
+    "expires_at",
+    "explicit_instruction",
+    "instruction_sha256",
+    "attestation_type",
+    "guarantee_scope",
+    "consumed",
+    "invalidated",
+  }
+  missing = sorted(allowed_fields - set(delegation))
+  extra = sorted(set(delegation) - allowed_fields)
+  if missing:
+    errors.append("commit-execution-delegation 必須フィールド不足: " + ", ".join(missing))
+  if extra:
+    errors.append("commit-execution-delegation 不明フィールド: " + ", ".join(extra))
+  for field in sorted(FORBIDDEN_APPROVAL_FIELDS):
+    if field in delegation:
+      errors.append(f"commit-execution-delegation record に禁止フィールド {field} があります")
+
+  expected_values = {
+    "approved_action": "commit_execution_delegation",
+    "delegated_action": "commit",
+    "delegated_to": "llm",
+    "approved_by": "user",
+    "challenge_path": DEFAULT_COMMIT_APPROVAL_CHALLENGE_PATH,
+    "approval_record_path": DEFAULT_COMMIT_APPROVAL_PATH,
+    "attestation_type": EXECUTION_DELEGATION_ATTESTATION_TYPE,
+    "guarantee_scope": EXECUTION_DELEGATION_GUARANTEE_SCOPE,
+    "consumed": False,
+    "invalidated": False,
+  }
+  for field, expected in expected_values.items():
+    if delegation.get(field) != expected:
+      errors.append(f"commit-execution-delegation {field} が不正です")
+
+  if delegation.get("nonce") != approval.get("nonce"):
+    errors.append("commit-execution-delegation nonce が commit-approval と一致しません")
+
+  created_at = _parse_datetime(delegation.get("created_at"))
+  expires_at = _parse_datetime(delegation.get("expires_at"))
+  now = utc_now()
+  if created_at is None or expires_at is None:
+    errors.append("commit-execution-delegation timestamp が UTC ISO-8601 ではありません")
+  else:
+    if created_at > now:
+      errors.append("commit-execution-delegation clock rollback を検出しました")
+    if expires_at <= now:
+      errors.append("commit-execution-delegation は期限切れです")
+  if delegation.get("expires_at") != approval.get("expires_at"):
+    errors.append("commit-execution-delegation expires_at が commit-approval と一致しません")
+
+  instruction = delegation.get("explicit_instruction")
+  if instruction not in ALLOWED_EXECUTION_DELEGATION_INSTRUCTIONS:
+    errors.append("commit-execution-delegation explicit_instruction が不正です")
+  elif delegation.get("instruction_sha256") != hashlib.sha256(
+    instruction.encode("utf-8")
+  ).hexdigest():
+    errors.append("commit-execution-delegation instruction_sha256 が不正です")
+
+  current = canonical_target(cwd)
+  target_digest = delegation.get("target_digest")
+  if not isinstance(target_digest, dict):
+    errors.append("commit-execution-delegation target_digest が不正です")
+  elif target_digest.get("algorithm") != CANONICAL_DIGEST_ALGORITHM:
+    errors.append("commit-execution-delegation target_digest algorithm が不正です")
+  elif not _is_canonical_digest_text(target_digest.get("digest")):
+    errors.append("commit-execution-delegation target_digest digest が不正です")
+  elif target_digest.get("digest") != current["digest"]:
+    errors.append("commit-execution-delegation target_digest が staged exact index と一致しません")
+
+  staged_file_set_digest = delegation.get("staged_file_set_digest")
+  expected_file_set_digest = staged_file_set_digest_from_canonical(current)
+  if staged_file_set_digest != expected_file_set_digest:
+    errors.append("commit-execution-delegation staged_file_set_digest が一致しません")
+
+  staged_content_approval_digest = delegation.get("staged_content_approval_digest")
+  expected_approval_digest = approval_record_digest(approval)
+  if staged_content_approval_digest != expected_approval_digest:
+    errors.append("commit-execution-delegation staged_content_approval_digest が一致しません")
 
   if errors:
     _invalidate_runtime_records(cwd, approval)

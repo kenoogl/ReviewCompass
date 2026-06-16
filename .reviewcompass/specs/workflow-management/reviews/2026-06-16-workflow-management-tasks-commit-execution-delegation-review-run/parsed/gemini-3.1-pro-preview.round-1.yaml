@@ -1,0 +1,32 @@
+role: judgment
+provider: gemini-api
+model: gemini-3.1-pro-preview
+attempts: 1
+duration_seconds: 27.218
+findings:
+- severity: ERROR
+  target_location: Tasks Drafting Changes To Review > T-006
+  description: Task T-006 completion conditions and test requirements omit the exact-match
+    allowed phrases validation.
+  rationale: The Design Basis strictly mandates that input must exact-match specific
+    allowed phrases (e.g., 'コミット', 'commit'). Providing 'stdin normalization' without
+    explicitly requiring test coverage and implementation for the 'exact-match allowed
+    phrases' logic risks allowing arbitrary normalized text to pass the delegation
+    gate.
+- severity: ERROR
+  target_location: Tasks Drafting Changes To Review > T-006
+  description: Task T-006 completion conditions omit the 'current index revalidation'
+    requirement at the commit gate.
+  rationale: The Design Basis specifies that the commit gate with '--execution-actor
+    llm' must revalidate the challenge, staged approval, delegation, and the 'current
+    index'. Failing to explicitly include the current index revalidation in task completion
+    conditions creates a vulnerability where delegation could be consumed even if
+    the git index has drifted.
+- severity: WARN
+  target_location: Tasks Drafting Changes To Review > T-006
+  description: Task T-006 completion conditions do not explicitly list 'revalidation
+    immediately before write'.
+  rationale: The Design Basis requires revalidation immediately before writing the
+    delegation record. While 'atomic write' and 'expiry race' are included, explicitly
+    omitting pre-write revalidation from the task conditions risks TOCTOU (Time-of-Check
+    to Time-of-Use) vulnerabilities during the generation phase.

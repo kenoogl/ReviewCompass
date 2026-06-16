@@ -1,0 +1,17 @@
+findings:
+  - severity: WARN
+    target_location: "review-target.md — target_implementation_files and Implementation Summary"
+    description: "The review target references implementation files (tools/check_workflow_action/commit_approval.py, tools/check-workflow-action.py, tools/guarded-git-commit.py) and tests, but the actual file contents are not embedded in this document. The reviewer cannot verify any of the nine review questions (fail-closed behavior, schema completeness, binding sufficiency, consumption order) against actual code from this document alone."
+    rationale: "A triad-review of an implementation phase requires the code under review to be available. Without the implementation diff or file contents, claims such as 'binds delegation to nonce, target digest, staged file set digest...' and 'fail closed for malformed stdin' are unverifiable assertions, making genuine review of correctness impossible."
+  - severity: INFO
+    target_location: "review-target.md — Expected Output classification vs. Output contract severity"
+    description: "The document instructs the reviewer to classify issues as must-fix / should-fix / leave-as-is, but the enforced output contract only permits severity values CRITICAL/ERROR/WARN/INFO. These two taxonomies are not mapped to each other."
+    rationale: "The mismatch between the requested classification vocabulary and the mandated severity enum can cause inconsistent reporting; an explicit mapping (e.g., must-fix→ERROR/CRITICAL, should-fix→WARN, leave-as-is→INFO) would prevent ambiguity."
+  - severity: INFO
+    target_location: "review-target.md — Verification Already Run"
+    description: "Verification commands target only CommitExitCodeTests within test_check_workflow_action and the full test_guarded_git_commit module. The summary lists new behaviors (CRLF stdin rejection, tampered delegation target digest rejection, separate delegation record creation) but does not confirm those specific new test cases reside within CommitExitCodeTests or are otherwise executed."
+    rationale: "If the newly added tests for delegation live in a test class not covered by the run command, the 'verification already run' evidence would not actually exercise the new behavior, weakening the claim that the implementation satisfies Requirement 4 acceptance 8."
+  - severity: INFO
+    target_location: "review-target.md — Review Question 9 (deployment/portability)"
+    description: "Question 9 raises runtime-path and portability concerns ('commit-execution-delegation.json runtime path', 'use outside the ReviewCompass development repository'), but the document provides no information on how the runtime path is resolved (absolute vs. repo-relative, configurable vs. hardcoded), preventing assessment."
+    rationale: "Portability of hardcoded runtime paths is a legitimate implementation risk; the absence of path-resolution detail in the target document leaves a stated review concern unanswerable from the provided material."

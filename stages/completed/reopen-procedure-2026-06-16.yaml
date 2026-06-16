@@ -1,0 +1,326 @@
+process_id: reopen-procedure
+feature: workflow-management
+classification: R-0
+started_at: '2026-06-16T00:00:00+09:00'
+trigger: commit execution delegation formal CLI is missing
+classification_basis: docs/reviews/reopen-classification-2026-06-16-wm-commit-execution-delegation.md
+feature_impact_decisions:
+- feature: foundation
+  decision: no_reopen_existing_feature
+  impact_basis: no_implementation_impact
+  rationale: commit execution delegation formal CLI は workflow-management 所有の不可逆操作直前ゲート実装であり、foundation
+    所有の共通語彙・共有契約を変更しない。
+  evidence:
+  - docs/reviews/reopen-classification-2026-06-16-wm-commit-execution-delegation.md
+- feature: runtime
+  decision: no_reopen_existing_feature
+  impact_basis: no_implementation_impact
+  rationale: commit execution delegation formal CLI は workflow-management の承認 runtime record と commit
+    gate の強化であり、runtime feature の実行時責務を変更しない。
+  evidence:
+  - docs/reviews/reopen-classification-2026-06-16-wm-commit-execution-delegation.md
+- feature: evaluation
+  decision: no_reopen_existing_feature
+  impact_basis: no_implementation_impact
+  rationale: commit execution delegation formal CLI は評価ロジック、評価成果物、review/evaluation 判定契約を変更しない。
+  evidence:
+  - docs/reviews/reopen-classification-2026-06-16-wm-commit-execution-delegation.md
+- feature: analysis
+  decision: no_reopen_existing_feature
+  impact_basis: no_implementation_impact
+  rationale: commit execution delegation formal CLI は分析 feature の入力・出力契約やレポート生成責務を変更しない。
+  evidence:
+  - docs/reviews/reopen-classification-2026-06-16-wm-commit-execution-delegation.md
+- feature: workflow-management
+  decision: reopen_existing_feature
+  impact_basis: contract_ownership
+  rationale: commit execution delegation formal CLI は workflow-management が所有する不可逆操作直前ゲート、commit
+    approval runtime record、承認 CLI、guard validation の契約と実装に直接影響する。
+  evidence:
+  - docs/reviews/reopen-classification-2026-06-16-wm-commit-execution-delegation.md
+  - .reviewcompass/specs/workflow-management/requirements.md
+  - .reviewcompass/specs/workflow-management/design.md
+  - .reviewcompass/specs/workflow-management/tasks.md
+- feature: self-improvement
+  decision: no_reopen_existing_feature
+  impact_basis: no_implementation_impact
+  rationale: commit execution delegation formal CLI は self-improvement の改善提案ループや規律変更提案の契約を変更しない。
+  evidence:
+  - docs/reviews/reopen-classification-2026-06-16-wm-commit-execution-delegation.md
+- feature: conformance-evaluation
+  decision: indirect_check_only
+  impact_basis: consumer_or_derivative_only
+  rationale: conformance-evaluation は workflow-management の commit gate 契約を確認対象として参照し得るが、本
+    reopen で実装所有責務は変わらない。
+  evidence:
+  - docs/reviews/reopen-classification-2026-06-16-wm-commit-execution-delegation.md
+new_feature_decision:
+  decision: no_new_feature
+  rationale: commit execution delegation formal CLI は既存 workflow-management の不可逆操作直前ゲート強化として受けられ、新
+    feature 境界は不要。
+  evidence:
+  - docs/reviews/reopen-classification-2026-06-16-wm-commit-execution-delegation.md
+impacted_downstream_phases:
+- design
+- tasks
+- implementation
+completed_steps:
+- 第1過程：判定とフラグ差し戻し（利用者承認済み：2026-06-16「次へ」）
+- 第2過程：正本修正（requirements.md Requirement 4 受入 8 追記）
+- 第3過程：requirements triad-review review-run 実行（利用者提示ゲートで停止）
+- 第3過程：requirements triad-review 所見 C1〜C4 裁定・反映完了（C1〜C3 must-fix 適用、C4 leave-as-is）
+- 第3過程：requirements review-wave 完了（他機能波及なし）
+- 第3過程：requirements alignment 完了（要件整合確認済み）
+- 第3過程：requirements approval 承認（利用者発言「次へ」）
+- 第3過程：design drafting（design.md に commit execution delegation formal CLI 設計を追記）
+- 第3過程：design triad-review 所見 C1〜C6 裁定・反映完了（C1〜C3 must-fix、C4〜C5 should-fix、C6 leave-as-is）
+- 第3過程：design review-wave 完了（他機能 design 波及なし）
+- 第3過程：design alignment 完了（設計整合確認済み）
+- 第3過程：design approval 承認（利用者発言「承認」）
+- 第3過程：tasks drafting（tasks.md の T-004／T-006／T-011 に commit execution delegation formal
+  CLI を展開）
+- 第3過程：tasks triad-review 所見 C1〜C7 裁定・反映完了（C1〜C4 must-fix、C5〜C7 should-fix）
+- 第3過程：tasks review-wave 完了（他機能 tasks 波及なし）
+- 第3過程：tasks alignment 完了（tasks 整合確認済み）
+- 第3過程：tasks approval 承認（利用者発言「承認」）
+- 第3過程：implementation drafting（commit-approval delegate-execution CLI、別ファイル実行代行承認、commit
+  gate 検証、guarded commit 消費処理を実装）
+- 第3過程：implementation triad-review R2 所見 C1〜C8 裁定・反映完了（C1 must-fix、C2〜C5 should-fix、C6〜C8
+  leave-as-is）
+- 第3過程：implementation review-wave 完了（他機能 implementation 波及なし）
+- 第3過程：implementation alignment 完了（実装整合確認済み）
+- 第3過程：implementation approval 承認（利用者発言「承認」）
+- 第4過程：最終確認・recheck クリア・進行中状態ファイル完了処理
+next_step: 完了
+step_number: 4
+pending_gates: []
+current_blocker: null
+commit_stop_point: false
+commit_stop_point_reason: null
+completed_at: '2026-06-16T08:57:11+09:00'
+recheck_clear_result: workflow-management の recheck.upstream_change_pending を false、impacted_downstream_phases
+  を空 list に戻した。reopened は履歴として維持した。
+recheck_clear_evidence:
+- .reviewcompass/specs/workflow-management/spec.json
+completed_gates:
+- stages/requirements.yaml#triad-review
+- stages/requirements.yaml#review-wave
+- stages/requirements.yaml#alignment
+- stages/requirements.yaml#approval
+- stages/design.yaml#triad-review
+- stages/design.yaml#review-wave
+- stages/design.yaml#alignment
+- stages/design.yaml#approval
+- stages/tasks.yaml#triad-review
+- stages/tasks.yaml#review-wave
+- stages/tasks.yaml#alignment
+- stages/tasks.yaml#approval
+- stages/implementation.yaml#triad-review
+- stages/implementation.yaml#review-wave
+- stages/implementation.yaml#alignment
+- stages/implementation.yaml#approval
+drafting_completed_gates:
+- stages/requirements.yaml#drafting
+- stages/design.yaml#drafting
+- stages/tasks.yaml#drafting
+- stages/implementation.yaml#drafting
+requirements_drafting_result: workflow-management requirements.md に commit execution
+  delegation formal CLI の受入条件を追加した。
+requirements_drafting_evidence:
+- .reviewcompass/specs/workflow-management/requirements.md
+requirements_triad_review_run: .reviewcompass/specs/workflow-management/reviews/2026-06-16-workflow-management-requirements-commit-execution-delegation-review-run
+requirements_triad_review_summary: .reviewcompass/specs/workflow-management/reviews/2026-06-16-workflow-management-requirements-commit-execution-delegation-review-run/raw-review-triage-summary.md
+requirements_triad_review_status: completed
+requirements_triad_review_resolution:
+  approved_at: 2026-06-16 00:00:00+09:00
+  approval_source: 利用者発言「承認」
+  applied_clusters:
+  - cluster: C1
+    summary: formal CLI path、既存有効 challenge / staged content approval prerequisite、staged
+      content approval first、out-of-order fail-closed を Requirement 4 受入 8 に明示した。
+  - cluster: C2
+    summary: empty / whitespace-only / non-UTF-8 / non-text-binary / byte-limit-exceeding
+      input と既存未期限切れ delegation record の fail-closed を Requirement 4 受入 8 に明示した。
+  - cluster: C3
+    summary: redaction failure または residual secret 検出時は delegation record を作成せず fail-closed
+      とすることを Requirement 4 受入 8 に明示した。
+  leave_as_is_clusters:
+  - cluster: C4
+    summary: allowed/disallowed phrase examples は要件意図として維持し、厳密な matching / normalization
+      は design で扱う。
+downstream_recheck_correction:
+  corrected_at: 2026-06-16 00:00:00+09:00
+  rationale: requirements approval 後に pending_gates が空となり next が finalize_reopen を返したが、分類記録と
+    spec.json の impacted_downstream_phases は design / tasks / implementation の連鎖再実施を要求しているため、下流
+    pending gates を明示した。
+  evidence:
+  - docs/reviews/reopen-classification-2026-06-16-wm-commit-execution-delegation.md
+  - .reviewcompass/specs/workflow-management/spec.json
+design_drafting_result: workflow-management design.md に commit-approval delegate-execution、execution_delegation
+  record、staged 内容承認との順序制約、nonce / target digest / expiry 束縛、文言正規化、secret handling、LLM
+  非依存の設計を追加した。
+design_drafting_evidence:
+- .reviewcompass/specs/workflow-management/design.md
+tasks_drafting_result: workflow-management tasks.md の既存 T-004／T-006／T-011 に commit-approval
+  delegate-execution、commit-execution-delegation.json、staged 内容 binding、stdin normalization、strict
+  schema、invalidate／consume、--execution-actor llm gate、統合テスト責務を追記した。新タスクは増やさず、既存 commit
+  直前ゲート領域の強化として扱う。
+tasks_drafting_evidence:
+- .reviewcompass/specs/workflow-management/tasks.md
+implementation_drafting_result: tools/check-workflow-action.py / tools/check_workflow_action/commit_approval.py
+  / tools/guarded-git-commit.py に commit execution delegation formal CLI と検証・消費処理を実装し、tests/tools/test_check_workflow_action.py
+  / tests/tools/test_guarded_git_commit.py に別ファイル保存、LLM 実行時必須化、CRLF 拒否、改ざん遮断、commit
+  後消費の回帰テストを追加した。
+implementation_drafting_evidence:
+- tools/check-workflow-action.py
+- tools/check_workflow_action/commit_approval.py
+- tools/guarded-git-commit.py
+- tests/tools/test_check_workflow_action.py
+- tests/tools/test_guarded_git_commit.py
+implementation_drafting_verification:
+- .venv/bin/python3 -m unittest tests.tools.test_check_workflow_action.CommitExitCodeTests
+  -v
+- .venv/bin/python3 -m unittest tests.tools.test_guarded_git_commit -v
+- PYTHONPYCACHEPREFIX=/tmp/reviewcompass-pycache python3 -m py_compile tools/check-workflow-action.py
+  tools/check_workflow_action/commit_approval.py tools/guarded-git-commit.py
+- git diff --check
+downstream_impact_decisions:
+- gate: stages/requirements.yaml#triad-review
+  feature_scope: workflow-management
+  decision: approved
+  rationale: requirements triad-review findings C1-C4 were adjudicated after user approval;
+    C1-C3 must-fix were reflected in requirements.md and C4 was left as design-phase
+    detail
+  evidence:
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-16-workflow-management-requirements-commit-execution-delegation-review-run/raw-review-triage-summary.md
+  - .reviewcompass/specs/workflow-management/requirements.md
+- gate: stages/requirements.yaml#review-wave
+  feature_scope: workflow-management
+  decision: no_impact
+  rationale: Requirement 4 acceptance 8 is owned by workflow-management pre-operation
+    commit gate; no other feature requirements or shared contracts change
+  evidence:
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-16-requirements-commit-execution-delegation-review-wave.md
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-16-requirements-commit-execution-delegation-review-wave-summary.md
+- gate: stages/requirements.yaml#alignment
+  feature_scope: workflow-management
+  decision: existing_sufficient
+  rationale: Requirement 4 acceptance 8 is consistent with existing requirements,
+    classification, triad-review resolution, review-wave no-impact decision, and downstream
+    recheck remains design/tasks/implementation
+  evidence:
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-16-requirements-commit-execution-delegation-reopen-alignment.md
+- gate: stages/requirements.yaml#approval
+  feature_scope: workflow-management
+  decision: approved
+  rationale: User approved requirements phase for Requirement 4 acceptance 8 via 2026-06-16
+    message '次へ'; triad-review, review-wave, and alignment are complete
+  evidence:
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-16-requirements-commit-execution-delegation-approval.md
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-16-requirements-commit-execution-delegation-reopen-alignment.md
+- gate: stages/design.yaml#triad-review
+  feature_scope: workflow-management
+  decision: approved
+  rationale: design triad-review findings C1-C6 were adjudicated after user selected
+    Option A; C1-C5 were reflected in design.md and C6 was left as sign-off information
+  evidence:
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-16-workflow-management-design-commit-execution-delegation-review-run/raw-review-triage-summary.md
+  - .reviewcompass/specs/workflow-management/design.md
+- gate: stages/design.yaml#review-wave
+  feature_scope: workflow-management
+  decision: no_impact
+  rationale: Design change for commit execution delegation remains within workflow-management
+    irreversible-operation commit gate; no other feature design canonical document
+    requires updates
+  evidence:
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-16-design-commit-execution-delegation-review-wave.md
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-16-design-commit-execution-delegation-review-wave-summary.md
+- gate: stages/design.yaml#alignment
+  feature_scope: workflow-management
+  decision: existing_sufficient
+  rationale: Design section 2.2 is consistent with Requirement 4 acceptance 8, design
+    triad-review resolution, design review-wave no-impact decision, and existing workflow-management
+    gate design
+  evidence:
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-16-design-commit-execution-delegation-reopen-alignment.md
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-16-design-commit-execution-delegation-review-wave.md
+  - .reviewcompass/specs/workflow-management/design.md
+- gate: stages/design.yaml#approval
+  feature_scope: workflow-management
+  decision: approved
+  rationale: User explicitly approved design phase via 2026-06-16 message '承認'; design
+    triad-review, review-wave, and alignment are complete
+  evidence:
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-16-design-commit-execution-delegation-approval.md
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-16-design-commit-execution-delegation-reopen-alignment.md
+- gate: stages/tasks.yaml#triad-review
+  feature_scope: workflow-management
+  decision: approved
+  rationale: tasks triad-review findings C1-C7 were adjudicated after user approval;
+    C1-C4 must-fix and C5-C7 should-fix were reflected in tasks.md
+  evidence:
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-16-workflow-management-tasks-commit-execution-delegation-review-run/raw-review-triage-summary.md
+  - .reviewcompass/specs/workflow-management/tasks.md
+- gate: stages/tasks.yaml#review-wave
+  feature_scope: workflow-management
+  decision: no_impact
+  rationale: Tasks change for commit execution delegation remains within workflow-management
+    T-004/T-006/T-011; no other feature tasks canonical document requires updates
+  evidence:
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-16-tasks-commit-execution-delegation-review-wave.md
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-16-tasks-commit-execution-delegation-review-wave-summary.md
+- gate: stages/tasks.yaml#alignment
+  feature_scope: workflow-management
+  decision: existing_sufficient
+  rationale: Tasks T-004/T-006/T-011 are consistent with Requirement 4 acceptance
+    8, design section 2.2, tasks triad-review resolution, and tasks review-wave no-impact
+    decision
+  evidence:
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-16-tasks-commit-execution-delegation-reopen-alignment.md
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-16-tasks-commit-execution-delegation-review-wave.md
+  - .reviewcompass/specs/workflow-management/tasks.md
+- gate: stages/tasks.yaml#approval
+  feature_scope: workflow-management
+  decision: approved
+  rationale: User explicitly approved tasks phase via 2026-06-16 message '承認'; tasks
+    triad-review, review-wave, and alignment are complete
+  evidence:
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-16-tasks-commit-execution-delegation-approval.md
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-16-tasks-commit-execution-delegation-reopen-alignment.md
+- gate: stages/implementation.yaml#triad-review
+  feature_scope: workflow-management
+  decision: approved
+  rationale: implementation triad-review R2 findings were adjudicated after user approval;
+    C1 was fixed by regression evidence, C2-C5 were addressed with focused tests or
+    implementation refinement, and C6-C8 were left as-is
+  evidence:
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-16-r2-workflow-management-implementation-review-run/raw-review-triage-summary.md
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-16-r2-workflow-management-implementation-review-run/triage.yaml
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-16-r2-workflow-management-implementation-review-run/approval.yaml
+- gate: stages/implementation.yaml#review-wave
+  feature_scope: workflow-management
+  decision: no_impact
+  rationale: Implementation change is owned by workflow-management commit gate and
+    uses existing .reviewcompass/runtime/ placement; no other feature implementation
+    canonical document or ownership changes are required
+  evidence:
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-16-implementation-commit-execution-delegation-review-wave.md
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-16-implementation-commit-execution-delegation-review-wave-summary.md
+- gate: stages/implementation.yaml#alignment
+  feature_scope: workflow-management
+  decision: existing_sufficient
+  rationale: Implementation is consistent with Requirement 4 acceptance 8, design
+    §2.2, tasks T-004/T-006/T-011, implementation triad-review R2 resolution, tests,
+    and review-wave no-impact decision
+  evidence:
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-16-implementation-commit-execution-delegation-reopen-alignment.md
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-16-implementation-commit-execution-delegation-review-wave.md
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-16-r2-workflow-management-implementation-review-run/raw-review-triage-summary.md
+- gate: stages/implementation.yaml#approval
+  feature_scope: workflow-management
+  decision: approved
+  rationale: User explicitly approved implementation phase via 2026-06-16 message
+    '承認'; implementation triad-review R2, review-wave, and alignment are complete
+  evidence:
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-16-implementation-commit-execution-delegation-approval.md
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-16-implementation-commit-execution-delegation-reopen-alignment.md

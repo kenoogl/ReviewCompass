@@ -1,0 +1,190 @@
+status: completed
+target_files:
+- .reviewcompass/specs/_cross_feature/reviews/2026-06-16-design-commit-execution-delegation-approval.md
+- .reviewcompass/specs/_cross_feature/reviews/2026-06-16-design-commit-execution-delegation-reopen-alignment.md
+- .reviewcompass/specs/_cross_feature/reviews/2026-06-16-design-commit-execution-delegation-review-wave-summary.md
+- .reviewcompass/specs/_cross_feature/reviews/2026-06-16-design-commit-execution-delegation-review-wave.md
+- .reviewcompass/specs/_cross_feature/reviews/2026-06-16-implementation-commit-execution-delegation-approval.md
+- .reviewcompass/specs/_cross_feature/reviews/2026-06-16-implementation-commit-execution-delegation-reopen-alignment.md
+- .reviewcompass/specs/_cross_feature/reviews/2026-06-16-implementation-commit-execution-delegation-review-wave-summary.md
+- .reviewcompass/specs/_cross_feature/reviews/2026-06-16-implementation-commit-execution-delegation-review-wave.md
+- .reviewcompass/specs/_cross_feature/reviews/2026-06-16-requirements-commit-execution-delegation-approval.md
+- .reviewcompass/specs/_cross_feature/reviews/2026-06-16-requirements-commit-execution-delegation-reopen-alignment.md
+- .reviewcompass/specs/_cross_feature/reviews/2026-06-16-requirements-commit-execution-delegation-review-wave-summary.md
+- .reviewcompass/specs/_cross_feature/reviews/2026-06-16-requirements-commit-execution-delegation-review-wave.md
+- .reviewcompass/specs/_cross_feature/reviews/2026-06-16-tasks-commit-execution-delegation-approval.md
+- .reviewcompass/specs/_cross_feature/reviews/2026-06-16-tasks-commit-execution-delegation-reopen-alignment.md
+- .reviewcompass/specs/_cross_feature/reviews/2026-06-16-tasks-commit-execution-delegation-review-wave-summary.md
+- .reviewcompass/specs/_cross_feature/reviews/2026-06-16-tasks-commit-execution-delegation-review-wave.md
+- .reviewcompass/specs/workflow-management/design.md
+- .reviewcompass/specs/workflow-management/requirements.md
+- .reviewcompass/specs/workflow-management/reviews/2026-06-16-r2-workflow-management-implementation-review-run/raw-review-triage-summary.md
+- .reviewcompass/specs/workflow-management/reviews/2026-06-16-r2-workflow-management-implementation-review-run/review-target.md
+- .reviewcompass/specs/workflow-management/reviews/2026-06-16-r2-workflow-management-implementation-review-run/review_summary.md
+- .reviewcompass/specs/workflow-management/reviews/2026-06-16-workflow-management-design-commit-execution-delegation-review-run/raw-review-triage-summary.md
+- .reviewcompass/specs/workflow-management/reviews/2026-06-16-workflow-management-design-commit-execution-delegation-review-run/review-target.md
+- .reviewcompass/specs/workflow-management/reviews/2026-06-16-workflow-management-design-commit-execution-delegation-review-run/review_summary.md
+- .reviewcompass/specs/workflow-management/reviews/2026-06-16-workflow-management-implementation-commit-execution-delegation-review-run/raw-review-triage-summary.md
+- .reviewcompass/specs/workflow-management/reviews/2026-06-16-workflow-management-implementation-commit-execution-delegation-review-run/review-target.md
+- .reviewcompass/specs/workflow-management/reviews/2026-06-16-workflow-management-implementation-commit-execution-delegation-review-run/review_summary.md
+- .reviewcompass/specs/workflow-management/reviews/2026-06-16-workflow-management-requirements-commit-execution-delegation-review-run/raw-review-triage-summary.md
+- .reviewcompass/specs/workflow-management/reviews/2026-06-16-workflow-management-requirements-commit-execution-delegation-review-run/review-target.md
+- .reviewcompass/specs/workflow-management/reviews/2026-06-16-workflow-management-requirements-commit-execution-delegation-review-run/review_summary.md
+- .reviewcompass/specs/workflow-management/reviews/2026-06-16-workflow-management-tasks-commit-execution-delegation-review-run/raw-review-triage-summary.md
+- .reviewcompass/specs/workflow-management/reviews/2026-06-16-workflow-management-tasks-commit-execution-delegation-review-run/review-target.md
+- .reviewcompass/specs/workflow-management/reviews/2026-06-16-workflow-management-tasks-commit-execution-delegation-review-run/review_summary.md
+- .reviewcompass/specs/workflow-management/tasks.md
+- docs/notes/2026-06-16-workflow-recovery-smell-inventory.md
+- docs/reviews/reopen-classification-2026-06-16-wm-commit-execution-delegation.md
+target_sha256:
+  .reviewcompass/specs/_cross_feature/reviews/2026-06-16-design-commit-execution-delegation-approval.md: 3efd4189ee2177f6685aaf44572d9800cea6c586e05611aeec9cef38b4be7e4c
+  .reviewcompass/specs/_cross_feature/reviews/2026-06-16-design-commit-execution-delegation-reopen-alignment.md: 981dff18a17ffb5a32fa2ef58402e8b251a3f2b51674d693d52b7bbb13c050d7
+  .reviewcompass/specs/_cross_feature/reviews/2026-06-16-design-commit-execution-delegation-review-wave-summary.md: 83d1d5ab4a2f7adf199f636d1299a0f560a134203a9a6bd2906770f6eb154333
+  .reviewcompass/specs/_cross_feature/reviews/2026-06-16-design-commit-execution-delegation-review-wave.md: f28f4f4fe70c6d368308da731b26db24dbb8081a68a5c3d955d96c79ed0f3d9e
+  .reviewcompass/specs/_cross_feature/reviews/2026-06-16-implementation-commit-execution-delegation-approval.md: 7706625974f397162d00f635a278a578197dd09fc5948a152debcf7123ba6229
+  .reviewcompass/specs/_cross_feature/reviews/2026-06-16-implementation-commit-execution-delegation-reopen-alignment.md: 5e6c8dd307d75ab0e35a9e7a35c742c2f2b92f078fd20ea5744139527551343f
+  .reviewcompass/specs/_cross_feature/reviews/2026-06-16-implementation-commit-execution-delegation-review-wave-summary.md: 2abdfb9c895f5ec85d5806121ebc1d37ca7a76a9542b8fbe793c938e62d8ffe8
+  .reviewcompass/specs/_cross_feature/reviews/2026-06-16-implementation-commit-execution-delegation-review-wave.md: bc25280ba816172b5c88a71cc4677a9a2b156764946cdba4f52b0268087eeda6
+  .reviewcompass/specs/_cross_feature/reviews/2026-06-16-requirements-commit-execution-delegation-approval.md: 79077419ea37e743cab000f3b30ada75f81f01190e0e08734532df3306e06246
+  .reviewcompass/specs/_cross_feature/reviews/2026-06-16-requirements-commit-execution-delegation-reopen-alignment.md: bdf20a9ee068da3cc4f841da6e8e9a22afb06865dd3b79408a3f962d20424c57
+  .reviewcompass/specs/_cross_feature/reviews/2026-06-16-requirements-commit-execution-delegation-review-wave-summary.md: 2abdfb9c895f5ec85d5806121ebc1d37ca7a76a9542b8fbe793c938e62d8ffe8
+  .reviewcompass/specs/_cross_feature/reviews/2026-06-16-requirements-commit-execution-delegation-review-wave.md: 989499be6661356fffd6b27e151bb408426b394fb26e58ae4cc09c5706c70fea
+  .reviewcompass/specs/_cross_feature/reviews/2026-06-16-tasks-commit-execution-delegation-approval.md: 3ba4cb282fcfa563fa8ebce16a17119e3841285505bcf916f51b6a3364dd49d0
+  .reviewcompass/specs/_cross_feature/reviews/2026-06-16-tasks-commit-execution-delegation-reopen-alignment.md: 53a9d8828b9761058c8bf9c1e6ac2a098a4dc1a238b496d378d5e3e198c14d00
+  .reviewcompass/specs/_cross_feature/reviews/2026-06-16-tasks-commit-execution-delegation-review-wave-summary.md: a493e5555fd11acf42995b037167a06cd30dea77505a8d88fa85307d25788e9a
+  .reviewcompass/specs/_cross_feature/reviews/2026-06-16-tasks-commit-execution-delegation-review-wave.md: 1cfd84bf37383324e84057a51d99cf15b440a2f50df53a463289bbd90121a4a6
+  .reviewcompass/specs/workflow-management/design.md: 4e133ba19accf1bfe1e2d8e9f5b28ae6bb59ccd80004d4a945618d7cc5dcf99b
+  .reviewcompass/specs/workflow-management/requirements.md: b9cdb15ec1e7d0431bbfd4d73e0e58d6ca3ae8059beafc6051ebb202be7ef124
+  ? .reviewcompass/specs/workflow-management/reviews/2026-06-16-r2-workflow-management-implementation-review-run/raw-review-triage-summary.md
+  : 0f4de01680ae8ad79766b5587557f958801467b05c6a0e159d3be53aa25c9f7e
+  ? .reviewcompass/specs/workflow-management/reviews/2026-06-16-r2-workflow-management-implementation-review-run/review-target.md
+  : 73bc782566848e9140c8c6d2380be6facaf4caf97c4d8bc5217354c395fd9ec5
+  ? .reviewcompass/specs/workflow-management/reviews/2026-06-16-r2-workflow-management-implementation-review-run/review_summary.md
+  : 9975ff228e81aeb4068651ebaef352ec4ed7c4d8d6868421d41db0c7d56d399c
+  ? .reviewcompass/specs/workflow-management/reviews/2026-06-16-workflow-management-design-commit-execution-delegation-review-run/raw-review-triage-summary.md
+  : 11ecc729561b88c204bf53649e9d8c38eeb505130852464bb182ff4965d386d3
+  ? .reviewcompass/specs/workflow-management/reviews/2026-06-16-workflow-management-design-commit-execution-delegation-review-run/review-target.md
+  : 7500b03991c751d2f5550941c2cfc8b88cf03ff2c38d7bed9707a431ed67d544
+  ? .reviewcompass/specs/workflow-management/reviews/2026-06-16-workflow-management-design-commit-execution-delegation-review-run/review_summary.md
+  : 1b8871d32b49555263a8cf08b9dbb30defc0ae72006973556ab4e6e1989a66a3
+  ? .reviewcompass/specs/workflow-management/reviews/2026-06-16-workflow-management-implementation-commit-execution-delegation-review-run/raw-review-triage-summary.md
+  : 6fd5dd42d4845e1ac27787e4617f25b56dd2c06d20b6643a80fd25e936ef7333
+  ? .reviewcompass/specs/workflow-management/reviews/2026-06-16-workflow-management-implementation-commit-execution-delegation-review-run/review-target.md
+  : f28d7795681e9c034b69fc4a5d9ab5d4f094f6622149d32b1e2b42e2302b954e
+  ? .reviewcompass/specs/workflow-management/reviews/2026-06-16-workflow-management-implementation-commit-execution-delegation-review-run/review_summary.md
+  : c29cdd975aa6be90a579bdb49816f5c084c1ecca9a31942790b21f8a05757821
+  ? .reviewcompass/specs/workflow-management/reviews/2026-06-16-workflow-management-requirements-commit-execution-delegation-review-run/raw-review-triage-summary.md
+  : e03230f529228bbe43a5060ee2f878937f86956f8b970649f4cf1e98dfe3dd08
+  ? .reviewcompass/specs/workflow-management/reviews/2026-06-16-workflow-management-requirements-commit-execution-delegation-review-run/review-target.md
+  : 4501955e3ed81e67395cc1fa65552f830abc4363982276bff27a5f78a3e16a58
+  ? .reviewcompass/specs/workflow-management/reviews/2026-06-16-workflow-management-requirements-commit-execution-delegation-review-run/review_summary.md
+  : b9e8f4a823ce65834c20382766f255fd9327d18c17fca3d82b40b6049ea2f5f2
+  ? .reviewcompass/specs/workflow-management/reviews/2026-06-16-workflow-management-tasks-commit-execution-delegation-review-run/raw-review-triage-summary.md
+  : 6659034a3ec21d49cd076a62277b6e960f973ebea2e4798353a5f4c93cb115b2
+  ? .reviewcompass/specs/workflow-management/reviews/2026-06-16-workflow-management-tasks-commit-execution-delegation-review-run/review-target.md
+  : b75f663fb354e86153f39f3f1b87c5056eed9dd014155d43c56d7d33818c669e
+  ? .reviewcompass/specs/workflow-management/reviews/2026-06-16-workflow-management-tasks-commit-execution-delegation-review-run/review_summary.md
+  : 26aa927bcd0136801114520d366918dfb96d74de4ebe1093798f82a924a431df
+  .reviewcompass/specs/workflow-management/tasks.md: 8f5a1ff7e24a246bcf1366bfa2531d8ca2a6f3cefe67dd992978413e9bb9bb12
+  docs/notes/2026-06-16-workflow-recovery-smell-inventory.md: 1c2a4bb62fbd4735f3f52b7021436f5a843abc8a86428c107821b50bc0a62616
+  docs/reviews/reopen-classification-2026-06-16-wm-commit-execution-delegation.md: 663de33071ad06dd029600254eca2c52e3b7739c594a17a062996c766af049b8
+required_verifiers: &id001
+- gemini-3.5-flash
+completed_verifiers: *id001
+unresolved_substantive_findings: 0
+verifications:
+- verifier: gemini-3.5-flash
+  target_files:
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-16-design-commit-execution-delegation-approval.md
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-16-design-commit-execution-delegation-reopen-alignment.md
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-16-design-commit-execution-delegation-review-wave-summary.md
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-16-design-commit-execution-delegation-review-wave.md
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-16-implementation-commit-execution-delegation-approval.md
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-16-implementation-commit-execution-delegation-reopen-alignment.md
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-16-implementation-commit-execution-delegation-review-wave-summary.md
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-16-implementation-commit-execution-delegation-review-wave.md
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-16-requirements-commit-execution-delegation-approval.md
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-16-requirements-commit-execution-delegation-reopen-alignment.md
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-16-requirements-commit-execution-delegation-review-wave-summary.md
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-16-requirements-commit-execution-delegation-review-wave.md
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-16-tasks-commit-execution-delegation-approval.md
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-16-tasks-commit-execution-delegation-reopen-alignment.md
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-16-tasks-commit-execution-delegation-review-wave-summary.md
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-16-tasks-commit-execution-delegation-review-wave.md
+  - .reviewcompass/specs/workflow-management/design.md
+  - .reviewcompass/specs/workflow-management/requirements.md
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-16-r2-workflow-management-implementation-review-run/raw-review-triage-summary.md
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-16-r2-workflow-management-implementation-review-run/review-target.md
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-16-r2-workflow-management-implementation-review-run/review_summary.md
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-16-workflow-management-design-commit-execution-delegation-review-run/raw-review-triage-summary.md
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-16-workflow-management-design-commit-execution-delegation-review-run/review-target.md
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-16-workflow-management-design-commit-execution-delegation-review-run/review_summary.md
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-16-workflow-management-implementation-commit-execution-delegation-review-run/raw-review-triage-summary.md
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-16-workflow-management-implementation-commit-execution-delegation-review-run/review-target.md
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-16-workflow-management-implementation-commit-execution-delegation-review-run/review_summary.md
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-16-workflow-management-requirements-commit-execution-delegation-review-run/raw-review-triage-summary.md
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-16-workflow-management-requirements-commit-execution-delegation-review-run/review-target.md
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-16-workflow-management-requirements-commit-execution-delegation-review-run/review_summary.md
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-16-workflow-management-tasks-commit-execution-delegation-review-run/raw-review-triage-summary.md
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-16-workflow-management-tasks-commit-execution-delegation-review-run/review-target.md
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-16-workflow-management-tasks-commit-execution-delegation-review-run/review_summary.md
+  - .reviewcompass/specs/workflow-management/tasks.md
+  - docs/notes/2026-06-16-workflow-recovery-smell-inventory.md
+  - docs/reviews/reopen-classification-2026-06-16-wm-commit-execution-delegation.md
+  target_sha256:
+    .reviewcompass/specs/_cross_feature/reviews/2026-06-16-design-commit-execution-delegation-approval.md: 3efd4189ee2177f6685aaf44572d9800cea6c586e05611aeec9cef38b4be7e4c
+    .reviewcompass/specs/_cross_feature/reviews/2026-06-16-design-commit-execution-delegation-reopen-alignment.md: 981dff18a17ffb5a32fa2ef58402e8b251a3f2b51674d693d52b7bbb13c050d7
+    .reviewcompass/specs/_cross_feature/reviews/2026-06-16-design-commit-execution-delegation-review-wave-summary.md: 83d1d5ab4a2f7adf199f636d1299a0f560a134203a9a6bd2906770f6eb154333
+    .reviewcompass/specs/_cross_feature/reviews/2026-06-16-design-commit-execution-delegation-review-wave.md: f28f4f4fe70c6d368308da731b26db24dbb8081a68a5c3d955d96c79ed0f3d9e
+    .reviewcompass/specs/_cross_feature/reviews/2026-06-16-implementation-commit-execution-delegation-approval.md: 7706625974f397162d00f635a278a578197dd09fc5948a152debcf7123ba6229
+    .reviewcompass/specs/_cross_feature/reviews/2026-06-16-implementation-commit-execution-delegation-reopen-alignment.md: 5e6c8dd307d75ab0e35a9e7a35c742c2f2b92f078fd20ea5744139527551343f
+    .reviewcompass/specs/_cross_feature/reviews/2026-06-16-implementation-commit-execution-delegation-review-wave-summary.md: 2abdfb9c895f5ec85d5806121ebc1d37ca7a76a9542b8fbe793c938e62d8ffe8
+    .reviewcompass/specs/_cross_feature/reviews/2026-06-16-implementation-commit-execution-delegation-review-wave.md: bc25280ba816172b5c88a71cc4677a9a2b156764946cdba4f52b0268087eeda6
+    .reviewcompass/specs/_cross_feature/reviews/2026-06-16-requirements-commit-execution-delegation-approval.md: 79077419ea37e743cab000f3b30ada75f81f01190e0e08734532df3306e06246
+    .reviewcompass/specs/_cross_feature/reviews/2026-06-16-requirements-commit-execution-delegation-reopen-alignment.md: bdf20a9ee068da3cc4f841da6e8e9a22afb06865dd3b79408a3f962d20424c57
+    .reviewcompass/specs/_cross_feature/reviews/2026-06-16-requirements-commit-execution-delegation-review-wave-summary.md: 2abdfb9c895f5ec85d5806121ebc1d37ca7a76a9542b8fbe793c938e62d8ffe8
+    .reviewcompass/specs/_cross_feature/reviews/2026-06-16-requirements-commit-execution-delegation-review-wave.md: 989499be6661356fffd6b27e151bb408426b394fb26e58ae4cc09c5706c70fea
+    .reviewcompass/specs/_cross_feature/reviews/2026-06-16-tasks-commit-execution-delegation-approval.md: 3ba4cb282fcfa563fa8ebce16a17119e3841285505bcf916f51b6a3364dd49d0
+    .reviewcompass/specs/_cross_feature/reviews/2026-06-16-tasks-commit-execution-delegation-reopen-alignment.md: 53a9d8828b9761058c8bf9c1e6ac2a098a4dc1a238b496d378d5e3e198c14d00
+    .reviewcompass/specs/_cross_feature/reviews/2026-06-16-tasks-commit-execution-delegation-review-wave-summary.md: a493e5555fd11acf42995b037167a06cd30dea77505a8d88fa85307d25788e9a
+    .reviewcompass/specs/_cross_feature/reviews/2026-06-16-tasks-commit-execution-delegation-review-wave.md: 1cfd84bf37383324e84057a51d99cf15b440a2f50df53a463289bbd90121a4a6
+    .reviewcompass/specs/workflow-management/design.md: 4e133ba19accf1bfe1e2d8e9f5b28ae6bb59ccd80004d4a945618d7cc5dcf99b
+    .reviewcompass/specs/workflow-management/requirements.md: b9cdb15ec1e7d0431bbfd4d73e0e58d6ca3ae8059beafc6051ebb202be7ef124
+    ? .reviewcompass/specs/workflow-management/reviews/2026-06-16-r2-workflow-management-implementation-review-run/raw-review-triage-summary.md
+    : 0f4de01680ae8ad79766b5587557f958801467b05c6a0e159d3be53aa25c9f7e
+    ? .reviewcompass/specs/workflow-management/reviews/2026-06-16-r2-workflow-management-implementation-review-run/review-target.md
+    : 73bc782566848e9140c8c6d2380be6facaf4caf97c4d8bc5217354c395fd9ec5
+    ? .reviewcompass/specs/workflow-management/reviews/2026-06-16-r2-workflow-management-implementation-review-run/review_summary.md
+    : 9975ff228e81aeb4068651ebaef352ec4ed7c4d8d6868421d41db0c7d56d399c
+    ? .reviewcompass/specs/workflow-management/reviews/2026-06-16-workflow-management-design-commit-execution-delegation-review-run/raw-review-triage-summary.md
+    : 11ecc729561b88c204bf53649e9d8c38eeb505130852464bb182ff4965d386d3
+    ? .reviewcompass/specs/workflow-management/reviews/2026-06-16-workflow-management-design-commit-execution-delegation-review-run/review-target.md
+    : 7500b03991c751d2f5550941c2cfc8b88cf03ff2c38d7bed9707a431ed67d544
+    ? .reviewcompass/specs/workflow-management/reviews/2026-06-16-workflow-management-design-commit-execution-delegation-review-run/review_summary.md
+    : 1b8871d32b49555263a8cf08b9dbb30defc0ae72006973556ab4e6e1989a66a3
+    ? .reviewcompass/specs/workflow-management/reviews/2026-06-16-workflow-management-implementation-commit-execution-delegation-review-run/raw-review-triage-summary.md
+    : 6fd5dd42d4845e1ac27787e4617f25b56dd2c06d20b6643a80fd25e936ef7333
+    ? .reviewcompass/specs/workflow-management/reviews/2026-06-16-workflow-management-implementation-commit-execution-delegation-review-run/review-target.md
+    : f28d7795681e9c034b69fc4a5d9ab5d4f094f6622149d32b1e2b42e2302b954e
+    ? .reviewcompass/specs/workflow-management/reviews/2026-06-16-workflow-management-implementation-commit-execution-delegation-review-run/review_summary.md
+    : c29cdd975aa6be90a579bdb49816f5c084c1ecca9a31942790b21f8a05757821
+    ? .reviewcompass/specs/workflow-management/reviews/2026-06-16-workflow-management-requirements-commit-execution-delegation-review-run/raw-review-triage-summary.md
+    : e03230f529228bbe43a5060ee2f878937f86956f8b970649f4cf1e98dfe3dd08
+    ? .reviewcompass/specs/workflow-management/reviews/2026-06-16-workflow-management-requirements-commit-execution-delegation-review-run/review-target.md
+    : 4501955e3ed81e67395cc1fa65552f830abc4363982276bff27a5f78a3e16a58
+    ? .reviewcompass/specs/workflow-management/reviews/2026-06-16-workflow-management-requirements-commit-execution-delegation-review-run/review_summary.md
+    : b9e8f4a823ce65834c20382766f255fd9327d18c17fca3d82b40b6049ea2f5f2
+    ? .reviewcompass/specs/workflow-management/reviews/2026-06-16-workflow-management-tasks-commit-execution-delegation-review-run/raw-review-triage-summary.md
+    : 6659034a3ec21d49cd076a62277b6e960f973ebea2e4798353a5f4c93cb115b2
+    ? .reviewcompass/specs/workflow-management/reviews/2026-06-16-workflow-management-tasks-commit-execution-delegation-review-run/review-target.md
+    : b75f663fb354e86153f39f3f1b87c5056eed9dd014155d43c56d7d33818c669e
+    ? .reviewcompass/specs/workflow-management/reviews/2026-06-16-workflow-management-tasks-commit-execution-delegation-review-run/review_summary.md
+    : 26aa927bcd0136801114520d366918dfb96d74de4ebe1093798f82a924a431df
+    .reviewcompass/specs/workflow-management/tasks.md: 8f5a1ff7e24a246bcf1366bfa2531d8ca2a6f3cefe67dd992978413e9bb9bb12
+    docs/notes/2026-06-16-workflow-recovery-smell-inventory.md: 1c2a4bb62fbd4735f3f52b7021436f5a843abc8a86428c107821b50bc0a62616
+    docs/reviews/reopen-classification-2026-06-16-wm-commit-execution-delegation.md: 663de33071ad06dd029600254eca2c52e3b7739c594a17a062996c766af049b8
+review_run:
+  path: .reviewcompass/evidence/review-runs/2026-06-16-postwrite-commit-execution-delegation-classification
+  summary_path: .reviewcompass/evidence/review-runs/2026-06-16-postwrite-commit-execution-delegation-classification/model-result-summary.yaml
+notes: Generated template; verify target_files cover current post-write targets before
+  use.
