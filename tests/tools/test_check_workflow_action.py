@@ -3833,6 +3833,94 @@ class ReopenAdvanceGateTests(unittest.TestCase):
     self.assertEqual(result.returncode, 2, result.stdout)
     self.assertIn("evidence", result.stdout)
 
+  def test_reopen_advance_gate_rejects_malformed_pending_gate(self):
+    """pending_gates の全要素が標準 gate 形式でなければ拒否する"""
+    self._write_spec()
+    in_progress = (
+      Path(self.tmpdir)
+      / "stages"
+      / "in-progress"
+      / "reopen-procedure-2026-06-15.yaml"
+    )
+    in_progress.parent.mkdir(parents=True)
+    in_progress.write_text(
+      "process_id: reopen-procedure\n"
+      "feature: workflow-management\n"
+      "step_number: 3\n"
+      "next_step: 第3過程：requirements alignment\n"
+      "completed_steps: []\n"
+      "pending_gates:\n"
+      "  - stages/requirements.yaml#alignment\n"
+      "  - requirements approval\n"
+      "completed_gates: []\n"
+      "downstream_impact_decisions: []\n"
+      "current_blocker: null\n",
+      encoding="utf-8",
+    )
+
+    result = run_script(
+      [
+        "reopen-advance-gate",
+        "--file", "stages/in-progress/reopen-procedure-2026-06-15.yaml",
+        "--gate", "stages/requirements.yaml#alignment",
+        "--decision", "existing_sufficient",
+        "--feature-scope", "workflow-management",
+        "--rationale", "requirements alignment は既存で受けられる。",
+        "--evidence", "alignment.md",
+        "--json",
+      ],
+      cwd=self.tmpdir,
+    )
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 2, result.stdout)
+    self.assertIn("pending_gates", result.stdout)
+    self.assertIn("stages/<phase>.yaml#<stage>", result.stdout)
+
+  def test_reopen_advance_gate_rejects_drafting_pending_gate(self):
+    """pending_gates は review 系 gate に限定する"""
+    self._write_spec()
+    in_progress = (
+      Path(self.tmpdir)
+      / "stages"
+      / "in-progress"
+      / "reopen-procedure-2026-06-15.yaml"
+    )
+    in_progress.parent.mkdir(parents=True)
+    in_progress.write_text(
+      "process_id: reopen-procedure\n"
+      "feature: workflow-management\n"
+      "step_number: 3\n"
+      "next_step: 第3過程：requirements alignment\n"
+      "completed_steps: []\n"
+      "pending_gates:\n"
+      "  - stages/requirements.yaml#alignment\n"
+      "  - stages/requirements.yaml#drafting\n"
+      "completed_gates: []\n"
+      "downstream_impact_decisions: []\n"
+      "current_blocker: null\n",
+      encoding="utf-8",
+    )
+
+    result = run_script(
+      [
+        "reopen-advance-gate",
+        "--file", "stages/in-progress/reopen-procedure-2026-06-15.yaml",
+        "--gate", "stages/requirements.yaml#alignment",
+        "--decision", "existing_sufficient",
+        "--feature-scope", "workflow-management",
+        "--rationale", "requirements alignment は既存で受けられる。",
+        "--evidence", "alignment.md",
+        "--json",
+      ],
+      cwd=self.tmpdir,
+    )
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 2, result.stdout)
+    self.assertIn("pending_gates", result.stdout)
+    self.assertIn("review 系 gate", result.stdout)
+
 
 class ReopenAdvanceStepTests(unittest.TestCase):
   """reopen-advance-step サブコマンドの第1・第2過程更新"""

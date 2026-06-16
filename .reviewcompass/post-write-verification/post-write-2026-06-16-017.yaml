@@ -1,0 +1,27 @@
+status: completed
+target_files:
+- TODO_NEXT_SESSION.md
+- docs/operations/WORKFLOW_PRECHECK.md
+- docs/operations/WORKFLOW_PRECHECK_DETAILS.md
+target_sha256:
+  TODO_NEXT_SESSION.md: 4b2d805d70d09c3cb0003a7f359847ca3f316aec7df42b2726e128220d19b56f
+  docs/operations/WORKFLOW_PRECHECK.md: 36480cddcf3915d614875c96950fccaf5b5cf166c905e4cfddf4e61be11d5a7b
+  docs/operations/WORKFLOW_PRECHECK_DETAILS.md: c528e9e4aa6f090f355dcb35610ac84adaefffd332c5e78f1f1685230e33c374
+required_verifiers: &id001
+- gemini-3.5-flash
+completed_verifiers: *id001
+unresolved_substantive_findings: 0
+verifications:
+- verifier: gemini-3.5-flash
+  target_files:
+  - TODO_NEXT_SESSION.md
+  - docs/operations/WORKFLOW_PRECHECK.md
+  - docs/operations/WORKFLOW_PRECHECK_DETAILS.md
+  target_sha256:
+    TODO_NEXT_SESSION.md: 4b2d805d70d09c3cb0003a7f359847ca3f316aec7df42b2726e128220d19b56f
+    docs/operations/WORKFLOW_PRECHECK.md: 36480cddcf3915d614875c96950fccaf5b5cf166c905e4cfddf4e61be11d5a7b
+    docs/operations/WORKFLOW_PRECHECK_DETAILS.md: c528e9e4aa6f090f355dcb35610ac84adaefffd332c5e78f1f1685230e33c374
+review_run:
+  path: .reviewcompass/evidence/review-runs/2026-06-16-reopen-gate-normalization-postwrite
+  summary_path: .reviewcompass/evidence/review-runs/2026-06-16-reopen-gate-normalization-postwrite/model-result-summary.yaml
+notes: reopen-advance-gate pending gate normalization documentation post-write verification

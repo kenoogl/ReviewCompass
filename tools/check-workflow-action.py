@@ -5292,6 +5292,29 @@ def _next_step_for_pending_gate(gate):
   return f"第3過程：{phase} {stage}"
 
 
+def _validate_reopen_pending_gate_references(pending_gates):
+  """pending_gates の gate 参照が標準形式か検査する"""
+  malformed = []
+  non_review_gates = []
+  review_stages = {"triad-review", "review-wave", "alignment", "approval"}
+  for gate in pending_gates:
+    phase, stage = _parse_stage_gate(gate)
+    if phase is None or stage is None:
+      malformed.append(gate)
+    elif stage not in review_stages:
+      non_review_gates.append(gate)
+  if malformed:
+    raise ValueError(
+      "pending_gates は stages/<phase>.yaml#<stage> 形式の既知 gate が必要です: "
+      + ", ".join(malformed)
+    )
+  if non_review_gates:
+    raise ValueError(
+      "pending_gates は review 系 gate（triad-review/review-wave/alignment/approval）だけを指定できます: "
+      + ", ".join(non_review_gates)
+    )
+
+
 def cmd_reopen_advance_step(args):
   """reopen 第1・第2過程の完了更新を機械処理する"""
   cwd = Path.cwd()
@@ -5392,6 +5415,7 @@ def cmd_reopen_advance_gate(args):
     pending_gates = data.get("pending_gates")
     if not isinstance(pending_gates, list) or not all(isinstance(v, str) for v in pending_gates):
       raise ValueError("pending_gates は文字列 list が必要です")
+    _validate_reopen_pending_gate_references(pending_gates)
     if not pending_gates or pending_gates[0] != args.gate:
       raise ValueError("指定 gate は pending_gates の先頭である必要があります")
     evidence = args.evidence or []

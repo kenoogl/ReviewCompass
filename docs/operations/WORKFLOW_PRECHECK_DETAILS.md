@@ -182,7 +182,7 @@ tools/guarded-git-commit.py -m "<commit message>" --rationale "<理由>"
 
 - 対象 YAML が存在し、`process_id: reopen-procedure` であることを要求する
 - `--gate` は `pending_gates` の先頭文字列と完全一致する必要がある。先頭文字列との不一致は逸脱とする
-- `pending_gates` 自体は、`reopen-start` 等が作る標準の `stages/<phase>.yaml#<stage>` 形式を前提とする。既存 YAML 内の gate 文字列を追加検証する正規化処理は本コマンドの対象外である
+- `pending_gates` の全要素は、標準の `stages/<phase>.yaml#<stage>` 形式で、かつ既知 phase の review 系 gate（`triad-review`／`review-wave`／`alignment`／`approval`）として解釈できる必要がある。壊れた gate 文字列や `drafting` gate が 1 件でもあれば逸脱とする
 - `--evidence` が 1 件も無い更新は逸脱とする
 - 完了した gate を `pending_gates` から除去し、`completed_gates` へ追加する
 - `downstream_impact_decisions` に `gate`、`feature_scope`、`decision`、`rationale`、`evidence` を追記する

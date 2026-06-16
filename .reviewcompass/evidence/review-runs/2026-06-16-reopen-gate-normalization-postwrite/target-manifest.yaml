@@ -1,0 +1,4 @@
+run_id: 2026-06-16-reopen-gate-normalization-postwrite
+target_files:
+- path: .reviewcompass/evidence/review-runs/2026-06-16-reopen-gate-normalization-postwrite/review-target.md
+  sha256: 87724a461b89a1388625cc4712bf92ce1e9c1c3fcafa8b01376e6414c74bb8b8
