@@ -3791,6 +3791,48 @@ class ReopenAdvanceGateTests(unittest.TestCase):
     self.assertEqual(result.returncode, 2, result.stdout)
     self.assertIn("先頭", result.stdout)
 
+  def test_reopen_advance_gate_rejects_missing_evidence(self):
+    """根拠なしの pending gate 更新は拒否する"""
+    self._write_spec()
+    in_progress = (
+      Path(self.tmpdir)
+      / "stages"
+      / "in-progress"
+      / "reopen-procedure-2026-06-15.yaml"
+    )
+    in_progress.parent.mkdir(parents=True)
+    in_progress.write_text(
+      "process_id: reopen-procedure\n"
+      "feature: workflow-management\n"
+      "step_number: 3\n"
+      "next_step: 第3過程：requirements alignment\n"
+      "completed_steps: []\n"
+      "pending_gates:\n"
+      "  - stages/requirements.yaml#alignment\n"
+      "  - stages/requirements.yaml#approval\n"
+      "completed_gates: []\n"
+      "downstream_impact_decisions: []\n"
+      "current_blocker: null\n",
+      encoding="utf-8",
+    )
+
+    result = run_script(
+      [
+        "reopen-advance-gate",
+        "--file", "stages/in-progress/reopen-procedure-2026-06-15.yaml",
+        "--gate", "stages/requirements.yaml#alignment",
+        "--decision", "existing_sufficient",
+        "--feature-scope", "workflow-management",
+        "--rationale", "requirements alignment は既存で受けられる。",
+        "--json",
+      ],
+      cwd=self.tmpdir,
+    )
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 2, result.stdout)
+    self.assertIn("evidence", result.stdout)
+
 
 class ReopenAdvanceStepTests(unittest.TestCase):
   """reopen-advance-step サブコマンドの第1・第2過程更新"""

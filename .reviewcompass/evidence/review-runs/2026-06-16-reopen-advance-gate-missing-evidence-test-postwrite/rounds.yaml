@@ -1,0 +1,26 @@
+round_id: round-1
+purpose: post_write_verification
+invocation_timestamp: '2026-06-16T09:12:15.296966+00:00'
+target_files:
+- path: .reviewcompass/evidence/review-runs/2026-06-16-reopen-advance-gate-missing-evidence-test-postwrite/review-target.md
+  sha256: 2578d7a5dd33a13b37a63487f71aa8a4a6b4d3337818dd023c0936e2e8725997
+criteria: reopen_advance_gate_missing_evidence_test_todo_post_write
+prompt_sha256: b84bf450688f0ba0b67e823f3c2a8bc22f0bb8eb035e68a397e0185cb1b36f44
+model_results:
+- model_id: gemini-3.5-flash
+  provider: gemini-api
+  role: primary
+  treatment: primary
+  invocation_path: api
+  raw_path: raw/gemini-3.5-flash.round-1.txt
+  raw_sha256: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+  parsed_path: parsed/gemini-3.5-flash.round-1.yaml
+  parsed_sha256: ff6baac10ea5c997cc0c4570f86373c3075e182536d24c935366e1dd8977ea8c
+  parse_status: parsed
+  formatted_by: parser
+  formatted_by_actor_type: orchestrator
+  formatted_by_actor: run_role.py
+  formatted_at: '2026-06-16T09:12:15.296966+00:00'
+  follow_up_action: triage
+  attempts: 1
+  duration_seconds: 4.341
