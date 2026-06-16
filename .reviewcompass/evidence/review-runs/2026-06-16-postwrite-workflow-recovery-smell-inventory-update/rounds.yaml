@@ -1,0 +1,28 @@
+round_id: round-1
+purpose: post_write_verification
+invocation_timestamp: '2026-06-16T01:40:35.720447+00:00'
+target_files:
+- path: docs/notes/2026-06-16-workflow-recovery-smell-inventory.md
+  sha256: f641e3dabf943395cec968a29e662d798b2f52f812067648746c13cb517484d6
+criteria: workflow_recovery_smell_inventory_update
+prompt_sha256: 55aed8833ffd31cf9c6d158446abc9d34075ec5eb4228c230d3938033d7306bd
+model_results:
+- model_id: gemini-3.5-flash
+  provider: gemini-api
+  role: primary
+  treatment: primary
+  invocation_path: api
+  raw_path: raw/gemini-3.5-flash.round-1.txt
+  raw_sha256: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+  parsed_path: parsed/gemini-3.5-flash.round-1.yaml
+  parsed_sha256: 0d508bfd304e9c9d522fab41930ecb0f4e1fb542fc03929b8d1d53d75aa41d43
+  parse_status: parsed
+  formatted_by: parser
+  formatted_by_actor_type: orchestrator
+  formatted_by_actor: run_role.py
+  formatted_at: '2026-06-16T01:40:35.720447+00:00'
+  follow_up_action: triage
+  attempts: 1
+  duration_seconds: 9.955
+effective_prompt_path: .reviewcompass/runtime/effective-prompts/next_action_kind-post_write_verification.prompt.md
+effective_prompt_sha256: a0bdde1bdd73ed547a07653ce4264e116b128232b06ada223c85ccb16ff81bca

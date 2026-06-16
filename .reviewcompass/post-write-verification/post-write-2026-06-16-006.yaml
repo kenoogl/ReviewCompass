@@ -1,0 +1,20 @@
+status: completed
+target_files:
+- docs/notes/2026-06-16-workflow-recovery-smell-inventory.md
+target_sha256:
+  docs/notes/2026-06-16-workflow-recovery-smell-inventory.md: f641e3dabf943395cec968a29e662d798b2f52f812067648746c13cb517484d6
+required_verifiers: &id001
+- gemini-3.5-flash
+completed_verifiers: *id001
+unresolved_substantive_findings: 0
+verifications:
+- verifier: gemini-3.5-flash
+  target_files:
+  - docs/notes/2026-06-16-workflow-recovery-smell-inventory.md
+  target_sha256:
+    docs/notes/2026-06-16-workflow-recovery-smell-inventory.md: f641e3dabf943395cec968a29e662d798b2f52f812067648746c13cb517484d6
+review_run:
+  path: .reviewcompass/evidence/review-runs/2026-06-16-postwrite-workflow-recovery-smell-inventory-update
+  summary_path: .reviewcompass/evidence/review-runs/2026-06-16-postwrite-workflow-recovery-smell-inventory-update/model-result-summary.yaml
+notes: Generated template; verify target_files cover current post-write targets before
+  use.

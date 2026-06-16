@@ -17,6 +17,24 @@
 - post-write review 差分 bundle の取得元選択ミス
 - commit 承認と LLM 実行代行承認の設計ギャップ
 
+## TODO 未完了候補との関係
+
+`TODO_NEXT_SESSION.md` の未完了候補には、実アプリ pilot や P3 最終形のような
+大きな作業も含まれる。このメモが直接扱うのは、そのうち次の「作業導線の弱さ」
+に関する候補である。
+
+- 正本優先の規律化／生成ツール横展開の検討
+- reopen 進行中／完了 YAML の手編集事故対策
+- commit 承認記録の安全な生成方法の検討
+- reopen approval gate の blocker 構造化
+- reopen-advance-gate の追加テスト
+- reopen-advance-gate の gate 正規化検査
+- 裁定負荷対策の運用開始時に必要になる、重要決定記録の作成前検査
+
+一方、実アプリ pilot、レビュー証跡の機能側ポインタ要件の一般化、P3 最終形の
+専用 reopen 計画は、このメモから派生する局所改善ではなく、別の作業単位として
+扱う。
+
 ## 今回見つかった主要 3 件
 
 ### 1. 現セッション正式記録の生成前防止不足
@@ -311,6 +329,7 @@ rounds / target-manifest / summary を更新・上書きし得る。
 対象：
 
 - `tools/make-triage-decision.py`
+- `tools/api_providers/review_triage.py decide`
 
 このツールは `triage.yaml` と `model-result-summary.yaml` を書いた後、全件 decided の場合に
 正本判定へ通す。最後の正本判定で落ちた場合、既に書き換えたファイルが残る。
@@ -322,6 +341,19 @@ atomic に置き換える。または失敗時に元内容へ rollback する。
 判断済み状態が残っていないことを確認する。
 監査対象は少なくとも、triage、model-result-summary、関連 summary、manifest 生成有無、
 approval record 参照まで含め、途中失敗で残り得る副作用を限定してから修正する。
+
+追加で、`review_triage.py decide` 実行前に approval record の前提を検査する必要がある。
+同コマンドは approval record の存在だけでなく、対象 finding id と final label が
+事前列挙されていることを要求する。この前提が実行前に明示・生成されず、
+空の `approval.yaml` で失敗する手戻りが起きた。
+
+後続対応では、`decide` の preflight または別の approval-template 生成コマンドで次を行う。
+
+- 対象 finding id が approval record に存在するか確認する
+- 対象 finding id に対応する final label が列挙されているか確認する
+- 不足している場合は、既存形式に沿った `approval.yaml` 草案を生成する
+- 自動生成しない場合は、必要な項目と記入先を明示して停止する
+- 空 approval record を渡してから失敗する導線を避ける
 
 ### B-3. proxy approval の既存成果物上書き・削除
 
@@ -421,6 +453,133 @@ post-write-verification の開始時に、正本手順では
 短縮名だけのコマンド実行を避けること、失敗時は成果物未作成を確認してから続行することを
 明示する。
 
+あわせて、存在しない補助コマンドや未確認の引数を推測して実行する手戻りも同じ型である。
+具体例として、`reopen-status` が存在すると誤認して実行しようとしたこと、
+`check-workflow-action.py next` が `--file` を受け取ると誤認したことがある。
+reopen 状態確認の正規経路は `next --json` と in-progress YAML の確認であり、
+存在しない補助コマンド名を推測してはいけない。
+
+後続対応では、reopen / next / triage などの workflow CLI を使う前に、対象サブコマンドの
+存在、引数、前提ファイルを `--help` または機械可読 command registry で確認する
+preflight を追加する。少なくとも次を満たす必要がある。
+
+- サブコマンドが存在する
+- 指定しようとしている option が存在する
+- 対象ファイルや approval record などの前提がそろっている
+- 状態確認の正規経路が分かっている場合は、その経路を優先する
+- 推測した短縮名や存在しない補助コマンドは実行前に止める
+
+### B-8. 前例模倣による implementation review target 不備
+
+implementation triad-review の `review-target.md` を作る際、requirements / design /
+tasks の前例形式を模倣し、実装 diff や主要コード抜粋を含めなかった。
+
+直接原因は、文書レビュー用の review target 形式を implementation review にそのまま
+横展開したことである。本質原因は、前例を使う前に、正本、phase、artifact 種別、
+reviewer が必要とする一次情報を照合しなかったことである。
+
+影響として、review-run 自体は実行できたが、reviewer から「実装を検証できない」と
+指摘され、review-run や review target の作り直しが必要になった。
+
+後続対応では、前例適用前チェックを追加する。
+
+- `phase=implementation` なら diff / code excerpt / test diff の有無を検査する
+- requirements / design / tasks 用の target 形式を implementation へ無条件に転用しない
+- 「前例と同じ形か」ではなく「今回の reviewer が検証可能か」をチェック項目にする
+- review-run 作成前 checker の対象に review target の一次情報充足を含める
+
+分類は、review-run / bundle 作成前チェック、前例適用チェック、手戻り削減候補である。
+
+### B-9. post-write pending 中の別作業混在による workflow 混線
+
+既存の post-write-verification pending が残っている状態で、別件の実装変更を同じ
+worktree に追加したため、`next` / guard が「post-write pending 中にコード変更が
+混ざっている」と判定して停止した。
+
+具体例では、smell inventory 系の post-write-verification 後処理が残っているところに、
+commit execution delegation 実装変更が同居した。
+
+直接原因は、過渡的な staged / dirty 状態の同居である。ただし問題の型としては
+定常的に起こり得る。ReviewCompass の運用では、review-run、post-write-verification、
+reopen、commit approval などの未完了手続き中に、別の不具合や改善点を発見して
+同じ worktree で修正を始める場面があるためである。
+
+影響：
+
+- `next` が本来進めたい作業ではなく、混在検出で停止する
+- 作業者が「今どの手続きに従うべきか」を再確認する必要が出る
+- staged / unstaged / generated artifacts の分離が手作業になる
+- 手戻り、説明コスト、トークン消費が増える
+- post-write 対象外の変更が同じ流れに混入する危険がある
+
+本質原因は、未完了手続きがある状態で、新しい作業差分を同じ worktree に作る前の
+機械的な分離チェックが弱いことである。「pending 手続きの対象差分」と
+「新しく始める作業差分」が同居してよいかを、作業開始前に判定できていない。
+
+後続対応では、作業開始前チェックで pending 手続きと staged / dirty 差分の種類を照合する。
+post-write pending 中に対象外ファイルを変更しようとした場合は、開始前に停止して
+次の分離案を機械的に提示する。
+
+- 先に pending 手続きを完了する
+- 別 worktree / 別スレッドへ分ける
+- 現在作業を保留メモ化する
+- 明示承認を得て side-track として記録する
+
+また、`next` が混在を検出したときは、単に止めるだけでなく、どの既存 pending と
+どの新規差分が衝突しているかを表示する。
+
+分類は、workflow 混線防止、post-write / review-run / reopen 作業分離、
+作業開始前チェック、手戻り削減候補である。
+
+### B-10. completed_gates と downstream_impact_decisions の対応漏れ
+
+reopen 完了処理では、`completed_gates` に並ぶ gate と、
+`downstream_impact_decisions[].gate` の対応が必要である。
+`pending_gates` から外れた gate も、完了扱いなら downstream impact decision の
+対象になる。
+
+この構造は機械チェックしやすい。reopen 完了前チェックでは次を確認できる。
+
+1. `completed_gates` を読む
+2. `drafting_completed_gates` は別扱いにする
+3. `requirements` / `design` / `tasks` / `implementation` の
+   `triad-review` / `review-wave` / `alignment` / `approval` gate を対象にする
+4. 各 gate について、`downstream_impact_decisions[].gate` に同じ値があるか確認する
+5. なければ `DEVIATION` で止める
+
+補助的には、`reopen-advance-gate` で gate を完了させたときに、
+`downstream_impact_decisions` へ必ず 1 件追加する導線にできる。
+また、`completed_gates` へ手で追加する経路を禁止し、既存ファイル修復用には
+欠落 gate 一覧を出す lint を用意する。
+
+ただし、判断理由そのものは完全自動にしない。機械ができるのは、対応レコードがあるか、
+必須フィールドがあるか、evidence が空でないか、どの gate が足りないかを示すところまでである。
+`rationale` の意味的妥当性は、人または review / proxy が確認する。
+
+自然な組み込み先は、`check-workflow-action.py commit` または reopen finalize 系の検査である。
+
+### B-11. commit approval chain の順序依存を並列実行できてしまう
+
+commit approval chain は、`prepare -> record -> delegate-execution -> guarded commit` の
+順序依存処理である。各段階は直前の成果物に依存し、nonce、target digest、
+staged file set digest を確認しながら進む。
+
+しかし現状では、この順序が「手順として分かっている」だけで、実行側が
+`record` と `delegate-execution` を並列実行しようとした時点で止める機械ガードが弱い。
+実際、`record` と `delegate-execution` を同時に走らせたため、
+`delegate-execution` が古い approval record を見て失敗する手戻りが起きた。
+
+後続対応では、commit approval chain を直列専用の操作として扱う。
+
+- `prepare -> record -> delegate-execution -> guarded commit` は並列実行対象から除外する
+- `multi_tool_use.parallel` 等でまとめて実行しない
+- wrapper で一括実行し、各段階で成果物の存在確認と digest 検証を挟む
+- `delegate-execution` は、同じ nonce の approval record が作成済みであることを
+  事前に確認してから実行する
+- エラー時は、どの段階の成果物が不足または stale かを明示する
+
+平たく言えば、ルールはあるが、LLM が間違えないようにする実行前ガードが足りない。
+
 ## 共通する問題構造
 
 今回の追加点も含めると、共通する構造は次である。
@@ -429,9 +588,15 @@ post-write-verification の開始時に、正本手順では
 - 対象確定チェックが弱い
 - 空成果物チェックが弱い
 - 正本コマンド呼び出し前に、短縮名や記憶に依存して動くことがある
+- 存在しないサブコマンドや未確認の option を推測してしまうことがある
+- 前例を正本・phase・artifact 種別と照合せず横展開してしまうことがある
+- pending 手続き中に別作業差分が同じ worktree へ混在し得る
+- 順序依存の承認 chain を並列実行できてしまう
 - stale 承認を避ける導線が弱い
 - runtime JSON 手編集のようなワークアラウンドが発生し得る
 - review-run / manifest 作成前の妥当性検査が弱い
+- approval record 作成前に、対象 finding と final label の充足を確認する導線が弱い
+- reopen 完了記録で、completed gate と downstream impact decision の対応漏れを事前検出しにくい
 - 実装完了と実運用確認完了の境界が曖昧になり得る
 - 調査前の説明が、後で修正を要することがある
 - 生成後検査はあっても、生成前 preflight が弱い
@@ -497,6 +662,22 @@ post-write-verification の開始時に、正本手順では
      短縮名からではなく機械的に選ぶ
    - 実行前に対象、出力先、必須引数、既存成果物との衝突を表示・検査する
    - コマンド失敗時は成果物未作成または部分生成の有無を確認する
+8. approval-template / approval preflight
+   - `review_triage.py decide` 前に、対象 finding id と final label が approval record に
+     事前列挙されていることを確認する
+   - 不足時は既存形式に沿った approval 草案を生成するか、明確な手順を出して停止する
+9. 前例適用前 checker
+   - phase と artifact 種別を確認し、前例形式をそのまま横展開してよいか検査する
+   - implementation review target では diff / code excerpt / test diff の有無を確認する
+10. worktree 混線 preflight
+    - pending 手続き中に対象外差分を作ろうとしていないか確認する
+    - 混在時は、pending 完了、別 worktree、保留メモ化、side-track 承認の候補を提示する
+11. reopen 完了前 checker
+    - `completed_gates` と `downstream_impact_decisions[].gate` の対応漏れを検出する
+    - 必須フィールドと evidence の存在を確認し、rationale の意味的妥当性は人または review に残す
+12. commit approval chain wrapper
+    - `prepare -> record -> delegate-execution -> guarded commit` を直列専用として扱う
+    - 途中成果物の存在確認と digest 検証を挟み、並列実行を避ける
 
 ## 追跡方針
 
@@ -511,8 +692,13 @@ post-write-verification の開始時に、正本手順では
 - diff bundle 作成 helper
 - review-run 作成前 checker
 - commit approval 作成前 checker
+- commit approval chain wrapper
 - session-record current guard 共通化
 - proxy approval / triage decision の atomic 書き込み
+- review triage approval-template / approval preflight
+- 前例適用前 checker
+- worktree 混線 preflight
+- reopen 完了前 checker
 - deployment smoke と bundle export の出力先 preflight
 
 ## 追加分の優先度
@@ -520,30 +706,45 @@ post-write-verification の開始時に、正本手順では
 追加候補の中では、次の順で扱うのが妥当である。
 
 1. review-run dir の衝突・混在防止
-2. proxy approval / triage decision の atomic 書き込み
-3. deployment smoke の外部 app root 上書き防止
-4. bundle export の出力先衝突 preflight
-5. session-record backfill / promote の current-session guard 共通化
-6. 正本コマンド呼び出し前の短縮名・記憶依存防止
+2. review triage approval-template / approval preflight
+3. worktree 混線 preflight
+4. 前例適用前 checker
+5. reopen 完了前 checker
+6. commit approval chain wrapper
+7. proxy approval / triage decision の atomic 書き込み
+8. deployment smoke の外部 app root 上書き防止
+9. bundle export の出力先衝突 preflight
+10. session-record backfill / promote の current-session guard 共通化
+11. 正本コマンド呼び出し前の短縮名・記憶依存防止
 
 主要 3 件を含めた全体優先度は、不可逆操作・正本汚染・検証品質の順で考える。
 
 1. commit 承認と LLM 実行代行承認の正式 CLI 化
-2. 現セッション正式記録の生成前防止
-3. review-run dir の衝突・混在防止
-4. diff bundle 作成 helper
-5. 正本コマンド呼び出し helper
-6. proxy approval / triage decision の atomic 書き込み
-7. deployment smoke と bundle export の出力先 preflight
-8. 実装完了条件テンプレートと説明前確認ルール
+2. commit approval chain wrapper
+3. 現セッション正式記録の生成前防止
+4. worktree 混線 preflight
+5. review-run dir の衝突・混在防止
+6. review triage approval-template / approval preflight
+7. diff bundle 作成 helper
+8. 前例適用前 checker
+9. reopen 完了前 checker
+10. 正本コマンド呼び出し helper
+11. proxy approval / triage decision の atomic 書き込み
+12. deployment smoke と bundle export の出力先 preflight
+13. 実装完了条件テンプレートと説明前確認ルール
 
 ## 期待する完了条件
 
 - review-run / manifest / bundle は、生成前に対象妥当性を検査できる
 - 空 bundle や対象ずれ bundle が生成されない
+- implementation review target には、reviewer が実装を検証できる一次情報が含まれる
+- `review_triage.py decide` 前に、対象 finding id と final label の approval 前提を確認できる
+- post-write pending 中の別作業混在を作業開始前に検出し、分離案を提示できる
 - commit approval は最終 staged 固定後に作る導線になる
+- commit approval chain は直列専用 wrapper または preflight により順序通り実行される
 - 正式 CLI だけで、内容承認と LLM 実行代行承認を安全に記録できる
 - current session の正式 2 層記録生成は全入口で fail-closed する
+- reopen 完了前に、completed gate と downstream impact decision の対応漏れを検出できる
 - 実装完了と実環境確認未完了を完了報告で分けて示せる
 - runtime JSON 手編集を必要としない正式経路が整う
 - 正本 CLI がある作業では、短縮名や記憶ではなく正式コマンドを機械的に選べる
