@@ -1,0 +1,20 @@
+status: completed
+target_files:
+- docs/notes/2026-06-17-maintenance-workflow-compliance-improvement-candidates.md
+target_sha256:
+  docs/notes/2026-06-17-maintenance-workflow-compliance-improvement-candidates.md: e4b0dd048dc73b15ea4589c7373bf3eab26b38a3f75edb2e109abb458c8d1e25
+required_verifiers: &id001
+- gemini-3.5-flash
+completed_verifiers: *id001
+unresolved_substantive_findings: 0
+verifications:
+- verifier: gemini-3.5-flash
+  target_files:
+  - docs/notes/2026-06-17-maintenance-workflow-compliance-improvement-candidates.md
+  target_sha256:
+    docs/notes/2026-06-17-maintenance-workflow-compliance-improvement-candidates.md: e4b0dd048dc73b15ea4589c7373bf3eab26b38a3f75edb2e109abb458c8d1e25
+review_run:
+  path: .reviewcompass/evidence/review-runs/2026-06-17-postwrite-maintenance-workflow-compliance-improvement-candidates
+  summary_path: .reviewcompass/evidence/review-runs/2026-06-17-postwrite-maintenance-workflow-compliance-improvement-candidates/model-result-summary.yaml
+notes: Generated template; verify target_files cover current post-write targets before
+  use.

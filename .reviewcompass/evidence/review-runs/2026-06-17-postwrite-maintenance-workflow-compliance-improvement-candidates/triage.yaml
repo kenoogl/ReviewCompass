@@ -1,0 +1,61 @@
+run_id: 2026-06-17-postwrite-maintenance-workflow-compliance-improvement-candidates
+triage_status: draft
+generated_at: '2026-06-16T23:50:34.029284+00:00'
+decision_actor: null
+decision_actor_type: human
+items:
+- finding_id: 2026-06-17-postwrite-maintenance-workflow-compliance-improvement-candidates-gemini-3.5-flash-primary-001
+  run_id: 2026-06-17-postwrite-maintenance-workflow-compliance-improvement-candidates
+  source_model: gemini-3.5-flash
+  source_round: round-1
+  source_raw_path: raw/gemini-3.5-flash.round-1.txt
+  source_parsed_path: parsed/gemini-3.5-flash.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: Section 4 変更対象候補 (maintenance YAML 専用 schema / validation)
+  plain_language_summary: maintenance YAML専用のスキーマ定義とそのバリデーションロジックの位置づけが曖昧です。
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: 観測された問題の2番（YAMLにおけるreview processの構造の弱さ）を解決するためには、既存のside-track-stateスキーマへの統合か、完全な新規スキーマとしての独立かを早期に明確化し、自動テストや静的検証ツールへの組み込み対象として確定する必要があります。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-17-postwrite-maintenance-workflow-compliance-improvement-candidates-gemini-3.5-flash-primary-002
+  run_id: 2026-06-17-postwrite-maintenance-workflow-compliance-improvement-candidates
+  source_model: gemini-3.5-flash
+  source_round: round-1
+  source_raw_path: raw/gemini-3.5-flash.round-1.txt
+  source_parsed_path: parsed/gemini-3.5-flash.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: Section 3 修正候補 8 (maintenance、reopen、新規 workflow unit の使い分け基準)
+  plain_language_summary: rollback recovery がどの分類に属するのか、あるいは独自のフローとなるのかが明記されていません。
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: 観測された問題の7番で「rollback recoveryの文脈が混ざり」と指摘されているにもかかわらず、候補8における使い分け基準の定義ではrollback
+    recoveryの扱いが抜けており、復旧作業発生時に再度の混乱を招く可能性があります。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-17-postwrite-maintenance-workflow-compliance-improvement-candidates-gemini-3.5-flash-primary-003
+  run_id: 2026-06-17-postwrite-maintenance-workflow-compliance-improvement-candidates
+  source_model: gemini-3.5-flash
+  source_round: round-1
+  source_raw_path: raw/gemini-3.5-flash.round-1.txt
+  source_parsed_path: parsed/gemini-3.5-flash.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: Section 3 修正候補 6 (引き継ぎ資料の更新)
+  plain_language_summary: 手動での引き継ぎ資料更新ルールだけでは再発を防止しきれない可能性があります。
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: 引き継ぎ資料（`TODO_NEXT_SESSION.md`など）の更新漏れを防ぐため、`check-workflow-action.py`などの自動検証スクリプト側で、中断時や長期間放置時に警告を出すなどの検知ロジックを設けることが推奨されます。
+  applied_files: []
+  superseded_by: null

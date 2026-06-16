@@ -1,0 +1,4 @@
+run_id: 2026-06-17-postwrite-maintenance-workflow-compliance-improvement-candidates
+target_files:
+- path: docs/notes/2026-06-17-maintenance-workflow-compliance-improvement-candidates.md
+  sha256: 4141dac49c07f5fb6d7b9f21e53a485b3c5cdffbaffdbc3c04cd85b25e17df04

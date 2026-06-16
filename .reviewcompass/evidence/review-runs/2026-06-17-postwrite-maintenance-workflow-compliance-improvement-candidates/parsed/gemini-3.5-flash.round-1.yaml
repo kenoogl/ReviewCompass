@@ -1,0 +1,19 @@
+role: primary
+provider: gemini-api
+model: gemini-3.5-flash
+attempts: 1
+duration_seconds: 14.536
+findings:
+- severity: WARN
+  target_location: Section 4 変更対象候補 (maintenance YAML 専用 schema / validation)
+  description: maintenance YAML専用のスキーマ定義とそのバリデーションロジックの位置づけが曖昧です。
+  rationale: 観測された問題の2番（YAMLにおけるreview processの構造の弱さ）を解決するためには、既存のside-track-stateスキーマへの統合か、完全な新規スキーマとしての独立かを早期に明確化し、自動テストや静的検証ツールへの組み込み対象として確定する必要があります。
+- severity: WARN
+  target_location: Section 3 修正候補 8 (maintenance、reopen、新規 workflow unit の使い分け基準)
+  description: rollback recovery がどの分類に属するのか、あるいは独自のフローとなるのかが明記されていません。
+  rationale: 観測された問題の7番で「rollback recoveryの文脈が混ざり」と指摘されているにもかかわらず、候補8における使い分け基準の定義ではrollback
+    recoveryの扱いが抜けており、復旧作業発生時に再度の混乱を招く可能性があります。
+- severity: INFO
+  target_location: Section 3 修正候補 6 (引き継ぎ資料の更新)
+  description: 手動での引き継ぎ資料更新ルールだけでは再発を防止しきれない可能性があります。
+  rationale: 引き継ぎ資料（`TODO_NEXT_SESSION.md`など）の更新漏れを防ぐため、`check-workflow-action.py`などの自動検証スクリプト側で、中断時や長期間放置時に警告を出すなどの検知ロジックを設けることが推奨されます。

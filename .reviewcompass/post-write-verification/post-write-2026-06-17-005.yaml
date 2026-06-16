@@ -1,0 +1,24 @@
+status: completed
+target_files:
+- docs/notes/2026-06-17-maintenance-workflow-compliance-improvement-candidates.md
+- docs/notes/2026-06-17-working-note-verification-trigger-policy.md
+target_sha256:
+  docs/notes/2026-06-17-maintenance-workflow-compliance-improvement-candidates.md: 4141dac49c07f5fb6d7b9f21e53a485b3c5cdffbaffdbc3c04cd85b25e17df04
+  docs/notes/2026-06-17-working-note-verification-trigger-policy.md: fb5661553b1fb83450d63eb40e7c869c4ad0b55873462d9d8541a38cbab839fa
+required_verifiers:
+- lightweight_self_check
+completed_verifiers:
+- lightweight_self_check
+unresolved_substantive_findings: 0
+verifications:
+- verifier: lightweight_self_check
+  target_files:
+  - docs/notes/2026-06-17-maintenance-workflow-compliance-improvement-candidates.md
+  - docs/notes/2026-06-17-working-note-verification-trigger-policy.md
+  target_sha256:
+    docs/notes/2026-06-17-maintenance-workflow-compliance-improvement-candidates.md: 4141dac49c07f5fb6d7b9f21e53a485b3c5cdffbaffdbc3c04cd85b25e17df04
+    docs/notes/2026-06-17-working-note-verification-trigger-policy.md: fb5661553b1fb83450d63eb40e7c869c4ad0b55873462d9d8541a38cbab839fa
+notes: >
+  Working-note self check only. API post-write verification was intentionally
+  not rerun because the purpose of these notes is to record improvement
+  candidates, not to establish a normative specification.
