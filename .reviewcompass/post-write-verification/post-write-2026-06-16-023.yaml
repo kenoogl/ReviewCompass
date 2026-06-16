@@ -1,0 +1,28 @@
+status: completed
+target_files:
+- TODO_NEXT_SESSION.md
+- docs/operations/WORKFLOW_PRECHECK.md
+- docs/operations/WORKFLOW_PRECHECK_DETAILS.md
+target_sha256:
+  TODO_NEXT_SESSION.md: 7aebc6d356fbe7da39f45ffe1adc84161cbf9c3c02d829ed741ab87fc02fe2f8
+  docs/operations/WORKFLOW_PRECHECK.md: eb6b9a91fdae86ec63cfc190bb0e48fbbe909b603d18e1f4f2ccd0c81ddf8717
+  docs/operations/WORKFLOW_PRECHECK_DETAILS.md: fcf6c267f0c4b9f4e9950f572e0f5603768bd4e08254712be631dcfa40ad3615
+required_verifiers: &id001
+- gemini-3.5-flash
+completed_verifiers: *id001
+unresolved_substantive_findings: 0
+verifications:
+- verifier: gemini-3.5-flash
+  target_files:
+  - TODO_NEXT_SESSION.md
+  - docs/operations/WORKFLOW_PRECHECK.md
+  - docs/operations/WORKFLOW_PRECHECK_DETAILS.md
+  target_sha256:
+    TODO_NEXT_SESSION.md: 7aebc6d356fbe7da39f45ffe1adc84161cbf9c3c02d829ed741ab87fc02fe2f8
+    docs/operations/WORKFLOW_PRECHECK.md: eb6b9a91fdae86ec63cfc190bb0e48fbbe909b603d18e1f4f2ccd0c81ddf8717
+    docs/operations/WORKFLOW_PRECHECK_DETAILS.md: fcf6c267f0c4b9f4e9950f572e0f5603768bd4e08254712be631dcfa40ad3615
+review_run:
+  path: .reviewcompass/evidence/review-runs/2026-06-16-postwrite-reopen-set-blocker
+  summary_path: .reviewcompass/evidence/review-runs/2026-06-16-postwrite-reopen-set-blocker/model-result-summary.yaml
+notes: Generated template; verify target_files cover current post-write targets before
+  use.

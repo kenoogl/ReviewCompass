@@ -1,0 +1,8 @@
+run_id: 2026-06-16-postwrite-reopen-set-blocker
+target_files:
+- path: TODO_NEXT_SESSION.md
+  sha256: 7aebc6d356fbe7da39f45ffe1adc84161cbf9c3c02d829ed741ab87fc02fe2f8
+- path: docs/operations/WORKFLOW_PRECHECK.md
+  sha256: eb6b9a91fdae86ec63cfc190bb0e48fbbe909b603d18e1f4f2ccd0c81ddf8717
+- path: docs/operations/WORKFLOW_PRECHECK_DETAILS.md
+  sha256: fcf6c267f0c4b9f4e9950f572e0f5603768bd4e08254712be631dcfa40ad3615

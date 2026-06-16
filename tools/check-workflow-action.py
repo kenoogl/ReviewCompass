@@ -5541,6 +5541,77 @@ def cmd_reopen_advance_gate(args):
   return exit_code
 
 
+def cmd_reopen_set_blocker(args):
+  """reopen 第3過程の承認待ち blocker を構造化して設定する"""
+  cwd = Path.cwd()
+  reasons = []
+  try:
+    path, data = _load_reopen_advance_state(cwd, args.file)
+    pending_gates = data.get("pending_gates")
+    if not isinstance(pending_gates, list) or not all(isinstance(v, str) for v in pending_gates):
+      raise ValueError("pending_gates は文字列 list が必要です")
+    _validate_reopen_pending_gate_references(pending_gates)
+    if not pending_gates or pending_gates[0] != args.gate:
+      raise ValueError("指定 gate は pending_gates の先頭である必要があります")
+
+    phase, stage = _parse_stage_gate(args.gate)
+    if phase is None or stage is None:
+      raise ValueError("--gate は stages/<phase>.yaml#<stage> 形式が必要です")
+    if stage != "approval":
+      raise ValueError("reopen-set-blocker は approval gate だけを対象にできます")
+    if not args.rationale.strip():
+      raise ValueError("--rationale は空にできません")
+    evidence = args.evidence or []
+    if not evidence:
+      raise ValueError("--evidence は 1 件以上必要です")
+
+    blocker = {
+      "blocker_type": "approval_gate",
+      "gate": args.gate,
+      "actor": args.actor,
+      "status": "waiting_for_approval",
+      "rationale": args.rationale,
+      "evidence": evidence,
+    }
+    data["current_blocker"] = blocker
+
+    path.write_text(
+      yaml.safe_dump(data, allow_unicode=True, sort_keys=False),
+      encoding="utf-8",
+    )
+    verdict, exit_code = "OK", 0
+    next_action = {
+      "kind": "reopen_blocker_set",
+      "file": args.file,
+      "gate": args.gate,
+      "phase": phase,
+      "stage": stage,
+      "reason": "reopen approval blocker を設定しました",
+    }
+    current_state = {
+      "file": args.file,
+      "current_blocker": blocker,
+    }
+  except (OSError, ValueError) as e:
+    verdict, exit_code = "DEVIATION", 2
+    reasons = [str(e)]
+    next_action = {
+      "kind": "reopen_set_blocker_failed",
+      "file": args.file,
+      "gate": args.gate,
+      "phase": None,
+      "stage": None,
+      "reason": "reopen approval blocker を設定できません",
+    }
+    current_state = {}
+
+  if args.json:
+    print(format_next_json_output(verdict, exit_code, next_action, reasons, current_state))
+  else:
+    print(format_next_human_output(verdict, exit_code, next_action, reasons, current_state))
+  return exit_code
+
+
 def _reopen_finalize_feature_impact_items(feature_impacts):
   """--feature-impact 指定を feature_impact_decisions へ変換する"""
   items = []
@@ -6116,6 +6187,17 @@ def main():
     help="spec.json の workflow_state を同時更新する",
   )
 
+  rsb = sub.add_parser(
+    "reopen-set-blocker",
+    help="reopen 第3過程の approval 承認待ち blocker を構造化して設定する",
+    parents=[common_parser],
+  )
+  rsb.add_argument("--file", required=True, help="更新対象の reopen in-progress YAML")
+  rsb.add_argument("--gate", required=True, help="承認待ちにする gate（例: stages/design.yaml#approval）")
+  rsb.add_argument("--actor", required=True, choices=["human", "proxy_model"], help="承認主体")
+  rsb.add_argument("--rationale", required=True, help="判断理由")
+  rsb.add_argument("--evidence", action="append", default=[], help="判断証跡。複数指定可")
+
   rf = sub.add_parser(
     "reopen-finalize",
     help="reopen 第4過程の完了 YAML 生成と completed 移動を機械処理する",
@@ -6259,6 +6341,8 @@ def main():
     sys.exit(cmd_reopen_advance_step(args))
   elif args.subcommand == "reopen-advance-gate":
     sys.exit(cmd_reopen_advance_gate(args))
+  elif args.subcommand == "reopen-set-blocker":
+    sys.exit(cmd_reopen_set_blocker(args))
   elif args.subcommand == "reopen-finalize":
     sys.exit(cmd_reopen_finalize(args))
   elif args.subcommand == "review-wave-summary":

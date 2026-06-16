@@ -2770,6 +2770,43 @@ class NextNavigationTests(unittest.TestCase):
       "stages/requirements.yaml#approval（人間承認待ち）",
     )
 
+  def test_next_reopen_structured_blocker_requires_wait(self):
+    """構造化された reopen blocker も承認待ちとして返す"""
+    cwd = Path(self.tmpdir)
+    _write_specs_for_next(cwd, {})
+    in_progress_dir = cwd / "stages" / "in-progress"
+    in_progress_dir.mkdir(parents=True)
+    (in_progress_dir / "reopen-procedure-2026-06-02.yaml").write_text(
+      "process_id: reopen-procedure\n"
+      "next_step: 第3過程：連鎖再実施\n"
+      "pending_gates:\n"
+      "  - stages/requirements.yaml#approval\n"
+      "current_blocker:\n"
+      "  blocker_type: approval_gate\n"
+      "  gate: stages/requirements.yaml#approval\n"
+      "  actor: human\n"
+      "  status: waiting_for_approval\n"
+      "  rationale: approval gate に到達した。\n"
+      "  evidence:\n"
+      "    - .reviewcompass/specs/workflow-management/requirements.md\n",
+      encoding="utf-8",
+    )
+
+    result = run_script(["next", "--json"], cwd=cwd)
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 0, result.stderr)
+    data = json.loads(result.stdout)
+    action = data["next_action"]
+    self.assertEqual(action["kind"], "reopen_in_progress")
+    self.assertEqual(action["required_action"], "wait_for_human_approval")
+    self.assertEqual(
+      action["current_blocker"]["gate"],
+      "stages/requirements.yaml#approval",
+    )
+    self.assertEqual(action["current_blocker"]["actor"], "human")
+    self.assertEqual(action["current_blocker"]["status"], "waiting_for_approval")
+
   def test_next_prioritizes_post_write_verification_for_target_doc_changes(self):
     """対象 docs 文書の未コミット変更があれば post-write-verification を返す"""
     cwd = Path(self.tmpdir)
@@ -4074,6 +4111,137 @@ class ReopenAdvanceStepTests(unittest.TestCase):
     _assert_script_invoked(self, result)
     self.assertEqual(result.returncode, 2, result.stdout)
     self.assertIn("step_number", result.stdout)
+
+
+class ReopenSetBlockerTests(unittest.TestCase):
+  """reopen-set-blocker サブコマンドの承認待ち blocker 構造化"""
+
+  def setUp(self):
+    self.tmpdir = tempfile.mkdtemp()
+    self.addCleanup(shutil.rmtree, self.tmpdir)
+
+  def _write_in_progress(self, pending_gates=None):
+    if pending_gates is None:
+      pending_gates = [
+        "stages/requirements.yaml#approval",
+        "stages/design.yaml#alignment",
+      ]
+    in_progress = (
+      Path(self.tmpdir)
+      / "stages"
+      / "in-progress"
+      / "reopen-procedure-2026-06-16.yaml"
+    )
+    in_progress.parent.mkdir(parents=True)
+    lines = [
+      "process_id: reopen-procedure",
+      "feature: workflow-management",
+      "step_number: 3",
+      "next_step: 第3過程：連鎖再実施",
+      "pending_gates:",
+    ]
+    lines.extend([f"  - {gate}" for gate in pending_gates])
+    lines.append("current_blocker: null")
+    in_progress.write_text("\n".join(lines) + "\n", encoding="utf-8")
+    return in_progress
+
+  def test_reopen_set_blocker_writes_structured_approval_blocker(self):
+    """先頭 approval gate の承認待ち blocker を構造化して保存する"""
+    in_progress = self._write_in_progress()
+
+    result = run_script(
+      [
+        "reopen-set-blocker",
+        "--file", "stages/in-progress/reopen-procedure-2026-06-16.yaml",
+        "--gate", "stages/requirements.yaml#approval",
+        "--actor", "human",
+        "--rationale", "approval gate に到達した。",
+        "--evidence", ".reviewcompass/specs/workflow-management/requirements.md",
+        "--json",
+      ],
+      cwd=self.tmpdir,
+    )
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 0, result.stdout)
+    data = json.loads(result.stdout)
+    self.assertEqual(data["verdict"], "OK")
+    state = yaml.safe_load(in_progress.read_text(encoding="utf-8"))
+    self.assertEqual(
+      state["current_blocker"],
+      {
+        "blocker_type": "approval_gate",
+        "gate": "stages/requirements.yaml#approval",
+        "actor": "human",
+        "status": "waiting_for_approval",
+        "rationale": "approval gate に到達した。",
+        "evidence": [
+          ".reviewcompass/specs/workflow-management/requirements.md",
+        ],
+      },
+    )
+
+  def test_reopen_set_blocker_rejects_non_head_gate(self):
+    """pending_gates 先頭ではない gate の blocker 設定は拒否する"""
+    self._write_in_progress()
+
+    result = run_script(
+      [
+        "reopen-set-blocker",
+        "--file", "stages/in-progress/reopen-procedure-2026-06-16.yaml",
+        "--gate", "stages/design.yaml#alignment",
+        "--actor", "human",
+        "--rationale", "approval gate に到達した。",
+        "--evidence", ".reviewcompass/specs/workflow-management/design.md",
+        "--json",
+      ],
+      cwd=self.tmpdir,
+    )
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 2, result.stdout)
+    self.assertIn("先頭", result.stdout)
+
+  def test_reopen_set_blocker_rejects_non_approval_gate(self):
+    """approval 以外の gate には承認待ち blocker を設定しない"""
+    self._write_in_progress(pending_gates=["stages/requirements.yaml#alignment"])
+
+    result = run_script(
+      [
+        "reopen-set-blocker",
+        "--file", "stages/in-progress/reopen-procedure-2026-06-16.yaml",
+        "--gate", "stages/requirements.yaml#alignment",
+        "--actor", "human",
+        "--rationale", "alignment gate に到達した。",
+        "--evidence", ".reviewcompass/specs/workflow-management/requirements.md",
+        "--json",
+      ],
+      cwd=self.tmpdir,
+    )
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 2, result.stdout)
+    self.assertIn("approval", result.stdout)
+
+  def test_reopen_set_blocker_rejects_missing_evidence(self):
+    """根拠なしの blocker 設定は拒否する"""
+    self._write_in_progress()
+
+    result = run_script(
+      [
+        "reopen-set-blocker",
+        "--file", "stages/in-progress/reopen-procedure-2026-06-16.yaml",
+        "--gate", "stages/requirements.yaml#approval",
+        "--actor", "proxy_model",
+        "--rationale", "proxy_model 承認待ち。",
+        "--json",
+      ],
+      cwd=self.tmpdir,
+    )
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 2, result.stdout)
+    self.assertIn("evidence", result.stdout)
 
 
 class ReopenFinalizeTests(unittest.TestCase):

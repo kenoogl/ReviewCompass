@@ -1,0 +1,41 @@
+process_id: maintenance
+started_at: 2026-06-16T22:05:00+09:00
+title: reopen approval blocker structuring
+trigger: reopen approval gate の human/proxy_model 承認待ちを current_blocker へ手編集で書く余地が残っている。
+mainline_blocked_by: completed workflow has no required next action
+allowed_scope:
+  - workflow-management maintenance
+allowed_files:
+  - tools/check-workflow-action.py
+  - tests/tools/test_check_workflow_action.py
+  - stages/operation-registry.yaml
+  - docs/operations/WORKFLOW_PRECHECK.md
+  - docs/operations/WORKFLOW_PRECHECK_DETAILS.md
+  - TODO_NEXT_SESSION.md
+  - stages/in-progress/maintenance-2026-06-16-reopen-set-blocker-command.yaml
+current_status: completed
+completed_at: 2026-06-16T22:18:00+09:00
+completion_conditions:
+  - reopen approval gate の承認待ち blocker を構造化して設定するコマンドが TDD で追加される。
+  - 非先頭 gate、非 approval gate、根拠なし更新、actor 不正は fail-closed で拒否する。
+  - next --json が構造化 blocker を wait_for_human_approval として返す。
+completion_evidence:
+  - command: python3 -m unittest tests.tools.test_check_workflow_action.NextNavigationTests.test_next_reopen_structured_blocker_requires_wait tests.tools.test_check_workflow_action.ReopenSetBlockerTests -v
+    result: pass
+  - command: python3 -m unittest tests.tools.test_check_workflow_action.NextNavigationTests tests.tools.test_check_workflow_action.ReopenAdvanceStepTests tests.tools.test_check_workflow_action.ReopenAdvanceGateTests tests.tools.test_check_workflow_action.ReopenSetBlockerTests tests.tools.test_check_workflow_action.ReopenFinalizeTests -v
+    result: pass
+  - command: .venv/bin/python3 tools/check-workflow-action.py operation-preflight --operation-id reopen_set_blocker_preflight --json
+    result: pass
+  - command: python3 -m unittest tests.tools.test_operation_registry_preflight -v
+    result: pass
+  - command: PYTHONPYCACHEPREFIX=/tmp/reviewcompass-pycache python3 -m py_compile tools/check-workflow-action.py
+    result: pass
+  - command: git diff --check
+    result: pass
+completion_note: >
+  `reopen-set-blocker` は pending_gates 先頭の approval gate だけを対象にし、
+  actor human/proxy_model、rationale、evidence を必須にして current_blocker を
+  blocker_type/gate/actor/status/rationale/evidence の構造化 object として保存する。
+  既存の文字列 current_blocker は互換として next --json の wait_for_human_approval
+  判定に残す。
+next_step: 本線へ戻る。
