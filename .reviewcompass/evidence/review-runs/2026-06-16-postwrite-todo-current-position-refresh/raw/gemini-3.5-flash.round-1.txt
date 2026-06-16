@@ -1,0 +1,5 @@
+findings:
+  - severity: WARN
+    target_location: "## 4. 次作業 (Item 8)"
+    description: "Item 8 remains titled '要対処' (needs action) and is not struck through, despite all of its sub-items being marked as fully addressed ('対処済み' / '対処済みの穴') as of 2026-06-16."
+    rationale: "To ensure the refresh of the current position is consistent and accurate, completed items should be systematically marked as done (e.g., struck through) to avoid confusion about outstanding tasks."

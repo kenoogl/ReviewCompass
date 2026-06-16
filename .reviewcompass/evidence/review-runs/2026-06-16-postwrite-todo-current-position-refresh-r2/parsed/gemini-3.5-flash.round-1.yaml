@@ -1,0 +1,10 @@
+role: primary
+provider: gemini-api
+model: gemini-3.5-flash
+attempts: 1
+duration_seconds: 14.286
+findings:
+- severity: WARN
+  target_location: '## 4. 次作業'
+  description: 完了済みのタスク（項目2、10〜16など）や対処済みの背景（項目8、9など）が打消し線の状態で「次作業」に残されています。
+  rationale: これらは既に完了または対処済みであるため、次セッションへの引き継ぎノイズとなります。「3. 現在位置」へ整理・移行し、「4. 次作業」からは削除することで、真に次に着手すべき未完了タスク（項目1、3、4、5の運用、6、7など）を明確に保つべきです。

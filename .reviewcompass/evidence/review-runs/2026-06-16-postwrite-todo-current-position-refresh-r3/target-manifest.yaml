@@ -1,0 +1,4 @@
+run_id: 2026-06-16-postwrite-todo-current-position-refresh-r3
+target_files:
+- path: TODO_NEXT_SESSION.md
+  sha256: edfc05c01f7d10d58a782837e78e825ce231883ce7c36006f5ea2f39a8cd606d

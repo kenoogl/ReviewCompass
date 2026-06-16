@@ -1,0 +1,26 @@
+round_id: round-1
+purpose: post_write_verification
+invocation_timestamp: '2026-06-16T13:33:07.612160+00:00'
+target_files:
+- path: TODO_NEXT_SESSION.md
+  sha256: 471297c822ac61fb14724cf41ce194c779d978f03c7cacc199eab7b410079190
+criteria: todo_next_session_current_position_refresh
+prompt_sha256: 5e1427424c92064ed08b53602651521c3d76697fbe5a7f9cc5c962a455ecabb9
+model_results:
+- model_id: gemini-3.5-flash
+  provider: gemini-api
+  role: primary
+  treatment: primary
+  invocation_path: api
+  raw_path: raw/gemini-3.5-flash.round-1.txt
+  raw_sha256: 0b4afd400bb6a0ff947574c3a81d092fe01b1ea7649ada696375a6bfa8267100
+  parsed_path: parsed/gemini-3.5-flash.round-1.yaml
+  parsed_sha256: c91b2755c3e675cb82b5a7cd82f28a3110f16c7717e033d5447fd7b6c98b3d8d
+  parse_status: parsed
+  formatted_by: parser
+  formatted_by_actor_type: orchestrator
+  formatted_by_actor: run_role.py
+  formatted_at: '2026-06-16T13:33:07.612160+00:00'
+  follow_up_action: triage
+  attempts: 1
+  duration_seconds: 30.088

@@ -1,0 +1,25 @@
+run_id: 2026-06-16-postwrite-todo-current-position-refresh-r2
+triage_status: draft
+generated_at: '2026-06-16T13:33:57.796794+00:00'
+decision_actor: null
+decision_actor_type: human
+items:
+- finding_id: 2026-06-16-postwrite-todo-current-position-refresh-r2-gemini-3.5-flash-primary-001
+  run_id: 2026-06-16-postwrite-todo-current-position-refresh-r2
+  source_model: gemini-3.5-flash
+  source_round: round-1
+  source_raw_path: raw/gemini-3.5-flash.round-1.txt
+  source_parsed_path: parsed/gemini-3.5-flash.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: '## 4. 次作業'
+  plain_language_summary: 完了済みのタスク（項目2、10〜16など）や対処済みの背景（項目8、9など）が打消し線の状態で「次作業」に残されています。
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: これらは既に完了または対処済みであるため、次セッションへの引き継ぎノイズとなります。「3. 現在位置」へ整理・移行し、「4.
+    次作業」からは削除することで、真に次に着手すべき未完了タスク（項目1、3、4、5の運用、6、7など）を明確に保つべきです。
+  applied_files: []
+  superseded_by: null
