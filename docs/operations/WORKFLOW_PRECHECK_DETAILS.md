@@ -10,6 +10,7 @@ tools/check-workflow-action.py commit --rationale "<理由>" [--execution-actor 
 tools/check-workflow-action.py push --rationale "<理由>"
 tools/check-workflow-action.py audit-commit <commit-ish>
 tools/check-workflow-action.py reopen-advance-gate --file <path> --gate stages/<phase>.yaml#<stage> --decision <decision> --feature-scope <feature> --rationale "<理由>" --evidence <path> [--evidence <path> ...] [--completed-step "<説明>"] [--set-spec FEATURE PHASE STAGE VALUE]
+tools/check-workflow-action.py reopen-finalize --file <path> --impacted-downstream-phase <phase> --feature-impact FEATURE DECISION IMPACT_BASIS RATIONALE EVIDENCE --new-feature-decision DECISION RATIONALE EVIDENCE [--completed-step "<説明>"]
 tools/check-workflow-action.py autonomous-plan <plan.yaml>
 tools/check-workflow-action.py autonomous-plan-template --run-id <run-id> --out <plan.yaml>
 tools/check-workflow-action.py autonomous-plan-record-integration --ledger <ledger.yaml> --status <status> --tests "<tests>" --decision "<decision>"
@@ -162,12 +163,41 @@ tools/guarded-git-commit.py -m "<commit message>" --rationale "<理由>"
 - 残る pending gate があれば `step_number: 3` を維持し、`next_step` を次 gate に更新する。無ければ `step_number: 4` と `next_step: 第4過程：完了` へ進める
 - 成功時は exit 0、上記の前提違反や入力不正は DEVIATION として exit 2 を返す
 
+<a id="reopen-finalize"></a>
+
+## 7. reopen-finalize
+
+`reopen-finalize` は、reopen 第4過程で `stages/in-progress/` の手続き YAML を `stages/completed/` へ移す更新コマンドである。完了 YAML の必須項目を手編集で埋める代わりに、構造化引数から `feature_impact_decisions`、`new_feature_decision`、`impacted_downstream_phases`、`completed_steps` を更新する。
+
+引数：
+
+| 引数 | 必須 | 説明 |
+|---|---|---|
+| `--file` | 必須 | `stages/in-progress/` 配下の reopen 手続き YAML |
+| `--impacted-downstream-phase` | 必須 | `impacted_downstream_phases` に記録する phase。複数指定可 |
+| `--feature-impact` | 必須 | `FEATURE DECISION IMPACT_BASIS RATIONALE EVIDENCE` の 5 値で feature impact 判定を追加する。既存 feature すべてについて指定する |
+| `--new-feature-decision` | 必須 | `DECISION RATIONALE EVIDENCE` の 3 値で new feature 判定を記録する |
+| `--completed-step` | 任意 | `completed_steps` に追記する完了ステップ |
+
+判定と更新：
+
+- 対象 YAML が存在し、`process_id: reopen-procedure` であることを要求する
+- 対象 YAML は `stages/in-progress/` 配下でなければならない
+- `step_number` は `4`、`pending_gates` は空、`current_blocker` は `null` でなければならない
+- `--feature-impact` は既存 feature すべてを覆う必要がある
+- feature impact の `decision`、`impact_basis`、`rationale`、`evidence` は commit 前検査の完了 YAML 検査と同じ条件で検査する
+- `--new-feature-decision` は `decision`、`rationale`、`evidence` を必須とする
+- `--impacted-downstream-phase` は既知 phase 名だけを許可する
+- 成功時は `step_number: 4`、`next_step: 完了`、`pending_gates: []`、`current_blocker: null` を保存し、同名ファイルを `stages/completed/` へ作成して元の in-progress ファイルを削除する
+- completed 側に同名ファイルが既にある場合は上書きせず DEVIATION とする
+- 成功時は exit 0、上記の前提違反や入力不正は DEVIATION として exit 2 を返す
+
 <a id="autonomous-plan"></a>
 <a id="autonomous-plan-template"></a>
 <a id="autonomous-plan-record-integration"></a>
 <a id="autonomous-ledger-audit"></a>
 
-## 7. autonomous-plan 系
+## 8. autonomous-plan 系
 
 `autonomous-plan` は実行計画 YAML を fail-closed で検査する。最低限、次を確認する。
 
@@ -260,6 +290,7 @@ commit 承認レコード（`.reviewcompass/runtime/approvals/commit-approval.js
 - `push` の clean 性検査
 - `audit-commit` の manifest 対応検査
 - `reopen-advance-gate` の先頭 gate 更新、spec.json 同時更新、非先頭 gate 拒否
+- `reopen-finalize` の完了 YAML 生成、in-progress 削除、第4過程未到達と feature impact 不足の拒否
 - `guarded-git-commit.py` の commit 遮断と承認レコード消費
 - `autonomous-plan` 系サブコマンドの構造検査
 

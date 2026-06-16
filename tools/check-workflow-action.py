@@ -5392,6 +5392,128 @@ def cmd_reopen_advance_gate(args):
   return exit_code
 
 
+def _reopen_finalize_feature_impact_items(feature_impacts):
+  """--feature-impact 指定を feature_impact_decisions へ変換する"""
+  items = []
+  for values in feature_impacts or []:
+    feature, decision, impact_basis, rationale, evidence = values
+    items.append({
+      "feature": feature,
+      "decision": decision,
+      "impact_basis": impact_basis,
+      "rationale": rationale,
+      "evidence": [evidence],
+    })
+  return items
+
+
+def _reopen_finalize_new_feature_decision(values):
+  """--new-feature-decision 指定を new_feature_decision へ変換する"""
+  decision, rationale, evidence = values
+  return {
+    "decision": decision,
+    "rationale": rationale,
+    "evidence": [evidence],
+  }
+
+
+def _completed_reopen_path(cwd, source_path):
+  """in-progress reopen path から completed 側 path を返す"""
+  in_progress_dir = Path(cwd) / "stages" / "in-progress"
+  completed_dir = Path(cwd) / "stages" / "completed"
+  try:
+    source_path.relative_to(in_progress_dir)
+  except ValueError as e:
+    raise ValueError("--file は stages/in-progress/ 配下の reopen YAML が必要です") from e
+  return completed_dir / source_path.name
+
+
+def cmd_reopen_finalize(args):
+  """reopen 第4過程の完了 YAML 生成と completed 移動を機械処理する"""
+  cwd = Path.cwd()
+  reasons = []
+  try:
+    source_path, data = _load_reopen_advance_state(cwd, args.file)
+    if data.get("step_number") not in (4, "4"):
+      raise ValueError("reopen-finalize は第4過程の state だけを完了化できます")
+    pending_gates = data.get("pending_gates")
+    if pending_gates not in ([], None):
+      raise ValueError("reopen-finalize は pending_gates が空の state だけを完了化できます")
+    if data.get("current_blocker") not in (None, "null"):
+      raise ValueError("reopen-finalize は current_blocker が無い state だけを完了化できます")
+
+    data["step_number"] = 4
+    data["next_step"] = "完了"
+    data["pending_gates"] = []
+    data["current_blocker"] = None
+    data["impacted_downstream_phases"] = args.impacted_downstream_phase or []
+    data["feature_impact_decisions"] = _reopen_finalize_feature_impact_items(
+      args.feature_impact
+    )
+    data["new_feature_decision"] = _reopen_finalize_new_feature_decision(
+      args.new_feature_decision
+    )
+    completed_steps = data.get("completed_steps")
+    if completed_steps is None:
+      completed_steps = []
+    if not isinstance(completed_steps, list):
+      raise ValueError("completed_steps は list が必要です")
+    if args.completed_step and args.completed_step not in completed_steps:
+      completed_steps.append(args.completed_step)
+    data["completed_steps"] = completed_steps
+
+    impact_errors = _validate_feature_impact_decisions(data)
+    if impact_errors:
+      raise ValueError("; ".join(impact_errors))
+    if (
+      not isinstance(data["impacted_downstream_phases"], list)
+      or not all(isinstance(v, str) and v in PHASE_STAGES for v in data["impacted_downstream_phases"])
+    ):
+      raise ValueError("impacted_downstream_phases は既知フェーズ名の list が必要です")
+
+    target_path = _completed_reopen_path(cwd, source_path)
+    if target_path.exists():
+      raise ValueError(f"{target_path.relative_to(cwd)} は既に存在します")
+    target_path.parent.mkdir(parents=True, exist_ok=True)
+    target_path.write_text(
+      yaml.safe_dump(data, allow_unicode=True, sort_keys=False),
+      encoding="utf-8",
+    )
+    source_path.unlink()
+    verdict, exit_code = "OK", 0
+    next_action = {
+      "kind": "reopen_finalized",
+      "file": str(target_path.relative_to(cwd)),
+      "source_file": args.file,
+      "phase": None,
+      "stage": None,
+      "reason": "reopen 完了 YAML を generated completed state として保存しました",
+    }
+    current_state = {
+      "source_file": args.file,
+      "completed_file": str(target_path.relative_to(cwd)),
+      "feature_impact_count": len(data["feature_impact_decisions"]),
+      "impacted_downstream_phases": data["impacted_downstream_phases"],
+    }
+  except (OSError, ValueError, yaml.YAMLError) as e:
+    verdict, exit_code = "DEVIATION", 2
+    reasons = [str(e)]
+    next_action = {
+      "kind": "reopen_finalize_failed",
+      "file": args.file,
+      "phase": None,
+      "stage": None,
+      "reason": "reopen 完了 YAML を生成できません",
+    }
+    current_state = {}
+
+  if args.json:
+    print(format_next_json_output(verdict, exit_code, next_action, reasons, current_state))
+  else:
+    print(format_next_human_output(verdict, exit_code, next_action, reasons, current_state))
+  return exit_code
+
+
 def _feature_all_approved(specs, feature):
   """feature の全 phase で approval=true かを返す（review-wave-summary 用、Req 10）"""
   ws = specs.get(feature, {}).get("workflow_state", {})
@@ -5834,6 +5956,35 @@ def main():
     help="spec.json の workflow_state を同時更新する",
   )
 
+  rf = sub.add_parser(
+    "reopen-finalize",
+    help="reopen 第4過程の完了 YAML 生成と completed 移動を機械処理する",
+    parents=[common_parser],
+  )
+  rf.add_argument("--file", required=True, help="完了対象の reopen in-progress YAML")
+  rf.add_argument(
+    "--impacted-downstream-phase",
+    action="append",
+    default=[],
+    help="impacted_downstream_phases に記録する phase。複数指定可",
+  )
+  rf.add_argument(
+    "--feature-impact",
+    nargs=5,
+    action="append",
+    metavar=("FEATURE", "DECISION", "IMPACT_BASIS", "RATIONALE", "EVIDENCE"),
+    default=[],
+    help="feature_impact_decisions に追加する判定。既存 feature ごとに指定する",
+  )
+  rf.add_argument(
+    "--new-feature-decision",
+    nargs=3,
+    required=True,
+    metavar=("DECISION", "RATIONALE", "EVIDENCE"),
+    help="new_feature_decision に記録する判定",
+  )
+  rf.add_argument("--completed-step", default=None, help="completed_steps に追加する説明")
+
   rws = sub.add_parser(
     "review-wave-summary",
     help="review-wave 横断確認の指標を集計して出力する（Req 10）",
@@ -5946,6 +6097,8 @@ def main():
     sys.exit(cmd_reopen_start(args))
   elif args.subcommand == "reopen-advance-gate":
     sys.exit(cmd_reopen_advance_gate(args))
+  elif args.subcommand == "reopen-finalize":
+    sys.exit(cmd_reopen_finalize(args))
   elif args.subcommand == "review-wave-summary":
     sys.exit(cmd_review_wave_summary(args))
   elif args.subcommand == "operation-preflight":

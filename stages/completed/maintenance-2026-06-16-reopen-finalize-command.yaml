@@ -1,0 +1,36 @@
+process_id: maintenance
+started_at: 2026-06-16T00:00:00+09:00
+completed_at: 2026-06-16T00:00:00+09:00
+trigger: TODO_NEXT_SESSION.md §4 候補 8 の「reopen 進行中ファイルの手編集が手戻りを生んだ実例と基盤改善」のうち、完了 YAML の手編集排除を実装する。
+mainline_blocked_by: next --json は completed であり通常 workflow は進行中ではないが、reopen 第4過程の手編集事故を減らす保守改善として扱う。
+allowed_scope: reopen 第4過程 finalize の機械更新コマンド、関連テスト、運用文書、入口メモの更新に限定する。
+allowed_files:
+  - tools/check-workflow-action.py
+  - tests/tools/test_check_workflow_action.py
+  - docs/operations/WORKFLOW_PRECHECK.md
+  - docs/operations/WORKFLOW_PRECHECK_DETAILS.md
+  - TODO_NEXT_SESSION.md
+  - stages/in-progress/maintenance-2026-06-16-reopen-finalize-command.yaml
+  - stages/completed/maintenance-2026-06-16-reopen-finalize-command.yaml
+  - stages/operation-registry.yaml
+completion_conditions:
+  - reopen 第4過程の in-progress YAML を completed YAML へ移すコマンドが TDD で追加される。
+  - feature_impact_decisions と new_feature_decision を構造化入力から保存できる。
+  - 不完全な入力や完了条件未充足の reopen state は fail-closed で拒否する。
+  - 関連テストが通過する。
+completion_evidence:
+  - command: python3 -m unittest tests.tools.test_check_workflow_action.ReopenFinalizeTests -v
+    result: pass
+  - command: python3 -m unittest tests.tools.test_check_workflow_action.ReopenFinalizeTests tests.tools.test_check_workflow_action.ReopenAdvanceGateTests -v
+    result: pass
+  - command: .venv/bin/python3 tools/check-workflow-action.py operation-preflight --operation-id reopen_finalize_preflight --json
+    result: pass
+  - command: PYTHONPYCACHEPREFIX=/private/tmp/reviewcompass-pycache python3 -m py_compile tools/check-workflow-action.py
+    result: pass
+completion_note: >
+  `reopen-finalize` は第4過程到達、pending_gates 空、current_blocker なし、
+  全 feature の feature_impact_decisions、new_feature_decision、
+  impacted_downstream_phases の構造を検査してから completed YAML を作成し、
+  元の in-progress YAML を削除する。第1・第2過程更新や approval blocker
+  構造化は今回の scope 外として残す。
+next_step: 本線へ戻る。

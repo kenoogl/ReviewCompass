@@ -1,0 +1,27 @@
+status: completed
+target_files:
+- TODO_NEXT_SESSION.md
+- docs/operations/WORKFLOW_PRECHECK.md
+- docs/operations/WORKFLOW_PRECHECK_DETAILS.md
+target_sha256:
+  TODO_NEXT_SESSION.md: 9bc7ab494a91115219b596fc3c0d823e8721803b70d38d8105e68a4a4a3917f8
+  docs/operations/WORKFLOW_PRECHECK.md: 563bfd08d92f2e614740214bd922979567b2b1997cca82616b972eee4cdc76d9
+  docs/operations/WORKFLOW_PRECHECK_DETAILS.md: a4f4ef966753af582418c603144dd760c4bb3e8d52bffc60e988e35f35d9c6cf
+required_verifiers: &id001
+- gemini-3.5-flash
+completed_verifiers: *id001
+unresolved_substantive_findings: 0
+verifications:
+- verifier: gemini-3.5-flash
+  target_files:
+  - TODO_NEXT_SESSION.md
+  - docs/operations/WORKFLOW_PRECHECK.md
+  - docs/operations/WORKFLOW_PRECHECK_DETAILS.md
+  target_sha256:
+    TODO_NEXT_SESSION.md: 9bc7ab494a91115219b596fc3c0d823e8721803b70d38d8105e68a4a4a3917f8
+    docs/operations/WORKFLOW_PRECHECK.md: 563bfd08d92f2e614740214bd922979567b2b1997cca82616b972eee4cdc76d9
+    docs/operations/WORKFLOW_PRECHECK_DETAILS.md: a4f4ef966753af582418c603144dd760c4bb3e8d52bffc60e988e35f35d9c6cf
+review_run:
+  path: .reviewcompass/evidence/review-runs/2026-06-16-reopen-finalize-postwrite
+  summary_path: .reviewcompass/evidence/review-runs/2026-06-16-reopen-finalize-postwrite/model-result-summary.yaml
+notes: reopen-finalize command documentation post-write verification

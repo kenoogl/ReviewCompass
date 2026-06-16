@@ -129,6 +129,49 @@ operations:
     vocabulary_refs:
       - final_label
 
+  - operation_id: reopen_finalize_preflight
+    kind: workflow_state
+    operation_family: workflow_cli
+    canonical_invocation:
+      entrypoint: tools/check-workflow-action.py
+      subcommand: reopen-finalize
+      options:
+        - --file
+        - --impacted-downstream-phase
+        - --feature-impact
+        - --new-feature-decision
+        - --completed-step
+        - --json
+      positional_args: []
+      execution_context: repo_root
+    workflow_binding:
+      phase: null
+      stage: null
+      gate: null
+      next_action_kind: null
+    required_inputs:
+      - stages/in-progress/reopen-procedure-{date}.yaml
+      - feature_impact_decisions
+      - new_feature_decision
+      - impacted_downstream_phases
+    target_identity:
+      - reopen_procedure
+      - completed_reopen_yaml
+    planned_outputs:
+      - stages/completed/reopen-procedure-{date}.yaml
+    sequence_mode: serial_only
+    worktree_policy: allow_dirty_structured_state_update
+    pending_conflict_policy: require_matching_reopen_finalize
+    artifact_policy: no_overwrite_existing_completed_reopen
+    family_required_checks:
+      - parser_invocation
+      - workflow_binding
+      - next_active_state_dimensions
+      - scope_consistency
+    vocabulary_refs:
+      - verdict
+      - workflow_stage
+
   - operation_id: commit_approval_chain_preflight
     kind: irreversible
     operation_family: commit_approval_chain

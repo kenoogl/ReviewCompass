@@ -3792,6 +3792,162 @@ class ReopenAdvanceGateTests(unittest.TestCase):
     self.assertIn("先頭", result.stdout)
 
 
+class ReopenFinalizeTests(unittest.TestCase):
+  """reopen-finalize サブコマンドの完了 YAML 機械更新"""
+
+  def setUp(self):
+    self.tmpdir = tempfile.mkdtemp()
+    self.addCleanup(shutil.rmtree, self.tmpdir)
+
+  def _write_ready_in_progress(self):
+    in_progress = (
+      Path(self.tmpdir)
+      / "stages"
+      / "in-progress"
+      / "reopen-procedure-2026-06-16.yaml"
+    )
+    in_progress.parent.mkdir(parents=True)
+    in_progress.write_text(
+      "process_id: reopen-procedure\n"
+      "feature: workflow-management\n"
+      "step_number: 4\n"
+      "next_step: 第4過程：完了\n"
+      "completed_steps:\n"
+      "  - 第3過程：requirements approval 実施\n"
+      "pending_gates: []\n"
+      "completed_gates:\n"
+      "  - stages/requirements.yaml#alignment\n"
+      "  - stages/requirements.yaml#approval\n"
+      "downstream_impact_decisions:\n"
+      "  - gate: stages/requirements.yaml#alignment\n"
+      "    feature_scope: all_features\n"
+      "    decision: existing_sufficient\n"
+      "    rationale: alignment 済み。\n"
+      "    evidence:\n"
+      "      - .reviewcompass/specs/_cross_feature/reviews/alignment.md\n"
+      "  - gate: stages/requirements.yaml#approval\n"
+      "    feature_scope: all_features\n"
+      "    decision: approved\n"
+      "    rationale: approval 済み。\n"
+      "    evidence:\n"
+      "      - .reviewcompass/specs/_cross_feature/reviews/approval.md\n"
+      "current_blocker: null\n",
+      encoding="utf-8",
+    )
+    return in_progress
+
+  def _feature_impact_args(self):
+    args = []
+    for feature in FEATURE_ORDER:
+      args.extend([
+        "--feature-impact",
+        feature,
+        "reopen_existing_feature",
+        "contract_ownership",
+        f"{feature} の契約影響を確認した。",
+        f".reviewcompass/specs/{feature}/requirements.md",
+      ])
+    return args
+
+  def test_reopen_finalize_moves_in_progress_to_completed_with_required_decisions(self):
+    """第4過程の完了 YAML を構造化入力から生成し in-progress を残さない"""
+    in_progress = self._write_ready_in_progress()
+
+    result = run_script(
+      [
+        "reopen-finalize",
+        "--file", "stages/in-progress/reopen-procedure-2026-06-16.yaml",
+        "--impacted-downstream-phase", "requirements",
+        "--new-feature-decision",
+        "no_new_feature",
+        "既存 feature で受けられる。",
+        "stages/feature-partitioning/2026-05-24-proposal.md",
+        "--completed-step", "第4過程：reopen 完了",
+        "--json",
+      ]
+      + self._feature_impact_args(),
+      cwd=self.tmpdir,
+    )
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 0, result.stdout)
+    data = json.loads(result.stdout)
+    self.assertEqual(data["verdict"], "OK")
+    self.assertFalse(in_progress.exists())
+    completed = (
+      Path(self.tmpdir)
+      / "stages"
+      / "completed"
+      / "reopen-procedure-2026-06-16.yaml"
+    )
+    self.assertTrue(completed.exists())
+    state = yaml.safe_load(completed.read_text(encoding="utf-8"))
+    self.assertEqual(state["step_number"], 4)
+    self.assertEqual(state["next_step"], "完了")
+    self.assertEqual(state["pending_gates"], [])
+    self.assertEqual(state["current_blocker"], None)
+    self.assertEqual(state["impacted_downstream_phases"], ["requirements"])
+    self.assertEqual(len(state["feature_impact_decisions"]), len(FEATURE_ORDER))
+    self.assertEqual(state["new_feature_decision"]["decision"], "no_new_feature")
+    self.assertIn("第4過程：reopen 完了", state["completed_steps"])
+
+  def test_reopen_finalize_blocks_before_step_four(self):
+    """第4過程に到達していない reopen state は完了化できない"""
+    in_progress = self._write_ready_in_progress()
+    state = yaml.safe_load(in_progress.read_text(encoding="utf-8"))
+    state["step_number"] = 3
+    state["pending_gates"] = ["stages/requirements.yaml#approval"]
+    in_progress.write_text(
+      yaml.safe_dump(state, allow_unicode=True, sort_keys=False),
+      encoding="utf-8",
+    )
+
+    result = run_script(
+      [
+        "reopen-finalize",
+        "--file", "stages/in-progress/reopen-procedure-2026-06-16.yaml",
+        "--impacted-downstream-phase", "requirements",
+        "--new-feature-decision",
+        "no_new_feature",
+        "既存 feature で受けられる。",
+        "stages/feature-partitioning/2026-05-24-proposal.md",
+        "--json",
+      ]
+      + self._feature_impact_args(),
+      cwd=self.tmpdir,
+    )
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 2, result.stdout)
+    self.assertIn("第4過程", result.stdout)
+    self.assertTrue(in_progress.exists())
+
+  def test_reopen_finalize_requires_all_feature_impact_decisions(self):
+    """全 feature の impact 判定が無ければ完了 YAML を生成しない"""
+    in_progress = self._write_ready_in_progress()
+    incomplete_feature_args = self._feature_impact_args()[:-6]
+
+    result = run_script(
+      [
+        "reopen-finalize",
+        "--file", "stages/in-progress/reopen-procedure-2026-06-16.yaml",
+        "--impacted-downstream-phase", "requirements",
+        "--new-feature-decision",
+        "no_new_feature",
+        "既存 feature で受けられる。",
+        "stages/feature-partitioning/2026-05-24-proposal.md",
+        "--json",
+      ]
+      + incomplete_feature_args,
+      cwd=self.tmpdir,
+    )
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 2, result.stdout)
+    self.assertIn("feature_impact_decisions", result.stdout)
+    self.assertTrue(in_progress.exists())
+
+
 def _init_git_repo(tmpdir):
   """temp dir に git リポジトリを初期化し、初回コミットと .reviewcompass 構造を準備する
 
