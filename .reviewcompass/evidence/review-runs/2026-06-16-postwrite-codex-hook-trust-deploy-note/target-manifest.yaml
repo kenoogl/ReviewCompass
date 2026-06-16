@@ -1,0 +1,4 @@
+run_id: 2026-06-16-postwrite-codex-hook-trust-deploy-note
+target_files:
+- path: docs/operations/INITIAL_SETUP_LLM_GUIDE.md
+  sha256: 795a724677f0b5c3df76984b8d4a302a62f0af9de9df0732e24e49408d15f997

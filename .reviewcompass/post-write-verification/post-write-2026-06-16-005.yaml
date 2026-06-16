@@ -1,0 +1,24 @@
+status: completed
+target_files:
+- TODO_NEXT_SESSION.md
+- docs/operations/INITIAL_SETUP_LLM_GUIDE.md
+target_sha256:
+  TODO_NEXT_SESSION.md: 48ca5c2b2c909a51c28adc7dbc4d1c2cc90aecb66217f33b9701839567f5455a
+  docs/operations/INITIAL_SETUP_LLM_GUIDE.md: 795a724677f0b5c3df76984b8d4a302a62f0af9de9df0732e24e49408d15f997
+required_verifiers: &id001
+- gemini-3.5-flash
+completed_verifiers: *id001
+unresolved_substantive_findings: 0
+verifications:
+- verifier: gemini-3.5-flash
+  target_files:
+  - TODO_NEXT_SESSION.md
+  - docs/operations/INITIAL_SETUP_LLM_GUIDE.md
+  target_sha256:
+    TODO_NEXT_SESSION.md: 48ca5c2b2c909a51c28adc7dbc4d1c2cc90aecb66217f33b9701839567f5455a
+    docs/operations/INITIAL_SETUP_LLM_GUIDE.md: 795a724677f0b5c3df76984b8d4a302a62f0af9de9df0732e24e49408d15f997
+review_run:
+  path: .reviewcompass/evidence/review-runs/2026-06-16-postwrite-codex-hook-trust-deploy-note
+  summary_path: .reviewcompass/evidence/review-runs/2026-06-16-postwrite-codex-hook-trust-deploy-note/model-result-summary.yaml
+notes: Generated template; verify target_files cover current post-write targets before
+  use.
