@@ -1,0 +1,13 @@
+findings:
+  - severity: INFO
+    target_location: "docs/notes/2026-06-16-nested-issue-handling-smell.md (issue 分類 preflight / 既存 preflight 項目との関係)"
+    description: "nested-issue メモは B-12/B-13/B-14 を既存 preflight 項目として参照し役割分担を整理しているが、operation-registry メモの Phase 1 表や smell-inventory の追跡単位リストには `nested_issue_stack`（または `side_track_stack`）が独立追跡単位として登録されていない。3 文書間で nested issue の扱いが片方向参照に留まっている。"
+    rationale: "notes 間の consistency を保つには、片方が新規追跡単位として提案した項目が、横断的な追跡方針側にも反映されているか確認できると整合が取りやすい。スコープ上は後続 SDD 送りで足りるため INFO に留める。"
+  - severity: INFO
+    target_location: "docs/notes/2026-06-16-operation-registry-preflight-design.md (operation の初期対象 Phase 1 表) / docs/notes/2026-06-16-workflow-recovery-smell-inventory.md (B-14 / 追跡単位)"
+    description: "operation-registry メモの Phase 1 表では `post_write_review` の source smell を `B-9、B-12、B-14` と記載するが、smell-inventory 側で B-9 は workflow 混線（worktree 混線 preflight）として、B-12 は document-type preflight として別追跡単位に割り当てられている。同一 operation へ複数 smell をまとめる対応関係自体は妥当だが、各 smell が別 operation 行（document_type_preflight, post_write_manifest_coverage_preflight）にも再掲されており、対応の一意性が読み取りにくい。"
+    rationale: "B-12 が `post_write_review` と `document_type_preflight` の両方の source smell に現れるなど多対多になっているため、追跡単位の責務境界を後で確認する際に曖昧さが残る。スキーマ最終化前のメモとしては許容範囲のため INFO。"
+  - severity: INFO
+    target_location: "docs/notes/2026-06-16-nested-issue-handling-smell.md (今回発生したこと / 危険 2) と docs/notes/2026-06-16-workflow-recovery-smell-inventory.md (B-14)"
+    description: "nested-issue メモは『B-14 発見時点では 2 文書、本メモ追加後は 3 文書』という bundle 件数の経緯を明示しているが、smell-inventory 側 B-14 は manifest が 2 文書を含む一方 review-run target-manifest は 1 文書という記述で、件数の文脈（coverage 過大表現 vs bundle 件数の増加）が別軸である。両者は矛盾しないが、同じ『2 文書』という数字が異なる意味で使われており、読み手が同一事象と誤読する余地がある。"
+    rationale: "数字の指す対象が異なるまま近接して登場すると、後続 SDD で coverage 検査と bundle 件数を取り違える恐れがある。事実関係に矛盾はないため INFO。"

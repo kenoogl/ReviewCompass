@@ -1,0 +1,40 @@
+role: primary
+provider: openai-api
+model: gpt-5.4
+attempts: 1
+duration_seconds: 6.225
+findings:
+- severity: WARN
+  target_location: docs/notes/2026-06-16-operation-registry-preflight-design.md /
+    'operation contract' section and subsequent response-shape sections
+  description: The memo goes beyond the bundle's stated post-write scope by repeatedly
+    fixing concrete field names, allowed values, requiredness, and verdict-derivation
+    rules, which reads close to schema/API finalization despite the document being
+    labeled as a design memo.
+  rationale: The bundle header and related notes say detailed schema/API design belongs
+    to later SDD, and the workflow-recovery memo's B-12/B-13 specifically says complete
+    schema/API contract should be follow-up rather than a post-write blocker. Phrases
+    like '必須', '固定する', explicit allowed-value sets, and full top-level required-field
+    tables create a tension with that scope boundary and risk inconsistent review
+    expectations.
+- severity: WARN
+  target_location: 'docs/notes/2026-06-16-operation-registry-preflight-design.md /
+    ''Phase 1: read-only registry'' and ''Phase 1 の各 operation は...'' tables'
+  description: The operation-registry memo enumerates `document_type_preflight`, `review_criteria_preflight`,
+    and `post_write_manifest_coverage_preflight` as initial Phase 1 operations, but
+    it does not mention the newly added nested-issue handling concern or how scope
+    expansion during verification should be represented alongside those registry entries.
+  rationale: The nested-issue memo concludes that this issue should be considered
+    as an independent follow-up item in the same operation-registry/preflight line
+    of work, potentially as `nested_issue_stack` or similar operations. Omitting that
+    linkage from the registry design memo leaves the two notes only partially aligned
+    on the operation inventory and follow-up tracking units.
+- severity: INFO
+  target_location: docs/notes/2026-06-16-nested-issue-handling-smell.md / '既存 preflight
+    項目との関係'
+  description: This memo references B-12/B-13/B-14 as existing tracking units without
+    briefly restating that they originate in the workflow-recovery smell inventory.
+  rationale: The reference is understandable in-context, but because this note is
+    also added to the verification bundle as a third document, a small explicit backlink
+    would make the cross-document dependency clearer and reduce ambiguity when the
+    memo is read standalone.

@@ -1,0 +1,11 @@
+```yaml
+findings:
+  - severity: WARN
+    target_location: "docs/notes/2026-06-16-workflow-recovery-smell-inventory.md (追跡方針) & docs/notes/2026-06-16-operation-registry-preflight-design.md (Phase 1)"
+    description: "Nested issue operations and tracking units are missing from the consolidated inventory and operation registry."
+    rationale: "The 'nested-issue-handling-smell.md' memo explicitly defines vertical nesting as a distinct problem from horizontal workflow cross-talk and proposes specific candidate operations (e.g., `issue_discovered`, `nested_issue_stack`). However, these concepts are entirely absent from the tracking units in the smell inventory and the Phase 1 target list in the operation registry, leaving the proposed design orphaned."
+  - severity: WARN
+    target_location: "docs/notes/2026-06-16-operation-registry-preflight-design.md"
+    description: "Premature schema and API contract finalization in a note document."
+    rationale: "The review expectations explicitly state 'no schema finalization' and that detailed API design belongs to a later SDD. However, the operation registry memo uses definitive language such as '契約フィールド自体は先に固定する。' and 'verdict の意味は次で固定する。'. These overly prescriptive constraints effectively finalize schema elements in an early design memo and should be framed as proposals deferred to the SDD phase."
+```

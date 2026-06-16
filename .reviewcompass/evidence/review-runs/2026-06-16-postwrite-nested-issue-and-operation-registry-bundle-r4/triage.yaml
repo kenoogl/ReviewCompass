@@ -1,0 +1,184 @@
+run_id: 2026-06-16-postwrite-nested-issue-and-operation-registry-bundle-r4
+triage_status: decided
+generated_at: '2026-06-16T03:38:06.833359+00:00'
+decision_actor: null
+decision_actor_type: human
+items:
+- finding_id: 2026-06-16-postwrite-nested-issue-and-operation-registry-bundle-r4-gpt-5.4-primary-001
+  run_id: 2026-06-16-postwrite-nested-issue-and-operation-registry-bundle-r4
+  source_model: gpt-5.4
+  source_round: round-1
+  source_raw_path: raw/gpt-5.4.round-1.txt
+  source_parsed_path: parsed/gpt-5.4.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: docs/notes/2026-06-16-operation-registry-preflight-design.md /
+    'operation contract' section and subsequent response-shape sections
+  plain_language_summary: The memo goes beyond the bundle's stated post-write scope
+    by repeatedly fixing concrete field names, allowed values, requiredness, and verdict-derivation
+    rules, which reads close to schema/API finalization despite the document being
+    labeled as a design memo.
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: codex
+  decision_actor_type: agent
+  decision_at: '2026-06-16T03:38:34.543167+00:00'
+  decision_reason: 今回の依頼は nested issue handling を別課題メモとして起票すること。統合 inventory / operation
+    registry への本格組み込み、schema/API 契約、parser adapter、operation kind の固定は後続 SDD で扱うべき詳細であり、現メモの事実関係・問題分類・後続化方針を壊す矛盾ではないため本文修正は不要。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-16-postwrite-nested-issue-and-operation-registry-bundle-r4-gpt-5.4-primary-002
+  run_id: 2026-06-16-postwrite-nested-issue-and-operation-registry-bundle-r4
+  source_model: gpt-5.4
+  source_round: round-1
+  source_raw_path: raw/gpt-5.4.round-1.txt
+  source_parsed_path: parsed/gpt-5.4.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: 'docs/notes/2026-06-16-operation-registry-preflight-design.md /
+    ''Phase 1: read-only registry'' and ''Phase 1 の各 operation は...'' tables'
+  plain_language_summary: The operation-registry memo enumerates `document_type_preflight`,
+    `review_criteria_preflight`, and `post_write_manifest_coverage_preflight` as initial
+    Phase 1 operations, but it does not mention the newly added nested-issue handling
+    concern or how scope expansion during verification should be represented alongside
+    those registry entries.
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: codex
+  decision_actor_type: agent
+  decision_at: '2026-06-16T03:38:34.601916+00:00'
+  decision_reason: 今回の依頼は nested issue handling を別課題メモとして起票すること。統合 inventory / operation
+    registry への本格組み込み、schema/API 契約、parser adapter、operation kind の固定は後続 SDD で扱うべき詳細であり、現メモの事実関係・問題分類・後続化方針を壊す矛盾ではないため本文修正は不要。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-16-postwrite-nested-issue-and-operation-registry-bundle-r4-gpt-5.4-primary-003
+  run_id: 2026-06-16-postwrite-nested-issue-and-operation-registry-bundle-r4
+  source_model: gpt-5.4
+  source_round: round-1
+  source_raw_path: raw/gpt-5.4.round-1.txt
+  source_parsed_path: parsed/gpt-5.4.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: docs/notes/2026-06-16-nested-issue-handling-smell.md / '既存 preflight
+    項目との関係'
+  plain_language_summary: This memo references B-12/B-13/B-14 as existing tracking
+    units without briefly restating that they originate in the workflow-recovery smell
+    inventory.
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: codex
+  decision_actor_type: agent
+  decision_at: '2026-06-16T03:38:34.662160+00:00'
+  decision_reason: 今回の依頼は nested issue handling を別課題メモとして起票すること。統合 inventory / operation
+    registry への本格組み込み、schema/API 契約、parser adapter、operation kind の固定は後続 SDD で扱うべき詳細であり、現メモの事実関係・問題分類・後続化方針を壊す矛盾ではないため本文修正は不要。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-16-postwrite-nested-issue-and-operation-registry-bundle-r4-claude-opus-4-8-adversarial-001
+  run_id: 2026-06-16-postwrite-nested-issue-and-operation-registry-bundle-r4
+  source_model: claude-opus-4-8
+  source_round: round-1
+  source_raw_path: raw/claude-opus-4-8.round-1.txt
+  source_parsed_path: parsed/claude-opus-4-8.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: docs/notes/2026-06-16-nested-issue-handling-smell.md (issue 分類
+    preflight / 既存 preflight 項目との関係)
+  plain_language_summary: nested-issue メモは B-12/B-13/B-14 を既存 preflight 項目として参照し役割分担を整理しているが、operation-registry
+    メモの Phase 1 表や smell-inventory の追跡単位リストには `nested_issue_stack`（または `side_track_stack`）が独立追跡単位として登録されていない。3
+    文書間で nested issue の扱いが片方向参照に留まっている。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: codex
+  decision_actor_type: agent
+  decision_at: '2026-06-16T03:38:34.718465+00:00'
+  decision_reason: 今回の依頼は nested issue handling を別課題メモとして起票すること。統合 inventory / operation
+    registry への本格組み込み、schema/API 契約、parser adapter、operation kind の固定は後続 SDD で扱うべき詳細であり、現メモの事実関係・問題分類・後続化方針を壊す矛盾ではないため本文修正は不要。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-16-postwrite-nested-issue-and-operation-registry-bundle-r4-claude-opus-4-8-adversarial-002
+  run_id: 2026-06-16-postwrite-nested-issue-and-operation-registry-bundle-r4
+  source_model: claude-opus-4-8
+  source_round: round-1
+  source_raw_path: raw/claude-opus-4-8.round-1.txt
+  source_parsed_path: parsed/claude-opus-4-8.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: docs/notes/2026-06-16-operation-registry-preflight-design.md (operation
+    の初期対象 Phase 1 表) / docs/notes/2026-06-16-workflow-recovery-smell-inventory.md
+    (B-14 / 追跡単位)
+  plain_language_summary: operation-registry メモの Phase 1 表では `post_write_review` の
+    source smell を `B-9、B-12、B-14` と記載するが、smell-inventory 側で B-9 は workflow 混線（worktree
+    混線 preflight）として、B-12 は document-type preflight として別追跡単位に割り当てられている。同一 operation
+    へ複数 smell をまとめる対応関係自体は妥当だが、各 smell が別 operation 行（document_type_preflight, post_write_manifest_coverage_preflight）にも再掲されており、対応の一意性が読み取りにくい。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: codex
+  decision_actor_type: agent
+  decision_at: '2026-06-16T03:38:34.774732+00:00'
+  decision_reason: 今回の依頼は nested issue handling を別課題メモとして起票すること。統合 inventory / operation
+    registry への本格組み込み、schema/API 契約、parser adapter、operation kind の固定は後続 SDD で扱うべき詳細であり、現メモの事実関係・問題分類・後続化方針を壊す矛盾ではないため本文修正は不要。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-16-postwrite-nested-issue-and-operation-registry-bundle-r4-claude-opus-4-8-adversarial-003
+  run_id: 2026-06-16-postwrite-nested-issue-and-operation-registry-bundle-r4
+  source_model: claude-opus-4-8
+  source_round: round-1
+  source_raw_path: raw/claude-opus-4-8.round-1.txt
+  source_parsed_path: parsed/claude-opus-4-8.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: docs/notes/2026-06-16-nested-issue-handling-smell.md (今回発生したこと
+    / 危険 2) と docs/notes/2026-06-16-workflow-recovery-smell-inventory.md (B-14)
+  plain_language_summary: nested-issue メモは『B-14 発見時点では 2 文書、本メモ追加後は 3 文書』という bundle
+    件数の経緯を明示しているが、smell-inventory 側 B-14 は manifest が 2 文書を含む一方 review-run target-manifest
+    は 1 文書という記述で、件数の文脈（coverage 過大表現 vs bundle 件数の増加）が別軸である。両者は矛盾しないが、同じ『2 文書』という数字が異なる意味で使われており、読み手が同一事象と誤読する余地がある。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: codex
+  decision_actor_type: agent
+  decision_at: '2026-06-16T03:38:34.831009+00:00'
+  decision_reason: 今回の依頼は nested issue handling を別課題メモとして起票すること。統合 inventory / operation
+    registry への本格組み込み、schema/API 契約、parser adapter、operation kind の固定は後続 SDD で扱うべき詳細であり、現メモの事実関係・問題分類・後続化方針を壊す矛盾ではないため本文修正は不要。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-16-postwrite-nested-issue-and-operation-registry-bundle-r4-gemini-3.1-pro-preview-judgment-001
+  run_id: 2026-06-16-postwrite-nested-issue-and-operation-registry-bundle-r4
+  source_model: gemini-3.1-pro-preview
+  source_round: round-1
+  source_raw_path: raw/gemini-3.1-pro-preview.round-1.txt
+  source_parsed_path: parsed/gemini-3.1-pro-preview.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: docs/notes/2026-06-16-workflow-recovery-smell-inventory.md (追跡方針)
+    & docs/notes/2026-06-16-operation-registry-preflight-design.md (Phase 1)
+  plain_language_summary: Nested issue operations and tracking units are missing from
+    the consolidated inventory and operation registry.
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: codex
+  decision_actor_type: agent
+  decision_at: '2026-06-16T03:38:34.886836+00:00'
+  decision_reason: 今回の依頼は nested issue handling を別課題メモとして起票すること。統合 inventory / operation
+    registry への本格組み込み、schema/API 契約、parser adapter、operation kind の固定は後続 SDD で扱うべき詳細であり、現メモの事実関係・問題分類・後続化方針を壊す矛盾ではないため本文修正は不要。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-16-postwrite-nested-issue-and-operation-registry-bundle-r4-gemini-3.1-pro-preview-judgment-002
+  run_id: 2026-06-16-postwrite-nested-issue-and-operation-registry-bundle-r4
+  source_model: gemini-3.1-pro-preview
+  source_round: round-1
+  source_raw_path: raw/gemini-3.1-pro-preview.round-1.txt
+  source_parsed_path: parsed/gemini-3.1-pro-preview.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: docs/notes/2026-06-16-operation-registry-preflight-design.md
+  plain_language_summary: Premature schema and API contract finalization in a note
+    document.
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: codex
+  decision_actor_type: agent
+  decision_at: '2026-06-16T03:38:34.943725+00:00'
+  decision_reason: 今回の依頼は nested issue handling を別課題メモとして起票すること。統合 inventory / operation
+    registry への本格組み込み、schema/API 契約、parser adapter、operation kind の固定は後続 SDD で扱うべき詳細であり、現メモの事実関係・問題分類・後続化方針を壊す矛盾ではないため本文修正は不要。
+  applied_files: []
+  superseded_by: null

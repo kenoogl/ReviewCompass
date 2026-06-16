@@ -1,0 +1,49 @@
+status: completed
+target_files:
+- docs/notes/2026-06-16-nested-issue-handling-smell.md
+- docs/notes/2026-06-16-operation-registry-preflight-design.md
+- docs/notes/2026-06-16-workflow-recovery-smell-inventory.md
+target_sha256:
+  docs/notes/2026-06-16-nested-issue-handling-smell.md: 5afef0362cfaab7d4ca424d4aa2a5417fb0fd5c7c6c246516393aab2e29935ee
+  docs/notes/2026-06-16-operation-registry-preflight-design.md: db0b2716c1628e9abb35b3e38da92c1144a4c7ab1185a799f6ea20dc9b9a98f1
+  docs/notes/2026-06-16-workflow-recovery-smell-inventory.md: be535f26086d296f911db3e963b112c6f9d0cadbedff561d4a6023011aacf8db
+required_verifiers: &id001
+- claude-opus-4-8
+- gemini-3.1-pro-preview
+- gpt-5.4
+completed_verifiers: *id001
+unresolved_substantive_findings: 0
+verifications:
+- verifier: claude-opus-4-8
+  target_files:
+  - docs/notes/2026-06-16-nested-issue-handling-smell.md
+  - docs/notes/2026-06-16-operation-registry-preflight-design.md
+  - docs/notes/2026-06-16-workflow-recovery-smell-inventory.md
+  target_sha256:
+    docs/notes/2026-06-16-nested-issue-handling-smell.md: 5afef0362cfaab7d4ca424d4aa2a5417fb0fd5c7c6c246516393aab2e29935ee
+    docs/notes/2026-06-16-operation-registry-preflight-design.md: db0b2716c1628e9abb35b3e38da92c1144a4c7ab1185a799f6ea20dc9b9a98f1
+    docs/notes/2026-06-16-workflow-recovery-smell-inventory.md: be535f26086d296f911db3e963b112c6f9d0cadbedff561d4a6023011aacf8db
+- verifier: gemini-3.1-pro-preview
+  target_files:
+  - docs/notes/2026-06-16-nested-issue-handling-smell.md
+  - docs/notes/2026-06-16-operation-registry-preflight-design.md
+  - docs/notes/2026-06-16-workflow-recovery-smell-inventory.md
+  target_sha256:
+    docs/notes/2026-06-16-nested-issue-handling-smell.md: 5afef0362cfaab7d4ca424d4aa2a5417fb0fd5c7c6c246516393aab2e29935ee
+    docs/notes/2026-06-16-operation-registry-preflight-design.md: db0b2716c1628e9abb35b3e38da92c1144a4c7ab1185a799f6ea20dc9b9a98f1
+    docs/notes/2026-06-16-workflow-recovery-smell-inventory.md: be535f26086d296f911db3e963b112c6f9d0cadbedff561d4a6023011aacf8db
+- verifier: gpt-5.4
+  target_files:
+  - docs/notes/2026-06-16-nested-issue-handling-smell.md
+  - docs/notes/2026-06-16-operation-registry-preflight-design.md
+  - docs/notes/2026-06-16-workflow-recovery-smell-inventory.md
+  target_sha256:
+    docs/notes/2026-06-16-nested-issue-handling-smell.md: 5afef0362cfaab7d4ca424d4aa2a5417fb0fd5c7c6c246516393aab2e29935ee
+    docs/notes/2026-06-16-operation-registry-preflight-design.md: db0b2716c1628e9abb35b3e38da92c1144a4c7ab1185a799f6ea20dc9b9a98f1
+    docs/notes/2026-06-16-workflow-recovery-smell-inventory.md: be535f26086d296f911db3e963b112c6f9d0cadbedff561d4a6023011aacf8db
+review_run:
+  path: .reviewcompass/evidence/review-runs/2026-06-16-postwrite-nested-issue-and-operation-registry-bundle-r4
+  summary_path: .reviewcompass/evidence/review-runs/2026-06-16-postwrite-nested-issue-and-operation-registry-bundle-r4/model-result-summary.yaml
+notes: Three current post-write target files were reviewed together through the generated
+  runtime bundle .reviewcompass/runtime/postwrite-nested-issue-operation-registry-smell-inventory-target.md.
+  The manifest targets are the source documents, not the ignored runtime bundle.

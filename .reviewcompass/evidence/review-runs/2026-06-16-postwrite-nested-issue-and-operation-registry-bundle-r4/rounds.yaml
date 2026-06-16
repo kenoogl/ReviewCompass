@@ -1,0 +1,62 @@
+round_id: round-1
+purpose: post_write_verification
+invocation_timestamp: '2026-06-16T03:38:06.814777+00:00'
+target_files:
+- path: .reviewcompass/runtime/postwrite-nested-issue-operation-registry-smell-inventory-target.md
+  sha256: 6950a365f6ba7efffd359a2bdac113bcc95627a532281827682d810206228854
+criteria: notes_consistency_nested_issue_and_operation_registry_post_write_no_schema_finalization
+prompt_sha256: e76b12a78485968d71d1b785eda14393a74e272c863f4815fe8125a62b873b1e
+model_results:
+- model_id: gpt-5.4
+  provider: openai-api
+  role: primary
+  treatment: primary
+  invocation_path: api
+  raw_path: raw/gpt-5.4.round-1.txt
+  raw_sha256: a9e6a8109b3d5cad6b785c26237d917577bb0507b12b43ca00b3d3f1cc879e34
+  parsed_path: parsed/gpt-5.4.round-1.yaml
+  parsed_sha256: 2a0aef53f149fdeafa1019c1c732aac02d47cb379daabead2ee94e818ee2854c
+  parse_status: parsed
+  formatted_by: parser
+  formatted_by_actor_type: orchestrator
+  formatted_by_actor: run_role.py
+  formatted_at: '2026-06-16T03:36:30.550611+00:00'
+  follow_up_action: triage
+  attempts: 1
+  duration_seconds: 6.225
+- model_id: claude-opus-4-8
+  provider: anthropic-api
+  role: adversarial
+  treatment: adversarial
+  invocation_path: api
+  raw_path: raw/claude-opus-4-8.round-1.txt
+  raw_sha256: a6ef74bcf84f90e1d66e50accb61f4013967e209482f2f26bd0055a1338567c2
+  parsed_path: parsed/claude-opus-4-8.round-1.yaml
+  parsed_sha256: 022a04833c725abaa3b10358f985a0f7b08d10f3ef15d3e6bb63c2c6e6e6a15f
+  parse_status: parsed
+  formatted_by: parser
+  formatted_by_actor_type: orchestrator
+  formatted_by_actor: run_role.py
+  formatted_at: '2026-06-16T03:36:50.329793+00:00'
+  follow_up_action: triage
+  attempts: 1
+  duration_seconds: 19.77
+- model_id: gemini-3.1-pro-preview
+  provider: gemini-api
+  role: judgment
+  treatment: judgment
+  invocation_path: api
+  raw_path: raw/gemini-3.1-pro-preview.round-1.txt
+  raw_sha256: 45143aca250b5f641aca8069cf43c5dec6807fcf821c0e27e042ca43428335f3
+  parsed_path: parsed/gemini-3.1-pro-preview.round-1.yaml
+  parsed_sha256: cb5e7ff3aa7785f178d0300ce66cc4b1b692ae843d9a241a18cfd0cb1eaf952d
+  parse_status: parsed
+  formatted_by: parser
+  formatted_by_actor_type: orchestrator
+  formatted_by_actor: run_role.py
+  formatted_at: '2026-06-16T03:38:06.814777+00:00'
+  follow_up_action: triage
+  attempts: 1
+  duration_seconds: 76.473
+effective_prompt_path: .reviewcompass/runtime/effective-prompts/next_action_kind-post_write_verification.prompt.md
+effective_prompt_sha256: 269ad4a60c245fdd8600500b03318c18e0fa1978c2fe057255e442fd53b41e03

@@ -1,0 +1,4 @@
+run_id: 2026-06-16-postwrite-nested-issue-and-operation-registry-bundle-r4
+target_files:
+- path: .reviewcompass/runtime/postwrite-nested-issue-operation-registry-smell-inventory-target.md
+  sha256: 6950a365f6ba7efffd359a2bdac113bcc95627a532281827682d810206228854

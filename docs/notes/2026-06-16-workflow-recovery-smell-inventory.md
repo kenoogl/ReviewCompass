@@ -1,6 +1,9 @@
 # 手戻りで通過した作業導線の棚卸し
 
 日付：2026-06-16
+文書タイプ：棚卸しメモ（実装正本ではない）
+review 期待値：発生事象、共通原因、機械化候補、追跡単位の整理を確認する。具体 API や JSON schema は後続 SDD で固定する。
+document-type preflight 結論：この文書は棚卸しメモとして扱い、再分類は不要。仕様候補は後続 SDD へ送る。
 
 ## 背景
 
@@ -342,7 +345,8 @@ atomic に置き換える。または失敗時に元内容へ rollback する。
 監査対象は少なくとも、triage、model-result-summary、関連 summary、manifest 生成有無、
 approval record 参照まで含め、途中失敗で残り得る副作用を限定してから修正する。
 
-追加で、`review_triage.py decide` 実行前に approval record の前提を検査する必要がある。
+追加で、`tools/api_providers/review_triage.py decide` 実行前に approval record の前提を
+検査する必要がある。
 同コマンドは approval record の存在だけでなく、対象 finding id と final label が
 事前列挙されていることを要求する。この前提が実行前に明示・生成されず、
 空の `approval.yaml` で失敗する手戻りが起きた。
@@ -442,8 +446,9 @@ post-write-verification の開始時に、正本手順では
 - workflow precheck：`spec-set`、`commit`、`push`、`audit-commit`、
   `reopen-advance-gate`、`autonomous-plan`
 - commit：直接 `git commit` ではなく `tools/guarded-git-commit.py` 経由
-- post-write review：`run_review.py`、`review_triage.py list-pending / decide /
-  write-manifest` の順序、variant、target、review-run-dir、approval-record
+- post-write review：`tools/api_providers/run_review.py`、
+  `tools/api_providers/review_triage.py list-pending / decide / write-manifest` の順序、
+  variant、target、review-run-dir、approval-record
 - session-record：backfill と promote の使い分け、current session と終了済み session
   の区別
 - autonomous / proxy：plan、承認、記録、proxy approval の作成順序
@@ -468,6 +473,11 @@ preflight を追加する。少なくとも次を満たす必要がある。
 - 対象ファイルや approval record などの前提がそろっている
 - 状態確認の正規経路が分かっている場合は、その経路を優先する
 - 推測した短縮名や存在しない補助コマンドは実行前に止める
+
+追跡上は、B-7 自体は今回追加された補助候補である。ただし実装単位としては、
+主要 3 件にもまたがる「正本コマンド呼び出し helper」に統合して扱う。
+理由は、短縮名、存在しない補助コマンド、誤った引数、誤った entrypoint のいずれも、
+実行前に正本 operation / command registry へ照合する同じ入口で止められるためである。
 
 ### B-8. 前例模倣による implementation review target 不備
 
@@ -580,6 +590,158 @@ staged file set digest を確認しながら進む。
 
 平たく言えば、ルールはあるが、LLM が間違えないようにする実行前ガードが足りない。
 
+### B-12. post-write review が設計壁打ちへ変質し、round 数が増える
+
+operation registry / preflight 設計メモの post-write verification では、本来 5 回程度の
+往復で収束する見込みだったが、実際には r11 まで増えた。
+
+直接原因は、調査・設計メモとして始めた文書に、途中から `operation contract`、
+共通 JSON、`verdict` 計算規則、`checks`、`pending_conflicts`、`state_refs` などの
+仕様候補を具体例つきで書き込んだことである。review 側から見ると、これは
+「設計メモの妥当性確認」ではなく「仕様候補の自己整合性確認」になった。
+
+本質原因は、post-write verification の前に文書タイプと review 期待値を機械的に
+確定していなかったことである。文書が `調査メモ`、`設計メモ`、`仕様化前メモ`、
+`SDD 正本`、`運用手順` のどれかによって、見るべき観点は変わる。
+今回のように、設計メモが仕様候補へ変質した時点で停止または再分類する導線が無かった。
+
+影響：
+
+- review が完了検証ではなく設計補助として機能し、round 数が増える
+- 例と本文の不整合を 1 件ずつ直すことになり、修正と再 review の往復が増える
+- 作業時間、説明コスト、トークン消費が増える
+- 「どこまでをメモで決め、どこから SDD 正本へ送るか」が曖昧になる
+
+機械処理できる範囲は広い。
+
+- 文書タイプ宣言の有無を確認する
+- JSON / YAML / command 例があるのに schema 表や未確定宣言が無い場合に警告する
+- `必須`、`固定`、`fail-closed`、`schema_version`、`allowed_*` などの仕様語彙を検出する
+- post-write review の criteria / variant が文書タイプに合っているか確認する
+- review round が閾値を超えたら、検証ではなく設計議論化している可能性を警告する
+- ERROR / WARN が例と本文の不整合に集中する場合、仕様化前メモまたは SDD への切り出しを促す
+
+ただし、文書タイプの最終判断、仕様として切り出すかどうか、スキーマ内容の妥当性は
+完全自動化しない。機械は停止・再分類候補を提示し、人または review / proxy が判断する。
+
+後続対応では、post-write verification 前に document-type preflight を追加する。
+preflight は、少なくとも次を返す。
+次のブロックは未確定の出力例であり、schema 正本ではない。
+
+```text
+document_type: design_memo
+contract_like_content: true
+schema_examples: true
+schema_declared: false
+recommended_action: stop_or_reclassify
+```
+
+また、仕様っぽい JSON / YAML 例を書く場合は、先に必須フィールド、任意フィールド、
+許容値、未実装値の扱い、verdict 導出規則、既存語彙との対応を表で明示する。
+それをしない場合は、詳細スキーマを未確定として SDD 側へ送る。
+
+### B-13. API review に渡す criteria / prompt が文書タイプを十分に制御していない
+
+B-12 の round 数増加は、文書が仕様候補へ踏み込んだことだけでなく、API review に渡した
+criteria / prompt が文書タイプに対して十分に具体的でなかったことにも起因する。
+
+今回の review 実行では、`--criteria` に `operation_registry_preflight_design_post_write_r12`
+や `workflow_recovery_smell_inventory_document_type_preflight_post_write_r3` のような
+識別子を渡した。しかし、これは実質的には ID であり、reviewer に対して次を明確に伝える
+十分な本文ではなかった。
+
+- この文書は設計メモ / 棚卸しメモであり、SDD 正本ではない
+- JSON / YAML 例は、明示がない限り参考例または未確定例として扱う
+- 完全な schema 整合性は post-write blocker ではなく、後続 SDD 論点として扱う
+- 今すぐ直すべき明白な矛盾と、後続 SDD に送る論点を分ける
+- round が増えた場合は、仕様策定へ変質していないか再分類を促す
+
+この情報が薄いと、API reviewer は自然に「仕様として読める箇所」を深掘りする。
+その結果、post-write verification が完了検証ではなく、設計補助・仕様策定に近づき、
+round 数と修正往復が増える。
+
+後続対応では、document-type preflight と連動する review criteria preflight を追加する。
+文書タイプごとに criteria template を用意し、API review へ渡す前に scope を確定する。
+例えば設計メモでは、次のような境界を criteria として明示する。
+
+責務分担は次のように分ける。
+
+- document-type preflight：対象文書が設計メモ、棚卸しメモ、SDD 正本、実装 review target
+  のどれかを判定し、文書としての扱いと review 期待値を決める
+- review criteria preflight：その文書タイプに合わせて、API reviewer に渡す scope、
+  out-of-scope、finding policy、blocker 判定基準を生成・検査する
+
+つまり B-12 は「文書をどう分類するか」、B-13 は「分類結果を API reviewer の入力へ
+どう反映するか」を追跡単位にする。
+
+このメモ自身に適用する場合、document-type preflight の結論は「棚卸しメモ」であり、
+review 期待値は「発生事象、共通原因、機械化候補、追跡単位の整理」である。
+review criteria preflight は、その結論を API reviewer へ渡す criteria に反映し、
+完全な JSON schema や実装 API 契約を post-write blocker にしないことを明示する。
+下の `document_type: design_memo` は設計メモ向け criteria template の例であり、
+この棚卸しメモ自身の document type を示すものではない。
+
+```text
+document_type: design_memo
+review_scope:
+  - existing partial implementations are captured
+  - proposed direction is coherent
+  - obvious contradictions are flagged
+  - follow-up SDD topics are identified
+out_of_scope:
+  - complete JSON schema
+  - full API contract
+  - implementation fixture completeness
+finding_policy:
+  schema details are follow-up unless they contradict explicit normative text
+```
+
+機械処理できる範囲は次である。
+
+- effective prompt に文書タイプと review 期待値が含まれているか確認する
+- `--criteria` が単なる ID だけでなく、文書タイプ別の scope / out-of-scope / finding policy を含むか確認する
+- JSON / YAML 例の扱いが criteria に明示されているか確認する
+- schema 完全性を blocker にするか、後続 SDD 論点にするかを review 前に固定する
+- review round が閾値を超えた場合、criteria 不足または文書タイプ不一致として警告する
+
+### B-14. post-write manifest が review-run の実対象より広い coverage を表現できる
+
+B-13 追記後の post-write verification で、`next` は `completed` に戻ったが、
+直近 manifest は `target_files` に 2 文書を含む一方、参照された review-run の
+`target-manifest.yaml` は `docs/notes/2026-06-16-workflow-recovery-smell-inventory.md`
+1 文書だけを対象にしていた。
+
+直接原因は、`tools/api_providers/review_triage.py write-manifest` の manifest 雛形生成が、
+review-run の `target-manifest.yaml` に加えて、現在の git 差分上の post-write 対象を
+union することである。これにより、review-run 自体が実際に見た対象より広い
+`target_files` と `verifications[]` を manifest に書けてしまう。
+
+本質原因は、post-write verification の正本が「`target_files` 全体を同じ verifier が見る」
+ことを要求しているのに、実行系は `run_review.py --target <single-file>` を前提にしており、
+multi-target review の一次情報、bundle、manifest coverage の対応を機械的に照合していない
+ことである。
+
+影響として、機械ゲートは completed を返すが、証跡だけを見ると「各 verifier が 2 文書を
+確認した」と読める一方、実際の review-run target は 1 文書である、という過大表現が
+起こり得る。これは未解決指摘を通す問題ではなく、検証 coverage の主張と一次証跡が
+ずれる問題である。
+
+対策候補：
+
+- post-write review-run 作成前に、`next_action.target_files` 全体を単一 review 対象として
+  渡せる形式を用意する
+- multi-target review 用の bundle を正本化し、bundle manifest に各 target path と sha256 を
+  記録する
+- manifest 生成時に、review-run の target set と manifest の `target_files` が一致するか、
+  または bundle manifest が全 target を覆っていることを必須検査する
+- `write-manifest` が current git post-write targets を暗黙 union する場合は、
+  review-run 側に存在しない target を追加した時点で `DEVIATION` として止める
+- `tools/make-post-write-manifest.py` も、指定 `--target` が review-run の実対象または
+  bundle manifest に含まれることを生成前に確認する
+
+分類は、post-write manifest coverage preflight、multi-target review target、証跡過大表現防止、
+手戻り削減候補である。
+
 ## 共通する問題構造
 
 今回の追加点も含めると、共通する構造は次である。
@@ -599,6 +761,10 @@ staged file set digest を確認しながら進む。
 - reopen 完了記録で、completed gate と downstream impact decision の対応漏れを事前検出しにくい
 - 実装完了と実運用確認完了の境界が曖昧になり得る
 - 調査前の説明が、後で修正を要することがある
+- 文書タイプと review 期待値が未確定のまま post-write verification を始めることがある
+- 設計メモが仕様候補へ変質した時点で停止・再分類する導線が弱い
+- API review に渡す criteria / prompt が文書タイプ別の scope を十分に制御していないことがある
+- post-write manifest の coverage 主張と review-run の実 target set がずれ得る
 - 生成後検査はあっても、生成前 preflight が弱い
 - 失敗時に既存正本を壊さない atomic 書き込みが弱い
 
@@ -634,6 +800,7 @@ staged file set digest を確認しながら進む。
 残り得るため、guard や post-write verification は最後の保険として維持する。
 
 時間・トークン削減の観点では、次の順に効果が大きい。
+これは効果見込みの参考順位であり、実装着手順の正本ではない。
 
 1. 正本コマンド呼び出し helper
 2. diff bundle 作成 helper
@@ -662,9 +829,11 @@ staged file set digest を確認しながら進む。
      短縮名からではなく機械的に選ぶ
    - 実行前に対象、出力先、必須引数、既存成果物との衝突を表示・検査する
    - コマンド失敗時は成果物未作成または部分生成の有無を確認する
+   - これは項目 1 の review-run 作成前 checker とは別である。項目 1 は review-run の
+     対象・出力先・manifest 整合を扱い、項目 7 は正本 CLI 選択と引数存在確認を扱う
 8. approval-template / approval preflight
-   - `review_triage.py decide` 前に、対象 finding id と final label が approval record に
-     事前列挙されていることを確認する
+   - `tools/api_providers/review_triage.py decide` 前に、対象 finding id と final label が
+     approval record に事前列挙されていることを確認する
    - 不足時は既存形式に沿った approval 草案を生成するか、明確な手順を出して停止する
 9. 前例適用前 checker
    - phase と artifact 種別を確認し、前例形式をそのまま横展開してよいか検査する
@@ -678,6 +847,18 @@ staged file set digest を確認しながら進む。
 12. commit approval chain wrapper
     - `prepare -> record -> delegate-execution -> guarded commit` を直列専用として扱う
     - 途中成果物の存在確認と digest 検証を挟み、並列実行を避ける
+13. document-type preflight
+    - post-write verification 前に、対象文書のタイプと review 期待値を確認する
+    - 仕様候補化した設計メモは、SDD へ切り出すか、詳細スキーマ未確定として止める
+    - review round が閾値を超えた場合、設計壁打ち化として停止・再分類を促す
+14. review criteria preflight
+    - API review 前に、criteria が文書タイプ別の scope / out-of-scope / finding policy を含むか確認する
+    - 単なる criteria id だけで review scope を制御しない
+    - schema 詳細を blocker にするか後続 SDD 論点にするかを review 前に固定する
+15. post-write manifest coverage preflight
+    - manifest の `target_files` と review-run の実 target set が一致するか確認する
+    - multi-target の場合は bundle manifest が全 target path / sha256 を覆ることを要求する
+    - review-run に存在しない target を current git 差分から暗黙追加しない
 
 ## 追跡方針
 
@@ -700,10 +881,17 @@ staged file set digest を確認しながら進む。
 - worktree 混線 preflight
 - reopen 完了前 checker
 - deployment smoke と bundle export の出力先 preflight
+- document-type preflight / post-write review scope control
+- review criteria preflight / criteria template
+- post-write manifest coverage preflight / multi-target review bundle
 
 ## 追加分の優先度
 
 追加候補の中では、次の順で扱うのが妥当である。
+これは追加候補だけの相対順位である。主要 3 件を含む実装着手順は、直後の
+「主要 3 件を含めた全体優先度」を優先して参照する。
+本節の順位と「機械化による効果見込み」の順位は判断材料であり、実装着手順の正本ではない。
+後続 SDD へ送るときは、必ず「主要 3 件を含めた全体優先度」を起点にする。
 
 1. review-run dir の衝突・混在防止
 2. review triage approval-template / approval preflight
@@ -716,6 +904,7 @@ staged file set digest を確認しながら進む。
 9. bundle export の出力先衝突 preflight
 10. session-record backfill / promote の current-session guard 共通化
 11. 正本コマンド呼び出し前の短縮名・記憶依存防止
+12. post-write manifest coverage と multi-target review bundle の整合検査
 
 主要 3 件を含めた全体優先度は、不可逆操作・正本汚染・検証品質の順で考える。
 
@@ -732,17 +921,24 @@ staged file set digest を確認しながら進む。
 11. proxy approval / triage decision の atomic 書き込み
 12. deployment smoke と bundle export の出力先 preflight
 13. 実装完了条件テンプレートと説明前確認ルール
+14. document-type preflight / post-write review scope control
+15. review criteria preflight / criteria template
+16. post-write manifest coverage preflight / multi-target review bundle
 
 ## 期待する完了条件
 
 - review-run / manifest / bundle は、生成前に対象妥当性を検査できる
 - 空 bundle や対象ずれ bundle が生成されない
 - implementation review target には、reviewer が実装を検証できる一次情報が含まれる
-- `review_triage.py decide` 前に、対象 finding id と final label の approval 前提を確認できる
+- `tools/api_providers/review_triage.py decide` 前に、対象 finding id と final label の approval 前提を確認できる
 - post-write pending 中の別作業混在を作業開始前に検出し、分離案を提示できる
 - commit approval は最終 staged 固定後に作る導線になる
 - commit approval chain は直列専用 wrapper または preflight により順序通り実行される
 - 正式 CLI だけで、内容承認と LLM 実行代行承認を安全に記録できる
+- post-write verification 前に文書タイプと review 期待値を確認できる
+- 設計メモが仕様候補へ変質した場合、SDD 化または未確定化へ切り分けられる
+- API review 前に文書タイプ別 criteria を生成し、review scope と blocker 条件を明示できる
+- post-write manifest が、review-run の実 target set または bundle manifest を超える coverage を主張しない
 - current session の正式 2 層記録生成は全入口で fail-closed する
 - reopen 完了前に、completed gate と downstream impact decision の対応漏れを検出できる
 - 実装完了と実環境確認未完了を完了報告で分けて示せる
