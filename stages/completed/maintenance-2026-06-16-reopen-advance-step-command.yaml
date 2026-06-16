@@ -1,0 +1,36 @@
+process_id: maintenance
+started_at: 2026-06-16T00:00:00+09:00
+completed_at: 2026-06-16T00:00:00+09:00
+trigger: TODO_NEXT_SESSION.md §4 候補 8 の残る改善として、reopen 第1・第2過程の state 更新を手編集から機械操作へ寄せる。
+mainline_blocked_by: next --json は completed であり通常 workflow は進行中ではないが、reopen state 手編集事故を減らす保守改善として扱う。
+allowed_scope: reopen 第1・第2過程の進行中 YAML 更新コマンド、関連テスト、運用文書、入口メモの更新に限定する。
+allowed_files:
+  - tools/check-workflow-action.py
+  - tests/tools/test_check_workflow_action.py
+  - docs/operations/WORKFLOW_PRECHECK.md
+  - docs/operations/WORKFLOW_PRECHECK_DETAILS.md
+  - TODO_NEXT_SESSION.md
+  - stages/operation-registry.yaml
+  - stages/in-progress/maintenance-2026-06-16-reopen-advance-step-command.yaml
+  - stages/completed/maintenance-2026-06-16-reopen-advance-step-command.yaml
+completion_conditions:
+  - reopen 第1過程完了から第2過程へ進めるコマンドが TDD で追加される。
+  - reopen 第2過程完了から停止点コミットへ進めるコマンドが TDD で追加される。
+  - 根拠なし更新や現在 step 不一致は fail-closed で拒否する。
+  - 関連テストが通過する。
+completion_evidence:
+  - command: python3 -m unittest tests.tools.test_check_workflow_action.ReopenAdvanceStepTests -v
+    result: pass
+  - command: python3 -m unittest tests.tools.test_check_workflow_action.ReopenAdvanceStepTests tests.tools.test_check_workflow_action.ReopenAdvanceGateTests tests.tools.test_check_workflow_action.ReopenFinalizeTests -v
+    result: pass
+  - command: .venv/bin/python3 tools/check-workflow-action.py operation-preflight --operation-id reopen_advance_step_preflight --json
+    result: pass
+  - command: PYTHONPYCACHEPREFIX=/private/tmp/reviewcompass-pycache python3 -m py_compile tools/check-workflow-action.py
+    result: pass
+completion_note: >
+  `reopen-advance-step` は第1・第2過程だけを対象にし、現在 step_number と
+  --from-step の一致、completed-step、rationale、evidence を検査してから
+  completed_steps と reopen_step_records を更新する。第1過程完了時は
+  第2過程の正本修正へ、第2過程完了時は停止点コミット状態へ進める。
+  approval blocker 構造化と停止点コミット判定の step_number 化は scope 外として残す。
+next_step: 本線へ戻る。

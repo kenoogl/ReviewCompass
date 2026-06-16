@@ -172,6 +172,50 @@ operations:
       - verdict
       - workflow_stage
 
+  - operation_id: reopen_advance_step_preflight
+    kind: workflow_state
+    operation_family: workflow_cli
+    canonical_invocation:
+      entrypoint: tools/check-workflow-action.py
+      subcommand: reopen-advance-step
+      options:
+        - --file
+        - --from-step
+        - --completed-step
+        - --rationale
+        - --evidence
+        - --json
+      positional_args: []
+      execution_context: repo_root
+    workflow_binding:
+      phase: null
+      stage: null
+      gate: null
+      next_action_kind: null
+    required_inputs:
+      - stages/in-progress/reopen-procedure-{date}.yaml
+      - from_step
+      - completed_step
+      - rationale
+      - evidence
+    target_identity:
+      - reopen_procedure
+      - step_number
+    planned_outputs:
+      - stages/in-progress/reopen-procedure-{date}.yaml
+    sequence_mode: serial_only
+    worktree_policy: allow_dirty_structured_state_update
+    pending_conflict_policy: require_matching_reopen_step
+    artifact_policy: update_existing_reopen_in_progress_only
+    family_required_checks:
+      - parser_invocation
+      - workflow_binding
+      - next_active_state_dimensions
+      - scope_consistency
+    vocabulary_refs:
+      - verdict
+      - workflow_stage
+
   - operation_id: commit_approval_chain_preflight
     kind: irreversible
     operation_family: commit_approval_chain

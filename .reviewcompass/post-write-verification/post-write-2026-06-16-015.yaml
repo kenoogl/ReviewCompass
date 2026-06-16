@@ -1,0 +1,31 @@
+status: completed
+target_files:
+- TODO_NEXT_SESSION.md
+- docs/operations/WORKFLOW_PRECHECK.md
+- docs/operations/WORKFLOW_PRECHECK_DETAILS.md
+- stages/operation-registry.yaml
+target_sha256:
+  TODO_NEXT_SESSION.md: 21c4c2dc7dc9bac41a592036634d83336eeab0c9f10397b907ecd64128c40882
+  docs/operations/WORKFLOW_PRECHECK.md: 33eef227f0f90e8f6db9eb0085dce26da3bc9e776d0bf8c1f3935282b9de21e9
+  docs/operations/WORKFLOW_PRECHECK_DETAILS.md: 033d4567b7e57058c85067764cd693285ce0a5dd7edeed4d94ae5cb89f4c0959
+  stages/operation-registry.yaml: 2c6b4570a9dcffc32e103168bb7bb6f5edd75317b78686a42aeb026100db32b5
+required_verifiers: &id001
+- gemini-3.5-flash
+completed_verifiers: *id001
+unresolved_substantive_findings: 0
+verifications:
+- verifier: gemini-3.5-flash
+  target_files:
+  - TODO_NEXT_SESSION.md
+  - docs/operations/WORKFLOW_PRECHECK.md
+  - docs/operations/WORKFLOW_PRECHECK_DETAILS.md
+  - stages/operation-registry.yaml
+  target_sha256:
+    TODO_NEXT_SESSION.md: 21c4c2dc7dc9bac41a592036634d83336eeab0c9f10397b907ecd64128c40882
+    docs/operations/WORKFLOW_PRECHECK.md: 33eef227f0f90e8f6db9eb0085dce26da3bc9e776d0bf8c1f3935282b9de21e9
+    docs/operations/WORKFLOW_PRECHECK_DETAILS.md: 033d4567b7e57058c85067764cd693285ce0a5dd7edeed4d94ae5cb89f4c0959
+    stages/operation-registry.yaml: 2c6b4570a9dcffc32e103168bb7bb6f5edd75317b78686a42aeb026100db32b5
+review_run:
+  path: .reviewcompass/evidence/review-runs/2026-06-16-reopen-advance-step-postwrite
+  summary_path: .reviewcompass/evidence/review-runs/2026-06-16-reopen-advance-step-postwrite/model-result-summary.yaml
+notes: reopen-advance-step command documentation post-write verification

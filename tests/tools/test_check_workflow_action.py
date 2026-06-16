@@ -3792,6 +3792,153 @@ class ReopenAdvanceGateTests(unittest.TestCase):
     self.assertIn("先頭", result.stdout)
 
 
+class ReopenAdvanceStepTests(unittest.TestCase):
+  """reopen-advance-step サブコマンドの第1・第2過程更新"""
+
+  def setUp(self):
+    self.tmpdir = tempfile.mkdtemp()
+    self.addCleanup(shutil.rmtree, self.tmpdir)
+
+  def _write_in_progress(self, *, step_number, next_step, pending_gates=None):
+    in_progress = (
+      Path(self.tmpdir)
+      / "stages"
+      / "in-progress"
+      / "reopen-procedure-2026-06-16.yaml"
+    )
+    in_progress.parent.mkdir(parents=True)
+    if pending_gates is None:
+      pending_gates = [
+        "stages/requirements.yaml#alignment",
+        "stages/requirements.yaml#approval",
+      ]
+    in_progress.write_text(
+      yaml.safe_dump(
+        {
+          "process_id": "reopen-procedure",
+          "feature": "workflow-management",
+          "step_number": step_number,
+          "next_step": next_step,
+          "completed_steps": [],
+          "pending_gates": pending_gates,
+          "current_blocker": None,
+        },
+        allow_unicode=True,
+        sort_keys=False,
+      ),
+      encoding="utf-8",
+    )
+    return in_progress
+
+  def test_reopen_advance_step_one_records_evidence_and_moves_to_step_two(self):
+    """第1過程の完了を記録し第2過程へ進める"""
+    in_progress = self._write_in_progress(
+      step_number=1,
+      next_step="第1過程：判定とフラグ差し戻し",
+    )
+
+    result = run_script(
+      [
+        "reopen-advance-step",
+        "--file", "stages/in-progress/reopen-procedure-2026-06-16.yaml",
+        "--from-step", "1",
+        "--completed-step", "第1過程：判定とフラグ差し戻し完了",
+        "--rationale", "分類と rollback flags を記録した。",
+        "--evidence", "docs/reviews/reopen-classification-2026-06-16.md",
+        "--json",
+      ],
+      cwd=self.tmpdir,
+    )
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 0, result.stdout)
+    state = yaml.safe_load(in_progress.read_text(encoding="utf-8"))
+    self.assertEqual(state["step_number"], 2)
+    self.assertEqual(state["next_step"], "第2過程：正本修正")
+    self.assertIn("第1過程：判定とフラグ差し戻し完了", state["completed_steps"])
+    self.assertEqual(state["reopen_step_records"][0]["from_step"], 1)
+    self.assertEqual(
+      state["reopen_step_records"][0]["evidence"],
+      ["docs/reviews/reopen-classification-2026-06-16.md"],
+    )
+
+  def test_reopen_advance_step_two_records_commit_stop_point(self):
+    """第2過程の完了を記録し停止点コミット状態へ進める"""
+    in_progress = self._write_in_progress(
+      step_number=2,
+      next_step="第2過程：正本修正",
+    )
+
+    result = run_script(
+      [
+        "reopen-advance-step",
+        "--file", "stages/in-progress/reopen-procedure-2026-06-16.yaml",
+        "--from-step", "2",
+        "--completed-step", "第2過程：正本修正完了",
+        "--rationale", "正本文書の修正を完了した。",
+        "--evidence", ".reviewcompass/specs/workflow-management/requirements.md",
+        "--json",
+      ],
+      cwd=self.tmpdir,
+    )
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 0, result.stdout)
+    state = yaml.safe_load(in_progress.read_text(encoding="utf-8"))
+    self.assertEqual(state["step_number"], 2)
+    self.assertEqual(state["next_step"], "第2過程：停止点コミット")
+    self.assertEqual(state["current_blocker"], "第2過程の停止点としてコミットが必要")
+    self.assertIn("第2過程：正本修正完了", state["completed_steps"])
+    self.assertEqual(state["reopen_step_records"][0]["from_step"], 2)
+
+  def test_reopen_advance_step_rejects_missing_evidence(self):
+    """根拠なしの reopen step 更新は拒否する"""
+    self._write_in_progress(
+      step_number=1,
+      next_step="第1過程：判定とフラグ差し戻し",
+    )
+
+    result = run_script(
+      [
+        "reopen-advance-step",
+        "--file", "stages/in-progress/reopen-procedure-2026-06-16.yaml",
+        "--from-step", "1",
+        "--completed-step", "第1過程：判定とフラグ差し戻し完了",
+        "--rationale", "分類した。",
+        "--json",
+      ],
+      cwd=self.tmpdir,
+    )
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 2, result.stdout)
+    self.assertIn("evidence", result.stdout)
+
+  def test_reopen_advance_step_rejects_current_step_mismatch(self):
+    """現在 step と --from-step が一致しなければ拒否する"""
+    self._write_in_progress(
+      step_number=2,
+      next_step="第2過程：正本修正",
+    )
+
+    result = run_script(
+      [
+        "reopen-advance-step",
+        "--file", "stages/in-progress/reopen-procedure-2026-06-16.yaml",
+        "--from-step", "1",
+        "--completed-step", "第1過程：判定とフラグ差し戻し完了",
+        "--rationale", "分類した。",
+        "--evidence", "docs/reviews/reopen-classification-2026-06-16.md",
+        "--json",
+      ],
+      cwd=self.tmpdir,
+    )
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 2, result.stdout)
+    self.assertIn("step_number", result.stdout)
+
+
 class ReopenFinalizeTests(unittest.TestCase):
   """reopen-finalize サブコマンドの完了 YAML 機械更新"""
 

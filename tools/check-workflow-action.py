@@ -5292,6 +5292,97 @@ def _next_step_for_pending_gate(gate):
   return f"第3過程：{phase} {stage}"
 
 
+def cmd_reopen_advance_step(args):
+  """reopen 第1・第2過程の完了更新を機械処理する"""
+  cwd = Path.cwd()
+  reasons = []
+  try:
+    path, data = _load_reopen_advance_state(cwd, args.file)
+    from_step = int(args.from_step)
+    if from_step not in (1, 2):
+      raise ValueError("--from-step は 1 または 2 が必要です")
+    if data.get("step_number") not in (from_step, str(from_step)):
+      raise ValueError("現在の step_number と --from-step が一致しません")
+    if not args.completed_step.strip():
+      raise ValueError("--completed-step は空にできません")
+    if not args.rationale.strip():
+      raise ValueError("--rationale は空にできません")
+    evidence = args.evidence or []
+    if not evidence:
+      raise ValueError("--evidence は 1 件以上必要です")
+
+    completed_steps = data.get("completed_steps")
+    if completed_steps is None:
+      completed_steps = []
+    if not isinstance(completed_steps, list):
+      raise ValueError("completed_steps は list が必要です")
+    if args.completed_step not in completed_steps:
+      completed_steps.append(args.completed_step)
+    data["completed_steps"] = completed_steps
+
+    records = data.get("reopen_step_records")
+    if records is None:
+      records = []
+    if not isinstance(records, list):
+      raise ValueError("reopen_step_records は list が必要です")
+    records.append(
+      {
+        "from_step": from_step,
+        "completed_step": args.completed_step,
+        "rationale": args.rationale,
+        "evidence": evidence,
+      }
+    )
+    data["reopen_step_records"] = records
+
+    if from_step == 1:
+      data["step_number"] = 2
+      data["next_step"] = "第2過程：正本修正"
+      data["current_blocker"] = None
+    else:
+      data["step_number"] = 2
+      data["next_step"] = "第2過程：停止点コミット"
+      data["current_blocker"] = "第2過程の停止点としてコミットが必要"
+
+    path.write_text(
+      yaml.safe_dump(data, allow_unicode=True, sort_keys=False),
+      encoding="utf-8",
+    )
+    verdict, exit_code = "OK", 0
+    next_action = {
+      "kind": "reopen_step_advanced",
+      "file": args.file,
+      "from_step": from_step,
+      "phase": None,
+      "stage": None,
+      "reason": "reopen step を更新しました",
+    }
+    current_state = {
+      "file": args.file,
+      "step_number": data["step_number"],
+      "next_step": data["next_step"],
+      "current_blocker": data.get("current_blocker"),
+    }
+  except (OSError, ValueError) as e:
+    verdict, exit_code = "DEVIATION", 2
+    reasons = [str(e)]
+    next_action = {
+      "kind": "reopen_advance_step_failed",
+      "file": args.file,
+      "from_step": args.from_step,
+      "phase": None,
+      "stage": None,
+      "reason": "reopen step を更新できません",
+    }
+    current_state = {}
+
+  if args.json:
+    print(format_next_json_output(verdict, exit_code, next_action, reasons, current_state))
+  else:
+    print(format_next_human_output(verdict, exit_code, next_action, reasons, current_state))
+  return exit_code
+
+
 def cmd_reopen_advance_gate(args):
   """reopen 第3過程の pending gate 完了更新を機械処理する"""
   cwd = Path.cwd()
@@ -5937,6 +6028,17 @@ def main():
   rs.add_argument("--date", required=True, help="in-progress ファイル名に使う日付（YYYY-MM-DD）")
   rs.add_argument("--trigger", required=True, help="reopen 起動理由")
 
+  ras = sub.add_parser(
+    "reopen-advance-step",
+    help="reopen 第1・第2過程の完了更新を機械処理する",
+    parents=[common_parser],
+  )
+  ras.add_argument("--file", required=True, help="更新対象の reopen in-progress YAML")
+  ras.add_argument("--from-step", required=True, choices=["1", "2"], help="完了扱いにする reopen 過程番号")
+  ras.add_argument("--completed-step", required=True, help="completed_steps に追加する説明")
+  ras.add_argument("--rationale", required=True, help="判断理由")
+  ras.add_argument("--evidence", action="append", default=[], help="判断証跡。複数指定可")
+
   rag = sub.add_parser(
     "reopen-advance-gate",
     help="reopen 第3過程の pending gate 完了更新を機械処理する",
@@ -6095,6 +6197,8 @@ def main():
     sys.exit(cmd_next(args))
   elif args.subcommand == "reopen-start":
     sys.exit(cmd_reopen_start(args))
+  elif args.subcommand == "reopen-advance-step":
+    sys.exit(cmd_reopen_advance_step(args))
   elif args.subcommand == "reopen-advance-gate":
     sys.exit(cmd_reopen_advance_gate(args))
   elif args.subcommand == "reopen-finalize":

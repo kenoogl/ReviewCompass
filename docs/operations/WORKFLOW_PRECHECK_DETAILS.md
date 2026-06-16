@@ -9,6 +9,7 @@ tools/check-workflow-action.py spec-set <feature> <phase> <stage> <new-value> [-
 tools/check-workflow-action.py commit --rationale "<理由>" [--execution-actor llm|human]
 tools/check-workflow-action.py push --rationale "<理由>"
 tools/check-workflow-action.py audit-commit <commit-ish>
+tools/check-workflow-action.py reopen-advance-step --file <path> --from-step 1|2 --completed-step "<説明>" --rationale "<理由>" --evidence <path> [--evidence <path> ...]
 tools/check-workflow-action.py reopen-advance-gate --file <path> --gate stages/<phase>.yaml#<stage> --decision <decision> --feature-scope <feature> --rationale "<理由>" --evidence <path> [--evidence <path> ...] [--completed-step "<説明>"] [--set-spec FEATURE PHASE STAGE VALUE]
 tools/check-workflow-action.py reopen-finalize --file <path> --impacted-downstream-phase <phase> --feature-impact FEATURE DECISION IMPACT_BASIS RATIONALE EVIDENCE --new-feature-decision DECISION RATIONALE EVIDENCE [--completed-step "<説明>"]
 tools/check-workflow-action.py autonomous-plan <plan.yaml>
@@ -130,9 +131,37 @@ tools/guarded-git-commit.py -m "<commit message>" --rationale "<理由>"
 
 この監査は、対象 commit 時点に manifest が存在したことを証明するものではない。現在のリポジトリ状態で、その commit 内容に対応する検証記録が存在するかを確認する是正監査である。
 
+<a id="reopen-advance-step"></a>
+
+## 6. reopen-advance-step
+
+`reopen-advance-step` は、reopen 手続きファイルの第1過程・第2過程を機械的に進める更新コマンドである。第1過程の完了では第2過程の正本修正へ進め、第2過程の完了では停止点コミット状態へ進める。
+
+引数：
+
+| 引数 | 必須 | 説明 |
+|---|---|---|
+| `--file` | 必須 | 対象の reopen 手続き YAML |
+| `--from-step` | 必須 | 完了扱いにする過程番号。`1` または `2` |
+| `--completed-step` | 必須 | `completed_steps` に追記する完了ステップ |
+| `--rationale` | 必須 | 判断理由 |
+| `--evidence` | 必須 | 判断根拠。複数指定可 |
+
+判定と更新：
+
+- 対象 YAML が存在し、`process_id: reopen-procedure` であることを要求する
+- `--from-step` は `1` または `2` のみを許可する
+- 対象 YAML の `step_number` は `--from-step` と一致する必要がある。不一致は逸脱とする
+- `--completed-step`、`--rationale`、`--evidence` が空の更新は逸脱とする
+- `completed_steps` に `--completed-step` を追記する
+- `reopen_step_records` に `from_step`、`completed_step`、`rationale`、`evidence` を追記する
+- `--from-step 1` の成功時は `step_number: 2`、`next_step: 第2過程：正本修正`、`current_blocker: null` を保存する
+- `--from-step 2` の成功時は `step_number: 2`、`next_step: 第2過程：停止点コミット`、`current_blocker: 第2過程の停止点としてコミットが必要` を保存する
+- 成功時は exit 0、上記の前提違反や入力不正は DEVIATION として exit 2 を返す
+
 <a id="reopen-advance-gate"></a>
 
-## 6. reopen-advance-gate
+## 7. reopen-advance-gate
 
 `reopen-advance-gate` は、reopen 手続きファイルの `pending_gates` を 1 件進める更新コマンドである。`spec-set` は in-progress reopen が存在する状態を通常作業として遮断するため、reopen 第3過程の gate 完了更新では本コマンドを使う。
 
@@ -165,7 +194,7 @@ tools/guarded-git-commit.py -m "<commit message>" --rationale "<理由>"
 
 <a id="reopen-finalize"></a>
 
-## 7. reopen-finalize
+## 8. reopen-finalize
 
 `reopen-finalize` は、reopen 第4過程で `stages/in-progress/` の手続き YAML を `stages/completed/` へ移す更新コマンドである。完了 YAML の必須項目を手編集で埋める代わりに、構造化引数から `feature_impact_decisions`、`new_feature_decision`、`impacted_downstream_phases`、`completed_steps` を更新する。
 
@@ -197,7 +226,7 @@ tools/guarded-git-commit.py -m "<commit message>" --rationale "<理由>"
 <a id="autonomous-plan-record-integration"></a>
 <a id="autonomous-ledger-audit"></a>
 
-## 8. autonomous-plan 系
+## 9. autonomous-plan 系
 
 `autonomous-plan` は実行計画 YAML を fail-closed で検査する。最低限、次を確認する。
 
@@ -289,6 +318,7 @@ commit 承認レコード（`.reviewcompass/runtime/approvals/commit-approval.js
 - `commit` の承認レコード、post-write-verification、reopen 手続き、危険変更、文書リンクの検査
 - `push` の clean 性検査
 - `audit-commit` の manifest 対応検査
+- `reopen-advance-step` の第1・第2過程更新、根拠なし更新拒否、現在 step 不一致拒否
 - `reopen-advance-gate` の先頭 gate 更新、spec.json 同時更新、非先頭 gate 拒否
 - `reopen-finalize` の完了 YAML 生成、in-progress 削除、第4過程未到達と feature impact 不足の拒否
 - `guarded-git-commit.py` の commit 遮断と承認レコード消費
