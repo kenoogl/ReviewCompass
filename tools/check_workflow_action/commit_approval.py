@@ -43,6 +43,7 @@ ALLOWED_EXECUTION_DELEGATION_INSTRUCTIONS = {
   "コミット",
   "コミットして",
   "コミットを実行",
+  "承認",
   "commit",
   "commitして",
 }

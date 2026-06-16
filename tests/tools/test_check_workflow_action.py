@@ -4745,6 +4745,25 @@ class CommitExitCodeTests(unittest.TestCase):
     self.assertNotIn("provider", delegation)
     self.assertNotIn("model", delegation)
 
+  def test_commit_approval_delegate_execution_accepts_approval_instruction(self):
+    """2回目入力の「承認」を commit 実行代行承認として受け入れる"""
+    _set_pending_findings(self.pending_file, unresolved_count=0, resolved_count=2)
+    _stage_file(self.tmpdir, "notes.md", "# nonce 対象")
+    challenge = _prepare_commit_approval(self.tmpdir)
+    record_result = _record_commit_approval(self.tmpdir, challenge["nonce"])
+    self.assertEqual(record_result.returncode, 0, record_result.stderr)
+
+    delegate_result = _delegate_commit_execution(
+      self.tmpdir,
+      challenge["nonce"],
+      source_text="承認\n",
+    )
+
+    _assert_script_invoked(self, delegate_result)
+    self.assertEqual(delegate_result.returncode, 0, delegate_result.stderr)
+    delegation = _read_commit_execution_delegation(self.tmpdir)
+    self.assertEqual(delegation["explicit_instruction"], "承認")
+
   def test_llm_commit_accepts_separate_execution_delegation_record(self):
     """LLM commit 実行は別ファイルの実行代行承認がある場合だけ通す"""
     _set_pending_findings(self.pending_file, unresolved_count=0, resolved_count=2)

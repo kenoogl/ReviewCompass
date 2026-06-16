@@ -1,0 +1,28 @@
+status: completed
+target_files:
+- TODO_NEXT_SESSION.md
+- docs/operations/WORKFLOW_NAVIGATION_FOR_CODEX.md
+- templates/todo/TODO_NEXT_SESSION.template.md
+target_sha256:
+  TODO_NEXT_SESSION.md: 53cf2cd3fa43b198f3eb95f3711d7a497b20cd5bcfdd663d6efdcfc5cca4c3d3
+  docs/operations/WORKFLOW_NAVIGATION_FOR_CODEX.md: 96aeaa98f48944df9fb1e45dc41d3c4b151b41c0fa7d730edf5c608c4e0df3a7
+  templates/todo/TODO_NEXT_SESSION.template.md: 897165dd9e755c8d21aeff0db0209b61f64d5b1ab37d4a6b91c04e2fd0b4d70d
+required_verifiers: &id001
+- gemini-3.5-flash
+completed_verifiers: *id001
+unresolved_substantive_findings: 0
+verifications:
+- verifier: gemini-3.5-flash
+  target_files:
+  - TODO_NEXT_SESSION.md
+  - docs/operations/WORKFLOW_NAVIGATION_FOR_CODEX.md
+  - templates/todo/TODO_NEXT_SESSION.template.md
+  target_sha256:
+    TODO_NEXT_SESSION.md: 53cf2cd3fa43b198f3eb95f3711d7a497b20cd5bcfdd663d6efdcfc5cca4c3d3
+    docs/operations/WORKFLOW_NAVIGATION_FOR_CODEX.md: 96aeaa98f48944df9fb1e45dc41d3c4b151b41c0fa7d730edf5c608c4e0df3a7
+    templates/todo/TODO_NEXT_SESSION.template.md: 897165dd9e755c8d21aeff0db0209b61f64d5b1ab37d4a6b91c04e2fd0b4d70d
+review_run:
+  path: .reviewcompass/evidence/review-runs/2026-06-16-postwrite-commit-ux-alignment
+  summary_path: .reviewcompass/evidence/review-runs/2026-06-16-postwrite-commit-ux-alignment/model-result-summary.yaml
+notes: Generated template; verify target_files cover current post-write targets before
+  use.

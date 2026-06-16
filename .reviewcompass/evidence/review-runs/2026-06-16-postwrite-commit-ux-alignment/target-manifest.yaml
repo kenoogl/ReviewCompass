@@ -1,0 +1,6 @@
+run_id: 2026-06-16-postwrite-commit-ux-alignment
+target_files:
+- path: TODO_NEXT_SESSION.md
+  sha256: 53cf2cd3fa43b198f3eb95f3711d7a497b20cd5bcfdd663d6efdcfc5cca4c3d3
+- path: docs/operations/WORKFLOW_NAVIGATION_FOR_CODEX.md
+  sha256: 96aeaa98f48944df9fb1e45dc41d3c4b151b41c0fa7d730edf5c608c4e0df3a7
