@@ -1,0 +1,4 @@
+run_id: 2026-06-16-todo-next-session-operation-registry-postwrite
+target_files:
+- path: TODO_NEXT_SESSION.md
+  sha256: 8c82527abb7851ff63835902954e502efcd2422bf3fa271667c543c08a3d993e
