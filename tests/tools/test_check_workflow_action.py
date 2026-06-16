@@ -4655,6 +4655,43 @@ class CommitExitCodeTests(unittest.TestCase):
     self.assertRegex(payload["nonce"], r"^[0-9a-f]{32,}$")
     self.assertEqual(payload["target_digest"]["algorithm"], "commit-approval-v1")
 
+  def test_commit_approval_prepare_invalidates_malformed_stale_delegation(self):
+    """prepare は古い壊れた delegation を新しい承認フローの邪魔にしない"""
+    _set_pending_findings(self.pending_file, unresolved_count=0, resolved_count=2)
+    stale_path = (
+      Path(self.tmpdir)
+      / ".reviewcompass"
+      / "runtime"
+      / "approvals"
+      / "commit-execution-delegation.json"
+    )
+    stale_path.parent.mkdir(parents=True, exist_ok=True)
+    stale_path.write_text(
+      json.dumps({
+        "schema_version": 1,
+        "approved_action": "commit_execution_delegation",
+        "expires_at": "not-a-timestamp",
+        "consumed": False,
+        "invalidated": False,
+      }, ensure_ascii=False, indent=2) + "\n",
+      encoding="utf-8",
+    )
+    _stage_file(self.tmpdir, "notes.md", "# nonce 対象")
+
+    challenge = _prepare_commit_approval(self.tmpdir)
+    record_result = _record_commit_approval(self.tmpdir, challenge["nonce"])
+    self.assertEqual(record_result.returncode, 0, record_result.stderr)
+    delegate_result = _delegate_commit_execution(
+      self.tmpdir,
+      challenge["nonce"],
+      source_text="承認\n",
+    )
+
+    _assert_script_invoked(self, delegate_result)
+    self.assertEqual(delegate_result.returncode, 0, delegate_result.stdout)
+    delegation = _read_commit_execution_delegation(self.tmpdir)
+    self.assertEqual(delegation["explicit_instruction"], "承認")
+
   def test_commit_approval_record_no_source_json_validates_for_commit(self):
     """prepare→record --no-source-text は commit 検査で通る nonce 承認を作る"""
     _set_pending_findings(self.pending_file, unresolved_count=0, resolved_count=2)

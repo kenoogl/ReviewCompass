@@ -1,0 +1,10 @@
+run_id: 2026-06-16-postwrite-deployable-commit-ux
+target_files:
+- path: TODO_NEXT_SESSION.md
+  sha256: 7b548ef1d380272ab5780cc7181d8b3525e65ddc423d4cf5e41157fd654cc432
+- path: docs/operations/WORKFLOW_NAVIGATION_FOR_CODEX.md
+  sha256: db719584aee4f973815806a0df125391c5dba0e076027a797421c47c5796cb6b
+- path: templates/entry/AGENT_ENTRY.template.md
+  sha256: c0899a30820a3f0e48bbce9046466cc53c48a7d2ca2aed83d607277b37f35121
+- path: templates/todo/TODO_NEXT_SESSION.template.md
+  sha256: 784652c84b792f4f3971acdd13c1437b1fa5c89d61e3a60856b1738482a70dc0

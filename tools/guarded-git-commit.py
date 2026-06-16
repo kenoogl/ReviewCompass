@@ -17,6 +17,8 @@ from check_workflow_action.runtime_paths import (
 )
 from check_workflow_action.commit_approval import (
   DEFAULT_COMMIT_EXECUTION_DELEGATION_PATH,
+  delegate_execution,
+  record,
 )
 
 DEFAULT_LAST_COMMIT_PRECHECK_PATH = ".git/reviewcompass/last-commit-precheck.json"
@@ -124,6 +126,19 @@ def run_git_commit(cwd, messages):
   return subprocess.run(cmd, cwd=str(cwd), capture_output=True, text=True)
 
 
+def record_line_approval(cwd, nonce):
+  """承認1行から内容承認と実行代行承認を連続作成する。"""
+  source_bytes = sys.stdin.buffer.readline()
+  if not source_bytes:
+    raise ValueError("承認文が入力されていません")
+  try:
+    source_text = source_bytes.decode("utf-8")
+  except UnicodeDecodeError as e:
+    raise ValueError(f"承認文は UTF-8 である必要があります: {e}") from e
+  record(cwd, nonce, source_text=source_text)
+  delegate_execution(cwd, nonce, source_bytes)
+
+
 def current_head_commit(cwd):
   """現在の HEAD commit を返す"""
   result = subprocess.run(
@@ -183,9 +198,31 @@ def main(argv=None):
     action="store_true",
     help="事前検査が WARN の場合も commit を続行する",
   )
+  parser.add_argument(
+    "--approval-nonce",
+    help="prepare 済み nonce。指定時は承認1行から approval/delegation を作成してから commit する",
+  )
+  parser.add_argument(
+    "--approval-source-text-line-stdin",
+    action="store_true",
+    help="承認文を stdin から1行だけ読む。EOF を待たない",
+  )
   args = parser.parse_args(argv)
 
   cwd = Path.cwd()
+  if bool(args.approval_nonce) != bool(args.approval_source_text_line_stdin):
+    print(
+      "error: --approval-nonce と --approval-source-text-line-stdin は同時に指定してください",
+      file=sys.stderr,
+    )
+    return 2
+  if args.approval_nonce:
+    try:
+      record_line_approval(cwd, args.approval_nonce)
+    except (OSError, RuntimeError, ValueError) as e:
+      print(f"error: commit 承認の記録に失敗しました: {e}", file=sys.stderr)
+      return 2
+
   precheck = run_precheck(cwd, args.rationale)
   if precheck.stdout:
     print(precheck.stdout, end="")

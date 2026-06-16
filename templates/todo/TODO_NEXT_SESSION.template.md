@@ -33,7 +33,7 @@ Python 実行は、必要に応じて venv を使う：
 ## 2. 不可逆操作の規律
 
 - spec.json の workflow_state 変更、commit、push、規律ファイル変更、大方針転換は利用者の明示承認が必要。
-- commit は、1 回目の「コミット」を commit 準備（staged 対象・digest・nonce・期限の提示）、2 回目の「承認」を提示済み内容への承認および LLM commit 実行代行承認として扱い、`tools/guarded-git-commit.py` 経由で実行する。2 回目を「コミット」とは呼ばない。
+- commit は、1 回目の「コミット」を commit 準備（staged 対象・digest・nonce・期限の提示）、2 回目の「承認」を提示済み内容への承認および LLM commit 実行代行承認として扱い、`tools/guarded-git-commit.py --approval-nonce <nonce> --approval-source-text-line-stdin` で実行する。2 回目を「コミット」とは呼ばず、低レベルの record / delegation 手順を通常利用者に露出しない。
 - commit は原則 `tools/guarded-git-commit.py -m "<message>" --rationale "<理由>"` 経由。
 - commit 前に `.reviewcompass/approvals/commit-approval.json` を staged 内容と SHA に合わせる。
 - post-write-verification 対象文書を staged する場合、completed manifest と SHA 一致が必要。

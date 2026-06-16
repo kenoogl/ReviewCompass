@@ -1,0 +1,44 @@
+status: completed
+target_files:
+- .reviewcompass/specs/workflow-management/design.md
+- .reviewcompass/specs/workflow-management/requirements.md
+- .reviewcompass/specs/workflow-management/tasks.md
+- TODO_NEXT_SESSION.md
+- docs/operations/WORKFLOW_NAVIGATION_FOR_CODEX.md
+- templates/entry/AGENT_ENTRY.template.md
+- templates/todo/TODO_NEXT_SESSION.template.md
+target_sha256:
+  .reviewcompass/specs/workflow-management/design.md: 16fd75a2231436ee11aa274e147b3459c4bcac04a7352d5f736a1295e08db791
+  .reviewcompass/specs/workflow-management/requirements.md: 813720f2aa60ff9f63522c7c174a9e5c77a8322a0fa9fe330e378f63982e9e1f
+  .reviewcompass/specs/workflow-management/tasks.md: a4a0a32a504c8b81a702bff397d3c4ee83bcbb849fec0042ef54e8e4beca937a
+  TODO_NEXT_SESSION.md: 7b548ef1d380272ab5780cc7181d8b3525e65ddc423d4cf5e41157fd654cc432
+  docs/operations/WORKFLOW_NAVIGATION_FOR_CODEX.md: db719584aee4f973815806a0df125391c5dba0e076027a797421c47c5796cb6b
+  templates/entry/AGENT_ENTRY.template.md: c0899a30820a3f0e48bbce9046466cc53c48a7d2ca2aed83d607277b37f35121
+  templates/todo/TODO_NEXT_SESSION.template.md: 784652c84b792f4f3971acdd13c1437b1fa5c89d61e3a60856b1738482a70dc0
+required_verifiers: &id001
+- gemini-3.5-flash
+completed_verifiers: *id001
+unresolved_substantive_findings: 0
+verifications:
+- verifier: gemini-3.5-flash
+  target_files:
+  - .reviewcompass/specs/workflow-management/design.md
+  - .reviewcompass/specs/workflow-management/requirements.md
+  - .reviewcompass/specs/workflow-management/tasks.md
+  - TODO_NEXT_SESSION.md
+  - docs/operations/WORKFLOW_NAVIGATION_FOR_CODEX.md
+  - templates/entry/AGENT_ENTRY.template.md
+  - templates/todo/TODO_NEXT_SESSION.template.md
+  target_sha256:
+    .reviewcompass/specs/workflow-management/design.md: 16fd75a2231436ee11aa274e147b3459c4bcac04a7352d5f736a1295e08db791
+    .reviewcompass/specs/workflow-management/requirements.md: 813720f2aa60ff9f63522c7c174a9e5c77a8322a0fa9fe330e378f63982e9e1f
+    .reviewcompass/specs/workflow-management/tasks.md: a4a0a32a504c8b81a702bff397d3c4ee83bcbb849fec0042ef54e8e4beca937a
+    TODO_NEXT_SESSION.md: 7b548ef1d380272ab5780cc7181d8b3525e65ddc423d4cf5e41157fd654cc432
+    docs/operations/WORKFLOW_NAVIGATION_FOR_CODEX.md: db719584aee4f973815806a0df125391c5dba0e076027a797421c47c5796cb6b
+    templates/entry/AGENT_ENTRY.template.md: c0899a30820a3f0e48bbce9046466cc53c48a7d2ca2aed83d607277b37f35121
+    templates/todo/TODO_NEXT_SESSION.template.md: 784652c84b792f4f3971acdd13c1437b1fa5c89d61e3a60856b1738482a70dc0
+review_run:
+  path: .reviewcompass/evidence/review-runs/2026-06-16-postwrite-deployable-commit-ux
+  summary_path: .reviewcompass/evidence/review-runs/2026-06-16-postwrite-deployable-commit-ux/model-result-summary.yaml
+notes: Generated template; verify target_files cover current post-write targets before
+  use.

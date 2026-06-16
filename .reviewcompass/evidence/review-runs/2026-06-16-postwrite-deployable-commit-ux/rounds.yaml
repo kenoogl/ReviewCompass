@@ -1,0 +1,26 @@
+round_id: round-1
+purpose: post_write_verification
+invocation_timestamp: '2026-06-16T11:43:15.700923+00:00'
+target_files:
+- path: .reviewcompass/evidence/review-runs/2026-06-16-postwrite-deployable-commit-ux/review-target.md
+  sha256: fbfe32c28dbfcea10edba0b77bba0a7cb8e349921bcc4cf1fae0425d9173627a
+criteria: deployable_commit_ux_alignment
+prompt_sha256: 75d8da707d54e4046947c4be2c5d4d080ec2f57207415924b0cb4146d348a285
+model_results:
+- model_id: gemini-3.5-flash
+  provider: gemini-api
+  role: primary
+  treatment: primary
+  invocation_path: api
+  raw_path: raw/gemini-3.5-flash.round-1.txt
+  raw_sha256: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+  parsed_path: parsed/gemini-3.5-flash.round-1.yaml
+  parsed_sha256: 1dc0b65afbad9eaa73f685df1d5a21d5631e7775f56d7650f520d52b34823c6b
+  parse_status: parsed
+  formatted_by: parser
+  formatted_by_actor_type: orchestrator
+  formatted_by_actor: run_role.py
+  formatted_at: '2026-06-16T11:43:15.700923+00:00'
+  follow_up_action: triage
+  attempts: 1
+  duration_seconds: 4.903

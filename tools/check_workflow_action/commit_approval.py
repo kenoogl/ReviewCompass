@@ -228,6 +228,7 @@ def approval_record_digest(approval):
 def prepare(cwd):
   """nonce challenge を作成する。"""
   now = utc_now()
+  invalidate_runtime_records_for_new_prepare(cwd)
   canonical = canonical_target(cwd)
   nonce = secrets.token_hex(24)
   challenge = {
@@ -323,6 +324,33 @@ def _atomic_write_json(path, data):
     encoding="utf-8",
   )
   tmp_path.replace(path)
+
+
+def _invalidate_existing_runtime_record(path, invalidated_at):
+  if not path.exists():
+    return False
+  try:
+    data = json.loads(path.read_text(encoding="utf-8"))
+  except (OSError, json.JSONDecodeError):
+    data = {}
+  if not isinstance(data, dict):
+    data = {}
+  if data.get("invalidated") is True:
+    return False
+  data["invalidated"] = True
+  data["invalidated_at"] = invalidated_at
+  _atomic_write_json(path, data)
+  return True
+
+
+def invalidate_runtime_records_for_new_prepare(cwd):
+  """新しい prepare 前に古い runtime 承認レコードを無効化する。"""
+  invalidated_at = _isoformat(utc_now())
+  changed = []
+  for path in (approval_path(cwd), delegation_path(cwd)):
+    if _invalidate_existing_runtime_record(path, invalidated_at):
+      changed.append(str(path))
+  return changed
 
 
 def _lower_ascii(text):

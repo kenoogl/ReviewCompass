@@ -33,11 +33,12 @@ def load_guarded_module():
   return module
 
 
-def run_guarded_commit(args, cwd):
+def run_guarded_commit(args, cwd, input_text=None):
   """guarded-git-commit.py をサブプロセスで実行する"""
   return subprocess.run(
     ["python3", str(SCRIPT)] + list(args),
     cwd=str(cwd),
+    input=input_text,
     capture_output=True,
     text=True,
   )
@@ -150,6 +151,40 @@ class GuardedGitCommitTests(unittest.TestCase):
     self.assertTrue(approval["consumed"])
     self.assertTrue(consumed_challenge["consumed"])
     self.assertTrue(delegation["consumed"])
+
+  def test_guarded_commit_records_line_approval_and_commits(self):
+    """承認1行で内容承認・実行代行承認・commit まで進める"""
+    _stage_file(self.tmpdir, "notes.md", "# deployable commit ux")
+    challenge = _prepare_commit_approval(self.tmpdir)
+
+    result = run_guarded_commit(
+      [
+        "-m", "guarded line approval commit",
+        "--rationale", "利用者が提示済み nonce と staged 内容を承認",
+        "--approval-nonce", challenge["nonce"],
+        "--approval-source-text-line-stdin",
+      ],
+      cwd=self.tmpdir,
+      input_text="承認\n",
+    )
+
+    self.assertEqual(
+      result.returncode, 0,
+      f"line approval should allow commit.\nstdout: {result.stdout}\nstderr: {result.stderr}",
+    )
+    self.assertEqual(latest_commit_subject(self.tmpdir), "guarded line approval commit")
+    approval_path = (
+      Path(self.tmpdir)
+      / ".reviewcompass"
+      / "runtime"
+      / "approvals"
+      / "commit-approval.json"
+    )
+    approval = json.loads(approval_path.read_text(encoding="utf-8"))
+    delegation = _read_commit_execution_delegation(self.tmpdir)
+    self.assertTrue(approval["consumed"])
+    self.assertTrue(delegation["consumed"])
+    self.assertEqual(delegation["explicit_instruction"], "承認")
 
   def test_guarded_commit_consumes_nonce_challenge_before_approval(self):
     """nonce 承認は challenge を先に消費し、再利用可能な challenge を残さない"""
