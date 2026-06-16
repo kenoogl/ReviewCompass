@@ -1,0 +1,6 @@
+role: primary
+provider: openai-api
+model: gpt-5.4
+attempts: 1
+duration_seconds: 2.65
+findings: []

@@ -1,0 +1,36 @@
+role: adversarial
+provider: anthropic-api
+model: claude-opus-4-8
+attempts: 1
+duration_seconds: 28.211
+findings:
+- severity: WARN
+  target_location: .codex/hooks/session-record-promote-previous-draft.sh (hash verification
+    python block, find_rollout)
+  description: rollout 検証用の find_rollout は CODEX_ROOT 配下を rglob で走査し session_meta
+    の id/cwd 一致で元 rollout を選ぶが、複数 rollout が同一 session_id を持つ場合に best=(mtime, path)
+    を最大 mtime で選ぶため、下書き作成時に sha256 を取った rollout と別ファイルを掴む可能性がある。一致 hash を持つ rollout
+    が複数候補にあっても mtime 最大の 1 件しか検査しないため、進行中判定（mismatch）と検証不能判定の境界が rollout 選択に依存する。
+  rationale: 安全策2/3 の核は『下書き source_sha256 と現在の元 rollout sha256 の一致だけで昇格』だが、対象 rollout
+    の同定が mtime 最大という弱い基準で行われるため、別 rollout を掴むと本来 match すべき下書きを mismatch/unverifiable
+    と誤判定（昇格漏れ）し得る。誤って昇格する方向ではないため安全側だが、合意した『最新候補 1 件を確実に昇格する』動作の確実性に影響する。テストは 1 session_id
+    = 1 rollout 前提のみで、この分岐を固定していない。
+- severity: INFO
+  target_location: tests/hooks/test_codex_session_record_promote_previous.py (no_promote_tool
+    event coverage)
+  description: 診断 event 一覧（README/INITIAL_SETUP）には no_promote_tool が含まれ、合意内容でも『no_promote_tool
+    / jq / 複数下書き時の最新 1 件処理を文書化する』とあるが、追加テストには no_promote_tool（tools/session-record-promote-draft.py
+    不在時）を固定するケースが無い。missing_jq・ignored_event・no_previous_draft・previous_draft_in_progress・previous_draft_unverifiable・promoted・selected
+    は固定されているが no_promote_tool/no_cwd/no_current_session_id/no_draft_dir/promote_failed
+    は未固定。
+  rationale: 合意で文書化対象に挙げた no_promote_tool が hook 実装には存在するがテストで固定されていないため、将来の改変で当該分岐が壊れても検知できない。安全側
+    no-op の保証範囲としては軽微だが、r5/r6 で『テスト不足』が繰り返し指摘された経緯を踏まえると回帰防止の網羅性に欠ける。
+- severity: INFO
+  target_location: .codex/hooks/session-record-promote-previous-draft.sh と templates/.../session-record-promote-previous-draft.sh.template
+    (REVIEWCOMPASS_PYTHON フォールバック)
+  description: 合意内容『repo hook は REVIEWCOMPASS_PYTHON 環境変数があればそれを使い、なければ python3 にフォールバックする』は
+    repo hook では REVIEWCOMPASS_PYTHON="${REVIEWCOMPASS_PYTHON:-python3}" で満たされているが、template
+    側は REVIEWCOMPASS_PYTHON="{{REVIEWCOMPASS_PYTHON}}" で固定置換され python3 フォールバックを持たない。これは他テンプレートと同方針で意図的と読めるが、合意文言は
+    repo hook 限定であることが target 上で明示されておらず、検証観点との対応が読み手に委ねられる。
+  rationale: 実装は合意（repo hook のフォールバック）と整合しており欠陥ではないが、target ドキュメントの合意文言が repo hook/template
+    の差異を区別していないため、レビュアが template にもフォールバックを期待して齟齬と誤読する余地がある。文言の対象範囲を明示すると検証が容易になる。

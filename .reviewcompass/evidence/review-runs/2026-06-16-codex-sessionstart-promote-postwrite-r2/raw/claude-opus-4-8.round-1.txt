@@ -1,0 +1,21 @@
+findings:
+  - severity: ERROR
+    target_location: ".codex/hooks/session-record-promote-previous-draft.sh (TARGET_INFO heredoc)"
+    description: "リポジトリ版 hook の draft 選択ブロックは `python3 - <<'PY'` をハードコードで呼び出しており、診断ログや hash 確認ブロックで使う `$REVIEWCOMPASS_PYTHON` を経由しない。合意内容・r1 所見対処では「REVIEWCOMPASS_PYTHON があればそれを使い、なければ python3 にフォールバックする」と明記されているが、このブロックだけはその規約から外れている。"
+    rationale: "REVIEWCOMPASS_PYTHON を指す Python と素の python3 が別 interpreter（依存差・version 差）の環境では、draft 選択だけ別 interpreter で走り、選択結果と後続の hash 検証・昇格が不整合になり得る。少なくとも README で宣言した規約と実装が食い違う。"
+  - severity: WARN
+    target_location: ".codex/hooks/README.md（動作節 step 4-5）と session-record-promote-previous-draft.sh"
+    description: "README の動作説明は「3. codex-<session_id>.md を探す → 4. current session_id と同じ下書きは除外する」と書くが、実装の TARGET_INFO ブロックは current 一致と空 session_id をまとめて除外しているだけで、README の記述順や粒度（『最新候補の hash が不一致なら古い候補へフォールバックせず』）と完全には対応していない。特に step 5 の『最新候補の hash が不一致の場合は古い候補へフォールバックしない』挙動は、実装では『最新1件を選んでから hash 判定』で実現されており、README の手順番号と実装のフローが読み手に誤解を生みうる。"
+    rationale: "検証観点『新 hook が current session_id を正式化せず最新の別 session_id 下書きだけを昇格するか』に対し、文書手順と実装フローの対応が曖昧だと、将来の保守者が『古い候補へのフォールバック』を誤って追加するリスクがある。"
+  - severity: INFO
+    target_location: "templates/hooks/session-record-promote-previous-draft.sh.template と .codex/hooks/session-record-promote-previous-draft.sh"
+    description: "テンプレート版には `no_promote_tool`（`tools/session-record-promote-draft.py` 不在チェック）の event とガードがあるが、リポジトリ版 hook にはこのガードと event が無い。README の診断ログ event 一覧（`ignored_event`／`no_current_session_id`／`no_cwd`／`no_draft_dir`／`no_previous_draft`／`selected`／`previous_draft_in_progress`／`previous_draft_unverifiable`／`promoted`／`promote_failed`）にも `no_promote_tool` は含まれていない。"
+    rationale: "配布テンプレートと repo hook 設定の整合性という検証観点に対し、event 集合が両者で一致しない。リポジトリ環境では tool 同梱が前提のため致命ではないが、テンプレート由来の event が文書化されていない点は将来の混乱要因。"
+  - severity: INFO
+    target_location: "tests/hooks/test_codex_session_record_promote_previous.py"
+    description: "テストは startup/resume・hash 不一致スキップ・current-only no-op・ignored_event を固定しているが、README/合意で定義された `previous_draft_unverifiable`（source_sha256 欠落や rollout 不在で hash 確認不能）の経路を直接検証するケースが無い。`no_current_session_id`／`no_cwd`／`no_draft_dir` の早期 exit 経路も未カバー。"
+    rationale: "r1 所見対処で『hash 確認不能時は previous_draft_unverifiable としてスキップする』を新規追加と明示しているため、その分岐に対する回帰テストが無いと、将来の改修で unverifiable→誤昇格や誤 in_progress 化が混入しても検知できない。"
+  - severity: INFO
+    target_location: ".codex/hooks/session-record-promote-previous-draft.sh / .template（rollout 探索 read_meta）"
+    description: "rollout 探索は `read_meta` が先頭 5 行以内の session_meta のみを読む前提で、cwd 前方一致と id 一致で最新 mtime を選ぶ。複数の rollout が同一 session_id・同一 cwd 前方一致を満たす場合、mtime 最大のものを『現在の元 rollout』とみなして hash 比較するが、この『最新 mtime = 正しい元ファイル』という仮定の妥当性は文書化されていない。"
+    rationale: "進行中判定（previous_draft_in_progress）の正しさは元 rollout の同定精度に依存する。誤った rollout を掴むと hash 一致/不一致判定がずれ、進行中セッションの誤昇格または終了済みセッションの誤スキップにつながり得るが、現状この同定ロジックの前提が明示されていない。"

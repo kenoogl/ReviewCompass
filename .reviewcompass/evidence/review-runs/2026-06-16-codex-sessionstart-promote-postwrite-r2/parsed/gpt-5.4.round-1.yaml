@@ -1,0 +1,15 @@
+role: primary
+provider: openai-api
+model: gpt-5.4
+attempts: 1
+duration_seconds: 3.472
+findings:
+- severity: ERROR
+  target_location: .codex/hooks/session-record-promote-previous-draft.sh
+  description: Runtime hook ignores REVIEWCOMPASS_PYTHON when selecting the interpreter
+    for the draft-selection helper and hardcodes `python3` instead.
+  rationale: The agreed response to prior findings says repo hooks must use `REVIEWCOMPASS_PYTHON`
+    when available and fall back to `python3`. This script sets `REVIEWCOMPASS_PYTHON`
+    for logging and promotion, but the `TARGET_INFO` helper still runs with bare `python3`,
+    which can break environments where only the configured interpreter is valid and
+    makes the implementation inconsistent with the documented policy.

@@ -1,0 +1,39 @@
+role: adversarial
+provider: anthropic-api
+model: claude-opus-4-8
+attempts: 1
+duration_seconds: 26.925
+findings:
+- severity: WARN
+  target_location: .codex/hooks/session-record-promote-previous-draft.sh (find_rollout
+    / read_meta)
+  description: Rollout 探索は session_meta を `read_meta` で先頭5行に限定して読むが、HASH 計算は `hashlib.sha256(rollout.read_bytes())`
+    でファイル全体を対象にする。一方 PostToolUse 下書き側が `source_sha256` をどう算出しているかはこの diff に含まれず、両者のハッシュ対象範囲（全文
+    vs 抽出後本文 vs 別正規化）の一致が target からは確認できない。算出範囲が食い違えば、正常な終了済み rollout でも常に mismatch
+    となり `previous_draft_in_progress` で永久に昇格されない設計欠陥になり得る。
+  rationale: 本変更の中核契約は『source_sha256 と現在 rollout hash が一致する場合だけ昇格』であり、ハッシュ対象の定義整合がこの
+    hook の正否を決める。target 内に下書き生成側のハッシュ定義が示されておらず、テストも `_sha256` でファイル全体を計算した値を `source_sha256`
+    に注入しているため、実装側の整合は検証されていない。
+- severity: WARN
+  target_location: tests/hooks/test_codex_session_record_promote_previous.py
+  description: 全テストが下書き fixture の `source_sha256` を `_sha256(rollout)`（ファイル全体ハッシュ）で生成しており、本物の
+    PostToolUse hook（session-record-capture-current-on-todo.sh / session-record-draft.py）が書く
+    source_sha256 の算出方法を再利用していない。テストは hook 内 HASH 計算ロジック（全文 sha256）に合わせて期待値を作っているだけで、実運用の下書き生成系との
+    end-to-end 整合は固定できていない。
+  rationale: post_write_verification では、テストが実装の自己無撞着ではなく実際の上流契約を固定しているかが重要。上流の下書きハッシュ定義が変われば全テストが緑のまま実運用が破綻し得る。
+- severity: INFO
+  target_location: .codex/hooks/session-record-promote-previous-draft.sh / templates/.../session-record-promote-previous-draft.sh.template
+    (依存記述)
+  description: README とガイドは jq の存在チェックを INITIAL_SETUP に追記したとするが、hook 本体は jq 不在時に `jq
+    -r` が失敗して `HOOK_EVENT_NAME` 等が空になり、`ignored_event` を記録して exit 0 する（safe no-op）。README
+    の『jq が無い場合は実質的に安全側の no-op』という説明と整合する一方、`ignored_event` という event 名は『誤登録』を意味する他用途と重複し、jq
+    不在という別原因を診断ログ上で区別できない。
+  rationale: 診断ログで原因を追える要件があるため、jq 不在と event 誤登録が同じ `ignored_event` に畳まれると原因切り分けが困難になる。重大ではないが運用診断性の観点で記録する。
+- severity: INFO
+  target_location: .codex/hooks/README.md / docs/operations/INITIAL_SETUP_LLM_GUIDE.md
+    (event 一覧)
+  description: README の `event` 一覧には `no_promote_tool` が含まれるが、INITIAL_SETUP ガイド手順8の動作確認列挙では
+    `no_promote_tool` を『昇格 helper 不在』として記載済みで整合する。一方 README 側の event 一覧文中で `no_cwd`／`no_draft_dir`
+    は列挙されるが、それらが何を意味するかの個別説明は `previous_draft_in_progress`／`previous_draft_unverifiable`
+    ほど詳しくない。実装上は no-op を示すのみで害はない。
+  rationale: 文書間の event 集合は概ね整合しているが、説明の粒度差は将来の誤読を招き得る。軽微な情報として記録する。

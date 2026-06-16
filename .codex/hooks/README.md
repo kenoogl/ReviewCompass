@@ -51,7 +51,7 @@ Codex の hook 設定で呼び出すスクリプトを置く。
 
 Codex の hook では `Stop` が turn scope であり、Claude の `SessionEnd` 相当としては使わない。`UserPromptSubmit` は発話ごとに呼ばれ得るため使用禁止とし、誤登録されても `ignored_event` を診断ログに残して終了する。Codex では、セッション継続時に `TODO_NEXT_SESSION.md` を更新する運用を合図として使い、TODO の内容 hash が前回保存時から変わった場合だけ現セッションの下書きを更新する。TODO は 1 セッション内で複数回更新され得るため、更新ごとに追記専用マージで伸びた分を反映する。
 
-**2026-06-16 実装反映**：hook は現セッションを `.reviewcompass/runtime/session-record-drafts/codex-<session_id>.md` へ下書き保存し、`.reviewcompass/evidence/sessions/` と `docs/sessions/` へ直接書かない。正式な 2 層セッション記録は、次セッション冒頭または利用者が明示した時点で `tools/session-record-promote-draft.py --session-id <id> --source codex --current-session-id <current-id>` により作る。Codex には SessionStart 相当も無いため、自動昇格は前提にしない。昇格 CLI は現在の `session_id` と同一のセッションを拒否する。`<current-id>` は、今セッションで TODO 更新 hook を一度走らせた後、診断ログの最新 `selected` event にある `selected_session_id` を使う。current `session_id` を取得できない場合は昇格せず、終了済み rollout を明示した backfill に戻す。診断ログ event は、正式記録と区別するため `drafted`／`draft_failed` を使う。
+**2026-06-16 実装反映**：hook は現セッションを `.reviewcompass/runtime/session-record-drafts/codex-<session_id>.md` へ下書き保存し、`.reviewcompass/evidence/sessions/` と `docs/sessions/` へ直接書かない。正式な 2 層セッション記録は、次の Codex `SessionStart` で `session-record-promote-previous-draft.sh` が前セッション下書きを昇格する。手動復旧が必要な場合は `tools/session-record-promote-draft.py --session-id <id> --source codex --current-session-id <current-id>` または終了済み rollout を明示した backfill を使う。昇格 CLI は現在の `session_id` と同一のセッションを拒否する。診断ログ event は、正式記録と区別するため `drafted`／`draft_failed` を使う。
 
 **入力**：標準入力で Codex の PostToolUse JSON ペイロードを受け取る。
 
@@ -80,6 +80,32 @@ TODO hash の状態ディレクトリはテスト用に `RC_SESSION_HOOK_STATE_D
 **昇格時の current 確認**：`--session-id` には正式記録へ昇格したい終了済みセッションの ID を渡す。`--current-session-id` には、昇格対象ではなく今動いている Codex セッションの ID を渡す。通常は TODO 更新後に診断ログを見て、最新の `selected` event の `selected_session_id` を current ID として確認する。`drafted` は下書き保存成功の確認用 event として扱う。`selected` が無く current ID を取得できない場合は推測せず、昇格操作を行わない。
 
 **登録**：`.codex/hooks.json` の `hooks.PostToolUse` セクションに登録済み。`UserPromptSubmit` には登録しない。TODO を更新しないセッション、クラッシュ、hook 失敗、または `session_id` が取れない場合は、終了済み rollout を指定した `tools/session-record-backfill.py --session <jsonl> --source codex` による明示回収を使う。
+
+### `session-record-promote-previous-draft.sh`（SessionStart hook）
+
+**役割**：新しい Codex セッション開始時に、現 session_id と異なる最新の runtime 下書き 1 件を正式 2 層記録へ昇格する。Codex 公式 hook 仕様では `SessionStart` が thread scope で利用できるため、前セッションの正式化はこの hook が担う。`Stop` は turn scope のため、セッション終了確定には使わない。
+
+**入力**：標準入力で Codex の SessionStart JSON ペイロードを受け取る。
+
+```json
+{"hook_event_name":"SessionStart","session_id":"<current-id>","cwd":"/path/to/repo","source":"startup"}
+```
+
+**動作**：
+
+1. `hook_event_name` が `SessionStart` でなければ `ignored_event` を記録して exit 0
+2. `session_id` または `cwd` が無ければ何もせず exit 0
+3. runtime 下書きディレクトリから `codex-<session_id>.md` を探す
+4. current `session_id` と同じ下書きは除外する
+5. 残った下書きのうち最新 1 件を選ぶ。最新候補の hash が不一致の場合は、古い候補へフォールバックせず `previous_draft_in_progress` を記録して終了する
+6. 最新候補の下書き frontmatter `source_sha256` と現在の元 rollout の sha256 が一致する場合だけ、`tools/session-record-promote-draft.py` に current `session_id` と出力先を渡して昇格する
+7. 昇格失敗も含め常に exit 0
+
+**診断ログ**：既定で `.reviewcompass/runtime/session-record-promote-previous-draft.jsonl` に JSON Lines を追記する。テスト用に `RC_SESSION_PROMOTE_HOOK_LOG` で差し替え可能。主な `event` は `missing_jq`、`ignored_event`、`no_current_session_id`、`no_cwd`、`no_draft_dir`、`no_promote_tool`、`no_previous_draft`、`selected`、`previous_draft_in_progress`、`previous_draft_unverifiable`、`promoted`、`promote_failed`。`missing_jq` は Codex payload の解析に必要な jq が見つからないため、安全側の no-op にしたことを表す。`previous_draft_in_progress` は、下書き作成時の `source_sha256` と現在の元 rollout の sha256 が不一致で、対象 rollout がまだ伸びている可能性があるため正式化しなかったことを表す。`previous_draft_unverifiable` は、下書きまたは rollout の hash 確認に必要な情報が不足しているため正式化しなかったことを表す。複数の終了済み下書きが溜まっている場合も、この hook は最新候補 1 件だけを扱う。最新候補が不一致または検証不能なら古い候補へは進まず、残りは次回 `SessionStart` または明示 backfill の対象とする。
+
+**登録**：`.codex/hooks.json` の `hooks.SessionStart` セクションに matcher = `"startup|resume"` で登録済み。配置・変更後は Codex の GUI 設定画面または `/hooks` で利用者が hook を信頼する必要がある。
+
+**依存**：bash、jq、Python、`tools/session-record-promote-draft.py`。jq が無い場合は Codex payload を読めないため、`missing_jq` を記録して安全側の no-op にする。導入時チェックでも jq の存在を確認する。
 
 ## テスト
 

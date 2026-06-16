@@ -1,0 +1,4 @@
+run_id: 2026-06-16-codex-sessionstart-promote-postwrite
+target_files:
+- path: .reviewcompass/evidence/review-runs/2026-06-16-codex-sessionstart-promote-postwrite/review-target.md
+  sha256: 466a586ff827e6795780cdb7b7add789502e131be93f1ce0ab2474a3d931baa6

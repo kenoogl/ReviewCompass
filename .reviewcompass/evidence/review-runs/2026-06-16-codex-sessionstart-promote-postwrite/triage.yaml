@@ -1,0 +1,154 @@
+run_id: 2026-06-16-codex-sessionstart-promote-postwrite
+triage_status: draft
+generated_at: '2026-06-16T07:12:55.113950+00:00'
+decision_actor: null
+decision_actor_type: human
+items:
+- finding_id: 2026-06-16-codex-sessionstart-promote-postwrite-gpt-5.4-primary-001
+  run_id: 2026-06-16-codex-sessionstart-promote-postwrite
+  source_model: gpt-5.4
+  source_round: round-1
+  source_raw_path: raw/gpt-5.4.round-1.txt
+  source_parsed_path: parsed/gpt-5.4.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: .codex/hooks/session-record-promote-previous-draft.sh
+  plain_language_summary: 新規 hook 実装が昇格ツール呼び出しに `python3` を固定使用しており、配布テンプレートが使う置換済み
+    Python 実行系と不整合です。
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: 対象文書の合意・検証観点には文書・設定・テンプレートの整合性が含まれます。テンプレート側は `{{REVIEWCOMPASS_PYTHON}}`
+    を使って依存導入済み実行系を明示するのに対し、repo 実装側は `python3` 固定です。環境によっては hook README/セットアップ手順どおりの
+    Python と実際の repo hook の Python が異なり、依存不足や挙動差で SessionStart 昇格だけ失敗する可能性があります。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-16-codex-sessionstart-promote-postwrite-gpt-5.4-primary-002
+  run_id: 2026-06-16-codex-sessionstart-promote-postwrite
+  source_model: gpt-5.4
+  source_round: round-1
+  source_raw_path: raw/gpt-5.4.round-1.txt
+  source_parsed_path: parsed/gpt-5.4.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: tests/hooks/test_codex_session_record_promote_previous.py
+  plain_language_summary: 追加テストは `startup` 契機しか実行しておらず、設定で登録した `resume` matcher の動作確認は含んでいません。
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: '`.codex/hooks.json` とテンプレートは `matcher: "startup|resume"` を前提にしているため、検証観点の『新
+    hook が current session_id を正式化せず、最新の別 session_id 下書きだけを昇格するか』を resume 再開時にも担保するなら、`source:
+    resume` での少なくとも 1 件の回帰テストがあると設定との対応がより明確になります。'
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-16-codex-sessionstart-promote-postwrite-claude-opus-4-8-adversarial-001
+  run_id: 2026-06-16-codex-sessionstart-promote-postwrite
+  source_model: claude-opus-4-8
+  source_round: round-1
+  source_raw_path: raw/claude-opus-4-8.round-1.txt
+  source_parsed_path: parsed/claude-opus-4-8.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: .codex/hooks/session-record-promote-previous-draft.sh (TARGET_INFO
+    heredoc) and templates/hooks/session-record-promote-previous-draft.sh.template
+  plain_language_summary: 下書き選択ロジックは draft ファイルの mtime のみで最新の別 session_id を選ぶが、対象
+    rollout が終了済みかを一切確認しない。進行中の並行 Codex セッション（現 session_id と異なるが現在も実行中のもの）の下書きが選ばれた場合、その
+    rollout はまだ生成中であり、commit guard が後で source_sha256 不一致で弾くことになる進行中記録を正式 2 層へ昇格してしまう。
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: 合意・設計の根幹である『終了済みセッションだけを正式記録にする』契約（docs/notes の正式化 4 点契約の第 4 点）が、SessionStart
+    hook の選択段階では機械的に保証されていない。並行セッション運用時に進行中記録が正式層へ漏れる経路が残る。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-16-codex-sessionstart-promote-postwrite-claude-opus-4-8-adversarial-002
+  run_id: 2026-06-16-codex-sessionstart-promote-postwrite
+  source_model: claude-opus-4-8
+  source_round: round-1
+  source_raw_path: raw/claude-opus-4-8.round-1.txt
+  source_parsed_path: parsed/claude-opus-4-8.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: .codex/hooks/session-record-promote-previous-draft.sh and template
+    — promote_failed handling
+  plain_language_summary: promote_failed は『rollout 不在などで昇格失敗』と文書化されているが、対象が current
+    session_id と同一で CLI が exit 2 拒否した場合や、進行中で実質昇格不可だった場合と区別がつかない。診断ログの promote_failed
+    だけでは原因（rollout 不在 / 同一 session_id 拒否 / その他）を切り分けられない。
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: 検証観点『hook 失敗時に診断ログで原因を追えるか』に対し、promote_failed が原因別に分解されておらず、運用時の原因追跡が困難になる。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-16-codex-sessionstart-promote-postwrite-claude-opus-4-8-adversarial-003
+  run_id: 2026-06-16-codex-sessionstart-promote-postwrite
+  source_model: claude-opus-4-8
+  source_round: round-1
+  source_raw_path: raw/claude-opus-4-8.round-1.txt
+  source_parsed_path: parsed/claude-opus-4-8.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: tests/hooks/test_codex_session_record_promote_previous.py
+  plain_language_summary: テストは『最新の別 session_id を昇格』『現セッションのみで no-op』『SessionStart
+    以外で ignored』の 3 ケースのみで、(1) 選択された前セッション rollout がまだ進行中（source ハッシュ不一致）のケース、(2)
+    current session_id と同一下書きしか別 id が存在せず CLI が拒否したケース、(3) no_current_session_id /
+    no_cwd / no_draft_dir の早期 exit、(4) promote_failed event の発火経路、を検証していない。
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: 今回追加した新 hook の安全側分岐（特に進行中除外と昇格失敗）が回帰テストで固定されておらず、合意の中核である『終了済みのみ昇格』『current
+    を拒否』が独立に担保されていない。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-16-codex-sessionstart-promote-postwrite-claude-opus-4-8-adversarial-004
+  run_id: 2026-06-16-codex-sessionstart-promote-postwrite
+  source_model: claude-opus-4-8
+  source_round: round-1
+  source_raw_path: raw/claude-opus-4-8.round-1.txt
+  source_parsed_path: parsed/claude-opus-4-8.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: docs/notes/2026-06-10-deployment-multi-llm-entry-design.md 正式化節
+  plain_language_summary: 正式化 4 点契約の第 4 点『終了済みセッションだけを正式記録にする』は CLI (session-record-promote-draft.py)
+    側の責務として記述されるが、SessionStart hook が mtime 最新の下書きを無条件に選ぶ点と、CLI 側でどう終了済み判定を担保するかの接続が文書上明示されていない。hook
+    の選択責務と CLI の終了済み判定責務の境界が読み取りにくい。
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: 選択（hook）と拒否（CLI）の責務分担が文書で曖昧だと、第 4 点の保証主体が不明確になり、将来の改修で抜け穴が再発しやすい。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-16-codex-sessionstart-promote-postwrite-claude-opus-4-8-adversarial-005
+  run_id: 2026-06-16-codex-sessionstart-promote-postwrite
+  source_model: claude-opus-4-8
+  source_round: round-1
+  source_raw_path: raw/claude-opus-4-8.round-1.txt
+  source_parsed_path: parsed/claude-opus-4-8.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: TODO_NEXT_SESSION.md 項目13 / 検証観点『前セッション正式化記録は…独立検証対象から除外してよいか』
+  plain_language_summary: 項目13 は PostToolUse hook の実環境発火を確認済みとする一方、新規追加した SessionStart
+    昇格 hook の実環境発火確認（GUI/`/hooks` での trust 後、実際に SessionStart で promoted が出ること）は本
+    diff の文書上は未確認のまま『次の SessionStart で自動昇格する』と将来形で記述されている。実環境確認の完了/未完了が PostToolUse
+    と同じ粒度で明記されていない。
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: PostToolUse 同様に Codex 非 managed hook は trust が必要で、定義 hash 変更で再
+    trust が要る。SessionStart hook の実発火確認が未了であることが明示されないと、項目13 の完了範囲が実態より広く読まれる恐れがある。
+  applied_files: []
+  superseded_by: null

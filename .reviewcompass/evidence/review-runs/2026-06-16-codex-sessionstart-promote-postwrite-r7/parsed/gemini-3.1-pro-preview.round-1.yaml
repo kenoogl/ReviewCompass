@@ -1,0 +1,23 @@
+role: judgment
+provider: gemini-api
+model: gemini-3.1-pro-preview
+attempts: 1
+duration_seconds: 48.562
+findings:
+- severity: WARN
+  target_location: .codex/hooks/session-record-promote-previous-draft.sh and template
+    (find_rollout function)
+  description: find_rollout() uses rglob('rollout-*.jsonl') to search through all
+    historical rollout files, opening and parsing JSON for each one on every SessionStart.
+  rationale: As the number of Codex sessions grows, scanning and reading thousands
+    of files synchronously on editor startup/resume will cause severe performance
+    degradation or hook timeouts. The search should be optimized to use the session
+    ID in the filename, e.g., rglob(f'*{target_session_id}*.jsonl').
+- severity: WARN
+  target_location: templates/hooks/session-record-promote-previous-draft.sh.template
+  description: LOG_PATH defaults to using $PWD instead of the templated absolute path
+    {{REVIEWCOMPASS_DIR}}.
+  rationale: If the Codex editor executes the hook with a different working directory,
+    the log will be created in an unexpected location. Using {{REVIEWCOMPASS_DIR}}
+    ensures the log is correctly written to the target application's root even if
+    jq is missing and CWD cannot be extracted from the payload.

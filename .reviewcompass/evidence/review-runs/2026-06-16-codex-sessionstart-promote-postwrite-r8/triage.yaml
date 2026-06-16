@@ -1,0 +1,139 @@
+run_id: 2026-06-16-codex-sessionstart-promote-postwrite-r8
+triage_status: draft
+generated_at: '2026-06-16T08:01:02.743080+00:00'
+decision_actor: null
+decision_actor_type: human
+items:
+- finding_id: 2026-06-16-codex-sessionstart-promote-postwrite-r8-claude-opus-4-8-adversarial-001
+  run_id: 2026-06-16-codex-sessionstart-promote-postwrite-r8
+  source_model: claude-opus-4-8
+  source_round: round-1
+  source_raw_path: raw/claude-opus-4-8.round-1.txt
+  source_parsed_path: parsed/claude-opus-4-8.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: .codex/hooks/session-record-promote-previous-draft.sh — log_event()
+    / set -u
+  plain_language_summary: log_event sets TARGET_SESSION_ID and TARGET_DRAFT as global
+    variables. When the heredoc python block runs, REVIEWCOMPASS_PYTHON is exported
+    in-line but TARGET_SESSION_ID/TARGET_DRAFT default to empty via parameter expansion
+    only at function call. However the function reassigns globals EVENT/TARGET_SESSION_ID/TARGET_DRAFT,
+    which can leak across calls. The selected event passes target args but a later
+    promoted/promote_failed call reuses the same globals correctly; verify no stale
+    leakage when an early no-arg call (e.g. ignored_event) precedes a later call.
+    With set -u and explicit args this is benign, but the reuse of unscoped globals
+    is fragile.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: Shared mutable globals in a logging helper invite subtle wrong-attribution
+    of diagnostic fields if call ordering changes later. Not a current defect, but
+    worth noting for maintainability of the safety-critical diagnostic log.
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-16-codex-sessionstart-promote-postwrite-r8-claude-opus-4-8-adversarial-002
+  run_id: 2026-06-16-codex-sessionstart-promote-postwrite-r8
+  source_model: claude-opus-4-8
+  source_round: round-1
+  source_raw_path: raw/claude-opus-4-8.round-1.txt
+  source_parsed_path: parsed/claude-opus-4-8.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: .codex/hooks/session-record-promote-previous-draft.sh — find_rollout()
+    prefers any matching cwd-prefixed rollout
+  plain_language_summary: find_rollout falls back to the most recent rollout (best
+    by mtime) when no exact sha match is found, then the caller compares actual==expected
+    to decide match/mismatch. If multiple rollouts share the session_id and none matches
+    the draft sha, the newest is reported as mismatch -> previous_draft_in_progress.
+    This is the intended safe-stop, and the duplicate-session test confirms hash-match
+    preference. No defect, but the fallback selection by mtime (not sha) means the
+    reported 'rollout' in mismatch may not be the rollout the draft was derived from.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: The decision (skip) is correct regardless, so behavior is safe.
+    Flagging only because the diagnostic 'rollout' field could mislead an operator
+    about which file was compared.
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-16-codex-sessionstart-promote-postwrite-r8-claude-opus-4-8-adversarial-003
+  run_id: 2026-06-16-codex-sessionstart-promote-postwrite-r8
+  source_model: claude-opus-4-8
+  source_round: round-1
+  source_raw_path: raw/claude-opus-4-8.round-1.txt
+  source_parsed_path: parsed/claude-opus-4-8.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: INITIAL_SETUP_LLM_GUIDE.md step 8 and README diagnostic list —
+    no_promote_tool / no_draft_dir / no_cwd / no_current_session_id
+  plain_language_summary: The committed hook emits events no_current_session_id, no_cwd,
+    no_draft_dir, and no_promote_tool, all of which appear in the README diagnostic
+    list. INITIAL_SETUP step 8 documents no_promote_tool but omits no_draft_dir, no_cwd,
+    no_current_session_id. The agreement item only required documenting no_promote_tool
+    / jq / multi-draft latest-1 handling, which is satisfied; the omission in INITIAL_SETUP
+    is a documentation completeness gap, not a contract violation.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: README is consistent and the required events are covered; the partial
+    enumeration in INITIAL_SETUP is minor since those events are exit-0 safe no-ops.
+    Noting for completeness only.
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-16-codex-sessionstart-promote-postwrite-r8-claude-opus-4-8-adversarial-004
+  run_id: 2026-06-16-codex-sessionstart-promote-postwrite-r8
+  source_model: claude-opus-4-8
+  source_round: round-1
+  source_raw_path: raw/claude-opus-4-8.round-1.txt
+  source_parsed_path: parsed/claude-opus-4-8.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: tests/hooks/test_codex_session_record_promote_previous.py — coverage
+    gaps
+  plain_language_summary: Tests cover promote, current-only no-op, ignored_event,
+    missing_jq, in_progress, duplicate-rollout hash preference, resume, and two unverifiable
+    (missing sha value / missing sha line) cases. There is no direct test for no_current_session_id,
+    no_cwd, no_draft_dir, no_promote_tool, no_previous_draft (empty draft dir vs current-only),
+    or the unverifiable 'missing_rollout' branch (draft has sha but no matching rollout
+    exists). The selected/promoted ordering is asserted broadly.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: The untested branches are all exit-0 safe no-ops, so risk is low,
+    but the missing_rollout unverifiable branch is a distinct safety path (hash present
+    but rollout absent) that is asserted in design and README yet not exercised by
+    a test.
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-16-codex-sessionstart-promote-postwrite-r8-claude-opus-4-8-adversarial-005
+  run_id: 2026-06-16-codex-sessionstart-promote-postwrite-r8
+  source_model: claude-opus-4-8
+  source_round: round-1
+  source_raw_path: raw/claude-opus-4-8.round-1.txt
+  source_parsed_path: parsed/claude-opus-4-8.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: Both hook scripts — promote-draft.py invocation suppresses stdout/stderr
+    (>/dev/null 2>&1)
+  plain_language_summary: On promote_failed the underlying error from session-record-promote-draft.py
+    is discarded, so the diagnostic log records only promote_failed without a reason.
+    The design states the hook should let the session start and allow tracing causes
+    via the diagnostic log; promote_failed alone provides limited root-cause detail.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: Aligns with 'never block session start' and is safe, but reduces
+    diagnosability of genuine promotion failures. Acceptable given exit 0 requirement;
+    noted as an observability limitation.
+  applied_files: []
+  superseded_by: null

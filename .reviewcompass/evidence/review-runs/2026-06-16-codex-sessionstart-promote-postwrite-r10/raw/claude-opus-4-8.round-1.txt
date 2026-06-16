@@ -1,0 +1,13 @@
+findings:
+  - severity: WARN
+    target_location: ".codex/hooks/session-record-promote-previous-draft.sh / templates/hooks/session-record-promote-previous-draft.sh.template (find_rollout)"
+    description: "find_rollout の探索は `root.rglob(f\"*{target_session_id}*.jsonl\")` だが、テスト fixture では session_id がファイル名に含まれており実環境とも一致するため動作する。ただし fixture とは別に、session_id がファイル名に現れない実 rollout (rename / 移動された場合) では `*<session_id>*.jsonl` glob にヒットせず meta による id 一致確認に到達できない。glob で絞り込むこと自体は r7 WARN 対処だが、ファイル名に session_id を含む前提が実環境の Codex rollout 命名規約に依存しており、命名が変わると静かに `missing_rollout`→`previous_draft_unverifiable` で正式化されなくなる。"
+    rationale: "正常な下書きが恒久的に正式化されず安全側 no-op に倒れ続ける退行を、診断ログ上の previous_draft_unverifiable と区別できない。Codex 命名規約への依存は検証観点『rollout 探索コスト・誤選択』の解消主張に対する残リスクであり、文書化されていない。"
+  - severity: INFO
+    target_location: "tests/hooks/test_codex_session_record_promote_previous.py"
+    description: "no_cwd / no_draft_dir / no_current_session_id / no_promote_tool の各早期 exit 分岐に対する固定テストが無い。missing_jq・ignored_event・no_previous_draft・previous_draft_in_progress・previous_draft_unverifiable・selected・promoted はテストされているが、README と INITIAL_SETUP で列挙された残りの event は未固定。"
+    rationale: "文書が列挙する診断 event のうち一部に回帰テストが無く、将来 early-exit のガード条件が変わっても気付けない。検証観点の網羅性に対する軽微なギャップ。"
+  - severity: INFO
+    target_location: ".codex/hooks/session-record-promote-previous-draft.sh (HASH_INFO heredoc) と templates 版"
+    description: "find_rollout は expected_sha と一致する rollout を見つけた時点で即 return するが、同一 session_id に複数 rollout があり最初に走査したものが一致した場合は最良 mtime 候補比較を行わない。test_duplicate_session_rollouts_prefer_hash_matching_source は hash 一致候補が存在する前提で通るが、走査順序 (rglob の順序) に依存して『一致候補より新しい不一致候補』が存在する状況での選択は走査順任せになる。"
+    rationale: "hash 一致を最優先する設計意図は満たすが、走査順序非決定性が将来 previous_draft_in_progress と promoted の境界判定に影響しうる。現状テストは順序非依存のケースのみ固定しており、挙動の安定性主張に対し軽微な未検証領域がある。"

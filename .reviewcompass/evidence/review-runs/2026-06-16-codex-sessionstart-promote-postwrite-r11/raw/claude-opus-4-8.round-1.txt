@@ -1,0 +1,17 @@
+findings:
+  - severity: WARN
+    target_location: ".codex/hooks/session-record-promote-previous-draft.sh (find_rollout) と tests/hooks/test_codex_session_record_promote_previous.py:test_duplicate_session_rollouts_prefer_hash_matching_source"
+    description: "hook の find_rollout は session_id を含む全 rollout を走査し、expected_sha と一致する rollout が見つかれば即座にそれを返す（early return）。これは『hash 一致候補を優先する』という合意は満たすが、同一 session_id で複数候補がある場合に hash 一致候補が複数存在するケース（理論上はまれだが、同一内容で複製された rollout など）でどれを正式 source とするかが mtime 順ではなく rglob 走査順依存になる。検証観点『下書き source_sha256 一致候補を優先し』は満たすが、複数一致時の決定性が文書化・テストされていない。"
+    rationale: "rglob の走査順序はファイルシステム依存であり、同一 session_id で hash 一致 rollout が複数あった場合に再現性が損なわれ得る。post_write_verification の再現性担保の観点から、決定性の境界が明示されていない。"
+  - severity: INFO
+    target_location: "templates/hooks/session-record-promote-previous-draft.sh.template と .codex/hooks/session-record-promote-previous-draft.sh の差分"
+    description: "repo hook 版は cd \"$REPO_ROOT\" || exit 0 で固定 REPO_ROOT へ移動するのに対し、template 版は cd \"$REVIEWCOMPASS_DIR\" && ... の形で promote 実行を条件にしている。両者は機能的に同等だが、repo 版は cd 失敗時に exit 0 して promote をスキップ（diagnostic log なし）、template 版は cd 失敗を if 条件の false として promote_failed を記録する点で診断ログ挙動が微妙に異なる。"
+    rationale: "テンプレートと repo hook の整合性が検証観点に含まれているが、cd 失敗時の診断ログ挙動が両者で食い違う。実害は小さいが、整合性の観点から差異として記録する価値がある。"
+  - severity: INFO
+    target_location: "tests/hooks/test_codex_session_record_promote_previous.py"
+    description: "新規テストファイルは repo hook（.codex/hooks/session-record-promote-previous-draft.sh）のみを実行対象としており、template 版（templates/hooks/session-record-promote-previous-draft.sh.template）の動作を直接検証するテストは含まれていない。test_codex_hook_repository.py で template の登録（SessionStart matcher）は固定されているが、template スクリプト本体の昇格挙動（特に repo 版と異なる cwd ベースの DRAFT_DIR/EVIDENCE_DIR/DOCS_DIR 解決や cd 条件分岐）の end-to-end 検証は無い。"
+    rationale: "検証観点『配布テンプレートと repo hook 設定の整合性が保たれているか』に対し、template の登録は固定されているが template スクリプト本体の昇格動作の独立検証が欠けている。repo 版と template 版でパス解決ロジックが異なる（CWD 基準 vs REPO_ROOT 基準）ため、template 固有の挙動がテストで保護されていない。"
+  - severity: INFO
+    target_location: ".codex/hooks/session-record-promote-previous-draft.sh:6 (set -u) と log_event 内 mtime 比較ロジック全般"
+    description: "TARGET_INFO を生成する Python ブロックは codex-*.md の mtime で最新を選ぶが、同一 mtime の下書きが複数存在した場合（mtime > best[0] は厳密大なので最初に列挙された方が残る）の選択が glob 列挙順依存になる。実運用では mtime 衝突はまれだが、tie-break が session_id 等で決定的になっていない。"
+    rationale: "post_write_verification の再現性観点で、最新 1 件選択の tie-break が非決定的になり得る。実害は低いが境界条件として記録する。"

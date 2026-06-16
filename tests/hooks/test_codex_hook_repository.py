@@ -13,6 +13,7 @@ CODEX_HOOK_FILES = [
   ".codex/hooks/README.md",
   ".codex/hooks/pre-bash-precheck.sh",
   ".codex/hooks/session-record-capture-current-on-todo.sh",
+  ".codex/hooks/session-record-promote-previous-draft.sh",
 ]
 
 
@@ -67,16 +68,50 @@ class CodexHookRepositoryTests(unittest.TestCase):
       "Codex PostToolUse で TODO 更新後の現セッション取り込み hook を登録する必要がある",
     )
 
-  def test_codex_session_start_capture_hook_is_not_registered(self):
+  def test_codex_session_start_promote_previous_draft_hook_is_registered(self):
     hooks_config = json.loads((REPO_ROOT / ".codex/hooks.json").read_text())
     commands = [
       hook["command"]
       for group in hooks_config["hooks"].get("SessionStart", [])
       for hook in group.get("hooks", [])
     ]
-    self.assertFalse(
-      any(".codex/hooks/session-record-capture-current-on-todo.sh" in c for c in commands),
-      "Codex の現セッション取り込み hook は SessionStart へ登録しない",
+    self.assertTrue(
+      any(".codex/hooks/session-record-promote-previous-draft.sh" in c for c in commands),
+      "Codex SessionStart で前セッション下書きの正式昇格 hook を登録する必要がある",
+    )
+    matchers = [
+      group.get("matcher", "")
+      for group in hooks_config["hooks"].get("SessionStart", [])
+      for hook in group.get("hooks", [])
+      if ".codex/hooks/session-record-promote-previous-draft.sh" in hook.get("command", "")
+    ]
+    self.assertTrue(
+      any("startup" in matcher and "resume" in matcher for matcher in matchers),
+      "SessionStart hook は startup/resume の開始契機で前セッション昇格を試みる必要がある",
+    )
+
+  def test_codex_session_start_promote_previous_draft_hook_template_is_registered(self):
+    hooks_config = json.loads(
+      (REPO_ROOT / "templates" / "hooks" / "codex-hooks.json.template").read_text()
+    )
+    commands = [
+      hook["command"]
+      for group in hooks_config["hooks"].get("SessionStart", [])
+      for hook in group.get("hooks", [])
+    ]
+    self.assertTrue(
+      any(".codex/hooks/session-record-promote-previous-draft.sh" in c for c in commands),
+      "Codex hook 雛形も SessionStart の前セッション昇格 hook を登録する必要がある",
+    )
+    matchers = [
+      group.get("matcher", "")
+      for group in hooks_config["hooks"].get("SessionStart", [])
+      for hook in group.get("hooks", [])
+      if ".codex/hooks/session-record-promote-previous-draft.sh" in hook.get("command", "")
+    ]
+    self.assertTrue(
+      any("startup" in matcher and "resume" in matcher for matcher in matchers),
+      "Codex hook 雛形の SessionStart hook も startup/resume を対象にする必要がある",
     )
 
   def test_codex_user_prompt_capture_fallback_hook_is_not_registered(self):

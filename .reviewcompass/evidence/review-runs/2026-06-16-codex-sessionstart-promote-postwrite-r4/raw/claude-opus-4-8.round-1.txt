@@ -1,0 +1,21 @@
+findings:
+  - severity: WARN
+    target_location: ".codex/hooks/session-record-promote-previous-draft.sh (HASH_INFO heredoc, find_rollout)"
+    description: "rollout 探索のディレクトリ前方一致が repo == cwd と startswith(repo + '/') で行われるが、cwd が末尾スラッシュ付きで渡された場合 repo は rstrip('/') 済みなので問題ないものの、別 repo がサブパス接頭辞を共有する場合（例 cwd=/a/repo に対し /a/repo-other）は startswith(repo + '/') で正しく除外される。しかし read_meta が JSONDecodeError を行単位ではなくファイル単位で握りつぶすため、先頭 5 行内の 1 行でも壊れた JSON があると session_meta を含むファイル全体が無視される。"
+    rationale: "終了済み前セッションの rollout が部分的に壊れていると hash 照合用 rollout が見つからず previous_draft_unverifiable となり昇格が静かに失敗する。診断ログには理由（missing_rollout）が出るが、テストはこの分岐を直接固定していない。"
+  - severity: INFO
+    target_location: "tests/hooks/test_codex_session_record_promote_previous.py"
+    description: "promote_failed イベント分岐（hash は match だが tools/session-record-promote-draft.py が非 0 終了する場合）を固定するテストが無い。selected/promoted、no_previous_draft、ignored_event、previous_draft_in_progress、previous_draft_unverifiable（空値・行欠落）は固定されているが promote_failed は未カバー。"
+    rationale: "合意の検証観点『hook 失敗時にセッション開始を妨げず、診断ログで原因を追えるか』のうち、CLI 昇格失敗パスの診断ログ event 出力が回帰テストで固定されていない。"
+  - severity: INFO
+    target_location: ".codex/hooks/session-record-promote-previous-draft.sh / templates/hooks/session-record-promote-previous-draft.sh.template"
+    description: "repo hook 版は no_promote_tool ガード（[ ! -f tools/session-record-promote-draft.py ]）を持たないが、template 版は持つ。両者の event 集合が一致せず、README の event 列挙にも no_promote_tool は含まれない。"
+    rationale: "repo hook では tools/ が常に存在する前提で許容できるが、README の診断 event 列挙と template の実装に差分があり、配布版で no_promote_tool が出た際に運用者が README から判断できない。文書整合の観点で軽微な不整合。"
+  - severity: INFO
+    target_location: ".codex/hooks/session-record-promote-previous-draft.sh (jq dependency)"
+    description: "hook は jq に依存するが、jq 不在時の挙動が文書化・テストされていない。jq が無い環境では HOOK_EVENT_NAME 等が空になり ignored_event 経由で exit 0 となるため安全側に倒れるが、pre-bash-precheck 系と異なり jq 前提が README/INITIAL_SETUP に明記されていない。"
+    rationale: "配布先で jq が無い場合に hook が全く機能せず（ignored_event で静かに終了）、利用者が原因を追いにくい。安全側には倒れるため重大ではない。"
+  - severity: INFO
+    target_location: "docs/operations/INITIAL_SETUP_LLM_GUIDE.md 手順 8 / .codex/hooks/README.md SessionStart 節"
+    description: "README の動作節では『最新候補の hash が不一致の場合は previous_draft_in_progress を記録して終了する』とあり、INITIAL_SETUP でも同様だが、現セッションが複数の終了済み別セッション下書きを残した場合、最新 1 件のみ処理し残りは次回 SessionStart 以降に持ち越す挙動（蓄積した複数前下書きの逐次回収）が文書に明記されていない。"
+    rationale: "クラッシュ等で複数下書きが溜まると、毎回 1 件ずつしか昇格されず、間に挟まった中間下書きが取り残される運用リスクがあるが、明示 backfill フォールバックでカバーされる範囲。文書の網羅性に関する軽微な指摘。"

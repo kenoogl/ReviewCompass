@@ -1,0 +1,16 @@
+role: primary
+provider: openai-api
+model: gpt-5.4
+attempts: 1
+duration_seconds: 3.045
+findings:
+- severity: WARN
+  target_location: tests/hooks/test_codex_session_record_promote_previous.py
+  description: SessionStart hook registration is only repository-tested for presence
+    and matcher string, but there is no template-level or config-shape test ensuring
+    the distributed `templates/hooks/codex-hooks.json.template` also registers `session-record-promote-previous-draft.sh`
+    consistently.
+  rationale: The verification target explicitly requires distribution template and
+    repo hook setting consistency. The tracked diff updates both runtime and template
+    configs, but the added tests only assert `.codex/hooks.json` contents. A future
+    drift between repository hook config and deployment template would not be caught.

@@ -1,0 +1,95 @@
+run_id: 2026-06-16-codex-sessionstart-promote-postwrite-r11
+triage_status: draft
+generated_at: '2026-06-16T08:09:19.797435+00:00'
+decision_actor: null
+decision_actor_type: human
+items:
+- finding_id: 2026-06-16-codex-sessionstart-promote-postwrite-r11-claude-opus-4-8-adversarial-001
+  run_id: 2026-06-16-codex-sessionstart-promote-postwrite-r11
+  source_model: claude-opus-4-8
+  source_round: round-1
+  source_raw_path: raw/claude-opus-4-8.round-1.txt
+  source_parsed_path: parsed/claude-opus-4-8.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: .codex/hooks/session-record-promote-previous-draft.sh (find_rollout)
+    と tests/hooks/test_codex_session_record_promote_previous.py:test_duplicate_session_rollouts_prefer_hash_matching_source
+  plain_language_summary: hook の find_rollout は session_id を含む全 rollout を走査し、expected_sha
+    と一致する rollout が見つかれば即座にそれを返す（early return）。これは『hash 一致候補を優先する』という合意は満たすが、同一 session_id
+    で複数候補がある場合に hash 一致候補が複数存在するケース（理論上はまれだが、同一内容で複製された rollout など）でどれを正式 source とするかが
+    mtime 順ではなく rglob 走査順依存になる。検証観点『下書き source_sha256 一致候補を優先し』は満たすが、複数一致時の決定性が文書化・テストされていない。
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: rglob の走査順序はファイルシステム依存であり、同一 session_id で hash 一致 rollout が複数あった場合に再現性が損なわれ得る。post_write_verification
+    の再現性担保の観点から、決定性の境界が明示されていない。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-16-codex-sessionstart-promote-postwrite-r11-claude-opus-4-8-adversarial-002
+  run_id: 2026-06-16-codex-sessionstart-promote-postwrite-r11
+  source_model: claude-opus-4-8
+  source_round: round-1
+  source_raw_path: raw/claude-opus-4-8.round-1.txt
+  source_parsed_path: parsed/claude-opus-4-8.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: templates/hooks/session-record-promote-previous-draft.sh.template
+    と .codex/hooks/session-record-promote-previous-draft.sh の差分
+  plain_language_summary: repo hook 版は cd "$REPO_ROOT" || exit 0 で固定 REPO_ROOT へ移動するのに対し、template
+    版は cd "$REVIEWCOMPASS_DIR" && ... の形で promote 実行を条件にしている。両者は機能的に同等だが、repo 版は cd
+    失敗時に exit 0 して promote をスキップ（diagnostic log なし）、template 版は cd 失敗を if 条件の false
+    として promote_failed を記録する点で診断ログ挙動が微妙に異なる。
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: テンプレートと repo hook の整合性が検証観点に含まれているが、cd 失敗時の診断ログ挙動が両者で食い違う。実害は小さいが、整合性の観点から差異として記録する価値がある。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-16-codex-sessionstart-promote-postwrite-r11-claude-opus-4-8-adversarial-003
+  run_id: 2026-06-16-codex-sessionstart-promote-postwrite-r11
+  source_model: claude-opus-4-8
+  source_round: round-1
+  source_raw_path: raw/claude-opus-4-8.round-1.txt
+  source_parsed_path: parsed/claude-opus-4-8.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: tests/hooks/test_codex_session_record_promote_previous.py
+  plain_language_summary: 新規テストファイルは repo hook（.codex/hooks/session-record-promote-previous-draft.sh）のみを実行対象としており、template
+    版（templates/hooks/session-record-promote-previous-draft.sh.template）の動作を直接検証するテストは含まれていない。test_codex_hook_repository.py
+    で template の登録（SessionStart matcher）は固定されているが、template スクリプト本体の昇格挙動（特に repo 版と異なる
+    cwd ベースの DRAFT_DIR/EVIDENCE_DIR/DOCS_DIR 解決や cd 条件分岐）の end-to-end 検証は無い。
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: 検証観点『配布テンプレートと repo hook 設定の整合性が保たれているか』に対し、template の登録は固定されているが
+    template スクリプト本体の昇格動作の独立検証が欠けている。repo 版と template 版でパス解決ロジックが異なる（CWD 基準 vs REPO_ROOT
+    基準）ため、template 固有の挙動がテストで保護されていない。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-16-codex-sessionstart-promote-postwrite-r11-claude-opus-4-8-adversarial-004
+  run_id: 2026-06-16-codex-sessionstart-promote-postwrite-r11
+  source_model: claude-opus-4-8
+  source_round: round-1
+  source_raw_path: raw/claude-opus-4-8.round-1.txt
+  source_parsed_path: parsed/claude-opus-4-8.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: .codex/hooks/session-record-promote-previous-draft.sh:6 (set -u)
+    と log_event 内 mtime 比較ロジック全般
+  plain_language_summary: TARGET_INFO を生成する Python ブロックは codex-*.md の mtime で最新を選ぶが、同一
+    mtime の下書きが複数存在した場合（mtime > best[0] は厳密大なので最初に列挙された方が残る）の選択が glob 列挙順依存になる。実運用では
+    mtime 衝突はまれだが、tie-break が session_id 等で決定的になっていない。
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: post_write_verification の再現性観点で、最新 1 件選択の tie-break が非決定的になり得る。実害は低いが境界条件として記録する。
+  applied_files: []
+  superseded_by: null

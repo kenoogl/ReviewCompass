@@ -1,0 +1,113 @@
+status: completed
+target_files:
+- TODO_NEXT_SESSION.md
+- docs/notes/2026-06-10-deployment-multi-llm-entry-design.md
+- docs/operations/INITIAL_SETUP_LLM_GUIDE.md
+- .codex/hooks/README.md
+- .codex/hooks.json
+- .gitignore
+- templates/hooks/codex-hooks.json.template
+- templates/hooks/session-record-promote-previous-draft.sh.template
+- .codex/hooks/session-record-promote-previous-draft.sh
+- tests/hooks/test_codex_hook_repository.py
+- tests/hooks/test_codex_session_record_promote_previous.py
+target_sha256:
+  TODO_NEXT_SESSION.md: 6fe17bf4dfa2d92767eef61b1230e2e418f3dfeae1bba3376178e0957d2aa3a5
+  docs/notes/2026-06-10-deployment-multi-llm-entry-design.md: 3bb5ca63ec7d8b9581483d970e8ca2d80def6d4b6c5f3c7b718cf82354b84c4e
+  docs/operations/INITIAL_SETUP_LLM_GUIDE.md: 938f822edf7a3819d8696b7ae3ee4d4cd36ed6d67950a631d7e5bb0764f9d548
+  .codex/hooks/README.md: c98740793d14e1ce56acf5cabc9b16880d3934765a6de639efe545e6c6224b15
+  .codex/hooks.json: 94d94138c967e652c6a45e14a33466b3446f5166ab53c9d95244d7a9964ec3aa
+  .gitignore: d60cb1009e23c0f1c48db7587f3662ff590225551560197f3fc6f6fef37cf59f
+  templates/hooks/codex-hooks.json.template: 0f1b091d5696e91a375f970d020becc190ffaf3228b9ee07140d1b6af5c6747e
+  templates/hooks/session-record-promote-previous-draft.sh.template: 3e1ec7dc3609446ab7ad471d4e3f6e4b6b2924642df57ba9fef0589a5fc149b2
+  .codex/hooks/session-record-promote-previous-draft.sh: 44013e90cd487a9f9c8a82495713da356ba505c6d16379850ff7f610ed88644c
+  tests/hooks/test_codex_hook_repository.py: 08746ba2c388366af67931725e4dcc597a4226340e5c48ff24da9c8afe264ec8
+  tests/hooks/test_codex_session_record_promote_previous.py: 99abd8c7ba30ede9b9b5b1627b18d96dc1a67fc94298fc86408dc8fe7f2aac19
+required_verifiers: &id001
+- claude-opus-4-8
+- gemini-3.1-pro-preview
+- gpt-5.4
+completed_verifiers: *id001
+unresolved_substantive_findings: 0
+verifications:
+- verifier: claude-opus-4-8
+  target_files:
+  - TODO_NEXT_SESSION.md
+  - docs/notes/2026-06-10-deployment-multi-llm-entry-design.md
+  - docs/operations/INITIAL_SETUP_LLM_GUIDE.md
+  - .codex/hooks/README.md
+  - .codex/hooks.json
+  - .gitignore
+  - templates/hooks/codex-hooks.json.template
+  - templates/hooks/session-record-promote-previous-draft.sh.template
+  - .codex/hooks/session-record-promote-previous-draft.sh
+  - tests/hooks/test_codex_hook_repository.py
+  - tests/hooks/test_codex_session_record_promote_previous.py
+  target_sha256:
+    TODO_NEXT_SESSION.md: 6fe17bf4dfa2d92767eef61b1230e2e418f3dfeae1bba3376178e0957d2aa3a5
+    docs/notes/2026-06-10-deployment-multi-llm-entry-design.md: 3bb5ca63ec7d8b9581483d970e8ca2d80def6d4b6c5f3c7b718cf82354b84c4e
+    docs/operations/INITIAL_SETUP_LLM_GUIDE.md: 938f822edf7a3819d8696b7ae3ee4d4cd36ed6d67950a631d7e5bb0764f9d548
+    .codex/hooks/README.md: c98740793d14e1ce56acf5cabc9b16880d3934765a6de639efe545e6c6224b15
+    .codex/hooks.json: 94d94138c967e652c6a45e14a33466b3446f5166ab53c9d95244d7a9964ec3aa
+    .gitignore: d60cb1009e23c0f1c48db7587f3662ff590225551560197f3fc6f6fef37cf59f
+    templates/hooks/codex-hooks.json.template: 0f1b091d5696e91a375f970d020becc190ffaf3228b9ee07140d1b6af5c6747e
+    templates/hooks/session-record-promote-previous-draft.sh.template: 3e1ec7dc3609446ab7ad471d4e3f6e4b6b2924642df57ba9fef0589a5fc149b2
+    .codex/hooks/session-record-promote-previous-draft.sh: 44013e90cd487a9f9c8a82495713da356ba505c6d16379850ff7f610ed88644c
+    tests/hooks/test_codex_hook_repository.py: 08746ba2c388366af67931725e4dcc597a4226340e5c48ff24da9c8afe264ec8
+    tests/hooks/test_codex_session_record_promote_previous.py: 99abd8c7ba30ede9b9b5b1627b18d96dc1a67fc94298fc86408dc8fe7f2aac19
+- verifier: gemini-3.1-pro-preview
+  target_files:
+  - TODO_NEXT_SESSION.md
+  - docs/notes/2026-06-10-deployment-multi-llm-entry-design.md
+  - docs/operations/INITIAL_SETUP_LLM_GUIDE.md
+  - .codex/hooks/README.md
+  - .codex/hooks.json
+  - .gitignore
+  - templates/hooks/codex-hooks.json.template
+  - templates/hooks/session-record-promote-previous-draft.sh.template
+  - .codex/hooks/session-record-promote-previous-draft.sh
+  - tests/hooks/test_codex_hook_repository.py
+  - tests/hooks/test_codex_session_record_promote_previous.py
+  target_sha256:
+    TODO_NEXT_SESSION.md: 6fe17bf4dfa2d92767eef61b1230e2e418f3dfeae1bba3376178e0957d2aa3a5
+    docs/notes/2026-06-10-deployment-multi-llm-entry-design.md: 3bb5ca63ec7d8b9581483d970e8ca2d80def6d4b6c5f3c7b718cf82354b84c4e
+    docs/operations/INITIAL_SETUP_LLM_GUIDE.md: 938f822edf7a3819d8696b7ae3ee4d4cd36ed6d67950a631d7e5bb0764f9d548
+    .codex/hooks/README.md: c98740793d14e1ce56acf5cabc9b16880d3934765a6de639efe545e6c6224b15
+    .codex/hooks.json: 94d94138c967e652c6a45e14a33466b3446f5166ab53c9d95244d7a9964ec3aa
+    .gitignore: d60cb1009e23c0f1c48db7587f3662ff590225551560197f3fc6f6fef37cf59f
+    templates/hooks/codex-hooks.json.template: 0f1b091d5696e91a375f970d020becc190ffaf3228b9ee07140d1b6af5c6747e
+    templates/hooks/session-record-promote-previous-draft.sh.template: 3e1ec7dc3609446ab7ad471d4e3f6e4b6b2924642df57ba9fef0589a5fc149b2
+    .codex/hooks/session-record-promote-previous-draft.sh: 44013e90cd487a9f9c8a82495713da356ba505c6d16379850ff7f610ed88644c
+    tests/hooks/test_codex_hook_repository.py: 08746ba2c388366af67931725e4dcc597a4226340e5c48ff24da9c8afe264ec8
+    tests/hooks/test_codex_session_record_promote_previous.py: 99abd8c7ba30ede9b9b5b1627b18d96dc1a67fc94298fc86408dc8fe7f2aac19
+- verifier: gpt-5.4
+  target_files:
+  - TODO_NEXT_SESSION.md
+  - docs/notes/2026-06-10-deployment-multi-llm-entry-design.md
+  - docs/operations/INITIAL_SETUP_LLM_GUIDE.md
+  - .codex/hooks/README.md
+  - .codex/hooks.json
+  - .gitignore
+  - templates/hooks/codex-hooks.json.template
+  - templates/hooks/session-record-promote-previous-draft.sh.template
+  - .codex/hooks/session-record-promote-previous-draft.sh
+  - tests/hooks/test_codex_hook_repository.py
+  - tests/hooks/test_codex_session_record_promote_previous.py
+  target_sha256:
+    TODO_NEXT_SESSION.md: 6fe17bf4dfa2d92767eef61b1230e2e418f3dfeae1bba3376178e0957d2aa3a5
+    docs/notes/2026-06-10-deployment-multi-llm-entry-design.md: 3bb5ca63ec7d8b9581483d970e8ca2d80def6d4b6c5f3c7b718cf82354b84c4e
+    docs/operations/INITIAL_SETUP_LLM_GUIDE.md: 938f822edf7a3819d8696b7ae3ee4d4cd36ed6d67950a631d7e5bb0764f9d548
+    .codex/hooks/README.md: c98740793d14e1ce56acf5cabc9b16880d3934765a6de639efe545e6c6224b15
+    .codex/hooks.json: 94d94138c967e652c6a45e14a33466b3446f5166ab53c9d95244d7a9964ec3aa
+    .gitignore: d60cb1009e23c0f1c48db7587f3662ff590225551560197f3fc6f6fef37cf59f
+    templates/hooks/codex-hooks.json.template: 0f1b091d5696e91a375f970d020becc190ffaf3228b9ee07140d1b6af5c6747e
+    templates/hooks/session-record-promote-previous-draft.sh.template: 3e1ec7dc3609446ab7ad471d4e3f6e4b6b2924642df57ba9fef0589a5fc149b2
+    .codex/hooks/session-record-promote-previous-draft.sh: 44013e90cd487a9f9c8a82495713da356ba505c6d16379850ff7f610ed88644c
+    tests/hooks/test_codex_hook_repository.py: 08746ba2c388366af67931725e4dcc597a4226340e5c48ff24da9c8afe264ec8
+    tests/hooks/test_codex_session_record_promote_previous.py: 99abd8c7ba30ede9b9b5b1627b18d96dc1a67fc94298fc86408dc8fe7f2aac19
+review_run:
+  path: .reviewcompass/evidence/review-runs/2026-06-16-codex-sessionstart-promote-postwrite-r13
+  summary_path: .reviewcompass/evidence/review-runs/2026-06-16-codex-sessionstart-promote-postwrite-r13/model-result-summary.yaml
+notes: Codex SessionStart previous-draft promotion post-write verification. r13 independent
+  3-way API review; remaining findings triaged leave-as-is as residual non-blocking
+  risk.

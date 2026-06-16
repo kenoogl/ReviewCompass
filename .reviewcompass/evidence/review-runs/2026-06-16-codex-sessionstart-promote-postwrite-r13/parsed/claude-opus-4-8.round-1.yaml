@@ -1,0 +1,38 @@
+role: adversarial
+provider: anthropic-api
+model: claude-opus-4-8
+attempts: 1
+duration_seconds: 30.029
+findings:
+- severity: WARN
+  target_location: .codex/hooks/session-record-promote-previous-draft.sh (find_rollout,
+    line with `for path in root.rglob(f"*{target_session_id}*.jsonl")`)
+  description: rollout 探索が `root.rglob(f"*{target_session_id}*.jsonl")` で full glob
+    を実行し、各候補について `read_meta` で session_meta を再パースしている。検証観点『rollout 探索は session_id
+    ファイル名で絞り込み、hash 一致候補を mtime/path tie-break で決定的に優先する』のうち、メタの id 一致と cwd 一致でさらに絞っている点は正しいが、テストは固定
+    fixture でしか走らず、実環境で session_id が他 session の rollout 名に部分一致する場合の挙動が固定されていない。
+  rationale: session_id は UUID なので実害は低いが、glob の部分一致前提が将来の命名変更で崩れる可能性があり、テストで session_id
+    部分一致誤検出ケースが固定されていない。
+- severity: INFO
+  target_location: .codex/hooks/session-record-promote-previous-draft.sh と templates/hooks/session-record-promote-previous-draft.sh.template
+    (find_rollout の決定的 tie-break)
+  description: hash 一致候補の tie-break は `candidate > best_match` の tuple 比較で mtime→path→Path→sha
+    の順だが、tuple 内に `Path` オブジェクトが含まれており、mtime と path 文字列が等しい場合に `Path` 同士の比較が走る。Python
+    では Path は `<` 比較可能だが、3要素目が str(path) で既に決定的なため 4要素目以降は到達しない。決定性は担保されているが、tuple
+    に比較不能になり得る要素を含めるのは脆い設計。
+  rationale: 現状は str(path) で順序が確定するため動作するが、将来 path 重複時に Path/str 混在 tuple 比較へ依存する形は可読性・堅牢性で改善余地がある。
+- severity: INFO
+  target_location: tests/hooks/test_codex_session_record_promote_previous.py (テスト総数)
+  description: 合意・要約では `test_codex_session_record_promote_previous` が 18 tests とされているが、本ファイル内の
+    test_ メソッドは 17 件である（promote_latest, promote_draft_tool, only_current_noop, non_session_start,
+    missing_current_session_id, missing_cwd, missing_draft_dir, missing_jq, missing_promote_tool,
+    promote_failure, skips_latest_when_hash_changed, duplicate_prefer_hash_match,
+    duplicate_without_hash_match, resume, missing_draft_hash, missing_draft_hash_line,
+    missing_rollout, rollout_for_other_cwd = 18）。再カウントすると 18 件で一致する。
+  rationale: 再カウントの結果 18 件で要約と整合する。報告との不一致なし。target document に含まれるテストファイルの件数と実行済みテスト記述の整合確認のための記録。
+- severity: INFO
+  target_location: docs/operations/INITIAL_SETUP_LLM_GUIDE.md (手順 5 の jq チェック)
+  description: 静的チェック手順に「`jq` が利用できることを確認する」を追加したが、SessionStart hook も PostToolUse
+    hook も REVIEWCOMPASS_JQ 環境変数で jq を差し替え可能な設計（`REVIEWCOMPASS_JQ:-jq`）。手順では既定の jq
+    のみ言及し、環境変数差し替え時の確認には触れていない。
+  rationale: 通常導入では既定 jq で十分だが、REVIEWCOMPASS_JQ を使う環境では手順の jq 確認が実体と乖離する可能性がある。実害は限定的。

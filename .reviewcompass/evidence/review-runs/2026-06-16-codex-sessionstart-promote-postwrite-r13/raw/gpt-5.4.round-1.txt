@@ -1,0 +1,5 @@
+findings:
+  - severity: WARN
+    target_location: "TODO_NEXT_SESSION.md §4 item 13"
+    description: "実環境発火確認の記述が、現時点で必要になった SessionStart hook の実地確認まで完了したように読めるが、本文中の根拠は旧構成の Pre/PostToolUse trust 確認に留まっている。"
+    rationale: "今回の phase では『previous draft promotion』の追加後、実運用で必要な trust 対象が増えている。項目 13 では SessionStart hook 自体は『次の Codex SessionStart で…自動昇格する』と将来形で述べており、PostToolUse と同様の実地確認が済んだ事実とは区別されていない。完了記録として残すなら、確認済み範囲と未実施範囲を明確に分けた方が誤解を防げる。"

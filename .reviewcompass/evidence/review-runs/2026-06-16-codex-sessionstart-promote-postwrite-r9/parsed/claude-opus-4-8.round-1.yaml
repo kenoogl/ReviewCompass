@@ -1,0 +1,51 @@
+role: adversarial
+provider: anthropic-api
+model: claude-opus-4-8
+attempts: 1
+duration_seconds: 17.605
+findings:
+- severity: WARN
+  target_location: .codex/hooks/session-record-promote-previous-draft.sh (find_rollout)
+    and tests/hooks/test_codex_session_record_promote_previous.py::test_duplicate_session_rollouts_prefer_hash_matching_source
+  description: The find_rollout fallback returns the most recent rollout (best by
+    mtime) when no hash-matching rollout exists, but its actual_sha is then compared
+    against expected in the caller. When a duplicate session_id has a later non-matching
+    rollout AND the original matching rollout exists, the loop returns the matching
+    one immediately via early-return; however if iteration order encounters the non-matching
+    newer rollout first the early-return on the matching file still wins. The test
+    only fixes the case where a hash match exists. There is no test for the case where
+    two same-session rollouts both differ from the draft hash (e.g. the matching original
+    was rotated/deleted), where the fallback returns the newest mismatched rollout
+    and emits previous_draft_in_progress — which is the intended safe behavior but
+    is unverified.
+  rationale: The duplicate-rollout selection logic has a fallback branch (return newest
+    by mtime) whose mismatch outcome is not exercised by any test. A regression that
+    changed the fallback to silently treat a mismatched newest rollout as match would
+    not be caught, weakening the in-progress safety guarantee that the document claims
+    is fixed for r7.
+- severity: INFO
+  target_location: .codex/hooks/session-record-promote-previous-draft.sh vs templates/hooks/session-record-promote-previous-draft.sh.template
+  description: The repo hook hardcodes DRAFT_DIR/EVIDENCE_DIR/DOCS_DIR defaults to
+    $REPO_ROOT-based paths and reads them before parsing payload, while the template
+    derives DRAFT_DIR/EVIDENCE_DIR/DOCS_DIR from $CWD (payload-derived) after jq parsing.
+    This divergence is intentional (repo uses local root, template uses target-app
+    cwd) but is not asserted by any equivalence test. No finding-level defect, but
+    the two files share a large copied Python heredoc body that can drift.
+  rationale: Two near-identical hook bodies (repo + template) with no test pinning
+    their behavioral equivalence are a known drift risk; the r5-r8 work added a template-registration
+    test for hooks.json but not for the script body parity.
+- severity: INFO
+  target_location: .codex/hooks/README.md diagnostic event list / docs/operations/INITIAL_SETUP_LLM_GUIDE.md
+    step 8
+  description: The README lists event no_promote_tool and the guide lists no_promote_tool,
+    but tests/hooks/test_codex_session_record_promote_previous.py does not include
+    a test exercising the no_promote_tool branch (missing tools/session-record-promote-draft.py).
+    The no_cwd, no_draft_dir, and no_current_session_id branches are also documented
+    but only ignored_event, no_current_session_id (not tested), missing_jq, no_previous_draft,
+    selected, promoted, previous_draft_in_progress, previous_draft_unverifiable are
+    covered.
+  rationale: Several documented diagnostic events (no_promote_tool, no_cwd, no_draft_dir,
+    no_current_session_id) lack tests, so the document's claim that diagnostics let
+    operators trace the cause is only partially substantiated. Not a correctness defect,
+    but the safety/diagnostic coverage is incomplete relative to the documented event
+    surface.

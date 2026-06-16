@@ -1,0 +1,161 @@
+run_id: 2026-06-16-codex-sessionstart-promote-postwrite-r2
+triage_status: draft
+generated_at: '2026-06-16T07:24:45.179500+00:00'
+decision_actor: null
+decision_actor_type: human
+items:
+- finding_id: 2026-06-16-codex-sessionstart-promote-postwrite-r2-gpt-5.4-primary-001
+  run_id: 2026-06-16-codex-sessionstart-promote-postwrite-r2
+  source_model: gpt-5.4
+  source_round: round-1
+  source_raw_path: raw/gpt-5.4.round-1.txt
+  source_parsed_path: parsed/gpt-5.4.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: .codex/hooks/session-record-promote-previous-draft.sh
+  plain_language_summary: Runtime hook ignores REVIEWCOMPASS_PYTHON when selecting
+    the interpreter for the draft-selection helper and hardcodes `python3` instead.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: The agreed response to prior findings says repo hooks must use
+    `REVIEWCOMPASS_PYTHON` when available and fall back to `python3`. This script
+    sets `REVIEWCOMPASS_PYTHON` for logging and promotion, but the `TARGET_INFO` helper
+    still runs with bare `python3`, which can break environments where only the configured
+    interpreter is valid and makes the implementation inconsistent with the documented
+    policy.
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-16-codex-sessionstart-promote-postwrite-r2-claude-opus-4-8-adversarial-001
+  run_id: 2026-06-16-codex-sessionstart-promote-postwrite-r2
+  source_model: claude-opus-4-8
+  source_round: round-1
+  source_raw_path: raw/claude-opus-4-8.round-1.txt
+  source_parsed_path: parsed/claude-opus-4-8.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: .codex/hooks/session-record-promote-previous-draft.sh (TARGET_INFO
+    heredoc)
+  plain_language_summary: リポジトリ版 hook の draft 選択ブロックは `python3 - <<'PY'` をハードコードで呼び出しており、診断ログや
+    hash 確認ブロックで使う `$REVIEWCOMPASS_PYTHON` を経由しない。合意内容・r1 所見対処では「REVIEWCOMPASS_PYTHON
+    があればそれを使い、なければ python3 にフォールバックする」と明記されているが、このブロックだけはその規約から外れている。
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: REVIEWCOMPASS_PYTHON を指す Python と素の python3 が別 interpreter（依存差・version
+    差）の環境では、draft 選択だけ別 interpreter で走り、選択結果と後続の hash 検証・昇格が不整合になり得る。少なくとも README
+    で宣言した規約と実装が食い違う。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-16-codex-sessionstart-promote-postwrite-r2-claude-opus-4-8-adversarial-002
+  run_id: 2026-06-16-codex-sessionstart-promote-postwrite-r2
+  source_model: claude-opus-4-8
+  source_round: round-1
+  source_raw_path: raw/claude-opus-4-8.round-1.txt
+  source_parsed_path: parsed/claude-opus-4-8.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: .codex/hooks/README.md（動作節 step 4-5）と session-record-promote-previous-draft.sh
+  plain_language_summary: README の動作説明は「3. codex-<session_id>.md を探す → 4. current
+    session_id と同じ下書きは除外する」と書くが、実装の TARGET_INFO ブロックは current 一致と空 session_id をまとめて除外しているだけで、README
+    の記述順や粒度（『最新候補の hash が不一致なら古い候補へフォールバックせず』）と完全には対応していない。特に step 5 の『最新候補の hash
+    が不一致の場合は古い候補へフォールバックしない』挙動は、実装では『最新1件を選んでから hash 判定』で実現されており、README の手順番号と実装のフローが読み手に誤解を生みうる。
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: 検証観点『新 hook が current session_id を正式化せず最新の別 session_id 下書きだけを昇格するか』に対し、文書手順と実装フローの対応が曖昧だと、将来の保守者が『古い候補へのフォールバック』を誤って追加するリスクがある。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-16-codex-sessionstart-promote-postwrite-r2-claude-opus-4-8-adversarial-003
+  run_id: 2026-06-16-codex-sessionstart-promote-postwrite-r2
+  source_model: claude-opus-4-8
+  source_round: round-1
+  source_raw_path: raw/claude-opus-4-8.round-1.txt
+  source_parsed_path: parsed/claude-opus-4-8.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: templates/hooks/session-record-promote-previous-draft.sh.template
+    と .codex/hooks/session-record-promote-previous-draft.sh
+  plain_language_summary: テンプレート版には `no_promote_tool`（`tools/session-record-promote-draft.py`
+    不在チェック）の event とガードがあるが、リポジトリ版 hook にはこのガードと event が無い。README の診断ログ event 一覧（`ignored_event`／`no_current_session_id`／`no_cwd`／`no_draft_dir`／`no_previous_draft`／`selected`／`previous_draft_in_progress`／`previous_draft_unverifiable`／`promoted`／`promote_failed`）にも
+    `no_promote_tool` は含まれていない。
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: 配布テンプレートと repo hook 設定の整合性という検証観点に対し、event 集合が両者で一致しない。リポジトリ環境では
+    tool 同梱が前提のため致命ではないが、テンプレート由来の event が文書化されていない点は将来の混乱要因。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-16-codex-sessionstart-promote-postwrite-r2-claude-opus-4-8-adversarial-004
+  run_id: 2026-06-16-codex-sessionstart-promote-postwrite-r2
+  source_model: claude-opus-4-8
+  source_round: round-1
+  source_raw_path: raw/claude-opus-4-8.round-1.txt
+  source_parsed_path: parsed/claude-opus-4-8.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: tests/hooks/test_codex_session_record_promote_previous.py
+  plain_language_summary: テストは startup/resume・hash 不一致スキップ・current-only no-op・ignored_event
+    を固定しているが、README/合意で定義された `previous_draft_unverifiable`（source_sha256 欠落や rollout
+    不在で hash 確認不能）の経路を直接検証するケースが無い。`no_current_session_id`／`no_cwd`／`no_draft_dir`
+    の早期 exit 経路も未カバー。
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: r1 所見対処で『hash 確認不能時は previous_draft_unverifiable としてスキップする』を新規追加と明示しているため、その分岐に対する回帰テストが無いと、将来の改修で
+    unverifiable→誤昇格や誤 in_progress 化が混入しても検知できない。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-16-codex-sessionstart-promote-postwrite-r2-claude-opus-4-8-adversarial-005
+  run_id: 2026-06-16-codex-sessionstart-promote-postwrite-r2
+  source_model: claude-opus-4-8
+  source_round: round-1
+  source_raw_path: raw/claude-opus-4-8.round-1.txt
+  source_parsed_path: parsed/claude-opus-4-8.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: .codex/hooks/session-record-promote-previous-draft.sh / .template（rollout
+    探索 read_meta）
+  plain_language_summary: rollout 探索は `read_meta` が先頭 5 行以内の session_meta のみを読む前提で、cwd
+    前方一致と id 一致で最新 mtime を選ぶ。複数の rollout が同一 session_id・同一 cwd 前方一致を満たす場合、mtime 最大のものを『現在の元
+    rollout』とみなして hash 比較するが、この『最新 mtime = 正しい元ファイル』という仮定の妥当性は文書化されていない。
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: 進行中判定（previous_draft_in_progress）の正しさは元 rollout の同定精度に依存する。誤った
+    rollout を掴むと hash 一致/不一致判定がずれ、進行中セッションの誤昇格または終了済みセッションの誤スキップにつながり得るが、現状この同定ロジックの前提が明示されていない。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-16-codex-sessionstart-promote-postwrite-r2-gemini-3.1-pro-preview-judgment-001
+  run_id: 2026-06-16-codex-sessionstart-promote-postwrite-r2
+  source_model: gemini-3.1-pro-preview
+  source_round: round-1
+  source_raw_path: raw/gemini-3.1-pro-preview.round-1.txt
+  source_parsed_path: parsed/gemini-3.1-pro-preview.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: .codex/hooks/session-record-promote-previous-draft.sh
+  plain_language_summary: TARGET_INFO を生成するサブシェル内で python3 がハードコードされており、REVIEWCOMPASS_PYTHON
+    環境変数が使われていない
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: r1所見への対処として「REVIEWCOMPASS_PYTHON 環境変数があればそれを使う」という方針が取られていますが、この1箇所だけ反映漏れがあります（テンプレートの
+    `templates/hooks/session-record-promote-previous-draft.sh.template` 側は正しく `"$REVIEWCOMPASS_PYTHON"`
+    となっています）。これにより、特定の環境で意図しない Python 実行系が呼ばれて実行に失敗する可能性があります。
+  applied_files: []
+  superseded_by: null

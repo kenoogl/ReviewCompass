@@ -1,0 +1,39 @@
+role: adversarial
+provider: anthropic-api
+model: claude-opus-4-8
+attempts: 1
+duration_seconds: 28.458
+findings:
+- severity: WARN
+  target_location: .codex/hooks/session-record-promote-previous-draft.sh (jq dependency,
+    no presence check)
+  description: 本体 hook は jq に依存するが、jq 不在時の振る舞いがコード上で安全側 no-op になることを保証していない。jq が無い場合
+    `jq -r '...'` は command-not-found となり、HOOK_EVENT_NAME 等が空文字に落ちる。SESSION_ID が空なら
+    `no_current_session_id` で exit 0 になるため結果的に no-op になるが、これは README が「jq が無い場合 Codex
+    payload を読めず実質的に安全側の no-op になる」と説明している経路に依存する偶発的挙動であり、明示的な jq 存在チェックや診断 event
+    はない。導入時チェック（INITIAL_SETUP_LLM_GUIDE 手順 5 で jq 確認）に依存している。
+  rationale: jq 不在は『hook 失敗時にセッション開始を妨げず、診断ログで原因を追えるか』の検証観点に関わる。実質 no-op にはなるが、原因が
+    jq 不在であることが診断ログ（no_current_session_id）から判別できず、運用者が誤った切り分けをし得る。
+- severity: INFO
+  target_location: .codex/hooks/session-record-promote-previous-draft.sh / .template
+    (rollout discovery scans HOME/.codex/sessions)
+  description: hash 検証の find_rollout() は CODEX_SESSIONS_ROOT 配下を rglob で全走査して session_meta
+    を読み、cwd 一致で絞り込む。大量の rollout がある環境では SessionStart ごとに全 jsonl の先頭5行を読むため、startup/resume
+    のたびにコストが掛かる。timeout=60 で打ち切られるが、打ち切られた場合の挙動（昇格されず exit code 非0扱いで Codex 側がどう扱うか）は本ターゲットの
+    diff からは確認できない。
+  rationale: SessionStart の毎回発火と全走査の組み合わせは、合意の『最新 1 件処理』『セッション開始を妨げない』要件のパフォーマンス境界として記録に値する。現状の検証観点・テストはこの走査規模を扱っていない。
+- severity: INFO
+  target_location: tests/hooks/test_codex_session_record_promote_previous.py (no test
+    for repo hook jq-absent / no_promote_tool / no_draft_dir paths)
+  description: テストは promote/in_progress/unverifiable/ignored_event/no_previous_draft/resume
+    を網羅するが、診断ログ event として README/ガイドが列挙する `no_promote_tool`、`no_draft_dir`、`no_cwd`、`no_current_session_id`、`promote_failed`
+    の分岐は固定テストがない。テンプレート側（.template）スクリプトの実行テストも本ターゲットには含まれず、テンプレート整合は codex-hooks.json.template
+    の登録テストのみで担保される。
+  rationale: 文書化された安全側 event の一部がテストで固定されておらず、回帰時に挙動変更が検出されない可能性がある。検証観点『hash 確認不能時に
+    previous_draft_unverifiable で安全側に止まるか』は固定済みだが、ツール不在・ディレクトリ不在などの安全側分岐は未固定。
+- severity: INFO
+  target_location: 実行済みテスト記載 (本ターゲットの新規テストとの対応)
+  description: 『実行済みテスト』節の 20 tests OK には test_codex_session_record_promote_previous
+    と test_codex_hook_repository が含まれるが、新規テストファイルには 8 ケース、repository テストには本 diff で
+    2 ケース追加されており、合計件数の内訳（既存 capture テスト等を含めて 20 になる根拠）は本ターゲットからは追検証できない。
+  rationale: テスト件数の主張は再現性確認の対象だが、ファイル単位の件数内訳が示されていないため、ターゲット内部だけでは件数整合を独立確認できない。重大ではないが記録として残す。

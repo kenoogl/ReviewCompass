@@ -1,0 +1,125 @@
+run_id: 2026-06-16-codex-sessionstart-promote-postwrite-r12
+triage_status: draft
+generated_at: '2026-06-16T08:12:07.937326+00:00'
+decision_actor: null
+decision_actor_type: human
+items:
+- finding_id: 2026-06-16-codex-sessionstart-promote-postwrite-r12-gpt-5.4-primary-001
+  run_id: 2026-06-16-codex-sessionstart-promote-postwrite-r12
+  source_model: gpt-5.4
+  source_round: round-1
+  source_raw_path: raw/gpt-5.4.round-1.txt
+  source_parsed_path: parsed/gpt-5.4.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: TODO_NEXT_SESSION.md §3 item 13
+  plain_language_summary: 実環境確認の記述が PostToolUse の信頼確認『2 件』のままで、今回追加した SessionStart
+    hook を含む現状の trust 手順と整合していない。
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: 今回の変更で Codex 側 hook は少なくとも pre-bash-precheck、PostToolUse 下書き、SessionStart
+    昇格の 3 系統になったため、『プロジェクト hook 2 件』という記述は利用者に古い設定状態を想起させる。post-write verification
+    では、前ドラフトの手順説明が新しい実装内容へ更新されているかを確認する必要がある。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-16-codex-sessionstart-promote-postwrite-r12-claude-opus-4-8-adversarial-001
+  run_id: 2026-06-16-codex-sessionstart-promote-postwrite-r12
+  source_model: claude-opus-4-8
+  source_round: round-1
+  source_raw_path: raw/claude-opus-4-8.round-1.txt
+  source_parsed_path: parsed/claude-opus-4-8.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: .codex/hooks/session-record-promote-previous-draft.sh (find_rollout)
+    and templates/hooks/session-record-promote-previous-draft.sh.template
+  plain_language_summary: 'The hash verification''s find_rollout() returns a best_match
+    only when an expected_sha-matching rollout exists, but when no rollout matches
+    it falls back to `best` (the newest non-matching rollout) and returns its actual_sha.
+    The caller then compares HASH_STATUS: actual != expected yields ''mismatch'' ->
+    previous_draft_in_progress. This is functionally safe, but the ''missing_rollout''
+    -> unverifiable path is only reached when find_rollout returns (None, ''''), which
+    happens only if NO rollout for the session_id exists at all. When a rollout exists
+    for the session_id but its cwd does not match repo, it is skipped and can yield
+    (None, '''') = unverifiable; however a same-session-id rollout that simply grew
+    yields ''mismatch'' = in_progress. The distinction between in_progress and unverifiable
+    is therefore sensitive to whether any candidate rollout survived the cwd filter,
+    which is documented as ''in_progress when rollout grew'' but the code path conflates
+    ''no matching hash but a candidate exists'' (in_progress) with the intended semantics.
+    Verify the test test_missing_rollout_is_unverifiable_and_not_promoted truly exercises
+    (None,'''') and not the mismatch branch — it creates a draft with hash ''0''*64
+    and NO rollout file, so find_rollout returns (None,'''') -> unverifiable. That
+    is consistent. No correctness defect, but the in_progress vs unverifiable boundary
+    relies on cwd-filter side effects and is not directly unit-tested for the cwd-mismatch
+    case.'
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: The post-write claim in the target asserts a clean separation between
+    previous_draft_in_progress (hash mismatch) and previous_draft_unverifiable (hash
+    unconfirmable). A same-session rollout that fails the cwd filter collapses into
+    the unverifiable path while a grown same-cwd rollout collapses into in_progress;
+    this boundary is asserted in docs but not exercised by a dedicated test, so a
+    future cwd-filter regression could silently reclassify safety outcomes without
+    test coverage.
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-16-codex-sessionstart-promote-postwrite-r12-claude-opus-4-8-adversarial-002
+  run_id: 2026-06-16-codex-sessionstart-promote-postwrite-r12
+  source_model: claude-opus-4-8
+  source_round: round-1
+  source_raw_path: raw/claude-opus-4-8.round-1.txt
+  source_parsed_path: parsed/claude-opus-4-8.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: .reviewcompass/evidence/review-runs/2026-06-16-codex-sessionstart-promote-postwrite-r12/review-target.md
+    (実行済みテスト section)
+  plain_language_summary: 'The 実行済みテスト section reports test counts (e.g. test_codex_session_record_promote_previous:
+    17 tests) but the embedded test file source shows 17 test methods, which matches.
+    However the document asserts ''29 tests OK'' for the combined run of three modules
+    with a breakdown of 17 + 7 + 5 = 29, consistent. These counts are claims that
+    the post-write verification cannot independently re-run from the document alone;
+    they are asserted, not reproduced here.'
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: Per post-write verification, test-count claims are assertions whose
+    independent verification requires running the suite. The document is internally
+    consistent (17+7+5=29), so this is informational only, but the reviewer should
+    note these numbers are unverified from the target text alone.
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-16-codex-sessionstart-promote-postwrite-r12-claude-opus-4-8-adversarial-003
+  run_id: 2026-06-16-codex-sessionstart-promote-postwrite-r12
+  source_model: claude-opus-4-8
+  source_round: round-1
+  source_raw_path: raw/claude-opus-4-8.round-1.txt
+  source_parsed_path: parsed/claude-opus-4-8.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: docs/operations/INITIAL_SETUP_LLM_GUIDE.md step 5 / step 8 and
+    .codex/hooks/README.md 依存 section
+  plain_language_summary: Step 5 adds 'jq が利用できることを確認する' to the static check and the
+    README 依存 section lists jq, consistent with the new missing_jq diagnostic. The
+    SessionStart hook lists no_promote_tool, missing_jq, previous_draft_unverifiable
+    etc. in step 8, matching the script's log_event call sites. The documented event
+    set in INITIAL_SETUP step 8 and README matches the script's emitted events (missing_jq,
+    ignored_event, no_current_session_id, no_cwd, no_draft_dir, no_promote_tool, no_previous_draft,
+    selected, previous_draft_in_progress, previous_draft_unverifiable, promoted, promote_failed).
+    No discrepancy found.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: Confirms the documentation-to-implementation event vocabulary is
+    aligned, which is one of the stated 検証観点. Recorded as INFO for completeness since
+    it is a positive verification result rather than a defect.
+  applied_files: []
+  superseded_by: null

@@ -1,0 +1,20 @@
+role: primary
+provider: openai-api
+model: gpt-5.4
+attempts: 1
+duration_seconds: 5.34
+findings:
+- severity: WARN
+  target_location: .codex/hooks/session-record-promote-previous-draft.sh
+  description: 本番用 hook に、テンプレート版にある promote tool 存在確認（no_promote_tool）が無く、README
+    に記載した診断 event 一覧とも不整合です。
+  rationale: テンプレートでは `tools/session-record-promote-draft.py` 不在時に `no_promote_tool`
+    を記録して安全終了できますが、本番用 script は単に `promote_failed` になるため原因追跡性が落ちます。文書では `no_promote_tool`
+    を主な event として案内していない一方、実装差分として本番・配布テンプレートの挙動がずれるのは post-write 検証観点の『配布テンプレートと
+    repo hook 設定の整合性』に抵触します。
+- severity: INFO
+  target_location: tests/hooks/test_codex_session_record_promote_previous.py
+  description: 新 hook の失敗時にセッション開始を妨げないことを明示的に固定するテストが見当たりません。
+  rationale: 文書の検証観点に『hook 失敗時にセッション開始を妨げず、診断ログで原因を追えるか』が含まれています。現テストは mismatch/unverifiable/non-SessionStart/no
+    previous draft はカバーしていますが、promote CLI 自体の失敗時に returncode 0 と `promote_failed`
+    を確認する専用ケースがあると、今回の安全性要件をより直接に担保できます。

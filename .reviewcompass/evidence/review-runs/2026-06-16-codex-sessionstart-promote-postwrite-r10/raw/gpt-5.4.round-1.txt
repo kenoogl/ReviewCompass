@@ -1,0 +1,9 @@
+findings:
+  - severity: WARN
+    target_location: "tests/hooks/test_codex_session_record_promote_previous.py"
+    description: "新しい SessionStart hook の主要 no-op/失敗分岐（no_current_session_id、no_cwd、no_draft_dir、no_promote_tool、promote_failed）がテスト一覧と tracked diff 上で未確認。"
+    rationale: "対象文書は r5-r9 指摘の解消と安全側停止を強く主張しているが、提示された追加テストは hash/jq/duplicate rollout 系に偏っている。SessionStart hook は常に exit 0 の診断駆動設計のため、主要分岐を固定しないと将来の変更でセッション開始を妨げない契約や診断イベント名の整合が崩れても検出しにくい。"
+  - severity: INFO
+    target_location: "TODO_NEXT_SESSION.md / 項目13"
+    description: "実環境発火確認の記述は PostToolUse hook の trust 確認に留まり、今回追加した SessionStart 昇格 hook 自体の実環境発火確認は『次の SessionStart で自動昇格する』という予定表現のまま。"
+    rationale: "フェーズは post_write_verification であり、文書内でも『実装済み』『完了』を複数箇所で主張しているため、実環境で確認済みの範囲と未確認の範囲を明確に分けると追跡性が上がる。現状の記述でも不整合ではないが、完了表現が広いため読者が SessionStart 実発火まで検証済みと誤解する余地がある。"

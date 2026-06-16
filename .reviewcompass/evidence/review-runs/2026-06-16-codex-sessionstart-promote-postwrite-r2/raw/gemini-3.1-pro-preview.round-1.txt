@@ -1,0 +1,5 @@
+findings:
+  - severity: ERROR
+    target_location: ".codex/hooks/session-record-promote-previous-draft.sh"
+    description: "TARGET_INFO を生成するサブシェル内で python3 がハードコードされており、REVIEWCOMPASS_PYTHON 環境変数が使われていない"
+    rationale: "r1所見への対処として「REVIEWCOMPASS_PYTHON 環境変数があればそれを使う」という方針が取られていますが、この1箇所だけ反映漏れがあります（テンプレートの `templates/hooks/session-record-promote-previous-draft.sh.template` 側は正しく `\"$REVIEWCOMPASS_PYTHON\"` となっています）。これにより、特定の環境で意図しない Python 実行系が呼ばれて実行に失敗する可能性があります。"

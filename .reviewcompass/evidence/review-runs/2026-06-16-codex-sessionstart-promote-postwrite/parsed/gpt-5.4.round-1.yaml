@@ -1,0 +1,18 @@
+role: primary
+provider: openai-api
+model: gpt-5.4
+attempts: 1
+duration_seconds: 5.412
+findings:
+- severity: WARN
+  target_location: .codex/hooks/session-record-promote-previous-draft.sh
+  description: 新規 hook 実装が昇格ツール呼び出しに `python3` を固定使用しており、配布テンプレートが使う置換済み Python 実行系と不整合です。
+  rationale: 対象文書の合意・検証観点には文書・設定・テンプレートの整合性が含まれます。テンプレート側は `{{REVIEWCOMPASS_PYTHON}}`
+    を使って依存導入済み実行系を明示するのに対し、repo 実装側は `python3` 固定です。環境によっては hook README/セットアップ手順どおりの
+    Python と実際の repo hook の Python が異なり、依存不足や挙動差で SessionStart 昇格だけ失敗する可能性があります。
+- severity: INFO
+  target_location: tests/hooks/test_codex_session_record_promote_previous.py
+  description: 追加テストは `startup` 契機しか実行しておらず、設定で登録した `resume` matcher の動作確認は含んでいません。
+  rationale: '`.codex/hooks.json` とテンプレートは `matcher: "startup|resume"` を前提にしているため、検証観点の『新
+    hook が current session_id を正式化せず、最新の別 session_id 下書きだけを昇格するか』を resume 再開時にも担保するなら、`source:
+    resume` での少なくとも 1 件の回帰テストがあると設定との対応がより明確になります。'
