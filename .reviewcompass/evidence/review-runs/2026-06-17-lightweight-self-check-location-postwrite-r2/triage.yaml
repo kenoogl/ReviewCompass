@@ -1,0 +1,27 @@
+run_id: 2026-06-17-lightweight-self-check-location-postwrite-r2
+triage_status: decided
+generated_at: '2026-06-17T03:48:17.674690+00:00'
+decision_actor: null
+decision_actor_type: human
+items:
+- finding_id: 2026-06-17-lightweight-self-check-location-postwrite-r2-gemini-3.5-flash-primary-001
+  run_id: 2026-06-17-lightweight-self-check-location-postwrite-r2
+  source_model: gemini-3.5-flash
+  source_round: round-1
+  source_raw_path: raw/gemini-3.5-flash.round-1.txt
+  source_parsed_path: parsed/gemini-3.5-flash.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: TODO_NEXT_SESSION.md
+  plain_language_summary: The proposed task for 'lightweight_self_check' classification
+    based on artifact class may conflict with the directory-only restriction.
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: llm
+  decision_actor_type: agent
+  decision_at: '2026-06-17T03:48:47.767642+00:00'
+  decision_reason: docs/operations/WORKFLOW_NAVIGATION.md は docs/notes/working/ 配下に限定すると明記しており、実装も
+    path prefix 判定のみで artifact class / front matter 判定を使っていない。TODO_NEXT_SESSION.md
+    の変更も旧メモパスを docs/notes/working/ 配下へ差し替えた参照更新だけで、指摘された矛盾は現差分に存在しない。
+  applied_files: []
+  superseded_by: null

@@ -453,6 +453,49 @@ findings:
   assert summary_model["findings_count_by_severity"]["WARN"] == 1
 
 
+def test_main_records_multiple_targets_in_review_run_artifacts(
+  tmp_config, tmp_path, monkeypatch
+):
+  """--target 複数指定時に全対象を manifest と rounds に記録する。"""
+  monkeypatch.setenv("ANTHROPIC_API_KEY", "test-key")
+  first_target = tmp_path / "first.md"
+  second_target = tmp_path / "second.md"
+  first_target.write_text("first\n", encoding="utf-8")
+  second_target.write_text("second\n", encoding="utf-8")
+  review_run_dir = tmp_path / "review-run"
+  mock_cls, mock_instance = _make_mock_provider(send_response="findings: []\n")
+
+  with patch("tools.api_providers.run_role.get_provider", return_value=mock_cls):
+    exit_code = main(
+      [
+        "--role", "primary",
+        "--target", str(first_target),
+        "--target", str(second_target),
+        "--phase", "post_write_verification",
+        "--criteria", "観点-1",
+        "--config", str(tmp_config),
+        "--review-run-dir", str(review_run_dir),
+      ]
+    )
+
+  assert exit_code == 0
+  sent_prompt = mock_instance.send_request.call_args.args[0]
+  assert str(first_target) in sent_prompt
+  assert str(second_target) in sent_prompt
+  target_manifest = yaml.safe_load(
+    (review_run_dir / "target-manifest.yaml").read_text(encoding="utf-8")
+  )
+  rounds = yaml.safe_load((review_run_dir / "rounds.yaml").read_text(encoding="utf-8"))
+  assert [item["path"] for item in target_manifest["target_files"]] == [
+    str(first_target),
+    str(second_target),
+  ]
+  assert [item["path"] for item in rounds["target_files"]] == [
+    str(first_target),
+    str(second_target),
+  ]
+
+
 def test_main_records_effective_prompt_metadata_in_rounds(
   tmp_target_file, tmp_config, tmp_path, monkeypatch
 ):

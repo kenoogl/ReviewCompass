@@ -225,6 +225,48 @@ def test_run_review_uses_post_write_default_variant_when_phase_is_post_write(tmp
   assert [item["role"] for item in rounds["model_results"]] == ["primary"]
 
 
+def test_run_review_records_multiple_targets_in_review_run_artifacts(tmp_path, monkeypatch):
+  """run_review の複数 --target が target-manifest と rounds に残る。"""
+  monkeypatch.setenv("GEMINI_API_KEY", "test-key")
+  first_target = tmp_path / "first.md"
+  second_target = tmp_path / "second.md"
+  first_target.write_text("first\n", encoding="utf-8")
+  second_target.write_text("second\n", encoding="utf-8")
+  config_path = _make_config(tmp_path)
+  review_run_dir = tmp_path / "review-run"
+  responses = {"gemini-api": "findings: []\n"}
+
+  with patch(
+    "tools.api_providers.run_review.get_provider",
+    side_effect=_make_provider_factory(responses),
+  ):
+    exit_code = main(
+      [
+        "--variant", "post_write_verification_google",
+        "--target", str(first_target),
+        "--target", str(second_target),
+        "--phase", "post_write_verification",
+        "--criteria", "観点-1",
+        "--review-run-dir", str(review_run_dir),
+        "--config", str(config_path),
+      ]
+    )
+
+  assert exit_code == 0
+  target_manifest = yaml.safe_load(
+    (review_run_dir / "target-manifest.yaml").read_text(encoding="utf-8")
+  )
+  rounds = yaml.safe_load((review_run_dir / "rounds.yaml").read_text(encoding="utf-8"))
+  assert [item["path"] for item in target_manifest["target_files"]] == [
+    str(first_target),
+    str(second_target),
+  ]
+  assert [item["path"] for item in rounds["target_files"]] == [
+    str(first_target),
+    str(second_target),
+  ]
+
+
 def test_run_review_respects_single_role_variant_required_roles(tmp_path, monkeypatch, capsys):
   """single_role variant は required_roles に従い primary だけを実行する。"""
   monkeypatch.setenv("GEMINI_API_KEY", "test-key")

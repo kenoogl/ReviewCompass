@@ -2881,6 +2881,68 @@ class NextNavigationTests(unittest.TestCase):
     self.assertEqual(data["next_action"]["kind"], "post_write_verification")
     self.assertEqual(data["next_action"]["target_files"], ["docs/notes/new-policy.md"])
 
+  def test_next_routes_working_notes_to_lightweight_self_check(self):
+    """docs/notes/working 配下だけなら API post-write ではなく軽量自己精査を返す"""
+    cwd = Path(self.tmpdir)
+    _init_git_repo(cwd)
+    _write_specs_for_next(cwd, {})
+    target = cwd / "docs" / "notes" / "working" / "memo.md"
+    target.parent.mkdir(parents=True, exist_ok=True)
+    target.write_text("作業中メモ\n", encoding="utf-8")
+
+    result = run_script(["next", "--json"], cwd=cwd)
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 0, result.stderr)
+    data = json.loads(result.stdout)
+    self.assertEqual(data["verdict"], "OK")
+    self.assertEqual(data["next_action"]["kind"], "lightweight_self_check")
+    self.assertEqual(data["next_action"]["target_files"], ["docs/notes/working/memo.md"])
+    self.assertEqual(
+      data["next_action"]["required_action"],
+      "review_working_note_without_api",
+    )
+
+  def test_next_keeps_regular_notes_as_post_write_targets(self):
+    """docs/notes 直下は混在配置なので従来どおり post-write 対象にする"""
+    cwd = Path(self.tmpdir)
+    _init_git_repo(cwd)
+    _write_specs_for_next(cwd, {})
+    target = cwd / "docs" / "notes" / "memo.md"
+    target.parent.mkdir(parents=True, exist_ok=True)
+    target.write_text("通常メモ\n", encoding="utf-8")
+
+    result = run_script(["next", "--json"], cwd=cwd)
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 0, result.stderr)
+    data = json.loads(result.stdout)
+    self.assertEqual(data["next_action"]["kind"], "post_write_verification")
+    self.assertEqual(data["next_action"]["target_files"], ["docs/notes/memo.md"])
+
+  def test_next_prioritizes_strict_post_write_when_mixed_with_working_notes(self):
+    """軽量メモと strict 対象が混ざる場合は strict post-write を優先する"""
+    cwd = Path(self.tmpdir)
+    _init_git_repo(cwd)
+    _write_specs_for_next(cwd, {})
+    working = cwd / "docs" / "notes" / "working" / "memo.md"
+    strict = cwd / "TODO_NEXT_SESSION.md"
+    working.parent.mkdir(parents=True, exist_ok=True)
+    working.write_text("作業中メモ\n", encoding="utf-8")
+    strict.write_text("# TODO\n", encoding="utf-8")
+
+    result = run_script(["next", "--json"], cwd=cwd)
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 0, result.stderr)
+    data = json.loads(result.stdout)
+    self.assertEqual(data["next_action"]["kind"], "post_write_verification")
+    self.assertEqual(data["next_action"]["target_files"], ["TODO_NEXT_SESSION.md"])
+    self.assertEqual(
+      data["current_state"]["lightweight_self_check_targets"],
+      ["docs/notes/working/memo.md"],
+    )
+
   def test_next_post_write_verification_target_matrix(self):
     """規律で定義された post-write-verification 対象だけを検出する"""
     cwd = Path(self.tmpdir)

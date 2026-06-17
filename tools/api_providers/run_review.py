@@ -210,7 +210,12 @@ def _parse_argv(argv: Optional[List[str]]) -> argparse.Namespace:
     description="3 role API review を同じ review-run に集約して実行する。",
   )
   parser.add_argument("--variant", default=None, help="variant 名。未指定なら default")
-  parser.add_argument("--target", required=True, help="対象文書ファイルパス")
+  parser.add_argument(
+    "--target",
+    required=True,
+    action="append",
+    help="対象文書ファイルパス（複数指定可）",
+  )
   parser.add_argument("--phase", required=True, help="段名")
   parser.add_argument("--criteria", required=True, help="観点識別子")
   parser.add_argument("--review-run-dir", required=True, help="review-run 成果物ディレクトリ")

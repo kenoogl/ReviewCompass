@@ -1,0 +1,28 @@
+status: completed
+target_files:
+- TODO_NEXT_SESSION.md
+- docs/operations/WORKFLOW_DISCIPLINE_MAP.yaml
+- docs/operations/WORKFLOW_NAVIGATION.md
+target_sha256:
+  TODO_NEXT_SESSION.md: a778fb0afac8b5d571d701c1a2fafb8735ed1f5a72f78c7be8c822b0f32f3715
+  docs/operations/WORKFLOW_DISCIPLINE_MAP.yaml: 99a83ea7e77cc53bf775cc430b0fa21000b5edf4fbafddef73bbab2f0fc19f57
+  docs/operations/WORKFLOW_NAVIGATION.md: d54fa1df88b2a62eb446da04b6c36c4860f51b99dc0229304a7ea2fff9d5cc83
+required_verifiers: &id001
+- gemini-3.5-flash
+completed_verifiers: *id001
+unresolved_substantive_findings: 0
+verifications:
+- verifier: gemini-3.5-flash
+  target_files:
+  - TODO_NEXT_SESSION.md
+  - docs/operations/WORKFLOW_DISCIPLINE_MAP.yaml
+  - docs/operations/WORKFLOW_NAVIGATION.md
+  target_sha256:
+    TODO_NEXT_SESSION.md: a778fb0afac8b5d571d701c1a2fafb8735ed1f5a72f78c7be8c822b0f32f3715
+    docs/operations/WORKFLOW_DISCIPLINE_MAP.yaml: 99a83ea7e77cc53bf775cc430b0fa21000b5edf4fbafddef73bbab2f0fc19f57
+    docs/operations/WORKFLOW_NAVIGATION.md: d54fa1df88b2a62eb446da04b6c36c4860f51b99dc0229304a7ea2fff9d5cc83
+review_run:
+  path: .reviewcompass/evidence/review-runs/2026-06-17-lightweight-self-check-location-postwrite-r2
+  summary_path: .reviewcompass/evidence/review-runs/2026-06-17-lightweight-self-check-location-postwrite-r2/model-result-summary.yaml
+notes: Generated template; verify target_files cover current post-write targets before
+  use.

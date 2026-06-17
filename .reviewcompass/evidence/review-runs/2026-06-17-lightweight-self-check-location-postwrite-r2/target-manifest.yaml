@@ -1,0 +1,8 @@
+run_id: 2026-06-17-lightweight-self-check-location-postwrite-r2
+target_files:
+- path: TODO_NEXT_SESSION.md
+  sha256: a778fb0afac8b5d571d701c1a2fafb8735ed1f5a72f78c7be8c822b0f32f3715
+- path: docs/operations/WORKFLOW_NAVIGATION.md
+  sha256: d54fa1df88b2a62eb446da04b6c36c4860f51b99dc0229304a7ea2fff9d5cc83
+- path: docs/operations/WORKFLOW_DISCIPLINE_MAP.yaml
+  sha256: 99a83ea7e77cc53bf775cc430b0fa21000b5edf4fbafddef73bbab2f0fc19f57

@@ -109,3 +109,9 @@ def test_design_notes_remain_target():
   cwa = _load_cwa()
   assert cwa.is_post_write_verification_target(
     "docs/notes/2026-06-12-document-placement-plan.md") is True
+
+
+def test_working_notes_are_not_strict_post_write_targets():
+  cwa = _load_cwa()
+  assert cwa.is_post_write_verification_target(
+    "docs/notes/working/2026-06-17-memo.md") is False

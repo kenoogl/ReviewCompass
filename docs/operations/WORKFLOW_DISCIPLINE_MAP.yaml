@@ -47,6 +47,10 @@ decision_points:
         - docs/operations/WORKFLOW_NAVIGATION.md#post_write_verification
         - docs/disciplines/discipline_post_write_verification.md
       effective_prompt_policy: one_effective_prompt_per_decision_point
+    - id: lightweight_self_check
+      prompt_source_refs:
+        - docs/operations/WORKFLOW_NAVIGATION.md#lightweight_self_check
+      effective_prompt_policy: one_effective_prompt_per_decision_point
     - id: post_write_policy_violation
       prompt_source_refs:
         - docs/operations/WORKFLOW_NAVIGATION.md#post_write_policy_violation
@@ -324,6 +328,8 @@ by_kind:
   post_write_verification:
     - docs/operations/WORKFLOW_NAVIGATION.md#post_write_verification
     - docs/disciplines/discipline_post_write_verification.md
+  lightweight_self_check:
+    - docs/operations/WORKFLOW_NAVIGATION.md#lightweight_self_check
   post_write_policy_violation:
     - docs/operations/WORKFLOW_NAVIGATION.md#post_write_policy_violation
     - docs/disciplines/discipline_post_write_verification.md

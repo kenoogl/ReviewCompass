@@ -68,8 +68,37 @@ def _select_prompt_template(provider_name: Optional[str]) -> Tuple[str, str]:
   return template_file.removesuffix(".md"), template_path.read_text(encoding="utf-8")
 
 
+def _normalize_target_paths(target_paths: Any) -> List[str]:
+  """単一 target と複数 target の入力を list に正規化する。"""
+  if isinstance(target_paths, list):
+    return [str(path) for path in target_paths]
+  return [str(target_paths)]
+
+
+def _read_target_content(target_paths: List[str]) -> str:
+  """target 群を 1 つの review prompt 用本文へ束ねる。"""
+  if len(target_paths) == 1:
+    return Path(target_paths[0]).read_text(encoding="utf-8")
+  parts = []
+  for target_path in target_paths:
+    target_content = Path(target_path).read_text(encoding="utf-8")
+    parts.append(f"## {target_path}\n\n{target_content}")
+  return "\n\n".join(parts)
+
+
+def _target_file_entries(target_paths: List[str]) -> List[Dict[str, str]]:
+  """review-run の target_files entry 群を作る。"""
+  return [
+    {
+      "path": target_path,
+      "sha256": _sha256_file(Path(target_path)),
+    }
+    for target_path in target_paths
+  ]
+
+
 def build_prompt(
-  target_path: str,
+  target_path: Any,
   phase: str,
   criteria: str,
   prior_finding_paths: List[str],
@@ -80,7 +109,8 @@ def build_prompt(
 
   provider ごとの差異を吸収するため、専用テンプレートがあればそれを使う。
   """
-  target_content = Path(target_path).read_text(encoding="utf-8")
+  target_paths = _normalize_target_paths(target_path)
+  target_content = _read_target_content(target_paths)
   prior_parts = []
   for i, prior_path in enumerate(prior_finding_paths, start=1):
     prior_content = Path(prior_path).read_text(encoding="utf-8")
@@ -95,7 +125,7 @@ def build_prompt(
       "model": model or "unknown-model",
       "phase": phase,
       "criteria": criteria,
-      "target_path": target_path,
+      "target_path": "\n".join(target_paths),
       "target_content": target_content,
       "prior_findings": "\n\n".join(prior_parts) if prior_parts else "なし",
     },
@@ -208,7 +238,7 @@ def update_review_run_artifacts(
   review_run_dir: str,
   *,
   round_id: str,
-  target_path: str,
+  target_path: Any,
   phase: str,
   criteria: str,
   role: str,
@@ -239,20 +269,15 @@ def update_review_run_artifacts(
     _write_text(parsed_path, formatted_output)
     parsed_sha256 = _sha256_file(parsed_path)
 
-  target_file = Path(target_path)
-  target_sha256 = _sha256_file(target_file)
+  target_paths = _normalize_target_paths(target_path)
+  target_files = _target_file_entries(target_paths)
   now = datetime.now(timezone.utc).isoformat()
 
   _dump_yaml(
     run_dir / "target-manifest.yaml",
     {
       "run_id": run_dir.name,
-      "target_files": [
-        {
-          "path": target_path,
-          "sha256": target_sha256,
-        },
-      ],
+      "target_files": target_files,
     },
   )
 
@@ -287,12 +312,7 @@ def update_review_run_artifacts(
     "round_id": round_id,
     "purpose": phase,
     "invocation_timestamp": now,
-    "target_files": [
-      {
-        "path": target_path,
-        "sha256": target_sha256,
-      },
-    ],
+    "target_files": target_files,
     "criteria": criteria,
     "prompt_sha256": _sha256_text(prompt),
     "model_results": model_results,
@@ -349,6 +369,7 @@ def _parse_argv(argv: Optional[List[str]]) -> argparse.Namespace:
   parser.add_argument(
     "--target",
     required=True,
+    action="append",
     help="対象文書ファイルパス（必須）",
   )
   parser.add_argument(

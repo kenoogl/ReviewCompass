@@ -1,0 +1,5 @@
+findings:
+  - severity: WARN
+    target_location: "TODO_NEXT_SESSION.md"
+    description: "The proposed task for 'lightweight_self_check' classification based on artifact class may conflict with the directory-only restriction."
+    rationale: "According to WORKFLOW_NAVIGATION.md, the lightweight self-check is strictly limited to the 'docs/notes/working/' directory, and content-based or front-matter-based (artifact class) determination is/should be excluded from the initial implementation. Any logic relying on artifact class rather than the directory path could violate the strict location policy."

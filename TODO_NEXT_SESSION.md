@@ -35,7 +35,7 @@
   - `next --json` 返値に紐づく effective prompt 必読、読了証跡、coverage audit、短文化の締め直しメモ。
 - `docs/notes/2026-06-17-maintenance-workflow-compliance-improvement-candidates.md`
   - maintenance workflow 遵守、commit sandbox `.git/index.lock` preflight、maintenance / reopen / new workflow の使い分け、手続きの比例性の候補。
-- `docs/notes/2026-06-17-working-note-verification-trigger-policy.md`
+- `docs/notes/working/2026-06-17-working-note-verification-trigger-policy.md`
   - 作業中メモを API post-write に反復投入せず、`lightweight_self_check` に分岐する候補。
 - `stages/completed/maintenance-2026-06-17-commit-sandbox-preflight.yaml`
   - commit sandbox preflight は実装・テスト・設計 / タスク反映まで完了済み。

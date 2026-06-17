@@ -42,6 +42,9 @@ POST_WRITE_VERIFICATION_FILE_PREFIXES = (
   "runtime/prompts/",
   "tools/api_providers/prompt_templates/",
 )
+LIGHTWEIGHT_SELF_CHECK_DIR_PREFIXES = (
+  "docs/notes/working/",
+)
 
 
 def _load_yaml_dict(path: Path) -> Dict[str, Any]:
@@ -73,6 +76,8 @@ def _parse_git_status_path(line: str) -> Optional[str]:
 def _is_post_write_target(path: str) -> bool:
   """post-write-verification 対象の md 文書パスかを返す。"""
   if path.startswith("docs/archive/"):
+    return False
+  if any(path.startswith(prefix) for prefix in LIGHTWEIGHT_SELF_CHECK_DIR_PREFIXES):
     return False
   if path in POST_WRITE_VERIFICATION_FILE_PATHS:
     return True

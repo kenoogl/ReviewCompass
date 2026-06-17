@@ -317,6 +317,10 @@ POST_WRITE_VERIFICATION_DIR_PREFIXES = (
   "docs/experiments/",
 )
 
+LIGHTWEIGHT_SELF_CHECK_DIR_PREFIXES = (
+  "docs/notes/working/",
+)
+
 AUTONOMOUS_PARALLEL_REQUIRED_INTEGRATION_GATES = (
   "requires_main_session_review",
   "requires_diff_scope_check",
@@ -4299,6 +4303,8 @@ def _is_machine_generated_record(cwd, path):
 
 def is_post_write_verification_target(path, cwd="."):
   """post-write-verification 規律の対象ファイルかを判定する"""
+  if is_lightweight_self_check_target(path):
+    return False
   # 機械生成・出所明記の派生記録は性質上、独立検証ではなく再現性で担保するため対象外
   if _is_machine_generated_record(cwd, path):
     return False
@@ -4334,6 +4340,11 @@ def is_post_write_verification_target(path, cwd="."):
   return False
 
 
+def is_lightweight_self_check_target(path):
+  """API post-write ではなく軽量自己精査で扱う作業中メモかを返す。"""
+  return any(path.startswith(prefix) for prefix in LIGHTWEIGHT_SELF_CHECK_DIR_PREFIXES)
+
+
 def list_post_write_verification_targets(cwd):
   """未コミット変更のうち post-write-verification 対象を返す"""
   return [
@@ -4341,6 +4352,40 @@ def list_post_write_verification_targets(cwd):
     for path in list_changed_files(cwd)
     if is_post_write_verification_target(path, cwd)
   ]
+
+
+def list_lightweight_self_check_targets(cwd):
+  """未コミット変更のうち軽量自己精査対象を返す。"""
+  return [
+    path
+    for path in list_changed_files(cwd)
+    if is_lightweight_self_check_target(path)
+  ]
+
+
+def build_lightweight_self_check_next_state(cwd, targets):
+  """軽量自己精査対象の next 状態を返す。完了済みなら None。"""
+  if not targets:
+    return None
+  manifest_state, manifest = evaluate_post_write_manifest_state(cwd, targets)
+  if manifest_state == "completed":
+    return None
+  return {
+    "next_action": {
+      "kind": "lightweight_self_check",
+      "required_action": "review_working_note_without_api",
+      "target_files": targets,
+      "feature": None,
+      "phase": None,
+      "stage": None,
+      "reason": "作業中メモ置き場の変更であり、API post-write verification ではなく軽量自己精査を行う",
+    },
+    "current_state": {
+      "lightweight_self_check_targets": targets,
+      "manifest_status": manifest_state,
+      "manifest": manifest,
+    },
+  }
 
 
 def is_forbidden_post_write_pending_change(path, verification_targets):
@@ -5108,10 +5153,20 @@ def cmd_next(args):
 
   if not in_progress_files or maintenance_action:
     verification_targets = list_post_write_verification_targets(cwd)
+    lightweight_targets = list_lightweight_self_check_targets(cwd)
     if verification_targets:
       manifest_state, manifest = evaluate_post_write_manifest_state(cwd, verification_targets)
       if manifest_state == "completed":
-        if maintenance_action:
+        lightweight_state = build_lightweight_self_check_next_state(cwd, lightweight_targets)
+        if lightweight_state:
+          next_action = lightweight_state["next_action"]
+          current_state = lightweight_state["current_state"]
+          current_state["post_write_manifest"] = manifest.get("_path")
+          if maintenance_action:
+            current_state["in_progress_files"] = in_progress_files
+          reasons = []
+          verdict, exit_code = "OK", 0
+        elif maintenance_action:
           next_action = maintenance_action
           current_state = {
             "in_progress_files": in_progress_files,
@@ -5169,6 +5224,8 @@ def cmd_next(args):
             "post_write_verification_targets": verification_targets,
             "forbidden_files": forbidden_files,
           }
+          if lightweight_targets:
+            current_state["lightweight_self_check_targets"] = lightweight_targets
           if maintenance_action:
             current_state["in_progress_files"] = in_progress_files
           reasons = [
@@ -5190,6 +5247,8 @@ def cmd_next(args):
             "post_write_verification_targets": verification_targets,
             "manifest": manifest,
           }
+          if lightweight_targets:
+            current_state["lightweight_self_check_targets"] = lightweight_targets
           if maintenance_action:
             current_state["in_progress_files"] = in_progress_files
           reasons = ["未解決の本質的指摘について人間判断が必要です"]
@@ -5204,12 +5263,22 @@ def cmd_next(args):
             "reason": "post-write-verification 対象の未コミット変更があります",
           }
           current_state = {"post_write_verification_targets": verification_targets}
+          if lightweight_targets:
+            current_state["lightweight_self_check_targets"] = lightweight_targets
           if maintenance_action:
             current_state["in_progress_files"] = in_progress_files
           reasons = []
           verdict, exit_code = "OK", 0
     else:
-      if maintenance_action:
+      lightweight_state = build_lightweight_self_check_next_state(cwd, lightweight_targets)
+      if lightweight_state:
+        next_action = lightweight_state["next_action"]
+        current_state = lightweight_state["current_state"]
+        if maintenance_action:
+          current_state["in_progress_files"] = in_progress_files
+        reasons = []
+        verdict, exit_code = "OK", 0
+      elif maintenance_action:
         next_action = maintenance_action
         current_state = {"in_progress_files": in_progress_files}
         reasons = []
