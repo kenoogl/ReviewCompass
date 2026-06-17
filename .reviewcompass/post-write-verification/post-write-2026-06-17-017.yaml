@@ -1,0 +1,23 @@
+status: completed
+target_files:
+  - docs/notes/working/2026-06-17-commit-operation-card-and-next-json-prompt-selection.md
+target_sha256:
+  docs/notes/working/2026-06-17-commit-operation-card-and-next-json-prompt-selection.md: 4f1c5f0d0c4e14d2f46d7707472651dc51fcd62a934c1565ce9d59ea006b1ee1
+required_verifiers:
+  - lightweight_self_check
+completed_verifiers:
+  - lightweight_self_check
+unresolved_substantive_findings: 0
+verifications:
+  - verifier: lightweight_self_check
+    target_files:
+      - docs/notes/working/2026-06-17-commit-operation-card-and-next-json-prompt-selection.md
+    target_sha256:
+      docs/notes/working/2026-06-17-commit-operation-card-and-next-json-prompt-selection.md: 4f1c5f0d0c4e14d2f46d7707472651dc51fcd62a934c1565ce9d59ea006b1ee1
+    checks:
+      user_points_preserved: true
+      facts_inferences_policy_and_open_items_separated: true
+      useful_as_later_decision_material: true
+      does_not_over_specify_scope: true
+      remains_working_note_not_canonical_spec: true
+notes: "Lightweight self-check for docs/notes/working/ only; API review intentionally not used."
