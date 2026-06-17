@@ -1,0 +1,9 @@
+findings:
+  - severity: WARN
+    target_location: "docs/operations/COMMIT_OPERATION_CARD.md"
+    description: "Claude Adapter (claude_adapter) 用の専用セクションまたは統合手順の記述が欠落しています。"
+    rationale: "基準 `claude_adapter_commit_card_integration` に基づき、Codex や Claude Code と同様に、claude_adapter がコミット操作を行う際の固有の制約（stdinの処理、ノンインタラクティブ実行時の invalidation 回避策など）に関するガイダンスを明記する必要があります。"
+  - severity: WARN
+    target_location: "docs/operations/WORKFLOW_DISCIPLINE_MAP.yaml"
+    description: "Claude Adapter 統合を確実に機能させるための、規律マップ内の決定ポイント（decision_point）やマッピング定義が不足しています。"
+    rationale: "Claude Adapter がコミット前チェックやコミット実行時に `COMMIT_OPERATION_CARD.md` を確実にロードしてコンテキストとして利用できるよう、規律マップ側で対応する決定ポイントやマッピングを定義し、システム統合を担保する必要があります。"

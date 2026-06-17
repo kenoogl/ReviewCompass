@@ -1,0 +1,6 @@
+run_id: 2026-06-17-claude-adapter-commit-prompt-postwrite
+target_files:
+- path: docs/operations/COMMIT_OPERATION_CARD.md
+  sha256: 6f3c64925016e4588c0660a351e9c2496290e654f0bb11910044570d28d21a3e
+- path: docs/operations/WORKFLOW_DISCIPLINE_MAP.yaml
+  sha256: dcd4608b95a7e292538cdf6af1b45ab8859f5c37606e94ef42ad8bb81a76d77d

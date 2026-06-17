@@ -1,0 +1,24 @@
+status: completed
+target_files:
+- docs/operations/COMMIT_OPERATION_CARD.md
+- docs/operations/WORKFLOW_DISCIPLINE_MAP.yaml
+target_sha256:
+  docs/operations/COMMIT_OPERATION_CARD.md: 6f3c64925016e4588c0660a351e9c2496290e654f0bb11910044570d28d21a3e
+  docs/operations/WORKFLOW_DISCIPLINE_MAP.yaml: dcd4608b95a7e292538cdf6af1b45ab8859f5c37606e94ef42ad8bb81a76d77d
+required_verifiers:
+- gemini-3.5-flash
+completed_verifiers:
+- gemini-3.5-flash
+unresolved_substantive_findings: 0
+verifications:
+- verifier: gemini-3.5-flash
+  target_files:
+  - docs/operations/COMMIT_OPERATION_CARD.md
+  - docs/operations/WORKFLOW_DISCIPLINE_MAP.yaml
+  target_sha256:
+    docs/operations/COMMIT_OPERATION_CARD.md: 6f3c64925016e4588c0660a351e9c2496290e654f0bb11910044570d28d21a3e
+    docs/operations/WORKFLOW_DISCIPLINE_MAP.yaml: dcd4608b95a7e292538cdf6af1b45ab8859f5c37606e94ef42ad8bb81a76d77d
+review_run:
+  path: .reviewcompass/evidence/review-runs/2026-06-17-claude-adapter-commit-prompt-postwrite
+  summary_path: .reviewcompass/evidence/review-runs/2026-06-17-claude-adapter-commit-prompt-postwrite/model-result-summary.yaml
+notes: "1体検証（post_write_verification_google・gemini-3.5-flash）。所見2件（WARN）はいずれも設計意図の誤認による逐語的指摘としてleave-as-is。利用者承認済み。"

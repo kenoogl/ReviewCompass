@@ -1,0 +1,42 @@
+run_id: 2026-06-17-claude-adapter-commit-prompt-postwrite
+triage_status: decided
+generated_at: '2026-06-17T09:00:27.464954+00:00'
+decision_actor: human
+decision_actor_type: human
+items:
+- finding_id: 2026-06-17-claude-adapter-commit-prompt-postwrite-gemini-3.5-flash-primary-001
+  run_id: 2026-06-17-claude-adapter-commit-prompt-postwrite
+  source_model: gemini-3.5-flash
+  source_round: round-1
+  source_raw_path: raw/gemini-3.5-flash.round-1.txt
+  source_parsed_path: parsed/gemini-3.5-flash.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: docs/operations/COMMIT_OPERATION_CARD.md
+  plain_language_summary: Claude Adapter (claude_adapter) 用の専用セクションまたは統合手順の記述が欠落しています。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-17T09:10:00.000000+00:00'
+  decision_reason: "今回の変更で ## Claude Code 節を追加済み。Gemini が criteria 識別子 claude_adapter_commit_card_integration に引きずられてセクション名の不一致を欠落と誤認した逐語的指摘。内容（空 stdin 禁止など Claude Code 固有の注意）は既に記述されている。"
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-17-claude-adapter-commit-prompt-postwrite-gemini-3.5-flash-primary-002
+  run_id: 2026-06-17-claude-adapter-commit-prompt-postwrite
+  source_model: gemini-3.5-flash
+  source_round: round-1
+  source_raw_path: raw/gemini-3.5-flash.round-1.txt
+  source_parsed_path: parsed/gemini-3.5-flash.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: docs/operations/WORKFLOW_DISCIPLINE_MAP.yaml
+  plain_language_summary: Claude Adapter 統合を確実に機能させるための、規律マップ内の決定ポイント（decision_point）やマッピング定義が不足しています。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-17T09:10:00.000000+00:00'
+  decision_reason: "案B（操作カードへ統合）の設計意図は adapter 参照を DISCIPLINE_MAP から削除してカード1本に集約すること。Geminiは adapter 参照を追加せよと逆方向の指摘をしており、設計方針を誤認した逐語的指摘。利用者承認済みの案B方針に従い leave-as-is。"
+  applied_files: []
+  superseded_by: null
