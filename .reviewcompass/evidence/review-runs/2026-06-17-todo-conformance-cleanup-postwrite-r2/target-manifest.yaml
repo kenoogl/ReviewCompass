@@ -1,0 +1,4 @@
+run_id: 2026-06-17-todo-conformance-cleanup-postwrite-r2
+target_files:
+- path: TODO_NEXT_SESSION.md
+  sha256: 8e439ffd3ca314a909ac1569a97dac80070d296b5dd501ac3769a1e09c91aec4
