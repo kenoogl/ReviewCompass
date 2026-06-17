@@ -24,6 +24,10 @@ commit 操作カード
 
 Codex で `--approval-source-text-line-stdin` を使う場合は、PTY で guarded commit を起動し、入力待ちになってから `write_stdin` で承認 1 行を渡す。sandbox により git 書き込みが拒否された場合は、guarded commit の preflight 結果に従い、必要な escalation を利用者へ確認する。
 
+## Claude Code
+
+Claude Code で `--approval-source-text-line-stdin` を使う場合は、stdin を渡せる実行形でのみ使う。空 stdin での実行は challenge invalidation（承認無効化）を起こすため、非対話・空入力で実行しない。
+
 ## 禁止
 
 - challenge 作成後に、承認 record や staged index を変える別コマンドを挟む。

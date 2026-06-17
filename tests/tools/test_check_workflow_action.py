@@ -2231,8 +2231,8 @@ class NextNavigationTests(unittest.TestCase):
       data["reasons"],
     )
 
-  def test_operation_prompt_commit_outputs_card_adapter_and_effective_prompt(self):
-    """commit 直前の操作 prompt は共通カードと実行面 adapter を返す"""
+  def test_operation_prompt_commit_outputs_card_and_effective_prompt(self):
+    """commit 直前の操作 prompt は共通カードのみを参照し adapter_card フィールドを持たない"""
     cwd = Path(self.tmpdir)
 
     result = run_script(["operation-prompt", "commit", "--json"], cwd=cwd)
@@ -2246,10 +2246,7 @@ class NextNavigationTests(unittest.TestCase):
       data["required_operation_card"],
       "docs/operations/COMMIT_OPERATION_CARD.md#commit-operation-card",
     )
-    self.assertEqual(
-      data["adapter_card"],
-      "docs/operations/WORKFLOW_NAVIGATION_FOR_CODEX.md#3-commit",
-    )
+    self.assertNotIn("adapter_card", data)
     self.assertEqual(
       data["effective_prompt"]["decision_point_refs"],
       [{"group": "operation_prompt", "id": "commit"}],
@@ -2258,7 +2255,7 @@ class NextNavigationTests(unittest.TestCase):
       "docs/operations/COMMIT_OPERATION_CARD.md#commit-operation-card",
       data["effective_prompt"]["prompt_source_refs"],
     )
-    self.assertIn(
+    self.assertNotIn(
       "docs/operations/WORKFLOW_NAVIGATION_FOR_CODEX.md#3-commit",
       data["effective_prompt"]["prompt_source_refs"],
     )

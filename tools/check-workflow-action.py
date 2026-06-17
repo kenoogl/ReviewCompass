@@ -5378,7 +5378,6 @@ def build_operation_prompt_payload(cwd, operation):
     "exit_code": 0,
     "operation": "commit",
     "required_operation_card": "docs/operations/COMMIT_OPERATION_CARD.md#commit-operation-card",
-    "adapter_card": "docs/operations/WORKFLOW_NAVIGATION_FOR_CODEX.md#3-commit",
     "effective_prompt": materialize_effective_prompt(
       cwd,
       prompt_context,

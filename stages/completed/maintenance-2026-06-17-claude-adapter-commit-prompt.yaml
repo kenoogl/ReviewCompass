@@ -1,0 +1,33 @@
+trigger: "r5 review で Claude adapter 欠落が指摘され、Codex 側で leave-as-is 承認。Claude 側で commit 操作カード参照と adapter 統合を修正する"
+mainline_blocked_by: "operation-prompt commit の adapter_card が Codex 固定のままであり、Claude Code 利用時に誤った adapter 参照が返る"
+allowed_scope:
+  - "COMMIT_OPERATION_CARD.md への Claude Code 節追加"
+  - "WORKFLOW_DISCIPLINE_MAP.yaml の operation_prompt > id: commit から Codex adapter 参照を削除しカード1本に集約"
+  - "check-workflow-action.py の build_operation_prompt_payload から adapter_card フィールドを削除"
+  - "対応するテストの修正（adapter_card アサート削除・prompt_source_refs をカード1本に更新）"
+  - "stages/in-progress ファイルの completed 化"
+allowed_files:
+  - "docs/operations/COMMIT_OPERATION_CARD.md"
+  - "docs/operations/WORKFLOW_DISCIPLINE_MAP.yaml"
+  - "tools/check-workflow-action.py"
+  - "tests/tools/test_check_workflow_action.py"
+  - "stages/in-progress/maintenance-2026-06-17-claude-adapter-commit-prompt.yaml"
+completion_conditions:
+  - "COMMIT_OPERATION_CARD.md に Claude Code 節が存在する"
+  - "WORKFLOW_DISCIPLINE_MAP.yaml の operation_prompt > id: commit の prompt_source_refs がカード1本のみ"
+  - "operation-prompt commit --json の出力に adapter_card フィールドが含まれない"
+  - "test_operation_prompt_commit_outputs_card_adapter_and_effective_prompt が adapter_card 削除後も通過する"
+  - "他の既存テストが壊れていない"
+workflow_steps:
+  - "TDD: 先に失敗テストに修正する（adapter_card アサート削除・Codex adapter ref 削除）"
+  - "実装: DISCIPLINE_MAP・スクリプト・カードを修正する"
+  - "検証: 対象テストを通す"
+  - "post-write: lightweight_self_check 方針に従う"
+post_write_verification: "lightweight_self_check（作業中メモの配置ベースで自己確認）"
+completed_at: "2026-06-17"
+completed_steps:
+  - "TDD: test_operation_prompt_commit_outputs_card_and_effective_prompt に改名・adapter_card アサートを assertNotIn に変更・Codex adapter ref アサートを削除して失敗を確認"
+  - "実装: COMMIT_OPERATION_CARD.md に Claude Code 節追加"
+  - "実装: WORKFLOW_DISCIPLINE_MAP.yaml の operation_prompt > id: commit から Codex adapter 参照を削除しカード1本に集約"
+  - "実装: check-workflow-action.py の build_operation_prompt_payload から adapter_card フィールドを削除"
+  - "検証: 対象テスト通過・213件全テスト通過を確認"
