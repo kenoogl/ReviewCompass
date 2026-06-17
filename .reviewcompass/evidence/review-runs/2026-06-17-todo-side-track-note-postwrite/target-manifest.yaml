@@ -1,0 +1,4 @@
+run_id: 2026-06-17-todo-side-track-note-postwrite
+target_files:
+- path: TODO_NEXT_SESSION.md
+  sha256: ce57f50b52984aaf4f723bc2c211af525246ad1b9a0ff225057ac459aeba473e

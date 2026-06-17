@@ -56,6 +56,7 @@
 2. **`next --json` 一意性と effective prompt 強制の締め直し**
    - `WORKFLOW_DISCIPLINE_MAP.yaml` coverage audit、全 action への `effective_prompt` 付与、読了証跡、アンカー節抽出を行う。
    - 他サブコマンドの JSON は次作業 selector ではない。次作業は必ず再度 `next --json` で決める。
+   - `completed` 状態の `prompt_source_refs` に `WORKFLOW_NAVIGATION_FOR_CLAUDE.md` の side track 宣言ルール（§2 規則6）が含まれていない。`DISCIPLINE_MAP` の coverage audit で対応する。
 
 3. **実アプリ pilot**
    - 未着手。対象アプリ root と、対象アプリ側 LLM が参照できる ReviewCompass 配布物配置先を決めるところから始める。
