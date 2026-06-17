@@ -20,16 +20,13 @@
 - `next --json`: `completed`
 - 進行中手続き: なし
 - 直近 commit:
-  - `3e001697 Record commit operation card planning note`
-  - `07be80be Document guarded commit nonce sequence`
-  - `9d374907 Add working note lightweight self-check`
-  - `dfcebfa3 Record commit approval stdin hazard`
-  - `c282f63a Refresh TODO task candidates`
+  - `6050f7f4 Record commit approval wording UX note`
+  - `3f9ff253 Add commit operation prompt`
+  - `616813fe Record conformance reflection candidates`
+  - `ab949fe7 Recover Codex session records`
+  - `7b9c4806 Refresh TODO session handoff`
 - 作業ツリーは clean。
-- `main` は `origin/main` より 3 commits ahead。未 push:
-  - `3e001697 Record commit operation card planning note`
-  - `07be80be Document guarded commit nonce sequence`
-  - `9d374907 Add working note lightweight self-check`
+- `main` は `origin/main` と同期済み。未 push commit なし。
 
 ## 3. 直近の重要メモ
 
@@ -47,29 +44,37 @@
   - 作業中メモの場所ベース lightweight self-check 化、API review 複数 `--target` 証跡化補正まで完了済み。
 - `stages/completed/maintenance-2026-06-17-commit-sandbox-preflight.yaml`
   - commit sandbox preflight は実装・テスト・設計 / タスク反映まで完了済み。
+- `.reviewcompass/specs/conformance-evaluation/conformance/2026-06-12-completed-followup-conformance.md`
+  - completed follow-up conformance は `gap_found`。MLE-GAP-001〜006 の仕様反映待ち。
+- `.reviewcompass/specs/conformance-evaluation/conformance/2026-06-12-reopen-handoff-package.yaml`
+  - conformance 結果を workflow-management / evaluation へ戻すための reopen 引き渡し正本。
 
 ## 4. 次作業候補
 
-1. **commit operation card と不可逆操作 prompt selection**
-   - `docs/notes/working/2026-06-17-commit-operation-card-and-next-json-prompt-selection.md` を元資料にする。
-   - commit 直前に必ず読む短い一枚 `docs/operations/COMMIT_OPERATION_CARD.md` を追加する。
-   - Codex / Claude adapter は実行面差分だけに絞り、commit 手順本体は操作カード参照に寄せる。
-   - `next --json` 改修計画と合わせ、通常 action prompt と不可逆操作直前 prompt を分離する。
+1. **conformance 結果の仕様反映**
+   - `.reviewcompass/specs/conformance-evaluation/conformance/2026-06-12-completed-followup-conformance.md` の MLE-GAP-001〜006 を反映対象にする。
+   - 引き渡し正本は `.reviewcompass/specs/conformance-evaluation/conformance/2026-06-12-reopen-handoff-package.yaml`。
+   - 最初の人間判断点は MLE-GAP-003 の `feature_order` / `phase_order` 語彙調停。
+   - additive な反映候補は `feature_definition_required`、feature-dependency 探索順、依存整合検査、配布テンプレート所有者、操縦 LLM 別 API variant、実行時生成物の post-write 対象除外。
 
-2. **maintenance workflow protocol の明文化**
+2. **Claude 側 adapter 修正**
+   - r5 の Claude adapter 欠落指摘は Codex 側では `leave-as-is` 承認済み。
+   - Claude 側で、commit 操作カード参照と不可逆操作 prompt selection の adapter 差分を修正する。
+
+3. **maintenance workflow protocol の明文化**
    - maintenance でも要件・設計・タスク相当の確認、TDD、実装後 review、post-write / lightweight self check、completed 化をどう扱うかを正本化する。
    - まず 3 行宣言で試す: `変更分類`、`理由`、`手順`。
 
-3. **`next --json` 一意性と effective prompt 強制の締め直し**
+4. **`next --json` 一意性と effective prompt 強制の締め直し**
    - `WORKFLOW_DISCIPLINE_MAP.yaml` coverage audit、全 action への `effective_prompt` 付与、読了証跡、アンカー節抽出を行う。
    - 他サブコマンドの JSON は次作業 selector ではない。次作業は必ず再度 `next --json` で決める。
 
-4. **実アプリ pilot**
+5. **実アプリ pilot**
    - 未着手。対象アプリ root と、対象アプリ側 LLM が参照できる ReviewCompass 配布物配置先を決めるところから始める。
    - 正本: `docs/operations/INITIAL_DEPLOYMENT_USER_GUIDE.md` §8、§9、§19、および `docs/operations/DEPLOYMENT.md` §8。
    - 配布前 smoke は実アプリ pilot 前の必要作業であり、現時点で完了済み扱いにしない。
 
-5. **decision-source-lint の運用開始**
+6. **decision-source-lint の運用開始**
    - 仕組みは実装済み。次に重要決定が発生した時点で `.reviewcompass/decisions/` に構造化決定記録を作る。
 
 完了済みとして候補から外したもの:
@@ -78,6 +83,8 @@
   - `eb028df2 Add commit sandbox preflight` と `stages/completed/maintenance-2026-06-17-commit-sandbox-preflight.yaml` で完了済み。
 - **作業中メモの `lightweight_self_check` 化**
   - `9d374907 Add working note lightweight self-check` と `stages/completed/maintenance-2026-06-17-lightweight-self-check-location.yaml` で完了済み。
+- **commit operation card と不可逆操作 prompt selection の Codex 側反映**
+  - `3f9ff253 Add commit operation prompt` で完了済み。r5 の Claude adapter 欠落指摘は Claude 側修正へ引き渡し。
 
 ## 5. 会話ログ取り込み
 
