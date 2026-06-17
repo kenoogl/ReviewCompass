@@ -1,0 +1,30 @@
+findings:
+  - severity: INFO
+    target_location: "§8 未確定事項 / §10 Phase 1 完了条件"
+    description: "状態スナップショットスキーマと Navigator WebUI 計画書の整合を完了条件に定めているが、Navigator WebUI 計画書自体の所在（ファイルパス）が本文書内に明示されていない。"
+    rationale: "完了条件の達成を機械的に確認するには、参照先文書のパスが特定できる必要がある。参照が曖昧なまま残ると Phase 1 の完了判定が人間の解釈に依存する。"
+
+  - severity: INFO
+    target_location: "§3.1 機械タスク / operation contract の属性表"
+    description: "`phase_boundary` 属性が §10 Phase 1 の語彙確定対象として挙げられているが、operation contract の属性表（§3.1）には含まれていない。"
+    rationale: "Phase 1 で確定予定の語彙が、その語彙を使う contract 構造の仕様に現れていない。スキーマ定義時に属性の追加漏れが生じるリスクがある。"
+
+  - severity: WARN
+    target_location: "§10 Phase 2 完了後の保守タスク"
+    description: "`WORKFLOW_DISCIPLINE_MAP.yaml` の移動タスクは Phase 2 完了後の「独立した保守タスク」とされているが、完了条件の定義・担当・コミット単位以外に、移動後に `next --json` の出力が変わらないことを確認するテストの具体的な記述がない。"
+    rationale: "移動作業は既存コマンドのパス参照に影響する。テスト確認の要件が本設計メモに記載されていないと、保守タスク実施時に検査基準が不明確になる。"
+
+  - severity: WARN
+    target_location: "§3.3 人間判断タスク / 側道のネストとコミット混線"
+    description: "`max_depth` のデフォルト値を 2 と定めているが、この値の根拠・変更方法・設定ファイル上の場所が記述されていない。"
+    rationale: "デフォルト値が設定として変更可能かどうかが不明なまま Phase 5 の機械的ブロックを実装すると、プロジェクト固有の深さ要件に対応できない可能性がある。"
+
+  - severity: INFO
+    target_location: "§5.2 第2層：意味的妥当性（LLM 裁判官）/ 出力形式 JSON 例"
+    description: "JSON 例の `decision_point` フィールド値が `\"completed\"` となっており、`next_action_kind:completed` という §4.3 の記法と一致していない。"
+    rationale: "スキーマ例内の識別子の記法がドキュメント内で統一されていないと、スキーマ定義時・実装時に混乱が生じる。"
+
+  - severity: INFO
+    target_location: "§7 D-003 との関係 / 実装の順序方針"
+    description: "「本メモの設計を実装する（新規ワークフロー単位）」とあるが、「新規ワークフロー単位」が何を指すか（新規に作成されるワークフローのみに適用するのか、Phase 1 から順に全判定点に展開するのか）が明確でない。"
+    rationale: "D-003 の再開判断タイミングに直接影響するため、適用範囲が曖昧なままだと実装完了の判定ができない。"

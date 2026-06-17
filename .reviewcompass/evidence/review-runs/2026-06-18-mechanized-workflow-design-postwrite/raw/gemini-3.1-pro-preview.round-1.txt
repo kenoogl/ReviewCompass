@@ -1,0 +1,13 @@
+findings:
+  - severity: ERROR
+    target_location: "§8 未確定事項 (項目5) および §10 段階的開発ステップ (Phase 2)"
+    description: "Phase 2における状態スナップショット出力の実装タスクが定義されていない"
+    rationale: "§8の項目5において「Phase 2 で（状態スナップショットの）出力を開始する」と指定されているが、§10のPhase 2の計画では既存動作を変えない読み取り専用API（operation-list）の実装のみが記載されており、ファイル出力という状態変更を伴うタスクが欠落している。設計と段階的計画の間に矛盾がある。"
+  - severity: ERROR
+    target_location: "§3.1 機械タスク および §10 段階的開発ステップ (Phase 1)"
+    description: "実装予定の属性「phase_boundary」が設計仕様上の属性一覧に存在しない"
+    rationale: "§10のPhase 1において「phase_boundaryの語彙を確定する（scratch / evidence / canonical_update / approval_gate）」とタスク化されているが、§3.1で定義されている operation contract の属性一覧表には `phase_boundary` が含まれていない。何に対する属性なのか設計が欠落している。"
+  - severity: WARN
+    target_location: "§3.3 人間判断タスク (明示的チャンネルの一覧表)"
+    description: "アクション「side track push」の命名・書式が他のコマンドと統一されていない"
+    rationale: "表内の他のaction（`wait_for_human_decision` や `record_human_decision` など）がスネークケースかつコードブロック記法で統一されているのに対し、「side track push」のみ平文のスペース区切りとなっている。システム上の明確な識別子（コマンド名）なのか概念の説明なのかが曖昧である。"

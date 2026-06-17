@@ -1,0 +1,33 @@
+findings:
+  - severity: CRITICAL
+    target_location: "§1.2, §7, §10"
+    description: "`next --json` の唯一性未保証を中核欠陥として認めている一方で、D-003 の再開を本メモ実装後に回しており、どの Phase でもセレクタの唯一性を保証していない。"
+    rationale: "機械化実行は唯一の次アクションを前提にするため、曖昧な `next --json` 応答のまま preflight・guard・commit・push・状態更新を自動化すると、誤った判定点や副作用を実行する危険がある。D-003 を前提条件にするか、曖昧応答時に fail-closed する設計が必要。"
+  - severity: ERROR
+    target_location: "§2, §8 項目2, §10"
+    description: "目標処理連鎖で示す自動実行ループを実装する Phase が存在せず、機械タスクをどのコマンドが実行するかも未確定のままになっている。"
+    rationale: "Phase 2 は registry、Phase 3 は preflight、Phase 4 は有効プロンプト構造化、Phase 5 は guard 追加であり、`next --json` を消費して操作を解決し、機械タスクを順序実行し、LLM 入出力を受け取り、事後条件を検査して再度 `next --json` を呼ぶ dispatcher/orchestrator の責務・状態管理・冪等性が定義されていない。これでは「機械化ワークフロー」として実装可能な設計にならない。"
+  - severity: ERROR
+    target_location: "§3.3, §10 Phase 3, §10 Phase 5"
+    description: "コミット混線検査が staged ファイルセット差分に依存しており、同一ファイル内の hunk 混在や、側道開始後に新規作成・変更されたファイルの所属登録を扱えない。"
+    rationale: "ファイル単位の検査だけでは、外側作業と側道作業が同じファイルに混在した場合を検出できない。また、側道 push 時点のファイルセットを基準にすると、その後の正当な新規ファイルや変更ファイルが許可セットに入る仕組みがないため、誤ってブロックするか、逆に混線を見逃す。コミット粒度の保証には hunk/digest/ownership の扱いを明確化する必要がある。"
+  - severity: ERROR
+    target_location: "§3.1, §10 Phase 5"
+    description: "`effect_kind` が単一値として設計されているが、実際の操作は複数種類の副作用を同時に持ち得る。また `approval_gate` の承認記録形式・スコープ・有効期限・対象 digest との紐付けが定義されていない。"
+    rationale: "commit、push、spec.json 更新などは write、state_mutation、external_call、irreversible_action などを複合的に含み得る。単一 enum だと危険な副作用を過小分類する可能性がある。さらに承認ゲートを機械強制するには、誰が何に対して承認したか、どの差分・操作に束縛されるか、再利用や改ざんをどう防ぐかが必要。"
+  - severity: WARN
+    target_location: "§3.3, §8 項目5"
+    description: "`active_side_tracks` の順序が「スタック順」「最初が最上位」とだけ説明されており、現在作業中の側道が先頭なのか末尾なのかが曖昧。"
+    rationale: "コミット混線検査や Navigator 表示では、どの側道レベルを current とみなすかが機械的に一意である必要がある。順序解釈が揺れると、preflight が誤った作業レベルのファイルセットや digest を参照する可能性がある。"
+  - severity: WARN
+    target_location: "§4.3"
+    description: "有効プロンプト例の `decision_point: next_action_kind:completed` が、本文中の判定点 ID（例: `completed`, `post_write_verification`）と整合していない。"
+    rationale: "例示は後続のテンプレート・スキーマ・テストの基準になりやすい。判定点 ID と next_action kind の表現が混在すると、DISCIPLINE_MAP の解決規則や監査ツールの入力形式が曖昧になる。"
+  - severity: WARN
+    target_location: "§5.1"
+    description: "アンカー検査が `<a id=\"...\">` タグ照合に限定されており、Markdown 見出しから生成されるアンカーを扱う設計になっていない。"
+    rationale: "参照先文書が明示的な `<a id>` ではなく Markdown heading anchor を使っている場合、実在する節を誤って欠落として検出する。監査ツールの誤検知を避けるには、サポートするアンカー形式を明示する必要がある。"
+  - severity: WARN
+    target_location: "§10 Phase 1"
+    description: "`phase_boundary` の語彙を確定するとあるが、本文中で operation contract や有効プロンプトのどのフィールドに使うのかが定義されていない。"
+    rationale: "語彙だけが追加されても、スキーマ上の位置、意味、遷移規則、検査タイミングが不明なため、実装者が一貫した検証や guard を作れない。"
