@@ -14,6 +14,7 @@ if str(_PROJECT_ROOT) not in sys.path:
 import pytest
 
 # 実装は未着手。import 自体が失敗する状態が TDD の初期期待。
+import tools.api_providers.providers as providers_module
 from tools.api_providers.providers import (
   get_provider,
   ProviderBase,
@@ -65,6 +66,29 @@ def test_anthropic_provider_reads_env(monkeypatch):
   monkeypatch.setenv("ANTHROPIC_API_KEY", "test-key-anthropic")
   provider = AnthropicProvider(model="claude-opus-4-7")
   assert provider.api_key == "test-key-anthropic"
+
+
+def test_entrypoint_can_enable_zshrc_api_key_fallback(monkeypatch):
+  """entrypoint が有効化した場合だけ ~/.zshrc 経由で API キーを補完する"""
+  monkeypatch.delenv("ANTHROPIC_API_KEY", raising=False)
+  monkeypatch.setattr(providers_module, "_LOAD_API_KEYS_FROM_ZSHRC", True)
+
+  class Result:
+    returncode = 0
+    stdout = "test-key-from-zshrc\n"
+    stderr = ""
+
+  def fake_run(cmd, **kwargs):
+    assert cmd == ["zsh", "-c", "source ~/.zshrc >/dev/null 2>&1; print -r -- \"${ANTHROPIC_API_KEY}\""]
+    assert kwargs["timeout"] == 5
+    assert kwargs["text"] is True
+    assert kwargs["capture_output"] is True
+    return Result()
+
+  monkeypatch.setattr(providers_module.subprocess, "run", fake_run)
+
+  provider = AnthropicProvider(model="claude-opus-4-7")
+  assert provider.api_key == "test-key-from-zshrc"
 
 
 def test_openai_provider_reads_env(monkeypatch):

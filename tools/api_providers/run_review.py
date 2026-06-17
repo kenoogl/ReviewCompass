@@ -22,7 +22,10 @@ from tools.api_providers.config_loader import (  # noqa: E402
   resolve_role,
   resolve_variant,
 )
-from tools.api_providers.providers import get_provider  # noqa: E402
+from tools.api_providers.providers import (  # noqa: E402
+  enable_zshrc_api_key_fallback,
+  get_provider,
+)
 from tools.api_providers.response_formatter import (  # noqa: E402
   format_response,
   parse_response_text,
@@ -340,6 +343,7 @@ def _run_one_role(
 
 
 def main(argv: Optional[List[str]] = None) -> int:
+  enable_zshrc_api_key_fallback()
   args = _parse_argv(argv)
   exit_code = 0
   try:

@@ -7,11 +7,37 @@ API 経路のプロバイダー抽象層。
 Agent ツールで処理するため、本スクリプトの対象外（claude-code-cli を渡すと ValueError）。
 """
 import os
+import subprocess
 import time
 from abc import ABC, abstractmethod
 from typing import Dict, List, Tuple, Type
 
 import httpx
+
+_LOAD_API_KEYS_FROM_ZSHRC = False
+
+
+def enable_zshrc_api_key_fallback() -> None:
+  """entrypoint から ~/.zshrc 経由の API key 補完を有効化する。"""
+  global _LOAD_API_KEYS_FROM_ZSHRC
+  _LOAD_API_KEYS_FROM_ZSHRC = True
+
+
+def _read_api_key_from_zshrc(env_var_name: str) -> str:
+  """~/.zshrc を読み、指定環境変数の値だけを取り出す。"""
+  result = subprocess.run(
+    [
+      "zsh",
+      "-c",
+      f"source ~/.zshrc >/dev/null 2>&1; print -r -- \"${{{env_var_name}}}\"",
+    ],
+    capture_output=True,
+    text=True,
+    timeout=5,
+  )
+  if result.returncode != 0:
+    return ""
+  return result.stdout.strip()
 
 
 class ProviderBase(ABC):
@@ -47,6 +73,8 @@ class ProviderBase(ABC):
     if not self.ENV_VAR_NAME:
       raise RuntimeError("ENV_VAR_NAME がサブクラスで未設定")
     api_key = os.environ.get(self.ENV_VAR_NAME)
+    if not api_key and _LOAD_API_KEYS_FROM_ZSHRC:
+      api_key = _read_api_key_from_zshrc(self.ENV_VAR_NAME)
     if not api_key:
       raise RuntimeError(
         f"環境変数 {self.ENV_VAR_NAME} が未設定。API キーを設定してください。"
