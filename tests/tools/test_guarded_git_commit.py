@@ -189,6 +189,50 @@ class GuardedGitCommitTests(unittest.TestCase):
     self.assertTrue(delegation["consumed"])
     self.assertEqual(delegation["explicit_instruction"], "承認")
 
+  def test_guarded_commit_success_output_is_minimal_by_default(self):
+    """成功時の既定表示は precheck 詳細を流さず commit summary に絞る"""
+    _stage_file(self.tmpdir, "notes.md", "# minimal output")
+    challenge = _prepare_commit_approval(self.tmpdir)
+
+    result = run_guarded_commit(
+      [
+        "-m", "minimal output commit",
+        "--rationale", "利用者が提示済み nonce と staged 内容を承認",
+        "--approval-nonce", challenge["nonce"],
+        "--approval-source-text-line-stdin",
+      ],
+      cwd=self.tmpdir,
+      input_text="承認\n",
+    )
+
+    self.assertEqual(result.returncode, 0, result.stderr)
+    self.assertNotIn("[CURRENT STATE]", result.stdout)
+    self.assertNotIn("[ACTION]", result.stdout)
+    self.assertIn("commit precheck: OK", result.stdout)
+    self.assertRegex(result.stdout, r"committed: [0-9a-f]{7,40} minimal output commit")
+
+  def test_guarded_commit_verbose_success_output_includes_precheck_details(self):
+    """verbose 指定時は precheck 詳細を表示する"""
+    _stage_file(self.tmpdir, "notes.md", "# verbose output")
+    challenge = _prepare_commit_approval(self.tmpdir)
+
+    result = run_guarded_commit(
+      [
+        "-m", "verbose output commit",
+        "--rationale", "利用者が提示済み nonce と staged 内容を承認",
+        "--approval-nonce", challenge["nonce"],
+        "--approval-source-text-line-stdin",
+        "--verbose",
+      ],
+      cwd=self.tmpdir,
+      input_text="承認\n",
+    )
+
+    self.assertEqual(result.returncode, 0, result.stderr)
+    self.assertIn("[CURRENT STATE]", result.stdout)
+    self.assertIn("[ACTION]", result.stdout)
+    self.assertIn("committed:", result.stdout)
+
   def test_guarded_commit_line_approval_retry_reuses_active_transaction(self):
     """commit 実行失敗後の同一 nonce 再実行は active transaction を再利用する"""
     _stage_file(self.tmpdir, "notes.md", "# retryable commit")

@@ -230,6 +230,39 @@ def current_head_commit(cwd):
   return result.stdout.strip()
 
 
+def current_head_subject(cwd):
+  """現在の HEAD commit subject を返す。"""
+  result = subprocess.run(
+    ["git", "log", "-1", "--pretty=%s"],
+    cwd=str(cwd),
+    capture_output=True,
+    text=True,
+  )
+  if result.returncode != 0:
+    return None
+  return result.stdout.strip()
+
+
+def print_precheck_output(precheck):
+  """commit precheck の詳細出力をそのまま表示する。"""
+  if precheck.stdout:
+    print(precheck.stdout, end="")
+  if precheck.stderr:
+    print(precheck.stderr, end="", file=sys.stderr)
+
+
+def print_success_summary(cwd, precheck):
+  """成功時の最小 summary を表示する。"""
+  status = "OK" if precheck.returncode == 0 else "WARN"
+  print(f"commit precheck: {status}")
+  head_commit = current_head_commit(cwd)
+  head_subject = current_head_subject(cwd)
+  if head_commit and head_subject:
+    print(f"committed: {head_commit} {head_subject}")
+  elif head_commit:
+    print(f"committed: {head_commit}")
+
+
 def record_last_commit_precheck(cwd, precheck):
   """commit 成功後に push 用の事前検査通過記録を repo 外へ残す"""
   head_commit = current_head_commit(cwd)
@@ -285,6 +318,11 @@ def main(argv=None):
     action="store_true",
     help="承認文を stdin から1行だけ読む。EOF を待たない",
   )
+  parser.add_argument(
+    "--verbose",
+    action="store_true",
+    help="commit precheck と git commit の詳細出力を表示する",
+  )
   args = parser.parse_args(argv)
 
   cwd = Path.cwd()
@@ -302,10 +340,8 @@ def main(argv=None):
       return 2
 
   precheck = run_precheck(cwd, args.rationale)
-  if precheck.stdout:
-    print(precheck.stdout, end="")
-  if precheck.stderr:
-    print(precheck.stderr, end="", file=sys.stderr)
+  if args.verbose or precheck.returncode != 0:
+    print_precheck_output(precheck)
 
   if precheck.returncode == 2:
     return 2
@@ -321,10 +357,11 @@ def main(argv=None):
     return 2
 
   result = run_git_commit(cwd, args.message)
-  if result.stdout:
-    print(result.stdout, end="")
-  if result.stderr:
-    print(result.stderr, end="", file=sys.stderr)
+  if args.verbose or result.returncode != 0:
+    if result.stdout:
+      print(result.stdout, end="")
+    if result.stderr:
+      print(result.stderr, end="", file=sys.stderr)
   if result.returncode != 0:
     if is_index_lock_permission_failure(result):
       print_commit_escalation_required({
@@ -337,6 +374,7 @@ def main(argv=None):
   record_last_commit_precheck(cwd, precheck)
   if not consume_commit_approval(cwd):
     return 2
+  print_success_summary(cwd, precheck)
   return 0
 
 

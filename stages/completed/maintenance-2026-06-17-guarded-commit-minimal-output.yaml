@@ -1,0 +1,33 @@
+trigger: "利用者指示: サイドで話した guarded commit のユーザ表示最小化を対応する"
+mainline_blocked_by: "guarded commit 成功時に precheck の詳細 4 ブロックがそのまま表示され、commit 手順の利用者体験を阻害する"
+allowed_scope:
+  - "guarded-git-commit.py の既定出力最小化"
+  - "詳細出力を確認するための verbose オプション"
+  - "対応する単体テスト"
+allowed_files:
+  - "tools/guarded-git-commit.py"
+  - "tests/tools/test_guarded_git_commit.py"
+  - "stages/in-progress/maintenance-2026-06-17-guarded-commit-minimal-output.yaml"
+completion_conditions:
+  - "成功時の既定出力に precheck の [CURRENT STATE] が出ないことをテストで確認する"
+  - "成功時の既定出力に commit hash と subject の最小表示が出ることをテストで確認する"
+  - "verbose 指定時は従来の precheck 詳細を確認できることをテストで確認する"
+  - "既存 guarded commit テストが通ることを確認する"
+workflow_steps:
+  - "TDD: 先に失敗テストを追加する"
+  - "実装: 既定出力を summary にし、verbose で詳細出力を残す"
+  - "検証: 対象テストを通す"
+post_write_verification: "小規模 wrapper 表示変更として対象テストと差分確認で扱う"
+completed_at: "2026-06-17"
+completed_steps:
+  - "red test: 成功時の既定出力に precheck の [CURRENT STATE] / [ACTION] が出ないことを追加し、失敗を確認"
+  - "red test: --verbose 指定時に precheck 詳細を表示できることを追加し、失敗を確認"
+  - "implementation: guarded-git-commit.py の既定出力を最小 summary にし、--verbose で詳細出力を残した"
+verification:
+  - command: ".venv/bin/python3 -m pytest tests/tools/test_guarded_git_commit.py -q"
+    result: "11 passed"
+  - command: ".venv/bin/python3 -m pytest tests/tools/test_guarded_git_commit.py tests/tools/test_check_workflow_action.py -q"
+    result: "220 passed"
+  - command: "git diff --check"
+    result: "passed"
+completion_note: "guarded commit 成功時の既定表示を commit precheck summary と commit hash / subject に絞った。詳細 precheck / git commit 出力は --verbose で確認できる。"
