@@ -1,0 +1,56 @@
+type: maintenance
+date: 2026-06-17
+title: conformance reflection candidates from recovered sessions
+trigger: "利用者指示: 前セッション由来の要件・設計・タスク反映候補を正式手続きで記録する"
+mainline_blocked_by: "workflow_state は completed だが、前セッション由来の R/D/T 反映候補が conformance-evaluation の draft-only 記録へ未登録"
+allowed_scope:
+  - "前セッション由来の workflow-management 反映候補を cross-feature contract ownership fixture に記録する"
+  - "conformance-evaluation cross-feature workflow を実行し、draft-only spec update artifact を生成する"
+  - "生成物に対象候補が含まれることを確認する"
+allowed_files:
+  - "tests/fixtures/conformance-evaluation/cross-feature-contract-ownership.yaml"
+  - "tests/conformance-evaluation/test_contract_ownership.py"
+  - "tests/conformance-evaluation/test_cross_feature_workflow.py"
+  - ".reviewcompass/specs/_cross_feature/conformance/2026-06-17-check.md"
+  - ".reviewcompass/specs/_cross_feature/conformance/2026-06-17-spec-update-drafts/*.md"
+  - ".reviewcompass/evidence/estimation/_cross_feature-2026-06-17-check/prompt.log"
+  - "stages/in-progress/maintenance-2026-06-17-conformance-reflection-candidates.yaml"
+  - "stages/completed/maintenance-2026-06-17-conformance-reflection-candidates.yaml"
+completion_conditions:
+  - "fixture に前セッション由来の workflow-management 候補 3 件が追加されている"
+  - "conformance-evaluation-cross-feature が正常終了する"
+  - "生成された check record と draft-only artifact に追加 ID が含まれている"
+  - "requirements.md / design.md / tasks.md の正本文書は直接変更しない"
+notes:
+  - "commit / push は利用者の明示承認なしに行わない"
+completed_at: "2026-06-17"
+result:
+  summary:
+    - "cross-feature contract ownership fixture に workflow-management 候補 3 件を追加した"
+    - "2026-06-17 の _cross_feature conformance check record と draft-only spec update artifact を生成した"
+    - "workflow-management requirements/design/tasks 正本は直接変更していない"
+  added_contracts:
+    - contract_id: "XDI-WM-MAINT-001"
+      target: ".reviewcompass/specs/workflow-management/requirements.md"
+      claim: "maintenance workflow protocol needs an explicit owner for start, scope, review, post-write, and completion handling after completed next action"
+    - contract_id: "XDI-WM-COMMIT-001"
+      target: ".reviewcompass/specs/workflow-management/design.md"
+      claim: "commit operation card and irreversible-operation prompt selection should be separated from normal next-action prompt selection"
+    - contract_id: "XDI-WM-WORKING-NOTE-001"
+      target: ".reviewcompass/specs/workflow-management/tasks.md"
+      claim: "docs/notes/working placement should remain a lightweight self-check route distinct from strict post-write verification"
+  generated:
+    check_record: ".reviewcompass/specs/_cross_feature/conformance/2026-06-17-check.md"
+    draft_dir: ".reviewcompass/specs/_cross_feature/conformance/2026-06-17-spec-update-drafts"
+    prompt_log: ".reviewcompass/evidence/estimation/_cross_feature-2026-06-17-check/prompt.log"
+verification:
+  - command: ".venv/bin/python3 -m pytest tests/conformance-evaluation/test_contract_ownership.py tests/conformance-evaluation/test_cross_feature_workflow.py tests/conformance-evaluation/test_spec_update_adoption.py -q"
+    result: "29 passed"
+  - command: "git diff --check"
+    result: "passed"
+  - command: ".venv/bin/python3 tools/conformance-evaluation-cross-feature.py --run-date 2026-06-17 --ownership-fixture tests/fixtures/conformance-evaluation/cross-feature-contract-ownership.yaml --json"
+    result: "passed; traceability ok, 7 draft files generated"
+  - command: "rg -n \"XDI-WM-MAINT-001|XDI-WM-COMMIT-001|XDI-WM-WORKING-NOTE-001\" .reviewcompass/specs/_cross_feature/conformance/2026-06-17-check.md .reviewcompass/specs/_cross_feature/conformance/2026-06-17-spec-update-drafts"
+    result: "passed; all 3 IDs found in check record and workflow-management draft files"
+  - command: "find .reviewcompass/evidence/estimation -maxdepth 3 -type f -print"
+    result: "passed; prompt log generated for _cross_feature-2026-06-17-check"

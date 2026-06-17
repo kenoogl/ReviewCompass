@@ -359,6 +359,9 @@ def test_cross_feature_contract_ownership_fixture_covers_representative_drift_it
     "XDI-EVAL-001",
     "XDI-ANALYSIS-001",
     "XDI-WM-001",
+    "XDI-WM-MAINT-001",
+    "XDI-WM-COMMIT-001",
+    "XDI-WM-WORKING-NOTE-001",
     "XDI-SI-001",
     "XDI-CE-001",
   ]
@@ -404,6 +407,33 @@ def test_cross_feature_contract_ownership_fixture_builds_spec_update_drafts():
       "contract_ids": ["XDI-ANALYSIS-001"],
       "claims": [
         "analysis intake and destination boundary guards are implementation-derived design contracts",
+      ],
+      "needs_human_decision": False,
+    },
+    {
+      "target_file": ".reviewcompass/specs/workflow-management/requirements.md",
+      "target_kind": "requirements",
+      "contract_ids": ["XDI-WM-MAINT-001"],
+      "claims": [
+        "maintenance workflow protocol needs an explicit owner for start, scope, review, post-write, and completion handling after completed next action",
+      ],
+      "needs_human_decision": False,
+    },
+    {
+      "target_file": ".reviewcompass/specs/workflow-management/design.md",
+      "target_kind": "design",
+      "contract_ids": ["XDI-WM-COMMIT-001"],
+      "claims": [
+        "commit operation card and irreversible-operation prompt selection should be separated from normal next-action prompt selection",
+      ],
+      "needs_human_decision": False,
+    },
+    {
+      "target_file": ".reviewcompass/specs/workflow-management/tasks.md",
+      "target_kind": "tasks",
+      "contract_ids": ["XDI-WM-WORKING-NOTE-001"],
+      "claims": [
+        "docs/notes/working placement should remain a lightweight self-check route distinct from strict post-write verification",
       ],
       "needs_human_decision": False,
     },
@@ -676,6 +706,9 @@ def test_check_pipeline_can_materialize_cross_feature_spec_update_drafts(tmp_pat
   assert [path.name for path in draft_files] == [
     "reviewcompass-specs-runtime-design.md",
     "reviewcompass-specs-analysis-design.md",
+    "reviewcompass-specs-workflow-management-requirements.md",
+    "reviewcompass-specs-workflow-management-design.md",
+    "reviewcompass-specs-workflow-management-tasks.md",
     "reviewcompass-specs-self-improvement-requirements.md",
     "reviewcompass-specs-conformance-evaluation-tasks.md",
   ]

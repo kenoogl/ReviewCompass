@@ -100,6 +100,60 @@ items:
       - XDRIFT-004
       - XDRIFT-005
       - XDRIFT-006
+  - contract_id: XDI-WM-MAINT-001
+    feature: workflow-management
+    claim: maintenance workflow protocol needs an explicit owner for start, scope, review, post-write, and completion handling after completed next action
+    classification: spec-missing
+    primary_owner_candidate: requirements
+    secondary_owner_candidate: design
+    contract_refs:
+      - .reviewcompass/specs/workflow-management/requirements.md
+      - .reviewcompass/specs/workflow-management/design.md
+      - .reviewcompass/specs/workflow-management/tasks.md
+      - docs/operations/SESSION_WORKFLOW_GUIDE.md
+    evidence_refs:
+      - docs/notes/2026-06-17-maintenance-workflow-compliance-improvement-candidates.md
+      - .reviewcompass/evidence/sessions/2026-06-16-codex-019ecf38-6afb-7543-b000-8b9e93c9d4e2.md
+      - .reviewcompass/evidence/sessions/2026-06-17-codex-019ed2f7-2f40-72c1-9f8b-2e7d5312ab3a.md
+      - TODO_NEXT_SESSION.md
+    related_clusters:
+      - XDRIFT-WM-MAINT
+  - contract_id: XDI-WM-COMMIT-001
+    feature: workflow-management
+    claim: commit operation card and irreversible-operation prompt selection should be separated from normal next-action prompt selection
+    classification: spec-missing
+    primary_owner_candidate: design
+    secondary_owner_candidate: tool_contract
+    contract_refs:
+      - .reviewcompass/specs/workflow-management/requirements.md
+      - .reviewcompass/specs/workflow-management/design.md
+      - .reviewcompass/specs/workflow-management/tasks.md
+      - docs/operations/WORKFLOW_NAVIGATION.md
+    evidence_refs:
+      - docs/notes/working/2026-06-17-commit-operation-card-and-next-json-prompt-selection.md
+      - .reviewcompass/evidence/sessions/2026-06-17-codex-019ed2f7-2f40-72c1-9f8b-2e7d5312ab3a.md
+      - TODO_NEXT_SESSION.md
+    related_clusters:
+      - XDRIFT-WM-COMMIT
+  - contract_id: XDI-WM-WORKING-NOTE-001
+    feature: workflow-management
+    claim: docs/notes/working placement should remain a lightweight self-check route distinct from strict post-write verification
+    classification: spec-missing
+    primary_owner_candidate: tool_contract
+    secondary_owner_candidate: design
+    contract_refs:
+      - .reviewcompass/specs/workflow-management/requirements.md
+      - .reviewcompass/specs/workflow-management/design.md
+      - .reviewcompass/specs/workflow-management/tasks.md
+      - docs/operations/WORKFLOW_NAVIGATION.md
+      - docs/operations/WORKFLOW_DISCIPLINE_MAP.yaml
+    evidence_refs:
+      - docs/notes/working/2026-06-17-working-note-verification-trigger-policy.md
+      - stages/completed/maintenance-2026-06-17-lightweight-self-check-location.yaml
+      - .reviewcompass/evidence/sessions/2026-06-17-codex-019ed2f7-2f40-72c1-9f8b-2e7d5312ab3a.md
+      - TODO_NEXT_SESSION.md
+    related_clusters:
+      - XDRIFT-WM-WORKING-NOTE
   - contract_id: XDI-SI-001
     feature: self-improvement
     claim: self-improvement approval, rejection, proposal id, and carry-forward guards are externally visible requirements candidates

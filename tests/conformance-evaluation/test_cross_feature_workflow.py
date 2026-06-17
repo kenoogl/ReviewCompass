@@ -47,6 +47,9 @@ def test_cross_feature_workflow_generates_check_record_drafts_and_traceability(t
   assert [Path(path).name for path in result["draft_files"]] == [
     "reviewcompass-specs-runtime-design.md",
     "reviewcompass-specs-analysis-design.md",
+    "reviewcompass-specs-workflow-management-requirements.md",
+    "reviewcompass-specs-workflow-management-design.md",
+    "reviewcompass-specs-workflow-management-tasks.md",
     "reviewcompass-specs-self-improvement-requirements.md",
     "reviewcompass-specs-conformance-evaluation-tasks.md",
   ]
@@ -69,7 +72,7 @@ def test_cross_feature_workflow_uses_default_fixture_and_refs(tmp_path):
   result = workflow.run(run_date="2026-06-08")
 
   assert result["feature"] == "_cross_feature"
-  assert len(result["draft_files"]) == 4
+  assert len(result["draft_files"]) == 7
   assert result["traceability"]["checked_refs"] == 21
 
 
@@ -106,7 +109,7 @@ def test_cross_feature_workflow_cli_outputs_json(tmp_path):
   assert payload["check_record"].endswith(
     ".reviewcompass/specs/_cross_feature/conformance/2026-06-08-check.md"
   )
-  assert len(payload["draft_files"]) == 4
+  assert len(payload["draft_files"]) == 7
   assert payload["traceability"]["checked_refs"] == 21
 
 
