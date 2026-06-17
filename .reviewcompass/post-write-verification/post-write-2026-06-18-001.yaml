@@ -1,0 +1,19 @@
+status: completed
+target_files:
+- TODO_NEXT_SESSION.md
+target_sha256:
+  TODO_NEXT_SESSION.md: 2b894801df910d071dd11e0d0917f3d2d635476b7373b82a47ee531053dbbefd
+required_verifiers: &id001
+- gemini-3.5-flash
+completed_verifiers: *id001
+unresolved_substantive_findings: 0
+verifications:
+- verifier: gemini-3.5-flash
+  target_files:
+  - TODO_NEXT_SESSION.md
+  target_sha256:
+    TODO_NEXT_SESSION.md: 2b894801df910d071dd11e0d0917f3d2d635476b7373b82a47ee531053dbbefd
+review_run:
+  path: .reviewcompass/evidence/review-runs/2026-06-18-todo-update-postwrite
+  summary_path: .reviewcompass/evidence/review-runs/2026-06-18-todo-update-postwrite/model-result-summary.yaml
+notes: TODO セッション引き継ぎメモの更新。INFO 1件（パス参照不整合）を修正済み

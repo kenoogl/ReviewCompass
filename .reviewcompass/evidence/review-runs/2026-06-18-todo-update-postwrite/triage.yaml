@@ -1,0 +1,27 @@
+run_id: 2026-06-18-todo-update-postwrite
+triage_status: decided
+generated_at: '2026-06-17T20:50:54.539531+00:00'
+decision_actor: claude
+decision_actor_type: human
+items:
+- finding_id: 2026-06-18-todo-update-postwrite-gemini-3.5-flash-primary-001
+  run_id: 2026-06-18-todo-update-postwrite
+  source_model: gemini-3.5-flash
+  source_round: round-1
+  source_raw_path: raw/gemini-3.5-flash.round-1.txt
+  source_parsed_path: parsed/gemini-3.5-flash.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: '## 3. 直近の重要メモ > 後書き検証のトリアージ中断について'
+  plain_language_summary: Inconsistent path reference for 'mechanized-workflow-execution-design.md'.
+    The text refers to `docs/notes/2026-06-18-mechanized-workflow-execution-design.md`,
+    but the file is currently located at `docs/notes/working/2026-06-18-mechanized-workflow-execution-design.md`.
+  final_label: must-fix
+  decision_status: decided
+  decision_actor: claude
+  decision_actor_type: human
+  decision_at: '2026-06-17T20:56:12.123125+00:00'
+  decision_reason: パス参照を docs/notes/ → docs/notes/working/ に修正済み。TODO_NEXT_SESSION.md
+    編集で適用した。
+  applied_files: []
+  superseded_by: null

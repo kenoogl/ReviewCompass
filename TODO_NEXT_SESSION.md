@@ -1,6 +1,6 @@
 # 次セッション継続用メモ
 
-最終更新：2026-06-17（Claude セッション）。
+最終更新：2026-06-18（Claude セッション）。
 
 この TODO は入口メモであり、作業順序の正本ではない。正本は常に `.venv/bin/python3 tools/check-workflow-action.py next --json` と各 feature の `spec.json`。
 
@@ -20,39 +20,55 @@
 - `next --json`: `completed`
 - 進行中手続き: なし
 - 直近 commit:
-  - `ab160d6b Allow run_review.py in Claude Code settings`
-  - `04cee37b Add OK and 承諾 as allowed commit approval instructions`
-  - `5c66b963 Add side-track discipline note to TODO candidate 2`
-  - `1479ece3 Minimize commit output in WORKFLOW_NAVIGATION_FOR_CLAUDE.md`
-  - `102df667 Add one-step commit approval to WORKFLOW_NAVIGATION_FOR_CLAUDE.md`
-- 作業ツリーは clean。
-- `main` は `origin/main` と同期済み。
+  - `2ceaf7ea Move design notes to working for integrated redesign, add review evidence`
+  - `6aa9546b Add problem note for context-limit session log anomaly`
+  - `686e8c7a Update session logs`
+  - `4e29d070 Add mechanized workflow design memo and update Navigator WebUI plan`
+  - `73769472 Refresh TODO`
+- 作業ツリーはほぼ clean（進行中セッションログのみ未コミット、フック任せ）。
+- `main` は origin/main より 3 commit 先行（未 push）。
 
 ## 3. 直近の重要メモ
 
-- `docs/notes/2026-06-17-next-json-unique-state-redesign.md`
-  - `next --json` を唯一の状態 / action selector とする設計メモ。
+### 統合設計（今セッションで開始・次セッションで継続）
+
+- `docs/notes/working/2026-06-16-next-json-unique-state-redesign.md`（D-003）
+  - `next --json` 唯一化の設計。19段階優先順位・72シナリオ・6件の初期失敗テスト。**統合設計の Phase 0 として位置づける**（単独で完成させない）。
+- `docs/notes/working/2026-06-18-mechanized-workflow-execution-design.md`
+  - ワークフロー機械化設計（operation contract・有効プロンプト構造化・スナップショット・Phase 1〜6）。D-003 の上に乗る**実行層**。
+- `docs/notes/working/2026-06-05-workflow-navigator-webui-plan.md`
+  - Navigator WebUI 構想。スナップショット形式が決まってから着手。機械化設計 Phase 1 完了が前提。
+- `docs/notes/working/2026-06-18-context-limit-session-log-anomaly.md`
+  - コンテキスト上限到達時にセッションログが中途更新される異常系の記録。
+
+### 次セッションの具体的な作業内容
+
+**統合設計メモの作成**（上記2つの working ノートを入力資料として）
+
+- D-003（選択層）と機械化設計（実行層）の接続点を整理する
+  - `required_action` 語彙（19種）と operation contract の対応
+  - 19段階優先順位と Phase 0〜6 の関係
+  - 承認ゲート・側道・スナップショット等の統一的な定義
+- 統合設計メモを新規作成し、2つの既存メモを入力資料（参照元）と位置づける
+
+**後書き検証のトリアージ中断について**
+
+`docs/notes/working/2026-06-18-mechanized-workflow-execution-design.md` の post-write verification（3モデルレビュー）を実施したが、A-1（D-003 依存問題）の議論中に設計の根本的見直しが必要と判断し、トリアージを中断した。レビュー証跡は `.reviewcompass/evidence/review-runs/2026-06-18-mechanized-workflow-design-postwrite/` に保存済み。統合設計メモが完成し `docs/notes/` に移動した時点で改めて検証を行う。
+
+### 参考メモ（前セッションから継続）
+
 - `docs/notes/2026-06-17-next-json-effective-prompt-enforcement.md`
-  - `next --json` 返値に紐づく effective prompt 必読、読了証跡、coverage audit、短文化の締め直しメモ。
+  - effective prompt 必読・読了証跡・coverage audit・短文化の方針メモ。
 - `docs/notes/2026-06-17-maintenance-workflow-compliance-improvement-candidates.md`
-  - maintenance workflow 遵守、commit sandbox `.git/index.lock` preflight、maintenance / reopen / new workflow の使い分け、手続きの比例性の候補。
-- `docs/notes/working/2026-06-17-working-note-verification-trigger-policy.md`
-  - 作業中メモを API post-write に反復投入せず、配置場所 `docs/notes/working/` で `lightweight_self_check` に分岐する方針と実装メモ。
-- `docs/notes/working/2026-06-17-commit-operation-card-and-next-json-prompt-selection.md`
-  - commit 直前に読む短い一枚 `COMMIT_OPERATION_CARD.md`、Codex / Claude adapter 分離、`next --json` の不可逆操作用 prompt selection 改修案。
-- `stages/completed/maintenance-2026-06-17-lightweight-self-check-location.yaml`
-  - 作業中メモの場所ベース lightweight self-check 化、API review 複数 `--target` 証跡化補正まで完了済み。
-- `stages/completed/maintenance-2026-06-17-commit-sandbox-preflight.yaml`
-  - commit sandbox preflight は実装・テスト・設計 / タスク反映まで完了済み。
-- `.reviewcompass/specs/conformance-evaluation/conformance/2026-06-12-completed-followup-conformance.md`
-  - completed follow-up conformance は `gap_found`。MLE-GAP-001〜006 の仕様反映は **2026-06-12 に完了済み**（`stages/completed/reopen-procedure-2026-06-12.yaml`・`reopen-procedure-2026-06-12-parse-error-failclosed.yaml`）。
+  - maintenance workflow 遵守・commit sandbox preflight・手続きの比例性の候補。
 
 ## 4. 次作業候補
 
-1. **`next --json` 一意性と effective prompt 強制の締め直し**
-   - `WORKFLOW_DISCIPLINE_MAP.yaml` coverage audit、全 action への `effective_prompt` 付与、読了証跡、アンカー節抽出を行う。
-   - 他サブコマンドの JSON は次作業 selector ではない。次作業は必ず再度 `next --json` で決める。
-   - `completed` 状態の `prompt_source_refs` に `WORKFLOW_NAVIGATION_FOR_CLAUDE.md` の side track 宣言ルール（§2 規則6）が含まれていない。`DISCIPLINE_MAP` の coverage audit で対応する。
+1. **統合設計メモの作成**（最優先）
+   - 入力：`docs/notes/working/2026-06-16-next-json-unique-state-redesign.md`（D-003）と `docs/notes/working/2026-06-18-mechanized-workflow-execution-design.md`
+   - 出力：`docs/notes/working/` に新規統合設計メモを作成
+   - Phase 0（`next --json` 唯一化）→ Phase 1〜6（実行層機械化）の一本の設計として整理する
+   - 接続点の整理から始める（`required_action` 語彙と operation contract の対応等）
 
 2. **実アプリ pilot**
    - 未着手。対象アプリ root と、対象アプリ側 LLM が参照できる ReviewCompass 配布物配置先を決めるところから始める。
