@@ -1,0 +1,20 @@
+status: completed
+target_files:
+- docs/notes/2026-06-17-next-json-effective-prompt-enforcement.md
+target_sha256:
+  docs/notes/2026-06-17-next-json-effective-prompt-enforcement.md: 9dcf7e79f2d6caaf7ede31019b10ab626e37e17085c53bb8b31a83a4a15c1b71
+required_verifiers:
+- lightweight_self_check
+completed_verifiers:
+- lightweight_self_check
+unresolved_substantive_findings: 0
+verifications:
+- verifier: lightweight_self_check
+  target_files:
+  - docs/notes/2026-06-17-next-json-effective-prompt-enforcement.md
+  target_sha256:
+    docs/notes/2026-06-17-next-json-effective-prompt-enforcement.md: 9dcf7e79f2d6caaf7ede31019b10ab626e37e17085c53bb8b31a83a4a15c1b71
+notes: >
+  Working-note self check only. API post-write verification was intentionally
+  not run because this document records an improvement candidate for later
+  workflow design, not a normative specification.
