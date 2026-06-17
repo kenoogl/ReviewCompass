@@ -44,8 +44,10 @@ ALLOWED_EXECUTION_DELEGATION_INSTRUCTIONS = {
   "コミットして",
   "コミットを実行",
   "承認",
+  "承諾",
   "commit",
   "commitして",
+  "ok",
 }
 SOURCE_OMISSION_REASONS = {
   "source_not_provided",

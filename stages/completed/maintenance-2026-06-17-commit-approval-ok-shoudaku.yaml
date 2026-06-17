@@ -1,0 +1,16 @@
+process_id: maintenance
+started_at: '2026-06-17T00:00:00+09:00'
+completed_at: '2026-06-17T00:00:00+09:00'
+trigger: >
+  コミット承認語に「OK」「承諾」を追加する。現在はこれらが許可文言に含まれておらず
+  承認が拒否される。
+mainline_blocked_by: なし
+completed_steps:
+  - 'red: test_commit_approval_delegate_execution_accepts_ok_instruction 追加・失敗確認'
+  - 'red: test_commit_approval_delegate_execution_accepts_shoudaku_instruction 追加・失敗確認'
+  - '実装: ALLOWED_EXECUTION_DELEGATION_INSTRUCTIONS に "ok" と "承諾" を追加'
+  - 'green: 226 passed'
+verification:
+  - command: '.venv/bin/python3 -m pytest tests/tools/test_check_workflow_action.py tests/tools/test_guarded_git_commit.py -q'
+    result: '226 passed'
+current_status: completed

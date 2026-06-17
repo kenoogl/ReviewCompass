@@ -5151,6 +5151,44 @@ class CommitExitCodeTests(unittest.TestCase):
     _assert_script_invoked(self, result_with_delegation)
     self.assertEqual(result_with_delegation.returncode, 0, result_with_delegation.stdout)
 
+  def test_commit_approval_delegate_execution_accepts_ok_instruction(self):
+    """「OK」を commit 実行代行承認として受け入れる"""
+    _set_pending_findings(self.pending_file, unresolved_count=0, resolved_count=2)
+    _stage_file(self.tmpdir, "notes.md", "# nonce 対象")
+    challenge = _prepare_commit_approval(self.tmpdir)
+    record_result = _record_commit_approval(self.tmpdir, challenge["nonce"])
+    self.assertEqual(record_result.returncode, 0, record_result.stderr)
+
+    delegate_result = _delegate_commit_execution(
+      self.tmpdir,
+      challenge["nonce"],
+      source_text="OK\n",
+    )
+
+    _assert_script_invoked(self, delegate_result)
+    self.assertEqual(delegate_result.returncode, 0, delegate_result.stderr)
+    delegation = _read_commit_execution_delegation(self.tmpdir)
+    self.assertEqual(delegation["explicit_instruction"], "ok")
+
+  def test_commit_approval_delegate_execution_accepts_shoudaku_instruction(self):
+    """「承諾」を commit 実行代行承認として受け入れる"""
+    _set_pending_findings(self.pending_file, unresolved_count=0, resolved_count=2)
+    _stage_file(self.tmpdir, "notes.md", "# nonce 対象")
+    challenge = _prepare_commit_approval(self.tmpdir)
+    record_result = _record_commit_approval(self.tmpdir, challenge["nonce"])
+    self.assertEqual(record_result.returncode, 0, record_result.stderr)
+
+    delegate_result = _delegate_commit_execution(
+      self.tmpdir,
+      challenge["nonce"],
+      source_text="承諾\n",
+    )
+
+    _assert_script_invoked(self, delegate_result)
+    self.assertEqual(delegate_result.returncode, 0, delegate_result.stderr)
+    delegation = _read_commit_execution_delegation(self.tmpdir)
+    self.assertEqual(delegation["explicit_instruction"], "承諾")
+
   def test_commit_approval_delegate_execution_rejects_crlf_instruction(self):
     """実行代行承認の stdin は CR/CRLF を許容しない"""
     _set_pending_findings(self.pending_file, unresolved_count=0, resolved_count=2)
