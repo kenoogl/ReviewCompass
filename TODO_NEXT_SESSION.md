@@ -1,72 +1,83 @@
 # 次セッション継続用メモ
 
-最終更新：2026-06-16。正本は `tools/check-workflow-action.py next --json` と各 feature の `spec.json`。この TODO は入口メモであり、作業順序の正本ではない。
+最終更新：2026-06-17。
 
-ReviewCompass は、複数 LLM のレビュー結果を raw で保存し、三段階トリアージと人間／proxy_model の判断を経て、仕様・実装・規律を改善するための自己適用型レビュー基盤である（詳細は `intent/` と各 feature の仕様を正本とする）。
+この TODO は入口メモであり、作業順序の正本ではない。正本は常に `.venv/bin/python3 tools/check-workflow-action.py next --json` と各 feature の `spec.json`。
 
 作業ディレクトリ：`/Users/Daily/Development/ReviewCompass/`
 リポジトリ：`git@github.com:kenoogl/ReviewCompass.git`（main ブランチ）
 
 ## 1. 起動時に必ず行うこと
 
-1. `.venv/bin/python3 tools/check-workflow-action.py next --json` を実行し、`next_action` を作業順序の正本として扱う。
-2. `git status --short` と `git log --oneline -5` で到達点を確認する。
-3. **会話ログはフックまたは明示 backfill で単一取り込みする**：Claude は SessionEnd／SessionStart、Codex は `TODO_NEXT_SESSION.md` 更新後の PostToolUse で現セッションを下書き保存し、次の `SessionStart` で前セッション下書きを正式 2 層へ昇格する。Codex は SessionEnd 相当が無いため、`.codex/hooks/session-record-capture-current-on-todo.sh` を `.codex/hooks.json` の `PostToolUse` に登録し、TODO の内容 hash が前回保存時から変わった場合だけ `session_id` が一致する現 rollout を扱う。`UserPromptSubmit` は発話ごとに誤発火し得るため使用禁止。Codex の PostToolUse hook は現セッションを `.reviewcompass/runtime/session-record-drafts/codex-<session_id>.md` へ下書き保存し、正式 2 層へは直接書かない。診断ログ `.reviewcompass/runtime/session-record-capture-current-on-todo.jsonl` に `todo_changed`／`selected`／`drafted` があれば下書き保存成功、`draft_failed` があれば失敗、`todo_unchanged` は変更なし、`baseline_recorded` は初回 baseline、`no_session_id` は自動推測せず手動回収対象、`ignored_event` は誤登録と判定する。Codex の `SessionStart` hook は `.codex/hooks/session-record-promote-previous-draft.sh` で、現 `session_id` と異なる最新下書き 1 件を `tools/session-record-promote-draft.py` により正式化する。昇格前に下書き frontmatter `source_sha256` と現在の元 rollout sha256 を比較し、一致した場合だけ正式化する。不一致なら `previous_draft_in_progress` を記録し、古い候補へフォールバックしない。診断ログ `.reviewcompass/runtime/session-record-promote-previous-draft.jsonl` に `selected`／`promoted` があれば正式化成功、`no_previous_draft` は対象なし、`previous_draft_in_progress` は安全側スキップ、`missing_jq`、`previous_draft_unverifiable` または `promote_failed` は失敗である。一括 backfill は使わない。
-4. `next_action.required_disciplines` に出た規律だけを、操作直前に読む。
-5. `post_write_verification`、`reopen_in_progress`、`resume_in_progress`、`unknown` が返った場合は通常作業へ進まない。
+1. `.venv/bin/python3 tools/check-workflow-action.py next --json` を実行する。
+2. `next_action.effective_prompt.effective_prompt_path` がある場合は、その本文を読む。
+3. `git status --short` と `git log --oneline -5` で到達点を確認する。
+4. `post_write_verification`、`reopen_in_progress`、`resume_in_progress`、`unknown` が返った場合は通常作業へ進まない。
+5. commit / push / spec.json workflow_state 変更は不可逆操作として扱い、利用者の明示承認と guard を通す。
 
-## 2. 不可逆操作の規律（要点）
+## 2. 現在位置
 
-- commit・push・spec.json（workflow_state）・規律ファイルの変更は、利用者の明示承認が必要。commit は、1 回目の「コミット」を commit 準備（staged 対象・digest・nonce・期限の提示）、2 回目の「承認」を提示済み内容への承認および LLM commit 実行代行承認として扱い、`tools/guarded-git-commit.py --approval-nonce <nonce> --approval-source-text-line-stdin` で実行する。2 回目を「コミット」とは呼ばず、低レベルの record / delegation 手順を通常利用者に露出しない。
-- commit 承認レコードの置き場は `.reviewcompass/runtime/approvals/commit-approval.json`（2026-06-13 の P1 実装で旧 `.reviewcompass/approvals/` から切替済み。委任欄 `explicit_instruction` は単発「コミット」等の機械判定に合う文字列で記録し、発言全文は rationale に残す）。
-- API review-run は実行前に variant と役ごとの provider／model を提示し、結果は raw・モデル別要約・三段階トリアージをまとめて提示してから次へ進む。操縦 LLM 別の既定 variant と独立性原則の正本は `docs/operations/SESSION_WORKFLOW_GUIDE.md` §3.3 (a-3)。新規 review-run の置き場は `.reviewcompass/evidence/review-runs/<run-id>/`。
-- Claude Code は子プロセスの `GEMINI_API_KEY`／`ANTHROPIC_API_KEY` を空に上書きする。API 実行は `zsh -c 'source ~/.zshrc && ...'` 経由（正本は `docs/experiments/n-model-comparison.md` §3.1）。
-- 詳細の正本は `docs/operations/WORKFLOW_NAVIGATION.md` §2 と `docs/operations/SESSION_WORKFLOW_GUIDE.md`。
+- `next --json`: `completed`
+- 進行中手続き: なし
+- 直近 commit:
+  - `ebb2df47 Record effective prompt enforcement note`
+  - `a5127ef6 Record workflow compliance improvement notes`
+  - `0183005e Import next json redesign note`
+  - `0d611816 Make next json action selection unique`
+  - `7f346075 Reuse active commit approval transactions`
+- D-003 reopen 以降の混乱は、退避・巻き戻し後に重要件だけを再取り込み済み。
+- 退避先: `/private/tmp/reviewcompass-d003-rollback-20260617/`
 
-## 3. 現在位置（2026-06-16 時点）
+## 3. 直近の重要メモ
 
-- `next --json`：**`completed`**（進行中手続きなし・全 workflow_state 完了）。直近作業コミットは `8b85736b Add reopen approval blocker command`（2026-06-16、`origin/main` へ push 済み）。
-- **直近の基盤整備（2026-06-16）**：commit 承認 UX の deployable 化（`9a382667 Make commit approval UX deployable`）、reopen 停止点コミット判定の構造化との文書整合（`abdf7150 Sync reopen stop point docs`）、reopen approval blocker 設定の機械化（`8b85736b Add reopen approval blocker command`）まで完了・公開済み。
-- **operation registry / read-only preflight（候補A・Req 12／T-014）完成・公開済み**：workflow CLI や review-run などを記憶・推測で実行して手戻りする問題への根本対策として、操作 ID から正規コマンド・前提ファイル・必須チェックを引ける `stages/operation-registry.yaml` と、読み取り専用の `operation-preflight` を TDD 実装した。主な実装は `tools/check_workflow_action/operation_registry.py`、`tools/check_workflow_action/operation_preflight.py`、`tools/check-workflow-action.py operation-preflight --operation-id <id> --json`、`tests/tools/test_operation_registry_preflight.py`。parser 由来の `--help` option 抽出、operation family ごとの必須チェック、未知チェックの fail-closed、deploy/export 時の絶対パス・`..` 拒否、`exit_code_contract` 検証を含む。requirements/design/tasks/implementation の triad-review → review-wave → alignment → approval、post-write verification、reopen 完了まで実施済み。完了記録＝`stages/completed/reopen-procedure-2026-06-16-operation-registry-preflight.yaml`。コミット `43f4ca07`。
-- **裁定負荷対策＝重要決定の出典検査（候補5・Req 11／decision-source-lint）仕組みの実装は完成・公開済み（運用は未開始＝§4 項目4）**：reopen **R-0** で workflow-management に Requirement 11（重要決定の出典検査＝束ね検出・逐語照合・内容性＋構造化した重要決定の記録形式）を新設し、`decision-source-lint` サブコマンドを TDD 実装（`tools/check_workflow_action/decision_source_lint.py`〔コア 10 関数〕・`check-workflow-action.py` への登録と commit 直前ゲート統合〔pending=WARN・unverifiable=DEVIATION〕・`stages/decision-source-lint-config.yaml`〔内容なし語リスト初期 11 件〕）。各 phase は 3 役 triad-review → proxy_model（gemini-3.1-pro-preview）裁定 → 収束 → review-wave/alignment/approval で連鎖再実施（利用者「自律的に実施」2026-06-15）。専用テスト 62 件＋全 395 件 pass。完了記録＝`stages/completed/reopen-procedure-2026-06-15.yaml`。コミット `7610a0d8`〜`bfd00dcf`（第1〜4過程）。**ただし運用は未開始**：構造化決定記録（`.reviewcompass/decisions/`）は現時点 0 件で `decision-source-lint --all` は「0 件（正常）」＝検査対象なし。埋没防止が実効を持つには、going-forward の重要決定を新形式で書き始める運用定着が要る（§4 項目4 の残タスク）。
-- **commit 承認の削除ファイル対応＋reopen 基盤の弱点記録**：reopen 完了処理で必ず起きる「進行中→完了への移動＝元ファイル削除」を承認できるよう、`make-commit-approval.py`（削除を検出し `DELETED` 印を付す）・`validate_commit_approval`（`DELETED` 印を通し、ファイルが残る時のみエラー）に TDD で追加（コミット `94900049` push 済み）。あわせて、第4過程で進行中ファイルの手編集が YAML 破損・必須項目漏れで2度コミットを止めた事故は reopen 基盤改善として対処済み。
-- **会話ログ取り込みの追記専用マージ化（maintenance side track）完了・改善中**：従来の「丸ごと上書き」をやめ、層 1（整形済み転写）の本文包含で `same`／`extend`／`shrink` を判定し、同一はスキップ・拡張は更新・縮小は既存保全（上書きせず警告）とした。元ログ（jsonl）が何らかの理由で縮んでも取り込み済み記録を失わない。判定モジュール `tools/session_record_extractor/merge.py`（`classify_update`／`is_subsequence`）を追加し `tools/session-record-backfill.py` を改修。判定は層 1 で行い層 2 は同一ソースゆえ追従（層 2 の「（なし）→実データ」を縮小と誤判定しない）。2026-06-15 に、本文同一でも元ログ hash だけ変わった場合に `source_sha256` frontmatter を更新する改善を追加（手修正で直していた stale hash 問題の再発防止）。TDD テストは `tests/tools/test_session_record_append_merge.py`（同一は書かない／本文同一でも hash stale は更新／伸びたら拡張反映／縮んだら保全／空欄→実データは拡張）。書き込み後検証はテスト通過で完了（利用者決定 2026-06-14。前例 postwrite-log-exclusion と同様、多モデル API レビューなし）。完了記録＝`stages/completed/maintenance-2026-06-14-session-record-append-merge.yaml`。コミット `44ed5ea8`。前セッションの取りこぼしセッション記録 4 件も `a37ad0c2` で確定。
-- **review-wave 要約コマンド（候補2・Req 10／T-012）完成・公開済み**：reopen **R-0** で workflow-management に Requirement 10 を新設し、`review-wave-summary` サブコマンドを TDD 実装（`tools/check-workflow-action.py`。`build_review_wave_summary`／`aggregate_triage_for_summary`／Markdown・JSON 安定スキーマ／fail-closed〔必須記録欠落で exit 2・任意記録の非在は ok〕／読み取り専用／`--out`・`--save`）。出力＝feature coverage・phase/stage 状態・triage 未解決/draft/human_required 件数・recheck 状態・依存状況・carry-forward 未消化。実行＝`python3 tools/check-workflow-action.py review-wave-summary [--json] [--out PATH|--save]`。各 phase は 3 役 triad-review → proxy_model（gemini-3.1-pro-preview）裁定 → 収束確認 → review-wave/alignment/approval で連鎖再実施（design は反証役の指摘で round-4 まで回し収束）。完了記録＝`stages/completed/reopen-procedure-2026-06-14.yaml`。コミット `451fd3da`（第1・2過程）・`bf3769a0`（第3・4過程）。専用テスト 14 件＋tests/tools 301 件 pass。
-- **セッション記録 機械抽出ツール（PLC-DEC-007 候補 5）完成・84 件バックフィル公開済み**：ツールは `tools/session-record-extractor.py`（単体）・`tools/session-record-backfill.py`（一括）・`tools/session_record_extractor/`（ライブラリ）。層 1（整形済み発言全文転写）＝`.reviewcompass/evidence/sessions/`、層 2（人が読む記録）＝`docs/sessions/auto-*.md`。来歴刻印＋再現性チェック（168/168 一致）＋機微除去 3 段（漏えい 0）。Codex は cwd 前方一致で絞り込み、内部思考は除外、ツール結果は先頭＋末尾に縮約。
-- **会話ログ自動保持（going-forward 取り込み）実装・公開済み**：Claude は、セッション終了時に当該会話ログを2層記録へ自動取り込みする SessionEnd フック（`.claude/hooks/session-record-capture.sh`）と、新セッション開始時に前セッションを補完回収する SessionStart フック（`.claude/hooks/session-record-capture-previous.sh`）を `.claude/settings.json` に登録済み。`tools/session-record-backfill.py` の単一セッション取り込み（`--session`／`--source`／`--evidence-dir`／`--docs-dir`）を TDD で追加。`transcript_path` 欠落時は `session_id`＋`cwd` から復元、ログ無し・失敗でも exit 0（終了を妨げない）。取りこぼしの回収は**終了済みセッションへの単一取り込み（`--session`）が安全網**（2026-06-14 是正。当初は「オフライン一括バックフィルが安全網」と PLC-DEC-007 追補で定めたが、一括は実行中セッションを掴み churn を生むため既定無効化＝§4 の churn 対応を参照）。フックは**設定読込の都合で次セッションから有効**。コミット `a287684a`（push 済み）。専用テスト＝`tests/tools/test_session_record_single_capture.py`・`tests/hooks/test_session_record_capture.py` 各 4 件、tools 202 件・hooks 21 件 pass。
-- **Codex TODO 更新 hook による現セッション下書き保存＋SessionStart 正式昇格 実装済み（2026-06-16）**：`UserPromptSubmit` 経由は実運用で発話ごとの誤発火が確認されたため使用禁止。TODO 更新を合図にする対象は前セッションではなく現セッションである。`.codex/hooks/session-record-capture-current-on-todo.sh` と `templates/hooks/session-record-capture-current-on-todo.sh.template` は、現セッションを `.reviewcompass/runtime/session-record-drafts/codex-<session_id>.md` へ下書き保存し、`.reviewcompass/evidence/sessions/` と `docs/sessions/` へ直接作らない。成功 event は `drafted`、失敗 event は `draft_failed`。`.codex/hooks/session-record-promote-previous-draft.sh` と `templates/hooks/session-record-promote-previous-draft.sh.template` は、Codex `SessionStart` で現 `session_id` と異なる最新下書き 1 件を正式 2 層へ昇格する。昇格 helper は `tools/session-record-promote-draft.py --session-id <id> --source codex --current-session-id <current-id>` で、対象が current `session_id` と同じ場合は exit 2 で拒否する。`session_id` が無い場合は並行セッション誤回収を避けて推測しない。
-- **正本優先（事例より正本）の生成ツール（案2）追加・公開済み**：「過去の事例を手で写す」のをやめ、正本（強制コードの検証関数）が受け入れる形を生成し、正本へ通して fail-closed する2ツールを TDD で追加。`tools/make-post-write-manifest.py`（書き込み後検証 manifest 生成。正本＝`evaluate_post_write_manifest_state`／`review_run_traceability_satisfied`）は残存。`tools/make-commit-approval.py`（commit 承認レコード生成）は **設計欠陥により 2026-06-15 に削除**（LLM が自律的に承認記録を生成できる＝コミット保護の無効化。経緯は `docs/notes/2026-06-15-security-incident-make-commit-approval.md`）。コミット `83abd1e6`（追加）→ `b16a021a`（`make-commit-approval.py` 削除）。動機・経緯と残検討は §4 の項目 6。
-- **reopen 中の pending gate 完了更新コマンド追加（maintenance side track）完了**：`tools/check-workflow-action.py reopen-advance-gate` を追加し、reopen 第3過程で `pending_gates` の先頭 gate を、判断・根拠・`spec.json` 更新・`completed_gates`・`downstream_impact_decisions`・`completed_steps` と一緒に機械更新できるようにした。非先頭 gate は拒否し、根拠なし更新も拒否する。これにより、`spec-set` が in-progress reopen を遮断する通常保護を保ったまま、reopen 内の gate 前進だけを正規コマンドで処理できる。完了記録＝`stages/completed/maintenance-2026-06-15-reopen-advance-gate.yaml`。コミット `96112385`。運用説明は `docs/operations/WORKFLOW_PRECHECK.md` と `docs/operations/WORKFLOW_PRECHECK_DETAILS.md` に反映済み。
-- **書き込み後検証ポリシー改訂済み**：独立検証が有効でないものを性質ベースで対象外化。(あ) 機械生成・出所明記の派生記録（来歴マーカー判定）、(い) 機械が吐く捕捉物（review-run・自律並列台帳・検証結果ログ＝ディレクトリ判定）。いずれも独立検証でなく再現性／走行・再実行で担保。正本＝`docs/disciplines/discipline_post_write_verification.md`、ガード＝`tools/check-workflow-action.py` の `is_post_write_verification_target`。監査・計測記録（`docs/discipline-compliance-reports/`）は主張を含むため対象に残す。
-- **文書配置規約は段階 5 まで完了**（計画 `docs/notes/2026-06-12-document-placement-plan.md` の状態欄が正。P1 完了判定は `docs/notes/2026-06-12-document-placement-stage4-migration.md`）。
-  - 配置規約 P1 の reopen 2 本（ce＝R-0・wm＝D-0）は第 4 過程まで完了し `stages/completed/` にある。
-  - 新配置の運用が開始済み：証跡は `.reviewcompass/evidence/`（review-runs・features/<feature>/conformance・estimation）、実行時生成物は `.reviewcompass/runtime/`（検査ログ・effective prompt・commit 承認レコード、gitignore 1 行）。旧置き場 6 箇所は凍結（各所の README が案内、読み取り互換は P3 まで）。
-  - 凍結違反の機械検出：ce＝`tools/conformance_evaluation/machine_verification.py`（check_record_freeze 等）、wm＝`tools/check_workflow_action/placement_freeze.py`（手動実行手順は `docs/operations/WORKFLOW_PRECHECK_DETAILS.md` §8.1）。
-- 全テスト：ディレクトリ単位で pass（`tests/tools` は 2026-06-14 の review-wave-summary 追加で 301 件。同名テストファイルの衝突があるため `tests/` 一括ではなくディレクトリごとに pytest を実行する）。
+- `docs/notes/2026-06-17-next-json-unique-state-redesign.md`
+  - `next --json` を唯一の状態 / action selector とする設計メモ。
+- `docs/notes/2026-06-17-next-json-effective-prompt-enforcement.md`
+  - `next --json` 返値に紐づく effective prompt 必読、読了証跡、coverage audit、短文化の締め直しメモ。
+- `docs/notes/2026-06-17-maintenance-workflow-compliance-improvement-candidates.md`
+  - maintenance workflow 遵守、commit sandbox `.git/index.lock` preflight、maintenance / reopen / new workflow の使い分け候補。
+- `docs/notes/2026-06-17-working-note-verification-trigger-policy.md`
+  - 作業中メモを API post-write に反復投入せず、`lightweight_self_check` に分岐する候補。
 
-## 4. 次作業（候補。正本は next --json と利用者指示）
+## 4. 次作業候補
 
-`next` が `completed` のため、次は保留事項からの利用者選択になる：
+1. **`next --json` 一意性と effective prompt 強制の締め直し**
+   - 入口: `WORKFLOW_DISCIPLINE_MAP.yaml` coverage audit、全 action への `effective_prompt` 付与、読了証跡、アンカー節抽出。
+   - 注意: 他サブコマンドの JSON は次作業 selector ではない。次作業は必ず再度 `next --json` で決める。
 
-- **会話ログの取り込みは原則フック任せ（手動 backfill は予備）**：会話ログの2層記録は、SessionEnd フック（`a287684a`）がセッション終了時に自動で取り込む。2026-06-14 に、漏れていた `b5bd051e` を対象にフックを一時出力先で実走させ、両層が正しく生成されることを確認済み（フックは動く）。したがって**進行中の本セッションも、終了時にフックが自動記録する**ので「次セッション冒頭で手動取り込み」を常時行う必要はない。取りこぼしの回収が要るときは、**終了済みセッション 1 件だけを `python3 tools/session-record-backfill.py --session <jsonl>` で取り込む**（フックと同じ単一取り込み。安全）。**一括スキャン（`--session` なし）は使わない**：実行中のセッション（自分自身を含む）を掴んで後で取り込み直し＝差分のたまり（churn）を生むため、2026-06-14 にコードで既定無効化した（`--historical-import` フラグ無しでは exit 2 で止まる。過去ログの一括取り込みは完了済み。歯止めテスト＝`tests/tools/test_session_record_bulk_guard.py`）。churn の発端は前セッション `a57d7790` が一括 backfill で自分自身を取り込んだこと。**作る側（一括無効化）だけでは塞ぎ切れない**——フックも継続・再開の区切りで進行中の本セッションを途中記録しうる（`ee627069` で実例）。そこで**コミット側にも歯止め**を追加：コミット前検査（`check-workflow-action.py commit`）が、staged のセッション記録について frontmatter の `source_sha256`（生成時の元ログのハッシュ）と現在の元ログのハッシュを突き合わせ、不一致（＝元ログが生成後に変化＝まだ進行中）なら exit 2 で弾く（手作業の除外に頼らない。判定不能は過剰遮断しない。歯止めテスト＝`tests/tools/test_commit_in_progress_session_guard.py`）。これで「進行中セッションの記録はコミットしない」が機械的に保証される。追記専用マージ化（`44ed5ea8`）により単一取り込みの再実行は安全（同一はスキップ・縮小は保全・増えた分だけ反映）。フック導入前の取りこぼしは `b5bd051e`（フック導入 25 分前に終了）1 件のみで 2026-06-14 に記録済み（`b5951612`）。生成物は `git status` で確認し、コミット・push は利用者承認のうえで行う。
-1. **実アプリ pilot**：前提だった P1 完了（PLC-DEC-010）を充足。配布前 smoke も合格済み（`tools/build-deploy-package.py --clean --verify --smoke-external-app-root <root>`）。
-2. **レビュー証跡の機能側ポインタ要件の一般化**：配置規約の実装完了により再開可能（置き場の前提が確定済み）。
-3. **P3（最終形）の専用 reopen 計画**：pilot 後に別途起こす（PLC-DEC-008・011）。主な項目＝disciplines／operations の `.reviewcompass/` 同型化（PLC-DEC-008 最終形）、旧パス読み取り互換の明示終了（PLC-DEC-011）、配置規約の「1 本の正本文書化」（段階 5 の未実施分）の再評価。
-4. **裁定負荷対策（利用者決定の埋没防止）：仕組みの実装は完了・運用は未開始（2026-06-15・R-0・`bfd00dcf`〜`94900049` push 済み）**。Requirement 11（重要決定の出典検査）を新設し `decision-source-lint`（束ね検出・逐語照合・内容性）＋構造化した重要決定の記録形式を TDD 実装・公開した（詳細は §3）。**「終了」ではない**：構造化決定記録（`.reviewcompass/decisions/{id}.yaml`）が現時点 0 件で `decision-source-lint --all` は「0 件（正常）」＝何も検査していない。**残る運用タスク**：(a) 【確定 2026-06-15 利用者「運用は次から」】起点は**次に発生する重要決定から**新形式で記録を始める（今回の reopen 分・既存の散文台帳は遡及しない）、(b) 「誰が・いつ・どの決定を」構造化記録にするかの運用手順の確定（次の重要決定が発生した時点で手順を定めつつ最初の記録を書く）、(c) この運用が回って初めて埋没防止が実効を持つ。
-   - **方針確定（2026-06-14、利用者決定）**：失敗の核心＝**一括承認の中に重要な件が埋もれ**、他が問題なく見えて「OK」と返したため、重要件が正しく裁定されないまま確定した（裁定負荷）。**ルールは既存**（`discipline_approval_operation`＝確定記述に出典必須・出典なし禁止、`discipline_plain_explanation_each_step`＝重要承認は1件ずつ）で、PLC-DEC-007 はその**違反**。よって今セッションの結論と同じく**機械で強制**する方向。**確定した検査方針（lint、重要種別＝不可逆操作・規律変更・仕様/計画変更に限定）**：(i) **束ね検出**＝複数決定が同一出典（同じ「OK」）を共有していたら確定扱いさせない、(ii) **逐語照合**＝出典の引用が会話転写（repo 取り込み済みの層1）に逐語で存在するか機械照合（でっち上げ・言い換えを弾く）、(iii) **内容性**＝「OK」「承認」等の中身なし返事だけを重要決定の出典として不可。**文言が意図を汲むかの意味一致は機械では「検証可能化」まで**で、最終は人/判定役（転写と突き合わせ）。**実装範囲（要・次セッション集中実装）**：決定台帳は散文・複数ファイル散在（PLC-DEC／MLE-DEC／reopen 分類記録…）で、確実な機械検査には**構造化した重要決定の記録形式**（決定ID・文言・出典〔引用＋セッションID＋個別/束ね〕）の新設が要る＝相応に大きい機能。going-forward の新規重要決定から適用し、過去の散文台帳は遡及移行しない方針が現実的。
-5. 検討材料：WP-001（外れ所見の原因分類軸）、`docs/notes/2026-06-11-agentic-flow-adoption-plan.md`。
-6. **「正本優先（事例より正本）」の規律化と、規律変更手続きの比例性（2026-06-14 着手・引き継ぎ）**：作業時に過去の事例を写すのでなく、正本（仕様・規律・強制コード）から要件を導く、という作業原則。動機＝本セッションで承認レコード・書き込み後検証 manifest を過去事例から手組みしていた（誤りの温床）こと。案2（生成ツール、`83abd1e6`）で手組みの温床は機械化済み。残る検討は次の3点：
-   - **結論（2026-06-14 試行）：コードで強制済みのルールは規律に書く必要がない**（コード＋テスト＋コミットがそれ自体で説明になる）。実例＝churn 歯止め（`b3d527b2`／`c069983c`）を規律化しようとして、「鍵のかかったドアに貼り紙」になると判明。よって (C)(D) は **コード強制済みルールの範囲では不要**：(C) の「正本優先」のうち生成ツールで強制済みの部分は規律化不要、(D) の軽い道もその狙い（コード強制済みルールの軽い規律化）が消えるため不要。残るのは「コードで強制していない、広い心がけとしての正本優先」を規律にするか否かだけで、これは別問題（必要が出てから重い道で検討）。なお (D) の一般的な軽量道は §5.23.13 軽量手続き（dogfooding 期間限定・整合性借金27件の前例あり）の復活になるため不採用と判断（方向B＝狭い例外も上記結論で不要化）。
-   - (C) **「正本優先」を正式な規律にする**：正本確認の結果、新規規律は `self-improvement` 由来の `new_discipline` 提案を `workflow-management` が drafting→review→approval で実体化する手続きであり（`requirements.md:34`）、かつ「新規規律を1つ足すなら既存規律を1つ以上統廃合する」運用ルール（`requirements.md:124`）に従う＝重い手続き。
-   - (D) **規律変更手続きに規模比例の軽い道が無い**：書き込み後検証は小規模1体／大規模3体と規模で軽重を変えるのに、規律変更手続きには小変更用の速路が無い。D を先に整えると C を軽く・正しく足せる（候補5 と同じ「手続きの作り」改善の族）。
-   - (拡大) **生成ツールの横展開**：手組みしている他の成果物（例：reopen-classification 記録、in-progress／completed の reopen yaml 等）も、正本から生成するツール化を順次検討（manifest は案2 で実装済み。承認レコードの生成ツールは設計欠陥で削除済み）。
+2. **maintenance workflow protocol の明文化**
+   - maintenance でも要件・設計・タスク相当の確認、TDD、実装後 review、post-write / lightweight self check の区別、completed 化をどう強制するかを決める。
+   - retrospective 対象候補: `7f346075`、`0d611816`、`0183005e`、`a5127ef6`、`ebb2df47`。
 
-## 5. 参照
+3. **作業中メモの `lightweight_self_check` 化**
+   - 作業中メモ / 修正候補メモ / rollback メモを API post-write ではなく軽量自己精査へ分岐する artifact class 判定を実装する。
+   - 現状は暫定的に `lightweight_self_check` manifest を手で置いて guard を通している。
 
-- workflow navigation：`docs/operations/WORKFLOW_NAVIGATION.md`
-- session guide：`docs/operations/SESSION_WORKFLOW_GUIDE.md`
-- 配置規約一式：`docs/notes/2026-06-12-document-placement-{inventory,plan,stage2-decisions,target-design,stage4-migration}.md`
-- reopen 分類記録：`docs/reviews/reopen-classification-2026-06-12-placement-p1-path-contracts.md`
-- carry-forward register：`learning/workflow/carry-forward-register/reviewcompass-import.yaml`
+4. **commit sandbox preflight**
+   - `guarded-git-commit.py` が `git commit` 直前に `.git/index.lock` 作成可否を preflight する。
+   - 不可なら approval を消費せず、sandbox 外 guarded commit 再実行を一意 action として返す。
 
-過去の完了事項の履歴は git log と `docs/notes/`・`stages/completed/` の各記録を正本とする（本 TODO には残さない）。
+5. **実アプリ pilot**
+   - P1 完了済み。
+   - 配布前 smoke は合格済み。
+
+6. **decision-source-lint の運用開始**
+   - 仕組みは実装済みだが、構造化決定記録 `.reviewcompass/decisions/` はまだ 0 件。
+   - 次に発生する重要決定から記録を始める。
+
+## 5. 会話ログ取り込み
+
+- 原則フック任せ。
+- Claude は SessionEnd / SessionStart。
+- Codex は TODO 更新後の PostToolUse で現セッション下書き保存、次 SessionStart で前セッション下書きを正式化。
+- 手動 backfill は終了済みセッション 1 件だけに限定する。
+- 一括 backfill は使わない。
+
+## 6. 参照
+
+- workflow navigation: `docs/operations/WORKFLOW_NAVIGATION.md`
+- session guide: `docs/operations/SESSION_WORKFLOW_GUIDE.md`
+- discipline map: `docs/operations/WORKFLOW_DISCIPLINE_MAP.yaml`
+- carry-forward register: `learning/workflow/carry-forward-register/reviewcompass-import.yaml`
+
+過去の詳細履歴は git log、`docs/notes/`、`stages/completed/` を正本とする。

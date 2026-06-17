@@ -1,0 +1,20 @@
+status: completed
+target_files:
+- TODO_NEXT_SESSION.md
+target_sha256:
+  TODO_NEXT_SESSION.md: 850b94ab38ac63883e44bbe9ac30139d2c9f39212634b4aa38c1d2573691b2dc
+required_verifiers: &id001
+- gemini-3.5-flash
+completed_verifiers: *id001
+unresolved_substantive_findings: 0
+verifications:
+- verifier: gemini-3.5-flash
+  target_files:
+  - TODO_NEXT_SESSION.md
+  target_sha256:
+    TODO_NEXT_SESSION.md: 850b94ab38ac63883e44bbe9ac30139d2c9f39212634b4aa38c1d2573691b2dc
+review_run:
+  path: .reviewcompass/evidence/review-runs/2026-06-17-postwrite-todo-next-session-slim-update
+  summary_path: .reviewcompass/evidence/review-runs/2026-06-17-postwrite-todo-next-session-slim-update/model-result-summary.yaml
+notes: Generated template; verify target_files cover current post-write targets before
+  use.
