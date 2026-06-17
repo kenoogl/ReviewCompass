@@ -20,12 +20,16 @@
 - `next --json`: `completed`
 - 進行中手続き: なし
 - 直近 commit:
-  - `3dc90dbc Correct API review entrypoint documentation`
-  - `3147bdaa Document canonical API review procedure`
-  - `be4d8c3e Load API keys from zshrc in API entrypoints`
-  - `a3263fdf Remove external API approval guard`
-  - `85b3bac5 Add external API approval guard`
-- 作業ツリーは clean、`origin/main` へ push 済み。
+  - `3e001697 Record commit operation card planning note`
+  - `07be80be Document guarded commit nonce sequence`
+  - `9d374907 Add working note lightweight self-check`
+  - `dfcebfa3 Record commit approval stdin hazard`
+  - `c282f63a Refresh TODO task candidates`
+- 作業ツリーは clean。
+- `main` は `origin/main` より 3 commits ahead。未 push:
+  - `3e001697 Record commit operation card planning note`
+  - `07be80be Document guarded commit nonce sequence`
+  - `9d374907 Add working note lightweight self-check`
 
 ## 3. 直近の重要メモ
 
@@ -36,14 +40,21 @@
 - `docs/notes/2026-06-17-maintenance-workflow-compliance-improvement-candidates.md`
   - maintenance workflow 遵守、commit sandbox `.git/index.lock` preflight、maintenance / reopen / new workflow の使い分け、手続きの比例性の候補。
 - `docs/notes/working/2026-06-17-working-note-verification-trigger-policy.md`
-  - 作業中メモを API post-write に反復投入せず、`lightweight_self_check` に分岐する候補。
+  - 作業中メモを API post-write に反復投入せず、配置場所 `docs/notes/working/` で `lightweight_self_check` に分岐する方針と実装メモ。
+- `docs/notes/working/2026-06-17-commit-operation-card-and-next-json-prompt-selection.md`
+  - commit 直前に読む短い一枚 `COMMIT_OPERATION_CARD.md`、Codex / Claude adapter 分離、`next --json` の不可逆操作用 prompt selection 改修案。
+- `stages/completed/maintenance-2026-06-17-lightweight-self-check-location.yaml`
+  - 作業中メモの場所ベース lightweight self-check 化、API review 複数 `--target` 証跡化補正まで完了済み。
 - `stages/completed/maintenance-2026-06-17-commit-sandbox-preflight.yaml`
   - commit sandbox preflight は実装・テスト・設計 / タスク反映まで完了済み。
 
 ## 4. 次作業候補
 
-1. **作業中メモの `lightweight_self_check` 化**
-   - 作業中メモ / 修正候補メモ / rollback メモを API post-write ではなく軽量自己精査へ分岐する artifact class 判定を実装する。
+1. **commit operation card と不可逆操作 prompt selection**
+   - `docs/notes/working/2026-06-17-commit-operation-card-and-next-json-prompt-selection.md` を元資料にする。
+   - commit 直前に必ず読む短い一枚 `docs/operations/COMMIT_OPERATION_CARD.md` を追加する。
+   - Codex / Claude adapter は実行面差分だけに絞り、commit 手順本体は操作カード参照に寄せる。
+   - `next --json` 改修計画と合わせ、通常 action prompt と不可逆操作直前 prompt を分離する。
 
 2. **maintenance workflow protocol の明文化**
    - maintenance でも要件・設計・タスク相当の確認、TDD、実装後 review、post-write / lightweight self check、completed 化をどう扱うかを正本化する。
@@ -65,6 +76,8 @@
 
 - **commit sandbox preflight**
   - `eb028df2 Add commit sandbox preflight` と `stages/completed/maintenance-2026-06-17-commit-sandbox-preflight.yaml` で完了済み。
+- **作業中メモの `lightweight_self_check` 化**
+  - `9d374907 Add working note lightweight self-check` と `stages/completed/maintenance-2026-06-17-lightweight-self-check-location.yaml` で完了済み。
 
 ## 5. 会話ログ取り込み
 
