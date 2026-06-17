@@ -1,0 +1,24 @@
+status: completed
+target_files:
+- docs/notes/2026-06-17-commit-approval-stdin-input-hazard.md
+target_sha256:
+  docs/notes/2026-06-17-commit-approval-stdin-input-hazard.md: cf3ba01024c74ebb4dce78e415c4f6d9012305bbd826f392bceac1d337415ebb
+required_verifiers:
+- lightweight_self_check
+completed_verifiers:
+- lightweight_self_check
+unresolved_substantive_findings: 0
+verifications:
+- verifier: lightweight_self_check
+  target_files:
+  - docs/notes/2026-06-17-commit-approval-stdin-input-hazard.md
+  target_sha256:
+    docs/notes/2026-06-17-commit-approval-stdin-input-hazard.md: cf3ba01024c74ebb4dce78e415c4f6d9012305bbd826f392bceac1d337415ebb
+notes: >
+  Lightweight self check only. The user explicitly instructed that API
+  verification is unnecessary. The note records a working observation: repeated
+  guarded commit failures were caused by incorrect stdin handling for
+  --approval-source-text-line-stdin, not by commit target selection or
+  post-write verification. Self-check confirmed the note distinguishes
+  observed failure, non-causes, missing runbook guidance, and future candidates
+  without changing the normative workflow contract.
