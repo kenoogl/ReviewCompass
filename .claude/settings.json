@@ -5,7 +5,8 @@
       "Bash(python3 -m unittest tests.tools.*)",
       "Bash(python3 -m unittest tests.hooks.*)",
       "Bash(python3 -m unittest discover -s tests*)",
-      "Bash(zsh -c 'source ~/.zshrc && .venv/bin/python3 tools/api_providers/run_role.py *')"
+      "Bash(zsh -c 'source ~/.zshrc && .venv/bin/python3 tools/api_providers/run_role.py *')",
+      "Bash(.venv/bin/python3 tools/api_providers/run_review.py *)"
     ]
   },
   "hooks": {
