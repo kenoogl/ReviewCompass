@@ -1,0 +1,23 @@
+status: completed
+target_files:
+  - docs/notes/working/2026-06-17-commit-approval-wording-guard-ux.md
+target_sha256:
+  docs/notes/working/2026-06-17-commit-approval-wording-guard-ux.md: 5b4fcf553d63df41df35e2eeac5b7494fe06cb87a9731f380ad8edddf8463845
+required_verifiers:
+  - lightweight_self_check
+completed_verifiers:
+  - lightweight_self_check
+unresolved_substantive_findings: 0
+verifications:
+  - verifier: lightweight_self_check
+    target_files:
+      - docs/notes/working/2026-06-17-commit-approval-wording-guard-ux.md
+    target_sha256:
+      docs/notes/working/2026-06-17-commit-approval-wording-guard-ux.md: 5b4fcf553d63df41df35e2eeac5b7494fe06cb87a9731f380ad8edddf8463845
+    checks:
+      user_points_preserved: true
+      facts_inferences_policy_and_open_items_separated: true
+      useful_as_later_decision_material: true
+      does_not_over_specify_scope: true
+      remains_working_note_not_canonical_spec: true
+notes: "Lightweight self-check for docs/notes/working/ only; API review intentionally not used."
