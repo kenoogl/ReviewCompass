@@ -1,0 +1,4 @@
+run_id: 2026-06-17-api-call-entrypoint-correction-postwrite
+target_files:
+- path: docs/operations/WORKFLOW_NAVIGATION.md
+  sha256: 837566eaa7c437eee596150c3905a0039631336bea37acd144eb70db35fc4e3f

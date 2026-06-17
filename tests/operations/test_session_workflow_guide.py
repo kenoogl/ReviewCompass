@@ -95,7 +95,10 @@ def test_post_write_verification_documents_canonical_api_call_procedure_without_
   )[0]
 
   assert "API 呼び出し起動手順の正本" in post_write_section
-  assert "zsh -c 'source ~/.zshrc && .venv/bin/python3 tools/api_providers/run_review.py" in post_write_section
+  assert ".venv/bin/python3 tools/api_providers/run_review.py" in post_write_section
+  assert "外側から `zsh -c` で包まない" in post_write_section
+  assert "entrypoint 内" in post_write_section
+  assert "~/.zshrc" in post_write_section
   assert "tools/api_providers/run_review.py" in post_write_section
   assert "ANTHROPIC_API_KEY" in post_write_section
   assert "GEMINI_API_KEY" in post_write_section
@@ -110,5 +113,6 @@ def test_post_write_verification_documents_canonical_api_call_procedure_without_
   assert "API key" in post_write_section
   assert "import" in post_write_section
   assert "argparse" in post_write_section
+  assert "zsh -c 'source ~/.zshrc && .venv/bin/python3 tools/api_providers/run_review.py" not in post_write_section
   assert "external-api-approval" not in post_write_section
   assert "--external-api-approval-record" not in post_write_section

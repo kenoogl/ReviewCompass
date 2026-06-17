@@ -66,13 +66,13 @@ reopen 手続きが進行中である。通常ワークフローや post-write-v
 API 経由の複数モデル検証を行う場合の標準手順：
 
 ```bash
-zsh -c 'source ~/.zshrc && .venv/bin/python3 tools/api_providers/run_review.py \
+.venv/bin/python3 tools/api_providers/run_review.py \
   --variant post_write_verification_google \
   --target <target-file> \
   [--target <target-file-2> ...] \
   --phase post_write_verification \
   --criteria <criteria-id> \
-  --review-run-dir .reviewcompass/evidence/review-runs/<run-id>'
+  --review-run-dir .reviewcompass/evidence/review-runs/<run-id>
 
 .venv/bin/python3 tools/api_providers/review_triage.py list-pending \
   --review-run-dir .reviewcompass/evidence/review-runs/<run-id>
@@ -93,7 +93,7 @@ zsh -c 'source ~/.zshrc && .venv/bin/python3 tools/api_providers/run_review.py \
 .venv/bin/python3 tools/check-workflow-action.py next --json
 ```
 
-API 呼び出し起動手順の正本は、`zsh -c 'source ~/.zshrc && .venv/bin/python3 tools/api_providers/run_review.py ...'` である。API key は配布物や設定ファイルへ書かず、利用者の shell 初期化で読み込まれる環境変数から渡す。Claude Code などの操縦実行面では、子プロセスの `ANTHROPIC_API_KEY` と `GEMINI_API_KEY` が空文字列へ上書きされることが確認済みである。一方、`OPENAI_API_KEY` は同じ確認では上書きされていない。このため API 経路は、直に Python を起動するのではなく、`source ~/.zshrc` で利用者環境の API key を読み直してから `run_review.py` を起動する。
+API 呼び出し起動手順の正本は、`.venv/bin/python3 tools/api_providers/run_review.py ...` である。外側から `zsh -c` で包まない。API key は配布物や設定ファイルへ書かず、利用者の shell 初期化で読み込まれる環境変数から渡す。Claude Code などの操縦実行面では、子プロセスの `ANTHROPIC_API_KEY` と `GEMINI_API_KEY` が空文字列へ上書きされることが確認済みである。一方、`OPENAI_API_KEY` は同じ確認では上書きされていない。このため `run_review.py` / `run_role.py` entrypoint 内で、環境変数が未設定の場合に `~/.zshrc` を読み直して API key を補完する。補完後も key が得られない場合は API key 未設定として fail-closed する。
 
 `next_action.target_files` が複数ある場合は、`--target` を複数回指定して同じ review-run に束ねる。API review-run の成否確認は、`review_summary.md`、`rounds.yaml`、`model-result-summary.yaml`、`raw/`、`parsed/`、`target-manifest.yaml` が同じ `--review-run-dir` に生成され、`rounds.yaml` の `target_files`、provider、model、raw/parsed path が今回の対象と一致することで行う。
 
