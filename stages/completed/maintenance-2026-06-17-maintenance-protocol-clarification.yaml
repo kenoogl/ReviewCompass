@@ -1,0 +1,34 @@
+process_id: maintenance
+started_at: '2026-06-17T00:00:00+09:00'
+completed_at: '2026-06-17T00:00:00+09:00'
+trigger: >
+  maintenance workflow protocol の明文化。completed 後の maintenance 開始条件・
+  事前調査義務・3行宣言・工程区別（TDD主導 vs 文書のみ）が WORKFLOW_NAVIGATION.md
+  に記述されていない。
+mainline_blocked_by: >
+  maintenance の手順が不明確なまま運用が続いており、局所作業が意図せず拡大したり
+  手順が省略されるリスクがある。
+allowed_scope:
+  - docs/operations/WORKFLOW_NAVIGATION.md の completed 節・maintenance_in_progress 節・禁止事項節への追記
+allowed_files:
+  - docs/operations/WORKFLOW_NAVIGATION.md
+  - stages/in-progress/maintenance-2026-06-17-maintenance-protocol-clarification.yaml
+  - stages/completed/maintenance-2026-06-17-maintenance-protocol-clarification.yaml
+completion_conditions:
+  - completed 節に事前調査義務と開始条件（局所かつフィーチャー内閉じ）が記述されている
+  - maintenance_in_progress 節に3行宣言の義務化とコード/文書の区別が記述されている
+  - 禁止事項節に「事前調査なしに maintenance を始めない」が追記されている
+  - 中核変更は reopen/新規 workflow、フィーチャー横断は人にエスカレーション、という分岐が記述されている
+workflow_steps:
+  - '文書変更: WORKFLOW_NAVIGATION.md の3箇所に追記'
+  - '確認: post-write verification（gemini-3.5-flash、round-1 で WARN 1件 → 修正 → round-2 で所見 0件）'
+  - '完了化: in-progress を completed へ移動'
+completed_steps:
+  - 'WORKFLOW_NAVIGATION.md の maintenance_in_progress 節に事前調査・開始条件・分岐・3行宣言・工程区別を追記'
+  - 'WORKFLOW_NAVIGATION.md の completed 節を短い参照のみに変更（詳細は maintenance_in_progress 節へ移動）'
+  - '禁止事項節に「事前調査省略禁止」を追記'
+  - 'post-write verification: round-1 WARN 1件（事前調査が completed 節にのみある問題）→ 修正 → round-2 所見 0件'
+post_write_verification:
+  - .reviewcompass/evidence/review-runs/2026-06-17-workflow-navigation-maintenance-protocol-postwrite/review_summary.md
+  - .reviewcompass/post-write-verification/post-write-2026-06-17-029.yaml
+current_status: completed

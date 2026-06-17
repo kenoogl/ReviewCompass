@@ -1,0 +1,14 @@
+role: primary
+provider: gemini-api
+model: gemini-3.5-flash
+attempts: 1
+duration_seconds: 12.165
+findings:
+- severity: WARN
+  target_location: docs/operations/WORKFLOW_NAVIGATION.md の「completed」および「maintenance_in_progress」セクション
+  description: メンテナンス（maintenance）開始時の「事前調査の3ステップ」および「開始条件」の詳細が `completed` セクションにのみ記述されており、他の状態から
+    side track としてメンテナンスを開始する際に見落とされる、または適用外と誤解されるリスクがあります。
+  rationale: 共通禁止事項で「事前調査を省略して maintenance を始めない」と規定されている通り、事前調査はどの状態からメンテナンスを開始する際にも必須です。しかし、具体的な調査手順や「変更が局所的であること」等の開始条件が
+    `completed` の配下にのみ記載されているため、通常ワークフロー（`stage` など）の途中から `maintenance` の side track
+    に入る場合に、これらのルールが `completed` 状態に限定されたものと誤解される可能性があります。手順と開始条件の記述を `maintenance_in_progress`
+    セクションに寄せるか、共通の前提条件として整理することを推奨します。

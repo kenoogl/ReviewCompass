@@ -1,0 +1,4 @@
+run_id: 2026-06-17-workflow-navigation-maintenance-protocol-postwrite
+target_files:
+- path: docs/operations/WORKFLOW_NAVIGATION.md
+  sha256: c8737c097e2c14710df6576f9df3ba530735e3523e076e0185e9e778ab8030ab
