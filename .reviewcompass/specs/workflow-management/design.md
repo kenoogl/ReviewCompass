@@ -557,6 +557,8 @@ commit 成功後は、staged 内容承認 record / challenge と同じ commit ap
 
 `guarded-git-commit.py --approval-nonce --approval-source-text-line-stdin` は、同じ nonce に対する有効な staged 内容承認 record と delegation record が既にある場合、approval record を再書き込みしない。これは、`git commit` 本体が sandbox、lock、hook、署名などの git execution failure で commit を作成できず終了した後、同一 staged exact index で wrapper を再実行したときに、既存 delegation の `staged_content_approval_digest` を壊さないためである。precheck が OK で `git commit` 本体だけが失敗した場合、wrapper は approval / challenge / delegation を consumed にせず、validation failure として invalidated にもしない。再実行時に staged exact index、nonce、expiry、approval、delegation がすべて同一なら同じ active transaction を使って commit を再試行できる。
 
+`guarded-git-commit.py` は commit precheck 通過後、`git commit` を呼ぶ直前に `git rev-parse --git-path index.lock` で解決した `index.lock` の排他作成を preflight する。`index.lock` が既に存在する場合は既存 lock の調査を促して停止し、作成が permission / sandbox 系の理由で失敗した場合は `sandbox_git_write_denied` として分類し、`required_action=rerun_commit_with_escalation` を表示して停止する。この停止では `git commit` を呼ばず、approval / challenge / delegation を consumed または invalidated にしない。`git commit` 実行後に `.git/index.lock` / permission 系エラーが返った場合も同じ分類と required action を表示し、承認は保持されたこと、staged 内容が変わらなければ再承認不要であること、sandbox 外で guarded commit を再実行する必要があることだけを利用者へ示す。sandbox 外再実行の直前 gate は既存の staged exact index / nonce / expiry / approval / delegation 再照合を再度行うため、staged 内容が変化した場合は既存 approval を使わず新しい challenge / approval からやり直す。
+
 ### 3. fail-closed の既定（Req 4 受入 3）
 
 検査が結論不能な場合：

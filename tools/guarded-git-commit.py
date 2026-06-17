@@ -22,6 +22,8 @@ from check_workflow_action.commit_approval import (
 )
 
 DEFAULT_LAST_COMMIT_PRECHECK_PATH = ".git/reviewcompass/last-commit-precheck.json"
+SANDBOX_GIT_WRITE_DENIED = "sandbox_git_write_denied"
+RERUN_COMMIT_WITH_ESCALATION = "rerun_commit_with_escalation"
 
 
 def _mark_consumed(path, consumed_at):
@@ -124,6 +126,82 @@ def run_git_commit(cwd, messages):
   for message in messages:
     cmd.extend(["-m", message])
   return subprocess.run(cmd, cwd=str(cwd), capture_output=True, text=True)
+
+
+def git_index_lock_path(cwd):
+  """現在の git index.lock パスを返す。"""
+  result = subprocess.run(
+    ["git", "rev-parse", "--git-path", "index.lock"],
+    cwd=str(cwd),
+    capture_output=True,
+    text=True,
+  )
+  if result.returncode == 0 and result.stdout.strip():
+    return Path(cwd) / result.stdout.strip()
+  return Path(cwd) / ".git" / "index.lock"
+
+
+def preflight_git_index_lock(cwd):
+  """git commit 直前に index.lock の作成可否を確認する。"""
+  lock_path = git_index_lock_path(cwd)
+  if lock_path.exists():
+    return {
+      "ok": False,
+      "classification": "git_index_lock_exists",
+      "required_action": "inspect_existing_git_index_lock",
+      "message": f"{lock_path} が既に存在します",
+    }
+
+  try:
+    with lock_path.open("x", encoding="utf-8"):
+      pass
+    lock_path.unlink()
+  except PermissionError as e:
+    return {
+      "ok": False,
+      "classification": SANDBOX_GIT_WRITE_DENIED,
+      "required_action": RERUN_COMMIT_WITH_ESCALATION,
+      "message": str(e),
+    }
+  except OSError as e:
+    return {
+      "ok": False,
+      "classification": SANDBOX_GIT_WRITE_DENIED,
+      "required_action": RERUN_COMMIT_WITH_ESCALATION,
+      "message": str(e),
+    }
+
+  return {"ok": True}
+
+
+def is_index_lock_permission_failure(result):
+  """git commit 結果が sandbox の index.lock 書き込み拒否かを判定する。"""
+  output = f"{result.stdout}\n{result.stderr}".lower()
+  return (
+    "index.lock" in output
+    and (
+      "operation not permitted" in output
+      or "permission denied" in output
+      or "unable to create" in output
+    )
+  )
+
+
+def print_commit_escalation_required(preflight):
+  """sandbox 外 guarded commit 再実行が必要なことを表示する。"""
+  classification = preflight.get("classification", SANDBOX_GIT_WRITE_DENIED)
+  required_action = preflight.get("required_action", RERUN_COMMIT_WITH_ESCALATION)
+  message = preflight.get("message")
+  print(f"error: {classification}", file=sys.stderr)
+  print(f"required_action={required_action}", file=sys.stderr)
+  print("承認は保持されました", file=sys.stderr)
+  if required_action == RERUN_COMMIT_WITH_ESCALATION:
+    print("staged 内容が変わらなければ再承認不要です", file=sys.stderr)
+    print("sandbox 外で guarded commit を再実行してください", file=sys.stderr)
+  else:
+    print("既存の git index lock を確認してください", file=sys.stderr)
+  if message:
+    print(f"detail: {message}", file=sys.stderr)
 
 
 def record_line_approval(cwd, nonce):
@@ -237,12 +315,23 @@ def main(argv=None):
   if precheck.returncode not in (0, 1):
     return precheck.returncode
 
+  preflight = preflight_git_index_lock(cwd)
+  if not preflight.get("ok"):
+    print_commit_escalation_required(preflight)
+    return 2
+
   result = run_git_commit(cwd, args.message)
   if result.stdout:
     print(result.stdout, end="")
   if result.stderr:
     print(result.stderr, end="", file=sys.stderr)
   if result.returncode != 0:
+    if is_index_lock_permission_failure(result):
+      print_commit_escalation_required({
+        "classification": SANDBOX_GIT_WRITE_DENIED,
+        "required_action": RERUN_COMMIT_WITH_ESCALATION,
+        "message": result.stderr.strip(),
+      })
     return result.returncode
 
   record_last_commit_precheck(cwd, precheck)

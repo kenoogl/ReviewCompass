@@ -1,6 +1,7 @@
 """tools/guarded-git-commit.py の単体テスト"""
 
 import io
+import contextlib
 import json
 import importlib.util
 import os
@@ -268,6 +269,105 @@ class GuardedGitCommitTests(unittest.TestCase):
     self.assertFalse(delegation_after_failure["invalidated"])
     self.assertEqual(second, 0)
     self.assertEqual(latest_commit_subject(self.tmpdir), "retryable guarded commit")
+
+  def test_guarded_commit_preflight_denial_keeps_approval_and_skips_commit(self):
+    """index.lock preflight で拒否されたら commit せず承認を保持する"""
+    _stage_file(self.tmpdir, "notes.md", "# sandbox denied before commit")
+    approval_path = _write_commit_approval(self.tmpdir, ["notes.md"])
+    guarded = load_guarded_module()
+    original_preflight = getattr(guarded, "preflight_git_index_lock", None)
+    original_run_git_commit = guarded.run_git_commit
+    original_cwd = os.getcwd()
+    calls = {"commit": 0}
+
+    def denied_preflight(cwd):
+      return {
+        "ok": False,
+        "classification": "sandbox_git_write_denied",
+        "message": "mock index.lock denied",
+      }
+
+    def fail_if_called(cwd, messages):
+      calls["commit"] += 1
+      return subprocess.CompletedProcess(
+        ["git", "commit"],
+        99,
+        stdout="",
+        stderr="git commit should not be called after denied preflight\n",
+      )
+
+    guarded.preflight_git_index_lock = denied_preflight
+    guarded.run_git_commit = fail_if_called
+    stdout = io.StringIO()
+    stderr = io.StringIO()
+    try:
+      os.chdir(self.tmpdir)
+      with contextlib.redirect_stdout(stdout), contextlib.redirect_stderr(stderr):
+        result = guarded.main([
+          "-m", "guarded commit",
+          "--rationale", "利用者が LLM によるコミット実行代行を明示承認",
+        ])
+    finally:
+      os.chdir(original_cwd)
+      guarded.run_git_commit = original_run_git_commit
+      if original_preflight is None:
+        del guarded.preflight_git_index_lock
+      else:
+        guarded.preflight_git_index_lock = original_preflight
+
+    approval = json.loads(approval_path.read_text(encoding="utf-8"))
+    combined_output = stdout.getvalue() + stderr.getvalue()
+    self.assertEqual(result, 2)
+    self.assertEqual(calls["commit"], 0)
+    self.assertFalse(approval["consumed"])
+    self.assertIn("sandbox_git_write_denied", combined_output)
+    self.assertIn("required_action=rerun_commit_with_escalation", combined_output)
+
+  def test_guarded_commit_classifies_index_lock_failure_after_commit_attempt(self):
+    """commit 実行後の index.lock 失敗も sandbox_git_write_denied として表示する"""
+    _stage_file(self.tmpdir, "notes.md", "# sandbox denied during commit")
+    approval_path = _write_commit_approval(self.tmpdir, ["notes.md"])
+    guarded = load_guarded_module()
+    original_preflight = getattr(guarded, "preflight_git_index_lock", None)
+    original_run_git_commit = guarded.run_git_commit
+    original_cwd = os.getcwd()
+
+    def allowed_preflight(cwd):
+      return {"ok": True}
+
+    def fail_with_index_lock(cwd, messages):
+      return subprocess.CompletedProcess(
+        ["git", "commit"],
+        128,
+        stdout="",
+        stderr="fatal: Unable to create '.git/index.lock': Operation not permitted\n",
+      )
+
+    guarded.preflight_git_index_lock = allowed_preflight
+    guarded.run_git_commit = fail_with_index_lock
+    stdout = io.StringIO()
+    stderr = io.StringIO()
+    try:
+      os.chdir(self.tmpdir)
+      with contextlib.redirect_stdout(stdout), contextlib.redirect_stderr(stderr):
+        result = guarded.main([
+          "-m", "guarded commit",
+          "--rationale", "利用者が LLM によるコミット実行代行を明示承認",
+        ])
+    finally:
+      os.chdir(original_cwd)
+      guarded.run_git_commit = original_run_git_commit
+      if original_preflight is None:
+        del guarded.preflight_git_index_lock
+      else:
+        guarded.preflight_git_index_lock = original_preflight
+
+    approval = json.loads(approval_path.read_text(encoding="utf-8"))
+    combined_output = stdout.getvalue() + stderr.getvalue()
+    self.assertEqual(result, 128)
+    self.assertFalse(approval["consumed"])
+    self.assertIn("sandbox_git_write_denied", combined_output)
+    self.assertIn("required_action=rerun_commit_with_escalation", combined_output)
 
   def test_guarded_commit_consumes_nonce_challenge_before_approval(self):
     """nonce 承認は challenge を先に消費し、再利用可能な challenge を残さない"""
