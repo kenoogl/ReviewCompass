@@ -1,0 +1,28 @@
+status: completed
+target_files:
+- docs/operations/SESSION_WORKFLOW_GUIDE.md
+- docs/operations/WORKFLOW_NAVIGATION.md
+- docs/operations/WORKFLOW_PRECHECK_DETAILS.md
+target_sha256:
+  docs/operations/SESSION_WORKFLOW_GUIDE.md: 3f2dc9d626def8ae8a4741b630bef59dd6d340ac85fbb24fb63bb8e607477df2
+  docs/operations/WORKFLOW_NAVIGATION.md: 38e5d769553f769b44bfb1da74a9431855f2fb3c2816809b209ddd4aab007baf
+  docs/operations/WORKFLOW_PRECHECK_DETAILS.md: 07741286a28c44d1d1e4c38e7a00d4e61c265ff35681466f0052e50b93c40c5d
+required_verifiers: &id001
+- gemini-3.5-flash
+completed_verifiers: *id001
+unresolved_substantive_findings: 0
+verifications:
+- verifier: gemini-3.5-flash
+  target_files:
+  - docs/operations/SESSION_WORKFLOW_GUIDE.md
+  - docs/operations/WORKFLOW_NAVIGATION.md
+  - docs/operations/WORKFLOW_PRECHECK_DETAILS.md
+  target_sha256:
+    docs/operations/SESSION_WORKFLOW_GUIDE.md: 3f2dc9d626def8ae8a4741b630bef59dd6d340ac85fbb24fb63bb8e607477df2
+    docs/operations/WORKFLOW_NAVIGATION.md: 38e5d769553f769b44bfb1da74a9431855f2fb3c2816809b209ddd4aab007baf
+    docs/operations/WORKFLOW_PRECHECK_DETAILS.md: 07741286a28c44d1d1e4c38e7a00d4e61c265ff35681466f0052e50b93c40c5d
+review_run:
+  path: .reviewcompass/evidence/review-runs/2026-06-17-external-api-approval-guard-postwrite
+  summary_path: .reviewcompass/evidence/review-runs/2026-06-17-external-api-approval-guard-postwrite/model-result-summary.yaml
+notes: external-api-approval guard and operation docs post-write verification; Gemini
+  findings triaged and reflected.

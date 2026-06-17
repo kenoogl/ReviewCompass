@@ -1,0 +1,27 @@
+trigger: "利用者指示: commit 指示時の進行報告が多すぎる問題を規律化する"
+mainline_blocked_by: "不可逆操作の承認・guard 実行中に、LLM の途中説明が多く表示され、guarded commit 出力最小化の効果を相殺する"
+allowed_scope:
+  - "SESSION_WORKFLOW_GUIDE.md に不可逆操作の進行報告最小化規律を追加する"
+  - "必要最小限の確認のみ行う"
+allowed_files:
+  - "docs/operations/SESSION_WORKFLOW_GUIDE.md"
+  - "stages/in-progress/maintenance-2026-06-17-irreversible-operation-report-minimization.yaml"
+completion_conditions:
+  - "commit / push / spec.json workflow_state 変更などの不可逆操作で、正常系の途中報告を原則省く規律が明文化される"
+  - "途中報告を許す例外が、ユーザ判断・承認切れ・precheck failure・sandbox escalation などに限定される"
+  - "正常完了時の報告項目が commit hash / status / next 状態などに限定される"
+workflow_steps:
+  - "運用文書へ軽量規律として追記する"
+  - "grep で追記箇所を確認する"
+post_write_verification: "運用文書のみの小変更として grep 確認で扱う"
+completed_at: "2026-06-17"
+completed_steps:
+  - "SESSION_WORKFLOW_GUIDE.md §6 に不可逆操作の進行報告最小化規律を追加"
+  - "正常系は途中報告を省き、例外時だけ短く報告する条件を明文化"
+  - "正常完了時の報告項目を commit hash / status / next 状態などに限定"
+verification:
+  - command: "sed -n '480,515p' docs/operations/SESSION_WORKFLOW_GUIDE.md"
+    result: "追記箇所を確認"
+  - command: "git diff --check"
+    result: "passed"
+completion_note: "不可逆操作の進行報告最小化を軽量運用規律として文書化した。"

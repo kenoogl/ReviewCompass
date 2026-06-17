@@ -1,0 +1,8 @@
+run_id: 2026-06-17-external-api-approval-guard-postwrite
+target_files:
+- path: docs/operations/SESSION_WORKFLOW_GUIDE.md
+  sha256: 3f2dc9d626def8ae8a4741b630bef59dd6d340ac85fbb24fb63bb8e607477df2
+- path: docs/operations/WORKFLOW_NAVIGATION.md
+  sha256: 38e5d769553f769b44bfb1da74a9431855f2fb3c2816809b209ddd4aab007baf
+- path: docs/operations/WORKFLOW_PRECHECK_DETAILS.md
+  sha256: 4d8affe4c3b5a511e6aac9fed26639e9ebc415260ebc58f0a8d6a6833d5b8fc2

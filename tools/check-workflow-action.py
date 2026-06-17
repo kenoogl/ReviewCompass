@@ -48,7 +48,13 @@ from check_workflow_action.runtime_paths import (
   resolve_effective_prompt_read_path,
 )
 from check_workflow_action import commit_approval
+from check_workflow_action import external_api_approval
 from check_workflow_action.operation_preflight import run_preflight
+from api_providers.config_loader import (
+  load_config as load_api_config,
+  resolve_role as resolve_api_role,
+  resolve_variant as resolve_api_variant,
+)
 
 DEFAULT_LAST_COMMIT_PRECHECK_PATH = ".git/reviewcompass/last-commit-precheck.json"
 DEFAULT_DISCIPLINE_MAP_PATH = "docs/operations/WORKFLOW_DISCIPLINE_MAP.yaml"
@@ -2537,6 +2543,106 @@ def cmd_commit_approval(args):
       print(f"error: {e}", file=sys.stderr)
     return 2
   _print_commit_approval_result(args, payload)
+  return 0
+
+
+def _roles_for_api_variant(variant_config):
+  required_roles = variant_config.get("required_roles")
+  if isinstance(required_roles, list) and required_roles:
+    return [role for role in required_roles if isinstance(role, str)]
+  return ["primary", "adversarial", "judgment"]
+
+
+def _api_role_metadata(config, variant_name):
+  variant_config = resolve_api_variant(config, variant_name)
+  providers = []
+  models = []
+  for role in _roles_for_api_variant(variant_config):
+    role_config = resolve_api_role(variant_config, role)
+    if role_config.get("path") != "api":
+      continue
+    providers.append(role_config["provider"])
+    models.append(role_config["model"])
+  if not providers:
+    raise ValueError("variant に API 経路の role がありません")
+  return providers, models
+
+
+def _print_external_api_approval_result(args, payload):
+  if args.json:
+    print(json.dumps(payload, ensure_ascii=False, sort_keys=True))
+  else:
+    print(payload["status"])
+
+
+def cmd_external_api_approval(args):
+  """external-api-approval サブコマンドのエントリポイント"""
+  cwd = Path.cwd()
+  try:
+    if args.external_api_approval_command == "prepare":
+      config = load_api_config(args.config)
+      providers, models = _api_role_metadata(config, args.variant)
+      payload = external_api_approval.prepare(
+        cwd,
+        target_files=args.target,
+        phase=args.phase,
+        criteria=args.criteria,
+        variant=args.variant,
+        review_run_dir=args.review_run_dir,
+        providers=providers,
+        models=models,
+      )
+    elif args.external_api_approval_command == "record":
+      if args.source_text_stdin:
+        source_text = sys.stdin.read()
+      else:
+        source_text = None
+      payload = external_api_approval.record(
+        cwd,
+        args.nonce,
+        source_text=source_text,
+        no_source_text=args.no_source_text,
+      )
+    elif args.external_api_approval_command == "invalidate":
+      changed = []
+      for path in (
+        external_api_approval.challenge_path(cwd),
+        external_api_approval.approval_path(cwd),
+      ):
+        if not path.exists():
+          continue
+        try:
+          data = json.loads(path.read_text(encoding="utf-8"))
+        except (OSError, json.JSONDecodeError):
+          data = {}
+        if not isinstance(data, dict):
+          data = {}
+        data["invalidated"] = True
+        data["invalidated_at"] = datetime.now(timezone.utc).isoformat()
+        path.write_text(
+          json.dumps(data, ensure_ascii=False, indent=2) + "\n",
+          encoding="utf-8",
+        )
+        changed.append(str(path))
+      payload = {
+        "status": "invalidated",
+        "invalidated_paths": changed,
+      }
+    else:
+      return 2
+  except (OSError, RuntimeError, ValueError) as e:
+    if args.json:
+      print(
+        json.dumps(
+          {"status": "error", "error": str(e)},
+          ensure_ascii=False,
+          sort_keys=True,
+        )
+      )
+    else:
+      print(f"error: {e}", file=sys.stderr)
+    return 2
+  _print_external_api_approval_result(args, payload)
   return 0
 
 
@@ -6369,6 +6475,44 @@ def main():
   cap_invalidate = cap_sub.add_parser("invalidate", help="challenge と承認レコードを無効化する")
   cap_invalidate.add_argument("--json", action="store_true", help="JSON のみを出力する")
 
+  eap = sub.add_parser(
+    "external-api-approval",
+    help="外部 API review 送信承認 nonce challenge を作成・記録・無効化する",
+  )
+  eap_sub = eap.add_subparsers(
+    dest="external_api_approval_command",
+    required=True,
+  )
+  eap_prepare = eap_sub.add_parser("prepare", help="API 送信対象に束縛した challenge を作成する")
+  eap_prepare.add_argument(
+    "--target",
+    action="append",
+    required=True,
+    help="外部 API に送信する対象文書。複数指定可",
+  )
+  eap_prepare.add_argument("--phase", required=True, help="review phase")
+  eap_prepare.add_argument("--criteria", required=True, help="review criteria")
+  eap_prepare.add_argument("--variant", required=True, help="API review variant")
+  eap_prepare.add_argument("--review-run-dir", required=True, help="review-run 成果物ディレクトリ")
+  eap_prepare.add_argument("--config", default="config/api-settings.yaml", help="API 設定ファイル")
+  eap_prepare.add_argument("--json", action="store_true", help="JSON のみを出力する")
+  eap_record = eap_sub.add_parser("record", help="nonce に対応する外部 API 承認レコードを保存する")
+  eap_record.add_argument("--nonce", required=True, help="prepare が出力した nonce")
+  eap_source_group = eap_record.add_mutually_exclusive_group(required=True)
+  eap_source_group.add_argument(
+    "--source-text-stdin",
+    action="store_true",
+    help="承認本文を stdin から読み、redaction 後に保存する",
+  )
+  eap_source_group.add_argument(
+    "--no-source-text",
+    action="store_true",
+    help="承認本文を保存しない no-store mode",
+  )
+  eap_record.add_argument("--json", action="store_true", help="JSON のみを出力する")
+  eap_invalidate = eap_sub.add_parser("invalidate", help="challenge と承認レコードを無効化する")
+  eap_invalidate.add_argument("--json", action="store_true", help="JSON のみを出力する")
+
   # decision-source-lint サブコマンド（Req 11）
   dsl = sub.add_parser(
     "decision-source-lint",
@@ -6435,6 +6579,8 @@ def main():
     sys.exit(cmd_operation_preflight(args))
   elif args.subcommand == "commit-approval":
     sys.exit(cmd_commit_approval(args))
+  elif args.subcommand == "external-api-approval":
+    sys.exit(cmd_external_api_approval(args))
   elif args.subcommand == "decision-source-lint":
     sys.exit(cmd_decision_source_lint(args))
   else:

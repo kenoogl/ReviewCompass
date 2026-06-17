@@ -487,7 +487,15 @@ reviewer:
 - `git diff --cached` で内容確認（必要に応じて）
 - `--no-verify` や `--no-gpg-sign` は使わない（規律）
 
-### 6.5 push
+### 6.5 不可逆操作の進行報告最小化
+
+commit、push、spec.json workflow_state 変更、フェーズ移行などの不可逆操作では、利用者が操作を明示指示した後の正常系進行報告を原則として省く。LLM は必要な確認、stage、承認 record、guard、実操作、事後確認を実行してよいが、各内部手順を逐一会話へ説明しない。
+
+途中報告を行うのは、利用者判断または追加承認が必要な場合に限る。例：承認 record の期限切れや対象不一致、precheck failure、post-write / reopen / in-progress による遮断、sandbox escalation が必要な場合、staged 内容が変わり再承認が必要な場合。
+
+正常完了時の報告は、実行結果だけに絞る。commit なら commit hash、`git status` の clean 性、`next --json` の要点を示す。push なら push 先と結果、`git status` の clean 性を示す。詳細な手順ログ、precheck の全文、stage したファイル一覧、nonce / challenge の値は、利用者が求めた場合または失敗調査に必要な場合だけ示す。
+
+### 6.6 push
 
 push は **利用者明示承認**を仰いでから実行。LLM が自律的に push しない。
 

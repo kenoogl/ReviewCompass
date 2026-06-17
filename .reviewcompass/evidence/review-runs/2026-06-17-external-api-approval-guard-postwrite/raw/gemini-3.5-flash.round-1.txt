@@ -1,0 +1,13 @@
+findings:
+  - severity: ERROR
+    target_location: "docs/operations/WORKFLOW_PRECHECK_DETAILS.md#1-サブコマンド"
+    description: "external-api-approval サブコマンド（prepare, record）のコマンドシグネチャが「1. サブコマンド」の一覧に記載されていません。"
+    rationale: "WORKFLOW_NAVIGATION.md などで具体例として示され、§9.1 でも言及されている重要なガードコマンドですが、仕様書の一覧から漏れているため整合性を欠いています。"
+  - severity: WARN
+    target_location: "docs/operations/WORKFLOW_PRECHECK_DETAILS.md#3-commit"
+    description: "commit 承認レコードの判定対象パスとして旧配置である `.reviewcompass/approvals/commit-approval.json` のみが記載されています。"
+    rationale: "§9.1 にて新配置 `.reviewcompass/runtime/approvals/commit-approval.json` が導入され、新旧の読み取りフォールバック規則が定義されているため、§3 の記述も新パスを基準にするか、解決規則への参照を追加すべきです。"
+  - severity: WARN
+    target_location: "docs/operations/WORKFLOW_PRECHECK_DETAILS.md#10-テスト観点"
+    description: "外部API送信承認（external-api-approval）機能の正常系・異常系に関するテスト観点がテスト項目一覧に記載されていません。"
+    rationale: "情報漏洩や不正なAPI送信を防ぐ fail-closed ガードはセキュリティ上極めて重要であり、prepare と record の連携およびガード不一致時の遮断テストをテスト観点として定義しておく必要があります。"

@@ -4879,6 +4879,151 @@ class CommitExitCodeTests(unittest.TestCase):
     self.assertRegex(payload["nonce"], r"^[0-9a-f]{32,}$")
     self.assertEqual(payload["target_digest"]["algorithm"], "commit-approval-v1")
 
+  def test_external_api_approval_prepare_and_record_outputs_bound_record(self):
+    """external-api-approval は API 送信対象に束縛した承認 record を作る"""
+    target = Path(self.tmpdir) / "docs" / "operations" / "target.md"
+    target.parent.mkdir(parents=True, exist_ok=True)
+    target.write_text("# API 送信対象\n", encoding="utf-8")
+    config_path = Path(self.tmpdir) / "config" / "api-settings.yaml"
+    config_path.parent.mkdir(parents=True, exist_ok=True)
+    config_path.write_text(
+      """
+connection:
+  timeout_seconds: 60
+  max_retries: 1
+variants:
+  post_write_verification_google:
+    context: post_write_verification
+    variant_type: single_role
+    required_roles: [primary]
+    primary:
+      path: api
+      provider: gemini-api
+      model: gemini-3.5-flash
+""",
+      encoding="utf-8",
+    )
+
+    prepare = run_script(
+      [
+        "external-api-approval",
+        "prepare",
+        "--target", "docs/operations/target.md",
+        "--phase", "post_write_verification",
+        "--criteria", "criteria-1",
+        "--variant", "post_write_verification_google",
+        "--review-run-dir", ".reviewcompass/evidence/review-runs/run-1",
+        "--config", str(config_path),
+        "--json",
+      ],
+      cwd=self.tmpdir,
+    )
+
+    _assert_script_invoked(self, prepare)
+    self.assertEqual(prepare.returncode, 0, prepare.stderr)
+    challenge = json.loads(prepare.stdout)
+    self.assertEqual(challenge["status"], "prepared")
+    self.assertEqual(challenge["approved_action"], "external_api_review")
+    self.assertEqual(challenge["target_files"], ["docs/operations/target.md"])
+    self.assertEqual(challenge["providers"], ["gemini-api"])
+    self.assertEqual(challenge["models"], ["gemini-3.5-flash"])
+
+    record = subprocess.run(
+      [
+        "python3",
+        str(SCRIPT),
+        "external-api-approval",
+        "record",
+        "--nonce", challenge["nonce"],
+        "--source-text-stdin",
+        "--json",
+      ],
+      cwd=str(self.tmpdir),
+      input="docs/operations/target.md を Google/Gemini API に送信してよい\n",
+      capture_output=True,
+      text=True,
+      timeout=10,
+    )
+
+    _assert_script_invoked(self, record)
+    self.assertEqual(record.returncode, 0, record.stderr)
+    payload = json.loads(record.stdout)
+    self.assertEqual(payload["status"], "recorded")
+    approval_path = (
+      Path(self.tmpdir)
+      / ".reviewcompass"
+      / "runtime"
+      / "approvals"
+      / "external-api-approval.json"
+    )
+    approval = json.loads(approval_path.read_text(encoding="utf-8"))
+    self.assertEqual(approval["approved_action"], "external_api_review")
+    self.assertEqual(approval["approved_by"], "user")
+    self.assertEqual(approval["phase"], "post_write_verification")
+    self.assertEqual(approval["criteria"], "criteria-1")
+    self.assertEqual(approval["variant"], "post_write_verification_google")
+    self.assertEqual(approval["review_run_dir"], ".reviewcompass/evidence/review-runs/run-1")
+    self.assertIn("source_text_redacted", approval)
+
+  def test_external_api_approval_record_rejects_empty_source_text(self):
+    """external-api-approval record は空の承認本文を拒否する"""
+    target = Path(self.tmpdir) / "docs" / "operations" / "target.md"
+    target.parent.mkdir(parents=True, exist_ok=True)
+    target.write_text("# API 送信対象\n", encoding="utf-8")
+    config_path = Path(self.tmpdir) / "config" / "api-settings.yaml"
+    config_path.parent.mkdir(parents=True, exist_ok=True)
+    config_path.write_text(
+      """
+variants:
+  post_write_verification_google:
+    context: post_write_verification
+    variant_type: single_role
+    required_roles: [primary]
+    primary:
+      path: api
+      provider: gemini-api
+      model: gemini-3.5-flash
+""",
+      encoding="utf-8",
+    )
+    prepare = run_script(
+      [
+        "external-api-approval",
+        "prepare",
+        "--target", "docs/operations/target.md",
+        "--phase", "post_write_verification",
+        "--criteria", "criteria-1",
+        "--variant", "post_write_verification_google",
+        "--review-run-dir", ".reviewcompass/evidence/review-runs/run-1",
+        "--config", str(config_path),
+        "--json",
+      ],
+      cwd=self.tmpdir,
+    )
+    nonce = json.loads(prepare.stdout)["nonce"]
+
+    record = subprocess.run(
+      [
+        "python3",
+        str(SCRIPT),
+        "external-api-approval",
+        "record",
+        "--nonce", nonce,
+        "--source-text-stdin",
+        "--json",
+      ],
+      cwd=str(self.tmpdir),
+      input="\n",
+      capture_output=True,
+      text=True,
+      timeout=10,
+    )
+
+    _assert_script_invoked(self, record)
+    self.assertEqual(record.returncode, 2)
+    payload = json.loads(record.stdout)
+    self.assertIn("source text が空です", payload["error"])
+
   def test_commit_approval_prepare_invalidates_malformed_stale_delegation(self):
     """prepare は古い壊れた delegation を新しい承認フローの邪魔にしない"""
     _set_pending_findings(self.pending_file, unresolved_count=0, resolved_count=2)

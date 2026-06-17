@@ -29,9 +29,12 @@ from tools.api_providers.response_formatter import (  # noqa: E402
 )
 from tools.api_providers.run_role import (  # noqa: E402
   _resolve_effective_prompt_sha256,
+  _render_prompt_template,
+  _select_prompt_template,
   build_prompt,
   update_review_run_artifacts,
 )
+from tools.check_workflow_action import external_api_approval  # noqa: E402
 
 ROLES = ["primary", "adversarial", "judgment"]
 NORMALIZED_SEVERITY = {"CRITICAL", "ERROR", "WARN", "INFO"}
@@ -207,7 +210,12 @@ def _parse_argv(argv: Optional[List[str]]) -> argparse.Namespace:
     description="3 role API review を同じ review-run に集約して実行する。",
   )
   parser.add_argument("--variant", default=None, help="variant 名。未指定なら default")
-  parser.add_argument("--target", required=True, help="対象文書ファイルパス")
+  parser.add_argument(
+    "--target",
+    action="append",
+    required=True,
+    help="対象文書ファイルパス。複数指定可",
+  )
   parser.add_argument("--phase", required=True, help="段名")
   parser.add_argument("--criteria", required=True, help="観点識別子")
   parser.add_argument("--review-run-dir", required=True, help="review-run 成果物ディレクトリ")
@@ -228,6 +236,11 @@ def _parse_argv(argv: Optional[List[str]]) -> argparse.Namespace:
     "--effective-prompt-sha256",
     default=None,
     help="effective prompt ファイルの sha256。未指定ならファイルから計算する",
+  )
+  parser.add_argument(
+    "--external-api-approval-record",
+    default=None,
+    help="外部 API 送信承認 record（post_write_verification の API 経路で必須）",
   )
   return parser.parse_args(argv)
 
@@ -251,6 +264,125 @@ def _roles_for_variant(variant_config: Dict[str, Any]) -> List[str]:
   return list(ROLES)
 
 
+def _target_files(args) -> List[str]:
+  return list(args.target or [])
+
+
+def _target_path_label(target_files: List[str]) -> str:
+  if len(target_files) == 1:
+    return target_files[0]
+  return "multiple:" + ",".join(target_files)
+
+
+def _build_prompt_for_targets(
+  target_files: List[str],
+  phase: str,
+  criteria: str,
+  prior_finding_paths: List[str],
+  provider_name: Optional[str] = None,
+  model: Optional[str] = None,
+) -> str:
+  if len(target_files) == 1:
+    return build_prompt(
+      target_files[0],
+      phase,
+      criteria,
+      prior_finding_paths,
+      provider_name=provider_name,
+      model=model,
+    )
+  target_parts = []
+  for target_path in target_files:
+    target_content = Path(target_path).read_text(encoding="utf-8")
+    target_parts.append(f"# FILE: {target_path}\n{target_content}")
+  prior_parts = []
+  for i, prior_path in enumerate(prior_finding_paths, start=1):
+    prior_content = Path(prior_path).read_text(encoding="utf-8")
+    prior_parts.append(f"# 前段所見 {i}：\n{prior_content}")
+  prompt_id, template = _select_prompt_template(provider_name)
+  return _render_prompt_template(
+    template,
+    {
+      "prompt_id": prompt_id,
+      "provider_name": provider_name or "unknown-provider",
+      "model": model or "unknown-model",
+      "phase": phase,
+      "criteria": criteria,
+      "target_path": _target_path_label(target_files),
+      "target_content": "\n\n".join(target_parts),
+      "prior_findings": "\n\n".join(prior_parts) if prior_parts else "なし",
+    },
+  )
+
+
+def _api_review_metadata(
+  config: Dict[str, Any],
+  variant_name: Optional[str],
+  roles: List[str],
+) -> Tuple[List[str], List[str], bool]:
+  """variant の API role から provider/model 一覧を返す。"""
+  variant_config = resolve_variant(config, variant_name)
+  providers = []
+  models = []
+  has_api_role = False
+  for role in roles:
+    role_config = resolve_role(variant_config, role)
+    if role_config.get("path") != "api":
+      continue
+    has_api_role = True
+    providers.append(role_config["provider"])
+    models.append(role_config["model"])
+  return providers, models, has_api_role
+
+
+def _validate_external_api_approval_if_needed(
+  args,
+  config: Dict[str, Any],
+  variant_name: Optional[str],
+  roles: List[str],
+) -> None:
+  providers, models, has_api_role = _api_review_metadata(config, variant_name, roles)
+  if args.phase != "post_write_verification" or not has_api_role:
+    return
+  if not args.external_api_approval_record:
+    raise RuntimeError(
+      "external-api-approval record がありません。"
+      "tools/check-workflow-action.py external-api-approval prepare/record で"
+      "外部 API 送信承認を作成してください。"
+    )
+  approval = external_api_approval.load_approval_record(
+    args.external_api_approval_record
+  )
+  expected = {
+    "target_files": _target_files(args),
+    "phase": args.phase,
+    "criteria": args.criteria,
+    "variant": variant_name or "default",
+    "review_run_dir": args.review_run_dir,
+    "providers": providers,
+    "models": models,
+  }
+  errors = external_api_approval.validate(
+    _approval_record_cwd(args.external_api_approval_record),
+    approval,
+    expected,
+  )
+  if errors:
+    raise RuntimeError("external-api-approval record が無効です: " + "; ".join(errors))
+
+
+def _approval_record_cwd(record_path: str) -> Path:
+  path = Path(record_path)
+  if not path.is_absolute():
+    return Path.cwd()
+  parts = path.parts
+  suffix = (".reviewcompass", "runtime", "approvals")
+  for index in range(0, len(parts) - len(suffix)):
+    if parts[index:index + len(suffix)] == suffix:
+      return Path(*parts[:index])
+  return Path.cwd()
+
+
 def _run_one_role(
   args,
   config: Dict[str, Any],
@@ -272,8 +404,9 @@ def _run_one_role(
     max_retries=connection_settings.get("max_retries", 1),
   )
 
-  prompt = build_prompt(
-    args.target,
+  target_files = _target_files(args)
+  prompt = _build_prompt_for_targets(
+    target_files,
     args.phase,
     args.criteria,
     args.prior_finding,
@@ -291,7 +424,8 @@ def _run_one_role(
     update_review_run_artifacts(
       args.review_run_dir,
       round_id=args.round_id,
-      target_path=args.target,
+      target_path=_target_path_label(target_files),
+      target_files=target_files,
       phase=args.phase,
       criteria=args.criteria,
       role=role,
@@ -320,7 +454,8 @@ def _run_one_role(
   update_review_run_artifacts(
     args.review_run_dir,
     round_id=args.round_id,
-    target_path=args.target,
+    target_path=_target_path_label(target_files),
+    target_files=target_files,
     phase=args.phase,
     criteria=args.criteria,
     role=role,
@@ -347,6 +482,7 @@ def main(argv: Optional[List[str]] = None) -> int:
     variant_name = _select_variant_name(args)
     variant_config = resolve_variant(config, variant_name)
     roles = _roles_for_variant(variant_config)
+    _validate_external_api_approval_if_needed(args, config, variant_name, roles)
     for role in roles:
       role_exit_code = _run_one_role(args, config, variant_name, role)
       if role_exit_code != 0:
