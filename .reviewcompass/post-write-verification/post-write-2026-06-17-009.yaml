@@ -1,0 +1,27 @@
+status: completed
+target_files:
+- TODO_NEXT_SESSION.md
+- docs/notes/2026-06-17-maintenance-workflow-compliance-improvement-candidates.md
+target_sha256:
+  TODO_NEXT_SESSION.md: 3914d24b259d41a731f62a9e26cc59f7cc421513e1250f152f2d514e487dc93e
+  docs/notes/2026-06-17-maintenance-workflow-compliance-improvement-candidates.md: 1107c3a0151921686537b44d8775b3e89b81ab896a7a09e5fb563db47e6deeb3
+required_verifiers:
+- lightweight_self_check
+completed_verifiers:
+- lightweight_self_check
+unresolved_substantive_findings: 0
+verifications:
+- verifier: lightweight_self_check
+  target_files:
+  - TODO_NEXT_SESSION.md
+  - docs/notes/2026-06-17-maintenance-workflow-compliance-improvement-candidates.md
+  target_sha256:
+    TODO_NEXT_SESSION.md: 3914d24b259d41a731f62a9e26cc59f7cc421513e1250f152f2d514e487dc93e
+    docs/notes/2026-06-17-maintenance-workflow-compliance-improvement-candidates.md: 1107c3a0151921686537b44d8775b3e89b81ab896a7a09e5fb563db47e6deeb3
+notes: >
+  Lightweight self check only. The change records the user's agreed observation
+  that ReviewCompass should try a proportional workflow rule before mechanizing
+  it: local, low-impact changes can proceed TDD-first, while workflow core,
+  approval, state machine, reopen, post-write, and next --json semantics remain
+  specification-driven. The TODO handoff now points to that candidate and keeps
+  next --json as the authoritative action selector.

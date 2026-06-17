@@ -1,0 +1,20 @@
+status: completed
+target_files:
+- docs/notes/2026-06-17-maintenance-workflow-compliance-improvement-candidates.md
+target_sha256:
+  docs/notes/2026-06-17-maintenance-workflow-compliance-improvement-candidates.md: 1107c3a0151921686537b44d8775b3e89b81ab896a7a09e5fb563db47e6deeb3
+required_verifiers:
+- lightweight_self_check
+completed_verifiers:
+- lightweight_self_check
+unresolved_substantive_findings: 0
+verifications:
+- verifier: lightweight_self_check
+  target_files:
+  - docs/notes/2026-06-17-maintenance-workflow-compliance-improvement-candidates.md
+  target_sha256:
+    docs/notes/2026-06-17-maintenance-workflow-compliance-improvement-candidates.md: 1107c3a0151921686537b44d8775b3e89b81ab896a7a09e5fb563db47e6deeb3
+notes: >
+  Working-note self check only. API post-write verification was intentionally
+  not run because this change records an improvement candidate about process
+  proportionality, not a normative specification.

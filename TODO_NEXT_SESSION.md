@@ -35,7 +35,7 @@
 - `docs/notes/2026-06-17-next-json-effective-prompt-enforcement.md`
   - `next --json` 返値に紐づく effective prompt 必読、読了証跡、coverage audit、短文化の締め直しメモ。
 - `docs/notes/2026-06-17-maintenance-workflow-compliance-improvement-candidates.md`
-  - maintenance workflow 遵守、commit sandbox `.git/index.lock` preflight、maintenance / reopen / new workflow の使い分け候補。
+  - maintenance workflow 遵守、commit sandbox `.git/index.lock` preflight、maintenance / reopen / new workflow の使い分け、手続きの比例性の候補。
 - `docs/notes/2026-06-17-working-note-verification-trigger-policy.md`
   - 作業中メモを API post-write に反復投入せず、`lightweight_self_check` に分岐する候補。
 
@@ -47,6 +47,8 @@
 
 2. **maintenance workflow protocol の明文化**
    - maintenance でも要件・設計・タスク相当の確認、TDD、実装後 review、post-write / lightweight self check の区別、completed 化をどう強制するかを決める。
+   - ただし、最初から guard / schema / `next --json` へ組み込まず、まず 3 行宣言で軽く試す。
+   - 試行宣言: `変更分類: 局所 / 中核`、`理由: <影響範囲と既存仕様境界の説明>`、`手順: TDD 主導 / 仕様駆動`。
    - retrospective 対象候補: `7f346075`、`0d611816`、`0183005e`、`a5127ef6`、`ebb2df47`。
 
 3. **作業中メモの `lightweight_self_check` 化**
