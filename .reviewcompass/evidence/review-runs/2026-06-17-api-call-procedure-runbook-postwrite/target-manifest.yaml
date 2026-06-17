@@ -1,0 +1,4 @@
+run_id: 2026-06-17-api-call-procedure-runbook-postwrite
+target_files:
+- path: docs/operations/WORKFLOW_PRECHECK_DETAILS.md
+  sha256: 6d9332c97227eef58522612903b73f94b320fafe98cda0f0675f5f8010d6ab09

@@ -1,0 +1,10 @@
+findings:
+  - severity: WARN
+    target_location: "## 1. サブコマンド および ## 9. reopen-finalize"
+    description: "`reopen-finalize` の `--feature-impact` や `--new-feature-decision` など、スペースを含む値（RATIONALE や EVIDENCE）を指定するオプション引数について、シェル実行時にクォーテーションで囲む必要がある旨の注記がなく、また複数指定（繰り返し指定）が必要なオプションのシグネチャ表記が不十分です。"
+    rationale: "RATIONALE（理由）や EVIDENCE（根拠）は通常スペースを含んだ文章や複数パスになるため、適切にクォーテーション（\"\"）で囲まないと argparse の引数解析（nargs=5 や nargs=3）で要素数不一致のエラーになります。また、複数 feature に対し `--feature-impact` を繰り返し指定できることがシグネチャ上で明記されていないため、LLM や開発者が誤った構文でコマンドを実行し、運用手順が失敗するリスクがあります。"
+
+  - severity: INFO
+    target_location: "## 9. autonomous-plan 系 以降のセクション番号"
+    description: "セクション番号の割り振りが重複・逆転しています（`## 9. reopen-finalize` の後に `## 9. autonomous-plan 系`、`## 8. 出力形式`、`## 9. ログ` と続いています）。"
+    rationale: "文書全体のセクション番号の整合性が取れていないため、仕様の自己参照や、外部の運用手順書から本仕様書をクロスリファレンスする際に、参照先の特定に混乱を招く恐れがあります。"

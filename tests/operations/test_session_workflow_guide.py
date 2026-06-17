@@ -85,3 +85,30 @@ def test_post_write_verification_command_uses_explicit_api_variant():
     1,
   )[0]
   assert "--variant <post-write-api-variant>" in post_write_section
+
+
+def test_post_write_verification_documents_canonical_api_call_procedure_without_approval_guard():
+  navigation = (ROOT / "docs" / "operations" / "WORKFLOW_NAVIGATION.md").read_text(encoding="utf-8")
+  post_write_section = navigation.split("### `post_write_verification`", 1)[1].split(
+    "### `post_write_policy_violation`",
+    1,
+  )[0]
+
+  assert "API 呼び出し起動手順の正本" in post_write_section
+  assert "zsh -c 'source ~/.zshrc && .venv/bin/python3 tools/api_providers/run_review.py" in post_write_section
+  assert "tools/api_providers/run_review.py" in post_write_section
+  assert "ANTHROPIC_API_KEY" in post_write_section
+  assert "GEMINI_API_KEY" in post_write_section
+  assert "空文字列へ上書き" in post_write_section
+  assert "OPENAI_API_KEY" in post_write_section
+  assert "上書きされていない" in post_write_section
+  assert "review_summary.md" in post_write_section
+  assert "rounds.yaml" in post_write_section
+  assert "target-manifest.yaml" in post_write_section
+  assert "ConnectError" in post_write_section
+  assert "sandbox network" in post_write_section
+  assert "API key" in post_write_section
+  assert "import" in post_write_section
+  assert "argparse" in post_write_section
+  assert "external-api-approval" not in post_write_section
+  assert "--external-api-approval-record" not in post_write_section

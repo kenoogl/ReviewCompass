@@ -16,8 +16,6 @@ tools/check-workflow-action.py reopen-finalize --file <path> --impacted-downstre
 tools/check-workflow-action.py autonomous-plan <plan.yaml>
 tools/check-workflow-action.py autonomous-plan-template --run-id <run-id> --out <plan.yaml>
 tools/check-workflow-action.py autonomous-plan-record-integration --ledger <ledger.yaml> --status <status> --tests "<tests>" --decision "<decision>"
-tools/check-workflow-action.py external-api-approval prepare --target <path> [--target <path> ...] --phase <phase> --criteria <id> --variant <variant> --review-run-dir <dir>
-tools/check-workflow-action.py external-api-approval record --nonce <nonce> --source-text-stdin
 tools/guarded-git-commit.py -m "<commit message>" --rationale "<理由>"
 ```
 
@@ -318,8 +316,6 @@ commit 承認レコード（`.reviewcompass/runtime/approvals/commit-approval.js
 （新旧競合時は新配置を正とする）。契約の正本は workflow-management design §実行時生成物の凍結期（P3 まで）の扱い。
 定数と読み取り解決の実装正本は `tools/check_workflow_action/runtime_paths.py`。
 
-外部 API review 送信承認レコード（`.reviewcompass/runtime/approvals/external-api-approval.json`）と challenge は新規 runtime approval 生成物である。旧配置互換を持たず、`external-api-approval prepare` / `record` で作成し、`run_review.py --external-api-approval-record` が送信前に照合する。
-
 凍結検査の手動実行手順（ゲートへの自動統合は行わず、手動運用とする）：
 
 1. 凍結境界（P1 実装反映コミット＝書き込み先切替のコミット）を特定する。例：
@@ -355,7 +351,6 @@ commit 承認レコード（`.reviewcompass/runtime/approvals/commit-approval.js
 - `reopen-set-blocker` の構造化 blocker 設定、非先頭 gate 拒否、非 approval gate 拒否、根拠なし更新拒否
 - `reopen-finalize` の完了 YAML 生成、in-progress 削除、第4過程未到達と feature impact 不足の拒否
 - `guarded-git-commit.py` の commit 遮断と承認レコード消費
-- `external-api-approval` の prepare / record 連携、空の承認本文拒否、target sha / provider / model / phase / criteria / review-run-dir 不一致時の `run_review.py` 遮断
 - `autonomous-plan` 系サブコマンドの構造検査
 
 実装変更時は、期待される入出力に基づくテストを先に用意し、失敗確認後に実装を更新する。

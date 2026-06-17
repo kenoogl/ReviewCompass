@@ -1,0 +1,24 @@
+status: completed
+target_files:
+- docs/operations/WORKFLOW_NAVIGATION.md
+- docs/operations/WORKFLOW_PRECHECK_DETAILS.md
+target_sha256:
+  docs/operations/WORKFLOW_NAVIGATION.md: cb2fda6206cafc0c2f012bb2f3004adf6c0cb26dd32dc71c909899012970ed6b
+  docs/operations/WORKFLOW_PRECHECK_DETAILS.md: 6d9332c97227eef58522612903b73f94b320fafe98cda0f0675f5f8010d6ab09
+required_verifiers: &id001
+- gemini-3.5-flash
+completed_verifiers: *id001
+unresolved_substantive_findings: 0
+verifications:
+- verifier: gemini-3.5-flash
+  target_files:
+  - docs/operations/WORKFLOW_NAVIGATION.md
+  - docs/operations/WORKFLOW_PRECHECK_DETAILS.md
+  target_sha256:
+    docs/operations/WORKFLOW_NAVIGATION.md: cb2fda6206cafc0c2f012bb2f3004adf6c0cb26dd32dc71c909899012970ed6b
+    docs/operations/WORKFLOW_PRECHECK_DETAILS.md: 6d9332c97227eef58522612903b73f94b320fafe98cda0f0675f5f8010d6ab09
+review_run:
+  path: .reviewcompass/evidence/review-runs/2026-06-17-api-call-procedure-runbook-postwrite
+  summary_path: .reviewcompass/evidence/review-runs/2026-06-17-api-call-procedure-runbook-postwrite/model-result-summary.yaml
+notes: Generated template; verify target_files cover current post-write targets before
+  use.

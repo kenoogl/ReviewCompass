@@ -1,0 +1,46 @@
+run_id: 2026-06-17-api-call-procedure-runbook-postwrite
+triage_status: decided
+generated_at: '2026-06-17T02:38:44.993810+00:00'
+decision_actor: null
+decision_actor_type: human
+items:
+- finding_id: 2026-06-17-api-call-procedure-runbook-postwrite-gemini-3.5-flash-primary-001
+  run_id: 2026-06-17-api-call-procedure-runbook-postwrite
+  source_model: gemini-3.5-flash
+  source_round: round-1
+  source_raw_path: raw/gemini-3.5-flash.round-1.txt
+  source_parsed_path: parsed/gemini-3.5-flash.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: '## 1. サブコマンド および ## 9. reopen-finalize'
+  plain_language_summary: '`reopen-finalize` の `--feature-impact` や `--new-feature-decision`
+    など、スペースを含む値（RATIONALE や EVIDENCE）を指定するオプション引数について、シェル実行時にクォーテーションで囲む必要がある旨の注記がなく、また複数指定（繰り返し指定）が必要なオプションのシグネチャ表記が不十分です。'
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-17T02:40:14.488835+00:00'
+  decision_reason: 利用者了承。指摘は WORKFLOW_PRECHECK_DETAILS.md の reopen-finalize 引数表記改善であり、今回の
+    API 呼び出し手順正本化と key 補完実装の範囲外。post-write 収束を妨げる本質的指摘ではないため別作業送りとする。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-17-api-call-procedure-runbook-postwrite-gemini-3.5-flash-primary-002
+  run_id: 2026-06-17-api-call-procedure-runbook-postwrite
+  source_model: gemini-3.5-flash
+  source_round: round-1
+  source_raw_path: raw/gemini-3.5-flash.round-1.txt
+  source_parsed_path: parsed/gemini-3.5-flash.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: '## 9. autonomous-plan 系 以降のセクション番号'
+  plain_language_summary: セクション番号の割り振りが重複・逆転しています（`## 9. reopen-finalize` の後に `##
+    9. autonomous-plan 系`、`## 8. 出力形式`、`## 9. ログ` と続いています）。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: llm
+  decision_actor_type: agent
+  decision_at: '2026-06-17T02:39:13.560098+00:00'
+  decision_reason: セクション番号の重複・逆転は既存の文書整備論点であり、今回の API 呼び出し手順正本化の意味を損なわない。post-write
+    収束を妨げる本質的指摘ではないため別作業へ送る。
+  applied_files: []
+  superseded_by: null

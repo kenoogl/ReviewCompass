@@ -66,31 +66,18 @@ reopen 手続きが進行中である。通常ワークフローや post-write-v
 API 経由の複数モデル検証を行う場合の標準手順：
 
 ```bash
-python3 tools/check-workflow-action.py external-api-approval prepare \
-  --target <target-file> \
-  [--target <target-file-2> ...] \
-  --phase post_write_verification \
-  --criteria <criteria-id> \
-  --variant post_write_verification_google \
-  --review-run-dir .reviewcompass/evidence/review-runs/<run-id>
-
-python3 tools/check-workflow-action.py external-api-approval record \
-  --nonce <nonce> \
-  --source-text-stdin
-
-python3 tools/api_providers/run_review.py \
+zsh -c 'source ~/.zshrc && .venv/bin/python3 tools/api_providers/run_review.py \
   --variant post_write_verification_google \
   --target <target-file> \
   [--target <target-file-2> ...] \
   --phase post_write_verification \
   --criteria <criteria-id> \
-  --review-run-dir .reviewcompass/evidence/review-runs/<run-id> \
-  --external-api-approval-record .reviewcompass/runtime/approvals/external-api-approval.json
+  --review-run-dir .reviewcompass/evidence/review-runs/<run-id>'
 
-python3 tools/api_providers/review_triage.py list-pending \
+.venv/bin/python3 tools/api_providers/review_triage.py list-pending \
   --review-run-dir .reviewcompass/evidence/review-runs/<run-id>
 
-python3 tools/api_providers/review_triage.py decide \
+.venv/bin/python3 tools/api_providers/review_triage.py decide \
   --review-run-dir .reviewcompass/evidence/review-runs/<run-id> \
   --finding-id <finding-id> \
   --final-label must-fix \
@@ -98,17 +85,21 @@ python3 tools/api_providers/review_triage.py decide \
   --decision-actor human \
   --approval-record .reviewcompass/evidence/review-runs/<run-id>/approval.yaml
 
-python3 tools/api_providers/review_triage.py write-manifest \
+.venv/bin/python3 tools/api_providers/review_triage.py write-manifest \
   --review-run-dir .reviewcompass/evidence/review-runs/<run-id> \
   --out auto \
   --approval-record .reviewcompass/evidence/review-runs/<run-id>/approval.yaml
 
-python3 tools/check-workflow-action.py next --json
+.venv/bin/python3 tools/check-workflow-action.py next --json
 ```
 
-`post_write_verification` では API 経路の variant を明示する。小規模既定は `--variant post_write_verification_google`、大規模または 3 系統検証が必要な場合は `--variant <post-write-api-variant>` として、`config/api-settings.yaml` の `context: post_write_verification` かつ API provider だけで構成された variant を選ぶ。CLI 経路を含む default variant に暗黙フォールバックしてはいけない。
+API 呼び出し起動手順の正本は、`zsh -c 'source ~/.zshrc && .venv/bin/python3 tools/api_providers/run_review.py ...'` である。API key は配布物や設定ファイルへ書かず、利用者の shell 初期化で読み込まれる環境変数から渡す。Claude Code などの操縦実行面では、子プロセスの `ANTHROPIC_API_KEY` と `GEMINI_API_KEY` が空文字列へ上書きされることが確認済みである。一方、`OPENAI_API_KEY` は同じ確認では上書きされていない。このため API 経路は、直に Python を起動するのではなく、`source ~/.zshrc` で利用者環境の API key を読み直してから `run_review.py` を起動する。
 
-API 経路の `post_write_verification` は外部送信であるため、`run_review.py` 実行前に `external-api-approval prepare` と `record` で承認 record を作成する。record は `target_files`、`target_sha256`、`phase`、`criteria`、`variant`、`review_run_dir`、provider、model、nonce に束縛される。`next_action.target_files` が複数ある場合は、`--target` を複数回指定して同じ承認 record と同じ review-run に束ねる。`run_review.py` は `--external-api-approval-record` が無い場合、または record が実行引数・現在の対象内容と一致しない場合、provider 呼び出し前に fail-closed する。
+`next_action.target_files` が複数ある場合は、`--target` を複数回指定して同じ review-run に束ねる。API review-run の成否確認は、`review_summary.md`、`rounds.yaml`、`model-result-summary.yaml`、`raw/`、`parsed/`、`target-manifest.yaml` が同じ `--review-run-dir` に生成され、`rounds.yaml` の `target_files`、provider、model、raw/parsed path が今回の対象と一致することで行う。
+
+API 呼び出しが失敗した場合は、まず上の正本手順を再確認する。`import` エラー、`argparse` エラー、引数不一致は起動手順または実装の問題であり、外部送信ポリシーや provider 側障害と混同しない。`ConnectError`、名前解決失敗、接続不能が出た場合は sandbox network 制限の可能性を先に疑い、同じ正本コマンドをネットワーク実行が許可された実行面で再実行する。API key 未設定のエラーは `~/.zshrc` から対象 provider の環境変数が読み込まれているかを確認する。
+
+`post_write_verification` では API 経路の variant を明示する。小規模既定は `--variant post_write_verification_google`、大規模または 3 系統検証が必要な場合は `--variant <post-write-api-variant>` として、`config/api-settings.yaml` の `context: post_write_verification` かつ API provider だけで構成された variant を選ぶ。CLI 経路を含む default variant に暗黙フォールバックしてはいけない。
 
 API レビュー結果を得た場合は、raw 参照、モデル別要約、三段階トリアージ（`must-fix`／`should-fix`／`leave-as-is`）を利用者へまとめて提示する。`ERROR`／`CRITICAL` または最終判断 `must-fix` の重要件を `decide` する場合、または重要件を含む run から manifest を生成する場合は、承認を記録した `--approval-record` が必須である。承認レコードには `approved_by: user` または `approved_by: proxy_model`、`review_run_id`、`summary_presented_to_user: true`、`triage_presented_to_user: true`、`approved_finding_ids`、必要に応じて `approved_final_labels` を含める。`approved_by: proxy_model` の場合は、`proxy_model_id` と finding ごとの `proxy_decisions` を含め、各 decision file が raw response、候補案、採用案、判断理由、最終ラベルを保持する。
 
