@@ -34,6 +34,8 @@ python3 tools/check-workflow-action.py next --json
 
 commit 直前は `docs/operations/COMMIT_OPERATION_CARD.md` を読む。Claude Code 側の実行環境で stdin を渡す場合も、空 stdin で `--approval-source-text-line-stdin` を実行しない。共通手順は操作カードに寄せ、Claude 固有の実行面だけを本節で扱う。
 
+利用者の指示テキストが許可文言（`コミット`・`承認` など）の場合、その発言テキストを承認語として使い、nonce 取得から guarded commit 実行まで同一ターンで完結させる。別途承認語の再入力を求めない。
+
 ## 4. post-write-verification の扱い
 
 Claude は `next_action.target_files` 全体を確認する。複数ファイルがある場合でも、ファイルごとの分業を独立多重チェックとして扱わない。

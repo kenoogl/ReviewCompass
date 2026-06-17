@@ -1,0 +1,19 @@
+process_id: maintenance
+started_at: '2026-06-17T00:00:00+09:00'
+completed_at: '2026-06-17T00:00:00+09:00'
+trigger: >
+  Claude Code でのコミット体験改善。許可文言（「コミット」等）で指示した後に
+  再度承認語の入力を求めるため、同じ言葉を2回唱える体験になっている。
+  Codex 側では同一ターン完結の処理が実装済み。
+mainline_blocked_by: なし
+allowed_scope:
+  - docs/operations/WORKFLOW_NAVIGATION_FOR_CLAUDE.md の §3 commit 節への追記
+completion_conditions:
+  - WORKFLOW_NAVIGATION_FOR_CLAUDE.md の commit 節に「許可文言を承認語として同一ターンで使い、再入力を求めない」旨が記述されている
+completed_steps:
+  - 'WORKFLOW_NAVIGATION_FOR_CLAUDE.md §3 に「許可文言を承認語として同一ターン完結」旨を追記'
+  - 'post-write verification: gemini-3.5-flash 所見 0件'
+post_write_verification:
+  - .reviewcompass/evidence/review-runs/2026-06-17-claude-commit-one-step-postwrite/review_summary.md
+  - .reviewcompass/post-write-verification/post-write-2026-06-17-030.yaml
+current_status: completed

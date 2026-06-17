@@ -1,0 +1,4 @@
+run_id: 2026-06-17-claude-commit-one-step-postwrite
+target_files:
+- path: docs/operations/WORKFLOW_NAVIGATION_FOR_CLAUDE.md
+  sha256: 131dd447334cc2015b043847f89440c1ed69059004b5be6a65dffd03eb44a90c
