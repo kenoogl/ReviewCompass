@@ -20,12 +20,12 @@
 - `next --json`: `completed`
 - 進行中手続き: なし
 - 直近 commit:
-  - `f3602482 Refresh TODO and add post-write verification evidence for session handoff`
-  - `6b61cc94 Add post-write verification evidence for claude adapter commit prompt`
-  - `bc3840e6 Integrate Claude Code adapter into commit operation card`
-  - `d11da682 Record session snapshot gap note`
-  - `8b7ac2e7 Refresh TODO task candidates`
-- 作業ツリーは clean（このセッションで TODO を整理済み）。
+  - `ab160d6b Allow run_review.py in Claude Code settings`
+  - `04cee37b Add OK and 承諾 as allowed commit approval instructions`
+  - `5c66b963 Add side-track discipline note to TODO candidate 2`
+  - `1479ece3 Minimize commit output in WORKFLOW_NAVIGATION_FOR_CLAUDE.md`
+  - `102df667 Add one-step commit approval to WORKFLOW_NAVIGATION_FOR_CLAUDE.md`
+- 作業ツリーは clean。
 - `main` は `origin/main` と同期済み。
 
 ## 3. 直近の重要メモ
@@ -49,24 +49,24 @@
 
 ## 4. 次作業候補
 
-1. **maintenance workflow protocol の明文化**
-   - maintenance でも要件・設計・タスク相当の確認、TDD、実装後 review、post-write / lightweight self check、completed 化をどう扱うかを正本化する。
-   - まず 3 行宣言で試す: `変更分類`、`理由`、`手順`。
-
-2. **`next --json` 一意性と effective prompt 強制の締め直し**
+1. **`next --json` 一意性と effective prompt 強制の締め直し**
    - `WORKFLOW_DISCIPLINE_MAP.yaml` coverage audit、全 action への `effective_prompt` 付与、読了証跡、アンカー節抽出を行う。
    - 他サブコマンドの JSON は次作業 selector ではない。次作業は必ず再度 `next --json` で決める。
    - `completed` 状態の `prompt_source_refs` に `WORKFLOW_NAVIGATION_FOR_CLAUDE.md` の side track 宣言ルール（§2 規則6）が含まれていない。`DISCIPLINE_MAP` の coverage audit で対応する。
 
-3. **実アプリ pilot**
+2. **実アプリ pilot**
    - 未着手。対象アプリ root と、対象アプリ側 LLM が参照できる ReviewCompass 配布物配置先を決めるところから始める。
    - 正本: `docs/operations/INITIAL_DEPLOYMENT_USER_GUIDE.md` §8、§9、§19、および `docs/operations/DEPLOYMENT.md` §8。
    - 配布前 smoke は実アプリ pilot 前の必要作業であり、現時点で完了済み扱いにしない。
 
-4. **decision-source-lint の運用開始**
+3. **decision-source-lint の運用開始**
    - 仕組みは実装済み。次に重要決定が発生した時点で `.reviewcompass/decisions/` に構造化決定記録を作る。
 
 完了済みとして候補から外したもの（直近）:
+
+- **maintenance workflow protocol の明文化**
+  - `98fe84a7 Add maintenance protocol to WORKFLOW_NAVIGATION.md` で完了。事前調査義務・開始条件（局所かつフィーチャー内閉じ）・3行宣言・TDD主導 vs 文書のみの区別を `WORKFLOW_NAVIGATION.md` に明文化。
+  - side track として、コミット体験改善（1回化・出力最小化・承認語追加・run_review.py allow）も実施済み。
 
 - **conformance 結果の仕様反映（MLE-GAP-001〜006）**
   - `stages/completed/reopen-procedure-2026-06-12.yaml` で workflow-management / conformance-evaluation の requirements・design・tasks・implementation 完了済み。
