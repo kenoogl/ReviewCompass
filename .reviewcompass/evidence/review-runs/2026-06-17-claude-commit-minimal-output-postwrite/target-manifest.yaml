@@ -1,0 +1,4 @@
+run_id: 2026-06-17-claude-commit-minimal-output-postwrite
+target_files:
+- path: docs/operations/WORKFLOW_NAVIGATION_FOR_CLAUDE.md
+  sha256: b303d80a4cbfb00e6d32364b08fcfd931e313d6fe860bb8275c5e1641e4a0178

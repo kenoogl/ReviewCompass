@@ -1,0 +1,14 @@
+process_id: maintenance
+started_at: '2026-06-17T00:00:00+09:00'
+completed_at: '2026-06-17T00:00:00+09:00'
+trigger: >
+  コミット時のユーザ向け出力が多すぎる。ツール実行前後の説明文を省き、
+  結果の1行（コミット番号 + 完了）だけをテキストで出す運用に変える。
+mainline_blocked_by: なし
+completed_steps:
+  - 'WORKFLOW_NAVIGATION_FOR_CLAUDE.md §3 に出力最小化の規則を追記'
+  - 'post-write verification: gemini-3.5-flash 所見 0件'
+post_write_verification:
+  - .reviewcompass/evidence/review-runs/2026-06-17-claude-commit-minimal-output-postwrite/review_summary.md
+  - .reviewcompass/post-write-verification/post-write-2026-06-17-031.yaml
+current_status: completed
