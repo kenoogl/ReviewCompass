@@ -1,0 +1,23 @@
+status: completed
+target_files:
+  - docs/notes/working/2026-06-17-session-record-current-snapshot-gap.md
+target_sha256:
+  docs/notes/working/2026-06-17-session-record-current-snapshot-gap.md: 39b20e2b6c4f5bbbc66ca0879f66220a6cbbf99071e5922d533ff0745f3851ce
+required_verifiers:
+  - lightweight_self_check
+completed_verifiers:
+  - lightweight_self_check
+unresolved_substantive_findings: 0
+verifications:
+  - verifier: lightweight_self_check
+    target_files:
+      - docs/notes/working/2026-06-17-session-record-current-snapshot-gap.md
+    target_sha256:
+      docs/notes/working/2026-06-17-session-record-current-snapshot-gap.md: 39b20e2b6c4f5bbbc66ca0879f66220a6cbbf99071e5922d533ff0745f3851ce
+    checks:
+      user_points_preserved: true
+      facts_problem_and_candidates_separated: true
+      useful_as_later_decision_material: true
+      does_not_over_specify_scope: true
+      remains_working_note_not_canonical_spec: true
+notes: "Lightweight self-check for docs/notes/working/ only; API review intentionally not used."
