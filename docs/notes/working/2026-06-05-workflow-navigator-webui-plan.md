@@ -1,6 +1,7 @@
 # ReviewCompass Navigator WebUI 構想メモ
 
 作成日：2026-06-05
+更新：2026-06-18（`docs/notes/working/` へ移動。機械化ワークフロー設計との接続点を追記）
 
 ## 0. 位置づけ
 
@@ -142,29 +143,49 @@ B
 
 side track は単なる会話上の脱線ではなく、次を持つ機械判定可能な状態である。
 
+- `title`（人間が読める作業タイトル。「今何の作業をしているか」として Navigator に表示する）
+- `spawned_from`（どの外側工程・内側工程から、何をきっかけに派生したか）
+- `return_to`（側道を抜けた後に戻る作業位置）
 - `track_kind`
 - `reason`
 - `target_files`
 - `manifest_status`
 - `policy_violations`
-- `return_to`
 - `required_action`
 
-例：
+**側道に入ったときの表示で最も重要なのは次の3点である。**
+
+1. 今何の作業をしているか（`title`）
+2. どこから派生したか（`spawned_from`）
+3. 側道が入れ子になっている場合、スタック全体（最上位から現在の深さまで）
+
+スナップショット例：
 
 ```yaml
-active_track:
-  kind: side_track
-  id: post_write_verification
-  label: Post-write Verification
-  reason: post_write_target_dirty
-  target_files:
-    - docs/notes/example.md
-  manifest_status: pending
-  return_to:
-    outer_node: implementation
-    inner_node: review_wave
+current_work:
+  title: "設計ドキュメント draft 作成"
+  outer_node: design
+  inner_node: write_draft
+
+active_side_tracks:   # スタック順（先頭が最初に開いた側道、末尾が最も深い現在の側道）
+  - title: "Post-write 検証：docs/notes/example.md"
+    kind: side_track
+    id: post_write_verification
+    reason: post_write_target_dirty
+    spawned_from:
+      outer_node: design
+      inner_node: write_draft
+      trigger: "文書書き込み後"
+    return_to:
+      outer_node: design
+      inner_node: write_draft
+    target_files:
+      - docs/notes/example.md
+    manifest_status: pending
+    staged_file_digest: "（コミット混線検査用）"
 ```
+
+側道が入れ子になった場合は `active_side_tracks` が複数エントリになる。Navigator は各エントリを積み上げて表示し、どの側道がいつ開き、どこへ戻るかを一目で示す。
 
 ## 6. Git Tree の扱い
 
@@ -270,4 +291,20 @@ MVP の非目標：
 - 複数アプリ横断の workflow comparison
 
 ただし、最初の価値は「状態から現在位置と復帰点が一目で分かること」に置く。
+
+---
+
+## 11. 機械化ワークフロー設計との関係
+
+2026-06-18 作成の設計メモ（`docs/notes/working/2026-06-18-mechanized-workflow-execution-design.md`）は、ReviewCompass Core 側の機械化を段階的に進める設計である。Navigator WebUI はその出力（状態スナップショット）を読む側であり、次の依存関係がある。
+
+| Core 側の作業 | Navigator が得るもの |
+|---|---|
+| Phase 1：スナップショットのスキーマ定義（`.reviewcompass/schema/` に配置） | スキーマが確定し、UI 側の実装仕様が固まる |
+| Phase 2：読み取り専用 registry の実装 | 操作一覧と effect_kind（副作用の種別）が取得可能になる |
+| Phase 2 完了後の保守タスク：`docs/operations/` から `.reviewcompass/` へのファイル移動 | スナップショット出力パスが確定する |
+
+**Navigator WebUI の実装開始タイミング**：Core 側の Phase 1 が完了し、スナップショットのスキーマが確定してから着手する。スキーマが固まる前に UI を作ると、Core 側の変更に追随するコストが高くなる。
+
+**スナップショットの出力先**：`.reviewcompass/runtime/workflow-state-snapshot.yaml`（Phase 2 完了時から Core が自動生成する）
 
