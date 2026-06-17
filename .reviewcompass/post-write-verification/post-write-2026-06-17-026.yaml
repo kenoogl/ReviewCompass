@@ -1,0 +1,20 @@
+status: completed
+target_files:
+- TODO_NEXT_SESSION.md
+target_sha256:
+  TODO_NEXT_SESSION.md: e580bc641f894aa3acaab266fc18c78b9b03ea24f6f07772ab6b993ea9f71165
+required_verifiers:
+- gemini-3.5-flash
+completed_verifiers:
+- gemini-3.5-flash
+unresolved_substantive_findings: 0
+verifications:
+- verifier: gemini-3.5-flash
+  target_files:
+  - TODO_NEXT_SESSION.md
+  target_sha256:
+    TODO_NEXT_SESSION.md: e580bc641f894aa3acaab266fc18c78b9b03ea24f6f07772ab6b993ea9f71165
+review_run:
+  path: .reviewcompass/evidence/review-runs/2026-06-17-todo-next-session-update-postwrite-r3
+  summary_path: .reviewcompass/evidence/review-runs/2026-06-17-todo-next-session-update-postwrite-r3/model-result-summary.yaml
+notes: "TODO 更新（Claude 側 adapter 修正の完了反映・番号振り直し）。所見1件（WARN）は検証者と操縦者の混同による逐語的指摘。利用者 leave-as-is 承認済み。"

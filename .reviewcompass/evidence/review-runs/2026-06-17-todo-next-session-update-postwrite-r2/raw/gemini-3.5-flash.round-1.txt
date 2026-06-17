@@ -1,0 +1,5 @@
+findings:
+  - severity: INFO
+    target_location: "TODO_NEXT_SESSION.md の「4. 次作業候補」セクション"
+    description: "リストの採番が「2」から「4」に飛んでおり、「3」が欠番となっています。"
+    rationale: "構造化されたドキュメントの整合性を維持し、意図しない項目の漏れを防ぐために、ナンバリングを修正することが望ましいです。"

@@ -1,0 +1,25 @@
+run_id: 2026-06-17-todo-next-session-update-postwrite-r3
+triage_status: decided
+generated_at: '2026-06-17T09:16:50.280978+00:00'
+decision_actor: human
+decision_actor_type: human
+items:
+- finding_id: 2026-06-17-todo-next-session-update-postwrite-r3-gemini-3.5-flash-primary-001
+  run_id: 2026-06-17-todo-next-session-update-postwrite-r3
+  source_model: gemini-3.5-flash
+  source_round: round-1
+  source_raw_path: raw/gemini-3.5-flash.round-1.txt
+  source_parsed_path: parsed/gemini-3.5-flash.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: 最終更新：2026-06-17（Claude セッション）。
+  plain_language_summary: セッション記述が 'Claude セッション' となっていますが、現在の実行モデルは Gemini (gemini-3.5-flash)
+    です。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-17T09:20:00.000000+00:00'
+  decision_reason: "Gemini は検証者として呼ばれているだけでセッションの操縦者ではない。Claude セッションはこのセッションを操縦した LLM が Claude Code であることを示す正しい記述。検証者と操縦者を混同した逐語的指摘。利用者 leave-as-is 承認済み。"
+  applied_files: []
+  superseded_by: null

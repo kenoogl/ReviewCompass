@@ -1,0 +1,11 @@
+role: primary
+provider: gemini-api
+model: gemini-3.5-flash
+attempts: 1
+duration_seconds: 8.051
+findings:
+- severity: WARN
+  target_location: 最終更新：2026-06-17（Claude セッション）。
+  description: セッション記述が 'Claude セッション' となっていますが、現在の実行モデルは Gemini (gemini-3.5-flash)
+    です。
+  rationale: 次セッション継続用メモの最終更新メタデータが、実際に作業を行った現在のセッション環境（Gemini）と一致していないため、引き継ぎ履歴に齟齬が生じる可能性があります。
