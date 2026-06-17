@@ -1,0 +1,35 @@
+status: completed
+target_files:
+- docs/operations/COMMIT_OPERATION_CARD.md
+- docs/operations/WORKFLOW_DISCIPLINE_MAP.yaml
+- docs/operations/WORKFLOW_NAVIGATION_FOR_CODEX.md
+- docs/operations/WORKFLOW_NAVIGATION_FOR_CLAUDE.md
+- docs/operations/INITIAL_SETUP_LLM_GUIDE.md
+target_sha256:
+  docs/operations/COMMIT_OPERATION_CARD.md: ef9fbc26dd329efd9996341eead2b00f84f835b2585b45ae1073b643004c69bd
+  docs/operations/WORKFLOW_DISCIPLINE_MAP.yaml: e67efb2646b2e9682f97445851c76e5f066114e9d0861969f57a0fcf7e295b5b
+  docs/operations/WORKFLOW_NAVIGATION_FOR_CODEX.md: d2fb48da8cd419e337000a9f494e4e9a18ae343b7d545cfddfcb2f6f5c36b709
+  docs/operations/WORKFLOW_NAVIGATION_FOR_CLAUDE.md: 5db9c58cf1809391dc423724ae4b25fa36dc2dab3aa5bf5e68cdeae19f2346fa
+  docs/operations/INITIAL_SETUP_LLM_GUIDE.md: e79134a5a6c60cc16bace29107b806892d5a9f9a572aac1466a1988e00afcb8c
+required_verifiers: &id001
+- gemini-3.5-flash
+completed_verifiers: *id001
+unresolved_substantive_findings: 0
+verifications:
+- verifier: gemini-3.5-flash
+  target_files:
+  - docs/operations/COMMIT_OPERATION_CARD.md
+  - docs/operations/WORKFLOW_DISCIPLINE_MAP.yaml
+  - docs/operations/WORKFLOW_NAVIGATION_FOR_CODEX.md
+  - docs/operations/WORKFLOW_NAVIGATION_FOR_CLAUDE.md
+  - docs/operations/INITIAL_SETUP_LLM_GUIDE.md
+  target_sha256:
+    docs/operations/COMMIT_OPERATION_CARD.md: ef9fbc26dd329efd9996341eead2b00f84f835b2585b45ae1073b643004c69bd
+    docs/operations/WORKFLOW_DISCIPLINE_MAP.yaml: e67efb2646b2e9682f97445851c76e5f066114e9d0861969f57a0fcf7e295b5b
+    docs/operations/WORKFLOW_NAVIGATION_FOR_CODEX.md: d2fb48da8cd419e337000a9f494e4e9a18ae343b7d545cfddfcb2f6f5c36b709
+    docs/operations/WORKFLOW_NAVIGATION_FOR_CLAUDE.md: 5db9c58cf1809391dc423724ae4b25fa36dc2dab3aa5bf5e68cdeae19f2346fa
+    docs/operations/INITIAL_SETUP_LLM_GUIDE.md: e79134a5a6c60cc16bace29107b806892d5a9f9a572aac1466a1988e00afcb8c
+review_run:
+  path: .reviewcompass/evidence/review-runs/2026-06-17-commit-operation-card-postwrite-r2
+  summary_path: .reviewcompass/evidence/review-runs/2026-06-17-commit-operation-card-postwrite-r2/model-result-summary.yaml
+notes: commit operation card prompt selection post-write

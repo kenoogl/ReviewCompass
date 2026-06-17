@@ -1509,6 +1509,24 @@ def materialize_effective_prompt(cwd, next_action, effective_prompt):
   return augmented
 
 
+def effective_prompt_for_decision_point(cwd, group, point_id):
+  """指定した判定点の effective prompt 元資料メタデータを返す"""
+  discipline_map = _load_discipline_map(cwd)
+  catalog = discipline_map.get("decision_points")
+  entry = _find_decision_point(catalog, group, point_id)
+  if entry is None:
+    return None
+  policy = entry.get("effective_prompt_policy")
+  return {
+    "effective_prompt_policy": (
+      policy if isinstance(policy, str) and policy
+      else "one_effective_prompt_per_decision_point"
+    ),
+    "decision_point_refs": [{"group": group, "id": point_id}],
+    "prompt_source_refs": _dedupe_strings(entry.get("prompt_source_refs") or []),
+  }
+
+
 def attach_required_context(cwd, next_action):
   """next_action に直前必読規律と抽象入力を付与する"""
   augmented = dict(next_action)
@@ -5340,6 +5358,60 @@ def cmd_next(args):
   return exit_code
 
 
+def build_operation_prompt_payload(cwd, operation):
+  """不可逆操作直前に読む prompt 情報を返す"""
+  if operation != "commit":
+    return None
+  effective_prompt = effective_prompt_for_decision_point(
+    cwd,
+    "operation_prompt",
+    "commit",
+  )
+  if effective_prompt is None:
+    return None
+  prompt_context = {
+    "kind": "operation_prompt",
+    "operation": operation,
+  }
+  return {
+    "verdict": "OK",
+    "exit_code": 0,
+    "operation": "commit",
+    "required_operation_card": "docs/operations/COMMIT_OPERATION_CARD.md#commit-operation-card",
+    "adapter_card": "docs/operations/WORKFLOW_NAVIGATION_FOR_CODEX.md#3-commit",
+    "effective_prompt": materialize_effective_prompt(
+      cwd,
+      prompt_context,
+      effective_prompt,
+    ),
+  }
+
+
+def cmd_operation_prompt(args):
+  """不可逆操作用 prompt selection を出力する"""
+  cwd = Path.cwd()
+  payload = build_operation_prompt_payload(cwd, args.operation)
+  if payload is None:
+    payload = {
+      "verdict": "DEVIATION",
+      "exit_code": 2,
+      "operation": args.operation,
+      "reasons": [f"未定義の operation prompt です: {args.operation}"],
+    }
+  if args.json:
+    print(json.dumps(payload, ensure_ascii=False, indent=2))
+  else:
+    print(f"[VERDICT] {payload['verdict']}（exit {payload['exit_code']}）")
+    print(f"[OPERATION] {payload.get('operation')}")
+    if payload.get("required_operation_card"):
+      print(f"[CARD] {payload['required_operation_card']}")
+    if payload.get("adapter_card"):
+      print(f"[ADAPTER] {payload['adapter_card']}")
+    for reason in payload.get("reasons", []):
+      print(f"- {reason}")
+  return payload["exit_code"]
+
+
 def build_reopen_in_progress_data(args, pending_gates):
   """reopen-start で生成する in-progress データを作る"""
   return {
@@ -6299,6 +6371,17 @@ def main():
     parents=[common_parser],
   )
 
+  opp = sub.add_parser(
+    "operation-prompt",
+    help="不可逆操作直前に読む操作カードと effective prompt を返す",
+    parents=[common_parser],
+  )
+  opp.add_argument(
+    "operation",
+    choices=["commit"],
+    help="対象操作",
+  )
+
   rs = sub.add_parser(
     "reopen-start",
     help="reopen classification から in-progress ファイルを生成する",
@@ -6488,6 +6571,8 @@ def main():
     sys.exit(cmd_audit_commit(args))
   elif args.subcommand == "next":
     sys.exit(cmd_next(args))
+  elif args.subcommand == "operation-prompt":
+    sys.exit(cmd_operation_prompt(args))
   elif args.subcommand == "reopen-start":
     sys.exit(cmd_reopen_start(args))
   elif args.subcommand == "reopen-advance-step":

@@ -1,0 +1,27 @@
+run_id: 2026-06-17-commit-operation-card-postwrite
+triage_status: draft
+generated_at: '2026-06-17T06:29:37.758169+00:00'
+decision_actor: null
+decision_actor_type: human
+items:
+- finding_id: 2026-06-17-commit-operation-card-postwrite-gemini-3.5-flash-primary-001
+  run_id: 2026-06-17-commit-operation-card-postwrite
+  source_model: gemini-3.5-flash
+  source_round: round-1
+  source_raw_path: raw/gemini-3.5-flash.round-1.txt
+  source_parsed_path: parsed/gemini-3.5-flash.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: docs/operations/WORKFLOW_DISCIPLINE_MAP.yaml
+  plain_language_summary: 'operation_promptのid: commitにおいて、Claude用の規律ドキュメントの参照が欠落しており、Codex用のアンカー参照も存在しない場所を指しています。'
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: 'WORKFLOW_DISCIPLINE_MAP.yaml の operation_prompt (id: commit) の
+    prompt_source_refs に docs/operations/WORKFLOW_NAVIGATION_FOR_CLAUDE.md の参照が含まれていないため、Claude
+    Code使用時にコミット操作の前提規律がロードされません。また、指定されている WORKFLOW_NAVIGATION_FOR_CODEX.md#commit
+    は、実際のファイルに該当する見出し（#commit）が存在しないため参照不整合を起こします。'
+  applied_files: []
+  superseded_by: null

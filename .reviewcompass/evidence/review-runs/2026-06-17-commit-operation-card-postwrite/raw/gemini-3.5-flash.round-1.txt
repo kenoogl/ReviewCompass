@@ -1,0 +1,5 @@
+findings:
+  - severity: ERROR
+    target_location: "docs/operations/WORKFLOW_DISCIPLINE_MAP.yaml"
+    description: "operation_promptのid: commitにおいて、Claude用の規律ドキュメントの参照が欠落しており、Codex用のアンカー参照も存在しない場所を指しています。"
+    rationale: "WORKFLOW_DISCIPLINE_MAP.yaml の operation_prompt (id: commit) の prompt_source_refs に docs/operations/WORKFLOW_NAVIGATION_FOR_CLAUDE.md の参照が含まれていないため、Claude Code使用時にコミット操作の前提規律がロードされません。また、指定されている WORKFLOW_NAVIGATION_FOR_CODEX.md#commit は、実際のファイルに該当する見出し（#commit）が存在しないため参照不整合を起こします。"

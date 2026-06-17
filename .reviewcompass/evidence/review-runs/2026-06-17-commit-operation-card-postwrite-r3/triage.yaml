@@ -1,0 +1,52 @@
+run_id: 2026-06-17-commit-operation-card-postwrite-r3
+triage_status: draft
+generated_at: '2026-06-17T06:48:19.890746+00:00'
+decision_actor: null
+decision_actor_type: human
+items:
+- finding_id: 2026-06-17-commit-operation-card-postwrite-r3-gemini-3.5-flash-primary-001
+  run_id: 2026-06-17-commit-operation-card-postwrite-r3
+  source_model: gemini-3.5-flash
+  source_round: round-1
+  source_raw_path: raw/gemini-3.5-flash.round-1.txt
+  source_parsed_path: parsed/gemini-3.5-flash.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: docs/operations/COMMIT_OPERATION_CARD.md
+  plain_language_summary: 'The main heading ''# COMMIT_OPERATION_CARD: commit 操作カード''
+    contains Japanese characters and lacks a clean, ASCII-safe anchor, which makes
+    automated prompt selection fragile.'
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: Prompt selection tools and parser frameworks rely on clean, deterministic
+    anchors to extract specific document sections. Using non-ASCII characters in the
+    main heading can lead to parsing mismatches across different environments. Simplifying
+    the heading to '# COMMIT_OPERATION_CARD' or adding a stable ASCII anchor is recommended.
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-17-commit-operation-card-postwrite-r3-gemini-3.5-flash-primary-002
+  run_id: 2026-06-17-commit-operation-card-postwrite-r3
+  source_model: gemini-3.5-flash
+  source_round: round-1
+  source_raw_path: raw/gemini-3.5-flash.round-1.txt
+  source_parsed_path: parsed/gemini-3.5-flash.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: docs/operations/WORKFLOW_DISCIPLINE_MAP.yaml
+  plain_language_summary: The prompt source reference for 'COMMIT_OPERATION_CARD.md'
+    under 'operation_prompt.commit' is specified without a selection anchor (e.g.,
+    '#commit-operation-card').
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: To align with the 'one_effective_prompt_per_decision_point' policy
+    and ensure consistency with other references in the same decision point (which
+    use anchors like '#3-commit'), the reference should target a specific, stable
+    selection anchor.
+  applied_files: []
+  superseded_by: null

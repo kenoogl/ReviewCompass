@@ -1,0 +1,5 @@
+findings:
+  - severity: ERROR
+    target_location: "docs/operations/WORKFLOW_DISCIPLINE_MAP.yaml"
+    description: "The 'commit' decision point under 'operation_prompt' only references the Codex adapter, omitting the Claude-specific navigation prompt."
+    rationale: "Both Codex and Claude have agent-specific guides for commit operations (with WORKFLOW_NAVIGATION_FOR_CLAUDE.md containing a matching #3-commit anchor). Omitting the Claude reference in the discipline map prevents the workflow action runner from resolving and serving the correct prompt when Claude is the active agent."

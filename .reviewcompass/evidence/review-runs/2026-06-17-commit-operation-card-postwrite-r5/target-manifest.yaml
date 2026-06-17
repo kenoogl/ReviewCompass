@@ -1,0 +1,10 @@
+run_id: 2026-06-17-commit-operation-card-postwrite-r5
+target_files:
+- path: docs/operations/COMMIT_OPERATION_CARD.md
+  sha256: 24fa015c7a06da3444592791b610e4e464260753986f0f92e1716e41cd855c05
+- path: docs/operations/WORKFLOW_DISCIPLINE_MAP.yaml
+  sha256: 4e5efbc7e4d97e4b36ac4283df7a9063189bb50fa80941e1b9cd0d920d0e384a
+- path: docs/operations/WORKFLOW_NAVIGATION_FOR_CODEX.md
+  sha256: 9d9d8b9a15ca451aaeed609b98559eeb15db86b13a986b4c8fbc696247a898cf
+- path: docs/operations/WORKFLOW_NAVIGATION_FOR_CLAUDE.md
+  sha256: 045e808c96170d70a86fae1e8b6e60d1a877ccd4cc02e6b660e4e9173f05391d

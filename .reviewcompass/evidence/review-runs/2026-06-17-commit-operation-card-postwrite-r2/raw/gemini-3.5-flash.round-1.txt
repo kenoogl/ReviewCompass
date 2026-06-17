@@ -1,0 +1,5 @@
+findings:
+  - severity: ERROR
+    target_location: "docs/operations/WORKFLOW_DISCIPLINE_MAP.yaml"
+    description: "The 'commit' decision point under 'operation_prompt' lists multiple 'prompt_source_refs', violating the 'one_effective_prompt_per_decision_point' policy."
+    rationale: "Under the 'one_effective_prompt_per_decision_point' policy, a decision point must map to exactly one effective prompt. Listing 'COMMIT_OPERATION_CARD.md', 'WORKFLOW_NAVIGATION_FOR_CODEX.md#commit', and 'WORKFLOW_NAVIGATION_FOR_CLAUDE.md#commit' simultaneously violates this constraint. Agent-specific commit variations should be consolidated within 'COMMIT_OPERATION_CARD.md' itself so that it can serve as the sole source of truth."

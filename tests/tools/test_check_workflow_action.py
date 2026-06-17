@@ -2231,6 +2231,45 @@ class NextNavigationTests(unittest.TestCase):
       data["reasons"],
     )
 
+  def test_operation_prompt_commit_outputs_card_adapter_and_effective_prompt(self):
+    """commit 直前の操作 prompt は共通カードと実行面 adapter を返す"""
+    cwd = Path(self.tmpdir)
+
+    result = run_script(["operation-prompt", "commit", "--json"], cwd=cwd)
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 0, result.stderr)
+    data = json.loads(result.stdout)
+    self.assertEqual(data["verdict"], "OK")
+    self.assertEqual(data["operation"], "commit")
+    self.assertEqual(
+      data["required_operation_card"],
+      "docs/operations/COMMIT_OPERATION_CARD.md#commit-operation-card",
+    )
+    self.assertEqual(
+      data["adapter_card"],
+      "docs/operations/WORKFLOW_NAVIGATION_FOR_CODEX.md#3-commit",
+    )
+    self.assertEqual(
+      data["effective_prompt"]["decision_point_refs"],
+      [{"group": "operation_prompt", "id": "commit"}],
+    )
+    self.assertIn(
+      "docs/operations/COMMIT_OPERATION_CARD.md#commit-operation-card",
+      data["effective_prompt"]["prompt_source_refs"],
+    )
+    self.assertIn(
+      "docs/operations/WORKFLOW_NAVIGATION_FOR_CODEX.md#3-commit",
+      data["effective_prompt"]["prompt_source_refs"],
+    )
+    prompt_path = cwd / data["effective_prompt"]["effective_prompt_path"]
+    self.assertTrue(prompt_path.is_file())
+    self.assertTrue(data["effective_prompt"]["effective_prompt_loaded"])
+    self.assertEqual(
+      data["effective_prompt"]["effective_prompt_sha256"],
+      _sha256_file(prompt_path),
+    )
+
   def test_next_triad_review_reports_target_and_review_run_inputs(self):
     """triad-review 直前に読む対象文書と review-run 成果物を抽象入力として返す"""
     cwd = Path(self.tmpdir)

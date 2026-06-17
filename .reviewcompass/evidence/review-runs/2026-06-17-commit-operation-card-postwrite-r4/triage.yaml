@@ -1,0 +1,71 @@
+run_id: 2026-06-17-commit-operation-card-postwrite-r4
+triage_status: draft
+generated_at: '2026-06-17T06:50:28.009473+00:00'
+decision_actor: null
+decision_actor_type: human
+items:
+- finding_id: 2026-06-17-commit-operation-card-postwrite-r4-gemini-3.5-flash-primary-001
+  run_id: 2026-06-17-commit-operation-card-postwrite-r4
+  source_model: gemini-3.5-flash
+  source_round: round-1
+  source_raw_path: raw/gemini-3.5-flash.round-1.txt
+  source_parsed_path: parsed/gemini-3.5-flash.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: docs/operations/WORKFLOW_DISCIPLINE_MAP.yaml
+  plain_language_summary: The 'commit' operation prompt includes mutually exclusive
+    environment-specific references under the same decision point.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: The 'commit' ID decision point references both Codex and Claude
+    navigation files. Under 'one_effective_prompt_per_decision_point', compiling these
+    sources simultaneously leads to prompt contamination across environments. The
+    workflow discipline map should segregate or conditionally select these prompts
+    based on the active agent/environment.
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-17-commit-operation-card-postwrite-r4-gemini-3.5-flash-primary-002
+  run_id: 2026-06-17-commit-operation-card-postwrite-r4
+  source_model: gemini-3.5-flash
+  source_round: round-1
+  source_raw_path: raw/gemini-3.5-flash.round-1.txt
+  source_parsed_path: parsed/gemini-3.5-flash.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: docs/operations/WORKFLOW_NAVIGATION_FOR_CODEX.md
+  plain_language_summary: Missing explicit HTML anchor '<a id="3-commit"></a>' for
+    the '#3-commit' reference.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: The header '## 3. commit' is referenced via '#3-commit' in WORKFLOW_DISCIPLINE_MAP.yaml.
+    Relying on markdown engine slugging is fragile; adding an explicit anchor matches
+    the robust pattern used in COMMIT_OPERATION_CARD.md.
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-17-commit-operation-card-postwrite-r4-gemini-3.5-flash-primary-003
+  run_id: 2026-06-17-commit-operation-card-postwrite-r4
+  source_model: gemini-3.5-flash
+  source_round: round-1
+  source_raw_path: raw/gemini-3.5-flash.round-1.txt
+  source_parsed_path: parsed/gemini-3.5-flash.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: docs/operations/WORKFLOW_NAVIGATION_FOR_CLAUDE.md
+  plain_language_summary: Missing explicit HTML anchor '<a id="3-commit"></a>' for
+    the '#3-commit' reference.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: The header '## 3. commit' is referenced via '#3-commit' in WORKFLOW_DISCIPLINE_MAP.yaml.
+    Relying on markdown engine slugging is fragile; adding an explicit anchor matches
+    the robust pattern used in COMMIT_OPERATION_CARD.md.
+  applied_files: []
+  superseded_by: null

@@ -1,0 +1,29 @@
+role: primary
+provider: gemini-api
+model: gemini-3.5-flash
+attempts: 1
+duration_seconds: 49.835
+findings:
+- severity: WARN
+  target_location: docs/operations/WORKFLOW_DISCIPLINE_MAP.yaml
+  description: The 'commit' operation prompt includes mutually exclusive environment-specific
+    references under the same decision point.
+  rationale: The 'commit' ID decision point references both Codex and Claude navigation
+    files. Under 'one_effective_prompt_per_decision_point', compiling these sources
+    simultaneously leads to prompt contamination across environments. The workflow
+    discipline map should segregate or conditionally select these prompts based on
+    the active agent/environment.
+- severity: WARN
+  target_location: docs/operations/WORKFLOW_NAVIGATION_FOR_CODEX.md
+  description: Missing explicit HTML anchor '<a id="3-commit"></a>' for the '#3-commit'
+    reference.
+  rationale: The header '## 3. commit' is referenced via '#3-commit' in WORKFLOW_DISCIPLINE_MAP.yaml.
+    Relying on markdown engine slugging is fragile; adding an explicit anchor matches
+    the robust pattern used in COMMIT_OPERATION_CARD.md.
+- severity: WARN
+  target_location: docs/operations/WORKFLOW_NAVIGATION_FOR_CLAUDE.md
+  description: Missing explicit HTML anchor '<a id="3-commit"></a>' for the '#3-commit'
+    reference.
+  rationale: The header '## 3. commit' is referenced via '#3-commit' in WORKFLOW_DISCIPLINE_MAP.yaml.
+    Relying on markdown engine slugging is fragile; adding an explicit anchor matches
+    the robust pattern used in COMMIT_OPERATION_CARD.md.

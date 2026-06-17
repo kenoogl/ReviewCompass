@@ -1,0 +1,31 @@
+status: completed
+target_files:
+- docs/operations/COMMIT_OPERATION_CARD.md
+- docs/operations/WORKFLOW_DISCIPLINE_MAP.yaml
+- docs/operations/WORKFLOW_NAVIGATION_FOR_CODEX.md
+- docs/operations/WORKFLOW_NAVIGATION_FOR_CLAUDE.md
+target_sha256:
+  docs/operations/COMMIT_OPERATION_CARD.md: 24fa015c7a06da3444592791b610e4e464260753986f0f92e1716e41cd855c05
+  docs/operations/WORKFLOW_DISCIPLINE_MAP.yaml: 4e5efbc7e4d97e4b36ac4283df7a9063189bb50fa80941e1b9cd0d920d0e384a
+  docs/operations/WORKFLOW_NAVIGATION_FOR_CODEX.md: 9d9d8b9a15ca451aaeed609b98559eeb15db86b13a986b4c8fbc696247a898cf
+  docs/operations/WORKFLOW_NAVIGATION_FOR_CLAUDE.md: 045e808c96170d70a86fae1e8b6e60d1a877ccd4cc02e6b660e4e9173f05391d
+required_verifiers: &id001
+- gemini-3.5-flash
+completed_verifiers: *id001
+unresolved_substantive_findings: 0
+verifications:
+- verifier: gemini-3.5-flash
+  target_files:
+  - docs/operations/COMMIT_OPERATION_CARD.md
+  - docs/operations/WORKFLOW_DISCIPLINE_MAP.yaml
+  - docs/operations/WORKFLOW_NAVIGATION_FOR_CODEX.md
+  - docs/operations/WORKFLOW_NAVIGATION_FOR_CLAUDE.md
+  target_sha256:
+    docs/operations/COMMIT_OPERATION_CARD.md: 24fa015c7a06da3444592791b610e4e464260753986f0f92e1716e41cd855c05
+    docs/operations/WORKFLOW_DISCIPLINE_MAP.yaml: 4e5efbc7e4d97e4b36ac4283df7a9063189bb50fa80941e1b9cd0d920d0e384a
+    docs/operations/WORKFLOW_NAVIGATION_FOR_CODEX.md: 9d9d8b9a15ca451aaeed609b98559eeb15db86b13a986b4c8fbc696247a898cf
+    docs/operations/WORKFLOW_NAVIGATION_FOR_CLAUDE.md: 045e808c96170d70a86fae1e8b6e60d1a877ccd4cc02e6b660e4e9173f05391d
+review_run:
+  path: .reviewcompass/evidence/review-runs/2026-06-17-commit-operation-card-postwrite-r5
+  summary_path: .reviewcompass/evidence/review-runs/2026-06-17-commit-operation-card-postwrite-r5/model-result-summary.yaml
+notes: commit operation card prompt selection final

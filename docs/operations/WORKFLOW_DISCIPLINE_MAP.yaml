@@ -180,6 +180,12 @@ decision_points:
         - docs/operations/WORKFLOW_PRECHECK_DETAILS.md#commit
         - docs/operations/REOPEN_PROCEDURE.md
       effective_prompt_policy: one_effective_prompt_per_decision_point
+  operation_prompt:
+    - id: commit
+      prompt_source_refs:
+        - docs/operations/COMMIT_OPERATION_CARD.md#commit-operation-card
+        - docs/operations/WORKFLOW_NAVIGATION_FOR_CODEX.md#3-commit
+      effective_prompt_policy: one_effective_prompt_per_decision_point
   reopen_required_action:
     - id: classify_and_rollback_flags
       prompt_source_refs:

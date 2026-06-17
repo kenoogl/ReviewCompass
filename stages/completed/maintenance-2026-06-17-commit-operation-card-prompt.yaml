@@ -1,0 +1,51 @@
+type: maintenance
+process_id: maintenance
+date: 2026-06-17
+title: commit operation card and irreversible operation prompt selection
+trigger: "利用者指示: 次タスクへ"
+mainline_blocked_by: "commit 直前の短い操作カードと不可逆操作用 prompt selection が未実装"
+allowed_scope:
+  - "commit 直前に読む短い操作カードを追加する"
+  - "Codex / Claude adapter の commit 手順本体を操作カード参照へ寄せる"
+  - "不可逆操作用 prompt selection として commit operation prompt を JSON 出力できるようにする"
+  - "対応する TDD テストを追加・通過させる"
+allowed_files:
+  - "docs/operations/COMMIT_OPERATION_CARD.md"
+  - "docs/operations/WORKFLOW_NAVIGATION_FOR_CODEX.md"
+  - "docs/operations/WORKFLOW_NAVIGATION_FOR_CLAUDE.md"
+  - "docs/operations/WORKFLOW_DISCIPLINE_MAP.yaml"
+  - "tools/check-workflow-action.py"
+  - "tests/tools/test_check_workflow_action.py"
+  - "stages/in-progress/maintenance-2026-06-17-commit-operation-card-prompt.yaml"
+  - "stages/completed/maintenance-2026-06-17-commit-operation-card-prompt.yaml"
+completion_conditions:
+  - "operation-prompt commit --json が共通操作カードと Codex adapter を返す"
+  - "operation-prompt commit --json が effective prompt を materialize する"
+  - "commit 操作カードが prepare / guarded commit / stdin 注意を短く明示する"
+  - "関連テストが通過する"
+  - "completed maintenance 記録へ移す"
+notes:
+  - "commit / push は利用者の明示承認なしに行わない"
+completed_at: "2026-06-17"
+result:
+  summary:
+    - "docs/operations/COMMIT_OPERATION_CARD.md を追加した"
+    - "Codex / Claude adapter の commit 節を操作カード参照中心に整理した"
+    - "WORKFLOW_DISCIPLINE_MAP.yaml に operation_prompt: commit を追加した"
+    - "tools/check-workflow-action.py に operation-prompt commit --json を追加した"
+    - "post-write review r2 の ERROR 所見は利用者承認により leave-as-is として triage 決定した"
+  post_write:
+    review_run: ".reviewcompass/evidence/review-runs/2026-06-17-commit-operation-card-postwrite-r2"
+    manifest: ".reviewcompass/post-write-verification/post-write-2026-06-17-020.yaml"
+    triage_decision: "leave-as-is"
+verification:
+  - command: ".venv/bin/python3 -m pytest tests/tools/test_check_workflow_action.py::NextNavigationTests::test_operation_prompt_commit_outputs_card_adapter_and_effective_prompt -q"
+    result: "red confirmed before implementation; passed after implementation"
+  - command: ".venv/bin/python3 -m pytest tests/tools/test_check_workflow_action.py::NextNavigationTests tests/tools/test_check_workflow_action.py::CommitExitCodeTests tests/tools/test_check_workflow_action.py::CommitPushOutputTests -q"
+    result: "108 passed"
+  - command: "PYTHONPYCACHEPREFIX=/tmp/reviewcompass-pycache .venv/bin/python3 -m py_compile tools/check-workflow-action.py"
+    result: "passed"
+  - command: "git diff --check"
+    result: "passed"
+  - command: ".venv/bin/python3 tools/check-workflow-action.py operation-prompt commit --json"
+    result: "passed; effective_prompt_loaded true"
