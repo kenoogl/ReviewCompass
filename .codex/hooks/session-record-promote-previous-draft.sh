@@ -76,7 +76,7 @@ CWD=$(printf '%s' "$INPUT" | "$REVIEWCOMPASS_JQ" -r '.cwd // empty')
 [ ! -d "$DRAFT_DIR" ] && { log_event "no_draft_dir"; exit 0; }
 [ ! -f "$PROMOTE_TOOL" ] && { log_event "no_promote_tool"; exit 0; }
 
-TARGET_INFO=$(
+TARGET_INFOS=$(
   DRAFT_DIR="$DRAFT_DIR" SESSION_ID="$SESSION_ID" "$REVIEWCOMPASS_PYTHON" - <<'PY'
 import json
 import os
@@ -85,7 +85,7 @@ from pathlib import Path
 draft_dir = Path(os.environ["DRAFT_DIR"])
 current_id = os.environ["SESSION_ID"]
 
-best = None
+candidates = []
 for path in draft_dir.glob("codex-*.md"):
   session_id = path.name.removeprefix("codex-").removesuffix(".md")
   if not session_id or session_id == current_id:
@@ -94,28 +94,29 @@ for path in draft_dir.glob("codex-*.md"):
     mtime = path.stat().st_mtime
   except OSError:
     continue
-  candidate = (mtime, session_id, path)
-  if best is None or candidate > best:
-    best = candidate
+  candidates.append((mtime, session_id, path))
 
-if best is not None:
-  print(json.dumps({"session_id": best[1], "draft": str(best[2])}, ensure_ascii=False))
+for mtime, session_id, path in sorted(candidates, reverse=True):
+  print(json.dumps({"session_id": session_id, "draft": str(path)}, ensure_ascii=False))
 PY
 )
 
-[ -z "$TARGET_INFO" ] && { log_event "no_previous_draft"; exit 0; }
-TARGET_SESSION_ID=$(printf '%s' "$TARGET_INFO" | "$REVIEWCOMPASS_JQ" -r '.session_id // empty')
-TARGET_DRAFT=$(printf '%s' "$TARGET_INFO" | "$REVIEWCOMPASS_JQ" -r '.draft // empty')
-[ -z "$TARGET_SESSION_ID" ] && { log_event "no_previous_draft"; exit 0; }
+[ -z "$TARGET_INFOS" ] && { log_event "no_previous_draft"; exit 0; }
 
-log_event "selected" "$TARGET_SESSION_ID" "$TARGET_DRAFT"
+printf '%s\n' "$TARGET_INFOS" | while IFS= read -r TARGET_INFO; do
+  [ -z "$TARGET_INFO" ] && continue
+  TARGET_SESSION_ID=$(printf '%s' "$TARGET_INFO" | "$REVIEWCOMPASS_JQ" -r '.session_id // empty')
+  TARGET_DRAFT=$(printf '%s' "$TARGET_INFO" | "$REVIEWCOMPASS_JQ" -r '.draft // empty')
+  [ -z "$TARGET_SESSION_ID" ] && continue
 
-HASH_INFO=$(
-  TARGET_DRAFT="$TARGET_DRAFT" \
-  TARGET_SESSION_ID="$TARGET_SESSION_ID" \
-  CODEX_ROOT="$CODEX_ROOT" \
-  CWD="$CWD" \
-  "$REVIEWCOMPASS_PYTHON" - <<'PY'
+  log_event "selected" "$TARGET_SESSION_ID" "$TARGET_DRAFT"
+
+  HASH_INFO=$(
+    TARGET_DRAFT="$TARGET_DRAFT" \
+    TARGET_SESSION_ID="$TARGET_SESSION_ID" \
+    CODEX_ROOT="$CODEX_ROOT" \
+    CWD="$CWD" \
+    "$REVIEWCOMPASS_PYTHON" - <<'PY'
 import hashlib
 import json
 import os
@@ -203,31 +204,33 @@ elif actual == expected:
 else:
   print(json.dumps({"status": "mismatch", "rollout": str(rollout)}))
 PY
-)
+  )
 
-HASH_STATUS=$(printf '%s' "$HASH_INFO" | "$REVIEWCOMPASS_JQ" -r '.status // empty')
-if [ "$HASH_STATUS" = "mismatch" ]; then
-  log_event "previous_draft_in_progress" "$TARGET_SESSION_ID" "$TARGET_DRAFT"
-  exit 0
-fi
-if [ "$HASH_STATUS" != "match" ]; then
-  log_event "previous_draft_unverifiable" "$TARGET_SESSION_ID" "$TARGET_DRAFT"
-  exit 0
-fi
+  HASH_STATUS=$(printf '%s' "$HASH_INFO" | "$REVIEWCOMPASS_JQ" -r '.status // empty')
+  if [ "$HASH_STATUS" = "mismatch" ]; then
+    log_event "previous_draft_in_progress" "$TARGET_SESSION_ID" "$TARGET_DRAFT"
+    continue
+  fi
+  if [ "$HASH_STATUS" != "match" ]; then
+    log_event "previous_draft_unverifiable" "$TARGET_SESSION_ID" "$TARGET_DRAFT"
+    continue
+  fi
 
-cd "$REPO_ROOT" || exit 0
-if "$REVIEWCOMPASS_PYTHON" "$PROMOTE_TOOL" \
-  --session-id "$TARGET_SESSION_ID" \
-  --source codex \
-  --current-session-id "$SESSION_ID" \
-  --codex-root "$CODEX_ROOT" \
-  --repo-path "$CWD" \
-  --draft-dir "$DRAFT_DIR" \
-  --evidence-dir "$EVIDENCE_DIR" \
-  --docs-dir "$DOCS_DIR" >/dev/null 2>&1; then
-  log_event "promoted" "$TARGET_SESSION_ID" "$TARGET_DRAFT"
-else
-  log_event "promote_failed" "$TARGET_SESSION_ID" "$TARGET_DRAFT"
-fi
+  cd "$REPO_ROOT" || exit 0
+  if "$REVIEWCOMPASS_PYTHON" "$PROMOTE_TOOL" \
+    --session-id "$TARGET_SESSION_ID" \
+    --source codex \
+    --current-session-id "$SESSION_ID" \
+    --codex-root "$CODEX_ROOT" \
+    --repo-path "$CWD" \
+    --draft-dir "$DRAFT_DIR" \
+    --evidence-dir "$EVIDENCE_DIR" \
+    --docs-dir "$DOCS_DIR" >/dev/null 2>&1; then
+    log_event "promoted" "$TARGET_SESSION_ID" "$TARGET_DRAFT"
+  else
+    log_event "promote_failed" "$TARGET_SESSION_ID" "$TARGET_DRAFT"
+  fi
+  exit 0
+done
 
 exit 0

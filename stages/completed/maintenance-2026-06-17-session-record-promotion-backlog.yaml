@@ -1,0 +1,45 @@
+type: maintenance
+date: 2026-06-17
+title: session record promotion backlog recovery
+trigger: "利用者指摘: セッション会話ログが記録されていない"
+mainline_blocked_by: "Codex SessionStart hook が previous_draft_in_progress で停止し、複数の session-record draft が正式記録へ昇格していない"
+allowed_scope:
+  - "session-record promote hook の詰まり原因調査"
+  - "最新 draft が未確定でも、検証可能な終了済み draft を昇格できるようにする修正"
+  - "未昇格 draft の復旧"
+allowed_files:
+  - ".codex/hooks/session-record-promote-previous-draft.sh"
+  - ".codex/hooks/README.md"
+  - "docs/operations/INITIAL_SETUP_LLM_GUIDE.md"
+  - "templates/hooks/session-record-promote-previous-draft.sh.template"
+  - "tests/hooks/test_codex_session_record_promote_previous.py"
+  - ".reviewcompass/evidence/sessions/*.md"
+  - "docs/sessions/*.md"
+completion_conditions:
+  - "失敗再現テストを追加し、修正前に失敗を確認する"
+  - "SessionStart hook が検証不能または不一致の最新 draft で詰まらず、検証可能な draft を昇格する"
+  - "関連テストが通過する"
+  - "未昇格の終了済み session draft を正式 2 層記録へ復旧する"
+notes:
+  - "commit / push は利用者の明示承認なしに行わない"
+completed_at: 2026-06-17
+result:
+  summary:
+    - "SessionStart hook が候補 draft を新しい順に確認し、不一致または検証不能の候補で詰まらず次候補へ進むよう修正した"
+    - "配布テンプレートと運用文書の記述を同じ挙動へ更新した"
+    - "未昇格だった終了済み Codex セッション 2 件を正式 2 層記録へ復旧した"
+  recovered_sessions:
+    - session_id: "019ecf38-6afb-7543-b000-8b9e93c9d4e2"
+      evidence: ".reviewcompass/evidence/sessions/2026-06-16-codex-019ecf38-6afb-7543-b000-8b9e93c9d4e2.md"
+      docs: "docs/sessions/auto-2026-06-16-codex-019ecf38-6afb-7543-b000-8b9e93c9d4e2.md"
+    - session_id: "019ed2f7-2f40-72c1-9f8b-2e7d5312ab3a"
+      evidence: ".reviewcompass/evidence/sessions/2026-06-17-codex-019ed2f7-2f40-72c1-9f8b-2e7d5312ab3a.md"
+      docs: "docs/sessions/auto-2026-06-17-codex-019ed2f7-2f40-72c1-9f8b-2e7d5312ab3a.md"
+  current_session_not_promoted: "019ed422-693e-7d73-b2a8-7a1f105ee682"
+verification:
+  failed_first:
+    command: ".venv/bin/python3 -m pytest tests/hooks/test_codex_session_record_promote_previous.py::CodexPromotePreviousDraftHookTests::test_falls_back_to_verified_older_draft_when_latest_hash_changed -q"
+    result: "failed before implementation"
+  passed:
+    - command: ".venv/bin/python3 -m pytest tests/hooks/test_codex_session_record_promote_previous.py tests/hooks/test_codex_session_record_capture_current_on_todo.py tests/tools/test_session_record_promote_draft.py tests/deployment/test_hook_templates.py -q"
+      result: "27 passed"

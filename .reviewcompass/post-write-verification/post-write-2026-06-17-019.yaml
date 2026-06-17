@@ -1,0 +1,19 @@
+status: completed
+target_files:
+- docs/operations/INITIAL_SETUP_LLM_GUIDE.md
+target_sha256:
+  docs/operations/INITIAL_SETUP_LLM_GUIDE.md: e79134a5a6c60cc16bace29107b806892d5a9f9a572aac1466a1988e00afcb8c
+required_verifiers: &id001
+- gemini-3.5-flash
+completed_verifiers: *id001
+unresolved_substantive_findings: 0
+verifications:
+- verifier: gemini-3.5-flash
+  target_files:
+  - docs/operations/INITIAL_SETUP_LLM_GUIDE.md
+  target_sha256:
+    docs/operations/INITIAL_SETUP_LLM_GUIDE.md: e79134a5a6c60cc16bace29107b806892d5a9f9a572aac1466a1988e00afcb8c
+review_run:
+  path: .reviewcompass/evidence/review-runs/2026-06-17-session-record-promote-doc-postwrite
+  summary_path: .reviewcompass/evidence/review-runs/2026-06-17-session-record-promote-doc-postwrite/model-result-summary.yaml
+notes: session record promote fallback doc update

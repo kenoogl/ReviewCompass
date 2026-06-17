@@ -83,7 +83,7 @@ TODO hash の状態ディレクトリはテスト用に `RC_SESSION_HOOK_STATE_D
 
 ### `session-record-promote-previous-draft.sh`（SessionStart hook）
 
-**役割**：新しい Codex セッション開始時に、現 session_id と異なる最新の runtime 下書き 1 件を正式 2 層記録へ昇格する。Codex 公式 hook 仕様では `SessionStart` が thread scope で利用できるため、前セッションの正式化はこの hook が担う。`Stop` は turn scope のため、セッション終了確定には使わない。
+**役割**：新しい Codex セッション開始時に、現 session_id と異なる runtime 下書きを新しい順に確認し、最初に検証できた 1 件を正式 2 層記録へ昇格する。Codex 公式 hook 仕様では `SessionStart` が thread scope で利用できるため、前セッションの正式化はこの hook が担う。`Stop` は turn scope のため、セッション終了確定には使わない。
 
 **入力**：標準入力で Codex の SessionStart JSON ペイロードを受け取る。
 
@@ -97,11 +97,11 @@ TODO hash の状態ディレクトリはテスト用に `RC_SESSION_HOOK_STATE_D
 2. `session_id` または `cwd` が無ければ何もせず exit 0
 3. runtime 下書きディレクトリから `codex-<session_id>.md` を探す
 4. current `session_id` と同じ下書きは除外する
-5. 残った下書きのうち最新 1 件を選ぶ。最新候補の hash が不一致の場合は、古い候補へフォールバックせず `previous_draft_in_progress` を記録して終了する
-6. 最新候補の下書き frontmatter `source_sha256` と現在の元 rollout の sha256 が一致する場合だけ、`tools/session-record-promote-draft.py` に current `session_id` と出力先を渡して昇格する
+5. 残った下書きを新しい順に選ぶ。候補の hash が不一致の場合は `previous_draft_in_progress`、検証不能なら `previous_draft_unverifiable` を記録して次候補へ進む
+6. 候補の下書き frontmatter `source_sha256` と現在の元 rollout の sha256 が一致する場合だけ、`tools/session-record-promote-draft.py` に current `session_id` と出力先を渡して昇格する
 7. 昇格失敗も含め常に exit 0
 
-**診断ログ**：既定で `.reviewcompass/runtime/session-record-promote-previous-draft.jsonl` に JSON Lines を追記する。テスト用に `RC_SESSION_PROMOTE_HOOK_LOG` で差し替え可能。主な `event` は `missing_jq`、`ignored_event`、`no_current_session_id`、`no_cwd`、`no_draft_dir`、`no_promote_tool`、`no_previous_draft`、`selected`、`previous_draft_in_progress`、`previous_draft_unverifiable`、`promoted`、`promote_failed`。`missing_jq` は Codex payload の解析に必要な jq が見つからないため、安全側の no-op にしたことを表す。`previous_draft_in_progress` は、下書き作成時の `source_sha256` と現在の元 rollout の sha256 が不一致で、対象 rollout がまだ伸びている可能性があるため正式化しなかったことを表す。`previous_draft_unverifiable` は、下書きまたは rollout の hash 確認に必要な情報が不足しているため正式化しなかったことを表す。複数の終了済み下書きが溜まっている場合も、この hook は最新候補 1 件だけを扱う。最新候補が不一致または検証不能なら古い候補へは進まず、残りは次回 `SessionStart` または明示 backfill の対象とする。
+**診断ログ**：既定で `.reviewcompass/runtime/session-record-promote-previous-draft.jsonl` に JSON Lines を追記する。テスト用に `RC_SESSION_PROMOTE_HOOK_LOG` で差し替え可能。主な `event` は `missing_jq`、`ignored_event`、`no_current_session_id`、`no_cwd`、`no_draft_dir`、`no_promote_tool`、`no_previous_draft`、`selected`、`previous_draft_in_progress`、`previous_draft_unverifiable`、`promoted`、`promote_failed`。`missing_jq` は Codex payload の解析に必要な jq が見つからないため、安全側の no-op にしたことを表す。`previous_draft_in_progress` は、下書き作成時の `source_sha256` と現在の元 rollout の sha256 が不一致で、対象 rollout がまだ伸びている可能性があるため正式化しなかったことを表す。`previous_draft_unverifiable` は、下書きまたは rollout の hash 確認に必要な情報が不足しているため正式化しなかったことを表す。複数の終了済み下書きが溜まっている場合、この hook は新しい順に候補を確認し、検証できた最初の 1 件だけを昇格する。不一致または検証不能の候補は診断ログに残し、次回 `SessionStart` または明示 backfill の対象として残す。
 
 **登録**：`.codex/hooks.json` の `hooks.SessionStart` セクションに matcher = `"startup|resume"` で登録済み。配置・変更後は Codex の GUI 設定画面または `/hooks` で利用者が hook を信頼する必要がある。
 

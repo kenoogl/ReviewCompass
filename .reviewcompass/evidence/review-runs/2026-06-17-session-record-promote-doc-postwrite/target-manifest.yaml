@@ -1,0 +1,4 @@
+run_id: 2026-06-17-session-record-promote-doc-postwrite
+target_files:
+- path: docs/operations/INITIAL_SETUP_LLM_GUIDE.md
+  sha256: e79134a5a6c60cc16bace29107b806892d5a9f9a572aac1466a1988e00afcb8c

@@ -382,8 +382,8 @@ class CodexPromotePreviousDraftHookTests(unittest.TestCase):
     self.assertFalse(self.evidence.exists() and any(self.evidence.iterdir()))
     self.assertEqual(_events(self.log_path), ["selected", "promote_failed"])
 
-  def test_skips_latest_previous_draft_when_rollout_hash_changed(self):
-    """最新候補の rollout が下書き作成後に伸びた場合は正式化しない。"""
+  def test_falls_back_to_verified_older_draft_when_latest_hash_changed(self):
+    """最新候補の rollout が伸びていても、検証可能な古い終了済み下書きは昇格する。"""
     _codex_fixture(self._rollout(self.old_id), self.old_id, self.cwd, "古い終了済み", 1000)
     _codex_fixture(self._rollout(self.prev_id), self.prev_id, self.cwd, "前セッション v1", 2000)
     _draft_fixture(
@@ -414,11 +414,14 @@ class CodexPromotePreviousDraftHookTests(unittest.TestCase):
       (self.evidence / f"2026-06-15-codex-{self.prev_id}.md").exists(),
       "hash 不一致の最新候補は正式化してはいけない",
     )
-    self.assertFalse(
+    self.assertTrue(
       (self.evidence / f"2026-06-15-codex-{self.old_id}.md").exists(),
-      "最新候補が進行中なら古い候補へフォールバックしない",
+      "hash 一致する古い終了済み下書きは正式化する必要がある",
     )
-    self.assertEqual(_events(self.log_path), ["selected", "previous_draft_in_progress"])
+    self.assertEqual(
+      _events(self.log_path),
+      ["selected", "previous_draft_in_progress", "selected", "promoted"],
+    )
 
   def test_duplicate_session_rollouts_prefer_hash_matching_source(self):
     """同一 session_id の候補が複数ある場合は下書き source_sha256 一致を優先する。"""
