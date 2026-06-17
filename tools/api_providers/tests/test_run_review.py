@@ -2,9 +2,6 @@
 # 複数モデル review-run orchestrator の TDD テスト。
 
 import sys
-import json
-import hashlib
-from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from unittest.mock import MagicMock, patch
 
@@ -62,203 +59,6 @@ def _make_provider_factory(responses):
   return factory
 
 
-def _write_external_api_approval(
-  tmp_path,
-  target,
-  variant="post_write_verification_google",
-  criteria="観点-1",
-  review_run_dir=None,
-  providers=None,
-  models=None,
-):
-  review_run_dir = review_run_dir or tmp_path / "review-run"
-  providers = providers or ["gemini-api"]
-  models = models or ["gemini-3.5-flash"]
-  approval_dir = tmp_path / ".reviewcompass" / "runtime" / "approvals"
-  approval_dir.mkdir(parents=True, exist_ok=True)
-  now = datetime.now(timezone.utc)
-  target_sha = hashlib.sha256(target.read_bytes()).hexdigest()
-  challenge_path = approval_dir / "external-api-approval-challenge.json"
-  approval_path = approval_dir / "external-api-approval.json"
-  common = {
-    "schema_version": 1,
-    "approved_action": "external_api_review",
-    "approved_by": "user",
-    "nonce": "0" * 48,
-    "created_at": now.isoformat(),
-    "expires_at": (now + timedelta(seconds=600)).isoformat(),
-    "ttl_seconds": 600,
-    "target_files": [str(target)],
-    "target_sha256": {str(target): target_sha},
-    "phase": "post_write_verification",
-    "criteria": criteria,
-    "variant": variant,
-    "review_run_dir": str(review_run_dir),
-    "providers": providers,
-    "models": models,
-    "consumed": False,
-    "invalidated": False,
-  }
-  challenge_path.write_text(
-    json.dumps({
-      **common,
-      "challenge_type": "external_api_approval",
-    }, ensure_ascii=False, indent=2) + "\n",
-    encoding="utf-8",
-  )
-  approval_path.write_text(
-    json.dumps({
-      **common,
-      "source_text_redacted": "外部 API 送信を承認",
-      "attestation_type": "external_api_review_nonce_binding",
-      "guarantee_scope": "target_provider_phase_criteria_binding",
-    }, ensure_ascii=False, indent=2) + "\n",
-    encoding="utf-8",
-  )
-  return approval_path
-
-
-def test_run_review_blocks_post_write_api_without_external_approval(tmp_path, monkeypatch, capsys):
-  """post_write_verification の API 送信は external API 承認 record なしで止める。"""
-  monkeypatch.setenv("GEMINI_API_KEY", "test-key")
-  target = tmp_path / "target.md"
-  target.write_text("レビュー対象\n", encoding="utf-8")
-  config_path = _make_config(tmp_path)
-  review_run_dir = tmp_path / "review-run"
-
-  provider_factory = MagicMock(side_effect=_make_provider_factory({"gemini-api": "findings: []\n"}))
-  with patch("tools.api_providers.run_review.get_provider", side_effect=provider_factory):
-    exit_code = main(
-      [
-        "--variant", "post_write_verification_google",
-        "--target", str(target),
-        "--phase", "post_write_verification",
-        "--criteria", "観点-1",
-        "--review-run-dir", str(review_run_dir),
-        "--round-id", "round-1",
-        "--config", str(config_path),
-      ]
-    )
-
-  assert exit_code == 1
-  captured = capsys.readouterr()
-  assert "external-api-approval" in captured.err
-  provider_factory.assert_not_called()
-
-
-def test_run_review_allows_post_write_api_with_matching_external_approval(tmp_path, monkeypatch, capsys):
-  """実行引数と一致する external API 承認 record があれば API 送信へ進む。"""
-  monkeypatch.setenv("GEMINI_API_KEY", "test-key")
-  target = tmp_path / "target.md"
-  target.write_text("レビュー対象\n", encoding="utf-8")
-  config_path = _make_config(tmp_path)
-  review_run_dir = tmp_path / "review-run"
-  approval_path = _write_external_api_approval(
-    tmp_path,
-    target,
-    review_run_dir=review_run_dir,
-  )
-
-  with patch(
-    "tools.api_providers.run_review.get_provider",
-    side_effect=_make_provider_factory({"gemini-api": "findings: []\n"}),
-  ):
-    exit_code = main(
-      [
-        "--variant", "post_write_verification_google",
-        "--target", str(target),
-        "--phase", "post_write_verification",
-        "--criteria", "観点-1",
-        "--review-run-dir", str(review_run_dir),
-        "--round-id", "round-1",
-        "--config", str(config_path),
-        "--external-api-approval-record", str(approval_path),
-      ]
-    )
-
-  assert exit_code == 0
-  output = capsys.readouterr().out
-  assert "variant: post_write_verification_google" in output
-
-
-def test_run_review_accepts_multiple_targets_with_matching_external_approval(tmp_path, monkeypatch, capsys):
-  """post_write_verification は複数 target を 1 review-run に束ねて検証できる。"""
-  monkeypatch.setenv("GEMINI_API_KEY", "test-key")
-  target_a = tmp_path / "a.md"
-  target_b = tmp_path / "b.md"
-  target_a.write_text("A\n", encoding="utf-8")
-  target_b.write_text("B\n", encoding="utf-8")
-  config_path = _make_config(tmp_path)
-  review_run_dir = tmp_path / "review-run"
-  approval_dir = tmp_path / ".reviewcompass" / "runtime" / "approvals"
-  approval_dir.mkdir(parents=True, exist_ok=True)
-  now = datetime.now(timezone.utc)
-  common = {
-    "schema_version": 1,
-    "approved_action": "external_api_review",
-    "approved_by": "user",
-    "nonce": "1" * 48,
-    "created_at": now.isoformat(),
-    "expires_at": (now + timedelta(seconds=600)).isoformat(),
-    "ttl_seconds": 600,
-    "target_files": [str(target_a), str(target_b)],
-    "target_sha256": {
-      str(target_a): hashlib.sha256(target_a.read_bytes()).hexdigest(),
-      str(target_b): hashlib.sha256(target_b.read_bytes()).hexdigest(),
-    },
-    "phase": "post_write_verification",
-    "criteria": "観点-1",
-    "variant": "post_write_verification_google",
-    "review_run_dir": str(review_run_dir),
-    "providers": ["gemini-api"],
-    "models": ["gemini-3.5-flash"],
-    "consumed": False,
-    "invalidated": False,
-  }
-  challenge_path = approval_dir / "external-api-approval-challenge.json"
-  approval_path = approval_dir / "external-api-approval.json"
-  challenge_path.write_text(
-    json.dumps({**common, "challenge_type": "external_api_approval"}, ensure_ascii=False),
-    encoding="utf-8",
-  )
-  approval_path.write_text(
-    json.dumps({
-      **common,
-      "source_text_redacted": "承認",
-      "attestation_type": "external_api_review_nonce_binding",
-      "guarantee_scope": "target_provider_phase_criteria_binding",
-    }, ensure_ascii=False),
-    encoding="utf-8",
-  )
-
-  with patch(
-    "tools.api_providers.run_review.get_provider",
-    side_effect=_make_provider_factory({"gemini-api": "findings: []\n"}),
-  ):
-    exit_code = main(
-      [
-        "--variant", "post_write_verification_google",
-        "--target", str(target_a),
-        "--target", str(target_b),
-        "--phase", "post_write_verification",
-        "--criteria", "観点-1",
-        "--review-run-dir", str(review_run_dir),
-        "--round-id", "round-1",
-        "--config", str(config_path),
-        "--external-api-approval-record", str(approval_path),
-      ]
-    )
-
-  assert exit_code == 0
-  output = capsys.readouterr().out
-  assert "variant: post_write_verification_google" in output
-  rounds = yaml.safe_load((review_run_dir / "rounds.yaml").read_text(encoding="utf-8"))
-  assert [item["path"] for item in rounds["target_files"]] == [
-    str(target_a),
-    str(target_b),
-  ]
-
-
 def test_run_review_executes_three_roles_and_creates_summary_and_triage(tmp_path, monkeypatch, capsys):
   """3 役を同じ review-run に集約し、summary と triage 下書きを生成する。"""
   monkeypatch.setenv("ANTHROPIC_API_KEY", "test-key")
@@ -268,14 +68,6 @@ def test_run_review_executes_three_roles_and_creates_summary_and_triage(tmp_path
   target.write_text("レビュー対象\n", encoding="utf-8")
   config_path = _make_config(tmp_path)
   review_run_dir = tmp_path / "review-run"
-  approval_path = _write_external_api_approval(
-    tmp_path,
-    target,
-    variant="default",
-    review_run_dir=review_run_dir,
-    providers=["anthropic-api", "openai-api", "gemini-api"],
-    models=["claude-sonnet-4-6", "gpt-5.4", "gemini-3.1-pro-preview"],
-  )
   responses = {
     "anthropic-api": """
 findings:
@@ -307,7 +99,6 @@ findings:
         "--review-run-dir", str(review_run_dir),
         "--round-id", "round-1",
         "--config", str(config_path),
-        "--external-api-approval-record", str(approval_path),
       ]
     )
 
@@ -363,14 +154,6 @@ def test_run_review_continues_after_one_role_parse_failure(tmp_path, monkeypatch
   target.write_text("レビュー対象\n", encoding="utf-8")
   config_path = _make_config(tmp_path)
   review_run_dir = tmp_path / "review-run"
-  approval_path = _write_external_api_approval(
-    tmp_path,
-    target,
-    variant="default",
-    review_run_dir=review_run_dir,
-    providers=["anthropic-api", "openai-api", "gemini-api"],
-    models=["claude-sonnet-4-6", "gpt-5.4", "gemini-3.1-pro-preview"],
-  )
   responses = {
     "anthropic-api": "findings: [broken\n",
     "openai-api": "findings: []\n",
@@ -390,7 +173,6 @@ def test_run_review_continues_after_one_role_parse_failure(tmp_path, monkeypatch
         "--review-run-dir", str(review_run_dir),
         "--round-id", "round-1",
         "--config", str(config_path),
-        "--external-api-approval-record", str(approval_path),
       ]
     )
 
@@ -414,11 +196,6 @@ def test_run_review_uses_post_write_default_variant_when_phase_is_post_write(tmp
   target.write_text("レビュー対象\n", encoding="utf-8")
   config_path = _make_config(tmp_path)
   review_run_dir = tmp_path / "review-run"
-  approval_path = _write_external_api_approval(
-    tmp_path,
-    target,
-    review_run_dir=review_run_dir,
-  )
   responses = {
     "gemini-api": "findings: []\n",
   }
@@ -435,7 +212,6 @@ def test_run_review_uses_post_write_default_variant_when_phase_is_post_write(tmp
         "--review-run-dir", str(review_run_dir),
         "--round-id", "round-1",
         "--config", str(config_path),
-        "--external-api-approval-record", str(approval_path),
       ]
     )
 
@@ -456,11 +232,6 @@ def test_run_review_respects_single_role_variant_required_roles(tmp_path, monkey
   target.write_text("レビュー対象\n", encoding="utf-8")
   config_path = _make_config(tmp_path)
   review_run_dir = tmp_path / "review-run"
-  approval_path = _write_external_api_approval(
-    tmp_path,
-    target,
-    review_run_dir=review_run_dir,
-  )
   responses = {
     "gemini-api": """
 findings:
@@ -484,7 +255,6 @@ findings:
         "--review-run-dir", str(review_run_dir),
         "--round-id", "round-1",
         "--config", str(config_path),
-        "--external-api-approval-record", str(approval_path),
       ]
     )
 

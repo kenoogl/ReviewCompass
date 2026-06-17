@@ -206,7 +206,6 @@ def update_review_run_artifacts(
   *,
   round_id: str,
   target_path: str,
-  target_files: Optional[List[str]] = None,
   phase: str,
   criteria: str,
   role: str,
@@ -237,21 +236,20 @@ def update_review_run_artifacts(
     _write_text(parsed_path, formatted_output)
     parsed_sha256 = _sha256_file(parsed_path)
 
-  artifact_target_files = list(target_files or [target_path])
-  target_entries = [
-    {
-      "path": path,
-      "sha256": _sha256_file(Path(path)),
-    }
-    for path in artifact_target_files
-  ]
+  target_file = Path(target_path)
+  target_sha256 = _sha256_file(target_file)
   now = datetime.now(timezone.utc).isoformat()
 
   _dump_yaml(
     run_dir / "target-manifest.yaml",
     {
       "run_id": run_dir.name,
-      "target_files": target_entries,
+      "target_files": [
+        {
+          "path": target_path,
+          "sha256": target_sha256,
+        },
+      ],
     },
   )
 
@@ -286,7 +284,12 @@ def update_review_run_artifacts(
     "round_id": round_id,
     "purpose": phase,
     "invocation_timestamp": now,
-    "target_files": target_entries,
+    "target_files": [
+      {
+        "path": target_path,
+        "sha256": target_sha256,
+      },
+    ],
     "criteria": criteria,
     "prompt_sha256": _sha256_text(prompt),
     "model_results": model_results,
