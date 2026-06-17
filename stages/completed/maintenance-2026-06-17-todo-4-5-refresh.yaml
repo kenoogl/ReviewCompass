@@ -1,0 +1,32 @@
+trigger: "利用者指示: 4 と 5 を検査して修正、TODO 更新とスリム化"
+mainline_blocked_by: "TODO_NEXT_SESSION.md の候補 4/5 が現在状態と食い違い、次作業候補の判断を誤らせる可能性"
+allowed_scope:
+  - "commit sandbox preflight の完了状態確認"
+  - "実アプリ pilot の未着手状態確認"
+  - "TODO_NEXT_SESSION.md の現在位置と次作業候補の事実更新"
+  - "TODO_NEXT_SESSION.md の古い履歴記述のスリム化"
+allowed_files:
+  - "TODO_NEXT_SESSION.md"
+  - "stages/in-progress/maintenance-2026-06-17-todo-4-5-refresh.yaml"
+completion_conditions:
+  - "commit sandbox preflight が完了済みである根拠を確認する"
+  - "実アプリ pilot が未着手である根拠を確認する"
+  - "TODO_NEXT_SESSION.md から実態と異なる P1 完了済み / 配布前 smoke 合格済み記述を除く"
+  - "TODO_NEXT_SESSION.md の現在位置を直近 HEAD と next --json 結果に合わせる"
+  - "作業完了時に completed maintenance 記録へ移す"
+workflow_steps:
+  - "調査: git log、completed maintenance、deployment/user guide を確認する"
+  - "修正: TODO_NEXT_SESSION.md を事実ベースに更新し、古い詳細を削る"
+  - "検証: 差分と next --json を確認する"
+completed_at: "2026-06-17"
+completed_steps:
+  - "commit sandbox preflight は eb028df2 Add commit sandbox preflight と stages/completed/maintenance-2026-06-17-commit-sandbox-preflight.yaml で完了済みと確認"
+  - "実アプリ pilot は docs/operations/INITIAL_DEPLOYMENT_USER_GUIDE.md の pilot 前チェックリストと docs/operations/DEPLOYMENT.md の次作業記述から、対象アプリ root / 配布物配置先の決定前と確認"
+  - "TODO_NEXT_SESSION.md の P1 完了済み / 配布前 smoke 合格済みの誤記を削除"
+  - "TODO_NEXT_SESSION.md の直近 commit と候補順を現在状態に合わせ、commit sandbox preflight を完了済み欄へ移動"
+verification:
+  - command: "rg -n \"P1 完了済み|配布前 smoke は合格済み|commit sandbox preflight|実アプリ pilot\" TODO_NEXT_SESSION.md"
+    result: "誤記なし。commit sandbox preflight は完了済み、実アプリ pilot は未着手候補として記載"
+  - command: "git diff --check"
+    result: "passed"
+completion_note: "TODO_NEXT_SESSION.md の候補 4/5 を検査し、4 は完了済み、5 は未着手として修正した。古い直近 commit と詳細履歴を削り、次作業候補を事実ベースに整理した。"

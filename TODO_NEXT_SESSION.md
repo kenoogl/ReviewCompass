@@ -20,13 +20,12 @@
 - `next --json`: `completed`
 - 進行中手続き: なし
 - 直近 commit:
-  - `ebb2df47 Record effective prompt enforcement note`
-  - `a5127ef6 Record workflow compliance improvement notes`
-  - `0183005e Import next json redesign note`
-  - `0d611816 Make next json action selection unique`
-  - `7f346075 Reuse active commit approval transactions`
-- D-003 reopen 以降の混乱は、退避・巻き戻し後に重要件だけを再取り込み済み。
-- 退避先: `/private/tmp/reviewcompass-d003-rollback-20260617/`
+  - `3dc90dbc Correct API review entrypoint documentation`
+  - `3147bdaa Document canonical API review procedure`
+  - `be4d8c3e Load API keys from zshrc in API entrypoints`
+  - `a3263fdf Remove external API approval guard`
+  - `85b3bac5 Add external API approval guard`
+- 作業ツリーは clean、`origin/main` へ push 済み。
 
 ## 3. 直近の重要メモ
 
@@ -38,34 +37,34 @@
   - maintenance workflow 遵守、commit sandbox `.git/index.lock` preflight、maintenance / reopen / new workflow の使い分け、手続きの比例性の候補。
 - `docs/notes/2026-06-17-working-note-verification-trigger-policy.md`
   - 作業中メモを API post-write に反復投入せず、`lightweight_self_check` に分岐する候補。
+- `stages/completed/maintenance-2026-06-17-commit-sandbox-preflight.yaml`
+  - commit sandbox preflight は実装・テスト・設計 / タスク反映まで完了済み。
 
 ## 4. 次作業候補
 
-1. **`next --json` 一意性と effective prompt 強制の締め直し**
-   - 入口: `WORKFLOW_DISCIPLINE_MAP.yaml` coverage audit、全 action への `effective_prompt` 付与、読了証跡、アンカー節抽出。
-   - 注意: 他サブコマンドの JSON は次作業 selector ではない。次作業は必ず再度 `next --json` で決める。
+1. **作業中メモの `lightweight_self_check` 化**
+   - 作業中メモ / 修正候補メモ / rollback メモを API post-write ではなく軽量自己精査へ分岐する artifact class 判定を実装する。
 
 2. **maintenance workflow protocol の明文化**
-   - maintenance でも要件・設計・タスク相当の確認、TDD、実装後 review、post-write / lightweight self check の区別、completed 化をどう強制するかを決める。
-   - ただし、最初から guard / schema / `next --json` へ組み込まず、まず 3 行宣言で軽く試す。
-   - 試行宣言: `変更分類: 局所 / 中核`、`理由: <影響範囲と既存仕様境界の説明>`、`手順: TDD 主導 / 仕様駆動`。
-   - retrospective 対象候補: `7f346075`、`0d611816`、`0183005e`、`a5127ef6`、`ebb2df47`。
+   - maintenance でも要件・設計・タスク相当の確認、TDD、実装後 review、post-write / lightweight self check、completed 化をどう扱うかを正本化する。
+   - まず 3 行宣言で試す: `変更分類`、`理由`、`手順`。
 
-3. **作業中メモの `lightweight_self_check` 化**
-   - 作業中メモ / 修正候補メモ / rollback メモを API post-write ではなく軽量自己精査へ分岐する artifact class 判定を実装する。
-   - 現状は暫定的に `lightweight_self_check` manifest を手で置いて guard を通している。
+3. **`next --json` 一意性と effective prompt 強制の締め直し**
+   - `WORKFLOW_DISCIPLINE_MAP.yaml` coverage audit、全 action への `effective_prompt` 付与、読了証跡、アンカー節抽出を行う。
+   - 他サブコマンドの JSON は次作業 selector ではない。次作業は必ず再度 `next --json` で決める。
 
-4. **commit sandbox preflight**
-   - `guarded-git-commit.py` が `git commit` 直前に `.git/index.lock` 作成可否を preflight する。
-   - 不可なら approval を消費せず、sandbox 外 guarded commit 再実行を一意 action として返す。
+4. **実アプリ pilot**
+   - 未着手。対象アプリ root と、対象アプリ側 LLM が参照できる ReviewCompass 配布物配置先を決めるところから始める。
+   - 正本: `docs/operations/INITIAL_DEPLOYMENT_USER_GUIDE.md` §8、§9、§19、および `docs/operations/DEPLOYMENT.md` §8。
+   - 配布前 smoke は実アプリ pilot 前の必要作業であり、現時点で完了済み扱いにしない。
 
-5. **実アプリ pilot**
-   - P1 完了済み。
-   - 配布前 smoke は合格済み。
+5. **decision-source-lint の運用開始**
+   - 仕組みは実装済み。次に重要決定が発生した時点で `.reviewcompass/decisions/` に構造化決定記録を作る。
 
-6. **decision-source-lint の運用開始**
-   - 仕組みは実装済みだが、構造化決定記録 `.reviewcompass/decisions/` はまだ 0 件。
-   - 次に発生する重要決定から記録を始める。
+完了済みとして候補から外したもの:
+
+- **commit sandbox preflight**
+  - `eb028df2 Add commit sandbox preflight` と `stages/completed/maintenance-2026-06-17-commit-sandbox-preflight.yaml` で完了済み。
 
 ## 5. 会話ログ取り込み
 
