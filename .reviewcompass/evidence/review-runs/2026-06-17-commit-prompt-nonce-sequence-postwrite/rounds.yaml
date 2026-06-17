@@ -1,0 +1,30 @@
+round_id: round-1
+purpose: post_write_verification
+invocation_timestamp: '2026-06-17T03:55:39.841517+00:00'
+target_files:
+- path: docs/operations/WORKFLOW_NAVIGATION_FOR_CODEX.md
+  sha256: eae74426db0145d5fca492b2ec80883b8fd03e04b6d1c7acdf63768c01e650a0
+- path: docs/operations/WORKFLOW_PRECHECK.md
+  sha256: f5ced1961da537a4fd9a2f5a917513eeb9a6b0c0b900094e3e6893219ce75b9b
+- path: docs/operations/WORKFLOW_PRECHECK_DETAILS.md
+  sha256: c7952f97ddae5b1e9123ed11a02b633f8bb51581aca2136a90fff282fb60d3be
+criteria: commit_prompt_nonce_sequence_post_write_check
+prompt_sha256: 47717c5804d939491452939bc49c200535c5f4db476133b6a8646439c57fa472
+model_results:
+- model_id: gemini-3.5-flash
+  provider: gemini-api
+  role: primary
+  treatment: primary
+  invocation_path: api
+  raw_path: raw/gemini-3.5-flash.round-1.txt
+  raw_sha256: 3ee8dfa22af154d77c988d6aef414afe15270bbdd769a00778e570b6be1005e5
+  parsed_path: parsed/gemini-3.5-flash.round-1.yaml
+  parsed_sha256: 99a51e572e27656301df32b7d624591120c57d4f16206726fad89df9de3dc9df
+  parse_status: parsed
+  formatted_by: parser
+  formatted_by_actor_type: orchestrator
+  formatted_by_actor: run_role.py
+  formatted_at: '2026-06-17T03:55:39.841517+00:00'
+  follow_up_action: triage
+  attempts: 1
+  duration_seconds: 22.0

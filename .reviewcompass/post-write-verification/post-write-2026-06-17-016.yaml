@@ -1,0 +1,28 @@
+status: completed
+target_files:
+- docs/operations/WORKFLOW_NAVIGATION_FOR_CODEX.md
+- docs/operations/WORKFLOW_PRECHECK.md
+- docs/operations/WORKFLOW_PRECHECK_DETAILS.md
+target_sha256:
+  docs/operations/WORKFLOW_NAVIGATION_FOR_CODEX.md: 9efd5bd7db067e6d34d41f028cd646f8fbc8b8071d93c17b4952f23c3dea6c71
+  docs/operations/WORKFLOW_PRECHECK.md: 20d3a7acca443c3016e738dde0e900343d694716f0b86a51b3af44c6b3c85b56
+  docs/operations/WORKFLOW_PRECHECK_DETAILS.md: c7952f97ddae5b1e9123ed11a02b633f8bb51581aca2136a90fff282fb60d3be
+required_verifiers: &id001
+- gemini-3.5-flash
+completed_verifiers: *id001
+unresolved_substantive_findings: 0
+verifications:
+- verifier: gemini-3.5-flash
+  target_files:
+  - docs/operations/WORKFLOW_NAVIGATION_FOR_CODEX.md
+  - docs/operations/WORKFLOW_PRECHECK.md
+  - docs/operations/WORKFLOW_PRECHECK_DETAILS.md
+  target_sha256:
+    docs/operations/WORKFLOW_NAVIGATION_FOR_CODEX.md: 9efd5bd7db067e6d34d41f028cd646f8fbc8b8071d93c17b4952f23c3dea6c71
+    docs/operations/WORKFLOW_PRECHECK.md: 20d3a7acca443c3016e738dde0e900343d694716f0b86a51b3af44c6b3c85b56
+    docs/operations/WORKFLOW_PRECHECK_DETAILS.md: c7952f97ddae5b1e9123ed11a02b633f8bb51581aca2136a90fff282fb60d3be
+review_run:
+  path: .reviewcompass/evidence/review-runs/2026-06-17-commit-prompt-nonce-sequence-postwrite-r2
+  summary_path: .reviewcompass/evidence/review-runs/2026-06-17-commit-prompt-nonce-sequence-postwrite-r2/model-result-summary.yaml
+notes: Generated template; verify target_files cover current post-write targets before
+  use.

@@ -1,0 +1,13 @@
+findings:
+  - severity: WARN
+    target_location: "docs/operations/WORKFLOW_NAVIGATION_FOR_CODEX.md"
+    description: "Inconsistent command reference for `commit-approval prepare`."
+    rationale: "The document instructs the agent to run `commit-approval prepare --json` as a standalone command, whereas it is actually a subcommand of `tools/check-workflow-action.py` (as specified in WORKFLOW_PRECHECK_DETAILS.md). This can lead to command-not-found errors during execution."
+  - severity: WARN
+    target_location: "docs/operations/WORKFLOW_PRECHECK.md"
+    description: "Standalone invocation style used for `commit-approval prepare`."
+    rationale: "The text references running `commit-approval prepare --json` without the `tools/check-workflow-action.py` prefix, which is inconsistent with the fully qualified command pattern described in WORKFLOW_PRECHECK_DETAILS.md."
+  - severity: INFO
+    target_location: "docs/operations/WORKFLOW_PRECHECK.md"
+    description: "Missing nonce-based usage pattern in the list of basic command signatures/contracts."
+    rationale: "The command signatures under section 4 only show the message and rationale version for `tools/guarded-git-commit.py`, omitting the `--approval-nonce` and `--approval-source-text-line-stdin` signature which is discussed in the nonce sequence details."

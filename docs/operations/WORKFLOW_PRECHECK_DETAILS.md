@@ -98,6 +98,15 @@ tools/guarded-git-commit.py -m "<commit message>" --rationale "<理由>"
 
 `tools/guarded-git-commit.py` は `commit --execution-actor llm` を先に実行し、exit 2 なら commit しない。exit 1 は既定では停止し、人の判断で続行する場合だけ `--allow-warn` を付ける。commit 成功後、期限付き承認レコードは消費済みにする。
 
+nonce challenge を使う commit 手順は、次の順序で逐次実行する。
+
+1. `git add ...` で対象を stage する。
+2. `.venv/bin/python3 tools/check-workflow-action.py commit-approval prepare --json` を単独で実行する。
+3. 返された `nonce` を使い、`.venv/bin/python3 tools/guarded-git-commit.py ... --approval-nonce <nonce> --approval-source-text-line-stdin` を stdin 入力可能な実行形で起動する。
+4. guarded commit が承認入力待ちになってから、承認 1 行（例：`コミット\n`）を渡す。
+
+`commit-approval prepare` と `commit --json` precheck を並列化しない。`prepare` 後の challenge は staged exact index と承認状態に束縛されるため、guarded commit 以外の承認系コマンドを挟まない。`--approval-source-text-line-stdin` を指定して空 stdin で実行すると challenge が invalidated になり得るため、非対話・空入力の実行形では使わない。
+
 <a id="push"></a>
 
 ## 4. push

@@ -1,0 +1,8 @@
+run_id: 2026-06-17-commit-prompt-nonce-sequence-postwrite
+target_files:
+- path: docs/operations/WORKFLOW_NAVIGATION_FOR_CODEX.md
+  sha256: eae74426db0145d5fca492b2ec80883b8fd03e04b6d1c7acdf63768c01e650a0
+- path: docs/operations/WORKFLOW_PRECHECK.md
+  sha256: f5ced1961da537a4fd9a2f5a917513eeb9a6b0c0b900094e3e6893219ce75b9b
+- path: docs/operations/WORKFLOW_PRECHECK_DETAILS.md
+  sha256: c7952f97ddae5b1e9123ed11a02b633f8bb51581aca2136a90fff282fb60d3be

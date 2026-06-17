@@ -64,6 +64,7 @@ tools/check-workflow-action.py autonomous-plan <plan.yaml>
 tools/check-workflow-action.py autonomous-plan-template --run-id <run-id> --out <plan.yaml>
 tools/check-workflow-action.py autonomous-plan-record-integration --ledger <ledger.yaml> --status <status> --tests "<tests>" --decision "<decision>"
 tools/guarded-git-commit.py -m "<commit message>" --rationale "<理由>"
+tools/guarded-git-commit.py -m "<commit message>" --rationale "<理由>" --approval-nonce <nonce> --approval-source-text-line-stdin
 ```
 
 共通オプション：
@@ -73,6 +74,8 @@ tools/guarded-git-commit.py -m "<commit message>" --rationale "<理由>"
 - `--help`：使い方を表示する
 
 commit は人の職掌範囲である。`--execution-actor llm` の場合、通常の commit 内容承認とは別に、LLM による実行代行の明示承認を必要とする。実行時は直接 `git commit` ではなく、原則として `tools/guarded-git-commit.py` を使う。
+
+nonce 方式の commit approval を使う場合、commit 準備は逐次手順として扱う。stage 後に `.venv/bin/python3 tools/check-workflow-action.py commit-approval prepare --json` を実行し、返された nonce で `tools/guarded-git-commit.py --approval-nonce <nonce> --approval-source-text-line-stdin` を起動する。`commit-approval prepare` と `commit --json` precheck を並列に実行しない。challenge 作成後は、staged index や承認状態を変え得る別コマンドを挟まず、guarded commit に承認 1 行を渡す。`--approval-source-text-line-stdin` を空 stdin で実行してはいけない。
 
 <a id="spec-set"></a>
 

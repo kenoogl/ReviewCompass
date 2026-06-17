@@ -1,0 +1,14 @@
+run_id: 2026-06-17-commit-prompt-nonce-sequence-postwrite
+models:
+- model_id: gemini-3.5-flash
+  raw_path: raw/gemini-3.5-flash.round-1.txt
+  parse_status: parsed
+  triage_status: triage_pending
+  findings_count: 3
+  findings_count_by_severity:
+    WARN: 2
+    INFO: 1
+  must_fix_count: 0
+  should_fix_count: 0
+  leave_as_is_count: 0
+  human_required_count: 0
