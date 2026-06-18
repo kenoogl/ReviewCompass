@@ -1,0 +1,18 @@
+status: completed
+target_files:
+- TODO_NEXT_SESSION.md
+target_sha256:
+  TODO_NEXT_SESSION.md: 7b1e37e0d0110c51161dd58df92008177ec2ece987fe49e6e7bac4aaa9b7c780
+required_verifiers: &id001
+- gemini-3.5-flash
+completed_verifiers: *id001
+unresolved_substantive_findings: 0
+verifications:
+- verifier: gemini-3.5-flash
+  target_files:
+  - TODO_NEXT_SESSION.md
+  target_sha256:
+    TODO_NEXT_SESSION.md: 7b1e37e0d0110c51161dd58df92008177ec2ece987fe49e6e7bac4aaa9b7c780
+  review_run:
+    path: .reviewcompass/evidence/review-runs/post-write-todo-2026-06-19-session
+    summary_path: .reviewcompass/evidence/review-runs/post-write-todo-2026-06-19-session/model-result-summary.yaml
