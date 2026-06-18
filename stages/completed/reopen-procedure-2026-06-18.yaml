@@ -1,0 +1,181 @@
+process_id: reopen-procedure
+feature: workflow-management
+classification: R-0
+started_at: '2026-06-18T00:00:00+09:00'
+trigger: Phase 1 最小スキーマ定義（required_action 語彙・next --json 応答スキーマ）を workflow-management
+  Requirement 2 の受入基準として追加
+classification_basis: docs/reviews/reopen-classification-2026-06-18-wm-phase1-schema-definitions.md
+completed_steps:
+- R-0 判定確定・spec.json フラグ差し戻し完了（requirements.alignment/approval → false、recheck.upstream_change_pending
+  → true、impacted_downstream_phases → design/tasks/implementation）
+- requirements.md に受入基準10・11を追記（required_action スキーマ定義・next_action_response スキーマ定義）およびChange
+  Intentに変更由来を追記
+- review-wave ゲート完了（他機能影響なし、全6機能 upstream_change_pending=false 確認済み）
+- 第3過程：requirements alignment 完了（AC10/AC11 と既存要件・設計の整合確認済み）
+- 第3過程：requirements approval 完了（利用者承認済み）
+- 第4過程：完了（recheck クリア・進行中ファイルを completed に移動）
+next_step: 完了
+step_number: 4
+pending_gates: []
+completed_gates:
+- stages/requirements.yaml#triad-review
+- stages/requirements.yaml#review-wave
+- stages/requirements.yaml#alignment
+- stages/requirements.yaml#approval
+drafting_completed_gates:
+- stages/requirements.yaml#drafting
+current_blocker: null
+reopen_step_records:
+- from_step: 1
+  completed_step: R-0 判定確定・spec.json フラグ差し戻し完了（requirements.alignment/approval → false、recheck.upstream_change_pending
+    → true、impacted_downstream_phases → design/tasks/implementation）
+  rationale: 利用者承認済み（セッション 77e272a2、「はい」発言）。分類根拠：docs/reviews/reopen-classification-2026-06-18-wm-phase1-schema-definitions.md
+  evidence:
+  - docs/reviews/reopen-classification-2026-06-18-wm-phase1-schema-definitions.md
+- from_step: 2
+  completed_step: requirements.md に受入基準10・11を追記（required_action スキーマ定義・next_action_response
+    スキーマ定義）およびChange Intentに変更由来を追記
+  rationale: 分類根拠 docs/reviews/reopen-classification-2026-06-18-wm-phase1-schema-definitions.md
+    に従い、Requirement 2 受入10・11を追記した
+  evidence:
+  - .reviewcompass/specs/workflow-management/requirements.md
+- from_step: 3
+  completed_step: 第2過程停止点コミット完了（commit 025603bd）
+  rationale: 利用者承認済み（セッション 8f34560b、「承認」発言）。requirements.md AC10/AC11・spec.json・reopen分類文書・進行中ファイル・失敗テストを1コミットに集約した
+  evidence:
+  - 025603bd
+advance_record:
+  advanced_from_stop_point: true
+  stop_point_step: 3
+  stop_point_kind: drafting_complete
+  stop_point_gate: stages/requirements.yaml#drafting
+  advanced_commit: ee86932f
+gate_records:
+- gate: stages/requirements.yaml#triad-review
+  completed_at: '2026-06-18T10:00:00+09:00'
+  review_run: .reviewcompass/specs/workflow-management/reviews/2026-06-18-workflow-management-requirements-phase1-schema-definitions-review-run
+  triage_path: .reviewcompass/specs/workflow-management/reviews/2026-06-18-workflow-management-requirements-phase1-schema-definitions-review-run/triage.yaml
+  rounds: 2
+  findings_addressed: all
+  requirements_md_modified: true
+  postwrite_manifest: .reviewcompass/post-write-verification/post-write-2026-06-18-242.yaml
+downstream_impact_decisions:
+- gate: stages/requirements.yaml#triad-review
+  feature_scope: workflow-management
+  decision: approved
+  rationale: requirements triad-review を 2 ラウンド・3 モデルで実施。クラスタ A〜F の全所見（25 件）を裁定・反映し、後書き検証（gemini-3.5-flash）で 0 所見を確認した。
+  evidence:
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-18-workflow-management-requirements-phase1-schema-definitions-review-run/triage.yaml
+  - .reviewcompass/post-write-verification/post-write-2026-06-18-242.yaml
+- gate: stages/requirements.yaml#review-wave
+  feature_scope: workflow-management
+  decision: existing_sufficient
+  rationale: AC10/AC11 は workflow-management 内部のスキーマファイル定義（required_action 語彙・next_action_response
+    応答スキーマ）の追加であり、他機能の要件変更を要しない。review-wave-summary で全6機能（foundation/runtime/evaluation/analysis/self-improvement/conformance-evaluation）が
+    all_approved かつ upstream_change_pending=false を確認済み。
+  evidence:
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-18-workflow-management-requirements-phase1-schema-definitions-review-run/triage.yaml
+- gate: stages/requirements.yaml#alignment
+  feature_scope: workflow-management
+  decision: existing_sufficient
+  rationale: AC10/AC11 は既存要件（Req 1〜12）と整合し、requirements 段内の追加改訂を要しない。design.md は required_action
+    19語彙と next_action_response 応答スキーマの設計を保持済みであり矛盾しない。design/tasks/implementation
+    での追加対応は recheck.impacted_downstream_phases で追跡中。
+  evidence:
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-18-requirements-phase1-schema-definitions-reopen-alignment.md
+- gate: stages/requirements.yaml#approval
+  feature_scope: workflow-management
+  decision: approved
+  rationale: 利用者が明示的に承認（セッション 77e272a2、「承認」発言）。Requirement 2 受入 10・11（required_action
+    19語彙スキーマ・next_action_response 応答スキーマの定義）を承認済み。
+  evidence:
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-18-requirements-phase1-schema-definitions-reopen-alignment.md
+- gate: stages/design.yaml#alignment
+  feature_scope: workflow-management
+  decision: affected_update_required
+  rationale: recheck.impacted_downstream_phases 対象。design.md へ .reviewcompass/schema/ 配下 2 ファイルのファイル一覧追記とスキーマ生成タスクの接続が必要。recheck 手続き（別セッション）で実施予定。
+  evidence:
+  - .reviewcompass/specs/workflow-management/spec.json
+- gate: stages/design.yaml#approval
+  feature_scope: workflow-management
+  decision: affected_update_required
+  rationale: recheck.impacted_downstream_phases 対象。design 更新後に利用者承認が必要。recheck 手続き（別セッション）で実施予定。
+  evidence:
+  - .reviewcompass/specs/workflow-management/spec.json
+- gate: stages/tasks.yaml#alignment
+  feature_scope: workflow-management
+  decision: affected_update_required
+  rationale: recheck.impacted_downstream_phases 対象。required_action.schema.json と next_action_response.schema.json の作成タスク（T-004 相当）を tasks.md に追加する必要がある。recheck 手続き（別セッション）で実施予定。
+  evidence:
+  - .reviewcompass/specs/workflow-management/spec.json
+- gate: stages/tasks.yaml#approval
+  feature_scope: workflow-management
+  decision: affected_update_required
+  rationale: recheck.impacted_downstream_phases 対象。tasks 更新後に利用者承認が必要。recheck 手続き（別セッション）で実施予定。
+  evidence:
+  - .reviewcompass/specs/workflow-management/spec.json
+- gate: stages/implementation.yaml#alignment
+  feature_scope: workflow-management
+  decision: affected_update_required
+  rationale: recheck.impacted_downstream_phases 対象。17 テスト（tests/tools/test_phase1_schema_definitions.py）を通過させる TDD 実装（required_action.schema.json・next_action_response.schema.json の作成）が未着手。recheck 手続き（別セッション）で実施予定。
+  evidence:
+  - .reviewcompass/specs/workflow-management/spec.json
+  - tests/tools/test_phase1_schema_definitions.py
+- gate: stages/implementation.yaml#approval
+  feature_scope: workflow-management
+  decision: affected_update_required
+  rationale: recheck.impacted_downstream_phases 対象。implementation 完了後に利用者承認が必要。recheck 手続き（別セッション）で実施予定。
+  evidence:
+  - .reviewcompass/specs/workflow-management/spec.json
+impacted_downstream_phases:
+- design
+- tasks
+- implementation
+feature_impact_decisions:
+- feature: workflow-management
+  decision: reopen_existing_feature
+  impact_basis: contract_ownership
+  rationale: next --json の action selector 契約（Requirement 2）を所有。受入10・11の要件・設計・実装を所有するため。
+  evidence:
+  - docs/reviews/reopen-classification-2026-06-18-wm-phase1-schema-definitions.md
+- feature: foundation
+  decision: no_reopen_existing_feature
+  impact_basis: no_implementation_impact
+  rationale: 共通スキーマはレビュー実行系であり、ワークフロー管理系スキーマに変更なし。
+  evidence:
+  - docs/reviews/reopen-classification-2026-06-18-wm-phase1-schema-definitions.md
+- feature: runtime
+  decision: no_reopen_existing_feature
+  impact_basis: no_implementation_impact
+  rationale: レビュー実行パイプラインに変更なし。
+  evidence:
+  - docs/reviews/reopen-classification-2026-06-18-wm-phase1-schema-definitions.md
+- feature: evaluation
+  decision: no_reopen_existing_feature
+  impact_basis: no_implementation_impact
+  rationale: 評価契約に変更なし。
+  evidence:
+  - docs/reviews/reopen-classification-2026-06-18-wm-phase1-schema-definitions.md
+- feature: analysis
+  decision: no_reopen_existing_feature
+  impact_basis: no_implementation_impact
+  rationale: 横断分析に変更なし。
+  evidence:
+  - docs/reviews/reopen-classification-2026-06-18-wm-phase1-schema-definitions.md
+- feature: self-improvement
+  decision: no_reopen_existing_feature
+  impact_basis: no_implementation_impact
+  rationale: 規律提案契約に変更なし。
+  evidence:
+  - docs/reviews/reopen-classification-2026-06-18-wm-phase1-schema-definitions.md
+- feature: conformance-evaluation
+  decision: no_reopen_existing_feature
+  impact_basis: no_implementation_impact
+  rationale: 実装推定・照合に変更なし。
+  evidence:
+  - docs/reviews/reopen-classification-2026-06-18-wm-phase1-schema-definitions.md
+new_feature_decision:
+  decision: no_new_feature
+  rationale: AC10/AC11 は workflow-management の責務境界内で受けられるため、新機能は不要。
+  evidence:
+  - docs/reviews/reopen-classification-2026-06-18-wm-phase1-schema-definitions.md

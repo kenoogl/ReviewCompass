@@ -1,0 +1,28 @@
+round_id: round-1
+purpose: requirements
+invocation_timestamp: '2026-06-18T09:55:40.361383+00:00'
+target_files:
+- path: .reviewcompass/specs/workflow-management/requirements.md
+  sha256: f3194f6fda84bf202f180bc7210fb03fd2696b092771790e455ebae126243609
+criteria: workflow_management_phase1_schema_definitions_requirements_postwrite
+prompt_sha256: ce4c704ea99dfe5a89c64494d3fbfb39b494ad3bed095d10e681d111afaa2322
+model_results:
+- model_id: gemini-3.5-flash
+  provider: gemini-api
+  role: primary
+  treatment: primary
+  invocation_path: api
+  raw_path: raw/gemini-3.5-flash.round-1.txt
+  raw_sha256: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+  parsed_path: parsed/gemini-3.5-flash.round-1.yaml
+  parsed_sha256: 081a06baf0d835c297f09f9a6cc28eed87010a9ff008c40488e5343fb9d1c4e1
+  parse_status: parsed
+  formatted_by: parser
+  formatted_by_actor_type: orchestrator
+  formatted_by_actor: run_role.py
+  formatted_at: '2026-06-18T09:55:40.361383+00:00'
+  follow_up_action: triage
+  attempts: 1
+  duration_seconds: 21.733
+effective_prompt_path: .reviewcompass/runtime/effective-prompts/next_action_kind-reopen_in_progress__workflow_stage-triad-review__reopen_required_action-run_reopen_pending_gate.prompt.md
+effective_prompt_sha256: 8b000b7a4fa9ca3b230e547eb5a3a2f38981bf141abfea7ee5c7f9e196218843

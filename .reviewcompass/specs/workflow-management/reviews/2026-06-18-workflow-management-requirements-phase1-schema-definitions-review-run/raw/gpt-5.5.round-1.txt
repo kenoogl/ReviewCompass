@@ -1,0 +1,21 @@
+findings:
+  - severity: ERROR
+    target_location: "Requirement 2 AC11 (6) run_maintenance action_parameters"
+    description: "`run_maintenance` 時に必須となる `action_parameters` の6フィールドが具体名・型・必須性として列挙されていない。"
+    rationale: "`maintenance_action 等6フィールド` では JSON Schema と受入テストが一意に定義できず、design/implementation で解釈差が生じる。requirements 段階で D-003 §4.2 の該当6フィールドを明示するか、厳密な参照先を指定する必要がある。"
+  - severity: WARN
+    target_location: "Requirement 2 AC11 required_action field"
+    description: "AC11 が `next_action.required_action` を AC10 の `.reviewcompass/schema/required_action.schema.json` に明示的に参照させていない。"
+    rationale: "AC10 は required_action 語彙スキーマを正本とすると定めているが、AC11 側で `$ref` 等による参照関係が明記されていないため、`next_action_response.schema.json` 側で enum が重複定義され、19語彙との不整合が発生する余地がある。"
+  - severity: WARN
+    target_location: "Requirement 2 AC11 (5) backward compatibility fields"
+    description: "後方互換フィールド `pending_gates`・`next_pending_gate` の正本フィールドとの整合条件が規定されていない。"
+    rationale: "オプションであることは明示されているが、存在する場合に `pending_gates` が `future_gates` と一致すべきか、`next_pending_gate` が `active_gate` と一致すべきかが不明である。これによりスキーマ上は矛盾した JSON を許容し、既存コードとの互換性確認が曖昧になる。"
+  - severity: WARN
+    target_location: "Requirement 2 AC11 (6) required_action value-specific constraints"
+    description: "`required_action` 値ごとの制約として6種類のみが記載されており、19語彙全体に対する扱いが不明確である。"
+    rationale: "AC10 は19語彙を定義する一方、AC11 は6アクションだけに個別制約を記載している。残り13アクションに追加制約がないのか、D-003 §4.2 から別途導出するのかが明示されていないため、スキーマの完全性とテスト期待値に解釈差が生じる。"
+  - severity: WARN
+    target_location: "Requirement 2 AC10 required_action enum"
+    description: "19個の `required_action` enum 値が受入基準本文に完全列挙されていない。"
+    rationale: "`repair_workflow_state`〜`completed` の19値という端点表現と D-003 §6 参照だけでは、requirements 単体から exact enum と順序を検証しにくい。語彙スキーマを正本にする要件であるため、受入基準または厳密な参照先で19値を完全に特定する方が安全である。"

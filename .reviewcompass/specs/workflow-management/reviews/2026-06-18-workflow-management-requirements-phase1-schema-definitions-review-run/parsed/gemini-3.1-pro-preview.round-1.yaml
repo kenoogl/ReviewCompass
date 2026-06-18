@@ -1,0 +1,14 @@
+role: judgment
+provider: gemini-api
+model: gemini-3.1-pro-preview
+attempts: 1
+duration_seconds: 40.398
+findings:
+- severity: WARN
+  target_location: 2.2 受入11（Requirement 2 AC11）
+  description: 受入11の記述内に、受入10（`required_action.schema.json`）で定義されたスキーマへの明示的な相互参照が含まれていません。
+  rationale: レビュー観点8に対する指摘事項です。AC11の`required_action`フィールドがAC10の定義を正本として参照・依存する構造を明文化することで、要件間およびスキーマ間の関係性を明確にする必要があります。
+- severity: INFO
+  target_location: 5. レビュー観点 (項目5, 6, 7)
+  description: 受入11のサブ項目を参照する番号が「（3）」「（4）」「（5）」となっていますが、2.2節での実際の定義番号は「（4）」「（5）」「（6）」であり、参照番号にずれが生じています。
+  rationale: ドキュメント内の自己参照の整合性を確保し、レビューおよび後続フェーズでの確認作業における混乱を防ぐためです。

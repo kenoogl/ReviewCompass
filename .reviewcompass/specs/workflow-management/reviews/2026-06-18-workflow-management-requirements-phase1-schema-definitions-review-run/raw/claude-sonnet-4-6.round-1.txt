@@ -1,0 +1,35 @@
+findings:
+  - severity: WARN
+    target_location: "受入11 (2) — next_action 必須フィールドリスト"
+    description: "AC11(2) で列挙された10個の必須フィールドのうち `kind` の意味・取り得る値が他のフィールドと比べて要件本文中に全く定義されていない。`required_action` との関係（同義か補完的分類軸か）が不明瞭なため、スキーマ実装者が独自解釈する余地が残る。"
+    rationale: "要件フェーズで型・値域・他フィールドとの関係が未定義のフィールドは、design/tasks フェーズで仕様乖離を生む起点になる。`kind` の値域または `required_action` との対応規則をAC11に明記しないと、17テストのうち `kind` 関連テストとスキーマの整合が取れないリスクがある。"
+
+  - severity: WARN
+    target_location: "受入11 (2) — repair_reasons の条件付き必須規則"
+    description: "`repair_reasons` は `repair_workflow_state` 時に必須とされるが、「必須」の範囲（空配列を許可するか・最低1要素を要求するか）が要件レベルで未定義。条件付き必須のトリガー条件が `required_action == 'repair_workflow_state'` のみか、他の値でも適用されるかも明示されていない。"
+    rationale: "テストファイル（test_phase1_schema_definitions.py）は既に作成済みであり、条件付き必須の境界が曖昧なままでは失敗テストの設計意図とスキーマの if/then 制約が食い違う可能性が高い。要件で最低限の値域（非空配列）を明記することが望ましい。"
+
+  - severity: WARN
+    target_location: "受入11 (6) — ⑥ run_maintenance の action_parameters 6フィールド"
+    description: "`run_maintenance` 時に `action_parameters` が必須となり「maintenance_action 等6フィールドを含める」と記述されているが、残り5フィールドの名称が「等」で省略されており要件として不完全。スキーマファイルに書けばよいという意図であれば、その旨を明示的に「詳細はスキーマファイルで規定」と断るべき。"
+    rationale: "要件文書が正本であることと、スキーマファイルが実装の正本であることの役割分担が曖昧になっている。要件レベルで6フィールド全名称を列挙するか、あるいは「スキーマファイルで完全定義する（要件はフィールド数と必須性のみ規定）」と明示的に委譲する記述に改めるべき。"
+
+  - severity: WARN
+    target_location: "受入11 (4) — 後方互換フィールドの読み取り側の取り扱い"
+    description: "`pending_gates`・`next_pending_gate` をオプションフィールドとして残すと明記されているが、新規実装のコンシューマがこれらのフィールドを無視すべきか・読み取ってもよいか、あるいは将来削除される予定があるかが要件に記載されていない。後方互換の範囲（書き込み側のみか、読み取り側も含むか）が不明確。"
+    rationale: "スキーマに additionalProperties 制約を設ける場合や、コンシューマ実装を複数チームが担う場合に、オプションフィールドの「後方互換」が書き込み継続保証なのか読み取り継続保証なのかで実装方針が変わる。要件フェーズで非推奨（deprecated）扱いであることを明示しておく方が下流の混乱を防ぐ。"
+
+  - severity: INFO
+    target_location: "受入10 — スキーマファイルパスとリポジトリ規約の整合"
+    description: "`.reviewcompass/schema/required_action.schema.json` というパスが採用されているが、`.reviewcompass/` 配下にスキーマファイルを置くというディレクトリ規約が他の仕様・設定ファイルと明示的に整合しているかを確認できる記述が要件本文にない。"
+    rationale: "クリティカルではないが、将来的にスキーマファイルが増えた際にパス規約が散在するリスクがある。要件または Change Intent にパス規約の根拠（既存慣例への追従か新規規約の設定か）を一言添えておくと traceability が向上する。"
+
+  - severity: INFO
+    target_location: "受入11 (1) — current_state フィールドの定義"
+    description: "最上位必須フィールドとして `current_state` が列挙されているが、その型・値域・`next_action` との関係が要件本文のどこにも記述されていない。`verdict` については配置制約が明示されているのと対照的。"
+    rationale: "ブロッカーではないが、`current_state` の定義不足はスキーマのプロパティ設計時に設計者の裁量が大きくなる。AC9または参照ノートへの明示的なポインタを要件に追加することで下流の手戻りリスクを減らせる。"
+
+  - severity: INFO
+    target_location: "受入10・11 相互参照（レビュー観点8）"
+    description: "AC11 が AC10 のスキーマを `$ref` または同等の参照で取り込む構造であることは設計上自明だが、要件本文には「AC11 のスキーマは AC10 のスキーマを参照する」という旨の記述がない。参照の方向と形式（JSON Schema $ref か、ファイル間参照かバンドルか）が要件として未定義。"
+    rationale: "要件フェーズでの明記は必須ではないが、design フェーズで $ref の解決方法（バンドル vs. 外部参照）を決定する際の根拠として要件に参照構造の意図を残しておくと traceability が向上する。"

@@ -17,10 +17,10 @@
     },
     "requirements": {
       "drafting": true,
-      "triad-review": false,
-      "review-wave": false,
-      "alignment": false,
-      "approval": false
+      "triad-review": true,
+      "review-wave": true,
+      "alignment": true,
+      "approval": true
     },
     "design": {
       "drafting": true,
@@ -53,11 +53,7 @@
     "implementation": true
   },
   "recheck": {
-    "upstream_change_pending": true,
-    "impacted_downstream_phases": [
-      "design",
-      "tasks",
-      "implementation"
-    ]
+    "upstream_change_pending": false,
+    "impacted_downstream_phases": []
   }
 }

@@ -1,0 +1,586 @@
+run_id: 2026-06-18-workflow-management-requirements-phase1-schema-definitions-review-run
+triage_status: decided
+generated_at: '2026-06-18T09:47:26.430241+00:00'
+decided_at: '2026-06-18T10:00:00+09:00'
+decision_actor: main-session-llm
+decision_actor_type: agent
+user_presented: true
+rounds_covered: [round-1, round-2]
+# クラスタ定義（利用者 OK 確認済み）
+# A: must-fix → APPLIED（「run_maintenance のみ」「6フィールド全て required」「追加フィールドは design で確定」）
+# B: leave-as-is → 偽陽性（requirements.md には「受入10のスキーマを参照」が既にある）
+# C: should-fix → APPLIED（「非空配列・最低1要素」追記）
+# D: should-fix → APPLIED（producer 不変条件・新規コンシューマは正本参照のみ、JSON Schema 表現は design で確定）
+# E: should-fix → APPLIED（「①〜⑥は D-003 §4.2 確定済みの全て、他種別に追加制約なし」追記）
+# F: should-fix → APPLIED（「kind は required_action の分類子、値域は design で確定」追記）
+
+items:
+# ---- Round-1 findings ----
+- finding_id: 2026-06-18-wm-req-phase1-r1-claude-primary-001
+  run_id: 2026-06-18-workflow-management-requirements-phase1-schema-definitions-review-run
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  cluster: F
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: 受入11 (2) — next_action 必須フィールドリスト（kind 値域）
+  plain_language_summary: kind フィールドの意味・値域・required_action との関係が定義されていない
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: main-session-llm
+  decision_actor_type: agent
+  decision_at: '2026-06-18T10:00:00+09:00'
+  decision_reason: >
+    kind フィールドに「required_action の分類子、値域は design で確定」を追記した（F クラスタ対処）。
+  applied_files:
+    - .reviewcompass/specs/workflow-management/requirements.md
+  superseded_by: null
+
+- finding_id: 2026-06-18-wm-req-phase1-r1-claude-primary-002
+  run_id: 2026-06-18-workflow-management-requirements-phase1-schema-definitions-review-run
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  cluster: C
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: 受入11 (2) — repair_reasons の条件付き必須規則
+  plain_language_summary: 空配列許容か最低1要素必須かが未定義
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: main-session-llm
+  decision_actor_type: agent
+  decision_at: '2026-06-18T10:00:00+09:00'
+  decision_reason: >
+    repair_reasons に「（非空配列・最低1要素）」を追記した（C クラスタ対処）。
+  applied_files:
+    - .reviewcompass/specs/workflow-management/requirements.md
+  superseded_by: null
+
+- finding_id: 2026-06-18-wm-req-phase1-r1-claude-primary-003
+  run_id: 2026-06-18-workflow-management-requirements-phase1-schema-definitions-review-run
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  cluster: A
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: 受入11 (6) — ⑥ run_maintenance の action_parameters 6フィールド
+  plain_language_summary: フィールド名の一部を「等」で省略し、必須性・委譲範囲が曖昧
+  final_label: must-fix
+  decision_status: decided
+  decision_actor: main-session-llm
+  decision_actor_type: agent
+  decision_at: '2026-06-18T10:00:00+09:00'
+  decision_reason: >
+    ラウンド2で3者 ERROR 確認後、「run_maintenance のみ」「6フィールドすべて required」
+    「追加フィールドは design で確定」と明記した（A クラスタ対処）。
+  applied_files:
+    - .reviewcompass/specs/workflow-management/requirements.md
+  superseded_by: null
+
+- finding_id: 2026-06-18-wm-req-phase1-r1-claude-primary-004
+  run_id: 2026-06-18-workflow-management-requirements-phase1-schema-definitions-review-run
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  cluster: D
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: 受入11 (4) — 後方互換フィールドの読み取り側の取り扱い
+  plain_language_summary: 後方互換フィールドの読み取り可否・整合条件が未定義
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: main-session-llm
+  decision_actor_type: agent
+  decision_at: '2026-06-18T10:00:00+09:00'
+  decision_reason: >
+    producer 不変条件として整合を要求し、新規コンシューマは正本フィールドのみ参照してよいと
+    明記した（D クラスタ対処）。
+  applied_files:
+    - .reviewcompass/specs/workflow-management/requirements.md
+  superseded_by: null
+
+- finding_id: 2026-06-18-wm-req-phase1-r1-claude-primary-005
+  run_id: 2026-06-18-workflow-management-requirements-phase1-schema-definitions-review-run
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  cluster: null
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: 受入10 — スキーマファイルパスとリポジトリ規約の整合
+  plain_language_summary: パス規約の根拠記述がない
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: main-session-llm
+  decision_actor_type: agent
+  decision_at: '2026-06-18T10:00:00+09:00'
+  decision_reason: >
+    要件フェーズでパス規約の根拠記述は必須でない。.reviewcompass/schema/ パスは慣例に従う。
+  applied_files: []
+  superseded_by: null
+
+- finding_id: 2026-06-18-wm-req-phase1-r1-claude-primary-006
+  run_id: 2026-06-18-workflow-management-requirements-phase1-schema-definitions-review-run
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  cluster: null
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: 受入11 (1) — current_state フィールドの定義
+  plain_language_summary: current_state の型・構造が要件に未定義
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: main-session-llm
+  decision_actor_type: agent
+  decision_at: '2026-06-18T10:00:00+09:00'
+  decision_reason: >
+    current_state の型・値域は設計フェーズで確定する詳細。要件で存在を明示していれば十分。
+  applied_files: []
+  superseded_by: null
+
+- finding_id: 2026-06-18-wm-req-phase1-r1-claude-primary-007
+  run_id: 2026-06-18-workflow-management-requirements-phase1-schema-definitions-review-run
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  cluster: B
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: 受入10・11 相互参照（レビュー観点8）
+  plain_language_summary: AC11 が AC10 スキーマを参照する旨の記述がないとの指摘
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: main-session-llm
+  decision_actor_type: agent
+  decision_at: '2026-06-18T10:00:00+09:00'
+  decision_reason: >
+    偽陽性。requirements.md の AC11(2) には「受入10のスキーマを参照」と明示済み。
+    review-target.md の要約省略による誤検出。
+  applied_files: []
+  superseded_by: null
+
+- finding_id: 2026-06-18-wm-req-phase1-r1-gpt-primary-001
+  run_id: 2026-06-18-workflow-management-requirements-phase1-schema-definitions-review-run
+  source_model: gpt-5.5
+  source_round: round-1
+  source_raw_path: raw/gpt-5.5.round-1.txt
+  source_parsed_path: parsed/gpt-5.5.round-1.yaml
+  cluster: A
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: Requirement 2 AC11 (6) run_maintenance action_parameters
+  plain_language_summary: action_parameters 6フィールドの名称・型・必須性が要件に列挙されていない
+  final_label: must-fix
+  decision_status: decided
+  decision_actor: main-session-llm
+  decision_actor_type: agent
+  decision_at: '2026-06-18T10:00:00+09:00'
+  decision_reason: >
+    ラウンド2で3者 ERROR 確認後、A クラスタ修正を適用（A クラスタ対処）。
+  applied_files:
+    - .reviewcompass/specs/workflow-management/requirements.md
+  superseded_by: null
+
+- finding_id: 2026-06-18-wm-req-phase1-r1-gpt-primary-002
+  run_id: 2026-06-18-workflow-management-requirements-phase1-schema-definitions-review-run
+  source_model: gpt-5.5
+  source_round: round-1
+  source_raw_path: raw/gpt-5.5.round-1.txt
+  source_parsed_path: parsed/gpt-5.5.round-1.yaml
+  cluster: B
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: Requirement 2 AC11 required_action field
+  plain_language_summary: AC11 が AC10 スキーマへの $ref 等を明示していないとの指摘
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: main-session-llm
+  decision_actor_type: agent
+  decision_at: '2026-06-18T10:00:00+09:00'
+  decision_reason: >
+    偽陽性。requirements.md の AC11(2) には「（受入10のスキーマを参照）」と明示済み。
+    review-target.md の要約省略による誤検出。
+  applied_files: []
+  superseded_by: null
+
+- finding_id: 2026-06-18-wm-req-phase1-r1-gpt-primary-003
+  run_id: 2026-06-18-workflow-management-requirements-phase1-schema-definitions-review-run
+  source_model: gpt-5.5
+  source_round: round-1
+  source_raw_path: raw/gpt-5.5.round-1.txt
+  source_parsed_path: parsed/gpt-5.5.round-1.yaml
+  cluster: D
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: Requirement 2 AC11 (5) backward compatibility fields
+  plain_language_summary: pending_gates と future_gates の整合条件が規定されていない
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: main-session-llm
+  decision_actor_type: agent
+  decision_at: '2026-06-18T10:00:00+09:00'
+  decision_reason: >
+    D クラスタ修正を適用。producer 不変条件として整合を要求し、JSON Schema での表現は
+    design で確定すると明記した。
+  applied_files:
+    - .reviewcompass/specs/workflow-management/requirements.md
+  superseded_by: null
+
+- finding_id: 2026-06-18-wm-req-phase1-r1-gpt-primary-004
+  run_id: 2026-06-18-workflow-management-requirements-phase1-schema-definitions-review-run
+  source_model: gpt-5.5
+  source_round: round-1
+  source_raw_path: raw/gpt-5.5.round-1.txt
+  source_parsed_path: parsed/gpt-5.5.round-1.yaml
+  cluster: E
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: Requirement 2 AC11 (6) required_action value-specific constraints
+  plain_language_summary: 6制約のみで残り13語彙の扱いが不明
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: main-session-llm
+  decision_actor_type: agent
+  decision_at: '2026-06-18T10:00:00+09:00'
+  decision_reason: >
+    E クラスタ修正を適用。「①〜⑥は D-003 §4.2 確定済みの全て、他種別に追加制約なし」と追記。
+  applied_files:
+    - .reviewcompass/specs/workflow-management/requirements.md
+  superseded_by: null
+
+- finding_id: 2026-06-18-wm-req-phase1-r1-gpt-primary-005
+  run_id: 2026-06-18-workflow-management-requirements-phase1-schema-definitions-review-run
+  source_model: gpt-5.5
+  source_round: round-1
+  source_raw_path: raw/gpt-5.5.round-1.txt
+  source_parsed_path: parsed/gpt-5.5.round-1.yaml
+  cluster: null
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: Requirement 2 AC10 required_action enum
+  plain_language_summary: 19語彙が要件本文に完全列挙されていない
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: main-session-llm
+  decision_actor_type: agent
+  decision_at: '2026-06-18T10:00:00+09:00'
+  decision_reason: >
+    AC10 は D-003 §6 を正本として列挙を委任している。スキーマファイル自体が完全な enum を
+    持つ設計であり、要件に19値を重複列挙することは over-specification になる。leave-as-is。
+  applied_files: []
+  superseded_by: null
+
+- finding_id: 2026-06-18-wm-req-phase1-r1-gemini-judgment-001
+  run_id: 2026-06-18-workflow-management-requirements-phase1-schema-definitions-review-run
+  source_model: gemini-3.1-pro-preview
+  source_round: round-1
+  source_raw_path: raw/gemini-3.1-pro-preview.round-1.txt
+  source_parsed_path: parsed/gemini-3.1-pro-preview.round-1.yaml
+  cluster: B
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: 2.2 受入11（Requirement 2 AC11）
+  plain_language_summary: AC11 に AC10 への明示的相互参照がないとの指摘
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: main-session-llm
+  decision_actor_type: agent
+  decision_at: '2026-06-18T10:00:00+09:00'
+  decision_reason: >
+    偽陽性。requirements.md の AC11(2) には「（受入10のスキーマを参照）」と明示済み。
+  applied_files: []
+  superseded_by: null
+
+- finding_id: 2026-06-18-wm-req-phase1-r1-gemini-judgment-002
+  run_id: 2026-06-18-workflow-management-requirements-phase1-schema-definitions-review-run
+  source_model: gemini-3.1-pro-preview
+  source_round: round-1
+  source_raw_path: raw/gemini-3.1-pro-preview.round-1.txt
+  source_parsed_path: parsed/gemini-3.1-pro-preview.round-1.yaml
+  cluster: null
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: 5. レビュー観点 (項目5, 6, 7)
+  plain_language_summary: review-target.md 内の項番ずれ
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: main-session-llm
+  decision_actor_type: agent
+  decision_at: '2026-06-18T10:00:00+09:00'
+  decision_reason: >
+    review-target.md 審査対象文書内の項番ずれ。requirements.md 自体の問題でない。
+  applied_files: []
+  superseded_by: null
+
+# ---- Round-2 findings ----
+- finding_id: 2026-06-18-workflow-management-requirements-phase1-schema-definitions-review-run-claude-sonnet-4-6-primary-001
+  run_id: 2026-06-18-workflow-management-requirements-phase1-schema-definitions-review-run
+  source_model: claude-sonnet-4-6
+  source_round: round-2
+  source_raw_path: raw/claude-sonnet-4-6.round-2.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-2.yaml
+  cluster: A
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: 受入11(6) ⑥ run_maintenance — action_parameters 6フィールドの必須性と追加フィールド許可
+  plain_language_summary: >
+    「含める」では6フィールド全て必須かつ追加フィールドを禁止するか否かが一意に確定しない。
+    TDD の失敗テスト期待値が要件依存であるためブロッカー。
+  final_label: must-fix
+  decision_status: decided
+  decision_actor: main-session-llm
+  decision_actor_type: agent
+  decision_at: '2026-06-18T10:00:00+09:00'
+  decision_reason: >
+    3者 ERROR 一致。「run_maintenance のみ、6フィールドすべて required、追加フィールドは
+    design で確定」と修正した（A クラスタ対処）。
+  applied_files:
+    - .reviewcompass/specs/workflow-management/requirements.md
+  superseded_by: null
+
+- finding_id: 2026-06-18-workflow-management-requirements-phase1-schema-definitions-review-run-claude-sonnet-4-6-primary-002
+  run_id: 2026-06-18-workflow-management-requirements-phase1-schema-definitions-review-run
+  source_model: claude-sonnet-4-6
+  source_round: round-2
+  source_raw_path: raw/claude-sonnet-4-6.round-2.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-2.yaml
+  cluster: D
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: 受入11(5) — pending_gates・next_pending_gate の整合条件
+  plain_language_summary: 整合条件未定義のまま実装すると矛盾 JSON を許容してしまう
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: main-session-llm
+  decision_actor_type: agent
+  decision_at: '2026-06-18T10:00:00+09:00'
+  decision_reason: >
+    D クラスタ修正を適用。producer 不変条件・JSON Schema 表現は design で確定と明記した。
+  applied_files:
+    - .reviewcompass/specs/workflow-management/requirements.md
+  superseded_by: null
+
+- finding_id: 2026-06-18-workflow-management-requirements-phase1-schema-definitions-review-run-claude-sonnet-4-6-primary-003
+  run_id: 2026-06-18-workflow-management-requirements-phase1-schema-definitions-review-run
+  source_model: claude-sonnet-4-6
+  source_round: round-2
+  source_raw_path: raw/claude-sonnet-4-6.round-2.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-2.yaml
+  cluster: E
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: 受入11(6) — 残り13語彙への追加制約がないことの明示性
+  plain_language_summary: E クラスタ修正がドキュメント引用内に反映済みと確認（本体への反映は別途確認要）
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: main-session-llm
+  decision_actor_type: agent
+  decision_at: '2026-06-18T10:00:00+09:00'
+  decision_reason: >
+    E クラスタで対処済み。requirements.md 本体への反映も確認済み。
+  applied_files: []
+  superseded_by: null
+
+- finding_id: 2026-06-18-workflow-management-requirements-phase1-schema-definitions-review-run-claude-sonnet-4-6-primary-004
+  run_id: 2026-06-18-workflow-management-requirements-phase1-schema-definitions-review-run
+  source_model: claude-sonnet-4-6
+  source_round: round-2
+  source_raw_path: raw/claude-sonnet-4-6.round-2.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-2.yaml
+  cluster: C
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: 受入11(2) — repair_reasons の条件付き必須の境界（ラウンド1所見の再確認）
+  plain_language_summary: C クラスタ修正が引用内に反映済みと確認
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: main-session-llm
+  decision_actor_type: agent
+  decision_at: '2026-06-18T10:00:00+09:00'
+  decision_reason: >
+    C クラスタで対処済み（非空配列・最低1要素を requirements.md に追記済み）。
+  applied_files: []
+  superseded_by: null
+
+- finding_id: 2026-06-18-workflow-management-requirements-phase1-schema-definitions-review-run-claude-sonnet-4-6-primary-005
+  run_id: 2026-06-18-workflow-management-requirements-phase1-schema-definitions-review-run
+  source_model: claude-sonnet-4-6
+  source_round: round-2
+  source_raw_path: raw/claude-sonnet-4-6.round-2.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-2.yaml
+  cluster: A
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: 論点 A-3 — TDD 観点での「含める」記述の一意性
+  plain_language_summary: A クラスタ修正で解消される TDD 観察事項
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: main-session-llm
+  decision_actor_type: agent
+  decision_at: '2026-06-18T10:00:00+09:00'
+  decision_reason: >
+    A クラスタ修正（6フィールドすべて required 明記）により解消済み。
+  applied_files: []
+  superseded_by: null
+
+- finding_id: 2026-06-18-workflow-management-requirements-phase1-schema-definitions-review-run-gpt-5.5-adversarial-001
+  run_id: 2026-06-18-workflow-management-requirements-phase1-schema-definitions-review-run
+  source_model: gpt-5.5
+  source_round: round-2
+  source_raw_path: raw/gpt-5.5.round-2.txt
+  source_parsed_path: parsed/gpt-5.5.round-2.yaml
+  cluster: A
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: 受入11（2）および受入11（6） — action_parameters の条件付き必須トリガー
+  plain_language_summary: >
+    「等」が残り action_parameters 必須の対象 action 種別が一意でない。run_maintenance のみか否か。
+  final_label: must-fix
+  decision_status: decided
+  decision_actor: main-session-llm
+  decision_actor_type: agent
+  decision_at: '2026-06-18T10:00:00+09:00'
+  decision_reason: >
+    「run_maintenance のみを対象とする」に修正した（A クラスタ対処）。
+  applied_files:
+    - .reviewcompass/specs/workflow-management/requirements.md
+  superseded_by: null
+
+- finding_id: 2026-06-18-workflow-management-requirements-phase1-schema-definitions-review-run-gpt-5.5-adversarial-002
+  run_id: 2026-06-18-workflow-management-requirements-phase1-schema-definitions-review-run
+  source_model: gpt-5.5
+  source_round: round-2
+  source_raw_path: raw/gpt-5.5.round-2.txt
+  source_parsed_path: parsed/gpt-5.5.round-2.yaml
+  cluster: A
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: 受入11（6） — run_maintenance の action_parameters 6フィールド
+  plain_language_summary: 型・追加フィールド可否が要件未確定、design への委譲範囲の明記が必要
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: main-session-llm
+  decision_actor_type: agent
+  decision_at: '2026-06-18T10:00:00+09:00'
+  decision_reason: >
+    「6フィールドはすべて required とし、追加フィールドの許可・禁止は design で確定する」と
+    明記した（A クラスタ対処）。
+  applied_files:
+    - .reviewcompass/specs/workflow-management/requirements.md
+  superseded_by: null
+
+- finding_id: 2026-06-18-workflow-management-requirements-phase1-schema-definitions-review-run-gpt-5.5-adversarial-003
+  run_id: 2026-06-18-workflow-management-requirements-phase1-schema-definitions-review-run
+  source_model: gpt-5.5
+  source_round: round-2
+  source_raw_path: raw/gpt-5.5.round-2.txt
+  source_parsed_path: parsed/gpt-5.5.round-2.yaml
+  cluster: D
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: 受入11（5） — pending_gates・next_pending_gate の後方互換フィールド
+  plain_language_summary: 整合条件・責任境界（正本のミラーか無視してよいか）が未定義
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: main-session-llm
+  decision_actor_type: agent
+  decision_at: '2026-06-18T10:00:00+09:00'
+  decision_reason: >
+    D クラスタ修正を適用。producer 不変条件として整合を要求し、新規コンシューマは正本参照のみ
+    でよいと明記した。
+  applied_files:
+    - .reviewcompass/specs/workflow-management/requirements.md
+  superseded_by: null
+
+- finding_id: 2026-06-18-workflow-management-requirements-phase1-schema-definitions-review-run-gpt-5.5-adversarial-004
+  run_id: 2026-06-18-workflow-management-requirements-phase1-schema-definitions-review-run
+  source_model: gpt-5.5
+  source_round: round-2
+  source_raw_path: raw/gpt-5.5.round-2.txt
+  source_parsed_path: parsed/gpt-5.5.round-2.yaml
+  cluster: D
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: 受入11（5） — 後方互換フィールドの整合性をスキーマで検証する方針
+  plain_language_summary: 標準 JSON Schema でフィールド間値比較が困難という技術制約の指摘
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: main-session-llm
+  decision_actor_type: agent
+  decision_at: '2026-06-18T10:00:00+09:00'
+  decision_reason: >
+    「JSON Schema での表現は design で確定する」と明記し、スキーマ外で検証する責任境界を
+    明示した（D クラスタ対処）。
+  applied_files:
+    - .reviewcompass/specs/workflow-management/requirements.md
+  superseded_by: null
+
+- finding_id: 2026-06-18-workflow-management-requirements-phase1-schema-definitions-review-run-gemini-3.1-pro-preview-judgment-001
+  run_id: 2026-06-18-workflow-management-requirements-phase1-schema-definitions-review-run
+  source_model: gemini-3.1-pro-preview
+  source_round: round-2
+  source_raw_path: raw/gemini-3.1-pro-preview.round-2.txt
+  source_parsed_path: parsed/gemini-3.1-pro-preview.round-2.yaml
+  cluster: A
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: 論点 A（受入11 (6) action_parameters の6フィールド）
+  plain_language_summary: >
+    「含める」では6フィールド必須性・追加フィールド許容可否が判断できず TDD テスト期待値が
+    不定となるブロッカー。
+  final_label: must-fix
+  decision_status: decided
+  decision_actor: main-session-llm
+  decision_actor_type: agent
+  decision_at: '2026-06-18T10:00:00+09:00'
+  decision_reason: >
+    3者 ERROR 一致。A クラスタ修正を適用した。
+  applied_files:
+    - .reviewcompass/specs/workflow-management/requirements.md
+  superseded_by: null
+
+- finding_id: 2026-06-18-workflow-management-requirements-phase1-schema-definitions-review-run-gemini-3.1-pro-preview-judgment-002
+  run_id: 2026-06-18-workflow-management-requirements-phase1-schema-definitions-review-run
+  source_model: gemini-3.1-pro-preview
+  source_round: round-2
+  source_raw_path: raw/gemini-3.1-pro-preview.round-2.txt
+  source_parsed_path: parsed/gemini-3.1-pro-preview.round-2.yaml
+  cluster: D
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: 論点 D（受入11 (5) pending_gates の整合条件）
+  plain_language_summary: >
+    整合条件と検証責任境界が未定義。JSON Schema 標準でのフィールド間値比較は困難。
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: main-session-llm
+  decision_actor_type: agent
+  decision_at: '2026-06-18T10:00:00+09:00'
+  decision_reason: >
+    D クラスタ修正を適用。JSON Schema での表現は design で確定すると明記した。
+  applied_files:
+    - .reviewcompass/specs/workflow-management/requirements.md
+  superseded_by: null
+
+summary:
+  total_findings: 25
+  must_fix_count: 4
+  must_fix_applied: 4
+  should_fix_count: 10
+  should_fix_applied: 10
+  leave_as_is_count: 11
+  all_must_fix_applied: true
+  all_should_fix_applied: true
+  applied_files:
+    - .reviewcompass/specs/workflow-management/requirements.md

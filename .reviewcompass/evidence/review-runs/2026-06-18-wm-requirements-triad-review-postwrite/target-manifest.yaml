@@ -1,0 +1,4 @@
+run_id: 2026-06-18-wm-requirements-triad-review-postwrite
+target_files:
+- path: .reviewcompass/specs/workflow-management/requirements.md
+  sha256: f3194f6fda84bf202f180bc7210fb03fd2696b092771790e455ebae126243609

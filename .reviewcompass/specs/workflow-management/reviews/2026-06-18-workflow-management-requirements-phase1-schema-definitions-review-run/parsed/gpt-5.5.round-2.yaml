@@ -1,0 +1,33 @@
+role: adversarial
+provider: openai-api
+model: gpt-5.5
+attempts: 1
+duration_seconds: 60.35
+findings:
+- severity: ERROR
+  target_location: 受入11（2）および受入11（6） — action_parameters の条件付き必須トリガー
+  description: '`action_parameters` が必須となる action 種別の範囲が一意に定義されていない。受入11（2）は「`run_maintenance`
+    等の補助情報が必要な action 種別」としている一方、受入11（6）は `run_maintenance` のみを具体的に列挙し、他の `required_action`
+    種別には確定した追加フィールド制約はないとしている。'
+  rationale: 'スキーマ実装では `if required_action == ... then required: [action_parameters]`
+    の対象値を確定する必要がある。`等` が残ると、`run_maintenance` のみを対象にする実装と、他の action にも拡張する実装に分岐し、TDD
+    の失敗テストとスキーマの期待値が一致しなくなる。要件として `action_parameters` 必須は `run_maintenance` のみなのか、他にも対象があるのかを明示すべき。'
+- severity: WARN
+  target_location: 受入11（6） — run_maintenance の action_parameters 6フィールド
+  description: '`action_parameters` に含める6フィールド名は列挙されたが、各フィールドの型・null許容・値域、および追加フィールドを許可するか禁止するかが要件上未確定のままである。'
+  rationale: '`含める` という表現から6フィールドの存在必須性は推定できるが、JSON Schema と受入テストでは `required`、`properties`、`additionalProperties`
+    の扱いを具体化する必要がある。これらを design に委譲する方針でもよいが、その場合は「6フィールドは必須、型・値域・追加フィールド可否は design
+    で確定」など、委譲範囲を要件に明記しないと解釈差が残る。'
+- severity: WARN
+  target_location: 受入11（5） — pending_gates・next_pending_gate の後方互換フィールド
+  description: 後方互換フィールドが存在する場合に、`pending_gates` が `future_gates` と、`next_pending_gate`
+    が `active_gate` と一致すべきかどうかが規定されていない。
+  rationale: 正本フィールドを `future_gates`・`active_gate` と定めるだけでは、互換フィールドに矛盾した値が入った JSON
+    を許容するか判断できない。`next --json` の利用者にとっては、古いフィールドと新しいフィールドが同時に存在して異なる値を示す契約は混乱の原因になるため、要件として「存在する場合は正本フィールドのミラーでなければならない」または「互換フィールドは非正本であり新規コンシューマは無視する」など責任境界を明示することが望ましい。
+- severity: WARN
+  target_location: 受入11（5） — 後方互換フィールドの整合性をスキーマで検証する方針
+  description: 仮に後方互換フィールドと正本フィールドの一致を schema validation エラーとして扱う場合、標準 JSON Schema
+    だけで sibling property 同士の値一致を表現できるかが未整理である。
+  rationale: '`pending_gates == future_gates` や `next_pending_gate == active_gate`
+    のような動的なフィールド間一致は、標準 JSON Schema では表現しにくく、実装依存の `$data` 拡張やスキーマ外の生成時検証・ランタイム検証が必要になる可能性がある。要件で整合条件を採用するなら、機械検証の責任を
+    JSON Schema に置くのか、producer invariant や別バリデータに置くのかを design で決められるよう明示しておくべき。'
