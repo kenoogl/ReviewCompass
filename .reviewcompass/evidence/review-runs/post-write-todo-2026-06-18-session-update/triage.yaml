@@ -1,0 +1,24 @@
+run_id: post-write-todo-2026-06-18-session-update
+triage_status: decided
+generated_at: '2026-06-18T06:06:57.731133+00:00'
+decision_actor: null
+decision_actor_type: human
+items:
+- finding_id: post-write-todo-2026-06-18-session-update-gemini-3.5-flash-primary-001
+  run_id: post-write-todo-2026-06-18-session-update
+  source_model: gemini-3.5-flash
+  source_round: round-1
+  source_raw_path: raw/gemini-3.5-flash.round-1.txt
+  source_parsed_path: parsed/gemini-3.5-flash.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: '## 4. 次作業候補'
+  plain_language_summary: 連番が「1.」から「3.」に飛んでおり、「2.」が欠落しています。
+  final_label: must-fix
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-18T06:10:57.982915+00:00'
+  decision_reason: 番号付きリストの「2」が欠落していた記述ミス。「3」を「2」に修正済み。利用者承認済み。
+  applied_files: []
+  superseded_by: null

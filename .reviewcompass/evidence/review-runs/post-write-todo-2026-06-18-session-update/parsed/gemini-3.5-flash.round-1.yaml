@@ -1,0 +1,10 @@
+role: primary
+provider: gemini-api
+model: gemini-3.5-flash
+attempts: 1
+duration_seconds: 7.269
+findings:
+- severity: INFO
+  target_location: '## 4. 次作業候補'
+  description: 連番が「1.」から「3.」に飛んでおり、「2.」が欠落しています。
+  rationale: 項目の番号付けに不整合が生じています。単なる記述ミスか、検討中だった作業候補が誤って削除・見落とされた可能性があります。

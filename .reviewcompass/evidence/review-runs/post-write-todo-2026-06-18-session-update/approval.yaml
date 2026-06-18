@@ -1,0 +1,12 @@
+approved_action: review_run_triage
+approved_by: user
+review_run_id: post-write-todo-2026-06-18-session-update
+summary_presented_to_user: true
+triage_presented_to_user: true
+approved_finding_ids:
+  - post-write-todo-2026-06-18-session-update-gemini-3.5-flash-primary-001
+approved_final_labels:
+  post-write-todo-2026-06-18-session-update-gemini-3.5-flash-primary-001: must-fix
+approval_source: >
+  INFO 指摘：「4. 次作業候補」の番号付きリストで「2」が欠落していた記述ミス（1→3に飛んでいた）。
+  利用者に提示後「承認」と発言（セッション 77e272a2）。修正は承認前に適用済み（「3」→「2」）。

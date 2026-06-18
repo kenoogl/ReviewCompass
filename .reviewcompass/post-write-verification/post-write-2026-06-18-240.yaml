@@ -1,0 +1,24 @@
+status: completed
+target_files:
+- TODO_NEXT_SESSION.md
+- docs/sessions/auto-2026-06-17-claude-eec103c2-8c42-4b79-b256-7ff57bd87431.md
+target_sha256:
+  TODO_NEXT_SESSION.md: 9d810d54f3dedac0a9b8923ecf9739b35089f522425046b6836897ee82e7e804
+  docs/sessions/auto-2026-06-17-claude-eec103c2-8c42-4b79-b256-7ff57bd87431.md: 86e7716eecc5da5c7820a4a22909066b7f6a1c53e8ac9de68b23e98021ef007a
+required_verifiers: &id001
+- gemini-3.5-flash
+completed_verifiers: *id001
+unresolved_substantive_findings: 0
+verifications:
+- verifier: gemini-3.5-flash
+  target_files:
+  - TODO_NEXT_SESSION.md
+  - docs/sessions/auto-2026-06-17-claude-eec103c2-8c42-4b79-b256-7ff57bd87431.md
+  target_sha256:
+    TODO_NEXT_SESSION.md: 9d810d54f3dedac0a9b8923ecf9739b35089f522425046b6836897ee82e7e804
+    docs/sessions/auto-2026-06-17-claude-eec103c2-8c42-4b79-b256-7ff57bd87431.md: 86e7716eecc5da5c7820a4a22909066b7f6a1c53e8ac9de68b23e98021ef007a
+review_run:
+  path: .reviewcompass/evidence/review-runs/post-write-todo-2026-06-18-session-update
+  summary_path: .reviewcompass/evidence/review-runs/post-write-todo-2026-06-18-session-update/model-result-summary.yaml
+notes: Generated template; verify target_files cover current post-write targets before
+  use.
