@@ -1,0 +1,70 @@
+round_id: round-1
+purpose: triad_review
+invocation_timestamp: '2026-06-18T16:47:54.350755+00:00'
+target_files:
+- path: .reviewcompass/evidence/review-runs/2026-06-19-integrated-design-requirements-traceability-3way-rerun/review-target.md
+  sha256: 4f2cf85655b80cc4d017698afe79e38abb9da8b8b4d849c0def09471d9f6ef98
+- path: docs/notes/2026-06-18-integrated-design-selection-execution-layers.md
+  sha256: 31d29388a8bb55c7e71501a2432cebd12c4d5ff6817052ebc36b81aef8c76608
+- path: docs/notes/working/2026-06-18-mechanized-workflow-execution-design.md
+  sha256: e38051da74d26f1237a4c690d1f2c1b678f923e9003b1549d05ee4a6431ce4bb
+- path: docs/notes/working/2026-06-19-integrated-design-requirements-missing.md
+  sha256: 962e1dde868bf383a5d5003adcb609bddd2d2509bd06a250ee705a5b5c63e6bc
+- path: intent/INTENT.md
+  sha256: f0529d2bab6a868c13a0672e295532760c0126e2a8a11fc6b69f2bf0adfd40e8
+- path: .reviewcompass/specs/workflow-management/requirements.md
+  sha256: bb611d99f469c0eb153b87e70e0575e08670634f6296ff5f7f95feee4073f670
+criteria: integrated_design_requirements_traceability_review
+prompt_sha256: 3203c128c2a53cd94b497365ed0513d71dbabb7ad3b09b17970bda71ee354c0c
+model_results:
+- model_id: gpt-5.4
+  provider: openai-api
+  role: primary
+  treatment: primary
+  invocation_path: api
+  raw_path: raw/gpt-5.4.round-1.txt
+  raw_sha256: a515eab9a50f05ecc1f2856786e3ca420eb4ea5884cbacf75ffd647b7b986afd
+  parsed_path: null
+  parsed_sha256: null
+  parse_status: parse_failed
+  formatted_by: parser
+  formatted_by_actor_type: orchestrator
+  formatted_by_actor: run_role.py
+  formatted_at: '2026-06-18T16:46:22.373588+00:00'
+  follow_up_action: format_pending
+  attempts: 1
+  duration_seconds: 18.51
+- model_id: claude-opus-4-8
+  provider: anthropic-api
+  role: adversarial
+  treatment: adversarial
+  invocation_path: api
+  raw_path: raw/claude-opus-4-8.round-1.txt
+  raw_sha256: 951e88675162ccfd6136f882994dcc8679c6e31f02d938ce2ae623ecb60ffe35
+  parsed_path: parsed/claude-opus-4-8.round-1.yaml
+  parsed_sha256: 82ab94440ec0c33e40a26f3cd1cfd37aec6e3fe5d6182b90bedbd3fa9dda6ebe
+  parse_status: parsed
+  formatted_by: parser
+  formatted_by_actor_type: orchestrator
+  formatted_by_actor: run_role.py
+  formatted_at: '2026-06-18T16:47:08.261918+00:00'
+  follow_up_action: triage
+  attempts: 1
+  duration_seconds: 45.808
+- model_id: gemini-3.1-pro-preview
+  provider: gemini-api
+  role: judgment
+  treatment: judgment
+  invocation_path: api
+  raw_path: raw/gemini-3.1-pro-preview.round-1.txt
+  raw_sha256: 28bd566520235a763bbf75afc31473b1fdbd88b9c7fca005a20f0bc8ba1e6750
+  parsed_path: parsed/gemini-3.1-pro-preview.round-1.yaml
+  parsed_sha256: 95d390ab3572cfba8273000a5c1a67b1d9dc7a1eba8308d588e0580636aefc63
+  parse_status: parsed
+  formatted_by: parser
+  formatted_by_actor_type: orchestrator
+  formatted_by_actor: run_role.py
+  formatted_at: '2026-06-18T16:47:54.350755+00:00'
+  follow_up_action: triage
+  attempts: 1
+  duration_seconds: 46.027

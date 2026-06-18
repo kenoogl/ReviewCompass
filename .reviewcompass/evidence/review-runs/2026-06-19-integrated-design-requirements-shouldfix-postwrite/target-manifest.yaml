@@ -1,0 +1,12 @@
+run_id: 2026-06-19-integrated-design-requirements-shouldfix-postwrite
+target_files:
+- path: .reviewcompass/evidence/review-runs/2026-06-19-integrated-design-requirements-shouldfix-postwrite/target.md
+  sha256: a00528a3a0ebc33efd9f2adbaf80d7df2e08c8ac77dbbc33da981aed577d34ee
+- path: intent/INTENT.md
+  sha256: 4bc55cd37fbaab9769c3294d3c44d998144f2ed630888d147988c309f472cd6a
+- path: .reviewcompass/specs/workflow-management/requirements.md
+  sha256: 2d24be2c7b95bd33be0eed0d39405af49c30e9ac470f4327a33076dfa63f269f
+- path: .reviewcompass/evidence/review-runs/2026-06-19-integrated-design-requirements-traceability-3way-rerun/review_summary.md
+  sha256: 28e3fe170842fbdf950b116b1ba153a9d570bb9b986d2591014b29141719465c
+- path: .reviewcompass/evidence/review-runs/2026-06-19-integrated-design-requirements-traceability-3way-rerun/triage.yaml
+  sha256: 15f7a9c7e7c7daf98bc5ca1136967ff690d85bc58100b3042e9ce59fa9afaaa7

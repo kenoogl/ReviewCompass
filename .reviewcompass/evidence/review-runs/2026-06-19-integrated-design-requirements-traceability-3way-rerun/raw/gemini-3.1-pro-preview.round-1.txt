@@ -1,0 +1,9 @@
+findings:
+  - severity: INFO
+    target_location: "intent/INTENT.md (Sections 3.8, 4.8, 11.5) and .reviewcompass/specs/workflow-management/requirements.md (Requirements 13-16)"
+    description: "The draft adequately recovers the missed scope and establishes strong traceability."
+    rationale: |
+      The draft successfully resolves the incident described in `docs/notes/working/2026-06-19-integrated-design-requirements-missing.md`. It accurately translates the selection/execution layer boundaries, task classifications (mechanical/language/human-decision), approval gates, side-track stacks, and the Phase 0-6 implementation plan into appropriate requirements abstractions. It properly delegates implementation details (such as the exact schema for composite `effect_kind` operations) to the design phase, avoiding overreach. The addition of `XDI-WM-005` correctly anchors the traceability.
+      Source: `docs/notes/working/2026-06-19-integrated-design-requirements-missing.md` (all missed areas).
+      Impact: Ensures downstream design and Phase 0-6 task breakdown can proceed cleanly without requiring developers to re-infer context from the raw design notes.
+      Remediation direction: The draft is highly adequate. Proceed with committing these edits and utilizing Requirement 16 as the structural basis for the upcoming task definition phase.

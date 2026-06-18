@@ -1,0 +1,273 @@
+run_id: 2026-06-19-integrated-design-requirements-traceability-3way-rerun
+triage_status: draft
+generated_at: '2026-06-18T16:47:54.370905+00:00'
+decision_actor: null
+decision_actor_type: human
+items:
+- finding_id: 2026-06-19-integrated-design-requirements-traceability-3way-rerun-claude-opus-4-8-adversarial-001
+  run_id: 2026-06-19-integrated-design-requirements-traceability-3way-rerun
+  source_model: claude-opus-4-8
+  source_round: round-1
+  source_raw_path: raw/claude-opus-4-8.round-1.txt
+  source_parsed_path: parsed/claude-opus-4-8.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: .reviewcompass/specs/workflow-management/requirements.md Requirement
+    13-16 / intent/INTENT.md §3.8, §4.8, §11.5
+  plain_language_summary: 'The current draft substantively recovers the missed scope
+    from the incident memo. All eight bulleted missed areas are now traceable: required_action↔operation
+    contract mapping (R13 AC3), effect_kind/approval_required (R13 AC1/AC4), Phase
+    0 plus Phase 1-6 (R16), approval gate semantics (R14 AC1-2), side-track stack
+    (R14 AC3-5), workflow state snapshot (R14 AC6-8), structured effective prompts
+    and LLM judge audit (R15), and task classification (intent §3.8 plus R13/R15 distinction
+    of machine/language/human tasks). The abstraction level (intent for principles,
+    requirements for external-visible contracts deferring schema/representation to
+    design) is appropriate. This is recorded as the overall adequacy judgment requested
+    by the review prompt.'
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: The review prompt explicitly asks for a non-binary adequacy statement
+    and residual-risk identification rather than accept/reject; recording adequacy
+    lets downstream work proceed without re-inferring the source design.
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-19-integrated-design-requirements-traceability-3way-rerun-claude-opus-4-8-adversarial-002
+  run_id: 2026-06-19-integrated-design-requirements-traceability-3way-rerun
+  source_model: claude-opus-4-8
+  source_round: round-1
+  source_raw_path: raw/claude-opus-4-8.round-1.txt
+  source_parsed_path: parsed/claude-opus-4-8.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: .reviewcompass/specs/workflow-management/requirements.md Requirement
+    13 AC3 and AC4
+  plain_language_summary: The source note (integrated design §3 table) assigns a specific
+    execution agent (実行主体) and approval_required value to each of the 19 required_action
+    items, and §3.1 enumerates a fully reasoned approval-gate list including the explicit
+    exclusion logic for record_human_decision. R13 AC3 only requires that each required_action
+    have effect_kind/execution-agent/approval_required mapped in 'registry or equivalent',
+    and AC4 lists the seven approval-required operations but omits the source note's
+    explicit statement that run_maintenance is conditional (maintenance YAML approval_required)
+    and that run_reopen_pending_gate approval depends on gate kind.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: Without carrying the conditional cases (run_maintenance, run_reopen_pending_gate
+    per §3.2, run_workflow_stage) into the requirement text or a clear pointer, design/implementation
+    may treat the seven-item approval list as exhaustive and mis-handle the per-kind/per-maintenance
+    approval branching the source note carefully distinguished. The §3.1 design note
+    explicitly warns these complex operations break the single-enum assumption.
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-19-integrated-design-requirements-traceability-3way-rerun-claude-opus-4-8-adversarial-003
+  run_id: 2026-06-19-integrated-design-requirements-traceability-3way-rerun
+  source_model: claude-opus-4-8
+  source_round: round-1
+  source_raw_path: raw/claude-opus-4-8.round-1.txt
+  source_parsed_path: parsed/claude-opus-4-8.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: .reviewcompass/specs/workflow-management/requirements.md Requirement
+    13 AC7
+  plain_language_summary: Source note §7 item 6 lists three concrete options for representing
+    effect_kind of composite operations (single representative value with note, list
+    type, or decomposition into single-enum steps) and marks this as an open item
+    to be settled at Phase 1 schema definition. R13 AC7 correctly defers the choice
+    to design but does not capture that this is an explicitly unresolved 未確定事項 with
+    three enumerated candidate resolutions, nor the related §7 item 5 open question
+    (linking record_human_decision to its target required_action via session id/timestamp/operation
+    id).
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: If the open-decision status and its candidate options are not traceable
+    in the requirements layer, design may silently re-decide without referencing the
+    source analysis, or may overlook the approval-record-to-target-operation linkage
+    problem (§7 item 5) that has no requirement home. Preserving the open-item provenance
+    avoids re-inferring it from conversation context.
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-19-integrated-design-requirements-traceability-3way-rerun-claude-opus-4-8-adversarial-004
+  run_id: 2026-06-19-integrated-design-requirements-traceability-3way-rerun
+  source_model: claude-opus-4-8
+  source_round: round-1
+  source_raw_path: raw/claude-opus-4-8.round-1.txt
+  source_parsed_path: parsed/claude-opus-4-8.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: .reviewcompass/specs/workflow-management/requirements.md Requirement
+    16 AC1-AC3 (Phase 0 / D-003 references)
+  plain_language_summary: Requirement 16 repeatedly references 'D-003 §6 the 19-stage
+    priority', 'D-003 §7.1 six failure tests', and 'D-003 §9 workflow state repair'
+    as Phase 0's specification and completion condition. The authoritative D-003 source
+    (docs/notes/working/2026-06-16-next-json-unique-state-redesign.md) is named in
+    the integrated design note's frontmatter but is NOT included among this run's
+    review targets, and the integrated note itself only summarizes D-003. The requirement
+    thus traces to a document not visible in this review and not directly excerpted.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: Phase 0's completion gate is defined entirely by D-003 section
+    numbers. If D-003 is a working note that could be superseded or relocated (the
+    integrated note is itself marked superseded-on-promotion), the requirement's completion
+    condition becomes unverifiable when D-003 moves. Downstream tasks need either
+    the six failure tests enumerated in-spec or a stable canonical anchor for D-003.
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-19-integrated-design-requirements-traceability-3way-rerun-claude-opus-4-8-adversarial-005
+  run_id: 2026-06-19-integrated-design-requirements-traceability-3way-rerun
+  source_model: claude-opus-4-8
+  source_round: round-1
+  source_raw_path: raw/claude-opus-4-8.round-1.txt
+  source_parsed_path: parsed/claude-opus-4-8.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: .reviewcompass/specs/workflow-management/requirements.md Requirement
+    16 AC2 vs Requirement 13 AC2
+  plain_language_summary: R16 AC2 states Phase 0's precondition is satisfying Requirement
+    2 AC10/AC11 schema definitions, and that effect_kind/phase_boundary/operation-contract/snapshot/language-task
+    schemas 'may be defined in parallel with Phase 0'. R13 AC2 places these same schemas
+    in 'Phase 1'. The integrated design note §4.1 establishes the ordering Phase 1(schema)→Phase
+    0(selection layer)→Phase 2-6, and §7 item 2 clarifies only the two AC10/AC11 schemas
+    are hard Phase-0 prerequisites while the others are parallel. The draft's phrasing
+    scatters this nuance across R13 AC2, R16 AC2, and R16 AC4 without one place stating
+    the dependency that Phase 1 schema definition is the prerequisite of Phase 0.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: The single most load-bearing ordering claim in the source note
+    (Phase 1 schema precedes Phase 0 implementation, but only AC10/AC11 are blocking)
+    is split across three acceptance criteria in two requirements. Implementers sequencing
+    the TDD work could misread which schemas block Phase 0 start versus which are
+    parallel, reintroducing the very ambiguity §4.1/§7 resolved.
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-19-integrated-design-requirements-traceability-3way-rerun-claude-opus-4-8-adversarial-006
+  run_id: 2026-06-19-integrated-design-requirements-traceability-3way-rerun
+  source_model: claude-opus-4-8
+  source_round: round-1
+  source_raw_path: raw/claude-opus-4-8.round-1.txt
+  source_parsed_path: parsed/claude-opus-4-8.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: .reviewcompass/specs/workflow-management/requirements.md Requirement
+    14 AC6 and intent/INTENT.md §4.8
+  plain_language_summary: 'The snapshot path .reviewcompass/runtime/workflow-state-snapshot.yaml
+    (R14 AC6) matches both source notes (integrated §5.3, mechanized §8). The snapshot''s
+    required fields (R14 AC7) align with both source schemas. One minor residual:
+    the source mechanized-design §8 snapshot omits the active_gate sub-field under
+    current_work that the integrated §5.3 schema adds, and R14 AC7 follows the integrated
+    (richer) version. This is a correct choice (integrated note is the later reconciliation)
+    but is not noted as a deliberate reconciliation of the two source schemas.'
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: Recording that R14 follows the integrated-note schema over the
+    earlier mechanized-note schema (rather than merging both) prevents a later reviewer
+    from flagging the missing active_gate field as a regression against the mechanized
+    note.
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-19-integrated-design-requirements-traceability-3way-rerun-claude-opus-4-8-adversarial-007
+  run_id: 2026-06-19-integrated-design-requirements-traceability-3way-rerun
+  source_model: claude-opus-4-8
+  source_round: round-1
+  source_raw_path: raw/claude-opus-4-8.round-1.txt
+  source_parsed_path: parsed/claude-opus-4-8.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: .reviewcompass/specs/workflow-management/requirements.md Requirement
+    15 AC4 and AC5
+  plain_language_summary: R15 captures the structured effective-prompt structure (§4.3),
+    the Phase-4 generation requirement, and the first-layer machine checks (§5.1)
+    including the review-target-manifest match. The source §5.1 machine-check table
+    additionally lists 'staged files within current work-level file set (commit-mixing
+    check)', which R15 AC5 omits but which is independently covered by R14 AC3/AC5
+    (staged_file_set) and R12. No gap, but the cross-reference is implicit.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: The commit-mixing check appears in the source under the effective-prompt
+    audit table yet is allocated to side-track/operation-preflight requirements in
+    the draft; making that allocation explicit would prevent duplicate or orphaned
+    implementation of the same check.
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-19-integrated-design-requirements-traceability-3way-rerun-claude-opus-4-8-adversarial-008
+  run_id: 2026-06-19-integrated-design-requirements-traceability-3way-rerun
+  source_model: claude-opus-4-8
+  source_round: round-1
+  source_raw_path: raw/claude-opus-4-8.round-1.txt
+  source_parsed_path: parsed/claude-opus-4-8.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: intent/INTENT.md §3.8, §4.8
+  plain_language_summary: 'The intent additions stay at principle level (task classification,
+    mechanical uniqueness of current position/next operation, not hiding adjudication
+    load in implicit LLM judgment) and avoid implementation detail, satisfying the
+    no-overreach criterion. Residual optional improvement: §3.8/§4.8 do not reference
+    the source design notes or the workflow-management requirements they flow into,
+    so the intent→requirements traceability relies solely on §11.5 and the requirements-side
+    由来 entries rather than a TRACEABILITY.md linkage that INTENT.md §10.1/§14 anticipate.'
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: INTENT.md's own completion condition (§14) requires that each feature
+    spec be traceable to the intent it implements via TRACEABILITY.md. The new §3.8/§4.8
+    intents have no corresponding TRACEABILITY.md entry shown, leaving a minor forward-traceability
+    gap for later auditors.
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-19-integrated-design-requirements-traceability-3way-rerun-gemini-3.1-pro-preview-judgment-001
+  run_id: 2026-06-19-integrated-design-requirements-traceability-3way-rerun
+  source_model: gemini-3.1-pro-preview
+  source_round: round-1
+  source_raw_path: raw/gemini-3.1-pro-preview.round-1.txt
+  source_parsed_path: parsed/gemini-3.1-pro-preview.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: intent/INTENT.md (Sections 3.8, 4.8, 11.5) and .reviewcompass/specs/workflow-management/requirements.md
+    (Requirements 13-16)
+  plain_language_summary: The draft adequately recovers the missed scope and establishes
+    strong traceability.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: 'The draft successfully resolves the incident described in `docs/notes/working/2026-06-19-integrated-design-requirements-missing.md`.
+    It accurately translates the selection/execution layer boundaries, task classifications
+    (mechanical/language/human-decision), approval gates, side-track stacks, and the
+    Phase 0-6 implementation plan into appropriate requirements abstractions. It properly
+    delegates implementation details (such as the exact schema for composite `effect_kind`
+    operations) to the design phase, avoiding overreach. The addition of `XDI-WM-005`
+    correctly anchors the traceability.
+
+    Source: `docs/notes/working/2026-06-19-integrated-design-requirements-missing.md`
+    (all missed areas).
+
+    Impact: Ensures downstream design and Phase 0-6 task breakdown can proceed cleanly
+    without requiring developers to re-infer context from the raw design notes.
+
+    Remediation direction: The draft is highly adequate. Proceed with committing these
+    edits and utilizing Requirement 16 as the structural basis for the upcoming task
+    definition phase.'
+  applied_files: []
+  superseded_by: null

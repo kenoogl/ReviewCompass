@@ -1,0 +1,35 @@
+findings:
+  - severity: WARN
+    target_location: "intent/INTENT.md §11.5"
+    description: "workflow-management の役割追加が、実行層の主要責務を列挙している一方で、統合設計・機械化設計が強調する『タスク分類（機械タスク／言語タスク／人間判断タスクの分離）』を上位意図として明示していない。"
+    rationale: "incident memo の『追記されていない内容』には機械化設計全体の task classification が明記されており、機械化設計 §2・§3 はこの分離を中核思想として置いている。現在の INTENT §3.8 では LLM に暗黙裁定をさせない趣旨は入っているが、workflow-management の責務として何を機械に、何を LLM に、何を人に残すかの分類原則が §11.5 に落ちていないため、下流の design/tasks で責務境界を再推論する余地が残る。"
+
+  - severity: WARN
+    target_location: "intent/INTENT.md §4.8, §11.5"
+    description: "INTENT には『状態スナップショット』『承認ゲート』『側道スタック』『構造化有効プロンプト』が列挙されているが、それらがなぜ必要かという意図レベルの結び付きが弱く、特に current state の可視化と side track の追跡可能性が上位目的として独立に立っていない。"
+    rationale: "統合設計 §5.2・§5.3 は side-track stack と workflow state snapshot を、LLM が会話文脈で現在位置や復帰先を推測しないための中核機構として定義している。現行 INTENT は列挙で存在は示すが、意図文書として『現在位置・復帰先・承認待ちの可視化を機械状態で持つべき』という目的が十分に前景化されておらず、requirements 以降で optional 実装 detail と誤読されるリスクがある。"
+
+  - severity: WARN
+    target_location: ".reviewcompass/specs/workflow-management/requirements.md Requirement 13"
+    description: "Requirement 13 は required_action と operation contract の対応を要求しているが、統合設計 §3.1 で確定的に列挙された approval_required:true 対象や §3 の19件対応表を、要件本文の acceptance criteria では『最低限』『含む』レベルに留めており、完全な対応表の保持要求が弱い。"
+    rationale: "レビュー観点は traceability/completeness であり、incident memo でも『required_action to operation contract mapping』『effect_kind and approval_required』の欠落回収が主題である。現状でも Requirement 13 は大枠を戻しているが、要件としては registry 等に19語彙すべての対応を保持すること以上の必須項目が抽象的で、後続設計で一部のみ定義しても満たしたと解釈されうる。 source note の対応表を再推論不要な形で要求する強さが不足している。"
+
+  - severity: INFO
+    target_location: ".reviewcompass/specs/workflow-management/requirements.md Requirement 14"
+    description: "承認ゲート、側道スタック、状態スナップショットの主要論点はおおむね回収されており、incident memo の欠落項目に対する要件レベルの復旧としては概ね妥当。"
+    rationale: "統合設計 §5.1〜§5.3 のうち、approval gate の wait/record ペア、判断結果の分岐責務、side-track frame の必須属性、top-only pop、snapshot の出力先と最小項目は Requirement 14 に反映されている。後続設計へ進むための traceability は確保されつつある。"
+
+  - severity: WARN
+    target_location: ".reviewcompass/specs/workflow-management/requirements.md Requirement 15"
+    description: "有効プロンプト監査の第1層・第2層は要件化されているが、機械化設計 §5.2 が重視する『前提条件の網羅性』『不足している機械タスクの有無』という監査観点が acceptance criteria では弱く、LLM judge の監査範囲がやや一般化されている。"
+    rationale: "incident memo では『structured effective prompts and LLM judge audit』が未追記項目として挙がっている。Requirement 15 は構造と実施段階を戻しているが、source note の監査問いは、単なる prompt 品質ではなく、機械に移すべきものが prompt に残っていないかの監査である。ここが薄いと、下流設計で従来型の“長い説明書の品質検査”へ後退するおそれがある。"
+
+  - severity: WARN
+    target_location: ".reviewcompass/specs/workflow-management/requirements.md Requirement 16 AC2"
+    description: "Phase 0 の開始前提について、統合設計 §4.1 と §7 item 2 の整理を十分に保持できておらず、『Phase 1 のうち Requirement 2 受入10・11 を先に満たす』とだけ書くことで、Phase 0 前提が AC10・AC11 の2点に矮小化されて見える。"
+    rationale: "統合設計は、Phase 0 より前に必要なのは next応答/required_action の最小 schema であり、effect_kind など他の schema は並行可と整理している一方、今回の incident 自体が『最小2点だけに縮退して全体回収を逃した』ことにある。Requirement 16 AC2 の書き方は technically source と整合するが、文脈上また同じ誤読を誘発しやすい。Phase 0 前提の最小集合であって、統合設計全体の要件範囲を限定しないことを明確化した方が traceability 上安全である。"
+
+  - severity: INFO
+    target_location: ".reviewcompass/specs/workflow-management/requirements.md Change Intent / 実装由来契約の波及トレース"
+    description: "統合設計メモから Requirement 13〜16 へ戻した経緯と XDI-WM-005 の追跡は明示されており、会話依存だった背景を requirements 文書内で辿れる点は traceability 上有効。"
+    rationale: "review target の要件 4 は『会話コンテキストを再推論せずに後続作業へ進める追跡性』である。Change Intent の 2026-06-19 補完説明と XDI-WM-005 は、なぜ Requirement 13〜16 が追加されたかを requirement 文書単独で把握できるようにしており、incident memo の欠落回収として有益である。"}

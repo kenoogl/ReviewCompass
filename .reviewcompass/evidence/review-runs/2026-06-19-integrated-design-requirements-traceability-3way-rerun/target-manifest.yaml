@@ -1,0 +1,14 @@
+run_id: 2026-06-19-integrated-design-requirements-traceability-3way-rerun
+target_files:
+- path: .reviewcompass/evidence/review-runs/2026-06-19-integrated-design-requirements-traceability-3way-rerun/review-target.md
+  sha256: 4f2cf85655b80cc4d017698afe79e38abb9da8b8b4d849c0def09471d9f6ef98
+- path: docs/notes/2026-06-18-integrated-design-selection-execution-layers.md
+  sha256: 31d29388a8bb55c7e71501a2432cebd12c4d5ff6817052ebc36b81aef8c76608
+- path: docs/notes/working/2026-06-18-mechanized-workflow-execution-design.md
+  sha256: e38051da74d26f1237a4c690d1f2c1b678f923e9003b1549d05ee4a6431ce4bb
+- path: docs/notes/working/2026-06-19-integrated-design-requirements-missing.md
+  sha256: 962e1dde868bf383a5d5003adcb609bddd2d2509bd06a250ee705a5b5c63e6bc
+- path: intent/INTENT.md
+  sha256: f0529d2bab6a868c13a0672e295532760c0126e2a8a11fc6b69f2bf0adfd40e8
+- path: .reviewcompass/specs/workflow-management/requirements.md
+  sha256: bb611d99f469c0eb153b87e70e0575e08670634f6296ff5f7f95feee4073f670

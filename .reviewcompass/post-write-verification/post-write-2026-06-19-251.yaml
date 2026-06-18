@@ -1,0 +1,36 @@
+status: completed
+target_files:
+- .reviewcompass/evidence/review-runs/2026-06-19-integrated-design-requirements-shouldfix-postwrite/target.md
+- .reviewcompass/evidence/review-runs/2026-06-19-integrated-design-requirements-traceability-3way-rerun/review_summary.md
+- .reviewcompass/evidence/review-runs/2026-06-19-integrated-design-requirements-traceability-3way-rerun/triage.yaml
+- .reviewcompass/specs/workflow-management/requirements.md
+- intent/INTENT.md
+target_sha256:
+  .reviewcompass/evidence/review-runs/2026-06-19-integrated-design-requirements-shouldfix-postwrite/target.md: a00528a3a0ebc33efd9f2adbaf80d7df2e08c8ac77dbbc33da981aed577d34ee
+  .reviewcompass/evidence/review-runs/2026-06-19-integrated-design-requirements-traceability-3way-rerun/review_summary.md: 28e3fe170842fbdf950b116b1ba153a9d570bb9b986d2591014b29141719465c
+  .reviewcompass/evidence/review-runs/2026-06-19-integrated-design-requirements-traceability-3way-rerun/triage.yaml: 15f7a9c7e7c7daf98bc5ca1136967ff690d85bc58100b3042e9ce59fa9afaaa7
+  .reviewcompass/specs/workflow-management/requirements.md: 2d24be2c7b95bd33be0eed0d39405af49c30e9ac470f4327a33076dfa63f269f
+  intent/INTENT.md: 4bc55cd37fbaab9769c3294d3c44d998144f2ed630888d147988c309f472cd6a
+required_verifiers: &id001
+- gemini-3.5-flash
+completed_verifiers: *id001
+unresolved_substantive_findings: 0
+verifications:
+- verifier: gemini-3.5-flash
+  target_files:
+  - .reviewcompass/evidence/review-runs/2026-06-19-integrated-design-requirements-shouldfix-postwrite/target.md
+  - .reviewcompass/evidence/review-runs/2026-06-19-integrated-design-requirements-traceability-3way-rerun/review_summary.md
+  - .reviewcompass/evidence/review-runs/2026-06-19-integrated-design-requirements-traceability-3way-rerun/triage.yaml
+  - .reviewcompass/specs/workflow-management/requirements.md
+  - intent/INTENT.md
+  target_sha256:
+    .reviewcompass/evidence/review-runs/2026-06-19-integrated-design-requirements-shouldfix-postwrite/target.md: a00528a3a0ebc33efd9f2adbaf80d7df2e08c8ac77dbbc33da981aed577d34ee
+    .reviewcompass/evidence/review-runs/2026-06-19-integrated-design-requirements-traceability-3way-rerun/review_summary.md: 28e3fe170842fbdf950b116b1ba153a9d570bb9b986d2591014b29141719465c
+    .reviewcompass/evidence/review-runs/2026-06-19-integrated-design-requirements-traceability-3way-rerun/triage.yaml: 15f7a9c7e7c7daf98bc5ca1136967ff690d85bc58100b3042e9ce59fa9afaaa7
+    .reviewcompass/specs/workflow-management/requirements.md: 2d24be2c7b95bd33be0eed0d39405af49c30e9ac470f4327a33076dfa63f269f
+    intent/INTENT.md: 4bc55cd37fbaab9769c3294d3c44d998144f2ed630888d147988c309f472cd6a
+review_run:
+  path: .reviewcompass/evidence/review-runs/2026-06-19-integrated-design-requirements-shouldfix-postwrite
+  summary_path: .reviewcompass/evidence/review-runs/2026-06-19-integrated-design-requirements-shouldfix-postwrite/model-result-summary.yaml
+notes: Generated template; verify target_files cover current post-write targets before
+  use.
