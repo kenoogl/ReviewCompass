@@ -1,0 +1,4 @@
+run_id: post-write-reopen-classification-2026-06-18
+target_files:
+- path: docs/reviews/reopen-classification-2026-06-18-wm-phase1-schema-definitions.md
+  sha256: 21b0052dc5a3194083f3c4769aad476c5b9d2ca4945d9739cc2edb66ed4d6431

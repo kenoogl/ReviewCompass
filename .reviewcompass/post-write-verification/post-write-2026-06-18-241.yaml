@@ -1,0 +1,18 @@
+status: completed
+target_files:
+- docs/reviews/reopen-classification-2026-06-18-wm-phase1-schema-definitions.md
+target_sha256:
+  docs/reviews/reopen-classification-2026-06-18-wm-phase1-schema-definitions.md: 21b0052dc5a3194083f3c4769aad476c5b9d2ca4945d9739cc2edb66ed4d6431
+required_verifiers: &id001
+- gemini-3.5-flash
+completed_verifiers: *id001
+unresolved_substantive_findings: 0
+verifications:
+- verifier: gemini-3.5-flash
+  target_files:
+  - docs/reviews/reopen-classification-2026-06-18-wm-phase1-schema-definitions.md
+  target_sha256:
+    docs/reviews/reopen-classification-2026-06-18-wm-phase1-schema-definitions.md: 21b0052dc5a3194083f3c4769aad476c5b9d2ca4945d9739cc2edb66ed4d6431
+review_run:
+  path: .reviewcompass/evidence/review-runs/post-write-reopen-classification-2026-06-18
+  summary_path: .reviewcompass/evidence/review-runs/post-write-reopen-classification-2026-06-18/model-result-summary.yaml

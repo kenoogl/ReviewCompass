@@ -1,0 +1,26 @@
+round_id: round-1
+purpose: post_write_verification
+invocation_timestamp: '2026-06-18T09:00:44.899146+00:00'
+target_files:
+- path: docs/reviews/reopen-classification-2026-06-18-wm-phase1-schema-definitions.md
+  sha256: 21b0052dc5a3194083f3c4769aad476c5b9d2ca4945d9739cc2edb66ed4d6431
+criteria: post_write_verification
+prompt_sha256: d8a24cfa611d846f4decfe9589346c59ad9cce28b3c39a3f8315132b5f81a320
+model_results:
+- model_id: gemini-3.5-flash
+  provider: gemini-api
+  role: primary
+  treatment: primary
+  invocation_path: api
+  raw_path: raw/gemini-3.5-flash.round-1.txt
+  raw_sha256: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+  parsed_path: parsed/gemini-3.5-flash.round-1.yaml
+  parsed_sha256: 850f6a3038f711f7d410841fa0d51bb0454bff6f360c93adbcbf9a42a8cecea7
+  parse_status: parsed
+  formatted_by: parser
+  formatted_by_actor_type: orchestrator
+  formatted_by_actor: run_role.py
+  formatted_at: '2026-06-18T09:00:44.899146+00:00'
+  follow_up_action: triage
+  attempts: 1
+  duration_seconds: 6.104
