@@ -1,0 +1,4 @@
+run_id: deep-review
+target_files:
+- path: .reviewcompass/specs/workflow-management/reviews/2026-06-18-workflow-management-tasks-phase1-schema-definitions-review-run/deep-review/review-target.md
+  sha256: 69218f8a2f2dbd611b722d5aca8aa708a04c93521b90ecb221a1c904670a94b0

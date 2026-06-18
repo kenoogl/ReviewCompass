@@ -1,0 +1,258 @@
+run_id: deep-review
+triage_status: draft
+generated_at: '2026-06-18T14:54:57.293541+00:00'
+decision_actor: null
+decision_actor_type: human
+items:
+- finding_id: deep-review-claude-sonnet-4-6-primary-001
+  run_id: deep-review
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: '## 3.1 クラスタ C：順序要件の明記漏れ / 完了条件1の記述'
+  plain_language_summary: 完了条件1は enum の19語彙の「存在」のみを要求しており、D-003 §6 の優先順位順という「順序」要件を明示していない。テストも順序を検証しないため、逆順・任意順の
+    enum を持つ実装が完了条件を満たしてしまう。
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: AC10 および design §5.1 は「D-003 §6 の優先順位順に19値を列挙する（この順が正本）」と明記しており、順序はスキーマの意味的正確性に直結する。完了条件がこれを漏らしていると、T-015
+    が完了判定されても要件を充足しない成果物が生まれる可能性がある。テストで担保できない制約は完了条件に手動確認項目として明示するか、完了条件の文言に「D-003
+    §6 の優先順位順に列挙されていること（手動確認）」を追記する必要がある。
+  applied_files: []
+  superseded_by: null
+- finding_id: deep-review-claude-sonnet-4-6-primary-002
+  run_id: deep-review
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: '## 3.2 クラスタ A：テストが未検証の完了条件2の項目 / 完了条件2・完了条件3の整合性'
+  plain_language_summary: '完了条件2は `properties: { "verdict": false }`・`kind` 14値インライン
+    enum・`$ref: "urn:reviewcompass:schema:required_action"`（具体値）・条件付き必須フィールドを要求しているが、完了条件3（17テスト全pass）はこれらを検証しない。完了条件2と完了条件3が実質的に矛盾した保証水準を示している。'
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: 完了条件2を「満たす」と宣言した実装が、完了条件3（テスト全pass）だけで完了と判定できる構造になっている。verdict禁止の欠如・kindの架空値・$refの誤URNは仕様違反であり、T-011
+    統合テストまで発見されない可能性がある。完了条件3の表現を「17テスト全passは必要条件であり、下記項目は実装後手動確認を要する」に改め、未テスト項目を明示列挙すべきである。
+  applied_files: []
+  superseded_by: null
+- finding_id: deep-review-claude-sonnet-4-6-primary-003
+  run_id: deep-review
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: '## 3.2 クラスタ A / テスト挙動表：$ref具体値の検証（△行）'
+  plain_language_summary: '`test_required_action_ref_or_enum` は `$ref` の存在のみを確認し、その値（`urn:reviewcompass:schema:required_action`）を検証しない。完了条件2には具体URNが明記されているため、テストによる保証は不完全（△）とされているが、完了条件の文言上はこの区別が見えない。'
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: $ref が異なるURNを指す場合、required_action の語彙制約が失われ、AC11 の要件を充足しない。テスト△であることを完了条件の文言に反映しないと、レビュアーが誤ってテスト全passを完全な保証と解釈するリスクがある。
+  applied_files: []
+  superseded_by: null
+- finding_id: deep-review-claude-sonnet-4-6-primary-004
+  run_id: deep-review
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: '## 4. 判断に必要な関連事項 / T-011による補完の言及'
+  plain_language_summary: T-011（統合テスト）で不足カバレッジを補う余地があると記載されているが、その依存関係や移譲条件が tasks.md
+    の完了条件に反映されていない。T-015 の完了条件が「T-011で補完予定」という暗黙の前提に依存している。
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: T-015 の完了条件が単独で自己完結しない場合、T-015 を完了とした後に T-011 が実施されなかった、または T-011
+    のスコープが変わった場合、未検証の仕様違反が残存するリスクがある。完了条件に「T-011 で補完される未検証項目の一覧」を明示し、T-015 完了の前提条件として
+    T-011 との依存を可視化すべきである。
+  applied_files: []
+  superseded_by: null
+- finding_id: deep-review-claude-sonnet-4-6-primary-005
+  run_id: deep-review
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: '## 3.2 クラスタ A / 問い3：現在の書き方で問題ないか'
+  plain_language_summary: 「design §5.1 の設計を満たす」という参照によって要件を間接的に読み取れるという解釈の余地が示されているが、この読み替えは完了確認の実務において運用上の曖昧さを生む。
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: 完了条件が外部文書参照で要件を間接的に包含する構造は、レビュアーや実装者がどの項目をどの手段で確認するかを個別判断に委ねる。設計文書参照は補足として有効だが、確認手段（テスト
+    or 手動）の明示を代替できない。明確性の観点から、参照に加えて確認項目と確認手段を完了条件に列挙することが望ましい。
+  applied_files: []
+  superseded_by: null
+- finding_id: deep-review-gpt-5.5-adversarial-001
+  run_id: deep-review
+  source_model: gpt-5.5
+  source_round: round-1
+  source_raw_path: raw/gpt-5.5.round-1.txt
+  source_parsed_path: parsed/gpt-5.5.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: .reviewcompass/specs/workflow-management/reviews/2026-06-18-workflow-management-tasks-phase1-schema-definitions-review-run/deep-review/review-target.md
+    §3.1 / T-015 完了条件1
+  plain_language_summary: 完了条件1が、required_action.schema.json の enum を D-003 §6 の優先順位順に列挙することを明示していない。
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: AC10 と design §5.1 は enum の19語彙だけでなく、その配列順が正本であることを要求している。現行テストは語彙の存在のみを確認し順序を検証しないため、完了条件に順序要件を明示しないと、逆順や任意順の
+    enum でも17テスト全通過により完了扱いされ得る。
+  applied_files: []
+  superseded_by: null
+- finding_id: deep-review-gpt-5.5-adversarial-002
+  run_id: deep-review
+  source_model: gpt-5.5
+  source_round: round-1
+  source_raw_path: raw/gpt-5.5.round-1.txt
+  source_parsed_path: parsed/gpt-5.5.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: .reviewcompass/specs/workflow-management/reviews/2026-06-18-workflow-management-tasks-phase1-schema-definitions-review-run/deep-review/review-target.md
+    §3.2 / T-015 完了条件2・完了条件3
+  plain_language_summary: 17テスト全passを、AC11および design §5.2 の充足を保証する十分条件として扱えない。
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: 現行テストは next_action 内の verdict 禁止、kind の14値インライン enum の具体値、条件付き必須フィールド、required_action
+    の $ref 具体値を完全には検証していない。したがって完了条件3は必要条件として位置付け、未検証項目は実装後の手動確認またはスキーマ内容確認を完了条件に明示しないと、要件違反のスキーマが完了扱いされる。
+  applied_files: []
+  superseded_by: null
+- finding_id: deep-review-gpt-5.5-adversarial-003
+  run_id: deep-review
+  source_model: gpt-5.5
+  source_round: round-1
+  source_raw_path: raw/gpt-5.5.round-1.txt
+  source_parsed_path: parsed/gpt-5.5.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: .reviewcompass/specs/workflow-management/reviews/2026-06-18-workflow-management-tasks-phase1-schema-definitions-review-run/deep-review/review-target.md
+    §3.2 / 条件付き必須フィールド
+  plain_language_summary: 条件付き必須フィールドの具体的な条件・対象フィールドが完了条件上で特定されていない。
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: 『条件付き必須フィールド』という表現だけでは、実装者やレビュー担当者が何を確認すべきか一意に判断できない。テスト未検証で手動確認が必要な項目であるため、design
+    §5.2 の該当箇所や具体的な if/then/required ルールを完了条件から追跡可能にする必要がある。
+  applied_files: []
+  superseded_by: null
+- finding_id: deep-review-gpt-5.5-adversarial-004
+  run_id: deep-review
+  source_model: gpt-5.5
+  source_round: round-1
+  source_raw_path: raw/gpt-5.5.round-1.txt
+  source_parsed_path: parsed/gpt-5.5.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: .reviewcompass/specs/workflow-management/reviews/2026-06-18-workflow-management-tasks-phase1-schema-definitions-review-run/deep-review/review-target.md
+    §4
+  plain_language_summary: T-011 の統合テストで不足分を補う余地があることを、T-015 の受入不足を許容する根拠として読める。
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: T-015 は AC10・AC11 に対応するスキーマ定義タスクであり、T-015 完了時点で設計・要件を満たす必要がある。後続の統合テストは回帰確認や追加検証には有用だが、T-015
+    の完了条件から必須要件の確認を外す理由にはならない。
+  applied_files: []
+  superseded_by: null
+- finding_id: deep-review-gemini-3.1-pro-preview-judgment-001
+  run_id: deep-review
+  source_model: gemini-3.1-pro-preview
+  source_round: round-1
+  source_raw_path: raw/gemini-3.1-pro-preview.round-1.txt
+  source_parsed_path: parsed/gemini-3.1-pro-preview.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: 3.1 クラスタ C：順序要件の明記漏れ
+  plain_language_summary: 完了条件1に「D-003 §6の優先順位順であること」と「手動（目視やレビュー）での確認が必要であること」を明記するよう修正すべき
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: テストで順序を検証できない制約がある以上、自動テスト（完了条件3）のみでは要件AC10を担保できないため、補完する手動確認プロセスを完了条件に明示する必要がある。
+  applied_files: []
+  superseded_by: null
+- finding_id: deep-review-gemini-3.1-pro-preview-judgment-002
+  run_id: deep-review
+  source_model: gemini-3.1-pro-preview
+  source_round: round-1
+  source_raw_path: raw/gemini-3.1-pro-preview.round-1.txt
+  source_parsed_path: parsed/gemini-3.1-pro-preview.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: 3.2 クラスタ A：テストが未検証の完了条件2の項目
+  plain_language_summary: 「要件（AC11）」および「設計（design §5.2）」に記載のない「条件付き必須フィールド」という項目が「現状の完了条件2」に含まれており矛盾している
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: 要件・設計に存在しない項目が完了条件に含まれていると、実装者が何を実装し確認すべきか混乱する原因となる。誤記であれば削除が必要である。
+  applied_files: []
+  superseded_by: null
+- finding_id: deep-review-gemini-3.1-pro-preview-judgment-003
+  run_id: deep-review
+  source_model: gemini-3.1-pro-preview
+  source_round: round-1
+  source_raw_path: raw/gemini-3.1-pro-preview.round-1.txt
+  source_parsed_path: parsed/gemini-3.1-pro-preview.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: 3.2 クラスタ A：テストが未検証の完了条件2の項目
+  plain_language_summary: 完了条件2を修正し、テストで未検証となる項目（verdict禁止、kind 14値enum、$ref具体値）について、コードレビュー等で手動確認する旨を明記すべき
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: テストの変更が禁止されている制約上、現状のテスト全通過（完了条件3）だけではAC11の要件充足を証明できない。テストで担保できない要件は、手動で確認することを明文化しなければ要件漏れのリスクが残る。
+  applied_files: []
+  superseded_by: null
+- finding_id: deep-review-gemini-3.1-pro-preview-judgment-004
+  run_id: deep-review
+  source_model: gemini-3.1-pro-preview
+  source_round: round-1
+  source_raw_path: raw/gemini-3.1-pro-preview.round-1.txt
+  source_parsed_path: parsed/gemini-3.1-pro-preview.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: 4. 判断に必要な関連事項
+  plain_language_summary: フェーズ1の制約によりテストでの検証から漏れた項目（配列の順序、verdict禁止など）について、後続のT-011（統合テスト）でテストカバレッジを補完する方針を
+    tasks.md に追記することが望ましい
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: T-015における手動確認での回避は妥当だが、長期的には回帰バグを防ぐため、どのタスクで自動テスト化して技術的負債を解消するかを明示しておくことで品質保証の確実性が高まるため。
+  applied_files: []
+  superseded_by: null

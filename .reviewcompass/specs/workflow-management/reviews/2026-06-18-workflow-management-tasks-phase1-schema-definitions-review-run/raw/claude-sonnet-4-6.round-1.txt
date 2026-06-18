@@ -1,0 +1,20 @@
+findings:
+  - severity: WARN
+    target_location: "T-015 完了条件1"
+    description: "完了条件1に `enum` 19語彙の具体的な列挙がなく、design §5.1 参照のみに留まっている。"
+    rationale: "完了条件はタスク完了の自己完結した判断基準となるべきであり、design §5.1 を参照しなければ検証できない形式は、実装者・レビュアーが独立して条件を確認できない。語彙の明示的な列挙、またはその語彙数・出典の明記が望ましい。"
+
+  - severity: WARN
+    target_location: "4.3 design.md §3 と §5.2 の不一致メモ"
+    description: "design.md §3 の共通フィールド一覧（`action_parameters` を含む、`required_feature_scope`・`future_gates` を含まない）と §5.2 の必須フィールド10つが一致していない不整合が設計文書内に存在し、tasks.md 内でも参考情報として言及されている。"
+    rationale: "T-015 の実装は §5.2 を正本とするため直接的な障害にはならないが、将来的に §3 に基づく別タスクが作成された場合に矛盾が顕在化するリスクがある。設計文書の不一致は design フェーズで解消されるべきであり、tasks.md がその不整合を引き継いでいる点はトレーサビリティ上の懸念となる。"
+
+  - severity: INFO
+    target_location: "T-015 前提タスク"
+    description: "前提タスクに T-004・T-011 のみが列挙されており、T-001〜T-003 が不要である理由が tasks.md 本文に明示されていない。"
+    rationale: "スキーマファイルの作成（T-015）がリポジトリ基盤（T-001〜T-003 が担う可能性のある初期セットアップ等）に依存しないことが自明でない場合、レビュアーが独立して依存関係の完全性を判断できない。簡潔な除外理由の注記があると可読性が向上する。"
+
+  - severity: INFO
+    target_location: "T-015 完了条件2"
+    description: "`properties: { \"verdict\": false }` の記述が完了条件2に含まれているが、これは `next_action` オブジェクト内での禁止であることが完了条件の文中で明示されていない。"
+    rationale: "requirements.md AC11 には「`next_action` 内で禁止」と明記されているのに対し、T-015 完了条件2の記述ではその配置が `next_action` 内であることが読み取りにくい。実装者が最上位スキーマに誤配置するリスクを低減するため、対象階層の明示が望ましい。"

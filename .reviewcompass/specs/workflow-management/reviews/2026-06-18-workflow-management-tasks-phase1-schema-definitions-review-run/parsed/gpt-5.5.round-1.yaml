@@ -1,0 +1,27 @@
+role: adversarial
+provider: openai-api
+model: gpt-5.5
+attempts: 1
+duration_seconds: 59.225
+findings:
+- severity: ERROR
+  target_location: T-015 完了条件1 / Requirement 2 受入10
+  description: required_action の enum について、AC10 が要求する「D-003 §6 の優先順位順」が完了条件に明記されていない。
+  rationale: AC10 は 19 語彙の存在だけでなく列挙順も要求しているが、T-015 は「enum 19語彙」としか書いていないため、順序が不正でもタスク上は完了と解釈される余地がある。提示されたテスト内訳にも順序検証がないため、要件充足の見落としにつながる。
+- severity: ERROR
+  target_location: T-015 責務 / 完了条件3 / tests/tools/test_phase1_schema_definitions.py
+    との対応
+  description: 「17テストを通過させることで実装の正しさを担保する」という記載に対し、テスト内訳は design §5.2 / AC11 の主要条件を十分に検証していない。
+  rationale: '提示された8件の next_action_response テストでは、`$ref` が `urn:reviewcompass:schema:required_action`
+    と一致すること、`kind` が14値のインライン enum であること、`next_action.properties.verdict: false` による禁止、条件付き必須フィールドなどが確認されない。特に
+    `test_required_action_ref_or_enum` は `$ref` または enum の存在のみを許容しており、T-015 の完了条件2より弱い。テスト全passだけで設計・要件適合を保証できないため、タスク記述上は手動確認項目を明示するか、テスト保証という表現を弱める必要がある。'
+- severity: WARN
+  target_location: T-015 完了条件2
+  description: 「条件付き必須フィールド」の内容がタスク内で具体化されていない。
+  rationale: 参照抜粋の Requirement 2 受入11、およびレビュー観点Bの design §5.2 確定事項には条件付き必須フィールドの具体名や条件が示されていない。T-015
+    の完了判定者が design.md §5.2 を別途読めば判断できる可能性はあるが、tasks.md 単体では何を実装・確認すべきか曖昧になるため、該当フィールド名と条件、または厳密な設計節への参照を明記した方がよい。
+- severity: WARN
+  target_location: T-015 前提タスク
+  description: T-004 と T-011 を T-015 の前提タスクとする根拠が、提示された説明だけでは依存方向として不明確である。
+  rationale: T-015 はスキーマ定義ファイルを作成するタスクであり、T-004 の `check-workflow-action.py` や回帰テスト統合はむしろそのスキーマ成果物を参照・利用する側に見える。タスクグラフ上の「前提」が実行順序を意味する場合、スキーマ作成が消費側タスクの後に置かれ、依存関係が逆転するおそれがある。T-004/T-011
+    が既存の参照契約やテスト基盤を確定済みであることを前提にする意図なら、その理由を明確化するとよい。

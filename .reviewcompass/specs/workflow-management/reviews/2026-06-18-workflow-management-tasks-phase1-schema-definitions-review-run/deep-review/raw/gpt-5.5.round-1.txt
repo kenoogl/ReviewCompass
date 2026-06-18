@@ -1,0 +1,17 @@
+findings:
+  - severity: ERROR
+    target_location: ".reviewcompass/specs/workflow-management/reviews/2026-06-18-workflow-management-tasks-phase1-schema-definitions-review-run/deep-review/review-target.md §3.1 / T-015 完了条件1"
+    description: "完了条件1が、required_action.schema.json の enum を D-003 §6 の優先順位順に列挙することを明示していない。"
+    rationale: "AC10 と design §5.1 は enum の19語彙だけでなく、その配列順が正本であることを要求している。現行テストは語彙の存在のみを確認し順序を検証しないため、完了条件に順序要件を明示しないと、逆順や任意順の enum でも17テスト全通過により完了扱いされ得る。"
+  - severity: ERROR
+    target_location: ".reviewcompass/specs/workflow-management/reviews/2026-06-18-workflow-management-tasks-phase1-schema-definitions-review-run/deep-review/review-target.md §3.2 / T-015 完了条件2・完了条件3"
+    description: "17テスト全passを、AC11および design §5.2 の充足を保証する十分条件として扱えない。"
+    rationale: "現行テストは next_action 内の verdict 禁止、kind の14値インライン enum の具体値、条件付き必須フィールド、required_action の $ref 具体値を完全には検証していない。したがって完了条件3は必要条件として位置付け、未検証項目は実装後の手動確認またはスキーマ内容確認を完了条件に明示しないと、要件違反のスキーマが完了扱いされる。"
+  - severity: ERROR
+    target_location: ".reviewcompass/specs/workflow-management/reviews/2026-06-18-workflow-management-tasks-phase1-schema-definitions-review-run/deep-review/review-target.md §3.2 / 条件付き必須フィールド"
+    description: "条件付き必須フィールドの具体的な条件・対象フィールドが完了条件上で特定されていない。"
+    rationale: "『条件付き必須フィールド』という表現だけでは、実装者やレビュー担当者が何を確認すべきか一意に判断できない。テスト未検証で手動確認が必要な項目であるため、design §5.2 の該当箇所や具体的な if/then/required ルールを完了条件から追跡可能にする必要がある。"
+  - severity: WARN
+    target_location: ".reviewcompass/specs/workflow-management/reviews/2026-06-18-workflow-management-tasks-phase1-schema-definitions-review-run/deep-review/review-target.md §4"
+    description: "T-011 の統合テストで不足分を補う余地があることを、T-015 の受入不足を許容する根拠として読める。"
+    rationale: "T-015 は AC10・AC11 に対応するスキーマ定義タスクであり、T-015 完了時点で設計・要件を満たす必要がある。後続の統合テストは回帰確認や追加検証には有用だが、T-015 の完了条件から必須要件の確認を外す理由にはならない。"

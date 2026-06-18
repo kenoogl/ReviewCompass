@@ -1,0 +1,16 @@
+role: judgment
+provider: gemini-api
+model: gemini-3.1-pro-preview
+attempts: 1
+duration_seconds: 19.46
+findings:
+- severity: WARN
+  target_location: 2.2 T-015 の追加 / 4.2 テスト17件の内訳
+  description: 完了条件2で要求されている仕様の一部を検証するテスト項目が内訳に存在しない
+  rationale: 'T-015の完了条件2では「properties: { ''verdict'': false }（verdictの禁止）」「kind 14値インライン
+    enum」「条件付き必須フィールド」を満たすことが要求されているが、TestNextActionResponseSchemaのテスト内訳（8件）にはこれらを明示的に検証する項目が含まれていない。TDDを前提としているため、テストが完了条件を網羅していないと実装漏れを見逃す恐れがある。'
+- severity: INFO
+  target_location: 4.3 design.md §3 との不一致メモ（参考情報）
+  description: design.md の §3 と §5.2 の間で next_action の必須フィールド定義に矛盾が残っている
+  rationale: T-015は§5.2を正本と指定しているためタスクの実行自体に支障はないが、上流の設計文書において「action_parameters」や「required_feature_scope」「future_gates」の扱いに不一致が存在する状態は望ましくない。後続フェーズでの混乱やバグを防ぐため、design.md
+    の修正タスクの追加等を別途検討するべきである。

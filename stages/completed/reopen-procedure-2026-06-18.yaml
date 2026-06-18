@@ -19,13 +19,13 @@ completed_steps:
 - 第3過程（design）：design review-wave 完了（他機能影響なし）
 - 第3過程（design）：design alignment 完了（requirements AC10/AC11 と整合確認済み）
 - 第3過程（design）：design approval 完了（利用者承認済み、セッション 854682f5）
-next_step: tasks/triad-review
-step_number: 3
-pending_gates:
-- stages/tasks.yaml#triad-review
-- stages/tasks.yaml#review-wave
-- stages/tasks.yaml#alignment
-- stages/tasks.yaml#approval
+- 第3過程（tasks）：tasks triad-review 完了（10件トリアージ完了、tasks.md 完了条件3点修正済み）
+- 第3過程（tasks）：tasks review-wave 完了（他機能影響なし確認済み）
+- 第3過程（tasks）：tasks alignment 完了（requirements AC10/AC11 と整合確認済み）
+- 第3過程（tasks）：tasks approval 完了（利用者承認済み）
+next_step: 第4過程：完了
+step_number: 4
+pending_gates: []
 completed_gates:
 - stages/requirements.yaml#triad-review
 - stages/requirements.yaml#review-wave
@@ -35,6 +35,10 @@ completed_gates:
 - stages/design.yaml#review-wave
 - stages/design.yaml#alignment
 - stages/design.yaml#approval
+- stages/tasks.yaml#triad-review
+- stages/tasks.yaml#review-wave
+- stages/tasks.yaml#alignment
+- stages/tasks.yaml#approval
 drafting_completed_gates:
 - stages/requirements.yaml#drafting
 - stages/design.yaml#drafting
@@ -78,7 +82,8 @@ downstream_impact_decisions:
 - gate: stages/requirements.yaml#triad-review
   feature_scope: workflow-management
   decision: approved
-  rationale: requirements triad-review を 2 ラウンド・3 モデルで実施。クラスタ A〜F の全所見（25 件）を裁定・反映し、後書き検証（gemini-3.5-flash）で 0 所見を確認した。
+  rationale: requirements triad-review を 2 ラウンド・3 モデルで実施。クラスタ A〜F の全所見（25 件）を裁定・反映し、後書き検証（gemini-3.5-flash）で
+    0 所見を確認した。
   evidence:
   - .reviewcompass/specs/workflow-management/reviews/2026-06-18-workflow-management-requirements-phase1-schema-definitions-review-run/triage.yaml
   - .reviewcompass/post-write-verification/post-write-2026-06-18-242.yaml
@@ -108,13 +113,15 @@ downstream_impact_decisions:
 - gate: stages/design.yaml#triad-review
   feature_scope: workflow-management
   decision: approved
-  rationale: design triad-review を 2ラウンド（main + deep-review）で実施。クラスタ A/B/C/D/S-1/S-2 の全所見（11件）を裁定・反映した。トリアージ完了（must-fix 7件解決・should-fix 2件解決・leave-as-is 2件）。
+  rationale: design triad-review を 2ラウンド（main + deep-review）で実施。クラスタ A/B/C/D/S-1/S-2
+    の全所見（11件）を裁定・反映した。トリアージ完了（must-fix 7件解決・should-fix 2件解決・leave-as-is 2件）。
   evidence:
   - .reviewcompass/specs/workflow-management/reviews/2026-06-18-workflow-management-design-phase1-schema-definitions-review-run/triage.yaml
 - gate: stages/design.yaml#review-wave
   feature_scope: workflow-management
   decision: existing_sufficient
-  rationale: design.md §5.2 の変更は workflow-management 内部の JSON Schema 定義の詳細修正（$ref 絶対URN化・verdict禁止追加・additionalProperties理由区別・kind enum化）であり、他6機能の要件・設計に影響しない。
+  rationale: design.md §5.2 の変更は workflow-management 内部の JSON Schema 定義の詳細修正（$ref
+    絶対URN化・verdict禁止追加・additionalProperties理由区別・kind enum化）であり、他6機能の要件・設計に影響しない。
   evidence:
   - .reviewcompass/specs/_cross_feature/reviews/2026-06-18-design-review-wave-phase1-schema-definitions-reopen.md
 - gate: stages/design.yaml#alignment
@@ -126,25 +133,29 @@ downstream_impact_decisions:
 - gate: stages/design.yaml#approval
   feature_scope: workflow-management
   decision: approved
-  rationale: 利用者が明示的に承認（セッション 854682f5、「承認」発言）。design §5.2 の6点修正（$ref絶対URN化・後方互換等価性の責務明確化・minItems明記・verdict禁止追加・additionalProperties理由区別・kind enum化）を承認済み。
+  rationale: 利用者が明示的に承認（セッション 854682f5、「承認」発言）。design §5.2 の6点修正（$ref絶対URN化・後方互換等価性の責務明確化・minItems明記・verdict禁止追加・additionalProperties理由区別・kind
+    enum化）を承認済み。
   evidence:
   - .reviewcompass/specs/_cross_feature/reviews/2026-06-18-design-alignment-phase1-schema-definitions-reopen.md
 - gate: stages/tasks.yaml#triad-review
   feature_scope: workflow-management
   decision: affected_update_required
-  rationale: recheck.impacted_downstream_phases 対象。T-015（Phase 1 最小スキーマ定義ファイル作成）を tasks.md に追加済み。triad-review は次セッションで実施予定。
+  rationale: recheck.impacted_downstream_phases 対象。T-015（Phase 1 最小スキーマ定義ファイル作成）を
+    tasks.md に追加済み。triad-review は次セッションで実施予定。
   evidence:
   - .reviewcompass/specs/workflow-management/tasks.md
 - gate: stages/tasks.yaml#review-wave
   feature_scope: workflow-management
   decision: affected_update_required
-  rationale: recheck.impacted_downstream_phases 対象。T-015 追加後に他機能への影響確認が必要。review-wave は triad-review 完了後に次セッションで実施予定。
+  rationale: recheck.impacted_downstream_phases 対象。T-015 追加後に他機能への影響確認が必要。review-wave
+    は triad-review 完了後に次セッションで実施予定。
   evidence:
   - .reviewcompass/specs/workflow-management/tasks.md
 - gate: stages/tasks.yaml#alignment
   feature_scope: workflow-management
   decision: affected_update_required
-  rationale: recheck.impacted_downstream_phases 対象。required_action.schema.json と next_action_response.schema.json の作成タスク（T-015）を tasks.md に追加済み。alignment は次セッションで実施予定。
+  rationale: recheck.impacted_downstream_phases 対象。required_action.schema.json と next_action_response.schema.json
+    の作成タスク（T-015）を tasks.md に追加済み。alignment は次セッションで実施予定。
   evidence:
   - .reviewcompass/specs/workflow-management/spec.json
   - .reviewcompass/specs/workflow-management/tasks.md
@@ -157,16 +168,50 @@ downstream_impact_decisions:
 - gate: stages/implementation.yaml#alignment
   feature_scope: workflow-management
   decision: affected_update_required
-  rationale: recheck.impacted_downstream_phases 対象。17 テスト（tests/tools/test_phase1_schema_definitions.py）を通過させる TDD 実装（required_action.schema.json・next_action_response.schema.json の作成）が未着手。recheck 手続き（別セッション）で実施予定。
+  rationale: recheck.impacted_downstream_phases 対象。17 テスト（tests/tools/test_phase1_schema_definitions.py）を通過させる
+    TDD 実装（required_action.schema.json・next_action_response.schema.json の作成）が未着手。recheck
+    手続き（別セッション）で実施予定。
   evidence:
   - .reviewcompass/specs/workflow-management/spec.json
   - tests/tools/test_phase1_schema_definitions.py
 - gate: stages/implementation.yaml#approval
   feature_scope: workflow-management
   decision: affected_update_required
-  rationale: recheck.impacted_downstream_phases 対象。implementation 完了後に利用者承認が必要。recheck 手続き（別セッション）で実施予定。
+  rationale: recheck.impacted_downstream_phases 対象。implementation 完了後に利用者承認が必要。recheck
+    手続き（別セッション）で実施予定。
   evidence:
   - .reviewcompass/specs/workflow-management/spec.json
+- gate: stages/tasks.yaml#triad-review
+  feature_scope: workflow-management
+  decision: approved
+  rationale: tasks triad-review を2ラウンド（main + deep-review）で実施。10件の所見（ERROR 2件・WARN
+    5件・INFO 3件）をトリアージし、3件を applied（完了条件1に enum 順序要件追記、完了条件2を具体化、完了条件3を必要条件に修正）、2件を
+    superseded、3件を leave-as-is と判定。tasks.md の T-015 完了条件が AC10/AC11 の要件を漏れなく反映した。
+  evidence:
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-18-workflow-management-tasks-phase1-schema-definitions-review-run/triage.yaml
+- gate: stages/tasks.yaml#review-wave
+  feature_scope: workflow-management
+  decision: existing_sufficient
+  rationale: T-015（required_action.schema.json・next_action_response.schema.json の作成タスク）は
+    workflow-management 内部のスキーマファイル定義であり、他機能の tasks・implementation に変更を要しない。review-wave-summary
+    で全7機能が all_approved かつ upstream_change_pending=false を確認済み。
+  evidence:
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-18-workflow-management-tasks-phase1-schema-definitions-review-run/triage.yaml
+- gate: stages/tasks.yaml#alignment
+  feature_scope: workflow-management
+  decision: existing_sufficient
+  rationale: T-015 は AC10（required_action スキーマ定義）・AC11（next_action_response スキーマ定義）に直接対応し、既存
+    T-001〜T-014 との依存順（前提タスク T-004・T-011）も整合している。tasks.md の完了条件はトリアージ後の修正で AC10/AC11
+    の要件を漏れなく反映した。tasks 段内の追加改訂は不要。
+  evidence:
+  - .reviewcompass/specs/workflow-management/tasks.md
+- gate: stages/tasks.yaml#approval
+  feature_scope: workflow-management
+  decision: approved
+  rationale: 利用者が明示的に承認（セッション cf8204d6 継続、「承認」発言）。tasks/triad-review 2ラウンドの10件所見トリアージ完了、T-015
+    完了条件3点修正（enum順序要件追記・条件付き必須フィールド具体化・完了条件3を必要条件に修正）を承認済み。
+  evidence:
+  - .reviewcompass/specs/workflow-management/tasks.md
 impacted_downstream_phases:
 - design
 - tasks

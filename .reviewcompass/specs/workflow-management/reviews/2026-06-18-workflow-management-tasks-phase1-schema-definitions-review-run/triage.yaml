@@ -1,0 +1,196 @@
+run_id: 2026-06-18-workflow-management-tasks-phase1-schema-definitions-review-run
+triage_status: completed
+generated_at: '2026-06-18T14:19:46.248249+00:00'
+decision_actor: kenoogl
+decision_actor_type: human
+items:
+- finding_id: 2026-06-18-workflow-management-tasks-phase1-schema-definitions-review-run-claude-sonnet-4-6-primary-001
+  run_id: 2026-06-18-workflow-management-tasks-phase1-schema-definitions-review-run
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: T-015 完了条件1
+  plain_language_summary: 完了条件1に `enum` 19語彙の具体的な列挙がなく、design §5.1 参照のみに留まっている。
+  final_label: superseded
+  decision_status: decided
+  decision_actor: kenoogl
+  decision_actor_type: human
+  decision_at: '2026-06-19T00:00:00+09:00'
+  decision_reason: gpt-5.5-adversarial-001（ERROR）が同根の問題をより具体的に指摘しており、そちらで対処済み。完了条件1に「D-003 §6 の優先順位順に並んでいること（手動確認）」を追記したことで間接的に対応。
+  applied_files: []
+  superseded_by: 2026-06-18-workflow-management-tasks-phase1-schema-definitions-review-run-gpt-5.5-adversarial-001
+- finding_id: 2026-06-18-workflow-management-tasks-phase1-schema-definitions-review-run-claude-sonnet-4-6-primary-002
+  run_id: 2026-06-18-workflow-management-tasks-phase1-schema-definitions-review-run
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: 4.3 design.md §3 との不一致メモ
+  plain_language_summary: design.md §3 の共通フィールド一覧（`action_parameters` を含む、`required_feature_scope`・`future_gates`
+    を含まない）と §5.2 の必須フィールド10つが一致していない不整合が設計文書内に存在し、tasks.md 内でも参考情報として言及されている。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: kenoogl
+  decision_actor_type: human
+  decision_at: '2026-06-19T00:00:00+09:00'
+  decision_reason: design.md の §3 と §5.2 の不整合は tasks.md 修正の範囲外。T-015 は §5.2 を正本と指定しており、実装上の障害はない。design フェーズでの修正事項として記録するに留める。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-18-workflow-management-tasks-phase1-schema-definitions-review-run-claude-sonnet-4-6-primary-003
+  run_id: 2026-06-18-workflow-management-tasks-phase1-schema-definitions-review-run
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: T-015 前提タスク
+  plain_language_summary: 前提タスクに T-004・T-011 のみが列挙されており、T-001〜T-003 が不要である理由が tasks.md
+    本文に明示されていない。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: kenoogl
+  decision_actor_type: human
+  decision_at: '2026-06-19T00:00:00+09:00'
+  decision_reason: T-015 はスキーマファイルを 2 枚作成するだけのタスクであり、ディレクトリ準備（T-001〜T-003）に依存しない。INFO 所見であり、除外理由の注記は可読性の問題で必須要件ではない。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-18-workflow-management-tasks-phase1-schema-definitions-review-run-claude-sonnet-4-6-primary-004
+  run_id: 2026-06-18-workflow-management-tasks-phase1-schema-definitions-review-run
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: T-015 完了条件2
+  plain_language_summary: '`properties: { "verdict": false }` の記述が完了条件2に含まれているが、これは
+    `next_action` オブジェクト内での禁止であることが完了条件の文中で明示されていない。'
+  final_label: applied
+  decision_status: decided
+  decision_actor: kenoogl
+  decision_actor_type: human
+  decision_at: '2026-06-19T00:00:00+09:00'
+  decision_reason: 完了条件2の修正で「`next_action` 内で `properties: { "verdict": false }` による verdict 禁止（手動確認）」と明示した。
+  applied_files:
+  - .reviewcompass/specs/workflow-management/tasks.md
+  superseded_by: null
+- finding_id: 2026-06-18-workflow-management-tasks-phase1-schema-definitions-review-run-gpt-5.5-adversarial-001
+  run_id: 2026-06-18-workflow-management-tasks-phase1-schema-definitions-review-run
+  source_model: gpt-5.5
+  source_round: round-1
+  source_raw_path: raw/gpt-5.5.round-1.txt
+  source_parsed_path: parsed/gpt-5.5.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: T-015 完了条件1 / Requirement 2 受入10
+  plain_language_summary: required_action の enum について、AC10 が要求する「D-003 §6 の優先順位順」が完了条件に明記されていない。
+  final_label: applied
+  decision_status: decided
+  decision_actor: kenoogl
+  decision_actor_type: human
+  decision_at: '2026-06-19T00:00:00+09:00'
+  decision_reason: 完了条件1に「`enum` の配列が D-003 §6 の優先順位順に並んでいること（テストは順序を確認しないため手動確認）」を追記した。
+  applied_files:
+  - .reviewcompass/specs/workflow-management/tasks.md
+  superseded_by: null
+- finding_id: 2026-06-18-workflow-management-tasks-phase1-schema-definitions-review-run-gpt-5.5-adversarial-002
+  run_id: 2026-06-18-workflow-management-tasks-phase1-schema-definitions-review-run
+  source_model: gpt-5.5
+  source_round: round-1
+  source_raw_path: raw/gpt-5.5.round-1.txt
+  source_parsed_path: parsed/gpt-5.5.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: T-015 責務 / 完了条件3 / tests/tools/test_phase1_schema_definitions.py
+    との対応
+  plain_language_summary: 「17テストを通過させることで実装の正しさを担保する」という記載に対し、テスト内訳は design §5.2 /
+    AC11 の主要条件を十分に検証していない。
+  final_label: applied
+  decision_status: decided
+  decision_actor: kenoogl
+  decision_actor_type: human
+  decision_at: '2026-06-19T00:00:00+09:00'
+  decision_reason: 完了条件3を「17テスト全通過は必要条件であり、完了条件1の enum 順序・完了条件2の手動確認項目は別途手動で確認する」に修正した。また完了条件2でテスト未検証項目（verdict禁止・kind具体値・$ref具体値・条件付き必須フィールド）をそれぞれ「手動確認」として明示した。
+  applied_files:
+  - .reviewcompass/specs/workflow-management/tasks.md
+  superseded_by: null
+- finding_id: 2026-06-18-workflow-management-tasks-phase1-schema-definitions-review-run-gpt-5.5-adversarial-003
+  run_id: 2026-06-18-workflow-management-tasks-phase1-schema-definitions-review-run
+  source_model: gpt-5.5
+  source_round: round-1
+  source_raw_path: raw/gpt-5.5.round-1.txt
+  source_parsed_path: parsed/gpt-5.5.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: T-015 完了条件2
+  plain_language_summary: 「条件付き必須フィールド」の内容がタスク内で具体化されていない。
+  final_label: applied
+  decision_status: decided
+  decision_actor: kenoogl
+  decision_actor_type: human
+  decision_at: '2026-06-19T00:00:00+09:00'
+  decision_reason: 完了条件2に「条件付き必須フィールドが `if/then` 構文で定義されていること：`repair_reasons`（`required_action = "repair_workflow_state"` のとき必須）・`action_parameters`（`required_action = "run_maintenance"` のとき必須）（手動確認）」を追記した。
+  applied_files:
+  - .reviewcompass/specs/workflow-management/tasks.md
+  superseded_by: null
+- finding_id: 2026-06-18-workflow-management-tasks-phase1-schema-definitions-review-run-gpt-5.5-adversarial-004
+  run_id: 2026-06-18-workflow-management-tasks-phase1-schema-definitions-review-run
+  source_model: gpt-5.5
+  source_round: round-1
+  source_raw_path: raw/gpt-5.5.round-1.txt
+  source_parsed_path: parsed/gpt-5.5.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: T-015 前提タスク
+  plain_language_summary: T-004 と T-011 を T-015 の前提タスクとする根拠が、提示された説明だけでは依存方向として不明確である。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: kenoogl
+  decision_actor_type: human
+  decision_at: '2026-06-19T00:00:00+09:00'
+  decision_reason: T-004 は参照先（check-workflow-action.py がスキーマを参照する）として、T-011 は統合テスト受け入れ先として前提タスクとした。依存方向の説明補足は軽微な改善であり必須ではない。WARN 所見だが tasks.md の記述範囲で対処は不要と判断。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-18-workflow-management-tasks-phase1-schema-definitions-review-run-gemini-3.1-pro-preview-judgment-001
+  run_id: 2026-06-18-workflow-management-tasks-phase1-schema-definitions-review-run
+  source_model: gemini-3.1-pro-preview
+  source_round: round-1
+  source_raw_path: raw/gemini-3.1-pro-preview.round-1.txt
+  source_parsed_path: parsed/gemini-3.1-pro-preview.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: 2.2 T-015 の追加 / 4.2 テスト17件の内訳
+  plain_language_summary: 完了条件2で要求されている仕様の一部を検証するテスト項目が内訳に存在しない
+  final_label: applied
+  decision_status: decided
+  decision_actor: kenoogl
+  decision_actor_type: human
+  decision_at: '2026-06-19T00:00:00+09:00'
+  decision_reason: 完了条件2のテスト未検証項目（verdict禁止・kind 14値・条件付き必須フィールド）を手動確認として明示し、完了条件3を「必要条件」に弱めた。テストの変更は TDD 規律で禁止されているため、完了条件の記述で対処した。
+  applied_files:
+  - .reviewcompass/specs/workflow-management/tasks.md
+  superseded_by: null
+- finding_id: 2026-06-18-workflow-management-tasks-phase1-schema-definitions-review-run-gemini-3.1-pro-preview-judgment-002
+  run_id: 2026-06-18-workflow-management-tasks-phase1-schema-definitions-review-run
+  source_model: gemini-3.1-pro-preview
+  source_round: round-1
+  source_raw_path: raw/gemini-3.1-pro-preview.round-1.txt
+  source_parsed_path: parsed/gemini-3.1-pro-preview.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: 4.3 design.md §3 との不一致メモ（参考情報）
+  plain_language_summary: design.md の §3 と §5.2 の間で next_action の必須フィールド定義に矛盾が残っている
+  final_label: superseded
+  decision_status: decided
+  decision_actor: kenoogl
+  decision_actor_type: human
+  decision_at: '2026-06-19T00:00:00+09:00'
+  decision_reason: claude-sonnet-4-6-primary-002 と同根の所見。design フェーズでの修正事項として同一の leave-as-is 判断を適用。
+  applied_files: []
+  superseded_by: 2026-06-18-workflow-management-tasks-phase1-schema-definitions-review-run-claude-sonnet-4-6-primary-002

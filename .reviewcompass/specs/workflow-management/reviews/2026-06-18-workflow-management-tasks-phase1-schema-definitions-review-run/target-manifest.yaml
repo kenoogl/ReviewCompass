@@ -1,0 +1,4 @@
+run_id: 2026-06-18-workflow-management-tasks-phase1-schema-definitions-review-run
+target_files:
+- path: .reviewcompass/specs/workflow-management/reviews/2026-06-18-workflow-management-tasks-phase1-schema-definitions-review-run/review-target.md
+  sha256: 685fd939b36def280a972dcbdb5bc122171c5f5104242d825262287e33baf444
