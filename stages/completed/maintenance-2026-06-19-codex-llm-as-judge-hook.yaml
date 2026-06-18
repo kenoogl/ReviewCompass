@@ -1,0 +1,37 @@
+process_id: maintenance
+started_at: "2026-06-19"
+completed_at: "2026-06-19"
+trigger: "Codex lacks the UserPromptSubmit hook that injects docs/disciplines/discipline_llm_as_judge_prompting.md for review-related prompts."
+mainline_blocked_by: "LLM-as-judge review prompt discipline is not automatically surfaced in Codex sessions."
+classification: local
+reason: "The change is limited to Codex hook parity for an existing Claude-side prompt guide injection mechanism. It does not change workflow state semantics, review criteria, or existing session capture hooks."
+procedure: "TDD"
+allowed_scope:
+  - codex_hook_prompt_guide_injection
+allowed_files:
+  - ".codex/hooks.json"
+  - ".codex/hooks/README.md"
+  - ".codex/hooks/review-prompt-guide-inject.sh"
+  - "templates/hooks/codex-hooks.json.template"
+  - "tests/hooks/test_codex_hook_repository.py"
+  - "stages/in-progress/maintenance-2026-06-19-codex-llm-as-judge-hook.yaml"
+  - "stages/completed/maintenance-2026-06-19-codex-llm-as-judge-hook.yaml"
+completion_conditions:
+  - "Codex UserPromptSubmit hook is registered for review-related prompt guide injection."
+  - "The hook reads docs/disciplines/discipline_llm_as_judge_prompting.md from cwd and emits additionalContext only for review-related prompts."
+  - "Codex hook template includes the same registration."
+  - "Focused hook repository tests pass."
+completed_conditions:
+  - "Added .codex/hooks/review-prompt-guide-inject.sh."
+  - "Registered the hook in .codex/hooks.json and templates/hooks/codex-hooks.json.template."
+  - "Updated .codex/hooks/README.md to distinguish review prompt guide injection from session capture."
+  - "Added focused tests in tests/hooks/test_codex_hook_repository.py."
+verification:
+  focused:
+    command: ".venv/bin/python3 -m unittest tests.hooks.test_codex_hook_repository -v"
+    result: pass
+  broader:
+    command: ".venv/bin/python3 -m unittest discover -s tests/hooks -v"
+    result: fail
+    note: "Failures were in pre-existing pre-bash/session capture test areas, not in the new Codex prompt guide hook tests."
+return_to: "integrated-design requirements follow-up"

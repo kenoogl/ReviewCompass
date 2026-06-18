@@ -28,6 +28,7 @@ tools/experiments/logs/
 .codex/hooks/*
 !.codex/hooks/README.md
 !.codex/hooks/pre-bash-precheck.sh
+!.codex/hooks/review-prompt-guide-inject.sh
 !.codex/hooks/session-record-capture-current-on-todo.sh
 !.codex/hooks/session-record-promote-previous-draft.sh
 

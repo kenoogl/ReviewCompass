@@ -45,11 +45,43 @@ Codex の hook 設定で呼び出すスクリプトを置く。
 
 **登録**：`.codex/hooks.json` の `hooks.PreToolUse` セクションに matcher = `"Bash"` で登録済み。
 
+### `review-prompt-guide-inject.sh`（UserPromptSubmit hook）
+
+**役割**：レビュー、審査、3者レビュー、triad、proxy、プロンプト、判定に関するユーザー発話を検出したとき、`docs/disciplines/discipline_llm_as_judge_prompting.md` を追加コンテキストとして注入する。3者レビューや proxy_model 判断の前に、材料揃え、問い設計、機微情報チェックを Codex が読み落とさないようにする。
+
+**入力**：標準入力で Codex の UserPromptSubmit JSON ペイロードを受け取る。
+
+```json
+{"hook_event_name":"UserPromptSubmit","session_id":"<id>","cwd":"/path/to/repo","prompt":"3者レビューで確認してはどうか"}
+```
+
+**動作**：
+
+1. JSON ペイロードから `prompt` と `cwd` を取得
+2. `prompt` が `レビュー|審査|3者|triad|proxy|プロンプト|判定` に一致しなければ何もせず exit 0
+3. `cwd/docs/disciplines/discipline_llm_as_judge_prompting.md` が存在しなければ何もせず exit 0
+4. 一致した場合だけ、同規律本文を `hookSpecificOutput.additionalContext` として返す
+
+**出力（該当時）**：
+
+```json
+{
+  "hookSpecificOutput": {
+    "hookEventName": "UserPromptSubmit",
+    "additionalContext": "..."
+  }
+}
+```
+
+**通過時**：何も出力せず exit 0。
+
+**登録**：`.codex/hooks.json` の `hooks.UserPromptSubmit` セクションに登録済み。これはレビュー用プロンプト規律の注入専用であり、セッション記録の取り込みには使わない。
+
 ### `session-record-capture-current-on-todo.sh`（PostToolUse hook）
 
 **役割**：`TODO_NEXT_SESSION.md` の更新を合図に、現 Codex セッションの rollout を 1 件だけ、runtime 下書きへ保存する。
 
-Codex の hook では `Stop` が turn scope であり、Claude の `SessionEnd` 相当としては使わない。`UserPromptSubmit` は発話ごとに呼ばれ得るため使用禁止とし、誤登録されても `ignored_event` を診断ログに残して終了する。Codex では、セッション継続時に `TODO_NEXT_SESSION.md` を更新する運用を合図として使い、TODO の内容 hash が前回保存時から変わった場合だけ現セッションの下書きを更新する。TODO は 1 セッション内で複数回更新され得るため、更新ごとに追記専用マージで伸びた分を反映する。
+Codex の hook では `Stop` が turn scope であり、Claude の `SessionEnd` 相当としては使わない。`UserPromptSubmit` は発話ごとに呼ばれ得るため**セッション記録取り込み用途では使用禁止**とし、誤登録されても `ignored_event` を診断ログに残して終了する。Codex では、セッション継続時に `TODO_NEXT_SESSION.md` を更新する運用を合図として使い、TODO の内容 hash が前回保存時から変わった場合だけ現セッションの下書きを更新する。TODO は 1 セッション内で複数回更新され得るため、更新ごとに追記専用マージで伸びた分を反映する。
 
 **2026-06-16 実装反映**：hook は現セッションを `.reviewcompass/runtime/session-record-drafts/codex-<session_id>.md` へ下書き保存し、`.reviewcompass/evidence/sessions/` と `docs/sessions/` へ直接書かない。正式な 2 層セッション記録は、次の Codex `SessionStart` で `session-record-promote-previous-draft.sh` が前セッション下書きを昇格する。手動復旧が必要な場合は `tools/session-record-promote-draft.py --session-id <id> --source codex --current-session-id <current-id>` または終了済み rollout を明示した backfill を使う。昇格 CLI は現在の `session_id` と同一のセッションを拒否する。診断ログ event は、正式記録と区別するため `drafted`／`draft_failed` を使う。
 

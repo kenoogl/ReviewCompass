@@ -12,6 +12,7 @@ CODEX_HOOK_FILES = [
   ".codex/hooks.json",
   ".codex/hooks/README.md",
   ".codex/hooks/pre-bash-precheck.sh",
+  ".codex/hooks/review-prompt-guide-inject.sh",
   ".codex/hooks/session-record-capture-current-on-todo.sh",
   ".codex/hooks/session-record-promote-previous-draft.sh",
 ]
@@ -125,6 +126,69 @@ class CodexHookRepositoryTests(unittest.TestCase):
       any(".codex/hooks/session-record-capture-current-on-todo.sh" in c for c in commands),
       "UserPromptSubmit は発話ごとに誤発火し得るため、現セッション取り込み hook を登録してはいけない",
     )
+
+  def test_codex_user_prompt_review_guide_hook_is_registered(self):
+    hooks_config = json.loads((REPO_ROOT / ".codex/hooks.json").read_text())
+    commands = [
+      hook["command"]
+      for group in hooks_config["hooks"].get("UserPromptSubmit", [])
+      for hook in group.get("hooks", [])
+    ]
+    self.assertTrue(
+      any(".codex/hooks/review-prompt-guide-inject.sh" in c for c in commands),
+      "Codex UserPromptSubmit で LLM-as-judge prompt guide hook を登録する必要がある",
+    )
+
+  def test_codex_user_prompt_review_guide_hook_template_is_registered(self):
+    hooks_config = json.loads(
+      (REPO_ROOT / "templates" / "hooks" / "codex-hooks.json.template").read_text()
+    )
+    commands = [
+      hook["command"]
+      for group in hooks_config["hooks"].get("UserPromptSubmit", [])
+      for hook in group.get("hooks", [])
+    ]
+    self.assertTrue(
+      any(".codex/hooks/review-prompt-guide-inject.sh" in c for c in commands),
+      "Codex hook 雛形も UserPromptSubmit の LLM-as-judge prompt guide hook を登録する必要がある",
+    )
+
+  def test_codex_review_prompt_guide_hook_injects_context_for_review_prompt(self):
+    payload = json.dumps({
+      "hook_event_name": "UserPromptSubmit",
+      "prompt": "3者レビューで確認してはどうか",
+      "cwd": str(REPO_ROOT),
+    })
+    result = subprocess.run(
+      ["bash", ".codex/hooks/review-prompt-guide-inject.sh"],
+      cwd=str(REPO_ROOT),
+      input=payload,
+      capture_output=True,
+      text=True,
+    )
+
+    self.assertEqual(result.returncode, 0, result.stderr)
+    parsed = json.loads(result.stdout)
+    additional_context = parsed["hookSpecificOutput"]["additionalContext"]
+    self.assertIn("LLM as a Judge", additional_context)
+    self.assertIn("llm-as-judge-prompting", additional_context)
+
+  def test_codex_review_prompt_guide_hook_is_silent_for_unrelated_prompt(self):
+    payload = json.dumps({
+      "hook_event_name": "UserPromptSubmit",
+      "prompt": "TODO_NEXT_SESSION.mdを読む",
+      "cwd": str(REPO_ROOT),
+    })
+    result = subprocess.run(
+      ["bash", ".codex/hooks/review-prompt-guide-inject.sh"],
+      cwd=str(REPO_ROOT),
+      input=payload,
+      capture_output=True,
+      text=True,
+    )
+
+    self.assertEqual(result.returncode, 0, result.stderr)
+    self.assertEqual(result.stdout, "")
 
 
 if __name__ == "__main__":

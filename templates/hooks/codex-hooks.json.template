@@ -1,6 +1,17 @@
 {
   "_comment": "対象アプリの .codex/hooks.json の雛形。pre-bash-precheck は Claude/Codex 共通、session-record-capture-current-on-todo と session-record-promote-previous-draft は Codex 専用。",
   "hooks": {
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash '.codex/hooks/review-prompt-guide-inject.sh'",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
     "SessionStart": [
       {
         "matcher": "startup|resume",
