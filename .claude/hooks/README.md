@@ -57,9 +57,10 @@ Claude Code のフック機構（PreToolUse 等）に登録するスクリプト
 
 **動作**：
 
-1. `transcript_path` があればそれを使う。無ければ `session_id` と `cwd` から `$HOME/.claude/projects/<cwd の / を - に置換>/<session_id>.jsonl` を復元する
-2. 当該 jsonl が存在すれば `python3 tools/session-record-backfill.py --session <path> --source claude` を呼び、1 セッション分だけ取り込む（来歴刻印・再現性チェック・機微の fail-closed はツール側が担保）
-3. 取り込めるログが無い場合も含め常に exit 0（セッション終了を妨げない）
+1. `reason` が `"clear"` 以外の非空文字列（例：`"auto_compact"` = コンテキスト圧縮由来の中間 SessionEnd）の場合はスキップして exit 0。圧縮後もセッションが同一 JSONL に追記を続けるため、ここで取り込むと `source_sha256` が後続の追記で変化し commit guard が「進行中」と誤検知する。
+2. `transcript_path` があればそれを使う。無ければ `session_id` と `cwd` から `$HOME/.claude/projects/<cwd の / を - に置換>/<session_id>.jsonl` を復元する
+3. 当該 jsonl が存在すれば `python3 tools/session-record-backfill.py --session <path> --source claude` を呼び、1 セッション分だけ取り込む（来歴刻印・再現性チェック・機微の fail-closed はツール側が担保）
+4. 取り込めるログが無い場合も含め常に exit 0（セッション終了を妨げない）
 
 **出力先の差し替え**：既定は repo の正規置き場。テスト時は環境変数 `RC_SESSION_EVIDENCE_DIR`（層1）／`RC_SESSION_DOCS_DIR`（層2）で temp に差し替える。
 

@@ -140,6 +140,48 @@ class HookCaptureTests(unittest.TestCase):
     _assert_hook_invoked(self, r)
     self.assertEqual(r.returncode, 0, f"stderr={r.stderr}")
 
+  def test_auto_compact_reason_skips_capture(self):
+    """reason が "auto_compact" のとき（コンテキスト圧縮中間 SessionEnd）は取り込まない。"""
+    sess = self.tmp / "compact-sess-0001.jsonl"
+    _claude_fixture(sess, _SAMPLE)
+    payload = {
+      "hook_event_name": "SessionEnd",
+      "session_id": "compact-sess-0001",
+      "transcript_path": str(sess),
+      "cwd": str(REPO_ROOT),
+      "reason": "auto_compact",
+    }
+    r = _run_hook(payload, self.evidence, self.docs)
+    _assert_hook_invoked(self, r)
+    self.assertEqual(r.returncode, 0, f"フックは常に exit 0。stderr={r.stderr}")
+    self.assertFalse(
+      self.evidence.exists() and any(self.evidence.iterdir()),
+      "コンテキスト圧縮中間終了時に記録を書いてはいけない",
+    )
+    self.assertFalse(
+      self.docs.exists() and any(self.docs.iterdir()),
+      "コンテキスト圧縮中間終了時に記録を書いてはいけない（層2）",
+    )
+
+  def test_clear_reason_still_captures(self):
+    """reason が "clear" のとき（通常終了）は取り込みを行う。（回帰テスト）"""
+    sess = self.tmp / "clear-sess-0002.jsonl"
+    _claude_fixture(sess, _SAMPLE)
+    payload = {
+      "hook_event_name": "SessionEnd",
+      "session_id": "clear-sess-0002",
+      "transcript_path": str(sess),
+      "cwd": str(REPO_ROOT),
+      "reason": "clear",
+    }
+    r = _run_hook(payload, self.evidence, self.docs)
+    _assert_hook_invoked(self, r)
+    self.assertEqual(r.returncode, 0, f"stdout={r.stdout}\nstderr={r.stderr}")
+    self.assertTrue(
+      (self.evidence / "2026-06-14-claude-clear-sess-0002.md").exists(),
+      f"reason=clear のとき層1 を書くべき。stdout={r.stdout} stderr={r.stderr}",
+    )
+
 
 if __name__ == "__main__":
   unittest.main()

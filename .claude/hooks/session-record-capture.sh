@@ -32,6 +32,15 @@ INPUT=$(cat)
 TRANSCRIPT=$(printf '%s' "$INPUT" | jq -r '.transcript_path // empty')
 SESSION_ID=$(printf '%s' "$INPUT" | jq -r '.session_id // empty')
 CWD=$(printf '%s' "$INPUT" | jq -r '.cwd // empty')
+REASON=$(printf '%s' "$INPUT" | jq -r '.reason // empty')
+
+# コンテキスト圧縮由来の中間 SessionEnd はスキップする。
+# 圧縮後もセッションは同一 JSONL に追記を続けるため、ここで取り込むと
+# source_sha256 が後続の追記で変化し commit guard が「進行中」と誤検知する。
+# reason が "clear" 以外の非空文字列 = セッションがまだ継続中と判断してスキップ。
+if [ -n "$REASON" ] && [ "$REASON" != "clear" ]; then
+  exit 0
+fi
 
 # transcript_path が無ければ session_id と cwd からログのパスを復元する
 if [ -z "$TRANSCRIPT" ] && [ -n "$SESSION_ID" ] && [ -n "$CWD" ]; then
