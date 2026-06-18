@@ -1,0 +1,4 @@
+run_id: post-write-todo-2026-06-18-push-session
+target_files:
+- path: TODO_NEXT_SESSION.md
+  sha256: fedbae9be18bf99ed3c7b2d6f94ea9b108a3c6ccf15da181d6fd703986eaa20a

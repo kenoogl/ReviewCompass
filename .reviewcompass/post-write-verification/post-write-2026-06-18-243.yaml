@@ -1,0 +1,72 @@
+status: completed
+target_files:
+- TODO_NEXT_SESSION.md
+- docs/sessions/auto-2026-06-02-claude-0c365e45-915c-4971-8f3d-f4bc03bdf9aa.md
+- docs/sessions/auto-2026-06-17-claude-eec103c2-8c42-4b79-b256-7ff57bd87431.md
+- docs/sessions/auto-2026-06-18-claude-4d027dd0-1237-4077-83b5-a506a34a8837.md
+- docs/sessions/auto-2026-06-18-claude-77e272a2-4862-4fcf-9af1-9812edde17f6.md
+- docs/sessions/auto-2026-06-18-claude-8f34560b-04ee-4d41-b10a-b62457be7e1c.md
+target_sha256:
+  TODO_NEXT_SESSION.md: fedbae9be18bf99ed3c7b2d6f94ea9b108a3c6ccf15da181d6fd703986eaa20a
+  docs/sessions/auto-2026-06-02-claude-0c365e45-915c-4971-8f3d-f4bc03bdf9aa.md: 34033147fbcf1724d2f9d56bcf53ce928a6e035177115257e17af4356b5c69c8
+  docs/sessions/auto-2026-06-17-claude-eec103c2-8c42-4b79-b256-7ff57bd87431.md: 86e7716eecc5da5c7820a4a22909066b7f6a1c53e8ac9de68b23e98021ef007a
+  docs/sessions/auto-2026-06-18-claude-4d027dd0-1237-4077-83b5-a506a34a8837.md: b48c748d08e2c0b1b9fdcda8c622923dc0ee8245504f384cc66f571db524a2df
+  docs/sessions/auto-2026-06-18-claude-77e272a2-4862-4fcf-9af1-9812edde17f6.md: 29f1eae12b035df87b6e1687fe14685e8277144dce8e025b20b525751313ae4f
+  docs/sessions/auto-2026-06-18-claude-8f34560b-04ee-4d41-b10a-b62457be7e1c.md: 73712ca386d9b6ecaca784250cc3d58ca77a35ee378a0970737270490edf2be3
+required_verifiers: &id001
+- claude-sonnet-4-6
+- gpt-5.5
+- gemini-3.1-pro-preview
+completed_verifiers: *id001
+unresolved_substantive_findings: 0
+verifications:
+- verifier: claude-sonnet-4-6
+  target_files:
+  - TODO_NEXT_SESSION.md
+  - docs/sessions/auto-2026-06-02-claude-0c365e45-915c-4971-8f3d-f4bc03bdf9aa.md
+  - docs/sessions/auto-2026-06-17-claude-eec103c2-8c42-4b79-b256-7ff57bd87431.md
+  - docs/sessions/auto-2026-06-18-claude-4d027dd0-1237-4077-83b5-a506a34a8837.md
+  - docs/sessions/auto-2026-06-18-claude-77e272a2-4862-4fcf-9af1-9812edde17f6.md
+  - docs/sessions/auto-2026-06-18-claude-8f34560b-04ee-4d41-b10a-b62457be7e1c.md
+  target_sha256:
+    TODO_NEXT_SESSION.md: fedbae9be18bf99ed3c7b2d6f94ea9b108a3c6ccf15da181d6fd703986eaa20a
+    docs/sessions/auto-2026-06-02-claude-0c365e45-915c-4971-8f3d-f4bc03bdf9aa.md: 34033147fbcf1724d2f9d56bcf53ce928a6e035177115257e17af4356b5c69c8
+    docs/sessions/auto-2026-06-17-claude-eec103c2-8c42-4b79-b256-7ff57bd87431.md: 86e7716eecc5da5c7820a4a22909066b7f6a1c53e8ac9de68b23e98021ef007a
+    docs/sessions/auto-2026-06-18-claude-4d027dd0-1237-4077-83b5-a506a34a8837.md: b48c748d08e2c0b1b9fdcda8c622923dc0ee8245504f384cc66f571db524a2df
+    docs/sessions/auto-2026-06-18-claude-77e272a2-4862-4fcf-9af1-9812edde17f6.md: 29f1eae12b035df87b6e1687fe14685e8277144dce8e025b20b525751313ae4f
+    docs/sessions/auto-2026-06-18-claude-8f34560b-04ee-4d41-b10a-b62457be7e1c.md: 73712ca386d9b6ecaca784250cc3d58ca77a35ee378a0970737270490edf2be3
+- verifier: gpt-5.5
+  target_files:
+  - TODO_NEXT_SESSION.md
+  - docs/sessions/auto-2026-06-02-claude-0c365e45-915c-4971-8f3d-f4bc03bdf9aa.md
+  - docs/sessions/auto-2026-06-17-claude-eec103c2-8c42-4b79-b256-7ff57bd87431.md
+  - docs/sessions/auto-2026-06-18-claude-4d027dd0-1237-4077-83b5-a506a34a8837.md
+  - docs/sessions/auto-2026-06-18-claude-77e272a2-4862-4fcf-9af1-9812edde17f6.md
+  - docs/sessions/auto-2026-06-18-claude-8f34560b-04ee-4d41-b10a-b62457be7e1c.md
+  target_sha256:
+    TODO_NEXT_SESSION.md: fedbae9be18bf99ed3c7b2d6f94ea9b108a3c6ccf15da181d6fd703986eaa20a
+    docs/sessions/auto-2026-06-02-claude-0c365e45-915c-4971-8f3d-f4bc03bdf9aa.md: 34033147fbcf1724d2f9d56bcf53ce928a6e035177115257e17af4356b5c69c8
+    docs/sessions/auto-2026-06-17-claude-eec103c2-8c42-4b79-b256-7ff57bd87431.md: 86e7716eecc5da5c7820a4a22909066b7f6a1c53e8ac9de68b23e98021ef007a
+    docs/sessions/auto-2026-06-18-claude-4d027dd0-1237-4077-83b5-a506a34a8837.md: b48c748d08e2c0b1b9fdcda8c622923dc0ee8245504f384cc66f571db524a2df
+    docs/sessions/auto-2026-06-18-claude-77e272a2-4862-4fcf-9af1-9812edde17f6.md: 29f1eae12b035df87b6e1687fe14685e8277144dce8e025b20b525751313ae4f
+    docs/sessions/auto-2026-06-18-claude-8f34560b-04ee-4d41-b10a-b62457be7e1c.md: 73712ca386d9b6ecaca784250cc3d58ca77a35ee378a0970737270490edf2be3
+- verifier: gemini-3.1-pro-preview
+  target_files:
+  - TODO_NEXT_SESSION.md
+  - docs/sessions/auto-2026-06-02-claude-0c365e45-915c-4971-8f3d-f4bc03bdf9aa.md
+  - docs/sessions/auto-2026-06-17-claude-eec103c2-8c42-4b79-b256-7ff57bd87431.md
+  - docs/sessions/auto-2026-06-18-claude-4d027dd0-1237-4077-83b5-a506a34a8837.md
+  - docs/sessions/auto-2026-06-18-claude-77e272a2-4862-4fcf-9af1-9812edde17f6.md
+  - docs/sessions/auto-2026-06-18-claude-8f34560b-04ee-4d41-b10a-b62457be7e1c.md
+  target_sha256:
+    TODO_NEXT_SESSION.md: fedbae9be18bf99ed3c7b2d6f94ea9b108a3c6ccf15da181d6fd703986eaa20a
+    docs/sessions/auto-2026-06-02-claude-0c365e45-915c-4971-8f3d-f4bc03bdf9aa.md: 34033147fbcf1724d2f9d56bcf53ce928a6e035177115257e17af4356b5c69c8
+    docs/sessions/auto-2026-06-17-claude-eec103c2-8c42-4b79-b256-7ff57bd87431.md: 86e7716eecc5da5c7820a4a22909066b7f6a1c53e8ac9de68b23e98021ef007a
+    docs/sessions/auto-2026-06-18-claude-4d027dd0-1237-4077-83b5-a506a34a8837.md: b48c748d08e2c0b1b9fdcda8c622923dc0ee8245504f384cc66f571db524a2df
+    docs/sessions/auto-2026-06-18-claude-77e272a2-4862-4fcf-9af1-9812edde17f6.md: 29f1eae12b035df87b6e1687fe14685e8277144dce8e025b20b525751313ae4f
+    docs/sessions/auto-2026-06-18-claude-8f34560b-04ee-4d41-b10a-b62457be7e1c.md: 73712ca386d9b6ecaca784250cc3d58ca77a35ee378a0970737270490edf2be3
+review_run:
+  path: .reviewcompass/evidence/review-runs/post-write-todo-2026-06-18-push-session
+  summary_path: .reviewcompass/evidence/review-runs/post-write-todo-2026-06-18-push-session/model-result-summary.yaml
+notes: Generated template; verify target_files cover current post-write targets before
+  use.

@@ -1,6 +1,6 @@
 # 次セッション継続用メモ
 
-最終更新：2026-06-18（Claude セッション 77e272a2）。
+最終更新：2026-06-18（Claude セッション 8f34560b）。
 
 この TODO は入口メモであり、作業順序の正本ではない。正本は常に `.venv/bin/python3 tools/check-workflow-action.py next --json` と各 feature の `spec.json`。
 
@@ -20,64 +20,61 @@
 - `next --json`: `completed`
 - 進行中手続き: なし
 - 直近 commit:
+  - `edc006c7 Finalize reopen R-0 phase1-schema-definitions: requirements approval & recheck clear`
+  - `ee86932f Fix reopen procedure: restore triad-review/review-wave gates and record step-3 stop point`
+  - `025603bd Add workflow-management AC10/AC11: required_action and next_action_response schema definitions`
+  - `ff98ffdc Fix TODO_NEXT_SESSION.md: correct numbered list`
   - `c9b3e06d Triage all 15 pending-issues-review findings; record 3 design decisions`
-  - `f2cd361a Refresh TODO: reflect session results and pending-issues-review findings`
-  - `5688d4c5 Add working note on LLM-as-judge prompt quality`
-  - `267d4595 Fix session-backfill hook to skip already-imported sessions; fix Unicode filename handling in commit check`
-  - `2df06b17 Add session log for 2026-06-17 session d55d02bc`
 - 作業ツリーはほぼ clean（進行中セッションログのみ未コミット、フック任せ）。
-- `main` は origin/main より 6 commit 先行（未 push）。
+- `main` は origin/main より 11 commit 先行（未 push）。
 
 ## 3. 直近の重要メモ
 
-### 今セッション（77e272a2）で完了した主要作業
+### 今セッション（8f34560b）で完了した主要作業
 
-- **pending-issues-review 全15件のトリアージ完了**
-  - 全件 `leave-as-is`。前セッション（eec103c2）で文書修正済みのため再修正不要。
-  - GPT ERROR 3件（gpt-001〜003）の承認記録を `.reviewcompass/evidence/review-runs/2026-06-18-pending-issues-review/approval.yaml` に作成。
+- **reopen R-0（Phase 1 最小スキーマ定義）の完了**
+  - requirements alignment ゲート通過（判定: 既存で充分、追記不要）
+  - requirements approval ゲート通過（利用者承認済み）
+  - 第4過程（最終化）完了：feature_impact_decisions 7 機能分・downstream_impact_decisions 9 gate 分を記録
+  - recheck フラグをクリア（upstream_change_pending=false・impacted_downstream_phases=[]）
+  - コミット `edc006c7`
 
-- **3つの設計判断を設計メモに記録**
-  1. **Phase 0/1 分割方針**（§7 item 2）：Phase 0 開始前に必要な最小 Phase 1 作業は `required_action` 19語彙のスキーマ定義と `next --json` 応答スキーマの定義のみ。
-  2. **実行担当コマンド**（機械化設計 §8 item 2）：専用新規サブコマンド（例 `run-next`）を作成。`next --json` は判定専用に維持。
-  3. **言語タスク入出力スキーマ**（機械化設計 §8 item 4）：枠組みを Phase 1 で定義、判定点ごとの詳細は Phase 4 で定義。
+- **workflow-management の全段が再び完了状態に**
+  - `next --json` が `completed` を返すことを確認
+  - Phase 1 スキーマ実装（design/tasks/implementation の再確認）は次の reopen 手続きとして `downstream_impact_decisions` に `affected_update_required` で記録済み
 
-- **post-write 検証とコミット完了**
-  - 統合設計メモ変更：Gemini レビュー（0 所見）→ post-write-2026-06-18-008.yaml
-  - 機械化設計メモ変更：lightweight self-check → post-write-2026-06-18-239.yaml
-  - コミット：`c9b3e06d`
+### 前セッション（77e272a2）の主要作業（参考）
 
-### 前セッション（f2cd361a 時点）の主要作業（参考）
-
-- **統合設計メモ完成**：`docs/notes/2026-06-18-integrated-design-selection-execution-layers.md`
-- **機械化設計メモへの3者レビュー指摘を解消**：`docs/notes/working/2026-06-18-mechanized-workflow-execution-design.md`
-- **WORKFLOW_NAVIGATION.md の語彙統一**
-- **セッション記録フック修正**
-
-### 参考メモ（前セッションから継続）
-
-- `docs/notes/2026-06-17-next-json-effective-prompt-enforcement.md`
-  - effective prompt 必読・読了証跡・coverage audit・短文化の方針メモ。
-- `docs/notes/2026-06-17-maintenance-workflow-compliance-improvement-candidates.md`
-  - maintenance workflow 遵守・commit sandbox preflight・手続きの比例性の候補。
+- **pending-issues-review 全 15 件のトリアージ完了**
+  - 全件 leave-as-is。3 つの設計判断を設計メモに記録。コミット `c9b3e06d`。
 
 ## 4. 次作業候補
 
-1. **実アプリ pilot**
+1. **Phase 1 スキーマ実装（reopen 手続きが必要）**
+   - 対象：`reopen-procedure-2026-06-18.yaml` の `downstream_impact_decisions` に `affected_update_required` として記録済みの下流フェーズ。
+   - 手順：design recheck → tasks recheck → implementation recheck（TDD）の順。
+   - 実装ゴール：`tests/tools/test_phase1_schema_definitions.py` の 17 テストを全て通過させる。
+   - 作成するファイル：
+     - `.reviewcompass/schema/required_action.schema.json`（AC10：19 語彙の列挙）
+     - `.reviewcompass/schema/next_action_response.schema.json`（AC11：`next --json` の応答スキーマ）
+
+2. **実アプリ pilot**
    - 未着手。対象アプリ root と、対象アプリ側 LLM が参照できる ReviewCompass 配布物配置先を決めるところから始める。
    - 正本: `docs/operations/INITIAL_DEPLOYMENT_USER_GUIDE.md` §8、§9、§19、および `docs/operations/DEPLOYMENT.md` §8。
    - 配布前 smoke は実アプリ pilot 前の必要作業であり、現時点で完了済み扱いにしない。
 
-2. **decision-source-lint の運用開始**
+3. **decision-source-lint の運用開始**
    - 仕組みは実装済み。次に重要決定が発生した時点で `.reviewcompass/decisions/` に構造化決定記録を作る。
 
 完了済みとして候補から外したもの（直近）:
 
-- **`pending-issues-review` の未確定事項への対処**（最優先）
-  - 全15件 `leave-as-is` で確定。設計判断3件を記録。`c9b3e06d` でコミット済み。
+- **reopen R-0 phase1-schema-definitions の requirements フェーズ完了**（edc006c7）
+
+- **`pending-issues-review` の未確定事項への対処**
+  - 全 15 件 leave-as-is で確定。設計判断 3 件を記録。`c9b3e06d` でコミット済み。
 
 - **統合設計メモの作成**
   - `docs/notes/2026-06-18-integrated-design-selection-execution-layers.md` として完成・コミット済み。
-  - effect_kind 4値確定、approval_required の独立属性化、実装順序（Phase 0→1→2〜6）を確定。
 
 - **maintenance workflow protocol の明文化**
   - `98fe84a7 Add maintenance protocol to WORKFLOW_NAVIGATION.md` で完了。
@@ -86,10 +83,10 @@
   - `stages/completed/reopen-procedure-2026-06-12.yaml` で完了済み。
 
 - **commit sandbox preflight**
-  - `eb028df2 Add commit sandbox preflight` と `stages/completed/maintenance-2026-06-17-commit-sandbox-preflight.yaml` で完了済み。
+  - `eb028df2` と `stages/completed/maintenance-2026-06-17-commit-sandbox-preflight.yaml` で完了済み。
 
-- **作業中メモの `lightweight_self_check` 化**
-  - `9d374907 Add working note lightweight self-check` と `stages/completed/maintenance-2026-06-17-lightweight-self-check-location.yaml` で完了済み。
+- **作業中メモの lightweight_self_check 化**
+  - `9d374907` と `stages/completed/maintenance-2026-06-17-lightweight-self-check-location.yaml` で完了済み。
 
 - **commit operation card と不可逆操作 prompt selection の Codex 側反映**
   - `3f9ff253 Add commit operation prompt` で完了済み。

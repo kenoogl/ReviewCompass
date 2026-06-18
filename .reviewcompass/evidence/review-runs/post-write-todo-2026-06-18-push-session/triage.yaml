@@ -1,0 +1,61 @@
+run_id: post-write-todo-2026-06-18-push-session
+triage_status: decided
+generated_at: '2026-06-18T10:50:15.398739+00:00'
+decision_actor: null
+decision_actor_type: human
+items:
+- finding_id: post-write-todo-2026-06-18-push-session-claude-sonnet-4-6-primary-001
+  run_id: post-write-todo-2026-06-18-push-session
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: ファイル冒頭 最終更新日
+  plain_language_summary: 最終更新日が 2026-06-18 と記載されているが、これは将来の日付である。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-18T10:52:35.414630+00:00'
+  decision_reason: 利用者承認：内容は正確であり、実質的な誤りなし
+  applied_files: []
+  superseded_by: null
+- finding_id: post-write-todo-2026-06-18-push-session-claude-sonnet-4-6-primary-002
+  run_id: post-write-todo-2026-06-18-push-session
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: セクション 2「現在位置」- main は origin/main より 11 commit 先行
+  plain_language_summary: main ブランチが origin/main より 11 コミット先行している状態が記録されている。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-18T10:52:35.459495+00:00'
+  decision_reason: 利用者承認：内容は正確であり、実質的な誤りなし
+  applied_files: []
+  superseded_by: null
+- finding_id: post-write-todo-2026-06-18-push-session-claude-sonnet-4-6-primary-003
+  run_id: post-write-todo-2026-06-18-push-session
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: セクション 4「次作業候補」- Phase 1 スキーマ実装
+  plain_language_summary: 作成予定ファイルのパスが明示されているが、テストファイル `tests/tools/test_phase1_schema_definitions.py`
+    の現在の状態（存在するか、スキップされているか）についての記述がない。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-18T10:52:35.502437+00:00'
+  decision_reason: 利用者承認：内容は正確であり、実質的な誤りなし
+  applied_files: []
+  superseded_by: null
