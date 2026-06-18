@@ -1,0 +1,4 @@
+run_id: 2026-06-19-workflow-precheck-commit-guidance-postwrite
+target_files:
+- path: docs/operations/WORKFLOW_PRECHECK.md
+  sha256: 547eb74cb55c028a00a198f17eba8cf70c5358d04884daaf54bfdb9331f0ae25

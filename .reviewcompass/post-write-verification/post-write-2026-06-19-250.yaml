@@ -1,0 +1,36 @@
+status: completed
+target_files:
+- .reviewcompass/specs/workflow-management/requirements.md
+- docs/operations/WORKFLOW_PRECHECK.md
+- docs/sessions/auto-2026-06-18-claude-4d027dd0-1237-4077-83b5-a506a34a8837.md
+- docs/sessions/auto-2026-06-18-claude-cf8204d6-8a80-4d1a-a88f-8918071ed43d.md
+- intent/INTENT.md
+target_sha256:
+  .reviewcompass/specs/workflow-management/requirements.md: bb611d99f469c0eb153b87e70e0575e08670634f6296ff5f7f95feee4073f670
+  docs/operations/WORKFLOW_PRECHECK.md: 547eb74cb55c028a00a198f17eba8cf70c5358d04884daaf54bfdb9331f0ae25
+  docs/sessions/auto-2026-06-18-claude-4d027dd0-1237-4077-83b5-a506a34a8837.md: b48c748d08e2c0b1b9fdcda8c622923dc0ee8245504f384cc66f571db524a2df
+  docs/sessions/auto-2026-06-18-claude-cf8204d6-8a80-4d1a-a88f-8918071ed43d.md: d8587d35ffccf227090ab15d9b64e204f62117a15dbd9a6b60c0d05377912347
+  intent/INTENT.md: f0529d2bab6a868c13a0672e295532760c0126e2a8a11fc6b69f2bf0adfd40e8
+required_verifiers: &id001
+- gemini-3.5-flash
+completed_verifiers: *id001
+unresolved_substantive_findings: 0
+verifications:
+- verifier: gemini-3.5-flash
+  target_files:
+  - .reviewcompass/specs/workflow-management/requirements.md
+  - docs/operations/WORKFLOW_PRECHECK.md
+  - docs/sessions/auto-2026-06-18-claude-4d027dd0-1237-4077-83b5-a506a34a8837.md
+  - docs/sessions/auto-2026-06-18-claude-cf8204d6-8a80-4d1a-a88f-8918071ed43d.md
+  - intent/INTENT.md
+  target_sha256:
+    .reviewcompass/specs/workflow-management/requirements.md: bb611d99f469c0eb153b87e70e0575e08670634f6296ff5f7f95feee4073f670
+    docs/operations/WORKFLOW_PRECHECK.md: 547eb74cb55c028a00a198f17eba8cf70c5358d04884daaf54bfdb9331f0ae25
+    docs/sessions/auto-2026-06-18-claude-4d027dd0-1237-4077-83b5-a506a34a8837.md: b48c748d08e2c0b1b9fdcda8c622923dc0ee8245504f384cc66f571db524a2df
+    docs/sessions/auto-2026-06-18-claude-cf8204d6-8a80-4d1a-a88f-8918071ed43d.md: d8587d35ffccf227090ab15d9b64e204f62117a15dbd9a6b60c0d05377912347
+    intent/INTENT.md: f0529d2bab6a868c13a0672e295532760c0126e2a8a11fc6b69f2bf0adfd40e8
+review_run:
+  path: .reviewcompass/evidence/review-runs/2026-06-19-workflow-precheck-commit-guidance-postwrite
+  summary_path: .reviewcompass/evidence/review-runs/2026-06-19-workflow-precheck-commit-guidance-postwrite/model-result-summary.yaml
+notes: Generated template; verify target_files cover current post-write targets before
+  use.
