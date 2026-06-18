@@ -1,0 +1,6 @@
+run_id: 2026-06-18-disciplines-postwrite
+target_files:
+- path: docs/disciplines/README.md
+  sha256: eb671c79aeafe30989c761eb514134a938e308cf8fa4703270d65fa25e679939
+- path: docs/disciplines/discipline_llm_as_judge_prompting.md
+  sha256: a9191d5613fab4bfe008c7ea5a89fbfe0d0be141edaa23ce269f4f521f7b3377

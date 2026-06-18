@@ -1,0 +1,28 @@
+status: completed
+target_files:
+- docs/disciplines/README.md
+- docs/disciplines/discipline_llm_as_judge_prompting.md
+target_sha256:
+  docs/disciplines/README.md: eb671c79aeafe30989c761eb514134a938e308cf8fa4703270d65fa25e679939
+  docs/disciplines/discipline_llm_as_judge_prompting.md: a9191d5613fab4bfe008c7ea5a89fbfe0d0be141edaa23ce269f4f521f7b3377
+required_verifiers:
+- gemini-3.5-flash
+completed_verifiers:
+- gemini-3.5-flash
+unresolved_substantive_findings: 0
+verifications:
+- verifier: gemini-3.5-flash
+  round: round-1
+  target_files:
+  - docs/disciplines/README.md
+  - docs/disciplines/discipline_llm_as_judge_prompting.md
+  target_sha256:
+    docs/disciplines/README.md: eb671c79aeafe30989c761eb514134a938e308cf8fa4703270d65fa25e679939
+    docs/disciplines/discipline_llm_as_judge_prompting.md: a9191d5613fab4bfe008c7ea5a89fbfe0d0be141edaa23ce269f4f521f7b3377
+  findings: []
+review_run:
+  path: .reviewcompass/evidence/review-runs/2026-06-18-disciplines-postwrite
+  summary_path: .reviewcompass/evidence/review-runs/2026-06-18-disciplines-postwrite/model-result-summary.yaml
+notes: |
+  docs/disciplines/ の2ファイルのみを単独で検証。post_write_policy_violation 解消のため他のファイルと分離。
+  所見ゼロで収束。
