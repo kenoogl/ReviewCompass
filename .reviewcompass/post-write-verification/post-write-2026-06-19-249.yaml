@@ -1,0 +1,23 @@
+status: completed
+target_files:
+- TODO_NEXT_SESSION.md
+- docs/notes/working/2026-06-19-integrated-design-requirements-missing.md
+target_sha256:
+  TODO_NEXT_SESSION.md: d86fa92079f89fa1c2141a17369559d86cb5c00812e134c6e7641e585cc442c3
+  docs/notes/working/2026-06-19-integrated-design-requirements-missing.md: 962e1dde868bf383a5d5003adcb609bddd2d2509bd06a250ee705a5b5c63e6bc
+required_verifiers: &id001
+- gemini-3.5-flash
+completed_verifiers: *id001
+unresolved_substantive_findings: 0
+verifications:
+- verifier: gemini-3.5-flash
+  target_files:
+  - TODO_NEXT_SESSION.md
+  - docs/notes/working/2026-06-19-integrated-design-requirements-missing.md
+  target_sha256:
+    TODO_NEXT_SESSION.md: d86fa92079f89fa1c2141a17369559d86cb5c00812e134c6e7641e585cc442c3
+    docs/notes/working/2026-06-19-integrated-design-requirements-missing.md: 962e1dde868bf383a5d5003adcb609bddd2d2509bd06a250ee705a5b5c63e6bc
+review_run:
+  path: .reviewcompass/evidence/review-runs/post-write-todo-2026-06-19-memo-session
+  summary_path: .reviewcompass/evidence/review-runs/post-write-todo-2026-06-19-memo-session/model-result-summary.yaml
+notes: 'TODO_NEXT_SESSION.md: 統合設計要件追記未完了の経緯メモ参照を追加。メモ本体新規作成。Gemini 所見0件。'

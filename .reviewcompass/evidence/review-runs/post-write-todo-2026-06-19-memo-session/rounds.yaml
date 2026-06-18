@@ -1,0 +1,28 @@
+round_id: round-1
+purpose: post_write_verification
+invocation_timestamp: '2026-06-18T16:12:20.021011+00:00'
+target_files:
+- path: TODO_NEXT_SESSION.md
+  sha256: d86fa92079f89fa1c2141a17369559d86cb5c00812e134c6e7641e585cc442c3
+- path: docs/notes/working/2026-06-19-integrated-design-requirements-missing.md
+  sha256: 962e1dde868bf383a5d5003adcb609bddd2d2509bd06a250ee705a5b5c63e6bc
+criteria: todo_next_session_update
+prompt_sha256: a42fd026439a735e5266b1c182a0753e5649ceddf5ce27d6cc68988fcee84d5f
+model_results:
+- model_id: gemini-3.5-flash
+  provider: gemini-api
+  role: primary
+  treatment: primary
+  invocation_path: api
+  raw_path: raw/gemini-3.5-flash.round-1.txt
+  raw_sha256: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+  parsed_path: parsed/gemini-3.5-flash.round-1.yaml
+  parsed_sha256: 778d112ac9cb52415d02550a9476a2ea55924f1a62258a414f66bd7fab0dc4ab
+  parse_status: parsed
+  formatted_by: parser
+  formatted_by_actor_type: orchestrator
+  formatted_by_actor: run_role.py
+  formatted_at: '2026-06-18T16:12:20.021011+00:00'
+  follow_up_action: triage
+  attempts: 1
+  duration_seconds: 6.917

@@ -51,7 +51,13 @@
 
 ## 4. 次作業候補
 
-1. **実アプリ pilot**（最優先）
+1. **統合設計メモの要件追記（未完了）**
+   - 2026-06-18 セッション 77e272a2 で依頼されたが完遂されなかった作業。
+   - `docs/notes/2026-06-18-integrated-design-selection-execution-layers.md` および `docs/notes/working/2026-06-18-mechanized-workflow-execution-design.md` の内容を `intent.md` と `requirements.md` に書き込む。
+   - 現在 AC10・AC11（スキーマ定義2点）のみ追記済み。未追記の章：統合設計 §3・§4 Phase 0〜6・§5.1〜5.3、機械化設計全体。
+   - 経緯メモ: `docs/notes/working/2026-06-19-integrated-design-requirements-missing.md`
+
+2. **実アプリ pilot**
    - 未着手。対象アプリ root と ReviewCompass 配布物配置先を決めるところから始める。
    - 正本: `docs/operations/INITIAL_DEPLOYMENT_USER_GUIDE.md` §8、§9、§19、および `docs/operations/DEPLOYMENT.md` §8。
 

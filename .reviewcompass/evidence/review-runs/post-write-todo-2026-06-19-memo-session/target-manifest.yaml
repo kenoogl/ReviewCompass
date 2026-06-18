@@ -1,0 +1,6 @@
+run_id: post-write-todo-2026-06-19-memo-session
+target_files:
+- path: TODO_NEXT_SESSION.md
+  sha256: d86fa92079f89fa1c2141a17369559d86cb5c00812e134c6e7641e585cc442c3
+- path: docs/notes/working/2026-06-19-integrated-design-requirements-missing.md
+  sha256: 962e1dde868bf383a5d5003adcb609bddd2d2509bd06a250ee705a5b5c63e6bc
