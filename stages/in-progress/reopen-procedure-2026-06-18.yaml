@@ -10,11 +10,15 @@ completed_steps:
   → true、impacted_downstream_phases → design/tasks/implementation）
 - requirements.md に受入基準10・11を追記（required_action スキーマ定義・next_action_response スキーマ定義）およびChange
   Intentに変更由来を追記
-next_step: 第2過程：停止点コミット
-step_number: 2
+next_step: 第3過程：triad-review ゲート実施待ち（起草完了）
+step_number: 3
 pending_gates:
+- stages/requirements.yaml#triad-review
+- stages/requirements.yaml#review-wave
 - stages/requirements.yaml#alignment
 - stages/requirements.yaml#approval
+drafting_completed_gates:
+- stages/requirements.yaml#drafting
 current_blocker: null
 reopen_step_records:
 - from_step: 1
@@ -30,7 +34,13 @@ reopen_step_records:
     に従い、Requirement 2 受入10・11を追記した
   evidence:
   - .reviewcompass/specs/workflow-management/requirements.md
+- from_step: 3
+  completed_step: 第2過程停止点コミット完了（commit 025603bd）
+  rationale: 利用者承認済み（セッション 8f34560b、「承認」発言）。requirements.md AC10/AC11・spec.json・reopen分類文書・進行中ファイル・失敗テストを1コミットに集約した
+  evidence:
+  - 025603bd
 commit_stop_point: true
-commit_stop_point_step: 2
-commit_stop_point_kind: canonical_update_complete
-commit_stop_point_reason: 第2過程の正本修正完了
+commit_stop_point_step: 3
+commit_stop_point_kind: drafting_complete
+commit_stop_point_gate: stages/requirements.yaml#drafting
+commit_stop_point_reason: requirements 起草完了（AC10・AC11 追記済み）、triad-review 前の停止点
