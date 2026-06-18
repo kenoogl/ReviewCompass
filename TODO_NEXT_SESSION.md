@@ -20,40 +20,54 @@
 - `next --json`: `completed`
 - 進行中手続き: なし
 - 直近 commit:
-  - `2ceaf7ea Move design notes to working for integrated redesign, add review evidence`
-  - `6aa9546b Add problem note for context-limit session log anomaly`
-  - `686e8c7a Update session logs`
-  - `4e29d070 Add mechanized workflow design memo and update Navigator WebUI plan`
-  - `73769472 Refresh TODO`
+  - `5688d4c5 Add working note on LLM-as-judge prompt quality`
+  - `267d4595 Fix session-backfill hook to skip already-imported sessions; fix Unicode filename handling in commit check`
+  - `2df06b17 Add session log for 2026-06-17 session d55d02bc`
+  - `3aa29ed4 Update design memos and operations docs: effect_kind/approval_required separation`
+  - `0c6579d3 Add discipline_llm_as_judge_prompting.md and update README`
 - 作業ツリーはほぼ clean（進行中セッションログのみ未コミット、フック任せ）。
-- `main` は origin/main より 3 commit 先行（未 push）。
+- `main` は origin/main より 5 commit 先行（未 push）。
 
 ## 3. 直近の重要メモ
 
-### 統合設計（今セッションで開始・次セッションで継続）
+### 今セッションで完了した主要作業
 
-- `docs/notes/working/2026-06-16-next-json-unique-state-redesign.md`（D-003）
-  - `next --json` 唯一化の設計。19段階優先順位・72シナリオ・6件の初期失敗テスト。**統合設計の Phase 0 として位置づける**（単独で完成させない）。
-- `docs/notes/working/2026-06-18-mechanized-workflow-execution-design.md`
-  - ワークフロー機械化設計（operation contract・有効プロンプト構造化・スナップショット・Phase 1〜6）。D-003 の上に乗る**実行層**。
-- `docs/notes/working/2026-06-05-workflow-navigator-webui-plan.md`
-  - Navigator WebUI 構想。スナップショット形式が決まってから着手。機械化設計 Phase 1 完了が前提。
-- `docs/notes/working/2026-06-18-context-limit-session-log-anomaly.md`
-  - コンテキスト上限到達時にセッションログが中途更新される異常系の記録。
+- **統合設計メモ完成**：`docs/notes/2026-06-18-integrated-design-selection-execution-layers.md`
+  - D-003（選択層）と機械化設計（実行層）の接続点を整理した正本。
+  - `effect_kind`（副作用の種別）は `read / write / state_mutation / external_call` の4値に確定。`irreversible_action` は廃止。
+  - `approval_required`（実行前に人間の承認が必要か）は `effect_kind` とは独立した属性として定義。
+  - `record_human_decision` は `state_mutation` かつ `approval_required: false`（承認ゲートの内側操作）。
 
-### 次セッションの具体的な作業内容
+- **機械化設計メモへの3者レビュー指摘を解消**：`docs/notes/working/2026-06-18-mechanized-workflow-execution-design.md`
+  - §3.1：`approval_required: true` の具体的な操作リストを明記（`commit_stop_point` 等7種）。
+  - §7：D-003 を Phase 0 として位置づけ、実装順序を §4.1 を正本として更新。
+  - Phase 2 の `operation-list --json` 属性に `approval_required` を追加。
 
-**統合設計メモの作成**（上記2つの working ノートを入力資料として）
+- **WORKFLOW_NAVIGATION.md の語彙統一**：`docs/operations/WORKFLOW_NAVIGATION.md`
+  - `reopen_in_progress` セクションの `required_action` 語彙を正式名称に統一。
 
-- D-003（選択層）と機械化設計（実行層）の接続点を整理する
-  - `required_action` 語彙（19種）と operation contract の対応
-  - 19段階優先順位と Phase 0〜6 の関係
-  - 承認ゲート・側道・スナップショット等の統一的な定義
-- 統合設計メモを新規作成し、2つの既存メモを入力資料（参照元）と位置づける
+- **セッション記録フック修正**：`.claude/hooks/session-record-capture-previous.sh`
+  - コンテキスト圧縮による `SessionStart` 再発火で、現セッションが前セッションとして誤取り込みされる問題を修正。
+  - 取り込み済みセッション ID を `.reviewcompass/runtime/session-backfill-done/` にマーカーとして記録し、二重取り込みを防止。
 
-**後書き検証のトリアージ中断について**
+### 次セッションの主要課題
 
-`docs/notes/working/2026-06-18-mechanized-workflow-execution-design.md` の post-write verification（3モデルレビュー）を実施したが、A-1（D-003 依存問題）の議論中に設計の根本的見直しが必要と判断し、トリアージを中断した。レビュー証跡は `.reviewcompass/evidence/review-runs/2026-06-18-mechanized-workflow-design-postwrite/` に保存済み。統合設計メモが完成し `docs/notes/` に移動した時点で改めて検証を行う。
+**`pending-issues-review` の未確定事項15件**（`human_required`、全件未判定）
+
+レビューラン：`.reviewcompass/evidence/review-runs/2026-06-18-pending-issues-review/`
+
+主な未確定事項（Sonnet primary の所見より）：
+1. `alignment` gate の `effect_kind`（`write` か `state_mutation` か複合値か）
+2. Phase 0 と Phase 1 の並行作業の分割方針
+3. 状態スナップショットの出力タイミング（`next --json` 後の自動出力 vs 専用サブコマンド）
+4. D-003 §8 の72シナリオを Phase 6 の監査テストとして使う具体的方法
+5. 機械タスクの自動実行担当コマンド（`next --json` 呼び出し側 vs 新規サブコマンド）
+6. LLM 裁判官（§5.2）の実行基盤（`run_review.py` 流用 vs 新規スクリプト）
+7. 言語タスクの入出力スキーマの具体定義
+8. state repair（reopen plan 再コンパイル）の Phase 0 組み込み方法
+9. `docs/operations/` から `.reviewcompass/` への実行時参照ファイル移動
+
+これらはすべて設計上の判断事項であり、次セッションで利用者と議論して決める。
 
 ### 参考メモ（前セッションから継続）
 
@@ -64,11 +78,10 @@
 
 ## 4. 次作業候補
 
-1. **統合設計メモの作成**（最優先）
-   - 入力：`docs/notes/working/2026-06-16-next-json-unique-state-redesign.md`（D-003）と `docs/notes/working/2026-06-18-mechanized-workflow-execution-design.md`
-   - 出力：`docs/notes/working/` に新規統合設計メモを作成
-   - Phase 0（`next --json` 唯一化）→ Phase 1〜6（実行層機械化）の一本の設計として整理する
-   - 接続点の整理から始める（`required_action` 語彙と operation contract の対応等）
+1. **`pending-issues-review` の未確定事項への対処**（最優先）
+   - 上記9件（Sonnet）＋GPT/Gemini の追加所見計15件に対し、`review_triage.py decide` で判定を記録する。
+   - 設計判断が必要なものは利用者と議論してから決める。
+   - 証跡：`.reviewcompass/evidence/review-runs/2026-06-18-pending-issues-review/triage.yaml`
 
 2. **実アプリ pilot**
    - 未着手。対象アプリ root と、対象アプリ側 LLM が参照できる ReviewCompass 配布物配置先を決めるところから始める。
@@ -80,23 +93,27 @@
 
 完了済みとして候補から外したもの（直近）:
 
+- **統合設計メモの作成**
+  - `docs/notes/2026-06-18-integrated-design-selection-execution-layers.md` として完成・コミット済み。
+  - effect_kind 4値確定、approval_required の独立属性化、実装順序（Phase 0→1→2〜6）を確定。
+
 - **maintenance workflow protocol の明文化**
-  - `98fe84a7 Add maintenance protocol to WORKFLOW_NAVIGATION.md` で完了。事前調査義務・開始条件（局所かつフィーチャー内閉じ）・3行宣言・TDD主導 vs 文書のみの区別を `WORKFLOW_NAVIGATION.md` に明文化。
-  - side track として、コミット体験改善（1回化・出力最小化・承認語追加・run_review.py allow）も実施済み。
+  - `98fe84a7 Add maintenance protocol to WORKFLOW_NAVIGATION.md` で完了。
 
 - **conformance 結果の仕様反映（MLE-GAP-001〜006）**
-  - `stages/completed/reopen-procedure-2026-06-12.yaml` で workflow-management / conformance-evaluation の requirements・design・tasks・implementation 完了済み。
-  - `stages/completed/reopen-procedure-2026-06-12-parse-error-failclosed.yaml` で MLE-DEC-005（パースエラー遮断分離）の実装まで完了済み。
-  - 2026-06-12 のセッションで完了。TODO の更新漏れにより誤って残存していた。
+  - `stages/completed/reopen-procedure-2026-06-12.yaml` で完了済み。
 
 - **commit sandbox preflight**
   - `eb028df2 Add commit sandbox preflight` と `stages/completed/maintenance-2026-06-17-commit-sandbox-preflight.yaml` で完了済み。
+
 - **作業中メモの `lightweight_self_check` 化**
   - `9d374907 Add working note lightweight self-check` と `stages/completed/maintenance-2026-06-17-lightweight-self-check-location.yaml` で完了済み。
+
 - **commit operation card と不可逆操作 prompt selection の Codex 側反映**
   - `3f9ff253 Add commit operation prompt` で完了済み。
+
 - **Claude 側 adapter 修正**
-  - `bc3840e6 Integrate Claude Code adapter into commit operation card` で完了済み。COMMIT_OPERATION_CARD に Claude Code 節を追加し、DISCIPLINE_MAP の adapter 参照をカード1本に集約。adapter_card フィールド廃止。
+  - `bc3840e6 Integrate Claude Code adapter into commit operation card` で完了済み。
 
 ## 5. 会話ログ取り込み
 

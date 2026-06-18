@@ -1,0 +1,4 @@
+run_id: 2026-06-18-todo-update-postwrite-r2
+target_files:
+- path: TODO_NEXT_SESSION.md
+  sha256: 375fd98857606c07d10a312beb278c643f2bede641ddd2f66810d952e7795eb8
