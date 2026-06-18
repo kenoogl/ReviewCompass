@@ -1,0 +1,395 @@
+run_id: deep-review
+triage_status: draft
+generated_at: '2026-06-18T11:55:59.224314+00:00'
+decision_actor: null
+decision_actor_type: human
+items:
+- finding_id: deep-review-claude-sonnet-4-6-primary-001
+  run_id: deep-review
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: CRITICAL
+  severity_normalized: CRITICAL
+  target_location: 論点1：`verdict` フィールドの配置制約
+  plain_language_summary: '`next_action` オブジェクトで `additionalProperties` を指定しないことにより、`next_action.verdict`
+    を含む応答がスキーマバリデーションを通過してしまう。受入条件11の「`verdict` は最上位にのみあり、`next_action` 内には含めない」という要件をスキーマレベルで強制できていない。'
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: '受入条件はスキーマで表現できるならスキーマで表現すべきである。後方互換フィールド（`pending_gates` 等）の許容という目的は、`unevaluatedProperties:
+    false` と `patternProperties` を組み合わせる、あるいは `if/then` を用いた条件付き `not` 制約で特定フィールドのみ禁止するといった方法で対応できる。「後方互換のために
+    `additionalProperties` を開放している」という理由が、スキーマで検出可能な仕様違反を見逃す理由にはならない。テスト `test_phase1_schema_definitions.py`
+    の17テストが `next_action.verdict` の混入を検査しているかを確認し、していなければテストケースの追加も合わせて必要である。'
+  applied_files: []
+  superseded_by: null
+- finding_id: deep-review-claude-sonnet-4-6-primary-002
+  run_id: deep-review
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: 論点2：`additionalProperties` 未指定の理由の区別
+  plain_language_summary: 最上位と `next_action` の `additionalProperties` 未指定は理由が異なる（前者は前方拡張、後者は後方互換）が、スキーマファイル本体にもレビュー対象文書にも、この区別を明示するコメント・注釈・ドキュメント構造が存在しない。
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: 'JSON Schema Draft 2020-12 は `$comment` キーワードをサポートしており、機械可読な形でスキーマ自体に意図を残せる。明記しない場合、将来の実装者が「後方互換フィールドはもう不要になった」と誤判断して
+    `next_action` に `additionalProperties: false` を追加した際、前方拡張の妨げになるかどうかを誤って推論するリスクがある。逆に最上位の意図を知らずに
+    `additionalProperties: false` を足すと、段階的拡張の妨げになる。いずれもスキーマの誤改訂に直結し、CI で検出できずに本番で初めて判明する種類の障害を生む。明記のコストはコメント2行であり、リスクと比べて無視できるほど小さい。'
+  applied_files: []
+  superseded_by: null
+- finding_id: deep-review-claude-sonnet-4-6-primary-003
+  run_id: deep-review
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: 論点3：`kind` フィールドの値域制約
+  plain_language_summary: '`next_action.kind` が `type: string` のみで値域無制限のため、スキーマは任意の文字列を合格とする。`WORKFLOW_NAVIGATION.md
+    §2` で定義された14値以外の値（例：タイポ、廃止済み値）を出力するバグをスキーマバリデーションで検出できない。'
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: 「将来追加される可能性がある」という理由はオープンなままにする根拠にならない。`required_action` が19語彙の
+    `enum` として別ファイルで厳密に定義されているにもかかわらず、同一オブジェクト内の `kind` がオープンであることは設計上の非対称性であり、`kind`
+    の変更漏れ・タイポをスキーマが検出できないことを意味する。適切な対処は `kind` を `urn:reviewcompass:schema:action_kind`
+    として別スキーマファイルで14値の `enum` として定義し、`required_action.schema.json` と同様のパターンを適用することである。値の追加が必要になったときはスキーマ改訂をワークフローに組み込む（`CHANGELOG`
+    エントリ＋テスト追加）ことで「将来追加可能性」と「スキーマ厳格性」を両立できる。インラインで書いた場合、`kind` の値リストが `next_action_response.schema.json`
+    に埋め込まれ、`WORKFLOW_NAVIGATION.md §2` との二重管理になるため別ファイル化が望ましい。
+  applied_files: []
+  superseded_by: null
+- finding_id: deep-review-claude-sonnet-4-6-primary-004
+  run_id: deep-review
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: 論点3：`kind` と `required_action` の設計整合性
+  plain_language_summary: '`kind`（14値、制約なし）と `required_action`（19語彙、URN参照で別ファイル管理）の扱いが非対称であることが設計文書内で説明されていない。'
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: レビュアーや将来の実装者が「なぜ `required_action` は別ファイルURN参照で `kind` はインライン型なしなのか」と疑問を持ったとき、設計文書に根拠がなければ「片方が実装漏れ」と誤解する可能性がある。非対称を意図的に採用するならその根拠（例：`required_action`
+    は複数スキーマから $ref される共有語彙であり `kind` は単一箇所でのみ使われる）を設計文書に記述すべきである。現状の設計文書にはこの説明がない。
+  applied_files: []
+  superseded_by: null
+- finding_id: deep-review-claude-sonnet-4-6-primary-005
+  run_id: deep-review
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: 確定済みの構造：`additionalProperties` 未指定（最上位）
+  plain_language_summary: 最上位の `additionalProperties` 未指定により、`verdict` `exit_code`
+    `next_action` `reasons` `current_state` 以外の任意フィールドが最上位に混入してもバリデーションを通過する。設計文書は「段階的拡張を妨げないため」と説明するが、許容する追加フィールドの命名規則・追加プロセスが定義されていない。
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: フィールド追加が自由な場合、異なるバージョン間での `next --json` 出力の解釈に曖昧性が生じる。最低限「拡張フィールドは
+    `x_` プレフィックスを使う」等の規則を設計文書に明記し、`patternProperties` でプレフィックス付きフィールドのみ許可する方法も検討に値する。
+  applied_files: []
+  superseded_by: null
+- finding_id: deep-review-claude-sonnet-4-6-primary-006
+  run_id: deep-review
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: 共通の前提：テストファイル `tests/tools/test_phase1_schema_definitions.py`
+  plain_language_summary: 17個のテストがスキーマファイルの内容を検証するとあるが、論点1で指摘した `next_action.verdict`
+    混入ケース、論点3の `kind` タイポケースがテストカバレッジに含まれているかどうかが設計文書から読み取れない。
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: スキーマのバリデーション境界条件（禁止フィールドの混入、値域外の `kind`）は境界値テストとして明示的に存在すべきである。設計レビューの時点でテストケース一覧を設計文書に列挙し、論点で議論された制約がテストで担保されているかを対応付けておくことで、実装フェーズでの抜け漏れを防げる。
+  applied_files: []
+  superseded_by: null
+- finding_id: deep-review-claude-sonnet-4-6-primary-007
+  run_id: deep-review
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: 論点1：`verdict` フィールドの配置制約（実装手段）
+  plain_language_summary: 'JSON Schema Draft 2020-12 では `unevaluatedProperties` を使うことで
+    `$ref` 経由で評価されたプロパティを含めた上で追加プロパティを制御できる。`next_action` で後方互換フィールドを許しつつ `verdict`
+    のみ禁止したい場合、`not: { required: ["verdict"] }` を `next_action` オブジェクトに追加する方法が最小変更で実現可能である。'
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: '設計文書は「どのような方法が有効か」を問うているが、具体的な実装パスを示していない。`not: { required: ["verdict"]
+    }` は `additionalProperties` の開放を維持しつつ特定フィールドの存在を禁止する最も直接的な手法であり、`jsonschema` ライブラリ（Draft
+    2020-12対応）で動作確認しやすい。設計段階でこの選択肢を記録しておくことで実装者の調査コストを削減できる。'
+  applied_files: []
+  superseded_by: null
+- finding_id: deep-review-claude-sonnet-4-6-primary-008
+  run_id: deep-review
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: 論点2：後方互換フィールド（`pending_gates`・`next_pending_gate`）の廃止計画
+  plain_language_summary: '後方互換フィールドを許容する期間・廃止条件が設計文書に明記されていない。いつ `next_action` を
+    `additionalProperties: false` または `unevaluatedProperties: false` に移行できるかの判断基準がない。'
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: 後方互換フィールドの許容は技術的負債であり、廃止計画がなければ永続化するリスクがある。「バージョン X.Y 以降のすべての出力クライアントが
+    `future_gates`・`active_gate` を使用することが確認できた時点で旧フィールドの許容を打ち切る」等の基準を設計文書に追記することが望ましい。
+  applied_files: []
+  superseded_by: null
+- finding_id: deep-review-gpt-5.5-adversarial-001
+  run_id: deep-review
+  source_model: gpt-5.5
+  source_round: round-1
+  source_raw_path: raw/gpt-5.5.round-1.txt
+  source_parsed_path: parsed/gpt-5.5.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: 論点 1 / next_action.additionalProperties と verdict 配置制約
+  plain_language_summary: 受入条件である「verdict は最上位にのみ存在する」を満たすには、next_action 内の verdict
+    をスキーマで明示的に禁止するべきです。
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: 'additionalProperties を許容したままでも、JSON Schema Draft 2020-12 では properties:
+    { verdict: false } または not: { required: [verdict] } により、他の拡張フィールドを許容しつつ verdict
+    だけを禁止できます。これは後方互換性を損なわずに受入11を機械的に検証できるため、実装・テスト・外部連携における曖昧さを減らします。禁止しない場合、next_action.verdict
+    を含む誤った出力がスキーマ検証を通過し、消費側が最上位 verdict と入れ子の verdict のどちらを信頼すべきか誤解するリスクがあります。'
+  applied_files: []
+  superseded_by: null
+- finding_id: deep-review-gpt-5.5-adversarial-002
+  run_id: deep-review
+  source_model: gpt-5.5
+  source_round: round-1
+  source_raw_path: raw/gpt-5.5.round-1.txt
+  source_parsed_path: parsed/gpt-5.5.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: 論点 1 / 禁止方法
+  plain_language_summary: 'next_action.verdict の禁止には additionalProperties: false を使うべきではありません。'
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: 'next_action では pending_gates や next_pending_gate など旧フィールドを許容する後方互換要件があるため、additionalProperties:
+    false は設計意図と衝突します。禁止対象が verdict のみであるなら、boolean schema を用いた properties: { verdict:
+    false } が最も局所的で、将来拡張や旧出力の受け入れを維持しやすい方法です。'
+  applied_files: []
+  superseded_by: null
+- finding_id: deep-review-gpt-5.5-adversarial-003
+  run_id: deep-review
+  source_model: gpt-5.5
+  source_round: round-1
+  source_raw_path: raw/gpt-5.5.round-1.txt
+  source_parsed_path: parsed/gpt-5.5.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: 論点 2 / additionalProperties 未指定理由
+  plain_language_summary: 最上位と next_action で additionalProperties 未指定の理由が異なることは、設計文書に明記するべきです。
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: 最上位は将来拡張のため、next_action は主に旧フィールド互換のためという目的差を明記しないと、実装者が両者を同じ拡張ポリシーと誤解し、将来のスキーマ改訂で
+    next_action を過度に閉じたり、逆に最上位の任意フィールドを互換用途と誤認したりする可能性があります。記載コストは数行程度であり、将来の誤改訂やテスト期待値のずれを防ぐ実用的価値が高いです。
+  applied_files: []
+  superseded_by: null
+- finding_id: deep-review-gpt-5.5-adversarial-004
+  run_id: deep-review
+  source_model: gpt-5.5
+  source_round: round-1
+  source_raw_path: raw/gpt-5.5.round-1.txt
+  source_parsed_path: parsed/gpt-5.5.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: 論点 2 / next_action の旧フィールド互換
+  plain_language_summary: pending_gates と next_pending_gate を単に additionalProperties
+    で許容するだけでは、旧フィールドの型や意味を検証できません。
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: 後方互換のために旧フィールドを受け入れるのであれば、既知の旧フィールドとして properties に明示し、deprecated
+    相当の注記や description を付けたうえで型を定義する方が安全です。現在の方針では、旧フィールド以外の typo や意図しないフィールドも同じ扱いで通過するため、互換目的と無制限拡張が区別されません。
+  applied_files: []
+  superseded_by: null
+- finding_id: deep-review-gpt-5.5-adversarial-005
+  run_id: deep-review
+  source_model: gpt-5.5
+  source_round: round-1
+  source_raw_path: raw/gpt-5.5.round-1.txt
+  source_parsed_path: parsed/gpt-5.5.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: 論点 3 / next_action.kind
+  plain_language_summary: 'kind が現時点で 14 値に限定される実質的な分類値であるなら、type: string のみでは next
+    --json の正しさを十分に検証できません。'
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: スキーマの目的が next --json の出力検証である以上、既知の分類値に対する誤字や未実装値を検出できないことは品質保証上の欠落です。required_action
+    を enum で厳密化している一方で kind だけを完全にオープンにすると、同じ next_action 内の中核分類フィールドに対する制約方針が不整合になります。将来値の追加可能性は
+    enum を避ける理由にはなり得ますが、その場合は設計文書で「kind は互換性優先の拡張ポイントであり、未知値を許容する」と明確に宣言する必要があります。
+  applied_files: []
+  superseded_by: null
+- finding_id: deep-review-gpt-5.5-adversarial-006
+  run_id: deep-review
+  source_model: gpt-5.5
+  source_round: round-1
+  source_raw_path: raw/gpt-5.5.round-1.txt
+  source_parsed_path: parsed/gpt-5.5.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: 論点 3 / kind enum の配置
+  plain_language_summary: kind を enum 化する場合は、required_action と同様に独立した schema ファイルまたは明確な
+    $defs として単一の参照元を設けるべきです。
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: kind は WORKFLOW_NAVIGATION.md の判定結果種別と対応する共有語彙であり、将来追加や他スキーマからの参照が発生し得ます。インライン
+    enum は小規模なうちは簡単ですが、required_action が別スキーマで管理されている現状では、kind だけをインラインにすると語彙管理の一貫性が下がります。別ファイル化する場合は
+    $id を付与し、テストで 14 値との同期を検証することで保守性が高まります。
+  applied_files: []
+  superseded_by: null
+- finding_id: deep-review-gpt-5.5-adversarial-007
+  run_id: deep-review
+  source_model: gpt-5.5
+  source_round: round-1
+  source_raw_path: raw/gpt-5.5.round-1.txt
+  source_parsed_path: parsed/gpt-5.5.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: 論点 3 / kind と required_action の関係
+  plain_language_summary: kind と required_action を異なる制約方式にする場合は、役割の違いを設計上明文化する必要があります。
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: required_action が実行すべき具体的アクションを表す安定語彙で、kind が診断・分類用の拡張可能ラベルであるなら、required_action
+    のみ enum 化し kind を open string にする設計は成立します。ただし、その場合でも未知の kind を消費側がどう扱うべきか、completed
+    や unknown のような値の意味、required_action との整合性をどこまで保証するかを明記しないと、ツール連携時に解釈差が生じます。
+  applied_files: []
+  superseded_by: null
+- finding_id: deep-review-gpt-5.5-adversarial-008
+  run_id: deep-review
+  source_model: gpt-5.5
+  source_round: round-1
+  source_raw_path: raw/gpt-5.5.round-1.txt
+  source_parsed_path: parsed/gpt-5.5.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: 共通の前提 / tests/tools/test_phase1_schema_definitions.py
+  plain_language_summary: スキーマ方針の変更に合わせて、自動テストに負例を追加する必要があります。
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: next_action.verdict を禁止するなら当該フィールドを含む応答が失敗するテスト、kind を enum 化するなら未知値や
+    typo が失敗するテスト、旧フィールド互換を明示するなら pending_gates と next_pending_gate が期待どおり通過するテストが必要です。設計判断だけでなくテストに落とし込まないと、将来のスキーマ改訂で同じ曖昧さが再発します。
+  applied_files: []
+  superseded_by: null
+- finding_id: deep-review-gemini-3.1-pro-preview-judgment-001
+  run_id: deep-review
+  source_model: gemini-3.1-pro-preview
+  source_round: round-1
+  source_raw_path: raw/gemini-3.1-pro-preview.round-1.txt
+  source_parsed_path: parsed/gemini-3.1-pro-preview.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: 論点 1：`verdict` フィールドの配置制約
+  plain_language_summary: 'next_action内で `verdict` フィールドを禁止するため `properties: { verdict:
+    false }` を指定すべきである'
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: 要件（受入11）で明示的に禁止されている制約は、スキーマで表現することが強く推奨されます。JSON Schema Draft
+    2020-12では、`properties` 内で特定のキーにブーリアンスキーマの `false` を指定することで、`additionalProperties`
+    を未指定（拡張可能）にしたまま特定のプロパティのみを確実に禁止できます。出力生成元のバグを検知できるためスキーマで禁止しないリスクよりメリットが上回り、後方互換性も損なわれません。
+  applied_files: []
+  superseded_by: null
+- finding_id: deep-review-gemini-3.1-pro-preview-judgment-002
+  run_id: deep-review
+  source_model: gemini-3.1-pro-preview
+  source_round: round-1
+  source_raw_path: raw/gemini-3.1-pro-preview.round-1.txt
+  source_parsed_path: parsed/gemini-3.1-pro-preview.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: 論点 2：`additionalProperties` 未指定の理由の区別
+  plain_language_summary: 最上位とnext_actionにおける `additionalProperties` 未指定の異なる意図を `$comment`
+    キーワード等で明記すべきである
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: '未指定の理由が「将来の拡張」と「後方互換性の維持」で明確に異なるため、背景を知らない開発者が将来「厳密な検証のため」と誤って
+    `additionalProperties: false` を設定し、互換性を破壊するリスクがあります。スキーマファイル内に `$comment` として設計意図を記載するコストは極めて低く、誤改訂を防ぐドキュメントとしての実用的価値が非常に高いため記載すべきです。'
+  applied_files: []
+  superseded_by: null
+- finding_id: deep-review-gemini-3.1-pro-preview-judgment-003
+  run_id: deep-review
+  source_model: gemini-3.1-pro-preview
+  source_round: round-1
+  source_raw_path: raw/gemini-3.1-pro-preview.round-1.txt
+  source_parsed_path: parsed/gemini-3.1-pro-preview.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: 論点 3：`kind` フィールドの値域制約
+  plain_language_summary: kindフィールドは単なる文字列ではなくenumとして定義し、required_actionと制約の粒度を揃えるべきである
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: kindは判定結果の種別を示す重要なフィールドであり、オープンな文字列のままではテストおよび検証の精度が低下します。同じオブジェクト内の
+    required_action を厳密に定義している状況において、kind のみ値域制約がないのは設計上不整合です。開発中で値が追加される可能性があっても、現行の14値をenumとして定義し、必要に応じてスキーマを更新する運用をとる方が安全です。再利用性を考慮し、required_action
+    と同様に別ファイルで定義してURN参照するのが理想的です。
+  applied_files: []
+  superseded_by: null

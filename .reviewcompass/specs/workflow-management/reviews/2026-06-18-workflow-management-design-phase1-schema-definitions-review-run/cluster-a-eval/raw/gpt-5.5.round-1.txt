@@ -1,0 +1,21 @@
+findings:
+  - severity: WARN
+    target_location: "問題の核心"
+    description: "URN を基底 URI にした相対参照の説明が「RFC 3986 上未定義」と断定している点は不正確です。"
+    rationale: "RFC 3986 の相対 URI 解決アルゴリズム自体は非階層的に見える URI に対しても機械的に適用されます。ただし、`urn:reviewcompass:schema:next_action_response` を基底に `./required_action.schema.json` を解決しても、同一ディレクトリのファイルを指す意図した識別子にはならず、URN としても有用な結果になりません。問題は「未定義」ではなく「意図した兄弟ファイル参照として解決されない／ポータブルでない」と表現した方が正確です。"
+  - severity: ERROR
+    target_location: "案ア：`$id` を HTTP URL 形式に変更し、相対 `$ref` を維持する"
+    description: "HTTP 形式の `$id` と相対 `$ref` だけでは、Python `jsonschema` がローカルの `required_action.schema.json` を自動的に見つけるとは限りません。"
+    rationale: "`$ref` は `https://schema.reviewcompass.example/required_action.schema.json` に解決されますが、その URI とローカルで読み込んだ語彙スキーマを対応付ける registry/store/retrieve 処理を明示しないと、バリデータは未解決参照として失敗するか、実装・設定によってはリモート取得を試みる可能性があります。案アを採用する場合は、両スキーマを `$id` で登録するテスト実装方針まで設計に含める必要があります。"
+  - severity: ERROR
+    target_location: "案イ：`$id` を省略し、ファイルパスで解決させる"
+    description: "`$id` 省略時にファイルパスが基底 URI として使われることを前提にしていますが、これはスキーマをどの retrieval URI でバリデータに渡すかに依存します。"
+    rationale: "JSON Schema 仕様上、`$id` がない場合の基底 URI はスキーマの取得 URI に由来します。Python `jsonschema` でも、単に JSON を dict として読み込んで `Draft202012Validator(schema)` に渡すだけでは、ファイルパスが自動的に基底 URI になるとは限りません。`file://.../next_action_response.schema.json` を基底 URI として与え、相対参照を解決する registry/retrieve または resolver 設定を明示しないと、案イの動作は再現性がありません。"
+  - severity: WARN
+    target_location: "案イ：Python の `jsonschema` ライブラリでの説明"
+    description: "`RefResolver` を前提にしている点は、現行の `jsonschema` 利用方針として古くなる可能性があります。"
+    rationale: "Python `jsonschema` では `RefResolver` は非推奨化され、`referencing` ライブラリの `Registry` / `Resource` / `retrieve` を使う方向に移行しています。設計段階で `RefResolver` 依存として固定すると、将来の保守性や Draft 2020-12 での参照解決テストの再現性に影響します。"
+  - severity: WARN
+    target_location: "評価してほしいこと / 2案以外の解決方法"
+    description: "より良い解決策として、スキーマ登録方式を明示する案が設計候補に含まれていません。"
+    rationale: "案アを採るなら、HTTP 形式の安定した canonical `$id` を付けたうえで、テスト時に `required_action.schema.json` をその `$id` に紐づけて registry に登録するのが堅牢です。案イを採るなら、実ファイルの `file://` URI を retrieval URI として与え、同一ディレクトリの相対 `$ref` を解決する retrieve 関数を定義する必要があります。単に `$id` の有無だけを選ぶ設計では、参照解決の実装責務が曖昧に残ります。"

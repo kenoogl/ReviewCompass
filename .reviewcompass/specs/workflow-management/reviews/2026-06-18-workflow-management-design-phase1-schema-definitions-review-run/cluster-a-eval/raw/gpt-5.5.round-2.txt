@@ -1,0 +1,25 @@
+findings:
+  - severity: ERROR
+    target_location: "案イ：`$id` を省略する / 「基底 URI は登録キー（`file://` URI）になる」"
+    description: "案イのコード骨格だけでは、ルートスキーマの基底 URI が登録キーの `file://` URI になるとは限りません。"
+    rationale: "Python `jsonschema` で `Draft202012Validator(response, registry=registry)` のようにスキーマ内容を直接渡す場合、`response` スキーマに `$id` がないため、ルートリソースの基底 URI は登録時の `response_uri` ではなく空 URI になり得ます。その場合、`$ref: \"./required_action.schema.json\"` は `file:///.../required_action.schema.json` ではなく意図しない相対 URI として扱われ、登録済みリソースに解決されません。案イを成立させるには、検証開始時に `response_uri` を retrieval URI として明示的に使う方法、または retrieve/resolver 設定を設計に含める必要があります。"
+
+  - severity: ERROR
+    target_location: "3案共通：`Resource.from_contents(...)` を使った登録コード"
+    description: "`Resource.from_contents(...)` が Draft 2020-12 の仕様を判定できる前提が明示されていません。"
+    rationale: "`referencing.Resource.from_contents` は通常、スキーマ内の `$schema` から仕様を判定します。提示されたスキーマ断片では `$schema` が示されていないため、実際のファイルにも `$schema` がない場合は `CannotDetermineSpecification` になる、または期待した Draft 2020-12 と異なる扱いになる可能性があります。設計では各スキーマに `\"$schema\": \"https://json-schema.org/draft/2020-12/schema\"` を入れるか、Draft 2020-12 の specification を明示して `Resource` を作成する方針を明記すべきです。"
+
+  - severity: WARN
+    target_location: "案イ：`$id` を省略する / 「別マシンに配布しても同じ登録コードは使えない」"
+    description: "案イのデプロイ時リスクの説明がやや不正確です。"
+    rationale: "提示コードは `Path(...).resolve().as_uri()` で実行時の絶対 `file://` URI を生成しているため、同じディレクトリ構造であれば別マシンでも登録コード自体を書き換えずに動作させられる可能性があります。問題は「コードを書き換える必要がある」ことではなく、スキーマの識別子が実行環境固有の絶対パスになり、外部参照・ログ・キャッシュ・配布物間で安定した canonical URI として扱えないことです。"
+
+  - severity: WARN
+    target_location: "案ウ：`$id` を URN のまま維持し、`$ref` も URN に変える"
+    description: "`urn:reviewcompass:...` という URN 名前空間の妥当性と運用ルールが設計に明記されていません。"
+    rationale: "JSON Schema の `$id` は URI として機能すればよい一方、URN として厳密に扱うなら namespace identifier の登録・衝突回避・バージョニング方針を考慮する必要があります。`reviewcompass` が未登録の URN namespace である場合、長期的なグローバル一意性の説明が弱くなります。固定識別子を使う目的なら、正式に管理する HTTPS URI、`tag:` URI、または `urn:uuid:` などとの比較を設計に含めると判断根拠が明確になります。"
+
+  - severity: WARN
+    target_location: "3案共通：テスト・検証コードの骨格"
+    description: "登録後に `jsonschema` バリデータへ `registry` をどのように渡し、どの URI をルートとして検証するかが示されていません。"
+    rationale: "参照解決の成否は、`Registry` にリソースを登録するだけでなく、`Draft202012Validator(..., registry=registry)` のようにバリデータへ渡す方法、およびルートスキーマを `$id` 付きリソースとして扱うか retrieval URI から開始するかに依存します。特に `$id` を省略する案イではこの差が致命的になるため、実際の validator 構築コードまで設計に含めないと「上記コードが正しく動作する」という評価が再現できません。"

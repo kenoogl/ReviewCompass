@@ -1,0 +1,164 @@
+status: completed
+target_files:
+- .reviewcompass/specs/_cross_feature/reviews/2026-06-18-design-alignment-phase1-schema-definitions-reopen.md
+- .reviewcompass/specs/_cross_feature/reviews/2026-06-18-design-review-wave-phase1-schema-definitions-reopen.md
+- .reviewcompass/specs/workflow-management/design.md
+- .reviewcompass/specs/workflow-management/reviews/2026-06-18-workflow-management-design-phase1-schema-definitions-review-run/cluster-a-eval/review-target-round2.md
+- .reviewcompass/specs/workflow-management/reviews/2026-06-18-workflow-management-design-phase1-schema-definitions-review-run/cluster-a-eval/review-target.md
+- .reviewcompass/specs/workflow-management/reviews/2026-06-18-workflow-management-design-phase1-schema-definitions-review-run/cluster-a-eval/review_summary.md
+- .reviewcompass/specs/workflow-management/reviews/2026-06-18-workflow-management-design-phase1-schema-definitions-review-run/deep-review/review-target.md
+- .reviewcompass/specs/workflow-management/reviews/2026-06-18-workflow-management-design-phase1-schema-definitions-review-run/deep-review/review_summary.md
+- .reviewcompass/specs/workflow-management/reviews/2026-06-18-workflow-management-design-phase1-schema-definitions-review-run/review-target.md
+- .reviewcompass/specs/workflow-management/reviews/2026-06-18-workflow-management-design-phase1-schema-definitions-review-run/review_summary.md
+- .reviewcompass/specs/workflow-management/tasks.md
+- TODO_NEXT_SESSION.md
+- docs/sessions/auto-2026-06-18-claude-4d027dd0-1237-4077-83b5-a506a34a8837.md
+- docs/sessions/auto-2026-06-18-claude-854682f5-03e9-4b73-ac36-7bb37e269266.md
+target_sha256:
+  .reviewcompass/specs/_cross_feature/reviews/2026-06-18-design-alignment-phase1-schema-definitions-reopen.md: f22dad9c04cddaf2c1c59515bdb49eef56ed5bb058d797ab843c1328b5909e50
+  .reviewcompass/specs/_cross_feature/reviews/2026-06-18-design-review-wave-phase1-schema-definitions-reopen.md: 3a1c9eaaebf4c51ad52d9f3984c728b3ca8c0110e0f007775a2a7d59f4699ea8
+  .reviewcompass/specs/workflow-management/design.md: 035ee889db08844cc80f670f4451d2cf3d3c221707087af90fe1fa6433f6b005
+  ? .reviewcompass/specs/workflow-management/reviews/2026-06-18-workflow-management-design-phase1-schema-definitions-review-run/cluster-a-eval/review-target-round2.md
+  : 83db4efef9f4b2db64b2c0734d1decd3c79c225a31a8454b8cdfb59d9179ec73
+  ? .reviewcompass/specs/workflow-management/reviews/2026-06-18-workflow-management-design-phase1-schema-definitions-review-run/cluster-a-eval/review-target.md
+  : 3a425e4fc290046c2b3e3dc84e94455fc6d497696e511f1cdf6643727894ca71
+  ? .reviewcompass/specs/workflow-management/reviews/2026-06-18-workflow-management-design-phase1-schema-definitions-review-run/cluster-a-eval/review_summary.md
+  : 25c4b125f2c2a9ce02770a64ec5451a595eb5d26bc8a6d685e157795188131aa
+  ? .reviewcompass/specs/workflow-management/reviews/2026-06-18-workflow-management-design-phase1-schema-definitions-review-run/deep-review/review-target.md
+  : 3b6b0a721e1472302a7748bbeffa8bc81afe99cc3573ec3fc8717c822f49184d
+  ? .reviewcompass/specs/workflow-management/reviews/2026-06-18-workflow-management-design-phase1-schema-definitions-review-run/deep-review/review_summary.md
+  : cc2688f2ee58cf421c3e39b59ebfb9ff659365dc5233bd82e289906d94dbdda4
+  ? .reviewcompass/specs/workflow-management/reviews/2026-06-18-workflow-management-design-phase1-schema-definitions-review-run/review-target.md
+  : 43621f176594d6e71983fe8457cdc064c67ab84972be9465582471bb6ea69321
+  ? .reviewcompass/specs/workflow-management/reviews/2026-06-18-workflow-management-design-phase1-schema-definitions-review-run/review_summary.md
+  : 1b97dafeece19dea0da6e16648988f2bb0050d8c085b1a64d32db038e0217660
+  .reviewcompass/specs/workflow-management/tasks.md: f502fa2b343f5c9d262a50217260b7197a5875e6a5edd8feb591cc8d6d0c9dbc
+  TODO_NEXT_SESSION.md: 4cd3d715bf8f77c953a25191a7003b246b3081616c003c62f989f16a3f0f5aab
+  docs/sessions/auto-2026-06-18-claude-4d027dd0-1237-4077-83b5-a506a34a8837.md: b48c748d08e2c0b1b9fdcda8c622923dc0ee8245504f384cc66f571db524a2df
+  docs/sessions/auto-2026-06-18-claude-854682f5-03e9-4b73-ac36-7bb37e269266.md: 227d91be1c473fb766f7f089f0a3c59c18fd09471d74dab3242f83f36094eedd
+required_verifiers: &id001
+- claude-sonnet-4-6
+- gpt-5.5
+- gemini-3.1-pro-preview
+completed_verifiers: *id001
+unresolved_substantive_findings: 0
+verifications:
+- verifier: claude-sonnet-4-6
+  target_files:
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-18-design-alignment-phase1-schema-definitions-reopen.md
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-18-design-review-wave-phase1-schema-definitions-reopen.md
+  - .reviewcompass/specs/workflow-management/design.md
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-18-workflow-management-design-phase1-schema-definitions-review-run/cluster-a-eval/review-target-round2.md
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-18-workflow-management-design-phase1-schema-definitions-review-run/cluster-a-eval/review-target.md
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-18-workflow-management-design-phase1-schema-definitions-review-run/cluster-a-eval/review_summary.md
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-18-workflow-management-design-phase1-schema-definitions-review-run/deep-review/review-target.md
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-18-workflow-management-design-phase1-schema-definitions-review-run/deep-review/review_summary.md
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-18-workflow-management-design-phase1-schema-definitions-review-run/review-target.md
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-18-workflow-management-design-phase1-schema-definitions-review-run/review_summary.md
+  - .reviewcompass/specs/workflow-management/tasks.md
+  - TODO_NEXT_SESSION.md
+  - docs/sessions/auto-2026-06-18-claude-4d027dd0-1237-4077-83b5-a506a34a8837.md
+  - docs/sessions/auto-2026-06-18-claude-854682f5-03e9-4b73-ac36-7bb37e269266.md
+  target_sha256:
+    .reviewcompass/specs/_cross_feature/reviews/2026-06-18-design-alignment-phase1-schema-definitions-reopen.md: f22dad9c04cddaf2c1c59515bdb49eef56ed5bb058d797ab843c1328b5909e50
+    .reviewcompass/specs/_cross_feature/reviews/2026-06-18-design-review-wave-phase1-schema-definitions-reopen.md: 3a1c9eaaebf4c51ad52d9f3984c728b3ca8c0110e0f007775a2a7d59f4699ea8
+    .reviewcompass/specs/workflow-management/design.md: 035ee889db08844cc80f670f4451d2cf3d3c221707087af90fe1fa6433f6b005
+    ? .reviewcompass/specs/workflow-management/reviews/2026-06-18-workflow-management-design-phase1-schema-definitions-review-run/cluster-a-eval/review-target-round2.md
+    : 83db4efef9f4b2db64b2c0734d1decd3c79c225a31a8454b8cdfb59d9179ec73
+    ? .reviewcompass/specs/workflow-management/reviews/2026-06-18-workflow-management-design-phase1-schema-definitions-review-run/cluster-a-eval/review-target.md
+    : 3a425e4fc290046c2b3e3dc84e94455fc6d497696e511f1cdf6643727894ca71
+    ? .reviewcompass/specs/workflow-management/reviews/2026-06-18-workflow-management-design-phase1-schema-definitions-review-run/cluster-a-eval/review_summary.md
+    : 25c4b125f2c2a9ce02770a64ec5451a595eb5d26bc8a6d685e157795188131aa
+    ? .reviewcompass/specs/workflow-management/reviews/2026-06-18-workflow-management-design-phase1-schema-definitions-review-run/deep-review/review-target.md
+    : 3b6b0a721e1472302a7748bbeffa8bc81afe99cc3573ec3fc8717c822f49184d
+    ? .reviewcompass/specs/workflow-management/reviews/2026-06-18-workflow-management-design-phase1-schema-definitions-review-run/deep-review/review_summary.md
+    : cc2688f2ee58cf421c3e39b59ebfb9ff659365dc5233bd82e289906d94dbdda4
+    ? .reviewcompass/specs/workflow-management/reviews/2026-06-18-workflow-management-design-phase1-schema-definitions-review-run/review-target.md
+    : 43621f176594d6e71983fe8457cdc064c67ab84972be9465582471bb6ea69321
+    ? .reviewcompass/specs/workflow-management/reviews/2026-06-18-workflow-management-design-phase1-schema-definitions-review-run/review_summary.md
+    : 1b97dafeece19dea0da6e16648988f2bb0050d8c085b1a64d32db038e0217660
+    .reviewcompass/specs/workflow-management/tasks.md: f502fa2b343f5c9d262a50217260b7197a5875e6a5edd8feb591cc8d6d0c9dbc
+    TODO_NEXT_SESSION.md: 4cd3d715bf8f77c953a25191a7003b246b3081616c003c62f989f16a3f0f5aab
+    docs/sessions/auto-2026-06-18-claude-4d027dd0-1237-4077-83b5-a506a34a8837.md: b48c748d08e2c0b1b9fdcda8c622923dc0ee8245504f384cc66f571db524a2df
+    docs/sessions/auto-2026-06-18-claude-854682f5-03e9-4b73-ac36-7bb37e269266.md: 227d91be1c473fb766f7f089f0a3c59c18fd09471d74dab3242f83f36094eedd
+- verifier: gpt-5.5
+  target_files:
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-18-design-alignment-phase1-schema-definitions-reopen.md
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-18-design-review-wave-phase1-schema-definitions-reopen.md
+  - .reviewcompass/specs/workflow-management/design.md
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-18-workflow-management-design-phase1-schema-definitions-review-run/cluster-a-eval/review-target-round2.md
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-18-workflow-management-design-phase1-schema-definitions-review-run/cluster-a-eval/review-target.md
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-18-workflow-management-design-phase1-schema-definitions-review-run/cluster-a-eval/review_summary.md
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-18-workflow-management-design-phase1-schema-definitions-review-run/deep-review/review-target.md
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-18-workflow-management-design-phase1-schema-definitions-review-run/deep-review/review_summary.md
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-18-workflow-management-design-phase1-schema-definitions-review-run/review-target.md
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-18-workflow-management-design-phase1-schema-definitions-review-run/review_summary.md
+  - .reviewcompass/specs/workflow-management/tasks.md
+  - TODO_NEXT_SESSION.md
+  - docs/sessions/auto-2026-06-18-claude-4d027dd0-1237-4077-83b5-a506a34a8837.md
+  - docs/sessions/auto-2026-06-18-claude-854682f5-03e9-4b73-ac36-7bb37e269266.md
+  target_sha256:
+    .reviewcompass/specs/_cross_feature/reviews/2026-06-18-design-alignment-phase1-schema-definitions-reopen.md: f22dad9c04cddaf2c1c59515bdb49eef56ed5bb058d797ab843c1328b5909e50
+    .reviewcompass/specs/_cross_feature/reviews/2026-06-18-design-review-wave-phase1-schema-definitions-reopen.md: 3a1c9eaaebf4c51ad52d9f3984c728b3ca8c0110e0f007775a2a7d59f4699ea8
+    .reviewcompass/specs/workflow-management/design.md: 035ee889db08844cc80f670f4451d2cf3d3c221707087af90fe1fa6433f6b005
+    ? .reviewcompass/specs/workflow-management/reviews/2026-06-18-workflow-management-design-phase1-schema-definitions-review-run/cluster-a-eval/review-target-round2.md
+    : 83db4efef9f4b2db64b2c0734d1decd3c79c225a31a8454b8cdfb59d9179ec73
+    ? .reviewcompass/specs/workflow-management/reviews/2026-06-18-workflow-management-design-phase1-schema-definitions-review-run/cluster-a-eval/review-target.md
+    : 3a425e4fc290046c2b3e3dc84e94455fc6d497696e511f1cdf6643727894ca71
+    ? .reviewcompass/specs/workflow-management/reviews/2026-06-18-workflow-management-design-phase1-schema-definitions-review-run/cluster-a-eval/review_summary.md
+    : 25c4b125f2c2a9ce02770a64ec5451a595eb5d26bc8a6d685e157795188131aa
+    ? .reviewcompass/specs/workflow-management/reviews/2026-06-18-workflow-management-design-phase1-schema-definitions-review-run/deep-review/review-target.md
+    : 3b6b0a721e1472302a7748bbeffa8bc81afe99cc3573ec3fc8717c822f49184d
+    ? .reviewcompass/specs/workflow-management/reviews/2026-06-18-workflow-management-design-phase1-schema-definitions-review-run/deep-review/review_summary.md
+    : cc2688f2ee58cf421c3e39b59ebfb9ff659365dc5233bd82e289906d94dbdda4
+    ? .reviewcompass/specs/workflow-management/reviews/2026-06-18-workflow-management-design-phase1-schema-definitions-review-run/review-target.md
+    : 43621f176594d6e71983fe8457cdc064c67ab84972be9465582471bb6ea69321
+    ? .reviewcompass/specs/workflow-management/reviews/2026-06-18-workflow-management-design-phase1-schema-definitions-review-run/review_summary.md
+    : 1b97dafeece19dea0da6e16648988f2bb0050d8c085b1a64d32db038e0217660
+    .reviewcompass/specs/workflow-management/tasks.md: f502fa2b343f5c9d262a50217260b7197a5875e6a5edd8feb591cc8d6d0c9dbc
+    TODO_NEXT_SESSION.md: 4cd3d715bf8f77c953a25191a7003b246b3081616c003c62f989f16a3f0f5aab
+    docs/sessions/auto-2026-06-18-claude-4d027dd0-1237-4077-83b5-a506a34a8837.md: b48c748d08e2c0b1b9fdcda8c622923dc0ee8245504f384cc66f571db524a2df
+    docs/sessions/auto-2026-06-18-claude-854682f5-03e9-4b73-ac36-7bb37e269266.md: 227d91be1c473fb766f7f089f0a3c59c18fd09471d74dab3242f83f36094eedd
+- verifier: gemini-3.1-pro-preview
+  target_files:
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-18-design-alignment-phase1-schema-definitions-reopen.md
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-18-design-review-wave-phase1-schema-definitions-reopen.md
+  - .reviewcompass/specs/workflow-management/design.md
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-18-workflow-management-design-phase1-schema-definitions-review-run/cluster-a-eval/review-target-round2.md
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-18-workflow-management-design-phase1-schema-definitions-review-run/cluster-a-eval/review-target.md
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-18-workflow-management-design-phase1-schema-definitions-review-run/cluster-a-eval/review_summary.md
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-18-workflow-management-design-phase1-schema-definitions-review-run/deep-review/review-target.md
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-18-workflow-management-design-phase1-schema-definitions-review-run/deep-review/review_summary.md
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-18-workflow-management-design-phase1-schema-definitions-review-run/review-target.md
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-18-workflow-management-design-phase1-schema-definitions-review-run/review_summary.md
+  - .reviewcompass/specs/workflow-management/tasks.md
+  - TODO_NEXT_SESSION.md
+  - docs/sessions/auto-2026-06-18-claude-4d027dd0-1237-4077-83b5-a506a34a8837.md
+  - docs/sessions/auto-2026-06-18-claude-854682f5-03e9-4b73-ac36-7bb37e269266.md
+  target_sha256:
+    .reviewcompass/specs/_cross_feature/reviews/2026-06-18-design-alignment-phase1-schema-definitions-reopen.md: f22dad9c04cddaf2c1c59515bdb49eef56ed5bb058d797ab843c1328b5909e50
+    .reviewcompass/specs/_cross_feature/reviews/2026-06-18-design-review-wave-phase1-schema-definitions-reopen.md: 3a1c9eaaebf4c51ad52d9f3984c728b3ca8c0110e0f007775a2a7d59f4699ea8
+    .reviewcompass/specs/workflow-management/design.md: 035ee889db08844cc80f670f4451d2cf3d3c221707087af90fe1fa6433f6b005
+    ? .reviewcompass/specs/workflow-management/reviews/2026-06-18-workflow-management-design-phase1-schema-definitions-review-run/cluster-a-eval/review-target-round2.md
+    : 83db4efef9f4b2db64b2c0734d1decd3c79c225a31a8454b8cdfb59d9179ec73
+    ? .reviewcompass/specs/workflow-management/reviews/2026-06-18-workflow-management-design-phase1-schema-definitions-review-run/cluster-a-eval/review-target.md
+    : 3a425e4fc290046c2b3e3dc84e94455fc6d497696e511f1cdf6643727894ca71
+    ? .reviewcompass/specs/workflow-management/reviews/2026-06-18-workflow-management-design-phase1-schema-definitions-review-run/cluster-a-eval/review_summary.md
+    : 25c4b125f2c2a9ce02770a64ec5451a595eb5d26bc8a6d685e157795188131aa
+    ? .reviewcompass/specs/workflow-management/reviews/2026-06-18-workflow-management-design-phase1-schema-definitions-review-run/deep-review/review-target.md
+    : 3b6b0a721e1472302a7748bbeffa8bc81afe99cc3573ec3fc8717c822f49184d
+    ? .reviewcompass/specs/workflow-management/reviews/2026-06-18-workflow-management-design-phase1-schema-definitions-review-run/deep-review/review_summary.md
+    : cc2688f2ee58cf421c3e39b59ebfb9ff659365dc5233bd82e289906d94dbdda4
+    ? .reviewcompass/specs/workflow-management/reviews/2026-06-18-workflow-management-design-phase1-schema-definitions-review-run/review-target.md
+    : 43621f176594d6e71983fe8457cdc064c67ab84972be9465582471bb6ea69321
+    ? .reviewcompass/specs/workflow-management/reviews/2026-06-18-workflow-management-design-phase1-schema-definitions-review-run/review_summary.md
+    : 1b97dafeece19dea0da6e16648988f2bb0050d8c085b1a64d32db038e0217660
+    .reviewcompass/specs/workflow-management/tasks.md: f502fa2b343f5c9d262a50217260b7197a5875e6a5edd8feb591cc8d6d0c9dbc
+    TODO_NEXT_SESSION.md: 4cd3d715bf8f77c953a25191a7003b246b3081616c003c62f989f16a3f0f5aab
+    docs/sessions/auto-2026-06-18-claude-4d027dd0-1237-4077-83b5-a506a34a8837.md: b48c748d08e2c0b1b9fdcda8c622923dc0ee8245504f384cc66f571db524a2df
+    docs/sessions/auto-2026-06-18-claude-854682f5-03e9-4b73-ac36-7bb37e269266.md: 227d91be1c473fb766f7f089f0a3c59c18fd09471d74dab3242f83f36094eedd
+review_run:
+  path: .reviewcompass/evidence/review-runs/post-write-todo-2026-06-18-new-session-update
+  summary_path: .reviewcompass/evidence/review-runs/post-write-todo-2026-06-18-new-session-update/model-result-summary.yaml
+notes: Generated template; verify target_files cover current post-write targets before
+  use.

@@ -1,0 +1,10 @@
+approved_action: review_run_triage
+approved_by: user
+review_run_id: post-write-todo-2026-06-18-new-session-update
+summary_presented_to_user: true
+triage_presented_to_user: true
+approved_finding_ids:
+  - post-write-todo-2026-06-18-new-session-update-gpt-5.5-adversarial-001
+approved_final_labels:
+  post-write-todo-2026-06-18-new-session-update-gpt-5.5-adversarial-001: must-fix
+approval_note: "利用者が「修正」と発言して承認（2026-06-18）"

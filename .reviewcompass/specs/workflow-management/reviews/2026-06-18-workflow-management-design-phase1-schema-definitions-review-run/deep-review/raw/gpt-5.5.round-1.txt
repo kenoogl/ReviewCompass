@@ -1,0 +1,33 @@
+findings:
+  - severity: ERROR
+    target_location: "論点 1 / next_action.additionalProperties と verdict 配置制約"
+    description: "受入条件である「verdict は最上位にのみ存在する」を満たすには、next_action 内の verdict をスキーマで明示的に禁止するべきです。"
+    rationale: "additionalProperties を許容したままでも、JSON Schema Draft 2020-12 では properties: { verdict: false } または not: { required: [verdict] } により、他の拡張フィールドを許容しつつ verdict だけを禁止できます。これは後方互換性を損なわずに受入11を機械的に検証できるため、実装・テスト・外部連携における曖昧さを減らします。禁止しない場合、next_action.verdict を含む誤った出力がスキーマ検証を通過し、消費側が最上位 verdict と入れ子の verdict のどちらを信頼すべきか誤解するリスクがあります。"
+  - severity: WARN
+    target_location: "論点 1 / 禁止方法"
+    description: "next_action.verdict の禁止には additionalProperties: false を使うべきではありません。"
+    rationale: "next_action では pending_gates や next_pending_gate など旧フィールドを許容する後方互換要件があるため、additionalProperties: false は設計意図と衝突します。禁止対象が verdict のみであるなら、boolean schema を用いた properties: { verdict: false } が最も局所的で、将来拡張や旧出力の受け入れを維持しやすい方法です。"
+  - severity: WARN
+    target_location: "論点 2 / additionalProperties 未指定理由"
+    description: "最上位と next_action で additionalProperties 未指定の理由が異なることは、設計文書に明記するべきです。"
+    rationale: "最上位は将来拡張のため、next_action は主に旧フィールド互換のためという目的差を明記しないと、実装者が両者を同じ拡張ポリシーと誤解し、将来のスキーマ改訂で next_action を過度に閉じたり、逆に最上位の任意フィールドを互換用途と誤認したりする可能性があります。記載コストは数行程度であり、将来の誤改訂やテスト期待値のずれを防ぐ実用的価値が高いです。"
+  - severity: WARN
+    target_location: "論点 2 / next_action の旧フィールド互換"
+    description: "pending_gates と next_pending_gate を単に additionalProperties で許容するだけでは、旧フィールドの型や意味を検証できません。"
+    rationale: "後方互換のために旧フィールドを受け入れるのであれば、既知の旧フィールドとして properties に明示し、deprecated 相当の注記や description を付けたうえで型を定義する方が安全です。現在の方針では、旧フィールド以外の typo や意図しないフィールドも同じ扱いで通過するため、互換目的と無制限拡張が区別されません。"
+  - severity: ERROR
+    target_location: "論点 3 / next_action.kind"
+    description: "kind が現時点で 14 値に限定される実質的な分類値であるなら、type: string のみでは next --json の正しさを十分に検証できません。"
+    rationale: "スキーマの目的が next --json の出力検証である以上、既知の分類値に対する誤字や未実装値を検出できないことは品質保証上の欠落です。required_action を enum で厳密化している一方で kind だけを完全にオープンにすると、同じ next_action 内の中核分類フィールドに対する制約方針が不整合になります。将来値の追加可能性は enum を避ける理由にはなり得ますが、その場合は設計文書で「kind は互換性優先の拡張ポイントであり、未知値を許容する」と明確に宣言する必要があります。"
+  - severity: WARN
+    target_location: "論点 3 / kind enum の配置"
+    description: "kind を enum 化する場合は、required_action と同様に独立した schema ファイルまたは明確な $defs として単一の参照元を設けるべきです。"
+    rationale: "kind は WORKFLOW_NAVIGATION.md の判定結果種別と対応する共有語彙であり、将来追加や他スキーマからの参照が発生し得ます。インライン enum は小規模なうちは簡単ですが、required_action が別スキーマで管理されている現状では、kind だけをインラインにすると語彙管理の一貫性が下がります。別ファイル化する場合は $id を付与し、テストで 14 値との同期を検証することで保守性が高まります。"
+  - severity: INFO
+    target_location: "論点 3 / kind と required_action の関係"
+    description: "kind と required_action を異なる制約方式にする場合は、役割の違いを設計上明文化する必要があります。"
+    rationale: "required_action が実行すべき具体的アクションを表す安定語彙で、kind が診断・分類用の拡張可能ラベルであるなら、required_action のみ enum 化し kind を open string にする設計は成立します。ただし、その場合でも未知の kind を消費側がどう扱うべきか、completed や unknown のような値の意味、required_action との整合性をどこまで保証するかを明記しないと、ツール連携時に解釈差が生じます。"
+  - severity: WARN
+    target_location: "共通の前提 / tests/tools/test_phase1_schema_definitions.py"
+    description: "スキーマ方針の変更に合わせて、自動テストに負例を追加する必要があります。"
+    rationale: "next_action.verdict を禁止するなら当該フィールドを含む応答が失敗するテスト、kind を enum 化するなら未知値や typo が失敗するテスト、旧フィールド互換を明示するなら pending_gates と next_pending_gate が期待どおり通過するテストが必要です。設計判断だけでなくテストに落とし込まないと、将来のスキーマ改訂で同じ曖昧さが再発します。"

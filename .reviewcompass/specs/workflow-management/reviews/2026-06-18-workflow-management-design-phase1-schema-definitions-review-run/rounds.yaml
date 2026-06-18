@@ -1,0 +1,62 @@
+round_id: round-1
+purpose: design
+invocation_timestamp: '2026-06-18T11:35:31.219676+00:00'
+target_files:
+- path: .reviewcompass/specs/workflow-management/reviews/2026-06-18-workflow-management-design-phase1-schema-definitions-review-run/review-target.md
+  sha256: 43621f176594d6e71983fe8457cdc064c67ab84972be9465582471bb6ea69321
+criteria: workflow_management_phase1_schema_definitions_design_triad_review
+prompt_sha256: 5480269ab43e933e356b7b71be6478136e4c198cf2eed4832ced9563c9d830e4
+model_results:
+- model_id: claude-sonnet-4-6
+  provider: anthropic-api
+  role: primary
+  treatment: primary
+  invocation_path: api
+  raw_path: raw/claude-sonnet-4-6.round-1.txt
+  raw_sha256: 93d503ebdf2820cb2702bf0d4e878224e55af79c2d2f3d1b7cf6c95986cdb08d
+  parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  parsed_sha256: 6d6d5842a4a6638decd07ea245cdd786a780587a60adde7ba59f979971b1670c
+  parse_status: parsed
+  formatted_by: parser
+  formatted_by_actor_type: orchestrator
+  formatted_by_actor: run_role.py
+  formatted_at: '2026-06-18T11:34:40.440413+00:00'
+  follow_up_action: triage
+  attempts: 1
+  duration_seconds: 42.237
+- model_id: gpt-5.5
+  provider: openai-api
+  role: adversarial
+  treatment: adversarial
+  invocation_path: api
+  raw_path: raw/gpt-5.5.round-1.txt
+  raw_sha256: a4ae343f7dabc609ea2e535c12f507a4543ee51466719b92f28b8ec4fd98d791
+  parsed_path: parsed/gpt-5.5.round-1.yaml
+  parsed_sha256: 660f9f30cdf2926ea0a85091dab5a6774353e62466ea85a6c59a0a628d301e22
+  parse_status: parsed
+  formatted_by: parser
+  formatted_by_actor_type: orchestrator
+  formatted_by_actor: run_role.py
+  formatted_at: '2026-06-18T11:35:12.687813+00:00'
+  follow_up_action: triage
+  attempts: 1
+  duration_seconds: 32.291
+- model_id: gemini-3.1-pro-preview
+  provider: gemini-api
+  role: judgment
+  treatment: judgment
+  invocation_path: api
+  raw_path: raw/gemini-3.1-pro-preview.round-1.txt
+  raw_sha256: 1ea1506501ff560120615f0a0e2f348b15f19bd7221e461490769465e0592843
+  parsed_path: parsed/gemini-3.1-pro-preview.round-1.yaml
+  parsed_sha256: 799001b0a7f343f5515f9f7bc3c55d77c4414d1b918075916ebc9e7f68b171b2
+  parse_status: parsed
+  formatted_by: parser
+  formatted_by_actor_type: orchestrator
+  formatted_by_actor: run_role.py
+  formatted_at: '2026-06-18T11:35:31.219676+00:00'
+  follow_up_action: triage
+  attempts: 1
+  duration_seconds: 18.468
+effective_prompt_path: .reviewcompass/runtime/effective-prompts/next_action_kind-reopen_in_progress__workflow_stage-triad-review__reopen_required_action-run_reopen_pending_gate.prompt.md
+effective_prompt_sha256: 8b000b7a4fa9ca3b230e547eb5a3a2f38981bf141abfea7ee5c7f9e196218843

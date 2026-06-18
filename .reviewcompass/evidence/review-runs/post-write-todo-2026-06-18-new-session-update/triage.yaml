@@ -1,0 +1,104 @@
+run_id: post-write-todo-2026-06-18-new-session-update
+triage_status: decided
+generated_at: '2026-06-18T12:18:40.916980+00:00'
+decision_actor: null
+decision_actor_type: human
+items:
+- finding_id: post-write-todo-2026-06-18-new-session-update-claude-sonnet-4-6-primary-001
+  run_id: post-write-todo-2026-06-18-new-session-update
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: '## 1. 起動時に必ず行うこと, item 4'
+  plain_language_summary: The list of states requiring non-standard handling ('post_write_verification',
+    'reopen_in_progress', 'resume_in_progress', 'unknown') does not include guidance
+    on what to do when those states are returned, only what not to do.
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-18T12:22:38.988494+00:00'
+  decision_reason: §1 step 2 の effective_prompt_path 読み込みが実質的な案内を担うため、TODO への追加ポインタは不要
+  applied_files: []
+  superseded_by: null
+- finding_id: post-write-todo-2026-06-18-new-session-update-claude-sonnet-4-6-primary-002
+  run_id: post-write-todo-2026-06-18-new-session-update
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: '## 2. 現在位置'
+  plain_language_summary: The '現在位置' section states the next-action result is a predicted
+    value ('見込み') rather than an observed value, which may be stale or incorrect by
+    the time the next session reads this file.
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-18T12:22:39.035919+00:00'
+  decision_reason: §2 に '確認推奨' と明記しており、§1 の強制手順が実行を担保するため予測値記録は許容
+  applied_files: []
+  superseded_by: null
+- finding_id: post-write-todo-2026-06-18-new-session-update-claude-sonnet-4-6-primary-003
+  run_id: post-write-todo-2026-06-18-new-session-update
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: 最終更新：2026-06-18（Claude セッション 854682f5）
+  plain_language_summary: The document records a date of 2026-06-18, which is in the
+    future relative to the current date.
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-18T12:22:39.082028+00:00'
+  decision_reason: 2026-06-18 は今日の日付であり誤検出
+  applied_files: []
+  superseded_by: null
+- finding_id: post-write-todo-2026-06-18-new-session-update-claude-sonnet-4-6-primary-004
+  run_id: post-write-todo-2026-06-18-new-session-update
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: '## 4. 次作業候補, item 1'
+  plain_language_summary: The commit instruction says to combine all uncommitted changes
+    into a single guard commit, but does not specify the commit message format or
+    reference the guard tool/script to invoke.
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-18T12:22:39.128117+00:00'
+  decision_reason: TODO は意図的に簡潔にしており、ガードツール名の明示は不要
+  applied_files: []
+  superseded_by: null
+- finding_id: post-write-todo-2026-06-18-new-session-update-gpt-5.5-adversarial-001
+  run_id: post-write-todo-2026-06-18-new-session-update
+  source_model: gpt-5.5
+  source_round: round-1
+  source_raw_path: raw/gpt-5.5.round-1.txt
+  source_parsed_path: parsed/gpt-5.5.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: §4 次作業候補 / 1. 今セッションの変更をコミット
+  plain_language_summary: 未コミット変更により post_write_verification が見込まれる状況で、最優先作業を「変更をコミット」としている。
+  final_label: must-fix
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-18T12:23:09.907047+00:00'
+  decision_reason: §4.1 の「コミット後に next --json を確認して post_write_verification があれば対処する」は
+    §1 ルール（post_write_verification はコミット前に先に対処）と論理的に矛盾するため修正する
+  applied_files: []
+  superseded_by: null

@@ -1,0 +1,17 @@
+findings:
+  - severity: WARN
+    target_location: "## 1. 起動時に必ず行うこと, item 4"
+    description: "The list of states requiring non-standard handling ('post_write_verification', 'reopen_in_progress', 'resume_in_progress', 'unknown') does not include guidance on what to do when those states are returned, only what not to do."
+    rationale: "A reader encountering one of these states for the first time has no actionable path forward from this document alone. Adding even a brief pointer (e.g., 'see WORKFLOW_NAVIGATION.md §X') would reduce ambiguity and risk of incorrect action."
+  - severity: WARN
+    target_location: "## 2. 現在位置"
+    description: "The '現在位置' section states the next-action result is a predicted value ('見込み') rather than an observed value, which may be stale or incorrect by the time the next session reads this file."
+    rationale: "A session memo is most useful when it records actual observed state. A prediction can mislead the next operator into skipping the mandatory Step 1 check, contradicting the instruction in §1."
+  - severity: INFO
+    target_location: "最終更新：2026-06-18（Claude セッション 854682f5）"
+    description: "The document records a date of 2026-06-18, which is in the future relative to the current date."
+    rationale: "If the date is a typo or clock error it could cause confusion when cross-referencing git log entries or staged/completed procedure files that use the same date string."
+  - severity: INFO
+    target_location: "## 4. 次作業候補, item 1"
+    description: "The commit instruction says to combine all uncommitted changes into a single guard commit, but does not specify the commit message format or reference the guard tool/script to invoke."
+    rationale: "Consistency with the workflow's commit discipline (referenced elsewhere) would be improved by naming the guard mechanism explicitly, reducing the chance of an unguarded commit."

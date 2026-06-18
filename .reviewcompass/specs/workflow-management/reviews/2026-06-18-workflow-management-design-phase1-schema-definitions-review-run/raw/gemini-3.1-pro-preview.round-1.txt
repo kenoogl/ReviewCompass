@@ -1,0 +1,7 @@
+```yaml
+findings:
+  - severity: ERROR
+    target_location: "§5.2 next_action_response.schema.json（Req 2 受入 11） > `next_action` フィールド型定義"
+    description: "$id が URN スキームの場合、$ref における相対ファイルパス (./required_action.schema.json) の解決に失敗する"
+    rationale: "JSON Schema Draft 2020-12 では、`$id` が base URI として扱われます。`$id` に `urn:reviewcompass:schema:next_action_response` のような階層構造を持たない URN を設定している状態から、`$ref: \"./required_action.schema.json\"` のような相対パスを解決しようとすると、URI の解決規則（RFC 3986）上エラーとなります。`$ref` の値にはファイルパスではなく、参照先スキーマの `$id` (`urn:reviewcompass:schema:required_action`) を絶対URIとして指定する必要があります。"
+```

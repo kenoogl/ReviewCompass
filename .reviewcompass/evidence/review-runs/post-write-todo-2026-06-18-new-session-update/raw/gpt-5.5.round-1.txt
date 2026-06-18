@@ -1,0 +1,5 @@
+findings:
+  - severity: ERROR
+    target_location: "§4 次作業候補 / 1. 今セッションの変更をコミット"
+    description: "未コミット変更により post_write_verification が見込まれる状況で、最優先作業を「変更をコミット」としている。"
+    rationale: "§1 では post_write_verification が返った場合は通常作業へ進まないと明記しているため、次作業はまず next --json の結果に従った post_write_verification の実施であるべきです。検証完了前の commit を促す記述は、workflow guard を迂回して未検証変更を固定化するリスクがあります。"

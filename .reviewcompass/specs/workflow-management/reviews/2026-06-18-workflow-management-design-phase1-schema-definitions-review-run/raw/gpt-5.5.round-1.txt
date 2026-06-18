@@ -1,0 +1,13 @@
+findings:
+  - severity: ERROR
+    target_location: "§5.2 next_action_response.schema.json / $ref と $id"
+    description: "`$id` に `urn:reviewcompass:schema:next_action_response` を指定したまま `$ref: \"./required_action.schema.json\"` を使う設計は、相対参照の解決先が同一ディレクトリの schema ファイルにならない可能性が高い。"
+    rationale: "JSON Schema では `$id` が基底 URI になるため、相対 `$ref` はファイル配置パスではなく `$id` を基準に解決される。URN 形式の `$id` と相対ファイル参照を併用すると、バリデータによって参照解決に失敗する、または意図しない URI に解決される恐れがある。`$ref` を `urn:reviewcompass:schema:required_action` にするか、階層的な絶対 URI/ファイル URI を `$id` に使うなど、参照解決規則を明確化する必要がある。"
+  - severity: ERROR
+    target_location: "§5.2 後方互換フィールドの整合規則"
+    description: "`pending_gates` が存在する場合に `future_gates` と一致させる規則を「JSON Schema では `if/then` または `unevaluatedProperties` で表現」としているが、Draft 2020-12 標準機能だけでは sibling property 同士の任意値の等価性は表現できない。"
+    rationale: "標準 JSON Schema には、あるプロパティ値を別プロパティ値と動的に比較する `$data` のような機能は含まれていない。`if/then` は条件分岐、`unevaluatedProperties` は未評価プロパティ制御であり、`pending_gates == future_gates` の等価性保証には使えない。このままだと実装者がスキーマで保証できると誤解するため、標準スキーマでは存在時の型制約まで、等価性は実装コードまたはカスタム検証で保証する、と責務を明確に分けるべきである。"
+  - severity: ERROR
+    target_location: "§5.2 next_action オブジェクトの設計確定事項"
+    description: "受入11の「`verdict` は最上位にのみあり `next_action` 内には含まれない」制約が、設計上のスキーマ制約として反映されていない。"
+    rationale: "`next_action` では `additionalProperties` を指定しない方針のため、現設計のままでは `next_action.verdict` を含むレスポンスもスキーマ上は許容される。後方互換フィールドを許容する方針自体は妥当だが、禁止すべき既知フィールドについては `not: { required: [\"verdict\"] }` などで明示しないと、受入11の出力契約を機械検証できない。"

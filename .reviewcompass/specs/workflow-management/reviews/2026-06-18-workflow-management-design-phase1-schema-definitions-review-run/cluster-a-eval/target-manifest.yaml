@@ -1,0 +1,4 @@
+run_id: cluster-a-eval
+target_files:
+- path: .reviewcompass/specs/workflow-management/reviews/2026-06-18-workflow-management-design-phase1-schema-definitions-review-run/cluster-a-eval/review-target-round2.md
+  sha256: 83db4efef9f4b2db64b2c0734d1decd3c79c225a31a8454b8cdfb59d9179ec73

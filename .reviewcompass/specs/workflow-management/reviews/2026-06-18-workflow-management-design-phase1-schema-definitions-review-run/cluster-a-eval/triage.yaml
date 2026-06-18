@@ -1,0 +1,343 @@
+run_id: cluster-a-eval
+triage_status: draft
+generated_at: '2026-06-18T11:49:16.824077+00:00'
+decision_actor: null
+decision_actor_type: human
+items:
+- finding_id: cluster-a-eval-claude-sonnet-4-6-primary-001
+  run_id: cluster-a-eval
+  source_model: claude-sonnet-4-6
+  source_round: round-2
+  source_raw_path: raw/claude-sonnet-4-6.round-2.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-2.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: 案イ：`$id` を省略する／テスト・検証コードの骨格
+  plain_language_summary: '案イの登録コードでは `next_action_response.schema.json` を `response_uri`
+    で登録しているが、バリデータに渡す際にどの URI を基底 URI として与えるかが示されていない。`Draft202012Validator(response,
+    registry=registry)` のように dict を直接渡すと、`$id` がないスキーマの基底 URI は登録キーではなく空文字列（または未定義）になり、`$ref:
+    "./required_action.schema.json"` の解決先が `required_action.schema.json` のみとなって `file://`
+    キーと一致しない可能性がある。'
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: '`referencing` ライブラリでは、スキーマを Registry に登録したキー（retrieval URI）は `$id`
+    がない場合のみ基底 URI として機能するが、それはバリデータがそのキーを起点にスキーマを取得した場合に限られる。`Resource.from_contents()`
+    に `$id` なしスキーマを渡しただけでは、バリデータが相対 `$ref` を解決する際の基底 URI として登録キーが自動採用されるとは限らない。設計文書はこの動作を「基底
+    URI は登録キーになる」と断定しているが、実際には `retrieve` 経由での取得か、`Resource` 構築時に retrieval URI を明示しない限り保証されない。具体的には
+    `referencing.Resource` の `__init__` に `default_specification` を与えるか、`Registry`
+    の `retrieve` コールバックで file URI を解決する実装が必要になる。'
+  applied_files: []
+  superseded_by: null
+- finding_id: cluster-a-eval-claude-sonnet-4-6-primary-002
+  run_id: cluster-a-eval
+  source_model: claude-sonnet-4-6
+  source_round: round-2
+  source_raw_path: raw/claude-sonnet-4-6.round-2.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-2.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: 案イ：`$id` を省略する／「登録済みリソースが見つかる」という記述
+  plain_language_summary: '案イの設計文書は「`$ref: "./required_action.schema.json"` は `file:///.../required_action.schema.json`
+    に解決され、登録済みリソースが見つかる」と断定しているが、この解決が成立するには next_action_response スキーマ自体の基底 URI が当該
+    `file://` URI として確定していることが前提となる。この前提を満たすための実装手順が骨格コードに含まれていない。'
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: JSON Schema Draft 2020-12（§8.2.1）では、`$id` がないスキーマリソースの基底 URI は「スキーマが取得された
+    URI」である。`Registry().with_resources([(uri, resource)])` で登録した場合、`resource` の基底
+    URI がそのキーと結びつくかどうかは `referencing` ライブラリの内部実装（`Resource.id` プロパティの返す値）に依存する。`$id`
+    なしスキーマでは `resource.id()` が `None` を返し、登録キーがアンカーとして機能しない実装挙動が確認されている。設計文書がこの落とし穴を「意図しない落とし穴」の節で扱わずに正常動作として記述している点は設計上の誤りである。
+  applied_files: []
+  superseded_by: null
+- finding_id: cluster-a-eval-claude-sonnet-4-6-primary-003
+  run_id: cluster-a-eval
+  source_model: claude-sonnet-4-6
+  source_round: round-2
+  source_raw_path: raw/claude-sonnet-4-6.round-2.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-2.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: 案ア：`$id` を HTTP URL 形式にする／登録キーの一致に関する記述
+  plain_language_summary: '「登録キーはスキーマの `$id` と一致するため」という説明は正しいが、`$ref: "./required_action.schema.json"`
+    が相対参照として解決される際、末尾スラッシュの有無やパスの正規化によって解決後 URI が登録キーと完全一致しないケースへの言及がない。'
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: RFC 3986 の相対 URI 解決規則では、基底 URI `https://schema.reviewcompass.example/next_action_response.schema.json`
+    に対して `./required_action.schema.json` を解決すると `https://schema.reviewcompass.example/required_action.schema.json`
+    になる（同ディレクトリへの相対参照として正しく解決される）。この特定ケースでは一致するため実害は低いが、設計文書は「`$id` の末尾がファイル名でないパス（例：`https://schema.example.com/schemas/`）の場合は解決結果が変わる」という一般的な注意を省略している。将来のスキーマ
+    URI 変更時のリスクとして記録すべきである。
+  applied_files: []
+  superseded_by: null
+- finding_id: cluster-a-eval-claude-sonnet-4-6-primary-004
+  run_id: cluster-a-eval
+  source_model: claude-sonnet-4-6
+  source_round: round-2
+  source_raw_path: raw/claude-sonnet-4-6.round-2.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-2.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: 案ウ：`$id` を URN のまま維持し、`$ref` も URN に変える／仕様準拠性の評価
+  plain_language_summary: 設計文書は案ウについて「ファイルパスや URL と無関係に URN という固定の識別子だけで登録・参照できる」と利点のみ記述しているが、URN
+    を `$id` に使用する場合の Draft 2020-12 仕様上の制約（URN は階層的パス解決をサポートしないため相対 `$ref` が使用不可になるという
+    ラウンド1 の問題の核心）が案ウでは `$ref` を絶対 URN にすることで解決済みである旨の明示的な説明がない。
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: ラウンド1 での問題は「URN 形式 `$id` ＋ 相対 `$ref`」の組み合わせであった。案ウは `$ref` を絶対
+    URN `"urn:reviewcompass:schema:required_action"` に変更することでこの問題を根本解決しているが、設計文書はその点を明示せず「URN
+    で登録・参照できる」という結果のみ記述している。なぜ案ウが相対参照問題を回避できるのかの技術的説明を設計文書に補足することで、後続の実装者が理由を理解せずに相対
+    URN を誤用するリスクを防げる。
+  applied_files: []
+  superseded_by: null
+- finding_id: cluster-a-eval-claude-sonnet-4-6-primary-005
+  run_id: cluster-a-eval
+  source_model: claude-sonnet-4-6
+  source_round: round-2
+  source_raw_path: raw/claude-sonnet-4-6.round-2.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-2.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: 評価してほしいこと／4. 意図しない落とし穴
+  plain_language_summary: 評価項目4で「テストが通るのに実際には想定と異なる動作をするリスク」を問うているが、設計文書自体がそのリスクの最も典型的な例（案イの
+    `file://` URI 解決が環境依存で偶然成功する場合）を含んでいる可能性があり、テスト設計への影響が考慮されていない。
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: CI 環境と開発者ローカル環境でリポジトリの絶対パスが異なる場合、案イのコードは開発者環境では動作するが CI では失敗する（またはその逆）という非再現性を持つ。これは「テストが通るのに本番で壊れる」よりも「環境によってテスト結果が変わる」という形で顕在化するリスクである。設計文書は案イの欠点として「別マシンに配布しても同じ登録コードは使えない」と指摘しているが、同一リポジトリ内でも
+    CI と手元で再現性が異なりうる点を評価項目4の文脈で設計文書に組み込むべきである。
+  applied_files: []
+  superseded_by: null
+- finding_id: cluster-a-eval-claude-sonnet-4-6-primary-006
+  run_id: cluster-a-eval
+  source_model: claude-sonnet-4-6
+  source_round: round-2
+  source_raw_path: raw/claude-sonnet-4-6.round-2.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-2.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: 全体：ラウンド2 の評価対象
+  plain_language_summary: 3案の比較において、`referencing.Registry` の `retrieve` コールバックを使った動的解決（案ア・イの組み合わせ的アプローチ）が候補として挙がっていない。
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: '`referencing.Registry` は `retrieve` パラメータに callable を受け取り、未登録の
+    URI が参照されたときに動的にスキーマを取得する仕組みを持つ。HTTP URL 形式の `$id`（案ア）を採用しつつ、`retrieve` でローカルファイルシステムへのマッピングを定義すれば、登録コードに全スキーマを事前列挙しなくても相対
+    `$ref` が解決できる。スキーマファイルが増加した際の保守コストを下げる設計として、評価項目5「推奨案とその理由」の補足候補として記録する価値がある。'
+  applied_files: []
+  superseded_by: null
+- finding_id: cluster-a-eval-claude-sonnet-4-6-primary-007
+  run_id: cluster-a-eval
+  source_model: claude-sonnet-4-6
+  source_round: round-2
+  source_raw_path: raw/claude-sonnet-4-6.round-2.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-2.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: 案ウ：`$id` を URN のまま維持し、`$ref` も URN に変える
+  plain_language_summary: '案ウのコード骨格は正確に見えるが、`next_action_response.schema.json` 内で
+    `$ref` として記述される値がスキーマファイル上 `"urn:reviewcompass:schema:required_action"` という絶対
+    URN であることを、実際のスキーマ JSON サンプルとして明示しておらず、コメント「`$ref: "urn:..." を内部で使用`」という曖昧な記述にとどまっている。'
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: 案ア・イのスキーマファイル表記と案ウのそれを統一した形式で示すことで、レビュアーおよび実装者が各案の実際のスキーマ記述を比較できる。現状の記述は案ウのスキーマ側の具体的な
+    `$ref` 値が他案と比べて不明瞭であり、設計文書の一貫性が低下している。
+  applied_files: []
+  superseded_by: null
+- finding_id: cluster-a-eval-gpt-5.5-adversarial-001
+  run_id: cluster-a-eval
+  source_model: gpt-5.5
+  source_round: round-2
+  source_raw_path: raw/gpt-5.5.round-2.txt
+  source_parsed_path: parsed/gpt-5.5.round-2.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: 案イ：`$id` を省略する / 「基底 URI は登録キー（`file://` URI）になる」
+  plain_language_summary: 案イのコード骨格だけでは、ルートスキーマの基底 URI が登録キーの `file://` URI になるとは限りません。
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: 'Python `jsonschema` で `Draft202012Validator(response, registry=registry)`
+    のようにスキーマ内容を直接渡す場合、`response` スキーマに `$id` がないため、ルートリソースの基底 URI は登録時の `response_uri`
+    ではなく空 URI になり得ます。その場合、`$ref: "./required_action.schema.json"` は `file:///.../required_action.schema.json`
+    ではなく意図しない相対 URI として扱われ、登録済みリソースに解決されません。案イを成立させるには、検証開始時に `response_uri` を retrieval
+    URI として明示的に使う方法、または retrieve/resolver 設定を設計に含める必要があります。'
+  applied_files: []
+  superseded_by: null
+- finding_id: cluster-a-eval-gpt-5.5-adversarial-002
+  run_id: cluster-a-eval
+  source_model: gpt-5.5
+  source_round: round-2
+  source_raw_path: raw/gpt-5.5.round-2.txt
+  source_parsed_path: parsed/gpt-5.5.round-2.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: 3案共通：`Resource.from_contents(...)` を使った登録コード
+  plain_language_summary: '`Resource.from_contents(...)` が Draft 2020-12 の仕様を判定できる前提が明示されていません。'
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: '`referencing.Resource.from_contents` は通常、スキーマ内の `$schema` から仕様を判定します。提示されたスキーマ断片では
+    `$schema` が示されていないため、実際のファイルにも `$schema` がない場合は `CannotDetermineSpecification`
+    になる、または期待した Draft 2020-12 と異なる扱いになる可能性があります。設計では各スキーマに `"$schema": "https://json-schema.org/draft/2020-12/schema"`
+    を入れるか、Draft 2020-12 の specification を明示して `Resource` を作成する方針を明記すべきです。'
+  applied_files: []
+  superseded_by: null
+- finding_id: cluster-a-eval-gpt-5.5-adversarial-003
+  run_id: cluster-a-eval
+  source_model: gpt-5.5
+  source_round: round-2
+  source_raw_path: raw/gpt-5.5.round-2.txt
+  source_parsed_path: parsed/gpt-5.5.round-2.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: 案イ：`$id` を省略する / 「別マシンに配布しても同じ登録コードは使えない」
+  plain_language_summary: 案イのデプロイ時リスクの説明がやや不正確です。
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: 提示コードは `Path(...).resolve().as_uri()` で実行時の絶対 `file://` URI を生成しているため、同じディレクトリ構造であれば別マシンでも登録コード自体を書き換えずに動作させられる可能性があります。問題は「コードを書き換える必要がある」ことではなく、スキーマの識別子が実行環境固有の絶対パスになり、外部参照・ログ・キャッシュ・配布物間で安定した
+    canonical URI として扱えないことです。
+  applied_files: []
+  superseded_by: null
+- finding_id: cluster-a-eval-gpt-5.5-adversarial-004
+  run_id: cluster-a-eval
+  source_model: gpt-5.5
+  source_round: round-2
+  source_raw_path: raw/gpt-5.5.round-2.txt
+  source_parsed_path: parsed/gpt-5.5.round-2.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: 案ウ：`$id` を URN のまま維持し、`$ref` も URN に変える
+  plain_language_summary: '`urn:reviewcompass:...` という URN 名前空間の妥当性と運用ルールが設計に明記されていません。'
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: JSON Schema の `$id` は URI として機能すればよい一方、URN として厳密に扱うなら namespace
+    identifier の登録・衝突回避・バージョニング方針を考慮する必要があります。`reviewcompass` が未登録の URN namespace
+    である場合、長期的なグローバル一意性の説明が弱くなります。固定識別子を使う目的なら、正式に管理する HTTPS URI、`tag:` URI、または `urn:uuid:`
+    などとの比較を設計に含めると判断根拠が明確になります。
+  applied_files: []
+  superseded_by: null
+- finding_id: cluster-a-eval-gpt-5.5-adversarial-005
+  run_id: cluster-a-eval
+  source_model: gpt-5.5
+  source_round: round-2
+  source_raw_path: raw/gpt-5.5.round-2.txt
+  source_parsed_path: parsed/gpt-5.5.round-2.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: 3案共通：テスト・検証コードの骨格
+  plain_language_summary: 登録後に `jsonschema` バリデータへ `registry` をどのように渡し、どの URI をルートとして検証するかが示されていません。
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: 参照解決の成否は、`Registry` にリソースを登録するだけでなく、`Draft202012Validator(...,
+    registry=registry)` のようにバリデータへ渡す方法、およびルートスキーマを `$id` 付きリソースとして扱うか retrieval URI
+    から開始するかに依存します。特に `$id` を省略する案イではこの差が致命的になるため、実際の validator 構築コードまで設計に含めないと「上記コードが正しく動作する」という評価が再現できません。
+  applied_files: []
+  superseded_by: null
+- finding_id: cluster-a-eval-gemini-3.1-pro-preview-judgment-001
+  run_id: cluster-a-eval
+  source_model: gemini-3.1-pro-preview
+  source_round: round-2
+  source_raw_path: raw/gemini-3.1-pro-preview.round-2.txt
+  source_parsed_path: parsed/gemini-3.1-pro-preview.round-2.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: 案イ：`$id` を省略する
+  plain_language_summary: 「登録キーに実行環境の絶対パスが含まれるため、別マシンに配布しても同じ登録コードは使えない」という記述は、提示されたコードの実際の挙動と矛盾しています。
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: 提示されたPythonコードは `Path(".reviewcompass/schema").resolve()` を用いて実行時に絶対パスを動的に取得・組み立てています。そのため、別マシンにコードとスキーマのディレクトリ構造をセットで配布すれば、コードを一切変更することなく正常に動作します。案イの問題点はコードの移植性ではなく、「他言語や他ツールで利用する際にも、言語ごとに
+    file:// URI を動的に組み立てて Registry（または同等の機能）に登録する実装を強いられる」というインターフェースの煩雑さにあります。
+  applied_files: []
+  superseded_by: null
+- finding_id: cluster-a-eval-gemini-3.1-pro-preview-judgment-002
+  run_id: cluster-a-eval
+  source_model: gemini-3.1-pro-preview
+  source_round: round-2
+  source_raw_path: raw/gemini-3.1-pro-preview.round-2.txt
+  source_parsed_path: parsed/gemini-3.1-pro-preview.round-2.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: 案ア：`$id` を HTTP URL 形式にする
+  plain_language_summary: 論理的な識別子である HTTP URL 型 `$id` に対して、ファイルシステムの配置に由来する `./` という相対
+    `$ref` を組み合わせる設計は、論理と物理の混同を招くリスクがあります。
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: 本設計のようにローカルで Registry 登録して使う場合、HTTP 形式の `$id` はネットワーク取得先ではなく純粋な「論理的識別子」として扱われます。この論理名前空間の中で
+    `./` のようなファイルシステム由来の相対パスを使用することは仕様上（RFC 3986）可能ですが、ファイル配置の都合が論理的な URL 構造に密結合してしまいます。案ウのような絶対参照を用いた方が、ファイルの物理配置とスキーマの論理的識別という関心を明確に分離できます。
+  applied_files: []
+  superseded_by: null
+- finding_id: cluster-a-eval-gemini-3.1-pro-preview-judgment-003
+  run_id: cluster-a-eval
+  source_model: gemini-3.1-pro-preview
+  source_round: round-2
+  source_raw_path: raw/gemini-3.1-pro-preview.round-2.txt
+  source_parsed_path: parsed/gemini-3.1-pro-preview.round-2.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: 評価してほしいこと / 1. JSON Schema Draft 2020-12 の仕様準拠性
+  plain_language_summary: 案ウの「絶対 URN 参照」は、基底 URI や相対解決のアルゴリズムに依存しないため、仕様上最も解釈のブレが生じにくく堅牢な設計です。
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: 案アおよび案イは、JSON Schema 仕様の基底 URI 解決（Section 8.2）および RFC 3986 の相対参照解決のプロセスを必ず経由します。一方、案ウのように
+    `$id` と `$ref` の両方に絶対 URI（URN）を用いた場合、相対参照の計算が不要になり、Registry への文字列マッチングによるリソース引き当てへと直接フォールバックします。これにより、バリデータ実装の解釈差異による参照解決失敗のリスクを根本から排除できます。
+  applied_files: []
+  superseded_by: null
+- finding_id: cluster-a-eval-gemini-3.1-pro-preview-judgment-004
+  run_id: cluster-a-eval
+  source_model: gemini-3.1-pro-preview
+  source_round: round-2
+  source_raw_path: raw/gemini-3.1-pro-preview.round-2.txt
+  source_parsed_path: parsed/gemini-3.1-pro-preview.round-2.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: 評価してほしいこと / 4. 意図しない落とし穴
+  plain_language_summary: 各案を Registry 登録が未設定のツール（エディタの拡張機能や他言語のデフォルト状態のバリデータなど）で読み込んだ場合の「失敗時の挙動（フェールセーフ性）」に違いがあります。
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: 案アの場合、ツールによっては `$ref` を解決しようとして実在しない `schema.reviewcompass.example`
+    へ意図しないネットワークリクエストを送信し、タイムアウトや不要な通信遅延を引き起こすリスクがあります。一方、案ウは明示的な登録がない限り解決不可能な URN
+    であるため、ネットワークアクセスを試みることなく即座に「参照エラー」としてフェイルファストします。この副作用のない明白な失敗モードは、デバッグ容易性の観点で案ウの隠れたメリットとなります。
+  applied_files: []
+  superseded_by: null

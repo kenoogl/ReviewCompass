@@ -1,6 +1,6 @@
 # 次セッション継続用メモ
 
-最終更新：2026-06-18（Claude セッション 8f34560b）。
+最終更新：2026-06-18（Claude セッション 854682f5）。
 
 この TODO は入口メモであり、作業順序の正本ではない。正本は常に `.venv/bin/python3 tools/check-workflow-action.py next --json` と各 feature の `spec.json`。
 
@@ -17,82 +17,70 @@
 
 ## 2. 現在位置
 
-- `next --json`: `completed`
-- 進行中手続き: なし
+- `next --json`: 未コミット変更があるため `post_write_verification` になる見込み（確認推奨）
+- 進行中手続き: reopen R-0（phase1-schema-definitions）の下流作業中（`downstream_impact_decisions` 追跡）
 - 直近 commit:
   - `edc006c7 Finalize reopen R-0 phase1-schema-definitions: requirements approval & recheck clear`
   - `ee86932f Fix reopen procedure: restore triad-review/review-wave gates and record step-3 stop point`
   - `025603bd Add workflow-management AC10/AC11: required_action and next_action_response schema definitions`
-  - `ff98ffdc Fix TODO_NEXT_SESSION.md: correct numbered list`
-  - `c9b3e06d Triage all 15 pending-issues-review findings; record 3 design decisions`
-- 作業ツリーはほぼ clean（進行中セッションログのみ未コミット、フック任せ）。
+- **未コミット変更（今セッション作成）**：
+  - `design.md`（§5.2 の6点修正：$ref絶対URI化・additionalProperties理由区別・verdict禁止・kind enum化ほか）
+  - `triage.yaml`（design triad-review 全11件の最終判定記録）
+  - `_cross_feature/reviews/2026-06-18-design-review-wave-*.md`（design review-wave 記録）
+  - `_cross_feature/reviews/2026-06-18-design-alignment-*.md`（design alignment 記録）
+  - `stages/completed/reopen-procedure-2026-06-18.yaml`（design フェーズ完了ステップを追記）
+  - `tasks.md`（T-015 追加・タスク数 14→15・要件追跡2行追加）
 - `main` は origin/main より 11 commit 先行（未 push）。
 
 ## 3. 直近の重要メモ
 
-### 今セッション（8f34560b）で完了した主要作業
+### 今セッション（854682f5）で完了した主要作業
 
-- **reopen R-0（Phase 1 最小スキーマ定義）の完了**
-  - requirements alignment ゲート通過（判定: 既存で充分、追記不要）
-  - requirements approval ゲート通過（利用者承認済み）
-  - 第4過程（最終化）完了：feature_impact_decisions 7 機能分・downstream_impact_decisions 9 gate 分を記録
-  - recheck フラグをクリア（upstream_change_pending=false・impacted_downstream_phases=[]）
+- **reopen R-0 design フェーズ完了**
+  - design/triad-review：3者 API レビュー + 深掘りレビュー実施。クラスタ A/B/C/D/S-1/S-2 の全11件をトリアージ。design.md §5.2 に6点修正を適用（深掘りレビューで承認した Case ウ適用・verdict禁止・kind enum化・additionalProperties理由区別）
+  - design/review-wave：他6機能への影響確認、`existing_sufficient`
+  - design/alignment：requirements AC10/AC11 との整合確認、`existing_sufficient`
+  - design/approval：**利用者が明示承認**（「承認」発言）
+  - `reopen-procedure-2026-06-18.yaml` の `downstream_impact_decisions` を更新（design 4段を追記・resolved に変更）
+
+- **reopen R-0 tasks フェーズ drafting 完了**
+  - tasks.md に T-015（Phase 1 最小スキーマ定義ファイル作成）を追加
+  - タスク数を 14 → 15 に更新、要件追跡表に AC10/AC11 を追加
+  - T-015 の完了条件：`tests/tools/test_phase1_schema_definitions.py` の17テストが全て pass すること
+
+### 前セッション（8f34560b）の主要作業（参考）
+
+- **reopen R-0（Phase 1 最小スキーマ定義）requirements フェーズの完了**
+  - requirements alignment/approval ゲート通過・第4過程完了・recheck クリア（upstream_change_pending=false）
   - コミット `edc006c7`
-
-- **workflow-management の全段が再び完了状態に**
-  - `next --json` が `completed` を返すことを確認
-  - Phase 1 スキーマ実装（design/tasks/implementation の再確認）は次の reopen 手続きとして `downstream_impact_decisions` に `affected_update_required` で記録済み
-
-### 前セッション（77e272a2）の主要作業（参考）
-
-- **pending-issues-review 全 15 件のトリアージ完了**
-  - 全件 leave-as-is。3 つの設計判断を設計メモに記録。コミット `c9b3e06d`。
 
 ## 4. 次作業候補
 
-1. **Phase 1 スキーマ実装（reopen 手続きが必要）**
-   - 対象：`reopen-procedure-2026-06-18.yaml` の `downstream_impact_decisions` に `affected_update_required` として記録済みの下流フェーズ。
-   - 手順：design recheck → tasks recheck → implementation recheck（TDD）の順。
-   - 実装ゴール：`tests/tools/test_phase1_schema_definitions.py` の 17 テストを全て通過させる。
-   - 作成するファイル：
-     - `.reviewcompass/schema/required_action.schema.json`（AC10：19 語彙の列挙）
-     - `.reviewcompass/schema/next_action_response.schema.json`（AC11：`next --json` の応答スキーマ）
+1. **今セッションの変更をコミット**（§1 起動検査クリア後）
+   - §1 起動手順（next --json → post_write_verification など）を完了してから commit に進む。
+   - 未コミット変更（設計書修正・トリアージ記録・review-wave/alignment記録・tasks追加）を guard commit で 1 コミットにまとめる。
 
-2. **実アプリ pilot**
-   - 未着手。対象アプリ root と、対象アプリ側 LLM が参照できる ReviewCompass 配布物配置先を決めるところから始める。
+2. **tasks/triad-review**
+   - tasks.md の T-015 追加部分を対象に API 3者レビューを実施する。
+   - 変更規模が小さいので観点は「T-015 の完了条件がテストと整合しているか」「前提タスクの設定が正しいか」を中心にする。
+
+3. **tasks/review-wave → alignment → approval**
+   - triad-review 完了後に続けて実施する。
+
+4. **implementation フェーズ（TDD）**
+   - T-015 の実装：`.reviewcompass/schema/required_action.schema.json` と `.reviewcompass/schema/next_action_response.schema.json` を作成する。
+   - テストは `tests/tools/test_phase1_schema_definitions.py` に既に作成済み（失敗状態）。
+   - 作成後に17テスト全 pass を確認。
+
+5. **実アプリ pilot**
+   - 未着手。対象アプリ root と ReviewCompass 配布物配置先を決めるところから始める。
    - 正本: `docs/operations/INITIAL_DEPLOYMENT_USER_GUIDE.md` §8、§9、§19、および `docs/operations/DEPLOYMENT.md` §8。
-   - 配布前 smoke は実アプリ pilot 前の必要作業であり、現時点で完了済み扱いにしない。
-
-3. **decision-source-lint の運用開始**
-   - 仕組みは実装済み。次に重要決定が発生した時点で `.reviewcompass/decisions/` に構造化決定記録を作る。
 
 完了済みとして候補から外したもの（直近）:
 
+- **reopen R-0 design フェーズ全段完了**（今セッション 854682f5）
+- **reopen R-0 tasks drafting 完了**（今セッション 854682f5、T-015 追加）
 - **reopen R-0 phase1-schema-definitions の requirements フェーズ完了**（edc006c7）
-
-- **`pending-issues-review` の未確定事項への対処**
-  - 全 15 件 leave-as-is で確定。設計判断 3 件を記録。`c9b3e06d` でコミット済み。
-
-- **統合設計メモの作成**
-  - `docs/notes/2026-06-18-integrated-design-selection-execution-layers.md` として完成・コミット済み。
-
-- **maintenance workflow protocol の明文化**
-  - `98fe84a7 Add maintenance protocol to WORKFLOW_NAVIGATION.md` で完了。
-
-- **conformance 結果の仕様反映（MLE-GAP-001〜006）**
-  - `stages/completed/reopen-procedure-2026-06-12.yaml` で完了済み。
-
-- **commit sandbox preflight**
-  - `eb028df2` と `stages/completed/maintenance-2026-06-17-commit-sandbox-preflight.yaml` で完了済み。
-
-- **作業中メモの lightweight_self_check 化**
-  - `9d374907` と `stages/completed/maintenance-2026-06-17-lightweight-self-check-location.yaml` で完了済み。
-
-- **commit operation card と不可逆操作 prompt selection の Codex 側反映**
-  - `3f9ff253 Add commit operation prompt` で完了済み。
-
-- **Claude 側 adapter 修正**
-  - `bc3840e6 Integrate Claude Code adapter into commit operation card` で完了済み。
 
 ## 5. 会話ログ取り込み
 

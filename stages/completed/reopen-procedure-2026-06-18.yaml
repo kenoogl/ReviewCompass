@@ -14,16 +14,31 @@ completed_steps:
 - 第3過程：requirements alignment 完了（AC10/AC11 と既存要件・設計の整合確認済み）
 - 第3過程：requirements approval 完了（利用者承認済み）
 - 第4過程：完了（recheck クリア・進行中ファイルを completed に移動）
-next_step: 完了
-step_number: 4
-pending_gates: []
+- 第3過程（design）：design drafting 完了（design.md §5.2 に6点修正を追加）
+- 第3過程（design）：design triad-review 完了（11件トリアージ完了、triage.yaml 更新済み）
+- 第3過程（design）：design review-wave 完了（他機能影響なし）
+- 第3過程（design）：design alignment 完了（requirements AC10/AC11 と整合確認済み）
+- 第3過程（design）：design approval 完了（利用者承認済み、セッション 854682f5）
+next_step: tasks/triad-review
+step_number: 3
+pending_gates:
+- stages/tasks.yaml#triad-review
+- stages/tasks.yaml#review-wave
+- stages/tasks.yaml#alignment
+- stages/tasks.yaml#approval
 completed_gates:
 - stages/requirements.yaml#triad-review
 - stages/requirements.yaml#review-wave
 - stages/requirements.yaml#alignment
 - stages/requirements.yaml#approval
+- stages/design.yaml#triad-review
+- stages/design.yaml#review-wave
+- stages/design.yaml#alignment
+- stages/design.yaml#approval
 drafting_completed_gates:
 - stages/requirements.yaml#drafting
+- stages/design.yaml#drafting
+- stages/tasks.yaml#drafting
 current_blocker: null
 reopen_step_records:
 - from_step: 1
@@ -90,24 +105,49 @@ downstream_impact_decisions:
     19語彙スキーマ・next_action_response 応答スキーマの定義）を承認済み。
   evidence:
   - .reviewcompass/specs/_cross_feature/reviews/2026-06-18-requirements-phase1-schema-definitions-reopen-alignment.md
+- gate: stages/design.yaml#triad-review
+  feature_scope: workflow-management
+  decision: approved
+  rationale: design triad-review を 2ラウンド（main + deep-review）で実施。クラスタ A/B/C/D/S-1/S-2 の全所見（11件）を裁定・反映した。トリアージ完了（must-fix 7件解決・should-fix 2件解決・leave-as-is 2件）。
+  evidence:
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-18-workflow-management-design-phase1-schema-definitions-review-run/triage.yaml
+- gate: stages/design.yaml#review-wave
+  feature_scope: workflow-management
+  decision: existing_sufficient
+  rationale: design.md §5.2 の変更は workflow-management 内部の JSON Schema 定義の詳細修正（$ref 絶対URN化・verdict禁止追加・additionalProperties理由区別・kind enum化）であり、他6機能の要件・設計に影響しない。
+  evidence:
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-18-design-review-wave-phase1-schema-definitions-reopen.md
 - gate: stages/design.yaml#alignment
   feature_scope: workflow-management
-  decision: affected_update_required
-  rationale: recheck.impacted_downstream_phases 対象。design.md へ .reviewcompass/schema/ 配下 2 ファイルのファイル一覧追記とスキーマ生成タスクの接続が必要。recheck 手続き（別セッション）で実施予定。
+  decision: existing_sufficient
+  rationale: design.md §5 の変更は requirements AC10/AC11 と整合する。受入基準の変更は不要。設計強化（kind enum化・additionalProperties理由区別・minItems明記）は受入基準の意図を超えない範囲の仕様詳細化。
   evidence:
-  - .reviewcompass/specs/workflow-management/spec.json
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-18-design-alignment-phase1-schema-definitions-reopen.md
 - gate: stages/design.yaml#approval
   feature_scope: workflow-management
-  decision: affected_update_required
-  rationale: recheck.impacted_downstream_phases 対象。design 更新後に利用者承認が必要。recheck 手続き（別セッション）で実施予定。
+  decision: approved
+  rationale: 利用者が明示的に承認（セッション 854682f5、「承認」発言）。design §5.2 の6点修正（$ref絶対URN化・後方互換等価性の責務明確化・minItems明記・verdict禁止追加・additionalProperties理由区別・kind enum化）を承認済み。
   evidence:
-  - .reviewcompass/specs/workflow-management/spec.json
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-18-design-alignment-phase1-schema-definitions-reopen.md
+- gate: stages/tasks.yaml#triad-review
+  feature_scope: workflow-management
+  decision: affected_update_required
+  rationale: recheck.impacted_downstream_phases 対象。T-015（Phase 1 最小スキーマ定義ファイル作成）を tasks.md に追加済み。triad-review は次セッションで実施予定。
+  evidence:
+  - .reviewcompass/specs/workflow-management/tasks.md
+- gate: stages/tasks.yaml#review-wave
+  feature_scope: workflow-management
+  decision: affected_update_required
+  rationale: recheck.impacted_downstream_phases 対象。T-015 追加後に他機能への影響確認が必要。review-wave は triad-review 完了後に次セッションで実施予定。
+  evidence:
+  - .reviewcompass/specs/workflow-management/tasks.md
 - gate: stages/tasks.yaml#alignment
   feature_scope: workflow-management
   decision: affected_update_required
-  rationale: recheck.impacted_downstream_phases 対象。required_action.schema.json と next_action_response.schema.json の作成タスク（T-004 相当）を tasks.md に追加する必要がある。recheck 手続き（別セッション）で実施予定。
+  rationale: recheck.impacted_downstream_phases 対象。required_action.schema.json と next_action_response.schema.json の作成タスク（T-015）を tasks.md に追加済み。alignment は次セッションで実施予定。
   evidence:
   - .reviewcompass/specs/workflow-management/spec.json
+  - .reviewcompass/specs/workflow-management/tasks.md
 - gate: stages/tasks.yaml#approval
   feature_scope: workflow-management
   decision: affected_update_required

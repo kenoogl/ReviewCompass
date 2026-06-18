@@ -1,0 +1,239 @@
+run_id: 2026-06-18-workflow-management-design-phase1-schema-definitions-review-run
+triage_status: complete
+generated_at: '2026-06-18T11:35:31.237435+00:00'
+decision_actor: claude_code_main_session_human_approved
+decision_actor_type: human
+items:
+- finding_id: 2026-06-18-workflow-management-design-phase1-schema-definitions-review-run-claude-sonnet-4-6-primary-001
+  run_id: 2026-06-18-workflow-management-design-phase1-schema-definitions-review-run
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: §5.2 next_action_response.schema.json — $ref 参照の妥当性（レビュー観点5）
+  plain_language_summary: '`$id` に `urn:reviewcompass:schema:required_action` という
+    URN 形式を使いながら、参照側で `$ref: "./required_action.schema.json"` という相対ファイルパスを使用している。URN
+    ベースの `$id` を持つスキーマに対して相対パス参照を行う場合、JSON Schema Draft 2020-12 の仕様上、基底 URI が URN
+    になるため相対パスの解決が未定義となる。バリデータ実装によって動作が異なり、参照解決に失敗するリスクがある。'
+  final_label: must-fix
+  decision_status: resolved
+  decision_actor: claude_code_main_session_human_approved
+  decision_actor_type: human
+  decision_at: '2026-06-18'
+  decision_reason: 3者レビュー（クラスタ A）および cluster-a-eval 2ラウンドの評価を経て Case ウ（URN $id + 絶対 URN
+    $ref）を採用することを利用者が「承認」。`$ref` を `"urn:reviewcompass:schema:required_action"` に変更することで
+    URN 基底 URI に対する相対パス解決の問題を回避する。
+  applied_files:
+  - .reviewcompass/specs/workflow-management/design.md
+  superseded_by: null
+- finding_id: 2026-06-18-workflow-management-design-phase1-schema-definitions-review-run-claude-sonnet-4-6-primary-002
+  run_id: 2026-06-18-workflow-management-design-phase1-schema-definitions-review-run
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: §5.2 next_action_response.schema.json — 条件付き必須フィールド `repair_reasons`
+    の「非空配列」制約
+  plain_language_summary: '`repair_reasons` を「非空配列」として必須化する設計が記述されているが、`if/then` 構文内で非空制約（`minItems:
+    1`）を併せて定義する旨が明記されていない。設計文書としての記述が「非空配列」という自然言語に留まり、JSON Schema での表現方法が確定していない。'
+  final_label: must-fix
+  decision_status: resolved
+  decision_actor: claude_code_main_session_human_approved
+  decision_actor_type: human
+  decision_at: '2026-06-18'
+  decision_reason: '条件付き必須フィールドの記述を「`repair_reasons`（非空配列、`type: array, minItems: 1`）」に更新し、JSON
+    Schema での表現方法を明記した。'
+  applied_files:
+  - .reviewcompass/specs/workflow-management/design.md
+  superseded_by: null
+- finding_id: 2026-06-18-workflow-management-design-phase1-schema-definitions-review-run-claude-sonnet-4-6-primary-003
+  run_id: 2026-06-18-workflow-management-design-phase1-schema-definitions-review-run
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: §5.2 next_action_response.schema.json — `additionalProperties`
+    未指定の設計意図の明確性
+  plain_language_summary: '最上位と `next_action` オブジェクトの両方で `additionalProperties` を「指定しない」としているが、JSON
+    Schema Draft 2020-12 のデフォルトは `additionalProperties: true` である。「指定しない＝追加プロパティを許容する」という設計意図は正しいが、その理由（段階的拡張・後方互換フィールド許容）が最上位と
+    `next_action` で同一理由か異なる理由かが区別されていない。将来の厳格化（`additionalProperties: false` への変更）方針も不明である。'
+  final_label: should-fix
+  decision_status: resolved
+  decision_actor: claude_code_main_session_human_approved
+  decision_actor_type: human
+  decision_at: '2026-06-18'
+  decision_reason: 深掘りレビュー（S-1）で3者全員が記述を推奨。最上位は「前向き拡張用」、`next_action` は「後ろ向き互換用」と区別し、スキーマファイルの
+    `$comment` に意図を記録する旨を design.md に明記した。
+  applied_files:
+  - .reviewcompass/specs/workflow-management/design.md
+  superseded_by: null
+- finding_id: 2026-06-18-workflow-management-design-phase1-schema-definitions-review-run-claude-sonnet-4-6-primary-004
+  run_id: 2026-06-18-workflow-management-design-phase1-schema-definitions-review-run
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: §5.2 next_action_response.schema.json — 後方互換フィールド整合規則の検証可能性
+  plain_language_summary: '`pending_gates` が存在する場合は `future_gates` と一致させることを「実装側の不変条件」として設計しているが、JSON
+    Schema による機械検証の方法（`if/then` または `unevaluatedProperties`）が「表現し」という記述に留まり、どちらを採用するかが未決定のまま設計文書に記録されている。'
+  final_label: must-fix
+  decision_status: resolved
+  decision_actor: claude_code_main_session_human_approved
+  decision_actor_type: human
+  decision_at: '2026-06-18'
+  decision_reason: クラスタ B の対処として「JSON Schema の標準機能では 2 フィールドの内容が等しいことを機械検証できないため、この等価性はスキーマの責務対象外とし、実装コードで保証する。スキーマは
+    `pending_gates` の型（配列）のみ定義する」と明記した。
+  applied_files:
+  - .reviewcompass/specs/workflow-management/design.md
+  superseded_by: null
+- finding_id: 2026-06-18-workflow-management-design-phase1-schema-definitions-review-run-claude-sonnet-4-6-primary-005
+  run_id: 2026-06-18-workflow-management-design-phase1-schema-definitions-review-run
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: §5.2 next_action_response.schema.json — `next_action.kind` の値域が「実装定義」
+  plain_language_summary: '`kind` フィールドの値域が「実装定義、WORKFLOW_NAVIGATION.md §2 の判定結果種別に対応」とされており、スキーマ内で
+    `enum` や `pattern` による制約を持たない設計になっている。'
+  final_label: should-fix
+  decision_status: resolved
+  decision_actor: claude_code_main_session_human_approved
+  decision_actor_type: human
+  decision_at: '2026-06-18'
+  decision_reason: 深掘りレビュー（S-2）で3者全員が enum 化を推奨。`kind` を 14値インライン enum として定義し、design.md
+    に値一覧テーブルを追加した。別ファイル化はせず `next_action_response.schema.json` 内にインラインで定義する（`kind`
+    は当ファイル内でのみ参照されるため）。
+  applied_files:
+  - .reviewcompass/specs/workflow-management/design.md
+  superseded_by: null
+- finding_id: 2026-06-18-workflow-management-design-phase1-schema-definitions-review-run-claude-sonnet-4-6-primary-006
+  run_id: 2026-06-18-workflow-management-design-phase1-schema-definitions-review-run
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: §5.1 required_action.schema.json — `$id` URN 形式の選択
+  plain_language_summary: '`$id` に `urn:reviewcompass:schema:required_action` という非公開
+    URN を使用している。この URN は IANA 登録されたネームスペースではなく、非公式の URN 形式である。'
+  final_label: leave-as-is
+  decision_status: leave-as-is
+  decision_actor: claude_code_main_session_human_approved
+  decision_actor_type: human
+  decision_at: '2026-06-18'
+  decision_reason: cluster-a-eval 2ラウンドの評価で Case ウ（URN $id + 絶対 URN $ref）が最もポータブルと判定された。JSON
+    Schema 仕様上 IANA 登録は不要。非公式 URN の採用を意図的な選択として確定。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-18-workflow-management-design-phase1-schema-definitions-review-run-claude-sonnet-4-6-primary-007
+  run_id: 2026-06-18-workflow-management-design-phase1-schema-definitions-review-run
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: §2.4 変更意図節への追記 — テキスト内の「§軽量版検査スクリプトモデル §5」
+  plain_language_summary: 変更意図節の追記テキストに「§軽量版検査スクリプトモデル §5 に」という記述があり、「§軽量版検査スクリプトモデル」という節名が設計文書内の実際の節名と一致しない可能性がある。
+  final_label: leave-as-is
+  decision_status: leave-as-is
+  decision_actor: claude_code_main_session_human_approved
+  decision_actor_type: human
+  decision_at: '2026-06-18'
+  decision_reason: '`## 軽量版検査スクリプトモデル（Lightweight Check Script Model）— Req 2` という節が実際に存在することを確認した。参照は正しいため修正不要。'
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-18-workflow-management-design-phase1-schema-definitions-review-run-gpt-5.5-adversarial-001
+  run_id: 2026-06-18-workflow-management-design-phase1-schema-definitions-review-run
+  source_model: gpt-5.5
+  source_round: round-1
+  source_raw_path: raw/gpt-5.5.round-1.txt
+  source_parsed_path: parsed/gpt-5.5.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: §5.2 next_action_response.schema.json / $ref と $id
+  plain_language_summary: '`$id` に `urn:reviewcompass:schema:next_action_response`
+    を指定したまま `$ref: "./required_action.schema.json"` を使う設計は、相対参照の解決先が同一ディレクトリの schema
+    ファイルにならない可能性が高い。'
+  final_label: must-fix
+  decision_status: resolved
+  decision_actor: claude_code_main_session_human_approved
+  decision_actor_type: human
+  decision_at: '2026-06-18'
+  decision_reason: クラスタ A（$ref/$id ミスマッチ）として対処済み。finding_id ...-primary-001 と同一根拠で Case ウを採用。
+  applied_files:
+  - .reviewcompass/specs/workflow-management/design.md
+  superseded_by: 2026-06-18-workflow-management-design-phase1-schema-definitions-review-run-claude-sonnet-4-6-primary-001
+- finding_id: 2026-06-18-workflow-management-design-phase1-schema-definitions-review-run-gpt-5.5-adversarial-002
+  run_id: 2026-06-18-workflow-management-design-phase1-schema-definitions-review-run
+  source_model: gpt-5.5
+  source_round: round-1
+  source_raw_path: raw/gpt-5.5.round-1.txt
+  source_parsed_path: parsed/gpt-5.5.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: §5.2 後方互換フィールドの整合規則
+  plain_language_summary: '`pending_gates` が存在する場合に `future_gates` と一致させる規則を「JSON
+    Schema では `if/then` または `unevaluatedProperties` で表現」としているが、Draft 2020-12 標準機能だけでは
+    sibling property 同士の任意値の等価性は表現できない。'
+  final_label: must-fix
+  decision_status: resolved
+  decision_actor: claude_code_main_session_human_approved
+  decision_actor_type: human
+  decision_at: '2026-06-18'
+  decision_reason: クラスタ B として対処済み。finding_id ...-primary-004 と同一根拠で実装コードで保証・スキーマは型のみと明確化。
+  applied_files:
+  - .reviewcompass/specs/workflow-management/design.md
+  superseded_by: 2026-06-18-workflow-management-design-phase1-schema-definitions-review-run-claude-sonnet-4-6-primary-004
+- finding_id: 2026-06-18-workflow-management-design-phase1-schema-definitions-review-run-gpt-5.5-adversarial-003
+  run_id: 2026-06-18-workflow-management-design-phase1-schema-definitions-review-run
+  source_model: gpt-5.5
+  source_round: round-1
+  source_raw_path: raw/gpt-5.5.round-1.txt
+  source_parsed_path: parsed/gpt-5.5.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: §5.2 next_action オブジェクトの設計確定事項
+  plain_language_summary: 受入11の「`verdict` は最上位にのみあり `next_action` 内には含まれない」制約が、設計上のスキーマ制約として反映されていない。
+  final_label: must-fix
+  decision_status: resolved
+  decision_actor: claude_code_main_session_human_approved
+  decision_actor_type: human
+  decision_at: '2026-06-18'
+  decision_reason: 深掘りレビュー（クラスタ C）で3者全員が禁止を推奨。`properties: { "verdict": false }` を `next_action`
+    の設計確定事項に追加した。
+  applied_files:
+  - .reviewcompass/specs/workflow-management/design.md
+  superseded_by: null
+- finding_id: 2026-06-18-workflow-management-design-phase1-schema-definitions-review-run-gemini-3.1-pro-preview-judgment-001
+  run_id: 2026-06-18-workflow-management-design-phase1-schema-definitions-review-run
+  source_model: gemini-3.1-pro-preview
+  source_round: round-1
+  source_raw_path: raw/gemini-3.1-pro-preview.round-1.txt
+  source_parsed_path: parsed/gemini-3.1-pro-preview.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: §5.2 next_action_response.schema.json（Req 2 受入 11） > `next_action`
+    フィールド型定義
+  plain_language_summary: $id が URN スキームの場合、$ref における相対ファイルパス (./required_action.schema.json)
+    の解決に失敗する
+  final_label: must-fix
+  decision_status: resolved
+  decision_actor: claude_code_main_session_human_approved
+  decision_actor_type: human
+  decision_at: '2026-06-18'
+  decision_reason: クラスタ A として対処済み。finding_id ...-primary-001 と同一根拠で Case ウを採用。
+  applied_files:
+  - .reviewcompass/specs/workflow-management/design.md
+  superseded_by: 2026-06-18-workflow-management-design-phase1-schema-definitions-review-run-claude-sonnet-4-6-primary-001

@@ -1,0 +1,35 @@
+findings:
+  - severity: ERROR
+    target_location: "§5.2 next_action_response.schema.json — $ref 参照の妥当性（レビュー観点5）"
+    description: "`$id` に `urn:reviewcompass:schema:required_action` という URN 形式を使いながら、参照側で `$ref: \"./required_action.schema.json\"` という相対ファイルパスを使用している。URN ベースの `$id` を持つスキーマに対して相対パス参照を行う場合、JSON Schema Draft 2020-12 の仕様上、基底 URI が URN になるため相対パスの解決が未定義となる。バリデータ実装によって動作が異なり、参照解決に失敗するリスクがある。"
+    rationale: "JSON Schema Draft 2020-12 では `$ref` の解決は `$id` で確立された基底 URI を起点とする。URN スキームには階層的なパス概念がないため `./required_action.schema.json` の解決先が不定になる。テストファイル `tests/tools/test_phase1_schema_definitions.py` の17テストが `$ref` 解決を前提とする場合、バリデータ依存で再現性のないテスト結果を生む。設計段階で `$ref` を `urn:reviewcompass:schema:required_action` に統一するか、`$id` をファイル URL（例：`https://reviewcompass.example/schema/required_action.schema.json`）に変更するかを確定する必要がある。"
+
+  - severity: ERROR
+    target_location: "§5.2 next_action_response.schema.json — 条件付き必須フィールド `repair_reasons` の「非空配列」制約"
+    description: "`repair_reasons` を「非空配列」として必須化する設計が記述されているが、`if/then` 構文内で非空制約（`minItems: 1`）を併せて定義する旨が明記されていない。設計文書としての記述が「非空配列」という自然言語に留まり、JSON Schema での表現方法が確定していない。"
+    rationale: "「非空配列」は `type: array` かつ `minItems: 1` で表現する必要があるが、設計文書にその旨が欠落している。実装者がこの制約を見落として `type: array` のみを記述した場合、空配列 `[]` が受入11の意図に反して合格する。テスト `test_phase1_schema_definitions.py` が空配列を拒否するテストケースを含む場合、設計と実装の乖離が検出されるが、設計段階での明示が望ましい。"
+
+  - severity: WARN
+    target_location: "§5.2 next_action_response.schema.json — `additionalProperties` 未指定の設計意図の明確性"
+    description: "最上位と `next_action` オブジェクトの両方で `additionalProperties` を「指定しない」としているが、JSON Schema Draft 2020-12 のデフォルトは `additionalProperties: true` である。「指定しない＝追加プロパティを許容する」という設計意図は正しいが、その理由（段階的拡張・後方互換フィールド許容）が最上位と `next_action` で同一理由か異なる理由かが区別されていない。将来の厳格化（`additionalProperties: false` への変更）方針も不明である。"
+    rationale: "最上位の「指定しない」は実装の段階的拡張のためとされ、`next_action` の「指定しない」は `pending_gates`・`next_pending_gate` 等の後方互換フィールド許容のためとされている。両者の理由が異なるにもかかわらず同一の設計手法を採ることの意図が明示されていないと、将来フィールドを固定化するタイミングの判断基準が不明確になる。"
+
+  - severity: WARN
+    target_location: "§5.2 next_action_response.schema.json — 後方互換フィールド整合規則の検証可能性"
+    description: "`pending_gates` が存在する場合は `future_gates` と一致させることを「実装側の不変条件」として設計しているが、JSON Schema による機械検証の方法（`if/then` または `unevaluatedProperties`）が「表現し」という記述に留まり、どちらを採用するかが未決定のまま設計文書に記録されている。"
+    rationale: "`if/then` による等値制約と `unevaluatedProperties` による制約は意味論が異なる。等値制約（2フィールドの内容が一致する）は標準的な JSON Schema キーワードのみでは表現が困難であり、`const` や `$data` 参照（Draft 2020-12 では非標準）を必要とする場合がある。設計段階でこの不変条件を「JSON Schema で表現する」か「実装コードで保証する」かを確定しないと、スキーマファイルと実装の責務境界が曖昧なまま実装フェーズに入る。"
+
+  - severity: WARN
+    target_location: "§5.2 next_action_response.schema.json — `next_action.kind` の値域が「実装定義」"
+    description: "`kind` フィールドの値域が「実装定義、WORKFLOW_NAVIGATION.md §2 の判定結果種別に対応」とされており、スキーマ内で `enum` や `pattern` による制約を持たない設計になっている。"
+    rationale: "`required_action` が19語彙を `enum` で厳密に定義しているのに対し、同じ `next_action` オブジェクト内の `kind` が無制約 `string` であることの非対称性が設計文書から読み取れない。WORKFLOW_NAVIGATION.md §2 の判定結果種別が有限集合であれば `enum` 化が可能であり、そうでなければその理由を設計文書に記録する必要がある。テスト `test_phase1_schema_definitions.py` が `kind` の値を検証するテストケースを含む場合、スキーマが無制約ではテストの意図と乖離する。"
+
+  - severity: INFO
+    target_location: "§5.1 required_action.schema.json — `$id` URN 形式の選択"
+    description: "`$id` に `urn:reviewcompass:schema:required_action` という非公開 URN を使用している。この URN は IANA 登録されたネームスペースではなく、非公式の URN 形式である。"
+    rationale: "JSON Schema 仕様上、`$id` は絶対 URI であれば登録済み URN である必要はなく、技術的には有効である。ただし、URN 形式を採用する場合と HTTP URL 形式（例：`https://reviewcompass.example/schema/`）を採用する場合でツールサポートの差異が生じる可能性がある。ERROR 項目に記載した `$ref` 解決問題と合わせて URI スキームの統一方針を設計文書に明記することが望ましい。"
+
+  - severity: INFO
+    target_location: "§2.4 変更意図節への追記 — テキスト内の「§軽量版検査スクリプトモデル §5」"
+    description: "変更意図節の追記テキストに「§軽量版検査スクリプトモデル §5 に」という記述があり、「§軽量版検査スクリプトモデル」という節名が設計文書内の実際の節名と一致しない可能性がある。"
+    rationale: "追記内容が設計文書の正しい節を参照していないと、変更履歴としての追跡可能性が損なわれる。レビュー対象は design.md の追記内容であり、変更意図節が誤った節名を参照している場合は修正が必要である。"
