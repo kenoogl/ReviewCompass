@@ -1,0 +1,5 @@
+findings:
+  - severity: WARN
+    target_location: "docs/notes/2026-06-18-integrated-design-selection-execution-layers.md: 7. 未確定事項（継続検討）"
+    description: "`run_workflow_stage` の `alignment` ゲートに対する `effect_kind` および `approval_required` の定義が未確定として残存している"
+    rationale: "`approval_required` の独立属性化および `effect_kind` の再定義（`irreversible_action` の廃止など）に伴い、すべての操作について実行層の契約を明確にする必要がある。`alignment` の性質（`write` か `state_mutation` か）および承認要否が未確定のままでは、機械的ガードや自動実行の判定を正確に実装できないため。"

@@ -1,0 +1,18 @@
+role: primary
+provider: gemini-api
+model: gemini-3.5-flash
+attempts: 1
+duration_seconds: 14.585
+findings:
+- severity: WARN
+  target_location: docs/operations/SESSION_WORKFLOW_GUIDE.md
+  description: Use of non-standard Wikilink format [[llm-as-judge-prompting]]
+  rationale: The document uses double-bracket Wikilinks ('[[llm-as-judge-prompting]]')
+    instead of standard Markdown relative links. Standard relative links are preferred
+    to ensure compatibility and correct rendering across standard Markdown parsers.
+- severity: WARN
+  target_location: docs/operations/WORKFLOW_NAVIGATION.md
+  description: Use of non-standard Wikilink format [[llm-as-judge-prompting]]
+  rationale: The document uses double-bracket Wikilinks ('[[llm-as-judge-prompting]]')
+    instead of standard Markdown relative links. Standard relative links are preferred
+    to ensure compatibility and correct rendering across standard Markdown parsers.

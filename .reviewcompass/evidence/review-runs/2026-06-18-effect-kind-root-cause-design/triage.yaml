@@ -1,0 +1,254 @@
+run_id: 2026-06-18-effect-kind-root-cause-design
+triage_status: draft
+generated_at: '2026-06-17T23:21:37.991333+00:00'
+decision_actor: null
+decision_actor_type: human
+items:
+- finding_id: 2026-06-18-effect-kind-root-cause-design-claude-opus-4-8-primary-001
+  run_id: 2026-06-18-effect-kind-root-cause-design
+  source_model: claude-opus-4-8
+  source_round: round-1
+  source_raw_path: raw/claude-opus-4-8.round-1.txt
+  source_parsed_path: parsed/claude-opus-4-8.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: §3 表 — required_action と effect_kind の対応表
+  plain_language_summary: effect_kind を実行主体（LLM/ツール/構造化コマンド）の観点で対応付けているが、effect_kind
+    は本来「副作用の種類」を表す根本軸であり、実行主体とは独立した直交軸であるべき。たとえば run_maintenance に `write / state_mutation`
+    と複数値を併記し「操作による」と濁すのは、effect_kind が操作の根本原因（何を不可逆に変えるか）を一意に分類できていないことを示す。
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: effect_kind は承認ゲートの要否を機械判定する根拠（root cause）であるべきなのに、1操作に複数の effect_kind
+    が同居すると機械判定が成立しない。実行主体軸と副作用軸を混在させると、設計の根本軸が曖昧になり実装時に判定ロジックが分岐爆発する。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-18-effect-kind-root-cause-design-claude-opus-4-8-primary-002
+  run_id: 2026-06-18-effect-kind-root-cause-design
+  source_model: claude-opus-4-8
+  source_round: round-1
+  source_raw_path: raw/claude-opus-4-8.round-1.txt
+  source_parsed_path: parsed/claude-opus-4-8.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: §3.2 表 — run_reopen_pending_gate の gate 種別による effect_kind 分岐 /
+    §7-1 未確定事項
+  plain_language_summary: 同一の required_action（run_reopen_pending_gate, run_workflow_stage）が
+    gate 種別に応じて external_call / write / irreversible_action へと effect_kind を切り替える設計になっている。effect_kind
+    が required_action から一意に決まらず、実行時の active_gate 値に依存して後から確定する。
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: effect_kind を『操作の不可逆性という根本原因』として定義するなら、選択層が返す required_action の時点で
+    effect_kind が一意確定していないと、承認ゲート要否を選択層で判定できない。実行時依存の effect_kind は、§2.2 の『選択層が何をすべきかを唯一に決める』という分離原則と矛盾し、不可逆操作の見落としリスクを生む。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-18-effect-kind-root-cause-design-claude-opus-4-8-primary-003
+  run_id: 2026-06-18-effect-kind-root-cause-design
+  source_model: claude-opus-4-8
+  source_round: round-1
+  source_raw_path: raw/claude-opus-4-8.round-1.txt
+  source_parsed_path: parsed/claude-opus-4-8.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: §7-1 未確定事項 — alignment の effect_kind が未確定
+  plain_language_summary: alignment gate の effect_kind を write（合意記録の作成）か state_mutation（alignment
+    flag の更新）か未確定としているが、両者は副作用の根本性質が異なる（ファイル生成 vs 状態遷移）。この未確定は effect_kind の定義そのものが『何を根本軸とするか』を確定していないことに起因する。
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: effect_kind の各値（write/state_mutation/external_call/irreversible_action/read）の境界定義が明文化されていれば
+    alignment は自動的に分類できるはず。分類できないのは値の定義が根本原因レベルで未整備であることを示し、他の操作の分類にも波及する。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-18-effect-kind-root-cause-design-claude-opus-4-8-primary-004
+  run_id: 2026-06-18-effect-kind-root-cause-design
+  source_model: claude-opus-4-8
+  source_round: round-1
+  source_raw_path: raw/claude-opus-4-8.round-1.txt
+  source_parsed_path: parsed/claude-opus-4-8.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: §3.1 — run_maintenance の effect_kind が maintenance YAML 側の指定に委譲されている
+  plain_language_summary: run_maintenance の不可逆性を maintenance YAML 内の effect_kind 値に委ねているが、その値が誰によってどう保証されるか（root
+    cause の出所）が本メモでは規定されていない。
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: 承認ゲート要否が外部 YAML の自己申告 effect_kind に依存する設計だと、申告漏れ・誤申告が不可逆操作の無ガード実行に直結する。effect_kind
+    の信頼性根拠（検証経路）を設計段階で明示しないと、根本原因の保証が成立しない。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-18-effect-kind-root-cause-design-gpt-5.5-adversarial-001
+  run_id: 2026-06-18-effect-kind-root-cause-design
+  source_model: gpt-5.5
+  source_round: round-1
+  source_raw_path: raw/gpt-5.5.round-1.txt
+  source_parsed_path: parsed/gpt-5.5.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: §3 required_action/effect_kind table and §3.1
+  plain_language_summary: 'The same operations are assigned conflicting effect_kind
+    values: several actions are listed as state_mutation in the table but later declared
+    to require effect_kind: irreversible_action.'
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: 'The design says approval gates are triggered by effect_kind: irreversible_action,
+    but actions such as apply_approved_reopen_plan, run_reopen_start, advance_reopen_after_commit_stop_point,
+    advance_reopen_after_approval_stop_point, finalize_reopen, and repair_workflow_state
+    are mapped to state_mutation in §3. A machine-readable operation registry derived
+    from the table could therefore fail to require approval for irreversible state
+    changes.'
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-18-effect-kind-root-cause-design-gpt-5.5-adversarial-002
+  run_id: 2026-06-18-effect-kind-root-cause-design
+  source_model: gpt-5.5
+  source_round: round-1
+  source_raw_path: raw/gpt-5.5.round-1.txt
+  source_parsed_path: parsed/gpt-5.5.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: §3 and §3.1 effect_kind model
+  plain_language_summary: 'effect_kind conflates two separate design dimensions: the
+    kind of side effect and whether the operation is irreversible or approval-gated.'
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: 'Operations such as apply_approved_reopen_plan are both state mutations
+    and irreversible. Modeling irreversible_action as an alternative effect_kind forces
+    the design to choose between describing the technical effect and describing the
+    approval requirement. This obscures root cause, weakens contract validation, and
+    makes it hard for execution tooling to select the correct executor, preconditions,
+    postconditions, and approval policy. The design should separate these concerns,
+    for example effect_kind: state_mutation plus irreversible: true or approval_required:
+    true.'
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-18-effect-kind-root-cause-design-gpt-5.5-adversarial-003
+  run_id: 2026-06-18-effect-kind-root-cause-design
+  source_model: gpt-5.5
+  source_round: round-1
+  source_raw_path: raw/gpt-5.5.round-1.txt
+  source_parsed_path: parsed/gpt-5.5.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: '§3 table: run_maintenance and run_workflow_stage'
+  plain_language_summary: Some required_action rows use dynamic or ambiguous effect_kind
+    values such as 'write / state_mutation', '操作による', and 'ステージ種別による'.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: If operation contracts are intended to be mechanically enforced,
+    each executable operation must resolve to a concrete effect_kind and approval
+    policy before execution. Leaving these as informal unions makes preflight checks,
+    approval gating, and executor selection dependent on ad hoc interpretation rather
+    than schema-valid data.
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-18-effect-kind-root-cause-design-gpt-5.5-adversarial-004
+  run_id: 2026-06-18-effect-kind-root-cause-design
+  source_model: gpt-5.5
+  source_round: round-1
+  source_raw_path: raw/gpt-5.5.round-1.txt
+  source_parsed_path: parsed/gpt-5.5.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: §3.2 run_reopen_pending_gate
+  plain_language_summary: run_reopen_pending_gate is assigned different effect_kind
+    values depending on active_gate, but the design does not define a normalized contract
+    key for that dispatch.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: The table lists run_reopen_pending_gate as external_call / write,
+    while §3.2 adds irreversible_action for approval gates. Without a concrete discriminator
+    such as active_gate_type in the operation contract schema, implementations may
+    validate only required_action and miss gate-specific approval requirements.
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-18-effect-kind-root-cause-design-gemini-3.1-pro-preview-judgment-001
+  run_id: 2026-06-18-effect-kind-root-cause-design
+  source_model: gemini-3.1-pro-preview
+  source_round: round-1
+  source_raw_path: raw/gemini-3.1-pro-preview.round-1.txt
+  source_parsed_path: parsed/gemini-3.1-pro-preview.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: Section 3 vs Section 3.1
+  plain_language_summary: Inconsistent effect_kind mapping for run_maintenance regarding
+    irreversible actions.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: The mapping table in Section 3 restricts the `run_maintenance`
+    effect_kind to `write` or `state_mutation`. However, Section 3.1 explicitly notes
+    that maintenance YAMLs can have an `effect_kind` of `irreversible_action` and
+    must pass through an approval gate. Omitting this from the primary mapping table
+    compromises the execution layer's ability to reliably enforce safety guards on
+    destructive maintenance operations.
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-18-effect-kind-root-cause-design-gemini-3.1-pro-preview-judgment-002
+  run_id: 2026-06-18-effect-kind-root-cause-design
+  source_model: gemini-3.1-pro-preview
+  source_round: round-1
+  source_raw_path: raw/gemini-3.1-pro-preview.round-1.txt
+  source_parsed_path: parsed/gemini-3.1-pro-preview.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: Section 3.2 vs Section 7
+  plain_language_summary: Contradictory effect_kind assignment for the alignment gate.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: Section 3.2 unequivocally assigns the `alignment` gate to the `write`
+    effect_kind in its definition table. Conversely, Section 7 (Unresolved items)
+    explicitly states the `alignment` gate's effect_kind is yet to be determined,
+    debating between `write` and `state_mutation`. This contradiction prevents a stable
+    foundation for the operation contract design.
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-18-effect-kind-root-cause-design-gemini-3.1-pro-preview-judgment-003
+  run_id: 2026-06-18-effect-kind-root-cause-design
+  source_model: gemini-3.1-pro-preview
+  source_round: round-1
+  source_raw_path: raw/gemini-3.1-pro-preview.round-1.txt
+  source_parsed_path: parsed/gemini-3.1-pro-preview.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: Section 7, Item 1
+  plain_language_summary: Terminology confusion between 'stage' and 'gate' classifications.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: Section 7 discusses the effect_kind definitions per gate type under
+    the context of `run_workflow_stage`. However, the types listed (drafting, triad-review,
+    approval, alignment) are gate types inherently associated with `run_reopen_pending_gate`
+    (as established in Section 3.2). Blurring stages and gates at the execution layer
+    design level risks misaligning the mechanical routing.
+  applied_files: []
+  superseded_by: null

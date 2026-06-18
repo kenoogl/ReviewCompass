@@ -1,0 +1,80 @@
+status: completed
+target_files:
+- docs/disciplines/README.md
+- docs/disciplines/discipline_llm_as_judge_prompting.md
+- docs/notes/2026-06-18-integrated-design-selection-execution-layers.md
+- docs/operations/SESSION_WORKFLOW_GUIDE.md
+- docs/operations/WORKFLOW_NAVIGATION.md
+- docs/sessions/auto-2026-06-17-claude-d55d02bc-73f0-453e-9f6f-664446529553.md
+- docs/sessions/auto-2026-06-17-claude-eec103c2-8c42-4b79-b256-7ff57bd87431.md
+target_sha256:
+  docs/disciplines/README.md: eb671c79aeafe30989c761eb514134a938e308cf8fa4703270d65fa25e679939
+  docs/disciplines/discipline_llm_as_judge_prompting.md: a9191d5613fab4bfe008c7ea5a89fbfe0d0be141edaa23ce269f4f521f7b3377
+  docs/notes/2026-06-18-integrated-design-selection-execution-layers.md: f2a1d5c9a5424bad1bb4bbe32dd264c9fca58957893d1c2393ed830c0882b663
+  docs/operations/SESSION_WORKFLOW_GUIDE.md: 33468dbaa02cac77962f311fa8c768e45871ad51f71df67f880a96da6536a0c9
+  docs/operations/WORKFLOW_NAVIGATION.md: fe597d481185d16f5c963b00cddcc49c2f8d769507e070b43183d8ba2e089d67
+  docs/sessions/auto-2026-06-17-claude-d55d02bc-73f0-453e-9f6f-664446529553.md: f25031e4035254a3aef272570053975097708886b54788a3aa9b2df6e64c5a24
+  docs/sessions/auto-2026-06-17-claude-eec103c2-8c42-4b79-b256-7ff57bd87431.md: c8219b81b34e03625af29cae3e63d1ad0be620fce7008fb269e4681bf6bd78d4
+required_verifiers: &id001
+- claude-sonnet-4-6
+- gpt-5.5
+- gemini-3.1-pro-preview
+completed_verifiers: *id001
+unresolved_substantive_findings: 0
+verifications:
+- verifier: claude-sonnet-4-6
+  target_files:
+  - docs/disciplines/README.md
+  - docs/disciplines/discipline_llm_as_judge_prompting.md
+  - docs/notes/2026-06-18-integrated-design-selection-execution-layers.md
+  - docs/operations/SESSION_WORKFLOW_GUIDE.md
+  - docs/operations/WORKFLOW_NAVIGATION.md
+  - docs/sessions/auto-2026-06-17-claude-d55d02bc-73f0-453e-9f6f-664446529553.md
+  - docs/sessions/auto-2026-06-17-claude-eec103c2-8c42-4b79-b256-7ff57bd87431.md
+  target_sha256:
+    docs/disciplines/README.md: eb671c79aeafe30989c761eb514134a938e308cf8fa4703270d65fa25e679939
+    docs/disciplines/discipline_llm_as_judge_prompting.md: a9191d5613fab4bfe008c7ea5a89fbfe0d0be141edaa23ce269f4f521f7b3377
+    docs/notes/2026-06-18-integrated-design-selection-execution-layers.md: f2a1d5c9a5424bad1bb4bbe32dd264c9fca58957893d1c2393ed830c0882b663
+    docs/operations/SESSION_WORKFLOW_GUIDE.md: 33468dbaa02cac77962f311fa8c768e45871ad51f71df67f880a96da6536a0c9
+    docs/operations/WORKFLOW_NAVIGATION.md: fe597d481185d16f5c963b00cddcc49c2f8d769507e070b43183d8ba2e089d67
+    docs/sessions/auto-2026-06-17-claude-d55d02bc-73f0-453e-9f6f-664446529553.md: f25031e4035254a3aef272570053975097708886b54788a3aa9b2df6e64c5a24
+    docs/sessions/auto-2026-06-17-claude-eec103c2-8c42-4b79-b256-7ff57bd87431.md: c8219b81b34e03625af29cae3e63d1ad0be620fce7008fb269e4681bf6bd78d4
+- verifier: gpt-5.5
+  target_files:
+  - docs/disciplines/README.md
+  - docs/disciplines/discipline_llm_as_judge_prompting.md
+  - docs/notes/2026-06-18-integrated-design-selection-execution-layers.md
+  - docs/operations/SESSION_WORKFLOW_GUIDE.md
+  - docs/operations/WORKFLOW_NAVIGATION.md
+  - docs/sessions/auto-2026-06-17-claude-d55d02bc-73f0-453e-9f6f-664446529553.md
+  - docs/sessions/auto-2026-06-17-claude-eec103c2-8c42-4b79-b256-7ff57bd87431.md
+  target_sha256:
+    docs/disciplines/README.md: eb671c79aeafe30989c761eb514134a938e308cf8fa4703270d65fa25e679939
+    docs/disciplines/discipline_llm_as_judge_prompting.md: a9191d5613fab4bfe008c7ea5a89fbfe0d0be141edaa23ce269f4f521f7b3377
+    docs/notes/2026-06-18-integrated-design-selection-execution-layers.md: f2a1d5c9a5424bad1bb4bbe32dd264c9fca58957893d1c2393ed830c0882b663
+    docs/operations/SESSION_WORKFLOW_GUIDE.md: 33468dbaa02cac77962f311fa8c768e45871ad51f71df67f880a96da6536a0c9
+    docs/operations/WORKFLOW_NAVIGATION.md: fe597d481185d16f5c963b00cddcc49c2f8d769507e070b43183d8ba2e089d67
+    docs/sessions/auto-2026-06-17-claude-d55d02bc-73f0-453e-9f6f-664446529553.md: f25031e4035254a3aef272570053975097708886b54788a3aa9b2df6e64c5a24
+    docs/sessions/auto-2026-06-17-claude-eec103c2-8c42-4b79-b256-7ff57bd87431.md: c8219b81b34e03625af29cae3e63d1ad0be620fce7008fb269e4681bf6bd78d4
+- verifier: gemini-3.1-pro-preview
+  target_files:
+  - docs/disciplines/README.md
+  - docs/disciplines/discipline_llm_as_judge_prompting.md
+  - docs/notes/2026-06-18-integrated-design-selection-execution-layers.md
+  - docs/operations/SESSION_WORKFLOW_GUIDE.md
+  - docs/operations/WORKFLOW_NAVIGATION.md
+  - docs/sessions/auto-2026-06-17-claude-d55d02bc-73f0-453e-9f6f-664446529553.md
+  - docs/sessions/auto-2026-06-17-claude-eec103c2-8c42-4b79-b256-7ff57bd87431.md
+  target_sha256:
+    docs/disciplines/README.md: eb671c79aeafe30989c761eb514134a938e308cf8fa4703270d65fa25e679939
+    docs/disciplines/discipline_llm_as_judge_prompting.md: a9191d5613fab4bfe008c7ea5a89fbfe0d0be141edaa23ce269f4f521f7b3377
+    docs/notes/2026-06-18-integrated-design-selection-execution-layers.md: f2a1d5c9a5424bad1bb4bbe32dd264c9fca58957893d1c2393ed830c0882b663
+    docs/operations/SESSION_WORKFLOW_GUIDE.md: 33468dbaa02cac77962f311fa8c768e45871ad51f71df67f880a96da6536a0c9
+    docs/operations/WORKFLOW_NAVIGATION.md: fe597d481185d16f5c963b00cddcc49c2f8d769507e070b43183d8ba2e089d67
+    docs/sessions/auto-2026-06-17-claude-d55d02bc-73f0-453e-9f6f-664446529553.md: f25031e4035254a3aef272570053975097708886b54788a3aa9b2df6e64c5a24
+    docs/sessions/auto-2026-06-17-claude-eec103c2-8c42-4b79-b256-7ff57bd87431.md: c8219b81b34e03625af29cae3e63d1ad0be620fce7008fb269e4681bf6bd78d4
+review_run:
+  path: .reviewcompass/evidence/review-runs/2026-06-18-llm-judge-guideline-update-postwrite-r2
+  summary_path: .reviewcompass/evidence/review-runs/2026-06-18-llm-judge-guideline-update-postwrite-r2/model-result-summary.yaml
+notes: Generated template; verify target_files cover current post-write targets before
+  use.

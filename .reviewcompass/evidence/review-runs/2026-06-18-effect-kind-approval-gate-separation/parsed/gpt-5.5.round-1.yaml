@@ -1,0 +1,38 @@
+role: adversarial
+provider: openai-api
+model: gpt-5.5
+attempts: 1
+duration_seconds: 29.528
+findings:
+- severity: ERROR
+  target_location: Section 3 table and Section 3.1
+  description: 'The same required_actions are assigned conflicting effect_kind values:
+    several actions are listed as state_mutation in the table but later described
+    as effect_kind: irreversible_action.'
+  rationale: effect_kind must be stable and unambiguous for operation contract dispatch.
+    Irreversibility or approval requirement should be modeled separately from the
+    mechanical effect kind, or the table and approval-gate section must be reconciled.
+- severity: ERROR
+  target_location: Section 3.1
+  description: 'The design treats approval-gate eligibility as if it were an effect_kind
+    by saying operations that require approval become effect_kind: irreversible_action.'
+  rationale: 'This conflates two separate concerns: what an operation does versus
+    whether it requires human approval before execution. Mixing them can cause incorrect
+    routing, duplicated approval checks, or loss of information about the actual mutation
+    being performed.'
+- severity: ERROR
+  target_location: Section 3.2
+  description: 'run_reopen_pending_gate with active_gate=approval is assigned effect_kind:
+    irreversible_action even though the described execution is structuring an approval
+    request via reopen-set-blocker, not performing the irreversible target operation.'
+  rationale: An approval gate action should not itself be classified as the irreversible
+    operation it is gating. Otherwise the executor may require approval before it
+    can create or process the approval request, creating circular gating behavior.
+- severity: WARN
+  target_location: Section 5.1
+  description: The unified approval-gate definition correctly separates record_human_decision
+    from executing the target operation, but this separation is not consistently reflected
+    in the effect_kind mappings.
+  rationale: The document establishes the right conceptual boundary, but earlier mappings
+    violate it. The operation contract schema should distinguish effect_kind, irreversible/reversible
+    semantics, and approval_required explicitly.

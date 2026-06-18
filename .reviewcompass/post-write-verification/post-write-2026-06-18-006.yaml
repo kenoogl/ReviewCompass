@@ -1,0 +1,55 @@
+status: completed
+target_files:
+- docs/notes/2026-06-18-integrated-design-selection-execution-layers.md
+- docs/operations/SESSION_WORKFLOW_GUIDE.md
+- docs/operations/WORKFLOW_NAVIGATION.md
+target_sha256:
+  docs/notes/2026-06-18-integrated-design-selection-execution-layers.md: c5402773d2a47700ac387bfda4510e35b6b352e4a09c4ee4f50075ec721ba585
+  docs/operations/SESSION_WORKFLOW_GUIDE.md: 33468dbaa02cac77962f311fa8c768e45871ad51f71df67f880a96da6536a0c9
+  docs/operations/WORKFLOW_NAVIGATION.md: e43b4b24e289316a0f32a971dc8154c822a94736fb9fc0ac2734e5688454fc38
+required_verifiers:
+- gemini-3.5-flash
+completed_verifiers:
+- gemini-3.5-flash
+unresolved_substantive_findings: 0
+verifications:
+- verifier: gemini-3.5-flash
+  round: round-1
+  target_files:
+  - docs/notes/2026-06-18-integrated-design-selection-execution-layers.md
+  - docs/operations/SESSION_WORKFLOW_GUIDE.md
+  - docs/operations/WORKFLOW_NAVIGATION.md
+  target_sha256:
+    docs/notes/2026-06-18-integrated-design-selection-execution-layers.md: c5402773d2a47700ac387bfda4510e35b6b352e4a09c4ee4f50075ec721ba585
+    docs/operations/SESSION_WORKFLOW_GUIDE.md: 33468dbaa02cac77962f311fa8c768e45871ad51f71df67f880a96da6536a0c9
+    docs/operations/WORKFLOW_NAVIGATION.md: fe597d481185d16f5c963b00cddcc49c2f8d769507e070b43183d8ba2e089d67
+  findings:
+  - severity: ERROR
+    description: WORKFLOW_NAVIGATION.md の reopen_in_progress セクションの required_action 語彙が旧来の名称
+    resolution: classify_and_rollback_flags→draft_reopen_classification、rerun_alignment_approval_chain→削除（run_reopen_pending_gateに統合）、wait_for_human_approval→wait_for_human_decision、inspect_reopen_state→repair_workflow_state に修正
+  - severity: WARN
+    description: WikiLink形式（[[llm-as-judge-prompting]]）が標準Markdownリンクではない
+    resolution: leave-as-is（プロジェクト全体で73箇所使用されているスタイル）
+- verifier: gemini-3.5-flash
+  round: round-2
+  target_files:
+  - docs/notes/2026-06-18-integrated-design-selection-execution-layers.md
+  - docs/operations/SESSION_WORKFLOW_GUIDE.md
+  - docs/operations/WORKFLOW_NAVIGATION.md
+  target_sha256:
+    docs/notes/2026-06-18-integrated-design-selection-execution-layers.md: c5402773d2a47700ac387bfda4510e35b6b352e4a09c4ee4f50075ec721ba585
+    docs/operations/SESSION_WORKFLOW_GUIDE.md: 33468dbaa02cac77962f311fa8c768e45871ad51f71df67f880a96da6536a0c9
+    docs/operations/WORKFLOW_NAVIGATION.md: e43b4b24e289316a0f32a971dc8154c822a94736fb9fc0ac2734e5688454fc38
+  findings:
+  - severity: WARN
+    description: WikiLink形式（SESSION_WORKFLOW_GUIDE.md）
+    resolution: leave-as-is
+  - severity: WARN
+    description: WikiLink形式（WORKFLOW_NAVIGATION.md）
+    resolution: leave-as-is
+review_run:
+  path: .reviewcompass/evidence/review-runs/2026-06-18-remaining-docs-postwrite
+  summary_path: .reviewcompass/evidence/review-runs/2026-06-18-remaining-docs-postwrite/model-result-summary.yaml
+notes: |
+  ラウンド1のERROR（required_action語彙の不整合）を修正後、ラウンド2でERROR解消。
+  残るWARN（WikiLink形式）はプロジェクト全体のスタイルにつき leave-as-is で収束。

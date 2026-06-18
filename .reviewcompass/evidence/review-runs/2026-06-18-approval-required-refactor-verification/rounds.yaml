@@ -1,0 +1,64 @@
+round_id: round-1
+purpose: design_review
+invocation_timestamp: '2026-06-17T23:58:37.711071+00:00'
+target_files:
+- path: docs/notes/2026-06-18-integrated-design-selection-execution-layers.md
+  sha256: f2a1d5c9a5424bad1bb4bbe32dd264c9fca58957893d1c2393ed830c0882b663
+- path: docs/notes/working/2026-06-18-mechanized-workflow-execution-design.md
+  sha256: 27f641f6336d91006ea1c18c36aadcc068a97b2ec14e17166a32869f981da2e3
+criteria: approval_required_refactor_verification
+prompt_sha256: 13b7437f4cd0e57f9e0cb5c0d1b2744cf3a74b9f328cd2476c6455220ff49503
+model_results:
+- model_id: claude-opus-4-8
+  provider: anthropic-api
+  role: primary
+  treatment: primary
+  invocation_path: api
+  raw_path: raw/claude-opus-4-8.round-1.txt
+  raw_sha256: d2c2559cd6af287da8f34c7cc1a7f126f07de172d6e974f464bcbe08fe8fa4d0
+  parsed_path: parsed/claude-opus-4-8.round-1.yaml
+  parsed_sha256: 68dbc2888f2cd1c61526e4b7951b354d8e576ea3df10cd61415369b0eb7e2dd0
+  parse_status: parsed
+  formatted_by: parser
+  formatted_by_actor_type: orchestrator
+  formatted_by_actor: run_role.py
+  formatted_at: '2026-06-17T23:57:34.493709+00:00'
+  follow_up_action: triage
+  attempts: 1
+  duration_seconds: 25.03
+- model_id: gpt-5.5
+  provider: openai-api
+  role: adversarial
+  treatment: adversarial
+  invocation_path: api
+  raw_path: raw/gpt-5.5.round-1.txt
+  raw_sha256: 406e79e2736ee6cfcbcba04a42662495ff127882c79a3ec37d10890c3efb1ca8
+  parsed_path: parsed/gpt-5.5.round-1.yaml
+  parsed_sha256: 024b7b9a108d5383681ae1b1809faaeb4a1239a9a4b9da3c38b55a5996cad4e3
+  parse_status: parsed
+  formatted_by: parser
+  formatted_by_actor_type: orchestrator
+  formatted_by_actor: run_role.py
+  formatted_at: '2026-06-17T23:58:03.777113+00:00'
+  follow_up_action: triage
+  attempts: 1
+  duration_seconds: 29.22
+- model_id: gemini-3.1-pro-preview
+  provider: gemini-api
+  role: judgment
+  treatment: judgment
+  invocation_path: api
+  raw_path: raw/gemini-3.1-pro-preview.round-1.txt
+  raw_sha256: 6a21d4088b587da6dab48daa1ac4584e55723442eae020e3e35da4ac865797f4
+  parsed_path: parsed/gemini-3.1-pro-preview.round-1.yaml
+  parsed_sha256: 7be9ebac8e1380186d8aa239eafcf46f36867dc353fd4f7b71727702bd885a51
+  parse_status: parsed
+  formatted_by: parser
+  formatted_by_actor_type: orchestrator
+  formatted_by_actor: run_role.py
+  formatted_at: '2026-06-17T23:58:37.711071+00:00'
+  follow_up_action: triage
+  attempts: 1
+  duration_seconds: 33.869
+effective_prompt_path: .reviewcompass/review-prompts/2026-06-18-approval-required-refactor-verification.prompt.md
+effective_prompt_sha256: 86d67454a4590b8c802128b6d47675b9d9831aba9c19b22b6aacbb69e2b954bf

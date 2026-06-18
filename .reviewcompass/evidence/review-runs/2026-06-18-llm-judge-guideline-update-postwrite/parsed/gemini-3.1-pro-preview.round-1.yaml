@@ -1,0 +1,10 @@
+role: judgment
+provider: gemini-api
+model: gemini-3.1-pro-preview
+attempts: 1
+duration_seconds: 16.016
+findings:
+- severity: WARN
+  target_location: プロンプト作成の手順 > ステップ2：プロンプトを作成する
+  description: 「次の3つの要素が必要である」と記載されているが、直下に4つの太字項目（「適切な情報」「適切な問い」「適切な範囲」「送信前の確認」）が列挙されている。
+  rationale: 「送信前の確認（機微な情報のチェック）」はプロンプトの構成要素ではなくアクション（プロセス）であり、「3つの要素」という前置きと整合性が取れていない。文書の論理的構造を整え、読者の混乱を防ぐため、プロンプトの要素と送信前の確認ステップを明確に分離して記述することが望ましい。

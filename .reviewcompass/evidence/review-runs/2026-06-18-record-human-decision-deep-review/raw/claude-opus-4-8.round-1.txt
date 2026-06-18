@@ -1,0 +1,9 @@
+findings:
+  - severity: WARN
+    target_location: "§4.1 and §6"
+    description: "A circular dependency exists between Phase 0 (選択層実装) and Phase 1 (スキーマ定義), and the document resolves it by asserting an ordering (Phase 1 → Phase 0) without recording this as an explicit human decision. §4.1 states 'Phase 1 のスキーマ定義が Phase 0 の実装の前提' while also claiming 'Phase 0 と Phase 1 はほぼ同時並行で進めることができる'. §6 reverses emphasis by saying Phase 0 can proceed in parallel with Phase 1-2 ('スキーマ定義が先'). The two statements are in tension and no human-decision record fixes the resolution."
+    rationale: "The criterion record_human_decision_circular_dependency requires that when a circular/ordering dependency between design layers is resolved, the resolution be captured as an explicit, recorded human decision rather than an inline assertion. Without a recorded decision, the chosen ordering can silently drift, and §7 item 2 explicitly leaves '何がどこまで Phase 0 実装に必要か' undecided, leaving the circular dependency partially unresolved and untracked."
+  - severity: INFO
+    target_location: "§7 未確定事項 (item 2)"
+    description: "Item 2 acknowledges the Phase 0 / Phase 1 split is undetermined ('実装着手時に確認する') but defers it without designating a decision owner, channel, or record location for when the circular dependency is finally resolved."
+    rationale: "Per record_human_decision_circular_dependency, deferred resolution of a circular dependency should still specify how and where the eventual human decision will be recorded (e.g., a decision record under .reviewcompass/specs/...), so the resolution is auditable rather than implicit at implementation time."

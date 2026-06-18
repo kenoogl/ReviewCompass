@@ -1,0 +1,17 @@
+findings:
+  - severity: INFO
+    target_location: "§5.1 承認ゲート（approval gate）"
+    description: "承認ゲートが選択層と実行層の独立した軸として明確に定義されており、approval gate が effect_kind: irreversible_action を持つ操作とは別の概念（承認を構成する部品としての record_human_decision）として分離されている。"
+    rationale: "承認軸と実行軸の分離は適切に行われている。§3.1 で record_human_decision が「承認ゲートの対象操作ではなく、承認ゲートを構成する部品である」と明示され、記録の完了と承認の成立が別の事実として区別されている点が、承認を独立軸として扱う要件を満たしている。"
+  - severity: WARN
+    target_location: "§3 required_action 語彙と operation contract の対応表 / §3.1"
+    description: "対応表では承認ゲートの要否を示す独立した列がなく、承認が必要な操作は §3.1 の本文リストにのみ列挙されている。承認軸（承認ゲート要否）が effect_kind 列と「不可逆か」列に暗黙的に埋め込まれている。"
+    rationale: "承認の要否は不可逆性とほぼ一致するが完全には一致しない（run_maintenance は操作内容による）。承認ゲート要否を独立した軸として表で明示すれば、effect_kind や不可逆性から承認要否を読み手が推論する必要がなくなり、承認軸が独立して判定可能であることが構造的に保証される。"
+  - severity: WARN
+    target_location: "§3.2 run_reopen_pending_gate の gate 種別による分岐表 / §5.1"
+    description: "approval gate の承認判断（承認/拒否/保留/修正要求）の分岐と、effect_kind: irreversible_action を持つ操作の承認ゲートとの関係が、gate 種別の approval と effect_kind の irreversible_action で二重に表現されており、両者が同一の承認軸を指すのか別軸なのかが表上で明示されていない。"
+    rationale: "§3.2 の active_gate=approval（effect_kind: irreversible_action）と、§3.1 の irreversible_action 操作群に対する承認ゲートが、同じ承認メカニズムを参照していることは §5.1 の統一定義で接続されているが、対応表レベルでは承認軸の参照先が一意に追跡できない。承認を独立軸として扱うなら、gate 種別の approval が §5.1 の統一定義と同一の承認チャンネルを使うことを表注で明記すべき。"
+  - severity: INFO
+    target_location: "§7 未確定事項 項目1"
+    description: "alignment gate の effect_kind が未確定とされているが、これが承認軸（承認ゲート要否）に影響するかどうかは明記されていない。選択肢の write / state_mutation はいずれも irreversible_action ではないため承認ゲート対象外と推測されるが、その含意が明示されていない。"
+    rationale: "承認を独立軸として扱う観点では、未確定の effect_kind が承認ゲート要否を変える可能性があるかどうかを明示しておくと、承認軸の確定性が読み手に伝わる。今回の選択肢ではいずれも承認不要であることを一文添えれば、承認軸が effect_kind の未確定に影響されないことが明確になる。"

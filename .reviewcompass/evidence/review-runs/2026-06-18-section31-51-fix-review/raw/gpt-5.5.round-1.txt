@@ -1,0 +1,5 @@
+findings:
+  - severity: ERROR
+    target_location: "docs/notes/2026-06-18-integrated-design-selection-execution-layers.md §3 / §3.1"
+    description: "§3 の対応表では `apply_approved_reopen_plan`、`run_reopen_start`、`advance_reopen_after_commit_stop_point` などを `effect_kind: state_mutation` としている一方、§3.1 では同じ操作を `effect_kind: irreversible_action` となる操作として列挙している。"
+    rationale: "`effect_kind` が単一値の契約フィールドである場合、同じ `required_action` が `state_mutation` と `irreversible_action` の両方に分類されると、承認ゲートの判定条件を機械実装できない。不可逆性を別軸で扱うのか、`effect_kind` を `irreversible_action` に統一するのかを明確にする必要がある。"

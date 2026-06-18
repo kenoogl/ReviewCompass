@@ -1,0 +1,45 @@
+findings:
+  - severity: WARN
+    target_location: "docs/notes/2026-06-18-integrated-design-selection-execution-layers.md §7 item 1"
+    description: "`alignment` gate の `effect_kind` が未確定のまま保留されている。`write`（合意記録の作成）と `state_mutation`（alignment flag の更新）の2候補が挙げられているが、どちらかに決定されていない。"
+    rationale: "Phase 1 のスキーマ定義が Phase 0 実装の前提とされており（§4.1）、`run_reopen_pending_gate` の operation contract は gate 種別ごとに `effect_kind` を定める必要がある。`alignment` の `effect_kind` が未確定のままでは Phase 1 スキーマが不完全となり、Phase 0 実装に入れない可能性がある。"
+
+  - severity: WARN
+    target_location: "docs/notes/2026-06-18-integrated-design-selection-execution-layers.md §7 item 2"
+    description: "Phase 0 と Phase 1 の並行作業の分割方針が「実装着手時に確認する」として未確定のままになっている。"
+    rationale: "§4.1 で `Phase 1 スキーマ定義 → Phase 0 実装 → Phase 2〜6` という依存関係が明示されているにもかかわらず、どこまでが Phase 0 実装に必要かが未定義である。着手時に判断が必要となり、作業開始のブロッカーになりうる。"
+
+  - severity: WARN
+    target_location: "docs/notes/2026-06-18-integrated-design-selection-execution-layers.md §7 item 3"
+    description: "状態スナップショットの出力タイミング（`next --json` 実行後の自動出力 vs 専用サブコマンド）が未確定であり、Phase 2 の `operation-list --json` 実装と合わせて決定するとのみ記されている。"
+    rationale: "スナップショットは Navigator WebUI が読む機械可読ファイルであり、WebUI の実装計画に依存する。出力タイミングの未確定は Phase 2 の設計スコープを曖昧にし、Phase 1 スキーマ定義時の設計判断にも影響する。"
+
+  - severity: WARN
+    target_location: "docs/notes/2026-06-18-integrated-design-selection-execution-layers.md §7 item 4"
+    description: "D-003 §8 の72シナリオを Phase 6 の監査テストとして使う方法（構造化フィクスチャとして保存 vs テストコード内に記述）が Phase 6 着手時まで判断保留になっている。"
+    rationale: "Phase 6 の完了条件は「既知の gap を正しく検出できること」（機械化設計 §10 Phase 6）であり、72シナリオの格納方式が未定だとテスト設計を Phase 6 着手時に一から行うことになる。事前に方針だけでも決めておかないと Phase 6 の見積もりが困難になる。"
+
+  - severity: WARN
+    target_location: "docs/notes/working/2026-06-18-mechanized-workflow-execution-design.md §8 item 2"
+    description: "機械タスクの自動実行をどのコマンドが担うか（`next --json` の呼び出し側か新規サブコマンドか）が未確定のままになっている。"
+    rationale: "机械タスクの実行主体は operation contract の `canonical_commands` に直結し、Phase 2 の registry 実装で必要になる。コマンドの所在が未定だと Phase 2 の `operation-list --json` に登録する `canonical_commands` の値が確定できない。"
+
+  - severity: WARN
+    target_location: "docs/notes/working/2026-06-18-mechanized-workflow-execution-design.md §8 item 3"
+    description: "LLM 裁判官（§5.2）の実行基盤（既存の `run_review.py` 流用 vs 新規スクリプト）が Phase 6 着手時まで未確定のままになっている。"
+    rationale: "Phase 6 は任意・後回し可とされているが、`run_review.py` の流用可否は既存コードの依存構造に関わる。後から流用不可と判明した場合、Phase 6 のスコープが大幅に増加する可能性がある。"
+
+  - severity: WARN
+    target_location: "docs/notes/working/2026-06-18-mechanized-workflow-execution-design.md §8 item 4"
+    description: "言語タスクの入出力形式の具体的なスキーマ定義が未確定のままになっており、Phase 4 の有効プロンプト構造化の前提が固まっていない。"
+    rationale: "Phase 4 の完了条件は「全判定点で新構造の有効プロンプトが生成でき、テストで構造の完全性を確認できること」であり、入出力スキーマが確定していないとテスト設計が着手できない。Phase 1 スキーマ定義の一部として扱うべきか否かも不明確である。"
+
+  - severity: INFO
+    target_location: "docs/notes/2026-06-18-integrated-design-selection-execution-layers.md §6"
+    description: "D-003 §9 に記載の state repair（reopen plan の再コンパイル）は Phase 0 の invariant 検査実装に依存しており、Phase 0 完了まで機械的修復を実行できない状態が継続する。"
+    rationale: "統合設計メモ自体がこの順序制約を明示しているが、既存の D-003 reopen が壊れた状態にある期間の管理方針（手動回避策の有無等）が記述されていない。実装が遅延した場合の影響範囲を把握しておく必要がある。"
+
+  - severity: INFO
+    target_location: "docs/notes/working/2026-06-18-mechanized-workflow-execution-design.md §10 Phase 2 完了後保守タスク"
+    description: "`docs/operations/` から `.reviewcompass/` への実行時参照ファイル移動が Phase 2 完了後の独立保守タスクとして定義されているが、この保守タスクの担当者・スケジュールが未定義である。"
+    rationale: "Phase 2 完了後に忘れずに実施しないと、`WORKFLOW_DISCIPLINE_MAP.yaml` 等のパス参照が旧来の場所を指したままになり、Phase 3 以降の実装で混乱が生じる可能性がある。"

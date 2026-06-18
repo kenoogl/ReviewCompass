@@ -1,0 +1,21 @@
+findings:
+  - severity: ERROR
+    target_location: "§3 required_action/effect_kind 対応表 and §3.1"
+    description: "取り消し不能操作の effect_kind が `state_mutation` と `irreversible_action` の間で矛盾している。"
+    rationale: "`apply_approved_reopen_plan`、`run_reopen_start`、`advance_reopen_after_commit_stop_point`、`advance_reopen_after_approval_stop_point`、`record_human_decision`、`finalize_reopen`、`repair_workflow_state` は §3 の表では主に `state_mutation` とされる一方、§3.1 では `effect_kind: irreversible_action` が必要な操作として列挙されている。実装時に承認ゲート判定が effect_kind enum を見るのか、別の不可逆フラグを見るのか決まらず、ガード条件が不安定になる。"
+  - severity: ERROR
+    target_location: "§3.1 `effect_kind: irreversible_action` が必要な操作 and §5.1 承認ゲート"
+    description: "`record_human_decision` を approval gate 必須操作に含めており、承認ゲート定義と循環している。"
+    rationale: "§5.1 では approval gate が `wait_for_human_decision → record_human_decision → 対象操作の実行` と定義されているため、`record_human_decision` 自体に approval gate を要求すると、承認を記録する前に承認記録が必要になる。これにより不可逆操作の実行フローがデッドロックする。"
+  - severity: ERROR
+    target_location: "§3.2 `run_reopen_pending_gate` の `approval` row"
+    description: "`approval` gate の `run_reopen_pending_gate` を `irreversible_action` としているが、実行内容は承認要求の構造化であり、承認ゲートそのものを開始する操作と混同している。"
+    rationale: "`effect_kind: irreversible_action` に承認ゲートを必須化する設計のまま、approval gate 開始操作を `irreversible_action` にすると、承認要求を作成するために先に承認が必要になる可能性がある。`reopen-set-blocker` が副作用を持つなら `state_mutation` 等として扱い、対象の不可逆操作とは別の contract に分離する必要がある。"
+  - severity: WARN
+    target_location: "§3 required_action/effect_kind 対応表 and §7 未確定事項"
+    description: "`run_workflow_stage` の effect_kind が未確定で、operation contract を一意に選択できない。"
+    rationale: "§3 では `run_workflow_stage` が「ステージ種別による」とされ、§7 でも `alignment` の effect_kind が未確定のまま残っている。`next --json` が返す `required_action` だけでは preconditions、approval gate、postconditions を決められないため、stage/gate 種別を discriminator とする contract 分割、または各 stage の effect_kind 固定が必要になる。"
+  - severity: WARN
+    target_location: "§3 required_action/effect_kind 対応表"
+    description: "一部の effect_kind が `write / state_mutation` や `external_call / write` のように複数値で記載されている。"
+    rationale: "operation contract の effect_kind が単一 enum である想定なら、複数値表記は機械判定できない。複合操作を許す場合は primary effect、sub-steps、または contract variant の選択規則を明示しないと、preflight・承認ゲート・postcondition 検査の適用範囲が曖昧になる。"

@@ -1,0 +1,188 @@
+run_id: 2026-06-18-approval-gate-rejection-path
+triage_status: draft
+generated_at: '2026-06-17T22:14:22.104897+00:00'
+decision_actor: null
+decision_actor_type: human
+items:
+- finding_id: 2026-06-18-approval-gate-rejection-path-claude-opus-4-8-primary-001
+  run_id: 2026-06-18-approval-gate-rejection-path
+  source_model: claude-opus-4-8
+  source_round: round-1
+  source_raw_path: raw/claude-opus-4-8.round-1.txt
+  source_parsed_path: parsed/claude-opus-4-8.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: §5.1 承認ゲート（approval gate）
+  plain_language_summary: 承認ゲートの統一定義はペア完結（wait_for_human_decision → record_human_decision
+    → 対象操作の実行）の正常系のみを記述し、人間が承認を拒否（reject）した場合の経路が一切定義されていない。record_human_decision
+    が承認ではなく拒否を記録した場合に対象操作を実行してはならないこと、および拒否後にどの required_action へ遷移するかが欠落している。
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: 承認ゲートは取り消し不能操作の直前に置かれる安全装置であり、拒否経路が未定義だと『判断を記録したら必ず対象操作が実行される』という危険な実装に倒れる余地がある。承認ゲートの本質は『拒否によって不可逆操作を止められること』であり、拒否経路の欠落はゲートの目的そのものを損なう。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-18-approval-gate-rejection-path-claude-opus-4-8-primary-002
+  run_id: 2026-06-18-approval-gate-rejection-path
+  source_model: claude-opus-4-8
+  source_round: round-1
+  source_raw_path: raw/claude-opus-4-8.round-1.txt
+  source_parsed_path: parsed/claude-opus-4-8.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: §5.1 承認ゲートの処理連鎖図および説明文
+  plain_language_summary: record_human_decision の effect_kind は §3 表で state_mutation・不可逆『はい』とされているが、これは人間判断の内容（承認/拒否）に関わらず常に記録が不可逆コミットされることを意味する。拒否を記録した場合に後続の対象操作（commit_stop_point
+    等の irreversible_action）へ進ませない分岐ロジックが、選択層（next --json が拒否後に何を返すか）にも実行層にも記述されていない。
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: 選択層が『何をすべきか』を唯一に決める設計（§2.2）である以上、拒否後に next --json が返す required_action
+    が定義されていなければ、拒否時の処理連鎖が宙に浮く。拒否は承認ゲートの主要な分岐であり、選択層の19段階優先順位のどこで扱われるかが特定できないと実装が破綻する。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-18-approval-gate-rejection-path-claude-opus-4-8-primary-003
+  run_id: 2026-06-18-approval-gate-rejection-path
+  source_model: claude-opus-4-8
+  source_round: round-1
+  source_raw_path: raw/claude-opus-4-8.round-1.txt
+  source_parsed_path: parsed/claude-opus-4-8.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: §3.2 run_reopen_pending_gate の gate 種別による分岐 / approval gate 行
+  plain_language_summary: approval gate は『承認ゲート経由（構造化コマンド）』『直接 completed にしない』とあるが、承認が拒否された場合に
+    reopen がどう扱われるか（reopen 全体の中止、blocker 維持、別経路への分岐など）が記載されていない。S-032 の参照も承認要求の構造化までで、拒否時の
+    reopen 状態遷移を示していない。
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: reopen の approval gate で承認が拒否されると reopen を進められないが、拒否後の状態（pending_gate
+    に留まるのか、reopen 自体を巻き戻すのか）が未定義だと、reopen フローが拒否時にデッドロックまたは不整合状態に陥る恐れがある。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-18-approval-gate-rejection-path-claude-opus-4-8-primary-004
+  run_id: 2026-06-18-approval-gate-rejection-path
+  source_model: claude-opus-4-8
+  source_round: round-1
+  source_raw_path: raw/claude-opus-4-8.round-1.txt
+  source_parsed_path: parsed/claude-opus-4-8.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: §7 未確定事項（継続検討）
+  plain_language_summary: 未確定事項に承認拒否（reject）経路の設計が項目として挙がっていない。alignment の effect_kind
+    やスナップショットのタイミングといった細目は列挙されているが、承認ゲートの拒否時遷移という安全上重要な論点が継続検討リストからも漏れている。
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: 拒否経路が本文で未定義であるにもかかわらず、未確定事項としても明示されていないため、この欠落が意図的な保留なのか単なる見落としなのか後続の実装者が判断できない。安全に関わる未定義事項は明示的に追跡されるべきである。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-18-approval-gate-rejection-path-claude-opus-4-8-primary-005
+  run_id: 2026-06-18-approval-gate-rejection-path
+  source_model: claude-opus-4-8
+  source_round: round-1
+  source_raw_path: raw/claude-opus-4-8.round-1.txt
+  source_parsed_path: parsed/claude-opus-4-8.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: §5.1 統一定義の文『どちらか一方で操作を実行してはならない』
+  plain_language_summary: 『どちらか一方で操作を実行してはならない』という記述はペアの完結を要求しているが、record_human_decision
+    が成立した後に対象操作の実行を許可する条件が『承認された場合のみ』であることを明記していない。記録の成立と承認の成立が区別されていない。
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: record_human_decision はあくまで『判断の記録』であり承認とは限らない。記録成立＝対象操作実行の許可、と読める現在の表現は、拒否の記録も対象操作を解禁すると誤読される余地があり、承認ゲートの安全性を弱める。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-18-approval-gate-rejection-path-gpt-5.5-adversarial-001
+  run_id: 2026-06-18-approval-gate-rejection-path
+  source_model: gpt-5.5
+  source_round: round-1
+  source_raw_path: raw/gpt-5.5.round-1.txt
+  source_parsed_path: parsed/gpt-5.5.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: §5.1 承認ゲート（approval gate）
+  plain_language_summary: 承認ゲートが承認成功パスのみで定義されており、拒否・差し戻し時の状態遷移が定義されていない。
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: 現在の定義は `wait_for_human_decision → record_human_decision → 対象操作の実行`
+    となっており、人間が拒否した場合でも次段の不可逆操作へ進むように読める。承認ゲートには少なくとも approved / rejected / changes_requested
+    などの結果別に、対象操作を実行するか、ブロッカーを維持するか、再ドラフトへ戻すか、workflow を中断するかを明示する必要がある。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-18-approval-gate-rejection-path-gpt-5.5-adversarial-002
+  run_id: 2026-06-18-approval-gate-rejection-path
+  source_model: gpt-5.5
+  source_round: round-1
+  source_raw_path: raw/gpt-5.5.round-1.txt
+  source_parsed_path: parsed/gpt-5.5.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: '§3.1 `effect_kind: irreversible_action` が必要な操作'
+  plain_language_summary: '`record_human_decision` が「blocker 解除」として扱われており、拒否判断を記録する場合の挙動が不明確。'
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: 人間判断の記録は承認と拒否の両方を表現できる必要があるが、本設計では `record_human_decision` が無条件にブロッカー解除へ結び付いている。拒否時にもブロッカーが解除されると、未承認の不可逆操作が実行可能になるか、次の
+    `required_action` が誤選択される危険がある。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-18-approval-gate-rejection-path-gpt-5.5-adversarial-003
+  run_id: 2026-06-18-approval-gate-rejection-path
+  source_model: gpt-5.5
+  source_round: round-1
+  source_raw_path: raw/gpt-5.5.round-1.txt
+  source_parsed_path: parsed/gpt-5.5.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: §5.1 reopen の `approval` gate
+  plain_language_summary: reopen approval gate の拒否時に戻る先が定義されていない。
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: '`reopen-set-blocker` → `wait_for_human_decision` → `record_human_decision`
+    の承認要求パスは記載されているが、拒否された場合に reopen plan candidates の再作成、classification への戻し、reopen
+    中止、または blocker 継続のどれを行うかが未定義である。これにより、reopen フローが停止するか、誤って承認済みとして進行する可能性がある。'
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-18-approval-gate-rejection-path-gemini-3.1-pro-preview-judgment-001
+  run_id: 2026-06-18-approval-gate-rejection-path
+  source_model: gemini-3.1-pro-preview
+  source_round: round-1
+  source_raw_path: raw/gemini-3.1-pro-preview.round-1.txt
+  source_parsed_path: parsed/gemini-3.1-pro-preview.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: 5.1 承認ゲート（approval gate）
+  plain_language_summary: The definition of the approval gate sequence lacks a rejection
+    path and assumes approval.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: The document defines the unified sequence strictly as 'wait_for_human_decision
+    → (人間が判断を下す) → record_human_decision → 対象操作の実行'. This linear progression implies
+    that recording a decision invariably leads to executing the target irreversible
+    operation. The integration design must define how the execution layer handles
+    a 'reject' or 'needs work' decision (e.g., aborting the irreversible action, routing
+    back to drafting, or emitting a specific required_action in the selection layer).
+  applied_files: []
+  superseded_by: null

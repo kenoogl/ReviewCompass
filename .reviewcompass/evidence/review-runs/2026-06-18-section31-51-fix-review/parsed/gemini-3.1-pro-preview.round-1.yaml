@@ -1,0 +1,25 @@
+role: judgment
+provider: gemini-api
+model: gemini-3.1-pro-preview
+attempts: 1
+duration_seconds: 50.858
+findings:
+- severity: ERROR
+  target_location: 第3章（表）および 第3.1節
+  description: 'effect_kind: irreversible_action の指定に関する表と本文の致命的な矛盾'
+  rationale: '第3.1節では `apply_approved_reopen_plan` や `finalize_reopen`、`repair_workflow_state`
+    等の操作を「`effect_kind: irreversible_action` が必要な操作」として列挙し、承認ゲートの必須対象としています。しかし、第3章の表ではこれらの操作の
+    `effect_kind` を `state_mutation` と定義したままになっています。第5.1節の統一定義通り承認ゲートの要否を `effect_kind`
+    で判定する場合、表の定義に従うと重大な不可逆操作に対する承認ゲートがスキップされる実装バグに直結します。'
+- severity: ERROR
+  target_location: 第3章（表）および 第3.2節
+  description: run_reopen_pending_gate の effect_kind 定義の漏れと矛盾
+  rationale: '第3.2節では active_gate が `approval` の場合に `effect_kind: irreversible_action`
+    となると明記されています。しかし、第3章の全体表における `run_reopen_pending_gate` の `effect_kind` は `external_call
+    / write` のみとなっており、`irreversible_action` が欠落しているうえ、「不可逆か」の列も「いいえ」となっています。これも承認ゲートの判定ロジックに破綻をきたす矛盾です。'
+- severity: WARN
+  target_location: 第5.1節
+  description: reopen approval gate における「対象の不可逆操作」の記述漏れ
+  rationale: 第5.1節の前半の一般定義では「record_human_decision → 承認 → 対象の不可逆操作を実行」というフローが示されていますが、後半の
+    reopen 固有の approval gate の説明では「reopen-set-blocker → wait_for_human_decision →
+    record_human_decision の順で踏む」と記載されるにとどまっています。記録完了・承認後にどの操作（ゲートの完了など）を実行するかが明記されていないため、実行層のステートマシン実装時に解釈のブレが生じる懸念があります。

@@ -1,0 +1,4 @@
+run_id: 2026-06-18-effect-kind-approval-gate-separation
+target_files:
+- path: docs/notes/2026-06-18-integrated-design-selection-execution-layers.md
+  sha256: 3b5db35ab58445c4cf48852afd4b7b06942896ff938e422dee9b4e92e2c872cc

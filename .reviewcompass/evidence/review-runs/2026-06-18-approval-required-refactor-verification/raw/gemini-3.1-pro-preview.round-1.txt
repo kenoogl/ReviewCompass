@@ -1,0 +1,9 @@
+findings:
+  - severity: WARN
+    target_location: "docs/notes/2026-06-18-integrated-design-selection-execution-layers.md §3.1"
+    description: "run_maintenance の approval_required が静的スキーマ定義と整合していない"
+    rationale: "機械化設計の Phase 1 では operation contract に `approval_required: true / false` の静的な属性を持たせるとしていますが、統合メモ §3.1 では `run_maintenance` の承認要否は「maintenance YAML の approval_required が true のもの」と実行時に決まる動的な性質となっています。事前検査や Phase 5 のガードで機械的に一貫した判定ができるよう、スキーマ定義で動的評価を許容するか、next --json の出力時点でフラグを確定させるなどの仕様の明確化が必要です。"
+  - severity: ERROR
+    target_location: "docs/notes/2026-06-18-integrated-design-selection-execution-layers.md §3 および §3.2"
+    description: "run_reopen_pending_gate の approval_required の記述に関する矛盾"
+    rationale: "§3の対応表では `run_reopen_pending_gate` の approval_required が「gate 種別による（§3.2 参照）」と記載されていますが、参照先の§3.2の表では、定義されている全ての gate 種別（triad-review, alignment, approval, drafting）において approval_required が一律「いいえ」となっています。承認要求の設定自体は可逆であるという設計方針に鑑みても常に「いいえ」となるはずであり、§3の表の「gate 種別による」という例外的な記述は内部矛盾しています。"

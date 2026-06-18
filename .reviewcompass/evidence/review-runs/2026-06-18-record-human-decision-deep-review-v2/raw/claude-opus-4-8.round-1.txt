@@ -1,0 +1,17 @@
+findings:
+  - severity: WARN
+    target_location: "§5.1 承認ゲート（approval gate）の処理連鎖"
+    description: "承認ゲートの処理連鎖が `wait_for_human_decision → (人間が判断を下す) → record_human_decision → 対象操作の実行` と直線的に定義されているが、人間が判断を「拒否」または「保留」した場合の経路が記述されていない。record_human_decision が承認以外の結果（reject / defer）を記録できるか、その場合に対象操作をスキップしてどこへ戻るかが不明。"
+    rationale: "record_human_decision は state_mutation かつ irreversible とされており、承認のみを前提にした直線設計だと、却下時の状態遷移が未定義のまま実装に入る。選択層が次に何を返すべきか（元の wait に戻るのか、別アクションを返すのか）が決まらず、循環的な人間判断記録の健全性が保証されない。"
+  - severity: WARN
+    target_location: "§3 対応表の `record_human_decision`（effect_kind: state_mutation, 不可逆: はい）と §3.1 の列挙"
+    description: "§3 の対応表で `record_human_decision` は effect_kind が `state_mutation` とされているが、§3.1 では「irreversible_action となる操作」の列挙に `record_human_decision` が含まれている。effect_kind=state_mutation と「irreversible_action となる操作」の区別が一貫していない。"
+    rationale: "§3.1 は「effect_kind: irreversible_action となる操作」を列挙すると宣言しているのに、effect_kind が state_mutation の record_human_decision を含めている。承認ゲート要否の判定基準（effect_kind による分類か、別軸の不可逆性フラグか）が二重定義されており、実装時にどちらを参照すべきか判断できない。"
+  - severity: WARN
+    target_location: "§5.1 と §3.1 の record_human_decision の位置づけ"
+    description: "承認ゲートそのものを構成する `record_human_decision` が、§3.1 では「irreversible_action の前に承認ゲートを通す操作」として列挙されている。承認ゲートを構成する操作自身が承認ゲートを要求するという循環的な定義になっている。"
+    rationale: "record_human_decision は承認ゲートの記録チャンネル（§5.1 の統一定義）であり、それ自体に対してさらに承認ゲートを課すと無限後退を招く。承認ゲートの『記録操作』と『承認対象操作』を区別せずに同じ irreversible_action 集合へ入れていることが、設計の自己参照的不整合を生んでいる。"
+  - severity: INFO
+    target_location: "§5.1 `reopen-set-blocker → wait_for_human_decision → record_human_decision`"
+    description: "reopen の approval gate が `reopen-set-blocker → wait_for_human_decision → record_human_decision` の順序を踏むと記述されているが、record_human_decision 後に blocker を解除する操作（reopen-clear-blocker 等）が連鎖に明示されていない。§3 の対応表では record_human_decision の説明に「blocker 解除」とあるが、§5.1 の連鎖図には現れない。"
+    rationale: "§3 表（blocker 解除と decision record 作成）と §5.1 連鎖図の記述が一致しておらず、record_human_decision が blocker 解除を内包するのか別操作なのかが曖昧。人間判断記録の完了条件を機械確認する postcondition の設計に影響する。"

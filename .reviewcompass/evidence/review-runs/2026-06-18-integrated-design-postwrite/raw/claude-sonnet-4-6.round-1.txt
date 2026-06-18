@@ -1,0 +1,30 @@
+findings:
+  - severity: INFO
+    target_location: "Section 3 - required_action vocabulary table"
+    description: "The table lists 19 required_action values but does not explicitly enumerate all 19 from D-003 §4.2; only 19 rows appear to be present when counted, which is consistent."
+    rationale: "Verification that the count matches the claimed '19 kinds' is satisfied. No discrepancy found, but this is worth noting as a future maintenance risk if D-003 is updated."
+
+  - severity: INFO
+    target_location: "Section 3.1 - effect_kind: irreversible_action list"
+    description: "The list of irreversible actions includes 8 items, but the table in Section 3 marks only `commit_stop_point` as `irreversible_action` in the effect_kind column. The remaining 7 are listed as `state_mutation` in the table but classified as irreversible in §3.1."
+    rationale: "This creates a potential ambiguity: `state_mutation` and `irreversible_action` are used as distinct effect_kind values in the table, yet §3.1 treats state_mutation operations as also requiring approval gates. The document should clarify whether `state_mutation` is a subset of or distinct from `irreversible_action`, or whether the table effect_kind values should be updated for the 7 state_mutation entries that also require approval gates."
+
+  - severity: WARN
+    target_location: "Section 7, item 1 - alignment gate effect_kind"
+    description: "The `alignment` gate's effect_kind is listed as undecided between `write` and `state_mutation`, yet Section 3.2 already assigns `write` to the alignment gate in the active_gate table."
+    rationale: "There is an internal inconsistency: §3.2 appears to have already resolved the decision by listing `write` for the alignment gate, while §7 item 1 still lists it as undetermined. This contradiction may cause implementation confusion."
+
+  - severity: INFO
+    target_location: "Section 4.1 - Phase ordering rationale"
+    description: "The document states 'Phase 1 のスキーマ定義が Phase 0 の実装の前提' and presents the ordering as Phase 1 → Phase 0 → Phase 2–6, which reverses the numeric order intentionally."
+    rationale: "This non-sequential numbering is internally consistent and explained, but it deviates from typical reader expectations. Consider adding a brief callout or note at the start of Section 4 to flag that Phase 0 is implemented second despite its label."
+
+  - severity: INFO
+    target_location: "Section 5.2 - side track stack YAML schema"
+    description: "The `max_depth` default of 2 is mentioned in prose but not reflected in the YAML schema block for the stack frame."
+    rationale: "For completeness and machine-readability, the schema or a companion schema-level comment should encode this constraint, especially since Phase 3 warning and Phase 5 blocking behavior depend on it."
+
+  - severity: INFO
+    target_location: "Section 8 - document lifecycle"
+    description: "The document status is `draft` and the section states it will be superseded by content in `.reviewcompass/specs/workflow-management/` once Phase 0 progresses. No trigger condition or owner is specified for the superseding action."
+    rationale: "Without a clear trigger condition or responsible party, the transition to `superseded` may be overlooked. Consider adding a completion criterion tied to Phase 0 milestones."

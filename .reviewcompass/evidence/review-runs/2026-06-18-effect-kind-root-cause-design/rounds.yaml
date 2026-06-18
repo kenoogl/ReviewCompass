@@ -1,0 +1,62 @@
+round_id: round-1
+purpose: design_review
+invocation_timestamp: '2026-06-17T23:21:37.975596+00:00'
+target_files:
+- path: docs/notes/2026-06-18-integrated-design-selection-execution-layers.md
+  sha256: 3b5db35ab58445c4cf48852afd4b7b06942896ff938e422dee9b4e92e2c872cc
+criteria: effect_kind_root_cause_design
+prompt_sha256: cb51202c3050f386d1625422a8af6d855515de5db2742520bcc4bd30e4314418
+model_results:
+- model_id: claude-opus-4-8
+  provider: anthropic-api
+  role: primary
+  treatment: primary
+  invocation_path: api
+  raw_path: raw/claude-opus-4-8.round-1.txt
+  raw_sha256: 5befe261ff5c47838e6f41af28d7ddcac712081122943513cda528138c41c0e0
+  parsed_path: parsed/claude-opus-4-8.round-1.yaml
+  parsed_sha256: ce2315e732cadc578d6ef9f57082544e26172069d26d24526bbee0ae13368d30
+  parse_status: parsed
+  formatted_by: parser
+  formatted_by_actor_type: orchestrator
+  formatted_by_actor: run_role.py
+  formatted_at: '2026-06-17T23:20:51.150548+00:00'
+  follow_up_action: triage
+  attempts: 1
+  duration_seconds: 22.052
+- model_id: gpt-5.5
+  provider: openai-api
+  role: adversarial
+  treatment: adversarial
+  invocation_path: api
+  raw_path: raw/gpt-5.5.round-1.txt
+  raw_sha256: db1c302cae1f8e17e32c22e8367d7139a1d452b7b0f95d0778015886deca0b36
+  parsed_path: parsed/gpt-5.5.round-1.yaml
+  parsed_sha256: 1a74e188700925d92fc7ec150118ac840b30e0268cd38530b7aa8e83bc1b9b37
+  parse_status: parsed
+  formatted_by: parser
+  formatted_by_actor_type: orchestrator
+  formatted_by_actor: run_role.py
+  formatted_at: '2026-06-17T23:21:16.265129+00:00'
+  follow_up_action: triage
+  attempts: 1
+  duration_seconds: 25.061
+- model_id: gemini-3.1-pro-preview
+  provider: gemini-api
+  role: judgment
+  treatment: judgment
+  invocation_path: api
+  raw_path: raw/gemini-3.1-pro-preview.round-1.txt
+  raw_sha256: 84b8aba0aa6d70ef87aa968ac77713d2cd70282424d1e045f8dfe3834a2c598c
+  parsed_path: parsed/gemini-3.1-pro-preview.round-1.yaml
+  parsed_sha256: f1487b84b39a9bdffe6b94a1350cb7b5b4302153f830c751571d288bb747fccf
+  parse_status: parsed
+  formatted_by: parser
+  formatted_by_actor_type: orchestrator
+  formatted_by_actor: run_role.py
+  formatted_at: '2026-06-17T23:21:37.975596+00:00'
+  follow_up_action: triage
+  attempts: 1
+  duration_seconds: 21.652
+effective_prompt_path: .reviewcompass/review-prompts/2026-06-18-effect-kind-root-cause-design.prompt.md
+effective_prompt_sha256: 295c0440a260062f4d56ce54f8c69a31a64f08fa06f3b9a9bad7aeeed15e51c7

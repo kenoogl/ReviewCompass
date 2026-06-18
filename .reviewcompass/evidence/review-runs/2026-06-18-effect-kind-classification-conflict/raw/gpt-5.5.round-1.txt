@@ -1,0 +1,17 @@
+findings:
+  - severity: ERROR
+    target_location: "Section 3 table and Section 3.1"
+    description: "Several required_actions are classified as state_mutation in the main mapping table but later listed as effect_kind: irreversible_action."
+    rationale: "The table classifies apply_approved_reopen_plan, run_reopen_start, advance_reopen_after_commit_stop_point, advance_reopen_after_approval_stop_point, finalize_reopen, and repair_workflow_state as state_mutation, while Section 3.1 says those same operations require effect_kind: irreversible_action. This makes the operation contract ambiguous: implementers cannot tell whether effect_kind represents the mechanical side effect category or the approval/irreversibility category."
+  - severity: ERROR
+    target_location: "Section 3 table and Section 3.2 run_reopen_pending_gate"
+    description: "run_reopen_pending_gate has conflicting effect_kind classifications."
+    rationale: "The main table lists run_reopen_pending_gate as external_call / write, but Section 3.2 says the approval gate variant has effect_kind: irreversible_action. If required_action alone is used to select an operation contract, this conflict prevents a single valid contract. The design needs either a discriminated contract keyed by active_gate or an explicit composite classification that includes irreversible_action."
+  - severity: WARN
+    target_location: "Section 3 table and Section 3.1 run_maintenance"
+    description: "run_maintenance omits irreversible_action from the main effect_kind mapping despite later allowing irreversible maintenance operations."
+    rationale: "The main table lists run_maintenance as write / state_mutation, while Section 3.1 states that maintenance YAML entries with effect_kind: irreversible_action must pass an approval gate. This weakens the mapping table as a source of truth and can cause tooling to miss approval-gated maintenance operations unless the per-maintenance-YAML override is explicitly modeled."
+  - severity: WARN
+    target_location: "Section 3.2 and Section 7 item 1"
+    description: "The alignment gate effect_kind is treated as fixed in one section but unresolved in another."
+    rationale: "Section 3.2 assigns alignment to effect_kind: write for run_reopen_pending_gate, while Section 7 says alignment's effect_kind is still undecided between write and state_mutation for run_workflow_stage. If alignment is a shared gate concept, this creates inconsistent classification guidance. The document should clarify whether the uncertainty is action-specific or whether the earlier write classification is provisional."

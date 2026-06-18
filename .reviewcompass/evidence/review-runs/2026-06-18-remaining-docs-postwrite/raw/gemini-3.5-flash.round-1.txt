@@ -1,0 +1,9 @@
+findings:
+  - severity: ERROR
+    target_location: "docs/operations/WORKFLOW_NAVIGATION.md"
+    description: "Vocabulary mismatch for required_action values under reopen_in_progress"
+    rationale: "The navigation guide (WORKFLOW_NAVIGATION.md) lists 'classify_and_rollback_flags', 'rerun_alignment_approval_chain', 'wait_for_human_approval', and 'inspect_reopen_state' as representative actions. However, these do not match the 19 standard required_action values integrated in the design note (2026-06-18-integrated-design-selection-execution-layers.md), which specifies actions like 'draft_reopen_classification', 'wait_for_human_decision', and 'repair_workflow_state' instead. This inconsistency can lead to errors in mechanization and state tracking."
+  - severity: WARN
+    target_location: "docs/operations/SESSION_WORKFLOW_GUIDE.md and docs/operations/WORKFLOW_NAVIGATION.md"
+    description: "Use of non-standard Wikilink format [[llm-as-judge-prompting]]"
+    rationale: "Both documents use double-bracket Wikilinks ('[[llm-as-judge-prompting]]') instead of standard Markdown relative links. Standard relative links are preferred to ensure compatibility and correct rendering across all standard Markdown parsers."

@@ -1,0 +1,322 @@
+run_id: 2026-06-18-pending-issues-review
+triage_status: draft
+generated_at: '2026-06-18T03:24:33.960808+00:00'
+decision_actor: null
+decision_actor_type: human
+items:
+- finding_id: 2026-06-18-pending-issues-review-claude-sonnet-4-6-primary-001
+  run_id: 2026-06-18-pending-issues-review
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: docs/notes/2026-06-18-integrated-design-selection-execution-layers.md
+    §7 item 1
+  plain_language_summary: '`alignment` gate の `effect_kind` が未確定のまま保留されている。`write`（合意記録の作成）と
+    `state_mutation`（alignment flag の更新）の2候補が挙げられているが、どちらかに決定されていない。'
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: Phase 1 のスキーマ定義が Phase 0 実装の前提とされており（§4.1）、`run_reopen_pending_gate`
+    の operation contract は gate 種別ごとに `effect_kind` を定める必要がある。`alignment` の `effect_kind`
+    が未確定のままでは Phase 1 スキーマが不完全となり、Phase 0 実装に入れない可能性がある。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-18-pending-issues-review-claude-sonnet-4-6-primary-002
+  run_id: 2026-06-18-pending-issues-review
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: docs/notes/2026-06-18-integrated-design-selection-execution-layers.md
+    §7 item 2
+  plain_language_summary: Phase 0 と Phase 1 の並行作業の分割方針が「実装着手時に確認する」として未確定のままになっている。
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: §4.1 で `Phase 1 スキーマ定義 → Phase 0 実装 → Phase 2〜6` という依存関係が明示されているにもかかわらず、どこまでが
+    Phase 0 実装に必要かが未定義である。着手時に判断が必要となり、作業開始のブロッカーになりうる。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-18-pending-issues-review-claude-sonnet-4-6-primary-003
+  run_id: 2026-06-18-pending-issues-review
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: docs/notes/2026-06-18-integrated-design-selection-execution-layers.md
+    §7 item 3
+  plain_language_summary: 状態スナップショットの出力タイミング（`next --json` 実行後の自動出力 vs 専用サブコマンド）が未確定であり、Phase
+    2 の `operation-list --json` 実装と合わせて決定するとのみ記されている。
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: スナップショットは Navigator WebUI が読む機械可読ファイルであり、WebUI の実装計画に依存する。出力タイミングの未確定は
+    Phase 2 の設計スコープを曖昧にし、Phase 1 スキーマ定義時の設計判断にも影響する。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-18-pending-issues-review-claude-sonnet-4-6-primary-004
+  run_id: 2026-06-18-pending-issues-review
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: docs/notes/2026-06-18-integrated-design-selection-execution-layers.md
+    §7 item 4
+  plain_language_summary: D-003 §8 の72シナリオを Phase 6 の監査テストとして使う方法（構造化フィクスチャとして保存 vs
+    テストコード内に記述）が Phase 6 着手時まで判断保留になっている。
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: Phase 6 の完了条件は「既知の gap を正しく検出できること」（機械化設計 §10 Phase 6）であり、72シナリオの格納方式が未定だとテスト設計を
+    Phase 6 着手時に一から行うことになる。事前に方針だけでも決めておかないと Phase 6 の見積もりが困難になる。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-18-pending-issues-review-claude-sonnet-4-6-primary-005
+  run_id: 2026-06-18-pending-issues-review
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: docs/notes/working/2026-06-18-mechanized-workflow-execution-design.md
+    §8 item 2
+  plain_language_summary: 機械タスクの自動実行をどのコマンドが担うか（`next --json` の呼び出し側か新規サブコマンドか）が未確定のままになっている。
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: 机械タスクの実行主体は operation contract の `canonical_commands` に直結し、Phase
+    2 の registry 実装で必要になる。コマンドの所在が未定だと Phase 2 の `operation-list --json` に登録する `canonical_commands`
+    の値が確定できない。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-18-pending-issues-review-claude-sonnet-4-6-primary-006
+  run_id: 2026-06-18-pending-issues-review
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: docs/notes/working/2026-06-18-mechanized-workflow-execution-design.md
+    §8 item 3
+  plain_language_summary: LLM 裁判官（§5.2）の実行基盤（既存の `run_review.py` 流用 vs 新規スクリプト）が Phase
+    6 着手時まで未確定のままになっている。
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: Phase 6 は任意・後回し可とされているが、`run_review.py` の流用可否は既存コードの依存構造に関わる。後から流用不可と判明した場合、Phase
+    6 のスコープが大幅に増加する可能性がある。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-18-pending-issues-review-claude-sonnet-4-6-primary-007
+  run_id: 2026-06-18-pending-issues-review
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: docs/notes/working/2026-06-18-mechanized-workflow-execution-design.md
+    §8 item 4
+  plain_language_summary: 言語タスクの入出力形式の具体的なスキーマ定義が未確定のままになっており、Phase 4 の有効プロンプト構造化の前提が固まっていない。
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: Phase 4 の完了条件は「全判定点で新構造の有効プロンプトが生成でき、テストで構造の完全性を確認できること」であり、入出力スキーマが確定していないとテスト設計が着手できない。Phase
+    1 スキーマ定義の一部として扱うべきか否かも不明確である。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-18-pending-issues-review-claude-sonnet-4-6-primary-008
+  run_id: 2026-06-18-pending-issues-review
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: docs/notes/2026-06-18-integrated-design-selection-execution-layers.md
+    §6
+  plain_language_summary: D-003 §9 に記載の state repair（reopen plan の再コンパイル）は Phase 0
+    の invariant 検査実装に依存しており、Phase 0 完了まで機械的修復を実行できない状態が継続する。
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: 統合設計メモ自体がこの順序制約を明示しているが、既存の D-003 reopen が壊れた状態にある期間の管理方針（手動回避策の有無等）が記述されていない。実装が遅延した場合の影響範囲を把握しておく必要がある。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-18-pending-issues-review-claude-sonnet-4-6-primary-009
+  run_id: 2026-06-18-pending-issues-review
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: docs/notes/working/2026-06-18-mechanized-workflow-execution-design.md
+    §10 Phase 2 完了後保守タスク
+  plain_language_summary: '`docs/operations/` から `.reviewcompass/` への実行時参照ファイル移動が
+    Phase 2 完了後の独立保守タスクとして定義されているが、この保守タスクの担当者・スケジュールが未定義である。'
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: Phase 2 完了後に忘れずに実施しないと、`WORKFLOW_DISCIPLINE_MAP.yaml` 等のパス参照が旧来の場所を指したままになり、Phase
+    3 以降の実装で混乱が生じる可能性がある。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-18-pending-issues-review-gpt-5.5-adversarial-001
+  run_id: 2026-06-18-pending-issues-review
+  source_model: gpt-5.5
+  source_round: round-1
+  source_raw_path: raw/gpt-5.5.round-1.txt
+  source_parsed_path: parsed/gpt-5.5.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: docs/notes/working/2026-06-18-mechanized-workflow-execution-design.md
+    §10 Phase 2
+  plain_language_summary: Phase 2 の `operation-list --json` が `approval_required`
+    を返す対象に含めていない
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: §3.1 では `approval_required` を operation contract の独立属性として定義し、Phase
+    5 で承認ゲートを強制するとしている。読み取り専用 registry が `approval_required` を公開しないと、後続の preflight/guard
+    がどの操作を承認ゲート対象にすべきか機械的に判定できず、approval_required リファクタの実装基盤が欠ける。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-18-pending-issues-review-gpt-5.5-adversarial-002
+  run_id: 2026-06-18-pending-issues-review
+  source_model: gpt-5.5
+  source_round: round-1
+  source_raw_path: raw/gpt-5.5.round-1.txt
+  source_parsed_path: parsed/gpt-5.5.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: docs/notes/working/2026-06-18-mechanized-workflow-execution-design.md
+    §3.1 / docs/notes/2026-06-18-integrated-design-selection-execution-layers.md §3.1
+  plain_language_summary: '`spec.json の workflow_state 更新` の承認要否が広すぎる記述のまま残っている'
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: '機械化設計 §3.1 は `spec.json の workflow_state 更新など` を `approval_required:
+    true` の例としている一方、統合設計 §3.1 は `record_human_decision` を `state_mutation` だが承認不要と明確化している。古い広義の記述が残ると、判断記録や承認要求設定まで承認ゲート対象にしてしまい、承認ゲートの記録操作自体が承認待ちになる循環・停止を引き起こす可能性がある。'
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-18-pending-issues-review-gpt-5.5-adversarial-003
+  run_id: 2026-06-18-pending-issues-review
+  source_model: gpt-5.5
+  source_round: round-1
+  source_raw_path: raw/gpt-5.5.round-1.txt
+  source_parsed_path: parsed/gpt-5.5.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: docs/notes/working/2026-06-18-mechanized-workflow-execution-design.md
+    §7 / docs/notes/2026-06-18-integrated-design-selection-execution-layers.md §4.1,
+    §6
+  plain_language_summary: D-003/Phase 0 の実装順序について、2文書間で矛盾した方針が残っている
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: 機械化設計 §7 は『本メモの設計を実装してから D-003 と照合』とするが、統合設計 §4.1/§6 は `next --json`
+    の唯一選択が壊れたままでは実行層機械化が無意味として、Phase 1 スキーマ後に Phase 0 を先行実装すると定めている。どちらを採用するかを明確にしないと、approval_required
+    を含む実行層ガードを、前提となる selector invariant が未実装の状態で実装してしまう。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-18-pending-issues-review-gpt-5.5-adversarial-004
+  run_id: 2026-06-18-pending-issues-review
+  source_model: gpt-5.5
+  source_round: round-1
+  source_raw_path: raw/gpt-5.5.round-1.txt
+  source_parsed_path: parsed/gpt-5.5.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: docs/notes/2026-06-18-integrated-design-selection-execution-layers.md
+    §3
+  plain_language_summary: '`effect_kind` 欄に enum ではない複合値・条件付き値が残っている'
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: 機械化設計 §3.1 は `effect_kind` を `read / write / state_mutation / external_call`
+    の4値として定義しているが、統合設計 §3 では `write / state_mutation`、`external_call / write / state_mutation`、`ステージ種別による`
+    などの値が表に残っている。operation contract schema が単一 enum を想定するなら不適合になり、複数 effect を許すなら
+    schema 側で list または variant contract として明示する必要がある。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-18-pending-issues-review-gpt-5.5-adversarial-005
+  run_id: 2026-06-18-pending-issues-review
+  source_model: gpt-5.5
+  source_round: round-1
+  source_raw_path: raw/gpt-5.5.round-1.txt
+  source_parsed_path: parsed/gpt-5.5.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: docs/notes/2026-06-18-integrated-design-selection-execution-layers.md
+    §5.3, §7
+  plain_language_summary: 状態スナップショットの出力タイミングが確定事項と未確定事項の両方として記述されている
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: §5.3 は `.reviewcompass/runtime/workflow-state-snapshot.yaml` を
+    `next --json` 実行後に自動更新される副産物と定義しているが、§7 では `next --json` 後の自動出力か専用サブコマンドかを未確定事項としている。registry/preflight/approval
+    gate の実装がスナップショットを参照する場合、生成タイミングの不一致は stale state の扱いを曖昧にする。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-18-pending-issues-review-gemini-3.1-pro-preview-judgment-001
+  run_id: 2026-06-18-pending-issues-review
+  source_model: gemini-3.1-pro-preview
+  source_round: round-1
+  source_raw_path: raw/gemini-3.1-pro-preview.round-1.txt
+  source_parsed_path: parsed/gemini-3.1-pro-preview.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: 'docs/notes/2026-06-18-integrated-design-selection-execution-layers.md:
+    7. 未確定事項（継続検討）'
+  plain_language_summary: '`run_workflow_stage` の `alignment` ゲートに対する `effect_kind`
+    および `approval_required` の定義が未確定として残存している'
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: '`approval_required` の独立属性化および `effect_kind` の再定義（`irreversible_action`
+    の廃止など）に伴い、すべての操作について実行層の契約を明確にする必要がある。`alignment` の性質（`write` か `state_mutation`
+    か）および承認要否が未確定のままでは、機械的ガードや自動実行の判定を正確に実装できないため。'
+  applied_files: []
+  superseded_by: null

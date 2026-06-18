@@ -1,0 +1,62 @@
+round_id: round-1
+purpose: design_review
+invocation_timestamp: '2026-06-17T22:14:22.088065+00:00'
+target_files:
+- path: docs/notes/2026-06-18-integrated-design-selection-execution-layers.md
+  sha256: 670e12c21e9c0b9740f7523e882f1b497151956211d508d57c11a6eb51b4502f
+criteria: approval_gate_rejection_path
+prompt_sha256: bc58bb42cac3f2fa67e755017e81b4b735873efa343556565d59f083bdd01cde
+model_results:
+- model_id: claude-opus-4-8
+  provider: anthropic-api
+  role: primary
+  treatment: primary
+  invocation_path: api
+  raw_path: raw/claude-opus-4-8.round-1.txt
+  raw_sha256: 938be3236e1cc194db94be7d38c7c05ccc1821b5269951e7fae937894b0c3a1e
+  parsed_path: parsed/claude-opus-4-8.round-1.yaml
+  parsed_sha256: 06f2bb02ad32b0d2e40ede59a0e1ee66df3bc607dcdba1cbf152ab8696ed4cf4
+  parse_status: parsed
+  formatted_by: parser
+  formatted_by_actor_type: orchestrator
+  formatted_by_actor: run_role.py
+  formatted_at: '2026-06-17T22:13:37.063712+00:00'
+  follow_up_action: triage
+  attempts: 1
+  duration_seconds: 26.979
+- model_id: gpt-5.5
+  provider: openai-api
+  role: adversarial
+  treatment: adversarial
+  invocation_path: api
+  raw_path: raw/gpt-5.5.round-1.txt
+  raw_sha256: 37d0956f5501e9621a70e74114bfb727ef05737907888c184b58ae5c857f9216
+  parsed_path: parsed/gpt-5.5.round-1.yaml
+  parsed_sha256: 5e4130bb9deff3992ba6adf4cb81d3a3c6dfe58befd39e5f02fb659174d34326
+  parse_status: parsed
+  formatted_by: parser
+  formatted_by_actor_type: orchestrator
+  formatted_by_actor: run_role.py
+  formatted_at: '2026-06-17T22:14:08.703434+00:00'
+  follow_up_action: triage
+  attempts: 1
+  duration_seconds: 31.578
+- model_id: gemini-3.1-pro-preview
+  provider: gemini-api
+  role: judgment
+  treatment: judgment
+  invocation_path: api
+  raw_path: raw/gemini-3.1-pro-preview.round-1.txt
+  raw_sha256: e7811d9a1ecee8c3736e88af3766b57e7f2645b0925e32cbc499e13aed22c0f5
+  parsed_path: parsed/gemini-3.1-pro-preview.round-1.yaml
+  parsed_sha256: c7d8a94105121486a9a863f5c56ceed45dee8ebd7e3c46cfbab91a796b77ec9a
+  parse_status: parsed
+  formatted_by: parser
+  formatted_by_actor_type: orchestrator
+  formatted_by_actor: run_role.py
+  formatted_at: '2026-06-17T22:14:22.088065+00:00'
+  follow_up_action: triage
+  attempts: 1
+  duration_seconds: 13.321
+effective_prompt_path: .reviewcompass/review-prompts/2026-06-18-approval-gate-rejection-path.prompt.md
+effective_prompt_sha256: 60308c123cc2400a794dbb5e05e30bdec82a162a5bcbcc0cd9208f955a5593f3

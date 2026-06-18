@@ -1,0 +1,5 @@
+findings:
+  - severity: WARN
+    target_location: "docs/notes/2026-06-18-integrated-design-selection-execution-layers.md#7-未確定事項継続検討"
+    description: "「run_workflow_stage」と「run_reopen_pending_gate」（あるいは gate 一般）の用語が混同されている可能性があります。"
+    rationale: "§3の表の `run_workflow_stage` 行から「§7 item 1」が参照されていますが、§7.1の見出しは「run_workflow_stage の gate 種別ごとの...」となっており、その記述内容（drafting, triad-review, alignment, approvalなど）は§3.2で `run_reopen_pending_gate` のものとして定義されている gate 種別と一致しています。ステージ種別とゲート種別の整理において混同が生じている可能性があります。"

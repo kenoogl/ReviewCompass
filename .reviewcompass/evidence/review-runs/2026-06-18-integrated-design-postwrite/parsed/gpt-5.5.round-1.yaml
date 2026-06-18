@@ -1,0 +1,44 @@
+role: adversarial
+provider: openai-api
+model: gpt-5.5
+attempts: 1
+duration_seconds: 31.598
+findings:
+- severity: ERROR
+  target_location: §3 table and §3.1
+  description: The `effect_kind` classification is inconsistent for irreversible operations.
+  rationale: 'The table classifies several irreversible operations such as `apply_approved_reopen_plan`,
+    `run_reopen_start`, `record_human_decision`, `finalize_reopen`, and `repair_workflow_state`
+    as `state_mutation`, while §3.1 says these are operations with `effect_kind: irreversible_action`
+    that must pass an approval gate. Because guard enforcement is keyed to `effect_kind`,
+    this ambiguity can cause implementations either to skip required approval gates
+    or to over-block ordinary state mutations.'
+- severity: ERROR
+  target_location: §4.1
+  description: The Phase 0 / Phase 1 execution order is self-contradictory.
+  rationale: The text first states that D-003's 19-step priority implementation should
+    be treated as Phase 0 and started before mechanized design Phase 1, but then states
+    that Phase 1 schema definitions are a prerequisite for Phase 0 implementation
+    and shows `Phase 1 → Phase 0 → Phase 2〜6`. This leaves implementers without a
+    clear sequencing rule for the integrated design.
+- severity: ERROR
+  target_location: §5.3 and §7 item 3
+  description: The workflow state snapshot output timing is both defined and listed
+    as unresolved.
+  rationale: §5.3 defines the snapshot as `.reviewcompass/runtime/workflow-state-snapshot.yaml`
+    and says it is automatically updated after `next --json`, while §7 says it is
+    still undecided whether snapshot output should occur automatically after `next
+    --json` or via a dedicated subcommand. This conflict should be resolved before
+    implementation because it affects command contracts and consumers such as Navigator
+    WebUI.
+- severity: WARN
+  target_location: §3.2 and §5.1
+  description: The reopen `approval` gate flow is not fully reconciled with the generic
+    approval-gate definition.
+  rationale: '§3.2 says `run_reopen_pending_gate` for an `approval` gate has `effect_kind:
+    irreversible_action` and executes structured approval-request handling via `reopen-set-blocker`,
+    while §5.1 defines an approval gate as `wait_for_human_decision → record_human_decision
+    → 対象操作の実行` and then says reopen approval uses `reopen-set-blocker → wait_for_human_decision
+    → record_human_decision`. The document should clarify whether `run_reopen_pending_gate`
+    itself performs only blocker setup, whether it is the irreversible operation,
+    and what subsequent `required_action` performs the approved target transition.'

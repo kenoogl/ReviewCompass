@@ -1,0 +1,13 @@
+findings:
+  - severity: ERROR
+    target_location: "§5.1 承認ゲート（approval gate）"
+    description: "承認ゲートが承認成功パスのみで定義されており、拒否・差し戻し時の状態遷移が定義されていない。"
+    rationale: "現在の定義は `wait_for_human_decision → record_human_decision → 対象操作の実行` となっており、人間が拒否した場合でも次段の不可逆操作へ進むように読める。承認ゲートには少なくとも approved / rejected / changes_requested などの結果別に、対象操作を実行するか、ブロッカーを維持するか、再ドラフトへ戻すか、workflow を中断するかを明示する必要がある。"
+  - severity: ERROR
+    target_location: "§3.1 `effect_kind: irreversible_action` が必要な操作"
+    description: "`record_human_decision` が「blocker 解除」として扱われており、拒否判断を記録する場合の挙動が不明確。"
+    rationale: "人間判断の記録は承認と拒否の両方を表現できる必要があるが、本設計では `record_human_decision` が無条件にブロッカー解除へ結び付いている。拒否時にもブロッカーが解除されると、未承認の不可逆操作が実行可能になるか、次の `required_action` が誤選択される危険がある。"
+  - severity: WARN
+    target_location: "§5.1 reopen の `approval` gate"
+    description: "reopen approval gate の拒否時に戻る先が定義されていない。"
+    rationale: "`reopen-set-blocker` → `wait_for_human_decision` → `record_human_decision` の承認要求パスは記載されているが、拒否された場合に reopen plan candidates の再作成、classification への戻し、reopen 中止、または blocker 継続のどれを行うかが未定義である。これにより、reopen フローが停止するか、誤って承認済みとして進行する可能性がある。"

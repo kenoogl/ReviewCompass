@@ -1,0 +1,4 @@
+run_id: 2026-06-18-llm-judge-guideline-update-postwrite
+target_files:
+- path: docs/disciplines/discipline_llm_as_judge_prompting.md
+  sha256: 6674d4c35ebdcbb0f267c2ce920ba33fdd406889a3cfd4c0708578b8a8addd15

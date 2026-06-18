@@ -1,0 +1,62 @@
+round_id: round-1
+purpose: design_review
+invocation_timestamp: '2026-06-17T22:03:40.951044+00:00'
+target_files:
+- path: docs/notes/2026-06-18-integrated-design-selection-execution-layers.md
+  sha256: 670e12c21e9c0b9740f7523e882f1b497151956211d508d57c11a6eb51b4502f
+criteria: record_human_decision_circular_dependency
+prompt_sha256: c83d8982e0a2afa34f911aac8bd09cde7f5e63fe6e6685a78e4adf6513dba0a5
+model_results:
+- model_id: claude-opus-4-8
+  provider: anthropic-api
+  role: primary
+  treatment: primary
+  invocation_path: api
+  raw_path: raw/claude-opus-4-8.round-1.txt
+  raw_sha256: d430bd34881c51f63d6864f6f7c6ed5d992f641f76a1f87cb02165bd9887696c
+  parsed_path: parsed/claude-opus-4-8.round-1.yaml
+  parsed_sha256: 8c879b8acbd57dc7ed580b60979fa5276d42f30c232294b37ab246b9656d0c37
+  parse_status: parsed
+  formatted_by: parser
+  formatted_by_actor_type: orchestrator
+  formatted_by_actor: run_role.py
+  formatted_at: '2026-06-17T21:58:11.743249+00:00'
+  follow_up_action: triage
+  attempts: 1
+  duration_seconds: 9.878
+- model_id: gpt-5.5
+  provider: openai-api
+  role: adversarial
+  treatment: adversarial
+  invocation_path: api
+  raw_path: raw/gpt-5.5.round-1.txt
+  raw_sha256: 25dc5bc740f002dd403fb5f09587a7f7d0ab90a00842c812177f4c535370b873
+  parsed_path: parsed/gpt-5.5.round-1.yaml
+  parsed_sha256: e7d19c8d06701db505e933949cba2423127f88552b82bde7c6e66712cfbc147f
+  parse_status: parsed
+  formatted_by: parser
+  formatted_by_actor_type: orchestrator
+  formatted_by_actor: run_role.py
+  formatted_at: '2026-06-17T22:03:30.434292+00:00'
+  follow_up_action: triage
+  attempts: 1
+  duration_seconds: 318.632
+- model_id: gemini-3.1-pro-preview
+  provider: gemini-api
+  role: judgment
+  treatment: judgment
+  invocation_path: api
+  raw_path: raw/gemini-3.1-pro-preview.round-1.txt
+  raw_sha256: 5f7b7000e768b656e908f9fa80a2f3e97ebc1f1cc00209e7a9aee21f90edac05
+  parsed_path: parsed/gemini-3.1-pro-preview.round-1.yaml
+  parsed_sha256: 670c4755b533bb38473f022d1c650e3bbd499cb471ecfe5a26f017f13249c6fa
+  parse_status: parsed
+  formatted_by: parser
+  formatted_by_actor_type: orchestrator
+  formatted_by_actor: run_role.py
+  formatted_at: '2026-06-17T22:03:40.951044+00:00'
+  follow_up_action: triage
+  attempts: 1
+  duration_seconds: 10.454
+effective_prompt_path: .reviewcompass/review-prompts/2026-06-18-record-human-decision-circular-review.prompt.md
+effective_prompt_sha256: fd1b57c8b42e515f110f8a7b555bd5a2c5cd52af4cfd9630a0efc108108a0218

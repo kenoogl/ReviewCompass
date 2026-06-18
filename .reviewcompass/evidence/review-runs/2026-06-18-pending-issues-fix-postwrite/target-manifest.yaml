@@ -1,0 +1,6 @@
+run_id: 2026-06-18-pending-issues-fix-postwrite
+target_files:
+- path: docs/notes/working/2026-06-18-mechanized-workflow-execution-design.md
+  sha256: 949b4dd7b9b5f4cf136c534c60333e8217413313b6fe53dd6c7b208c40e44816
+- path: docs/notes/2026-06-18-integrated-design-selection-execution-layers.md
+  sha256: c5402773d2a47700ac387bfda4510e35b6b352e4a09c4ee4f50075ec721ba585

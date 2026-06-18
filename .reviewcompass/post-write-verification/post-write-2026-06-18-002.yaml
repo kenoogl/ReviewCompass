@@ -1,0 +1,41 @@
+manifest_id: post-write-2026-06-18-002
+date: "2026-06-18"
+status: completed
+
+target_files:
+  - docs/notes/working/2026-06-18-integrated-design-selection-execution-layers.md
+
+target_sha256:
+  docs/notes/working/2026-06-18-integrated-design-selection-execution-layers.md: "670e12c21e9c0b9740f7523e882f1b497151956211d508d57c11a6eb51b4502f"
+
+required_verifiers:
+  - lightweight_self_check
+
+completed_verifiers:
+  - lightweight_self_check
+
+verifications:
+  - verifier: lightweight_self_check
+    target_files:
+      - docs/notes/working/2026-06-18-integrated-design-selection-execution-layers.md
+    target_sha256:
+      docs/notes/working/2026-06-18-integrated-design-selection-execution-layers.md: "670e12c21e9c0b9740f7523e882f1b497151956211d508d57c11a6eb51b4502f"
+    result: pass
+    checks:
+      - id: no_missing_user_inputs
+        result: pass
+        note: "TODO §3 の3要件（required_action対応・Phase対応・統一定義）を §3・§4・§5 で網羅"
+      - id: distinction_of_facts_and_policy
+        result: pass
+        note: "事実は入力資料の内容、方針は §4.1 で明示、未確定事項は §7 に集約"
+      - id: useful_as_future_reference
+        result: pass
+        note: "§3 対応表・§4.2 実装順序・§5 統一定義は実装着手時の判断材料として十分"
+      - id: no_scope_creep
+        result: pass
+        note: "入力資料の統合・接続点整理のみ。§8 で作業中メモと明示"
+      - id: not_promoted_to_canonical
+        result: pass
+        note: "§8 に昇格しない旨を明示"
+
+unresolved_substantive_findings: []

@@ -1,0 +1,36 @@
+role: primary
+provider: anthropic-api
+model: claude-opus-4-8
+attempts: 1
+duration_seconds: 25.03
+findings:
+- severity: WARN
+  target_location: integrated-design-selection-execution-layers.md §3 対応表 vs §3.1
+  description: §3の対応表で `run_reopen_pending_gate` の approval_required を「gate 種別による（§3.2
+    参照）」としているが、§3.2の表では全 gate 種別が approval_required=いいえ になっており、種別によって true になるケースが存在しない。表の注記と実体が矛盾している。
+  rationale: approval_required の値が分岐するかどうかは承認ゲート必須性の判定に直結する。表が「種別による」と示唆しながら実際は常に
+    false なら、リファクタ実装時に不要な分岐ロジックを組み込む誤実装を招く。承認必須性は不可逆操作の安全性に関わるため正確性が重要。
+- severity: WARN
+  target_location: integrated-design-selection-execution-layers.md §3.2 `alignment`
+    行 vs §7 未確定事項1
+  description: §3.2の表で `alignment` gate の effect_kind を `write` と確定的に記載しているが、§7-1では「`alignment`
+    の effect_kind が未確定」「選択肢：`write` / `state_mutation`」としている。同一文書内で確定値と未確定が併存している。
+  rationale: operation contract の effect_kind は preconditions/postconditions の検査設計に影響する。確定済みか未確定かが文書内で食い違うと、実装担当が誤った前提でガードを実装する恐れがある。
+- severity: INFO
+  target_location: integrated-design-selection-execution-layers.md §4.1 と本文の Phase
+    順序記述
+  description: §4.1冒頭で「Phase 0 と Phase 1 はほぼ同時並行で進めることができる」と述べた直後に「Phase 1 のスキーマ定義が
+    Phase 0 の実装の前提」と述べ、図では `Phase 1 → Phase 0 → Phase 2〜6` と直列を示している。並行可能なのか直列依存なのかの記述が曖昧。
+  rationale: 承認後のリファクタ着手順序を決める根拠になるため、並行・直列の関係を明確にしないと作業計画段階で混乱が生じる。
+- severity: INFO
+  target_location: integrated-design-selection-execution-layers.md §5.3 スナップショット vs
+    mechanized §8 項目5
+  description: 統合メモ §5.3 のスナップショット必須項目には `schema_version`・`generated_by`・`generated_at`・`current_work.required_action`・`current_work.active_gate`・`workflow_state_summary`
+    等が追加されているが、機械化設計 §8 項目5のスキーマにはこれらが含まれない。両者を「統合」と称しているが、機械化設計側のスキーマ完成条件（Phase 1
+    完了条件「Navigator WebUI 計画書の必須項目を網羅」）と統合メモ側の必須項目集合の整合関係が示されていない。
+  rationale: Phase 1 のスキーマ定義完了条件をどちらの項目集合で判定するかが不明確だと、リファクタ実装の受け入れ基準が定まらない。
+- severity: INFO
+  target_location: mechanized-workflow-execution-design.md §7 vs integrated §6
+  description: 機械化設計 §7 は「D-003 の再開は本メモの実装完了後に判断する」とするが、統合メモ §6 は「Phase 0 の実装は機械化設計
+    Phase 1〜2 と並行して進めることができる」と上書きしている。機械化設計本体は更新されておらず、入力資料と統合メモの結論が並存したまま残る。
+  rationale: 統合メモは作業中メモで正本昇格しない旨が§8に記載されているが、どちらの順序方針が有効かが二文書で食い違うと、実装着手判断時に古い方針を参照するリスクがある。

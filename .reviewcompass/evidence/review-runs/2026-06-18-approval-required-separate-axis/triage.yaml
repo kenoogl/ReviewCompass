@@ -1,0 +1,186 @@
+run_id: 2026-06-18-approval-required-separate-axis
+triage_status: draft
+generated_at: '2026-06-17T23:27:17.236327+00:00'
+decision_actor: null
+decision_actor_type: human
+items:
+- finding_id: 2026-06-18-approval-required-separate-axis-claude-opus-4-8-primary-001
+  run_id: 2026-06-18-approval-required-separate-axis
+  source_model: claude-opus-4-8
+  source_round: round-1
+  source_raw_path: raw/claude-opus-4-8.round-1.txt
+  source_parsed_path: parsed/claude-opus-4-8.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: §5.1 承認ゲート（approval gate）
+  plain_language_summary: '承認ゲートが選択層と実行層の独立した軸として明確に定義されており、approval gate が effect_kind:
+    irreversible_action を持つ操作とは別の概念（承認を構成する部品としての record_human_decision）として分離されている。'
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: 承認軸と実行軸の分離は適切に行われている。§3.1 で record_human_decision が「承認ゲートの対象操作ではなく、承認ゲートを構成する部品である」と明示され、記録の完了と承認の成立が別の事実として区別されている点が、承認を独立軸として扱う要件を満たしている。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-18-approval-required-separate-axis-claude-opus-4-8-primary-002
+  run_id: 2026-06-18-approval-required-separate-axis
+  source_model: claude-opus-4-8
+  source_round: round-1
+  source_raw_path: raw/claude-opus-4-8.round-1.txt
+  source_parsed_path: parsed/claude-opus-4-8.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: §3 required_action 語彙と operation contract の対応表 / §3.1
+  plain_language_summary: 対応表では承認ゲートの要否を示す独立した列がなく、承認が必要な操作は §3.1 の本文リストにのみ列挙されている。承認軸（承認ゲート要否）が
+    effect_kind 列と「不可逆か」列に暗黙的に埋め込まれている。
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: 承認の要否は不可逆性とほぼ一致するが完全には一致しない（run_maintenance は操作内容による）。承認ゲート要否を独立した軸として表で明示すれば、effect_kind
+    や不可逆性から承認要否を読み手が推論する必要がなくなり、承認軸が独立して判定可能であることが構造的に保証される。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-18-approval-required-separate-axis-claude-opus-4-8-primary-003
+  run_id: 2026-06-18-approval-required-separate-axis
+  source_model: claude-opus-4-8
+  source_round: round-1
+  source_raw_path: raw/claude-opus-4-8.round-1.txt
+  source_parsed_path: parsed/claude-opus-4-8.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: §3.2 run_reopen_pending_gate の gate 種別による分岐表 / §5.1
+  plain_language_summary: 'approval gate の承認判断（承認/拒否/保留/修正要求）の分岐と、effect_kind: irreversible_action
+    を持つ操作の承認ゲートとの関係が、gate 種別の approval と effect_kind の irreversible_action で二重に表現されており、両者が同一の承認軸を指すのか別軸なのかが表上で明示されていない。'
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: '§3.2 の active_gate=approval（effect_kind: irreversible_action）と、§3.1
+    の irreversible_action 操作群に対する承認ゲートが、同じ承認メカニズムを参照していることは §5.1 の統一定義で接続されているが、対応表レベルでは承認軸の参照先が一意に追跡できない。承認を独立軸として扱うなら、gate
+    種別の approval が §5.1 の統一定義と同一の承認チャンネルを使うことを表注で明記すべき。'
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-18-approval-required-separate-axis-claude-opus-4-8-primary-004
+  run_id: 2026-06-18-approval-required-separate-axis
+  source_model: claude-opus-4-8
+  source_round: round-1
+  source_raw_path: raw/claude-opus-4-8.round-1.txt
+  source_parsed_path: parsed/claude-opus-4-8.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: §7 未確定事項 項目1
+  plain_language_summary: alignment gate の effect_kind が未確定とされているが、これが承認軸（承認ゲート要否）に影響するかどうかは明記されていない。選択肢の
+    write / state_mutation はいずれも irreversible_action ではないため承認ゲート対象外と推測されるが、その含意が明示されていない。
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: 承認を独立軸として扱う観点では、未確定の effect_kind が承認ゲート要否を変える可能性があるかどうかを明示しておくと、承認軸の確定性が読み手に伝わる。今回の選択肢ではいずれも承認不要であることを一文添えれば、承認軸が
+    effect_kind の未確定に影響されないことが明確になる。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-18-approval-required-separate-axis-gpt-5.5-adversarial-001
+  run_id: 2026-06-18-approval-required-separate-axis
+  source_model: gpt-5.5
+  source_round: round-1
+  source_raw_path: raw/gpt-5.5.round-1.txt
+  source_parsed_path: parsed/gpt-5.5.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: '§3.1 `effect_kind: irreversible_action` が必要な操作'
+  plain_language_summary: '承認要否が `effect_kind: irreversible_action` に結合されており、独立した
+    `approval_required` 軸として定義されていない。'
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: '承認が必要かどうかは副作用種別とは別のポリシー属性として扱う必要がある。現在の設計では `effect_kind` が副作用分類と承認ゲート要否の両方を担っており、操作契約で
+    `effect_kind: state_mutation` だが承認必須、または `write` だが承認必須といったケースを正確に表現できない。'
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-18-approval-required-separate-axis-gpt-5.5-adversarial-002
+  run_id: 2026-06-18-approval-required-separate-axis
+  source_model: gpt-5.5
+  source_round: round-1
+  source_raw_path: raw/gpt-5.5.round-1.txt
+  source_parsed_path: parsed/gpt-5.5.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: §3 required_action 対応表 / §3.1 承認ゲート対象リスト
+  plain_language_summary: '`apply_approved_reopen_plan`、`run_reopen_start`、`advance_reopen_after_commit_stop_point`
+    などが表では `state_mutation` とされる一方、§3.1 では `effect_kind: irreversible_action` の操作として扱われている。'
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: '同一操作の `effect_kind` が箇所によって異なるため、operation contract、preflight、guard
+    実装がどの分類を信頼すべきか不明になる。不可逆性や承認必須性は `effect_kind` から分離し、例えば `effect_kind: state_mutation`、`irreversible:
+    true`、`approval_required: true` のように別軸で表現する必要がある。'
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-18-approval-required-separate-axis-gpt-5.5-adversarial-003
+  run_id: 2026-06-18-approval-required-separate-axis
+  source_model: gpt-5.5
+  source_round: round-1
+  source_raw_path: raw/gpt-5.5.round-1.txt
+  source_parsed_path: parsed/gpt-5.5.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: §3.2 `run_reopen_pending_gate` の gate 種別による分岐
+  plain_language_summary: '`approval` gate の `effect_kind` が `irreversible_action`
+    と定義されており、承認要求の構造化処理と承認後の不可逆操作が混同されている。'
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: '`approval` gate で実行する `reopen-set-blocker` や承認材料の提示は、承認を要求・記録するための状態更新であり、それ自体を不可逆操作として承認ゲート対象にすると、承認を求める操作にも承認が必要になる循環が生じ得る。gate
+    種別、effect_kind、approval_required は分離して定義するべきである。'
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-18-approval-required-separate-axis-gpt-5.5-adversarial-004
+  run_id: 2026-06-18-approval-required-separate-axis
+  source_model: gpt-5.5
+  source_round: round-1
+  source_raw_path: raw/gpt-5.5.round-1.txt
+  source_parsed_path: parsed/gpt-5.5.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: §5.1 承認ゲート（approval gate）
+  plain_language_summary: 統一定義が「取り消し不能な操作を実行する前に必須」として承認ゲートを定義しており、承認必須性を不可逆性からのみ導出している。
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: 承認が必要な理由は不可逆性に限らず、外部影響、ポリシー、リスク、ユーザー明示判断などでも発生し得る。設計段階では operation
+    contract に `approval_required` または同等の独立フィールドを持たせ、不可逆性とは別に評価できるようにする必要がある。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-18-approval-required-separate-axis-gemini-3.1-pro-preview-judgment-001
+  run_id: 2026-06-18-approval-required-separate-axis
+  source_model: gemini-3.1-pro-preview
+  source_round: round-1
+  source_raw_path: raw/gemini-3.1-pro-preview.round-1.txt
+  source_parsed_path: parsed/gemini-3.1-pro-preview.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: '3.1 `effect_kind: irreversible_action` が必要な操作 および 3.2, 7'
+  plain_language_summary: 承認の要否（不可逆性）が別軸として分離されず、`effect_kind`の列挙値（`irreversible_action`）として定義されている
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: '第3章の表では副作用種別（`state_mutation`など）と「不可逆か」を分けているにもかかわらず、3.1節、3.2節、7節において
+    `effect_kind: irreversible_action` という値が用いられ、設計が矛盾・混同されている。承認要求（不可逆な操作であること）は、副作用の物理的性質（状態変更か外部呼び出しかなど）とは独立した概念であるため、`effect_kind`に混ぜるのではなく
+    `requires_approval: true` などの独立した別軸（真偽値や属性）として定義しなければならない。'
+  applied_files: []
+  superseded_by: null

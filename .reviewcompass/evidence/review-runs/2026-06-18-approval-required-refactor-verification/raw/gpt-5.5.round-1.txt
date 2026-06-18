@@ -1,0 +1,13 @@
+findings:
+  - severity: ERROR
+    target_location: "docs/notes/working/2026-06-18-mechanized-workflow-execution-design.md §10 Phase 2"
+    description: "The read-only operation registry does not require `approval_required` to be returned."
+    rationale: "The design defines `approval_required` as an independent operation contract attribute in §3.1 and later relies on it in Phase 5 to enforce approval gates. However, Phase 2 only lists `canonical_commands / effect_kind / sequence / pending_conflicts` as registry output. Without exposing `approval_required` in `operation-list --json`, downstream preflight, guards, tests, and refactor verification cannot mechanically determine which operations require approval."
+  - severity: ERROR
+    target_location: "docs/notes/2026-06-18-integrated-design-selection-execution-layers.md §5.1; docs/notes/working/2026-06-18-mechanized-workflow-execution-design.md §3.1 and §10 Phase 5"
+    description: "The approval record verification model is not specified."
+    rationale: "The documents separate `record_human_decision` from execution of the approved operation, but they do not define the machine-checkable approval evidence needed before an `approval_required: true` operation runs. The design should specify at minimum how an approval record is bound to the target operation, required_action, command/payload, current workflow state or digest, freshness/expiry, decision value, and consumed status. Without this, Phase 5 can only check that some approval exists, not that the current irreversible operation is the one that was approved."
+  - severity: WARN
+    target_location: "docs/notes/working/2026-06-18-mechanized-workflow-execution-design.md §3.1; docs/notes/2026-06-18-integrated-design-selection-execution-layers.md §3.1-§3.2"
+    description: "The text gives conflicting guidance about whether workflow-state mutations generally require approval."
+    rationale: "The mechanized design says `approval_required: true` applies to operations such as `spec.json` workflow_state updates, while the integrated design explicitly marks some state mutations as approval-free, including `record_human_decision` and approval-request setup under `run_reopen_pending_gate`. Because `approval_required` is meant to be independent from `effect_kind`, the documents should avoid broad statements implying all workflow_state mutations require approval and instead make the operation-level allow/require list authoritative."

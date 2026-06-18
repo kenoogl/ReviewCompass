@@ -1,0 +1,30 @@
+role: judgment
+provider: gemini-api
+model: gemini-3.1-pro-preview
+attempts: 1
+duration_seconds: 16.209
+findings:
+- severity: INFO
+  target_location: 3. required_action 語彙と operation contract の対応
+  description: Maps 19 'required_action' types to their respective 'effect_kind' (e.g.,
+    'state_mutation', 'write', 'read', 'irreversible_action').
+  rationale: Establishes the foundational mapping between action selection and the
+    execution layer's operation contracts.
+- severity: INFO
+  target_location: '3.1 `effect_kind: irreversible_action` が必要な操作'
+  description: 'Mandates that operations with ''effect_kind: irreversible_action''
+    must pass an approval gate before execution.'
+  rationale: Ensures destructive or permanent actions have explicit human approval,
+    mitigating unintended system changes.
+- severity: INFO
+  target_location: 3.2 `run_reopen_pending_gate` の gate 種別による分岐
+  description: Defines the 'effect_kind' mapping for various 'active_gate' types (e.g.,
+    'approval' mapped to 'irreversible_action', 'triad-review' mapped to 'external_call').
+  rationale: Provides clear execution paths and boundaries based on specific gate
+    types.
+- severity: WARN
+  target_location: 7. 未確定事項（継続検討）
+  description: The 'effect_kind' for the 'alignment' gate during 'run_workflow_stage'
+    remains undecided, with options between 'write' and 'state_mutation'.
+  rationale: This unresolved design decision creates an ambiguity in the operation
+    contract that must be addressed before the execution layer can be fully implemented.

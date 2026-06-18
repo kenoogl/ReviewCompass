@@ -1,0 +1,5 @@
+findings:
+  - severity: ERROR
+    target_location: "§3.1 `effect_kind: irreversible_action` が必要な操作 / §5.1 承認ゲート"
+    description: "`record_human_decision` is listed as an operation that must pass an approval gate, while the approval gate itself is defined as `wait_for_human_decision → record_human_decision → target operation`."
+    rationale: "This makes the human-decision recording action circular: executing `record_human_decision` would first require another `record_human_decision`, causing a deadlock in the approval flow. `record_human_decision` should be the mechanism that satisfies an approval gate, not an operation gated by the same approval mechanism."

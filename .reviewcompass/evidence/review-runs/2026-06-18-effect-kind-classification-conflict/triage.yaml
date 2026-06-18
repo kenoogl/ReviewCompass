@@ -1,0 +1,277 @@
+run_id: 2026-06-18-effect-kind-classification-conflict
+triage_status: draft
+generated_at: '2026-06-17T23:07:05.450077+00:00'
+decision_actor: null
+decision_actor_type: human
+items:
+- finding_id: 2026-06-18-effect-kind-classification-conflict-claude-opus-4-8-primary-001
+  run_id: 2026-06-18-effect-kind-classification-conflict
+  source_model: claude-opus-4-8
+  source_round: round-1
+  source_raw_path: raw/claude-opus-4-8.round-1.txt
+  source_parsed_path: parsed/claude-opus-4-8.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: §3 表 `run_post_write_verification` 行 と §3.2 表 `triad-review` /
+    `review-wave` 行
+  plain_language_summary: '`run_post_write_verification` を `external_call`、reopen
+    の review 系 gate も `external_call` としているが、`run_review.py` はレビュー結果に基づき manifest
+    等の状態を更新する副作用を持つ可能性が高く、その場合 `external_call` 単独では分類が不足する。`run_maintenance` は `write`/`state_mutation`
+    の複合を許容しているのに、検証/レビュー操作は単一 `external_call` で固定されており、分類基準が一貫していない。'
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: 同種の「ツール実行＋状態書き込み」操作で effect_kind の付与方針が揃っていないと、Phase 5 の機械的ブロック（どの操作にガードを掛けるか）の判定が破綻する。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-18-effect-kind-classification-conflict-claude-opus-4-8-primary-002
+  run_id: 2026-06-18-effect-kind-classification-conflict
+  source_model: claude-opus-4-8
+  source_round: round-1
+  source_raw_path: raw/claude-opus-4-8.round-1.txt
+  source_parsed_path: parsed/claude-opus-4-8.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: §3 表 `repair_workflow_state` 行（`state_mutation`）と §3.1 リスト
+  plain_language_summary: §3 の対応表では `repair_workflow_state` の effect_kind を `state_mutation`
+    と分類しているが、§3.1 の『irreversible_action となる操作』リストには `repair_workflow_state`（状態修復コマンドの実行）が含まれている。同一操作の
+    effect_kind 分類が表と本文で `state_mutation` と `irreversible_action` に矛盾している。
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: effect_kind は承認ゲート要否を決める根幹の分類軸であり、`state_mutation` なら §3.1 の承認ゲート対象に入らず、`irreversible_action`
+    なら入る。矛盾を放置すると Phase 0/Phase 5 の実装で承認ゲート要否が確定できない。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-18-effect-kind-classification-conflict-claude-opus-4-8-primary-003
+  run_id: 2026-06-18-effect-kind-classification-conflict
+  source_model: claude-opus-4-8
+  source_round: round-1
+  source_raw_path: raw/claude-opus-4-8.round-1.txt
+  source_parsed_path: parsed/claude-opus-4-8.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: §3 表 `apply_approved_reopen_plan` / `run_reopen_start` / `advance_reopen_after_commit_stop_point`
+    / `advance_reopen_after_approval_stop_point` / `finalize_reopen` 各行 と §3.1 リスト
+  plain_language_summary: §3 表ではこれら5操作の effect_kind を `state_mutation` と分類しているが、§3.1
+    の irreversible_action リストにはこれら全てが列挙されている。`commit_stop_point` だけが §3 表で `irreversible_action`
+    と明記され、他の不可逆操作は `state_mutation` 表記のまま §3.1 で irreversible_action 扱いされており、表と本文の分類が体系的に食い違っている。
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: 『不可逆か＝はい』の列と effect_kind 列の対応が崩れている。state_mutation と irreversible_action
+    のどちらが承認ゲート判定の基準になるのかが操作ごとにバラバラになり、選択層と実行層の境界（承認ゲート要否）が一意に定まらない。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-18-effect-kind-classification-conflict-claude-opus-4-8-primary-004
+  run_id: 2026-06-18-effect-kind-classification-conflict
+  source_model: claude-opus-4-8
+  source_round: round-1
+  source_raw_path: raw/claude-opus-4-8.round-1.txt
+  source_parsed_path: parsed/claude-opus-4-8.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: §3.2 表 `approval` 行（`irreversible_action`） と §3 表 `run_reopen_pending_gate`
+    行（`external_call` / `write`）
+  plain_language_summary: §3 表では `run_reopen_pending_gate` の effect_kind を `external_call`
+    / `write` のいずれかとしているが、§3.2 の gate 種別分岐表では `approval` gate のとき `irreversible_action`
+    を取るとされており、§3 表に列挙されていない第三の effect_kind が現れる。親 required_action の effect_kind 候補集合と、その分岐先の
+    effect_kind が一致していない。
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: 同一 required_action の effect_kind が箇所によって取りうる集合が異なると、operation contract
+    スキーマ（Phase 1）で effect_kind を一意に解決できず、承認ゲート挿入判定が gate 種別解決前に確定できない。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-18-effect-kind-classification-conflict-claude-opus-4-8-primary-005
+  run_id: 2026-06-18-effect-kind-classification-conflict
+  source_model: claude-opus-4-8
+  source_round: round-1
+  source_raw_path: raw/claude-opus-4-8.round-1.txt
+  source_parsed_path: parsed/claude-opus-4-8.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: §3.2 表 `approval` 行 と §3.1 本文 `run_reopen_start` の説明
+  plain_language_summary: §3.2 で reopen の `approval` gate は `irreversible_action`
+    とされるが、§3.1 では `run_reopen_start`（reopen plan の生成と in-progress YAML 作成）を irreversible_action
+    としつつ、§3.2 の drafting/approval/alignment の分岐とは別経路で扱っている。reopen 系操作のうちどれが gate 種別由来の
+    irreversible_action で、どれが操作自体の irreversible_action かの分類軸が二重化している。
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: 'irreversible_action の発生源（操作固有か gate 種別由来か）が混在すると、§5.1 の承認ゲート統一定義（『effect_kind:
+    irreversible_action を持つ操作の前に必須』）の適用対象が一意に決まらない。'
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-18-effect-kind-classification-conflict-claude-opus-4-8-primary-006
+  run_id: 2026-06-18-effect-kind-classification-conflict
+  source_model: claude-opus-4-8
+  source_round: round-1
+  source_raw_path: raw/claude-opus-4-8.round-1.txt
+  source_parsed_path: parsed/claude-opus-4-8.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: §7 未確定事項1 と §3 表 `run_workflow_stage` 行・§3.2 表
+  plain_language_summary: §7 で `run_workflow_stage` の `alignment` の effect_kind を未確定（`write`
+    か `state_mutation`）としているが、§3.2 表では reopen の `alignment` gate を `write` と確定的に分類している。同じ
+    `alignment` という gate 種別に対し、§3.2 では確定値、§7 では未確定として扱われ、確定状態の記述が矛盾している。
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: alignment の effect_kind が確定なのか未確定なのかが文書内で食い違うと、Phase 1 スキーマ定義時にこの値を確定すべきか保留すべきかが判断できない。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-18-effect-kind-classification-conflict-gpt-5.5-adversarial-001
+  run_id: 2026-06-18-effect-kind-classification-conflict
+  source_model: gpt-5.5
+  source_round: round-1
+  source_raw_path: raw/gpt-5.5.round-1.txt
+  source_parsed_path: parsed/gpt-5.5.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: Section 3 table and Section 3.1
+  plain_language_summary: 'Several required_actions are classified as state_mutation
+    in the main mapping table but later listed as effect_kind: irreversible_action.'
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: 'The table classifies apply_approved_reopen_plan, run_reopen_start,
+    advance_reopen_after_commit_stop_point, advance_reopen_after_approval_stop_point,
+    finalize_reopen, and repair_workflow_state as state_mutation, while Section 3.1
+    says those same operations require effect_kind: irreversible_action. This makes
+    the operation contract ambiguous: implementers cannot tell whether effect_kind
+    represents the mechanical side effect category or the approval/irreversibility
+    category.'
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-18-effect-kind-classification-conflict-gpt-5.5-adversarial-002
+  run_id: 2026-06-18-effect-kind-classification-conflict
+  source_model: gpt-5.5
+  source_round: round-1
+  source_raw_path: raw/gpt-5.5.round-1.txt
+  source_parsed_path: parsed/gpt-5.5.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: Section 3 table and Section 3.2 run_reopen_pending_gate
+  plain_language_summary: run_reopen_pending_gate has conflicting effect_kind classifications.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: 'The main table lists run_reopen_pending_gate as external_call
+    / write, but Section 3.2 says the approval gate variant has effect_kind: irreversible_action.
+    If required_action alone is used to select an operation contract, this conflict
+    prevents a single valid contract. The design needs either a discriminated contract
+    keyed by active_gate or an explicit composite classification that includes irreversible_action.'
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-18-effect-kind-classification-conflict-gpt-5.5-adversarial-003
+  run_id: 2026-06-18-effect-kind-classification-conflict
+  source_model: gpt-5.5
+  source_round: round-1
+  source_raw_path: raw/gpt-5.5.round-1.txt
+  source_parsed_path: parsed/gpt-5.5.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: Section 3 table and Section 3.1 run_maintenance
+  plain_language_summary: run_maintenance omits irreversible_action from the main
+    effect_kind mapping despite later allowing irreversible maintenance operations.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: 'The main table lists run_maintenance as write / state_mutation,
+    while Section 3.1 states that maintenance YAML entries with effect_kind: irreversible_action
+    must pass an approval gate. This weakens the mapping table as a source of truth
+    and can cause tooling to miss approval-gated maintenance operations unless the
+    per-maintenance-YAML override is explicitly modeled.'
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-18-effect-kind-classification-conflict-gpt-5.5-adversarial-004
+  run_id: 2026-06-18-effect-kind-classification-conflict
+  source_model: gpt-5.5
+  source_round: round-1
+  source_raw_path: raw/gpt-5.5.round-1.txt
+  source_parsed_path: parsed/gpt-5.5.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: Section 3.2 and Section 7 item 1
+  plain_language_summary: The alignment gate effect_kind is treated as fixed in one
+    section but unresolved in another.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: 'Section 3.2 assigns alignment to effect_kind: write for run_reopen_pending_gate,
+    while Section 7 says alignment''s effect_kind is still undecided between write
+    and state_mutation for run_workflow_stage. If alignment is a shared gate concept,
+    this creates inconsistent classification guidance. The document should clarify
+    whether the uncertainty is action-specific or whether the earlier write classification
+    is provisional.'
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-18-effect-kind-classification-conflict-gemini-3.1-pro-preview-judgment-001
+  run_id: 2026-06-18-effect-kind-classification-conflict
+  source_model: gemini-3.1-pro-preview
+  source_round: round-1
+  source_raw_path: raw/gemini-3.1-pro-preview.round-1.txt
+  source_parsed_path: parsed/gemini-3.1-pro-preview.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: Section 3 & Section 3.1
+  plain_language_summary: Contradiction in effect_kind classification for multiple
+    required_actions between the summary table and the irreversible_action list.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: 'The table in Section 3 classifies actions such as `apply_approved_reopen_plan`,
+    `run_reopen_start`, `finalize_reopen`, `advance_reopen_after_commit_stop_point`,
+    and `repair_workflow_state` as `state_mutation`. However, Section 3.1 explicitly
+    states these exact actions fall under `effect_kind: irreversible_action` to mandate
+    execution through an approval gate. This direct contradiction breaks the deterministic
+    routing of execution layers and risks bypassing required approvals.'
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-18-effect-kind-classification-conflict-gemini-3.1-pro-preview-judgment-002
+  run_id: 2026-06-18-effect-kind-classification-conflict
+  source_model: gemini-3.1-pro-preview
+  source_round: round-1
+  source_raw_path: raw/gemini-3.1-pro-preview.round-1.txt
+  source_parsed_path: parsed/gemini-3.1-pro-preview.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: Section 3 & Section 3.2
+  plain_language_summary: The effect_kind summary for `run_reopen_pending_gate` in
+    the Section 3 table omits `irreversible_action`.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: Section 3 defines the effect_kind for `run_reopen_pending_gate`
+    strictly as `external_call / write`. However, Section 3.2 correctly specifies
+    that if the active_gate is `approval`, the effect_kind must be `irreversible_action`.
+    Omitting this from the primary lookup table could lead to implementation oversights
+    where approval gates are mistakenly treated as standard writes or external calls.
+  applied_files: []
+  superseded_by: null

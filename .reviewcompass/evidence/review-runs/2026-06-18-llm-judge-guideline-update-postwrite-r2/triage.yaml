@@ -1,0 +1,42 @@
+run_id: 2026-06-18-llm-judge-guideline-update-postwrite-r2
+triage_status: decided
+generated_at: '2026-06-18T01:05:02.718882+00:00'
+decision_actor: null
+decision_actor_type: human
+items:
+- finding_id: 2026-06-18-llm-judge-guideline-update-postwrite-r2-claude-sonnet-4-6-primary-001
+  run_id: 2026-06-18-llm-judge-guideline-update-postwrite-r2
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: ステップ3：モデルに審査させる / 複数モデルでの審査（3者レビュー）を推奨
+  plain_language_summary: 「3者レビュー」という表現が使われているが、直後に「3者が推奨だが、1者のみでも有効である」と説明されており、推奨の根拠や3者という数の意味が説明されていない。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-18T03:20:38.056711+00:00'
+  decision_reason: INFO 参考意見。3者という数の根拠説明は現時点では追加しない
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-18-llm-judge-guideline-update-postwrite-r2-claude-sonnet-4-6-primary-002
+  run_id: 2026-06-18-llm-judge-guideline-update-postwrite-r2
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: 発展：複数ターンの活用
+  plain_language_summary: 複数ターンの活用セクションは有用だが、「いつ複数ターンに切り替えるか」の判断基準が「1回のレビューで答えが出なかった場合」という曖昧な記述にとどまっている。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-18T03:20:41.631572+00:00'
+  decision_reason: INFO 参考意見。複数ターンの切り替え基準の明示化は現時点では追加しない
+  applied_files: []
+  superseded_by: null

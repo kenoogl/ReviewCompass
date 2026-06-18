@@ -1,0 +1,13 @@
+findings:
+  - severity: ERROR
+    target_location: "Section 3 vs Section 3.1"
+    description: "Inconsistent effect_kind mapping for run_maintenance regarding irreversible actions."
+    rationale: "The mapping table in Section 3 restricts the `run_maintenance` effect_kind to `write` or `state_mutation`. However, Section 3.1 explicitly notes that maintenance YAMLs can have an `effect_kind` of `irreversible_action` and must pass through an approval gate. Omitting this from the primary mapping table compromises the execution layer's ability to reliably enforce safety guards on destructive maintenance operations."
+  - severity: ERROR
+    target_location: "Section 3.2 vs Section 7"
+    description: "Contradictory effect_kind assignment for the alignment gate."
+    rationale: "Section 3.2 unequivocally assigns the `alignment` gate to the `write` effect_kind in its definition table. Conversely, Section 7 (Unresolved items) explicitly states the `alignment` gate's effect_kind is yet to be determined, debating between `write` and `state_mutation`. This contradiction prevents a stable foundation for the operation contract design."
+  - severity: WARN
+    target_location: "Section 7, Item 1"
+    description: "Terminology confusion between 'stage' and 'gate' classifications."
+    rationale: "Section 7 discusses the effect_kind definitions per gate type under the context of `run_workflow_stage`. However, the types listed (drafting, triad-review, approval, alignment) are gate types inherently associated with `run_reopen_pending_gate` (as established in Section 3.2). Blurring stages and gates at the execution layer design level risks misaligning the mechanical routing."

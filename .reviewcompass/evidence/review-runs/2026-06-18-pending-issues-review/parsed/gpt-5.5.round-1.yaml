@@ -1,0 +1,42 @@
+role: adversarial
+provider: openai-api
+model: gpt-5.5
+attempts: 1
+duration_seconds: 44.019
+findings:
+- severity: ERROR
+  target_location: docs/notes/working/2026-06-18-mechanized-workflow-execution-design.md
+    §10 Phase 2
+  description: Phase 2 の `operation-list --json` が `approval_required` を返す対象に含めていない
+  rationale: §3.1 では `approval_required` を operation contract の独立属性として定義し、Phase 5
+    で承認ゲートを強制するとしている。読み取り専用 registry が `approval_required` を公開しないと、後続の preflight/guard
+    がどの操作を承認ゲート対象にすべきか機械的に判定できず、approval_required リファクタの実装基盤が欠ける。
+- severity: ERROR
+  target_location: docs/notes/working/2026-06-18-mechanized-workflow-execution-design.md
+    §3.1 / docs/notes/2026-06-18-integrated-design-selection-execution-layers.md §3.1
+  description: '`spec.json の workflow_state 更新` の承認要否が広すぎる記述のまま残っている'
+  rationale: '機械化設計 §3.1 は `spec.json の workflow_state 更新など` を `approval_required:
+    true` の例としている一方、統合設計 §3.1 は `record_human_decision` を `state_mutation` だが承認不要と明確化している。古い広義の記述が残ると、判断記録や承認要求設定まで承認ゲート対象にしてしまい、承認ゲートの記録操作自体が承認待ちになる循環・停止を引き起こす可能性がある。'
+- severity: ERROR
+  target_location: docs/notes/working/2026-06-18-mechanized-workflow-execution-design.md
+    §7 / docs/notes/2026-06-18-integrated-design-selection-execution-layers.md §4.1,
+    §6
+  description: D-003/Phase 0 の実装順序について、2文書間で矛盾した方針が残っている
+  rationale: 機械化設計 §7 は『本メモの設計を実装してから D-003 と照合』とするが、統合設計 §4.1/§6 は `next --json`
+    の唯一選択が壊れたままでは実行層機械化が無意味として、Phase 1 スキーマ後に Phase 0 を先行実装すると定めている。どちらを採用するかを明確にしないと、approval_required
+    を含む実行層ガードを、前提となる selector invariant が未実装の状態で実装してしまう。
+- severity: WARN
+  target_location: docs/notes/2026-06-18-integrated-design-selection-execution-layers.md
+    §3
+  description: '`effect_kind` 欄に enum ではない複合値・条件付き値が残っている'
+  rationale: 機械化設計 §3.1 は `effect_kind` を `read / write / state_mutation / external_call`
+    の4値として定義しているが、統合設計 §3 では `write / state_mutation`、`external_call / write / state_mutation`、`ステージ種別による`
+    などの値が表に残っている。operation contract schema が単一 enum を想定するなら不適合になり、複数 effect を許すなら
+    schema 側で list または variant contract として明示する必要がある。
+- severity: WARN
+  target_location: docs/notes/2026-06-18-integrated-design-selection-execution-layers.md
+    §5.3, §7
+  description: 状態スナップショットの出力タイミングが確定事項と未確定事項の両方として記述されている
+  rationale: §5.3 は `.reviewcompass/runtime/workflow-state-snapshot.yaml` を `next
+    --json` 実行後に自動更新される副産物と定義しているが、§7 では `next --json` 後の自動出力か専用サブコマンドかを未確定事項としている。registry/preflight/approval
+    gate の実装がスナップショットを参照する場合、生成タイミングの不一致は stale state の扱いを曖昧にする。

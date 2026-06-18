@@ -1,0 +1,13 @@
+role: adversarial
+provider: openai-api
+model: gpt-5.5
+attempts: 1
+duration_seconds: 318.632
+findings:
+- severity: ERROR
+  target_location: '§3.1 `effect_kind: irreversible_action` が必要な操作 / §5.1 承認ゲート'
+  description: '`record_human_decision` が `irreversible_action` として承認ゲート必須操作に含まれているため、承認ゲートを完了するための
+    `record_human_decision` 自体がさらに承認ゲートを要求する循環依存になっている。'
+  rationale: §5.1 では承認ゲートを `wait_for_human_decision → record_human_decision → 対象操作の実行`
+    と定義している。一方で §3.1 は `record_human_decision` 自体を承認ゲート必須の不可逆操作に分類しているため、人間判断を記録する前に別の人間判断記録が必要になり、承認フローが開始・完了できない。`record_human_decision`
+    は対象操作の承認を記録するゲート内部操作として扱い、少なくとも同じ承認ゲートを再要求しない例外または別 effect_kind として定義する必要がある。

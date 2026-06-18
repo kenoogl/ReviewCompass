@@ -1,0 +1,6 @@
+run_id: 2026-06-18-pending-issues-review
+target_files:
+- path: docs/notes/2026-06-18-integrated-design-selection-execution-layers.md
+  sha256: f2a1d5c9a5424bad1bb4bbe32dd264c9fca58957893d1c2393ed830c0882b663
+- path: docs/notes/working/2026-06-18-mechanized-workflow-execution-design.md
+  sha256: 27f641f6336d91006ea1c18c36aadcc068a97b2ec14e17166a32869f981da2e3

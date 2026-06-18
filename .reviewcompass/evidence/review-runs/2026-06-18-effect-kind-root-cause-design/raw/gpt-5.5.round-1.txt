@@ -1,0 +1,20 @@
+findings:
+  - severity: ERROR
+    target_location: "§3 required_action/effect_kind table and §3.1"
+    description: "The same operations are assigned conflicting effect_kind values: several actions are listed as state_mutation in the table but later declared to require effect_kind: irreversible_action."
+    rationale: "The design says approval gates are triggered by effect_kind: irreversible_action, but actions such as apply_approved_reopen_plan, run_reopen_start, advance_reopen_after_commit_stop_point, advance_reopen_after_approval_stop_point, finalize_reopen, and repair_workflow_state are mapped to state_mutation in §3. A machine-readable operation registry derived from the table could therefore fail to require approval for irreversible state changes."
+
+  - severity: ERROR
+    target_location: "§3 and §3.1 effect_kind model"
+    description: "effect_kind conflates two separate design dimensions: the kind of side effect and whether the operation is irreversible or approval-gated."
+    rationale: "Operations such as apply_approved_reopen_plan are both state mutations and irreversible. Modeling irreversible_action as an alternative effect_kind forces the design to choose between describing the technical effect and describing the approval requirement. This obscures root cause, weakens contract validation, and makes it hard for execution tooling to select the correct executor, preconditions, postconditions, and approval policy. The design should separate these concerns, for example effect_kind: state_mutation plus irreversible: true or approval_required: true."
+
+  - severity: WARN
+    target_location: "§3 table: run_maintenance and run_workflow_stage"
+    description: "Some required_action rows use dynamic or ambiguous effect_kind values such as 'write / state_mutation', '操作による', and 'ステージ種別による'."
+    rationale: "If operation contracts are intended to be mechanically enforced, each executable operation must resolve to a concrete effect_kind and approval policy before execution. Leaving these as informal unions makes preflight checks, approval gating, and executor selection dependent on ad hoc interpretation rather than schema-valid data."
+
+  - severity: WARN
+    target_location: "§3.2 run_reopen_pending_gate"
+    description: "run_reopen_pending_gate is assigned different effect_kind values depending on active_gate, but the design does not define a normalized contract key for that dispatch."
+    rationale: "The table lists run_reopen_pending_gate as external_call / write, while §3.2 adds irreversible_action for approval gates. Without a concrete discriminator such as active_gate_type in the operation contract schema, implementations may validate only required_action and miss gate-specific approval requirements."

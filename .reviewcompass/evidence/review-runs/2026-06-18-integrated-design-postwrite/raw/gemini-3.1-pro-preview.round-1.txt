@@ -1,0 +1,9 @@
+findings:
+  - severity: ERROR
+    target_location: "§3 (Table) vs §3.1"
+    description: "Contradiction in `effect_kind` mapping for multiple `required_action` items."
+    rationale: "The table in Section 3 defines the `effect_kind` for actions like `repair_workflow_state`, `run_reopen_start`, `finalize_reopen`, and `record_human_decision` as `state_mutation`. However, Section 3.1 explicitly categorizes these exact actions under `effect_kind: irreversible_action`. This direct contradiction undermines the core operation contract definitions of the execution layer."
+  - severity: ERROR
+    target_location: "§3.1 vs §5.1"
+    description: "Logical paradox (infinite loop) in the approval gate requirement for `record_human_decision`."
+    rationale: "Section 3.1 asserts that `record_human_decision` is an `irreversible_action` and states that all such actions must pass an approval gate before execution. However, Section 5.1 defines the approval gate itself as the sequence ending with `record_human_decision`. Requiring an approval gate to authorize the command that records the approval gate's decision creates an impossible circular dependency."

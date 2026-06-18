@@ -1,0 +1,9 @@
+findings:
+  - severity: ERROR
+    target_location: "Section 3 & Section 3.1"
+    description: "Contradiction in effect_kind classification for multiple required_actions between the summary table and the irreversible_action list."
+    rationale: "The table in Section 3 classifies actions such as `apply_approved_reopen_plan`, `run_reopen_start`, `finalize_reopen`, `advance_reopen_after_commit_stop_point`, and `repair_workflow_state` as `state_mutation`. However, Section 3.1 explicitly states these exact actions fall under `effect_kind: irreversible_action` to mandate execution through an approval gate. This direct contradiction breaks the deterministic routing of execution layers and risks bypassing required approvals."
+  - severity: WARN
+    target_location: "Section 3 & Section 3.2"
+    description: "The effect_kind summary for `run_reopen_pending_gate` in the Section 3 table omits `irreversible_action`."
+    rationale: "Section 3 defines the effect_kind for `run_reopen_pending_gate` strictly as `external_call / write`. However, Section 3.2 correctly specifies that if the active_gate is `approval`, the effect_kind must be `irreversible_action`. Omitting this from the primary lookup table could lead to implementation oversights where approval gates are mistakenly treated as standard writes or external calls."

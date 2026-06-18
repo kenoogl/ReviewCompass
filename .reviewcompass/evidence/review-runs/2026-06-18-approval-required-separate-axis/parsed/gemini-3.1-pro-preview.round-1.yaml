@@ -1,0 +1,12 @@
+role: judgment
+provider: gemini-api
+model: gemini-3.1-pro-preview
+attempts: 1
+duration_seconds: 19.573
+findings:
+- severity: ERROR
+  target_location: '3.1 `effect_kind: irreversible_action` が必要な操作 および 3.2, 7'
+  description: 承認の要否（不可逆性）が別軸として分離されず、`effect_kind`の列挙値（`irreversible_action`）として定義されている
+  rationale: '第3章の表では副作用種別（`state_mutation`など）と「不可逆か」を分けているにもかかわらず、3.1節、3.2節、7節において
+    `effect_kind: irreversible_action` という値が用いられ、設計が矛盾・混同されている。承認要求（不可逆な操作であること）は、副作用の物理的性質（状態変更か外部呼び出しかなど）とは独立した概念であるため、`effect_kind`に混ぜるのではなく
+    `requires_approval: true` などの独立した別軸（真偽値や属性）として定義しなければならない。'

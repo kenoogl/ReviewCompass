@@ -1,0 +1,103 @@
+run_id: 2026-06-18-record-human-decision-deep-review
+triage_status: draft
+generated_at: '2026-06-17T22:03:40.967862+00:00'
+decision_actor: null
+decision_actor_type: human
+items:
+- finding_id: 2026-06-18-record-human-decision-deep-review-claude-opus-4-8-primary-001
+  run_id: 2026-06-18-record-human-decision-deep-review
+  source_model: claude-opus-4-8
+  source_round: round-1
+  source_raw_path: raw/claude-opus-4-8.round-1.txt
+  source_parsed_path: parsed/claude-opus-4-8.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: §4.1 and §6
+  plain_language_summary: A circular dependency exists between Phase 0 (選択層実装) and
+    Phase 1 (スキーマ定義), and the document resolves it by asserting an ordering (Phase
+    1 → Phase 0) without recording this as an explicit human decision. §4.1 states
+    'Phase 1 のスキーマ定義が Phase 0 の実装の前提' while also claiming 'Phase 0 と Phase 1 はほぼ同時並行で進めることができる'.
+    §6 reverses emphasis by saying Phase 0 can proceed in parallel with Phase 1-2
+    ('スキーマ定義が先'). The two statements are in tension and no human-decision record fixes
+    the resolution.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: The criterion record_human_decision_circular_dependency requires
+    that when a circular/ordering dependency between design layers is resolved, the
+    resolution be captured as an explicit, recorded human decision rather than an
+    inline assertion. Without a recorded decision, the chosen ordering can silently
+    drift, and §7 item 2 explicitly leaves '何がどこまで Phase 0 実装に必要か' undecided, leaving
+    the circular dependency partially unresolved and untracked.
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-18-record-human-decision-deep-review-claude-opus-4-8-primary-002
+  run_id: 2026-06-18-record-human-decision-deep-review
+  source_model: claude-opus-4-8
+  source_round: round-1
+  source_raw_path: raw/claude-opus-4-8.round-1.txt
+  source_parsed_path: parsed/claude-opus-4-8.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: §7 未確定事項 (item 2)
+  plain_language_summary: Item 2 acknowledges the Phase 0 / Phase 1 split is undetermined
+    ('実装着手時に確認する') but defers it without designating a decision owner, channel, or
+    record location for when the circular dependency is finally resolved.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: Per record_human_decision_circular_dependency, deferred resolution
+    of a circular dependency should still specify how and where the eventual human
+    decision will be recorded (e.g., a decision record under .reviewcompass/specs/...),
+    so the resolution is auditable rather than implicit at implementation time.
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-18-record-human-decision-deep-review-gpt-5.5-adversarial-001
+  run_id: 2026-06-18-record-human-decision-deep-review
+  source_model: gpt-5.5
+  source_round: round-1
+  source_raw_path: raw/gpt-5.5.round-1.txt
+  source_parsed_path: parsed/gpt-5.5.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: '§3.1 `effect_kind: irreversible_action` が必要な操作 / §5.1 承認ゲート'
+  plain_language_summary: '`record_human_decision` が `irreversible_action` として承認ゲート必須操作に含まれているため、承認ゲートを完了するための
+    `record_human_decision` 自体がさらに承認ゲートを要求する循環依存になっている。'
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: §5.1 では承認ゲートを `wait_for_human_decision → record_human_decision
+    → 対象操作の実行` と定義している。一方で §3.1 は `record_human_decision` 自体を承認ゲート必須の不可逆操作に分類しているため、人間判断を記録する前に別の人間判断記録が必要になり、承認フローが開始・完了できない。`record_human_decision`
+    は対象操作の承認を記録するゲート内部操作として扱い、少なくとも同じ承認ゲートを再要求しない例外または別 effect_kind として定義する必要がある。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-18-record-human-decision-deep-review-gemini-3.1-pro-preview-judgment-001
+  run_id: 2026-06-18-record-human-decision-deep-review
+  source_model: gemini-3.1-pro-preview
+  source_round: round-1
+  source_raw_path: raw/gemini-3.1-pro-preview.round-1.txt
+  source_parsed_path: parsed/gemini-3.1-pro-preview.round-1.yaml
+  severity_original: CRITICAL
+  severity_normalized: CRITICAL
+  target_location: Section 3.1 and Section 5.1
+  plain_language_summary: 'Circular dependency detected: `record_human_decision` requires
+    an approval gate, which itself requires `record_human_decision`.'
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: Section 3.1 classifies `record_human_decision` as an `irreversible_action`
+    and mandates that all such actions must pass an approval gate before execution.
+    However, Section 5.1 defines the approval gate itself as a sequence that executes
+    `record_human_decision`. This creates a deadlock where attempting to execute `record_human_decision`
+    triggers another approval gate, which in turn requires another `record_human_decision`,
+    resulting in an infinite loop.
+  applied_files: []
+  superseded_by: null

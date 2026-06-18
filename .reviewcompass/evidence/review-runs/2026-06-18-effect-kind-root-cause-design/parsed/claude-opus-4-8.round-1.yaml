@@ -1,0 +1,32 @@
+role: primary
+provider: anthropic-api
+model: claude-opus-4-8
+attempts: 1
+duration_seconds: 22.052
+findings:
+- severity: WARN
+  target_location: §3 表 — required_action と effect_kind の対応表
+  description: effect_kind を実行主体（LLM/ツール/構造化コマンド）の観点で対応付けているが、effect_kind は本来「副作用の種類」を表す根本軸であり、実行主体とは独立した直交軸であるべき。たとえば
+    run_maintenance に `write / state_mutation` と複数値を併記し「操作による」と濁すのは、effect_kind が操作の根本原因（何を不可逆に変えるか）を一意に分類できていないことを示す。
+  rationale: effect_kind は承認ゲートの要否を機械判定する根拠（root cause）であるべきなのに、1操作に複数の effect_kind
+    が同居すると機械判定が成立しない。実行主体軸と副作用軸を混在させると、設計の根本軸が曖昧になり実装時に判定ロジックが分岐爆発する。
+- severity: WARN
+  target_location: §3.2 表 — run_reopen_pending_gate の gate 種別による effect_kind 分岐 /
+    §7-1 未確定事項
+  description: 同一の required_action（run_reopen_pending_gate, run_workflow_stage）が gate
+    種別に応じて external_call / write / irreversible_action へと effect_kind を切り替える設計になっている。effect_kind
+    が required_action から一意に決まらず、実行時の active_gate 値に依存して後から確定する。
+  rationale: effect_kind を『操作の不可逆性という根本原因』として定義するなら、選択層が返す required_action の時点で effect_kind
+    が一意確定していないと、承認ゲート要否を選択層で判定できない。実行時依存の effect_kind は、§2.2 の『選択層が何をすべきかを唯一に決める』という分離原則と矛盾し、不可逆操作の見落としリスクを生む。
+- severity: INFO
+  target_location: §7-1 未確定事項 — alignment の effect_kind が未確定
+  description: alignment gate の effect_kind を write（合意記録の作成）か state_mutation（alignment
+    flag の更新）か未確定としているが、両者は副作用の根本性質が異なる（ファイル生成 vs 状態遷移）。この未確定は effect_kind の定義そのものが『何を根本軸とするか』を確定していないことに起因する。
+  rationale: effect_kind の各値（write/state_mutation/external_call/irreversible_action/read）の境界定義が明文化されていれば
+    alignment は自動的に分類できるはず。分類できないのは値の定義が根本原因レベルで未整備であることを示し、他の操作の分類にも波及する。
+- severity: INFO
+  target_location: §3.1 — run_maintenance の effect_kind が maintenance YAML 側の指定に委譲されている
+  description: run_maintenance の不可逆性を maintenance YAML 内の effect_kind 値に委ねているが、その値が誰によってどう保証されるか（root
+    cause の出所）が本メモでは規定されていない。
+  rationale: 承認ゲート要否が外部 YAML の自己申告 effect_kind に依存する設計だと、申告漏れ・誤申告が不可逆操作の無ガード実行に直結する。effect_kind
+    の信頼性根拠（検証経路）を設計段階で明示しないと、根本原因の保証が成立しない。

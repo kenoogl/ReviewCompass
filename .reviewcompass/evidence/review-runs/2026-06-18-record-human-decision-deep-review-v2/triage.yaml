@@ -1,0 +1,135 @@
+run_id: 2026-06-18-record-human-decision-deep-review-v2
+triage_status: draft
+generated_at: '2026-06-17T22:11:02.449186+00:00'
+decision_actor: null
+decision_actor_type: human
+items:
+- finding_id: 2026-06-18-record-human-decision-deep-review-v2-claude-opus-4-8-primary-001
+  run_id: 2026-06-18-record-human-decision-deep-review-v2
+  source_model: claude-opus-4-8
+  source_round: round-1
+  source_raw_path: raw/claude-opus-4-8.round-1.txt
+  source_parsed_path: parsed/claude-opus-4-8.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: §5.1 承認ゲート（approval gate）の処理連鎖
+  plain_language_summary: 承認ゲートの処理連鎖が `wait_for_human_decision → (人間が判断を下す) → record_human_decision
+    → 対象操作の実行` と直線的に定義されているが、人間が判断を「拒否」または「保留」した場合の経路が記述されていない。record_human_decision
+    が承認以外の結果（reject / defer）を記録できるか、その場合に対象操作をスキップしてどこへ戻るかが不明。
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: record_human_decision は state_mutation かつ irreversible とされており、承認のみを前提にした直線設計だと、却下時の状態遷移が未定義のまま実装に入る。選択層が次に何を返すべきか（元の
+    wait に戻るのか、別アクションを返すのか）が決まらず、循環的な人間判断記録の健全性が保証されない。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-18-record-human-decision-deep-review-v2-claude-opus-4-8-primary-002
+  run_id: 2026-06-18-record-human-decision-deep-review-v2
+  source_model: claude-opus-4-8
+  source_round: round-1
+  source_raw_path: raw/claude-opus-4-8.round-1.txt
+  source_parsed_path: parsed/claude-opus-4-8.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: '§3 対応表の `record_human_decision`（effect_kind: state_mutation, 不可逆:
+    はい）と §3.1 の列挙'
+  plain_language_summary: §3 の対応表で `record_human_decision` は effect_kind が `state_mutation`
+    とされているが、§3.1 では「irreversible_action となる操作」の列挙に `record_human_decision` が含まれている。effect_kind=state_mutation
+    と「irreversible_action となる操作」の区別が一貫していない。
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: '§3.1 は「effect_kind: irreversible_action となる操作」を列挙すると宣言しているのに、effect_kind
+    が state_mutation の record_human_decision を含めている。承認ゲート要否の判定基準（effect_kind による分類か、別軸の不可逆性フラグか）が二重定義されており、実装時にどちらを参照すべきか判断できない。'
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-18-record-human-decision-deep-review-v2-claude-opus-4-8-primary-003
+  run_id: 2026-06-18-record-human-decision-deep-review-v2
+  source_model: claude-opus-4-8
+  source_round: round-1
+  source_raw_path: raw/claude-opus-4-8.round-1.txt
+  source_parsed_path: parsed/claude-opus-4-8.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: §5.1 と §3.1 の record_human_decision の位置づけ
+  plain_language_summary: 承認ゲートそのものを構成する `record_human_decision` が、§3.1 では「irreversible_action
+    の前に承認ゲートを通す操作」として列挙されている。承認ゲートを構成する操作自身が承認ゲートを要求するという循環的な定義になっている。
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: record_human_decision は承認ゲートの記録チャンネル（§5.1 の統一定義）であり、それ自体に対してさらに承認ゲートを課すと無限後退を招く。承認ゲートの『記録操作』と『承認対象操作』を区別せずに同じ
+    irreversible_action 集合へ入れていることが、設計の自己参照的不整合を生んでいる。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-18-record-human-decision-deep-review-v2-claude-opus-4-8-primary-004
+  run_id: 2026-06-18-record-human-decision-deep-review-v2
+  source_model: claude-opus-4-8
+  source_round: round-1
+  source_raw_path: raw/claude-opus-4-8.round-1.txt
+  source_parsed_path: parsed/claude-opus-4-8.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: §5.1 `reopen-set-blocker → wait_for_human_decision → record_human_decision`
+  plain_language_summary: reopen の approval gate が `reopen-set-blocker → wait_for_human_decision
+    → record_human_decision` の順序を踏むと記述されているが、record_human_decision 後に blocker を解除する操作（reopen-clear-blocker
+    等）が連鎖に明示されていない。§3 の対応表では record_human_decision の説明に「blocker 解除」とあるが、§5.1 の連鎖図には現れない。
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: §3 表（blocker 解除と decision record 作成）と §5.1 連鎖図の記述が一致しておらず、record_human_decision
+    が blocker 解除を内包するのか別操作なのかが曖昧。人間判断記録の完了条件を機械確認する postcondition の設計に影響する。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-18-record-human-decision-deep-review-v2-gpt-5.5-adversarial-001
+  run_id: 2026-06-18-record-human-decision-deep-review-v2
+  source_model: gpt-5.5
+  source_round: round-1
+  source_raw_path: raw/gpt-5.5.round-1.txt
+  source_parsed_path: parsed/gpt-5.5.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: '§3.1 `effect_kind: irreversible_action` が必要な操作 / §5.1 承認ゲート'
+  plain_language_summary: '`record_human_decision` is listed as an operation that
+    must pass an approval gate, while the approval gate itself is defined as `wait_for_human_decision
+    → record_human_decision → target operation`.'
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: 'This makes the human-decision recording action circular: executing
+    `record_human_decision` would first require another `record_human_decision`, causing
+    a deadlock in the approval flow. `record_human_decision` should be the mechanism
+    that satisfies an approval gate, not an operation gated by the same approval mechanism.'
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-18-record-human-decision-deep-review-v2-gemini-3.1-pro-preview-judgment-001
+  run_id: 2026-06-18-record-human-decision-deep-review-v2
+  source_model: gemini-3.1-pro-preview
+  source_round: round-1
+  source_raw_path: raw/gemini-3.1-pro-preview.round-1.txt
+  source_parsed_path: parsed/gemini-3.1-pro-preview.round-1.yaml
+  severity_original: CRITICAL
+  severity_normalized: CRITICAL
+  target_location: '3.1 `effect_kind: irreversible_action` が必要な操作 および 5.1 承認ゲート（approval
+    gate）'
+  plain_language_summary: 承認ゲートの記録処理を担う `record_human_decision` 自身が、実行前に承認ゲートを通す必要がある不可逆操作として定義されており、循環依存（デッドロック）が発生している。
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: 3.1節の規定では「不可逆操作は実行前に必ず承認ゲートを通す」とし、その対象に `record_human_decision`
+    を含めている。一方、5.1節で承認ゲートは「`wait_for_human_decision` → `record_human_decision` → 対象操作」という手順で定義されている。この設計のままでは、`record_human_decision`
+    を実行するために別の `record_human_decision` が必要になり、無限ループに陥って処理が進行しなくなる。`record_human_decision`
+    は承認プロセス自体を構成するコマンドであるため、承認ゲートの事前要求対象（対象操作）から除外しなければならない。
+  applied_files: []
+  superseded_by: null

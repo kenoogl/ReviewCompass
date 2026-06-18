@@ -1,0 +1,335 @@
+run_id: 2026-06-18-effect-kind-design-review
+triage_status: draft
+generated_at: '2026-06-17T21:52:52.881415+00:00'
+decision_actor: null
+decision_actor_type: human
+items:
+- finding_id: 2026-06-18-effect-kind-design-review-claude-sonnet-4-6-primary-001
+  run_id: 2026-06-18-effect-kind-design-review
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: 'Section 3, Table row: `wait_for_human_decision`'
+  plain_language_summary: The `effect_kind` for `wait_for_human_decision` is listed
+    as `read`, but this action also triggers the approval gate sequence and may produce
+    observable output (e.g., structured prompt or blocker record).
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: If `wait_for_human_decision` only reads state and presents information,
+    `read` is appropriate. However, section 5.1 describes `reopen-set-blocker` as
+    a step before `wait_for_human_decision`, implying the gate entry itself may mutate
+    state. A misclassified `effect_kind` could cause Phase 3/5 guards to skip a precondition
+    check where one is needed.
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-18-effect-kind-design-review-claude-sonnet-4-6-primary-002
+  run_id: 2026-06-18-effect-kind-design-review
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: 'Section 3, Table row: `run_maintenance`'
+  plain_language_summary: The `effect_kind` for `run_maintenance` is listed as `write`
+    / `state_mutation` with the qualifier 'depends on operation', but no mechanism
+    is specified for how the concrete `effect_kind` is resolved at dispatch time.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: The operation contract model requires a deterministic `effect_kind`
+    to route to the correct execution guard. If `run_maintenance` can be either `write`,
+    `state_mutation`, or `irreversible_action`, the dispatch logic must read the maintenance
+    YAML's `effect_kind` field before applying guards. This resolution path is mentioned
+    in section 3.1 but not formalized as a contract rule, leaving an implementation
+    gap that could allow an irreversible maintenance action to bypass the approval
+    gate.
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-18-effect-kind-design-review-claude-sonnet-4-6-primary-003
+  run_id: 2026-06-18-effect-kind-design-review
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: 'Section 3.1, list of `effect_kind: irreversible_action` actions'
+  plain_language_summary: '`record_human_decision` is classified as `irreversible_action`
+    and listed as requiring an approval gate, but by definition it *is* the approval
+    gate terminal step. Requiring an approval gate before executing the approval gate
+    record creates a logical circularity.'
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: The approval gate sequence defined in section 5.1 is `wait_for_human_decision
+    → (human decides) → record_human_decision → target operation`. If `record_human_decision`
+    itself requires a prior approval gate, the sequence cannot terminate. This is
+    a design contradiction that must be resolved before implementation of Phase 0
+    or Phase 5 guards.
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-18-effect-kind-design-review-claude-sonnet-4-6-primary-004
+  run_id: 2026-06-18-effect-kind-design-review
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: Section 3.2, `approval` gate row
+  plain_language_summary: The `effect_kind` for the `approval` gate variant of `run_reopen_pending_gate`
+    is listed as `irreversible_action`, but the described execution is `reopen-set-blocker`,
+    which sets a blocker rather than completing an irreversible state transition.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: Setting a blocker is a reversible state mutation (the blocker can
+    be cleared). Classifying it as `irreversible_action` would trigger the full approval
+    gate guard for an operation that is itself preparatory. The intended irreversible
+    action is the downstream operation gated by the blocker, not the blocker-setting
+    step. This misclassification could cause unnecessary double-gating.
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-18-effect-kind-design-review-claude-sonnet-4-6-primary-005
+  run_id: 2026-06-18-effect-kind-design-review
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: 'Section 7, item 1: `alignment` gate `effect_kind`'
+  plain_language_summary: The `effect_kind` for the `alignment` gate is explicitly
+    left undecided between `write` and `state_mutation`.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: 'This is acknowledged as an open item, but the choice has concrete
+    consequences: `state_mutation` would make `alignment` subject to approval gate
+    guards in Phase 5, while `write` would not. Deferring this decision past Phase
+    1 schema definition risks schema instability when Phase 5 is implemented.'
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-18-effect-kind-design-review-claude-sonnet-4-6-primary-006
+  run_id: 2026-06-18-effect-kind-design-review
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: 'Section 3, Table row: `completed`'
+  plain_language_summary: The `effect_kind` for `completed` is `read` and the executor
+    is listed as `LLM (candidate presentation)`, but no operation contract boundary
+    is specified for what the LLM may or may not do during this step.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: In a mechanized execution layer, even `read`-classified steps that
+    involve LLM output should have a bounded operation contract to prevent unintended
+    side effects. Without a contract specifying allowed output scope, the `completed`
+    step could be interpreted as a license for open-ended LLM action.
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-18-effect-kind-design-review-gpt-5.5-adversarial-001
+  run_id: 2026-06-18-effect-kind-design-review
+  source_model: gpt-5.5
+  source_round: round-1
+  source_raw_path: raw/gpt-5.5.round-1.txt
+  source_parsed_path: parsed/gpt-5.5.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: §3 required_action/effect_kind 対応表 and §3.1
+  plain_language_summary: 取り消し不能操作の effect_kind が `state_mutation` と `irreversible_action`
+    の間で矛盾している。
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: '`apply_approved_reopen_plan`、`run_reopen_start`、`advance_reopen_after_commit_stop_point`、`advance_reopen_after_approval_stop_point`、`record_human_decision`、`finalize_reopen`、`repair_workflow_state`
+    は §3 の表では主に `state_mutation` とされる一方、§3.1 では `effect_kind: irreversible_action`
+    が必要な操作として列挙されている。実装時に承認ゲート判定が effect_kind enum を見るのか、別の不可逆フラグを見るのか決まらず、ガード条件が不安定になる。'
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-18-effect-kind-design-review-gpt-5.5-adversarial-002
+  run_id: 2026-06-18-effect-kind-design-review
+  source_model: gpt-5.5
+  source_round: round-1
+  source_raw_path: raw/gpt-5.5.round-1.txt
+  source_parsed_path: parsed/gpt-5.5.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: '§3.1 `effect_kind: irreversible_action` が必要な操作 and §5.1 承認ゲート'
+  plain_language_summary: '`record_human_decision` を approval gate 必須操作に含めており、承認ゲート定義と循環している。'
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: §5.1 では approval gate が `wait_for_human_decision → record_human_decision
+    → 対象操作の実行` と定義されているため、`record_human_decision` 自体に approval gate を要求すると、承認を記録する前に承認記録が必要になる。これにより不可逆操作の実行フローがデッドロックする。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-18-effect-kind-design-review-gpt-5.5-adversarial-003
+  run_id: 2026-06-18-effect-kind-design-review
+  source_model: gpt-5.5
+  source_round: round-1
+  source_raw_path: raw/gpt-5.5.round-1.txt
+  source_parsed_path: parsed/gpt-5.5.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: §3.2 `run_reopen_pending_gate` の `approval` row
+  plain_language_summary: '`approval` gate の `run_reopen_pending_gate` を `irreversible_action`
+    としているが、実行内容は承認要求の構造化であり、承認ゲートそのものを開始する操作と混同している。'
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: '`effect_kind: irreversible_action` に承認ゲートを必須化する設計のまま、approval
+    gate 開始操作を `irreversible_action` にすると、承認要求を作成するために先に承認が必要になる可能性がある。`reopen-set-blocker`
+    が副作用を持つなら `state_mutation` 等として扱い、対象の不可逆操作とは別の contract に分離する必要がある。'
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-18-effect-kind-design-review-gpt-5.5-adversarial-004
+  run_id: 2026-06-18-effect-kind-design-review
+  source_model: gpt-5.5
+  source_round: round-1
+  source_raw_path: raw/gpt-5.5.round-1.txt
+  source_parsed_path: parsed/gpt-5.5.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: §3 required_action/effect_kind 対応表 and §7 未確定事項
+  plain_language_summary: '`run_workflow_stage` の effect_kind が未確定で、operation contract
+    を一意に選択できない。'
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: §3 では `run_workflow_stage` が「ステージ種別による」とされ、§7 でも `alignment` の
+    effect_kind が未確定のまま残っている。`next --json` が返す `required_action` だけでは preconditions、approval
+    gate、postconditions を決められないため、stage/gate 種別を discriminator とする contract 分割、または各
+    stage の effect_kind 固定が必要になる。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-18-effect-kind-design-review-gpt-5.5-adversarial-005
+  run_id: 2026-06-18-effect-kind-design-review
+  source_model: gpt-5.5
+  source_round: round-1
+  source_raw_path: raw/gpt-5.5.round-1.txt
+  source_parsed_path: parsed/gpt-5.5.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: §3 required_action/effect_kind 対応表
+  plain_language_summary: 一部の effect_kind が `write / state_mutation` や `external_call
+    / write` のように複数値で記載されている。
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: operation contract の effect_kind が単一 enum である想定なら、複数値表記は機械判定できない。複合操作を許す場合は
+    primary effect、sub-steps、または contract variant の選択規則を明示しないと、preflight・承認ゲート・postcondition
+    検査の適用範囲が曖昧になる。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-18-effect-kind-design-review-gemini-3.1-pro-preview-judgment-001
+  run_id: 2026-06-18-effect-kind-design-review
+  source_model: gemini-3.1-pro-preview
+  source_round: round-1
+  source_raw_path: raw/gemini-3.1-pro-preview.round-1.txt
+  source_parsed_path: parsed/gemini-3.1-pro-preview.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: 3. required_action 語彙と operation contract の対応
+  plain_language_summary: Maps 19 'required_action' types to their respective 'effect_kind'
+    (e.g., 'state_mutation', 'write', 'read', 'irreversible_action').
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: Establishes the foundational mapping between action selection and
+    the execution layer's operation contracts.
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-18-effect-kind-design-review-gemini-3.1-pro-preview-judgment-002
+  run_id: 2026-06-18-effect-kind-design-review
+  source_model: gemini-3.1-pro-preview
+  source_round: round-1
+  source_raw_path: raw/gemini-3.1-pro-preview.round-1.txt
+  source_parsed_path: parsed/gemini-3.1-pro-preview.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: '3.1 `effect_kind: irreversible_action` が必要な操作'
+  plain_language_summary: 'Mandates that operations with ''effect_kind: irreversible_action''
+    must pass an approval gate before execution.'
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: Ensures destructive or permanent actions have explicit human approval,
+    mitigating unintended system changes.
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-18-effect-kind-design-review-gemini-3.1-pro-preview-judgment-003
+  run_id: 2026-06-18-effect-kind-design-review
+  source_model: gemini-3.1-pro-preview
+  source_round: round-1
+  source_raw_path: raw/gemini-3.1-pro-preview.round-1.txt
+  source_parsed_path: parsed/gemini-3.1-pro-preview.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: 3.2 `run_reopen_pending_gate` の gate 種別による分岐
+  plain_language_summary: Defines the 'effect_kind' mapping for various 'active_gate'
+    types (e.g., 'approval' mapped to 'irreversible_action', 'triad-review' mapped
+    to 'external_call').
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: Provides clear execution paths and boundaries based on specific
+    gate types.
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-18-effect-kind-design-review-gemini-3.1-pro-preview-judgment-004
+  run_id: 2026-06-18-effect-kind-design-review
+  source_model: gemini-3.1-pro-preview
+  source_round: round-1
+  source_raw_path: raw/gemini-3.1-pro-preview.round-1.txt
+  source_parsed_path: parsed/gemini-3.1-pro-preview.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: 7. 未確定事項（継続検討）
+  plain_language_summary: The 'effect_kind' for the 'alignment' gate during 'run_workflow_stage'
+    remains undecided, with options between 'write' and 'state_mutation'.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: This unresolved design decision creates an ambiguity in the operation
+    contract that must be addressed before the execution layer can be fully implemented.
+  applied_files: []
+  superseded_by: null

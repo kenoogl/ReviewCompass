@@ -1,0 +1,211 @@
+run_id: 2026-06-18-section31-51-fix-review
+triage_status: draft
+generated_at: '2026-06-17T22:35:31.226054+00:00'
+decision_actor: null
+decision_actor_type: human
+items:
+- finding_id: 2026-06-18-section31-51-fix-review-claude-opus-4-8-primary-001
+  run_id: 2026-06-18-section31-51-fix-review
+  source_model: claude-opus-4-8
+  source_round: round-1
+  source_raw_path: raw/claude-opus-4-8.round-1.txt
+  source_parsed_path: parsed/claude-opus-4-8.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: 'section criteria: section31_51_fix_verification'
+  plain_language_summary: The requested criteria 'section31_51_fix_verification' targets
+    a specific fix verification, but no prior findings were provided and the target
+    document does not contain a clearly-marked 'section 31_51' or a prior issue to
+    verify against. Reviewed §3.1 and §5.1 (the most plausible referents) for consistency
+    instead.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: Without a documented prior finding or an unambiguous section reference,
+    the verification scope must be inferred; recording this explicitly avoids a false
+    'verified' or 'failed' verdict.
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-18-section31-51-fix-review-claude-opus-4-8-primary-002
+  run_id: 2026-06-18-section31-51-fix-review
+  source_model: claude-opus-4-8
+  source_round: round-1
+  source_raw_path: raw/claude-opus-4-8.round-1.txt
+  source_parsed_path: parsed/claude-opus-4-8.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: '§3.1 ''effect_kind: irreversible_action が必要な操作'' and §5.1 承認ゲート'
+  plain_language_summary: §3.1 now correctly excludes `record_human_decision` from
+    the list of approval-gate target operations and explicitly states it is a component
+    of the approval gate rather than a gated operation. §5.1 consistently states `record_human_decision`
+    only records a judgment and does not directly trigger the target operation. The
+    two sections are mutually consistent.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: If the intended fix concerned the role of `record_human_decision`
+    relative to the approval gate, the document is internally consistent and the distinction
+    between 'recording completed' and 'approved' is explicit, satisfying the verification.
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-18-section31-51-fix-review-claude-opus-4-8-primary-003
+  run_id: 2026-06-18-section31-51-fix-review
+  source_model: claude-opus-4-8
+  source_round: round-1
+  source_raw_path: raw/claude-opus-4-8.round-1.txt
+  source_parsed_path: parsed/claude-opus-4-8.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: §3.1 list of irreversible_action operations vs §3 table 'effect_kind'
+    column
+  plain_language_summary: '§3.1 lists `repair_workflow_state`, `apply_approved_reopen_plan`,
+    `run_reopen_start`, `advance_reopen_after_commit_stop_point`, `advance_reopen_after_approval_stop_point`,
+    and `finalize_reopen` as requiring the approval gate (irreversible_action), but
+    the §3 table assigns these `effect_kind: state_mutation`, not `irreversible_action`.
+    Only `commit_stop_point` has `effect_kind: irreversible_action` in the table.'
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: If the section31_51 fix was meant to align which operations carry
+    `irreversible_action` and therefore require the approval gate, the §3 table and
+    §3.1 list disagree on the effect_kind classification. This inconsistency could
+    cause the gate-enforcement logic to be implemented against the wrong set of operations.
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-18-section31-51-fix-review-claude-opus-4-8-primary-004
+  run_id: 2026-06-18-section31-51-fix-review
+  source_model: claude-opus-4-8
+  source_round: round-1
+  source_raw_path: raw/claude-opus-4-8.round-1.txt
+  source_parsed_path: parsed/claude-opus-4-8.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: §5.1 reopen approval gate sequence vs §3.2 approval row
+  plain_language_summary: §5.1 states the reopen `approval` gate follows `reopen-set-blocker`
+    → `wait_for_human_decision` → `record_human_decision`, while §3.2 lists the `approval`
+    gate's effect_kind as `irreversible_action` via '承認ゲート経由（構造化コマンド）'. The relationship
+    between `reopen-set-blocker` (the blocker-setting structured command) and the
+    irreversible operation it guards is not stated, leaving ambiguous whether `reopen-set-blocker`
+    itself is the irreversible_action operation or merely the request structuring
+    step.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: For the fix verification to confirm the approval-gate model is
+    coherent, the document must make clear which concrete operation carries irreversible_action
+    in the reopen approval path; current wording allows two readings.
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-18-section31-51-fix-review-claude-opus-4-8-primary-005
+  run_id: 2026-06-18-section31-51-fix-review
+  source_model: claude-opus-4-8
+  source_round: round-1
+  source_raw_path: raw/claude-opus-4-8.round-1.txt
+  source_parsed_path: parsed/claude-opus-4-8.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: §3 table row `advance_reopen_after_approval_stop_point`
+  plain_language_summary: The table row label `advance_reopen_after_approval_stop_point`
+    corresponds to §3.1's `advance_reopen_after_approval_stop_point`（step advance）.
+    Naming is consistent across §3 and §3.1.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: Confirms the required_action vocabulary is used consistently in
+    the reviewed sections, supporting the verification of the fixed content.
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-18-section31-51-fix-review-gpt-5.5-adversarial-001
+  run_id: 2026-06-18-section31-51-fix-review
+  source_model: gpt-5.5
+  source_round: round-1
+  source_raw_path: raw/gpt-5.5.round-1.txt
+  source_parsed_path: parsed/gpt-5.5.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: docs/notes/2026-06-18-integrated-design-selection-execution-layers.md
+    §3 / §3.1
+  plain_language_summary: '§3 の対応表では `apply_approved_reopen_plan`、`run_reopen_start`、`advance_reopen_after_commit_stop_point`
+    などを `effect_kind: state_mutation` としている一方、§3.1 では同じ操作を `effect_kind: irreversible_action`
+    となる操作として列挙している。'
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: '`effect_kind` が単一値の契約フィールドである場合、同じ `required_action` が `state_mutation`
+    と `irreversible_action` の両方に分類されると、承認ゲートの判定条件を機械実装できない。不可逆性を別軸で扱うのか、`effect_kind`
+    を `irreversible_action` に統一するのかを明確にする必要がある。'
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-18-section31-51-fix-review-gemini-3.1-pro-preview-judgment-001
+  run_id: 2026-06-18-section31-51-fix-review
+  source_model: gemini-3.1-pro-preview
+  source_round: round-1
+  source_raw_path: raw/gemini-3.1-pro-preview.round-1.txt
+  source_parsed_path: parsed/gemini-3.1-pro-preview.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: 第3章（表）および 第3.1節
+  plain_language_summary: 'effect_kind: irreversible_action の指定に関する表と本文の致命的な矛盾'
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: '第3.1節では `apply_approved_reopen_plan` や `finalize_reopen`、`repair_workflow_state`
+    等の操作を「`effect_kind: irreversible_action` が必要な操作」として列挙し、承認ゲートの必須対象としています。しかし、第3章の表ではこれらの操作の
+    `effect_kind` を `state_mutation` と定義したままになっています。第5.1節の統一定義通り承認ゲートの要否を `effect_kind`
+    で判定する場合、表の定義に従うと重大な不可逆操作に対する承認ゲートがスキップされる実装バグに直結します。'
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-18-section31-51-fix-review-gemini-3.1-pro-preview-judgment-002
+  run_id: 2026-06-18-section31-51-fix-review
+  source_model: gemini-3.1-pro-preview
+  source_round: round-1
+  source_raw_path: raw/gemini-3.1-pro-preview.round-1.txt
+  source_parsed_path: parsed/gemini-3.1-pro-preview.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: 第3章（表）および 第3.2節
+  plain_language_summary: run_reopen_pending_gate の effect_kind 定義の漏れと矛盾
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: '第3.2節では active_gate が `approval` の場合に `effect_kind: irreversible_action`
+    となると明記されています。しかし、第3章の全体表における `run_reopen_pending_gate` の `effect_kind` は `external_call
+    / write` のみとなっており、`irreversible_action` が欠落しているうえ、「不可逆か」の列も「いいえ」となっています。これも承認ゲートの判定ロジックに破綻をきたす矛盾です。'
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-18-section31-51-fix-review-gemini-3.1-pro-preview-judgment-003
+  run_id: 2026-06-18-section31-51-fix-review
+  source_model: gemini-3.1-pro-preview
+  source_round: round-1
+  source_raw_path: raw/gemini-3.1-pro-preview.round-1.txt
+  source_parsed_path: parsed/gemini-3.1-pro-preview.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: 第5.1節
+  plain_language_summary: reopen approval gate における「対象の不可逆操作」の記述漏れ
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: 第5.1節の前半の一般定義では「record_human_decision → 承認 → 対象の不可逆操作を実行」というフローが示されていますが、後半の
+    reopen 固有の approval gate の説明では「reopen-set-blocker → wait_for_human_decision →
+    record_human_decision の順で踏む」と記載されるにとどまっています。記録完了・承認後にどの操作（ゲートの完了など）を実行するかが明記されていないため、実行層のステートマシン実装時に解釈のブレが生じる懸念があります。
+  applied_files: []
+  superseded_by: null

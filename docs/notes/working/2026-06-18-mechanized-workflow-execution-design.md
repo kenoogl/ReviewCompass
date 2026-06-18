@@ -105,13 +105,14 @@ next --json
 | 属性 | 役割 |
 |---|---|
 | `canonical_commands` | LLM が記憶でコマンドを推測せず、registry（操作台帳）から正式コマンドを得る |
-| `effect_kind` | 副作用の種別。`read / write / state_mutation / external_call / irreversible_action` の5値 |
+| `effect_kind` | 副作用の種別。`read / write / state_mutation / external_call` の4値 |
+| `approval_required` | 実行前に人間の承認が必要か。`true / false` |
 | `sequence` | `serial_only`（直列専用）か `single_step` か。並列実行の機械的禁止に使う |
 | `pending_conflicts` | 他の保留中操作との混線条件。worktree 混線（同一作業ツリーへの別変更混入）を事前に検出する |
 | `preconditions` | 操作開始前に満たすべき機械確認条件 |
 | `postconditions` | 操作完了後に機械が確認する条件 |
 
-`effect_kind: irreversible_action`（取り消し不能操作）を持つ操作（commit、push、spec.json の workflow_state 更新など）は、承認ゲート（`approval_gate`）を通過してからでないと実行できない。
+`approval_required: true` を持つ操作は、承認ゲート（`approval_gate`）を通過してからでないと実行できない。該当する操作は `commit_stop_point`・`apply_approved_reopen_plan`・`run_reopen_start`・`advance_reopen_after_commit_stop_point`・`advance_reopen_after_approval_stop_point`・`finalize_reopen`・`repair_workflow_state` であり、統合設計メモ §3.1 を正本とする。`approval_required` は副作用の種別（`effect_kind`）とは独立した属性であり、`state_mutation` であっても `approval_required: false` になる操作がある（例：`record_human_decision` は承認ゲートの部品であり、自身は承認不要）。
 
 ### 3.2 言語タスク（LLM が担当する）
 
@@ -287,11 +288,15 @@ WORKFLOW_NAVIGATION.md の該当節: <内容>
 
 2026-06-16 設計メモ（D-003 reopen 設計）は `next --json` の唯一セレクタ契約を定義した。本メモはその延長として、**セレクタが返した判定点以降の処理**を機械化する設計を補う。
 
-実装の順序方針：
-1. 本メモの設計を実装する（新規ワークフロー単位）
-2. 実装後に D-003 の設計と照合し、漏れがあれば対応する
+**実装の順序方針（統合設計メモ §4.1 を正本とする）：**
 
-D-003 の再開は本メモの実装完了後に判断する。
+統合設計メモ §4.1 で方針が確定した。D-003 を「Phase 0」として位置づけ、本メモの Phase 1 スキーマ定義の直後に着手する。
+
+```
+Phase 1（スキーマ定義）→ Phase 0（D-003 選択層実装）→ Phase 2〜6（実行層強化）
+```
+
+Phase 0 の完了条件は統合設計メモ §4.3 を参照。旧来の「本メモの実装完了後に D-003 と照合する」という方針は統合設計メモ §4.1 によって更新された。
 
 ---
 
@@ -356,7 +361,8 @@ post_write_manifest_summary:
 
 目的：後の実装の土台になる語彙とスキーマ（型定義）を確定する。この段階でコードを動かす変更は一切しない。
 
-- `effect_kind` の語彙を確定する（`read / write / state_mutation / external_call / irreversible_action`）
+- `effect_kind` の語彙を確定する（`read / write / state_mutation / external_call` の4値。`irreversible_action` は廃止）
+- `approval_required` を operation contract の独立した属性として定義する（`true / false`）
 - `phase_boundary` の語彙を確定する（`scratch / evidence / canonical_update / approval_gate`）
 - operation contract の YAML スキーマを定義する
 - コミット混線の検査ルール（ファイルセット記録方式）を文書化する
@@ -370,7 +376,7 @@ post_write_manifest_summary:
 目的：各操作の contract 情報を返す読み取り専用 API を作る。
 
 - `check-workflow-action.py operation-list --json` を実装する
-- 各操作の `canonical_commands / effect_kind / sequence / pending_conflicts` を返す
+- 各操作の `canonical_commands / effect_kind / approval_required / sequence / pending_conflicts` を返す
 - `next --json` をはじめ既存コマンドの動作は変えない
 
 完了条件：全操作が registry に登録されており、テストで内容がスキーマに適合することを確認できること。
@@ -408,7 +414,7 @@ post_write_manifest_summary:
 - `sequence: serial_only` の実行ガードを追加する
 - コミット混線を検出したらコミットをブロックする
 - `max_depth` 超過の側道開始をブロックし `repair_workflow_state` を要求する
-- `effect_kind: irreversible_action` に承認ゲートを強制する
+- `approval_required: true` の操作に承認ゲートを強制する
 
 完了条件：ブロック条件が正しく機能し、かつ正常パスがブロックされないことをテストで確認できること。
 

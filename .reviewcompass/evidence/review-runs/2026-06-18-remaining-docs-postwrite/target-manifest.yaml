@@ -1,0 +1,8 @@
+run_id: 2026-06-18-remaining-docs-postwrite
+target_files:
+- path: docs/notes/2026-06-18-integrated-design-selection-execution-layers.md
+  sha256: c5402773d2a47700ac387bfda4510e35b6b352e4a09c4ee4f50075ec721ba585
+- path: docs/operations/SESSION_WORKFLOW_GUIDE.md
+  sha256: 33468dbaa02cac77962f311fa8c768e45871ad51f71df67f880a96da6536a0c9
+- path: docs/operations/WORKFLOW_NAVIGATION.md
+  sha256: e43b4b24e289316a0f32a971dc8154c822a94736fb9fc0ac2734e5688454fc38

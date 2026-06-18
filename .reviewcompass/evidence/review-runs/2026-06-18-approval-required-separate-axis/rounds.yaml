@@ -1,0 +1,62 @@
+round_id: round-1
+purpose: design_review
+invocation_timestamp: '2026-06-17T23:27:17.219629+00:00'
+target_files:
+- path: docs/notes/2026-06-18-integrated-design-selection-execution-layers.md
+  sha256: 3b5db35ab58445c4cf48852afd4b7b06942896ff938e422dee9b4e92e2c872cc
+criteria: approval_required_separate_axis
+prompt_sha256: a9b6970f15ced2dfdb483fb548d556743a2a5a32535c822320247d6603232ad7
+model_results:
+- model_id: claude-opus-4-8
+  provider: anthropic-api
+  role: primary
+  treatment: primary
+  invocation_path: api
+  raw_path: raw/claude-opus-4-8.round-1.txt
+  raw_sha256: eac462cd8d0bb2d1b3b8cb07044848a81cb31b0bc2a1425ab33cafcdc4959729
+  parsed_path: parsed/claude-opus-4-8.round-1.yaml
+  parsed_sha256: bd90f4e4745242f645957246917a21aa198b7141cf242876cd2d36af01e43552
+  parse_status: parsed
+  formatted_by: parser
+  formatted_by_actor_type: orchestrator
+  formatted_by_actor: run_role.py
+  formatted_at: '2026-06-17T23:26:25.677821+00:00'
+  follow_up_action: triage
+  attempts: 1
+  duration_seconds: 19.285
+- model_id: gpt-5.5
+  provider: openai-api
+  role: adversarial
+  treatment: adversarial
+  invocation_path: api
+  raw_path: raw/gpt-5.5.round-1.txt
+  raw_sha256: e3e6285311f37cd1bbfe3467afe9673a86376bb9fa89d29639be1993a60482ff
+  parsed_path: parsed/gpt-5.5.round-1.yaml
+  parsed_sha256: b212e7e4679f6c867c0b16cfb2ddabac31d0547a094091cae5e0035b949318f2
+  parse_status: parsed
+  formatted_by: parser
+  formatted_by_actor_type: orchestrator
+  formatted_by_actor: run_role.py
+  formatted_at: '2026-06-17T23:26:57.585404+00:00'
+  follow_up_action: triage
+  attempts: 1
+  duration_seconds: 31.857
+- model_id: gemini-3.1-pro-preview
+  provider: gemini-api
+  role: judgment
+  treatment: judgment
+  invocation_path: api
+  raw_path: raw/gemini-3.1-pro-preview.round-1.txt
+  raw_sha256: e62e6ecd2ed1e51d8c8f4300e0bd2e637e7423f417dd1df5a72190fe69ed069c
+  parsed_path: parsed/gemini-3.1-pro-preview.round-1.yaml
+  parsed_sha256: 86f3f23dd66284121c5ba4834fb889dd2e5a83d66cdc27066c7151e53c433f6b
+  parse_status: parsed
+  formatted_by: parser
+  formatted_by_actor_type: orchestrator
+  formatted_by_actor: run_role.py
+  formatted_at: '2026-06-17T23:27:17.219629+00:00'
+  follow_up_action: triage
+  attempts: 1
+  duration_seconds: 19.573
+effective_prompt_path: .reviewcompass/review-prompts/2026-06-18-approval-required-separate-axis.prompt.md
+effective_prompt_sha256: 645a520cf59db5142d10240bd92c09a38099deb39fff2dfbfe7e7dcd70a2cbef

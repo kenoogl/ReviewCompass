@@ -1,0 +1,16 @@
+role: judgment
+provider: gemini-api
+model: gemini-3.1-pro-preview
+attempts: 1
+duration_seconds: 13.321
+findings:
+- severity: ERROR
+  target_location: 5.1 承認ゲート（approval gate）
+  description: The definition of the approval gate sequence lacks a rejection path
+    and assumes approval.
+  rationale: The document defines the unified sequence strictly as 'wait_for_human_decision
+    → (人間が判断を下す) → record_human_decision → 対象操作の実行'. This linear progression implies
+    that recording a decision invariably leads to executing the target irreversible
+    operation. The integration design must define how the execution layer handles
+    a 'reject' or 'needs work' decision (e.g., aborting the irreversible action, routing
+    back to drafting, or emitting a specific required_action in the selection layer).

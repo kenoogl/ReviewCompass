@@ -1,0 +1,17 @@
+findings:
+  - severity: ERROR
+    target_location: "§3.1 `effect_kind: irreversible_action` が必要な操作"
+    description: "承認要否が `effect_kind: irreversible_action` に結合されており、独立した `approval_required` 軸として定義されていない。"
+    rationale: "承認が必要かどうかは副作用種別とは別のポリシー属性として扱う必要がある。現在の設計では `effect_kind` が副作用分類と承認ゲート要否の両方を担っており、操作契約で `effect_kind: state_mutation` だが承認必須、または `write` だが承認必須といったケースを正確に表現できない。"
+  - severity: ERROR
+    target_location: "§3 required_action 対応表 / §3.1 承認ゲート対象リスト"
+    description: "`apply_approved_reopen_plan`、`run_reopen_start`、`advance_reopen_after_commit_stop_point` などが表では `state_mutation` とされる一方、§3.1 では `effect_kind: irreversible_action` の操作として扱われている。"
+    rationale: "同一操作の `effect_kind` が箇所によって異なるため、operation contract、preflight、guard 実装がどの分類を信頼すべきか不明になる。不可逆性や承認必須性は `effect_kind` から分離し、例えば `effect_kind: state_mutation`、`irreversible: true`、`approval_required: true` のように別軸で表現する必要がある。"
+  - severity: WARN
+    target_location: "§3.2 `run_reopen_pending_gate` の gate 種別による分岐"
+    description: "`approval` gate の `effect_kind` が `irreversible_action` と定義されており、承認要求の構造化処理と承認後の不可逆操作が混同されている。"
+    rationale: "`approval` gate で実行する `reopen-set-blocker` や承認材料の提示は、承認を要求・記録するための状態更新であり、それ自体を不可逆操作として承認ゲート対象にすると、承認を求める操作にも承認が必要になる循環が生じ得る。gate 種別、effect_kind、approval_required は分離して定義するべきである。"
+  - severity: WARN
+    target_location: "§5.1 承認ゲート（approval gate）"
+    description: "統一定義が「取り消し不能な操作を実行する前に必須」として承認ゲートを定義しており、承認必須性を不可逆性からのみ導出している。"
+    rationale: "承認が必要な理由は不可逆性に限らず、外部影響、ポリシー、リスク、ユーザー明示判断などでも発生し得る。設計段階では operation contract に `approval_required` または同等の独立フィールドを持たせ、不可逆性とは別に評価できるようにする必要がある。"

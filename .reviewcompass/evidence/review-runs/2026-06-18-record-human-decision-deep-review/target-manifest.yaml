@@ -1,0 +1,4 @@
+run_id: 2026-06-18-record-human-decision-deep-review
+target_files:
+- path: docs/notes/2026-06-18-integrated-design-selection-execution-layers.md
+  sha256: 670e12c21e9c0b9740f7523e882f1b497151956211d508d57c11a6eb51b4502f

@@ -1,0 +1,78 @@
+run_id: 2026-06-18-llm-judge-guideline-update-postwrite
+triage_status: draft
+generated_at: '2026-06-18T00:47:38.562254+00:00'
+decision_actor: null
+decision_actor_type: human
+items:
+- finding_id: 2026-06-18-llm-judge-guideline-update-postwrite-claude-sonnet-4-6-primary-001
+  run_id: 2026-06-18-llm-judge-guideline-update-postwrite
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: docs/disciplines/discipline_llm_as_judge_prompting.md
+  plain_language_summary: ドキュメント全体の構成・内容は整合しており、LLM as a Judgeプロンプト作成の手順・注意点・発展的活用が適切にカバーされている。
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: post_write_verificationのdiscipline_content_update基準において、内容の欠落・矛盾・不整合は確認されなかった。構造的に完結しており、他のdisciplineドキュメントとの重複や競合も見当たらない。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-18-llm-judge-guideline-update-postwrite-gpt-5.5-adversarial-001
+  run_id: 2026-06-18-llm-judge-guideline-update-postwrite
+  source_model: gpt-5.5
+  source_round: round-1
+  source_raw_path: raw/gpt-5.5.round-1.txt
+  source_parsed_path: parsed/gpt-5.5.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: 避けるべきこと > 明示的な選択肢を提示しない
+  plain_language_summary: 選択肢の提示を一律に避けるべきとしており、候補案の比較評価を行うLLM-as-Judge用途と矛盾する可能性がある
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: 冒頭では「選択肢の優劣を客観的に評価したい」場面を対象に含めているため、候補案そのものを提示しないと評価不能になるケースがある。問題は選択肢を提示すること自体ではなく、選択肢だけから選ばせる誘導や、選択肢外の指摘を禁止する設計であるため、その区別を明記した方が実用上の誤解を防げる。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-18-llm-judge-guideline-update-postwrite-gpt-5.5-adversarial-002
+  run_id: 2026-06-18-llm-judge-guideline-update-postwrite
+  source_model: gpt-5.5
+  source_round: round-1
+  source_raw_path: raw/gpt-5.5.round-1.txt
+  source_parsed_path: parsed/gpt-5.5.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: ステップ3：モデルに審査させる > 複数モデルでの審査（3者レビュー）を推奨
+  plain_language_summary: 複数モデルの一致を信頼性が高い根拠としてやや強く表現している
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: 複数モデルは同じ学習傾向や推論バイアスを共有する場合があり、一致していても正しいとは限らない。モデル間一致は有用なシグナルだが、根拠確認、反証観点、人間による最終判断と組み合わせるべきであることを補足すると、LLM-as-Judge運用上の過信を避けられる。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-18-llm-judge-guideline-update-postwrite-gemini-3.1-pro-preview-judgment-001
+  run_id: 2026-06-18-llm-judge-guideline-update-postwrite
+  source_model: gemini-3.1-pro-preview
+  source_round: round-1
+  source_raw_path: raw/gemini-3.1-pro-preview.round-1.txt
+  source_parsed_path: parsed/gemini-3.1-pro-preview.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: プロンプト作成の手順 > ステップ2：プロンプトを作成する
+  plain_language_summary: 「次の3つの要素が必要である」と記載されているが、直下に4つの太字項目（「適切な情報」「適切な問い」「適切な範囲」「送信前の確認」）が列挙されている。
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: 「送信前の確認（機微な情報のチェック）」はプロンプトの構成要素ではなくアクション（プロセス）であり、「3つの要素」という前置きと整合性が取れていない。文書の論理的構造を整え、読者の混乱を防ぐため、プロンプトの要素と送信前の確認ステップを明確に分離して記述することが望ましい。
+  applied_files: []
+  superseded_by: null

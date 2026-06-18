@@ -1,0 +1,286 @@
+run_id: 2026-06-18-integrated-design-postwrite
+triage_status: draft
+generated_at: '2026-06-17T21:23:45.602730+00:00'
+decision_actor: null
+decision_actor_type: human
+items:
+- finding_id: 2026-06-18-integrated-design-postwrite-claude-sonnet-4-6-primary-001
+  run_id: 2026-06-18-integrated-design-postwrite
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: Section 3 - required_action vocabulary table
+  plain_language_summary: The table lists 19 required_action values but does not explicitly
+    enumerate all 19 from D-003 §4.2; only 19 rows appear to be present when counted,
+    which is consistent.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: Verification that the count matches the claimed '19 kinds' is satisfied.
+    No discrepancy found, but this is worth noting as a future maintenance risk if
+    D-003 is updated.
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-18-integrated-design-postwrite-claude-sonnet-4-6-primary-002
+  run_id: 2026-06-18-integrated-design-postwrite
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: 'Section 3.1 - effect_kind: irreversible_action list'
+  plain_language_summary: The list of irreversible actions includes 8 items, but the
+    table in Section 3 marks only `commit_stop_point` as `irreversible_action` in
+    the effect_kind column. The remaining 7 are listed as `state_mutation` in the
+    table but classified as irreversible in §3.1.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: 'This creates a potential ambiguity: `state_mutation` and `irreversible_action`
+    are used as distinct effect_kind values in the table, yet §3.1 treats state_mutation
+    operations as also requiring approval gates. The document should clarify whether
+    `state_mutation` is a subset of or distinct from `irreversible_action`, or whether
+    the table effect_kind values should be updated for the 7 state_mutation entries
+    that also require approval gates.'
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-18-integrated-design-postwrite-claude-sonnet-4-6-primary-003
+  run_id: 2026-06-18-integrated-design-postwrite
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: Section 7, item 1 - alignment gate effect_kind
+  plain_language_summary: The `alignment` gate's effect_kind is listed as undecided
+    between `write` and `state_mutation`, yet Section 3.2 already assigns `write`
+    to the alignment gate in the active_gate table.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: 'There is an internal inconsistency: §3.2 appears to have already
+    resolved the decision by listing `write` for the alignment gate, while §7 item
+    1 still lists it as undetermined. This contradiction may cause implementation
+    confusion.'
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-18-integrated-design-postwrite-claude-sonnet-4-6-primary-004
+  run_id: 2026-06-18-integrated-design-postwrite
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: Section 4.1 - Phase ordering rationale
+  plain_language_summary: The document states 'Phase 1 のスキーマ定義が Phase 0 の実装の前提' and
+    presents the ordering as Phase 1 → Phase 0 → Phase 2–6, which reverses the numeric
+    order intentionally.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: This non-sequential numbering is internally consistent and explained,
+    but it deviates from typical reader expectations. Consider adding a brief callout
+    or note at the start of Section 4 to flag that Phase 0 is implemented second despite
+    its label.
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-18-integrated-design-postwrite-claude-sonnet-4-6-primary-005
+  run_id: 2026-06-18-integrated-design-postwrite
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: Section 5.2 - side track stack YAML schema
+  plain_language_summary: The `max_depth` default of 2 is mentioned in prose but not
+    reflected in the YAML schema block for the stack frame.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: For completeness and machine-readability, the schema or a companion
+    schema-level comment should encode this constraint, especially since Phase 3 warning
+    and Phase 5 blocking behavior depend on it.
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-18-integrated-design-postwrite-claude-sonnet-4-6-primary-006
+  run_id: 2026-06-18-integrated-design-postwrite
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: Section 8 - document lifecycle
+  plain_language_summary: The document status is `draft` and the section states it
+    will be superseded by content in `.reviewcompass/specs/workflow-management/` once
+    Phase 0 progresses. No trigger condition or owner is specified for the superseding
+    action.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: Without a clear trigger condition or responsible party, the transition
+    to `superseded` may be overlooked. Consider adding a completion criterion tied
+    to Phase 0 milestones.
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-18-integrated-design-postwrite-gpt-5.5-adversarial-001
+  run_id: 2026-06-18-integrated-design-postwrite
+  source_model: gpt-5.5
+  source_round: round-1
+  source_raw_path: raw/gpt-5.5.round-1.txt
+  source_parsed_path: parsed/gpt-5.5.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: §3 table and §3.1
+  plain_language_summary: The `effect_kind` classification is inconsistent for irreversible
+    operations.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: 'The table classifies several irreversible operations such as `apply_approved_reopen_plan`,
+    `run_reopen_start`, `record_human_decision`, `finalize_reopen`, and `repair_workflow_state`
+    as `state_mutation`, while §3.1 says these are operations with `effect_kind: irreversible_action`
+    that must pass an approval gate. Because guard enforcement is keyed to `effect_kind`,
+    this ambiguity can cause implementations either to skip required approval gates
+    or to over-block ordinary state mutations.'
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-18-integrated-design-postwrite-gpt-5.5-adversarial-002
+  run_id: 2026-06-18-integrated-design-postwrite
+  source_model: gpt-5.5
+  source_round: round-1
+  source_raw_path: raw/gpt-5.5.round-1.txt
+  source_parsed_path: parsed/gpt-5.5.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: §4.1
+  plain_language_summary: The Phase 0 / Phase 1 execution order is self-contradictory.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: The text first states that D-003's 19-step priority implementation
+    should be treated as Phase 0 and started before mechanized design Phase 1, but
+    then states that Phase 1 schema definitions are a prerequisite for Phase 0 implementation
+    and shows `Phase 1 → Phase 0 → Phase 2〜6`. This leaves implementers without a
+    clear sequencing rule for the integrated design.
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-18-integrated-design-postwrite-gpt-5.5-adversarial-003
+  run_id: 2026-06-18-integrated-design-postwrite
+  source_model: gpt-5.5
+  source_round: round-1
+  source_raw_path: raw/gpt-5.5.round-1.txt
+  source_parsed_path: parsed/gpt-5.5.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: §5.3 and §7 item 3
+  plain_language_summary: The workflow state snapshot output timing is both defined
+    and listed as unresolved.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: §5.3 defines the snapshot as `.reviewcompass/runtime/workflow-state-snapshot.yaml`
+    and says it is automatically updated after `next --json`, while §7 says it is
+    still undecided whether snapshot output should occur automatically after `next
+    --json` or via a dedicated subcommand. This conflict should be resolved before
+    implementation because it affects command contracts and consumers such as Navigator
+    WebUI.
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-18-integrated-design-postwrite-gpt-5.5-adversarial-004
+  run_id: 2026-06-18-integrated-design-postwrite
+  source_model: gpt-5.5
+  source_round: round-1
+  source_raw_path: raw/gpt-5.5.round-1.txt
+  source_parsed_path: parsed/gpt-5.5.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: §3.2 and §5.1
+  plain_language_summary: The reopen `approval` gate flow is not fully reconciled
+    with the generic approval-gate definition.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: '§3.2 says `run_reopen_pending_gate` for an `approval` gate has
+    `effect_kind: irreversible_action` and executes structured approval-request handling
+    via `reopen-set-blocker`, while §5.1 defines an approval gate as `wait_for_human_decision
+    → record_human_decision → 対象操作の実行` and then says reopen approval uses `reopen-set-blocker
+    → wait_for_human_decision → record_human_decision`. The document should clarify
+    whether `run_reopen_pending_gate` itself performs only blocker setup, whether
+    it is the irreversible operation, and what subsequent `required_action` performs
+    the approved target transition.'
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-18-integrated-design-postwrite-gemini-3.1-pro-preview-judgment-001
+  run_id: 2026-06-18-integrated-design-postwrite
+  source_model: gemini-3.1-pro-preview
+  source_round: round-1
+  source_raw_path: raw/gemini-3.1-pro-preview.round-1.txt
+  source_parsed_path: parsed/gemini-3.1-pro-preview.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: §3 (Table) vs §3.1
+  plain_language_summary: Contradiction in `effect_kind` mapping for multiple `required_action`
+    items.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: 'The table in Section 3 defines the `effect_kind` for actions like
+    `repair_workflow_state`, `run_reopen_start`, `finalize_reopen`, and `record_human_decision`
+    as `state_mutation`. However, Section 3.1 explicitly categorizes these exact actions
+    under `effect_kind: irreversible_action`. This direct contradiction undermines
+    the core operation contract definitions of the execution layer.'
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-18-integrated-design-postwrite-gemini-3.1-pro-preview-judgment-002
+  run_id: 2026-06-18-integrated-design-postwrite
+  source_model: gemini-3.1-pro-preview
+  source_round: round-1
+  source_raw_path: raw/gemini-3.1-pro-preview.round-1.txt
+  source_parsed_path: parsed/gemini-3.1-pro-preview.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: §3.1 vs §5.1
+  plain_language_summary: Logical paradox (infinite loop) in the approval gate requirement
+    for `record_human_decision`.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: Section 3.1 asserts that `record_human_decision` is an `irreversible_action`
+    and states that all such actions must pass an approval gate before execution.
+    However, Section 5.1 defines the approval gate itself as the sequence ending with
+    `record_human_decision`. Requiring an approval gate to authorize the command that
+    records the approval gate's decision creates an impossible circular dependency.
+  applied_files: []
+  superseded_by: null

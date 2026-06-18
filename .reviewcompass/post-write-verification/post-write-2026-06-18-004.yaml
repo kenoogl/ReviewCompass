@@ -1,0 +1,40 @@
+status: completed
+target_files:
+- docs/notes/working/2026-06-18-mechanized-workflow-execution-design.md
+- docs/notes/2026-06-18-integrated-design-selection-execution-layers.md
+target_sha256:
+  docs/notes/working/2026-06-18-mechanized-workflow-execution-design.md: 949b4dd7b9b5f4cf136c534c60333e8217413313b6fe53dd6c7b208c40e44816
+  docs/notes/2026-06-18-integrated-design-selection-execution-layers.md: c5402773d2a47700ac387bfda4510e35b6b352e4a09c4ee4f50075ec721ba585
+required_verifiers:
+- gemini-3.5-flash
+completed_verifiers:
+- gemini-3.5-flash
+unresolved_substantive_findings: 0
+verifications:
+- verifier: gemini-3.5-flash
+  round: round-1
+  target_files:
+  - docs/notes/working/2026-06-18-mechanized-workflow-execution-design.md
+  - docs/notes/2026-06-18-integrated-design-selection-execution-layers.md
+  target_sha256:
+    docs/notes/working/2026-06-18-mechanized-workflow-execution-design.md: 949b4dd7b9b5f4cf136c534c60333e8217413313b6fe53dd6c7b208c40e44816
+    docs/notes/2026-06-18-integrated-design-selection-execution-layers.md: 59e83a784aed69373fb6ca1c4c8ecbd3b06a7b683d5eea3fde454ad598785704
+  findings:
+  - severity: WARN
+    description: §7 item 1 の見出しが run_workflow_stage になっているが内容は run_reopen_pending_gate の gate 種別
+    resolution: §7 item 1 の見出しを run_reopen_pending_gate に修正し、§3 の run_workflow_stage 行から誤った §7 item 1 参照を削除。run_workflow_stage には混同注意の注記を追記
+- verifier: gemini-3.5-flash
+  round: round-2
+  target_files:
+  - docs/notes/working/2026-06-18-mechanized-workflow-execution-design.md
+  - docs/notes/2026-06-18-integrated-design-selection-execution-layers.md
+  target_sha256:
+    docs/notes/working/2026-06-18-mechanized-workflow-execution-design.md: 949b4dd7b9b5f4cf136c534c60333e8217413313b6fe53dd6c7b208c40e44816
+    docs/notes/2026-06-18-integrated-design-selection-execution-layers.md: c5402773d2a47700ac387bfda4510e35b6b352e4a09c4ee4f50075ec721ba585
+  findings: []
+review_run:
+  path: .reviewcompass/evidence/review-runs/2026-06-18-pending-issues-fix-postwrite
+  summary_path: .reviewcompass/evidence/review-runs/2026-06-18-pending-issues-fix-postwrite/model-result-summary.yaml
+notes: |
+  3者レビュー（2026-06-18-pending-issues-review）で指摘された問題への対処後の検証。
+  ラウンド1の WARN（§7 item 1 の見出し混同）を修正後、ラウンド2で所見ゼロ。収束。

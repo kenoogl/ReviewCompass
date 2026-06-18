@@ -1,0 +1,30 @@
+findings:
+  - severity: WARN
+    target_location: "Section 3, Table row: `wait_for_human_decision`"
+    description: "The `effect_kind` for `wait_for_human_decision` is listed as `read`, but this action also triggers the approval gate sequence and may produce observable output (e.g., structured prompt or blocker record)."
+    rationale: "If `wait_for_human_decision` only reads state and presents information, `read` is appropriate. However, section 5.1 describes `reopen-set-blocker` as a step before `wait_for_human_decision`, implying the gate entry itself may mutate state. A misclassified `effect_kind` could cause Phase 3/5 guards to skip a precondition check where one is needed."
+
+  - severity: WARN
+    target_location: "Section 3, Table row: `run_maintenance`"
+    description: "The `effect_kind` for `run_maintenance` is listed as `write` / `state_mutation` with the qualifier 'depends on operation', but no mechanism is specified for how the concrete `effect_kind` is resolved at dispatch time."
+    rationale: "The operation contract model requires a deterministic `effect_kind` to route to the correct execution guard. If `run_maintenance` can be either `write`, `state_mutation`, or `irreversible_action`, the dispatch logic must read the maintenance YAML's `effect_kind` field before applying guards. This resolution path is mentioned in section 3.1 but not formalized as a contract rule, leaving an implementation gap that could allow an irreversible maintenance action to bypass the approval gate."
+
+  - severity: ERROR
+    target_location: "Section 3.1, list of `effect_kind: irreversible_action` actions"
+    description: "`record_human_decision` is classified as `irreversible_action` and listed as requiring an approval gate, but by definition it *is* the approval gate terminal step. Requiring an approval gate before executing the approval gate record creates a logical circularity."
+    rationale: "The approval gate sequence defined in section 5.1 is `wait_for_human_decision → (human decides) → record_human_decision → target operation`. If `record_human_decision` itself requires a prior approval gate, the sequence cannot terminate. This is a design contradiction that must be resolved before implementation of Phase 0 or Phase 5 guards."
+
+  - severity: WARN
+    target_location: "Section 3.2, `approval` gate row"
+    description: "The `effect_kind` for the `approval` gate variant of `run_reopen_pending_gate` is listed as `irreversible_action`, but the described execution is `reopen-set-blocker`, which sets a blocker rather than completing an irreversible state transition."
+    rationale: "Setting a blocker is a reversible state mutation (the blocker can be cleared). Classifying it as `irreversible_action` would trigger the full approval gate guard for an operation that is itself preparatory. The intended irreversible action is the downstream operation gated by the blocker, not the blocker-setting step. This misclassification could cause unnecessary double-gating."
+
+  - severity: INFO
+    target_location: "Section 7, item 1: `alignment` gate `effect_kind`"
+    description: "The `effect_kind` for the `alignment` gate is explicitly left undecided between `write` and `state_mutation`."
+    rationale: "This is acknowledged as an open item, but the choice has concrete consequences: `state_mutation` would make `alignment` subject to approval gate guards in Phase 5, while `write` would not. Deferring this decision past Phase 1 schema definition risks schema instability when Phase 5 is implemented."
+
+  - severity: INFO
+    target_location: "Section 3, Table row: `completed`"
+    description: "The `effect_kind` for `completed` is `read` and the executor is listed as `LLM (candidate presentation)`, but no operation contract boundary is specified for what the LLM may or may not do during this step."
+    rationale: "In a mechanized execution layer, even `read`-classified steps that involve LLM output should have a bounded operation contract to prevent unintended side effects. Without a contract specifying allowed output scope, the `completed` step could be interpreted as a license for open-ended LLM action."

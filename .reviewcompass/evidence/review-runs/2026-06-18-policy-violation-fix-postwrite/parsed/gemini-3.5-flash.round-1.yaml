@@ -1,0 +1,10 @@
+role: primary
+provider: gemini-api
+model: gemini-3.5-flash
+attempts: 1
+duration_seconds: 12.424
+findings:
+- severity: CRITICAL
+  target_location: docs/disciplines/ and docs/operations/ / docs/notes/
+  description: 規律ファイルと他の検証対象文書（運用文書、ノート）が単一の変更セットに混在しています。
+  rationale: WORKFLOW_NAVIGATION.mdのポリシーにおいて、他のpost-write検証対象ファイルとdocs/disciplines/配下の変更が未コミット変更内で混ざることは、post_write_policy_violation（ポリシー違反）として規定されています。これらは独立して検証・コミットされる必要があります。

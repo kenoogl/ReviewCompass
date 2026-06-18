@@ -1,0 +1,36 @@
+role: primary
+provider: anthropic-api
+model: claude-opus-4-8
+attempts: 1
+duration_seconds: 20.504
+findings:
+- severity: WARN
+  target_location: §3 表 (run_workflow_stage 行) と §3.1 リスト
+  description: '§3 の対応表で `run_workflow_stage` の effect_kind が「ステージ種別による」とされ、ステージ種別によっては
+    irreversible_action になりうる（§3.2・§7 の `approval` gate = irreversible_action、§7-1
+    で `run_workflow_stage` の approval を irreversible_action と明記）が、§3.1『effect_kind:
+    irreversible_action が必要な操作』の承認ゲート対象リストには `run_workflow_stage` が含まれていない。effect_kind
+    と承認ゲートの結びつき（irreversible_action なら必ず承認ゲートを通す）が `run_workflow_stage` 経由の approval
+    stage に対して欠落しており、承認ゲートを通すべき操作の列挙が不完全。'
+  rationale: '§3.1 は『effect_kind: irreversible_action となる操作は実行前に必ず承認ゲートを通す』と宣言したうえで該当
+    required_action を列挙している。`run_workflow_stage` がステージ種別によって irreversible_action になりうるのに承認ゲート対象リストから漏れていると、effect_kind
+    と承認ゲートの分離原則（irreversible_action ⇒ 承認ゲート必須）に穴が生じ、approval ステージが承認ゲートなしで実行される実装解釈を許してしまう。`run_maintenance`
+    には『effect_kind が irreversible_action のものは承認ゲートを通す』という条件付き記述があるのに、`run_workflow_stage`
+    には同種の条件付き記述がなく非対称。'
+- severity: WARN
+  target_location: §3 表 (run_reopen_pending_gate 行) と §3.2 表・§3.1 リスト
+  description: §3.2 で `run_reopen_pending_gate` の `approval` 種別は effect_kind=irreversible_action
+    とされるが、§3 概要表では `run_reopen_pending_gate` の effect_kind が `external_call` / `write`
+    のみで irreversible_action が記載されておらず、また §3.1 の承認ゲート対象リストにも `run_reopen_pending_gate`
+    が含まれていない。approval gate を通す `run_reopen_pending_gate` の経路が承認ゲート対象列挙から漏れている。
+  rationale: effect_kind=irreversible_action と承認ゲート必須の対応が、`run_reopen_pending_gate`
+    の approval 分岐に対して三箇所（§3 表・§3.1 リスト・§3.2 表）で整合していない。§3.2 は『approval gate は構造化コマンド経由・直接
+    completed にしない』と述べ §5.1 の承認ゲート構造を参照しているが、§3.1 のゲート対象操作リストに現れないため、irreversible_action
+    ⇒ 承認ゲートという分離原則の追跡可能性が崩れる。
+- severity: INFO
+  target_location: §3.1 と §5.1
+  description: '§3.1 は `record_human_decision`（effect_kind: state_mutation）を『承認ゲートを構成する部品であり、承認ゲートに通す対象ではない』と明確に分離しており、effect_kind
+    が state_mutation であっても承認ゲートの『対象操作』ではなく『構成要素』であるという区別を適切に示している。承認ゲートの対象（irreversible_action
+    操作）とゲート機構そのもの（wait/record ペア）の分離は明快。'
+  rationale: effect_kind と承認ゲートの分離という観点では、判断記録操作（ゲート部品）と被ゲート操作（不可逆操作）を明示的に切り分けた良い設計である。記録の完了と承認の成立を別事実とする
+    §5.1 の記述も含め、承認ゲートが state_mutation 自体を不可逆操作と混同しない構造になっている点を肯定的に記録する。

@@ -1,0 +1,5 @@
+findings:
+  - severity: ERROR
+    target_location: "3.2 `run_reopen_pending_gate` の gate 種別による分岐、および 7. 未確定事項 1"
+    description: "approval ゲートへの進行・要求操作が `irreversible_action` に誤分類されている"
+    rationale: "3.2の表および7.1において、active_gate が `approval` の場合の操作（`reopen-set-blocker` による承認要求の構造化など）の `effect_kind` が `irreversible_action` とされている。しかし「承認要求のセットアップ」や「ゲートの進行」自体は可逆な状態変更（`state_mutation`）であり、それ自体は不可逆操作ではない。本基準である「不可逆操作（ペイロード）とそれを守る承認ゲート機構の分離」に反し、承認プロセスそのものを不可逆操作と混同しているため、実行層における機械的ガード機構に矛盾と混乱をもたらす。"

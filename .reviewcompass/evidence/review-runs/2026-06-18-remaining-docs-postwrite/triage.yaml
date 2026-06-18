@@ -1,0 +1,42 @@
+run_id: 2026-06-18-remaining-docs-postwrite
+triage_status: decided
+generated_at: '2026-06-18T04:13:51.928683+00:00'
+decision_actor: null
+decision_actor_type: human
+items:
+- finding_id: 2026-06-18-remaining-docs-postwrite-gemini-3.5-flash-primary-001
+  run_id: 2026-06-18-remaining-docs-postwrite
+  source_model: gemini-3.5-flash
+  source_round: round-2
+  source_raw_path: raw/gemini-3.5-flash.round-2.txt
+  source_parsed_path: parsed/gemini-3.5-flash.round-2.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: docs/operations/SESSION_WORKFLOW_GUIDE.md
+  plain_language_summary: Use of non-standard Wikilink format [[llm-as-judge-prompting]]
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-18T04:20:20.437752+00:00'
+  decision_reason: プロジェクト全体で73箇所使用されているWikiLinkスタイル（[[name]]形式）。leave-as-is とする。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-18-remaining-docs-postwrite-gemini-3.5-flash-primary-002
+  run_id: 2026-06-18-remaining-docs-postwrite
+  source_model: gemini-3.5-flash
+  source_round: round-2
+  source_raw_path: raw/gemini-3.5-flash.round-2.txt
+  source_parsed_path: parsed/gemini-3.5-flash.round-2.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: docs/operations/WORKFLOW_NAVIGATION.md
+  plain_language_summary: Use of non-standard Wikilink format [[llm-as-judge-prompting]]
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-18T04:20:23.404713+00:00'
+  decision_reason: プロジェクト全体で73箇所使用されているWikiLinkスタイル（[[name]]形式）。leave-as-is とする。
+  applied_files: []
+  superseded_by: null
