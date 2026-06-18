@@ -1,0 +1,20 @@
+status: completed
+target_files:
+- docs/notes/working/2026-06-18-mechanized-workflow-execution-design.md
+target_sha256:
+  docs/notes/working/2026-06-18-mechanized-workflow-execution-design.md: e38051da74d26f1237a4c690d1f2c1b678f923e9003b1549d05ee4a6431ce4bb
+required_verifiers:
+- lightweight_self_check
+completed_verifiers:
+- lightweight_self_check
+unresolved_substantive_findings: 0
+verifications:
+- verifier: lightweight_self_check
+  target_files:
+  - docs/notes/working/2026-06-18-mechanized-workflow-execution-design.md
+  target_sha256:
+    docs/notes/working/2026-06-18-mechanized-workflow-execution-design.md: e38051da74d26f1237a4c690d1f2c1b678f923e9003b1549d05ee4a6431ce4bb
+notes: >
+  §8 item 2（機械タスク自動実行の担当コマンド）と item 4（言語タスク入出力スキーマの分割方針）に
+  利用者承認済みの設計判断を追記。いずれも方針メモの記録であり、正本への昇格なし。
+  自己確認5項目すべてクリア。

@@ -1,5 +1,5 @@
 run_id: 2026-06-18-pending-issues-review
-triage_status: draft
+triage_status: decided
 generated_at: '2026-06-18T03:24:33.960808+00:00'
 decision_actor: null
 decision_actor_type: human
@@ -16,14 +16,13 @@ items:
     §7 item 1
   plain_language_summary: '`alignment` gate の `effect_kind` が未確定のまま保留されている。`write`（合意記録の作成）と
     `state_mutation`（alignment flag の更新）の2候補が挙げられているが、どちらかに決定されていない。'
-  final_label: null
-  decision_status: human_required
-  decision_actor: null
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: human
   decision_actor_type: human
-  decision_at: null
-  decision_reason: Phase 1 のスキーマ定義が Phase 0 実装の前提とされており（§4.1）、`run_reopen_pending_gate`
-    の operation contract は gate 種別ごとに `effect_kind` を定める必要がある。`alignment` の `effect_kind`
-    が未確定のままでは Phase 1 スキーマが不完全となり、Phase 0 実装に入れない可能性がある。
+  decision_at: '2026-06-18T05:29:18.547172+00:00'
+  decision_reason: 前セッションで修正済み。alignment の effect_kind は実装確認の結果 write（整合確認レポートをファイルに書き出す操作）に確定し、§7
+    item 1・§3.2 の両方に反映済み。
   applied_files: []
   superseded_by: null
 - finding_id: 2026-06-18-pending-issues-review-claude-sonnet-4-6-primary-002
@@ -37,13 +36,14 @@ items:
   target_location: docs/notes/2026-06-18-integrated-design-selection-execution-layers.md
     §7 item 2
   plain_language_summary: Phase 0 と Phase 1 の並行作業の分割方針が「実装着手時に確認する」として未確定のままになっている。
-  final_label: null
-  decision_status: human_required
-  decision_actor: null
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: human
   decision_actor_type: human
-  decision_at: null
-  decision_reason: §4.1 で `Phase 1 スキーマ定義 → Phase 0 実装 → Phase 2〜6` という依存関係が明示されているにもかかわらず、どこまでが
-    Phase 0 実装に必要かが未定義である。着手時に判断が必要となり、作業開始のブロッカーになりうる。
+  decision_at: '2026-06-18T05:53:10.189693+00:00'
+  decision_reason: 方針確定。Phase 0 TDD を始める前に必要な最小 Phase 1 作業は（1）required_action の19語彙のスキーマファイル化・（2）next
+    --json 応答スキーマの定義の2点のみ。effect_kind・phase_boundary・operation contract スキーマ・スナップショットスキーマは
+    Phase 0 と並行で定義してよい（Phase 0 の選択ロジックはこれらを参照しない）。統合設計メモ §7 item 2 に明記済み。
   applied_files: []
   superseded_by: null
 - finding_id: 2026-06-18-pending-issues-review-claude-sonnet-4-6-primary-003
@@ -58,13 +58,13 @@ items:
     §7 item 3
   plain_language_summary: 状態スナップショットの出力タイミング（`next --json` 実行後の自動出力 vs 専用サブコマンド）が未確定であり、Phase
     2 の `operation-list --json` 実装と合わせて決定するとのみ記されている。
-  final_label: null
-  decision_status: human_required
-  decision_actor: null
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: human
   decision_actor_type: human
-  decision_at: null
-  decision_reason: スナップショットは Navigator WebUI が読む機械可読ファイルであり、WebUI の実装計画に依存する。出力タイミングの未確定は
-    Phase 2 の設計スコープを曖昧にし、Phase 1 スキーマ定義時の設計判断にも影響する。
+  decision_at: '2026-06-18T05:30:12.510609+00:00'
+  decision_reason: 前セッションで修正済み。§7 item 3 を更新し「設計方針は §5.3 で確定：next --json の副産物として実行後に自動出力する。専用サブコマンドは設けない。」と明記。未確定なのは実装コードパスのみで
+    Phase 2 で確定する。
   applied_files: []
   superseded_by: null
 - finding_id: 2026-06-18-pending-issues-review-claude-sonnet-4-6-primary-004
@@ -79,13 +79,13 @@ items:
     §7 item 4
   plain_language_summary: D-003 §8 の72シナリオを Phase 6 の監査テストとして使う方法（構造化フィクスチャとして保存 vs
     テストコード内に記述）が Phase 6 着手時まで判断保留になっている。
-  final_label: null
-  decision_status: human_required
-  decision_actor: null
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: human
   decision_actor_type: human
-  decision_at: null
-  decision_reason: Phase 6 の完了条件は「既知の gap を正しく検出できること」（機械化設計 §10 Phase 6）であり、72シナリオの格納方式が未定だとテスト設計を
-    Phase 6 着手時に一から行うことになる。事前に方針だけでも決めておかないと Phase 6 の見積もりが困難になる。
+  decision_at: '2026-06-18T05:39:55.773839+00:00'
+  decision_reason: §7 item 4 として記録済み。72シナリオの格納方式（構造化フィクスチャ vs テストコード内記述）は Phase 6
+    着手時に決める設計判断。今決める必要はない。
   applied_files: []
   superseded_by: null
 - finding_id: 2026-06-18-pending-issues-review-claude-sonnet-4-6-primary-005
@@ -99,14 +99,14 @@ items:
   target_location: docs/notes/working/2026-06-18-mechanized-workflow-execution-design.md
     §8 item 2
   plain_language_summary: 機械タスクの自動実行をどのコマンドが担うか（`next --json` の呼び出し側か新規サブコマンドか）が未確定のままになっている。
-  final_label: null
-  decision_status: human_required
-  decision_actor: null
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: human
   decision_actor_type: human
-  decision_at: null
-  decision_reason: 机械タスクの実行主体は operation contract の `canonical_commands` に直結し、Phase
-    2 の registry 実装で必要になる。コマンドの所在が未定だと Phase 2 の `operation-list --json` に登録する `canonical_commands`
-    の値が確定できない。
+  decision_at: '2026-06-18T05:53:10.256418+00:00'
+  decision_reason: '方針確定。専用の新規サブコマンド（例: check-workflow-action.py run-next）を作る案を採用。next
+    --json 自体は判定を返すだけの責務を維持する。具体的なコマンド名・引数・冪等性の設計は Phase 2（操作台帳実装）と合わせて確定する。機械化設計メモ
+    §8 item 2 に明記済み。'
   applied_files: []
   superseded_by: null
 - finding_id: 2026-06-18-pending-issues-review-claude-sonnet-4-6-primary-006
@@ -121,13 +121,13 @@ items:
     §8 item 3
   plain_language_summary: LLM 裁判官（§5.2）の実行基盤（既存の `run_review.py` 流用 vs 新規スクリプト）が Phase
     6 着手時まで未確定のままになっている。
-  final_label: null
-  decision_status: human_required
-  decision_actor: null
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: human
   decision_actor_type: human
-  decision_at: null
-  decision_reason: Phase 6 は任意・後回し可とされているが、`run_review.py` の流用可否は既存コードの依存構造に関わる。後から流用不可と判明した場合、Phase
-    6 のスコープが大幅に増加する可能性がある。
+  decision_at: '2026-06-18T05:39:55.841704+00:00'
+  decision_reason: Phase 6 は任意・後回し可の段階。LLM 裁判官の実行基盤（run_review.py 流用 vs 新規）は Phase
+    6 着手時に既存コードの依存構造を見て判断する。
   applied_files: []
   superseded_by: null
 - finding_id: 2026-06-18-pending-issues-review-claude-sonnet-4-6-primary-007
@@ -141,13 +141,13 @@ items:
   target_location: docs/notes/working/2026-06-18-mechanized-workflow-execution-design.md
     §8 item 4
   plain_language_summary: 言語タスクの入出力形式の具体的なスキーマ定義が未確定のままになっており、Phase 4 の有効プロンプト構造化の前提が固まっていない。
-  final_label: null
-  decision_status: human_required
-  decision_actor: null
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: human
   decision_actor_type: human
-  decision_at: null
-  decision_reason: Phase 4 の完了条件は「全判定点で新構造の有効プロンプトが生成でき、テストで構造の完全性を確認できること」であり、入出力スキーマが確定していないとテスト設計が着手できない。Phase
-    1 スキーマ定義の一部として扱うべきか否かも不明確である。
+  decision_at: '2026-06-18T05:53:10.323363+00:00'
+  decision_reason: 方針確定。言語タスクの共通入出力スキーマの枠組みは Phase 1 で定義し .reviewcompass/schema/ に置く。判定点ごとの具体的な入出力内容は
+    Phase 4（有効プロンプト構造化）で埋める。Phase 4 の完了条件テストはこの共通スキーマに対して書く。機械化設計メモ §8 item 4 に明記済み。
   applied_files: []
   superseded_by: null
 - finding_id: 2026-06-18-pending-issues-review-claude-sonnet-4-6-primary-008
@@ -162,12 +162,12 @@ items:
     §6
   plain_language_summary: D-003 §9 に記載の state repair（reopen plan の再コンパイル）は Phase 0
     の invariant 検査実装に依存しており、Phase 0 完了まで機械的修復を実行できない状態が継続する。
-  final_label: null
-  decision_status: human_required
-  decision_actor: null
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: human
   decision_actor_type: human
-  decision_at: null
-  decision_reason: 統合設計メモ自体がこの順序制約を明示しているが、既存の D-003 reopen が壊れた状態にある期間の管理方針（手動回避策の有無等）が記述されていない。実装が遅延した場合の影響範囲を把握しておく必要がある。
+  decision_at: '2026-06-18T05:39:55.907252+00:00'
+  decision_reason: 統合設計メモ §6 で既に明示されている順序制約（Phase 0 完了まで state repair は手動）。設計として認識・受け入れ済み。追加の文書修正は不要。
   applied_files: []
   superseded_by: null
 - finding_id: 2026-06-18-pending-issues-review-claude-sonnet-4-6-primary-009
@@ -182,13 +182,12 @@ items:
     §10 Phase 2 完了後保守タスク
   plain_language_summary: '`docs/operations/` から `.reviewcompass/` への実行時参照ファイル移動が
     Phase 2 完了後の独立保守タスクとして定義されているが、この保守タスクの担当者・スケジュールが未定義である。'
-  final_label: null
-  decision_status: human_required
-  decision_actor: null
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: human
   decision_actor_type: human
-  decision_at: null
-  decision_reason: Phase 2 完了後に忘れずに実施しないと、`WORKFLOW_DISCIPLINE_MAP.yaml` 等のパス参照が旧来の場所を指したままになり、Phase
-    3 以降の実装で混乱が生じる可能性がある。
+  decision_at: '2026-06-18T05:39:55.972958+00:00'
+  decision_reason: Phase 2 完了後の保守タスク。担当者・スケジュールは Phase 2 完了時に決める。着手前に固定する必要はない。
   applied_files: []
   superseded_by: null
 - finding_id: 2026-06-18-pending-issues-review-gpt-5.5-adversarial-001
@@ -203,14 +202,13 @@ items:
     §10 Phase 2
   plain_language_summary: Phase 2 の `operation-list --json` が `approval_required`
     を返す対象に含めていない
-  final_label: null
-  decision_status: human_required
-  decision_actor: null
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: human
   decision_actor_type: human
-  decision_at: null
-  decision_reason: §3.1 では `approval_required` を operation contract の独立属性として定義し、Phase
-    5 で承認ゲートを強制するとしている。読み取り専用 registry が `approval_required` を公開しないと、後続の preflight/guard
-    がどの操作を承認ゲート対象にすべきか機械的に判定できず、approval_required リファクタの実装基盤が欠ける。
+  decision_at: '2026-06-18T05:32:13.577723+00:00'
+  decision_reason: 前セッションで修正済み。機械化設計 Phase 2 の出力項目に approval_required が追加されており（canonical_commands
+    / effect_kind / approval_required / sequence / pending_conflicts を返す）、指摘の欠落は解消されている。
   applied_files: []
   superseded_by: null
 - finding_id: 2026-06-18-pending-issues-review-gpt-5.5-adversarial-002
@@ -224,13 +222,13 @@ items:
   target_location: docs/notes/working/2026-06-18-mechanized-workflow-execution-design.md
     §3.1 / docs/notes/2026-06-18-integrated-design-selection-execution-layers.md §3.1
   plain_language_summary: '`spec.json の workflow_state 更新` の承認要否が広すぎる記述のまま残っている'
-  final_label: null
-  decision_status: human_required
-  decision_actor: null
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: human
   decision_actor_type: human
-  decision_at: null
-  decision_reason: '機械化設計 §3.1 は `spec.json の workflow_state 更新など` を `approval_required:
-    true` の例としている一方、統合設計 §3.1 は `record_human_decision` を `state_mutation` だが承認不要と明確化している。古い広義の記述が残ると、判断記録や承認要求設定まで承認ゲート対象にしてしまい、承認ゲートの記録操作自体が承認待ちになる循環・停止を引き起こす可能性がある。'
+  decision_at: '2026-06-18T05:32:13.644285+00:00'
+  decision_reason: '前セッションで修正済み。機械化設計 §3.1 で approval_required: true の対象操作を7件に具体列挙し、record_human_decision
+    は承認不要（承認ゲートの部品）と明記。広すぎる例示は削除済み。'
   applied_files: []
   superseded_by: null
 - finding_id: 2026-06-18-pending-issues-review-gpt-5.5-adversarial-003
@@ -245,14 +243,13 @@ items:
     §7 / docs/notes/2026-06-18-integrated-design-selection-execution-layers.md §4.1,
     §6
   plain_language_summary: D-003/Phase 0 の実装順序について、2文書間で矛盾した方針が残っている
-  final_label: null
-  decision_status: human_required
-  decision_actor: null
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: human
   decision_actor_type: human
-  decision_at: null
-  decision_reason: 機械化設計 §7 は『本メモの設計を実装してから D-003 と照合』とするが、統合設計 §4.1/§6 は `next --json`
-    の唯一選択が壊れたままでは実行層機械化が無意味として、Phase 1 スキーマ後に Phase 0 を先行実装すると定めている。どちらを採用するかを明確にしないと、approval_required
-    を含む実行層ガードを、前提となる selector invariant が未実装の状態で実装してしまう。
+  decision_at: '2026-06-18T05:32:13.708019+00:00'
+  decision_reason: 前セッションで修正済み。機械化設計 §7 を更新し、統合設計メモ §4.1 を正本として Phase 1→Phase 0→Phase
+    2〜6 の順序を明記。旧来の「本メモの実装完了後に D-003 と照合する」方針は廃止済み。
   applied_files: []
   superseded_by: null
 - finding_id: 2026-06-18-pending-issues-review-gpt-5.5-adversarial-004
@@ -266,15 +263,13 @@ items:
   target_location: docs/notes/2026-06-18-integrated-design-selection-execution-layers.md
     §3
   plain_language_summary: '`effect_kind` 欄に enum ではない複合値・条件付き値が残っている'
-  final_label: null
-  decision_status: human_required
-  decision_actor: null
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: human
   decision_actor_type: human
-  decision_at: null
-  decision_reason: 機械化設計 §3.1 は `effect_kind` を `read / write / state_mutation / external_call`
-    の4値として定義しているが、統合設計 §3 では `write / state_mutation`、`external_call / write / state_mutation`、`ステージ種別による`
-    などの値が表に残っている。operation contract schema が単一 enum を想定するなら不適合になり、複数 effect を許すなら
-    schema 側で list または variant contract として明示する必要がある。
+  decision_at: '2026-06-18T05:39:56.038453+00:00'
+  decision_reason: §7 item 6 として記録済み。run_maintenance・run_reopen_pending_gate・run_workflow_stage
+    の effect_kind 複合値問題は Phase 1 のスキーマ定義時に3択（代表値採用 / list 型拡張 / 内部ステップ分解）から選択して確定する。
   applied_files: []
   superseded_by: null
 - finding_id: 2026-06-18-pending-issues-review-gpt-5.5-adversarial-005
@@ -288,14 +283,13 @@ items:
   target_location: docs/notes/2026-06-18-integrated-design-selection-execution-layers.md
     §5.3, §7
   plain_language_summary: 状態スナップショットの出力タイミングが確定事項と未確定事項の両方として記述されている
-  final_label: null
-  decision_status: human_required
-  decision_actor: null
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: human
   decision_actor_type: human
-  decision_at: null
-  decision_reason: §5.3 は `.reviewcompass/runtime/workflow-state-snapshot.yaml` を
-    `next --json` 実行後に自動更新される副産物と定義しているが、§7 では `next --json` 後の自動出力か専用サブコマンドかを未確定事項としている。registry/preflight/approval
-    gate の実装がスナップショットを参照する場合、生成タイミングの不一致は stale state の扱いを曖昧にする。
+  decision_at: '2026-06-18T05:29:29.487778+00:00'
+  decision_reason: 前セッションで修正済み。§7 item 3 を更新し、スナップショット出力の方針を §5.3 で確定（next --json
+    の副産物として自動出力、専用サブコマンドなし）と明記。§5.3 との矛盾は解消済み。未確定なのは実装コードパスのみ（Phase 2 で確定）。
   applied_files: []
   superseded_by: null
 - finding_id: 2026-06-18-pending-issues-review-gemini-3.1-pro-preview-judgment-001
@@ -310,13 +304,12 @@ items:
     7. 未確定事項（継続検討）'
   plain_language_summary: '`run_workflow_stage` の `alignment` ゲートに対する `effect_kind`
     および `approval_required` の定義が未確定として残存している'
-  final_label: null
-  decision_status: human_required
-  decision_actor: null
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: human
   decision_actor_type: human
-  decision_at: null
-  decision_reason: '`approval_required` の独立属性化および `effect_kind` の再定義（`irreversible_action`
-    の廃止など）に伴い、すべての操作について実行層の契約を明確にする必要がある。`alignment` の性質（`write` か `state_mutation`
-    か）および承認要否が未確定のままでは、機械的ガードや自動実行の判定を正確に実装できないため。'
+  decision_at: '2026-06-18T05:29:23.398946+00:00'
+  decision_reason: 前セッションで修正済み。alignment の effect_kind は write に確定（§7 item 1）、approval_required
+    は §3.2 でいいえ（承認要求の設定自体は承認不要）と定義済み。
   applied_files: []
   superseded_by: null

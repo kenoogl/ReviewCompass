@@ -1,0 +1,19 @@
+approved_action: review_run_triage
+approved_by: user
+review_run_id: 2026-06-18-pending-issues-review
+summary_presented_to_user: true
+triage_presented_to_user: true
+approved_finding_ids:
+  - 2026-06-18-pending-issues-review-gpt-5.5-adversarial-001
+  - 2026-06-18-pending-issues-review-gpt-5.5-adversarial-002
+  - 2026-06-18-pending-issues-review-gpt-5.5-adversarial-003
+approved_final_labels:
+  2026-06-18-pending-issues-review-gpt-5.5-adversarial-001: leave-as-is
+  2026-06-18-pending-issues-review-gpt-5.5-adversarial-002: leave-as-is
+  2026-06-18-pending-issues-review-gpt-5.5-adversarial-003: leave-as-is
+approval_source: >
+  3件とも前セッション（2026-06-18 eec103c2）で文書修正済み。レビュー実施時点（2026-06-18T03:22）は
+  修正前の文書を参照していたため指摘が出たが、現在の文書では解消確認済み。
+  gpt-001: Phase 2 の operation-list --json 出力項目に approval_required を追加済み。
+  gpt-002: §3.1 の承認対象操作を7件に具体列挙し広義表現を削除済み。
+  gpt-003: 機械化設計 §7 を統合設計 §4.1 に揃えて矛盾を解消済み。

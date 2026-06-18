@@ -1,0 +1,4 @@
+run_id: 2026-06-18-integrated-design-phase1-split-postwrite
+target_files:
+- path: docs/notes/2026-06-18-integrated-design-selection-execution-layers.md
+  sha256: 31d29388a8bb55c7e71501a2432cebd12c4d5ff6817052ebc36b81aef8c76608
