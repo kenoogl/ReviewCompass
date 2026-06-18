@@ -19,6 +19,11 @@ decision_points:
         - docs/operations/WORKFLOW_NAVIGATION.md
         - docs/disciplines/discipline_workflow_state_truth_source.md
       effective_prompt_policy: one_effective_prompt_per_decision_point
+    - id: commit_stop_point
+      prompt_source_refs:
+        - docs/operations/WORKFLOW_NAVIGATION.md#commit_stop_point
+        - docs/disciplines/discipline_approval_operation.md
+      effective_prompt_policy: one_effective_prompt_per_decision_point
     - id: upstream_recheck
       prompt_source_refs:
         - docs/operations/WORKFLOW_NAVIGATION.md

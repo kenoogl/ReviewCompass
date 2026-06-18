@@ -1,0 +1,25 @@
+run_id: 2026-06-19-normal-cross-phase-commit-stop-point-postwrite
+triage_status: decided
+generated_at: '2026-06-18T23:53:57.275951+00:00'
+decision_actor: null
+decision_actor_type: human
+items:
+- finding_id: 2026-06-19-normal-cross-phase-commit-stop-point-postwrite-gemini-3.5-flash-primary-001
+  run_id: 2026-06-19-normal-cross-phase-commit-stop-point-postwrite
+  source_model: gemini-3.5-flash
+  source_round: round-1
+  source_raw_path: raw/gemini-3.5-flash.round-1.txt
+  source_parsed_path: parsed/gemini-3.5-flash.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: TODO_NEXT_SESSION.md
+  plain_language_summary: Reopen第3過程の複数ゲート（triad-reviewからapprovalまで）をコミットを挟まず一挙に進めており、段階的コミット停止ポイントポリシーに抵触している
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: main_session_llm
+  decision_actor_type: agent
+  decision_at: '2026-06-18T23:54:22.569537+00:00'
+  decision_reason: 既に今回の side track の問題意識として扱っている過去進行の指摘であり、今回の差分は通常 workflow の intent
+    / feature-partitioning 終端停止点を追加して再発防止を強化するもの。TODO の履歴記述自体は現状維持する。
+  applied_files: []
+  superseded_by: null

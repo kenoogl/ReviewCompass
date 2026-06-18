@@ -115,6 +115,53 @@ def _write_specs_for_next(cwd, states_by_feature):
     _write_spec(cwd, feature, states_by_feature.get(feature, untouched))
 
 
+def _write_cross_feature_specs(
+  cwd,
+  intent_state,
+  feature_partitioning_state,
+  downstream_state=None,
+):
+  """cross-feature phase の状態を直接指定した spec.json を全 feature に作る"""
+  downstream = downstream_state or {
+    "drafting": False,
+    "triad-review": False,
+    "review-wave": False,
+    "alignment": False,
+    "approval": False,
+  }
+  _write_feature_dependency(
+    cwd,
+    "stages/feature-dependency.yaml",
+    feature_order=list(FEATURE_ORDER),
+  )
+  for feature in FEATURE_ORDER:
+    spec_dir = Path(cwd) / ".reviewcompass" / "specs" / feature
+    spec_dir.mkdir(parents=True, exist_ok=True)
+    spec = {
+      "feature_name": feature,
+      "language": "ja",
+      "created_at": "2026-06-02T00:00:00+09:00",
+      "updated_at": "2026-06-02T00:00:00+09:00",
+      "workflow_state": {
+        "intent": dict(intent_state),
+        "feature-partitioning": dict(feature_partitioning_state),
+        "requirements": dict(downstream),
+        "design": dict(downstream),
+        "tasks": dict(downstream),
+        "implementation": dict(downstream),
+      },
+      "reopened": {},
+      "recheck": {
+        "upstream_change_pending": False,
+        "impacted_downstream_phases": [],
+      },
+    }
+    (spec_dir / "spec.json").write_text(
+      json.dumps(spec, ensure_ascii=False, indent=2),
+      encoding="utf-8",
+    )
+
+
 def _write_phase_artifact(cwd, relative_path, text, timestamp):
   """phase 成果物を指定時刻で作る"""
   path = Path(cwd) / relative_path
@@ -973,7 +1020,9 @@ class SpecSetExitCodeTests(unittest.TestCase):
     )
 
     _assert_script_invoked(self, result)
-    self.assertEqual(result.returncode, 0, result.stdout)
+    self.assertEqual(result.returncode, 1, result.stdout)
+    self.assertIn("[VERDICT] WARN", result.stdout)
+    self.assertNotIn("[VERDICT] DEVIATION", result.stdout)
 
   def test_spec_set_blocks_unimplemented_completion_predicate(self):
     """file_exists completion_predicate の対象ファイルがなければ true にしない"""
@@ -1919,6 +1968,116 @@ class NextNavigationTests(unittest.TestCase):
   def setUp(self):
     self.tmpdir = tempfile.mkdtemp()
     self.addCleanup(shutil.rmtree, self.tmpdir)
+
+  def _commit_cross_feature_baseline(
+    self,
+    cwd,
+    intent_state,
+    feature_partitioning_state,
+  ):
+    _init_git_repo(cwd)
+    _write_cross_feature_specs(cwd, intent_state, feature_partitioning_state)
+    subprocess.run(
+      ["git", "add", "."],
+      cwd=str(cwd),
+      check=True,
+      capture_output=True,
+    )
+    subprocess.run(
+      ["git", "commit", "-qm", "cross feature baseline"],
+      cwd=str(cwd),
+      check=True,
+      capture_output=True,
+    )
+
+  def test_next_returns_commit_stop_point_after_intent_approval_dirty(self):
+    """通常 workflow の intent.approval 完了直後は次 phase へ進まず commit 停止点を返す"""
+    cwd = Path(self.tmpdir)
+    intent_before = {
+      "drafting": True,
+      "review": True,
+      "approval": False,
+      "reference": "stages/intent.yaml",
+    }
+    feature_partitioning = {
+      "candidate-proposal": False,
+      "approval": False,
+      "reference": "stages/feature-partitioning/2026-05-24-proposal.md",
+    }
+    self._commit_cross_feature_baseline(cwd, intent_before, feature_partitioning)
+    intent_after = dict(intent_before)
+    intent_after["approval"] = True
+    _write_cross_feature_specs(cwd, intent_after, feature_partitioning)
+
+    result = run_script(["next", "--json"], cwd=cwd)
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 0, result.stderr)
+    data = json.loads(result.stdout)
+    action = data["next_action"]
+    self.assertEqual(action["kind"], "commit_stop_point")
+    self.assertEqual(action["required_action"], "commit_stop_point")
+    self.assertEqual(action["blocked_by"]["type"], "workflow_phase_end")
+    self.assertEqual(action["blocked_by"]["phase"], "intent")
+    self.assertEqual(action["blocked_by"]["stage"], "approval")
+    self.assertEqual(action["blocked_by"]["kind"], "phase_approval_complete")
+
+  def test_next_returns_commit_stop_point_after_feature_partitioning_approval_dirty(self):
+    """通常 workflow の feature-partitioning.approval 完了直後は requirements へ進まず commit 停止点を返す"""
+    cwd = Path(self.tmpdir)
+    intent_complete = {
+      "drafting": True,
+      "review": True,
+      "approval": True,
+      "reference": "stages/intent.yaml",
+    }
+    partitioning_before = {
+      "candidate-proposal": True,
+      "approval": False,
+      "reference": "stages/feature-partitioning/2026-05-24-proposal.md",
+    }
+    self._commit_cross_feature_baseline(cwd, intent_complete, partitioning_before)
+    partitioning_after = dict(partitioning_before)
+    partitioning_after["approval"] = True
+    _write_cross_feature_specs(cwd, intent_complete, partitioning_after)
+
+    result = run_script(["next", "--json"], cwd=cwd)
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 0, result.stderr)
+    data = json.loads(result.stdout)
+    action = data["next_action"]
+    self.assertEqual(action["kind"], "commit_stop_point")
+    self.assertEqual(action["required_action"], "commit_stop_point")
+    self.assertEqual(action["blocked_by"]["type"], "workflow_phase_end")
+    self.assertEqual(action["blocked_by"]["phase"], "feature-partitioning")
+    self.assertEqual(action["blocked_by"]["stage"], "approval")
+    self.assertEqual(action["blocked_by"]["kind"], "phase_approval_complete")
+
+  def test_next_continues_after_cross_feature_commit_stop_point_is_clean(self):
+    """phase 終端が既に commit 済みなら停止点を返し続けない"""
+    cwd = Path(self.tmpdir)
+    intent_complete = {
+      "drafting": True,
+      "review": True,
+      "approval": True,
+      "reference": "stages/intent.yaml",
+    }
+    feature_partitioning = {
+      "candidate-proposal": False,
+      "approval": False,
+      "reference": "stages/feature-partitioning/2026-05-24-proposal.md",
+    }
+    self._commit_cross_feature_baseline(cwd, intent_complete, feature_partitioning)
+
+    result = run_script(["next", "--json"], cwd=cwd)
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 0, result.stderr)
+    data = json.loads(result.stdout)
+    self.assertEqual(data["next_action"]["kind"], "cross_feature_stage")
+    self.assertEqual(data["next_action"]["phase"], "feature-partitioning")
+    self.assertEqual(data["next_action"]["stage"], "candidate-proposal")
 
   def test_next_returns_evaluation_implementation_drafting_after_runtime_triad_review(self):
     """runtime triad-review 完了後は evaluation implementation drafting を返す"""
@@ -3939,6 +4098,81 @@ class ReopenAdvanceGateTests(unittest.TestCase):
     )
     self.assertEqual(state["next_step"], "第3過程：requirements approval")
 
+  def test_reopen_advance_gate_records_review_gate_commit_stop_point(self):
+    """review 系 gate 完了後は構造化された停止点コミット状態にする"""
+    cases = [
+      (
+        "stages/requirements.yaml#triad-review",
+        "stages/requirements.yaml#review-wave",
+        3,
+        "triad_review_complete",
+      ),
+      (
+        "stages/design.yaml#review-wave",
+        "stages/design.yaml#alignment",
+        3,
+        "review_wave_complete",
+      ),
+      (
+        "stages/tasks.yaml#alignment",
+        "stages/tasks.yaml#approval",
+        3,
+        "alignment_complete",
+      ),
+      (
+        "stages/implementation.yaml#approval",
+        None,
+        4,
+        "approval_complete",
+      ),
+    ]
+    for gate, next_gate, expected_step, expected_kind in cases:
+      with self.subTest(gate=gate):
+        in_progress = (
+          Path(self.tmpdir)
+          / "stages"
+          / "in-progress"
+          / "reopen-procedure-2026-06-15.yaml"
+        )
+        in_progress.parent.mkdir(parents=True, exist_ok=True)
+        in_progress.write_text(
+          "process_id: reopen-procedure\n"
+          "feature: workflow-management\n"
+          "step_number: 3\n"
+          f"next_step: 第3過程：{gate}\n"
+          "completed_steps: []\n"
+          "pending_gates:\n"
+          f"  - {gate}\n"
+          + (f"  - {next_gate}\n" if next_gate else "")
+          +
+          "completed_gates: []\n"
+          "downstream_impact_decisions: []\n"
+          "current_blocker: null\n",
+          encoding="utf-8",
+        )
+
+        result = run_script(
+          [
+            "reopen-advance-gate",
+            "--file", "stages/in-progress/reopen-procedure-2026-06-15.yaml",
+            "--gate", gate,
+            "--decision", "existing_sufficient",
+            "--feature-scope", "workflow-management",
+            "--rationale", "gate 完了後の停止点コミットを記録する。",
+            "--evidence", "reviews/evidence.md",
+            "--json",
+          ],
+          cwd=self.tmpdir,
+        )
+
+        _assert_script_invoked(self, result)
+        self.assertEqual(result.returncode, 0, result.stdout)
+        state = yaml.safe_load(in_progress.read_text(encoding="utf-8"))
+        self.assertIs(state["commit_stop_point"], True)
+        self.assertEqual(state["commit_stop_point_step"], expected_step)
+        self.assertEqual(state["commit_stop_point_kind"], expected_kind)
+        self.assertEqual(state["commit_stop_point_gate"], gate)
+
   def test_reopen_advance_gate_blocks_nonleading_pending_gate(self):
     """pending_gates の先頭以外を飛ばして完了できない"""
     self._write_spec()
@@ -5953,6 +6187,113 @@ class CommitExitCodeTests(unittest.TestCase):
 
     _assert_script_invoked(self, result)
     self.assertEqual(result.returncode, 0, result.stdout)
+
+  def test_commit_allows_reopen_review_gate_commit_stop_point(self):
+    """第3過程の review 系 gate 完了停止点は構造フィールドで通過する"""
+    _set_pending_findings(self.pending_file, unresolved_count=0)
+    _stage_file(self.tmpdir, "notes.md", "# review gate 停止点の記録")
+    in_progress_path = (
+      Path(self.tmpdir)
+      / "stages"
+      / "in-progress"
+      / "reopen-procedure-2026-06-15.yaml"
+    )
+    in_progress_path.parent.mkdir(parents=True)
+    in_progress_path.write_text(
+      "process_id: reopen-procedure\n"
+      "next_step: 第3過程：tasks approval\n"
+      "step_number: 3\n"
+      "commit_stop_point: true\n"
+      "commit_stop_point_step: 3\n"
+      "commit_stop_point_kind: approval_complete\n"
+      "commit_stop_point_gate: stages/tasks.yaml#approval\n"
+      "commit_stop_point_reason: tasks approval 完了時点の停止点\n",
+      encoding="utf-8",
+    )
+    subprocess.run(
+      ["git", "add", "stages/in-progress/reopen-procedure-2026-06-15.yaml"],
+      cwd=str(self.tmpdir),
+      check=True,
+      capture_output=True,
+    )
+    _write_commit_approval(
+      self.tmpdir,
+      [
+        "notes.md",
+        "stages/in-progress/reopen-procedure-2026-06-15.yaml",
+      ],
+    )
+
+    result = run_script(
+      ["commit", "--rationale", "reopen review gate 停止点 commit"],
+      cwd=self.tmpdir,
+    )
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 0, result.stdout)
+
+  def test_commit_allows_normal_workflow_cross_feature_phase_end(self):
+    """通常 workflow の cross-feature phase 終端差分は通常 commit guard で通過する"""
+    _set_pending_findings(self.pending_file, unresolved_count=0)
+    intent_before = {
+      "drafting": True,
+      "review": True,
+      "approval": False,
+      "reference": "stages/intent.yaml",
+    }
+    feature_partitioning = {
+      "candidate-proposal": False,
+      "approval": False,
+      "reference": "stages/feature-partitioning/2026-05-24-proposal.md",
+    }
+    _write_cross_feature_specs(
+      self.tmpdir,
+      intent_before,
+      feature_partitioning,
+    )
+    subprocess.run(
+      ["git", "add", ".reviewcompass/specs", "stages/feature-dependency.yaml"],
+      cwd=str(self.tmpdir),
+      check=True,
+      capture_output=True,
+    )
+    subprocess.run(
+      ["git", "commit", "-qm", "cross feature baseline"],
+      cwd=str(self.tmpdir),
+      check=True,
+      capture_output=True,
+    )
+    intent_after = dict(intent_before)
+    intent_after["approval"] = True
+    _write_cross_feature_specs(
+      self.tmpdir,
+      intent_after,
+      feature_partitioning,
+    )
+    subprocess.run(
+      ["git", "add", ".reviewcompass/specs"],
+      cwd=str(self.tmpdir),
+      check=True,
+      capture_output=True,
+    )
+    staged = subprocess.run(
+      ["git", "diff", "--cached", "--name-only"],
+      cwd=str(self.tmpdir),
+      check=True,
+      capture_output=True,
+      text=True,
+    ).stdout.splitlines()
+    _write_commit_approval(self.tmpdir, staged)
+
+    result = run_script(
+      ["commit", "--rationale", "通常 workflow phase 終端 commit"],
+      cwd=self.tmpdir,
+    )
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 1, result.stdout)
+    self.assertIn("[VERDICT] WARN", result.stdout)
+    self.assertNotIn("[VERDICT] DEVIATION", result.stdout)
 
   def test_commit_blocks_reopen_commit_stop_point_with_unscoped_reason(self):
     """commit_stop_point=true でも正当な implementation drafting 停止点でなければ遮断する"""

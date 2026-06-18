@@ -1,0 +1,20 @@
+approved_by: proxy_model
+finding_id: 2026-06-19-workflow-management-requirements-integrated-design-review-run-gemini-3.1-pro-preview-judgment-001
+proxy_model_id: gemini-3.1-pro-preview
+decision_prompt_path: proxy-decision-prompts/C1-C9.prompt.md
+selected_option: should-fix
+final_label: should-fix
+rationale: C7 proxy decision selected should-fix. The concern should be resolved by
+  clarifying historical reopened flags versus current scope rather than by blindly
+  flipping the flags.
+raw_response_path: proxy-decisions/C1-C9.raw.yaml
+candidate_options:
+- must-fix
+- should-fix
+- leave-as-is
+rejected_options:
+  must-fix: The correct response is clarification, not an immediate blocking state
+    change.
+  leave-as-is: The ambiguity has already confused reviewers and should be addressed.
+source_raw_paths:
+- raw/gemini-3.1-pro-preview.round-1.txt

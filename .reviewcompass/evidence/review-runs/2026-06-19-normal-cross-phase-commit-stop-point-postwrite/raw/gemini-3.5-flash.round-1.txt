@@ -1,0 +1,5 @@
+findings:
+  - severity: WARN
+    target_location: "TODO_NEXT_SESSION.md"
+    description: "Reopen第3過程の複数ゲート（triad-reviewからapprovalまで）をコミットを挟まず一挙に進めており、段階的コミット停止ポイントポリシーに抵触している"
+    rationale: "WORKFLOW_PRECHECK_DETAILS.mdの仕様では、各review系ゲート完了後は再開可能な停止点コミット（commit_stop_point: true）として扱うと規定されている。中間ゲートのコミットをスキップすると、ゲートごとの成果物・検証証跡（post-write verification等）のコミット履歴におけるトレーサビリティが失われ、切り戻しも困難になる。"

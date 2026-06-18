@@ -1,0 +1,12 @@
+run_id: 2026-06-19-requirements-triad-review-fix-reflection-postwrite
+target_files:
+- path: .reviewcompass/specs/workflow-management/requirements.md
+  sha256: ca557a4b3c7d6ed879e48c9c1537338c40e721ea56f1326604eb3603245c9623
+- path: .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-requirements-integrated-design-review-run/review-response.md
+  sha256: f1cc31f91a08060f123feb06dc9af9b335c4f20eb6be8b169254801fb58ecced
+- path: docs/notes/working/2026-06-19-integrated-design-manual-workflow-progress.md
+  sha256: e51efac85f4d0f9eb5d03a96d34219e6aead91923bab9620ad2c0768ad16a2a3
+- path: TODO_NEXT_SESSION.md
+  sha256: 2b5cc58fbc51d7a17ba77036122a33894586ee0fe5a39846f6574fcaf38f96e5
+- path: stages/in-progress/reopen-procedure-2026-06-19.yaml
+  sha256: f93459b5e3468b107ec4921b8c1aa5ffce80956ad773a9331b54096dc5305fa9

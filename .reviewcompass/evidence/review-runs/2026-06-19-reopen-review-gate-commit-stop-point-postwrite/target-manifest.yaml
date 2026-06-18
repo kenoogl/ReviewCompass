@@ -1,0 +1,8 @@
+run_id: 2026-06-19-reopen-review-gate-commit-stop-point-postwrite
+target_files:
+- path: TODO_NEXT_SESSION.md
+  sha256: 6e7e42315659eab1e93d8e504d1a974f049f920267c35c095f4dbc8b289784fa
+- path: docs/operations/WORKFLOW_PRECHECK_DETAILS.md
+  sha256: 40f9141981de19f6e55d2cc08820ba49ea0dc3f20798626811ac287e20648a8e
+- path: docs/reviews/reopen-classification-2026-06-19-wm-integrated-design-requirements.md
+  sha256: f34088901082f6ecc320250fb1aac36e1c46c9a226d66c0357f9233a504e9862

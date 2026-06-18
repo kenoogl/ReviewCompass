@@ -1,0 +1,12 @@
+run_id: 2026-06-19-requirements-review-wave-gate-completion-postwrite
+target_files:
+- path: .reviewcompass/specs/workflow-management/spec.json
+  sha256: 4b1b7f54ec7031bbf8787c926869b2de87dbce978b3edc006f1bf0b6f3a228cb
+- path: stages/in-progress/reopen-procedure-2026-06-19.yaml
+  sha256: 4e36bc609154aff78773ef37a55d35d983d3cbf571b88610243c16a55d175d5b
+- path: TODO_NEXT_SESSION.md
+  sha256: 19951318cf9d9b3e1ac777c139ffb5fa00650ce1ecea4dbb75a1b8a51523138a
+- path: docs/notes/working/2026-06-19-integrated-design-manual-workflow-progress.md
+  sha256: 3f5340b7fa019b6517c0a9858cfbb000ec0cd22104559293238a9d85b9cec416
+- path: .reviewcompass/post-write-verification/post-write-2026-06-19-256.yaml
+  sha256: 7030bf0c774f4b98c5935618d679b07e86f9ba7208742f1f466662f6514927df

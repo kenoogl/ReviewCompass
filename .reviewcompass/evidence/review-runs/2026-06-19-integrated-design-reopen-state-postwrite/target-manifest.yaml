@@ -1,0 +1,12 @@
+run_id: 2026-06-19-integrated-design-reopen-state-postwrite
+target_files:
+- path: .reviewcompass/specs/workflow-management/spec.json
+  sha256: 075808c88ee5747fbf9e85720769d2491a6c97465380c7eb7b20d9120bf7a32b
+- path: stages/in-progress/reopen-procedure-2026-06-19.yaml
+  sha256: 3336079383df22151c2152104fea21ec3aced472f1f50926e2be34c4df0a9067
+- path: docs/reviews/reopen-classification-2026-06-19-wm-integrated-design-requirements.md
+  sha256: f34088901082f6ecc320250fb1aac36e1c46c9a226d66c0357f9233a504e9862
+- path: docs/notes/working/2026-06-19-integrated-design-manual-workflow-progress.md
+  sha256: 1d8dc8f2389913662ef96a49df21a9ae81314b2564cde6d2ec15237fa6d7b384
+- path: TODO_NEXT_SESSION.md
+  sha256: 00192a50207e673ef07ba23225fb80da93e6ae7fcc81d8998af902c485dd1297

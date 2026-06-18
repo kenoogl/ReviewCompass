@@ -1,0 +1,25 @@
+findings:
+  - severity: ERROR
+    target_location: ".reviewcompass/specs/workflow-management/requirements.md Requirement 13 Acceptance Criteria 8"
+    description: "複合操作の `effect_kind` 表現が未確定のまま要件化されており、Requirement 13 AC1/AC3 の『機械可読に対応付ける』要求と両立していない。"
+    rationale: "AC3 は 19 個すべての `required_action` について registry 等で曖昧化せず対応付けることを要求している一方、AC8 は `run_maintenance`・`run_reopen_pending_gate`・`run_workflow_stage` の表現方法を 3 案の候補保持に留めている。これでは downstream design/implementation で schema や registry を一意に確定できず、『LLM 解釈不要で全 19 語彙をカバーする』という本 review の重点観点 5 を満たせない。少なくとも requirements 段階で、許容される表現戦略を 1 つに絞るか、複合操作の正規表現ルールと互換条件を定める必要がある。"
+  - severity: ERROR
+    target_location: ".reviewcompass/specs/workflow-management/requirements.md Requirement 14 Acceptance Criteria 3-5"
+    description: "side-track stack の push/pop・復帰・コミット混線防止に必要な整合規則が不足しており、要件だけでは workflow drift や commit mixing を防げない。"
+    rationale: "各 frame の必須属性は列挙されているが、`staged_file_digest`/`staged_file_set` をいつ採取し、push 後の index 変化をどう判定し、pop 時に何を一致条件とするか、親子 frame 間で file set が重なった場合の扱い、mainline へ戻る前に満たすべき検査が要求されていない。Requirement 12/16 には preflight や block 昇格があるものの、Requirement 14 自体で side-track の状態遷移不変条件が弱いため、設計側に丸投げになっている。review question 4 の『drift と commit mixing を防ぐ十分な指定』としては不十分。"
+  - severity: WARN
+    target_location: ".reviewcompass/specs/workflow-management/requirements.md Requirement 14 Acceptance Criteria 1-2 and Requirement 13 Acceptance Criteria 5"
+    description: "`record_human_decision` と承認対象操作の関係は方向性は示されているが、拒否・保留・修正要求時の遷移先が requirements レベルで未拘束である。"
+    rationale: "Requirement 14 AC1-2 は『記録完了≠承認』『分岐は next --json の責務』を明確にしている点は良いが、各判断結果に対して少なくとも停止継続・再起草・対象操作実行不可のどれを返すべきかの最小制約がない。統合設計メモでは operation contract 側で定義するとしているが、requirements に残ったままだと downstream で gate ごとに異なる恣意的実装が可能になる。特に irreversible operation authorization の曖昧さを避ける本 review の重点観点 3 に照らすと、拒否/保留は対象操作を直接許可しないこと、修正要求は write 系 required_action に戻ること等の最低限の受入条件が必要。"
+  - severity: WARN
+    target_location: ".reviewcompass/specs/workflow-management/requirements.md Requirement 15 Acceptance Criteria 5-7"
+    description: "構造化有効プロンプト監査の acceptance が入力存在や構造検査中心で、`postconditions` の機械確認可能性や language task 出力拘束の検証条件が弱い。"
+    rationale: "源泉ノートでは『有効プロンプトは言語タスクの仕様書』『機械タスクは外出し』『postconditions で妥当性確認』が中核だが、AC5 は参照先・節・長さ・manifest 一致までで、`language_task.output_format` と `postconditions` の対応、`preconditions_checked` が実際に機械検査済みであること、`on_completion` が operation contract と矛盾しないことを必須化していない。AC6-7 で LLM judge 監査は補助的にあるが、Phase 6 は任意後回しであり、自動承認不可でも第1層 acceptance が不足すると prompt 構造化の価値が薄れる。"
+  - severity: WARN
+    target_location: "docs/reviews/reopen-classification-2026-06-19-wm-integrated-design-requirements.md feature impact 判定 / Review context item 8"
+    description: "統合設計変更の cross-feature impact を workflow-management 内に閉じる前提が強く、review-wave へ持ち上げるべき波及確認項目が requirements に明示されていない。"
+    rationale: "今回の追加は `required_action` schema、effective prompt、operation registry/preflight、snapshot など他 feature が consumer として参照し得る契約面を含む。分類文書は foundation/runtime/evaluation などを `no_reopen_existing_feature` としているが、少なくとも review-wave で『consumer 契約への影響確認』を実施する要求を Requirements 13-16 または Change Intent に持たせないと、正本変更不要でも利用側調整漏れが起こりうる。review question 8 の観点では、reopen 不要判断と impact review 不要判断が混線しないよう補強が望ましい。"
+  - severity: INFO
+    target_location: ".reviewcompass/specs/workflow-management/spec.json and stages/in-progress/reopen-procedure-2026-06-19.yaml"
+    description: "reopen rollback の位置づけは概ね整合しており、requirements triad-review へ戻した状態表現は文書間で一致している。"
+    rationale: "spec.json では requirements の drafting のみ true、triad-review 以降と design/tasks/implementation が false で、recheck も downstream phases に限定されている。in-progress reopen でも step 3・pending_gates・drafting_completed_gates が同じ意図を表しており、review question 7 の『actual workflow position の表現』には大きな齟齬は見当たらない。"

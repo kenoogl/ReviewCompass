@@ -1,0 +1,12 @@
+run_id: 2026-06-19-requirements-approval-gate-completion-postwrite
+target_files:
+- path: .reviewcompass/specs/_cross_feature/reviews/2026-06-19-requirements-integrated-design-approval.md
+  sha256: 04d9660115b93681dfcd93f69bfcc5fec9b737b737da5af4608c94a42bc7478d
+- path: .reviewcompass/specs/workflow-management/spec.json
+  sha256: 5ee1911882d70d41ec6a2c5a48d52b9e2e304057eb48e364ad79916355c038c5
+- path: stages/in-progress/reopen-procedure-2026-06-19.yaml
+  sha256: 4d86b2a13ac0a3e074eb438e03ca9fe6847b2748874c2b8928b5bd8b9b5b6f56
+- path: TODO_NEXT_SESSION.md
+  sha256: 4c27c3fe02944d70411c7f3ba91e5b2ba10cc3fd0524cbc381d7a653d880ae53
+- path: docs/notes/working/2026-06-19-integrated-design-manual-workflow-progress.md
+  sha256: ee691a6e17e95fc3e0fb04b8888fcd7987e06a09f2aa5fcc1f07633dac1ca796

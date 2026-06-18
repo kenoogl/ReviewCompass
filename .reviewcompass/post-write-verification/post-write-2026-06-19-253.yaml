@@ -1,0 +1,36 @@
+status: completed
+target_files:
+- .reviewcompass/specs/workflow-management/spec.json
+- TODO_NEXT_SESSION.md
+- docs/notes/working/2026-06-19-integrated-design-manual-workflow-progress.md
+- docs/reviews/reopen-classification-2026-06-19-wm-integrated-design-requirements.md
+- stages/in-progress/reopen-procedure-2026-06-19.yaml
+target_sha256:
+  .reviewcompass/specs/workflow-management/spec.json: 075808c88ee5747fbf9e85720769d2491a6c97465380c7eb7b20d9120bf7a32b
+  TODO_NEXT_SESSION.md: 00192a50207e673ef07ba23225fb80da93e6ae7fcc81d8998af902c485dd1297
+  docs/notes/working/2026-06-19-integrated-design-manual-workflow-progress.md: 1d8dc8f2389913662ef96a49df21a9ae81314b2564cde6d2ec15237fa6d7b384
+  docs/reviews/reopen-classification-2026-06-19-wm-integrated-design-requirements.md: f34088901082f6ecc320250fb1aac36e1c46c9a226d66c0357f9233a504e9862
+  stages/in-progress/reopen-procedure-2026-06-19.yaml: 3336079383df22151c2152104fea21ec3aced472f1f50926e2be34c4df0a9067
+required_verifiers: &id001
+- gemini-3.5-flash
+completed_verifiers: *id001
+unresolved_substantive_findings: 0
+verifications:
+- verifier: gemini-3.5-flash
+  target_files:
+  - .reviewcompass/specs/workflow-management/spec.json
+  - TODO_NEXT_SESSION.md
+  - docs/notes/working/2026-06-19-integrated-design-manual-workflow-progress.md
+  - docs/reviews/reopen-classification-2026-06-19-wm-integrated-design-requirements.md
+  - stages/in-progress/reopen-procedure-2026-06-19.yaml
+  target_sha256:
+    .reviewcompass/specs/workflow-management/spec.json: 075808c88ee5747fbf9e85720769d2491a6c97465380c7eb7b20d9120bf7a32b
+    TODO_NEXT_SESSION.md: 00192a50207e673ef07ba23225fb80da93e6ae7fcc81d8998af902c485dd1297
+    docs/notes/working/2026-06-19-integrated-design-manual-workflow-progress.md: 1d8dc8f2389913662ef96a49df21a9ae81314b2564cde6d2ec15237fa6d7b384
+    docs/reviews/reopen-classification-2026-06-19-wm-integrated-design-requirements.md: f34088901082f6ecc320250fb1aac36e1c46c9a226d66c0357f9233a504e9862
+    stages/in-progress/reopen-procedure-2026-06-19.yaml: 3336079383df22151c2152104fea21ec3aced472f1f50926e2be34c4df0a9067
+review_run:
+  path: .reviewcompass/evidence/review-runs/2026-06-19-integrated-design-reopen-state-postwrite
+  summary_path: .reviewcompass/evidence/review-runs/2026-06-19-integrated-design-reopen-state-postwrite/model-result-summary.yaml
+notes: Generated template; verify target_files cover current post-write targets before
+  use.

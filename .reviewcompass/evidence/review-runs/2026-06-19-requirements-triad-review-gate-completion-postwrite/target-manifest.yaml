@@ -1,0 +1,12 @@
+run_id: 2026-06-19-requirements-triad-review-gate-completion-postwrite
+target_files:
+- path: .reviewcompass/specs/workflow-management/spec.json
+  sha256: 1240df7cd9ada93809c107601293ba244abc682edc725d98fb24d5628307cc72
+- path: stages/in-progress/reopen-procedure-2026-06-19.yaml
+  sha256: a41df88e878d21ae4e724ddf422abbe7d580cdd702a4de62d7b3037f8ed5ab15
+- path: TODO_NEXT_SESSION.md
+  sha256: d2687f4f6b4fa2cb1006b9b52c731784d76e98d1d2dc7fb6bfd7d00a4c3c5cd5
+- path: docs/notes/working/2026-06-19-integrated-design-manual-workflow-progress.md
+  sha256: 4ad368f81343c6a1aac1afcdcc0cceaf6316a0ffe2b2d3741f18230e010e15ad
+- path: .reviewcompass/post-write-verification/post-write-2026-06-19-254.yaml
+  sha256: 8692e518479102df9cccdd55e7000991b7d2b49095ce5e26cab0c1e1c5c51d81

@@ -1,0 +1,11 @@
+findings:
+  - id: spec-json-reopened-flags-mismatch
+    severity: ERROR
+    summary: "spec.json の reopened フラグに R-0 対象外の intent と feature-partitioning が含まれている"
+    description: "spec.json の reopened フラグにおいて、今回の手戻り範囲外である intent と feature-partitioning が true と設定されており、R-0 の分類定義と矛盾している"
+    target_file: ".reviewcompass/specs/workflow-management/spec.json"
+    target_location: "spec.json の \"reopened\" オブジェクト"
+    finding_type: workflow_state_gap
+    rationale: "docs/reviews/reopen-classification-2026-06-19-wm-integrated-design-requirements.md において、今回の手戻りは「R-0（requirements 起点。intent・feature-partitioning へは遡らない）」と明記されている。しかし spec.json では `reopened.intent` と `reopened.feature-partitioning` が `true` のままとなっており、宣言された再実施スコープと実際の state フラグが矛盾している。この状態の不整合は、以降の `next --json` や reopen コンパイラが誤って上流段の再実施を要求したり、状態異常として停止する原因となる。"
+    recommendation: "spec.json の `reopened.intent` および `reopened.feature-partitioning` を `false` に修正し、R-0 分類の宣言と整合させる。"
+    suggested_label: must-fix

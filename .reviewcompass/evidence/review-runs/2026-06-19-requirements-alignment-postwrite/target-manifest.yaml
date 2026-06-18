@@ -1,0 +1,8 @@
+run_id: 2026-06-19-requirements-alignment-postwrite
+target_files:
+- path: .reviewcompass/specs/_cross_feature/reviews/2026-06-19-requirements-integrated-design-reopen-alignment.md
+  sha256: bee9b0f400e18b8b691b9d55efc7426f8b37ed91e6938c19b8478bc9ab886185
+- path: docs/notes/working/2026-06-19-integrated-design-manual-workflow-progress.md
+  sha256: 5ae7f074ee7ef3e8ca8b0fd24fff31f11a114e84d0d91401578517bb7299c925
+- path: TODO_NEXT_SESSION.md
+  sha256: 13c79c11c9b5db1464ef8e2fc11a3fb21b1b881f8e04fbf0bddb8fdc1e840e80

@@ -1,0 +1,12 @@
+run_id: 2026-06-19-normal-cross-phase-commit-stop-point-postwrite
+target_files:
+- path: TODO_NEXT_SESSION.md
+  sha256: 6e7e42315659eab1e93d8e504d1a974f049f920267c35c095f4dbc8b289784fa
+- path: docs/operations/WORKFLOW_DISCIPLINE_MAP.yaml
+  sha256: bce198b34bf5269735c07b0126e408f8c308cd6343b587eaa6d4103b83bb180b
+- path: docs/operations/WORKFLOW_NAVIGATION.md
+  sha256: ec1c9acf5ae0f5c4999d7375dc054a6a396275721c150efae359d6c70e994a0e
+- path: docs/operations/WORKFLOW_PRECHECK_DETAILS.md
+  sha256: be2623b88e8ee73b9786954848b3ee0d6dc306d536f16d4903deb4f418f2878b
+- path: docs/reviews/reopen-classification-2026-06-19-wm-integrated-design-requirements.md
+  sha256: f34088901082f6ecc320250fb1aac36e1c46c9a226d66c0357f9233a504e9862

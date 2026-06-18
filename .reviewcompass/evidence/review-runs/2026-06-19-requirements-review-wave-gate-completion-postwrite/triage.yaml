@@ -1,0 +1,43 @@
+run_id: 2026-06-19-requirements-review-wave-gate-completion-postwrite
+triage_status: decided
+generated_at: '2026-06-18T22:44:51.413965+00:00'
+decision_actor: null
+decision_actor_type: human
+items:
+- finding_id: 2026-06-19-requirements-review-wave-gate-completion-postwrite-gemini-3.5-flash-primary-001
+  run_id: 2026-06-19-requirements-review-wave-gate-completion-postwrite
+  source_model: gemini-3.5-flash
+  source_round: round-1
+  source_raw_path: raw/gemini-3.5-flash.round-1.txt
+  source_parsed_path: parsed/gemini-3.5-flash.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: stages/in-progress/reopen-procedure-2026-06-19.yaml
+  plain_language_summary: reopen_step_recordsにおける完了ステップの記録漏れ、およびstep_numberとステップ名称の不整合
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: codex_operator
+  decision_actor_type: agent
+  decision_at: '2026-06-18T22:46:04.143811+00:00'
+  decision_reason: 指摘どおり、requirements review-wave gate 完了に対応する reopen_step_records
+    が不足していたため追加した。第3過程の呼称は TODO 側で『第3過程内』と明確化した。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-19-requirements-review-wave-gate-completion-postwrite-gemini-3.5-flash-primary-002
+  run_id: 2026-06-19-requirements-review-wave-gate-completion-postwrite
+  source_model: gemini-3.5-flash
+  source_round: round-1
+  source_raw_path: raw/gemini-3.5-flash.round-1.txt
+  source_parsed_path: parsed/gemini-3.5-flash.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: docs/notes/working/2026-06-19-integrated-design-manual-workflow-progress.md
+  plain_language_summary: Formal Requirements Triad Review および Review-wave の親タスクチェックボックスが未完了表示のままになっている
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: codex_operator
+  decision_actor_type: agent
+  decision_at: '2026-06-18T22:46:04.182589+00:00'
+  decision_reason: 指摘どおり、詳細タスクが完了している親項目を [x] に更新した。
+  applied_files: []
+  superseded_by: null

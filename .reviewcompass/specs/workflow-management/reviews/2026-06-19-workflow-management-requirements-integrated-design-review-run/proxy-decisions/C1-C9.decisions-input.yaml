@@ -1,0 +1,102 @@
+proxy_model_id: gemini-3.1-pro-preview
+decision_prompt_path: proxy-decision-prompts/C1-C9.prompt.md
+raw_response_path: proxy-decisions/C1-C9.raw.yaml
+decisions:
+- finding_id: 2026-06-19-workflow-management-requirements-integrated-design-review-run-gpt-5.4-primary-001
+  final_label: must-fix
+  rationale: C1 proxy decision selected must-fix. The 19 required_action mappings and compound operation constraints are fundamental requirements for implementation and testing.
+  candidate_options: [must-fix, should-fix, leave-as-is]
+  rejected_options:
+    should-fix: The missing compound operation constraints are too central to defer.
+    leave-as-is: Leaving this unresolved would force implementation to guess the operation contract behavior.
+- finding_id: 2026-06-19-workflow-management-requirements-integrated-design-review-run-claude-opus-4-8-adversarial-002
+  final_label: must-fix
+  rationale: C1 proxy decision selected must-fix. Requirements must explicitly cover all 19 required_action values without relying on source-note inference.
+  candidate_options: [must-fix, should-fix, leave-as-is]
+  rejected_options:
+    should-fix: The gap blocks reliable downstream design and implementation.
+    leave-as-is: Source-note-only mapping leaves the requirement under-specified.
+- finding_id: 2026-06-19-workflow-management-requirements-integrated-design-review-run-gpt-5.4-primary-002
+  final_label: must-fix
+  rationale: C2 proxy decision selected must-fix. Side-track stack invariants and commit-mixing conflict behavior are critical data integrity requirements.
+  candidate_options: [must-fix, should-fix, leave-as-is]
+  rejected_options:
+    should-fix: State invariants and conflict handling are core requirements, not optional refinements.
+    leave-as-is: Undefined stack invariants risk broken state management.
+- finding_id: 2026-06-19-workflow-management-requirements-integrated-design-review-run-claude-opus-4-8-adversarial-006
+  final_label: must-fix
+  rationale: C2 proxy decision selected must-fix. Digest/file-set relationship and mismatch handling are part of commit-mixing prevention.
+  candidate_options: [must-fix, should-fix, leave-as-is]
+  rejected_options:
+    should-fix: The digest/set invariant is necessary for reliable side-track enforcement.
+    leave-as-is: Leaving mismatch behavior to design risks an unenforceable requirement.
+- finding_id: 2026-06-19-workflow-management-requirements-integrated-design-review-run-gpt-5.4-primary-003
+  final_label: should-fix
+  rationale: C3 proxy decision selected should-fix. The core distinction between decision recording and authorization exists, but reject/hold/change-request behavior needs clarification.
+  candidate_options: [must-fix, should-fix, leave-as-is]
+  rejected_options:
+    must-fix: The happy-path distinction is already present, so this is not a total blocker.
+    leave-as-is: Undefined alternate states can cause divergent downstream behavior.
+- finding_id: 2026-06-19-workflow-management-requirements-integrated-design-review-run-claude-opus-4-8-adversarial-001
+  final_label: should-fix
+  rationale: C3 proxy decision selected should-fix. Clarifying record_human_decision effect_kind and non-authorization behavior will reduce implementation ambiguity.
+  candidate_options: [must-fix, should-fix, leave-as-is]
+  rejected_options:
+    must-fix: The main requirement direction is already present.
+    leave-as-is: The current wording leaves avoidable edge-case ambiguity.
+- finding_id: 2026-06-19-workflow-management-requirements-integrated-design-review-run-gpt-5.4-primary-004
+  final_label: should-fix
+  rationale: C4 proxy decision selected should-fix. Cross-validation between prompt output format, preconditions, postconditions, and completion hooks is an important reliability enhancement.
+  candidate_options: [must-fix, should-fix, leave-as-is]
+  rejected_options:
+    must-fix: Basic structure and reference checks already exist.
+    leave-as-is: Ignoring consistency checks misses a significant reliability improvement.
+- finding_id: 2026-06-19-workflow-management-requirements-integrated-design-review-run-gpt-5.4-primary-005
+  final_label: should-fix
+  rationale: C5 proxy decision selected should-fix. Cross-feature impact review-wave handling should be explicit during this reopen.
+  candidate_options: [must-fix, should-fix, leave-as-is]
+  rejected_options:
+    must-fix: The core localized workflow requirements can still be understood.
+    leave-as-is: Explicit review-wave impact handling prevents future procedural confusion.
+- finding_id: 2026-06-19-workflow-management-requirements-integrated-design-review-run-claude-opus-4-8-adversarial-003
+  final_label: should-fix
+  rationale: C6 proxy decision selected should-fix. Requirement 16 depends on D-003 and should clarify the stable canonical anchor for traceability and verification.
+  candidate_options: [must-fix, should-fix, leave-as-is]
+  rejected_options:
+    must-fix: The anchor issue creates documentation friction rather than making the requirement logically impossible.
+    leave-as-is: Leaving the anchor unstable makes future verification harder.
+- finding_id: 2026-06-19-workflow-management-requirements-integrated-design-review-run-claude-opus-4-8-adversarial-005
+  final_label: should-fix
+  rationale: C7 proxy decision selected should-fix. The current active reopen scope should be distinguished from historical reopened flags.
+  candidate_options: [must-fix, should-fix, leave-as-is]
+  rejected_options:
+    must-fix: This is a clarity issue about metadata semantics, not a blocking logic defect.
+    leave-as-is: Multiple models perceived a conflict, so the distinction should be recorded.
+- finding_id: 2026-06-19-workflow-management-requirements-integrated-design-review-run-gemini-3.1-pro-preview-judgment-001
+  final_label: should-fix
+  rationale: C7 proxy decision selected should-fix. The concern should be resolved by clarifying historical reopened flags versus current scope rather than by blindly flipping the flags.
+  candidate_options: [must-fix, should-fix, leave-as-is]
+  rejected_options:
+    must-fix: The correct response is clarification, not an immediate blocking state change.
+    leave-as-is: The ambiguity has already confused reviewers and should be addressed.
+- finding_id: 2026-06-19-workflow-management-requirements-integrated-design-review-run-gpt-5.4-primary-006
+  final_label: should-fix
+  rationale: C7 proxy decision included this counterpoint in the cluster. Preserve the positive rollback assessment while clarifying metadata semantics.
+  candidate_options: [must-fix, should-fix, leave-as-is]
+  rejected_options:
+    must-fix: This item is a counterpoint, not a blocking defect.
+    leave-as-is: The item is useful as evidence for the intended clarification.
+- finding_id: 2026-06-19-workflow-management-requirements-integrated-design-review-run-claude-opus-4-8-adversarial-004
+  final_label: leave-as-is
+  rationale: C8 proxy decision selected leave-as-is. Phase numbering convention does not affect testability, logic, or correctness.
+  candidate_options: [must-fix, should-fix, leave-as-is]
+  rejected_options:
+    must-fix: Phase naming does not block implementation.
+    should-fix: Renumbering would likely harm historical traceability.
+- finding_id: 2026-06-19-workflow-management-requirements-integrated-design-review-run-claude-opus-4-8-adversarial-007
+  final_label: leave-as-is
+  rationale: C9 proxy decision selected leave-as-is. Citing draft or superseded source notes as provenance is appropriate when integrating those notes into requirements.
+  candidate_options: [must-fix, should-fix, leave-as-is]
+  rejected_options:
+    must-fix: The provenance citations are not broken dependencies.
+    should-fix: Removing or rewriting provenance would reduce useful historical context.

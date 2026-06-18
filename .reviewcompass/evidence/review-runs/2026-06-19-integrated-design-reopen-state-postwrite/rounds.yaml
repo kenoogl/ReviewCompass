@@ -1,0 +1,34 @@
+round_id: round-1
+purpose: post_write_verification
+invocation_timestamp: '2026-06-18T21:41:36.342641+00:00'
+target_files:
+- path: .reviewcompass/specs/workflow-management/spec.json
+  sha256: 075808c88ee5747fbf9e85720769d2491a6c97465380c7eb7b20d9120bf7a32b
+- path: stages/in-progress/reopen-procedure-2026-06-19.yaml
+  sha256: 3336079383df22151c2152104fea21ec3aced472f1f50926e2be34c4df0a9067
+- path: docs/reviews/reopen-classification-2026-06-19-wm-integrated-design-requirements.md
+  sha256: f34088901082f6ecc320250fb1aac36e1c46c9a226d66c0357f9233a504e9862
+- path: docs/notes/working/2026-06-19-integrated-design-manual-workflow-progress.md
+  sha256: 1d8dc8f2389913662ef96a49df21a9ae81314b2564cde6d2ec15237fa6d7b384
+- path: TODO_NEXT_SESSION.md
+  sha256: 00192a50207e673ef07ba23225fb80da93e6ae7fcc81d8998af902c485dd1297
+criteria: integrated_design_reopen_state_reconciliation_post_write
+prompt_sha256: 10e9a1509c45d2322f899f06449c3d76cf2c37365910fb7f375ec9de73522c93
+model_results:
+- model_id: gemini-3.5-flash
+  provider: gemini-api
+  role: primary
+  treatment: primary
+  invocation_path: api
+  raw_path: raw/gemini-3.5-flash.round-1.txt
+  raw_sha256: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+  parsed_path: parsed/gemini-3.5-flash.round-1.yaml
+  parsed_sha256: 257afb337d005c09e2ee6ded44d1a1b6089f56711cf5cbf8df4b528e406d95cf
+  parse_status: parsed
+  formatted_by: parser
+  formatted_by_actor_type: orchestrator
+  formatted_by_actor: run_role.py
+  formatted_at: '2026-06-18T21:41:36.342641+00:00'
+  follow_up_action: triage
+  attempts: 1
+  duration_seconds: 12.373

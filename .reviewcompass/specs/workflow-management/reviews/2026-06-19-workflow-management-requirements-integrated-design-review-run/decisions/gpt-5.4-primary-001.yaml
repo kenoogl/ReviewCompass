@@ -1,0 +1,20 @@
+approved_by: proxy_model
+finding_id: 2026-06-19-workflow-management-requirements-integrated-design-review-run-gpt-5.4-primary-001
+proxy_model_id: gemini-3.1-pro-preview
+decision_prompt_path: proxy-decision-prompts/C1-C9.prompt.md
+selected_option: must-fix
+final_label: must-fix
+rationale: C1 proxy decision selected must-fix. The 19 required_action mappings and
+  compound operation constraints are fundamental requirements for implementation and
+  testing.
+raw_response_path: proxy-decisions/C1-C9.raw.yaml
+candidate_options:
+- must-fix
+- should-fix
+- leave-as-is
+rejected_options:
+  should-fix: The missing compound operation constraints are too central to defer.
+  leave-as-is: Leaving this unresolved would force implementation to guess the operation
+    contract behavior.
+source_raw_paths:
+- raw/gpt-5.4.round-1.txt

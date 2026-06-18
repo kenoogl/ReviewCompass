@@ -1,0 +1,31 @@
+status: completed
+target_files:
+  - docs/notes/working/2026-06-19-commit-instruction-preflight-issues.md
+  - docs/notes/working/2026-06-19-integrated-design-manual-workflow-progress.md
+  - docs/notes/working/2026-06-19-proxy-model-triage-cost-issues.md
+target_sha256:
+  docs/notes/working/2026-06-19-commit-instruction-preflight-issues.md: f6b9722290dbc7dbcf199cbe68b793ffa06e73d4474fbbd8a6f6cbf99c8d01ce
+  docs/notes/working/2026-06-19-integrated-design-manual-workflow-progress.md: e151b1c092aa388d55b1009a9d44372240299d5786867821fa1e7d97e44686e0
+  docs/notes/working/2026-06-19-proxy-model-triage-cost-issues.md: 97a7d204d0f6d179a18f4c9de0a81cef154ed9d35e33e01a0c5a8ddafb985584
+required_verifiers:
+  - lightweight_self_check
+completed_verifiers:
+  - lightweight_self_check
+unresolved_substantive_findings: 0
+verifications:
+  - verifier: lightweight_self_check
+    target_files:
+      - docs/notes/working/2026-06-19-commit-instruction-preflight-issues.md
+      - docs/notes/working/2026-06-19-integrated-design-manual-workflow-progress.md
+      - docs/notes/working/2026-06-19-proxy-model-triage-cost-issues.md
+    target_sha256:
+      docs/notes/working/2026-06-19-commit-instruction-preflight-issues.md: f6b9722290dbc7dbcf199cbe68b793ffa06e73d4474fbbd8a6f6cbf99c8d01ce
+      docs/notes/working/2026-06-19-integrated-design-manual-workflow-progress.md: e151b1c092aa388d55b1009a9d44372240299d5786867821fa1e7d97e44686e0
+      docs/notes/working/2026-06-19-proxy-model-triage-cost-issues.md: 97a7d204d0f6d179a18f4c9de0a81cef154ed9d35e33e01a0c5a8ddafb985584
+    checks:
+      user_points_preserved: true
+      facts_problem_and_candidates_separated: true
+      useful_as_later_decision_material: true
+      does_not_over_specify_scope: true
+      remains_working_note_not_canonical_spec: true
+notes: "Lightweight self-check for docs/notes/working/ only; API post-write verification intentionally not used."

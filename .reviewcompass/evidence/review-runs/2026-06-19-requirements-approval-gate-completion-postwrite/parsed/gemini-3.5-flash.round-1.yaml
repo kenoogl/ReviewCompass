@@ -1,0 +1,12 @@
+role: primary
+provider: gemini-api
+model: gemini-3.5-flash
+attempts: 1
+duration_seconds: 16.058
+findings:
+- severity: WARN
+  target_location: .reviewcompass/specs/_cross_feature/reviews/2026-06-19-requirements-integrated-design-approval.md
+  description: 証跡セクションにおける Alignment 検証ファイルの参照誤り（タイポ）
+  rationale: 本文中の 'Alignment gate completion verification' で '.reviewcompass/post-write-verification/post-write-2026-06-19-259.yaml'（当
+    approval ゲート用の検証ファイル）を参照していますが、これは 'reopen-procedure-2026-06-19.yaml' に記載されている
+    alignment ゲートの検証ファイル 'post-write-2026-06-19-258.yaml' と整合していません。

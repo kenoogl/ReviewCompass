@@ -1,0 +1,17 @@
+role: primary
+provider: gemini-api
+model: gemini-3.5-flash
+attempts: 1
+duration_seconds: 25.436
+findings:
+- severity: WARN
+  target_location: stages/in-progress/reopen-procedure-2026-06-19.yaml
+  description: reopen_step_recordsにおける完了ステップの記録漏れ、およびstep_numberとステップ名称の不整合
+  rationale: 'completed_stepsおよびcompleted_gatesには「requirements review-wave gate 完了」が記録されているが、reopen_step_recordsにはこれに対応する完了レコードが存在しない。また、TODO_NEXT_SESSION.mdでは「第3過程：requirements
+    triad-review」とされているのに対し、本ファイルでは「第3過程：requirements alignment」となっており、step_number:
+    3 も含めてプロセス全体でのステップ番号や呼称に不整合が生じている。'
+- severity: INFO
+  target_location: docs/notes/working/2026-06-19-integrated-design-manual-workflow-progress.md
+  description: Formal Requirements Triad Review および Review-wave の親タスクチェックボックスが未完了表示のままになっている
+  rationale: 各ステップ内の詳細タスクがすべて完了（[x]）しているにもかかわらず、「Formal Requirements Triad Review」および「Review-wave
+    / Impact Check」の親チェックボックスが「[ ]」の未完了状態のままになっており、一目で全体の進捗が分かりにくくなっている。

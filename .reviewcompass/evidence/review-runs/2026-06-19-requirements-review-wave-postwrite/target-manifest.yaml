@@ -1,0 +1,12 @@
+run_id: 2026-06-19-requirements-review-wave-postwrite
+target_files:
+- path: .reviewcompass/specs/_cross_feature/reviews/2026-06-19-requirements-integrated-design-review-wave.md
+  sha256: 0b427092f58c810aeded31c4571e88a80bfd29bc7ceaf9f1c42abb2c0d653ec6
+- path: .reviewcompass/specs/_cross_feature/reviews/2026-06-19-requirements-integrated-design-review-wave-summary.md
+  sha256: d5fce3c3f69b1d698fbb3dc4a41362e8961231a5cc2e39e0f8a77ef521250d05
+- path: docs/notes/working/2026-06-19-integrated-design-manual-workflow-progress.md
+  sha256: 9b6ad3e3d47a7bcbb0fa10dce1c66cedbcc4c4c2ca3c158d89ab027221b5b905
+- path: TODO_NEXT_SESSION.md
+  sha256: 5ff9dcdddbe4ef35d9291a54cba500e62bff831db88c748c6648b4752b587d49
+- path: docs/notes/working/2026-06-19-commit-instruction-preflight-issues.md
+  sha256: f6b9722290dbc7dbcf199cbe68b793ffa06e73d4474fbbd8a6f6cbf99c8d01ce

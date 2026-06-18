@@ -465,6 +465,10 @@ DEFAULT_DISCIPLINE_MAP = {
     "cross_feature_stage": [
       "docs/disciplines/discipline_workflow_state_truth_source.md",
     ],
+    "commit_stop_point": [
+      "docs/operations/WORKFLOW_NAVIGATION.md#commit_stop_point",
+      "docs/disciplines/discipline_approval_operation.md",
+    ],
     "post_write_verification": [
       "docs/operations/WORKFLOW_NAVIGATION.md#post_write_verification",
       "docs/disciplines/discipline_post_write_verification.md",
@@ -3847,22 +3851,43 @@ def _is_structured_reopen_commit_stop_point(data):
     return kind == "canonical_update_complete"
 
   if step_number == 3:
-    if kind != "drafting_complete":
-      return False
     gate = data.get("commit_stop_point_gate")
     if not isinstance(gate, str):
       return False
-    parts = gate.split("#", 1)
-    if len(parts) != 2:
+    expected_kind = _commit_stop_point_kind_for_gate(gate)
+    if expected_kind is None or kind != expected_kind:
       return False
-    stage_file, stage = parts
-    if not stage_file.startswith("stages/") or not stage_file.endswith(".yaml"):
+    return True
+
+  if step_number == 4:
+    gate = data.get("commit_stop_point_gate")
+    if not isinstance(gate, str):
       return False
-    if stage != "drafting":
+    if kind != "approval_complete":
+      return False
+    expected_kind = _commit_stop_point_kind_for_gate(gate)
+    if expected_kind != "approval_complete":
+      return False
+    phase, _stage = _parse_stage_gate(gate)
+    if phase != "implementation":
       return False
     return True
 
   return False
+
+
+def _commit_stop_point_kind_for_gate(gate):
+  """標準 gate 文字列から構造化 commit stop point kind を返す"""
+  phase, stage = _parse_stage_gate(gate)
+  if phase is None or stage is None:
+    return None
+  return {
+    "drafting": "drafting_complete",
+    "triad-review": "triad_review_complete",
+    "review-wave": "review_wave_complete",
+    "alignment": "alignment_complete",
+    "approval": "approval_complete",
+  }.get(stage)
 
 
 def is_completed_maintenance_commit_allowed(cwd, in_progress_files, staged_files):
@@ -4800,6 +4825,124 @@ def all_features_stage_true(specs, phase, stage):
   return all(phase_stage_value(specs, feature, phase, stage) for feature in FEATURE_ORDER)
 
 
+def list_uncommitted_files(cwd):
+  """HEAD との差分と未追跡ファイルを相対パスで返す"""
+  paths = []
+  diff_result = subprocess.run(
+    ["git", "diff", "--name-only", "-z", "HEAD", "--"],
+    cwd=str(cwd),
+    capture_output=True,
+    text=False,
+  )
+  if diff_result.returncode == 0:
+    paths.extend(
+      p.decode("utf-8")
+      for p in diff_result.stdout.split(b"\0")
+      if p
+    )
+  other_result = subprocess.run(
+    ["git", "ls-files", "--others", "--exclude-standard", "-z"],
+    cwd=str(cwd),
+    capture_output=True,
+    text=False,
+  )
+  if other_result.returncode == 0:
+    paths.extend(
+      p.decode("utf-8")
+      for p in other_result.stdout.split(b"\0")
+      if p
+    )
+  return _unique_preserving_order(paths)
+
+
+def _read_head_json(cwd, relative_path):
+  result = subprocess.run(
+    ["git", "show", f"HEAD:{relative_path}"],
+    cwd=str(cwd),
+    capture_output=True,
+    text=True,
+  )
+  if result.returncode != 0:
+    return None
+  try:
+    return json.loads(result.stdout)
+  except json.JSONDecodeError:
+    return None
+
+
+def _workflow_phase_changed_from_head(cwd, feature, phase):
+  relative_path = f".reviewcompass/specs/{feature}/spec.json"
+  current_path = Path(cwd) / relative_path
+  if not current_path.exists():
+    return False
+  head_data = _read_head_json(cwd, relative_path)
+  if head_data is None:
+    return False
+  try:
+    current_data = json.loads(current_path.read_text(encoding="utf-8"))
+  except (OSError, json.JSONDecodeError):
+    return False
+  head_phase = (
+    head_data.get("workflow_state", {})
+    .get(phase, {})
+  )
+  current_phase = (
+    current_data.get("workflow_state", {})
+    .get(phase, {})
+  )
+  return head_phase != current_phase
+
+
+def _phase_artifact_changed(dirty_paths, phase):
+  artifact_paths = set(_phase_artifact_paths(None, phase))
+  return any(path in artifact_paths for path in dirty_paths)
+
+
+def _cross_feature_phase_dirty(cwd, dirty_paths, phase):
+  if _phase_artifact_changed(dirty_paths, phase):
+    return True
+  for feature in FEATURE_ORDER:
+    spec_path = f".reviewcompass/specs/{feature}/spec.json"
+    if (
+      spec_path in dirty_paths
+      and _workflow_phase_changed_from_head(cwd, feature, phase)
+    ):
+      return True
+  return False
+
+
+def build_commit_stop_point_next_action(phase, dirty_paths):
+  """通常 workflow の phase 終端 commit 停止点を返す"""
+  return {
+    "kind": "commit_stop_point",
+    "required_action": "commit_stop_point",
+    "feature": None,
+    "phase": phase,
+    "stage": "approval",
+    "reason": f"{phase}.approval 完了後の未コミット変更があるため、次 phase へ進む前に commit が必要です",
+    "blocked_by": {
+      "type": "workflow_phase_end",
+      "phase": phase,
+      "stage": "approval",
+      "kind": "phase_approval_complete",
+      "dirty_paths": dirty_paths,
+    },
+  }
+
+
+def resolve_normal_workflow_commit_stop_point_action(cwd, specs):
+  """通常 workflow の cross-feature phase 終端停止点を判定する"""
+  dirty_paths = list_uncommitted_files(cwd)
+  if not dirty_paths:
+    return None
+  for phase in CROSS_FEATURE_PHASES:
+    if not all_features_stage_true(specs, phase, "approval"):
+      continue
+    if _cross_feature_phase_dirty(cwd, dirty_paths, phase):
+      return build_commit_stop_point_next_action(phase, dirty_paths)
+  return None
+
+
 def build_stage_next_action(feature, phase, stage, reason):
   """機能単位 stage の next_action を作る"""
   return {
@@ -5211,7 +5354,10 @@ def cmd_next(args):
               reasons = [f"{feature} の spec.json が見つかりません" for feature in missing]
               verdict, exit_code = "DEVIATION", 2
             else:
-              resolved_action = resolve_next_action(specs)
+              resolved_action = (
+                resolve_normal_workflow_commit_stop_point_action(cwd, specs)
+                or resolve_next_action(specs)
+              )
               if resolved_action.get("kind") == "completed":
                 resolved_action = resolve_upstream_recheck_action(cwd) or resolved_action
               next_action = augment_cross_feature_next_action(
@@ -5319,7 +5465,10 @@ def cmd_next(args):
             reasons = [f"{feature} の spec.json が見つかりません" for feature in missing]
             verdict, exit_code = "DEVIATION", 2
           else:
-            resolved_action = resolve_next_action(specs)
+            resolved_action = (
+              resolve_normal_workflow_commit_stop_point_action(cwd, specs)
+              or resolve_next_action(specs)
+            )
             if resolved_action.get("kind") == "completed":
               resolved_action = resolve_upstream_recheck_action(cwd) or resolved_action
             next_action = augment_cross_feature_next_action(
@@ -5569,6 +5718,19 @@ def _validate_reopen_pending_gate_references(pending_gates):
     )
 
 
+def _set_reopen_gate_commit_stop_point(data, gate):
+  """第3過程の review 系 gate 完了後を構造化された停止点コミットにする"""
+  kind = _commit_stop_point_kind_for_gate(gate)
+  if kind is None or kind == "drafting_complete":
+    return
+  phase, stage = _parse_stage_gate(gate)
+  data["commit_stop_point"] = True
+  data["commit_stop_point_step"] = data.get("step_number")
+  data["commit_stop_point_kind"] = kind
+  data["commit_stop_point_gate"] = gate
+  data["commit_stop_point_reason"] = f"{phase} {stage} 完了時点の停止点"
+
+
 def cmd_reopen_advance_step(args):
   """reopen 第1・第2過程の完了更新を機械処理する"""
   cwd = Path.cwd()
@@ -5724,6 +5886,7 @@ def cmd_reopen_advance_gate(args):
     else:
       data["next_step"] = "第4過程：完了"
       data["step_number"] = 4
+    _set_reopen_gate_commit_stop_point(data, args.gate)
 
     path.write_text(
       yaml.safe_dump(data, allow_unicode=True, sort_keys=False),

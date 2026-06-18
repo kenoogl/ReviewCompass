@@ -1,0 +1,74 @@
+round_id: round-1
+purpose: requirements
+invocation_timestamp: '2026-06-18T21:47:03.354530+00:00'
+target_files:
+- path: .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-requirements-integrated-design-review-run/review-target.md
+  sha256: d9f37b63cd9a3af54e8919557eeb9869339f19dc906da88194e9cd56cf60bb80
+- path: .reviewcompass/specs/workflow-management/requirements.md
+  sha256: 2d24be2c7b95bd33be0eed0d39405af49c30e9ac470f4327a33076dfa63f269f
+- path: .reviewcompass/specs/workflow-management/spec.json
+  sha256: 075808c88ee5747fbf9e85720769d2491a6c97465380c7eb7b20d9120bf7a32b
+- path: stages/in-progress/reopen-procedure-2026-06-19.yaml
+  sha256: 3336079383df22151c2152104fea21ec3aced472f1f50926e2be34c4df0a9067
+- path: docs/reviews/reopen-classification-2026-06-19-wm-integrated-design-requirements.md
+  sha256: f34088901082f6ecc320250fb1aac36e1c46c9a226d66c0357f9233a504e9862
+- path: docs/notes/2026-06-18-integrated-design-selection-execution-layers.md
+  sha256: 31d29388a8bb55c7e71501a2432cebd12c4d5ff6817052ebc36b81aef8c76608
+- path: docs/notes/working/2026-06-18-mechanized-workflow-execution-design.md
+  sha256: e38051da74d26f1237a4c690d1f2c1b678f923e9003b1549d05ee4a6431ce4bb
+- path: docs/notes/working/2026-06-19-integrated-design-requirements-missing.md
+  sha256: 962e1dde868bf383a5d5003adcb609bddd2d2509bd06a250ee705a5b5c63e6bc
+criteria: workflow_management_integrated_design_requirements_triad_review
+prompt_sha256: e7675eb44140d49c819d7c5ce34e9fc3eaa10632a7afdab0be9506eae0d6407a
+model_results:
+- model_id: gpt-5.4
+  provider: openai-api
+  role: primary
+  treatment: primary
+  invocation_path: api
+  raw_path: raw/gpt-5.4.round-1.txt
+  raw_sha256: 7ba7e62d33a6592bfa8ac9cd06543179d3d98d531c704bf1f051ad0bb1b87a4e
+  parsed_path: parsed/gpt-5.4.round-1.yaml
+  parsed_sha256: ed5b4305f8e25ccab088ec35fefb633d52487c5ad31e37b10b154ce13700eaa9
+  parse_status: parsed
+  formatted_by: parser
+  formatted_by_actor_type: orchestrator
+  formatted_by_actor: run_role.py
+  formatted_at: '2026-06-18T21:44:33.061528+00:00'
+  follow_up_action: triage
+  attempts: 1
+  duration_seconds: 15.716
+- model_id: claude-opus-4-8
+  provider: anthropic-api
+  role: adversarial
+  treatment: adversarial
+  invocation_path: api
+  raw_path: raw/claude-opus-4-8.round-1.txt
+  raw_sha256: c9724b2367a065c6b62149ee67e5ce72eb9a877bf13307e02f7504b7f9c009e6
+  parsed_path: parsed/claude-opus-4-8.round-1.yaml
+  parsed_sha256: cbef9aecb6ba46212fbb75e735e3f8c2cdc837dd149133e098cf534be7562974
+  parse_status: parsed
+  formatted_by: parser
+  formatted_by_actor_type: orchestrator
+  formatted_by_actor: run_role.py
+  formatted_at: '2026-06-18T21:45:31.059249+00:00'
+  follow_up_action: triage
+  attempts: 1
+  duration_seconds: 57.974
+- model_id: gemini-3.1-pro-preview
+  provider: gemini-api
+  role: judgment
+  treatment: judgment
+  invocation_path: api
+  raw_path: raw/gemini-3.1-pro-preview.round-1.txt
+  raw_sha256: 1079249cf99f1dea3b12f61ff1d0753bf19ee9eda00ac2a629074f18c0ec4842
+  parsed_path: parsed/gemini-3.1-pro-preview.round-1.yaml
+  parsed_sha256: 731aef79cd78923fc20478e68a0cc2686a5657b5a5b5a15d249aed2f426ad908
+  parse_status: parsed
+  formatted_by: parser
+  formatted_by_actor_type: orchestrator
+  formatted_by_actor: run_role.py
+  formatted_at: '2026-06-18T21:47:03.354530+00:00'
+  follow_up_action: triage
+  attempts: 1
+  duration_seconds: 92.28

@@ -1,0 +1,18 @@
+approved_by: proxy_model
+finding_id: 2026-06-19-workflow-management-requirements-integrated-design-review-run-claude-opus-4-8-adversarial-002
+proxy_model_id: gemini-3.1-pro-preview
+decision_prompt_path: proxy-decision-prompts/C1-C9.prompt.md
+selected_option: must-fix
+final_label: must-fix
+rationale: C1 proxy decision selected must-fix. Requirements must explicitly cover
+  all 19 required_action values without relying on source-note inference.
+raw_response_path: proxy-decisions/C1-C9.raw.yaml
+candidate_options:
+- must-fix
+- should-fix
+- leave-as-is
+rejected_options:
+  should-fix: The gap blocks reliable downstream design and implementation.
+  leave-as-is: Source-note-only mapping leaves the requirement under-specified.
+source_raw_paths:
+- raw/claude-opus-4-8.round-1.txt

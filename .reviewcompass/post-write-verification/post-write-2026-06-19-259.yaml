@@ -1,0 +1,92 @@
+status: completed
+target_files:
+- .reviewcompass/post-write-verification/post-write-2026-06-19-258.yaml
+- .reviewcompass/specs/_cross_feature/reviews/2026-06-19-requirements-integrated-design-reopen-alignment.md
+- .reviewcompass/specs/_cross_feature/reviews/2026-06-19-requirements-integrated-design-review-wave-summary.md
+- .reviewcompass/specs/_cross_feature/reviews/2026-06-19-requirements-integrated-design-review-wave.md
+- .reviewcompass/specs/workflow-management/requirements.md
+- .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-requirements-integrated-design-review-run/proxy-decision-prompts/C1-C9.prompt.md
+- .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-requirements-integrated-design-review-run/proxy-decision-summary.md
+- .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-requirements-integrated-design-review-run/raw-review-triage-summary.md
+- .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-requirements-integrated-design-review-run/review-response.md
+- .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-requirements-integrated-design-review-run/review-target.md
+- .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-requirements-integrated-design-review-run/review_summary.md
+- .reviewcompass/specs/workflow-management/spec.json
+- TODO_NEXT_SESSION.md
+- docs/notes/working/2026-06-19-integrated-design-manual-workflow-progress.md
+- docs/reviews/reopen-classification-2026-06-19-wm-integrated-design-requirements.md
+- stages/in-progress/reopen-procedure-2026-06-19.yaml
+target_sha256:
+  .reviewcompass/post-write-verification/post-write-2026-06-19-258.yaml: 8f9b45b249c66bb519260e272334f17b1378f9d652b81ee2009b87f1b164a707
+  .reviewcompass/specs/_cross_feature/reviews/2026-06-19-requirements-integrated-design-reopen-alignment.md: bee9b0f400e18b8b691b9d55efc7426f8b37ed91e6938c19b8478bc9ab886185
+  .reviewcompass/specs/_cross_feature/reviews/2026-06-19-requirements-integrated-design-review-wave-summary.md: d5fce3c3f69b1d698fbb3dc4a41362e8961231a5cc2e39e0f8a77ef521250d05
+  .reviewcompass/specs/_cross_feature/reviews/2026-06-19-requirements-integrated-design-review-wave.md: 0b427092f58c810aeded31c4571e88a80bfd29bc7ceaf9f1c42abb2c0d653ec6
+  .reviewcompass/specs/workflow-management/requirements.md: ca557a4b3c7d6ed879e48c9c1537338c40e721ea56f1326604eb3603245c9623
+  ? .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-requirements-integrated-design-review-run/proxy-decision-prompts/C1-C9.prompt.md
+  : 0a9c5e4d8b92af86151be473e5a6cc2a0287341c24509617e023c155feace19f
+  ? .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-requirements-integrated-design-review-run/proxy-decision-summary.md
+  : c9ac4c4dcc1853a0ed2bca00bec9c6331fa30c2f7ca155bda36ba7e9de4256e4
+  ? .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-requirements-integrated-design-review-run/raw-review-triage-summary.md
+  : 054fe82c0220fc810eaf93d86b7742f0322b6916c48e3d6217766321fdb4911f
+  ? .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-requirements-integrated-design-review-run/review-response.md
+  : f1cc31f91a08060f123feb06dc9af9b335c4f20eb6be8b169254801fb58ecced
+  ? .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-requirements-integrated-design-review-run/review-target.md
+  : d9f37b63cd9a3af54e8919557eeb9869339f19dc906da88194e9cd56cf60bb80
+  ? .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-requirements-integrated-design-review-run/review_summary.md
+  : cd0445fc37ff0e4a2b1dd70dd865101d64b22265f809d809edc5e40d4a8fe163
+  .reviewcompass/specs/workflow-management/spec.json: 9412b2f9711b97033c82a4c5ca569e8192910402c83dbe3a952b86db3adead5c
+  TODO_NEXT_SESSION.md: 645d6bf9be06bda8de683e89a59a89cb3877c42658fc8398c17345c0a4256145
+  docs/notes/working/2026-06-19-integrated-design-manual-workflow-progress.md: ec8465caadfcae2b0307f70067868f90768bab41e23e2b086af1f2807d764a30
+  docs/reviews/reopen-classification-2026-06-19-wm-integrated-design-requirements.md: f34088901082f6ecc320250fb1aac36e1c46c9a226d66c0357f9233a504e9862
+  stages/in-progress/reopen-procedure-2026-06-19.yaml: 1f9ffe03ea4c830ba390f982acdf44f6f4173d46c2118c777a68c1a7f654af0a
+required_verifiers: &id001
+- gemini-3.5-flash
+completed_verifiers: *id001
+unresolved_substantive_findings: 0
+verifications:
+- verifier: gemini-3.5-flash
+  target_files:
+  - .reviewcompass/post-write-verification/post-write-2026-06-19-258.yaml
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-19-requirements-integrated-design-reopen-alignment.md
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-19-requirements-integrated-design-review-wave-summary.md
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-19-requirements-integrated-design-review-wave.md
+  - .reviewcompass/specs/workflow-management/requirements.md
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-requirements-integrated-design-review-run/proxy-decision-prompts/C1-C9.prompt.md
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-requirements-integrated-design-review-run/proxy-decision-summary.md
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-requirements-integrated-design-review-run/raw-review-triage-summary.md
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-requirements-integrated-design-review-run/review-response.md
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-requirements-integrated-design-review-run/review-target.md
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-requirements-integrated-design-review-run/review_summary.md
+  - .reviewcompass/specs/workflow-management/spec.json
+  - TODO_NEXT_SESSION.md
+  - docs/notes/working/2026-06-19-integrated-design-manual-workflow-progress.md
+  - docs/reviews/reopen-classification-2026-06-19-wm-integrated-design-requirements.md
+  - stages/in-progress/reopen-procedure-2026-06-19.yaml
+  target_sha256:
+    .reviewcompass/post-write-verification/post-write-2026-06-19-258.yaml: 8f9b45b249c66bb519260e272334f17b1378f9d652b81ee2009b87f1b164a707
+    .reviewcompass/specs/_cross_feature/reviews/2026-06-19-requirements-integrated-design-reopen-alignment.md: bee9b0f400e18b8b691b9d55efc7426f8b37ed91e6938c19b8478bc9ab886185
+    .reviewcompass/specs/_cross_feature/reviews/2026-06-19-requirements-integrated-design-review-wave-summary.md: d5fce3c3f69b1d698fbb3dc4a41362e8961231a5cc2e39e0f8a77ef521250d05
+    .reviewcompass/specs/_cross_feature/reviews/2026-06-19-requirements-integrated-design-review-wave.md: 0b427092f58c810aeded31c4571e88a80bfd29bc7ceaf9f1c42abb2c0d653ec6
+    .reviewcompass/specs/workflow-management/requirements.md: ca557a4b3c7d6ed879e48c9c1537338c40e721ea56f1326604eb3603245c9623
+    ? .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-requirements-integrated-design-review-run/proxy-decision-prompts/C1-C9.prompt.md
+    : 0a9c5e4d8b92af86151be473e5a6cc2a0287341c24509617e023c155feace19f
+    ? .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-requirements-integrated-design-review-run/proxy-decision-summary.md
+    : c9ac4c4dcc1853a0ed2bca00bec9c6331fa30c2f7ca155bda36ba7e9de4256e4
+    ? .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-requirements-integrated-design-review-run/raw-review-triage-summary.md
+    : 054fe82c0220fc810eaf93d86b7742f0322b6916c48e3d6217766321fdb4911f
+    ? .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-requirements-integrated-design-review-run/review-response.md
+    : f1cc31f91a08060f123feb06dc9af9b335c4f20eb6be8b169254801fb58ecced
+    ? .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-requirements-integrated-design-review-run/review-target.md
+    : d9f37b63cd9a3af54e8919557eeb9869339f19dc906da88194e9cd56cf60bb80
+    ? .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-requirements-integrated-design-review-run/review_summary.md
+    : cd0445fc37ff0e4a2b1dd70dd865101d64b22265f809d809edc5e40d4a8fe163
+    .reviewcompass/specs/workflow-management/spec.json: 9412b2f9711b97033c82a4c5ca569e8192910402c83dbe3a952b86db3adead5c
+    TODO_NEXT_SESSION.md: 645d6bf9be06bda8de683e89a59a89cb3877c42658fc8398c17345c0a4256145
+    docs/notes/working/2026-06-19-integrated-design-manual-workflow-progress.md: ec8465caadfcae2b0307f70067868f90768bab41e23e2b086af1f2807d764a30
+    docs/reviews/reopen-classification-2026-06-19-wm-integrated-design-requirements.md: f34088901082f6ecc320250fb1aac36e1c46c9a226d66c0357f9233a504e9862
+    stages/in-progress/reopen-procedure-2026-06-19.yaml: 1f9ffe03ea4c830ba390f982acdf44f6f4173d46c2118c777a68c1a7f654af0a
+review_run:
+  path: .reviewcompass/evidence/review-runs/2026-06-19-requirements-alignment-gate-completion-postwrite
+  summary_path: .reviewcompass/evidence/review-runs/2026-06-19-requirements-alignment-gate-completion-postwrite/model-result-summary.yaml
+notes: Generated template; verify target_files cover current post-write targets before
+  use.

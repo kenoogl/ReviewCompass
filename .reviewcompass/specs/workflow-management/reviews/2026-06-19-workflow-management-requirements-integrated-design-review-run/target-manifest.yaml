@@ -1,0 +1,18 @@
+run_id: 2026-06-19-workflow-management-requirements-integrated-design-review-run
+target_files:
+- path: .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-requirements-integrated-design-review-run/review-target.md
+  sha256: d9f37b63cd9a3af54e8919557eeb9869339f19dc906da88194e9cd56cf60bb80
+- path: .reviewcompass/specs/workflow-management/requirements.md
+  sha256: 2d24be2c7b95bd33be0eed0d39405af49c30e9ac470f4327a33076dfa63f269f
+- path: .reviewcompass/specs/workflow-management/spec.json
+  sha256: 075808c88ee5747fbf9e85720769d2491a6c97465380c7eb7b20d9120bf7a32b
+- path: stages/in-progress/reopen-procedure-2026-06-19.yaml
+  sha256: 3336079383df22151c2152104fea21ec3aced472f1f50926e2be34c4df0a9067
+- path: docs/reviews/reopen-classification-2026-06-19-wm-integrated-design-requirements.md
+  sha256: f34088901082f6ecc320250fb1aac36e1c46c9a226d66c0357f9233a504e9862
+- path: docs/notes/2026-06-18-integrated-design-selection-execution-layers.md
+  sha256: 31d29388a8bb55c7e71501a2432cebd12c4d5ff6817052ebc36b81aef8c76608
+- path: docs/notes/working/2026-06-18-mechanized-workflow-execution-design.md
+  sha256: e38051da74d26f1237a4c690d1f2c1b678f923e9003b1549d05ee4a6431ce4bb
+- path: docs/notes/working/2026-06-19-integrated-design-requirements-missing.md
+  sha256: 962e1dde868bf383a5d5003adcb609bddd2d2509bd06a250ee705a5b5c63e6bc

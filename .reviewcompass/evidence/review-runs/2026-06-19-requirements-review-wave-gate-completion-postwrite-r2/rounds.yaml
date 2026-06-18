@@ -1,0 +1,36 @@
+round_id: round-1
+purpose: post_write_verification
+invocation_timestamp: '2026-06-18T22:46:25.746855+00:00'
+target_files:
+- path: .reviewcompass/specs/workflow-management/spec.json
+  sha256: 4b1b7f54ec7031bbf8787c926869b2de87dbce978b3edc006f1bf0b6f3a228cb
+- path: stages/in-progress/reopen-procedure-2026-06-19.yaml
+  sha256: 73a05eeaa02f5e80c2b74f0a60eb27758c31c8db05bcd3d9f2270cf984c14437
+- path: TODO_NEXT_SESSION.md
+  sha256: 13f83ef521029a2339cdc8c43530aeb0a5792a55367646399204550f11c1fd39
+- path: docs/notes/working/2026-06-19-integrated-design-manual-workflow-progress.md
+  sha256: 6a46f5d7453abc78a14e7bb19ec9a839d8a01ea7b37e2f4e9c1599e65644a74c
+- path: .reviewcompass/post-write-verification/post-write-2026-06-19-256.yaml
+  sha256: 7030bf0c774f4b98c5935618d679b07e86f9ba7208742f1f466662f6514927df
+- path: .reviewcompass/evidence/review-runs/2026-06-19-requirements-review-wave-gate-completion-postwrite/triage.yaml
+  sha256: 133c196d62564f470e1b25ecdaebcc2482c53a6cd173abb11fbae66371efe232
+criteria: workflow_management_requirements_review_wave_gate_completion_post_write_r2
+prompt_sha256: c4c20068b4f0c2848ad3e8d6c1adab3d1c3da02e4e421da4417a8e9ef50692e7
+model_results:
+- model_id: gemini-3.5-flash
+  provider: gemini-api
+  role: primary
+  treatment: primary
+  invocation_path: api
+  raw_path: raw/gemini-3.5-flash.round-1.txt
+  raw_sha256: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+  parsed_path: parsed/gemini-3.5-flash.round-1.yaml
+  parsed_sha256: ddc6b3f96c4e24d999dfe6dc1ecfba86d03a133fa86b60a02d0df4d7a4fe2576
+  parse_status: parsed
+  formatted_by: parser
+  formatted_by_actor_type: orchestrator
+  formatted_by_actor: run_role.py
+  formatted_at: '2026-06-18T22:46:25.746855+00:00'
+  follow_up_action: triage
+  attempts: 1
+  duration_seconds: 14.011

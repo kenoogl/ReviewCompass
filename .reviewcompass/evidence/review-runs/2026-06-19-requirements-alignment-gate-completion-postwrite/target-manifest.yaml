@@ -1,0 +1,12 @@
+run_id: 2026-06-19-requirements-alignment-gate-completion-postwrite
+target_files:
+- path: .reviewcompass/specs/workflow-management/spec.json
+  sha256: 9412b2f9711b97033c82a4c5ca569e8192910402c83dbe3a952b86db3adead5c
+- path: stages/in-progress/reopen-procedure-2026-06-19.yaml
+  sha256: 1f9ffe03ea4c830ba390f982acdf44f6f4173d46c2118c777a68c1a7f654af0a
+- path: TODO_NEXT_SESSION.md
+  sha256: 645d6bf9be06bda8de683e89a59a89cb3877c42658fc8398c17345c0a4256145
+- path: docs/notes/working/2026-06-19-integrated-design-manual-workflow-progress.md
+  sha256: ec8465caadfcae2b0307f70067868f90768bab41e23e2b086af1f2807d764a30
+- path: .reviewcompass/post-write-verification/post-write-2026-06-19-258.yaml
+  sha256: 8f9b45b249c66bb519260e272334f17b1378f9d652b81ee2009b87f1b164a707
