@@ -13,6 +13,8 @@
 #   - その dir の *.jsonl のうち、session_id（現セッション）以外で mtime 最新の 1 件を選ぶ
 #   - 当該 jsonl を tools/session-record-backfill.py --session で取り込む（単一・安全）
 #   - 進行中の現セッションは選ばない。仮に取り込んでもコミット側の歯止めが弾く
+#   - 取り込み済みのセッションは .reviewcompass/runtime/session-backfill-done/ にマーカーを
+#     残し、コンテキスト圧縮による SessionStart 再発火でも二重取り込みしない
 #   - 取り込めない場合も含め常に exit 0（起動を妨げない）
 #
 # 出力先はテスト用に環境変数で差し替え可能（既定は repo の正規置き場）：
@@ -51,6 +53,13 @@ done < <(ls -t "$PROJ"/*.jsonl 2>/dev/null)
 [ -z "$PREV" ] && exit 0
 [ ! -f "$PREV" ] && exit 0
 
+PREV_ID=$(basename "$PREV" .jsonl)
+DONE_DIR="$REPO_ROOT/.reviewcompass/runtime/session-backfill-done"
+DONE_MARKER="$DONE_DIR/$PREV_ID"
+
+# 取り込み済みマーカーがあればスキップ（コンテキスト圧縮による再発火対策）
+[ -f "$DONE_MARKER" ] && exit 0
+
 EVIDENCE_DIR="${RC_SESSION_EVIDENCE_DIR:-$REPO_ROOT/.reviewcompass/evidence/sessions}"
 DOCS_DIR="${RC_SESSION_DOCS_DIR:-$REPO_ROOT/docs/sessions}"
 
@@ -58,5 +67,9 @@ cd "$REPO_ROOT" || exit 0
 python3 tools/session-record-backfill.py \
   --session "$PREV" --source claude \
   --evidence-dir "$EVIDENCE_DIR" --docs-dir "$DOCS_DIR" >/dev/null 2>&1 || true
+
+# 取り込み完了マーカーを記録
+mkdir -p "$DONE_DIR"
+touch "$DONE_MARKER"
 
 exit 0

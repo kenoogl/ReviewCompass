@@ -3424,16 +3424,16 @@ def cmd_commit(args):
 
   # staged ファイルの取得と分類
   result = subprocess.run(
-    ["git", "diff", "--cached", "--name-only"],
+    ["git", "diff", "--cached", "--name-only", "-z"],
     cwd=str(cwd),
     capture_output=True,
-    text=True,
+    text=False,
   )
   if result.returncode != 0:
-    print(f"error: git diff 失敗: {result.stderr}", file=sys.stderr)
+    print(f"error: git diff 失敗: {result.stderr.decode('utf-8', errors='replace')}", file=sys.stderr)
     return 2
 
-  staged_files = [f for f in result.stdout.strip().splitlines() if f]
+  staged_files = [f.decode("utf-8") for f in result.stdout.split(b"\0") if f]
   dangerous = [f for f in staged_files if classify_staged_file(f) == "dangerous"]
   caution = [f for f in staged_files if classify_staged_file(f) == "caution"]
   normal = [f for f in staged_files if classify_staged_file(f) == "normal"]
