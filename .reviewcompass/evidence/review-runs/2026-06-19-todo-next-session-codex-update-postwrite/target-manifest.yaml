@@ -1,0 +1,6 @@
+run_id: 2026-06-19-todo-next-session-codex-update-postwrite
+target_files:
+- path: TODO_NEXT_SESSION.md
+  sha256: 0c832386312be75f4483728a5a7238c9c581e56f59e482dc2c86d7b10a5b69cb
+- path: docs/notes/working/2026-06-19-integrated-design-manual-workflow-progress.md
+  sha256: e54a454884a31b97d441c68eb91fdfa8389ccb6b39041c7a5ffe013e831453cd

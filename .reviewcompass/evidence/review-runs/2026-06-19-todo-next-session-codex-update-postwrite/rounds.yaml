@@ -1,0 +1,28 @@
+round_id: round-1
+purpose: post_write_verification
+invocation_timestamp: '2026-06-18T21:32:38.839422+00:00'
+target_files:
+- path: TODO_NEXT_SESSION.md
+  sha256: 0c832386312be75f4483728a5a7238c9c581e56f59e482dc2c86d7b10a5b69cb
+- path: docs/notes/working/2026-06-19-integrated-design-manual-workflow-progress.md
+  sha256: e54a454884a31b97d441c68eb91fdfa8389ccb6b39041c7a5ffe013e831453cd
+criteria: todo_and_manual_progress_current_status_update
+prompt_sha256: 0d1b9f8efcb8ca466707f373bad1b20cb65e4f0153d4edbaa531743b80051e3c
+model_results:
+- model_id: gemini-3.5-flash
+  provider: gemini-api
+  role: primary
+  treatment: primary
+  invocation_path: api
+  raw_path: raw/gemini-3.5-flash.round-1.txt
+  raw_sha256: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+  parsed_path: parsed/gemini-3.5-flash.round-1.yaml
+  parsed_sha256: c40822f9a0683d0ff89737124ba30bff0e8ab39d7d4e478934ce885d082b8931
+  parse_status: parsed
+  formatted_by: parser
+  formatted_by_actor_type: orchestrator
+  formatted_by_actor: run_role.py
+  formatted_at: '2026-06-18T21:32:38.839422+00:00'
+  follow_up_action: triage
+  attempts: 1
+  duration_seconds: 9.09

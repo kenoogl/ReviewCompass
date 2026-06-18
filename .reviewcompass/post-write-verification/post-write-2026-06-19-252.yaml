@@ -1,0 +1,24 @@
+status: completed
+target_files:
+- TODO_NEXT_SESSION.md
+- docs/notes/working/2026-06-19-integrated-design-manual-workflow-progress.md
+target_sha256:
+  TODO_NEXT_SESSION.md: 0c832386312be75f4483728a5a7238c9c581e56f59e482dc2c86d7b10a5b69cb
+  docs/notes/working/2026-06-19-integrated-design-manual-workflow-progress.md: e54a454884a31b97d441c68eb91fdfa8389ccb6b39041c7a5ffe013e831453cd
+required_verifiers: &id001
+- gemini-3.5-flash
+completed_verifiers: *id001
+unresolved_substantive_findings: 0
+verifications:
+- verifier: gemini-3.5-flash
+  target_files:
+  - TODO_NEXT_SESSION.md
+  - docs/notes/working/2026-06-19-integrated-design-manual-workflow-progress.md
+  target_sha256:
+    TODO_NEXT_SESSION.md: 0c832386312be75f4483728a5a7238c9c581e56f59e482dc2c86d7b10a5b69cb
+    docs/notes/working/2026-06-19-integrated-design-manual-workflow-progress.md: e54a454884a31b97d441c68eb91fdfa8389ccb6b39041c7a5ffe013e831453cd
+review_run:
+  path: .reviewcompass/evidence/review-runs/2026-06-19-todo-next-session-codex-update-postwrite
+  summary_path: .reviewcompass/evidence/review-runs/2026-06-19-todo-next-session-codex-update-postwrite/model-result-summary.yaml
+notes: Generated template; verify target_files cover current post-write targets before
+  use.
