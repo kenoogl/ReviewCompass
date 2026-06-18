@@ -1,0 +1,121 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:reviewcompass:schema:next_action_response",
+  "$comment": "additionalProperties は指定しない（前向き拡張用：将来の実装で新フィールドを追加してもスキーマ改訂なしに対応できるよう、段階的拡張を妨げない）",
+  "type": "object",
+  "required": ["verdict", "exit_code", "next_action", "reasons", "current_state"],
+  "properties": {
+    "verdict": { "type": "string" },
+    "exit_code": { "type": "integer" },
+    "next_action": {
+      "$comment": "additionalProperties は指定しない（後ろ向き互換用：旧バージョンのツールが出力する pending_gates・next_pending_gate 等を許容するため。最上位の前向き拡張とは目的が異なる）",
+      "type": "object",
+      "required": [
+        "kind",
+        "required_action",
+        "active_gate",
+        "feature",
+        "phase",
+        "stage",
+        "required_feature_scope",
+        "blocked_by",
+        "future_gates",
+        "state_refs"
+      ],
+      "properties": {
+        "verdict": false,
+        "kind": {
+          "type": "string",
+          "enum": [
+            "resume_in_progress",
+            "reopen_in_progress",
+            "maintenance_in_progress",
+            "reopen_classification_required",
+            "post_write_verification",
+            "lightweight_self_check",
+            "post_write_policy_violation",
+            "post_write_human_decision_required",
+            "stage",
+            "cross_feature_stage",
+            "upstream_recheck",
+            "feature_definition_required",
+            "completed",
+            "unknown"
+          ]
+        },
+        "required_action": {
+          "$ref": "urn:reviewcompass:schema:required_action"
+        },
+        "active_gate": {
+          "oneOf": [{ "type": "string" }, { "type": "null" }]
+        },
+        "feature": {
+          "oneOf": [{ "type": "string" }, { "type": "null" }]
+        },
+        "phase": {
+          "oneOf": [{ "type": "string" }, { "type": "null" }]
+        },
+        "stage": {
+          "oneOf": [{ "type": "string" }, { "type": "null" }]
+        },
+        "required_feature_scope": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "blocked_by": {
+          "oneOf": [{ "type": "object" }, { "type": "null" }]
+        },
+        "future_gates": {
+          "type": "array"
+        },
+        "state_refs": {
+          "type": "object"
+        },
+        "pending_gates": {
+          "type": "array"
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": { "required_action": { "const": "repair_workflow_state" } },
+            "required": ["required_action"]
+          },
+          "then": {
+            "required": ["repair_reasons"],
+            "properties": {
+              "repair_reasons": {
+                "type": "array",
+                "minItems": 1
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": { "required_action": { "const": "run_maintenance" } },
+            "required": ["required_action"]
+          },
+          "then": {
+            "required": ["action_parameters"],
+            "properties": {
+              "action_parameters": {
+                "type": "object",
+                "required": [
+                  "maintenance_action",
+                  "allowed_scope",
+                  "allowed_files",
+                  "completion_conditions",
+                  "active_stack_frame_id",
+                  "parent_frame_id"
+                ]
+              }
+            }
+          }
+        }
+      ]
+    },
+    "reasons": { "type": "array" },
+    "current_state": { "type": "object" }
+  }
+}

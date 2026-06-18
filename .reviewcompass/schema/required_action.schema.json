@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:reviewcompass:schema:required_action",
+  "type": "string",
+  "enum": [
+    "repair_workflow_state",
+    "run_post_write_verification",
+    "wait_for_human_decision",
+    "record_human_decision",
+    "run_maintenance",
+    "advance_reopen_after_commit_stop_point",
+    "commit_stop_point",
+    "draft_reopen_plan_candidates",
+    "apply_approved_reopen_plan",
+    "advance_reopen_after_approval_stop_point",
+    "repair_canonical_documents",
+    "run_reopen_drafting",
+    "run_reopen_pending_gate",
+    "collect_required_decisions",
+    "finalize_reopen",
+    "draft_reopen_classification",
+    "run_reopen_start",
+    "run_workflow_stage",
+    "completed"
+  ]
+}

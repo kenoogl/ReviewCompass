@@ -1,0 +1,132 @@
+run_id: 2026-06-19-workflow-management-implementation-phase1-schema-definitions-review-run
+triage_status: decided
+generated_at: '2026-06-18T15:36:49.669612+00:00'
+decision_actor: null
+decision_actor_type: human
+items:
+- finding_id: 2026-06-19-workflow-management-implementation-phase1-schema-definitions-review-run-claude-sonnet-4-6-primary-001
+  run_id: 2026-06-19-workflow-management-implementation-phase1-schema-definitions-review-run
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: 3.1 required_action.schema.json / enum
+  plain_language_summary: 観点A：enum 順序は仕様（§5.1 優先順位表）と完全一致している。19値すべての位置・値が正本と一致しており、欠落・余剰・順序ズレはない。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-18T15:43:15.757014+00:00'
+  decision_reason: 3モデル総合（gpt-5.5・gemini-3.1-pro-preview は所見なし）：実装は仕様を正確に満たしており、修正不要。利用者が
+    leave-as-is を承認。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-19-workflow-management-implementation-phase1-schema-definitions-review-run-claude-sonnet-4-6-primary-002
+  run_id: 2026-06-19-workflow-management-implementation-phase1-schema-definitions-review-run
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: 3.2 next_action_response.schema.json / next_action / properties
+    / verdict
+  plain_language_summary: '観点B：`properties: { "verdict": false }` は JSON Schema Draft
+    2020-12 において有効だが、`additionalProperties` が指定されていない場合、このスキーマ単体では `verdict` フィールドの存在を拒否できない。`false`
+    スキーマはそのパスのスキーマを常に失敗させるが、`additionalProperties` が未指定（デフォルト `true`）の環境では `verdict`
+    が `properties` に列挙されていても追加プロパティとして通過するバリデーターの実装が存在しうる。ただし、Draft 2020-12 仕様では `properties`
+    に記載されたキーは `additionalProperties` の対象外となるため、準拠実装では意図通り機能する。'
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-18T15:43:15.809896+00:00'
+  decision_reason: 3モデル総合（gpt-5.5・gemini-3.1-pro-preview は所見なし）：実装は仕様を正確に満たしており、修正不要。利用者が
+    leave-as-is を承認。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-19-workflow-management-implementation-phase1-schema-definitions-review-run-claude-sonnet-4-6-primary-003
+  run_id: 2026-06-19-workflow-management-implementation-phase1-schema-definitions-review-run
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: 3.2 next_action_response.schema.json / next_action / properties
+    / kind / enum
+  plain_language_summary: 観点C：`kind` の enum 14値は仕様（§5.2 kind フィールドの値域）と値・順序ともに完全一致している。欠落・余剰・順序ズレはない。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-18T15:43:15.860465+00:00'
+  decision_reason: 3モデル総合（gpt-5.5・gemini-3.1-pro-preview は所見なし）：実装は仕様を正確に満たしており、修正不要。利用者が
+    leave-as-is を承認。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-19-workflow-management-implementation-phase1-schema-definitions-review-run-claude-sonnet-4-6-primary-004
+  run_id: 2026-06-19-workflow-management-implementation-phase1-schema-definitions-review-run
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: 3.2 next_action_response.schema.json / next_action / properties
+    / required_action / $ref
+  plain_language_summary: '観点D：`"$ref": "urn:reviewcompass:schema:required_action"`
+    は JSON Schema Draft 2020-12 において適切な絶対 URI 参照である。URN は絶対 URI の一形式であり、基底 URI への相対解決が発生しないため、スキーマファイルの配置場所に依存しない解決が可能という設計意図と合致している。'
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-18T15:43:15.910692+00:00'
+  decision_reason: 3モデル総合（gpt-5.5・gemini-3.1-pro-preview は所見なし）：実装は仕様を正確に満たしており、修正不要。利用者が
+    leave-as-is を承認。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-19-workflow-management-implementation-phase1-schema-definitions-review-run-claude-sonnet-4-6-primary-005
+  run_id: 2026-06-19-workflow-management-implementation-phase1-schema-definitions-review-run
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: 3.2 next_action_response.schema.json / next_action / allOf
+  plain_language_summary: '観点E：2つの `if/then` ブロックは JSON Schema Draft 2020-12 として正しく実装されている。`if`
+    条件に `required: ["required_action"]` を含めることで `required_action` が存在する場合のみ条件評価が行われ、フィールド不在時の誤発動を防いでいる。`then`
+    で `required` と `properties` を両方定義しており、条件付き必須と型制約が正しく機能する。'
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-18T15:43:15.960650+00:00'
+  decision_reason: 3モデル総合（gpt-5.5・gemini-3.1-pro-preview は所見なし）：実装は仕様を正確に満たしており、修正不要。利用者が
+    leave-as-is を承認。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-19-workflow-management-implementation-phase1-schema-definitions-review-run-claude-sonnet-4-6-primary-006
+  run_id: 2026-06-19-workflow-management-implementation-phase1-schema-definitions-review-run
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: 3.2 next_action_response.schema.json / 全体設計
+  plain_language_summary: 観点F：設計意図との整合性は高い。最上位の `additionalProperties` 非指定（前向き拡張用）、`next_action`
+    内の `additionalProperties` 非指定（後ろ向き互換用）、`pending_gates` の配列型定義による後方互換フィールドの明示、`oneOf`
+    による nullable 型定義、いずれも仕様の設計決定と合致している。`$comment` による意図の文書化も両箇所に存在しており、保守性が確保されている。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-18T15:43:16.010779+00:00'
+  decision_reason: 3モデル総合（gpt-5.5・gemini-3.1-pro-preview は所見なし）：実装は仕様を正確に満たしており、修正不要。利用者が
+    leave-as-is を承認。
+  applied_files: []
+  superseded_by: null

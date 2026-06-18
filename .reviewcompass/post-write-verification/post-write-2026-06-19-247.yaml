@@ -1,0 +1,64 @@
+status: completed
+target_files:
+- .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-implementation-phase1-schema-definitions-review-run/review-target.md
+- .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-implementation-phase1-schema-definitions-review-run/review_summary.md
+- docs/sessions/auto-2026-06-18-claude-4d027dd0-1237-4077-83b5-a506a34a8837.md
+- docs/sessions/auto-2026-06-18-claude-cf8204d6-8a80-4d1a-a88f-8918071ed43d.md
+target_sha256:
+  ? .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-implementation-phase1-schema-definitions-review-run/review-target.md
+  : 46798ed5e59fda9cce9d2a27856726a9b14ed1351fc7269859c86dee7807e42c
+  ? .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-implementation-phase1-schema-definitions-review-run/review_summary.md
+  : d82f6c4b6d13b9a434e97a49a50bd24730cb2e225e4d83ac795b72263a5b2195
+  docs/sessions/auto-2026-06-18-claude-4d027dd0-1237-4077-83b5-a506a34a8837.md: b48c748d08e2c0b1b9fdcda8c622923dc0ee8245504f384cc66f571db524a2df
+  docs/sessions/auto-2026-06-18-claude-cf8204d6-8a80-4d1a-a88f-8918071ed43d.md: d8587d35ffccf227090ab15d9b64e204f62117a15dbd9a6b60c0d05377912347
+required_verifiers: &id001
+- claude-sonnet-4-6
+- gpt-5.5
+- gemini-3.1-pro-preview
+completed_verifiers: *id001
+unresolved_substantive_findings: 0
+verifications:
+- verifier: claude-sonnet-4-6
+  target_files:
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-implementation-phase1-schema-definitions-review-run/review-target.md
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-implementation-phase1-schema-definitions-review-run/review_summary.md
+  - docs/sessions/auto-2026-06-18-claude-4d027dd0-1237-4077-83b5-a506a34a8837.md
+  - docs/sessions/auto-2026-06-18-claude-cf8204d6-8a80-4d1a-a88f-8918071ed43d.md
+  target_sha256:
+    ? .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-implementation-phase1-schema-definitions-review-run/review-target.md
+    : 46798ed5e59fda9cce9d2a27856726a9b14ed1351fc7269859c86dee7807e42c
+    ? .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-implementation-phase1-schema-definitions-review-run/review_summary.md
+    : d82f6c4b6d13b9a434e97a49a50bd24730cb2e225e4d83ac795b72263a5b2195
+    docs/sessions/auto-2026-06-18-claude-4d027dd0-1237-4077-83b5-a506a34a8837.md: b48c748d08e2c0b1b9fdcda8c622923dc0ee8245504f384cc66f571db524a2df
+    docs/sessions/auto-2026-06-18-claude-cf8204d6-8a80-4d1a-a88f-8918071ed43d.md: d8587d35ffccf227090ab15d9b64e204f62117a15dbd9a6b60c0d05377912347
+- verifier: gpt-5.5
+  target_files:
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-implementation-phase1-schema-definitions-review-run/review-target.md
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-implementation-phase1-schema-definitions-review-run/review_summary.md
+  - docs/sessions/auto-2026-06-18-claude-4d027dd0-1237-4077-83b5-a506a34a8837.md
+  - docs/sessions/auto-2026-06-18-claude-cf8204d6-8a80-4d1a-a88f-8918071ed43d.md
+  target_sha256:
+    ? .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-implementation-phase1-schema-definitions-review-run/review-target.md
+    : 46798ed5e59fda9cce9d2a27856726a9b14ed1351fc7269859c86dee7807e42c
+    ? .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-implementation-phase1-schema-definitions-review-run/review_summary.md
+    : d82f6c4b6d13b9a434e97a49a50bd24730cb2e225e4d83ac795b72263a5b2195
+    docs/sessions/auto-2026-06-18-claude-4d027dd0-1237-4077-83b5-a506a34a8837.md: b48c748d08e2c0b1b9fdcda8c622923dc0ee8245504f384cc66f571db524a2df
+    docs/sessions/auto-2026-06-18-claude-cf8204d6-8a80-4d1a-a88f-8918071ed43d.md: d8587d35ffccf227090ab15d9b64e204f62117a15dbd9a6b60c0d05377912347
+- verifier: gemini-3.1-pro-preview
+  target_files:
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-implementation-phase1-schema-definitions-review-run/review-target.md
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-implementation-phase1-schema-definitions-review-run/review_summary.md
+  - docs/sessions/auto-2026-06-18-claude-4d027dd0-1237-4077-83b5-a506a34a8837.md
+  - docs/sessions/auto-2026-06-18-claude-cf8204d6-8a80-4d1a-a88f-8918071ed43d.md
+  target_sha256:
+    ? .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-implementation-phase1-schema-definitions-review-run/review-target.md
+    : 46798ed5e59fda9cce9d2a27856726a9b14ed1351fc7269859c86dee7807e42c
+    ? .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-implementation-phase1-schema-definitions-review-run/review_summary.md
+    : d82f6c4b6d13b9a434e97a49a50bd24730cb2e225e4d83ac795b72263a5b2195
+    docs/sessions/auto-2026-06-18-claude-4d027dd0-1237-4077-83b5-a506a34a8837.md: b48c748d08e2c0b1b9fdcda8c622923dc0ee8245504f384cc66f571db524a2df
+    docs/sessions/auto-2026-06-18-claude-cf8204d6-8a80-4d1a-a88f-8918071ed43d.md: d8587d35ffccf227090ab15d9b64e204f62117a15dbd9a6b60c0d05377912347
+review_run:
+  path: .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-implementation-phase1-schema-definitions-review-run
+  summary_path: .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-implementation-phase1-schema-definitions-review-run/model-result-summary.yaml
+notes: Generated template; verify target_files cover current post-write targets before
+  use.
