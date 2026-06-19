@@ -261,11 +261,13 @@ commit_stop_point_records:
   head: 0178dbdcd50688ed2a91439899967aa73d5b4da8
   evidence:
   - .reviewcompass/post-write-verification/post-write-2026-06-19-282.yaml
+- step: 3
+  kind: review_wave_complete
+  gate: stages/tasks.yaml#review-wave
+  reason: tasks review-wave 完了時点の停止点
+  head: 3827cf61b739617dca4825dd84b0b18f17358147
+  evidence:
+  - .reviewcompass/post-write-verification/post-write-2026-06-19-283.yaml
 commit_required: true
 commit_required_kind: stop_point_consumed
 commit_required_reason: reopen commit stop point 消費完了時点の停止点
-commit_stop_point: true
-commit_stop_point_step: 3
-commit_stop_point_kind: review_wave_complete
-commit_stop_point_gate: stages/tasks.yaml#review-wave
-commit_stop_point_reason: tasks review-wave 完了時点の停止点
