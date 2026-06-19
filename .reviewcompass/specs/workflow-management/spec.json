@@ -30,18 +30,18 @@
       "approval": true
     },
     "tasks": {
-      "drafting": true,
-      "triad-review": true,
-      "review-wave": true,
-      "alignment": true,
-      "approval": true
+      "drafting": false,
+      "triad-review": false,
+      "review-wave": false,
+      "alignment": false,
+      "approval": false
     },
     "implementation": {
-      "drafting": true,
-      "triad-review": true,
-      "review-wave": true,
-      "alignment": true,
-      "approval": true
+      "drafting": false,
+      "triad-review": false,
+      "review-wave": false,
+      "alignment": false,
+      "approval": false
     }
   },
   "reopened": {
@@ -53,7 +53,9 @@
     "implementation": true
   },
   "recheck": {
-    "upstream_change_pending": false,
-    "impacted_downstream_phases": []
+    "upstream_change_pending": true,
+    "impacted_downstream_phases": [
+      "implementation"
+    ]
   }
 }

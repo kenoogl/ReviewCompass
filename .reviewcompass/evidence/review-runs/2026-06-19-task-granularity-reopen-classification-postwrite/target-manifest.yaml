@@ -1,0 +1,6 @@
+run_id: 2026-06-19-task-granularity-reopen-classification-postwrite
+target_files:
+- path: TODO_NEXT_SESSION.md
+  sha256: 8f7c68666851e8e54e76369abe9adb4e9f6da836ce31987543736f4a2ed07608
+- path: docs/reviews/reopen-classification-2026-06-19-wm-task-granularity-regeneration.md
+  sha256: f932d143642ee3c243ae096b14d560ce0bdd8bf9aea3c51ed52f4efdfe4e31bd

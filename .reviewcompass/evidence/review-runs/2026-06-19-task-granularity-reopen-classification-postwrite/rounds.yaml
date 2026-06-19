@@ -1,0 +1,112 @@
+round_id: round-1
+purpose: post_write_verification
+invocation_timestamp: '2026-06-19T11:57:20.142924+00:00'
+target_files:
+- path: TODO_NEXT_SESSION.md
+  sha256: 8f7c68666851e8e54e76369abe9adb4e9f6da836ce31987543736f4a2ed07608
+- path: docs/reviews/reopen-classification-2026-06-19-wm-task-granularity-regeneration.md
+  sha256: f932d143642ee3c243ae096b14d560ce0bdd8bf9aea3c51ed52f4efdfe4e31bd
+criteria: '# Post-write Review Target
+
+
+  criteria_id: post_write_verification
+
+  phase: post_write_verification
+
+  generated_at: 2026-06-19T11:57:06.632111+00:00
+
+
+  ## Change Summary
+
+
+  TODO_NEXT_SESSION.md was refreshed to the b06e3e2a handoff and a new workflow-management
+  A-0 reopen classification record was added for task-granularity regeneration. The
+  classification says tasks.md will be regenerated under the new task-granularity
+  discipline, then implementation will create tests and code from tasks.md without
+  creating implementation-drafting.md.
+
+
+  ## Review Question
+
+
+  Do these two changed files accurately reflect the user instruction to reopen from
+  the tasks phase, regenerate workflow-management tasks under the new task-granularity
+  discipline, and then implement from tasks.md without overextending the scope beyond
+  workflow-management tasks and implementation?
+
+
+  ## Target Files
+
+
+  - TODO_NEXT_SESSION.md sha256=8f7c68666851e8e54e76369abe9adb4e9f6da836ce31987543736f4a2ed07608
+
+  - docs/reviews/reopen-classification-2026-06-19-wm-task-granularity-regeneration.md
+  sha256=f932d143642ee3c243ae096b14d560ce0bdd8bf9aea3c51ed52f4efdfe4e31bd
+
+
+  ## Scope
+
+
+  - Check whether the changed target files clearly state the intended contract.
+
+  - Check whether related instructions are mutually consistent across targets.
+
+  - Check whether the documented procedure is actionable before API review, triage,
+  manifest, or commit steps continue.
+
+
+  ## Out Of Scope
+
+
+  - Do not request unrelated refactors or style-only rewrites.
+
+  - Do not judge files that are not listed in Target Files.
+
+  - Do not treat missing implementation work as a document defect unless the target
+  text claims it already exists.
+
+
+  ## Finding Policy
+
+
+  - Report must-fix findings for contradictions, missing required gates, or instructions
+  that would allow an unsafe workflow action.
+
+  - Report should-fix findings for ambiguity that could cause repeated manual judgment
+  or unnecessary API review loops.
+
+  - Return findings: [] when the target files are internally consistent for this review
+  question.
+
+
+  ## Sensitive Information Check
+
+
+  - status: passed
+
+  - External API review must not proceed if this section reports potential secrets.
+
+  '
+prompt_sha256: 6061c25e7a2b1e9b913110b2d3e88b0cbb130145f891e32425959729d07d1cf6
+model_results:
+- model_id: gemini-3.5-flash
+  provider: gemini-api
+  role: primary
+  treatment: primary
+  invocation_path: api
+  raw_path: raw/gemini-3.5-flash.round-1.txt
+  raw_sha256: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+  parsed_path: parsed/gemini-3.5-flash.round-1.yaml
+  parsed_sha256: 6394848b5351d9625a1935e1fa392476fd286705cf3e227b1da0cd5125ed57d5
+  parse_status: parsed
+  formatted_by: parser
+  formatted_by_actor_type: orchestrator
+  formatted_by_actor: run_role.py
+  formatted_at: '2026-06-19T11:57:20.142924+00:00'
+  follow_up_action: triage
+  attempts: 1
+  duration_seconds: 7.333
+  prompt_path: prompts/gemini-3.5-flash.round-1.prompt.md
+  prompt_sha256: 6061c25e7a2b1e9b913110b2d3e88b0cbb130145f891e32425959729d07d1cf6
+criteria_source_path: .reviewcompass/evidence/review-runs/2026-06-19-task-granularity-reopen-classification-postwrite/review-target.md
+criteria_source_sha256: f97743ebdc2b61c3c69cee51dbee1913bc2cff18c8a69766bbfe5519c2826d01

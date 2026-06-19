@@ -1,0 +1,39 @@
+process_id: reopen-procedure
+feature: workflow-management
+classification: A-0
+started_at: '2026-06-19T00:00:00+09:00'
+trigger: タスク粒度規律に従う workflow-management tasks 再生成と implementation 実作業化
+classification_basis: docs/reviews/reopen-classification-2026-06-19-wm-task-granularity-regeneration.md
+completed_steps:
+- A-0 判定確定・spec.json フラグ差し戻し完了（tasks 全段 → false、implementation 全段 → false、recheck.upstream_change_pending
+  → true、impacted_downstream_phases → implementation）
+- tasks.md を新しい粒度規律に従って再生成（T-016〜T-019 に実装対象ファイル、最初に書く失敗テスト、実装順序、完了条件、検証コマンド、禁止事項、停止条件を追加）
+next_step: 第2過程：停止点コミット
+step_number: 2
+pending_gates:
+- stages/tasks.yaml#triad-review
+- stages/tasks.yaml#review-wave
+- stages/tasks.yaml#alignment
+- stages/tasks.yaml#approval
+current_blocker: null
+reopen_step_records:
+- from_step: 1
+  completed_step: A-0 判定確定・spec.json フラグ差し戻し完了（tasks 全段 → false、implementation 全段
+    → false、recheck.upstream_change_pending → true、impacted_downstream_phases → implementation）
+  rationale: 利用者指示に基づき、tasks 段からの reopen としてタスク粒度規律に従う tasks.md 再生成と implementation
+    実作業化を行うため。分類根拠は docs/reviews/reopen-classification-2026-06-19-wm-task-granularity-regeneration.md
+    に記録済み。
+  evidence:
+  - docs/reviews/reopen-classification-2026-06-19-wm-task-granularity-regeneration.md
+  - .reviewcompass/specs/workflow-management/spec.json
+- from_step: 2
+  completed_step: tasks.md を新しい粒度規律に従って再生成（T-016〜T-019 に実装対象ファイル、最初に書く失敗テスト、実装順序、完了条件、検証コマンド、禁止事項、停止条件を追加）
+  rationale: implementation-drafting.md を正本成果物にせず、tasks.md から直接テストと実装コードへ進める粒度へ上げるため。既存粒度テスト
+    tests/tools/test_workflow_management_task_granularity.py は pass。
+  evidence:
+  - .reviewcompass/specs/workflow-management/tasks.md
+  - tests/tools/test_workflow_management_task_granularity.py
+commit_stop_point: true
+commit_stop_point_step: 2
+commit_stop_point_kind: canonical_update_complete
+commit_stop_point_reason: 第2過程の正本修正完了

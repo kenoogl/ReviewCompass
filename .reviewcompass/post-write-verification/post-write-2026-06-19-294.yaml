@@ -1,0 +1,24 @@
+status: completed
+target_files:
+- TODO_NEXT_SESSION.md
+- docs/reviews/reopen-classification-2026-06-19-wm-task-granularity-regeneration.md
+target_sha256:
+  TODO_NEXT_SESSION.md: 8f7c68666851e8e54e76369abe9adb4e9f6da836ce31987543736f4a2ed07608
+  docs/reviews/reopen-classification-2026-06-19-wm-task-granularity-regeneration.md: f932d143642ee3c243ae096b14d560ce0bdd8bf9aea3c51ed52f4efdfe4e31bd
+required_verifiers: &id001
+- gemini-3.5-flash
+completed_verifiers: *id001
+unresolved_substantive_findings: 0
+verifications:
+- verifier: gemini-3.5-flash
+  target_files:
+  - TODO_NEXT_SESSION.md
+  - docs/reviews/reopen-classification-2026-06-19-wm-task-granularity-regeneration.md
+  target_sha256:
+    TODO_NEXT_SESSION.md: 8f7c68666851e8e54e76369abe9adb4e9f6da836ce31987543736f4a2ed07608
+    docs/reviews/reopen-classification-2026-06-19-wm-task-granularity-regeneration.md: f932d143642ee3c243ae096b14d560ce0bdd8bf9aea3c51ed52f4efdfe4e31bd
+review_run:
+  path: .reviewcompass/evidence/review-runs/2026-06-19-task-granularity-reopen-classification-postwrite
+  summary_path: .reviewcompass/evidence/review-runs/2026-06-19-task-granularity-reopen-classification-postwrite/model-result-summary.yaml
+notes: Generated template; verify target_files cover current post-write targets before
+  use.

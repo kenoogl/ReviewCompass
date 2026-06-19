@@ -1,0 +1,16 @@
+run_id: 2026-06-19-task-granularity-reopen-classification-postwrite
+phase: post_write_verification
+criteria_id: post_write_verification
+criteria_file: .reviewcompass/evidence/review-runs/2026-06-19-task-granularity-reopen-classification-postwrite/review-target.md
+criteria_file_sha256: f97743ebdc2b61c3c69cee51dbee1913bc2cff18c8a69766bbfe5519c2826d01
+target_files:
+- path: TODO_NEXT_SESSION.md
+  sha256: 8f7c68666851e8e54e76369abe9adb4e9f6da836ce31987543736f4a2ed07608
+- path: docs/reviews/reopen-classification-2026-06-19-wm-task-granularity-regeneration.md
+  sha256: f932d143642ee3c243ae096b14d560ce0bdd8bf9aea3c51ed52f4efdfe4e31bd
+sensitive_information_check:
+  status: passed
+  checked_at: '2026-06-19T11:57:06.632111+00:00'
+recommended_run_review_args:
+  criteria_file: .reviewcompass/evidence/review-runs/2026-06-19-task-granularity-reopen-classification-postwrite/review-target.md
+  phase: post_write_verification

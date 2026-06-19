@@ -1,0 +1,21 @@
+status: completed
+target_files:
+  - TODO_NEXT_SESSION.md
+target_sha256:
+  TODO_NEXT_SESSION.md: 8f7c68666851e8e54e76369abe9adb4e9f6da836ce31987543736f4a2ed07608
+required_verifiers:
+  - lightweight_self_check
+completed_verifiers:
+  - lightweight_self_check
+unresolved_substantive_findings: 0
+verifications:
+  - verifier: lightweight_self_check
+    target_files:
+      - TODO_NEXT_SESSION.md
+    target_sha256:
+      TODO_NEXT_SESSION.md: 8f7c68666851e8e54e76369abe9adb4e9f6da836ce31987543736f4a2ed07608
+notes: >
+  Lightweight self check only. The change updates the next-session handoff to
+  the pushed b06e3e2a state, preserves next --json and spec.json as the
+  canonical workflow sources, and records the user-requested next work as
+  reopening from the tasks phase under the new task-granularity discipline.
