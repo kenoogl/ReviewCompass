@@ -1,0 +1,144 @@
+round_id: round-1
+purpose: tasks
+invocation_timestamp: '2026-06-19T12:22:46.083029+00:00'
+target_files:
+- path: .reviewcompass/specs/workflow-management/requirements.md
+  sha256: ca557a4b3c7d6ed879e48c9c1537338c40e721ea56f1326604eb3603245c9623
+- path: .reviewcompass/specs/workflow-management/design.md
+  sha256: 4f056a064b8c8e8bba2f443cac78225115da062ac749cd66be58188b83d5190c
+- path: .reviewcompass/specs/workflow-management/tasks.md
+  sha256: af6479890decc9986d280232a3e56e5c3a373ca94b60e6531735579aaa6c37b4
+- path: .reviewcompass/specs/workflow-management/spec.json
+  sha256: e2ddc2dddd3e113dccf8bac42fe074579d56b14798af3f3a9635f4df1fb4188c
+- path: docs/operations/SESSION_WORKFLOW_GUIDE.md
+  sha256: e5f4685948f01a41e4a26682d822726ec6dc56c7ee831853fba2a63ef5a45b03
+- path: docs/operations/WORKFLOW_DISCIPLINE_MAP.yaml
+  sha256: e87d5572185ca09f8d37e6faf0c4c40f7ecbcad11b9463cb8d3c8be6d301d7e7
+- path: stages/in-progress/reopen-procedure-2026-06-19.yaml
+  sha256: 5a6c6427a55c8014319c5c2fe3aa25546cf75bc4197acf61c168b022a5aee198
+criteria: "---\nreview_target: workflow-management tasks vertical intent regeneration\n\
+  phase: tasks\ngate: stages/tasks.yaml#triad-review\nfeature: workflow-management\n\
+  date: 2026-06-19\nbaseline_review_run: .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-tasks-granularity-regeneration-review-run.baseline-before-vertical-intent\n\
+  source_documents:\n  - .reviewcompass/specs/workflow-management/requirements.md\n\
+  \  - .reviewcompass/specs/workflow-management/design.md\n  - .reviewcompass/specs/workflow-management/tasks.md\n\
+  \  - .reviewcompass/specs/workflow-management/spec.json\n  - docs/operations/SESSION_WORKFLOW_GUIDE.md#vertical-intent-transfer-review\n\
+  \  - docs/operations/WORKFLOW_DISCIPLINE_MAP.yaml\n---\n\n# Review Target: workflow-management\
+  \ tasks / vertical intent regeneration\n\n## Review Purpose\n\nReview whether the\
+  \ regenerated `workflow-management` tasks now preserve upstream intent vertically\
+  \ from requirements to design to tasks, not merely whether `tasks.md` is detailed.\n\
+  \nThis review follows the new discipline in `SESSION_WORKFLOW_GUIDE.md#vertical-intent-transfer-review`:\
+  \ each phase review must check that upstream purpose, responsibility boundaries,\
+  \ acceptance criteria, and forbidden actions are inherited into the target artifact\
+  \ without omission, weakening, unsupported additions, or drift.\n\n## Baseline For\
+  \ Comparison\n\nThe baseline review run is:\n\n- `.reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-tasks-granularity-regeneration-review-run.baseline-before-vertical-intent`\n\
+  \nBaseline same-root clusters were:\n\n- C1: T-016 operation contract / registry\
+  \ ownership boundary.\n- C2: T-017 approval / side track / snapshot persistence\
+  \ and mutation boundary.\n- C3: T-019 human-required decision predicate.\n- C4:\
+  \ tasks granularity, traceability, and state records adequate.\n\nThis review should\
+  \ identify whether the regenerated tasks reduce, resolve, or expose new issues compared\
+  \ with those baseline clusters.\n\n## Target Files\n\n- `.reviewcompass/specs/workflow-management/requirements.md`\n\
+  - `.reviewcompass/specs/workflow-management/design.md`\n- `.reviewcompass/specs/workflow-management/tasks.md`\n\
+  - `.reviewcompass/specs/workflow-management/spec.json`\n- `docs/operations/SESSION_WORKFLOW_GUIDE.md`\n\
+  - `docs/operations/WORKFLOW_DISCIPLINE_MAP.yaml`\n- `stages/in-progress/reopen-procedure-2026-06-19.yaml`\n\
+  \n## Required Vertical Checks\n\n1. Check whether T-016 carries Requirement 13's\
+  \ intent through design.md into tasks.md: `next --json` selected action must connect\
+  \ to operation contract; operation registry / preflight remains read-only confirmation;\
+  \ operation contract owns side effects, approval need, sequence, preconditions,\
+  \ and postconditions.\n2. Check whether T-016 now avoids omission, weakening, drift,\
+  \ and unsupported additions in the relationship between `stages/operation-contracts.yaml`\
+  \ and `stages/operation-registry.yaml`, including the single-source-of-truth and\
+  \ digest / version synchronization rule.\n3. Check whether T-017 carries Requirement\
+  \ 14's intent through design.md into tasks.md: approval, side track, and state visualization\
+  \ must be machine-readable state rather than conversation context; snapshot is not\
+  \ canonical; read-only and mutating operations are separated.\n4. Check whether\
+  \ T-017 now defines enough implementation-ready tests and completion conditions\
+  \ for approval decision states, side track stack storage, push / pop / current mutation\
+  \ boundaries, return conditions, staged file digest checks, and snapshot staleness.\n\
+  5. Check whether T-018 still carries Requirement 15's intent: structured effective\
+  \ prompt remains a language task specification, not a place for machine execution\
+  \ steps; prompt audit and review-run recording remain implementation-ready.\n6.\
+  \ Check whether T-019 carries Requirement 16's intent through design.md into tasks.md:\
+  \ Phase 0-6 sequencing, active reopen scope vs history flag, impact review scope,\
+  \ proxy_model triage evidence completeness, and human-required boundary are machine-checkable.\n\
+  7. Check whether T-019 now defines a concrete human-required predicate without allowing\
+  \ proxy_model to pass human-only decisions, and without tying the judgment to provider\
+  \ / model names.\n8. Check whether the new discipline itself is wired into `WORKFLOW_DISCIPLINE_MAP.yaml`\
+  \ so future `next --json` / effective prompt generation includes vertical intent\
+  \ transfer checks for triad-review, review-wave, and alignment.\n9. Check whether\
+  \ the regenerated tasks remain implementation-ready: target files, first failing\
+  \ tests, implementation order, completion conditions, verification commands, forbidden\
+  \ actions, and stop conditions.\n\n## Out Of Scope\n\n- Do not request implementation\
+  \ code changes during this tasks triad-review.\n- Do not judge unrelated older tasks\
+  \ unless they directly affect Requirement 13 through 16 vertical intent transfer.\n\
+  - Do not decide proxy_model triage or apply fixes; this review only reports findings\
+  \ for comparison.\n\n## Finding Policy\n\n- Report `must-fix` for any upstream intent\
+  \ that is missing, weakened, contradicted, or replaced by unsupported task-level\
+  \ behavior.\n- Report `must-fix` for any stale state that falsely claims an uncompleted\
+  \ gate, or any bypass of required human approval / commit / review boundaries.\n\
+  - Report `should-fix` for ambiguity likely to force implementation-time design judgment,\
+  \ weak red tests, unclear ownership, or weak machine-checkable predicates.\n- Report\
+  \ `leave-as-is` or no finding when the regenerated tasks preserve vertical intent,\
+  \ remain implementation-ready, and improve on the baseline issues.\n"
+prompt_sha256: a87d470592f9f8f2075b82049570c6b6db0f14e3a5f086eaa4d2fc3cede17ce2
+model_results:
+- model_id: gpt-5.4
+  provider: openai-api
+  role: primary
+  treatment: primary
+  invocation_path: api
+  raw_path: raw/gpt-5.4.round-1.txt
+  raw_sha256: a7a50bf2093f4d0805360bbaf2518ea28fa11ae637d9cab596e8504f80a7c0b8
+  parsed_path: parsed/gpt-5.4.round-1.yaml
+  parsed_sha256: b6974801051266face9c93caba231d9bf97cd3c194d0e2c58c4c317645fd61d1
+  parse_status: parsed
+  formatted_by: parser
+  formatted_by_actor_type: orchestrator
+  formatted_by_actor: run_role.py
+  formatted_at: '2026-06-19T12:21:37.893854+00:00'
+  follow_up_action: triage
+  attempts: 1
+  duration_seconds: 20.615
+  prompt_path: prompts/gpt-5.4.round-1.prompt.md
+  prompt_sha256: 02608bfb57acacda517890f229f29d35454a10765129c21e27b9f35beb973d3c
+- model_id: claude-opus-4-8
+  provider: anthropic-api
+  role: adversarial
+  treatment: adversarial
+  invocation_path: api
+  raw_path: raw/claude-opus-4-8.round-1.txt
+  raw_sha256: a4353f713ec9e48ffac337e2991dc594bc7502faa9c91b64e61199a350cf09dd
+  parsed_path: parsed/claude-opus-4-8.round-1.yaml
+  parsed_sha256: 0d3df472b6eca8be45945cadc6427e68dfc04230455f9f9d0ab2089e55470394
+  parse_status: parsed
+  formatted_by: parser
+  formatted_by_actor_type: orchestrator
+  formatted_by_actor: run_role.py
+  formatted_at: '2026-06-19T12:22:19.881608+00:00'
+  follow_up_action: triage
+  attempts: 1
+  duration_seconds: 41.917
+  prompt_path: prompts/claude-opus-4-8.round-1.prompt.md
+  prompt_sha256: ccaa0b0283e9f59b14d57b129fe99acaec45f2263fc24cae08d55fbcd9c130cf
+- model_id: gemini-3.1-pro-preview
+  provider: gemini-api
+  role: judgment
+  treatment: judgment
+  invocation_path: api
+  raw_path: raw/gemini-3.1-pro-preview.round-1.txt
+  raw_sha256: 67f20b5f2a77ca36c12b6b153ce451a10d7c0026c9147c2eb86f0e1d33ea4fb1
+  parsed_path: parsed/gemini-3.1-pro-preview.round-1.yaml
+  parsed_sha256: 3f120e6526cabd74c36ae32c5531dc9d81838fdc91912824b6eb66d00170be79
+  parse_status: parsed
+  formatted_by: parser
+  formatted_by_actor_type: orchestrator
+  formatted_by_actor: run_role.py
+  formatted_at: '2026-06-19T12:22:46.083029+00:00'
+  follow_up_action: triage
+  attempts: 1
+  duration_seconds: 26.135
+  prompt_path: prompts/gemini-3.1-pro-preview.round-1.prompt.md
+  prompt_sha256: a87d470592f9f8f2075b82049570c6b6db0f14e3a5f086eaa4d2fc3cede17ce2
+criteria_source_path: .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-tasks-vertical-intent-regeneration-review-run/review-target.md
+criteria_source_sha256: 8c0277f7d940bd11d319fdfe3ac3784aa7b8c9b0d120f4bbd71b6deede83fa8e
+effective_prompt_path: .reviewcompass/runtime/effective-prompts/next_action_kind-reopen_in_progress__workflow_stage-triad-review__reopen_required_action-run_reopen_pending_gate.prompt.md
+effective_prompt_sha256: 386d5ca111ca2815dcd7664c5bf20decbad2e1b1aaafb8b74d9caf6dc85fb004

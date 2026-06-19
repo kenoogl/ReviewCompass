@@ -1,0 +1,16 @@
+run_id: 2026-06-19-workflow-management-tasks-vertical-intent-regeneration-review-run
+target_files:
+- path: .reviewcompass/specs/workflow-management/requirements.md
+  sha256: ca557a4b3c7d6ed879e48c9c1537338c40e721ea56f1326604eb3603245c9623
+- path: .reviewcompass/specs/workflow-management/design.md
+  sha256: 4f056a064b8c8e8bba2f443cac78225115da062ac749cd66be58188b83d5190c
+- path: .reviewcompass/specs/workflow-management/tasks.md
+  sha256: af6479890decc9986d280232a3e56e5c3a373ca94b60e6531735579aaa6c37b4
+- path: .reviewcompass/specs/workflow-management/spec.json
+  sha256: e2ddc2dddd3e113dccf8bac42fe074579d56b14798af3f3a9635f4df1fb4188c
+- path: docs/operations/SESSION_WORKFLOW_GUIDE.md
+  sha256: e5f4685948f01a41e4a26682d822726ec6dc56c7ee831853fba2a63ef5a45b03
+- path: docs/operations/WORKFLOW_DISCIPLINE_MAP.yaml
+  sha256: e87d5572185ca09f8d37e6faf0c4c40f7ecbcad11b9463cb8d3c8be6d301d7e7
+- path: stages/in-progress/reopen-procedure-2026-06-19.yaml
+  sha256: 5a6c6427a55c8014319c5c2fe3aa25546cf75bc4197acf61c168b022a5aee198

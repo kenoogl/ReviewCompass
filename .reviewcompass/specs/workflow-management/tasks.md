@@ -344,6 +344,7 @@ language: ja
 - **対応設計節**：design.md §Requirement 13 設計モデル、§D-003、§XDI-WM-005
 - **対応要件**：Requirement 13 受入 1〜10
 - **責務**：operation contract を、operation registry / preflight の補助情報ではなく、`next --json` の `required_action` と実行前検査を束ねる正本契約として定義する。`effect_kind`、`phase_boundary`、operation contract response、precondition／postcondition、side effect 宣言、commit boundary 宣言、required_action mapping を構造化し、各 `required_action` が必ず 1 つ以上の operation contract に接続されることを機械検査する。T-014 の registry / read-only preflight は参照側として残し、T-016 が operation contract 語彙・schema・対応表の所有タスクとなる。
+- **上流意図継承**：Requirement 13 の目的は「`next --json` が選んだ唯一 action を、記憶や前例ではなく operation contract に基づいて実行できるようにする」ことである。design.md §Requirement 13 は、`stages/operation-contracts.yaml` を operation contract 正本、`stages/operation-registry.yaml` を registry / preflight binding 正本として確定した。T-016 はこの設計に従い、contract 側に副作用・承認要否・順序・前提・事後条件・side effects・承認要否集約規則を置き、registry 側は canonical invocation / workflow binding / policies / contract ID / digest / schema_version 参照だけを持つようにする。preflight は contract を読み取って確認する read-only confirmation であり、contract 更新、operation 実行、approval consume、workflow state 更新を行わない。
 - **前提タスク**：T-004（`next --json`）、T-014（operation registry / preflight）、T-015（required_action schema）
 - **実装対象ファイル**：
   - `.reviewcompass/schema/effect_kind.schema.json`
@@ -359,18 +360,23 @@ language: ja
   1. `test_required_action_contract_mapping_covers_required_action_enum`：`required_action.schema.json` の enum 全値が `stages/operation-contracts.yaml` に 1 件以上接続されていなければ失敗する。
   2. `test_operation_contract_check_reports_unmapped_required_action`：一時 fixture で `required_action` を 1 つ未接続にし、`operation-contract-check --json` が `verdict=DEVIATION` を返すことを期待して失敗させる。
   3. `test_commit_boundary_blocks_bypass_for_irreversible_actions`：`commit_stop_point`、`advance_reopen_after_commit_stop_point`、`finalize_reopen` など commit 境界必須 operation が `commit_boundary.required=true` でない場合に失敗する。
+  4. `test_registry_references_contract_without_duplicating_contract_fields`：`stages/operation-registry.yaml` が contract の正本 field を複製した場合、または参照 contract ID / digest が不一致の場合に失敗する。
+  5. `test_record_human_decision_does_not_satisfy_target_approval_required`：`record_human_decision` の完了だけで対象 operation の `approval_required=true` が満たされた扱いになる場合に失敗する。
+  6. `test_preflight_reads_contract_without_mutating_state_or_approval`：operation preflight が contract / workflow state / approval record / side track stack / snapshot / review-run artifact を作成・更新・consume した場合に失敗する。
 - **実装順序**：
   1. JSON Schema 3 件を追加し、enum 値は design.md の語彙をそのまま写す。
   2. `stages/operation-contracts.yaml` を新設し、既存 required_action enum 全値を最小契約へ接続する。
   3. `operation_contracts.py` に読み込み、schema 検証、required_action coverage、commit boundary 検査を実装する。
-  4. `tools/check-workflow-action.py` に read-only の `operation-contract-check --json` を追加する。
-  5. T-014 の operation registry / preflight とは正本を重複させず、必要な場合は contract id を参照するだけにする。
+  4. registry / contract 境界検査を追加し、registry 側は `operation_contract` ID / digest / schema_version 参照、contract 側は副作用・承認要否・順序・前提・事後条件・side effects・承認要否集約規則を持つことを検査する。
+  5. `tools/check-workflow-action.py` に read-only の `operation-contract-check --json` を追加する。
+  6. T-014 の operation registry / preflight とは正本を重複させず、必要な場合は contract id と digest を参照するだけにする。
 - **完了条件**：
   1. `effect_kind` と `phase_boundary` が JSON Schema Draft 2020-12 で定義され、未知値・空文字・型不一致を fail-closed にできる。
   2. operation contract が `operation_id`、`required_action`、`effect_kind`、`phase_boundary`、preconditions、postconditions、side_effects、commit_boundary、workflow_state_effect、canonical_invocation を構造化して保持する。
   3. `required_action.schema.json` の enum 全値が operation contract に接続され、未接続・重複矛盾・未知 `required_action` を DEVIATION にする。
   4. commit を強制すべき operation と強制しない operation が `commit_boundary` で区別され、停止点消費・approval consumption・phase boundary などの強制 commit 点を bypass できない。
-  5. T-014 の preflight response が operation contract を参照でき、別正本の再定義を持たない。
+  5. T-014 の preflight response が operation contract ID / digest / schema_version を参照でき、別正本の再定義を持たない。registry と contract の不一致、参照先欠落、digest drift、正本 field 重複は DEVIATION になる。
+  6. operation preflight は read-only confirmation に閉じ、contract 更新、operation 実行、approval consume、workflow state 更新、side track stack 更新、snapshot 保存を行わないことが機械検証される。
 - **検証コマンド**：
   - `.venv/bin/python3 -m pytest tests/workflow-management/test_operation_contract_schema.py tests/workflow-management/test_required_action_contract_mapping.py tests/workflow-management/test_operation_contract_cli.py -q`
   - `.venv/bin/python3 tools/check-workflow-action.py operation-contract-check --json`
@@ -378,6 +384,7 @@ language: ja
 - **禁止事項**：
   - `required_action` 語彙を schema、YAML、コードへ別々に手書きして不一致を作らない。
   - T-014 の operation registry を operation contract 正本として上書きしない。
+  - operation contract の副作用・承認要否・前提・事後条件を registry に複製して二重正本を作らない。
   - commit 境界必須 operation を WARN に格下げしない。
 - **停止条件**：
   - `required_action.schema.json` と `stages/operation-contracts.yaml` の語彙差分が残る場合。
@@ -388,6 +395,7 @@ language: ja
 - **対応設計節**：design.md §Requirement 14 設計モデル、§XDI-WM-005
 - **対応要件**：Requirement 14 受入 1〜10
 - **責務**：承認ゲート、side track stack、workflow-state snapshot を同一の状態防御層として追加する。承認ゲートは human / proxy_model decision の対象・根拠・有効期限・消費状態を構造化し、side track stack は本線作業、maintenance、nested issue、post-write verification などの入れ子状態を LIFO で保持する。workflow-state snapshot は `spec.json`、`stages/in-progress/`、pending gates、drafting completed gates、completed gates、worktree digest、staged file set、operation contract を同時点の証跡として記録し、状態 drift を検出する。
+- **上流意図継承**：Requirement 14 の目的は、承認・側道・状態可視化を LLM の暗黙解釈ではなく機械可読状態として扱うことである。design.md §Requirement 14 は、approval gate record、side track stack、workflow-state snapshot の保存先・正本性・read-only / mutating 操作境界を確定した。T-017 は `decision_scope=human_only|proxy_allowed|advisory_only` により proxy / human decision 境界を実装し、commit、push、`spec.json` 更新、phase approval、reopen finalize、`approval_required=true` の不可逆 operation 実行許可を human-only として扱う。side track stack は `current` / `inspect` を read-only、`push` / `pop` / `repair` を mutating とし、snapshot は正本ではなく `next --json` と state refs の監査補助として扱う。
 - **前提タスク**：T-006（直前ゲート）、T-008（in-progress 管理）、T-014（preflight）、T-016（operation contract）
 - **実装対象ファイル**：
   - `.reviewcompass/schema/approval_gate.schema.json`
@@ -405,12 +413,19 @@ language: ja
   1. `test_workflow_snapshot_includes_reopen_and_worktree_digests`：snapshot に `spec.json.workflow_state`、`recheck`、in-progress sha、pending gates、staged file set digest、worktree dirty path digest が欠けると失敗する。
   2. `test_snapshot_drift_reports_pending_gate_change`：snapshot 後に pending gate を変えた fixture で drift reason が返らなければ失敗する。
   3. `test_side_track_stack_rejects_non_lifo_pop`：LIFO でない pop を `DEVIATION` にしなければ失敗する。
+  4. `test_side_track_push_pop_are_mutating_but_current_is_read_only`：`side-track-stack current --json` が正本を書き換えず、push / pop だけが stack state を変更することを期待して失敗させる。
+  5. `test_snapshot_is_not_trusted_without_matching_next_action_digest`：snapshot が古い、手動更新された、または `next --json` digest と一致しない場合に通常進行の根拠にできないことを期待して失敗させる。
+  6. `test_approval_record_non_approved_decisions_block_irreversible_operation`：rejected / deferred / changes_requested が対象不可逆操作を許可しないことを期待して失敗させる。
+  7. `test_proxy_model_cannot_approve_human_only_decision_scope`：`decision_scope=human_only` かつ `decided_by=proxy_model` の approval gate record が不可逆操作を許可しないことを期待して失敗させる。
+  8. `test_side_track_pop_unresolved_return_to_routes_to_repair`：pop 後に `return_to` が解決不能、または staged file set が本線復帰条件を満たさない場合に通常作業へ戻らず repair 停止になることを期待して失敗させる。
 - **実装順序**：
   1. approval gate / side track stack / snapshot の schema を追加する。
   2. snapshot の読み取り専用 builder を実装し、path と sha256 は repo-relative で安定化する。
   3. drift 検査を `workflow_state`、`recheck`、in-progress sha、pending gate、operation contract digest、staged / dirty digest の順で実装する。
-  4. side track stack の push / pop / current 検査を LIFO と許可ファイル境界に絞って実装する。
-  5. CLI は成果物を書かず JSON 出力のみとし、保存が必要な段は後続 operation contract に委ねる。
+  4. side track stack の `current` を read-only、`push` / `pop` を mutating operation として分け、LIFO、許可ファイル境界、return_to、staged digest を検査する。
+  5. approval gate record の decision 4 値、`decision_scope` 3 値、human-only 初期集合、next 分岐を実装し、approved 以外または proxy_model による human-only approval は不可逆操作を許可しない。
+  6. side track pop 後の `return_to` 解決、staged file set の本線復帰条件、親子 frame overlap 許可境界を検査する。
+  7. CLI は read-only 系と mutating 系を operation contract で分ける。`workflow-snapshot --json` と `side-track-stack current --json` は成果物を書かず、保存が必要な段は別 contract に委ねる。
 - **完了条件**：
   1. 承認ゲートは対象 operation、承認 actor、source evidence、target digest、expiry、consume / invalidate 状態を保持し、欠落・期限切れ・対象不一致を fail-closed にする。
   2. proxy_model decision は人間承認を置換しない対象と、代行可能な判断対象を schema / gate で区別する。
@@ -419,6 +434,10 @@ language: ja
   5. workflow-state snapshot は正本状態と worktree / staged 対象を同時点で固定し、snapshot と現状態の drift を WARN または DEVIATION として検出する。snapshot payload は最低限、`spec.json.workflow_state`、`spec.json.reopened`、`spec.json.recheck`、`stages/in-progress/` の対象ファイル path / sha256、`pending_gates`、`drafting_completed_gates`、`completed_gates`、`downstream_impact_decisions`、参照した operation contract id / sha256、staged file set digest、worktree dirty path digest を保持する。
   6. snapshot は commit / phase transition / approval consumption など T-016 の commit boundary と接続する。
   7. snapshot drift 判定は、`pending_gates`、`drafting_completed_gates`、`completed_gates`、operation contract digest、staged file set digest、worktree dirty path digest のいずれかが snapshot 時点と異なる場合を個別理由として返す。
+  8. snapshot は正本ではなく、古い snapshot、手動更新 snapshot、`next --json` digest と一致しない snapshot は操作許可の根拠にしない。
+  9. side track stack の保存先、read-only 操作、mutating 操作、return_to 解決、commit / push 直前の digest 照合がそれぞれ機械検査される。
+  10. `decision_scope=human_only` の承認は proxy_model decision で通過できず、human-only 初期集合が機械検査される。
+  11. side track pop 後に `return_to` が解決できない、または staged file set が本線復帰条件を満たさない場合、通常作業へ戻さず `repair_workflow_state` または同等の停止状態を返す。
 - **検証コマンド**：
   - `.venv/bin/python3 -m pytest tests/workflow-management/test_approval_gate.py tests/workflow-management/test_side_track_stack.py tests/workflow-management/test_workflow_state_snapshot.py tests/workflow-management/test_workflow_snapshot_cli.py -q`
   - `.venv/bin/python3 tools/check-workflow-action.py workflow-snapshot --json`
@@ -426,10 +445,13 @@ language: ja
 - **禁止事項**：
   - snapshot 作成コマンドで正本ファイルや approval record を書き換えない。
   - proxy_model decision を commit / push / spec.json 更新の人間承認として扱わない。
+  - proxy_model decision を `decision_scope=human_only` の承認として扱わない。
   - side track stack の current だけを見て親 task / 戻り条件を省略しない。
+  - read-only CLI と mutating CLI を同じ operation として曖昧に扱わない。
 - **停止条件**：
   - snapshot digest が実行ごとに不安定で、同じ状態から同じ値を再現できない場合。
   - proxy_model 代行可否の境界が既存承認規律と衝突する場合。
+  - stack state の保存先または mutation boundary を design.md の意図と一致させられない場合。
 
 ### T-018：構造化有効プロンプトと prompt audit（Req 15、reopen R-0 2026-06-19）
 
@@ -451,17 +473,18 @@ language: ja
   1. `test_effective_prompt_manifest_covers_source_digests`：manifest の source artifact に path と sha256 がない場合に失敗する。
   2. `test_prompt_audit_rejects_direct_state_mutation_instruction`：prompt の completion routing に spec.json 直接変更や commit 実行指示が含まれると `DEVIATION` を期待して失敗する。
   3. `test_rounds_records_prompt_manifest_without_removing_text_prompt_fields`：review-run の `rounds.yaml` が manifest path / sha256 を追加しつつ既存 text field を保持しなければ失敗する。
+  4. `test_prompt_audit_rejects_machine_execution_steps_beyond_state_mutation`：review-run artifact 作成、approval consume、side-track mutation、operation execution などの機械実行手順が prompt の language_task に残ると `DEVIATION` になることを期待して失敗させる。
 - **実装順序**：
   1. language task I/O と effective prompt manifest の schema を追加する。
   2. 既存 effective prompt 生成は壊さず、manifest builder を横に追加する。
-  3. prompt audit で source digest、禁止 action、output schema、operation contract 参照を検査する。
+  3. prompt audit で source digest、禁止 action、output schema、operation contract 参照、機械実行タスク混入を検査する。
   4. `run_role.py` / `run_review.py` の rounds 記録へ manifest path / sha256 を追加する。既存 `effective_prompt_path` / `effective_prompt_sha256` は P1 互換として残す。
   5. `prompt-audit` CLI を read-only として追加し、manifest 欠落時と text-only 互換時の WARN / DEVIATION を固定する。
 - **完了条件**：
   1. effective prompt manifest が source artifacts、sha256、required disciplines、operation contract、expected output schema、completion routing を構造化して保持する。
   2. language task I/O schema が input role、allowed action、forbidden action、output contract、evidence anchors を定義し、未知 field / 欠落を fail-closed にする。
   3. prompt に含まれる on_completion / next step 指示は `next --json` または operation contract への参照に限定され、spec.json・phase・commit の直接変更指示を禁止する。
-  4. prompt audit が元資料 digest 不一致、必須 source 欠落、機械実行タスク混入、出力 schema 欠落、禁止事項違反を DEVIATION にする。
+  4. prompt audit が元資料 digest 不一致、必須 source 欠落、機械実行タスク混入、出力 schema 欠落、禁止事項違反を DEVIATION にする。機械実行タスク混入には、commit / push / spec.json 更新 / phase 移行だけでなく、review-run artifact 作成、approval consume、side-track mutation、operation execution を含める。
   5. review-run / role-run の `rounds.yaml` は prompt manifest path と sha256 を、既存 T-004 の `effective_prompt_path` / `effective_prompt_sha256` を置換せず拡張 field として記録する。移行中は既存 text-only effective prompt field と structured manifest field の併存を許可し、manifest field がある場合は manifest sha256 と source digest coverage を正本検査対象にする。manifest field がなく text-only field のみの場合は P1 互換として WARN、manifest field があるが text-only field と対象 decision point が不一致の場合は DEVIATION、どちらの field もない場合は DEVIATION とする。
 - **検証コマンド**：
   - `.venv/bin/python3 -m pytest tests/workflow-management/test_language_task_io_schema.py tests/workflow-management/test_effective_prompt_manifest.py tests/workflow-management/test_prompt_audit.py tests/workflow-management/test_prompt_manifest_rounds_recording.py -q`
@@ -480,6 +503,7 @@ language: ja
 - **対応設計節**：design.md §Requirement 16 設計モデル、§XDI-WM-005
 - **対応要件**：Requirement 16 受入 1〜12
 - **責務**：Requirement 13〜15 の実装を Phase 0〜6 に分け、各 phase の開始条件・完了条件・禁止事項・成果物・回帰範囲を機械的に確認できるようにする。proxy_model triage decision は review-run の raw response、triage 候補、decision prompt、decision output、採用理由、最終反映先を束ね、human decision と proxy_model decision の境界を operation contract / approval gate / prompt audit に接続する。review-wave への影響は consumer impact として追跡し、未反映のまま完了できないようにする。
+- **上流意図継承**：Requirement 16 の目的は、選択層と実行層の機械化を一度に混ぜず、既存挙動を壊さない順序で TDD 実装できるようにすることである。design.md §Requirement 16 は Phase 0〜6 の順序、active reopen scope と impact review scope の分離、proxy_model triage decision の証跡処理、human-required predicate の優先順位を定義している。実装では phase plan の entry / exit criteria と forbidden operations を正本化し、human-required decision は triage item、approval gate record、operation contract の `approval_required`、review-wave impact evidence、downstream impact decisions / scope 整合から machine-readable に導出する。`decision_scope=human_only`、未解決 approval gate、`approval_required=true`、未解決 review-wave impact evidence は proxy decision より常に優先する。`spec.json.reopened` は履歴であり active scope ではない。
 - **前提タスク**：T-012（review-wave summary）、T-014（operation preflight）、T-016（operation contract）、T-017（approval / snapshot）、T-018（structured prompt）
 - **実装対象ファイル**：
   - `stages/workflow-management-implementation-phases.yaml`
@@ -496,20 +520,27 @@ language: ja
   1. `test_implementation_phase_plan_covers_phase_0_to_6`：Phase 0〜6 の欠落、順序違反、entry / exit criteria 欠落で失敗する。
   2. `test_proxy_triage_decision_requires_raw_prompt_candidate_selected_reason_target`：proxy decision の raw、prompt、候補、採用、理由、反映先のいずれかが欠けると失敗する。
   3. `test_reopened_history_flag_is_not_active_scope`：`spec.json.reopened` だけを根拠に active reopen scope と判定すると失敗する。
+  4. `test_human_required_decision_blocks_proxy_application`：triage item / approval gate / operation contract / review-wave impact evidence のいずれかが human-required を示す場合に、proxy decision apply が失敗する。
+  5. `test_phase_checker_uses_entry_exit_and_forbidden_operations`：phase plan が entry criteria 未充足、exit criteria 未充足、または forbidden operation 実行済みの場合に DEVIATION を返すことを期待して失敗させる。
+  6. `test_human_required_priority_overrides_proxy_approved_leave_as_is`：`decision_scope=human_only`、未解決 approval gate、`approval_required=true`、未解決 review-wave impact evidence がある場合、triage の `leave-as-is` や `proxy_approved` があっても proxy apply が失敗する。
+  7. `test_proxy_triage_requires_complete_finding_cluster_coverage`：finding / cluster coverage が不足・過剰・競合する場合に proxy decision 展開が DEVIATION になる。
 - **実装順序**：
   1. implementation phase plan schema と `stages/workflow-management-implementation-phases.yaml` を追加する。
   2. phase check を read-only で実装し、Phase 0〜6 coverage、順序、entry / exit criteria、禁止 operation を検査する。
-  3. proxy triage decision schema と検査器を追加し、provider / model 名ではなく証跡 completeness と対象一致で判定する。
-  4. review-wave consumer impact 検査を、review-wave summary、carry-forward register、downstream impact decisions、spec recheck から組み立てる。
-  5. CLI 2 件を追加し、既存 review triage の生成物を壊さず検査だけを行う。
+  3. human-required predicate を、triage item、approval gate record の `decision_scope` / decision / decided_by、operation contract の `approval_required` / `phase_boundary`、review-wave impact evidence、downstream impact decisions / scope 整合から機械的に導出する。
+  4. human-required の優先順位を実装し、human-only / 未解決 approval / `approval_required=true` / 未解決 review-wave impact evidence を proxy apply より優先する。
+  5. proxy triage decision schema と検査器を追加し、provider / model 名ではなく証跡 completeness、対象一致、coverage、human-required predicate で判定する。
+  6. review-wave consumer impact 検査を、review-wave summary、carry-forward register、downstream impact decisions、spec recheck から組み立てる。
+  7. CLI 2 件を追加し、既存 review triage の生成物を壊さず検査だけを行う。
 - **完了条件**：
   1. Phase 0〜6 が schema 化され、各 phase の entry criteria、exit criteria、allowed operations、forbidden operations、required tests、commit boundary を検査できる。
   2. Phase の順序違反、未完了 exit criteria、禁止 operation 実行、必要 snapshot 欠落を DEVIATION にする。
   3. proxy_model triage decision が raw response、triage item、decision prompt、candidate decisions、selected decision、reasoning summary、final application target を構造化して保持する。
   4. proxy_model decision は LLM/provider/model 名ではなく、証跡 completeness、対象一致、decision schema、approval gate 可否で判定する。
-  5. human 承認が必要な decision を proxy_model decision で通過させない。
+  5. human 承認が必要な decision を proxy_model decision で通過させない。human-required は triage item、approval gate record の `decision_scope` / decision / decided_by、operation contract の `approval_required` / `phase_boundary`、review-wave impact evidence、downstream impact decisions / scope 整合から導出され、判定元が欠ける場合は DEVIATION にする。
   6. review-wave summary / carry-forward register / downstream impact decisions への consumer impact が未反映なら完了判定を出さない。必須入力は `review-wave-summary` JSON / Markdown 出力、`learning/workflow/carry-forward-register/reviewcompass-import.yaml`、reopen in-progress / completed YAML の `downstream_impact_decisions`、`spec.json.recheck.impacted_downstream_phases`、`spec.json.reopened` とする。
   7. T-019 は `spec.json.reopened` を履歴フラグとして扱い、active reopen scope と同一視しない。active reopen scope は reopen in-progress / completed YAML の `pending_gates`、`completed_gates`、`drafting_completed_gates`、`feature_impact_decisions`、`downstream_impact_decisions` から解決し、impact review scope は review-wave summary と downstream impact decisions から解決する。両 scope が混同・欠落・矛盾した場合は DEVIATION とする。
+  8. `decision_scope=human_only`、未解決 approval gate、`approval_required=true` の対象 operation、未解決 review-wave impact evidence は proxy_model の判断より常に優先し、triage 上の `leave-as-is` や `proxy_approved` で打ち消されない。
 - **検証コマンド**：
   - `.venv/bin/python3 -m pytest tests/workflow-management/test_implementation_phase_plan.py tests/workflow-management/test_proxy_triage_decision_machine.py tests/workflow-management/test_review_wave_consumer_impact.py tests/workflow-management/test_implementation_phase_cli.py -q`
   - `.venv/bin/python3 tools/check-workflow-action.py implementation-phase-check --feature workflow-management --json`
@@ -605,15 +636,18 @@ language: ja
 | Requirement 13 受入 3〜4：required_action と operation contract の対応 | T-016（T-015 と連動） |
 | Requirement 13 受入 5〜7：precondition / postcondition / side effect / phase boundary | T-016（T-014 と連動） |
 | Requirement 13 受入 8〜10：commit boundary 強制・bypass 防止・LLM 非依存 | T-016（T-006／T-014 と連動） |
+| Requirement 13 受入 11〜12：registry / contract 単一正本境界、drift / 重複検出、preflight read-only 境界 | T-016（T-014 と連動） |
 | Requirement 14 受入 1〜3：承認ゲート、proxy_model / human decision 境界、decision 消費状態 | T-017（T-006／T-016 と連動） |
 | Requirement 14 受入 4〜7：side track stack、push / pop / current、本線復帰条件、許可ファイル・nesting depth | T-017（T-008／T-014 と連動） |
 | Requirement 14 受入 8〜10：workflow-state snapshot、staged file set / worktree digest、pending / completed gates drift 検出 | T-017（T-016 と連動） |
+| Requirement 14 受入 11〜12：proxy / human decision_scope、read-only / mutating 操作境界 | T-017（T-006／T-016 と連動） |
 | Requirement 15 受入 1〜2：language task I/O と effective prompt manifest | T-018 |
 | Requirement 15 受入 3〜5：prompt audit、on_completion 制御、機械実行タスク混入防止 | T-018（T-004／T-016 と連動） |
 | Requirement 15 受入 6〜7：review-run 記録、structured prompt manifest、T-004 rounds.yaml field 互換、text-only 移行境界 | T-018（T-014／T-017 と連動） |
 | Requirement 16 受入 1〜4：Phase 0〜6 実装計画と phase gate | T-019（T-016〜T-018 と連動） |
 | Requirement 16 受入 5〜9：proxy_model triage decision の機械処理化 | T-019（T-017／T-018 と連動） |
 | Requirement 16 受入 10〜12：review-wave consumer impact blocking、carry-forward / downstream impact evidence、active reopen scope / impact review scope 分離 | T-019（T-012／T-016〜T-018 と連動） |
+| Requirement 16 受入 13〜14：human-required predicate、proxy decision 優先順位、競合解決 | T-019（T-017／T-018 と連動） |
 | Boundary Context 隣接期待（self-improvement との接合面、A-007 案 2／A-012） | T-010 |
 
 ## テスト戦略の継承（Test Strategy Inheritance）

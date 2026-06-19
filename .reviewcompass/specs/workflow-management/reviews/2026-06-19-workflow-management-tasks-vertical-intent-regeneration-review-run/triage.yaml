@@ -1,0 +1,343 @@
+run_id: 2026-06-19-workflow-management-tasks-vertical-intent-regeneration-review-run
+triage_status: draft
+generated_at: '2026-06-19T12:22:46.111571+00:00'
+decision_actor: null
+decision_actor_type: human
+items:
+- finding_id: 2026-06-19-workflow-management-tasks-vertical-intent-regeneration-review-run-gpt-5.4-primary-001
+  run_id: 2026-06-19-workflow-management-tasks-vertical-intent-regeneration-review-run
+  source_model: gpt-5.4
+  source_round: round-1
+  source_raw_path: raw/gpt-5.4.round-1.txt
+  source_parsed_path: parsed/gpt-5.4.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: .reviewcompass/specs/workflow-management/tasks.md#T-016
+  plain_language_summary: T-016 が Requirement 13 / design の『operation contract が execution
+    の正本、operation registry / preflight は参照側』という責務境界を実装タスクへ十分に落としておらず、read-only confirmation
+    と side-effect ownership の分離が弱い。
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: Requirement 13 と design §Requirement 13 は、`next --json` の唯一 action
+    を operation contract へ接続し、registry/preflight は read-only 確認に留めること、contract 側が副作用・承認要否・順序・前提・事後条件の正本であることを要求している。T-016
+    は registry が contract ID/digest を参照し二重正本化しない点は書いているが、preflight が contract の preconditions/postconditions
+    を『確認するだけで実行・更新しない』こと、side effects/approval/sequence ownership が contract のみであることを
+    completion 条件や失敗テストに落としていないため、旧 C1 の責務境界問題が完全には解消していない。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-19-workflow-management-tasks-vertical-intent-regeneration-review-run-gpt-5.4-primary-002
+  run_id: 2026-06-19-workflow-management-tasks-vertical-intent-regeneration-review-run
+  source_model: gpt-5.4
+  source_round: round-1
+  source_raw_path: raw/gpt-5.4.round-1.txt
+  source_parsed_path: parsed/gpt-5.4.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: .reviewcompass/specs/workflow-management/tasks.md#T-016
+  plain_language_summary: T-016 の contract/registry 同期規則が digest または schema version
+    の一致確認に留まり、単一正本・同期失敗時 fail-closed のテスト粒度が不足している。
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: Required vertical check 2 は `stages/operation-contracts.yaml` と
+    `stages/operation-registry.yaml` の single-source-of-truth と digest/version synchronization
+    rule の継承を求めている。T-016 は『registry の参照先 contract が存在し、sha256 または schema version が一致しない場合は
+    DEVIATION』と記しているが、どちらを正本同期キーにするのか、両方不一致時・片方だけ更新時・registry が stale field を保持した場合の
+    machine-checkable completion 条件が弱い。baseline C1 の改善は見られるが、実装時判断にぶれが残る。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-19-workflow-management-tasks-vertical-intent-regeneration-review-run-gpt-5.4-primary-003
+  run_id: 2026-06-19-workflow-management-tasks-vertical-intent-regeneration-review-run
+  source_model: gpt-5.4
+  source_round: round-1
+  source_raw_path: raw/gpt-5.4.round-1.txt
+  source_parsed_path: parsed/gpt-5.4.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: .reviewcompass/specs/workflow-management/tasks.md#T-017
+  plain_language_summary: T-017 が Requirement 14 の『snapshot は正本ではなく可視化補助』という制約を十分に実装条件へ落としておらず、read-only
+    snapshot と mutating state operation の境界が一部曖昧である。
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: Requirement 14 / design §Requirement 14 は、approval gate・side track
+    stack・snapshot を別の機械可読状態として扱い、snapshot は `next --json` と state refs の副産物であって正本ではないと定めている。T-017
+    は read-only CLI と mutating CLI を分ける旨を書くが、成果物一覧に snapshot schema/CLI はある一方、approval
+    record 保存・stack push/pop・snapshot 保存のどれが read-only でどれが mutating かの最終契約が completion
+    条件で完全に固定されていない。旧 C2 の mutation boundary 問題の一部が残っている。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-19-workflow-management-tasks-vertical-intent-regeneration-review-run-gpt-5.4-primary-004
+  run_id: 2026-06-19-workflow-management-tasks-vertical-intent-regeneration-review-run
+  source_model: gpt-5.4
+  source_round: round-1
+  source_raw_path: raw/gpt-5.4.round-1.txt
+  source_parsed_path: parsed/gpt-5.4.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: .reviewcompass/specs/workflow-management/tasks.md#T-017
+  plain_language_summary: T-017 は approval decision states、side track stack、digest
+    drift を広くカバーしているが、pop 後の return condition 未充足時の戻し先決定と staged file overlap 許可境界の
+    red test が不足している。
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: Required vertical check 4 は approval decision states、side track
+    stack storage、push/pop/current mutation boundaries、return conditions、staged file
+    digest checks、snapshot staleness を implementation-ready に定義することを求めている。T-017 は多くを列挙して
+    baseline C2 を大きく改善しているが、親子 frame 間の `allowed_files` 重なり、pop 後に index が本線状態へ戻っていない場合の具体的
+    `next` 分岐、return_to 解決失敗時の stop/repair 条件が完了条件に十分固定されていない。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-19-workflow-management-tasks-vertical-intent-regeneration-review-run-gpt-5.4-primary-005
+  run_id: 2026-06-19-workflow-management-tasks-vertical-intent-regeneration-review-run
+  source_model: gpt-5.4
+  source_round: round-1
+  source_raw_path: raw/gpt-5.4.round-1.txt
+  source_parsed_path: parsed/gpt-5.4.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: .reviewcompass/specs/workflow-management/tasks.md#T-018
+  plain_language_summary: T-018 は構造化 effective prompt を language task specification
+    として扱う意図を概ね保持しているが、機械実行タスク混入禁止の判定観点が commit/spec.json 更新/phase 遷移以外へ十分拡張されていない。
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: Requirement 15 は effective prompt を language task specification
+    に限定し、機械タスクは operation contract / preflight / runner / guard の責務とすることを求める。T-018
+    の失敗テストと完了条件は direct state mutation instruction を中心にしており、review-run artifact 作成、approval
+    consumption、side-track mutation など他の machine execution steps の prompt 残留も網羅対象であることを明示すると、design
+    の禁止境界がより機械的になる。baseline C4 の implementation-readiness は改善しているが、検査観点の明示がやや弱い。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-19-workflow-management-tasks-vertical-intent-regeneration-review-run-gpt-5.4-primary-006
+  run_id: 2026-06-19-workflow-management-tasks-vertical-intent-regeneration-review-run
+  source_model: gpt-5.4
+  source_round: round-1
+  source_raw_path: raw/gpt-5.4.round-1.txt
+  source_parsed_path: parsed/gpt-5.4.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: .reviewcompass/specs/workflow-management/tasks.md#T-019
+  plain_language_summary: T-019 の human-required predicate が複数証跡源から導出されると書かれている一方、導出規則の優先順位・欠落時の扱い・proxy_model
+    適用禁止条件が十分に一意化されていない。
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: Requirement 16 と design §Requirement 16 は、Phase 0-6 sequencing、active
+    reopen scope と履歴 flag の分離、impact review scope、proxy_model triage evidence completeness、human-required
+    boundary を machine-checkable にすることを要求する。T-019 は『triage item、approval gate record、operation
+    contract の `approval_required`、review-wave impact evidence の未解決状態から導出』と書くが、これらが競合した場合の優先順位、どの欠落が即
+    DEVIATION か、`approval_required=true` だが triage は leave-as-is の場合の判定などが completion
+    条件へ落ちきっていない。baseline C3 の『人間必要判定が曖昧』は改善したが未解消。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-19-workflow-management-tasks-vertical-intent-regeneration-review-run-gpt-5.4-primary-007
+  run_id: 2026-06-19-workflow-management-tasks-vertical-intent-regeneration-review-run
+  source_model: gpt-5.4
+  source_round: round-1
+  source_raw_path: raw/gpt-5.4.round-1.txt
+  source_parsed_path: parsed/gpt-5.4.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: .reviewcompass/specs/workflow-management/tasks.md#T-019
+  plain_language_summary: proxy_model が通過できない human-only decision 境界は provider/model
+    非依存で書かれているが、human-only と proxy-allowed の分類根拠を機械可読に保持する成果物がタスクで固定されていない。
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: Required vertical check 7 は、provider/model 名に依存せず、proxy_model が
+    human-only decisions を通過させない concrete predicate を求める。T-019 は provider/model 非依存を明記しているが、『human-required
+    はどの field に明示されていれば sufficient か』『proxy decision apply を止める blocking record の正本は何か』が成果物レベルで固定されていないため、実装時に判定ロジックがコード内推論へ戻る余地がある。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-19-workflow-management-tasks-vertical-intent-regeneration-review-run-gpt-5.4-primary-008
+  run_id: 2026-06-19-workflow-management-tasks-vertical-intent-regeneration-review-run
+  source_model: gpt-5.4
+  source_round: round-1
+  source_raw_path: raw/gpt-5.4.round-1.txt
+  source_parsed_path: parsed/gpt-5.4.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: docs/operations/WORKFLOW_DISCIPLINE_MAP.yaml
+  plain_language_summary: 新しい vertical intent transfer review discipline は triad-review
+    / review-wave / alignment の prompt source と required input に反映されており、将来の `next
+    --json` / effective prompt generation へ接続されている。
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: Required vertical check 8 に対し、`workflow_stage.triad-review`/`review-wave`/`alignment`
+    が `SESSION_WORKFLOW_GUIDE.md#vertical-intent-transfer-review` を参照し、さらに `required_inputs.by_stage.triad-review`
+    と `review-wave` に vertical intent transfer check を持っているため、規律の wiring は概ね成立している。baseline
+    にはなかった改善であり、この点は維持でよい。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-19-workflow-management-tasks-vertical-intent-regeneration-review-run-gpt-5.4-primary-009
+  run_id: 2026-06-19-workflow-management-tasks-vertical-intent-regeneration-review-run
+  source_model: gpt-5.4
+  source_round: round-1
+  source_raw_path: raw/gpt-5.4.round-1.txt
+  source_parsed_path: parsed/gpt-5.4.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: .reviewcompass/specs/workflow-management/tasks.md#T-016-T-019
+  plain_language_summary: 再生成後の T-016〜T-019 は target files、first failing tests、implementation
+    order、completion conditions、verification commands、forbidden actions、stop conditions
+    を備え、baseline の粒度不足は大きく改善している。
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: Required vertical check 9 と baseline C4 に対し、各新規タスクが implementation-ready
+    な粒度まで具体化されており、単なる設計要約ではなく実装着手可能な形になっている。残る問題は主に責務境界と machine-checkable predicate
+    の精密化であり、粒度そのものは leave-as-is に近い改善である。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-19-workflow-management-tasks-vertical-intent-regeneration-review-run-claude-opus-4-8-adversarial-001
+  run_id: 2026-06-19-workflow-management-tasks-vertical-intent-regeneration-review-run
+  source_model: claude-opus-4-8
+  source_round: round-1
+  source_raw_path: raw/claude-opus-4-8.round-1.txt
+  source_parsed_path: parsed/claude-opus-4-8.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: tasks.md T-016 完了条件5 / design.md §Requirement 12 設計モデル §1, §Requirement
+    13 設計モデル §3
+  plain_language_summary: T-016 は operation contract (`stages/operation-contracts.yaml`)
+    と operation registry (`stages/operation-registry.yaml`) の二正本分離と digest 同期規則を新規導入しているが、その分離は
+    requirements Requirement 13 にも design.md にも明示的な根拠がない。requirements Requirement
+    13 受入 3 は『operation contract 上の effect_kind、実行主体、approval_required の対応を registry
+    または同等の機械可読定義で表す』とし、registry と contract を同一物として扱う余地を残している。design.md §Requirement
+    13 設計モデル §3 も『stages/operation-registry.yaml は各 required_action について operation_contract
+    を参照し』とするが、T-014 が既に operation-registry.yaml に contract field（effect_kind 等）を持たせているため、T-016
+    が contract を別ファイル正本へ移す決定は tasks 段で新たに導入された設計判断である。
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: 上流（design.md）が二ファイル正本分離・digest 同期規則を確定していないのに tasks がそれを完了条件・禁止事項として固定すると、design
+    に根拠のない実装制約を tasks が追加したことになる（unsupported addition）。実装時に registry/contract の正本境界の設計判断を強いる。design
+    でこの分離を確定するか、T-016 が registry 内表現も許容する形にして整合させるべき。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-19-workflow-management-tasks-vertical-intent-regeneration-review-run-claude-opus-4-8-adversarial-002
+  run_id: 2026-06-19-workflow-management-tasks-vertical-intent-regeneration-review-run
+  source_model: claude-opus-4-8
+  source_round: round-1
+  source_raw_path: raw/claude-opus-4-8.round-1.txt
+  source_parsed_path: parsed/claude-opus-4-8.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: tasks.md T-017 完了条件2 / design.md §Requirement 14 設計モデル §1, requirements
+    Requirement 14 受入 1-3
+  plain_language_summary: T-017 完了条件2は『proxy_model decision は人間承認を置換しない対象と、代行可能な判断対象を
+    schema / gate で区別する』を要求するが、requirements Requirement 14 と design.md §Requirement
+    14 設計モデルには approval gate における proxy_model の代行可否境界の規定がない。requirements Requirement
+    14 受入 1-3 は decided_by を user | proxy_model とするのみで、どの判断を proxy が代行できないかの境界を定めていない。proxy
+    非代行範囲（commit・push・spec.json 更新・フェーズ移行）は requirements Requirement 3 受入 5 由来だが、T-017
+    はこれを承認ゲート schema/gate の区別要件として持ち込んでおり、design.md §Requirement 14 にこの境界設計がない。
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: 上流に proxy 代行可否境界の設計が無いまま tasks が schema/gate での区別を完了条件にすると、実装段で『どの
+    decision を proxy 非代行とするか』の境界設計を実装者が判断することになる（implementation-time design judgment
+    の強制）。design.md §Requirement 14 で proxy 代行可否境界を明示するか、T-017 の該当条件を Requirement 3
+    受入 5 への参照に限定して整合させるべき。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-19-workflow-management-tasks-vertical-intent-regeneration-review-run-claude-opus-4-8-adversarial-003
+  run_id: 2026-06-19-workflow-management-tasks-vertical-intent-regeneration-review-run
+  source_model: claude-opus-4-8
+  source_round: round-1
+  source_raw_path: raw/claude-opus-4-8.round-1.txt
+  source_parsed_path: parsed/claude-opus-4-8.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: tasks.md T-019 完了条件5 / requirements Requirement 16 受入, design.md
+    §Requirement 16 設計モデル
+  plain_language_summary: T-019 完了条件5 の human-required predicate は『triage item、approval
+    gate record、operation contract の approval_required、review-wave impact evidence
+    の未解決状態から導出され、判定元が欠ける場合は DEVIATION』として、provider/model 名に依存しない機械可読述語として具体化されている。requirements
+    Requirement 16 受入には human-required 述語の具体的な導出元列挙はないが、design.md §Requirement 16
+    設計モデル §1 が『human-required decision は triad item / approval gate record / operation
+    contract の approval_required / review-wave impact evidence のいずれかで明示的に machine-readable
+    に出る場合だけ blocker として扱う』として導出元を確定しており、tasks はこれを忠実に継承している。proxy_model に human-only
+    判断を通過させない要件（Requirement 16 受入 5-9）も最初の失敗テスト test_human_required_decision_blocks_proxy_application
+    で machine-checkable に固定されている。上流意図が欠落・弱体化なく実装可能粒度へ落ちている。
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: T-019 の human-required predicate は design の導出元定義を正しく継承し、provider/model
+    名に依存しない条件として明示され、ベースライン C3（T-019 human-required 述語）の懸念に対応している。指摘ではなく良好な意図伝達の記録。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-19-workflow-management-tasks-vertical-intent-regeneration-review-run-claude-opus-4-8-adversarial-004
+  run_id: 2026-06-19-workflow-management-tasks-vertical-intent-regeneration-review-run
+  source_model: claude-opus-4-8
+  source_round: round-1
+  source_raw_path: raw/claude-opus-4-8.round-1.txt
+  source_parsed_path: parsed/claude-opus-4-8.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: tasks.md T-016 最初に書く失敗テスト test_record_human_decision_does_not_satisfy_target_approval_required,
+    T-017 test_approval_record_non_approved_decisions_block_irreversible_operation
+  plain_language_summary: ベースライン C1（T-016 operation contract / registry 所有境界）と C2（T-017
+    承認・側道・スナップショット境界）に対応する失敗テストが具体的に列挙され、record_human_decision の完了だけで approval_required
+    を満たさないこと（Requirement 13 受入 6）、approved 以外の判断が不可逆操作を許可しないこと（Requirement 14 受入 3）が
+    machine-checkable な赤テストとして固定されている。side track の push/pop/current 分離（test_side_track_push_pop_are_mutating_but_current_is_read_only）、staged
+    file digest 照合（test_workflow_snapshot_includes_reopen_and_worktree_digests）も failing
+    test として明示され、ベースラインの『実装ready なテスト不足』懸念を緩和している。
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: ベースライン同根クラスタ C1/C2 が要求していた『実装ready なテストと完了条件』が、T-016/T-017 の失敗テストと完了条件として具体化された。前回比で改善した点の記録。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-19-workflow-management-tasks-vertical-intent-regeneration-review-run-claude-opus-4-8-adversarial-005
+  run_id: 2026-06-19-workflow-management-tasks-vertical-intent-regeneration-review-run
+  source_model: claude-opus-4-8
+  source_round: round-1
+  source_raw_path: raw/claude-opus-4-8.round-1.txt
+  source_parsed_path: parsed/claude-opus-4-8.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: docs/operations/WORKFLOW_DISCIPLINE_MAP.yaml decision_points.workflow_stage(triad-review,
+    review-wave, alignment), by_stage, required_inputs.by_stage
+  plain_language_summary: 新規律 vertical-intent-transfer-review が WORKFLOW_DISCIPLINE_MAP.yaml
+    の triad-review / review-wave / alignment の prompt_source_refs と by_stage に登録され、required_inputs.by_stage.triad-review
+    および review-wave に vertical_intent_transfer_check 入力（phase_chains で requirements→design→tasks→implementation
+    の連鎖、required_question を明示）として配線されている。これにより next --json / effective prompt 生成が
+    triad-review・review-wave・alignment で上流意図伝達検査を含めるよう機械的に保証される（ベースライン要求8への対応）。
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: ベースラインの required check 8『新規律が WORKFLOW_DISCIPLINE_MAP.yaml に配線されているか』が満たされている。良好な配線の記録。
+  applied_files: []
+  superseded_by: null

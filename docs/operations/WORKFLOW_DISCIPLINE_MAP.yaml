@@ -114,16 +114,19 @@ decision_points:
       prompt_source_refs:
         - docs/operations/WORKFLOW_NAVIGATION.md
         - docs/operations/SESSION_WORKFLOW_GUIDE.md#3.3-a-2
+        - docs/operations/SESSION_WORKFLOW_GUIDE.md#vertical-intent-transfer-review
         - docs/disciplines/discipline_approval_operation.md
       effective_prompt_policy: one_effective_prompt_per_decision_point
     - id: review-wave
       prompt_source_refs:
         - docs/operations/WORKFLOW_NAVIGATION.md
+        - docs/operations/SESSION_WORKFLOW_GUIDE.md#vertical-intent-transfer-review
         - learning/workflow/carry-forward-register/reviewcompass-import.yaml
       effective_prompt_policy: one_effective_prompt_per_decision_point
     - id: alignment
       prompt_source_refs:
         - docs/operations/WORKFLOW_NAVIGATION.md
+        - docs/operations/SESSION_WORKFLOW_GUIDE.md#vertical-intent-transfer-review
         - docs/disciplines/discipline_workflow_state_truth_source.md
       effective_prompt_policy: one_effective_prompt_per_decision_point
     - id: approval
@@ -363,9 +366,12 @@ by_stage:
     - docs/disciplines/discipline_workflow_state_truth_source.md
   triad-review:
     - docs/operations/SESSION_WORKFLOW_GUIDE.md#3.3-a-2
+    - docs/operations/SESSION_WORKFLOW_GUIDE.md#vertical-intent-transfer-review
     - docs/disciplines/discipline_approval_operation.md
-  review-wave: []
+  review-wave:
+    - docs/operations/SESSION_WORKFLOW_GUIDE.md#vertical-intent-transfer-review
   alignment:
+    - docs/operations/SESSION_WORKFLOW_GUIDE.md#vertical-intent-transfer-review
     - docs/disciplines/discipline_workflow_state_truth_source.md
   approval:
     - docs/disciplines/discipline_approval_operation.md
@@ -399,7 +405,7 @@ required_inputs:
       - id: target_feature_documents
         role: stage_entry_context
         source_type: feature_document_set
-        purpose: Read the current feature state and phase documents before starting triad-review.
+        purpose: Read the current feature state and phase documents before starting triad-review, including upstream intent transfer from requirements to design to tasks to implementation as applicable.
         resolver:
           kind: next_action_template
           paths:
@@ -425,6 +431,28 @@ required_inputs:
           - variant-role-assignment
           - user-visible-triage-gate
         read_policy: review_run_bundle_and_triage
+      - id: vertical_intent_transfer_check
+        role: review_prompt_requirement
+        source_type: upstream_intent_transfer_contract
+        purpose: Ensure triad-review checks that upstream purpose, responsibility boundaries, acceptance criteria, and forbidden actions are inherited into the target phase without omission, weakening, unsupported additions, or drift.
+        resolver:
+          kind: static_reference
+          path: docs/operations/SESSION_WORKFLOW_GUIDE.md#vertical-intent-transfer-review
+        phase_chains:
+          design:
+            - requirements.md
+            - design.md
+          tasks:
+            - requirements.md
+            - design.md
+            - tasks.md
+          implementation:
+            - requirements.md
+            - design.md
+            - tasks.md
+            - implementation
+        required_question: upstream目的・責務境界・受入条件・禁止事項が対象成果物へ欠落・弱体化・逸脱・未根拠追加なく引き継がれているか。
+        read_policy: include_in_review_prompt
     review-wave:
       - id: cross_feature_stage_artifacts
         role: stage_output_contract
@@ -442,3 +470,12 @@ required_inputs:
           kind: project_state
           path: learning/workflow/carry-forward-register/reviewcompass-import.yaml
         read_policy: unresolved_items_only
+      - id: vertical_intent_transfer_check
+        role: review_prompt_requirement
+        source_type: upstream_intent_transfer_contract
+        purpose: Ensure review-wave preserves upstream intent while resolving cross-feature findings, and does not weaken or add unsupported requirements when carrying fixes across features.
+        resolver:
+          kind: static_reference
+          path: docs/operations/SESSION_WORKFLOW_GUIDE.md#vertical-intent-transfer-review
+        required_question: 上流の目的・責務境界・受入条件・禁止事項が、横断対処後の対象成果物へ欠落・弱体化・逸脱・未根拠追加なく引き継がれているか。
+        read_policy: include_in_review_prompt

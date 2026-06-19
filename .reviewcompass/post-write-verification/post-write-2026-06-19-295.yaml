@@ -1,0 +1,31 @@
+status: completed
+target_files:
+- docs/operations/SESSION_WORKFLOW_GUIDE.md
+- docs/operations/WORKFLOW_DISCIPLINE_MAP.yaml
+- docs/reviews/reopen-classification-2026-06-19-wm-requirement-13-16-vertical-redo.md
+target_sha256:
+  docs/operations/SESSION_WORKFLOW_GUIDE.md: e5f4685948f01a41e4a26682d822726ec6dc56c7ee831853fba2a63ef5a45b03
+  docs/operations/WORKFLOW_DISCIPLINE_MAP.yaml: e87d5572185ca09f8d37e6faf0c4c40f7ecbcad11b9463cb8d3c8be6d301d7e7
+  docs/reviews/reopen-classification-2026-06-19-wm-requirement-13-16-vertical-redo.md: a0b5f927a68f02648bb1c9277a7efb9909ffdcff0e230f20e0d6f15e30f96f9a
+required_verifiers:
+- gemini-3.5-flash
+completed_verifiers:
+- gemini-3.5-flash
+unresolved_substantive_findings: 0
+verifications:
+- verifier: gemini-3.5-flash
+  target_files:
+  - docs/operations/SESSION_WORKFLOW_GUIDE.md
+  - docs/operations/WORKFLOW_DISCIPLINE_MAP.yaml
+  - docs/reviews/reopen-classification-2026-06-19-wm-requirement-13-16-vertical-redo.md
+  target_sha256:
+    docs/operations/SESSION_WORKFLOW_GUIDE.md: e5f4685948f01a41e4a26682d822726ec6dc56c7ee831853fba2a63ef5a45b03
+    docs/operations/WORKFLOW_DISCIPLINE_MAP.yaml: e87d5572185ca09f8d37e6faf0c4c40f7ecbcad11b9463cb8d3c8be6d301d7e7
+    docs/reviews/reopen-classification-2026-06-19-wm-requirement-13-16-vertical-redo.md: a0b5f927a68f02648bb1c9277a7efb9909ffdcff0e230f20e0d6f15e30f96f9a
+review_run:
+  path: .reviewcompass/evidence/review-runs/2026-06-19-vertical-intent-redo-postwrite
+  summary_path: .reviewcompass/evidence/review-runs/2026-06-19-vertical-intent-redo-postwrite/model-result-summary.yaml
+notes: >
+  Independent post-write verification for the vertical intent transfer
+  discipline additions and Requirement 13-16 reopen classification. The
+  review run completed with zero findings.

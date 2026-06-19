@@ -1,0 +1,6 @@
+role: primary
+provider: gemini-api
+model: gemini-3.5-flash
+attempts: 1
+duration_seconds: 13.843
+findings: []

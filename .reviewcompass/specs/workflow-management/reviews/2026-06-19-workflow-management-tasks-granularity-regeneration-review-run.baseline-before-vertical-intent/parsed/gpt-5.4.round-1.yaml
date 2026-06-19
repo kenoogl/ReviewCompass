@@ -1,0 +1,47 @@
+role: primary
+provider: openai-api
+model: gpt-5.4
+attempts: 1
+duration_seconds: 9.488
+findings:
+- severity: WARN
+  target_location: .reviewcompass/specs/workflow-management/tasks.md#T-016
+  description: T-016 does not yet make the ownership boundary with T-014 implementation-safe
+    enough, because it says T-016 owns operation contract vocabulary while T-014 remains
+    the registry/preflight owner, but it does not specify the concrete single source
+    of truth or synchronization rule between `stages/operation-registry.yaml` and
+    the new `stages/operation-contracts.yaml` beyond 'refer only'.
+  rationale: Required check 3 asks that T-016 own operation contract vocabulary without
+    overwriting T-014's registry/preflight responsibilities. As written, implementers
+    still have to decide whether contract fields live canonically in the new contracts
+    file, are duplicated into the registry, or are derived at load time. That ambiguity
+    is likely to cause manual judgment and drift between the two artifacts during
+    implementation.
+- severity: WARN
+  target_location: .reviewcompass/specs/workflow-management/tasks.md#T-017
+  description: T-017 leaves key persistence and state-transition details for approval
+    gates and side track stack underspecified by saying CLI commands are added but
+    also that the CLI is 'JSON output only' and 'saving is delegated later', while
+    the task simultaneously requires stack push/pop/current behavior, approval consumption,
+    and snapshot-based drift detection over concrete state.
+  rationale: Required checks 4 and 9 expect implementation-ready detail for push/pop/current
+    behavior, return conditions, workflow-state snapshots, staged file set/digest
+    checks, and drift detection. The task names the data to hold, but it does not
+    fully pin down where side-track stack state and approval-gate state are stored,
+    when snapshot files are actually emitted versus only printed, or which command
+    transitions mutate which state. That can force implementation-time design choices
+    instead of direct test-first coding.
+- severity: WARN
+  target_location: .reviewcompass/specs/workflow-management/tasks.md#T-019
+  description: T-019 does not fully mechanize the human-required decision boundary
+    for proxy triage and phase progression, because it states that proxy decisions
+    must not pass human-required decisions and that active reopen scope must not be
+    inferred from `spec.json.reopened`, but it does not define the concrete machine-checkable
+    predicate or input field that marks a decision as human-required at the phase-plan
+    checker boundary.
+  rationale: Required check 6 asks for implementation-ready coverage of proxy_model
+    triage decision mechanization and the human-required decision boundary. The task
+    provides good artifact coverage, but an implementer still has to choose whether
+    the blocker comes from triage labels, approval-gate records, operation contracts,
+    or review-wave impact evidence. That is a likely source of manual interpretation
+    and inconsistent enforcement.

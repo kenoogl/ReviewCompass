@@ -1,0 +1,329 @@
+run_id: 2026-06-19-workflow-management-tasks-granularity-regeneration-review-run
+triage_status: draft
+generated_at: '2026-06-19T12:10:54.005374+00:00'
+decision_actor: null
+decision_actor_type: human
+items:
+- finding_id: 2026-06-19-workflow-management-tasks-granularity-regeneration-review-run-gpt-5.4-primary-001
+  run_id: 2026-06-19-workflow-management-tasks-granularity-regeneration-review-run
+  source_model: gpt-5.4
+  source_round: round-1
+  source_raw_path: raw/gpt-5.4.round-1.txt
+  source_parsed_path: parsed/gpt-5.4.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: .reviewcompass/specs/workflow-management/tasks.md#T-016
+  plain_language_summary: T-016 does not yet make the ownership boundary with T-014
+    implementation-safe enough, because it says T-016 owns operation contract vocabulary
+    while T-014 remains the registry/preflight owner, but it does not specify the
+    concrete single source of truth or synchronization rule between `stages/operation-registry.yaml`
+    and the new `stages/operation-contracts.yaml` beyond 'refer only'.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: Required check 3 asks that T-016 own operation contract vocabulary
+    without overwriting T-014's registry/preflight responsibilities. As written, implementers
+    still have to decide whether contract fields live canonically in the new contracts
+    file, are duplicated into the registry, or are derived at load time. That ambiguity
+    is likely to cause manual judgment and drift between the two artifacts during
+    implementation.
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-19-workflow-management-tasks-granularity-regeneration-review-run-gpt-5.4-primary-002
+  run_id: 2026-06-19-workflow-management-tasks-granularity-regeneration-review-run
+  source_model: gpt-5.4
+  source_round: round-1
+  source_raw_path: raw/gpt-5.4.round-1.txt
+  source_parsed_path: parsed/gpt-5.4.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: .reviewcompass/specs/workflow-management/tasks.md#T-017
+  plain_language_summary: T-017 leaves key persistence and state-transition details
+    for approval gates and side track stack underspecified by saying CLI commands
+    are added but also that the CLI is 'JSON output only' and 'saving is delegated
+    later', while the task simultaneously requires stack push/pop/current behavior,
+    approval consumption, and snapshot-based drift detection over concrete state.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: Required checks 4 and 9 expect implementation-ready detail for
+    push/pop/current behavior, return conditions, workflow-state snapshots, staged
+    file set/digest checks, and drift detection. The task names the data to hold,
+    but it does not fully pin down where side-track stack state and approval-gate
+    state are stored, when snapshot files are actually emitted versus only printed,
+    or which command transitions mutate which state. That can force implementation-time
+    design choices instead of direct test-first coding.
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-19-workflow-management-tasks-granularity-regeneration-review-run-gpt-5.4-primary-003
+  run_id: 2026-06-19-workflow-management-tasks-granularity-regeneration-review-run
+  source_model: gpt-5.4
+  source_round: round-1
+  source_raw_path: raw/gpt-5.4.round-1.txt
+  source_parsed_path: parsed/gpt-5.4.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: .reviewcompass/specs/workflow-management/tasks.md#T-019
+  plain_language_summary: T-019 does not fully mechanize the human-required decision
+    boundary for proxy triage and phase progression, because it states that proxy
+    decisions must not pass human-required decisions and that active reopen scope
+    must not be inferred from `spec.json.reopened`, but it does not define the concrete
+    machine-checkable predicate or input field that marks a decision as human-required
+    at the phase-plan checker boundary.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: Required check 6 asks for implementation-ready coverage of proxy_model
+    triage decision mechanization and the human-required decision boundary. The task
+    provides good artifact coverage, but an implementer still has to choose whether
+    the blocker comes from triage labels, approval-gate records, operation contracts,
+    or review-wave impact evidence. That is a likely source of manual interpretation
+    and inconsistent enforcement.
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-19-workflow-management-tasks-granularity-regeneration-review-run-claude-opus-4-8-adversarial-001
+  run_id: 2026-06-19-workflow-management-tasks-granularity-regeneration-review-run
+  source_model: claude-opus-4-8
+  source_round: round-1
+  source_raw_path: raw/claude-opus-4-8.round-1.txt
+  source_parsed_path: parsed/claude-opus-4-8.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: .reviewcompass/specs/workflow-management/tasks.md T-016〜T-019
+  plain_language_summary: 'T-016 through T-019 each provide implementation-ready detail:
+    対応設計節, 対応要件, 責務, 前提タスク, 実装対象ファイル, 最初に書く失敗テスト, 実装順序, 完了条件, 検証コマンド, 禁止事項, 停止条件.
+    The granularity discipline stated near the top of tasks.md (実装対象ファイル, 最初に書く失敗テスト,
+    実装順序, 完了条件, 検証コマンド, 禁止事項, 停止条件) is satisfied for these four tasks.'
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: Required Checks 1, 2, and 9 are confirmed satisfied; tasks can
+    proceed from test to implementation to commit without a separate implementation-drafting.md
+    artifact.
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-19-workflow-management-tasks-granularity-regeneration-review-run-claude-opus-4-8-adversarial-002
+  run_id: 2026-06-19-workflow-management-tasks-granularity-regeneration-review-run
+  source_model: claude-opus-4-8
+  source_round: round-1
+  source_raw_path: raw/claude-opus-4-8.round-1.txt
+  source_parsed_path: parsed/claude-opus-4-8.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: .reviewcompass/specs/workflow-management/tasks.md T-016 vs T-014
+    ownership boundary
+  plain_language_summary: T-016 introduces stages/operation-contracts.yaml as the
+    operation contract 正本 while T-014 already owns stages/operation-registry.yaml
+    with operation contract fields (operation_id, kind, canonical_invocation, etc.).
+    The tasks.md states T-014's registry is 参照側 and T-016 owns operation contract
+    語彙/対応表, and T-016's 禁止事項 says 'T-014 の operation registry を operation contract
+    正本として上書きしない'. However, design.md §Req 13 設計モデル §3 says 'stages/operation-registry.yaml
+    は各 required_action について operation_contract を参照' — implying the registry references
+    contracts, not a separate operation-contracts.yaml. The relationship between stages/operation-registry.yaml
+    (T-014) and stages/operation-contracts.yaml (T-016) is not fully reconciled, and
+    T-016's own 停止条件 flags this risk ('既存 preflight と contract の責務境界が衝突し、どちらを正本にするか判断が必要な場合').
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: Required Check 3 asks whether T-016 owns operation contract vocabulary
+    without overwriting T-014's responsibilities. The two YAML files (operation-registry.yaml
+    and operation-contracts.yaml) create a potential dual-ownership ambiguity that
+    the design suggests should be a single registry-referencing-contracts model. This
+    is likely to cause manual judgment during implementation (which file is the contract
+    正本). The task already records this as a stop condition, so it is recoverable,
+    but the boundary should be clarified before implementation to avoid drift.
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-19-workflow-management-tasks-granularity-regeneration-review-run-claude-opus-4-8-adversarial-003
+  run_id: 2026-06-19-workflow-management-tasks-granularity-regeneration-review-run
+  source_model: claude-opus-4-8
+  source_round: round-1
+  source_raw_path: raw/claude-opus-4-8.round-1.txt
+  source_parsed_path: parsed/claude-opus-4-8.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: .reviewcompass/specs/workflow-management/tasks.md T-016 commit
+    boundary
+  plain_language_summary: T-016 explicitly covers operation contract vocabulary (effect_kind,
+    phase_boundary, operation_contract.schema.json), required_action mapping (test_required_action_contract_mapping_covers_required_action_enum),
+    preconditions/postconditions (完了条件 2), side effects (side_effects field), and
+    commit boundary enforcement (test_commit_boundary_blocks_bypass_for_irreversible_actions,
+    完了条件 4). These map to design.md Requirement 13 受入 1〜10 and are traceable.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: Required Check 3 (T-016 ownership of operation contract vocabulary,
+    required_action mapping, effect_kind, phase_boundary, schema, pre/postconditions,
+    side effects, commit boundary) is confirmed covered with implementation-ready
+    tests.
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-19-workflow-management-tasks-granularity-regeneration-review-run-claude-opus-4-8-adversarial-004
+  run_id: 2026-06-19-workflow-management-tasks-granularity-regeneration-review-run
+  source_model: claude-opus-4-8
+  source_round: round-1
+  source_raw_path: raw/claude-opus-4-8.round-1.txt
+  source_parsed_path: parsed/claude-opus-4-8.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: .reviewcompass/specs/workflow-management/tasks.md T-017
+  plain_language_summary: T-017 covers approval gates (approval_gate.schema.json,
+    完了条件 1〜2), proxy_model/human decision boundary (完了条件 2 and 5; 禁止事項 'proxy_model
+    decision を commit/push/spec.json 更新の人間承認として扱わない'), side track stack push/pop/current
+    (side_track_stack.py, 完了条件 3, test_side_track_stack_rejects_non_lifo_pop), return
+    conditions (完了条件 4), workflow-state snapshots (workflow_state_snapshot.py, 完了条件
+    5〜7 with explicit payload fields), staged file set/digest checks (staged file
+    set digest, worktree dirty path digest), and drift detection (test_snapshot_drift_reports_pending_gate_change,
+    完了条件 7). These trace to design.md Requirement 14 受入 1〜10.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: Required Check 4 (T-017 coverage) is confirmed implementation-ready
+    and traceable to Requirement 14.
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-19-workflow-management-tasks-granularity-regeneration-review-run-claude-opus-4-8-adversarial-005
+  run_id: 2026-06-19-workflow-management-tasks-granularity-regeneration-review-run
+  source_model: claude-opus-4-8
+  source_round: round-1
+  source_raw_path: raw/claude-opus-4-8.round-1.txt
+  source_parsed_path: parsed/claude-opus-4-8.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: .reviewcompass/specs/workflow-management/tasks.md T-018
+  plain_language_summary: T-018 covers structured effective prompt manifests (effective_prompt_manifest.schema.json),
+    language task I/O schema (language_task_io.schema.json), prompt audit (prompt_audit.py,
+    prompt-audit CLI), source digest coverage (test_effective_prompt_manifest_covers_source_digests,
+    完了条件 1), machine task separation (完了条件 3〜4, 禁止事項 on_completion 制約), on_completion
+    constraints (test_prompt_audit_rejects_direct_state_mutation_instruction, 完了条件
+    3), and review-run recording compatibility (完了条件 5 with explicit P1 互換 / WARN
+    / DEVIATION migration boundary for rounds.yaml). These trace to design.md Requirement
+    15 受入 1〜7.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: Required Check 5 (T-018 coverage) is confirmed implementation-ready
+    and traceable to Requirement 15, including the text-only migration boundary.
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-19-workflow-management-tasks-granularity-regeneration-review-run-claude-opus-4-8-adversarial-006
+  run_id: 2026-06-19-workflow-management-tasks-granularity-regeneration-review-run
+  source_model: claude-opus-4-8
+  source_round: round-1
+  source_raw_path: raw/claude-opus-4-8.round-1.txt
+  source_parsed_path: parsed/claude-opus-4-8.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: .reviewcompass/specs/workflow-management/tasks.md T-019
+  plain_language_summary: T-019 covers Phase 0〜6 implementation plan (implementation_phase.schema.json,
+    stages/workflow-management-implementation-phases.yaml, test_implementation_phase_plan_covers_phase_0_to_6),
+    phase entry/exit criteria (完了条件 1〜2), forbidden operation checks (完了条件 1〜2 forbidden_operations),
+    proxy_model triage decision mechanization (proxy_triage_decision.schema.json,
+    完了条件 3〜5), human-required decision boundary (完了条件 5, 禁止事項), and review-wave consumer
+    impact blocking (test_review_wave_consumer_impact, 完了条件 6 with explicit required
+    inputs). The active reopen scope vs impact review scope distinction and reopened-as-history-flag
+    are also addressed (完了条件 7, test_reopened_history_flag_is_not_active_scope). These
+    trace to design.md Requirement 16 受入 1〜12.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: Required Check 6 (T-019 coverage) is confirmed implementation-ready
+    and traceable to Requirement 16.
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-19-workflow-management-tasks-granularity-regeneration-review-run-claude-opus-4-8-adversarial-007
+  run_id: 2026-06-19-workflow-management-tasks-granularity-regeneration-review-run
+  source_model: claude-opus-4-8
+  source_round: round-1
+  source_raw_path: raw/claude-opus-4-8.round-1.txt
+  source_parsed_path: parsed/claude-opus-4-8.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: .reviewcompass/specs/workflow-management/spec.json and stages/in-progress/reopen-procedure-2026-06-19.yaml
+  plain_language_summary: spec.json marks tasks.drafting=true with tasks.triad-review/review-wave/alignment/approval=false
+    and all implementation stages=false; recheck.upstream_change_pending=true with
+    impacted_downstream_phases=[implementation]. The reopen-procedure-2026-06-19.yaml
+    records drafting_completed_gates=[stages/tasks.yaml#drafting], pending_gates starting
+    at stages/tasks.yaml#triad-review, next_step '第3過程：tasks triad-review', current_blocker=null,
+    and commit_stop_point_records pointing to head e239f6f4. These accurately reflect
+    only tasks drafting completion and keep triad-review, review-wave, alignment,
+    approval, and all implementation/commit/push stages pending.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: 'Required Check 8 is confirmed: state files accurately reflect
+    tasks drafting completion only, with no premature marking of later gates. No stale
+    or false gate-complete state detected.'
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-19-workflow-management-tasks-granularity-regeneration-review-run-claude-opus-4-8-adversarial-008
+  run_id: 2026-06-19-workflow-management-tasks-granularity-regeneration-review-run
+  source_model: claude-opus-4-8
+  source_round: round-1
+  source_raw_path: raw/claude-opus-4-8.round-1.txt
+  source_parsed_path: parsed/claude-opus-4-8.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: .reviewcompass/specs/workflow-management/tasks.md T-016〜T-019 traceability
+  plain_language_summary: T-016〜T-019 each cite 対応要件 (Requirement 13〜16 with specific
+    受入 ranges) and 対応設計節 (design.md §Requirement 13〜16 設計モデル, §XDI-WM-005). The 要件追跡
+    table maps Requirement 13 受入 1〜10 → T-016, Requirement 14 受入 1〜10 → T-017, Requirement
+    15 受入 1〜7 → T-018, Requirement 16 受入 1〜12 → T-019. No behavior in T-016〜T-019
+    contradicts the approved requirements.md or design.md; the tasks restate design
+    constraints (e.g., commit boundary, LLM/provider/model 非依存, snapshot-is-not-canonical)
+    consistent with upstream.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: 'Required Check 7 is confirmed: T-016〜T-019 remain traceable to
+    Requirement 13〜16 and introduce no contradiction with approved upstream documents.'
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-19-workflow-management-tasks-granularity-regeneration-review-run-claude-opus-4-8-adversarial-009
+  run_id: 2026-06-19-workflow-management-tasks-granularity-regeneration-review-run
+  source_model: claude-opus-4-8
+  source_round: round-1
+  source_raw_path: raw/claude-opus-4-8.round-1.txt
+  source_parsed_path: parsed/claude-opus-4-8.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: .reviewcompass/specs/workflow-management/tasks.md タスク粒度と方針 / implementation-drafting.md
+    非採用
+  plain_language_summary: tasks.md explicitly states 'implementation-drafting.md は正本成果物として採用しない'
+    and 'implementation drafting は、tasks.md に従って実際のテストと実装コードを生成する段である'. This is consistent
+    with the reopen classification record (A-0, task-granularity-regeneration) which
+    states implementation-drafting.md is not a formal artifact and tasks.md must carry
+    implementation-ready granularity. T-016〜T-019 deliver that granularity.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: 'Required Check 2 is confirmed: the regenerated tasks allow implementation
+    drafting to proceed by writing tests and code directly from tasks.md without a
+    separate canonical implementation-drafting.md, consistent with the A-0 reopen
+    scope and classification record.'
+  applied_files: []
+  superseded_by: null

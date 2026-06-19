@@ -1,0 +1,14 @@
+run_id: 2026-06-19-workflow-management-tasks-granularity-regeneration-review-run
+target_files:
+- path: .reviewcompass/specs/workflow-management/requirements.md
+  sha256: ca557a4b3c7d6ed879e48c9c1537338c40e721ea56f1326604eb3603245c9623
+- path: .reviewcompass/specs/workflow-management/design.md
+  sha256: 4f056a064b8c8e8bba2f443cac78225115da062ac749cd66be58188b83d5190c
+- path: .reviewcompass/specs/workflow-management/tasks.md
+  sha256: 743c1ae3d5e0701f1de9609336d5178faffb6b9704301c266d9ea415fd4c7ce1
+- path: .reviewcompass/specs/workflow-management/spec.json
+  sha256: e2ddc2dddd3e113dccf8bac42fe074579d56b14798af3f3a9635f4df1fb4188c
+- path: stages/in-progress/reopen-procedure-2026-06-19.yaml
+  sha256: 5a6c6427a55c8014319c5c2fe3aa25546cf75bc4197acf61c168b022a5aee198
+- path: docs/reviews/reopen-classification-2026-06-19-wm-task-granularity-regeneration.md
+  sha256: f932d143642ee3c243ae096b14d560ce0bdd8bf9aea3c51ed52f4efdfe4e31bd

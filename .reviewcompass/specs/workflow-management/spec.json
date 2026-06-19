@@ -16,18 +16,18 @@
       "reference": "stages/feature-partitioning/2026-05-24-proposal.md"
     },
     "requirements": {
-      "drafting": true,
-      "triad-review": true,
-      "review-wave": true,
-      "alignment": true,
-      "approval": true
+      "drafting": false,
+      "triad-review": false,
+      "review-wave": false,
+      "alignment": false,
+      "approval": false
     },
     "design": {
-      "drafting": true,
-      "triad-review": true,
-      "review-wave": true,
-      "alignment": true,
-      "approval": true
+      "drafting": false,
+      "triad-review": false,
+      "review-wave": false,
+      "alignment": false,
+      "approval": false
     },
     "tasks": {
       "drafting": false,
@@ -55,6 +55,8 @@
   "recheck": {
     "upstream_change_pending": true,
     "impacted_downstream_phases": [
+      "design",
+      "tasks",
       "implementation"
     ]
   }

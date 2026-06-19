@@ -1,0 +1,145 @@
+round_id: round-1
+purpose: tasks
+invocation_timestamp: '2026-06-19T12:10:53.982098+00:00'
+target_files:
+- path: .reviewcompass/specs/workflow-management/requirements.md
+  sha256: ca557a4b3c7d6ed879e48c9c1537338c40e721ea56f1326604eb3603245c9623
+- path: .reviewcompass/specs/workflow-management/design.md
+  sha256: 4f056a064b8c8e8bba2f443cac78225115da062ac749cd66be58188b83d5190c
+- path: .reviewcompass/specs/workflow-management/tasks.md
+  sha256: 743c1ae3d5e0701f1de9609336d5178faffb6b9704301c266d9ea415fd4c7ce1
+- path: .reviewcompass/specs/workflow-management/spec.json
+  sha256: e2ddc2dddd3e113dccf8bac42fe074579d56b14798af3f3a9635f4df1fb4188c
+- path: stages/in-progress/reopen-procedure-2026-06-19.yaml
+  sha256: 5a6c6427a55c8014319c5c2fe3aa25546cf75bc4197acf61c168b022a5aee198
+- path: docs/reviews/reopen-classification-2026-06-19-wm-task-granularity-regeneration.md
+  sha256: f932d143642ee3c243ae096b14d560ce0bdd8bf9aea3c51ed52f4efdfe4e31bd
+criteria: "---\nreview_target: workflow-management tasks granularity regeneration\n\
+  phase: tasks\ngate: stages/tasks.yaml#triad-review\nfeature: workflow-management\n\
+  date: 2026-06-19\nsource_commit: e239f6f4\nsource_documents:\n  - .reviewcompass/specs/workflow-management/requirements.md\n\
+  \  - .reviewcompass/specs/workflow-management/design.md\n  - .reviewcompass/specs/workflow-management/tasks.md\n\
+  \  - .reviewcompass/specs/workflow-management/spec.json\n  - stages/in-progress/reopen-procedure-2026-06-19.yaml\n\
+  \  - docs/reviews/reopen-classification-2026-06-19-wm-task-granularity-regeneration.md\n\
+  ---\n\n# Review Target: workflow-management tasks / granularity regeneration\n\n\
+  ## Review Purpose\n\nReview whether the regenerated `workflow-management` tasks\
+  \ are now detailed enough to enter implementation drafting directly without a separate\
+  \ `implementation-drafting.md` canonical artifact.\n\nThis review is limited to\
+  \ the 2026-06-19 A-0 reopen scope: tasks.md task granularity for T-016 through T-019,\
+  \ plus the state files that mark tasks drafting complete and keep later gates pending.\n\
+  \n## Background\n\n- User requested continuation from `TODO_NEXT_SESSION.md`.\n\
+  - Reopen classification was recorded as A-0 in `docs/reviews/reopen-classification-2026-06-19-wm-task-granularity-regeneration.md`.\n\
+  - Commit `e239f6f4` saved the regenerated tasks and reopen state at the commit stop\
+  \ point.\n- After the stop point was consumed, `spec.json` now marks only `workflow_state.tasks.drafting=true`;\
+  \ tasks triad-review, review-wave, alignment, approval, and all implementation stages\
+  \ remain false.\n- `stages/in-progress/reopen-procedure-2026-06-19.yaml` now records\
+  \ `drafting_completed_gates: [stages/tasks.yaml#drafting]` and keeps the next gate\
+  \ at `stages/tasks.yaml#triad-review`.\n\n## Target Files\n\n- `.reviewcompass/specs/workflow-management/requirements.md`\n\
+  - `.reviewcompass/specs/workflow-management/design.md`\n- `.reviewcompass/specs/workflow-management/tasks.md`\n\
+  - `.reviewcompass/specs/workflow-management/spec.json`\n- `stages/in-progress/reopen-procedure-2026-06-19.yaml`\n\
+  - `docs/reviews/reopen-classification-2026-06-19-wm-task-granularity-regeneration.md`\n\
+  \n## Required Checks\n\n1. Check whether T-016 through T-019 each contain enough\
+  \ implementation-ready detail: implementation target files, first failing tests,\
+  \ implementation order, completion conditions, verification commands, forbidden\
+  \ actions, and stop conditions.\n2. Check whether the regenerated tasks let implementation\
+  \ drafting proceed by writing tests and implementation code directly from `tasks.md`,\
+  \ without requiring a separate canonical `implementation-drafting.md`.\n3. Check\
+  \ whether T-016 correctly owns operation contract vocabulary, `required_action`\
+  \ mapping, `effect_kind`, `phase_boundary`, operation contract schema, preconditions\
+  \ / postconditions, side effects, and commit boundary enforcement without overwriting\
+  \ T-014's operation registry / preflight responsibilities.\n4. Check whether T-017\
+  \ gives implementation-ready coverage for approval gates, proxy_model / human decision\
+  \ boundary, side track stack push / pop / current behavior, return conditions, workflow-state\
+  \ snapshots, staged file set / digest checks, and drift detection.\n5. Check whether\
+  \ T-018 gives implementation-ready coverage for structured effective prompt manifests,\
+  \ language task I/O schema, prompt audit, source digest coverage, machine task separation,\
+  \ `on_completion` constraints, and review-run recording compatibility.\n6. Check\
+  \ whether T-019 gives implementation-ready coverage for Phase 0 through Phase 6\
+  \ implementation plan, phase entry / exit criteria, forbidden operation checks,\
+  \ proxy_model triage decision mechanization, human-required decision boundary, and\
+  \ review-wave consumer impact blocking.\n7. Check whether T-016 through T-019 remain\
+  \ traceable to requirements / design Requirement 13 through Requirement 16 and do\
+  \ not introduce behavior that contradicts approved upstream documents.\n8. Check\
+  \ whether `spec.json` and `stages/in-progress/reopen-procedure-2026-06-19.yaml`\
+  \ accurately reflect only tasks drafting completion, without prematurely marking\
+  \ tasks triad-review, review-wave, alignment, approval, implementation, commit,\
+  \ or push complete.\n9. Check whether the task granularity discipline stated near\
+  \ the top of `tasks.md` is actually satisfied by T-016 through T-019, including\
+  \ the rule that each task can be worked from test to implementation to commit as\
+  \ a coherent unit.\n\n## Out Of Scope\n\n- Do not request implementation code changes\
+  \ during this tasks triad-review.\n- Do not judge unrelated older tasks unless they\
+  \ directly contradict T-016 through T-019 or the task granularity policy.\n- Do\
+  \ not reopen requirements or design unless T-016 through T-019 are untraceable or\
+  \ contradictory against the already approved upstream documents.\n- Do not decide\
+  \ proxy_model triage or apply fixes; this review only reports findings for human\
+  \ presentation.\n\n## Finding Policy\n\n- Report `must-fix` for missing Requirement\
+  \ 13 through 16 task coverage, task text that is not implementation-ready, stale\
+  \ state that falsely claims an uncompleted gate, contradictions with approved requirements\
+  \ / design, or any bypass of commit / approval / review boundaries.\n- Report `should-fix`\
+  \ for ambiguity that is likely to cause manual judgment during implementation, unclear\
+  \ task ownership, weak TDD starting tests, weak verification commands, or responsibility\
+  \ overlap with earlier tasks.\n- Report `leave-as-is` or no finding when the regenerated\
+  \ tasks are traceable, implementation-ready, and correctly scoped for a tasks drafting\
+  \ artifact.\n"
+prompt_sha256: 5d59a1ade7037ea77700b3c7563a136b7c750dd1785abba540849b3dd140c89b
+model_results:
+- model_id: gpt-5.4
+  provider: openai-api
+  role: primary
+  treatment: primary
+  invocation_path: api
+  raw_path: raw/gpt-5.4.round-1.txt
+  raw_sha256: 84978df01238b742264ce427d591fefb26acebb333e10ded0df59454afffb0eb
+  parsed_path: parsed/gpt-5.4.round-1.yaml
+  parsed_sha256: f0478c84a0110cf1dc65be08d1604b3a3558a06dcae10b29b5747847d3538126
+  parse_status: parsed
+  formatted_by: parser
+  formatted_by_actor_type: orchestrator
+  formatted_by_actor: run_role.py
+  formatted_at: '2026-06-19T12:09:50.680890+00:00'
+  follow_up_action: triage
+  attempts: 1
+  duration_seconds: 9.488
+  prompt_path: prompts/gpt-5.4.round-1.prompt.md
+  prompt_sha256: 8dc8117eca72d116b9960441a6145b15c3eace906688060e839509c5e6095ee7
+- model_id: claude-opus-4-8
+  provider: anthropic-api
+  role: adversarial
+  treatment: adversarial
+  invocation_path: api
+  raw_path: raw/claude-opus-4-8.round-1.txt
+  raw_sha256: c582ba7f0135478310a378206f16fabdc82f2b93968c0aefc71567e19df457c2
+  parsed_path: parsed/claude-opus-4-8.round-1.yaml
+  parsed_sha256: f8e2533c91f5f921c36f0e8ef480652b8aa548aad9f3ff06f7248638f6b97101
+  parse_status: parsed
+  formatted_by: parser
+  formatted_by_actor_type: orchestrator
+  formatted_by_actor: run_role.py
+  formatted_at: '2026-06-19T12:10:32.757565+00:00'
+  follow_up_action: triage
+  attempts: 1
+  duration_seconds: 41.889
+  prompt_path: prompts/claude-opus-4-8.round-1.prompt.md
+  prompt_sha256: e31e2c04e514fba2bb12da34030c6cffe9896ffcabddcae02a36428e86153629
+- model_id: gemini-3.1-pro-preview
+  provider: gemini-api
+  role: judgment
+  treatment: judgment
+  invocation_path: api
+  raw_path: raw/gemini-3.1-pro-preview.round-1.txt
+  raw_sha256: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+  parsed_path: parsed/gemini-3.1-pro-preview.round-1.yaml
+  parsed_sha256: 1d1240e7fbf12d8cf93c8148a7f7eb6e848cd8ce2c03a932c643ade171cef86d
+  parse_status: parsed
+  formatted_by: parser
+  formatted_by_actor_type: orchestrator
+  formatted_by_actor: run_role.py
+  formatted_at: '2026-06-19T12:10:53.982098+00:00'
+  follow_up_action: triage
+  attempts: 1
+  duration_seconds: 21.173
+  prompt_path: prompts/gemini-3.1-pro-preview.round-1.prompt.md
+  prompt_sha256: 5d59a1ade7037ea77700b3c7563a136b7c750dd1785abba540849b3dd140c89b
+criteria_source_path: .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-tasks-granularity-regeneration-review-run/review-target.md
+criteria_source_sha256: 0628de2914ca184d6c5715ab018c2f9e21ab90c85eb4823012a500a60b8c8393
+effective_prompt_path: .reviewcompass/runtime/effective-prompts/next_action_kind-reopen_in_progress__workflow_stage-triad-review__reopen_required_action-run_reopen_pending_gate.prompt.md
+effective_prompt_sha256: 96ca48627b0bdbd51f109ba5f9704d1c4deeea4cdc9fe82dbc3f0a3dbd67793a

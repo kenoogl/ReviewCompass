@@ -1,16 +1,25 @@
 process_id: reopen-procedure
 feature: workflow-management
-classification: A-0
+classification: R-0
 started_at: '2026-06-19T00:00:00+09:00'
-trigger: タスク粒度規律に従う workflow-management tasks 再生成と implementation 実作業化
-classification_basis: docs/reviews/reopen-classification-2026-06-19-wm-task-granularity-regeneration.md
+trigger: Requirement 13〜16 の縦方向意図監査に基づく requirements/design/tasks 再生成
+classification_basis: docs/reviews/reopen-classification-2026-06-19-wm-requirement-13-16-vertical-redo.md
 completed_steps:
-- A-0 判定確定・spec.json フラグ差し戻し完了（tasks 全段 → false、implementation 全段 → false、recheck.upstream_change_pending
-  → true、impacted_downstream_phases → implementation）
-- tasks.md を新しい粒度規律に従って再生成（T-016〜T-019 に実装対象ファイル、最初に書く失敗テスト、実装順序、完了条件、検証コマンド、禁止事項、停止条件を追加）
+- R-0 判定確定・spec.json フラグ差し戻し完了（requirements/design/tasks/implementation 全段 → false、recheck.upstream_change_pending
+  → true、impacted_downstream_phases → design/tasks/implementation）
+- R-0 判定確定・spec.json フラグ差し戻し完了（requirements/design/tasks/implementation 全段 → false）
+- Requirement 13〜16 を基点に requirements/design/tasks を縦方向意図監査の結果へ合わせて再生成
 next_step: 第2過程：停止点コミット
 step_number: 2
 pending_gates:
+- stages/requirements.yaml#triad-review
+- stages/requirements.yaml#review-wave
+- stages/requirements.yaml#alignment
+- stages/requirements.yaml#approval
+- stages/design.yaml#triad-review
+- stages/design.yaml#review-wave
+- stages/design.yaml#alignment
+- stages/design.yaml#approval
 - stages/tasks.yaml#triad-review
 - stages/tasks.yaml#review-wave
 - stages/tasks.yaml#alignment
@@ -18,21 +27,32 @@ pending_gates:
 current_blocker: null
 reopen_step_records:
 - from_step: 1
-  completed_step: A-0 判定確定・spec.json フラグ差し戻し完了（tasks 全段 → false、implementation 全段
-    → false、recheck.upstream_change_pending → true、impacted_downstream_phases → implementation）
-  rationale: 利用者指示に基づき、tasks 段からの reopen としてタスク粒度規律に従う tasks.md 再生成と implementation
-    実作業化を行うため。分類根拠は docs/reviews/reopen-classification-2026-06-19-wm-task-granularity-regeneration.md
-    に記録済み。
+  completed_step: R-0 判定確定・spec.json フラグ差し戻し完了（requirements/design/tasks/implementation
+    全段 → false、recheck.upstream_change_pending → true、impacted_downstream_phases →
+    design/tasks/implementation）
+  rationale: 縦方向意図監査により、Requirement 13〜16 から requirements/design/tasks を再生成する必要があるため。分類根拠に従い、requirements
+    を drafting から再開し、design/tasks/implementation を下流未完了へ戻す。
   evidence:
-  - docs/reviews/reopen-classification-2026-06-19-wm-task-granularity-regeneration.md
+  - docs/reviews/reopen-classification-2026-06-19-wm-requirement-13-16-vertical-redo.md
+  - .reviewcompass/specs/workflow-management/spec.json
+- from_step: 1
+  completed_step: R-0 判定確定・spec.json フラグ差し戻し完了（requirements/design/tasks/implementation
+    全段 → false）
+  rationale: 縦方向意図監査により Requirement 13〜16 を基点に requirements/design/tasks を再生成するため
+  evidence:
+  - docs/reviews/reopen-classification-2026-06-19-wm-requirement-13-16-vertical-redo.md
   - .reviewcompass/specs/workflow-management/spec.json
 - from_step: 2
-  completed_step: tasks.md を新しい粒度規律に従って再生成（T-016〜T-019 に実装対象ファイル、最初に書く失敗テスト、実装順序、完了条件、検証コマンド、禁止事項、停止条件を追加）
-  rationale: implementation-drafting.md を正本成果物にせず、tasks.md から直接テストと実装コードへ進める粒度へ上げるため。既存粒度テスト
-    tests/tools/test_workflow_management_task_granularity.py は pass。
+  completed_step: Requirement 13〜16 を基点に requirements/design/tasks を縦方向意図監査の結果へ合わせて再生成
+  rationale: tasks 粒度起点 reopen の比較実験で、registry/contract 正本境界と proxy/human decision
+    境界が requirements/design authority の問題として露出したため。Requirement 13〜16、design Req 13/14/16、T-016〜T-019
+    を同じ縦方向意図で再生成した。
   evidence:
+  - .reviewcompass/specs/workflow-management/requirements.md
+  - .reviewcompass/specs/workflow-management/design.md
   - .reviewcompass/specs/workflow-management/tasks.md
-  - tests/tools/test_workflow_management_task_granularity.py
+  - docs/reviews/reopen-classification-2026-06-19-wm-requirement-13-16-vertical-redo.md
+  - docs/notes/working/2026-06-19-vertical-intent-review-audit-experiment.md
 commit_stop_point: true
 commit_stop_point_step: 2
 commit_stop_point_kind: canonical_update_complete

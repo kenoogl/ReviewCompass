@@ -1,0 +1,12 @@
+run_id: 2026-06-19-vertical-intent-redo-postwrite
+models:
+- model_id: gemini-3.5-flash
+  raw_path: raw/gemini-3.5-flash.round-1.txt
+  parse_status: parsed
+  triage_status: no_findings
+  findings_count: 0
+  findings_count_by_severity: {}
+  must_fix_count: 0
+  should_fix_count: 0
+  leave_as_is_count: 0
+  human_required_count: 0
