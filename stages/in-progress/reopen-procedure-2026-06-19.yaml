@@ -279,11 +279,13 @@ commit_stop_point_records:
   head: 3827cf61b739617dca4825dd84b0b18f17358147
   evidence:
   - .reviewcompass/post-write-verification/post-write-2026-06-19-283.yaml
+- step: 3
+  kind: alignment_complete
+  gate: stages/tasks.yaml#alignment
+  reason: tasks alignment 完了時点の停止点
+  head: a6bf8f44
+  evidence:
+  - .reviewcompass/post-write-verification/post-write-2026-06-19-284.yaml
 commit_required: true
 commit_required_kind: stop_point_consumed
 commit_required_reason: reopen commit stop point 消費完了時点の停止点
-commit_stop_point: true
-commit_stop_point_step: 3
-commit_stop_point_kind: alignment_complete
-commit_stop_point_gate: stages/tasks.yaml#alignment
-commit_stop_point_reason: tasks alignment 完了時点の停止点
