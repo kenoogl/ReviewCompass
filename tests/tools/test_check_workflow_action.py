@@ -5401,12 +5401,13 @@ def _load_commit_approval_module():
   return importlib.import_module("check_workflow_action.commit_approval")
 
 
-def _write_completed_post_write_manifest(tmpdir, target_files):
+def _write_completed_post_write_manifest(tmpdir, target_files, target_sha256=None):
   """対象ファイルを覆う完了 post-write manifest を書く"""
-  target_sha256 = {
-    relpath: _sha256_file(Path(tmpdir) / relpath)
-    for relpath in target_files
-  }
+  if target_sha256 is None:
+    target_sha256 = {
+      relpath: _sha256_file(Path(tmpdir) / relpath)
+      for relpath in target_files
+    }
   _write_post_write_manifest(
     tmpdir,
     "post-write-2026-06-03-999.yaml",
@@ -7934,6 +7935,46 @@ class CommitExitCodeTests(unittest.TestCase):
     self.assertEqual(result.returncode, 2, result.stdout)
     self.assertIn("文書リンク lint", result.stdout)
     self.assertIn("missing_anchor", result.stdout)
+
+  def test_commit_skips_document_link_lint_for_deleted_staged_markdown(self):
+    """削除された staged Markdown は文書リンク lint の読み取り対象にしない"""
+    _set_pending_findings(self.pending_file, unresolved_count=0)
+    source_path = "docs/operations/delete-me.md"
+    _stage_file(
+      self.tmpdir,
+      source_path,
+      "# Delete Me\n\n[missing](missing.md#anchor)\n",
+    )
+    subprocess.run(
+      ["git", "commit", "-m", "seed delete target"],
+      cwd=str(self.tmpdir),
+      check=True,
+      capture_output=True,
+    )
+    subprocess.run(
+      ["git", "rm", source_path],
+      cwd=str(self.tmpdir),
+      check=True,
+      capture_output=True,
+    )
+    _write_completed_post_write_manifest(
+      self.tmpdir,
+      [source_path],
+      target_sha256={source_path: "DELETED"},
+    )
+    _write_commit_approval(
+      self.tmpdir,
+      [source_path],
+      target_sha256={source_path: "DELETED"},
+    )
+
+    result = run_script(
+      ["commit", "--rationale", "削除文書の commit gate テスト"],
+      cwd=self.tmpdir,
+    )
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 0, result.stdout)
 
   def test_commit_rationale_is_required(self):
     """commit に --rationale なし → 非 0 終了（仕様 §5.2 必須）"""

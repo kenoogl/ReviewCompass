@@ -1,0 +1,41 @@
+round_id: round-1
+purpose: post_write_verification
+invocation_timestamp: '2026-06-19T11:44:44.283440+00:00'
+target_files:
+- path: .reviewcompass/evidence/review-runs/2026-06-19-remove-implementation-drafting-artifacts-postwrite-r2/review-target.md
+  sha256: d5b21672c39bcc0a4e6f55fba05982a615d710e638a81474e3f9136c58b00cfb
+criteria: "run_id: 2026-06-19-remove-implementation-drafting-artifacts-postwrite-r2\n\
+  phase: post_write_verification\ncriteria_id: remove_implementation_drafting_artifacts_and_deleted_staged_guard\n\
+  criteria_file: .reviewcompass/evidence/review-runs/2026-06-19-remove-implementation-drafting-artifacts-postwrite-r2/review-target.md\n\
+  criteria_file_sha256: d5b21672c39bcc0a4e6f55fba05982a615d710e638a81474e3f9136c58b00cfb\n\
+  target_files:\n- path: .reviewcompass/README.md\n  sha256: 9533a51f23816d865ef9cefd1956b28f83db164ab3aef1a3be8dd3803c7fe3a9\n\
+  - path: .reviewcompass/specs/workflow-management/tasks.md\n  sha256: 715add2dd0ed1a2373eef50ea8c545ebe5620576c1c8f88b095fa9f806d1ddd1\n\
+  - path: docs/notes/2026-06-12-document-placement-target-design.md\n  sha256: a451a6a4200777988c20d49c16cb1ded0acbc038306086c83b3c39d57cf6ea81\n\
+  - path: docs/operations/SESSION_WORKFLOW_GUIDE.md\n  sha256: 522f67fa99b07d98b6a89e4dc088d4d8aca235ef5b5f4a498196a25011504c81\n\
+  - path: tools/check-workflow-action.py\n  sha256: 9b8e3b56301a7ec48f86fcdacdcca50c70b0d725f556b9afc5bcf652da707807\n\
+  sensitive_information_check:\n  status: passed\n  checked_at: '2026-06-19T11:44:31.240487+00:00'\n\
+  recommended_run_review_args:\n  criteria_file: .reviewcompass/evidence/review-runs/2026-06-19-remove-implementation-drafting-artifacts-postwrite-r2/review-target.md\n\
+  \  phase: post_write_verification\n"
+prompt_sha256: 65be769a69e5c6690dc240051b2699168fc6d5f880274ccaebdb286dbbbe0cb1
+model_results:
+- model_id: gemini-3.5-flash
+  provider: gemini-api
+  role: primary
+  treatment: primary
+  invocation_path: api
+  raw_path: raw/gemini-3.5-flash.round-1.txt
+  raw_sha256: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+  parsed_path: parsed/gemini-3.5-flash.round-1.yaml
+  parsed_sha256: 47f31b4ddd6053efbc0cf56514708927d17c2ffd20eaf04403a8b23042f1744f
+  parse_status: parsed
+  formatted_by: parser
+  formatted_by_actor_type: orchestrator
+  formatted_by_actor: run_role.py
+  formatted_at: '2026-06-19T11:44:44.283440+00:00'
+  follow_up_action: triage
+  attempts: 1
+  duration_seconds: 4.464
+  prompt_path: prompts/gemini-3.5-flash.round-1.prompt.md
+  prompt_sha256: 65be769a69e5c6690dc240051b2699168fc6d5f880274ccaebdb286dbbbe0cb1
+criteria_source_path: .reviewcompass/evidence/review-runs/2026-06-19-remove-implementation-drafting-artifacts-postwrite-r2/review-target.yaml
+criteria_source_sha256: 3e9135b3834228a795074915f732e622cbe32f57de79eabd64425d923f354d6c

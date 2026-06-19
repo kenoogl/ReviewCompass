@@ -21,7 +21,7 @@ related:
 
 | 種別 | 置き場 |
 | --- | --- |
-| 1 正本仕様 | `.reviewcompass/specs/<feature>/`（requirements・design・tasks・spec.json・implementation-drafting）、`.reviewcompass/feature-dependency.yaml` |
+| 1 正本仕様 | `.reviewcompass/specs/<feature>/`（requirements・design・tasks・spec.json）、`.reviewcompass/feature-dependency.yaml` |
 | 2 証跡記録 | `.reviewcompass/evidence/`（内部構造は §2） |
 | 3 規律・運用 | `.reviewcompass/AGENT_ENTRY.md`＋配布された規律（最終形では開発リポジトリの operations／disciplines と同型） |
 | 4 実行時生成物 | `.reviewcompass/runtime/`（原則 git 無視。内部構造は §2） |

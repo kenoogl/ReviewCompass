@@ -68,7 +68,8 @@ implementation 段：drafting → triad-review → review-wave → alignment →
 
 ### 2.2 各段の役割（責務分離後）
 
-- **drafting**：各機能の草案作成のみ。1 機能ずつ独立に進める。actor=llm（または human）。tasks 段の drafting では、対象機能の設計書 §14 要件追跡表（Req 受入単位 × 担当タスク単位）を骨格として tasks.md を作成する。
+- **drafting**：各機能の草案作成のみ。1 機能ずつ独立に進める。actor=llm（または human）。requirements／design／tasks の drafting は文書起草を意味する。implementation の drafting は文書起草ではなく、tasks.md に従ったテストと実装コードの生成を意味する。
+- **tasks drafting の粒度**：tasks 段の drafting では、対象機能の設計書 §14 要件追跡表（Req 受入単位 × 担当タスク単位）を骨格として tasks.md を作成する。tasks.md は implementation drafting へ直接入れる粒度で書く。各タスクには、実装対象ファイル、最初に書く失敗テスト、実装順序、完了条件、検証コマンド、禁止事項、停止条件を含める。implementation-plan.md や implementation-drafting.md のような別の実装前計画文書を正本成果物として要求しない。
 - **triad-review**：機能内の 3 役レビュー（主役・敵対役・判定役）と機能内対処の実施。手動 dogfooding または subagent_mediated（サブエージェント仲介方式）で実施。actor=llm
 - **review-wave**：複数機能を横断する複数ラウンドレビュー。機能横断波及所見と同根所見（異なる機能で同じ性格の所見が独立に発見された組）を集約し、一貫した対処方針で全該当機能の仕様文書に反映する
 - **alignment**：LLM 自動判定による整合確認段（actor=llm）
@@ -534,7 +535,7 @@ push は **利用者明示承認**を仰いでから実行。LLM が自律的に
 言い換え例：
 
 - 「tasks approval の停止点を消費」ではなく「tasks 段の承認を完了済みとして記録」
-- 「implementation drafting を完了」ではなく「implementation 段で扱う実装対象を整理」
+- 「implementation drafting を完了」ではなく「implementation 段のコードとテストを作成」
 - 「次の required_action は run_reopen_pending_gate」ではなく「次は現在の段のレビュー作業」
 
 ### 7.2 利用者操作が必要な停止点の表示

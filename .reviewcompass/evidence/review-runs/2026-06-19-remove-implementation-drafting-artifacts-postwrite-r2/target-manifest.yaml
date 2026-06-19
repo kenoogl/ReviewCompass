@@ -1,0 +1,4 @@
+run_id: 2026-06-19-remove-implementation-drafting-artifacts-postwrite-r2
+target_files:
+- path: .reviewcompass/evidence/review-runs/2026-06-19-remove-implementation-drafting-artifacts-postwrite-r2/review-target.md
+  sha256: d5b21672c39bcc0a4e6f55fba05982a615d710e638a81474e3f9136c58b00cfb

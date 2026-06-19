@@ -2430,6 +2430,17 @@ def staged_file_sha256(cwd, filepath):
   return hashlib.sha256(result.stdout).hexdigest()
 
 
+def staged_file_content_hash(cwd, filepath):
+  """staged 内容の hash を返す。削除済み staged path は DELETED sentinel にする"""
+  sha256 = staged_file_sha256(cwd, filepath)
+  return "DELETED" if sha256 is None else sha256
+
+
+def is_staged_deleted(cwd, filepath):
+  """staged path が削除として index に載っているかを返す"""
+  return staged_file_content_hash(cwd, filepath) == "DELETED"
+
+
 def validate_commit_approval(cwd, staged_files):
   """commit 用ユーザ承認レコードを検査する"""
   resolved_relative = resolve_commit_approval_path(cwd)
@@ -2658,7 +2669,10 @@ def validate_deployment_independence_for_staged_files(cwd, staged_files):
   """D-023 配置非依存 lint を staged 内容に対して実行する"""
   target_files = [
     filepath for filepath in staged_files
-    if is_deployment_independence_guard_target(filepath)
+    if (
+      is_deployment_independence_guard_target(filepath)
+      and not is_staged_deleted(cwd, filepath)
+    )
   ]
   state = {
     "target_files": target_files,
@@ -2697,7 +2711,7 @@ def validate_document_links_for_staged_files(cwd, staged_files):
   """staged 文書のリンク存在・アンカー・既知の意味的組み合わせを検査する"""
   target_files = [
     filepath for filepath in staged_files
-    if is_document_link_guard_target(filepath)
+    if is_document_link_guard_target(filepath) and not is_staged_deleted(cwd, filepath)
   ]
   path_texts = {}
   errors = []
@@ -3461,9 +3475,14 @@ def cmd_commit(args):
     cwd,
     staged_files,
   )
+  staged_content_hashes = {
+    filepath: staged_file_content_hash(cwd, filepath)
+    for filepath in staged_files
+  }
   post_write_state, post_write_errors = validate_post_write_completion_for_targets(
     cwd,
     staged_files,
+    actual_hashes=staged_content_hashes,
   )
   deployment_lint_state, deployment_lint_errors = (
     validate_deployment_independence_for_staged_files(cwd, staged_files)

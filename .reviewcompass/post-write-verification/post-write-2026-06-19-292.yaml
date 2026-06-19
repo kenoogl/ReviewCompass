@@ -1,0 +1,36 @@
+status: completed
+target_files:
+- .reviewcompass/README.md
+- .reviewcompass/specs/workflow-management/tasks.md
+- docs/notes/2026-06-12-document-placement-target-design.md
+- docs/operations/SESSION_WORKFLOW_GUIDE.md
+- tools/check-workflow-action.py
+target_sha256:
+  .reviewcompass/README.md: 9533a51f23816d865ef9cefd1956b28f83db164ab3aef1a3be8dd3803c7fe3a9
+  .reviewcompass/specs/workflow-management/tasks.md: 715add2dd0ed1a2373eef50ea8c545ebe5620576c1c8f88b095fa9f806d1ddd1
+  docs/notes/2026-06-12-document-placement-target-design.md: a451a6a4200777988c20d49c16cb1ded0acbc038306086c83b3c39d57cf6ea81
+  docs/operations/SESSION_WORKFLOW_GUIDE.md: 522f67fa99b07d98b6a89e4dc088d4d8aca235ef5b5f4a498196a25011504c81
+  tools/check-workflow-action.py: 9b8e3b56301a7ec48f86fcdacdcca50c70b0d725f556b9afc5bcf652da707807
+required_verifiers: &id001
+- gemini-3.5-flash
+completed_verifiers: *id001
+unresolved_substantive_findings: 0
+verifications:
+- verifier: gemini-3.5-flash
+  target_files:
+  - .reviewcompass/README.md
+  - .reviewcompass/specs/workflow-management/tasks.md
+  - docs/notes/2026-06-12-document-placement-target-design.md
+  - docs/operations/SESSION_WORKFLOW_GUIDE.md
+  - tools/check-workflow-action.py
+  target_sha256:
+    .reviewcompass/README.md: 9533a51f23816d865ef9cefd1956b28f83db164ab3aef1a3be8dd3803c7fe3a9
+    .reviewcompass/specs/workflow-management/tasks.md: 715add2dd0ed1a2373eef50ea8c545ebe5620576c1c8f88b095fa9f806d1ddd1
+    docs/notes/2026-06-12-document-placement-target-design.md: a451a6a4200777988c20d49c16cb1ded0acbc038306086c83b3c39d57cf6ea81
+    docs/operations/SESSION_WORKFLOW_GUIDE.md: 522f67fa99b07d98b6a89e4dc088d4d8aca235ef5b5f4a498196a25011504c81
+    tools/check-workflow-action.py: 9b8e3b56301a7ec48f86fcdacdcca50c70b0d725f556b9afc5bcf652da707807
+review_run:
+  path: .reviewcompass/evidence/review-runs/2026-06-19-remove-implementation-drafting-artifacts-postwrite-r2
+  summary_path: .reviewcompass/evidence/review-runs/2026-06-19-remove-implementation-drafting-artifacts-postwrite-r2/model-result-summary.yaml
+notes: Final verification for removing implementation-drafting artifacts and fixing
+  deleted staged Markdown commit guard handling.
