@@ -1,0 +1,22 @@
+status: completed
+target_files:
+  - TODO_NEXT_SESSION.md
+target_sha256:
+  TODO_NEXT_SESSION.md: c4a9f0eeeb51b39662371d3373d5fcd2c063dc66a44c624243de2b54fd1e4096
+required_verifiers:
+  - lightweight_self_check
+completed_verifiers:
+  - lightweight_self_check
+unresolved_substantive_findings: 0
+verifications:
+  - verifier: lightweight_self_check
+    target_files:
+      - TODO_NEXT_SESSION.md
+    target_sha256:
+      TODO_NEXT_SESSION.md: c4a9f0eeeb51b39662371d3373d5fcd2c063dc66a44c624243de2b54fd1e4096
+notes: >
+  Lightweight self check only. The change refreshes the next-session handoff
+  after commit 561e5a45 was pushed, restores next --json as the mechanical
+  current-position source while preserving reopen/manual cross-checks, and
+  records the current recommended next action as integrated-design design
+  drafting.

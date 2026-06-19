@@ -1,0 +1,34 @@
+process_id: maintenance
+started_at: "2026-06-19T12:33:54+09:00"
+completed_at: "2026-06-19T12:33:54+09:00"
+trigger: "利用者の TODO更新 指示により、次セッション継続用メモを現在の push 済み状態へ更新"
+mainline_blocked_by: "stages/in-progress/reopen-procedure-2026-06-19.yaml"
+classification: local
+reason: "TODO_NEXT_SESSION.md の入口メモ更新のみであり、workflow phase/gate の意味や本線成果物を変更しない。"
+procedure: lightweight_self_check
+allowed_scope:
+  - "TODO_NEXT_SESSION.md の現在位置、直近 commit、次作業候補を実体に合わせて更新する"
+  - "TODO_NEXT_SESSION.md 更新の lightweight self-check manifest を記録する"
+  - "reopen 本線の進行中状態は変更しない"
+allowed_files:
+  - "TODO_NEXT_SESSION.md"
+  - ".reviewcompass/post-write-verification/post-write-2026-06-19-275.yaml"
+  - "stages/completed/maintenance-2026-06-19-todo-session-handoff-update.yaml"
+completion_conditions:
+  - "TODO_NEXT_SESSION.md が commit 561e5a45 push 済み状態を反映している"
+  - "次作業候補の先頭が integrated-design design drafting である"
+  - "next --json の current action が reopen_in_progress / run_reopen_drafting として記録されている"
+completed_steps:
+  - "TODO_NEXT_SESSION.md の最終更新、現在位置、直近 commit、次作業候補を更新"
+  - "TODO_NEXT_SESSION.md 単独変更として lightweight self-check manifest を作成"
+verification:
+  - command: ".venv/bin/python3 tools/check-workflow-action.py next --json"
+    result: "reopen_in_progress / required_action: run_reopen_drafting"
+  - command: "git diff -- TODO_NEXT_SESSION.md"
+    result: "TODO_NEXT_SESSION.md のみの内容更新で、本線 spec/stage は変更なし"
+  - command: "shasum -a 256 TODO_NEXT_SESSION.md"
+    result: "c4a9f0eeeb51b39662371d3373d5fcd2c063dc66a44c624243de2b54fd1e4096"
+post_write_verification:
+  manifest: ".reviewcompass/post-write-verification/post-write-2026-06-19-275.yaml"
+current_status: completed
+return_to: "integrated-design design drafting after maintenance commit"
