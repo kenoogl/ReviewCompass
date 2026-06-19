@@ -1,0 +1,22 @@
+variant: implementation_review_independent_3way_codex_operator
+context: triad_review
+required_roles:
+  - primary
+  - adversarial
+  - judgment
+provider_constraint: all_roles_distinct
+roles:
+  primary:
+    path: api
+    provider: openai-api
+    model: gpt-5.4
+  adversarial:
+    path: api
+    provider: anthropic-api
+    model: claude-opus-4-8
+  judgment:
+    path: api
+    provider: gemini-api
+    model: gemini-3.1-pro-preview
+effective_prompt_path: .reviewcompass/runtime/effective-prompts/next_action_kind-reopen_in_progress__workflow_stage-triad-review__reopen_required_action-run_reopen_pending_gate.prompt.md
+effective_prompt_sha256: 7aa4a2d79ca4f97db6ca076035aa2cdf559cdce2fb94721be267d8d7763d4d02

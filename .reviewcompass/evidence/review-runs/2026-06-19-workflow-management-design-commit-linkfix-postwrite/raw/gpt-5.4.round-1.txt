@@ -1,0 +1,6 @@
+findings:
+  - severity: ERROR
+    target_location: ".reviewcompass/specs/workflow-management/spec.json"
+    description: "design approval 完了後も design.workflow_state が false のままで、recheck.impacted_downstream_phases に design が残っており、承認済み design 状態と整合していない。"
+    rationale: "review question は design approval target set の整合性と commit stop point 証拠の有効性確認であるが、approval.md・reopen-procedure・post-write review evidence はいずれも design triad-review/review-wave/alignment/approval 完了を示している一方、spec.json は未完了状態を保持している。commit stop point 直前にこの不整合が残ると、最終承認対象集合の正本状態が崩れ、stop point 証拠も『承認後に必要な state 同期が未反映』という must-fix を含んだままになる。"
+

@@ -1,0 +1,22 @@
+run_id: 2026-06-19-workflow-management-design-integrated-design-review-run
+target_files:
+- path: .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-design-integrated-design-review-run/review-target.md
+  sha256: 8c6e17c6d0599dfd9a2b58a1fa61cf23d903c65ffa55816778f1b12abf007c72
+- path: .reviewcompass/specs/workflow-management/design.md
+  sha256: 48a81d9e62ac9f78dde34d411b7989742b8027460bd08458691bbac05863d536
+- path: .reviewcompass/specs/workflow-management/requirements.md
+  sha256: ca557a4b3c7d6ed879e48c9c1537338c40e721ea56f1326604eb3603245c9623
+- path: .reviewcompass/specs/workflow-management/spec.json
+  sha256: 5ee1911882d70d41ec6a2c5a48d52b9e2e304057eb48e364ad79916355c038c5
+- path: stages/in-progress/reopen-procedure-2026-06-19.yaml
+  sha256: c3aaa408d054a5fda2c4198f735dc602769bc380f3def6de490f9475075a1789
+- path: docs/notes/working/2026-06-19-integrated-design-manual-workflow-progress.md
+  sha256: 5b5f65f540673557af4927e4ec8b3547fdfab387fb536611a1f08d2910e61704
+- path: docs/notes/2026-06-18-integrated-design-selection-execution-layers.md
+  sha256: 31d29388a8bb55c7e71501a2432cebd12c4d5ff6817052ebc36b81aef8c76608
+- path: docs/notes/working/2026-06-18-mechanized-workflow-execution-design.md
+  sha256: e38051da74d26f1237a4c690d1f2c1b678f923e9003b1549d05ee4a6431ce4bb
+- path: docs/notes/working/2026-06-19-integrated-design-requirements-missing.md
+  sha256: 962e1dde868bf383a5d5003adcb609bddd2d2509bd06a250ee705a5b5c63e6bc
+- path: docs/notes/working/2026-06-19-proxy-model-triage-cost-issues.md
+  sha256: 97a7d204d0f6d179a18f4c9de0a81cef154ed9d35e33e01a0c5a8ddafb985584

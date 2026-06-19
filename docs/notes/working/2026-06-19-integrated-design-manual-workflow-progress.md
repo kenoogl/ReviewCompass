@@ -103,40 +103,40 @@ related:
 
 ## 2. Design Phase
 
-- [ ] Drafting
-  - [ ] Requirement 13〜16 を `.reviewcompass/specs/workflow-management/design.md` へ展開する
-  - [ ] operation contract registry の設計を書く
-  - [ ] 複合 operation の表現方針を決める
-  - [ ] approval gate の記録構造を設計する
-  - [ ] Requirement 14 の side-track stack 契約を design に展開する
-    - [ ] frame schema
-    - [ ] push / pop 操作
-    - [ ] `return_to` の機械参照
-    - [ ] `staged_file_set` / `staged_file_digest`
-    - [ ] `max_depth` の Phase 3 WARN / Phase 5 block 方針
-  - [ ] workflow-state snapshot の生成方式と正本状態との関係を設計する
-  - [ ] structured effective prompt の生成方式を設計する
-  - [ ] proxy_model triage decision の機械処理化方針を設計する
-    - [ ] cluster-level decision から finding-level decision への展開
-    - [ ] finding ID coverage validation
-    - [ ] approval scope の機械的区別
-    - [ ] batch triage decision 適用
-  - [ ] Phase 0〜6 の実装順序を design 上に落とす
+- [x] Drafting
+  - [x] Requirement 13〜16 を `.reviewcompass/specs/workflow-management/design.md` へ展開する
+  - [x] operation contract registry の設計を書く
+  - [x] 複合 operation の表現方針を決める
+  - [x] approval gate の記録構造を設計する
+  - [x] Requirement 14 の side-track stack 契約を design に展開する
+    - [x] frame schema
+    - [x] push / pop 操作
+    - [x] `return_to` の機械参照
+    - [x] `staged_file_set` / `staged_file_digest`
+    - [x] `max_depth` の Phase 3 WARN / Phase 5 block 方針
+  - [x] workflow-state snapshot の生成方式と正本状態との関係を設計する
+  - [x] structured effective prompt の生成方式を設計する
+  - [x] proxy_model triage decision の機械処理化方針を設計する
+    - [x] cluster-level decision から finding-level decision への展開
+    - [x] finding ID coverage validation
+    - [x] approval scope の機械的区別
+    - [x] batch triage decision 適用
+  - [x] Phase 0〜6 の実装順序を design 上に落とす
 
-- [ ] Triad Review
-  - [ ] design 3者レビューを実施する
-  - [ ] must-fix / should-fix / leave-as-is を整理する
-  - [ ] 必要な design 修正を反映する
+- [x] Triad Review
+  - [x] design 3者レビューを実施する
+  - [x] must-fix / should-fix / leave-as-is を整理する
+  - [x] 必要な design 修正を反映する
 
-- [ ] Review-wave / Impact Check
-  - [ ] workflow-management 以外の feature への影響を確認する
-  - [ ] runtime / foundation / evaluation / conformance-evaluation への波及有無を判定する
+- [x] Review-wave / Impact Check
+  - [x] workflow-management 以外の feature への影響を確認する
+  - [x] runtime / foundation / evaluation / conformance-evaluation への波及有無を判定する
 
-- [ ] Alignment
-  - [ ] requirements Requirement 13〜16 と design の対応を確認する
+- [x] Alignment
+  - [x] requirements Requirement 13〜16 と design の対応を確認する
 
-- [ ] Approval
-  - [ ] 利用者承認を得る
+- [x] Approval
+  - [x] 利用者承認を得る
 
 - [ ] Commit
   - [ ] design phase の成果を guarded commit する
@@ -245,4 +245,4 @@ related:
 - [x] requirements alignment gate の完了を記録する
 - [x] requirements approval を利用者に確認し、承認された場合は gate 完了を記録する
 - [x] requirements approval gate 完了後の post-write verification を実施する
-- [ ] design drafting に着手する
+- [x] design drafting に着手する

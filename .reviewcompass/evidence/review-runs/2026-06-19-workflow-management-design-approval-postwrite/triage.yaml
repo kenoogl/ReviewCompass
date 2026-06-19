@@ -1,0 +1,27 @@
+run_id: 2026-06-19-workflow-management-design-approval-postwrite
+triage_status: decided
+generated_at: '2026-06-19T04:22:41.443865+00:00'
+decision_actor: null
+decision_actor_type: human
+items:
+- finding_id: 2026-06-19-workflow-management-design-approval-postwrite-gemini-3.5-flash-primary-001
+  run_id: 2026-06-19-workflow-management-design-approval-postwrite
+  source_model: gemini-3.5-flash
+  source_round: round-1
+  source_raw_path: raw/gemini-3.5-flash.round-1.txt
+  source_parsed_path: parsed/gemini-3.5-flash.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: .reviewcompass/specs/workflow-management/spec.json
+  plain_language_summary: The design workflow_state flags are still all set to false,
+    and the recheck.impacted_downstream_phases list still includes design, despite
+    the design approval gate having been fully completed and approved.
+  final_label: must-fix
+  decision_status: decided
+  decision_actor: user
+  decision_actor_type: agent
+  decision_at: '2026-06-19T04:24:42.845752+00:00'
+  decision_reason: 利用者発言『進める』に基づき、design approval 完了後の spec.json 状態同期指摘を妥当な must-fix
+    として採用する。design 全段を true にし、impacted_downstream_phases から design を除外する。
+  applied_files: []
+  superseded_by: null

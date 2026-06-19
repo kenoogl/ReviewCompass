@@ -1,0 +1,21 @@
+findings:
+  - severity: INFO
+    target_location: ".reviewcompass/specs/workflow-management/design.md §Req 13〜16 設計モデル全般"
+    description: "Requirement 13〜16 の design 反映は、operation contract 語彙（effect_kind/phase_boundary/approval_required の独立）、required_action 19語彙対応表（complex operation の branch 表現含む）、record_human_decision の判断記録分離、preconditions/postconditions、承認ゲート record、side track stack frame schema（push/pop・return_to・staged_file_set/digest・max_depth・workflow-state snapshot）、structured effective prompt schema（language_task I/O・機械タスク分離・第1層 prompt 検査・LLM judge audit）、Phase 0〜6（D-003 anchor・Phase 0 prerequisites・完了条件・active reopen scope vs spec.json.reopened・impact review scope・proxy_model triage decision 機械化）まで、required checks 1〜4 が求める設計節をすべて備えており、§要件と設計の対応表で受入基準ごとに traceability が張られている。"
+    rationale "required checks 1〜4 の traceability は満たされていることを確認した。所見は記録のみ（INFO）。"
+  - severity: INFO
+    target_location: ".reviewcompass/specs/workflow-management/design.md §Req 12〜13 の境界記述"
+    description: "Requirement 13 の operation contract（副作用・承認・順序・前提・事後）は Requirement 12 の operation registry/preflight（操作開始前の read-only 確認）と責務を明確に分離して記述されており（§Req 13 設計モデル冒頭、§Req 12 設計モデル §11 の『next --json の別正本を持たない』記述）、Requirement 12 の registry/preflight 設計と矛盾しない。承認必須操作の列挙（commit_stop_point 等）も Req 12 §7・§3 と整合している。"
+    rationale: "required check 5（Req 12 との矛盾検査）で矛盾は見つからなかった。"
+  - severity: INFO
+    target_location: ".reviewcompass/specs/workflow-management/design.md §Req 14〜16 の Phase 表現と状態記述"
+    description: "design は Phase 3 では WARN、Phase 5 では DEVIATION/repair_workflow_state へ昇格、Phase 6 は LLM judge audit を後回し可能、といった将来段階として記述しており、runtime 挙動が既に存在するとは主張していない。実装済みと明示している箇所（§機能依存マップモデル §7 のコミット cde1f5c、§軽量版検査スクリプトモデル §5 の失敗テスト作成済み、next --json unique selector の 2026-06-17 maintenance 反映）は、いずれも実在のコミット/テストを根拠にした追認であり overclaim ではない。"
+    rationale: "required check 6（未実装の overclaim 検査）で問題は見つからなかった。"
+  - severity: INFO
+    target_location: "docs/notes/working/2026-06-19-integrated-design-manual-workflow-progress.md §2 Design Phase / stages/in-progress/reopen-procedure-2026-06-19.yaml"
+    description: "進捗ノートは Design Phase の Drafting を [x] 完了とし、Triad Review/Review-wave/Alignment/Approval/Commit を [ ] 未了のまま保持している。reopen 進行中記録も next_step を『第3過程：design triad-review』、completed_steps の最後を『design drafting 完了』とし、design triad-review 以降の gate を pending_gates に残している。spec.json も design 全段を false に保っており、triad-review・review-wave・alignment・approval・workflow_state・commit・push の完了を前倒しで主張していない。"
+    rationale: "required check 7（状態記録が未完了 gate を偽って完了主張していないか）で問題は見つからなかった。design drafting 完了を正確に反映している。"
+  - severity: INFO
+    target_location: ".reviewcompass/specs/workflow-management/design.md §Req 16 設計モデル §2 / 末尾 proxy_model triage decision の機械処理化"
+    description: "active reopen scope（workflow-management の requirements→design/tasks/implementation 連鎖）と spec.json.reopened（過去 reopen の履歴フラグ）の非同一視、review-wave での impact review scope と reopen scope の区別、proxy_model triage decision の operation family（cluster→finding 展開・coverage validation・approval scope 区別・batch 適用）は required check 4 の全項目を網羅している。proxy_model triage の機械化は §段集合の静的列挙モデル内の review-run 後 proxy 判断代行モデルと §Req 16 末尾で二重に展開されており、working note のコスト問題（run_role.py 誤用・cluster→finding 手動展開・approval scope 混同）に対応した設計化になっている。"
+    rationale: "required check 4 の proxy_model triage 機械化と scope 区別が設計として明示されていることを確認した。"

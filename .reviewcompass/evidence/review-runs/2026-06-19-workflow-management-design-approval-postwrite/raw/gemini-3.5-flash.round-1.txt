@@ -1,0 +1,5 @@
+findings:
+  - severity: ERROR
+    target_location: ".reviewcompass/specs/workflow-management/spec.json"
+    description: "The design workflow_state flags are still all set to false, and the recheck.impacted_downstream_phases list still includes design, despite the design approval gate having been fully completed and approved."
+    rationale: "As design approval is officially completed (as recorded in reopen-procedure-2026-06-19.yaml and the approval record), the state of the design phase in spec.json must be updated to true (for drafting, triad-review, review-wave, alignment, and approval) and design must be removed from impacted_downstream_phases before committing at the design approval commit stop point. Failing to update spec.json leaves the system state inconsistent and halts downstream task execution."

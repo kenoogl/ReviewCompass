@@ -1,0 +1,13 @@
+run_id: 2026-06-19-workflow-management-design-commit-linkfix-postwrite
+models:
+- model_id: gpt-5.4
+  raw_path: raw/gpt-5.4.round-1.txt
+  parse_status: parsed
+  triage_status: triaged
+  findings_count: 1
+  findings_count_by_severity:
+    ERROR: 1
+  must_fix_count: 0
+  should_fix_count: 0
+  leave_as_is_count: 1
+  human_required_count: 0

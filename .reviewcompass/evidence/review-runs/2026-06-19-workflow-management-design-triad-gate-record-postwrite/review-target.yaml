@@ -1,0 +1,16 @@
+run_id: 2026-06-19-workflow-management-design-triad-gate-record-postwrite
+phase: post_write_verification
+criteria_id: workflow_management_design_triad_gate_record_post_write
+criteria_file: .reviewcompass/evidence/review-runs/2026-06-19-workflow-management-design-triad-gate-record-postwrite/review-target.md
+criteria_file_sha256: 394c472ace6af69269b12e9c04c0024f86ed0f85f7ccf4084183339112ce4dab
+target_files:
+- path: stages/in-progress/reopen-procedure-2026-06-19.yaml
+  sha256: 9b1b2ec9cc2a0a32ade92fdedd9401d18202b8895df2e616d38c7cddcc8ca375
+- path: docs/notes/working/2026-06-19-integrated-design-manual-workflow-progress.md
+  sha256: 18a0951829eb6187e61e2edd56e2e323eb1d6f47e283d1560a26b0a0db2458e7
+sensitive_information_check:
+  status: passed
+  checked_at: '2026-06-19T04:02:27.345810+00:00'
+recommended_run_review_args:
+  criteria_file: .reviewcompass/evidence/review-runs/2026-06-19-workflow-management-design-triad-gate-record-postwrite/review-target.md
+  phase: post_write_verification

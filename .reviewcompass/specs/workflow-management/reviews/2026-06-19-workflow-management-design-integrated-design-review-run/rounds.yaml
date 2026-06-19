@@ -1,0 +1,185 @@
+round_id: round-1
+purpose: design
+invocation_timestamp: '2026-06-19T03:47:05.252689+00:00'
+target_files:
+- path: .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-design-integrated-design-review-run/review-target.md
+  sha256: 8c6e17c6d0599dfd9a2b58a1fa61cf23d903c65ffa55816778f1b12abf007c72
+- path: .reviewcompass/specs/workflow-management/design.md
+  sha256: 48a81d9e62ac9f78dde34d411b7989742b8027460bd08458691bbac05863d536
+- path: .reviewcompass/specs/workflow-management/requirements.md
+  sha256: ca557a4b3c7d6ed879e48c9c1537338c40e721ea56f1326604eb3603245c9623
+- path: .reviewcompass/specs/workflow-management/spec.json
+  sha256: 5ee1911882d70d41ec6a2c5a48d52b9e2e304057eb48e364ad79916355c038c5
+- path: stages/in-progress/reopen-procedure-2026-06-19.yaml
+  sha256: c3aaa408d054a5fda2c4198f735dc602769bc380f3def6de490f9475075a1789
+- path: docs/notes/working/2026-06-19-integrated-design-manual-workflow-progress.md
+  sha256: 5b5f65f540673557af4927e4ec8b3547fdfab387fb536611a1f08d2910e61704
+- path: docs/notes/2026-06-18-integrated-design-selection-execution-layers.md
+  sha256: 31d29388a8bb55c7e71501a2432cebd12c4d5ff6817052ebc36b81aef8c76608
+- path: docs/notes/working/2026-06-18-mechanized-workflow-execution-design.md
+  sha256: e38051da74d26f1237a4c690d1f2c1b678f923e9003b1549d05ee4a6431ce4bb
+- path: docs/notes/working/2026-06-19-integrated-design-requirements-missing.md
+  sha256: 962e1dde868bf383a5d5003adcb609bddd2d2509bd06a250ee705a5b5c63e6bc
+- path: docs/notes/working/2026-06-19-proxy-model-triage-cost-issues.md
+  sha256: 97a7d204d0f6d179a18f4c9de0a81cef154ed9d35e33e01a0c5a8ddafb985584
+criteria: '# Design Triad Review Target
+
+
+  criteria_id: workflow_management_integrated_design_design_triad_review
+
+  phase: design
+
+  gate: stages/design.yaml#triad-review
+
+
+  ## Review Purpose
+
+
+  Review whether `workflow-management` design drafting correctly and sufficiently
+  reflects approved Requirement 13 through Requirement 16 from the integrated design
+  follow-up.
+
+
+  ## Target Files
+
+
+  - `.reviewcompass/specs/workflow-management/design.md`
+
+  - `.reviewcompass/specs/workflow-management/requirements.md`
+
+  - `.reviewcompass/specs/workflow-management/spec.json`
+
+  - `stages/in-progress/reopen-procedure-2026-06-19.yaml`
+
+  - `docs/notes/working/2026-06-19-integrated-design-manual-workflow-progress.md`
+
+  - `docs/notes/2026-06-18-integrated-design-selection-execution-layers.md`
+
+  - `docs/notes/working/2026-06-18-mechanized-workflow-execution-design.md`
+
+  - `docs/notes/working/2026-06-19-integrated-design-requirements-missing.md`
+
+  - `docs/notes/working/2026-06-19-proxy-model-triage-cost-issues.md`
+
+
+  ## Required Checks
+
+
+  1. Check traceability from Requirement 13 to design sections for operation contract
+  vocabulary, `required_action` mapping, compound operation representation, `record_human_decision`,
+  and preconditions / postconditions.
+
+  2. Check traceability from Requirement 14 to design sections for approval gate records,
+  side track stack frame schema, push / pop behavior, `return_to`, staged file set
+  / digest checks, max depth policy, and workflow-state snapshot.
+
+  3. Check traceability from Requirement 15 to design sections for structured effective
+  prompt schema, language task I/O, machine task separation, first-layer prompt checks,
+  and LLM judge audit.
+
+  4. Check traceability from Requirement 16 to design sections for Phase 0 through
+  Phase 6, D-003 anchor, Phase 0 prerequisites, Phase completion conditions, active
+  reopen scope vs `spec.json.reopened`, impact review scope, and proxy_model triage
+  decision mechanization.
+
+  5. Check whether the design introduces contradictions with existing Requirement
+  12 operation registry / preflight design.
+
+  6. Check whether the design overclaims implementation that has not been implemented
+  yet. It may define future schema and tasks, but must not state that runtime behavior
+  already exists unless it does.
+
+  7. Check whether the manual progress note and reopen in-progress record accurately
+  reflect design drafting completion without prematurely marking triad-review, review-wave,
+  alignment, approval, spec.json workflow_state, commit, or push complete.
+
+
+  ## Out Of Scope
+
+
+  - Do not request implementation changes in this design triad-review.
+
+  - Do not judge unrelated wording outside the Requirement 13 through 16 design expansion
+  unless it creates a direct contradiction.
+
+  - Do not require edits to other features during this gate; cross-feature impact
+  belongs to design review-wave.
+
+
+  ## Finding Policy
+
+
+  - Report `must-fix` for contradictions, missing design coverage for approved requirements,
+  state records that falsely claim an uncompleted gate, or design text that would
+  allow unsafe workflow actions.
+
+  - Report `should-fix` for ambiguity that could cause repeated manual judgment, unclear
+  schema boundaries, or weak traceability to requirements.
+
+  - Return no findings when the design is traceable, internally consistent, and correctly
+  scoped for a design drafting artifact.
+
+  '
+prompt_sha256: f369aa2a5dae0b77ab7bdb3800bcbb30f0bb4ef2d3305b480014b64a1ea9ef85
+model_results:
+- model_id: gpt-5.4
+  provider: openai-api
+  role: primary
+  treatment: primary
+  invocation_path: api
+  raw_path: raw/gpt-5.4.round-1.txt
+  raw_sha256: ec505fe1e40f6d39fcf05b7cb7ba8dfc90b3907386c5d1035692bae10a32a387
+  parsed_path: parsed/gpt-5.4.round-1.yaml
+  parsed_sha256: 8b66b17c38ed4633c1bae2b7f99030d176e182975c51be9e95fd3ebd9206ee84
+  parse_status: parsed
+  formatted_by: parser
+  formatted_by_actor_type: orchestrator
+  formatted_by_actor: run_role.py
+  formatted_at: '2026-06-19T03:45:58.674721+00:00'
+  follow_up_action: triage
+  attempts: 1
+  duration_seconds: 7.699
+  prompt_path: prompts/gpt-5.4.round-1.prompt.md
+  prompt_sha256: 73b8cad0fec3440ed6e49302f7efa25089654440f6a6661ebc34270da4b6ee96
+- model_id: claude-opus-4-8
+  provider: anthropic-api
+  role: adversarial
+  treatment: adversarial
+  invocation_path: api
+  raw_path: raw/claude-opus-4-8.round-1.txt
+  raw_sha256: 9a0b41891b0bef51632bf7617b671573b200af638008f1511a4e7884ffefc0da
+  parsed_path: null
+  parsed_sha256: null
+  parse_status: parse_failed
+  formatted_by: parser
+  formatted_by_actor_type: orchestrator
+  formatted_by_actor: run_role.py
+  formatted_at: '2026-06-19T03:46:30.508943+00:00'
+  follow_up_action: format_pending
+  attempts: 1
+  duration_seconds: 31.772
+  prompt_path: prompts/claude-opus-4-8.round-1.prompt.md
+  prompt_sha256: 3d849b64f6f5baa7747d1a3f4b4bbd948bf939025b3ce326f0e14a55823f065a
+- model_id: gemini-3.1-pro-preview
+  provider: gemini-api
+  role: judgment
+  treatment: judgment
+  invocation_path: api
+  raw_path: raw/gemini-3.1-pro-preview.round-1.txt
+  raw_sha256: 67f20b5f2a77ca36c12b6b153ce451a10d7c0026c9147c2eb86f0e1d33ea4fb1
+  parsed_path: parsed/gemini-3.1-pro-preview.round-1.yaml
+  parsed_sha256: 48a555a58d09b63058c047f239d47e43eb4c6f9d992ff30a82bb42e9e7b5deb1
+  parse_status: parsed
+  formatted_by: parser
+  formatted_by_actor_type: orchestrator
+  formatted_by_actor: run_role.py
+  formatted_at: '2026-06-19T03:47:05.252689+00:00'
+  follow_up_action: triage
+  attempts: 1
+  duration_seconds: 34.671
+  prompt_path: prompts/gemini-3.1-pro-preview.round-1.prompt.md
+  prompt_sha256: f369aa2a5dae0b77ab7bdb3800bcbb30f0bb4ef2d3305b480014b64a1ea9ef85
+criteria_source_path: .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-design-integrated-design-review-run/review-target.md
+criteria_source_sha256: 8c6e17c6d0599dfd9a2b58a1fa61cf23d903c65ffa55816778f1b12abf007c72
+effective_prompt_path: .reviewcompass/runtime/effective-prompts/next_action_kind-reopen_in_progress__workflow_stage-triad-review__reopen_required_action-run_reopen_pending_gate.prompt.md
+effective_prompt_sha256: 7aa4a2d79ca4f97db6ca076035aa2cdf559cdce2fb94721be267d8d7763d4d02

@@ -16,13 +16,19 @@ completed_steps:
 - requirements alignment gate 完了（intent / requirements / triad-review / review-wave
   / workflow_state 整合、post-write verification no findings）
 - requirements approval gate 完了（利用者発言『承認』に基づく明示承認）
-next_step: 第3過程：design triad-review
+- design drafting 完了（Requirement 13〜16 を design.md へ展開し、operation contract、承認ゲート、side
+  track stack、workflow-state snapshot、structured effective prompt、proxy_model triage
+  decision 機械処理化、Phase 0〜6 を設計化）
+- design triad-review gate 完了（3者レビュー、利用者承認 triage、C2/C3反映、post-write verification
+  no findings）
+- design review-wave gate 完了（全 feature impact check、workflow-management 以外 existing_sufficient、post-write
+  verification no findings）
+- design alignment gate 完了（requirements Requirement 13〜16 / design / triad-review
+  / review-wave / workflow_state 整合、post-write verification no findings）
+- design approval gate 完了（利用者発言『承認』に基づく明示承認）
+next_step: 第3過程：tasks triad-review
 step_number: 3
 pending_gates:
-- stages/design.yaml#triad-review
-- stages/design.yaml#review-wave
-- stages/design.yaml#alignment
-- stages/design.yaml#approval
 - stages/tasks.yaml#triad-review
 - stages/tasks.yaml#review-wave
 - stages/tasks.yaml#alignment
@@ -36,13 +42,18 @@ completed_gates:
 - stages/requirements.yaml#review-wave
 - stages/requirements.yaml#alignment
 - stages/requirements.yaml#approval
+- stages/design.yaml#triad-review
+- stages/design.yaml#review-wave
+- stages/design.yaml#alignment
+- stages/design.yaml#approval
 drafting_completed_gates:
 - stages/requirements.yaml#drafting
+- stages/design.yaml#drafting
 current_blocker: null
 side_track_records:
 - completed_maintenance: stages/completed/maintenance-2026-06-19-post-write-review-target-preflight.yaml
-  rationale: post-write API review の criteria / review-target 生成を機械化する局所改善を、本線
-    design drafting 再開前の maintenance commit として記録した。reopen gate 状態は変更しない。
+  rationale: post-write API review の criteria / review-target 生成を機械化する局所改善を、本線 design
+    drafting 再開前の maintenance commit として記録した。reopen gate 状態は変更しない。
   evidence:
   - .reviewcompass/post-write-verification/post-write-2026-06-19-268.yaml
   - .reviewcompass/evidence/review-runs/2026-06-19-post-write-review-target-preflight-postwrite/review_summary.md
@@ -82,6 +93,45 @@ reopen_step_records:
   - .reviewcompass/specs/_cross_feature/reviews/2026-06-19-requirements-integrated-design-review-wave.md
   - .reviewcompass/specs/_cross_feature/reviews/2026-06-19-requirements-integrated-design-review-wave-summary.md
   - .reviewcompass/post-write-verification/post-write-2026-06-19-256.yaml
+- from_step: 3
+  completed_step: design drafting 完了（Requirement 13〜16 を design.md へ展開）
+  rationale: requirements approval 済みの Requirement 13〜16 を workflow-management design.md
+    へ展開し、operation contract 語彙、required_action 対応、承認ゲート、side track stack、workflow-state
+    snapshot、structured effective prompt、proxy_model triage decision 機械処理化、Phase 0〜6
+    の段階的実装順序を設計化した。次は design triad-review gate。
+  evidence:
+  - .reviewcompass/specs/workflow-management/design.md
+  - docs/notes/working/2026-06-19-integrated-design-manual-workflow-progress.md
+- from_step: 3
+  completed_step: design triad-review gate 完了
+  rationale: design triad-review を実施し、C1 leave-as-is、C2/C3 should-fix のトリアージ案を利用者発言「承認」に基づき確定した。
+    C2/C3 は design.md の完成判定基準へ反映済み。post-write verification は gemini-3.5-flash no findings。
+    次は design review-wave / impact check。
+  evidence:
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-design-integrated-design-review-run/raw-review-triage-summary.md
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-design-integrated-design-review-run/triage.yaml
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-design-integrated-design-review-run/review-response.md
+  - .reviewcompass/specs/workflow-management/design.md
+  - .reviewcompass/post-write-verification/post-write-2026-06-19-276.yaml
+- from_step: 3
+  completed_step: design review-wave gate 完了（全 feature impact check、workflow-management
+    以外 existing_sufficient）
+  rationale: design review-wave / impact check を実施し、workflow-management 以外の feature
+    は consumer / derivative として現行正本で受けられるため design 正本変更不要と判断した。post-write verification
+    は gemini-3.5-flash no findings。
+  evidence:
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-19-design-integrated-design-review-wave.md
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-19-design-integrated-design-review-wave-summary.md
+  - .reviewcompass/post-write-verification/post-write-2026-06-19-278.yaml
+- from_step: 3
+  completed_step: design alignment gate 完了
+  rationale: design alignment を実施し、requirements Requirement 13〜16、design、triad-review
+    対処、review-wave 判定、workflow_state / reopen 記録が整合していると確認した。design 内の追加修正は不要で、tasks
+    / implementation への recheck は維持する。post-write verification は gemini-3.5-flash no
+    findings。
+  evidence:
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-19-design-integrated-design-reopen-alignment.md
+  - .reviewcompass/post-write-verification/post-write-2026-06-19-279.yaml
 downstream_impact_decisions:
 - gate: stages/requirements.yaml#triad-review
   feature_scope: workflow-management
@@ -123,3 +173,47 @@ downstream_impact_decisions:
   - .reviewcompass/specs/_cross_feature/reviews/2026-06-19-requirements-integrated-design-approval.md
   - .reviewcompass/specs/_cross_feature/reviews/2026-06-19-requirements-integrated-design-reopen-alignment.md
   - .reviewcompass/post-write-verification/post-write-2026-06-19-259.yaml
+- gate: stages/design.yaml#triad-review
+  feature_scope: workflow-management
+  decision: approved
+  rationale: design triad-review を実施し、利用者承認に基づき C1 は leave-as-is、C2/C3 は should-fix
+    とした。C2/C3 は design.md へ反映済みで、post-write verification は gemini-3.5-flash no findings。
+  evidence:
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-design-integrated-design-review-run/raw-review-triage-summary.md
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-design-integrated-design-review-run/triage.yaml
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-design-integrated-design-review-run/review-response.md
+  - .reviewcompass/post-write-verification/post-write-2026-06-19-276.yaml
+- gate: stages/design.yaml#review-wave
+  feature_scope: all_features
+  decision: existing_sufficient
+  rationale: design review-wave / impact check を実施し、workflow-management 以外の feature
+    は consumer / derivative として現行正本で受けられるため design 正本変更不要と判断した。post-write verification
+    は gemini-3.5-flash no findings。利用者の『次へ』指示に基づき gate 完了へ進める。
+  evidence:
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-19-design-integrated-design-review-wave.md
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-19-design-integrated-design-review-wave-summary.md
+  - .reviewcompass/post-write-verification/post-write-2026-06-19-278.yaml
+- gate: stages/design.yaml#alignment
+  feature_scope: workflow-management
+  decision: existing_sufficient
+  rationale: design alignment を実施し、requirements Requirement 13〜16、design、triad-review
+    対処、review-wave 判定、workflow_state / reopen 記録が整合していると確認した。design 内の追加修正は不要で、tasks
+    / implementation への recheck は維持する。post-write verification は gemini-3.5-flash no
+    findings。利用者の『次へ』指示に基づき gate 完了へ進める。
+  evidence:
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-19-design-integrated-design-reopen-alignment.md
+  - .reviewcompass/post-write-verification/post-write-2026-06-19-279.yaml
+- gate: stages/design.yaml#approval
+  feature_scope: workflow-management
+  decision: approved
+  rationale: 利用者が 2026-06-19 Codex セッションで『承認』と明示し、design drafting、triad-review、review-wave、alignment
+    が完了済みであるため、統合設計メモ反映の design phase を承認済みとして扱う。
+  evidence:
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-19-design-integrated-design-approval.md
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-19-design-integrated-design-reopen-alignment.md
+  - .reviewcompass/post-write-verification/post-write-2026-06-19-279.yaml
+commit_stop_point: true
+commit_stop_point_step: 3
+commit_stop_point_kind: approval_complete
+commit_stop_point_gate: stages/design.yaml#approval
+commit_stop_point_reason: design approval 完了時点の停止点

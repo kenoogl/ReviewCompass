@@ -1,0 +1,6 @@
+run_id: 2026-06-19-workflow-management-design-triad-gate-record-postwrite
+target_files:
+- path: stages/in-progress/reopen-procedure-2026-06-19.yaml
+  sha256: 9b1b2ec9cc2a0a32ade92fdedd9401d18202b8895df2e616d38c7cddcc8ca375
+- path: docs/notes/working/2026-06-19-integrated-design-manual-workflow-progress.md
+  sha256: 18a0951829eb6187e61e2edd56e2e323eb1d6f47e283d1560a26b0a0db2458e7

@@ -1,0 +1,12 @@
+approved_action: review_run_triage
+approved_by: user
+approved_at: '2026-06-19T00:00:00+09:00'
+approval_source: 利用者発言「進める」
+review_run_id: 2026-06-19-workflow-management-design-approval-postwrite
+summary_presented_to_user: true
+triage_presented_to_user: true
+approved_finding_ids:
+- 2026-06-19-workflow-management-design-approval-postwrite-gemini-3.5-flash-primary-001
+approved_final_labels:
+  2026-06-19-workflow-management-design-approval-postwrite-gemini-3.5-flash-primary-001: must-fix
+rationale: design approval 完了後の spec.json 状態同期指摘を妥当な must-fix として採用する。

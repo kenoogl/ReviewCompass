@@ -1,0 +1,81 @@
+run_id: 2026-06-19-workflow-management-design-integrated-design-review-run
+triage_status: decided
+generated_at: '2026-06-19T03:47:05.284542+00:00'
+decision_actor: user
+decision_actor_type: human
+decision_at: '2026-06-19T03:59:03Z'
+approval_source: 利用者発言「承認」（2026-06-19 Codex セッション）
+items:
+- finding_id: 2026-06-19-workflow-management-design-integrated-design-review-run-gpt-5.4-primary-001
+  run_id: 2026-06-19-workflow-management-design-integrated-design-review-run
+  source_model: gpt-5.4
+  source_round: round-1
+  source_raw_path: raw/gpt-5.4.round-1.txt
+  source_parsed_path: parsed/gpt-5.4.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: stages/in-progress/reopen-procedure-2026-06-19.yaml
+  plain_language_summary: 'The reopen in-progress record uses `classification: R-0`
+    for work that the same record and the design describe as the design-phase follow-up
+    for Requirement 13–16, which should be a design-origin reopen scope rather than
+    requirements-origin.'
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: user
+  decision_actor_type: human
+  decision_at: '2026-06-19T03:59:03Z'
+  decision_reason: 利用者承認に基づき leave-as-is。R-0 は Requirement 13〜16
+    requirements 変更を起点にした reopen origin classification であり、現在の active
+    design gate は next_step / pending_gates / drafting_completed_gates で別途表現されているため、
+    active reopen scope との矛盾として扱わない。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-19-workflow-management-design-integrated-design-review-run-gpt-5.4-primary-002
+  run_id: 2026-06-19-workflow-management-design-integrated-design-review-run
+  source_model: gpt-5.4
+  source_round: round-1
+  source_raw_path: raw/gpt-5.4.round-1.txt
+  source_parsed_path: parsed/gpt-5.4.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: .reviewcompass/specs/workflow-management/design.md §Req 16 設計モデル
+    §1
+  plain_language_summary: Phase 0 is said to be blocked by Phase 1 schema work, but
+    the completion criteria still say the feature currently satisfies only the minimum
+    of conditions 1–3 with just the `spec-set` subcommand, which no longer matches
+    the added Requirement 16 design and current documents.
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: user
+  decision_actor_type: human
+  decision_at: '2026-06-19T03:59:03Z'
+  decision_reason: 利用者承認に基づき should-fix。Requirement 13〜16 追加後も完成判定基準末尾が古い最小条件を残しており、
+    現在の設計完成条件と将来実装条件の境界が読みづらいため、完成判定基準を更新する。
+  applied_files:
+  - .reviewcompass/specs/workflow-management/design.md
+  superseded_by: null
+- finding_id: 2026-06-19-workflow-management-design-integrated-design-review-run-gpt-5.4-primary-003
+  run_id: 2026-06-19-workflow-management-design-integrated-design-review-run
+  source_model: gpt-5.4
+  source_round: round-1
+  source_raw_path: raw/gpt-5.4.round-1.txt
+  source_parsed_path: parsed/gpt-5.4.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: .reviewcompass/specs/workflow-management/design.md §完成判定基準
+  plain_language_summary: The completion criteria still state `tools/check-workflow-action.py`
+    provides 3 subcommands (`spec-set`/`commit`/`push`), even though the design now
+    normatively defines additional subcommands and operation families such as `next`,
+    `decision-source-lint`, `review-wave-summary`, `operation-list`, and `operation-preflight`.
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: user
+  decision_actor_type: human
+  decision_at: '2026-06-19T03:59:03Z'
+  decision_reason: 利用者承認に基づき should-fix。完成判定基準が `spec-set` / `commit` / `push`
+    の3サブコマンドだけを現在のコマンド面として示しており、Requirement 12〜16 で追加された
+    `next`、decision-source-lint、review-wave-summary、operation-list、operation-preflight
+    系の設計面を反映していないため、記述を更新する。
+  applied_files:
+  - .reviewcompass/specs/workflow-management/design.md
+  superseded_by: null
