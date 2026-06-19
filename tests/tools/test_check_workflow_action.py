@@ -4630,7 +4630,7 @@ class ReopenAdvanceAfterCommitStopPointTests(unittest.TestCase):
     return in_progress
 
   def test_reopen_advance_after_commit_stop_point_consumes_stop_point(self):
-    """停止点消費後は、消費記録 commit まで次の pending gate を実行させない"""
+    """停止点消費だけでは追加 commit を強制せず次の gate へ進める"""
     in_progress = self._write_in_progress()
     subprocess.run(
       ["git", "add", "-A"],
@@ -4672,24 +4672,25 @@ class ReopenAdvanceAfterCommitStopPointTests(unittest.TestCase):
       state["commit_stop_point_records"][0]["kind"],
       "approval_complete",
     )
-    self.assertIs(state["commit_required"], True)
-    self.assertEqual(state["commit_required_kind"], "stop_point_consumed")
+    self.assertNotIn("commit_required", state)
+    self.assertNotIn("commit_required_kind", state)
 
     next_result = run_script(["next", "--json"], cwd=self.tmpdir)
     _assert_script_invoked(self, next_result)
     self.assertEqual(next_result.returncode, 0, next_result.stdout)
     next_data = json.loads(next_result.stdout)
     action = next_data["next_action"]
-    self.assertEqual(action["required_action"], "commit_stop_point")
-    self.assertIsNone(action["active_gate"])
-    self.assertEqual(action["blocked_by"]["kind"], "stop_point_consumed")
+    self.assertEqual(action["required_action"], "run_reopen_drafting")
+    self.assertEqual(action["active_gate"], "stages/tasks.yaml#drafting")
+    self.assertEqual(action["next_pending_gate"], "stages/tasks.yaml#triad-review")
+    self.assertIsNone(action["blocked_by"])
 
     preflight = run_script(["commit-preflight", "--json"], cwd=self.tmpdir)
     _assert_script_invoked(self, preflight)
-    self.assertEqual(preflight.returncode, 0, preflight.stdout)
+    self.assertEqual(preflight.returncode, 2, preflight.stdout)
     preflight_data = json.loads(preflight.stdout)
-    self.assertEqual(preflight_data["next_required_action"], "commit_stop_point")
-    self.assertTrue(preflight_data["allowed_to_stage"])
+    self.assertEqual(preflight_data["next_required_action"], "run_reopen_drafting")
+    self.assertFalse(preflight_data["allowed_to_stage"])
 
     subprocess.run(
       ["git", "add", "-A"],
@@ -4804,6 +4805,72 @@ class ReopenSetBlockerTests(unittest.TestCase):
         ],
       },
     )
+
+    next_result = run_script(["next", "--json"], cwd=self.tmpdir)
+    _assert_script_invoked(self, next_result)
+    self.assertEqual(next_result.returncode, 0, next_result.stdout)
+    next_data = json.loads(next_result.stdout)
+    action = next_data["next_action"]
+    self.assertEqual(action["required_action"], "wait_for_human_decision")
+    self.assertEqual(action["blocked_by"]["type"], "current_blocker")
+    self.assertEqual(action["blocked_by"]["gate"], "stages/requirements.yaml#approval")
+
+  def test_legacy_commit_required_does_not_mask_approval_blocker(self):
+    """旧 commit_required が残っても approval blocker を commit_stop_point に戻さない"""
+    in_progress = self._write_in_progress()
+    state = yaml.safe_load(in_progress.read_text(encoding="utf-8"))
+    state["commit_stop_point_records"] = [
+      {
+        "step": 3,
+        "kind": "alignment_complete",
+        "gate": "stages/requirements.yaml#alignment",
+        "head": "abc123",
+      },
+    ]
+    state["commit_required"] = True
+    state["commit_required_kind"] = "stop_point_consumed"
+    state["commit_required_reason"] = "legacy bookkeeping commit boundary"
+    in_progress.write_text(
+      yaml.safe_dump(state, allow_unicode=True, sort_keys=False),
+      encoding="utf-8",
+    )
+    _init_git_repo(self.tmpdir)
+    subprocess.run(
+      ["git", "add", "-A"],
+      cwd=str(self.tmpdir),
+      check=True,
+      capture_output=True,
+    )
+    subprocess.run(
+      ["git", "commit", "-qm", "add legacy commit required state"],
+      cwd=str(self.tmpdir),
+      check=True,
+      capture_output=True,
+    )
+
+    result = run_script(
+      [
+        "reopen-set-blocker",
+        "--file", "stages/in-progress/reopen-procedure-2026-06-16.yaml",
+        "--gate", "stages/requirements.yaml#approval",
+        "--actor", "human",
+        "--rationale", "approval gate に到達した。",
+        "--evidence", ".reviewcompass/specs/workflow-management/requirements.md",
+        "--json",
+      ],
+      cwd=self.tmpdir,
+    )
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 0, result.stdout)
+
+    next_result = run_script(["next", "--json"], cwd=self.tmpdir)
+    _assert_script_invoked(self, next_result)
+    self.assertEqual(next_result.returncode, 0, next_result.stdout)
+    next_data = json.loads(next_result.stdout)
+    action = next_data["next_action"]
+    self.assertEqual(action["required_action"], "wait_for_human_decision")
+    self.assertEqual(action["blocked_by"]["type"], "current_blocker")
+    self.assertEqual(action["blocked_by"]["gate"], "stages/requirements.yaml#approval")
 
   def test_reopen_set_blocker_rejects_non_head_gate(self):
     """pending_gates 先頭ではない gate の blocker 設定は拒否する"""

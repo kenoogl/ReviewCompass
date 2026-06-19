@@ -4053,10 +4053,7 @@ def is_reopen_stop_point_commit_allowed(cwd, in_progress_files, staged_files):
     data = load_in_progress_file(cwd, relative_path)
     if data.get("process_id") != "reopen-procedure":
       return False
-    if not (
-      _is_structured_reopen_commit_stop_point(data)
-      or _is_structured_reopen_commit_required(data)
-    ):
+    if not _is_structured_reopen_commit_stop_point(data):
       return False
   return True
 
@@ -4473,21 +4470,7 @@ def build_in_progress_next_action(cwd, relative_path):
     pending_gates = data.get("pending_gates", [])
     if pending_gates is None:
       pending_gates = []
-    if (
-      _is_structured_reopen_commit_required(data)
-      and relative_path in list_changed_files(cwd)
-    ):
-      action_fields = {
-        "required_action": "commit_stop_point",
-        "next_pending_gate": None,
-        "next_drafting_gate": None,
-        "active_gate": None,
-        "phase": None,
-        "stage": None,
-        "blocked_by": _reopen_commit_required_blocked_by(data, relative_path),
-      }
-    else:
-      action_fields = select_reopen_next_action_fields(data, pending_gates)
+    action_fields = select_reopen_next_action_fields(data, pending_gates)
     feature_scope = reopen_feature_scope_from_data(data)
     return {
       "kind": "reopen_in_progress",
@@ -6124,10 +6107,6 @@ def cmd_reopen_advance_after_commit_stop_point(args):
       }
     )
     data["commit_stop_point_records"] = records
-    data["commit_required"] = True
-    data["commit_required_kind"] = "stop_point_consumed"
-    data["commit_required_reason"] = "reopen commit stop point 消費完了時点の停止点"
-
     for key in [
       "commit_stop_point",
       "commit_stop_point_step",

@@ -1,0 +1,42 @@
+process_id: maintenance
+started_at: "2026-06-19T18:10:00+09:00"
+completed_at: "2026-06-19T18:10:24+09:00"
+trigger: "利用者が、ワークフローのコミット点を見直す必要があると指摘し、side track で処理するよう指示した"
+mainline_blocked_by: "stages/in-progress/reopen-procedure-2026-06-19.yaml"
+classification: local
+reason: "reopen 第3過程で gate 完了、停止点消費、approval blocker 記録がそれぞれ commit 強制を生み、利用者操作が過度に細分化された。commit 強制点を実質変更・承認済み状態の固定へ寄せ、bookkeeping だけの状態更新で二重 commit を要求しないよう修正した。"
+procedure: "TDD"
+allowed_scope:
+  - "reopen stop point 消費後の commit_required 強制を見直す"
+  - "approval blocker 記録が commit 強制を発生させないことを明確化する"
+  - "commit guard の安全性を維持し、実質成果物や承認済み状態の commit stop point は残す"
+allowed_files:
+  - "tools/check-workflow-action.py"
+  - "tests/tools/test_check_workflow_action.py"
+  - "docs/operations/REOPEN_PROCEDURE.md"
+  - "docs/operations/WORKFLOW_NAVIGATION.md"
+  - "docs/operations/WORKFLOW_PRECHECK.md"
+  - "docs/operations/WORKFLOW_PRECHECK_DETAILS.md"
+  - "stages/in-progress/maintenance-2026-06-19-reopen-commit-point-policy.yaml"
+  - "stages/completed/maintenance-2026-06-19-reopen-commit-point-policy.yaml"
+completion_conditions:
+  - "reopen stop point 消費後、dirty な in-progress YAML だけを理由に next が commit_stop_point を返さない"
+  - "reopen stop point 消費後、次の pending gate または current_blocker が正しく返る"
+  - "approval blocker 設定後、clean なら wait_for_human_decision を返し、dirty であることだけを理由に commit_stop_point を返さない"
+  - "既存の実質 gate 完了後 commit_stop_point は維持される"
+completed_steps:
+  - "停止点消費後に commit_required を生成しない期待へ ReopenAdvanceAfterCommitStopPointTests を更新し、先に失敗を確認した"
+  - "旧 commit_required が残る dirty YAML でも approval blocker を commit_stop_point に戻さない回帰テストを追加し、先に失敗を確認した"
+  - "reopen-advance-after-commit-stop-point から commit_required 生成を削除した"
+  - "next / commit 許可判定から旧 commit_required 優先経路を外し、構造化 commit_stop_point だけを commit 強制点として扱うようにした"
+  - "docs/operations 変更は post-write policy violation を避けるため本 side track から外した"
+verification:
+  tests:
+    - command: ".venv/bin/python3 -m unittest tests.tools.test_check_workflow_action.ReopenAdvanceAfterCommitStopPointTests tests.tools.test_check_workflow_action.ReopenSetBlockerTests -v"
+      result: "OK"
+    - command: ".venv/bin/python3 -m unittest tests.tools.test_check_workflow_action.CommitExitCodeTests.test_commit_preflight_allows_reopen_commit_stop_point_before_staging tests.tools.test_check_workflow_action.CommitExitCodeTests.test_commit_allows_reopen_review_gate_commit_stop_point tests.tools.test_check_workflow_action.CommitExitCodeTests.test_commit_allows_reopen_explicit_commit_stop_point_field tests.tools.test_check_workflow_action.CommitExitCodeTests.test_commit_allows_reopen_stop_point_when_in_progress_file_is_staged -v"
+      result: "OK"
+    - command: ".venv/bin/python3 -m unittest tests.tools.test_check_workflow_action.NextNavigationTests tests.tools.test_check_workflow_action.ReopenAdvanceGateTests tests.tools.test_check_workflow_action.ReopenAdvanceStepTests.test_reopen_advance_step_two_records_commit_stop_point -v"
+      result: "OK"
+current_status: completed
+return_to: "tasks approval human decision"
