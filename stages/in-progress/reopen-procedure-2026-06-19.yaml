@@ -242,11 +242,13 @@ commit_stop_point_records:
   head: 75411eb282475636719c2f79a4f372922ef57ba3
   evidence:
   - .reviewcompass/post-write-verification/post-write-2026-06-19-281.yaml
+- step: 3
+  kind: triad_review_complete
+  gate: stages/tasks.yaml#triad-review
+  reason: tasks triad-review 完了時点の停止点
+  head: 0178dbdcd50688ed2a91439899967aa73d5b4da8
+  evidence:
+  - .reviewcompass/post-write-verification/post-write-2026-06-19-282.yaml
 commit_required: true
 commit_required_kind: stop_point_consumed
 commit_required_reason: reopen commit stop point 消費完了時点の停止点
-commit_stop_point: true
-commit_stop_point_step: 3
-commit_stop_point_kind: triad_review_complete
-commit_stop_point_gate: stages/tasks.yaml#triad-review
-commit_stop_point_reason: tasks triad-review 完了時点の停止点
