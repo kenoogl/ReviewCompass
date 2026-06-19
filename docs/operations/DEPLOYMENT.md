@@ -51,6 +51,7 @@ ReviewCompass の開発リポジトリには、実行に必要なファイル、
 | `tools/api_providers/providers.py` | 各 provider 呼び出しに必要。 |
 | `tools/api_providers/response_formatter.py` | レビュー応答の整形に必要。 |
 | `tools/api_providers/review_triage.py` | review-run の所見整理に必要。 |
+| `tools/api_providers/prepare_post_write_review.py` | post-write API review 前に review-target を生成するため。 |
 | `tools/api_providers/run_review.py` | review-run の CLI 入口。 |
 | `tools/api_providers/run_role.py` | 役単位の CLI 入口。 |
 | `tools/api_providers/prompt_templates/*.md` | provider 別の API 呼び出しプロンプト。 |

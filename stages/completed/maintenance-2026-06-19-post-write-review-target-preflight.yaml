@@ -1,0 +1,62 @@
+process_id: maintenance
+title: post-write review-target preflight
+trigger: "post-write validation の API 検査で短い criteria ID だけが渡され、検査観点の明示証跡が薄かったため、API 検査前の review-target 生成を機械化する"
+mainline_blocked_by: stages/in-progress/reopen-procedure-2026-06-19.yaml
+completed_at: "2026-06-19"
+classification: local_workflow_guard_improvement
+reason: "post-write API review の入力生成と証跡保存を改善する局所変更。workflow phase/gate の意味や reopen 本線の成果物内容は変更しない"
+allowed_scope:
+  - "post-write API review 前の review-target 生成"
+  - "criteria-file 経由の API review 実行"
+  - "rendered prompt の review-run 証跡保存"
+  - "配布 manifest と運用文書の追従"
+allowed_files:
+  - tools/api_providers/prepare_post_write_review.py
+  - tools/api_providers/run_review.py
+  - tools/api_providers/run_role.py
+  - tools/api_providers/tests/test_prepare_post_write_review.py
+  - tools/api_providers/tests/test_run_review.py
+  - docs/operations/WORKFLOW_NAVIGATION.md
+  - docs/operations/DEPLOYMENT.md
+  - deploy-manifest.yaml
+  - tests/operations/test_session_workflow_guide.py
+  - tests/deployment/test_deploy_manifest.py
+  - stages/in-progress/reopen-procedure-2026-06-19.yaml
+  - stages/completed/maintenance-2026-06-19-post-write-review-target-preflight.yaml
+completion_conditions:
+  - "post-write API review 前に review-target.md / review-target.yaml を機械生成できる"
+  - "run_review.py / run_role.py が --criteria-file を受け取り、criteria 出典 path / sha256 を rounds.yaml に記録する"
+  - "API へ送る rendered prompt を review-run の prompts/ 配下に保存し、model_result に path / sha256 を記録する"
+  - "機微情報らしい token を含む target は review-target 生成時点で fail-closed する"
+completed_actions:
+  - "tests: prepare_post_write_review の review-target 生成と secret-like target fail-closed を追加"
+  - "tests: run_review が --criteria-file を使い rendered prompt を保存する期待を追加"
+  - "implementation: prepare_post_write_review.py を追加"
+  - "implementation: run_review.py / run_role.py に --criteria-file と criteria 出典記録を追加"
+  - "implementation: review-run の prompts/ 配下に rendered prompt を保存"
+  - "documentation: WORKFLOW_NAVIGATION の post_write_verification 標準手順を prepare → run_review --criteria-file に更新"
+  - "deployment: deploy-manifest.yaml と DEPLOYMENT.md に新 CLI を追加"
+verification:
+  - command: ".venv/bin/python3 -m pytest tools/api_providers/tests/test_run_review.py::test_run_review_uses_criteria_file_and_records_prompt_artifact -q"
+    result: "passed"
+  - command: ".venv/bin/python3 -m pytest tools/api_providers/tests/test_prepare_post_write_review.py -q"
+    result: "2 passed"
+  - command: ".venv/bin/python3 -m pytest tools/api_providers/tests/test_run_review.py tools/api_providers/tests/test_run_role.py tools/api_providers/tests/test_prepare_post_write_review.py -q"
+    result: "29 passed"
+  - command: ".venv/bin/python3 -m pytest tests/operations/test_session_workflow_guide.py tests/deployment/test_deploy_manifest.py -q"
+    result: "13 passed"
+  - command: "PYTHONPYCACHEPREFIX=/private/tmp/reviewcompass-pycache .venv/bin/python3 -m py_compile tools/api_providers/run_review.py tools/api_providers/run_role.py tools/api_providers/prepare_post_write_review.py"
+    result: "passed"
+  - command: "git diff --check"
+    result: "passed"
+  - command: ".venv/bin/python3 tools/api_providers/prepare_post_write_review.py --target docs/operations/WORKFLOW_NAVIGATION.md --target docs/operations/DEPLOYMENT.md --target deploy-manifest.yaml --target stages/completed/maintenance-2026-06-19-post-write-review-target-preflight.yaml --review-run-dir .reviewcompass/evidence/review-runs/2026-06-19-post-write-review-target-preflight-postwrite --criteria-id post_write_review_target_preflight_contract_clearance --change-summary \"post-write API review 前に review-target を機械生成し、run_review は criteria-file と rendered prompt 証跡を保存するようにした。標準手順と配布 manifest も追従した。\" --review-question \"post-write API review の標準手順が、短い criteria ID だけに依存せず、review-target 生成、criteria-file 利用、rendered prompt 保存、機微情報チェックを一貫して要求しているか。\""
+    result: "passed"
+  - command: ".venv/bin/python3 tools/api_providers/run_review.py --variant post_write_verification_google --target docs/operations/WORKFLOW_NAVIGATION.md --target docs/operations/DEPLOYMENT.md --target deploy-manifest.yaml --target stages/completed/maintenance-2026-06-19-post-write-review-target-preflight.yaml --phase post_write_verification --criteria-file .reviewcompass/evidence/review-runs/2026-06-19-post-write-review-target-preflight-postwrite/review-target.md --review-run-dir .reviewcompass/evidence/review-runs/2026-06-19-post-write-review-target-preflight-postwrite"
+    result: "passed: no findings"
+  - command: ".venv/bin/python3 tools/api_providers/review_triage.py list-pending --review-run-dir .reviewcompass/evidence/review-runs/2026-06-19-post-write-review-target-preflight-postwrite"
+    result: "no pending findings"
+post_write_verification:
+  manifest: .reviewcompass/post-write-verification/post-write-2026-06-19-268.yaml
+  review_run: .reviewcompass/evidence/review-runs/2026-06-19-post-write-review-target-preflight-postwrite
+current_status: completed
+return_to: "integrated-design reopen design drafting"

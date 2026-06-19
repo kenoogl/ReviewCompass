@@ -1,0 +1,32 @@
+status: completed
+target_files:
+- deploy-manifest.yaml
+- docs/operations/DEPLOYMENT.md
+- docs/operations/WORKFLOW_NAVIGATION.md
+- stages/completed/maintenance-2026-06-19-post-write-review-target-preflight.yaml
+target_sha256:
+  deploy-manifest.yaml: 6500b168b1024b40d8848a1480ea44a9ab6ff8cfc139603a9786d38cf00bfa03
+  docs/operations/DEPLOYMENT.md: 4d7230eae5a6bd91ee7b427e99dd786174c6431a1591ed37d9326521f323ac8f
+  docs/operations/WORKFLOW_NAVIGATION.md: f467affd2d8d842369a4b9e54fdd5322b1d230b427fca12bfc5c3205916fef73
+  stages/completed/maintenance-2026-06-19-post-write-review-target-preflight.yaml: f625b5678e2cbe421f7fa7408ab41d5b7b6e1c1091fe88c37a65f38185ad8040
+required_verifiers: &id001
+- gemini-3.5-flash
+completed_verifiers: *id001
+unresolved_substantive_findings: 0
+verifications:
+- verifier: gemini-3.5-flash
+  target_files:
+  - deploy-manifest.yaml
+  - docs/operations/DEPLOYMENT.md
+  - docs/operations/WORKFLOW_NAVIGATION.md
+  - stages/completed/maintenance-2026-06-19-post-write-review-target-preflight.yaml
+  target_sha256:
+    deploy-manifest.yaml: 6500b168b1024b40d8848a1480ea44a9ab6ff8cfc139603a9786d38cf00bfa03
+    docs/operations/DEPLOYMENT.md: 4d7230eae5a6bd91ee7b427e99dd786174c6431a1591ed37d9326521f323ac8f
+    docs/operations/WORKFLOW_NAVIGATION.md: f467affd2d8d842369a4b9e54fdd5322b1d230b427fca12bfc5c3205916fef73
+    stages/completed/maintenance-2026-06-19-post-write-review-target-preflight.yaml: f625b5678e2cbe421f7fa7408ab41d5b7b6e1c1091fe88c37a65f38185ad8040
+review_run:
+  path: .reviewcompass/evidence/review-runs/2026-06-19-post-write-review-target-preflight-postwrite
+  summary_path: .reviewcompass/evidence/review-runs/2026-06-19-post-write-review-target-preflight-postwrite/model-result-summary.yaml
+notes: Generated template; verify target_files cover current post-write targets before
+  use.

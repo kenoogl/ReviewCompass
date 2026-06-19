@@ -56,6 +56,12 @@ def _dump_yaml(path: Path, data: Dict[str, Any]) -> None:
   )
 
 
+def _sha256_file(path: Path) -> str:
+  import hashlib
+
+  return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
 def _call_provider(provider, prompt: str) -> Tuple[str, int, float]:
   start = time.monotonic()
   response_text = provider.send_request(prompt)
@@ -217,7 +223,12 @@ def _parse_argv(argv: Optional[List[str]]) -> argparse.Namespace:
     help="対象文書ファイルパス（複数指定可）",
   )
   parser.add_argument("--phase", required=True, help="段名")
-  parser.add_argument("--criteria", required=True, help="観点識別子")
+  parser.add_argument("--criteria", default=None, help="観点識別子")
+  parser.add_argument(
+    "--criteria-file",
+    default=None,
+    help="観点本文を含むファイル。指定時は --criteria の代わりに本文を使う",
+  )
   parser.add_argument("--review-run-dir", required=True, help="review-run 成果物ディレクトリ")
   parser.add_argument("--round-id", default="round-1", help="round ID")
   parser.add_argument("--config", default="config/api-settings.yaml", help="API 設定ファイル")
@@ -238,6 +249,17 @@ def _parse_argv(argv: Optional[List[str]]) -> argparse.Namespace:
     help="effective prompt ファイルの sha256。未指定ならファイルから計算する",
   )
   return parser.parse_args(argv)
+
+
+def _resolve_criteria(args: argparse.Namespace) -> Tuple[str, Optional[str], Optional[str]]:
+  """--criteria / --criteria-file から実効 criteria と出典情報を返す。"""
+  if bool(args.criteria) == bool(args.criteria_file):
+    raise ValueError("--criteria または --criteria-file のどちらか一方を指定してください")
+  if args.criteria_file:
+    path = Path(args.criteria_file)
+    criteria = path.read_text(encoding="utf-8")
+    return criteria, str(path), _sha256_file(path)
+  return args.criteria, None, None
 
 
 def _select_variant_name(args) -> Optional[str]:
@@ -279,11 +301,12 @@ def _run_one_role(
     timeout_seconds=connection_settings.get("timeout_seconds", 60),
     max_retries=connection_settings.get("max_retries", 1),
   )
+  criteria, criteria_source_path, criteria_source_sha256 = _resolve_criteria(args)
 
   prompt = build_prompt(
     args.target,
     args.phase,
-    args.criteria,
+    criteria,
     args.prior_finding,
     provider_name=provider_name,
     model=model,
@@ -301,7 +324,7 @@ def _run_one_role(
       round_id=args.round_id,
       target_path=args.target,
       phase=args.phase,
-      criteria=args.criteria,
+      criteria=criteria,
       role=role,
       provider=provider_name,
       model=model,
@@ -314,6 +337,8 @@ def _run_one_role(
       formatted_output=None,
       effective_prompt_path=args.effective_prompt_path,
       effective_prompt_sha256=effective_prompt_sha256,
+      criteria_source_path=criteria_source_path,
+      criteria_source_sha256=criteria_source_sha256,
     )
     return 1
 
@@ -330,7 +355,7 @@ def _run_one_role(
     round_id=args.round_id,
     target_path=args.target,
     phase=args.phase,
-    criteria=args.criteria,
+    criteria=criteria,
     role=role,
     provider=provider_name,
     model=model,
@@ -343,6 +368,8 @@ def _run_one_role(
     formatted_output=output,
     effective_prompt_path=args.effective_prompt_path,
     effective_prompt_sha256=effective_prompt_sha256,
+    criteria_source_path=criteria_source_path,
+    criteria_source_sha256=criteria_source_sha256,
   )
   return 0
 

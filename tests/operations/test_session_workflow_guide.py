@@ -95,7 +95,10 @@ def test_post_write_verification_documents_canonical_api_call_procedure_without_
   )[0]
 
   assert "API 呼び出し起動手順の正本" in post_write_section
+  assert ".venv/bin/python3 tools/api_providers/prepare_post_write_review.py" in post_write_section
   assert ".venv/bin/python3 tools/api_providers/run_review.py" in post_write_section
+  assert "--criteria-file" in post_write_section
+  assert "review-target.md" in post_write_section
   assert "外側から `zsh -c` で包まない" in post_write_section
   assert "entrypoint 内" in post_write_section
   assert "~/.zshrc" in post_write_section
@@ -107,6 +110,7 @@ def test_post_write_verification_documents_canonical_api_call_procedure_without_
   assert "上書きされていない" in post_write_section
   assert "review_summary.md" in post_write_section
   assert "rounds.yaml" in post_write_section
+  assert "prompts/" in post_write_section
   assert "target-manifest.yaml" in post_write_section
   assert "ConnectError" in post_write_section
   assert "sandbox network" in post_write_section

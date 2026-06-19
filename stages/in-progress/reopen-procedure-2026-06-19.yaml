@@ -39,6 +39,13 @@ completed_gates:
 drafting_completed_gates:
 - stages/requirements.yaml#drafting
 current_blocker: null
+side_track_records:
+- completed_maintenance: stages/completed/maintenance-2026-06-19-post-write-review-target-preflight.yaml
+  rationale: post-write API review の criteria / review-target 生成を機械化する局所改善を、本線
+    design drafting 再開前の maintenance commit として記録した。reopen gate 状態は変更しない。
+  evidence:
+  - .reviewcompass/post-write-verification/post-write-2026-06-19-268.yaml
+  - .reviewcompass/evidence/review-runs/2026-06-19-post-write-review-target-preflight-postwrite/review_summary.md
 reopen_step_records:
 - from_step: 1
   completed_step: R-0 判定確定・spec.json フラグ差し戻し完了（requirements.triad-review/review-wave/alignment/approval

@@ -2,6 +2,7 @@
 # 複数モデル review-run orchestrator の TDD テスト。
 
 import sys
+import hashlib
 from pathlib import Path
 from unittest.mock import MagicMock, patch
 
@@ -350,3 +351,53 @@ def test_run_review_records_effective_prompt_metadata(tmp_path, monkeypatch, cap
   rounds = yaml.safe_load((review_run_dir / "rounds.yaml").read_text(encoding="utf-8"))
   assert rounds["effective_prompt_path"] == str(effective_prompt)
   assert len(rounds["effective_prompt_sha256"]) == 64
+
+
+def test_run_review_uses_criteria_file_and_records_prompt_artifact(
+  tmp_path,
+  monkeypatch,
+):
+  """criteria-file の本文を使い、実送信プロンプトを review-run に保存する。"""
+  monkeypatch.setenv("GEMINI_API_KEY", "test-key")
+  target = tmp_path / "target.md"
+  target.write_text("契約本文\n", encoding="utf-8")
+  criteria_file = tmp_path / "review-target.md"
+  criteria_file.write_text(
+    "# Review Target\n\n"
+    "commit instruction preflight の契約整合を確認する。\n"
+    "git add より前に preflight が走ることを確認する。\n",
+    encoding="utf-8",
+  )
+  config_path = _make_config(tmp_path)
+  review_run_dir = tmp_path / "review-run"
+  responses = {"gemini-api": "findings: []\n"}
+
+  with patch(
+    "tools.api_providers.run_review.get_provider",
+    side_effect=_make_provider_factory(responses),
+  ):
+    exit_code = main(
+      [
+        "--variant", "post_write_verification_google",
+        "--target", str(target),
+        "--phase", "post_write_verification",
+        "--criteria-file", str(criteria_file),
+        "--review-run-dir", str(review_run_dir),
+        "--config", str(config_path),
+      ]
+    )
+
+  assert exit_code == 0
+  rounds = yaml.safe_load((review_run_dir / "rounds.yaml").read_text(encoding="utf-8"))
+  model_result = rounds["model_results"][0]
+  prompt_path = review_run_dir / model_result["prompt_path"]
+  assert rounds["criteria"] == criteria_file.read_text(encoding="utf-8")
+  assert rounds["criteria_source_path"] == str(criteria_file)
+  assert rounds["criteria_source_sha256"] == hashlib.sha256(
+    criteria_file.read_bytes()
+  ).hexdigest()
+  assert prompt_path.is_file()
+  assert "git add より前" in prompt_path.read_text(encoding="utf-8")
+  assert model_result["prompt_sha256"] == hashlib.sha256(
+    prompt_path.read_bytes()
+  ).hexdigest()

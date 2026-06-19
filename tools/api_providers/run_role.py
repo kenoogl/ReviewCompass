@@ -253,15 +253,21 @@ def update_review_run_artifacts(
   formatted_output: Optional[str],
   effective_prompt_path: Optional[str] = None,
   effective_prompt_sha256: Optional[str] = None,
+  criteria_source_path: Optional[str] = None,
+  criteria_source_sha256: Optional[str] = None,
 ) -> None:
   """1 回の API 応答を review-run 成果物へ反映する。"""
   run_dir = Path(review_run_dir)
   raw_dir = run_dir / "raw"
   parsed_dir = run_dir / "parsed"
+  prompt_dir = run_dir / "prompts"
   model_stem = _safe_artifact_stem(model)
   raw_path = raw_dir / f"{model_stem}.{round_id}.txt"
   parsed_path = parsed_dir / f"{model_stem}.{round_id}.yaml"
+  prompt_path = prompt_dir / f"{model_stem}.{round_id}.prompt.md"
 
+  _write_text(prompt_path, prompt)
+  prompt_sha256 = _sha256_file(prompt_path)
   _write_text(raw_path, response_text)
   raw_sha256 = _sha256_file(raw_path)
   parsed_sha256 = None
@@ -305,6 +311,8 @@ def update_review_run_artifacts(
     "follow_up_action": "triage" if parse_status == "parsed" else "format_pending",
     "attempts": attempts,
     "duration_seconds": round(duration_seconds, 3),
+    "prompt_path": _relative_to_run(run_dir, prompt_path),
+    "prompt_sha256": prompt_sha256,
   }
   _upsert_by_keys(model_results, model_result, ["model_id", "role"])
 
@@ -314,9 +322,13 @@ def update_review_run_artifacts(
     "invocation_timestamp": now,
     "target_files": target_files,
     "criteria": criteria,
-    "prompt_sha256": _sha256_text(prompt),
+    "prompt_sha256": prompt_sha256,
     "model_results": model_results,
   }
+  if criteria_source_path:
+    rounds_update["criteria_source_path"] = criteria_source_path
+  if criteria_source_sha256:
+    rounds_update["criteria_source_sha256"] = criteria_source_sha256
   if effective_prompt_path:
     rounds_update["effective_prompt_path"] = effective_prompt_path
   if effective_prompt_sha256:
@@ -379,8 +391,13 @@ def _parse_argv(argv: Optional[List[str]]) -> argparse.Namespace:
   )
   parser.add_argument(
     "--criteria",
-    required=True,
+    default=None,
     help="観点識別子（例：観点-1、必須）",
+  )
+  parser.add_argument(
+    "--criteria-file",
+    default=None,
+    help="観点本文を含むファイル。指定時は --criteria の代わりに本文を使う",
   )
   parser.add_argument(
     "--prior-finding",
@@ -426,6 +443,17 @@ def _parse_argv(argv: Optional[List[str]]) -> argparse.Namespace:
   return parser.parse_args(argv)
 
 
+def _resolve_criteria(args: argparse.Namespace) -> Tuple[str, Optional[str], Optional[str]]:
+  """--criteria / --criteria-file から実効 criteria と出典情報を返す。"""
+  if bool(args.criteria) == bool(args.criteria_file):
+    raise ValueError("--criteria または --criteria-file のどちらか一方を指定してください")
+  if args.criteria_file:
+    path = Path(args.criteria_file)
+    criteria = path.read_text(encoding="utf-8")
+    return criteria, str(path), _sha256_file(path)
+  return args.criteria, None, None
+
+
 def _resolve_effective_prompt_sha256(path_value: Optional[str], sha_value: Optional[str]) -> Optional[str]:
   """effective prompt sha256 を明示値またはファイル内容から返す。
 
@@ -464,11 +492,12 @@ def main(argv: Optional[List[str]] = None) -> int:
       timeout_seconds=connection_settings.get("timeout_seconds", 60),
       max_retries=connection_settings.get("max_retries", 1),
     )
+    criteria, criteria_source_path, criteria_source_sha256 = _resolve_criteria(args)
 
     prompt = build_prompt(
       args.target,
       args.phase,
-      args.criteria,
+      criteria,
       args.prior_finding,
       provider_name=provider_name,
       model=model,
@@ -488,7 +517,7 @@ def main(argv: Optional[List[str]] = None) -> int:
           round_id=args.round_id,
           target_path=args.target,
           phase=args.phase,
-          criteria=args.criteria,
+          criteria=criteria,
           role=args.role,
           provider=provider_name,
           model=model,
@@ -501,6 +530,8 @@ def main(argv: Optional[List[str]] = None) -> int:
           formatted_output=None,
           effective_prompt_path=args.effective_prompt_path,
           effective_prompt_sha256=effective_prompt_sha256,
+          criteria_source_path=criteria_source_path,
+          criteria_source_sha256=criteria_source_sha256,
         )
       raise
     output = format_response(
@@ -518,7 +549,7 @@ def main(argv: Optional[List[str]] = None) -> int:
         round_id=args.round_id,
         target_path=args.target,
         phase=args.phase,
-        criteria=args.criteria,
+        criteria=criteria,
         role=args.role,
         provider=provider_name,
         model=model,
@@ -531,6 +562,8 @@ def main(argv: Optional[List[str]] = None) -> int:
         formatted_output=output,
         effective_prompt_path=args.effective_prompt_path,
         effective_prompt_sha256=effective_prompt_sha256,
+        criteria_source_path=criteria_source_path,
+        criteria_source_sha256=criteria_source_sha256,
       )
     sys.stdout.write(output)
     return 0

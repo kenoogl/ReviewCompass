@@ -1,0 +1,10 @@
+run_id: 2026-06-19-post-write-review-target-preflight-postwrite
+target_files:
+- path: docs/operations/WORKFLOW_NAVIGATION.md
+  sha256: f467affd2d8d842369a4b9e54fdd5322b1d230b427fca12bfc5c3205916fef73
+- path: docs/operations/DEPLOYMENT.md
+  sha256: 4d7230eae5a6bd91ee7b427e99dd786174c6431a1591ed37d9326521f323ac8f
+- path: deploy-manifest.yaml
+  sha256: 6500b168b1024b40d8848a1480ea44a9ab6ff8cfc139603a9786d38cf00bfa03
+- path: stages/completed/maintenance-2026-06-19-post-write-review-target-preflight.yaml
+  sha256: f625b5678e2cbe421f7fa7408ab41d5b7b6e1c1091fe88c37a65f38185ad8040

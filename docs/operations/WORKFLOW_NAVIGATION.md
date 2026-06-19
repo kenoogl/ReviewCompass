@@ -91,12 +91,20 @@ reopen 手続きが進行中である。通常ワークフローや post-write-v
 API 経由の複数モデル検証を行う場合の標準手順：
 
 ```bash
+.venv/bin/python3 tools/api_providers/prepare_post_write_review.py \
+  --target <target-file> \
+  [--target <target-file-2> ...] \
+  --review-run-dir .reviewcompass/evidence/review-runs/<run-id> \
+  --criteria-id <criteria-id> \
+  --change-summary "<change-summary>" \
+  --review-question "<review-question>"
+
 .venv/bin/python3 tools/api_providers/run_review.py \
   --variant post_write_verification_google \
   --target <target-file> \
   [--target <target-file-2> ...] \
   --phase post_write_verification \
-  --criteria <criteria-id> \
+  --criteria-file .reviewcompass/evidence/review-runs/<run-id>/review-target.md \
   --review-run-dir .reviewcompass/evidence/review-runs/<run-id>
 
 .venv/bin/python3 tools/api_providers/review_triage.py list-pending \
@@ -118,9 +126,11 @@ API 経由の複数モデル検証を行う場合の標準手順：
 .venv/bin/python3 tools/check-workflow-action.py next --json
 ```
 
-API 呼び出し起動手順の正本は、`.venv/bin/python3 tools/api_providers/run_review.py ...` である。外側から `zsh -c` で包まない。API key は配布物や設定ファイルへ書かず、利用者の shell 初期化で読み込まれる環境変数から渡す。Claude Code などの操縦実行面では、子プロセスの `ANTHROPIC_API_KEY` と `GEMINI_API_KEY` が空文字列へ上書きされることが確認済みである。一方、`OPENAI_API_KEY` は同じ確認では上書きされていない。このため `run_review.py` / `run_role.py` entrypoint 内で、環境変数が未設定の場合に `~/.zshrc` を読み直して API key を補完する。補完後も key が得られない場合は API key 未設定として fail-closed する。
+API 呼び出し起動手順の正本は、先に `.venv/bin/python3 tools/api_providers/prepare_post_write_review.py ...` で review-target を生成し、その後 `.venv/bin/python3 tools/api_providers/run_review.py ... --criteria-file <review-target.md>` を実行することである。外側から `zsh -c` で包まない。API key は配布物や設定ファイルへ書かず、利用者の shell 初期化で読み込まれる環境変数から渡す。Claude Code などの操縦実行面では、子プロセスの `ANTHROPIC_API_KEY` と `GEMINI_API_KEY` が空文字列へ上書きされることが確認済みである。一方、`OPENAI_API_KEY` は同じ確認では上書きされていない。このため `run_review.py` / `run_role.py` entrypoint 内で、環境変数が未設定の場合に `~/.zshrc` を読み直して API key を補完する。補完後も key が得られない場合は API key 未設定として fail-closed する。
 
-`next_action.target_files` が複数ある場合は、`--target` を複数回指定して同じ review-run に束ねる。API review-run の成否確認は、`review_summary.md`、`rounds.yaml`、`model-result-summary.yaml`、`raw/`、`parsed/`、`target-manifest.yaml` が同じ `--review-run-dir` に生成され、`rounds.yaml` の `target_files`、provider、model、raw/parsed path が今回の対象と一致することで行う。
+`prepare_post_write_review.py` は `review-target.md` と `review-target.yaml` を同じ `--review-run-dir` に生成する。`review-target.md` には criteria ID、変更要約、検査質問、target files、scope / out-of-scope、finding policy、機微情報チェック結果を含める。機微情報らしい文字列を検出した場合は fail-closed し、外部 API review へ進まない。
+
+`next_action.target_files` が複数ある場合は、`prepare_post_write_review.py` と `run_review.py` の両方で `--target` を複数回指定して同じ review-run に束ねる。API review-run の成否確認は、`review-target.md`、`review-target.yaml`、`review_summary.md`、`rounds.yaml`、`model-result-summary.yaml`、`raw/`、`parsed/`、`prompts/`、`target-manifest.yaml` が同じ `--review-run-dir` に生成され、`rounds.yaml` の `target_files`、`criteria_source_path`、provider、model、prompt/raw/parsed path が今回の対象と一致することで行う。
 
 API 呼び出しが失敗した場合は、まず上の正本手順を再確認する。`import` エラー、`argparse` エラー、引数不一致は起動手順または実装の問題であり、外部送信ポリシーや provider 側障害と混同しない。`ConnectError`、名前解決失敗、接続不能が出た場合は sandbox network 制限の可能性を先に疑い、同じ正本コマンドをネットワーク実行が許可された実行面で再実行する。API key 未設定のエラーは `~/.zshrc` から対象 provider の環境変数が読み込まれているかを確認する。
 

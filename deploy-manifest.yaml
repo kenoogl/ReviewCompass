@@ -66,6 +66,8 @@ include:
     reason: Review response formatting.
   - path: tools/api_providers/review_triage.py
     reason: Review-run finding triage.
+  - path: tools/api_providers/prepare_post_write_review.py
+    reason: Post-write review-target preparation before API review.
   - path: tools/api_providers/run_review.py
     reason: Review-run CLI entry point.
   - path: tools/api_providers/run_role.py
