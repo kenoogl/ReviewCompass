@@ -59,6 +59,16 @@ def latest_commit_subject(cwd):
   return result.stdout.strip()
 
 
+class TtyStdin:
+  """テスト用の TTY 承認入力"""
+
+  def __init__(self, text):
+    self.buffer = io.BytesIO(text.encode("utf-8"))
+
+  def isatty(self):
+    return True
+
+
 class GuardedGitCommitTests(unittest.TestCase):
   """ユーザ承認付き git commit ラッパーの判定"""
 
@@ -155,8 +165,8 @@ class GuardedGitCommitTests(unittest.TestCase):
     self.assertTrue(consumed_challenge["consumed"])
     self.assertTrue(delegation["consumed"])
 
-  def test_guarded_commit_records_line_approval_and_commits(self):
-    """承認1行で内容承認・実行代行承認・commit まで進める"""
+  def test_guarded_commit_rejects_piped_line_approval(self):
+    """pipe 経由の承認1行では approval record を作らず commit しない"""
     _stage_file(self.tmpdir, "notes.md", "# deployable commit ux")
     challenge = _prepare_commit_approval(self.tmpdir)
 
@@ -171,9 +181,42 @@ class GuardedGitCommitTests(unittest.TestCase):
       input_text="承認\n",
     )
 
+    self.assertEqual(result.returncode, 2)
+    self.assertIn("TTY", result.stderr)
+    self.assertEqual(latest_commit_subject(self.tmpdir), "add carry-forward register")
+    approval_path = (
+      Path(self.tmpdir)
+      / ".reviewcompass"
+      / "runtime"
+      / "approvals"
+      / "commit-approval.json"
+    )
+    self.assertFalse(approval_path.exists())
+
+  def test_guarded_commit_records_tty_line_approval_and_commits(self):
+    """TTY 承認1行で内容承認・実行代行承認・commit まで進める"""
+    _stage_file(self.tmpdir, "notes.md", "# deployable commit ux")
+    challenge = _prepare_commit_approval(self.tmpdir)
+    guarded = load_guarded_module()
+    original_stdin = guarded.sys.stdin
+    original_cwd = os.getcwd()
+
+    try:
+      os.chdir(self.tmpdir)
+      guarded.sys.stdin = TtyStdin("承認\n")
+      result = guarded.main([
+        "-m", "guarded line approval commit",
+        "--rationale", "利用者が提示済み nonce と staged 内容を承認",
+        "--approval-nonce", challenge["nonce"],
+        "--approval-source-text-line-stdin",
+      ])
+    finally:
+      os.chdir(original_cwd)
+      guarded.sys.stdin = original_stdin
+
     self.assertEqual(
-      result.returncode, 0,
-      f"line approval should allow commit.\nstdout: {result.stdout}\nstderr: {result.stderr}",
+      result, 0,
+      "TTY line approval should allow commit.",
     )
     self.assertEqual(latest_commit_subject(self.tmpdir), "guarded line approval commit")
     approval_path = (
@@ -194,44 +237,64 @@ class GuardedGitCommitTests(unittest.TestCase):
     _stage_file(self.tmpdir, "notes.md", "# minimal output")
     challenge = _prepare_commit_approval(self.tmpdir)
 
-    result = run_guarded_commit(
-      [
-        "-m", "minimal output commit",
-        "--rationale", "利用者が提示済み nonce と staged 内容を承認",
-        "--approval-nonce", challenge["nonce"],
-        "--approval-source-text-line-stdin",
-      ],
-      cwd=self.tmpdir,
-      input_text="承認\n",
-    )
+    guarded = load_guarded_module()
+    original_stdin = guarded.sys.stdin
+    original_cwd = os.getcwd()
+    stdout = io.StringIO()
+    stderr = io.StringIO()
 
-    self.assertEqual(result.returncode, 0, result.stderr)
-    self.assertNotIn("[CURRENT STATE]", result.stdout)
-    self.assertNotIn("[ACTION]", result.stdout)
-    self.assertIn("commit precheck: OK", result.stdout)
-    self.assertRegex(result.stdout, r"committed: [0-9a-f]{7,40} minimal output commit")
+    try:
+      os.chdir(self.tmpdir)
+      guarded.sys.stdin = TtyStdin("承認\n")
+      with contextlib.redirect_stdout(stdout), contextlib.redirect_stderr(stderr):
+        result = guarded.main([
+          "-m", "minimal output commit",
+          "--rationale", "利用者が提示済み nonce と staged 内容を承認",
+          "--approval-nonce", challenge["nonce"],
+          "--approval-source-text-line-stdin",
+        ])
+    finally:
+      os.chdir(original_cwd)
+      guarded.sys.stdin = original_stdin
+
+    output = stdout.getvalue()
+    self.assertEqual(result, 0, stderr.getvalue())
+    self.assertNotIn("[CURRENT STATE]", output)
+    self.assertNotIn("[ACTION]", output)
+    self.assertIn("commit precheck: OK", output)
+    self.assertRegex(output, r"committed: [0-9a-f]{7,40} minimal output commit")
 
   def test_guarded_commit_verbose_success_output_includes_precheck_details(self):
     """verbose 指定時は precheck 詳細を表示する"""
     _stage_file(self.tmpdir, "notes.md", "# verbose output")
     challenge = _prepare_commit_approval(self.tmpdir)
 
-    result = run_guarded_commit(
-      [
-        "-m", "verbose output commit",
-        "--rationale", "利用者が提示済み nonce と staged 内容を承認",
-        "--approval-nonce", challenge["nonce"],
-        "--approval-source-text-line-stdin",
-        "--verbose",
-      ],
-      cwd=self.tmpdir,
-      input_text="承認\n",
-    )
+    guarded = load_guarded_module()
+    original_stdin = guarded.sys.stdin
+    original_cwd = os.getcwd()
+    stdout = io.StringIO()
+    stderr = io.StringIO()
 
-    self.assertEqual(result.returncode, 0, result.stderr)
-    self.assertIn("[OK] commit", result.stdout)
-    self.assertIn("1 file changed", result.stdout)
-    self.assertIn("committed:", result.stdout)
+    try:
+      os.chdir(self.tmpdir)
+      guarded.sys.stdin = TtyStdin("承認\n")
+      with contextlib.redirect_stdout(stdout), contextlib.redirect_stderr(stderr):
+        result = guarded.main([
+          "-m", "verbose output commit",
+          "--rationale", "利用者が提示済み nonce と staged 内容を承認",
+          "--approval-nonce", challenge["nonce"],
+          "--approval-source-text-line-stdin",
+          "--verbose",
+        ])
+    finally:
+      os.chdir(original_cwd)
+      guarded.sys.stdin = original_stdin
+
+    output = stdout.getvalue()
+    self.assertEqual(result, 0, stderr.getvalue())
+    self.assertIn("[OK] commit", output)
+    self.assertIn("1 file changed", output)
+    self.assertIn("committed:", output)
 
   def test_guarded_commit_line_approval_retry_reuses_active_transaction(self):
     """commit 実行失敗後の同一 nonce 再実行は active transaction を再利用する"""
@@ -257,10 +320,7 @@ class GuardedGitCommitTests(unittest.TestCase):
     guarded.run_git_commit = fail_then_succeed
     try:
       os.chdir(self.tmpdir)
-      guarded.sys.stdin = io.TextIOWrapper(
-        io.BytesIO("承認\n".encode("utf-8")),
-        encoding="utf-8",
-      )
+      guarded.sys.stdin = TtyStdin("承認\n")
       first = guarded.main([
         "-m", "retryable guarded commit",
         "--rationale", "利用者が提示済み nonce と staged 内容を承認",
@@ -289,10 +349,7 @@ class GuardedGitCommitTests(unittest.TestCase):
       )
       delegation_after_failure = _read_commit_execution_delegation(self.tmpdir)
 
-      guarded.sys.stdin = io.TextIOWrapper(
-        io.BytesIO("承認\n".encode("utf-8")),
-        encoding="utf-8",
-      )
+      guarded.sys.stdin = TtyStdin("承認\n")
       second = guarded.main([
         "-m", "retryable guarded commit",
         "--rationale", "利用者が提示済み nonce と staged 内容を承認",

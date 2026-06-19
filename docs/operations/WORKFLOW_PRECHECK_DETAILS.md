@@ -21,7 +21,7 @@ tools/check-workflow-action.py reopen-finalize --file <path> --impacted-downstre
 tools/check-workflow-action.py autonomous-plan <plan.yaml>
 tools/check-workflow-action.py autonomous-plan-template --run-id <run-id> --out <plan.yaml>
 tools/check-workflow-action.py autonomous-plan-record-integration --ledger <ledger.yaml> --status <status> --tests "<tests>" --decision "<decision>"
-printf 'コミット\n' | tools/commit-from-current-staged.py -m "<commit message>" --rationale "<理由>"
+tools/commit-from-current-staged.py -m "<commit message>" --rationale "<理由>"
 tools/guarded-git-commit.py -m "<commit message>" --rationale "<理由>"
 tools/guarded-git-commit.py -m "<commit message>" --rationale "<理由>" --approval-nonce <nonce> --approval-source-text-line-stdin
 ```
@@ -148,7 +148,7 @@ tools/guarded-git-commit.py -m "<commit message>" --rationale "<理由>" --appro
 
 危険変更がある場合は逸脱とする。要注意変更は警告とする。
 
-`tools/commit-from-current-staged.py` は、stdin 承認 1 行を検査してから `commit_approval.prepare()` を呼び、現在の staged exact index に束縛した challenge を作る。古い runtime approval/delegation は `prepare()` により invalidated になり、返された nonce は同じ process 内で `tools/guarded-git-commit.py --approval-nonce <nonce> --approval-source-text-line-stdin` に渡す。stdin 承認文が空、UTF-8 でない、複数行、または許可文言外の場合は challenge 作成前に停止する。
+`tools/commit-from-current-staged.py` は、TTY からの対話的な stdin 承認 1 行を検査してから `commit_approval.prepare()` を呼び、現在の staged exact index に束縛した challenge を作る。古い runtime approval/delegation は `prepare()` により invalidated になる。返された nonce は同じ process 内で内容承認と実行代行承認に使い、子プロセスへ承認文を pipe しない。stdin 承認文が非 TTY、空、UTF-8 でない、複数行、または許可文言外の場合は challenge 作成前に停止する。承認文は直近の利用者発話または利用者による対話入力に限り、LLM が `printf` 等で生成して渡してはならない。
 
 `tools/guarded-git-commit.py` は `commit --execution-actor llm` を先に実行し、exit 2 なら commit しない。exit 1 は既定では停止し、人の判断で続行する場合だけ `--allow-warn` を付ける。commit 成功後、期限付き承認レコードは消費済みにする。
 
@@ -158,9 +158,9 @@ tools/guarded-git-commit.py -m "<commit message>" --rationale "<理由>" --appro
 
 1. `.venv/bin/python3 tools/check-workflow-action.py commit-preflight --json` を実行し、`OK` を確認する。
 2. `git add ...` で対象を stage する。
-3. `printf 'コミット\n' | .venv/bin/python3 tools/commit-from-current-staged.py -m "<commit message>" --rationale "<理由>"` を実行する。
+3. `.venv/bin/python3 tools/commit-from-current-staged.py -m "<commit message>" --rationale "<理由>"` を TTY で起動し、利用者承認の 1 行を対話入力する。
 
-低レベル手順として `commit-approval prepare` と `guarded-git-commit.py --approval-nonce` を直接使う場合も、`commit-approval prepare` と `commit --json` precheck を並列化しない。`prepare` 後の challenge は staged exact index と承認状態に束縛されるため、guarded commit 以外の承認系コマンドを挟まない。`--approval-source-text-line-stdin` を指定して空 stdin で実行すると challenge が invalidated になり得るため、非対話・空入力の実行形では使わない。
+低レベル手順として `commit-approval prepare` と `guarded-git-commit.py --approval-nonce` を直接使う場合も、`commit-approval prepare` と `commit --json` precheck を並列化しない。`prepare` 後の challenge は staged exact index と承認状態に束縛されるため、guarded commit 以外の承認系コマンドを挟まない。`--approval-source-text-line-stdin` は TTY からの対話入力だけを受け付ける。空 stdin、pipe、heredoc、redirect、LLM が生成した `printf` 等の承認文では実行してはいけない。
 
 <a id="next"></a>
 

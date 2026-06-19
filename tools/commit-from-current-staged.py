@@ -16,6 +16,8 @@ from check_workflow_action import commit_approval  # noqa: E402
 
 def _read_required_approval_line():
   """stdin から承認文 1 行を読み、challenge 作成前に妥当性を確認する。"""
+  if not sys.stdin.isatty():
+    raise ValueError("承認文は TTY からの対話入力である必要があります")
   source_bytes = sys.stdin.buffer.readline()
   if not source_bytes:
     raise ValueError("承認文が入力されていません")
@@ -23,19 +25,25 @@ def _read_required_approval_line():
   return source_bytes
 
 
-def _run_guarded_commit(cwd, args, nonce, source_bytes):
-  """生成済み nonce と承認文で guarded-git-commit.py を実行する。"""
+def _record_approval_pair(cwd, nonce, source_bytes):
+  """TTY で読んだ承認文から内容承認と実行代行承認を作る。"""
+  try:
+    source_text = source_bytes.decode("utf-8")
+  except UnicodeDecodeError as e:
+    raise ValueError(f"承認文は UTF-8 である必要があります: {e}") from e
+  commit_approval.record(cwd, nonce, source_text=source_text)
+  commit_approval.delegate_execution(cwd, nonce, source_bytes)
+
+
+def _run_guarded_commit(cwd, args):
+  """生成済み approval record を使って guarded-git-commit.py を実行する。"""
   cmd = [
     sys.executable,
     str(_TOOLS_DIR / "guarded-git-commit.py"),
   ]
   for message in args.message:
     cmd.extend(["-m", message])
-  cmd.extend([
-    "--rationale", args.rationale,
-    "--approval-nonce", nonce,
-    "--approval-source-text-line-stdin",
-  ])
+  cmd.extend(["--rationale", args.rationale])
   if args.allow_warn:
     cmd.append("--allow-warn")
   if args.verbose:
@@ -43,7 +51,6 @@ def _run_guarded_commit(cwd, args, nonce, source_bytes):
   return subprocess.run(
     cmd,
     cwd=str(cwd),
-    input=source_bytes,
     capture_output=True,
   )
 
@@ -51,9 +58,15 @@ def _run_guarded_commit(cwd, args, nonce, source_bytes):
 def _relay(result):
   """子プロセスの出力をそのまま返す。"""
   if result.stdout:
-    sys.stdout.buffer.write(result.stdout)
+    if hasattr(sys.stdout, "buffer"):
+      sys.stdout.buffer.write(result.stdout)
+    else:
+      sys.stdout.write(result.stdout.decode("utf-8", errors="replace"))
   if result.stderr:
-    sys.stderr.buffer.write(result.stderr)
+    if hasattr(sys.stderr, "buffer"):
+      sys.stderr.buffer.write(result.stderr)
+    else:
+      sys.stderr.write(result.stderr.decode("utf-8", errors="replace"))
 
 
 def main(argv=None):
@@ -88,6 +101,7 @@ def main(argv=None):
   try:
     source_bytes = _read_required_approval_line()
     challenge = commit_approval.prepare(Path.cwd())
+    _record_approval_pair(Path.cwd(), challenge["nonce"], source_bytes)
   except (OSError, RuntimeError, ValueError) as e:
     print(f"error: commit-from-current-staged: {e}", file=sys.stderr)
     return 2
@@ -95,8 +109,6 @@ def main(argv=None):
   result = _run_guarded_commit(
     Path.cwd(),
     args,
-    challenge["nonce"],
-    source_bytes,
   )
   _relay(result)
   return result.returncode

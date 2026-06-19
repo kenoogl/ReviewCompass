@@ -15,21 +15,22 @@ commit 操作カード
 3. `commit-approval prepare` と `commit --json` precheck を並列実行しない。
 4. 返された nonce を使い、すぐに `tools/guarded-git-commit.py --approval-nonce <nonce> --approval-source-text-line-stdin` を起動する。
 5. challenge 作成後は、staged index や承認状態を変え得る別コマンドを挟まない。
-6. `--approval-source-text-line-stdin` は stdin を渡せる実行形でだけ使う。
-7. 空 stdin は challenge invalidation を起こし得るため、非対話・空入力で実行しない。
+6. `--approval-source-text-line-stdin` は TTY からの対話入力でだけ使う。
+7. 空 stdin、pipe、heredoc、redirect、LLM が生成した `printf` 等の承認文では実行しない。
 8. guarded commit が承認入力待ちになってから、利用者承認の 1 行を渡す。
 9. 失敗時は、まず承認入力経路、challenge 状態、staged digest の一致を確認する。
 
 ## Codex
 
-Codex で `--approval-source-text-line-stdin` を使う場合は、PTY で guarded commit を起動し、入力待ちになってから `write_stdin` で承認 1 行を渡す。sandbox により git 書き込みが拒否された場合は、guarded commit の preflight 結果に従い、必要な escalation を利用者へ確認する。
+Codex で `--approval-source-text-line-stdin` を使う場合は、PTY で guarded commit を起動し、入力待ちになってから、直近の利用者発話で明示された承認 1 行だけを `write_stdin` で渡す。利用者発話なしに Codex が承認文を生成してはならない。sandbox により git 書き込みが拒否された場合は、guarded commit の preflight 結果に従い、必要な escalation を利用者へ確認する。
 
 ## Claude Code
 
-Claude Code で `--approval-source-text-line-stdin` を使う場合は、stdin を渡せる実行形でのみ使う。空 stdin での実行は challenge invalidation（承認無効化）を起こすため、非対話・空入力で実行しない。
+Claude Code で `--approval-source-text-line-stdin` を使う場合は、TTY からの対話入力でのみ使う。空 stdin での実行は challenge invalidation（承認無効化）を起こすため、非対話・空入力で実行しない。
 
 ## 禁止
 
 - challenge 作成後に、承認 record や staged index を変える別コマンドを挟む。
-- `--approval-source-text-line-stdin` を stdin なしで実行する。
+- `--approval-source-text-line-stdin` を stdin なし、pipe、heredoc、redirect で実行する。
+- LLM が `printf` 等で承認文を生成して commit approval / execution delegation を作る。
 - commit 実行後に結果確認なしで完了扱いにする。

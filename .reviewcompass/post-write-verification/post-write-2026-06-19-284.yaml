@@ -1,0 +1,40 @@
+status: completed
+target_files:
+- .reviewcompass/specs/_cross_feature/reviews/2026-06-19-tasks-integrated-design-reopen-alignment.md
+- docs/operations/COMMIT_OPERATION_CARD.md
+- docs/operations/WORKFLOW_NAVIGATION_FOR_CLAUDE.md
+- docs/operations/WORKFLOW_NAVIGATION_FOR_CODEX.md
+- docs/operations/WORKFLOW_PRECHECK.md
+- docs/operations/WORKFLOW_PRECHECK_DETAILS.md
+target_sha256:
+  .reviewcompass/specs/_cross_feature/reviews/2026-06-19-tasks-integrated-design-reopen-alignment.md: 45be81678dd4bba0d1de05bbbd80aea8bd88c362afcd50ab9cc450656d8ef105
+  docs/operations/COMMIT_OPERATION_CARD.md: 074a487360c7c4ed16be6a769658e918e269fd8766c75df6a005b3ff86d97c8d
+  docs/operations/WORKFLOW_NAVIGATION_FOR_CLAUDE.md: 76b64b34f80cf06919c3f91da6e7f5e9d46a6ea447465943345fcdaf1a50e5d0
+  docs/operations/WORKFLOW_NAVIGATION_FOR_CODEX.md: 1ad72c7a8a57c11bdc8ceeb0c1357d5c75c34a769a123f16829af7a509687dca
+  docs/operations/WORKFLOW_PRECHECK.md: 93a2f50f205408638cf11ed2f332f41a6e295600903e10a6c27ca8e9adb321c1
+  docs/operations/WORKFLOW_PRECHECK_DETAILS.md: b9d88150269cc65ff344dd9b1adef6c0d23ddcb696067c960702a35af4162f2e
+required_verifiers: &id001
+- gemini-3.5-flash
+completed_verifiers: *id001
+unresolved_substantive_findings: 0
+verifications:
+- verifier: gemini-3.5-flash
+  target_files:
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-19-tasks-integrated-design-reopen-alignment.md
+  - docs/operations/COMMIT_OPERATION_CARD.md
+  - docs/operations/WORKFLOW_NAVIGATION_FOR_CLAUDE.md
+  - docs/operations/WORKFLOW_NAVIGATION_FOR_CODEX.md
+  - docs/operations/WORKFLOW_PRECHECK.md
+  - docs/operations/WORKFLOW_PRECHECK_DETAILS.md
+  target_sha256:
+    .reviewcompass/specs/_cross_feature/reviews/2026-06-19-tasks-integrated-design-reopen-alignment.md: 45be81678dd4bba0d1de05bbbd80aea8bd88c362afcd50ab9cc450656d8ef105
+    docs/operations/COMMIT_OPERATION_CARD.md: 074a487360c7c4ed16be6a769658e918e269fd8766c75df6a005b3ff86d97c8d
+    docs/operations/WORKFLOW_NAVIGATION_FOR_CLAUDE.md: 76b64b34f80cf06919c3f91da6e7f5e9d46a6ea447465943345fcdaf1a50e5d0
+    docs/operations/WORKFLOW_NAVIGATION_FOR_CODEX.md: 1ad72c7a8a57c11bdc8ceeb0c1357d5c75c34a769a123f16829af7a509687dca
+    docs/operations/WORKFLOW_PRECHECK.md: 93a2f50f205408638cf11ed2f332f41a6e295600903e10a6c27ca8e9adb321c1
+    docs/operations/WORKFLOW_PRECHECK_DETAILS.md: b9d88150269cc65ff344dd9b1adef6c0d23ddcb696067c960702a35af4162f2e
+review_run:
+  path: .reviewcompass/evidence/review-runs/2026-06-19-tasks-alignment-and-commit-approval-docs-postwrite
+  summary_path: .reviewcompass/evidence/review-runs/2026-06-19-tasks-alignment-and-commit-approval-docs-postwrite/model-result-summary.yaml
+notes: Generated template; verify target_files cover current post-write targets before
+  use.

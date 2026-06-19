@@ -1,0 +1,102 @@
+round_id: round-1
+purpose: post_write_verification
+invocation_timestamp: '2026-06-19T08:00:32.921114+00:00'
+target_files:
+- path: .reviewcompass/specs/_cross_feature/reviews/2026-06-19-tasks-integrated-design-reopen-alignment.md
+  sha256: 45be81678dd4bba0d1de05bbbd80aea8bd88c362afcd50ab9cc450656d8ef105
+criteria: '# Post-write Review Target
+
+
+  criteria_id: workflow_management_tasks_alignment_postwrite
+
+  phase: post_write_verification
+
+  generated_at: 2026-06-19T08:00:18.968093+00:00
+
+
+  ## Change Summary
+
+
+  workflow-management tasks alignment の整合確認証跡を追加した。
+
+
+  ## Review Question
+
+
+  追加した tasks alignment 証跡が、requirements Requirement 13〜16、design、tasks T-016〜T-019、triad-review
+  対処、review-wave 判定、workflow_state / reopen 記録の整合確認として十分であり、重大な抜けや矛盾がないか確認してください。
+
+
+  ## Target Files
+
+
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-19-tasks-integrated-design-reopen-alignment.md
+  sha256=45be81678dd4bba0d1de05bbbd80aea8bd88c362afcd50ab9cc450656d8ef105
+
+
+  ## Scope
+
+
+  - Check whether the changed target files clearly state the intended contract.
+
+  - Check whether related instructions are mutually consistent across targets.
+
+  - Check whether the documented procedure is actionable before API review, triage,
+  manifest, or commit steps continue.
+
+
+  ## Out Of Scope
+
+
+  - Do not request unrelated refactors or style-only rewrites.
+
+  - Do not judge files that are not listed in Target Files.
+
+  - Do not treat missing implementation work as a document defect unless the target
+  text claims it already exists.
+
+
+  ## Finding Policy
+
+
+  - Report must-fix findings for contradictions, missing required gates, or instructions
+  that would allow an unsafe workflow action.
+
+  - Report should-fix findings for ambiguity that could cause repeated manual judgment
+  or unnecessary API review loops.
+
+  - Return findings: [] when the target files are internally consistent for this review
+  question.
+
+
+  ## Sensitive Information Check
+
+
+  - status: passed
+
+  - External API review must not proceed if this section reports potential secrets.
+
+  '
+prompt_sha256: 05ec6f1379f1e78b7e59e4d7ace2045d19b816b4c894e256f6d0fdb6050bdc11
+model_results:
+- model_id: gemini-3.5-flash
+  provider: gemini-api
+  role: primary
+  treatment: primary
+  invocation_path: api
+  raw_path: raw/gemini-3.5-flash.round-1.txt
+  raw_sha256: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+  parsed_path: parsed/gemini-3.5-flash.round-1.yaml
+  parsed_sha256: f4737793eb281c55cdbc364a56c2fe6f0dd5f56a9091ba52d4522aafa13e0f0e
+  parse_status: parsed
+  formatted_by: parser
+  formatted_by_actor_type: orchestrator
+  formatted_by_actor: run_role.py
+  formatted_at: '2026-06-19T08:00:32.921114+00:00'
+  follow_up_action: triage
+  attempts: 1
+  duration_seconds: 7.607
+  prompt_path: prompts/gemini-3.5-flash.round-1.prompt.md
+  prompt_sha256: 05ec6f1379f1e78b7e59e4d7ace2045d19b816b4c894e256f6d0fdb6050bdc11
+criteria_source_path: .reviewcompass/evidence/review-runs/2026-06-19-tasks-integrated-design-alignment-postwrite/review-target.md
+criteria_source_sha256: a657ff428dbd5c5f3ca345f4b3ff12b2f283e1c68a3749bdb42b2dec7498ecae

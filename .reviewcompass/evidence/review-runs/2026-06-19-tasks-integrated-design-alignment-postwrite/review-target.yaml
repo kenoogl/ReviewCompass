@@ -1,0 +1,14 @@
+run_id: 2026-06-19-tasks-integrated-design-alignment-postwrite
+phase: post_write_verification
+criteria_id: workflow_management_tasks_alignment_postwrite
+criteria_file: .reviewcompass/evidence/review-runs/2026-06-19-tasks-integrated-design-alignment-postwrite/review-target.md
+criteria_file_sha256: a657ff428dbd5c5f3ca345f4b3ff12b2f283e1c68a3749bdb42b2dec7498ecae
+target_files:
+- path: .reviewcompass/specs/_cross_feature/reviews/2026-06-19-tasks-integrated-design-reopen-alignment.md
+  sha256: 45be81678dd4bba0d1de05bbbd80aea8bd88c362afcd50ab9cc450656d8ef105
+sensitive_information_check:
+  status: passed
+  checked_at: '2026-06-19T08:00:18.968093+00:00'
+recommended_run_review_args:
+  criteria_file: .reviewcompass/evidence/review-runs/2026-06-19-tasks-integrated-design-alignment-postwrite/review-target.md
+  phase: post_write_verification

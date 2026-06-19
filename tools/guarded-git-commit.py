@@ -206,6 +206,8 @@ def print_commit_escalation_required(preflight):
 
 def record_line_approval(cwd, nonce):
   """承認1行から内容承認と実行代行承認を連続作成する。"""
+  if not sys.stdin.isatty():
+    raise ValueError("承認文は TTY からの対話入力である必要があります")
   source_bytes = sys.stdin.buffer.readline()
   if not source_bytes:
     raise ValueError("承認文が入力されていません")
@@ -316,7 +318,7 @@ def main(argv=None):
   parser.add_argument(
     "--approval-source-text-line-stdin",
     action="store_true",
-    help="承認文を stdin から1行だけ読む。EOF を待たない",
+    help="承認文を TTY stdin から1行だけ読む。EOF を待たない",
   )
   parser.add_argument(
     "--verbose",

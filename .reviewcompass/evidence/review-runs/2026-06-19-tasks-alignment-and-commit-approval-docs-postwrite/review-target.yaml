@@ -1,0 +1,24 @@
+run_id: 2026-06-19-tasks-alignment-and-commit-approval-docs-postwrite
+phase: post_write_verification
+criteria_id: tasks_alignment_and_commit_approval_docs_postwrite
+criteria_file: .reviewcompass/evidence/review-runs/2026-06-19-tasks-alignment-and-commit-approval-docs-postwrite/review-target.md
+criteria_file_sha256: d6f2f94960e72200f9623cfab6c880da7d44460e593012d52609864c99e3faa2
+target_files:
+- path: .reviewcompass/specs/_cross_feature/reviews/2026-06-19-tasks-integrated-design-reopen-alignment.md
+  sha256: 45be81678dd4bba0d1de05bbbd80aea8bd88c362afcd50ab9cc450656d8ef105
+- path: docs/operations/COMMIT_OPERATION_CARD.md
+  sha256: 074a487360c7c4ed16be6a769658e918e269fd8766c75df6a005b3ff86d97c8d
+- path: docs/operations/WORKFLOW_NAVIGATION_FOR_CLAUDE.md
+  sha256: 76b64b34f80cf06919c3f91da6e7f5e9d46a6ea447465943345fcdaf1a50e5d0
+- path: docs/operations/WORKFLOW_NAVIGATION_FOR_CODEX.md
+  sha256: 1ad72c7a8a57c11bdc8ceeb0c1357d5c75c34a769a123f16829af7a509687dca
+- path: docs/operations/WORKFLOW_PRECHECK.md
+  sha256: 93a2f50f205408638cf11ed2f332f41a6e295600903e10a6c27ca8e9adb321c1
+- path: docs/operations/WORKFLOW_PRECHECK_DETAILS.md
+  sha256: b9d88150269cc65ff344dd9b1adef6c0d23ddcb696067c960702a35af4162f2e
+sensitive_information_check:
+  status: passed
+  checked_at: '2026-06-19T08:01:03.354822+00:00'
+recommended_run_review_args:
+  criteria_file: .reviewcompass/evidence/review-runs/2026-06-19-tasks-alignment-and-commit-approval-docs-postwrite/review-target.md
+  phase: post_write_verification

@@ -30,10 +30,11 @@ completed_steps:
 - tasks triad-review gate 完了（proxy_model 判断、C1〜C4反映、post-write verification no findings）
 - tasks review-wave gate 完了（全 feature impact check、workflow-management 以外 existing_sufficient、post-write
   verification no findings）
-next_step: 第3過程：tasks alignment
+- tasks alignment gate 完了（requirements Requirement 13〜16 / design / tasks / triad-review
+  / review-wave / workflow_state 整合、post-write verification no findings）
+next_step: 第3過程：tasks approval
 step_number: 3
 pending_gates:
-- stages/tasks.yaml#alignment
 - stages/tasks.yaml#approval
 - stages/implementation.yaml#triad-review
 - stages/implementation.yaml#review-wave
@@ -50,6 +51,7 @@ completed_gates:
 - stages/design.yaml#approval
 - stages/tasks.yaml#triad-review
 - stages/tasks.yaml#review-wave
+- stages/tasks.yaml#alignment
 drafting_completed_gates:
 - stages/requirements.yaml#drafting
 - stages/design.yaml#drafting
@@ -246,6 +248,15 @@ downstream_impact_decisions:
   - .reviewcompass/specs/_cross_feature/reviews/2026-06-19-tasks-integrated-design-review-wave.md
   - .reviewcompass/specs/_cross_feature/reviews/2026-06-19-tasks-integrated-design-review-wave-summary.md
   - .reviewcompass/post-write-verification/post-write-2026-06-19-283.yaml
+- gate: stages/tasks.yaml#alignment
+  feature_scope: workflow-management
+  decision: existing_sufficient
+  rationale: tasks alignment を実施し、requirements Requirement 13〜16、design、tasks T-016〜T-019、triad-review
+    対処、review-wave 判定、workflow_state / reopen 記録が整合していると確認した。tasks 内の追加修正は不要で、implementation
+    への recheck は維持する。post-write verification は gemini-3.5-flash no findings。
+  evidence:
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-19-tasks-integrated-design-reopen-alignment.md
+  - .reviewcompass/post-write-verification/post-write-2026-06-19-284.yaml
 commit_stop_point_records:
 - step: 3
   kind: approval_complete
@@ -271,3 +282,8 @@ commit_stop_point_records:
 commit_required: true
 commit_required_kind: stop_point_consumed
 commit_required_reason: reopen commit stop point 消費完了時点の停止点
+commit_stop_point: true
+commit_stop_point_step: 3
+commit_stop_point_kind: alignment_complete
+commit_stop_point_gate: stages/tasks.yaml#alignment
+commit_stop_point_reason: tasks alignment 完了時点の停止点

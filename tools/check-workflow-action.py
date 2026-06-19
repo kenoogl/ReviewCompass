@@ -2532,7 +2532,9 @@ def cmd_commit_approval(args):
       payload = commit_approval.prepare(cwd)
     elif args.commit_approval_command == "record":
       if args.source_text_stdin:
-        source_text = sys.stdin.read()
+        if not sys.stdin.isatty():
+          raise ValueError("承認本文は TTY からの対話入力である必要があります")
+        source_text = sys.stdin.readline()
       else:
         source_text = None
       payload = commit_approval.record(
@@ -2542,7 +2544,9 @@ def cmd_commit_approval(args):
         no_source_text=args.no_source_text,
       )
     elif args.commit_approval_command == "delegate-execution":
-      source_text = sys.stdin.buffer.read()
+      if not sys.stdin.isatty():
+        raise ValueError("実行代行承認文は TTY からの対話入力である必要があります")
+      source_text = sys.stdin.buffer.readline()
       payload = commit_approval.delegate_execution(
         cwd,
         args.nonce,
@@ -7032,7 +7036,7 @@ def main():
   source_group.add_argument(
     "--source-text-stdin",
     action="store_true",
-    help="承認本文を stdin から読み、redaction 後に保存する",
+    help="承認本文を TTY stdin から読み、redaction 後に保存する",
   )
   source_group.add_argument(
     "--no-source-text",
@@ -7049,7 +7053,7 @@ def main():
     "--source-text-stdin",
     action="store_true",
     required=True,
-    help="実行代行承認の明示文言を stdin から読む",
+    help="実行代行承認の明示文言を TTY stdin から読む",
   )
   cap_delegate.add_argument("--json", action="store_true", help="JSON のみを出力する")
   cap_invalidate = cap_sub.add_parser("invalidate", help="challenge と承認レコードを無効化する")

@@ -13,9 +13,11 @@ import json
 import hashlib
 import importlib
 import os
+import pty
 import shutil
 import subprocess
 import tempfile
+import tty
 import unittest
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
@@ -49,6 +51,38 @@ def run_script(args, cwd):
     text=True,
     timeout=10,
   )
+
+
+def run_script_with_tty_stdin(args, cwd, input_text):
+  """stdin だけ PTY にして check-workflow-action.py を実行する"""
+  if not input_text.endswith("\n"):
+    input_text += "\n"
+  master_fd, slave_fd = pty.openpty()
+  try:
+    tty.setraw(slave_fd)
+    process = subprocess.Popen(
+      ["python3", str(SCRIPT)] + list(args),
+      cwd=str(cwd),
+      stdin=slave_fd,
+      stdout=subprocess.PIPE,
+      stderr=subprocess.PIPE,
+      text=True,
+    )
+    os.close(slave_fd)
+    slave_fd = None
+    os.write(master_fd, input_text.encode("utf-8"))
+    stdout, stderr = process.communicate(timeout=10)
+    return subprocess.CompletedProcess(
+      ["python3", str(SCRIPT)] + list(args),
+      process.returncode,
+      stdout,
+      stderr,
+    )
+  finally:
+    if slave_fd is not None:
+      os.close(slave_fd)
+    if master_fd is not None:
+      os.close(master_fd)
 
 
 def _write_spec(cwd, feature, implementation_state):
@@ -5176,10 +5210,11 @@ def _record_commit_approval(tmpdir, nonce, source_text=None, extra_args=None):
     input_text = source_text
   if extra_args:
     args.extend(extra_args)
+  if input_text is not None:
+    return run_script_with_tty_stdin(args, tmpdir, input_text)
   return subprocess.run(
     ["python3", str(SCRIPT)] + args,
     cwd=str(tmpdir),
-    input=input_text,
     capture_output=True,
     text=True,
     timeout=10,
@@ -5197,14 +5232,7 @@ def _delegate_commit_execution(tmpdir, nonce, source_text="コミット\n", extr
   ]
   if extra_args:
     args.extend(extra_args)
-  return subprocess.run(
-    ["python3", str(SCRIPT)] + args,
-    cwd=str(tmpdir),
-    input=source_text,
-    capture_output=True,
-    text=True,
-    timeout=10,
-  )
+  return run_script_with_tty_stdin(args, tmpdir, source_text)
 
 
 def _read_commit_execution_delegation(tmpdir):
@@ -5674,6 +5702,31 @@ class CommitExitCodeTests(unittest.TestCase):
     _assert_script_invoked(self, result)
     self.assertEqual(result.returncode, 0, result.stdout)
 
+  def test_commit_approval_record_rejects_piped_source_text(self):
+    """内容承認本文は pipe では保存できない"""
+    _set_pending_findings(self.pending_file, unresolved_count=0, resolved_count=2)
+    _stage_file(self.tmpdir, "notes.md", "# nonce 対象")
+    challenge = _prepare_commit_approval(self.tmpdir)
+
+    result = subprocess.run(
+      [
+        "python3", str(SCRIPT),
+        "commit-approval", "record",
+        "--nonce", challenge["nonce"],
+        "--source-text-stdin",
+        "--json",
+      ],
+      cwd=str(self.tmpdir),
+      input="コミット\n",
+      capture_output=True,
+      text=True,
+      timeout=10,
+    )
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 2)
+    self.assertIn("TTY", result.stdout)
+
   def test_commit_approval_record_does_not_embed_execution_delegation_by_default(self):
     """nonce 承認 record は staged 内容承認だけを保存し、実行代行承認を既定で混ぜない"""
     _set_pending_findings(self.pending_file, unresolved_count=0, resolved_count=2)
@@ -5728,6 +5781,33 @@ class CommitExitCodeTests(unittest.TestCase):
     self.assertNotIn("llm", delegation)
     self.assertNotIn("provider", delegation)
     self.assertNotIn("model", delegation)
+
+  def test_commit_approval_delegate_execution_rejects_piped_source_text(self):
+    """実行代行承認本文は pipe では保存できない"""
+    _set_pending_findings(self.pending_file, unresolved_count=0, resolved_count=2)
+    _stage_file(self.tmpdir, "notes.md", "# nonce 対象")
+    challenge = _prepare_commit_approval(self.tmpdir)
+    record_result = _record_commit_approval(self.tmpdir, challenge["nonce"])
+    self.assertEqual(record_result.returncode, 0, record_result.stderr)
+
+    result = subprocess.run(
+      [
+        "python3", str(SCRIPT),
+        "commit-approval", "delegate-execution",
+        "--nonce", challenge["nonce"],
+        "--source-text-stdin",
+        "--json",
+      ],
+      cwd=str(self.tmpdir),
+      input="コミット\n",
+      capture_output=True,
+      text=True,
+      timeout=10,
+    )
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 2)
+    self.assertIn("TTY", result.stdout)
 
   def test_commit_approval_delegate_execution_accepts_approval_instruction(self):
     """2回目入力の「承認」を commit 実行代行承認として受け入れる"""

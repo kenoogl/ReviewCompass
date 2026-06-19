@@ -1,0 +1,4 @@
+run_id: 2026-06-19-tasks-integrated-design-alignment-postwrite
+target_files:
+- path: .reviewcompass/specs/_cross_feature/reviews/2026-06-19-tasks-integrated-design-reopen-alignment.md
+  sha256: 45be81678dd4bba0d1de05bbbd80aea8bd88c362afcd50ab9cc450656d8ef105
