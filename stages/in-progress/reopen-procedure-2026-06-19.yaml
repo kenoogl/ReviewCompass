@@ -212,8 +212,14 @@ downstream_impact_decisions:
   - .reviewcompass/specs/_cross_feature/reviews/2026-06-19-design-integrated-design-approval.md
   - .reviewcompass/specs/_cross_feature/reviews/2026-06-19-design-integrated-design-reopen-alignment.md
   - .reviewcompass/post-write-verification/post-write-2026-06-19-279.yaml
-commit_stop_point: true
-commit_stop_point_step: 3
-commit_stop_point_kind: approval_complete
-commit_stop_point_gate: stages/design.yaml#approval
-commit_stop_point_reason: design approval 完了時点の停止点
+commit_stop_point_records:
+- step: 3
+  kind: approval_complete
+  gate: stages/design.yaml#approval
+  reason: design approval 完了時点の停止点
+  head: 75411eb282475636719c2f79a4f372922ef57ba3
+  evidence:
+  - .reviewcompass/post-write-verification/post-write-2026-06-19-281.yaml
+commit_required: true
+commit_required_kind: stop_point_consumed
+commit_required_reason: reopen commit stop point 消費完了時点の停止点

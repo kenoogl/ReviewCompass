@@ -4049,9 +4049,10 @@ def is_reopen_stop_point_commit_allowed(cwd, in_progress_files, staged_files):
     data = load_in_progress_file(cwd, relative_path)
     if data.get("process_id") != "reopen-procedure":
       return False
-    if data.get("commit_stop_point") is not True:
-      return False
-    if not _is_structured_reopen_commit_stop_point(data):
+    if not (
+      _is_structured_reopen_commit_stop_point(data)
+      or _is_structured_reopen_commit_required(data)
+    ):
       return False
   return True
 
@@ -4066,6 +4067,8 @@ def _int_field(data, name):
 
 def _is_structured_reopen_commit_stop_point(data):
   """人間向け文言ではなく構造フィールドで reopen 停止点を判定する"""
+  if data.get("commit_stop_point") is not True:
+    return False
   step_number = _int_field(data, "step_number")
   stop_point_step = _int_field(data, "commit_stop_point_step")
   if step_number is None or stop_point_step != step_number:
@@ -4099,6 +4102,23 @@ def _is_structured_reopen_commit_stop_point(data):
     return True
 
   return False
+
+
+def _is_structured_reopen_commit_required(data):
+  """状態遷移後に残る commit 境界を構造フィールドで判定する"""
+  if data.get("commit_required") is not True:
+    return False
+  if _int_field(data, "step_number") is None:
+    return False
+  if data.get("commit_required_kind") not in {"stop_point_consumed"}:
+    return False
+  records = data.get("commit_stop_point_records")
+  if not isinstance(records, list) or not records:
+    return False
+  latest = records[-1]
+  if not isinstance(latest, dict):
+    return False
+  return bool(latest.get("head") and latest.get("kind"))
 
 
 def _commit_stop_point_kind_for_gate(gate):
@@ -4341,7 +4361,20 @@ def _reopen_commit_stop_point_blocked_by(data):
   if data.get("commit_stop_point_gate"):
     blocked_by["gate"] = data.get("commit_stop_point_gate")
   if data.get("commit_stop_point_reason"):
-    blocked_by["reason"] = data.get("commit_stop_point_reason")
+      blocked_by["reason"] = data.get("commit_stop_point_reason")
+  return blocked_by
+
+
+def _reopen_commit_required_blocked_by(data, relative_path):
+  """状態遷移後の commit 境界を next_action の blocked_by に正規化する"""
+  blocked_by = {
+    "type": "commit_required",
+    "step": data.get("step_number"),
+    "kind": data.get("commit_required_kind"),
+    "file": relative_path,
+  }
+  if data.get("commit_required_reason"):
+    blocked_by["reason"] = data.get("commit_required_reason")
   return blocked_by
 
 
@@ -4436,7 +4469,21 @@ def build_in_progress_next_action(cwd, relative_path):
     pending_gates = data.get("pending_gates", [])
     if pending_gates is None:
       pending_gates = []
-    action_fields = select_reopen_next_action_fields(data, pending_gates)
+    if (
+      _is_structured_reopen_commit_required(data)
+      and relative_path in list_changed_files(cwd)
+    ):
+      action_fields = {
+        "required_action": "commit_stop_point",
+        "next_pending_gate": None,
+        "next_drafting_gate": None,
+        "active_gate": None,
+        "phase": None,
+        "stage": None,
+        "blocked_by": _reopen_commit_required_blocked_by(data, relative_path),
+      }
+    else:
+      action_fields = select_reopen_next_action_fields(data, pending_gates)
     feature_scope = reopen_feature_scope_from_data(data)
     return {
       "kind": "reopen_in_progress",
@@ -6035,6 +6082,106 @@ def cmd_reopen_advance_step(args):
   return exit_code
 
 
+def cmd_reopen_advance_after_commit_stop_point(args):
+  """reopen 停止点 commit 後に commit_stop_point を消費する"""
+  cwd = Path.cwd()
+  reasons = []
+  try:
+    path, data = _load_reopen_advance_state(cwd, args.file)
+    if data.get("commit_stop_point") is not True:
+      raise ValueError("commit_stop_point=true の reopen 停止点ではありません")
+    if not _is_structured_reopen_commit_stop_point(data):
+      raise ValueError("構造化された commit_stop_point ではありません")
+    current_kind = data.get("commit_stop_point_kind")
+    if current_kind != args.kind:
+      raise ValueError(
+        "commit_stop_point_kind が --kind と一致しません: "
+        f"{current_kind} != {args.kind}"
+      )
+    if not args.head.strip():
+      raise ValueError("--head は空にできません")
+    evidence = args.evidence or []
+    if not evidence:
+      raise ValueError("--evidence は 1 件以上必要です")
+
+    records = data.get("commit_stop_point_records")
+    if records is None:
+      records = []
+    if not isinstance(records, list):
+      raise ValueError("commit_stop_point_records は list が必要です")
+    records.append(
+      {
+        "step": data.get("commit_stop_point_step"),
+        "kind": current_kind,
+        "gate": data.get("commit_stop_point_gate"),
+        "reason": data.get("commit_stop_point_reason"),
+        "head": args.head.strip(),
+        "evidence": evidence,
+      }
+    )
+    data["commit_stop_point_records"] = records
+    data["commit_required"] = True
+    data["commit_required_kind"] = "stop_point_consumed"
+    data["commit_required_reason"] = "reopen commit stop point 消費完了時点の停止点"
+
+    for key in [
+      "commit_stop_point",
+      "commit_stop_point_step",
+      "commit_stop_point_kind",
+      "commit_stop_point_gate",
+      "commit_stop_point_reason",
+    ]:
+      data.pop(key, None)
+
+    data["current_blocker"] = None
+    pending_gates = data.get("pending_gates")
+    if isinstance(pending_gates, list) and pending_gates:
+      data["step_number"] = 3
+      data["next_step"] = _next_step_for_pending_gate(pending_gates[0])
+    else:
+      data["step_number"] = 4
+      data["next_step"] = "第4過程：完了"
+
+    path.write_text(
+      yaml.safe_dump(data, allow_unicode=True, sort_keys=False),
+      encoding="utf-8",
+    )
+    verdict, exit_code = "OK", 0
+    next_action = {
+      "kind": "reopen_commit_stop_point_advanced",
+      "file": args.file,
+      "commit_stop_point_kind": current_kind,
+      "head": args.head.strip(),
+      "phase": None,
+      "stage": None,
+      "reason": "reopen commit stop point を消費しました",
+    }
+    current_state = {
+      "file": args.file,
+      "step_number": data.get("step_number"),
+      "next_step": data.get("next_step"),
+      "current_blocker": data.get("current_blocker"),
+    }
+  except (OSError, ValueError) as e:
+    verdict, exit_code = "DEVIATION", 2
+    reasons = [str(e)]
+    next_action = {
+      "kind": "reopen_commit_stop_point_advance_failed",
+      "file": args.file,
+      "commit_stop_point_kind": args.kind,
+      "phase": None,
+      "stage": None,
+      "reason": "reopen commit stop point を消費できません",
+    }
+    current_state = {}
+
+  if args.json:
+    print(format_next_json_output(verdict, exit_code, next_action, reasons, current_state))
+  else:
+    print(format_next_human_output(verdict, exit_code, next_action, reasons, current_state))
+  return exit_code
+
+
 def cmd_reopen_advance_gate(args):
   """reopen 第3過程の pending gate 完了更新を機械処理する"""
   cwd = Path.cwd()
@@ -6781,6 +6928,16 @@ def main():
   ras.add_argument("--rationale", required=True, help="判断理由")
   ras.add_argument("--evidence", action="append", default=[], help="判断証跡。複数指定可")
 
+  raac = sub.add_parser(
+    "reopen-advance-after-commit-stop-point",
+    help="reopen 停止点 commit 後に commit_stop_point を消費する",
+    parents=[common_parser],
+  )
+  raac.add_argument("--file", required=True, help="更新対象の reopen in-progress YAML")
+  raac.add_argument("--head", required=True, help="停止点 commit の HEAD commit")
+  raac.add_argument("--kind", required=True, help="消費対象の commit_stop_point_kind")
+  raac.add_argument("--evidence", action="append", default=[], help="判断証跡。複数指定可")
+
   rag = sub.add_parser(
     "reopen-advance-gate",
     help="reopen 第3過程の pending gate 完了更新を機械処理する",
@@ -6956,6 +7113,8 @@ def main():
     sys.exit(cmd_reopen_start(args))
   elif args.subcommand == "reopen-advance-step":
     sys.exit(cmd_reopen_advance_step(args))
+  elif args.subcommand == "reopen-advance-after-commit-stop-point":
+    sys.exit(cmd_reopen_advance_after_commit_stop_point(args))
   elif args.subcommand == "reopen-advance-gate":
     sys.exit(cmd_reopen_advance_gate(args))
   elif args.subcommand == "reopen-set-blocker":

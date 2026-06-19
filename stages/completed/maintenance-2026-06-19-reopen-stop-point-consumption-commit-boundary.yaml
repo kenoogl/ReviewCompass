@@ -1,0 +1,41 @@
+process_id: maintenance
+title: reopen stop point consumption commit boundary
+started_at: "2026-06-19T00:00:00+09:00"
+completed_at: "2026-06-19T00:00:00+09:00"
+trigger: "reopen commit stop point 消費後の状態変更が未コミットでも next --json が次の tasks drafting を返し、本線 gate へスルーできる"
+mainline_blocked_by: stages/in-progress/reopen-procedure-2026-06-19.yaml
+blocked_normal_workflow: true
+classification: local_workflow_guard_improvement
+reason: "停止点消費は workflow 状態遷移であり、次 gate 実行前に commit 境界を強制する必要があるため"
+required_action: continue_maintenance
+allowed_scope:
+  - "reopen commit stop point 消費後の commit 境界を next selector / commit-preflight に追加する"
+  - "停止点消費コマンドの TDD テストを commit 境界期待へ更新する"
+  - "現在の reopen state に停止点消費後 commit_required 記録を反映する"
+allowed_files:
+  - tools/check-workflow-action.py
+  - tests/tools/test_check_workflow_action.py
+  - stages/in-progress/reopen-procedure-2026-06-19.yaml
+  - stages/in-progress/maintenance-2026-06-19-reopen-stop-point-consumption-commit-boundary.yaml
+  - stages/completed/maintenance-2026-06-19-reopen-stop-point-consumption-commit-boundary.yaml
+completion_conditions:
+  - "停止点消費直後、対象 reopen YAML が dirty の間は next --json が commit_stop_point を返す"
+  - "停止点消費後 commit 境界は commit-preflight で stage / approval 作成を許可する"
+  - "停止点消費後の状態が clean であれば next --json が次の reopen drafting / gate へ戻る"
+  - "focused tests と py_compile / diff check が通過する"
+completed_steps:
+  - "red test: 停止点消費後に commit_required が存在しないことで失敗する期待を追加"
+  - "implementation: reopen-advance-after-commit-stop-point が commit_required_kind=stop_point_consumed を保存するよう変更"
+  - "implementation: next selector が commit_required かつ対象 reopen YAML dirty の間だけ commit_stop_point を返すよう変更"
+  - "implementation: commit guard が構造化 commit_required を reopen 停止点 commit として許可するよう変更"
+verification:
+  - command: "python3 -m unittest tests.tools.test_check_workflow_action.ReopenAdvanceAfterCommitStopPointTests -v"
+    result: "passed"
+  - command: "python3 -m unittest tests.tools.test_check_workflow_action.ReopenAdvanceStepTests tests.tools.test_check_workflow_action.ReopenAdvanceAfterCommitStopPointTests tests.tools.test_check_workflow_action.ReopenAdvanceGateTests -v"
+    result: "12 tests passed"
+  - command: "python3 -m unittest tests.tools.test_check_workflow_action.CommitExitCodeTests.test_commit_preflight_allows_reopen_commit_stop_point_before_staging tests.tools.test_check_workflow_action.CommitExitCodeTests.test_commit_allows_reopen_review_gate_commit_stop_point tests.tools.test_check_workflow_action.CommitExitCodeTests.test_commit_allows_reopen_stop_point_when_in_progress_file_is_staged -v"
+    result: "3 tests passed"
+  - command: "PYTHONPYCACHEPREFIX=.pytest_cache/pycache python3 -m py_compile tools/check-workflow-action.py"
+    result: "passed"
+current_status: completed
+return_to: "reopen stop point consumption commit boundary"

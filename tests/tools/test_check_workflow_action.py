@@ -487,6 +487,7 @@ class AutonomousParallelPlanTests(unittest.TestCase):
   def setUp(self):
     self.tmpdir = tempfile.mkdtemp()
     self.addCleanup(shutil.rmtree, self.tmpdir)
+    _init_git_repo(self.tmpdir)
 
   def test_valid_plan_returns_zero(self):
     """正常な実行計画は OK になる"""
@@ -4545,6 +4546,161 @@ class ReopenAdvanceStepTests(unittest.TestCase):
     _assert_script_invoked(self, result)
     self.assertEqual(result.returncode, 2, result.stdout)
     self.assertIn("step_number", result.stdout)
+
+
+class ReopenAdvanceAfterCommitStopPointTests(unittest.TestCase):
+  """reopen-advance-after-commit-stop-point サブコマンドの停止点消費"""
+
+  def setUp(self):
+    self.tmpdir = tempfile.mkdtemp()
+    self.addCleanup(shutil.rmtree, self.tmpdir)
+    _init_git_repo(self.tmpdir)
+
+  def _write_in_progress(self, *, kind="approval_complete"):
+    in_progress = (
+      Path(self.tmpdir)
+      / "stages"
+      / "in-progress"
+      / "reopen-procedure-2026-06-19.yaml"
+    )
+    in_progress.parent.mkdir(parents=True)
+    in_progress.write_text(
+      yaml.safe_dump(
+        {
+          "process_id": "reopen-procedure",
+          "feature": "workflow-management",
+          "step_number": 3,
+          "next_step": "第3過程：tasks triad-review",
+          "completed_steps": [
+            "design approval gate 完了（利用者発言『承認』に基づく明示承認）",
+          ],
+          "pending_gates": [
+            "stages/tasks.yaml#triad-review",
+            "stages/tasks.yaml#review-wave",
+          ],
+          "completed_gates": [
+            "stages/design.yaml#approval",
+          ],
+          "current_blocker": None,
+          "commit_stop_point": True,
+          "commit_stop_point_step": 3,
+          "commit_stop_point_kind": kind,
+          "commit_stop_point_gate": "stages/design.yaml#approval",
+          "commit_stop_point_reason": "design approval 完了時点の停止点",
+        },
+        allow_unicode=True,
+        sort_keys=False,
+      ),
+      encoding="utf-8",
+    )
+    return in_progress
+
+  def test_reopen_advance_after_commit_stop_point_consumes_stop_point(self):
+    """停止点消費後は、消費記録 commit まで次の pending gate を実行させない"""
+    in_progress = self._write_in_progress()
+    subprocess.run(
+      ["git", "add", "-A"],
+      cwd=str(self.tmpdir),
+      check=True,
+      capture_output=True,
+    )
+    subprocess.run(
+      ["git", "commit", "-qm", "add reopen stop point"],
+      cwd=str(self.tmpdir),
+      check=True,
+      capture_output=True,
+    )
+
+    result = run_script(
+      [
+        "reopen-advance-after-commit-stop-point",
+        "--file", "stages/in-progress/reopen-procedure-2026-06-19.yaml",
+        "--head", "75411eb282475636719c2f79a4f372922ef57ba3",
+        "--kind", "approval_complete",
+        "--evidence", ".reviewcompass/post-write-verification/post-write-2026-06-19-281.yaml",
+        "--json",
+      ],
+      cwd=self.tmpdir,
+    )
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 0, result.stdout)
+    data = json.loads(result.stdout)
+    self.assertEqual(data["verdict"], "OK")
+    state = yaml.safe_load(in_progress.read_text(encoding="utf-8"))
+    self.assertNotIn("commit_stop_point", state)
+    self.assertNotIn("commit_stop_point_kind", state)
+    self.assertEqual(
+      state["commit_stop_point_records"][0]["head"],
+      "75411eb282475636719c2f79a4f372922ef57ba3",
+    )
+    self.assertEqual(
+      state["commit_stop_point_records"][0]["kind"],
+      "approval_complete",
+    )
+    self.assertIs(state["commit_required"], True)
+    self.assertEqual(state["commit_required_kind"], "stop_point_consumed")
+
+    next_result = run_script(["next", "--json"], cwd=self.tmpdir)
+    _assert_script_invoked(self, next_result)
+    self.assertEqual(next_result.returncode, 0, next_result.stdout)
+    next_data = json.loads(next_result.stdout)
+    action = next_data["next_action"]
+    self.assertEqual(action["required_action"], "commit_stop_point")
+    self.assertIsNone(action["active_gate"])
+    self.assertEqual(action["blocked_by"]["kind"], "stop_point_consumed")
+
+    preflight = run_script(["commit-preflight", "--json"], cwd=self.tmpdir)
+    _assert_script_invoked(self, preflight)
+    self.assertEqual(preflight.returncode, 0, preflight.stdout)
+    preflight_data = json.loads(preflight.stdout)
+    self.assertEqual(preflight_data["next_required_action"], "commit_stop_point")
+    self.assertTrue(preflight_data["allowed_to_stage"])
+
+    subprocess.run(
+      ["git", "add", "-A"],
+      cwd=str(self.tmpdir),
+      check=True,
+      capture_output=True,
+    )
+    subprocess.run(
+      ["git", "commit", "-qm", "consume reopen stop point"],
+      cwd=str(self.tmpdir),
+      check=True,
+      capture_output=True,
+    )
+
+    clean_next = run_script(["next", "--json"], cwd=self.tmpdir)
+    _assert_script_invoked(self, clean_next)
+    self.assertEqual(clean_next.returncode, 0, clean_next.stdout)
+    clean_data = json.loads(clean_next.stdout)
+    action = clean_data["next_action"]
+    self.assertEqual(action["required_action"], "run_reopen_drafting")
+    self.assertEqual(action["active_gate"], "stages/tasks.yaml#drafting")
+    self.assertEqual(action["next_pending_gate"], "stages/tasks.yaml#triad-review")
+
+  def test_reopen_advance_after_commit_stop_point_rejects_kind_mismatch(self):
+    """停止点 kind が一致しなければ消費しない"""
+    in_progress = self._write_in_progress(kind="review_wave_complete")
+
+    result = run_script(
+      [
+        "reopen-advance-after-commit-stop-point",
+        "--file", "stages/in-progress/reopen-procedure-2026-06-19.yaml",
+        "--head", "75411eb282475636719c2f79a4f372922ef57ba3",
+        "--kind", "approval_complete",
+        "--evidence", "post-write.yaml",
+        "--json",
+      ],
+      cwd=self.tmpdir,
+    )
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 2, result.stdout)
+    self.assertIn("commit_stop_point_kind", result.stdout)
+    state = yaml.safe_load(in_progress.read_text(encoding="utf-8"))
+    self.assertIs(state["commit_stop_point"], True)
+    self.assertEqual(state["commit_stop_point_kind"], "review_wave_complete")
 
 
 class ReopenSetBlockerTests(unittest.TestCase):
