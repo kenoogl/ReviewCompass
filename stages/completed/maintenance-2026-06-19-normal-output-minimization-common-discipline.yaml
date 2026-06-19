@@ -1,0 +1,73 @@
+process_id: maintenance
+title: normal output minimization common discipline
+trigger: "全 CLI / 全ツールへ正常系出力最小化を広げるため、共通規律と棚卸しを作成する"
+mainline_blocked_by: stages/in-progress/reopen-procedure-2026-06-19.yaml
+completed_at: "2026-06-19"
+classification: local_workflow_guard_improvement
+reason: "個別 CLI の局所修正ではなく、全 tool へ段階適用するための共通契約と棚卸しが必要"
+allowed_scope:
+  - "正常系出力最小化の共通規律追加"
+  - "tools README への共通 CLI 出力契約追加"
+  - "各 tool の適用状態と優先度の棚卸し"
+  - "共通 formatter と優先度順接続の実装方針メモ"
+  - "高頻度 CLI の正常系出力最小化実装"
+  - "棚卸し文書契約テスト追加"
+allowed_files:
+  - tools/normal_output.py
+  - tools/api_providers/run_review.py
+  - tools/api_providers/run_role.py
+  - tools/api_providers/prepare_post_write_review.py
+  - tools/experiments/_experiment_n_model.py
+  - tools/api_providers/tests/test_run_review.py
+  - tools/api_providers/tests/test_run_role.py
+  - tools/api_providers/tests/test_prepare_post_write_review.py
+  - tools/experiments/tests/test_experiment_n_model.py
+  - tests/tools/test_commit_from_current_staged.py
+  - tests/tools/test_guarded_git_commit.py
+  - tests/tools/test_make_triage_decision.py
+  - tests/tools/test_make_post_write_manifest.py
+  - docs/disciplines/discipline_normal_output_minimization.md
+  - docs/disciplines/README.md
+  - tools/README.md
+  - docs/notes/working/2026-06-19-normal-output-minimization-tool-inventory.yaml
+  - docs/notes/working/2026-06-19-normal-output-minimization-implementation-policy.md
+  - tests/operations/test_normal_output_minimization_docs.py
+  - stages/completed/maintenance-2026-06-19-normal-output-minimization-common-discipline.yaml
+  - .reviewcompass/evidence/review-runs/2026-06-19-normal-output-minimization-common-discipline-postwrite/
+  - .reviewcompass/post-write-verification/post-write-2026-06-19-274.yaml
+completion_conditions:
+  - "正常系 human output / 異常系 human output / --json の共通契約が文書化される"
+  - "tool 棚卸しが machine-readable YAML として保存される"
+  - "共通 formatter と優先度順接続の方針が working note として保存される"
+  - "高頻度 CLI の成功時出力が短い human output と成果物詳細に分離される"
+  - "tools README から共通規律と棚卸しに辿れる"
+  - "文書契約テストが通る"
+completed_actions:
+  - "tests: normal output minimization docs の契約テストを追加"
+  - "documentation: discipline_normal_output_minimization.md を追加"
+  - "documentation: tools README に共通 CLI 出力契約を追加"
+  - "documentation: tool 棚卸し YAML を追加"
+  - "documentation: 共通 formatter と優先度順接続の実装方針メモを追加"
+  - "documentation: disciplines README に新規規律を登録"
+  - "implementation: tools/normal_output.py を追加"
+  - "implementation: run_review.py の正常系 stdout を 1 行 summary へ変更し --verbose を追加"
+  - "implementation: run_role.py の成果物保存時 stdout を 1 行 summary へ変更し --verbose を追加"
+  - "implementation: prepare_post_write_review.py の正常系 stdout を 1 行 summary へ変更"
+  - "implementation: _experiment_n_model.py に --out / --verbose を追加し --out 指定時 stdout を 1 行 summary へ変更"
+  - "tests: 高頻度 CLI の正常系出力最小化テストを追加・更新"
+  - "tests: make-triage-decision.py / make-post-write-manifest.py の既存 1 行成功出力を固定"
+verification:
+  - command: ".venv/bin/python3 -m pytest tests/operations/test_normal_output_minimization_docs.py -q"
+    result: "4 passed"
+  - command: ".venv/bin/python3 tools/document_link_lint.py --json docs/disciplines/discipline_normal_output_minimization.md docs/disciplines/README.md tools/README.md"
+    result: "passed; findings=[]"
+  - command: ".venv/bin/python3 -m pytest tools/api_providers/tests/test_run_review.py tools/api_providers/tests/test_run_role.py tools/api_providers/tests/test_prepare_post_write_review.py tools/experiments/tests/test_experiment_n_model.py -q"
+    result: "48 passed"
+  - command: ".venv/bin/python3 -m unittest tests.tools.test_commit_from_current_staged tests.tools.test_guarded_git_commit tests.tools.test_make_triage_decision tests.tools.test_make_post_write_manifest -v"
+    result: "20 passed"
+post_write_verification:
+  review_run: .reviewcompass/evidence/review-runs/2026-06-19-normal-output-minimization-common-discipline-postwrite
+  manifest: .reviewcompass/post-write-verification/post-write-2026-06-19-274.yaml
+  result: "findings=0; completed"
+current_status: completed
+return_to: "integrated-design reopen design drafting"

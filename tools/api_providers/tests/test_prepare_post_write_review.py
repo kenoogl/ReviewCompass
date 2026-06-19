@@ -14,7 +14,7 @@ import yaml
 from tools.api_providers.prepare_post_write_review import main
 
 
-def test_prepare_post_write_review_writes_review_target_and_metadata(tmp_path):
+def test_prepare_post_write_review_writes_review_target_and_metadata(tmp_path, capsys):
   """対象・観点・機微情報確認を review-run 配下に機械生成する。"""
   target = tmp_path / "docs" / "operations" / "WORKFLOW_PRECHECK.md"
   target.parent.mkdir(parents=True)
@@ -32,8 +32,13 @@ def test_prepare_post_write_review_writes_review_target_and_metadata(tmp_path):
   )
 
   assert exit_code == 0
+  captured = capsys.readouterr()
+  assert captured.out.count("\n") == 1
+  assert captured.out.startswith("[OK] prepare_post_write_review ")
   review_target = review_run_dir / "review-target.md"
   metadata_path = review_run_dir / "review-target.yaml"
+  assert f"review_target={review_target}" in captured.out
+  assert f"metadata={metadata_path}" in captured.out
   assert review_target.is_file()
   assert metadata_path.is_file()
   content = review_target.read_text(encoding="utf-8")

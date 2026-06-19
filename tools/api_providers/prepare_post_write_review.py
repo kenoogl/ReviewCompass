@@ -17,6 +17,7 @@ if str(_PROJECT_ROOT) not in sys.path:
   sys.path.insert(0, str(_PROJECT_ROOT))
 
 import yaml  # noqa: E402
+from tools.normal_output import status_line  # noqa: E402
 
 
 SECRET_PATTERNS = [
@@ -200,7 +201,15 @@ def main(argv: Optional[List[str]] = None) -> int:
     yaml.safe_dump(metadata, allow_unicode=True, sort_keys=False),
     encoding="utf-8",
   )
-  sys.stdout.write(str(review_target_path) + "\n")
+  sys.stdout.write(status_line(
+    "OK",
+    "prepare_post_write_review",
+    {
+      "review_target": review_target_path,
+      "metadata": run_dir / "review-target.yaml",
+      "targets": len(targets),
+    },
+  ))
   return 0
 
 

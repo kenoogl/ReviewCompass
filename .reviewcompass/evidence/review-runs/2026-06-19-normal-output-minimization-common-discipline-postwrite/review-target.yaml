@@ -1,0 +1,16 @@
+run_id: 2026-06-19-normal-output-minimization-common-discipline-postwrite
+phase: post_write_verification
+criteria_id: normal_output_minimization_common_discipline_postwrite
+criteria_file: .reviewcompass/evidence/review-runs/2026-06-19-normal-output-minimization-common-discipline-postwrite/review-target.md
+criteria_file_sha256: 94b77907f7a22c83196cafe79faa4ff5e087025d98f31180d8088fe37a35deb9
+target_files:
+- path: docs/disciplines/README.md
+  sha256: 28362c70f48b90c3d4da03866e69d24b0ebf6e3ed9675a4125c57b85d56cf436
+- path: docs/disciplines/discipline_normal_output_minimization.md
+  sha256: e74d3098d84c52e50f0e6602a426754b52ecdbe16ffa1f6a3fcdaf6a6d71e8a6
+sensitive_information_check:
+  status: passed
+  checked_at: '2026-06-19T03:25:14.429042+00:00'
+recommended_run_review_args:
+  criteria_file: .reviewcompass/evidence/review-runs/2026-06-19-normal-output-minimization-common-discipline-postwrite/review-target.md
+  phase: post_write_verification

@@ -74,6 +74,10 @@ class CommitFromCurrentStagedTests(unittest.TestCase):
     )
 
     self.assertEqual(result.returncode, 0, result.stderr)
+    self.assertEqual(result.stdout.count("\n"), 2)
+    self.assertIn("commit precheck: OK", result.stdout)
+    self.assertIn("committed:", result.stdout)
+    self.assertNotIn("[CURRENT STATE]", result.stdout)
     self.assertEqual(latest_commit_subject(self.tmpdir), "commit current staged")
     approval = runtime_record(self.tmpdir, "commit-approval.json")
     challenge = runtime_record(self.tmpdir, "commit-approval-challenge.json")

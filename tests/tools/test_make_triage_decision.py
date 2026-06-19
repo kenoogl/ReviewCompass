@@ -129,6 +129,8 @@ class MakeTriageDecisionTests(unittest.TestCase):
                   "--reason", "時点記録で正しい。誤検出として保全。",
                   "--actor", "user", "--decided-at", "2026-06-14T23:50:00+00:00")
     self.assertEqual(r.returncode, 0, f"全件 decided なら正本OKで通る。\nstdout={r.stdout}\nstderr={r.stderr}")
+    self.assertEqual(r.stdout.count("\n"), 1)
+    self.assertIn("全件 decided", r.stdout)
     item = self._triage()["items"][0]
     self.assertEqual(item["decision_status"], "decided")
     self.assertEqual(item["final_label"], "leave-as-is")

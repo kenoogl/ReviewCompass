@@ -1,0 +1,171 @@
+title: normal output minimization tool inventory
+created_at: "2026-06-19"
+policy_source: docs/disciplines/discipline_normal_output_minimization.md
+implementation_policy: docs/notes/working/2026-06-19-normal-output-minimization-implementation-policy.md
+purpose: "全 CLI / tool へ正常系出力最小化を広げるための棚卸し"
+default_contract:
+  ok_human_output: minimal
+  warn_human_output: actionable
+  deviation_human_output: diagnostic
+  json_output: complete
+  verbose_output: detailed
+status_values:
+  enforced: "正常系 human output の最小化が実装・テスト済み"
+  partially_enforced: "一部コマンドまたは wrapper で実装済み"
+  pending_audit: "出力契約の確認が未完"
+  deferred: "一時実験・内部用途のため後回し"
+priority_values:
+  high: "対話で頻出、不可逆操作に近い、または API/レビュー実行で出力が重い"
+  medium: "利用頻度はあるが、出力過多の影響が限定的"
+  low: "内部 helper または一時実験"
+tools:
+  - path: tools/check-workflow-action.py
+    category: workflow
+    status: partially_enforced
+    priority: high
+    current_state: "OK human output は最小化済み。WARN / DEVIATION と --json は詳細維持。"
+    next_action: "サブコマンド単位で正常系出力テストを追加し、未検査 command を洗い出す。"
+  - path: tools/commit-from-current-staged.py
+    category: commit
+    status: enforced
+    priority: high
+    current_state: "commit wrapper として正常系は commit precheck OK と commit 成功の短い出力に寄せ、成功時 output を 2 行に固定するテストを追加済み。"
+    next_action: "追加対応なし。"
+  - path: tools/guarded-git-commit.py
+    category: commit
+    status: enforced
+    priority: high
+    current_state: "成功時の既定出力は commit summary に限定し、--verbose は precheck 行と git commit 詳細を出すテストに更新済み。"
+    next_action: "追加対応なし。"
+  - path: tools/api_providers/run_review.py
+    category: api_review
+    status: enforced
+    priority: high
+    current_state: "正常系 human output は review_run_dir / summary / roles / findings / parse_failed の 1 行に最小化済み。詳細は review_summary.md と --verbose。"
+    next_action: "追加対応なし。"
+  - path: tools/api_providers/run_role.py
+    category: api_review
+    status: enforced
+    priority: high
+    current_state: "raw / parsed / review-run の成果物保存先がある場合は 1 行 summary に最小化済み。保存先がない場合は stdout を成果物として維持し、--verbose でも詳細 YAML を出す。"
+    next_action: "追加対応なし。"
+  - path: tools/api_providers/prepare_post_write_review.py
+    category: api_review
+    status: enforced
+    priority: high
+    current_state: "正常系 human output は review_target / metadata / targets の 1 行に最小化済み。"
+    next_action: "追加対応なし。"
+  - path: tools/api_providers/review_triage.py
+    category: review_triage
+    status: pending_audit
+    priority: high
+    current_state: "triage / manifest 系の多機能 CLI。正常系でも情報量が増えやすい。"
+    next_action: "サブコマンド別に OK human output と --json の責務を分ける。"
+  - path: tools/make-triage-decision.py
+    category: review_triage
+    status: pending_audit
+    priority: high
+    current_state: "proxy_model 判断結果を正本 triage へ通す補助 CLI。"
+    next_action: "成功時は出力先と判定件数のみ、詳細は生成ファイルへ残す。"
+  - path: tools/make-post-write-manifest.py
+    category: post_write_verification
+    status: pending_audit
+    priority: high
+    current_state: "post-write manifest 生成 CLI。正常系で manifest path が分かれば十分な場合が多い。"
+    next_action: "成功時 human output を manifest path と covered file count に限定する。"
+  - path: tools/make-proxy-approval.py
+    category: approval
+    status: pending_audit
+    priority: high
+    current_state: "proxy approval 生成 CLI。承認証跡の完全性は JSON / file 側に残す。"
+    next_action: "成功時は approval path と nonce / target digest 要約だけにする。"
+  - path: tools/document_link_lint.py
+    category: lint
+    status: pending_audit
+    priority: medium
+    current_state: "Markdown link / prompt refs lint。"
+    next_action: "OK 時は対象数と OK のみ、finding は詳細維持にする。"
+  - path: tools/deployment_independence_lint.py
+    category: lint
+    status: pending_audit
+    priority: medium
+    current_state: "配置非依存性 lint。"
+    next_action: "OK 時は対象数と OK のみ、違反時は path / reason を出す。"
+  - path: tools/build-deploy-package.py
+    category: deployment
+    status: pending_audit
+    priority: medium
+    current_state: "deploy package 生成 CLI。成果物パスと検査結果は必要。"
+    next_action: "成功時は package path と manifest path だけにし、詳細は manifest へ残す。"
+  - path: tools/session-record-draft.py
+    category: session_record
+    status: pending_audit
+    priority: medium
+    current_state: "現セッション記録の下書き作成 CLI。"
+    next_action: "成功時は draft path のみ、詳細は draft file へ残す。"
+  - path: tools/session-record-promote-draft.py
+    category: session_record
+    status: pending_audit
+    priority: medium
+    current_state: "session record draft の昇格 CLI。"
+    next_action: "成功時は promoted path と source path のみ出す。"
+  - path: tools/session-record-extractor.py
+    category: session_record
+    status: pending_audit
+    priority: medium
+    current_state: "転写から session record を抽出する CLI。"
+    next_action: "成功時は出力先と抽出件数のみ出す。"
+  - path: tools/session-record-backfill.py
+    category: session_record
+    status: pending_audit
+    priority: medium
+    current_state: "既存転写から記録を一括生成する CLI。"
+    next_action: "成功時は件数要約のみ、詳細は log / output files へ残す。"
+  - path: tools/session-log-converter.py
+    category: session_record
+    status: pending_audit
+    priority: medium
+    current_state: "session log 変換 CLI。"
+    next_action: "成功時は output path のみに寄せる。"
+  - path: tools/conformance-evaluation-check.py
+    category: conformance_evaluation
+    status: pending_audit
+    priority: medium
+    current_state: "conformance-evaluation の機械検査入口。"
+    next_action: "OK 時の既定出力と machine-readable 出力の分離を確認する。"
+  - path: tools/conformance-evaluation-cross-feature.py
+    category: conformance_evaluation
+    status: pending_audit
+    priority: medium
+    current_state: "cross-feature conformance evaluation 補助 CLI。"
+    next_action: "成功時は対象 feature と output path だけにする。"
+  - path: tools/self-improvement-check.py
+    category: self_improvement
+    status: pending_audit
+    priority: medium
+    current_state: "self-improvement の機械検査入口。"
+    next_action: "OK 時の既定出力を短縮し、詳細は --json に寄せる。"
+  - path: tools/foundation_validators/check_completion.py
+    category: foundation
+    status: pending_audit
+    priority: medium
+    current_state: "foundation 完了検査 helper。"
+    next_action: "OK / violation の出力契約を確認する。"
+  - path: tools/foundation_validators/check_encoding_convention.py
+    category: foundation
+    status: pending_audit
+    priority: medium
+    current_state: "encoding convention 検査 helper。"
+    next_action: "OK / violation の出力契約を確認する。"
+  - path: tools/experiments/_experiment_n_model.py
+    category: experiment
+    status: partially_enforced
+    priority: high
+    current_state: "--out 指定時は結果 YAML をファイルへ保存し、stdout は 1 行 summary に最小化済み。--verbose または --out なしでは stdout を成果物として維持。"
+    next_action: "既存の shell redirect 利用箇所を --out へ置換できるか別途確認する。"
+  - path: tools/experiments/*_temp.py
+    category: experiment
+    status: deferred
+    priority: low
+    current_state: "一時実験・集計 script 群。数が多く、正規 CLI より優先度は低い。"
+    next_action: "正規 workflow で再利用するものから個別 entry に昇格して監査する。"

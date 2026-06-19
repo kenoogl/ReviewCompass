@@ -1,0 +1,23 @@
+status: completed
+target_files:
+- docs/disciplines/README.md
+- docs/disciplines/discipline_normal_output_minimization.md
+target_sha256:
+  docs/disciplines/README.md: 28362c70f48b90c3d4da03866e69d24b0ebf6e3ed9675a4125c57b85d56cf436
+  docs/disciplines/discipline_normal_output_minimization.md: e74d3098d84c52e50f0e6602a426754b52ecdbe16ffa1f6a3fcdaf6a6d71e8a6
+required_verifiers: &id001
+- gemini-3.5-flash
+completed_verifiers: *id001
+unresolved_substantive_findings: 0
+verifications:
+- verifier: gemini-3.5-flash
+  target_files:
+  - docs/disciplines/README.md
+  - docs/disciplines/discipline_normal_output_minimization.md
+  target_sha256:
+    docs/disciplines/README.md: 28362c70f48b90c3d4da03866e69d24b0ebf6e3ed9675a4125c57b85d56cf436
+    docs/disciplines/discipline_normal_output_minimization.md: e74d3098d84c52e50f0e6602a426754b52ecdbe16ffa1f6a3fcdaf6a6d71e8a6
+review_run:
+  path: .reviewcompass/evidence/review-runs/2026-06-19-normal-output-minimization-common-discipline-postwrite
+  summary_path: .reviewcompass/evidence/review-runs/2026-06-19-normal-output-minimization-common-discipline-postwrite/model-result-summary.yaml
+notes: normal output minimization common discipline post-write verification

@@ -101,6 +101,8 @@ class MakePostWriteManifestTests(unittest.TestCase):
                   "--target", "doc.md",
                   "--out", out)
     self.assertEqual(r.returncode, 0, f"stdout={r.stdout}\nstderr={r.stderr}")
+    self.assertEqual(r.stdout.count("\n"), 1)
+    self.assertIn("manifest 生成", r.stdout)
     status, _manifest = self.cwa.evaluate_post_write_manifest_state(self.tmp, ["doc.md"])
     self.assertEqual(status, "completed", f"正本判定が completed でない: {status}")
 

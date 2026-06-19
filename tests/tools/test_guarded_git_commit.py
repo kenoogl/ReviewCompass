@@ -229,8 +229,8 @@ class GuardedGitCommitTests(unittest.TestCase):
     )
 
     self.assertEqual(result.returncode, 0, result.stderr)
-    self.assertIn("[CURRENT STATE]", result.stdout)
-    self.assertIn("[ACTION]", result.stdout)
+    self.assertIn("[OK] commit", result.stdout)
+    self.assertIn("1 file changed", result.stdout)
     self.assertIn("committed:", result.stdout)
 
   def test_guarded_commit_line_approval_retry_reuses_active_transaction(self):

@@ -18,9 +18,12 @@
 - --history-file <パス>：省略可（前ターンまでの対話履歴 YAML）
 - --turn-number <整数>：省略可（既定 1、メタデータ用）
 - --timeout-seconds <整数>：省略可（既定 60。GPT-5.5 は 300 を指定すること）
+- --out <パス>：省略可（結果 YAML の保存先。指定時は正常系 stdout を 1 行にする）
+- --verbose：省略可（--out 指定時も YAML を stdout に表示する）
 
 標準出力 YAML 形式：
 - provider / model / turn_number / duration_seconds / sent_messages_count / response_text
+ただし --out 指定かつ --verbose なしの場合、標準出力は最小 summary になる。
 """
 import argparse
 import sys
@@ -36,6 +39,7 @@ if str(_PROJECT_ROOT) not in sys.path:
   sys.path.insert(0, str(_PROJECT_ROOT))
 
 from tools.api_providers.providers import get_provider  # noqa: E402
+from tools.normal_output import status_line  # noqa: E402
 
 
 def load_prompt_file(path: str) -> str:
@@ -92,6 +96,16 @@ def _parse_argv(argv: Optional[List[str]]) -> argparse.Namespace:
     default=60,
     help="API タイムアウト秒数（既定 60。GPT-5.5 は 300 を指定すること）",
   )
+  parser.add_argument(
+    "--out",
+    default=None,
+    help="結果 YAML の保存先。指定時、正常系 stdout は最小 summary にする",
+  )
+  parser.add_argument(
+    "--verbose",
+    action="store_true",
+    help="--out 指定時も結果 YAML を標準出力へ表示する",
+  )
   return parser.parse_args(argv)
 
 
@@ -119,7 +133,25 @@ def main(argv: Optional[List[str]] = None) -> int:
       "response_text": response_text,
     }
 
-    sys.stdout.write(yaml.dump(output, allow_unicode=True, sort_keys=False))
+    output_yaml = yaml.dump(output, allow_unicode=True, sort_keys=False)
+    if args.out:
+      out_path = Path(args.out)
+      out_path.parent.mkdir(parents=True, exist_ok=True)
+      out_path.write_text(output_yaml, encoding="utf-8")
+    if args.verbose or not args.out:
+      sys.stdout.write(output_yaml)
+    else:
+      sys.stdout.write(status_line(
+        "OK",
+        "experiment_n_model",
+        {
+          "provider": args.provider,
+          "model": args.model,
+          "turn": args.turn_number,
+          "messages": len(messages),
+          "out": args.out,
+        },
+      ))
     return 0
 
   except Exception as exc:

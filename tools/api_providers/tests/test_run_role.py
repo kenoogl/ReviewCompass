@@ -363,7 +363,7 @@ def test_main_writes_raw_out_before_parse_failure(
 
 
 def test_main_writes_parsed_out_on_parse_success(
-  tmp_target_file, tmp_config, tmp_path, monkeypatch
+  tmp_target_file, tmp_config, tmp_path, monkeypatch, capsys
 ):
   """parse 成功時に --parsed-out へ整形済み YAML を保存する。"""
   monkeypatch.setenv("ANTHROPIC_API_KEY", "test-key")
@@ -389,6 +389,10 @@ findings:
     )
 
   assert exit_code == 0
+  captured = capsys.readouterr()
+  assert captured.out.count("\n") == 1
+  assert captured.out.startswith("[OK] run_role ")
+  assert f"parsed={parsed_out}" in captured.out
   parsed = yaml.safe_load(parsed_out.read_text(encoding="utf-8"))
   assert parsed["role"] == "primary"
   assert parsed["model"] == "claude-opus-4-7"
@@ -396,7 +400,7 @@ findings:
 
 
 def test_main_updates_review_run_artifacts(
-  tmp_target_file, tmp_config, tmp_path, monkeypatch
+  tmp_target_file, tmp_config, tmp_path, monkeypatch, capsys
 ):
   """--review-run-dir 指定時に raw、parsed、rounds、summary、target manifest を生成する。"""
   monkeypatch.setenv("ANTHROPIC_API_KEY", "test-key")
@@ -423,6 +427,13 @@ findings:
     )
 
   assert exit_code == 0
+  captured = capsys.readouterr()
+  assert captured.out.count("\n") == 1
+  assert captured.out.startswith("[OK] run_role ")
+  assert "role=primary" in captured.out
+  assert "model=claude-opus-4-7" in captured.out
+  assert "findings=1" in captured.out
+  assert f"review_run_dir={review_run_dir}" in captured.out
   raw_path = review_run_dir / "raw" / "claude-opus-4-7.round-1.txt"
   parsed_path = review_run_dir / "parsed" / "claude-opus-4-7.round-1.yaml"
   assert raw_path.is_file()
@@ -451,6 +462,33 @@ findings:
   assert summary_model["triage_status"] == "triage_pending"
   assert summary_model["findings_count"] == 1
   assert summary_model["findings_count_by_severity"]["WARN"] == 1
+
+
+def test_main_verbose_outputs_formatted_yaml_with_artifact_sink(
+  tmp_target_file, tmp_config, tmp_path, monkeypatch, capsys
+):
+  """--verbose では保存先があっても整形済み YAML を stdout に出す。"""
+  monkeypatch.setenv("ANTHROPIC_API_KEY", "test-key")
+  parsed_out = tmp_path / "parsed.yaml"
+  mock_cls, _ = _make_mock_provider(send_response="findings: []\n")
+  with patch("tools.api_providers.run_role.get_provider", return_value=mock_cls):
+    exit_code = main(
+      [
+        "--role", "primary",
+        "--target", str(tmp_target_file),
+        "--phase", "requirements",
+        "--criteria", "観点-1",
+        "--config", str(tmp_config),
+        "--parsed-out", str(parsed_out),
+        "--verbose",
+      ]
+    )
+
+  assert exit_code == 0
+  captured = capsys.readouterr()
+  parsed = yaml.safe_load(captured.out)
+  assert parsed["role"] == "primary"
+  assert parsed["findings"] == []
 
 
 def test_main_records_multiple_targets_in_review_run_artifacts(

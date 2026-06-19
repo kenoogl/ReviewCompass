@@ -35,6 +35,7 @@ from tools.api_providers.run_role import (  # noqa: E402
   build_prompt,
   update_review_run_artifacts,
 )
+from tools.normal_output import join_values, status_line  # noqa: E402
 
 ROLES = ["primary", "adversarial", "judgment"]
 NORMALIZED_SEVERITY = {"CRITICAL", "ERROR", "WARN", "INFO"}
@@ -248,6 +249,11 @@ def _parse_argv(argv: Optional[List[str]]) -> argparse.Namespace:
     default=None,
     help="effective prompt ファイルの sha256。未指定ならファイルから計算する",
   )
+  parser.add_argument(
+    "--verbose",
+    action="store_true",
+    help="正常系でも review_summary.md の本文を標準出力へ表示する",
+  )
   return parser.parse_args(argv)
 
 
@@ -374,6 +380,38 @@ def _run_one_role(
   return 0
 
 
+def _summary_fields(review_run_dir: str, roles: List[str]) -> Dict[str, Any]:
+  """正常系 human output 用の短い summary fields を返す。"""
+  run_dir = Path(review_run_dir)
+  summary = _load_yaml_dict(run_dir / "model-result-summary.yaml")
+  models = summary.get("models")
+  if not isinstance(models, list):
+    models = []
+  model_ids = [
+    item.get("model_id")
+    for item in models
+    if isinstance(item, dict) and item.get("model_id")
+  ]
+  findings = sum(
+    int(item.get("findings_count", 0) or 0)
+    for item in models
+    if isinstance(item, dict)
+  )
+  parse_failed = sum(
+    1
+    for item in models
+    if isinstance(item, dict) and item.get("parse_status") == "parse_failed"
+  )
+  return {
+    "review_run_dir": review_run_dir,
+    "summary": str(run_dir / "review_summary.md"),
+    "roles": len(roles),
+    "model_ids": join_values(model_ids),
+    "findings": findings,
+    "parse_failed": parse_failed,
+  }
+
+
 def main(argv: Optional[List[str]] = None) -> int:
   enable_zshrc_api_key_fallback()
   args = _parse_argv(argv)
@@ -393,7 +431,15 @@ def main(argv: Optional[List[str]] = None) -> int:
       args.review_run_dir,
       summary_variant_name,
     )
-    sys.stdout.write(summary_markdown)
+    if args.verbose:
+      sys.stdout.write(summary_markdown)
+    else:
+      verdict = "OK" if exit_code == 0 else "WARN"
+      sys.stdout.write(status_line(
+        verdict,
+        "run_review",
+        _summary_fields(args.review_run_dir, roles),
+      ))
     return exit_code
   except Exception as exc:
     sys.stderr.write(f"エラー：{type(exc).__name__}: {exc}\n")

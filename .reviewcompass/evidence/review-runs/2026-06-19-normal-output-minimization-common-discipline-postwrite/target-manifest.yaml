@@ -1,0 +1,6 @@
+run_id: 2026-06-19-normal-output-minimization-common-discipline-postwrite
+target_files:
+- path: docs/disciplines/README.md
+  sha256: 28362c70f48b90c3d4da03866e69d24b0ebf6e3ed9675a4125c57b85d56cf436
+- path: docs/disciplines/discipline_normal_output_minimization.md
+  sha256: e74d3098d84c52e50f0e6602a426754b52ecdbe16ffa1f6a3fcdaf6a6d71e8a6

@@ -1,7 +1,8 @@
 """tools/api_providers/run_role.py
 
-API 経路で 1 役を 1 回実行し、結果を標準出力に YAML で返す。
-任意指定の出力先がある場合は raw / parsed / review-run 成果物も保存する。
+API 経路で 1 役を 1 回実行し、結果を保存する。
+出力先がない場合は標準出力に YAML を返す。任意指定の出力先がある場合は
+raw / parsed / review-run 成果物を保存し、正常系 human output は 1 行に抑える。
 計画書 §5.9.7.1（入出力契約）と §5.23.12.3（プロンプト雛形はフェーズ 4 で整備）を参照。
 """
 import argparse
@@ -34,6 +35,7 @@ from tools.api_providers.response_formatter import (  # noqa: E402
   format_response,
   parse_response_text,
 )
+from tools.normal_output import status_line  # noqa: E402
 
 
 _PROMPT_TEMPLATE_DIR = Path(__file__).resolve().parent / "prompt_templates"
@@ -365,7 +367,7 @@ def update_review_run_artifacts(
 def _parse_argv(argv: Optional[List[str]]) -> argparse.Namespace:
   """引数解析。計画書 §5.9.7.1 の長オプション 6 種＋ --config に対応。"""
   parser = argparse.ArgumentParser(
-    description="API 経路で 1 役を 1 回実行し、結果を標準出力に YAML で返す。",
+    description="API 経路で 1 役を 1 回実行し、結果を保存する。",
   )
   parser.add_argument(
     "--role",
@@ -440,6 +442,11 @@ def _parse_argv(argv: Optional[List[str]]) -> argparse.Namespace:
     default=None,
     help="effective prompt ファイルの sha256。未指定ならファイルから計算する",
   )
+  parser.add_argument(
+    "--verbose",
+    action="store_true",
+    help="成果物保存先がある場合も整形済み YAML を標準出力へ表示する",
+  )
   return parser.parse_args(argv)
 
 
@@ -471,6 +478,33 @@ def _resolve_effective_prompt_sha256(path_value: Optional[str], sha_value: Optio
   if not path.is_file():
     return None
   return _sha256_file(path)
+
+
+def _normal_output_fields(
+  args: argparse.Namespace,
+  *,
+  role: str,
+  provider: str,
+  model: str,
+  findings: List[Dict[str, Any]],
+) -> Dict[str, Any]:
+  """run_role 成功時の短い human output fields を返す。"""
+  run_dir = Path(args.review_run_dir) if args.review_run_dir else None
+  safe_model = _safe_artifact_stem(model)
+  parsed = args.parsed_out
+  raw = args.raw_out
+  if run_dir:
+    parsed = str(run_dir / "parsed" / f"{safe_model}.{args.round_id}.yaml")
+    raw = str(run_dir / "raw" / f"{safe_model}.{args.round_id}.txt")
+  return {
+    "role": role,
+    "provider": provider,
+    "model": model,
+    "findings": len(findings),
+    "review_run_dir": args.review_run_dir,
+    "raw": raw,
+    "parsed": parsed,
+  }
 
 
 def main(argv: Optional[List[str]] = None) -> int:
@@ -565,7 +599,21 @@ def main(argv: Optional[List[str]] = None) -> int:
         criteria_source_path=criteria_source_path,
         criteria_source_sha256=criteria_source_sha256,
       )
-    sys.stdout.write(output)
+    has_artifact_sink = bool(args.raw_out or args.parsed_out or args.review_run_dir)
+    if args.verbose or not has_artifact_sink:
+      sys.stdout.write(output)
+    else:
+      sys.stdout.write(status_line(
+        "OK",
+        "run_role",
+        _normal_output_fields(
+          args,
+          role=args.role,
+          provider=provider_name,
+          model=model,
+          findings=findings,
+        ),
+      ))
     return 0
   except Exception as exc:
     sys.stderr.write(f"エラー：{type(exc).__name__}: {exc}\n")

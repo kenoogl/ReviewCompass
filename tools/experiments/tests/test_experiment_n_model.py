@@ -279,6 +279,67 @@ def test_main_output_response_text_matches(monkeypatch, tmp_path, capsys):
   assert parsed["response_text"] == "期待される応答テキスト"
 
 
+@respx.mock
+def test_main_out_writes_yaml_file_and_stdout_is_minimal(monkeypatch, tmp_path, capsys):
+  """--out 指定時は応答全文をファイルへ保存し、stdout は最小化する。"""
+  monkeypatch.setenv("OPENAI_API_KEY", "test-key")
+  prompt_path = tmp_path / "prompt.txt"
+  prompt_path.write_text("質問")
+  out_path = tmp_path / "result.yaml"
+  respx.post("https://api.openai.com/v1/chat/completions").mock(
+    return_value=httpx.Response(
+      200, json={"choices": [{"message": {"content": "長い応答本文"}}]}
+    )
+  )
+
+  exit_code = main(
+    [
+      "--provider", "openai-api",
+      "--model", "gpt-5.5",
+      "--prompt-file", str(prompt_path),
+      "--out", str(out_path),
+    ]
+  )
+
+  assert exit_code == 0
+  captured = capsys.readouterr()
+  assert captured.out.count("\n") == 1
+  assert captured.out.startswith("[OK] experiment_n_model ")
+  assert f"out={out_path}" in captured.out
+  assert "長い応答本文" not in captured.out
+  parsed = yaml.safe_load(out_path.read_text(encoding="utf-8"))
+  assert parsed["response_text"] == "長い応答本文"
+
+
+@respx.mock
+def test_main_out_verbose_also_outputs_yaml(monkeypatch, tmp_path, capsys):
+  """--out と --verbose を併用すると従来の YAML stdout も得られる。"""
+  monkeypatch.setenv("ANTHROPIC_API_KEY", "test-key")
+  prompt_path = tmp_path / "prompt.txt"
+  prompt_path.write_text("質問")
+  out_path = tmp_path / "result.yaml"
+  respx.post("https://api.anthropic.com/v1/messages").mock(
+    return_value=httpx.Response(
+      200, json={"content": [{"type": "text", "text": "応答"}]}
+    )
+  )
+
+  exit_code = main(
+    [
+      "--provider", "anthropic-api",
+      "--model", "claude-opus-4-7",
+      "--prompt-file", str(prompt_path),
+      "--out", str(out_path),
+      "--verbose",
+    ]
+  )
+
+  assert exit_code == 0
+  captured = capsys.readouterr()
+  parsed = yaml.safe_load(captured.out)
+  assert parsed["response_text"] == "応答"
+
+
 # --- E. エラー処理（2 件） ---
 
 

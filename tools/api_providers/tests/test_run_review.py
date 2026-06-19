@@ -105,16 +105,13 @@ findings:
 
   assert exit_code == 0
   output = capsys.readouterr().out
-  assert "claude-sonnet-4-6" in output
-  assert "gpt-5.4" in output
-  assert "gemini-3.1-pro-preview" in output
-  assert "triage_pending" in output
-  assert "variant: default" in output
-  assert "| primary | api | anthropic-api | claude-sonnet-4-6 |" in output
-  assert "| adversarial | api | openai-api | gpt-5.4 |" in output
-  assert "| judgment | api | gemini-api | gemini-3.1-pro-preview |" in output
-  assert "proxy_model" in output
-  assert "利用者提示ゲート" in output
+  assert output.count("\n") == 1
+  assert output.startswith("[OK] run_review ")
+  assert f"review_run_dir={review_run_dir}" in output
+  assert f"summary={review_run_dir / 'review_summary.md'}" in output
+  assert "roles=3" in output
+  assert "findings=2" in output
+  assert "parse_failed=0" in output
 
   rounds = yaml.safe_load((review_run_dir / "rounds.yaml").read_text(encoding="utf-8"))
   summary = yaml.safe_load(
@@ -144,6 +141,39 @@ findings:
   assert "variant: default" in review_summary
   assert "proxy_model" in review_summary
   assert "利用者提示ゲート" in review_summary
+
+
+def test_run_review_verbose_outputs_review_summary(tmp_path, monkeypatch, capsys):
+  """--verbose では従来どおり review_summary.md の本文を stdout に出す。"""
+  monkeypatch.setenv("GEMINI_API_KEY", "test-key")
+  target = tmp_path / "target.md"
+  target.write_text("レビュー対象\n", encoding="utf-8")
+  config_path = _make_config(tmp_path)
+  review_run_dir = tmp_path / "review-run"
+  responses = {"gemini-api": "findings: []\n"}
+
+  with patch(
+    "tools.api_providers.run_review.get_provider",
+    side_effect=_make_provider_factory(responses),
+  ):
+    exit_code = main(
+      [
+        "--variant", "post_write_verification_google",
+        "--target", str(target),
+        "--phase", "post_write_verification",
+        "--criteria", "観点-1",
+        "--review-run-dir", str(review_run_dir),
+        "--round-id", "round-1",
+        "--config", str(config_path),
+        "--verbose",
+      ]
+    )
+
+  assert exit_code == 0
+  output = capsys.readouterr().out
+  assert "variant: post_write_verification_google" in output
+  assert "| primary | api | gemini-api | gemini-3.5-flash |" in output
+  assert "利用者提示ゲート" in output
 
 
 def test_run_review_continues_after_one_role_parse_failure(tmp_path, monkeypatch):
@@ -218,7 +248,8 @@ def test_run_review_uses_post_write_default_variant_when_phase_is_post_write(tmp
 
   assert exit_code == 0
   output = capsys.readouterr().out
-  assert "variant: post_write_verification_google" in output
+  assert output.startswith("[OK] run_review ")
+  assert "roles=1" in output
   assert "gemini-3.5-flash" in output
   assert "claude-code-cli" not in output
 
@@ -303,7 +334,9 @@ findings:
 
   assert exit_code == 0
   output = capsys.readouterr().out
-  assert "| primary | api | gemini-api | gemini-3.5-flash |" in output
+  assert output.startswith("[OK] run_review ")
+  assert "roles=1" in output
+  assert "model_ids=gemini-3.5-flash" in output
   assert "| adversarial |" not in output
   assert "| judgment |" not in output
 
