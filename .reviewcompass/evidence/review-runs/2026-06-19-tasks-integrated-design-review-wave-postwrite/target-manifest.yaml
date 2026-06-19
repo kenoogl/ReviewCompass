@@ -1,0 +1,6 @@
+run_id: 2026-06-19-tasks-integrated-design-review-wave-postwrite
+target_files:
+- path: .reviewcompass/specs/_cross_feature/reviews/2026-06-19-tasks-integrated-design-review-wave.md
+  sha256: 200a283ee2d8a5e6b74fbb0f44ca0ad46dbaa09a658295d17757b26f0f1c7769
+- path: .reviewcompass/specs/_cross_feature/reviews/2026-06-19-tasks-integrated-design-review-wave-summary.md
+  sha256: ad5a08ebf4d6529f45c510aac83bad85ef26d75ef01b766eb6597b6dc957482c

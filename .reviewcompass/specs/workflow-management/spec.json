@@ -32,7 +32,7 @@
     "tasks": {
       "drafting": true,
       "triad-review": true,
-      "review-wave": false,
+      "review-wave": true,
       "alignment": false,
       "approval": false
     },

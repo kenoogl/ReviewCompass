@@ -1,0 +1,24 @@
+status: completed
+target_files:
+- .reviewcompass/specs/_cross_feature/reviews/2026-06-19-tasks-integrated-design-review-wave.md
+- .reviewcompass/specs/_cross_feature/reviews/2026-06-19-tasks-integrated-design-review-wave-summary.md
+target_sha256:
+  .reviewcompass/specs/_cross_feature/reviews/2026-06-19-tasks-integrated-design-review-wave.md: 200a283ee2d8a5e6b74fbb0f44ca0ad46dbaa09a658295d17757b26f0f1c7769
+  .reviewcompass/specs/_cross_feature/reviews/2026-06-19-tasks-integrated-design-review-wave-summary.md: ad5a08ebf4d6529f45c510aac83bad85ef26d75ef01b766eb6597b6dc957482c
+required_verifiers: &id001
+- gemini-3.5-flash
+completed_verifiers: *id001
+unresolved_substantive_findings: 0
+verifications:
+- verifier: gemini-3.5-flash
+  target_files:
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-19-tasks-integrated-design-review-wave.md
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-19-tasks-integrated-design-review-wave-summary.md
+  target_sha256:
+    .reviewcompass/specs/_cross_feature/reviews/2026-06-19-tasks-integrated-design-review-wave.md: 200a283ee2d8a5e6b74fbb0f44ca0ad46dbaa09a658295d17757b26f0f1c7769
+    .reviewcompass/specs/_cross_feature/reviews/2026-06-19-tasks-integrated-design-review-wave-summary.md: ad5a08ebf4d6529f45c510aac83bad85ef26d75ef01b766eb6597b6dc957482c
+review_run:
+  path: .reviewcompass/evidence/review-runs/2026-06-19-tasks-integrated-design-review-wave-postwrite
+  summary_path: .reviewcompass/evidence/review-runs/2026-06-19-tasks-integrated-design-review-wave-postwrite/model-result-summary.yaml
+notes: Generated template; verify target_files cover current post-write targets before
+  use.

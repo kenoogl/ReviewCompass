@@ -28,10 +28,11 @@ completed_steps:
 - design approval gate 完了（利用者発言『承認』に基づく明示承認）
 - tasks drafting 完了（Requirement 13〜16 を T-016〜T-019 として tasks.md へ展開）
 - tasks triad-review gate 完了（proxy_model 判断、C1〜C4反映、post-write verification no findings）
-next_step: 第3過程：tasks review-wave
+- tasks review-wave gate 完了（全 feature impact check、workflow-management 以外 existing_sufficient、post-write
+  verification no findings）
+next_step: 第3過程：tasks alignment
 step_number: 3
 pending_gates:
-- stages/tasks.yaml#review-wave
 - stages/tasks.yaml#alignment
 - stages/tasks.yaml#approval
 - stages/implementation.yaml#triad-review
@@ -48,6 +49,7 @@ completed_gates:
 - stages/design.yaml#alignment
 - stages/design.yaml#approval
 - stages/tasks.yaml#triad-review
+- stages/tasks.yaml#review-wave
 drafting_completed_gates:
 - stages/requirements.yaml#drafting
 - stages/design.yaml#drafting
@@ -234,6 +236,16 @@ downstream_impact_decisions:
   - .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-tasks-integrated-design-review-run/review-response.md
   - .reviewcompass/post-write-verification/post-write-2026-06-19-282.yaml
   - .reviewcompass/specs/workflow-management/tasks.md
+- gate: stages/tasks.yaml#review-wave
+  feature_scope: all_features
+  decision: existing_sufficient
+  rationale: tasks review-wave summary が status ok、carry-forward 未消化 0、workflow-management
+    以外 clear を示し、post-write verification post-write-2026-06-19-283 で findings 0 を確認したため、他
+    feature の tasks 正本変更は不要と判定する。
+  evidence:
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-19-tasks-integrated-design-review-wave.md
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-19-tasks-integrated-design-review-wave-summary.md
+  - .reviewcompass/post-write-verification/post-write-2026-06-19-283.yaml
 commit_stop_point_records:
 - step: 3
   kind: approval_complete
@@ -252,3 +264,8 @@ commit_stop_point_records:
 commit_required: true
 commit_required_kind: stop_point_consumed
 commit_required_reason: reopen commit stop point 消費完了時点の停止点
+commit_stop_point: true
+commit_stop_point_step: 3
+commit_stop_point_kind: review_wave_complete
+commit_stop_point_gate: stages/tasks.yaml#review-wave
+commit_stop_point_reason: tasks review-wave 完了時点の停止点
