@@ -32,10 +32,10 @@ completed_steps:
   verification no findings）
 - tasks alignment gate 完了（requirements Requirement 13〜16 / design / tasks / triad-review
   / review-wave / workflow_state 整合、post-write verification no findings）
-next_step: 第3過程：tasks approval
+- tasks approval gate 完了（利用者発言『承認』に基づく明示承認）
+next_step: 第3過程：implementation triad-review
 step_number: 3
 pending_gates:
-- stages/tasks.yaml#approval
 - stages/implementation.yaml#triad-review
 - stages/implementation.yaml#review-wave
 - stages/implementation.yaml#alignment
@@ -52,21 +52,12 @@ completed_gates:
 - stages/tasks.yaml#triad-review
 - stages/tasks.yaml#review-wave
 - stages/tasks.yaml#alignment
+- stages/tasks.yaml#approval
 drafting_completed_gates:
 - stages/requirements.yaml#drafting
 - stages/design.yaml#drafting
 - stages/tasks.yaml#drafting
-current_blocker:
-  blocker_type: approval_gate
-  gate: stages/tasks.yaml#approval
-  actor: human
-  status: waiting_for_approval
-  rationale: tasks drafting、triad-review、review-wave、alignment が完了済みであり、tasks approval
-    は人の明示承認が必要な停止点であるため
-  evidence:
-  - .reviewcompass/specs/workflow-management/tasks.md
-  - .reviewcompass/specs/_cross_feature/reviews/2026-06-19-tasks-integrated-design-reopen-alignment.md
-  - .reviewcompass/post-write-verification/post-write-2026-06-19-284.yaml
+current_blocker: null
 side_track_records:
 - completed_maintenance: stages/completed/maintenance-2026-06-19-post-write-review-target-preflight.yaml
   rationale: post-write API review の criteria / review-target 生成を機械化する局所改善を、本線 design
@@ -267,6 +258,15 @@ downstream_impact_decisions:
   evidence:
   - .reviewcompass/specs/_cross_feature/reviews/2026-06-19-tasks-integrated-design-reopen-alignment.md
   - .reviewcompass/post-write-verification/post-write-2026-06-19-284.yaml
+- gate: stages/tasks.yaml#approval
+  feature_scope: workflow-management
+  decision: approved
+  rationale: 利用者が 2026-06-19 Codex セッションで『承認』と明示し、tasks drafting、triad-review、review-wave、alignment
+    が完了済みであるため、統合設計メモ反映の tasks phase を承認済みとして扱う。
+  evidence:
+  - .reviewcompass/specs/workflow-management/tasks.md
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-19-tasks-integrated-design-reopen-alignment.md
+  - .reviewcompass/post-write-verification/post-write-2026-06-19-284.yaml
 commit_stop_point_records:
 - step: 3
   kind: approval_complete
@@ -299,3 +299,8 @@ commit_stop_point_records:
 commit_required: true
 commit_required_kind: stop_point_consumed
 commit_required_reason: reopen commit stop point 消費完了時点の停止点
+commit_stop_point: true
+commit_stop_point_step: 3
+commit_stop_point_kind: approval_complete
+commit_stop_point_gate: stages/tasks.yaml#approval
+commit_stop_point_reason: tasks approval 完了時点の停止点
