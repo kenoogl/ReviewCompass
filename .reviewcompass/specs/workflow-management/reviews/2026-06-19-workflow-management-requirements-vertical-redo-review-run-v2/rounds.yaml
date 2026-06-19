@@ -1,0 +1,363 @@
+round_id: round-1
+purpose: triad-review
+invocation_timestamp: '2026-06-19T14:02:27.246577+00:00'
+target_files:
+- path: .reviewcompass/specs/workflow-management/requirements.md
+  sha256: ba65d45cfe0b4fd5b4ae31600e14ed19337f3cbc717979a0775714a04c28b004
+criteria: '# Requirements Vertical Intent Review Target: Workflow Management Requirement
+  13-16
+
+
+  ## Review Target
+
+
+  Review the vertical intent transfer into `.reviewcompass/specs/workflow-management/requirements.md`,
+  specifically Requirement 13 through Requirement 16 and their directly related Change
+  Intent / traceability text.
+
+
+  The target phase artifact is `requirements.md`. The review question is not whether
+  downstream `design.md` or `tasks.md` are correct.
+
+
+  ## Source Materials
+
+
+  These source materials were read and summarized below. They are not path-only references.
+
+
+  - `docs/reviews/reopen-classification-2026-06-19-wm-requirement-13-16-vertical-redo.md`
+
+  - `docs/notes/2026-06-18-integrated-design-selection-execution-layers.md`
+
+  - `docs/notes/working/2026-06-18-mechanized-workflow-execution-design.md`
+
+  - `docs/notes/working/2026-06-19-integrated-design-requirements-missing.md`
+
+  - `docs/operations/SESSION_WORKFLOW_GUIDE.md#vertical-intent-transfer-review`
+
+
+  ## Upstream Structured Summary
+
+
+  ### purpose
+
+
+  The upstream purpose is to make workflow execution less dependent on LLM memory
+  or implicit interpretation. `next --json` remains the selector that decides what
+  should happen next; execution must be governed by machine-readable operation contracts,
+  preflight checks, approval gates, side-track state, workflow-state snapshots, and
+  structured language-task prompts.
+
+
+  For this reopen, the purpose is narrower: restore the integrated design intent that
+  was previously under-transferred into requirements. The 2026-06-18 request was to
+  incorporate the two integrated design notes into intent / requirements and then
+  proceed through the workflow. The prior result only added the minimal Phase 1 schema
+  points, so Requirement 13-16 now need to carry the larger upstream intent.
+
+
+  ### responsibility_boundaries
+
+
+  - Selection layer boundary: `next --json` chooses the single current `required_action`;
+  it is not replaced by operation contracts or workflow-state snapshots.
+
+  - Execution layer boundary: operation contracts define how an action is executed,
+  including `effect_kind`, `approval_required`, sequence, preconditions, postconditions,
+  pending conflicts, and fail-closed behavior.
+
+  - Registry / preflight boundary: registry and preflight are read-only consumers
+  / confirmations of the contract. They must not become independent sources of truth,
+  execute operations, update state, or consume approvals.
+
+  - Human decision boundary: `record_human_decision` records a decision but does not
+  itself authorize an approval-required operation. Commit, push, spec updates, phase
+  approval, reopen finalize, and approval-required irreversible operations remain
+  human-only.
+
+  - LLM boundary: LLMs perform language tasks such as drafting, triage explanation,
+  and semantic audit. Mechanical checks, guards, preflight, and approval enforcement
+  must not be left to implicit LLM judgment.
+
+  - Snapshot boundary: workflow-state snapshots are visualization / audit support
+  and must not replace `next --json` or state refs.
+
+
+  ### acceptance_criteria
+
+
+  Upstream acceptance intent includes:
+
+
+  - The 19 `required_action` terms must map to operation contract information, including
+  `effect_kind`, execution actor, and `approval_required`.
+
+  - `approval_required` is independent from `effect_kind`; some `state_mutation` operations
+  are approval-required and some are not.
+
+  - Approval-required actions include at least `commit_stop_point`, `apply_approved_reopen_plan`,
+  `run_reopen_start`, `advance_reopen_after_commit_stop_point`, `advance_reopen_after_approval_stop_point`,
+  `finalize_reopen`, and `repair_workflow_state`.
+
+  - `record_human_decision` is a decision-recording operation and a component of the
+  approval gate; its completion must not be treated as approval for the target operation.
+
+  - `run_reopen_pending_gate` branches by gate kind: `triad-review` / `review-wave`
+  are external API review runs, `alignment` is a write language task, `approval` structures
+  an approval request, and drafting is separated.
+
+  - Complex actions such as `run_maintenance`, `run_reopen_pending_gate`, and `run_workflow_stage`
+  may vary by internal step or stage kind; their representation is a design decision,
+  but LLMs must not infer it ad hoc.
+
+  - Side track frames need `allowed_scope`, `allowed_files`, `return_to`, `staged_file_digest`,
+  and `staged_file_set`; only the top frame can be popped, and `next --json` resumes
+  the next state.
+
+  - Side-track depth excess, scope drift, and commit mixing are initially warning-only
+  in Phase 3 and mechanically blocked in Phase 5.
+
+  - Structured effective prompts must describe the language task, not embed mechanical
+  execution. Machine checks belong to contracts, preflight, runners, and guards.
+
+  - LLM judge audit is auxiliary semantic analysis and must not automate final approval
+  or override mechanical / human-only gates.
+
+  - Phase order is Phase 1 schema, Phase 0 selector implementation, then Phase 2 read-only
+  registry, Phase 3 warning preflight, Phase 4 structured prompts, Phase 5 blocking
+  guards, Phase 6 optional LLM judge audit.
+
+
+  ### forbidden_actions
+
+
+  The upstream materials forbid or constrain:
+
+
+  - Treating source materials as path-only references when the review asks for vertical
+  intent transfer.
+
+  - Letting LLMs infer operation side effects, approval requirements, return destinations,
+  or complex-operation branches from conversation context.
+
+  - Treating `record_human_decision` completion as approval for an approval-required
+  target operation.
+
+  - Letting proxy_model replace human-only decisions.
+
+  - Letting workflow-state snapshots become canonical state or a hidden state-mutation
+  path.
+
+  - Reimplementing mechanical checks inside effective prompts instead of referencing
+  machine-confirmed preconditions and contract / preflight outputs.
+
+  - Mixing phase-spanning intermediate implementation states into a single commit.
+
+  - Treating historical `spec.json.reopened` as the current active reopen scope.
+
+  - Confusing reopen scope with impact-review scope.
+
+
+  ### unresolved_or_design_deferred_items
+
+
+  The upstream materials intentionally defer some details to design:
+
+
+  - Physical representation of complex operations: maximum side-effect representative
+  value, list-valued `effect_kind`, or internal-step decomposition.
+
+  - The exact data structure tying `record_human_decision` to the approval target
+  operation.
+
+  - The exact implementation path for workflow-state snapshot generation.
+
+  - The exact way D-003 scenarios become Phase 6 semantic-audit tests.
+
+  - Human-required predicate priority and conflict resolution for proxy_model applicability.
+
+  - Concrete command names / arguments for future operation runner behavior.
+
+
+  These deferred details should not be forced into requirements as final implementation
+  design, but requirements should preserve enough constraints so design cannot silently
+  choose an unsafe option.
+
+
+  ### intended_target_phase_transfer
+
+
+  The intended requirements-level transfer is:
+
+
+  - Requirement 13 should capture operation contract vocabulary, the 19-action mapping,
+  approval-required semantics, complex-operation constraints, single-source-of-truth
+  boundary, read-only registry/preflight role, and fail-closed drift handling.
+
+  - Requirement 14 should capture approval gate semantics, explicit human-decision
+  records, side-track stack safety, staged-file digest checks, workflow-state snapshots
+  as non-canonical support, read-only versus mutating state operations, and proxy_model
+  versus human-only boundaries.
+
+  - Requirement 15 should capture structured effective prompts as language-task specifications,
+  machine-checkable prompt structure, separation from mechanical tasks, and LLM judge
+  audit as non-approving auxiliary analysis.
+
+  - Requirement 16 should capture Phase 1 / Phase 0 / Phase 2-6 ordering, phase completion
+  constraints, no cross-phase implementation mixing, active reopen scope versus historical
+  flags, impact review scope, and proxy_model applicability predicates.
+
+
+  ## Target Phase Artifact Excerpt
+
+
+  Requirement 13 currently covers operation contract vocabulary, `.reviewcompass/schema/`
+  Phase 1 schemas, the 19 `required_action` mapping, approval-required simple actions,
+  `record_human_decision`, `run_reopen_pending_gate`, complex operations, fail-closed
+  pre/postconditions, and contract / registry / preflight source-of-truth boundaries.
+
+
+  Requirement 14 currently covers approval gates, side-track stack frames, staged
+  file set / digest checks, side-track pop and max depth, workflow-state snapshots,
+  proxy_model versus human-only decisions, and read-only versus mutating operation
+  boundaries.
+
+
+  Requirement 15 currently covers structured effective prompt fields, `language_task`,
+  separation from mechanical tasks, Phase 4 prompt generation, first-layer machine
+  checks, Phase 6 LLM judge audit, and non-automation of semantic final approval.
+
+
+  Requirement 16 currently covers Phase 0 through Phase 6 ordering and completion,
+  no phase-spanning intermediate state commits, active reopen scope versus historical
+  reopened flags, impact review scope, proxy_model triage decision applicability predicates,
+  and human-required precedence.
+
+
+  ## Required Check
+
+
+  Independently analyze whether the upstream purpose, responsibility boundaries, acceptance
+  criteria, forbidden actions, unresolved / design-deferred items, and intended target-phase
+  transfer are inherited into Requirement 13-16 without omission, weakening, unsupported
+  additions, or drift.
+
+
+  Do not assume the requirements are correct because they mention the upstream files.
+  Judge the actual transfer.
+
+
+  ## Out Of Scope
+
+
+  - Correctness of `design.md`
+
+  - Correctness or implementation-readiness of `tasks.md`
+
+  - Whether design/tasks already carry the requirements correctly
+
+  - Implementation code changes
+
+  - Commit, push, spec.json mutation, phase approval, or reopen movement
+
+
+  ## Finding Policy
+
+
+  Return findings as YAML with a top-level `findings` list. Each finding must include:
+
+
+  - `severity`: CRITICAL, ERROR, WARN, or INFO
+
+  - `target_location`: file and section / requirement
+
+  - `description`: concrete issue
+
+  - `rationale`: why it matters
+
+  - `recommendation`: what should change
+
+
+  Use `ERROR` for omissions, weakened requirements, unsupported additions, or responsibility-boundary
+  drift that make requirements unsafe to approve.
+
+  Use `WARN` for ambiguity or traceability weakness that should be fixed before downstream
+  design/tasks review.
+
+  Use `INFO` only for non-blocking observations.
+
+
+  If there are no substantive findings, return `findings: []`.
+
+
+  ## Sensitive Information Check
+
+
+  No API keys, access tokens, passwords, personal contact information, or non-public
+  third-party confidential data are intentionally included in this review target.
+
+  '
+prompt_sha256: b236668f227f36b1fc88a4e46a24f3c2f0ab095d0b0803e41dee0cf4fbc34bdc
+model_results:
+- model_id: gpt-5.4
+  provider: openai-api
+  role: primary
+  treatment: primary
+  invocation_path: api
+  raw_path: raw/gpt-5.4.round-1.txt
+  raw_sha256: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+  parsed_path: parsed/gpt-5.4.round-1.yaml
+  parsed_sha256: c976427816b80a2f47279f06c7e90fd310a1b1e571a0b79ee144509168caa9ff
+  parse_status: parsed
+  formatted_by: parser
+  formatted_by_actor_type: orchestrator
+  formatted_by_actor: run_role.py
+  formatted_at: '2026-06-19T14:01:14.354640+00:00'
+  follow_up_action: triage
+  attempts: 1
+  duration_seconds: 3.287
+  prompt_path: prompts/gpt-5.4.round-1.prompt.md
+  prompt_sha256: 7004ddcd1818fdf1f126cd6f47ba7b1079227b29d116330f8cc16d74cc608d60
+- model_id: claude-opus-4-8
+  provider: anthropic-api
+  role: adversarial
+  treatment: adversarial
+  invocation_path: api
+  raw_path: raw/claude-opus-4-8.round-1.txt
+  raw_sha256: 1f1db10546779fc217f862d8ea775a45eb1062c0279576b3382975b76f14bf1e
+  parsed_path: parsed/claude-opus-4-8.round-1.yaml
+  parsed_sha256: e6e2d28fb5b1ef6cd86fdbe959cfe81c261e6edbb46f012ee6a0c160e9ef17db
+  parse_status: parsed
+  formatted_by: parser
+  formatted_by_actor_type: orchestrator
+  formatted_by_actor: run_role.py
+  formatted_at: '2026-06-19T14:01:47.909762+00:00'
+  follow_up_action: triage
+  attempts: 1
+  duration_seconds: 33.499
+  prompt_path: prompts/claude-opus-4-8.round-1.prompt.md
+  prompt_sha256: c4d2f479e208566177fdfdd51c186117efa0d5cba62f92e4d779c5cd8a1cf4c7
+- model_id: gemini-3.1-pro-preview
+  provider: gemini-api
+  role: judgment
+  treatment: judgment
+  invocation_path: api
+  raw_path: raw/gemini-3.1-pro-preview.round-1.txt
+  raw_sha256: 67f20b5f2a77ca36c12b6b153ce451a10d7c0026c9147c2eb86f0e1d33ea4fb1
+  parsed_path: parsed/gemini-3.1-pro-preview.round-1.yaml
+  parsed_sha256: 131cf789a159f5504939b8ea2763652fb3f8dc68280c374ac87661930d568f18
+  parse_status: parsed
+  formatted_by: parser
+  formatted_by_actor_type: orchestrator
+  formatted_by_actor: run_role.py
+  formatted_at: '2026-06-19T14:02:27.246577+00:00'
+  follow_up_action: triage
+  attempts: 1
+  duration_seconds: 39.269
+  prompt_path: prompts/gemini-3.1-pro-preview.round-1.prompt.md
+  prompt_sha256: b236668f227f36b1fc88a4e46a24f3c2f0ab095d0b0803e41dee0cf4fbc34bdc
+criteria_source_path: .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-requirements-vertical-redo-review-run-v2/review-target.md
+criteria_source_sha256: b44b2d7005a4d656a5734775696ca0bda0ab0b8d7ba4c7eb0ba7efa35ebce335
+effective_prompt_path: .reviewcompass/runtime/effective-prompts/next_action_kind-reopen_in_progress__workflow_stage-triad-review__reopen_required_action-run_reopen_pending_gate.prompt.md
+effective_prompt_sha256: 33799a431cc88a55263f81cb28f4d810cd7d01d1e2b17a42c5f33ee569f80830

@@ -1,0 +1,23 @@
+variant: implementation_review_independent_3way_codex_operator
+phase: requirements
+stage: triad-review
+review_run_id: 2026-06-19-workflow-management-requirements-vertical-redo-review-run-v2
+roles:
+  - role: primary
+    path: api
+    provider: openai-api
+    model: gpt-5.4
+    raw_path: raw/gpt-5.4.round-1.txt
+    parse_status: parsed
+  - role: adversarial
+    path: api
+    provider: anthropic-api
+    model: claude-opus-4-8
+    raw_path: raw/claude-opus-4-8.round-1.txt
+    parse_status: parsed
+  - role: judgment
+    path: api
+    provider: gemini-api
+    model: gemini-3.1-pro-preview
+    raw_path: raw/gemini-3.1-pro-preview.round-1.txt
+    parse_status: parsed

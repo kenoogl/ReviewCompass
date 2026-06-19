@@ -1,0 +1,16 @@
+run_id: 2026-06-19-requirements-triad-review-stop-postwrite
+phase: post_write_verification
+criteria_id: requirements_triad_review_stop_post_write
+criteria_file: .reviewcompass/evidence/review-runs/2026-06-19-requirements-triad-review-stop-postwrite/review-target.md
+criteria_file_sha256: 9bb3495f518062a9a3fe641a36cb622cffbb2ffe55a5c980112c569fde0b418f
+target_files:
+- path: docs/operations/SESSION_WORKFLOW_GUIDE.md
+  sha256: 904b60a6184ca438060897faf448f4de3c621c7cc66b3238912c849c477c0985
+- path: docs/operations/WORKFLOW_DISCIPLINE_MAP.yaml
+  sha256: 007304ffb73fd022aa270296d02f2af4997728d2f975e56e2d324bc195e14ba2
+sensitive_information_check:
+  status: passed
+  checked_at: '2026-06-19T14:53:27.145731+00:00'
+recommended_run_review_args:
+  criteria_file: .reviewcompass/evidence/review-runs/2026-06-19-requirements-triad-review-stop-postwrite/review-target.md
+  phase: post_write_verification

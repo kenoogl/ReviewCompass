@@ -1,0 +1,67 @@
+proxy_model_id: gpt-5.5
+decision_prompt_path: proxy-decision-prompt.md
+raw_response_path: proxy-decision-response.yaml
+decisions:
+- finding_id: 2026-06-19-workflow-management-requirements-vertical-redo-review-run-v2-claude-opus-4-8-adversarial-001
+  final_label: should-fix
+  rationale: The approval boundary is materially important because upstream intent
+    says record_human_decision records a decision but does not itself authorize an
+    approval-required operation. However, the described surrounding requirements already
+    state this boundary in Requirement 13 AC6 and Requirement 14 AC1 and AC3, so the
+    requirements set is not missing the rule. Adding a local cross-reference in AC5
+    would reduce downstream misread risk and improve traceability, but the issue is
+    not blocking for requirements triad-review.
+  rejected_options:
+    must-fix: Not selected because the boundary is already present elsewhere in the
+      requirements, so this is not a blocking omission or unsupported weakening of
+      upstream intent.
+    should-fix: selected
+    leave-as-is: Not selected because AC5 is directly about approval-required operations
+      and an explicit local pointer to the non-authorizing nature of record_human_decision
+      would usefully prevent design-stage drift.
+- finding_id: 2026-06-19-workflow-management-requirements-vertical-redo-review-run-v2-claude-opus-4-8-adversarial-002
+  final_label: should-fix
+  rationale: The proxy_model boundary is already substantively covered by stating
+    that proxy_model cannot replace human-only decisions, and proxy applicability
+    predicates are reportedly covered in Requirement 16 AC13 and AC14. The finding
+    therefore identifies a traceability and readability gap rather than a missing
+    safety rule. A cross-reference would help downstream design preserve the intended
+    priority and applicability boundaries without implying proxy_model can authorize
+    human-only operations.
+  rejected_options:
+    must-fix: 'Not selected because the safety rule itself is present: proxy_model
+      cannot replace human-only decisions. The lack of a cross-reference does not
+      by itself create a blocking requirements failure.'
+    should-fix: selected
+    leave-as-is: Not selected because proxy applicability and human-only decision
+      boundaries are high-risk areas, and making their relationship explicit is a
+      worthwhile pre-design clarification.
+- finding_id: 2026-06-19-workflow-management-requirements-vertical-redo-review-run-v2-claude-opus-4-8-adversarial-003
+  final_label: should-fix
+  rationale: Upstream intent deliberately leaves the representation of complex operations
+    design-deferred, but requires that minimum safety constraints survive any chosen
+    representation. If AC8 states the minimum constraints and AC9 lists permissible
+    representation options without explicitly saying those options remain constrained
+    by AC8, a downstream design could misread the representative-value option as permission
+    to collapse away branch conditions, maximum side-effect handling, or approval
+    aggregation behavior. Because AC8 already supplies the core constraint, this is
+    best treated as a non-blocking clarification rather than a requirements-blocking
+    omission.
+  rejected_options:
+    must-fix: Not selected because the minimum constraints are already described in
+      AC8, so the requirements do not appear to wholly omit the safety requirement.
+    should-fix: selected
+    leave-as-is: Not selected because this is more than a cosmetic cross-reference.
+      The deferred representation choice is an explicitly risky area, and the requirements
+      should make clear that every allowed representation must preserve AC8 constraints.
+- finding_id: 2026-06-19-workflow-management-requirements-vertical-redo-review-run-v2-claude-opus-4-8-adversarial-004
+  final_label: leave-as-is
+  rationale: The finding is a positive confirmation that Phase 1 to Phase 0 dependency
+    and Phase 0 completion criteria were transferred correctly. It identifies no omission,
+    ambiguity, unsupported addition, or responsibility-boundary drift requiring a
+    requirements change.
+  rejected_options:
+    must-fix: Not selected because there is no blocking requirements problem identified.
+    should-fix: Not selected because the finding does not request a clarification
+      or traceability improvement; it confirms adequate transfer.
+    leave-as-is: selected

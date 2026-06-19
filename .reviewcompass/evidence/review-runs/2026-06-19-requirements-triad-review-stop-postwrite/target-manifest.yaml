@@ -1,0 +1,6 @@
+run_id: 2026-06-19-requirements-triad-review-stop-postwrite
+target_files:
+- path: docs/operations/SESSION_WORKFLOW_GUIDE.md
+  sha256: 904b60a6184ca438060897faf448f4de3c621c7cc66b3238912c849c477c0985
+- path: docs/operations/WORKFLOW_DISCIPLINE_MAP.yaml
+  sha256: 007304ffb73fd022aa270296d02f2af4997728d2f975e56e2d324bc195e14ba2

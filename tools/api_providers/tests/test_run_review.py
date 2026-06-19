@@ -434,3 +434,107 @@ def test_run_review_uses_criteria_file_and_records_prompt_artifact(
   assert model_result["prompt_sha256"] == hashlib.sha256(
     prompt_path.read_bytes()
   ).hexdigest()
+
+
+def test_run_review_blocks_vertical_review_when_source_materials_are_paths_only(
+  tmp_path,
+  monkeypatch,
+  capsys,
+):
+  """縦方向監査で source materials がパスだけなら API 送信前に遮断する。"""
+  monkeypatch.setenv("ANTHROPIC_API_KEY", "test-key")
+  monkeypatch.setenv("OPENAI_API_KEY", "test-key")
+  monkeypatch.setenv("GEMINI_API_KEY", "test-key")
+  target = tmp_path / "requirements.md"
+  target.write_text("Requirement 13 本文\n", encoding="utf-8")
+  criteria_file = tmp_path / "review-target.md"
+  criteria_file.write_text(
+    "# Requirements Triad Review Target\n\n"
+    "## Source Materials\n\n"
+    "Use these source materials as upstream decision materials:\n\n"
+    "- `docs/reviews/reopen-classification.md`\n"
+    "- `docs/notes/integrated-design.md`\n\n"
+    "## Required Check\n\n"
+    "Check whether upstream purpose, responsibility boundaries, acceptance criteria, "
+    "and forbidden actions were inherited into requirements.md.\n",
+    encoding="utf-8",
+  )
+  config_path = _make_config(tmp_path)
+  review_run_dir = tmp_path / "review-run"
+  provider_factory = _make_provider_factory({
+    "anthropic-api": "findings: []\n",
+    "openai-api": "findings: []\n",
+    "gemini-api": "findings: []\n",
+  })
+
+  with patch("tools.api_providers.run_review.get_provider", side_effect=provider_factory) as get_provider:
+    exit_code = main(
+      [
+        "--target", str(target),
+        "--phase", "triad-review",
+        "--criteria-file", str(criteria_file),
+        "--review-run-dir", str(review_run_dir),
+        "--config", str(config_path),
+      ]
+    )
+
+  captured = capsys.readouterr()
+  assert exit_code == 1
+  assert "vertical intent transfer prompt preflight failed" in captured.err
+  assert "source materials are listed only as paths" in captured.err
+  assert not get_provider.called
+  assert not (review_run_dir / "prompts").exists()
+
+
+def test_run_review_allows_vertical_review_with_structured_upstream_summary(
+  tmp_path,
+  monkeypatch,
+):
+  """縦方向監査でも上流要点が実体化されていれば API 送信できる。"""
+  monkeypatch.setenv("ANTHROPIC_API_KEY", "test-key")
+  monkeypatch.setenv("OPENAI_API_KEY", "test-key")
+  monkeypatch.setenv("GEMINI_API_KEY", "test-key")
+  target = tmp_path / "requirements.md"
+  target.write_text("Requirement 13 本文\n", encoding="utf-8")
+  criteria_file = tmp_path / "review-target.md"
+  criteria_file.write_text(
+    "# Requirements Vertical Intent Review\n\n"
+    "## Source Materials\n\n"
+    "- `docs/notes/upstream.md`\n\n"
+    "## Upstream Structured Summary\n\n"
+    "- purpose: 操作契約を機械可読にし、LLM の推測を減らす。\n"
+    "- responsibility_boundaries: registry は read-only consumer、contract が正本。\n"
+    "- acceptance_criteria: 19 required_action の effect_kind と approval_required を持つ。\n"
+    "- forbidden_actions: source materials をパスだけで扱わない。承認不要操作を勝手に承認済みにしない。\n"
+    "- unresolved_or_design_deferred_items: 複合操作の物理表現は design で確定する。\n"
+    "- intended_target_phase_transfer: Requirement 13 に正本境界と承認要否を渡す。\n\n"
+    "## Required Check\n\n"
+    "Check whether upstream purpose, responsibility boundaries, acceptance criteria, "
+    "and forbidden actions were inherited into requirements.md.\n",
+    encoding="utf-8",
+  )
+  config_path = _make_config(tmp_path)
+  review_run_dir = tmp_path / "review-run"
+  responses = {
+    "anthropic-api": "findings: []\n",
+    "openai-api": "findings: []\n",
+    "gemini-api": "findings: []\n",
+  }
+
+  with patch(
+    "tools.api_providers.run_review.get_provider",
+    side_effect=_make_provider_factory(responses),
+  ):
+    exit_code = main(
+      [
+        "--target", str(target),
+        "--phase", "triad-review",
+        "--criteria-file", str(criteria_file),
+        "--review-run-dir", str(review_run_dir),
+        "--config", str(config_path),
+      ]
+    )
+
+  assert exit_code == 0
+  rounds = yaml.safe_load((review_run_dir / "rounds.yaml").read_text(encoding="utf-8"))
+  assert len(rounds["model_results"]) == 3

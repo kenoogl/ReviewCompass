@@ -1,0 +1,25 @@
+findings:
+  - severity: ERROR
+    target_location: ".reviewcompass/specs/workflow-management/requirements.md Requirement 13 AC5"
+    description: >-
+      AC5 で承認必須の単純操作を列挙する際、`run_reopen_start` を含めているが、これは upstream acceptance_criteria の列挙（commit_stop_point, apply_approved_reopen_plan, run_reopen_start, advance_reopen_after_commit_stop_point, advance_reopen_after_approval_stop_point, finalize_reopen, repair_workflow_state）と一致する。ただし AC5 は「これらは approval_required: true として扱い、実行前に明示的な人間判断記録を必要とする」とする一方で、Requirement 13 AC6 と Requirement 14 AC1/AC3 は `record_human_decision` の完了が承認と同一視されないことを定める。AC5 の「明示的な人間判断記録を必要とする」という文言は、record_human_decision 完了＝承認という誤読を許す表現になっており、upstream の forbidden_actions「record_human_decision 完了を承認とみなさない」との整合がこの受入基準単体では弱い。
+    rationale: >-
+      upstream は record_human_decision 完了を承認と扱うことを明確に禁止している。AC5 が「人間判断記録を必要とする」とだけ述べ、AC6 への明示的な相互参照や「記録だけでは承認に当たらない」旨の注記を欠くと、design 段で承認必須操作の通過条件を record_human_decision 存在のみに緩める余地が残る。
+  - severity: WARN
+    target_location: ".reviewcompass/specs/workflow-management/requirements.md Requirement 14 AC11"
+    description: >-
+      upstream の human_decision_boundary は「record_human_decision はそれ自体で approval-required 操作を authorize しない。commit, push, spec updates, phase approval, reopen finalize, approval-required irreversible operations は human-only」と定める。AC11 は human-only decision として commit, push, spec.json 更新, phase approval, reopen finalize, approval_required な不可逆操作を列挙し、proxy_model decision だけで通過させないとする点で概ね転写されている。しかし upstream forbidden_actions の「proxy_model が human-only decision を置換することを禁止」を AC11 は満たすが、Requirement 16 AC13/AC14 の proxy_model 適用判定との整合（human-required predicate 優先順位）が AC11 から相互参照されておらず、proxy_model 境界が Requirement 14 と Requirement 16 に分散して読み手が一貫性を確認しにくい。
+    rationale: >-
+      proxy_model と human-only の境界は安全上の中核制約であり、Requirement 14 と Requirement 16 の双方に分散したまま相互参照が無いと、design 段で片方の制約だけ参照して他方を緩める drift が起きやすい。
+  - severity: WARN
+    target_location: ".reviewcompass/specs/workflow-management/requirements.md Requirement 13 AC9 / Requirement 16 AC2・AC4"
+    description: >-
+      upstream の unresolved_or_design_deferred_items は「complex operation の physical representation（最大副作用代表値・list 型 effect_kind・内部ステップ分解）」と「record_human_decision を承認対象 operation に結びつけるデータ構造」を design 委譲としつつ、requirements は unsafe option を design が silently 選べないだけの制約を保持すべきと求める。AC9 は3案を保持し record_human_decision の結びつけ方法を design 確定とする点で転写されているが、AC8 の「複合操作は分岐条件・内部 step・各 step の effect_kind・最大副作用・承認要否の集約規則を持つ」という最小規則と AC9 の3案保持の関係（最小規則が3案いずれでも維持されること）が明示されておらず、design が代表値1案を選んだ際に最小規則が骨抜きになる経路への封じが弱い。
+    rationale: >-
+      upstream は「design が unsafe option を silently 選べないだけの制約を requirements に残す」ことを明示的に要求している。AC8 の最小規則と AC9 の3案選択肢の連動が曖昧だと、代表値1案採用時に分岐条件や最大副作用の保持が失われ得る。
+  - severity: INFO
+    target_location: ".reviewcompass/specs/workflow-management/requirements.md Requirement 16 AC1・AC3"
+    description: >-
+      upstream の phase 順序は「Phase 1 schema, Phase 0 selector 実装, then Phase 2 read-only registry, ...」であり、Phase 1 が Phase 0 に先行する依存（schema が selector TDD の前提）を含む。AC1 は Phase 0 を selector 実装とし、AC2 で Phase 0 開始前提に Phase 1 のうち Requirement 2 AC10・AC11 を要求しており、upstream の Phase 1→Phase 0 依存は正しく転写されている。D-003 §7.1 の6失敗テスト・節番号変更時の anchor 移行も AC3 で扱われており、unresolved の「D-003 §7.1 が Phase 6 semantic-audit テストになる経路」とは別物だが混同されていない。実質的な omission は認められない。
+    rationale: >-
+      非ブロッキングの確認事項。Phase 順序と Phase 0/1 依存の転写は upstream と整合している。

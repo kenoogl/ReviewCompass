@@ -1,0 +1,182 @@
+round_id: round-1
+purpose: triad-review
+invocation_timestamp: '2026-06-19T13:37:36.163334+00:00'
+target_files:
+- path: .reviewcompass/specs/workflow-management/requirements.md
+  sha256: ba65d45cfe0b4fd5b4ae31600e14ed19337f3cbc717979a0775714a04c28b004
+criteria: '# Requirements Triad Review Target: Workflow Management Requirement 13-16
+  Vertical Redo
+
+
+  ## Review Target
+
+
+  This review judges only `.reviewcompass/specs/workflow-management/requirements.md`,
+  specifically Requirement 13 through Requirement 16 and the directly related change
+  intent / traceability text.
+
+
+  Do not judge `design.md` or `tasks.md` as review targets in this run. They may be
+  mentioned only as downstream context if needed to detect unsupported requirements-level
+  additions or missing requirements-level intent.
+
+
+  ## Source Materials
+
+
+  Use these source materials as upstream decision materials for intent-transfer analysis:
+
+
+  - `docs/reviews/reopen-classification-2026-06-19-wm-requirement-13-16-vertical-redo.md`
+
+  - `docs/notes/2026-06-18-integrated-design-selection-execution-layers.md`
+
+  - `docs/notes/working/2026-06-18-mechanized-workflow-execution-design.md`
+
+  - `docs/notes/working/2026-06-19-integrated-design-requirements-missing.md`
+
+  - `docs/operations/SESSION_WORKFLOW_GUIDE.md#vertical-intent-transfer-review`
+
+
+  ## Required Check
+
+
+  Independently review whether the upstream decision materials'' purpose, responsibility
+  boundaries, acceptance criteria, and forbidden actions have been inherited into
+  Requirement 13 through Requirement 16 without omission, weakening, unsupported additions,
+  or drift.
+
+
+  Pay particular attention to:
+
+
+  - Requirement 13: operation contract vocabulary, required_action mapping, single
+  source of truth boundary between operation contracts and registry/preflight, read-only
+  confirmation boundary, and fail-closed treatment for missing or stale contract references.
+
+  - Requirement 14: approval gate semantics, side track stack, workflow-state snapshot,
+  read-only versus mutating operations, and proxy_model versus human-only decision
+  boundaries.
+
+  - Requirement 15: structured effective prompt as a language-task specification,
+  separation from mechanical tasks, machine-checkable prompt audit, and LLM judge
+  audit as non-approving auxiliary analysis.
+
+  - Requirement 16: Phase 0 through Phase 6 ordering, phase completion conditions,
+  no cross-phase implementation mixing, active reopen scope versus historical reopened
+  flags, impact review scope, and proxy_model triage decision applicability predicates.
+
+
+  ## Finding Policy
+
+
+  Return findings as YAML with a top-level `findings` list. Each finding must include:
+
+
+  - `severity`: CRITICAL, ERROR, WARN, or INFO
+
+  - `target_location`: file and section/requirement
+
+  - `description`: concrete issue
+
+  - `rationale`: why it matters
+
+  - `recommendation`: what should change
+
+
+  Use `ERROR` for omissions, weakened requirements, unsupported additions, or boundary
+  drift that could make the requirements phase unsafe to approve.
+
+  Use `WARN` for ambiguity or traceability weakness that should be fixed before downstream
+  design/tasks review if it affects later implementation readiness.
+
+  Use `INFO` only for non-blocking observations.
+
+
+  If there are no substantive findings, return `findings: []`.
+
+
+  ## Out Of Scope
+
+
+  - Correctness of `design.md`
+
+  - Correctness or implementation-readiness of `tasks.md`
+
+  - Whether design/tasks already carry the requirements correctly
+
+  - Implementation code changes
+
+  - Commit, push, spec.json phase movement, or approval decisions
+
+
+  ## Sensitive Information Check
+
+
+  No API keys, access tokens, passwords, personal contact information, or non-public
+  third-party confidential data are intentionally included in this review target.
+
+  '
+prompt_sha256: e56e13114db997f504b1ab0a1e63e0c99946b9aee4a951ff3697a7e8095c2141
+model_results:
+- model_id: gpt-5.4
+  provider: openai-api
+  role: primary
+  treatment: primary
+  invocation_path: api
+  raw_path: raw/gpt-5.4.round-1.txt
+  raw_sha256: 30c8e0272d1ff0a17eadc37e7a1916bde6c5424f9638fd67543e6098e90e528a
+  parsed_path: parsed/gpt-5.4.round-1.yaml
+  parsed_sha256: becedbdbf728a9ddb9aff84f1b5dd218d287dd103b461681a782ce410eb3f2d8
+  parse_status: parsed
+  formatted_by: parser
+  formatted_by_actor_type: orchestrator
+  formatted_by_actor: run_role.py
+  formatted_at: '2026-06-19T13:36:16.193433+00:00'
+  follow_up_action: triage
+  attempts: 1
+  duration_seconds: 9.948
+  prompt_path: prompts/gpt-5.4.round-1.prompt.md
+  prompt_sha256: 8d892a3f1c3dc4920a18da914f1d8398648c0f72ce38a98a52b2189cae9914a6
+- model_id: claude-opus-4-8
+  provider: anthropic-api
+  role: adversarial
+  treatment: adversarial
+  invocation_path: api
+  raw_path: raw/claude-opus-4-8.round-1.txt
+  raw_sha256: 46fe907347fc61425f398fa5cf61e4124a19cf6398f2d4a1ece84385cc406ad4
+  parsed_path: parsed/claude-opus-4-8.round-1.yaml
+  parsed_sha256: 0d5446dba66ea242ba942a3067e8f574816cf2aba5d345d447556aabde2d0e9a
+  parse_status: parsed
+  formatted_by: parser
+  formatted_by_actor_type: orchestrator
+  formatted_by_actor: run_role.py
+  formatted_at: '2026-06-19T13:37:03.913868+00:00'
+  follow_up_action: triage
+  attempts: 1
+  duration_seconds: 47.652
+  prompt_path: prompts/claude-opus-4-8.round-1.prompt.md
+  prompt_sha256: 900ff36a653f3257f46de9fc17a413d98298f404b9a48f3395401590da9485d3
+- model_id: gemini-3.1-pro-preview
+  provider: gemini-api
+  role: judgment
+  treatment: judgment
+  invocation_path: api
+  raw_path: raw/gemini-3.1-pro-preview.round-1.txt
+  raw_sha256: 67f20b5f2a77ca36c12b6b153ce451a10d7c0026c9147c2eb86f0e1d33ea4fb1
+  parsed_path: parsed/gemini-3.1-pro-preview.round-1.yaml
+  parsed_sha256: e0f0c81b26a485c65f2d872a33a55a7c06de7da61d2fd2fc52cfde141fc18348
+  parse_status: parsed
+  formatted_by: parser
+  formatted_by_actor_type: orchestrator
+  formatted_by_actor: run_role.py
+  formatted_at: '2026-06-19T13:37:36.163334+00:00'
+  follow_up_action: triage
+  attempts: 1
+  duration_seconds: 30.242
+  prompt_path: prompts/gemini-3.1-pro-preview.round-1.prompt.md
+  prompt_sha256: e56e13114db997f504b1ab0a1e63e0c99946b9aee4a951ff3697a7e8095c2141
+criteria_source_path: .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-requirements-vertical-redo-review-run/review-target.md
+criteria_source_sha256: 538243effc26a3d84f3d1bffb2ac25c9544c41e1eaf57d7a5f0f9308b20938b6
+effective_prompt_path: .reviewcompass/runtime/effective-prompts/next_action_kind-reopen_in_progress__workflow_stage-triad-review__reopen_required_action-run_reopen_pending_gate.prompt.md
+effective_prompt_sha256: 33799a431cc88a55263f81cb28f4d810cd7d01d1e2b17a42c5f33ee569f80830

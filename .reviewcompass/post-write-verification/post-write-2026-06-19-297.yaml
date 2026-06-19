@@ -1,0 +1,124 @@
+status: completed
+target_files:
+- .reviewcompass/specs/workflow-management/requirements.md
+- .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-requirements-vertical-redo-review-run-v2/prompt-postcheck.md
+- .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-requirements-vertical-redo-review-run-v2/prompts/claude-opus-4-8.round-1.prompt.md
+- .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-requirements-vertical-redo-review-run-v2/prompts/gemini-3.1-pro-preview.round-1.prompt.md
+- .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-requirements-vertical-redo-review-run-v2/prompts/gpt-5.4.round-1.prompt.md
+- .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-requirements-vertical-redo-review-run-v2/proxy-decision-prompt.md
+- .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-requirements-vertical-redo-review-run-v2/raw-review-triage-summary.md
+- .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-requirements-vertical-redo-review-run-v2/review-target.md
+- .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-requirements-vertical-redo-review-run-v2/review_summary.md
+- .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-requirements-vertical-redo-review-run-v2/user-visible-triage-gate.md
+- .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-requirements-vertical-redo-review-run/invalidation.md
+- .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-requirements-vertical-redo-review-run/prompts/claude-opus-4-8.round-1.prompt.md
+- .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-requirements-vertical-redo-review-run/prompts/gemini-3.1-pro-preview.round-1.prompt.md
+- .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-requirements-vertical-redo-review-run/prompts/gpt-5.4.round-1.prompt.md
+- .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-requirements-vertical-redo-review-run/proxy-decision-prompt.md
+- .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-requirements-vertical-redo-review-run/review-target.md
+- .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-requirements-vertical-redo-review-run/review_summary.md
+- docs/operations/SESSION_WORKFLOW_GUIDE.md
+- docs/operations/WORKFLOW_DISCIPLINE_MAP.yaml
+target_sha256:
+  .reviewcompass/specs/workflow-management/requirements.md: e7621e6d56a3ef42085e2864a88366d670e55c304668dd21f48dde32411e13f3
+  ? .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-requirements-vertical-redo-review-run-v2/prompt-postcheck.md
+  : 280a0e974db05308acfc14a293025c0b70cfa297052c9fcd45a3e5a062004743
+  ? .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-requirements-vertical-redo-review-run-v2/prompts/claude-opus-4-8.round-1.prompt.md
+  : c4d2f479e208566177fdfdd51c186117efa0d5cba62f92e4d779c5cd8a1cf4c7
+  ? .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-requirements-vertical-redo-review-run-v2/prompts/gemini-3.1-pro-preview.round-1.prompt.md
+  : b236668f227f36b1fc88a4e46a24f3c2f0ab095d0b0803e41dee0cf4fbc34bdc
+  ? .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-requirements-vertical-redo-review-run-v2/prompts/gpt-5.4.round-1.prompt.md
+  : 7004ddcd1818fdf1f126cd6f47ba7b1079227b29d116330f8cc16d74cc608d60
+  ? .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-requirements-vertical-redo-review-run-v2/proxy-decision-prompt.md
+  : 263f17c21e633d649b216972445ed60ec347f6f677c2ef02751a01a68d281743
+  ? .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-requirements-vertical-redo-review-run-v2/raw-review-triage-summary.md
+  : a9e65b30525fa8df7c472c59506774814d0991c480de3e73b3e444ca8f4e630d
+  ? .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-requirements-vertical-redo-review-run-v2/review-target.md
+  : b44b2d7005a4d656a5734775696ca0bda0ab0b8d7ba4c7eb0ba7efa35ebce335
+  ? .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-requirements-vertical-redo-review-run-v2/review_summary.md
+  : e57851bf9f53b1565ea1f67b0c2a7fb5254b8e9dc2aeb6560fd70dbe56b25daf
+  ? .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-requirements-vertical-redo-review-run-v2/user-visible-triage-gate.md
+  : efda14dbf8c2aec91a433da96df72bcab4f6a527b86f37fbb35d432ea14d5b8d
+  ? .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-requirements-vertical-redo-review-run/invalidation.md
+  : 6858f5e815e707d02139231c4475e51069d67e2dcd93a5fac8766c8a3a451915
+  ? .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-requirements-vertical-redo-review-run/prompts/claude-opus-4-8.round-1.prompt.md
+  : 900ff36a653f3257f46de9fc17a413d98298f404b9a48f3395401590da9485d3
+  ? .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-requirements-vertical-redo-review-run/prompts/gemini-3.1-pro-preview.round-1.prompt.md
+  : e56e13114db997f504b1ab0a1e63e0c99946b9aee4a951ff3697a7e8095c2141
+  ? .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-requirements-vertical-redo-review-run/prompts/gpt-5.4.round-1.prompt.md
+  : 8d892a3f1c3dc4920a18da914f1d8398648c0f72ce38a98a52b2189cae9914a6
+  ? .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-requirements-vertical-redo-review-run/proxy-decision-prompt.md
+  : 02e91fb09ed76fac4164a2d3b383c46e054262f00ee5db83a91a792e79491229
+  ? .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-requirements-vertical-redo-review-run/review-target.md
+  : 538243effc26a3d84f3d1bffb2ac25c9544c41e1eaf57d7a5f0f9308b20938b6
+  ? .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-requirements-vertical-redo-review-run/review_summary.md
+  : 04eb12c4c15c73c4e0e1a7fd26ff63decca55475e6daa3487f3b175a912eb291
+  docs/operations/SESSION_WORKFLOW_GUIDE.md: 904b60a6184ca438060897faf448f4de3c621c7cc66b3238912c849c477c0985
+  docs/operations/WORKFLOW_DISCIPLINE_MAP.yaml: 007304ffb73fd022aa270296d02f2af4997728d2f975e56e2d324bc195e14ba2
+required_verifiers: &id001
+- gemini-3.5-flash
+completed_verifiers: *id001
+unresolved_substantive_findings: 0
+verifications:
+- verifier: gemini-3.5-flash
+  target_files:
+  - .reviewcompass/specs/workflow-management/requirements.md
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-requirements-vertical-redo-review-run-v2/prompt-postcheck.md
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-requirements-vertical-redo-review-run-v2/prompts/claude-opus-4-8.round-1.prompt.md
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-requirements-vertical-redo-review-run-v2/prompts/gemini-3.1-pro-preview.round-1.prompt.md
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-requirements-vertical-redo-review-run-v2/prompts/gpt-5.4.round-1.prompt.md
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-requirements-vertical-redo-review-run-v2/proxy-decision-prompt.md
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-requirements-vertical-redo-review-run-v2/raw-review-triage-summary.md
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-requirements-vertical-redo-review-run-v2/review-target.md
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-requirements-vertical-redo-review-run-v2/review_summary.md
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-requirements-vertical-redo-review-run-v2/user-visible-triage-gate.md
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-requirements-vertical-redo-review-run/invalidation.md
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-requirements-vertical-redo-review-run/prompts/claude-opus-4-8.round-1.prompt.md
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-requirements-vertical-redo-review-run/prompts/gemini-3.1-pro-preview.round-1.prompt.md
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-requirements-vertical-redo-review-run/prompts/gpt-5.4.round-1.prompt.md
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-requirements-vertical-redo-review-run/proxy-decision-prompt.md
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-requirements-vertical-redo-review-run/review-target.md
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-requirements-vertical-redo-review-run/review_summary.md
+  - docs/operations/SESSION_WORKFLOW_GUIDE.md
+  - docs/operations/WORKFLOW_DISCIPLINE_MAP.yaml
+  target_sha256:
+    .reviewcompass/specs/workflow-management/requirements.md: e7621e6d56a3ef42085e2864a88366d670e55c304668dd21f48dde32411e13f3
+    ? .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-requirements-vertical-redo-review-run-v2/prompt-postcheck.md
+    : 280a0e974db05308acfc14a293025c0b70cfa297052c9fcd45a3e5a062004743
+    ? .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-requirements-vertical-redo-review-run-v2/prompts/claude-opus-4-8.round-1.prompt.md
+    : c4d2f479e208566177fdfdd51c186117efa0d5cba62f92e4d779c5cd8a1cf4c7
+    ? .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-requirements-vertical-redo-review-run-v2/prompts/gemini-3.1-pro-preview.round-1.prompt.md
+    : b236668f227f36b1fc88a4e46a24f3c2f0ab095d0b0803e41dee0cf4fbc34bdc
+    ? .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-requirements-vertical-redo-review-run-v2/prompts/gpt-5.4.round-1.prompt.md
+    : 7004ddcd1818fdf1f126cd6f47ba7b1079227b29d116330f8cc16d74cc608d60
+    ? .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-requirements-vertical-redo-review-run-v2/proxy-decision-prompt.md
+    : 263f17c21e633d649b216972445ed60ec347f6f677c2ef02751a01a68d281743
+    ? .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-requirements-vertical-redo-review-run-v2/raw-review-triage-summary.md
+    : a9e65b30525fa8df7c472c59506774814d0991c480de3e73b3e444ca8f4e630d
+    ? .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-requirements-vertical-redo-review-run-v2/review-target.md
+    : b44b2d7005a4d656a5734775696ca0bda0ab0b8d7ba4c7eb0ba7efa35ebce335
+    ? .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-requirements-vertical-redo-review-run-v2/review_summary.md
+    : e57851bf9f53b1565ea1f67b0c2a7fb5254b8e9dc2aeb6560fd70dbe56b25daf
+    ? .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-requirements-vertical-redo-review-run-v2/user-visible-triage-gate.md
+    : efda14dbf8c2aec91a433da96df72bcab4f6a527b86f37fbb35d432ea14d5b8d
+    ? .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-requirements-vertical-redo-review-run/invalidation.md
+    : 6858f5e815e707d02139231c4475e51069d67e2dcd93a5fac8766c8a3a451915
+    ? .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-requirements-vertical-redo-review-run/prompts/claude-opus-4-8.round-1.prompt.md
+    : 900ff36a653f3257f46de9fc17a413d98298f404b9a48f3395401590da9485d3
+    ? .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-requirements-vertical-redo-review-run/prompts/gemini-3.1-pro-preview.round-1.prompt.md
+    : e56e13114db997f504b1ab0a1e63e0c99946b9aee4a951ff3697a7e8095c2141
+    ? .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-requirements-vertical-redo-review-run/prompts/gpt-5.4.round-1.prompt.md
+    : 8d892a3f1c3dc4920a18da914f1d8398648c0f72ce38a98a52b2189cae9914a6
+    ? .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-requirements-vertical-redo-review-run/proxy-decision-prompt.md
+    : 02e91fb09ed76fac4164a2d3b383c46e054262f00ee5db83a91a792e79491229
+    ? .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-requirements-vertical-redo-review-run/review-target.md
+    : 538243effc26a3d84f3d1bffb2ac25c9544c41e1eaf57d7a5f0f9308b20938b6
+    ? .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-requirements-vertical-redo-review-run/review_summary.md
+    : 04eb12c4c15c73c4e0e1a7fd26ff63decca55475e6daa3487f3b175a912eb291
+    docs/operations/SESSION_WORKFLOW_GUIDE.md: 904b60a6184ca438060897faf448f4de3c621c7cc66b3238912c849c477c0985
+    docs/operations/WORKFLOW_DISCIPLINE_MAP.yaml: 007304ffb73fd022aa270296d02f2af4997728d2f975e56e2d324bc195e14ba2
+review_run:
+  path: .reviewcompass/evidence/review-runs/2026-06-19-requirements-triad-review-stop-full-postwrite
+  summary_path: .reviewcompass/evidence/review-runs/2026-06-19-requirements-triad-review-stop-full-postwrite/model-result-summary.yaml
+notes: Generated template; verify target_files cover current post-write targets before
+  use.

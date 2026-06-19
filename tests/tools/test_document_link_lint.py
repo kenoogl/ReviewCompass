@@ -42,6 +42,40 @@ def test_lint_paths_accepts_explicit_html_anchor(tmp_path):
   assert findings == []
 
 
+def test_lint_paths_skips_review_run_prompt_artifacts(tmp_path):
+  prompt = (
+    tmp_path
+    / ".reviewcompass"
+    / "specs"
+    / "workflow-management"
+    / "reviews"
+    / "2026-06-19-review-run"
+    / "prompts"
+    / "gpt-5.4.round-1.prompt.md"
+  )
+  prompt.parent.mkdir(parents=True)
+  prompt.write_text("[copied source link](../../../missing/source.md)\n", encoding="utf-8")
+
+  findings = lint_paths([prompt], root=tmp_path)
+
+  assert findings == []
+
+
+def test_lint_path_texts_skips_review_run_prompt_artifacts(tmp_path):
+  prompt = Path(
+    ".reviewcompass/specs/workflow-management/reviews/2026-06-19-review-run/prompts/gpt-5.4.round-1.prompt.md"
+  )
+
+  findings = lint_path_texts(
+    {
+      prompt: "[copied source link](../../../missing/source.md)\n",
+    },
+    root=tmp_path,
+  )
+
+  assert findings == []
+
+
 def test_lint_path_texts_prefers_supplied_text_over_file_content(tmp_path):
   source = tmp_path / "docs" / "guide.md"
   target = tmp_path / "docs" / "target.md"

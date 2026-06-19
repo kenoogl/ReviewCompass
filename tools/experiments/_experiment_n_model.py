@@ -38,7 +38,10 @@ _PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
 if str(_PROJECT_ROOT) not in sys.path:
   sys.path.insert(0, str(_PROJECT_ROOT))
 
-from tools.api_providers.providers import get_provider  # noqa: E402
+from tools.api_providers.providers import (  # noqa: E402
+  enable_zshrc_api_key_fallback,
+  get_provider,
+)
 from tools.normal_output import status_line  # noqa: E402
 
 
@@ -111,6 +114,7 @@ def _parse_argv(argv: Optional[List[str]]) -> argparse.Namespace:
 
 def main(argv: Optional[List[str]] = None) -> int:
   """メイン処理。エラー時は標準エラーに理由を書いて非ゼロを返す。"""
+  enable_zshrc_api_key_fallback()
   args = _parse_argv(argv)
 
   try:

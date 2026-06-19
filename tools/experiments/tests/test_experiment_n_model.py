@@ -340,6 +340,39 @@ def test_main_out_verbose_also_outputs_yaml(monkeypatch, tmp_path, capsys):
   assert parsed["response_text"] == "応答"
 
 
+def test_main_enables_zshrc_api_key_fallback(monkeypatch, tmp_path):
+  """実験 entrypoint も正規 review entrypoint と同じ API key fallback を有効化する。"""
+  from tools.experiments import _experiment_n_model as experiment_module
+
+  prompt_path = tmp_path / "prompt.txt"
+  prompt_path.write_text("質問", encoding="utf-8")
+  calls = []
+
+  def fake_enable():
+    calls.append("enabled")
+
+  class FakeProvider:
+    def __init__(self, model, timeout_seconds):
+      assert calls == ["enabled"]
+
+    def send_messages(self, messages):
+      return "応答"
+
+  monkeypatch.setattr(experiment_module, "enable_zshrc_api_key_fallback", fake_enable)
+  monkeypatch.setattr(experiment_module, "get_provider", lambda provider: FakeProvider)
+
+  exit_code = main(
+    [
+      "--provider", "openai-api",
+      "--model", "gpt-5.5",
+      "--prompt-file", str(prompt_path),
+    ]
+  )
+
+  assert exit_code == 0
+  assert calls == ["enabled"]
+
+
 # --- E. エラー処理（2 件） ---
 
 

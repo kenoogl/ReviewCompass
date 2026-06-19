@@ -1,0 +1,61 @@
+role: adversarial
+provider: anthropic-api
+model: claude-opus-4-8
+attempts: 1
+duration_seconds: 47.652
+findings:
+- severity: ERROR
+  target_location: .reviewcompass/specs/workflow-management/requirements.md Requirement
+    13 受入5 / 受入7
+  description: '上流素材（mechanized-workflow-execution-design §3 / integrated-design §3）では、approval
+    ゲートを必須とする単純操作の列挙と複合操作（run_maintenance / run_workflow_stage / run_reopen_pending_gate）の分岐が
+    D-003 §6 の19語彙全体を網羅する形で扱われるべきだが、受入3が「19語彙すべてを対象とし代表値だけで曖昧化しない」と述べる一方、受入5の `approval_required:
+    true` 列挙が7語彙＋2語彙（run_maintenance/run_workflow_stage）に留まり、残る read 系・state_mutation
+    系（例：record_human_decision 以外の wait_for_human_decision、completed、repair_workflow_state
+    以外の selector-only action）の `approval_required` 真偽値が対応表側（受入4）にしか担保されておらず、要件本文では明示の網羅確認が弱い。'
+  rationale: 選択層が返す唯一 action のうち承認要否が要件で一意に固定されないと、実行層が `approval_required` を推測で補う余地が残り、fail-closed
+    境界（human-only decision 通過防止）が崩れうる。これは triad-review クライテリアの required_action mapping
+    網羅性の欠落に当たる。
+  recommendation: 受入4の19語彙対応表が approval_required を全語彙について必ず保持する旨を受入3または受入4で『例外なく全19語彙に値を持つ』と明示し、受入5の列挙は『代表例であり対応表の網羅性を縮約しない』ことを要件本文で確認する文を追加する。
+- severity: WARN
+  target_location: .reviewcompass/specs/workflow-management/requirements.md Requirement
+    13 受入11 / 受入12
+  description: single source of truth 境界（operation contract 正本と registry/preflight
+    の参照関係）について、受入11が『複数箇所で別々に再定義してはならない』とし受入12が drift 検出を求めるが、Requirement 12 受入1（registry
+    が effect_kind 等に相当する語彙を機械可読定義する）との関係で、どちらが正本でどちらが派生かの方向が要件本文で一意に固定されていない。受入11は『registry/preflight
+    は正本 contract を参照または同一正本内で読み取り』と two-way の表現を許している。
+  rationale: upstream 素材は contract を正本、registry/preflight を read-only consumer とする一方向境界を意図しているが、『同一正本内で読み取り』という選択肢を残すと、physical
+    表現を design に委ねた結果 Req12 側との二重正本化（境界 drift）を招きうる。
+  recommendation: 受入11で『正本は operation contract 側であり、registry/preflight は派生・参照側である』という方向を要件層で固定し、Requirement
+    12 受入1 の registry 語彙定義が contract 正本の派生であることを相互参照で明示する。
+- severity: WARN
+  target_location: .reviewcompass/specs/workflow-management/requirements.md Requirement
+    14 受入5 / 受入7
+  description: staged file set / digest 照合および side track depth 超過・scope drift の扱いについて、受入5は
+    Phase 3=WARN以上 / Phase 5=DEVIATION または repair_workflow_state、受入7は Phase 3=警告 /
+    Phase 5=ブロックとしているが、Requirement 16 の Phase 定義（Phase 3=警告のみ導入、Phase 5=機械的ブロック昇格）との整合は取れている一方、『repair_workflow_state
+    として扱う』のと『DEVIATION でブロックする』のどちらを最終状態とするかが受入5内で or 接続のまま残り、機械が一意に選ぶ条件が要件層で確定していない。
+  rationale: side track stack の mutating/read-only 境界（受入12）と合わせ、pop 時 digest 不一致が
+    repair か block かを LLM/実装が推測すると、復帰先選択の安全契約（受入6：LLM が会話文脈から選ばない）が骨抜きになる懸念がある。
+  recommendation: 受入5・受入7で repair_workflow_state と DEVIATION の選択条件（どの状態次元が満たされたとき
+    repair へ、満たされないとき block へ進むか）を要件層の最小規則として示すか、design 確定事項であることを明示的に切り出す。
+- severity: WARN
+  target_location: .reviewcompass/specs/workflow-management/requirements.md Requirement
+    15 受入5
+  description: 機械検査（第1層）の対象として『side道スタックまたは operation preflight が持つ staged file set
+    とのコミット混線検査は Requirement 12・14 の責務として扱い、有効プロンプト監査から参照可能にする』とあるが、参照可能にする具体的責務（プロンプト監査が混線検査結果を入力に取るのか、リンクを示すだけか）が曖昧で、upstream
+    素材 §4・§5 の『機械タスクは contract/guard が担い、プロンプト監査は言語タスク仕様の妥当性に限定する』分離意図に対し、責務境界の読み取りが一意でない。
+  rationale: プロンプト監査と Req12/14 のコミット混線検査の責務が曖昧だと、downstream design で混線検査がプロンプト監査側に重複実装される（機械タスクの有効プロンプト残留禁止という受入3・受入6の趣旨と逆行する）リスクがある。
+  recommendation: 受入5で『有効プロンプト監査は混線検査を再実装せず、Requirement 12・14 の検査結果を参照のみする』ことを明示し、参照方法（結果の引用か
+    state_refs か）は design 確定とする旨を切り分ける。
+- severity: INFO
+  target_location: .reviewcompass/specs/workflow-management/requirements.md Requirement
+    16 受入11
+  description: active reopen scope と historical reopened flag の区別（`spec.json.reopened`
+    を履歴フラグとして保持し active scope と同一視しない）は upstream の意図を適切に継承しているが、現在の active scope を記録する正本（in-progress
+    reopen record / classification record / spec.json.recheck / review-wave・alignment
+    証跡）が複数列挙され、これらの間で矛盾した場合の優先順位が受入11では述べられていない（Requirement 12 受入13 の整合要求に依存している）。
+  rationale: 非ブロッキングだが、複数の active scope 正本候補の優先順位が Req16 単独では読み取れず、Req12 受入13 を併読しないと一意化されない点は
+    traceability 上の補足が望ましい。
+  recommendation: 受入11に Requirement 12 受入13（reopen scope / impact review scope の一意性と整合検査）への相互参照を一文加えると、active
+    scope の正本解決が要件層内で追跡しやすくなる。

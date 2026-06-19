@@ -9,10 +9,11 @@ completed_steps:
   → true、impacted_downstream_phases → design/tasks/implementation）
 - R-0 判定確定・spec.json フラグ差し戻し完了（requirements/design/tasks/implementation 全段 → false）
 - Requirement 13〜16 を基点に requirements/design/tasks を縦方向意図監査の結果へ合わせて再生成
-next_step: 第2過程：停止点コミット
-step_number: 2
+- requirements triad-review 完了（Requirement 13〜16 縦方向意図監査、API 版 gpt-5.5 proxy_model
+  判定 C1〜C3 should-fix 適用、C4 leave-as-is）
+next_step: 第3過程：requirements review-wave
+step_number: 3
 pending_gates:
-- stages/requirements.yaml#triad-review
 - stages/requirements.yaml#review-wave
 - stages/requirements.yaml#alignment
 - stages/requirements.yaml#approval
@@ -25,6 +26,17 @@ pending_gates:
 - stages/tasks.yaml#alignment
 - stages/tasks.yaml#approval
 current_blocker: null
+drafting_completed_gates:
+- stages/requirements.yaml#drafting
+requirements_drafting_state_sync:
+  synced_at: '2026-06-19T00:00:00+09:00'
+  gate: stages/requirements.yaml#drafting
+  rationale: reopen 中の通常 spec-set は in-progress と recheck により DEVIATION で遮断されるため、requirements
+    drafting 完了を drafting_completed_gates と workflow-management spec.json の requirements.drafting=true
+    に同期した。triad-review/review-wave/alignment/approval は false のまま維持する。
+  evidence:
+  - .reviewcompass/specs/workflow-management/requirements.md
+  - .reviewcompass/specs/workflow-management/spec.json
 reopen_step_records:
 - from_step: 1
   completed_step: R-0 判定確定・spec.json フラグ差し戻し完了（requirements/design/tasks/implementation
@@ -53,7 +65,31 @@ reopen_step_records:
   - .reviewcompass/specs/workflow-management/tasks.md
   - docs/reviews/reopen-classification-2026-06-19-wm-requirement-13-16-vertical-redo.md
   - docs/notes/working/2026-06-19-vertical-intent-review-audit-experiment.md
+commit_stop_point_records:
+- step: 2
+  kind: canonical_update_complete
+  gate: null
+  reason: 第2過程の正本修正完了
+  head: 24062d238cc407551f13d3edcacff940dcce6b56
+  evidence:
+  - 24062d238cc407551f13d3edcacff940dcce6b56
+completed_gates:
+- stages/requirements.yaml#triad-review
+downstream_impact_decisions:
+- gate: stages/requirements.yaml#triad-review
+  feature_scope: workflow-management
+  decision: proxy_model_approved_after_should_fix
+  rationale: requirements triad-review で Requirement 13〜16 の縦方向意図伝達を監査し、API 版 gpt-5.5
+    proxy_model が C1〜C3 should-fix、C4 leave-as-is と判定した。C1〜C3 は requirements.md に反映済みで、関連テスト
+    42 件が通過したため、requirements triad-review gate を完了する。
+  evidence:
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-requirements-vertical-redo-review-run-v2/review_summary.md
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-requirements-vertical-redo-review-run-v2/triage.yaml
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-requirements-vertical-redo-review-run-v2/proxy-decision-decisions.yaml
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-requirements-vertical-redo-review-run-v2/proxy-approval.yaml
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-requirements-vertical-redo-review-run-v2/raw-review-triage-summary.md
 commit_stop_point: true
-commit_stop_point_step: 2
-commit_stop_point_kind: canonical_update_complete
-commit_stop_point_reason: 第2過程の正本修正完了
+commit_stop_point_step: 3
+commit_stop_point_kind: triad_review_complete
+commit_stop_point_gate: stages/requirements.yaml#triad-review
+commit_stop_point_reason: requirements triad-review 完了時点の停止点

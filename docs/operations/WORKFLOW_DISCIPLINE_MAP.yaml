@@ -466,6 +466,24 @@ required_inputs:
               - downstream_artifacts_not_review_target
               - design.md correctness
               - tasks.md correctness
+        prompt_materialization_contract:
+          source_materials_must_not_be_path_only: true
+          required_prompt_material:
+            - upstream_excerpt_or_structured_summary
+            - target_phase_artifact_excerpt
+            - review_target
+            - out_of_scope
+          upstream_summary_fields:
+            - purpose
+            - responsibility_boundaries
+            - acceptance_criteria
+            - forbidden_actions
+            - unresolved_or_design_deferred_items
+            - intended_target_phase_transfer
+          blocking_conditions:
+            - block_review_run_when_upstream_material_unread
+            - block_review_run_when_prompt_contains_only_source_paths
+            - block_review_run_when_upstream_summary_omits_required_fields
         required_question: upstream目的・責務境界・受入条件・禁止事項が対象成果物へ欠落・弱体化・逸脱・未根拠追加なく引き継がれているか。
         read_policy: include_in_review_prompt
     review-wave:

@@ -16,8 +16,8 @@
       "reference": "stages/feature-partitioning/2026-05-24-proposal.md"
     },
     "requirements": {
-      "drafting": false,
-      "triad-review": false,
+      "drafting": true,
+      "triad-review": true,
       "review-wave": false,
       "alignment": false,
       "approval": false

@@ -90,6 +90,8 @@ drafting と triad-review を別段にする理由は、誰が何をしたかを
 
 review prompt は、review target / source materials / out of scope を明示する。審査対象は現在 phase の成果物に限定し、source materials は背景・意図伝達確認のための参照資料として扱う。下流 phase の成果物が source materials に含まれる場合でも、その correctness を現在 phase の review で判定してはならない。
 
+source materials をパス名だけで列挙してはならない。縦方向監査の review prompt には、判断に必要な上流本文または要点抽出を、モデルが推測せず読める形で含める。要点抽出を使う場合は、少なくとも上流の目的、責務境界、受入条件、禁止事項、未確定事項、対象 phase へ引き継ぐべき判断を分けて記録する。上流資料を読んでいない場合は review-run を開始してはならない。prompt 内で上流資料の中身が確認できない場合も review-run を開始してはならない。
+
 tasks review では、単に tasks.md の粒度や項目数を見るだけでは不十分である。たとえば T-016〜T-019 を審査する場合は、Requirement 13〜16 の意図が design.md の設計判断を経由して、欠落・弱体化・勝手な追加なしに implementation-ready な作業単位へ落ちているかを必須で確認する。
 
 ### 2.3 段の進め方の規律

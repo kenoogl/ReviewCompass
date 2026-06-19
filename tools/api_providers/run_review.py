@@ -4,6 +4,7 @@
 raw / parsed / rounds / summary の生成は run_role.py の成果物関数を再利用する。
 """
 import argparse
+import re
 import sys
 import time
 from datetime import datetime, timezone
@@ -40,6 +41,14 @@ from tools.normal_output import join_values, status_line  # noqa: E402
 ROLES = ["primary", "adversarial", "judgment"]
 NORMALIZED_SEVERITY = {"CRITICAL", "ERROR", "WARN", "INFO"}
 POST_WRITE_DEFAULT_VARIANT = "post_write_verification_google"
+VERTICAL_REVIEW_REQUIRED_FIELDS = [
+  "purpose",
+  "responsibility_boundaries",
+  "acceptance_criteria",
+  "forbidden_actions",
+  "unresolved_or_design_deferred_items",
+  "intended_target_phase_transfer",
+]
 
 
 def _load_yaml_dict(path: Path) -> Dict[str, Any]:
@@ -268,6 +277,71 @@ def _resolve_criteria(args: argparse.Namespace) -> Tuple[str, Optional[str], Opt
   return args.criteria, None, None
 
 
+def _looks_like_vertical_intent_review(criteria: str) -> bool:
+  lowered = criteria.lower()
+  markers = [
+    "vertical intent",
+    "intent-transfer",
+    "intent transfer",
+    "上流意図",
+    "意図伝達",
+    "upstream purpose",
+    "responsibility boundaries",
+    "forbidden actions",
+  ]
+  return any(marker in lowered for marker in markers)
+
+
+def _source_materials_body(criteria: str) -> str:
+  match = re.search(
+    r"(?ims)^#{2,6}\s*source materials\s*$\n(?P<body>.*?)(?=^#{2,6}\s|\Z)",
+    criteria,
+  )
+  return match.group("body").strip() if match else ""
+
+
+def _has_upstream_structured_summary(criteria: str) -> bool:
+  lowered = criteria.lower()
+  return all(field in lowered for field in VERTICAL_REVIEW_REQUIRED_FIELDS)
+
+
+def _source_materials_are_paths_only(criteria: str) -> bool:
+  body = _source_materials_body(criteria)
+  if not body:
+    return False
+  meaningful_lines = [
+    line.strip()
+    for line in body.splitlines()
+    if line.strip() and not line.strip().startswith("Use these source materials")
+  ]
+  if not meaningful_lines:
+    return False
+
+  path_line_re = re.compile(
+    r"^[-*]\s+`?[\w./{}-]+\.(?:md|yaml|yml|json|txt)(?:#[\w./{}-]+)?`?\s*$",
+  )
+  return all(path_line_re.match(line) for line in meaningful_lines)
+
+
+def validate_review_prompt_preflight(args: argparse.Namespace, criteria: str) -> List[str]:
+  """API 送信前に review prompt の機械的な最低条件を検査する。"""
+  if args.phase != "triad-review" or not _looks_like_vertical_intent_review(criteria):
+    return []
+
+  errors = []
+  has_structured_summary = _has_upstream_structured_summary(criteria)
+  if _source_materials_are_paths_only(criteria) and not has_structured_summary:
+    errors.append(
+      "source materials are listed only as paths; include upstream excerpt or structured summary"
+    )
+  if not has_structured_summary:
+    errors.append(
+      "upstream structured summary is missing required fields: "
+      + ", ".join(VERTICAL_REVIEW_REQUIRED_FIELDS)
+    )
+  return errors
+
+
 def _select_variant_name(args) -> Optional[str]:
   """phase に応じた実効 variant 名を返す。"""
   if args.variant == "default":
@@ -417,6 +491,14 @@ def main(argv: Optional[List[str]] = None) -> int:
   args = _parse_argv(argv)
   exit_code = 0
   try:
+    criteria, _, _ = _resolve_criteria(args)
+    preflight_errors = validate_review_prompt_preflight(args, criteria)
+    if preflight_errors:
+      sys.stderr.write("エラー：vertical intent transfer prompt preflight failed\n")
+      for error in preflight_errors:
+        sys.stderr.write(f"  - {error}\n")
+      return 1
+
     config = load_config(args.config)
     variant_name = _select_variant_name(args)
     variant_config = resolve_variant(config, variant_name)

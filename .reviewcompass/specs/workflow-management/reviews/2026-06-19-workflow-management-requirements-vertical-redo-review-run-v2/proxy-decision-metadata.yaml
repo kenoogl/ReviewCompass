@@ -1,0 +1,8 @@
+variant: proxy_model_openai_gpt_55
+provider: openai-api
+model: gpt-5.5
+prompt_path: .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-requirements-vertical-redo-review-run-v2/proxy-decision-prompt.md
+raw_response_path: proxy-decision-response.yaml
+parsed_decisions_path: proxy-decision-decisions.yaml
+duration_seconds: 22.909
+parse_status: parsed

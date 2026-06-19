@@ -70,6 +70,19 @@ def test_requirements_vertical_review_scope_is_not_downstream_review():
   assert "downstream_artifacts_not_review_target" in discipline_map
 
 
+def test_vertical_review_prompt_must_materialize_upstream_content():
+  guide = (ROOT / "docs" / "operations" / "SESSION_WORKFLOW_GUIDE.md").read_text(encoding="utf-8")
+  discipline_map = (ROOT / "docs" / "operations" / "WORKFLOW_DISCIPLINE_MAP.yaml").read_text(encoding="utf-8")
+
+  assert "source materials をパス名だけで列挙してはならない" in guide
+  assert "上流本文または要点抽出" in guide
+  assert "上流資料を読んでいない場合は review-run を開始してはならない" in guide
+  assert "prompt_materialization_contract" in discipline_map
+  assert "source_materials_must_not_be_path_only" in discipline_map
+  assert "upstream_excerpt_or_structured_summary" in discipline_map
+  assert "block_review_run_when_upstream_material_unread" in discipline_map
+
+
 def test_cross_feature_stage_artifacts_have_canonical_location():
   navigation = (ROOT / "docs" / "operations" / "WORKFLOW_NAVIGATION.md").read_text(encoding="utf-8")
   discipline_map = (ROOT / "docs" / "operations" / "WORKFLOW_DISCIPLINE_MAP.yaml").read_text(encoding="utf-8")

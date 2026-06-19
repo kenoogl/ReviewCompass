@@ -1,0 +1,4 @@
+run_id: 2026-06-19-workflow-management-requirements-vertical-redo-review-run
+target_files:
+- path: .reviewcompass/specs/workflow-management/requirements.md
+  sha256: ba65d45cfe0b4fd5b4ae31600e14ed19337f3cbc717979a0775714a04c28b004

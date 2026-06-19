@@ -61,13 +61,26 @@ def _anchors_for(path: Path) -> Set[str]:
 def _iter_scannable_files(paths: Iterable[Path]) -> Iterable[Path]:
   for path in paths:
     if path.is_file():
-      if path.suffix in SCANNED_SUFFIXES:
+      if path.suffix in SCANNED_SUFFIXES and not _is_review_run_prompt_artifact(path):
         yield path
       continue
     if path.is_dir():
       for child in sorted(path.rglob("*")):
-        if child.is_file() and child.suffix in SCANNED_SUFFIXES:
+        if (
+          child.is_file()
+          and child.suffix in SCANNED_SUFFIXES
+          and not _is_review_run_prompt_artifact(child)
+        ):
           yield child
+
+
+def _is_review_run_prompt_artifact(path: Path) -> bool:
+  parts = path.parts
+  return (
+    "reviews" in parts
+    and "prompts" in parts
+    and path.name.endswith(".prompt.md")
+  )
 
 
 def _parse_ref(ref: str) -> Tuple[str, str]:
@@ -256,6 +269,8 @@ def lint_path_texts(
   findings: List[Dict[str, object]] = []
   for path in path_texts:
     resolved_path = (resolved_root / path if not path.is_absolute() else path).resolve()
+    if _is_review_run_prompt_artifact(resolved_path):
+      continue
     findings.extend(_markdown_findings(resolved_path, checker))
     findings.extend(_workflow_map_findings(resolved_path, checker))
   return findings

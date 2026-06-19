@@ -1,0 +1,28 @@
+approved_by: proxy_model
+finding_id: 2026-06-19-workflow-management-requirements-vertical-redo-review-run-v2-claude-opus-4-8-adversarial-001
+proxy_model_id: gpt-5.5
+decision_prompt_path: proxy-decision-prompt.md
+selected_option: should-fix
+final_label: should-fix
+rationale: The approval boundary is materially important because upstream intent says
+  record_human_decision records a decision but does not itself authorize an approval-required
+  operation. However, the described surrounding requirements already state this boundary
+  in Requirement 13 AC6 and Requirement 14 AC1 and AC3, so the requirements set is
+  not missing the rule. Adding a local cross-reference in AC5 would reduce downstream
+  misread risk and improve traceability, but the issue is not blocking for requirements
+  triad-review.
+raw_response_path: proxy-decision-response.yaml
+candidate_options:
+- must-fix
+- should-fix
+- leave-as-is
+rejected_options:
+  must-fix: Not selected because the boundary is already present elsewhere in the
+    requirements, so this is not a blocking omission or unsupported weakening of upstream
+    intent.
+  should-fix: selected
+  leave-as-is: Not selected because AC5 is directly about approval-required operations
+    and an explicit local pointer to the non-authorizing nature of record_human_decision
+    would usefully prevent design-stage drift.
+source_raw_paths:
+- raw/claude-opus-4-8.round-1.txt
