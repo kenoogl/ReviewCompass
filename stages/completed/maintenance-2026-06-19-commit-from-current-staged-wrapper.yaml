@@ -1,0 +1,44 @@
+process_id: maintenance
+title: commit from current staged wrapper
+trigger: "commit 時に stale approval の検出、nonce 手写し、challenge 作成後の別操作、空 stdin 実行が混ざり、利用者体験が悪化することがある"
+mainline_blocked_by: stages/in-progress/reopen-procedure-2026-06-19.yaml
+completed_at: "2026-06-19"
+classification: local_workflow_guard_improvement
+reason: "現在の staged exact index に対する approval 作成と guarded commit を 1 コマンドに閉じ、commit 操作事故を機械的に減らす局所修正"
+allowed_scope:
+  - "commit-from-current-staged wrapper の追加"
+  - "stale runtime approval/delegation の標準導線からの除外"
+  - "stdin 承認文必須チェックの challenge 作成前実施"
+  - "commit 手順の運用文書更新"
+  - "wrapper と既存 commit guard の回帰テスト"
+allowed_files:
+  - tools/commit-from-current-staged.py
+  - tests/tools/test_commit_from_current_staged.py
+  - docs/operations/WORKFLOW_PRECHECK.md
+  - docs/operations/WORKFLOW_PRECHECK_DETAILS.md
+  - stages/completed/maintenance-2026-06-19-commit-from-current-staged-wrapper.yaml
+  - .reviewcompass/evidence/review-runs/2026-06-19-commit-from-current-staged-postwrite/
+  - .reviewcompass/post-write-verification/post-write-2026-06-19-271.yaml
+completion_conditions:
+  - "現在の staged index に対する approval だけを作成して即 guarded commit できる"
+  - "stdin 承認文がない場合は challenge 作成前に停止する"
+  - "古い approval が残っていても標準導線で意識せずに現在の staged 内容へ束縛し直せる"
+completed_actions:
+  - "tests: stale approval があっても current staged に束縛し直して commit する wrapper テストを追加"
+  - "tests: stdin 承認文なしでは challenge を作らず停止する wrapper テストを追加"
+  - "implementation: tools/commit-from-current-staged.py を追加"
+  - "documentation: WORKFLOW_PRECHECK / DETAILS の標準 commit 導線を wrapper 優先に更新"
+verification:
+  - command: ".venv/bin/python3 -m unittest tests.tools.test_commit_from_current_staged -v"
+    result: "2 passed"
+  - command: ".venv/bin/python3 -m unittest tests.tools.test_guarded_git_commit -v"
+    result: "11 passed"
+  - command: ".venv/bin/python3 -m unittest tests.tools.test_check_workflow_action.CommitExitCodeTests -v"
+    result: "75 passed"
+  - command: "PYTHONPYCACHEPREFIX=/private/tmp/reviewcompass-pycache .venv/bin/python3 -m py_compile tools/commit-from-current-staged.py"
+    result: "passed"
+post_write_verification:
+  review_run: .reviewcompass/evidence/review-runs/2026-06-19-commit-from-current-staged-postwrite
+  manifest: .reviewcompass/post-write-verification/post-write-2026-06-19-271.yaml
+current_status: completed
+return_to: "integrated-design reopen design drafting"

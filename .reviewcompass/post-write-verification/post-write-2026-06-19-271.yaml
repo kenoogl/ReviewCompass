@@ -1,0 +1,24 @@
+status: completed
+target_files:
+- docs/operations/WORKFLOW_PRECHECK.md
+- docs/operations/WORKFLOW_PRECHECK_DETAILS.md
+target_sha256:
+  docs/operations/WORKFLOW_PRECHECK.md: f9459f1505fc41feb780d370ada1bf7feea2b9c6b395595ab74643b15d1d102f
+  docs/operations/WORKFLOW_PRECHECK_DETAILS.md: cabc3f443ed751986035cd32bab204993d8f4100cdb047d29dcc3afacbc418d3
+required_verifiers: &id001
+- gemini-3.5-flash
+completed_verifiers: *id001
+unresolved_substantive_findings: 0
+verifications:
+- verifier: gemini-3.5-flash
+  target_files:
+  - docs/operations/WORKFLOW_PRECHECK.md
+  - docs/operations/WORKFLOW_PRECHECK_DETAILS.md
+  target_sha256:
+    docs/operations/WORKFLOW_PRECHECK.md: f9459f1505fc41feb780d370ada1bf7feea2b9c6b395595ab74643b15d1d102f
+    docs/operations/WORKFLOW_PRECHECK_DETAILS.md: cabc3f443ed751986035cd32bab204993d8f4100cdb047d29dcc3afacbc418d3
+review_run:
+  path: .reviewcompass/evidence/review-runs/2026-06-19-commit-from-current-staged-postwrite
+  summary_path: .reviewcompass/evidence/review-runs/2026-06-19-commit-from-current-staged-postwrite/model-result-summary.yaml
+notes: Generated template; verify target_files cover current post-write targets before
+  use.

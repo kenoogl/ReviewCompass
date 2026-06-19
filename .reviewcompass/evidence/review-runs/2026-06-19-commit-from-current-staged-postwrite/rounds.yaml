@@ -1,0 +1,106 @@
+round_id: round-1
+purpose: post_write_verification
+invocation_timestamp: '2026-06-19T01:16:56.774275+00:00'
+target_files:
+- path: docs/operations/WORKFLOW_PRECHECK.md
+  sha256: f9459f1505fc41feb780d370ada1bf7feea2b9c6b395595ab74643b15d1d102f
+- path: docs/operations/WORKFLOW_PRECHECK_DETAILS.md
+  sha256: cabc3f443ed751986035cd32bab204993d8f4100cdb047d29dcc3afacbc418d3
+criteria: '# Post-write Review Target
+
+
+  criteria_id: commit_from_current_staged_wrapper_contract_clearance
+
+  phase: post_write_verification
+
+  generated_at: 2026-06-19T01:16:39.506981+00:00
+
+
+  ## Change Summary
+
+
+  commit approval prepare から guarded commit までを tools/commit-from-current-staged.py
+  にまとめ、現在の staged index に束縛した approval だけを作って即 commit する標準導線を追加した。
+
+
+  ## Review Question
+
+
+  commit 手順の運用文書が、stale approval の残存、nonce 手写し、challenge 作成後の別操作、空 stdin 実行を標準導線から外す
+  contract と矛盾していないか。
+
+
+  ## Target Files
+
+
+  - docs/operations/WORKFLOW_PRECHECK.md sha256=f9459f1505fc41feb780d370ada1bf7feea2b9c6b395595ab74643b15d1d102f
+
+  - docs/operations/WORKFLOW_PRECHECK_DETAILS.md sha256=cabc3f443ed751986035cd32bab204993d8f4100cdb047d29dcc3afacbc418d3
+
+
+  ## Scope
+
+
+  - Check whether the changed target files clearly state the intended contract.
+
+  - Check whether related instructions are mutually consistent across targets.
+
+  - Check whether the documented procedure is actionable before API review, triage,
+  manifest, or commit steps continue.
+
+
+  ## Out Of Scope
+
+
+  - Do not request unrelated refactors or style-only rewrites.
+
+  - Do not judge files that are not listed in Target Files.
+
+  - Do not treat missing implementation work as a document defect unless the target
+  text claims it already exists.
+
+
+  ## Finding Policy
+
+
+  - Report must-fix findings for contradictions, missing required gates, or instructions
+  that would allow an unsafe workflow action.
+
+  - Report should-fix findings for ambiguity that could cause repeated manual judgment
+  or unnecessary API review loops.
+
+  - Return findings: [] when the target files are internally consistent for this review
+  question.
+
+
+  ## Sensitive Information Check
+
+
+  - status: passed
+
+  - External API review must not proceed if this section reports potential secrets.
+
+  '
+prompt_sha256: dcfd10d32f2f039912a51078729a31642dbe667afe80312851624e1da3972e9d
+model_results:
+- model_id: gemini-3.5-flash
+  provider: gemini-api
+  role: primary
+  treatment: primary
+  invocation_path: api
+  raw_path: raw/gemini-3.5-flash.round-1.txt
+  raw_sha256: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+  parsed_path: parsed/gemini-3.5-flash.round-1.yaml
+  parsed_sha256: 21a4bc6c148adc189b007a1494658b877185702e1c2799ed2c82fa38d087efc4
+  parse_status: parsed
+  formatted_by: parser
+  formatted_by_actor_type: orchestrator
+  formatted_by_actor: run_role.py
+  formatted_at: '2026-06-19T01:16:56.774275+00:00'
+  follow_up_action: triage
+  attempts: 1
+  duration_seconds: 11.039
+  prompt_path: prompts/gemini-3.5-flash.round-1.prompt.md
+  prompt_sha256: dcfd10d32f2f039912a51078729a31642dbe667afe80312851624e1da3972e9d
+criteria_source_path: .reviewcompass/evidence/review-runs/2026-06-19-commit-from-current-staged-postwrite/review-target.md
+criteria_source_sha256: be36d01bcc29c79d3d0ee0f7c727b413e4d4fb68765f2e5f7cd3235cf50a0042

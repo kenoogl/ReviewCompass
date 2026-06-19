@@ -1,0 +1,16 @@
+run_id: 2026-06-19-commit-from-current-staged-postwrite
+phase: post_write_verification
+criteria_id: commit_from_current_staged_wrapper_contract_clearance
+criteria_file: .reviewcompass/evidence/review-runs/2026-06-19-commit-from-current-staged-postwrite/review-target.md
+criteria_file_sha256: be36d01bcc29c79d3d0ee0f7c727b413e4d4fb68765f2e5f7cd3235cf50a0042
+target_files:
+- path: docs/operations/WORKFLOW_PRECHECK.md
+  sha256: f9459f1505fc41feb780d370ada1bf7feea2b9c6b395595ab74643b15d1d102f
+- path: docs/operations/WORKFLOW_PRECHECK_DETAILS.md
+  sha256: cabc3f443ed751986035cd32bab204993d8f4100cdb047d29dcc3afacbc418d3
+sensitive_information_check:
+  status: passed
+  checked_at: '2026-06-19T01:16:39.506981+00:00'
+recommended_run_review_args:
+  criteria_file: .reviewcompass/evidence/review-runs/2026-06-19-commit-from-current-staged-postwrite/review-target.md
+  phase: post_write_verification

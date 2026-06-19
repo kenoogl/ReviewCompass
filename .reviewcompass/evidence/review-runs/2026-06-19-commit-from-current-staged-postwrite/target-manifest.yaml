@@ -1,0 +1,6 @@
+run_id: 2026-06-19-commit-from-current-staged-postwrite
+target_files:
+- path: docs/operations/WORKFLOW_PRECHECK.md
+  sha256: f9459f1505fc41feb780d370ada1bf7feea2b9c6b395595ab74643b15d1d102f
+- path: docs/operations/WORKFLOW_PRECHECK_DETAILS.md
+  sha256: cabc3f443ed751986035cd32bab204993d8f4100cdb047d29dcc3afacbc418d3
