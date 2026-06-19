@@ -1,0 +1,28 @@
+status: completed
+target_files:
+- docs/operations/WORKFLOW_NAVIGATION.md
+- docs/operations/WORKFLOW_PRECHECK.md
+- docs/operations/WORKFLOW_PRECHECK_DETAILS.md
+target_sha256:
+  docs/operations/WORKFLOW_NAVIGATION.md: 3c66928378117f69b2b1d90b47c600bb90a4dc54b752f11f06f6f6fdb3935f76
+  docs/operations/WORKFLOW_PRECHECK.md: df0ddb39a9027abe4e7114e2ce0ca37be1918cfa39951fb12d432a0f5758f3e2
+  docs/operations/WORKFLOW_PRECHECK_DETAILS.md: ace9d2811fbff3558200d68f081c1f34ff44e306f35bb89a70f0378230ca421f
+required_verifiers: &id001
+- gemini-3.5-flash
+completed_verifiers: *id001
+unresolved_substantive_findings: 0
+verifications:
+- verifier: gemini-3.5-flash
+  target_files:
+  - docs/operations/WORKFLOW_NAVIGATION.md
+  - docs/operations/WORKFLOW_PRECHECK.md
+  - docs/operations/WORKFLOW_PRECHECK_DETAILS.md
+  target_sha256:
+    docs/operations/WORKFLOW_NAVIGATION.md: 3c66928378117f69b2b1d90b47c600bb90a4dc54b752f11f06f6f6fdb3935f76
+    docs/operations/WORKFLOW_PRECHECK.md: df0ddb39a9027abe4e7114e2ce0ca37be1918cfa39951fb12d432a0f5758f3e2
+    docs/operations/WORKFLOW_PRECHECK_DETAILS.md: ace9d2811fbff3558200d68f081c1f34ff44e306f35bb89a70f0378230ca421f
+review_run:
+  path: .reviewcompass/evidence/review-runs/2026-06-19-commit-instruction-preflight-postwrite-r6
+  summary_path: .reviewcompass/evidence/review-runs/2026-06-19-commit-instruction-preflight-postwrite-r6/model-result-summary.yaml
+notes: Generated template; verify target_files cover current post-write targets before
+  use.

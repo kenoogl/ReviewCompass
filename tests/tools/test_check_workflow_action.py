@@ -3098,6 +3098,27 @@ class NextNavigationTests(unittest.TestCase):
       "review_working_note_without_api",
     )
 
+  def test_next_routes_todo_only_to_lightweight_self_check(self):
+    """TODO_NEXT_SESSION.md 単独変更は API post-write ではなく軽量自己精査を返す"""
+    cwd = Path(self.tmpdir)
+    _init_git_repo(cwd)
+    _write_specs_for_next(cwd, {})
+    target = cwd / "TODO_NEXT_SESSION.md"
+    target.write_text("# TODO\n\n次作業: design drafting\n", encoding="utf-8")
+
+    result = run_script(["next", "--json"], cwd=cwd)
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 0, result.stderr)
+    data = json.loads(result.stdout)
+    self.assertEqual(data["verdict"], "OK")
+    self.assertEqual(data["next_action"]["kind"], "lightweight_self_check")
+    self.assertEqual(data["next_action"]["target_files"], ["TODO_NEXT_SESSION.md"])
+    self.assertEqual(
+      data["next_action"]["required_action"],
+      "review_working_note_without_api",
+    )
+
   def test_next_keeps_regular_notes_as_post_write_targets(self):
     """docs/notes 直下は混在配置なので従来どおり post-write 対象にする"""
     cwd = Path(self.tmpdir)
@@ -3115,16 +3136,16 @@ class NextNavigationTests(unittest.TestCase):
     self.assertEqual(data["next_action"]["kind"], "post_write_verification")
     self.assertEqual(data["next_action"]["target_files"], ["docs/notes/memo.md"])
 
-  def test_next_prioritizes_strict_post_write_when_mixed_with_working_notes(self):
-    """軽量メモと strict 対象が混ざる場合は strict post-write を優先する"""
+  def test_next_includes_todo_in_strict_post_write_when_mixed_with_strict_target(self):
+    """TODO と strict 対象が混ざる場合は TODO も strict post-write に同梱する"""
     cwd = Path(self.tmpdir)
     _init_git_repo(cwd)
     _write_specs_for_next(cwd, {})
-    working = cwd / "docs" / "notes" / "working" / "memo.md"
-    strict = cwd / "TODO_NEXT_SESSION.md"
-    working.parent.mkdir(parents=True, exist_ok=True)
-    working.write_text("作業中メモ\n", encoding="utf-8")
-    strict.write_text("# TODO\n", encoding="utf-8")
+    todo = cwd / "TODO_NEXT_SESSION.md"
+    strict = cwd / "docs" / "operations" / "policy.md"
+    strict.parent.mkdir(parents=True, exist_ok=True)
+    todo.write_text("# TODO\n", encoding="utf-8")
+    strict.write_text("運用正本\n", encoding="utf-8")
 
     result = run_script(["next", "--json"], cwd=cwd)
 
@@ -3132,7 +3153,30 @@ class NextNavigationTests(unittest.TestCase):
     self.assertEqual(result.returncode, 0, result.stderr)
     data = json.loads(result.stdout)
     self.assertEqual(data["next_action"]["kind"], "post_write_verification")
-    self.assertEqual(data["next_action"]["target_files"], ["TODO_NEXT_SESSION.md"])
+    self.assertEqual(
+      data["next_action"]["target_files"],
+      ["TODO_NEXT_SESSION.md", "docs/operations/policy.md"],
+    )
+
+  def test_next_prioritizes_strict_post_write_when_mixed_with_working_notes(self):
+    """軽量メモと strict 対象が混ざる場合は strict post-write を優先する"""
+    cwd = Path(self.tmpdir)
+    _init_git_repo(cwd)
+    _write_specs_for_next(cwd, {})
+    working = cwd / "docs" / "notes" / "working" / "memo.md"
+    strict = cwd / "docs" / "operations" / "policy.md"
+    working.parent.mkdir(parents=True, exist_ok=True)
+    strict.parent.mkdir(parents=True, exist_ok=True)
+    working.write_text("作業中メモ\n", encoding="utf-8")
+    strict.write_text("運用正本\n", encoding="utf-8")
+
+    result = run_script(["next", "--json"], cwd=cwd)
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 0, result.stderr)
+    data = json.loads(result.stdout)
+    self.assertEqual(data["next_action"]["kind"], "post_write_verification")
+    self.assertEqual(data["next_action"]["target_files"], ["docs/operations/policy.md"])
     self.assertEqual(
       data["current_state"]["lightweight_self_check_targets"],
       ["docs/notes/working/memo.md"],
@@ -5082,6 +5126,139 @@ class CommitExitCodeTests(unittest.TestCase):
     self.tmpdir = tempfile.mkdtemp()
     self.addCleanup(shutil.rmtree, self.tmpdir)
     self.pending_file = _init_git_repo(self.tmpdir)
+
+  def test_commit_preflight_blocks_reopen_in_progress_before_staging(self):
+    """reopen 途中で停止点でなければ stage / approval 作成前に遮断する"""
+    in_progress_path = (
+      Path(self.tmpdir)
+      / "stages"
+      / "in-progress"
+      / "reopen-procedure-2026-06-19.yaml"
+    )
+    in_progress_path.parent.mkdir(parents=True)
+    in_progress_path.write_text(
+      "process_id: reopen-procedure\n"
+      "step_number: 3\n"
+      "next_step: 第3過程：requirements review-wave\n"
+      "pending_gates:\n"
+      "  - stages/requirements.yaml#review-wave\n",
+      encoding="utf-8",
+    )
+
+    result = run_script(["commit-preflight", "--json"], cwd=self.tmpdir)
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 2, result.stdout)
+    data = json.loads(result.stdout)
+    self.assertEqual(data["verdict"], "DEVIATION")
+    self.assertFalse(data["allowed_to_stage"])
+    self.assertFalse(data["allowed_to_prepare_approval"])
+    self.assertFalse(data["allowed_to_delegate_execution"])
+    self.assertFalse(data["allowed_to_run_guarded_commit"])
+    self.assertEqual(data["next_required_action"], "run_reopen_pending_gate")
+    self.assertIn("commit stop point", "\n".join(data["reasons"]))
+
+  def test_commit_preflight_allows_reopen_commit_stop_point_before_staging(self):
+    """構造化 reopen 停止点なら commit 処理の準備に進める"""
+    in_progress_path = (
+      Path(self.tmpdir)
+      / "stages"
+      / "in-progress"
+      / "reopen-procedure-2026-06-19.yaml"
+    )
+    in_progress_path.parent.mkdir(parents=True)
+    in_progress_path.write_text(
+      "process_id: reopen-procedure\n"
+      "step_number: 3\n"
+      "next_step: 第3過程：design triad-review 完了\n"
+      "commit_stop_point: true\n"
+      "commit_stop_point_step: 3\n"
+      "commit_stop_point_kind: triad_review_complete\n"
+      "commit_stop_point_gate: stages/design.yaml#triad-review\n"
+      "commit_stop_point_reason: design triad-review 完了時点の停止点\n",
+      encoding="utf-8",
+    )
+
+    result = run_script(["commit-preflight", "--json"], cwd=self.tmpdir)
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 0, result.stdout)
+    data = json.loads(result.stdout)
+    self.assertEqual(data["verdict"], "OK")
+    self.assertTrue(data["allowed_to_stage"])
+    self.assertTrue(data["allowed_to_prepare_approval"])
+    self.assertTrue(data["allowed_to_delegate_execution"])
+    self.assertFalse(data["allowed_to_run_guarded_commit"])
+    self.assertEqual(data["next_required_action"], "commit_stop_point")
+
+  def test_commit_preflight_blocks_post_write_pending_before_staging(self):
+    """post-write 未完了なら stage / approval 作成前に遮断する"""
+    target = Path(self.tmpdir) / "docs" / "operations" / "policy.md"
+    target.parent.mkdir(parents=True)
+    target.write_text("運用正本\n", encoding="utf-8")
+
+    result = run_script(["commit-preflight", "--json"], cwd=self.tmpdir)
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 2, result.stdout)
+    data = json.loads(result.stdout)
+    self.assertEqual(data["verdict"], "DEVIATION")
+    self.assertFalse(data["allowed_to_stage"])
+    self.assertFalse(data["allowed_to_prepare_approval"])
+    self.assertFalse(data["allowed_to_delegate_execution"])
+    self.assertFalse(data["allowed_to_run_guarded_commit"])
+    self.assertEqual(data["next_required_action"], "run_post_write_verification")
+
+  def test_commit_preflight_allows_normal_workflow_phase_end_stop_point(self):
+    """通常 workflow の phase 終端停止点でも commit 準備に進める"""
+    intent_before = {
+      "drafting": True,
+      "review": True,
+      "approval": False,
+      "reference": "stages/intent.yaml",
+    }
+    feature_partitioning = {
+      "candidate-proposal": False,
+      "approval": False,
+      "reference": "stages/feature-partitioning/2026-05-24-proposal.md",
+    }
+    _write_cross_feature_specs(
+      self.tmpdir,
+      intent_before,
+      feature_partitioning,
+    )
+    subprocess.run(
+      ["git", "add", ".reviewcompass/specs", "stages/feature-dependency.yaml"],
+      cwd=str(self.tmpdir),
+      check=True,
+      capture_output=True,
+    )
+    subprocess.run(
+      ["git", "commit", "-qm", "cross feature baseline"],
+      cwd=str(self.tmpdir),
+      check=True,
+      capture_output=True,
+    )
+    intent_after = dict(intent_before)
+    intent_after["approval"] = True
+    _write_cross_feature_specs(
+      self.tmpdir,
+      intent_after,
+      feature_partitioning,
+    )
+
+    result = run_script(["commit-preflight", "--json"], cwd=self.tmpdir)
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 0, result.stdout)
+    data = json.loads(result.stdout)
+    self.assertEqual(data["verdict"], "OK")
+    self.assertTrue(data["allowed_to_stage"])
+    self.assertTrue(data["allowed_to_prepare_approval"])
+    self.assertTrue(data["allowed_to_delegate_execution"])
+    self.assertFalse(data["allowed_to_run_guarded_commit"])
+    self.assertEqual(data["next_required_action"], "commit_stop_point")
+    self.assertEqual(data["current_state"]["next_action"]["kind"], "commit_stop_point")
 
   def test_commit_with_no_pending_and_normal_changes_returns_zero(self):
     """未消化所見 0 件 + 通常変更 + ユーザ承認あり → exit 0"""
@@ -7210,8 +7387,8 @@ class CommitExitCodeTests(unittest.TestCase):
   def test_commit_with_post_write_target_without_manifest_returns_two(self):
     """post-write 対象文書が staged され、完了 manifest がなければ exit 2"""
     _set_pending_findings(self.pending_file, unresolved_count=0)
-    _stage_file(self.tmpdir, "TODO_NEXT_SESSION.md", "# 次セッション")
-    _write_commit_approval(self.tmpdir, ["TODO_NEXT_SESSION.md"])
+    _stage_file(self.tmpdir, "docs/notes/policy.md", "# 運用メモ")
+    _write_commit_approval(self.tmpdir, ["docs/notes/policy.md"])
     result = run_script(
       ["commit", "--rationale", "post-write 未検証の遮断テスト"],
       cwd=self.tmpdir,
@@ -7223,9 +7400,9 @@ class CommitExitCodeTests(unittest.TestCase):
   def test_commit_with_post_write_target_and_completed_manifest_returns_zero(self):
     """post-write 対象文書が staged されても完了 manifest があれば exit 0"""
     _set_pending_findings(self.pending_file, unresolved_count=0)
-    _stage_file(self.tmpdir, "TODO_NEXT_SESSION.md", "# 次セッション")
-    _write_completed_post_write_manifest(self.tmpdir, ["TODO_NEXT_SESSION.md"])
-    _write_commit_approval(self.tmpdir, ["TODO_NEXT_SESSION.md"])
+    _stage_file(self.tmpdir, "docs/notes/policy.md", "# 運用メモ")
+    _write_completed_post_write_manifest(self.tmpdir, ["docs/notes/policy.md"])
+    _write_commit_approval(self.tmpdir, ["docs/notes/policy.md"])
     result = run_script(
       ["commit", "--rationale", "post-write 検証済み commit のテスト"],
       cwd=self.tmpdir,
@@ -7519,13 +7696,13 @@ class AuditCommitTests(unittest.TestCase):
 
   def test_audit_commit_detects_post_write_target_without_manifest(self):
     """指定 commit に post-write 対象があり manifest がなければ exit 2"""
-    self._commit_file("TODO_NEXT_SESSION.md", "# 次セッション", "add todo")
+    self._commit_file("docs/notes/policy.md", "# 運用メモ", "add policy note")
     result = run_script(["audit-commit", "HEAD", "--json"], cwd=self.tmpdir)
     _assert_script_invoked(self, result)
     self.assertEqual(result.returncode, 2)
     data = json.loads(result.stdout)
     self.assertEqual(data["verdict"], "DEVIATION")
-    self.assertIn("TODO_NEXT_SESSION.md", data["current_state"]["post_write_targets"])
+    self.assertIn("docs/notes/policy.md", data["current_state"]["post_write_targets"])
 
   def test_audit_commit_detects_root_commit_post_write_target_without_manifest(self):
     """root commit の post-write 対象追加も監査対象に含める"""
@@ -7538,7 +7715,7 @@ class AuditCommitTests(unittest.TestCase):
       ["git", "config", "commit.gpgsign", "false"],
     ]:
       subprocess.run(cmd, cwd=str(tmpdir), check=True, capture_output=True)
-    _stage_file(tmpdir, "TODO_NEXT_SESSION.md", "# root todo")
+    _stage_file(tmpdir, "docs/notes/policy.md", "# root policy")
     subprocess.run(
       ["git", "commit", "-qm", "root todo"],
       cwd=str(tmpdir),
@@ -7551,12 +7728,12 @@ class AuditCommitTests(unittest.TestCase):
     _assert_script_invoked(self, result)
     self.assertEqual(result.returncode, 2)
     data = json.loads(result.stdout)
-    self.assertIn("TODO_NEXT_SESSION.md", data["current_state"]["post_write_targets"])
+    self.assertIn("docs/notes/policy.md", data["current_state"]["post_write_targets"])
 
   def test_audit_commit_accepts_post_write_target_with_matching_manifest(self):
     """指定 commit の post-write 対象を覆う manifest があれば exit 0"""
-    self._commit_file("TODO_NEXT_SESSION.md", "# 次セッション", "add todo")
-    _write_completed_post_write_manifest(self.tmpdir, ["TODO_NEXT_SESSION.md"])
+    self._commit_file("docs/notes/policy.md", "# 運用メモ", "add policy note")
+    _write_completed_post_write_manifest(self.tmpdir, ["docs/notes/policy.md"])
     result = run_script(["audit-commit", "HEAD", "--json"], cwd=self.tmpdir)
     _assert_script_invoked(self, result)
     self.assertEqual(

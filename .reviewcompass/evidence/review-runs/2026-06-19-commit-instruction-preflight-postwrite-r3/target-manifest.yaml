@@ -1,0 +1,8 @@
+run_id: 2026-06-19-commit-instruction-preflight-postwrite-r3
+target_files:
+- path: docs/operations/WORKFLOW_PRECHECK.md
+  sha256: df0ddb39a9027abe4e7114e2ce0ca37be1918cfa39951fb12d432a0f5758f3e2
+- path: docs/operations/WORKFLOW_PRECHECK_DETAILS.md
+  sha256: 3eaae234e67d56e6852b1248085ac4c358a861ec4a0d8ff9226582d97e5e7734
+- path: docs/operations/WORKFLOW_NAVIGATION.md
+  sha256: 717941d5409d6470c348247b844bbab990320de78c32907e9584260f366f715d

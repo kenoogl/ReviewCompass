@@ -3588,6 +3588,214 @@ def cmd_commit(args):
   return exit_code
 
 
+def _git_cached_files(cwd):
+  """staged ファイル一覧を返す。取得失敗時は None を返す。"""
+  result = subprocess.run(
+    ["git", "diff", "--cached", "--name-only", "-z"],
+    cwd=str(cwd),
+    capture_output=True,
+    text=False,
+  )
+  if result.returncode != 0:
+    return None
+  return [f.decode("utf-8") for f in result.stdout.split(b"\0") if f]
+
+
+def _completed_maintenance_commit_candidate(cwd, in_progress_files, paths):
+  """stage 前の path 群から maintenance 完了 commit 候補かを判定する。"""
+  if not in_progress_files:
+    return False
+  completed_files = _maintenance_completed_files(paths)
+  if not completed_files:
+    return False
+
+  covered_in_progress = set()
+  for filepath in completed_files:
+    try:
+      text = (Path(cwd) / filepath).read_text(encoding="utf-8")
+      data = yaml.safe_load(text)
+    except (OSError, yaml.YAMLError):
+      return False
+    if not isinstance(data, dict):
+      return False
+    if data.get("process_id") != "maintenance":
+      return False
+    mainline_blocked_by = data.get("mainline_blocked_by")
+    if isinstance(mainline_blocked_by, str):
+      covered_in_progress.add(mainline_blocked_by)
+
+  for relative_path in in_progress_files:
+    if relative_path not in covered_in_progress:
+      return False
+    data = load_in_progress_file(cwd, relative_path)
+    if data.get("process_id") != "reopen-procedure":
+      return False
+  return True
+
+
+def _commit_preflight_next_action(cwd, in_progress_files):
+  """commit 指示入口で見る現在の workflow action を副作用なしに組み立てる。"""
+  if in_progress_files:
+    return build_in_progress_next_action(cwd, in_progress_files[0])
+
+  verification_targets = list_post_write_verification_targets(cwd)
+  if verification_targets:
+    manifest_state, manifest = evaluate_post_write_manifest_state(
+      cwd,
+      verification_targets,
+    )
+    if manifest_state != "completed":
+      return {
+        "kind": "post_write_verification",
+        "required_action": "run_post_write_verification",
+        "target_files": verification_targets,
+        "manifest_status": manifest_state,
+        "manifest": manifest.get("_path") if isinstance(manifest, dict) else None,
+        "reason": "post-write-verification 対象の未完了変更があります",
+      }
+
+  specs, missing = load_all_feature_specs(cwd)
+  if missing:
+    return {
+      "kind": "unknown",
+      "required_action": "repair_workflow_state",
+      "reason": "必要な spec.json が不足しています",
+      "missing_features": missing,
+    }
+
+  commit_stop_point = resolve_normal_workflow_commit_stop_point_action(cwd, specs)
+  if commit_stop_point:
+    return commit_stop_point
+
+  return {
+    "kind": "commit_candidate",
+    "required_action": "prepare_commit",
+    "reason": "commit 指示入口で遮断すべき active workflow unit はありません",
+  }
+
+
+def build_commit_instruction_preflight(cwd):
+  """利用者の commit 指示直後に使う read-only preflight を返す。"""
+  cwd = Path(cwd)
+  action = {
+    "subcommand": "commit-preflight",
+    "args": {},
+  }
+  if not (cwd / ".git").exists():
+    return {
+      "verdict": "DEVIATION",
+      "exit_code": 2,
+      "action": action,
+      "reasons": ["git リポジトリではありません"],
+      "current_state": {},
+      "allowed_to_stage": False,
+      "allowed_to_prepare_approval": False,
+      "allowed_to_delegate_execution": False,
+      "allowed_to_run_guarded_commit": False,
+      "next_required_action": None,
+    }
+
+  in_progress_files = list_in_progress_files(cwd)
+  changed_files = list_changed_files(cwd)
+  staged_files = _git_cached_files(cwd)
+  if staged_files is None:
+    return {
+      "verdict": "DEVIATION",
+      "exit_code": 2,
+      "action": action,
+      "reasons": ["staged ファイル一覧を取得できません"],
+      "current_state": {"in_progress_files": in_progress_files},
+      "allowed_to_stage": False,
+      "allowed_to_prepare_approval": False,
+      "allowed_to_delegate_execution": False,
+      "allowed_to_run_guarded_commit": False,
+      "next_required_action": None,
+    }
+
+  next_action = _commit_preflight_next_action(cwd, in_progress_files)
+  next_required_action = next_action.get("required_action")
+  reasons = []
+  verdict = "OK"
+  allowed_to_stage = True
+  allowed_to_prepare_approval = True
+  allowed_to_delegate_execution = True
+
+  if in_progress_files:
+    if next_required_action == "commit_stop_point":
+      pass
+    elif _completed_maintenance_commit_candidate(cwd, in_progress_files, changed_files):
+      next_required_action = "prepare_completed_maintenance_commit"
+    else:
+      verdict = "DEVIATION"
+      allowed_to_stage = False
+      allowed_to_prepare_approval = False
+      allowed_to_delegate_execution = False
+      reasons.append(
+        "stages/in-progress に進行中ファイルがありますが、現在位置は commit stop point ではありません: "
+        + ", ".join(in_progress_files)
+      )
+
+  if next_action.get("kind") in (
+    "post_write_verification",
+    "post_write_policy_violation",
+    "post_write_human_decision_required",
+  ):
+    verdict = "DEVIATION"
+    allowed_to_stage = False
+    allowed_to_prepare_approval = False
+    allowed_to_delegate_execution = False
+    reasons.append("commit より前に post-write verification を完了してください")
+
+  approval_state, approval_errors = validate_commit_approval(cwd, staged_files)
+  execution_delegation_errors = validate_commit_execution_delegation(
+    cwd,
+    approval_state,
+    "llm",
+  )
+  allowed_to_run_guarded_commit = (
+    verdict != "DEVIATION"
+    and bool(staged_files)
+    and approval_state.get("valid") is True
+    and not execution_delegation_errors
+  )
+
+  current_state = {
+    "changed_files": changed_files,
+    "staged_files": staged_files,
+    "in_progress_files": in_progress_files,
+    "next_action": next_action,
+    "commit_approval": approval_state,
+    "approval_errors": approval_errors,
+    "execution_delegation_errors": execution_delegation_errors,
+  }
+
+  return {
+    "verdict": verdict,
+    "exit_code": 0 if verdict == "OK" else 2,
+    "action": action,
+    "reasons": reasons,
+    "current_state": current_state,
+    "allowed_to_stage": allowed_to_stage,
+    "allowed_to_prepare_approval": allowed_to_prepare_approval,
+    "allowed_to_delegate_execution": allowed_to_delegate_execution,
+    "allowed_to_run_guarded_commit": allowed_to_run_guarded_commit,
+    "next_required_action": next_required_action,
+  }
+
+
+def cmd_commit_preflight(args):
+  """commit 指示直後に stage / approval 作成可否を read-only 判定する。"""
+  response = build_commit_instruction_preflight(Path.cwd())
+  if args.json:
+    print(json.dumps(response, ensure_ascii=False, indent=2))
+  else:
+    print(f"[VERDICT] {response['verdict']}")
+    for reason in response.get("reasons", []):
+      print(f"[REASON] {reason}")
+    print(f"[NEXT] {response.get('next_required_action')}")
+  return response["exit_code"]
+
+
 def cmd_push(args):
   """push サブコマンドのエントリポイント（仕様 §6.3）"""
   cwd = Path.cwd()
@@ -3747,11 +3955,7 @@ def cmd_audit_commit(args):
     print(f"error: {e}", file=sys.stderr)
     return 2
 
-  post_write_targets = [
-    path
-    for path in changed_files
-    if is_post_write_verification_target(path, cwd)
-  ]
+  post_write_targets = post_write_verification_targets_for_paths(cwd, changed_files)
   commit_hashes = {
     target: commit_file_sha256(cwd, commitish, target)
     for target in post_write_targets
@@ -4368,8 +4572,6 @@ def is_post_write_verification_target(path, cwd="."):
   #   凍結済み旧ログも引き続き対象外）
   if path in (DEFAULT_LOG_PATH, LEGACY_LOG_PATH):
     return False
-  if path == "TODO_NEXT_SESSION.md":
-    return True
   if path.startswith("docs/reviews/"):
     name = Path(path).name
     return (
@@ -4385,24 +4587,41 @@ def is_post_write_verification_target(path, cwd="."):
 
 def is_lightweight_self_check_target(path):
   """API post-write ではなく軽量自己精査で扱う作業中メモかを返す。"""
+  if path == "TODO_NEXT_SESSION.md":
+    return True
   return any(path.startswith(prefix) for prefix in LIGHTWEIGHT_SELF_CHECK_DIR_PREFIXES)
 
 
 def list_post_write_verification_targets(cwd):
   """未コミット変更のうち post-write-verification 対象を返す"""
-  return [
+  changed = list_changed_files(cwd)
+  return post_write_verification_targets_for_paths(cwd, changed)
+
+
+def post_write_verification_targets_for_paths(cwd, paths):
+  """path 群から post-write-verification 対象を返す。
+
+  TODO_NEXT_SESSION.md は単独なら軽量自己精査だが、strict 対象と同時に
+  変更される場合は同じ strict 検証に同梱する。
+  """
+  targets = [
     path
-    for path in list_changed_files(cwd)
+    for path in paths
     if is_post_write_verification_target(path, cwd)
   ]
+  if targets and "TODO_NEXT_SESSION.md" in paths:
+    return _unique_preserving_order(["TODO_NEXT_SESSION.md"] + targets)
+  return targets
 
 
 def list_lightweight_self_check_targets(cwd):
   """未コミット変更のうち軽量自己精査対象を返す。"""
+  strict_targets = list_post_write_verification_targets(cwd)
   return [
     path
     for path in list_changed_files(cwd)
     if is_lightweight_self_check_target(path)
+    and path not in strict_targets
   ]
 
 
@@ -4743,11 +4962,7 @@ def evaluate_post_write_manifest_state_for_hashes(cwd, target_files, actual_hash
 
 def validate_post_write_completion_for_targets(cwd, target_files, actual_hashes=None):
   """post-write 対象ファイルの完了 manifest があるか検査する"""
-  post_write_targets = [
-    path
-    for path in target_files
-    if is_post_write_verification_target(path, cwd)
-  ]
+  post_write_targets = post_write_verification_targets_for_paths(cwd, target_files)
   state = {
     "target_files": post_write_targets,
     "manifest_status": "not_applicable" if not post_write_targets else "pending",
@@ -6464,6 +6679,12 @@ def main():
     ),
   )
 
+  sub.add_parser(
+    "commit-preflight",
+    help="commit 指示直後に stage / approval 作成可否を read-only 判定する",
+    parents=[common_parser],
+  )
+
   # push サブコマンド（仕様 §5.3）
   ps = sub.add_parser(
     "push",
@@ -6719,6 +6940,8 @@ def main():
     sys.exit(cmd_stage(args))
   elif args.subcommand == "commit":
     sys.exit(cmd_commit(args))
+  elif args.subcommand == "commit-preflight":
+    sys.exit(cmd_commit_preflight(args))
   elif args.subcommand == "push":
     sys.exit(cmd_push(args))
   elif args.subcommand == "autonomous-plan":

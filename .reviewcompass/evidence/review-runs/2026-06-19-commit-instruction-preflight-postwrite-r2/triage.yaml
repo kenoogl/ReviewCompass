@@ -1,0 +1,62 @@
+run_id: 2026-06-19-commit-instruction-preflight-postwrite-r2
+triage_status: draft
+generated_at: '2026-06-19T00:25:18.872166+00:00'
+decision_actor: null
+decision_actor_type: human
+items:
+- finding_id: 2026-06-19-commit-instruction-preflight-postwrite-r2-gemini-3.5-flash-primary-001
+  run_id: 2026-06-19-commit-instruction-preflight-postwrite-r2
+  source_model: gemini-3.5-flash
+  source_round: round-1
+  source_raw_path: raw/gemini-3.5-flash.round-1.txt
+  source_parsed_path: parsed/gemini-3.5-flash.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: docs/operations/WORKFLOW_PRECHECK.md
+  plain_language_summary: サブコマンド `commit-approval` が第3節の適用範囲および第4節の呼び出し契約に明記されていません。
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: 4.2節などの本文中で `commit-approval prepare` の呼び出し手順に言及しているのに対し、適用範囲のリストや基本呼び出し形式の一覧から漏れているため、インターフェース契約の整合性が欠けています。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-19-commit-instruction-preflight-postwrite-r2-gemini-3.5-flash-primary-002
+  run_id: 2026-06-19-commit-instruction-preflight-postwrite-r2
+  source_model: gemini-3.5-flash
+  source_round: round-1
+  source_raw_path: raw/gemini-3.5-flash.round-1.txt
+  source_parsed_path: parsed/gemini-3.5-flash.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: docs/operations/WORKFLOW_PRECHECK_DETAILS.md
+  plain_language_summary: 第1節のサブコマンド一覧および詳細仕様に `commit-approval` サブコマンドの定義が存在しません。
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: 3.1節で `tools/check-workflow-action.py commit-approval prepare --json`
+    の具体的な実行プロセスを規定しているにもかかわらず、その引数仕様や判定内容、出力構造の定義がどこにも記述されておらず、契約文書として不完全です。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-19-commit-instruction-preflight-postwrite-r2-gemini-3.5-flash-primary-003
+  run_id: 2026-06-19-commit-instruction-preflight-postwrite-r2
+  source_model: gemini-3.5-flash
+  source_round: round-1
+  source_raw_path: raw/gemini-3.5-flash.round-1.txt
+  source_parsed_path: parsed/gemini-3.5-flash.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: docs/operations/WORKFLOW_PRECHECK.md
+  plain_language_summary: 「stage」という用語が、Gitのインデックスへの追加（`git add`）とワークフロー上のステージ（成果物生成・フェーズ移行）のどちらを指すのか文脈によって曖昧です。
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: 「stage、commit approval challenge...を作る前にも、まず `commit-preflight
+    --json` を実行する」と記述されていますが、Gitのステージング（`git add`）より前に実行すべきなのか、それともワークフロー定義（`stages/`）の編集前に実行すべきなのかが判然とせず、LLMの自律動作や自動ガード構築の際に混乱を招く恐れがあります。
+  applied_files: []
+  superseded_by: null

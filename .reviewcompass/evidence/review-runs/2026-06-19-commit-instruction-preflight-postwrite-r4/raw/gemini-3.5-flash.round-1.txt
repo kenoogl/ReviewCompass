@@ -1,0 +1,5 @@
+findings:
+  - severity: INFO
+    target_location: "docs/operations/WORKFLOW_PRECHECK_DETAILS.md"
+    description: "Duplicate and misordered section numbering starting from Section 8"
+    rationale: "Sections 8 and 9 are duplicated (e.g., '8. reopen-set-blocker' and '8. 出力形式', '9. reopen-finalize', '9. autonomous-plan 系', and '9. ログ'). Correcting the sequence to linear numbers (8, 9, 10, 11, 12) prevents confusion during contract cross-referencing."

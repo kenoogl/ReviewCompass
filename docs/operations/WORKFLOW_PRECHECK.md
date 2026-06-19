@@ -27,6 +27,8 @@
 本スクリプトは次を対象とする。
 
 - `spec-set`：spec.json の workflow_state 変更前検査
+- `commit-preflight`：commit 指示直後、stage / approval 作成前の read-only 入口検査
+- `commit-approval`：staged 内容に束縛した commit approval challenge、内容承認、実行代行承認、無効化の記録
 - `commit`：commit 前検査
 - `push`：push 前検査
 - `audit-commit`：commit 済み変更に対する post-write-verification 監査
@@ -53,6 +55,11 @@
 
 ```bash
 tools/check-workflow-action.py spec-set <feature> <phase> <stage> <new-value> [--rationale "<理由>"]
+tools/check-workflow-action.py commit-preflight
+tools/check-workflow-action.py commit-approval prepare --json
+tools/check-workflow-action.py commit-approval record --nonce <nonce> (--source-text-stdin|--no-source-text) [--json]
+tools/check-workflow-action.py commit-approval delegate-execution --nonce <nonce> --source-text-stdin [--json]
+tools/check-workflow-action.py commit-approval invalidate [--json]
 tools/check-workflow-action.py commit --rationale "<理由>" [--execution-actor llm|human]
 tools/check-workflow-action.py push --rationale "<理由>"
 tools/check-workflow-action.py audit-commit <commit-ish>
@@ -73,7 +80,7 @@ tools/guarded-git-commit.py -m "<commit message>" --rationale "<理由>" --appro
 - `--log-path <path>`：判定ログの出力先を上書きする
 - `--help`：使い方を表示する
 
-commit は人の職掌範囲である。`--execution-actor llm` の場合、通常の commit 内容承認とは別に、LLM による実行代行の明示承認を必要とする。実行時は直接 `git commit` ではなく、原則として `tools/guarded-git-commit.py` を使う。
+commit は人の職掌範囲である。利用者が commit を指示した直後は、Git index への追加（`git add`）、commit approval challenge、approval record、execution delegation record、guarded commit のいずれを作る前にも、まず `commit-preflight --json` を実行する。`DEVIATION` の場合は何も作らず停止し、commit できない理由、何も作らず止めたこと、次に許可されている workflow action だけを短く報告する。`--execution-actor llm` の場合、通常の commit 内容承認とは別に、LLM による実行代行の明示承認を必要とする。実行時は直接 `git commit` ではなく、原則として `tools/guarded-git-commit.py` を使う。
 
 nonce 方式の commit approval を使う場合、commit 準備は逐次手順として扱う。stage 後に `.venv/bin/python3 tools/check-workflow-action.py commit-approval prepare --json` を実行し、返された nonce で `tools/guarded-git-commit.py --approval-nonce <nonce> --approval-source-text-line-stdin` を起動する。`commit-approval prepare` と `commit --json` precheck を並列に実行しない。challenge 作成後は、staged index や承認状態を変え得る別コマンドを挟まず、guarded commit に承認 1 行を渡す。`--approval-source-text-line-stdin` を空 stdin で実行してはいけない。
 
@@ -92,6 +99,8 @@ commit 実行時のユーザー向け報告は、guard や precheck の詳細出
 ### 4.2 commit
 
 `commit` は、git commit の直前に呼び出す。承認レコード、post-write-verification 完了、reopen 手続き記録、持ち越し所見、staged ファイル分類、staged 文書のリンク整合を検査する。詳細は [WORKFLOW_PRECHECK_DETAILS.md](WORKFLOW_PRECHECK_DETAILS.md#commit) を参照する。
+
+`commit-preflight` は `commit` より前、利用者の commit 指示直後に呼び出す。現在の workflow action が commit operation に入ってよい状態かを read-only で判定し、stage や approval 作成に進んでよいかを返す。詳細は [WORKFLOW_PRECHECK_DETAILS.md](WORKFLOW_PRECHECK_DETAILS.md#commit-preflight) を参照する。
 
 <a id="push"></a>
 
@@ -146,6 +155,8 @@ reopen 開始時は、上流正本変更の影響範囲を分類し、必要な 
 主要な判定対象：
 
 - `spec-set` は、段順序、上流フェーズ完了、reopen pending、機能横断段の整合を検査する
+- `commit-preflight` は、commit operation 入口で stage / approval 作成へ進んでよい workflow 状態かを検査する
+- `commit-approval` は、staged exact index に束縛した nonce challenge、内容承認、実行代行承認、無効化を記録する
 - `commit` は、承認レコード、post-write-verification 完了、reopen 手続き記録、持ち越し所見、staged ファイル分類、staged 文書のリンク整合を検査する
 - `push` は、作業ツリーの clean 性、ローカル先行コミット数、push 先を検査する
 - `audit-commit` は、指定 commit に含まれる post-write-verification 対象と completed manifest の対応を検査する
@@ -166,7 +177,7 @@ reopen 開始時は、上流正本変更の影響範囲を分類し、必要な 
 
 `--json` 指定時は、機械処理向けに同等の情報を構造化して出力する。
 
-判定ログは JSON Lines 形式で記録する。既定パスは `docs/logs/workflow-precheck.log` とし、`--log-path` で上書きできる。
+判定ログは JSON Lines 形式で記録する。既定パスは `.reviewcompass/runtime/logs/workflow-precheck.log` とし、`--log-path` で上書きできる。旧 `docs/logs/workflow-precheck.log` は legacy path として扱う。
 
 ## 7. テスト契約
 

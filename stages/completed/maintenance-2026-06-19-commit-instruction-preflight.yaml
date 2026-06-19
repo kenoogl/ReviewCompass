@@ -1,0 +1,44 @@
+process_id: maintenance
+title: commit instruction preflight
+trigger: "docs/notes/working/2026-06-19-commit-instruction-preflight-issues.md の対応として、commit 指示直後の read-only preflight を機械化する"
+mainline_blocked_by: stages/in-progress/reopen-procedure-2026-06-19.yaml
+completed_at: "2026-06-19"
+classification: local_workflow_guard_improvement
+reason: "commit 指示入口の可否判定を追加し、workflow phase/gate の意味や reopen 本線の成果物内容は変更しない"
+allowed_scope:
+  - "commit 指示直後の read-only preflight"
+  - "preflight のテスト"
+  - "commit 手順の運用文書"
+allowed_files:
+  - tools/check-workflow-action.py
+  - tests/tools/test_check_workflow_action.py
+  - docs/operations/WORKFLOW_PRECHECK.md
+  - docs/operations/WORKFLOW_PRECHECK_DETAILS.md
+  - docs/operations/WORKFLOW_NAVIGATION.md
+  - .reviewcompass/evidence/review-runs/2026-06-19-commit-instruction-preflight-postwrite-r6/
+  - .reviewcompass/post-write-verification/post-write-2026-06-19-267.yaml
+completion_conditions:
+  - "commit-preflight が stage / approval 作成前に reopen 途中状態を遮断する"
+  - "reopen commit stop point、通常 workflow phase 終端、post-write pending の代表ケースをテストする"
+  - "docs/operations の post-write verification が no findings で完了する"
+completed_actions:
+  - "tests: commit-preflight の reopen 途中遮断、reopen stop point 許可、post-write pending 遮断、通常 phase 終端許可を追加"
+  - "implementation: commit-preflight サブコマンドと build_commit_instruction_preflight を追加"
+  - "implementation: stage 前の maintenance 完了 commit 候補を in-progress reopen と対応付けて許可する判定を追加"
+  - "documentation: WORKFLOW_PRECHECK / WORKFLOW_PRECHECK_DETAILS / WORKFLOW_NAVIGATION に commit-preflight の順序と commit-approval 契約を追記"
+  - "post-write verification: 2026-06-19-commit-instruction-preflight-postwrite-r6 no findings"
+verification:
+  - command: ".venv/bin/python3 -m unittest tests.tools.test_check_workflow_action.CommitExitCodeTests -v"
+    result: pass
+  - command: ".venv/bin/python3 -m unittest tests.tools.test_check_workflow_action.NextNavigationTests -v"
+    result: pass
+  - command: ".venv/bin/python3 -m unittest tests.tools.test_check_workflow_action.AuditCommitTests -v"
+    result: pass
+  - command: "PYTHONPYCACHEPREFIX=/tmp/reviewcompass-pycache .venv/bin/python3 -m py_compile tools/check-workflow-action.py"
+    result: pass
+  - command: "git diff --check"
+    result: pass
+  - command: ".venv/bin/python3 tools/api_providers/run_review.py --variant post_write_verification_google --target docs/operations/WORKFLOW_PRECHECK.md --target docs/operations/WORKFLOW_PRECHECK_DETAILS.md --target docs/operations/WORKFLOW_NAVIGATION.md --phase post_write_verification --criteria commit_instruction_preflight_contract_clearance_r6 --review-run-dir .reviewcompass/evidence/review-runs/2026-06-19-commit-instruction-preflight-postwrite-r6"
+    result: "pass: no findings"
+post_write_manifest: .reviewcompass/post-write-verification/post-write-2026-06-19-267.yaml
+return_to: "integrated-design reopen design drafting"

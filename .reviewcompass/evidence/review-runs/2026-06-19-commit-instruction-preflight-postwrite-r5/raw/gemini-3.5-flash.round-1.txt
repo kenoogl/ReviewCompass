@@ -1,0 +1,5 @@
+findings:
+  - severity: WARN
+    target_location: "docs/operations/WORKFLOW_PRECHECK_DETAILS.md"
+    description: "Inconsistency in sequential commit steps where the prerequisite `commit-preflight` is omitted before staging."
+    rationale: "Section 3.2 lists step 1 as `git add ...` directly, whereas WORKFLOW_PRECHECK.md and WORKFLOW_NAVIGATION.md strictly mandate that `commit-preflight` must be executed before staging (Git index addition) or creating any approval records."

@@ -1,0 +1,13 @@
+findings:
+  - severity: ERROR
+    target_location: "docs/operations/WORKFLOW_PRECHECK_DETAILS.md#1. サブコマンド"
+    description: "The 'commit-preflight' subcommand is missing from the list of subcommands."
+    rationale: "Section 1 of WORKFLOW_PRECHECK_DETAILS.md lists all subcommands but omits 'commit-preflight', which is a key preflight operational contract tool."
+  - severity: ERROR
+    target_location: "docs/operations/WORKFLOW_PRECHECK_DETAILS.md#3.0 commit-preflight"
+    description: "Inconsistent arguments specified for 'commit-preflight'."
+    rationale: "The argument table under Section 3.0 lists '--rationale' as a required parameter, which contradicts the calling contract in WORKFLOW_PRECHECK.md where 'commit-preflight' takes no arguments, and these parameters actually belong to the 'commit' subcommand."
+  - severity: WARN
+    target_location: "docs/operations/WORKFLOW_PRECHECK.md#6. 出力とログ"
+    description: "Inconsistent default log path between WORKFLOW_PRECHECK.md and WORKFLOW_PRECHECK_DETAILS.md."
+    rationale: "WORKFLOW_PRECHECK.md refers to the legacy path 'docs/logs/workflow-precheck.log' as the default, whereas WORKFLOW_PRECHECK_DETAILS.md lists '.reviewcompass/runtime/logs/workflow-precheck.log' as the new default location."

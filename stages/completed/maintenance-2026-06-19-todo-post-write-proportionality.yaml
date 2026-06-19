@@ -1,0 +1,53 @@
+process_id: maintenance
+started_at: "2026-06-19T00:00:00+09:00"
+completed_at: "2026-06-19T09:11:31+09:00"
+trigger: "TODO_NEXT_SESSION.md の post-write validation が過剰に感じられるため、進捗・次タスク更新は軽量自己精査へ寄せる"
+mainline_blocked_by: "stages/in-progress/reopen-procedure-2026-06-19.yaml の design drafting 再開直前状態"
+classification: local
+reason: "post-write 対象判定のうち TODO_NEXT_SESSION.md の重み付けだけを変更する局所変更。workflow phase/gate の意味や承認要件は変更しない。"
+procedure: "TDD"
+allowed_scope:
+  - "TODO_NEXT_SESSION.md 単独変更を lightweight_self_check 対象へ変更する"
+  - "TODO_NEXT_SESSION.md が strict post-write 対象と混在する場合は strict 側の target_files に同梱する"
+  - "WORKFLOW_NAVIGATION の軽量自己精査説明を更新する"
+allowed_files:
+  - "tools/check-workflow-action.py"
+  - "tests/tools/test_check_workflow_action.py"
+  - "docs/operations/WORKFLOW_NAVIGATION.md"
+  - ".reviewcompass/evidence/review-runs/2026-06-19-todo-post-write-proportionality-postwrite/"
+  - ".reviewcompass/post-write-verification/post-write-2026-06-19-266.yaml"
+  - "stages/in-progress/maintenance-2026-06-19-todo-post-write-proportionality.yaml"
+  - "stages/completed/maintenance-2026-06-19-todo-post-write-proportionality.yaml"
+completion_conditions:
+  - "TODO_NEXT_SESSION.md 単独変更が lightweight_self_check を返すテストを追加し、先に失敗を確認する"
+  - "TODO_NEXT_SESSION.md と strict 対象の混在が post_write_verification で TODO も target_files に含めるテストを追加し、先に失敗を確認する"
+  - "実装後、focused test と関連 post-write / lightweight self-check テストが通過する"
+  - "運用文書が TODO_NEXT_SESSION.md の比例的扱いを説明する"
+completed_steps:
+  - "red test: TODO_NEXT_SESSION.md 単独変更が post_write_verification へ進むことを確認"
+  - "test: TODO_NEXT_SESSION.md と strict 対象の混在時、TODO も strict target_files に含める期待を追加"
+  - "implementation: TODO_NEXT_SESSION.md を lightweight_self_check 対象に変更"
+  - "implementation: strict 対象が同時にある場合、TODO_NEXT_SESSION.md を post_write_verification target_files に昇格する共通抽出関数を追加"
+  - "implementation: next / commit / audit-commit の post-write 対象抽出を共通化"
+  - "test: post-write 対象一般の commit / audit テストを TODO ではなく docs/notes の strict 文書へ切り替え"
+  - "documentation: WORKFLOW_NAVIGATION の lightweight_self_check 説明に TODO の比例的扱いを追記"
+  - "post-write verification: WORKFLOW_NAVIGATION.md の変更を API review し no findings を確認"
+verification:
+  - command: ".venv/bin/python3 -m unittest tests.tools.test_check_workflow_action.NextNavigationTests.test_next_routes_todo_only_to_lightweight_self_check tests.tools.test_check_workflow_action.NextNavigationTests.test_next_includes_todo_in_strict_post_write_when_mixed_with_strict_target tests.tools.test_check_workflow_action.NextNavigationTests.test_next_prioritizes_strict_post_write_when_mixed_with_working_notes tests.tools.test_check_workflow_action.NextNavigationTests.test_next_post_write_verification_target_matrix -v"
+    result: "passed"
+  - command: ".venv/bin/python3 -m unittest tests.tools.test_check_workflow_action.NextNavigationTests.test_next_routes_todo_only_to_lightweight_self_check tests.tools.test_check_workflow_action.NextNavigationTests.test_next_includes_todo_in_strict_post_write_when_mixed_with_strict_target tests.tools.test_check_workflow_action.NextNavigationTests.test_next_prioritizes_strict_post_write_when_mixed_with_working_notes tests.tools.test_check_workflow_action.NextNavigationTests.test_next_post_write_verification_target_matrix tests.tools.test_check_workflow_action.CommitExitCodeTests.test_commit_with_post_write_target_without_manifest_returns_two tests.tools.test_check_workflow_action.CommitExitCodeTests.test_commit_with_post_write_target_and_completed_manifest_returns_zero tests.tools.test_check_workflow_action.AuditCommitTests -v"
+    result: "9 tests passed"
+  - command: ".venv/bin/python3 -m unittest tests.tools.test_check_workflow_action.NextNavigationTests -v"
+    result: "45 tests passed"
+  - command: "PYTHONPYCACHEPREFIX=/tmp/reviewcompass-pycache .venv/bin/python3 -m py_compile tools/check-workflow-action.py"
+    result: "passed"
+  - command: "git diff --check"
+    result: "passed"
+  - command: ".venv/bin/python3 tools/api_providers/run_review.py --variant post_write_verification_google --target docs/operations/WORKFLOW_NAVIGATION.md --phase post_write_verification --criteria todo_post_write_proportionality_policy_clearance --review-run-dir .reviewcompass/evidence/review-runs/2026-06-19-todo-post-write-proportionality-postwrite"
+    result: "no findings"
+  - command: ".venv/bin/python3 tools/api_providers/review_triage.py list-pending --review-run-dir .reviewcompass/evidence/review-runs/2026-06-19-todo-post-write-proportionality-postwrite"
+    result: "no pending findings"
+post_write_verification:
+  manifest: ".reviewcompass/post-write-verification/post-write-2026-06-19-266.yaml"
+current_status: completed
+return_to: "integrated-design design drafting after reopen stop point release"

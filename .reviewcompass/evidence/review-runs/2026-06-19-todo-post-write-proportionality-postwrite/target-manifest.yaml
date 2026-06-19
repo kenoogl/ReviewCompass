@@ -1,0 +1,4 @@
+run_id: 2026-06-19-todo-post-write-proportionality-postwrite
+target_files:
+- path: docs/operations/WORKFLOW_NAVIGATION.md
+  sha256: 7ae3ca87d425c433aa86272d13c7b8f367ae90fdbd5e89b837c0d00637338b0a

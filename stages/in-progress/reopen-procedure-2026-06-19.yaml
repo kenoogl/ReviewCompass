@@ -39,11 +39,6 @@ completed_gates:
 drafting_completed_gates:
 - stages/requirements.yaml#drafting
 current_blocker: null
-commit_stop_point: true
-commit_stop_point_step: 3
-commit_stop_point_kind: approval_complete
-commit_stop_point_gate: stages/requirements.yaml#approval
-commit_stop_point_reason: requirements approval 完了時点の停止点
 reopen_step_records:
 - from_step: 1
   completed_step: R-0 判定確定・spec.json フラグ差し戻し完了（requirements.triad-review/review-wave/alignment/approval

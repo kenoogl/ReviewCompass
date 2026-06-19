@@ -1,0 +1,13 @@
+findings:
+  - severity: ERROR
+    target_location: "docs/operations/WORKFLOW_PRECHECK_DETAILS.md"
+    description: "Command signature mismatch for tools/guarded-git-commit.py"
+    rationale: "WORKFLOW_PRECHECK.md documents the nonce-based execution form of tools/guarded-git-commit.py, but WORKFLOW_PRECHECK_DETAILS.md's list of subcommands/scripts in Section 1 only lists the basic form, creating a contract discrepancy."
+  - severity: ERROR
+    target_location: "docs/operations/WORKFLOW_NAVIGATION.md"
+    description: "Out-of-order staging instruction violating commit-preflight contract"
+    rationale: "The navigation guide under commit_stop_point instructs the user to stage target diffs before entering the guarded commit sequence. This directly violates the preflight contract requiring commit-preflight to be run before any staging (git add) or approval creation."
+  - severity: WARN
+    target_location: "docs/operations/WORKFLOW_PRECHECK_DETAILS.md"
+    description: "Duplicate and inconsistent section numbering"
+    rationale: "The details document contains duplicate section numbers (e.g., two section 9s) and reverts to lower numbers (e.g., section 8 and 9 repeating after section 9), causing structural inconsistency."

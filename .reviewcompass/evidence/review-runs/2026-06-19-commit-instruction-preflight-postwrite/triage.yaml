@@ -1,0 +1,68 @@
+run_id: 2026-06-19-commit-instruction-preflight-postwrite
+triage_status: draft
+generated_at: '2026-06-19T00:24:20.104592+00:00'
+decision_actor: null
+decision_actor_type: human
+items:
+- finding_id: 2026-06-19-commit-instruction-preflight-postwrite-gemini-3.5-flash-primary-001
+  run_id: 2026-06-19-commit-instruction-preflight-postwrite
+  source_model: gemini-3.5-flash
+  source_round: round-1
+  source_raw_path: raw/gemini-3.5-flash.round-1.txt
+  source_parsed_path: parsed/gemini-3.5-flash.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: docs/operations/WORKFLOW_PRECHECK_DETAILS.md#1. サブコマンド
+  plain_language_summary: The 'commit-preflight' subcommand is missing from the list
+    of subcommands.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: Section 1 of WORKFLOW_PRECHECK_DETAILS.md lists all subcommands
+    but omits 'commit-preflight', which is a key preflight operational contract tool.
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-19-commit-instruction-preflight-postwrite-gemini-3.5-flash-primary-002
+  run_id: 2026-06-19-commit-instruction-preflight-postwrite
+  source_model: gemini-3.5-flash
+  source_round: round-1
+  source_raw_path: raw/gemini-3.5-flash.round-1.txt
+  source_parsed_path: parsed/gemini-3.5-flash.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: docs/operations/WORKFLOW_PRECHECK_DETAILS.md#3.0 commit-preflight
+  plain_language_summary: Inconsistent arguments specified for 'commit-preflight'.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: The argument table under Section 3.0 lists '--rationale' as a required
+    parameter, which contradicts the calling contract in WORKFLOW_PRECHECK.md where
+    'commit-preflight' takes no arguments, and these parameters actually belong to
+    the 'commit' subcommand.
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-19-commit-instruction-preflight-postwrite-gemini-3.5-flash-primary-003
+  run_id: 2026-06-19-commit-instruction-preflight-postwrite
+  source_model: gemini-3.5-flash
+  source_round: round-1
+  source_raw_path: raw/gemini-3.5-flash.round-1.txt
+  source_parsed_path: parsed/gemini-3.5-flash.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: docs/operations/WORKFLOW_PRECHECK.md#6. 出力とログ
+  plain_language_summary: Inconsistent default log path between WORKFLOW_PRECHECK.md
+    and WORKFLOW_PRECHECK_DETAILS.md.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: WORKFLOW_PRECHECK.md refers to the legacy path 'docs/logs/workflow-precheck.log'
+    as the default, whereas WORKFLOW_PRECHECK_DETAILS.md lists '.reviewcompass/runtime/logs/workflow-precheck.log'
+    as the new default location.
+  applied_files: []
+  superseded_by: null

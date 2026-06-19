@@ -1,0 +1,68 @@
+run_id: 2026-06-19-commit-instruction-preflight-postwrite-r3
+triage_status: draft
+generated_at: '2026-06-19T00:26:54.846155+00:00'
+decision_actor: null
+decision_actor_type: human
+items:
+- finding_id: 2026-06-19-commit-instruction-preflight-postwrite-r3-gemini-3.5-flash-primary-001
+  run_id: 2026-06-19-commit-instruction-preflight-postwrite-r3
+  source_model: gemini-3.5-flash
+  source_round: round-1
+  source_raw_path: raw/gemini-3.5-flash.round-1.txt
+  source_parsed_path: parsed/gemini-3.5-flash.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: docs/operations/WORKFLOW_PRECHECK_DETAILS.md
+  plain_language_summary: Command signature mismatch for tools/guarded-git-commit.py
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: WORKFLOW_PRECHECK.md documents the nonce-based execution form of
+    tools/guarded-git-commit.py, but WORKFLOW_PRECHECK_DETAILS.md's list of subcommands/scripts
+    in Section 1 only lists the basic form, creating a contract discrepancy.
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-19-commit-instruction-preflight-postwrite-r3-gemini-3.5-flash-primary-002
+  run_id: 2026-06-19-commit-instruction-preflight-postwrite-r3
+  source_model: gemini-3.5-flash
+  source_round: round-1
+  source_raw_path: raw/gemini-3.5-flash.round-1.txt
+  source_parsed_path: parsed/gemini-3.5-flash.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: docs/operations/WORKFLOW_NAVIGATION.md
+  plain_language_summary: Out-of-order staging instruction violating commit-preflight
+    contract
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: The navigation guide under commit_stop_point instructs the user
+    to stage target diffs before entering the guarded commit sequence. This directly
+    violates the preflight contract requiring commit-preflight to be run before any
+    staging (git add) or approval creation.
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-19-commit-instruction-preflight-postwrite-r3-gemini-3.5-flash-primary-003
+  run_id: 2026-06-19-commit-instruction-preflight-postwrite-r3
+  source_model: gemini-3.5-flash
+  source_round: round-1
+  source_raw_path: raw/gemini-3.5-flash.round-1.txt
+  source_parsed_path: parsed/gemini-3.5-flash.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: docs/operations/WORKFLOW_PRECHECK_DETAILS.md
+  plain_language_summary: Duplicate and inconsistent section numbering
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: The details document contains duplicate section numbers (e.g.,
+    two section 9s) and reverts to lower numbers (e.g., section 8 and 9 repeating
+    after section 9), causing structural inconsistency.
+  applied_files: []
+  superseded_by: null

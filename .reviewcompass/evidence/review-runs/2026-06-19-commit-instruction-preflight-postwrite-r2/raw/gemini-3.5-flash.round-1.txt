@@ -1,0 +1,13 @@
+findings:
+  - severity: ERROR
+    target_location: "docs/operations/WORKFLOW_PRECHECK.md"
+    description: "サブコマンド `commit-approval` が第3節の適用範囲および第4節の呼び出し契約に明記されていません。"
+    rationale: "4.2節などの本文中で `commit-approval prepare` の呼び出し手順に言及しているのに対し、適用範囲のリストや基本呼び出し形式の一覧から漏れているため、インターフェース契約の整合性が欠けています。"
+  - severity: ERROR
+    target_location: "docs/operations/WORKFLOW_PRECHECK_DETAILS.md"
+    description: "第1節のサブコマンド一覧および詳細仕様に `commit-approval` サブコマンドの定義が存在しません。"
+    rationale: "3.1節で `tools/check-workflow-action.py commit-approval prepare --json` の具体的な実行プロセスを規定しているにもかかわらず、その引数仕様や判定内容、出力構造の定義がどこにも記述されておらず、契約文書として不完全です。"
+  - severity: WARN
+    target_location: "docs/operations/WORKFLOW_PRECHECK.md"
+    description: "「stage」という用語が、Gitのインデックスへの追加（`git add`）とワークフロー上のステージ（成果物生成・フェーズ移行）のどちらを指すのか文脈によって曖昧です。"
+    rationale: "「stage、commit approval challenge...を作る前にも、まず `commit-preflight --json` を実行する」と記述されていますが、Gitのステージング（`git add`）より前に実行すべきなのか、それともワークフロー定義（`stages/`）の編集前に実行すべきなのかが判然とせず、LLMの自律動作や自動ガード構築の際に混乱を招く恐れがあります。"

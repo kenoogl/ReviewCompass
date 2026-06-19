@@ -1,0 +1,28 @@
+run_id: 2026-06-19-commit-instruction-preflight-postwrite-r4
+triage_status: draft
+generated_at: '2026-06-19T00:28:11.116006+00:00'
+decision_actor: null
+decision_actor_type: human
+items:
+- finding_id: 2026-06-19-commit-instruction-preflight-postwrite-r4-gemini-3.5-flash-primary-001
+  run_id: 2026-06-19-commit-instruction-preflight-postwrite-r4
+  source_model: gemini-3.5-flash
+  source_round: round-1
+  source_raw_path: raw/gemini-3.5-flash.round-1.txt
+  source_parsed_path: parsed/gemini-3.5-flash.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: docs/operations/WORKFLOW_PRECHECK_DETAILS.md
+  plain_language_summary: Duplicate and misordered section numbering starting from
+    Section 8
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: Sections 8 and 9 are duplicated (e.g., '8. reopen-set-blocker'
+    and '8. 出力形式', '9. reopen-finalize', '9. autonomous-plan 系', and '9. ログ'). Correcting
+    the sequence to linear numbers (8, 9, 10, 11, 12) prevents confusion during contract
+    cross-referencing.
+  applied_files: []
+  superseded_by: null
