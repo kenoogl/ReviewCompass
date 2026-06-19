@@ -1,6 +1,6 @@
 # 次セッション継続用メモ
 
-最終更新：2026-06-19（Codex セッション、`b06e3e2a` push 済み）。
+最終更新：2026-06-20（Codex セッション、`c09a6f9d` push 済み）。
 
 この TODO は入口メモであり、作業順序の正本ではない。正本は各 feature の `spec.json` と `tools/check-workflow-action.py next --json` の機械判定である。
 
@@ -19,51 +19,53 @@
 
 - `main` と `origin/main` は同期済み。
 - 作業ツリーは clean。
-- `next --json` は `completed`。
-- 直近 commit: `b06e3e2a Remove implementation drafting artifacts`
-- `implementation-drafting.md` は正式成果物として採用しない方針に変更済み。
-- implementation drafting は文書作成ではなく、`tasks.md` に従ったテストと実装コードの生成を意味する。
-- tasks drafting では、各タスクに次を含める必要がある。
-  - 実装対象ファイル
-  - 最初に書く失敗テスト
-  - 実装順序
-  - 完了条件
-  - 検証コマンド
-  - 禁止事項
-  - 停止条件
+- 直近 commit: `c09a6f9d requirements approval を完了`
+- `next --json` は `reopen_in_progress`。
+- 現在の本筋は `workflow-management` の Requirement 13〜16 を基点にした reopen R-0。
+- requirements は再生成、triad-review、review-wave、alignment、approval まで完了済み。
+- 次の停止点は requirements approval 完了コミット後の記録消化。これを済ませると design triad-review へ進む。
+- 進行中ファイル: `stages/in-progress/reopen-procedure-2026-06-19.yaml`
+- 次の pending gate:
+  - `stages/design.yaml#triad-review`
+  - `stages/design.yaml#review-wave`
+  - `stages/design.yaml#alignment`
+  - `stages/design.yaml#approval`
+  - `stages/tasks.yaml#triad-review`
+  - `stages/tasks.yaml#review-wave`
+  - `stages/tasks.yaml#alignment`
+  - `stages/tasks.yaml#approval`
 
 ## 3. 次作業
 
-利用者指示：
+次に行うこと：
 
-> 次の作業は、タスク段からのreopenで、新しい規律に従ってタスクを再生成、実装を行う。
+1. requirements approval の停止点を完了済みとして記録する。
+   - 対象 commit: `c09a6f9de1144a46fae98aea4a59b92384308c2b`
+   - kind: `approval_complete`
+   - gate: `stages/requirements.yaml#approval`
+2. `next --json` を再実行し、design triad-review が次作業になることを確認する。
+3. design triad-review の API review-run を開始する前に、使用 variant と role ごとの path／provider／model を利用者へ提示して停止する。
+4. design triad-review では、requirements.md → design.md の意図伝達を必ず確認する。
+   - Requirement 13〜16 の目的、責務境界、受入条件、禁止事項が design.md の設計判断へ落ちているかを見る。
+   - design.md が審査対象で、requirements.md は上流資料。tasks.md はこの段では審査対象ではない。
 
-進め方：
+進め方の注意：
 
-1. tasks 段からの reopen として分類根拠を作成する。
-2. `reopen-start` で in-progress 手続きを発行する。
-3. 新しい tasks 粒度規律に従い、`workflow-management` の `tasks.md` を再生成する。
-4. tasks 段の必要 gate を進める。
-5. implementation drafting では、再生成した `tasks.md` に従って実際のテストと実装コードを書く。
-6. 実装後は review / review-wave / alignment / approval の流れに従う。
-
-注意：
-
-- 作業開始前に `docs/operations/WORKFLOW_NAVIGATION.md` の `reopen_in_progress` と `reopen_classification_required` を確認する。
-- `implementation-drafting.md` は作らない。
-- 実装前計画文書を別成果物として増やさない。
-- タスク記述が実装に足りない場合は、tasks.md の粒度を上げる。
-- 平易な進捗説明を使う。「implementation drafting を完了」ではなく「コードとテストを作成」のように説明する。
+- `next --json` が示す停止点を飛ばさない。
+- commit / push は利用者の明示指示がある場合だけ実行する。
+- triad-review の API review-run 前には、variant と role 割当を利用者に提示する。
+- review prompt は、上流資料のパス名だけでなく、必要な本文または要点を含める。
+- 平易な進捗説明を使う。内部状態名を主語にせず、「今どの段階か」「何をしたか」「次に何をするか」を先に述べる。
 
 ## 4. 直近の完了事項
 
-- `implementation-drafting.md` の全 spec 成果物を削除。
-- 旧 `test_workflow_management_implementation_drafting.py` を削除。
-- `test_workflow_management_task_granularity.py` を追加。
-- `SESSION_WORKFLOW_GUIDE.md`、`workflow-management/tasks.md`、`.reviewcompass/README.md`、関連 notes を更新。
-- 削除済み staged Markdown を commit guard が誤遮断しないよう、`tools/check-workflow-action.py` を修正。
-- post-write verification 所見 0。
-- commit `b06e3e2a` を `origin/main` へ push 済み。
+- Requirement 13〜16 を基点に、requirements/design/tasks を縦方向意図監査の結果へ合わせて再生成。
+- requirements triad-review を実施し、API 版 gpt-5.5 proxy_model 判定で C1〜C3 を should-fix として反映、C4 は leave-as-is。
+- requirements review-wave を実施し、他 feature の requirements 正本変更は不要と確認。
+- requirements alignment を完了し、Requirement 13〜16 と design/tasks の追跡、triad-review 修正反映、review-wave 影響確認を記録。
+- 利用者承認により requirements approval を完了。
+- Codex の commit 実行環境と利用者向け報告文の規律を明確化。
+- `main` を `origin/main` へ push 済み（`c09a6f9d`）。
 
 ## 5. 参照
 

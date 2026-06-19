@@ -1,0 +1,26 @@
+process_id: maintenance
+started_at: '2026-06-20T00:00:00+09:00'
+completed_at: '2026-06-20T00:00:00+09:00'
+trigger: TODO_NEXT_SESSION.md が現在の reopen 進行状況とずれていたため、次セッション入口を更新した
+mainline_blocked_by: stages/in-progress/reopen-procedure-2026-06-19.yaml
+allowed_scope: 次セッション入口メモの現在状態更新
+allowed_files:
+- TODO_NEXT_SESSION.md
+- stages/completed/maintenance-2026-06-20-todo-current-state-refresh.yaml
+completion_conditions:
+- TODO_NEXT_SESSION.md が c09a6f9d push 済みの状態を示す
+- 次作業が requirements approval 停止点の記録消化から design triad-review へ進む流れとして示される
+- 本線 reopen の pending gate や spec.json を変更しない
+completed_changes:
+- TODO_NEXT_SESSION.md の現在位置を c09a6f9d push 済み、requirements approval 完了済みへ更新した
+- 次作業を requirements approval 停止点の記録消化、design triad-review 前の API 割当提示へ更新した
+verification:
+- command: .venv/bin/python3 tools/check-workflow-action.py next --json
+  result: reopen_in_progress / requirements approval 完了時点の停止点
+- command: git status --short
+  result: TODO_NEXT_SESSION.md のみ変更状態で更新開始
+return_to:
+  required_action: commit_stop_point
+  active_gate: stages/requirements.yaml#approval
+  state_file: stages/in-progress/reopen-procedure-2026-06-19.yaml
+status: completed
