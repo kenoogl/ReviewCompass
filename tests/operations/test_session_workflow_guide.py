@@ -56,6 +56,20 @@ def test_discipline_map_surfaces_user_visible_triad_review_gate():
   assert "user-visible-triage-gate" in text
 
 
+def test_requirements_vertical_review_scope_is_not_downstream_review():
+  guide = (ROOT / "docs" / "operations" / "SESSION_WORKFLOW_GUIDE.md").read_text(encoding="utf-8")
+  discipline_map = (ROOT / "docs" / "operations" / "WORKFLOW_DISCIPLINE_MAP.yaml").read_text(encoding="utf-8")
+
+  assert "requirements review" in guide
+  assert "上流判断材料 → requirements.md" in guide
+  assert "design.md / tasks.md は参照資料であり、審査対象ではない" in guide
+  assert "review target / source materials / out of scope" in guide
+  assert "requirements:" in discipline_map
+  assert "upstream_decision_materials" in discipline_map
+  assert "review_target: requirements.md" in discipline_map
+  assert "downstream_artifacts_not_review_target" in discipline_map
+
+
 def test_cross_feature_stage_artifacts_have_canonical_location():
   navigation = (ROOT / "docs" / "operations" / "WORKFLOW_NAVIGATION.md").read_text(encoding="utf-8")
   discipline_map = (ROOT / "docs" / "operations" / "WORKFLOW_DISCIPLINE_MAP.yaml").read_text(encoding="utf-8")

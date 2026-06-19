@@ -1,0 +1,36 @@
+process_id: maintenance
+started_at: '2026-06-19T00:00:00+09:00'
+completed_at: '2026-06-19T00:00:00+09:00'
+trigger: requirements triad-review の review prompt 範囲で、参照資料 design/tasks を審査対象と誤読し得る欠落が見つかったため
+mainline_blocked_by: stages/in-progress/reopen-procedure-2026-06-19.yaml
+allowed_scope: requirements triad-review の縦方向意図監査における review target/source/out-of-scope の規律明確化
+allowed_files:
+- docs/operations/SESSION_WORKFLOW_GUIDE.md
+- docs/operations/WORKFLOW_DISCIPLINE_MAP.yaml
+- tests/operations/test_session_workflow_guide.py
+- stages/in-progress/maintenance-2026-06-19-requirements-vertical-review-scope.yaml
+- stages/completed/maintenance-2026-06-19-requirements-vertical-review-scope.yaml
+- .reviewcompass/evidence/review-runs/2026-06-19-requirements-vertical-review-scope-postwrite/
+- .reviewcompass/post-write-verification/post-write-2026-06-19-296.yaml
+completion_conditions:
+- requirements triad-review では requirements.md が審査対象で、design.md/tasks.md は後続 phase の参照資料であり審査対象ではないことが規律に明記される
+- vertical_intent_transfer_check が requirements phase の上流判断材料から requirements.md への伝達を表現する
+- 対応テストが先に失敗し、修正後に通過する
+- 本線 reopen の pending gate を進めない
+completed_changes:
+- docs/operations/SESSION_WORKFLOW_GUIDE.md に requirements review の向き（上流判断材料 → requirements.md）と、design.md/tasks.md は参照資料であり審査対象ではないことを明記した
+- docs/operations/WORKFLOW_DISCIPLINE_MAP.yaml の vertical_intent_transfer_check に requirements 用 phase_chains と review_target_by_phase を追加した
+- tests/operations/test_session_workflow_guide.py に requirements review の審査対象混線を防ぐ回帰テストを追加した
+verification:
+- command: .venv/bin/python3 -m pytest tests/operations/test_session_workflow_guide.py -q
+  result: 10 passed
+- command: .venv/bin/python3 tools/api_providers/run_review.py --variant post_write_verification_google --target docs/operations/SESSION_WORKFLOW_GUIDE.md --target docs/operations/WORKFLOW_DISCIPLINE_MAP.yaml --phase post_write_verification --criteria-file .reviewcompass/evidence/review-runs/2026-06-19-requirements-vertical-review-scope-postwrite/review-target.md --review-run-dir .reviewcompass/evidence/review-runs/2026-06-19-requirements-vertical-review-scope-postwrite --effective-prompt-path .reviewcompass/runtime/effective-prompts/next_action_kind-post_write_verification.prompt.md
+  result: findings=0, parse_failed=0
+evidence:
+- .reviewcompass/evidence/review-runs/2026-06-19-requirements-vertical-review-scope-postwrite/review_summary.md
+- .reviewcompass/post-write-verification/post-write-2026-06-19-296.yaml
+return_to:
+  required_action: run_reopen_pending_gate
+  active_gate: stages/requirements.yaml#triad-review
+  state_file: stages/in-progress/reopen-procedure-2026-06-19.yaml
+status: completed

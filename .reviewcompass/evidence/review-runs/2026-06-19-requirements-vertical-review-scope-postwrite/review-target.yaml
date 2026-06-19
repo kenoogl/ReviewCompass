@@ -1,0 +1,16 @@
+run_id: 2026-06-19-requirements-vertical-review-scope-postwrite
+phase: post_write_verification
+criteria_id: requirements_vertical_review_scope_post_write
+criteria_file: .reviewcompass/evidence/review-runs/2026-06-19-requirements-vertical-review-scope-postwrite/review-target.md
+criteria_file_sha256: c448bc89f32268471aeeecc091fe9ee63871cf6c9db4d93043ef8ec20a692645
+target_files:
+- path: docs/operations/SESSION_WORKFLOW_GUIDE.md
+  sha256: dc879a5cc1565096854be2b8ae2120c79593fc0ee4c936b054f9fbf3ccdec246
+- path: docs/operations/WORKFLOW_DISCIPLINE_MAP.yaml
+  sha256: 6c6985ecc0741f138365e8c0a0a665ee4efda49d667946c05a197161205a2364
+sensitive_information_check:
+  status: passed
+  checked_at: '2026-06-19T13:17:48.951278+00:00'
+recommended_run_review_args:
+  criteria_file: .reviewcompass/evidence/review-runs/2026-06-19-requirements-vertical-review-scope-postwrite/review-target.md
+  phase: post_write_verification

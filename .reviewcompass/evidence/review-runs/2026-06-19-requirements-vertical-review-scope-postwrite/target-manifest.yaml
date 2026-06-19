@@ -1,0 +1,6 @@
+run_id: 2026-06-19-requirements-vertical-review-scope-postwrite
+target_files:
+- path: docs/operations/SESSION_WORKFLOW_GUIDE.md
+  sha256: dc879a5cc1565096854be2b8ae2120c79593fc0ee4c936b054f9fbf3ccdec246
+- path: docs/operations/WORKFLOW_DISCIPLINE_MAP.yaml
+  sha256: 6c6985ecc0741f138365e8c0a0a665ee4efda49d667946c05a197161205a2364

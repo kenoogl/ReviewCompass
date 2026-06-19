@@ -1,0 +1,24 @@
+status: completed
+target_files:
+- docs/operations/SESSION_WORKFLOW_GUIDE.md
+- docs/operations/WORKFLOW_DISCIPLINE_MAP.yaml
+target_sha256:
+  docs/operations/SESSION_WORKFLOW_GUIDE.md: dc879a5cc1565096854be2b8ae2120c79593fc0ee4c936b054f9fbf3ccdec246
+  docs/operations/WORKFLOW_DISCIPLINE_MAP.yaml: 6c6985ecc0741f138365e8c0a0a665ee4efda49d667946c05a197161205a2364
+required_verifiers: &id001
+- gemini-3.5-flash
+completed_verifiers: *id001
+unresolved_substantive_findings: 0
+verifications:
+- verifier: gemini-3.5-flash
+  target_files:
+  - docs/operations/SESSION_WORKFLOW_GUIDE.md
+  - docs/operations/WORKFLOW_DISCIPLINE_MAP.yaml
+  target_sha256:
+    docs/operations/SESSION_WORKFLOW_GUIDE.md: dc879a5cc1565096854be2b8ae2120c79593fc0ee4c936b054f9fbf3ccdec246
+    docs/operations/WORKFLOW_DISCIPLINE_MAP.yaml: 6c6985ecc0741f138365e8c0a0a665ee4efda49d667946c05a197161205a2364
+review_run:
+  path: .reviewcompass/evidence/review-runs/2026-06-19-requirements-vertical-review-scope-postwrite
+  summary_path: .reviewcompass/evidence/review-runs/2026-06-19-requirements-vertical-review-scope-postwrite/model-result-summary.yaml
+notes: Generated template; verify target_files cover current post-write targets before
+  use.

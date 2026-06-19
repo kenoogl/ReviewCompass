@@ -439,6 +439,9 @@ required_inputs:
           kind: static_reference
           path: docs/operations/SESSION_WORKFLOW_GUIDE.md#vertical-intent-transfer-review
         phase_chains:
+          requirements:
+            - upstream_decision_materials
+            - requirements.md
           design:
             - requirements.md
             - design.md
@@ -451,6 +454,18 @@ required_inputs:
             - design.md
             - tasks.md
             - implementation
+        review_target_by_phase:
+          requirements:
+            review_target: requirements.md
+            source_materials:
+              - upstream_decision_materials
+              - reopen_classification_record
+              - planning_notes
+              - user_decisions
+            out_of_scope:
+              - downstream_artifacts_not_review_target
+              - design.md correctness
+              - tasks.md correctness
         required_question: upstream目的・責務境界・受入条件・禁止事項が対象成果物へ欠落・弱体化・逸脱・未根拠追加なく引き継がれているか。
         read_policy: include_in_review_prompt
     review-wave:
