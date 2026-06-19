@@ -3601,20 +3601,26 @@ def _git_cached_files(cwd):
   return [f.decode("utf-8") for f in result.stdout.split(b"\0") if f]
 
 
-def _completed_maintenance_commit_candidate(cwd, in_progress_files, paths):
-  """stage 前の path 群から maintenance 完了 commit 候補かを判定する。"""
+def _completed_maintenance_files_cover_in_progress(
+  cwd,
+  in_progress_files,
+  completed_files,
+  read_text,
+):
+  """maintenance 完了ファイル群が現在の in-progress reopen を覆うか判定する。"""
   if not in_progress_files:
     return False
-  completed_files = _maintenance_completed_files(paths)
   if not completed_files:
     return False
 
   covered_in_progress = set()
   for filepath in completed_files:
+    text = read_text(filepath)
+    if text is None:
+      return False
     try:
-      text = (Path(cwd) / filepath).read_text(encoding="utf-8")
       data = yaml.safe_load(text)
-    except (OSError, yaml.YAMLError):
+    except yaml.YAMLError:
       return False
     if not isinstance(data, dict):
       return False
@@ -3631,6 +3637,24 @@ def _completed_maintenance_commit_candidate(cwd, in_progress_files, paths):
     if data.get("process_id") != "reopen-procedure":
       return False
   return True
+
+
+def _completed_maintenance_commit_candidate(cwd, in_progress_files, paths):
+  """stage 前の path 群から maintenance 完了 commit 候補かを判定する。"""
+  completed_files = _maintenance_completed_files(paths)
+
+  def read_worktree_text(filepath):
+    try:
+      return (Path(cwd) / filepath).read_text(encoding="utf-8")
+    except OSError:
+      return None
+
+  return _completed_maintenance_files_cover_in_progress(
+    cwd,
+    in_progress_files,
+    completed_files,
+    read_worktree_text,
+  )
 
 
 def _commit_preflight_next_action(cwd, in_progress_files):
@@ -4096,40 +4120,13 @@ def _commit_stop_point_kind_for_gate(gate):
 
 def is_completed_maintenance_commit_allowed(cwd, in_progress_files, staged_files):
   """maintenance 完了 commit だけは本線 in-progress 同伴を許可する"""
-  if not in_progress_files:
-    return False
-  staged_set = set(staged_files)
-  if not set(in_progress_files).issubset(staged_set):
-    return False
-
   completed_files = _maintenance_completed_files(staged_files)
-  if not completed_files:
-    return False
-
-  covered_in_progress = set()
-  for filepath in completed_files:
-    text = _staged_text(cwd, filepath)
-    if text is None:
-      return False
-    try:
-      data = yaml.safe_load(text)
-    except yaml.YAMLError:
-      return False
-    if not isinstance(data, dict):
-      return False
-    if data.get("process_id") != "maintenance":
-      return False
-    mainline_blocked_by = data.get("mainline_blocked_by")
-    if isinstance(mainline_blocked_by, str):
-      covered_in_progress.add(mainline_blocked_by)
-
-  for relative_path in in_progress_files:
-    if relative_path not in covered_in_progress:
-      return False
-    data = load_in_progress_file(cwd, relative_path)
-    if data.get("process_id") != "reopen-procedure":
-      return False
-  return True
+  return _completed_maintenance_files_cover_in_progress(
+    cwd,
+    in_progress_files,
+    completed_files,
+    lambda filepath: _staged_text(cwd, filepath),
+  )
 
 
 def is_reopen_pending_gate_change_allowed(

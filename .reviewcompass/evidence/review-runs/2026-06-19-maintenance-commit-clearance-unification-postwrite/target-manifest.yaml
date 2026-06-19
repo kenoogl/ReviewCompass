@@ -1,0 +1,8 @@
+run_id: 2026-06-19-maintenance-commit-clearance-unification-postwrite
+target_files:
+- path: docs/operations/WORKFLOW_NAVIGATION.md
+  sha256: 840dfe2e7f30ff3d18492d6713ee969d9e75341ad7aad086d479266813e76a85
+- path: docs/operations/WORKFLOW_PRECHECK_DETAILS.md
+  sha256: d5279e60525ecc9f7d5ed03d6bd62df17892ff4812b0be85d27b3f9ae207c9f4
+- path: stages/completed/maintenance-2026-06-19-maintenance-commit-clearance-unification.yaml
+  sha256: 9e88f4070814f4ae0cf956f2d590cb23b691adbdfe4412d445f7e96fbc71cfc1

@@ -5191,6 +5191,62 @@ class CommitExitCodeTests(unittest.TestCase):
     self.assertFalse(data["allowed_to_run_guarded_commit"])
     self.assertEqual(data["next_required_action"], "commit_stop_point")
 
+  def test_commit_preflight_allows_completed_maintenance_without_reopen_state_change(self):
+    """maintenance 完了 commit 候補は本線 reopen state を変えずに準備できる"""
+    in_progress_path = (
+      Path(self.tmpdir)
+      / "stages"
+      / "in-progress"
+      / "reopen-procedure-2026-06-19.yaml"
+    )
+    in_progress_path.parent.mkdir(parents=True)
+    in_progress_path.write_text(
+      "process_id: reopen-procedure\n"
+      "step_number: 3\n"
+      "next_step: 第3過程：requirements review-wave\n"
+      "pending_gates:\n"
+      "  - stages/requirements.yaml#review-wave\n",
+      encoding="utf-8",
+    )
+    subprocess.run(
+      ["git", "add", "stages/in-progress/reopen-procedure-2026-06-19.yaml"],
+      cwd=str(self.tmpdir),
+      check=True,
+      capture_output=True,
+    )
+    subprocess.run(
+      ["git", "commit", "-qm", "add reopen in-progress"],
+      cwd=str(self.tmpdir),
+      check=True,
+      capture_output=True,
+    )
+
+    maintenance_path = (
+      Path(self.tmpdir)
+      / "stages"
+      / "completed"
+      / "maintenance-2026-06-19-review-target.yaml"
+    )
+    maintenance_path.parent.mkdir(parents=True)
+    maintenance_path.write_text(
+      "process_id: maintenance\n"
+      "title: review target preflight\n"
+      "mainline_blocked_by: stages/in-progress/reopen-procedure-2026-06-19.yaml\n"
+      "completed_actions:\n"
+      "  - side track completed\n",
+      encoding="utf-8",
+    )
+
+    result = run_script(["commit-preflight", "--json"], cwd=self.tmpdir)
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 0, result.stdout)
+    data = json.loads(result.stdout)
+    self.assertEqual(data["verdict"], "OK")
+    self.assertTrue(data["allowed_to_stage"])
+    self.assertTrue(data["allowed_to_prepare_approval"])
+    self.assertEqual(data["next_required_action"], "prepare_completed_maintenance_commit")
+
   def test_commit_preflight_blocks_post_write_pending_before_staging(self):
     """post-write 未完了なら stage / approval 作成前に遮断する"""
     target = Path(self.tmpdir) / "docs" / "operations" / "policy.md"
@@ -6134,8 +6190,8 @@ class CommitExitCodeTests(unittest.TestCase):
     self.assertEqual(result.returncode, 2, result.stdout)
     self.assertIn("stages/in-progress", result.stdout)
 
-  def test_commit_allows_completed_maintenance_with_mainline_reopen_in_progress(self):
-    """本線 reopen 中でも対応する maintenance 完了 commit は許可する"""
+  def test_commit_allows_completed_maintenance_without_staging_mainline_reopen_state(self):
+    """maintenance 完了 commit は本線 reopen state を同伴 stage しなくても許可する"""
     _set_pending_findings(self.pending_file, unresolved_count=0)
     reopen_path = (
       Path(self.tmpdir)
@@ -6168,22 +6224,14 @@ class CommitExitCodeTests(unittest.TestCase):
       encoding="utf-8",
     )
     subprocess.run(
-      [
-        "git",
-        "add",
-        "stages/in-progress/reopen-procedure-2026-06-09.yaml",
-        "stages/completed/maintenance-2026-06-09-reopen-guard.yaml",
-      ],
+      ["git", "add", "stages/completed/maintenance-2026-06-09-reopen-guard.yaml"],
       cwd=str(self.tmpdir),
       check=True,
       capture_output=True,
     )
     _write_commit_approval(
       self.tmpdir,
-      [
-        "stages/in-progress/reopen-procedure-2026-06-09.yaml",
-        "stages/completed/maintenance-2026-06-09-reopen-guard.yaml",
-      ],
+      ["stages/completed/maintenance-2026-06-09-reopen-guard.yaml"],
     )
 
     result = run_script(

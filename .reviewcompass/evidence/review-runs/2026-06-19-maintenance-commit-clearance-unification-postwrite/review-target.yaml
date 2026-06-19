@@ -1,0 +1,18 @@
+run_id: 2026-06-19-maintenance-commit-clearance-unification-postwrite
+phase: post_write_verification
+criteria_id: maintenance_commit_clearance_unification_contract_clearance
+criteria_file: .reviewcompass/evidence/review-runs/2026-06-19-maintenance-commit-clearance-unification-postwrite/review-target.md
+criteria_file_sha256: 56f94f3c8439256687fde32e43b1567c4e8b2603e701235e3c786c60508f7acb
+target_files:
+- path: docs/operations/WORKFLOW_NAVIGATION.md
+  sha256: 840dfe2e7f30ff3d18492d6713ee969d9e75341ad7aad086d479266813e76a85
+- path: docs/operations/WORKFLOW_PRECHECK_DETAILS.md
+  sha256: d5279e60525ecc9f7d5ed03d6bd62df17892ff4812b0be85d27b3f9ae207c9f4
+- path: stages/completed/maintenance-2026-06-19-maintenance-commit-clearance-unification.yaml
+  sha256: 9e88f4070814f4ae0cf956f2d590cb23b691adbdfe4412d445f7e96fbc71cfc1
+sensitive_information_check:
+  status: passed
+  checked_at: '2026-06-19T00:58:55.951033+00:00'
+recommended_run_review_args:
+  criteria_file: .reviewcompass/evidence/review-runs/2026-06-19-maintenance-commit-clearance-unification-postwrite/review-target.md
+  phase: post_write_verification

@@ -79,7 +79,7 @@ tools/guarded-git-commit.py -m "<commit message>" --rationale "<理由>" --appro
 
 1. `stages/in-progress/` がある場合、現在位置が構造化された reopen `commit_stop_point` かを確認する。
 2. `commit_stop_point` でない reopen / maintenance / resume 途中状態なら `DEVIATION` とし、stage / approval 作成へ進まない。
-3. ただし、本線 reopen 中に対応する `stages/completed/maintenance-*.yaml` が未コミット差分にあり、その `mainline_blocked_by` が全 in-progress reopen を覆う場合は、maintenance 完了 commit 候補として stage / approval 作成を許可する。
+3. ただし、本線 reopen 中に対応する `stages/completed/maintenance-*.yaml` が未コミット差分にあり、その `mainline_blocked_by` が全 in-progress reopen を覆う場合は、maintenance 完了 commit 候補として stage / approval 作成を許可する。この場合、本線 `stages/in-progress/reopen-*.yaml` は commit 対象に含めない。side-track 完了 commit のために本線 state を人工的に変更しない。
 4. post-write-verification 対象の未完了変更がある場合は `DEVIATION` とし、stage / approval 作成へ進まない。
 5. 通常 workflow の phase 終端停止点、reopen の構造化停止点、maintenance 完了 commit 候補では stage / approval 作成を許可する。
 6. `allowed_to_run_guarded_commit` は、staged ファイルがあり、commit approval と execution delegation が現在の staged 内容に対して有効な場合だけ `true` にする。

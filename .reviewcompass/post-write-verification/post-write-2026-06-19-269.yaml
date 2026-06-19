@@ -1,0 +1,28 @@
+status: completed
+target_files:
+- docs/operations/WORKFLOW_NAVIGATION.md
+- docs/operations/WORKFLOW_PRECHECK_DETAILS.md
+- stages/completed/maintenance-2026-06-19-maintenance-commit-clearance-unification.yaml
+target_sha256:
+  docs/operations/WORKFLOW_NAVIGATION.md: 840dfe2e7f30ff3d18492d6713ee969d9e75341ad7aad086d479266813e76a85
+  docs/operations/WORKFLOW_PRECHECK_DETAILS.md: d5279e60525ecc9f7d5ed03d6bd62df17892ff4812b0be85d27b3f9ae207c9f4
+  stages/completed/maintenance-2026-06-19-maintenance-commit-clearance-unification.yaml: 9e88f4070814f4ae0cf956f2d590cb23b691adbdfe4412d445f7e96fbc71cfc1
+required_verifiers: &id001
+- gemini-3.5-flash
+completed_verifiers: *id001
+unresolved_substantive_findings: 0
+verifications:
+- verifier: gemini-3.5-flash
+  target_files:
+  - docs/operations/WORKFLOW_NAVIGATION.md
+  - docs/operations/WORKFLOW_PRECHECK_DETAILS.md
+  - stages/completed/maintenance-2026-06-19-maintenance-commit-clearance-unification.yaml
+  target_sha256:
+    docs/operations/WORKFLOW_NAVIGATION.md: 840dfe2e7f30ff3d18492d6713ee969d9e75341ad7aad086d479266813e76a85
+    docs/operations/WORKFLOW_PRECHECK_DETAILS.md: d5279e60525ecc9f7d5ed03d6bd62df17892ff4812b0be85d27b3f9ae207c9f4
+    stages/completed/maintenance-2026-06-19-maintenance-commit-clearance-unification.yaml: 9e88f4070814f4ae0cf956f2d590cb23b691adbdfe4412d445f7e96fbc71cfc1
+review_run:
+  path: .reviewcompass/evidence/review-runs/2026-06-19-maintenance-commit-clearance-unification-postwrite
+  summary_path: .reviewcompass/evidence/review-runs/2026-06-19-maintenance-commit-clearance-unification-postwrite/model-result-summary.yaml
+notes: Generated template; verify target_files cover current post-write targets before
+  use.

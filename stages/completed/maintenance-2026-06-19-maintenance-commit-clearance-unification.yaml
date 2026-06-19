@@ -1,0 +1,50 @@
+process_id: maintenance
+title: maintenance commit clearance unification
+trigger: "commit-preflight は maintenance 完了 commit を許可したが、guarded commit 本体が本線 in-progress YAML の同伴 stage を要求し、承認 digest 作り直しが発生した"
+mainline_blocked_by: stages/in-progress/reopen-procedure-2026-06-19.yaml
+completed_at: "2026-06-19"
+classification: local_workflow_guard_improvement
+reason: "commit-preflight と commit 本体の maintenance 完了判定を共通化し、本線 state を人工的に変更しない commit 経路へ戻す局所修正"
+allowed_scope:
+  - "maintenance 完了 commit の clearance 判定共通化"
+  - "maintenance 完了 commit で本線 in-progress YAML の同伴 stage を不要にする"
+  - "commit-preflight / commit の回帰テスト"
+  - "運用文書の staging contract 更新"
+allowed_files:
+  - tools/check-workflow-action.py
+  - tests/tools/test_check_workflow_action.py
+  - docs/operations/WORKFLOW_PRECHECK_DETAILS.md
+  - docs/operations/WORKFLOW_NAVIGATION.md
+  - .reviewcompass/evidence/review-runs/2026-06-19-maintenance-commit-clearance-unification-postwrite/
+  - .reviewcompass/post-write-verification/post-write-2026-06-19-269.yaml
+  - stages/completed/maintenance-2026-06-19-maintenance-commit-clearance-unification.yaml
+completion_conditions:
+  - "commit 本体が maintenance 完了 YAML だけの staged set を許可する"
+  - "commit-preflight が同じ maintenance 完了条件で stage / approval 作成を許可する"
+  - "判定 helper が stage 前 / stage 後で同じ coverage 条件を使う"
+completed_actions:
+  - "tests: maintenance 完了 commit が本線 reopen state を同伴 stage しなくても通る期待へ更新"
+  - "tests: commit-preflight が本線 reopen state を変えない maintenance 完了 commit 候補を許可する期待を追加"
+  - "implementation: _completed_maintenance_files_cover_in_progress を追加し、stage 前 / stage 後の判定を共通化"
+  - "implementation: is_completed_maintenance_commit_allowed から本線 in-progress staged 必須条件を削除"
+  - "documentation: WORKFLOW_PRECHECK_DETAILS / WORKFLOW_NAVIGATION に本線 in-progress を同伴 stage しない contract を追記"
+verification:
+  - command: ".venv/bin/python3 -m unittest tests.tools.test_check_workflow_action.CommitExitCodeTests.test_commit_allows_completed_maintenance_without_staging_mainline_reopen_state -v"
+    result: "passed"
+  - command: ".venv/bin/python3 -m unittest tests.tools.test_check_workflow_action.CommitExitCodeTests.test_commit_preflight_allows_completed_maintenance_without_reopen_state_change -v"
+    result: "passed"
+  - command: ".venv/bin/python3 -m unittest tests.tools.test_check_workflow_action.CommitExitCodeTests -v"
+    result: "75 tests passed"
+  - command: ".venv/bin/python3 -m unittest tests.tools.test_check_workflow_action.NextNavigationTests -v"
+    result: "45 tests passed"
+  - command: "PYTHONPYCACHEPREFIX=/private/tmp/reviewcompass-pycache .venv/bin/python3 -m py_compile tools/check-workflow-action.py"
+    result: "passed"
+  - command: "git diff --check"
+    result: "passed"
+  - command: ".venv/bin/python3 tools/api_providers/run_review.py --variant post_write_verification_google --target docs/operations/WORKFLOW_NAVIGATION.md --target docs/operations/WORKFLOW_PRECHECK_DETAILS.md --target stages/completed/maintenance-2026-06-19-maintenance-commit-clearance-unification.yaml --phase post_write_verification --criteria-file .reviewcompass/evidence/review-runs/2026-06-19-maintenance-commit-clearance-unification-postwrite/review-target.md --review-run-dir .reviewcompass/evidence/review-runs/2026-06-19-maintenance-commit-clearance-unification-postwrite"
+    result: "passed: no findings"
+post_write_verification:
+  manifest: .reviewcompass/post-write-verification/post-write-2026-06-19-269.yaml
+  review_run: .reviewcompass/evidence/review-runs/2026-06-19-maintenance-commit-clearance-unification-postwrite
+current_status: completed
+return_to: "integrated-design reopen design drafting"
