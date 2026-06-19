@@ -1,0 +1,24 @@
+status: completed
+target_files:
+- docs/operations/COMMIT_OPERATION_CARD.md
+- docs/operations/SESSION_WORKFLOW_GUIDE.md
+target_sha256:
+  docs/operations/COMMIT_OPERATION_CARD.md: 42026278193652097c2cd914833118c886aa3796d1ab82283542f572b5d0a0b8
+  docs/operations/SESSION_WORKFLOW_GUIDE.md: 3d1f68545d41115b22d676cda2a4260aba45bb39cfb14c5293bbf1cb71189ce1
+required_verifiers: &id001
+- gemini-3.5-flash
+completed_verifiers: *id001
+unresolved_substantive_findings: 0
+verifications:
+- verifier: gemini-3.5-flash
+  target_files:
+  - docs/operations/COMMIT_OPERATION_CARD.md
+  - docs/operations/SESSION_WORKFLOW_GUIDE.md
+  target_sha256:
+    docs/operations/COMMIT_OPERATION_CARD.md: 42026278193652097c2cd914833118c886aa3796d1ab82283542f572b5d0a0b8
+    docs/operations/SESSION_WORKFLOW_GUIDE.md: 3d1f68545d41115b22d676cda2a4260aba45bb39cfb14c5293bbf1cb71189ce1
+review_run:
+  path: .reviewcompass/evidence/review-runs/2026-06-20-commit-progress-report-minimization-postwrite-rerun
+  summary_path: .reviewcompass/evidence/review-runs/2026-06-20-commit-progress-report-minimization-postwrite-rerun/model-result-summary.yaml
+notes: Generated template; verify target_files cover current post-write targets before
+  use.

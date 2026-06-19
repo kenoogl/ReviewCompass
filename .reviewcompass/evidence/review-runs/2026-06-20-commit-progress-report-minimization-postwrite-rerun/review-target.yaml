@@ -1,0 +1,16 @@
+run_id: 2026-06-20-commit-progress-report-minimization-postwrite-rerun
+phase: post_write_verification
+criteria_id: commit_progress_report_minimization_post_write
+criteria_file: .reviewcompass/evidence/review-runs/2026-06-20-commit-progress-report-minimization-postwrite-rerun/review-target.md
+criteria_file_sha256: 9752c5f8b072947258cae1712f394af9722628a6d456757ad282db335dd19aba
+target_files:
+- path: docs/operations/COMMIT_OPERATION_CARD.md
+  sha256: 42026278193652097c2cd914833118c886aa3796d1ab82283542f572b5d0a0b8
+- path: docs/operations/SESSION_WORKFLOW_GUIDE.md
+  sha256: 3d1f68545d41115b22d676cda2a4260aba45bb39cfb14c5293bbf1cb71189ce1
+sensitive_information_check:
+  status: passed
+  checked_at: '2026-06-19T23:00:52.130589+00:00'
+recommended_run_review_args:
+  criteria_file: .reviewcompass/evidence/review-runs/2026-06-20-commit-progress-report-minimization-postwrite-rerun/review-target.md
+  phase: post_write_verification

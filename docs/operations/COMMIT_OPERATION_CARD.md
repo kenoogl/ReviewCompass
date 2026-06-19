@@ -25,6 +25,8 @@ commit 操作カード
 
 Codex で `--approval-source-text-line-stdin` を使う場合は、PTY で guarded commit を起動し、入力待ちになってから、直近の利用者発話で明示された commit 指示だけを `write_stdin` で渡す。この 1 行を staged 内容承認と LLM commit 実行代行承認として扱う。利用者発話なしに Codex / Claude / LLM が承認文を生成してはならない。Codex の `workspace-write` sandbox では、commit wrapper 本体を最初から sandbox 外（`require_escalated`）で実行する。これは guard を迂回する手順ではなく、承認レコード、staged 内容照合、commit gate を同じ wrapper 内で通したうえで、git index 書き込みだけを許可された実行面で行うための運用である。先に sandbox 内で失敗させてから再実行する手順を標準にしない。
 
+commit 中に承認内容を作り直す、既存 delegation を使い直す、nonce を更新する、といった内部再準備が必要になっても、それ自体を利用者に報告しない。これは承認済みの対象範囲内で、利用者判断を要しない場合に限る。コミット対象が増えた、staged 内容が変わった、または再承認が必要になった場合は内部再準備として隠さず、追加判断が必要な停止理由だけを短く報告する。利用者へ報告するのは、作業を続けられない異常、追加判断が必要な WARN / DEVIATION、または成功結果だけとする。
+
 ## Claude Code
 
 Claude Code で `--approval-source-text-line-stdin` を使う場合は、TTY からの対話入力でのみ使う。直近の利用者発話で明示された commit 指示は staged 内容承認と LLM commit 実行代行承認として扱い、別の承認語の再入力を求めない。空 stdin での実行は challenge invalidation（承認無効化）を起こすため、非対話・空入力で実行しない。

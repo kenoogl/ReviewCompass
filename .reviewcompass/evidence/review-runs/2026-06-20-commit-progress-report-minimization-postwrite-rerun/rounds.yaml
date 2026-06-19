@@ -1,0 +1,104 @@
+round_id: round-1
+purpose: post_write_verification
+invocation_timestamp: '2026-06-19T23:01:05.736141+00:00'
+target_files:
+- path: docs/operations/COMMIT_OPERATION_CARD.md
+  sha256: 42026278193652097c2cd914833118c886aa3796d1ab82283542f572b5d0a0b8
+- path: docs/operations/SESSION_WORKFLOW_GUIDE.md
+  sha256: 3d1f68545d41115b22d676cda2a4260aba45bb39cfb14c5293bbf1cb71189ce1
+criteria: '# Post-write Review Target
+
+
+  criteria_id: commit_progress_report_minimization_post_write
+
+  phase: post_write_verification
+
+  generated_at: 2026-06-19T23:00:52.130589+00:00
+
+
+  ## Change Summary
+
+
+  commit 中の内部再準備を利用者へ報告しない規律を、安全上の再承認条件を除外して追加した
+
+
+  ## Review Question
+
+
+  変更した運用文書が、承認済み対象範囲内の内部再準備は利用者へ報告せず、コミット対象増加・staged 内容変更・再承認が必要な場合は短く報告する規律として矛盾なく明確化しているか。既存手順との衝突や不足があれば指摘すること。
+
+
+  ## Target Files
+
+
+  - docs/operations/COMMIT_OPERATION_CARD.md sha256=42026278193652097c2cd914833118c886aa3796d1ab82283542f572b5d0a0b8
+
+  - docs/operations/SESSION_WORKFLOW_GUIDE.md sha256=3d1f68545d41115b22d676cda2a4260aba45bb39cfb14c5293bbf1cb71189ce1
+
+
+  ## Scope
+
+
+  - Check whether the changed target files clearly state the intended contract.
+
+  - Check whether related instructions are mutually consistent across targets.
+
+  - Check whether the documented procedure is actionable before API review, triage,
+  manifest, or commit steps continue.
+
+
+  ## Out Of Scope
+
+
+  - Do not request unrelated refactors or style-only rewrites.
+
+  - Do not judge files that are not listed in Target Files.
+
+  - Do not treat missing implementation work as a document defect unless the target
+  text claims it already exists.
+
+
+  ## Finding Policy
+
+
+  - Report must-fix findings for contradictions, missing required gates, or instructions
+  that would allow an unsafe workflow action.
+
+  - Report should-fix findings for ambiguity that could cause repeated manual judgment
+  or unnecessary API review loops.
+
+  - Return findings: [] when the target files are internally consistent for this review
+  question.
+
+
+  ## Sensitive Information Check
+
+
+  - status: passed
+
+  - External API review must not proceed if this section reports potential secrets.
+
+  '
+prompt_sha256: acc72f74fd46b28bc75bbc0a8fff5101251b750b1d64ea9d1d25f14145390d81
+model_results:
+- model_id: gemini-3.5-flash
+  provider: gemini-api
+  role: primary
+  treatment: primary
+  invocation_path: api
+  raw_path: raw/gemini-3.5-flash.round-1.txt
+  raw_sha256: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+  parsed_path: parsed/gemini-3.5-flash.round-1.yaml
+  parsed_sha256: d1c5251ec624ca25bd652b6f57770b1a1a2bbf2fd4e8cd70a62204a9a5ee1a7d
+  parse_status: parsed
+  formatted_by: parser
+  formatted_by_actor_type: orchestrator
+  formatted_by_actor: run_role.py
+  formatted_at: '2026-06-19T23:01:05.736141+00:00'
+  follow_up_action: triage
+  attempts: 1
+  duration_seconds: 6.992
+  prompt_path: prompts/gemini-3.5-flash.round-1.prompt.md
+  prompt_sha256: acc72f74fd46b28bc75bbc0a8fff5101251b750b1d64ea9d1d25f14145390d81
+criteria_source_path: .reviewcompass/evidence/review-runs/2026-06-20-commit-progress-report-minimization-postwrite-rerun/review-target.md
+criteria_source_sha256: 9752c5f8b072947258cae1712f394af9722628a6d456757ad282db335dd19aba

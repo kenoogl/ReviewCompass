@@ -1,3 +1,141 @@
+prompt_id: gemini_review
+provider: gemini-api
+model_id: gemini-3.5-flash
+
+# Task
+Review the target document for the requested phase and criteria.
+
+# Phase
+post_write_verification
+
+# Criteria
+# Post-write Review Target
+
+criteria_id: commit_progress_report_minimization_post_write
+phase: post_write_verification
+generated_at: 2026-06-19T23:00:52.130589+00:00
+
+## Change Summary
+
+commit 中の内部再準備を利用者へ報告しない規律を、安全上の再承認条件を除外して追加した
+
+## Review Question
+
+変更した運用文書が、承認済み対象範囲内の内部再準備は利用者へ報告せず、コミット対象増加・staged 内容変更・再承認が必要な場合は短く報告する規律として矛盾なく明確化しているか。既存手順との衝突や不足があれば指摘すること。
+
+## Target Files
+
+- docs/operations/COMMIT_OPERATION_CARD.md sha256=42026278193652097c2cd914833118c886aa3796d1ab82283542f572b5d0a0b8
+- docs/operations/SESSION_WORKFLOW_GUIDE.md sha256=3d1f68545d41115b22d676cda2a4260aba45bb39cfb14c5293bbf1cb71189ce1
+
+## Scope
+
+- Check whether the changed target files clearly state the intended contract.
+- Check whether related instructions are mutually consistent across targets.
+- Check whether the documented procedure is actionable before API review, triage, manifest, or commit steps continue.
+
+## Out Of Scope
+
+- Do not request unrelated refactors or style-only rewrites.
+- Do not judge files that are not listed in Target Files.
+- Do not treat missing implementation work as a document defect unless the target text claims it already exists.
+
+## Finding Policy
+
+- Report must-fix findings for contradictions, missing required gates, or instructions that would allow an unsafe workflow action.
+- Report should-fix findings for ambiguity that could cause repeated manual judgment or unnecessary API review loops.
+- Return findings: [] when the target files are internally consistent for this review question.
+
+## Sensitive Information Check
+
+- status: passed
+- External API review must not proceed if this section reports potential secrets.
+
+
+# Output contract
+Return YAML only.
+The top-level key must be exactly findings.
+Do not add wrapper keys such as review, result, metadata, or summary.
+Do not wrap the YAML in Markdown code fences.
+Do not write prose before or after the YAML.
+
+Each finding must include these keys:
+- severity
+- target_location
+- description
+- rationale
+
+Use only these severity values:
+- CRITICAL
+- ERROR
+- WARN
+- INFO
+
+If there are no findings, return exactly:
+
+findings: []
+
+Valid shape example:
+
+findings:
+  - severity: WARN
+    target_location: "path or section"
+    description: "Plain finding summary"
+    rationale: "Why this matters"
+
+# Prior findings
+なし
+
+# Target path
+docs/operations/COMMIT_OPERATION_CARD.md
+docs/operations/SESSION_WORKFLOW_GUIDE.md
+
+# Target document
+## docs/operations/COMMIT_OPERATION_CARD.md
+
+<a id="commit-operation-card"></a>
+
+# COMMIT_OPERATION_CARD
+
+commit 操作カード
+
+最終更新: 2026-06-20
+
+このカードは commit 直前に読む短い実行手順である。仕様説明ではなく、操作事故を防ぐための実行カードとして扱う。詳細契約は `WORKFLOW_PRECHECK.md` と `WORKFLOW_PRECHECK_DETAILS.md` を参照する。
+
+## 手順
+
+1. 利用者の単発 commit 指示を commit 操作の開始条件として扱う。
+2. `git add` 後、staged 対象を確認する。
+3. `.venv/bin/python3 tools/check-workflow-action.py commit-approval prepare --json` を単独で実行する。
+4. `commit-approval prepare` と `commit --json` precheck を並列実行しない。
+5. 返された nonce を使い、すぐに `tools/guarded-git-commit.py --approval-nonce <nonce> --approval-source-text-line-stdin` を起動する。
+6. challenge 作成後は、staged index や承認状態を変え得る別コマンドを挟まない。
+7. `--approval-source-text-line-stdin` は TTY からの対話入力でだけ使う。
+8. 空 stdin、pipe、heredoc、redirect、LLM が生成した `printf` 等の承認文では実行しない。
+9. guarded commit が承認入力待ちになってから、直近の利用者発話で明示された commit 指示を 1 行として渡す。この 1 行は staged 内容承認と LLM commit 実行代行承認の source である。
+10. 失敗時は、まず承認入力経路、challenge 状態、staged digest の一致を確認する。
+
+## Codex
+
+Codex で `--approval-source-text-line-stdin` を使う場合は、PTY で guarded commit を起動し、入力待ちになってから、直近の利用者発話で明示された commit 指示だけを `write_stdin` で渡す。この 1 行を staged 内容承認と LLM commit 実行代行承認として扱う。利用者発話なしに Codex / Claude / LLM が承認文を生成してはならない。Codex の `workspace-write` sandbox では、commit wrapper 本体を最初から sandbox 外（`require_escalated`）で実行する。これは guard を迂回する手順ではなく、承認レコード、staged 内容照合、commit gate を同じ wrapper 内で通したうえで、git index 書き込みだけを許可された実行面で行うための運用である。先に sandbox 内で失敗させてから再実行する手順を標準にしない。
+
+commit 中に承認内容を作り直す、既存 delegation を使い直す、nonce を更新する、といった内部再準備が必要になっても、それ自体を利用者に報告しない。これは承認済みの対象範囲内で、利用者判断を要しない場合に限る。コミット対象が増えた、staged 内容が変わった、または再承認が必要になった場合は内部再準備として隠さず、追加判断が必要な停止理由だけを短く報告する。利用者へ報告するのは、作業を続けられない異常、追加判断が必要な WARN / DEVIATION、または成功結果だけとする。
+
+## Claude Code
+
+Claude Code で `--approval-source-text-line-stdin` を使う場合は、TTY からの対話入力でのみ使う。直近の利用者発話で明示された commit 指示は staged 内容承認と LLM commit 実行代行承認として扱い、別の承認語の再入力を求めない。空 stdin での実行は challenge invalidation（承認無効化）を起こすため、非対話・空入力で実行しない。
+
+## 禁止
+
+- challenge 作成後に、承認 record や staged index を変える別コマンドを挟む。
+- `--approval-source-text-line-stdin` を stdin なし、pipe、heredoc、redirect で実行する。
+- LLM が `printf` 等で承認文を生成して commit approval / execution delegation を作る。
+- commit 実行後に結果確認なしで完了扱いにする。
+
+
+## docs/operations/SESSION_WORKFLOW_GUIDE.md
+
 # SESSION_WORKFLOW_GUIDE：セッション運営ガイドライン
 
 最終更新：2026-06-10（現行のセッション運営契約として整理）
@@ -628,3 +766,4 @@ push は **利用者明示承認**を仰いでから実行。LLM が自律的に
 - セッションの経緯記録は `docs/sessions/` に残し、本文書には現行の運用契約だけを置く
 - 規律変更（§2〜§8）は利用者明示承認後に反映
 - 改訂時は最終更新日付を更新
+

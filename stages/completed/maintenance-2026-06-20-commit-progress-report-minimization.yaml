@@ -1,0 +1,35 @@
+process_id: maintenance
+started_at: '2026-06-20T00:00:00+09:00'
+completed_at: '2026-06-20T00:00:00+09:00'
+trigger: commit 中の内部手順説明が利用者向けに過剰だったため、正常系の進行報告をさらに絞る規律を追加した
+mainline_blocked_by: stages/in-progress/reopen-procedure-2026-06-19.yaml
+allowed_scope: commit 中の利用者向け進行報告最小化規律
+allowed_files:
+- docs/operations/COMMIT_OPERATION_CARD.md
+- docs/operations/SESSION_WORKFLOW_GUIDE.md
+- tests/operations/test_session_workflow_guide.py
+- stages/completed/maintenance-2026-06-20-commit-progress-report-minimization.yaml
+completion_conditions:
+- commit 中の内部再準備を利用者へ報告しない規律が明記される
+- 報告対象が、作業を続けられない異常、追加判断が必要な WARN / DEVIATION、成功結果に限定される
+- コミット対象増加、staged 内容変更、再承認が必要な場合は隠さず短く報告する
+- 回帰テストが追加され、通過する
+- docs/operations の post-write verification が no findings で完了する
+completed_changes:
+- SESSION_WORKFLOW_GUIDE.md に commit 中の内部再準備を黙って実行する規律を追加した
+- COMMIT_OPERATION_CARD.md に同じ短縮規律を追加した
+- post-write verification の指摘を受け、対象追加や再承認が必要な場合は報告する条件を明記した
+- test_session_workflow_guide.py に回帰テストを追加した
+verification:
+- command: .venv/bin/python3 -m pytest tests/operations/test_session_workflow_guide.py -q
+  result: 15 passed
+- command: .venv/bin/python3 tools/api_providers/run_review.py --variant post_write_verification_google --target docs/operations/COMMIT_OPERATION_CARD.md --target docs/operations/SESSION_WORKFLOW_GUIDE.md --phase post_write_verification --criteria-file .reviewcompass/evidence/review-runs/2026-06-20-commit-progress-report-minimization-postwrite-rerun/review-target.md --review-run-dir .reviewcompass/evidence/review-runs/2026-06-20-commit-progress-report-minimization-postwrite-rerun
+  result: findings=0, parse_failed=0
+post_write_verification:
+  review_run: .reviewcompass/evidence/review-runs/2026-06-20-commit-progress-report-minimization-postwrite-rerun
+  manifest: .reviewcompass/post-write-verification/post-write-2026-06-20-002.yaml
+return_to:
+  required_action: commit_stop_point
+  active_gate: stages/requirements.yaml#approval
+  state_file: stages/in-progress/reopen-procedure-2026-06-19.yaml
+status: completed

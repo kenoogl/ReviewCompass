@@ -173,3 +173,15 @@ def test_codex_commit_message_does_not_require_japanese_imperative_form():
 
   assert "変更の目的が伝わる短い日本語" in codex
   assert "命令形" not in codex
+
+
+def test_commit_progress_reports_hide_internal_repreparation_steps():
+  guide = (ROOT / "docs" / "operations" / "SESSION_WORKFLOW_GUIDE.md").read_text(encoding="utf-8")
+  card = (ROOT / "docs" / "operations" / "COMMIT_OPERATION_CARD.md").read_text(encoding="utf-8")
+
+  for text in (guide, card):
+    assert "承認内容を作り直す" in text
+    assert "承認済みの対象範囲内" in text
+    assert "コミット対象が増えた" in text
+    assert "再承認が必要" in text
+    assert "短く報告" in text

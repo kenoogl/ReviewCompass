@@ -1,0 +1,6 @@
+run_id: 2026-06-20-commit-progress-report-minimization-postwrite-rerun
+target_files:
+- path: docs/operations/COMMIT_OPERATION_CARD.md
+  sha256: 42026278193652097c2cd914833118c886aa3796d1ab82283542f572b5d0a0b8
+- path: docs/operations/SESSION_WORKFLOW_GUIDE.md
+  sha256: 3d1f68545d41115b22d676cda2a4260aba45bb39cfb14c5293bbf1cb71189ce1
