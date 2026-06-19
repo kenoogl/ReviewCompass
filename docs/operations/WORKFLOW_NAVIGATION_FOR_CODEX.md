@@ -20,7 +20,7 @@ python3 tools/check-workflow-action.py next --json
 2. Claude memory が自動ロードされる前提を置かない。必要な規律本文は repo 内 `docs/disciplines/` を読む。
 3. repo 外 memory への書き込みを前提にしない。memory 相当の永続記録が必要な場合は、まず記録先と内容を利用者へ提示し、明示承認を得る。
 4. filesystem sandbox と approval の制約を守る。外部 API、ネットワーク通信、repo 外書き込み、破壊的操作は、許可が必要な場合に承認を得てから実行する。
-5. commit と push は利用者の運用方針に従う。「次のコミットまで自律実行」は commit 停止点まで進めて止まる指示であり、commit 実行代行は含まない。停止点到達後、利用者の 1 回目の「コミット」は commit 準備（staged 対象・digest・nonce・期限の提示）として扱い、2 回目の「承認」を提示済み内容への承認および LLM commit 実行代行承認として扱う。最初から commit も含めて自律実行する場合は、「コミット代行も含めて自律実行」のように commit 実行代行を含むことを明示する。commit 直前は `docs/operations/COMMIT_OPERATION_CARD.md` を読み、共通手順は同カードに従う。Codex では `tools/guarded-git-commit.py --approval-nonce <nonce> --approval-source-text-line-stdin` を PTY で起動し、承認入力待ちになってから、直近の利用者発話で明示された承認 1 行だけを `write_stdin` で渡す。利用者発話なしに Codex が承認文を生成してはならない。sandbox escalation が必要な場合は、guarded commit の preflight 結果に従って利用者へ確認する。コミットメッセージは利用者指定があればそれを使い、指定がなければ staged 差分の主目的を 1 行の命令形または名詞句で要約する。
+5. commit と push は利用者の運用方針に従う。「次のコミットまで自律実行」は commit 停止点まで進めて止まる指示であり、commit 実行代行は含まない。停止点到達後、利用者の単発 commit 指示（例：`コミット`）は、提示済みまたは直後に stage する対象への staged 内容承認と LLM commit 実行代行承認として扱う。最初から commit も含めて自律実行する場合は、「コミット代行も含めて自律実行」のように commit 実行代行を含むことを明示する。commit 直前は `docs/operations/COMMIT_OPERATION_CARD.md` を読み、共通手順は同カードに従う。Codex では `commit-preflight`、stage、nonce prepare、guarded commit を同一ターンで逐次実行し、`tools/guarded-git-commit.py --approval-nonce <nonce> --approval-source-text-line-stdin` を PTY で起動する。承認入力待ちになってから、直近の利用者発話で明示された commit 指示だけを `write_stdin` で渡す。利用者発話なしに Codex が承認文を生成してはならない。sandbox escalation が必要な場合は、guarded commit の preflight 結果に従って利用者へ確認する。コミットメッセージは利用者指定があればそれを使い、指定がなければ staged 差分の主目的を 1 行の命令形または名詞句で要約する。
 6. 通常の `next_action` と異なる side track に入るときは、作業前に `SIDE TRACK 開始: <名前>`、`本線停止理由`、`復帰条件` を利用者へ明示する。side track から抜けるときは、`SIDE TRACK 終了: <名前>`、`復帰先`、`next` の判定結果を明示する。
 7. docs/ 配下や `TODO_NEXT_SESSION.md` を書いた後は、`next` を再実行して結果を報告する。`post_write_verification` が返った場合は通常ワークフローへ戻らない。
 8. post-write-verification pending 中に、再発防止や反省を目的として規律、TODO、テンプレート、hook、スクリプトを勝手に変更しない。必要なら提案して利用者の承認を待つ。
@@ -32,7 +32,7 @@ python3 tools/check-workflow-action.py next --json
 
 ## 3. commit
 
-commit 直前は `docs/operations/COMMIT_OPERATION_CARD.md` を読む。Codex では `tools/guarded-git-commit.py --approval-nonce <nonce> --approval-source-text-line-stdin` を PTY で起動し、承認入力待ちになってから、直近の利用者発話で明示された承認 1 行だけを `write_stdin` で渡す。利用者発話なしに Codex が承認文を生成してはならない。sandbox escalation が必要な場合は、guarded commit の preflight 結果に従って利用者へ確認する。
+commit 直前は `docs/operations/COMMIT_OPERATION_CARD.md` を読む。Codex では利用者の単発 commit 指示を staged 内容承認と LLM commit 実行代行承認として扱い、`tools/guarded-git-commit.py --approval-nonce <nonce> --approval-source-text-line-stdin` を PTY で起動する。承認入力待ちになってから、直近の利用者発話で明示された commit 指示だけを `write_stdin` で渡す。利用者発話なしに Codex が承認文を生成してはならない。sandbox escalation が必要な場合は、guarded commit の preflight 結果に従って利用者へ確認する。
 
 ## 4. post-write-verification の扱い
 

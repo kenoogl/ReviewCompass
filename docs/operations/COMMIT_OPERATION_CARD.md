@@ -10,23 +10,24 @@ commit 操作カード
 
 ## 手順
 
-1. `git add` 後、staged 対象を確認する。
-2. `.venv/bin/python3 tools/check-workflow-action.py commit-approval prepare --json` を単独で実行する。
-3. `commit-approval prepare` と `commit --json` precheck を並列実行しない。
-4. 返された nonce を使い、すぐに `tools/guarded-git-commit.py --approval-nonce <nonce> --approval-source-text-line-stdin` を起動する。
-5. challenge 作成後は、staged index や承認状態を変え得る別コマンドを挟まない。
-6. `--approval-source-text-line-stdin` は TTY からの対話入力でだけ使う。
-7. 空 stdin、pipe、heredoc、redirect、LLM が生成した `printf` 等の承認文では実行しない。
-8. guarded commit が承認入力待ちになってから、利用者承認の 1 行を渡す。
-9. 失敗時は、まず承認入力経路、challenge 状態、staged digest の一致を確認する。
+1. 利用者の単発 commit 指示を commit 操作の開始条件として扱う。
+2. `git add` 後、staged 対象を確認する。
+3. `.venv/bin/python3 tools/check-workflow-action.py commit-approval prepare --json` を単独で実行する。
+4. `commit-approval prepare` と `commit --json` precheck を並列実行しない。
+5. 返された nonce を使い、すぐに `tools/guarded-git-commit.py --approval-nonce <nonce> --approval-source-text-line-stdin` を起動する。
+6. challenge 作成後は、staged index や承認状態を変え得る別コマンドを挟まない。
+7. `--approval-source-text-line-stdin` は TTY からの対話入力でだけ使う。
+8. 空 stdin、pipe、heredoc、redirect、LLM が生成した `printf` 等の承認文では実行しない。
+9. guarded commit が承認入力待ちになってから、直近の利用者発話で明示された commit 指示を 1 行として渡す。この 1 行は staged 内容承認と LLM commit 実行代行承認の source である。
+10. 失敗時は、まず承認入力経路、challenge 状態、staged digest の一致を確認する。
 
 ## Codex
 
-Codex で `--approval-source-text-line-stdin` を使う場合は、PTY で guarded commit を起動し、入力待ちになってから、直近の利用者発話で明示された承認 1 行だけを `write_stdin` で渡す。利用者発話なしに Codex が承認文を生成してはならない。sandbox により git 書き込みが拒否された場合は、guarded commit の preflight 結果に従い、必要な escalation を利用者へ確認する。
+Codex で `--approval-source-text-line-stdin` を使う場合は、PTY で guarded commit を起動し、入力待ちになってから、直近の利用者発話で明示された commit 指示だけを `write_stdin` で渡す。この 1 行を staged 内容承認と LLM commit 実行代行承認として扱う。利用者発話なしに Codex / Claude / LLM が承認文を生成してはならない。sandbox により git 書き込みが拒否された場合は、guarded commit の preflight 結果に従い、必要な escalation を利用者へ確認する。
 
 ## Claude Code
 
-Claude Code で `--approval-source-text-line-stdin` を使う場合は、TTY からの対話入力でのみ使う。空 stdin での実行は challenge invalidation（承認無効化）を起こすため、非対話・空入力で実行しない。
+Claude Code で `--approval-source-text-line-stdin` を使う場合は、TTY からの対話入力でのみ使う。直近の利用者発話で明示された commit 指示は staged 内容承認と LLM commit 実行代行承認として扱い、別の承認語の再入力を求めない。空 stdin での実行は challenge invalidation（承認無効化）を起こすため、非対話・空入力で実行しない。
 
 ## 禁止
 

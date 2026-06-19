@@ -1,0 +1,36 @@
+status: completed
+target_files:
+- docs/operations/COMMIT_OPERATION_CARD.md
+- docs/operations/WORKFLOW_NAVIGATION_FOR_CLAUDE.md
+- docs/operations/WORKFLOW_NAVIGATION_FOR_CODEX.md
+- docs/operations/WORKFLOW_PRECHECK.md
+- docs/operations/WORKFLOW_PRECHECK_DETAILS.md
+target_sha256:
+  docs/operations/COMMIT_OPERATION_CARD.md: b2a2af165b1c1f34b4d27be9ceeedf4b4b283851c065384bf11c84dd3c5561ec
+  docs/operations/WORKFLOW_NAVIGATION_FOR_CLAUDE.md: 3cdb0ae0a1ba4ee2e491befae05fc574b0a95578ce9e23fb8b9667a950f8b0e6
+  docs/operations/WORKFLOW_NAVIGATION_FOR_CODEX.md: 15f98ecc0076d5dc1060197267df6ee9df0f17502bb11d61cc22265f6f201695
+  docs/operations/WORKFLOW_PRECHECK.md: dae366f96f67e114e99569619b7de54d59a46e662ade65f7dd6eacde6d578dbf
+  docs/operations/WORKFLOW_PRECHECK_DETAILS.md: 7316098c131f2e7200e6188e77924db3d938d2859092227b3791ffbaeb8e1776
+required_verifiers: &id001
+- gemini-3.5-flash
+completed_verifiers: *id001
+unresolved_substantive_findings: 0
+verifications:
+- verifier: gemini-3.5-flash
+  target_files:
+  - docs/operations/COMMIT_OPERATION_CARD.md
+  - docs/operations/WORKFLOW_NAVIGATION_FOR_CLAUDE.md
+  - docs/operations/WORKFLOW_NAVIGATION_FOR_CODEX.md
+  - docs/operations/WORKFLOW_PRECHECK.md
+  - docs/operations/WORKFLOW_PRECHECK_DETAILS.md
+  target_sha256:
+    docs/operations/COMMIT_OPERATION_CARD.md: b2a2af165b1c1f34b4d27be9ceeedf4b4b283851c065384bf11c84dd3c5561ec
+    docs/operations/WORKFLOW_NAVIGATION_FOR_CLAUDE.md: 3cdb0ae0a1ba4ee2e491befae05fc574b0a95578ce9e23fb8b9667a950f8b0e6
+    docs/operations/WORKFLOW_NAVIGATION_FOR_CODEX.md: 15f98ecc0076d5dc1060197267df6ee9df0f17502bb11d61cc22265f6f201695
+    docs/operations/WORKFLOW_PRECHECK.md: dae366f96f67e114e99569619b7de54d59a46e662ade65f7dd6eacde6d578dbf
+    docs/operations/WORKFLOW_PRECHECK_DETAILS.md: 7316098c131f2e7200e6188e77924db3d938d2859092227b3791ffbaeb8e1776
+review_run:
+  path: .reviewcompass/evidence/review-runs/2026-06-19-single-turn-commit-approval-policy-postwrite
+  summary_path: .reviewcompass/evidence/review-runs/2026-06-19-single-turn-commit-approval-policy-postwrite/model-result-summary.yaml
+notes: Generated template; verify target_files cover current post-write targets before
+  use.

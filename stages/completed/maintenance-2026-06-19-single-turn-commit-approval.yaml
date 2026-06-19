@@ -1,0 +1,46 @@
+process_id: maintenance
+started_at: "2026-06-19T17:00:00+09:00"
+completed_at: "2026-06-19T17:51:49+09:00"
+trigger: "利用者が、コミットは操作性の点から1回にしたいが、LLMが自動でコミットするのはダメ、と明示した"
+mainline_blocked_by: "stages/in-progress/reopen-procedure-2026-06-19.yaml"
+classification: local
+reason: "commit approval の入力源と Codex / Claude adapter の運用記述を、利用者の単発 commit 指示を承認 source として扱う方針へ修正する局所変更。commit guard の staged exact index / nonce binding は維持し、LLM 生成承認文の禁止も維持する。"
+procedure: "TDD"
+allowed_scope:
+  - "利用者の単発 commit 指示を、staged 内容承認と LLM commit 実行代行承認の source として扱う"
+  - "LLM が利用者発話なしに承認文を生成する経路は禁止したまま維持する"
+  - "Codex / Claude adapter と commit 操作カード、precheck 文書の整合を取る"
+allowed_files:
+  - "docs/operations/COMMIT_OPERATION_CARD.md"
+  - "docs/operations/WORKFLOW_NAVIGATION_FOR_CLAUDE.md"
+  - "docs/operations/WORKFLOW_NAVIGATION_FOR_CODEX.md"
+  - "docs/operations/WORKFLOW_PRECHECK.md"
+  - "docs/operations/WORKFLOW_PRECHECK_DETAILS.md"
+  - "tests/tools/test_commit_single_turn_policy_docs.py"
+  - "stages/in-progress/maintenance-2026-06-19-single-turn-commit-approval.yaml"
+  - "stages/completed/maintenance-2026-06-19-single-turn-commit-approval.yaml"
+completion_conditions:
+  - "Codex adapter から 1回目コミット / 2回目承認 の二段階記述が消えている"
+  - "commit 操作カードが、直近利用者 commit 指示を承認 source として転送できることと、LLM 生成承認文は禁止であることを明示する"
+  - "WORKFLOW_PRECHECK と DETAILS が同じ方針を説明する"
+  - "文書方針テストが通過する"
+completed_steps:
+  - "文書方針テスト tests/tools/test_commit_single_turn_policy_docs.py を追加し、修正前に 3 件失敗することを確認した"
+  - "Codex adapter の 1 回目 commit / 2 回目承認の二段階記述を、利用者の単発 commit 指示を source とする記述へ置換した"
+  - "COMMIT_OPERATION_CARD と Claude adapter に、直近利用者 commit 指示を staged 内容承認と LLM commit 実行代行承認として扱うことを明記した"
+  - "WORKFLOW_PRECHECK と WORKFLOW_PRECHECK_DETAILS に、単発 commit 指示の転送可否と LLM 生成承認文禁止を明記した"
+  - "post-write verification を実施し、gemini-3.5-flash で所見 0 件を確認した"
+verification:
+  tests:
+    - command: ".venv/bin/python3 -m pytest tests/tools/test_commit_single_turn_policy_docs.py"
+      result: "3 passed"
+    - command: "rg -n \"1 回目|2 回目|1回目|2回目\" docs/operations/WORKFLOW_NAVIGATION_FOR_CODEX.md docs/operations/COMMIT_OPERATION_CARD.md docs/operations/WORKFLOW_PRECHECK.md docs/operations/WORKFLOW_PRECHECK_DETAILS.md docs/operations/WORKFLOW_NAVIGATION_FOR_CLAUDE.md"
+      result: "no matches"
+  post_write_verification:
+    review_run_dir: ".reviewcompass/evidence/review-runs/2026-06-19-single-turn-commit-approval-policy-postwrite"
+    variant: "post_write_verification_google"
+    model: "gemini-3.5-flash"
+    findings: 0
+    manifest: ".reviewcompass/post-write-verification/post-write-2026-06-19-285.yaml"
+current_status: completed
+return_to: "tasks alignment commit stop point"

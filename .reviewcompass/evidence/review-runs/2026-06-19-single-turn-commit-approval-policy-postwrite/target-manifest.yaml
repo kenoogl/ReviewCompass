@@ -1,0 +1,12 @@
+run_id: 2026-06-19-single-turn-commit-approval-policy-postwrite
+target_files:
+- path: docs/operations/COMMIT_OPERATION_CARD.md
+  sha256: b2a2af165b1c1f34b4d27be9ceeedf4b4b283851c065384bf11c84dd3c5561ec
+- path: docs/operations/WORKFLOW_NAVIGATION_FOR_CLAUDE.md
+  sha256: 3cdb0ae0a1ba4ee2e491befae05fc574b0a95578ce9e23fb8b9667a950f8b0e6
+- path: docs/operations/WORKFLOW_NAVIGATION_FOR_CODEX.md
+  sha256: 15f98ecc0076d5dc1060197267df6ee9df0f17502bb11d61cc22265f6f201695
+- path: docs/operations/WORKFLOW_PRECHECK.md
+  sha256: dae366f96f67e114e99569619b7de54d59a46e662ade65f7dd6eacde6d578dbf
+- path: docs/operations/WORKFLOW_PRECHECK_DETAILS.md
+  sha256: 7316098c131f2e7200e6188e77924db3d938d2859092227b3791ffbaeb8e1776
