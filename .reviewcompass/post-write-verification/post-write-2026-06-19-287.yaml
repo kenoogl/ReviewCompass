@@ -1,0 +1,96 @@
+status: completed
+target_files:
+- .reviewcompass/specs/workflow-management/implementation-drafting.md
+- .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-implementation-integrated-design-review-run/prompts/claude-sonnet-4-6.round-1.prompt.md
+- .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-implementation-integrated-design-review-run/prompts/gemini-3.1-pro-preview.proxy-C1-C7.prompt.md
+- .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-implementation-integrated-design-review-run/prompts/gemini-3.1-pro-preview.round-1.prompt.md
+- .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-implementation-integrated-design-review-run/prompts/gpt-5.4.round-1.prompt.md
+- .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-implementation-integrated-design-review-run/proxy-decision-prompts/C1-C7.prompt.md
+- .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-implementation-integrated-design-review-run/proxy-decision-summary.md
+- .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-implementation-integrated-design-review-run/raw-review-triage-summary.md
+- .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-implementation-integrated-design-review-run/review-response.md
+- .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-implementation-integrated-design-review-run/review-target.md
+- .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-implementation-integrated-design-review-run/review_summary.md
+- AGENTS.md
+- docs/operations/SESSION_WORKFLOW_GUIDE.md
+- .reviewcompass/specs/_cross_feature/reviews/2026-06-19-implementation-integrated-design-review-wave.md
+- .reviewcompass/specs/_cross_feature/reviews/2026-06-19-implementation-integrated-design-review-wave-summary.md
+target_sha256:
+  .reviewcompass/specs/workflow-management/implementation-drafting.md: 77368e12d30d51add6d97d56e9511bf5c73777e052cf6c49b8ab0ac9868ab7fb
+  ? .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-implementation-integrated-design-review-run/prompts/claude-sonnet-4-6.round-1.prompt.md
+  : 3dfb47ba32dbb0411fe103f208d677691b2e049a14c011a109b22473a5dfcc40
+  ? .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-implementation-integrated-design-review-run/prompts/gemini-3.1-pro-preview.proxy-C1-C7.prompt.md
+  : 359cdfdf22092a4ac24c17eb24ea08b2cab5a3f0ffe8dbad2870f3298f5f79fd
+  ? .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-implementation-integrated-design-review-run/prompts/gemini-3.1-pro-preview.round-1.prompt.md
+  : 03d96b175f44db391d5a790e6ea2fa0e1484efa25271dab41f7c6a0a9f98339f
+  ? .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-implementation-integrated-design-review-run/prompts/gpt-5.4.round-1.prompt.md
+  : 71b1aa97226a3fca0b58957b87e25d4e491ed867febd6754d12de81e31e67794
+  ? .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-implementation-integrated-design-review-run/proxy-decision-prompts/C1-C7.prompt.md
+  : cf828a6bbb8ef63f2fa0eb326a7bd86815c12768483b8ee83afeeff5a433b0d5
+  ? .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-implementation-integrated-design-review-run/proxy-decision-summary.md
+  : 6209707d4c7c6433bc4346c37a4126ec9e38f638c4bc5e29d6b156ec2cae1989
+  ? .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-implementation-integrated-design-review-run/raw-review-triage-summary.md
+  : 0338464d2288943cdd4954236417c8d3bccded34d557241ab565e1e1feec4af1
+  ? .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-implementation-integrated-design-review-run/review-response.md
+  : 6fdaa5960a8c4b55f0db46b399f0982b6c9e0f12fd48f7bdabce6b15e38d3833
+  ? .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-implementation-integrated-design-review-run/review-target.md
+  : b6b1ebd2c46782a4e5953951e629e5be345133d120ce6bfdd140cf1071d0f92b
+  ? .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-implementation-integrated-design-review-run/review_summary.md
+  : 9086b1781001098fa5564be379b770428dd90afb994cb30e51eb82068e80831a
+  AGENTS.md: 5f5acc991963ea80441f3adccfccb338ed8b93e03b19a7ce45dee5173a30a527
+  docs/operations/SESSION_WORKFLOW_GUIDE.md: 273b6e9dcc5017047535fdcf443f9854d90e78e4044349e754df9a3433bf431b
+  .reviewcompass/specs/_cross_feature/reviews/2026-06-19-implementation-integrated-design-review-wave.md: 317dc6523771b2ce3410cf19afb330fc60be2815d9b1dbee7371ecc83d393233
+  .reviewcompass/specs/_cross_feature/reviews/2026-06-19-implementation-integrated-design-review-wave-summary.md: f63b62e178aefc18041bc507f11863ccc930e106e7f37493377e8d1ca2a97624
+required_verifiers: &id001
+- gemini-3.5-flash
+completed_verifiers: *id001
+unresolved_substantive_findings: 0
+verifications:
+- verifier: gemini-3.5-flash
+  target_files:
+  - .reviewcompass/specs/workflow-management/implementation-drafting.md
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-implementation-integrated-design-review-run/prompts/claude-sonnet-4-6.round-1.prompt.md
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-implementation-integrated-design-review-run/prompts/gemini-3.1-pro-preview.proxy-C1-C7.prompt.md
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-implementation-integrated-design-review-run/prompts/gemini-3.1-pro-preview.round-1.prompt.md
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-implementation-integrated-design-review-run/prompts/gpt-5.4.round-1.prompt.md
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-implementation-integrated-design-review-run/proxy-decision-prompts/C1-C7.prompt.md
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-implementation-integrated-design-review-run/proxy-decision-summary.md
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-implementation-integrated-design-review-run/raw-review-triage-summary.md
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-implementation-integrated-design-review-run/review-response.md
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-implementation-integrated-design-review-run/review-target.md
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-implementation-integrated-design-review-run/review_summary.md
+  - AGENTS.md
+  - docs/operations/SESSION_WORKFLOW_GUIDE.md
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-19-implementation-integrated-design-review-wave.md
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-19-implementation-integrated-design-review-wave-summary.md
+  target_sha256:
+    .reviewcompass/specs/workflow-management/implementation-drafting.md: 77368e12d30d51add6d97d56e9511bf5c73777e052cf6c49b8ab0ac9868ab7fb
+    ? .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-implementation-integrated-design-review-run/prompts/claude-sonnet-4-6.round-1.prompt.md
+    : 3dfb47ba32dbb0411fe103f208d677691b2e049a14c011a109b22473a5dfcc40
+    ? .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-implementation-integrated-design-review-run/prompts/gemini-3.1-pro-preview.proxy-C1-C7.prompt.md
+    : 359cdfdf22092a4ac24c17eb24ea08b2cab5a3f0ffe8dbad2870f3298f5f79fd
+    ? .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-implementation-integrated-design-review-run/prompts/gemini-3.1-pro-preview.round-1.prompt.md
+    : 03d96b175f44db391d5a790e6ea2fa0e1484efa25271dab41f7c6a0a9f98339f
+    ? .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-implementation-integrated-design-review-run/prompts/gpt-5.4.round-1.prompt.md
+    : 71b1aa97226a3fca0b58957b87e25d4e491ed867febd6754d12de81e31e67794
+    ? .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-implementation-integrated-design-review-run/proxy-decision-prompts/C1-C7.prompt.md
+    : cf828a6bbb8ef63f2fa0eb326a7bd86815c12768483b8ee83afeeff5a433b0d5
+    ? .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-implementation-integrated-design-review-run/proxy-decision-summary.md
+    : 6209707d4c7c6433bc4346c37a4126ec9e38f638c4bc5e29d6b156ec2cae1989
+    ? .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-implementation-integrated-design-review-run/raw-review-triage-summary.md
+    : 0338464d2288943cdd4954236417c8d3bccded34d557241ab565e1e1feec4af1
+    ? .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-implementation-integrated-design-review-run/review-response.md
+    : 6fdaa5960a8c4b55f0db46b399f0982b6c9e0f12fd48f7bdabce6b15e38d3833
+    ? .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-implementation-integrated-design-review-run/review-target.md
+    : b6b1ebd2c46782a4e5953951e629e5be345133d120ce6bfdd140cf1071d0f92b
+    ? .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-implementation-integrated-design-review-run/review_summary.md
+    : 9086b1781001098fa5564be379b770428dd90afb994cb30e51eb82068e80831a
+    AGENTS.md: 5f5acc991963ea80441f3adccfccb338ed8b93e03b19a7ce45dee5173a30a527
+    docs/operations/SESSION_WORKFLOW_GUIDE.md: 273b6e9dcc5017047535fdcf443f9854d90e78e4044349e754df9a3433bf431b
+    .reviewcompass/specs/_cross_feature/reviews/2026-06-19-implementation-integrated-design-review-wave.md: 317dc6523771b2ce3410cf19afb330fc60be2815d9b1dbee7371ecc83d393233
+    .reviewcompass/specs/_cross_feature/reviews/2026-06-19-implementation-integrated-design-review-wave-summary.md: f63b62e178aefc18041bc507f11863ccc930e106e7f37493377e8d1ca2a97624
+review_run:
+  path: .reviewcompass/evidence/review-runs/2026-06-19-implementation-triad-and-review-wave-postwrite
+  summary_path: .reviewcompass/evidence/review-runs/2026-06-19-implementation-triad-and-review-wave-postwrite/model-result-summary.yaml
+notes: Generated template; verify target_files cover current post-write targets before
+  use.

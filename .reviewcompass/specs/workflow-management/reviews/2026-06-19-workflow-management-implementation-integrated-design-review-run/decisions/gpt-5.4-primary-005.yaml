@@ -1,0 +1,16 @@
+finding_id: 2026-06-19-workflow-management-implementation-integrated-design-review-run-gpt-5.4-primary-005
+cluster_id: C5
+proxy_model_id: gemini-3.1-pro-preview
+decision_prompt_path: proxy-decision-prompts/C1-C7.prompt.md
+raw_response_path: proxy-decisions/C1-C7.raw.yaml
+final_label: should-fix
+rationale: Clearer Phase 0 through 6 entry/exit conditions and review-wave blocking
+  tests improve workflow safety and should be added before moving on if practical.
+candidate_options:
+- must-fix
+- should-fix
+- leave-as-is
+rejected_options:
+  must-fix: The phase plan exists, so the gap is clarity and test detail rather than
+    missing the whole mechanism.
+  leave-as-is: The missing test detail could allow premature completion checks.

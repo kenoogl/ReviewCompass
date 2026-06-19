@@ -1,0 +1,16 @@
+finding_id: 2026-06-19-workflow-management-implementation-integrated-design-review-run-gpt-5.4-primary-004
+cluster_id: C4
+proxy_model_id: gemini-3.1-pro-preview
+decision_prompt_path: proxy-decision-prompts/C1-C7.prompt.md
+raw_response_path: proxy-decisions/C1-C7.raw.yaml
+final_label: should-fix
+rationale: Review-run recording and migration-boundary clarity should be improved
+  to prevent inconsistencies during structured prompt adoption.
+candidate_options:
+- must-fix
+- should-fix
+- leave-as-is
+rejected_options:
+  must-fix: The issue is an implementation-preparation clarity gap rather than an
+    immediate unsafe state movement.
+  leave-as-is: Without clearer tests, migration behavior remains underspecified.

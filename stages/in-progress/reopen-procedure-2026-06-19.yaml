@@ -33,13 +33,19 @@ completed_steps:
 - tasks alignment gate 完了（requirements Requirement 13〜16 / design / tasks / triad-review
   / review-wave / workflow_state 整合、post-write verification no findings）
 - tasks approval gate 完了（利用者発言『承認』に基づく明示承認）
-next_step: 第3過程：implementation triad-review
-step_number: 3
-pending_gates:
-- stages/implementation.yaml#triad-review
-- stages/implementation.yaml#review-wave
-- stages/implementation.yaml#alignment
-- stages/implementation.yaml#approval
+- implementation drafting 完了（Requirement 13〜16 / T-016〜T-019 を implementation-drafting.md
+  へ展開）
+- implementation triad-review gate 完了（proxy_model 判断、C1〜C6反映、post-write verification
+  no findings）
+- implementation review-wave gate 完了（全 feature impact check、workflow-management 以外
+  existing_sufficient、post-write verification no findings）
+- implementation alignment gate 完了（requirements Requirement 13〜16 / design / tasks
+  / implementation drafting / triad-review / review-wave / workflow_state 整合、post-write
+  verification no findings）
+- implementation approval gate 完了（利用者発言『承認』に基づく明示承認）
+next_step: 第4過程：完了
+step_number: 4
+pending_gates: []
 completed_gates:
 - stages/requirements.yaml#triad-review
 - stages/requirements.yaml#review-wave
@@ -53,10 +59,15 @@ completed_gates:
 - stages/tasks.yaml#review-wave
 - stages/tasks.yaml#alignment
 - stages/tasks.yaml#approval
+- stages/implementation.yaml#triad-review
+- stages/implementation.yaml#review-wave
+- stages/implementation.yaml#alignment
+- stages/implementation.yaml#approval
 drafting_completed_gates:
 - stages/requirements.yaml#drafting
 - stages/design.yaml#drafting
 - stages/tasks.yaml#drafting
+- stages/implementation.yaml#drafting
 current_blocker: null
 side_track_records:
 - completed_maintenance: stages/completed/maintenance-2026-06-19-post-write-review-target-preflight.yaml
@@ -148,6 +159,35 @@ reopen_step_records:
     も更新済み。 次は tasks triad-review gate。
   evidence:
   - .reviewcompass/specs/workflow-management/tasks.md
+- from_step: 3
+  completed_step: implementation triad-review gate 完了
+  rationale: implementation triad-review を実施し、proxy_model 判断により C1/C2 must-fix、C3〜C6
+    should-fix、C7 leave-as-is を確定した。C1〜C6 は implementation-drafting.md と review-response.md
+    に反映済みで、post-write verification は gemini-3.5-flash findings 0。
+  evidence:
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-implementation-integrated-design-review-run/proxy-decision-summary.md
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-implementation-integrated-design-review-run/review-response.md
+  - .reviewcompass/post-write-verification/post-write-2026-06-19-286.yaml
+  - .reviewcompass/specs/workflow-management/implementation-drafting.md
+- from_step: 3
+  completed_step: implementation review-wave gate 完了（全 feature impact check、workflow-management
+    以外 existing_sufficient）
+  rationale: implementation review-wave summary が status ok、carry-forward 未消化 0、workflow-management
+    以外 existing_sufficient を示し、post-write verification post-write-2026-06-19-287 で
+    findings 0 を確認したため、他 feature の implementation 正本変更は不要と判定する。
+  evidence:
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-19-implementation-integrated-design-review-wave.md
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-19-implementation-integrated-design-review-wave-summary.md
+  - .reviewcompass/post-write-verification/post-write-2026-06-19-287.yaml
+- from_step: 3
+  completed_step: implementation alignment gate 完了
+  rationale: implementation alignment を実施し、requirements Requirement 13〜16、design、tasks、implementation
+    drafting、triad-review 対処、review-wave 判定、workflow_state / reopen 記録が整合していると確認した。implementation
+    内の追加修正は不要で、approval は未完了として維持する。post-write verification は gemini-3.5-flash findings
+    0。
+  evidence:
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-19-implementation-integrated-design-reopen-alignment.md
+  - .reviewcompass/post-write-verification/post-write-2026-06-19-288.yaml
 downstream_impact_decisions:
 - gate: stages/requirements.yaml#triad-review
   feature_scope: workflow-management
@@ -267,6 +307,46 @@ downstream_impact_decisions:
   - .reviewcompass/specs/workflow-management/tasks.md
   - .reviewcompass/specs/_cross_feature/reviews/2026-06-19-tasks-integrated-design-reopen-alignment.md
   - .reviewcompass/post-write-verification/post-write-2026-06-19-284.yaml
+- gate: stages/implementation.yaml#triad-review
+  feature_scope: workflow-management
+  decision: proxy_approved
+  rationale: implementation triad-review を実施し、proxy_model 判断により C1/C2 must-fix、C3〜C6
+    should-fix、C7 leave-as-is を確定した。C1〜C6 は implementation-drafting.md と review-response.md
+    に反映済みで、post-write verification は gemini-3.5-flash findings 0。
+  evidence:
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-implementation-integrated-design-review-run/proxy-decision-summary.md
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-implementation-integrated-design-review-run/review-response.md
+  - .reviewcompass/post-write-verification/post-write-2026-06-19-286.yaml
+  - .reviewcompass/specs/workflow-management/implementation-drafting.md
+- gate: stages/implementation.yaml#review-wave
+  feature_scope: all_features
+  decision: existing_sufficient
+  rationale: implementation review-wave summary が status ok、carry-forward 未消化 0、workflow-management
+    以外 existing_sufficient を示し、post-write verification post-write-2026-06-19-287 で
+    findings 0 を確認したため、他 feature の implementation 正本変更は不要と判定する。
+  evidence:
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-19-implementation-integrated-design-review-wave.md
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-19-implementation-integrated-design-review-wave-summary.md
+  - .reviewcompass/post-write-verification/post-write-2026-06-19-287.yaml
+- gate: stages/implementation.yaml#alignment
+  feature_scope: workflow-management
+  decision: existing_sufficient
+  rationale: implementation alignment を実施し、requirements Requirement 13〜16、design、tasks、implementation
+    drafting、triad-review 対処、review-wave 判定、workflow_state / reopen 記録が整合していると確認した。implementation
+    内の追加修正は不要で、approval は未完了として維持する。post-write verification は gemini-3.5-flash findings
+    0。
+  evidence:
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-19-implementation-integrated-design-reopen-alignment.md
+  - .reviewcompass/post-write-verification/post-write-2026-06-19-288.yaml
+- gate: stages/implementation.yaml#approval
+  feature_scope: workflow-management
+  decision: approved
+  rationale: 利用者が 2026-06-19 Codex セッションで『承認』と明示し、implementation drafting、triad-review、review-wave、alignment
+    が完了済みであるため、統合設計メモ反映の implementation phase を承認済みとして扱う。
+  evidence:
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-19-implementation-integrated-design-approval.md
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-19-implementation-integrated-design-reopen-alignment.md
+  - .reviewcompass/post-write-verification/post-write-2026-06-19-288.yaml
 commit_stop_point_records:
 - step: 3
   kind: approval_complete
@@ -296,11 +376,18 @@ commit_stop_point_records:
   head: a6bf8f44
   evidence:
   - .reviewcompass/post-write-verification/post-write-2026-06-19-284.yaml
+- step: 3
+  kind: approval_complete
+  gate: stages/tasks.yaml#approval
+  reason: tasks approval 完了時点の停止点
+  head: 6e364b86
+  evidence:
+  - .reviewcompass/post-write-verification/post-write-2026-06-19-284.yaml
 commit_required: true
 commit_required_kind: stop_point_consumed
 commit_required_reason: reopen commit stop point 消費完了時点の停止点
 commit_stop_point: true
-commit_stop_point_step: 3
+commit_stop_point_step: 4
 commit_stop_point_kind: approval_complete
-commit_stop_point_gate: stages/tasks.yaml#approval
-commit_stop_point_reason: tasks approval 完了時点の停止点
+commit_stop_point_gate: stages/implementation.yaml#approval
+commit_stop_point_reason: implementation approval 完了時点の停止点

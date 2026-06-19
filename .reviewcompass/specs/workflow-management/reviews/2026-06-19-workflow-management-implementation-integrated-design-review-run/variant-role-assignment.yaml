@@ -1,0 +1,22 @@
+run_id: 2026-06-19-workflow-management-implementation-integrated-design-review-run
+variant: implementation_review_independent_3way_codex_operator_sonnet_adversarial
+base_variant: implementation_review_independent_3way_codex_operator
+operator: codex
+phase: implementation
+gate: stages/implementation.yaml#triad-review
+roles:
+  primary:
+    path: api
+    provider: openai-api
+    model: gpt-5.4
+  adversarial:
+    path: api
+    provider: anthropic-api
+    model: claude-sonnet-4-6
+  judgment:
+    path: api
+    provider: gemini-api
+    model: gemini-3.1-pro-preview
+effective_prompt_path: .reviewcompass/runtime/effective-prompts/next_action_kind-reopen_in_progress__workflow_stage-triad-review__reopen_required_action-run_reopen_pending_gate.prompt.md
+effective_prompt_sha256: fdd292d2ae3a7623f9423a6adaadd42ec05e55842b29eb03bf9cf55c6ff0ba69
+selection_rationale: 利用者指示により、Codex 操縦時の既定 variant から adversarial 役のみ claude-sonnet-4-6 へ差し替える。primary と judgment は既定のまま維持する。

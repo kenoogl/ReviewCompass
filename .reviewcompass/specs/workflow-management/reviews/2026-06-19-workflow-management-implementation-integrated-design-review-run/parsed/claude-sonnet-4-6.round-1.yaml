@@ -1,0 +1,69 @@
+role: adversarial
+provider: anthropic-api
+model: claude-sonnet-4-6
+attempts: 1
+duration_seconds: 45.031
+findings:
+- severity: WARN
+  target_location: .reviewcompass/specs/workflow-management/implementation-drafting.md
+    § T-016：operation contract 語彙と required_action 対応
+  description: T-016 の実装準備で、commit boundary の強制点と bypass 防止の TDD 停止条件が不明確。既存 commit_stop_point
+    ガードを広い bypass に戻さない旨は記載されているが、commit_boundary=true 強制点と bookmark 更新のみの distinction
+    を検査する具体的な期待テスト・テストファイル・停止条件が列挙されていない。
+  rationale: Requirement 13 受入 8〜10 と tasks T-016 完了条件 4 は、commit_boundary 強制点の bypass
+    拒否と不要 commit 要求なしの 2 テストを個別に機械検証することを要求する。implementation drafting が TDD-ready
+    な期待テスト記述を欠くと、triad-review 時に実装境界が再判断になり繰り返し人間判断を生む。
+- severity: WARN
+  target_location: .reviewcompass/specs/workflow-management/implementation-drafting.md
+    § T-017：承認ゲート・side track stack・workflow-state snapshot
+  description: T-017 の proxy_model / human decision 境界について、implementation drafting
+    が境界判定のテスト停止条件を具体化していない。proxy_model 代行可否の判定入力（何を根拠に代行可能と判断するか）を schema / gate で区別する旨は記載されているが、境界テストのケース（代行不可対象を
+    proxy で通過させた場合に DEVIATION になることの期待テスト）が明示されていない。
+  rationale: Requirement 14 受入 2 と tasks T-017 完了条件 2 は、proxy_model decision が人間承認を置換しない対象と代行可能な判断対象を
+    schema / gate で区別することを必須とする。境界ケースの期待テストが drafting に不在だと TDD の赤フェーズ設計が曖昧になり、実装後に発覚する。
+- severity: WARN
+  target_location: .reviewcompass/specs/workflow-management/implementation-drafting.md
+    § T-018：構造化有効プロンプトと prompt audit
+  description: T-018 の review-run recording（rounds.yaml への manifest path / sha256
+    記録）について、T-004 既存 effective_prompt_path との併存正常系と text-only のみの場合の WARN、manifest
+    と text-only decision point 不一致の DEVIATION、両フィールド欠落の DEVIATION の 4 境界を区別するテスト停止条件が
+    implementation drafting に明示されていない。
+  rationale: Requirement 15 受入 6〜7 と tasks T-018 完了条件 5 は、移行期の共存ルール（text-only = P1互換
+    WARN、不一致 = DEVIATION、両欠落 = DEVIATION）を機械検証することを要求する。drafting でこれらの停止条件が不在だと triad-review
+    時に移行境界の再判断が必要になる。
+- severity: WARN
+  target_location: .reviewcompass/specs/workflow-management/implementation-drafting.md
+    § T-019：段階的実装計画 Phase 0〜6
+  description: T-019 の review-wave consumer impact blocking について、必須入力（review-wave-summary
+    JSON/Markdown 出力、carry-forward register、downstream_impact_decisions、spec.json.recheck.impacted_downstream_phases、spec.json.reopened）の未反映検出テストと、spec.json.reopened
+    を active reopen scope と誤認しないことのテスト停止条件が drafting に記載されていない。
+  rationale: Requirement 16 受入 10〜12 と tasks T-019 完了条件 6〜7 は、consumer impact の未反映完了遮断と
+    active reopen scope / impact review scope の混同 DEVIATION を個別テストで確認することを要求する。TDD-ready
+    な停止条件の記載不足は、実装者が判断問題として停止する経路を生む。
+- severity: WARN
+  target_location: .reviewcompass/specs/workflow-management/implementation-drafting.md
+    §drafting 完了判断
+  description: drafting 完了判断節で「T-016〜T-019 を implementation 正本上の実装対象へ展開したため、spec.json
+    の workflow-management.implementation.drafting=true を更新し、implementation triad-review
+    へ進める」と述べているが、owned files（`.reviewcompass/schema/effect_kind.schema.json` 等）・prerequisite（T-015
+    完了）・completion conditions の依存順が T-016〜T-019 ごとに確認できる形で drafting 内に整理されていない。
+  rationale: Required check 6 は TDD-ready detail として owned files、prerequisites、completion
+    conditions、dependency ordering が drafting に含まれることを要求する。T-016〜T-019 の成果物一覧は tasks.md
+    には存在するが、implementation drafting 文書の各セクションには prerequisite タスクの完了確認手順と dependency
+    ordering が統合されておらず、実装者が着手前に判断しなければならない事項が残る。
+- severity: INFO
+  target_location: stages/in-progress/reopen-procedure-2026-06-19.yaml
+  description: reopen-procedure-2026-06-19.yaml の pending_gates に stages/implementation.yaml#triad-review
+    が先頭として存在し、drafting_completed_gates に stages/implementation.yaml#drafting が記録されている。現在の
+    workflow 状態（implementation.drafting=true、triad-review=false）と in-progress ファイルの
+    next_step および pending_gates は整合しており、triad-review が未完了であることは正確に反映されている。
+  rationale: Required check 7 の確認として、現在の workflow records は implementation drafting
+    完了・triad-review 未完了の状態を正確に記録しており、triad-review / review-wave / alignment / approval
+    / commit / push を完了と偽る stale 状態は検出されなかった。
+- severity: INFO
+  target_location: docs/operations/SESSION_WORKFLOW_GUIDE.md §6.5 不可逆操作の進行報告最小化 および
+    AGENTS.md
+  description: SESSION_WORKFLOW_GUIDE.md §6.5 の進捗報告最小化ルールと AGENTS.md の進捗説明平易化規律は、会話上の
+    reporting discipline として記述されており、workflow state の正本（spec.json・stages/in-progress/）を変更する規則ではない。両文書の
+    scope は報告・説明の形式に限定され、workflow state source-of-truth rules との矛盾は検出されなかった。
+  rationale: Required check 8 の確認として、新たに追加された進捗報告規律が workflow state の正本判定ルールと衝突しないことを確認した。

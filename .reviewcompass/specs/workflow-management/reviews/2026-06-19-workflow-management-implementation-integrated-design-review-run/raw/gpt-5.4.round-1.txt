@@ -1,0 +1,35 @@
+findings:
+  - severity: ERROR
+    target_location: ".reviewcompass/specs/workflow-management/implementation-drafting.md#drafting-完了判断"
+    description: "implementation drafting が spec.json の `workflow-management.implementation.drafting=true` 更新を推奨しており、実装準備の triad-review 前に状態更新を促している。"
+    rationale: "実装準備文書自体は triad-review の対象であり、現行 reopen 記録でも次ステップは `implementation triad-review` である。triad-review 前に drafting 完了状態更新を推奨すると、要件 13〜16 の実装準備レビュー境界を飛び越える誤運用を誘発し、Required Check 5 と 7 に反する。"
+
+  - severity: ERROR
+    target_location: ".reviewcompass/specs/workflow-management/implementation-drafting.md#t-017承認ゲートside-track-stackworkflow-state-snapshot"
+    description: "T-017 の実装準備に、Requirement 14 / T-017 で求められる staged file set digest チェックの実装対象・テスト対象が明示されていない。"
+    rationale: "当該節は snapshot drift と worktree digest には触れているが、Required Check 2 が要求する staged file set / digest checks の実装所有とテスト境界が列挙されていない。tasks.md では `staged file set digest` が明確な完了条件・テスト要件になっているため、implementation drafting 側でも実装対象と検証点を落とさず準備していなければ traceability が不十分になる。"
+
+  - severity: WARN
+    target_location: ".reviewcompass/specs/workflow-management/implementation-drafting.md#t-016operation-contract-語彙と-required_action-対応"
+    description: "T-016 の実装準備は operation contract の主要成果物を挙げているが、preconditions・postconditions・side effects・workflow_state_effect の具体テスト観点が tasks/design の粒度まで展開されていない。"
+    rationale: "Requirement 13 と tasks T-016 は operation contract に preconditions、postconditions、side_effects、workflow_state_effect、canonical invocation を持たせることを要求している。implementation drafting では『TDD で検査』と総称しているだけで、どの失敗系を先に赤にするかが弱く、TDD-ready detail と traceability がやや不足している。"
+
+  - severity: WARN
+    target_location: ".reviewcompass/specs/workflow-management/implementation-drafting.md#t-018構造化有効プロンプトと-prompt-audit"
+    description: "T-018 の実装準備に、review-run 記録の `rounds.yaml` 拡張、text-only 互換 WARN、manifest と text-only decision point 不一致 DEVIATION の実装所有ファイルが明示されていない。"
+    rationale: "tasks.md の T-018 は review-run recording と移行期の互換規則を完了条件・テスト要件として明示しているが、implementation drafting は builder / audit CLI に主眼が寄っており、既存 `run_role.py` / `run_review.py` などの記録側変更や対応テストの所有が見えない。これでは Requirement 15 の review-run recording への準備が弱い。"
+
+  - severity: WARN
+    target_location: ".reviewcompass/specs/workflow-management/implementation-drafting.md#t-019phase-06-と-proxy_model-triage-decision-機械処理化"
+    description: "T-019 の Phase 0〜6 実装準備は高水準の順序説明に留まり、各 phase の entry/exit criteria、forbidden operations、required tests をどのファイルで正本化するかの詳細が不足している。"
+    rationale: "Requirement 16 / T-019 は phase ごとの entry criteria、exit criteria、allowed / forbidden operations、required tests、commit boundary を機械検査可能にすることを求めている。implementation drafting では `stages/workflow-management-implementation-phases.yaml` を挙げているものの、各 phase の停止条件・依存順・失敗時の打ち切り条件までの具体化が薄く、TDD-ready な実装準備としてはもう一段の明確化余地がある。"
+
+  - severity: WARN
+    target_location: ".reviewcompass/specs/workflow-management/implementation-drafting.md#検証"
+    description: "検証欄に `tests/tools/test_workflow_management_implementation_drafting.py` を『通過予定の棚卸し検査』と記しており、実行済みと予定が混在している。"
+    rationale: "実装準備段の証跡では、実行済み・未実行・想定を厳密に分けないと状態誤認を招く。Required Check 5 と 7 の観点では、implementation drafting は完了主張を抑制すべきであり、『実行済み』欄に予定を混ぜる表現は不正確である。"
+
+  - severity: INFO
+    target_location: "AGENTS.md / docs/operations/SESSION_WORKFLOW_GUIDE.md"
+    description: "進捗説明の平易化ルールは会話・報告規律として記述されており、workflow state の正本を置き換える内容にはなっていない。"
+    rationale: "Required Check 8 の観点では、追加された進捗報告規律は会話表現の制約に留まっており、`next --json`、spec.json、in-progress YAML などの状態ソースを上書きする規定ではないため、現時点では競合は見当たらない。"

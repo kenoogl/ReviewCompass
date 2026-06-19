@@ -1,0 +1,16 @@
+finding_id: 2026-06-19-workflow-management-implementation-integrated-design-review-run-gpt-5.4-primary-002
+cluster_id: C2
+proxy_model_id: gemini-3.1-pro-preview
+decision_prompt_path: proxy-decision-prompts/C1-C7.prompt.md
+raw_response_path: proxy-decisions/C1-C7.raw.yaml
+final_label: must-fix
+rationale: Concrete tests for staged file digest checks and proxy/human decision boundaries
+  directly affect approval safety and boundary enforcement.
+candidate_options:
+- must-fix
+- should-fix
+- leave-as-is
+rejected_options:
+  should-fix: Approval safety and decision-boundary enforcement are blocking concerns.
+  leave-as-is: Leaving the tests implicit would force implementation to guess critical
+    approval boundaries.

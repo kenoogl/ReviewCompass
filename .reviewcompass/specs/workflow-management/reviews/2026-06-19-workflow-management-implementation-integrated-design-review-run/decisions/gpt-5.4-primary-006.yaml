@@ -1,0 +1,15 @@
+finding_id: 2026-06-19-workflow-management-implementation-integrated-design-review-run-gpt-5.4-primary-006
+cluster_id: C6
+proxy_model_id: gemini-3.1-pro-preview
+decision_prompt_path: proxy-decision-prompts/C1-C7.prompt.md
+raw_response_path: proxy-decisions/C1-C7.raw.yaml
+final_label: should-fix
+rationale: Verification wording should distinguish executed checks from planned checks
+  to prevent confusion about the actual verification state.
+candidate_options:
+- must-fix
+- should-fix
+- leave-as-is
+rejected_options:
+  must-fix: This is a wording problem, not a core workflow safety failure.
+  leave-as-is: The wording can mislead readers about what was actually run.

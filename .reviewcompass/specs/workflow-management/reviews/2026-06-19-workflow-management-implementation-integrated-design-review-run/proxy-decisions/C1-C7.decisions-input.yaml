@@ -1,0 +1,49 @@
+run_id: 2026-06-19-workflow-management-implementation-integrated-design-review-run
+decision_prompt_path: proxy-decision-prompts/C1-C7.prompt.md
+clusters:
+- cluster_id: C1
+  draft_label: must-fix
+  summary: Drafting completion wording may imply premature state movement.
+  finding_ids:
+  - 2026-06-19-workflow-management-implementation-integrated-design-review-run-gpt-5.4-primary-001
+  - 2026-06-19-workflow-management-implementation-integrated-design-review-run-claude-sonnet-4-6-adversarial-005
+- cluster_id: C2
+  draft_label: must-fix
+  summary: T-017 lacks staged file digest and proxy/human boundary test detail.
+  finding_ids:
+  - 2026-06-19-workflow-management-implementation-integrated-design-review-run-gpt-5.4-primary-002
+  - 2026-06-19-workflow-management-implementation-integrated-design-review-run-claude-sonnet-4-6-adversarial-002
+  - 2026-06-19-workflow-management-implementation-integrated-design-review-run-gemini-3.1-pro-preview-judgment-001
+- cluster_id: C3
+  draft_label: should-fix
+  summary: T-016 needs more concrete operation contract and commit boundary tests.
+  finding_ids:
+  - 2026-06-19-workflow-management-implementation-integrated-design-review-run-gpt-5.4-primary-003
+  - 2026-06-19-workflow-management-implementation-integrated-design-review-run-claude-sonnet-4-6-adversarial-001
+  - 2026-06-19-workflow-management-implementation-integrated-design-review-run-gemini-3.1-pro-preview-judgment-001
+- cluster_id: C4
+  draft_label: should-fix
+  summary: T-018 needs review-run recording and migration boundary tests.
+  finding_ids:
+  - 2026-06-19-workflow-management-implementation-integrated-design-review-run-gpt-5.4-primary-004
+  - 2026-06-19-workflow-management-implementation-integrated-design-review-run-claude-sonnet-4-6-adversarial-003
+  - 2026-06-19-workflow-management-implementation-integrated-design-review-run-gemini-3.1-pro-preview-judgment-001
+- cluster_id: C5
+  draft_label: should-fix
+  summary: T-019 needs clearer phase and review-wave blocking tests.
+  finding_ids:
+  - 2026-06-19-workflow-management-implementation-integrated-design-review-run-gpt-5.4-primary-005
+  - 2026-06-19-workflow-management-implementation-integrated-design-review-run-claude-sonnet-4-6-adversarial-004
+  - 2026-06-19-workflow-management-implementation-integrated-design-review-run-gemini-3.1-pro-preview-judgment-001
+- cluster_id: C6
+  draft_label: should-fix
+  summary: Verification wording mixes executed checks and planned checks.
+  finding_ids:
+  - 2026-06-19-workflow-management-implementation-integrated-design-review-run-gpt-5.4-primary-006
+- cluster_id: C7
+  draft_label: leave-as-is
+  summary: Progress-reporting discipline and current workflow records are consistent.
+  finding_ids:
+  - 2026-06-19-workflow-management-implementation-integrated-design-review-run-gpt-5.4-primary-007
+  - 2026-06-19-workflow-management-implementation-integrated-design-review-run-claude-sonnet-4-6-adversarial-006
+  - 2026-06-19-workflow-management-implementation-integrated-design-review-run-claude-sonnet-4-6-adversarial-007

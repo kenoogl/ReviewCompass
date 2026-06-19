@@ -1,0 +1,55 @@
+approved_action: review_triage_decide
+approved_by: proxy_model
+review_run_id: 2026-06-19-workflow-management-implementation-integrated-design-review-run
+summary_presented_to_user: true
+triage_presented_to_user: true
+consumed: false
+approved_finding_ids:
+- 2026-06-19-workflow-management-implementation-integrated-design-review-run-gpt-5.4-primary-001
+- 2026-06-19-workflow-management-implementation-integrated-design-review-run-gpt-5.4-primary-002
+- 2026-06-19-workflow-management-implementation-integrated-design-review-run-gpt-5.4-primary-003
+- 2026-06-19-workflow-management-implementation-integrated-design-review-run-gpt-5.4-primary-004
+- 2026-06-19-workflow-management-implementation-integrated-design-review-run-gpt-5.4-primary-005
+- 2026-06-19-workflow-management-implementation-integrated-design-review-run-gpt-5.4-primary-006
+- 2026-06-19-workflow-management-implementation-integrated-design-review-run-gpt-5.4-primary-007
+- 2026-06-19-workflow-management-implementation-integrated-design-review-run-claude-sonnet-4-6-adversarial-001
+- 2026-06-19-workflow-management-implementation-integrated-design-review-run-claude-sonnet-4-6-adversarial-002
+- 2026-06-19-workflow-management-implementation-integrated-design-review-run-claude-sonnet-4-6-adversarial-003
+- 2026-06-19-workflow-management-implementation-integrated-design-review-run-claude-sonnet-4-6-adversarial-004
+- 2026-06-19-workflow-management-implementation-integrated-design-review-run-claude-sonnet-4-6-adversarial-005
+- 2026-06-19-workflow-management-implementation-integrated-design-review-run-claude-sonnet-4-6-adversarial-006
+- 2026-06-19-workflow-management-implementation-integrated-design-review-run-claude-sonnet-4-6-adversarial-007
+- 2026-06-19-workflow-management-implementation-integrated-design-review-run-gemini-3.1-pro-preview-judgment-001
+approved_final_labels:
+  2026-06-19-workflow-management-implementation-integrated-design-review-run-gpt-5.4-primary-001: must-fix
+  2026-06-19-workflow-management-implementation-integrated-design-review-run-gpt-5.4-primary-002: must-fix
+  2026-06-19-workflow-management-implementation-integrated-design-review-run-gpt-5.4-primary-003: should-fix
+  2026-06-19-workflow-management-implementation-integrated-design-review-run-gpt-5.4-primary-004: should-fix
+  2026-06-19-workflow-management-implementation-integrated-design-review-run-gpt-5.4-primary-005: should-fix
+  2026-06-19-workflow-management-implementation-integrated-design-review-run-gpt-5.4-primary-006: should-fix
+  2026-06-19-workflow-management-implementation-integrated-design-review-run-gpt-5.4-primary-007: leave-as-is
+  2026-06-19-workflow-management-implementation-integrated-design-review-run-claude-sonnet-4-6-adversarial-001: should-fix
+  2026-06-19-workflow-management-implementation-integrated-design-review-run-claude-sonnet-4-6-adversarial-002: must-fix
+  2026-06-19-workflow-management-implementation-integrated-design-review-run-claude-sonnet-4-6-adversarial-003: should-fix
+  2026-06-19-workflow-management-implementation-integrated-design-review-run-claude-sonnet-4-6-adversarial-004: should-fix
+  2026-06-19-workflow-management-implementation-integrated-design-review-run-claude-sonnet-4-6-adversarial-005: must-fix
+  2026-06-19-workflow-management-implementation-integrated-design-review-run-claude-sonnet-4-6-adversarial-006: leave-as-is
+  2026-06-19-workflow-management-implementation-integrated-design-review-run-claude-sonnet-4-6-adversarial-007: leave-as-is
+  2026-06-19-workflow-management-implementation-integrated-design-review-run-gemini-3.1-pro-preview-judgment-001: must-fix
+proxy_model_id: gemini-3.1-pro-preview
+proxy_decisions:
+  2026-06-19-workflow-management-implementation-integrated-design-review-run-gpt-5.4-primary-001: decisions/gpt-5.4-primary-001.yaml
+  2026-06-19-workflow-management-implementation-integrated-design-review-run-gpt-5.4-primary-002: decisions/gpt-5.4-primary-002.yaml
+  2026-06-19-workflow-management-implementation-integrated-design-review-run-gpt-5.4-primary-003: decisions/gpt-5.4-primary-003.yaml
+  2026-06-19-workflow-management-implementation-integrated-design-review-run-gpt-5.4-primary-004: decisions/gpt-5.4-primary-004.yaml
+  2026-06-19-workflow-management-implementation-integrated-design-review-run-gpt-5.4-primary-005: decisions/gpt-5.4-primary-005.yaml
+  2026-06-19-workflow-management-implementation-integrated-design-review-run-gpt-5.4-primary-006: decisions/gpt-5.4-primary-006.yaml
+  2026-06-19-workflow-management-implementation-integrated-design-review-run-gpt-5.4-primary-007: decisions/gpt-5.4-primary-007.yaml
+  2026-06-19-workflow-management-implementation-integrated-design-review-run-claude-sonnet-4-6-adversarial-001: decisions/claude-sonnet-4-6-adversarial-001.yaml
+  2026-06-19-workflow-management-implementation-integrated-design-review-run-claude-sonnet-4-6-adversarial-002: decisions/claude-sonnet-4-6-adversarial-002.yaml
+  2026-06-19-workflow-management-implementation-integrated-design-review-run-claude-sonnet-4-6-adversarial-003: decisions/claude-sonnet-4-6-adversarial-003.yaml
+  2026-06-19-workflow-management-implementation-integrated-design-review-run-claude-sonnet-4-6-adversarial-004: decisions/claude-sonnet-4-6-adversarial-004.yaml
+  2026-06-19-workflow-management-implementation-integrated-design-review-run-claude-sonnet-4-6-adversarial-005: decisions/claude-sonnet-4-6-adversarial-005.yaml
+  2026-06-19-workflow-management-implementation-integrated-design-review-run-claude-sonnet-4-6-adversarial-006: decisions/claude-sonnet-4-6-adversarial-006.yaml
+  2026-06-19-workflow-management-implementation-integrated-design-review-run-claude-sonnet-4-6-adversarial-007: decisions/claude-sonnet-4-6-adversarial-007.yaml
+  2026-06-19-workflow-management-implementation-integrated-design-review-run-gemini-3.1-pro-preview-judgment-001: decisions/gemini-3.1-pro-preview-judgment-001.yaml

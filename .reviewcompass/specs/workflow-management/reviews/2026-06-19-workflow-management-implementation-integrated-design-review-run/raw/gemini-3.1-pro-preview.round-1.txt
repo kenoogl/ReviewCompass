@@ -1,0 +1,7 @@
+```yaml
+findings:
+  - severity: WARN
+    target_location: ".reviewcompass/specs/workflow-management/implementation-drafting.md (2026-06-19 integrated design Requirement 13〜16 implementation drafting)"
+    description: "Weak traceability and missing TDD-ready details for T-016 through T-019 in implementation drafting."
+    rationale: "The drafting document omits specific implementation preparations explicitly requested in the criteria, such as preconditions/postconditions/side-effects (T-016), proxy_model/human decision boundaries and return conditions (T-017), machine task separation and review-run recording in rounds.yaml (T-018), review-wave consumer impact blocking logic (T-019), and stopping conditions for newly discovered judgment problems. This weak traceability and lack of explicit TDD completion criteria could cause ambiguity during actual implementation."
+```

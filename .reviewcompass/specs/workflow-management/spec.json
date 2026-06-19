@@ -37,11 +37,11 @@
       "approval": true
     },
     "implementation": {
-      "drafting": false,
-      "triad-review": false,
-      "review-wave": false,
-      "alignment": false,
-      "approval": false
+      "drafting": true,
+      "triad-review": true,
+      "review-wave": true,
+      "alignment": true,
+      "approval": true
     }
   },
   "reopened": {
