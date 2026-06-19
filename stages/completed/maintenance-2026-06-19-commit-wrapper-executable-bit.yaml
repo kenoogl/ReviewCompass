@@ -1,0 +1,25 @@
+process_id: maintenance
+title: commit wrapper executable bit
+trigger: "commit-from-current-staged.py を直接実行できるようにする"
+mainline_blocked_by: stages/in-progress/reopen-procedure-2026-06-19.yaml
+completed_at: "2026-06-19"
+classification: local_workflow_guard_improvement
+reason: "commit wrapper を ./tools/commit-from-current-staged.py として実行できるよう、実行権限を付与する局所修正"
+allowed_scope:
+  - "commit-from-current-staged.py の実行権限付与"
+  - "maintenance 完了記録"
+allowed_files:
+  - tools/commit-from-current-staged.py
+  - stages/completed/maintenance-2026-06-19-commit-wrapper-executable-bit.yaml
+completion_conditions:
+  - "tools/commit-from-current-staged.py が 100755 mode になる"
+  - "./tools/commit-from-current-staged.py --help が実行できる"
+completed_actions:
+  - "implementation: tools/commit-from-current-staged.py に実行権限を付与"
+verification:
+  - command: "git diff --summary -- tools/commit-from-current-staged.py"
+    result: "mode change 100644 => 100755"
+  - command: "./tools/commit-from-current-staged.py --help"
+    result: "passed"
+current_status: completed
+return_to: "integrated-design reopen design drafting"
