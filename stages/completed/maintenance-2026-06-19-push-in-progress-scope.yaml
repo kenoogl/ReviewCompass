@@ -1,0 +1,41 @@
+process_id: maintenance
+title: push in-progress scope narrowing
+trigger: "push guard が stages/in-progress の存在だけで停止し、commit 済みの side track を公開できない"
+mainline_blocked_by: stages/in-progress/reopen-procedure-2026-06-19.yaml
+completed_at: "2026-06-19"
+classification: local_workflow_guard_improvement
+reason: "push では本当に危険な dirty tree、commit precheck 欠落、deployable artifact lint 失敗だけを止め、in-progress の存在だけでは遮断しない局所修正"
+allowed_scope:
+  - "push guard の in-progress 存在単体による遮断解除"
+  - "push guard の dirty tree / commit precheck / deployment lint 遮断維持"
+  - "push 操作文書の判定対象更新"
+  - "push exit code テストの期待更新"
+allowed_files:
+  - tools/check-workflow-action.py
+  - tests/tools/test_check_workflow_action.py
+  - docs/operations/WORKFLOW_PRECHECK.md
+  - docs/operations/WORKFLOW_PRECHECK_DETAILS.md
+  - stages/completed/maintenance-2026-06-19-push-in-progress-scope.yaml
+  - .reviewcompass/evidence/review-runs/2026-06-19-push-in-progress-scope-postwrite/
+  - .reviewcompass/post-write-verification/post-write-2026-06-19-272.yaml
+completion_conditions:
+  - "clean tree なら stages/in-progress が存在しても push precheck が通る"
+  - "dirty tree は引き続き push precheck で遮断される"
+  - "ahead commit の HEAD に対応する commit precheck record がない場合は引き続き遮断される"
+  - "deployable artifact の配置非依存 lint 失敗は引き続き遮断される"
+completed_actions:
+  - "tests: clean tree に in-progress がある push を許可する期待へ更新"
+  - "implementation: cmd_push から in-progress 存在単体の停止理由を削除"
+  - "documentation: push guard は in-progress 存在単体では遮断しないことを明記"
+verification:
+  - command: ".venv/bin/python3 -m unittest tests.tools.test_check_workflow_action.PushExitCodeTests -v"
+    result: "7 passed"
+  - command: ".venv/bin/python3 -m unittest tests.tools.test_check_workflow_action.CommitExitCodeTests -v"
+    result: "75 passed"
+  - command: "PYTHONPYCACHEPREFIX=/private/tmp/reviewcompass-pycache .venv/bin/python3 -m py_compile tools/check-workflow-action.py"
+    result: "passed"
+post_write_verification:
+  review_run: .reviewcompass/evidence/review-runs/2026-06-19-push-in-progress-scope-postwrite
+  manifest: .reviewcompass/post-write-verification/post-write-2026-06-19-272.yaml
+current_status: completed
+return_to: "integrated-design reopen design drafting"

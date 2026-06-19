@@ -1,0 +1,6 @@
+run_id: 2026-06-19-push-in-progress-scope-postwrite
+target_files:
+- path: docs/operations/WORKFLOW_PRECHECK.md
+  sha256: d9c446b65a3d27ab42e608caa3252d225e74b716e8a0d558f4ae600c54091b36
+- path: docs/operations/WORKFLOW_PRECHECK_DETAILS.md
+  sha256: 33a6167a08a245cfa62a4aff045277fb2c03c0d0c5c610d824c37e744a38771b

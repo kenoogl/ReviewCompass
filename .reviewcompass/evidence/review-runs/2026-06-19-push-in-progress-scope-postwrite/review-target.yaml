@@ -1,0 +1,16 @@
+run_id: 2026-06-19-push-in-progress-scope-postwrite
+phase: post_write_verification
+criteria_id: push_in_progress_scope_contract_clearance
+criteria_file: .reviewcompass/evidence/review-runs/2026-06-19-push-in-progress-scope-postwrite/review-target.md
+criteria_file_sha256: 24155952fc5ef734d92e5db972651cf66f0d28912bb9eec60660a0357f8addf5
+target_files:
+- path: docs/operations/WORKFLOW_PRECHECK.md
+  sha256: d9c446b65a3d27ab42e608caa3252d225e74b716e8a0d558f4ae600c54091b36
+- path: docs/operations/WORKFLOW_PRECHECK_DETAILS.md
+  sha256: 33a6167a08a245cfa62a4aff045277fb2c03c0d0c5c610d824c37e744a38771b
+sensitive_information_check:
+  status: passed
+  checked_at: '2026-06-19T02:45:09.153646+00:00'
+recommended_run_review_args:
+  criteria_file: .reviewcompass/evidence/review-runs/2026-06-19-push-in-progress-scope-postwrite/review-target.md
+  phase: post_write_verification

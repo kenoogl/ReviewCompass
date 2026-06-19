@@ -3884,11 +3884,6 @@ def cmd_push(args):
 
   # 判定（仕様 §6.3）
   reasons = []
-  if in_progress_files:
-    reasons.append(
-      "stages/in-progress に進行中ファイルがあります: "
-      + ", ".join(in_progress_files)
-    )
   if is_dirty:
     reasons.append("作業ツリーに未コミット変更があります（push 前に commit が必要）")
   if commit_precheck_errors:

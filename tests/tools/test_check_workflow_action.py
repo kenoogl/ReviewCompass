@@ -7590,13 +7590,25 @@ class PushExitCodeTests(unittest.TestCase):
       f"stdout: {result.stdout}\nstderr: {result.stderr}",
     )
 
-  def test_push_blocks_when_in_progress_file_exists(self):
-    """stages/in-progress が非空なら push は exit 2"""
+  def test_push_allows_clean_tree_when_in_progress_file_exists(self):
+    """stages/in-progress があっても clean なら push は遮断しない"""
     in_progress_dir = Path(self.tmpdir) / "stages" / "in-progress"
     in_progress_dir.mkdir(parents=True)
     (in_progress_dir / "manual-process.yaml").write_text(
       "next_step: human approval\n",
       encoding="utf-8",
+    )
+    subprocess.run(
+      ["git", "add", "stages/in-progress/manual-process.yaml"],
+      cwd=str(self.tmpdir),
+      check=True,
+      capture_output=True,
+    )
+    subprocess.run(
+      ["git", "commit", "-qm", "add in-progress marker"],
+      cwd=str(self.tmpdir),
+      check=True,
+      capture_output=True,
     )
 
     result = run_script(
@@ -7605,8 +7617,8 @@ class PushExitCodeTests(unittest.TestCase):
     )
 
     _assert_script_invoked(self, result)
-    self.assertEqual(result.returncode, 2, result.stdout)
-    self.assertIn("stages/in-progress", result.stdout)
+    self.assertEqual(result.returncode, 0, result.stdout)
+    self.assertIn("進行中ファイル: 1 件", result.stdout)
 
   def test_push_with_dirty_tree_returns_two(self):
     """作業ツリーが dirty（未追跡ファイルあり）→ exit 2"""
