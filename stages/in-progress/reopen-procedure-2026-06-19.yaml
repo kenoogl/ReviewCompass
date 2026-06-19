@@ -26,6 +26,7 @@ completed_steps:
 - design alignment gate 完了（requirements Requirement 13〜16 / design / triad-review
   / review-wave / workflow_state 整合、post-write verification no findings）
 - design approval gate 完了（利用者発言『承認』に基づく明示承認）
+- tasks drafting 完了（Requirement 13〜16 を T-016〜T-019 として tasks.md へ展開）
 next_step: 第3過程：tasks triad-review
 step_number: 3
 pending_gates:
@@ -49,6 +50,7 @@ completed_gates:
 drafting_completed_gates:
 - stages/requirements.yaml#drafting
 - stages/design.yaml#drafting
+- stages/tasks.yaml#drafting
 current_blocker: null
 side_track_records:
 - completed_maintenance: stages/completed/maintenance-2026-06-19-post-write-review-target-preflight.yaml
@@ -132,6 +134,15 @@ reopen_step_records:
   evidence:
   - .reviewcompass/specs/_cross_feature/reviews/2026-06-19-design-integrated-design-reopen-alignment.md
   - .reviewcompass/post-write-verification/post-write-2026-06-19-279.yaml
+- from_step: 3
+  completed_step: tasks drafting 完了（Requirement 13〜16 を T-016〜T-019 として tasks.md へ展開）
+  rationale: design approval 済みの Requirement 13〜16 を workflow-management tasks.md
+    へ展開し、operation contract 語彙、承認ゲート・side track stack・workflow-state
+    snapshot、構造化有効プロンプト、Phase 0〜6 と proxy_model triage decision 機械処理化を
+    T-016〜T-019 として追加した。要件追跡、テスト戦略、完成判定、変更意図、XDI-WM-005 も更新済み。
+    次は tasks triad-review gate。
+  evidence:
+  - .reviewcompass/specs/workflow-management/tasks.md
 downstream_impact_decisions:
 - gate: stages/requirements.yaml#triad-review
   feature_scope: workflow-management
