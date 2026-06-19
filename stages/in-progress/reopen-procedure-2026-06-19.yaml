@@ -11,10 +11,11 @@ completed_steps:
 - Requirement 13〜16 を基点に requirements/design/tasks を縦方向意図監査の結果へ合わせて再生成
 - requirements triad-review 完了（Requirement 13〜16 縦方向意図監査、API 版 gpt-5.5 proxy_model
   判定 C1〜C3 should-fix 適用、C4 leave-as-is）
-next_step: 第3過程：requirements review-wave
+- requirements review-wave 完了（Requirement 13〜16 縦方向やり直し、全 feature impact review、他
+  feature 正本変更不要）
+next_step: 第3過程：requirements alignment
 step_number: 3
 pending_gates:
-- stages/requirements.yaml#review-wave
 - stages/requirements.yaml#alignment
 - stages/requirements.yaml#approval
 - stages/design.yaml#triad-review
@@ -73,8 +74,16 @@ commit_stop_point_records:
   head: 24062d238cc407551f13d3edcacff940dcce6b56
   evidence:
   - 24062d238cc407551f13d3edcacff940dcce6b56
+- step: 3
+  kind: triad_review_complete
+  gate: stages/requirements.yaml#triad-review
+  reason: requirements triad-review 完了時点の停止点
+  head: b46952cb96d1a0f99e90da5f6cd02d433959add5
+  evidence:
+  - b46952cb96d1a0f99e90da5f6cd02d433959add5
 completed_gates:
 - stages/requirements.yaml#triad-review
+- stages/requirements.yaml#review-wave
 downstream_impact_decisions:
 - gate: stages/requirements.yaml#triad-review
   feature_scope: workflow-management
@@ -88,8 +97,18 @@ downstream_impact_decisions:
   - .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-requirements-vertical-redo-review-run-v2/proxy-decision-decisions.yaml
   - .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-requirements-vertical-redo-review-run-v2/proxy-approval.yaml
   - .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-requirements-vertical-redo-review-run-v2/raw-review-triage-summary.md
+- gate: stages/requirements.yaml#review-wave
+  feature_scope: all_features
+  decision: existing_sufficient
+  rationale: Requirement 13〜16 縦方向やり直しの requirements review-wave として全 feature への正本変更要否を確認した。未消化
+    carry-forward は 0 件で、workflow-management 以外は consumer / derivative として現行正本で受けられるため、他
+    feature の requirements 正本変更は不要。
+  evidence:
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-20-requirements-vertical-redo-review-wave.md
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-20-requirements-vertical-redo-review-wave-summary.md
+  - .reviewcompass/specs/workflow-management/requirements.md
 commit_stop_point: true
 commit_stop_point_step: 3
-commit_stop_point_kind: triad_review_complete
-commit_stop_point_gate: stages/requirements.yaml#triad-review
-commit_stop_point_reason: requirements triad-review 完了時点の停止点
+commit_stop_point_kind: review_wave_complete
+commit_stop_point_gate: stages/requirements.yaml#review-wave
+commit_stop_point_reason: requirements review-wave 完了時点の停止点
