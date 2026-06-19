@@ -4,7 +4,7 @@
 
 commit 操作カード
 
-最終更新: 2026-06-17
+最終更新: 2026-06-20
 
 このカードは commit 直前に読む短い実行手順である。仕様説明ではなく、操作事故を防ぐための実行カードとして扱う。詳細契約は `WORKFLOW_PRECHECK.md` と `WORKFLOW_PRECHECK_DETAILS.md` を参照する。
 
@@ -23,7 +23,7 @@ commit 操作カード
 
 ## Codex
 
-Codex で `--approval-source-text-line-stdin` を使う場合は、PTY で guarded commit を起動し、入力待ちになってから、直近の利用者発話で明示された commit 指示だけを `write_stdin` で渡す。この 1 行を staged 内容承認と LLM commit 実行代行承認として扱う。利用者発話なしに Codex / Claude / LLM が承認文を生成してはならない。sandbox により git 書き込みが拒否された場合は、guarded commit の preflight 結果に従い、必要な escalation を利用者へ確認する。
+Codex で `--approval-source-text-line-stdin` を使う場合は、PTY で guarded commit を起動し、入力待ちになってから、直近の利用者発話で明示された commit 指示だけを `write_stdin` で渡す。この 1 行を staged 内容承認と LLM commit 実行代行承認として扱う。利用者発話なしに Codex / Claude / LLM が承認文を生成してはならない。Codex の `workspace-write` sandbox では、commit wrapper 本体を最初から sandbox 外（`require_escalated`）で実行する。これは guard を迂回する手順ではなく、承認レコード、staged 内容照合、commit gate を同じ wrapper 内で通したうえで、git index 書き込みだけを許可された実行面で行うための運用である。先に sandbox 内で失敗させてから再実行する手順を標準にしない。
 
 ## Claude Code
 

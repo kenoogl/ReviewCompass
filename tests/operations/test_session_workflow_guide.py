@@ -147,3 +147,29 @@ def test_post_write_verification_documents_canonical_api_call_procedure_without_
   assert "zsh -c 'source ~/.zshrc && .venv/bin/python3 tools/api_providers/run_review.py" not in post_write_section
   assert "external-api-approval" not in post_write_section
   assert "--external-api-approval-record" not in post_write_section
+
+
+def test_codex_commit_sandbox_external_wrapper_is_starting_condition():
+  precheck = (ROOT / "docs" / "operations" / "WORKFLOW_PRECHECK.md").read_text(encoding="utf-8")
+  details = (ROOT / "docs" / "operations" / "WORKFLOW_PRECHECK_DETAILS.md").read_text(encoding="utf-8")
+  codex = (ROOT / "docs" / "operations" / "WORKFLOW_NAVIGATION_FOR_CODEX.md").read_text(encoding="utf-8")
+  card = (ROOT / "docs" / "operations" / "COMMIT_OPERATION_CARD.md").read_text(encoding="utf-8")
+
+  for text in (precheck, details, codex, card):
+    assert "commit wrapper 本体を最初から sandbox 外" in text
+    assert "先に sandbox 内で失敗させてから再実行" in text
+
+
+def test_user_facing_reports_avoid_translation_style_japanese():
+  guide = (ROOT / "docs" / "operations" / "SESSION_WORKFLOW_GUIDE.md").read_text(encoding="utf-8")
+
+  assert "翻訳調の名詞句" in guide
+  assert "内部状態名や英語の道具名を見出しや主語にしない" in guide
+  assert "利用者が次に何をすればよいかを自然な日本語の文で示す" in guide
+
+
+def test_codex_commit_message_does_not_require_japanese_imperative_form():
+  codex = (ROOT / "docs" / "operations" / "WORKFLOW_NAVIGATION_FOR_CODEX.md").read_text(encoding="utf-8")
+
+  assert "変更の目的が伝わる短い日本語" in codex
+  assert "命令形" not in codex

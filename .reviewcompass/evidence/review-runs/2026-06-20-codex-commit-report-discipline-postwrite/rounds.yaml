@@ -1,0 +1,112 @@
+round_id: round-1
+purpose: post_write_verification
+invocation_timestamp: '2026-06-19T15:32:26.460631+00:00'
+target_files:
+- path: docs/operations/COMMIT_OPERATION_CARD.md
+  sha256: afde19bc53d79558f0cc44988daec39e7a8b3de1c45426d8810d4ebe90234d23
+- path: docs/operations/SESSION_WORKFLOW_GUIDE.md
+  sha256: 3d35d9924e08e199700a45d8a6f083da1c168a74ec2560890b6fd054c78ca755
+- path: docs/operations/WORKFLOW_NAVIGATION_FOR_CODEX.md
+  sha256: d7e259963e7bc784b793313974bc237a6f78bb56c2026e19e47e1e02a6032ca3
+- path: docs/operations/WORKFLOW_PRECHECK_DETAILS.md
+  sha256: 85fbf5b6bd8d63ab99b2756e44973ec2dbbac6bea3872fa85df000bb65d3a7cd
+criteria: '# Post-write Review Target
+
+
+  criteria_id: codex_commit_and_user_report_discipline_post_write
+
+  phase: post_write_verification
+
+  generated_at: 2026-06-19T15:31:54.516042+00:00
+
+
+  ## Change Summary
+
+
+  Codex のコミット実行環境と利用者向け報告文の規律を明確化した
+
+
+  ## Review Question
+
+
+  変更した運用文書が、Codex のコミットは最初から許可された実行環境で行うこと、および利用者向け報告を自然な日本語で書くことを矛盾なく規律化しているか。既存手順との衝突や不足があれば指摘すること。
+
+
+  ## Target Files
+
+
+  - docs/operations/COMMIT_OPERATION_CARD.md sha256=afde19bc53d79558f0cc44988daec39e7a8b3de1c45426d8810d4ebe90234d23
+
+  - docs/operations/SESSION_WORKFLOW_GUIDE.md sha256=3d35d9924e08e199700a45d8a6f083da1c168a74ec2560890b6fd054c78ca755
+
+  - docs/operations/WORKFLOW_NAVIGATION_FOR_CODEX.md sha256=d7e259963e7bc784b793313974bc237a6f78bb56c2026e19e47e1e02a6032ca3
+
+  - docs/operations/WORKFLOW_PRECHECK_DETAILS.md sha256=85fbf5b6bd8d63ab99b2756e44973ec2dbbac6bea3872fa85df000bb65d3a7cd
+
+
+  ## Scope
+
+
+  - Check whether the changed target files clearly state the intended contract.
+
+  - Check whether related instructions are mutually consistent across targets.
+
+  - Check whether the documented procedure is actionable before API review, triage,
+  manifest, or commit steps continue.
+
+
+  ## Out Of Scope
+
+
+  - Do not request unrelated refactors or style-only rewrites.
+
+  - Do not judge files that are not listed in Target Files.
+
+  - Do not treat missing implementation work as a document defect unless the target
+  text claims it already exists.
+
+
+  ## Finding Policy
+
+
+  - Report must-fix findings for contradictions, missing required gates, or instructions
+  that would allow an unsafe workflow action.
+
+  - Report should-fix findings for ambiguity that could cause repeated manual judgment
+  or unnecessary API review loops.
+
+  - Return findings: [] when the target files are internally consistent for this review
+  question.
+
+
+  ## Sensitive Information Check
+
+
+  - status: passed
+
+  - External API review must not proceed if this section reports potential secrets.
+
+  '
+prompt_sha256: 440242e9c946fbca6211499582fa688b6b262d77188f0b2091eabba22967ed23
+model_results:
+- model_id: gemini-3.5-flash
+  provider: gemini-api
+  role: primary
+  treatment: primary
+  invocation_path: api
+  raw_path: raw/gemini-3.5-flash.round-1.txt
+  raw_sha256: 04d0d2ce0040405a25dbd28d8cc2a92d470974825c923f1df85be22f4b75a86a
+  parsed_path: parsed/gemini-3.5-flash.round-1.yaml
+  parsed_sha256: 75da793179f568efc955791d238a228bb6f625460755722eec877d17a541f660
+  parse_status: parsed
+  formatted_by: parser
+  formatted_by_actor_type: orchestrator
+  formatted_by_actor: run_role.py
+  formatted_at: '2026-06-19T15:32:26.460631+00:00'
+  follow_up_action: triage
+  attempts: 1
+  duration_seconds: 25.15
+  prompt_path: prompts/gemini-3.5-flash.round-1.prompt.md
+  prompt_sha256: 440242e9c946fbca6211499582fa688b6b262d77188f0b2091eabba22967ed23
+criteria_source_path: .reviewcompass/evidence/review-runs/2026-06-20-codex-commit-report-discipline-postwrite/review-target.md
+criteria_source_sha256: 0cd7a6526395cbb6a820abb0022569dbcdd072ec26969347340775eb8bc0ee21

@@ -152,6 +152,8 @@ tools/guarded-git-commit.py -m "<commit message>" --rationale "<理由>" --appro
 
 `tools/guarded-git-commit.py` は `commit --execution-actor llm` を先に実行し、exit 2 なら commit しない。exit 1 は既定では停止し、人の判断で続行する場合だけ `--allow-warn` を付ける。commit 成功後、期限付き承認レコードは消費済みにする。
 
+Codex の `workspace-write` sandbox では、`commit-from-current-staged.py` または `guarded-git-commit.py` が最終的に `.git/index.lock` へ書き込む段階で sandbox に拒否され得る。このため Codex から commit を実行する場合は、commit wrapper 本体を最初から sandbox 外（`require_escalated`）で実行する。これは guard を迂回する手順ではなく、承認レコード、staged 内容照合、commit gate を同じ wrapper 内で通したうえで、git index 書き込みだけを許可された実行面で行うための運用である。先に sandbox 内で失敗させてから再実行する手順を標準にしない。
+
 通常 workflow の `intent.approval` / `feature-partitioning.approval` 完了後の停止点は、`next --json` が `kind: commit_stop_point` として検出する。これらは `stages/in-progress/` を使わない通常 commit であるため、commit guard 側では特別な in-progress 例外を要求せず、通常どおり承認レコード、staged 範囲、post-write-verification、文書 lint を検査する。
 
 通常の nonce challenge 付き commit 手順は、次の順序で逐次実行する。

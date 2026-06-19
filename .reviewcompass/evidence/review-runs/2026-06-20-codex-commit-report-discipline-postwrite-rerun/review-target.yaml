@@ -1,0 +1,20 @@
+run_id: 2026-06-20-codex-commit-report-discipline-postwrite-rerun
+phase: post_write_verification
+criteria_id: codex_commit_and_user_report_discipline_post_write
+criteria_file: .reviewcompass/evidence/review-runs/2026-06-20-codex-commit-report-discipline-postwrite-rerun/review-target.md
+criteria_file_sha256: 6926b221d16a373154dca8d52331dae5895bdd2f74b85bbf19e28ca175283a00
+target_files:
+- path: docs/operations/COMMIT_OPERATION_CARD.md
+  sha256: afde19bc53d79558f0cc44988daec39e7a8b3de1c45426d8810d4ebe90234d23
+- path: docs/operations/SESSION_WORKFLOW_GUIDE.md
+  sha256: 3d35d9924e08e199700a45d8a6f083da1c168a74ec2560890b6fd054c78ca755
+- path: docs/operations/WORKFLOW_NAVIGATION_FOR_CODEX.md
+  sha256: 55a9d5d19f92de30f04393cafeccf52ff7ef6b84edc1252af9115c1de447e8b6
+- path: docs/operations/WORKFLOW_PRECHECK_DETAILS.md
+  sha256: 85fbf5b6bd8d63ab99b2756e44973ec2dbbac6bea3872fa85df000bb65d3a7cd
+sensitive_information_check:
+  status: passed
+  checked_at: '2026-06-19T15:33:38.863024+00:00'
+recommended_run_review_args:
+  criteria_file: .reviewcompass/evidence/review-runs/2026-06-20-codex-commit-report-discipline-postwrite-rerun/review-target.md
+  phase: post_write_verification

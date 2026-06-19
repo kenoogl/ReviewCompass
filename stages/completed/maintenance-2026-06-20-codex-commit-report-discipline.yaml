@@ -1,0 +1,42 @@
+process_id: maintenance
+started_at: '2026-06-20T00:00:00+09:00'
+completed_at: '2026-06-20T00:00:00+09:00'
+trigger: Codex の commit 実行環境と利用者向け報告文が、このセッション限りの運用にならないよう規律へ明記する必要があったため
+mainline_blocked_by: stages/in-progress/reopen-procedure-2026-06-19.yaml
+allowed_scope: Codex の commit 実行環境、利用者向け進捗説明、自然な日本語の commit message 規律の明確化
+allowed_files:
+- docs/operations/COMMIT_OPERATION_CARD.md
+- docs/operations/SESSION_WORKFLOW_GUIDE.md
+- docs/operations/WORKFLOW_NAVIGATION_FOR_CODEX.md
+- docs/operations/WORKFLOW_PRECHECK_DETAILS.md
+- tests/operations/test_session_workflow_guide.py
+- stages/completed/maintenance-2026-06-20-codex-commit-report-discipline.yaml
+- .reviewcompass/evidence/review-runs/2026-06-20-codex-commit-report-discipline-postwrite/
+- .reviewcompass/evidence/review-runs/2026-06-20-codex-commit-report-discipline-postwrite-rerun/
+- .reviewcompass/post-write-verification/post-write-2026-06-20-001.yaml
+completion_conditions:
+- Codex の commit では commit wrapper 本体を最初から sandbox 外で実行することが、短縮版、詳細版、Codex 向け手順、操作カードに明記される
+- 利用者向けの完了報告や途中報告で、内部状態名や英語の道具名を主語にせず、自然な日本語で説明する規律が明記される
+- Codex の commit message 規律が、日本語に不自然な命令形を要求しない
+- 対応する回帰テストが通過する
+- docs/operations の post-write verification が no findings で完了する
+completed_changes:
+- docs/operations/COMMIT_OPERATION_CARD.md、WORKFLOW_NAVIGATION_FOR_CODEX.md、WORKFLOW_PRECHECK_DETAILS.md に Codex commit の sandbox 外実行原則を追加した
+- docs/operations/SESSION_WORKFLOW_GUIDE.md に、利用者向け報告を自然な日本語で書く具体規律と避ける表現を追加した
+- docs/operations/WORKFLOW_NAVIGATION_FOR_CODEX.md の commit message 規律から、日本語に不自然な命令形指定を外した
+- tests/operations/test_session_workflow_guide.py に回帰テストを追加した
+- 初回 post-write review の should-fix 指摘を反映し、再実行で findings=0 を確認した
+verification:
+- command: .venv/bin/python3 -m pytest tests/operations/test_session_workflow_guide.py -q
+  result: 14 passed
+- command: .venv/bin/python3 tools/api_providers/run_review.py --variant post_write_verification_google --target docs/operations/COMMIT_OPERATION_CARD.md --target docs/operations/SESSION_WORKFLOW_GUIDE.md --target docs/operations/WORKFLOW_NAVIGATION_FOR_CODEX.md --target docs/operations/WORKFLOW_PRECHECK_DETAILS.md --phase post_write_verification --criteria-file .reviewcompass/evidence/review-runs/2026-06-20-codex-commit-report-discipline-postwrite-rerun/review-target.md --review-run-dir .reviewcompass/evidence/review-runs/2026-06-20-codex-commit-report-discipline-postwrite-rerun
+  result: findings=0, parse_failed=0
+evidence:
+- .reviewcompass/evidence/review-runs/2026-06-20-codex-commit-report-discipline-postwrite/review_summary.md
+- .reviewcompass/evidence/review-runs/2026-06-20-codex-commit-report-discipline-postwrite-rerun/review_summary.md
+- .reviewcompass/post-write-verification/post-write-2026-06-20-001.yaml
+return_to:
+  required_action: commit_stop_point
+  active_gate: stages/requirements.yaml#review-wave
+  state_file: stages/in-progress/reopen-procedure-2026-06-19.yaml
+status: completed

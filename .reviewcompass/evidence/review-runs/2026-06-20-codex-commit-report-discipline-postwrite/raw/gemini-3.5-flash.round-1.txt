@@ -1,0 +1,5 @@
+findings:
+  - severity: WARN
+    target_location: "docs/operations/WORKFLOW_NAVIGATION_FOR_CODEX.md (Section 2, item 5)"
+    description: "コミットメッセージの要約形式として『1行の命令形』が指示されており、日本語における『平易で自然な日本語』の規律と衝突する。"
+    rationale: "SESSION_WORKFLOW_GUIDE.md の 6.3 節では『平易な日本語』や自然な名詞句（例：『〜の抽出と〜レビュー』）をコミットメッセージの規範としているが、WORKFLOW_NAVIGATION_FOR_CODEX.md には英語圏の規律の直訳調である『命令形または名詞句』という表現が残っている。日本語の命令形（例：『〜を修正せよ』）はコミットメッセージとして極めて不自然であり、モデルに不自然な日本語を生成させる原因となる。要約形式を名詞句または終止形（例：『〜を修正』『〜を修正する』）に制限することが望ましい。"
