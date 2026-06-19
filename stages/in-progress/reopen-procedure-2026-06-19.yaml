@@ -13,10 +13,11 @@ completed_steps:
   判定 C1〜C3 should-fix 適用、C4 leave-as-is）
 - requirements review-wave 完了（Requirement 13〜16 縦方向やり直し、全 feature impact review、他
   feature 正本変更不要）
-next_step: 第3過程：requirements alignment
+- requirements alignment 完了（Requirement 13〜16 と design/tasks 追跡、triad-review 修正反映、review-wave
+  影響確認済み）
+next_step: 第3過程：requirements approval
 step_number: 3
 pending_gates:
-- stages/requirements.yaml#alignment
 - stages/requirements.yaml#approval
 - stages/design.yaml#triad-review
 - stages/design.yaml#review-wave
@@ -81,9 +82,17 @@ commit_stop_point_records:
   head: b46952cb96d1a0f99e90da5f6cd02d433959add5
   evidence:
   - b46952cb96d1a0f99e90da5f6cd02d433959add5
+- step: 3
+  kind: review_wave_complete
+  gate: stages/requirements.yaml#review-wave
+  reason: requirements review-wave 完了時点の停止点
+  head: dd19b13c23aa34377fdedfc36100b0f3c17dc357
+  evidence:
+  - dd19b13c23aa34377fdedfc36100b0f3c17dc357
 completed_gates:
 - stages/requirements.yaml#triad-review
 - stages/requirements.yaml#review-wave
+- stages/requirements.yaml#alignment
 downstream_impact_decisions:
 - gate: stages/requirements.yaml#triad-review
   feature_scope: workflow-management
@@ -107,8 +116,20 @@ downstream_impact_decisions:
   - .reviewcompass/specs/_cross_feature/reviews/2026-06-20-requirements-vertical-redo-review-wave.md
   - .reviewcompass/specs/_cross_feature/reviews/2026-06-20-requirements-vertical-redo-review-wave-summary.md
   - .reviewcompass/specs/workflow-management/requirements.md
+- gate: stages/requirements.yaml#alignment
+  feature_scope: workflow-management
+  decision: approved
+  rationale: Requirement 13〜16 は requirements.md に受入基準として定義され、design.md の Requirement
+    13〜16 設計モデルおよび tasks.md の T-016〜T-019 に追跡可能である。requirements triad-review の C1〜C3
+    は反映済み、review-wave では他 feature 正本変更不要と確認済みのため、requirements alignment を完了とする。
+  evidence:
+  - .reviewcompass/specs/workflow-management/requirements.md
+  - .reviewcompass/specs/workflow-management/design.md
+  - .reviewcompass/specs/workflow-management/tasks.md
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-requirements-vertical-redo-review-run-v2/proxy-decision-decisions.yaml
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-20-requirements-vertical-redo-review-wave-summary.md
 commit_stop_point: true
 commit_stop_point_step: 3
-commit_stop_point_kind: review_wave_complete
-commit_stop_point_gate: stages/requirements.yaml#review-wave
-commit_stop_point_reason: requirements review-wave 完了時点の停止点
+commit_stop_point_kind: alignment_complete
+commit_stop_point_gate: stages/requirements.yaml#alignment
+commit_stop_point_reason: requirements alignment 完了時点の停止点
