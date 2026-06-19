@@ -1,0 +1,232 @@
+round_id: round-1
+purpose: post_write_verification
+invocation_timestamp: '2026-06-19T07:26:25.717610+00:00'
+target_files:
+- path: .reviewcompass/specs/workflow-management/tasks.md
+  sha256: b447cd7fbd3ac372566d436fd6b03130493d60119c3d8cc4e3b27c815f6839a4
+- path: .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-tasks-integrated-design-review-run/review-target.md
+  sha256: fcf9be131b783abf2040ffe072d2db28a923dcb61ee4bec83885a7d8c8b5fd1b
+- path: .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-tasks-integrated-design-review-run/variant-role-assignment.yaml
+  sha256: 10e2d6de3d5727a15a26e6c8082a05a58bd0be70235b9c3adddd717f0bf9426e
+- path: .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-tasks-integrated-design-review-run/triage.yaml
+  sha256: f73c41414565733c0be7ebc241c05fd301e98f0079b2df15016e243c69badbd2
+- path: .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-tasks-integrated-design-review-run/raw-review-triage-summary.md
+  sha256: 2ab37a73fa139375f2b9f6d797fc6de5e2ab36ac7b026d911994ad0f09843a71
+- path: .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-tasks-integrated-design-review-run/proxy-decision-prompts/C1-C5.prompt.md
+  sha256: 6488ef14bc32cfc40ea0feccab5dc392ef9f28c4606a13e79825d9d2f80deabe
+- path: .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-tasks-integrated-design-review-run/proxy-decisions/C1-C5.decisions-input.yaml
+  sha256: 1dffea603ef0d1a6d7970338cae2330f6f8890101e0e88f4bbcf0065ae5710bc
+- path: .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-tasks-integrated-design-review-run/proxy-decisions/C1-C5.raw.yaml
+  sha256: 57a6ec1f55baf7b49d63a294e9262a03654e32091b096fc5507ed6a5762cf695
+- path: .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-tasks-integrated-design-review-run/proxy-approval.yaml
+  sha256: f4dc8521e52c077a8c189f4565669386dd0a88f8b8ecff0e13d01dac7a733db2
+- path: .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-tasks-integrated-design-review-run/proxy-decision-summary.md
+  sha256: 18acf42cf138909e71a7813aa119af750a70246bfbdd37d2b59130d618bb6040
+- path: .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-tasks-integrated-design-review-run/review-response.md
+  sha256: afdc72bad64986c7e595a12c5fd86a52e43b8a3b694db9ace473be1ef1ce06dd
+- path: .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-tasks-integrated-design-review-run/decisions/gpt-5.4-primary-001.yaml
+  sha256: b691dc3e27744479dbc45436282f78d073d7b27c2ac5775e339a9fc68b4a51c3
+- path: .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-tasks-integrated-design-review-run/decisions/gpt-5.4-primary-002.yaml
+  sha256: d1b60c962733cf05b685f64266b77ddb6e48edd24879bd88b058c80aff654da8
+- path: .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-tasks-integrated-design-review-run/decisions/gpt-5.4-primary-003.yaml
+  sha256: 8e3075c6c75279f13b683a88191aa64937e239309229d5de458cb4711358a805
+- path: .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-tasks-integrated-design-review-run/decisions/gpt-5.4-primary-004.yaml
+  sha256: 92099cbd54fed0b07cff9dc514b553b50a84024a4a2c5f15f9f7256966d28ef5
+- path: .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-tasks-integrated-design-review-run/decisions/gpt-5.4-primary-005.yaml
+  sha256: 2616cb04ad4a23cdc427e8483a7b533cbd88bec3cba48f6f6ed8dc09b4d9a1d1
+- path: .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-tasks-integrated-design-review-run/decisions/gpt-5.4-primary-006.yaml
+  sha256: 060ce3d73aac0b624d2c63afe2dd1ef8e2d0cc2c5c76769f2f0e0d4d6d87e4d0
+- path: .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-tasks-integrated-design-review-run/decisions/claude-opus-4-8-adversarial-001.yaml
+  sha256: d626261062a688a0b0d6dcb52db6f0f3f2876606bba1dad5d7703ae52510157c
+- path: .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-tasks-integrated-design-review-run/decisions/claude-opus-4-8-adversarial-002.yaml
+  sha256: 194819563d7763944a708c78c5d4553a39b36229ee3efc8ae9e35244d6eafeb4
+- path: .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-tasks-integrated-design-review-run/decisions/claude-opus-4-8-adversarial-003.yaml
+  sha256: 62d6faed6f74bfe7f431598ce3302c61ce91e2f31e3f344ba0a9d7e079438c1e
+- path: .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-tasks-integrated-design-review-run/decisions/claude-opus-4-8-adversarial-004.yaml
+  sha256: 8b2f52f0252d54173a14e8f3bb4f9a47ec4d382e1802590e4b9b6a2a11304cdc
+- path: .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-tasks-integrated-design-review-run/decisions/claude-opus-4-8-adversarial-005.yaml
+  sha256: ef9f69c414de6d1f124238010049c1fd7ae1902d4b3427a7cc6db2087f740b26
+- path: .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-tasks-integrated-design-review-run/prompts/claude-opus-4-8.round-1.prompt.md
+  sha256: d2028b348c897bbc94feeb1bfe3d4bb1609f23c337fe7a8f8338ba06fa9dfbd6
+- path: .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-tasks-integrated-design-review-run/prompts/gemini-3.1-pro-preview.proxy-C1-C5.prompt.md
+  sha256: 57adcb2541430072a6c5d12171441f8501ff0e6c8612fef2416c99162285a43b
+- path: .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-tasks-integrated-design-review-run/prompts/gemini-3.1-pro-preview.round-1.prompt.md
+  sha256: ca9d1a16d98f512e66573ef8c8b0918cfe914d2ca564cdca1d8286fd9956baad
+- path: .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-tasks-integrated-design-review-run/prompts/gpt-5.4.round-1.prompt.md
+  sha256: 7b1240d9812f4ca0836aac1211a7e69bb25f9036ddda1aecabd32ab1cd2c07ca
+- path: .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-tasks-integrated-design-review-run/review_summary.md
+  sha256: 1bdde998862e3a6c400291bf95f19bd0294f3c3ab4ce6918ccefd4d45aada808
+criteria: '# Post-write Review Target
+
+
+  criteria_id: workflow_management_tasks_triad_review_postwrite
+
+  phase: post_write_verification
+
+  generated_at: 2026-06-19T06:09:01.967180+00:00
+
+
+  ## Change Summary
+
+
+  workflow-management tasks triad-review proxy_model decisions and C1-C4 task updates
+
+
+  ## Review Question
+
+
+  Verify that the proxy_model decisions are recorded consistently, all triad-review
+  findings are decided, must-fix/should-fix responses are reflected in tasks.md, generated
+  review prompt summaries are covered, and no tasks/reopen state is prematurely advanced.
+
+
+  ## Target Files
+
+
+  - .reviewcompass/specs/workflow-management/tasks.md sha256=b447cd7fbd3ac372566d436fd6b03130493d60119c3d8cc4e3b27c815f6839a4
+
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-tasks-integrated-design-review-run/review-target.md
+  sha256=fcf9be131b783abf2040ffe072d2db28a923dcb61ee4bec83885a7d8c8b5fd1b
+
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-tasks-integrated-design-review-run/variant-role-assignment.yaml
+  sha256=10e2d6de3d5727a15a26e6c8082a05a58bd0be70235b9c3adddd717f0bf9426e
+
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-tasks-integrated-design-review-run/triage.yaml
+  sha256=f73c41414565733c0be7ebc241c05fd301e98f0079b2df15016e243c69badbd2
+
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-tasks-integrated-design-review-run/raw-review-triage-summary.md
+  sha256=2ab37a73fa139375f2b9f6d797fc6de5e2ab36ac7b026d911994ad0f09843a71
+
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-tasks-integrated-design-review-run/proxy-decision-prompts/C1-C5.prompt.md
+  sha256=6488ef14bc32cfc40ea0feccab5dc392ef9f28c4606a13e79825d9d2f80deabe
+
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-tasks-integrated-design-review-run/proxy-decisions/C1-C5.decisions-input.yaml
+  sha256=1dffea603ef0d1a6d7970338cae2330f6f8890101e0e88f4bbcf0065ae5710bc
+
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-tasks-integrated-design-review-run/proxy-decisions/C1-C5.raw.yaml
+  sha256=57a6ec1f55baf7b49d63a294e9262a03654e32091b096fc5507ed6a5762cf695
+
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-tasks-integrated-design-review-run/proxy-approval.yaml
+  sha256=f4dc8521e52c077a8c189f4565669386dd0a88f8b8ecff0e13d01dac7a733db2
+
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-tasks-integrated-design-review-run/proxy-decision-summary.md
+  sha256=18acf42cf138909e71a7813aa119af750a70246bfbdd37d2b59130d618bb6040
+
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-tasks-integrated-design-review-run/review-response.md
+  sha256=afdc72bad64986c7e595a12c5fd86a52e43b8a3b694db9ace473be1ef1ce06dd
+
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-tasks-integrated-design-review-run/decisions/gpt-5.4-primary-001.yaml
+  sha256=b691dc3e27744479dbc45436282f78d073d7b27c2ac5775e339a9fc68b4a51c3
+
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-tasks-integrated-design-review-run/decisions/gpt-5.4-primary-002.yaml
+  sha256=d1b60c962733cf05b685f64266b77ddb6e48edd24879bd88b058c80aff654da8
+
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-tasks-integrated-design-review-run/decisions/gpt-5.4-primary-003.yaml
+  sha256=8e3075c6c75279f13b683a88191aa64937e239309229d5de458cb4711358a805
+
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-tasks-integrated-design-review-run/decisions/gpt-5.4-primary-004.yaml
+  sha256=92099cbd54fed0b07cff9dc514b553b50a84024a4a2c5f15f9f7256966d28ef5
+
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-tasks-integrated-design-review-run/decisions/gpt-5.4-primary-005.yaml
+  sha256=2616cb04ad4a23cdc427e8483a7b533cbd88bec3cba48f6f6ed8dc09b4d9a1d1
+
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-tasks-integrated-design-review-run/decisions/gpt-5.4-primary-006.yaml
+  sha256=060ce3d73aac0b624d2c63afe2dd1ef8e2d0cc2c5c76769f2f0e0d4d6d87e4d0
+
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-tasks-integrated-design-review-run/decisions/claude-opus-4-8-adversarial-001.yaml
+  sha256=d626261062a688a0b0d6dcb52db6f0f3f2876606bba1dad5d7703ae52510157c
+
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-tasks-integrated-design-review-run/decisions/claude-opus-4-8-adversarial-002.yaml
+  sha256=194819563d7763944a708c78c5d4553a39b36229ee3efc8ae9e35244d6eafeb4
+
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-tasks-integrated-design-review-run/decisions/claude-opus-4-8-adversarial-003.yaml
+  sha256=62d6faed6f74bfe7f431598ce3302c61ce91e2f31e3f344ba0a9d7e079438c1e
+
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-tasks-integrated-design-review-run/decisions/claude-opus-4-8-adversarial-004.yaml
+  sha256=8b2f52f0252d54173a14e8f3bb4f9a47ec4d382e1802590e4b9b6a2a11304cdc
+
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-tasks-integrated-design-review-run/decisions/claude-opus-4-8-adversarial-005.yaml
+  sha256=ef9f69c414de6d1f124238010049c1fd7ae1902d4b3427a7cc6db2087f740b26
+
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-tasks-integrated-design-review-run/prompts/claude-opus-4-8.round-1.prompt.md
+  sha256=d2028b348c897bbc94feeb1bfe3d4bb1609f23c337fe7a8f8338ba06fa9dfbd6
+
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-tasks-integrated-design-review-run/prompts/gemini-3.1-pro-preview.proxy-C1-C5.prompt.md
+  sha256=57adcb2541430072a6c5d12171441f8501ff0e6c8612fef2416c99162285a43b
+
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-tasks-integrated-design-review-run/prompts/gemini-3.1-pro-preview.round-1.prompt.md
+  sha256=ca9d1a16d98f512e66573ef8c8b0918cfe914d2ca564cdca1d8286fd9956baad
+
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-tasks-integrated-design-review-run/prompts/gpt-5.4.round-1.prompt.md
+  sha256=7b1240d9812f4ca0836aac1211a7e69bb25f9036ddda1aecabd32ab1cd2c07ca
+
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-tasks-integrated-design-review-run/review_summary.md
+  sha256=1bdde998862e3a6c400291bf95f19bd0294f3c3ab4ce6918ccefd4d45aada808
+
+
+  ## Scope
+
+
+  - Check whether the changed target files clearly state the intended contract.
+
+  - Check whether related instructions are mutually consistent across targets.
+
+  - Check whether the documented procedure is actionable before API review, triage,
+  manifest, or commit steps continue.
+
+
+  ## Out Of Scope
+
+
+  - Do not request unrelated refactors or style-only rewrites.
+
+  - Do not judge files that are not listed in Target Files.
+
+  - Do not treat missing implementation work as a document defect unless the target
+  text claims it already exists.
+
+
+  ## Finding Policy
+
+
+  - Report must-fix findings for contradictions, missing required gates, or instructions
+  that would allow an unsafe workflow action.
+
+  - Report should-fix findings for ambiguity that could cause repeated manual judgment
+  or unnecessary API review loops.
+
+  - Return findings: [] when the target files are internally consistent for this review
+  question.
+
+
+  ## Sensitive Information Check
+
+
+  - status: passed
+
+  - External API review must not proceed if this section reports potential secrets.
+
+  '
+prompt_sha256: d153452e0550bb42a9cf85145b9aa3a8adcc9aa67507fdf855496cc827e09665
+model_results:
+- model_id: gemini-3.5-flash
+  provider: gemini-api
+  role: primary
+  treatment: primary
+  invocation_path: api
+  raw_path: raw/gemini-3.5-flash.round-1.txt
+  raw_sha256: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+  parsed_path: parsed/gemini-3.5-flash.round-1.yaml
+  parsed_sha256: fb91c3a9cb0fbe895af03095a3027007801df351caa8f43e99b964237d7e9439
+  parse_status: parsed
+  formatted_by: parser
+  formatted_by_actor_type: orchestrator
+  formatted_by_actor: run_role.py
+  formatted_at: '2026-06-19T07:26:25.717610+00:00'
+  follow_up_action: triage
+  attempts: 1
+  duration_seconds: 26.392
+  prompt_path: prompts/gemini-3.5-flash.round-1.prompt.md
+  prompt_sha256: d153452e0550bb42a9cf85145b9aa3a8adcc9aa67507fdf855496cc827e09665
+criteria_source_path: .reviewcompass/evidence/review-runs/2026-06-19-workflow-management-tasks-triad-review-postwrite/review-target.md
+criteria_source_sha256: 26a20598115b0d7f07c79138da6d3371bc16d7d5705e7e00e65bd33cbc7603a2

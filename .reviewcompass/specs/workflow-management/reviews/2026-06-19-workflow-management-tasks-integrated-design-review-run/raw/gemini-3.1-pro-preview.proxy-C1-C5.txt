@@ -1,0 +1,21 @@
+findings:
+  - severity: ERROR
+    target_location: "### C1: T-017 workflow-state snapshot coverage is underspecified"
+    description: "The draft triage label 'should-fix' understates the risk and must be upgraded to 'must-fix'."
+    rationale: "The project's active scope focuses on the Reopen Procedure (Req 13-16). T-017's snapshot payload is essential for detecting drift and safely managing reopen states. Underspecifying critical fields like spec.json, pending_gates, and worktree digest risks catastrophic drift in the reopen workflow, making this a blocking issue that must be addressed before acceptance."
+  - severity: ERROR
+    target_location: "### C2: T-018 prompt manifest compatibility with existing rounds.yaml is unclear"
+    description: "The draft triage label 'should-fix' understates the risk and must be upgraded to 'must-fix'."
+    rationale: "Unclear coexistence between the new structured manifest paths and the existing T-004 effective_prompt fields introduces a high risk of backward incompatibility or silent data overwrite in rounds.yaml. Defining text-only compatibility and fail-closed behaviors is mandatory to prevent breaking active session data."
+  - severity: ERROR
+    target_location: "### C3: T-019 consumer impact and scope distinction need concrete inputs"
+    description: "The draft triage label 'should-fix' understates the risk and must be upgraded to 'must-fix'."
+    rationale: "Blocking completion on unreflected consumer impact is a core function of Requirements 14-16. Without explicit definitions for inputs and checks (e.g., active reopen scope vs impact review scope), T-019 cannot effectively enforce this block. As this is central to the current drafting scope, it must be resolved before the tasks review can be accepted."
+  - severity: INFO
+    target_location: "### C4: Traceability rows are correct but too coarse for high-risk Req 14-16 points"
+    description: "The draft triage label 'should-fix' correctly categorizes this cluster."
+    rationale: "Enriching the traceability matrix to highlight high-risk phrases improves documentation and reviewability, but its current coarse state does not functionally break the tasks themselves. Therefore, 'should-fix' is the appropriate operational label."
+  - severity: INFO
+    target_location: "### C5: Positive state and scope checks"
+    description: "The draft triage label 'leave-as-is' correctly categorizes this cluster."
+    rationale: "These findings represent positive confirmations of correct internal state, requirement presence, and responsibility splits. No modifications are needed."

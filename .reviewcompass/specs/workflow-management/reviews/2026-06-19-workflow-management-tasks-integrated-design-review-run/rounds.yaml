@@ -1,0 +1,134 @@
+round_id: proxy-C1-C5
+purpose: tasks_proxy_triage
+invocation_timestamp: '2026-06-19T06:02:53.620634+00:00'
+target_files:
+- path: .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-tasks-integrated-design-review-run/raw-review-triage-summary.md
+  sha256: 2ab37a73fa139375f2b9f6d797fc6de5e2ab36ac7b026d911994ad0f09843a71
+criteria: "# Proxy Model Triage Decision Prompt: C1-C5\n\n## Role\n\nYou are acting\
+  \ as `proxy_model` for a ReviewCompass tasks triad-review. Your task is to make\
+  \ final triage decisions for finding clusters C1-C5.\n\nThis is not an implementation\
+  \ request. Do not edit files. Decide the final triage label and explain the reasoning.\n\
+  \n## Review Run\n\n- run_id: `2026-06-19-workflow-management-tasks-integrated-design-review-run`\n\
+  - phase: `tasks`\n- gate: `stages/tasks.yaml#triad-review`\n- variant used for review:\
+  \ `implementation_review_independent_3way_codex_operator`\n- review target: `.reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-tasks-integrated-design-review-run/review-target.md`\n\
+  - triage summary: `.reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-tasks-integrated-design-review-run/raw-review-triage-summary.md`\n\
+  \n## Source Raw Responses\n\nUse these raw responses as source evidence:\n\n- primary\
+  \ / gpt-5.4: `raw/gpt-5.4.round-1.txt`\n- adversarial / claude-opus-4-8: `raw/claude-opus-4-8.round-1.txt`\n\
+  - judgment / gemini-3.1-pro-preview: `raw/gemini-3.1-pro-preview.round-1.txt`\n\n\
+  The parsed findings and cluster summary are in `raw-review-triage-summary.md`. If\
+  \ a cluster summary overstates, understates, or misgroups the raw findings, adjust\
+  \ the decision and explain why.\n\n## Current Context\n\nThe project is in reopen\
+  \ procedure:\n\n- active gate: `stages/tasks.yaml#triad-review`\n- state file: `stages/in-progress/reopen-procedure-2026-06-19.yaml`\n\
+  - classification: R-0 for `workflow-management`\n- scope: tasks drafting for approved\
+  \ Requirement 13 through Requirement 16.\n\nDo not decide that the gate or phase\
+  \ is complete. This prompt only asks for triage labels.\n\n## Labels\n\nUse the\
+  \ standard labels:\n\n- `must-fix`: must be addressed before this tasks triad-review\
+  \ can be accepted.\n- `should-fix`: should be addressed if practical before moving\
+  \ on; may be batched into the review response.\n- `leave-as-is`: no change required;\
+  \ record only.\n\nThese labels are operational labels, not closed reasoning choices.\
+  \ You may split or merge clusters if the source evidence supports it, but each final\
+  \ cluster must still receive one of these labels.\n\n## Cluster Proposals from Main\
+  \ Session\n\n### C1: T-017 workflow-state snapshot coverage is underspecified\n\n\
+  Source finding ids:\n\n- `2026-06-19-workflow-management-tasks-integrated-design-review-run-gpt-5.4-primary-001`\n\
+  \nDraft summary: T-017 mentions snapshot and drift detection, but does not spell\
+  \ out the fixed snapshot payload strongly enough: `spec.json`, `pending_gates`,\
+  \ `drafting_completed_gates`, `completed_gates`, operation contract, staged file\
+  \ set, and worktree digest.\n\nDraft label: `should-fix`\n\n### C2: T-018 prompt\
+  \ manifest compatibility with existing rounds.yaml is unclear\n\nSource finding\
+  \ ids:\n\n- `2026-06-19-workflow-management-tasks-integrated-design-review-run-gpt-5.4-primary-002`\n\
+  - `2026-06-19-workflow-management-tasks-integrated-design-review-run-claude-opus-4-8-adversarial-001`\n\
+  \nDraft summary: T-018 adds structured prompt manifests, but the tasks text does\
+  \ not clearly say how the new manifest path / sha256 coexists with the existing\
+  \ T-004 `effective_prompt_path` / `effective_prompt_sha256` fields in `rounds.yaml`,\
+  \ nor where text-only compatibility ends.\n\nDraft label: `should-fix`\n\n### C3:\
+  \ T-019 consumer impact and scope distinction need concrete inputs\n\nSource finding\
+  \ ids:\n\n- `2026-06-19-workflow-management-tasks-integrated-design-review-run-gpt-5.4-primary-003`\n\
+  - `2026-06-19-workflow-management-tasks-integrated-design-review-run-claude-opus-4-8-adversarial-002`\n\
+  \nDraft summary: T-019 says unreflected consumer impact blocks completion, but does\
+  \ not define the exact required inputs and checks for review-wave summary, carry-forward\
+  \ register, downstream impact decisions, active reopen scope, and impact review\
+  \ scope.\n\nDraft label: `should-fix`\n\n### C4: Traceability rows are correct but\
+  \ too coarse for high-risk Req 14-16 points\n\nSource finding ids:\n\n- `2026-06-19-workflow-management-tasks-integrated-design-review-run-gpt-5.4-primary-004`\n\
+  \nDraft summary: Requirement 14 through 16 traceability rows map to T-017 through\
+  \ T-019, but omit several high-risk phrases from the review target: proxy_model\
+  \ / human decision boundary, staged file set / digest checks, and review-wave consumer\
+  \ impact blocking.\n\nDraft label: `should-fix`\n\n### C5: Positive state and scope\
+  \ checks\n\nSource finding ids:\n\n- `2026-06-19-workflow-management-tasks-integrated-design-review-run-gpt-5.4-primary-005`\n\
+  - `2026-06-19-workflow-management-tasks-integrated-design-review-run-gpt-5.4-primary-006`\n\
+  - `2026-06-19-workflow-management-tasks-integrated-design-review-run-claude-opus-4-8-adversarial-003`\n\
+  - `2026-06-19-workflow-management-tasks-integrated-design-review-run-claude-opus-4-8-adversarial-004`\n\
+  - `2026-06-19-workflow-management-tasks-integrated-design-review-run-claude-opus-4-8-adversarial-005`\n\
+  \nDraft summary: The task count, completion criteria, Requirement 13 through 16\
+  \ traceability presence, XDI-WM-005, T-014 / T-016 responsibility split, `spec.json`,\
+  \ and reopen in-progress state are internally consistent. No edit is needed for\
+  \ these positive findings.\n\nDraft label: `leave-as-is`\n\n## Required Output\n\
+  \nReturn YAML only:\n\n```yaml\nproxy_model_id: gemini-3.1-pro-preview\ndecisions:\n\
+  \  - cluster_id: C1\n    final_label: must-fix | should-fix | leave-as-is\n    rationale:\
+  \ <decision rationale>\n    rejected_options:\n      must-fix: <why rejected, if\
+  \ not selected>\n      should-fix: <why rejected, if not selected>\n      leave-as-is:\
+  \ <why rejected, if not selected>\n    apply_to_finding_ids:\n      - <source finding\
+  \ id>\n```\n\nIf you split or merge clusters, use stable cluster ids such as `C1a`\
+  \ or `C2-C4` and include all affected `apply_to_finding_ids`.\n"
+prompt_sha256: 57adcb2541430072a6c5d12171441f8501ff0e6c8612fef2416c99162285a43b
+model_results:
+- model_id: gpt-5.4
+  provider: openai-api
+  role: primary
+  treatment: primary
+  invocation_path: api
+  raw_path: raw/gpt-5.4.round-1.txt
+  raw_sha256: ecf54417c0c4ecac979c478e5fb350064d4d12fdffcaf4212234030634136b57
+  parsed_path: parsed/gpt-5.4.round-1.yaml
+  parsed_sha256: ac4d68cdfb72c4792a9450024a77e7a1bf999324d99093d660d4df747a476bf4
+  parse_status: parsed
+  formatted_by: parser
+  formatted_by_actor_type: orchestrator
+  formatted_by_actor: run_role.py
+  formatted_at: '2026-06-19T05:50:25.683838+00:00'
+  follow_up_action: triage
+  attempts: 1
+  duration_seconds: 12.381
+  prompt_path: prompts/gpt-5.4.round-1.prompt.md
+  prompt_sha256: 7b1240d9812f4ca0836aac1211a7e69bb25f9036ddda1aecabd32ab1cd2c07ca
+- model_id: claude-opus-4-8
+  provider: anthropic-api
+  role: adversarial
+  treatment: adversarial
+  invocation_path: api
+  raw_path: raw/claude-opus-4-8.round-1.txt
+  raw_sha256: 6b238a5a7bb77f514267ab5496afd8c7a7f92b79b4e92b722d4cbce79d7ae2e5
+  parsed_path: parsed/claude-opus-4-8.round-1.yaml
+  parsed_sha256: 3b28c3b25ac1df3d7fbe3af341c49d704efc6ca7b8b0c3132f33c2a3ae388359
+  parse_status: parsed
+  formatted_by: parser
+  formatted_by_actor_type: orchestrator
+  formatted_by_actor: run_role.py
+  formatted_at: '2026-06-19T05:51:02.802598+00:00'
+  follow_up_action: triage
+  attempts: 1
+  duration_seconds: 37.062
+  prompt_path: prompts/claude-opus-4-8.round-1.prompt.md
+  prompt_sha256: d2028b348c897bbc94feeb1bfe3d4bb1609f23c337fe7a8f8338ba06fa9dfbd6
+- model_id: gemini-3.1-pro-preview
+  provider: gemini-api
+  role: judgment
+  treatment: judgment
+  invocation_path: api
+  raw_path: raw/gemini-3.1-pro-preview.proxy-C1-C5.txt
+  raw_sha256: 57a6ec1f55baf7b49d63a294e9262a03654e32091b096fc5507ed6a5762cf695
+  parsed_path: parsed/gemini-3.1-pro-preview.proxy-C1-C5.yaml
+  parsed_sha256: 591aecaa62a4b231f21606e9fceb2f03f28adc0dcc6796ab0942ca4bf526a88e
+  parse_status: parsed
+  formatted_by: parser
+  formatted_by_actor_type: orchestrator
+  formatted_by_actor: run_role.py
+  formatted_at: '2026-06-19T06:02:53.620634+00:00'
+  follow_up_action: triage
+  attempts: 1
+  duration_seconds: 50.653
+  prompt_path: prompts/gemini-3.1-pro-preview.proxy-C1-C5.prompt.md
+  prompt_sha256: 57adcb2541430072a6c5d12171441f8501ff0e6c8612fef2416c99162285a43b
+criteria_source_path: .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-tasks-integrated-design-review-run/proxy-decision-prompts/C1-C5.prompt.md
+criteria_source_sha256: 6488ef14bc32cfc40ea0feccab5dc392ef9f28c4606a13e79825d9d2f80deabe
+effective_prompt_path: .reviewcompass/runtime/effective-prompts/next_action_kind-reopen_in_progress__workflow_stage-triad-review__reopen_required_action-run_reopen_pending_gate.prompt.md
+effective_prompt_sha256: c0ab86293eb8e7e8a5c47bc7d73fe987d7155d99e51289eb58fdcb927335f4e8

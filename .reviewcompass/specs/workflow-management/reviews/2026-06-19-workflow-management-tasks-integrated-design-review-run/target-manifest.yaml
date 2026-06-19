@@ -1,0 +1,4 @@
+run_id: 2026-06-19-workflow-management-tasks-integrated-design-review-run
+target_files:
+- path: .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-tasks-integrated-design-review-run/raw-review-triage-summary.md
+  sha256: 2ab37a73fa139375f2b9f6d797fc6de5e2ab36ac7b026d911994ad0f09843a71

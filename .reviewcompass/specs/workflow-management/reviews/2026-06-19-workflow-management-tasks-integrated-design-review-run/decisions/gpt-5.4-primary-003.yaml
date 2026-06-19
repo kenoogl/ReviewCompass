@@ -1,0 +1,14 @@
+finding_id: 2026-06-19-workflow-management-tasks-integrated-design-review-run-gpt-5.4-primary-003
+cluster_id: C3
+proxy_model_id: gemini-3.1-pro-preview
+decision_prompt_path: proxy-decision-prompts/C1-C5.prompt.md
+raw_response_path: proxy-decisions/C1-C5.raw.yaml
+final_label: must-fix
+rationale: Consumer impact inputs and active reopen scope versus impact review scope are core completion-blocking checks for T-019 and must be concrete before accepting tasks triad-review.
+candidate_options:
+- must-fix
+- should-fix
+- leave-as-is
+rejected_options:
+  should-fix: The blocking condition is central to Requirement 16 and cannot be left vague.
+  leave-as-is: Without required inputs, the implementation-phase check cannot reliably enforce consumer impact blocking.

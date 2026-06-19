@@ -1,0 +1,19 @@
+run_id: 2026-06-19-workflow-management-tasks-integrated-design-review-run
+variant: implementation_review_independent_3way_codex_operator
+operator: codex
+phase: tasks
+gate: stages/tasks.yaml#triad-review
+roles:
+  primary:
+    path: api
+    provider: openai-api
+    model: gpt-5.4
+  adversarial:
+    path: api
+    provider: anthropic-api
+    model: claude-opus-4-8
+  judgment:
+    path: api
+    provider: gemini-api
+    model: gemini-3.1-pro-preview
+selection_rationale: Codex 操縦時の既定 variant。adversarial と judgment を操縦 LLM と別系列にし、primary のみ同系列を許容する規律に従う。

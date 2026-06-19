@@ -1,0 +1,14 @@
+finding_id: 2026-06-19-workflow-management-tasks-integrated-design-review-run-claude-opus-4-8-adversarial-001
+cluster_id: C2
+proxy_model_id: gemini-3.1-pro-preview
+decision_prompt_path: proxy-decision-prompts/C1-C5.prompt.md
+raw_response_path: proxy-decisions/C1-C5.raw.yaml
+final_label: must-fix
+rationale: T-018 must define whether manifest path / sha256 extend or coexist with existing effective_prompt_path / effective_prompt_sha256 and how mixed text-only / manifest states fail closed.
+candidate_options:
+- must-fix
+- should-fix
+- leave-as-is
+rejected_options:
+  should-fix: The migration and coexistence semantics are part of the task contract, not an optional refinement.
+  leave-as-is: Leaving the relationship to T-004 implicit would make TDD completion non-deterministic.

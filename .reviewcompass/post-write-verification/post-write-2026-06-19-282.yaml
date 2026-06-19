@@ -1,0 +1,176 @@
+status: completed
+target_files:
+- .reviewcompass/specs/workflow-management/tasks.md
+- .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-tasks-integrated-design-review-run/review-target.md
+- .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-tasks-integrated-design-review-run/variant-role-assignment.yaml
+- .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-tasks-integrated-design-review-run/triage.yaml
+- .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-tasks-integrated-design-review-run/raw-review-triage-summary.md
+- .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-tasks-integrated-design-review-run/proxy-decision-prompts/C1-C5.prompt.md
+- .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-tasks-integrated-design-review-run/proxy-decisions/C1-C5.decisions-input.yaml
+- .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-tasks-integrated-design-review-run/proxy-decisions/C1-C5.raw.yaml
+- .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-tasks-integrated-design-review-run/proxy-approval.yaml
+- .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-tasks-integrated-design-review-run/proxy-decision-summary.md
+- .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-tasks-integrated-design-review-run/review-response.md
+- .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-tasks-integrated-design-review-run/decisions/gpt-5.4-primary-001.yaml
+- .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-tasks-integrated-design-review-run/decisions/gpt-5.4-primary-002.yaml
+- .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-tasks-integrated-design-review-run/decisions/gpt-5.4-primary-003.yaml
+- .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-tasks-integrated-design-review-run/decisions/gpt-5.4-primary-004.yaml
+- .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-tasks-integrated-design-review-run/decisions/gpt-5.4-primary-005.yaml
+- .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-tasks-integrated-design-review-run/decisions/gpt-5.4-primary-006.yaml
+- .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-tasks-integrated-design-review-run/decisions/claude-opus-4-8-adversarial-001.yaml
+- .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-tasks-integrated-design-review-run/decisions/claude-opus-4-8-adversarial-002.yaml
+- .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-tasks-integrated-design-review-run/decisions/claude-opus-4-8-adversarial-003.yaml
+- .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-tasks-integrated-design-review-run/decisions/claude-opus-4-8-adversarial-004.yaml
+- .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-tasks-integrated-design-review-run/decisions/claude-opus-4-8-adversarial-005.yaml
+- .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-tasks-integrated-design-review-run/prompts/claude-opus-4-8.round-1.prompt.md
+- .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-tasks-integrated-design-review-run/prompts/gemini-3.1-pro-preview.proxy-C1-C5.prompt.md
+- .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-tasks-integrated-design-review-run/prompts/gemini-3.1-pro-preview.round-1.prompt.md
+- .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-tasks-integrated-design-review-run/prompts/gpt-5.4.round-1.prompt.md
+- .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-tasks-integrated-design-review-run/review_summary.md
+target_sha256:
+  .reviewcompass/specs/workflow-management/tasks.md: b447cd7fbd3ac372566d436fd6b03130493d60119c3d8cc4e3b27c815f6839a4
+  ? .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-tasks-integrated-design-review-run/review-target.md
+  : fcf9be131b783abf2040ffe072d2db28a923dcb61ee4bec83885a7d8c8b5fd1b
+  ? .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-tasks-integrated-design-review-run/variant-role-assignment.yaml
+  : 10e2d6de3d5727a15a26e6c8082a05a58bd0be70235b9c3adddd717f0bf9426e
+  ? .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-tasks-integrated-design-review-run/triage.yaml
+  : f73c41414565733c0be7ebc241c05fd301e98f0079b2df15016e243c69badbd2
+  ? .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-tasks-integrated-design-review-run/raw-review-triage-summary.md
+  : 2ab37a73fa139375f2b9f6d797fc6de5e2ab36ac7b026d911994ad0f09843a71
+  ? .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-tasks-integrated-design-review-run/proxy-decision-prompts/C1-C5.prompt.md
+  : 6488ef14bc32cfc40ea0feccab5dc392ef9f28c4606a13e79825d9d2f80deabe
+  ? .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-tasks-integrated-design-review-run/proxy-decisions/C1-C5.decisions-input.yaml
+  : 1dffea603ef0d1a6d7970338cae2330f6f8890101e0e88f4bbcf0065ae5710bc
+  ? .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-tasks-integrated-design-review-run/proxy-decisions/C1-C5.raw.yaml
+  : 57a6ec1f55baf7b49d63a294e9262a03654e32091b096fc5507ed6a5762cf695
+  ? .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-tasks-integrated-design-review-run/proxy-approval.yaml
+  : f4dc8521e52c077a8c189f4565669386dd0a88f8b8ecff0e13d01dac7a733db2
+  ? .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-tasks-integrated-design-review-run/proxy-decision-summary.md
+  : 18acf42cf138909e71a7813aa119af750a70246bfbdd37d2b59130d618bb6040
+  ? .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-tasks-integrated-design-review-run/review-response.md
+  : afdc72bad64986c7e595a12c5fd86a52e43b8a3b694db9ace473be1ef1ce06dd
+  ? .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-tasks-integrated-design-review-run/decisions/gpt-5.4-primary-001.yaml
+  : b691dc3e27744479dbc45436282f78d073d7b27c2ac5775e339a9fc68b4a51c3
+  ? .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-tasks-integrated-design-review-run/decisions/gpt-5.4-primary-002.yaml
+  : d1b60c962733cf05b685f64266b77ddb6e48edd24879bd88b058c80aff654da8
+  ? .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-tasks-integrated-design-review-run/decisions/gpt-5.4-primary-003.yaml
+  : 8e3075c6c75279f13b683a88191aa64937e239309229d5de458cb4711358a805
+  ? .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-tasks-integrated-design-review-run/decisions/gpt-5.4-primary-004.yaml
+  : 92099cbd54fed0b07cff9dc514b553b50a84024a4a2c5f15f9f7256966d28ef5
+  ? .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-tasks-integrated-design-review-run/decisions/gpt-5.4-primary-005.yaml
+  : 2616cb04ad4a23cdc427e8483a7b533cbd88bec3cba48f6f6ed8dc09b4d9a1d1
+  ? .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-tasks-integrated-design-review-run/decisions/gpt-5.4-primary-006.yaml
+  : 060ce3d73aac0b624d2c63afe2dd1ef8e2d0cc2c5c76769f2f0e0d4d6d87e4d0
+  ? .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-tasks-integrated-design-review-run/decisions/claude-opus-4-8-adversarial-001.yaml
+  : d626261062a688a0b0d6dcb52db6f0f3f2876606bba1dad5d7703ae52510157c
+  ? .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-tasks-integrated-design-review-run/decisions/claude-opus-4-8-adversarial-002.yaml
+  : 194819563d7763944a708c78c5d4553a39b36229ee3efc8ae9e35244d6eafeb4
+  ? .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-tasks-integrated-design-review-run/decisions/claude-opus-4-8-adversarial-003.yaml
+  : 62d6faed6f74bfe7f431598ce3302c61ce91e2f31e3f344ba0a9d7e079438c1e
+  ? .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-tasks-integrated-design-review-run/decisions/claude-opus-4-8-adversarial-004.yaml
+  : 8b2f52f0252d54173a14e8f3bb4f9a47ec4d382e1802590e4b9b6a2a11304cdc
+  ? .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-tasks-integrated-design-review-run/decisions/claude-opus-4-8-adversarial-005.yaml
+  : ef9f69c414de6d1f124238010049c1fd7ae1902d4b3427a7cc6db2087f740b26
+  ? .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-tasks-integrated-design-review-run/prompts/claude-opus-4-8.round-1.prompt.md
+  : d2028b348c897bbc94feeb1bfe3d4bb1609f23c337fe7a8f8338ba06fa9dfbd6
+  ? .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-tasks-integrated-design-review-run/prompts/gemini-3.1-pro-preview.proxy-C1-C5.prompt.md
+  : 57adcb2541430072a6c5d12171441f8501ff0e6c8612fef2416c99162285a43b
+  ? .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-tasks-integrated-design-review-run/prompts/gemini-3.1-pro-preview.round-1.prompt.md
+  : ca9d1a16d98f512e66573ef8c8b0918cfe914d2ca564cdca1d8286fd9956baad
+  ? .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-tasks-integrated-design-review-run/prompts/gpt-5.4.round-1.prompt.md
+  : 7b1240d9812f4ca0836aac1211a7e69bb25f9036ddda1aecabd32ab1cd2c07ca
+  ? .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-tasks-integrated-design-review-run/review_summary.md
+  : 1bdde998862e3a6c400291bf95f19bd0294f3c3ab4ce6918ccefd4d45aada808
+required_verifiers: &id001
+- gemini-3.5-flash
+completed_verifiers: *id001
+unresolved_substantive_findings: 0
+verifications:
+- verifier: gemini-3.5-flash
+  target_files:
+  - .reviewcompass/specs/workflow-management/tasks.md
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-tasks-integrated-design-review-run/review-target.md
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-tasks-integrated-design-review-run/variant-role-assignment.yaml
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-tasks-integrated-design-review-run/triage.yaml
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-tasks-integrated-design-review-run/raw-review-triage-summary.md
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-tasks-integrated-design-review-run/proxy-decision-prompts/C1-C5.prompt.md
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-tasks-integrated-design-review-run/proxy-decisions/C1-C5.decisions-input.yaml
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-tasks-integrated-design-review-run/proxy-decisions/C1-C5.raw.yaml
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-tasks-integrated-design-review-run/proxy-approval.yaml
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-tasks-integrated-design-review-run/proxy-decision-summary.md
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-tasks-integrated-design-review-run/review-response.md
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-tasks-integrated-design-review-run/decisions/gpt-5.4-primary-001.yaml
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-tasks-integrated-design-review-run/decisions/gpt-5.4-primary-002.yaml
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-tasks-integrated-design-review-run/decisions/gpt-5.4-primary-003.yaml
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-tasks-integrated-design-review-run/decisions/gpt-5.4-primary-004.yaml
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-tasks-integrated-design-review-run/decisions/gpt-5.4-primary-005.yaml
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-tasks-integrated-design-review-run/decisions/gpt-5.4-primary-006.yaml
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-tasks-integrated-design-review-run/decisions/claude-opus-4-8-adversarial-001.yaml
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-tasks-integrated-design-review-run/decisions/claude-opus-4-8-adversarial-002.yaml
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-tasks-integrated-design-review-run/decisions/claude-opus-4-8-adversarial-003.yaml
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-tasks-integrated-design-review-run/decisions/claude-opus-4-8-adversarial-004.yaml
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-tasks-integrated-design-review-run/decisions/claude-opus-4-8-adversarial-005.yaml
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-tasks-integrated-design-review-run/prompts/claude-opus-4-8.round-1.prompt.md
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-tasks-integrated-design-review-run/prompts/gemini-3.1-pro-preview.proxy-C1-C5.prompt.md
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-tasks-integrated-design-review-run/prompts/gemini-3.1-pro-preview.round-1.prompt.md
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-tasks-integrated-design-review-run/prompts/gpt-5.4.round-1.prompt.md
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-tasks-integrated-design-review-run/review_summary.md
+  target_sha256:
+    .reviewcompass/specs/workflow-management/tasks.md: b447cd7fbd3ac372566d436fd6b03130493d60119c3d8cc4e3b27c815f6839a4
+    ? .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-tasks-integrated-design-review-run/review-target.md
+    : fcf9be131b783abf2040ffe072d2db28a923dcb61ee4bec83885a7d8c8b5fd1b
+    ? .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-tasks-integrated-design-review-run/variant-role-assignment.yaml
+    : 10e2d6de3d5727a15a26e6c8082a05a58bd0be70235b9c3adddd717f0bf9426e
+    ? .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-tasks-integrated-design-review-run/triage.yaml
+    : f73c41414565733c0be7ebc241c05fd301e98f0079b2df15016e243c69badbd2
+    ? .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-tasks-integrated-design-review-run/raw-review-triage-summary.md
+    : 2ab37a73fa139375f2b9f6d797fc6de5e2ab36ac7b026d911994ad0f09843a71
+    ? .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-tasks-integrated-design-review-run/proxy-decision-prompts/C1-C5.prompt.md
+    : 6488ef14bc32cfc40ea0feccab5dc392ef9f28c4606a13e79825d9d2f80deabe
+    ? .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-tasks-integrated-design-review-run/proxy-decisions/C1-C5.decisions-input.yaml
+    : 1dffea603ef0d1a6d7970338cae2330f6f8890101e0e88f4bbcf0065ae5710bc
+    ? .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-tasks-integrated-design-review-run/proxy-decisions/C1-C5.raw.yaml
+    : 57a6ec1f55baf7b49d63a294e9262a03654e32091b096fc5507ed6a5762cf695
+    ? .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-tasks-integrated-design-review-run/proxy-approval.yaml
+    : f4dc8521e52c077a8c189f4565669386dd0a88f8b8ecff0e13d01dac7a733db2
+    ? .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-tasks-integrated-design-review-run/proxy-decision-summary.md
+    : 18acf42cf138909e71a7813aa119af750a70246bfbdd37d2b59130d618bb6040
+    ? .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-tasks-integrated-design-review-run/review-response.md
+    : afdc72bad64986c7e595a12c5fd86a52e43b8a3b694db9ace473be1ef1ce06dd
+    ? .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-tasks-integrated-design-review-run/decisions/gpt-5.4-primary-001.yaml
+    : b691dc3e27744479dbc45436282f78d073d7b27c2ac5775e339a9fc68b4a51c3
+    ? .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-tasks-integrated-design-review-run/decisions/gpt-5.4-primary-002.yaml
+    : d1b60c962733cf05b685f64266b77ddb6e48edd24879bd88b058c80aff654da8
+    ? .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-tasks-integrated-design-review-run/decisions/gpt-5.4-primary-003.yaml
+    : 8e3075c6c75279f13b683a88191aa64937e239309229d5de458cb4711358a805
+    ? .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-tasks-integrated-design-review-run/decisions/gpt-5.4-primary-004.yaml
+    : 92099cbd54fed0b07cff9dc514b553b50a84024a4a2c5f15f9f7256966d28ef5
+    ? .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-tasks-integrated-design-review-run/decisions/gpt-5.4-primary-005.yaml
+    : 2616cb04ad4a23cdc427e8483a7b533cbd88bec3cba48f6f6ed8dc09b4d9a1d1
+    ? .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-tasks-integrated-design-review-run/decisions/gpt-5.4-primary-006.yaml
+    : 060ce3d73aac0b624d2c63afe2dd1ef8e2d0cc2c5c76769f2f0e0d4d6d87e4d0
+    ? .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-tasks-integrated-design-review-run/decisions/claude-opus-4-8-adversarial-001.yaml
+    : d626261062a688a0b0d6dcb52db6f0f3f2876606bba1dad5d7703ae52510157c
+    ? .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-tasks-integrated-design-review-run/decisions/claude-opus-4-8-adversarial-002.yaml
+    : 194819563d7763944a708c78c5d4553a39b36229ee3efc8ae9e35244d6eafeb4
+    ? .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-tasks-integrated-design-review-run/decisions/claude-opus-4-8-adversarial-003.yaml
+    : 62d6faed6f74bfe7f431598ce3302c61ce91e2f31e3f344ba0a9d7e079438c1e
+    ? .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-tasks-integrated-design-review-run/decisions/claude-opus-4-8-adversarial-004.yaml
+    : 8b2f52f0252d54173a14e8f3bb4f9a47ec4d382e1802590e4b9b6a2a11304cdc
+    ? .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-tasks-integrated-design-review-run/decisions/claude-opus-4-8-adversarial-005.yaml
+    : ef9f69c414de6d1f124238010049c1fd7ae1902d4b3427a7cc6db2087f740b26
+    ? .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-tasks-integrated-design-review-run/prompts/claude-opus-4-8.round-1.prompt.md
+    : d2028b348c897bbc94feeb1bfe3d4bb1609f23c337fe7a8f8338ba06fa9dfbd6
+    ? .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-tasks-integrated-design-review-run/prompts/gemini-3.1-pro-preview.proxy-C1-C5.prompt.md
+    : 57adcb2541430072a6c5d12171441f8501ff0e6c8612fef2416c99162285a43b
+    ? .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-tasks-integrated-design-review-run/prompts/gemini-3.1-pro-preview.round-1.prompt.md
+    : ca9d1a16d98f512e66573ef8c8b0918cfe914d2ca564cdca1d8286fd9956baad
+    ? .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-tasks-integrated-design-review-run/prompts/gpt-5.4.round-1.prompt.md
+    : 7b1240d9812f4ca0836aac1211a7e69bb25f9036ddda1aecabd32ab1cd2c07ca
+    ? .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-tasks-integrated-design-review-run/review_summary.md
+    : 1bdde998862e3a6c400291bf95f19bd0294f3c3ab4ce6918ccefd4d45aada808
+review_run:
+  path: .reviewcompass/evidence/review-runs/2026-06-19-workflow-management-tasks-triad-review-postwrite
+  summary_path: .reviewcompass/evidence/review-runs/2026-06-19-workflow-management-tasks-triad-review-postwrite/model-result-summary.yaml
+notes: Generated template; verify target_files cover current post-write targets before
+  use.

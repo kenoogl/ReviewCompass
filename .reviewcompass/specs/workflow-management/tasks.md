@@ -382,9 +382,10 @@ language: ja
   2. proxy_model decision は人間承認を置換しない対象と、代行可能な判断対象を schema / gate で区別する。
   3. side track stack は push / pop / current の 3 操作を持ち、親 task、許可ファイル、戻り条件、nesting depth、関連 operation を検査する。
   4. side track 完了後に本線へ戻る条件が未充足なら通常進行を返さず、必要 action を `next --json` に反映する。
-  5. workflow-state snapshot は正本状態と worktree / staged 対象を同時点で固定し、snapshot と現状態の drift を WARN または DEVIATION として検出する。
+  5. workflow-state snapshot は正本状態と worktree / staged 対象を同時点で固定し、snapshot と現状態の drift を WARN または DEVIATION として検出する。snapshot payload は最低限、`spec.json.workflow_state`、`spec.json.reopened`、`spec.json.recheck`、`stages/in-progress/` の対象ファイル path / sha256、`pending_gates`、`drafting_completed_gates`、`completed_gates`、`downstream_impact_decisions`、参照した operation contract id / sha256、staged file set digest、worktree dirty path digest を保持する。
   6. snapshot は commit / phase transition / approval consumption など T-016 の commit boundary と接続する。
-- **テスト要件（TDD：先に失敗テストを書く）**：(1) approval gate 正常系、(2) expired / consumed / invalidated / target digest mismatch の fail-closed、(3) proxy_model 代行可否の境界、(4) side track push / pop / current、(5) LIFO 違反・許可ファイル逸脱・nesting depth 超過の DEVIATION、(6) side track 完了後の本線復帰条件、(7) workflow-state snapshot 作成、(8) spec / in-progress / staged set drift 検出、(9) commit boundary と snapshot 必須化の接続。全 pytest が pass、回帰なし。
+  7. snapshot drift 判定は、`pending_gates`、`drafting_completed_gates`、`completed_gates`、operation contract digest、staged file set digest、worktree dirty path digest のいずれかが snapshot 時点と異なる場合を個別理由として返す。
+- **テスト要件（TDD：先に失敗テストを書く）**：(1) approval gate 正常系、(2) expired / consumed / invalidated / target digest mismatch の fail-closed、(3) proxy_model 代行可否の境界、(4) side track push / pop / current、(5) LIFO 違反・許可ファイル逸脱・nesting depth 超過の DEVIATION、(6) side track 完了後の本線復帰条件、(7) workflow-state snapshot 作成と payload 必須 field coverage、(8) `spec.json.workflow_state` / `reopened` / `recheck`、in-progress sha、pending / drafting completed / completed gates、operation contract digest、staged file set digest、worktree dirty path digest の drift 検出、(9) commit boundary と snapshot 必須化の接続。全 pytest が pass、回帰なし。
 
 ### T-018：構造化有効プロンプトと prompt audit（Req 15、reopen R-0 2026-06-19）
 
@@ -406,8 +407,8 @@ language: ja
   2. language task I/O schema が input role、allowed action、forbidden action、output contract、evidence anchors を定義し、未知 field / 欠落を fail-closed にする。
   3. prompt に含まれる on_completion / next step 指示は `next --json` または operation contract への参照に限定され、spec.json・phase・commit の直接変更指示を禁止する。
   4. prompt audit が元資料 digest 不一致、必須 source 欠落、機械実行タスク混入、出力 schema 欠落、禁止事項違反を DEVIATION にする。
-  5. review-run / role-run の `rounds.yaml` は prompt manifest path と sha256 を記録し、旧 text-only prompt からの移行中互換を明示的に扱う。
-- **テスト要件（TDD：先に失敗テストを書く）**：(1) language_task_io schema 正常系、(2) 欠落・未知値・型不一致の fail-closed、(3) effective prompt manifest の source digest coverage、(4) on_completion の直接状態変更指示拒否、(5) operation contract 参照正常系、(6) prompt audit の digest mismatch / source missing / machine task contamination / output schema missing、(7) rounds.yaml への manifest path / sha256 記録。全 pytest が pass、回帰なし。
+  5. review-run / role-run の `rounds.yaml` は prompt manifest path と sha256 を、既存 T-004 の `effective_prompt_path` / `effective_prompt_sha256` を置換せず拡張 field として記録する。移行中は既存 text-only effective prompt field と structured manifest field の併存を許可し、manifest field がある場合は manifest sha256 と source digest coverage を正本検査対象にする。manifest field がなく text-only field のみの場合は P1 互換として WARN、manifest field があるが text-only field と対象 decision point が不一致の場合は DEVIATION、どちらの field もない場合は DEVIATION とする。
+- **テスト要件（TDD：先に失敗テストを書く）**：(1) language_task_io schema 正常系、(2) 欠落・未知値・型不一致の fail-closed、(3) effective prompt manifest の source digest coverage、(4) on_completion の直接状態変更指示拒否、(5) operation contract 参照正常系、(6) prompt audit の digest mismatch / source missing / machine task contamination / output schema missing、(7) rounds.yaml への manifest path / sha256 記録、(8) T-004 既存 `effective_prompt_path` / `effective_prompt_sha256` との併存正常系、(9) text-only のみの P1 互換 WARN、(10) manifest と text-only decision point 不一致の DEVIATION、(11) 両 field 欠落の DEVIATION。全 pytest が pass、回帰なし。
 
 ### T-019：段階的実装計画 Phase 0〜6 と proxy_model triage decision 機械処理化（Req 16、reopen R-0 2026-06-19）
 
@@ -432,8 +433,9 @@ language: ja
   3. proxy_model triage decision が raw response、triage item、decision prompt、candidate decisions、selected decision、reasoning summary、final application target を構造化して保持する。
   4. proxy_model decision は LLM/provider/model 名ではなく、証跡 completeness、対象一致、decision schema、approval gate 可否で判定する。
   5. human 承認が必要な decision を proxy_model decision で通過させない。
-  6. review-wave summary / carry-forward register / downstream impact decisions への consumer impact が未反映なら完了判定を出さない。
-- **テスト要件（TDD：先に失敗テストを書く）**：(1) phase plan schema 正常系、(2) Phase 0〜6 coverage、(3) entry / exit criteria 欠落の fail-closed、(4) phase 順序違反、(5) forbidden operation 実行の DEVIATION、(6) proxy triage decision schema 正常系、(7) raw / prompt / candidate / selected / reason / target 欠落の fail-closed、(8) human-required decision の proxy 通過拒否、(9) provider / model 名非依存、(10) review-wave consumer impact 未反映検出。全 pytest が pass、回帰なし。
+  6. review-wave summary / carry-forward register / downstream impact decisions への consumer impact が未反映なら完了判定を出さない。必須入力は `review-wave-summary` JSON / Markdown 出力、`learning/workflow/carry-forward-register/reviewcompass-import.yaml`、reopen in-progress / completed YAML の `downstream_impact_decisions`、`spec.json.recheck.impacted_downstream_phases`、`spec.json.reopened` とする。
+  7. T-019 は `spec.json.reopened` を履歴フラグとして扱い、active reopen scope と同一視しない。active reopen scope は reopen in-progress / completed YAML の `pending_gates`、`completed_gates`、`drafting_completed_gates`、`feature_impact_decisions`、`downstream_impact_decisions` から解決し、impact review scope は review-wave summary と downstream impact decisions から解決する。両 scope が混同・欠落・矛盾した場合は DEVIATION とする。
+- **テスト要件（TDD：先に失敗テストを書く）**：(1) phase plan schema 正常系、(2) Phase 0〜6 coverage、(3) entry / exit criteria 欠落の fail-closed、(4) phase 順序違反、(5) forbidden operation 実行の DEVIATION、(6) proxy triage decision schema 正常系、(7) raw / prompt / candidate / selected / reason / target 欠落の fail-closed、(8) human-required decision の proxy 通過拒否、(9) provider / model 名非依存、(10) review-wave summary、carry-forward register、downstream impact decisions、`spec.json.recheck.impacted_downstream_phases` の consumer impact 未反映検出、(11) `spec.json.reopened` 履歴フラグを active reopen scope と誤認しないこと、(12) active reopen scope / impact review scope の欠落・矛盾 DEVIATION。全 pytest が pass、回帰なし。
 
 ## 要件追跡（Requirements Traceability）
 
@@ -518,15 +520,15 @@ language: ja
 | Requirement 13 受入 3〜4：required_action と operation contract の対応 | T-016（T-015 と連動） |
 | Requirement 13 受入 5〜7：precondition / postcondition / side effect / phase boundary | T-016（T-014 と連動） |
 | Requirement 13 受入 8〜10：commit boundary 強制・bypass 防止・LLM 非依存 | T-016（T-006／T-014 と連動） |
-| Requirement 14 受入 1〜3：承認ゲートと decision 境界 | T-017（T-006／T-016 と連動） |
-| Requirement 14 受入 4〜7：side track stack と本線復帰条件 | T-017（T-008／T-014 と連動） |
-| Requirement 14 受入 8〜10：workflow-state snapshot と drift 検出 | T-017（T-016 と連動） |
+| Requirement 14 受入 1〜3：承認ゲート、proxy_model / human decision 境界、decision 消費状態 | T-017（T-006／T-016 と連動） |
+| Requirement 14 受入 4〜7：side track stack、push / pop / current、本線復帰条件、許可ファイル・nesting depth | T-017（T-008／T-014 と連動） |
+| Requirement 14 受入 8〜10：workflow-state snapshot、staged file set / worktree digest、pending / completed gates drift 検出 | T-017（T-016 と連動） |
 | Requirement 15 受入 1〜2：language task I/O と effective prompt manifest | T-018 |
 | Requirement 15 受入 3〜5：prompt audit、on_completion 制御、機械実行タスク混入防止 | T-018（T-004／T-016 と連動） |
-| Requirement 15 受入 6〜7：review-run 記録・structured prompt 互換 | T-018（T-014／T-017 と連動） |
+| Requirement 15 受入 6〜7：review-run 記録、structured prompt manifest、T-004 rounds.yaml field 互換、text-only 移行境界 | T-018（T-014／T-017 と連動） |
 | Requirement 16 受入 1〜4：Phase 0〜6 実装計画と phase gate | T-019（T-016〜T-018 と連動） |
 | Requirement 16 受入 5〜9：proxy_model triage decision の機械処理化 | T-019（T-017／T-018 と連動） |
-| Requirement 16 受入 10〜12：review-wave consumer impact と完了遮断 | T-019（T-012／T-016〜T-018 と連動） |
+| Requirement 16 受入 10〜12：review-wave consumer impact blocking、carry-forward / downstream impact evidence、active reopen scope / impact review scope 分離 | T-019（T-012／T-016〜T-018 と連動） |
 | Boundary Context 隣接期待（self-improvement との接合面、A-007 案 2／A-012） | T-010 |
 
 ## テスト戦略の継承（Test Strategy Inheritance）

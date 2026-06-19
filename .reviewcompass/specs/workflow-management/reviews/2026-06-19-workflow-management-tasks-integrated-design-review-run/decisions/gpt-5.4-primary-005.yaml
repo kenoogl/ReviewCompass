@@ -1,0 +1,14 @@
+finding_id: 2026-06-19-workflow-management-tasks-integrated-design-review-run-gpt-5.4-primary-005
+cluster_id: C5
+proxy_model_id: gemini-3.1-pro-preview
+decision_prompt_path: proxy-decision-prompts/C1-C5.prompt.md
+raw_response_path: proxy-decisions/C1-C5.raw.yaml
+final_label: leave-as-is
+rationale: This is a positive confirmation that spec.json does not prematurely mark tasks triad-review or later gates complete.
+candidate_options:
+- must-fix
+- should-fix
+- leave-as-is
+rejected_options:
+  must-fix: No defect is identified.
+  should-fix: No edit is needed for a positive state check.

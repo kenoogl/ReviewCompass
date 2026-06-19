@@ -1,0 +1,51 @@
+role: primary
+provider: openai-api
+model: gpt-5.4
+attempts: 1
+duration_seconds: 12.381
+findings:
+- severity: WARN
+  target_location: .reviewcompass/specs/workflow-management/tasks.md#T-017
+  description: T-017 の完了条件・テスト要件は承認ゲート、side track stack、snapshot の個別実装を示しているが、Requirement
+    14 受入 8〜10 で求められる workflow-state snapshot の内容にある `spec.json`・`pending_gates`・`drafting_completed_gates`・`completed_gates`・operation
+    contract 同時記録、ならびに staged file set / worktree digest の固定対象が task 文面で明示されていない。
+  rationale: triad-review の必須確認対象には workflow-state snapshot、staged file set / digest
+    checks、drift detection が含まれる。現状の T-017 は『spec / in-progress / staged set drift
+    検出』までしか具体化しておらず、design と reopen in-progress 記録が持つ状態軸のどこを snapshot 正本として固定するかが曖昧で、実装時に手作業判断や
+    coverage 漏れを招く。
+- severity: WARN
+  target_location: .reviewcompass/specs/workflow-management/tasks.md#T-018
+  description: T-018 は structured effective prompt manifest と prompt audit の追加を定義しているが、Requirement
+    15 受入 1〜7 のうち review-run recording について `rounds.yaml` に manifest path / sha256
+    を記録する点はある一方、旧 text-only prompt 互換の終了条件・移行中の判定境界が task レベルで未具体化である。
+  rationale: 設計と Requirement 15 は『旧 text-only prompt からの移行中互換を明示的に扱う』ことを求めている。tasks
+    では owned file とテスト対象は示されているが、どの状態を pass とし、どの状態を DEVIATION とするかの completion 条件が弱く、review-run
+    consumer が text-only / manifest 併存期に同じ判断を再現できないおそれがある。
+- severity: WARN
+  target_location: .reviewcompass/specs/workflow-management/tasks.md#T-019
+  description: T-019 は Phase 0〜6 計画と proxy_model triage decision 機械化を扱うが、Requirement
+    16 の『review-wave consumer impact blocking』に対して、どの consumer 記録を completion 判定で必須入力とするかが
+    task 文面で曖昧である。
+  rationale: 完了条件 6 は review-wave summary / carry-forward register / downstream impact
+    decisions への consumer impact 未反映を遮断すると述べるだけで、どのファイル・どの整合条件を検査するかが不足している。これでは implementation-phase-check
+    が review-wave 影響未反映をどう検知するかが実装時に再判断となり、Requirement 16 の blocking 条件が弱くなる。
+- severity: WARN
+  target_location: .reviewcompass/specs/workflow-management/tasks.md#要件追跡表
+  description: Requirement 14〜16 の追跡行は T-017〜T-019 へ概ね接続されているが、triad-review 必須確認項目である『proxy_model
+    / human decision boundary』『staged file set / digest checks』『review-wave consumer
+    impact blocking』が traceability 行の粒度では省略されている。
+  rationale: 現行表は受入番号の範囲でまとめており、今回 gate で要求される詳細論点ごとの追跡確認に使いにくい。tasks drafting artifact
+    として最低限成立はしているが、Requirement 14〜16 の追加分は実装上の事故点が細かいため、今のままだと review で都度本文を読み直さないと
+    coverage 判定できない。
+- severity: INFO
+  target_location: .reviewcompass/specs/workflow-management/spec.json
+  description: spec.json は tasks.drafting=true、tasks.triad-review=false のままであり、tasks
+    triad-review や review-wave 以降を未完了として扱っている。
+  rationale: 本 gate の確認項目 8 に対して、spec.json 側に premature completion の誤記は見当たらない。
+- severity: INFO
+  target_location: stages/in-progress/reopen-procedure-2026-06-19.yaml
+  description: 'reopen in-progress 記録は `next_step: 第3過程：tasks triad-review`、`pending_gates`
+    に tasks/implementation の残 gate を保持し、tasks triad-review・review-wave・alignment・approval
+    を未完了として残している。'
+  rationale: 本 gate の確認項目 8 に対して、reopen 状態記録は tasks drafting 完了のみを反映しており、triad-review・review-wave・alignment・approval・implementation・commit/push
+    完了を前倒しで主張していない。

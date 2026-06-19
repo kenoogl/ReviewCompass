@@ -1,0 +1,43 @@
+approved_action: review_triage_decide
+approved_by: proxy_model
+review_run_id: 2026-06-19-workflow-management-tasks-integrated-design-review-run
+summary_presented_to_user: true
+triage_presented_to_user: true
+consumed: false
+approved_finding_ids:
+- 2026-06-19-workflow-management-tasks-integrated-design-review-run-gpt-5.4-primary-001
+- 2026-06-19-workflow-management-tasks-integrated-design-review-run-gpt-5.4-primary-002
+- 2026-06-19-workflow-management-tasks-integrated-design-review-run-claude-opus-4-8-adversarial-001
+- 2026-06-19-workflow-management-tasks-integrated-design-review-run-gpt-5.4-primary-003
+- 2026-06-19-workflow-management-tasks-integrated-design-review-run-claude-opus-4-8-adversarial-002
+- 2026-06-19-workflow-management-tasks-integrated-design-review-run-gpt-5.4-primary-004
+- 2026-06-19-workflow-management-tasks-integrated-design-review-run-gpt-5.4-primary-005
+- 2026-06-19-workflow-management-tasks-integrated-design-review-run-gpt-5.4-primary-006
+- 2026-06-19-workflow-management-tasks-integrated-design-review-run-claude-opus-4-8-adversarial-003
+- 2026-06-19-workflow-management-tasks-integrated-design-review-run-claude-opus-4-8-adversarial-004
+- 2026-06-19-workflow-management-tasks-integrated-design-review-run-claude-opus-4-8-adversarial-005
+approved_final_labels:
+  2026-06-19-workflow-management-tasks-integrated-design-review-run-gpt-5.4-primary-001: must-fix
+  2026-06-19-workflow-management-tasks-integrated-design-review-run-gpt-5.4-primary-002: must-fix
+  2026-06-19-workflow-management-tasks-integrated-design-review-run-claude-opus-4-8-adversarial-001: must-fix
+  2026-06-19-workflow-management-tasks-integrated-design-review-run-gpt-5.4-primary-003: must-fix
+  2026-06-19-workflow-management-tasks-integrated-design-review-run-claude-opus-4-8-adversarial-002: must-fix
+  2026-06-19-workflow-management-tasks-integrated-design-review-run-gpt-5.4-primary-004: should-fix
+  2026-06-19-workflow-management-tasks-integrated-design-review-run-gpt-5.4-primary-005: leave-as-is
+  2026-06-19-workflow-management-tasks-integrated-design-review-run-gpt-5.4-primary-006: leave-as-is
+  2026-06-19-workflow-management-tasks-integrated-design-review-run-claude-opus-4-8-adversarial-003: leave-as-is
+  2026-06-19-workflow-management-tasks-integrated-design-review-run-claude-opus-4-8-adversarial-004: leave-as-is
+  2026-06-19-workflow-management-tasks-integrated-design-review-run-claude-opus-4-8-adversarial-005: leave-as-is
+proxy_model_id: gemini-3.1-pro-preview
+proxy_decisions:
+  2026-06-19-workflow-management-tasks-integrated-design-review-run-gpt-5.4-primary-001: decisions/gpt-5.4-primary-001.yaml
+  2026-06-19-workflow-management-tasks-integrated-design-review-run-gpt-5.4-primary-002: decisions/gpt-5.4-primary-002.yaml
+  2026-06-19-workflow-management-tasks-integrated-design-review-run-claude-opus-4-8-adversarial-001: decisions/claude-opus-4-8-adversarial-001.yaml
+  2026-06-19-workflow-management-tasks-integrated-design-review-run-gpt-5.4-primary-003: decisions/gpt-5.4-primary-003.yaml
+  2026-06-19-workflow-management-tasks-integrated-design-review-run-claude-opus-4-8-adversarial-002: decisions/claude-opus-4-8-adversarial-002.yaml
+  2026-06-19-workflow-management-tasks-integrated-design-review-run-gpt-5.4-primary-004: decisions/gpt-5.4-primary-004.yaml
+  2026-06-19-workflow-management-tasks-integrated-design-review-run-gpt-5.4-primary-005: decisions/gpt-5.4-primary-005.yaml
+  2026-06-19-workflow-management-tasks-integrated-design-review-run-gpt-5.4-primary-006: decisions/gpt-5.4-primary-006.yaml
+  2026-06-19-workflow-management-tasks-integrated-design-review-run-claude-opus-4-8-adversarial-003: decisions/claude-opus-4-8-adversarial-003.yaml
+  2026-06-19-workflow-management-tasks-integrated-design-review-run-claude-opus-4-8-adversarial-004: decisions/claude-opus-4-8-adversarial-004.yaml
+  2026-06-19-workflow-management-tasks-integrated-design-review-run-claude-opus-4-8-adversarial-005: decisions/claude-opus-4-8-adversarial-005.yaml

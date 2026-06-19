@@ -1,0 +1,204 @@
+run_id: 2026-06-19-workflow-management-tasks-integrated-design-review-run
+triage_status: decided
+generated_at: '2026-06-19T05:52:05.720976+00:00'
+decision_actor: proxy_model
+decision_actor_type: agent
+items:
+- finding_id: 2026-06-19-workflow-management-tasks-integrated-design-review-run-gpt-5.4-primary-001
+  run_id: 2026-06-19-workflow-management-tasks-integrated-design-review-run
+  source_model: gpt-5.4
+  source_round: round-1
+  source_raw_path: raw/gpt-5.4.round-1.txt
+  source_parsed_path: parsed/gpt-5.4.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: .reviewcompass/specs/workflow-management/tasks.md#T-017
+  plain_language_summary: T-017 の完了条件・テスト要件は承認ゲート、side track stack、snapshot の個別実装を示しているが、Requirement 14 受入 8〜10 で求められる workflow-state snapshot の内容にある `spec.json`・`pending_gates`・`drafting_completed_gates`・`completed_gates`・operation contract 同時記録、ならびに staged file set / worktree digest の固定対象が task 文面で明示されていない。
+  final_label: must-fix
+  decision_status: decided
+  decision_actor: proxy_model
+  decision_actor_type: agent
+  decision_at: '2026-06-19T06:03:11+00:00'
+  decision_reason: 'C1 proxy decision: workflow-state snapshot payload fields and drift comparisons are essential for safe reopen state management; underspecification blocks tasks triad-review acceptance.'
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-19-workflow-management-tasks-integrated-design-review-run-gpt-5.4-primary-002
+  run_id: 2026-06-19-workflow-management-tasks-integrated-design-review-run
+  source_model: gpt-5.4
+  source_round: round-1
+  source_raw_path: raw/gpt-5.4.round-1.txt
+  source_parsed_path: parsed/gpt-5.4.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: .reviewcompass/specs/workflow-management/tasks.md#T-018
+  plain_language_summary: T-018 は structured effective prompt manifest と prompt audit の追加を定義しているが、Requirement 15 受入 1〜7 のうち review-run recording について `rounds.yaml` に manifest path / sha256 を記録する点はある一方、旧 text-only prompt 互換の終了条件・移行中の判定境界が task レベルで未具体化である。
+  final_label: must-fix
+  decision_status: decided
+  decision_actor: proxy_model
+  decision_actor_type: agent
+  decision_at: '2026-06-19T06:03:11+00:00'
+  decision_reason: 'C2 proxy decision: structured prompt manifest compatibility with existing T-004 rounds.yaml fields must be defined to avoid backward-incompatible or silently overwritten prompt records.'
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-19-workflow-management-tasks-integrated-design-review-run-gpt-5.4-primary-003
+  run_id: 2026-06-19-workflow-management-tasks-integrated-design-review-run
+  source_model: gpt-5.4
+  source_round: round-1
+  source_raw_path: raw/gpt-5.4.round-1.txt
+  source_parsed_path: parsed/gpt-5.4.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: .reviewcompass/specs/workflow-management/tasks.md#T-019
+  plain_language_summary: T-019 は Phase 0〜6 計画と proxy_model triage decision 機械化を扱うが、Requirement 16 の『review-wave consumer impact blocking』に対して、どの consumer 記録を completion 判定で必須入力とするかが task 文面で曖昧である。
+  final_label: must-fix
+  decision_status: decided
+  decision_actor: proxy_model
+  decision_actor_type: agent
+  decision_at: '2026-06-19T06:03:11+00:00'
+  decision_reason: 'C3 proxy decision: consumer impact inputs and active reopen scope versus impact review scope are core completion-blocking checks for T-019 and must be concrete before accepting tasks triad-review.'
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-19-workflow-management-tasks-integrated-design-review-run-gpt-5.4-primary-004
+  run_id: 2026-06-19-workflow-management-tasks-integrated-design-review-run
+  source_model: gpt-5.4
+  source_round: round-1
+  source_raw_path: raw/gpt-5.4.round-1.txt
+  source_parsed_path: parsed/gpt-5.4.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: .reviewcompass/specs/workflow-management/tasks.md#要件追跡表
+  plain_language_summary: Requirement 14〜16 の追跡行は T-017〜T-019 へ概ね接続されているが、triad-review 必須確認項目である『proxy_model / human decision boundary』『staged file set / digest checks』『review-wave consumer impact blocking』が traceability 行の粒度では省略されている。
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: proxy_model
+  decision_actor_type: agent
+  decision_at: '2026-06-19T06:03:11+00:00'
+  decision_reason: 'C4 proxy decision: enriching traceability rows improves reviewability for high-risk Req 14-16 points, but the current coarse rows do not by themselves make the tasks unusable.'
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-19-workflow-management-tasks-integrated-design-review-run-gpt-5.4-primary-005
+  run_id: 2026-06-19-workflow-management-tasks-integrated-design-review-run
+  source_model: gpt-5.4
+  source_round: round-1
+  source_raw_path: raw/gpt-5.4.round-1.txt
+  source_parsed_path: parsed/gpt-5.4.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: .reviewcompass/specs/workflow-management/spec.json
+  plain_language_summary: spec.json は tasks.drafting=true、tasks.triad-review=false のままであり、tasks triad-review や review-wave 以降を未完了として扱っている。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: proxy_model
+  decision_actor_type: agent
+  decision_at: '2026-06-19T06:03:11+00:00'
+  decision_reason: 'C5 proxy decision: this is a positive confirmation that spec.json does not prematurely mark tasks triad-review or later gates complete.'
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-19-workflow-management-tasks-integrated-design-review-run-gpt-5.4-primary-006
+  run_id: 2026-06-19-workflow-management-tasks-integrated-design-review-run
+  source_model: gpt-5.4
+  source_round: round-1
+  source_raw_path: raw/gpt-5.4.round-1.txt
+  source_parsed_path: parsed/gpt-5.4.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: stages/in-progress/reopen-procedure-2026-06-19.yaml
+  plain_language_summary: 'reopen in-progress 記録は `next_step: 第3過程：tasks triad-review`、`pending_gates` に tasks/implementation の残 gate を保持し、tasks triad-review・review-wave・alignment・approval を未完了として残している。'
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: proxy_model
+  decision_actor_type: agent
+  decision_at: '2026-06-19T06:03:11+00:00'
+  decision_reason: 'C5 proxy decision: this is a positive confirmation that reopen state records tasks drafting only and keeps later gates pending.'
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-19-workflow-management-tasks-integrated-design-review-run-claude-opus-4-8-adversarial-001
+  run_id: 2026-06-19-workflow-management-tasks-integrated-design-review-run
+  source_model: claude-opus-4-8
+  source_round: round-1
+  source_raw_path: raw/claude-opus-4-8.round-1.txt
+  source_parsed_path: parsed/claude-opus-4-8.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: .reviewcompass/specs/workflow-management/tasks.md T-018 完了条件 5 / テスト要件 7
+  plain_language_summary: T-018 の review-run / role-run rounds.yaml 記録は T-004 の既存責務（rounds.yaml に effective_prompt_path / effective_prompt_sha256 を記録）を prompt manifest path / sha256 へ拡張する形だが、T-018 の前提タスクに T-004 は含まれているものの、既存 T-004 完了条件 12（rounds.yaml への effective prompt 記録）との関係（拡張か併存か上書きか）が tasks 本文で明示されていない。Requirement 15 受入 7（structured prompt 互換）は design §Req 15 §1 で『既存 Markdown prompt はその人向けレンダリングとして扱う』『互換 path を維持』としており、T-018 が T-004 の既存 rounds.yaml 記録形式とどう接続するかが曖昧。
+  final_label: must-fix
+  decision_status: decided
+  decision_actor: proxy_model
+  decision_actor_type: agent
+  decision_at: '2026-06-19T06:03:11+00:00'
+  decision_reason: 'C2 proxy decision: T-018 must define whether manifest path / sha256 extend or coexist with existing effective_prompt_path / effective_prompt_sha256 and how mixed text-only / manifest states fail closed.'
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-19-workflow-management-tasks-integrated-design-review-run-claude-opus-4-8-adversarial-002
+  run_id: 2026-06-19-workflow-management-tasks-integrated-design-review-run
+  source_model: claude-opus-4-8
+  source_round: round-1
+  source_raw_path: raw/claude-opus-4-8.round-1.txt
+  source_parsed_path: parsed/claude-opus-4-8.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: .reviewcompass/specs/workflow-management/tasks.md T-019 完了条件 6 / 要件追跡 Requirement 16 受入 10〜12
+  plain_language_summary: Requirement 16 受入 12（consumer / derivative impact review、foundation 等への正本変更要否を review-wave で確認）に対し、T-019 完了条件 6 は『review-wave summary / carry-forward register / downstream impact decisions への consumer impact が未反映なら完了判定を出さない』としているが、design §Req 16 §2 が求める『reopen scope と impact review scope を混同せず記録する』点（受入 11 の reopened フラグと active reopen scope の区別を含む）への対応タスクが T-019 完了条件・テスト要件に明示されていない。要件追跡表は受入 11〜12 を T-019 に一括対応付けているが、scope 区別の機械検査が完了条件に落ちていない。
+  final_label: must-fix
+  decision_status: decided
+  decision_actor: proxy_model
+  decision_actor_type: agent
+  decision_at: '2026-06-19T06:03:11+00:00'
+  decision_reason: 'C3 proxy decision: T-019 must explicitly cover reopened history flags, active reopen scope, impact review scope, and required consumer-impact evidence so implementation does not guess the boundary.'
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-19-workflow-management-tasks-integrated-design-review-run-claude-opus-4-8-adversarial-003
+  run_id: 2026-06-19-workflow-management-tasks-integrated-design-review-run
+  source_model: claude-opus-4-8
+  source_round: round-1
+  source_raw_path: raw/claude-opus-4-8.round-1.txt
+  source_parsed_path: parsed/claude-opus-4-8.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: .reviewcompass/specs/workflow-management/tasks.md テスト戦略の継承 / 完成判定基準
+  plain_language_summary: T-016〜T-019 追加に伴うテスト戦略の継承・完成判定基準・要件追跡・DVT の更新は概ね整合している（単体/統合/境界条件に T-016〜T-019 が追記済み、要件追跡に Requirement 13〜16 行が追加済み、XDI-WM-005 が追加済み、概要冒頭の 19 タスク記載と T-001〜T-019 完成判定が一致）。stale count や stale 完了基準は検出されなかった。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: proxy_model
+  decision_actor_type: agent
+  decision_at: '2026-06-19T06:03:11+00:00'
+  decision_reason: 'C5 proxy decision: this is a positive confirmation that task count, completion criteria, traceability presence, and XDI-WM-005 are internally consistent.'
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-19-workflow-management-tasks-integrated-design-review-run-claude-opus-4-8-adversarial-004
+  run_id: 2026-06-19-workflow-management-tasks-integrated-design-review-run
+  source_model: claude-opus-4-8
+  source_round: round-1
+  source_raw_path: raw/claude-opus-4-8.round-1.txt
+  source_parsed_path: parsed/claude-opus-4-8.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: .reviewcompass/specs/workflow-management/tasks.md T-014 前提タスク注記 / T-016 責務
+  plain_language_summary: T-016 は T-014 の operation registry / preflight を参照側として残し、T-016 を operation contract 語彙・schema・対応表の所有タスクとする旨が責務・XDI-WM-005・変更意図に一貫して明記されており、T-014 の operation registry / preflight 責務と矛盾していない。実装挙動を tasks 起草成果物に移し込む記述（実装の前倒し）も検出されなかった。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: proxy_model
+  decision_actor_type: agent
+  decision_at: '2026-06-19T06:03:11+00:00'
+  decision_reason: 'C5 proxy decision: this is a positive confirmation that T-014 and T-016 responsibilities remain separated.'
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-19-workflow-management-tasks-integrated-design-review-run-claude-opus-4-8-adversarial-005
+  run_id: 2026-06-19-workflow-management-tasks-integrated-design-review-run
+  source_model: claude-opus-4-8
+  source_round: round-1
+  source_raw_path: raw/claude-opus-4-8.round-1.txt
+  source_parsed_path: parsed/claude-opus-4-8.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: spec.json workflow_state.tasks / stages/in-progress/reopen-procedure-2026-06-19.yaml
+  plain_language_summary: spec.json は tasks.drafting=true、tasks.triad-review 以降=false、design 全段=true、requirements 全段=true であり、tasks drafting 完了かつ triad-review 未完了を正しく示す。reopen 進行中ファイルも next_step=『第3過程：tasks triad-review』、pending_gates に stages/tasks.yaml#triad-review 以降を保持し、drafting_completed_gates に stages/tasks.yaml#drafting を含む。review-wave / alignment / approval / implementation / commit / push を前倒しで完了と主張する記述は見当たらない。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: proxy_model
+  decision_actor_type: agent
+  decision_at: '2026-06-19T06:03:11+00:00'
+  decision_reason: 'C5 proxy decision: this is a positive confirmation that spec.json and reopen in-progress state accurately show tasks drafting complete and later gates incomplete.'
+  applied_files: []
+  superseded_by: null

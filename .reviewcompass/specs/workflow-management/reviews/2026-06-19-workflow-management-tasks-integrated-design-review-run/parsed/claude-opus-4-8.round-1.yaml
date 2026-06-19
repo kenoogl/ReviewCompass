@@ -1,0 +1,52 @@
+role: adversarial
+provider: anthropic-api
+model: claude-opus-4-8
+attempts: 1
+duration_seconds: 37.062
+findings:
+- severity: WARN
+  target_location: .reviewcompass/specs/workflow-management/tasks.md T-018 完了条件 5
+    / テスト要件 7
+  description: T-018 の review-run / role-run rounds.yaml 記録は T-004 の既存責務（rounds.yaml
+    に effective_prompt_path / effective_prompt_sha256 を記録）を prompt manifest path /
+    sha256 へ拡張する形だが、T-018 の前提タスクに T-004 は含まれているものの、既存 T-004 完了条件 12（rounds.yaml への
+    effective prompt 記録）との関係（拡張か併存か上書きか）が tasks 本文で明示されていない。Requirement 15 受入 7（structured
+    prompt 互換）は design §Req 15 §1 で『既存 Markdown prompt はその人向けレンダリングとして扱う』『互換 path
+    を維持』としており、T-018 が T-004 の既存 rounds.yaml 記録形式とどう接続するかが曖昧。
+  rationale: 実装時に T-004 の既存 rounds.yaml フィールドと T-018 の manifest path / sha256 が重複定義・競合し、どちらを正本とするか繰り返し判断が必要になりうる。design
+    は互換維持を述べるが tasks にその接続点が落ちており、TDD 完了条件が一意に定まらない。
+- severity: WARN
+  target_location: .reviewcompass/specs/workflow-management/tasks.md T-019 完了条件 6
+    / 要件追跡 Requirement 16 受入 10〜12
+  description: Requirement 16 受入 12（consumer / derivative impact review、foundation
+    等への正本変更要否を review-wave で確認）に対し、T-019 完了条件 6 は『review-wave summary / carry-forward
+    register / downstream impact decisions への consumer impact が未反映なら完了判定を出さない』としているが、design
+    §Req 16 §2 が求める『reopen scope と impact review scope を混同せず記録する』点（受入 11 の reopened
+    フラグと active reopen scope の区別を含む）への対応タスクが T-019 完了条件・テスト要件に明示されていない。要件追跡表は受入 11〜12
+    を T-019 に一括対応付けているが、scope 区別の機械検査が完了条件に落ちていない。
+  rationale: 受入 11（reopened 履歴フラグと active reopen scope の同一視禁止）と受入 12（impact review
+    scope の記録）は design §Req 16 §2 で明示された設計要素だが、T-019 の完了条件は consumer impact の未反映遮断のみを扱い、scope
+    区別の検査が抜けている。実装段で reopen scope / impact review scope の取り扱いが T-014（受入 11 で扱う）と T-019
+    のどちらの責務か曖昧になり、繰り返し判断を招く。
+- severity: INFO
+  target_location: .reviewcompass/specs/workflow-management/tasks.md テスト戦略の継承 / 完成判定基準
+  description: T-016〜T-019 追加に伴うテスト戦略の継承・完成判定基準・要件追跡・DVT の更新は概ね整合している（単体/統合/境界条件に
+    T-016〜T-019 が追記済み、要件追跡に Requirement 13〜16 行が追加済み、XDI-WM-005 が追加済み、概要冒頭の 19 タスク記載と
+    T-001〜T-019 完成判定が一致）。stale count や stale 完了基準は検出されなかった。
+  rationale: Required Check 6（stale counts / 完了基準 / 欠落追跡行 / 不整合参照）の確認結果として、内部整合は保たれていることを記録する。
+- severity: INFO
+  target_location: .reviewcompass/specs/workflow-management/tasks.md T-014 前提タスク注記
+    / T-016 責務
+  description: T-016 は T-014 の operation registry / preflight を参照側として残し、T-016 を operation
+    contract 語彙・schema・対応表の所有タスクとする旨が責務・XDI-WM-005・変更意図に一貫して明記されており、T-014 の operation
+    registry / preflight 責務と矛盾していない。実装挙動を tasks 起草成果物に移し込む記述（実装の前倒し）も検出されなかった。
+  rationale: Required Check 7（既存 T-014 責務との矛盾、実装挙動の tasks への混入）の確認結果として、責務分離が保たれていることを記録する。
+- severity: INFO
+  target_location: spec.json workflow_state.tasks / stages/in-progress/reopen-procedure-2026-06-19.yaml
+  description: spec.json は tasks.drafting=true、tasks.triad-review 以降=false、design
+    全段=true、requirements 全段=true であり、tasks drafting 完了かつ triad-review 未完了を正しく示す。reopen
+    進行中ファイルも next_step=『第3過程：tasks triad-review』、pending_gates に stages/tasks.yaml#triad-review
+    以降を保持し、drafting_completed_gates に stages/tasks.yaml#drafting を含む。review-wave /
+    alignment / approval / implementation / commit / push を前倒しで完了と主張する記述は見当たらない。
+  rationale: Required Check 8（spec.json と reopen 進行中ファイルが tasks drafting 完了を正確に反映し、未完了
+    gate を前倒しで完了扱いしていないこと）の確認結果として、状態記録が正確であることを記録する。
