@@ -1,0 +1,24 @@
+status: completed
+target_files:
+- docs/operations/WORKFLOW_NAVIGATION.md
+- stages/completed/maintenance-2026-06-19-post-write-manifest-final-seal.yaml
+target_sha256:
+  docs/operations/WORKFLOW_NAVIGATION.md: 4f01dd574b9fb57b5de84f322cd719e87484fa2f05ae20228c5c2f0e904a0531
+  stages/completed/maintenance-2026-06-19-post-write-manifest-final-seal.yaml: 03ae3b4683fa7d5c0d7e78166a0d045467bdc2ab66a8e4df7f9c1f283f725184
+required_verifiers: &id001
+- gemini-3.5-flash
+completed_verifiers: *id001
+unresolved_substantive_findings: 0
+verifications:
+- verifier: gemini-3.5-flash
+  target_files:
+  - docs/operations/WORKFLOW_NAVIGATION.md
+  - stages/completed/maintenance-2026-06-19-post-write-manifest-final-seal.yaml
+  target_sha256:
+    docs/operations/WORKFLOW_NAVIGATION.md: 4f01dd574b9fb57b5de84f322cd719e87484fa2f05ae20228c5c2f0e904a0531
+    stages/completed/maintenance-2026-06-19-post-write-manifest-final-seal.yaml: 03ae3b4683fa7d5c0d7e78166a0d045467bdc2ab66a8e4df7f9c1f283f725184
+review_run:
+  path: .reviewcompass/evidence/review-runs/2026-06-19-post-write-manifest-final-seal-postwrite
+  summary_path: .reviewcompass/evidence/review-runs/2026-06-19-post-write-manifest-final-seal-postwrite/model-result-summary.yaml
+notes: Generated template; verify target_files cover current post-write targets before
+  use.

@@ -123,15 +123,31 @@ def _current_git_post_write_targets(cwd: Path) -> List[str]:
   return sorted(set(targets))
 
 
+def _review_run_target_files(run_dir: Path) -> List[str]:
+  """review-run の target-manifest.yaml から対象ファイル一覧を返す。"""
+  target_manifest = _load_yaml_dict(run_dir / "target-manifest.yaml")
+  return [
+    item.get("path")
+    for item in target_manifest.get("target_files", [])
+    if isinstance(item, dict) and item.get("path")
+  ]
+
+
 def _find_git_root(start: Path) -> Path:
   """start から上位へ .git を探し、見つからなければ現在ディレクトリを返す。"""
+  found = _find_git_root_or_none(start)
+  return found if found is not None else Path.cwd()
+
+
+def _find_git_root_or_none(start: Path) -> Optional[Path]:
+  """start から上位へ .git を探し、見つからなければ None を返す。"""
   current = start.resolve()
   if current.is_file():
     current = current.parent
   for candidate in [current] + list(current.parents):
     if (candidate / ".git").exists():
       return candidate
-  return Path.cwd()
+  return None
 
 
 def _resolve_path(path: str, base_dir: Optional[Path] = None) -> Path:
@@ -597,14 +613,7 @@ def build_manifest_template(review_run_dir: str) -> Dict[str, Any]:
   rounds = _load_yaml_dict(run_dir / "rounds.yaml")
   triage = _load_yaml_dict(run_dir / "triage.yaml")
   summary_path = run_dir / "model-result-summary.yaml"
-  target_files = [
-    item.get("path")
-    for item in target_manifest.get("target_files", [])
-    if isinstance(item, dict) and item.get("path")
-  ]
-  current_targets = _current_git_post_write_targets(git_root)
-  if current_targets:
-    target_files = sorted(set(target_files).union(current_targets))
+  target_files = _review_run_target_files(run_dir)
   fallback_sha256 = {
     item.get("path"): item.get("sha256")
     for item in target_manifest.get("target_files", [])
@@ -641,6 +650,16 @@ def assert_manifest_ready(
 ) -> None:
   """manifest 生成可能か確認し、未判断があれば例外にする。"""
   run_dir = Path(review_run_dir)
+  git_root = _find_git_root_or_none(run_dir)
+  if git_root is not None:
+    review_targets = sorted(set(_review_run_target_files(run_dir)))
+    current_targets = _current_git_post_write_targets(git_root)
+    unreviewed_targets = sorted(set(current_targets) - set(review_targets))
+    if unreviewed_targets:
+      raise ValueError(
+        "unreviewed post-write target changes remain: "
+        + ", ".join(unreviewed_targets)
+      )
   unresolved = unresolved_triage_count(review_run_dir)
   if unresolved > 0:
     raise ValueError(f"unresolved triage remains (human_required/draft): {unresolved}")

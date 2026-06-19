@@ -3,6 +3,7 @@
 
 import sys
 import hashlib
+import subprocess
 from datetime import date
 from pathlib import Path
 
@@ -135,6 +136,83 @@ def _write_review_run(tmp_path):
           },
         ],
       },
+      allow_unicode=True,
+      sort_keys=False,
+    ),
+    encoding="utf-8",
+  )
+  return run_dir
+
+
+def _write_clean_review_run_for_target(cwd, relative_target):
+  """所見0の post-write review-run を cwd 配下に作る。"""
+  run_dir = cwd / ".reviewcompass" / "evidence" / "review-runs" / "run"
+  raw_dir = run_dir / "raw"
+  raw_dir.mkdir(parents=True)
+  raw_file = raw_dir / "gemini-3.5-flash.round-1.txt"
+  raw_file.write_text("findings: []\n", encoding="utf-8")
+  target = cwd / relative_target
+  target.parent.mkdir(parents=True, exist_ok=True)
+  target.write_text("target\n", encoding="utf-8")
+  target_sha = hashlib.sha256(target.read_bytes()).hexdigest()
+  raw_sha = hashlib.sha256(raw_file.read_bytes()).hexdigest()
+  target_files = [{"path": relative_target, "sha256": target_sha}]
+  (run_dir / "target-manifest.yaml").write_text(
+    yaml.safe_dump(
+      {"run_id": run_dir.name, "target_files": target_files},
+      allow_unicode=True,
+      sort_keys=False,
+    ),
+    encoding="utf-8",
+  )
+  (run_dir / "rounds.yaml").write_text(
+    yaml.safe_dump(
+      {
+        "round_id": "round-1",
+        "purpose": "post_write_verification",
+        "target_files": target_files,
+        "model_results": [
+          {
+            "model_id": "gemini-3.5-flash",
+            "provider": "gemini-api",
+            "role": "primary",
+            "raw_path": "raw/gemini-3.5-flash.round-1.txt",
+            "raw_sha256": raw_sha,
+            "parse_status": "parsed",
+          },
+        ],
+      },
+      allow_unicode=True,
+      sort_keys=False,
+    ),
+    encoding="utf-8",
+  )
+  (run_dir / "model-result-summary.yaml").write_text(
+    yaml.safe_dump(
+      {
+        "run_id": run_dir.name,
+        "models": [
+          {
+            "model_id": "gemini-3.5-flash",
+            "raw_path": "raw/gemini-3.5-flash.round-1.txt",
+            "parse_status": "parsed",
+            "triage_status": "no_findings",
+            "findings_count": 0,
+            "must_fix_count": 0,
+            "should_fix_count": 0,
+            "leave_as_is_count": 0,
+            "human_required_count": 0,
+          },
+        ],
+      },
+      allow_unicode=True,
+      sort_keys=False,
+    ),
+    encoding="utf-8",
+  )
+  (run_dir / "triage.yaml").write_text(
+    yaml.safe_dump(
+      {"run_id": run_dir.name, "triage_status": "draft", "items": []},
       allow_unicode=True,
       sort_keys=False,
     ),
@@ -541,6 +619,42 @@ def test_write_manifest_auto_chooses_next_post_write_name(tmp_path, monkeypatch,
   assert created_path.is_file()
   manifest = yaml.safe_load(created_path.read_text(encoding="utf-8"))
   assert manifest["status"] == "completed"
+
+
+def test_write_manifest_blocks_unreviewed_post_write_target_change(
+  tmp_path,
+  monkeypatch,
+  capsys,
+):
+  """review-run 対象外の post-write 未コミット変更が残る場合は manifest を作らない。"""
+  cwd = tmp_path / "repo"
+  cwd.mkdir()
+  subprocess.run(["git", "init", "-q", "-b", "main"], cwd=str(cwd), check=True)
+  subprocess.run(["git", "config", "user.email", "test@example.com"], cwd=str(cwd), check=True)
+  subprocess.run(["git", "config", "user.name", "Test User"], cwd=str(cwd), check=True)
+  (cwd / ".gitignore").write_text("", encoding="utf-8")
+  subprocess.run(["git", "add", ".gitignore"], cwd=str(cwd), check=True)
+  subprocess.run(["git", "commit", "-qm", "initial"], cwd=str(cwd), check=True)
+  monkeypatch.chdir(cwd)
+  run_dir = _write_clean_review_run_for_target(
+    cwd,
+    "docs/operations/reviewed.md",
+  )
+  unreviewed = cwd / "docs" / "operations" / "unreviewed.md"
+  unreviewed.write_text("unreviewed\n", encoding="utf-8")
+  output_path = cwd / ".reviewcompass" / "post-write-verification" / "manifest.yaml"
+
+  exit_code = main(
+    [
+      "write-manifest",
+      "--review-run-dir", str(run_dir),
+      "--out", str(output_path),
+    ]
+  )
+
+  assert exit_code == 1
+  assert not output_path.exists()
+  assert "unreviewed post-write target" in capsys.readouterr().err
 
 
 def test_write_manifest_blocks_important_decisions_without_approval(tmp_path, capsys):

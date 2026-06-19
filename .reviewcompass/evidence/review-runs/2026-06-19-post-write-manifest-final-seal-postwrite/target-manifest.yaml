@@ -1,0 +1,6 @@
+run_id: 2026-06-19-post-write-manifest-final-seal-postwrite
+target_files:
+- path: docs/operations/WORKFLOW_NAVIGATION.md
+  sha256: 4f01dd574b9fb57b5de84f322cd719e87484fa2f05ae20228c5c2f0e904a0531
+- path: stages/completed/maintenance-2026-06-19-post-write-manifest-final-seal.yaml
+  sha256: 03ae3b4683fa7d5c0d7e78166a0d045467bdc2ab66a8e4df7f9c1f283f725184

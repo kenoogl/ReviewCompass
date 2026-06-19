@@ -1,0 +1,42 @@
+process_id: maintenance
+title: post-write manifest final seal
+trigger: "post-write manifest を作成後に対象ファイルを追記して hash が変わり、review-run / manifest の作り直しが発生することがある"
+mainline_blocked_by: stages/in-progress/reopen-procedure-2026-06-19.yaml
+completed_at: "2026-06-19"
+classification: local_workflow_guard_improvement
+reason: "manifest 作成を commit 直前の最終封印として扱うため、review-run 対象外の post-write 未コミット変更が残る状態で manifest を生成しない局所修正"
+allowed_scope:
+  - "write-manifest の manifest 生成前 fail-closed 条件"
+  - "現在の post-write target set が review-run target set に含まれることの確認"
+  - "manifest 作成順序の運用文書更新"
+  - "review_triage の回帰テスト"
+allowed_files:
+  - tools/api_providers/review_triage.py
+  - tools/api_providers/tests/test_review_triage.py
+  - docs/operations/WORKFLOW_NAVIGATION.md
+  - stages/completed/maintenance-2026-06-19-post-write-manifest-final-seal.yaml
+  - .reviewcompass/evidence/review-runs/2026-06-19-post-write-manifest-final-seal-postwrite/
+  - .reviewcompass/post-write-verification/post-write-2026-06-19-270.yaml
+completion_conditions:
+  - "review-run 対象外の post-write 未コミット変更が残る場合、write-manifest が fail-closed する"
+  - "manifest template が現在の未コミット target を勝手に union しない"
+  - "既存 review_triage / run_review / prepare_post_write_review テストが通る"
+completed_actions:
+  - "tests: review-run 対象外 post-write 未コミット変更が残る write-manifest を遮断するテストを追加"
+  - "implementation: assert_manifest_ready で current git post-write targets と review-run target set の差分を検出"
+  - "implementation: build_manifest_template から current targets の自動 union を削除"
+  - "documentation: WORKFLOW_NAVIGATION に manifest は commit 直前の最終封印であることを追記"
+verification:
+  - command: ".venv/bin/python3 -m pytest tools/api_providers/tests/test_review_triage.py::test_write_manifest_blocks_unreviewed_post_write_target_change -q"
+    result: "passed"
+  - command: ".venv/bin/python3 -m pytest tools/api_providers/tests/test_review_triage.py -q"
+    result: "31 passed"
+  - command: ".venv/bin/python3 -m pytest tools/api_providers/tests/test_prepare_post_write_review.py tools/api_providers/tests/test_run_review.py -q"
+    result: "9 passed"
+  - command: "PYTHONPYCACHEPREFIX=/private/tmp/reviewcompass-pycache .venv/bin/python3 -m py_compile tools/api_providers/review_triage.py"
+    result: "passed"
+post_write_verification:
+  review_run: .reviewcompass/evidence/review-runs/2026-06-19-post-write-manifest-final-seal-postwrite
+  manifest: .reviewcompass/post-write-verification/post-write-2026-06-19-270.yaml
+current_status: completed
+return_to: "integrated-design reopen design drafting"

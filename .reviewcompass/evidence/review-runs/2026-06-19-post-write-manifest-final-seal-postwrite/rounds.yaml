@@ -1,0 +1,106 @@
+round_id: round-1
+purpose: post_write_verification
+invocation_timestamp: '2026-06-19T01:08:51.455459+00:00'
+target_files:
+- path: docs/operations/WORKFLOW_NAVIGATION.md
+  sha256: 4f01dd574b9fb57b5de84f322cd719e87484fa2f05ae20228c5c2f0e904a0531
+- path: stages/completed/maintenance-2026-06-19-post-write-manifest-final-seal.yaml
+  sha256: 03ae3b4683fa7d5c0d7e78166a0d045467bdc2ab66a8e4df7f9c1f283f725184
+criteria: '# Post-write Review Target
+
+
+  criteria_id: post_write_manifest_final_seal_contract_clearance
+
+  phase: post_write_verification
+
+  generated_at: 2026-06-19T01:08:37.577516+00:00
+
+
+  ## Change Summary
+
+
+  post-write manifest を commit 直前の最終封印として扱い、review-run 対象外の post-write 未コミット変更が残る場合は
+  write-manifest を fail-closed するようにした。
+
+
+  ## Review Question
+
+
+  manifest 作成手順と完了記録が、manifest を途中記録ではなく最終封印として扱い、対象外 post-write 変更を残したまま manifest
+  を作らない contract と矛盾していないか。
+
+
+  ## Target Files
+
+
+  - docs/operations/WORKFLOW_NAVIGATION.md sha256=4f01dd574b9fb57b5de84f322cd719e87484fa2f05ae20228c5c2f0e904a0531
+
+  - stages/completed/maintenance-2026-06-19-post-write-manifest-final-seal.yaml sha256=03ae3b4683fa7d5c0d7e78166a0d045467bdc2ab66a8e4df7f9c1f283f725184
+
+
+  ## Scope
+
+
+  - Check whether the changed target files clearly state the intended contract.
+
+  - Check whether related instructions are mutually consistent across targets.
+
+  - Check whether the documented procedure is actionable before API review, triage,
+  manifest, or commit steps continue.
+
+
+  ## Out Of Scope
+
+
+  - Do not request unrelated refactors or style-only rewrites.
+
+  - Do not judge files that are not listed in Target Files.
+
+  - Do not treat missing implementation work as a document defect unless the target
+  text claims it already exists.
+
+
+  ## Finding Policy
+
+
+  - Report must-fix findings for contradictions, missing required gates, or instructions
+  that would allow an unsafe workflow action.
+
+  - Report should-fix findings for ambiguity that could cause repeated manual judgment
+  or unnecessary API review loops.
+
+  - Return findings: [] when the target files are internally consistent for this review
+  question.
+
+
+  ## Sensitive Information Check
+
+
+  - status: passed
+
+  - External API review must not proceed if this section reports potential secrets.
+
+  '
+prompt_sha256: f084d2e5237cc9566a407c59ac8d3262d7fc51023c2e1dd3eed5fb0d821d18a0
+model_results:
+- model_id: gemini-3.5-flash
+  provider: gemini-api
+  role: primary
+  treatment: primary
+  invocation_path: api
+  raw_path: raw/gemini-3.5-flash.round-1.txt
+  raw_sha256: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+  parsed_path: parsed/gemini-3.5-flash.round-1.yaml
+  parsed_sha256: de004400f04b7ba384cd3ea7a45cc280aa298db728e7d8fa2e70b0d676ed4318
+  parse_status: parsed
+  formatted_by: parser
+  formatted_by_actor_type: orchestrator
+  formatted_by_actor: run_role.py
+  formatted_at: '2026-06-19T01:08:51.455459+00:00'
+  follow_up_action: triage
+  attempts: 1
+  duration_seconds: 8.102
+  prompt_path: prompts/gemini-3.5-flash.round-1.prompt.md
+  prompt_sha256: f084d2e5237cc9566a407c59ac8d3262d7fc51023c2e1dd3eed5fb0d821d18a0
+criteria_source_path: .reviewcompass/evidence/review-runs/2026-06-19-post-write-manifest-final-seal-postwrite/review-target.md
+criteria_source_sha256: 4e64a802f00d643ed14b9d398a0fa4426c4fe0166724308cdc62a3c7d7425162
