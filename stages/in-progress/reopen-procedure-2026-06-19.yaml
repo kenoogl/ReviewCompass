@@ -56,7 +56,17 @@ drafting_completed_gates:
 - stages/requirements.yaml#drafting
 - stages/design.yaml#drafting
 - stages/tasks.yaml#drafting
-current_blocker: null
+current_blocker:
+  blocker_type: approval_gate
+  gate: stages/tasks.yaml#approval
+  actor: human
+  status: waiting_for_approval
+  rationale: tasks drafting、triad-review、review-wave、alignment が完了済みであり、tasks approval
+    は人の明示承認が必要な停止点であるため
+  evidence:
+  - .reviewcompass/specs/workflow-management/tasks.md
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-19-tasks-integrated-design-reopen-alignment.md
+  - .reviewcompass/post-write-verification/post-write-2026-06-19-284.yaml
 side_track_records:
 - completed_maintenance: stages/completed/maintenance-2026-06-19-post-write-review-target-preflight.yaml
   rationale: post-write API review の criteria / review-target 生成を機械化する局所改善を、本線 design
