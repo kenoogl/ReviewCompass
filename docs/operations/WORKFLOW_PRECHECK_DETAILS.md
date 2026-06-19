@@ -304,7 +304,7 @@ tools/guarded-git-commit.py -m "<commit message>" --rationale "<理由>" --appro
 
 ## 9. reopen-finalize
 
-`reopen-finalize` は、reopen 第4過程で `stages/in-progress/` の手続き YAML を `stages/completed/` へ移す更新コマンドである。完了 YAML の必須項目を手編集で埋める代わりに、構造化引数から `feature_impact_decisions`、`new_feature_decision`、`impacted_downstream_phases`、`completed_steps` を更新する。
+`reopen-finalize` は、reopen 第4過程で `stages/in-progress/` の手続き YAML を `stages/completed/` へ移す更新コマンドである。完了 YAML の必須項目を手編集で埋める代わりに、構造化引数から `feature_impact_decisions`、`new_feature_decision`、`impacted_downstream_phases`、`completed_steps` を更新する。対象 feature の `spec.json` が存在する場合は、同じ操作で `recheck.upstream_change_pending=false`、`recheck.impacted_downstream_phases=[]` にクリアし、第4過程完了の `reopen_step_records` も追加する。
 
 引数：
 
@@ -325,7 +325,7 @@ tools/guarded-git-commit.py -m "<commit message>" --rationale "<理由>" --appro
 - feature impact の `decision`、`impact_basis`、`rationale`、`evidence` は commit 前検査の完了 YAML 検査と同じ条件で検査する
 - `--new-feature-decision` は `decision`、`rationale`、`evidence` を必須とする
 - `--impacted-downstream-phase` は既知 phase 名だけを許可する
-- 成功時は `step_number: 4`、`next_step: 完了`、`pending_gates: []`、`current_blocker: null` を保存し、同名ファイルを `stages/completed/` へ作成して元の in-progress ファイルを削除する
+- 成功時は `step_number: 4`、`next_step: 完了`、`pending_gates: []`、`current_blocker: null` を保存し、対象 feature の `spec.json` の recheck をクリアし、第4過程完了の `reopen_step_records` を追加したうえで、同名ファイルを `stages/completed/` へ作成して元の in-progress ファイルを削除する
 - completed 側に同名ファイルが既にある場合は上書きせず DEVIATION とする
 - 成功時は exit 0、上記の前提違反や入力不正は DEVIATION として exit 2 を返す
 

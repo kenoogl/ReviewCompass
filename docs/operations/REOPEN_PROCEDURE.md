@@ -61,7 +61,7 @@
 ### 第4過程：完了（連続実行）
 
 10. 整合性の最終確認（上流の変更が下流に正しく伝わったか）
-11. recheck をクリアする（`upstream_change_pending=false`、`impacted_downstream_phases=[]`）。`reopened.<上流>` は `true` のまま残す（履歴）。進行中状態ファイルを `stages/completed/` へ移動する
+11. `reopen-finalize` で recheck をクリアする（`upstream_change_pending=false`、`impacted_downstream_phases=[]`）、第4過程完了履歴を追加する、進行中状態ファイルを `stages/completed/` へ移動する、の 3 点を一括で行う。`reopened.<上流>` は `true` のまま残す（履歴）。
 
 → **停止点：コミット**
 

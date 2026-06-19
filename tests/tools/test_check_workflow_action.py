@@ -4979,6 +4979,41 @@ class ReopenFinalizeTests(unittest.TestCase):
     )
     return in_progress
 
+  def _write_workflow_management_spec_with_recheck(self):
+    spec_path = (
+      Path(self.tmpdir)
+      / ".reviewcompass"
+      / "specs"
+      / "workflow-management"
+      / "spec.json"
+    )
+    spec_path.parent.mkdir(parents=True)
+    spec_path.write_text(
+      json.dumps(
+        {
+          "feature_name": "workflow-management",
+          "workflow_state": {},
+          "reopened": {
+            "intent": True,
+            "feature-partitioning": True,
+            "requirements": True,
+            "design": True,
+            "tasks": True,
+            "implementation": True,
+          },
+          "recheck": {
+            "upstream_change_pending": True,
+            "impacted_downstream_phases": ["tasks", "implementation"],
+          },
+        },
+        ensure_ascii=False,
+        indent=2,
+      )
+      + "\n",
+      encoding="utf-8",
+    )
+    return spec_path
+
   def _feature_impact_args(self):
     args = []
     for feature in FEATURE_ORDER:
@@ -5033,6 +5068,50 @@ class ReopenFinalizeTests(unittest.TestCase):
     self.assertEqual(len(state["feature_impact_decisions"]), len(FEATURE_ORDER))
     self.assertEqual(state["new_feature_decision"]["decision"], "no_new_feature")
     self.assertIn("第4過程：reopen 完了", state["completed_steps"])
+
+  def test_reopen_finalize_clears_feature_recheck_and_records_step_four(self):
+    """reopen-finalize は完了予定状態を一括反映し recheck と第4過程履歴を整合させる"""
+    in_progress = self._write_ready_in_progress()
+    spec_path = self._write_workflow_management_spec_with_recheck()
+
+    result = run_script(
+      [
+        "reopen-finalize",
+        "--file", "stages/in-progress/reopen-procedure-2026-06-16.yaml",
+        "--impacted-downstream-phase", "requirements",
+        "--new-feature-decision",
+        "no_new_feature",
+        "既存 feature で受けられる。",
+        "stages/feature-partitioning/2026-05-24-proposal.md",
+        "--completed-step", "第4過程 完了",
+        "--json",
+      ]
+      + self._feature_impact_args(),
+      cwd=self.tmpdir,
+    )
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 0, result.stdout)
+    self.assertFalse(in_progress.exists())
+    spec = json.loads(spec_path.read_text(encoding="utf-8"))
+    self.assertEqual(
+      spec["recheck"],
+      {"upstream_change_pending": False, "impacted_downstream_phases": []},
+    )
+    completed = (
+      Path(self.tmpdir)
+      / "stages"
+      / "completed"
+      / "reopen-procedure-2026-06-16.yaml"
+    )
+    state = yaml.safe_load(completed.read_text(encoding="utf-8"))
+    step_four_records = [
+      record for record in state["reopen_step_records"]
+      if record["from_step"] == 4
+    ]
+    self.assertEqual(len(step_four_records), 1)
+    self.assertIn("recheck をクリア", step_four_records[0]["rationale"])
+    self.assertIn(str(spec_path.relative_to(self.tmpdir)), step_four_records[0]["evidence"])
 
   def test_reopen_finalize_blocks_before_step_four(self):
     """第4過程に到達していない reopen state は完了化できない"""

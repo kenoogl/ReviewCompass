@@ -1,0 +1,43 @@
+status: completed
+target_files:
+- tools/check-workflow-action.py
+- tests/tools/test_check_workflow_action.py
+- docs/operations/WORKFLOW_PRECHECK.md
+- docs/operations/WORKFLOW_PRECHECK_DETAILS.md
+- docs/operations/REOPEN_PROCEDURE.md
+- .reviewcompass/specs/workflow-management/spec.json
+- stages/completed/reopen-procedure-2026-06-19.yaml
+target_sha256:
+  tools/check-workflow-action.py: 4f6170ee2d821bebfb5fb7b1611053c7ae8f7f1006cd284ba429fd9224ce3843
+  tests/tools/test_check_workflow_action.py: 16a9150ed0c0c0e46b791c301b6623fd92b6d37a54c3cb6b8f46519736d026b7
+  docs/operations/WORKFLOW_PRECHECK.md: 4b28befc8b402142ed2fb47d95ab091ed830f7153e0afe6553b55808ac7d9674
+  docs/operations/WORKFLOW_PRECHECK_DETAILS.md: d795c3556d6d85d618cbf36b2c847cc6c616871b8eb7a720c125685c0db4e6d4
+  docs/operations/REOPEN_PROCEDURE.md: b4b3135c7980b61eaed1b778184b8196fe8e987022f6d44e616896788a1f0347
+  .reviewcompass/specs/workflow-management/spec.json: 6fc3c93687a71b5d5e52c6a48508216d816af047cc5ea9f3c0d3d07cb1430f10
+  stages/completed/reopen-procedure-2026-06-19.yaml: 0bb357e42d1bcf9347db4233d21419858e48cb83d70bbf0295cabcb45ceb8bc6
+required_verifiers: &required_verifiers
+- gemini-3.5-flash
+completed_verifiers: *required_verifiers
+unresolved_substantive_findings: 0
+verifications:
+- verifier: gemini-3.5-flash
+  target_files:
+  - tools/check-workflow-action.py
+  - tests/tools/test_check_workflow_action.py
+  - docs/operations/WORKFLOW_PRECHECK.md
+  - docs/operations/WORKFLOW_PRECHECK_DETAILS.md
+  - docs/operations/REOPEN_PROCEDURE.md
+  - .reviewcompass/specs/workflow-management/spec.json
+  - stages/completed/reopen-procedure-2026-06-19.yaml
+  target_sha256:
+    tools/check-workflow-action.py: 4f6170ee2d821bebfb5fb7b1611053c7ae8f7f1006cd284ba429fd9224ce3843
+    tests/tools/test_check_workflow_action.py: 16a9150ed0c0c0e46b791c301b6623fd92b6d37a54c3cb6b8f46519736d026b7
+    docs/operations/WORKFLOW_PRECHECK.md: 4b28befc8b402142ed2fb47d95ab091ed830f7153e0afe6553b55808ac7d9674
+    docs/operations/WORKFLOW_PRECHECK_DETAILS.md: d795c3556d6d85d618cbf36b2c847cc6c616871b8eb7a720c125685c0db4e6d4
+    docs/operations/REOPEN_PROCEDURE.md: b4b3135c7980b61eaed1b778184b8196fe8e987022f6d44e616896788a1f0347
+    .reviewcompass/specs/workflow-management/spec.json: 6fc3c93687a71b5d5e52c6a48508216d816af047cc5ea9f3c0d3d07cb1430f10
+    stages/completed/reopen-procedure-2026-06-19.yaml: 0bb357e42d1bcf9347db4233d21419858e48cb83d70bbf0295cabcb45ceb8bc6
+review_run:
+  path: .reviewcompass/evidence/review-runs/2026-06-19-reopen-finalize-atomic-postwrite-r2
+  summary_path: .reviewcompass/evidence/review-runs/2026-06-19-reopen-finalize-atomic-postwrite-r2/model-result-summary.yaml
+notes: reopen-finalize now prepares the completion state first, records step 4 completion, and clears feature recheck in the same command flow.

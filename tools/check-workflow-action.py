@@ -6374,6 +6374,67 @@ def _completed_reopen_path(cwd, source_path):
   return completed_dir / source_path.name
 
 
+def _reopen_feature_spec_path(cwd, data):
+  """reopen state の feature に対応する spec.json path を返す"""
+  feature = data.get("feature")
+  if isinstance(feature, list):
+    if len(feature) != 1:
+      return None
+    feature = feature[0]
+  if not isinstance(feature, str) or not feature:
+    return None
+  return Path(cwd) / ".reviewcompass" / "specs" / feature / "spec.json"
+
+
+def _prepare_reopen_feature_recheck_clear(cwd, data):
+  """reopen-finalize 時に対象 feature の recheck クリア内容を準備する"""
+  spec_path = _reopen_feature_spec_path(cwd, data)
+  if spec_path is None or not spec_path.exists():
+    return None, None
+  try:
+    spec_data = json.loads(spec_path.read_text(encoding="utf-8"))
+  except json.JSONDecodeError as e:
+    raise ValueError(f"{spec_path.relative_to(cwd)} を JSON として読めません") from e
+  spec_data["recheck"] = {
+    "upstream_change_pending": False,
+    "impacted_downstream_phases": [],
+  }
+  spec_text = json.dumps(spec_data, ensure_ascii=False, indent=2) + "\n"
+  return spec_path, spec_text
+
+
+def _write_text_via_replace(path, text):
+  """同一 directory 内の一時ファイル経由で text を置換保存する"""
+  tmp_path = path.with_name(f".{path.name}.tmp")
+  tmp_path.write_text(text, encoding="utf-8")
+  tmp_path.replace(path)
+
+
+def _append_reopen_finalize_step_record(data, completed_step, evidence):
+  """reopen 第4過程完了の履歴レコードを不足なく追加する"""
+  records = data.get("reopen_step_records")
+  if records is None:
+    records = []
+  if not isinstance(records, list):
+    raise ValueError("reopen_step_records は list が必要です")
+  if any(record.get("from_step") == 4 for record in records if isinstance(record, dict)):
+    data["reopen_step_records"] = records
+    return
+  record_evidence = [item for item in evidence if item]
+  records.append(
+    {
+      "from_step": 4,
+      "completed_step": completed_step,
+      "rationale": (
+        "全 pending gate が完了し、対象 feature の recheck をクリアしたうえで、"
+        "in-progress reopen 記録を completed state として保存した。"
+      ),
+      "evidence": record_evidence,
+    }
+  )
+  data["reopen_step_records"] = records
+
+
 def cmd_reopen_finalize(args):
   """reopen 第4過程の完了 YAML 生成と completed 移動を機械処理する"""
   cwd = Path.cwd()
@@ -6420,12 +6481,25 @@ def cmd_reopen_finalize(args):
     target_path = _completed_reopen_path(cwd, source_path)
     if target_path.exists():
       raise ValueError(f"{target_path.relative_to(cwd)} は既に存在します")
+    completed_step = args.completed_step or "第4過程 完了"
+    spec_path, spec_text = _prepare_reopen_feature_recheck_clear(cwd, data)
+    spec_evidence = str(spec_path.relative_to(cwd)) if spec_path else None
+    _append_reopen_finalize_step_record(
+      data,
+      completed_step,
+      [
+        spec_evidence,
+        str(target_path.relative_to(cwd)),
+      ],
+    )
     target_path.parent.mkdir(parents=True, exist_ok=True)
-    target_path.write_text(
+    _write_text_via_replace(
+      target_path,
       yaml.safe_dump(data, allow_unicode=True, sort_keys=False),
-      encoding="utf-8",
     )
     source_path.unlink()
+    if spec_path and spec_text:
+      _write_text_via_replace(spec_path, spec_text)
     verdict, exit_code = "OK", 0
     next_action = {
       "kind": "reopen_finalized",

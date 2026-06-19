@@ -43,7 +43,8 @@ completed_steps:
   / implementation drafting / triad-review / review-wave / workflow_state 整合、post-write
   verification no findings）
 - implementation approval gate 完了（利用者発言『承認』に基づく明示承認）
-next_step: 第4過程：完了
+- 第4過程 完了（recheck をクリアし、reopen 完了記録を generated completed state として保存）
+next_step: 完了
 step_number: 4
 pending_gates: []
 completed_gates:
@@ -188,6 +189,77 @@ reopen_step_records:
   evidence:
   - .reviewcompass/specs/_cross_feature/reviews/2026-06-19-implementation-integrated-design-reopen-alignment.md
   - .reviewcompass/post-write-verification/post-write-2026-06-19-288.yaml
+- from_step: 3
+  completed_step: requirements alignment gate 完了
+  rationale: requirements alignment で intent、requirements、triad-review 対処、review-wave 判定、workflow_state
+    / reopen 記録の整合を確認し、requirements 内の追加修正は不要と判断した。
+  evidence:
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-19-requirements-integrated-design-reopen-alignment.md
+  - .reviewcompass/post-write-verification/post-write-2026-06-19-258.yaml
+- from_step: 3
+  completed_step: requirements approval gate 完了
+  rationale: 利用者が 2026-06-19 Codex セッションで「承認」と明示し、requirements drafting、triad-review、review-wave、alignment
+    が完了済みであるため、requirements phase を承認済みとして扱った。
+  evidence:
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-19-requirements-integrated-design-approval.md
+  - .reviewcompass/post-write-verification/post-write-2026-06-19-259.yaml
+- from_step: 3
+  completed_step: design approval gate 完了
+  rationale: 利用者が 2026-06-19 Codex セッションで「承認」と明示し、design drafting、triad-review、review-wave、alignment
+    が完了済みであるため、design phase を承認済みとして扱った。
+  evidence:
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-19-design-integrated-design-approval.md
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-19-design-integrated-design-reopen-alignment.md
+- from_step: 3
+  completed_step: tasks triad-review gate 完了
+  rationale: tasks triad-review を実施し、proxy_model 判断により C1〜C3 must-fix、C4 should-fix、C5
+    leave-as-is を確定した。C1〜C4 は tasks.md と review-response.md に反映済みである。
+  evidence:
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-tasks-integrated-design-review-run/proxy-decision-summary.md
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-tasks-integrated-design-review-run/review-response.md
+  - .reviewcompass/post-write-verification/post-write-2026-06-19-282.yaml
+- from_step: 3
+  completed_step: tasks review-wave gate 完了
+  rationale: tasks review-wave summary が status ok、carry-forward 未消化 0、workflow-management 以外 clear
+    を示し、他 feature の tasks 正本変更は不要と判断した。
+  evidence:
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-19-tasks-integrated-design-review-wave.md
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-19-tasks-integrated-design-review-wave-summary.md
+  - .reviewcompass/post-write-verification/post-write-2026-06-19-283.yaml
+- from_step: 3
+  completed_step: tasks alignment gate 完了
+  rationale: tasks alignment で requirements、design、tasks、triad-review 対処、review-wave 判定、workflow_state
+    / reopen 記録の整合を確認し、tasks 内の追加修正は不要と判断した。
+  evidence:
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-19-tasks-integrated-design-reopen-alignment.md
+  - .reviewcompass/post-write-verification/post-write-2026-06-19-284.yaml
+- from_step: 3
+  completed_step: tasks approval gate 完了
+  rationale: 利用者が 2026-06-19 Codex セッションで「承認」と明示し、tasks drafting、triad-review、review-wave、alignment
+    が完了済みであるため、tasks phase を承認済みとして扱った。
+  evidence:
+  - .reviewcompass/specs/workflow-management/tasks.md
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-19-tasks-integrated-design-reopen-alignment.md
+  - .reviewcompass/post-write-verification/post-write-2026-06-19-284.yaml
+- from_step: 3
+  completed_step: implementation drafting 完了
+  rationale: Requirement 13〜16 / T-016〜T-019 を implementation-drafting.md へ展開した。
+  evidence:
+  - .reviewcompass/specs/workflow-management/implementation-drafting.md
+- from_step: 3
+  completed_step: implementation approval gate 完了
+  rationale: 利用者が 2026-06-19 Codex セッションで「承認」と明示し、implementation drafting、triad-review、review-wave、alignment
+    が完了済みであるため、implementation phase を承認済みとして扱った。
+  evidence:
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-19-implementation-integrated-design-approval.md
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-19-implementation-integrated-design-reopen-alignment.md
+- from_step: 4
+  completed_step: 第4過程 完了（recheck をクリアし、reopen 完了記録を generated completed state として保存）
+  rationale: 全 pending gate が完了し、workflow-management spec.json の recheck をクリアしたうえで、in-progress
+    reopen 記録を completed state として保存した。
+  evidence:
+  - .reviewcompass/specs/workflow-management/spec.json
+  - stages/completed/reopen-procedure-2026-06-19.yaml
 downstream_impact_decisions:
 - gate: stages/requirements.yaml#triad-review
   feature_scope: workflow-management
@@ -383,11 +455,68 @@ commit_stop_point_records:
   head: 6e364b86
   evidence:
   - .reviewcompass/post-write-verification/post-write-2026-06-19-284.yaml
+- step: 4
+  kind: approval_complete
+  gate: stages/implementation.yaml#approval
+  reason: implementation approval 完了時点の停止点
+  head: 363b3decdc6a803824979488a64605e555b9bdaa
+  evidence:
+  - 363b3decdc6a803824979488a64605e555b9bdaa
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-19-implementation-integrated-design-approval.md
 commit_required: true
 commit_required_kind: stop_point_consumed
 commit_required_reason: reopen commit stop point 消費完了時点の停止点
-commit_stop_point: true
-commit_stop_point_step: 4
-commit_stop_point_kind: approval_complete
-commit_stop_point_gate: stages/implementation.yaml#approval
-commit_stop_point_reason: implementation approval 完了時点の停止点
+impacted_downstream_phases:
+- requirements
+- design
+- tasks
+- implementation
+feature_impact_decisions:
+- feature: foundation
+  decision: no_reopen_existing_feature
+  impact_basis: no_implementation_impact
+  rationale: review-wave で workflow-management 以外は既存仕様で受けられると確認済み
+  evidence:
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-19-implementation-integrated-design-review-wave-summary.md
+- feature: runtime
+  decision: no_reopen_existing_feature
+  impact_basis: consumer_or_derivative_only
+  rationale: review-wave で workflow-management 以外は既存仕様で受けられると確認済み
+  evidence:
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-19-implementation-integrated-design-review-wave-summary.md
+- feature: evaluation
+  decision: no_reopen_existing_feature
+  impact_basis: consumer_or_derivative_only
+  rationale: review-wave で workflow-management 以外は既存仕様で受けられると確認済み
+  evidence:
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-19-implementation-integrated-design-review-wave-summary.md
+- feature: analysis
+  decision: no_reopen_existing_feature
+  impact_basis: consumer_or_derivative_only
+  rationale: review-wave で workflow-management 以外は既存仕様で受けられると確認済み
+  evidence:
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-19-implementation-integrated-design-review-wave-summary.md
+- feature: workflow-management
+  decision: reopen_existing_feature
+  impact_basis: implementation_ownership
+  rationale: 統合設計メモ Requirement 13〜16 を workflow-management の requirements/design/tasks/implementation
+    に反映済み
+  evidence:
+  - .reviewcompass/specs/workflow-management/implementation-drafting.md
+- feature: self-improvement
+  decision: no_reopen_existing_feature
+  impact_basis: consumer_or_derivative_only
+  rationale: review-wave で workflow-management 以外は既存仕様で受けられると確認済み
+  evidence:
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-19-implementation-integrated-design-review-wave-summary.md
+- feature: conformance-evaluation
+  decision: no_reopen_existing_feature
+  impact_basis: consumer_or_derivative_only
+  rationale: review-wave で workflow-management 以外は既存仕様で受けられると確認済み
+  evidence:
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-19-implementation-integrated-design-review-wave-summary.md
+new_feature_decision:
+  decision: no_new_feature
+  rationale: 既存 feature workflow-management の手戻りとして完結し、新規 feature は不要
+  evidence:
+  - docs/reviews/reopen-classification-2026-06-19-wm-integrated-design-requirements.md

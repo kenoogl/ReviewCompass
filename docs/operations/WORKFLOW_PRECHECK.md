@@ -146,7 +146,7 @@ reopen 開始時は、上流正本変更の影響範囲を分類し、必要な 
 
 ### 4.9 reopen-finalize
 
-`reopen-finalize` は、reopen 第4過程で in-progress 手続き YAML を completed 側へ移すときに呼び出す。feature impact 判定、new feature 判定、影響 phase を構造化入力で受け取り、完了 YAML に必要な項目を機械更新する。詳細は [WORKFLOW_PRECHECK_DETAILS.md](WORKFLOW_PRECHECK_DETAILS.md#reopen-finalize) を参照する。
+`reopen-finalize` は、reopen 第4過程で in-progress 手続き YAML を completed 側へ移すときに呼び出す。feature impact 判定、new feature 判定、影響 phase を構造化入力で受け取り、完了 YAML に必要な項目を機械更新する。対象 feature の `spec.json` が存在する場合は recheck クリアと第4過程完了履歴の追加も同じ操作で行う。詳細は [WORKFLOW_PRECHECK_DETAILS.md](WORKFLOW_PRECHECK_DETAILS.md#reopen-finalize) を参照する。
 
 ## 5. 判定契約
 
@@ -167,7 +167,7 @@ reopen 開始時は、上流正本変更の影響範囲を分類し、必要な 
 - `reopen-advance-step` は、現在 step と `--from-step` の一致、完了説明、判断理由、証跡を検査する
 - `reopen-advance-gate` は、pending gate 文字列が review 系 gate の正規形であること、先頭の pending gate だけを完了扱いに進めること、根拠なし更新を検査する
 - `reopen-set-blocker` は、pending gate 先頭の approval gate だけに、根拠つきの構造化 blocker を設定できることを検査する
-- `reopen-finalize` は、第4過程到達、pending gate 空、blocker なし、全 feature の impact 判定を検査する
+- `reopen-finalize` は、第4過程到達、pending gate 空、blocker なし、全 feature の impact 判定を検査し、対象 feature の recheck クリアと第4過程完了履歴追加を一括で行う
 - `autonomous-plan` は、承認、作業境界、停止条件、統合ゲート、履歴台帳方針を検査する
 
 ## 6. 出力とログ

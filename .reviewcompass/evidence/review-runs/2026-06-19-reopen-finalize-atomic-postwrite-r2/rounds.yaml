@@ -1,0 +1,40 @@
+round_id: round-1
+purpose: post_write_verification
+invocation_timestamp: '2026-06-19T10:40:50.600866+00:00'
+target_files:
+- path: tools/check-workflow-action.py
+  sha256: 4f6170ee2d821bebfb5fb7b1611053c7ae8f7f1006cd284ba429fd9224ce3843
+- path: tests/tools/test_check_workflow_action.py
+  sha256: 16a9150ed0c0c0e46b791c301b6623fd92b6d37a54c3cb6b8f46519736d026b7
+- path: docs/operations/WORKFLOW_PRECHECK.md
+  sha256: 4b28befc8b402142ed2fb47d95ab091ed830f7153e0afe6553b55808ac7d9674
+- path: docs/operations/WORKFLOW_PRECHECK_DETAILS.md
+  sha256: d795c3556d6d85d618cbf36b2c847cc6c616871b8eb7a720c125685c0db4e6d4
+- path: docs/operations/REOPEN_PROCEDURE.md
+  sha256: b4b3135c7980b61eaed1b778184b8196fe8e987022f6d44e616896788a1f0347
+- path: .reviewcompass/specs/workflow-management/spec.json
+  sha256: 6fc3c93687a71b5d5e52c6a48508216d816af047cc5ea9f3c0d3d07cb1430f10
+- path: stages/completed/reopen-procedure-2026-06-19.yaml
+  sha256: 0bb357e42d1bcf9347db4233d21419858e48cb83d70bbf0295cabcb45ceb8bc6
+criteria: reopen_finalize_atomic_recheck_and_record_post_write_check
+prompt_sha256: db11badcd648170f40cb852a12ed9e2a618575b5d52c74e455a0f7ce18c27fd6
+model_results:
+- model_id: gemini-3.5-flash
+  provider: gemini-api
+  role: primary
+  treatment: primary
+  invocation_path: api
+  raw_path: raw/gemini-3.5-flash.round-1.txt
+  raw_sha256: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+  parsed_path: parsed/gemini-3.5-flash.round-1.yaml
+  parsed_sha256: 6cb26eac236b4b82073ffffb8217240d483a5f4117c3d05f610e06d2438da877
+  parse_status: parsed
+  formatted_by: parser
+  formatted_by_actor_type: orchestrator
+  formatted_by_actor: run_role.py
+  formatted_at: '2026-06-19T10:40:50.600866+00:00'
+  follow_up_action: triage
+  attempts: 1
+  duration_seconds: 56.851
+  prompt_path: prompts/gemini-3.5-flash.round-1.prompt.md
+  prompt_sha256: db11badcd648170f40cb852a12ed9e2a618575b5d52c74e455a0f7ce18c27fd6
