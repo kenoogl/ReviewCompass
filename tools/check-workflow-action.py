@@ -1078,6 +1078,8 @@ def format_current_state_text(feature, phase, phase_state):
 
 def format_human_output(verdict, exit_code, action_str, reasons, current_state_text):
   """人間可読出力を整形する（仕様 §7.2）"""
+  if verdict == "OK" and exit_code == 0:
+    return f"[OK] {action_str}"
   lines = [
     f"[VERDICT] {verdict}（exit {exit_code}）",
     f"[ACTION] {action_str}",

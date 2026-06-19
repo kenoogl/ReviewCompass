@@ -1804,7 +1804,7 @@ class SpecSetOutputTests(unittest.TestCase):
     )
 
   def test_ok_output_contains_verdict_keyword(self):
-    """通過出力に [VERDICT] OK が含まれる（仕様 §7.2）"""
+    """通過出力は最小の OK 行だけにする（仕様 §7.2）"""
     cwd = self._copy_fixture("case-a-ready-for-approval")
     result = run_script(
       ["spec-set", "foundation", "requirements", "approval", "true"],
@@ -1815,6 +1815,8 @@ class SpecSetOutputTests(unittest.TestCase):
       f"通過時の出力に OK の文字列が含まれるべき。\n"
       f"stdout: {result.stdout}",
     )
+    self.assertNotIn("[CURRENT STATE]", result.stdout)
+    self.assertNotIn("[REASON]", result.stdout)
 
   def test_json_output_with_flag_for_ok(self):
     """--json で OK 判定が JSON 出力に切り替わる（仕様 §7.3）"""
@@ -7618,7 +7620,8 @@ class PushExitCodeTests(unittest.TestCase):
 
     _assert_script_invoked(self, result)
     self.assertEqual(result.returncode, 0, result.stdout)
-    self.assertIn("進行中ファイル: 1 件", result.stdout)
+    self.assertIn("OK", result.stdout)
+    self.assertNotIn("[CURRENT STATE]", result.stdout)
 
   def test_push_with_dirty_tree_returns_two(self):
     """作業ツリーが dirty（未追跡ファイルあり）→ exit 2"""

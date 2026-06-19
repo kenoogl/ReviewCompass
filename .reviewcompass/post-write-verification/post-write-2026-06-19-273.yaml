@@ -1,0 +1,20 @@
+status: completed
+target_files:
+- docs/operations/WORKFLOW_PRECHECK_DETAILS.md
+target_sha256:
+  docs/operations/WORKFLOW_PRECHECK_DETAILS.md: 201d0042180346025767d868585b9356bf5b7f9c1f38f2f0e38f2261db566370
+required_verifiers: &id001
+- gemini-3.5-flash
+completed_verifiers: *id001
+unresolved_substantive_findings: 0
+verifications:
+- verifier: gemini-3.5-flash
+  target_files:
+  - docs/operations/WORKFLOW_PRECHECK_DETAILS.md
+  target_sha256:
+    docs/operations/WORKFLOW_PRECHECK_DETAILS.md: 201d0042180346025767d868585b9356bf5b7f9c1f38f2f0e38f2261db566370
+review_run:
+  path: .reviewcompass/evidence/review-runs/2026-06-19-normal-output-minimization-postwrite
+  summary_path: .reviewcompass/evidence/review-runs/2026-06-19-normal-output-minimization-postwrite/model-result-summary.yaml
+notes: Generated template; verify target_files cover current post-write targets before
+  use.

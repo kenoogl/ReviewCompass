@@ -1,0 +1,14 @@
+run_id: 2026-06-19-normal-output-minimization-postwrite
+phase: post_write_verification
+criteria_id: normal_output_minimization_contract_clearance
+criteria_file: .reviewcompass/evidence/review-runs/2026-06-19-normal-output-minimization-postwrite/review-target.md
+criteria_file_sha256: b3cbb346095ad490d9fd0a52c27b088209a5955af4e6bfcac8a4db3e72ca43b3
+target_files:
+- path: docs/operations/WORKFLOW_PRECHECK_DETAILS.md
+  sha256: 201d0042180346025767d868585b9356bf5b7f9c1f38f2f0e38f2261db566370
+sensitive_information_check:
+  status: passed
+  checked_at: '2026-06-19T02:53:28.248736+00:00'
+recommended_run_review_args:
+  criteria_file: .reviewcompass/evidence/review-runs/2026-06-19-normal-output-minimization-postwrite/review-target.md
+  phase: post_write_verification

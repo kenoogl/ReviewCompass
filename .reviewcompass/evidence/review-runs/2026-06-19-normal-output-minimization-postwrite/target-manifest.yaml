@@ -1,0 +1,4 @@
+run_id: 2026-06-19-normal-output-minimization-postwrite
+target_files:
+- path: docs/operations/WORKFLOW_PRECHECK_DETAILS.md
+  sha256: 201d0042180346025767d868585b9356bf5b7f9c1f38f2f0e38f2261db566370

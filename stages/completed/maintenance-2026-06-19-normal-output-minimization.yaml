@@ -1,0 +1,38 @@
+process_id: maintenance
+title: normal output minimization
+trigger: "正常処理系のメッセージが多く、利用者の認知負荷が高い"
+mainline_blocked_by: stages/in-progress/reopen-procedure-2026-06-19.yaml
+completed_at: "2026-06-19"
+classification: local_workflow_guard_improvement
+reason: "正常系は最小出力、異常系は原因と現在状態を出す形に分ける局所修正"
+allowed_scope:
+  - "check-workflow-action の正常系人間可読出力最小化"
+  - "逸脱・警告時の詳細出力維持"
+  - "出力契約の運用文書更新"
+  - "正常系出力テストの期待更新"
+allowed_files:
+  - tools/check-workflow-action.py
+  - tests/tools/test_check_workflow_action.py
+  - docs/operations/WORKFLOW_PRECHECK_DETAILS.md
+  - stages/completed/maintenance-2026-06-19-normal-output-minimization.yaml
+  - .reviewcompass/evidence/review-runs/2026-06-19-normal-output-minimization-postwrite/
+  - .reviewcompass/post-write-verification/post-write-2026-06-19-273.yaml
+completion_conditions:
+  - "OK の人間可読出力は判定結果と対象 action の最小行だけになる"
+  - "DEVIATION / WARN は理由と現在状態の詳細を維持する"
+  - "JSON 出力は従来どおり詳細を保持する"
+completed_actions:
+  - "tests: spec-set OK 出力が CURRENT STATE / REASON を含まないことを追加"
+  - "tests: push OK 出力が CURRENT STATE を含まないことを追加"
+  - "implementation: format_human_output の OK 出力を 1 行へ最小化"
+  - "documentation: WORKFLOW_PRECHECK_DETAILS の人間可読出力契約を更新"
+verification:
+  - command: ".venv/bin/python3 -m unittest tests.tools.test_check_workflow_action.SpecSetOutputTests tests.tools.test_check_workflow_action.PushExitCodeTests tests.tools.test_check_workflow_action.CommitExitCodeTests -v"
+    result: "86 passed"
+  - command: "PYTHONPYCACHEPREFIX=/private/tmp/reviewcompass-pycache .venv/bin/python3 -m py_compile tools/check-workflow-action.py"
+    result: "passed"
+post_write_verification:
+  review_run: .reviewcompass/evidence/review-runs/2026-06-19-normal-output-minimization-postwrite
+  manifest: .reviewcompass/post-write-verification/post-write-2026-06-19-273.yaml
+current_status: completed
+return_to: "integrated-design reopen design drafting"

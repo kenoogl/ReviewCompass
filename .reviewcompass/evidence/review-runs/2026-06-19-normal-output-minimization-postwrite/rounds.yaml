@@ -1,0 +1,100 @@
+round_id: round-1
+purpose: post_write_verification
+invocation_timestamp: '2026-06-19T02:53:47.150607+00:00'
+target_files:
+- path: docs/operations/WORKFLOW_PRECHECK_DETAILS.md
+  sha256: 201d0042180346025767d868585b9356bf5b7f9c1f38f2f0e38f2261db566370
+criteria: '# Post-write Review Target
+
+
+  criteria_id: normal_output_minimization_contract_clearance
+
+  phase: post_write_verification
+
+  generated_at: 2026-06-19T02:53:28.248736+00:00
+
+
+  ## Change Summary
+
+
+  check-workflow-action の正常系人間可読出力を最小化し、逸脱・警告・非定型処理では詳細を維持する方針を運用文書に反映した。
+
+
+  ## Review Question
+
+
+  運用文書の出力契約が、正常系は最小出力、異常系は原因と現在状態を出すという方針と矛盾していないか。
+
+
+  ## Target Files
+
+
+  - docs/operations/WORKFLOW_PRECHECK_DETAILS.md sha256=201d0042180346025767d868585b9356bf5b7f9c1f38f2f0e38f2261db566370
+
+
+  ## Scope
+
+
+  - Check whether the changed target files clearly state the intended contract.
+
+  - Check whether related instructions are mutually consistent across targets.
+
+  - Check whether the documented procedure is actionable before API review, triage,
+  manifest, or commit steps continue.
+
+
+  ## Out Of Scope
+
+
+  - Do not request unrelated refactors or style-only rewrites.
+
+  - Do not judge files that are not listed in Target Files.
+
+  - Do not treat missing implementation work as a document defect unless the target
+  text claims it already exists.
+
+
+  ## Finding Policy
+
+
+  - Report must-fix findings for contradictions, missing required gates, or instructions
+  that would allow an unsafe workflow action.
+
+  - Report should-fix findings for ambiguity that could cause repeated manual judgment
+  or unnecessary API review loops.
+
+  - Return findings: [] when the target files are internally consistent for this review
+  question.
+
+
+  ## Sensitive Information Check
+
+
+  - status: passed
+
+  - External API review must not proceed if this section reports potential secrets.
+
+  '
+prompt_sha256: e9b6fb8627dba7e7748eb5740c83b09434fe4192ab6a50c96bf5beb5a87b8abc
+model_results:
+- model_id: gemini-3.5-flash
+  provider: gemini-api
+  role: primary
+  treatment: primary
+  invocation_path: api
+  raw_path: raw/gemini-3.5-flash.round-1.txt
+  raw_sha256: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+  parsed_path: parsed/gemini-3.5-flash.round-1.yaml
+  parsed_sha256: 73358d45b4b7ac4a98c1f30c8a71f6716ad6a9951ac8d63fd45f90eabe06160a
+  parse_status: parsed
+  formatted_by: parser
+  formatted_by_actor_type: orchestrator
+  formatted_by_actor: run_role.py
+  formatted_at: '2026-06-19T02:53:47.150607+00:00'
+  follow_up_action: triage
+  attempts: 1
+  duration_seconds: 12.108
+  prompt_path: prompts/gemini-3.5-flash.round-1.prompt.md
+  prompt_sha256: e9b6fb8627dba7e7748eb5740c83b09434fe4192ab6a50c96bf5beb5a87b8abc
+criteria_source_path: .reviewcompass/evidence/review-runs/2026-06-19-normal-output-minimization-postwrite/review-target.md
+criteria_source_sha256: b3cbb346095ad490d9fd0a52c27b088209a5955af4e6bfcac8a4db3e72ca43b3
