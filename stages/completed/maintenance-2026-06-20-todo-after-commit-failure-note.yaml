@@ -1,0 +1,27 @@
+process_id: maintenance
+started_at: '2026-06-20T00:00:00+09:00'
+completed_at: '2026-06-20T00:00:00+09:00'
+trigger: TODO_NEXT_SESSION.md が直近 commit と未 push 状態を反映していなかったため
+mainline_blocked_by: stages/in-progress/reopen-procedure-2026-06-19.yaml
+allowed_scope: 次セッション入口メモの現在状態更新
+allowed_files:
+- TODO_NEXT_SESSION.md
+- stages/completed/maintenance-2026-06-20-todo-after-commit-failure-note.yaml
+completion_conditions:
+- TODO_NEXT_SESSION.md が `42b63f18` までのローカル commit 状態を示す
+- TODO_NEXT_SESSION.md が `origin/main` より 3 commits ahead であることを示す
+- TODO_NEXT_SESSION.md が未 push commit を明示する
+- 本線 reopen の pending gate や spec.json を変更しない
+completed_changes:
+- TODO_NEXT_SESSION.md の現在位置を `42b63f18` までローカル commit 済みに更新した
+- TODO_NEXT_SESSION.md に未 push commit と次作業 design triad-review を反映した
+verification:
+- command: .venv/bin/python3 tools/check-workflow-action.py next --json
+  result: reopen_in_progress / requirements approval 完了時点の停止点
+- command: git status --short --branch
+  result: main は origin/main より 3 commits ahead、TODO_NEXT_SESSION.md のみ未コミット
+return_to:
+  required_action: commit_stop_point
+  active_gate: stages/requirements.yaml#approval
+  state_file: stages/in-progress/reopen-procedure-2026-06-19.yaml
+status: completed

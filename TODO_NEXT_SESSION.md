@@ -1,6 +1,6 @@
 # 次セッション継続用メモ
 
-最終更新：2026-06-20（Codex セッション、`c09a6f9d` push 済み）。
+最終更新：2026-06-20（Codex セッション、`42b63f18` までローカル commit 済み。`origin/main` より 3 commits ahead）。
 
 この TODO は入口メモであり、作業順序の正本ではない。正本は各 feature の `spec.json` と `tools/check-workflow-action.py next --json` の機械判定である。
 
@@ -17,9 +17,9 @@
 
 ## 2. 現在位置
 
-- `main` と `origin/main` は同期済み。
+- `main` は `origin/main` より 3 commits ahead。
 - 作業ツリーは clean。
-- 直近 commit: `c09a6f9d requirements approval を完了`
+- 直近 commit: `42b63f18 Record commit operation failure cases`
 - `next --json` は `reopen_in_progress`。
 - 現在の本筋は `workflow-management` の Requirement 13〜16 を基点にした reopen R-0。
 - requirements は再生成、triad-review、review-wave、alignment、approval まで完了済み。
@@ -65,7 +65,9 @@
 - requirements alignment を完了し、Requirement 13〜16 と design/tasks の追跡、triad-review 修正反映、review-wave 影響確認を記録。
 - 利用者承認により requirements approval を完了。
 - Codex の commit 実行環境と利用者向け報告文の規律を明確化。
-- `main` を `origin/main` へ push 済み（`c09a6f9d`）。
+- commit 中の進行報告最小化規律を追加。
+- commit 操作機械処理化に向け、失敗ケースメモを `docs/notes/working/2026-06-20-commit-operation-failure-cases.md` に追加。
+- `main` を `origin/main` へ push 済みなのは `c09a6f9d` まで。`e544d680`、`0c146630`、`42b63f18` は未 push。
 
 ## 5. 参照
 
