@@ -30,6 +30,11 @@ VALID_DECISION_SCOPES = {
   "proxy_allowed",
   "advisory_only",
 }
+WAIT_ONLY_REQUIRED_ACTIONS = {
+  "wait_for_human_decision",
+  "collect_required_decisions",
+  "completed",
+}
 HUMAN_ONLY_REQUIRED_ACTIONS = {
   "commit_stop_point",
   "apply_approved_reopen_plan",
@@ -78,7 +83,23 @@ def derived_decision_scope(operation_contract):
   return "advisory_only"
 
 
-def _validate_binding(record):
+def _allows_binding_none(operation_contract):
+  if not isinstance(operation_contract, dict):
+    return False
+  return (
+    operation_contract.get("required_action") in WAIT_ONLY_REQUIRED_ACTIONS
+    and operation_contract.get("approval_required") is False
+    and operation_contract.get("effect_kind") == "read"
+    and operation_contract.get("phase_boundary") == "none"
+  )
+
+
+def _validate_binding(
+  record,
+  operation_contract,
+  current_target_artifact_digest=None,
+  current_staged_file_set_digest=None,
+):
   reasons = []
   binding_kind = record.get("binding_kind")
   target_digest = record.get("target_artifact_digest")
@@ -95,12 +116,35 @@ def _validate_binding(record):
       reasons.append("binding_kind=both には target_artifact_digest が必要です")
     if not staged_digest:
       reasons.append("binding_kind=both には staged_file_set_digest が必要です")
+  elif binding_kind == "none":
+    if not _allows_binding_none(operation_contract):
+      reasons.append("binding_kind=none は read-only / wait-only operation に限ります")
   else:
     reasons.append(f"binding_kind が不正です: {binding_kind}")
+
+  if (
+    current_target_artifact_digest is not None
+    and target_digest is not None
+    and target_digest != current_target_artifact_digest
+  ):
+    reasons.append("target_artifact_digest が現在の対象 digest と一致しません")
+
+  if (
+    current_staged_file_set_digest is not None
+    and staged_digest is not None
+    and staged_digest != current_staged_file_set_digest
+  ):
+    reasons.append("staged_file_set_digest が現在の staged digest と一致しません")
+
   return reasons
 
 
-def validate_approval_gate_record(record, operation_contract=None):
+def validate_approval_gate_record(
+  record,
+  operation_contract=None,
+  current_target_artifact_digest=None,
+  current_staged_file_set_digest=None,
+):
   """Validate an approval gate record and contract-derived scope."""
   reasons = []
   if not isinstance(record, dict):
@@ -122,7 +166,14 @@ def validate_approval_gate_record(record, operation_contract=None):
   if "consumed" in record and not isinstance(record.get("consumed"), bool):
     reasons.append("consumed は boolean である必要があります")
 
-  reasons.extend(_validate_binding(record))
+  reasons.extend(
+    _validate_binding(
+      record,
+      operation_contract,
+      current_target_artifact_digest=current_target_artifact_digest,
+      current_staged_file_set_digest=current_staged_file_set_digest,
+    )
+  )
 
   expected_scope = derived_decision_scope(operation_contract)
   if expected_scope is not None and record.get("decision_scope") != expected_scope:
@@ -158,6 +209,13 @@ def allows_target_operation(record, operation_contract):
     reasons.append(
       "target_required_action が operation contract と一致しません: "
       f"{record.get('target_required_action')} != {operation_contract.get('required_action')}"
+    )
+
+  operation_id = operation_contract.get("operation_id")
+  if operation_id is not None and record.get("target_operation_id") != operation_id:
+    reasons.append(
+      "target_operation_id が operation contract と一致しません: "
+      f"{record.get('target_operation_id')} != {operation_id}"
     )
 
   return {

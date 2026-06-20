@@ -78,7 +78,8 @@
       "enum": [
         "artifact_digest",
         "staged_file_set_digest",
-        "both"
+        "both",
+        "none"
       ]
     },
     "decided_by": {

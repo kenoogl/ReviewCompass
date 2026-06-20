@@ -233,6 +233,40 @@ def detect_drift(
   if snapshot_pending is not None and current_pending is not None and snapshot_pending != current_pending:
     reasons.append("pending_gates が snapshot と現在状態で一致しません")
 
+  snapshot_summary = (
+    snapshot.get("workflow_state_summary")
+    if isinstance(snapshot.get("workflow_state_summary"), dict)
+    else {}
+  )
+  current_summary = current_next_action.get("workflow_state_summary", {})
+  if not isinstance(current_summary, dict):
+    current_summary = {}
+
+  for key in ["drafting_completed_gates", "completed_gates"]:
+    snapshot_value = snapshot_summary.get(key)
+    current_value = current_summary.get(key)
+    if current_value is None and isinstance(current_next_action, dict):
+      current_value = current_next_action.get(key)
+    if snapshot_value is not None and current_value is not None and snapshot_value != current_value:
+      reasons.append(f"{key} が snapshot と現在状態で一致しません")
+
+  snapshot_contract = snapshot_summary.get("operation_contract")
+  current_contract = current_summary.get("operation_contract")
+  if current_contract is None and isinstance(current_next_action, dict):
+    current_contract = current_next_action.get("operation_contract")
+  snapshot_contract_digest = (
+    snapshot_contract.get("digest") if isinstance(snapshot_contract, dict) else None
+  )
+  current_contract_digest = (
+    current_contract.get("digest") if isinstance(current_contract, dict) else None
+  )
+  if (
+    snapshot_contract_digest is not None
+    and current_contract_digest is not None
+    and snapshot_contract_digest != current_contract_digest
+  ):
+    reasons.append("operation_contract digest が snapshot と現在状態で一致しません")
+
   snapshot_git = snapshot.get("git_tree_summary") if isinstance(snapshot.get("git_tree_summary"), dict) else {}
   for key in ["staged_file_set_digest", "worktree_dirty_path_digest"]:
     if key in snapshot_git and key in current_git_tree_summary:

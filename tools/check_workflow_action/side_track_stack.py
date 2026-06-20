@@ -53,6 +53,32 @@ def _write_stack(path, stack):
   path.write_text(yaml.safe_dump(stack, allow_unicode=True, sort_keys=False), encoding="utf-8")
 
 
+def _validate_push_frame(stack, frame):
+  reasons = []
+  staged_files = frame.get("staged_file_set")
+  allowed_files = frame.get("allowed_files")
+  if isinstance(staged_files, list) and isinstance(allowed_files, list):
+    allowed = set(allowed_files)
+    out_of_scope = [
+      path for path in staged_files
+      if isinstance(path, str) and path not in allowed
+    ]
+    if out_of_scope:
+      reasons.append("staged_file_set が allowed_files を超えています: " + ", ".join(out_of_scope))
+  else:
+    reasons.append("allowed_files と staged_file_set は list である必要があります")
+
+  frames = stack.get("frames")
+  max_depth = frame.get("max_depth", 2)
+  if isinstance(frames, list) and isinstance(max_depth, int):
+    if len(frames) + 1 > max_depth:
+      reasons.append(f"max_depth を超過しています: {len(frames) + 1} > {max_depth}")
+  else:
+    reasons.append("frames は list、max_depth は integer である必要があります")
+
+  return reasons
+
+
 def current(path=None):
   """Read the current stack without mutating it."""
   stack_path = Path(path or DEFAULT_SIDE_TRACK_STACK_PATH)
@@ -70,6 +96,8 @@ def push_frame(path, frame):
   stack, reasons = _load_stack(path)
   if not isinstance(frame, dict):
     reasons.append("side track frame は mapping である必要があります")
+  else:
+    reasons.extend(_validate_push_frame(stack, frame))
   if reasons:
     return _result("DEVIATION", reasons, stack=stack, operation_mode="mutating")
   stack["frames"].append(frame)
