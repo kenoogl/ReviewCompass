@@ -1,0 +1,168 @@
+run_id: 2026-06-20-workflow-management-implementation-req16-review-run
+generated_at: '2026-06-21T00:00:00+09:00'
+status: implemented_traceability_ready
+clusters:
+- cluster_id: R16-A
+  title: proxy decision checks do not apply human-required predicates before accepting proxy output
+  finding_ids:
+  - 2026-06-20-workflow-management-implementation-req16-review-run-gpt-5.4-primary-001
+  - 2026-06-20-workflow-management-implementation-req16-review-run-claude-sonnet-4-6-adversarial-001
+  - 2026-06-20-workflow-management-implementation-req16-review-run-claude-sonnet-4-6-adversarial-002
+  - 2026-06-20-workflow-management-implementation-req16-review-run-claude-sonnet-4-6-adversarial-004
+  plain_explanation: proxy decision の CLI が、人間判断に戻すべき条件を十分に確認しないまま OK を返せる状態でした。
+  candidate_options:
+  - option_id: A
+    summary: check_decision で human-required 判定と evidence completeness を必ず評価する
+    tradeoff: proxy 境界を入口で守れる
+  - option_id: B
+    summary: schema validation のみで不足を検出する
+    tradeoff: 軽いが、運用上の判断条件を表しきれない
+  recommended_option: A
+  recommended_reason: proxy モードではユーザが介入しない前提なので、適用入口で human-required 条件を fail-closed にする必要があるため。
+  proposed_final_label: must-fix
+  source_raw_paths:
+  - raw/gpt-5.4.round-1.txt
+  - raw/claude-sonnet-4-6.round-1.txt
+  source_models:
+  - gpt-5.4
+  - claude-sonnet-4-6
+  severity_max: ERROR
+- cluster_id: R16-B
+  title: proxy decision schema does not require enough evidence, coverage, and mapping structure
+  finding_ids:
+  - 2026-06-20-workflow-management-implementation-req16-review-run-gpt-5.4-primary-003
+  - 2026-06-20-workflow-management-implementation-req16-review-run-gpt-5.4-primary-007
+  - 2026-06-20-workflow-management-implementation-req16-review-run-claude-sonnet-4-6-adversarial-007
+  plain_explanation: proxy decision の schema が、根拠、coverage、finding-to-operation mapping、approval gate 参照などを必須にしていませんでした。
+  candidate_options:
+  - option_id: A
+    summary: schema に evidence, coverage, mapping, approval/review-wave references を必須化する
+    tradeoff: 機械監査しやすい
+  - option_id: B
+    summary: 自由記述欄に残すだけにする
+    tradeoff: 柔軟だが、欠落を機械的に止められない
+  recommended_option: A
+  recommended_reason: proxy 判断は証跡を構造化しないと、適用後の検査で根拠不足を検出できないため。
+  proposed_final_label: must-fix
+  source_raw_paths:
+  - raw/gpt-5.4.round-1.txt
+  - raw/claude-sonnet-4-6.round-1.txt
+  source_models:
+  - gpt-5.4
+  - claude-sonnet-4-6
+  severity_max: ERROR
+- cluster_id: R16-C
+  title: approval scope semantics need a narrower rule than simple set equality
+  finding_ids:
+  - 2026-06-20-workflow-management-implementation-req16-review-run-gpt-5.4-primary-002
+  - 2026-06-20-workflow-management-implementation-req16-review-run-claude-sonnet-4-6-adversarial-003
+  plain_explanation: triage 決定の承認と修正適用の承認は別物ですが、単純な finding set equality だけでは境界が曖昧になります。
+  candidate_options:
+  - option_id: A
+    summary: review_triage_decide と apply_fixes の scope 境界を明示し、apply 側でより厳しく検査する
+    tradeoff: 承認流用を防ぎやすい
+  - option_id: B
+    summary: set equality のみ維持する
+    tradeoff: 単純だが、承認意味の違いを表しにくい
+  recommended_option: A
+  recommended_reason: proxy 前提では承認境界の混同を避ける必要があるため。
+  proposed_final_label: must-fix
+  source_raw_paths:
+  - raw/gpt-5.4.round-1.txt
+  - raw/claude-sonnet-4-6.round-1.txt
+  source_models:
+  - gpt-5.4
+  - claude-sonnet-4-6
+  severity_max: ERROR
+- cluster_id: R16-D
+  title: implementation phase checks do not enforce required snapshot evidence or commit boundary details
+  finding_ids:
+  - 2026-06-20-workflow-management-implementation-req16-review-run-gpt-5.4-primary-004
+  - 2026-06-20-workflow-management-implementation-req16-review-run-gpt-5.4-primary-005
+  - 2026-06-20-workflow-management-implementation-req16-review-run-gemini-3.1-pro-preview-judgment-001
+  plain_explanation: implementation phase plan が、snapshot evidence や commit boundary の意味を十分に検査していませんでした。
+  candidate_options:
+  - option_id: A
+    summary: phase schema と checker に snapshot evidence、ordered Phase 0-6、commit boundary を必須化する
+    tradeoff: 段階完了の根拠が強くなる
+  - option_id: B
+    summary: 既存の phase order check だけに留める
+    tradeoff: 軽いが、証跡の鮮度と境界は保証できない
+  recommended_option: A
+  recommended_reason: implementation フェーズを機械的に運用するには、段階そのものだけでなく根拠の有無も検査する必要があるため。
+  proposed_final_label: must-fix
+  source_raw_paths:
+  - raw/gpt-5.4.round-1.txt
+  - raw/gemini-3.1-pro-preview.round-1.txt
+  source_models:
+  - gpt-5.4
+  - gemini-3.1-pro-preview
+  severity_max: ERROR
+- cluster_id: R16-E
+  title: review-wave consumer impact states are under-modeled
+  finding_ids:
+  - 2026-06-20-workflow-management-implementation-req16-review-run-gpt-5.4-primary-008
+  - 2026-06-20-workflow-management-implementation-req16-review-run-claude-sonnet-4-6-adversarial-005
+  - 2026-06-20-workflow-management-implementation-req16-review-run-claude-sonnet-4-6-adversarial-006
+  plain_explanation: review-wave の下流影響は、未解決だけでなく、影響なし、carry-forward、証跡付き解決などの状態を区別する必要がありました。
+  candidate_options:
+  - option_id: A
+    summary: consumer impact の状態を明示的に分けて判定する
+    tradeoff: 後続判断の誤判定を減らせる
+  - option_id: B
+    summary: unresolved の有無だけを見る
+    tradeoff: 単純だが、状態の意味を取り違えやすい
+  recommended_option: A
+  recommended_reason: review-wave は後続作業への接続が重要なので、影響状態を粗く扱うと再判断の品質が落ちるため。
+  proposed_final_label: should-fix
+  source_raw_paths:
+  - raw/gpt-5.4.round-1.txt
+  - raw/claude-sonnet-4-6.round-1.txt
+  source_models:
+  - gpt-5.4
+  - claude-sonnet-4-6
+  severity_max: WARN
+- cluster_id: R16-F
+  title: operation-list and positive-path CLI coverage are weak
+  finding_ids:
+  - 2026-06-20-workflow-management-implementation-req16-review-run-gpt-5.4-primary-006
+  - 2026-06-20-workflow-management-implementation-req16-review-run-claude-sonnet-4-6-adversarial-008
+  - 2026-06-20-workflow-management-implementation-req16-review-run-claude-sonnet-4-6-adversarial-009
+  plain_explanation: operation-list の出力が pending conflict などの意味ある状態を十分に示しておらず、CLI の正常系確認も弱い状態でした。
+  candidate_options:
+  - option_id: A
+    summary: operation-list に pending conflict status を出し、CLI 正常系テストを補う
+    tradeoff: 運用時に判断しやすくなる
+  - option_id: B
+    summary: 現状の最小表示に留める
+    tradeoff: 表示は軽いが、確認時の情報が不足する
+  recommended_option: A
+  recommended_reason: 実運用では、判断前に read-only な一覧で十分な状態が見えることが重要なため。
+  proposed_final_label: should-fix
+  source_raw_paths:
+  - raw/gpt-5.4.round-1.txt
+  - raw/claude-sonnet-4-6.round-1.txt
+  source_models:
+  - gpt-5.4
+  - claude-sonnet-4-6
+  severity_max: WARN
+- cluster_id: R16-G
+  title: active reopen scope structure validation is a minor robustness issue
+  finding_ids:
+  - 2026-06-20-workflow-management-implementation-req16-review-run-claude-sonnet-4-6-adversarial-010
+  plain_explanation: malformed reopen scope への追加防御の指摘です。今回の中心要件は満たしており、直接の修正対象からは外しました。
+  candidate_options:
+  - option_id: A
+    summary: 今回は leave-as-is とし、観測された入力経路になったら扱う
+    tradeoff: 範囲を保てる
+  - option_id: B
+    summary: 追加 validation を先に入れる
+    tradeoff: 堅くなるが今回の主目的から外れる
+  recommended_option: A
+  recommended_reason: Req16 の中心は proxy decision と実装フェーズの境界であり、この指摘は周辺的な堅牢化であるため。
+  proposed_final_label: leave-as-is
+  source_raw_paths:
+  - raw/claude-sonnet-4-6.round-1.txt
+  source_models:
+  - claude-sonnet-4-6
+  severity_max: INFO

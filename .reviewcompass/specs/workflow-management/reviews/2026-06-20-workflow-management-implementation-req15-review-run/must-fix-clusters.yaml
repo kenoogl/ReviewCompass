@@ -1,0 +1,92 @@
+run_id: 2026-06-20-workflow-management-implementation-req15-review-run
+generated_at: '2026-06-21T00:00:00+09:00'
+status: implemented_traceability_ready
+clusters:
+- cluster_id: R15-A
+  title: prompt audit does not implement the required fail-closed checks
+  finding_ids:
+  - 2026-06-20-workflow-management-implementation-req15-review-run-claude-sonnet-4-6-adversarial-001
+  - 2026-06-20-workflow-management-implementation-req15-review-run-claude-sonnet-4-6-adversarial-002
+  - 2026-06-20-workflow-management-implementation-req15-review-run-claude-sonnet-4-6-adversarial-003
+  - 2026-06-20-workflow-management-implementation-req15-review-run-gemini-3.1-pro-preview-judgment-001
+  plain_explanation: effective prompt の監査が、必須構造、壊れた source artifact、未知の action kind、未検証 precondition、不可能 postcondition などを十分に拒否できていませんでした。
+  candidate_options:
+  - option_id: A
+    summary: prompt audit に必須構造と source/precondition/postcondition の fail-closed 検査を追加する
+    tradeoff: 実装量は増えるが、Req15 の目的に直接効く
+  - option_id: B
+    summary: 文書規律だけで運用する
+    tradeoff: 軽いが、同じ見落としを機械的に止められない
+  recommended_option: A
+  recommended_reason: API に渡すプロンプトの品質を実行前監査で機械的に守れるため。
+  proposed_final_label: must-fix
+  source_raw_paths:
+  - raw/claude-sonnet-4-6.round-1.txt
+  - raw/gemini-3.1-pro-preview.round-1.txt
+  source_models:
+  - claude-sonnet-4-6
+  - gemini-3.1-pro-preview
+  severity_max: ERROR
+- cluster_id: R15-B
+  title: prompt length boundary semantics are not actually verified
+  finding_ids:
+  - 2026-06-20-workflow-management-implementation-req15-review-run-claude-sonnet-4-6-adversarial-004
+  plain_explanation: prompt length のテストが、境界値の不正ではなく別の欠落で失敗していました。
+  candidate_options:
+  - option_id: A
+    summary: 境界値の不正そのものを検査する fixture と監査ロジックに直す
+    tradeoff: テスト意図と実装が一致する
+  - option_id: B
+    summary: 現状の schema 必須項目検査だけに任せる
+    tradeoff: 長さ境界の意味は保証されない
+  recommended_option: A
+  recommended_reason: prompt の構成品質を扱う Req15 では、境界条件の検査が本当に効いていることが重要なため。
+  proposed_final_label: must-fix
+  source_raw_paths:
+  - raw/claude-sonnet-4-6.round-1.txt
+  source_models:
+  - claude-sonnet-4-6
+  severity_max: ERROR
+- cluster_id: R15-C
+  title: machine-task leakage diagnostics are incomplete
+  finding_ids:
+  - 2026-06-20-workflow-management-implementation-req15-review-run-claude-sonnet-4-6-adversarial-005
+  - 2026-06-20-workflow-management-implementation-req15-review-run-claude-sonnet-4-6-adversarial-006
+  - 2026-06-20-workflow-management-implementation-req15-review-run-claude-sonnet-4-6-adversarial-007
+  plain_explanation: 複数の machine-task leakage がある場合に最初の 1 件だけで止まり、診断の全体像が見えにくくなっていました。
+  candidate_options:
+  - option_id: A
+    summary: 複数違反を収集し、テスト fixture の狙いを明確化する
+    tradeoff: 診断品質が上がる
+  - option_id: B
+    summary: 最初の違反だけを返す現状を維持する
+    tradeoff: 実装は軽いが、レビュー後の原因分析が弱い
+  recommended_option: A
+  recommended_reason: 再発調査とレビュー結果の説明品質を上げるため。
+  proposed_final_label: should-fix
+  source_raw_paths:
+  - raw/claude-sonnet-4-6.round-1.txt
+  source_models:
+  - claude-sonnet-4-6
+  severity_max: WARN
+- cluster_id: R15-D
+  title: digest format and manifest validation are inconsistent
+  finding_ids:
+  - 2026-06-20-workflow-management-implementation-req15-review-run-claude-sonnet-4-6-adversarial-008
+  - 2026-06-20-workflow-management-implementation-req15-review-run-claude-sonnet-4-6-adversarial-009
+  plain_explanation: manifest 側と rounds 側の sha256 表記が揃っておらず、effective prompt builder の schema 検証も不足していました。
+  candidate_options:
+  - option_id: A
+    summary: rounds 側も prefixed sha を記録し、builder 出力を schema 検証する
+    tradeoff: 追跡形式が揃う
+  - option_id: B
+    summary: 形式差を文書化するだけにする
+    tradeoff: 互換性は保てるが、機械監査の負担が残る
+  recommended_option: A
+  recommended_reason: effective prompt の真正性を後から機械的に追えるようにするため。
+  proposed_final_label: should-fix
+  source_raw_paths:
+  - raw/claude-sonnet-4-6.round-1.txt
+  source_models:
+  - claude-sonnet-4-6
+  severity_max: WARN
