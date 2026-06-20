@@ -1,0 +1,40 @@
+proxy_model_id: gpt-5.5
+decision_prompt_path: .reviewcompass/specs/workflow-management/reviews/2026-06-20-workflow-management-design-vertical-redo-proxy-decision-c1-prompt-quality-run/proxy-decision-c1-prompt.md
+raw_response_path: proxy-decision-c1-response.yaml
+review_run_id: 2026-06-20-workflow-management-design-vertical-redo-review-run-v2
+proxy_decision_scope: design_triad_review_cluster_triage
+decisions:
+  - cluster_id: C1
+    final_label: must-fix
+    validity: valid
+    cluster_adopted: true
+    blocking: true
+    design_level: true
+    adopted_findings:
+      - 2026-06-20-workflow-management-design-vertical-redo-review-run-v2-gpt-5.4-primary-001
+      - 2026-06-20-workflow-management-design-vertical-redo-review-run-v2-gpt-5.4-primary-002
+      - 2026-06-20-workflow-management-design-vertical-redo-review-run-v2-claude-sonnet-4-6-adversarial-008
+    rejected_findings: []
+    decision_rationale: C1 identifies a real design-level issue because Requirements 12 and 13 require a single machine-readable operation contract authority and a clear read-only registry/preflight boundary. The summarized design contains correct statements that operation-contracts.yaml is the physical source of truth and that the registry references it, but also contains wording that can be read as placing contract schema authority in operation-registry.yaml and assigning precheck vocabulary or output contract authority to operation docs or scripts. That ambiguity is not safe to defer because downstream tasks would have to decide which artifact owns operation vocabulary, output contract fields, and preflight authority. C1-F3 is also adopted because Requirement 13 specifically requires the design to decide whether duplicated contract fields are structurally forbidden rather than leaving that decision to implementation-only integrity checks.
+    required_design_response:
+      - Clarify unambiguously that stages/operation-contracts.yaml is the sole physical source of truth for operation contract vocabulary and contract fields, including fields such as effect_kind, approval_required, phase_boundary, required_action mappings, and equivalent output/effect contract fields.
+      - Clarify that stages/operation-registry.yaml owns only registry-specific metadata and references to operation contracts, such as contract ID, contract digest, schema version, invocation binding, workflow binding, target identity, required inputs, planned outputs as references or projections where applicable, sequence mode, and worktree/pending/artifact policy.
+      - Remove or rewrite any wording that says or implies that operation contract schema lives in stages/operation-registry.yaml.
+      - Remove or rewrite any wording that says or implies that operations documentation, check scripts, or preflight implementation define the canonical precheck vocabulary, required_action vocabulary, output contract, effect kind, approval requirement, phase boundary, or equivalent contract semantics.
+      - State that registry and preflight read operation contracts and state evidence only; they do not redefine contract fields, update contracts, execute operations, consume approvals, create workflow state, or mutate artifacts.
+      - State at the design level that registry schema structurally forbids duplicated contract-authority fields such as effect_kind, approval_required, and phase_boundary, and that any attempted duplication or digest/schema mismatch fails closed.
+      - Preserve next --json as the single action selector and specify that registry/preflight may validate and bind to that selector but must not invent a parallel source of action truth.
+    downstream_risk_if_unfixed: If not fixed, implementation tasks may encode multiple competing authorities for operation vocabulary, output/effect semantics, approval requirements, and preflight behavior. That creates drift between contracts, registry, docs, and scripts; may let preflight become an independent gatekeeper; and can undermine fail-closed behavior at operation start.
+    notes_for_main:
+      - Treat C1 as blocking for the design triad-review until design.md resolves the source-of-truth and schema-boundary ambiguity.
+      - The fix should be textual and structural in the design artifact, not deferred solely to implementation tests or task acceptance criteria.
+authority_limits_confirmed:
+  commit: not_authorized
+  push: not_authorized
+  spec_json_update: not_authorized
+  gate_completion: not_authorized
+  phase_transition: not_authorized
+  direct_file_edit: not_authorized
+  human_only_approval_substitution: not_authorized
+  reopen_finalize: not_authorized
+  approval_required_irreversible_operation: not_authorized

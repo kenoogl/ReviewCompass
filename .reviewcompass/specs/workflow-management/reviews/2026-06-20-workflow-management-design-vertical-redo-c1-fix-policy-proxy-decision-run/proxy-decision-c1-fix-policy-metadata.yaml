@@ -1,0 +1,10 @@
+variant: proxy_model_openai_gpt_55
+provider: openai-api
+model: gpt-5.5
+prompt_path: .reviewcompass/specs/workflow-management/reviews/2026-06-20-workflow-management-design-vertical-redo-c1-fix-policy-proxy-prompt-quality-run/proxy-decision-c1-fix-policy-prompt.md
+raw_response_path: proxy-decision-c1-fix-policy-response.yaml
+parsed_decisions_path: proxy-decision-c1-fix-policy-decisions.yaml
+duration_seconds: 32.423
+external_approval_record_path: .reviewcompass/specs/workflow-management/reviews/2026-06-20-workflow-management-design-vertical-redo-c1-fix-policy-proxy-decision-run/external-api-approval.yaml
+external_approval_record_schema_version: external-api-approval-v1
+parse_status: parsed

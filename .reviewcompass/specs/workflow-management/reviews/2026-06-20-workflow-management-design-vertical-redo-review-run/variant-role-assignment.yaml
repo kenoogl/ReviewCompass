@@ -1,0 +1,29 @@
+variant: design_vertical_redo_3way_codex_operator_sonnet_adversarial
+phase: design
+stage: triad-review
+review_run_id: 2026-06-20-workflow-management-design-vertical-redo-review-run
+context: triad_review
+required_roles:
+  - primary
+  - adversarial
+  - judgment
+provider_constraint: all_roles_distinct
+roles:
+  - role: primary
+    path: api
+    provider: openai-api
+    model: gpt-5.4
+    raw_path: raw/gpt-5.4.round-1.txt
+  - role: adversarial
+    path: api
+    provider: anthropic-api
+    model: claude-sonnet-4-6
+    raw_path: raw/claude-sonnet-4-6.round-1.txt
+  - role: judgment
+    path: api
+    provider: gemini-api
+    model: gemini-3.1-pro-preview
+    raw_path: raw/gemini-3.1-pro-preview.round-1.txt
+effective_prompt:
+  path: .reviewcompass/runtime/effective-prompts/next_action_kind-reopen_in_progress__workflow_stage-triad-review__reopen_required_action-run_reopen_pending_gate.prompt.md
+  sha256: 6d4374ac39164c2001ca6a34fb9029ee3a6816febd15a5da7b26208ca17b4a11

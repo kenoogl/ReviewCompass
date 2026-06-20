@@ -1,0 +1,17 @@
+role: judgment
+provider: gemini-api
+model: gemini-3.1-pro-preview
+attempts: 1
+duration_seconds: 43.165
+findings:
+- severity: WARN
+  target_location: Output Contract / YAML template
+  description: 'Instructions for empty values (e.g., `or use [] if none`) are placed
+    inside list item markers and string field placeholders. For example, `- <finding
+    id, or use [] if none>` encourages the model to output a nested empty list (`-
+    []`) rather than an empty parent array (`adopted_findings: []`). Similarly, using
+    `[]` for an empty `reason` string creates a type mismatch.'
+  rationale: The criteria require a fixed, parser-friendly output contract. Injecting
+    `[]` into list elements or string fields will likely cause schema validation failures
+    (e.g., List[List] instead of List[str], or List instead of str) in strict downstream
+    YAML parsers, making the decision evidence unusable without manual correction.

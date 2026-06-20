@@ -1,0 +1,28 @@
+round_id: proxy-decision-c1-c7-1
+purpose: proxy_model
+invocation_timestamp: '2026-06-20T01:43:59.470833+00:00'
+target_files:
+- path: .reviewcompass/specs/workflow-management/reviews/2026-06-20-workflow-management-design-vertical-redo-proxy-decision-prompt-quality-run/proxy-decision-prompt-draft.md
+  sha256: 200be391c4b94bccdeb91ad8193adf0ab33dee293d346c8bba2aab235e810085
+criteria: proxy-decision-cluster-triage
+prompt_sha256: 97700c8ee55a24bc9ca76f4fcc5935c1f25ce1806548483339afafb88c16e314
+model_results:
+- model_id: gpt-5.5
+  provider: openai-api
+  role: primary
+  treatment: primary
+  invocation_path: api
+  raw_path: raw/gpt-5.5.proxy-decision-c1-c7-1.txt
+  raw_sha256: b940e3806cf3327d9b828c4fdb841e6ca12ed7c6921f7e243a203ed6a00cd47e
+  parsed_path: parsed/gpt-5.5.proxy-decision-c1-c7-1.yaml
+  parsed_sha256: 9de95f76f665076588713787648bdcbc75aaaf4c1c8f4124336bc9c98de15160
+  parse_status: parsed
+  formatted_by: parser
+  formatted_by_actor_type: orchestrator
+  formatted_by_actor: run_role.py
+  formatted_at: '2026-06-20T01:43:59.470833+00:00'
+  follow_up_action: triage
+  attempts: 1
+  duration_seconds: 35.891
+  prompt_path: prompts/gpt-5.5.proxy-decision-c1-c7-1.prompt.md
+  prompt_sha256: 97700c8ee55a24bc9ca76f4fcc5935c1f25ce1806548483339afafb88c16e314

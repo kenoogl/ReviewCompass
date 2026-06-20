@@ -1,0 +1,9 @@
+findings:
+  - severity: WARN
+    target_location: "Output Contract / Consistency rules"
+    description: "The consistency rules imply that a `should-fix` cluster must have a non-empty `required_design_response`, even if it is marked as deferrable (`design_level: false`)."
+    rationale: "If a cluster is deemed a `should-fix` but safely deferrable to tasks/implementation (`design_level: false`), requiring a design response contradicts the decision to defer it. The rules explicitly permit an empty response only for `leave-as-is`. This ambiguity may force the proxy model to invent an artificial design change for deferred items. Explicitly allowing an empty `required_design_response` when `design_level` is `false` would resolve this."
+  - severity: INFO
+    target_location: "Output Contract / YAML template"
+    description: "The `decision_prompt_path` field in the template hardcodes the `-draft.md` filename."
+    rationale: "When the final prompt is executed, the model is likely to copy this literal string, causing the generated proxy decision record to point to the draft file rather than the final prompt file. Replacing the static string with an explicit instruction or placeholder (e.g., `<actual path of this prompt>`) would ensure precise provenance accuracy in the output."

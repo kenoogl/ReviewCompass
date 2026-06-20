@@ -1,0 +1,251 @@
+round_id: round-1
+purpose: design
+invocation_timestamp: '2026-06-20T00:59:20.922734+00:00'
+target_files:
+- path: .reviewcompass/specs/workflow-management/design.md
+  sha256: cc668ad714baf00bb6edd5e108cd6e1b3a9a673dac88e0cfe947e58fa8643ef8
+criteria: "---\ncriteria_id: workflow-management-design-vertical-redo-review-criteria-draft\n\
+  phase: design\ngate: stages/design.yaml#triad-review\nintended_review_target:\n\
+  \  - .reviewcompass/specs/workflow-management/design.md\nsource_materials:\n  note:\
+  \ \"This front matter records provenance only. The model-readable source material\
+  \ is embedded in the body below.\"\n  embedded:\n    - requirement_12_registry_preflight_context\n\
+  \    - requirements_13_16_summary\n    - vertical_intent_transfer_rule_summary\n\
+  status: approved_by_prompt_quality_review\n---\n\n# Workflow-management Design Vertical\
+  \ Redo Review Criteria Draft\n\n## Review Task\n\nReview `.reviewcompass/specs/workflow-management/design.md`\
+  \ for the design triad-review gate.\n\nThe review question is:\n\nDoes the current\
+  \ `design.md` carry Requirement 13 through Requirement 16 from `requirements.md`\
+  \ into design-level decisions without omission, weakening, contradiction, unsupported\
+  \ addition, or drift?\n\nReturn findings only when the design target itself is deficient\
+  \ for this design-phase question.\n\n## Why This Review Exists\n\nThis is not a\
+  \ general design review and not a reuse of the earlier design run. The current R-0\
+  \ reopen exists because a tasks-granularity reopen exposed upstream design-authority\
+  \ problems. The active question moved upward: before tasks can be trusted, design\
+  \ must clearly authorize the operation contract / registry boundary and proxy /\
+  \ human decision boundary.\n\nThe earlier no-findings run from `2026-06-20-workflow-management-design-vertical-redo-review-run`\
+  \ is not sufficient as gate-completion evidence because its generated prompt used\
+  \ `review-target.md` as both criteria and target. That caused the models to review\
+  \ an author-written summary rather than `design.md` as the target document.\n\n\
+  For this review, the reviewing model must use `.reviewcompass/specs/workflow-management/design.md`\
+  \ as the sole review target. Do not treat this criteria file, any review-target\
+  \ wrapper, or any author-written summary as a substitute for the target document.\n\
+  \n## Required Discipline\n\nApply these prompt and review disciplines:\n\n- `docs/disciplines/discipline_llm_as_judge_prompting.md`:\
+  \ judge prompts must include appropriate information, an appropriate non-leading\
+  \ question, an appropriate scope, a fixed output contract, and must avoid sending\
+  \ sensitive material.\n- `docs/operations/SESSION_WORKFLOW_GUIDE.md#vertical-intent-transfer-review`:\
+  \ design review must check `requirements.md -> design.md`. The prompt must not list\
+  \ source materials by path only; it must include upstream material or a structured\
+  \ upstream summary that lets the model judge without guessing.\n\nFor this criteria\
+  \ file, the source materials are provided as structured summaries below. The path\
+  \ references in front matter are provenance only, not a request for the model to\
+  \ infer missing content.\n\n## Review Target\n\nThe review target is only:\n\n-\
+  \ `.reviewcompass/specs/workflow-management/design.md`\n\nThe model may use the\
+  \ source materials below only to check vertical intent transfer into the target.\
+  \ Do not judge `requirements.md`, `tasks.md`, implementation code, or other feature\
+  \ documents as targets in this review.\n\n## Source Materials For Vertical Intent\
+  \ Transfer\n\n### Requirement 12 context: operation registry / preflight\n\nRequirement\
+  \ 12 is background context for Required Check 9. It requires operation preflight\
+  \ to be read-only and to inspect operation start conditions before execution. Its\
+  \ relevant expectations are:\n\n- Operation registry / preflight covers review-run,\
+  \ post-write verification, triage, reopen, commit approval, session-record, deployment,\
+  \ export, and similar workflow operations.\n- Preflight checks canonical command,\
+  \ inputs, artifacts, ordering, pending conflicts, worktree state, overwrite policy,\
+  \ and feature impact review scope before an operation starts.\n- Preflight is a\
+  \ read-only confirmation layer. It must not update `spec.json`, workflow phase state,\
+  \ decision records, approval records, or the target operation itself.\n- Workflow-management\
+  \ owns the operation contract / registry / preflight contract, but other features\
+  \ may be consumer / derivative impact review targets.\n- Review should detect a\
+  \ contradiction if `design.md` makes registry / preflight an executor, approval\
+  \ consumer, state mutator, or separate source of truth from the operation contract.\n\
+  \n### Requirement 13: operation contract vocabulary and required_action mapping\n\
+  \nPurpose:\n\nMaintainers must execute the one action selected by `next --json`\
+  \ based on operation contracts, not memory or precedent. The selection layer says\
+  \ what to do; the execution layer defines how through side effects, approval, preconditions,\
+  \ and postconditions.\n\nRequired transfer into design:\n\n- Define `effect_kind`,\
+  \ `approval_required`, `phase_boundary`, `sequence`, `preconditions`, and `postconditions`.\n\
+  - Keep `approval_required` independent from `effect_kind`.\n- Define Phase 1 schemas\
+  \ for operation contract, effect kind, phase boundary, workflow-state snapshot,\
+  \ and language task I/O.\n- Map all 19 `required_action` values without hiding branchy\
+  \ operations behind representative values.\n- Include required_action, effect_kind,\
+  \ approval_required, phase_boundary, sequence, actor, branching, and referenced\
+  \ pre/postconditions.\n- Treat `commit_stop_point`, `apply_approved_reopen_plan`,\
+  \ `run_reopen_start`, `advance_reopen_after_commit_stop_point`, `advance_reopen_after_approval_stop_point`,\
+  \ `finalize_reopen`, and `repair_workflow_state` as approval-required simple operations.\n\
+  - Keep `record_human_decision` as a decision-record operation that does not itself\
+  \ satisfy target-operation approval.\n- Split `run_reopen_pending_gate` by active\
+  \ gate and keep drafting separate as `run_reopen_drafting`.\n- Treat `run_maintenance`\
+  \ and `run_workflow_stage` as compound operations with branch conditions, internal\
+  \ steps, max side effect, and approval aggregation.\n- Establish a single machine-readable\
+  \ source-of-truth boundary between operation contract and operation registry / preflight.\n\
+  - Ensure registry / preflight reads contract and does not execute, update, or consume\
+  \ approvals.\n- Require detection of missing contract refs, stale digests, version\
+  \ drift, or duplicated source-of-truth fields.\n\nForbidden or high-risk drift:\n\
+  \n- Do not duplicate side-effect / approval / phase-boundary fields across registry\
+  \ and contract as separate authorities.\n- Do not let `record_human_decision` completion\
+  \ satisfy an approval-required target operation.\n- Do not downgrade required commit\
+  \ / approval boundaries to advisory warnings in runner-enabled paths.\n\n### Requirement\
+  \ 14: approval gate, side-track stack, and workflow-state snapshot\n\nPurpose:\n\
+  \nApproval, unexpected side tracks, and current-state visibility must be machine-readable\
+  \ state, not implicit LLM interpretation.\n\nRequired transfer into design:\n\n\
+  - Model approval gate as `wait_for_human_decision`, `record_human_decision`, and\
+  \ subsequent `next --json` branching.\n- Record approved, rejected, deferred, and\
+  \ changes_requested distinctly.\n- Bind each decision to target operation ID, required_action,\
+  \ artifact or staged file set digest, actor, timestamp, and source.\n- Treat side\
+  \ track as a stack. Frames include frame ID, kind, parent, pusher, allowed scope/files,\
+  \ completion conditions, return_to, title, spawned_from, staged file set, and staged\
+  \ file digest.\n- Capture staged file set/digest on push, before pop, and before\
+  \ commit/push.\n- Only top frame can pop; `next --json` resumes the immediate parent\
+  \ or mainline.\n- Default `max_depth` is 2; Phase 3 warns and Phase 5 blocks.\n\
+  - Treat `.reviewcompass/runtime/workflow-state-snapshot.yaml` as a `next --json`\
+  \ byproduct, not an authority replacing `next --json`.\n- Include schema_version,\
+  \ generated_by, generated_at, current_work, active_side_tracks, git_tree_summary,\
+  \ post_write_manifest_summary, and workflow_state_summary in the snapshot.\n- Mechanically\
+  \ distinguish proxy decisions and human-only decisions.\n- Treat commit, push, spec.json\
+  \ update, phase approval, reopen finalize, and approval_required irreversible operation\
+  \ execution as human-only.\n- Keep read-only operations and mutating operations\
+  \ separate.\n\nForbidden or high-risk drift:\n\n- Do not let proxy_model replace\
+  \ human-only approval.\n- Do not let stale snapshots authorize operations.\n- Do\
+  \ not return to mainline after side-track pop if return_to or staged state cannot\
+  \ be verified.\n\n### Requirement 15: structured effective prompt and audit\n\n\
+  Purpose:\n\nEffective prompts should be language-task specifications, not long unstructured\
+  \ instructions that smuggle machine operations into LLM text.\n\nRequired transfer\
+  \ into design:\n\n- Define prompt structure with decision_point, preconditions_checked,\
+  \ language_task, postconditions, and on_completion.\n- Define language_task with\
+  \ document_kind, input, output_format, and constraints.\n- Keep machine tasks in\
+  \ operation contract, preflight, runner, and guard, not prompt instructions.\n-\
+  \ Preserve `next_action.effective_prompt.effective_prompt_path` while Phase 4 generates\
+  \ structured prompts from DISCIPLINE_MAP or successor registry.\n- Define first-layer\
+  \ prompt checks for file/anchor existence, mandatory sections, length, unknown action\
+  \ kind, review-target/manifest match, output/postcondition consistency, machine-checked\
+  \ preconditions, and on_completion compatibility.\n- Keep Phase 6 LLM judge audit\
+  \ auxiliary and never final approval.\n\nForbidden or high-risk drift:\n\n- Do not\
+  \ put commit, push, spec.json mutation, approval consumption, review-run artifact\
+  \ creation, or side-track mutation into the LLM language task.\n- Do not treat semantic\
+  \ LLM judge audit as final approval.\n\n### Requirement 16: Phase 0-6 implementation\
+  \ plan\n\nPurpose:\n\nMechanization of the selection and execution layers must be\
+  \ implemented in order without mixing future phases into one risky change.\n\nRequired\
+  \ transfer into design:\n\n- Phase 0 is D-003 selection-layer work: 19-step priority,\
+  \ one required_action, invariant checks, and reopen plan compiler.\n- Phase 0 starts\
+  \ after the minimum schemas from Requirement 2 AC10-11; other operation contract\
+  \ schemas can proceed in parallel.\n- Phase 0 completion requires the six D-003\
+  \ failure tests and mechanical workflow-state repair detection.\n- Phase 1 defines\
+  \ vocabularies and schemas without changing behavior.\n- Phase 2 introduces read-only\
+  \ registry.\n- Phase 3 introduces advisory preflight.\n- Phase 4 structures effective\
+  \ prompts.\n- Phase 5 turns selected warnings into blocks.\n- Phase 6 adds optional\
+  \ LLM judge audit.\n- Each Phase ends only after `next --json` can return normal\
+  \ work or an explicit stop state.\n- Do not mix phases in one commit.\n- Distinguish\
+  \ active reopen scope from historical `spec.json.reopened`.\n- Check consumer /\
+  \ derivative impacts to other features during review-wave.\n- Base proxy_model triage\
+  \ application on evidence completeness, finding/cluster coverage, approval gate\
+  \ records, operation contract approval_required, review-wave evidence, and human-only\
+  \ boundaries, not provider/model names.\n- Human-required evidence always outranks\
+  \ proxy approval.\n\nForbidden or high-risk drift:\n\n- Do not use `spec.json.reopened`\
+  \ alone as active reopen scope.\n- Do not let proxy_model decisions pass human-required\
+  \ gates.\n- Do not complete a phase with unresolved review-wave impact evidence\
+  \ or missing active-scope evidence.\n\n## Required Checks\n\n1. Check whether Requirement\
+  \ 13's purpose, responsibility boundaries, acceptance criteria, and forbidden actions\
+  \ are carried into `design.md`.\n2. Check whether `design.md` settles the operation\
+  \ registry / operation contract source-of-truth boundary enough that tasks do not\
+  \ need to invent it later.\n3. Check whether `record_human_decision` remains a decision-record\
+  \ operation and does not satisfy target operation approval by itself.\n4. Check\
+  \ whether `run_reopen_pending_gate`, `run_reopen_drafting`, `run_maintenance`, and\
+  \ `run_workflow_stage` have enough branching / compound-operation structure to avoid\
+  \ LLM inference.\n5. Check whether Requirement 14's approval gate, side-track stack,\
+  \ workflow-state snapshot, proxy/human boundary, and read-only/mutating boundary\
+  \ are carried into `design.md`.\n6. Check whether `design.md` gives a clear enough\
+  \ human-only / proxy-allowed boundary for downstream tasks and implementation, especially\
+  \ commit, push, spec.json update, phase approval, reopen finalize, and approval_required\
+  \ operation execution.\n7. Check whether Requirement 15's structured effective prompt\
+  \ model keeps machine operations outside language tasks and makes prompt audit mechanically\
+  \ checkable.\n8. Check whether Requirement 16's Phase 0-6 sequencing, active reopen\
+  \ scope distinction, impact review scope, and proxy triage decision predicates are\
+  \ design-level decisions rather than task-level guesses.\n9. Check whether `design.md`\
+  \ contradicts Requirement 12 operation registry / preflight.\n10. Check whether\
+  \ `design.md` overclaims implementation that has not happened yet.\n11. Check whether\
+  \ `design.md` accurately represents design drafting status without implying design\
+  \ triad-review, review-wave, alignment, approval, commit, or push are complete.\n\
+  \n## Out Of Scope\n\n- Do not request implementation code changes during this design\
+  \ triad-review.\n- Do not judge `tasks.md` correctness except when a design omission\
+  \ would force tasks to invent design authority.\n- Do not decide cross-feature impact;\
+  \ that belongs to design review-wave.\n- The reviewing model must not itself approve\
+  \ or authorize commit, push, spec.json mutation, phase transition, or reopen gate\
+  \ completion. This does not prevent findings about whether `design.md` correctly\
+  \ preserves those boundaries.\n- Do not treat source-material defects as findings\
+  \ unless they cause a design transfer defect in `design.md`.\n\n## Finding Policy\n\
+  \n- Report `CRITICAL` when the design would allow bypassing human-only approval,\
+  \ commit/push/spec.json/phase approval boundaries, or active reopen-scope evidence.\n\
+  - Report `ERROR` when a requirement purpose, responsibility boundary, acceptance\
+  \ criterion, or forbidden action is missing, weakened, contradicted, or replaced\
+  \ by unsupported design behavior.\n- Report `ERROR` when `design.md` adds a design\
+  \ behavior that is unsupported by Requirement 13 through Requirement 16 or by the\
+  \ provided Requirement 12 context, if that addition would constrain downstream tasks\
+  \ or implementation.\n- Report `ERROR` when design leaves registry/contract authority,\
+  \ proxy/human authority, or active reopen scope ambiguous enough that tasks or implementation\
+  \ must invent policy.\n- Report `WARN` for ambiguity likely to force repeated manual\
+  \ judgment, weak traceability, unclear schema/state boundaries, or overclaiming\
+  \ implementation completion.\n- Report `INFO` only for non-blocking traceability\
+  \ improvements.\n- Return `findings: []` only when `design.md` is traceable, internally\
+  \ consistent, correctly scoped for design drafting, and sufficiently grounded for\
+  \ downstream tasks.\n"
+prompt_sha256: 20befb3b5a97eb21ce7d2b526c537757513c34c9b61a11b5c951e437f69dc9c4
+model_results:
+- model_id: gpt-5.4
+  provider: openai-api
+  role: primary
+  treatment: primary
+  invocation_path: api
+  raw_path: raw/gpt-5.4.round-1.txt
+  raw_sha256: 9ffd11c70813c2beb558b38f980a42d85861a50bc5d904aa6f2b2598c8db2c4a
+  parsed_path: parsed/gpt-5.4.round-1.yaml
+  parsed_sha256: 1ce4b573bff625b58c6f9fcd9a85dbd34f2861f78b939822d420b6d8dded2745
+  parse_status: parsed
+  formatted_by: parser
+  formatted_by_actor_type: orchestrator
+  formatted_by_actor: run_role.py
+  formatted_at: '2026-06-20T00:57:54.187390+00:00'
+  follow_up_action: triage
+  attempts: 1
+  duration_seconds: 9.307
+  prompt_path: prompts/gpt-5.4.round-1.prompt.md
+  prompt_sha256: aa14cd9ceef427f15a44237be9ad0547c46ac6d6680c284a5798395c199a2a44
+- model_id: claude-sonnet-4-6
+  provider: anthropic-api
+  role: adversarial
+  treatment: adversarial
+  invocation_path: api
+  raw_path: raw/claude-sonnet-4-6.round-1.txt
+  raw_sha256: c902a11e643fc9c73db60e0f233a6b7241cd55bf4586f393ac159dc6b715c6ad
+  parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  parsed_sha256: ea3285acde97af323833fcdbdd3cdee8f0886baf6e100f1e988622c2b2ae6d13
+  parse_status: parsed
+  formatted_by: parser
+  formatted_by_actor_type: orchestrator
+  formatted_by_actor: run_role.py
+  formatted_at: '2026-06-20T00:58:50.856021+00:00'
+  follow_up_action: triage
+  attempts: 1
+  duration_seconds: 56.588
+  prompt_path: prompts/claude-sonnet-4-6.round-1.prompt.md
+  prompt_sha256: 00ed43dc57f95005ac988cd496de3f203cd078d7ede2a418baa02f2707d6cf27
+- model_id: gemini-3.1-pro-preview
+  provider: gemini-api
+  role: judgment
+  treatment: judgment
+  invocation_path: api
+  raw_path: raw/gemini-3.1-pro-preview.round-1.txt
+  raw_sha256: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+  parsed_path: parsed/gemini-3.1-pro-preview.round-1.yaml
+  parsed_sha256: e6fcacde8e02e7201a2dd33bbf9cc6136f92760b4c0ad0499801c8e17085bbf9
+  parse_status: parsed
+  formatted_by: parser
+  formatted_by_actor_type: orchestrator
+  formatted_by_actor: run_role.py
+  formatted_at: '2026-06-20T00:59:20.922734+00:00'
+  follow_up_action: triage
+  attempts: 1
+  duration_seconds: 29.999
+  prompt_path: prompts/gemini-3.1-pro-preview.round-1.prompt.md
+  prompt_sha256: 20befb3b5a97eb21ce7d2b526c537757513c34c9b61a11b5c951e437f69dc9c4
+criteria_source_path: .reviewcompass/specs/workflow-management/reviews/2026-06-20-workflow-management-design-vertical-redo-prompt-quality-run/design-review-criteria-draft.md
+criteria_source_sha256: 0c7635e1eab9d47da4495a396b93b3e76700489bf7758aa38fe98032153b7fc4
+effective_prompt_path: .reviewcompass/runtime/effective-prompts/next_action_kind-reopen_in_progress__workflow_stage-triad-review__reopen_required_action-run_reopen_pending_gate.prompt.md
+effective_prompt_sha256: 6d4374ac39164c2001ca6a34fb9029ee3a6816febd15a5da7b26208ca17b4a11

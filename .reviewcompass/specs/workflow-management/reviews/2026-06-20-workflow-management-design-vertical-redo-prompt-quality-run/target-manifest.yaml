@@ -1,0 +1,4 @@
+run_id: 2026-06-20-workflow-management-design-vertical-redo-prompt-quality-run
+target_files:
+- path: .reviewcompass/specs/workflow-management/reviews/2026-06-20-workflow-management-design-vertical-redo-prompt-quality-run/design-review-criteria-draft.md
+  sha256: 65c310d5fbdbbf5dca5f25681d03f829bf06ea1f09cdc565c5cf0752016c1b71

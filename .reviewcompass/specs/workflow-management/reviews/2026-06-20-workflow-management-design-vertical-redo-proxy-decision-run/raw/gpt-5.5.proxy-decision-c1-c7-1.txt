@@ -1,0 +1,13 @@
+findings:
+  - severity: ERROR
+    target_location: "Output Contract / authority_limits_confirmed"
+    description: "The required authority-limit confirmation omits several prohibited authorities that the prompt itself identifies or imports from Requirement 14."
+    rationale: "The prompt requires explicit confirmation of authority limits, but the output schema only covers commit, push, spec_json_update, phase_transition, and direct_file_edit. It does not require explicit confirmation for gate completion, human-only approval substitution, reopen finalize, or approval-required irreversible operation execution. This weakens the proxy/human boundary that is central to the cluster triage."
+  - severity: WARN
+    target_location: "Output Contract / final_label and design_level"
+    description: "The relationship between final_label and design_level is underdefined and can produce contradictory triage outputs."
+    rationale: "The schema defines design_level=true as meaning the issue must be resolved before triad-review can complete, which appears equivalent to must-fix, but final_label also allows should-fix without defining whether should-fix is blocking or deferrable. A proxy model could return should-fix with design_level=true or must-fix with design_level=false, leaving main without an unambiguous gate decision."
+  - severity: WARN
+    target_location: "Output Contract / cluster_decisions"
+    description: "The schema does not include an explicit cluster adoption or rejection field even though the prompt asks the proxy to decide adopted clusters."
+    rationale: "Validity, final_label, adopted_findings, and rejected_findings provide partial information, but they do not directly state whether the cluster as a whole is adopted for design response. This can be ambiguous for partially_valid clusters or for clusters with mixed adopted and rejected source findings."

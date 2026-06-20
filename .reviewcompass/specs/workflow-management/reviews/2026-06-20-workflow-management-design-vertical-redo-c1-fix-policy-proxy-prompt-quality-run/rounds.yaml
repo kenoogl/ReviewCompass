@@ -1,0 +1,157 @@
+round_id: c1-fix-policy-prompt-quality-judgment-2
+purpose: prompt_quality
+invocation_timestamp: '2026-06-20T02:35:39.430075+00:00'
+target_files:
+- path: .reviewcompass/specs/workflow-management/reviews/2026-06-20-workflow-management-design-vertical-redo-c1-fix-policy-proxy-prompt-quality-run/proxy-decision-c1-fix-policy-prompt.md
+  sha256: e196216251a9be594455b9d2a08603a914a80583b17a257692aa72b8e18b29dc
+criteria: '---
+
+  criteria_id: proxy-decision-c1-fix-policy-prompt-quality-review
+
+  phase: prompt-quality
+
+  review_target: proxy-decision-c1-fix-policy-prompt.md
+
+  ---
+
+
+  # C1 Fix Policy Proxy Prompt Quality Review Criteria
+
+
+  Review the target prompt draft itself. Do not judge the eventual `design.md` fix
+  yet.
+
+
+  Question:
+
+
+  Is the draft prompt suitable for asking `proxy_model` to judge the C1 fix policy,
+  given the prior C1 `must-fix / blocking` decision and the current workflow constraints?
+
+
+  ## Required Checks
+
+
+  The prompt draft must:
+
+
+  1. Preserve the user request to use proxy mode for C1 response policy instead of
+  main-session unilateral approval.
+
+  2. Keep the judgment limited to C1 fix policy, not C2-C7.
+
+  3. Include enough prior C1 decision material and relevant design excerpts for the
+  proxy model to judge without guessing.
+
+  4. Ask a non-leading question that permits confirming, modifying, rejecting, or
+  replacing the main session''s Policy A.
+
+  5. Avoid forcing a closed A/B/C choice.
+
+  6. Distinguish prior proxy decision, current design material, main-session proposed
+  policy, judgment question, and out-of-scope operations.
+
+  7. Avoid authorizing direct file edits, `spec.json` updates, gate completion, phase
+  transition, commit, push, human-only approval substitution, reopen finalization,
+  or irreversible operations.
+
+  8. Use a parser-friendly YAML output contract.
+
+  9. Avoid credentials, tokens, passwords, nonces, personal identifiers, third-party
+  confidential material, and unrelated full logs.
+
+  10. Keep the source material to the minimum needed for this single judgment.
+
+
+  ## Finding Policy
+
+
+  - Report `CRITICAL` if the prompt authorizes or implies authorization of irreversible
+  operations, gate completion, human-only approvals, or direct edits.
+
+  - Report `ERROR` if the prompt asks the wrong question, combines independent judgments,
+  omits material needed to judge C1 fix policy, or forces a closed choice.
+
+  - Report `WARN` if the prompt is usable but has avoidable ambiguity, weak source/target
+  separation, output contract weakness, or mildly leading wording.
+
+  - Report `INFO` for minor wording or ergonomics issues.
+
+  - Return `findings: []` only if the prompt is safe to use for the intended proxy_model
+  judgment.
+
+
+  ## Output Contract
+
+
+  Return YAML only with top-level key `findings`.
+
+
+  If there are no findings, return exactly:
+
+
+  ```yaml
+
+  findings: []
+
+  ```
+
+
+  Each finding must include:
+
+
+  ```yaml
+
+  severity: CRITICAL | ERROR | WARN | INFO
+
+  target_location: string
+
+  description: string
+
+  rationale: string
+
+  ```
+
+  '
+prompt_sha256: ed196bb3b5dbb3853e5fdab0a81007e337b402626598de625df3df42bf9e82b8
+model_results:
+- model_id: claude-sonnet-4-6
+  provider: anthropic-api
+  role: adversarial
+  treatment: adversarial
+  invocation_path: api
+  raw_path: raw/claude-sonnet-4-6.c1-fix-policy-prompt-quality-adversarial-1.txt
+  raw_sha256: fc51559585b79d5de84e967379b6b6619c4d0863dcc48d441b5ae04bedc707f2
+  parsed_path: parsed/claude-sonnet-4-6.c1-fix-policy-prompt-quality-adversarial-1.yaml
+  parsed_sha256: af729badc5ff306b3866699d8f03af9f0e7180056bcdfcac3cf316c2647ca5ff
+  parse_status: parsed
+  formatted_by: parser
+  formatted_by_actor_type: orchestrator
+  formatted_by_actor: run_role.py
+  formatted_at: '2026-06-20T02:33:27.855228+00:00'
+  follow_up_action: triage
+  attempts: 1
+  duration_seconds: 21.951
+  prompt_path: prompts/claude-sonnet-4-6.c1-fix-policy-prompt-quality-adversarial-1.prompt.md
+  prompt_sha256: 354860a3733c29623f8aa9f4c976d44b1dea144762fe90c79543793ac9658793
+- model_id: gemini-3.1-pro-preview
+  provider: gemini-api
+  role: judgment
+  treatment: judgment
+  invocation_path: api
+  raw_path: raw/gemini-3.1-pro-preview.c1-fix-policy-prompt-quality-judgment-2.txt
+  raw_sha256: 67f20b5f2a77ca36c12b6b153ce451a10d7c0026c9147c2eb86f0e1d33ea4fb1
+  parsed_path: parsed/gemini-3.1-pro-preview.c1-fix-policy-prompt-quality-judgment-2.yaml
+  parsed_sha256: 0ae7e2048284a6de7339689f949688e484a198aaf5cca3ab6832b77db9c09b46
+  parse_status: parsed
+  formatted_by: parser
+  formatted_by_actor_type: orchestrator
+  formatted_by_actor: run_role.py
+  formatted_at: '2026-06-20T02:35:39.430075+00:00'
+  follow_up_action: triage
+  attempts: 1
+  duration_seconds: 16.316
+  prompt_path: prompts/gemini-3.1-pro-preview.c1-fix-policy-prompt-quality-judgment-2.prompt.md
+  prompt_sha256: ed196bb3b5dbb3853e5fdab0a81007e337b402626598de625df3df42bf9e82b8
+criteria_source_path: .reviewcompass/specs/workflow-management/reviews/2026-06-20-workflow-management-design-vertical-redo-c1-fix-policy-proxy-prompt-quality-run/prompt-quality-review-criteria.md
+criteria_source_sha256: 17088efd87a0f32852f90257a912810114139d9f4c3743660ac55a23f815d3c6

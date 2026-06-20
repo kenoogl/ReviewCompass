@@ -1,0 +1,7 @@
+```yaml
+findings:
+  - severity: INFO
+    target_location: Output Contract / YAML template
+    description: "The prompt instructs the model to replace `<actual proxy model id>` and `<actual prompt file path used for this run>` with the literal execution context. The LLM does not natively possess these runner-level details from the text alone."
+    rationale: "This may cause the proxy model to hallucinate a file path or guess its own model identifier (e.g., writing 'gpt-4' when the system expects a specific internal ID). To prevent metadata inconsistency, consider asking the model to map the `prompt_id` from the frontmatter instead, or rely on the pipeline to inject these values."
+```

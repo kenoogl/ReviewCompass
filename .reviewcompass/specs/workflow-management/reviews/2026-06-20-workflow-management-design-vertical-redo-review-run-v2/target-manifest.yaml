@@ -1,0 +1,4 @@
+run_id: 2026-06-20-workflow-management-design-vertical-redo-review-run-v2
+target_files:
+- path: .reviewcompass/specs/workflow-management/design.md
+  sha256: cc668ad714baf00bb6edd5e108cd6e1b3a9a673dac88e0cfe947e58fa8643ef8

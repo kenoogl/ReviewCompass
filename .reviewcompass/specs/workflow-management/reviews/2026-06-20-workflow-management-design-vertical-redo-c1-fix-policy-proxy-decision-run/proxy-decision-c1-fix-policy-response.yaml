@@ -1,0 +1,152 @@
+proxy_model_id: "actual_model_id_unavailable; expected gpt-5.5"
+decision_prompt_path: ".reviewcompass/specs/workflow-management/reviews/2026-06-20-workflow-management-design-vertical-redo-c1-fix-policy-proxy-prompt-quality-run/proxy-decision-c1-fix-policy-prompt.md"
+raw_response_path: "proxy-decision-c1-fix-policy-response.yaml"
+review_run_id: "2026-06-20-workflow-management-design-vertical-redo-review-run-v2"
+cluster_id: "C1"
+decision_scope: "c1_fix_policy"
+selected_policy: >-
+  Apply a local design correction, but require it to be internally consistent across
+  Requirement 12, Requirement 13, and the XDI entries. The proposed local fix direction
+  is the right scope and does not require a wholesale rewrite, provided it explicitly
+  removes all remaining registry-as-contract-authority wording, reconciles the
+  advisory-preflight wording with fail-closed contract/registry validation, and clarifies
+  that any registry-side planned outputs or bindings are references/projections rather
+  than authoritative contract fields.
+selected_policy_category: "local_fix_with_modifications"
+local_fix_direction_sufficient: true
+blocking_until_design_edit: true
+decision_rationale: >-
+  The proposed local fix direction addresses the core C1 defect: ambiguous authority
+  between stages/operation-contracts.yaml and stages/operation-registry.yaml. A broader
+  rewrite is not necessary because Requirement 13 already contains much of the correct
+  model: operation-contracts.yaml is the physical contract authority, registry references
+  contract ID/digest/schema version, and preflight reads rather than mutates. However,
+  the design still contains contradictory or drift-prone wording in Requirement 12 and
+  the XDI entries, especially the statement that operation contract schema is placed in
+  operation-registry.yaml and the statement that composite operation effect/approval
+  aggregation is represented in the registry. Those must be corrected before C1 can be
+  considered addressed. Deferral to tasks or implementation is not acceptable for the
+  source-of-truth boundary, structural duplication prohibition, required_action binding,
+  output/effect contract authority, or read-only preflight boundary because those are
+  design-level decisions required by Requirements 12 and 13.
+required_design_changes:
+  - >-
+    Rewrite the Requirement 12 section title and placement text so it no longer says
+    or implies that "operation contract schema" lives in stages/operation-registry.yaml.
+    Requirement 12 should describe the operation registry and read-only preflight layer,
+    not the canonical operation contract schema.
+  - >-
+    State unambiguously that stages/operation-contracts.yaml is the sole physical source
+    of truth for operation contract fields and contract semantics, including effect_kind,
+    approval_required, phase_boundary, sequence, required_action-to-operation semantics,
+    preconditions, postconditions, side effects, approval aggregation, branch/internal-step
+    semantics, and equivalent output/effect contract fields.
+  - >-
+    Preserve the distinction that .reviewcompass/schema/required_action.schema.json owns
+    the allowed required_action token vocabulary, while stages/operation-contracts.yaml
+    owns the mapping from those tokens to operation contract semantics and effect/output
+    contracts.
+  - >-
+    State that stages/operation-registry.yaml owns only registry-specific metadata and
+    bindings, including operation ID, invocation binding, workflow binding, target
+    identity, required inputs, sequence mode, worktree/pending/artifact policy, and
+    contract references such as contract ID, schema version, and digest.
+  - >-
+    Clarify that registry-side planned outputs, if retained, are non-authoritative
+    references, projections, or binding hints derived from or checked against the
+    operation contract; they must not become a parallel output contract authority.
+  - >-
+    State at the design level that the registry schema structurally forbids duplicated
+    contract-authority fields, including effect_kind, approval_required, phase_boundary,
+    preconditions, postconditions, side effects, approval aggregation, branch/internal-step
+    contract semantics, and equivalent output/effect contract fields.
+  - >-
+    Reconcile the current advisory-preflight text with the required fail-closed rule:
+    missing contract references, digest/schema drift, duplicated contract-authority
+    fields, and unbound required_action mappings must not be treated as merely
+    implementation-defined warnings. The design may allow a read-only diagnostic mode,
+    but contract/registry validation must fail closed and must not report the operation
+    as safely bound or executable.
+  - >-
+    State that registry and preflight read operation contracts and state evidence only;
+    they do not redefine contract fields, update contracts, execute operations, consume
+    approvals, create workflow state, create review-run artifacts, mutate artifacts, or
+    independently select an action.
+  - >-
+    Preserve next --json as the single action selector. Registry and preflight may validate,
+    bind, and check the selected action against the contract, but must not invent a
+    parallel source of action truth or independently select pending gates or maintenance
+    actions.
+  - >-
+    Rewrite XDI-WM-004 so that it describes the registry as the authority for registry
+    metadata and preflight bindings only, not as an authority for operation contract
+    fields or contract schema.
+  - >-
+    Rewrite XDI-WM-005 so that effect_kind, approval requirement, phase boundary,
+    branch/internal-step semantics, max effect, and approval aggregation are represented
+    in the operation contract, not "on the registry"; the registry may only reference,
+    project, or bind to those contract-defined semantics.
+wording_or_scope_pitfalls:
+  - >-
+    Do not use "operation contract schema" as the heading for a section whose placement
+    is stages/operation-registry.yaml; use terms such as "operation registry schema" or
+    "registry/preflight binding schema" instead.
+  - >-
+    Do not say that the registry "defines" effect_kind, approval_required, phase_boundary,
+    preconditions, postconditions, side effects, approval aggregation, or output/effect
+    contracts.
+  - >-
+    Do not let "planned_outputs" in the registry become a second output contract. If the
+    field remains, qualify it as a reference/projection/binding checked against the
+    contract.
+  - >-
+    Do not imply that operation docs, check scripts, preflight implementation, or runner
+    code define the canonical precheck vocabulary, required_action mapping, effect kind,
+    approval requirement, phase boundary, or output contract.
+  - >-
+    Do not weaken structural duplication prohibition into a runtime-only integrity check
+    or a task-level implementation detail.
+  - >-
+    Do not treat digest drift, schema-version mismatch, missing contract IDs, or duplicated
+    contract-authority fields as merely advisory if the operation is to be considered
+    validly bound or executable.
+  - >-
+    Do not confuse the required_action schema's ownership of allowed tokens with the
+    operation contract's ownership of semantic mappings and operation effects.
+  - >-
+    Do not expand this C1 fix into unrelated C2-C7 decisions, task design, implementation
+    correctness, gate completion, spec mutation, or approval/commit authorization.
+non_selected_or_risky_directions:
+  - direction: "Broader rewrite of all Requirement 12 and Requirement 13 material"
+    reason: >-
+      Not required if the local correction is applied consistently. The defect is an
+      authority-boundary contradiction, not evidence that the full design structure must
+      be replaced.
+  - direction: "Narrow correction limited to changing the Requirement 12 placement sentence"
+    reason: >-
+      Too narrow. XDI-WM-005 and advisory-preflight wording can still imply duplicated
+      registry authority or non-fail-closed validation, so the ambiguity would remain.
+  - direction: "Deferral to tasks or implementation"
+    reason: >-
+      Not acceptable for C1. The source-of-truth boundary, structural duplication ban,
+      read-only preflight boundary, and next --json selector boundary are design-level
+      requirements.
+  - direction: "Move all registry fields into operation-contracts.yaml"
+    reason: >-
+      Too broad and creates new drift. Registry-specific metadata and bindings should
+      remain in stages/operation-registry.yaml as long as they do not duplicate contract
+      authority.
+  - direction: "Make preflight or registry an action selector"
+    reason: >-
+      Invalid because next --json must remain the single action selector; registry and
+      preflight may only validate and bind to that selected action.
+authority_limits_confirmed:
+  commit: "not_authorized"
+  push: "not_authorized"
+  spec_json_update: "not_authorized"
+  gate_completion: "not_authorized"
+  phase_transition: "not_authorized"
+  direct_file_edit: "not_authorized"
+  human_only_approval_substitution: "not_authorized"
+  reopen_finalize: "not_authorized"
+  approval_required_irreversible_operation: "not_authorized"

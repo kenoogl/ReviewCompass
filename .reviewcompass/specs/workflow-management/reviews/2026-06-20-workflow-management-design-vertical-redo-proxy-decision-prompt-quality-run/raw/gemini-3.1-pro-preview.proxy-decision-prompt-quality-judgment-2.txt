@@ -1,0 +1,13 @@
+findings:
+  - severity: ERROR
+    target_location: "Output Contract / YAML template"
+    description: "The YAML template hardcodes `proxy_model_id: gpt-5.5` instead of using a placeholder."
+    rationale: "If the proxy model follows the template literally, it will record its identity as `gpt-5.5` regardless of which model actually executes the prompt. This falsifies the target identity and provenance in the resulting proxy decision evidence, making the audit record inaccurate."
+  - severity: WARN
+    target_location: "Output requirements vs Judgment Question"
+    description: "Contradictory instructions regarding cluster splitting and merging versus the required output shape."
+    rationale: "The Judgment Question permits the model to 'split, merge' clusters, but the Output requirements mandate 'Produce one item in `decisions` per cluster.' Additionally, the YAML template lacks structural guidance for formatting split or merged cluster IDs (e.g., C1+C2 or C1-A). This ambiguity risks producing YAML that violates downstream parser expectations or breaks traceability."
+  - severity: INFO
+    target_location: "Output Contract / YAML template"
+    description: "The template includes both `finding_id: C1` and `cluster_id: C1` at the top level of each decision item."
+    rationale: "Using `finding_id` to hold a cluster ID is semantically confusing and unnecessarily duplicates the `cluster_id` field. Removing `finding_id: C1` from the cluster object level would improve schema clarity and ergonomics."

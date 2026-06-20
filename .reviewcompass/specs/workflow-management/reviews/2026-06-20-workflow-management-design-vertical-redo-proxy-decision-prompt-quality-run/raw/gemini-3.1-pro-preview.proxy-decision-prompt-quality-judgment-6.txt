@@ -1,0 +1,11 @@
+```yaml
+findings:
+  - severity: INFO
+    target_location: "Output Contract / Consistency rules"
+    description: "The prompt lacks a global constraint explicitly requiring every source finding ID to be exhaustively categorized into either `adopted_findings` or `rejected_findings`."
+    rationale: "While targeted disposition instructions correctly guarantee edge cases in C1, C3, and C5 are handled, adding a global consistency rule ensures the proxy model does not silently drop standard finding IDs in the remaining clusters, mechanically guaranteeing 100% traceability."
+  - severity: INFO
+    target_location: "Output Contract / Consistency rules"
+    description: "The consistency rules do not specify an expected state for the `design_level` boolean when `final_label` is `leave-as-is`."
+    rationale: "Leaving `design_level` completely unconstrained for rejected clusters may cause the proxy model to arbitrarily flip between true and false. Providing a brief rule (e.g., 'may use true or false depending on whether the dismissed issue was conceptual') removes this minor output ambiguity."
+```

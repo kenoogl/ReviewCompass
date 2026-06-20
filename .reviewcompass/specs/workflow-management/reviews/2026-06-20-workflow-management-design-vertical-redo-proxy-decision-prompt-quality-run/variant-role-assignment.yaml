@@ -1,0 +1,14 @@
+variant: implementation_review_independent_3way_codex_operator
+purpose: proxy-decision-prompt-quality
+roles:
+  adversarial:
+    path: api
+    provider: anthropic-api
+    model: claude-sonnet-4-6
+  judgment:
+    path: api
+    provider: gemini-api
+    model: gemini-3.1-pro-preview
+notes:
+  - "adversarial reviews the proxy decision prompt draft before proxy_model use."
+  - "judgment decides whether the revised prompt is safe to use."

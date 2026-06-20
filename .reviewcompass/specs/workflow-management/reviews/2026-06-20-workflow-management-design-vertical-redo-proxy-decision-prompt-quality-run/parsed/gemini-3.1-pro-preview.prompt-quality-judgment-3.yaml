@@ -1,0 +1,30 @@
+role: judgment
+provider: gemini-api
+model: gemini-3.1-pro-preview
+attempts: 1
+duration_seconds: 57.198
+findings:
+- severity: WARN
+  target_location: Output Contract / YAML template
+  description: The YAML schema example hardcodes Main's proposed triage values for
+    C1 (`must-fix`, `valid`, `true`) instead of using neutral placeholders.
+  rationale: Using Main's actual proposed label and validity as the schema example
+    creates a strong framing bias. It anchors the proxy model to blindly confirm C1
+    as a `must-fix` rather than evaluating it objectively. Using type placeholders
+    (e.g., `<must-fix | should-fix | leave-as-is>`) prevents this bias.
+- severity: INFO
+  target_location: Output Contract / YAML template
+  description: The template does not explicitly specify how to format `adopted_findings`,
+    `rejected_findings`, or `notes_for_main` if there are zero items.
+  rationale: While `required_design_response` explicitly permits an `empty list if
+    none`, omitting this guidance for the other array fields risks the model emitting
+    nulls, omitting keys entirely, or hallucinating dummy values, which could break
+    strict downstream YAML parsers.
+- severity: INFO
+  target_location: Output Contract / YAML template
+  description: The `decisions` array in the template demonstrates exactly one item
+    (C1) without an explicit structural comment to iterate.
+  rationale: Although the preamble instructs the model to produce one item per cluster,
+    adding an explicit comment like `# Repeat for C2 through C7` inside the YAML block
+    reinforces the requirement and reduces the risk that literalist models truncate
+    the output after generating the first item.

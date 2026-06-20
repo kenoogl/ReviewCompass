@@ -1,0 +1,36 @@
+schema_version: reviewcompass.post_fix_target_manifest.v1
+manifest_kind: post_fix_review_target
+run_id: 2026-06-20-workflow-management-design-vertical-redo-review-run-v2
+created_at: '2026-06-20'
+purpose: >
+  Record the current post-fix target digest for follow-up review-wave or
+  gate judgment without overwriting the original review target manifest.
+original_manifest:
+  path: .reviewcompass/specs/workflow-management/reviews/2026-06-20-workflow-management-design-vertical-redo-review-run-v2/target-manifest.yaml
+  target_sha256: cc668ad714baf00bb6edd5e108cd6e1b3a9a673dac88e0cfe947e58fa8643ef8
+current_target_files:
+  - path: .reviewcompass/specs/workflow-management/design.md
+    sha256: ac6bd42e57b507a615af3ed6a40f3c031f56fe75f27e7f1fcc12ddcb4dc46558
+supporting_artifacts:
+  - path: .reviewcompass/specs/workflow-management/reviews/2026-06-20-workflow-management-design-vertical-redo-review-run-v2/post-fix-coverage-inventory.md
+    role: post_fix_coverage_inventory
+  - path: .reviewcompass/specs/workflow-management/reviews/2026-06-20-workflow-management-design-vertical-redo-review-run-v2/integrated-post-fix-review.md
+    role: integrated_post_fix_review
+    sha256: e7ec5074bfcda8e15dead3d8ce85153f2d6b4eb9ce53cfe173272013b2b5e7d8
+  - path: .reviewcompass/specs/workflow-management/reviews/2026-06-20-workflow-management-design-vertical-redo-review-run-v2/integrated-post-fix-recheck.md
+    role: integrated_post_fix_recheck
+    sha256: 312a274d9c477d3bfe7a0d2dc1deef64860b09ffc1e68b91792bd286c4b8e6c9
+  - path: .reviewcompass/specs/workflow-management/reviews/2026-06-20-workflow-management-design-vertical-redo-review-run-v2/triage.yaml
+    role: finalized_triage
+    sha256: deced73286df26c37f7dc67b207194fa1581fedd97c17671058372c886038bdc
+  - path: .reviewcompass/specs/workflow-management/reviews/2026-06-20-workflow-management-design-vertical-redo-review-run-v2/post-fix-completion-readiness.md
+    role: post_fix_completion_readiness
+    sha256: 4149fce5e2682651eba923a2537699c0b1b1beeabb56aac1c2cfad444c6fe30b
+status:
+  triage_yaml_finalized: true
+  external_review_rerun: false
+  gate_completion_authorized: false
+notes:
+  - The original target manifest remains the immutable input record for the first triad-review run.
+  - This manifest only identifies the current post-fix target set for subsequent review or human judgment.
+  - This manifest does not authorize commit, push, spec.json mutation, phase transition, or reopen finalization.

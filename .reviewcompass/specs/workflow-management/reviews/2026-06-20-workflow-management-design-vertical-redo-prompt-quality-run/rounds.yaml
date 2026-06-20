@@ -1,0 +1,164 @@
+round_id: prompt-quality-judgment-1
+purpose: prompt-quality
+invocation_timestamp: '2026-06-20T00:56:58.202926+00:00'
+target_files:
+- path: .reviewcompass/specs/workflow-management/reviews/2026-06-20-workflow-management-design-vertical-redo-prompt-quality-run/design-review-criteria-draft.md
+  sha256: 65c310d5fbdbbf5dca5f25681d03f829bf06ea1f09cdc565c5cf0752016c1b71
+criteria: '---
+
+  criteria_id: api-review-prompt-quality-review
+
+  phase: prompt-quality
+
+  review_target: design-review-criteria-draft.md
+
+  ---
+
+
+  # API Review Prompt Quality Review Criteria
+
+
+  Review the target prompt draft itself. Do not review `design.md` yet.
+
+
+  The question is:
+
+
+  Is the draft prompt suitable to use as the `--criteria-file` for an API-mediated
+  design triad-review where the actual `--target` will be `.reviewcompass/specs/workflow-management/design.md`?
+
+
+  ## Required Quality Checks
+
+
+  Check both general LLM-as-Judge prompt quality and this workflow''s vertical-intent
+  review requirements.
+
+
+  ### General API review prompt quality
+
+
+  The prompt draft must:
+
+
+  1. Show that the main LLM identified the materials and judgment points before sending
+  the prompt.
+
+  2. Include enough background and related design context for the model to avoid guessing.
+
+  3. Ask a non-leading analysis question.
+
+  4. Define a scope that is neither too broad nor too narrow.
+
+  5. Provide a fixed, parser-friendly output contract when combined with the API review
+  runner template.
+
+  6. Avoid including credentials, personal data, or unrelated confidential material.
+
+
+  ### Vertical intent transfer requirements
+
+
+  The prompt draft must:
+
+
+  1. Clearly distinguish review target, source materials, and out-of-scope material.
+
+  2. Limit the target judgment to the current phase artifact, here `design.md`.
+
+  3. Use source materials only for background and intent-transfer checking.
+
+  4. Avoid path-only source material listing.
+
+  5. Include upstream purpose, responsibility boundaries, acceptance criteria, forbidden
+  actions, unresolved items, and intended target-phase transfer in a model-readable
+  form.
+
+  6. Ensure the actual design artifact can be reviewed, rather than only an author-written
+  summary.
+
+  7. Prevent the model from judging downstream tasks or implementation correctness.
+
+
+  ## Finding Policy
+
+
+  - Report `ERROR` if the draft prompt would likely cause models to review the wrong
+  target, rely on summaries instead of the real target, miss upstream-transfer obligations,
+  or produce unusable output.
+
+  - Report `WARN` if the draft prompt is usable but has avoidable ambiguity, framing
+  bias, or incomplete source-material presentation.
+
+  - Report `INFO` for minor wording or ergonomics improvements.
+
+  - Return `findings: []` only if the draft prompt is safe to use for the intended
+  API review.
+
+
+  ## Output Contract
+
+
+  Return YAML only with top-level key `findings`.
+
+
+  Each finding must include:
+
+
+  - `severity`: CRITICAL, ERROR, WARN, or INFO
+
+  - `target_location`: specific section in the prompt draft
+
+  - `description`: concise finding summary
+
+  - `rationale`: why this matters for API review quality
+
+
+  If there are no findings, return exactly:
+
+
+  findings: []
+
+  '
+prompt_sha256: 3358b7443a8dc8db83d571f0f0d3dad91ae063b67a0dd44f6707a902461f3c53
+model_results:
+- model_id: claude-sonnet-4-6
+  provider: anthropic-api
+  role: adversarial
+  treatment: adversarial
+  invocation_path: api
+  raw_path: raw/claude-sonnet-4-6.prompt-quality-1.txt
+  raw_sha256: 25ccbb7303f83a27caf9934726050f586faf4cc5cd015cd865388d519df5bdd2
+  parsed_path: parsed/claude-sonnet-4-6.prompt-quality-1.yaml
+  parsed_sha256: 283c9a8b59b8c4050da453ba85a930fc47c61812b318ed8b24310187bf47379a
+  parse_status: parsed
+  formatted_by: parser
+  formatted_by_actor_type: orchestrator
+  formatted_by_actor: run_role.py
+  formatted_at: '2026-06-20T00:55:32.608755+00:00'
+  follow_up_action: triage
+  attempts: 1
+  duration_seconds: 22.445
+  prompt_path: prompts/claude-sonnet-4-6.prompt-quality-1.prompt.md
+  prompt_sha256: a7dd9b63cdeb8f7a22df7731fe66a83e5174b497474d38fcccc977e09aa7bdd0
+- model_id: gemini-3.1-pro-preview
+  provider: gemini-api
+  role: judgment
+  treatment: judgment
+  invocation_path: api
+  raw_path: raw/gemini-3.1-pro-preview.prompt-quality-judgment-1.txt
+  raw_sha256: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+  parsed_path: parsed/gemini-3.1-pro-preview.prompt-quality-judgment-1.yaml
+  parsed_sha256: 7a6157fe2a0a2f6dc255bcdfe1350e5ed7bc3d6f7369e8068a39b228526bf718
+  parse_status: parsed
+  formatted_by: parser
+  formatted_by_actor_type: orchestrator
+  formatted_by_actor: run_role.py
+  formatted_at: '2026-06-20T00:56:58.202926+00:00'
+  follow_up_action: triage
+  attempts: 1
+  duration_seconds: 16.816
+  prompt_path: prompts/gemini-3.1-pro-preview.prompt-quality-judgment-1.prompt.md
+  prompt_sha256: 3358b7443a8dc8db83d571f0f0d3dad91ae063b67a0dd44f6707a902461f3c53
+criteria_source_path: .reviewcompass/specs/workflow-management/reviews/2026-06-20-workflow-management-design-vertical-redo-prompt-quality-run/prompt-quality-review-criteria.md
+criteria_source_sha256: 39ffafc24ae13be4f0779e797888f2f419d7e33d6f261392d753e39a2b1891fb

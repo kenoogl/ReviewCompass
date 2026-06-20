@@ -1,0 +1,15 @@
+role: judgment
+provider: gemini-api
+model: gemini-3.1-pro-preview
+attempts: 1
+duration_seconds: 22.68
+findings:
+- severity: INFO
+  target_location: '## Output Contract'
+  description: 'The output contract code block still hard-codes `proxy_model_id: gpt-5.5`
+    despite the new instructions in the metadata section telling the model to report
+    the actual executing model ID.'
+  rationale: Language models heavily anchor on literal values provided in YAML code
+    blocks. Changing `gpt-5.5` to a type declaration like `string` or a descriptive
+    placeholder (e.g., `<actual_model_id>`) in the example block would better ensure
+    the model follows the instruction to dynamically report its actual ID.

@@ -1,0 +1,30 @@
+findings:
+  - severity: ERROR
+    target_location: "Requirement 12 設計モデル §1, 全体構造, Requirement 13 設計モデル §3"
+    description: "Operation registry / contract authority is internally contradictory: Req 12 §1 says the operation contract schema is placed in `stages/operation-registry.yaml`, while the architecture section and Req 13 §3 say `stages/operation-contracts.yaml` is the contract source of truth and the registry only references it."
+    rationale: "Requirements 12 and 13 require a single machine-readable source-of-truth boundary between operation contract and registry/preflight, with the registry reading but not duplicating or replacing the contract. This design currently states two incompatible authorities for the contract, leaving downstream tasks to invent which file is canonical."
+
+  - severity: ERROR
+    target_location: "全体構造（Architecture）, Requirement 12 設計モデル §1, 軽量版検査スクリプトモデル §1"
+    description: "The design assigns the precheck vocabulary and output contract source of truth to operations docs and script implementation rather than to the registry / contract design artifacts."
+    rationale: "Requirement 13 requires the operation contract / registry boundary to be the single machine-readable source of truth, and Requirement 12 warns against making preflight a separate authority. By saying the canonical vocabulary and output contract are owned by `docs/operations/WORKFLOW_PRECHECK.md`, `WORKFLOW_PRECHECK_DETAILS.md`, and implementation, the design weakens the intended authority boundary and invites drift between design, registry, and code."
+
+  - severity: ERROR
+    target_location: "Requirement 14 設計モデル §1"
+    description: "Approval decision records are not required to bind both artifact digest and staged file-set digest together with actor/timestamp/source for each target operation; the schema makes both digest fields optional alternatives."
+    rationale: "Requirement 14 requires each decision to be bound distinctly to target operation ID, required_action, artifact or staged file set digest, actor, timestamp, and source. The current design leaves `target_artifact_digest` and `staged_file_set_digest` independently nullable without a rule that at least one must exist according to operation type, so approval records can be too weakly bound for downstream mechanization."
+
+  - severity: ERROR
+    target_location: "段集合の静的列挙モデル §2 (`approval` stage example), review-run 後の proxy_model 判断代行モデル, Requirement 14 設計モデル §1"
+    description: "The proxy/human boundary for phase approval is contradictory and weaker than required. The approval stage example allows `proxy_model` for `approval`, while Requirement 14 later states phase approval is human-only."
+    rationale: "Requirement 14 explicitly requires commit, push, spec.json update, phase approval, reopen finalize, and approval_required irreversible operation execution to remain human-only, and proxy decisions must be mechanically distinguished. This design still carries forward an earlier proxy-allowed phase approval model, creating a direct contradiction that could let downstream tasks bypass human-only approval gates."
+
+  - severity: ERROR
+    target_location: "Requirement 16 設計モデル §1 (Phase 0 row and surrounding text)"
+    description: "Phase 0 completion criteria omit the required mechanical workflow-state repair detection."
+    rationale: "Requirement 16 requires Phase 0 completion to include both the six D-003 failure tests and mechanical workflow-state repair detection. The design mentions the 19-step priority, one required_action, invariant checks, reopen plan compiler, and six failure tests, but does not carry forward the workflow-state repair detection criterion, weakening the phase gate."
+
+  - severity: WARN
+    target_location: "Requirement 16 設計モデル §1, 完成判定基準 §10, XDI-WM-003/XDI-WM-004 sections"
+    description: "The design mixes future-phase design with statements that some changes are already implemented or 'design追認', without consistently separating current drafting status from implemented status."
+    rationale: "The review gate asks that design drafting status not imply broader review-wave/alignment/approval/implementation completion. Several sections correctly say later phases remain future work, but others describe implementation-first contracts as already established and adopted. This risks overstating what is actually implemented and approved at the design stage, making downstream readers infer completion that has not been design-gated here."

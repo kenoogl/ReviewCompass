@@ -1,0 +1,22 @@
+variant: prompt_quality_2way_codex_operator_sonnet_adversarial
+phase: prompt-quality
+stage: side-track
+review_run_id: 2026-06-20-workflow-management-design-vertical-redo-prompt-quality-run
+context: prompt_quality_review
+required_roles:
+  - adversarial
+  - judgment
+provider_constraint: roles_distinct
+roles:
+  - role: adversarial
+    path: api
+    provider: anthropic-api
+    model: claude-sonnet-4-6
+    raw_path: raw/claude-sonnet-4-6.prompt-quality.txt
+  - role: judgment
+    path: api
+    provider: gemini-api
+    model: gemini-3.1-pro-preview
+    raw_path: raw/gemini-3.1-pro-preview.prompt-quality.txt
+source_prompt_draft: .reviewcompass/specs/workflow-management/reviews/2026-06-20-workflow-management-design-vertical-redo-prompt-quality-run/design-review-criteria-draft.md
+quality_criteria: .reviewcompass/specs/workflow-management/reviews/2026-06-20-workflow-management-design-vertical-redo-prompt-quality-run/prompt-quality-review-criteria.md

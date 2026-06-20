@@ -1,0 +1,4 @@
+run_id: 2026-06-20-workflow-management-design-vertical-redo-proxy-decision-prompt-quality-run
+target_files:
+- path: .reviewcompass/specs/workflow-management/reviews/2026-06-20-workflow-management-design-vertical-redo-proxy-decision-prompt-quality-run/proxy-decision-prompt-draft.md
+  sha256: bfb0a3bd4ad031c7ab0e4b0327ea717a5012dba113c9fd0ddad36f0260de9800

@@ -1,0 +1,25 @@
+findings:
+  - severity: WARN
+    target_location: "## Main Session's Proposed Response Policy / Alternative Policy B and C"
+    description: "The prompt names Alternative Policy B and Alternative Policy C as labeled options, which creates mild leading-choice framing even though the judgment question explicitly says 'Do not simply choose from A/B/C.' The labeled enumeration anchors the proxy model's answer space to three named options, making it slightly harder to propose a genuinely independent policy."
+    rationale: "Criteria 4 and 5 require a non-leading question that permits confirming, modifying, rejecting, or replacing Policy A without forcing a closed choice. Naming and describing B and C as distinct alternatives alongside A biases the model toward selecting among the three rather than reasoning from first principles. The judgment question partially mitigates this but the structural framing in the policy section still nudges toward A/B/C enumeration."
+
+  - severity: WARN
+    target_location: "## Output Contract / selected_policy field"
+    description: "The YAML output contract enumerates a closed set of pipe-delimited values for `selected_policy`: `policy_a | policy_a_with_modifications | broader_rewrite_required | defer_to_tasks | other`. Including `other` partially opens the field, but the enumeration still anchors the model's vocabulary. A free-string field or a separate `selected_policy_description` field would better match the open-ended judgment question."
+    rationale: "Criteria 5 and 8 require the output contract to support an open answer while remaining parser-friendly. The enumeration with `other` is usable but creates mild tension with the non-closed-choice requirement in criterion 5, because `other` is syntactically awkward and under-specified relative to what a genuinely different policy would look like."
+
+  - severity: WARN
+    target_location: "## Output Contract / rejected_policies block"
+    description: "The `rejected_policies` block pre-names exactly three keys: `policy_a`, `broader_rewrite`, and `defer_to_tasks`. This structurally presupposes that the proxy model will reject at least some of those policies and implicitly requires it to comment on all three, even if the proxy model's conclusion is that Policy A is fully sufficient and neither B nor C is worth discussing."
+    rationale: "A parser-friendly contract should not force the proxy model to populate fields that may not apply to its conclusion. If the proxy model selects `policy_a` as fully sufficient, the `rejected_policies.policy_a` key is contradictory. This creates output ambiguity and may force the model to write placeholder text."
+
+  - severity: INFO
+    target_location: "## Current Design Material Relevant To C1 / Design Summary: Requirement 12 Boundaries"
+    description: "This section is labelled 'Design Summary' rather than 'Design Excerpt', making it unclear whether it is verbatim source text or a paraphrase synthesised by the main session. If it is a paraphrase, the proxy model cannot verify it against the actual design.md wording."
+    rationale: "Criterion 3 requires enough prior material for the proxy model to judge without guessing. A paraphrase summary reduces verifiability. Labelling it explicitly as 'main-session summary (not verbatim)' or replacing it with a verbatim excerpt would improve transparency without materially increasing prompt length."
+
+  - severity: INFO
+    target_location: "## Execution Metadata For This Run / proxy_model_id"
+    description: "The metadata names `gpt-5.5` as the target proxy model. The output contract YAML also hard-codes `proxy_model_id: gpt-5.5`. If the actual model variant differs at execution time, the hard-coded value creates a mismatch in the output artifact without any prompt-level instruction to override it."
+    rationale: "Minor ergonomics issue. The prompt could instruct the proxy model to confirm or correct the model identifier rather than simply echoing a hard-coded string, reducing the risk of a stale identifier propagating into the response artifact."

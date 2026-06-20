@@ -1,0 +1,18 @@
+schema_version: external-api-approval-v1
+approved_action: external_api_proxy_model
+approved_by: user
+approval_basis: "User instructed to proceed in this session: 進める"
+provider: openai-api
+model: gpt-5.5
+allowed_prompt_globs:
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-20-workflow-management-design-vertical-redo-c1-fix-policy-proxy-prompt-quality-run/proxy-decision-c1-fix-policy-prompt.md
+purpose:
+  - proxy_model_decision
+material_policy:
+  allow_reviewcompass_internal_specs: true
+  require_secret_scan: true
+  forbid_credentials: true
+  forbid_personal_identifiers: true
+  forbid_third_party_confidential: true
+expires_at: 2026-06-21T23:59:00+09:00
+consumed: false

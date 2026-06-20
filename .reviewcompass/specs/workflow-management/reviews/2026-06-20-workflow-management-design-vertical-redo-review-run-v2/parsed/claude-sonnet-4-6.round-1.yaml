@@ -1,0 +1,144 @@
+role: adversarial
+provider: anthropic-api
+model: claude-sonnet-4-6
+attempts: 1
+duration_seconds: 56.588
+findings:
+- severity: ERROR
+  target_location: §Req 13 設計モデル §3 — required_action 19語彙の対応表
+  description: 'The design does not map all 19 required_action values individually
+    to their operation contract fields. Instead it provides only a partial enumeration:
+    it lists 7 approval-required simple operations and provides a branching table
+    for run_reopen_pending_gate by active gate, but does not show the remaining values
+    (run_post_write_verification, wait_for_human_decision, record_human_decision,
+    draft_reopen_plan_candidates, repair_canonical_documents, run_reopen_drafting,
+    collect_required_decisions, finalize_reopen, draft_reopen_classification, run_reopen_start,
+    run_workflow_stage, completed) mapped to their individual effect_kind, approval_required,
+    phase_boundary, sequence, actor, branching, and preconditions/postconditions.
+    Requirement 13 explicitly forbids hiding branchy operations behind representative
+    values and requires mapping all 19 without omission.'
+  rationale: Requirement 13 requires the design to map all 19 required_action values
+    without hiding branchy operations behind representative values, and to include
+    effect_kind, approval_required, phase_boundary, sequence, actor, branching, and
+    referenced pre/postconditions for each. The incomplete mapping leaves tasks free
+    to invent the contract for at least 10 of the 19 values, which is exactly the
+    design-authority problem the reopen exists to fix.
+- severity: ERROR
+  target_location: §Req 13 設計モデル §3 — run_maintenance and run_workflow_stage as compound
+    operations
+  description: The design states that run_maintenance and run_workflow_stage are compound
+    operations with branch conditions, internal steps, max side effect, and approval
+    aggregation, but provides no concrete branch conditions, no enumeration of internal
+    steps, no explicit max_effect_kind values, and no approval aggregation rules for
+    either operation. The text says 'do not settle for a single representative value'
+    but then provides none of the required detail. Tasks and implementation would
+    need to invent these specifics, which contradicts Requirement 13's requirement
+    to avoid LLM inference for compound operations.
+  rationale: Requirement 13 requires branching.branches[] with branch conditions,
+    internal steps, each step's effect_kind, max side effect, and approval aggregation
+    rules for run_maintenance and run_workflow_stage. The absence of this detail forces
+    tasks to invent design authority, which is the failure mode the reopen targets.
+- severity: ERROR
+  target_location: §Req 14 設計モデル §1 — human-only decision initial set
+  description: 'The design lists the human-only decision initial set as: commit, push,
+    spec.json update, phase approval, reopen finalize, and approval_required=true
+    irreversible operation execution. However the design does not specify the machine-checkable
+    predicate by which next --json distinguishes proxy_allowed from human_only at
+    the decision gate boundary—specifically it does not define how decision_scope
+    is set on a given approval gate record, who sets it, and what the source of truth
+    is. The design states ''decided_by=proxy_model かつ decision_scope=human_only の
+    record は承認として扱わない'' but does not define how decision_scope gets populated for
+    each of the 19 required_action values. This leaves the proxy/human boundary ambiguous
+    enough that tasks must invent it.'
+  rationale: Requirement 14 requires mechanically distinguishing proxy decisions and
+    human-only decisions. Without specifying how decision_scope is assigned per required_action
+    or per operation contract, the boundary is stated as policy but not implemented
+    as a machine-readable rule that tasks can inherit without invention.
+- severity: ERROR
+  target_location: §Req 16 設計モデル §3 — proxy_model triage decision human-required predicate
+  description: The design defines proxy_model triage decision human-required predicates
+    using 5 evidence sources, but bases proxy triage application partly on 'triage
+    item の decision_status, final_label, decision_actor_type' rather than restricting
+    entirely to the evidence sources listed in Requirement 16. Specifically Requirement
+    16 forbids basing proxy triage on provider/model names but the design does not
+    violate that. However, the design does not specify the predicate evaluation order
+    as a machine-checkable algorithm—it lists 4 priority rules in prose but does not
+    specify what constitutes '未解決 approval gate' or 'approval_required=true の対象 operation'
+    in terms of the fields already defined in §Req 13 and §Req 14, leaving the connection
+    ambiguous. Additionally, Requirement 16 requires that 'human-required evidence
+    always outranks proxy approval' but the design gives this as a prose rule rather
+    than as a formal pre-condition in the operation contract for proxy_triage_apply_batch,
+    meaning tasks must invent the enforcement mechanism.
+  rationale: Requirement 16 requires design-level decisions for proxy triage decision
+    predicates based on enumerated evidence completeness criteria. The design provides
+    the criteria list but does not connect them to the operation contract preconditions
+    for proxy_triage_apply_batch in a way that prevents tasks from inventing enforcement.
+- severity: ERROR
+  target_location: §Req 16 設計モデル §2 — active reopen scope vs spec.json.reopened
+  description: The design states 'spec.json.reopened は過去に上流を reopen した履歴フラグとして保持され得るため、現在の
+    active reopen scope と同一視しない' but does not define what the authoritative source
+    for active reopen scope IS. The design does not specify which field, file, or
+    state structure holds the active reopen scope that next --json reads, nor how
+    it is initialized and cleared. The in-progress file structure (§session 跨ぎ状態管理モデル
+    §1) has pending_gates and completed_gates but no explicit active_reopen_scope
+    field. Tasks would need to invent where active reopen scope lives.
+  rationale: Requirement 16 requires design-level decisions distinguishing active
+    reopen scope from historical spec.json.reopened. Saying they are not the same
+    without specifying the authoritative structure for the active scope leaves tasks
+    to invent the data model.
+- severity: WARN
+  target_location: §Req 15 設計モデル §2 — first-layer prompt checks
+  description: The design lists 8 first-layer prompt checks but does not specify the
+    machine-checkable threshold or rule for the 'length within upper and lower bounds
+    per decision point' check. Requirement 15 requires length bounds to be mechanically
+    checkable but the design does not specify where the per-decision-point bounds
+    are stored, who sets them, or what the failure verdict is. This is likely to force
+    repeated manual judgment during implementation.
+  rationale: Without a defined source of truth for length bounds (e.g., a field in
+    DISCIPLINE_MAP or operation contract), the check is named but not implementable
+    from the design alone, which will require task-level invention of the bound specification
+    mechanism.
+- severity: WARN
+  target_location: §Req 16 設計モデル §1 — Phase 0 completion conditions
+  description: The design states Phase 0 completion requires '6 D-003 failure tests
+    and mechanical workflow-state repair detection' and references D-003 §7.1. However
+    the design also notes 'if section numbers change, copy the 6 failure tests to
+    tasks or implementation acceptance units so completion conditions do not depend
+    on section numbers alone.' The design does not itself enumerate the 6 failure
+    tests or their acceptance criteria, meaning Phase 0 completion is defined by reference
+    to an external working note that may change. This is weak traceability that will
+    require task-level resolution.
+  rationale: Requirement 16 requires Phase 0 completion conditions to be design-level
+    decisions. Deferring the enumeration of the 6 failure tests to tasks or implementation
+    introduces traceability risk, since the design's own completion condition is not
+    self-contained.
+- severity: WARN
+  target_location: §Req 13 設計モデル §5 — registry/preflight read-only boundary
+  description: The design correctly states that preflight reads operation contracts
+    and does not execute, update, or consume approvals. However it does not explicitly
+    state that the registry itself (stages/operation-registry.yaml) must not contain
+    effect_kind, approval_required, or phase_boundary fields—only that such fields
+    must not be duplicated from contract to registry. The prohibition on registry
+    re-definition is stated as a fail-closed integrity check condition but the design
+    does not state it as a structural constraint on registry schema. Tasks may interpret
+    the integrity check as a runtime guard rather than a schema-level prohibition,
+    potentially allowing registry authors to add such fields and rely on the check
+    to catch it.
+  rationale: Requirement 13 requires a clear single machine-readable source-of-truth
+    boundary between operation contract and registry. The distinction between 'schema
+    must not allow these fields' and 'runtime check rejects these fields if present'
+    matters for downstream task and implementation scope.
+- severity: INFO
+  target_location: §要件と設計の対応 — Requirement 13 受入 6
+  description: The traceability table maps Requirement 13 受入 6 (record_human_decision)
+    to §Req 13 設計モデル §4 and §Req 14 設計モデル §1. The §Req 13 §4 entry correctly states
+    that record_human_decision completion alone does not satisfy approval_required=true
+    for the target operation. However the traceability entry for Requirement 14 受入
+    3 (判断 record の対象束縛) and Requirement 13 受入 6 share the same design section references
+    without cross-referencing the decision_scope field defined in §Req 14 §1. Adding
+    a cross-reference from §Req 13 §4 to the decision_scope mechanism in §Req 14 §1
+    would improve traceability between the two models.
+  rationale: 'Non-blocking traceability improvement: the connection between record_human_decision''s
+    non-approval status and the decision_scope predicate that enforces it is present
+    in the design but not explicitly linked, which may slow downstream task authors
+    reading only one section.'
