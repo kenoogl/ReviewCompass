@@ -2330,6 +2330,11 @@ def cmd_spec_set(args):
       + ", ".join(in_progress_files),
     )
     verdict, exit_code = "DEVIATION", 2
+  elif in_progress_files and allow_reopen_gate_change and verdict == "OK":
+    reasons.append(
+      "reopen 手続き内の pending gate 変更として許可します"
+    )
+    verdict, exit_code = "WARN", 1
 
   # 出力の組み立て
   workflow_state = spec_data.get("workflow_state", {})
