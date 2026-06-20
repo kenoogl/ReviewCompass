@@ -16,6 +16,22 @@ VERTICAL_REQUIRED_FIELDS = (
   "intended_target_phase_transfer",
 )
 
+PROMPT_MATERIALIZATION_REQUIRED_ITEMS = (
+  "upstream_excerpt_or_structured_summary",
+  "target_phase_artifact_excerpt",
+  "review_target",
+  "out_of_scope",
+)
+
+UPSTREAM_SUMMARY_REQUIRED_FIELDS = (
+  "purpose",
+  "responsibility_boundaries",
+  "acceptance_criteria",
+  "forbidden_actions",
+  "unresolved_or_design_deferred_items",
+  "intended_target_phase_transfer",
+)
+
 
 @dataclass
 class SourceMaterial:
@@ -180,6 +196,59 @@ def build_api_review_criteria(
   return "\n".join(lines).rstrip() + "\n"
 
 
+def build_api_review_criteria_from_next_action(
+  *,
+  next_action: Dict[str, Any],
+  topic: str,
+  review_target_paths: Sequence[str],
+  judgment_item: str | Sequence[str],
+  review_purpose: str,
+  review_object: str,
+  review_focus: Sequence[str],
+  scope_boundaries: Dict[str, Sequence[str]],
+  source_materials: Sequence[SourceMaterial],
+  user_requirements: UserReviewRequirements | None = None,
+) -> str:
+  """Build criteria using the workflow next-action point as the customization source."""
+  feature = _required_next_action_str(next_action, "feature")
+  phase = _required_next_action_str(next_action, "phase")
+  vertical_intent = None
+  if _next_action_requires_vertical_intent(next_action):
+    _required_input(next_action, "target_feature_documents")
+    vertical_intent = vertical_intent_from_next_action(next_action)
+
+  return build_api_review_criteria(
+    feature=feature,
+    phase=phase,
+    topic=topic,
+    review_target_paths=review_target_paths,
+    judgment_item=judgment_item,
+    review_purpose=review_purpose,
+    review_object=review_object,
+    review_focus=review_focus,
+    scope_boundaries=scope_boundaries,
+    source_materials=source_materials,
+    user_requirements=user_requirements,
+    vertical_intent=vertical_intent,
+  )
+
+
+def vertical_intent_from_next_action(next_action: Dict[str, Any]) -> VerticalIntentTransfer:
+  """Extract the current phase's vertical intent contract from next_action."""
+  phase = _required_next_action_str(next_action, "phase")
+  vertical_input = _required_input(next_action, "vertical_intent_transfer_check")
+  phase_chains = vertical_input.get("phase_chains")
+  if not isinstance(phase_chains, dict):
+    raise ValueError("vertical_intent_transfer_check.phase_chains is required")
+  phase_chain = phase_chains.get(phase)
+  if not isinstance(phase_chain, list) or not phase_chain:
+    raise ValueError(f"vertical intent phase chain is missing for phase: {phase}")
+  _validate_prompt_materialization_contract(
+    vertical_input.get("prompt_materialization_contract")
+  )
+  return VerticalIntentTransfer(chain=[str(item) for item in phase_chain])
+
+
 def _primary_question(review_purpose: str, judgment_item: str, vertical: bool) -> str:
   if vertical:
     return (
@@ -317,6 +386,59 @@ def _vertical_presence(material: SourceMaterial) -> Dict[str, bool]:
     "unresolved_or_deferred": bool(material.unresolved_or_deferred),
     "intended_target_phase_transfer": bool(material.intended_target_phase_transfer),
   }
+
+
+def _required_next_action_str(next_action: Dict[str, Any], key: str) -> str:
+  value = next_action.get(key)
+  if not isinstance(value, str) or not value:
+    raise ValueError(f"next_action.{key} is required")
+  return value
+
+
+def _next_action_requires_vertical_intent(next_action: Dict[str, Any]) -> bool:
+  return (
+    next_action.get("kind") == "stage"
+    and next_action.get("stage") == "triad-review"
+  )
+
+
+def _required_input(next_action: Dict[str, Any], input_id: str) -> Dict[str, Any]:
+  required_inputs = next_action.get("required_inputs")
+  if not isinstance(required_inputs, list):
+    raise ValueError("next_action.required_inputs is required")
+  for item in required_inputs:
+    if isinstance(item, dict) and item.get("id") == input_id:
+      return item
+  raise ValueError(f"required input {input_id} is missing")
+
+
+def _validate_prompt_materialization_contract(contract: Any) -> None:
+  if not isinstance(contract, dict):
+    raise ValueError("prompt_materialization_contract is required")
+  if contract.get("source_materials_must_not_be_path_only") is not True:
+    raise ValueError("source_materials_must_not_be_path_only must be true")
+  required_material = contract.get("required_prompt_material")
+  if not isinstance(required_material, list):
+    raise ValueError("required_prompt_material is required")
+  missing_material = [
+    item for item in PROMPT_MATERIALIZATION_REQUIRED_ITEMS
+    if item not in required_material
+  ]
+  if missing_material:
+    raise ValueError(
+      "required_prompt_material is missing: " + ", ".join(missing_material)
+    )
+  upstream_fields = contract.get("upstream_summary_fields")
+  if not isinstance(upstream_fields, list):
+    raise ValueError("upstream_summary_fields is required")
+  missing_fields = [
+    field_name for field_name in UPSTREAM_SUMMARY_REQUIRED_FIELDS
+    if field_name not in upstream_fields
+  ]
+  if missing_fields:
+    raise ValueError(
+      "upstream_summary_fields is missing: " + ", ".join(missing_fields)
+    )
 
 
 def _bullet_lines(values: Iterable[Any], *, indent: str = "") -> List[str]:

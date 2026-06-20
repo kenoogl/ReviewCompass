@@ -7,7 +7,55 @@ from tools.api_providers.api_review_prompt_builder import (
   UserReviewRequirements,
   VerticalIntentTransfer,
   build_api_review_criteria,
+  build_api_review_criteria_from_next_action,
+  vertical_intent_from_next_action,
 )
+
+
+TRIAD_REVIEW_NEXT_ACTION = {
+  "kind": "stage",
+  "feature": "workflow-management",
+  "phase": "implementation",
+  "stage": "triad-review",
+  "required_inputs": [
+    {
+      "id": "target_feature_documents",
+      "paths": [
+        ".reviewcompass/specs/workflow-management/requirements.md",
+        ".reviewcompass/specs/workflow-management/design.md",
+        ".reviewcompass/specs/workflow-management/tasks.md",
+      ],
+    },
+    {
+      "id": "vertical_intent_transfer_check",
+      "phase_chains": {
+        "implementation": [
+          "requirements.md",
+          "design.md",
+          "tasks.md",
+          "implementation",
+        ],
+      },
+      "prompt_materialization_contract": {
+        "source_materials_must_not_be_path_only": True,
+        "required_prompt_material": [
+          "upstream_excerpt_or_structured_summary",
+          "target_phase_artifact_excerpt",
+          "review_target",
+          "out_of_scope",
+        ],
+        "upstream_summary_fields": [
+          "purpose",
+          "responsibility_boundaries",
+          "acceptance_criteria",
+          "forbidden_actions",
+          "unresolved_or_design_deferred_items",
+          "intended_target_phase_transfer",
+        ],
+      },
+    },
+  ],
+}
 
 
 def test_build_api_review_criteria_preserves_generic_core_and_user_requirements():
@@ -157,6 +205,86 @@ def test_builder_rejects_multiple_independent_judgment_items():
           key="requirement-14",
           purpose="workflow management requirement",
           content="Requirement 14 excerpt.",
+        )
+      ],
+    )
+
+
+def test_vertical_intent_from_next_action_uses_current_phase_chain():
+  vertical_intent = vertical_intent_from_next_action(TRIAD_REVIEW_NEXT_ACTION)
+
+  assert vertical_intent == VerticalIntentTransfer(
+    chain=["requirements.md", "design.md", "tasks.md", "implementation"]
+  )
+
+
+def test_build_api_review_criteria_from_next_action_applies_required_inputs():
+  criteria = build_api_review_criteria_from_next_action(
+    next_action=TRIAD_REVIEW_NEXT_ACTION,
+    topic="approval-gate-transfer",
+    review_target_paths=["tools/check-workflow-action.py"],
+    judgment_item="approval gate upstream transfer",
+    review_purpose="upstream transfer check",
+    review_object="implementation artifact",
+    review_focus=["vertical intent transfer"],
+    scope_boundaries={
+      "in_scope": ["approval gate implementation"],
+      "out_of_scope": ["review-run execution", "spec.json phase movement"],
+    },
+    source_materials=[
+      SourceMaterial(
+        key="workflow-management-requirements-design-tasks",
+        purpose="upstream workflow-management intent",
+        purpose_field="keep approval and proxy boundaries explicit",
+        responsibility_boundaries=["proxy_model is not a substitute for human approval"],
+        acceptance_criteria=["prompt material includes concrete upstream intent"],
+        forbidden_actions=["pass only file paths as review evidence"],
+        unresolved_or_deferred=["none"],
+        intended_target_phase_transfer=[
+          "implementation must preserve approval/proxy separation"
+        ],
+      )
+    ],
+  )
+
+  assert "criteria_id: workflow-management-implementation-approval-gate-transfer-review-criteria" in criteria
+  assert "requirements.md -> design.md -> tasks.md -> implementation" in criteria
+  assert "pass only file paths as review evidence" in criteria
+
+
+def test_build_api_review_criteria_from_next_action_requires_vertical_input_contract():
+  next_action = {
+    "kind": "stage",
+    "feature": "workflow-management",
+    "phase": "implementation",
+    "stage": "triad-review",
+    "required_inputs": [
+      {
+        "id": "target_feature_documents",
+        "paths": [
+          ".reviewcompass/specs/workflow-management/requirements.md",
+          ".reviewcompass/specs/workflow-management/design.md",
+          ".reviewcompass/specs/workflow-management/tasks.md",
+        ],
+      },
+    ],
+  }
+
+  with pytest.raises(ValueError, match="vertical_intent_transfer_check"):
+    build_api_review_criteria_from_next_action(
+      next_action=next_action,
+      topic="approval-gate-transfer",
+      review_target_paths=["tools/check-workflow-action.py"],
+      judgment_item="approval gate upstream transfer",
+      review_purpose="upstream transfer check",
+      review_object="implementation artifact",
+      review_focus=["vertical intent transfer"],
+      scope_boundaries={"in_scope": ["approval gate"], "out_of_scope": []},
+      source_materials=[
+        SourceMaterial(
+          key="workflow-management-requirements-design-tasks",
+          purpose="upstream workflow-management intent",
+          content="Purpose: preserve approval/proxy separation.",
         )
       ],
     )
