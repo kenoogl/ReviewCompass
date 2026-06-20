@@ -28,10 +28,11 @@ completed_steps:
 - tasks triad-review 完了（v3 triage 25 件 decided、post-fix coverage 25/25、apply-fixes
   ready 通過、local post-fix recheck 済み）
 - tasks review-wave 完了（軽量横断確認、他 feature tasks 正本変更不要、carry-forward 未消化 0 件）
-next_step: 第3過程：tasks alignment
+- tasks alignment 完了（Requirement 13〜16、tasks triad-review v3 post-fix、tasks review-wave、implementation
+  連鎖再実施の追跡整合確認済み）
+next_step: 第3過程：tasks approval
 step_number: 3
 pending_gates:
-- stages/tasks.yaml#alignment
 - stages/tasks.yaml#approval
 current_blocker: null
 drafting_completed_gates:
@@ -173,6 +174,13 @@ commit_stop_point_records:
   head: 54b7cecfa60d0df56eaeea9e49d19e5f8bf0b9e2
   evidence:
   - 54b7cecfa60d0df56eaeea9e49d19e5f8bf0b9e2
+- step: 3
+  kind: review_wave_complete
+  gate: stages/tasks.yaml#review-wave
+  reason: tasks review-wave 完了時点の停止点
+  head: db7df9f8135bd088ee64a1e2d2d3ed130dd33798
+  evidence:
+  - db7df9f8135bd088ee64a1e2d2d3ed130dd33798
 completed_gates:
 - stages/requirements.yaml#triad-review
 - stages/requirements.yaml#review-wave
@@ -184,6 +192,7 @@ completed_gates:
 - stages/design.yaml#approval
 - stages/tasks.yaml#triad-review
 - stages/tasks.yaml#review-wave
+- stages/tasks.yaml#alignment
 downstream_impact_decisions:
 - gate: stages/requirements.yaml#triad-review
   feature_scope: workflow-management
@@ -300,6 +309,18 @@ downstream_impact_decisions:
   - .reviewcompass/specs/_cross_feature/reviews/2026-06-20-tasks-vertical-redo-review-wave.md
   - .reviewcompass/specs/_cross_feature/reviews/2026-06-20-tasks-vertical-redo-review-wave-summary.md
   - .reviewcompass/specs/workflow-management/reviews/2026-06-20-workflow-management-tasks-vertical-redo-review-run-v3/post-fix-target-manifest.yaml
+- gate: stages/tasks.yaml#alignment
+  feature_scope: workflow-management
+  decision: existing_sufficient
+  rationale: Requirement 13〜16 は requirements.md、design.md、tasks.md の T-016〜T-019
+    へ追跡可能である。tasks triad-review v3 post-fix と tasks review-wave の結果も整合しており、他 feature
+    正本変更不要、implementation への連鎖再実施は pending gate / recheck で維持されているため、tasks alignment
+    を完了とする。
+  evidence:
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-20-tasks-vertical-redo-alignment.md
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-20-tasks-vertical-redo-review-wave.md
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-20-workflow-management-tasks-vertical-redo-review-run-v3/post-fix-target-manifest.yaml
+  - .reviewcompass/specs/workflow-management/tasks.md
 recheck_progress:
 - consumed_phase: design
   consumed_at: '2026-06-20T00:00:00+09:00'
@@ -313,6 +334,6 @@ recheck_progress:
   - .reviewcompass/specs/workflow-management/spec.json
 commit_stop_point: true
 commit_stop_point_step: 3
-commit_stop_point_kind: review_wave_complete
-commit_stop_point_gate: stages/tasks.yaml#review-wave
-commit_stop_point_reason: tasks review-wave 完了時点の停止点
+commit_stop_point_kind: alignment_complete
+commit_stop_point_gate: stages/tasks.yaml#alignment
+commit_stop_point_reason: tasks alignment 完了時点の停止点
