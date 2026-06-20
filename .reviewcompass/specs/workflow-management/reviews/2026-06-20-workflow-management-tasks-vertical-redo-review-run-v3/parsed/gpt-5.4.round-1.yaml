@@ -1,0 +1,113 @@
+role: primary
+provider: openai-api
+model: gpt-5.4
+attempts: 1
+duration_seconds: 14.912
+findings:
+- severity: ERROR
+  target_location: .reviewcompass/specs/workflow-management/tasks.md#T-016
+  description: T-016 does not carry the approved design's full branch/internal-step
+    contract requirements into implementation-ready work. It mentions branch/internal
+    step semantics in prose, but its owned files, first failing tests, implementation
+    order, and completion criteria do not require the concrete branch tables and internal
+    step fields that the design fixes for `run_maintenance`, `run_workflow_stage`,
+    and `run_reopen_pending_gate`, nor the explicit 19-row baseline mappings with
+    branch-specific `approval_required`, `approval_contract_ref`, and `phase_boundary`
+    semantics.
+  rationale: Requirement 13 and the approved design make the branchy operations the
+    core safety mechanism that prevents LLM-side guessing. A task-level transfer is
+    incomplete unless implementation work explicitly requires those branch structures
+    and validates them, not just generic schema fields. Without that, T-016 could
+    be implemented as a coarse contract list that loses the approved `run_maintenance`
+    branch matrix, `run_workflow_stage` branch matrix, and `run_reopen_pending_gate`
+    active-gate split.
+- severity: ERROR
+  target_location: .reviewcompass/specs/workflow-management/tasks.md#T-016
+  description: T-016 omits explicit task-level coverage for Requirement 13 / design
+    approval aggregation rules and approval-contract binding details. The task does
+    not require tests or completion criteria that verify `approval_contract_refs`,
+    branch-level `approval_aggregation`, `human_only_override_applies`, or the rule
+    that `record_human_decision` must be linked to the target operation by an identifier/binding
+    and must not satisfy the target operation's approval on its own except through
+    the separate approval gate logic.
+  rationale: The requirement excerpt and design excerpt both treat approval aggregation
+    and target binding as mandatory intent, especially for compound operations and
+    for keeping `record_human_decision` separate from operation approval. Generic
+    references to '承認要否集約規則' are too weak at tasks level because they do not force
+    implementation artifacts or tests to preserve the approved mechanics.
+- severity: ERROR
+  target_location: .reviewcompass/specs/workflow-management/tasks.md#T-017
+  description: 'T-017 does not fully transfer the approved approval-gate record schema
+    and binding rules. It calls for an approval schema and mentions target digest/expiry/consume
+    state, but it does not require implementation-ready coverage of the design''s
+    mandatory fields and conditional binding behavior: `decision_id`, `decision`,
+    `decision_scope`, `target_operation_id`, `target_required_action`, `target_artifact`,
+    `target_artifact_digest`, `staged_file_set_digest`, `binding_kind`, `decided_by`,
+    `decided_at`, `source_ref`, `source_digest`, `rationale`, `next_action_expectation`,
+    `consumed`, plus the conditional requirements for `artifact_digest` / `staged_file_set_digest`
+    / `both` / `none`.'
+  rationale: Requirement 14 hinges on approval records being machine-bindable to the
+    exact target artifact or staged content. If tasks only require a looser schema,
+    implementation could miss the approved conditional binding contract and fail to
+    preserve the requirement-to-design intent transfer.
+- severity: ERROR
+  target_location: .reviewcompass/specs/workflow-management/tasks.md#T-017
+  description: T-017 does not explicitly assign implementation work for the approved
+    snapshot file/output contract and `next --json` digest binding. The design fixes
+    `.reviewcompass/runtime/workflow-state-snapshot.yaml` as the snapshot output,
+    requires `source_next_action_sha256`, and defines specific top-level sections
+    (`current_work`, `active_side_tracks`, `git_tree_summary`, `post_write_manifest_summary`,
+    `workflow_state_summary`). T-017's task text and completion criteria only describe
+    partial payload content and drift checks, leaving the approved top-level snapshot
+    contract under-specified.
+  rationale: This is a vertical transfer gap from design to tasks. The snapshot is
+    only trustworthy as an audit aid if it follows the approved structure and binds
+    to the exact `next --json` result. A looser task could produce a different snapshot
+    shape and still appear to satisfy the current task wording.
+- severity: WARN
+  target_location: .reviewcompass/specs/workflow-management/tasks.md#T-018
+  description: T-018 covers structured prompt manifest and prompt audit well, but
+    it does not explicitly carry the approved prompt length bounds contract from `WORKFLOW_DISCIPLINE_MAP.yaml`
+    into owned files, first failing tests, or completion criteria. The design requires
+    structured `prompt_length` fields sourced from discipline-map bounds and machine
+    validation of in-range/out-of-range verdict behavior.
+  rationale: Requirement 15's first-layer machine audit includes prompt length bounds
+    as a required structured check. Without explicit task-level work, this part could
+    be skipped while still satisfying the current broader wording about source digests
+    and schema coverage.
+- severity: WARN
+  target_location: .reviewcompass/specs/workflow-management/tasks.md#T-018
+  description: T-018 references prompt audit and a CLI, but it does not explicitly
+    task the Phase 6 LLM judge-audit output schema or the known-gap fixture coverage
+    required by the approved design (`gap_id`, `severity`, `prompt_ref`, `contract_ref`,
+    `finding`, `recommended_action`, `blocks_approval`, and known gaps beyond missing
+    sections).
+  rationale: The requirement and design limit Phase 6 to optional semantic audit with
+    structured output, and they specify what that structure must contain. The current
+    task mentions 'Phase 6 judge-audit limits' only indirectly and risks under-specifying
+    implementation-ready work for that deferred-but-required layer.
+- severity: ERROR
+  target_location: .reviewcompass/specs/workflow-management/tasks.md#T-019
+  description: T-019 does not correctly transfer the approved Phase 2 requirement.
+    The design requires a read-only registry phase with `operation-list --json` (or
+    equivalent) returning each operation's `canonical_commands`, `effect_kind`, `approval_required`,
+    `sequence`, and `pending_conflicts` without changing `next --json`. T-019 instead
+    scopes Phase 2 only around a phase-plan checker and does not require implementation-ready
+    work or tests for `operation-list --json` / equivalent output.
+  rationale: Requirement 16 and the design define the phased rollout itself as part
+    of the intended implementation order. Missing the concrete Phase 2 deliverable
+    means the task plan no longer faithfully transfers the approved staged implementation
+    plan, which is the main purpose of T-019.
+- severity: WARN
+  target_location: .reviewcompass/specs/workflow-management/tasks.md#Requirements
+    Traceability
+  description: The traceability table lists Requirement 13 through Requirement 16
+    acceptance-criteria ranges that exceed the verbatim requirements excerpt. Requirement
+    13 is traced as '受入 11〜12', Requirement 14 as '受入 11〜12', Requirement 16 as '受入
+    13〜14', but the verbatim excerpt for these requirements is bounded at 10, 12,
+    and 14 respectively and the task review scope says Requirement 13 through 16 should
+    be judged from the verbatim excerpts only.
+  rationale: Even where the substance mostly aligns, stale or off-by-range traceability
+    weakens vertical intent transfer and makes it unclear whether tasks are anchored
+    to the approved excerpt set or to later/restated numbering. This is especially
+    risky in a reopen focused on exact upstream transfer.

@@ -1,0 +1,49 @@
+role: judgment
+provider: gemini-api
+model: gemini-3.1-pro-preview
+attempts: 1
+duration_seconds: 69.773
+findings:
+- severity: ERROR
+  target_location: T-016 (実装順序, 完了条件)
+  description: T-016 omits structural constraints required by the approved design
+    for composite actions, specifically `branching`, `internal_steps`, `max_effect_kind`,
+    and `approval_aggregation`.
+  rationale: Requirement 13 and the design excerpt explicitly mandate these properties
+    to enforce branching logic and max effects without relying on LLM guesswork. Their
+    absence compromises the execution layer contract transfer.
+  recommendation: Update T-016 to explicitly require `branching.branches[]`, `sequence.internal_steps[]`,
+    `max_effect_kind`, and `approval_aggregation` in the operation contract schema
+    and implementation conditions.
+- severity: ERROR
+  target_location: T-017 (実装順序, 完了条件)
+  description: T-017 fails to include the explicit `binding_kind` logic (`artifact_digest`,
+    `staged_file_set_digest`, `both`, `none`) required by the design for strict digest
+    binding in the approval gate.
+  rationale: The design conditionally requires either the artifact digest or the staged
+    file set digest (or both) depending on the operation type to prevent commit mixing.
+    Omitting `binding_kind` breaks this strict boundary.
+  recommendation: Add `binding_kind` and its conditional validation logic to T-017's
+    approval gate record schema requirements and completion conditions.
+- severity: ERROR
+  target_location: T-018 and 要件追跡（Requirements Traceability）
+  description: T-018 omits the implementation of Phase 6 LLM judge-audit limits (Requirement
+    15 AC 6-7). Additionally, the traceability table incorrectly maps AC 6-7 to review-run
+    recording instead of the semantic audit mechanism.
+  rationale: The prompt specifically requires checking whether T-018 transfers Phase
+    6 judge-audit limits. Without this, the semantic audit capability designed to
+    inspect structured prompts will not be implemented.
+  recommendation: Add the Phase 6 LLM judge-audit mechanism to T-018's scope and completion
+    conditions, and correct the traceability table to map Requirement 15 AC 6-7 to
+    the judge audit.
+- severity: WARN
+  target_location: T-018 (完了条件 2)
+  description: T-018 defines the `language_task_io` schema as having properties like
+    `input role`, `allowed action`, and `forbidden action`, which conflicts with the
+    approved design vocabulary.
+  rationale: Using a different schema vocabulary in the task than what was established
+    in the design excerpt (`document_kind`, `input`, `output_format`, `constraints`)
+    causes misalignment and violates the intent transfer.
+  recommendation: Align the `language_task_io` schema properties in T-018's completion
+    conditions with the design document (`document_kind`, `input`, `output_format`,
+    `constraints`).

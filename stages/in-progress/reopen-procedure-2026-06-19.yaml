@@ -16,20 +16,60 @@ completed_steps:
 - requirements alignment 完了（Requirement 13〜16 と design/tasks 追跡、triad-review 修正反映、review-wave
   影響確認済み）
 - requirements approval 完了（利用者承認済み）
-next_step: 第3過程：design triad-review
+- design drafting 完了（Requirement 13〜16 の設計反映確認済み、本文追加不要）
+- design triad-review 完了（v2 triage 15 件 decided、post-fix coverage 15/15、統合 post-fix
+  recheck 済み）
+- design review-wave 完了（軽量横断確認、他 feature design 正本変更不要）
+- design alignment 完了（Requirement 13〜16、design post-fix、review-wave、tasks T-016〜T-019
+  の追跡整合確認済み）
+- design approval 完了（利用者承認済み）
+- tasks drafting 完了（Requirement 13〜16 を T-016〜T-019 として tasks.md へ展開済み、design alignment
+  で追跡整合確認済み）
+- tasks triad-review 完了（v3 triage 25 件 decided、post-fix coverage 25/25、apply-fixes
+  ready 通過、local post-fix recheck 済み）
+next_step: 第3過程：tasks review-wave
 step_number: 3
 pending_gates:
-- stages/design.yaml#triad-review
-- stages/design.yaml#review-wave
-- stages/design.yaml#alignment
-- stages/design.yaml#approval
-- stages/tasks.yaml#triad-review
 - stages/tasks.yaml#review-wave
 - stages/tasks.yaml#alignment
 - stages/tasks.yaml#approval
 current_blocker: null
 drafting_completed_gates:
 - stages/requirements.yaml#drafting
+- stages/design.yaml#drafting
+- stages/tasks.yaml#drafting
+active_reopen_scope:
+  feature: workflow-management
+  source_phase: requirements
+  reopened_phases:
+  - requirements
+  - design
+  - tasks
+  - implementation
+  current_phase: tasks
+  start_gate: stages/requirements.yaml#drafting
+  pending_gate_source: pending_gates
+  completion_condition: pending_gates_empty_and_downstream_impact_decisions_cover_required_gates
+  rationale: Requirement 13〜16 の縦方向意図監査に基づき、workflow-management の requirements から
+    design / tasks / implementation へ連鎖再実施している active scope。
+active_impact_review_scope:
+  features:
+  - foundation
+  - runtime
+  - evaluation
+  - analysis
+  - self-improvement
+  - conformance-evaluation
+  phases:
+  - requirements
+  - design
+  - tasks
+  - implementation
+  decision_source: requirements review-wave と今後の downstream impact decisions
+  flag_policy: impact_review_only_no_workflow_state_false
+  rationale: workflow-management の operation contract / structured prompt / workflow
+    state は他 feature が consumer / derivative として参照し得るため、正本変更要否を確認するが、 active reopen
+    scope とは分離する。
 requirements_drafting_state_sync:
   synced_at: '2026-06-19T00:00:00+09:00'
   gate: stages/requirements.yaml#drafting
@@ -38,6 +78,29 @@ requirements_drafting_state_sync:
     に同期した。triad-review/review-wave/alignment/approval は false のまま維持する。
   evidence:
   - .reviewcompass/specs/workflow-management/requirements.md
+  - .reviewcompass/specs/workflow-management/spec.json
+design_drafting_state_sync:
+  synced_at: '2026-06-20T00:00:00+09:00'
+  gate: stages/design.yaml#drafting
+  rationale: Requirement 13〜16 は design.md の Requirement 13〜16 設計モデル、追跡表、変更履歴に反映済みであり、requirements.md
+    の目的・責務境界・受入条件・禁止事項が設計判断へ落ちていることを確認した。本文追加は不要のため、drafting 完了を drafting_completed_gates
+    と workflow-management spec.json の design.drafting=true に同期した。triad-review/review-wave/alignment/approval
+    は false のまま維持する。
+  evidence:
+  - .reviewcompass/specs/workflow-management/requirements.md
+  - .reviewcompass/specs/workflow-management/design.md
+  - .reviewcompass/specs/workflow-management/tasks.md
+  - .reviewcompass/specs/workflow-management/spec.json
+tasks_drafting_state_sync:
+  synced_at: '2026-06-20T00:00:00+09:00'
+  gate: stages/tasks.yaml#drafting
+  rationale: Requirement 13〜16 は T-016〜T-019 として tasks.md に展開済みであり、design alignment
+    でも requirements / design / tasks の追跡整合を確認した。tasks triad-review 以降は未完了のまま維持し、drafting
+    完了のみを drafting_completed_gates と workflow-management spec.json の tasks.drafting=true
+    に同期する。
+  evidence:
+  - .reviewcompass/specs/workflow-management/tasks.md
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-20-design-vertical-redo-alignment.md
   - .reviewcompass/specs/workflow-management/spec.json
 reopen_step_records:
 - from_step: 1
@@ -96,11 +159,23 @@ commit_stop_point_records:
   head: 1e9de71e78e1f8dc3fa3b066a4b94f25ea0543ce
   evidence:
   - 1e9de71e78e1f8dc3fa3b066a4b94f25ea0543ce
+- step: 3
+  kind: approval_complete
+  gate: stages/requirements.yaml#approval
+  reason: requirements approval 完了時点の停止点
+  head: c09a6f9de1144a46fae98aea4a59b92384308c2b
+  evidence:
+  - c09a6f9de1144a46fae98aea4a59b92384308c2b
 completed_gates:
 - stages/requirements.yaml#triad-review
 - stages/requirements.yaml#review-wave
 - stages/requirements.yaml#alignment
 - stages/requirements.yaml#approval
+- stages/design.yaml#triad-review
+- stages/design.yaml#review-wave
+- stages/design.yaml#alignment
+- stages/design.yaml#approval
+- stages/tasks.yaml#triad-review
 downstream_impact_decisions:
 - gate: stages/requirements.yaml#triad-review
   feature_scope: workflow-management
@@ -146,8 +221,79 @@ downstream_impact_decisions:
   - .reviewcompass/specs/workflow-management/reviews/2026-06-19-workflow-management-requirements-vertical-redo-review-run-v2/proxy-decision-decisions.yaml
   - .reviewcompass/specs/_cross_feature/reviews/2026-06-20-requirements-vertical-redo-review-wave-summary.md
   - 1e9de71e78e1f8dc3fa3b066a4b94f25ea0543ce
+- gate: stages/design.yaml#triad-review
+  feature_scope: workflow-management
+  decision: user_approved_after_post_fix
+  rationale: design triad-review v2 の 15 件は利用者承認により triage finalization 済みで、13 件 must-fix、2
+    件 should-fix として decided になった。全 15 件に post-fix recheck coverage があり、統合 post-fix
+    review で見つかった Req 13 の追加不整合も修正・再点検済みのため、design triad-review gate を完了とする。
+  evidence:
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-20-workflow-management-design-vertical-redo-review-run-v2/triage.yaml
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-20-workflow-management-design-vertical-redo-review-run-v2/post-fix-coverage-inventory.md
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-20-workflow-management-design-vertical-redo-review-run-v2/integrated-post-fix-review.md
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-20-workflow-management-design-vertical-redo-review-run-v2/integrated-post-fix-recheck.md
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-20-workflow-management-design-vertical-redo-review-run-v2/post-fix-target-manifest.yaml
+- gate: stages/design.yaml#review-wave
+  feature_scope: all_features
+  decision: existing_sufficient
+  rationale: Requirement 13〜16 縦方向やり直しの design review-wave として軽量横断確認を実施した。未消化 carry-forward
+    は 0 件で、workflow-management 以外は consumer / derivative として現行正本で受けられるため、他 feature
+    の design 正本変更は不要。
+  evidence:
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-20-design-vertical-redo-review-wave.md
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-20-design-vertical-redo-review-wave-summary.md
+  - .reviewcompass/specs/workflow-management/design.md
+- gate: stages/design.yaml#alignment
+  feature_scope: workflow-management
+  decision: existing_sufficient
+  rationale: Requirement 13〜16 は requirements.md、design.md、tasks.md の T-016〜T-019
+    へ追跡可能である。design triad-review v2 post-fix と軽量 review-wave の結果も整合しており、他 feature
+    正本変更不要、tasks / implementation への連鎖再実施は pending gates で維持されているため、design alignment
+    を完了とする。
+  evidence:
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-20-design-vertical-redo-alignment.md
+  - .reviewcompass/specs/workflow-management/requirements.md
+  - .reviewcompass/specs/workflow-management/design.md
+  - .reviewcompass/specs/workflow-management/tasks.md
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-20-workflow-management-design-vertical-redo-review-run-v2/post-fix-target-manifest.yaml
+- gate: stages/design.yaml#approval
+  feature_scope: workflow-management
+  decision: approved
+  rationale: 利用者が design approval を明示承認した。Requirement 13〜16 の design 展開、triad-review
+    v2 post-fix、軽量 review-wave、 alignment 完了を踏まえ、design phase を承認済みとする。
+  evidence:
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-20-design-vertical-redo-approval.md
+  - .reviewcompass/specs/workflow-management/design.md
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-20-design-vertical-redo-alignment.md
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-20-design-vertical-redo-review-wave.md
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-20-workflow-management-design-vertical-redo-review-run-v2/post-fix-target-manifest.yaml
+- gate: stages/tasks.yaml#triad-review
+  feature_scope: workflow-management
+  decision: approved
+  rationale: tasks triad-review v3 の 25 件は全件 decided で、10 件 must-fix、12 件 should-fix、3
+    件 leave-as-is として整理済み。22 件の fix 対象は approval-apply-fixes-2026-06-20.yaml により apply-fixes
+    ready を通過し、post-fix coverage inventory、integrated post-fix recheck、post-fix target
+    manifest で tasks.md 反映と leave-as-is disposition を確認したため、tasks triad-review gate
+    を完了とする。
+  evidence:
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-20-workflow-management-tasks-vertical-redo-review-run-v3/triage.yaml
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-20-workflow-management-tasks-vertical-redo-review-run-v3/approval-apply-fixes-2026-06-20.yaml
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-20-workflow-management-tasks-vertical-redo-review-run-v3/post-fix-coverage-inventory.md
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-20-workflow-management-tasks-vertical-redo-review-run-v3/integrated-post-fix-recheck.md
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-20-workflow-management-tasks-vertical-redo-review-run-v3/post-fix-target-manifest.yaml
+recheck_progress:
+- consumed_phase: design
+  consumed_at: '2026-06-20T00:00:00+09:00'
+  reason: design drafting / triad-review / review-wave / alignment / approval が完了し、利用者が
+    design approval を明示承認したため。
+  remaining_impacted_downstream_phases:
+  - tasks
+  - implementation
+  evidence:
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-20-design-vertical-redo-approval.md
+  - .reviewcompass/specs/workflow-management/spec.json
 commit_stop_point: true
 commit_stop_point_step: 3
-commit_stop_point_kind: approval_complete
-commit_stop_point_gate: stages/requirements.yaml#approval
-commit_stop_point_reason: requirements approval 完了時点の停止点
+commit_stop_point_kind: triad_review_complete
+commit_stop_point_gate: stages/tasks.yaml#triad-review
+commit_stop_point_reason: tasks triad-review 完了時点の停止点

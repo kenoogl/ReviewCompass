@@ -1,0 +1,44 @@
+schema_version: reviewcompass.post_fix_target_manifest.v1
+manifest_kind: post_fix_review_target
+run_id: 2026-06-20-workflow-management-tasks-vertical-redo-review-run-v3
+created_at: '2026-06-20'
+purpose: >
+  Record the current post-fix target digest for follow-up tasks review-wave
+  or gate judgment without overwriting the original review target manifest.
+original_manifest:
+  path: .reviewcompass/specs/workflow-management/reviews/2026-06-20-workflow-management-tasks-vertical-redo-review-run-v3/target-manifest.yaml
+  target_sha256: e6adb86ea69669f88b093dbd7f109c4105add01a6dc78da88403967968ef8262
+current_target_files:
+  - path: .reviewcompass/specs/workflow-management/tasks.md
+    sha256: 053858cf4abf94bd7b54bf8a45a8ca9504afef39ea8be48bd282193f95e84098
+supporting_artifacts:
+  - path: .reviewcompass/specs/workflow-management/reviews/2026-06-20-workflow-management-tasks-vertical-redo-review-run-v3/triage.yaml
+    role: finalized_triage
+    sha256: 2d8257907f38ebab8a53c797eed623ddcbd7dbb3526b34a7bbc3243c357306f7
+  - path: .reviewcompass/specs/workflow-management/reviews/2026-06-20-workflow-management-tasks-vertical-redo-review-run-v3/review_summary.md
+    role: user_visible_review_summary
+    sha256: 317982441c410987a74b8f311dae15d6a8a7fcef913caef4ed15f16ac794d5eb
+  - path: .reviewcompass/specs/workflow-management/reviews/2026-06-20-workflow-management-tasks-vertical-redo-review-run-v3/approval-triage-2026-06-20.yaml
+    role: triage_decision_approval
+    sha256: 47774ee39674d15dfdaa08a665a222620489ab0e224bea95ad9055d44108398e
+  - path: .reviewcompass/specs/workflow-management/reviews/2026-06-20-workflow-management-tasks-vertical-redo-review-run-v3/approval-apply-fixes-2026-06-20.yaml
+    role: apply_fixes_approval
+    sha256: 56e8305750aa1d69d8bdc5859ab5a42bcb2b780e0a06b986e5fddf2b878a7f1d
+  - path: .reviewcompass/specs/workflow-management/reviews/2026-06-20-workflow-management-tasks-vertical-redo-review-run-v3/post-fix-coverage-inventory.md
+    role: post_fix_coverage_inventory
+    sha256: 1744b33d83587f8f30e2494ac31589ff435090510d80c738c4c5d8592e6ca67b
+  - path: .reviewcompass/specs/workflow-management/reviews/2026-06-20-workflow-management-tasks-vertical-redo-review-run-v3/integrated-post-fix-recheck.md
+    role: integrated_post_fix_recheck
+    sha256: 9ac5f7b290be39b25ca389c4b6622d158662815260ede4b858538f84ae4954d9
+  - path: .reviewcompass/specs/workflow-management/reviews/2026-06-20-workflow-management-tasks-vertical-redo-review-run-v3/post-fix-completion-readiness.md
+    role: post_fix_completion_readiness
+    sha256: fbd13fa0155b1e6ca12d177b25f78d52b61fe02a4aeb90c1c2532e191bfa813d
+status:
+  triage_yaml_finalized: true
+  apply_fixes_ready: true
+  external_review_rerun: false
+  gate_completion_authorized: false
+notes:
+  - The original target manifest remains the immutable input record for the first triad-review run.
+  - This manifest only identifies the current post-fix target set for subsequent review or human judgment.
+  - This manifest does not authorize commit, push, spec.json mutation, phase transition, or reopen finalization.

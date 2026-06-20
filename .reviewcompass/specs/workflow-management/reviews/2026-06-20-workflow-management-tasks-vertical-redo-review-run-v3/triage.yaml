@@ -1,0 +1,627 @@
+run_id: 2026-06-20-workflow-management-tasks-vertical-redo-review-run-v3
+triage_status: decided
+generated_at: '2026-06-20T04:41:09.048531+00:00'
+decision_actor: null
+decision_actor_type: human
+items:
+- finding_id: 2026-06-20-workflow-management-tasks-vertical-redo-review-run-v3-gpt-5.4-primary-001
+  run_id: 2026-06-20-workflow-management-tasks-vertical-redo-review-run-v3
+  source_model: gpt-5.4
+  source_round: round-1
+  source_raw_path: raw/gpt-5.4.round-1.txt
+  source_parsed_path: parsed/gpt-5.4.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: .reviewcompass/specs/workflow-management/tasks.md#T-016
+  plain_language_summary: T-016 does not carry the approved design's full branch/internal-step
+    contract requirements into implementation-ready work. It mentions branch/internal
+    step semantics in prose, but its owned files, first failing tests, implementation
+    order, and completion criteria do not require the concrete branch tables and internal
+    step fields that the design fixes for `run_maintenance`, `run_workflow_stage`,
+    and `run_reopen_pending_gate`, nor the explicit 19-row baseline mappings with
+    branch-specific `approval_required`, `approval_contract_ref`, and `phase_boundary`
+    semantics.
+  final_label: must-fix
+  decision_status: decided
+  decision_actor: codex-main-llm
+  decision_actor_type: agent
+  decision_at: '2026-06-20T05:01:23.603755+00:00'
+  decision_reason: 'C1 main-LLM judgment: design-fixed branchy operation contracts
+    were under-specified in T-016. tasks.md now requires branching.branches[], internal_steps[],
+    max_effect_kind, approval_aggregation, human_only_override_applies, approval_contract_ref,
+    and phase_boundary checks.'
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-20-workflow-management-tasks-vertical-redo-review-run-v3-gpt-5.4-primary-002
+  run_id: 2026-06-20-workflow-management-tasks-vertical-redo-review-run-v3
+  source_model: gpt-5.4
+  source_round: round-1
+  source_raw_path: raw/gpt-5.4.round-1.txt
+  source_parsed_path: parsed/gpt-5.4.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: .reviewcompass/specs/workflow-management/tasks.md#T-016
+  plain_language_summary: T-016 omits explicit task-level coverage for Requirement
+    13 / design approval aggregation rules and approval-contract binding details.
+    The task does not require tests or completion criteria that verify `approval_contract_refs`,
+    branch-level `approval_aggregation`, `human_only_override_applies`, or the rule
+    that `record_human_decision` must be linked to the target operation by an identifier/binding
+    and must not satisfy the target operation's approval on its own except through
+    the separate approval gate logic.
+  final_label: must-fix
+  decision_status: decided
+  decision_actor: codex-main-llm
+  decision_actor_type: agent
+  decision_at: '2026-06-20T05:01:23.666371+00:00'
+  decision_reason: 'C1 main-LLM judgment: design-fixed branchy operation contracts
+    were under-specified in T-016. tasks.md now requires branching.branches[], internal_steps[],
+    max_effect_kind, approval_aggregation, human_only_override_applies, approval_contract_ref,
+    and phase_boundary checks.'
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-20-workflow-management-tasks-vertical-redo-review-run-v3-gpt-5.4-primary-003
+  run_id: 2026-06-20-workflow-management-tasks-vertical-redo-review-run-v3
+  source_model: gpt-5.4
+  source_round: round-1
+  source_raw_path: raw/gpt-5.4.round-1.txt
+  source_parsed_path: parsed/gpt-5.4.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: .reviewcompass/specs/workflow-management/tasks.md#T-017
+  plain_language_summary: 'T-017 does not fully transfer the approved approval-gate
+    record schema and binding rules. It calls for an approval schema and mentions
+    target digest/expiry/consume state, but it does not require implementation-ready
+    coverage of the design''s mandatory fields and conditional binding behavior: `decision_id`,
+    `decision`, `decision_scope`, `target_operation_id`, `target_required_action`,
+    `target_artifact`, `target_artifact_digest`, `staged_file_set_digest`, `binding_kind`,
+    `decided_by`, `decided_at`, `source_ref`, `source_digest`, `rationale`, `next_action_expectation`,
+    `consumed`, plus the conditional requirements for `artifact_digest` / `staged_file_set_digest`
+    / `both` / `none`.'
+  final_label: must-fix
+  decision_status: decided
+  decision_actor: codex-main-llm
+  decision_actor_type: agent
+  decision_at: '2026-06-20T05:01:23.728404+00:00'
+  decision_reason: 'C2 main-LLM judgment: approval gate record schema, decision_scope
+    derivation, binding_kind, and digest binding were under-specified in T-017. tasks.md
+    now requires the design field set and conditional digest validation.'
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-20-workflow-management-tasks-vertical-redo-review-run-v3-gpt-5.4-primary-004
+  run_id: 2026-06-20-workflow-management-tasks-vertical-redo-review-run-v3
+  source_model: gpt-5.4
+  source_round: round-1
+  source_raw_path: raw/gpt-5.4.round-1.txt
+  source_parsed_path: parsed/gpt-5.4.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: .reviewcompass/specs/workflow-management/tasks.md#T-017
+  plain_language_summary: T-017 does not explicitly assign implementation work for
+    the approved snapshot file/output contract and `next --json` digest binding. The
+    design fixes `.reviewcompass/runtime/workflow-state-snapshot.yaml` as the snapshot
+    output, requires `source_next_action_sha256`, and defines specific top-level sections
+    (`current_work`, `active_side_tracks`, `git_tree_summary`, `post_write_manifest_summary`,
+    `workflow_state_summary`). T-017's task text and completion criteria only describe
+    partial payload content and drift checks, leaving the approved top-level snapshot
+    contract under-specified.
+  final_label: must-fix
+  decision_status: decided
+  decision_actor: codex-main-llm
+  decision_actor_type: agent
+  decision_at: '2026-06-20T05:01:23.789371+00:00'
+  decision_reason: 'C3 main-LLM judgment: workflow-state snapshot path, source_next_action_sha256,
+    top-level schema, and current_work fields were under-specified in T-017. tasks.md
+    now carries the design minimum structure.'
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-20-workflow-management-tasks-vertical-redo-review-run-v3-gpt-5.4-primary-005
+  run_id: 2026-06-20-workflow-management-tasks-vertical-redo-review-run-v3
+  source_model: gpt-5.4
+  source_round: round-1
+  source_raw_path: raw/gpt-5.4.round-1.txt
+  source_parsed_path: parsed/gpt-5.4.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: .reviewcompass/specs/workflow-management/tasks.md#T-018
+  plain_language_summary: T-018 covers structured prompt manifest and prompt audit
+    well, but it does not explicitly carry the approved prompt length bounds contract
+    from `WORKFLOW_DISCIPLINE_MAP.yaml` into owned files, first failing tests, or
+    completion criteria. The design requires structured `prompt_length` fields sourced
+    from discipline-map bounds and machine validation of in-range/out-of-range verdict
+    behavior.
+  final_label: must-fix
+  decision_status: decided
+  decision_actor: codex-main-llm
+  decision_actor_type: agent
+  decision_at: '2026-06-20T05:01:23.850272+00:00'
+  decision_reason: 'C4 main-LLM judgment: prompt_length bounds and next_action_compatible/on_completion
+    checks are explicit Requirement 15 layer-1 audit requirements. tasks.md now requires
+    discipline-map bounds and compatibility tests.'
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-20-workflow-management-tasks-vertical-redo-review-run-v3-gpt-5.4-primary-006
+  run_id: 2026-06-20-workflow-management-tasks-vertical-redo-review-run-v3
+  source_model: gpt-5.4
+  source_round: round-1
+  source_raw_path: raw/gpt-5.4.round-1.txt
+  source_parsed_path: parsed/gpt-5.4.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: .reviewcompass/specs/workflow-management/tasks.md#T-018
+  plain_language_summary: T-018 references prompt audit and a CLI, but it does not
+    explicitly task the Phase 6 LLM judge-audit output schema or the known-gap fixture
+    coverage required by the approved design (`gap_id`, `severity`, `prompt_ref`,
+    `contract_ref`, `finding`, `recommended_action`, `blocks_approval`, and known
+    gaps beyond missing sections).
+  final_label: must-fix
+  decision_status: decided
+  decision_actor: codex-main-llm
+  decision_actor_type: agent
+  decision_at: '2026-06-20T05:01:23.910653+00:00'
+  decision_reason: 'C5 main-LLM judgment: Requirement 15 Phase 6 judge-audit schema
+    and language_task vocabulary needed design-faithful transfer. tasks.md now uses
+    document_kind/input/output_format/constraints and defines structured judge-audit
+    gap output.'
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-20-workflow-management-tasks-vertical-redo-review-run-v3-gpt-5.4-primary-007
+  run_id: 2026-06-20-workflow-management-tasks-vertical-redo-review-run-v3
+  source_model: gpt-5.4
+  source_round: round-1
+  source_raw_path: raw/gpt-5.4.round-1.txt
+  source_parsed_path: parsed/gpt-5.4.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: .reviewcompass/specs/workflow-management/tasks.md#T-019
+  plain_language_summary: T-019 does not correctly transfer the approved Phase 2 requirement.
+    The design requires a read-only registry phase with `operation-list --json` (or
+    equivalent) returning each operation's `canonical_commands`, `effect_kind`, `approval_required`,
+    `sequence`, and `pending_conflicts` without changing `next --json`. T-019 instead
+    scopes Phase 2 only around a phase-plan checker and does not require implementation-ready
+    work or tests for `operation-list --json` / equivalent output.
+  final_label: must-fix
+  decision_status: decided
+  decision_actor: codex-main-llm
+  decision_actor_type: agent
+  decision_at: '2026-06-20T05:01:23.972556+00:00'
+  decision_reason: 'C6 main-LLM judgment: Requirement 16 Phase 2 read-only registry
+    deliverable and proxy coverage guard details needed transfer. tasks.md now requires
+    operation-list --json equivalent, no next --json behavior change, approval scope
+    mismatch checks, and fixed predicate order.'
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-20-workflow-management-tasks-vertical-redo-review-run-v3-gpt-5.4-primary-008
+  run_id: 2026-06-20-workflow-management-tasks-vertical-redo-review-run-v3
+  source_model: gpt-5.4
+  source_round: round-1
+  source_raw_path: raw/gpt-5.4.round-1.txt
+  source_parsed_path: parsed/gpt-5.4.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: .reviewcompass/specs/workflow-management/tasks.md#Requirements
+    Traceability
+  plain_language_summary: The traceability table lists Requirement 13 through Requirement
+    16 acceptance-criteria ranges that exceed the verbatim requirements excerpt. Requirement
+    13 is traced as '受入 11〜12', Requirement 14 as '受入 11〜12', Requirement 16 as '受入
+    13〜14', but the verbatim excerpt for these requirements is bounded at 10, 12,
+    and 14 respectively and the task review scope says Requirement 13 through 16 should
+    be judged from the verbatim excerpts only.
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: codex-main-llm
+  decision_actor_type: agent
+  decision_at: '2026-06-20T05:01:24.032774+00:00'
+  decision_reason: 'C7 main-LLM judgment: the specific claim that traceability ranges
+    exceeded the verbatim excerpt was inaccurate; the excerpt includes the cited ranges.
+    Adjacent real traceability issues were handled through C5/C6 corrections.'
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-20-workflow-management-tasks-vertical-redo-review-run-v3-claude-sonnet-4-6-adversarial-001
+  run_id: 2026-06-20-workflow-management-tasks-vertical-redo-review-run-v3
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: tasks.md T-016 / 要件追跡表 Requirement 13
+  plain_language_summary: T-016 の要件追跡表エントリが Requirement 13 受入 1〜12 のうち受入 11〜12 を別行で列挙しているが、tasks.md
+    本文の完了条件5が『T-014 の preflight response が operation contract ID / digest / schema_version
+    を参照でき、別正本の再定義を持たない。registry と contract の不一致、参照先欠落、digest drift、正本 field 重複は DEVIATION
+    になる』と述べるのに対し、design §5 の read-only 境界が『contract 更新、operation 実行、approval consume、workflow
+    state 更新を行わない』という preflight の mutating 禁止事項を明示している。T-016 の禁止事項と停止条件にはこの mutating
+    禁止が含まれているが、完了条件6に限定されており、registry / preflight の read-only 境界に violation した場合の
+    DEVIATION 判定がテスト要件に明示されていない。design §5 の fail-closed は registry が contract field
+    を複製・二重定義した場合の DEVIATION を含むが、T-016 テスト要件にその具体ケース（registry が effect_kind / approval_required
+    等を直接保持する場合）が抜けている。
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: codex-main-llm
+  decision_actor_type: agent
+  decision_at: '2026-06-20T05:01:24.091982+00:00'
+  decision_reason: 'C1 main-LLM judgment: design-fixed branchy operation contracts
+    were under-specified in T-016. tasks.md now requires branching.branches[], internal_steps[],
+    max_effect_kind, approval_aggregation, human_only_override_applies, approval_contract_ref,
+    and phase_boundary checks.'
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-20-workflow-management-tasks-vertical-redo-review-run-v3-claude-sonnet-4-6-adversarial-002
+  run_id: 2026-06-20-workflow-management-tasks-vertical-redo-review-run-v3
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: tasks.md T-016 / 最初に書く失敗テスト test_registry_references_contract_without_duplicating_contract_fields
+  plain_language_summary: test_registry_references_contract_without_duplicating_contract_fields
+    は『registry が contract の正本 field を複製した場合』と『参照 contract ID / digest が不一致の場合』に失敗するとされているが、design
+    §3 で列挙された複製禁止 field（effect_kind、approval_required、approval_contract_refs、phase_boundary、preconditions/postconditions、side
+    effects、承認要否の集約規則、branch/internal step semantics、max effect、出力・副作用 contract field）の網羅リストがテストに要求されていない。これでは
+    partial 複製（例えば approval_contract_refs だけが registry に残る）を見逃す可能性がある。
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: codex-main-llm
+  decision_actor_type: agent
+  decision_at: '2026-06-20T05:01:24.151170+00:00'
+  decision_reason: 'C1 main-LLM judgment: design-fixed branchy operation contracts
+    were under-specified in T-016. tasks.md now requires branching.branches[], internal_steps[],
+    max_effect_kind, approval_aggregation, human_only_override_applies, approval_contract_ref,
+    and phase_boundary checks.'
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-20-workflow-management-tasks-vertical-redo-review-run-v3-claude-sonnet-4-6-adversarial-003
+  run_id: 2026-06-20-workflow-management-tasks-vertical-redo-review-run-v3
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: tasks.md T-016 / 完了条件4
+  plain_language_summary: 完了条件4に『commit を強制すべき operation と強制しない operation が commit_boundary
+    で区別され、停止点消費・approval consumption・phase boundary などの強制 commit 点を bypass できない』とある。design
+    §3 の 19語彙基線表に照らすと、run_reopen_start・run_workflow_stage(phase_transition=true) の
+    phase_boundary が commit_boundary ではなく reopen_boundary・phase_transition とされているが、T-016
+    の完了条件または禁止事項にこれら phase_boundary 値の正確な対応チェックが含まれていない。実装者が commit_boundary を独自に拡大適用するリスクがある。
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: codex-main-llm
+  decision_actor_type: agent
+  decision_at: '2026-06-20T05:01:24.210845+00:00'
+  decision_reason: 'C1 main-LLM judgment: design-fixed branchy operation contracts
+    were under-specified in T-016. tasks.md now requires branching.branches[], internal_steps[],
+    max_effect_kind, approval_aggregation, human_only_override_applies, approval_contract_ref,
+    and phase_boundary checks.'
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-20-workflow-management-tasks-vertical-redo-review-run-v3-claude-sonnet-4-6-adversarial-004
+  run_id: 2026-06-20-workflow-management-tasks-vertical-redo-review-run-v3
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: tasks.md T-017 / 完了条件2
+  plain_language_summary: 完了条件2に『proxy_model decision は人間承認を置換しない対象と、代行可能な判断対象を schema
+    / gate で区別する』とある。design §1 の approval gate record は decision_scope を『target_required_action
+    から解決した operation contract の approval_required、phase_boundary、effect_kind、actor.kind、および
+    human-only override set から機械的に導出する』と定めているが、T-017 の実装順序と完了条件に『decision_scope が
+    contract から導出した値と一致しない場合は形式不正として fail-closed』という検査が明示されていない。これは Requirement 14
+    受入 3 と design §1 の直接要件である。
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: codex-main-llm
+  decision_actor_type: agent
+  decision_at: '2026-06-20T05:01:24.270956+00:00'
+  decision_reason: 'C2 main-LLM judgment: approval gate record schema, decision_scope
+    derivation, binding_kind, and digest binding were under-specified in T-017. tasks.md
+    now requires the design field set and conditional digest validation.'
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-20-workflow-management-tasks-vertical-redo-review-run-v3-claude-sonnet-4-6-adversarial-005
+  run_id: 2026-06-20-workflow-management-tasks-vertical-redo-review-run-v3
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: tasks.md T-017 / 最初に書く失敗テスト
+  plain_language_summary: T-017 の最初に書く失敗テストに binding_kind の条件付き必須検査（design §1 binding
+    条件表）のテストが含まれていない。design §1 は binding_kind ごとに必須 digest を明示し、approval_required=true
+    や human-only override set の対象 record では binding_kind=none を禁止している。T-017 テスト要件にも
+    binding_kind=none 禁止の fail-closed が見当たらない。
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: codex-main-llm
+  decision_actor_type: agent
+  decision_at: '2026-06-20T05:01:24.331948+00:00'
+  decision_reason: 'C2 main-LLM judgment: approval gate record schema, decision_scope
+    derivation, binding_kind, and digest binding were under-specified in T-017. tasks.md
+    now requires the design field set and conditional digest validation.'
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-20-workflow-management-tasks-vertical-redo-review-run-v3-claude-sonnet-4-6-adversarial-006
+  run_id: 2026-06-20-workflow-management-tasks-vertical-redo-review-run-v3
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: tasks.md T-017 / 完了条件5
+  plain_language_summary: 完了条件5の snapshot payload 最低限フィールドリストに『downstream_impact_decisions』が含まれているが、design
+    §3 の snapshot 最低構造（schema_version / generated_by / generated_at / source_next_action_sha256
+    / current_work / active_side_tracks / git_tree_summary / post_write_manifest_summary
+    / workflow_state_summary）には downstream_impact_decisions が明示されていない。また design §3
+    の current_work 構造（required_action / title / outer_node / inner_node / active_gate）の必須フィールドが
+    T-017 完了条件5に再列挙されていないため、実装者が current_work の outer_node / inner_node を省略するリスクがある。
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: codex-main-llm
+  decision_actor_type: agent
+  decision_at: '2026-06-20T05:01:24.393106+00:00'
+  decision_reason: 'C3 main-LLM judgment: workflow-state snapshot path, source_next_action_sha256,
+    top-level schema, and current_work fields were under-specified in T-017. tasks.md
+    now carries the design minimum structure.'
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-20-workflow-management-tasks-vertical-redo-review-run-v3-claude-sonnet-4-6-adversarial-007
+  run_id: 2026-06-20-workflow-management-tasks-vertical-redo-review-run-v3
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: tasks.md T-018 / 完了条件5
+  plain_language_summary: 完了条件5に『manifest field があるが text-only field と対象 decision
+    point が不一致の場合は DEVIATION、どちらの field もない場合は DEVIATION』とある。design §1 の prompt_length
+    構造に関して、T-018 の完了条件および実装順序に『WORKFLOW_DISCIPLINE_MAP.yaml の prompt_length_bounds
+    または default_prompt_length_bounds との一致検査』が含まれていない。Requirement 15 受入 5 と design
+    §2 は prompt_length の上下限を DISCIPLINE_MAP から解決することを必須とし、failure_verdict を runner
+    が推測してはならないと明示しているが、T-018 のテスト要件にこの prompt_length bounds 解決失敗の fail-closed が見当たらない。
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: codex-main-llm
+  decision_actor_type: agent
+  decision_at: '2026-06-20T05:01:24.454464+00:00'
+  decision_reason: 'C4 main-LLM judgment: prompt_length bounds and next_action_compatible/on_completion
+    checks are explicit Requirement 15 layer-1 audit requirements. tasks.md now requires
+    discipline-map bounds and compatibility tests.'
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-20-workflow-management-tasks-vertical-redo-review-run-v3-claude-sonnet-4-6-adversarial-008
+  run_id: 2026-06-20-workflow-management-tasks-vertical-redo-review-run-v3
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: tasks.md T-018 / 最初に書く失敗テスト
+  plain_language_summary: 'T-018 の最初に書く失敗テスト4件は Requirement 15 の主要なパスをカバーしているが、design
+    §1 で定められた postconditions 構造（check_kind: section_exists / schema_valid / target_set_matches
+    / next_action_compatible / manual_review_required）のうち next_action_compatible（on_completion
+    が operation contract の postconditions と次 action に矛盾しないこと）を検証するテストが最初の失敗テストに含まれていない。Requirement
+    15 受入 5 の最後の検査項目として明示されているにもかかわらず、T-018 テスト要件全体にも該当する失敗テスト候補が見当たらない。'
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: codex-main-llm
+  decision_actor_type: agent
+  decision_at: '2026-06-20T05:01:24.514841+00:00'
+  decision_reason: 'C4 main-LLM judgment: prompt_length bounds and next_action_compatible/on_completion
+    checks are explicit Requirement 15 layer-1 audit requirements. tasks.md now requires
+    discipline-map bounds and compatibility tests.'
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-20-workflow-management-tasks-vertical-redo-review-run-v3-claude-sonnet-4-6-adversarial-009
+  run_id: 2026-06-20-workflow-management-tasks-vertical-redo-review-run-v3
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: tasks.md T-019 / 完了条件6
+  plain_language_summary: 完了条件6の必須入力リストに『review-wave-summary JSON / Markdown 出力、learning/workflow/carry-forward-register/reviewcompass-import.yaml、reopen
+    in-progress / completed YAML の downstream_impact_decisions、spec.json.recheck.impacted_downstream_phases、spec.json.reopened』が含まれているが、design
+    §2 と §3 は spec.json.reopened を『履歴フラグ』として明示し、active reopen scope と同一視しないことを要求している。T-019
+    完了条件6で spec.json.reopened を必須入力として列挙することで、実装者が active reopen scope 判定に spec.json.reopened
+    を使用する可能性がある。要件追跡表の『Requirement 16 受入 10〜12』行では正しく分離されているが、完了条件6との整合確認が必要。
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: codex-main-llm
+  decision_actor_type: agent
+  decision_at: '2026-06-20T05:01:24.576088+00:00'
+  decision_reason: 'C6 main-LLM judgment: Requirement 16 Phase 2 read-only registry
+    deliverable and proxy coverage guard details needed transfer. tasks.md now requires
+    operation-list --json equivalent, no next --json behavior change, approval scope
+    mismatch checks, and fixed predicate order.'
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-20-workflow-management-tasks-vertical-redo-review-run-v3-claude-sonnet-4-6-adversarial-010
+  run_id: 2026-06-20-workflow-management-tasks-vertical-redo-review-run-v3
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: tasks.md T-019 / 最初に書く失敗テスト test_proxy_triage_requires_complete_finding_cluster_coverage
+  plain_language_summary: design §3 の coverage validation fail-closed リストに『review_triage_decide
+    approval と apply-fixes approval の scope が一致しない』場合が含まれているが、T-019 の test_proxy_triage_requires_complete_finding_cluster_coverage
+    は『finding / cluster coverage が不足・過剰・競合する場合』としか記述されておらず、approval scope 不一致の fail-closed
+    が明示されていない。これは design §3 の coverage validation 最終項目に対応する実装漏れリスクがある。
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: codex-main-llm
+  decision_actor_type: agent
+  decision_at: '2026-06-20T05:01:24.637176+00:00'
+  decision_reason: 'C6 main-LLM judgment: Requirement 16 Phase 2 read-only registry
+    deliverable and proxy coverage guard details needed transfer. tasks.md now requires
+    operation-list --json equivalent, no next --json behavior change, approval scope
+    mismatch checks, and fixed predicate order.'
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-20-workflow-management-tasks-vertical-redo-review-run-v3-claude-sonnet-4-6-adversarial-011
+  run_id: 2026-06-20-workflow-management-tasks-vertical-redo-review-run-v3
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: tasks.md / 要件追跡表 Requirement 13 受入 8〜10
+  plain_language_summary: 要件追跡表の Requirement 13 受入 8〜10 が T-016 にまとめられているが、受入 9 の『複合操作の
+    schema 表現 3 候補（最大副作用代表値注記 / effect_kind list型 / 内部ステップ分解）のうち design で採用する案を Phase
+    1 未確定事項として扱う』という扱いが T-016 の完了条件または禁止事項に反映されていない。design §4 はこれを Phase 1 未確定として明示しているが、T-016
+    で採用案を確定させるか、または Phase 2 以降に延期するかが不明瞭なため、実装者が独自判断する可能性がある。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: codex-main-llm
+  decision_actor_type: agent
+  decision_at: '2026-06-20T05:01:24.698820+00:00'
+  decision_reason: 'Main-LLM judgment: informational or already-correct state check;
+    no tasks.md change is required for this finding.'
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-20-workflow-management-tasks-vertical-redo-review-run-v3-claude-sonnet-4-6-adversarial-012
+  run_id: 2026-06-20-workflow-management-tasks-vertical-redo-review-run-v3
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: tasks.md T-019 / 完了条件8
+  plain_language_summary: 完了条件8に『triage 上の leave-as-is や proxy_approved で打ち消されない』とある。design
+    §3 の優先順位 3 は同じ内容を述べているが、T-019 テスト要件の test_human_required_priority_overrides_proxy_approved_leave_as_is
+    がこれを直接検証するテストとして最初の失敗テストに含まれているため、完了条件8とテストの対応は取れている。ただし design §3 の predicate
+    評価順序（5段階固定順）が T-019 の実装順序3に対応するとされているが、完了条件にその固定順の機械検証が含まれていない。実装者が評価順序を変えた場合の
+    fail-closed が保証されない。
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: codex-main-llm
+  decision_actor_type: agent
+  decision_at: '2026-06-20T05:01:24.760342+00:00'
+  decision_reason: 'C6 main-LLM judgment: predicate fixed-order verification was a
+    useful strengthening item. tasks.md now requires the fixed evaluation order to
+    be mechanically testable.'
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-20-workflow-management-tasks-vertical-redo-review-run-v3-claude-sonnet-4-6-adversarial-013
+  run_id: 2026-06-20-workflow-management-tasks-vertical-redo-review-run-v3
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: spec.json / workflow_state.tasks
+  plain_language_summary: spec.json の workflow_state.tasks.triad-review が false であり、reopen-procedure-2026-06-19.yaml
+    の pending_gates に stages/tasks.yaml#triad-review が含まれている。これは tasks drafting が完了し、triad-review
+    が未開始であることを正しく示している。spec.json の tasks.drafting=true と reopen-procedure の tasks_drafting_state_sync
+    も整合している。workflow 状態は要件に照らして正しい。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: codex-main-llm
+  decision_actor_type: agent
+  decision_at: '2026-06-20T05:01:24.822435+00:00'
+  decision_reason: 'Main-LLM judgment: informational or already-correct state check;
+    no tasks.md change is required for this finding.'
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-20-workflow-management-tasks-vertical-redo-review-run-v3-gemini-3.1-pro-preview-judgment-001
+  run_id: 2026-06-20-workflow-management-tasks-vertical-redo-review-run-v3
+  source_model: gemini-3.1-pro-preview
+  source_round: round-1
+  source_raw_path: raw/gemini-3.1-pro-preview.round-1.txt
+  source_parsed_path: parsed/gemini-3.1-pro-preview.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: T-016 (実装順序, 完了条件)
+  plain_language_summary: T-016 omits structural constraints required by the approved
+    design for composite actions, specifically `branching`, `internal_steps`, `max_effect_kind`,
+    and `approval_aggregation`.
+  final_label: must-fix
+  decision_status: decided
+  decision_actor: codex-main-llm
+  decision_actor_type: agent
+  decision_at: '2026-06-20T05:01:24.884802+00:00'
+  decision_reason: 'C1 main-LLM judgment: design-fixed branchy operation contracts
+    were under-specified in T-016. tasks.md now requires branching.branches[], internal_steps[],
+    max_effect_kind, approval_aggregation, human_only_override_applies, approval_contract_ref,
+    and phase_boundary checks.'
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-20-workflow-management-tasks-vertical-redo-review-run-v3-gemini-3.1-pro-preview-judgment-002
+  run_id: 2026-06-20-workflow-management-tasks-vertical-redo-review-run-v3
+  source_model: gemini-3.1-pro-preview
+  source_round: round-1
+  source_raw_path: raw/gemini-3.1-pro-preview.round-1.txt
+  source_parsed_path: parsed/gemini-3.1-pro-preview.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: T-017 (実装順序, 完了条件)
+  plain_language_summary: T-017 fails to include the explicit `binding_kind` logic
+    (`artifact_digest`, `staged_file_set_digest`, `both`, `none`) required by the
+    design for strict digest binding in the approval gate.
+  final_label: must-fix
+  decision_status: decided
+  decision_actor: codex-main-llm
+  decision_actor_type: agent
+  decision_at: '2026-06-20T05:01:24.947714+00:00'
+  decision_reason: 'C2 main-LLM judgment: approval gate record schema, decision_scope
+    derivation, binding_kind, and digest binding were under-specified in T-017. tasks.md
+    now requires the design field set and conditional digest validation.'
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-20-workflow-management-tasks-vertical-redo-review-run-v3-gemini-3.1-pro-preview-judgment-003
+  run_id: 2026-06-20-workflow-management-tasks-vertical-redo-review-run-v3
+  source_model: gemini-3.1-pro-preview
+  source_round: round-1
+  source_raw_path: raw/gemini-3.1-pro-preview.round-1.txt
+  source_parsed_path: parsed/gemini-3.1-pro-preview.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: T-018 and 要件追跡（Requirements Traceability）
+  plain_language_summary: T-018 omits the implementation of Phase 6 LLM judge-audit
+    limits (Requirement 15 AC 6-7). Additionally, the traceability table incorrectly
+    maps AC 6-7 to review-run recording instead of the semantic audit mechanism.
+  final_label: must-fix
+  decision_status: decided
+  decision_actor: codex-main-llm
+  decision_actor_type: agent
+  decision_at: '2026-06-20T05:01:25.011082+00:00'
+  decision_reason: 'C5 main-LLM judgment: Requirement 15 Phase 6 judge-audit schema
+    and language_task vocabulary needed design-faithful transfer. tasks.md now uses
+    document_kind/input/output_format/constraints and defines structured judge-audit
+    gap output.'
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-20-workflow-management-tasks-vertical-redo-review-run-v3-gemini-3.1-pro-preview-judgment-004
+  run_id: 2026-06-20-workflow-management-tasks-vertical-redo-review-run-v3
+  source_model: gemini-3.1-pro-preview
+  source_round: round-1
+  source_raw_path: raw/gemini-3.1-pro-preview.round-1.txt
+  source_parsed_path: parsed/gemini-3.1-pro-preview.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: T-018 (完了条件 2)
+  plain_language_summary: T-018 defines the `language_task_io` schema as having properties
+    like `input role`, `allowed action`, and `forbidden action`, which conflicts with
+    the approved design vocabulary.
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: codex-main-llm
+  decision_actor_type: agent
+  decision_at: '2026-06-20T05:01:25.074435+00:00'
+  decision_reason: 'C5 main-LLM judgment: Requirement 15 Phase 6 judge-audit schema
+    and language_task vocabulary needed design-faithful transfer. tasks.md now uses
+    document_kind/input/output_format/constraints and defines structured judge-audit
+    gap output.'
+  applied_files: []
+  superseded_by: null

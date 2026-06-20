@@ -1,0 +1,65 @@
+findings:
+  - severity: WARN
+    target_location: "tasks.md T-016 / 要件追跡表 Requirement 13"
+    description: "T-016 の要件追跡表エントリが Requirement 13 受入 1〜12 のうち受入 11〜12 を別行で列挙しているが、tasks.md 本文の完了条件5が『T-014 の preflight response が operation contract ID / digest / schema_version を参照でき、別正本の再定義を持たない。registry と contract の不一致、参照先欠落、digest drift、正本 field 重複は DEVIATION になる』と述べるのに対し、design §5 の read-only 境界が『contract 更新、operation 実行、approval consume、workflow state 更新を行わない』という preflight の mutating 禁止事項を明示している。T-016 の禁止事項と停止条件にはこの mutating 禁止が含まれているが、完了条件6に限定されており、registry / preflight の read-only 境界に violation した場合の DEVIATION 判定がテスト要件に明示されていない。design §5 の fail-closed は registry が contract field を複製・二重定義した場合の DEVIATION を含むが、T-016 テスト要件にその具体ケース（registry が effect_kind / approval_required 等を直接保持する場合）が抜けている。"
+    rationale: "Requirement 13 受入 11〜12 および design §5 の read-only 境界と二重正本防止は実装安全性に直結するため、テスト要件に明示的な fail-closed ケースが必要。"
+
+  - severity: WARN
+    target_location: "tasks.md T-016 / 最初に書く失敗テスト test_registry_references_contract_without_duplicating_contract_fields"
+    description: "test_registry_references_contract_without_duplicating_contract_fields は『registry が contract の正本 field を複製した場合』と『参照 contract ID / digest が不一致の場合』に失敗するとされているが、design §3 で列挙された複製禁止 field（effect_kind、approval_required、approval_contract_refs、phase_boundary、preconditions/postconditions、side effects、承認要否の集約規則、branch/internal step semantics、max effect、出力・副作用 contract field）の網羅リストがテストに要求されていない。これでは partial 複製（例えば approval_contract_refs だけが registry に残る）を見逃す可能性がある。"
+    rationale: "design §3 は複製禁止 field を明示的に列挙しており、テスト要件はこの全列挙を対象にしなければ、registry と contract の単一正本境界が保証されない。"
+
+  - severity: WARN
+    target_location: "tasks.md T-016 / 完了条件4"
+    description: "完了条件4に『commit を強制すべき operation と強制しない operation が commit_boundary で区別され、停止点消費・approval consumption・phase boundary などの強制 commit 点を bypass できない』とある。design §3 の 19語彙基線表に照らすと、run_reopen_start・run_workflow_stage(phase_transition=true) の phase_boundary が commit_boundary ではなく reopen_boundary・phase_transition とされているが、T-016 の完了条件または禁止事項にこれら phase_boundary 値の正確な対応チェックが含まれていない。実装者が commit_boundary を独自に拡大適用するリスクがある。"
+    rationale: "design §3 の phase_boundary 基線は 19語彙ごとに値を確定しており、commit_boundary と phase_transition / reopen_boundary の混同は commit gate の不正 bypass につながるため、完了条件またはテスト要件でその区別を機械検証する必要がある。"
+
+  - severity: WARN
+    target_location: "tasks.md T-017 / 完了条件2"
+    description: "完了条件2に『proxy_model decision は人間承認を置換しない対象と、代行可能な判断対象を schema / gate で区別する』とある。design §1 の approval gate record は decision_scope を『target_required_action から解決した operation contract の approval_required、phase_boundary、effect_kind、actor.kind、および human-only override set から機械的に導出する』と定めているが、T-017 の実装順序と完了条件に『decision_scope が contract から導出した値と一致しない場合は形式不正として fail-closed』という検査が明示されていない。これは Requirement 14 受入 3 と design §1 の直接要件である。"
+    rationale: "decision_scope の機械導出と形式不正 fail-closed は human-only 境界の実装安全性を保証する中核契約であり、完了条件から抜けると実装者が任意値を設定するリスクがある。"
+
+  - severity: WARN
+    target_location: "tasks.md T-017 / 最初に書く失敗テスト"
+    description: "T-017 の最初に書く失敗テストに binding_kind の条件付き必須検査（design §1 binding 条件表）のテストが含まれていない。design §1 は binding_kind ごとに必須 digest を明示し、approval_required=true や human-only override set の対象 record では binding_kind=none を禁止している。T-017 テスト要件にも binding_kind=none 禁止の fail-closed が見当たらない。"
+    rationale: "Requirement 14 受入 3 の『digest 束縛』は承認 record の有効性に直結し、binding_kind=none を使った承認逃げを防ぐ実装を保証するためにテストが必要。"
+
+  - severity: WARN
+    target_location: "tasks.md T-017 / 完了条件5"
+    description: "完了条件5の snapshot payload 最低限フィールドリストに『downstream_impact_decisions』が含まれているが、design §3 の snapshot 最低構造（schema_version / generated_by / generated_at / source_next_action_sha256 / current_work / active_side_tracks / git_tree_summary / post_write_manifest_summary / workflow_state_summary）には downstream_impact_decisions が明示されていない。また design §3 の current_work 構造（required_action / title / outer_node / inner_node / active_gate）の必須フィールドが T-017 完了条件5に再列挙されていないため、実装者が current_work の outer_node / inner_node を省略するリスクがある。"
+    rationale: "snapshot の current_work 構造は Requirement 14 受入 9 と design §3 で確定されており、完了条件がその構造を明示しないと実装不完全になる可能性がある。downstream_impact_decisions の追加は tasks 独自拡張であり、design §3 との乖離として確認が必要。"
+
+  - severity: WARN
+    target_location: "tasks.md T-018 / 完了条件5"
+    description: "完了条件5に『manifest field があるが text-only field と対象 decision point が不一致の場合は DEVIATION、どちらの field もない場合は DEVIATION』とある。design §1 の prompt_length 構造に関して、T-018 の完了条件および実装順序に『WORKFLOW_DISCIPLINE_MAP.yaml の prompt_length_bounds または default_prompt_length_bounds との一致検査』が含まれていない。Requirement 15 受入 5 と design §2 は prompt_length の上下限を DISCIPLINE_MAP から解決することを必須とし、failure_verdict を runner が推測してはならないと明示しているが、T-018 のテスト要件にこの prompt_length bounds 解決失敗の fail-closed が見当たらない。"
+    rationale: "prompt_length の DISCIPLINE_MAP 参照は Requirement 15 受入 5 と design §2 の直接要件であり、T-018 のテスト要件から抜けると bounds を runner が独自推測する実装が生まれるリスクがある。"
+
+  - severity: WARN
+    target_location: "tasks.md T-018 / 最初に書く失敗テスト"
+    description: "T-018 の最初に書く失敗テスト4件は Requirement 15 の主要なパスをカバーしているが、design §1 で定められた postconditions 構造（check_kind: section_exists / schema_valid / target_set_matches / next_action_compatible / manual_review_required）のうち next_action_compatible（on_completion が operation contract の postconditions と次 action に矛盾しないこと）を検証するテストが最初の失敗テストに含まれていない。Requirement 15 受入 5 の最後の検査項目として明示されているにもかかわらず、T-018 テスト要件全体にも該当する失敗テスト候補が見当たらない。"
+    rationale: "on_completion と operation contract postconditions の整合検査は T-018 の中核機能の一つであり、最初の失敗テストに含まれないとTDDの実施順序が曖昧になる。"
+
+  - severity: WARN
+    target_location: "tasks.md T-019 / 完了条件6"
+    description: "完了条件6の必須入力リストに『review-wave-summary JSON / Markdown 出力、learning/workflow/carry-forward-register/reviewcompass-import.yaml、reopen in-progress / completed YAML の downstream_impact_decisions、spec.json.recheck.impacted_downstream_phases、spec.json.reopened』が含まれているが、design §2 と §3 は spec.json.reopened を『履歴フラグ』として明示し、active reopen scope と同一視しないことを要求している。T-019 完了条件6で spec.json.reopened を必須入力として列挙することで、実装者が active reopen scope 判定に spec.json.reopened を使用する可能性がある。要件追跡表の『Requirement 16 受入 10〜12』行では正しく分離されているが、完了条件6との整合確認が必要。"
+    rationale: "Requirement 16 受入 11 と design §2 は spec.json.reopened と active reopen scope の混同を明確に禁止しており、完了条件での必須入力列挙がその混同を誘発しないよう文言の整理が必要。"
+
+  - severity: WARN
+    target_location: "tasks.md T-019 / 最初に書く失敗テスト test_proxy_triage_requires_complete_finding_cluster_coverage"
+    description: "design §3 の coverage validation fail-closed リストに『review_triage_decide approval と apply-fixes approval の scope が一致しない』場合が含まれているが、T-019 の test_proxy_triage_requires_complete_finding_cluster_coverage は『finding / cluster coverage が不足・過剰・競合する場合』としか記述されておらず、approval scope 不一致の fail-closed が明示されていない。これは design §3 の coverage validation 最終項目に対応する実装漏れリスクがある。"
+    rationale: "review_triage_decide と apply-fixes の approval scope 一致検査は proxy triage の安全境界の一部であり、テスト要件から抜けると実装で省略されるリスクがある。"
+
+  - severity: INFO
+    target_location: "tasks.md / 要件追跡表 Requirement 13 受入 8〜10"
+    description: "要件追跡表の Requirement 13 受入 8〜10 が T-016 にまとめられているが、受入 9 の『複合操作の schema 表現 3 候補（最大副作用代表値注記 / effect_kind list型 / 内部ステップ分解）のうち design で採用する案を Phase 1 未確定事項として扱う』という扱いが T-016 の完了条件または禁止事項に反映されていない。design §4 はこれを Phase 1 未確定として明示しているが、T-016 で採用案を確定させるか、または Phase 2 以降に延期するかが不明瞭なため、実装者が独自判断する可能性がある。"
+    rationale: "受入 9 の未確定事項は T-016 の実装範囲に影響するため、完了条件または DVT に明示的に扱いを書くことが望ましい。"
+
+  - severity: INFO
+    target_location: "tasks.md T-019 / 完了条件8"
+    description: "完了条件8に『triage 上の leave-as-is や proxy_approved で打ち消されない』とある。design §3 の優先順位 3 は同じ内容を述べているが、T-019 テスト要件の test_human_required_priority_overrides_proxy_approved_leave_as_is がこれを直接検証するテストとして最初の失敗テストに含まれているため、完了条件8とテストの対応は取れている。ただし design §3 の predicate 評価順序（5段階固定順）が T-019 の実装順序3に対応するとされているが、完了条件にその固定順の機械検証が含まれていない。実装者が評価順序を変えた場合の fail-closed が保証されない。"
+    rationale: "predicate 評価固定順は design §3 で明示されており、順序変更が許容されないことを完了条件またはテスト要件で明示することが望ましい。"
+
+  - severity: INFO
+    target_location: "spec.json / workflow_state.tasks"
+    description: "spec.json の workflow_state.tasks.triad-review が false であり、reopen-procedure-2026-06-19.yaml の pending_gates に stages/tasks.yaml#triad-review が含まれている。これは tasks drafting が完了し、triad-review が未開始であることを正しく示している。spec.json の tasks.drafting=true と reopen-procedure の tasks_drafting_state_sync も整合している。workflow 状態は要件に照らして正しい。"
+    rationale: "Check 8 の workflow 状態確認。requirements / design 完了、tasks drafting 完了、tasks triad-review / review-wave / alignment / approval 未完了、implementation 未完了、reopen 中の recheck pending が tasks / implementation に残ることを確認した。状態は正しい。"
