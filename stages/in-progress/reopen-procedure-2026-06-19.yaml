@@ -27,10 +27,10 @@ completed_steps:
   で追跡整合確認済み）
 - tasks triad-review 完了（v3 triage 25 件 decided、post-fix coverage 25/25、apply-fixes
   ready 通過、local post-fix recheck 済み）
-next_step: 第3過程：tasks review-wave
+- tasks review-wave 完了（軽量横断確認、他 feature tasks 正本変更不要、carry-forward 未消化 0 件）
+next_step: 第3過程：tasks alignment
 step_number: 3
 pending_gates:
-- stages/tasks.yaml#review-wave
 - stages/tasks.yaml#alignment
 - stages/tasks.yaml#approval
 current_blocker: null
@@ -166,6 +166,13 @@ commit_stop_point_records:
   head: c09a6f9de1144a46fae98aea4a59b92384308c2b
   evidence:
   - c09a6f9de1144a46fae98aea4a59b92384308c2b
+- step: 3
+  kind: triad_review_complete
+  gate: stages/tasks.yaml#triad-review
+  reason: tasks triad-review 完了時点の停止点
+  head: 54b7cecfa60d0df56eaeea9e49d19e5f8bf0b9e2
+  evidence:
+  - 54b7cecfa60d0df56eaeea9e49d19e5f8bf0b9e2
 completed_gates:
 - stages/requirements.yaml#triad-review
 - stages/requirements.yaml#review-wave
@@ -176,6 +183,7 @@ completed_gates:
 - stages/design.yaml#alignment
 - stages/design.yaml#approval
 - stages/tasks.yaml#triad-review
+- stages/tasks.yaml#review-wave
 downstream_impact_decisions:
 - gate: stages/requirements.yaml#triad-review
   feature_scope: workflow-management
@@ -281,6 +289,17 @@ downstream_impact_decisions:
   - .reviewcompass/specs/workflow-management/reviews/2026-06-20-workflow-management-tasks-vertical-redo-review-run-v3/post-fix-coverage-inventory.md
   - .reviewcompass/specs/workflow-management/reviews/2026-06-20-workflow-management-tasks-vertical-redo-review-run-v3/integrated-post-fix-recheck.md
   - .reviewcompass/specs/workflow-management/reviews/2026-06-20-workflow-management-tasks-vertical-redo-review-run-v3/post-fix-target-manifest.yaml
+- gate: stages/tasks.yaml#review-wave
+  feature_scope: all_features
+  decision: existing_sufficient
+  rationale: Requirement 13〜16 縦方向やり直しの tasks review-wave として軽量横断確認を実施した。carry-forward
+    未消化は 0 件で、workflow-management 以外は consumer / derivative として現行 tasks 正本で受けられるため、他
+    feature の tasks 正本変更は不要。上流意図伝達も T-016〜T-019 の post-fix 後タスク粒度で維持されているため、tasks
+    review-wave gate を完了とする。
+  evidence:
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-20-tasks-vertical-redo-review-wave.md
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-20-tasks-vertical-redo-review-wave-summary.md
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-20-workflow-management-tasks-vertical-redo-review-run-v3/post-fix-target-manifest.yaml
 recheck_progress:
 - consumed_phase: design
   consumed_at: '2026-06-20T00:00:00+09:00'
@@ -294,6 +313,6 @@ recheck_progress:
   - .reviewcompass/specs/workflow-management/spec.json
 commit_stop_point: true
 commit_stop_point_step: 3
-commit_stop_point_kind: triad_review_complete
-commit_stop_point_gate: stages/tasks.yaml#triad-review
-commit_stop_point_reason: tasks triad-review 完了時点の停止点
+commit_stop_point_kind: review_wave_complete
+commit_stop_point_gate: stages/tasks.yaml#review-wave
+commit_stop_point_reason: tasks review-wave 完了時点の停止点
