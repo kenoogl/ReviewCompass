@@ -5042,6 +5042,143 @@ class ReopenSetBlockerTests(unittest.TestCase):
     self.assertIn("evidence", result.stdout)
 
 
+class RecordHumanDecisionTests(unittest.TestCase):
+  """record-human-decision サブコマンドの承認判断記録"""
+
+  def setUp(self):
+    self.tmpdir = tempfile.mkdtemp()
+    self.addCleanup(shutil.rmtree, self.tmpdir)
+
+  def _write_blocked_in_progress(self):
+    in_progress = (
+      Path(self.tmpdir)
+      / "stages"
+      / "in-progress"
+      / "reopen-procedure-2026-06-20.yaml"
+    )
+    in_progress.parent.mkdir(parents=True)
+    in_progress.write_text(
+      yaml.safe_dump(
+        {
+          "process_id": "reopen-procedure",
+          "feature": "workflow-management",
+          "step_number": 3,
+          "next_step": "第3過程：連鎖再実施",
+          "pending_gates": [
+            "stages/requirements.yaml#approval",
+          ],
+          "current_blocker": {
+            "blocker_type": "approval_gate",
+            "gate": "stages/requirements.yaml#approval",
+            "actor": "human",
+            "status": "waiting_for_approval",
+            "rationale": "approval gate に到達した。",
+            "evidence": [
+              ".reviewcompass/specs/workflow-management/requirements.md",
+            ],
+          },
+        },
+        allow_unicode=True,
+        sort_keys=False,
+      ),
+      encoding="utf-8",
+    )
+    return in_progress
+
+  def test_record_human_decision_saves_record_and_binds_current_blocker(self):
+    """人間判断を approval record として保存し blocker に path を結びつける"""
+    in_progress = self._write_blocked_in_progress()
+    out_path = ".reviewcompass/runtime/approvals/req-approval.yaml"
+
+    result = run_script(
+      [
+        "record-human-decision",
+        "--file", "stages/in-progress/reopen-procedure-2026-06-20.yaml",
+        "--gate", "stages/requirements.yaml#approval",
+        "--decision-id", "REQ-APPROVAL-001",
+        "--decision", "approved",
+        "--decision-scope", "human_only",
+        "--target-operation-id", "requirements_approval",
+        "--target-required-action", "phase_approval",
+        "--target-artifact", ".reviewcompass/specs/workflow-management/spec.json",
+        "--target-artifact-digest", "sha256:" + "a" * 64,
+        "--binding-kind", "artifact_digest",
+        "--decided-by", "user",
+        "--decided-at", "2026-06-20T00:00:00+00:00",
+        "--source-ref", "conversation:user:approval",
+        "--source-digest", "sha256:" + "b" * 64,
+        "--rationale", "利用者が approval gate を承認した。",
+        "--next-action-expectation", "proceed",
+        "--out", out_path,
+        "--json",
+      ],
+      cwd=self.tmpdir,
+    )
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 0, result.stdout)
+    data = json.loads(result.stdout)
+    self.assertEqual(data["verdict"], "OK")
+
+    record_path = Path(self.tmpdir) / out_path
+    self.assertTrue(record_path.exists())
+    record = yaml.safe_load(record_path.read_text(encoding="utf-8"))
+    self.assertEqual(record["schema_version"], "approval-gate-v1")
+    self.assertEqual(record["decision"], "approved")
+    self.assertEqual(record["consumed"], False)
+
+    state = yaml.safe_load(in_progress.read_text(encoding="utf-8"))
+    blocker = state["current_blocker"]
+    self.assertEqual(blocker["status"], "decision_recorded")
+    self.assertEqual(blocker["approval_record_path"], out_path)
+    self.assertEqual(blocker["gate"], "stages/requirements.yaml#approval")
+
+    next_result = run_script(["next", "--json"], cwd=self.tmpdir)
+    _assert_script_invoked(self, next_result)
+    self.assertEqual(next_result.returncode, 0, next_result.stdout)
+    next_data = json.loads(next_result.stdout)
+    blocked_by = next_data["next_action"]["blocked_by"]
+    self.assertEqual(next_data["next_action"]["required_action"], "wait_for_human_decision")
+    self.assertEqual(blocked_by["status"], "decision_recorded")
+    self.assertEqual(blocked_by["approval_record_path"], out_path)
+
+  def test_record_human_decision_rejects_llm_for_human_only_scope(self):
+    """human_only decision は record 操作時点でも LLM actor を拒否する"""
+    self._write_blocked_in_progress()
+
+    result = run_script(
+      [
+        "record-human-decision",
+        "--file", "stages/in-progress/reopen-procedure-2026-06-20.yaml",
+        "--gate", "stages/requirements.yaml#approval",
+        "--decision-id", "REQ-APPROVAL-002",
+        "--decision", "approved",
+        "--decision-scope", "human_only",
+        "--target-operation-id", "requirements_approval",
+        "--target-required-action", "phase_approval",
+        "--target-artifact", ".reviewcompass/specs/workflow-management/spec.json",
+        "--target-artifact-digest", "sha256:" + "a" * 64,
+        "--binding-kind", "artifact_digest",
+        "--decided-by", "llm",
+        "--decided-at", "2026-06-20T00:00:00+00:00",
+        "--source-ref", "conversation:assistant:approval",
+        "--source-digest", "sha256:" + "b" * 64,
+        "--rationale", "LLM が承認した。",
+        "--next-action-expectation", "proceed",
+        "--out", ".reviewcompass/runtime/approvals/llm-approval.yaml",
+        "--json",
+      ],
+      cwd=self.tmpdir,
+    )
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 2, result.stdout)
+    self.assertIn("human_only decision", result.stdout)
+    self.assertFalse(
+      (Path(self.tmpdir) / ".reviewcompass/runtime/approvals/llm-approval.yaml").exists()
+    )
+
+
 class ReopenFinalizeTests(unittest.TestCase):
   """reopen-finalize サブコマンドの完了 YAML 機械更新"""
 

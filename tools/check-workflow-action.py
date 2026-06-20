@@ -22,6 +22,7 @@
 import argparse
 import hashlib
 import json
+import re
 import subprocess
 import sys
 from datetime import datetime, timezone, timedelta
@@ -4417,6 +4418,15 @@ def _reopen_blocked_by_current_blocker(current_blocker):
       blocked_by["actor"] = current_blocker.get("actor")
     if current_blocker.get("status"):
       blocked_by["status"] = current_blocker.get("status")
+    for field in [
+      "approval_record_path",
+      "decision_id",
+      "decision",
+      "decided_by",
+      "next_action_expectation",
+    ]:
+      if current_blocker.get(field):
+        blocked_by[field] = current_blocker.get(field)
   return blocked_by
 
 
@@ -6406,6 +6416,126 @@ def cmd_reopen_set_blocker(args):
   return exit_code
 
 
+def _approval_record_output_path(cwd, decision_id, out):
+  """approval gate record の保存先を repo-relative path として返す"""
+  if out:
+    relative = Path(out)
+  else:
+    safe_decision_id = re.sub(r"[^A-Za-z0-9_.-]+", "-", decision_id).strip("-")
+    relative = Path(".reviewcompass") / "runtime" / "approvals" / f"{safe_decision_id}.yaml"
+  if relative.is_absolute():
+    raise ValueError("--out は repo-relative path で指定してください")
+  if ".." in relative.parts:
+    raise ValueError("--out に親ディレクトリ参照は指定できません")
+  if not str(relative).startswith(".reviewcompass/runtime/approvals/"):
+    raise ValueError("--out は .reviewcompass/runtime/approvals/ 配下に保存してください")
+  return relative, cwd / relative
+
+
+def cmd_record_human_decision(args):
+  """approval gate の人間判断 record を保存して blocker に結びつける"""
+  cwd = Path.cwd()
+  reasons = []
+  record_relative_path = None
+  try:
+    path, data = _load_reopen_advance_state(cwd, args.file)
+    blocker = data.get("current_blocker")
+    if not isinstance(blocker, dict):
+      raise ValueError("current_blocker が必要です")
+    if blocker.get("blocker_type") != "approval_gate":
+      raise ValueError("current_blocker.blocker_type は approval_gate である必要があります")
+    if blocker.get("gate") != args.gate:
+      raise ValueError("--gate は current_blocker.gate と一致する必要があります")
+    if blocker.get("status") != "waiting_for_approval":
+      raise ValueError("current_blocker.status は waiting_for_approval である必要があります")
+
+    record = {
+      "schema_version": "approval-gate-v1",
+      "decision_id": args.decision_id,
+      "decision": args.decision,
+      "decision_scope": args.decision_scope,
+      "target_operation_id": args.target_operation_id,
+      "target_required_action": args.target_required_action,
+      "target_artifact": args.target_artifact,
+      "target_artifact_digest": args.target_artifact_digest,
+      "staged_file_set_digest": args.staged_file_set_digest,
+      "binding_kind": args.binding_kind,
+      "decided_by": args.decided_by,
+      "decided_at": args.decided_at,
+      "source_ref": args.source_ref,
+      "source_digest": args.source_digest,
+      "rationale": args.rationale,
+      "next_action_expectation": args.next_action_expectation,
+      "consumed": False,
+    }
+    validation = approval_gate.validate_approval_gate_record(record)
+    if validation.get("verdict") != "OK":
+      raise ValueError("; ".join(validation.get("reasons") or ["approval gate record が不正です"]))
+    if args.decision_scope == "human_only" and args.decided_by not in {"user", "human"}:
+      raise ValueError("human_only decision は人間 actor でのみ記録できます")
+
+    record_relative_path, record_path = _approval_record_output_path(
+      cwd,
+      args.decision_id,
+      args.out,
+    )
+    record_path.parent.mkdir(parents=True, exist_ok=True)
+    record_path.write_text(
+      yaml.safe_dump(record, allow_unicode=True, sort_keys=False),
+      encoding="utf-8",
+    )
+
+    updated_blocker = dict(blocker)
+    updated_blocker.update({
+      "status": "decision_recorded",
+      "approval_record_path": str(record_relative_path),
+      "decision_id": args.decision_id,
+      "decision": args.decision,
+      "decided_by": args.decided_by,
+      "next_action_expectation": args.next_action_expectation,
+    })
+    data["current_blocker"] = updated_blocker
+    path.write_text(
+      yaml.safe_dump(data, allow_unicode=True, sort_keys=False),
+      encoding="utf-8",
+    )
+
+    verdict, exit_code = "OK", 0
+    next_action = {
+      "kind": "human_decision_recorded",
+      "file": args.file,
+      "gate": args.gate,
+      "approval_record_path": str(record_relative_path),
+      "phase": None,
+      "stage": None,
+      "reason": "approval gate decision を記録しました",
+    }
+    current_state = {
+      "file": args.file,
+      "current_blocker": updated_blocker,
+      "approval_record_path": str(record_relative_path),
+    }
+  except (OSError, ValueError) as e:
+    verdict, exit_code = "DEVIATION", 2
+    reasons = [str(e)]
+    next_action = {
+      "kind": "record_human_decision_failed",
+      "file": args.file,
+      "gate": args.gate,
+      "approval_record_path": str(record_relative_path) if record_relative_path else None,
+      "phase": None,
+      "stage": None,
+      "reason": "approval gate decision を記録できません",
+    }
+    current_state = {}
+
+  if args.json:
+    print(format_next_json_output(verdict, exit_code, next_action, reasons, current_state))
+  else:
+    print(format_next_human_output(verdict, exit_code, next_action, reasons, current_state))
+  return exit_code
+
+
 def _reopen_finalize_feature_impact_items(feature_impacts):
   """--feature-impact 指定を feature_impact_decisions へ変換する"""
   items = []
@@ -7274,6 +7404,50 @@ def main():
   rsb.add_argument("--rationale", required=True, help="判断理由")
   rsb.add_argument("--evidence", action="append", default=[], help="判断証跡。複数指定可")
 
+  rhd = sub.add_parser(
+    "record-human-decision",
+    help="approval gate の人間判断 record を保存する",
+    parents=[common_parser],
+  )
+  rhd.add_argument("--file", required=True, help="更新対象の reopen in-progress YAML")
+  rhd.add_argument("--gate", required=True, help="判断対象 gate（例: stages/design.yaml#approval）")
+  rhd.add_argument("--decision-id", required=True, help="approval gate decision id")
+  rhd.add_argument(
+    "--decision",
+    required=True,
+    choices=["approved", "rejected", "deferred", "changes_requested"],
+    help="記録する判断",
+  )
+  rhd.add_argument(
+    "--decision-scope",
+    required=True,
+    choices=["human_only", "proxy_allowed", "advisory_only"],
+    help="判断境界",
+  )
+  rhd.add_argument("--target-operation-id", required=True, help="判断対象 operation_id")
+  rhd.add_argument("--target-required-action", required=True, help="判断対象 required_action")
+  rhd.add_argument("--target-artifact", required=True, help="判断対象 artifact")
+  rhd.add_argument("--target-artifact-digest", default=None, help="判断対象 artifact digest")
+  rhd.add_argument("--staged-file-set-digest", default=None, help="判断対象 staged file set digest")
+  rhd.add_argument(
+    "--binding-kind",
+    required=True,
+    choices=["artifact_digest", "staged_file_set_digest", "both", "none"],
+    help="判断 record の束縛種別",
+  )
+  rhd.add_argument(
+    "--decided-by",
+    required=True,
+    choices=["user", "human", "proxy_model", "llm"],
+    help="判断主体",
+  )
+  rhd.add_argument("--decided-at", required=True, help="判断時刻")
+  rhd.add_argument("--source-ref", required=True, help="判断出典")
+  rhd.add_argument("--source-digest", required=True, help="判断出典 digest")
+  rhd.add_argument("--rationale", required=True, help="判断理由")
+  rhd.add_argument("--next-action-expectation", required=True, help="次 action 期待")
+  rhd.add_argument("--out", default=None, help="保存先 approval record path")
+
   rf = sub.add_parser(
     "reopen-finalize",
     help="reopen 第4過程の完了 YAML 生成と completed 移動を機械処理する",
@@ -7483,6 +7657,8 @@ def main():
     sys.exit(cmd_reopen_advance_gate(args))
   elif args.subcommand == "reopen-set-blocker":
     sys.exit(cmd_reopen_set_blocker(args))
+  elif args.subcommand == "record-human-decision":
+    sys.exit(cmd_record_human_decision(args))
   elif args.subcommand == "reopen-finalize":
     sys.exit(cmd_reopen_finalize(args))
   elif args.subcommand == "review-wave-summary":

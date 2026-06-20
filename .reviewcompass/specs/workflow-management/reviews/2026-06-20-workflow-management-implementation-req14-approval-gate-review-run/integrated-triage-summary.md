@@ -153,6 +153,7 @@ The tests did not catch the human-only bypass and binding/source validation gaps
 - Cluster A: added regression coverage and implementation guard so `decided_by=llm` cannot satisfy `decision_scope=human_only`.
 - Cluster B: added authorization-path current digest parameters and fail-closed behavior when required current digest evidence is missing or mismatched.
 - Cluster C partial: `explicit_human_approval_recorded` now validates `approval-gate-v1` records instead of treating their mere file presence as sufficient. Legacy non-approval-gate approval files remain presence-based for compatibility.
+- Cluster C partial: added `record-human-decision` as the first CLI entry point for `record_human_decision`. It writes an `approval-gate-v1` record under `.reviewcompass/runtime/approvals/`, binds the record path back to the reopen `current_blocker`, rejects non-human actors for `human_only`, and exposes the approval record reference through `next --json` `blocked_by`.
 - Cluster D: added actor/source validation for invalid `decided_by`, empty source fields, malformed `source_digest`, and schema-level binding-kind digest requirements.
 - Cluster G partial: added focused tests for A/B/C partial/D regressions.
 
@@ -166,10 +167,12 @@ Validation performed:
 - `.venv/bin/python3 -m pytest tests/tools/test_check_workflow_action.py::SpecSetExitCodeTests::test_spec_set_blocks_approval_gate_record_when_human_only_actor_is_llm tests/tools/test_check_workflow_action.py::SpecSetExitCodeTests::test_spec_set_allows_valid_approval_gate_human_record -q` -> 2 passed.
 - `.venv/bin/python3 -m pytest tests/tools/test_check_workflow_action.py -k "spec_set or human_approval or approval_gate" -q` -> 22 passed, 215 deselected.
 - `.venv/bin/python3 -m pytest tests/workflow-management/test_operation_contract_cli.py tests/workflow-management/test_operation_contract_schema.py tests/workflow-management/test_required_action_contract_mapping.py -q` -> 12 passed.
+- `.venv/bin/python3 -m pytest tests/tools/test_check_workflow_action.py::ReopenSetBlockerTests tests/tools/test_check_workflow_action.py::RecordHumanDecisionTests -q` -> 7 passed.
+- `.venv/bin/python3 -m pytest tests/tools/test_check_workflow_action.py -k "approval_gate or human_approval or record_human_decision or reopen_set_blocker" -q` -> 10 passed, 229 deselected.
 
 ### Still open
 
-- Cluster C remains partially open. The CLI no longer treats `approval-gate-v1` record presence alone as sufficient for `explicit_human_approval_recorded`, but it still does not bind approval gate records to operation contracts, current digests, or `next --json` branching. Closing this cluster fully requires a separate design/implementation step for how approval records are located, how current digest evidence is supplied, and where `next --json` consumes the gate decision.
+- Cluster C remains partially open. The CLI now records an approval decision and exposes its path through reopen `current_blocker` / `next --json`, but it still does not perform the final `next --json` branch that consumes the record, compares current digest evidence, and permits / blocks the target operation based on operation contract validation.
 - Cluster E remains open until actual operation identifiers for push, spec.json update, and phase approval are confirmed against the operation registry.
 - Cluster F remains human-required until the responsibility for marking approval records as consumed is confirmed.
 
