@@ -31,8 +31,9 @@ completed_steps:
 - tasks alignment 完了（Requirement 13〜16、tasks triad-review v3 post-fix、tasks review-wave、implementation
   連鎖再実施の追跡整合確認済み）
 - tasks approval 完了（利用者承認済み）
-next_step: 第3過程：tasks approval
-step_number: 3
+- 第4過程：reopen 完了（tasks までのやり直し完了、implementation は次工程として未完了維持）
+next_step: 完了
+step_number: 4
 pending_gates: []
 current_blocker: null
 drafting_completed_gates:
@@ -131,6 +132,13 @@ reopen_step_records:
   - .reviewcompass/specs/workflow-management/tasks.md
   - docs/reviews/reopen-classification-2026-06-19-wm-requirement-13-16-vertical-redo.md
   - docs/notes/working/2026-06-19-vertical-intent-review-audit-experiment.md
+- from_step: 4
+  completed_step: 第4過程：reopen 完了（tasks までのやり直し完了、implementation は次工程として未完了維持）
+  rationale: 全 pending gate が完了し、対象 feature の recheck をクリアしたうえで、in-progress reopen
+    記録を completed state として保存した。
+  evidence:
+  - .reviewcompass/specs/workflow-management/spec.json
+  - stages/completed/reopen-procedure-2026-06-20.yaml
 commit_stop_point_records:
 - step: 2
   kind: canonical_update_complete
@@ -188,6 +196,13 @@ commit_stop_point_records:
   head: 5038c20d1719a1012efee343c1c83d86d6a4c063
   evidence:
   - 5038c20d1719a1012efee343c1c83d86d6a4c063
+- step: 3
+  kind: approval_complete
+  gate: stages/tasks.yaml#approval
+  reason: tasks approval 完了時点の停止点
+  head: 06ee29e2d8a8a4e311318996568a2df4919f2dfa
+  evidence:
+  - 06ee29e2d8a8a4e311318996568a2df4919f2dfa
 completed_gates:
 - stages/requirements.yaml#triad-review
 - stages/requirements.yaml#review-wave
@@ -204,7 +219,7 @@ completed_gates:
 downstream_impact_decisions:
 - gate: stages/requirements.yaml#triad-review
   feature_scope: workflow-management
-  decision: proxy_model_approved_after_should_fix
+  decision: proxy_approved
   rationale: requirements triad-review で Requirement 13〜16 の縦方向意図伝達を監査し、API 版 gpt-5.5
     proxy_model が C1〜C3 should-fix、C4 leave-as-is と判定した。C1〜C3 は requirements.md に反映済みで、関連テスト
     42 件が通過したため、requirements triad-review gate を完了する。
@@ -248,7 +263,7 @@ downstream_impact_decisions:
   - 1e9de71e78e1f8dc3fa3b066a4b94f25ea0543ce
 - gate: stages/design.yaml#triad-review
   feature_scope: workflow-management
-  decision: user_approved_after_post_fix
+  decision: approved
   rationale: design triad-review v2 の 15 件は利用者承認により triage finalization 済みで、13 件 must-fix、2
     件 should-fix として decided になった。全 15 件に post-fix recheck coverage があり、統合 post-fix
     review で見つかった Req 13 の追加不整合も修正・再点検済みのため、design triad-review gate を完了とする。
@@ -350,8 +365,57 @@ recheck_progress:
   evidence:
   - .reviewcompass/specs/_cross_feature/reviews/2026-06-20-design-vertical-redo-approval.md
   - .reviewcompass/specs/workflow-management/spec.json
-commit_stop_point: true
-commit_stop_point_step: 3
-commit_stop_point_kind: approval_complete
-commit_stop_point_gate: stages/tasks.yaml#approval
-commit_stop_point_reason: tasks approval 完了時点の停止点
+impacted_downstream_phases:
+- tasks
+feature_impact_decisions:
+- feature: foundation
+  decision: indirect_check_only
+  impact_basis: consumer_or_derivative_only
+  rationale: workflow-management の操作契約・承認ゲート・prompt audit を参照する consumer として確認したが、foundation
+    正本変更は不要。
+  evidence:
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-20-tasks-vertical-redo-review-wave.md
+- feature: runtime
+  decision: indirect_check_only
+  impact_basis: consumer_or_derivative_only
+  rationale: runtime は実行状態や証跡の供給側として確認したが、runtime 正本変更は不要。
+  evidence:
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-20-tasks-vertical-redo-review-wave.md
+- feature: evaluation
+  decision: indirect_check_only
+  impact_basis: consumer_or_derivative_only
+  rationale: evaluation は review-run / post-write verification 成果物の供給側として確認したが、evaluation
+    正本変更は不要。
+  evidence:
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-20-tasks-vertical-redo-review-wave.md
+- feature: analysis
+  decision: indirect_check_only
+  impact_basis: consumer_or_derivative_only
+  rationale: analysis は workflow-state snapshot の consumer として確認したが、analysis 正本変更は不要。
+  evidence:
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-20-tasks-vertical-redo-review-wave.md
+- feature: workflow-management
+  decision: reopen_existing_feature
+  impact_basis: contract_ownership
+  rationale: Requirement 13〜16 の受け皿として workflow-management の requirements / design
+    / tasks を再実施し、tasks approval まで完了した。
+  evidence:
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-20-tasks-vertical-redo-approval.md
+- feature: self-improvement
+  decision: indirect_check_only
+  impact_basis: consumer_or_derivative_only
+  rationale: self-improvement は改善提案側として確認したが、workflow 操作実装は workflow-management 側で足りるため正本変更不要。
+  evidence:
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-20-tasks-vertical-redo-review-wave.md
+- feature: conformance-evaluation
+  decision: indirect_check_only
+  impact_basis: consumer_or_derivative_only
+  rationale: conformance-evaluation は gap handoff の consumer / upstream source として確認したが、active
+    reopen scope の処理は workflow-management 側で足りるため正本変更不要。
+  evidence:
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-20-tasks-vertical-redo-review-wave.md
+new_feature_decision:
+  decision: no_new_feature
+  rationale: Requirement 13〜16 の変更は既存 workflow-management の責務内で受けられるため、新 feature は不要。
+  evidence:
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-20-tasks-vertical-redo-review-wave.md
