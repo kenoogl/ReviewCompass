@@ -1,0 +1,50 @@
+findings:
+  - severity: WARN
+    target_location: "tasks.md § T-016 完了条件"
+    description: "T-016 の完了条件 6 項目は operation contract / registry の境界、19語彙の全対応、commit boundary 必須操作の bypass 防止を明示しているが、approval_required の集約規則（branchy operations のApproval aggregation）と preconditions/postconditions の機械確認可能性 check（machine_checkable=false 時の fail-closed）を独立した完了条件として列挙していない。design §Req 13 §2 は approval aggregation と machine_checkable=false の fail-closed を必須要件として扱っており、T-016 の完了条件が design 意図をカバーしきれていない可能性がある。"
+    rationale: "Requirement 13 受入 8〜9 は複合操作の branching.branches[].approval_aggregation と internal step の machine_checkable preconditions を schema 上の要件としており、design §Req 13 §2 もこれを明示している。T-016 完了条件 6 は read-only 境界の機械検証に言及するが、approval aggregation ルールと machine_checkable=false の DEVIATION への格上げが独立した検証可能な完了条件として現れないため、TDD 実装時に抜け落ちるリスクがある。"
+
+  - severity: WARN
+    target_location: "tasks.md § T-016 最初に書く失敗テスト（test 5, test 6）"
+    description: "test 5（record_human_decision の完了だけで approval_required=true が満たされた扱いにならないこと）は正しく設定されているが、T-016 の ownership である operation contract schema 側の対応確認（record_human_decision の effect_kind=state_mutation, approval_required=false の contract schema 上の値）の first failing test が明示されていない。test 6（preflight が contract を変更しないこと）はあるが、T-017 の承認ゲートとの境界が T-016 のテストとして十分に区別されていない。"
+    rationale: "Requirement 13 受入 6 は record_human_decision の contract 定義と承認 gate への非昇格を要件としており、design §Req 13 §4 はこれを approval_required=false / effect_kind=state_mutation として確定している。T-016 が所有する operation contract schema 上のこの値が first failing test として明示されないと、T-017 の承認ゲート実装とフェーズが混在して schema 確定が先延ばしになるリスクがある。"
+
+  - severity: WARN
+    target_location: "tasks.md § T-017 完了条件 10（human-only 初期集合の機械検査）"
+    description: "完了条件 10 は decision_scope=human_only の承認が proxy_model で通過できないことと human-only 初期集合の機械検査を要求しているが、human-only 初期集合の具体的な列挙（commit, push, spec.json 更新, phase approval, reopen finalize, approval_required=true 不可逆操作実行許可）が完了条件テキスト内に参照されていない。design §Req 14 §1 はこの集合を明示しており、実装時に network slice が欠落するリスクがある。"
+    rationale: "Requirement 14 受入 11 は proxy_model が human-only decision を置換できない対象を明示列挙する要件として扱われており、design §Req 14 §1 の human-only 初期集合（6件）を機械検査可能な単位として完了条件が参照しないと、初期集合の partial implementation が完了判定を通過する可能性がある。"
+
+  - severity: WARN
+    target_location: "tasks.md § T-017 最初に書く失敗テスト（test 7）"
+    description: "test 7（proxy_model cannot approve human_only decision scope）は完了条件に対応した failing test として明示されているが、binding_kind が contract から導出される点（artifact_digest / staged_file_set_digest / both / none の条件付き必須）の first failing test が T-017 のテストセットに現れていない。design §Req 14 §1 は binding_kind を operation contract から導出し、欠落時に fail-closed とすることを要求している。"
+    rationale: "Requirement 14 受入 3 は対象 operation, required_action, artifact digest または staged file set digest を判断 record が持つことを要件としており、binding_kind の条件付き必須を schema で表現しない場合 approval gate record の欠落 digest が実装時に見逃される。T-017 の first failing test セットにこの境界条件が含まれていないと TDD で発見されない可能性がある。"
+
+  - severity: WARN
+    target_location: "tasks.md § T-018 完了条件 5（rounds.yaml 互換フィールド境界）"
+    description: "完了条件 5 は manifest field がなく text-only field のみの場合は WARN、manifest field があるが text-only field と対象 decision point が不一致の場合は DEVIATION という3種の状態遷移ルールを定義しているが、この境界ルール自体を検証する first failing test が明示的に T-018 最初に書く失敗テストセットに含まれていない（test 3 は rounds.yaml が manifest path/sha256 を追加しつつ既存 text field を保持しなければ失敗する、という正常系の保持のみを対象とする）。"
+    rationale: "Requirement 15 受入 6〜7 は review-run 記録の移行互換性を明示しており、design §Req 15 §1 は migrating 中の text-only / manifest field 併存ルールを確定している。WARN vs DEVIATION の境界（manifest あり / なし / 対象不一致の3分岐）の失敗テストが T-018 の first failing test に含まれないと、移行互換の境界が実装時に誤ってドロップされるリスクがある。"
+
+  - severity: WARN
+    target_location: "tasks.md § T-019 完了条件 6（review-wave summary 必須入力）"
+    description: "完了条件 6 は consumer impact の必須入力を明示（review-wave-summary JSON/Markdown 出力、carry-forward register、reopen in-progress/completed YAML の downstream_impact_decisions、spec.json.recheck.impacted_downstream_phases、spec.json.reopened）しているが、この必須入力が欠落または矛盾した場合の DEVIATION 判定の first failing test が T-019 最初に書く失敗テストセットに含まれていない。"
+    rationale: "Requirement 16 受入 12 は review-wave consumer impact の必須入力を明示しており、design §Req 16 §3 もこれを precondition として proxy_triage_apply_batch の完了条件に組み込んでいる。必須入力欠落時の fail-closed を検証する first failing test が T-019 になければ、必須入力の一部欠落で consumer impact が通過するリスクがある。"
+
+  - severity: WARN
+    target_location: "tasks.md §要件追跡（Requirement 13 受入 11〜12 の行）"
+    description: "要件追跡表の Requirement 13 受入 11〜12 は T-016 との連動として記載されているが、受入 12（contract 参照 drift / 重複検出）は T-014 との連動も含む設計（design §Req 13 §5）に対して、追跡表が T-016（T-014 と連動）という一行のみであり、T-014 側の registry / contract 整合検査が T-016 の成果物から参照されることが追跡表では十分に明示されていない。"
+    rationale: "design §Req 13 §3 は registry / contract の整合検査（contract ID 欠落、digest drift、正本 field 重複）を fail-closed にすることを両タスクにまたがる要件として扱っている。追跡表の粒度が粗いと、T-014 の registry schema が contract 正本 field を誤って保持していても triad-review gate で検出されないリスクがある。"
+
+  - severity: WARN
+    target_location: "tasks.md § T-019 最初に書く失敗テスト（test 7）"
+    description: "test 7（proxy_triage_requires_complete_finding_cluster_coverage）は coverage の不足・過剰・競合で DEVIATION になることを検証しているが、finding-to-operation mapping が複数候補で一意解決不能な場合に blocks_proxy_apply=true になること（design §Req 16 §3 の predicate 評価順序 step 2）の first failing test が明示されていない。"
+    rationale: "Requirement 16 受入 13 は proxy_model triage decision の適用可否を machine-readable evidence completeness から判定することを要件としており、design §Req 16 §3 は finding-to-operation mapping の一意解決不能を DEVIATION とすることを predicate 評価順序 step 2 として明確にしている。この境界条件の first failing test が T-019 にないと TDD で検出されない可能性がある。"
+
+  - severity: INFO
+    target_location: "tasks.md §テスト戦略の継承 境界条件"
+    description: "境界条件の一覧に T-019（proxy_model / human decision 境界）は追記されているが、T-016（operation contract の commit boundary と approval aggregation 境界）と T-018（prompt / machine task 境界の rounds.yaml 3分岐境界）が境界条件行に列挙されていない。"
+    rationale: "これは実装安全性に直接影響する欠落ではなく T-016/T-018 本体のテスト要件には記載されているが、テスト戦略の継承節から参照可能にすることで T-011 の統合テスト範囲が明確になる。"
+
+  - severity: INFO
+    target_location: "spec.json § workflow_state.tasks"
+    description: "spec.json の workflow_state.tasks は drafting=true, triad-review/review-wave/alignment/approval=false となっており、tasks triad-review が未完了であることが明示されている。reopen-procedure-2026-06-19.yaml の pending_gates も stages/tasks.yaml#triad-review 以降が残っており、tasks gate 状態と reopen 進行中状態は一致している。これは正常な状態を確認するための観察である。"
+    rationale: "Check 8 の確認として、requirements と design は完了し tasks drafting は完了、tasks triad-review 以降は未完了という状態が spec.json と reopen-procedure の両方で整合しており、誤った完了主張はない。"

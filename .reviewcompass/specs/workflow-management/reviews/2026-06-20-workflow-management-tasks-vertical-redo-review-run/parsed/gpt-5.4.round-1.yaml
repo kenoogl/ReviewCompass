@@ -1,0 +1,130 @@
+role: primary
+provider: openai-api
+model: gpt-5.4
+attempts: 1
+duration_seconds: 26.442
+findings:
+- severity: ERROR
+  target_location: .reviewcompass/specs/workflow-management/tasks.md#T-016
+  description: T-016 が Requirement 13 で要求された operation contract の重要項目を実装対象・完了条件・失敗テストへ十分に落とし込めていない。特に
+    `approval_required` の boolean 制約、`approval_contract_refs`、branch/internal step
+    semantics、`approval_aggregation`、`max_effect_kind`、actor/source、output / side-effect
+    contract fields、human-only override 境界がタスク本文で明示的な実装・検証対象になっていない。
+  rationale: Requirement 13 と design §Requirement 13 は、T-016 が operation contract
+    の正本語彙・schema・mapping を所有し、registry/preflight へ責務を逃がさずに 19 action 全体を安全に機械化することを求めている。主要
+    field や branch semantics が tasks で抜けると、implementation 時に contract 正本が簡略化され、registry
+    側へ責務が逆流する危険がある。
+- severity: ERROR
+  target_location: .reviewcompass/specs/workflow-management/tasks.md#T-016
+  description: T-016 の required_action coverage 条件が『各 `required_action` が 1 件以上接続』と読むことができ、design
+    が要求する fail-closed 条件である『未接続』『未知 action』『重複矛盾』『missing contract IDs』の全検出を十分に表現していない。
+  rationale: Requirement 13 は 19 語彙の完全対応に加え、unmapped actions、unknown actions、duplicated
+    source-of-truth fields、registry/contract digest drift、missing contract IDs を fail-closed
+    にすることを受入条件としている。単に 1 件以上の接続だけでは、同一 action に競合 contract がぶら下がる、registry が存在しない
+    contract を参照する、といった危険な不整合を取り逃す。
+- severity: WARN
+  target_location: .reviewcompass/specs/workflow-management/tasks.md#T-016
+  description: T-016 の実装対象ファイルに workflow-state snapshot schema や language task I/O
+    schema が含まれておらず、Requirement 13 受入 1 の『共通 schema 群』との関係が T-017/T-018 へ跨っていることは読めるが、T-016
+    自身の境界説明が弱い。
+  rationale: Requirement 13 と design §Requirement 13 は共通 schema 5件を一体の設計入力として示している。tasks
+    として分割すること自体は可能だが、T-016 がどこまで所有し、どこから T-017/T-018 へ委譲するかを明示しないと、Phase 1 schema
+    の責務分割が implementation で揺れる。
+- severity: ERROR
+  target_location: .reviewcompass/specs/workflow-management/tasks.md#T-017
+  description: T-017 が approval gate record の必須内容を Requirement 14 / design どおり十分に分解していない。`decision_scope`
+    の契約由来導出、`binding_kind` 4値、`target_required_action`、`staged_file_set_digest` と
+    `target_artifact_digest` の条件付き必須、`source_digest`、`next_action_expectation`、consumed
+    state のテスト観点がタスク本文から抜けている。
+  rationale: Requirement 14 は承認を conversational memory ではなく機械可読 state にすることが目的であり、digest
+    binding と decision scope 導出が中核である。ここが tasks で曖昧なままだと、approval gate が単なるメモ化に後退し、proxy/human
+    境界や不可逆操作の束縛が実装で弱くなる。
+- severity: ERROR
+  target_location: .reviewcompass/specs/workflow-management/tasks.md#T-017
+  description: T-017 が side track stack の最大深度、親子 frame overlap、allowed_files 外 staged
+    change、push 時点からの digest 変化、commit / push 直前照合、および `repair` 操作の責務を implementation-ready
+    なテスト項目として十分に列挙していない。
+  rationale: Requirement 14 と design §Requirement 14 は side track stack を LIFO だけでなく
+    scope drift 防止の正本として扱う。非LIFO pop 以外の drift 条件が tasks に落ちていないと、read-only/mutating
+    分離はあっても、実際の mainline 保護条件が implementation に伝わらない。
+- severity: WARN
+  target_location: .reviewcompass/specs/workflow-management/tasks.md#T-017
+  description: T-017 の snapshot 完了条件は drift 検出を列挙しているが、Requirement 14 が求める `next --json`
+    source digest、side tracks、unstaged summary、post-write summary の保持が完了条件で明示されていない。
+  rationale: snapshot は authority ではなく audit / visualization support であるため、何を固定して何を表示するかの項目が
+    tasks で明確である必要がある。source digest や side track 可視化が弱いと、後続実装で snapshot の監査価値が不足する。
+- severity: ERROR
+  target_location: .reviewcompass/specs/workflow-management/tasks.md#T-018
+  description: T-018 が Requirement 15 と design §Requirement 15 の一部を取りこぼしている。特に `prompt_length`
+    / bounds の正本が `WORKFLOW_DISCIPLINE_MAP.yaml` にあること、その bounds 一致検査、`preconditions_checked.source`
+    の許容値、`on_completion.next_required_action` / `allowed_followups` / `forbidden_actions`
+    の構造がタスク本文で明確に実装対象化されていない。
+  rationale: Requirement 15 は structured prompt を単なる manifest 記録ではなく、言語タスク仕様として機械検査可能にすることを求める。長さ
+    bounds や completion routing 構造が tasks に入っていないと、prompt audit が source coverage
+    だけの弱い検査になり、machine-task leakage 防止の意図が十分に transfer されない。
+- severity: ERROR
+  target_location: .reviewcompass/specs/workflow-management/tasks.md#T-018
+  description: T-018 に Phase 6 judge-audit の制限が implementation-ready に落ちていない。『judge
+    audit は Phase 6 のみ』『最終承認を自動化しない』という境界を検証する失敗テスト、禁止事項、停止条件が不足している。
+  rationale: Requirement 15 の重要な禁止事項は、LLM judge を approval automation に使わないことである。これが
+    tasks に明示されないと、Phase 6 実装時に audit と approval の責務が混ざる危険がある。
+- severity: ERROR
+  target_location: .reviewcompass/specs/workflow-management/tasks.md#T-019
+  description: T-019 が Phase 0〜6 の内容を完全には transfer していない。Phase 0 の D-003 固定失敗テスト6件、Phase
+    2 の `operation-list --json` 相当、Phase 3 の advisory-only 境界、Phase 5 の warning-to-block
+    promotion 対象、Phase 6 の optional/deferrable 性質がタスク本文で明示的な実装・検証対象として不足している。
+  rationale: Requirement 16 と design §Requirement 16 は『何をどの phase で入れるか』を混在防止のために細かく固定している。tasks
+    が phase 境界を粗くまとめると、implementation で phase exit criteria を混在させる危険が高く、Requirement
+    16 の主目的を損なう。
+- severity: ERROR
+  target_location: .reviewcompass/specs/workflow-management/tasks.md#T-019
+  description: T-019 の human-required predicate 実装観点が design より粗い。対象 finding/cluster
+    coverage、finding-to-operation mapping の一意解決、approval gate record の `binding_kind`
+    / digest / `next_action_expectation`、review-wave impact evidence の未解決判定、判定元欠落時
+    DEVIATION が完了条件と最初の失敗テストに十分に落ちていない。
+  rationale: Requirement 16 の人間優先境界は provider/model 非依存で、証跡 completeness と scope consistency
+    によって決まる。tasks で predicate 入力と評価順が粗いままだと、proxy triage decision が convenience ベースで適用され、human-required
+    override を破る実装を招きやすい。
+- severity: WARN
+  target_location: .reviewcompass/specs/workflow-management/tasks.md#T-019
+  description: T-019 の consumer impact 条件は review-wave summary / carry-forward / downstream
+    impact decisions / `spec.json.recheck` / `spec.json.reopened` を列挙しているが、design
+    が強調する『`spec.json.reopened` は active scope の正本ではない』ことを検証する具体的失敗テストが scope 混同ケースまで十分に細分化されていない。
+  rationale: Requirement 16 の reopen scope/impact scope 分離は vertical intent の核心である。tasks
+    に実装停止条件や fixture 粒度が足りないと、`spec.json.reopened` を近道で使う実装が入り込みやすい。
+- severity: ERROR
+  target_location: .reviewcompass/specs/workflow-management/tasks.md#Completion Criteria
+  description: 文書全体の完了基準が『T-001〜T-019 のすべてが起草・実装・テスト・コミット完了』となっており、tasks drafting
+    成果物の gate と矛盾している。現 gate は triad-review であり、implementation 完了を tasks 文書の完了条件にしている。
+  rationale: この review gate は tasks.md が implementation-ready かを審査する段階であり、実装完了は downstream
+    state である。tasks 文書自身の completion criteria が implementation 完了を前提にすると、未完了 gate
+    で偽の完了条件を掲げる状態になり、state interpretation を誤らせる。
+- severity: WARN
+  target_location: .reviewcompass/specs/workflow-management/tasks.md#T-016-#T-019
+  description: T-016〜T-019 は implementation-ready detail を多く含むが、旧タスク群と比べて『成果物』欄の代わりに『実装対象ファイル』へ寄せており、文書全体のタスク形式が不揃いである。
+  rationale: 形式不統一自体は必ずしも要件違反ではないが、tasks 文書の消化や traceability の自動検査時に粒度差がノイズになりやすい。特に
+    completion 条件・verification commands・禁止事項との結び付きが機械的に読みにくくなる。
+- severity: ERROR
+  target_location: .reviewcompass/specs/workflow-management/tasks.md#Requirements
+    Traceability
+  description: Requirement 13〜16 の追跡表が、requirements.md の受入基準番号と整合していない。tasks.md では
+    Requirement 13 受入 11〜12、Requirement 14 受入 11〜12、Requirement 16 受入 13〜14 まで存在する前提で記載しているが、requirements.md
+    の該当要件はその番号体系を持っていない。
+  rationale: vertical intent transfer review では requirements→design→tasks の番号追跡が崩れていないことが重要である。tasks
+    側が存在しない受入番号を参照すると、どの要求を満たすタスクかを implementation で誤解しやすく、traceability 自体が stale
+    になる。
+- severity: ERROR
+  target_location: .reviewcompass/specs/workflow-management/spec.json
+  description: spec.json の workflow state が tasks drafting 完了・tasks triad-review 未完了・implementation
+    未着手である点は適切だが、requirements と design が approval=true のまま reopened/recheck も true
+    になっており、active reopen scope の正本を spec.json 側だけで読むと誤解しやすい状態にある。少なくとも tasks gate
+    review では、この state が in-progress reopen record と対で解釈されることを明示する補助が不足している。
+  rationale: Requirement 16 は `spec.json.reopened` を active reopen scope と同一視しないことを強く禁じている。実際の
+    state は in-progress YAML が正本なので不整合そのものではないが、triad-review 観点では spec.json 単体の見かけが誤読を誘いやすく、state
+    consistency の説明が弱い。
+- severity: INFO
+  target_location: stages/in-progress/reopen-procedure-2026-06-19.yaml
+  description: reopen in-progress record は requirements/design 完了、tasks drafting 完了、tasks
+    triad-review 以降未完了、implementation 未完了という gate 状態を概ね正しく保持している。
+  rationale: Required check 8 の主要状態整合は満たしており、active_reopen_scope / active_impact_review_scope
+    の分離も記録されているため、tasks triad-review 対象としての reopen state 自体は大きく破綻していない。

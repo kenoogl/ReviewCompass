@@ -1,0 +1,12 @@
+run_id: 2026-06-20-workflow-management-tasks-vertical-redo-review-run
+target_files:
+- path: .reviewcompass/specs/workflow-management/tasks.md
+  sha256: e6adb86ea69669f88b093dbd7f109c4105add01a6dc78da88403967968ef8262
+- path: .reviewcompass/specs/workflow-management/design.md
+  sha256: ac6bd42e57b507a615af3ed6a40f3c031f56fe75f27e7f1fcc12ddcb4dc46558
+- path: .reviewcompass/specs/workflow-management/requirements.md
+  sha256: e7621e6d56a3ef42085e2864a88366d670e55c304668dd21f48dde32411e13f3
+- path: .reviewcompass/specs/workflow-management/spec.json
+  sha256: 27d656a44f0b354066bdfe6d6730dbd4c38b1491d2288c2a6bea29ea952c13ee
+- path: stages/in-progress/reopen-procedure-2026-06-19.yaml
+  sha256: 01203af71291eacf88a2037c402796cc3e687de82f520d5ddd7bca8f29677494

@@ -1,0 +1,19 @@
+run_id: 2026-06-20-workflow-management-tasks-vertical-redo-review-run-v2
+variant: implementation_review_independent_3way_codex_operator
+operator: codex
+phase: tasks
+gate: stages/tasks.yaml#triad-review
+roles:
+  primary:
+    path: api
+    provider: openai-api
+    model: gpt-5.4
+  adversarial:
+    path: api
+    provider: anthropic-api
+    model: claude-sonnet-4-6
+  judgment:
+    path: api
+    provider: gemini-api
+    model: gemini-3.1-pro-preview
+selection_rationale: Codex 操縦時の triad-review variant として、利用者指示に従い adversarial は claude-sonnet-4-6 を使用し、claude-opus-4-8 は使用しない。requirements.md 全文は target に入れず、Requirement 13-16 の構造化上流意図だけを prompt 内 source material として渡す。
