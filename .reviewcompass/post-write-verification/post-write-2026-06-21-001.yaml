@@ -1,0 +1,30 @@
+status: completed
+target_files:
+  - TODO_NEXT_SESSION.md
+target_sha256:
+  TODO_NEXT_SESSION.md: 9c3d38efc08109feabd9672e507f873abefe2178fe60a3b6e1e2ce4e6a932b75
+required_verifiers:
+  - lightweight_self_check
+completed_verifiers:
+  - lightweight_self_check
+unresolved_substantive_findings: 0
+verifications:
+  - verifier: lightweight_self_check
+    target_files:
+      - TODO_NEXT_SESSION.md
+    target_sha256:
+      TODO_NEXT_SESSION.md: 9c3d38efc08109feabd9672e507f873abefe2178fe60a3b6e1e2ce4e6a932b75
+    checks:
+      user_points_preserved: true
+      facts_inferences_policy_and_open_items_separated: true
+      useful_as_later_decision_material: true
+      does_not_over_specify_scope: true
+      remains_working_note_not_canonical_spec: true
+      api_review_intentionally_not_used: true
+notes: >
+  Lightweight self-check for TODO_NEXT_SESSION.md only. The update replaces
+  stale reopen-in-progress and ahead-count handoff text with the current
+  completed workflow state, clean/synced repository state, pushed HEAD
+  f772a39a, and a clear statement that there is no next mainline workflow task.
+  The note keeps next --json and spec.json as canonical sources and does not
+  promote the TODO entry into a specification.
