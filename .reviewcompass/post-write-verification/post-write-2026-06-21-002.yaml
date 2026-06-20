@@ -1,0 +1,34 @@
+status: completed
+target_files:
+  - docs/notes/working/2026-06-21-effective-prompt-freshness-audit-plan.md
+  - docs/notes/working/2026-06-21-workflow-operation-mechanization-improvement-plan.md
+target_sha256:
+  docs/notes/working/2026-06-21-effective-prompt-freshness-audit-plan.md: 1f8057c6434be538276a109aa1aefd291473ff0ce3d3920367576946c9212274
+  docs/notes/working/2026-06-21-workflow-operation-mechanization-improvement-plan.md: 4fb72335000ac32049dd7f1db847db8d9f3ccc9f3535987d203843cbfed9841c
+required_verifiers:
+  - lightweight_self_check
+completed_verifiers:
+  - lightweight_self_check
+unresolved_substantive_findings: 0
+verifications:
+  - verifier: lightweight_self_check
+    target_files:
+      - docs/notes/working/2026-06-21-effective-prompt-freshness-audit-plan.md
+      - docs/notes/working/2026-06-21-workflow-operation-mechanization-improvement-plan.md
+    target_sha256:
+      docs/notes/working/2026-06-21-effective-prompt-freshness-audit-plan.md: 1f8057c6434be538276a109aa1aefd291473ff0ce3d3920367576946c9212274
+      docs/notes/working/2026-06-21-workflow-operation-mechanization-improvement-plan.md: 4fb72335000ac32049dd7f1db847db8d9f3ccc9f3535987d203843cbfed9841c
+    checks:
+      user_points_preserved: true
+      facts_inferences_policy_and_open_items_separated: true
+      useful_as_later_decision_material: true
+      does_not_over_specify_scope: true
+      remains_working_note_not_canonical_spec: true
+      api_review_intentionally_not_used: true
+notes: >
+  Lightweight self-check for two working notes. The first note records the
+  user's point that effective prompts are derived artifacts and therefore need
+  freshness audit before further mechanization. The second note preserves the
+  broader improvement plan for reducing manual assembly after effective prompt
+  loading, while explicitly depending on the freshness audit first. Both notes
+  remain planning records and do not change canonical workflow behavior.
