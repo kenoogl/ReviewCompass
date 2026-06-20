@@ -1553,11 +1553,11 @@ def attach_required_context(cwd, next_action):
   required_inputs = required_inputs_for_next_action(cwd, next_action)
   if required_inputs:
     augmented["required_inputs"] = required_inputs
-  effective_prompt = effective_prompt_for_next_action(cwd, next_action)
+  effective_prompt = effective_prompt_for_next_action(cwd, augmented)
   if effective_prompt is not None:
     augmented["effective_prompt"] = materialize_effective_prompt(
       cwd,
-      next_action,
+      augmented,
       effective_prompt,
     )
   return augmented
