@@ -1,0 +1,28 @@
+process_id: maintenance
+started_at: '2026-06-20T00:00:00+09:00'
+completed_at: '2026-06-20T00:00:00+09:00'
+trigger: commit 操作の機械処理化に向けて、2026-06-20 セッションで発生した commit 周辺の失敗情報を後続実装の参照メモとして残す必要があったため
+mainline_blocked_by: stages/in-progress/reopen-procedure-2026-06-19.yaml
+allowed_scope: commit 操作機械処理化のための失敗ケース作業メモ追加
+allowed_files:
+- docs/notes/working/2026-06-20-commit-operation-failure-cases.md
+- stages/completed/maintenance-2026-06-20-commit-operation-failure-cases-note.yaml
+completion_conditions:
+- commit 周辺で発生した失敗パターンが、後続実装の参照情報として整理される
+- commit 前に機械処理で検出すべき不変条件が整理される
+- 利用者に見せる情報と見せない内部手順の境界が整理される
+- 本線 reopen の pending gate や spec.json を変更しない
+completed_changes:
+- docs/notes/working/2026-06-20-commit-operation-failure-cases.md を追加し、commit 操作失敗ケース、事前判定、利用者向け出力、テスト候補を整理した
+verification:
+- command: sed -n '1,260p' docs/notes/working/2026-06-20-commit-operation-failure-cases.md
+  result: メモ内容を確認した
+- command: .venv/bin/python3 tools/check-workflow-action.py next --json
+  result: reopen_in_progress / requirements approval 完了時点の停止点
+- command: git status --short
+  result: docs/notes/working/2026-06-20-commit-operation-failure-cases.md のみ未コミットで作業開始
+return_to:
+  required_action: commit_stop_point
+  active_gate: stages/requirements.yaml#approval
+  state_file: stages/in-progress/reopen-procedure-2026-06-19.yaml
+status: completed
