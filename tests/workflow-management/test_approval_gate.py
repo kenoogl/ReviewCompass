@@ -148,6 +148,90 @@ class ApprovalGateTests(unittest.TestCase):
       )
       self.assertEqual(result["verdict"], "DEVIATION", record["binding_kind"])
 
+  def test_binding_kind_none_is_allowed_only_for_wait_only_operations(self):
+    module = self._module()
+
+    wait_only = module.validate_approval_gate_record(
+      valid_record(
+        target_operation_id="wait_for_human_decision",
+        target_required_action="wait_for_human_decision",
+        decision_scope="advisory_only",
+        binding_kind="none",
+        target_artifact_digest=None,
+        staged_file_set_digest=None,
+      ),
+      operation_contract={
+        "operation_id": "wait_for_human_decision",
+        "required_action": "wait_for_human_decision",
+        "approval_required": False,
+        "phase_boundary": "none",
+        "effect_kind": "read",
+        "actor": {"kind": "tool"},
+      },
+    )
+    self.assertEqual(wait_only["verdict"], "OK", wait_only.get("reasons"))
+
+    irreversible = module.validate_approval_gate_record(
+      valid_record(
+        decision_scope="human_only",
+        binding_kind="none",
+        target_artifact_digest=None,
+        staged_file_set_digest=None,
+      ),
+      operation_contract={
+        "operation_id": "commit_stop_point",
+        "required_action": "commit_stop_point",
+        "approval_required": True,
+        "phase_boundary": "commit_boundary",
+        "effect_kind": "state_mutation",
+        "actor": {"kind": "human"},
+      },
+    )
+    self.assertEqual(irreversible["verdict"], "DEVIATION")
+
+  def test_target_operation_id_must_match_operation_contract(self):
+    module = self._module()
+
+    result = module.allows_target_operation(
+      valid_record(target_operation_id="wrong_operation_id"),
+      operation_contract={
+        "operation_id": "commit_stop_point",
+        "required_action": "commit_stop_point",
+        "approval_required": True,
+        "phase_boundary": "commit_boundary",
+        "effect_kind": "state_mutation",
+        "actor": {"kind": "human"},
+      },
+    )
+
+    self.assertFalse(result["allowed"])
+    self.assertEqual(result["verdict"], "DEVIATION")
+    self.assertIn("target_operation_id", "\n".join(result["reasons"]))
+
+  def test_digest_mismatch_fails_closed(self):
+    module = self._module()
+
+    result = module.validate_approval_gate_record(
+      valid_record(
+        binding_kind="both",
+        target_artifact_digest="sha256:" + "c" * 64,
+        staged_file_set_digest="sha256:" + "d" * 64,
+      ),
+      operation_contract={
+        "operation_id": "commit_stop_point",
+        "required_action": "commit_stop_point",
+        "approval_required": True,
+        "phase_boundary": "commit_boundary",
+        "effect_kind": "state_mutation",
+        "actor": {"kind": "human"},
+      },
+      current_target_artifact_digest="sha256:" + "e" * 64,
+      current_staged_file_set_digest="sha256:" + "f" * 64,
+    )
+
+    self.assertEqual(result["verdict"], "DEVIATION")
+    self.assertIn("digest", "\n".join(result["reasons"]))
+
 
 if __name__ == "__main__":
   unittest.main()

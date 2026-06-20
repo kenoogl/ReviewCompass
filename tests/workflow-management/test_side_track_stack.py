@@ -89,6 +89,41 @@ class SideTrackStackTests(unittest.TestCase):
     self.assertEqual(result["verdict"], "DEVIATION")
     self.assertEqual(result["next_required_action"], "repair_workflow_state")
 
+  def test_side_track_push_rejects_allowed_files_drift(self):
+    module = self._module()
+    with tempfile.TemporaryDirectory() as tmp:
+      path = Path(tmp) / "side-track-stack.yaml"
+      path.write_text(yaml.safe_dump({"schema_version": "side-track-stack-v1", "frames": []}), encoding="utf-8")
+      next_frame = frame("A")
+      next_frame["allowed_files"] = ["docs/notes/working/example.md"]
+      next_frame["staged_file_set"] = [
+        "docs/notes/working/example.md",
+        "tools/unapproved.py",
+      ]
+
+      result = module.push_frame(path, next_frame)
+
+      self.assertEqual(result["verdict"], "DEVIATION")
+      self.assertIn("allowed_files", "\n".join(result["reasons"]))
+
+  def test_side_track_push_rejects_max_depth_exceeded(self):
+    module = self._module()
+    with tempfile.TemporaryDirectory() as tmp:
+      path = Path(tmp) / "side-track-stack.yaml"
+      stack = {
+        "schema_version": "side-track-stack-v1",
+        "frames": [
+          frame("A"),
+          frame("B", "A"),
+        ],
+      }
+      path.write_text(yaml.safe_dump(stack), encoding="utf-8")
+
+      result = module.push_frame(path, frame("C", "B"))
+
+      self.assertEqual(result["verdict"], "DEVIATION")
+      self.assertIn("max_depth", "\n".join(result["reasons"]))
+
 
 if __name__ == "__main__":
   unittest.main()

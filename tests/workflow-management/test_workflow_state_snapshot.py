@@ -123,6 +123,46 @@ class WorkflowStateSnapshotTests(unittest.TestCase):
       self.assertEqual(result["verdict"], "DEVIATION")
       self.assertIn("source_next_action_sha256", "\n".join(result["reasons"]))
 
+  def test_snapshot_drift_reports_completed_gate_and_contract_digest_change(self):
+    module = self._module()
+    with tempfile.TemporaryDirectory() as tmp:
+      path = Path(tmp) / "snapshot.yaml"
+      snapshot = {
+        "schema_version": "workflow-state-snapshot-v1",
+        "source_next_action_sha256": "sha256:same",
+        "workflow_state_summary": {
+          "pending_gates": [],
+          "drafting_completed_gates": ["stages/design.yaml#drafting"],
+          "completed_gates": ["stages/design.yaml#triad-review"],
+          "operation_contract": {"digest": "sha256:old"},
+        },
+        "git_tree_summary": {
+          "staged_file_set_digest": "sha256:same",
+          "worktree_dirty_path_digest": "sha256:same",
+        },
+      }
+      path.write_text(yaml.safe_dump(snapshot), encoding="utf-8")
+
+      result = module.detect_drift(
+        path,
+        current_next_action={
+          "pending_gates": [],
+          "drafting_completed_gates": ["stages/design.yaml#drafting"],
+          "completed_gates": ["stages/design.yaml#alignment"],
+          "operation_contract": {"digest": "sha256:new"},
+        },
+        current_next_action_sha256="sha256:same",
+        current_git_tree_summary={
+          "staged_file_set_digest": "sha256:same",
+          "worktree_dirty_path_digest": "sha256:same",
+        },
+      )
+
+      self.assertEqual(result["verdict"], "DEVIATION")
+      reasons = "\n".join(result["reasons"])
+      self.assertIn("completed_gates", reasons)
+      self.assertIn("operation_contract", reasons)
+
 
 if __name__ == "__main__":
   unittest.main()
