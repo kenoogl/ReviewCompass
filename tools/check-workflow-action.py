@@ -50,6 +50,8 @@ from check_workflow_action.runtime_paths import (
 from check_workflow_action import commit_approval
 from check_workflow_action.operation_preflight import run_preflight
 from check_workflow_action.operation_contracts import run_contract_check
+from check_workflow_action.side_track_stack import current as current_side_track_stack
+from check_workflow_action.workflow_state_snapshot import build_snapshot
 
 DEFAULT_LAST_COMMIT_PRECHECK_PATH = ".git/reviewcompass/last-commit-precheck.json"
 DEFAULT_DISCIPLINE_MAP_PATH = "docs/operations/WORKFLOW_DISCIPLINE_MAP.yaml"
@@ -6850,6 +6852,35 @@ def cmd_operation_contract_check(args):
   return 0 if verdict == "OK" else 2
 
 
+def cmd_workflow_snapshot(args):
+  """workflow-snapshot サブコマンドのエントリポイント（Req 14）"""
+  snapshot = build_snapshot(Path.cwd())
+  response = {
+    "verdict": "OK",
+    "operation_mode": "read_only",
+    "snapshot": snapshot,
+  }
+  if args.json:
+    print(json.dumps(response, ensure_ascii=False, indent=2))
+  else:
+    print("[VERDICT] OK")
+    print(f"[CURRENT] {snapshot.get('current_work', {}).get('title')}")
+  return 0
+
+
+def cmd_side_track_stack(args):
+  """side-track-stack サブコマンドのエントリポイント（Req 14）"""
+  if args.side_track_stack_command == "current":
+    response = current_side_track_stack(args.path)
+    if args.json:
+      print(json.dumps(response, ensure_ascii=False, indent=2))
+    else:
+      print(f"[VERDICT] {response.get('verdict')}")
+      print(f"[FRAMES] {len(response.get('stack', {}).get('frames', []))}")
+    return 0 if response.get("verdict") == "OK" else 2
+  return 2
+
+
 def main():
   # 共通オプション（サブコマンドの前後どちらでも受け取れるよう親パーサに集約、仕様 §4 共通オプション）
   common_parser = argparse.ArgumentParser(add_help=False)
@@ -7113,6 +7144,31 @@ def main():
     parents=[common_parser],
   )
 
+  sub.add_parser(
+    "workflow-snapshot",
+    help="現在の workflow-state snapshot を read-only で出力する（Req 14）",
+    parents=[common_parser],
+  )
+
+  sts = sub.add_parser(
+    "side-track-stack",
+    help="side track stack を操作する（Req 14）",
+  )
+  sts_sub = sts.add_subparsers(
+    dest="side_track_stack_command",
+    required=True,
+  )
+  sts_current = sts_sub.add_parser(
+    "current",
+    help="side track stack の現在値を read-only で出力する",
+    parents=[common_parser],
+  )
+  sts_current.add_argument(
+    "--path",
+    default=None,
+    help="side track stack YAML のパス（省略時は既定位置）",
+  )
+
   cap = sub.add_parser(
     "commit-approval",
     help="commit 承認 nonce challenge を作成・記録・無効化する",
@@ -7224,6 +7280,10 @@ def main():
     sys.exit(cmd_operation_preflight(args))
   elif args.subcommand == "operation-contract-check":
     sys.exit(cmd_operation_contract_check(args))
+  elif args.subcommand == "workflow-snapshot":
+    sys.exit(cmd_workflow_snapshot(args))
+  elif args.subcommand == "side-track-stack":
+    sys.exit(cmd_side_track_stack(args))
   elif args.subcommand == "commit-approval":
     sys.exit(cmd_commit_approval(args))
   elif args.subcommand == "decision-source-lint":

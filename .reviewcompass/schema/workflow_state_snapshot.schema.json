@@ -1,0 +1,61 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:reviewcompass:schema:workflow_state_snapshot",
+  "type": "object",
+  "additionalProperties": true,
+  "required": [
+    "schema_version",
+    "generated_by",
+    "generated_at",
+    "source_next_action_sha256",
+    "current_work",
+    "active_side_tracks",
+    "git_tree_summary",
+    "post_write_manifest_summary",
+    "workflow_state_summary"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "const": "workflow-state-snapshot-v1"
+    },
+    "generated_by": {
+      "type": "string",
+      "minLength": 1
+    },
+    "generated_at": {
+      "type": "string",
+      "minLength": 1
+    },
+    "source_next_action_sha256": {
+      "type": "string",
+      "minLength": 1
+    },
+    "current_work": {
+      "type": "object",
+      "additionalProperties": true,
+      "required": [
+        "required_action",
+        "title",
+        "outer_node",
+        "inner_node",
+        "active_gate"
+      ]
+    },
+    "active_side_tracks": {
+      "type": "array"
+    },
+    "git_tree_summary": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "post_write_manifest_summary": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "workflow_state_summary": {
+      "type": "object",
+      "additionalProperties": true
+    }
+  }
+}

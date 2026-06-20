@@ -1,0 +1,101 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:reviewcompass:schema:side_track_stack",
+  "type": "object",
+  "additionalProperties": true,
+  "required": [
+    "schema_version",
+    "frames"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "const": "side-track-stack-v1"
+    },
+    "frames": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": true,
+        "required": [
+          "frame_id",
+          "kind",
+          "parent_frame_id",
+          "pushed_by",
+          "title",
+          "spawned_from",
+          "allowed_scope",
+          "allowed_files",
+          "completion_conditions",
+          "return_to",
+          "staged_file_set",
+          "staged_file_digest",
+          "pushed_at",
+          "max_depth"
+        ],
+        "properties": {
+          "frame_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "kind": {
+            "type": "string",
+            "minLength": 1
+          },
+          "parent_frame_id": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "pushed_by": {
+            "type": "string",
+            "minLength": 1
+          },
+          "title": {
+            "type": "string",
+            "minLength": 1
+          },
+          "spawned_from": {
+            "type": "object"
+          },
+          "allowed_scope": {
+            "type": "string",
+            "minLength": 1
+          },
+          "allowed_files": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "completion_conditions": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "return_to": {
+            "type": "object"
+          },
+          "staged_file_set": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "staged_file_digest": {
+            "type": "string"
+          },
+          "pushed_at": {
+            "type": "string"
+          },
+          "max_depth": {
+            "type": "integer",
+            "minimum": 0
+          }
+        }
+      }
+    }
+  }
+}

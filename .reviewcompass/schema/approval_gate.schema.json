@@ -1,0 +1,117 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:reviewcompass:schema:approval_gate",
+  "type": "object",
+  "additionalProperties": true,
+  "required": [
+    "schema_version",
+    "decision_id",
+    "decision",
+    "decision_scope",
+    "target_operation_id",
+    "target_required_action",
+    "target_artifact",
+    "target_artifact_digest",
+    "staged_file_set_digest",
+    "binding_kind",
+    "decided_by",
+    "decided_at",
+    "source_ref",
+    "source_digest",
+    "rationale",
+    "next_action_expectation",
+    "consumed"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "const": "approval-gate-v1"
+    },
+    "decision_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "decision": {
+      "type": "string",
+      "enum": [
+        "approved",
+        "rejected",
+        "deferred",
+        "changes_requested"
+      ]
+    },
+    "decision_scope": {
+      "type": "string",
+      "enum": [
+        "human_only",
+        "proxy_allowed",
+        "advisory_only"
+      ]
+    },
+    "target_operation_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "target_required_action": {
+      "$ref": "required_action.schema.json"
+    },
+    "target_artifact": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "target_artifact_digest": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "staged_file_set_digest": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "binding_kind": {
+      "type": "string",
+      "enum": [
+        "artifact_digest",
+        "staged_file_set_digest",
+        "both"
+      ]
+    },
+    "decided_by": {
+      "type": "string",
+      "enum": [
+        "user",
+        "human",
+        "proxy_model",
+        "llm"
+      ]
+    },
+    "decided_at": {
+      "type": "string",
+      "minLength": 1
+    },
+    "source_ref": {
+      "type": "string",
+      "minLength": 1
+    },
+    "source_digest": {
+      "type": "string",
+      "minLength": 1
+    },
+    "rationale": {
+      "type": "string",
+      "minLength": 1
+    },
+    "next_action_expectation": {
+      "type": "string",
+      "minLength": 1
+    },
+    "consumed": {
+      "type": "boolean"
+    }
+  }
+}
