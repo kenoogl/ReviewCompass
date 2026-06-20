@@ -30,10 +30,10 @@ completed_steps:
 - tasks review-wave 完了（軽量横断確認、他 feature tasks 正本変更不要、carry-forward 未消化 0 件）
 - tasks alignment 完了（Requirement 13〜16、tasks triad-review v3 post-fix、tasks review-wave、implementation
   連鎖再実施の追跡整合確認済み）
+- tasks approval 完了（利用者承認済み）
 next_step: 第3過程：tasks approval
 step_number: 3
-pending_gates:
-- stages/tasks.yaml#approval
+pending_gates: []
 current_blocker: null
 drafting_completed_gates:
 - stages/requirements.yaml#drafting
@@ -181,6 +181,13 @@ commit_stop_point_records:
   head: db7df9f8135bd088ee64a1e2d2d3ed130dd33798
   evidence:
   - db7df9f8135bd088ee64a1e2d2d3ed130dd33798
+- step: 3
+  kind: alignment_complete
+  gate: stages/tasks.yaml#alignment
+  reason: tasks alignment 完了時点の停止点
+  head: 5038c20d1719a1012efee343c1c83d86d6a4c063
+  evidence:
+  - 5038c20d1719a1012efee343c1c83d86d6a4c063
 completed_gates:
 - stages/requirements.yaml#triad-review
 - stages/requirements.yaml#review-wave
@@ -193,6 +200,7 @@ completed_gates:
 - stages/tasks.yaml#triad-review
 - stages/tasks.yaml#review-wave
 - stages/tasks.yaml#alignment
+- stages/tasks.yaml#approval
 downstream_impact_decisions:
 - gate: stages/requirements.yaml#triad-review
   feature_scope: workflow-management
@@ -321,6 +329,16 @@ downstream_impact_decisions:
   - .reviewcompass/specs/_cross_feature/reviews/2026-06-20-tasks-vertical-redo-review-wave.md
   - .reviewcompass/specs/workflow-management/reviews/2026-06-20-workflow-management-tasks-vertical-redo-review-run-v3/post-fix-target-manifest.yaml
   - .reviewcompass/specs/workflow-management/tasks.md
+- gate: stages/tasks.yaml#approval
+  feature_scope: workflow-management
+  decision: approved
+  rationale: 利用者が tasks approval を明示承認した。Requirement 13〜16 の tasks 展開、tasks triad-review
+    v3 post-fix、tasks review-wave、tasks alignment の整合確認が完了しているため、tasks approval を完了とする。
+  evidence:
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-20-tasks-vertical-redo-approval.md
+  - .reviewcompass/specs/_cross_feature/reviews/2026-06-20-tasks-vertical-redo-alignment.md
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-20-workflow-management-tasks-vertical-redo-review-run-v3/post-fix-target-manifest.yaml
+  - .reviewcompass/specs/workflow-management/tasks.md
 recheck_progress:
 - consumed_phase: design
   consumed_at: '2026-06-20T00:00:00+09:00'
@@ -334,6 +352,6 @@ recheck_progress:
   - .reviewcompass/specs/workflow-management/spec.json
 commit_stop_point: true
 commit_stop_point_step: 3
-commit_stop_point_kind: alignment_complete
-commit_stop_point_gate: stages/tasks.yaml#alignment
-commit_stop_point_reason: tasks alignment 完了時点の停止点
+commit_stop_point_kind: approval_complete
+commit_stop_point_gate: stages/tasks.yaml#approval
+commit_stop_point_reason: tasks approval 完了時点の停止点
