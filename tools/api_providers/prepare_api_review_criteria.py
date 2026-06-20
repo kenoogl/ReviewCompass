@@ -49,6 +49,8 @@ def _source_material_from_dict(data: Dict[str, Any]) -> SourceMaterial:
   return SourceMaterial(
     key=str(data.get("key") or ""),
     purpose=str(data.get("purpose") or ""),
+    source_paths=_list_value(data, "source_paths"),
+    source_anchors=_list_value(data, "source_anchors"),
     content=data.get("content"),
     purpose_field=data.get("purpose_field"),
     responsibility_boundaries=_list_value(data, "responsibility_boundaries"),

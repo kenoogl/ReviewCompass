@@ -1,4 +1,5 @@
 import sys
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from unittest.mock import MagicMock, patch
 
@@ -8,6 +9,7 @@ if str(_PROJECT_ROOT) not in sys.path:
 
 import yaml
 
+from tools.api_providers.external_api_approval import prompt_material_findings
 from tools.api_providers.run_proxy_decision import main
 
 
@@ -37,6 +39,42 @@ variants:
     encoding="utf-8",
   )
   return config_path
+
+
+def _write_external_approval(
+  tmp_path,
+  prompt,
+  *,
+  provider="openai-api",
+  model="gpt-5.5",
+  expires_delta=timedelta(hours=1),
+  allowed_prompt_glob=None,
+):
+  approval_path = tmp_path / "external-api-approval.yaml"
+  expires_at = (datetime.now(timezone.utc) + expires_delta).isoformat()
+  approval_path.write_text(
+    f"""
+schema_version: external-api-approval-v1
+approved_action: external_api_proxy_model
+approved_by: user
+provider: {provider}
+model: {model}
+allowed_prompt_globs:
+  - {allowed_prompt_glob or str(prompt)}
+purpose:
+  - proxy_model_decision
+material_policy:
+  allow_reviewcompass_internal_specs: true
+  require_secret_scan: true
+  forbid_credentials: true
+  forbid_personal_identifiers: true
+  forbid_third_party_confidential: true
+expires_at: {expires_at}
+consumed: false
+""",
+    encoding="utf-8",
+  )
+  return approval_path
 
 
 def test_run_proxy_decision_records_raw_parsed_and_metadata(tmp_path, monkeypatch, capsys):
@@ -95,6 +133,179 @@ decisions:
   assert metadata["prompt_path"] == str(prompt)
   assert metadata["raw_response_path"] == "proxy-decision-response.yaml"
   assert metadata["parsed_decisions_path"] == "proxy-decision-decisions.yaml"
+
+
+def test_run_proxy_decision_accepts_external_api_approval_record(
+  tmp_path,
+  monkeypatch,
+):
+  monkeypatch.setenv("OPENAI_API_KEY", "test-key")
+  prompt = tmp_path / "proxy-decision-prompt.md"
+  prompt.write_text("# prompt\n", encoding="utf-8")
+  review_run_dir = tmp_path / "review-run"
+  config_path = _make_config(tmp_path)
+  approval_path = _write_external_approval(tmp_path, prompt)
+  response = """
+proxy_model_id: gpt-5.5
+decisions: []
+"""
+
+  provider_instance = MagicMock()
+  provider_instance.send_messages.return_value = response
+  provider_class = MagicMock(return_value=provider_instance)
+
+  with patch("tools.api_providers.run_proxy_decision.get_provider", return_value=provider_class):
+    exit_code = main(
+      [
+        "--variant", "proxy_model_openai_gpt_55",
+        "--prompt-file", str(prompt),
+        "--review-run-dir", str(review_run_dir),
+        "--config", str(config_path),
+        "--external-approval-record", str(approval_path),
+      ]
+    )
+
+  assert exit_code == 0
+  metadata = yaml.safe_load(
+    (review_run_dir / "proxy-decision-metadata.yaml").read_text(encoding="utf-8")
+  )
+  assert metadata["external_approval_record_path"] == str(approval_path)
+
+
+def test_run_proxy_decision_accepts_policy_mapping_response(
+  tmp_path,
+  monkeypatch,
+):
+  monkeypatch.setenv("OPENAI_API_KEY", "test-key")
+  prompt = tmp_path / "proxy-decision-prompt.md"
+  prompt.write_text("# prompt\n", encoding="utf-8")
+  review_run_dir = tmp_path / "review-run"
+  config_path = _make_config(tmp_path)
+  response = """
+proxy_model_id: gpt-5.5
+decision_scope: c1_fix_policy
+selected_policy_category: local_fix_with_modifications
+required_design_changes:
+  - Rewrite Requirement 12 placement wording.
+"""
+
+  provider_instance = MagicMock()
+  provider_instance.send_messages.return_value = response
+  provider_class = MagicMock(return_value=provider_instance)
+
+  with patch("tools.api_providers.run_proxy_decision.get_provider", return_value=provider_class):
+    exit_code = main(
+      [
+        "--variant", "proxy_model_openai_gpt_55",
+        "--prompt-file", str(prompt),
+        "--review-run-dir", str(review_run_dir),
+        "--config", str(config_path),
+      ]
+    )
+
+  assert exit_code == 0
+  parsed = yaml.safe_load(
+    (review_run_dir / "proxy-decision-decisions.yaml").read_text(encoding="utf-8")
+  )
+  assert parsed["decision_scope"] == "c1_fix_policy"
+  assert parsed["selected_policy_category"] == "local_fix_with_modifications"
+
+
+def test_run_proxy_decision_rejects_external_api_approval_model_mismatch(
+  tmp_path,
+  monkeypatch,
+):
+  monkeypatch.setenv("OPENAI_API_KEY", "test-key")
+  prompt = tmp_path / "proxy-decision-prompt.md"
+  prompt.write_text("# prompt\n", encoding="utf-8")
+  config_path = _make_config(tmp_path)
+  approval_path = _write_external_approval(tmp_path, prompt, model="gpt-5.4")
+
+  with patch("tools.api_providers.run_proxy_decision.get_provider") as get_provider:
+    exit_code = main(
+      [
+        "--variant", "proxy_model_openai_gpt_55",
+        "--prompt-file", str(prompt),
+        "--review-run-dir", str(tmp_path / "review-run"),
+        "--config", str(config_path),
+        "--external-approval-record", str(approval_path),
+      ]
+    )
+
+  assert exit_code == 1
+  get_provider.assert_not_called()
+
+
+def test_run_proxy_decision_rejects_external_api_approval_expired(
+  tmp_path,
+  monkeypatch,
+):
+  monkeypatch.setenv("OPENAI_API_KEY", "test-key")
+  prompt = tmp_path / "proxy-decision-prompt.md"
+  prompt.write_text("# prompt\n", encoding="utf-8")
+  config_path = _make_config(tmp_path)
+  approval_path = _write_external_approval(
+    tmp_path,
+    prompt,
+    expires_delta=timedelta(seconds=-1),
+  )
+
+  with patch("tools.api_providers.run_proxy_decision.get_provider") as get_provider:
+    exit_code = main(
+      [
+        "--variant", "proxy_model_openai_gpt_55",
+        "--prompt-file", str(prompt),
+        "--review-run-dir", str(tmp_path / "review-run"),
+        "--config", str(config_path),
+        "--external-approval-record", str(approval_path),
+      ]
+    )
+
+  assert exit_code == 1
+  get_provider.assert_not_called()
+
+
+def test_run_proxy_decision_rejects_external_api_approval_secret_in_prompt(
+  tmp_path,
+  monkeypatch,
+):
+  monkeypatch.setenv("OPENAI_API_KEY", "test-key")
+  prompt = tmp_path / "proxy-decision-prompt.md"
+  prompt.write_text("OPENAI_API_KEY=sk-test-secret\n", encoding="utf-8")
+  config_path = _make_config(tmp_path)
+  approval_path = _write_external_approval(tmp_path, prompt)
+
+  with patch("tools.api_providers.run_proxy_decision.get_provider") as get_provider:
+    exit_code = main(
+      [
+        "--variant", "proxy_model_openai_gpt_55",
+        "--prompt-file", str(prompt),
+        "--review-run-dir", str(tmp_path / "review-run"),
+        "--config", str(config_path),
+        "--external-approval-record", str(approval_path),
+      ]
+    )
+
+  assert exit_code == 1
+  get_provider.assert_not_called()
+
+
+def test_external_api_approval_material_scan_allows_date_paths():
+  prompt = (
+    ".reviewcompass/specs/workflow-management/reviews/"
+    "2026-06-20-workflow-management-design-vertical-redo/"
+    "proxy-decision-prompt.md\n"
+  )
+
+  assert prompt_material_findings(prompt) == []
+
+
+def test_external_api_approval_material_scan_rejects_personal_identifiers():
+  prompt = "Contact: reviewer@example.com / +1 415 555 0101\n"
+
+  assert "prompt contains possible personal identifier" in prompt_material_findings(
+    prompt
+  )
 
 
 def test_run_proxy_decision_rejects_non_single_role_variant(tmp_path, monkeypatch):

@@ -24,6 +24,7 @@ import yaml  # noqa: E402
 from tools.api_providers.config_loader import (  # noqa: E402
   load_config,
   resolve_connection_settings,
+  resolve_default_variant_name,
   resolve_role,
   resolve_variant,
 )
@@ -33,7 +34,7 @@ from tools.api_providers.providers import (  # noqa: E402
 )
 from tools.api_providers.response_formatter import (  # noqa: E402
   format_response,
-  parse_response_text,
+  parse_response_data,
 )
 from tools.normal_output import status_line  # noqa: E402
 
@@ -387,6 +388,11 @@ def _parse_argv(argv: Optional[List[str]]) -> argparse.Namespace:
     help="variant 名。未指定なら default を使う",
   )
   parser.add_argument(
+    "--default-variant-for",
+    default=None,
+    help="operation_defaults から既定 variant を解決する場面名",
+  )
+  parser.add_argument(
     "--target",
     required=True,
     action="append",
@@ -466,6 +472,15 @@ def _parse_argv(argv: Optional[List[str]]) -> argparse.Namespace:
   return parser.parse_args(argv)
 
 
+def _select_variant_name(config: Dict[str, Any], args: argparse.Namespace) -> Optional[str]:
+  """明示 variant または場面別既定から実効 variant 名を返す。"""
+  if args.variant and args.default_variant_for:
+    raise ValueError("--variant と --default-variant-for は同時に指定できません")
+  if args.default_variant_for:
+    return resolve_default_variant_name(config, args.default_variant_for)
+  return args.variant
+
+
 def _resolve_criteria(args: argparse.Namespace) -> Tuple[str, Optional[str], Optional[str]]:
   """--criteria / --criteria-file から実効 criteria と出典情報を返す。"""
   if bool(args.criteria) == bool(args.criteria_file):
@@ -541,7 +556,8 @@ def main(argv: Optional[List[str]] = None) -> int:
   args = _parse_argv(argv)
   try:
     config = load_config(args.config)
-    variant_config = resolve_variant(config, args.variant)
+    variant_name = _select_variant_name(config, args)
+    variant_config = resolve_variant(config, variant_name)
     role_config = resolve_role(variant_config, args.role)
     connection_defaults = config.get("connection", {})
     connection_settings = resolve_connection_settings(role_config, connection_defaults)
@@ -575,7 +591,8 @@ def main(argv: Optional[List[str]] = None) -> int:
     response_text, attempts, duration_seconds = _call_provider(provider, prompt)
     _write_raw_response(args.raw_out, response_text)
     try:
-      findings = parse_response_text(response_text)
+      parsed_response = parse_response_data(response_text)
+      findings = parsed_response["findings"]
     except Exception:
       if args.review_run_dir:
         update_review_run_artifacts(
@@ -602,6 +619,11 @@ def main(argv: Optional[List[str]] = None) -> int:
           criteria_source_sha256=criteria_source_sha256,
         )
       raise
+    extra_fields = {
+      key: value
+      for key, value in parsed_response.items()
+      if key != "findings"
+    }
     output = format_response(
       role=args.role,
       provider=provider_name,
@@ -609,6 +631,7 @@ def main(argv: Optional[List[str]] = None) -> int:
       attempts=attempts,
       duration_seconds=round(duration_seconds, 3),
       findings=findings,
+      extra_fields=extra_fields,
     )
     _write_parsed_response(args.parsed_out, output)
     if args.review_run_dir:

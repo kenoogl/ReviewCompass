@@ -7,6 +7,10 @@
 # `by_kind`、`by_stage`、`required_inputs` は既存実装が読む実行時マップとして維持する。
 default:
   - docs/operations/WORKFLOW_NAVIGATION.md
+default_prompt_length_bounds:
+  min_chars: 400
+  max_chars: 20000
+  failure_verdict: WARN
 decision_points:
   next_action_kind:
     - id: stage
@@ -115,8 +119,14 @@ decision_points:
         - docs/operations/WORKFLOW_NAVIGATION.md
         - docs/operations/SESSION_WORKFLOW_GUIDE.md#3.3-a-2
         - docs/operations/SESSION_WORKFLOW_GUIDE.md#vertical-intent-transfer-review
+        - docs/operations/API_REVIEW_PROMPT_QUALITY.md
+        - docs/disciplines/discipline_llm_as_judge_prompting.md
         - docs/disciplines/discipline_approval_operation.md
       effective_prompt_policy: one_effective_prompt_per_decision_point
+      prompt_length_bounds:
+        min_chars: 1200
+        max_chars: 60000
+        failure_verdict: DEVIATION
     - id: review-wave
       prompt_source_refs:
         - docs/operations/WORKFLOW_NAVIGATION.md
@@ -136,6 +146,10 @@ decision_points:
         - docs/operations/WORKFLOW_PRECHECK_DETAILS.md#spec-set
         - docs/disciplines/discipline_approval_operation.md
       effective_prompt_policy: one_effective_prompt_per_decision_point
+      prompt_length_bounds:
+        min_chars: 400
+        max_chars: 12000
+        failure_verdict: DEVIATION
   precheck_subcommand:
     - id: spec-set
       prompt_source_refs:
@@ -299,11 +313,15 @@ decision_points:
     - id: proxy_decision_prompt
       prompt_source_refs:
         - docs/operations/SESSION_WORKFLOW_GUIDE.md#3.3-a-2
+        - docs/operations/API_REVIEW_PROMPT_QUALITY.md
+        - docs/disciplines/discipline_llm_as_judge_prompting.md
         - docs/disciplines/discipline_approval_operation.md
       effective_prompt_policy: one_effective_prompt_per_decision_point
     - id: proxy_decision_file
       prompt_source_refs:
         - docs/operations/SESSION_WORKFLOW_GUIDE.md#3.3-a-2
+        - docs/operations/API_REVIEW_PROMPT_QUALITY.md
+        - docs/disciplines/discipline_llm_as_judge_prompting.md
         - docs/disciplines/discipline_approval_operation.md
       effective_prompt_policy: one_effective_prompt_per_decision_point
     - id: proxy_approval_record
@@ -367,6 +385,8 @@ by_stage:
   triad-review:
     - docs/operations/SESSION_WORKFLOW_GUIDE.md#3.3-a-2
     - docs/operations/SESSION_WORKFLOW_GUIDE.md#vertical-intent-transfer-review
+    - docs/operations/API_REVIEW_PROMPT_QUALITY.md
+    - docs/disciplines/discipline_llm_as_judge_prompting.md
     - docs/disciplines/discipline_approval_operation.md
   review-wave:
     - docs/operations/SESSION_WORKFLOW_GUIDE.md#vertical-intent-transfer-review

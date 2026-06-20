@@ -13,8 +13,9 @@ Review the target document for the requested phase and criteria.
 
 # Output contract
 Return YAML only.
-The top-level key must be exactly findings.
-Do not add any other top-level key such as review, result, metadata, or summary.
+The response must include the top-level key findings.
+Additional top-level keys are allowed only when the criteria explicitly defines them.
+Do not add wrapper keys such as review, result, metadata, or summary.
 Do not wrap the YAML in Markdown code fences.
 Do not write prose before or after the YAML.
 
@@ -30,7 +31,7 @@ Use only these severity values:
 - WARN
 - INFO
 
-If there are no findings, return exactly:
+If there are no findings and the criteria does not define additional top-level keys, return exactly:
 
 findings: []
 

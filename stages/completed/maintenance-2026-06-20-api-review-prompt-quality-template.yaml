@@ -1,0 +1,45 @@
+process_id: maintenance
+title: api review prompt quality template
+trigger: "前回 side-track は今回の design triad-review 用プロンプト品質確認に寄っており、APIレビュー用プロンプト作成・品質確認の汎用手順としては未抽象化だった"
+mainline_blocked_by: stages/in-progress/reopen-procedure-2026-06-19.yaml
+started_at: "2026-06-20"
+completed_at: "2026-06-20"
+classification: local_review_prompt_quality_improvement
+reason: "API review-run の前に、main が作成したプロンプト素案を adversarial / judgment の2者で品質確認する汎用テンプレートと運用手順を作る"
+allowed_scope:
+  - "APIレビュー用プロンプト品質確認の汎用手順化"
+  - "main / adversarial / judgment 体制の標準化"
+  - "criteria と target の分離ルールの明文化"
+  - "phase別の上流接続要件を差し込めるテンプレート化"
+  - "今回の design triad-review 事例を参考材料として記録する"
+allowed_files:
+  - docs/operations/API_REVIEW_PROMPT_QUALITY.md
+  - templates/review/api_review_criteria_template.md
+  - templates/review/api_review_prompt_quality_criteria_template.md
+  - docs/notes/working/2026-06-20-api-review-prompt-method-comparison.md
+  - stages/in-progress/maintenance-2026-06-20-api-review-prompt-quality-template.yaml
+  - stages/completed/maintenance-2026-06-20-api-review-prompt-quality-template.yaml
+completion_conditions:
+  - "汎用の API review criteria template が作成されている"
+  - "汎用の prompt quality review criteria template が作成されている"
+  - "運用ガイドが、一般 LLM-as-Judge 規律と vertical-intent-transfer-review 規律の接続方法を説明している"
+  - "今回の v2 design review 結果は参考材料に留まり、本線 gate 完了根拠として自動適用されていない"
+completed_actions:
+  - "operation guide: API review prompt quality の汎用運用手順を docs/operations に作成"
+  - "criteria template: API review criteria の汎用テンプレートを作成"
+  - "quality template: prompt quality review criteria の汎用テンプレートを作成"
+  - "comparison report: 今回事例と汎用テンプレート化成果物の接続を記録"
+  - "boundary: v2 design review 所見は本線 gate 完了根拠として自動適用しないことを記録"
+  - "user requirements fit: 任意場面で利用者が指定したレビュー要件を保持し、criteria と prompt quality review で照合する入力層を追加"
+verification:
+  - command: "sed -n '1,240p' docs/operations/API_REVIEW_PROMPT_QUALITY.md"
+    result: "運用ガイドが User Review Requirements、criteria / target 分離、phase別上流接続、prompt quality review、停止点を含むことを確認"
+  - command: "sed -n '1,240p' templates/review/api_review_criteria_template.md"
+    result: "criteria template が User Review Requirements、target、source materials、required checks、out of scope、finding policy を含むことを確認"
+  - command: "sed -n '1,260p' templates/review/api_review_prompt_quality_criteria_template.md"
+    result: "quality template が一般品質、User Review Requirements fit、source material、vertical intent transfer、output/triage fit を含むことを確認"
+post_write_verification:
+  review_run: null
+  note: "文書・テンプレート整備のみであり、仕様本文や実装コードは変更していない。post-write verification は不要。"
+current_status: completed
+return_to: "reopen-procedure-2026-06-19 design triad-review user-visible triage gate"

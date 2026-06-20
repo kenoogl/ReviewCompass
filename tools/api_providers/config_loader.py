@@ -33,6 +33,23 @@ def resolve_variant(config: dict, variant_name: Optional[str] = None) -> dict:
   return variants[variant_name]
 
 
+def resolve_default_variant_name(config: dict, operation_name: str) -> str:
+  """操作場面ごとの既定 variant 名を返す。
+
+  例: api_review_prompt_quality -> api_review_prompt_quality_2way
+  """
+  defaults = config.get("operation_defaults", {})
+  if operation_name not in defaults:
+    raise KeyError(f"operation default '{operation_name}' not found")
+  operation_default = defaults[operation_name]
+  if not isinstance(operation_default, dict):
+    raise KeyError(f"operation default '{operation_name}' is not a mapping")
+  variant_name = operation_default.get("variant")
+  if not isinstance(variant_name, str) or not variant_name:
+    raise KeyError(f"operation default '{operation_name}' has no variant")
+  return variant_name
+
+
 def resolve_role(variant_config: dict, role_name: str) -> dict:
   """役名から役設定を返す。
 

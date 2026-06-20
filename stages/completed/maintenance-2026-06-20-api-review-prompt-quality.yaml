@@ -1,0 +1,48 @@
+process_id: maintenance
+title: api review prompt quality gate
+trigger: "design triad-review の API review-run で、review-target.md を criteria と target の両方に使い、design.md 本体を審査対象として提示できていないことが判明した"
+mainline_blocked_by: stages/in-progress/reopen-procedure-2026-06-19.yaml
+started_at: "2026-06-20"
+completed_at: "2026-06-20"
+classification: local_review_prompt_quality_improvement
+reason: "APIレビュー用プロンプトは一般的な LLM-as-Judge 要件と縦方向意図伝達レビュー要件を同時に満たす必要があり、実レビュー前にプロンプト自体を adversarial / judgment の 2者で品質確認する side-track を挟む"
+allowed_scope:
+  - "APIレビュー用プロンプト品質レビューの手順記録"
+  - "design triad-review 用の修正版プロンプト素案作成"
+  - "プロンプト素案への adversarial レビュー実行と記録"
+  - "adversarial 指摘を踏まえた judgment 判定実行と記録"
+  - "使用可と判定されたプロンプトによる design triad-review API run の準備"
+  - "不十分だった旧 no-findings run を gate 完了根拠にしない記録"
+allowed_files:
+  - docs/notes/working/2026-06-20-api-review-prompt-quality-side-track.md
+  - stages/in-progress/maintenance-2026-06-20-api-review-prompt-quality.yaml
+  - stages/completed/maintenance-2026-06-20-api-review-prompt-quality.yaml
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-20-workflow-management-design-vertical-redo-review-run/
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-20-workflow-management-design-vertical-redo-prompt-quality-run/
+  - .reviewcompass/specs/workflow-management/reviews/2026-06-20-workflow-management-design-vertical-redo-review-run-v2/
+completion_conditions:
+  - "prompt 品質レビューの raw response、判定、反映結果が review-run または side-track 記録に保存されている"
+  - "修正版 API review prompt が discipline_llm_as_judge_prompting.md と SESSION_WORKFLOW_GUIDE.md#vertical-intent-transfer-review の両方を満たすことを確認済みである"
+  - "修正版 prompt の target manifest が、少なくとも実際の審査対象である design.md を含んでいる"
+  - "旧 no-findings run を design triad-review 完了根拠として扱わないことが記録されている"
+completed_actions:
+  - "working memo: APIレビュー用プロンプト品質レビュー side-track 方針を記録"
+  - "side-track state: maintenance 進行中記録を作成"
+  - "prompt draft: design.md を実 target にする修正版 criteria を作成"
+  - "prompt quality adversarial: claude-sonnet-4-6 が 5 件の prompt 品質所見を返した"
+  - "prompt revision: adversarial 所見 5 件を criteria draft へ反映"
+  - "prompt quality judgment: gemini-3.1-pro-preview が findings: [] を返し、修正版 prompt 使用可と判定"
+  - "corrected design review: design.md を target にして v2 API review-run を実行"
+  - "user-visible triage: v2 raw-review-triage-summary.md に同根クラスタと三段階トリアージ案を記録"
+verification:
+  - command: ".venv/bin/python3 tools/api_providers/run_role.py --role adversarial ... --target design-review-criteria-draft.md"
+    result: "parsed; claude-sonnet-4-6 findings=5"
+  - command: ".venv/bin/python3 tools/api_providers/run_role.py --role judgment ... --prior-finding parsed/claude-sonnet-4-6.prompt-quality-1.yaml"
+    result: "parsed; gemini-3.1-pro-preview findings=0"
+  - command: ".venv/bin/python3 tools/api_providers/run_review.py --target .reviewcompass/specs/workflow-management/design.md --criteria-file design-review-criteria-draft.md"
+    result: "parsed; roles=3; findings=15; parse_failed=0"
+post_write_verification:
+  review_run: null
+  note: "この side-track はレビュー証跡生成であり、design.md 本文や実装コードは変更していない。post-write verification は次の仕様本文修正後に実施する。"
+current_status: completed
+return_to: "reopen-procedure-2026-06-19 design triad-review user-visible triage gate"

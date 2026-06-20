@@ -17,6 +17,7 @@ import yaml
 
 from tools.api_providers.response_formatter import (
   format_response,
+  parse_response_data,
   parse_response_text,
 )
 
@@ -111,6 +112,42 @@ def test_format_response_with_multiple_findings_preserves_order():
   assert [f["description"] for f in parsed["findings"]] == ["1 件目", "2 件目", "3 件目"]
 
 
+def test_format_response_preserves_extra_review_fields():
+  """findings 以外の構造化レビュー結果もトップレベルに保持する。"""
+  output = format_response(
+    role="adversarial",
+    provider="anthropic-api",
+    model="claude-sonnet-4-6",
+    attempts=1,
+    duration_seconds=7.0,
+    findings=[],
+    extra_fields={
+      "verdict": "sufficient_with_revisions",
+      "preanalysis_assessment": {
+        "missing_perspectives": ["source coverage"],
+      },
+    },
+  )
+  parsed = yaml.safe_load(output)
+  assert parsed["verdict"] == "sufficient_with_revisions"
+  assert parsed["preanalysis_assessment"]["missing_perspectives"] == ["source coverage"]
+  assert parsed["findings"] == []
+
+
+def test_format_response_rejects_reserved_extra_field():
+  """メタデータや findings を extra_fields から上書きしない。"""
+  with pytest.raises(ValueError):
+    format_response(
+      role="adversarial",
+      provider="anthropic-api",
+      model="claude-sonnet-4-6",
+      attempts=1,
+      duration_seconds=7.0,
+      findings=[],
+      extra_fields={"model": "different-model"},
+    )
+
+
 # --- 2. 日本語と UTF-8 出力 ---
 
 
@@ -182,6 +219,76 @@ findings:
   assert len(findings) == 1
   assert findings[0]["severity"] == "WARN"
   assert findings[0]["description"] == "テスト所見"
+
+
+def test_parse_response_data_preserves_structured_review_keys():
+  """検査用レスポンスの verdict / assessment / prompt_sufficiency を保持する。"""
+  response_text = """
+verdict: sufficient_with_revisions
+independent_reconstruction:
+  judgment_items:
+    - item_id: req14_approval_gate
+      question: 承認ゲートを検査できるか
+      target_files:
+        - tasks.md
+      source_materials:
+        - requirements.md#Req14
+      out_of_scope:
+        - 実装修正
+      rationale: 上流意図との接続が必要
+preanalysis_assessment:
+  supported_parts:
+    - Req14 は分割が必要
+  missing_perspectives:
+    - APIレビューのデータソース網羅
+  unsupported_or_overconfident_parts: []
+  bias_risks:
+    - main preanalysis を正解扱いする危険
+prompt_sufficiency:
+  information: revisions_needed
+  question: sufficient
+  scope: revisions_needed
+  sensitivity_check: sufficient
+  notes:
+    - source を先に独立再構成させるべき
+required_prompt_changes:
+  - main preanalysis は仮説として扱わせる
+findings:
+  - severity: WARN
+    target_location: review prompt
+    description: preanalysis の扱いが強すぎる
+    rationale: レビュー側の独立判断を阻害する
+"""
+  parsed = parse_response_data(response_text)
+  assert parsed["verdict"] == "sufficient_with_revisions"
+  assert parsed["independent_reconstruction"]["judgment_items"][0]["item_id"] == "req14_approval_gate"
+  assert parsed["preanalysis_assessment"]["bias_risks"] == ["main preanalysis を正解扱いする危険"]
+  assert parsed["prompt_sufficiency"]["information"] == "revisions_needed"
+  assert parsed["required_prompt_changes"] == ["main preanalysis は仮説として扱わせる"]
+  assert parsed["findings"][0]["severity"] == "WARN"
+
+
+def test_parse_response_text_returns_findings_only_for_structured_review():
+  """互換 API は構造化レビュー結果から findings だけを返す。"""
+  response_text = """
+verdict: sufficient
+prompt_sufficiency:
+  information: sufficient
+findings:
+  - severity: INFO
+    target_location: review prompt
+    description: 問題なし
+    rationale: 必要項目を満たす
+"""
+  findings = parse_response_text(response_text)
+  assert findings == [
+    {
+      "severity": "INFO",
+      "target_location": "review prompt",
+      "description": "問題なし",
+      "rationale": "必要項目を満たす",
+    }
+  ]
 
 
 # --- 5. parse_response_text の fail-closed 系 ---

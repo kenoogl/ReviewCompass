@@ -91,13 +91,61 @@ def test_build_api_review_criteria_preserves_generic_core_and_user_requirements(
   assert "## User Review Requirements" in criteria
   assert "API review for approval gate only" in criteria
   assert "human_only cannot be proxied" in criteria
+  assert "Check each preserved review focus item" in criteria
+  assert "approval/proxy boundary" in criteria
+  assert "digest binding" in criteria
+  assert "Output requirements -> Finding Policy" in criteria
   assert "## Review Target" in criteria
   assert "tools/check_workflow_action/approval_gate.py" in criteria
   assert "## Source Materials" in criteria
   assert "Purpose: prevent approval/proxy bypass." in criteria
-  assert "Do not combine multiple independent judgments" in criteria
+  assert "create a separate criteria file" not in criteria
+  assert "Ask one non-leading primary judgment question" not in criteria
+  assert "Limit findings to this judgment item." in criteria
   assert "commit" in criteria
   assert "spec.json update" in criteria
+
+
+def test_prohibited_user_actions_are_not_mapped_to_target_code_behavior():
+  criteria = build_api_review_criteria(
+    feature="workflow-management",
+    phase="implementation",
+    topic="approval-gate-transfer",
+    review_target_paths=["tools/check_workflow_action/approval_gate.py"],
+    judgment_item="approval gate upstream transfer",
+    review_purpose="workflow-management implementation triad-review",
+    review_object="approval gate implementation",
+    review_focus=["approval/proxy boundary"],
+    scope_boundaries={
+      "in_scope": ["approval gate schema and validator"],
+      "out_of_scope": ["commit", "push", "spec.json update"],
+    },
+    source_materials=[
+      SourceMaterial(
+        key="requirement-14",
+        purpose="approval gate upstream requirement",
+        content="Purpose: prevent approval/proxy bypass.",
+      )
+    ],
+    user_requirements=UserReviewRequirements(
+      purpose="API review only",
+      object="approval gate implementation",
+      focus=["human_only cannot be proxied"],
+      output_requirements=["parser-compatible findings"],
+      prohibited_actions=["commit", "push", "spec.json update", "phase completion"],
+    ),
+  )
+
+  assert "target does not authorize commit" not in criteria
+  assert "Do not approve or authorize commit" in criteria
+  assert "These limits constrain this review run and the reviewing model" in criteria
+  assert "This check constrains the review run and model output" in criteria
+  assert "mere presence or implementation of workflow-operation code" in criteria
+  assert "legitimate target code" not in criteria
+  assert "Return findings: [] if and only if every required check passes" in criteria
+  assert "if and only if" in criteria
+  assert "For each finding, identify the target file" in criteria
+  assert "Traceable evidence means" in criteria
 
 
 def test_vertical_intent_customization_requires_structured_upstream_fields():
@@ -162,6 +210,16 @@ def test_vertical_intent_customization_materializes_required_fields():
       SourceMaterial(
         key="requirement-14",
         purpose="approval gate upstream requirement",
+        source_paths=[
+          ".reviewcompass/specs/workflow-management/requirements.md",
+          ".reviewcompass/specs/workflow-management/design.md",
+          ".reviewcompass/specs/workflow-management/tasks.md",
+        ],
+        source_anchors=[
+          ".reviewcompass/specs/workflow-management/requirements.md sha256:req",
+          ".reviewcompass/specs/workflow-management/design.md sha256:design",
+          ".reviewcompass/specs/workflow-management/tasks.md sha256:tasks",
+        ],
         purpose_field="prevent approval/proxy bypass",
         responsibility_boundaries=["proxy decisions cannot satisfy human_only"],
         acceptance_criteria=["target digest mismatch fails closed"],
@@ -179,10 +237,22 @@ def test_vertical_intent_customization_materializes_required_fields():
 
   assert "## Vertical Intent Transfer Customization" in criteria
   assert "requirements.md -> design.md -> tasks.md -> implementation" in criteria
+  assert "- omission" in criteria
+  assert "- weakening" in criteria
+  assert "- source_paths:" in criteria
+  assert "source_paths are provenance only" in criteria
+  assert "source_anchors:" in criteria
+  assert "At the actual review-run, pass every path listed here as --target" in criteria
+  assert "If any listed target path content is absent" in criteria
+  assert "Structured Summary (model-readable upstream intent)" in criteria
+  assert ".reviewcompass/specs/workflow-management/requirements.md" in criteria
   assert "prevent approval/proxy bypass" in criteria
   assert "proxy decisions cannot satisfy human_only" in criteria
   assert "target digest mismatch fails closed" in criteria
   assert "consume approval on read-only review" in criteria
+  assert "unresolved_or_design_deferred_items" in criteria
+  assert "unresolved_or_deferred:" not in criteria
+  assert "If the target claims resolved behavior for an unresolved item" in criteria
 
 
 def test_builder_rejects_multiple_independent_judgment_items():

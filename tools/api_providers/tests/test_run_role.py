@@ -143,7 +143,8 @@ def test_build_prompt_uses_anthropic_specific_template(tmp_target_file):
   assert "model_id: claude-sonnet-4-6" in prompt
   assert "Do not wrap the YAML in Markdown code fences" in prompt
   assert "Do not use review:" in prompt
-  assert "top-level key must be exactly findings" in prompt
+  assert "The response must include the top-level key findings" in prompt
+  assert "Additional top-level keys are allowed only when the criteria explicitly defines them" in prompt
 
 
 def test_build_prompt_uses_default_template_for_unknown_provider(tmp_target_file):
@@ -157,7 +158,8 @@ def test_build_prompt_uses_default_template_for_unknown_provider(tmp_target_file
     model="unknown-model",
   )
   assert "prompt_id: default_review" in prompt
-  assert "top-level key must be exactly findings" in prompt
+  assert "The response must include the top-level key findings" in prompt
+  assert "Additional top-level keys are allowed only when the criteria explicitly defines them" in prompt
   assert "findings: []" in prompt
 
 
@@ -334,6 +336,57 @@ variants:
   assert parsed["model"] == "gpt-test"
 
 
+def test_main_uses_default_variant_for_operation(
+  tmp_target_file, tmp_path, monkeypatch, capsys
+):
+  """--default-variant-for で場面ごとの既定 variant を取得する。"""
+  monkeypatch.setenv("ANTHROPIC_API_KEY", "test-key")
+  config_path = tmp_path / "api-settings.yaml"
+  config_path.write_text(
+    """
+connection:
+  timeout_seconds: 60
+  max_retries: 1
+operation_defaults:
+  api_review_prompt_quality:
+    variant: prompt_quality_2way
+default:
+  adversarial:
+    path: api
+    provider: openai-api
+    model: wrong-default
+variants:
+  prompt_quality_2way:
+    required_roles: [adversarial, judgment]
+    adversarial:
+      path: api
+      provider: anthropic-api
+      model: claude-sonnet-4-6
+    judgment:
+      path: api
+      provider: gemini-api
+      model: gemini-3.1-pro-preview
+""",
+    encoding="utf-8",
+  )
+  mock_cls, _ = _make_mock_provider()
+  with patch("tools.api_providers.run_role.get_provider", return_value=mock_cls):
+    main(
+      [
+        "--role", "adversarial",
+        "--default-variant-for", "api_review_prompt_quality",
+        "--target", str(tmp_target_file),
+        "--phase", "prompt-quality",
+        "--criteria", "観点-1",
+        "--config", str(config_path),
+      ]
+    )
+  captured = capsys.readouterr()
+  parsed = yaml.safe_load(captured.out)
+  assert parsed["provider"] == "anthropic-api"
+  assert parsed["model"] == "claude-sonnet-4-6"
+
+
 # --- 5. raw / parsed / review-run 成果物 ---
 
 
@@ -397,6 +450,52 @@ findings:
   assert parsed["role"] == "primary"
   assert parsed["model"] == "claude-opus-4-7"
   assert parsed["findings"][0]["severity"] == "INFO"
+
+
+def test_main_preserves_structured_fields_in_parsed_out(
+  tmp_target_file, tmp_config, tmp_path, monkeypatch, capsys
+):
+  """parse 成功時に findings 以外の検査結果も --parsed-out へ保存する。"""
+  monkeypatch.setenv("ANTHROPIC_API_KEY", "test-key")
+  parsed_out = tmp_path / "parsed.yaml"
+  mock_response = """
+verdict: sufficient_with_revisions
+independent_reconstruction:
+  judgment_items:
+    - item_id: req14_approval_gate
+      question: 承認ゲートを検査できるか
+preanalysis_assessment:
+  missing_perspectives:
+    - データソース網羅
+prompt_sufficiency:
+  information: revisions_needed
+required_prompt_changes:
+  - main preanalysis を仮説として扱う
+findings: []
+"""
+  mock_cls, _ = _make_mock_provider(send_response=mock_response)
+  with patch("tools.api_providers.run_role.get_provider", return_value=mock_cls):
+    exit_code = main(
+      [
+        "--role", "adversarial",
+        "--target", str(tmp_target_file),
+        "--phase", "prompt-quality",
+        "--criteria", "preanalysis sufficiency",
+        "--config", str(tmp_config),
+        "--parsed-out", str(parsed_out),
+      ]
+    )
+
+  assert exit_code == 0
+  capsys.readouterr()
+  parsed = yaml.safe_load(parsed_out.read_text(encoding="utf-8"))
+  assert parsed["role"] == "adversarial"
+  assert parsed["verdict"] == "sufficient_with_revisions"
+  assert parsed["independent_reconstruction"]["judgment_items"][0]["item_id"] == "req14_approval_gate"
+  assert parsed["preanalysis_assessment"]["missing_perspectives"] == ["データソース網羅"]
+  assert parsed["prompt_sufficiency"]["information"] == "revisions_needed"
+  assert parsed["required_prompt_changes"] == ["main preanalysis を仮説として扱う"]
+  assert parsed["findings"] == []
 
 
 def test_main_updates_review_run_artifacts(

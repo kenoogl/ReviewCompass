@@ -22,6 +22,11 @@ def _make_config(tmp_path):
 connection:
   timeout_seconds: 60
   max_retries: 1
+operation_defaults:
+  api_review_prompt_quality:
+    variant: prompt_quality_2way
+  implementation_review:
+    variant: implementation_review_independent_3way_codex_operator
 default:
   primary:
     path: api
@@ -36,6 +41,18 @@ default:
     provider: gemini-api
     model: gemini-3.1-pro-preview
 variants:
+  prompt_quality_2way:
+    context: prompt_quality
+    variant_type: two_role
+    required_roles: [adversarial, judgment]
+    adversarial:
+      path: api
+      provider: anthropic-api
+      model: claude-sonnet-4-6
+    judgment:
+      path: api
+      provider: gemini-api
+      model: gemini-3.1-pro-preview
   post_write_verification_google:
     context: post_write_verification
     variant_type: single_role
@@ -44,6 +61,22 @@ variants:
       path: api
       provider: gemini-api
       model: gemini-3.5-flash
+  implementation_review_independent_3way_codex_operator:
+    context: triad_review
+    variant_type: triad
+    required_roles: [primary, adversarial, judgment]
+    primary:
+      path: api
+      provider: openai-api
+      model: gpt-5.4
+    adversarial:
+      path: api
+      provider: anthropic-api
+      model: claude-sonnet-4-6
+    judgment:
+      path: api
+      provider: gemini-api
+      model: gemini-3.1-pro-preview
 """,
     encoding="utf-8",
   )
@@ -137,10 +170,105 @@ findings:
   }
   assert all(item["decision_status"] == "human_required" for item in triage["items"])
   assert all(item["final_label"] is None for item in triage["items"])
+
+
+def test_run_review_uses_default_variant_for_operation(
+  tmp_path,
+  monkeypatch,
+  capsys,
+):
+  """場面名から prompt-quality 既定 2 役 variant を解決する。"""
+  monkeypatch.setenv("ANTHROPIC_API_KEY", "test-key")
+  monkeypatch.setenv("GEMINI_API_KEY", "test-key")
+  target = tmp_path / "criteria-draft.md"
+  target.write_text("API review criteria draft\n", encoding="utf-8")
+  config_path = _make_config(tmp_path)
+  review_run_dir = tmp_path / "prompt-quality-run"
+  responses = {
+    "anthropic-api": "findings: []\n",
+    "gemini-api": "findings: []\n",
+  }
+
+  with patch(
+    "tools.api_providers.run_review.get_provider",
+    side_effect=_make_provider_factory(responses),
+  ):
+    exit_code = main(
+      [
+        "--default-variant-for", "api_review_prompt_quality",
+        "--target", str(target),
+        "--phase", "prompt-quality",
+        "--criteria", "prompt quality",
+        "--review-run-dir", str(review_run_dir),
+        "--config", str(config_path),
+      ]
+    )
+
+  assert exit_code == 0
+  output = capsys.readouterr().out
+  assert "roles=2" in output
+  rounds = yaml.safe_load((review_run_dir / "rounds.yaml").read_text(encoding="utf-8"))
+  triage = yaml.safe_load((review_run_dir / "triage.yaml").read_text(encoding="utf-8"))
+  models = [item["model_id"] for item in rounds["model_results"]]
+  assert models == ["claude-sonnet-4-6", "gemini-3.1-pro-preview"]
+  assert [item["role"] for item in rounds["model_results"]] == [
+    "adversarial",
+    "judgment",
+  ]
+  assert triage["items"] == []
   review_summary = (review_run_dir / "review_summary.md").read_text(encoding="utf-8")
-  assert "variant: default" in review_summary
+  assert "variant: prompt_quality_2way" in review_summary
+  assert "| adversarial | api | anthropic-api | claude-sonnet-4-6 |" in review_summary
+  assert "| judgment | api | gemini-api | gemini-3.1-pro-preview |" in review_summary
   assert "proxy_model" in review_summary
   assert "利用者提示ゲート" in review_summary
+
+
+def test_run_review_uses_default_variant_for_implementation_review(
+  tmp_path,
+  monkeypatch,
+  capsys,
+):
+  """場面名から implementation-review 既定 3 役 variant を解決する。"""
+  monkeypatch.setenv("ANTHROPIC_API_KEY", "test-key")
+  monkeypatch.setenv("OPENAI_API_KEY", "test-key")
+  monkeypatch.setenv("GEMINI_API_KEY", "test-key")
+  target = tmp_path / "implementation.md"
+  target.write_text("implementation target\n", encoding="utf-8")
+  config_path = _make_config(tmp_path)
+  review_run_dir = tmp_path / "implementation-review-run"
+  responses = {
+    "openai-api": "findings: []\n",
+    "anthropic-api": "findings: []\n",
+    "gemini-api": "findings: []\n",
+  }
+
+  with patch(
+    "tools.api_providers.run_review.get_provider",
+    side_effect=_make_provider_factory(responses),
+  ):
+    exit_code = main(
+      [
+        "--default-variant-for", "implementation_review",
+        "--target", str(target),
+        "--phase", "triad-review",
+        "--criteria", "implementation review",
+        "--review-run-dir", str(review_run_dir),
+        "--config", str(config_path),
+      ]
+    )
+
+  assert exit_code == 0
+  output = capsys.readouterr().out
+  assert "roles=3" in output
+  rounds = yaml.safe_load((review_run_dir / "rounds.yaml").read_text(encoding="utf-8"))
+  models = [item["model_id"] for item in rounds["model_results"]]
+  assert models == ["gpt-5.4", "claude-sonnet-4-6", "gemini-3.1-pro-preview"]
+  review_summary = (review_run_dir / "review_summary.md").read_text(encoding="utf-8")
+  assert "variant: implementation_review_independent_3way_codex_operator" in review_summary
+  assert "| primary | api | openai-api | gpt-5.4 |" in review_summary
+  assert "| adversarial | api | anthropic-api | claude-sonnet-4-6 |" in review_summary
+  assert "| judgment | api | gemini-api | gemini-3.1-pro-preview |" in review_summary
 
 
 def test_run_review_verbose_outputs_review_summary(tmp_path, monkeypatch, capsys):
@@ -343,6 +471,63 @@ findings:
   triage = yaml.safe_load((review_run_dir / "triage.yaml").read_text(encoding="utf-8"))
   assert len(triage["items"]) == 1
   assert triage["items"][0]["source_model"] == "gemini-3.5-flash"
+
+
+def test_run_review_preserves_structured_fields_in_parsed_artifact(
+  tmp_path,
+  monkeypatch,
+  capsys,
+):
+  """run_review でも findings 以外の検査結果を parsed 成果物に保持する。"""
+  monkeypatch.setenv("GEMINI_API_KEY", "test-key")
+  target = tmp_path / "target.md"
+  target.write_text("レビュー対象\n", encoding="utf-8")
+  config_path = _make_config(tmp_path)
+  review_run_dir = tmp_path / "review-run"
+  responses = {
+    "gemini-api": """
+verdict: insufficient
+independent_reconstruction:
+  judgment_items:
+    - item_id: prompt_source_coverage
+      question: source から preanalysis を引き出せるか
+preanalysis_assessment:
+  missing_perspectives:
+    - upstream connection
+prompt_sufficiency:
+  information: insufficient
+required_prompt_changes:
+  - source を原文として渡す
+findings: []
+""",
+  }
+
+  with patch(
+    "tools.api_providers.run_review.get_provider",
+    side_effect=_make_provider_factory(responses),
+  ):
+    exit_code = main(
+      [
+        "--variant", "post_write_verification_google",
+        "--target", str(target),
+        "--phase", "prompt-quality",
+        "--criteria", "preanalysis sufficiency",
+        "--review-run-dir", str(review_run_dir),
+        "--round-id", "round-1",
+        "--config", str(config_path),
+      ]
+    )
+
+  assert exit_code == 0
+  capsys.readouterr()
+  parsed_path = review_run_dir / "parsed" / "gemini-3.5-flash.round-1.yaml"
+  parsed = yaml.safe_load(parsed_path.read_text(encoding="utf-8"))
+  assert parsed["verdict"] == "insufficient"
+  assert parsed["independent_reconstruction"]["judgment_items"][0]["item_id"] == "prompt_source_coverage"
+  assert parsed["preanalysis_assessment"]["missing_perspectives"] == ["upstream connection"]
+  assert parsed["prompt_sufficiency"]["information"] == "insufficient"
+  assert parsed["required_prompt_changes"] == ["source を原文として渡す"]
+  assert parsed["findings"] == []
 
 
 def test_run_review_records_effective_prompt_metadata(tmp_path, monkeypatch, capsys):

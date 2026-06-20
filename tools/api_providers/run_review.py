@@ -20,6 +20,7 @@ import yaml  # noqa: E402
 from tools.api_providers.config_loader import (  # noqa: E402
   load_config,
   resolve_connection_settings,
+  resolve_default_variant_name,
   resolve_role,
   resolve_variant,
 )
@@ -29,7 +30,7 @@ from tools.api_providers.providers import (  # noqa: E402
 )
 from tools.api_providers.response_formatter import (  # noqa: E402
   format_response,
-  parse_response_text,
+  parse_response_data,
 )
 from tools.api_providers.run_role import (  # noqa: E402
   _resolve_effective_prompt_sha256,
@@ -228,6 +229,11 @@ def _parse_argv(argv: Optional[List[str]]) -> argparse.Namespace:
   )
   parser.add_argument("--variant", default=None, help="variant 名。未指定なら default")
   parser.add_argument(
+    "--default-variant-for",
+    default=None,
+    help="operation_defaults から既定 variant を解決する場面名",
+  )
+  parser.add_argument(
     "--target",
     required=True,
     action="append",
@@ -353,8 +359,12 @@ def validate_review_prompt_preflight(args: argparse.Namespace, criteria: str) ->
   return errors
 
 
-def _select_variant_name(args) -> Optional[str]:
+def _select_variant_name(args: argparse.Namespace, config: Dict[str, Any]) -> Optional[str]:
   """phase に応じた実効 variant 名を返す。"""
+  if args.variant and args.default_variant_for:
+    raise ValueError("--variant と --default-variant-for は同時に指定できません")
+  if args.default_variant_for:
+    return resolve_default_variant_name(config, args.default_variant_for)
   if args.variant == "default":
     return None
   if args.variant:
@@ -412,7 +422,8 @@ def _run_one_role(
   )
   response_text, attempts, duration_seconds = _call_provider(provider, prompt)
   try:
-    findings = parse_response_text(response_text)
+    parsed_response = parse_response_data(response_text)
+    findings = parsed_response["findings"]
   except Exception:
     update_review_run_artifacts(
       args.review_run_dir,
@@ -439,6 +450,11 @@ def _run_one_role(
     )
     return 1
 
+  extra_fields = {
+    key: value
+    for key, value in parsed_response.items()
+    if key != "findings"
+  }
   output = format_response(
     role=role,
     provider=provider_name,
@@ -446,6 +462,7 @@ def _run_one_role(
     attempts=attempts,
     duration_seconds=round(duration_seconds, 3),
     findings=findings,
+    extra_fields=extra_fields,
   )
   update_review_run_artifacts(
     args.review_run_dir,
@@ -519,7 +536,7 @@ def main(argv: Optional[List[str]] = None) -> int:
       return 1
 
     config = load_config(args.config)
-    variant_name = _select_variant_name(args)
+    variant_name = _select_variant_name(args, config)
     variant_config = resolve_variant(config, variant_name)
     roles = _roles_for_variant(variant_config)
     for role in roles:

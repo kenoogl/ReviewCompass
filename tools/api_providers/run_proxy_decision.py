@@ -21,6 +21,9 @@ from tools.api_providers.config_loader import (  # noqa: E402
   resolve_role,
   resolve_variant,
 )
+from tools.api_providers.external_api_approval import (  # noqa: E402
+  validate_external_api_approval,
+)
 from tools.api_providers.providers import (  # noqa: E402
   enable_zshrc_api_key_fallback,
   get_provider,
@@ -39,6 +42,10 @@ def _parse_argv(argv: Optional[List[str]]) -> argparse.Namespace:
   parser.add_argument("--raw-out", default="proxy-decision-response.yaml")
   parser.add_argument("--parsed-out", default="proxy-decision-decisions.yaml")
   parser.add_argument("--metadata-out", default="proxy-decision-metadata.yaml")
+  parser.add_argument(
+    "--external-approval-record",
+    help="外部 API 送信用の利用者承認レコード。指定時は送信前に provider/model/prompt/material を検査する。",
+  )
   parser.add_argument("--verbose", action="store_true")
   return parser.parse_args(argv)
 
@@ -70,10 +77,10 @@ def _parse_decisions(response_text: str) -> Dict[str, Any]:
   data = yaml.safe_load(response_text)
   if not isinstance(data, dict):
     raise ValueError("proxy_model response must be a YAML mapping")
-  if not isinstance(data.get("decisions"), list):
-    raise ValueError("proxy_model response must contain decisions list")
   if not isinstance(data.get("proxy_model_id"), str):
     raise ValueError("proxy_model response must contain proxy_model_id")
+  if "decisions" in data and not isinstance(data.get("decisions"), list):
+    raise ValueError("proxy_model response decisions must be a list when present")
   return data
 
 
@@ -96,6 +103,18 @@ def main(argv: Optional[List[str]] = None) -> int:
 
     provider_name = role_config["provider"]
     model = role_config["model"]
+    prompt_path = Path(args.prompt_file)
+    prompt = _read_prompt(prompt_path)
+    external_approval_record = None
+    if args.external_approval_record:
+      external_approval_record = validate_external_api_approval(
+        args.external_approval_record,
+        prompt_path=str(prompt_path),
+        provider=provider_name,
+        model=model,
+        purpose="proxy_model_decision",
+        prompt_text=prompt,
+      )
     provider_cls = get_provider(provider_name)
     provider = provider_cls(
       model=model,
@@ -103,8 +122,6 @@ def main(argv: Optional[List[str]] = None) -> int:
       max_retries=connection_settings.get("max_retries", 1),
     )
 
-    prompt_path = Path(args.prompt_file)
-    prompt = _read_prompt(prompt_path)
     run_dir = Path(args.review_run_dir)
     run_dir.mkdir(parents=True, exist_ok=True)
     raw_path = run_dir / args.raw_out
@@ -125,6 +142,11 @@ def main(argv: Optional[List[str]] = None) -> int:
       "parsed_decisions_path": _relative_name(parsed_path),
       "duration_seconds": duration_seconds,
     }
+    if external_approval_record is not None:
+      metadata["external_approval_record_path"] = args.external_approval_record
+      metadata["external_approval_record_schema_version"] = external_approval_record.get(
+        "schema_version"
+      )
 
     try:
       parsed = _parse_decisions(response_text)

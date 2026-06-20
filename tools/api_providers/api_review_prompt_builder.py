@@ -39,6 +39,8 @@ class SourceMaterial:
 
   key: str
   purpose: str
+  source_paths: List[str] = field(default_factory=list)
+  source_anchors: List[str] = field(default_factory=list)
   content: str | None = None
   purpose_field: str | None = None
   responsibility_boundaries: List[str] = field(default_factory=list)
@@ -123,9 +125,7 @@ def build_api_review_criteria(
     "",
     _primary_question(review_purpose, judgment_item, bool(vertical_intent)),
     "",
-    "Do not combine multiple independent judgments in this prompt. If another "
-    "cluster, finding, artifact, or design-policy judgment is needed, create a "
-    "separate criteria file and run separate prompt-quality review.",
+    "Limit findings to this judgment item.",
     "",
     "## User Review Requirements",
     "",
@@ -145,7 +145,6 @@ def build_api_review_criteria(
     "- Treat the target files as the only review target.",
     "- Treat source materials as background or intent-transfer evidence, not as targets.",
     "- Do not use path-only source materials as model-readable evidence.",
-    "- Ask one non-leading primary judgment question.",
     "- Preserve user review requirements without narrowing, broadening, or replacement.",
     "- Exclude credentials, personal identifiers, third-party non-sendable confidential material, and unrelated logs.",
     "- Return parser-compatible findings only.",
@@ -156,6 +155,9 @@ def build_api_review_criteria(
   for path in review_target_paths:
     lines.append(f"- `{path}`")
   lines.extend([
+    "",
+    "At the actual review-run, pass every path listed here as --target. The API runner reads and injects those file contents into the model prompt; this section is the target manifest, not a substitute for target content.",
+    "If any listed target path content is absent from the injected prompt, report ERROR against Review Target and do not return findings: [].",
     "",
     "Do not treat this criteria file, a wrapper, or an author-written summary as a substitute for the target.",
     "",
@@ -174,7 +176,11 @@ def build_api_review_criteria(
     "2. Check that the target satisfies preserved user review requirements.",
     "3. Check that source materials are used only for background or required intent transfer.",
     "4. Check that no finding depends on unstated assumptions or path-only source material.",
-    "5. Check that the target does not authorize commit, push, spec.json mutation, phase transition, or gate completion.",
+    "5. Check that this review run and its model output do not approve or authorize commit, push, spec.json mutation, phase transition, or gate completion. This check constrains the review run and model output, not the mere presence or implementation of workflow-operation code; report target-code findings only when behavior bypasses or weakens the required gate.",
+    "6. Check each preserved review focus item:",
+  ])
+  lines.extend(_bullet_lines(_review_focus_items(review_focus, user_requirements), indent="  "))
+  lines.extend([
     "",
     "## Out Of Scope",
     "",
@@ -183,6 +189,7 @@ def build_api_review_criteria(
     lines.append(f"- {item}")
   lines.extend([
     "- Do not approve or authorize commit, push, spec.json mutation, phase transition, or gate completion.",
+    "- These limits constrain this review run and the reviewing model; do not treat the mere presence or implementation of workflow-operation code as a violation solely because it mentions those operations.",
     "- Do not judge downstream correctness unless a target omission would force downstream invention.",
     "",
     "## Finding Policy",
@@ -191,7 +198,9 @@ def build_api_review_criteria(
     "- Use ERROR for missing required behavior, weakened user requirements, or unsupported target behavior.",
     "- Use WARN for meaningful ambiguity, weak traceability, or coverage gaps.",
     "- Use INFO only for minor non-blocking improvements.",
-    "- Return findings: [] only when the target is traceable, correctly scoped, and sufficiently grounded.",
+    "- For each finding, identify the target file and the narrowest available location such as line number, function, schema field, or test case.",
+    "- Traceable evidence means a target file plus the narrowest available anchor for every checked claim, such as a line number, function name, schema field, CLI option, fixture, or test case.",
+    "- Return findings: [] if and only if every required check passes with traceable evidence and no deviation from the preserved review requirements or upstream intent.",
   ])
   return "\n".join(lines).rstrip() + "\n"
 
@@ -254,8 +263,12 @@ def _primary_question(review_purpose: str, judgment_item: str, vertical: bool) -
     return (
       f"Does the target satisfy {judgment_item}, while carrying upstream purpose, "
       "responsibility boundaries, acceptance criteria, forbidden actions, unresolved "
-      "items, and intended transfer without omission, weakening, contradiction, "
-      "unsupported addition, or drift?"
+      "items, and intended transfer without any of the following?\n\n"
+      "- omission\n"
+      "- weakening\n"
+      "- contradiction\n"
+      "- unsupported addition\n"
+      "- drift"
     )
   return f"Does the target satisfy {judgment_item} for {review_purpose} without unsupported assumptions?"
 
@@ -270,7 +283,7 @@ def _render_user_requirements(
 ) -> List[str]:
   purpose = user_requirements.purpose if user_requirements else review_purpose
   review_object_value = user_requirements.object if user_requirements else review_object
-  focus = user_requirements.focus if user_requirements else list(review_focus)
+  focus = _review_focus_items(review_focus, user_requirements)
   output_requirements = (
     user_requirements.output_requirements if user_requirements else ["parser-compatible findings"]
   )
@@ -298,8 +311,21 @@ def _render_user_requirements(
   lines.append("  - Review purpose -> Review Task and Required Checks")
   lines.append("  - Review focus -> Required Checks")
   lines.append("  - Scope boundaries -> Review Target and Out Of Scope")
+  lines.append("  - Output requirements -> Finding Policy")
   lines.append("  - Prohibited actions -> Out Of Scope and Finding Policy")
   return lines
+
+
+def _review_focus_items(
+  review_focus: Sequence[str],
+  user_requirements: UserReviewRequirements | None,
+) -> List[str]:
+  combined: List[str] = []
+  for item in list(review_focus) + (user_requirements.focus if user_requirements else []):
+    text = str(item)
+    if text not in combined:
+      combined.append(text)
+  return combined
 
 
 def _render_source_material(material: SourceMaterial, *, vertical: bool) -> List[str]:
@@ -310,6 +336,14 @@ def _render_source_material(material: SourceMaterial, *, vertical: bool) -> List
     "",
   ]
   if vertical:
+    if material.source_paths:
+      lines.append("- source_paths:")
+      lines.extend(_bullet_lines(material.source_paths, indent="  "))
+      lines.append("- source_paths_note: source_paths are provenance only; use the structured summary fields below as the model-readable upstream intent material.")
+    if material.source_anchors:
+      lines.append("- source_anchors:")
+      lines.extend(_bullet_lines(material.source_anchors, indent="  "))
+    lines.extend(["", "Structured Summary (model-readable upstream intent):", ""])
     lines.extend([
       f"- purpose: {material.purpose_field}",
       "- responsibility_boundaries:",
@@ -319,8 +353,10 @@ def _render_source_material(material: SourceMaterial, *, vertical: bool) -> List
     lines.extend(_bullet_lines(material.acceptance_criteria, indent="  "))
     lines.append("- forbidden_actions:")
     lines.extend(_bullet_lines(material.forbidden_actions, indent="  "))
-    lines.append("- unresolved_or_deferred:")
+    lines.append("- unresolved_or_design_deferred_items:")
     lines.extend(_bullet_lines(material.unresolved_or_deferred, indent="  "))
+    if material.unresolved_or_deferred:
+      lines.append("- unresolved_items_review_rule: If the target claims resolved behavior for an unresolved item without implementation evidence, report WARN or ERROR according to impact.")
     lines.append("- intended_target_phase_transfer:")
     lines.extend(_bullet_lines(material.intended_target_phase_transfer, indent="  "))
     lines.append("")

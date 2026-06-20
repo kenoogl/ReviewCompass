@@ -8,9 +8,19 @@ API レスポンスの整形と所見抽出。
 
 日本語は UTF-8 のまま出力（allow_unicode=True）、キー順は固定（sort_keys=False）。
 """
-from typing import List
+from typing import Any, Dict, List, Optional
 
 import yaml
+
+
+_RESERVED_TOP_LEVEL_KEYS = {
+  "role",
+  "provider",
+  "model",
+  "attempts",
+  "duration_seconds",
+  "findings",
+}
 
 
 def format_response(
@@ -20,20 +30,28 @@ def format_response(
   attempts: int,
   duration_seconds: float,
   findings: List[dict],
+  extra_fields: Optional[Dict[str, Any]] = None,
 ) -> str:
   """構造化データから整形済み YAML 文字列を返す。
 
   キー順は role → provider → model → attempts → duration_seconds → findings。
   日本語は UTF-8 のまま出力する（ASCII エスケープしない）。
   """
+  reserved_extra_keys = set(extra_fields or {}).intersection(_RESERVED_TOP_LEVEL_KEYS)
+  if reserved_extra_keys:
+    keys = ", ".join(sorted(reserved_extra_keys))
+    raise ValueError(f"extra_fields に予約済みキーは指定できません: {keys}")
+
   data = {
     "role": role,
     "provider": provider,
     "model": model,
     "attempts": attempts,
     "duration_seconds": duration_seconds,
-    "findings": findings,
   }
+  if extra_fields:
+    data.update(extra_fields)
+  data["findings"] = findings
   return yaml.dump(data, allow_unicode=True, sort_keys=False)
 
 
@@ -48,8 +66,8 @@ def _strip_code_block(text: str) -> str:
   return text
 
 
-def parse_response_text(response_text: str) -> List[dict]:
-  """API レスポンスの YAML 文字列から findings リストを返す。
+def parse_response_data(response_text: str) -> Dict[str, Any]:
+  """API レスポンスの YAML 文字列からトップレベル dict 全体を返す。
 
   - YAML パース失敗：yaml.YAMLError を投げる（fail-closed、§5.9.1 規律）
   - findings キー欠落：ValueError
@@ -63,4 +81,9 @@ def parse_response_text(response_text: str) -> List[dict]:
     raise ValueError(
       f"findings の値はリストである必要があります（実体：{type(findings).__name__}）"
     )
-  return findings
+  return data
+
+
+def parse_response_text(response_text: str) -> List[dict]:
+  """API レスポンスの YAML 文字列から findings リストを返す。"""
+  return parse_response_data(response_text)["findings"]
