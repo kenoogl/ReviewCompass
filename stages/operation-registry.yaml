@@ -1,11 +1,15 @@
 schema_version: operation-registry-v1
 owner: workflow-management
 description: >
-  Read-only operation contracts for operation-preflight. Phase 1 preflight
-  must not create review-runs, manifests, approval records, session records,
-  commits, or deployment/export outputs.
+  Read-only operation registry for operation-preflight. Contract authority
+  fields live in stages/operation-contracts.yaml; this registry references
+  contract ID, schema version, and digest only.
 operations:
   - operation_id: workflow_next_preflight
+    operation_contract:
+      operation_id: completed
+      schema_version: operation-contract-v1
+      digest: sha256:8fd32aaa88f6144a9ddc620af08f1e2f3d535ad7103e7b441665245c87ca2f07
     kind: workflow_state
     operation_family: workflow_cli
     canonical_invocation:
@@ -41,6 +45,10 @@ operations:
       - workflow_stage
 
   - operation_id: review_run_create
+    operation_contract:
+      operation_id: run_workflow_stage
+      schema_version: operation-contract-v1
+      digest: sha256:4489da9cb18d9054b0ea9d9bd521ae71516c8dc9b5d1a1acd5b1f0137521db9d
     kind: review_artifact
     operation_family: review_artifact
     canonical_invocation:
@@ -87,6 +95,10 @@ operations:
       - review_mode
 
   - operation_id: triage_decide
+    operation_contract:
+      operation_id: record_human_decision
+      schema_version: operation-contract-v1
+      digest: sha256:3e1a57fab95ffe441bbd4a20b452bc80350774b9fe18bf1145d698bbf3ff4fe7
     kind: review_artifact
     operation_family: review_artifact
     canonical_invocation:
@@ -130,6 +142,10 @@ operations:
       - final_label
 
   - operation_id: reopen_finalize_preflight
+    operation_contract:
+      operation_id: finalize_reopen
+      schema_version: operation-contract-v1
+      digest: sha256:e23bd9cc2cda74c30d12e70995e95f22344eec68f54d8a78e50dc82242dd2591
     kind: workflow_state
     operation_family: workflow_cli
     canonical_invocation:
@@ -173,6 +189,10 @@ operations:
       - workflow_stage
 
   - operation_id: reopen_advance_step_preflight
+    operation_contract:
+      operation_id: advance_reopen_after_approval_stop_point
+      schema_version: operation-contract-v1
+      digest: sha256:4760ee8f63c0e639b075aac83dacdc26e13c11ae82531e814703282c363c33f0
     kind: workflow_state
     operation_family: workflow_cli
     canonical_invocation:
@@ -217,6 +237,10 @@ operations:
       - workflow_stage
 
   - operation_id: reopen_set_blocker_preflight
+    operation_contract:
+      operation_id: wait_for_human_decision
+      schema_version: operation-contract-v1
+      digest: sha256:c05fba307724b78b3735377e257f6824535f37100e34c1b64bcb4c961b7dcba8
     kind: workflow_state
     operation_family: workflow_cli
     canonical_invocation:
@@ -261,6 +285,10 @@ operations:
       - workflow_stage
 
   - operation_id: commit_approval_chain_preflight
+    operation_contract:
+      operation_id: commit_stop_point
+      schema_version: operation-contract-v1
+      digest: sha256:e05c9551a644c0ed7bc448b09f3542fb88bf9d2732fb51824bdb820eec92ab0c
     kind: irreversible
     operation_family: commit_approval_chain
     canonical_invocation:
@@ -302,6 +330,10 @@ operations:
       - approved_action
 
   - operation_id: session_record_capture_preflight
+    operation_contract:
+      operation_id: record_human_decision
+      schema_version: operation-contract-v1
+      digest: sha256:3e1a57fab95ffe441bbd4a20b452bc80350774b9fe18bf1145d698bbf3ff4fe7
     kind: evidence_capture
     operation_family: session_record_capture
     canonical_invocation:
@@ -337,6 +369,10 @@ operations:
       - session_record_mode
 
   - operation_id: nested_issue_preflight
+    operation_contract:
+      operation_id: run_maintenance
+      schema_version: operation-contract-v1
+      digest: sha256:44125796ce3335a00498d568785dd18d475bbd1664508d2429d838ab2c59e67d
     kind: workflow_state
     operation_family: nested_issue_control
     canonical_invocation:
@@ -377,6 +413,10 @@ operations:
       - nested_issue_relation
 
   - operation_id: deployment_export_preflight
+    operation_contract:
+      operation_id: run_maintenance
+      schema_version: operation-contract-v1
+      digest: sha256:44125796ce3335a00498d568785dd18d475bbd1664508d2429d838ab2c59e67d
     kind: deployment_export
     operation_family: deployment_export
     canonical_invocation:

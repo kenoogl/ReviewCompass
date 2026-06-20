@@ -93,11 +93,22 @@ def _adapt_next_action(next_data):
   action = (next_data or {}).get("next_action")
   if not isinstance(action, dict):
     return None
+  phase = action.get("phase")
+  stage = action.get("stage")
+  pending_gate = action.get("next_pending_gate")
+  if not isinstance(pending_gate, str):
+    pending_gates = action.get("pending_gates")
+    if isinstance(pending_gates, list) and pending_gates:
+      pending_gate = pending_gates[0]
+  if (phase is None or stage is None) and isinstance(pending_gate, str):
+    phase_stage = _phase_stage_from_gate(pending_gate)
+    phase = phase or phase_stage.get("phase")
+    stage = stage or phase_stage.get("stage")
   return {
     "current_mainline": action.get("kind"),
     "required_action": action.get("required_action"),
-    "phase": action.get("phase"),
-    "stage": action.get("stage"),
+    "phase": phase,
+    "stage": stage,
     "reopen_scope": list(action.get("direct_features") or []),
     "impact_review_scope": list(action.get("required_feature_scope") or action.get("feature") or []),
     "direct_features": list(action.get("direct_features") or []),
@@ -114,6 +125,22 @@ def _adapt_next_action(next_data):
       if "superseded" in step
     ],
     "state_files": [action["file"]] if action.get("file") else [],
+  }
+
+
+def _phase_stage_from_gate(gate):
+  prefix = "stages/"
+  suffix = gate
+  if suffix.startswith(prefix):
+    suffix = suffix[len(prefix):]
+  if "#" not in suffix:
+    return {"phase": None, "stage": None}
+  phase_part, stage = suffix.split("#", 1)
+  if phase_part.endswith(".yaml"):
+    phase_part = phase_part[:-len(".yaml")]
+  return {
+    "phase": phase_part or None,
+    "stage": stage or None,
   }
 
 

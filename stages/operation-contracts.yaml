@@ -1,0 +1,968 @@
+schema_version: operation-contracts-v1
+owner: workflow-management
+description: >
+  Operation contract authority for required_action execution semantics. The
+  operation registry references these contracts and must not duplicate contract
+  authority fields.
+operations:
+  - schema_version: operation-contract-v1
+    operation_id: repair_workflow_state
+    required_action: repair_workflow_state
+    effect_kind: state_mutation
+    approval_required: true
+    approval_contract_refs:
+      - human_only_workflow_state_repair
+    phase_boundary: within_phase
+    sequence:
+      mode: serial_only
+      internal_steps: []
+    actor:
+      kind: tool
+      source: requirements.md#requirement-13
+    branching:
+      has_branches: false
+      branches: []
+    max_effect_kind: state_mutation
+    preconditions:
+      - id: state_evidence_present
+        description: State evidence is available.
+        check_kind: artifact_presence
+        machine_checkable: true
+        source_ref: design.md#req13-precondition-repair_workflow_state-state_evidence_present
+        failure_verdict: DEVIATION
+    postconditions:
+      - id: state_consistency_restored
+        description: Workflow state consistency is restored.
+        check_kind: state_consistency
+        machine_checkable: true
+        source_ref: design.md#req13-postcondition-repair_workflow_state-state_consistency_restored
+        failure_verdict: DEVIATION
+    side_effects:
+      - workflow_state_update
+    commit_boundary:
+      required: true
+      reason: human-only workflow state repair must not bypass commit evidence
+    workflow_state_effect:
+      kind: repair
+    canonical_invocation:
+      entrypoint: tools/check-workflow-action.py
+      subcommand: repair-workflow-state
+
+  - schema_version: operation-contract-v1
+    operation_id: run_post_write_verification
+    required_action: run_post_write_verification
+    effect_kind: external_call
+    approval_required: false
+    approval_contract_refs: []
+    phase_boundary: within_phase
+    sequence:
+      mode: serial_only
+      internal_steps: []
+    actor:
+      kind: mixed
+      source: requirements.md#requirement-13
+    branching:
+      has_branches: false
+      branches: []
+    max_effect_kind: external_call
+    preconditions:
+      - id: changed_targets_detected
+        description: Changed post-write targets are detected.
+        check_kind: target_set
+        machine_checkable: true
+        source_ref: design.md#req13-precondition-run_post_write_verification-changed_targets_detected
+        failure_verdict: DEVIATION
+    postconditions:
+      - id: verification_artifact_saved
+        description: Verification artifact is saved.
+        check_kind: artifact_presence
+        machine_checkable: true
+        source_ref: design.md#req13-postcondition-run_post_write_verification-verification_artifact_saved
+        failure_verdict: DEVIATION
+    side_effects:
+      - external_review_artifacts
+    commit_boundary:
+      required: false
+    workflow_state_effect:
+      kind: none
+    canonical_invocation:
+      entrypoint: tools/api_providers/run_review.py
+
+  - schema_version: operation-contract-v1
+    operation_id: wait_for_human_decision
+    required_action: wait_for_human_decision
+    effect_kind: read
+    approval_required: false
+    approval_contract_refs: []
+    phase_boundary: none
+    sequence:
+      mode: serial_only
+      internal_steps: []
+    actor:
+      kind: human
+      source: requirements.md#requirement-13
+    branching:
+      has_branches: false
+      branches: []
+    max_effect_kind: read
+    preconditions:
+      - id: pending_human_gate_present
+        description: A pending human gate is present.
+        check_kind: state_ref
+        machine_checkable: true
+        source_ref: design.md#req13-precondition-wait_for_human_decision-pending_human_gate_present
+        failure_verdict: DEVIATION
+    postconditions:
+      - id: no_state_mutation
+        description: No state mutation occurs.
+        check_kind: read_only
+        machine_checkable: true
+        source_ref: design.md#req13-postcondition-wait_for_human_decision-no_state_mutation
+        failure_verdict: DEVIATION
+    side_effects: []
+    commit_boundary:
+      required: false
+    workflow_state_effect:
+      kind: none
+    canonical_invocation:
+      entrypoint: null
+
+  - schema_version: operation-contract-v1
+    operation_id: record_human_decision
+    required_action: record_human_decision
+    effect_kind: state_mutation
+    approval_required: false
+    approval_contract_refs: []
+    approval_satisfaction: does_not_satisfy_target_operation
+    phase_boundary: within_phase
+    sequence:
+      mode: serial_only
+      internal_steps: []
+    actor:
+      kind: tool
+      source: requirements.md#requirement-13
+    branching:
+      has_branches: false
+      branches: []
+    max_effect_kind: state_mutation
+    preconditions:
+      - id: pending_gate_present
+        description: A pending decision gate exists.
+        check_kind: state_ref
+        machine_checkable: true
+        source_ref: design.md#req13-precondition-record_human_decision-pending_gate_present
+        failure_verdict: DEVIATION
+    postconditions:
+      - id: target_operation_not_auto_approved
+        description: Recording the decision does not approve the target operation by itself.
+        check_kind: approval_boundary
+        machine_checkable: true
+        source_ref: design.md#req13-postcondition-record_human_decision-target_operation_not_auto_approved
+        failure_verdict: DEVIATION
+    side_effects:
+      - decision_record
+    commit_boundary:
+      required: false
+    workflow_state_effect:
+      kind: decision_record_only
+    canonical_invocation:
+      entrypoint: tools/check-workflow-action.py
+
+  - schema_version: operation-contract-v1
+    operation_id: run_maintenance
+    required_action: run_maintenance
+    effect_kind: state_mutation
+    approval_required: true
+    approval_contract_refs:
+      - branch_dependent
+    phase_boundary: within_phase
+    sequence:
+      mode: serial_only
+      internal_steps: []
+    actor:
+      kind: mixed
+      source: requirements.md#requirement-13
+    branching:
+      has_branches: true
+      branches:
+        - branch_id: read_only_diagnostic
+          condition: maintenance_kind=read_only_diagnostic
+          internal_steps:
+            - step_id: read_target_materials
+              effect_kind: read
+              approval_required: false
+              approval_contract_ref: none
+              phase_boundary: none
+              source_ref: design.md#req13-run-maintenance-step-read_target_materials
+            - step_id: present_diagnostic_result
+              effect_kind: read
+              approval_required: false
+              approval_contract_ref: none
+              phase_boundary: none
+              source_ref: design.md#req13-run-maintenance-step-present_diagnostic_result
+          max_effect_kind: read
+          approval_aggregation: all_false
+          human_only_override_applies: true
+          precondition_ids:
+            - side_track_frame_present
+          postcondition_ids:
+            - return_condition_preserved
+        - branch_id: working_note_or_decision_basis
+          condition: maintenance_kind=working_note_or_decision_basis
+          internal_steps:
+            - step_id: read_decision_basis_sources
+              effect_kind: read
+              approval_required: false
+              approval_contract_ref: none
+              phase_boundary: none
+              source_ref: design.md#req13-run-maintenance-step-read_decision_basis_sources
+            - step_id: write_working_note
+              effect_kind: write
+              approval_required: false
+              approval_contract_ref: none
+              phase_boundary: within_phase
+              source_ref: design.md#req13-run-maintenance-step-write_working_note
+          max_effect_kind: write
+          approval_aggregation: any_child_approval_required
+          human_only_override_applies: true
+          precondition_ids:
+            - allowed_scope_bound
+          postcondition_ids:
+            - maintenance_evidence_saved
+        - branch_id: workflow_state_repair
+          condition: maintenance_kind=workflow_state_repair
+          internal_steps:
+            - step_id: read_state_evidence
+              effect_kind: read
+              approval_required: false
+              approval_contract_ref: none
+              phase_boundary: none
+              source_ref: design.md#req13-run-maintenance-step-read_state_evidence
+            - step_id: apply_state_repair
+              effect_kind: state_mutation
+              approval_required: true
+              approval_contract_ref: repair_workflow_state
+              phase_boundary: within_phase
+              source_ref: design.md#req13-run-maintenance-step-apply_state_repair
+            - step_id: validate_state_consistency
+              effect_kind: read
+              approval_required: false
+              approval_contract_ref: none
+              phase_boundary: none
+              source_ref: design.md#req13-run-maintenance-step-validate_state_consistency
+          max_effect_kind: state_mutation
+          approval_aggregation: true
+          human_only_override_applies: true
+          precondition_ids:
+            - branch_condition_resolved
+          postcondition_ids:
+            - maintenance_evidence_saved
+    max_effect_kind: state_mutation
+    preconditions:
+      - id: side_track_frame_present
+        description: Maintenance side-track frame is present.
+        check_kind: state_ref
+        machine_checkable: true
+        source_ref: design.md#req13-precondition-run_maintenance-side_track_frame_present
+        failure_verdict: DEVIATION
+    postconditions:
+      - id: return_condition_preserved
+        description: Mainline return condition remains preserved.
+        check_kind: state_ref
+        machine_checkable: true
+        source_ref: design.md#req13-postcondition-run_maintenance-return_condition_preserved
+        failure_verdict: DEVIATION
+    side_effects:
+      - branch_dependent
+    commit_boundary:
+      required: false
+    workflow_state_effect:
+      kind: branch_dependent
+    canonical_invocation:
+      entrypoint: null
+
+  - schema_version: operation-contract-v1
+    operation_id: advance_reopen_after_commit_stop_point
+    required_action: advance_reopen_after_commit_stop_point
+    effect_kind: state_mutation
+    approval_required: true
+    approval_contract_refs:
+      - human_only_reopen_advance
+    phase_boundary: reopen_boundary
+    sequence:
+      mode: serial_only
+      internal_steps: []
+    actor:
+      kind: tool
+      source: requirements.md#requirement-13
+    branching:
+      has_branches: false
+      branches: []
+    max_effect_kind: state_mutation
+    preconditions:
+      - id: commit_stop_point_committed
+        description: Commit stop point has been committed.
+        check_kind: git_state
+        machine_checkable: true
+        source_ref: design.md#req13-precondition-advance_reopen_after_commit_stop_point-commit_stop_point_committed
+        failure_verdict: DEVIATION
+    postconditions:
+      - id: commit_stop_point_cleared
+        description: Commit stop point is consumed.
+        check_kind: state_ref
+        machine_checkable: true
+        source_ref: design.md#req13-postcondition-advance_reopen_after_commit_stop_point-commit_stop_point_cleared
+        failure_verdict: DEVIATION
+    side_effects:
+      - reopen_state_update
+    commit_boundary:
+      required: true
+    workflow_state_effect:
+      kind: reopen_state_update
+    canonical_invocation:
+      entrypoint: tools/check-workflow-action.py
+      subcommand: reopen-advance-after-commit-stop-point
+
+  - schema_version: operation-contract-v1
+    operation_id: commit_stop_point
+    required_action: commit_stop_point
+    effect_kind: state_mutation
+    approval_required: true
+    approval_contract_refs:
+      - commit_approval
+    phase_boundary: commit_boundary
+    sequence:
+      mode: serial_only
+      internal_steps: []
+    actor:
+      kind: human
+      source: requirements.md#requirement-13
+    branching:
+      has_branches: false
+      branches: []
+    max_effect_kind: state_mutation
+    preconditions:
+      - id: staged_content_bound
+        description: Staged content is bound to approval.
+        check_kind: git_index
+        machine_checkable: true
+        source_ref: design.md#req13-precondition-commit_stop_point-staged_content_bound
+        failure_verdict: DEVIATION
+    postconditions:
+      - id: commit_created
+        description: Commit is created.
+        check_kind: git_commit
+        machine_checkable: true
+        source_ref: design.md#req13-postcondition-commit_stop_point-commit_created
+        failure_verdict: DEVIATION
+    side_effects:
+      - git_commit
+    commit_boundary:
+      required: true
+    workflow_state_effect:
+      kind: commit
+    canonical_invocation:
+      entrypoint: tools/guarded-git-commit.py
+
+  - schema_version: operation-contract-v1
+    operation_id: draft_reopen_plan_candidates
+    required_action: draft_reopen_plan_candidates
+    effect_kind: write
+    approval_required: false
+    approval_contract_refs: []
+    phase_boundary: within_phase
+    sequence:
+      mode: serial_only
+      internal_steps: []
+    actor:
+      kind: llm
+      source: requirements.md#requirement-13
+    branching:
+      has_branches: false
+      branches: []
+    max_effect_kind: write
+    preconditions:
+      - id: classification_basis_present
+        description: Classification basis exists.
+        check_kind: artifact_presence
+        machine_checkable: true
+        source_ref: design.md#req13-precondition-draft_reopen_plan_candidates-classification_basis_present
+        failure_verdict: DEVIATION
+    postconditions:
+      - id: candidate_plan_saved
+        description: Candidate plan is saved.
+        check_kind: artifact_presence
+        machine_checkable: true
+        source_ref: design.md#req13-postcondition-draft_reopen_plan_candidates-candidate_plan_saved
+        failure_verdict: DEVIATION
+    side_effects:
+      - draft_artifact
+    commit_boundary:
+      required: false
+    workflow_state_effect:
+      kind: none
+    canonical_invocation:
+      entrypoint: null
+
+  - schema_version: operation-contract-v1
+    operation_id: apply_approved_reopen_plan
+    required_action: apply_approved_reopen_plan
+    effect_kind: state_mutation
+    approval_required: true
+    approval_contract_refs:
+      - human_only_reopen_plan_approval
+    phase_boundary: reopen_boundary
+    sequence:
+      mode: serial_only
+      internal_steps: []
+    actor:
+      kind: tool
+      source: requirements.md#requirement-13
+    branching:
+      has_branches: false
+      branches: []
+    max_effect_kind: state_mutation
+    preconditions:
+      - id: approved_plan_record_present
+        description: Approved plan record exists.
+        check_kind: approval_record
+        machine_checkable: true
+        source_ref: design.md#req13-precondition-apply_approved_reopen_plan-approved_plan_record_present
+        failure_verdict: DEVIATION
+    postconditions:
+      - id: reopen_in_progress_record_created
+        description: Reopen in-progress record is created.
+        check_kind: artifact_presence
+        machine_checkable: true
+        source_ref: design.md#req13-postcondition-apply_approved_reopen_plan-reopen_in_progress_record_created
+        failure_verdict: DEVIATION
+    side_effects:
+      - reopen_state_created
+    commit_boundary:
+      required: true
+    workflow_state_effect:
+      kind: reopen_state_update
+    canonical_invocation:
+      entrypoint: tools/check-workflow-action.py
+      subcommand: reopen-start
+
+  - schema_version: operation-contract-v1
+    operation_id: advance_reopen_after_approval_stop_point
+    required_action: advance_reopen_after_approval_stop_point
+    effect_kind: state_mutation
+    approval_required: true
+    approval_contract_refs:
+      - human_only_reopen_approval
+    phase_boundary: reopen_boundary
+    sequence:
+      mode: serial_only
+      internal_steps: []
+    actor:
+      kind: tool
+      source: requirements.md#requirement-13
+    branching:
+      has_branches: false
+      branches: []
+    max_effect_kind: state_mutation
+    preconditions:
+      - id: human_approval_record_valid
+        description: Human approval record is valid.
+        check_kind: approval_record
+        machine_checkable: true
+        source_ref: design.md#req13-precondition-advance_reopen_after_approval_stop_point-human_approval_record_valid
+        failure_verdict: DEVIATION
+    postconditions:
+      - id: approval_stop_point_cleared
+        description: Approval stop point is consumed.
+        check_kind: state_ref
+        machine_checkable: true
+        source_ref: design.md#req13-postcondition-advance_reopen_after_approval_stop_point-approval_stop_point_cleared
+        failure_verdict: DEVIATION
+    side_effects:
+      - reopen_state_update
+    commit_boundary:
+      required: true
+    workflow_state_effect:
+      kind: reopen_state_update
+    canonical_invocation:
+      entrypoint: tools/check-workflow-action.py
+
+  - schema_version: operation-contract-v1
+    operation_id: repair_canonical_documents
+    required_action: repair_canonical_documents
+    effect_kind: write
+    approval_required: false
+    approval_contract_refs: []
+    phase_boundary: within_phase
+    sequence:
+      mode: serial_only
+      internal_steps: []
+    actor:
+      kind: mixed
+      source: requirements.md#requirement-13
+    branching:
+      has_branches: false
+      branches: []
+    max_effect_kind: write
+    preconditions:
+      - id: target_documents_bound
+        description: Target documents are bound.
+        check_kind: target_set
+        machine_checkable: true
+        source_ref: design.md#req13-precondition-repair_canonical_documents-target_documents_bound
+        failure_verdict: DEVIATION
+    postconditions:
+      - id: canonical_documents_updated
+        description: Canonical documents are updated.
+        check_kind: artifact_digest
+        machine_checkable: true
+        source_ref: design.md#req13-postcondition-repair_canonical_documents-canonical_documents_updated
+        failure_verdict: DEVIATION
+    side_effects:
+      - canonical_document_update
+    commit_boundary:
+      required: false
+    workflow_state_effect:
+      kind: none
+    canonical_invocation:
+      entrypoint: null
+
+  - schema_version: operation-contract-v1
+    operation_id: run_reopen_drafting
+    required_action: run_reopen_drafting
+    effect_kind: write
+    approval_required: false
+    approval_contract_refs: []
+    phase_boundary: within_phase
+    sequence:
+      mode: serial_only
+      internal_steps: []
+    actor:
+      kind: llm
+      source: requirements.md#requirement-13
+    branching:
+      has_branches: false
+      branches: []
+    max_effect_kind: write
+    preconditions:
+      - id: active_reopen_scope_present
+        description: Active reopen scope exists.
+        check_kind: state_ref
+        machine_checkable: true
+        source_ref: design.md#req13-precondition-run_reopen_drafting-active_reopen_scope_present
+        failure_verdict: DEVIATION
+    postconditions:
+      - id: draft_artifact_updated
+        description: Draft artifact is updated.
+        check_kind: artifact_digest
+        machine_checkable: true
+        source_ref: design.md#req13-postcondition-run_reopen_drafting-draft_artifact_updated
+        failure_verdict: DEVIATION
+    side_effects:
+      - draft_artifact_update
+    commit_boundary:
+      required: false
+    workflow_state_effect:
+      kind: drafting_completed_gate_record
+    canonical_invocation:
+      entrypoint: null
+
+  - schema_version: operation-contract-v1
+    operation_id: run_reopen_pending_gate
+    required_action: run_reopen_pending_gate
+    effect_kind: external_call
+    approval_required: false
+    approval_contract_refs: []
+    phase_boundary: within_phase
+    sequence:
+      mode: serial_only
+      internal_steps: []
+    actor:
+      kind: mixed
+      source: requirements.md#requirement-13
+    branching:
+      has_branches: true
+      branches:
+        - branch_id: triad_review
+          condition: active_gate=triad-review
+          internal_steps:
+            - step_id: execute_review_run
+              effect_kind: external_call
+              approval_required: true
+              approval_contract_ref: external_send_approval
+              phase_boundary: external_boundary
+              source_ref: design.md#req13-run-reopen-pending-gate-step-execute_review_run
+            - step_id: save_gate_evidence
+              effect_kind: write
+              approval_required: false
+              approval_contract_ref: none
+              phase_boundary: within_phase
+              source_ref: design.md#req13-run-reopen-pending-gate-step-save_gate_evidence
+          max_effect_kind: external_call
+          approval_aggregation: any_child_approval_required
+          human_only_override_applies: true
+          precondition_ids:
+            - active_gate_resolved
+          postcondition_ids:
+            - gate_evidence_saved
+        - branch_id: approval
+          condition: active_gate=approval
+          internal_steps:
+            - step_id: present_approval_request
+              effect_kind: read
+              approval_required: false
+              approval_contract_ref: none
+              phase_boundary: none
+              source_ref: design.md#req13-run-reopen-pending-gate-step-present_approval_request
+            - step_id: record_approval_stop_point
+              effect_kind: state_mutation
+              approval_required: true
+              approval_contract_ref: human_only_phase_gate_approval
+              phase_boundary: within_phase
+              source_ref: design.md#req13-run-reopen-pending-gate-step-record_approval_stop_point
+          max_effect_kind: state_mutation
+          approval_aggregation: true
+          human_only_override_applies: true
+          precondition_ids:
+            - active_gate_resolved
+          postcondition_ids:
+            - gate_evidence_saved
+    max_effect_kind: external_call
+    preconditions:
+      - id: active_gate_resolved
+        description: Active reopen gate is resolved.
+        check_kind: state_ref
+        machine_checkable: true
+        source_ref: design.md#req13-precondition-run_reopen_pending_gate-active_gate_resolved
+        failure_verdict: DEVIATION
+    postconditions:
+      - id: gate_evidence_saved
+        description: Gate evidence is saved.
+        check_kind: artifact_presence
+        machine_checkable: true
+        source_ref: design.md#req13-postcondition-run_reopen_pending_gate-gate_evidence_saved
+        failure_verdict: DEVIATION
+    side_effects:
+      - branch_dependent
+    commit_boundary:
+      required: false
+    workflow_state_effect:
+      kind: gate_dependent
+    canonical_invocation:
+      entrypoint: tools/check-workflow-action.py
+
+  - schema_version: operation-contract-v1
+    operation_id: collect_required_decisions
+    required_action: collect_required_decisions
+    effect_kind: read
+    approval_required: false
+    approval_contract_refs: []
+    phase_boundary: none
+    sequence:
+      mode: serial_only
+      internal_steps: []
+    actor:
+      kind: tool
+      source: requirements.md#requirement-13
+    branching:
+      has_branches: false
+      branches: []
+    max_effect_kind: read
+    preconditions:
+      - id: open_decision_sources_present
+        description: Open decision sources are present.
+        check_kind: state_ref
+        machine_checkable: true
+        source_ref: design.md#req13-precondition-collect_required_decisions-open_decision_sources_present
+        failure_verdict: DEVIATION
+    postconditions:
+      - id: required_decision_list_reported
+        description: Required decision list is reported.
+        check_kind: output_contract
+        machine_checkable: true
+        source_ref: design.md#req13-postcondition-collect_required_decisions-required_decision_list_reported
+        failure_verdict: DEVIATION
+    side_effects: []
+    commit_boundary:
+      required: false
+    workflow_state_effect:
+      kind: none
+    canonical_invocation:
+      entrypoint: null
+
+  - schema_version: operation-contract-v1
+    operation_id: finalize_reopen
+    required_action: finalize_reopen
+    effect_kind: state_mutation
+    approval_required: true
+    approval_contract_refs:
+      - human_only_reopen_finalize
+    phase_boundary: reopen_boundary
+    sequence:
+      mode: serial_only
+      internal_steps: []
+    actor:
+      kind: tool
+      source: requirements.md#requirement-13
+    branching:
+      has_branches: false
+      branches: []
+    max_effect_kind: state_mutation
+    preconditions:
+      - id: pending_gates_empty
+        description: Pending gates are empty.
+        check_kind: state_ref
+        machine_checkable: true
+        source_ref: design.md#req13-precondition-finalize_reopen-pending_gates_empty
+        failure_verdict: DEVIATION
+    postconditions:
+      - id: reopen_record_completed
+        description: Reopen record is completed.
+        check_kind: artifact_presence
+        machine_checkable: true
+        source_ref: design.md#req13-postcondition-finalize_reopen-reopen_record_completed
+        failure_verdict: DEVIATION
+    side_effects:
+      - reopen_state_completion
+    commit_boundary:
+      required: true
+    workflow_state_effect:
+      kind: reopen_finalize
+    canonical_invocation:
+      entrypoint: tools/check-workflow-action.py
+      subcommand: reopen-finalize
+
+  - schema_version: operation-contract-v1
+    operation_id: draft_reopen_classification
+    required_action: draft_reopen_classification
+    effect_kind: write
+    approval_required: false
+    approval_contract_refs: []
+    phase_boundary: within_phase
+    sequence:
+      mode: serial_only
+      internal_steps: []
+    actor:
+      kind: llm
+      source: requirements.md#requirement-13
+    branching:
+      has_branches: false
+      branches: []
+    max_effect_kind: write
+    preconditions:
+      - id: upstream_change_evidence_present
+        description: Upstream change evidence is present.
+        check_kind: artifact_presence
+        machine_checkable: true
+        source_ref: design.md#req13-precondition-draft_reopen_classification-upstream_change_evidence_present
+        failure_verdict: DEVIATION
+    postconditions:
+      - id: classification_basis_saved
+        description: Classification basis is saved.
+        check_kind: artifact_presence
+        machine_checkable: true
+        source_ref: design.md#req13-postcondition-draft_reopen_classification-classification_basis_saved
+        failure_verdict: DEVIATION
+    side_effects:
+      - classification_basis
+    commit_boundary:
+      required: false
+    workflow_state_effect:
+      kind: none
+    canonical_invocation:
+      entrypoint: null
+
+  - schema_version: operation-contract-v1
+    operation_id: run_reopen_start
+    required_action: run_reopen_start
+    effect_kind: state_mutation
+    approval_required: true
+    approval_contract_refs:
+      - human_only_reopen_start
+    phase_boundary: reopen_boundary
+    sequence:
+      mode: serial_only
+      internal_steps: []
+    actor:
+      kind: tool
+      source: requirements.md#requirement-13
+    branching:
+      has_branches: false
+      branches: []
+    max_effect_kind: state_mutation
+    preconditions:
+      - id: classification_approved
+        description: Classification is approved.
+        check_kind: approval_record
+        machine_checkable: true
+        source_ref: design.md#req13-precondition-run_reopen_start-classification_approved
+        failure_verdict: DEVIATION
+    postconditions:
+      - id: spec_flags_updated
+        description: Spec flags are updated.
+        check_kind: spec_state
+        machine_checkable: true
+        source_ref: design.md#req13-postcondition-run_reopen_start-spec_flags_updated
+        failure_verdict: DEVIATION
+    side_effects:
+      - spec_state_update
+    commit_boundary:
+      required: true
+    workflow_state_effect:
+      kind: reopen_start
+    canonical_invocation:
+      entrypoint: tools/check-workflow-action.py
+      subcommand: reopen-start
+
+  - schema_version: operation-contract-v1
+    operation_id: run_workflow_stage
+    required_action: run_workflow_stage
+    effect_kind: state_mutation
+    approval_required: true
+    approval_contract_refs:
+      - branch_dependent
+    phase_boundary: phase_transition
+    sequence:
+      mode: serial_only
+      internal_steps: []
+    actor:
+      kind: mixed
+      source: requirements.md#requirement-13
+    branching:
+      has_branches: true
+      branches:
+        - branch_id: drafting
+          condition: phase=drafting
+          internal_steps:
+            - step_id: read_source_materials
+              effect_kind: read
+              approval_required: false
+              approval_contract_ref: none
+              phase_boundary: none
+              source_ref: design.md#req13-run-workflow-stage-step-read_source_materials
+            - step_id: write_draft_artifact
+              effect_kind: write
+              approval_required: false
+              approval_contract_ref: none
+              phase_boundary: within_phase
+              source_ref: design.md#req13-run-workflow-stage-step-write_draft_artifact
+          max_effect_kind: write
+          approval_aggregation: all_false
+          human_only_override_applies: true
+          precondition_ids:
+            - stage_contract_bound
+          postcondition_ids:
+            - stage_evidence_saved
+        - branch_id: triad_review
+          condition: stage=triad-review
+          internal_steps:
+            - step_id: build_review_prompt_manifest
+              effect_kind: write
+              approval_required: false
+              approval_contract_ref: none
+              phase_boundary: within_phase
+              source_ref: design.md#req13-run-workflow-stage-step-build_review_prompt_manifest
+            - step_id: execute_review_run
+              effect_kind: external_call
+              approval_required: true
+              approval_contract_ref: external_send_approval
+              phase_boundary: external_boundary
+              source_ref: design.md#req13-run-workflow-stage-step-execute_review_run
+            - step_id: save_raw_parsed_triage
+              effect_kind: write
+              approval_required: false
+              approval_contract_ref: none
+              phase_boundary: within_phase
+              source_ref: design.md#req13-run-workflow-stage-step-save_raw_parsed_triage
+          max_effect_kind: external_call
+          approval_aggregation: any_child_approval_required
+          human_only_override_applies: true
+          precondition_ids:
+            - stage_contract_bound
+          postcondition_ids:
+            - stage_evidence_saved
+        - branch_id: approval
+          condition: stage=approval
+          internal_steps:
+            - step_id: present_approval_request
+              effect_kind: read
+              approval_required: false
+              approval_contract_ref: none
+              phase_boundary: none
+              source_ref: design.md#req13-run-workflow-stage-step-present_approval_request
+            - step_id: record_human_approval_decision
+              effect_kind: state_mutation
+              approval_required: true
+              approval_contract_ref: human_only_phase_gate_approval
+              phase_boundary: within_phase
+              source_ref: design.md#req13-run-workflow-stage-step-record_human_approval_decision
+          max_effect_kind: state_mutation
+          approval_aggregation: true
+          human_only_override_applies: true
+          precondition_ids:
+            - stage_contract_bound
+          postcondition_ids:
+            - completion_predicate_rechecked
+    max_effect_kind: state_mutation
+    preconditions:
+      - id: stage_contract_bound
+        description: Stage contract is bound.
+        check_kind: state_ref
+        machine_checkable: true
+        source_ref: design.md#req13-precondition-run_workflow_stage-stage_contract_bound
+        failure_verdict: DEVIATION
+    postconditions:
+      - id: completion_predicate_rechecked
+        description: Completion predicate is rechecked.
+        check_kind: completion_predicate
+        machine_checkable: true
+        source_ref: design.md#req13-postcondition-run_workflow_stage-completion_predicate_rechecked
+        failure_verdict: DEVIATION
+    side_effects:
+      - branch_dependent
+    commit_boundary:
+      required: false
+    workflow_state_effect:
+      kind: phase_or_gate_dependent
+    canonical_invocation:
+      entrypoint: tools/check-workflow-action.py
+
+  - schema_version: operation-contract-v1
+    operation_id: completed
+    required_action: completed
+    effect_kind: read
+    approval_required: false
+    approval_contract_refs: []
+    phase_boundary: none
+    sequence:
+      mode: parallel_ok
+      internal_steps: []
+    actor:
+      kind: tool
+      source: requirements.md#requirement-13
+    branching:
+      has_branches: false
+      branches: []
+    max_effect_kind: read
+    preconditions:
+      - id: no_pending_required_action
+        description: No pending required action exists.
+        check_kind: state_ref
+        machine_checkable: true
+        source_ref: design.md#req13-precondition-completed-no_pending_required_action
+        failure_verdict: DEVIATION
+    postconditions:
+      - id: completed_report_returned
+        description: Completed report is returned.
+        check_kind: output_contract
+        machine_checkable: true
+        source_ref: design.md#req13-postcondition-completed-completed_report_returned
+        failure_verdict: DEVIATION
+    side_effects: []
+    commit_boundary:
+      required: false
+    workflow_state_effect:
+      kind: none
+    canonical_invocation:
+      entrypoint: tools/check-workflow-action.py
+      subcommand: next

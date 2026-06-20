@@ -49,6 +49,7 @@ from check_workflow_action.runtime_paths import (
 )
 from check_workflow_action import commit_approval
 from check_workflow_action.operation_preflight import run_preflight
+from check_workflow_action.operation_contracts import run_contract_check
 
 DEFAULT_LAST_COMMIT_PRECHECK_PATH = ".git/reviewcompass/last-commit-precheck.json"
 DEFAULT_DISCIPLINE_MAP_PATH = "docs/operations/WORKFLOW_DISCIPLINE_MAP.yaml"
@@ -6835,6 +6836,20 @@ def cmd_operation_preflight(args):
   return 2
 
 
+def cmd_operation_contract_check(args):
+  """operation-contract-check サブコマンドのエントリポイント（Req 13）"""
+  response = run_contract_check(Path.cwd())
+  verdict = response.get("verdict")
+  if args.json:
+    print(json.dumps(response, ensure_ascii=False, indent=2))
+  else:
+    print(f"[VERDICT] {verdict}")
+    for reason in response.get("reasons", []):
+      print(f"[REASON] {reason}")
+    print("[ACTION] proceed" if verdict == "OK" else "[ACTION] stop")
+  return 0 if verdict == "OK" else 2
+
+
 def main():
   # 共通オプション（サブコマンドの前後どちらでも受け取れるよう親パーサに集約、仕様 §4 共通オプション）
   common_parser = argparse.ArgumentParser(add_help=False)
@@ -7092,6 +7107,12 @@ def main():
   )
   opf.add_argument("--operation-id", required=True, help="preflight 対象の operation_id")
 
+  sub.add_parser(
+    "operation-contract-check",
+    help="operation contract と required_action / registry 参照の整合を検査する（Req 13）",
+    parents=[common_parser],
+  )
+
   cap = sub.add_parser(
     "commit-approval",
     help="commit 承認 nonce challenge を作成・記録・無効化する",
@@ -7201,6 +7222,8 @@ def main():
     sys.exit(cmd_review_wave_summary(args))
   elif args.subcommand == "operation-preflight":
     sys.exit(cmd_operation_preflight(args))
+  elif args.subcommand == "operation-contract-check":
+    sys.exit(cmd_operation_contract_check(args))
   elif args.subcommand == "commit-approval":
     sys.exit(cmd_commit_approval(args))
   elif args.subcommand == "decision-source-lint":
