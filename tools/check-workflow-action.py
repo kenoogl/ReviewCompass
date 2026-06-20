@@ -48,9 +48,15 @@ from check_workflow_action.runtime_paths import (
   resolve_effective_prompt_read_path,
 )
 from check_workflow_action import commit_approval
+from check_workflow_action.implementation_phases import check_phase_plan, load_plan
 from check_workflow_action.operation_preflight import run_preflight
 from check_workflow_action.operation_contracts import run_contract_check
+from check_workflow_action.operation_list import build_operation_list
 from check_workflow_action.prompt_audit import audit_manifest, load_manifest as load_prompt_manifest
+from check_workflow_action.proxy_triage_decisions import (
+  check_decision as check_proxy_triage_decision,
+  load_decision as load_proxy_triage_decision,
+)
 from check_workflow_action.side_track_stack import current as current_side_track_stack
 from check_workflow_action.workflow_state_snapshot import build_snapshot
 
@@ -6930,6 +6936,101 @@ def cmd_prompt_audit(args):
   return result["exit_code"]
 
 
+def cmd_implementation_phase_check(args):
+  """implementation phase plan を read-only で検査する（Req 16）"""
+  action_dict = {
+    "subcommand": "implementation-phase-check",
+    "args": {
+      "feature": args.feature,
+    },
+  }
+  try:
+    plan = load_plan(Path.cwd())
+  except (OSError, yaml.YAMLError, ValueError) as e:
+    reasons = [f"implementation phase plan を読めません: {e}"]
+    current_state = {"feature": args.feature}
+    if args.json:
+      print(format_json_output("DEVIATION", 2, action_dict, reasons, current_state))
+    else:
+      print(format_human_output("DEVIATION", 2, "implementation-phase-check", reasons, json.dumps(current_state)))
+    return 2
+  result = check_phase_plan(plan, feature=args.feature)
+  if args.json:
+    print(
+      format_json_output(
+        result["verdict"],
+        result["exit_code"],
+        action_dict,
+        result["reasons"],
+        result["current_state"],
+      )
+    )
+  else:
+    print(
+      format_human_output(
+        result["verdict"],
+        result["exit_code"],
+        "implementation-phase-check",
+        result["reasons"],
+        json.dumps(result["current_state"], ensure_ascii=False, indent=2),
+      )
+    )
+  return result["exit_code"]
+
+
+def cmd_operation_list(args):
+  """operation contracts を read-only 一覧として返す（Req 16）"""
+  result = build_operation_list(Path.cwd())
+  if args.json:
+    print(json.dumps(result, ensure_ascii=False, indent=2))
+  else:
+    print(f"[VERDICT] {result.get('verdict')}")
+    print(f"[OPERATIONS] {len(result.get('operations', []))}")
+  return result.get("exit_code", 2)
+
+
+def cmd_proxy_triage_decision_check(args):
+  """proxy triage decision を read-only で検査する（Req 16）"""
+  action_dict = {
+    "subcommand": "proxy-triage-decision-check",
+    "args": {
+      "run": args.run,
+    },
+  }
+  try:
+    decision = load_proxy_triage_decision(args.run)
+  except (OSError, yaml.YAMLError, ValueError) as e:
+    reasons = [f"proxy triage decision を読めません: {e}"]
+    current_state = {"run": args.run}
+    if args.json:
+      print(format_json_output("DEVIATION", 2, action_dict, reasons, current_state))
+    else:
+      print(format_human_output("DEVIATION", 2, "proxy-triage-decision-check", reasons, json.dumps(current_state)))
+    return 2
+  result = check_proxy_triage_decision(decision)
+  if args.json:
+    print(
+      format_json_output(
+        result["verdict"],
+        result["exit_code"],
+        action_dict,
+        result["reasons"],
+        result["current_state"],
+      )
+    )
+  else:
+    print(
+      format_human_output(
+        result["verdict"],
+        result["exit_code"],
+        "proxy-triage-decision-check",
+        result["reasons"],
+        json.dumps(result["current_state"], ensure_ascii=False, indent=2),
+      )
+    )
+  return result["exit_code"]
+
+
 def main():
   # 共通オプション（サブコマンドの前後どちらでも受け取れるよう親パーサに集約、仕様 §4 共通オプション）
   common_parser = argparse.ArgumentParser(add_help=False)
@@ -7225,6 +7326,26 @@ def main():
   )
   pa.add_argument("--prompt-manifest", required=True, help="監査対象 manifest YAML/JSON")
 
+  ipc = sub.add_parser(
+    "implementation-phase-check",
+    help="workflow-management implementation phase plan を read-only で検査する（Req 16）",
+    parents=[common_parser],
+  )
+  ipc.add_argument("--feature", required=True, help="検査対象 feature")
+
+  sub.add_parser(
+    "operation-list",
+    help="operation contract を read-only registry として出力する（Req 16）",
+    parents=[common_parser],
+  )
+
+  ptd = sub.add_parser(
+    "proxy-triage-decision-check",
+    help="proxy triage decision の構造と coverage を read-only で検査する（Req 16）",
+    parents=[common_parser],
+  )
+  ptd.add_argument("--run", required=True, help="proxy-triage-decision.yaml を含む review-run dir")
+
   cap = sub.add_parser(
     "commit-approval",
     help="commit 承認 nonce challenge を作成・記録・無効化する",
@@ -7342,6 +7463,12 @@ def main():
     sys.exit(cmd_side_track_stack(args))
   elif args.subcommand == "prompt-audit":
     sys.exit(cmd_prompt_audit(args))
+  elif args.subcommand == "implementation-phase-check":
+    sys.exit(cmd_implementation_phase_check(args))
+  elif args.subcommand == "operation-list":
+    sys.exit(cmd_operation_list(args))
+  elif args.subcommand == "proxy-triage-decision-check":
+    sys.exit(cmd_proxy_triage_decision_check(args))
   elif args.subcommand == "commit-approval":
     sys.exit(cmd_commit_approval(args))
   elif args.subcommand == "decision-source-lint":

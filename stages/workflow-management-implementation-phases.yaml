@@ -1,0 +1,122 @@
+schema_version: workflow-management-implementation-phases-v1
+feature: workflow-management
+active_phase: 6
+phases:
+  - phase: 0
+    name: D-003 selection layer
+    entry_criteria:
+      - id: required-action-schema-ready
+        satisfied: true
+        source_ref: .reviewcompass/schema/required_action.schema.json
+    exit_criteria:
+      - id: d003-six-red-tests-covered
+        satisfied: true
+        source_ref: .reviewcompass/specs/workflow-management/design.md#requirement-16-phase-0
+    allowed_operations:
+      - next
+      - operation-contract-check
+    forbidden_operations:
+      - proxy-triage-decision-check
+    required_tests:
+      - .venv/bin/python3 -m pytest tests/tools/test_check_workflow_action.py -k reopen -q
+    commit_boundary:
+      required: true
+  - phase: 1
+    name: vocabulary and schema
+    entry_criteria:
+      - id: phase-0-anchor-known
+        satisfied: true
+    exit_criteria:
+      - id: schemas-validate
+        satisfied: true
+    allowed_operations:
+      - operation-contract-check
+      - workflow-snapshot
+    forbidden_operations:
+      - proxy-triage-apply-batch
+    required_tests:
+      - .venv/bin/python3 -m pytest tests/workflow-management/test_operation_contract_schema.py -q
+    commit_boundary:
+      required: true
+  - phase: 2
+    name: read-only registry
+    entry_criteria:
+      - id: operation-contracts-ready
+        satisfied: true
+    exit_criteria:
+      - id: operation-list-read-only
+        satisfied: true
+    allowed_operations:
+      - operation-list
+      - operation-preflight
+    forbidden_operations:
+      - spec-set
+    required_tests:
+      - .venv/bin/python3 -m pytest tests/workflow-management/test_operation_list_read_only.py -q
+    commit_boundary:
+      required: true
+  - phase: 3
+    name: advisory preflight
+    entry_criteria:
+      - id: operation-list-available
+        satisfied: true
+    exit_criteria:
+      - id: advisory-warnings-available
+        satisfied: true
+    allowed_operations:
+      - operation-preflight
+    forbidden_operations:
+      - mechanical-blocking
+    required_tests:
+      - .venv/bin/python3 -m pytest tests/workflow-management/test_operation_contract_cli.py -q
+    commit_boundary:
+      required: true
+  - phase: 4
+    name: structured effective prompt
+    entry_criteria:
+      - id: prompt-schemas-ready
+        satisfied: true
+    exit_criteria:
+      - id: prompt-audit-available
+        satisfied: true
+    allowed_operations:
+      - prompt-audit
+    forbidden_operations:
+      - prompt-approval-automation
+    required_tests:
+      - .venv/bin/python3 -m pytest tests/workflow-management/test_prompt_audit.py -q
+    commit_boundary:
+      required: true
+  - phase: 5
+    name: mechanical blocking
+    entry_criteria:
+      - id: advisory-signals-ready
+        satisfied: true
+    exit_criteria:
+      - id: blocking-rules-ready
+        satisfied: true
+    allowed_operations:
+      - approval-gate-check
+      - workflow-snapshot
+    forbidden_operations:
+      - bypass-approval
+    required_tests:
+      - .venv/bin/python3 -m pytest tests/workflow-management/test_approval_gate.py -q
+    commit_boundary:
+      required: true
+  - phase: 6
+    name: llm judge audit
+    entry_criteria:
+      - id: mechanical-blocking-ready
+        satisfied: true
+    exit_criteria:
+      - id: judge-audit-structured-output
+        satisfied: true
+    allowed_operations:
+      - proxy-triage-decision-check
+    forbidden_operations:
+      - approval-automation
+    required_tests:
+      - .venv/bin/python3 -m pytest tests/workflow-management/test_proxy_triage_decision_machine.py -q
+    commit_boundary:
+      required: true

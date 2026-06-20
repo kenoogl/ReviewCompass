@@ -1,0 +1,124 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:reviewcompass:schema:implementation_phase",
+  "type": "object",
+  "additionalProperties": true,
+  "required": [
+    "schema_version",
+    "feature",
+    "phases"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "const": "workflow-management-implementation-phases-v1"
+    },
+    "feature": {
+      "type": "string",
+      "minLength": 1
+    },
+    "active_phase": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 6
+    },
+    "phases": {
+      "type": "array",
+      "minItems": 7,
+      "items": {
+        "type": "object",
+        "additionalProperties": true,
+        "required": [
+          "phase",
+          "name",
+          "entry_criteria",
+          "exit_criteria",
+          "allowed_operations",
+          "forbidden_operations",
+          "required_tests",
+          "commit_boundary"
+        ],
+        "properties": {
+          "phase": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 6
+          },
+          "name": {
+            "type": "string",
+            "minLength": 1
+          },
+          "entry_criteria": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "$ref": "#/$defs/criterion"
+            }
+          },
+          "exit_criteria": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "$ref": "#/$defs/criterion"
+            }
+          },
+          "allowed_operations": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "forbidden_operations": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "required_tests": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "commit_boundary": {
+            "type": "object",
+            "additionalProperties": true,
+            "required": [
+              "required"
+            ],
+            "properties": {
+              "required": {
+                "type": "boolean"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "criterion": {
+      "type": "object",
+      "additionalProperties": true,
+      "required": [
+        "id",
+        "satisfied"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "satisfied": {
+          "type": "boolean"
+        },
+        "source_ref": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}

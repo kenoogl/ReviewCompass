@@ -1,0 +1,165 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:reviewcompass:schema:proxy_triage_decision",
+  "type": "object",
+  "additionalProperties": true,
+  "required": [
+    "schema_version",
+    "decision_id",
+    "target_findings",
+    "target_clusters",
+    "source_triage_path",
+    "raw_response_path",
+    "parsed_finding_paths",
+    "decision_prompt_path",
+    "proxy_raw_response_path",
+    "candidate_decisions",
+    "selected_decision",
+    "reasoning_summary",
+    "final_application_target",
+    "approval_scope"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "const": "proxy-triage-decision-v1"
+    },
+    "decision_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "target_findings": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "target_clusters": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "source_triage_path": {
+      "type": "string",
+      "minLength": 1
+    },
+    "raw_response_path": {
+      "type": "string",
+      "minLength": 1
+    },
+    "parsed_finding_paths": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "decision_prompt_path": {
+      "type": "string",
+      "minLength": 1
+    },
+    "proxy_raw_response_path": {
+      "type": "string",
+      "minLength": 1
+    },
+    "candidate_decisions": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/finding_decision"
+      }
+    },
+    "selected_decision": {
+      "$ref": "#/$defs/finding_decision"
+    },
+    "reasoning_summary": {
+      "type": "string",
+      "minLength": 1
+    },
+    "final_application_target": {
+      "type": "object",
+      "additionalProperties": true,
+      "required": [
+        "operation_id",
+        "triage_path",
+        "finding_ids"
+      ],
+      "properties": {
+        "operation_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "triage_path": {
+          "type": "string",
+          "minLength": 1
+        },
+        "finding_ids": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    "approval_scope": {
+      "type": "object",
+      "additionalProperties": true,
+      "required": [
+        "review_triage_decide",
+        "apply_fixes"
+      ],
+      "properties": {
+        "review_triage_decide": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "apply_fixes": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "finding_decision": {
+      "type": "object",
+      "additionalProperties": true,
+      "required": [
+        "id",
+        "final_label",
+        "finding_ids"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "final_label": {
+          "type": "string",
+          "minLength": 1
+        },
+        "finding_ids": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    }
+  }
+}
