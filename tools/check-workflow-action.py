@@ -4479,14 +4479,22 @@ def _approval_branch_effective_contract(operation_contract, gate):
   return effective
 
 
-def _load_approval_gate_record(cwd, record_path):
-  """approval gate record を repo-relative path から読む"""
+def _approval_gate_record_path(cwd, record_path):
+  """approval gate record の repo-relative path を filesystem path に解決する"""
   if not isinstance(record_path, str) or not record_path.strip():
     return None, ["approval_record_path が必要です"]
   relative = Path(record_path)
   if relative.is_absolute() or ".." in relative.parts:
     return None, ["approval_record_path は repo-relative path である必要があります"]
   path = Path(cwd) / relative
+  return path, []
+
+
+def _load_approval_gate_record(cwd, record_path):
+  """approval gate record を repo-relative path から読む"""
+  path, reasons = _approval_gate_record_path(cwd, record_path)
+  if reasons:
+    return None, reasons
   try:
     record = yaml.safe_load(path.read_text(encoding="utf-8"))
   except (OSError, yaml.YAMLError) as exc:
@@ -4494,6 +4502,45 @@ def _load_approval_gate_record(cwd, record_path):
   if not isinstance(record, dict):
     return None, ["approval gate record は mapping である必要があります"]
   return record, []
+
+
+def _consume_recorded_approval_gate_record(cwd, current_blocker, gate):
+  """gate 完了時に、対応する approval gate record を single-use として消費する"""
+  if not isinstance(current_blocker, dict):
+    return None, []
+  if current_blocker.get("status") != "decision_recorded":
+    return None, []
+  if current_blocker.get("gate") != gate:
+    return None, []
+
+  record_path = current_blocker.get("approval_record_path")
+  path, path_reasons = _approval_gate_record_path(cwd, record_path)
+  if path_reasons:
+    return None, path_reasons
+  record, load_reasons = _load_approval_gate_record(cwd, record_path)
+  if load_reasons:
+    return None, load_reasons
+  if record.get("schema_version") != "approval-gate-v1":
+    return None, ["approval gate record は schema_version=approval-gate-v1 が必要です"]
+  if record.get("decision") != "approved":
+    return None, [f"approved 以外の decision は gate 完了に使えません: {record.get('decision')}"]
+  if record.get("next_action_expectation") != "proceed":
+    return None, [
+      "next_action_expectation が proceed ではない approval record は gate 完了に使えません: "
+      f"{record.get('next_action_expectation')}"
+    ]
+  if record.get("consumed") is True:
+    return None, ["approval gate record は既に consumed です"]
+
+  record["consumed"] = True
+  try:
+    path.write_text(
+      yaml.safe_dump(record, allow_unicode=True, sort_keys=False),
+      encoding="utf-8",
+    )
+  except OSError as exc:
+    return None, [f"approval gate record を consumed に更新できません: {record_path}: {exc}"]
+  return record_path, []
 
 
 def _approval_gate_decision_blocked_by(current_blocker, reasons):
@@ -6550,6 +6597,13 @@ def cmd_reopen_advance_gate(args):
     evidence = args.evidence or []
     if not evidence:
       raise ValueError("--evidence は 1 件以上必要です")
+    approval_record_consumed_path, consume_reasons = _consume_recorded_approval_gate_record(
+      cwd,
+      data.get("current_blocker"),
+      args.gate,
+    )
+    if consume_reasons:
+      raise ValueError("; ".join(consume_reasons))
 
     spec_path = _update_reopen_advance_spec(cwd, args.set_spec)
 
@@ -6616,6 +6670,7 @@ def cmd_reopen_advance_gate(args):
       "updated_spec": spec_path,
       "pending_gates": remaining_gates,
       "completed_gates": completed_gates,
+      "approval_record_consumed_path": approval_record_consumed_path,
     }
   except (OSError, ValueError, json.JSONDecodeError) as e:
     verdict, exit_code = "DEVIATION", 2

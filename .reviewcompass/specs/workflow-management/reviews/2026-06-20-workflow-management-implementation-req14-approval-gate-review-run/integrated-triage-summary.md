@@ -157,6 +157,8 @@ The tests did not catch the human-only bypass and binding/source validation gaps
 - Cluster C partial: `next --json` now evaluates `current_blocker.status=decision_recorded` approval records for reopen approval gates. When the record is approved, human-only, bound to a real operation contract, and its `target_artifact_digest` matches the current target artifact digest, `next --json` can return the pending approval gate as `run_reopen_pending_gate`. Stale target artifact digest keeps the workflow blocked.
 - Cluster C partial: non-approved approval decisions are now distinguished. `rejected` and `deferred` remain blocked with explicit decision metadata in `blocked_by`, while `changes_requested` routes to either the same phase drafting gate (`next_action_expectation=redraft`) or workflow repair (`next_action_expectation=repair`).
 - Cluster C partial: `next --json` now supplies current staged file set digest evidence for `binding_kind=staged_file_set_digest` and `binding_kind=both`, using the same canonical staged file set digest machinery as commit approval. Matching staged digest can proceed; stale staged digest remains blocked.
+- Cluster E main-LLM recheck: actual `stages/operation-contracts.yaml` / `stages/operation-registry.yaml` entries do not use separate `push` or `spec_json_update` operation identifiers. Existing registered commit, reopen, repair, and phase-transition contracts derive `human_only` through `approval_required: true`, commit/reopen/phase boundary, or human actor rules. Therefore the original concern is not a confirmed approval-gate mapping defect for the current registered operation set; future explicit push/spec-set registry entries should carry `approval_required: true` or a human-only boundary.
+- Cluster F: `reopen-advance-gate` now consumes the recorded `approval-gate-v1` record when the matching approved gate is actually completed. The consume write path is tied to gate advancement rather than `next --json`, preserving `next --json` as a read/decision surface while preventing approved records from being replayed after use.
 - Cluster D: added actor/source validation for invalid `decided_by`, empty source fields, malformed `source_digest`, and schema-level binding-kind digest requirements.
 - Cluster G partial: added focused tests for A/B/C partial/D regressions.
 
@@ -181,12 +183,14 @@ Validation performed:
 - `.venv/bin/python3 -m pytest tests/tools/test_check_workflow_action.py::RecordHumanDecisionTests -q` -> 11 passed.
 - `.venv/bin/python3 -m pytest tests/workflow-management/test_approval_gate.py tests/tools/test_check_workflow_action.py -k "approval_gate or human_approval or record_human_decision or reopen_set_blocker" -q` -> 26 passed, 235 deselected.
 - `.venv/bin/python3 -m pytest tests/workflow-management/test_operation_contract_cli.py tests/workflow-management/test_operation_contract_schema.py tests/workflow-management/test_required_action_contract_mapping.py -q` -> 12 passed.
+- `.venv/bin/python3 -m pytest tests/tools/test_check_workflow_action.py::ReopenAdvanceGateTests::test_reopen_advance_gate_consumes_recorded_approval_record -q` -> 1 passed.
+- `.venv/bin/python3 -m pytest tests/tools/test_check_workflow_action.py::ReopenAdvanceGateTests tests/tools/test_check_workflow_action.py::RecordHumanDecisionTests -q` -> 18 passed.
 
 ### Still open
 
-- Cluster C remains partially open. The CLI now records an approval decision and `next --json` can evaluate approved reopen approval records against operation contract, current target artifact digest, and current staged file set digest for `artifact_digest`, `staged_file_set_digest`, and `both`. Non-approved decisions are mapped for `rejected`, `deferred`, `changes_requested + redraft`, and `changes_requested + repair`. Remaining work: record consume after use.
-- Cluster E remains open until actual operation identifiers for push, spec.json update, and phase approval are confirmed against the operation registry.
-- Cluster F remains human-required until the responsibility for marking approval records as consumed is confirmed.
+- Cluster C remains partially open only for broader end-to-end integration coverage. The CLI now records an approval decision; `next --json` evaluates approved reopen approval records against operation contract, current target artifact digest, and current staged file set digest for `artifact_digest`, `staged_file_set_digest`, and `both`; non-approved decisions are mapped for `rejected`, `deferred`, `changes_requested + redraft`, and `changes_requested + repair`; and `reopen-advance-gate` consumes the approval record after use.
+- Cluster E is not a confirmed code defect for the current registered operation set. No explicit `push` or `spec_json_update` operation identifiers exist in the registry/contract set inspected; registered irreversible or approval-required operations derive `human_only` without relying solely on `HUMAN_ONLY_REQUIRED_ACTIONS`.
+- Cluster F is resolved for the reopen approval gate path. The consumption responsibility sits on the write path that actually completes the gate, not on the read-only `next --json` evaluator.
 
 Related validation caveat:
 

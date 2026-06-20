@@ -4361,6 +4361,95 @@ class ReopenAdvanceGateTests(unittest.TestCase):
         self.assertEqual(state["commit_stop_point_kind"], expected_kind)
         self.assertEqual(state["commit_stop_point_gate"], gate)
 
+  def test_reopen_advance_gate_consumes_recorded_approval_record(self):
+    """承認済み approval gate を完了したら approval record を再利用不可にする"""
+    approval_path = (
+      Path(self.tmpdir)
+      / ".reviewcompass"
+      / "runtime"
+      / "approvals"
+      / "req-approval.yaml"
+    )
+    approval_path.parent.mkdir(parents=True, exist_ok=True)
+    approval_path.write_text(
+      yaml.safe_dump(
+        {
+          "schema_version": "approval-gate-v1",
+          "decision_id": "REQ-APPROVAL-001",
+          "decision": "approved",
+          "decision_scope": "human_only",
+          "target_operation_id": "run_reopen_pending_gate",
+          "target_required_action": "run_reopen_pending_gate",
+          "target_artifact": ".reviewcompass/specs/workflow-management/requirements.md",
+          "target_artifact_digest": "sha256:" + "a" * 64,
+          "staged_file_set_digest": None,
+          "binding_kind": "artifact_digest",
+          "decided_by": "user",
+          "decided_at": "2026-06-20T00:00:00+00:00",
+          "source_ref": "conversation:user:approval",
+          "source_digest": "sha256:" + "b" * 64,
+          "rationale": "利用者が approval gate を承認した。",
+          "next_action_expectation": "proceed",
+          "consumed": False,
+        },
+        allow_unicode=True,
+        sort_keys=False,
+      ),
+      encoding="utf-8",
+    )
+    in_progress = (
+      Path(self.tmpdir)
+      / "stages"
+      / "in-progress"
+      / "reopen-procedure-2026-06-15.yaml"
+    )
+    in_progress.parent.mkdir(parents=True, exist_ok=True)
+    in_progress.write_text(
+      yaml.safe_dump(
+        {
+          "process_id": "reopen-procedure",
+          "feature": "workflow-management",
+          "step_number": 3,
+          "next_step": "第3過程：requirements approval",
+          "completed_steps": [],
+          "pending_gates": ["stages/requirements.yaml#approval"],
+          "completed_gates": [],
+          "downstream_impact_decisions": [],
+          "current_blocker": {
+            "blocker_type": "approval_gate",
+            "gate": "stages/requirements.yaml#approval",
+            "actor": "human",
+            "status": "decision_recorded",
+            "approval_record_path": ".reviewcompass/runtime/approvals/req-approval.yaml",
+          },
+        },
+        allow_unicode=True,
+        sort_keys=False,
+      ),
+      encoding="utf-8",
+    )
+
+    result = run_script(
+      [
+        "reopen-advance-gate",
+        "--file", "stages/in-progress/reopen-procedure-2026-06-15.yaml",
+        "--gate", "stages/requirements.yaml#approval",
+        "--decision", "approved",
+        "--feature-scope", "workflow-management",
+        "--rationale", "requirements approval を承認済み record に基づいて完了する。",
+        "--evidence", ".reviewcompass/runtime/approvals/req-approval.yaml",
+        "--json",
+      ],
+      cwd=self.tmpdir,
+    )
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 0, result.stdout)
+    record = yaml.safe_load(approval_path.read_text(encoding="utf-8"))
+    self.assertIs(record["consumed"], True)
+    state = yaml.safe_load(in_progress.read_text(encoding="utf-8"))
+    self.assertIsNone(state["current_blocker"])
+
   def test_reopen_advance_gate_blocks_nonleading_pending_gate(self):
     """pending_gates の先頭以外を飛ばして完了できない"""
     self._write_spec()
