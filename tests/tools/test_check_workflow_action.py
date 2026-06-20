@@ -4239,7 +4239,7 @@ class ReopenAdvanceGateTests(unittest.TestCase):
       / "in-progress"
       / "reopen-procedure-2026-06-15.yaml"
     )
-    in_progress.parent.mkdir(parents=True)
+    in_progress.parent.mkdir(parents=True, exist_ok=True)
     in_progress.write_text(
       "process_id: reopen-procedure\n"
       "feature: workflow-management\n"
@@ -5056,7 +5056,7 @@ class RecordHumanDecisionTests(unittest.TestCase):
       / "in-progress"
       / "reopen-procedure-2026-06-20.yaml"
     )
-    in_progress.parent.mkdir(parents=True)
+    in_progress.parent.mkdir(parents=True, exist_ok=True)
     in_progress.write_text(
       yaml.safe_dump(
         {
@@ -5294,6 +5294,100 @@ class RecordHumanDecisionTests(unittest.TestCase):
       "target_artifact_digest が現在の対象 digest と一致しません",
       "\n".join(action["blocked_by"]["approval_record_reasons"]),
     )
+
+  def test_next_distinguishes_rejected_and_deferred_approval_decisions(self):
+    """rejected / deferred は停止理由を区別して対象 gate へ進めない"""
+    for decision, expectation in [
+      ("rejected", "stay_blocked"),
+      ("deferred", "stay_blocked"),
+    ]:
+      with self.subTest(decision=decision):
+        self._write_blocked_in_progress()
+        self._write_run_reopen_pending_gate_contract()
+        target = self._write_target_artifact()
+        target_rel = str(target.relative_to(self.tmpdir))
+        target_digest = "sha256:" + _sha256_file(target)
+
+        result = run_script(
+          [
+            "record-human-decision",
+            "--file", "stages/in-progress/reopen-procedure-2026-06-20.yaml",
+            "--gate", "stages/requirements.yaml#approval",
+            "--decision-id", f"REQ-APPROVAL-{decision}",
+            "--decision", decision,
+            "--decision-scope", "human_only",
+            "--target-operation-id", "run_reopen_pending_gate",
+            "--target-required-action", "run_reopen_pending_gate",
+            "--target-artifact", target_rel,
+            "--target-artifact-digest", target_digest,
+            "--binding-kind", "artifact_digest",
+            "--decided-by", "user",
+            "--decided-at", "2026-06-20T00:00:00+00:00",
+            "--source-ref", "conversation:user:approval",
+            "--source-digest", "sha256:" + "b" * 64,
+            "--rationale", f"利用者判断: {decision}",
+            "--next-action-expectation", expectation,
+            "--out", f".reviewcompass/runtime/approvals/{decision}.yaml",
+            "--json",
+          ],
+          cwd=self.tmpdir,
+        )
+        _assert_script_invoked(self, result)
+        self.assertEqual(result.returncode, 0, result.stdout)
+
+        next_result = run_script(["next", "--json"], cwd=self.tmpdir)
+        _assert_script_invoked(self, next_result)
+        self.assertEqual(next_result.returncode, 0, next_result.stdout)
+        action = json.loads(next_result.stdout)["next_action"]
+        self.assertEqual(action["required_action"], "wait_for_human_decision")
+        self.assertEqual(action["blocked_by"]["approval_decision"], decision)
+        self.assertEqual(action["blocked_by"]["approval_decision_route"], "stay_blocked")
+
+  def test_next_routes_changes_requested_to_reopen_drafting_when_expectation_is_redraft(self):
+    """changes_requested + redraft は同じ phase の drafting へ戻す"""
+    self._write_blocked_in_progress()
+    self._write_run_reopen_pending_gate_contract()
+    target = self._write_target_artifact()
+    target_rel = str(target.relative_to(self.tmpdir))
+    target_digest = "sha256:" + _sha256_file(target)
+    out_path = ".reviewcompass/runtime/approvals/changes-requested.yaml"
+
+    result = run_script(
+      [
+        "record-human-decision",
+        "--file", "stages/in-progress/reopen-procedure-2026-06-20.yaml",
+        "--gate", "stages/requirements.yaml#approval",
+        "--decision-id", "REQ-APPROVAL-005",
+        "--decision", "changes_requested",
+        "--decision-scope", "human_only",
+        "--target-operation-id", "run_reopen_pending_gate",
+        "--target-required-action", "run_reopen_pending_gate",
+        "--target-artifact", target_rel,
+        "--target-artifact-digest", target_digest,
+        "--binding-kind", "artifact_digest",
+        "--decided-by", "user",
+        "--decided-at", "2026-06-20T00:00:00+00:00",
+        "--source-ref", "conversation:user:approval",
+        "--source-digest", "sha256:" + "b" * 64,
+        "--rationale", "利用者が再起草を要求した。",
+        "--next-action-expectation", "redraft",
+        "--out", out_path,
+        "--json",
+      ],
+      cwd=self.tmpdir,
+    )
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 0, result.stdout)
+
+    next_result = run_script(["next", "--json"], cwd=self.tmpdir)
+    _assert_script_invoked(self, next_result)
+    self.assertEqual(next_result.returncode, 0, next_result.stdout)
+    action = json.loads(next_result.stdout)["next_action"]
+    self.assertEqual(action["required_action"], "run_reopen_drafting")
+    self.assertEqual(action["active_gate"], "stages/requirements.yaml#drafting")
+    self.assertEqual(action["next_drafting_gate"], "stages/requirements.yaml#drafting")
+    self.assertEqual(action["approval_record_path"], out_path)
+    self.assertIsNone(action["blocked_by"])
 
   def test_record_human_decision_rejects_llm_for_human_only_scope(self):
     """human_only decision は record 操作時点でも LLM actor を拒否する"""

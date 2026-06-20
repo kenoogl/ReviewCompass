@@ -4491,6 +4491,84 @@ def _approval_gate_decision_blocked_by(current_blocker, reasons):
   return blocked_by
 
 
+def _approval_gate_non_approved_blocked_by(current_blocker, record, reasons):
+  """非承認 decision の停止理由を blocked_by に付加する"""
+  blocked_by = _reopen_blocked_by_current_blocker(current_blocker)
+  blocked_by["approval_record_verdict"] = "DECISION_RECORDED"
+  blocked_by["approval_decision"] = record.get("decision")
+  blocked_by["approval_decision_route"] = record.get("next_action_expectation")
+  blocked_by["approval_record_reasons"] = reasons
+  return blocked_by
+
+
+def _non_approval_only_reasons(reasons):
+  """allows_target_operation の理由から非承認そのものの理由を除外する"""
+  return [
+    reason for reason in reasons
+    if not str(reason).startswith("approved 以外の decision は不可逆操作を許可しません")
+  ]
+
+
+def _resolve_non_approved_approval_gate_action(record, current_blocker, decision_reasons):
+  """approved 以外の approval decision を next action へ写像する"""
+  structural_reasons = _non_approval_only_reasons(decision_reasons)
+  if structural_reasons:
+    return {
+      "required_action": "wait_for_human_decision",
+      "next_pending_gate": None,
+      "next_drafting_gate": None,
+      "active_gate": None,
+      "phase": None,
+      "stage": None,
+      "blocked_by": _approval_gate_decision_blocked_by(current_blocker, structural_reasons),
+    }
+
+  decision = record.get("decision")
+  expectation = record.get("next_action_expectation")
+  if decision in {"rejected", "deferred"}:
+    return {
+      "required_action": "wait_for_human_decision",
+      "next_pending_gate": None,
+      "next_drafting_gate": None,
+      "active_gate": None,
+      "phase": None,
+      "stage": None,
+      "blocked_by": _approval_gate_non_approved_blocked_by(
+        current_blocker,
+        record,
+        [f"{decision} decision のため対象 operation へ進みません"],
+      ),
+    }
+
+  if decision == "changes_requested" and expectation == "redraft":
+    phase, _stage = _parse_stage_gate(current_blocker.get("gate"))
+    drafting_gate = _stage_gate(phase, "drafting") if phase else None
+    return {
+      "required_action": "run_reopen_drafting",
+      "next_pending_gate": current_blocker.get("gate"),
+      "next_drafting_gate": drafting_gate,
+      "active_gate": drafting_gate,
+      "phase": phase,
+      "stage": "drafting" if phase else None,
+      "approval_record_path": current_blocker.get("approval_record_path"),
+      "blocked_by": None,
+    }
+
+  return {
+    "required_action": "wait_for_human_decision",
+    "next_pending_gate": None,
+    "next_drafting_gate": None,
+    "active_gate": None,
+    "phase": None,
+    "stage": None,
+    "blocked_by": _approval_gate_non_approved_blocked_by(
+      current_blocker,
+      record,
+      [f"未対応の approval decision route です: {decision} / {expectation}"],
+    ),
+  }
+
+
 def _resolve_recorded_approval_gate_next_action(cwd, data, pending_gates, current_blocker):
   """記録済み approval gate record から reopen の次 action を解決する"""
   if not isinstance(current_blocker, dict):
@@ -4541,6 +4619,13 @@ def _resolve_recorded_approval_gate_next_action(cwd, data, pending_gates, curren
     current_target_artifact_digest=current_target_digest,
     current_staged_file_set_digest=None,
   )
+  if record.get("decision") != "approved":
+    return _resolve_non_approved_approval_gate_action(
+      record,
+      current_blocker,
+      list(decision.get("reasons") or []),
+    )
+
   if decision.get("allowed") is not True or record.get("next_action_expectation") != "proceed":
     reasons = list(decision.get("reasons") or [])
     if record.get("next_action_expectation") != "proceed":
