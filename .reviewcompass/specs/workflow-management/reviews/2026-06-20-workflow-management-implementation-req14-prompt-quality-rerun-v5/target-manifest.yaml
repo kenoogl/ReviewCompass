@@ -1,0 +1,4 @@
+run_id: 2026-06-20-workflow-management-implementation-req14-prompt-quality-rerun-v5
+target_files:
+- path: .reviewcompass/specs/workflow-management/reviews/2026-06-20-workflow-management-implementation-req14-criteria-run/review-criteria.md
+  sha256: ccc57132aa84fe31c80096e14eecb202e14f220febf2eb6b0b7fcbd14617e75d

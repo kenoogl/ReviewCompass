@@ -1,0 +1,30 @@
+source_materials:
+  - key: workflow-management-req16-upstream-intent
+    purpose: Requirement 16 / design / tasks intent for phased implementation and proxy_model triage decision mechanics.
+    purpose_field: Separate selection-layer and execution-layer mechanization into Phase 0 to Phase 6 so TDD implementation does not mix unrelated behavior or break existing workflow.
+    responsibility_boundaries:
+      - Phase 0 owns D-003 action selection, required_action uniqueness, invariants, reopen plan compiler, and workflow-state repair detection.
+      - Phase 1 owns schemas without changing runtime behavior.
+      - Phase 2 owns read-only registry / operation-list behavior and must not mutate next --json state.
+      - Phase 3 owns advisory preflight; Phase 5 promotes selected warnings to mechanical blocking.
+      - Phase 4 owns structured prompt generation; Phase 6 owns advisory LLM judge audit.
+      - proxy_model triage decision mechanics depend on evidence completeness, finding/cluster coverage, approval gate records, operation contracts, review-wave impact evidence, and human-only boundaries, not provider or model name.
+    acceptance_criteria:
+      - Phase plan covers Phase 0 through Phase 6 in order, with entry criteria, exit criteria, allowed operations, forbidden operations, required tests, and commit boundary.
+      - implementation-phase-check fails on missing phase coverage, order violations, unmet criteria, forbidden operation evidence, and stale or missing required snapshot evidence.
+      - operation-list exposes read-only registry fields such as canonical commands, effect_kind, approval_required, sequence, and pending conflicts without changing next --json.
+      - proxy triage decision records raw response, prompt, candidates, selected decision, reason, final target, coverage, and mapping.
+      - human-required predicate blocks proxy application when decision_scope is human_only, approval gate is unresolved, operation approval_required is true, review-wave impact evidence is unresolved, or required evidence is missing or conflicting.
+      - spec.json.reopened is treated as history, not active reopen scope.
+    forbidden_actions:
+      - Do not mix multiple implementation phases into one completion claim.
+      - Do not treat provider or model identity as the proxy decision safety basis.
+      - Do not allow leave-as-is, proxy_approved, or selected proxy decision to override human-required evidence.
+      - Do not treat review_triage_decide approval as apply-fixes approval when scopes differ.
+      - Do not treat review-wave consumer impact as complete without carry-forward or downstream impact evidence.
+    unresolved_or_design_deferred_items:
+      - Later phases may be advisory until mechanical blocking is intentionally enabled.
+      - Existing proxy decision artifact formats may need mapping before a single schema can cover all historical runs.
+    intended_target_phase_transfer:
+      - Implementation should provide phase plan schema/checking, read-only operation-list, proxy triage decision validation, human-required predicate checks, and review-wave consumer impact checks.
+      - Implementation review should verify schemas, tools, and focused tests listed in req16-review-target-manifest.md against this intent.

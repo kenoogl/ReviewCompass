@@ -1,0 +1,49 @@
+role: judgment
+provider: gemini-api
+model: gemini-3.1-pro-preview
+attempts: 1
+duration_seconds: 56.097
+findings:
+- severity: ERROR
+  target_location: '## Review Task'
+  description: The prompt bundles three independent requirement subsystems (approval
+    gates, side-track stack, and workflow-state snapshots) into a single unified judgment
+    task.
+  rationale: Combining multiple distinct modules, schemas, and checks into one prompt
+    violates the judgment granularity rule. It significantly increases the risk that
+    the model will miss item-specific evidence, conflate contexts across modules,
+    or produce superficial decisions.
+- severity: ERROR
+  target_location: '## Required Checks'
+  description: 'The required checks omit specific user requirements listed in the
+    Source Materials, specifically: drift detection for ''pending gates'', ''staged
+    file set'', and ''snapshot evidence'', as well as the verification that mutating
+    helper functions are bounded by an explicit contract.'
+  rationale: Omitting explicitly stated requirements in the checklist weakens the
+    review. A model strictly following the 'Required Checks' will fail to evaluate
+    these constraints, improperly narrowing what is actually reviewed.
+- severity: WARN
+  target_location: '## Source Materials'
+  description: 'The ''Verification before review'' section asserts that tests passed
+    using bare inline text (e.g., ''observed result: 21 passed'') rather than providing
+    a model-readable structured summary or execution log excerpt.'
+  rationale: The prompt relies on an unverified manual assertion of test execution
+    rather than providing the necessary evidence in a verifiable, structured format,
+    resulting in incomplete source-material presentation.
+- severity: WARN
+  target_location: '## Finding Policy'
+  description: The policy does not explicitly instruct the model to provide precise
+    target-location guidance (such as specific file names, line numbers, or function
+    names) in its generated findings.
+  rationale: To satisfy the 'Output And Triage Fit' criteria, the prompt must ensure
+    the model gives enough target-location guidance for findings to be triaged. Relying
+    solely on an assumed runner template shape risks generating vague, location-less
+    findings.
+- severity: WARN
+  target_location: '## Review Target'
+  description: The target summary restricts the review scope for `check-workflow-action.py`
+    to specific CLI wiring but does not provide line ranges or a structured excerpt
+    to bound this scope deterministically.
+  rationale: Ambiguous inline file-scope instructions cause inconsistent evaluation,
+    as the reviewing model must guess which portions of the file constitute the requested
+    'CLI wiring,' introducing avoidable ambiguity.

@@ -1,0 +1,25 @@
+findings:
+  - severity: WARN
+    target_location: "## Source Materials / source_paths"
+    description: "source_paths lists three file paths without inline excerpts beyond the structured summary and cross-references. The source_anchor_instruction notes they are provenance only, and structured summaries plus excerpts are provided, which is compliant. However, the excerpts cover only selected line ranges (240-246, 254-255, 1803-1807, 1820-1833, 127-128) and do not include design.md lines 2225-2236 (requirement trace table) referenced in source_cross_references. The trace table is cited as mapping acceptance criteria to the design model but no excerpt is provided, leaving the model unable to verify that mapping from model-readable content."
+    rationale: "Source material cross-references that are listed as significant intent-transfer evidence must be backed by model-readable excerpts or structured summaries. A path-only or description-only reference to design.md lines 2225-2236 cannot serve as evidence for the reviewing model and creates a gap in traceability for acceptance-criteria mapping."
+
+  - severity: WARN
+    target_location: "## Required Checks / check 6"
+    description: "Check 6 contains an embedded negative instruction ('Do not report a violation merely because target code mentions or implements workflow-operation names') mixed with affirmative inspection guidance. This framing risks suppressing findings about code that both mentions and weakly implements an operation name when the weak implementation is the defect. The instruction may cause the model to undercount violations when operation names appear alongside incomplete boundary enforcement."
+    rationale: "Negative framing intended to reduce false positives can inadvertently suppress legitimate findings about boundary defects when target code contains the right identifiers but wrong logic. The check should express this as a precision reminder rather than a finding-suppression rule."
+
+  - severity: WARN
+    target_location: "## Review Target"
+    description: "The target manifest instruction correctly states that absent target path contents must trigger a CRITICAL finding. However, the instruction does not specify what constitutes 'absent' (empty file vs. path not injected vs. path yielding read error). Models may handle these three cases inconsistently, potentially treating an empty or minimal file as present and skipping the CRITICAL."
+    rationale: "Without a clear definition of 'absent from the injected prompt,' the CRITICAL-on-absence safeguard may not fire for edge cases such as a zero-byte file or an injection error that substitutes a placeholder, leaving the review proceeding on incomplete target content."
+
+  - severity: INFO
+    target_location: "## Finding Policy / severity labels"
+    description: "The Finding Policy uses 'Use CRITICAL if the model output or criteria would approve, delegate, or imply authorization…' alongside 'Use CRITICAL for bypass of human-only approval.' The second CRITICAL rule conflates two distinct subjects: (a) the review model's own output authorizing operations, and (b) target code defects that bypass the boundary. Keeping these as separate labeled bullets would reduce the risk of a model treating a target-code bypass finding as requiring self-restraint rather than reporting."
+    rationale: "Clarity in severity-label conditions prevents models from conflating self-constraint rules with target-defect reporting rules, which could cause under-reporting of target bypass defects."
+
+  - severity: INFO
+    target_location: "## Vertical Intent Transfer Customization"
+    description: "The phase chain lists requirements.md -> design.md -> tasks.md -> implementation but does not state that the upstream artifacts are those injected under Source Materials. A model unfamiliar with the workflow convention might attempt to fetch or infer upstream artifacts independently rather than relying on the provided structured summary and excerpts."
+    rationale: "Explicitly binding the phase chain entries to the structured summary and excerpts in Source Materials would prevent models from attempting external resolution of upstream artifacts."

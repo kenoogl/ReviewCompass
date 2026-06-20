@@ -1,0 +1,250 @@
+role: adversarial
+provider: anthropic-api
+model: claude-sonnet-4-6
+attempts: 1
+duration_seconds: 60.725
+verdict: sufficient_with_revisions
+independent_reconstruction:
+  judgment_items:
+  - item_id: req14_approval_gate_criteria_sufficiency
+    question: 'Does the proposed API review criteria for Req 14 approval gate give
+      a later API reviewer enough model-readable source material, a clear non-leading
+      primary question, and well-separated scope so that the reviewer can independently
+      judge whether the implementation satisfies upstream human-only approval, decision
+      binding, digest binding, and non-approved blocking requirements—without relying
+      on any preanalysis as an answer key?
+
+      '
+    target_files:
+    - .reviewcompass/specs/workflow-management/reviews/2026-06-20-workflow-management-implementation-req14-approval-gate-criteria-run/review-criteria.md
+    source_materials:
+    - .reviewcompass/specs/workflow-management/reviews/2026-06-20-workflow-management-implementation-review-run/source-materials/req14-approval-gate-source-materials.yaml
+      (embedded in bundle)
+    - Main preanalysis excerpt (hypothesis only, embedded in bundle)
+    - Prior prompt-quality evidence (Gemini findings, embedded in bundle)
+    - User and workflow review requirement (embedded in bundle)
+    out_of_scope:
+    - Actual implementation artifact correctness (schema, Python files, tests)
+    - Side track stack behavior
+    - Workflow-state snapshot behavior
+    - Commit, push, spec.json update, phase completion
+    - Actual implementation triage
+    rationale: 'The bundle defines a single audit judgment: can the proposed criteria
+      support a future implementation review without leaning on the preanalysis? The
+      source materials embedded in the bundle provide the upstream intent fields needed
+      to evaluate completeness and framing of the proposed criteria. No implementation
+      artifact is part of this audit judgment.
+
+      '
+preanalysis_assessment:
+  supported_parts:
+  - 'Split recommendation (preanalysis-002): the bundle confirms Req 14 is standalone
+    for approval gate and the proposed criteria scope boundary excludes side-track
+    and snapshot behavior, consistent with a split.'
+  - 'Warning about bare pass-count assertions (preanalysis-005): the prior Gemini
+    evidence independently raises a related concern about structured summary cross-referencing,
+    corroborating that raw assertions without traceable evidence are a risk.'
+  - 'Identification of four implementation target files: schema, CLI entry point,
+    approval_gate module, and test file aligns with the acceptance_criteria listing
+    in the source materials.'
+  - Out-of-scope list (side track stack, workflow-state snapshot) matches the bundle's
+    scope boundary.
+  missing_perspectives:
+  - 'The preanalysis does not note that source_paths in the proposed criteria are
+    marked provenance-only while the structured summary is the sole model-readable
+    upstream intent. This asymmetry is a material source-coverage risk that the preanalysis
+    does not flag.
+
+    '
+  - 'The preanalysis does not address the risk that the structured summary may omit
+    or misrepresent content from requirements.md, design.md, or tasks.md—a gap the
+    prior Gemini finding does raise but which the preanalysis leaves unexamined.
+
+    '
+  - 'The preanalysis does not discuss whether the proposed criteria''s repeated carve-out
+    language (check 5 / out-of-scope) may suppress valid gate-bypass findings; this
+    is the most material prompt-framing risk and is absent from the main preanalysis.
+
+    '
+  - 'The preanalysis does not flag the missing-target-content severity escalation
+    issue (INFO in prior evidence but arguably CRITICAL or ERROR given that an absent
+    target makes the review invalid).
+
+    '
+  unsupported_or_overconfident_parts:
+  - 'preanalysis-002 states Req 14 "cannot be reviewed as one combined judgment" and
+    implies three sub-criteria are needed (approval-gate, side-track-stack, snapshot).
+    The bundle scope has already applied that split, so repeating the finding as an
+    open ERROR in the preanalysis is stale and may mislead an auditor into thinking
+    the split was not applied.
+
+    '
+  - 'The preanalysis prompt_requirements bullet "Do not turn review-run prohibited
+    actions into target-code false positives" is stated as a requirement without explaining
+    the boundary between suppressing false positives and suppressing real gate-bypass
+    findings; the proposed criteria carries this ambiguity forward.
+
+    '
+  bias_risks:
+  - 'The preanalysis presents the structured summary fields (responsibility_boundaries,
+    acceptance_criteria, forbidden_actions) as if they are a direct and complete representation
+    of the upstream source documents. Treating the summary as equivalent to the originals
+    anchors the audit and the proposed criteria to whatever the summary author selected
+    or omitted, without exposing that selection to the reviewer.
+
+    '
+  - 'The repeated "do not treat mere presence as a violation" carve-out in the proposed
+    criteria (Required Checks 5 and Out Of Scope) was seeded by the preanalysis prompt_requirements
+    field. This framing biases the later reviewer toward leniency on boundary-weakening
+    code, which is the most critical risk the criteria is supposed to surface.
+
+    '
+prompt_sufficiency:
+  information: revisions_needed
+  question: sufficient
+  scope: revisions_needed
+  sensitivity_check: sufficient
+  notes:
+  - 'The primary judgment question is clear and non-leading. It asks whether the implementation
+    satisfies upstream intent across five named dimensions (omission, weakening, contradiction,
+    unsupported addition, drift).
+
+    '
+  - 'The structured summary is the sole model-readable upstream intent material because
+    source_paths are explicitly marked provenance-only. There is no instruction for
+    the reviewer to flag if the structured summary appears incomplete relative to
+    its stated source documents, and no cross-reference mechanism exists. This is
+    a material information gap.
+
+    '
+  - 'Required Check 5 and the Out Of Scope section both contain the same carve-out
+    language about not treating mere presence as a violation. The duplication itself
+    is not dangerous, but the combined weight of two repeated leniency instructions
+    and the absence of a countervailing instruction to actively probe for subtle gate
+    bypasses creates a scope imbalance that could suppress CRITICAL findings.
+
+    '
+  - 'The target manifest note instructs the model to report ERROR when a target path
+    is absent. The prior Gemini finding correctly notes this should be at least ERROR
+    and arguably CRITICAL, because a missing target makes the entire review invalid.
+    The current severity assignment is too low for that failure mode.
+
+    '
+  - 'The SHA256 anchors are listed as source_anchors but carry no evaluation instruction.
+    The reviewer has no basis to use them. This is a minor ergonomics issue but not
+    a blocker.
+
+    '
+  - 'Prohibited actions (commit, push, spec.json update, phase completion) are stated
+    in User Review Requirements but not repeated in the Finding Policy severity mapping.
+    The Finding Policy should explicitly state that any finding that would authorize
+    or imply authorization of those actions must be reported CRITICAL.
+
+    '
+required_prompt_changes:
+- 'ADD a cross-reference instruction to the Source Materials section: instruct the
+  reviewer that if the structured summary appears to omit or contradict named sections
+  of requirements.md, design.md, or tasks.md (based on any content injected at run-time),
+  the reviewer must flag the discrepancy as WARN or ERROR. Do not rely solely on the
+  summary author''s selection.
+
+  '
+- 'REVISE the missing-target-content instruction in the Review Target section: change
+  the severity from ERROR to CRITICAL when a listed target path is absent from the
+  injected prompt, because an absent target makes the entire review invalid.
+
+  '
+- 'REBALANCE the carve-out language: retain one instance of the "do not treat mere
+  presence as a violation" guard but add a countervailing instruction in Required
+  Checks that explicitly directs the reviewer to probe for subtle gate bypasses, including
+  indirect code paths that allow a proxy_model decision to satisfy a human_only boundary,
+  before concluding no violation exists.
+
+  '
+- 'ADD to Finding Policy: any model output that approves, delegates, or implies authorization
+  of commit, push, spec.json mutation, phase transition, or gate completion must be
+  reported CRITICAL, not merely Out Of Scope.
+
+  '
+- 'REMOVE or clearly date-stamp preanalysis-002 as resolved: the split it recommends
+  has already been applied in the bundle. Leaving it as an open ERROR in the preanalysis
+  creates misleading audit noise.
+
+  '
+findings:
+- severity: ERROR
+  target_location: Proposed Criteria / Source Materials / source_paths_note
+  description: 'source_paths are marked provenance-only, making the structured summary
+    the sole model-readable upstream intent material, but no instruction requires
+    the reviewer to flag gaps or misrepresentations between the summary and its stated
+    source documents.
+
+    '
+  rationale: 'If the structured summary omits or softens material upstream constraints
+    from requirements.md, design.md, or tasks.md, the later reviewer has no mechanism
+    to detect or report that gap. The review would silently operate on an incomplete
+    or biased representation of upstream intent.
+
+    '
+- severity: WARN
+  target_location: Proposed Criteria / Required Checks / Check 5 and Out Of Scope
+  description: 'Two separate sections repeat the instruction not to treat mere presence
+    of workflow-operation code as a violation, with no countervailing instruction
+    to actively probe for subtle gate bypasses. The combined leniency bias may cause
+    the reviewer to underreport CRITICAL boundary-weakening behavior.
+
+    '
+  rationale: 'The most important failure mode for an approval-gate review is a subtle
+    code path that allows proxy_model to satisfy a human_only boundary. The current
+    framing tips the reviewer toward leniency rather than active detection, which
+    is the opposite of the required posture for CRITICAL-severity findings.
+
+    '
+- severity: WARN
+  target_location: Proposed Criteria / Review Target / target manifest note
+  description: 'The criteria instructs the reviewer to report ERROR when a target
+    path is absent from the injected prompt, but an absent target makes the entire
+    review invalid and should be CRITICAL.
+
+    '
+  rationale: 'An ERROR implies the review can continue with reduced confidence. A
+    missing target means the reviewer has no artifact to judge and must not return
+    any implementation findings. CRITICAL is the appropriate severity to halt the
+    review run.
+
+    '
+- severity: WARN
+  target_location: Proposed Criteria / Finding Policy
+  description: 'The Finding Policy severity mapping does not explicitly state that
+    model output authorizing or implying authorization of commit, push, spec.json
+    mutation, phase transition, or gate completion must be reported CRITICAL. The
+    prohibited actions are listed only in User Review Requirements.
+
+    '
+  rationale: 'Prohibited actions need a severity anchor in Finding Policy so the reviewing
+    model has an unambiguous instruction to escalate, not merely exclude, any output
+    that crosses those boundaries.
+
+    '
+- severity: WARN
+  target_location: Main Preanalysis Excerpt / useful_discoveries / preanalysis-002
+  description: 'preanalysis-002 reports an open ERROR that "Req 14 cannot be reviewed
+    as one combined judgment" and implies three sub-criteria are needed. The bundle
+    has already applied the split. Leaving this as an open ERROR in the preanalysis
+    may mislead an auditor into thinking the split is still missing.
+
+    '
+  rationale: 'Stale open findings in a preanalysis used as a hypothesis source create
+    anchoring risk: an auditor scanning the preanalysis may treat the finding as current
+    and look for a defect that no longer exists, while missing actual defects.
+
+    '
+- severity: INFO
+  target_location: Proposed Criteria / Source Materials / source_anchors
+  description: 'SHA256 source anchors are listed but carry no evaluation instruction.
+    The reviewer has no basis to act on them.
+
+    '
+  rationale: Minor ergonomics issue. Adding a note such as "anchors are provenance
+    only; do not attempt to verify hashes at review time" would prevent the reviewer
+    from wasting inference on inert values.

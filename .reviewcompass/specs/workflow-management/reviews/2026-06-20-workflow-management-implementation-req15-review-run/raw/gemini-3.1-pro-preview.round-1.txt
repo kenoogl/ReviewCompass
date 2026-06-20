@@ -1,0 +1,7 @@
+```yaml
+findings:
+  - severity: ERROR
+    target_location: "tools/check_workflow_action/prompt_audit.py:audit_manifest"
+    description: "The prompt audit logic omits required fail-closed checks for manifest structure, references, lengths, and condition correspondence."
+    rationale: "Requirement 15 acceptance criteria explicitly mandates that prompt audit must reject missing required structure, broken refs, unknown action kinds, review target manifest mismatch, unverified preconditions, and impossible postconditions. The current implementation only checks for machine task leakage in constraints and next-action compatibility, weakening the intended mechanical prompt audit boundaries."
+```

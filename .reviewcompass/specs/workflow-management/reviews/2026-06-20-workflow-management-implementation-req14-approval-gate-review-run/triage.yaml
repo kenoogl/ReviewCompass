@@ -1,0 +1,314 @@
+run_id: 2026-06-20-workflow-management-implementation-req14-approval-gate-review-run
+triage_status: draft
+generated_at: '2026-06-20T12:34:49.964083+00:00'
+decision_actor: null
+decision_actor_type: human
+items:
+- finding_id: 2026-06-20-workflow-management-implementation-req14-approval-gate-review-run-claude-sonnet-4-6-primary-001
+  run_id: 2026-06-20-workflow-management-implementation-req14-approval-gate-review-run
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: 'tools/check_workflow_action/approval_gate.py: validate_approval_gate_record,
+    allows_target_operation'
+  plain_language_summary: The `decided_by` field is never validated against its allowed
+    value set. The schema defines `decided_by` as an enum of `user`, `human`, `proxy_model`,
+    `llm`, but the implementation contains no check that rejects an out-of-enum or
+    unexpected actor value. An invalid `decided_by` (e.g., `decided_by='llm'`) passes
+    validation without error.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: Upstream design (design.md lines 1820-1833) requires that `decided_by=proxy_model`
+    and `decision_scope=human_only` records are not treated as approval. While the
+    proxy/human_only check in `allows_target_operation` catches `proxy_model`, the
+    absence of a decided_by enum validation means the field can carry arbitrary strings.
+    This weakens the actor/source binding required by acceptance criteria (binding
+    actor, source) and may allow unexpected actor values to slip through undetected.
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-20-workflow-management-implementation-req14-approval-gate-review-run-claude-sonnet-4-6-primary-002
+  run_id: 2026-06-20-workflow-management-implementation-req14-approval-gate-review-run
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: 'tools/check_workflow_action/approval_gate.py: allows_target_operation'
+  plain_language_summary: The `consumed` guard only checks for `consumed is True`,
+    but never marks or enforces that a record is consumed after use. The function
+    checks `record.get('consumed') is True` and blocks, but there is no write-path
+    or enforcement mechanism preventing the same unconsumed record from being passed
+    to `allows_target_operation` multiple times. Replay of an approval gate record
+    is not prevented at the validation layer.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: 'Upstream acceptance criteria require that record_human_decision
+    completion is not conflated with target-operation approval, and that non-approved
+    decisions block operations. Single-use consumption enforcement is part of the
+    gate binding model (schema `consumed: boolean`). Without any replay-prevention
+    check or documentation of enforcement responsibility, the current implementation
+    is ambiguous about whether the consumed field is ever set to true, leaving an
+    unsupported gap that could allow the same approval record to be reused.'
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-20-workflow-management-implementation-req14-approval-gate-review-run-claude-sonnet-4-6-primary-003
+  run_id: 2026-06-20-workflow-management-implementation-req14-approval-gate-review-run
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: 'tools/check_workflow_action/approval_gate.py: HUMAN_ONLY_REQUIRED_ACTIONS'
+  plain_language_summary: The `HUMAN_ONLY_REQUIRED_ACTIONS` set does not include `commit`,
+    `push`, or `spec_json_update` as required actions, although upstream design (requirements.md
+    lines 254-255, design.md lines 1820-1833) lists `commit`, `push`, `spec.json update`,
+    `phase approval`, and `reopen finalize` as the initial human-only decision set.
+    `finalize_reopen` is present, but `commit_stop_point` is the only commit-adjacent
+    entry and neither `push` nor `spec_json_update` appear.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: If the operation registry uses required_action identifiers such
+    as `push` or `update_spec_json` that do not appear in HUMAN_ONLY_REQUIRED_ACTIONS,
+    `derived_decision_scope` will fall through to lower-priority checks. Depending
+    on the operation contract shape, a push or spec.json update could be classified
+    as `proxy_allowed` rather than `human_only`. This is a coverage gap relative to
+    the upstream human-only boundary definition.
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-20-workflow-management-implementation-req14-approval-gate-review-run-claude-sonnet-4-6-primary-004
+  run_id: 2026-06-20-workflow-management-implementation-req14-approval-gate-review-run
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: 'tests/workflow-management/test_approval_gate.py: test_binding_kind_none_is_allowed_only_for_wait_only_operations'
+  plain_language_summary: The wait-only `binding_kind=none` positive test uses `decision_scope='advisory_only'`,
+    but the `_allows_binding_none` implementation requires `approval_required=False`,
+    `effect_kind='read'`, and `phase_boundary='none'`. The test does not verify that
+    a wait-only operation with `decision_scope='proxy_allowed'` or `decision_scope='human_only'`
+    and `binding_kind=none` is also blocked. Coverage for the boundary between `advisory_only`
+    and other scopes with `binding_kind=none` is absent.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: Upstream acceptance criteria require focused tests covering the
+    proxy/human boundary and binding/digest checks. The existing test exercises one
+    valid path but does not exercise the reject path where a non-advisory scope is
+    combined with `binding_kind=none` for a wait-only operation, leaving a gap in
+    the required test coverage.
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-20-workflow-management-implementation-req14-approval-gate-review-run-claude-sonnet-4-6-primary-005
+  run_id: 2026-06-20-workflow-management-implementation-req14-approval-gate-review-run
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: 'tools/check_workflow_action/approval_gate.py: validate_approval_gate_record'
+  plain_language_summary: The `source_ref` and `source_digest` fields are only checked
+    for presence (via REQUIRED_RECORD_FIELDS), but their content is never validated.
+    There is no check that `source_digest` is a non-empty string in the expected hash
+    format, and no check that `source_ref` is non-empty beyond its inclusion in the
+    required-fields list.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: 'Upstream design (requirements.md lines 240-246) binds each decision
+    to its source (`source_ref`, `source_digest`). Accepting blank or structurally
+    invalid source fields would weaken the source-binding guarantee. The schema enforces
+    `minLength: 1` on both fields, but the Python validation does not apply this constraint.'
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-20-workflow-management-implementation-req14-approval-gate-review-run-claude-sonnet-4-6-primary-006
+  run_id: 2026-06-20-workflow-management-implementation-req14-approval-gate-review-run
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: 'tests/workflow-management/test_approval_gate.py: test cases overall'
+  plain_language_summary: There are no test cases covering `decided_by='llm'` attempting
+    to satisfy a `human_only` gate, nor tests for `decided_by='human'` (as opposed
+    to `'user'`) combined with `decision_scope='human_only'`. The `decided_by` enum
+    includes both `user` and `human` as separate values, but only `user` is exercised
+    in the baseline valid record.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: Minor coverage gap against the full actor/scope matrix required
+    by upstream acceptance criteria. Does not block the primary approval-gate behaviors
+    but leaves untested combinations that could reveal edge cases.
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-20-workflow-management-implementation-req14-approval-gate-review-run-gpt-5.5-adversarial-001
+  run_id: 2026-06-20-workflow-management-implementation-req14-approval-gate-review-run
+  source_model: gpt-5.5
+  source_round: round-1
+  source_raw_path: raw/gpt-5.5.round-1.txt
+  source_parsed_path: parsed/gpt-5.5.round-1.yaml
+  severity_original: CRITICAL
+  severity_normalized: CRITICAL
+  target_location: 'tools/check_workflow_action/approval_gate.py: allows_target_operation;
+    .reviewcompass/schema/approval_gate.schema.json:/properties/decided_by'
+  plain_language_summary: Human-only approval can be satisfied by non-human actors
+    other than proxy_model.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: allows_target_operation only rejects decided_by=proxy_model when
+    decision_scope=human_only, while the schema explicitly permits decided_by=llm
+    and the implementation does not validate decided_by against a human-only allowlist.
+    An approved human_only record with decided_by=llm can therefore be allowed for
+    commit/reopen/approval_required operation contracts, weakening the required human-only
+    boundary.
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-20-workflow-management-implementation-req14-approval-gate-review-run-gpt-5.5-adversarial-002
+  run_id: 2026-06-20-workflow-management-implementation-req14-approval-gate-review-run
+  source_model: gpt-5.5
+  source_round: round-1
+  source_raw_path: raw/gpt-5.5.round-1.txt
+  source_parsed_path: parsed/gpt-5.5.round-1.yaml
+  severity_original: CRITICAL
+  severity_normalized: CRITICAL
+  target_location: 'tools/check_workflow_action/approval_gate.py: allows_target_operation'
+  plain_language_summary: The authorization path does not perform current digest checks
+    before allowing the target operation.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: validate_approval_gate_record can compare current_target_artifact_digest
+    and current_staged_file_set_digest only when they are passed, but allows_target_operation
+    has no parameters for current digests and calls validation without them. This
+    permits an approved record with stale target_artifact_digest or staged_file_set_digest
+    to allow an irreversible operation, contrary to the required decision binding
+    and stale digest blocking behavior.
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-20-workflow-management-implementation-req14-approval-gate-review-run-gpt-5.5-adversarial-003
+  run_id: 2026-06-20-workflow-management-implementation-req14-approval-gate-review-run
+  source_model: gpt-5.5
+  source_round: round-1
+  source_raw_path: raw/gpt-5.5.round-1.txt
+  source_parsed_path: parsed/gpt-5.5.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: 'tools/check-workflow-action.py: main() subcommand registrations
+    and cmd_next()'
+  plain_language_summary: Approval gate validation is not integrated into the CLI
+    or next --json flow.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: The CLI registers next, operation-preflight, operation-contract-check,
+    workflow-snapshot, and other commands, but no approval-gate, wait_for_human_decision,
+    record_human_decision, or collect_required_decisions command is registered, and
+    cmd_next does not load or evaluate approval gate records. This omits the required
+    CLI integration where record_human_decision is only a record and next --json decides
+    whether to proceed, remain blocked, redraft, or repair.
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-20-workflow-management-implementation-req14-approval-gate-review-run-gpt-5.5-adversarial-004
+  run_id: 2026-06-20-workflow-management-implementation-req14-approval-gate-review-run
+  source_model: gpt-5.5
+  source_round: round-1
+  source_raw_path: raw/gpt-5.5.round-1.txt
+  source_parsed_path: parsed/gpt-5.5.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: 'tools/check_workflow_action/approval_gate.py: validate_approval_gate_record'
+  plain_language_summary: Source metadata and actor fields are only checked for presence,
+    not validity.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: REQUIRED_RECORD_FIELDS requires source_ref, source_digest, decided_at,
+    rationale, next_action_expectation, and decided_by to exist, but validate_approval_gate_record
+    does not reject empty strings, malformed source_digest values, or invalid decided_by
+    values. Because the implementation does not invoke the JSON schema, wrong actor/source
+    records can pass implementation validation, contrary to the required source metadata
+    binding and wrong actor/source blocking behavior.
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-20-workflow-management-implementation-req14-approval-gate-review-run-gpt-5.5-adversarial-005
+  run_id: 2026-06-20-workflow-management-implementation-req14-approval-gate-review-run
+  source_model: gpt-5.5
+  source_round: round-1
+  source_raw_path: raw/gpt-5.5.round-1.txt
+  source_parsed_path: parsed/gpt-5.5.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: .reviewcompass/schema/approval_gate.schema.json:/properties/binding_kind,
+    /properties/target_artifact_digest, /properties/staged_file_set_digest
+  plain_language_summary: The schema does not enforce binding_kind-specific digest
+    requirements.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: The schema lists binding_kind values and digest fields, but has
+    no conditional constraints requiring target_artifact_digest for artifact_digest,
+    staged_file_set_digest for staged_file_set_digest, both digests for both, or restricting
+    none to read-only/wait-only records. Schema validation alone can therefore accept
+    unbound approval-required records, weakening the required approval decision binding.
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-20-workflow-management-implementation-req14-approval-gate-review-run-gpt-5.5-adversarial-006
+  run_id: 2026-06-20-workflow-management-implementation-req14-approval-gate-review-run
+  source_model: gpt-5.5
+  source_round: round-1
+  source_raw_path: raw/gpt-5.5.round-1.txt
+  source_parsed_path: parsed/gpt-5.5.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: 'tests/workflow-management/test_approval_gate.py: ApprovalGateTests'
+  plain_language_summary: Focused approval gate tests omit required positive and wrong
+    actor/source coverage.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: The tests cover non-approved decisions, proxy_model for human_only,
+    decision_scope derivation, binding_kind requirements, target_operation_id mismatch,
+    and digest mismatch through validate_approval_gate_record. They do not include
+    an approved human/user record that is allowed, wrong actor values such as llm
+    or unknown, empty or wrong source_ref/source_digest, or stale digest rejection
+    through allows_target_operation/CLI integration. This leaves required approval/proxy
+    boundary and decision binding behavior weakly covered.
+  applied_files: []
+  superseded_by: null

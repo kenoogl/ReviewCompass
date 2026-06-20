@@ -1,0 +1,30 @@
+source_materials:
+  - key: workflow-management-req14-side-track-stack-upstream-intent
+    purpose: Requirement 14 / design / tasks intent for side track stack scope, return target, and digest drift.
+    source_paths:
+      - .reviewcompass/specs/workflow-management/requirements.md
+      - .reviewcompass/specs/workflow-management/design.md
+      - .reviewcompass/specs/workflow-management/tasks.md
+    source_anchors:
+      - .reviewcompass/specs/workflow-management/requirements.md sha256:e7621e6d56a3ef42085e2864a88366d670e55c304668dd21f48dde32411e13f3
+      - .reviewcompass/specs/workflow-management/design.md sha256:ac6bd42e57b507a615af3ed6a40f3c031f56fe75f27e7f1fcc12ddcb4dc46558
+      - .reviewcompass/specs/workflow-management/tasks.md sha256:053858cf4abf94bd7b54bf8a45a8ca9504afef39ea8be48bd282193f95e84098
+    purpose_field: Treat unexpected side-track work as explicit stack state with bounded scope, return target, and staged-file digest checks.
+    responsibility_boundaries:
+      - Side track stack state owns push, pop, current, inspect, repair, allowed scope/files, return target, staged file set, and digest checks.
+      - Read-only inspection and mutating stack operations must remain separated.
+      - Normal workflow resumption depends on top-frame completion and acceptable staged-file/digest state.
+    acceptance_criteria:
+      - Side track frames include frame identity, parent, allowed scope/files, completion conditions, return_to, spawned_from, staged_file_set, staged_file_digest, and max_depth behavior.
+      - Side track pop is allowed only for the top frame.
+      - Digest/scope drift blocks or warns according to the current phase contract.
+      - Focused tests cover push, pop, current, inspect, repair, max depth, non-top pop, scope overlap, and digest drift.
+    forbidden_actions:
+      - Do not allow non-top side track pop.
+      - Do not allow unallowed staged file overlap to resume normal work.
+      - Do not allow unexplained digest drift to resume normal work without the required warning or block.
+    unresolved_or_design_deferred_items:
+      - Phase 3 may warn on some side-track drift while Phase 5 blocks; this implementation target is Phase 3 and must not claim Phase 5 behavior unless implemented.
+      - Future runtime location may replace stages/in-progress/side-track-stack.yaml, but read-only and mutating operations must stay separated.
+    intended_target_phase_transfer:
+      - Implementation should expose side track stack state handling and focused tests for scope, top-frame, return target, and digest drift behavior.

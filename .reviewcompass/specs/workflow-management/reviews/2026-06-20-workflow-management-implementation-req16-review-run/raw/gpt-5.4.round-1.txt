@@ -1,0 +1,40 @@
+findings:
+  - severity: ERROR
+    target_location: "tools/check_workflow_action/proxy_triage_decisions.py:evaluate_human_required"
+    description: "Human-required evaluation omits several required blocking predicates and evidence checks for proxy application."
+    rationale: "Req 16 requires proxy blocking when required evidence is missing or conflicting, when decision-scope is human_only, when approval gate is unresolved, when operation approval_required is true, and when review-wave impact evidence is unresolved, with priority on human-required predicates. The implementation only checks selected decision coverage, approval_required, a narrow subset of approval gate fields, and a boolean unresolved flag. It does not verify evidence completeness, conflicting evidence, finding/cluster coverage, final target mapping, or whether missing approval/review-wave records themselves force human-required handling, weakening the required proxy triage safety mechanics."
+
+  - severity: ERROR
+    target_location: "tools/check_workflow_action/proxy_triage_decisions.py:validate_approval_scope"
+    description: "Approval scope validation incorrectly requires review_triage_decide and apply_fixes scopes to be identical instead of preserving their boundary distinction."
+    rationale: "Upstream intent explicitly forbids treating review_triage_decide approval as apply-fixes approval when scopes differ. This implementation flags any difference as a deviation, which collapses two distinct approval scopes into one equivalence rule. That both weakens responsibility boundaries and contradicts the requirement that differing scopes must not be treated as interchangeable."
+
+  - severity: ERROR
+    target_location: ".reviewcompass/schema/proxy_triage_decision.schema.json"
+    description: "Proxy triage decision schema does not require machine-readable evidence and coverage fields needed to preserve completeness and mapping obligations."
+    rationale: "Req 16 acceptance requires decision records to carry raw response, prompt, candidates, selected decision, reason, final target, coverage, and mapping, with dependence on evidence completeness, finding/cluster coverage, approval gate records, operation contracts, and review-wave impact evidence. The schema lacks required fields for explicit coverage status, finding-to-operation mapping, approval gate record references, operation contract references, review-wave impact evidence, and conflict/missing-evidence markers. Because these are not structurally required, compliant records can omit essential transfer information without detection."
+
+  - severity: ERROR
+    target_location: "tools/check_workflow_action/implementation_phases.py:check_phase_plan"
+    description: "Implementation phase checking does not enforce required snapshot evidence or commit-boundary semantics from the phase plan."
+    rationale: "Upstream acceptance requires implementation-phase-check to fail on stale or missing required snapshot evidence in addition to phase coverage, order violations, unmet criteria, and forbidden-operation evidence. The current checker validates feature match, basic phase numbering, unsatisfied entry/exit criteria, and forbidden operation hits, but it never inspects required snapshot evidence or commit boundary requirements. This omits a required enforcement path for Phase 0 to 6 separation."
+
+  - severity: WARN
+    target_location: ".reviewcompass/schema/implementation_phase.schema.json"
+    description: "Implementation phase schema leaves phase array and commit boundary too unconstrained to guarantee exactly one ordered Phase 0 through Phase 6 plan with meaningful boundaries."
+    rationale: "The schema only sets minItems: 7 and allows additionalProperties broadly, so extra phases, duplicate phase numbers, and underspecified commit-boundary content remain schema-valid. Although code later performs a basic order check, the schema itself does not preserve the upstream requirement for a complete ordered Phase 0-6 plan with explicit boundary information beyond a single boolean."
+
+  - severity: WARN
+    target_location: "tools/check_workflow_action/operation_list.py:_operation_entry"
+    description: "Read-only operation-list output does not expose all registry fields called out by Req 16, notably sequence details and meaningful pending conflict information."
+    rationale: "The acceptance criteria call for exposing read-only registry fields such as canonical commands, effect_kind, approval_required, sequence, and pending conflicts. While the implementation returns placeholders for these fields, pending_conflicts is always an empty list and no conflict derivation is performed, so coverage of proxy-decision-relevant operation context is incomplete. This appears weaker than the intended evidence completeness for read-only Phase 2 behavior."
+
+  - severity: WARN
+    target_location: "tests/workflow-management/test_proxy_triage_decision_machine.py"
+    description: "Focused tests do not cover several required proxy triage blocking cases, especially missing/conflicting evidence and unresolved approval or review-wave records."
+    rationale: "The verification context says tests should meaningfully cover evidence completeness, mapping, and human-required blocking. Current tests cover approval_required, human_only, coverage mismatch, and scope mismatch, but they do not assert blocking on missing approval gate evidence, missing review-wave evidence, conflicting evidence, or incomplete mapping/coverage records. Passing tests therefore do not demonstrate the full required proxy triage mechanics."
+
+  - severity: WARN
+    target_location: "tests/workflow-management/test_review_wave_consumer_impact.py"
+    description: "Review-wave consumer-impact tests cover only one unresolved case and do not verify the required distinction among no-impact, carried-forward, unresolved, and resolved-with-evidence states."
+    rationale: "Req 16 requires machine-readable handling that distinguishes no downstream consumer impact, carried-forward impact, unresolved carry-forward that blocks progress, and resolved downstream impact with evidence. The current tests assert blocking when carry-forward register is missing for an unresolved impact, but they do not exercise the other required state distinctions, leaving important transfer semantics under-tested."

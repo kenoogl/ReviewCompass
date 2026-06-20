@@ -1,0 +1,7 @@
+```yaml
+findings:
+  - severity: INFO
+    target_location: "## User Review Requirements"
+    description: "The scope boundary exception remains slightly ambiguous about what counts as a direct reference, as noted in a prior review."
+    rationale: "Changing 'except where the prompt audit directly references those boundaries' to 'except where prompt_audit.py code or schema fields explicitly name Req 14 or Req 16 boundary symbols' would make the boundary exception fully deterministic and further reduce the risk of the model evaluating out-of-scope proxy controls."
+```

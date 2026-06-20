@@ -1,0 +1,14 @@
+role: judgment
+provider: gemini-api
+model: gemini-3.1-pro-preview
+attempts: 1
+duration_seconds: 59.004
+findings:
+- severity: ERROR
+  target_location: tools/check_workflow_action/implementation_phases.py:check_phase_plan
+  description: check_phase_plan omits verification of required_tests and snapshot
+    evidence freshness.
+  rationale: The upstream acceptance criteria explicitly requires that 'implementation-phase-check
+    fails on... stale or missing required snapshot evidence'. However, the check_phase_plan
+    function only validates entry/exit criteria flags and forbidden operations, failing
+    to verify the test and snapshot evidence required for the phase.

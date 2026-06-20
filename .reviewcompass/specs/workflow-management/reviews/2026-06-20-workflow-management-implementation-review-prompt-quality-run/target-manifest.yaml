@@ -1,0 +1,4 @@
+run_id: 2026-06-20-workflow-management-implementation-review-prompt-quality-run
+target_files:
+- path: .reviewcompass/specs/workflow-management/reviews/2026-06-20-workflow-management-implementation-review-prompt-quality-run/api-review-criteria-draft.md
+  sha256: 218965e6655b60eb44c5b7be427d176b8bc301082b03d346324a0e55ef02b369

@@ -1,0 +1,17 @@
+findings:
+  - severity: WARN
+    target_location: "Source Materials / source_paths_note"
+    description: "Structured summary lacks cross-references to original source documents."
+    rationale: "The structured summary is the sole model-readable upstream intent material. Without a cross-reference mapping its fields back to specific source documents and sections, the reviewing model has no way to detect if the summary omits or misrepresents material details from the originals."
+  - severity: WARN
+    target_location: "Required Checks / Check 5 and Out Of Scope"
+    description: "Repeated carve-outs risk suppressing findings about critical boundary-weakening code."
+    rationale: "The prompt explicitly instructs the model 'not to treat the mere presence... as a violation' and to 'report target-code findings only when behavior bypasses...'. This double-layered framing violates the criteria to 'avoid wording that suppresses findings about critical boundaries', as it may cause the model to be overly lenient and miss real gate bypasses."
+  - severity: INFO
+    target_location: "Review Target / Target manifest note"
+    description: "Instructs the model to emit an ERROR instead of a CRITICAL when target path content is absent."
+    rationale: "A missing target artifact makes the entire API review invalid. Aligning the signal with a CRITICAL severity accurately reflects the impact and improves operator triage visibility."
+  - severity: INFO
+    target_location: "Source Materials / source_anchors"
+    description: "SHA256 source anchors are inert and lack evaluation instructions."
+    rationale: "The anchors are provided for provenance, but without a brief instruction telling the model to flag apparent inconsistencies if the structured summary diverges from the exact file versions identified, the anchors remain decorative rather than actionable."

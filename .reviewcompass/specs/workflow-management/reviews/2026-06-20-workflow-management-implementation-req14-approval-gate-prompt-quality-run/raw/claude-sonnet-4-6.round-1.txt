@@ -1,0 +1,20 @@
+findings:
+  - severity: WARN
+    target_location: "Source Materials / source_paths_note"
+    description: "Source paths are declared as provenance-only with a structured summary provided as the model-readable upstream intent, but the structured summary does not indicate which fields were extracted from which source document. If the structured summary omits or misrepresents a material detail from requirements.md, design.md, or tasks.md, the reviewing model has no way to detect that gap without access to the originals."
+    rationale: "The structured summary is the sole model-readable evidence for upstream intent transfer. If it is incomplete or partially stale relative to the sha256-anchored source files, the reviewing model will assess transfer fidelity against a potentially truncated baseline, silently missing omissions in the target. A cross-reference note mapping each structured-summary field to its source document and section would reduce this risk without requiring full file inclusion."
+
+  - severity: WARN
+    target_location: "Required Checks / Check 5 and Out Of Scope"
+    description: "Check 5 instructs the model that the check 'constrains the review run and model output, not the mere presence or implementation of workflow-operation code' and directs it to 'report target-code findings only when behavior bypasses or weakens the required gate.' The Out Of Scope section repeats a nearly identical carve-out. This double-layered framing risks suppressing findings about real gate-weakening behaviors because the model may interpret the repeated carve-out as a general instruction to be lenient toward any code that mentions irreversible operations, even when that code demonstrably bypasses the boundary."
+    rationale: "Wording that over-qualifies when to report on gate-related code can unintentionally raise the model's threshold for flagging CRITICAL or ERROR conditions, which is the opposite of the intended effect. The carve-out is conceptually correct but should be stated once and more precisely: the prohibition applies to the reviewing model's own output actions, not to findings about target artifacts that bypass the gate."
+
+  - severity: INFO
+    target_location: "Review Target / target manifest note"
+    description: "The note 'If any listed target path content is absent from the injected prompt, report ERROR against Review Target and do not return findings: []' is a useful guard, but it instructs the model to emit an ERROR finding rather than a CRITICAL finding when the actual target is missing. A missing target makes the entire review invalid, which is more severe than a single ERROR finding would convey."
+    rationale: "Aligning the severity of a missing-target signal with the actual impact (the review cannot proceed correctly) would make triage clearer for operators reading the output. This is a minor ergonomics improvement and does not block use of the prompt."
+
+  - severity: INFO
+    target_location: "Source Materials / source_anchors"
+    description: "The sha256 anchors are listed for provenance but there is no instruction telling the reviewing model what to do if the injected structured summary appears inconsistent with those anchors or if a future run regenerates the summary from a different file version. The anchors are currently inert from the model's perspective."
+    rationale: "Adding a brief note that the anchors identify the exact file versions from which the structured summary was derived, and that the model should flag any apparent internal inconsistency in the summary, would make the anchors actionable rather than decorative. This is a minor improvement."

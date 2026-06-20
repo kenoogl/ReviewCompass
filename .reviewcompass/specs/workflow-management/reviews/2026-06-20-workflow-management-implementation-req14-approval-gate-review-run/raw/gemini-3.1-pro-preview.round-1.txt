@@ -1,0 +1,12 @@
+- severity: CRITICAL
+  target_location: "tools/check_workflow_action/approval_gate.py"
+  description: "decided_by が 'llm' の場合に human_only の承認境界をすり抜ける"
+  rationale: "`allows_target_operation` メソッドにおいて、`decision_scope` が `human_only` の場合に `decided_by == 'proxy_model'` のみを遮断しています。スキーマで許可されているもう一つの非人間アクターである `llm` が指定された場合、このチェックを通過して不可逆操作が許可されてしまうため、Requirement 14 の「人間による承認境界」をバイパスするクリティカルな欠陥です。"
+- severity: ERROR
+  target_location: "tools/check-workflow-action.py"
+  description: "新設された approval_gate の検証・強制ロジックが CLI コマンドに全く統合されていない（完全な omission）"
+  rationale: "要件に「CLI integration」が含まれていますが、`check-workflow-action.py` 内で `approval_gate.py` がインポートされておらず、`commit`、`push`、`spec-set` などの不可逆操作において新しい承認レコードのバリデーションが一切呼び出されていません。また、`record_human_decision` を処理するコマンドや、`next --json` が承認レコードを読み取って分岐を判定する処理も実装されておらず、承認ゲートの挙動が CLI 上で強制されない状態です。"
+- severity: WARN
+  target_location: "tests/workflow-management/test_approval_gate.py"
+  description: "decided_by='llm' に対する human-only 境界のテストカバレッジが欠落している"
+  rationale: "`test_proxy_model_cannot_approve_human_only_decision_scope` テストケースにおいて、非人間アクターとして `proxy_model` のみをテストしており、スキーマで許容される `llm` のテストが含まれていないため、前述のすり抜けバグの検出が漏れています。"

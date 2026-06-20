@@ -1,0 +1,32 @@
+role: judgment
+provider: gemini-api
+model: gemini-3.1-pro-preview
+attempts: 1
+duration_seconds: 48.711
+findings:
+- severity: ERROR
+  target_location: Review Task and Generic API Review Core
+  description: The prompt leaks prompt-writing meta-instructions (e.g., 'Ask one non-leading
+    primary judgment question', 'create a separate criteria file') into the instructions
+    meant for the code-reviewing model.
+  rationale: Instructing the reviewing model to follow prompt-authoring criteria creates
+    severe role confusion. The model may mistakenly evaluate the implementation files
+    against these rules rather than evaluating the code against the upstream intent,
+    leading to confused or unusable output.
+- severity: ERROR
+  target_location: Required Checks
+  description: The specific 'Review focus' items (human-only boundary, digest drift,
+    non-authoritative audit aid) are omitted from the actionable Required Checks list,
+    despite the prompt's mapping claiming they are mapped there.
+  rationale: Omitting explicitly requested focus areas from the required checks weakens
+    the user's review requirements. The model is likely to focus only on the generic
+    upstream transfer check and miss the critical boundary and drift checks requested
+    by the user.
+- severity: WARN
+  target_location: Finding Policy
+  description: The policy defines finding severities but lacks explicit instructions
+    for the model to provide specific target locations (e.g., file paths, line numbers,
+    or function names) when generating its findings.
+  rationale: Without explicit guidance to pinpoint where an issue occurs within the
+    11 target files, the model may generate vague findings that are difficult for
+    developers to triage and resolve.

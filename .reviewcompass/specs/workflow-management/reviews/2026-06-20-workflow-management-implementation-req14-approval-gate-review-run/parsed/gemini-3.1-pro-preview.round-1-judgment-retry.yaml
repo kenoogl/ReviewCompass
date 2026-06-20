@@ -1,0 +1,39 @@
+role: judgment
+provider: gemini-api
+model: gemini-3.1-pro-preview
+attempts: 1
+duration_seconds: 88.188
+findings:
+- severity: CRITICAL
+  target_location: tools/check-workflow-action.py
+  description: Omission of CLI integration for approval gate validation
+  rationale: The implementation scope requires 'CLI integration' for the approval
+    gate. However, `check-workflow-action.py` does not provide any command to validate
+    or consume approval gate records, nor does it integrate `approval_gate.py` into
+    irreversible operations (e.g., commit, push). This leaves the new approval boundary
+    logic entirely unenforced at the CLI layer.
+- severity: CRITICAL
+  target_location: tools/check-workflow-action.py (_human_approval_reasons and cmd_spec_set)
+  description: spec.json update and phase transitions bypass the human_only approval
+    boundary
+  rationale: Upstream intent explicitly defines spec.json updates and phase approval
+    as human-only boundaries that proxy_model cannot pass. However, `cmd_spec_set`
+    executes phase transitions, and its reliance on `_human_approval_reasons` permits
+    proxy_model substitution if `proxy_allowed` is true in the configuration. This
+    allows proxy_model to bypass the critical human-only restriction.
+- severity: ERROR
+  target_location: tools/check_workflow_action/approval_gate.py (derived_decision_scope)
+  description: spec.json update and phase approval omitted from human-only boundary
+    scope
+  rationale: The `derived_decision_scope` function defines `HUMAN_ONLY_REQUIRED_ACTIONS`
+    but omits `spec.json` updates and phase approval operations. This weakens the
+    intent that these specific irreversible operations must remain human-only, as
+    they lack an explicit mapping and could incorrectly resolve to `proxy_allowed`
+    or `advisory_only`.
+- severity: ERROR
+  target_location: tests/workflow-management/test_approval_gate.py
+  description: Missing tests and enforcement for wrong actor and source behavior
+  rationale: Acceptance criteria strictly require focused tests covering 'wrong actor/source'
+    behavior. No such tests exist in `test_approval_gate.py`, and `approval_gate.py`
+    lacks the corresponding logic to validate that `decided_by` or `source_ref` match
+    the required context, leaving actor and source binding unenforced.

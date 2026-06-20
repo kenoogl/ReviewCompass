@@ -1,0 +1,78 @@
+role: adversarial
+provider: anthropic-api
+model: claude-sonnet-4-6
+attempts: 1
+duration_seconds: 26.415
+findings:
+- severity: WARN
+  target_location: Output Contract section (final YAML block)
+  description: The draft wraps the output contract YAML examples in Markdown code
+    fences (```yaml ... ```), which conflicts with the required parser-friendly plain-YAML
+    output contract.
+  rationale: The API review runner template expects plain YAML output with no fence
+    markers. Showing fenced examples in the criteria file may cause the reviewing
+    model to mirror that format in its response, producing output the parser cannot
+    consume. The examples should be shown as plain indented YAML or clearly labeled
+    as display-only illustrations.
+- severity: WARN
+  target_location: Source Materials / Implementation Commit Summary
+  description: The commit summary is prose-only and does not include any structured
+    excerpts, file-level diffs, or schema content from the actual implementation artifacts.
+    The reviewing model will have no model-readable content for the implementation
+    target until the run manifest is assembled.
+  rationale: Per source-material quality requirements, path-only or summary-only listings
+    are insufficient when the model needs to judge implementation correctness. If
+    the run manifest does not separately inject the full target files, the model will
+    be forced to guess at implementation details from the prose summary alone. The
+    criteria draft should note explicitly that the run manifest must include verbatim
+    file content, or include representative excerpts here for at least the boundary-critical
+    modules (approval_gate.py, proxy_triage_decisions.py, prompt_audit.py).
+- severity: WARN
+  target_location: Required Checks / Check 6 (TDD coverage)
+  description: Check 6 asks the reviewer to judge TDD coverage sufficiency but does
+    not specify what 'enough for the risk level' means in measurable or observable
+    terms, leaving the threshold ambiguous.
+  rationale: An underspecified coverage criterion can cause the reviewing model to
+    either suppress WARN findings about genuine gaps (too lenient) or flag every test
+    file regardless of actual risk (too broad). Adding at least a qualitative anchor—e.g.,
+    'fail-closed paths must have at least one explicit negative test per boundary
+    condition listed in the requirements summary'—would make the check actionable
+    and consistent across models.
+- severity: WARN
+  target_location: Review Target file list
+  description: The file list includes tools/api_providers/run_role.py and tools/api_providers/run_review.py
+    without explaining their connection to Requirement 14–16 or Requirement 13 touchpoints.
+  rationale: Including files without scoping rationale risks prompting the model to
+    review them broadly rather than only for the specific boundary properties in scope
+    (e.g., whether they respect the approval/proxy boundary). A brief parenthetical
+    tying each out-of-main-scope file to the relevant requirement check would prevent
+    the review drifting into unrelated judgments about those files.
+- severity: WARN
+  target_location: Source Materials / Requirements Intent Summary — Requirement 13
+    paragraph
+  description: The Requirement 13 summary lists eight contract properties (authority,
+    required_action mapping, effect kind, approval requirement, phase boundary, sequence,
+    commit boundary, registry/contract separation) but does not state which of those
+    are relevant only at touchpoints versus universally applicable, making it unclear
+    how much weight the reviewer should assign Requirement 13 findings relative to
+    Requirement 14–16 findings.
+  rationale: Ambiguity about Requirement 13 scope could lead the model either to over-report
+    Requirement 13 issues as ERROR when they are peripheral, or to under-report them
+    as INFO when a real contract violation exists. Clarifying 'check only where T-016/T-019
+    modules call into or read operation contract state' would bound the judgment appropriately.
+- severity: INFO
+  target_location: Front matter — review_target field
+  description: review_target is set to a prose description ('workflow-management implementation
+    artifacts from commits 5d3a5b6d..10cf6922') rather than a path or manifest reference.
+  rationale: For provenance traceability it is preferable for review_target to reference
+    the intended_actual_run_dir or a canonical manifest path so the criteria file
+    and run directory are unambiguously linked. The current prose value is human-readable
+    but not machine-resolvable.
+- severity: INFO
+  target_location: Finding Policy / CRITICAL definition
+  description: The CRITICAL definition partially overlaps with the Out Of Scope list
+    (both mention phase completion and push), creating mild redundancy. This is cosmetic
+    but may cause the model to conflate the two sections.
+  rationale: 'Minor clarity improvement: the Finding Policy could reference ''see
+    Out Of Scope'' rather than restating the same operations, reducing the chance
+    of interpretive drift between the two sections.'

@@ -1,0 +1,447 @@
+{
+  "verdict": "OK",
+  "exit_code": 0,
+  "next_action": {
+    "kind": "stage",
+    "feature": "workflow-management",
+    "phase": "implementation",
+    "stage": "triad-review",
+    "reason": "workflow-management の implementation.triad-review が未完了です",
+    "required_disciplines": [
+      "docs/operations/WORKFLOW_NAVIGATION.md",
+      "docs/disciplines/discipline_workflow_state_truth_source.md",
+      "docs/operations/SESSION_WORKFLOW_GUIDE.md#3.3-a-2",
+      "docs/operations/SESSION_WORKFLOW_GUIDE.md#vertical-intent-transfer-review",
+      "docs/operations/API_REVIEW_PROMPT_QUALITY.md",
+      "docs/disciplines/discipline_llm_as_judge_prompting.md",
+      "docs/disciplines/discipline_approval_operation.md"
+    ],
+    "required_inputs": [
+      {
+        "id": "target_feature_documents",
+        "role": "stage_entry_context",
+        "source_type": "feature_document_set",
+        "purpose": "Read the current feature state and phase documents before starting triad-review, including upstream intent transfer from requirements to design to tasks to implementation as applicable.",
+        "read_policy": "current_feature_documents",
+        "paths": [
+          ".reviewcompass/specs/workflow-management/spec.json",
+          ".reviewcompass/specs/workflow-management/requirements.md",
+          ".reviewcompass/specs/workflow-management/design.md",
+          ".reviewcompass/specs/workflow-management/tasks.md"
+        ]
+      },
+      {
+        "id": "triad_review_run_artifacts",
+        "role": "review_run_context",
+        "source_type": "review_run_artifact_set",
+        "purpose": "Prepare or read the review-run bundle, raw responses, model summaries, variant/role assignments, same-root finding clusters, and three-level triage records for this triad-review. Before proxy_model, implementation edits, spec.json updates, or phase movement, present the user-visible triage gate described in SESSION_WORKFLOW_GUIDE.md#3.3-a-2 and stop.",
+        "required_artifacts": [
+          "review-target.md",
+          "raw/",
+          "rounds.yaml",
+          "model-result-summary.yaml",
+          "triage.yaml",
+          "raw-review-triage-summary.md",
+          "variant-role-assignment",
+          "user-visible-triage-gate"
+        ],
+        "read_policy": "review_run_bundle_and_triage",
+        "base_path_pattern": ".reviewcompass/specs/workflow-management/reviews/*-workflow-management-implementation-review-run"
+      },
+      {
+        "id": "vertical_intent_transfer_check",
+        "role": "review_prompt_requirement",
+        "source_type": "upstream_intent_transfer_contract",
+        "purpose": "Ensure triad-review checks that upstream purpose, responsibility boundaries, acceptance criteria, and forbidden actions are inherited into the target phase without omission, weakening, unsupported additions, or drift.",
+        "phase_chains": {
+          "requirements": [
+            "upstream_decision_materials",
+            "requirements.md"
+          ],
+          "design": [
+            "requirements.md",
+            "design.md"
+          ],
+          "tasks": [
+            "requirements.md",
+            "design.md",
+            "tasks.md"
+          ],
+          "implementation": [
+            "requirements.md",
+            "design.md",
+            "tasks.md",
+            "implementation"
+          ]
+        },
+        "review_target_by_phase": {
+          "requirements": {
+            "review_target": "requirements.md",
+            "source_materials": [
+              "upstream_decision_materials",
+              "reopen_classification_record",
+              "planning_notes",
+              "user_decisions"
+            ],
+            "out_of_scope": [
+              "downstream_artifacts_not_review_target",
+              "design.md correctness",
+              "tasks.md correctness"
+            ]
+          }
+        },
+        "prompt_materialization_contract": {
+          "source_materials_must_not_be_path_only": true,
+          "required_prompt_material": [
+            "upstream_excerpt_or_structured_summary",
+            "target_phase_artifact_excerpt",
+            "review_target",
+            "out_of_scope"
+          ],
+          "upstream_summary_fields": [
+            "purpose",
+            "responsibility_boundaries",
+            "acceptance_criteria",
+            "forbidden_actions",
+            "unresolved_or_design_deferred_items",
+            "intended_target_phase_transfer"
+          ],
+          "blocking_conditions": [
+            "block_review_run_when_upstream_material_unread",
+            "block_review_run_when_prompt_contains_only_source_paths",
+            "block_review_run_when_upstream_summary_omits_required_fields"
+          ]
+        },
+        "required_question": "upstream目的・責務境界・受入条件・禁止事項が対象成果物へ欠落・弱体化・逸脱・未根拠追加なく引き継がれているか。",
+        "read_policy": "include_in_review_prompt"
+      }
+    ],
+    "effective_prompt": {
+      "effective_prompt_policy": "one_effective_prompt_per_decision_point",
+      "decision_point_refs": [
+        {
+          "group": "next_action_kind",
+          "id": "stage"
+        },
+        {
+          "group": "workflow_stage",
+          "id": "triad-review"
+        }
+      ],
+      "prompt_source_refs": [
+        "docs/operations/WORKFLOW_NAVIGATION.md",
+        "docs/disciplines/discipline_workflow_state_truth_source.md",
+        "docs/operations/SESSION_WORKFLOW_GUIDE.md#3.3-a-2",
+        "docs/operations/SESSION_WORKFLOW_GUIDE.md#vertical-intent-transfer-review",
+        "docs/operations/API_REVIEW_PROMPT_QUALITY.md",
+        "docs/disciplines/discipline_llm_as_judge_prompting.md",
+        "docs/disciplines/discipline_approval_operation.md"
+      ],
+      "effective_prompt_path": ".reviewcompass/runtime/effective-prompts/next_action_kind-stage__workflow_stage-triad-review.prompt.md",
+      "effective_prompt_sha256": "39d0d503c09c37593ede9e05faa752dd2909cd3b2efcb6b51b548254d00f06d5",
+      "effective_prompt_loaded": true
+    }
+  },
+  "reasons": [],
+  "current_state": {
+    "feature_order": [
+      "foundation",
+      "runtime",
+      "evaluation",
+      "analysis",
+      "workflow-management",
+      "self-improvement",
+      "conformance-evaluation"
+    ],
+    "workflow_state": {
+      "foundation": {
+        "intent": {
+          "drafting": true,
+          "review": true,
+          "approval": true,
+          "reference": "stages/intent.yaml"
+        },
+        "feature-partitioning": {
+          "candidate-proposal": true,
+          "approval": true,
+          "reference": "stages/feature-partitioning/2026-05-24-proposal.md"
+        },
+        "requirements": {
+          "drafting": true,
+          "triad-review": true,
+          "review-wave": true,
+          "alignment": true,
+          "approval": true
+        },
+        "design": {
+          "drafting": true,
+          "triad-review": true,
+          "review-wave": true,
+          "alignment": true,
+          "approval": true
+        },
+        "tasks": {
+          "drafting": true,
+          "triad-review": true,
+          "review-wave": true,
+          "alignment": true,
+          "approval": true
+        },
+        "implementation": {
+          "drafting": true,
+          "triad-review": true,
+          "review-wave": true,
+          "alignment": true,
+          "approval": true
+        }
+      },
+      "runtime": {
+        "intent": {
+          "drafting": true,
+          "review": true,
+          "approval": true,
+          "reference": "stages/intent.yaml"
+        },
+        "feature-partitioning": {
+          "candidate-proposal": true,
+          "approval": true,
+          "reference": "stages/feature-partitioning/2026-05-24-proposal.md"
+        },
+        "requirements": {
+          "drafting": true,
+          "triad-review": true,
+          "review-wave": true,
+          "alignment": true,
+          "approval": true
+        },
+        "design": {
+          "drafting": true,
+          "triad-review": true,
+          "review-wave": true,
+          "alignment": true,
+          "approval": true
+        },
+        "tasks": {
+          "drafting": true,
+          "triad-review": true,
+          "review-wave": true,
+          "alignment": true,
+          "approval": true
+        },
+        "implementation": {
+          "drafting": true,
+          "triad-review": true,
+          "review-wave": true,
+          "alignment": true,
+          "approval": true
+        }
+      },
+      "evaluation": {
+        "intent": {
+          "drafting": true,
+          "review": true,
+          "approval": true,
+          "reference": "stages/intent.yaml"
+        },
+        "feature-partitioning": {
+          "candidate-proposal": true,
+          "approval": true,
+          "reference": "stages/feature-partitioning/2026-05-24-proposal.md"
+        },
+        "requirements": {
+          "drafting": true,
+          "triad-review": true,
+          "review-wave": true,
+          "alignment": true,
+          "approval": true
+        },
+        "design": {
+          "drafting": true,
+          "triad-review": true,
+          "review-wave": true,
+          "alignment": true,
+          "approval": true
+        },
+        "tasks": {
+          "drafting": true,
+          "triad-review": true,
+          "review-wave": true,
+          "alignment": true,
+          "approval": true
+        },
+        "implementation": {
+          "drafting": true,
+          "triad-review": true,
+          "review-wave": true,
+          "alignment": true,
+          "approval": true
+        }
+      },
+      "analysis": {
+        "intent": {
+          "drafting": true,
+          "review": true,
+          "approval": true,
+          "reference": "stages/intent.yaml"
+        },
+        "feature-partitioning": {
+          "candidate-proposal": true,
+          "approval": true,
+          "reference": "stages/feature-partitioning/2026-05-24-proposal.md"
+        },
+        "requirements": {
+          "drafting": true,
+          "triad-review": true,
+          "review-wave": true,
+          "alignment": true,
+          "approval": true
+        },
+        "design": {
+          "drafting": true,
+          "triad-review": true,
+          "review-wave": true,
+          "alignment": true,
+          "approval": true
+        },
+        "tasks": {
+          "drafting": true,
+          "triad-review": true,
+          "review-wave": true,
+          "alignment": true,
+          "approval": true
+        },
+        "implementation": {
+          "drafting": true,
+          "triad-review": true,
+          "review-wave": true,
+          "alignment": true,
+          "approval": true
+        }
+      },
+      "workflow-management": {
+        "intent": {
+          "drafting": true,
+          "review": true,
+          "approval": true,
+          "reference": "stages/intent.yaml"
+        },
+        "feature-partitioning": {
+          "candidate-proposal": true,
+          "approval": true,
+          "reference": "stages/feature-partitioning/2026-05-24-proposal.md"
+        },
+        "requirements": {
+          "drafting": true,
+          "triad-review": true,
+          "review-wave": true,
+          "alignment": true,
+          "approval": true
+        },
+        "design": {
+          "drafting": true,
+          "triad-review": true,
+          "review-wave": true,
+          "alignment": true,
+          "approval": true
+        },
+        "tasks": {
+          "drafting": true,
+          "triad-review": true,
+          "review-wave": true,
+          "alignment": true,
+          "approval": true
+        },
+        "implementation": {
+          "drafting": true,
+          "triad-review": false,
+          "review-wave": false,
+          "alignment": false,
+          "approval": false
+        }
+      },
+      "self-improvement": {
+        "intent": {
+          "drafting": true,
+          "review": true,
+          "approval": true,
+          "reference": "stages/intent.yaml"
+        },
+        "feature-partitioning": {
+          "candidate-proposal": true,
+          "approval": true,
+          "reference": "stages/feature-partitioning/2026-05-24-proposal.md"
+        },
+        "requirements": {
+          "drafting": true,
+          "triad-review": true,
+          "review-wave": true,
+          "alignment": true,
+          "approval": true
+        },
+        "design": {
+          "drafting": true,
+          "triad-review": true,
+          "review-wave": true,
+          "alignment": true,
+          "approval": true
+        },
+        "tasks": {
+          "drafting": true,
+          "triad-review": true,
+          "review-wave": true,
+          "alignment": true,
+          "approval": true
+        },
+        "implementation": {
+          "drafting": true,
+          "triad-review": true,
+          "review-wave": true,
+          "alignment": true,
+          "approval": true
+        }
+      },
+      "conformance-evaluation": {
+        "intent": {
+          "drafting": true,
+          "review": true,
+          "approval": true,
+          "reference": "stages/intent.yaml"
+        },
+        "feature-partitioning": {
+          "candidate-proposal": true,
+          "approval": true,
+          "reference": "stages/feature-partitioning/2026-05-24-proposal.md"
+        },
+        "requirements": {
+          "drafting": true,
+          "triad-review": true,
+          "review-wave": true,
+          "alignment": true,
+          "approval": true
+        },
+        "design": {
+          "drafting": true,
+          "triad-review": true,
+          "review-wave": true,
+          "alignment": true,
+          "approval": true
+        },
+        "tasks": {
+          "drafting": true,
+          "triad-review": true,
+          "review-wave": true,
+          "alignment": true,
+          "approval": true
+        },
+        "implementation": {
+          "drafting": true,
+          "triad-review": true,
+          "review-wave": true,
+          "alignment": true,
+          "approval": true
+        }
+      }
+    },
+    "post_write_manifest": ".reviewcompass/post-write-verification/post-write-2026-06-20-003.yaml"
+  }
+}

@@ -1,0 +1,28 @@
+run_id: 2026-06-20-workflow-management-implementation-req15-review-run
+target_files:
+- path: .reviewcompass/schema/language_task_io.schema.json
+  sha256: ed5ef03a8498a1a9b510ba8d5ce4ab178224bf4a53062b2509de02a828a07d6a
+- path: .reviewcompass/schema/effective_prompt_manifest.schema.json
+  sha256: bde7da6682702adf99e57df6f6c375f6035ba88865a8dcebb942befcdcd45332
+- path: tools/check-workflow-action.py
+  sha256: 4871b439b11450d1b25728e5a1195fae95d30dfd1737c0d980841ef5aba5ee13
+- path: tools/check_workflow_action/effective_prompt_builder.py
+  sha256: 84d5abff837875e903c4960a413157186f46e3f9bd58908aada56510cdb87135
+- path: tools/check_workflow_action/prompt_audit.py
+  sha256: cc4c99c5e4c1e3976e0ae239432ba5dbc5240f5937a00de495de9fa834b56e97
+- path: tools/api_providers/run_role.py
+  sha256: 740f1a699e7f6355b775cf19ef96437d2ae29a0c91bba18df14a41237c528806
+- path: tools/api_providers/run_review.py
+  sha256: 9f5eb64d3621712ecb605c979a36ca70fc63955efefd24b3c9934b1b5a27f6bd
+- path: tests/workflow-management/test_language_task_io_schema.py
+  sha256: 11ecf0465a11c371fea093118050cde5584a06d2fb9dc26a1bed86bfa492edef
+- path: tests/workflow-management/test_effective_prompt_manifest.py
+  sha256: 46de932867c806ecfc7d857060384647ad610bc75df1c262289804b86562cfdf
+- path: tests/workflow-management/test_prompt_audit.py
+  sha256: f8c29aa0dceac8309fd5a92bc8bd0af65ac2c2877ac506a8d9f23807054be76d
+- path: tests/workflow-management/test_prompt_manifest_rounds_recording.py
+  sha256: c679c3ab1db9e45ef52ff8353c898614fb82923e84debd3cff15fd9c94251ef7
+- path: tools/api_providers/tests/test_run_role.py
+  sha256: a5bd205bc164344a262e905ad7d429cbd9c5bc682decf09f4ccc537c1cd6c30e
+- path: tools/api_providers/tests/test_run_review.py
+  sha256: 6e1b532afcb15f3432ffc6ae5c63cf8b681b26e3c0f539a4c6798225f7a3e53f

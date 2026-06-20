@@ -1,0 +1,28 @@
+role: judgment
+provider: gemini-api
+model: gemini-3.1-pro-preview
+attempts: 1
+duration_seconds: 40.745
+findings:
+- severity: WARN
+  target_location: Source Materials / Verification before review
+  description: Verification evidence is stated as prose assertions ('13 passed', 'verdict=OK')
+    rather than structured excerpts or attached test output.
+  rationale: A reviewing model cannot independently confirm the verification claims.
+    Inline structured summaries or excerpts of actual test output would let the model
+    distinguish confirmed-passing boundaries from unverified ones, reducing the risk
+    of treating unverified claims as evidence.
+- severity: INFO
+  target_location: Finding Policy
+  description: The section does not provide specific target-location guidance (e.g.,
+    instructing the model to pinpoint specific file paths, line numbers, or code components).
+  rationale: Although it properly relies on the review runner for the YAML shape,
+    explicit guidance on how to format the `target_location` ensures that implementation
+    findings are precise enough to be effectively triaged.
+- severity: INFO
+  target_location: Front matter
+  description: The `intended_actual_run_dir` value differs from the `review_target`
+    directory prefix.
+  rationale: This directory name inconsistency (implementation-req16-review-run vs
+    implementation-review-run) may cause confusion regarding where artifacts will
+    be written during the actual run.

@@ -1,0 +1,135 @@
+run_id: 2026-06-20-workflow-management-implementation-req14-approval-gate-prompt-quality-rerun-after-preanalysis-audit
+triage_status: draft
+generated_at: '2026-06-20T12:16:22.677516+00:00'
+decision_actor: null
+decision_actor_type: human
+items:
+- finding_id: 2026-06-20-workflow-management-implementation-req14-approval-gate-prompt-quality-rerun-after-preanalysis-audit-claude-sonnet-4-6-adversarial-001
+  run_id: 2026-06-20-workflow-management-implementation-req14-approval-gate-prompt-quality-rerun-after-preanalysis-audit
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: '## Source Materials / source_cross_references'
+  plain_language_summary: Cross-references cite specific line ranges in requirements.md,
+    design.md, and tasks.md, but the structured summary does not include the actual
+    excerpted text from those line ranges. The model must rely entirely on the author-written
+    structured summary fields rather than the raw upstream text.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: Source-Material Quality criterion requires source material as excerpt
+    or structured summary in model-readable form. The structured summary is present
+    and reasonably detailed, but the absence of any raw excerpt means the model cannot
+    detect discrepancies between the summary and the actual upstream documents. The
+    criteria file itself notes that visible contradictions should be reported, but
+    if no raw text is injected, the model has no basis for detecting them. This is
+    a gap in evidence completeness, though not a blocking defect given the structured
+    summary fields.
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-20-workflow-management-implementation-req14-approval-gate-prompt-quality-rerun-after-preanalysis-audit-claude-sonnet-4-6-adversarial-002
+  run_id: 2026-06-20-workflow-management-implementation-req14-approval-gate-prompt-quality-rerun-after-preanalysis-audit
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: '## Required Checks / Check 5'
+  plain_language_summary: 'Check 5 conflates two distinct obligations: (a) constraining
+    the review model from authorizing irreversible operations, and (b) instructing
+    the model to actively inspect target code for approval-gate bypass. Bundling both
+    into one numbered check risks the model treating the constraint clause as the
+    primary task and underweighting the active inspection obligation.'
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: Judgment Granularity criterion requires checks to be clearly separable
+    so the model does not conflate labels or miss item-specific evidence. The current
+    wording is long and self-referential. Splitting the constraint reminder from the
+    active bypass-inspection instruction would reduce risk of the model satisfying
+    one half while skipping the other.
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-20-workflow-management-implementation-req14-approval-gate-prompt-quality-rerun-after-preanalysis-audit-claude-sonnet-4-6-adversarial-003
+  run_id: 2026-06-20-workflow-management-implementation-req14-approval-gate-prompt-quality-rerun-after-preanalysis-audit
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: '## Review Target (target manifest section)'
+  plain_language_summary: The target manifest lists four paths but does not provide
+    any structured summary or excerpt of those files. The criteria correctly states
+    that the API runner will inject file contents, and includes a CRITICAL guard if
+    content is absent. However, there is no fallback or partial-content instruction
+    if only some paths are injected, which could leave the model reviewing an incomplete
+    target set without triggering the CRITICAL guard.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: Source-Material Quality and Output/Triage Fit criteria require
+    that the model can detect incomplete target injection. The current CRITICAL guard
+    fires only if 'any listed target path content is absent.' In practice, partial
+    injection (e.g., one of four files missing) should still fire the guard, but the
+    wording 'any listed target path' is ambiguous about whether it means 'at least
+    one is absent' or 'all are absent.' Clarifying to 'if any one or more listed target
+    paths are absent' would tighten the guard.
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-20-workflow-management-implementation-req14-approval-gate-prompt-quality-rerun-after-preanalysis-audit-claude-sonnet-4-6-adversarial-004
+  run_id: 2026-06-20-workflow-management-implementation-req14-approval-gate-prompt-quality-rerun-after-preanalysis-audit
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: '## Finding Policy / ''Traceable evidence'' sentence'
+  plain_language_summary: 'The traceable evidence definition appears at the end of
+    the Finding Policy section after the findings: [] condition. Placing it before
+    the per-finding location guidance would improve readability and ensure the model
+    applies it when writing individual findings rather than only when considering
+    the empty-findings case.'
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: Minor ergonomics improvement; does not affect correctness of the
+    review.
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-20-workflow-management-implementation-req14-approval-gate-prompt-quality-rerun-after-preanalysis-audit-claude-sonnet-4-6-adversarial-005
+  run_id: 2026-06-20-workflow-management-implementation-req14-approval-gate-prompt-quality-rerun-after-preanalysis-audit
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: '## User Review Requirements / Requirement-to-prompt mapping'
+  plain_language_summary: The requirement-to-prompt mapping field maps 'Output requirements'
+    to 'Finding Policy' but does not explicitly map 'Prohibited actions' to 'Finding
+    Policy' in addition to 'Out Of Scope'. The Finding Policy section does include
+    the CRITICAL rule for prohibited actions, so the gap is only in the mapping table,
+    not in the actual policy.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: Minor completeness gap in the traceability table; does not change
+    what is reviewed.
+  applied_files: []
+  superseded_by: null

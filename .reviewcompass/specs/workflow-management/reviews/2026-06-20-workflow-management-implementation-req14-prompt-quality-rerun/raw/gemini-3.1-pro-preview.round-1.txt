@@ -1,0 +1,13 @@
+findings:
+  - severity: ERROR
+    target_location: Required Checks / Check 5
+    description: "Check 5 incorrectly instructs the model to verify that the target code itself does not authorize commit, push, spec.json mutation, phase transition, or gate completion."
+    rationale: "The User Review Requirements list these as 'Prohibited actions' for the review session itself (i.e., the LLM is prohibited from performing them). By mapping these LLM boundaries into a functional check on the target source code—which is specifically implementing approval gates and phase transitions—the prompt replaces a user requirement and will likely cause massive false positives against legitimate tool functionality. This changes what will be reviewed."
+  - severity: WARN
+    target_location: Source Materials / workflow-management-req14-upstream-intent
+    description: "The structured summary merges all upstream intent without providing file path provenance or per-phase demarcation."
+    rationale: "While using a structured summary is permitted and often preferred for prompt sizing, omitting the origin paths (e.g., which parts came from design.md vs. tasks.md) obscures traceability. Since the review is a vertical intent transfer checking for phase-to-phase drift, combining all upstream constraints into a single block without provenance weakens the model's ability to anchor specific obligations to their originating artifacts."
+  - severity: INFO
+    target_location: Finding Policy
+    description: "The condition for returning an empty findings list (findings: []) is somewhat subjective and vague."
+    rationale: "Phrasing the acceptance condition as 'only when the target is traceable, correctly scoped, and sufficiently grounded' lacks explicit ties to the core review task. Tying this directly to 'when all required checks pass with no deviations from upstream intent' would provide clearer, more actionable guidance for the model."

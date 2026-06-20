@@ -1,0 +1,129 @@
+run_id: 2026-06-20-workflow-management-implementation-req14-approval-gate-prompt-quality-rerun-after-preanalysis-audit-v4
+triage_status: draft
+generated_at: '2026-06-20T12:24:31.379386+00:00'
+decision_actor: null
+decision_actor_type: human
+items:
+- finding_id: 2026-06-20-workflow-management-implementation-req14-approval-gate-prompt-quality-rerun-after-preanalysis-audit-v4-claude-sonnet-4-6-adversarial-001
+  run_id: 2026-06-20-workflow-management-implementation-req14-approval-gate-prompt-quality-rerun-after-preanalysis-audit-v4
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: Review Target (target manifest section)
+  plain_language_summary: The target manifest lists four paths but does not specify
+    what the API runner will inject or confirm injection of source material excerpts.
+    The prompt correctly states that source_paths are provenance-only and that structured
+    summary fields are model-readable, but there is no analogous explicit confirmation
+    that the structured summary and source excerpts are injected rather than being
+    path-referenced. In practice the summary is inline, so this is low risk, but the
+    asymmetry between target-injection verification (explicit CRITICAL rule) and source-material
+    injection (implicit) creates a minor ambiguity.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: If the source excerpts were ever refactored to path-only references,
+    no rule would catch the regression. Making the injection expectation symmetric
+    would close this gap.
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-20-workflow-management-implementation-req14-approval-gate-prompt-quality-rerun-after-preanalysis-audit-v4-claude-sonnet-4-6-adversarial-002
+  run_id: 2026-06-20-workflow-management-implementation-req14-approval-gate-prompt-quality-rerun-after-preanalysis-audit-v4
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: Source Materials / source_anchor_instruction
+  plain_language_summary: The instruction says 'Do not attempt to verify hashes during
+    this review.' This is correct, but the prompt does not tell the model what to
+    do if a source excerpt is visibly inconsistent with its sha256 anchor label (e.g.,
+    a wrong file is injected under that label). The source_conflict_instruction handles
+    summary-vs-excerpt conflict, but not anchor-label-vs-content conflict.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: A mislabeled excerpt injected under the wrong anchor would silently
+    corrupt intent-transfer checking. A brief instruction covering visible anchor-label
+    mismatches would prevent silent errors.
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-20-workflow-management-implementation-req14-approval-gate-prompt-quality-rerun-after-preanalysis-audit-v4-claude-sonnet-4-6-adversarial-003
+  run_id: 2026-06-20-workflow-management-implementation-req14-approval-gate-prompt-quality-rerun-after-preanalysis-audit-v4
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: Required Checks / check 6
+  plain_language_summary: Check 6 instructs the model to actively inspect whether
+    target code omits, weakens, contradicts, or bypasses required approval-gate behavior,
+    and provides useful behavioral examples. However, it does not instruct the model
+    on what to do when a required target file is readable but empty or contains only
+    stub/placeholder content (as opposed to a path being absent). The CRITICAL rule
+    in Finding Policy covers path absence but not stub content.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: A stub file present with non-empty placeholder content would pass
+    the path-presence check but would fail most behavioral checks. Covering this case
+    explicitly in Required Checks or Finding Policy would prevent a gap between path-presence
+    and behavioral adequacy.
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-20-workflow-management-implementation-req14-approval-gate-prompt-quality-rerun-after-preanalysis-audit-v4-claude-sonnet-4-6-adversarial-004
+  run_id: 2026-06-20-workflow-management-implementation-req14-approval-gate-prompt-quality-rerun-after-preanalysis-audit-v4
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: Finding Policy / traceable evidence paragraph
+  plain_language_summary: The finding policy asks for 'the narrowest available anchor'
+    but does not instruct the model to report when no anchor is available (e.g., required
+    behavior is entirely absent and no line/field exists to cite). Clarifying that
+    absence of an anchor for a missing behavior should be reported as such (e.g.,
+    'no implementing code found') would improve triage clarity.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: Minor ergonomics issue; the current wording could lead the model
+    to omit location for absence findings, making triage slightly harder.
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-20-workflow-management-implementation-req14-approval-gate-prompt-quality-rerun-after-preanalysis-audit-v4-claude-sonnet-4-6-adversarial-005
+  run_id: 2026-06-20-workflow-management-implementation-req14-approval-gate-prompt-quality-rerun-after-preanalysis-audit-v4
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: User Review Requirements / Requirement-to-prompt mapping
+  plain_language_summary: The mapping table entry 'Review purpose -> Review Task and
+    Required Checks' is accurate but does not mention Vertical Intent Transfer Customization,
+    which is the primary mechanism operationalizing the triad-review purpose for phase
+    reviews. Adding a reference would make the mapping complete.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: Non-blocking; the vertical intent transfer section is present and
+    correct, but the mapping table does not surface it, which could make future audits
+    of requirement-to-prompt fit slightly harder.
+  applied_files: []
+  superseded_by: null

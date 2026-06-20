@@ -1,0 +1,72 @@
+role: adversarial
+provider: anthropic-api
+model: claude-sonnet-4-6
+attempts: 1
+duration_seconds: 21.462
+findings:
+- severity: WARN
+  target_location: Source Materials / workflow-management-req14-upstream-intent /
+    source_paths_note
+  description: The source_paths_note correctly marks source_paths as provenance only,
+    but the structured summary fields that follow are presented as a flat inline block
+    rather than explicitly labeled sections. A model reading the criteria file must
+    infer that the fields under workflow-management-req14-upstream-intent (purpose,
+    responsibility_boundaries, acceptance_criteria, etc.) are the model-readable substitute.
+    Making this explicit with a label such as 'Structured Summary (model-readable)'
+    before those fields would reduce ambiguity.
+  rationale: Without a clear label, a model could treat the structured summary fields
+    as supplemental commentary rather than the primary evidence source, weakening
+    source-material quality and potentially causing the model to rely on path-only
+    material.
+- severity: WARN
+  target_location: Required Checks / item 5
+  description: Check 5 correctly scopes its prohibition to the review run and model
+    output, not to target code. However, the parenthetical clarification ('This check
+    constrains the review run and model output, not legitimate target code that implements
+    workflow operations') appears only in Required Checks and not in the primary judgment
+    question or the Out Of Scope section, where the same clarification is present
+    but phrased slightly differently. Inconsistent phrasing between the two locations
+    could cause a model to apply different interpretations when evaluating findings
+    near the boundary.
+  rationale: A small phrasing divergence between Required Checks item 5 and the Out
+    Of Scope section increases the risk that the model suppresses legitimate findings
+    about workflow-operation code or, conversely, flags compliant code as a violation.
+- severity: WARN
+  target_location: Review Target
+  description: The target manifest lists 11 paths but does not distinguish schemas,
+    implementation modules, and test files as separate sub-groups. The Required Checks
+    and acceptance criteria reference distinct behavioral expectations for schemas,
+    tools, and tests. Grouping the paths by artifact type (e.g., 'Schemas', 'Implementation',
+    'Tests') would help the model associate each path with the relevant acceptance
+    criteria without guessing.
+  rationale: Without grouping, a model may inadvertently apply schema-level criteria
+    to test files or vice versa, increasing the risk of miscategorized findings.
+- severity: WARN
+  target_location: Source Materials / unresolved_or_design_deferred_items
+  description: The two deferred items (Phase 3 vs Phase 5 drift behavior, and future
+    runtime location for side-track-stack.yaml) are listed but not linked to specific
+    acceptance criteria or forbidden_actions that the reviewing model should flag
+    if the target claims resolved behavior. Without this linkage, the model may not
+    know what finding severity to apply if the target appears to implement Phase 5
+    blocking without evidence.
+  rationale: Unresolved items that directly affect verdict thresholds should indicate
+    the expected finding severity if they surface in the target, to avoid the model
+    defaulting to INFO when an ERROR or WARN is warranted.
+- severity: INFO
+  target_location: Finding Policy
+  description: 'The finding policy does not explicitly state when findings: [] is
+    acceptable. The phrase ''if and only if every required check passes with traceable
+    evidence and no deviation'' is present but embedded at the end of the last bullet.
+    Surfacing this as a standalone line improves parser and human readability.'
+  rationale: 'Per the API review prompt quality criteria, the prompt must define when
+    findings: [] is acceptable. The condition is present but its placement reduces
+    visibility.'
+- severity: INFO
+  target_location: Primary judgment question
+  description: The primary judgment question lists five deviation types (omission,
+    weakening, contradiction, unsupported addition, drift) as a bullet list embedded
+    within the question sentence. Separating the question from the deviation taxonomy
+    would make the question itself non-leading and keep the taxonomy as a clarifying
+    appendix, improving readability without changing scope.
+  rationale: Minor ergonomics improvement; the current form is functional but slightly
+    harder to parse as a single question versus a checklist.

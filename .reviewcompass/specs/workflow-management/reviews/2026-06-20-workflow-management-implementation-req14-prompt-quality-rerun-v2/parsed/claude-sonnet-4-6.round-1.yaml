@@ -1,0 +1,66 @@
+role: adversarial
+provider: anthropic-api
+model: claude-sonnet-4-6
+attempts: 1
+duration_seconds: 22.607
+findings:
+- severity: WARN
+  target_location: Source Materials / workflow-management-req14-upstream-intent /
+    source_paths
+  description: Source materials are listed as paths only without excerpts or structured
+    summaries inline.
+  rationale: The prompt-quality criteria require that source material be included
+    as excerpt or structured summary in model-readable form, not as path-only listings.
+    The structured intent block below the paths partially compensates by providing
+    purpose, responsibility_boundaries, acceptance_criteria, forbidden_actions, and
+    unresolved items inline, but the raw .md files themselves are referenced only
+    by path. The reviewing model cannot read those files directly through the criteria
+    file alone. If the runner injects file contents at execution time this is acceptable,
+    but the criteria file should clarify that the runner will inject those file contents
+    or confirm the structured summary below is the authoritative model-readable substitute,
+    so there is no ambiguity about whether the paths are provenance markers or expected
+    file injections.
+- severity: WARN
+  target_location: Review Target
+  description: Review target lists twelve files by path only without any structural
+    summary, excerpt, or runner injection note.
+  rationale: Source-material quality checks require that the criteria file not rely
+    solely on path listings when the content must be model-readable. For the review
+    target specifically, the criteria file correctly states 'Do not treat this criteria
+    file, a wrapper, or an author-written summary as a substitute for the target,'
+    implying actual file content must reach the model. However, no runner injection
+    note or manifest reference is present to confirm how the actual artifact content
+    will be supplied. If the runner reliably injects all listed target paths as content,
+    this is workable, but the absence of an explicit injection note leaves ambiguity
+    about whether the model will receive the actual code or only paths.
+- severity: WARN
+  target_location: Required Checks / check 5
+  description: Check 5 conflates a scope boundary (this review run must not authorize
+    operations) with a finding-policy trigger in a way that could suppress legitimate
+    findings about target code implementing those same operations.
+  rationale: The Out Of Scope section already includes the clarifying note that legitimate
+    target code mentioning workflow operations should not be flagged solely for mentioning
+    them. Check 5 does not include that clarification and a model reading checks linearly
+    could interpret it as a reason to avoid reporting findings about approval or commit
+    logic in the target code. Repeating the exemption note in Check 5 or linking explicitly
+    to the Out Of Scope clarification would reduce this risk.
+- severity: INFO
+  target_location: Primary judgment question
+  description: 'The primary judgment question is slightly compound: it asks whether
+    the target satisfies Req 14 upstream transfer AND carries upstream intent without
+    omission, weakening, contradiction, unsupported addition, or drift as a single
+    sentence.'
+  rationale: This is a single inseparable vertical-intent-transfer judgment, so bundling
+    is acceptable under the criteria. However, the list of five sub-conditions (omission,
+    weakening, contradiction, unsupported addition, drift) embedded in one sentence
+    could cause a model to treat partial satisfaction as full pass. Numbering or bullet-separating
+    the sub-conditions would improve clarity without splitting into independent prompts.
+- severity: INFO
+  target_location: Finding Policy
+  description: 'Finding policy does not explicitly define when findings: [] is acceptable,
+    only stating the condition negatively (''only when every required check passes'').'
+  rationale: 'The output contract check requires that the prompt define when findings:
+    [] is acceptable. A positive statement such as ''Return findings: [] if and only
+    if all twelve target artifacts satisfy every required check with traceable evidence
+    and no deviation is found'' would make the acceptance condition unambiguous for
+    the reviewing model and the parser.'

@@ -1,0 +1,16 @@
+role: judgment
+provider: gemini-api
+model: gemini-3.1-pro-preview
+attempts: 1
+duration_seconds: 38.522
+findings:
+- severity: WARN
+  target_location: Required Checks (Item 5) and Finding Policy
+  description: Self-referential instructions asking the model to review its own output
+  rationale: Instructing the model to 'Check that this review run and its model output
+    do not approve...' and to 'Use CRITICAL for review prompt or model-output behavior...'
+    creates a paradox. The model evaluates the target artifact, not its own real-time
+    output. Prohibitions against authorizing operations should be phrased as direct
+    constraints on the model's behavior ('You must not...'), rather than items for
+    the model to report findings against itself. This framing bias can cause model
+    confusion or spurious findings.

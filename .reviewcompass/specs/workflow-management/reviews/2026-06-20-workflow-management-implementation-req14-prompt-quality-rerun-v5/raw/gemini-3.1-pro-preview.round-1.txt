@@ -1,0 +1,31 @@
+```yaml
+findings:
+  - severity: ERROR
+    target_location: "## Review Task"
+    description: "The draft prompt bundles multiple independent implementation judgments (approval gates, side track stack, workflow-state snapshot) and 11 target files into a single prompt."
+    rationale: "Combining three distinct technical components into one review task violates the judgment granularity requirement. With 11 target files spanning different schemas, implementations, and test suites, the model is highly likely to miss item-specific evidence, conflate context, or fail to analyze the entire codebase due to context length limits. These should be split into item-specific prompts."
+  - severity: WARN
+    target_location: "## Review Target"
+    description: "The instruction to report an error if listed target path content is 'absent' does not define how to handle partially injected files (e.g., token limit truncation)."
+    rationale: "Given the large target manifest size, token limit truncation is a significant risk. Without an explicit instruction to check for complete injection (such as verifying file ends), the model may silently evaluate truncated files and miss defects present later in the injected content."
+  - severity: WARN
+    target_location: "## Source Materials / unresolved_or_design_deferred_items"
+    description: "The prompt notes that Phase 3 may warn on some side-track drift while Phase 5 blocks, but it does not specify which phase the current implementation target represents."
+    rationale: "Without knowing the expected phase context, the reviewing model cannot consistently evaluate whether a warning-only drift check in the target code is acceptable or an actionable defect."
+  - severity: WARN
+    target_location: "## Required Checks / Check 5 & ## Out Of Scope"
+    description: "The instruction stating that the constraints apply to the review run and model output, 'not the mere presence or implementation of workflow-operation code,' creates potential confusion about when to flag actual vulnerabilities."
+    rationale: "While this is intended to prevent false positives merely for mentioning operations, the phrasing is slightly disconnected from the Finding Policy. A hasty model might misinterpret this as a directive to ignore actual target code that improperly bypasses gates. Tightening the wording to explicitly align with the Finding Policy's CRITICAL trigger would reduce ambiguity."
+  - severity: INFO
+    target_location: "## Finding Policy"
+    description: "The condition for returning `findings: []` does not clarify how to handle unresolved upstream items when the target correctly defers to them."
+    rationale: "Adding a brief clarification that a clean pass is acceptable despite the presence of acknowledged unresolved items (provided the target does not conflict with them) prevents the model from generating unnecessary WARN findings out of caution."
+  - severity: INFO
+    target_location: "## Source Materials"
+    description: "The structured summary provides model-readable intent but lacks metadata (such as a version or timestamp) explicitly tying it to the anchored SHA256 hashes."
+    rationale: "Adding a brief note confirming the summary was derived directly from the specific anchored versions clarifies provenance and ensures the model trusts the summary as faithfully matching the pinned intent."
+  - severity: INFO
+    target_location: "## Review Task"
+    description: "Deviation types (omission, weakening, contradiction, etc.) are formatted as a trailing bulleted list after the primary judgment question."
+    rationale: "Trailing bullet lists can sometimes be misparsed by models as independent checklist items rather than qualifiers to the main question. Incorporating them as an inline enumeration within the question sentence improves parsing reliability."
+```

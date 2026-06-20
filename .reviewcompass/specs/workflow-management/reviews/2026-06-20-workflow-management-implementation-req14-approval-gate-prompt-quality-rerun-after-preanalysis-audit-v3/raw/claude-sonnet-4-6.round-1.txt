@@ -1,0 +1,25 @@
+findings:
+  - severity: WARN
+    target_location: "Source Materials / source_paths_note"
+    description: "The source_paths_note states source_paths are provenance only and instructs the model to use structured summary fields as model-readable evidence. However, the criteria does not include an explicit fallback instruction for cases where an injected source excerpt visibly conflicts with the structured summary in a way that cannot be resolved without the full source text. This leaves the model without a triage rule when excerpt and summary diverge beyond what the WARN/ERROR anchor-instruction covers."
+    rationale: "Without a conflict-resolution rule, the model may suppress a finding or produce an unusable result when summary and excerpt text differ materially, reducing review reliability."
+
+  - severity: WARN
+    target_location: "Review Target / target manifest instruction"
+    description: "The target manifest instructs the model to report CRITICAL if any listed path is absent from the injected prompt, which is correct. However, it does not define what constitutes a 'clearly labeled section.' Different API runner templates use different heading conventions, so the absence-detection rule may be applied inconsistently across runners, risking false CRITICAL reports or missed absences."
+    rationale: "Ambiguous absence-detection language can cause the model to misjudge completeness of the injected target, producing either suppressed findings or spurious CRITICALs, both of which degrade triage usefulness."
+
+  - severity: WARN
+    target_location: "Required Checks / check 6"
+    description: "Check 6 instructs the model to actively inspect target code for omission, weakening, contradiction, or bypass, and lists specific behavioral risks (proxy_model decisions, stale digests, missing bindings, wrong actor/source). This is useful specificity. However, the check does not explicitly state that schema field presence alone is not sufficient evidence of enforcement; the model might accept a schema field definition as evidence of binding without verifying that the implementation actually enforces it at decision time. A brief clarifying clause would close this gap."
+    rationale: "Schema fields can be defined without enforcement in implementation code. Without an explicit instruction to verify enforcement rather than mere definition, the model may produce false-negative findings on human-only boundary checks."
+
+  - severity: INFO
+    target_location: "Finding Policy / traceable evidence definition"
+    description: "The finding policy defines traceable evidence as 'a target file plus the narrowest available anchor.' The phrase 'narrowest available anchor' is slightly ambiguous when the target is a schema file where line numbers may be less stable than field names. Adding 'schema field name preferred over line number for JSON schema targets' would improve anchor consistency."
+    rationale: "Minor ergonomics improvement; does not affect correctness of the review but would make findings easier to triage against the schema file specifically."
+
+  - severity: INFO
+    target_location: "Out Of Scope / constraint wording"
+    description: "The Out Of Scope section repeats the prohibited-action constraint using slightly different phrasing than the User Review Requirements section ('Do not approve or authorize commit, push, spec.json mutation, phase transition, or gate completion' vs. the user requirement list of 'commit, push, spec.json update, phase completion'). The terms 'spec.json mutation' and 'spec.json update' and 'phase transition' vs. 'phase completion' are close but not identical. Harmonizing the phrasing would eliminate any interpretation gap."
+    rationale: "Minor wording inconsistency; low risk but could cause the model to interpret the scope of prohibited actions slightly differently in each section."

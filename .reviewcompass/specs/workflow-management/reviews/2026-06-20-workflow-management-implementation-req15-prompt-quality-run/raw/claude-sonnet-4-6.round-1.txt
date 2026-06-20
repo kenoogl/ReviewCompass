@@ -1,0 +1,30 @@
+findings:
+  - severity: WARN
+    target_location: "## Review Target / file list"
+    description: "The target manifest path is declared in front matter, but the actual target files are listed inline in the criteria draft itself rather than being exclusively defined in the manifest. This creates a dual-definition risk where the manifest and the inline list could diverge."
+    rationale: "If the runner uses the manifest as the authoritative file list and the criteria draft also enumerates files, a discrepancy between the two could cause the model to review a different set of files than the runner supplies, or cause confusion about which list governs. The criteria draft should defer to the manifest for the authoritative file enumeration and note that the inline list is for human reference only."
+
+  - severity: WARN
+    target_location: "## Source Materials / Verification before review"
+    description: "The 'Verification before review' sub-section asserts that T-018 tests passed (9 passed) and that 31 other tests passed, but provides no excerpt or structured summary of what those tests cover. These are cited as factual preconditions the model is expected to rely on."
+    rationale: "Asking the model to treat pass counts as verified without showing the test names or any evidence violates the source-material quality requirement that source material be included as excerpt or structured summary in model-readable form, not as path-only or assertion-only references. The model cannot independently verify the assertion and may incorrectly treat the implementation as pre-validated, weakening negative coverage checks."
+
+  - severity: WARN
+    target_location: "## Required Checks / item 5"
+    description: "Check 5 asks whether 'source/digest/prompt length structures are specific enough for later audit' without defining a measurable threshold or acceptance criterion for specificity. This is a judgment-granularity ambiguity."
+    rationale: "Without a concrete criterion (e.g., minimum fields required, presence of sha256, required length bounds), different model runs will apply inconsistent standards. This reduces triage utility and could suppress or inflate WARN/ERROR findings on schema field completeness."
+
+  - severity: WARN
+    target_location: "## Finding Policy (inside criteria draft)"
+    description: "The finding policy inside the criteria draft defines its own output shape with a partial YAML example, which overlaps with the output contract provided by the API review runner template. The inline example uses 'path:line-or-section' as a placeholder, which could be mistaken for a required format string."
+    rationale: "Duplicate output contract definitions risk confusion if they diverge. The criteria draft should rely on the runner template's output contract and remove or clearly subordinate the inline example to avoid the model producing a shape that conflicts with the parser-expected format."
+
+  - severity: INFO
+    target_location: "## User Review Requirements / Scope boundaries"
+    description: "The scope boundary states 'do not review Req 14 approval gate or Req 16 phase/proxy controls except where the prompt audit directly references those boundaries.' The qualifying exception is slightly ambiguous about what counts as a direct reference."
+    rationale: "Minor wording improvement: specifying 'except where prompt_audit.py code or schema fields explicitly name Req 14 or Req 16 boundary symbols' would make the exception deterministic and reduce risk of the model either ignoring relevant boundary leakage or over-expanding into out-of-scope territory."
+
+  - severity: INFO
+    target_location: "## Source Materials / Design intent and Tasks intent"
+    description: "The design intent and tasks intent paragraphs restate requirements narrative but do not cite the canonical source document (e.g., a spec file path or excerpt). The model cannot distinguish whether this summary is authoritative or a paraphrase."
+    rationale: "Marking these as 'paraphrased from [spec path]' or including a brief canonical excerpt would improve provenance clarity and prevent the model from treating the summary as the ground truth if the implementation diverges from it."

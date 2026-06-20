@@ -1,0 +1,157 @@
+run_id: 2026-06-20-workflow-management-implementation-req14-approval-gate-prompt-quality-rerun-after-preanalysis-audit-v3
+triage_status: draft
+generated_at: '2026-06-20T12:20:45.420379+00:00'
+decision_actor: null
+decision_actor_type: human
+items:
+- finding_id: 2026-06-20-workflow-management-implementation-req14-approval-gate-prompt-quality-rerun-after-preanalysis-audit-v3-claude-sonnet-4-6-adversarial-001
+  run_id: 2026-06-20-workflow-management-implementation-req14-approval-gate-prompt-quality-rerun-after-preanalysis-audit-v3
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: Source Materials / source_paths_note
+  plain_language_summary: The source_paths_note states source_paths are provenance
+    only and instructs the model to use structured summary fields as model-readable
+    evidence. However, the criteria does not include an explicit fallback instruction
+    for cases where an injected source excerpt visibly conflicts with the structured
+    summary in a way that cannot be resolved without the full source text. This leaves
+    the model without a triage rule when excerpt and summary diverge beyond what the
+    WARN/ERROR anchor-instruction covers.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: Without a conflict-resolution rule, the model may suppress a finding
+    or produce an unusable result when summary and excerpt text differ materially,
+    reducing review reliability.
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-20-workflow-management-implementation-req14-approval-gate-prompt-quality-rerun-after-preanalysis-audit-v3-claude-sonnet-4-6-adversarial-002
+  run_id: 2026-06-20-workflow-management-implementation-req14-approval-gate-prompt-quality-rerun-after-preanalysis-audit-v3
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: Review Target / target manifest instruction
+  plain_language_summary: The target manifest instructs the model to report CRITICAL
+    if any listed path is absent from the injected prompt, which is correct. However,
+    it does not define what constitutes a 'clearly labeled section.' Different API
+    runner templates use different heading conventions, so the absence-detection rule
+    may be applied inconsistently across runners, risking false CRITICAL reports or
+    missed absences.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: Ambiguous absence-detection language can cause the model to misjudge
+    completeness of the injected target, producing either suppressed findings or spurious
+    CRITICALs, both of which degrade triage usefulness.
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-20-workflow-management-implementation-req14-approval-gate-prompt-quality-rerun-after-preanalysis-audit-v3-claude-sonnet-4-6-adversarial-003
+  run_id: 2026-06-20-workflow-management-implementation-req14-approval-gate-prompt-quality-rerun-after-preanalysis-audit-v3
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: Required Checks / check 6
+  plain_language_summary: Check 6 instructs the model to actively inspect target code
+    for omission, weakening, contradiction, or bypass, and lists specific behavioral
+    risks (proxy_model decisions, stale digests, missing bindings, wrong actor/source).
+    This is useful specificity. However, the check does not explicitly state that
+    schema field presence alone is not sufficient evidence of enforcement; the model
+    might accept a schema field definition as evidence of binding without verifying
+    that the implementation actually enforces it at decision time. A brief clarifying
+    clause would close this gap.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: Schema fields can be defined without enforcement in implementation
+    code. Without an explicit instruction to verify enforcement rather than mere definition,
+    the model may produce false-negative findings on human-only boundary checks.
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-20-workflow-management-implementation-req14-approval-gate-prompt-quality-rerun-after-preanalysis-audit-v3-claude-sonnet-4-6-adversarial-004
+  run_id: 2026-06-20-workflow-management-implementation-req14-approval-gate-prompt-quality-rerun-after-preanalysis-audit-v3
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: Finding Policy / traceable evidence definition
+  plain_language_summary: The finding policy defines traceable evidence as 'a target
+    file plus the narrowest available anchor.' The phrase 'narrowest available anchor'
+    is slightly ambiguous when the target is a schema file where line numbers may
+    be less stable than field names. Adding 'schema field name preferred over line
+    number for JSON schema targets' would improve anchor consistency.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: Minor ergonomics improvement; does not affect correctness of the
+    review but would make findings easier to triage against the schema file specifically.
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-20-workflow-management-implementation-req14-approval-gate-prompt-quality-rerun-after-preanalysis-audit-v3-claude-sonnet-4-6-adversarial-005
+  run_id: 2026-06-20-workflow-management-implementation-req14-approval-gate-prompt-quality-rerun-after-preanalysis-audit-v3
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: Out Of Scope / constraint wording
+  plain_language_summary: The Out Of Scope section repeats the prohibited-action constraint
+    using slightly different phrasing than the User Review Requirements section ('Do
+    not approve or authorize commit, push, spec.json mutation, phase transition, or
+    gate completion' vs. the user requirement list of 'commit, push, spec.json update,
+    phase completion'). The terms 'spec.json mutation' and 'spec.json update' and
+    'phase transition' vs. 'phase completion' are close but not identical. Harmonizing
+    the phrasing would eliminate any interpretation gap.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: Minor wording inconsistency; low risk but could cause the model
+    to interpret the scope of prohibited actions slightly differently in each section.
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-20-workflow-management-implementation-req14-approval-gate-prompt-quality-rerun-after-preanalysis-audit-v3-gemini-3.1-pro-preview-judgment-001
+  run_id: 2026-06-20-workflow-management-implementation-req14-approval-gate-prompt-quality-rerun-after-preanalysis-audit-v3
+  source_model: gemini-3.1-pro-preview
+  source_round: round-1
+  source_raw_path: raw/gemini-3.1-pro-preview.round-1.txt
+  source_parsed_path: parsed/gemini-3.1-pro-preview.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: Required Checks (Item 5) and Finding Policy
+  plain_language_summary: Self-referential instructions asking the model to review
+    its own output
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: Instructing the model to 'Check that this review run and its model
+    output do not approve...' and to 'Use CRITICAL for review prompt or model-output
+    behavior...' creates a paradox. The model evaluates the target artifact, not its
+    own real-time output. Prohibitions against authorizing operations should be phrased
+    as direct constraints on the model's behavior ('You must not...'), rather than
+    items for the model to report findings against itself. This framing bias can cause
+    model confusion or spurious findings.
+  applied_files: []
+  superseded_by: null

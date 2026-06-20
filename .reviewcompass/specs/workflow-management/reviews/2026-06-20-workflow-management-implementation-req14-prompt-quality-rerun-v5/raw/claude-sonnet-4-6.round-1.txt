@@ -1,0 +1,30 @@
+findings:
+  - severity: WARN
+    target_location: "## Source Materials / source_paths_note and source_anchors"
+    description: "Source paths are declared as provenance-only with SHA256 anchors, and the structured summary is provided as model-readable upstream intent. However, the structured summary does not include version or date metadata tying it to the anchored source files, so a reviewer cannot confirm the summary faithfully represents the pinned versions."
+    rationale: "If the structured summary diverges from the anchored source files, the model will check transfer against a stale or inaccurate intent baseline without any signal. Adding a brief note that the summary was derived from the anchored versions (or a generation timestamp) would close this gap."
+
+  - severity: WARN
+    target_location: "## Review Target / target manifest note"
+    description: "The target manifest lists eleven paths and instructs the runner to inject their contents, and it correctly says to report ERROR if content is absent. However, the criteria file does not define what constitutes 'absent' precisely enough: it is unclear whether a partially-injected file (e.g., truncated due to token limits) should also trigger the ERROR condition."
+    rationale: "Token-limit truncation is a real risk for a manifest of this size. Without a completeness check instruction, the model may silently proceed on partial content, producing findings that miss late-file content."
+
+  - severity: WARN
+    target_location: "## Required Checks / Check 5"
+    description: "Check 5 states that the out-of-scope constraint 'constrains the review run and model output, not the mere presence or implementation of workflow-operation code.' This phrasing is correct but may be confusing: a reviewer reading it quickly could interpret it as suppressing findings about code that actually bypasses the gate, which is the opposite of the intended behavior."
+    rationale: "The distinction between 'code that implements workflow operations' and 'code that bypasses the required gate' is critical. The current wording partially mirrors the Out Of Scope section but the two formulations are slightly different and could create ambiguity about when to surface a CRITICAL finding. Tightening the language to match the Finding Policy's CRITICAL trigger would reduce the risk of suppressed findings."
+
+  - severity: WARN
+    target_location: "## Source Materials / unresolved_or_design_deferred_items"
+    description: "The unresolved items note Phase 3 vs Phase 5 drift-warning/blocking behavior but do not specify which phase the current implementation target is expected to be in. The unresolved_items_review_rule says to report WARN or ERROR 'according to impact,' leaving severity calibration ambiguous for the reviewing model."
+    rationale: "Without knowing the current phase, the model cannot consistently decide whether a drift implementation that only warns (Phase 3 behavior) is acceptable or a defect. Stating the expected phase explicitly, or at minimum defining a default severity for the ambiguous case, would make findings more consistent."
+
+  - severity: INFO
+    target_location: "## Review Task / Primary judgment question"
+    description: "The primary judgment question lists five deviation types (omission, weakening, contradiction, unsupported addition, drift) as a bullet list after the question. Restructuring as a single inline enumeration within the question sentence would make it slightly easier to parse and less likely to be read as a separate checklist."
+    rationale: "Minor ergonomics: bullet lists after a question can visually separate the deviation types from the question itself, potentially causing a model to treat them as independent checks rather than as qualifiers of the single judgment question."
+
+  - severity: INFO
+    target_location: "## Finding Policy / 'Return findings: [] if and only if'"
+    description: "The condition for returning findings: [] requires 'every required check passes with traceable evidence.' This is correct, but the policy does not explicitly state that a clean pass on all checks despite the presence of unresolved upstream items (listed in source materials) is still acceptable provided no target claim conflicts with them."
+    rationale: "Without this clarification, a cautious model might feel obligated to emit a WARN for each unresolved upstream item even when the target correctly defers to them. Adding a sentence confirming that acknowledged deferred items do not automatically generate findings would prevent noise."

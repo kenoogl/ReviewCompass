@@ -1,0 +1,4 @@
+run_id: 2026-06-20-workflow-management-implementation-req14-approval-gate-prompt-quality-run
+target_files:
+- path: .reviewcompass/specs/workflow-management/reviews/2026-06-20-workflow-management-implementation-req14-approval-gate-criteria-run/review-criteria.md
+  sha256: 5f78a6811aaecca401fba796ecbad82fbc2310e4a691aa30280a4b2217b7d171

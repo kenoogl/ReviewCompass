@@ -1,0 +1,4 @@
+run_id: 2026-06-20-workflow-management-implementation-req14-approval-gate-preanalysis-audit-run
+target_files:
+- path: .reviewcompass/specs/workflow-management/reviews/2026-06-20-workflow-management-implementation-req14-approval-gate-preanalysis-audit-run/preanalysis-audit-bundle.md
+  sha256: 1ba0414be52f978f556cb0315dff7e08e88636ecc01356d07bddab32887fe255

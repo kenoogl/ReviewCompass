@@ -1,0 +1,144 @@
+run_id: 2026-06-20-workflow-management-implementation-req14-approval-gate-prompt-quality-rerun-after-preanalysis-audit-v5
+triage_status: draft
+generated_at: '2026-06-20T12:26:14.906374+00:00'
+decision_actor: null
+decision_actor_type: human
+items:
+- finding_id: 2026-06-20-workflow-management-implementation-req14-approval-gate-prompt-quality-rerun-after-preanalysis-audit-v5-claude-sonnet-4-6-adversarial-001
+  run_id: 2026-06-20-workflow-management-implementation-req14-approval-gate-prompt-quality-rerun-after-preanalysis-audit-v5
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: Review Target (target manifest section)
+  plain_language_summary: The target manifest lists four file paths but does not include
+    any inline excerpts or structured summaries of the target file contents. The criteria
+    correctly instructs the runner to inject file contents, and correctly instructs
+    the reviewing model to report CRITICAL if any path is absent. However, there is
+    no fallback inline content if the runner fails to inject one or more files, meaning
+    a partial injection failure would produce a CRITICAL finding rather than a usable
+    partial review. This is acceptable behavior by design, but the criteria could
+    note that a partial-injection CRITICAL terminates the review rather than continuing
+    on remaining files.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: 'Prompt-quality check: the manifest-presence detection instruction
+    is clear and correct, but the triage path for partial injection failure is implicit.
+    A reviewer unfamiliar with the runner contract might continue reviewing present
+    files after reporting CRITICAL against absent ones, producing mixed-reliability
+    output. Explicit instruction to halt on any absent path would remove this ambiguity.'
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-20-workflow-management-implementation-req14-approval-gate-prompt-quality-rerun-after-preanalysis-audit-v5-claude-sonnet-4-6-adversarial-002
+  run_id: 2026-06-20-workflow-management-implementation-req14-approval-gate-prompt-quality-rerun-after-preanalysis-audit-v5
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: Source Materials / source_paths_note and source_material_injection_note
+  plain_language_summary: The criteria states that source_paths are provenance only
+    and that the structured summary fields are the model-readable upstream intent
+    material. However, the structured summary and source excerpts are written in a
+    mix of Japanese (requirements.md and design.md excerpt text) and English (Structured
+    Summary fields). The criteria does not instruct the reviewing model how to handle
+    potential translation discrepancy between the Japanese excerpt text and the English
+    structured summary if they appear to conflict.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: The source_conflict_instruction prioritizes source excerpts over
+    the structured summary when they conflict, but if the reviewing model does not
+    read Japanese with full fidelity, it may under-weight the Japanese excerpts or
+    fail to detect a conflict between the Japanese excerpt and the English summary.
+    An explicit note acknowledging the bilingual material and confirming that both
+    are authoritative would reduce ambiguity.
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-20-workflow-management-implementation-req14-approval-gate-prompt-quality-rerun-after-preanalysis-audit-v5-claude-sonnet-4-6-adversarial-003
+  run_id: 2026-06-20-workflow-management-implementation-req14-approval-gate-prompt-quality-rerun-after-preanalysis-audit-v5
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: Required Checks / check 6
+  plain_language_summary: 'Check 6 includes the instruction: ''If a target file is
+    present but contains only stub, placeholder, or non-enforcing content for required
+    approval-gate behavior, treat that as missing or weakened behavior according to
+    impact.'' This is a correct and important instruction, but it appears inline within
+    check 6 rather than in the Finding Policy section where severity mappings are
+    defined. A reviewing model reading Finding Policy first may miss this stub-treatment
+    rule when forming its severity labels.'
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: 'Prompt-quality check for output consistency: placing enforcement
+    rules in Required Checks and severity rules in Finding Policy creates a split
+    that can cause the reviewing model to apply incorrect severity to stub findings.
+    Moving or cross-referencing the stub rule in Finding Policy would improve consistency.'
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-20-workflow-management-implementation-req14-approval-gate-prompt-quality-rerun-after-preanalysis-audit-v5-claude-sonnet-4-6-adversarial-004
+  run_id: 2026-06-20-workflow-management-implementation-req14-approval-gate-prompt-quality-rerun-after-preanalysis-audit-v5
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: Required Checks / check 5 and Out Of Scope (reviewer authority
+    limits)
+  plain_language_summary: The reviewer authority constraint ('do not approve, authorize,
+    delegate, or imply approval of commit, push, spec.json update, phase completion,
+    gate completion, or human-only approval') appears identically or near-identically
+    in Required Checks check 5, Out Of Scope, and is implied by the Finding Policy
+    CRITICAL rule. The triple repetition is intentional for safety but creates slight
+    verbosity that could be consolidated with a single canonical statement and cross-references.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: 'Minor ergonomics finding: the repetition is safe and correct but
+    adds length to common background. A single canonical authority-limit statement
+    with back-references would shorten the prompt without reducing clarity.'
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-20-workflow-management-implementation-req14-approval-gate-prompt-quality-rerun-after-preanalysis-audit-v5-claude-sonnet-4-6-adversarial-005
+  run_id: 2026-06-20-workflow-management-implementation-req14-approval-gate-prompt-quality-rerun-after-preanalysis-audit-v5
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: Structured Summary / unresolved_or_design_deferred_items
+  plain_language_summary: The unresolved_or_design_deferred_items field states 'No
+    approval-gate-specific deferred item may weaken the human-only approval boundary
+    in the current implementation.' This is a constraint, not a list of actual deferred
+    items. If there are no known deferred items, stating that explicitly (e.g., 'No
+    approval-gate-specific deferred items are currently recorded') would more clearly
+    distinguish 'no deferrals exist' from 'deferrals exist but are constrained.'
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: 'Minor clarity finding: the current wording could be read as implying
+    that deferrals exist but are bounded, when the intent appears to be that none
+    are recorded. Clearer wording would help the reviewing model correctly apply the
+    unresolved_items_review_rule.'
+  applied_files: []
+  superseded_by: null

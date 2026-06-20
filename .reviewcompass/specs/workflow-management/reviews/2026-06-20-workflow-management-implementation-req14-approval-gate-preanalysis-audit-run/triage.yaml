@@ -1,0 +1,210 @@
+run_id: 2026-06-20-workflow-management-implementation-req14-approval-gate-preanalysis-audit-run
+triage_status: draft
+generated_at: '2026-06-20T12:03:01.185260+00:00'
+decision_actor: null
+decision_actor_type: human
+items:
+- finding_id: 2026-06-20-workflow-management-implementation-req14-approval-gate-preanalysis-audit-run-claude-sonnet-4-6-adversarial-001
+  run_id: 2026-06-20-workflow-management-implementation-req14-approval-gate-preanalysis-audit-run
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: Proposed Criteria / Source Materials / source_paths_note
+  plain_language_summary: 'source_paths are marked provenance-only, making the structured
+    summary the sole model-readable upstream intent material, but no instruction requires
+    the reviewer to flag gaps or misrepresentations between the summary and its stated
+    source documents.
+
+    '
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: 'If the structured summary omits or softens material upstream constraints
+    from requirements.md, design.md, or tasks.md, the later reviewer has no mechanism
+    to detect or report that gap. The review would silently operate on an incomplete
+    or biased representation of upstream intent.
+
+    '
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-20-workflow-management-implementation-req14-approval-gate-preanalysis-audit-run-claude-sonnet-4-6-adversarial-002
+  run_id: 2026-06-20-workflow-management-implementation-req14-approval-gate-preanalysis-audit-run
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: Proposed Criteria / Required Checks / Check 5 and Out Of Scope
+  plain_language_summary: 'Two separate sections repeat the instruction not to treat
+    mere presence of workflow-operation code as a violation, with no countervailing
+    instruction to actively probe for subtle gate bypasses. The combined leniency
+    bias may cause the reviewer to underreport CRITICAL boundary-weakening behavior.
+
+    '
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: 'The most important failure mode for an approval-gate review is
+    a subtle code path that allows proxy_model to satisfy a human_only boundary. The
+    current framing tips the reviewer toward leniency rather than active detection,
+    which is the opposite of the required posture for CRITICAL-severity findings.
+
+    '
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-20-workflow-management-implementation-req14-approval-gate-preanalysis-audit-run-claude-sonnet-4-6-adversarial-003
+  run_id: 2026-06-20-workflow-management-implementation-req14-approval-gate-preanalysis-audit-run
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: Proposed Criteria / Review Target / target manifest note
+  plain_language_summary: 'The criteria instructs the reviewer to report ERROR when
+    a target path is absent from the injected prompt, but an absent target makes the
+    entire review invalid and should be CRITICAL.
+
+    '
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: 'An ERROR implies the review can continue with reduced confidence.
+    A missing target means the reviewer has no artifact to judge and must not return
+    any implementation findings. CRITICAL is the appropriate severity to halt the
+    review run.
+
+    '
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-20-workflow-management-implementation-req14-approval-gate-preanalysis-audit-run-claude-sonnet-4-6-adversarial-004
+  run_id: 2026-06-20-workflow-management-implementation-req14-approval-gate-preanalysis-audit-run
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: Proposed Criteria / Finding Policy
+  plain_language_summary: 'The Finding Policy severity mapping does not explicitly
+    state that model output authorizing or implying authorization of commit, push,
+    spec.json mutation, phase transition, or gate completion must be reported CRITICAL.
+    The prohibited actions are listed only in User Review Requirements.
+
+    '
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: 'Prohibited actions need a severity anchor in Finding Policy so
+    the reviewing model has an unambiguous instruction to escalate, not merely exclude,
+    any output that crosses those boundaries.
+
+    '
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-20-workflow-management-implementation-req14-approval-gate-preanalysis-audit-run-claude-sonnet-4-6-adversarial-005
+  run_id: 2026-06-20-workflow-management-implementation-req14-approval-gate-preanalysis-audit-run
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: Main Preanalysis Excerpt / useful_discoveries / preanalysis-002
+  plain_language_summary: 'preanalysis-002 reports an open ERROR that "Req 14 cannot
+    be reviewed as one combined judgment" and implies three sub-criteria are needed.
+    The bundle has already applied the split. Leaving this as an open ERROR in the
+    preanalysis may mislead an auditor into thinking the split is still missing.
+
+    '
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: 'Stale open findings in a preanalysis used as a hypothesis source
+    create anchoring risk: an auditor scanning the preanalysis may treat the finding
+    as current and look for a defect that no longer exists, while missing actual defects.
+
+    '
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-20-workflow-management-implementation-req14-approval-gate-preanalysis-audit-run-claude-sonnet-4-6-adversarial-006
+  run_id: 2026-06-20-workflow-management-implementation-req14-approval-gate-preanalysis-audit-run
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: Proposed Criteria / Source Materials / source_anchors
+  plain_language_summary: 'SHA256 source anchors are listed but carry no evaluation
+    instruction. The reviewer has no basis to act on them.
+
+    '
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: Minor ergonomics issue. Adding a note such as "anchors are provenance
+    only; do not attempt to verify hashes at review time" would prevent the reviewer
+    from wasting inference on inert values.
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-20-workflow-management-implementation-req14-approval-gate-preanalysis-audit-run-gemini-3.1-pro-preview-judgment-001
+  run_id: 2026-06-20-workflow-management-implementation-req14-approval-gate-preanalysis-audit-run
+  source_model: gemini-3.1-pro-preview
+  source_round: round-1
+  source_raw_path: raw/gemini-3.1-pro-preview.round-1.txt
+  source_parsed_path: parsed/gemini-3.1-pro-preview.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: Required Checks / Check 5
+  plain_language_summary: Check 5 arbitrarily narrows the review requirements by globally
+    suppressing findings that do not bypass or weaken the required gate.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: By instructing the model to 'report target-code findings only when
+    behavior bypasses or weakens the required gate', the prompt inadvertently instructs
+    the reviewer to ignore omissions, contradictions, or unsupported additions related
+    to other required aspects (like decision binding, CLI integration, or schema enforcement),
+    directly violating the policy against narrowing user requirements.
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-20-workflow-management-implementation-req14-approval-gate-preanalysis-audit-run-gemini-3.1-pro-preview-judgment-002
+  run_id: 2026-06-20-workflow-management-implementation-req14-approval-gate-preanalysis-audit-run
+  source_model: gemini-3.1-pro-preview
+  source_round: round-1
+  source_raw_path: raw/gemini-3.1-pro-preview.round-1.txt
+  source_parsed_path: parsed/gemini-3.1-pro-preview.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: Source Materials / workflow-management-req14-approval-gate-upstream-intent
+  plain_language_summary: The structured summary lacks cross-references mapping its
+    fields back to specific sections or anchors in the original source documents.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: Without internal trace references inside the structured summary
+    tying constraints back to the requirements/design files, the prompt has incomplete
+    source mapping, complicating traceability for the reviewer model.
+  applied_files: []
+  superseded_by: null

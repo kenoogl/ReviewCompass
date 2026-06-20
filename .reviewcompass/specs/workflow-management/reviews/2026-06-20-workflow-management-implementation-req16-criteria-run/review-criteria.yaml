@@ -1,0 +1,15 @@
+run_id: 2026-06-20-workflow-management-implementation-req16-criteria-run
+feature: workflow-management
+workflow_phase: implementation
+review_stage: triad-review
+criteria_file: .reviewcompass/specs/workflow-management/reviews/2026-06-20-workflow-management-implementation-req16-criteria-run/review-criteria.md
+criteria_file_sha256: c49245bfcff16807b6d7d1fa83d0eb7684966cc99d6e46971cc31333ebe4070d
+source_materials_file: .reviewcompass/specs/workflow-management/reviews/2026-06-20-workflow-management-implementation-review-run/source-materials/req16-source-materials.yaml
+generated_at: '2026-06-20T08:53:12.765316+00:00'
+recommended_run_review_args:
+  criteria_file: .reviewcompass/specs/workflow-management/reviews/2026-06-20-workflow-management-implementation-req16-criteria-run/review-criteria.md
+  phase: triad-review
+  effective_prompt_path: .reviewcompass/runtime/effective-prompts/next_action_kind-stage__workflow_stage-triad-review.prompt.md
+  effective_prompt_sha256: 39d0d503c09c37593ede9e05faa752dd2909cd3b2efcb6b51b548254d00f06d5
+effective_prompt_path: .reviewcompass/runtime/effective-prompts/next_action_kind-stage__workflow_stage-triad-review.prompt.md
+effective_prompt_sha256: 39d0d503c09c37593ede9e05faa752dd2909cd3b2efcb6b51b548254d00f06d5

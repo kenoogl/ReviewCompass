@@ -1,0 +1,21 @@
+findings:
+  - severity: WARN
+    target_location: "## Source Materials / source_paths_note"
+    description: "The structured summary provides upstream intent but lacks a version anchor (such as a commit hash or last-modified timestamp) for the source_paths it summarizes."
+    rationale: "Without version anchors, the model has no way to determine if the injected summary is stale relative to the actual upstream requirements, design, or tasks documents, which risks undetected drift in vertical intent transfer."
+  - severity: WARN
+    target_location: "## Required Checks / Check 5 and ## Out Of Scope"
+    description: "The instructions use the phrase 'legitimate target code that implements workflow operations' as an exception to the prohibited actions check."
+    rationale: "The undefined qualifier 'legitimate' introduces an ambiguous scope boundary. This ambiguity risks causing the model to self-censor findings about actual human-only boundary bypasses in the target code, assuming the code's behavior is just 'legitimate' workflow management."
+  - severity: WARN
+    target_location: "## Review Target"
+    description: "The target manifest lists 11 file paths to be injected by the runner but provides no fallback instruction dictating what the model should do if any of these files are missing from the prompt."
+    rationale: "If the API runner invocation drops a file, the model may silently review an incomplete artifact set without realizing it. An explicit instruction to return an ERROR if a listed target path is absent prevents invalid partial reviews."
+  - severity: INFO
+    target_location: "## User Review Requirements / Requirement-to-prompt mapping"
+    description: "The user requirement 'Output requirements: parser-compatible findings' is not explicitly mapped to a destination section in the mapping list."
+    rationale: "Complete requirement-to-prompt mapping ensures end-to-end traceability. The mapping list should explicitly point this output requirement to the Finding Policy or the injected Output Contract."
+  - severity: INFO
+    target_location: "## Finding Policy"
+    description: "The policy requires 'traceable evidence' for the model to return an empty findings list, but it does not define what constitutes traceable evidence (e.g., exact line numbers, schema fields, or test case names) for a full pass."
+    rationale: "Explicitly defining the expected traceability anchors for a pass condition reduces the risk of the model returning false-passes based on surface-level generalizations rather than verified evidence."

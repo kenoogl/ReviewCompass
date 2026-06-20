@@ -1,0 +1,59 @@
+role: adversarial
+provider: anthropic-api
+model: claude-sonnet-4-6
+attempts: 1
+duration_seconds: 18.951
+findings:
+- severity: WARN
+  target_location: '## Source Materials / source_paths_note'
+  description: The source_paths_note correctly marks source_paths as provenance-only,
+    but the structured summary itself omits explicit version or commit anchors for
+    the three upstream documents. If the actual requirements.md, design.md, or tasks.md
+    have been revised after the summary was written, the model has no way to detect
+    staleness.
+  rationale: A stale structured summary could cause the model to check transfer against
+    outdated intent, producing false-passes or false-failures. Even a last-modified
+    timestamp or a short hash note would anchor the summary to a specific revision.
+- severity: WARN
+  target_location: '## Required Checks / Check 5'
+  description: 'Check 5 instructs the model that the constraint ''constrain the review
+    run and model output, not legitimate target code that implements workflow operations.''
+    The same carve-out appears in Out Of Scope. The dual placement is useful, but
+    the phrasing ''legitimate target code'' introduces an unanchored qualifier: the
+    model must decide what counts as legitimate without a definition. This could suppress
+    findings about boundary violations inside target code that are real defects.'
+  rationale: Ambiguous scope boundaries in a check instruction risk causing the model
+    to self-censor findings about actual human-only boundary bypasses in the target
+    code, which is the primary CRITICAL risk this review is meant to catch.
+- severity: WARN
+  target_location: '## Review Target (target manifest)'
+  description: The manifest lists 12 target paths but provides no excerpt or structured
+    summary for any of them. The criteria document correctly states the API runner
+    will inject file contents, but if the runner or invocation does not pass all 12
+    paths as --target, the model will silently review an incomplete artifact set with
+    no warning mechanism built into the prompt.
+  rationale: Source-material quality rules require the prompt to avoid path-only listings
+    when content is needed for judgment. The note about the API runner is correct
+    process documentation, but the prompt itself has no fallback instruction telling
+    the model to report an ERROR or refuse if a listed target file is missing from
+    the injected content.
+- severity: INFO
+  target_location: '## Finding Policy / Return findings: [] condition'
+  description: 'The return condition for findings: [] requires ''traceable evidence''
+    but does not define what constitutes traceable evidence for this specific review
+    (e.g., schema field name, line number, test case name). The general instruction
+    to ''identify the narrowest available location'' partially addresses this but
+    leaves the bar implicit.'
+  rationale: Explicit traceability anchors reduce the risk of the model returning
+    an empty findings list on the basis of a surface-level match rather than verified
+    evidence, particularly for the human-only boundary checks.
+- severity: INFO
+  target_location: '## User Review Requirements / Requirement-to-prompt mapping'
+  description: 'The mapping table lists four user requirements and their prompt destinations
+    but does not map ''Output requirements: parser-compatible findings'' explicitly
+    to the Finding Policy or Output Contract section. This is a minor gap in the requirements-to-checks
+    traceability chain.'
+  rationale: Complete mapping makes it easier to verify during prompt-quality review
+    that every user requirement has a corresponding enforcement point in the prompt.
+    The omission is minor because parser compatibility is implied by the Finding Policy
+    severity labels.

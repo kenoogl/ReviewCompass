@@ -1,0 +1,286 @@
+run_id: 2026-06-20-workflow-management-implementation-review-run
+created_at: '2026-06-20T09:40:00+09:00'
+purpose: Main LLM preanalysis before creating API review criteria/prompts.
+status: trial_preanalysis
+scope:
+  feature: workflow-management
+  phase: implementation
+  stage: triad-review
+  note: >
+    This preanalysis reviews the available review-run preparation artifacts and
+    prompt-quality evidence before creating or sending additional API prompts.
+    The actual implementation triad-review raw/rounds/triage artifacts are not
+    present yet in this run directory.
+data_sources_read:
+  workflow_position:
+    - path: .reviewcompass/specs/workflow-management/reviews/2026-06-20-workflow-management-implementation-review-run/next-action.json
+      used_for:
+        - current stage confirmation
+        - required disciplines
+        - vertical intent transfer contract
+  operation_rules:
+    - path: docs/operations/API_REVIEW_PROMPT_QUALITY.md
+      used_for:
+        - prompt quality process
+        - one judgment per prompt rule
+        - criteria/target separation
+        - source material requirements
+  target_manifests:
+    - path: .reviewcompass/specs/workflow-management/reviews/2026-06-20-workflow-management-implementation-review-run/review-target-manifest.md
+      used_for:
+        - overall implementation target scope
+        - verification snapshot
+    - path: .reviewcompass/specs/workflow-management/reviews/2026-06-20-workflow-management-implementation-review-run/req14-review-target-manifest.md
+      used_for:
+        - Req 14 target files
+        - Req 14 verification snapshot
+    - path: .reviewcompass/specs/workflow-management/reviews/2026-06-20-workflow-management-implementation-review-run/req15-review-target-manifest.md
+      used_for:
+        - Req 15 target files
+        - Req 15 verification snapshot
+    - path: .reviewcompass/specs/workflow-management/reviews/2026-06-20-workflow-management-implementation-review-run/req16-review-target-manifest.md
+      used_for:
+        - Req 16 target files
+        - Req 16 verification snapshot
+  source_materials:
+    - path: .reviewcompass/specs/workflow-management/reviews/2026-06-20-workflow-management-implementation-review-run/source-materials/req14-source-materials.yaml
+      used_for:
+        - initial combined Req 14 upstream intent
+    - path: .reviewcompass/specs/workflow-management/reviews/2026-06-20-workflow-management-implementation-review-run/source-materials/req14-approval-gate-source-materials.yaml
+      used_for:
+        - split Req 14 approval-gate upstream intent
+    - path: .reviewcompass/specs/workflow-management/reviews/2026-06-20-workflow-management-implementation-review-run/source-materials/req14-side-track-stack-source-materials.yaml
+      used_for:
+        - split Req 14 side-track-stack upstream intent
+    - path: .reviewcompass/specs/workflow-management/reviews/2026-06-20-workflow-management-implementation-review-run/source-materials/req14-workflow-state-snapshot-source-materials.yaml
+      used_for:
+        - split Req 14 workflow-state-snapshot upstream intent
+    - path: .reviewcompass/specs/workflow-management/reviews/2026-06-20-workflow-management-implementation-review-run/source-materials/req15-source-materials.yaml
+      used_for:
+        - Req 15 upstream intent
+    - path: .reviewcompass/specs/workflow-management/reviews/2026-06-20-workflow-management-implementation-review-run/source-materials/req16-source-materials.yaml
+      used_for:
+        - Req 16 upstream intent
+  prompt_quality_evidence:
+    - path: .reviewcompass/specs/workflow-management/reviews/2026-06-20-workflow-management-implementation-req14-prompt-quality-rerun-v5/parsed/gemini-3.1-pro-preview.round-1.yaml
+      used_for:
+        - detecting bundled Req 14 judgment failure
+        - identifying target completeness and phase-context risks
+    - path: .reviewcompass/specs/workflow-management/reviews/2026-06-20-workflow-management-implementation-req14-approval-gate-prompt-quality-run/parsed/gemini-3.1-pro-preview.round-1.yaml
+      used_for:
+        - checking whether split approval-gate prompt reduced severity
+    - path: .reviewcompass/specs/workflow-management/reviews/2026-06-20-workflow-management-implementation-req15-prompt-quality-run/parsed/gemini-3.1-pro-preview.round-1.yaml
+      used_for:
+        - checking Req 15 residual prompt risks
+    - path: .reviewcompass/specs/workflow-management/reviews/2026-06-20-workflow-management-implementation-req16-prompt-quality-run/parsed/gemini-3.1-pro-preview.round-1.yaml
+      used_for:
+        - checking Req 16 residual prompt risks
+review_result_availability:
+  implementation_triad_review_results_present: false
+  missing_artifacts:
+    - raw/
+    - rounds.yaml
+    - model-result-summary.yaml
+    - triage.yaml
+    - raw-review-triage-summary.md
+  consequence: >
+    The main LLM cannot yet review actual implementation triad-review results for
+    this 2026-06-20 run. Current analysis can only prepare and evaluate API review
+    prompts/criteria before the real review-run.
+useful_discoveries:
+  - id: preanalysis-001
+    severity: ERROR
+    finding: Actual implementation triad-review results are not present yet.
+    evidence:
+      - .reviewcompass/specs/workflow-management/reviews/2026-06-20-workflow-management-implementation-review-run contains next-action and manifests, but no raw/rounds/summary/triage result bundle.
+    impact: >
+      A prompt that claims to review triad-review results would be reviewing a
+      non-existent result set. The correct next prompt class is review criteria
+      preparation or prompt-quality review, not triad-result triage.
+  - id: preanalysis-002
+    severity: ERROR
+    finding: Req 14 cannot be reviewed as one combined judgment.
+    evidence:
+      - Req 14 prompt-quality judgment reported that approval gates, side track stack, and workflow-state snapshot are independent implementation judgments.
+      - Req 14 target manifest spans schemas, tools, and tests for three distinct components.
+    impact: >
+      API prompts should split Req 14 into approval-gate, side-track-stack, and
+      workflow-state-snapshot criteria. This would have been discoverable before
+      API prompt-quality retries by reading the manifest and grouping files.
+  - id: preanalysis-003
+    severity: WARN
+    finding: Req 15 appears closer to usable but still has a scope-boundary ambiguity.
+    evidence:
+      - Req 15 judgment found only an INFO about what counts as direct reference to Req 14/Req 16 boundaries.
+      - Req 15 adversarial also noted dual target list and verification-evidence assertion risks.
+    impact: >
+      Req 15 may not need coarse splitting, but prompt generation should pin exact
+      target/source boundary language and avoid dual-definition of manifest vs inline file list.
+  - id: preanalysis-004
+    severity: WARN
+    finding: Req 16 prompt needs more source evidence from Req 14/Req 15 and structured verification evidence.
+    evidence:
+      - Req 16 prompt-quality judgment warned that verification evidence is prose assertions.
+      - Req 16 adversarial warned that proxy triage checks need structured summaries of approval-gate records and structured-prompt evidence fields.
+    impact: >
+      Req 16 criteria should include minimal structured source evidence for Req 14
+      approval gate records and Req 15 prompt/evidence fields where they are
+      dependencies of proxy triage blocking.
+  - id: preanalysis-005
+    severity: WARN
+    finding: Verification snapshots should not be passed as bare pass-count assertions.
+    evidence:
+      - Req 15 and Req 16 prompt-quality findings both questioned prose-only verification claims.
+    impact: >
+      API prompts should include either actual command output excerpts or structured
+      test coverage summaries, and should not imply that passing tests are proof of
+      correctness.
+candidate_judgment_items:
+  - item_id: req14_approval_gate
+    judgment_question: Does Req 14 approval gate implementation preserve upstream human-only approval, decision binding, digest binding, and non-approved blocking behavior?
+    recommended_split: standalone
+    target_files:
+      - .reviewcompass/schema/approval_gate.schema.json
+      - tools/check-workflow-action.py
+      - tools/check_workflow_action/approval_gate.py
+      - tests/workflow-management/test_approval_gate.py
+    source_materials:
+      - .reviewcompass/specs/workflow-management/reviews/2026-06-20-workflow-management-implementation-review-run/source-materials/req14-approval-gate-source-materials.yaml
+    out_of_scope:
+      - side track stack behavior
+      - workflow-state snapshot behavior
+    prompt_requirements:
+      - Do not turn review-run prohibited actions into target-code false positives.
+      - Report target-code issues only when behavior bypasses or weakens approval gates.
+  - item_id: req14_side_track_stack
+    judgment_question: Does Req 14 side track stack implementation preserve upstream scope, return target, top-frame, max-depth, and digest drift behavior?
+    recommended_split: standalone
+    target_files:
+      - .reviewcompass/schema/side_track_stack.schema.json
+      - tools/check-workflow-action.py
+      - tools/check_workflow_action/side_track_stack.py
+      - tests/workflow-management/test_side_track_stack.py
+    source_materials:
+      - .reviewcompass/specs/workflow-management/reviews/2026-06-20-workflow-management-implementation-review-run/source-materials/req14-side-track-stack-source-materials.yaml
+    out_of_scope:
+      - approval gate behavior
+      - workflow-state snapshot behavior
+    prompt_requirements:
+      - State that current target is Phase 3 where selected drift can warn rather than block.
+      - Do not claim Phase 5 blocking unless implemented.
+  - item_id: req14_workflow_state_snapshot
+    judgment_question: Does Req 14 workflow-state snapshot implementation preserve upstream non-authoritative audit-aid behavior and source_next_action/state recheck boundaries?
+    recommended_split: standalone
+    target_files:
+      - .reviewcompass/schema/workflow_state_snapshot.schema.json
+      - tools/check-workflow-action.py
+      - tools/check_workflow_action/workflow_state_snapshot.py
+      - tests/workflow-management/test_workflow_state_snapshot.py
+      - tests/workflow-management/test_workflow_snapshot_cli.py
+    source_materials:
+      - .reviewcompass/specs/workflow-management/reviews/2026-06-20-workflow-management-implementation-review-run/source-materials/req14-workflow-state-snapshot-source-materials.yaml
+    out_of_scope:
+      - approval gate behavior
+      - side track stack behavior
+    prompt_requirements:
+      - Make clear that snapshot output cannot authorize workflow state changes.
+  - item_id: req15_effective_prompt_structure_and_audit
+    judgment_question: Does Req 15 implementation preserve structured effective prompt, prompt audit, and review-run metadata boundaries without embedding machine execution as language instructions?
+    recommended_split: keep_single_unless_prompt_quality_flags_more_than_info
+    target_files:
+      - .reviewcompass/schema/language_task_io.schema.json
+      - .reviewcompass/schema/effective_prompt_manifest.schema.json
+      - tools/check-workflow-action.py
+      - tools/check_workflow_action/effective_prompt_builder.py
+      - tools/check_workflow_action/prompt_audit.py
+      - tools/api_providers/run_role.py
+      - tools/api_providers/run_review.py
+      - tests/workflow-management/test_language_task_io_schema.py
+      - tests/workflow-management/test_effective_prompt_manifest.py
+      - tests/workflow-management/test_prompt_audit.py
+      - tests/workflow-management/test_prompt_manifest_rounds_recording.py
+      - tools/api_providers/tests/test_run_role.py
+      - tools/api_providers/tests/test_run_review.py
+    source_materials:
+      - .reviewcompass/specs/workflow-management/reviews/2026-06-20-workflow-management-implementation-review-run/source-materials/req15-source-materials.yaml
+    out_of_scope:
+      - Req 14 approval gate internals except explicit prompt-audit boundary references
+      - Req 16 proxy triage internals except explicit metadata handoff references
+    prompt_requirements:
+      - Define exactly what direct boundary reference means.
+      - Avoid duplicate target file definitions between manifest and criteria.
+  - item_id: req16_phase_and_proxy_mechanics
+    judgment_question: Does Req 16 implementation preserve phased implementation controls, read-only operation registry/list behavior, proxy triage decision safety, and review-wave impact boundaries?
+    recommended_split: consider_subsplit_if_prompt_quality_reports_granularity_or_context_risk
+    target_files:
+      - .reviewcompass/schema/implementation_phase.schema.json
+      - .reviewcompass/schema/proxy_triage_decision.schema.json
+      - .reviewcompass/schema/operation_contract.schema.json
+      - .reviewcompass/schema/required_action.schema.json
+      - tools/check-workflow-action.py
+      - tools/check_workflow_action/implementation_phases.py
+      - tools/check_workflow_action/operation_contracts.py
+      - tools/check_workflow_action/operation_list.py
+      - tools/check_workflow_action/operation_registry.py
+      - tools/check_workflow_action/proxy_triage_decisions.py
+      - tests/workflow-management/test_implementation_phase_plan.py
+      - tests/workflow-management/test_operation_list_read_only.py
+      - tests/workflow-management/test_proxy_triage_decision_machine.py
+      - tests/workflow-management/test_review_wave_consumer_impact.py
+      - tests/workflow-management/test_implementation_phase_cli.py
+      - tests/workflow-management/test_operation_contract_cli.py
+      - tests/workflow-management/test_operation_contract_schema.py
+      - tests/workflow-management/test_required_action_contract_mapping.py
+    source_materials:
+      - .reviewcompass/specs/workflow-management/reviews/2026-06-20-workflow-management-implementation-review-run/source-materials/req16-source-materials.yaml
+      - minimal Req 14 approval gate record/evidence summary needed for human-required predicate checks
+      - minimal Req 15 prompt/effective-prompt evidence summary needed for proxy decision evidence completeness
+    out_of_scope:
+      - full Req 14 implementation correctness
+      - full Req 15 prompt audit implementation correctness
+    prompt_requirements:
+      - Include structured evidence fields required by proxy_triage_decisions.
+      - Define sufficient carry-forward/downstream impact evidence for review-wave checks.
+      - Treat provider/model identity as non-safety basis.
+data_sources_needed_but_missing:
+  - id: actual_implementation_triad_review_results
+    missing:
+      - raw/
+      - rounds.yaml
+      - model-result-summary.yaml
+      - triage.yaml
+    consequence: Cannot yet test the proposed process on real triad-review findings for this run.
+  - id: structured_test_output_excerpts
+    missing:
+      - command outputs or structured coverage snippets behind pass-count verification snapshots
+    consequence: API prompt should avoid treating pass counts as proof.
+  - id: req15_req16_source_anchors
+    missing:
+      - sha256/source anchor metadata equivalent to the split Req 14 materials
+    consequence: Later criteria may repeat provenance warnings unless anchors are added.
+  - id: req16_dependency_summaries
+    missing:
+      - minimal approval-gate record fields from Req 14
+      - minimal effective prompt/evidence fields from Req 15
+    consequence: Req 16 proxy triage prompt may lack enough source evidence to judge human-required boundaries.
+sensitivity_check:
+  contains_api_keys_or_tokens: false
+  contains_personal_identifiers: false
+  contains_third_party_confidential_material: false
+  repo_internal_material_sendable_if_user_approved_api_review: true
+process_assessment:
+  useful_discovery_found: true
+  most_important_discovery: >
+    The preanalysis would have caught the Req 14 bundling problem before repeated
+    prompt-quality API runs, because the target manifest itself naturally separates
+    approval gate, side track stack, and workflow-state snapshot artifacts.
+  recommended_mechanization:
+    - Require this preanalysis artifact before prepare_api_review_criteria.
+    - Require candidate_judgment_items with one target/source/out_of_scope set per item.
+    - Make prepare_api_review_criteria consume one item_id from this artifact.
+    - Fail closed when actual triad-review results are requested but raw/rounds/summary/triage are absent.
+next_recommended_action:
+  action: implement_review_preanalysis_gate
+  rationale: >
+    The trial produced actionable discoveries that were missed when jumping
+    directly to criteria generation and prompt-quality review.

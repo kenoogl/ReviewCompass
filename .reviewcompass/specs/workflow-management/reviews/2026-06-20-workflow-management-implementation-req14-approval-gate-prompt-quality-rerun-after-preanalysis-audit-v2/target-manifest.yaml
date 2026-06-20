@@ -1,0 +1,4 @@
+run_id: 2026-06-20-workflow-management-implementation-req14-approval-gate-prompt-quality-rerun-after-preanalysis-audit-v2
+target_files:
+- path: .reviewcompass/specs/workflow-management/reviews/2026-06-20-workflow-management-implementation-req14-approval-gate-criteria-run/review-criteria.md
+  sha256: 3046c4573c67900043457606a073e5c4a028a3b041fcd8a76c33173cde37f360

@@ -1,0 +1,50 @@
+findings:
+  - severity: ERROR
+    target_location: "tools/check_workflow_action/prompt_audit.py:audit_manifest"
+    description: "prompt audit が Req15 で求められた fail-closed 監査範囲の大半を実装しておらず、manifest 構造・参照整合・長さ境界・preconditions/postconditions の監査を行っていません。"
+    rationale: "Req15 の受入条件では prompt audit が missing required structure、broken refs、review target manifest mismatch、unverified preconditions、impossible postconditions、length bound などを拒否する必要がありますが、実装は language_task と on_completion の一部文字列検査だけです。schema 検証呼び出しも source_artifacts/path+sha256 の実在確認も prompt_length の min/max 整合確認もなく、要求された fail-closed 監査を満たしていません。"
+
+  - severity: ERROR
+    target_location: "tools/check_workflow_action/prompt_audit.py:_audit_language_task"
+    description: "machine task leakage の検出が language_task.constraints のみで、language_task.input/output_format や manifest の他セクションに機械操作指示を置いても監査で通過します。"
+    rationale: "Req15 は language task と machine task の分離を要求しており、機械操作が LLM 指示へ埋め込まれないことを fail-closed で検査する必要があります。しかし実装は constraints の文字列部分一致しか見ず、required_files/source_refs/required_sections や postconditions/on_completion 以外の自由記述欄、additionalProperties=true の section 内に埋め込まれた機械操作指示を検出できません。"
+
+  - severity: ERROR
+    target_location: ".reviewcompass/schema/effective_prompt_manifest.schema.json"
+    description: "effective prompt manifest schema が additionalProperties を広く許可しており、language task 以外の主要セクションへ未定義の自由項目を無制限に混入できます。"
+    rationale: "Req15 の責務境界では structured effective prompt の正本語彙を保ち、機械タスクを埋め込ませないことが重要です。ところが top-level、decision_point、source_artifacts、operation_contract、expected_output_schema、preconditions_checked、postconditions で additionalProperties:true のため、未定義フィールドに機械操作や弱い互換名目の逸脱を追加しても schema で止まりません。fail-closed を求める受入条件に対し境界が緩すぎます。"
+
+  - severity: ERROR
+    target_location: ".reviewcompass/schema/effective_prompt_manifest.schema.json:prompt_length"
+    description: "prompt_length で min_chars と max_chars の大小関係や測定対象が schema 上保証されておらず、Req15 が要求する監査可能な長さ境界の構造化が不足しています。"
+    rationale: "要件は measured field、bound source、failure behavior が特定できることを求めていますが、schema には source_ref と failure_verdict はある一方で測定対象フィールド識別子がなく、min_chars <= max_chars も表現されていません。実際にテストは逆転値を不正として期待していますが、現行 schema では failure_verdict 欠落だけが主因で、境界逆転そのものは防げません。"
+
+  - severity: ERROR
+    target_location: "tests/workflow-management/test_effective_prompt_manifest.py:test_prompt_length_bounds_are_required_and_structured"
+    description: "prompt_length 境界のテストが min/max の逆転検知を実証しておらず、Req15 の長さ境界 fail-closed 要件に対するカバレッジが不足しています。"
+    rationale: "このテストは bad_bounds から failure_verdict を省いているため、失敗理由が境界逆転でなく必須項目欠落になっています。結果として min_chars > max_chars を実際に拒否できるかを検証しておらず、Req15 の focused tests として要求境界を十分に固定していません。"
+
+  - severity: WARN
+    target_location: ".reviewcompass/schema/effective_prompt_manifest.schema.json:$defs.language_task"
+    description: "language_task 定義が専用 schema を参照せず複製されており、Req15 の language task 語彙が将来ドリフトする余地があります。"
+    rationale: "同一語彙は .reviewcompass/schema/language_task_io.schema.json に存在するのに manifest schema 内で再定義されています。現時点では内容一致して見えますが、重複定義は upstream transfer の一貫性と後続監査性を弱め、片方だけ更新されると language task 境界が静かにずれる危険があります。"
+
+  - severity: WARN
+    target_location: "tools/check-workflow-action.py:materialize_effective_prompt"
+    description: "effective prompt 生成が structured manifest 本体ではなく markdown 連結文書を主に実体化しており、Req15 の structured effective prompt への移行が部分的です。"
+    rationale: "実装は source refs を連結した .prompt.md を生成し path/sha256 を記録しますが、manifest を組み立てて audit してから runner に渡す流れはこの経路では見えません。Req15 は structured effective prompt manifest validation と prompt audit を中核に据えるため、markdown 互換経路が残るのは許容範囲でも、構造化 manifest がこの主経路で必須化されていない点は移行の弱さとして残ります。"
+
+  - severity: WARN
+    target_location: "tests/workflow-management/test_prompt_audit.py"
+    description: "prompt audit のテストが Req15 で明示された broken refs、review target manifest mismatch、unverified preconditions、impossible postconditions、provider/model 非依存 structured findings をほぼカバーしていません。"
+    rationale: "現行テストは direct state mutation、machine execution steps、next_action compatibility、CLI 読み込みだけです。受入条件にある fail-closed 監査群の多数が未試験のため、実装欠落を検出できず upstream 要求の保持が弱いままです。"
+
+  - severity: WARN
+    target_location: "tools/check_workflow_action/effective_prompt_builder.py"
+    description: "manifest builder が構造を単に集約するだけで、source_artifacts digest 形式や required sections、preconditions/postconditions の最低整合を事前補強していません。"
+    rationale: "schema と audit で閉じる設計自体は可能ですが、builder が無制約の pass-through になっているため、構造化 prompt 生成の責務境界が薄く、監査未実装部分と組み合わさると不完全 manifest を容易に通してしまいます。Req15 の『structured effective prompt manifest validation』の実装としては補助防御が不足しています。"
+
+  - severity: WARN
+    target_location: "tools/api_providers/run_role.py, tools/api_providers/run_review.py"
+    description: "effective prompt / prompt manifest metadata の記録は実装されていますが、sha256 の形式が rounds.yaml で bare hex と schema の sha256: プレフィックス形式で分かれており、監査語彙が統一されていません。"
+    rationale: "Req15 は path と sha256 記録の互換保持を求めており、記録自体は満たしています。一方で manifest schema は sha256:<hex> を要求するのに runner metadata は bare hex を保存しており、後続 audit や比較実装で形式差異を吸収する追加ロジックが必要になります。直ちに破綻ではないものの traceability の一貫性は弱いです。

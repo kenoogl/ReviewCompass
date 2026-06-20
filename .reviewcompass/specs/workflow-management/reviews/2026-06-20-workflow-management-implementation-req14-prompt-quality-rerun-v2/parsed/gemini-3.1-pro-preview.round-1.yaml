@@ -1,0 +1,46 @@
+role: judgment
+provider: gemini-api
+model: gemini-3.1-pro-preview
+attempts: 1
+duration_seconds: 53.613
+findings:
+- severity: WARN
+  target_location: Source Materials > workflow-management-req14-upstream-intent
+  description: Source materials are listed as paths only without explicit provenance
+    markers.
+  rationale: The criteria require marking front matter paths as provenance when they
+    are not model-readable content. Listing raw '.md' file paths under 'source_paths'
+    without clarifying whether they are expected to be injected by the runner or merely
+    serve as provenance for the structured summaries creates ambiguity for the model.
+- severity: WARN
+  target_location: Review Target
+  description: Review target lists multiple files by path only without a runner injection
+    note.
+  rationale: Source-material quality checks require avoiding path-only listings. While
+    the runner will provide the actual artifact context, relying solely on path listings
+    in the prompt without explicitly stating that the runner will inject their content
+    leaves ambiguity about how the model should access the code being reviewed.
+- severity: WARN
+  target_location: Required Checks
+  description: Check 5 prohibits authorizing operations but lacks the required exemption
+    for legitimate target code.
+  rationale: The prompt quality criteria warn against wording that suppresses findings
+    about critical boundaries. Check 5 instructs the model not to authorize operations
+    but does not repeat or link to the 'Out Of Scope' exemption regarding target code
+    that implements such operations. A sequentially processing model might erroneously
+    suppress findings about the target code's approval logic.
+- severity: INFO
+  target_location: Review Task
+  description: The primary judgment question bundles several sub-conditions into one
+    continuous sentence.
+  rationale: Combining five complex sub-conditions (omission, weakening, contradiction,
+    unsupported addition, drift) into a single continuous sentence reduces readability.
+    Using a numbered or bulleted list for these sub-conditions would improve clarity
+    and reduce the risk of partial evaluation by the model.
+- severity: INFO
+  target_location: Finding Policy
+  description: 'The acceptance condition for ''findings: []'' is phrased negatively.'
+  rationale: 'The output contract criteria require defining when ''findings: []''
+    is acceptable. Phrasing this as a positive, absolute condition (e.g., ''Return
+    findings: [] if and only if...'') provides clearer and more direct operational
+    guidance for the parser and the model than a negative restriction (''only when'').'

@@ -1,0 +1,50 @@
+findings:
+  - severity: ERROR
+    target_location: "tools/check_workflow_action/proxy_triage_decisions.py:check_decision"
+    description: "check_decision does not check for human-required predicate conditions. It only validates field presence, coverage, and approval_scope, but does not invoke evaluate_human_required or check decision_scope, operation approval_required, or review_wave_impact blocking."
+    rationale: "Upstream intent requires that the human-required predicate priority check be applied before any proxy decision is accepted. check_decision is the entry point for proxy-triage-decision-check CLI, but it does not call evaluate_human_required. A proxy decision where approval_required=true or decision_scope=human_only could pass check_decision with verdict OK, violating the forbidden action 'Do not allow leave-as-is, proxy_approved, or selected proxy decision to override human-required evidence.'"
+
+  - severity: ERROR
+    target_location: "tools/check_workflow_action/proxy_triage_decisions.py:evaluate_human_required"
+    description: "evaluate_human_required does not check for missing or conflicting required evidence. The upstream acceptance criterion requires blocking when 'required evidence is missing or conflicting', but the function only checks approval_required, decision_scope, approval decision, and review_wave_impact.unresolved. Missing evidence fields (e.g., empty parsed_finding_paths, missing raw_response_path) are not evaluated."
+    rationale: "The upstream intent states human-required predicate blocks proxy application when 'required evidence is missing or conflicting'. The function receives only decision, operation_contract, approval_gate, and review_wave_impact; it does not inspect decision.raw_response_path, decision.parsed_finding_paths, or decision.source_triage_path for completeness. This is a coverage gap in the human-required predicate."
+
+  - severity: ERROR
+    target_location: "tools/check_workflow_action/proxy_triage_decisions.py:validate_approval_scope"
+    description: "validate_approval_scope only checks that review_triage_decide and apply_fixes sets are equal. The upstream intent requires that review_triage_decide approval not be treated as apply_fixes approval when scopes differ. Equal sets do not prevent the case where the same finding IDs are present in both but the scope semantics differ (e.g., a triage decision applies to a broader or different operation scope)."
+    rationale: "The forbidden action states 'Do not treat review_triage_decide approval as apply-fixes approval when scopes differ.' The current implementation performs a set equality check only, which is not sufficient to detect semantic scope drift between the two approval contexts."
+
+  - severity: ERROR
+    target_location: "tests/workflow-management/test_proxy_triage_decision_machine.py:test_human_required_decision_blocks_proxy_application"
+    description: "The test verifies that approval_required=True blocks proxy apply, but does not test that the blocking occurs specifically because of the operation contract's approval_required field being checked against the proxy selected_decision. The test does not verify that a proxy_approved or leave-as-is selected_decision with approval_required=True is correctly blocked even when the decision looks valid."
+    rationale: "The upstream forbidden action is 'Do not allow leave-as-is, proxy_approved, or selected proxy decision to override human-required evidence.' The test only checks a generic operation_contract with approval_required=True but does not use a selected_decision of 'proxy_approved' or 'leave-as-is' to verify that these labels cannot bypass the human-required block."
+
+  - severity: WARN
+    target_location: "tools/check_workflow_action/proxy_triage_decisions.py:evaluate_review_wave_consumer_impact"
+    description: "evaluate_review_wave_consumer_impact treats unresolved consumer impact as the only trigger for blocking. It does not distinguish between 'no downstream consumer impact', 'downstream impact carried forward with target feature or phase', 'unresolved carry-forward item that must block', and 'resolved downstream impact with evidence path or decision record' as required by the review-wave-impact-evidence-definition."
+    rationale: "The source material review-wave-impact-evidence-definition requires distinguishing four states. The current implementation only blocks when status=='unresolved', treating all other cases (including missing carry-forward records) as non-blocking. This means a missing carry-forward register when no consumer_impacts are present will not be flagged, and the distinction between resolved-with-evidence and resolved-without-evidence is not captured."
+
+  - severity: WARN
+    target_location: "tests/workflow-management/test_review_wave_consumer_impact.py:test_review_wave_consumer_impact_blocks_without_carry_forward_register"
+    description: "The test only covers the unresolved+no-carry-forward blocking case. It does not test the case where consumer_impacts is empty or None (no downstream impact) and carry_forward_register is None, which should be non-blocking. Nor does it test the resolved-with-evidence-path state."
+    rationale: "Insufficient test coverage of the four review-wave consumer impact states defined in the review-wave-impact-evidence-definition. Missing tests could allow an implementation to incorrectly block or pass in non-unresolved states."
+
+  - severity: WARN
+    target_location: ".reviewcompass/schema/proxy_triage_decision.schema.json:properties/approval_scope"
+    description: "The approval_scope schema allows empty arrays for both review_triage_decide and apply_fixes (no minItems constraint). Two empty arrays would be 'equal' and pass validate_approval_scope, but an empty approval scope does not constitute a valid coverage record."
+    rationale: "Upstream acceptance criterion requires finding/cluster coverage in the proxy decision record. Allowing both review_triage_decide and apply_fixes to be empty arrays would pass schema validation and set-equality check without actually covering any findings."
+
+  - severity: WARN
+    target_location: "tools/check_workflow_action/implementation_phases.py:check_phase_plan"
+    description: "check_phase_plan does not validate that Phase 2 operations are read-only (i.e., do not mutate next --json state). The function checks forbidden_operations against executed_operations but has no mechanism to verify that an operation listed as allowed in Phase 2 does not in fact mutate workflow state."
+    rationale: "Phase 2 responsibility boundary in upstream intent is 'owns read-only registry / operation-list behavior and must not mutate next --json state'. The phase plan checker only validates static criteria and forbidden operation lists; it does not enforce the read-only invariant at runtime."
+
+  - severity: WARN
+    target_location: "tests/workflow-management/test_implementation_phase_cli.py:test_proxy_triage_decision_check_cli_returns_json"
+    description: "The test creates a minimal proxy-triage-decision.yaml with only schema_version, decision_id, and target_findings, then expects returncode==2 and verdict==DEVIATION. This correctly tests rejection of incomplete records. However, it does not test that a complete, valid decision record with human-required predicates present returns a correct result, leaving a gap in positive-path coverage."
+    rationale: "Without a positive-path CLI test for proxy-triage-decision-check, the test suite does not verify that the CLI correctly passes a well-formed decision record through check_decision and returns exit_code=0."
+
+  - severity: INFO
+    target_location: "tools/check_workflow_action/proxy_triage_decisions.py:resolve_active_reopen_scope"
+    description: "resolve_active_reopen_scope correctly rejects None reopen_record and does not treat spec.json.reopened as active scope. However, it does not validate the structure of reopen_record when it is a dict, so a dict with a missing or empty active_reopen_scope field is handled but a dict with a non-list scope is not explicitly rejected."
+    rationale: "Minor robustness gap: the upstream intent states spec.json.reopened is treated as history, not active reopen scope. The current implementation satisfies this intent for the None case, and the non-empty scope case, but structural validation of the reopen_record dict could be more explicit."

@@ -1,0 +1,10 @@
+run_id: 2026-06-20-workflow-management-implementation-req14-approval-gate-review-run
+target_files:
+- path: .reviewcompass/schema/approval_gate.schema.json
+  sha256: 9293f3f43da5dbe30b828eaca9ee67367a3b1bdca6457f43fc73ad436fce6533
+- path: tools/check-workflow-action.py
+  sha256: 4137bc832c04ae4d77834bde2d0e9fb65bea4d5c685bddf7c9d53f1e2e9ac51b
+- path: tools/check_workflow_action/approval_gate.py
+  sha256: 13f86540797da324b8ac65a602800e7079e814c3fe6ddf6e3fbea50883641f37
+- path: tests/workflow-management/test_approval_gate.py
+  sha256: 388e8f91b4838742d09625d10605a4d46da1aefaa1c55b6b6623822909aa2dd2

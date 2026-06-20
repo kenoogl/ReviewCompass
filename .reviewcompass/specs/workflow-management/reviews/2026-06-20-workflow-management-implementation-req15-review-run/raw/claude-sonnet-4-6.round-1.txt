@@ -1,0 +1,45 @@
+findings:
+  - severity: ERROR
+    target_location: "tools/check_workflow_action/prompt_audit.py:audit_manifest"
+    description: "prompt_audit.audit_manifest does not check for missing required structure sections (decision_point, preconditions_checked, postconditions, source_artifacts, prompt_length) beyond language_task and on_completion. The upstream acceptance criterion explicitly requires rejection of missing required structure."
+    rationale: "Req 15 acceptance criteria states: 'prompt audit rejects missing required structure, broken refs, unknown action kind, review target manifest mismatch, machine task leakage, unverified preconditions, and impossible postconditions.' The audit_manifest function only delegates to _audit_language_task and _audit_on_completion. Absence of decision_point, source_artifacts, preconditions_checked, or postconditions fields is not detected, leaving structural validation gaps that the schema alone cannot close at audit time."
+
+  - severity: ERROR
+    target_location: "tools/check_workflow_action/prompt_audit.py:audit_manifest"
+    description: "prompt_audit does not check for broken source artifact references, unknown action kind, review target manifest mismatch, unverified preconditions (machine_checked=false with no evidence), or impossible postconditions. All are required rejection cases per upstream acceptance criteria."
+    rationale: "The upstream intent explicitly lists these as required audit checks: broken refs, unknown action kind, review target manifest mismatch, machine task leakage, unverified preconditions, impossible postconditions. Only machine task leakage in language_task.constraints and on_completion direct-operation leakage are currently implemented. The remaining checks are absent, so manifests with broken source paths, invalid action kinds, or unverified preconditions will pass audit, violating the fail-closed requirement."
+
+  - severity: ERROR
+    target_location: "tests/workflow-management/test_prompt_audit.py"
+    description: "Test coverage does not include: missing required structure sections, broken source artifact references, unknown action kind, unverified preconditions, or impossible postconditions. The existing tests cover only state-mutation instruction leakage, machine-execution-step leakage, next_action incompatibility, and CLI round-trip. Required rejection cases per upstream acceptance criteria go untested."
+    rationale: "The upstream acceptance criterion lists seven distinct rejection conditions. Only three are covered by tests. The four uncovered conditions (missing structure, broken refs, unknown action kind, unverified preconditions/impossible postconditions) have no test, meaning correctness of the fail-closed guarantee for those conditions cannot be verified and regressions will not be caught."
+
+  - severity: ERROR
+    target_location: "tests/workflow-management/test_effective_prompt_manifest.py:test_prompt_length_bounds_are_required_and_structured"
+    description: "The test validates that missing failure_verdict causes a schema rejection, but the asserted bad_bounds fixture omits failure_verdict while keeping min_chars > max_chars. The test conflates two separate validation conditions and does not confirm that the actual invalidity being tested (missing failure_verdict vs. inverted bounds) is the cause of rejection. More critically, the schema requires failure_verdict but the test comment implies it is testing bound inversion."
+    rationale: "The bad_bounds fixture has min_chars=20000 and max_chars=100 and omits failure_verdict. The schema enforces failure_verdict as required, so rejection occurs for that reason, not for inverted bounds (the schema has no constraint ordering min_chars < max_chars). This creates a misleading test that does not meaningfully cover the prompt length bound semantics claimed in the upstream acceptance criteria."
+
+  - severity: WARN
+    target_location: "tools/check_workflow_action/prompt_audit.py:_audit_language_task"
+    description: "Machine action term detection in language_task.constraints returns after the first matching constraint rather than collecting all violations. A manifest with multiple machine-task-leaking constraints will report only one reason, potentially masking the extent of leakage."
+    rationale: "The upstream acceptance criterion requires audit findings to be structured. Stopping at the first violation reduces diagnostic completeness, which may impede downstream triage. This is a quality gap rather than a correctness failure, but it weakens the audit's informational value."
+
+  - severity: WARN
+    target_location: "tools/check_workflow_action/prompt_audit.py:_audit_on_completion"
+    description: "The DIRECT_FOLLOWUP_TERMS list includes 'commit', 'push', and 'spec-set' but not 'spec.json を更新' which appears in STATE_MUTATION_TERMS. The on_completion check and the language_task check use different term sets without explanation. A manifest that embeds 'spec.json を更新' in allowed_followups will not be rejected."
+    rationale: "Upstream forbidden actions include spec.json mutation. The inconsistency between term sets for on_completion and language_task creates a gap where certain machine-operation phrases in allowed_followups escape detection, weakening the fail-closed boundary."
+
+  - severity: WARN
+    target_location: "tests/workflow-management/test_prompt_audit.py:test_prompt_audit_rejects_direct_state_mutation_instruction"
+    description: "The test fixture sets on_completion.allowed_followups to ['spec.json を更新して commit する'] but the current _audit_on_completion implementation checks DIRECT_FOLLOWUP_TERMS which includes 'spec-set' and 'spec.json を更新'. The term 'spec.json を更新' does appear in DIRECT_FOLLOWUP_TERMS, so the test passes, but the test fixture includes 'commit する' which by itself would not trigger via DIRECT_FOLLOWUP_TERMS. If the term list changes, the test intent may silently break."
+    rationale: "Test intent and assertion rely on an undocumented matching between the fixture text and the term list. A comment or separate assertion would make the coupling explicit and reduce fragility."
+
+  - severity: WARN
+    target_location: "tools/api_providers/run_role.py:update_review_run_artifacts"
+    description: "effective_prompt_sha256 is recorded in rounds.yaml as the value passed by the caller. In test_run_role.py:test_main_records_effective_prompt_metadata_in_rounds, the expected sha256 is computed from the file bytes directly, but run_role._resolve_effective_prompt_sha256 uses _sha256_file which also computes from bytes. The rounds.yaml field stores the raw hex, not the 'sha256:' prefixed form. The effective_prompt_manifest.schema.json requires the 'sha256:<hex>' pattern for source_artifacts.sha256, but rounds.yaml stores plain hex. This inconsistency in digest format between the manifest schema and the rounds recording may cause downstream audit confusion."
+    rationale: "Upstream acceptance criteria requires 'generated prompt metadata preserves compatibility with effective_prompt_path and effective_prompt_sha256 in next_action and review-run rounds.' The format discrepancy (schema enforces 'sha256:' prefix; rounds stores plain hex) is not explicitly reconciled in the implementation or tests."
+
+  - severity: INFO
+    target_location: "tools/check_workflow_action/effective_prompt_builder.py:sha256_file"
+    description: "sha256_file returns the 'sha256:<hex>' prefixed form, consistent with the manifest schema. However, build_manifest does not validate that the constructed manifest satisfies the effective_prompt_manifest schema before returning it. Callers receive an unvalidated dict."
+    rationale: "Adding schema validation at build time would catch structural errors early and align with the fail-closed intent of Req 15. This is a minor improvement opportunity, not a blocking defect."

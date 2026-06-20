@@ -1,0 +1,243 @@
+round_id: round-1
+purpose: triad-review
+invocation_timestamp: '2026-06-20T15:32:08.712911+00:00'
+target_files:
+- path: .reviewcompass/schema/implementation_phase.schema.json
+  sha256: ab2e62347c17287e49aca48bbbe9e12a409096722720cd6e55ff5c39a601e9cb
+- path: .reviewcompass/schema/proxy_triage_decision.schema.json
+  sha256: a6e647c7a5b2c6bcfc5ba5f0f2951946fa434f122538ac315f480cf4b4a69710
+- path: .reviewcompass/schema/operation_contract.schema.json
+  sha256: 367b2accfb7fb069a6c094a32a197dce7cb52de1b1312f40018ac49c35bd82df
+- path: .reviewcompass/schema/required_action.schema.json
+  sha256: 8bdef724c81f464fe6297bceeec61ca177d7086d105f5683efd06623171bc610
+- path: tools/check-workflow-action.py
+  sha256: 4871b439b11450d1b25728e5a1195fae95d30dfd1737c0d980841ef5aba5ee13
+- path: tools/check_workflow_action/implementation_phases.py
+  sha256: 9e681744e0ccb7ef19382f1b74e7e9db5b84a0c26a5a93741121826a19e119f1
+- path: tools/check_workflow_action/operation_contracts.py
+  sha256: 885fc0248143533b8dab75eb0b440e1c8e4acc28b9749c4689c22e9f600637de
+- path: tools/check_workflow_action/operation_list.py
+  sha256: 6fee5ae12cadb2c3ef2cbc6c45c4fd5dc478dc4c26ea693b7a25b99fd0a32044
+- path: tools/check_workflow_action/operation_registry.py
+  sha256: ea83a5f07b2f8cc914595581b181d648103ff479208cddb4760b6a3b4691d4a7
+- path: tools/check_workflow_action/proxy_triage_decisions.py
+  sha256: 00b3c6a76f2bd8e252c26e992694a3b8cfbce1c124e133e1fa0c0b566d84a468
+- path: tests/workflow-management/test_implementation_phase_plan.py
+  sha256: cb2455ad33f0152fcf98d8aa6c6f3d6684a29f9b70fc42f1372fd2852aabc177
+- path: tests/workflow-management/test_operation_list_read_only.py
+  sha256: a388b21085615f28af16448df9149b4fd05a98b87cd97292ab9a04081046432f
+- path: tests/workflow-management/test_proxy_triage_decision_machine.py
+  sha256: 894b3e2184f37ed00cc6449dab2f58162a231a528b1bc7acea5da8ff94fa3c17
+- path: tests/workflow-management/test_review_wave_consumer_impact.py
+  sha256: 32fc6f580d086bb8661c1be60e56ced03e47edb45a2bcbd954d9e4299554f72f
+- path: tests/workflow-management/test_implementation_phase_cli.py
+  sha256: 6017b87d8f82142d1c8f9c498c997dedb0d33c898e2850ed655cff0cefbf0c46
+- path: tests/workflow-management/test_operation_contract_cli.py
+  sha256: e3e9e78e3405b1b6db9b26bf0996eea3d415cb5c61b01c3607244ecad356ad2c
+- path: tests/workflow-management/test_operation_contract_schema.py
+  sha256: 7266dd2b41f19ffa781a8ec3c61383c514d4c133a382e907f7f6eb7597e6e003
+- path: tests/workflow-management/test_required_action_contract_mapping.py
+  sha256: cbc24acca9d6fd32be440b730903542894a1fd15ffa2f761dcac82d6e1b2d208
+criteria: "---\ncriteria_id: workflow-management-implementation-req16-phase-proxy-triage-transfer-review-criteria\n\
+  phase: implementation\nstatus: prompt_quality_reviewed_nonblocking_warnings_addressed\n\
+  ---\n\n# workflow-management implementation req16-phase-proxy-triage-transfer API\
+  \ Review Criteria\n\n## Review Task\n\nReview the target for: Req 16 implementation\
+  \ upstream transfer for phased implementation and proxy triage decision mechanics.\n\
+  \nPrimary judgment question:\n\nDoes the target satisfy Req 16 implementation upstream\
+  \ transfer for phased implementation and proxy triage decision mechanics, while\
+  \ carrying upstream purpose, responsibility boundaries, acceptance criteria, forbidden\
+  \ actions, unresolved items, and intended transfer without omission, weakening,\
+  \ contradiction, unsupported addition, or drift?\n\nDo not combine multiple independent\
+  \ judgments in this prompt. If another cluster, finding, artifact, or design-policy\
+  \ judgment is needed, create a separate criteria file and run separate prompt-quality\
+  \ review.\n\n## User Review Requirements\n\n- Review purpose: workflow-management\
+  \ implementation triad-review\n- Review object: Req 16 implementation artifacts\n\
+  - Review focus:\n  - Phase 0 to 6 separation and read-only boundaries\n  - proxy\
+  \ decision evidence completeness and coverage\n  - human-required predicate priority\n\
+  - Scope boundaries:\n  - In scope:\n    - Req 16 schemas, implementation, operation\
+  \ contract connections, and focused tests\n  - Out of scope:\n    - Req 14 side\
+  \ track state implementation\n    - Req 15 prompt audit implementation\n- Output\
+  \ requirements:\n  - parser-compatible findings\n- Prohibited actions:\n  - commit\n\
+  \  - push\n  - spec.json update\n  - phase completion\n- Requirement-to-prompt mapping:\n\
+  \  - Review purpose -> Review Task and Required Checks\n  - Review focus -> Required\
+  \ Checks\n  - Scope boundaries -> Review Target and Out Of Scope\n  - Prohibited\
+  \ actions -> Out Of Scope and Finding Policy\n\n## Generic API Review Core\n\n-\
+  \ Keep criteria and target roles distinct.\n- Treat the target files as the only\
+  \ review target.\n- Treat source materials as background or intent-transfer evidence,\
+  \ not as targets.\n- Do not use path-only source materials as model-readable evidence.\n\
+  - Ask one non-leading primary judgment question.\n- Preserve user review requirements\
+  \ without narrowing, broadening, or replacement.\n- Exclude credentials, personal\
+  \ identifiers, third-party non-sendable confidential material, and unrelated logs.\n\
+  - Return parser-compatible findings only.\n\n## Review Target\n\nThe authoritative\
+  \ target file set is\n`.reviewcompass/specs/workflow-management/reviews/2026-06-20-workflow-management-implementation-review-run/req16-review-target-manifest.md`\n\
+  and the target files supplied by the review runner. The list below is an orientation\n\
+  copy only; if it diverges from the manifest or runner target set, treat the manifest\n\
+  and runner target set as authoritative and report the mismatch.\n\n- `.reviewcompass/schema/implementation_phase.schema.json`\n\
+  - `.reviewcompass/schema/proxy_triage_decision.schema.json`\n- `.reviewcompass/schema/operation_contract.schema.json`\n\
+  - `.reviewcompass/schema/required_action.schema.json`\n- `tools/check-workflow-action.py`\n\
+  - `tools/check_workflow_action/implementation_phases.py`\n- `tools/check_workflow_action/operation_contracts.py`\n\
+  - `tools/check_workflow_action/operation_list.py`\n- `tools/check_workflow_action/operation_registry.py`\n\
+  - `tools/check_workflow_action/proxy_triage_decisions.py`\n- `tests/workflow-management/test_implementation_phase_plan.py`\n\
+  - `tests/workflow-management/test_operation_list_read_only.py`\n- `tests/workflow-management/test_proxy_triage_decision_machine.py`\n\
+  - `tests/workflow-management/test_review_wave_consumer_impact.py`\n- `tests/workflow-management/test_implementation_phase_cli.py`\n\
+  - `tests/workflow-management/test_operation_contract_cli.py`\n- `tests/workflow-management/test_operation_contract_schema.py`\n\
+  - `tests/workflow-management/test_required_action_contract_mapping.py`\n\nDo not\
+  \ treat this criteria file, a wrapper, or an author-written summary as a substitute\
+  \ for the target.\n\n## Source Materials\n\n### workflow-management-req16-upstream-intent\n\
+  \nPurpose: Requirement 16 / design / tasks intent for phased implementation and\
+  \ proxy_model triage decision mechanics.\nThis is a structured summary of the upstream\
+  \ phase chain, paraphrased from\n`.reviewcompass/specs/workflow-management/requirements.md`,\n\
+  `.reviewcompass/specs/workflow-management/design.md`, and\n`.reviewcompass/specs/workflow-management/tasks.md`.\
+  \ Use it as intent-transfer\nevidence; do not treat it as a replacement for target\
+  \ files.\n\n- purpose: Separate selection-layer and execution-layer mechanization\
+  \ into Phase 0 to Phase 6 so TDD implementation does not mix unrelated behavior\
+  \ or break existing workflow.\n- responsibility_boundaries:\n  - Phase 0 owns D-003\
+  \ action selection, required_action uniqueness, invariants, reopen plan compiler,\
+  \ and workflow-state repair detection.\n  - Phase 1 owns schemas without changing\
+  \ runtime behavior.\n  - Phase 2 owns read-only registry / operation-list behavior\
+  \ and must not mutate next --json state.\n  - Phase 3 owns advisory preflight; Phase\
+  \ 5 promotes selected warnings to mechanical blocking.\n  - Phase 4 owns structured\
+  \ prompt generation; Phase 6 owns advisory LLM judge audit.\n  - proxy_model triage\
+  \ decision mechanics depend on evidence completeness, finding/cluster coverage,\
+  \ approval gate records, operation contracts, review-wave impact evidence, and human-only\
+  \ boundaries, not provider or model name.\n- acceptance_criteria:\n  - Phase plan\
+  \ covers Phase 0 through Phase 6 in order, with entry criteria, exit criteria, allowed\
+  \ operations, forbidden operations, required tests, and commit boundary.\n  - implementation-phase-check\
+  \ fails on missing phase coverage, order violations, unmet criteria, forbidden operation\
+  \ evidence, and stale or missing required snapshot evidence.\n  - operation-list\
+  \ exposes read-only registry fields such as canonical commands, effect_kind, approval_required,\
+  \ sequence, and pending conflicts without changing next --json.\n  - proxy triage\
+  \ decision records raw response, prompt, candidates, selected decision, reason,\
+  \ final target, coverage, and mapping.\n  - human-required predicate blocks proxy\
+  \ application when decision_scope is human_only, approval gate is unresolved, operation\
+  \ approval_required is true, review-wave impact evidence is unresolved, or required\
+  \ evidence is missing or conflicting.\n  - spec.json.reopened is treated as history,\
+  \ not active reopen scope.\n- forbidden_actions:\n  - Do not mix multiple implementation\
+  \ phases into one completion claim.\n  - Do not treat provider or model identity\
+  \ as the proxy decision safety basis.\n  - Do not allow leave-as-is, proxy_approved,\
+  \ or selected proxy decision to override human-required evidence.\n  - Do not treat\
+  \ review_triage_decide approval as apply-fixes approval when scopes differ.\n  -\
+  \ Do not treat review-wave consumer impact as complete without carry-forward or\
+  \ downstream impact evidence.\n- unresolved_or_design_deferred_items:\n  - Later\
+  \ phases may be advisory until mechanical blocking is intentionally enabled.\n \
+  \ - Existing proxy decision artifact formats may need mapping before a single schema\
+  \ can cover all historical runs.\n- intended_target_phase_transfer:\n  - Implementation\
+  \ should provide phase plan schema/checking, read-only operation-list, proxy triage\
+  \ decision validation, human-required predicate checks, and review-wave consumer\
+  \ impact checks.\n  - Implementation review should verify schemas, tools, and focused\
+  \ tests listed in req16-review-target-manifest.md against this intent.\n\n### req16-verification-context\n\
+  \nVerification snapshots are smoke evidence only. Passing tests are not proof of\n\
+  correctness and must not suppress findings. Use the target test files themselves\n\
+  to evaluate whether the boundaries are meaningfully covered.\n\n- `test_implementation_phase_plan.py`\
+  \ and `test_implementation_phase_cli.py`: cover phase plan schema/check behavior\
+  \ and CLI reporting.\n- `test_operation_list_read_only.py`: covers read-only operation-list\
+  \ behavior and no state mutation from listing.\n- `test_proxy_triage_decision_machine.py`:\
+  \ covers proxy decision record validation, evidence completeness, final target mapping,\
+  \ and human-required blocking predicates.\n- `test_review_wave_consumer_impact.py`:\
+  \ covers review-wave consumer impact / downstream evidence checks.\n- `test_operation_contract_cli.py`,\
+  \ `test_operation_contract_schema.py`, and `test_required_action_contract_mapping.py`:\
+  \ cover operation contract schema, mapping, registry drift, and required_action\
+  \ coverage.\n\n### req14-req15-minimal-source-evidence-for-req16\n\nReq14 and Req15\
+  \ internals are not review targets. They are source evidence only\nwhere Req16 explicitly\
+  \ depends on them.\n\n- Req14 approval-gate evidence expected by Req16 proxy blocking:\n\
+  \  - approval decisions carry `decision_scope`, `decided_by`, `decision`,\n    `target_operation_id`,\
+  \ `target_required_action`, digest binding fields,\n    `next_action_expectation`,\
+  \ and `consumed`\n  - `human_only` approval cannot be satisfied by `proxy_model`\
+  \ or `llm`\n  - non-approved decisions do not authorize target operations\n  - approval-required\
+  \ operation contracts must force human-required handling\n- Req15 structured-prompt\
+  \ evidence expected by Req16 proxy decision checks:\n  - prompt/effective-prompt\
+  \ metadata has path and sha256 traceability\n  - prompt audit output is advisory\
+  \ unless an explicit gate consumes it\n  - language-task material is separated from\
+  \ machine-operation authorization\n\nDo not review full Req14 or Req15 correctness\
+  \ beyond these dependency points.\n\n### review-wave-impact-evidence-definition\n\
+  \nFor Required Check 7 and review-wave consumer impact behavior, sufficient evidence\n\
+  means the target preserves enough machine-readable state or records to distinguish:\n\
+  \n- no downstream consumer impact\n- downstream impact carried forward with a target\
+  \ feature or phase\n- unresolved carry-forward item that must block proxy application\
+  \ or phase movement\n- resolved downstream impact with evidence path or decision\
+  \ record\n\nIf the implementation treats a missing or conflicting carry-forward\
+  \ / downstream\nimpact record as complete, report it.\n\n## Vertical Intent Transfer\
+  \ Customization\n\nPhase chain:\n\n- requirements.md -> design.md -> tasks.md ->\
+  \ implementation\n\nUse upstream materials only for background and transfer checking.\
+  \ Limit target judgment to the current phase artifact.\n\n## Required Checks\n\n\
+  1. Check the target against the single judgment item: Req 16 implementation upstream\
+  \ transfer for phased implementation and proxy triage decision mechanics.\n2. Check\
+  \ that the target satisfies preserved user review requirements.\n3. Check that source\
+  \ materials are used only for background or required intent transfer.\n4. Check\
+  \ that no finding depends on unstated assumptions or path-only source material.\n\
+  5. Check that Req14 / Req15 dependency evidence is used only for the explicit Req16\
+  \ proxy blocking predicates above.\n6. Check that review-wave consumer impact handling\
+  \ distinguishes unresolved carry-forward from resolved/no-impact states.\n7. Check\
+  \ that the target does not authorize commit, push, spec.json mutation, phase transition,\
+  \ or gate completion.\n\n## Out Of Scope\n\n- Req 14 side track state implementation\n\
+  - Req 15 prompt audit implementation\n- Do not approve or authorize commit, push,\
+  \ spec.json mutation, phase transition, or gate completion.\n- Do not judge downstream\
+  \ correctness unless a target omission would force downstream invention.\n\n## Finding\
+  \ Policy\n\n- Use CRITICAL for bypass of human-only approval or irreversible-operation\
+  \ boundaries.\n- Use ERROR for missing required behavior, weakened user requirements,\
+  \ or unsupported target behavior.\n- Use WARN for meaningful ambiguity, weak traceability,\
+  \ or coverage gaps.\n- Use INFO only for minor non-blocking improvements.\n- Use\
+  \ precise target locations such as `path`, `path:function`, or `path:section`.\n\
+  - Return findings: [] only when the target is traceable, correctly scoped, and sufficiently\
+  \ grounded.\n"
+prompt_sha256: d135c0bbfc90c25143d59cf4de9c947f03e2856015aec00b4e64669404857c42
+model_results:
+- model_id: gpt-5.4
+  provider: openai-api
+  role: primary
+  treatment: primary
+  invocation_path: api
+  raw_path: raw/gpt-5.4.round-1.txt
+  raw_sha256: 0e01d5257a9c00160847219a7c99168a833dfc5633278beaa1a7b20bc065bdcb
+  parsed_path: parsed/gpt-5.4.round-1.yaml
+  parsed_sha256: f67217c8080bf40a3961c4e95c27edf6392b5864fdbd0abdbf439a835899d21c
+  parse_status: parsed
+  formatted_by: parser
+  formatted_by_actor_type: orchestrator
+  formatted_by_actor: run_role.py
+  formatted_at: '2026-06-20T15:30:26.253063+00:00'
+  follow_up_action: triage
+  attempts: 1
+  duration_seconds: 11.375
+  prompt_path: prompts/gpt-5.4.round-1.prompt.md
+  prompt_sha256: 5cb63608ce525cf912447a0d1787b79119838102d3fb42ceb865d676a04c992b
+- model_id: claude-sonnet-4-6
+  provider: anthropic-api
+  role: adversarial
+  treatment: adversarial
+  invocation_path: api
+  raw_path: raw/claude-sonnet-4-6.round-1.txt
+  raw_sha256: 68d483829e6ae4285dca7949c7d95ea33a7403a55515fadccbbe27fe9df03203
+  parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  parsed_sha256: 183b3bdf6ad091b10de83a4fdfe0597bfe8bdb0af687911fe44861365902fd1d
+  parse_status: parsed
+  formatted_by: parser
+  formatted_by_actor_type: orchestrator
+  formatted_by_actor: run_role.py
+  formatted_at: '2026-06-20T15:31:09.673864+00:00'
+  follow_up_action: triage
+  attempts: 1
+  duration_seconds: 43.382
+  prompt_path: prompts/claude-sonnet-4-6.round-1.prompt.md
+  prompt_sha256: 6d830ecafef3120c23148ba9c5b95363e6b162fbfae87a55cc7f44f6e544db07
+- model_id: gemini-3.1-pro-preview
+  provider: gemini-api
+  role: judgment
+  treatment: judgment
+  invocation_path: api
+  raw_path: raw/gemini-3.1-pro-preview.round-1.txt
+  raw_sha256: 02a941674ed7e66d6747e69045123ea592ad1764629b89193fff021457c63228
+  parsed_path: parsed/gemini-3.1-pro-preview.round-1.yaml
+  parsed_sha256: fb00160c08d2a78a0da03c2cdca85fcc9830c0b3fee3ea8e039505aafacb40f0
+  parse_status: parsed
+  formatted_by: parser
+  formatted_by_actor_type: orchestrator
+  formatted_by_actor: run_role.py
+  formatted_at: '2026-06-20T15:32:08.712911+00:00'
+  follow_up_action: triage
+  attempts: 1
+  duration_seconds: 59.004
+  prompt_path: prompts/gemini-3.1-pro-preview.round-1.prompt.md
+  prompt_sha256: d135c0bbfc90c25143d59cf4de9c947f03e2856015aec00b4e64669404857c42
+criteria_source_path: .reviewcompass/specs/workflow-management/reviews/2026-06-20-workflow-management-implementation-req16-criteria-run/review-criteria.md
+criteria_source_sha256: c49245bfcff16807b6d7d1fa83d0eb7684966cc99d6e46971cc31333ebe4070d

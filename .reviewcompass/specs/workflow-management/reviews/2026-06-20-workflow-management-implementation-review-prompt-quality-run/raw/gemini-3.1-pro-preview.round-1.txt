@@ -1,0 +1,9 @@
+findings:
+  - severity: ERROR
+    target_location: "Review Task and Review Target"
+    description: "The prompt combines implementation reviews for three distinct major requirements (Req 14, 15, and 16) spanning 31 target files into a single review task."
+    rationale: "Per Judgment Granularity requirements, independent judgments must be split into separate prompt files. Evaluating 31 files across three disjoint subsystems (state protection, prompt structure, and phased rollouts) in one prompt will likely cause the model to dilute its attention, hallucinate test coverage, and miss item-specific boundary violations. These should be split into distinct criteria files focused on one requirement's specific subset of files and checks."
+  - severity: WARN
+    target_location: "Required Checks / Check 4"
+    description: "The read-only boundary check includes a vague exception ('except where a separate mutating operation is explicitly intended') without specifying which operations are allowed to mutate."
+    rationale: "Ambiguity in this exception creates a loophole. The reviewing model might incorrectly accept unintended state mutations by assuming they were 'explicitly intended'. If these modules are meant to be strictly read-only, the exception should be removed; otherwise, the explicitly intended mutating operations must be clearly named."

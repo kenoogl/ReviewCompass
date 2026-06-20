@@ -1,0 +1,67 @@
+role: adversarial
+provider: openai-api
+model: gpt-5.5
+attempts: 1
+duration_seconds: 49.404
+findings:
+- severity: CRITICAL
+  target_location: 'tools/check_workflow_action/approval_gate.py: allows_target_operation;
+    .reviewcompass/schema/approval_gate.schema.json:/properties/decided_by'
+  description: Human-only approval can be satisfied by non-human actors other than
+    proxy_model.
+  rationale: allows_target_operation only rejects decided_by=proxy_model when decision_scope=human_only,
+    while the schema explicitly permits decided_by=llm and the implementation does
+    not validate decided_by against a human-only allowlist. An approved human_only
+    record with decided_by=llm can therefore be allowed for commit/reopen/approval_required
+    operation contracts, weakening the required human-only boundary.
+- severity: CRITICAL
+  target_location: 'tools/check_workflow_action/approval_gate.py: allows_target_operation'
+  description: The authorization path does not perform current digest checks before
+    allowing the target operation.
+  rationale: validate_approval_gate_record can compare current_target_artifact_digest
+    and current_staged_file_set_digest only when they are passed, but allows_target_operation
+    has no parameters for current digests and calls validation without them. This
+    permits an approved record with stale target_artifact_digest or staged_file_set_digest
+    to allow an irreversible operation, contrary to the required decision binding
+    and stale digest blocking behavior.
+- severity: ERROR
+  target_location: 'tools/check-workflow-action.py: main() subcommand registrations
+    and cmd_next()'
+  description: Approval gate validation is not integrated into the CLI or next --json
+    flow.
+  rationale: The CLI registers next, operation-preflight, operation-contract-check,
+    workflow-snapshot, and other commands, but no approval-gate, wait_for_human_decision,
+    record_human_decision, or collect_required_decisions command is registered, and
+    cmd_next does not load or evaluate approval gate records. This omits the required
+    CLI integration where record_human_decision is only a record and next --json decides
+    whether to proceed, remain blocked, redraft, or repair.
+- severity: ERROR
+  target_location: 'tools/check_workflow_action/approval_gate.py: validate_approval_gate_record'
+  description: Source metadata and actor fields are only checked for presence, not
+    validity.
+  rationale: REQUIRED_RECORD_FIELDS requires source_ref, source_digest, decided_at,
+    rationale, next_action_expectation, and decided_by to exist, but validate_approval_gate_record
+    does not reject empty strings, malformed source_digest values, or invalid decided_by
+    values. Because the implementation does not invoke the JSON schema, wrong actor/source
+    records can pass implementation validation, contrary to the required source metadata
+    binding and wrong actor/source blocking behavior.
+- severity: ERROR
+  target_location: .reviewcompass/schema/approval_gate.schema.json:/properties/binding_kind,
+    /properties/target_artifact_digest, /properties/staged_file_set_digest
+  description: The schema does not enforce binding_kind-specific digest requirements.
+  rationale: The schema lists binding_kind values and digest fields, but has no conditional
+    constraints requiring target_artifact_digest for artifact_digest, staged_file_set_digest
+    for staged_file_set_digest, both digests for both, or restricting none to read-only/wait-only
+    records. Schema validation alone can therefore accept unbound approval-required
+    records, weakening the required approval decision binding.
+- severity: WARN
+  target_location: 'tests/workflow-management/test_approval_gate.py: ApprovalGateTests'
+  description: Focused approval gate tests omit required positive and wrong actor/source
+    coverage.
+  rationale: The tests cover non-approved decisions, proxy_model for human_only, decision_scope
+    derivation, binding_kind requirements, target_operation_id mismatch, and digest
+    mismatch through validate_approval_gate_record. They do not include an approved
+    human/user record that is allowed, wrong actor values such as llm or unknown,
+    empty or wrong source_ref/source_digest, or stale digest rejection through allows_target_operation/CLI
+    integration. This leaves required approval/proxy boundary and decision binding
+    behavior weakly covered.

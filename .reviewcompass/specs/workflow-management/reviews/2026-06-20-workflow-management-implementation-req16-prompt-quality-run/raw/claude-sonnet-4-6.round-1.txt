@@ -1,0 +1,30 @@
+findings:
+  - severity: WARN
+    target_location: "Source Materials / Verification before review"
+    description: "Verification evidence is stated as prose assertions ('13 passed', 'OK') rather than structured excerpts or attached test output."
+    rationale: "A reviewing model cannot independently confirm the verification claims. Inline structured summaries or excerpts of actual test output would let the model distinguish confirmed-passing boundaries from unverified ones, reducing the risk of treating unverified claims as evidence."
+
+  - severity: WARN
+    target_location: "Review Target (file list)"
+    description: "The target manifest path is declared in the front matter but the criteria draft does not confirm that the manifest will contain all eleven listed files as actual content, not path-only references."
+    rationale: "If the manifest lists paths without including file content or structured summaries, the reviewing model will have to judge against path stubs rather than real artifact content, which risks missing defects in schema fields, predicate logic, and CLI wiring."
+
+  - severity: WARN
+    target_location: "Source Materials (Req 14 / Req 15 cross-reference)"
+    description: "The prompt states that Req 14 approval gate internals and Req 15 prompt audit internals are out of scope 'except as source evidence for proxy blocking,' but provides no excerpt or structured summary of the approval-gate record schema or structured-prompt evidence fields that the proxy triage checker is expected to consume."
+    rationale: "Without at least a minimal structured summary of the upstream evidence fields, the model cannot verify whether the proxy triage decision checker correctly reads and fails-closed on missing Req 14 / Req 15 source evidence, which is a stated Required Check (items 3 and 4)."
+
+  - severity: WARN
+    target_location: "Required Checks / Check 7"
+    description: "The check for unresolved review-wave consumer impact blocking references 'required carry-forward and downstream impact evidence' without defining what constitutes sufficient carry-forward evidence or where in the target files it should appear."
+    rationale: "Ambiguous acceptance criteria for a boundary check increases the risk that the reviewing model applies inconsistent or overly lenient judgment when evaluating test_review_wave_consumer_impact.py coverage."
+
+  - severity: INFO
+    target_location: "Finding Policy (example YAML block)"
+    description: "The finding policy section includes an example YAML finding with a placeholder format ('path:line-or-section') that is slightly inconsistent with the API runner output contract, which expects a plain string for target_location."
+    rationale: "Minor ergonomics issue; the placeholder format is clear enough but could be made explicitly illustrative to avoid a model interpreting 'path:line-or-section' as a required literal format."
+
+  - severity: INFO
+    target_location: "Front matter / intended_actual_run_dir"
+    description: "The intended_actual_run_dir value differs from the review_target directory prefix, which may cause confusion about where artifacts will be written during the actual run."
+    rationale: "Not a blocking issue but noting the directory name inconsistency (prompt-quality-run vs implementation-req16-review-run) for traceability during actual run setup."
