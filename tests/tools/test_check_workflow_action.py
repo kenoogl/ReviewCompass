@@ -5142,6 +5142,12 @@ class RecordHumanDecisionTests(unittest.TestCase):
     target.write_text("承認対象 requirements\n", encoding="utf-8")
     return target
 
+  def _current_staged_file_set_digest(self):
+    commit_approval = _load_commit_approval_module()
+    canonical = commit_approval.canonical_target(self.tmpdir)
+    digest = commit_approval.staged_file_set_digest_from_canonical(canonical)
+    return "sha256:" + digest["digest"]
+
   def test_record_human_decision_saves_record_and_binds_current_blocker(self):
     """人間判断を approval record として保存し blocker に path を結びつける"""
     in_progress = self._write_blocked_in_progress()
@@ -5292,6 +5298,199 @@ class RecordHumanDecisionTests(unittest.TestCase):
     self.assertEqual(action["blocked_by"]["approval_record_verdict"], "DEVIATION")
     self.assertIn(
       "target_artifact_digest が現在の対象 digest と一致しません",
+      "\n".join(action["blocked_by"]["approval_record_reasons"]),
+    )
+
+  def test_next_allows_pending_approval_gate_when_staged_file_set_digest_matches(self):
+    """staged_file_set_digest が現在 index と一致すれば approval gate へ進める"""
+    _init_git_repo(self.tmpdir)
+    self._write_blocked_in_progress()
+    self._write_run_reopen_pending_gate_contract()
+    target = self._write_target_artifact()
+    target_rel = str(target.relative_to(self.tmpdir))
+    _stage_file(self.tmpdir, "notes/staged.txt", "承認時点の staged file\n")
+    staged_digest = self._current_staged_file_set_digest()
+    out_path = ".reviewcompass/runtime/approvals/staged-approval.yaml"
+
+    result = run_script(
+      [
+        "record-human-decision",
+        "--file", "stages/in-progress/reopen-procedure-2026-06-20.yaml",
+        "--gate", "stages/requirements.yaml#approval",
+        "--decision-id", "REQ-APPROVAL-STAGED-001",
+        "--decision", "approved",
+        "--decision-scope", "human_only",
+        "--target-operation-id", "run_reopen_pending_gate",
+        "--target-required-action", "run_reopen_pending_gate",
+        "--target-artifact", target_rel,
+        "--staged-file-set-digest", staged_digest,
+        "--binding-kind", "staged_file_set_digest",
+        "--decided-by", "user",
+        "--decided-at", "2026-06-20T00:00:00+00:00",
+        "--source-ref", "conversation:user:approval",
+        "--source-digest", "sha256:" + "b" * 64,
+        "--rationale", "利用者が staged file set を承認した。",
+        "--next-action-expectation", "proceed",
+        "--out", out_path,
+        "--json",
+      ],
+      cwd=self.tmpdir,
+    )
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 0, result.stdout)
+
+    next_result = run_script(["next", "--json"], cwd=self.tmpdir)
+    _assert_script_invoked(self, next_result)
+    self.assertEqual(next_result.returncode, 0, next_result.stdout)
+    action = json.loads(next_result.stdout)["next_action"]
+    self.assertEqual(action["required_action"], "run_reopen_pending_gate")
+    self.assertEqual(action["approval_record_path"], out_path)
+    self.assertIsNone(action["blocked_by"])
+
+  def test_next_blocks_recorded_approval_when_staged_file_set_digest_is_stale(self):
+    """承認後に staged file set が変わった場合は approval gate へ進めない"""
+    _init_git_repo(self.tmpdir)
+    self._write_blocked_in_progress()
+    self._write_run_reopen_pending_gate_contract()
+    target = self._write_target_artifact()
+    target_rel = str(target.relative_to(self.tmpdir))
+    _stage_file(self.tmpdir, "notes/staged.txt", "承認時点の staged file\n")
+    staged_digest = self._current_staged_file_set_digest()
+
+    result = run_script(
+      [
+        "record-human-decision",
+        "--file", "stages/in-progress/reopen-procedure-2026-06-20.yaml",
+        "--gate", "stages/requirements.yaml#approval",
+        "--decision-id", "REQ-APPROVAL-STAGED-002",
+        "--decision", "approved",
+        "--decision-scope", "human_only",
+        "--target-operation-id", "run_reopen_pending_gate",
+        "--target-required-action", "run_reopen_pending_gate",
+        "--target-artifact", target_rel,
+        "--staged-file-set-digest", staged_digest,
+        "--binding-kind", "staged_file_set_digest",
+        "--decided-by", "user",
+        "--decided-at", "2026-06-20T00:00:00+00:00",
+        "--source-ref", "conversation:user:approval",
+        "--source-digest", "sha256:" + "b" * 64,
+        "--rationale", "利用者が staged file set を承認した。",
+        "--next-action-expectation", "proceed",
+        "--out", ".reviewcompass/runtime/approvals/staged-stale-approval.yaml",
+        "--json",
+      ],
+      cwd=self.tmpdir,
+    )
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 0, result.stdout)
+
+    _stage_file(self.tmpdir, "notes/added-after-approval.txt", "承認後の staged file\n")
+    next_result = run_script(["next", "--json"], cwd=self.tmpdir)
+    _assert_script_invoked(self, next_result)
+    self.assertEqual(next_result.returncode, 0, next_result.stdout)
+    action = json.loads(next_result.stdout)["next_action"]
+    self.assertEqual(action["required_action"], "wait_for_human_decision")
+    self.assertEqual(action["blocked_by"]["approval_record_verdict"], "DEVIATION")
+    self.assertIn(
+      "staged_file_set_digest が現在の staged digest と一致しません",
+      "\n".join(action["blocked_by"]["approval_record_reasons"]),
+    )
+
+  def test_next_allows_pending_approval_gate_when_both_digests_match(self):
+    """both は artifact digest と staged file set digest の両方一致を要求する"""
+    _init_git_repo(self.tmpdir)
+    self._write_blocked_in_progress()
+    self._write_run_reopen_pending_gate_contract()
+    target = self._write_target_artifact()
+    target_rel = str(target.relative_to(self.tmpdir))
+    target_digest = "sha256:" + _sha256_file(target)
+    _stage_file(self.tmpdir, "notes/staged.txt", "承認時点の staged file\n")
+    staged_digest = self._current_staged_file_set_digest()
+    out_path = ".reviewcompass/runtime/approvals/both-approval.yaml"
+
+    result = run_script(
+      [
+        "record-human-decision",
+        "--file", "stages/in-progress/reopen-procedure-2026-06-20.yaml",
+        "--gate", "stages/requirements.yaml#approval",
+        "--decision-id", "REQ-APPROVAL-BOTH-001",
+        "--decision", "approved",
+        "--decision-scope", "human_only",
+        "--target-operation-id", "run_reopen_pending_gate",
+        "--target-required-action", "run_reopen_pending_gate",
+        "--target-artifact", target_rel,
+        "--target-artifact-digest", target_digest,
+        "--staged-file-set-digest", staged_digest,
+        "--binding-kind", "both",
+        "--decided-by", "user",
+        "--decided-at", "2026-06-20T00:00:00+00:00",
+        "--source-ref", "conversation:user:approval",
+        "--source-digest", "sha256:" + "b" * 64,
+        "--rationale", "利用者が artifact と staged file set を承認した。",
+        "--next-action-expectation", "proceed",
+        "--out", out_path,
+        "--json",
+      ],
+      cwd=self.tmpdir,
+    )
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 0, result.stdout)
+
+    next_result = run_script(["next", "--json"], cwd=self.tmpdir)
+    _assert_script_invoked(self, next_result)
+    self.assertEqual(next_result.returncode, 0, next_result.stdout)
+    action = json.loads(next_result.stdout)["next_action"]
+    self.assertEqual(action["required_action"], "run_reopen_pending_gate")
+    self.assertEqual(action["approval_record_path"], out_path)
+    self.assertIsNone(action["blocked_by"])
+
+  def test_next_blocks_recorded_approval_when_both_binding_has_stale_staged_digest(self):
+    """both の staged 側 digest が古い場合は approval gate へ進めない"""
+    _init_git_repo(self.tmpdir)
+    self._write_blocked_in_progress()
+    self._write_run_reopen_pending_gate_contract()
+    target = self._write_target_artifact()
+    target_rel = str(target.relative_to(self.tmpdir))
+    target_digest = "sha256:" + _sha256_file(target)
+    _stage_file(self.tmpdir, "notes/staged.txt", "承認時点の staged file\n")
+    staged_digest = self._current_staged_file_set_digest()
+
+    result = run_script(
+      [
+        "record-human-decision",
+        "--file", "stages/in-progress/reopen-procedure-2026-06-20.yaml",
+        "--gate", "stages/requirements.yaml#approval",
+        "--decision-id", "REQ-APPROVAL-BOTH-002",
+        "--decision", "approved",
+        "--decision-scope", "human_only",
+        "--target-operation-id", "run_reopen_pending_gate",
+        "--target-required-action", "run_reopen_pending_gate",
+        "--target-artifact", target_rel,
+        "--target-artifact-digest", target_digest,
+        "--staged-file-set-digest", staged_digest,
+        "--binding-kind", "both",
+        "--decided-by", "user",
+        "--decided-at", "2026-06-20T00:00:00+00:00",
+        "--source-ref", "conversation:user:approval",
+        "--source-digest", "sha256:" + "b" * 64,
+        "--rationale", "利用者が artifact と staged file set を承認した。",
+        "--next-action-expectation", "proceed",
+        "--out", ".reviewcompass/runtime/approvals/both-stale-approval.yaml",
+        "--json",
+      ],
+      cwd=self.tmpdir,
+    )
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 0, result.stdout)
+
+    _stage_file(self.tmpdir, "notes/added-after-approval.txt", "承認後の staged file\n")
+    next_result = run_script(["next", "--json"], cwd=self.tmpdir)
+    _assert_script_invoked(self, next_result)
+    self.assertEqual(next_result.returncode, 0, next_result.stdout)
+    action = json.loads(next_result.stdout)["next_action"]
+    self.assertEqual(action["required_action"], "wait_for_human_decision")
+    self.assertIn(
+      "staged_file_set_digest が現在の staged digest と一致しません",
       "\n".join(action["blocked_by"]["approval_record_reasons"]),
     )
 

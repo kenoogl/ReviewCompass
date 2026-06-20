@@ -4417,6 +4417,19 @@ def _sha256_digest_for_repo_file(cwd, relative_path):
   return f"sha256:{digest}"
 
 
+def _current_staged_file_set_digest(cwd):
+  """現在の git index の staged file set digest を approval-gate 形式で返す"""
+  try:
+    canonical = commit_approval.canonical_target(cwd)
+    digest = commit_approval.staged_file_set_digest_from_canonical(canonical)
+  except (OSError, RuntimeError, KeyError, TypeError):
+    return None
+  value = digest.get("digest") if isinstance(digest, dict) else None
+  if not isinstance(value, str) or not value:
+    return None
+  return f"sha256:{value}"
+
+
 def _approval_branch_effective_contract(operation_contract, gate):
   """active approval gate の branch 条件を反映した有効 contract を返す"""
   phase, stage = _parse_stage_gate(gate)
@@ -4628,12 +4641,15 @@ def _resolve_recorded_approval_gate_next_action(cwd, data, pending_gates, curren
   current_target_digest = None
   if record.get("binding_kind") in {"artifact_digest", "both"}:
     current_target_digest = _sha256_digest_for_repo_file(cwd, record.get("target_artifact"))
+  current_staged_digest = None
+  if record.get("binding_kind") in {"staged_file_set_digest", "both"}:
+    current_staged_digest = _current_staged_file_set_digest(cwd)
 
   decision = approval_gate.allows_target_operation_with_current_state(
     record,
     effective_contract,
     current_target_artifact_digest=current_target_digest,
-    current_staged_file_set_digest=None,
+    current_staged_file_set_digest=current_staged_digest,
   )
   if record.get("decision") != "approved":
     return _resolve_non_approved_approval_gate_action(

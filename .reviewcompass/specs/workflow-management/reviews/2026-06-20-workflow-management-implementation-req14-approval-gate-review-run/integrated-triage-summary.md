@@ -156,6 +156,7 @@ The tests did not catch the human-only bypass and binding/source validation gaps
 - Cluster C partial: added `record-human-decision` as the first CLI entry point for `record_human_decision`. It writes an `approval-gate-v1` record under `.reviewcompass/runtime/approvals/`, binds the record path back to the reopen `current_blocker`, rejects non-human actors for `human_only`, and exposes the approval record reference through `next --json` `blocked_by`.
 - Cluster C partial: `next --json` now evaluates `current_blocker.status=decision_recorded` approval records for reopen approval gates. When the record is approved, human-only, bound to a real operation contract, and its `target_artifact_digest` matches the current target artifact digest, `next --json` can return the pending approval gate as `run_reopen_pending_gate`. Stale target artifact digest keeps the workflow blocked.
 - Cluster C partial: non-approved approval decisions are now distinguished. `rejected` and `deferred` remain blocked with explicit decision metadata in `blocked_by`, while `changes_requested` routes to either the same phase drafting gate (`next_action_expectation=redraft`) or workflow repair (`next_action_expectation=repair`).
+- Cluster C partial: `next --json` now supplies current staged file set digest evidence for `binding_kind=staged_file_set_digest` and `binding_kind=both`, using the same canonical staged file set digest machinery as commit approval. Matching staged digest can proceed; stale staged digest remains blocked.
 - Cluster D: added actor/source validation for invalid `decided_by`, empty source fields, malformed `source_digest`, and schema-level binding-kind digest requirements.
 - Cluster G partial: added focused tests for A/B/C partial/D regressions.
 
@@ -177,10 +178,13 @@ Validation performed:
 - `.venv/bin/python3 -m pytest tests/workflow-management/test_approval_gate.py tests/tools/test_check_workflow_action.py -k "approval_gate or human_approval or record_human_decision or reopen_set_blocker" -q` -> 24 passed, 232 deselected.
 - `.venv/bin/python3 -m pytest tests/tools/test_check_workflow_action.py::RecordHumanDecisionTests -q` -> 7 passed.
 - `.venv/bin/python3 -m pytest tests/workflow-management/test_approval_gate.py tests/tools/test_check_workflow_action.py -k "approval_gate or human_approval or record_human_decision or reopen_set_blocker" -q` -> 24 passed, 233 deselected.
+- `.venv/bin/python3 -m pytest tests/tools/test_check_workflow_action.py::RecordHumanDecisionTests -q` -> 11 passed.
+- `.venv/bin/python3 -m pytest tests/workflow-management/test_approval_gate.py tests/tools/test_check_workflow_action.py -k "approval_gate or human_approval or record_human_decision or reopen_set_blocker" -q` -> 26 passed, 235 deselected.
+- `.venv/bin/python3 -m pytest tests/workflow-management/test_operation_contract_cli.py tests/workflow-management/test_operation_contract_schema.py tests/workflow-management/test_required_action_contract_mapping.py -q` -> 12 passed.
 
 ### Still open
 
-- Cluster C remains partially open. The CLI now records an approval decision and `next --json` can evaluate approved reopen approval records against operation contract and current target artifact digest. Non-approved decisions are mapped for `rejected`, `deferred`, `changes_requested + redraft`, and `changes_requested + repair`. Remaining work: `staged_file_set_digest` / `both` current digest evidence and record consume after use.
+- Cluster C remains partially open. The CLI now records an approval decision and `next --json` can evaluate approved reopen approval records against operation contract, current target artifact digest, and current staged file set digest for `artifact_digest`, `staged_file_set_digest`, and `both`. Non-approved decisions are mapped for `rejected`, `deferred`, `changes_requested + redraft`, and `changes_requested + repair`. Remaining work: record consume after use.
 - Cluster E remains open until actual operation identifiers for push, spec.json update, and phase approval are confirmed against the operation registry.
 - Cluster F remains human-required until the responsibility for marking approval records as consumed is confirmed.
 
