@@ -152,8 +152,9 @@ The tests did not catch the human-only bypass and binding/source validation gaps
 
 - Cluster A: added regression coverage and implementation guard so `decided_by=llm` cannot satisfy `decision_scope=human_only`.
 - Cluster B: added authorization-path current digest parameters and fail-closed behavior when required current digest evidence is missing or mismatched.
+- Cluster C partial: `explicit_human_approval_recorded` now validates `approval-gate-v1` records instead of treating their mere file presence as sufficient. Legacy non-approval-gate approval files remain presence-based for compatibility.
 - Cluster D: added actor/source validation for invalid `decided_by`, empty source fields, malformed `source_digest`, and schema-level binding-kind digest requirements.
-- Cluster G partial: added focused tests for A/B/D regressions.
+- Cluster G partial: added focused tests for A/B/C partial/D regressions.
 
 Validation performed:
 
@@ -162,10 +163,13 @@ Validation performed:
 - `.venv/bin/python3 -m pytest tests/workflow-management/test_operation_contract_cli.py -q` -> 2 passed.
 - `.venv/bin/python3 -m pytest tools/api_providers/tests/test_run_review.py tools/api_providers/tests/test_run_role.py tools/api_providers/tests/test_response_formatter.py -q` -> 51 passed.
 - `.venv/bin/python3 -m pytest tools/api_providers/tests -q` -> 173 passed.
+- `.venv/bin/python3 -m pytest tests/tools/test_check_workflow_action.py::SpecSetExitCodeTests::test_spec_set_blocks_approval_gate_record_when_human_only_actor_is_llm tests/tools/test_check_workflow_action.py::SpecSetExitCodeTests::test_spec_set_allows_valid_approval_gate_human_record -q` -> 2 passed.
+- `.venv/bin/python3 -m pytest tests/tools/test_check_workflow_action.py -k "spec_set or human_approval or approval_gate" -q` -> 22 passed, 215 deselected.
+- `.venv/bin/python3 -m pytest tests/workflow-management/test_operation_contract_cli.py tests/workflow-management/test_operation_contract_schema.py tests/workflow-management/test_required_action_contract_mapping.py -q` -> 12 passed.
 
 ### Still open
 
-- Cluster C remains open. Existing CLI logic can check whether `approval_record_path` exists, but it does not yet bind approval gate records to operation contracts, current digests, or `next --json` branching. Closing this cluster requires a separate design/implementation step for how approval records are located, how current digest evidence is supplied, and where `next --json` consumes the gate decision.
+- Cluster C remains partially open. The CLI no longer treats `approval-gate-v1` record presence alone as sufficient for `explicit_human_approval_recorded`, but it still does not bind approval gate records to operation contracts, current digests, or `next --json` branching. Closing this cluster fully requires a separate design/implementation step for how approval records are located, how current digest evidence is supplied, and where `next --json` consumes the gate decision.
 - Cluster E remains open until actual operation identifiers for push, spec.json update, and phase approval are confirmed against the operation registry.
 - Cluster F remains human-required until the responsibility for marking approval records as consumed is confirmed.
 

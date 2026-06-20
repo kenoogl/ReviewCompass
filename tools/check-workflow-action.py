@@ -47,7 +47,7 @@ from check_workflow_action.runtime_paths import (
   resolve_commit_approval_path,
   resolve_effective_prompt_read_path,
 )
-from check_workflow_action import commit_approval
+from check_workflow_action import approval_gate, commit_approval
 from check_workflow_action.implementation_phases import check_phase_plan, load_plan
 from check_workflow_action.operation_preflight import run_preflight
 from check_workflow_action.operation_contracts import run_contract_check
@@ -946,13 +946,47 @@ def _human_approval_reasons(cwd, feature, phase, stage, entry, predicate_name):
 
   record_path = entry.get("approval_record_path")
   if isinstance(record_path, str) and record_path.strip():
-    if (Path(cwd) / record_path).is_file():
-      return []
+    resolved_record_path = Path(cwd) / record_path
+    if resolved_record_path.is_file():
+      return _approval_gate_record_reasons(
+        resolved_record_path,
+        phase,
+        stage,
+        predicate_name,
+      )
     return [
       f"{_stage_ref(phase, stage)}.{predicate_name} の承認証跡がありません: "
       f"{record_path}"
     ]
   return _artifact_exists_reasons(cwd, feature, phase, stage, entry, predicate_name)
+
+
+def _approval_gate_record_reasons(record_path, phase, stage, predicate_name):
+  """approval-gate-v1 record の場合だけ中身を検査する。"""
+  try:
+    record = load_yaml_file(record_path)
+  except (OSError, yaml.YAMLError) as exc:
+    return [f"{record_path} を承認証跡として読めません: {exc}"]
+
+  if not isinstance(record, dict) or record.get("schema_version") != "approval-gate-v1":
+    return []
+
+  result = approval_gate.validate_approval_gate_record(record)
+  reasons = list(result.get("reasons") or [])
+
+  if record.get("decision") != "approved":
+    reasons.append(f"approved 以外の decision は approval predicate を満たしません: {record.get('decision')}")
+
+  if record.get("consumed") is True:
+    reasons.append("approval gate record は既に consumed です")
+
+  if record.get("decision_scope") == "human_only" and record.get("decided_by") not in {"user", "human"}:
+    reasons.append("human_only decision は人間 actor でのみ承認できます")
+
+  if reasons:
+    prefix = f"{_stage_ref(phase, stage)}.{predicate_name}"
+    return [f"{prefix} の approval gate record が不正です: {reason}" for reason in reasons]
+  return []
 
 
 def _depends_on_reasons(cwd, phase, stage):

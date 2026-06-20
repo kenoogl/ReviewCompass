@@ -85,6 +85,30 @@ def run_script_with_tty_stdin(args, cwd, input_text):
       os.close(master_fd)
 
 
+def _approval_gate_record(**overrides):
+  record = {
+    "schema_version": "approval-gate-v1",
+    "decision_id": "D-001",
+    "decision": "approved",
+    "decision_scope": "human_only",
+    "target_operation_id": "requirements_approval",
+    "target_required_action": "phase_approval",
+    "target_artifact": ".reviewcompass/specs/foundation/spec.json",
+    "target_artifact_digest": "sha256:" + "a" * 64,
+    "staged_file_set_digest": None,
+    "binding_kind": "artifact_digest",
+    "decided_by": "user",
+    "decided_at": "2026-06-20T00:00:00+00:00",
+    "source_ref": "conversation:user:approval",
+    "source_digest": "sha256:" + "b" * 64,
+    "rationale": "user approved phase approval",
+    "next_action_expectation": "proceed",
+    "consumed": False,
+  }
+  record.update(overrides)
+  return record
+
+
 def _write_spec(cwd, feature, implementation_state):
   """next サブコマンド用の最小 spec.json を作る"""
   spec_dir = Path(cwd) / ".reviewcompass" / "specs" / feature
@@ -1581,6 +1605,89 @@ class SpecSetExitCodeTests(unittest.TestCase):
     approval_path = cwd / "docs" / "approvals" / "requirements.yaml"
     approval_path.parent.mkdir(parents=True)
     approval_path.write_text("approved_by: user\n", encoding="utf-8")
+    (stages_dir / "requirements.yaml").write_text(
+      yaml.safe_dump(
+        {
+          "phase": "requirements",
+          "stages": [
+            {
+              "name": "approval",
+              "approval_record_path": "docs/approvals/requirements.yaml",
+              "completion_predicate": "explicit_human_approval_recorded",
+            },
+          ],
+        },
+        allow_unicode=True,
+        sort_keys=False,
+      ),
+      encoding="utf-8",
+    )
+
+    result = run_script(
+      ["spec-set", "foundation", "requirements", "approval", "true"],
+      cwd=cwd,
+    )
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 0, result.stdout)
+
+  def test_spec_set_blocks_approval_gate_record_when_human_only_actor_is_llm(self):
+    """approval-gate-v1 は存在だけでなく human-only actor を検査する"""
+    cwd = self._copy_fixture("case-a-ready-for-approval")
+    stages_dir = cwd / "stages"
+    stages_dir.mkdir(parents=True, exist_ok=True)
+    approval_path = cwd / "docs" / "approvals" / "requirements.yaml"
+    approval_path.parent.mkdir(parents=True)
+    approval_path.write_text(
+      yaml.safe_dump(
+        _approval_gate_record(decided_by="llm"),
+        allow_unicode=True,
+        sort_keys=False,
+      ),
+      encoding="utf-8",
+    )
+    (stages_dir / "requirements.yaml").write_text(
+      yaml.safe_dump(
+        {
+          "phase": "requirements",
+          "stages": [
+            {
+              "name": "approval",
+              "approval_record_path": "docs/approvals/requirements.yaml",
+              "completion_predicate": "explicit_human_approval_recorded",
+            },
+          ],
+        },
+        allow_unicode=True,
+        sort_keys=False,
+      ),
+      encoding="utf-8",
+    )
+
+    result = run_script(
+      ["spec-set", "foundation", "requirements", "approval", "true"],
+      cwd=cwd,
+    )
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 2, result.stdout)
+    self.assertIn("human_only", result.stdout)
+
+  def test_spec_set_allows_valid_approval_gate_human_record(self):
+    """valid approval-gate-v1 human record は approval predicate を通過する"""
+    cwd = self._copy_fixture("case-a-ready-for-approval")
+    stages_dir = cwd / "stages"
+    stages_dir.mkdir(parents=True, exist_ok=True)
+    approval_path = cwd / "docs" / "approvals" / "requirements.yaml"
+    approval_path.parent.mkdir(parents=True)
+    approval_path.write_text(
+      yaml.safe_dump(
+        _approval_gate_record(),
+        allow_unicode=True,
+        sort_keys=False,
+      ),
+      encoding="utf-8",
+    )
     (stages_dir / "requirements.yaml").write_text(
       yaml.safe_dump(
         {
