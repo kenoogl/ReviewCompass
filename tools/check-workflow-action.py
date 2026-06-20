@@ -4554,6 +4554,22 @@ def _resolve_non_approved_approval_gate_action(record, current_blocker, decision
       "blocked_by": None,
     }
 
+  if decision == "changes_requested" and expectation == "repair":
+    return {
+      "required_action": "repair_workflow_state",
+      "next_pending_gate": None,
+      "next_drafting_gate": None,
+      "active_gate": None,
+      "phase": None,
+      "stage": None,
+      "approval_record_path": current_blocker.get("approval_record_path"),
+      "repair_reasons": [
+        "changes_requested approval decision requested workflow repair: "
+        f"{current_blocker.get('approval_record_path')}"
+      ],
+      "blocked_by": None,
+    }
+
   return {
     "required_action": "wait_for_human_decision",
     "next_pending_gate": None,
@@ -4806,7 +4822,7 @@ def build_in_progress_next_action(cwd, relative_path):
       pending_gates = []
     action_fields = select_reopen_next_action_fields(data, pending_gates, cwd=cwd)
     feature_scope = reopen_feature_scope_from_data(data)
-    return {
+    action = {
       "kind": "reopen_in_progress",
       "file": relative_path,
       "process_id": process_id,
@@ -4830,6 +4846,9 @@ def build_in_progress_next_action(cwd, relative_path):
       "stage": action_fields["stage"],
       "reason": "reopen 手続きの進行中状態ファイルがあります",
     }
+    if action_fields.get("repair_reasons") is not None:
+      action["repair_reasons"] = action_fields["repair_reasons"]
+    return action
   return {
     "kind": "resume_in_progress",
     "file": relative_path,
