@@ -114,5 +114,99 @@
     "consumed": {
       "type": "boolean"
     }
-  }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "binding_kind": {
+            "const": "artifact_digest"
+          }
+        },
+        "required": [
+          "binding_kind"
+        ]
+      },
+      "then": {
+        "properties": {
+          "target_artifact_digest": {
+            "type": "string",
+            "minLength": 1
+          },
+          "staged_file_set_digest": {
+            "type": "null"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "binding_kind": {
+            "const": "staged_file_set_digest"
+          }
+        },
+        "required": [
+          "binding_kind"
+        ]
+      },
+      "then": {
+        "properties": {
+          "target_artifact_digest": {
+            "type": "null"
+          },
+          "staged_file_set_digest": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "binding_kind": {
+            "const": "both"
+          }
+        },
+        "required": [
+          "binding_kind"
+        ]
+      },
+      "then": {
+        "properties": {
+          "target_artifact_digest": {
+            "type": "string",
+            "minLength": 1
+          },
+          "staged_file_set_digest": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "binding_kind": {
+            "const": "none"
+          }
+        },
+        "required": [
+          "binding_kind"
+        ]
+      },
+      "then": {
+        "properties": {
+          "target_artifact_digest": {
+            "type": "null"
+          },
+          "staged_file_set_digest": {
+            "type": "null"
+          }
+        }
+      }
+    }
+  ]
 }

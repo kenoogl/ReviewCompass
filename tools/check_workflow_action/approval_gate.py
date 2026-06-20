@@ -1,5 +1,7 @@
 """Approval gate record validation for workflow-management T-017."""
 
+import re
+
 REQUIRED_RECORD_FIELDS = [
   "decision_id",
   "decision",
@@ -30,6 +32,17 @@ VALID_DECISION_SCOPES = {
   "proxy_allowed",
   "advisory_only",
 }
+VALID_DECIDED_BY = {
+  "user",
+  "human",
+  "proxy_model",
+  "llm",
+}
+HUMAN_DECIDED_BY = {
+  "user",
+  "human",
+}
+SHA256_DIGEST_RE = re.compile(r"^sha256:[0-9a-f]{64}$")
 WAIT_ONLY_REQUIRED_ACTIONS = {
   "wait_for_human_decision",
   "collect_required_decisions",
@@ -51,6 +64,14 @@ def _result(verdict, reasons):
     "verdict": verdict,
     "reasons": reasons,
   }
+
+
+def _is_non_empty_string(value):
+  return isinstance(value, str) and bool(value.strip())
+
+
+def _is_sha256_digest(value):
+  return isinstance(value, str) and bool(SHA256_DIGEST_RE.fullmatch(value))
 
 
 def derived_decision_scope(operation_contract):
@@ -99,6 +120,7 @@ def _validate_binding(
   operation_contract,
   current_target_artifact_digest=None,
   current_staged_file_set_digest=None,
+  require_current_digest=False,
 ):
   reasons = []
   binding_kind = record.get("binding_kind")
@@ -108,14 +130,30 @@ def _validate_binding(
   if binding_kind == "artifact_digest":
     if not target_digest:
       reasons.append("binding_kind=artifact_digest には target_artifact_digest が必要です")
+    elif not _is_sha256_digest(target_digest):
+      reasons.append("target_artifact_digest は sha256 digest である必要があります")
+    if require_current_digest and current_target_artifact_digest is None:
+      reasons.append("current_target_artifact_digest が必要です")
   elif binding_kind == "staged_file_set_digest":
     if not staged_digest:
       reasons.append("binding_kind=staged_file_set_digest には staged_file_set_digest が必要です")
+    elif not _is_sha256_digest(staged_digest):
+      reasons.append("staged_file_set_digest は sha256 digest である必要があります")
+    if require_current_digest and current_staged_file_set_digest is None:
+      reasons.append("current_staged_file_set_digest が必要です")
   elif binding_kind == "both":
     if not target_digest:
       reasons.append("binding_kind=both には target_artifact_digest が必要です")
+    elif not _is_sha256_digest(target_digest):
+      reasons.append("target_artifact_digest は sha256 digest である必要があります")
     if not staged_digest:
       reasons.append("binding_kind=both には staged_file_set_digest が必要です")
+    elif not _is_sha256_digest(staged_digest):
+      reasons.append("staged_file_set_digest は sha256 digest である必要があります")
+    if require_current_digest and current_target_artifact_digest is None:
+      reasons.append("current_target_artifact_digest が必要です")
+    if require_current_digest and current_staged_file_set_digest is None:
+      reasons.append("current_staged_file_set_digest が必要です")
   elif binding_kind == "none":
     if not _allows_binding_none(operation_contract):
       reasons.append("binding_kind=none は read-only / wait-only operation に限ります")
@@ -136,6 +174,23 @@ def _validate_binding(
   ):
     reasons.append("staged_file_set_digest が現在の staged digest と一致しません")
 
+  return reasons
+
+
+def _validate_actor_and_source(record):
+  reasons = []
+  decided_by = record.get("decided_by")
+  if "decided_by" in record and decided_by not in VALID_DECIDED_BY:
+    reasons.append(f"decided_by が不正です: {decided_by}")
+
+  for field in ["source_ref", "rationale", "next_action_expectation", "decided_at"]:
+    if field in record and not _is_non_empty_string(record.get(field)):
+      reasons.append(f"{field} は空でない文字列である必要があります")
+
+  if "source_digest" in record:
+    source_digest = record.get("source_digest")
+    if not _is_sha256_digest(source_digest):
+      reasons.append("source_digest は sha256 digest である必要があります")
   return reasons
 
 
@@ -166,6 +221,8 @@ def validate_approval_gate_record(
   if "consumed" in record and not isinstance(record.get("consumed"), bool):
     reasons.append("consumed は boolean である必要があります")
 
+  reasons.extend(_validate_actor_and_source(record))
+
   reasons.extend(
     _validate_binding(
       record,
@@ -185,9 +242,34 @@ def validate_approval_gate_record(
   return _result("DEVIATION" if reasons else "OK", reasons)
 
 
-def allows_target_operation(record, operation_contract):
+def allows_target_operation(
+  record,
+  operation_contract,
+  current_target_artifact_digest=None,
+  current_staged_file_set_digest=None,
+):
   """Return whether a record permits the target irreversible operation."""
-  validation = validate_approval_gate_record(record, operation_contract=operation_contract)
+  return allows_target_operation_with_current_state(
+    record,
+    operation_contract,
+    current_target_artifact_digest=current_target_artifact_digest,
+    current_staged_file_set_digest=current_staged_file_set_digest,
+  )
+
+
+def allows_target_operation_with_current_state(
+  record,
+  operation_contract,
+  current_target_artifact_digest=None,
+  current_staged_file_set_digest=None,
+):
+  """Return whether a record permits the operation for current target state."""
+  validation = validate_approval_gate_record(
+    record,
+    operation_contract=operation_contract,
+    current_target_artifact_digest=current_target_artifact_digest,
+    current_staged_file_set_digest=current_staged_file_set_digest,
+  )
   reasons = list(validation.get("reasons") or [])
   if validation.get("verdict") != "OK":
     return {
@@ -202,8 +284,17 @@ def allows_target_operation(record, operation_contract):
   if record.get("consumed") is True:
     reasons.append("approval gate record は既に consumed です")
 
-  if record.get("decision_scope") == "human_only" and record.get("decided_by") == "proxy_model":
-    reasons.append("human_only decision は proxy_model では承認できません")
+  binding_reasons = _validate_binding(
+    record,
+    operation_contract,
+    current_target_artifact_digest=current_target_artifact_digest,
+    current_staged_file_set_digest=current_staged_file_set_digest,
+    require_current_digest=True,
+  )
+  reasons.extend(binding_reasons)
+
+  if record.get("decision_scope") == "human_only" and record.get("decided_by") not in HUMAN_DECIDED_BY:
+    reasons.append("human_only decision は人間 actor でのみ承認できます")
 
   if record.get("target_required_action") != operation_contract.get("required_action"):
     reasons.append(

@@ -4,10 +4,14 @@ These tests define the approval gate behavior before implementation. They
 should fail until approval gate schema and validation logic are added.
 """
 
+import copy
+import json
 import importlib
 import sys
 import unittest
 from pathlib import Path
+
+import jsonschema
 
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
@@ -56,6 +60,12 @@ def valid_record(**overrides):
   }
   record.update(overrides)
   return record
+
+
+def approval_gate_schema():
+  schema = json.loads(APPROVAL_GATE_SCHEMA.read_text(encoding="utf-8"))
+  schema["properties"]["target_required_action"] = {"type": "string", "minLength": 1}
+  return schema
 
 
 class ApprovalGateTests(unittest.TestCase):
@@ -107,6 +117,82 @@ class ApprovalGateTests(unittest.TestCase):
     self.assertFalse(result["allowed"])
     self.assertEqual(result["verdict"], "DEVIATION")
     self.assertIn("human_only", "\n".join(result["reasons"]))
+
+  def test_llm_cannot_approve_human_only_decision_scope(self):
+    module = self._module()
+
+    result = module.allows_target_operation(
+      valid_record(decided_by="llm", decision_scope="human_only"),
+      operation_contract={
+        "required_action": "commit_stop_point",
+        "approval_required": True,
+        "phase_boundary": "commit_boundary",
+        "effect_kind": "state_mutation",
+        "actor": {"kind": "human"},
+      },
+    )
+
+    self.assertFalse(result["allowed"])
+    self.assertEqual(result["verdict"], "DEVIATION")
+    self.assertIn("human_only", "\n".join(result["reasons"]))
+
+  def test_invalid_actor_and_empty_source_metadata_are_rejected(self):
+    module = self._module()
+
+    cases = [
+      valid_record(decided_by="unknown_actor"),
+      valid_record(source_ref=""),
+      valid_record(source_digest=""),
+      valid_record(source_digest="not-a-sha256"),
+    ]
+    for record in cases:
+      result = module.validate_approval_gate_record(record)
+      self.assertEqual(result["verdict"], "DEVIATION", record)
+
+  def test_authorization_requires_current_digest_check(self):
+    module = self._module()
+
+    result = module.allows_target_operation(
+      valid_record(
+        binding_kind="staged_file_set_digest",
+        staged_file_set_digest="sha256:" + "a" * 64,
+      ),
+      operation_contract={
+        "operation_id": "commit_stop_point",
+        "required_action": "commit_stop_point",
+        "approval_required": True,
+        "phase_boundary": "commit_boundary",
+        "effect_kind": "state_mutation",
+        "actor": {"kind": "human"},
+      },
+      current_staged_file_set_digest="sha256:" + "f" * 64,
+    )
+
+    self.assertFalse(result["allowed"])
+    self.assertEqual(result["verdict"], "DEVIATION")
+    self.assertIn("digest", "\n".join(result["reasons"]))
+
+  def test_authorization_fails_closed_when_required_current_digest_is_missing(self):
+    module = self._module()
+
+    result = module.allows_target_operation(
+      valid_record(
+        binding_kind="staged_file_set_digest",
+        staged_file_set_digest="sha256:" + "a" * 64,
+      ),
+      operation_contract={
+        "operation_id": "commit_stop_point",
+        "required_action": "commit_stop_point",
+        "approval_required": True,
+        "phase_boundary": "commit_boundary",
+        "effect_kind": "state_mutation",
+        "actor": {"kind": "human"},
+      },
+    )
+
+    self.assertFalse(result["allowed"])
+    self.assertEqual(result["verdict"], "DEVIATION")
+    self.assertIn("current", "\n".join(result["reasons"]))
 
   def test_decision_scope_is_derived_from_operation_contract(self):
     module = self._module()
@@ -231,6 +317,24 @@ class ApprovalGateTests(unittest.TestCase):
 
     self.assertEqual(result["verdict"], "DEVIATION")
     self.assertIn("digest", "\n".join(result["reasons"]))
+
+  def test_schema_enforces_binding_kind_digest_requirements(self):
+    schema = approval_gate_schema()
+    jsonschema.Draft202012Validator.check_schema(schema)
+    validator = jsonschema.Draft202012Validator(schema)
+
+    invalid_cases = [
+      valid_record(binding_kind="artifact_digest", target_artifact_digest=None),
+      valid_record(binding_kind="staged_file_set_digest", staged_file_set_digest=None),
+      valid_record(binding_kind="both", target_artifact_digest=None),
+      valid_record(binding_kind="both", staged_file_set_digest=None),
+      valid_record(binding_kind="none", staged_file_set_digest="sha256:" + "a" * 64),
+    ]
+    for record in invalid_cases:
+      self.assertNotEqual(list(validator.iter_errors(record)), [], record)
+
+    valid = copy.deepcopy(valid_record())
+    self.assertEqual(list(validator.iter_errors(valid)), [])
 
 
 if __name__ == "__main__":
