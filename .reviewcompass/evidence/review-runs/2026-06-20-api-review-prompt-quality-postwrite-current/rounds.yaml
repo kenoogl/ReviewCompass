@@ -1,0 +1,108 @@
+round_id: round-1
+purpose: post_write_verification
+invocation_timestamp: '2026-06-20T14:13:49.183688+00:00'
+target_files:
+- path: docs/disciplines/discipline_llm_as_judge_prompting.md
+  sha256: 2dc7be6e2c21ade683c1736e23d2ce1943a4bc1bcda5b9edabe57ee0e9ccbc33
+- path: docs/operations/API_REVIEW_PROMPT_QUALITY.md
+  sha256: 61d209015f56bdeca42127165c91091361cba6b25d38074c819f99499681fda4
+- path: docs/operations/WORKFLOW_DISCIPLINE_MAP.yaml
+  sha256: ca6aa8ef21a672e01268f26a282b0f8fc71329592e4f0b59e2da8e7d24b598e1
+criteria: '# Post-write Review Target
+
+
+  criteria_id: api_review_prompt_quality_postwrite_current
+
+  phase: post_write_verification
+
+  generated_at: 2026-06-20T14:13:28.799793+00:00
+
+
+  ## Change Summary
+
+
+  APIレビュー用プロンプト品質規律・運用文書・規律マップの現在内容に対するpost-write verification
+
+
+  ## Review Question
+
+
+  現在の3文書は、APIレビュー用プロンプト品質に関する合意内容を正しく反映し、参照・既存記述・内部論理に矛盾がないか。
+
+
+  ## Target Files
+
+
+  - docs/disciplines/discipline_llm_as_judge_prompting.md sha256=2dc7be6e2c21ade683c1736e23d2ce1943a4bc1bcda5b9edabe57ee0e9ccbc33
+
+  - docs/operations/API_REVIEW_PROMPT_QUALITY.md sha256=61d209015f56bdeca42127165c91091361cba6b25d38074c819f99499681fda4
+
+  - docs/operations/WORKFLOW_DISCIPLINE_MAP.yaml sha256=ca6aa8ef21a672e01268f26a282b0f8fc71329592e4f0b59e2da8e7d24b598e1
+
+
+  ## Scope
+
+
+  - Check whether the changed target files clearly state the intended contract.
+
+  - Check whether related instructions are mutually consistent across targets.
+
+  - Check whether the documented procedure is actionable before API review, triage,
+  manifest, or commit steps continue.
+
+
+  ## Out Of Scope
+
+
+  - Do not request unrelated refactors or style-only rewrites.
+
+  - Do not judge files that are not listed in Target Files.
+
+  - Do not treat missing implementation work as a document defect unless the target
+  text claims it already exists.
+
+
+  ## Finding Policy
+
+
+  - Report must-fix findings for contradictions, missing required gates, or instructions
+  that would allow an unsafe workflow action.
+
+  - Report should-fix findings for ambiguity that could cause repeated manual judgment
+  or unnecessary API review loops.
+
+  - Return findings: [] when the target files are internally consistent for this review
+  question.
+
+
+  ## Sensitive Information Check
+
+
+  - status: passed
+
+  - External API review must not proceed if this section reports potential secrets.
+
+  '
+prompt_sha256: 973316b0d6c89f7b2d71ffd7d03060c571fc01689b0a2cb4360710d64e7c79e5
+model_results:
+- model_id: gemini-3.5-flash
+  provider: gemini-api
+  role: primary
+  treatment: primary
+  invocation_path: api
+  raw_path: raw/gemini-3.5-flash.round-1.txt
+  raw_sha256: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+  parsed_path: parsed/gemini-3.5-flash.round-1.yaml
+  parsed_sha256: 14dd57b88d306e3e0c8a9f5feff2888a6bc4b14a9f357b78eec9a2852d7c7e79
+  parse_status: parsed
+  formatted_by: parser
+  formatted_by_actor_type: orchestrator
+  formatted_by_actor: run_role.py
+  formatted_at: '2026-06-20T14:13:49.183688+00:00'
+  follow_up_action: triage
+  attempts: 1
+  duration_seconds: 12.78
+  prompt_path: prompts/gemini-3.5-flash.round-1.prompt.md
+  prompt_sha256: 973316b0d6c89f7b2d71ffd7d03060c571fc01689b0a2cb4360710d64e7c79e5
+criteria_source_path: .reviewcompass/evidence/review-runs/2026-06-20-api-review-prompt-quality-postwrite-current/review-target.md
+criteria_source_sha256: 34cfc74c18f5945e551a2df28cd02161b528f20ac111198d5108175d3b7353be

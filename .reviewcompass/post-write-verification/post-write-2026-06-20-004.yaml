@@ -1,0 +1,52 @@
+status: completed
+target_files:
+  - docs/notes/working/2026-06-19-proxy-model-triage-cost-issues.md
+  - docs/notes/working/2026-06-20-api-review-prompt-audit-discussion-record.md
+  - docs/notes/working/2026-06-20-api-review-prompt-method-comparison.md
+  - docs/notes/working/2026-06-20-api-review-prompt-quality-side-track.md
+  - docs/notes/working/2026-06-20-design-review-method-improvement-effect.md
+  - docs/notes/working/2026-06-20-proxy-model-sandbox-approval-friction.md
+target_sha256:
+  docs/notes/working/2026-06-19-proxy-model-triage-cost-issues.md: e8d3065f023e528111846273d395ea54d6b073355be7644077d766eeacff1617
+  docs/notes/working/2026-06-20-api-review-prompt-audit-discussion-record.md: b5a4b1383ebea524d7079d4eac26b03bd8ef7faa3156f3c4a51ca8d83947a6d5
+  docs/notes/working/2026-06-20-api-review-prompt-method-comparison.md: 5b763dd7372754d1ee861fc4c00cec8a7546e68824ab714316949adb59ea931c
+  docs/notes/working/2026-06-20-api-review-prompt-quality-side-track.md: 6053580f95d705ab85397a578b32d90f819916febf4db02e28f9980ccb0f5e18
+  docs/notes/working/2026-06-20-design-review-method-improvement-effect.md: 388cf35624cb2332b7b9aa55c5e7c49e70cb3edd3cc8e089d80c1a8a9f5ccb0e
+  docs/notes/working/2026-06-20-proxy-model-sandbox-approval-friction.md: 44c5720f00cb3c2c7968258361e9c4be2d81e8f1b3012ac4d089d1e62b26666e
+required_verifiers:
+  - lightweight_self_check
+completed_verifiers:
+  - lightweight_self_check
+unresolved_substantive_findings: 0
+verifications:
+  - verifier: lightweight_self_check
+    target_files:
+      - docs/notes/working/2026-06-19-proxy-model-triage-cost-issues.md
+      - docs/notes/working/2026-06-20-api-review-prompt-audit-discussion-record.md
+      - docs/notes/working/2026-06-20-api-review-prompt-method-comparison.md
+      - docs/notes/working/2026-06-20-api-review-prompt-quality-side-track.md
+      - docs/notes/working/2026-06-20-design-review-method-improvement-effect.md
+      - docs/notes/working/2026-06-20-proxy-model-sandbox-approval-friction.md
+    target_sha256:
+      docs/notes/working/2026-06-19-proxy-model-triage-cost-issues.md: e8d3065f023e528111846273d395ea54d6b073355be7644077d766eeacff1617
+      docs/notes/working/2026-06-20-api-review-prompt-audit-discussion-record.md: b5a4b1383ebea524d7079d4eac26b03bd8ef7faa3156f3c4a51ca8d83947a6d5
+      docs/notes/working/2026-06-20-api-review-prompt-method-comparison.md: 5b763dd7372754d1ee861fc4c00cec8a7546e68824ab714316949adb59ea931c
+      docs/notes/working/2026-06-20-api-review-prompt-quality-side-track.md: 6053580f95d705ab85397a578b32d90f819916febf4db02e28f9980ccb0f5e18
+      docs/notes/working/2026-06-20-design-review-method-improvement-effect.md: 388cf35624cb2332b7b9aa55c5e7c49e70cb3edd3cc8e089d80c1a8a9f5ccb0e
+      docs/notes/working/2026-06-20-proxy-model-sandbox-approval-friction.md: 44c5720f00cb3c2c7968258361e9c4be2d81e8f1b3012ac4d089d1e62b26666e
+    checks:
+      user_points_preserved: true
+      facts_inferences_policy_and_open_items_separated: true
+      useful_as_later_decision_material: true
+      does_not_over_specify_scope: true
+      remains_working_note_not_canonical_spec: true
+      api_review_intentionally_not_used: true
+notes: >
+  Lightweight self-check for working notes only. The notes preserve the user's
+  concerns about proxy_model operation, prompt quality, review-method cost, and
+  sandbox approval friction. The added audit discussion record captures the
+  rejected and deferred ideas as well as the implemented approach, including
+  main preanalysis, prompt audit, source cross-reference, runner selection,
+  output contract, and convergence criteria. The notes separate observed facts,
+  operational conclusions, and future improvement items sufficiently for later
+  use without promoting the notes to canonical specifications.

@@ -1,0 +1,33 @@
+run_id: 2026-06-20-api-review-prompt-quality-postwrite
+triage_status: draft
+generated_at: '2026-06-20T05:50:35.066832+00:00'
+decision_actor: null
+decision_actor_type: human
+items:
+- finding_id: 2026-06-20-api-review-prompt-quality-postwrite-gemini-3.5-flash-primary-001
+  run_id: 2026-06-20-api-review-prompt-quality-postwrite
+  source_model: gemini-3.5-flash
+  source_round: round-1
+  source_raw_path: raw/gemini-3.5-flash.round-1.txt
+  source_parsed_path: parsed/gemini-3.5-flash.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: docs/operations/WORKFLOW_DISCIPLINE_MAP.yaml
+  plain_language_summary: The workflow discipline map does not reference the newly
+    introduced prompt-quality guidelines (docs/operations/API_REVIEW_PROMPT_QUALITY.md
+    and docs/disciplines/discipline_llm_as_judge_prompting.md) at key review decision
+    points and stages.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: While API_REVIEW_PROMPT_QUALITY.md provides the required instructions
+    for prompt validation, the automation/routing tool uses WORKFLOW_DISCIPLINE_MAP.yaml
+    to determine which files must be read for each next_action. Without referencing
+    these guidelines in stages like 'triad-review' and gates like 'proxy_model_decision_gate'
+    (specifically 'proxy_decision_prompt' and 'proxy_decision_file'), developers and
+    agents will not be prompted to follow these procedures during actual runs, undermining
+    the newly added workflow connection.
+  applied_files: []
+  superseded_by: null

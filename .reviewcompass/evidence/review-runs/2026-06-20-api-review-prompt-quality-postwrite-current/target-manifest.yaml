@@ -1,0 +1,8 @@
+run_id: 2026-06-20-api-review-prompt-quality-postwrite-current
+target_files:
+- path: docs/disciplines/discipline_llm_as_judge_prompting.md
+  sha256: 2dc7be6e2c21ade683c1736e23d2ce1943a4bc1bcda5b9edabe57ee0e9ccbc33
+- path: docs/operations/API_REVIEW_PROMPT_QUALITY.md
+  sha256: 61d209015f56bdeca42127165c91091361cba6b25d38074c819f99499681fda4
+- path: docs/operations/WORKFLOW_DISCIPLINE_MAP.yaml
+  sha256: ca6aa8ef21a672e01268f26a282b0f8fc71329592e4f0b59e2da8e7d24b598e1
