@@ -51,7 +51,7 @@ from check_workflow_action.runtime_paths import (
 from check_workflow_action import approval_gate, commit_approval
 from check_workflow_action.implementation_phases import check_phase_plan, load_plan
 from check_workflow_action.operation_preflight import run_preflight
-from check_workflow_action.operation_contracts import run_contract_check
+from check_workflow_action.operation_contracts import load_contracts, run_contract_check
 from check_workflow_action.operation_list import build_operation_list
 from check_workflow_action.prompt_audit import audit_manifest, load_manifest as load_prompt_manifest
 from check_workflow_action.proxy_triage_decisions import (
@@ -4406,6 +4406,168 @@ def _resolve_reopen_next_gate(data, pending_gates, current_blocker):
   }
 
 
+def _sha256_digest_for_repo_file(cwd, relative_path):
+  """repo-relative ファイルの現在 digest を approval-gate 形式で返す"""
+  if not isinstance(relative_path, str) or not relative_path.strip():
+    return None
+  path = Path(cwd) / relative_path
+  digest = file_sha256(path)
+  if digest is None:
+    return None
+  return f"sha256:{digest}"
+
+
+def _approval_branch_effective_contract(operation_contract, gate):
+  """active approval gate の branch 条件を反映した有効 contract を返す"""
+  phase, stage = _parse_stage_gate(gate)
+  if stage != "approval" or not isinstance(operation_contract, dict):
+    return operation_contract
+  branching = operation_contract.get("branching")
+  branches = branching.get("branches") if isinstance(branching, dict) else []
+  if not isinstance(branches, list):
+    return operation_contract
+  approval_branch = None
+  for branch in branches:
+    if not isinstance(branch, dict):
+      continue
+    if branch.get("branch_id") == "approval" or branch.get("condition") == "active_gate=approval":
+      approval_branch = branch
+      break
+  if approval_branch is None:
+    return operation_contract
+
+  internal_steps = approval_branch.get("internal_steps")
+  approval_required = approval_branch.get("approval_aggregation") is True
+  if isinstance(internal_steps, list):
+    approval_required = approval_required or any(
+      isinstance(step, dict) and step.get("approval_required") is True
+      for step in internal_steps
+    )
+
+  effective = dict(operation_contract)
+  effective["effect_kind"] = approval_branch.get(
+    "max_effect_kind",
+    operation_contract.get("effect_kind"),
+  )
+  effective["max_effect_kind"] = approval_branch.get(
+    "max_effect_kind",
+    operation_contract.get("max_effect_kind"),
+  )
+  effective["approval_required"] = approval_required
+  if approval_branch.get("human_only_override_applies") is True:
+    effective["actor"] = {"kind": "human", "source": "operation branch human-only override"}
+  for step in internal_steps or []:
+    if isinstance(step, dict) and step.get("approval_required") is True:
+      effective["phase_boundary"] = step.get(
+        "phase_boundary",
+        effective.get("phase_boundary"),
+      )
+      break
+  return effective
+
+
+def _load_approval_gate_record(cwd, record_path):
+  """approval gate record を repo-relative path から読む"""
+  if not isinstance(record_path, str) or not record_path.strip():
+    return None, ["approval_record_path が必要です"]
+  relative = Path(record_path)
+  if relative.is_absolute() or ".." in relative.parts:
+    return None, ["approval_record_path は repo-relative path である必要があります"]
+  path = Path(cwd) / relative
+  try:
+    record = yaml.safe_load(path.read_text(encoding="utf-8"))
+  except (OSError, yaml.YAMLError) as exc:
+    return None, [f"approval gate record を読めません: {record_path}: {exc}"]
+  if not isinstance(record, dict):
+    return None, ["approval gate record は mapping である必要があります"]
+  return record, []
+
+
+def _approval_gate_decision_blocked_by(current_blocker, reasons):
+  """approval record 評価失敗を blocked_by に付加する"""
+  blocked_by = _reopen_blocked_by_current_blocker(current_blocker)
+  blocked_by["approval_record_verdict"] = "DEVIATION"
+  blocked_by["approval_record_reasons"] = reasons
+  return blocked_by
+
+
+def _resolve_recorded_approval_gate_next_action(cwd, data, pending_gates, current_blocker):
+  """記録済み approval gate record から reopen の次 action を解決する"""
+  if not isinstance(current_blocker, dict):
+    return None
+  if current_blocker.get("status") != "decision_recorded":
+    return None
+
+  record, reasons = _load_approval_gate_record(cwd, current_blocker.get("approval_record_path"))
+  if reasons:
+    return {
+      "required_action": "wait_for_human_decision",
+      "next_pending_gate": None,
+      "next_drafting_gate": None,
+      "active_gate": None,
+      "phase": None,
+      "stage": None,
+      "blocked_by": _approval_gate_decision_blocked_by(current_blocker, reasons),
+    }
+
+  contracts, _raw_contracts, contract_reasons = load_contracts(Path(cwd))
+  operation_contract = contracts.get(record.get("target_operation_id"))
+  if operation_contract is None:
+    contract_reasons.append(
+      f"operation contract が見つかりません: {record.get('target_operation_id')}"
+    )
+  if contract_reasons:
+    return {
+      "required_action": "wait_for_human_decision",
+      "next_pending_gate": None,
+      "next_drafting_gate": None,
+      "active_gate": None,
+      "phase": None,
+      "stage": None,
+      "blocked_by": _approval_gate_decision_blocked_by(current_blocker, contract_reasons),
+    }
+
+  effective_contract = _approval_branch_effective_contract(
+    operation_contract,
+    current_blocker.get("gate"),
+  )
+  current_target_digest = None
+  if record.get("binding_kind") in {"artifact_digest", "both"}:
+    current_target_digest = _sha256_digest_for_repo_file(cwd, record.get("target_artifact"))
+
+  decision = approval_gate.allows_target_operation_with_current_state(
+    record,
+    effective_contract,
+    current_target_artifact_digest=current_target_digest,
+    current_staged_file_set_digest=None,
+  )
+  if decision.get("allowed") is not True or record.get("next_action_expectation") != "proceed":
+    reasons = list(decision.get("reasons") or [])
+    if record.get("next_action_expectation") != "proceed":
+      reasons.append(
+        "next_action_expectation が proceed ではないため対象 operation へ進めません: "
+        f"{record.get('next_action_expectation')}"
+      )
+    return {
+      "required_action": "wait_for_human_decision",
+      "next_pending_gate": None,
+      "next_drafting_gate": None,
+      "active_gate": None,
+      "phase": None,
+      "stage": None,
+      "blocked_by": _approval_gate_decision_blocked_by(current_blocker, reasons),
+    }
+
+  gate_action = _resolve_reopen_next_gate(data, pending_gates, None)
+  if gate_action.get("required_action"):
+    return {
+      **gate_action,
+      "approval_record_path": current_blocker.get("approval_record_path"),
+      "blocked_by": None,
+    }
+  return None
+
+
 def _reopen_blocked_by_current_blocker(current_blocker):
   """current_blocker を next_action の blocked_by に正規化する"""
   blocked_by = {"type": "current_blocker"}
@@ -4457,10 +4619,19 @@ def _reopen_commit_required_blocked_by(data, relative_path):
   return blocked_by
 
 
-def select_reopen_next_action_fields(data, pending_gates):
+def select_reopen_next_action_fields(data, pending_gates, cwd=None):
   """reopen state から唯一の required_action と active gate 情報を選ぶ"""
   current_blocker = data.get("current_blocker")
   if current_blocker:
+    if cwd is not None:
+      recorded_approval_action = _resolve_recorded_approval_gate_next_action(
+        cwd,
+        data,
+        pending_gates,
+        current_blocker,
+      )
+      if recorded_approval_action is not None:
+        return recorded_approval_action
     return {
       "required_action": "wait_for_human_decision",
       "next_pending_gate": None,
@@ -4548,7 +4719,7 @@ def build_in_progress_next_action(cwd, relative_path):
     pending_gates = data.get("pending_gates", [])
     if pending_gates is None:
       pending_gates = []
-    action_fields = select_reopen_next_action_fields(data, pending_gates)
+    action_fields = select_reopen_next_action_fields(data, pending_gates, cwd=cwd)
     feature_scope = reopen_feature_scope_from_data(data)
     return {
       "kind": "reopen_in_progress",
@@ -4564,6 +4735,7 @@ def build_in_progress_next_action(cwd, relative_path):
       "current_blocker": data.get("current_blocker"),
       "required_action": action_fields["required_action"],
       "blocked_by": action_fields["blocked_by"],
+      "approval_record_path": action_fields.get("approval_record_path"),
       "feature": feature_scope["required_feature_scope"],
       "required_feature_scope": feature_scope["required_feature_scope"],
       "direct_features": feature_scope["direct_features"],

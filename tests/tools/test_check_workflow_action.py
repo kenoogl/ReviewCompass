@@ -5085,6 +5085,63 @@ class RecordHumanDecisionTests(unittest.TestCase):
     )
     return in_progress
 
+  def _write_run_reopen_pending_gate_contract(self):
+    contracts_path = Path(self.tmpdir) / "stages" / "operation-contracts.yaml"
+    contracts_path.parent.mkdir(parents=True, exist_ok=True)
+    contracts_path.write_text(
+      yaml.safe_dump(
+        {
+          "schema_version": "operation-contracts-v1",
+          "operations": [
+            {
+              "schema_version": "operation-contract-v1",
+              "operation_id": "run_reopen_pending_gate",
+              "required_action": "run_reopen_pending_gate",
+              "effect_kind": "external_call",
+              "approval_required": False,
+              "phase_boundary": "within_phase",
+              "actor": {"kind": "mixed"},
+              "branching": {
+                "has_branches": True,
+                "branches": [
+                  {
+                    "branch_id": "approval",
+                    "condition": "active_gate=approval",
+                    "internal_steps": [
+                      {
+                        "step_id": "record_approval_stop_point",
+                        "effect_kind": "state_mutation",
+                        "approval_required": True,
+                        "phase_boundary": "within_phase",
+                      },
+                    ],
+                    "max_effect_kind": "state_mutation",
+                    "approval_aggregation": True,
+                    "human_only_override_applies": True,
+                  },
+                ],
+              },
+            },
+          ],
+        },
+        allow_unicode=True,
+        sort_keys=False,
+      ),
+      encoding="utf-8",
+    )
+
+  def _write_target_artifact(self):
+    target = (
+      Path(self.tmpdir)
+      / ".reviewcompass"
+      / "specs"
+      / "workflow-management"
+      / "requirements.md"
+    )
+    target.parent.mkdir(parents=True, exist_ok=True)
+    target.write_text("承認対象 requirements\n", encoding="utf-8")
+    return target
+
   def test_record_human_decision_saves_record_and_binds_current_blocker(self):
     """人間判断を approval record として保存し blocker に path を結びつける"""
     in_progress = self._write_blocked_in_progress()
@@ -5141,6 +5198,102 @@ class RecordHumanDecisionTests(unittest.TestCase):
     self.assertEqual(next_data["next_action"]["required_action"], "wait_for_human_decision")
     self.assertEqual(blocked_by["status"], "decision_recorded")
     self.assertEqual(blocked_by["approval_record_path"], out_path)
+
+  def test_next_allows_pending_approval_gate_when_record_matches_current_digest(self):
+    """承認 record が contract と現在 digest に一致すれば approval gate へ進める"""
+    self._write_blocked_in_progress()
+    self._write_run_reopen_pending_gate_contract()
+    target = self._write_target_artifact()
+    target_rel = str(target.relative_to(self.tmpdir))
+    target_digest = "sha256:" + _sha256_file(target)
+    out_path = ".reviewcompass/runtime/approvals/req-approval.yaml"
+
+    result = run_script(
+      [
+        "record-human-decision",
+        "--file", "stages/in-progress/reopen-procedure-2026-06-20.yaml",
+        "--gate", "stages/requirements.yaml#approval",
+        "--decision-id", "REQ-APPROVAL-003",
+        "--decision", "approved",
+        "--decision-scope", "human_only",
+        "--target-operation-id", "run_reopen_pending_gate",
+        "--target-required-action", "run_reopen_pending_gate",
+        "--target-artifact", target_rel,
+        "--target-artifact-digest", target_digest,
+        "--binding-kind", "artifact_digest",
+        "--decided-by", "user",
+        "--decided-at", "2026-06-20T00:00:00+00:00",
+        "--source-ref", "conversation:user:approval",
+        "--source-digest", "sha256:" + "b" * 64,
+        "--rationale", "利用者が approval gate を承認した。",
+        "--next-action-expectation", "proceed",
+        "--out", out_path,
+        "--json",
+      ],
+      cwd=self.tmpdir,
+    )
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 0, result.stdout)
+
+    next_result = run_script(["next", "--json"], cwd=self.tmpdir)
+    _assert_script_invoked(self, next_result)
+    self.assertEqual(next_result.returncode, 0, next_result.stdout)
+    next_data = json.loads(next_result.stdout)
+    action = next_data["next_action"]
+    self.assertEqual(action["required_action"], "run_reopen_pending_gate")
+    self.assertEqual(action["active_gate"], "stages/requirements.yaml#approval")
+    self.assertEqual(action["next_pending_gate"], "stages/requirements.yaml#approval")
+    self.assertIsNone(action["blocked_by"])
+    self.assertEqual(action["approval_record_path"], out_path)
+
+  def test_next_blocks_recorded_approval_when_target_artifact_digest_is_stale(self):
+    """承認後に対象 artifact が変わった場合は approval gate へ進めない"""
+    self._write_blocked_in_progress()
+    self._write_run_reopen_pending_gate_contract()
+    target = self._write_target_artifact()
+    target_rel = str(target.relative_to(self.tmpdir))
+    target_digest = "sha256:" + _sha256_file(target)
+    out_path = ".reviewcompass/runtime/approvals/stale-approval.yaml"
+
+    result = run_script(
+      [
+        "record-human-decision",
+        "--file", "stages/in-progress/reopen-procedure-2026-06-20.yaml",
+        "--gate", "stages/requirements.yaml#approval",
+        "--decision-id", "REQ-APPROVAL-004",
+        "--decision", "approved",
+        "--decision-scope", "human_only",
+        "--target-operation-id", "run_reopen_pending_gate",
+        "--target-required-action", "run_reopen_pending_gate",
+        "--target-artifact", target_rel,
+        "--target-artifact-digest", target_digest,
+        "--binding-kind", "artifact_digest",
+        "--decided-by", "user",
+        "--decided-at", "2026-06-20T00:00:00+00:00",
+        "--source-ref", "conversation:user:approval",
+        "--source-digest", "sha256:" + "b" * 64,
+        "--rationale", "利用者が approval gate を承認した。",
+        "--next-action-expectation", "proceed",
+        "--out", out_path,
+        "--json",
+      ],
+      cwd=self.tmpdir,
+    )
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 0, result.stdout)
+
+    target.write_text("承認後に変更された requirements\n", encoding="utf-8")
+    next_result = run_script(["next", "--json"], cwd=self.tmpdir)
+    _assert_script_invoked(self, next_result)
+    self.assertEqual(next_result.returncode, 0, next_result.stdout)
+    next_data = json.loads(next_result.stdout)
+    action = next_data["next_action"]
+    self.assertEqual(action["required_action"], "wait_for_human_decision")
+    self.assertEqual(action["blocked_by"]["approval_record_verdict"], "DEVIATION")
+    self.assertIn(
+      "target_artifact_digest が現在の対象 digest と一致しません",
+      "\n".join(action["blocked_by"]["approval_record_reasons"]),
+    )
 
   def test_record_human_decision_rejects_llm_for_human_only_scope(self):
     """human_only decision は record 操作時点でも LLM actor を拒否する"""

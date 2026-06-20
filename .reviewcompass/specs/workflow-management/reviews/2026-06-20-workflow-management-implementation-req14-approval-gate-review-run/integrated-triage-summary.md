@@ -154,6 +154,7 @@ The tests did not catch the human-only bypass and binding/source validation gaps
 - Cluster B: added authorization-path current digest parameters and fail-closed behavior when required current digest evidence is missing or mismatched.
 - Cluster C partial: `explicit_human_approval_recorded` now validates `approval-gate-v1` records instead of treating their mere file presence as sufficient. Legacy non-approval-gate approval files remain presence-based for compatibility.
 - Cluster C partial: added `record-human-decision` as the first CLI entry point for `record_human_decision`. It writes an `approval-gate-v1` record under `.reviewcompass/runtime/approvals/`, binds the record path back to the reopen `current_blocker`, rejects non-human actors for `human_only`, and exposes the approval record reference through `next --json` `blocked_by`.
+- Cluster C partial: `next --json` now evaluates `current_blocker.status=decision_recorded` approval records for reopen approval gates. When the record is approved, human-only, bound to a real operation contract, and its `target_artifact_digest` matches the current target artifact digest, `next --json` can return the pending approval gate as `run_reopen_pending_gate`. Stale target artifact digest keeps the workflow blocked.
 - Cluster D: added actor/source validation for invalid `decided_by`, empty source fields, malformed `source_digest`, and schema-level binding-kind digest requirements.
 - Cluster G partial: added focused tests for A/B/C partial/D regressions.
 
@@ -169,10 +170,12 @@ Validation performed:
 - `.venv/bin/python3 -m pytest tests/workflow-management/test_operation_contract_cli.py tests/workflow-management/test_operation_contract_schema.py tests/workflow-management/test_required_action_contract_mapping.py -q` -> 12 passed.
 - `.venv/bin/python3 -m pytest tests/tools/test_check_workflow_action.py::ReopenSetBlockerTests tests/tools/test_check_workflow_action.py::RecordHumanDecisionTests -q` -> 7 passed.
 - `.venv/bin/python3 -m pytest tests/tools/test_check_workflow_action.py -k "approval_gate or human_approval or record_human_decision or reopen_set_blocker" -q` -> 10 passed, 229 deselected.
+- `.venv/bin/python3 -m pytest tests/tools/test_check_workflow_action.py::ReopenSetBlockerTests tests/tools/test_check_workflow_action.py::RecordHumanDecisionTests -q` -> 9 passed.
+- `.venv/bin/python3 -m pytest tests/workflow-management/test_approval_gate.py tests/tools/test_check_workflow_action.py -k "approval_gate or human_approval or record_human_decision or reopen_set_blocker" -q` -> 24 passed, 230 deselected.
 
 ### Still open
 
-- Cluster C remains partially open. The CLI now records an approval decision and exposes its path through reopen `current_blocker` / `next --json`, but it still does not perform the final `next --json` branch that consumes the record, compares current digest evidence, and permits / blocks the target operation based on operation contract validation.
+- Cluster C remains partially open. The CLI now records an approval decision and `next --json` can evaluate approved reopen approval records against operation contract and current target artifact digest. Remaining work: non-approved decisions (`rejected` / `deferred` / `changes_requested`) need explicit branch mapping, `staged_file_set_digest` / `both` current digest evidence is not yet wired through, and the record is not yet consumed after use.
 - Cluster E remains open until actual operation identifiers for push, spec.json update, and phase approval are confirmed against the operation registry.
 - Cluster F remains human-required until the responsibility for marking approval records as consumed is confirmed.
 
