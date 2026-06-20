@@ -569,6 +569,7 @@ def test_run_review_records_effective_prompt_metadata(tmp_path, monkeypatch, cap
   rounds = yaml.safe_load((review_run_dir / "rounds.yaml").read_text(encoding="utf-8"))
   assert rounds["effective_prompt_path"] == str(effective_prompt)
   assert len(rounds["effective_prompt_sha256"]) == 64
+  assert rounds["effective_prompt_sha256_prefixed"] == "sha256:" + rounds["effective_prompt_sha256"]
 
 
 def test_run_review_uses_criteria_file_and_records_prompt_artifact(

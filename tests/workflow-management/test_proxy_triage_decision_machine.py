@@ -47,7 +47,26 @@ def valid_decision(**overrides):
     "approval_scope": {
       "review_triage_decide": ["finding-001"],
       "apply_fixes": ["finding-001"],
+      "operation_scope": "proxy_triage_apply_batch",
     },
+    "evidence_completeness": {
+      "raw_response": True,
+      "parsed_findings": True,
+      "source_triage": True,
+      "approval_gate": True,
+      "operation_contract": True,
+      "review_wave_impact": True,
+    },
+    "finding_operation_map": [
+      {"finding_id": "finding-001", "operation_id": "proxy_triage_apply_batch"}
+    ],
+    "approval_gate_record_refs": ["review-run/approval.yaml"],
+    "operation_contract_refs": ["stages/operation-contracts.yaml#proxy_triage_apply_batch"],
+    "review_wave_impact_evidence": {
+      "status": "no_downstream_impact",
+      "evidence_refs": ["review-run/triage.yaml"],
+    },
+    "evidence_conflicts": [],
   }
   decision.update(overrides)
   return decision
@@ -87,6 +106,47 @@ class ProxyTriageDecisionMachineTests(unittest.TestCase):
     self.assertEqual(result["verdict"], "DEVIATION")
     self.assertTrue(result["blocks_proxy_apply"])
     self.assertIn("approval_required", "\n".join(result["blocking_reasons"]))
+
+  def test_check_decision_applies_human_required_predicates(self):
+    module = self._module()
+    decision = valid_decision(
+      operation_contract={"operation_id": "proxy_triage_apply_batch", "approval_required": True},
+      approval_gate={"decision_scope": "proxy_allowed", "decision": "approved"},
+      review_wave_impact={"unresolved": False},
+    )
+
+    result = module.check_decision(decision)
+
+    self.assertEqual(result["verdict"], "DEVIATION")
+    self.assertIn("approval_required", "\n".join(result["reasons"]))
+
+  def test_human_required_blocks_missing_or_conflicting_evidence(self):
+    module = self._module()
+    decision = valid_decision(
+      raw_response_path="",
+      parsed_finding_paths=[],
+      evidence_completeness={
+        "raw_response": False,
+        "parsed_findings": False,
+        "source_triage": True,
+        "approval_gate": True,
+        "operation_contract": True,
+        "review_wave_impact": True,
+      },
+      evidence_conflicts=["raw response digest mismatch"],
+    )
+
+    result = module.evaluate_human_required(
+      decision=decision,
+      operation_contract={"operation_id": "proxy_triage_apply_batch", "approval_required": False},
+      approval_gate={"decision_scope": "proxy_allowed", "decision": "approved"},
+      review_wave_impact={"unresolved": False},
+    )
+
+    self.assertEqual(result["verdict"], "DEVIATION")
+    joined = "\n".join(result["blocking_reasons"])
+    self.assertIn("evidence", joined)
+    self.assertIn("conflict", joined)
 
   def test_human_required_priority_overrides_proxy_approved_leave_as_is(self):
     module = self._module()
@@ -138,6 +198,35 @@ class ProxyTriageDecisionMachineTests(unittest.TestCase):
 
     self.assertEqual(result["verdict"], "DEVIATION")
     self.assertIn("scope", "\n".join(result["reasons"]).lower())
+
+  def test_proxy_triage_rejects_empty_approval_scope(self):
+    schema = load_json(SCHEMA_PATH)
+    validator = jsonschema.Draft202012Validator(schema)
+    broken = valid_decision(
+      approval_scope={
+        "review_triage_decide": [],
+        "apply_fixes": [],
+        "operation_scope": "proxy_triage_apply_batch",
+      }
+    )
+
+    self.assertNotEqual(list(validator.iter_errors(broken)), [])
+
+  def test_proxy_triage_schema_requires_evidence_and_mapping_fields(self):
+    schema = load_json(SCHEMA_PATH)
+    validator = jsonschema.Draft202012Validator(schema)
+
+    for field in [
+      "evidence_completeness",
+      "finding_operation_map",
+      "approval_gate_record_refs",
+      "operation_contract_refs",
+      "review_wave_impact_evidence",
+      "evidence_conflicts",
+    ]:
+      broken = valid_decision()
+      broken.pop(field)
+      self.assertNotEqual(list(validator.iter_errors(broken)), [], field)
 
   def test_human_required_predicate_evaluation_order_is_fixed(self):
     module = self._module()

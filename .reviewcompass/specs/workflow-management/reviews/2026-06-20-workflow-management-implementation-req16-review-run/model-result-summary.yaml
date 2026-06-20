@@ -3,36 +3,36 @@ models:
 - model_id: gpt-5.4
   raw_path: raw/gpt-5.4.round-1.txt
   parse_status: parsed
-  triage_status: triage_pending
+  triage_status: triaged
   findings_count: 8
   findings_count_by_severity:
     ERROR: 4
     WARN: 4
-  must_fix_count: 0
-  should_fix_count: 0
+  must_fix_count: 6
+  should_fix_count: 2
   leave_as_is_count: 0
   human_required_count: 0
 - model_id: claude-sonnet-4-6
   raw_path: raw/claude-sonnet-4-6.round-1.txt
   parse_status: parsed
-  triage_status: triage_pending
+  triage_status: triaged
   findings_count: 10
   findings_count_by_severity:
     ERROR: 4
     WARN: 5
     INFO: 1
-  must_fix_count: 0
-  should_fix_count: 0
-  leave_as_is_count: 0
+  must_fix_count: 5
+  should_fix_count: 4
+  leave_as_is_count: 1
   human_required_count: 0
 - model_id: gemini-3.1-pro-preview
   raw_path: raw/gemini-3.1-pro-preview.round-1.txt
   parse_status: parsed
-  triage_status: triage_pending
+  triage_status: triaged
   findings_count: 1
   findings_count_by_severity:
     ERROR: 1
-  must_fix_count: 0
+  must_fix_count: 1
   should_fix_count: 0
   leave_as_is_count: 0
   human_required_count: 0

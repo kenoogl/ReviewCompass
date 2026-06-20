@@ -17,7 +17,13 @@
     "selected_decision",
     "reasoning_summary",
     "final_application_target",
-    "approval_scope"
+    "approval_scope",
+    "evidence_completeness",
+    "finding_operation_map",
+    "approval_gate_record_refs",
+    "operation_contract_refs",
+    "review_wave_impact_evidence",
+    "evidence_conflicts"
   ],
   "properties": {
     "schema_version": {
@@ -118,6 +124,7 @@
       "properties": {
         "review_triage_decide": {
           "type": "array",
+          "minItems": 1,
           "items": {
             "type": "string",
             "minLength": 1
@@ -125,12 +132,77 @@
         },
         "apply_fixes": {
           "type": "array",
+          "minItems": 1,
           "items": {
             "type": "string",
             "minLength": 1
           }
+        },
+        "operation_scope": {
+          "type": "string",
+          "minLength": 1
         }
       }
+    },
+    "evidence_completeness": {
+      "type": "object",
+      "additionalProperties": true,
+      "required": [
+        "raw_response",
+        "parsed_findings",
+        "source_triage",
+        "approval_gate",
+        "operation_contract",
+        "review_wave_impact"
+      ],
+      "properties": {
+        "raw_response": {"type": "boolean"},
+        "parsed_findings": {"type": "boolean"},
+        "source_triage": {"type": "boolean"},
+        "approval_gate": {"type": "boolean"},
+        "operation_contract": {"type": "boolean"},
+        "review_wave_impact": {"type": "boolean"}
+      }
+    },
+    "finding_operation_map": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": true,
+        "required": ["finding_id", "operation_id"],
+        "properties": {
+          "finding_id": {"type": "string", "minLength": 1},
+          "operation_id": {"type": "string", "minLength": 1}
+        }
+      }
+    },
+    "approval_gate_record_refs": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"type": "string", "minLength": 1}
+    },
+    "operation_contract_refs": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"type": "string", "minLength": 1}
+    },
+    "review_wave_impact_evidence": {
+      "type": "object",
+      "additionalProperties": true,
+      "required": ["status", "evidence_refs"],
+      "properties": {
+        "status": {"type": "string", "minLength": 1},
+        "evidence_refs": {
+          "type": "array",
+          "minItems": 1,
+          "items": {"type": "string", "minLength": 1}
+        }
+      }
+    },
+    "evidence_conflicts": {
+      "type": "array",
+      "items": {"type": "string", "minLength": 1}
     }
   },
   "$defs": {

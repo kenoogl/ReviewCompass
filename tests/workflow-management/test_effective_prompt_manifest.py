@@ -1,6 +1,7 @@
 """T-018 effective prompt manifest red tests."""
 
 import json
+import sys
 import unittest
 from pathlib import Path
 
@@ -8,6 +9,7 @@ import jsonschema
 
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(REPO_ROOT / "tools"))
 MANIFEST_SCHEMA = (
   REPO_ROOT / ".reviewcompass" / "schema" / "effective_prompt_manifest.schema.json"
 )
@@ -106,15 +108,57 @@ class EffectivePromptManifestSchemaTests(unittest.TestCase):
     schema = load_json(MANIFEST_SCHEMA)
     validator = jsonschema.Draft202012Validator(schema)
 
-    bad_bounds = valid_manifest(
+    missing_failure_verdict = valid_manifest(
       prompt_length={
         "min_chars": 20000,
         "max_chars": 100,
         "source_ref": "docs/operations/WORKFLOW_DISCIPLINE_MAP.yaml#default_prompt_length_bounds",
       }
     )
-    errors = list(validator.iter_errors(bad_bounds))
+    errors = list(validator.iter_errors(missing_failure_verdict))
     self.assertNotEqual(errors, [])
+
+    valid_bounds_shape = valid_manifest(
+      prompt_length={
+        "min_chars": 20000,
+        "max_chars": 100,
+        "source_ref": "docs/operations/WORKFLOW_DISCIPLINE_MAP.yaml#default_prompt_length_bounds",
+        "failure_verdict": "WARN",
+      }
+    )
+    self.assertEqual(list(validator.iter_errors(valid_bounds_shape)), [])
+
+  def test_effective_prompt_builder_validates_manifest_before_returning(self):
+    from check_workflow_action.effective_prompt_builder import build_manifest
+
+    data = valid_manifest()
+    built = build_manifest(
+      decision_point=data["decision_point"],
+      source_artifacts=data["source_artifacts"],
+      required_disciplines=data["required_disciplines"],
+      operation_contract=data["operation_contract"],
+      expected_output_schema=data["expected_output_schema"],
+      prompt_length=data["prompt_length"],
+      preconditions_checked=data["preconditions_checked"],
+      language_task=data["language_task"],
+      postconditions=data["postconditions"],
+      on_completion=data["on_completion"],
+    )
+    self.assertEqual(built["schema_version"], "effective-prompt-manifest-v1")
+
+    with self.assertRaises(ValueError):
+      build_manifest(
+        decision_point=data["decision_point"],
+        source_artifacts=[{"path": "docs/operations/WORKFLOW_NAVIGATION.md"}],
+        required_disciplines=data["required_disciplines"],
+        operation_contract=data["operation_contract"],
+        expected_output_schema=data["expected_output_schema"],
+        prompt_length=data["prompt_length"],
+        preconditions_checked=data["preconditions_checked"],
+        language_task=data["language_task"],
+        postconditions=data["postconditions"],
+        on_completion=data["on_completion"],
+      )
 
 
 if __name__ == "__main__":

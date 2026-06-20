@@ -29,6 +29,14 @@ def manifest(**overrides):
       "source_ref": "docs/operations/WORKFLOW_DISCIPLINE_MAP.yaml#default_prompt_length_bounds",
       "failure_verdict": "WARN",
     },
+    "preconditions_checked": [
+      {
+        "id": "next-json-loaded",
+        "source": "next_json",
+        "machine_checked": True,
+        "evidence_ref": "docs/operations/WORKFLOW_NAVIGATION.md",
+      }
+    ],
     "language_task": {
       "document_kind": "review",
       "input": {"required_files": [], "state_refs": [], "source_refs": []},
@@ -81,6 +89,70 @@ class PromptAuditTests(unittest.TestCase):
 
     self.assertEqual(result["verdict"], "DEVIATION")
     self.assertIn("machine", "\n".join(result["reasons"]).lower())
+    self.assertGreaterEqual(len(result["reasons"]), 4)
+
+  def test_prompt_audit_rejects_missing_required_structure_sections(self):
+    module = self._module()
+    data = manifest()
+    data.pop("source_artifacts")
+    data.pop("preconditions_checked")
+
+    result = module.audit_manifest(data)
+
+    self.assertEqual(result["verdict"], "DEVIATION")
+    joined = "\n".join(result["reasons"])
+    self.assertIn("source_artifacts", joined)
+    self.assertIn("preconditions_checked", joined)
+
+  def test_prompt_audit_rejects_broken_source_artifact_refs(self):
+    module = self._module()
+    data = manifest(
+      source_artifacts=[
+        {"path": "docs/operations/DOES_NOT_EXIST.md", "sha256": "sha256:" + "b" * 64}
+      ]
+    )
+
+    result = module.audit_manifest(data)
+
+    self.assertEqual(result["verdict"], "DEVIATION")
+    self.assertIn("source_artifacts", "\n".join(result["reasons"]))
+
+  def test_prompt_audit_rejects_unknown_action_kind_and_unverified_preconditions(self):
+    module = self._module()
+    data = manifest(
+      decision_point={"kind": "unknown-kind", "required_action": "run_workflow_stage"},
+      preconditions_checked=[
+        {
+          "id": "manual-only",
+          "source": "notes",
+          "machine_checked": False,
+          "evidence_ref": "docs/operations/WORKFLOW_NAVIGATION.md",
+        }
+      ],
+    )
+
+    result = module.audit_manifest(data)
+
+    self.assertEqual(result["verdict"], "DEVIATION")
+    joined = "\n".join(result["reasons"])
+    self.assertIn("decision_point.kind", joined)
+    self.assertIn("preconditions_checked", joined)
+
+  def test_prompt_audit_rejects_inverted_prompt_length_bounds(self):
+    module = self._module()
+    data = manifest(
+      prompt_length={
+        "min_chars": 20000,
+        "max_chars": 100,
+        "source_ref": "docs/operations/WORKFLOW_DISCIPLINE_MAP.yaml#default_prompt_length_bounds",
+        "failure_verdict": "WARN",
+      }
+    )
+
+    result = module.audit_manifest(data)
+
+    self.assertEqual(result["verdict"], "DEVIATION")
+    self.assertIn("prompt_length", "\n".join(result["reasons"]))
 
   def test_prompt_audit_rejects_on_completion_not_next_action_compatible(self):
     module = self._module()

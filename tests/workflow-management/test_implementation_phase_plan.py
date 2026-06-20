@@ -84,6 +84,39 @@ class ImplementationPhasePlanTests(unittest.TestCase):
     self.assertIn("exit", joined)
     self.assertIn("forbidden", joined.lower())
 
+  def test_phase_checker_rejects_missing_required_snapshot_evidence_and_boundary_detail(self):
+    module = importlib.import_module("check_workflow_action.implementation_phases")
+    plan = {
+      "schema_version": "workflow-management-implementation-phases-v1",
+      "feature": "workflow-management",
+      "phases": [
+        {
+          "phase": 0,
+          "name": "phase-zero",
+          "entry_criteria": [{"id": "entry", "satisfied": True}],
+          "exit_criteria": [{"id": "exit", "satisfied": True}],
+          "allowed_operations": ["operation-list"],
+          "forbidden_operations": [],
+          "required_tests": ["pytest tests/workflow-management/test_x.py"],
+          "required_snapshot_evidence": [
+            {"id": "next-json-snapshot", "path": "", "fresh": False}
+          ],
+          "commit_boundary": {"required": True},
+        }
+      ],
+    }
+
+    result = module.check_phase_plan(
+      plan,
+      feature="workflow-management",
+      current_phase=0,
+    )
+
+    self.assertEqual(result["verdict"], "DEVIATION")
+    joined = "\n".join(result["reasons"])
+    self.assertIn("snapshot", joined)
+    self.assertIn("commit", joined)
+
 
 if __name__ == "__main__":
   unittest.main()

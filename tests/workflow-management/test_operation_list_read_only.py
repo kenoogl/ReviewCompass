@@ -48,8 +48,11 @@ class OperationListReadOnlyTests(unittest.TestCase):
         "approval_required",
         "sequence",
         "pending_conflicts",
+        "pending_conflicts_status",
       ]:
         self.assertIn(field, operation, operation)
+      if operation["pending_conflicts"] == []:
+        self.assertEqual(operation["pending_conflicts_status"], "none_detected")
 
 
 if __name__ == "__main__":

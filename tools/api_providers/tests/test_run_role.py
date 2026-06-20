@@ -663,6 +663,9 @@ def test_main_records_effective_prompt_metadata_in_rounds(
   assert rounds["effective_prompt_sha256"] == hashlib.sha256(
     effective_prompt.read_bytes()
   ).hexdigest()
+  assert rounds["effective_prompt_sha256_prefixed"] == "sha256:" + hashlib.sha256(
+    effective_prompt.read_bytes()
+  ).hexdigest()
 
 
 def test_main_updates_review_run_artifacts_on_parse_failure(

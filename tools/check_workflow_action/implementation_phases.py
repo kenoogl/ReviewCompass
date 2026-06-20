@@ -51,6 +51,8 @@ def check_phase_plan(
 
   _append_unsatisfied(reasons, phase.get("entry_criteria"), "entry")
   _append_unsatisfied(reasons, phase.get("exit_criteria"), "exit")
+  _append_snapshot_evidence(reasons, phase.get("required_snapshot_evidence"))
+  _append_commit_boundary(reasons, phase.get("commit_boundary"))
 
   executed = set(executed_operations or [])
   forbidden = set(phase.get("forbidden_operations") or [])
@@ -89,3 +91,30 @@ def _append_unsatisfied(reasons: List[str], criteria: Any, label: str) -> None:
       continue
     if criterion.get("satisfied") is not True:
       reasons.append(f"{label} criterion 未充足: {criterion.get('id')}")
+
+
+def _append_snapshot_evidence(reasons: List[str], evidence: Any) -> None:
+  if evidence is None:
+    return
+  if not isinstance(evidence, list) or not evidence:
+    reasons.append("snapshot evidence が非空 list ではありません")
+    return
+  for item in evidence:
+    if not isinstance(item, dict):
+      reasons.append("snapshot evidence は mapping である必要があります")
+      continue
+    if not item.get("path"):
+      reasons.append(f"snapshot evidence path が欠落しています: {item.get('id')}")
+    if item.get("fresh") is not True:
+      reasons.append(f"snapshot evidence が fresh ではありません: {item.get('id')}")
+
+
+def _append_commit_boundary(reasons: List[str], commit_boundary: Any) -> None:
+  if not isinstance(commit_boundary, dict):
+    reasons.append("commit_boundary が mapping ではありません")
+    return
+  if commit_boundary.get("required") is True:
+    if not commit_boundary.get("evidence_ref"):
+      reasons.append("commit_boundary.evidence_ref が欠落しています")
+    if not commit_boundary.get("description"):
+      reasons.append("commit_boundary.description が欠落しています")

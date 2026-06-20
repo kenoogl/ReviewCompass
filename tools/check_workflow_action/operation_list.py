@@ -32,6 +32,7 @@ def _operation_entry(contract: Dict[str, Any]) -> Dict[str, Any]:
     "approval_required": contract.get("approval_required"),
     "sequence": contract.get("sequence"),
     "pending_conflicts": [],
+    "pending_conflicts_status": "none_detected",
   }
 
 

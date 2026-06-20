@@ -3,8 +3,19 @@
 from __future__ import annotations
 
 import hashlib
+import json
 from pathlib import Path
 from typing import Any, Dict, Iterable, List, Optional
+
+import jsonschema
+
+
+MANIFEST_SCHEMA_PATH = (
+  Path(__file__).resolve().parents[2]
+  / ".reviewcompass"
+  / "schema"
+  / "effective_prompt_manifest.schema.json"
+)
 
 
 def sha256_file(path: str | Path) -> str:
@@ -51,4 +62,17 @@ def build_manifest(
   }
   if extra:
     manifest.update(extra)
+  _validate_manifest(manifest)
   return manifest
+
+
+def _validate_manifest(manifest: Dict[str, Any]) -> None:
+  schema = json.loads(MANIFEST_SCHEMA_PATH.read_text(encoding="utf-8"))
+  errors = sorted(
+    jsonschema.Draft202012Validator(schema).iter_errors(manifest),
+    key=lambda error: list(error.path),
+  )
+  if errors:
+    first = errors[0]
+    path = ".".join(str(part) for part in first.path) or "<root>"
+    raise ValueError(f"effective prompt manifest schema violation at {path}: {first.message}")

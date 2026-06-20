@@ -338,10 +338,12 @@ def update_review_run_artifacts(
     rounds_update["effective_prompt_path"] = effective_prompt_path
   if effective_prompt_sha256:
     rounds_update["effective_prompt_sha256"] = effective_prompt_sha256
+    rounds_update["effective_prompt_sha256_prefixed"] = _sha256_prefixed(effective_prompt_sha256)
   if prompt_manifest_path:
     rounds_update["prompt_manifest_path"] = prompt_manifest_path
   if prompt_manifest_sha256:
     rounds_update["prompt_manifest_sha256"] = prompt_manifest_sha256
+    rounds_update["prompt_manifest_sha256_prefixed"] = _sha256_prefixed(prompt_manifest_sha256)
   rounds.update(rounds_update)
   _dump_yaml(rounds_path, rounds)
 
@@ -521,6 +523,11 @@ def _resolve_prompt_manifest_sha256(path_value: Optional[str], sha_value: Option
   if not path.is_file():
     return None
   return _sha256_file(path)
+
+
+def _sha256_prefixed(value: str) -> str:
+  """bare hex / sha256:<hex> のどちらからでも prefixed digest を返す。"""
+  return value if value.startswith("sha256:") else "sha256:" + value
 
 
 def _normal_output_fields(

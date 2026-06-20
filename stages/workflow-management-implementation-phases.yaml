@@ -19,8 +19,14 @@ phases:
       - proxy-triage-decision-check
     required_tests:
       - .venv/bin/python3 -m pytest tests/tools/test_check_workflow_action.py -k reopen -q
+    required_snapshot_evidence:
+      - id: phase-0-next-json-snapshot
+        path: .reviewcompass/runtime/workflow-state-snapshot.yaml
+        fresh: true
     commit_boundary:
       required: true
+      evidence_ref: d14335f9
+      description: Phase 0 work is isolated by a dedicated commit boundary.
   - phase: 1
     name: vocabulary and schema
     entry_criteria:
@@ -36,8 +42,14 @@ phases:
       - proxy-triage-apply-batch
     required_tests:
       - .venv/bin/python3 -m pytest tests/workflow-management/test_operation_contract_schema.py -q
+    required_snapshot_evidence:
+      - id: phase-1-next-json-snapshot
+        path: .reviewcompass/runtime/workflow-state-snapshot.yaml
+        fresh: true
     commit_boundary:
       required: true
+      evidence_ref: 61c87e5a
+      description: Phase 1 schema work is isolated before later enforcement phases.
   - phase: 2
     name: read-only registry
     entry_criteria:
@@ -53,8 +65,14 @@ phases:
       - spec-set
     required_tests:
       - .venv/bin/python3 -m pytest tests/workflow-management/test_operation_list_read_only.py -q
+    required_snapshot_evidence:
+      - id: phase-2-next-json-snapshot
+        path: .reviewcompass/runtime/workflow-state-snapshot.yaml
+        fresh: true
     commit_boundary:
       required: true
+      evidence_ref: 61c87e5a
+      description: Phase 2 read-only registry work is isolated before advisory preflight.
   - phase: 3
     name: advisory preflight
     entry_criteria:
@@ -69,8 +87,14 @@ phases:
       - mechanical-blocking
     required_tests:
       - .venv/bin/python3 -m pytest tests/workflow-management/test_operation_contract_cli.py -q
+    required_snapshot_evidence:
+      - id: phase-3-next-json-snapshot
+        path: .reviewcompass/runtime/workflow-state-snapshot.yaml
+        fresh: true
     commit_boundary:
       required: true
+      evidence_ref: 61c87e5a
+      description: Phase 3 advisory behavior is isolated before structured prompt work.
   - phase: 4
     name: structured effective prompt
     entry_criteria:
@@ -85,8 +109,14 @@ phases:
       - prompt-approval-automation
     required_tests:
       - .venv/bin/python3 -m pytest tests/workflow-management/test_prompt_audit.py -q
+    required_snapshot_evidence:
+      - id: phase-4-next-json-snapshot
+        path: .reviewcompass/runtime/workflow-state-snapshot.yaml
+        fresh: true
     commit_boundary:
       required: true
+      evidence_ref: dbe5aa1f
+      description: Phase 4 structured effective prompt work is isolated by commit evidence.
   - phase: 5
     name: mechanical blocking
     entry_criteria:
@@ -102,8 +132,14 @@ phases:
       - bypass-approval
     required_tests:
       - .venv/bin/python3 -m pytest tests/workflow-management/test_approval_gate.py -q
+    required_snapshot_evidence:
+      - id: phase-5-next-json-snapshot
+        path: .reviewcompass/runtime/workflow-state-snapshot.yaml
+        fresh: true
     commit_boundary:
       required: true
+      evidence_ref: 10cf6922
+      description: Phase 5 mechanical blocking work is isolated before LLM judge audit.
   - phase: 6
     name: llm judge audit
     entry_criteria:
@@ -118,5 +154,11 @@ phases:
       - approval-automation
     required_tests:
       - .venv/bin/python3 -m pytest tests/workflow-management/test_proxy_triage_decision_machine.py -q
+    required_snapshot_evidence:
+      - id: phase-6-next-json-snapshot
+        path: .reviewcompass/runtime/workflow-state-snapshot.yaml
+        fresh: true
     commit_boundary:
       required: true
+      evidence_ref: 10cf6922
+      description: Phase 6 LLM judge audit work is isolated by implementation drafting completion.

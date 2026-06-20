@@ -77,6 +77,10 @@ def _is_post_write_target(path: str) -> bool:
   """post-write-verification 対象の md 文書パスかを返す。"""
   if path.startswith("docs/archive/"):
     return False
+  if path.startswith("docs/notes/review-runs/"):
+    return False
+  if path.startswith(".reviewcompass/evidence/review-runs/"):
+    return False
   if any(path.startswith(prefix) for prefix in LIGHTWEIGHT_SELF_CHECK_DIR_PREFIXES):
     return False
   if path in POST_WRITE_VERIFICATION_FILE_PATHS:

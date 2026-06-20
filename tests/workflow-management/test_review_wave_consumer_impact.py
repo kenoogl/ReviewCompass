@@ -38,6 +38,37 @@ class ReviewWaveConsumerImpactTests(unittest.TestCase):
     self.assertTrue(result["blocks_proxy_apply"])
     self.assertIn("carry-forward", "\n".join(result["blocking_reasons"]))
 
+  def test_review_wave_consumer_impact_reports_no_impact_carried_forward_and_resolved_states(self):
+    module = self._module()
+    result = module.evaluate_review_wave_consumer_impact(
+      review_wave_summary={
+        "consumer_impacts": [
+          {"feature": "runtime", "status": "no_downstream_impact"},
+          {"feature": "evaluation", "status": "carried_forward"},
+          {
+            "feature": "analysis",
+            "status": "resolved",
+            "evidence_refs": ["reviews/analysis-resolution.yaml"],
+          },
+        ]
+      },
+      carry_forward_register={"items": [{"item_id": "cf-1"}]},
+      downstream_impact_decisions=[
+        {"feature": "analysis", "decision": "resolved", "evidence": "reviews/analysis-resolution.yaml"}
+      ],
+      spec_recheck={"impacted_downstream_phases": []},
+    )
+
+    self.assertEqual(result["verdict"], "OK")
+    self.assertFalse(result["blocks_proxy_apply"])
+    statuses = {
+      item["feature"]: item["state"]
+      for item in result["consumer_impact_states"]
+    }
+    self.assertEqual(statuses["runtime"], "no_downstream_impact")
+    self.assertEqual(statuses["evaluation"], "carried_forward")
+    self.assertEqual(statuses["analysis"], "resolved_with_evidence")
+
 
 if __name__ == "__main__":
   unittest.main()
