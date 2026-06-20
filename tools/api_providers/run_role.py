@@ -255,6 +255,8 @@ def update_review_run_artifacts(
   formatted_output: Optional[str],
   effective_prompt_path: Optional[str] = None,
   effective_prompt_sha256: Optional[str] = None,
+  prompt_manifest_path: Optional[str] = None,
+  prompt_manifest_sha256: Optional[str] = None,
   criteria_source_path: Optional[str] = None,
   criteria_source_sha256: Optional[str] = None,
 ) -> None:
@@ -335,6 +337,10 @@ def update_review_run_artifacts(
     rounds_update["effective_prompt_path"] = effective_prompt_path
   if effective_prompt_sha256:
     rounds_update["effective_prompt_sha256"] = effective_prompt_sha256
+  if prompt_manifest_path:
+    rounds_update["prompt_manifest_path"] = prompt_manifest_path
+  if prompt_manifest_sha256:
+    rounds_update["prompt_manifest_sha256"] = prompt_manifest_sha256
   rounds.update(rounds_update)
   _dump_yaml(rounds_path, rounds)
 
@@ -443,6 +449,16 @@ def _parse_argv(argv: Optional[List[str]]) -> argparse.Namespace:
     help="effective prompt ファイルの sha256。未指定ならファイルから計算する",
   )
   parser.add_argument(
+    "--prompt-manifest-path",
+    default=None,
+    help="構造化 effective prompt manifest ファイルのパス",
+  )
+  parser.add_argument(
+    "--prompt-manifest-sha256",
+    default=None,
+    help="prompt manifest ファイルの sha256。未指定ならファイルから計算する",
+  )
+  parser.add_argument(
     "--verbose",
     action="store_true",
     help="成果物保存先がある場合も整形済み YAML を標準出力へ表示する",
@@ -475,6 +491,18 @@ def _resolve_effective_prompt_sha256(path_value: Optional[str], sha_value: Optio
 
   resolved = resolve_effective_prompt_read_path(Path.cwd(), path_value)
   path = Path(resolved)
+  if not path.is_file():
+    return None
+  return _sha256_file(path)
+
+
+def _resolve_prompt_manifest_sha256(path_value: Optional[str], sha_value: Optional[str]) -> Optional[str]:
+  """prompt manifest sha256 を明示値またはファイル内容から返す。"""
+  if sha_value:
+    return sha_value
+  if not path_value:
+    return None
+  path = Path(path_value)
   if not path.is_file():
     return None
   return _sha256_file(path)
@@ -540,6 +568,10 @@ def main(argv: Optional[List[str]] = None) -> int:
       args.effective_prompt_path,
       args.effective_prompt_sha256,
     )
+    prompt_manifest_sha256 = _resolve_prompt_manifest_sha256(
+      args.prompt_manifest_path,
+      args.prompt_manifest_sha256,
+    )
     response_text, attempts, duration_seconds = _call_provider(provider, prompt)
     _write_raw_response(args.raw_out, response_text)
     try:
@@ -564,6 +596,8 @@ def main(argv: Optional[List[str]] = None) -> int:
           formatted_output=None,
           effective_prompt_path=args.effective_prompt_path,
           effective_prompt_sha256=effective_prompt_sha256,
+          prompt_manifest_path=args.prompt_manifest_path,
+          prompt_manifest_sha256=prompt_manifest_sha256,
           criteria_source_path=criteria_source_path,
           criteria_source_sha256=criteria_source_sha256,
         )
@@ -596,6 +630,8 @@ def main(argv: Optional[List[str]] = None) -> int:
         formatted_output=output,
         effective_prompt_path=args.effective_prompt_path,
         effective_prompt_sha256=effective_prompt_sha256,
+        prompt_manifest_path=args.prompt_manifest_path,
+        prompt_manifest_sha256=prompt_manifest_sha256,
         criteria_source_path=criteria_source_path,
         criteria_source_sha256=criteria_source_sha256,
       )

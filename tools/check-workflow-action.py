@@ -50,6 +50,7 @@ from check_workflow_action.runtime_paths import (
 from check_workflow_action import commit_approval
 from check_workflow_action.operation_preflight import run_preflight
 from check_workflow_action.operation_contracts import run_contract_check
+from check_workflow_action.prompt_audit import audit_manifest, load_manifest as load_prompt_manifest
 from check_workflow_action.side_track_stack import current as current_side_track_stack
 from check_workflow_action.workflow_state_snapshot import build_snapshot
 
@@ -6886,6 +6887,49 @@ def cmd_side_track_stack(args):
   return 2
 
 
+def cmd_prompt_audit(args):
+  """prompt-audit サブコマンドのエントリポイント（Req 15）"""
+  action_dict = {
+    "subcommand": "prompt-audit",
+    "args": {
+      "prompt_manifest": args.prompt_manifest,
+    },
+  }
+  try:
+    manifest = load_prompt_manifest(args.prompt_manifest)
+  except (OSError, yaml.YAMLError, ValueError) as e:
+    reasons = [f"prompt_manifest を読めません: {e}"]
+    current_state = {"prompt_manifest": args.prompt_manifest}
+    if args.json:
+      print(format_json_output("DEVIATION", 2, action_dict, reasons, current_state))
+    else:
+      print(format_human_output("DEVIATION", 2, "prompt-audit", reasons, json.dumps(current_state)))
+    return 2
+
+  result = audit_manifest(manifest)
+  if args.json:
+    print(
+      format_json_output(
+        result["verdict"],
+        result["exit_code"],
+        action_dict,
+        result["reasons"],
+        result["current_state"],
+      )
+    )
+  else:
+    print(
+      format_human_output(
+        result["verdict"],
+        result["exit_code"],
+        "prompt-audit",
+        result["reasons"],
+        json.dumps(result["current_state"], ensure_ascii=False, indent=2),
+      )
+    )
+  return result["exit_code"]
+
+
 def main():
   # 共通オプション（サブコマンドの前後どちらでも受け取れるよう親パーサに集約、仕様 §4 共通オプション）
   common_parser = argparse.ArgumentParser(add_help=False)
@@ -7174,6 +7218,13 @@ def main():
     help="side track stack YAML のパス（省略時は既定位置）",
   )
 
+  pa = sub.add_parser(
+    "prompt-audit",
+    help="effective prompt manifest を read-only で監査する（Req 15）",
+    parents=[common_parser],
+  )
+  pa.add_argument("--prompt-manifest", required=True, help="監査対象 manifest YAML/JSON")
+
   cap = sub.add_parser(
     "commit-approval",
     help="commit 承認 nonce challenge を作成・記録・無効化する",
@@ -7289,6 +7340,8 @@ def main():
     sys.exit(cmd_workflow_snapshot(args))
   elif args.subcommand == "side-track-stack":
     sys.exit(cmd_side_track_stack(args))
+  elif args.subcommand == "prompt-audit":
+    sys.exit(cmd_prompt_audit(args))
   elif args.subcommand == "commit-approval":
     sys.exit(cmd_commit_approval(args))
   elif args.subcommand == "decision-source-lint":

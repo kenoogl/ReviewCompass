@@ -33,6 +33,7 @@ from tools.api_providers.response_formatter import (  # noqa: E402
 )
 from tools.api_providers.run_role import (  # noqa: E402
   _resolve_effective_prompt_sha256,
+  _resolve_prompt_manifest_sha256,
   build_prompt,
   update_review_run_artifacts,
 )
@@ -259,6 +260,16 @@ def _parse_argv(argv: Optional[List[str]]) -> argparse.Namespace:
     help="effective prompt ファイルの sha256。未指定ならファイルから計算する",
   )
   parser.add_argument(
+    "--prompt-manifest-path",
+    default=None,
+    help="構造化 effective prompt manifest ファイルのパス",
+  )
+  parser.add_argument(
+    "--prompt-manifest-sha256",
+    default=None,
+    help="prompt manifest ファイルの sha256。未指定ならファイルから計算する",
+  )
+  parser.add_argument(
     "--verbose",
     action="store_true",
     help="正常系でも review_summary.md の本文を標準出力へ表示する",
@@ -395,6 +406,10 @@ def _run_one_role(
     args.effective_prompt_path,
     args.effective_prompt_sha256,
   )
+  prompt_manifest_sha256 = _resolve_prompt_manifest_sha256(
+    args.prompt_manifest_path,
+    args.prompt_manifest_sha256,
+  )
   response_text, attempts, duration_seconds = _call_provider(provider, prompt)
   try:
     findings = parse_response_text(response_text)
@@ -417,6 +432,8 @@ def _run_one_role(
       formatted_output=None,
       effective_prompt_path=args.effective_prompt_path,
       effective_prompt_sha256=effective_prompt_sha256,
+      prompt_manifest_path=args.prompt_manifest_path,
+      prompt_manifest_sha256=prompt_manifest_sha256,
       criteria_source_path=criteria_source_path,
       criteria_source_sha256=criteria_source_sha256,
     )
@@ -448,6 +465,8 @@ def _run_one_role(
     formatted_output=output,
     effective_prompt_path=args.effective_prompt_path,
     effective_prompt_sha256=effective_prompt_sha256,
+    prompt_manifest_path=args.prompt_manifest_path,
+    prompt_manifest_sha256=prompt_manifest_sha256,
     criteria_source_path=criteria_source_path,
     criteria_source_sha256=criteria_source_sha256,
   )
