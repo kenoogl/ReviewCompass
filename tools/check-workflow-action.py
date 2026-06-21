@@ -3276,6 +3276,7 @@ def validate_deployment_independence_for_commit(cwd, commitish):
   """D-023 配置非依存 lint を commit 内容に対して実行する"""
   try:
     changed_files = list_commit_changed_files(cwd, commitish)
+    deleted_files = set(list_commit_deleted_files(cwd, commitish))
   except ValueError as e:
     return {
       "commit": commitish,
@@ -3285,7 +3286,10 @@ def validate_deployment_independence_for_commit(cwd, commitish):
 
   target_files = [
     filepath for filepath in changed_files
-    if is_deployment_independence_guard_target(filepath)
+    if (
+      is_deployment_independence_guard_target(filepath)
+      and filepath not in deleted_files
+    )
   ]
   state = {
     "commit": commitish,
@@ -4323,6 +4327,24 @@ def list_commit_changed_files(cwd, commitish):
   if result.returncode != 0:
     raise ValueError(result.stderr.strip() or f"commit を読めません: {commitish}")
   return sorted(set(f for f in result.stdout.splitlines() if f))
+
+
+def list_commit_deleted_files(cwd, commitish):
+  """指定 commit で削除されたファイル一覧を返す"""
+  result = subprocess.run(
+    ["git", "diff-tree", "--root", "--no-commit-id", "--name-status", "-r", commitish],
+    cwd=str(cwd),
+    capture_output=True,
+    text=True,
+  )
+  if result.returncode != 0:
+    raise ValueError(result.stderr.strip() or f"commit を読めません: {commitish}")
+  deleted = []
+  for line in result.stdout.splitlines():
+    parts = line.split("\t", 1)
+    if len(parts) == 2 and parts[0] == "D" and parts[1]:
+      deleted.append(parts[1])
+  return sorted(set(deleted))
 
 
 def commit_file_sha256(cwd, commitish, path):

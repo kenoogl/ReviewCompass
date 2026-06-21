@@ -9115,6 +9115,51 @@ class PushExitCodeTests(unittest.TestCase):
     self.assertIn("配置非依存", result.stdout)
     self.assertIn(relpath, result.stdout)
 
+  def test_push_ignores_deleted_deployment_lint_target(self):
+    """push 時の配置非依存 lint は削除済み対象ファイルを読もうとしない"""
+    relpath = "docs/operations/legacy.md"
+    _stage_file(
+      self.tmpdir,
+      relpath,
+      "旧配置の文書\n",
+    )
+    subprocess.run(
+      ["git", "commit", "-qm", "add legacy guidance"],
+      cwd=str(self.tmpdir),
+      check=True,
+      capture_output=True,
+    )
+    subprocess.run(
+      ["git", "update-ref", "refs/remotes/origin/main", "HEAD"],
+      cwd=str(self.tmpdir),
+      check=True,
+      capture_output=True,
+    )
+    subprocess.run(
+      ["git", "rm", "-q", relpath],
+      cwd=str(self.tmpdir),
+      check=True,
+      capture_output=True,
+    )
+    subprocess.run(
+      ["git", "commit", "-qm", "remove legacy guidance"],
+      cwd=str(self.tmpdir),
+      check=True,
+      capture_output=True,
+    )
+    _write_last_commit_precheck(self.tmpdir)
+
+    result = run_script(
+      ["push", "--rationale", "削除済み lint 対象 push のテスト", "--json"],
+      cwd=self.tmpdir,
+    )
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 0, result.stdout)
+    data = json.loads(result.stdout)
+    targets = data["current_state"]["deployment_independence_lint"]["target_files"]
+    self.assertNotIn(relpath, targets)
+
   def test_push_rationale_is_required(self):
     """push に --rationale なし → 非 0 終了（仕様 §5.3 必須）"""
     result = run_script(["push"], cwd=self.tmpdir)
