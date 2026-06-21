@@ -1,4 +1,8 @@
 import importlib.util
+import os
+import subprocess
+import sys
+import textwrap
 from pathlib import Path
 
 import yaml
@@ -47,3 +51,45 @@ def test_deploy_package_writes_review_run_to_external_app_root(tmp_path):
   )
   assert rounds["model_results"][0]["provider"] == "smoke-provider"
   assert target_manifest["target_files"][0]["path"].endswith("app.md")
+
+
+def test_deploy_package_resolves_transitive_imports_for_entrypoints(tmp_path):
+  module = _load_module()
+  package_dir = tmp_path / "ReviewCompass"
+  app_root = tmp_path / "external-app"
+  module.build_package(
+    repo_root=REPO_ROOT,
+    manifest_path=MANIFEST_PATH,
+    output_dir=package_dir,
+    clean=True,
+  )
+  app_root.mkdir()
+
+  script = textwrap.dedent(
+    """
+    import importlib
+
+    modules = [
+      "tools.api_providers.prepare_post_write_review",
+      "tools.api_providers.run_review",
+      "tools.api_providers.run_role",
+      "tools.normal_output",
+    ]
+
+    for module_name in modules:
+      importlib.import_module(module_name)
+    """
+  )
+  env = dict(os.environ)
+  env["PYTHONPATH"] = str(package_dir)
+
+  result = subprocess.run(
+    [sys.executable, "-c", script],
+    cwd=str(app_root),
+    env=env,
+    capture_output=True,
+    text=True,
+    timeout=15,
+  )
+
+  assert result.returncode == 0, result.stderr
