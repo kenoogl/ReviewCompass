@@ -1,0 +1,33 @@
+status: completed
+target_files:
+  - docs/notes/working/2026-06-21-llm-boundary-and-postwrite-prompt-mechanization-plan.md
+target_sha256:
+  docs/notes/working/2026-06-21-llm-boundary-and-postwrite-prompt-mechanization-plan.md: ddf583ec0aedd581079fd5a8f7754f5aa62438a72377ce698e5d3ea40587995a
+required_verifiers:
+  - lightweight_self_check
+completed_verifiers:
+  - lightweight_self_check
+unresolved_substantive_findings: 0
+verifications:
+  - verifier: lightweight_self_check
+    target_files:
+      - docs/notes/working/2026-06-21-llm-boundary-and-postwrite-prompt-mechanization-plan.md
+    target_sha256:
+      docs/notes/working/2026-06-21-llm-boundary-and-postwrite-prompt-mechanization-plan.md: ddf583ec0aedd581079fd5a8f7754f5aa62438a72377ce698e5d3ea40587995a
+    checks:
+      user_points_preserved: true
+      facts_inferences_policy_and_open_items_separated: true
+      useful_as_later_decision_material: true
+      does_not_over_specify_scope: true
+      remains_working_note_not_canonical_spec: true
+      api_review_intentionally_not_used: true
+notes: >
+  Lightweight self-check for the post-write prompt mechanization plan update.
+  The note now records that this is mainline reliability work, not a completed
+  side-track remainder, and incorporates the prior API review prompt audit
+  discussion: main preanalysis, target/source/out-of-scope separation,
+  non-path-only materials, one primary judgment per prompt, runner/output
+  contract separation, prompt quality review defaults, and fail-closed runner
+  gating. The update remains a working plan and explicitly states that
+  post-write prompt mechanization is not complete until source bundle, prompt
+  builder, prompt audit, runner gate, and practical reliability checks are done.
