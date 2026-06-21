@@ -3624,6 +3624,37 @@ class NextNavigationTests(unittest.TestCase):
       ["tools/post_write_verify_new_policy.py"],
     )
 
+  def test_next_post_write_policy_violation_returns_canonical_effective_prompt(self):
+    """policy violation 地点では runtime 合成ではなく canonical prompt を返す"""
+    cwd = Path(self.tmpdir)
+    _init_git_repo(cwd)
+    _write_specs_for_next(cwd, {})
+    target = cwd / "docs" / "notes" / "new-policy.md"
+    target.parent.mkdir(parents=True, exist_ok=True)
+    target.write_text("検証対象の正本文書\n", encoding="utf-8")
+    runner = cwd / "tools" / "post_write_verify_new_policy.py"
+    runner.parent.mkdir(parents=True, exist_ok=True)
+    runner.write_text("# 独自検証 runner\n", encoding="utf-8")
+
+    result = run_script(["next", "--json"], cwd=cwd)
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 2, result.stderr)
+    data = json.loads(result.stdout)
+    action = data["next_action"]
+    self.assertEqual(action["kind"], "post_write_policy_violation")
+    effective_prompt = action["effective_prompt"]
+    self.assertEqual(
+      effective_prompt["effective_prompt_path"],
+      ".reviewcompass/guidance/effective-prompts/"
+      "next-action-post-write-policy-violation.prompt.md",
+    )
+    self.assertNotIn(
+      ".reviewcompass/runtime/effective-prompts",
+      effective_prompt["effective_prompt_path"],
+    )
+    self.assertTrue(effective_prompt["effective_prompt_loaded"])
+
   def test_next_deviation_when_template_changes_during_post_write_verification(self):
     """post-write-verification pending 中の template 変更は逸脱"""
     cwd = Path(self.tmpdir)

@@ -14,6 +14,14 @@ def _yaml(path):
   return yaml.safe_load((ROOT / path).read_text(encoding="utf-8"))
 
 
+def _decision_point(group_name, point_id):
+  data = _yaml(".reviewcompass/guidance/WORKFLOW_DISCIPLINE_MAP.yaml")
+  for item in data["decision_points"][group_name]:
+    if item["id"] == point_id:
+      return item
+  raise AssertionError(f"missing decision point: {group_name}:{point_id}")
+
+
 def test_workflow_navigation_defines_one_effective_prompt_per_decision_point():
   text = _read("docs/operations/WORKFLOW_NAVIGATION.md")
 
@@ -162,3 +170,24 @@ def test_workflow_discipline_map_catalogs_all_current_decision_points():
     for item in catalog[group_name]:
       assert item["effective_prompt_policy"] == "one_effective_prompt_per_decision_point"
       assert item["prompt_source_refs"]
+
+
+def test_post_write_policy_violation_uses_canonical_effective_prompt_artifact():
+  item = _decision_point("next_action_kind", "post_write_policy_violation")
+
+  assert item["canonical_effective_prompt_path"] == (
+    ".reviewcompass/guidance/effective-prompts/"
+    "next-action-post-write-policy-violation.prompt.md"
+  )
+
+
+def test_post_write_policy_violation_canonical_prompt_contains_operation_boundary():
+  item = _decision_point("next_action_kind", "post_write_policy_violation")
+  prompt_path = ROOT / item["canonical_effective_prompt_path"]
+
+  text = prompt_path.read_text(encoding="utf-8")
+
+  assert "post_write_policy_violation.inspect" in text
+  assert "run_post_write_review" in text
+  assert "create_post_write_manifest" in text
+  assert "next_action.kind == post_write_verification" in text
