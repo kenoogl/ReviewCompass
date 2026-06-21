@@ -1410,6 +1410,7 @@ def effective_prompt_for_next_action(cwd, next_action):
   refs = []
   source_refs = []
   policies = []
+  canonical_paths = []
 
   for ref in _decision_point_refs_for_next_action(next_action):
     entry = _find_decision_point(catalog, ref["group"], ref["id"])
@@ -1420,17 +1421,23 @@ def effective_prompt_for_next_action(cwd, next_action):
     policy = entry.get("effective_prompt_policy")
     if isinstance(policy, str) and policy:
       policies.append(policy)
+    canonical_path = entry.get("canonical_effective_prompt_path")
+    if isinstance(canonical_path, str) and canonical_path:
+      canonical_paths.append(canonical_path)
 
   if not refs:
     return None
 
-  return {
+  result = {
     "effective_prompt_policy": (
       policies[0] if policies else "one_effective_prompt_per_decision_point"
     ),
     "decision_point_refs": refs,
     "prompt_source_refs": _dedupe_strings(source_refs),
   }
+  if canonical_paths:
+    result["canonical_effective_prompt_path"] = canonical_paths[0]
+  return result
 
 
 def _sanitize_prompt_path_part(value):
@@ -1449,6 +1456,9 @@ def _sanitize_prompt_path_part(value):
 
 def _effective_prompt_relative_path(effective_prompt):
   """判定点参照から effective prompt の保存先を決める"""
+  canonical_path = effective_prompt.get("canonical_effective_prompt_path")
+  if isinstance(canonical_path, str) and canonical_path:
+    return canonical_path
   parts = []
   for ref in effective_prompt.get("decision_point_refs") or []:
     if not isinstance(ref, dict):
@@ -1477,6 +1487,18 @@ def _resolve_prompt_source_path(cwd, source_ref):
   if path.is_absolute():
     return path if path.is_file() else None
 
+  candidates = [
+    Path(cwd) / path,
+    _script_root() / path,
+  ]
+  return next((candidate for candidate in candidates if candidate.is_file()), None)
+
+
+def _resolve_effective_prompt_artifact_path(cwd, relative_path):
+  """canonical effective prompt artifact を cwd または ReviewCompass root から解決する"""
+  path = Path(relative_path)
+  if path.is_absolute():
+    return path if path.is_file() else None
   candidates = [
     Path(cwd) / path,
     _script_root() / path,
@@ -1539,6 +1561,23 @@ def _render_effective_prompt_text(next_action, effective_prompt, sources):
 
 def materialize_effective_prompt(cwd, next_action, effective_prompt):
   """effective prompt 本文を生成し、パスと sha256 をメタデータへ追記する"""
+  canonical_path = effective_prompt.get("canonical_effective_prompt_path")
+  if isinstance(canonical_path, str) and canonical_path:
+    prompt_path = _resolve_effective_prompt_artifact_path(cwd, canonical_path)
+    prompt_text = ""
+    loaded = False
+    if prompt_path is not None:
+      try:
+        prompt_text = prompt_path.read_text(encoding="utf-8")
+        loaded = True
+      except OSError:
+        loaded = False
+    augmented = dict(effective_prompt)
+    augmented["effective_prompt_path"] = canonical_path
+    augmented["effective_prompt_sha256"] = _sha256_text(prompt_text)
+    augmented["effective_prompt_loaded"] = loaded
+    return augmented
+
   sources = [
     _read_prompt_source(cwd, source_ref)
     for source_ref in effective_prompt.get("prompt_source_refs") or []
@@ -1568,7 +1607,7 @@ def effective_prompt_for_decision_point(cwd, group, point_id):
   if entry is None:
     return None
   policy = entry.get("effective_prompt_policy")
-  return {
+  result = {
     "effective_prompt_policy": (
       policy if isinstance(policy, str) and policy
       else "one_effective_prompt_per_decision_point"
@@ -1576,6 +1615,10 @@ def effective_prompt_for_decision_point(cwd, group, point_id):
     "decision_point_refs": [{"group": group, "id": point_id}],
     "prompt_source_refs": _dedupe_strings(entry.get("prompt_source_refs") or []),
   }
+  canonical_path = entry.get("canonical_effective_prompt_path")
+  if isinstance(canonical_path, str) and canonical_path:
+    result["canonical_effective_prompt_path"] = canonical_path
+  return result
 
 
 def attach_required_context(cwd, next_action):
