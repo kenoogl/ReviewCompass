@@ -56,6 +56,39 @@ def test_prepare_post_write_review_writes_review_target_and_metadata(tmp_path, c
   ).hexdigest()
 
 
+def test_prepare_post_write_review_embeds_target_body_not_only_path_and_sha(tmp_path):
+  """API review prompt の材料は path/SHA だけにせず target 本文を含める。"""
+  target = tmp_path / "docs" / "operations" / "WORKFLOW_NAVIGATION.md"
+  target.parent.mkdir(parents=True)
+  target.write_text(
+    "### post_write_policy_violation\n"
+    "この地点では review-run を開始せず、未検証変更を分類する。\n",
+    encoding="utf-8",
+  )
+  review_run_dir = tmp_path / ".reviewcompass" / "evidence" / "review-runs" / "run"
+
+  exit_code = main(
+    [
+      "--target", str(target),
+      "--review-run-dir", str(review_run_dir),
+      "--criteria-id", "post_write_policy_violation_prompt_materialization",
+      "--change-summary", "post-write policy violation の手順を固定する。",
+    ]
+  )
+
+  assert exit_code == 0
+  review_target = (review_run_dir / "review-target.md").read_text(encoding="utf-8")
+  metadata = yaml.safe_load(
+    (review_run_dir / "review-target.yaml").read_text(encoding="utf-8")
+  )
+  assert "## Target File Contents" in review_target
+  assert "この地点では review-run を開始せず" in review_target
+  assert metadata["target_files"][0]["content_mode"] == "full_text"
+  assert metadata["target_files"][0]["content_sha256"] == hashlib.sha256(
+    target.read_bytes()
+  ).hexdigest()
+
+
 def test_prepare_post_write_review_fails_closed_on_secret_like_target(tmp_path):
   """外部 API に送る前に secret らしい対象を止める。"""
   target = tmp_path / "docs" / "operations" / "SECRET.md"

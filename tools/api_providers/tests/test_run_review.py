@@ -93,6 +93,57 @@ def _make_provider_factory(responses):
   return factory
 
 
+def _write_prompt_manifest(path, target, *, decision_kind, language_constraints=None):
+  source_sha = hashlib.sha256(target.read_bytes()).hexdigest()
+  constraints = language_constraints or [
+    "Review language-level consistency only.",
+  ]
+  manifest = {
+    "schema_version": "effective-prompt-manifest-v1",
+    "decision_point": {
+      "kind": decision_kind,
+      "required_action": "run_post_write_verification",
+    },
+    "source_artifacts": [
+      {
+        "path": str(target),
+        "sha256": f"sha256:{source_sha}",
+      },
+    ],
+    "prompt_length": {
+      "min_chars": 1,
+      "max_chars": 20000,
+      "failure_verdict": "DEVIATION",
+    },
+    "preconditions_checked": [
+      {
+        "name": "test-precondition",
+        "machine_checked": True,
+        "evidence_ref": str(target),
+      },
+    ],
+    "language_task": {
+      "constraints": constraints,
+    },
+    "postconditions": [
+      {
+        "check_kind": "next_action_compatible",
+        "source_ref": str(target),
+      },
+    ],
+    "on_completion": {
+      "allowed_followups": ["prompt-audit"],
+      "forbidden_actions": ["commit", "push"],
+      "next_required_action": "run_post_write_verification",
+    },
+  }
+  path.write_text(
+    yaml.safe_dump(manifest, allow_unicode=True, sort_keys=False),
+    encoding="utf-8",
+  )
+  return path
+
+
 def test_run_review_executes_three_roles_and_creates_summary_and_triage(tmp_path, monkeypatch, capsys):
   """3 役を同じ review-run に集約し、summary と triage 下書きを生成する。"""
   monkeypatch.setenv("ANTHROPIC_API_KEY", "test-key")
@@ -383,6 +434,91 @@ def test_run_review_uses_post_write_default_variant_when_phase_is_post_write(tmp
 
   rounds = yaml.safe_load((review_run_dir / "rounds.yaml").read_text(encoding="utf-8"))
   assert [item["role"] for item in rounds["model_results"]] == ["primary"]
+
+
+def test_run_review_blocks_post_write_when_next_action_is_policy_violation(
+  tmp_path,
+  monkeypatch,
+  capsys,
+):
+  """post_write_policy_violation のまま review-run を開始しない。"""
+  monkeypatch.setenv("GEMINI_API_KEY", "test-key")
+  target = tmp_path / "target.md"
+  target.write_text("post-write target body\n", encoding="utf-8")
+  prompt_manifest = _write_prompt_manifest(
+    tmp_path / "prompt-manifest.yaml",
+    target,
+    decision_kind="post_write_policy_violation",
+  )
+  config_path = _make_config(tmp_path)
+  review_run_dir = tmp_path / "review-run"
+  responses = {
+    "gemini-api": "findings: []\n",
+  }
+
+  with patch(
+    "tools.api_providers.run_review.get_provider",
+    side_effect=_make_provider_factory(responses),
+  ) as get_provider:
+    exit_code = main(
+      [
+        "--target", str(target),
+        "--phase", "post_write_verification",
+        "--criteria", "post-write verification",
+        "--review-run-dir", str(review_run_dir),
+        "--config", str(config_path),
+        "--prompt-manifest-path", str(prompt_manifest),
+      ]
+    )
+
+  assert exit_code == 1
+  assert get_provider.call_count == 0
+  assert not (review_run_dir / "rounds.yaml").exists()
+  assert "post_write_policy_violation" in capsys.readouterr().err
+
+
+def test_run_review_blocks_post_write_when_prompt_manifest_audit_fails(
+  tmp_path,
+  monkeypatch,
+  capsys,
+):
+  """prompt audit が DEVIATION の manifest では API runner を起動しない。"""
+  monkeypatch.setenv("GEMINI_API_KEY", "test-key")
+  target = tmp_path / "target.md"
+  target.write_text("post-write target body\n", encoding="utf-8")
+  prompt_manifest = _write_prompt_manifest(
+    tmp_path / "prompt-manifest.yaml",
+    target,
+    decision_kind="post_write_verification",
+    language_constraints=[
+      "git commit after the review response is received.",
+    ],
+  )
+  config_path = _make_config(tmp_path)
+  review_run_dir = tmp_path / "review-run"
+  responses = {
+    "gemini-api": "findings: []\n",
+  }
+
+  with patch(
+    "tools.api_providers.run_review.get_provider",
+    side_effect=_make_provider_factory(responses),
+  ) as get_provider:
+    exit_code = main(
+      [
+        "--target", str(target),
+        "--phase", "post_write_verification",
+        "--criteria", "post-write verification",
+        "--review-run-dir", str(review_run_dir),
+        "--config", str(config_path),
+        "--prompt-manifest-path", str(prompt_manifest),
+      ]
+    )
+
+  assert exit_code == 1
+  assert get_provider.call_count == 0
+  assert not (review_run_dir / "rounds.yaml").exists()
+  assert "prompt manifest audit" in capsys.readouterr().err
 
 
 def test_run_review_records_multiple_targets_in_review_run_artifacts(tmp_path, monkeypatch):
