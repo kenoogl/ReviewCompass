@@ -204,7 +204,7 @@ reopen 開始時は、上流正本変更の影響範囲を分類し、必要な 
 - `tools/check-workflow-action.py`
 - `tools/guarded-git-commit.py`
 - `tests/tools/test_check_workflow_action.py`
-- `docs/operations/WORKFLOW_PRECHECK.md`
+- `.reviewcompass/guidance/WORKFLOW_PRECHECK.md`
 
 補助モジュールを分割する場合は `tools/workflow_precheck/` 配下に置く。
 

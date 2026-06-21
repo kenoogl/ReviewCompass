@@ -23,7 +23,7 @@ def _decision_point(group_name, point_id):
 
 
 def test_workflow_navigation_defines_one_effective_prompt_per_decision_point():
-  text = _read("docs/operations/WORKFLOW_NAVIGATION.md")
+  text = _read(".reviewcompass/guidance/WORKFLOW_NAVIGATION.md")
 
   assert "判定点ごとに 1 本の effective prompt" in text
   assert "prompt_source_refs" in text
@@ -79,7 +79,7 @@ def test_workflow_management_documents_effective_prompt_runtime_records():
 
 
 def test_workflow_discipline_map_catalogs_all_current_decision_points():
-  data = _yaml("docs/operations/WORKFLOW_DISCIPLINE_MAP.yaml")
+  data = _yaml(".reviewcompass/guidance/WORKFLOW_DISCIPLINE_MAP.yaml")
   catalog = data["decision_points"]
 
   expected = {
@@ -99,6 +99,8 @@ def test_workflow_discipline_map_catalogs_all_current_decision_points():
       "resume_in_progress",
       "reopen_started",
       "reopen_start_failed",
+      "commit_stop_point",
+      "lightweight_self_check",
     },
     "workflow_stage": {
       "candidate-proposal",
@@ -160,6 +162,9 @@ def test_workflow_discipline_map_catalogs_all_current_decision_points():
     "yaml_audit_gate": {
       "yaml_audit_scope",
       "yaml_audit_post_write_check",
+    },
+    "operation_prompt": {
+      "commit",
     },
   }
 

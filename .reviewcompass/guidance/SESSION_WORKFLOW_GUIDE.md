@@ -19,11 +19,11 @@
    - 「§0 重要事項」「§1 起動手順」「§3 次の作業候補」を最低限読む
    - 直近の `docs/sessions/session-*.md` も併読し、TODO に圧縮された経緯の詳細を確認する
 
-2. **`docs/operations/WORKFLOW_NAVIGATION.md`**（次 action 判定）
+2. **`.reviewcompass/guidance/WORKFLOW_NAVIGATION.md`**（次 action 判定）
    - `tools/check-workflow-action.py next --json` の読み方
    - 判定点ごとの required disciplines / required inputs / effective prompt の扱い
 
-3. **`docs/operations/WORKFLOW_PRECHECK.md`**（機械判定の入口）
+3. **`.reviewcompass/guidance/WORKFLOW_PRECHECK.md`**（機械判定の入口）
    - `spec-set`、`commit`、`push`、`next`、`reopen-start` の実行前条件
    - 機械判定で停止した場合の扱い
 
@@ -294,7 +294,7 @@ MLE-DEC-004、2026-06-12 利用者決定）。
   別の LLM が操縦する場合（将来）は同じ原則で役を回転して対応する
 
 対象アプリ向けの同内容の案内は `templates/entry/AGENT_ENTRY.template.md` §10 と
-`docs/operations/INITIAL_SETUP_LLM_GUIDE.md` にあり、本節と整合させて保守する。
+`.reviewcompass/guidance/INITIAL_SETUP_LLM_GUIDE.md` にあり、本節と整合させて保守する。
 
 #### (b) 波及（同フェーズ・他機能への影響）
 
@@ -617,7 +617,7 @@ push は **利用者明示承認**を仰いでから実行。LLM が自律的に
 - ワークフローナビゲーション：[WORKFLOW_NAVIGATION.md](WORKFLOW_NAVIGATION.md)
 - 事前検査：[WORKFLOW_PRECHECK.md](WORKFLOW_PRECHECK.md)
 - reopen 手順：[REOPEN_PROCEDURE.md](REOPEN_PROCEDURE.md)
-- 抽出進捗：[../extraction-mapping.md](../extraction-mapping.md)
+- 抽出進捗：[../../docs/extraction-mapping.md](../../docs/extraction-mapping.md)
 - 機能横断波及所見：正本 [../../learning/workflow/carry-forward-register/reviewcompass-import.yaml](../../learning/workflow/carry-forward-register/reviewcompass-import.yaml)、履歴 source [../../learning/workflow/carry-forward-register/sources/reviewcompass-pending-cross-feature-findings.md](../../learning/workflow/carry-forward-register/sources/reviewcompass-pending-cross-feature-findings.md)
 - レビュー記録雛形：[../../templates/review/manual_dogfooding_review_template.md](../../templates/review/manual_dogfooding_review_template.md)
 - TODO：[../../TODO_NEXT_SESSION.md](../../TODO_NEXT_SESSION.md)

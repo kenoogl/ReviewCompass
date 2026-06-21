@@ -15,11 +15,11 @@ HTML_ANCHOR_RE = re.compile(r"<a\s+[^>]*id=[\"']([^\"']+)[\"']", re.IGNORECASE)
 HEADING_RE = re.compile(r"^(#{1,6})\s+(.+?)\s*#*\s*$")
 
 PRECHECK_DETAIL_COMPANIONS = {
-  "spec-set": "docs/operations/WORKFLOW_PRECHECK_DETAILS.md#spec-set",
-  "commit": "docs/operations/WORKFLOW_PRECHECK_DETAILS.md#commit",
-  "push": "docs/operations/WORKFLOW_PRECHECK_DETAILS.md#push",
-  "audit-commit": "docs/operations/WORKFLOW_PRECHECK_DETAILS.md#audit-commit",
-  "reopen-start": "docs/operations/WORKFLOW_PRECHECK_DETAILS.md#commit",
+  "spec-set": ".reviewcompass/guidance/WORKFLOW_PRECHECK_DETAILS.md#spec-set",
+  "commit": ".reviewcompass/guidance/WORKFLOW_PRECHECK_DETAILS.md#commit",
+  "push": ".reviewcompass/guidance/WORKFLOW_PRECHECK_DETAILS.md#push",
+  "audit-commit": ".reviewcompass/guidance/WORKFLOW_PRECHECK_DETAILS.md#audit-commit",
+  "reopen-start": ".reviewcompass/guidance/WORKFLOW_PRECHECK_DETAILS.md#commit",
 }
 
 
@@ -225,7 +225,7 @@ def _workflow_map_findings(path: Path, checker: LinkChecker) -> List[Dict[str, o
         )
       )
     for anchor, expected in PRECHECK_DETAIL_COMPANIONS.items():
-      contract_ref = f"docs/operations/WORKFLOW_PRECHECK.md#{anchor}"
+      contract_ref = f".reviewcompass/guidance/WORKFLOW_PRECHECK.md#{anchor}"
       if contract_ref in ref_set and expected not in ref_set:
         target_path, _, target_anchor = expected.partition("#")
         findings.append(

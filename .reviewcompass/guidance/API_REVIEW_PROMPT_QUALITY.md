@@ -123,7 +123,7 @@ preanalysis 内の所見は、`open`、`resolved`、`superseded`、`used_for_con
 
 ## 7. Phase 別の上流接続
 
-`docs/operations/SESSION_WORKFLOW_GUIDE.md#vertical-intent-transfer-review` が適用される review では、phase ごとに次を確認する。
+`.reviewcompass/guidance/SESSION_WORKFLOW_GUIDE.md#vertical-intent-transfer-review` が適用される review では、phase ごとに次を確認する。
 
 | phase | target | source materials |
 |---|---|---|
