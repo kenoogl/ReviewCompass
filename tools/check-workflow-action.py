@@ -62,6 +62,8 @@ from check_workflow_action.side_track_stack import current as current_side_track
 from check_workflow_action.workflow_state_snapshot import build_snapshot
 
 DEFAULT_LAST_COMMIT_PRECHECK_PATH = ".git/reviewcompass/last-commit-precheck.json"
+DEFAULT_WORKFLOW_STATE_REPAIR_PATH = ".reviewcompass/runtime/repairs/workflow-state-repair.json"
+WORKFLOW_STATE_REPAIR_TTL_SECONDS = 3600
 DEFAULT_DISCIPLINE_MAP_PATH = ".reviewcompass/guidance/WORKFLOW_DISCIPLINE_MAP.yaml"
 DEFAULT_CARRY_FORWARD_REGISTER_PATH = "learning/workflow/carry-forward-register/reviewcompass-import.yaml"
 DEFAULT_CARRY_FORWARD_SOURCE_PATH = (
@@ -2547,6 +2549,223 @@ def staged_file_content_hash(cwd, filepath):
   return "DELETED" if sha256 is None else sha256
 
 
+def _stable_json_digest(data):
+  """安定 JSON 表現の sha256 digest を返す"""
+  payload = json.dumps(
+    data,
+    ensure_ascii=False,
+    sort_keys=True,
+    separators=(",", ":"),
+  ).encode("utf-8")
+  return hashlib.sha256(payload).hexdigest()
+
+
+def _workflow_state_repair_path(cwd):
+  return Path(cwd) / DEFAULT_WORKFLOW_STATE_REPAIR_PATH
+
+
+def _iso_utc_now():
+  return datetime.now(timezone.utc)
+
+
+def _isoformat_utc(value):
+  return value.astimezone(timezone.utc).isoformat()
+
+
+def _parse_iso_datetime(value):
+  if not isinstance(value, str) or not value:
+    return None
+  try:
+    parsed = datetime.fromisoformat(value.replace("Z", "+00:00"))
+  except ValueError:
+    return None
+  if parsed.tzinfo is None:
+    return None
+  return parsed.astimezone(timezone.utc)
+
+
+def worktree_file_content_hash(cwd, filepath):
+  """worktree 内容の hash を返す。削除済み path は DELETED sentinel にする"""
+  path = Path(cwd) / filepath
+  if not path.exists():
+    return "DELETED"
+  if not path.is_file():
+    return "NON_FILE"
+  return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def workflow_repair_target(cwd, paths, mode):
+  """repair record が束縛する対象ファイル集合を canonical 化する"""
+  entries = []
+  for path in sorted(paths):
+    if mode == "staged":
+      content_hash = staged_file_content_hash(cwd, path)
+    else:
+      content_hash = worktree_file_content_hash(cwd, path)
+    entries.append({
+      "path": path,
+      "sha256": content_hash,
+    })
+  target = {
+    "algorithm": "workflow-state-repair-v1",
+    "entries": entries,
+  }
+  return {
+    "algorithm": "workflow-state-repair-v1",
+    "digest": _stable_json_digest(target),
+    "target": target,
+  }
+
+
+def load_workflow_state_repair_record(cwd):
+  """workflow state repair record を読む"""
+  path = _workflow_state_repair_path(cwd)
+  state = {
+    "path": DEFAULT_WORKFLOW_STATE_REPAIR_PATH,
+    "exists": path.exists(),
+    "valid": False,
+  }
+  if not path.exists():
+    return state, ["workflow state repair record がありません"]
+  try:
+    record = json.loads(path.read_text(encoding="utf-8"))
+  except (OSError, json.JSONDecodeError) as e:
+    return state, [f"workflow state repair record を読めません: {e}"]
+  if not isinstance(record, dict):
+    return state, ["workflow state repair record が object ではありません"]
+  state.update({
+    "repair_id": record.get("repair_id"),
+    "repair_kind": record.get("repair_kind"),
+    "reason": record.get("reason"),
+    "source_ref": record.get("source_ref"),
+    "target_files": record.get("target_files") or [],
+    "target_digest": record.get("target_digest"),
+    "expires_at": record.get("expires_at"),
+    "consumed": record.get("consumed"),
+  })
+  return state, []
+
+
+def validate_workflow_state_repair_record(cwd, paths, mode):
+  """repair record が現在の changed/staged 内容に一致するか検査する"""
+  paths = [
+    path
+    for path in paths
+    if path != DEFAULT_WORKFLOW_STATE_REPAIR_PATH
+  ]
+  state, errors = load_workflow_state_repair_record(cwd)
+  if not state.get("exists"):
+    return state, errors
+  record_path = Path(cwd) / DEFAULT_WORKFLOW_STATE_REPAIR_PATH
+  try:
+    record = json.loads(record_path.read_text(encoding="utf-8"))
+  except (OSError, json.JSONDecodeError):
+    return state, errors
+
+  if record.get("schema_version") != "workflow-state-repair-v1":
+    errors.append("workflow state repair record の schema_version が不正です")
+  if record.get("repair_kind") != "manual_post_write_policy_exception":
+    errors.append("workflow state repair record の repair_kind が不正です")
+  if record.get("approved_by") != "user":
+    errors.append("workflow state repair record の approved_by が user ではありません")
+  if record.get("consumed") is True:
+    errors.append("workflow state repair record は消費済みです")
+  expires_at = _parse_iso_datetime(record.get("expires_at"))
+  if expires_at is None:
+    errors.append("workflow state repair record の expires_at が不正です")
+  elif expires_at < _iso_utc_now():
+    errors.append("workflow state repair record は期限切れです")
+
+  current = workflow_repair_target(cwd, paths, mode)
+  recorded_digest = record.get("target_digest")
+  if not isinstance(recorded_digest, dict):
+    errors.append("workflow state repair record の target_digest が object ではありません")
+  elif recorded_digest.get("digest") != current["digest"]:
+    errors.append("workflow state repair record が現在の変更内容と一致しません")
+
+  target_files = record.get("target_files")
+  if target_files != [entry["path"] for entry in current["target"]["entries"]]:
+    errors.append("workflow state repair record の target_files が現在の変更集合と一致しません")
+
+  state["current_digest"] = {
+    "algorithm": current["algorithm"],
+    "digest": current["digest"],
+  }
+  state["valid"] = not errors
+  return state, errors
+
+
+def cmd_repair_workflow_state(args):
+  """workflow state repair record を作成する"""
+  cwd = Path.cwd()
+  if args.repair_workflow_state_command != "prepare":
+    return 2
+  changed_files = list_changed_files(cwd)
+  repair_targets = post_write_verification_targets_for_paths(cwd, changed_files)
+  if not changed_files:
+    payload = {
+      "status": "error",
+      "error": "repair 対象の未コミット変更がありません",
+    }
+    if args.json:
+      print(json.dumps(payload, ensure_ascii=False, indent=2))
+    else:
+      print(payload["error"], file=sys.stderr)
+    return 2
+  if not repair_targets:
+    payload = {
+      "status": "error",
+      "error": "post-write-verification 対象を含まないため repair record を作成しません",
+    }
+    if args.json:
+      print(json.dumps(payload, ensure_ascii=False, indent=2))
+    else:
+      print(payload["error"], file=sys.stderr)
+    return 2
+
+  now = _iso_utc_now()
+  canonical = workflow_repair_target(cwd, changed_files, "changed")
+  record = {
+    "schema_version": "workflow-state-repair-v1",
+    "repair_id": f"repair-{now.strftime('%Y%m%dT%H%M%SZ')}",
+    "repair_kind": "manual_post_write_policy_exception",
+    "approved_by": "user",
+    "created_at": _isoformat_utc(now),
+    "expires_at": _isoformat_utc(now + timedelta(seconds=WORKFLOW_STATE_REPAIR_TTL_SECONDS)),
+    "ttl_seconds": WORKFLOW_STATE_REPAIR_TTL_SECONDS,
+    "reason": args.reason,
+    "source_ref": args.source_ref,
+    "target_files": [
+      entry["path"]
+      for entry in canonical["target"]["entries"]
+    ],
+    "target_digest": {
+      "algorithm": canonical["algorithm"],
+      "digest": canonical["digest"],
+    },
+    "target": canonical["target"],
+    "consumed": False,
+  }
+  path = _workflow_state_repair_path(cwd)
+  path.parent.mkdir(parents=True, exist_ok=True)
+  path.write_text(
+    json.dumps(record, ensure_ascii=False, indent=2) + "\n",
+    encoding="utf-8",
+  )
+  payload = {
+    "status": "prepared",
+    "path": DEFAULT_WORKFLOW_STATE_REPAIR_PATH,
+    "repair_id": record["repair_id"],
+    "target_files": record["target_files"],
+    "target_digest": record["target_digest"],
+  }
+  if args.json:
+    print(json.dumps(payload, ensure_ascii=False, indent=2))
+  else:
+    print("prepared")
+  return 0
+
+
 def is_staged_deleted(cwd, filepath):
   """staged path が削除として index に載っているかを返す"""
   return staged_file_content_hash(cwd, filepath) == "DELETED"
@@ -3590,11 +3809,22 @@ def cmd_commit(args):
     filepath: staged_file_content_hash(cwd, filepath)
     for filepath in staged_files
   }
+  repair_state, repair_errors = validate_workflow_state_repair_record(
+    cwd,
+    staged_files,
+    "staged",
+  )
   post_write_state, post_write_errors = validate_post_write_completion_for_targets(
     cwd,
     staged_files,
     actual_hashes=staged_content_hashes,
   )
+  if post_write_errors and repair_state.get("valid") is True:
+    post_write_state["manifest_status"] = "repair_exception"
+    post_write_state["repair_record"] = repair_state.get("path")
+    post_write_errors = []
+  elif post_write_errors and repair_state.get("exists"):
+    post_write_errors.extend(repair_errors)
   deployment_lint_state, deployment_lint_errors = (
     validate_deployment_independence_for_staged_files(cwd, staged_files)
   )
@@ -3696,6 +3926,7 @@ def cmd_commit(args):
     "commit_approval": approval_state,
     "execution_actor": args.execution_actor,
     "post_write_verification": post_write_state,
+    "repair_workflow_state": repair_state,
     "deployment_independence_lint": deployment_lint_state,
     "document_link_lint": document_link_lint_state,
     "in_progress_session_records": in_progress_record_state,
@@ -3874,6 +4105,11 @@ def build_commit_instruction_preflight(cwd):
 
   next_action = _commit_preflight_next_action(cwd, in_progress_files)
   next_required_action = next_action.get("required_action")
+  repair_state, repair_errors = validate_workflow_state_repair_record(
+    cwd,
+    changed_files,
+    "changed",
+  )
   reasons = []
   verdict = "OK"
   allowed_to_stage = True
@@ -3900,11 +4136,16 @@ def build_commit_instruction_preflight(cwd):
     "post_write_policy_violation",
     "post_write_human_decision_required",
   ):
-    verdict = "DEVIATION"
-    allowed_to_stage = False
-    allowed_to_prepare_approval = False
-    allowed_to_delegate_execution = False
-    reasons.append("commit より前に post-write verification を完了してください")
+    if repair_state.get("valid") is True:
+      next_required_action = "prepare_repair_commit"
+    else:
+      verdict = "DEVIATION"
+      allowed_to_stage = False
+      allowed_to_prepare_approval = False
+      allowed_to_delegate_execution = False
+      reasons.append("commit より前に post-write verification を完了してください")
+      if repair_state.get("exists"):
+        reasons.extend(repair_errors)
 
   approval_state, approval_errors = validate_commit_approval(cwd, staged_files)
   execution_delegation_errors = validate_commit_execution_delegation(
@@ -3927,6 +4168,7 @@ def build_commit_instruction_preflight(cwd):
     "commit_approval": approval_state,
     "approval_errors": approval_errors,
     "execution_delegation_errors": execution_delegation_errors,
+    "repair_workflow_state": repair_state,
   }
 
   return {
@@ -7670,6 +7912,22 @@ def main():
     parents=[common_parser],
   )
 
+  rws_state = sub.add_parser(
+    "repair-workflow-state",
+    help="利用者承認済みの workflow state 修復例外 record を作成する",
+  )
+  rws_state_sub = rws_state.add_subparsers(
+    dest="repair_workflow_state_command",
+    required=True,
+  )
+  rws_prepare = rws_state_sub.add_parser(
+    "prepare",
+    help="現在の未コミット変更に束縛した修復例外 record を作成する",
+    parents=[common_parser],
+  )
+  rws_prepare.add_argument("--reason", required=True, help="修復例外の理由")
+  rws_prepare.add_argument("--source-ref", required=True, help="利用者判断の出典")
+
   # push サブコマンド（仕様 §5.3）
   ps = sub.add_parser(
     "push",
@@ -8039,6 +8297,8 @@ def main():
     sys.exit(cmd_commit(args))
   elif args.subcommand == "commit-preflight":
     sys.exit(cmd_commit_preflight(args))
+  elif args.subcommand == "repair-workflow-state":
+    sys.exit(cmd_repair_workflow_state(args))
   elif args.subcommand == "push":
     sys.exit(cmd_push(args))
   elif args.subcommand == "autonomous-plan":

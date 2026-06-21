@@ -6456,6 +6456,117 @@ class CommitExitCodeTests(unittest.TestCase):
     self.assertFalse(data["allowed_to_run_guarded_commit"])
     self.assertEqual(data["next_required_action"], "run_post_write_verification")
 
+  def test_repair_workflow_state_prepare_allows_post_write_exception_preflight(self):
+    """利用者承認済み repair record があれば post-write pending の stage 準備へ進める"""
+    target = Path(self.tmpdir) / "docs" / "operations" / "policy.md"
+    target.parent.mkdir(parents=True)
+    target.write_text("運用正本\n", encoding="utf-8")
+    tool = Path(self.tmpdir) / "tools" / "helper.py"
+    tool.parent.mkdir(parents=True)
+    tool.write_text("print('repair')\n", encoding="utf-8")
+
+    prepare = run_script(
+      [
+        "repair-workflow-state",
+        "prepare",
+        "--reason", "旧 guidance 二重管理解消の手動修復例外",
+        "--source-ref", "conversation:user:manual-repair-exception",
+        "--json",
+      ],
+      cwd=self.tmpdir,
+    )
+    _assert_script_invoked(self, prepare)
+    self.assertEqual(prepare.returncode, 0, prepare.stdout)
+
+    result = run_script(["commit-preflight", "--json"], cwd=self.tmpdir)
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 0, result.stdout)
+    data = json.loads(result.stdout)
+    self.assertEqual(data["verdict"], "OK")
+    self.assertTrue(data["allowed_to_stage"])
+    self.assertTrue(data["allowed_to_prepare_approval"])
+    self.assertEqual(data["next_required_action"], "prepare_repair_commit")
+    self.assertEqual(data["current_state"]["repair_workflow_state"]["valid"], True)
+
+  def test_repair_workflow_state_record_allows_matching_commit(self):
+    """repair record と staged 内容が一致すれば post-write 未完了を例外消費する"""
+    target = Path(self.tmpdir) / "docs" / "operations" / "policy.md"
+    target.parent.mkdir(parents=True)
+    target.write_text("運用正本\n", encoding="utf-8")
+    tool = Path(self.tmpdir) / "tools" / "helper.py"
+    tool.parent.mkdir(parents=True)
+    tool.write_text("print('repair')\n", encoding="utf-8")
+
+    prepare = run_script(
+      [
+        "repair-workflow-state",
+        "prepare",
+        "--reason", "旧 guidance 二重管理解消の手動修復例外",
+        "--source-ref", "conversation:user:manual-repair-exception",
+        "--json",
+      ],
+      cwd=self.tmpdir,
+    )
+    _assert_script_invoked(self, prepare)
+    self.assertEqual(prepare.returncode, 0, prepare.stdout)
+    subprocess.run(
+      ["git", "add", "docs/operations/policy.md", "tools/helper.py"],
+      cwd=str(self.tmpdir),
+      check=True,
+      capture_output=True,
+    )
+    _write_commit_approval(
+      self.tmpdir,
+      ["docs/operations/policy.md", "tools/helper.py"],
+    )
+
+    result = run_script(
+      [
+        "commit",
+        "--rationale", "利用者が手動修復例外として commit を承認",
+        "--json",
+      ],
+      cwd=self.tmpdir,
+    )
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 0, result.stdout)
+    data = json.loads(result.stdout)
+    self.assertEqual(data["current_state"]["repair_workflow_state"]["valid"], True)
+    self.assertEqual(data["current_state"]["post_write_verification"]["manifest_status"], "repair_exception")
+
+  def test_repair_workflow_state_record_rejects_changed_scope(self):
+    """repair record 後に差分が増えたら stage 準備を許可しない"""
+    target = Path(self.tmpdir) / "docs" / "operations" / "policy.md"
+    target.parent.mkdir(parents=True)
+    target.write_text("運用正本\n", encoding="utf-8")
+    prepare = run_script(
+      [
+        "repair-workflow-state",
+        "prepare",
+        "--reason", "旧 guidance 二重管理解消の手動修復例外",
+        "--source-ref", "conversation:user:manual-repair-exception",
+        "--json",
+      ],
+      cwd=self.tmpdir,
+    )
+    _assert_script_invoked(self, prepare)
+    self.assertEqual(prepare.returncode, 0, prepare.stdout)
+    Path(self.tmpdir, "docs", "operations", "extra.md").write_text(
+      "追加差分\n",
+      encoding="utf-8",
+    )
+
+    result = run_script(["commit-preflight", "--json"], cwd=self.tmpdir)
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 2, result.stdout)
+    data = json.loads(result.stdout)
+    self.assertEqual(data["verdict"], "DEVIATION")
+    self.assertFalse(data["allowed_to_stage"])
+    self.assertEqual(data["current_state"]["repair_workflow_state"]["valid"], False)
+
   def test_commit_preflight_allows_normal_workflow_phase_end_stop_point(self):
     """通常 workflow の phase 終端停止点でも commit 準備に進める"""
     intent_before = {
