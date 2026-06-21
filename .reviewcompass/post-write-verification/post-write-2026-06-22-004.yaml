@@ -1,0 +1,30 @@
+status: completed
+target_files:
+  - docs/notes/working/2026-06-22-commit-push-turn-order-operation-note.md
+target_sha256:
+  docs/notes/working/2026-06-22-commit-push-turn-order-operation-note.md: 649d9e37a814a5781f932f7a128b4eb3d3b7a8c41bb3cd1aa6d7db0c2cc0bf88
+required_verifiers:
+  - lightweight_self_check
+completed_verifiers:
+  - lightweight_self_check
+unresolved_substantive_findings: 0
+verifications:
+  - verifier: lightweight_self_check
+    target_files:
+      - docs/notes/working/2026-06-22-commit-push-turn-order-operation-note.md
+    target_sha256:
+      docs/notes/working/2026-06-22-commit-push-turn-order-operation-note.md: 649d9e37a814a5781f932f7a128b4eb3d3b7a8c41bb3cd1aa6d7db0c2cc0bf88
+    checks:
+      user_points_preserved: true
+      facts_inferences_policy_and_open_items_separated: true
+      useful_as_later_decision_material: true
+      does_not_over_specify_scope: true
+      remains_working_note_not_canonical_spec: true
+      api_review_intentionally_not_used: true
+notes: >
+  Lightweight self-check for the commit/push turn-order operation note. The
+  note preserves the user's concern that the first mitigation proposal may
+  conflict with workflow policy, distinguishes the actual failure causes from
+  proposed operational rules, avoids redefining next --json or automatic push
+  behavior, and leaves machine enforcement as a future option only if the
+  working-note level mitigation fails.
