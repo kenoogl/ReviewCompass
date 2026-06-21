@@ -469,6 +469,22 @@ DEFAULT_DISCIPLINE_MAP = {
   "default": [
     "docs/operations/WORKFLOW_NAVIGATION.md",
   ],
+  "decision_points": {
+    "next_action_kind": [
+      {
+        "id": "post_write_policy_violation",
+        "prompt_source_refs": [
+          "docs/operations/WORKFLOW_NAVIGATION.md#post_write_policy_violation",
+          "docs/disciplines/discipline_post_write_verification.md",
+        ],
+        "effective_prompt_policy": "one_effective_prompt_per_decision_point",
+        "canonical_effective_prompt_path": (
+          ".reviewcompass/guidance/effective-prompts/"
+          "next-action-post-write-policy-violation.prompt.md"
+        ),
+      },
+    ],
+  },
   "by_kind": {
     "stage": [
       "docs/disciplines/discipline_workflow_state_truth_source.md",
