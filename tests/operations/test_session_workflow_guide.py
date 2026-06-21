@@ -115,33 +115,37 @@ def test_post_write_verification_command_uses_explicit_api_variant():
 
 
 def test_post_write_verification_documents_canonical_api_call_procedure_without_approval_guard():
-  navigation = (ROOT / "docs" / "operations" / "WORKFLOW_NAVIGATION.md").read_text(encoding="utf-8")
-  post_write_section = navigation.split("### `post_write_verification`", 1)[1].split(
-    "### `post_write_policy_violation`",
-    1,
-  )[0]
+  for navigation_path in [
+    ROOT / "docs" / "operations" / "WORKFLOW_NAVIGATION.md",
+    ROOT / ".reviewcompass" / "guidance" / "WORKFLOW_NAVIGATION.md",
+  ]:
+    navigation = navigation_path.read_text(encoding="utf-8")
+    post_write_section = navigation.split("### `post_write_verification`", 1)[1].split(
+      "### `post_write_policy_violation`",
+      1,
+    )[0]
 
-  assert "API 呼び出し起動手順の正本" in post_write_section
-  assert ".venv/bin/python3 tools/api_providers/prepare_post_write_review.py" in post_write_section
-  assert ".venv/bin/python3 tools/api_providers/run_review.py" in post_write_section
-  assert "--criteria-file" in post_write_section
-  assert "review-target.md" in post_write_section
-  assert "--source-material" in post_write_section
-  assert "--prompt-manifest-path" in post_write_section
-  assert "prompt-manifest.yaml" in post_write_section
-  assert "source materials" in post_write_section
-  assert "外側から `zsh -c` で包まない" in post_write_section
-  assert "entrypoint 内" in post_write_section
-  assert "~/.zshrc" in post_write_section
-  assert "tools/api_providers/run_review.py" in post_write_section
-  assert "ANTHROPIC_API_KEY" in post_write_section
-  assert "GEMINI_API_KEY" in post_write_section
-  assert "空文字列へ上書き" in post_write_section
-  assert "OPENAI_API_KEY" in post_write_section
-  assert "上書きされていない" in post_write_section
-  assert "review_summary.md" in post_write_section
-  assert "rounds.yaml" in post_write_section
-  assert "prompts/" in post_write_section
+    assert "API 呼び出し起動手順の正本" in post_write_section
+    assert ".venv/bin/python3 tools/api_providers/prepare_post_write_review.py" in post_write_section
+    assert ".venv/bin/python3 tools/api_providers/run_review.py" in post_write_section
+    assert "--criteria-file" in post_write_section
+    assert "review-target.md" in post_write_section
+    assert "--source-material" in post_write_section
+    assert "--prompt-manifest-path" in post_write_section
+    assert "prompt-manifest.yaml" in post_write_section
+    assert "source materials" in post_write_section
+    assert "外側から `zsh -c` で包まない" in post_write_section
+    assert "entrypoint 内" in post_write_section
+    assert "~/.zshrc" in post_write_section
+    assert "tools/api_providers/run_review.py" in post_write_section
+    assert "ANTHROPIC_API_KEY" in post_write_section
+    assert "GEMINI_API_KEY" in post_write_section
+    assert "空文字列へ上書き" in post_write_section
+    assert "OPENAI_API_KEY" in post_write_section
+    assert "上書きされていない" in post_write_section
+    assert "review_summary.md" in post_write_section
+    assert "rounds.yaml" in post_write_section
+    assert "prompts/" in post_write_section
   assert "target-manifest.yaml" in post_write_section
   assert "ConnectError" in post_write_section
   assert "sandbox network" in post_write_section

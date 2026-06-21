@@ -1,0 +1,24 @@
+run_id: 2026-06-22-runtime-guidance-postwrite-prompt-manifest
+phase: post_write_verification
+criteria_id: runtime_guidance_post_write_prompt_manifest_procedure
+criteria_file: .reviewcompass/evidence/review-runs/2026-06-22-runtime-guidance-postwrite-prompt-manifest/review-target.md
+criteria_file_sha256: 30d94b0031a73d7319831f3484eef5dc1048091884f7b9ec02bcac56d1251675
+prompt_manifest_path: .reviewcompass/evidence/review-runs/2026-06-22-runtime-guidance-postwrite-prompt-manifest/prompt-manifest.yaml
+prompt_manifest_sha256: 3c3f488cb5eebed44c540aef92f078a3ef2956bb17dc19fa52ed4a6cec3805d7
+target_files:
+- path: .reviewcompass/guidance/WORKFLOW_NAVIGATION.md
+  sha256: 29f10f621afbf7170c15550d3ab0dc0592240615aea4d1344e1bd58a10fd673d
+  content_mode: full_text
+  content_sha256: 29f10f621afbf7170c15550d3ab0dc0592240615aea4d1344e1bd58a10fd673d
+source_materials:
+- path: .reviewcompass/guidance/API_REVIEW_PROMPT_QUALITY.md
+  sha256: 03a9b994c6b5fb4b99ebbbf169e48d76568c5b6190716bbe9e5e181844c9450d
+  content_mode: full_text
+  content_sha256: 03a9b994c6b5fb4b99ebbbf169e48d76568c5b6190716bbe9e5e181844c9450d
+sensitive_information_check:
+  status: passed
+  checked_at: '2026-06-21T21:49:10.536860+00:00'
+recommended_run_review_args:
+  criteria_file: .reviewcompass/evidence/review-runs/2026-06-22-runtime-guidance-postwrite-prompt-manifest/review-target.md
+  phase: post_write_verification
+  prompt_manifest_path: .reviewcompass/evidence/review-runs/2026-06-22-runtime-guidance-postwrite-prompt-manifest/prompt-manifest.yaml

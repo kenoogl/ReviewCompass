@@ -1,0 +1,4 @@
+run_id: 2026-06-22-runtime-guidance-postwrite-prompt-manifest
+target_files:
+- path: .reviewcompass/guidance/WORKFLOW_NAVIGATION.md
+  sha256: 29f10f621afbf7170c15550d3ab0dc0592240615aea4d1344e1bd58a10fd673d
