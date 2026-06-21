@@ -14,6 +14,7 @@ REQUIRED_ALLOWLIST = {
   "tools/api_providers/run_review.py",
   "tools/api_providers/run_role.py",
   "tools/api_providers/prepare_post_write_review.py",
+  "tools/api_providers/post_write_review_flow.py",
   "tools/session-record-backfill.py",
   "tools/session-record-extractor.py",
   "tools/session_record_extractor/*.py",

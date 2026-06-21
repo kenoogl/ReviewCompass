@@ -1,0 +1,29 @@
+status: completed
+target_files:
+  - docs/notes/working/2026-06-22-guidance-legacy-path-mixing-risk.md
+target_sha256:
+  docs/notes/working/2026-06-22-guidance-legacy-path-mixing-risk.md: f6a50aa563c3bea67405d035b029c2bccd81b5fdf1a06bccefd8fca5c94502f0
+required_verifiers:
+  - lightweight_self_check
+completed_verifiers:
+  - lightweight_self_check
+unresolved_substantive_findings: 0
+verifications:
+  - verifier: lightweight_self_check
+    target_files:
+      - docs/notes/working/2026-06-22-guidance-legacy-path-mixing-risk.md
+    target_sha256:
+      docs/notes/working/2026-06-22-guidance-legacy-path-mixing-risk.md: f6a50aa563c3bea67405d035b029c2bccd81b5fdf1a06bccefd8fca5c94502f0
+    checks:
+      user_points_preserved: true
+      facts_inferences_policy_and_open_items_separated: true
+      useful_as_later_decision_material: true
+      does_not_over_specify_scope: true
+      remains_working_note_not_canonical_spec: true
+      api_review_intentionally_not_used: true
+notes: >
+  Lightweight self-check for the guidance legacy path mixing risk note. The note
+  preserves the user's concern that mixed canonical and legacy guidance paths
+  are a recurring work hazard, records confirmed duplicate files and stale
+  references as facts, separates follow-up candidates from current work, and
+  intentionally leaves cleanup for a later separate task.
