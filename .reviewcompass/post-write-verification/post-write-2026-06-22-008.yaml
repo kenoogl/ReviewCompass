@@ -1,0 +1,29 @@
+status: completed
+target_files:
+  - docs/notes/working/2026-06-22-guidance-legacy-path-audit.md
+target_sha256:
+  docs/notes/working/2026-06-22-guidance-legacy-path-audit.md: 19d68953d11d63098cceb10a8e5464733e12a2ef59454dfac5c93d69052460c0
+required_verifiers:
+  - lightweight_self_check
+completed_verifiers:
+  - lightweight_self_check
+unresolved_substantive_findings: 0
+verifications:
+  - verifier: lightweight_self_check
+    target_files:
+      - docs/notes/working/2026-06-22-guidance-legacy-path-audit.md
+    target_sha256:
+      docs/notes/working/2026-06-22-guidance-legacy-path-audit.md: 19d68953d11d63098cceb10a8e5464733e12a2ef59454dfac5c93d69052460c0
+    checks:
+      user_points_preserved: true
+      facts_inferences_policy_and_open_items_separated: true
+      useful_as_later_decision_material: true
+      does_not_over_specify_scope: true
+      remains_working_note_not_canonical_spec: true
+      api_review_intentionally_not_used: true
+notes: >
+  Lightweight self-check for the guidance legacy path audit note. The note
+  preserves the user's concern that docs/notes and legacy guidance placement
+  must be checked before cleanup, records duplicate-file and reference-audit
+  facts, separates historical notes from active instruction surfaces, and
+  leaves deletion or reference updates for a later explicit task.
