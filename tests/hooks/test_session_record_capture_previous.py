@@ -38,10 +38,11 @@ def _claude_fixture(path, mtime):
   os.utime(path, (mtime, mtime))
 
 
-def _run_hook(payload, evidence_dir, docs_dir, home):
+def _run_hook(payload, evidence_dir, docs_dir, home, done_dir):
   env = dict(os.environ)
   env["RC_SESSION_EVIDENCE_DIR"] = str(evidence_dir)
   env["RC_SESSION_DOCS_DIR"] = str(docs_dir)
+  env["RC_SESSION_BACKFILL_DONE_DIR"] = str(done_dir)
   env["HOME"] = str(home)
   return subprocess.run(
     ["bash", str(HOOK)],
@@ -62,6 +63,7 @@ class CapturePreviousTests(unittest.TestCase):
     self.addCleanup(shutil.rmtree, self.tmp)
     self.evidence = self.tmp / "ev"
     self.docs = self.tmp / "dc"
+    self.done = self.tmp / "done"
     self.home = self.tmp / "home"
     self.cwd = "/Users/Daily/Development/ReviewCompass"
     enc = self.cwd.replace("/", "-")
@@ -75,7 +77,7 @@ class CapturePreviousTests(unittest.TestCase):
     _claude_fixture(self.proj / "sessB.jsonl", mtime=3000)   # 現セッション
     payload = {"hook_event_name": "SessionStart",
                "session_id": "sessB", "cwd": self.cwd, "source": "startup"}
-    r = _run_hook(payload, self.evidence, self.docs, self.home)
+    r = _run_hook(payload, self.evidence, self.docs, self.home, self.done)
     _assert_invoked(self, r)
     self.assertEqual(r.returncode, 0, f"stdout={r.stdout}\nstderr={r.stderr}")
     self.assertTrue((self.evidence / "2026-06-14-claude-sessA.md").exists(),
@@ -90,7 +92,7 @@ class CapturePreviousTests(unittest.TestCase):
     _claude_fixture(self.proj / "soloB.jsonl", mtime=3000)
     payload = {"hook_event_name": "SessionStart",
                "session_id": "soloB", "cwd": self.cwd, "source": "startup"}
-    r = _run_hook(payload, self.evidence, self.docs, self.home)
+    r = _run_hook(payload, self.evidence, self.docs, self.home, self.done)
     _assert_invoked(self, r)
     self.assertEqual(r.returncode, 0, f"stderr={r.stderr}")
     self.assertFalse(self.evidence.exists() and any(self.evidence.iterdir()),
@@ -99,7 +101,7 @@ class CapturePreviousTests(unittest.TestCase):
   def test_no_cwd_exits_zero(self):
     """cwd が無ければ何もせず exit 0（起動を妨げない）。"""
     payload = {"hook_event_name": "SessionStart", "session_id": "x"}
-    r = _run_hook(payload, self.evidence, self.docs, self.home)
+    r = _run_hook(payload, self.evidence, self.docs, self.home, self.done)
     _assert_invoked(self, r)
     self.assertEqual(r.returncode, 0, f"stderr={r.stderr}")
 

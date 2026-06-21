@@ -13,7 +13,7 @@
 # 自己診断：git commit／push を検出した時点で、プレースホルダの未置換・
 # 検査ツールの不在・Python 実行系の不在を確認し、不備がある場合は
 # 「hook 設定不備」という明確な理由で実行を拒否する（fail-closed）。
-# 復旧手順は配布物の docs/operations/INITIAL_SETUP_LLM_GUIDE.md を参照。
+# 復旧手順は配布物の .reviewcompass/guidance/INITIAL_SETUP_LLM_GUIDE.md を参照。
 
 REVIEWCOMPASS_PYTHON="{{REVIEWCOMPASS_PYTHON}}"
 REVIEWCOMPASS_DIR="{{REVIEWCOMPASS_DIR}}"

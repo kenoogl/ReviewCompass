@@ -2,7 +2,7 @@
 
 Codex の hook 設定で呼び出すスクリプトを置く。
 
-仕様：`docs/operations/WORKFLOW_PRECHECK.md` §12 段階 3 フック導入時の拡張余地
+仕様：`.reviewcompass/guidance/WORKFLOW_PRECHECK.md` §12 段階 3 フック導入時の拡張余地
 
 ## ファイル一覧
 
@@ -47,7 +47,7 @@ Codex の hook 設定で呼び出すスクリプトを置く。
 
 ### `review-prompt-guide-inject.sh`（UserPromptSubmit hook）
 
-**役割**：レビュー、審査、3者レビュー、triad、proxy、プロンプト、判定に関するユーザー発話を検出したとき、`docs/disciplines/discipline_llm_as_judge_prompting.md` を追加コンテキストとして注入する。3者レビューや proxy_model 判断の前に、材料揃え、問い設計、機微情報チェックを Codex が読み落とさないようにする。
+**役割**：レビュー、審査、3者レビュー、triad、proxy、プロンプト、判定に関するユーザー発話を検出したとき、`.reviewcompass/guidance/discipline_llm_as_judge_prompting.md` を追加コンテキストとして注入する。3者レビューや proxy_model 判断の前に、材料揃え、問い設計、機微情報チェックを Codex が読み落とさないようにする。
 
 **入力**：標準入力で Codex の UserPromptSubmit JSON ペイロードを受け取る。
 
@@ -59,7 +59,7 @@ Codex の hook 設定で呼び出すスクリプトを置く。
 
 1. JSON ペイロードから `prompt` と `cwd` を取得
 2. `prompt` が `レビュー|審査|3者|triad|proxy|プロンプト|判定` に一致しなければ何もせず exit 0
-3. `cwd/docs/disciplines/discipline_llm_as_judge_prompting.md` が存在しなければ何もせず exit 0
+3. `cwd/.reviewcompass/guidance/discipline_llm_as_judge_prompting.md` が存在しなければ何もせず exit 0
 4. 一致した場合だけ、同規律本文を `hookSpecificOutput.additionalContext` として返す
 
 **出力（該当時）**：
@@ -160,7 +160,7 @@ python3 -m unittest tests.hooks.test_pre_bash_precheck -v
 
 ### 段階 1 規律との関係
 
-LLM（段階 1）が `tools/check-workflow-action.py` を意図して呼ぶ運用に加え、フックが自動発動することで「LLM が呼び忘れた」ケースを構造的に補う。詳細：`docs/operations/WORKFLOW_PRECHECK.md` §11 段階 1 規律との接続、`docs/operations/WORKFLOW_PRECHECK.md` §12 段階 3 フック導入時の拡張余地。
+LLM（段階 1）が `tools/check-workflow-action.py` を意図して呼ぶ運用に加え、フックが自動発動することで「LLM が呼び忘れた」ケースを構造的に補う。詳細：`.reviewcompass/guidance/WORKFLOW_PRECHECK.md` §11 段階 1 規律との接続、`.reviewcompass/guidance/WORKFLOW_PRECHECK.md` §12 段階 3 フック導入時の拡張余地。
 
 ### fail-closed の度合い
 
@@ -178,7 +178,7 @@ commit については、段階 2 の `commit` サブコマンドが承認レコ
 
 ## 関連参照
 
-- 仕様：`docs/operations/WORKFLOW_PRECHECK.md` §12
+- 仕様：`.reviewcompass/guidance/WORKFLOW_PRECHECK.md` §12
 - 共存モデル議論：`docs/notes/2026-05-25-workflow-pre-check-and-discipline-consolidation.md`
 - 段階 2 スクリプト：`tools/check-workflow-action.py`
 - 段階 1 規律：`docs/disciplines/discipline_workflow_precheck_invocation.md`

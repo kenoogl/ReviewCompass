@@ -2,7 +2,7 @@
 
 Claude Code のフック機構（PreToolUse 等）に登録するスクリプトを置く。
 
-仕様：`docs/operations/WORKFLOW_PRECHECK.md` §12 段階 3 フック導入時の拡張余地
+仕様：`.reviewcompass/guidance/WORKFLOW_PRECHECK.md` §12 段階 3 フック導入時の拡張余地
 
 ## ファイル一覧
 
@@ -100,7 +100,7 @@ python3 -m unittest discover -s tests/hooks -v
 
 ### 段階 1 規律との関係
 
-LLM（段階 1）が `tools/check-workflow-action.py` を意図して呼ぶ運用に加え、フックが自動発動することで「LLM が呼び忘れた」ケースを構造的に補う。詳細：`docs/operations/WORKFLOW_PRECHECK.md` §11 段階 1 規律との接続、`docs/operations/WORKFLOW_PRECHECK.md` §12 段階 3 フック導入時の拡張余地。
+LLM（段階 1）が `tools/check-workflow-action.py` を意図して呼ぶ運用に加え、フックが自動発動することで「LLM が呼び忘れた」ケースを構造的に補う。詳細：`.reviewcompass/guidance/WORKFLOW_PRECHECK.md` §11 段階 1 規律との接続、`.reviewcompass/guidance/WORKFLOW_PRECHECK.md` §12 段階 3 フック導入時の拡張余地。
 
 ### fail-closed の度合い
 
@@ -118,7 +118,7 @@ commit については、段階 2 の `commit` サブコマンドが承認レコ
 
 ## 関連参照
 
-- 仕様：`docs/operations/WORKFLOW_PRECHECK.md` §12
+- 仕様：`.reviewcompass/guidance/WORKFLOW_PRECHECK.md` §12
 - 共存モデル議論：`docs/notes/2026-05-25-workflow-pre-check-and-discipline-consolidation.md`
 - 段階 2 スクリプト：`tools/check-workflow-action.py`
 - 段階 1 規律：`docs/disciplines/discipline_workflow_precheck_invocation.md`

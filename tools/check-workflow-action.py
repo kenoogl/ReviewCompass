@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """ワークフロー事前検査スクリプト（補助層 C 段階 2）
 
-仕様：docs/operations/WORKFLOW_PRECHECK.md
+仕様：.reviewcompass/guidance/WORKFLOW_PRECHECK.md
 位置付け：計画書 §5.8 補助層 C 共存モデルの段階 2（外部スクリプトによる機械的判定）
 
 呼び出し側（段階 1 LLM または段階 3 フック）から不可逆操作の直前に呼ばれ、
@@ -62,7 +62,7 @@ from check_workflow_action.side_track_stack import current as current_side_track
 from check_workflow_action.workflow_state_snapshot import build_snapshot
 
 DEFAULT_LAST_COMMIT_PRECHECK_PATH = ".git/reviewcompass/last-commit-precheck.json"
-DEFAULT_DISCIPLINE_MAP_PATH = "docs/operations/WORKFLOW_DISCIPLINE_MAP.yaml"
+DEFAULT_DISCIPLINE_MAP_PATH = ".reviewcompass/guidance/WORKFLOW_DISCIPLINE_MAP.yaml"
 DEFAULT_CARRY_FORWARD_REGISTER_PATH = "learning/workflow/carry-forward-register/reviewcompass-import.yaml"
 DEFAULT_CARRY_FORWARD_SOURCE_PATH = (
   "learning/workflow/carry-forward-register/sources/"
@@ -77,6 +77,7 @@ DEPLOYMENT_INDEPENDENCE_GUARD_PREFIXES = (
 )
 DEPLOYMENT_INDEPENDENCE_GUARD_SUFFIXES = (".md", ".yaml", ".yml", ".json")
 DOCUMENT_LINK_GUARD_PREFIXES = (
+  ".reviewcompass/guidance/",
   ".reviewcompass/specs/",
   "docs/disciplines/",
   "docs/operations/",
@@ -321,6 +322,7 @@ def feature_definition_next_state(feature_resolution):
   return None
 
 POST_WRITE_VERIFICATION_DIR_PREFIXES = (
+  ".reviewcompass/guidance/",
   "docs/plan/",
   "docs/disciplines/",
   "docs/operations/",
@@ -467,7 +469,7 @@ REOPEN_TRIGGER_MAP = {
 
 DEFAULT_DISCIPLINE_MAP = {
   "default": [
-    "docs/operations/WORKFLOW_NAVIGATION.md",
+    ".reviewcompass/guidance/WORKFLOW_NAVIGATION.md",
   ],
   "decision_points": {
     "next_action_kind": [
@@ -487,55 +489,55 @@ DEFAULT_DISCIPLINE_MAP = {
   },
   "by_kind": {
     "stage": [
-      "docs/disciplines/discipline_workflow_state_truth_source.md",
+      ".reviewcompass/guidance/discipline_workflow_state_truth_source.md",
     ],
     "cross_feature_stage": [
-      "docs/disciplines/discipline_workflow_state_truth_source.md",
+      ".reviewcompass/guidance/discipline_workflow_state_truth_source.md",
     ],
     "commit_stop_point": [
-      "docs/operations/WORKFLOW_NAVIGATION.md#commit_stop_point",
-      "docs/disciplines/discipline_approval_operation.md",
+      ".reviewcompass/guidance/WORKFLOW_NAVIGATION.md#commit_stop_point",
+      ".reviewcompass/guidance/discipline_approval_operation.md",
     ],
     "post_write_verification": [
-      "docs/operations/WORKFLOW_NAVIGATION.md#post_write_verification",
-      "docs/disciplines/discipline_post_write_verification.md",
+      ".reviewcompass/guidance/WORKFLOW_NAVIGATION.md#post_write_verification",
+      ".reviewcompass/guidance/discipline_post_write_verification.md",
     ],
     "post_write_policy_violation": [
-      "docs/operations/WORKFLOW_NAVIGATION.md#post_write_policy_violation",
-      "docs/disciplines/discipline_post_write_verification.md",
+      ".reviewcompass/guidance/WORKFLOW_NAVIGATION.md#post_write_policy_violation",
+      ".reviewcompass/guidance/discipline_post_write_verification.md",
     ],
     "post_write_human_decision_required": [
-      "docs/operations/WORKFLOW_NAVIGATION.md#post_write_human_decision_required",
-      "docs/disciplines/discipline_post_write_verification.md",
-      "docs/disciplines/discipline_approval_operation.md",
+      ".reviewcompass/guidance/WORKFLOW_NAVIGATION.md#post_write_human_decision_required",
+      ".reviewcompass/guidance/discipline_post_write_verification.md",
+      ".reviewcompass/guidance/discipline_approval_operation.md",
     ],
     "reopen_in_progress": [
-      "docs/operations/REOPEN_PROCEDURE.md",
-      "docs/disciplines/discipline_approval_operation.md",
+      ".reviewcompass/guidance/REOPEN_PROCEDURE.md",
+      ".reviewcompass/guidance/discipline_approval_operation.md",
     ],
     "maintenance_in_progress": [
-      "docs/operations/WORKFLOW_NAVIGATION.md#maintenance_in_progress",
+      ".reviewcompass/guidance/WORKFLOW_NAVIGATION.md#maintenance_in_progress",
     ],
     "resume_in_progress": [
-      "docs/operations/WORKFLOW_NAVIGATION.md#resume_in_progress",
+      ".reviewcompass/guidance/WORKFLOW_NAVIGATION.md#resume_in_progress",
     ],
   },
   "by_stage": {
     "drafting": [
-      "docs/operations/REOPEN_PROCEDURE.md",
-      "docs/disciplines/discipline_workflow_state_truth_source.md",
+      ".reviewcompass/guidance/REOPEN_PROCEDURE.md",
+      ".reviewcompass/guidance/discipline_workflow_state_truth_source.md",
     ],
     "triad-review": [
-      "docs/operations/SESSION_WORKFLOW_GUIDE.md#3.3-a-2",
-      "docs/disciplines/discipline_approval_operation.md",
+      ".reviewcompass/guidance/SESSION_WORKFLOW_GUIDE.md#3.3-a-2",
+      ".reviewcompass/guidance/discipline_approval_operation.md",
     ],
     "review-wave": [],
     "alignment": [
-      "docs/disciplines/discipline_workflow_state_truth_source.md",
+      ".reviewcompass/guidance/discipline_workflow_state_truth_source.md",
     ],
     "approval": [
-      "docs/disciplines/discipline_approval_operation.md",
-      "docs/operations/WORKFLOW_PRECHECK.md#spec-set",
+      ".reviewcompass/guidance/discipline_approval_operation.md",
+      ".reviewcompass/guidance/WORKFLOW_PRECHECK.md#spec-set",
     ],
   },
   "required_inputs": {
@@ -5160,11 +5162,11 @@ def is_forbidden_post_write_pending_change(path, verification_targets):
     return True
   if path.startswith("templates/"):
     return True
-  if path.startswith("docs/disciplines/"):
+  if path.startswith(("docs/disciplines/", ".reviewcompass/guidance/")):
     non_discipline_targets = [
       target
       for target in verification_targets
-      if not target.startswith("docs/disciplines/")
+      if not target.startswith(("docs/disciplines/", ".reviewcompass/guidance/"))
     ]
     return bool(non_discipline_targets)
   return False
@@ -6245,7 +6247,7 @@ def build_operation_prompt_payload(cwd, operation):
     "verdict": "OK",
     "exit_code": 0,
     "operation": "commit",
-    "required_operation_card": "docs/operations/COMMIT_OPERATION_CARD.md#commit-operation-card",
+    "required_operation_card": ".reviewcompass/guidance/COMMIT_OPERATION_CARD.md#commit-operation-card",
     "effective_prompt": materialize_effective_prompt(
       cwd,
       prompt_context,
@@ -7618,7 +7620,7 @@ def main():
   parser = argparse.ArgumentParser(
     description=(
       "ワークフロー事前検査スクリプト（補助層 C 段階 2、"
-      "仕様 docs/operations/WORKFLOW_PRECHECK.md）"
+      "仕様 .reviewcompass/guidance/WORKFLOW_PRECHECK.md）"
     ),
     parents=[common_parser],
   )

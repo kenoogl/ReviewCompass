@@ -27,7 +27,7 @@
 <配布物>/tools/check-workflow-action.py next --json
 ```
 
-`next_action` を作業順序の正本とし、`kind` の読み方は配布物の `docs/operations/WORKFLOW_NAVIGATION.md` に従う。`post_write_verification` 等が返った場合は通常作業へ進まない。
+`next_action` を作業順序の正本とし、`kind` の読み方は配布物の `.reviewcompass/guidance/WORKFLOW_NAVIGATION.md` に従う。`post_write_verification` 等が返った場合は通常作業へ進まない。
 
 feature が未確定の段階（`.reviewcompass/feature-dependency.yaml` が無い、または `feature_order` が未定義）では、`next` は `feature_definition_required` を返し、intent と feature-partitioning の実施を案内する。案内に従って機能分割を確定し、承認された分割結果を `.reviewcompass/feature-dependency.yaml` に記録する。
 

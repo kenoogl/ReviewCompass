@@ -60,7 +60,7 @@ variants:
     primary:
       path: api
       provider: gemini-api
-      model: gemini-3.5-flash
+      model: gemini-3.1-pro-preview
   implementation_review_independent_3way_codex_operator:
     context: triad_review
     variant_type: triad
@@ -351,7 +351,7 @@ def test_run_review_verbose_outputs_review_summary(tmp_path, monkeypatch, capsys
   assert exit_code == 0
   output = capsys.readouterr().out
   assert "variant: post_write_verification_google" in output
-  assert "| primary | api | gemini-api | gemini-3.5-flash |" in output
+  assert "| primary | api | gemini-api | gemini-3.1-pro-preview |" in output
   assert "利用者提示ゲート" in output
 
 
@@ -429,7 +429,7 @@ def test_run_review_uses_post_write_default_variant_when_phase_is_post_write(tmp
   output = capsys.readouterr().out
   assert output.startswith("[OK] run_review ")
   assert "roles=1" in output
-  assert "gemini-3.5-flash" in output
+  assert "gemini-3.1-pro-preview" in output
   assert "claude-code-cli" not in output
 
   rounds = yaml.safe_load((review_run_dir / "rounds.yaml").read_text(encoding="utf-8"))
@@ -600,13 +600,13 @@ findings:
   output = capsys.readouterr().out
   assert output.startswith("[OK] run_review ")
   assert "roles=1" in output
-  assert "model_ids=gemini-3.5-flash" in output
+  assert "model_ids=gemini-3.1-pro-preview" in output
   assert "| adversarial |" not in output
   assert "| judgment |" not in output
 
   triage = yaml.safe_load((review_run_dir / "triage.yaml").read_text(encoding="utf-8"))
   assert len(triage["items"]) == 1
-  assert triage["items"][0]["source_model"] == "gemini-3.5-flash"
+  assert triage["items"][0]["source_model"] == "gemini-3.1-pro-preview"
 
 
 def test_run_review_preserves_structured_fields_in_parsed_artifact(
@@ -656,7 +656,7 @@ findings: []
 
   assert exit_code == 0
   capsys.readouterr()
-  parsed_path = review_run_dir / "parsed" / "gemini-3.5-flash.round-1.yaml"
+  parsed_path = review_run_dir / "parsed" / "gemini-3.1-pro-preview.round-1.yaml"
   parsed = yaml.safe_load(parsed_path.read_text(encoding="utf-8"))
   assert parsed["verdict"] == "insufficient"
   assert parsed["independent_reconstruction"]["judgment_items"][0]["item_id"] == "prompt_source_coverage"

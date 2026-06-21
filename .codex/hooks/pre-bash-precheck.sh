@@ -1,7 +1,7 @@
 #!/bin/bash
 # 補助層 C 段階 3：Bash の git commit／git push を事前検査する PreToolUse フック
 #
-# 仕様：docs/operations/WORKFLOW_PRECHECK.md §12
+# 仕様：.reviewcompass/guidance/WORKFLOW_PRECHECK.md §12
 # 設計：
 #   - stdin から PreToolUse の JSON ペイロードを読み、tool_input.command を取得
 #   - git commit／git push を検出した場合のみ tools/check-workflow-action.py を呼ぶ

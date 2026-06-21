@@ -18,7 +18,7 @@ fi
 
 # ガイドラインファイルを読み込む（cwd が JSON に含まれているので絶対パスで参照）
 cwd=$(echo "$input" | "$JQ" -r '.cwd // ""' 2>/dev/null)
-guide_file="$cwd/docs/disciplines/discipline_llm_as_judge_prompting.md"
+guide_file="$cwd/.reviewcompass/guidance/discipline_llm_as_judge_prompting.md"
 
 [ -f "$guide_file" ] || exit 0
 

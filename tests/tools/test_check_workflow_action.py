@@ -1,6 +1,6 @@
 """ワークフロー事前検査スクリプト tools/check-workflow-action.py の単体テスト
 
-対象仕様：docs/operations/WORKFLOW_PRECHECK.md
+対象仕様：.reviewcompass/guidance/WORKFLOW_PRECHECK.md
 対象範囲：spec-set サブコマンド（範囲案 2 のうち、MVP 第 1 ラウンドで先行実装）
 
 TDD 規律（AGENTS.md 入口規律）に従い、本テストはスクリプト実装前に作成。
@@ -2253,11 +2253,11 @@ class NextNavigationTests(unittest.TestCase):
     self.assertEqual(data["next_action"]["phase"], "implementation")
     self.assertEqual(data["next_action"]["stage"], "drafting")
     self.assertIn(
-      "docs/operations/WORKFLOW_NAVIGATION.md",
+      ".reviewcompass/guidance/WORKFLOW_NAVIGATION.md",
       data["next_action"]["required_disciplines"],
     )
     self.assertIn(
-      "docs/disciplines/discipline_workflow_state_truth_source.md",
+      ".reviewcompass/guidance/discipline_workflow_state_truth_source.md",
       data["next_action"]["required_disciplines"],
     )
 
@@ -2462,7 +2462,7 @@ class NextNavigationTests(unittest.TestCase):
     self.assertEqual(data["next_action"]["kind"], "stage")
     self.assertEqual(data["next_action"]["stage"], "triad-review")
     self.assertIn(
-      "docs/operations/SESSION_WORKFLOW_GUIDE.md#3.3-a-2",
+      ".reviewcompass/guidance/SESSION_WORKFLOW_GUIDE.md#3.3-a-2",
       data["next_action"]["required_disciplines"],
     )
     self.assertEqual(
@@ -2478,7 +2478,7 @@ class NextNavigationTests(unittest.TestCase):
       data["next_action"]["effective_prompt"]["decision_point_refs"],
     )
     self.assertIn(
-      "docs/operations/SESSION_WORKFLOW_GUIDE.md#3.3-a-2",
+      ".reviewcompass/guidance/SESSION_WORKFLOW_GUIDE.md#3.3-a-2",
       data["next_action"]["effective_prompt"]["prompt_source_refs"],
     )
     prompt_path = cwd / data["next_action"]["effective_prompt"]["effective_prompt_path"]
@@ -2492,18 +2492,18 @@ class NextNavigationTests(unittest.TestCase):
     )
     prompt_text = prompt_path.read_text(encoding="utf-8")
     self.assertIn("# Effective Prompt", prompt_text)
-    self.assertIn("docs/operations/SESSION_WORKFLOW_GUIDE.md#3.3-a-2", prompt_text)
+    self.assertIn(".reviewcompass/guidance/SESSION_WORKFLOW_GUIDE.md#3.3-a-2", prompt_text)
 
   def test_next_fails_closed_when_effective_prompt_source_is_missing(self):
     """effective prompt の元資料が読めない判定点は fail-closed とする"""
     cwd = Path(self.tmpdir)
     _write_specs_for_next(cwd, {})
-    map_path = cwd / "docs" / "operations" / "WORKFLOW_DISCIPLINE_MAP.yaml"
+    map_path = cwd / ".reviewcompass" / "guidance" / "WORKFLOW_DISCIPLINE_MAP.yaml"
     map_path.parent.mkdir(parents=True, exist_ok=True)
     map_path.write_text(
       yaml.safe_dump(
         {
-          "default": ["docs/operations/WORKFLOW_NAVIGATION.md"],
+          "default": [".reviewcompass/guidance/WORKFLOW_NAVIGATION.md"],
           "decision_points": {
             "next_action_kind": [
               {
@@ -2547,7 +2547,7 @@ class NextNavigationTests(unittest.TestCase):
     self.assertEqual(data["operation"], "commit")
     self.assertEqual(
       data["required_operation_card"],
-      "docs/operations/COMMIT_OPERATION_CARD.md#commit-operation-card",
+      ".reviewcompass/guidance/COMMIT_OPERATION_CARD.md#commit-operation-card",
     )
     self.assertNotIn("adapter_card", data)
     self.assertEqual(
@@ -2555,7 +2555,7 @@ class NextNavigationTests(unittest.TestCase):
       [{"group": "operation_prompt", "id": "commit"}],
     )
     self.assertIn(
-      "docs/operations/COMMIT_OPERATION_CARD.md#commit-operation-card",
+      ".reviewcompass/guidance/COMMIT_OPERATION_CARD.md#commit-operation-card",
       data["effective_prompt"]["prompt_source_refs"],
     )
     self.assertNotIn(
@@ -2787,7 +2787,7 @@ class NextNavigationTests(unittest.TestCase):
       "  - docs/operations/\n"
       "  - TODO_NEXT_SESSION.md\n"
       "allowed_files:\n"
-      "  - docs/operations/WORKFLOW_NAVIGATION.md\n"
+      "  - .reviewcompass/guidance/WORKFLOW_NAVIGATION.md\n"
       "  - TODO_NEXT_SESSION.md\n"
       "completion_conditions:\n"
       "  - Codex 新規セッションで TODO から開始できる\n",
@@ -2818,7 +2818,7 @@ class NextNavigationTests(unittest.TestCase):
     )
     self.assertEqual(
       data["next_action"]["allowed_files"],
-      ["docs/operations/WORKFLOW_NAVIGATION.md", "TODO_NEXT_SESSION.md"],
+      [".reviewcompass/guidance/WORKFLOW_NAVIGATION.md", "TODO_NEXT_SESSION.md"],
     )
     self.assertEqual(
       data["next_action"]["completion_conditions"],
@@ -2862,11 +2862,11 @@ class NextNavigationTests(unittest.TestCase):
       ["docs/notes/codex-maintenance.md"],
     )
     self.assertIn(
-      "docs/operations/WORKFLOW_NAVIGATION.md#post_write_verification",
+      ".reviewcompass/guidance/WORKFLOW_NAVIGATION.md#post_write_verification",
       data["next_action"]["required_disciplines"],
     )
     self.assertIn(
-      "docs/disciplines/discipline_post_write_verification.md",
+      ".reviewcompass/guidance/discipline_post_write_verification.md",
       data["next_action"]["required_disciplines"],
     )
     self.assertEqual(
@@ -3082,7 +3082,7 @@ class NextNavigationTests(unittest.TestCase):
       "    decision: reopen_existing_feature\n"
       "    impact_basis: contract_ownership\n"
       "    rationale: direct\n"
-      "    evidence: [docs/operations/REOPEN_PROCEDURE.md]\n"
+      "    evidence: [.reviewcompass/guidance/REOPEN_PROCEDURE.md]\n"
       "  - feature: foundation\n"
       "    decision: indirect_check_only\n"
       "    impact_basis: consumer_or_derivative_only\n"
@@ -3686,7 +3686,7 @@ class NextNavigationTests(unittest.TestCase):
     target = cwd / "docs" / "operations" / "workflow.md"
     target.parent.mkdir(parents=True, exist_ok=True)
     target.write_text("検証対象の運用文書\n", encoding="utf-8")
-    discipline = cwd / "docs" / "disciplines" / "discipline_approval_operation.md"
+    discipline = cwd / ".reviewcompass" / "guidance" / "discipline_approval_operation.md"
     discipline.parent.mkdir(parents=True, exist_ok=True)
     discipline.write_text("越境した規律変更\n", encoding="utf-8")
 
@@ -3698,7 +3698,7 @@ class NextNavigationTests(unittest.TestCase):
     self.assertEqual(data["next_action"]["kind"], "post_write_policy_violation")
     self.assertEqual(
       data["next_action"]["forbidden_files"],
-      ["docs/disciplines/discipline_approval_operation.md"],
+      [".reviewcompass/guidance/discipline_approval_operation.md"],
     )
 
   def test_next_allows_discipline_post_write_when_it_is_the_only_target(self):
@@ -3706,7 +3706,7 @@ class NextNavigationTests(unittest.TestCase):
     cwd = Path(self.tmpdir)
     _init_git_repo(cwd)
     _write_specs_for_next(cwd, {})
-    discipline = cwd / "docs" / "disciplines" / "discipline_approval_operation.md"
+    discipline = cwd / ".reviewcompass" / "guidance" / "discipline_approval_operation.md"
     discipline.parent.mkdir(parents=True, exist_ok=True)
     discipline.write_text("正式手続き後の規律変更\n", encoding="utf-8")
 
@@ -3718,7 +3718,7 @@ class NextNavigationTests(unittest.TestCase):
     self.assertEqual(data["next_action"]["kind"], "post_write_verification")
     self.assertEqual(
       data["next_action"]["target_files"],
-      ["docs/disciplines/discipline_approval_operation.md"],
+      [".reviewcompass/guidance/discipline_approval_operation.md"],
     )
 
   def test_next_ignores_workflow_stage_spec_changes_for_post_write_verification(self):
@@ -8710,14 +8710,14 @@ class CommitExitCodeTests(unittest.TestCase):
     _set_pending_findings(self.pending_file, unresolved_count=0)
     _stage_file(
       self.tmpdir,
-      "docs/operations/WORKFLOW_PRECHECK.md",
+      ".reviewcompass/guidance/WORKFLOW_PRECHECK.md",
       "# WORKFLOW_PRECHECK",
     )
     _write_completed_post_write_manifest(
       self.tmpdir,
-      ["docs/operations/WORKFLOW_PRECHECK.md"],
+      [".reviewcompass/guidance/WORKFLOW_PRECHECK.md"],
     )
-    _write_commit_approval(self.tmpdir, ["docs/operations/WORKFLOW_PRECHECK.md"])
+    _write_commit_approval(self.tmpdir, [".reviewcompass/guidance/WORKFLOW_PRECHECK.md"])
     result = run_script(
       ["commit", "--rationale", "operations 文書検証済み commit のテスト"],
       cwd=self.tmpdir,

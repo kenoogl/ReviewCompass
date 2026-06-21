@@ -102,28 +102,42 @@ include:
     reason: Document link and prompt-source reference lint.
   - path: tools/deployment_independence_lint.py
     reason: Deployment independence lint.
+  - path: tools/normal_output.py
+    reason: Shared normal-output helpers imported by deployed provider tools.
   - path: tools/guarded-git-commit.py
     reason: Commit wrapper that enforces workflow-management checks.
-  - path: docs/operations/WORKFLOW_DISCIPLINE_MAP.yaml
+  - path: .reviewcompass/guidance/WORKFLOW_DISCIPLINE_MAP.yaml
     reason: Machine-readable decision-point to prompt-source map.
-  - path: docs/operations/WORKFLOW_NAVIGATION.md
+  - path: .reviewcompass/guidance/WORKFLOW_NAVIGATION.md
     reason: Workflow navigation contract.
-  - path: docs/operations/WORKFLOW_PRECHECK.md
+  - path: .reviewcompass/guidance/WORKFLOW_PRECHECK.md
     reason: Precheck operational contract.
-  - path: docs/operations/WORKFLOW_PRECHECK_DETAILS.md
+  - path: .reviewcompass/guidance/WORKFLOW_PRECHECK_DETAILS.md
     reason: Detailed precheck specification.
-  - path: docs/operations/REOPEN_PROCEDURE.md
+  - path: .reviewcompass/guidance/REOPEN_PROCEDURE.md
     reason: Reopen procedure.
-  - path: docs/operations/SESSION_WORKFLOW_GUIDE.md
+  - path: .reviewcompass/guidance/SESSION_WORKFLOW_GUIDE.md
     reason: Session completion and review-run handling guide.
+  - path: .reviewcompass/guidance/API_REVIEW_PROMPT_QUALITY.md
+    reason: API review prompt quality guidance.
+  - path: .reviewcompass/guidance/COMMIT_OPERATION_CARD.md
+    reason: Commit operation prompt card.
   - path: .reviewcompass/guidance/effective-prompts/next-action-post-write-policy-violation.prompt.md
     reason: Canonical effective prompt for post-write policy violation stop point.
   - path: docs/operations/INITIAL_DEPLOYMENT_USER_GUIDE.md
     reason: Initial owner-operated deployment guide.
-  - path: docs/operations/INITIAL_SETUP_LLM_GUIDE.md
+  - path: .reviewcompass/guidance/INITIAL_SETUP_LLM_GUIDE.md
     reason: LLM-facing initial setup guide.
-  - path: docs/disciplines/discipline_*.md
-    reason: Workflow-management discipline prompts.
+  - path: .reviewcompass/guidance/discipline_approval_operation.md
+    reason: Approval operation discipline prompt.
+  - path: .reviewcompass/guidance/discipline_llm_as_judge_prompting.md
+    reason: LLM-as-judge prompt construction discipline.
+  - path: .reviewcompass/guidance/discipline_post_write_verification.md
+    reason: Post-write verification discipline prompt.
+  - path: .reviewcompass/guidance/discipline_workflow_state_truth_source.md
+    reason: Workflow state truth-source discipline prompt.
+  - path: .reviewcompass/guidance/discipline_yaml_audit.md
+    reason: YAML audit discipline prompt.
   - path: .reviewcompass/specs/workflow-management/post-write-verification-spec.yaml
     reason: Post-write verification behavior contract.
   - path: .reviewcompass/specs/workflow-management/yaml-audit-spec.yaml

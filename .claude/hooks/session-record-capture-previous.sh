@@ -19,6 +19,7 @@
 #
 # 出力先はテスト用に環境変数で差し替え可能（既定は repo の正規置き場）：
 #   RC_SESSION_EVIDENCE_DIR（層1）／ RC_SESSION_DOCS_DIR（層2）
+#   RC_SESSION_BACKFILL_DONE_DIR（二重取り込み防止マーカー）
 #
 # 依存：bash、jq、python3、tools/session-record-backfill.py
 
@@ -54,7 +55,7 @@ done < <(ls -t "$PROJ"/*.jsonl 2>/dev/null)
 [ ! -f "$PREV" ] && exit 0
 
 PREV_ID=$(basename "$PREV" .jsonl)
-DONE_DIR="$REPO_ROOT/.reviewcompass/runtime/session-backfill-done"
+DONE_DIR="${RC_SESSION_BACKFILL_DONE_DIR:-$REPO_ROOT/.reviewcompass/runtime/session-backfill-done}"
 DONE_MARKER="$DONE_DIR/$PREV_ID"
 
 # 取り込み済みマーカーがあればスキップ（コンテキスト圧縮による再発火対策）

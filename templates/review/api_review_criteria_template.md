@@ -92,7 +92,7 @@ If any user requirement is ambiguous, state the assumption explicitly and keep i
 
 Apply these prompt and review disciplines:
 
-- `docs/disciplines/discipline_llm_as_judge_prompting.md`: include appropriate information, a non-leading question, appropriate scope, fixed output contract, and sensitive-information checks.
+- `.reviewcompass/guidance/discipline_llm_as_judge_prompting.md`: include appropriate information, a non-leading question, appropriate scope, fixed output contract, and sensitive-information checks.
 - `<phase-specific discipline refs>`: <summarize the phase/gate-specific requirements the model needs to apply.>
 
 ## Review Target
