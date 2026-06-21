@@ -57,7 +57,7 @@ def _write_clean_review_run(cwd, relative_target):
   raw_file = raw_dir / "gemini-3.1-pro-preview.round-1.txt"
   raw_file.write_text("findings: []\n", encoding="utf-8")
   target = cwd / relative_target
-  target.parent.mkdir(parents=True)
+  target.parent.mkdir(parents=True, exist_ok=True)
   target.write_text("target\n", encoding="utf-8")
   target_sha = hashlib.sha256(target.read_bytes()).hexdigest()
   raw_sha = hashlib.sha256(raw_file.read_bytes()).hexdigest()
@@ -130,8 +130,8 @@ def test_prepare_from_next_action_generates_review_materials(tmp_path, monkeypat
   """next --json の post_write_verification 地点から prepare 引数を機械確定する。"""
   monkeypatch.chdir(tmp_path)
   api_quality, post_write = _write_guidance_files(tmp_path)
-  target = tmp_path / "docs" / "operations" / "WORKFLOW_NAVIGATION.md"
-  target.parent.mkdir(parents=True)
+  target = tmp_path / ".reviewcompass" / "guidance" / "WORKFLOW_NAVIGATION.md"
+  target.parent.mkdir(parents=True, exist_ok=True)
   target.write_text(
     "### post_write_verification\n"
     "API review は prompt-manifest を preflight する。\n",
@@ -141,7 +141,7 @@ def test_prepare_from_next_action_generates_review_materials(tmp_path, monkeypat
   _write_next_action(
     next_action,
     "post_write_verification",
-    ["docs/operations/WORKFLOW_NAVIGATION.md"],
+    [".reviewcompass/guidance/WORKFLOW_NAVIGATION.md"],
   )
   review_run_dir = tmp_path / ".reviewcompass" / "evidence" / "review-runs" / "auto"
 

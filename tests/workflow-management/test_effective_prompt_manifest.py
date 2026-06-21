@@ -32,11 +32,11 @@ def valid_manifest(**overrides):
     },
     "source_artifacts": [
       {
-        "path": "docs/operations/WORKFLOW_NAVIGATION.md",
+        "path": ".reviewcompass/guidance/WORKFLOW_NAVIGATION.md",
         "sha256": "sha256:" + "a" * 64,
       }
     ],
-    "required_disciplines": ["docs/operations/WORKFLOW_NAVIGATION.md"],
+    "required_disciplines": [".reviewcompass/guidance/WORKFLOW_NAVIGATION.md"],
     "operation_contract": {
       "operation_id": "run_workflow_stage",
       "sha256": "sha256:" + "b" * 64,
@@ -48,7 +48,7 @@ def valid_manifest(**overrides):
     "prompt_length": {
       "min_chars": 100,
       "max_chars": 20000,
-      "source_ref": "docs/operations/WORKFLOW_DISCIPLINE_MAP.yaml#default_prompt_length_bounds",
+      "source_ref": ".reviewcompass/guidance/WORKFLOW_DISCIPLINE_MAP.yaml#default_prompt_length_bounds",
       "failure_verdict": "WARN",
     },
     "preconditions_checked": [
@@ -62,7 +62,7 @@ def valid_manifest(**overrides):
     "language_task": {
       "document_kind": "review",
       "input": {
-        "required_files": ["docs/operations/WORKFLOW_NAVIGATION.md"],
+        "required_files": [".reviewcompass/guidance/WORKFLOW_NAVIGATION.md"],
         "state_refs": [],
         "source_refs": [],
       },
@@ -100,7 +100,7 @@ class EffectivePromptManifestSchemaTests(unittest.TestCase):
     self.assertEqual(valid_errors, [])
 
     missing_digest = valid_manifest(
-      source_artifacts=[{"path": "docs/operations/WORKFLOW_NAVIGATION.md"}]
+      source_artifacts=[{"path": ".reviewcompass/guidance/WORKFLOW_NAVIGATION.md"}]
     )
     self.assertNotEqual(list(validator.iter_errors(missing_digest)), [])
 
@@ -112,7 +112,7 @@ class EffectivePromptManifestSchemaTests(unittest.TestCase):
       prompt_length={
         "min_chars": 20000,
         "max_chars": 100,
-        "source_ref": "docs/operations/WORKFLOW_DISCIPLINE_MAP.yaml#default_prompt_length_bounds",
+        "source_ref": ".reviewcompass/guidance/WORKFLOW_DISCIPLINE_MAP.yaml#default_prompt_length_bounds",
       }
     )
     errors = list(validator.iter_errors(missing_failure_verdict))
@@ -122,7 +122,7 @@ class EffectivePromptManifestSchemaTests(unittest.TestCase):
       prompt_length={
         "min_chars": 20000,
         "max_chars": 100,
-        "source_ref": "docs/operations/WORKFLOW_DISCIPLINE_MAP.yaml#default_prompt_length_bounds",
+        "source_ref": ".reviewcompass/guidance/WORKFLOW_DISCIPLINE_MAP.yaml#default_prompt_length_bounds",
         "failure_verdict": "WARN",
       }
     )
@@ -149,7 +149,7 @@ class EffectivePromptManifestSchemaTests(unittest.TestCase):
     with self.assertRaises(ValueError):
       build_manifest(
         decision_point=data["decision_point"],
-        source_artifacts=[{"path": "docs/operations/WORKFLOW_NAVIGATION.md"}],
+        source_artifacts=[{"path": ".reviewcompass/guidance/WORKFLOW_NAVIGATION.md"}],
         required_disciplines=data["required_disciplines"],
         operation_contract=data["operation_contract"],
         expected_output_schema=data["expected_output_schema"],

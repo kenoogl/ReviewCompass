@@ -39,7 +39,7 @@ PreToolUse で自動検査するようになったが、段階 1（LLM 自身の
   は段階 1 規律が恒久的に担う
 
 **Why:** LLM が段階 2 のスクリプトを呼ばないと機械検査の効果が消える。
-仕様 docs/operations/WORKFLOW_PRECHECK.md「段階 1・段階 3 との接続」で
+仕様 `.reviewcompass/guidance/WORKFLOW_PRECHECK.md`「段階 1・段階 3 との接続」で
 規定された段階 1 規律の文書化。
 
 **How to apply:**

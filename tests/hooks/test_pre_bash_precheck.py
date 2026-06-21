@@ -1,6 +1,6 @@
 """段階 3 フックスクリプト .codex/hooks/pre-bash-precheck.sh の単体テスト
 
-対象仕様：docs/operations/WORKFLOW_PRECHECK.md「段階 1・段階 3 との接続」
+対象仕様：.reviewcompass/guidance/WORKFLOW_PRECHECK.md「段階 1・段階 3 との接続」
 対象範囲：Bash の git commit／git push を検出して check-workflow-action.py を呼ぶ MVP
 
 TDD 規律（AGENTS.md 入口規律）に従い、本テストはフックスクリプト実装前に作成。

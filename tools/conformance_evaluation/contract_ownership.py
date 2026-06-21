@@ -146,6 +146,8 @@ class ContractOwnershipMap:
       return "design"
     if path.endswith("/tasks.md") or path.endswith("tasks.md"):
       return "tasks"
+    if path.startswith(".reviewcompass/guidance/"):
+      return "operations"
     if path.startswith("docs/operations/") or path.startswith("docs/disciplines/"):
       return "operations"
     if path.startswith("tests/"):
@@ -221,7 +223,7 @@ def workflow_management_seed_items() -> list:
   contract_refs = [
     ".reviewcompass/specs/workflow-management/requirements.md",
     ".reviewcompass/specs/workflow-management/design.md",
-    "docs/operations/WORKFLOW_NAVIGATION.md",
+    ".reviewcompass/guidance/WORKFLOW_NAVIGATION.md",
   ]
   common_evidence_refs = [
     "docs/notes/2026-06-08-workflow-management-conformance-drift-audit.md",

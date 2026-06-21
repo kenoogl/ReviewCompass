@@ -46,7 +46,7 @@ CLI / tool の正常系 human output は、[正常系出力最小化](../docs/di
 
 ## document links
 
-`tools/document_link_lint.py` は Markdown リンクと `docs/operations/WORKFLOW_DISCIPLINE_MAP.yaml` の `prompt_source_refs` を検査する。ファイル不存在、アンカー不存在に加え、`WORKFLOW_PRECHECK.md` の薄い運用契約を読む判定点が詳細仕様 `WORKFLOW_PRECHECK_DETAILS.md` を併読していない場合を検出する。`tools/check-workflow-action.py commit` は staged 文書に対してこの検査を実行し、所見があれば DEVIATION とする。
+`tools/document_link_lint.py` は Markdown リンクと `.reviewcompass/guidance/WORKFLOW_DISCIPLINE_MAP.yaml` の `prompt_source_refs` を検査する。ファイル不存在、アンカー不存在に加え、`WORKFLOW_PRECHECK.md` の薄い運用契約を読む判定点が詳細仕様 `WORKFLOW_PRECHECK_DETAILS.md` を併読していない場合を検出する。`tools/check-workflow-action.py commit` は staged 文書に対してこの検査を実行し、所見があれば DEVIATION とする。
 
 実行例:
 

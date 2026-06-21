@@ -478,8 +478,8 @@ DEFAULT_DISCIPLINE_MAP = {
       {
         "id": "post_write_policy_violation",
         "prompt_source_refs": [
-          "docs/operations/WORKFLOW_NAVIGATION.md#post_write_policy_violation",
-          "docs/disciplines/discipline_post_write_verification.md",
+          ".reviewcompass/guidance/WORKFLOW_NAVIGATION.md#post_write_policy_violation",
+          ".reviewcompass/guidance/discipline_post_write_verification.md",
         ],
         "effective_prompt_policy": "one_effective_prompt_per_decision_point",
         "canonical_effective_prompt_path": (

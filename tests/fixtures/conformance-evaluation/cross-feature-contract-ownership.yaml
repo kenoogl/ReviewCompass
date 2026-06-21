@@ -85,8 +85,8 @@ items:
     contract_refs:
       - .reviewcompass/specs/workflow-management/requirements.md
       - .reviewcompass/specs/workflow-management/design.md
-      - docs/operations/WORKFLOW_NAVIGATION.md
-      - docs/disciplines/discipline_post_write_verification.md
+      - .reviewcompass/guidance/WORKFLOW_NAVIGATION.md
+      - .reviewcompass/guidance/discipline_post_write_verification.md
     evidence_refs:
       - tools/check-workflow-action.py
       - tools/guarded-git-commit.py
@@ -110,7 +110,7 @@ items:
       - .reviewcompass/specs/workflow-management/requirements.md
       - .reviewcompass/specs/workflow-management/design.md
       - .reviewcompass/specs/workflow-management/tasks.md
-      - docs/operations/SESSION_WORKFLOW_GUIDE.md
+      - .reviewcompass/guidance/SESSION_WORKFLOW_GUIDE.md
     evidence_refs:
       - docs/notes/2026-06-17-maintenance-workflow-compliance-improvement-candidates.md
       - .reviewcompass/evidence/sessions/2026-06-16-codex-019ecf38-6afb-7543-b000-8b9e93c9d4e2.md
@@ -128,7 +128,7 @@ items:
       - .reviewcompass/specs/workflow-management/requirements.md
       - .reviewcompass/specs/workflow-management/design.md
       - .reviewcompass/specs/workflow-management/tasks.md
-      - docs/operations/WORKFLOW_NAVIGATION.md
+      - .reviewcompass/guidance/WORKFLOW_NAVIGATION.md
     evidence_refs:
       - docs/notes/working/2026-06-17-commit-operation-card-and-next-json-prompt-selection.md
       - .reviewcompass/evidence/sessions/2026-06-17-codex-019ed2f7-2f40-72c1-9f8b-2e7d5312ab3a.md
@@ -145,8 +145,8 @@ items:
       - .reviewcompass/specs/workflow-management/requirements.md
       - .reviewcompass/specs/workflow-management/design.md
       - .reviewcompass/specs/workflow-management/tasks.md
-      - docs/operations/WORKFLOW_NAVIGATION.md
-      - docs/operations/WORKFLOW_DISCIPLINE_MAP.yaml
+      - .reviewcompass/guidance/WORKFLOW_NAVIGATION.md
+      - .reviewcompass/guidance/WORKFLOW_DISCIPLINE_MAP.yaml
     evidence_refs:
       - docs/notes/working/2026-06-17-working-note-verification-trigger-policy.md
       - stages/completed/maintenance-2026-06-17-lightweight-self-check-location.yaml

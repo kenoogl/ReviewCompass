@@ -61,9 +61,9 @@
 
 ## 5. 参照
 
-- workflow navigation: `docs/operations/WORKFLOW_NAVIGATION.md`
-- session guide: `docs/operations/SESSION_WORKFLOW_GUIDE.md`
-- discipline map: `docs/operations/WORKFLOW_DISCIPLINE_MAP.yaml`
+- workflow navigation: `.reviewcompass/guidance/WORKFLOW_NAVIGATION.md`
+- session guide: `.reviewcompass/guidance/SESSION_WORKFLOW_GUIDE.md`
+- discipline map: `.reviewcompass/guidance/WORKFLOW_DISCIPLINE_MAP.yaml`
 - workflow-management tasks: `.reviewcompass/specs/workflow-management/tasks.md`
 - workflow-management spec: `.reviewcompass/specs/workflow-management/spec.json`
 

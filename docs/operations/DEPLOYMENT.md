@@ -77,13 +77,13 @@ ReviewCompass の開発リポジトリには、実行に必要なファイル、
 | `tools/document_link_lint.py` | 正本文書・規律文書の参照検査に必要。 |
 | `tools/deployment_independence_lint.py` | 配置非依存性の検査に必要。 |
 | `tools/guarded-git-commit.py` | commit 操作を workflow-management の検査に通すため。 |
-| `docs/operations/WORKFLOW_DISCIPLINE_MAP.yaml` | 判定点ごとの必読プロンプト対応を機械判定するため。 |
-| `docs/operations/WORKFLOW_NAVIGATION.md` | workflow navigation の正本手順。 |
-| `docs/operations/WORKFLOW_PRECHECK.md` | 事前検査の運用手順。 |
-| `docs/operations/WORKFLOW_PRECHECK_DETAILS.md` | 事前検査の詳細仕様。 |
-| `docs/operations/REOPEN_PROCEDURE.md` | reopen 手続きの正本手順。 |
-| `docs/operations/SESSION_WORKFLOW_GUIDE.md` | 作業完了時レポート契約と review-run 処理手順。 |
-| `docs/disciplines/discipline_*.md` | workflow-management が判定時に読む規律文書。 |
+| `.reviewcompass/guidance/WORKFLOW_DISCIPLINE_MAP.yaml` | 判定点ごとの必読プロンプト対応を機械判定するため。 |
+| `.reviewcompass/guidance/WORKFLOW_NAVIGATION.md` | workflow navigation の正本手順。 |
+| `.reviewcompass/guidance/WORKFLOW_PRECHECK.md` | 事前検査の運用手順。 |
+| `.reviewcompass/guidance/WORKFLOW_PRECHECK_DETAILS.md` | 事前検査の詳細仕様。 |
+| `.reviewcompass/guidance/REOPEN_PROCEDURE.md` | reopen 手続きの正本手順。 |
+| `.reviewcompass/guidance/SESSION_WORKFLOW_GUIDE.md` | 作業完了時レポート契約と review-run 処理手順。 |
+| `.reviewcompass/guidance/discipline_*.md` | workflow-management が判定時に読む規律文書。 |
 | `.reviewcompass/specs/workflow-management/post-write-verification-spec.yaml` | 書き込み後検証の動作仕様。 |
 | `.reviewcompass/specs/workflow-management/yaml-audit-spec.yaml` | YAML 監査の動作仕様。 |
 

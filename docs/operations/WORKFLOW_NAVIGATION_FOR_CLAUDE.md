@@ -2,7 +2,7 @@
 
 この文書は、Claude が ReviewCompass の開発作業を始める前に読むための adapter 手引きである。
 
-共通の `next_action` の読み方は `docs/operations/WORKFLOW_NAVIGATION.md` を正本とする。本書は Claude 環境に固有の制約だけを補う。
+共通の `next_action` の読み方は `.reviewcompass/guidance/WORKFLOW_NAVIGATION.md` を正本とする。本書は Claude 環境に固有の制約だけを補う。
 
 ## 1. 起点
 
@@ -12,15 +12,15 @@
 python3 tools/check-workflow-action.py next --json
 ```
 
-その後、`next_action.kind` は `docs/operations/WORKFLOW_NAVIGATION.md` に従って読む。
+その後、`next_action.kind` は `.reviewcompass/guidance/WORKFLOW_NAVIGATION.md` に従って読む。
 
 ## 2. Claude 固有の作業規則
 
 1. リポジトリ直下の `CLAUDE.md` は、`AGENTS.md` を取り込むだけの入口として扱う。入口規律の正本は `AGENTS.md` であり、`CLAUDE.md` に固有の指示を書き足さない。
-2. ユーザディレクトリ配下の Claude project memory（セッション開始時に自動ロードされる記憶領域）が読み込まれても、その内容を規律の正本として扱わない。必要な規律本文は repo 内 `docs/disciplines/` を読む。
+2. ユーザディレクトリ配下の Claude project memory（セッション開始時に自動ロードされる記憶領域）が読み込まれても、その内容を規律の正本として扱わない。必要な規律本文は repo 内 `.reviewcompass/guidance/` を読む。
 3. Claude project memory への追加・変更・削除は原則行わない。「忘れないため」「再発防止のため」「規律違反を直すため」であっても例外ではない。恒久記録が必要な場合は、repo 内の記録先と内容を利用者へ提示し、明示承認を得てから repo 側ファイルに書く。
 4. permission 設定（`.claude/settings.json`・`.claude/settings.local.json` の allow／deny）と Claude Code の承認モードの制約を守る。外部 API、ネットワーク通信、repo 外書き込み、破壊的操作は、許可が必要な場合に承認を得てから実行する。共有する設定は `.claude/settings.json` に置き、環境固有の許可は git 非追跡の `.claude/settings.local.json` に置く。`settings.json` に環境固有の絶対パスを書かない。
-5. commit と push は利用者の運用方針に従う。「次のコミットまで自律実行」は commit 停止点まで進めて止まる指示であり、commit 実行代行は含まない。停止点到達後に利用者が「コミット」と指示した場合は、その利用者の単発 commit 指示を staged 内容承認と LLM commit 実行代行承認として扱い、同一ターンで commit 実行を代行してよい。最初から commit も含めて自律実行する場合は、「コミット代行も含めて自律実行」のように commit 実行代行を含むことを明示する。commit 直前は `docs/operations/COMMIT_OPERATION_CARD.md` を読み、共通手順は同カードに従う。Claude Code 側で `--approval-source-text-line-stdin` を使う場合も、TTY からの対話入力だけを渡し、利用者発話なしに LLM が承認文を生成してはならない。コミットメッセージは利用者指定があればそれを使い、指定がなければ staged 差分の主目的を 1 行の命令形または名詞句で要約する。
+5. commit と push は利用者の運用方針に従う。「次のコミットまで自律実行」は commit 停止点まで進めて止まる指示であり、commit 実行代行は含まない。停止点到達後に利用者が「コミット」と指示した場合は、その利用者の単発 commit 指示を staged 内容承認と LLM commit 実行代行承認として扱い、同一ターンで commit 実行を代行してよい。最初から commit も含めて自律実行する場合は、「コミット代行も含めて自律実行」のように commit 実行代行を含むことを明示する。commit 直前は `.reviewcompass/guidance/COMMIT_OPERATION_CARD.md` を読み、共通手順は同カードに従う。Claude Code 側で `--approval-source-text-line-stdin` を使う場合も、TTY からの対話入力だけを渡し、利用者発話なしに LLM が承認文を生成してはならない。コミットメッセージは利用者指定があればそれを使い、指定がなければ staged 差分の主目的を 1 行の命令形または名詞句で要約する。
 6. 通常の `next_action` と異なる side track に入るときは、作業前に `SIDE TRACK 開始: <名前>`、`本線停止理由`、`復帰条件` を利用者へ明示する。side track から抜けるときは、`SIDE TRACK 終了: <名前>`、`復帰先`、`next` の判定結果を明示する。
 7. docs/ 配下や `TODO_NEXT_SESSION.md` を書いた後は、`next` を再実行して結果を報告する。`post_write_verification` が返った場合は通常ワークフローへ戻らない。
 8. post-write-verification pending 中に、再発防止や反省を目的として規律、TODO、テンプレート、hook、スクリプトを勝手に変更しない。必要なら提案して利用者の承認を待つ。
@@ -32,7 +32,7 @@ python3 tools/check-workflow-action.py next --json
 
 ## 3. commit
 
-commit 直前は `docs/operations/COMMIT_OPERATION_CARD.md` を読む。Claude Code 側で `--approval-source-text-line-stdin` を使う場合も、TTY からの対話入力だけを渡し、利用者発話なしに LLM が承認文を生成してはならない。共通手順は操作カードに寄せ、Claude 固有の実行面だけを本節で扱う。
+commit 直前は `.reviewcompass/guidance/COMMIT_OPERATION_CARD.md` を読む。Claude Code 側で `--approval-source-text-line-stdin` を使う場合も、TTY からの対話入力だけを渡し、利用者発話なしに LLM が承認文を生成してはならない。共通手順は操作カードに寄せ、Claude 固有の実行面だけを本節で扱う。
 
 利用者の指示テキストが許可文言（`コミット`・`承認` など）の場合、直近の利用者発話で明示された commit 指示を承認語として使い、nonce 取得から guarded commit 実行まで同一ターンで完結させる。別途承認語の再入力を求めない。
 

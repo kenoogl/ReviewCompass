@@ -21,12 +21,12 @@ def manifest(**overrides):
     "schema_version": "effective-prompt-manifest-v1",
     "decision_point": {"kind": "stage", "required_action": "run_workflow_stage"},
     "source_artifacts": [
-      {"path": "docs/operations/WORKFLOW_NAVIGATION.md", "sha256": "sha256:" + "a" * 64}
+      {"path": ".reviewcompass/guidance/WORKFLOW_NAVIGATION.md", "sha256": "sha256:" + "a" * 64}
     ],
     "prompt_length": {
       "min_chars": 100,
       "max_chars": 20000,
-      "source_ref": "docs/operations/WORKFLOW_DISCIPLINE_MAP.yaml#default_prompt_length_bounds",
+      "source_ref": ".reviewcompass/guidance/WORKFLOW_DISCIPLINE_MAP.yaml#default_prompt_length_bounds",
       "failure_verdict": "WARN",
     },
     "preconditions_checked": [
@@ -34,7 +34,7 @@ def manifest(**overrides):
         "id": "next-json-loaded",
         "source": "next_json",
         "machine_checked": True,
-        "evidence_ref": "docs/operations/WORKFLOW_NAVIGATION.md",
+        "evidence_ref": ".reviewcompass/guidance/WORKFLOW_NAVIGATION.md",
       }
     ],
     "language_task": {
@@ -126,7 +126,7 @@ class PromptAuditTests(unittest.TestCase):
           "id": "manual-only",
           "source": "notes",
           "machine_checked": False,
-          "evidence_ref": "docs/operations/WORKFLOW_NAVIGATION.md",
+          "evidence_ref": ".reviewcompass/guidance/WORKFLOW_NAVIGATION.md",
         }
       ],
     )
@@ -144,7 +144,7 @@ class PromptAuditTests(unittest.TestCase):
       prompt_length={
         "min_chars": 20000,
         "max_chars": 100,
-        "source_ref": "docs/operations/WORKFLOW_DISCIPLINE_MAP.yaml#default_prompt_length_bounds",
+        "source_ref": ".reviewcompass/guidance/WORKFLOW_DISCIPLINE_MAP.yaml#default_prompt_length_bounds",
         "failure_verdict": "WARN",
       }
     )
@@ -182,14 +182,14 @@ class PromptAuditTests(unittest.TestCase):
       review_prompt_materials={
         "target_files": [
           {
-            "path": "docs/operations/WORKFLOW_NAVIGATION.md",
+            "path": ".reviewcompass/guidance/WORKFLOW_NAVIGATION.md",
             "content_mode": "path_only",
             "content_sha256": "sha256:" + "a" * 64,
           }
         ],
         "source_materials": [
           {
-            "path": "docs/operations/API_REVIEW_PROMPT_QUALITY.md",
+            "path": ".reviewcompass/guidance/API_REVIEW_PROMPT_QUALITY.md",
             "content_mode": "path_only",
             "content_sha256": "sha256:" + "b" * 64,
           }

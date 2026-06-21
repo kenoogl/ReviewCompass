@@ -39,7 +39,7 @@ proposed_change:
     形式とする。
   related_disciplines:
     - docs/disciplines/discipline_facts_vs_interpretation.md
-    - docs/disciplines/discipline_yaml_audit.md
+    - .reviewcompass/guidance/discipline_yaml_audit.md
 expected_effect: >-
   外れ所見の原因帰属が記録として残ることで、改善先の振り分け
   （規律・テンプレートを直す／プロンプトを直す／モデル割当を変える）が

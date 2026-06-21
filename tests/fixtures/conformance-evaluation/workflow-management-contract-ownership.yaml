@@ -8,7 +8,7 @@ items:
     contract_refs:
       - .reviewcompass/specs/workflow-management/requirements.md
       - .reviewcompass/specs/workflow-management/design.md
-      - docs/operations/WORKFLOW_NAVIGATION.md
+      - .reviewcompass/guidance/WORKFLOW_NAVIGATION.md
     evidence_refs:
       - docs/notes/2026-06-08-workflow-management-conformance-drift-audit.md
       - tools/check-workflow-action.py
@@ -24,7 +24,7 @@ items:
     contract_refs:
       - .reviewcompass/specs/workflow-management/requirements.md
       - .reviewcompass/specs/workflow-management/design.md
-      - docs/operations/WORKFLOW_NAVIGATION.md
+      - .reviewcompass/guidance/WORKFLOW_NAVIGATION.md
     evidence_refs:
       - docs/notes/2026-06-08-workflow-management-conformance-drift-audit.md
       - tools/check-workflow-action.py
@@ -42,7 +42,7 @@ items:
     contract_refs:
       - .reviewcompass/specs/workflow-management/requirements.md
       - .reviewcompass/specs/workflow-management/design.md
-      - docs/operations/WORKFLOW_NAVIGATION.md
+      - .reviewcompass/guidance/WORKFLOW_NAVIGATION.md
     evidence_refs:
       - docs/notes/2026-06-08-workflow-management-conformance-drift-audit.md
       - tools/check-workflow-action.py
@@ -59,7 +59,7 @@ items:
     contract_refs:
       - .reviewcompass/specs/workflow-management/requirements.md
       - .reviewcompass/specs/workflow-management/design.md
-      - docs/operations/WORKFLOW_NAVIGATION.md
+      - .reviewcompass/guidance/WORKFLOW_NAVIGATION.md
     evidence_refs:
       - docs/notes/2026-06-08-workflow-management-conformance-drift-audit.md
       - tools/check-workflow-action.py

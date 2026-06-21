@@ -26,7 +26,7 @@ def test_codex_adapter_uses_single_turn_commit_instruction_policy():
 
 def test_commit_operation_card_allows_user_commit_instruction_transfer_only():
   """操作カードは直近の commit 指示の転送だけを許可する"""
-  text = read_doc("docs/operations/COMMIT_OPERATION_CARD.md")
+  text = read_doc(".reviewcompass/guidance/COMMIT_OPERATION_CARD.md")
 
   assert "直近の利用者発話で明示された commit 指示" in text
   assert "staged 内容承認と LLM commit 実行代行承認" in text
@@ -36,8 +36,8 @@ def test_commit_operation_card_allows_user_commit_instruction_transfer_only():
 
 def test_precheck_docs_describe_single_turn_commit_source():
   """precheck 文書は単発 commit 指示を approval source として説明する"""
-  short = read_doc("docs/operations/WORKFLOW_PRECHECK.md")
-  details = read_doc("docs/operations/WORKFLOW_PRECHECK_DETAILS.md")
+  short = read_doc(".reviewcompass/guidance/WORKFLOW_PRECHECK.md")
+  details = read_doc(".reviewcompass/guidance/WORKFLOW_PRECHECK_DETAILS.md")
   combined = short + "\n" + details
 
   assert "利用者の単発 commit 指示" in combined

@@ -22,9 +22,9 @@ def valid_language_task(**overrides):
   task = {
     "document_kind": "review",
     "input": {
-      "required_files": ["docs/operations/WORKFLOW_NAVIGATION.md"],
+      "required_files": [".reviewcompass/guidance/WORKFLOW_NAVIGATION.md"],
       "state_refs": [".reviewcompass/specs/workflow-management/spec.json"],
-      "source_refs": ["docs/operations/WORKFLOW_DISCIPLINE_MAP.yaml"],
+      "source_refs": [".reviewcompass/guidance/WORKFLOW_DISCIPLINE_MAP.yaml"],
     },
     "output_format": {
       "kind": "markdown",

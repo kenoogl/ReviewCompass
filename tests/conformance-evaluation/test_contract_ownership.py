@@ -26,7 +26,7 @@ def test_contract_ownership_map_records_provisional_owners_and_sources():
     contract_refs=[
       ".reviewcompass/specs/workflow-management/requirements.md",
       ".reviewcompass/specs/workflow-management/design.md",
-      "docs/operations/WORKFLOW_NAVIGATION.md",
+      ".reviewcompass/guidance/WORKFLOW_NAVIGATION.md",
     ],
     evidence_refs=[
       "tools/check-workflow-action.py",
@@ -49,7 +49,7 @@ def test_contract_ownership_map_records_provisional_owners_and_sources():
       "source_kind": "design",
     },
     {
-      "path": "docs/operations/WORKFLOW_NAVIGATION.md",
+      "path": ".reviewcompass/guidance/WORKFLOW_NAVIGATION.md",
       "source_kind": "operations",
     },
     {
