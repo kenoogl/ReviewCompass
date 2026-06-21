@@ -1,7 +1,9 @@
 ---
 date: 2026-06-21
 record_type: working-memo
-status: active
+status: completed
+completed_at: 2026-06-22 00:11:25 +0900
+completion_commit: 4a7d30c9
 topic: postwrite-prompt-mechanization-side-track-retroactive-record
 related:
   - docs/notes/working/2026-06-21-llm-boundary-and-postwrite-prompt-mechanization-plan.md
@@ -73,32 +75,36 @@ Phase 0 実装後、次を確認済み。
 - `tests/workflow-management/test_prompt_audit.py tests/tools/test_effective_prompt_contract.py`: `13 passed`
 - `tests/deployment/test_deploy_manifest.py tests/deployment/test_deploy_package_external_app_smoke.py`: `7 passed`
 
-## 6. 未完了事項
+## 6. 終了記録
 
-この side track はまだ完了していない。
+この side track は、2026-06-22 00:11:25 +0900 の commit
+`4a7d30c9 Add canonical post-write policy prompt` で実質終了した。
 
-未完了:
+終了時点で満たした条件:
 
-- Phase 0 実装差分のコミット
-- Phase 1: `post_write_policy_violation` 用 canonical effective prompt 固定化テスト
-- Phase 1 実装
-- post-write prompt generation / audit のより強い機械検査
-- guidance relocation 本線への復帰
-- 正しい post-write verification flow による再レビュー
+- Phase 0 実装差分がコミット済みである。
+- `post_write_policy_violation` から API review-run を開始しないことが機械的に固定されている。
+- `post_write_policy_violation` 用 canonical effective prompt が固定されている。
+- path / SHA だけの post-write prompt ではなく、対象本文を含む review target を生成することがテストで固定されている。
+- canonical prompt 追加に対する post-write verification が実行され、manifest が保存されている。
+
+未完了として残す事項:
+
+- post-write prompt generation / audit のさらなる機械検査強化は、別の workflow operation 機械化改善として扱う。
 
 ## 7. 復帰先
 
-この side track 完了後は、guidance relocation の本線へ戻る。
+この side track 完了後、guidance relocation の本線へ戻った。
 
-戻る地点:
+戻った地点:
 
 - guidance relocation の参照更新済み差分を、正しい post-write verification flow で検査する地点
 
-戻る前の条件:
+本線復帰後に実施した作業:
 
-- Phase 0 実装差分がコミットされている
-- 少なくとも `post_write_policy_violation` から無効な API review-run へ進まないことが機械的に固定されている
-- path / SHA だけの post-write prompt が生成されないことがテストで固定されている
+- `3bff3841 Point guidance references to deployed location`
+- `9d9f9f1d Update deployed guidance consumers`
+- `main` を `origin/main` へ push 済み
 
 ## 8. 運用上の課題
 
@@ -107,6 +113,8 @@ Phase 0 実装後、次を確認済み。
 これは次の運用課題を示している。
 
 - 本線から補修作業へ切り替わる時点で、side track 認定を先に行うべきだった。
+- side track 終了時には、終了宣言と終了記録を明示するべきだった。
+- 今回は `4a7d30c9` で実質終了していたが、終了宣言が遅れたため、後から終了点を確認する必要が生じた。
 - `side-track-stack` は read-only の `current` CLI しかなく、push / pop を正規 CLI として実行できない。
 - side track 開始操作が機械化されていないため、LLM が working note で代替する余地が残っている。
 - 今後は side track push / pop の正規 CLI 化、または `next --json` から side track 開始候補を返す導線が必要である。
@@ -115,6 +123,6 @@ Phase 0 実装後、次を確認済み。
 
 ## 9. 停止点
 
-このメモは side track の事後認定記録であり、それ自体は commit、API review-run、post-write manifest 作成、guidance relocation 本線復帰を許可しない。
+このメモは side track の事後認定および終了記録であり、それ自体は commit、API review-run、post-write manifest 作成、guidance relocation 本線復帰を許可しない。
 
-次に進む場合は、まず Phase 0 実装差分をコミットする。
+現在は side track 外であり、通常の `next --json` 判定に従う。

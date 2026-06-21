@@ -1,0 +1,30 @@
+status: completed
+target_files:
+  - docs/notes/working/2026-06-21-postwrite-prompt-mechanization-side-track-retroactive-record.md
+target_sha256:
+  docs/notes/working/2026-06-21-postwrite-prompt-mechanization-side-track-retroactive-record.md: 98808443b260e9a2d0579e2cbf6c28b2a93f5b8c57be072cea8613c21fb4db04
+required_verifiers:
+  - lightweight_self_check
+completed_verifiers:
+  - lightweight_self_check
+unresolved_substantive_findings: 0
+verifications:
+  - verifier: lightweight_self_check
+    target_files:
+      - docs/notes/working/2026-06-21-postwrite-prompt-mechanization-side-track-retroactive-record.md
+    target_sha256:
+      docs/notes/working/2026-06-21-postwrite-prompt-mechanization-side-track-retroactive-record.md: 98808443b260e9a2d0579e2cbf6c28b2a93f5b8c57be072cea8613c21fb4db04
+    checks:
+      user_points_preserved: true
+      facts_inferences_policy_and_open_items_separated: true
+      useful_as_later_decision_material: true
+      does_not_over_specify_scope: true
+      remains_working_note_not_canonical_spec: true
+      api_review_intentionally_not_used: true
+notes: >
+  Lightweight self-check for the side-track record update. The note now records
+  that side-track entry and exit should be explicit, marks the retroactive
+  side-track record as completed, identifies 4a7d30c9 as the effective
+  completion point, separates later guidance relocation work as mainline
+  continuation, and records the missing exit declaration as an operational
+  lesson rather than promoting the working note to a canonical workflow spec.
