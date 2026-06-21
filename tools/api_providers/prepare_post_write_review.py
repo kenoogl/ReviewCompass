@@ -36,6 +36,8 @@ def _target_entries(targets: List[str]) -> List[Dict[str, str]]:
     {
       "path": target,
       "sha256": _sha256_file(Path(target)),
+      "content_mode": "full_text",
+      "content_sha256": _sha256_file(Path(target)),
     }
     for target in targets
   ]
@@ -89,6 +91,25 @@ def _render_review_target(
   ]
   for entry in target_entries:
     lines.append(f"- {entry['path']} sha256={entry['sha256']}")
+  lines.extend([
+    "",
+    "## Target File Contents",
+    "",
+  ])
+  for entry in target_entries:
+    path = Path(entry["path"])
+    content = path.read_text(encoding="utf-8")
+    lines.extend([
+      f"### {entry['path']}",
+      "",
+      f"content_mode: {entry['content_mode']}",
+      f"content_sha256: {entry['content_sha256']}",
+      "",
+      "```text",
+      content.rstrip("\n"),
+      "```",
+      "",
+    ])
   lines.extend([
     "",
     "## Scope",

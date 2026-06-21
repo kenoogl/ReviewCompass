@@ -38,6 +38,10 @@ from tools.api_providers.run_role import (  # noqa: E402
   build_prompt,
   update_review_run_artifacts,
 )
+from tools.check_workflow_action.prompt_audit import (  # noqa: E402
+  audit_manifest,
+  load_manifest as load_prompt_manifest,
+)
 from tools.normal_output import join_values, status_line  # noqa: E402
 
 ROLES = ["primary", "adversarial", "judgment"]
@@ -359,6 +363,32 @@ def validate_review_prompt_preflight(args: argparse.Namespace, criteria: str) ->
   return errors
 
 
+def validate_post_write_prompt_manifest_preflight(args: argparse.Namespace) -> List[str]:
+  """post-write review-run 起動前に effective prompt manifest を検査する。"""
+  if args.phase != "post_write_verification" or not args.prompt_manifest_path:
+    return []
+
+  manifest = load_prompt_manifest(args.prompt_manifest_path)
+  decision_point = manifest.get("decision_point")
+  decision_kind = None
+  if isinstance(decision_point, dict):
+    decision_kind = decision_point.get("kind")
+
+  errors = []
+  if decision_kind != "post_write_verification":
+    errors.append(
+      "post_write_verification requires prompt manifest "
+      f"decision_point.kind=post_write_verification; got {decision_kind}"
+    )
+
+  audit_result = audit_manifest(manifest)
+  if audit_result.get("verdict") != "OK":
+    reasons = audit_result.get("reasons")
+    reason_text = "; ".join(str(reason) for reason in reasons or [])
+    errors.append(f"prompt manifest audit failed: {reason_text}")
+  return errors
+
+
 def _select_variant_name(args: argparse.Namespace, config: Dict[str, Any]) -> Optional[str]:
   """phase に応じた実効 variant 名を返す。"""
   if args.variant and args.default_variant_for:
@@ -532,6 +562,12 @@ def main(argv: Optional[List[str]] = None) -> int:
     if preflight_errors:
       sys.stderr.write("エラー：vertical intent transfer prompt preflight failed\n")
       for error in preflight_errors:
+        sys.stderr.write(f"  - {error}\n")
+      return 1
+    post_write_preflight_errors = validate_post_write_prompt_manifest_preflight(args)
+    if post_write_preflight_errors:
+      sys.stderr.write("エラー：post-write review prompt preflight failed\n")
+      for error in post_write_preflight_errors:
         sys.stderr.write(f"  - {error}\n")
       return 1
 
