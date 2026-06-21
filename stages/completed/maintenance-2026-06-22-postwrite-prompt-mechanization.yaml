@@ -1,0 +1,77 @@
+process_id: maintenance
+title: post-write prompt mechanization reliability
+started_at: "2026-06-22"
+trigger: >
+  post-write prompt 機械化は、post_write_policy_violation の安全停止と
+  target 本文注入の Phase 0 補修だけでは信頼利用できない。API review prompt
+  生成、source bundle、prompt audit、runner gate を機械処理化し、手作業の
+  prompt 合成や誤経路実行を防ぐ必要がある。
+mainline_blocked_by: >
+  next --json は completed だが、利用者が本線の基盤整備として post-write prompt
+  機械化を信頼して使える状態にすることを指示した。
+classification: local_workflow_guard_improvement
+reason: >
+  post-write review prompt の入力生成と API 実行可否 gate を局所的に強化する。
+  workflow phase/gate の意味、feature 正本文書、spec.json の workflow_state は変更しない。
+allowed_scope:
+  - "post-write verification 用 source bundle 生成の機械化"
+  - "post-write API review prompt の固定構造生成"
+  - "post-write prompt manifest / audit の fail-closed 強化"
+  - "post-write review-run 起動前 runner gate の強化"
+  - "関連テスト、配布 manifest、運用文書の追従"
+allowed_files:
+  - tools/api_providers/prepare_post_write_review.py
+  - tools/api_providers/run_review.py
+  - tools/api_providers/tests/test_prepare_post_write_review.py
+  - tools/api_providers/tests/test_run_review.py
+  - tools/check_workflow_action/prompt_audit.py
+  - tests/workflow-management/test_prompt_audit.py
+  - tests/tools/test_effective_prompt_contract.py
+  - tests/operations/test_session_workflow_guide.py
+  - tests/deployment/test_deploy_manifest.py
+  - deploy-manifest.yaml
+  - .reviewcompass/guidance/WORKFLOW_NAVIGATION.md
+  - .reviewcompass/guidance/WORKFLOW_DISCIPLINE_MAP.yaml
+  - .reviewcompass/guidance/effective-prompts/
+  - docs/notes/working/2026-06-21-llm-boundary-and-postwrite-prompt-mechanization-plan.md
+  - stages/in-progress/maintenance-2026-06-22-postwrite-prompt-mechanization.yaml
+  - stages/completed/maintenance-2026-06-22-postwrite-prompt-mechanization.yaml
+completion_conditions:
+  - "post_write_verification で target 本文と source material を含む source bundle が機械生成される"
+  - "API review prompt が固定構造から生成され、target / source / out-of-scope / output contract が分離される"
+  - "path-only source、target 本文欠落、複数主判断、runner / schema 不一致、機微情報混入を prompt audit が fail-closed で止める"
+  - "prompt audit OK の場合だけ post-write API provider を起動できる"
+  - "invalid prompt または誤経路 response を post-write verification の有効証跡として扱わない"
+  - "実運用相当の post-write 対象で source bundle、prompt、manifest、audit result の一貫性を確認済みである"
+current_status: completed
+completed_at: "2026-06-22"
+implemented:
+  - >
+    prepare_post_write_review.py が --source-material を受け取り、target 本文と
+    source material 本文を review-target.md に分離して埋め込む。
+  - >
+    review-target.yaml に target_files / source_materials の content_mode と
+    content_sha256 を記録し、prompt-manifest.yaml を同一 review-run に生成する。
+  - >
+    prompt-manifest.yaml の review_prompt_materials には target_files と
+    source_materials を content_mode: full_text と sha256:<hex> 付きで記録する。
+  - >
+    prompt audit は post_write_verification manifest で review_prompt_materials が
+    欠落、空、path-only、sha256 形式不正、参照先欠落の場合に DEVIATION とする。
+  - >
+    run_review.py は既存の prompt manifest preflight 経由で、audit OK の manifest
+    のみ post-write API provider 起動へ進める。
+  - >
+    prepare_post_write_review.py は target / source material の存在確認と
+    機微情報らしい文字列の検出で fail-closed する。
+verification:
+  - ".venv/bin/python3 -m pytest tools/api_providers/tests/test_prepare_post_write_review.py tests/workflow-management/test_prompt_audit.py tools/api_providers/tests/test_run_review.py -q"
+  - ".venv/bin/python3 -m pytest tests/deployment/test_deploy_manifest.py tests/deployment/test_deploy_package_external_app_smoke.py tests/workflow-management/test_effective_prompt_manifest.py tools/api_providers/tests/test_run_review.py tools/api_providers/tests/test_prepare_post_write_review.py tests/workflow-management/test_prompt_audit.py tests/operations/test_session_workflow_guide.py -q"
+  - "git diff --check"
+notes:
+  - >
+    post-write 対象文書の手順更新は、コード変更と同時に持つと
+    post_write_policy_violation になるため本実装差分から分離した。
+  - >
+    docs / guidance の説明更新は、今回のコード・テスト実装をコミットした後に
+    別の post-write 対象変更として扱う。

@@ -172,6 +172,52 @@ class PromptAuditTests(unittest.TestCase):
     self.assertEqual(result["verdict"], "DEVIATION")
     self.assertIn("next_action_compatible", "\n".join(result["reasons"]))
 
+  def test_prompt_audit_rejects_post_write_materials_without_embedded_bodies(self):
+    module = self._module()
+    data = manifest(
+      decision_point={
+        "kind": "post_write_verification",
+        "required_action": "run_post_write_verification",
+      },
+      review_prompt_materials={
+        "target_files": [
+          {
+            "path": "docs/operations/WORKFLOW_NAVIGATION.md",
+            "content_mode": "path_only",
+            "content_sha256": "sha256:" + "a" * 64,
+          }
+        ],
+        "source_materials": [
+          {
+            "path": "docs/operations/API_REVIEW_PROMPT_QUALITY.md",
+            "content_mode": "path_only",
+            "content_sha256": "sha256:" + "b" * 64,
+          }
+        ],
+      },
+    )
+
+    result = module.audit_manifest(data)
+
+    self.assertEqual(result["verdict"], "DEVIATION")
+    joined = "\n".join(result["reasons"])
+    self.assertIn("review_prompt_materials.target_files", joined)
+    self.assertIn("review_prompt_materials.source_materials", joined)
+
+  def test_prompt_audit_rejects_post_write_manifest_without_materials(self):
+    module = self._module()
+    data = manifest(
+      decision_point={
+        "kind": "post_write_verification",
+        "required_action": "run_post_write_verification",
+      },
+    )
+
+    result = module.audit_manifest(data)
+
+    self.assertEqual(result["verdict"], "DEVIATION")
+    self.assertIn("review_prompt_materials", "\n".join(result["reasons"]))
+
   def test_prompt_audit_cli_reads_manifest_json(self):
     with tempfile.TemporaryDirectory() as tmp:
       path = Path(tmp) / "prompt-manifest.yaml"

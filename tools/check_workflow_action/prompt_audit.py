@@ -98,6 +98,11 @@ def audit_manifest(
   _audit_preconditions(manifest.get("preconditions_checked"), reasons)
   _audit_postconditions(manifest.get("postconditions"), reasons)
   _audit_language_task(manifest.get("language_task"), reasons)
+  _audit_review_prompt_materials(
+    manifest.get("decision_point"),
+    manifest.get("review_prompt_materials"),
+    reasons,
+  )
   _audit_on_completion(manifest.get("on_completion"), reasons, current_next_action)
   verdict = "OK" if not reasons else "DEVIATION"
   return {
@@ -212,6 +217,51 @@ def _audit_language_task(language_task: Any, reasons: List[str]) -> None:
       reasons.append(
         "language_task.constraints に machine/state mutation instruction が含まれています"
       )
+
+
+def _audit_review_prompt_materials(
+  decision_point: Any,
+  materials: Any,
+  reasons: List[str],
+) -> None:
+  if not isinstance(decision_point, dict):
+    return
+  if decision_point.get("kind") != "post_write_verification":
+    return
+
+  if not isinstance(materials, dict):
+    reasons.append("review_prompt_materials が mapping ではありません")
+    return
+
+  for group_name in ("target_files", "source_materials"):
+    entries = materials.get(group_name)
+    if not isinstance(entries, list) or not entries:
+      reasons.append(f"review_prompt_materials.{group_name} が非空 list ではありません")
+      continue
+    for index, entry in enumerate(entries):
+      _audit_embedded_prompt_material_entry(group_name, index, entry, reasons)
+
+
+def _audit_embedded_prompt_material_entry(
+  group_name: str,
+  index: int,
+  entry: Any,
+  reasons: List[str],
+) -> None:
+  prefix = f"review_prompt_materials.{group_name}[{index}]"
+  if not isinstance(entry, dict):
+    reasons.append(f"{prefix} が mapping ではありません")
+    return
+  path = entry.get("path")
+  if not isinstance(path, str) or not path.strip():
+    reasons.append(f"{prefix}.path が空です")
+  elif not Path(path).exists():
+    reasons.append(f"{prefix}.path の参照先が存在しません: {path}")
+  if entry.get("content_mode") != "full_text":
+    reasons.append(f"{prefix}.content_mode が full_text ではありません")
+  content_sha256 = entry.get("content_sha256")
+  if not isinstance(content_sha256, str) or not SHA256_PATTERN.match(content_sha256):
+    reasons.append(f"{prefix}.content_sha256 が sha256:<hex> 形式ではありません")
 
 
 def _audit_on_completion(

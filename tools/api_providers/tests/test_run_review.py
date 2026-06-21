@@ -12,6 +12,7 @@ if str(_PROJECT_ROOT) not in sys.path:
 
 import yaml
 
+from tools.api_providers.prepare_post_write_review import main as prepare_post_write_review
 from tools.api_providers.run_review import main
 
 
@@ -756,6 +757,54 @@ def test_run_review_uses_criteria_file_and_records_prompt_artifact(
   assert model_result["prompt_sha256"] == hashlib.sha256(
     prompt_path.read_bytes()
   ).hexdigest()
+
+
+def test_run_review_accepts_prepare_post_write_prompt_manifest(
+  tmp_path,
+  monkeypatch,
+):
+  """prepare_post_write_review が生成した manifest は runner preflight を通る。"""
+  monkeypatch.setenv("GEMINI_API_KEY", "test-key")
+  target = tmp_path / "docs" / "operations" / "WORKFLOW_NAVIGATION.md"
+  target.parent.mkdir(parents=True)
+  target.write_text("post-write target body\n", encoding="utf-8")
+  source = tmp_path / ".reviewcompass" / "guidance" / "API_REVIEW_PROMPT_QUALITY.md"
+  source.parent.mkdir(parents=True)
+  source.write_text("source material body\n", encoding="utf-8")
+  review_run_dir = tmp_path / "review-run"
+  prepare_exit_code = prepare_post_write_review(
+    [
+      "--target", str(target),
+      "--source-material", str(source),
+      "--review-run-dir", str(review_run_dir),
+      "--criteria-id", "post_write_prompt_manifest_acceptance",
+      "--change-summary", "post-write prompt manifest を検証する。",
+    ]
+  )
+  assert prepare_exit_code == 0
+  config_path = _make_config(tmp_path)
+  responses = {"gemini-api": "findings: []\n"}
+
+  with patch(
+    "tools.api_providers.run_review.get_provider",
+    side_effect=_make_provider_factory(responses),
+  ) as get_provider:
+    exit_code = main(
+      [
+        "--variant", "post_write_verification_google",
+        "--target", str(target),
+        "--phase", "post_write_verification",
+        "--criteria-file", str(review_run_dir / "review-target.md"),
+        "--review-run-dir", str(review_run_dir),
+        "--config", str(config_path),
+        "--prompt-manifest-path", str(review_run_dir / "prompt-manifest.yaml"),
+      ]
+    )
+
+  assert exit_code == 0
+  assert get_provider.call_count == 1
+  rounds = yaml.safe_load((review_run_dir / "rounds.yaml").read_text(encoding="utf-8"))
+  assert rounds["prompt_manifest_path"] == str(review_run_dir / "prompt-manifest.yaml")
 
 
 def test_run_review_blocks_vertical_review_when_source_materials_are_paths_only(
