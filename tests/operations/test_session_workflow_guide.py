@@ -126,6 +126,10 @@ def test_post_write_verification_documents_canonical_api_call_procedure_without_
   assert ".venv/bin/python3 tools/api_providers/run_review.py" in post_write_section
   assert "--criteria-file" in post_write_section
   assert "review-target.md" in post_write_section
+  assert "--source-material" in post_write_section
+  assert "--prompt-manifest-path" in post_write_section
+  assert "prompt-manifest.yaml" in post_write_section
+  assert "source materials" in post_write_section
   assert "外側から `zsh -c` で包まない" in post_write_section
   assert "entrypoint 内" in post_write_section
   assert "~/.zshrc" in post_write_section
