@@ -1,3 +1,29 @@
+# Post-write Review Target
+
+criteria_id: post_write_policy_violation_canonical_prompt_map
+phase: post_write_verification
+generated_at: 2026-06-21T15:09:29.724724+00:00
+
+## Change Summary
+
+post_write_policy_violation の判定点に canonical effective prompt path を追加し、API review-run へ誤進行しない停止点 prompt を固定する。
+
+## Review Question
+
+docs/operations/WORKFLOW_DISCIPLINE_MAP.yaml の変更は、post_write_policy_violation 判定点に canonical effective prompt を対応付ける目的に対して過不足なく、既存の post-write verification 運用や他の判定点を壊していないか。
+
+## Target Files
+
+- docs/operations/WORKFLOW_DISCIPLINE_MAP.yaml sha256=4b5a00603c209cc53c8a0c0815e17a24190b695b48357b21592185eb1fbf6ddc
+
+## Target File Contents
+
+### docs/operations/WORKFLOW_DISCIPLINE_MAP.yaml
+
+content_mode: full_text
+content_sha256: 4b5a00603c209cc53c8a0c0815e17a24190b695b48357b21592185eb1fbf6ddc
+
+```text
 # next_action ごとの直前必読規律マップ。
 # `tools/check-workflow-action.py next --json` はこの内容を
 # `next_action.required_disciplines` として返す。
@@ -534,3 +560,28 @@ required_inputs:
           path: docs/operations/SESSION_WORKFLOW_GUIDE.md#vertical-intent-transfer-review
         required_question: 上流の目的・責務境界・受入条件・禁止事項が、横断対処後の対象成果物へ欠落・弱体化・逸脱・未根拠追加なく引き継がれているか。
         read_policy: include_in_review_prompt
+```
+
+
+## Scope
+
+- Check whether the changed target files clearly state the intended contract.
+- Check whether related instructions are mutually consistent across targets.
+- Check whether the documented procedure is actionable before API review, triage, manifest, or commit steps continue.
+
+## Out Of Scope
+
+- Do not request unrelated refactors or style-only rewrites.
+- Do not judge files that are not listed in Target Files.
+- Do not treat missing implementation work as a document defect unless the target text claims it already exists.
+
+## Finding Policy
+
+- Report must-fix findings for contradictions, missing required gates, or instructions that would allow an unsafe workflow action.
+- Report should-fix findings for ambiguity that could cause repeated manual judgment or unnecessary API review loops.
+- Return findings: [] when the target files are internally consistent for this review question.
+
+## Sensitive Information Check
+
+- status: passed
+- External API review must not proceed if this section reports potential secrets.

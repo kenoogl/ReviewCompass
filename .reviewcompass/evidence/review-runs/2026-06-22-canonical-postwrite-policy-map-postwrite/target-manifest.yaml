@@ -1,0 +1,4 @@
+run_id: 2026-06-22-canonical-postwrite-policy-map-postwrite
+target_files:
+- path: docs/operations/WORKFLOW_DISCIPLINE_MAP.yaml
+  sha256: 4b5a00603c209cc53c8a0c0815e17a24190b695b48357b21592185eb1fbf6ddc

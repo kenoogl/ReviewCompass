@@ -1,0 +1,333 @@
+round_id: round-1
+purpose: post_write_verification
+invocation_timestamp: '2026-06-21T15:09:48.365199+00:00'
+target_files:
+- path: docs/operations/WORKFLOW_DISCIPLINE_MAP.yaml
+  sha256: 4b5a00603c209cc53c8a0c0815e17a24190b695b48357b21592185eb1fbf6ddc
+criteria: "# Post-write Review Target\n\ncriteria_id: post_write_policy_violation_canonical_prompt_map\n\
+  phase: post_write_verification\ngenerated_at: 2026-06-21T15:09:29.724724+00:00\n\
+  \n## Change Summary\n\npost_write_policy_violation の判定点に canonical effective prompt\
+  \ path を追加し、API review-run へ誤進行しない停止点 prompt を固定する。\n\n## Review Question\n\ndocs/operations/WORKFLOW_DISCIPLINE_MAP.yaml\
+  \ の変更は、post_write_policy_violation 判定点に canonical effective prompt を対応付ける目的に対して過不足なく、既存の\
+  \ post-write verification 運用や他の判定点を壊していないか。\n\n## Target Files\n\n- docs/operations/WORKFLOW_DISCIPLINE_MAP.yaml\
+  \ sha256=4b5a00603c209cc53c8a0c0815e17a24190b695b48357b21592185eb1fbf6ddc\n\n##\
+  \ Target File Contents\n\n### docs/operations/WORKFLOW_DISCIPLINE_MAP.yaml\n\ncontent_mode:\
+  \ full_text\ncontent_sha256: 4b5a00603c209cc53c8a0c0815e17a24190b695b48357b21592185eb1fbf6ddc\n\
+  \n```text\n# next_action ごとの直前必読規律マップ。\n# `tools/check-workflow-action.py next --json`\
+  \ はこの内容を\n# `next_action.required_disciplines` として返す。\n# 作業対象の状態台帳や持ち越し一覧は規律ではないため、\n\
+  # `required_inputs` の抽象入力として返す。\n# `decision_points` は機械可読な判定点の全体カタログである。\n# `by_kind`、`by_stage`、`required_inputs`\
+  \ は既存実装が読む実行時マップとして維持する。\ndefault:\n  - docs/operations/WORKFLOW_NAVIGATION.md\n\
+  default_prompt_length_bounds:\n  min_chars: 400\n  max_chars: 20000\n  failure_verdict:\
+  \ WARN\ndecision_points:\n  next_action_kind:\n    - id: stage\n      prompt_source_refs:\n\
+  \        - docs/operations/WORKFLOW_NAVIGATION.md\n        - docs/disciplines/discipline_workflow_state_truth_source.md\n\
+  \      effective_prompt_policy: one_effective_prompt_per_decision_point\n    - id:\
+  \ cross_feature_stage\n      prompt_source_refs:\n        - docs/operations/WORKFLOW_NAVIGATION.md\n\
+  \        - docs/disciplines/discipline_workflow_state_truth_source.md\n      effective_prompt_policy:\
+  \ one_effective_prompt_per_decision_point\n    - id: commit_stop_point\n      prompt_source_refs:\n\
+  \        - docs/operations/WORKFLOW_NAVIGATION.md#commit_stop_point\n        - docs/disciplines/discipline_approval_operation.md\n\
+  \      effective_prompt_policy: one_effective_prompt_per_decision_point\n    - id:\
+  \ upstream_recheck\n      prompt_source_refs:\n        - docs/operations/WORKFLOW_NAVIGATION.md\n\
+  \        - docs/operations/REOPEN_PROCEDURE.md\n      effective_prompt_policy: one_effective_prompt_per_decision_point\n\
+  \    - id: reopen_classification_required\n      prompt_source_refs:\n        -\
+  \ docs/operations/WORKFLOW_NAVIGATION.md\n        - docs/operations/REOPEN_PROCEDURE.md\n\
+  \      effective_prompt_policy: one_effective_prompt_per_decision_point\n    - id:\
+  \ completed\n      prompt_source_refs:\n        - docs/operations/WORKFLOW_NAVIGATION.md\n\
+  \      effective_prompt_policy: one_effective_prompt_per_decision_point\n    - id:\
+  \ unknown\n      prompt_source_refs:\n        - docs/operations/WORKFLOW_NAVIGATION.md\n\
+  \      effective_prompt_policy: one_effective_prompt_per_decision_point\n    - id:\
+  \ feature_definition_required\n      prompt_source_refs:\n        - docs/operations/WORKFLOW_NAVIGATION.md#feature_definition_required\n\
+  \        - docs/operations/INITIAL_SETUP_LLM_GUIDE.md\n      effective_prompt_policy:\
+  \ one_effective_prompt_per_decision_point\n    - id: post_write_verification\n \
+  \     prompt_source_refs:\n        - docs/operations/WORKFLOW_NAVIGATION.md#post_write_verification\n\
+  \        - docs/disciplines/discipline_post_write_verification.md\n      effective_prompt_policy:\
+  \ one_effective_prompt_per_decision_point\n    - id: lightweight_self_check\n  \
+  \    prompt_source_refs:\n        - docs/operations/WORKFLOW_NAVIGATION.md#lightweight_self_check\n\
+  \      effective_prompt_policy: one_effective_prompt_per_decision_point\n    - id:\
+  \ post_write_policy_violation\n      prompt_source_refs:\n        - docs/operations/WORKFLOW_NAVIGATION.md#post_write_policy_violation\n\
+  \        - docs/disciplines/discipline_post_write_verification.md\n      effective_prompt_policy:\
+  \ one_effective_prompt_per_decision_point\n      canonical_effective_prompt_path:\
+  \ .reviewcompass/guidance/effective-prompts/next-action-post-write-policy-violation.prompt.md\n\
+  \    - id: post_write_human_decision_required\n      prompt_source_refs:\n     \
+  \   - docs/operations/WORKFLOW_NAVIGATION.md#post_write_human_decision_required\n\
+  \        - docs/disciplines/discipline_post_write_verification.md\n        - docs/disciplines/discipline_approval_operation.md\n\
+  \      effective_prompt_policy: one_effective_prompt_per_decision_point\n    - id:\
+  \ reopen_in_progress\n      prompt_source_refs:\n        - docs/operations/WORKFLOW_NAVIGATION.md#reopen_in_progress\n\
+  \        - docs/operations/REOPEN_PROCEDURE.md\n        - docs/disciplines/discipline_approval_operation.md\n\
+  \      effective_prompt_policy: one_effective_prompt_per_decision_point\n    - id:\
+  \ maintenance_in_progress\n      prompt_source_refs:\n        - docs/operations/WORKFLOW_NAVIGATION.md#maintenance_in_progress\n\
+  \      effective_prompt_policy: one_effective_prompt_per_decision_point\n    - id:\
+  \ resume_in_progress\n      prompt_source_refs:\n        - docs/operations/WORKFLOW_NAVIGATION.md#resume_in_progress\n\
+  \      effective_prompt_policy: one_effective_prompt_per_decision_point\n    - id:\
+  \ reopen_started\n      prompt_source_refs:\n        - docs/operations/WORKFLOW_PRECHECK.md#reopen-start\n\
+  \        - docs/operations/WORKFLOW_PRECHECK_DETAILS.md#commit\n        - docs/operations/REOPEN_PROCEDURE.md\n\
+  \      effective_prompt_policy: one_effective_prompt_per_decision_point\n    - id:\
+  \ reopen_start_failed\n      prompt_source_refs:\n        - docs/operations/WORKFLOW_PRECHECK.md#reopen-start\n\
+  \        - docs/operations/WORKFLOW_PRECHECK_DETAILS.md#commit\n        - docs/operations/REOPEN_PROCEDURE.md\n\
+  \      effective_prompt_policy: one_effective_prompt_per_decision_point\n  workflow_stage:\n\
+  \    - id: candidate-proposal\n      prompt_source_refs:\n        - docs/operations/WORKFLOW_NAVIGATION.md\n\
+  \        - stages/feature-partitioning/2026-05-24-proposal.md\n      effective_prompt_policy:\
+  \ one_effective_prompt_per_decision_point\n    - id: review\n      prompt_source_refs:\n\
+  \        - docs/operations/WORKFLOW_NAVIGATION.md\n        - stages/intent.yaml\n\
+  \      effective_prompt_policy: one_effective_prompt_per_decision_point\n    - id:\
+  \ drafting\n      prompt_source_refs:\n        - docs/operations/WORKFLOW_NAVIGATION.md\n\
+  \        - docs/operations/REOPEN_PROCEDURE.md\n        - docs/disciplines/discipline_workflow_state_truth_source.md\n\
+  \      effective_prompt_policy: one_effective_prompt_per_decision_point\n    - id:\
+  \ triad-review\n      prompt_source_refs:\n        - docs/operations/WORKFLOW_NAVIGATION.md\n\
+  \        - docs/operations/SESSION_WORKFLOW_GUIDE.md#3.3-a-2\n        - docs/operations/SESSION_WORKFLOW_GUIDE.md#vertical-intent-transfer-review\n\
+  \        - docs/operations/API_REVIEW_PROMPT_QUALITY.md\n        - docs/disciplines/discipline_llm_as_judge_prompting.md\n\
+  \        - docs/disciplines/discipline_approval_operation.md\n      effective_prompt_policy:\
+  \ one_effective_prompt_per_decision_point\n      prompt_length_bounds:\n       \
+  \ min_chars: 1200\n        max_chars: 60000\n        failure_verdict: DEVIATION\n\
+  \    - id: review-wave\n      prompt_source_refs:\n        - docs/operations/WORKFLOW_NAVIGATION.md\n\
+  \        - docs/operations/SESSION_WORKFLOW_GUIDE.md#vertical-intent-transfer-review\n\
+  \        - learning/workflow/carry-forward-register/reviewcompass-import.yaml\n\
+  \      effective_prompt_policy: one_effective_prompt_per_decision_point\n    - id:\
+  \ alignment\n      prompt_source_refs:\n        - docs/operations/WORKFLOW_NAVIGATION.md\n\
+  \        - docs/operations/SESSION_WORKFLOW_GUIDE.md#vertical-intent-transfer-review\n\
+  \        - docs/disciplines/discipline_workflow_state_truth_source.md\n      effective_prompt_policy:\
+  \ one_effective_prompt_per_decision_point\n    - id: approval\n      prompt_source_refs:\n\
+  \        - docs/operations/WORKFLOW_NAVIGATION.md\n        - docs/operations/WORKFLOW_PRECHECK.md#spec-set\n\
+  \        - docs/operations/WORKFLOW_PRECHECK_DETAILS.md#spec-set\n        - docs/disciplines/discipline_approval_operation.md\n\
+  \      effective_prompt_policy: one_effective_prompt_per_decision_point\n      prompt_length_bounds:\n\
+  \        min_chars: 400\n        max_chars: 12000\n        failure_verdict: DEVIATION\n\
+  \  precheck_subcommand:\n    - id: spec-set\n      prompt_source_refs:\n       \
+  \ - docs/operations/WORKFLOW_PRECHECK.md#spec-set\n        - docs/operations/WORKFLOW_PRECHECK_DETAILS.md#spec-set\n\
+  \      effective_prompt_policy: one_effective_prompt_per_decision_point\n    - id:\
+  \ commit\n      prompt_source_refs:\n        - docs/operations/WORKFLOW_PRECHECK.md#commit\n\
+  \        - docs/operations/WORKFLOW_PRECHECK_DETAILS.md#commit\n      effective_prompt_policy:\
+  \ one_effective_prompt_per_decision_point\n    - id: push\n      prompt_source_refs:\n\
+  \        - docs/operations/WORKFLOW_PRECHECK.md#push\n        - docs/operations/WORKFLOW_PRECHECK_DETAILS.md#push\n\
+  \      effective_prompt_policy: one_effective_prompt_per_decision_point\n    - id:\
+  \ autonomous-plan\n      prompt_source_refs:\n        - docs/operations/WORKFLOW_PRECHECK.md\n\
+  \        - docs/operations/WORKFLOW_PRECHECK_DETAILS.md#autonomous-plan\n      effective_prompt_policy:\
+  \ one_effective_prompt_per_decision_point\n    - id: autonomous-plan-template\n\
+  \      prompt_source_refs:\n        - docs/operations/WORKFLOW_PRECHECK.md\n   \
+  \     - docs/operations/WORKFLOW_PRECHECK_DETAILS.md#autonomous-plan-template\n\
+  \      effective_prompt_policy: one_effective_prompt_per_decision_point\n    - id:\
+  \ autonomous-plan-record-integration\n      prompt_source_refs:\n        - docs/operations/WORKFLOW_PRECHECK.md\n\
+  \        - docs/operations/WORKFLOW_PRECHECK_DETAILS.md#autonomous-plan-record-integration\n\
+  \      effective_prompt_policy: one_effective_prompt_per_decision_point\n    - id:\
+  \ autonomous-ledger-audit\n      prompt_source_refs:\n        - docs/operations/WORKFLOW_PRECHECK.md\n\
+  \        - docs/operations/WORKFLOW_PRECHECK_DETAILS.md#autonomous-ledger-audit\n\
+  \      effective_prompt_policy: one_effective_prompt_per_decision_point\n    - id:\
+  \ audit-commit\n      prompt_source_refs:\n        - docs/operations/WORKFLOW_PRECHECK.md#audit-commit\n\
+  \        - docs/operations/WORKFLOW_PRECHECK_DETAILS.md#audit-commit\n      effective_prompt_policy:\
+  \ one_effective_prompt_per_decision_point\n    - id: next\n      prompt_source_refs:\n\
+  \        - docs/operations/WORKFLOW_NAVIGATION.md\n        - docs/operations/WORKFLOW_DISCIPLINE_MAP.yaml\n\
+  \      effective_prompt_policy: one_effective_prompt_per_decision_point\n    - id:\
+  \ reopen-start\n      prompt_source_refs:\n        - docs/operations/WORKFLOW_PRECHECK.md#reopen-start\n\
+  \        - docs/operations/WORKFLOW_PRECHECK_DETAILS.md#commit\n        - docs/operations/REOPEN_PROCEDURE.md\n\
+  \      effective_prompt_policy: one_effective_prompt_per_decision_point\n  operation_prompt:\n\
+  \    - id: commit\n      prompt_source_refs:\n        - docs/operations/COMMIT_OPERATION_CARD.md#commit-operation-card\n\
+  \      effective_prompt_policy: one_effective_prompt_per_decision_point\n  reopen_required_action:\n\
+  \    - id: classify_and_rollback_flags\n      prompt_source_refs:\n        - docs/operations/REOPEN_PROCEDURE.md\n\
+  \        - docs/operations/WORKFLOW_NAVIGATION.md#reopen_in_progress\n      effective_prompt_policy:\
+  \ one_effective_prompt_per_decision_point\n    - id: repair_canonical_documents\n\
+  \      prompt_source_refs:\n        - docs/operations/REOPEN_PROCEDURE.md\n    \
+  \    - docs/operations/WORKFLOW_NAVIGATION.md#reopen_in_progress\n      effective_prompt_policy:\
+  \ one_effective_prompt_per_decision_point\n    - id: rerun_alignment_approval_chain\n\
+  \      prompt_source_refs:\n        - docs/operations/REOPEN_PROCEDURE.md\n    \
+  \    - docs/operations/WORKFLOW_NAVIGATION.md#reopen_in_progress\n      effective_prompt_policy:\
+  \ one_effective_prompt_per_decision_point\n    - id: run_reopen_pending_gate\n \
+  \     prompt_source_refs:\n        - docs/operations/REOPEN_PROCEDURE.md\n     \
+  \   - docs/operations/WORKFLOW_NAVIGATION.md#reopen_in_progress\n      effective_prompt_policy:\
+  \ one_effective_prompt_per_decision_point\n    - id: run_reopen_drafting\n     \
+  \ prompt_source_refs:\n        - docs/operations/REOPEN_PROCEDURE.md\n        -\
+  \ docs/operations/WORKFLOW_NAVIGATION.md#reopen_in_progress\n      effective_prompt_policy:\
+  \ one_effective_prompt_per_decision_point\n    - id: wait_for_human_approval\n \
+  \     prompt_source_refs:\n        - docs/operations/REOPEN_PROCEDURE.md\n     \
+  \   - docs/disciplines/discipline_approval_operation.md\n      effective_prompt_policy:\
+  \ one_effective_prompt_per_decision_point\n    - id: finalize_reopen\n      prompt_source_refs:\n\
+  \        - docs/operations/REOPEN_PROCEDURE.md\n      effective_prompt_policy: one_effective_prompt_per_decision_point\n\
+  \    - id: reopen_completed\n      prompt_source_refs:\n        - docs/operations/REOPEN_PROCEDURE.md\n\
+  \      effective_prompt_policy: one_effective_prompt_per_decision_point\n    - id:\
+  \ inspect_reopen_state\n      prompt_source_refs:\n        - docs/operations/WORKFLOW_NAVIGATION.md#reopen_in_progress\n\
+  \        - docs/operations/REOPEN_PROCEDURE.md\n      effective_prompt_policy: one_effective_prompt_per_decision_point\n\
+  \  review_run_triage_command:\n    - id: list-pending\n      prompt_source_refs:\n\
+  \        - docs/operations/SESSION_WORKFLOW_GUIDE.md#3.3-a-2\n      effective_prompt_policy:\
+  \ one_effective_prompt_per_decision_point\n    - id: decide\n      prompt_source_refs:\n\
+  \        - docs/operations/SESSION_WORKFLOW_GUIDE.md#3.3-a-2\n        - docs/disciplines/discipline_approval_operation.md\n\
+  \      effective_prompt_policy: one_effective_prompt_per_decision_point\n    - id:\
+  \ manifest-template\n      prompt_source_refs:\n        - docs/operations/SESSION_WORKFLOW_GUIDE.md#3.3-a-2\n\
+  \      effective_prompt_policy: one_effective_prompt_per_decision_point\n    - id:\
+  \ write-manifest\n      prompt_source_refs:\n        - docs/operations/SESSION_WORKFLOW_GUIDE.md#3.3-a-2\n\
+  \        - docs/disciplines/discipline_post_write_verification.md\n      effective_prompt_policy:\
+  \ one_effective_prompt_per_decision_point\n    - id: assert-apply-fixes-ready\n\
+  \      prompt_source_refs:\n        - docs/operations/SESSION_WORKFLOW_GUIDE.md#3.3-a-2\n\
+  \        - docs/disciplines/discipline_approval_operation.md\n      effective_prompt_policy:\
+  \ one_effective_prompt_per_decision_point\n    - id: assert-review-report-ready\n\
+  \      prompt_source_refs:\n        - docs/operations/SESSION_WORKFLOW_GUIDE.md#3.3-a-2\n\
+  \      effective_prompt_policy: one_effective_prompt_per_decision_point\n    - id:\
+  \ generate-review-report\n      prompt_source_refs:\n        - docs/operations/SESSION_WORKFLOW_GUIDE.md#3.3-a-2\n\
+  \      effective_prompt_policy: one_effective_prompt_per_decision_point\n  post_write_manifest_gate:\n\
+  \    - id: post_write_manifest_completed\n      prompt_source_refs:\n        - docs/operations/WORKFLOW_NAVIGATION.md#post_write_verification\n\
+  \        - docs/disciplines/discipline_post_write_verification.md\n      effective_prompt_policy:\
+  \ one_effective_prompt_per_decision_point\n    - id: post_write_manifest_human_required\n\
+  \      prompt_source_refs:\n        - docs/operations/WORKFLOW_NAVIGATION.md#post_write_human_decision_required\n\
+  \        - docs/disciplines/discipline_post_write_verification.md\n        - docs/disciplines/discipline_approval_operation.md\n\
+  \      effective_prompt_policy: one_effective_prompt_per_decision_point\n    - id:\
+  \ post_write_manifest_missing_or_invalid\n      prompt_source_refs:\n        - docs/operations/WORKFLOW_NAVIGATION.md#post_write_verification\n\
+  \        - docs/disciplines/discipline_post_write_verification.md\n      effective_prompt_policy:\
+  \ one_effective_prompt_per_decision_point\n    - id: post_write_policy_violation\n\
+  \      prompt_source_refs:\n        - docs/operations/WORKFLOW_NAVIGATION.md#post_write_policy_violation\n\
+  \        - docs/disciplines/discipline_post_write_verification.md\n      effective_prompt_policy:\
+  \ one_effective_prompt_per_decision_point\n      canonical_effective_prompt_path:\
+  \ .reviewcompass/guidance/effective-prompts/next-action-post-write-policy-violation.prompt.md\n\
+  \  proxy_model_decision_gate:\n    - id: user_visible_triage_gate\n      prompt_source_refs:\n\
+  \        - docs/operations/SESSION_WORKFLOW_GUIDE.md#3.3-a-2\n      effective_prompt_policy:\
+  \ one_effective_prompt_per_decision_point\n    - id: proxy_decision_prompt\n   \
+  \   prompt_source_refs:\n        - docs/operations/SESSION_WORKFLOW_GUIDE.md#3.3-a-2\n\
+  \        - docs/operations/API_REVIEW_PROMPT_QUALITY.md\n        - docs/disciplines/discipline_llm_as_judge_prompting.md\n\
+  \        - docs/disciplines/discipline_approval_operation.md\n      effective_prompt_policy:\
+  \ one_effective_prompt_per_decision_point\n    - id: proxy_decision_file\n     \
+  \ prompt_source_refs:\n        - docs/operations/SESSION_WORKFLOW_GUIDE.md#3.3-a-2\n\
+  \        - docs/operations/API_REVIEW_PROMPT_QUALITY.md\n        - docs/disciplines/discipline_llm_as_judge_prompting.md\n\
+  \        - docs/disciplines/discipline_approval_operation.md\n      effective_prompt_policy:\
+  \ one_effective_prompt_per_decision_point\n    - id: proxy_approval_record\n   \
+  \   prompt_source_refs:\n        - docs/operations/SESSION_WORKFLOW_GUIDE.md#3.3-a-2\n\
+  \        - docs/disciplines/discipline_approval_operation.md\n      effective_prompt_policy:\
+  \ one_effective_prompt_per_decision_point\n  conformance_evaluation_gate:\n    -\
+  \ id: mv6_prompt_isolation\n      prompt_source_refs:\n        - docs/operations/WORKFLOW_NAVIGATION.md\n\
+  \        - .reviewcompass/specs/conformance-evaluation/tasks.md\n      effective_prompt_policy:\
+  \ one_effective_prompt_per_decision_point\n    - id: reopen_handoff_package\n  \
+  \    prompt_source_refs:\n        - docs/operations/REOPEN_PROCEDURE.md\n      \
+  \  - .reviewcompass/specs/conformance-evaluation/design.md\n        - .reviewcompass/specs/conformance-evaluation/tasks.md\n\
+  \      effective_prompt_policy: one_effective_prompt_per_decision_point\n  yaml_audit_gate:\n\
+  \    - id: yaml_audit_scope\n      prompt_source_refs:\n        - docs/disciplines/discipline_yaml_audit.md\n\
+  \      effective_prompt_policy: one_effective_prompt_per_decision_point\n    - id:\
+  \ yaml_audit_post_write_check\n      prompt_source_refs:\n        - docs/disciplines/discipline_yaml_audit.md\n\
+  \        - docs/disciplines/discipline_post_write_verification.md\n      effective_prompt_policy:\
+  \ one_effective_prompt_per_decision_point\nby_kind:\n  stage:\n    - docs/disciplines/discipline_workflow_state_truth_source.md\n\
+  \  cross_feature_stage:\n    - docs/disciplines/discipline_workflow_state_truth_source.md\n\
+  \  post_write_verification:\n    - docs/operations/WORKFLOW_NAVIGATION.md#post_write_verification\n\
+  \    - docs/disciplines/discipline_post_write_verification.md\n  lightweight_self_check:\n\
+  \    - docs/operations/WORKFLOW_NAVIGATION.md#lightweight_self_check\n  post_write_policy_violation:\n\
+  \    - docs/operations/WORKFLOW_NAVIGATION.md#post_write_policy_violation\n    -\
+  \ docs/disciplines/discipline_post_write_verification.md\n  post_write_human_decision_required:\n\
+  \    - docs/operations/WORKFLOW_NAVIGATION.md#post_write_human_decision_required\n\
+  \    - docs/disciplines/discipline_post_write_verification.md\n    - docs/disciplines/discipline_approval_operation.md\n\
+  \  reopen_in_progress:\n    - docs/operations/REOPEN_PROCEDURE.md\n    - docs/disciplines/discipline_approval_operation.md\n\
+  \  maintenance_in_progress:\n    - docs/operations/WORKFLOW_NAVIGATION.md#maintenance_in_progress\n\
+  \  resume_in_progress:\n    - docs/operations/WORKFLOW_NAVIGATION.md#resume_in_progress\n\
+  \  feature_definition_required:\n    - docs/operations/WORKFLOW_NAVIGATION.md#feature_definition_required\n\
+  \    - docs/operations/INITIAL_SETUP_LLM_GUIDE.md\nby_stage:\n  drafting:\n    -\
+  \ docs/operations/REOPEN_PROCEDURE.md\n    - docs/disciplines/discipline_workflow_state_truth_source.md\n\
+  \  triad-review:\n    - docs/operations/SESSION_WORKFLOW_GUIDE.md#3.3-a-2\n    -\
+  \ docs/operations/SESSION_WORKFLOW_GUIDE.md#vertical-intent-transfer-review\n  \
+  \  - docs/operations/API_REVIEW_PROMPT_QUALITY.md\n    - docs/disciplines/discipline_llm_as_judge_prompting.md\n\
+  \    - docs/disciplines/discipline_approval_operation.md\n  review-wave:\n    -\
+  \ docs/operations/SESSION_WORKFLOW_GUIDE.md#vertical-intent-transfer-review\n  alignment:\n\
+  \    - docs/operations/SESSION_WORKFLOW_GUIDE.md#vertical-intent-transfer-review\n\
+  \    - docs/disciplines/discipline_workflow_state_truth_source.md\n  approval:\n\
+  \    - docs/disciplines/discipline_approval_operation.md\n    - docs/operations/WORKFLOW_PRECHECK.md#spec-set\n\
+  \    - docs/operations/WORKFLOW_PRECHECK_DETAILS.md#spec-set\nrequired_inputs:\n\
+  \  by_stage:\n    drafting:\n      - id: target_feature_documents\n        role:\
+  \ stage_entry_context\n        source_type: feature_document_set\n        purpose:\
+  \ Read the current feature state and phase documents before updating the phase artifact.\n\
+  \        resolver:\n          kind: next_action_template\n          paths:\n   \
+  \         - .reviewcompass/specs/{feature}/spec.json\n            - .reviewcompass/specs/{feature}/requirements.md\n\
+  \            - .reviewcompass/specs/{feature}/design.md\n            - .reviewcompass/specs/{feature}/tasks.md\n\
+  \        read_policy: current_feature_documents\n      - id: reopen_procedure_state\n\
+  \        role: workflow_state_context\n        source_type: reopen_in_progress_file\n\
+  \        purpose: Read the reopen state and downstream impact decisions before drafting.\n\
+  \        resolver:\n          kind: next_action_template\n          paths:\n   \
+  \         - \"{file}\"\n        read_policy: reopen_state\n    triad-review:\n \
+  \     - id: target_feature_documents\n        role: stage_entry_context\n      \
+  \  source_type: feature_document_set\n        purpose: Read the current feature\
+  \ state and phase documents before starting triad-review, including upstream intent\
+  \ transfer from requirements to design to tasks to implementation as applicable.\n\
+  \        resolver:\n          kind: next_action_template\n          paths:\n   \
+  \         - .reviewcompass/specs/{feature}/spec.json\n            - .reviewcompass/specs/{feature}/requirements.md\n\
+  \            - .reviewcompass/specs/{feature}/design.md\n            - .reviewcompass/specs/{feature}/tasks.md\n\
+  \        read_policy: current_feature_documents\n      - id: triad_review_run_artifacts\n\
+  \        role: review_run_context\n        source_type: review_run_artifact_set\n\
+  \        purpose: Prepare or read the review-run bundle, raw responses, model summaries,\
+  \ variant/role assignments, same-root finding clusters, and three-level triage records\
+  \ for this triad-review. Before proxy_model, implementation edits, spec.json updates,\
+  \ or phase movement, present the user-visible triage gate described in SESSION_WORKFLOW_GUIDE.md#3.3-a-2\
+  \ and stop.\n        resolver:\n          kind: next_action_template\n         \
+  \ base_path_pattern: .reviewcompass/specs/{feature}/reviews/*-{feature}-{phase}-review-run\n\
+  \        required_artifacts:\n          - review-target.md\n          - raw/\n \
+  \         - rounds.yaml\n          - model-result-summary.yaml\n          - triage.yaml\n\
+  \          - raw-review-triage-summary.md\n          - variant-role-assignment\n\
+  \          - user-visible-triage-gate\n        read_policy: review_run_bundle_and_triage\n\
+  \      - id: vertical_intent_transfer_check\n        role: review_prompt_requirement\n\
+  \        source_type: upstream_intent_transfer_contract\n        purpose: Ensure\
+  \ triad-review checks that upstream purpose, responsibility boundaries, acceptance\
+  \ criteria, and forbidden actions are inherited into the target phase without omission,\
+  \ weakening, unsupported additions, or drift.\n        resolver:\n          kind:\
+  \ static_reference\n          path: docs/operations/SESSION_WORKFLOW_GUIDE.md#vertical-intent-transfer-review\n\
+  \        phase_chains:\n          requirements:\n            - upstream_decision_materials\n\
+  \            - requirements.md\n          design:\n            - requirements.md\n\
+  \            - design.md\n          tasks:\n            - requirements.md\n    \
+  \        - design.md\n            - tasks.md\n          implementation:\n      \
+  \      - requirements.md\n            - design.md\n            - tasks.md\n    \
+  \        - implementation\n        review_target_by_phase:\n          requirements:\n\
+  \            review_target: requirements.md\n            source_materials:\n   \
+  \           - upstream_decision_materials\n              - reopen_classification_record\n\
+  \              - planning_notes\n              - user_decisions\n            out_of_scope:\n\
+  \              - downstream_artifacts_not_review_target\n              - design.md\
+  \ correctness\n              - tasks.md correctness\n        prompt_materialization_contract:\n\
+  \          source_materials_must_not_be_path_only: true\n          required_prompt_material:\n\
+  \            - upstream_excerpt_or_structured_summary\n            - target_phase_artifact_excerpt\n\
+  \            - review_target\n            - out_of_scope\n          upstream_summary_fields:\n\
+  \            - purpose\n            - responsibility_boundaries\n            - acceptance_criteria\n\
+  \            - forbidden_actions\n            - unresolved_or_design_deferred_items\n\
+  \            - intended_target_phase_transfer\n          blocking_conditions:\n\
+  \            - block_review_run_when_upstream_material_unread\n            - block_review_run_when_prompt_contains_only_source_paths\n\
+  \            - block_review_run_when_upstream_summary_omits_required_fields\n  \
+  \      required_question: upstream目的・責務境界・受入条件・禁止事項が対象成果物へ欠落・弱体化・逸脱・未根拠追加なく引き継がれているか。\n\
+  \        read_policy: include_in_review_prompt\n    review-wave:\n      - id: cross_feature_stage_artifacts\n\
+  \        role: stage_output_contract\n        source_type: artifact_location_contract\n\
+  \        purpose: Record cross-feature stage evidence under the cross-feature namespace\
+  \ instead of any single feature. Standard path is .reviewcompass/specs/_cross_feature/reviews/{date}-{phase}-{stage}.md.\n\
+  \        resolver:\n          kind: static_path_template\n          path: .reviewcompass/specs/_cross_feature/reviews/{date}-{phase}-{stage}.md\n\
+  \        read_policy: create_or_update_stage_artifact\n      - id: unresolved_cross_scope_items\n\
+  \        role: stage_entry_context\n        source_type: carry_forward_register\n\
+  \        purpose: Read unresolved items carried forward from prior reviews or adjacent\
+  \ scopes before starting this stage.\n        resolver:\n          kind: project_state\n\
+  \          path: learning/workflow/carry-forward-register/reviewcompass-import.yaml\n\
+  \        read_policy: unresolved_items_only\n      - id: vertical_intent_transfer_check\n\
+  \        role: review_prompt_requirement\n        source_type: upstream_intent_transfer_contract\n\
+  \        purpose: Ensure review-wave preserves upstream intent while resolving cross-feature\
+  \ findings, and does not weaken or add unsupported requirements when carrying fixes\
+  \ across features.\n        resolver:\n          kind: static_reference\n      \
+  \    path: docs/operations/SESSION_WORKFLOW_GUIDE.md#vertical-intent-transfer-review\n\
+  \        required_question: 上流の目的・責務境界・受入条件・禁止事項が、横断対処後の対象成果物へ欠落・弱体化・逸脱・未根拠追加なく引き継がれているか。\n\
+  \        read_policy: include_in_review_prompt\n```\n\n\n## Scope\n\n- Check whether\
+  \ the changed target files clearly state the intended contract.\n- Check whether\
+  \ related instructions are mutually consistent across targets.\n- Check whether\
+  \ the documented procedure is actionable before API review, triage, manifest, or\
+  \ commit steps continue.\n\n## Out Of Scope\n\n- Do not request unrelated refactors\
+  \ or style-only rewrites.\n- Do not judge files that are not listed in Target Files.\n\
+  - Do not treat missing implementation work as a document defect unless the target\
+  \ text claims it already exists.\n\n## Finding Policy\n\n- Report must-fix findings\
+  \ for contradictions, missing required gates, or instructions that would allow an\
+  \ unsafe workflow action.\n- Report should-fix findings for ambiguity that could\
+  \ cause repeated manual judgment or unnecessary API review loops.\n- Return findings:\
+  \ [] when the target files are internally consistent for this review question.\n\
+  \n## Sensitive Information Check\n\n- status: passed\n- External API review must\
+  \ not proceed if this section reports potential secrets.\n"
+prompt_sha256: f4f61c803c3f3a34b99da3a21cb0b2505772f8e2e98e9de8ad52c1a88ef778e6
+model_results:
+- model_id: gemini-3.5-flash
+  provider: gemini-api
+  role: primary
+  treatment: primary
+  invocation_path: api
+  raw_path: raw/gemini-3.5-flash.round-1.txt
+  raw_sha256: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+  parsed_path: parsed/gemini-3.5-flash.round-1.yaml
+  parsed_sha256: 8b0d6494147134162be967328ca2244c0233767655beb235cebd4ca5a063443c
+  parse_status: parsed
+  formatted_by: parser
+  formatted_by_actor_type: orchestrator
+  formatted_by_actor: run_role.py
+  formatted_at: '2026-06-21T15:09:48.365199+00:00'
+  follow_up_action: triage
+  attempts: 1
+  duration_seconds: 8.881
+  prompt_path: prompts/gemini-3.5-flash.round-1.prompt.md
+  prompt_sha256: f4f61c803c3f3a34b99da3a21cb0b2505772f8e2e98e9de8ad52c1a88ef778e6
+criteria_source_path: .reviewcompass/evidence/review-runs/2026-06-22-canonical-postwrite-policy-map-postwrite/review-target.md
+criteria_source_sha256: 258e9beadb53c2719c2af187a1633cbdc63479267a640f4c44f5b77095d9904c

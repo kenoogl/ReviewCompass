@@ -1,0 +1,16 @@
+run_id: 2026-06-22-canonical-postwrite-policy-map-postwrite
+phase: post_write_verification
+criteria_id: post_write_policy_violation_canonical_prompt_map
+criteria_file: .reviewcompass/evidence/review-runs/2026-06-22-canonical-postwrite-policy-map-postwrite/review-target.md
+criteria_file_sha256: 258e9beadb53c2719c2af187a1633cbdc63479267a640f4c44f5b77095d9904c
+target_files:
+- path: docs/operations/WORKFLOW_DISCIPLINE_MAP.yaml
+  sha256: 4b5a00603c209cc53c8a0c0815e17a24190b695b48357b21592185eb1fbf6ddc
+  content_mode: full_text
+  content_sha256: 4b5a00603c209cc53c8a0c0815e17a24190b695b48357b21592185eb1fbf6ddc
+sensitive_information_check:
+  status: passed
+  checked_at: '2026-06-21T15:09:29.724724+00:00'
+recommended_run_review_args:
+  criteria_file: .reviewcompass/evidence/review-runs/2026-06-22-canonical-postwrite-policy-map-postwrite/review-target.md
+  phase: post_write_verification

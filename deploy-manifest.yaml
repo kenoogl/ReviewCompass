@@ -116,6 +116,8 @@ include:
     reason: Reopen procedure.
   - path: docs/operations/SESSION_WORKFLOW_GUIDE.md
     reason: Session completion and review-run handling guide.
+  - path: .reviewcompass/guidance/effective-prompts/next-action-post-write-policy-violation.prompt.md
+    reason: Canonical effective prompt for post-write policy violation stop point.
   - path: docs/operations/INITIAL_DEPLOYMENT_USER_GUIDE.md
     reason: Initial owner-operated deployment guide.
   - path: docs/operations/INITIAL_SETUP_LLM_GUIDE.md
