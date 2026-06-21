@@ -1,0 +1,31 @@
+status: completed
+target_files:
+  - TODO_NEXT_SESSION.md
+target_sha256:
+  TODO_NEXT_SESSION.md: abc8ebd1fca5a8fc7f1e388c8bd20adf9e3b97ccdc36386a05cef8a488f7e6d9
+required_verifiers:
+  - lightweight_self_check
+completed_verifiers:
+  - lightweight_self_check
+unresolved_substantive_findings: 0
+verifications:
+  - verifier: lightweight_self_check
+    target_files:
+      - TODO_NEXT_SESSION.md
+    target_sha256:
+      TODO_NEXT_SESSION.md: abc8ebd1fca5a8fc7f1e388c8bd20adf9e3b97ccdc36386a05cef8a488f7e6d9
+    checks:
+      user_points_preserved: true
+      facts_inferences_policy_and_open_items_separated: true
+      useful_as_later_decision_material: true
+      does_not_over_specify_scope: true
+      remains_working_note_not_canonical_spec: true
+      api_review_intentionally_not_used: true
+notes: >
+  Lightweight self-check for TODO_NEXT_SESSION.md. The update refreshes the
+  session handoff from the old f772a39a endpoint to ac4913fa and preserves the
+  user's concern that context compression made the recent work sequence easy to
+  lose. It records completed facts about post-write prompt mechanization,
+  guidance relocation, legacy guidance deletion, workflow-state repair
+  exception handling, and push guard repair without turning the TODO into a new
+  workflow policy or canonical design document.
