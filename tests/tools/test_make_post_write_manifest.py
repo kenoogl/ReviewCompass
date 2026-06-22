@@ -106,6 +106,31 @@ class MakePostWriteManifestTests(unittest.TestCase):
     status, _manifest = self.cwa.evaluate_post_write_manifest_state(self.tmp, ["doc.md"])
     self.assertEqual(status, "completed", f"正本判定が completed でない: {status}")
 
+  def test_manifest_carries_review_run_unit_binding(self):
+    """review-run の unit binding を post-write manifest に引き継ぐ。"""
+    rundir = Path(self.tmp) / ".reviewcompass/evidence/review-runs/run-binding"
+    _build_review_run(rundir)
+    unit_binding = {
+      "work_unit_id": "unit-blocking-test",
+      "commit_unit_id": "commit-unit-test",
+      "staged_digest": {
+        "algorithm": "commit-unit-v1",
+        "digest": "abc123",
+      },
+    }
+    _dump(rundir / "review-target.yaml", {"unit_binding": unit_binding})
+    (Path(self.tmp) / "doc-binding.md").write_text("# 文書\n本文\n", encoding="utf-8")
+    out = ".reviewcompass/post-write-verification/post-write-test-binding.yaml"
+
+    r = _run_tool(self.tmp,
+                  "--review-run-dir", ".reviewcompass/evidence/review-runs/run-binding",
+                  "--target", "doc-binding.md",
+                  "--out", out)
+
+    self.assertEqual(r.returncode, 0, f"stdout={r.stdout}\nstderr={r.stderr}")
+    manifest = yaml.safe_load((Path(self.tmp) / out).read_text(encoding="utf-8"))
+    self.assertEqual(manifest["unit_binding"], unit_binding)
+
   def test_human_required_is_not_completed(self):
     """未解決の本質的指摘（human_required）があれば completed にしない（fail-closed）。"""
     rundir = Path(self.tmp) / ".reviewcompass/evidence/review-runs/run2"
