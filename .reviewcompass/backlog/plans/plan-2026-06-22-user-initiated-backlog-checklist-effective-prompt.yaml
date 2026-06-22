@@ -1,0 +1,178 @@
+schema_version: reviewcompass-backlog-item-v1
+id: plan-2026-06-22-user-initiated-backlog-checklist-effective-prompt
+kind: plan
+title: User-initiated backlog/checklist effective prompt plan
+status: candidate
+source_unit_id: main-completed
+created_at: '2026-06-22T15:45:00+09:00'
+index_path: .reviewcompass/backlog/index.yaml
+provenance:
+  created_by: llm
+  source_ref: conversation:user:ユーザ指示により開始する場合には effective prompt は必要
+  reason: >
+    next --json から直接開始されない backlog/checklist 系補助処理でも、利用者指示で開始する場合には
+    canonical effective prompt を読み、機械処理できる部分は CLI に寄せ、LLM が残る部分も迷わないようにするため。
+summary: >
+  backlog TODO から runtime checklist を作り、task-quality-check で監査し、
+  review materials へ接続する処理は、主 workflow の next --json から直接呼ばれない。
+  しかし利用者指示により開始される補助 workflow であるため、開始時に読むべき
+  canonical effective prompt を用意し、処理規律を固定する。
+background:
+  - backlog checklist bridge と task-quality gate では、TODO から checklist 生成、coverage audit、checklist close、task-quality audit、review materials 生成を実装した。
+  - これらは通常の workflow phase/stage ではなく、利用者が特定 TODO や計画の実行を指示した場合に開始される。
+  - そのため next --json が返す completed 用 effective prompt だけでは、補助処理の入口規律を固定できない。
+problem:
+  - どのタイミングで blocking unit に入るかが LLM 判断に残る。
+  - backlog TODO を直接実行するか runtime checklist へ bridge するかがその場判断になりうる。
+  - promoted TODO が複数ある場合の停止条件が effective prompt として固定されていない。
+  - checklist 生成後に task-quality-check を必ず実行するかが運用依存になりうる。
+  - review materials を生成する条件と、API review へ進める前の確認がその場で組み立てられうる。
+  - checklist / blocking unit の close、evidence commit、resume-parent の順序が LLM の記憶に依存しうる。
+risk_examples:
+  - path-only materials
+  - 複数判断の詰め込み
+  - main preanalysis 省略
+  - blocking unit 宣言漏れ
+  - checklist / backlog / evidence の混線
+  - 完了後の証跡 commit 漏れ
+policy:
+  - ユーザ指示を受けたら、該当 operation の effective prompt を読む。
+  - effective prompt は、その場で規律文書を合成しない。
+  - effective prompt は、次に実行する CLI、入力、停止条件、利用者承認が必要な地点を明示する。
+  - 機械処理できる部分は CLI へ委譲する。
+  - LLM が残る部分は、判断項目、禁止事項、出力形式を固定する。
+  - review prompt を作成する場合は、main preanalysis、材料本文、分割された問い、機微情報確認を必須にする。
+target_operations:
+  backlog_to_runtime_checklist:
+    commands:
+      - work-backlog start-checklist
+      - work-backlog audit-checklist-coverage
+      - work-backlog audit-checklist-bridge
+    prompt_requirements:
+      - 対象 TODO が利用者に明示されているか確認する。
+      - --id 未指定で進めるのは promoted TODO が単一の場合だけにする。
+      - 複数 promoted TODO がある場合は機械的に停止する。
+      - checklist item は LLM が要約せず、implementation_plan.phases / todos.* / red_tests から機械生成する。
+      - checklist 生成後、coverage audit を実行する。
+      - coverage audit が DEVIATION の場合は実装へ進まない。
+  blocking_unit_and_checklist:
+    commands:
+      - work-unit preflight-start
+      - work-unit enter-blocking
+      - work-checklist show
+      - work-checklist close
+      - work-unit exit-blocking
+      - work-unit resume-parent
+    prompt_requirements:
+      - 既存 active unit がある場合、新規作業が同一作業か blocking unit かを分類する。
+      - blocking unit に入る場合は明示的に宣言し、return conditions を記録する。
+      - checklist は active item を更新しながら進める。
+      - checklist close 前に unfinished item がないことを機械的に確認する。
+      - blocking unit exit 後、resume pending を消費する。
+      - evidence 生成後は commit 停止点にする。
+  task_quality_gate:
+    commands:
+      - task-quality-check audit
+      - task-quality-check prepare-review-materials
+    prompt_requirements:
+      - task-quality-check audit を review materials 生成前の mechanical gate とする。
+      - audit が DEVIATION の場合、review materials を生成しない。
+      - audit warnings は自動失敗にせず、review materials に引き継ぐ。
+      - review materials には backlog TODO 本文、runtime checklist 本文、audit 結果、main preanalysis、分割質問を含める。
+      - review result contract と decision boundary を材料に含める。
+  review_prompt_api_connection:
+    commands:
+      - task-quality-check prepare-review-materials
+      - tools/api_providers/run_role.py
+      - tools/api_providers/run_review.py
+    prompt_requirements:
+      - API に投げる前に main LLM が材料を直接確認する。
+      - main preanalysis は仮説であり、レビュー側に正解として扱わせない。
+      - source materials は path-only にしない。
+      - 問いは粒度、順序、上流接続、red test 充足などに分ける。
+      - 1 prompt に複数の独立判断を詰め込まない。
+      - API キー、認証情報、個人情報、不要な全文ログを含めない。
+      - ReviewCompass 内部資料は、利用者が API review / proxy_model 判断を明示承認した場合に限り、必要最小範囲で送信可能と扱う。
+mechanize_first:
+  - promoted TODO の単一選択
+  - TODO から checklist item への変換
+  - checklist source backlink の保存
+  - checklist coverage audit
+  - checklist close 時の unfinished item 検査
+  - checklist evidence への移動
+  - backlog TODO への execution_history 反映
+  - task-quality audit
+  - review materials YAML の生成
+  - review result contract / decision boundary の埋め込み
+  - generated materials の schema / 必須 field 検査
+llm_remaining_scope:
+  - 利用者の自然言語指示が、どの backlog TODO / work unit に対応するかの初期解釈
+  - 複数候補がある場合、利用者へ確認するか、機械的に停止するかの運用判断
+  - task-quality audit warnings をどう読むか
+  - review materials を実際に API review へ進めるかどうかの判断
+  - review 結果の意味的な同根整理
+  - critical / major / minor の最終的な triage
+required_effective_prompts:
+  - id: user_initiated_backlog_todo_execution
+    purpose: >
+      利用者が backlog TODO の実行を指示したとき、対象 TODO を runtime checklist へ bridge し、
+      blocking unit / checklist / quality gate へ接続する。
+    instructions:
+      - target TODO を確定する。
+      - active unit / resume pending を確認する。
+      - 必要なら blocking unit に入る。
+      - work-backlog start-checklist を実行する。
+      - work-backlog audit-checklist-coverage を実行する。
+      - checklist active item を更新しながら TDD で進める。
+  - id: user_initiated_task_quality_gate
+    purpose: 生成済み checklist が TODO から task/checklist へ妥当に落ちているかを検査する。
+    instructions:
+      - task-quality-check audit を先に実行する。
+      - DEVIATION なら停止する。
+      - warnings は review materials に引き継ぐ。
+      - review materials を生成する場合は path-only を禁止する。
+  - id: user_initiated_task_quality_review_materials
+    purpose: task-quality review の API / proxy_model 接続前に、材料と問いを固定する。
+    instructions:
+      - main preanalysis を材料から作る。
+      - main preanalysis は仮説として扱う。
+      - review questions を分割する。
+      - sensitive information check を行う。
+      - review result contract / decision boundary を確認する。
+implementation_plan:
+  - phase: phase-0-current-state-red-tests
+    items:
+      - ユーザ指示開始の operation が next --json の completed とは別入口であることをテストに固定する。
+      - 対象 operation 名から canonical effective prompt path が引けることを red test にする。
+      - prompt が存在しない場合は DEVIATION とする。
+  - phase: phase-1-effective-prompt-registry
+    items:
+      - next_action 以外の user-initiated operation 用 registry を追加する。
+      - operation id から effective prompt path / source refs / sha256 を返す。
+      - registry は .reviewcompass/guidance 側の正本文書を source refs とする。
+  - phase: phase-2-canonical-prompts
+    items:
+      - user_initiated_backlog_todo_execution の canonical prompt を作成する。
+      - user_initiated_task_quality_gate の canonical prompt を作成する。
+      - user_initiated_task_quality_review_materials の canonical prompt を作成する。
+  - phase: phase-3-freshness-audit
+    items:
+      - user-initiated operation prompt も freshness audit 対象に含める。
+      - source refs 変更時に stale prompt を検出する。
+      - stale prompt のまま operation 開始しない。
+  - phase: phase-4-cli-and-snapshot
+    items:
+      - workflow-snapshot または専用 CLI で利用可能な user-initiated operation prompt を確認できるようにする。
+      - active checklist / backlog TODO / effective prompt の対応を見える化する。
+acceptance_criteria:
+  - ユーザ指示で backlog TODO 実行を始める場合、読むべき effective prompt が機械的に確定する。
+  - effective prompt が存在しない、または stale の場合に停止できる。
+  - TODO から checklist への変換は LLM 要約に依存しない。
+  - checklist quality gate は task-quality-check で機械的に実行できる。
+  - review materials 生成時に path-only / 複数判断詰め込み / main preanalysis 省略を防げる。
+  - API review へ進む場合、review prompt 作成手順が effective prompt によって迷わず実行できる。
+non_goals:
+  - next --json の主 workflow を増やすこと。
+  - すべての自然言語指示分類を完全自動化すること。
+  - ReviewCompass 自身の backlog / runtime / evidence を対象アプリ deploy に含めること。
+decisions: []

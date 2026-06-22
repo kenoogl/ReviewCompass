@@ -49,3 +49,10 @@ items:
   path: .reviewcompass/backlog/todos/todo-2026-06-22-task-quality-review-gate.yaml
   source_unit_id: main-completed
   created_at: '2026-06-22T16:10:00+09:00'
+- id: plan-2026-06-22-user-initiated-backlog-checklist-effective-prompt
+  kind: plan
+  title: User-initiated backlog/checklist effective prompt plan
+  status: candidate
+  path: .reviewcompass/backlog/plans/plan-2026-06-22-user-initiated-backlog-checklist-effective-prompt.yaml
+  source_unit_id: main-completed
+  created_at: '2026-06-22T15:45:00+09:00'
