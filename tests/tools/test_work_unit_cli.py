@@ -264,6 +264,48 @@ class WorkUnitCliTests(unittest.TestCase):
     self.assertEqual(data["next_action"]["kind"], "parent_resume_pending")
     self.assertEqual(data["next_action"]["parent_unit_id"], "unit-parent-resume")
 
+  def test_resume_parent_consumes_parent_resume_pending_marker(self):
+    enter = self._enter_blocking(parent_unit_id="unit-parent-resume")
+    self.assertEqual(enter.returncode, 0, enter.stdout + enter.stderr)
+    exit_result = run_script(
+      [
+        "work-unit",
+        "exit-blocking",
+        "--unit-id", "unit-blocking-test",
+        "--completion-summary", "blocking unit complete",
+        "--json",
+      ],
+      cwd=self.tmpdir,
+    )
+    self.assertEqual(exit_result.returncode, 0, exit_result.stdout + exit_result.stderr)
+
+    result = run_script(
+      [
+        "work-unit",
+        "resume-parent",
+        "--json",
+      ],
+      cwd=self.tmpdir,
+    )
+
+    assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+    data = json.loads(result.stdout)
+    self.assertEqual(data["verdict"], "OK")
+    self.assertEqual(data["resumed"]["parent_unit_id"], "unit-parent-resume")
+    self.assertFalse(
+      (
+        self.tmpdir
+        / ".reviewcompass/runtime/work-units/resume-pending.yaml"
+      ).exists()
+    )
+    next_result = run_script(["next", "--json"], cwd=self.tmpdir)
+    self.assertEqual(next_result.returncode, 0, next_result.stdout + next_result.stderr)
+    self.assertNotEqual(
+      json.loads(next_result.stdout)["next_action"]["kind"],
+      "parent_resume_pending",
+    )
+
   def test_preflight_start_reports_active_unit_before_new_work(self):
     enter = self._enter_blocking(
       unit_id="unit-existing-blocking",
