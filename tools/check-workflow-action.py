@@ -4162,7 +4162,7 @@ def _commit_preflight_next_action(cwd, in_progress_files):
       verification_targets,
     )
     if manifest_state != "completed":
-      return {
+      action = {
         "kind": "post_write_verification",
         "required_action": "run_post_write_verification",
         "target_files": verification_targets,
@@ -4170,6 +4170,9 @@ def _commit_preflight_next_action(cwd, in_progress_files):
         "manifest": manifest.get("_path") if isinstance(manifest, dict) else None,
         "reason": "post-write-verification 対象の未完了変更があります",
       }
+      if isinstance(manifest, dict) and manifest.get("codes"):
+        action["codes"] = manifest.get("codes")
+      return action
 
   specs, missing = load_all_feature_specs(cwd)
   if missing:
@@ -5854,6 +5857,19 @@ def post_write_unit_binding_matches_current_commit_unit(cwd, manifest):
   return binding == expected
 
 
+def mark_manifest_code(manifest, code):
+  """manifest に機械判定用 code を重複なく付与する。"""
+  if not isinstance(manifest, dict):
+    return manifest
+  codes = manifest.setdefault("codes", [])
+  if not isinstance(codes, list):
+    manifest["codes"] = [code]
+    return manifest
+  if code not in codes:
+    codes.append(code)
+  return manifest
+
+
 def evaluate_post_write_manifest_state(cwd, target_files):
   """対象ファイル群に対する post-write-verification manifest 状態を返す"""
   actual_hashes = {
@@ -5877,14 +5893,16 @@ def evaluate_post_write_manifest_state_for_hashes(cwd, target_files, actual_hash
     coverage_ok = coverage_matrix_satisfied(manifest, target_files)
     if coverage_ok is None:
       coverage_ok = verifier_requirements_satisfied(manifest)
-    if (
+    if not (
       manifest.get("status") == "completed"
       and coverage_ok
       and review_run_traceability_satisfied(cwd, manifest)
-      and post_write_unit_binding_matches_current_commit_unit(cwd, manifest)
       and unresolved_substantive_count(manifest) == 0
     ):
-      return "completed", manifest
+      continue
+    if not post_write_unit_binding_matches_current_commit_unit(cwd, manifest):
+      return "pending", mark_manifest_code(manifest, "EVIDENCE_UNIT_MISMATCH")
+    return "completed", manifest
   return "pending", None
 
 
@@ -6754,12 +6772,18 @@ def cmd_next(args):
           next_action = {
             "kind": "post_write_verification",
             "target_files": verification_targets,
+            "manifest": manifest.get("_path") if isinstance(manifest, dict) else None,
             "feature": None,
             "phase": None,
             "stage": None,
             "reason": "post-write-verification 対象の未コミット変更があります",
           }
-          current_state = {"post_write_verification_targets": verification_targets}
+          if isinstance(manifest, dict) and manifest.get("codes"):
+            next_action["codes"] = manifest.get("codes")
+          current_state = {
+            "post_write_verification_targets": verification_targets,
+            "manifest": manifest,
+          }
           if lightweight_targets:
             current_state["lightweight_self_check_targets"] = lightweight_targets
           if maintenance_action:
