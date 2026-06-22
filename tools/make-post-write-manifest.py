@@ -48,6 +48,17 @@ def _load_yaml(path):
     return None
 
 
+def _load_unit_binding(run_dir):
+  """review-target metadata の unit binding を completion manifest 用に読む。"""
+  metadata = _load_yaml(run_dir / "review-target.yaml")
+  if not isinstance(metadata, dict):
+    return None
+  binding = metadata.get("unit_binding")
+  if not isinstance(binding, dict):
+    return None
+  return binding
+
+
 def _diagnose_summary_sync(run_dir):
   """model-result-summary の triage_status が triage 由来と食い違うモデルを返す。
 
@@ -154,6 +165,9 @@ def main():
   }
   if args.notes:
     manifest["notes"] = args.notes
+  unit_binding = _load_unit_binding(run_dir)
+  if unit_binding is not None:
+    manifest["unit_binding"] = unit_binding
 
   out = cwd / args.out
   out.parent.mkdir(parents=True, exist_ok=True)
