@@ -154,6 +154,27 @@ class CommitFromCurrentStagedTests(unittest.TestCase):
     self.assertTrue(challenge["consumed"])
     self.assertTrue(delegation["consumed"])
     self.assertEqual(
+      approval["approval_source"]["source_kind"],
+      "user_turn_relay",
+    )
+    self.assertEqual(
+      approval["approval_source"]["source_text_redacted"],
+      "コミット",
+    )
+    self.assertTrue(approval["approval_source"]["relay_from_user_turn"])
+    self.assertEqual(
+      approval["approval_source"]["target_digest"],
+      approval["target_digest"],
+    )
+    self.assertEqual(
+      delegation["approval_source"]["source_kind"],
+      "user_turn_relay",
+    )
+    self.assertEqual(
+      delegation["approval_source"]["target_digest"],
+      delegation["target_digest"],
+    )
+    self.assertEqual(
       sorted(challenge["target_files"]),
       ["current.md", "old.md"],
     )
