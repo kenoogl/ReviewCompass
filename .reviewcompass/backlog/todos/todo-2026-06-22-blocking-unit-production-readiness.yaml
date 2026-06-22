@@ -1,0 +1,135 @@
+schema_version: reviewcompass-backlog-item-v1
+id: todo-2026-06-22-blocking-unit-production-readiness
+kind: todo
+title: Complete blocking unit production readiness
+status: candidate
+source_unit_id: unit-2026-06-22-blocking-unit-control-improvements
+created_at: '2026-06-22T04:32:49+00:00'
+index_path: .reviewcompass/backlog/index.yaml
+provenance:
+  created_by: llm
+  source_ref: conversation:user:blocking unit 本格利用 TODO
+  reason: blocking unit の出入りを機械処理できず、手動運用では commit 混線を構造的に防ぎ切れないため
+summary: >
+  blocking unit を本格運用できる状態にするため、work-unit lifecycle、
+  commit-unit freeze/check、generated evidence binding、next --json、
+  commit guard の機械処理を実装する。
+todos:
+  work_unit_lifecycle:
+    - id: WU-1
+      title: work-unit start-blocking を実装する
+      status: pending
+    - id: WU-2
+      title: work-unit complete-blocking を実装する
+      status: pending
+    - id: WU-3
+      title: work-unit stack を read/write 対応にする
+      status: pending
+    - id: WU-4
+      title: 親 unit / blocking unit / 復帰条件を記録できるようにする
+      status: pending
+    - id: WU-5
+      title: blocking unit 開始時に親 unit を paused にする
+      status: pending
+    - id: WU-6
+      title: blocking unit 完了時に親 unit へ戻す
+      status: pending
+    - id: WU-7
+      title: blocking unit 完了後に親作業の stale check を必須化する
+      status: pending
+  commit_unit:
+    - id: CU-1
+      title: commit-unit freeze を実装する
+      status: pending
+    - id: CU-2
+      title: commit-unit check を実装する
+      status: pending
+    - id: CU-3
+      title: staged file set を記録する
+      status: pending
+    - id: CU-4
+      title: staged digest を記録する
+      status: pending
+    - id: CU-5
+      title: freeze 後の差分変更を STALE_COMMIT_UNIT として検出する
+      status: pending
+    - id: CU-6
+      title: allowed files 外の混入を COMMIT_MIXING_RISK として検出する
+      status: pending
+    - id: CU-7
+      title: blocking unit と commit unit を紐づける
+      status: pending
+    - id: CU-8
+      title: blocking unit 中の commit が親作業の commit unit に混ざらないようにする
+      status: pending
+  evidence_binding:
+    - id: EV-1
+      title: review-target.yaml に work_unit_id / commit_unit_id / staged_digest を記録する
+      status: pending
+    - id: EV-2
+      title: prompt-manifest.yaml に work_unit_id / commit_unit_id / staged_digest を記録する
+      status: pending
+    - id: EV-3
+      title: post-write manifest に unit binding を持たせる
+      status: pending
+    - id: EV-4
+      title: evidence 生成後に target file が変わったら stale 扱いにする
+      status: pending
+    - id: EV-5
+      title: evidence の unit ID が現在の commit unit と違う場合は EVIDENCE_UNIT_MISMATCH とする
+      status: pending
+  runner_and_workflow:
+    - id: RW-1
+      title: post_write_review_flow.py prepare を commit unit ベースにする
+      status: pending
+    - id: RW-2
+      title: run_review.py に unit / digest 検査を入れる
+      status: pending
+    - id: RW-3
+      title: next --json が blocking_unit_required を返せるようにする
+      status: pending
+    - id: RW-4
+      title: next --json が blocking_unit_in_progress を返せるようにする
+      status: pending
+    - id: RW-5
+      title: next --json が commit_unit_stale を返せるようにする
+      status: pending
+    - id: RW-6
+      title: next --json が commit_mixing_risk を返せるようにする
+      status: pending
+    - id: RW-7
+      title: commit guard に work unit / commit unit / evidence binding 検査を追加する
+      status: pending
+  interim_operation:
+    - id: IO-1
+      title: 機械化完了までの manual blocking unit ルールを明文化する
+      status: pending
+    - id: IO-2
+      title: manual blocking unit の宣言形式を決める
+      status: pending
+    - id: IO-3
+      title: allowed files の指定を必須にする
+      status: pending
+    - id: IO-4
+      title: 復帰条件の指定を必須にする
+      status: pending
+    - id: IO-5
+      title: 親作業の commit を blocking unit 完了まで禁止する
+      status: pending
+  tdd:
+    - id: TD-1
+      title: COMMIT_MIXING_RISK の red test を追加する
+      status: pending
+    - id: TD-2
+      title: STALE_COMMIT_UNIT の red test を追加する
+      status: pending
+    - id: TD-3
+      title: EVIDENCE_UNIT_MISMATCH の red test を追加する
+      status: pending
+    - id: TD-4
+      title: blocking unit 中の parent commit 禁止 red test を追加する
+      status: pending
+    - id: TD-5
+      title: red test 固定後、段階的に実装する
+      status: pending
+decisions: []
