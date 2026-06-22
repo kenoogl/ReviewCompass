@@ -1,0 +1,16 @@
+unit_id: unit-2026-06-22-work-unit-declaration-mechanization
+kind: blocking
+parent_unit_id: unit-post-write-prompt-mechanization-stash
+title: Mechanize blocking unit entry and exit
+reason: Blocking unit entry and exit were previously only verbal and easy to forget
+status: completed
+entered_at: '2026-06-22T01:53:28.895326+00:00'
+return_conditions:
+- enter/current/exit CLI implemented
+- workflow snapshot shows active work units
+- tests pass
+exited_at: '2026-06-22T01:59:45.558345+00:00'
+completion_summary: Implemented and pushed work-unit enter/current/exit commands;
+  next --json and workflow-snapshot now expose active blocking units.
+returned_to:
+  unit_id: unit-post-write-prompt-mechanization-stash
