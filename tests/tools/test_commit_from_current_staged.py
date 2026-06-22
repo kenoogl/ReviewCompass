@@ -226,6 +226,80 @@ class CommitFromCurrentStagedTests(unittest.TestCase):
     self.assertIn("TTY", result.stderr)
     self.assertEqual(latest_commit_subject(self.tmpdir), "add carry-forward register")
 
+  def test_rejects_free_form_tty_instruction_before_creating_challenge(self):
+    """TTY 入力でも固定許可文言でなければ challenge を作らない"""
+    _stage_file(self.tmpdir, "notes.md", "# notes")
+    wrapper = load_wrapper_module()
+    original_stdin = wrapper.sys.stdin
+    original_cwd = os.getcwd()
+    stdout = io.StringIO()
+    stderr = io.StringIO()
+
+    try:
+      os.chdir(self.tmpdir)
+      wrapper.sys.stdin = TtyStdin("お願いします\n")
+      with contextlib.redirect_stdout(stdout), contextlib.redirect_stderr(stderr):
+        result = wrapper.main([
+          "-m", "free form approval",
+          "--rationale", "利用者が本ターンでコミットを明示指示",
+        ])
+    finally:
+      os.chdir(original_cwd)
+      wrapper.sys.stdin = original_stdin
+
+    self.assertEqual(result, 2)
+    self.assertEqual(stdout.getvalue(), "")
+    self.assertIn("許可文言", stderr.getvalue())
+    challenge_path = (
+      Path(self.tmpdir)
+      / ".reviewcompass"
+      / "runtime"
+      / "approvals"
+      / "commit-approval-challenge.json"
+    )
+    self.assertFalse(challenge_path.exists())
+    self.assertEqual(latest_commit_subject(self.tmpdir), "add carry-forward register")
+
+  def test_fails_closed_when_staged_content_changes_after_approval_pair(self):
+    """approval chain 作成後に staged 内容が変わったら commit しない"""
+    _stage_file(self.tmpdir, "notes.md", "# notes")
+    wrapper = load_wrapper_module()
+    original_record_approval_pair = wrapper._record_approval_pair
+    original_stdin = wrapper.sys.stdin
+    original_cwd = os.getcwd()
+    stdout = io.StringIO()
+    stderr = io.StringIO()
+
+    def record_then_mutate_index(cwd, nonce, source_bytes):
+      original_record_approval_pair(cwd, nonce, source_bytes)
+      late_path = Path(cwd) / "late.md"
+      late_path.write_text("# late\n", encoding="utf-8")
+      subprocess.run(
+        ["git", "add", "late.md"],
+        cwd=str(cwd),
+        check=True,
+        capture_output=True,
+      )
+
+    try:
+      os.chdir(self.tmpdir)
+      wrapper.sys.stdin = TtyStdin("コミット\n")
+      wrapper._record_approval_pair = record_then_mutate_index
+      with contextlib.redirect_stdout(stdout), contextlib.redirect_stderr(stderr):
+        result = wrapper.main([
+          "-m", "mutated staged content",
+          "--rationale", "利用者が本ターンでコミットを明示指示",
+        ])
+    finally:
+      os.chdir(original_cwd)
+      wrapper.sys.stdin = original_stdin
+      wrapper._record_approval_pair = original_record_approval_pair
+
+    self.assertEqual(result, 2)
+    combined_output = stdout.getvalue() + stderr.getvalue()
+    self.assertIn("staged exact index", combined_output)
+    self.assertEqual(latest_commit_subject(self.tmpdir), "add carry-forward register")
+
   def test_requires_stdin_approval_before_creating_challenge(self):
     """stdin 承認文がない場合は challenge を作らず停止する"""
     _stage_file(self.tmpdir, "notes.md", "# notes")

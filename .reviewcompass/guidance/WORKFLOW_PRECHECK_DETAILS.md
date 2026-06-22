@@ -148,7 +148,7 @@ tools/guarded-git-commit.py -m "<commit message>" --rationale "<理由>" --appro
 
 危険変更がある場合は逸脱とする。要注意変更は警告とする。
 
-`tools/commit-from-current-staged.py` は、TTY からの対話的な stdin 承認 1 行を検査してから `commit_approval.prepare()` を呼び、現在の staged exact index に束縛した challenge を作る。古い runtime approval/delegation は `prepare()` により invalidated になる。返された nonce は同じ process 内で内容承認と実行代行承認に使い、子プロセスへ承認文を pipe しない。stdin 承認文が非 TTY、空、UTF-8 でない、複数行、または許可文言外の場合は challenge 作成前に停止する。承認文は直近の利用者発話または利用者による対話入力に限る。利用者の単発 commit 指示を使う場合、その 1 行を staged 内容承認と LLM commit 実行代行承認の source として扱い、LLM が `printf` 等で生成して渡してはならない。LLM が利用者発話なしに承認文を生成してはならない。
+`tools/commit-from-current-staged.py` は、approval 作成前に `commit-preflight --json` を実行し、`DEVIATION` なら承認入力や challenge 作成へ進まず停止する。preflight 通過後、TTY からの対話的な stdin 承認 1 行を検査してから `commit_approval.prepare()` を呼び、現在の staged exact index に束縛した challenge を作る。古い runtime approval/delegation は `prepare()` により invalidated になる。返された nonce は同じ process 内で内容承認と実行代行承認に使い、子プロセスへ承認文を pipe しない。stdin 承認文が非 TTY、空、UTF-8 でない、複数行、または許可文言外の場合は challenge 作成前に停止する。承認文は直近の利用者発話または利用者による対話入力に限る。利用者の単発 commit 指示を使う場合、その 1 行を staged 内容承認と LLM commit 実行代行承認の source として扱い、LLM が `printf` 等で生成して渡してはならない。LLM が利用者発話なしに承認文を生成してはならない。
 
 `tools/guarded-git-commit.py` は `commit --execution-actor llm` を先に実行し、exit 2 なら commit しない。exit 1 は既定では停止し、人の判断で続行する場合だけ `--allow-warn` を付ける。commit 成功後、期限付き承認レコードは消費済みにする。
 

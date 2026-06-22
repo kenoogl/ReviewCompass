@@ -2,6 +2,7 @@
 """現在の staged index に束縛した approval を作り、即 guarded commit する。"""
 
 import argparse
+import json
 import subprocess
 import sys
 from pathlib import Path
@@ -12,6 +13,53 @@ if str(_TOOLS_DIR) not in sys.path:
   sys.path.insert(0, str(_TOOLS_DIR))
 
 from check_workflow_action import commit_approval  # noqa: E402
+
+
+def _run_commit_preflight(cwd):
+  """approval 作成前に commit 入口検査を read-only で実行する。"""
+  return subprocess.run(
+    [
+      sys.executable,
+      str(_TOOLS_DIR / "check-workflow-action.py"),
+      "commit-preflight",
+      "--json",
+    ],
+    cwd=str(cwd),
+    capture_output=True,
+  )
+
+
+def _decode_process_output(value):
+  if isinstance(value, bytes):
+    return value.decode("utf-8", errors="replace")
+  return value or ""
+
+
+def _preflight_failure_lines(result):
+  """preflight 失敗時のユーザー向け短文だけを作る。"""
+  stdout = _decode_process_output(result.stdout)
+  stderr = _decode_process_output(result.stderr)
+  try:
+    data = json.loads(stdout)
+  except json.JSONDecodeError:
+    details = stderr.strip() or stdout.strip() or "commit-preflight failed"
+    return [
+      "commit preflight: DEVIATION",
+      f"reason: {details.splitlines()[0]}",
+    ]
+
+  reasons = data.get("reasons") if isinstance(data, dict) else None
+  next_required_action = (
+    data.get("next_required_action")
+    if isinstance(data, dict)
+    else None
+  )
+  lines = ["commit preflight: DEVIATION"]
+  if reasons:
+    lines.append(f"reason: {reasons[0]}")
+  if next_required_action:
+    lines.append(f"next: {next_required_action}")
+  return lines
 
 
 def _read_required_approval_line():
@@ -99,6 +147,11 @@ def main(argv=None):
   args = parser.parse_args(argv)
 
   try:
+    preflight = _run_commit_preflight(Path.cwd())
+    if preflight.returncode != 0:
+      for line in _preflight_failure_lines(preflight):
+        print(line, file=sys.stderr)
+      return preflight.returncode
     source_bytes = _read_required_approval_line()
     challenge = commit_approval.prepare(Path.cwd())
     _record_approval_pair(Path.cwd(), challenge["nonce"], source_bytes)

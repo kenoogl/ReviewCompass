@@ -1,0 +1,164 @@
+schema_version: work-checklist-v1
+checklist_id: checklist-todo-2026-06-22-commit-operation-efficiency
+unit_id: unit-2026-06-22-commit-operation-efficiency
+title: Mechanize efficient commit operation
+status: completed
+created_at: '2026-06-22T09:12:31.003269+00:00'
+provenance:
+  created_by: llm
+  source_ref: .reviewcompass/backlog/todos/todo-2026-06-22-commit-operation-efficiency.yaml
+  reason: backlog TODO から runtime checklist を機械生成する
+items:
+- id: COE-P1-1
+  title: tools/commit-from-current-staged.py の現状機能を COE-1〜COE-12 に対応づける
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: COE-P1-2
+  title: tools/guarded-git-commit.py と commit_approval.py の責務境界を確認する
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: COE-P1-3
+  title: WORKFLOW_PRECHECK.md / COMMIT_OPERATION_CARD.md の現行導線を確認する
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: COE-P2-1
+  title: 通常 commit 導線が commit-from-current-staged.py を使うことを固定する
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: COE-P2-2
+  title: 古い approval / delegation があっても現在 staged 内容で作り直せることを固定する
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: COE-P2-3
+  title: delegation に自由文を送る通常導線が存在しないことを固定する
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: COE-P2-4
+  title: approval chain 作成後に staged 内容が変わったら fail-closed することを固定する
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: COE-P2-5
+  title: 成功時のユーザ向け出力に nonce / delegation / invalidated を出さないことを固定する
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: COE-P3-1
+  title: commit-from-current-staged.py の通常出力を短くする
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: COE-P3-2
+  title: 内部ログと利用者向け表示を分離する
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: COE-P3-3
+  title: stale approval / delegation の扱いを wrapper 内で完結させる
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: COE-P4-1
+  title: commit 指示直後に commit-preflight を read-only で通す導線を固定する
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: COE-P4-2
+  title: DEVIATION の場合は approval record を作らず停止する
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: COE-P4-3
+  title: commit unit から file set / staged digest / message / rationale を取得できるか検討する
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: COE-P5-1
+  title: WORKFLOW_PRECHECK.md の標準導線を commit-from-current-staged.py 中心に整理する
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: COE-P5-2
+  title: COMMIT_OPERATION_CARD.md の低レベル手順を補助扱いにする
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: COE-1
+  title: commit operation の単一入口を定義する
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: COE-2
+  title: ユーザ表示と内部ログを分離する
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: COE-3
+  title: commit 対象 file set の固定方法を決める
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: COE-4
+  title: stale approval / delegation の事前無効化を機械化する
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: COE-5
+  title: fixed instruction stdin をコード側に閉じ込める
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: COE-6
+  title: approval chain の prepare / record / delegate / validate を一括実行する
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: COE-7
+  title: guarded commit 実行を一括操作に統合する
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: COE-8
+  title: commit message / rationale の入力契約を固定する
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: COE-9
+  title: postcondition check を標準化する
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: COE-10
+  title: delegation 固定文言ミスの red test を追加する
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: COE-11
+  title: stale approval record から自動復旧する red test を追加する
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: COE-12
+  title: staged 内容変更時に fail-closed する red test を追加する
+  status: done
+  checked: true
+  child_checklist_id: null
+source_backlog_item_id: todo-2026-06-22-commit-operation-efficiency
+source_backlog_path: .reviewcompass/backlog/todos/todo-2026-06-22-commit-operation-efficiency.yaml
+progress:
+  total: 28
+  done: 28
+  active: 0
+  pending: 0
+  blocked: 0
+  active_item_ids: []
+  blocked_item_ids: []
+completed_at: '2026-06-22T09:23:17.333181+00:00'
+completion_summary: commit wrapper が approval 作成前に commit-preflight を実行するようにし、固定文言、stale
+  approval 復旧、staged 変更 fail-closed、簡潔出力のテストと guidance 更新を完了した

@@ -11,15 +11,16 @@ commit 操作カード
 ## 手順
 
 1. 利用者の単発 commit 指示を commit 操作の開始条件として扱う。
-2. `git add` 後、staged 対象を確認する。
-3. `.venv/bin/python3 tools/check-workflow-action.py commit-approval prepare --json` を単独で実行する。
-4. `commit-approval prepare` と `commit --json` precheck を並列実行しない。
-5. 返された nonce を使い、すぐに `tools/guarded-git-commit.py --approval-nonce <nonce> --approval-source-text-line-stdin` を起動する。
-6. challenge 作成後は、staged index や承認状態を変え得る別コマンドを挟まない。
-7. `--approval-source-text-line-stdin` は TTY からの対話入力でだけ使う。
+2. `git add` 前に `.venv/bin/python3 tools/check-workflow-action.py commit-preflight --json` を実行する。
+3. `DEVIATION` の場合は stage / approval / guarded commit に進まず、停止理由と次に必要な操作だけを報告する。
+4. `git add` 後、staged 対象を確認する。
+5. `.venv/bin/python3 tools/commit-from-current-staged.py -m "<message>" --rationale "<理由>"` を TTY で起動する。
+6. wrapper が承認入力待ちになってから、直近の利用者発話で明示された commit 指示を 1 行として渡す。
+7. wrapper は approval 作成前に再度 `commit-preflight` を実行し、現在の staged 内容に束縛した approval / execution delegation を作って guarded commit する。
 8. 空 stdin、pipe、heredoc、redirect、LLM が生成した `printf` 等の承認文では実行しない。
-9. guarded commit が承認入力待ちになってから、直近の利用者発話で明示された commit 指示を 1 行として渡す。この 1 行は staged 内容承認と LLM commit 実行代行承認の source である。
-10. 失敗時は、まず承認入力経路、challenge 状態、staged digest の一致を確認する。
+9. 失敗時は、承認入力経路、staged 内容、post-write / workflow 停止理由のいずれかを短く確認する。
+
+低レベル nonce 手順は、標準 wrapper が使えない場合の補助手順としてだけ使う。
 
 ## Codex
 

@@ -2,7 +2,7 @@ schema_version: reviewcompass-backlog-item-v1
 id: todo-2026-06-22-commit-operation-efficiency
 kind: todo
 title: Mechanize efficient commit operation
-status: candidate
+status: completed
 source_unit_id: unit-2026-06-22-blocking-unit-control-improvements
 created_at: '2026-06-22T14:05:00+09:00'
 index_path: .reviewcompass/backlog/index.yaml
@@ -10,63 +10,63 @@ provenance:
   created_by: llm
   source_ref: conversation:user:コミット処理の効率化作業を計画、backlogへtodoリストを書く
   reason: commit 承認 chain の手順を LLM が都度組み立てると、nonce / delegation / 固定文言の手戻りが起き、内部事情を利用者へ見せすぎるため
-summary: >
-  commit 操作を、対象差分確認、承認 chain 作成、実行委任、guarded commit、
-  最終確認まで一つの機械処理として扱えるようにする。LLM は commit
-  対象の意味判断と利用者向け要約に集中し、nonce や delegation の
-  内部手順を逐次説明しない。
+summary: 'commit 操作を、対象差分確認、承認 chain 作成、実行委任、guarded commit、 最終確認まで一つの機械処理として扱えるようにする。LLM
+  は commit 対象の意味判断と利用者向け要約に集中し、nonce や delegation の 内部手順を逐次説明しない。
+
+  '
 todos:
   operation_design:
   - id: COE-1
     title: commit operation の単一入口を定義する
-    status: candidate
+    status: done
     detail: staged 内容または指定 file set を対象に、approval / delegation / guarded commit までを一つの操作として扱う。
   - id: COE-2
     title: ユーザ表示と内部ログを分離する
-    status: candidate
+    status: done
     detail: nonce、delegation、invalidated などの内部事情は通常表示せず、失敗時も利用者に必要な次操作だけを要約する。
   - id: COE-3
     title: commit 対象 file set の固定方法を決める
-    status: candidate
+    status: done
     detail: LLM が都度 git add 対象を選ぶのではなく、commit unit または明示 file set から staging 範囲を機械的に決める。
   approval_chain:
   - id: COE-4
     title: stale approval / delegation の事前無効化を機械化する
-    status: candidate
-    detail: 古い record が残っていても手戻りにならないよう、現在 staged digest に合わない record は commit operation 開始時に扱いを確定する。
+    status: done
+    detail: 古い record が残っていても手戻りにならないよう、現在 staged digest に合わない record は commit operation
+      開始時に扱いを確定する。
   - id: COE-5
     title: fixed instruction stdin をコード側に閉じ込める
-    status: candidate
+    status: done
     detail: record / delegate-execution に渡す固定文言を LLM が作文せず、機械処理が許可語彙から選ぶ。
   - id: COE-6
     title: approval chain の prepare / record / delegate / validate を一括実行する
-    status: candidate
+    status: done
     detail: 各段階の digest と nonce 一致を機械的に確認し、途中失敗時は安全に停止する。
   guarded_commit:
   - id: COE-7
     title: guarded commit 実行を一括操作に統合する
-    status: candidate
+    status: done
     detail: approval chain 作成直後に guarded-git-commit.py を呼び、成功時だけ commit hash を返す。
   - id: COE-8
     title: commit message / rationale の入力契約を固定する
-    status: candidate
+    status: done
     detail: message と rationale を明示引数または commit unit から取得し、LLM のその場作文を減らす。
   - id: COE-9
     title: postcondition check を標準化する
-    status: candidate
+    status: done
     detail: commit 後に clean/ahead 状態、commit hash、対象 file set を機械確認して要約する。
   tdd:
   - id: COE-10
     title: delegation 固定文言ミスの red test を追加する
-    status: candidate
+    status: done
     detail: LLM が自由文を送る経路を使わず、単一操作が許可語彙だけを使うことを固定する。
   - id: COE-11
     title: stale approval record から自動復旧する red test を追加する
-    status: candidate
+    status: done
     detail: 古い approval / delegation があっても、現在 staged 内容に束縛した chain を作り直せることを確認する。
   - id: COE-12
     title: staged 内容変更時に fail-closed する red test を追加する
-    status: candidate
+    status: done
     detail: approval chain 作成後に staged digest が変わった場合は commit を実行しない。
 non_goals:
 - 利用者承認なしで commit すること
@@ -78,10 +78,10 @@ notes:
 implementation_plan:
   entry_policy:
     primary_entry: tools/commit-from-current-staged.py
-    rationale: >
-      既に staged index に束縛した approval / delegation / guarded commit を
-      1 本化する wrapper があるため、ゼロから新コマンドを作らず、この導線を
-      標準 commit operation として育てる。
+    rationale: '既に staged index に束縛した approval / delegation / guarded commit を 1 本化する
+      wrapper があるため、ゼロから新コマンドを作らず、この導線を 標準 commit operation として育てる。
+
+      '
     preconditions:
     - 利用者が commit を明示指示している
     - commit-preflight が stage / approval 作成を許可している
@@ -135,8 +135,15 @@ implementation_plan:
   verification:
   - python3 -m pytest tests/tools/test_commit_from_current_staged.py -q
   - python3 -m pytest tests/tools/test_guarded_git_commit.py -q
-  - python3 -m pytest tests/tools/test_check_workflow_action.py -k "commit_approval or commit_preflight or commit_unit" -q
+  - python3 -m pytest tests/tools/test_check_workflow_action.py -k "commit_approval
+    or commit_preflight or commit_unit" -q
   completion_policy:
   - Phase ごとに red test を先に commit する
   - 実装中は red test を変更しない
   - 実装完了後、対応する COE-* の status だけを done にする
+execution_history:
+- checklist_id: checklist-todo-2026-06-22-commit-operation-efficiency
+  evidence_path: .reviewcompass/evidence/work-units/checklists/checklist-todo-2026-06-22-commit-operation-efficiency.yaml
+  completion_summary: commit wrapper が approval 作成前に commit-preflight を実行するようにし、固定文言、stale
+    approval 復旧、staged 変更 fail-closed、簡潔出力のテストと guidance 更新を完了した
+  completed_at: '2026-06-22T09:23:17.333181+00:00'
