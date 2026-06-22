@@ -1,0 +1,11 @@
+status: completed
+target_files:
+- TODO_NEXT_SESSION.md
+target_sha256:
+  TODO_NEXT_SESSION.md: 2d60c7e260eb119d17a235e630f0f390d46ec0aed4041d6877bfd25086c017d4
+required_verifiers:
+- lightweight_self_check
+completed_verifiers:
+- lightweight_self_check
+unresolved_substantive_findings: 0
+verification_summary: TODO_NEXT_SESSION.md の現在位置、完了事項、次作業候補を軽量自己精査し、利用者指摘の反映、事実と改善候補の区別、次セッション導線としての有用性、作業範囲超過がないことを確認した。

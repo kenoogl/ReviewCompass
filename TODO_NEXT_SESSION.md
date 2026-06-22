@@ -25,6 +25,7 @@
 - すべての feature / phase / stage の `workflow_state` は完了済み。
 - `workflow-management` の Requirement 13〜16 を基点にした reopen R-0 は、requirements / design / tasks / implementation まで完了済み。
 - reopen R-0 完了後に発生した post-write prompt 機械化、guidance 配置整理、旧 guidance 削除、repair 例外実装、push guard 補修も commit / push 済み。
+- `blocking unit production readiness` の blocking unit は完了し、evidence 記録、parent resume、push まで完了済み。
 - 進行中ファイルはない。
 - 次の pending gate はない。
 
@@ -45,6 +46,7 @@
 - triad-review の API review-run 前には、variant と role 割当を機械判定または設定から確定し、必要に応じて利用者に提示して停止する。
 - review prompt は、上流資料のパス名だけでなく、必要な本文または要点を含める。単にパスだけを渡さない。
 - 平易な進捗説明を使う。内部状態名を主語にせず、「今どの段階か」「何をしたか」「次に何をするか」を先に述べる。
+- 直近の改善候補として、commit 後に残る `.reviewcompass/runtime/work-units/commit-unit.json` を手動削除せずに済む `commit-unit clear` 相当の機械処理を検討できる。
 
 ## 4. 直近の完了事項
 
@@ -63,6 +65,10 @@
 - guidance 配置整理では、`.reviewcompass/guidance` を正本として参照更新し、旧 `docs/operations` / `docs/disciplines` の guidance 重複を削除した。
 - 旧 guidance 削除は通常の post-write 制約と衝突したため、今回限りの手動修復例外を機械的に扱う `repair-workflow-state prepare` 経路を追加した。
 - push 前 lint が削除済み deployable artifact を読もうとして止まる問題を修正し、削除ファイルは配置非依存 lint の commit 内容読み取り対象から除外した。
+- `blocking unit production readiness` の作業として、work-unit entry/exit/resume、commit-unit freeze/check、staged digest、stale/mixing 検出、work unit と commit unit の束縛、evidence unit mismatch 検出、blocking unit 中の parent commit 禁止を整備した。
+- `PARENT_COMMIT_DURING_BLOCKING_UNIT` により、active blocking unit 中に commit unit なしで親作業 commit を進める経路を遮断するようにした。
+- `EVIDENCE_UNIT_MISMATCH` により、post-write manifest の `unit_binding` が現在の commit unit と一致しない場合に理由コードを返すようにした。
+- `blocking unit production readiness` の runtime checklist は全 37 項目を完了確認し、`.reviewcompass/evidence/work-units/blocking-units/unit-2026-06-22-blocking-unit-production-readiness.yaml` に完了 evidence を保存した。
 - `main` を `origin/main` へ push 済み。正確な終端 commit は `git log --oneline -5` と `git status --short --branch` を正とする。
 
 ## 5. 参照
