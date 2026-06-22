@@ -523,6 +523,9 @@ DEFAULT_DISCIPLINE_MAP = {
     "resume_in_progress": [
       ".reviewcompass/guidance/WORKFLOW_NAVIGATION.md#resume_in_progress",
     ],
+    "parent_resume_pending": [
+      ".reviewcompass/guidance/WORKFLOW_NAVIGATION.md#parent_resume_pending",
+    ],
   },
   "by_stage": {
     "drafting": [
@@ -6345,6 +6348,37 @@ def cmd_next(args):
     except OSError as e:
       print(f"warning: ログ書き込みに失敗しました（処理は続行）: {e}", file=sys.stderr)
     return exit_code
+  parent_resume_state = work_unit_stack.resume_pending(cwd)
+  parent_resume = parent_resume_state.get("current")
+  if isinstance(parent_resume, dict):
+    next_action = {
+      "kind": "parent_resume_pending",
+      "required_action": "resume_parent_unit",
+      "parent_unit_id": parent_resume.get("parent_unit_id"),
+      "completed_unit_id": parent_resume.get("completed_unit_id"),
+      "feature": None,
+      "phase": None,
+      "stage": None,
+      "reason": "blocking unit 完了後に parent unit へ戻る必要があります",
+    }
+    current_state = {
+      "active_work_units": active_work_units,
+      "parent_resume_pending": parent_resume,
+    }
+    reasons = parent_resume_state.get("reasons", [])
+    verdict, exit_code = ("DEVIATION", 2) if reasons else ("OK", 0)
+    next_action = attach_required_context(cwd, next_action)
+    if args.json:
+      print(format_next_json_output(verdict, exit_code, next_action, reasons, current_state))
+    else:
+      print(format_next_human_output(verdict, exit_code, next_action, reasons, current_state))
+    action_dict = {"subcommand": "next", "args": {}}
+    log_path = args.log_path if args.log_path else DEFAULT_LOG_PATH
+    try:
+      append_log(log_path, action_dict, verdict, exit_code, reasons, current_state)
+    except OSError as e:
+      print(f"warning: ログ書き込みに失敗しました（処理は続行）: {e}", file=sys.stderr)
+    return exit_code
   feature_resolution = resolve_feature_order(cwd)
   if feature_resolution["feature_order"] is not None:
     FEATURE_ORDER = feature_resolution["feature_order"]
@@ -7827,6 +7861,13 @@ def cmd_work_unit(args):
       args.reason,
       args.return_condition,
     )
+  elif args.work_unit_command == "preflight-start":
+    response = work_unit_stack.preflight_start(
+      Path.cwd(),
+      args.proposed_unit_id,
+      args.title,
+      args.reason,
+    )
   elif args.work_unit_command == "current":
     response = work_unit_stack.current(Path.cwd())
   elif args.work_unit_command == "exit-blocking":
@@ -7849,6 +7890,8 @@ def cmd_work_unit(args):
       print(f"[CURRENT] {current.get('unit_id')} {current.get('title')}")
     else:
       print("[CURRENT] none")
+  if args.work_unit_command == "preflight-start":
+    return 0
   return 0 if response.get("verdict") == "OK" else 2
 
 
@@ -8506,6 +8549,14 @@ def main():
     default=[],
     help="戻る条件。複数指定可",
   )
+  wu_preflight = wu_sub.add_parser(
+    "preflight-start",
+    help="新しい作業を始める前に active unit / resume pending を診断する",
+    parents=[common_parser],
+  )
+  wu_preflight.add_argument("--proposed-unit-id", required=True, help="開始候補 unit ID")
+  wu_preflight.add_argument("--title", required=True, help="開始候補作業の題名")
+  wu_preflight.add_argument("--reason", required=True, help="開始候補作業の理由")
   wu_sub.add_parser(
     "current",
     help="現在の work unit stack を読む",
