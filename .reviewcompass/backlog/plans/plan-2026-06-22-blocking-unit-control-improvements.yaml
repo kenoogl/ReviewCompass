@@ -11,4 +11,69 @@ provenance:
   source_ref: conversation:user:blocking unit weak points improvement
   reason: '改善4点: return condition 構造化と exit 時検査; exit evidence commit/push 扱いの明確化;
     parent 復帰の機械化; TODO/handoff 更新の促し'
+summary: >
+  本線である post-write prompt mechanization へ戻る前に、blocking unit
+  自体の開始判定・終了判定・復帰案内を強化する。今回、blocking unit
+  改善作業を始める前に blocking unit 宣言を漏らしかけたため、規律だけでなく
+  機械的な preflight と記録で再発を防ぐ。
+background:
+  - workflow 上は completed だったが、会話上の戻り先は unit-post-write-prompt-mechanization-stash だった。
+  - その状態で blocking unit の弱点改善という別作業を始めようとした。
+  - 本来は作業開始前に blocking unit 判定を行い、enter-blocking してから進めるべきだった。
+  - 現行の next --json は active work unit を返せるが、parent resume pending や作業開始前分類までは扱えていない。
+problem:
+  - completed を「自由に次へ進める」と解釈し、会話上の戻り先を機械状態として扱い切れない。
+  - return_conditions が文字列配列であり、exit-blocking 時に未達条件を機械検査できない。
+  - exit-blocking 後に evidence commit が発生すると、push 済み状態が再び ahead になりやすい。
+  - parent unit / stash への復帰案内が自動化されていない。
+  - TODO / handoff 更新が必要な場合も、終了時に促されない。
+improvement_points:
+  - id: I1
+    title: return condition の構造化と exit 時検査
+    detail: >
+      return_conditions を単なる文字列から id/kind/required/command などを持つ
+      構造に拡張し、exit-blocking 時に満たしていない条件があれば fail-closed する。
+  - id: I2
+    title: exit evidence commit / push 扱いの明確化
+    detail: >
+      exit-blocking が evidence を生成することを前提に、終了後に必要な commit/push
+      を return condition または next action として明示する。
+  - id: I3
+    title: parent 復帰の機械化
+    detail: >
+      exit evidence だけでなく resume marker を残し、parent unit や stash
+      へ戻る必要がある場合に next --json が parent_resume_pending を返せるようにする。
+  - id: I4
+    title: TODO / handoff 更新の促し
+    detail: >
+      blocking unit 終了後、TODO_NEXT_SESSION.md や backlog への反映が必要な場合に
+      next --json が handoff_update_required 相当の停止点を示せるようにする。
+implementation_plan:
+  - phase: red-test
+    items:
+      - work-unit preflight-start が active unit / resume pending の有無を返す赤テストを追加する。
+      - parent resume pending がある状態で新規作業を始める場合、blocking unit 判定が必要になる赤テストを追加する。
+      - active unit 中に別作業へ入る場合、nested blocking / backlog / continue の分類が必要になる赤テストを追加する。
+      - structured return condition が未達なら exit-blocking を拒否する赤テストを追加する。
+  - phase: implementation
+    items:
+      - work_unit_stack に resume marker の read/write/consume を追加する。
+      - check-workflow-action.py に work-unit preflight-start を追加する。
+      - next --json が resume marker を通常 completed より優先して返すようにする。
+      - exit-blocking が structured return condition を評価し、未達時は DEVIATION を返すようにする。
+  - phase: verification
+    items:
+      - tests/tools/test_work_unit_cli.py を中心に関連テストを通す。
+      - workflow-snapshot で active unit / active checklist / backlog summary が見えることを確認する。
+      - 実作業 checklist を close できる状態まで更新し、completion evidence を残す。
+acceptance_criteria:
+  - active unit がある状態で別作業を始める前に preflight できる。
+  - parent resume pending がある状態で completed と誤認せず、復帰または blocking unit 宣言を促せる。
+  - structured return condition の未達時に exit-blocking が失敗する。
+  - exit 後の evidence commit/push 必要性が next action または checklist で見える。
+  - TODO / handoff 更新が必要な場合に見落としにくくなる。
+non_goals:
+  - ユーザ指示の意味分類を完全自動化すること。
+  - すべての workflow completed 状態を blocking unit 必須にすること。
+  - post-write prompt mechanization 本体の実装をこの plan に含めること。
 decisions: []
