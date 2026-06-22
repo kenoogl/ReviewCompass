@@ -185,6 +185,60 @@ def test_prepare_post_write_review_writes_auditable_prompt_manifest(tmp_path):
   assert audit_manifest(manifest)["verdict"] == "OK"
 
 
+def test_prepare_post_write_review_records_commit_unit_binding(tmp_path):
+  """commit-unit record があれば review-target と manifest に unit binding を記録する。"""
+  target = tmp_path / "docs" / "operations" / "WORKFLOW_NAVIGATION.md"
+  target.parent.mkdir(parents=True)
+  target.write_text(
+    "### post_write_verification\n"
+    "review evidence must bind to the active commit unit.\n",
+    encoding="utf-8",
+  )
+  commit_unit_path = (
+    tmp_path / ".reviewcompass" / "runtime" / "work-units" / "commit-unit.json"
+  )
+  commit_unit_path.parent.mkdir(parents=True)
+  commit_unit_path.write_text(
+    "{\n"
+    '  "schema_version": "commit-unit-v1",\n'
+    '  "commit_unit_id": "commit-unit-test",\n'
+    '  "work_unit_id": "unit-blocking-test",\n'
+    '  "staged_digest": {\n'
+    '    "algorithm": "commit-unit-v1",\n'
+    '    "digest": "abc123"\n'
+    "  }\n"
+    "}\n",
+    encoding="utf-8",
+  )
+  review_run_dir = tmp_path / ".reviewcompass" / "evidence" / "review-runs" / "run"
+
+  exit_code = main(
+    [
+      "--target", str(target),
+      "--review-run-dir", str(review_run_dir),
+      "--criteria-id", "post_write_commit_unit_binding",
+      "--change-summary", "post-write review evidence を commit unit に束縛する。",
+    ]
+  )
+
+  assert exit_code == 0
+  metadata = yaml.safe_load(
+    (review_run_dir / "review-target.yaml").read_text(encoding="utf-8")
+  )
+  manifest = yaml.safe_load(
+    (review_run_dir / "prompt-manifest.yaml").read_text(encoding="utf-8")
+  )
+  assert metadata["unit_binding"] == {
+    "work_unit_id": "unit-blocking-test",
+    "commit_unit_id": "commit-unit-test",
+    "staged_digest": {
+      "algorithm": "commit-unit-v1",
+      "digest": "abc123",
+    },
+  }
+  assert manifest["unit_binding"] == metadata["unit_binding"]
+
+
 def test_prepare_post_write_review_fails_closed_on_secret_like_target(tmp_path):
   """外部 API に送る前に secret らしい対象を止める。"""
   target = tmp_path / "docs" / "operations" / "SECRET.md"
