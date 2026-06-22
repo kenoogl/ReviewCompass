@@ -35,6 +35,13 @@ class TtyStdin:
     return True
 
 
+class ExplodingStdin:
+  """preflight 前に承認入力へ触れたら失敗させる stdin"""
+
+  def isatty(self):
+    raise AssertionError("approval input was read before commit-preflight")
+
+
 def load_wrapper_module():
   """commit-from-current-staged.py を直接呼び出せる形で読み込む"""
   spec = importlib.util.spec_from_file_location("commit_from_current_staged_under_test", SCRIPT)
@@ -136,6 +143,9 @@ class CommitFromCurrentStagedTests(unittest.TestCase):
     self.assertIn("commit precheck: OK", output)
     self.assertIn("committed:", output)
     self.assertNotIn("[CURRENT STATE]", output)
+    self.assertNotIn("nonce", output)
+    self.assertNotIn("delegation", output)
+    self.assertNotIn("invalidated", output)
     self.assertEqual(latest_commit_subject(self.tmpdir), "commit current staged")
     approval = runtime_record(self.tmpdir, "commit-approval.json")
     challenge = runtime_record(self.tmpdir, "commit-approval-challenge.json")
@@ -147,6 +157,57 @@ class CommitFromCurrentStagedTests(unittest.TestCase):
       sorted(challenge["target_files"]),
       ["current.md", "old.md"],
     )
+
+  def test_commit_preflight_runs_before_reading_approval_input(self):
+    """preflight が DEVIATION なら承認入力や challenge 作成に進まない"""
+    _stage_file(self.tmpdir, "notes.md", "# notes")
+    wrapper = load_wrapper_module()
+    original_stdin = wrapper.sys.stdin
+    original_cwd = os.getcwd()
+    stdout = io.StringIO()
+    stderr = io.StringIO()
+
+    def fake_preflight(_cwd):
+      return subprocess.CompletedProcess(
+        args=["commit-preflight"],
+        returncode=2,
+        stdout=json.dumps(
+          {
+            "verdict": "DEVIATION",
+            "reasons": ["commit より前に post-write verification を完了してください"],
+            "next_required_action": "run_post_write_verification",
+          },
+          ensure_ascii=False,
+        ).encode("utf-8"),
+        stderr=b"",
+      )
+
+    try:
+      os.chdir(self.tmpdir)
+      wrapper.sys.stdin = ExplodingStdin()
+      wrapper._run_commit_preflight = fake_preflight
+      with contextlib.redirect_stdout(stdout), contextlib.redirect_stderr(stderr):
+        result = wrapper.main([
+          "-m", "blocked commit",
+          "--rationale", "利用者が本ターンでコミットを明示指示",
+        ])
+    finally:
+      os.chdir(original_cwd)
+      wrapper.sys.stdin = original_stdin
+
+    self.assertEqual(result, 2)
+    self.assertEqual(stdout.getvalue(), "")
+    self.assertIn("commit preflight: DEVIATION", stderr.getvalue())
+    self.assertIn("run_post_write_verification", stderr.getvalue())
+    challenge_path = (
+      Path(self.tmpdir)
+      / ".reviewcompass"
+      / "runtime"
+      / "approvals"
+      / "commit-approval-challenge.json"
+    )
+    self.assertFalse(challenge_path.exists())
+    self.assertEqual(latest_commit_subject(self.tmpdir), "add carry-forward register")
 
   def test_commit_from_current_staged_no_longer_accepts_piped_approval(self):
     """旧導線の printf 風入力では commit しない"""
