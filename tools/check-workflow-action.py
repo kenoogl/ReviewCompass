@@ -48,7 +48,7 @@ from check_workflow_action.runtime_paths import (
   resolve_commit_approval_path,
   resolve_effective_prompt_read_path,
 )
-from check_workflow_action import approval_gate, commit_approval, commit_unit, work_checklist, work_unit_stack
+from check_workflow_action import approval_gate, commit_approval, commit_unit, work_backlog, work_checklist, work_unit_stack
 from check_workflow_action.implementation_phases import check_phase_plan, load_plan
 from check_workflow_action.operation_preflight import run_preflight
 from check_workflow_action.operation_contracts import load_contracts, run_contract_check
@@ -7908,6 +7908,68 @@ def cmd_work_checklist(args):
   return 0 if response.get("verdict") == "OK" else 2
 
 
+def cmd_work_backlog(args):
+  """workflow 候補 backlog を操作する"""
+  if args.work_backlog_command == "add-plan":
+    response = work_backlog.add_plan(
+      Path.cwd(),
+      args.id,
+      args.title,
+      args.source_unit_id,
+      args.source_ref,
+      args.reason,
+    )
+  elif args.work_backlog_command == "add-issue":
+    response = work_backlog.add_issue(
+      Path.cwd(),
+      args.id,
+      args.title,
+      args.source_unit_id,
+      args.source_ref,
+      args.reason,
+    )
+  elif args.work_backlog_command == "add-todo":
+    response = work_backlog.add_todo(
+      Path.cwd(),
+      args.id,
+      args.title,
+      args.source_unit_id,
+      args.source_ref,
+      args.reason,
+    )
+  elif args.work_backlog_command == "list":
+    response = work_backlog.list_items(Path.cwd())
+  elif args.work_backlog_command == "show":
+    response = work_backlog.show(Path.cwd(), args.id)
+  elif args.work_backlog_command == "promote":
+    response = work_backlog.promote(
+      Path.cwd(),
+      args.id,
+      args.decision_ref,
+      args.reason,
+    )
+  elif args.work_backlog_command == "reject":
+    response = work_backlog.reject(
+      Path.cwd(),
+      args.id,
+      args.decision_ref,
+      args.reason,
+    )
+  else:
+    return 2
+
+  if args.json:
+    print(json.dumps(response, ensure_ascii=False, indent=2))
+  else:
+    print(f"[VERDICT] {response.get('verdict')}")
+    for reason in response.get("reasons", []):
+      print(f"[REASON] {reason}")
+    item = response.get("item")
+    if isinstance(item, dict):
+      print(f"[BACKLOG] {item.get('id')} {item.get('status')}")
+  return 0 if response.get("verdict") == "OK" else 2
+
+
 def cmd_prompt_audit(args):
   """prompt-audit サブコマンドのエントリポイント（Req 15）"""
   action_dict = {
@@ -8518,6 +8580,55 @@ def main():
   wc_close.add_argument("--checklist-id", required=True, help="完了する checklist ID")
   wc_close.add_argument("--completion-summary", required=True, help="完了内容の要約")
 
+  wb = sub.add_parser(
+    "work-backlog",
+    help="workflow に乗せる前の計画候補・TODO・不具合を管理する",
+  )
+  wb_sub = wb.add_subparsers(
+    dest="work_backlog_command",
+    required=True,
+  )
+  for command, help_text in [
+    ("add-plan", "backlog に plan 候補を追加する"),
+    ("add-issue", "backlog に issue 候補を追加する"),
+    ("add-todo", "backlog に todo 候補を追加する"),
+  ]:
+    wb_add = wb_sub.add_parser(
+      command,
+      help=help_text,
+      parents=[common_parser],
+    )
+    wb_add.add_argument("--id", required=True, help="backlog item ID")
+    wb_add.add_argument("--title", required=True, help="backlog item の題名")
+    wb_add.add_argument("--source-unit-id", required=True, help="発生元 work unit ID")
+    wb_add.add_argument("--source-ref", required=True, help="発生根拠の参照")
+    wb_add.add_argument("--reason", required=True, help="候補として保存する理由")
+
+  wb_sub.add_parser(
+    "list",
+    help="backlog index を読む",
+    parents=[common_parser],
+  )
+  wb_show = wb_sub.add_parser(
+    "show",
+    help="backlog item を読む",
+    parents=[common_parser],
+  )
+  wb_show.add_argument("--id", required=True, help="backlog item ID")
+
+  for command, help_text in [
+    ("promote", "backlog item を workflow 候補として昇格する"),
+    ("reject", "backlog item を却下する"),
+  ]:
+    wb_decide = wb_sub.add_parser(
+      command,
+      help=help_text,
+      parents=[common_parser],
+    )
+    wb_decide.add_argument("--id", required=True, help="backlog item ID")
+    wb_decide.add_argument("--decision-ref", required=True, help="判断根拠の参照")
+    wb_decide.add_argument("--reason", required=True, help="判断理由")
+
   pa = sub.add_parser(
     "prompt-audit",
     help="effective prompt manifest を read-only で監査する（Req 15）",
@@ -8670,6 +8781,8 @@ def main():
     sys.exit(cmd_work_unit(args))
   elif args.subcommand == "work-checklist":
     sys.exit(cmd_work_checklist(args))
+  elif args.subcommand == "work-backlog":
+    sys.exit(cmd_work_backlog(args))
   elif args.subcommand == "prompt-audit":
     sys.exit(cmd_prompt_audit(args))
   elif args.subcommand == "implementation-phase-check":
