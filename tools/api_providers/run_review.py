@@ -42,6 +42,7 @@ from tools.check_workflow_action.prompt_audit import (  # noqa: E402
   audit_manifest,
   load_manifest as load_prompt_manifest,
 )
+from tools.check_workflow_action import commit_unit  # noqa: E402
 from tools.normal_output import join_values, status_line  # noqa: E402
 
 ROLES = ["primary", "adversarial", "judgment"]
@@ -363,6 +364,47 @@ def validate_review_prompt_preflight(args: argparse.Namespace, criteria: str) ->
   return errors
 
 
+def _workspace_root_from_artifact_path(path: Path) -> Path:
+  for candidate in [path, *path.parents]:
+    if candidate.name == ".reviewcompass":
+      return candidate.parent
+  local_root = path.parent
+  local_commit_unit_path = (
+    local_root / ".reviewcompass" / "runtime" / "work-units" / "commit-unit.json"
+  )
+  if local_commit_unit_path.is_file():
+    return local_root
+  return Path.cwd()
+
+
+def _load_commit_unit_binding_for_manifest(
+  manifest_path: str,
+) -> Tuple[Optional[Dict[str, Any]], List[str]]:
+  workspace_root = _workspace_root_from_artifact_path(Path(manifest_path))
+  record, errors = commit_unit.load(workspace_root)
+  if errors:
+    return None, errors
+  if not isinstance(record, dict):
+    return None, ["commit unit record が mapping ではありません"]
+  binding = {
+    "work_unit_id": record.get("work_unit_id"),
+    "commit_unit_id": record.get("commit_unit_id"),
+    "staged_digest": record.get("staged_digest"),
+  }
+  return binding, []
+
+
+def _unit_binding_mismatch_errors(
+  manifest_binding: Dict[str, Any],
+  current_binding: Dict[str, Any],
+) -> List[str]:
+  errors = []
+  for key in ("work_unit_id", "commit_unit_id", "staged_digest"):
+    if manifest_binding.get(key) != current_binding.get(key):
+      errors.append(f"unit binding mismatch: {key}")
+  return errors
+
+
 def validate_post_write_prompt_manifest_preflight(args: argparse.Namespace) -> List[str]:
   """post-write review-run 起動前に effective prompt manifest を検査する。"""
   if args.phase != "post_write_verification" or not args.prompt_manifest_path:
@@ -386,6 +428,20 @@ def validate_post_write_prompt_manifest_preflight(args: argparse.Namespace) -> L
     reasons = audit_result.get("reasons")
     reason_text = "; ".join(str(reason) for reason in reasons or [])
     errors.append(f"prompt manifest audit failed: {reason_text}")
+
+  manifest_binding = manifest.get("unit_binding")
+  if isinstance(manifest_binding, dict):
+    current_binding, binding_errors = _load_commit_unit_binding_for_manifest(
+      args.prompt_manifest_path
+    )
+    if binding_errors:
+      errors.append(
+        "unit binding check failed: " + "; ".join(str(error) for error in binding_errors)
+      )
+    elif current_binding is None:
+      errors.append("unit binding check failed: current commit unit is missing")
+    else:
+      errors.extend(_unit_binding_mismatch_errors(manifest_binding, current_binding))
   return errors
 
 
