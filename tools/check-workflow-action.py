@@ -496,6 +496,52 @@ DEFAULT_DISCIPLINE_MAP = {
         ),
       },
     ],
+    "operation_prompt": [
+      {
+        "id": "commit",
+        "prompt_source_refs": [
+          ".reviewcompass/guidance/COMMIT_OPERATION_CARD.md#commit-operation-card",
+        ],
+        "effective_prompt_policy": "one_effective_prompt_per_decision_point",
+      },
+      {
+        "id": "user_initiated_backlog_todo_execution",
+        "prompt_source_refs": [
+          ".reviewcompass/guidance/WORKFLOW_NAVIGATION.md",
+          ".reviewcompass/backlog/plans/plan-2026-06-22-user-initiated-backlog-checklist-effective-prompt.yaml",
+        ],
+        "effective_prompt_policy": "one_effective_prompt_per_decision_point",
+        "canonical_effective_prompt_path": (
+          ".reviewcompass/guidance/effective-prompts/"
+          "user-initiated-backlog-todo-execution.prompt.md"
+        ),
+      },
+      {
+        "id": "user_initiated_task_quality_gate",
+        "prompt_source_refs": [
+          ".reviewcompass/guidance/WORKFLOW_NAVIGATION.md",
+          ".reviewcompass/backlog/plans/plan-2026-06-22-user-initiated-backlog-checklist-effective-prompt.yaml",
+        ],
+        "effective_prompt_policy": "one_effective_prompt_per_decision_point",
+        "canonical_effective_prompt_path": (
+          ".reviewcompass/guidance/effective-prompts/"
+          "user-initiated-task-quality-gate.prompt.md"
+        ),
+      },
+      {
+        "id": "user_initiated_task_quality_review_materials",
+        "prompt_source_refs": [
+          ".reviewcompass/guidance/API_REVIEW_PROMPT_QUALITY.md",
+          ".reviewcompass/guidance/discipline_llm_as_judge_prompting.md",
+          ".reviewcompass/backlog/plans/plan-2026-06-22-user-initiated-backlog-checklist-effective-prompt.yaml",
+        ],
+        "effective_prompt_policy": "one_effective_prompt_per_decision_point",
+        "canonical_effective_prompt_path": (
+          ".reviewcompass/guidance/effective-prompts/"
+          "user-initiated-task-quality-review-materials.prompt.md"
+        ),
+      },
+    ],
   },
   "by_kind": {
     "stage": [
@@ -654,6 +700,13 @@ DEFAULT_DISCIPLINE_MAP = {
     },
   },
 }
+
+OPERATION_PROMPT_IDS = [
+  "commit",
+  "user_initiated_backlog_todo_execution",
+  "user_initiated_task_quality_gate",
+  "user_initiated_task_quality_review_materials",
+]
 
 
 def load_spec_json(cwd, feature):
@@ -6600,12 +6653,10 @@ def cmd_next(args):
 
 def build_operation_prompt_payload(cwd, operation):
   """不可逆操作直前に読む prompt 情報を返す"""
-  if operation != "commit":
-    return None
   effective_prompt = effective_prompt_for_decision_point(
     cwd,
     "operation_prompt",
-    "commit",
+    operation,
   )
   if effective_prompt is None:
     return None
@@ -6613,17 +6664,21 @@ def build_operation_prompt_payload(cwd, operation):
     "kind": "operation_prompt",
     "operation": operation,
   }
-  return {
+  payload = {
     "verdict": "OK",
     "exit_code": 0,
-    "operation": "commit",
-    "required_operation_card": ".reviewcompass/guidance/COMMIT_OPERATION_CARD.md#commit-operation-card",
+    "operation": operation,
     "effective_prompt": materialize_effective_prompt(
       cwd,
       prompt_context,
       effective_prompt,
     ),
   }
+  if operation == "commit":
+    payload["required_operation_card"] = (
+      ".reviewcompass/guidance/COMMIT_OPERATION_CARD.md#commit-operation-card"
+    )
+  return payload
 
 
 def cmd_operation_prompt(args):
@@ -8390,7 +8445,7 @@ def main():
   )
   opp.add_argument(
     "operation",
-    choices=["commit"],
+    choices=OPERATION_PROMPT_IDS,
     help="対象操作",
   )
 

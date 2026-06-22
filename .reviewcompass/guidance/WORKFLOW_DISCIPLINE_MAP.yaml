@@ -208,6 +208,25 @@ decision_points:
       prompt_source_refs:
         - .reviewcompass/guidance/COMMIT_OPERATION_CARD.md#commit-operation-card
       effective_prompt_policy: one_effective_prompt_per_decision_point
+    - id: user_initiated_backlog_todo_execution
+      prompt_source_refs:
+        - .reviewcompass/guidance/WORKFLOW_NAVIGATION.md
+        - .reviewcompass/backlog/plans/plan-2026-06-22-user-initiated-backlog-checklist-effective-prompt.yaml
+      effective_prompt_policy: one_effective_prompt_per_decision_point
+      canonical_effective_prompt_path: .reviewcompass/guidance/effective-prompts/user-initiated-backlog-todo-execution.prompt.md
+    - id: user_initiated_task_quality_gate
+      prompt_source_refs:
+        - .reviewcompass/guidance/WORKFLOW_NAVIGATION.md
+        - .reviewcompass/backlog/plans/plan-2026-06-22-user-initiated-backlog-checklist-effective-prompt.yaml
+      effective_prompt_policy: one_effective_prompt_per_decision_point
+      canonical_effective_prompt_path: .reviewcompass/guidance/effective-prompts/user-initiated-task-quality-gate.prompt.md
+    - id: user_initiated_task_quality_review_materials
+      prompt_source_refs:
+        - .reviewcompass/guidance/API_REVIEW_PROMPT_QUALITY.md
+        - .reviewcompass/guidance/discipline_llm_as_judge_prompting.md
+        - .reviewcompass/backlog/plans/plan-2026-06-22-user-initiated-backlog-checklist-effective-prompt.yaml
+      effective_prompt_policy: one_effective_prompt_per_decision_point
+      canonical_effective_prompt_path: .reviewcompass/guidance/effective-prompts/user-initiated-task-quality-review-materials.prompt.md
   reopen_required_action:
     - id: classify_and_rollback_flags
       prompt_source_refs:

@@ -1,0 +1,42 @@
+schema_version: work-checklist-v1
+checklist_id: checklist-2026-06-22-user-initiated-effective-prompts
+unit_id: unit-2026-06-22-user-initiated-effective-prompts
+title: User-initiated effective prompts
+status: completed
+created_at: '2026-06-22T08:36:34.372887+00:00'
+provenance:
+  created_by: llm
+  source_ref: .reviewcompass/backlog/plans/plan-2026-06-22-user-initiated-backlog-checklist-effective-prompt.yaml
+  reason: ユーザ指示で開始される backlog/checklist/task-quality 処理にも canonical effective prompt
+    を固定する
+items:
+- id: UIP-1
+  title: 'Red tests: user-initiated operation effective prompt registry'
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: UIP-2
+  title: 'Implementation: operation prompt resolver and canonical prompts'
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: UIP-3
+  title: 'Integration: CLI surfaces prompt path, sha256, and freshness state'
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: UIP-4
+  title: 'Verification: tests and checklist progress'
+  status: done
+  checked: true
+  child_checklist_id: null
+progress:
+  total: 4
+  done: 4
+  active: 0
+  pending: 0
+  blocked: 0
+  active_item_ids: []
+  blocked_item_ids: []
+completed_at: '2026-06-22T08:43:42.800327+00:00'
+completion_summary: user-initiated operation effective prompts implemented and verified
