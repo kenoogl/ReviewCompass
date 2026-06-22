@@ -48,7 +48,7 @@ from check_workflow_action.runtime_paths import (
   resolve_commit_approval_path,
   resolve_effective_prompt_read_path,
 )
-from check_workflow_action import approval_gate, commit_approval, commit_unit, work_unit_stack
+from check_workflow_action import approval_gate, commit_approval, commit_unit, work_checklist, work_unit_stack
 from check_workflow_action.implementation_phases import check_phase_plan, load_plan
 from check_workflow_action.operation_preflight import run_preflight
 from check_workflow_action.operation_contracts import load_contracts, run_contract_check
@@ -7852,6 +7852,62 @@ def cmd_work_unit(args):
   return 0 if response.get("verdict") == "OK" else 2
 
 
+def cmd_work_checklist(args):
+  """work checklist の実行リストを操作する"""
+  if args.work_checklist_command == "start":
+    response = work_checklist.start(
+      Path.cwd(),
+      args.checklist_id,
+      args.unit_id,
+      args.title,
+      args.source_ref,
+      args.reason,
+    )
+  elif args.work_checklist_command == "add-item":
+    response = work_checklist.add_item(
+      Path.cwd(),
+      args.checklist_id,
+      args.item_id,
+      args.title,
+    )
+  elif args.work_checklist_command == "set-status":
+    response = work_checklist.set_status(
+      Path.cwd(),
+      args.checklist_id,
+      args.item_id,
+      args.status,
+    )
+  elif args.work_checklist_command == "branch":
+    response = work_checklist.branch(
+      Path.cwd(),
+      args.checklist_id,
+      args.item_id,
+      args.child_checklist_id,
+      args.child_title,
+      args.source_ref,
+      args.reason,
+    )
+  elif args.work_checklist_command == "close":
+    response = work_checklist.close(
+      Path.cwd(),
+      args.checklist_id,
+      args.completion_summary,
+    )
+  else:
+    return 2
+
+  if args.json:
+    print(json.dumps(response, ensure_ascii=False, indent=2))
+  else:
+    print(f"[VERDICT] {response.get('verdict')}")
+    for reason in response.get("reasons", []):
+      print(f"[REASON] {reason}")
+    checklist = response.get("checklist")
+    if isinstance(checklist, dict):
+      print(f"[CHECKLIST] {checklist.get('checklist_id')} {checklist.get('status')}")
+  return 0 if response.get("verdict") == "OK" else 2
+
+
 def cmd_prompt_audit(args):
   """prompt-audit サブコマンドのエントリポイント（Req 15）"""
   action_dict = {
@@ -8400,6 +8456,68 @@ def main():
   wu_exit.add_argument("--unit-id", required=True, help="終了する blocking unit ID")
   wu_exit.add_argument("--completion-summary", required=True, help="完了内容の要約")
 
+  wc = sub.add_parser(
+    "work-checklist",
+    help="work unit 内の作業チェックリストを操作する",
+  )
+  wc_sub = wc.add_subparsers(
+    dest="work_checklist_command",
+    required=True,
+  )
+  wc_start = wc_sub.add_parser(
+    "start",
+    help="作業チェックリストを runtime に作成する",
+    parents=[common_parser],
+  )
+  wc_start.add_argument("--checklist-id", required=True, help="作成する checklist ID")
+  wc_start.add_argument("--unit-id", required=True, help="紐づける work unit ID")
+  wc_start.add_argument("--title", required=True, help="checklist の題名")
+  wc_start.add_argument("--source-ref", required=True, help="作成根拠の参照")
+  wc_start.add_argument("--reason", required=True, help="checklist を作成する理由")
+
+  wc_add = wc_sub.add_parser(
+    "add-item",
+    help="checklist に pending item を追加する",
+    parents=[common_parser],
+  )
+  wc_add.add_argument("--checklist-id", required=True, help="対象 checklist ID")
+  wc_add.add_argument("--item-id", required=True, help="追加する item ID")
+  wc_add.add_argument("--title", required=True, help="item の題名")
+
+  wc_status = wc_sub.add_parser(
+    "set-status",
+    help="checklist item の status を更新する",
+    parents=[common_parser],
+  )
+  wc_status.add_argument("--checklist-id", required=True, help="対象 checklist ID")
+  wc_status.add_argument("--item-id", required=True, help="対象 item ID")
+  wc_status.add_argument(
+    "--status",
+    required=True,
+    choices=sorted(work_checklist.ALLOWED_ITEM_STATUSES),
+    help="item status",
+  )
+
+  wc_branch = wc_sub.add_parser(
+    "branch",
+    help="blocked item から child checklist を作成する",
+    parents=[common_parser],
+  )
+  wc_branch.add_argument("--checklist-id", required=True, help="親 checklist ID")
+  wc_branch.add_argument("--item-id", required=True, help="親 item ID")
+  wc_branch.add_argument("--child-checklist-id", required=True, help="child checklist ID")
+  wc_branch.add_argument("--child-title", required=True, help="child checklist の題名")
+  wc_branch.add_argument("--source-ref", required=True, help="作成根拠の参照")
+  wc_branch.add_argument("--reason", required=True, help="child checklist を作成する理由")
+
+  wc_close = wc_sub.add_parser(
+    "close",
+    help="checklist を完了し evidence snapshot を残す",
+    parents=[common_parser],
+  )
+  wc_close.add_argument("--checklist-id", required=True, help="完了する checklist ID")
+  wc_close.add_argument("--completion-summary", required=True, help="完了内容の要約")
+
   pa = sub.add_parser(
     "prompt-audit",
     help="effective prompt manifest を read-only で監査する（Req 15）",
@@ -8550,6 +8668,8 @@ def main():
     sys.exit(cmd_commit_unit(args))
   elif args.subcommand == "work-unit":
     sys.exit(cmd_work_unit(args))
+  elif args.subcommand == "work-checklist":
+    sys.exit(cmd_work_checklist(args))
   elif args.subcommand == "prompt-audit":
     sys.exit(cmd_prompt_audit(args))
   elif args.subcommand == "implementation-phase-check":
