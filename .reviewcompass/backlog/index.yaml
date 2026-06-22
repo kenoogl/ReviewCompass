@@ -1,0 +1,9 @@
+schema_version: reviewcompass-backlog-index-v1
+items:
+- id: plan-2026-06-22-blocking-unit-control-improvements
+  kind: plan
+  title: Blocking unit control improvement plan
+  status: candidate
+  path: .reviewcompass/backlog/plans/plan-2026-06-22-blocking-unit-control-improvements.yaml
+  source_unit_id: unit-2026-06-22-blocking-unit-control-improvements
+  created_at: '2026-06-22T03:00:38.102731+00:00'

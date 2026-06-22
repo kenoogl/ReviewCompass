@@ -1,0 +1,14 @@
+schema_version: reviewcompass-backlog-item-v1
+id: plan-2026-06-22-blocking-unit-control-improvements
+kind: plan
+title: Blocking unit control improvement plan
+status: candidate
+source_unit_id: unit-2026-06-22-blocking-unit-control-improvements
+created_at: '2026-06-22T03:00:38.102731+00:00'
+index_path: .reviewcompass/backlog/index.yaml
+provenance:
+  created_by: llm
+  source_ref: conversation:user:blocking unit weak points improvement
+  reason: '改善4点: return condition 構造化と exit 時検査; exit evidence commit/push 扱いの明確化;
+    parent 復帰の機械化; TODO/handoff 更新の促し'
+decisions: []
