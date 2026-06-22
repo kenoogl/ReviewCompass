@@ -1,0 +1,13 @@
+schema_version: reviewcompass-backlog-item-v1
+id: todo-2026-06-22-checklist-human-progress-display
+kind: todo
+title: Add human-readable checklist progress display
+status: candidate
+source_unit_id: unit-2026-06-22-blocking-unit-control-improvements
+created_at: '2026-06-22T03:29:44.594082+00:00'
+index_path: .reviewcompass/backlog/index.yaml
+provenance:
+  created_by: llm
+  source_ref: conversation:user:チェックリストにはチェックボックスがなく、どこまで進捗したかが構造的にわからない
+  reason: 作業チェックリストは status を持つが、人間向けのチェックボックス表示と進捗サマリがなく、見通し改善という目的に弱い
+decisions: []
