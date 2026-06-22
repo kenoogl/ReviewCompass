@@ -8349,6 +8349,13 @@ def cmd_work_backlog(args):
       args.decision_ref,
       args.reason,
     )
+  elif args.work_backlog_command == "complete":
+    response = work_backlog.complete(
+      Path.cwd(),
+      args.id,
+      args.decision_ref,
+      args.reason,
+    )
   elif args.work_backlog_command == "reject":
     response = work_backlog.reject(
       Path.cwd(),
@@ -9134,6 +9141,7 @@ def main():
 
   for command, help_text in [
     ("promote", "backlog item を workflow 候補として昇格する"),
+    ("complete", "backlog item を完了扱いにする"),
     ("reject", "backlog item を却下する"),
   ]:
     wb_decide = wb_sub.add_parser(

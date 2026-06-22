@@ -2,7 +2,7 @@ schema_version: reviewcompass-backlog-item-v1
 id: todo-2026-06-22-checklist-human-progress-display
 kind: todo
 title: Add human-readable checklist progress display
-status: candidate
+status: completed
 source_unit_id: unit-2026-06-22-blocking-unit-control-improvements
 created_at: '2026-06-22T03:29:44.594082+00:00'
 index_path: .reviewcompass/backlog/index.yaml
@@ -22,5 +22,11 @@ decisions:
   decision: Move completed checklist from runtime to evidence on close
   rationale: 完了済み checklist が runtime に残ると、進行中リストと証跡の境界が曖昧になり誤解を招く
   implementation:
-  - close 成功時に .reviewcompass/evidence/work-units/checklists/ へ completed snapshot を保存する
+  - close 成功時に .reviewcompass/evidence/work-units/checklists/ へ completed snapshot
+    を保存する
   - close 成功後に .reviewcompass/runtime/work-units/checklists/ の元ファイルを削除する
+- decision: completed
+  decision_ref: git:05065c1d,git:703164ea
+  reason: checklist progress display implementation and evidence move were completed
+    in recorded commits
+  decided_at: '2026-06-22T15:36:49.070250+00:00'

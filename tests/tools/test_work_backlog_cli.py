@@ -360,6 +360,53 @@ class WorkBacklogCliTests(unittest.TestCase):
       [("plan-promote", "promoted"), ("todo-reject", "rejected")],
     )
 
+  def test_complete_records_decision_history_and_updates_index(self):
+    add = run_script(
+      [
+        "work-backlog",
+        "add-todo",
+        "--id", "todo-complete",
+        "--title", "completed backlog item",
+        "--source-unit-id", "unit-test",
+        "--source-ref", "conversation:user",
+        "--reason", "完了操作を検査する",
+        "--json",
+      ],
+      cwd=self.tmpdir,
+    )
+    self.assertEqual(add.returncode, 0, add.stdout + add.stderr)
+
+    completed = run_script(
+      [
+        "work-backlog",
+        "complete",
+        "--id", "todo-complete",
+        "--decision-ref", "git:abc1234",
+        "--reason", "既存 commit で完了済み",
+        "--json",
+      ],
+      cwd=self.tmpdir,
+    )
+
+    assert_script_invoked(self, completed)
+    self.assertEqual(completed.returncode, 0, completed.stdout + completed.stderr)
+    item = yaml.safe_load(
+      (
+        self.tmpdir
+        / ".reviewcompass/backlog/todos/todo-complete.yaml"
+      ).read_text(encoding="utf-8")
+    )
+    index = yaml.safe_load(
+      (self.tmpdir / ".reviewcompass/backlog/index.yaml").read_text(
+        encoding="utf-8",
+      )
+    )
+    self.assertEqual(item["status"], "completed")
+    self.assertEqual(item["decisions"][-1]["decision"], "completed")
+    self.assertEqual(item["decisions"][-1]["decision_ref"], "git:abc1234")
+    self.assertEqual(item["decisions"][-1]["reason"], "既存 commit で完了済み")
+    self.assertEqual(index["items"][0]["status"], "completed")
+
   def test_start_checklist_generates_runtime_checklist_from_backlog_todo(self):
     self._write_todo_item()
 

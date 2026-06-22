@@ -488,5 +488,9 @@ def promote(cwd, item_id, decision_ref, reason):
   return _decide(cwd, item_id, "promoted", decision_ref, reason)
 
 
+def complete(cwd, item_id, decision_ref, reason):
+  return _decide(cwd, item_id, "completed", decision_ref, reason)
+
+
 def reject(cwd, item_id, decision_ref, reason):
   return _decide(cwd, item_id, "rejected", decision_ref, reason)
