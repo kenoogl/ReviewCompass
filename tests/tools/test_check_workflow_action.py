@@ -6185,6 +6185,37 @@ class CommitUnitIsolationTests(unittest.TestCase):
     _assert_script_invoked(self, result)
     return result
 
+  def _write_active_blocking_unit(self, unit_id="unit-blocking-001"):
+    stack_path = (
+      Path(self.tmpdir)
+      / ".reviewcompass"
+      / "runtime"
+      / "work-units"
+      / "stack.yaml"
+    )
+    stack_path.parent.mkdir(parents=True, exist_ok=True)
+    stack_path.write_text(
+      yaml.safe_dump(
+        {
+          "schema_version": "work-unit-stack-v1",
+          "frames": [
+            {
+              "unit_id": unit_id,
+              "kind": "blocking",
+              "parent_unit_id": "main-completed",
+              "title": "active",
+              "reason": "test",
+              "status": "active",
+              "return_conditions": ["done"],
+            },
+          ],
+        },
+        allow_unicode=True,
+        sort_keys=False,
+      ),
+      encoding="utf-8",
+    )
+
   def test_commit_unit_freeze_records_allowed_staged_scope(self):
     """freeze は現在の staged exact index と allowed files を record に固定する"""
     self._write_and_stage("tools/check_workflow_action/blocking_unit.py", "print('x')\n")
@@ -6268,35 +6299,7 @@ class CommitUnitIsolationTests(unittest.TestCase):
     self._write_and_stage(target, "print('x')\n")
     freeze = self._freeze_commit_unit([target])
     self.assertEqual(freeze.returncode, 0, freeze.stdout + freeze.stderr)
-    stack_path = (
-      Path(self.tmpdir)
-      / ".reviewcompass"
-      / "runtime"
-      / "work-units"
-      / "stack.yaml"
-    )
-    stack_path.parent.mkdir(parents=True, exist_ok=True)
-    stack_path.write_text(
-      yaml.safe_dump(
-        {
-          "schema_version": "work-unit-stack-v1",
-          "frames": [
-            {
-              "unit_id": "unit-active-current",
-              "kind": "blocking",
-              "parent_unit_id": "main-completed",
-              "title": "active",
-              "reason": "test",
-              "status": "active",
-              "return_conditions": ["done"],
-            },
-          ],
-        },
-        allow_unicode=True,
-        sort_keys=False,
-      ),
-      encoding="utf-8",
-    )
+    self._write_active_blocking_unit("unit-active-current")
 
     result = run_script(["commit-preflight", "--json"], cwd=self.tmpdir)
 
@@ -6307,6 +6310,24 @@ class CommitUnitIsolationTests(unittest.TestCase):
     self.assertFalse(data["allowed_to_run_guarded_commit"])
     self.assertIn(
       "WORK_UNIT_COMMIT_UNIT_MISMATCH",
+      data["current_state"]["commit_unit"]["codes"],
+    )
+
+  def test_commit_preflight_blocks_parent_commit_without_commit_unit_during_blocking_unit(self):
+    """active blocking unit 中は commit unit なしの親作業 commit を遮断する"""
+    _write_specs_for_next(Path(self.tmpdir), {})
+    self._write_active_blocking_unit("unit-blocking-001")
+    self._write_and_stage("parent-work.txt", "parent change\n")
+
+    result = run_script(["commit-preflight", "--json"], cwd=self.tmpdir)
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 2, result.stdout + result.stderr)
+    data = json.loads(result.stdout)
+    self.assertEqual(data["verdict"], "DEVIATION")
+    self.assertFalse(data["allowed_to_run_guarded_commit"])
+    self.assertIn(
+      "PARENT_COMMIT_DURING_BLOCKING_UNIT",
       data["current_state"]["commit_unit"]["codes"],
     )
 
