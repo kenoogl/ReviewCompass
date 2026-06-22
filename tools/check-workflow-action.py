@@ -580,6 +580,10 @@ DEFAULT_DISCIPLINE_MAP = {
     "parent_resume_pending": [
       ".reviewcompass/guidance/WORKFLOW_NAVIGATION.md#parent_resume_pending",
     ],
+    "blocking_unit_required": [
+      ".reviewcompass/guidance/WORKFLOW_NAVIGATION.md#parent_resume_pending",
+      ".reviewcompass/guidance/effective-prompts/user-initiated-backlog-todo-execution.prompt.md",
+    ],
   },
   "by_stage": {
     "drafting": [
@@ -6454,6 +6458,42 @@ def cmd_next(args):
       "parent_resume_pending": parent_resume,
     }
     reasons = parent_resume_state.get("reasons", [])
+    verdict, exit_code = ("DEVIATION", 2) if reasons else ("OK", 0)
+    next_action = attach_required_context(cwd, next_action)
+    if args.json:
+      print(format_next_json_output(verdict, exit_code, next_action, reasons, current_state))
+    else:
+      print(format_next_human_output(verdict, exit_code, next_action, reasons, current_state))
+    action_dict = {"subcommand": "next", "args": {}}
+    log_path = args.log_path if args.log_path else DEFAULT_LOG_PATH
+    try:
+      append_log(log_path, action_dict, verdict, exit_code, reasons, current_state)
+    except OSError as e:
+      print(f"warning: ログ書き込みに失敗しました（処理は続行）: {e}", file=sys.stderr)
+    return exit_code
+  start_request_state = work_unit_stack.start_request(cwd)
+  start_request = start_request_state.get("current")
+  if isinstance(start_request, dict):
+    proposed_unit = start_request.get("proposed_unit")
+    if not isinstance(proposed_unit, dict):
+      proposed_unit = {}
+    next_action = {
+      "kind": "blocking_unit_required",
+      "required_action": "enter_blocking_unit",
+      "unit_id": proposed_unit.get("unit_id"),
+      "parent_unit_id": proposed_unit.get("parent_unit_id"),
+      "title": proposed_unit.get("title"),
+      "reason": proposed_unit.get("reason"),
+      "return_conditions": proposed_unit.get("return_conditions") or [],
+      "feature": None,
+      "phase": None,
+      "stage": None,
+    }
+    current_state = {
+      "active_work_units": active_work_units,
+      "work_unit_start_request": start_request,
+    }
+    reasons = start_request_state.get("reasons", [])
     verdict, exit_code = ("DEVIATION", 2) if reasons else ("OK", 0)
     next_action = attach_required_context(cwd, next_action)
     if args.json:

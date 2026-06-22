@@ -8,9 +8,11 @@ import yaml
 
 DEFAULT_WORK_UNIT_STACK_PATH = ".reviewcompass/runtime/work-units/stack.yaml"
 DEFAULT_RESUME_PENDING_PATH = ".reviewcompass/runtime/work-units/resume-pending.yaml"
+DEFAULT_START_REQUEST_PATH = ".reviewcompass/runtime/work-units/start-request.yaml"
 DEFAULT_BLOCKING_EVIDENCE_DIR = ".reviewcompass/evidence/work-units/blocking-units"
 SCHEMA_VERSION = "work-unit-stack-v1"
 RESUME_PENDING_SCHEMA_VERSION = "work-unit-resume-pending-v1"
+START_REQUEST_SCHEMA_VERSION = "work-unit-start-request-v1"
 
 
 def _now_iso():
@@ -74,6 +76,10 @@ def _resume_pending_path(cwd, path=None):
   return Path(cwd) / (path or DEFAULT_RESUME_PENDING_PATH)
 
 
+def _start_request_path(cwd, path=None):
+  return Path(cwd) / (path or DEFAULT_START_REQUEST_PATH)
+
+
 def _read_resume_pending(cwd, path=None):
   pending, reasons = _read_yaml(_resume_pending_path(cwd, path), None)
   if pending is None:
@@ -81,6 +87,27 @@ def _read_resume_pending(cwd, path=None):
   if pending.get("schema_version") != RESUME_PENDING_SCHEMA_VERSION:
     reasons.append("resume pending schema_version が不正です")
   return pending, reasons
+
+
+def _read_start_request(cwd, path=None):
+  request, reasons = _read_yaml(_start_request_path(cwd, path), None)
+  if request is None:
+    return None, reasons
+  if request.get("schema_version") != START_REQUEST_SCHEMA_VERSION:
+    reasons.append("start request schema_version が不正です")
+  if request.get("kind") != "blocking_unit_required":
+    reasons.append("start request kind が blocking_unit_required ではありません")
+  proposed = request.get("proposed_unit")
+  if not isinstance(proposed, dict):
+    reasons.append("start request proposed_unit が mapping ではありません")
+  else:
+    for key in ("unit_id", "title", "reason", "parent_unit_id"):
+      if not isinstance(proposed.get(key), str) or not proposed.get(key).strip():
+        reasons.append(f"start request proposed_unit.{key} が空です")
+    return_conditions = proposed.get("return_conditions")
+    if not isinstance(return_conditions, list) or not return_conditions:
+      reasons.append("start request proposed_unit.return_conditions が非空 list ではありません")
+  return request, reasons
 
 
 def _write_resume_pending(cwd, completed):
@@ -231,6 +258,15 @@ def resume_pending(cwd, path=None):
     "DEVIATION" if reasons else "OK",
     reasons,
     current=marker,
+  )
+
+
+def start_request(cwd, path=None):
+  request, reasons = _read_start_request(cwd, path)
+  return _result(
+    "DEVIATION" if reasons else "OK",
+    reasons,
+    current=request,
   )
 
 
