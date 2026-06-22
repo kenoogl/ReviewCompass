@@ -273,6 +273,36 @@ def _main_preanalysis(backlog_id, checklist_id, audit_result):
   }
 
 
+def _review_result_contract(output_dir):
+  prompt_materials_path = Path(output_dir) / "review-materials.yaml"
+  review_run_dir = ".reviewcompass/evidence/task-quality-review-runs/run"
+  return {
+    "roles": ["primary", "adversarial", "judgment"],
+    "paths": {
+      "prompt_materials": str(prompt_materials_path),
+      "review_run_dir": review_run_dir,
+      "prompts_dir": f"{review_run_dir}/prompts",
+      "raw_results_dir": f"{review_run_dir}/raw-results",
+      "normalized_results_dir": f"{review_run_dir}/normalized-results",
+      "triage_decision_path": f"{review_run_dir}/triage-decision.yaml",
+      "summary_path": f"{review_run_dir}/review-summary.yaml",
+    },
+  }
+
+
+def _decision_boundary():
+  return {
+    "mechanical_gate": "audit_result.verdict must be OK",
+    "blocking_finding_levels": ["critical", "major"],
+    "review_output_does_not_authorize_changes": True,
+    "accepted_when": [
+      "audit_result.verdict == OK",
+      "no unresolved critical/major findings",
+      "judgment role does not request changes",
+    ],
+  }
+
+
 def prepare_review_materials(cwd, backlog_id, checklist_id, output_dir):
   audit_result = audit(cwd, backlog_id, checklist_id)
   if audit_result.get("verdict") != "OK":
@@ -317,6 +347,8 @@ def prepare_review_materials(cwd, backlog_id, checklist_id, output_dir):
     "audit_result": audit_result,
     "main_preanalysis": _main_preanalysis(backlog_id, checklist_id, audit_result),
     "review_questions": _review_questions(),
+    "review_result_contract": _review_result_contract(output_dir),
+    "decision_boundary": _decision_boundary(),
     "sensitive_information_check": {
       "status": "not_required_for_local_materialization",
       "reason": "materials are generated locally before any API call",
