@@ -1,0 +1,20 @@
+status: completed
+target_files:
+- .reviewcompass/guidance/WORKFLOW_NAVIGATION.md
+target_sha256:
+  .reviewcompass/guidance/WORKFLOW_NAVIGATION.md: 9f925a76e648823eb4cfbb0f979c5fc298a3663c40a19e243bddb7949776095d
+required_verifiers: &id001
+- gemini-3.1-pro-preview
+completed_verifiers: *id001
+unresolved_substantive_findings: 0
+verifications:
+- verifier: gemini-3.1-pro-preview
+  target_files:
+  - .reviewcompass/guidance/WORKFLOW_NAVIGATION.md
+  target_sha256:
+    .reviewcompass/guidance/WORKFLOW_NAVIGATION.md: 9f925a76e648823eb4cfbb0f979c5fc298a3663c40a19e243bddb7949776095d
+review_run:
+  path: .reviewcompass/evidence/review-runs/2026-06-22-blocking-unit-return-conditions-postwrite
+  summary_path: .reviewcompass/evidence/review-runs/2026-06-22-blocking-unit-return-conditions-postwrite/model-result-summary.yaml
+notes: Generated template; verify target_files cover current post-write targets before
+  use.

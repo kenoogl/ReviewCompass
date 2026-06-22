@@ -1,0 +1,4 @@
+run_id: 2026-06-22-blocking-unit-return-conditions-postwrite
+target_files:
+- path: .reviewcompass/guidance/WORKFLOW_NAVIGATION.md
+  sha256: 9f925a76e648823eb4cfbb0f979c5fc298a3663c40a19e243bddb7949776095d

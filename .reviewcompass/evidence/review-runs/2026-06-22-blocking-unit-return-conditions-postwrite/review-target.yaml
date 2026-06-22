@@ -1,0 +1,34 @@
+run_id: 2026-06-22-blocking-unit-return-conditions-postwrite
+phase: post_write_verification
+criteria_id: blocking_unit_return_conditions_guidance_post_write
+criteria_file: .reviewcompass/evidence/review-runs/2026-06-22-blocking-unit-return-conditions-postwrite/review-target.md
+criteria_file_sha256: 72c07f62025e7f6940d417a32397c0b46a04ac7d4a66129df98f7f02ee057a04
+prompt_manifest_path: .reviewcompass/evidence/review-runs/2026-06-22-blocking-unit-return-conditions-postwrite/prompt-manifest.yaml
+prompt_manifest_sha256: 88888556461b9ad28aca3f13bd93a9dea3cd30a5e15fda31e629fe8926d1bfab
+target_files:
+- path: .reviewcompass/guidance/WORKFLOW_NAVIGATION.md
+  sha256: 9f925a76e648823eb4cfbb0f979c5fc298a3663c40a19e243bddb7949776095d
+  content_mode: full_text
+  content_sha256: 9f925a76e648823eb4cfbb0f979c5fc298a3663c40a19e243bddb7949776095d
+source_materials:
+- path: .reviewcompass/guidance/API_REVIEW_PROMPT_QUALITY.md
+  sha256: 03a9b994c6b5fb4b99ebbbf169e48d76568c5b6190716bbe9e5e181844c9450d
+  content_mode: full_text
+  content_sha256: 03a9b994c6b5fb4b99ebbbf169e48d76568c5b6190716bbe9e5e181844c9450d
+- path: .reviewcompass/backlog/todos/todo-2026-06-22-blocking-unit-production-readiness.yaml
+  sha256: 423086c5a77567daa5359eca74b4e7594a585fcf69e6be987eebdfc0cb2bec8b
+  content_mode: full_text
+  content_sha256: 423086c5a77567daa5359eca74b4e7594a585fcf69e6be987eebdfc0cb2bec8b
+sensitive_information_check:
+  status: passed
+  checked_at: '2026-06-22T13:25:27.254854+00:00'
+recommended_run_review_args:
+  criteria_file: .reviewcompass/evidence/review-runs/2026-06-22-blocking-unit-return-conditions-postwrite/review-target.md
+  phase: post_write_verification
+  prompt_manifest_path: .reviewcompass/evidence/review-runs/2026-06-22-blocking-unit-return-conditions-postwrite/prompt-manifest.yaml
+unit_binding:
+  work_unit_id: unit-2026-06-22-blocking-unit-production-readiness
+  commit_unit_id: commit-unit-20260622T131353Z
+  staged_digest:
+    algorithm: commit-unit-v1
+    digest: 454945f48bbb27673abf9cad9f6167ff8412fb80d2003396575310f3a3d3a93c

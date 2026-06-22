@@ -1,0 +1,83 @@
+schema_version: effective-prompt-manifest-v1
+decision_point:
+  kind: post_write_verification
+  required_action: run_post_write_verification
+source_artifacts:
+- path: .reviewcompass/guidance/WORKFLOW_NAVIGATION.md
+  sha256: sha256:9f925a76e648823eb4cfbb0f979c5fc298a3663c40a19e243bddb7949776095d
+- path: .reviewcompass/guidance/API_REVIEW_PROMPT_QUALITY.md
+  sha256: sha256:03a9b994c6b5fb4b99ebbbf169e48d76568c5b6190716bbe9e5e181844c9450d
+- path: .reviewcompass/backlog/todos/todo-2026-06-22-blocking-unit-production-readiness.yaml
+  sha256: sha256:423086c5a77567daa5359eca74b4e7594a585fcf69e6be987eebdfc0cb2bec8b
+required_disciplines:
+- .reviewcompass/guidance/WORKFLOW_NAVIGATION.md
+- .reviewcompass/guidance/API_REVIEW_PROMPT_QUALITY.md
+operation_contract:
+  operation_id: prepare_post_write_review
+  sha256: sha256:72c07f62025e7f6940d417a32397c0b46a04ac7d4a66129df98f7f02ee057a04
+expected_output_schema:
+  schema_ref: null
+  required_sections:
+  - findings
+prompt_length:
+  min_chars: 1
+  max_chars: 200000
+  source_ref: .reviewcompass/evidence/review-runs/2026-06-22-blocking-unit-return-conditions-postwrite/review-target.md
+  failure_verdict: DEVIATION
+preconditions_checked:
+- id: post-write-review-target-generated
+  source: prepare_post_write_review
+  machine_checked: true
+  evidence_ref: .reviewcompass/evidence/review-runs/2026-06-22-blocking-unit-return-conditions-postwrite/review-target.md
+language_task:
+  document_kind: post_write_verification
+  input:
+    required_files:
+    - .reviewcompass/guidance/WORKFLOW_NAVIGATION.md
+    state_refs: []
+    source_refs:
+    - .reviewcompass/guidance/API_REVIEW_PROMPT_QUALITY.md
+    - .reviewcompass/backlog/todos/todo-2026-06-22-blocking-unit-production-readiness.yaml
+  output_format:
+    kind: yaml_findings
+    required_sections:
+    - findings
+    schema_ref: null
+  constraints:
+  - Review language-level consistency only.
+  - Do not mutate workflow state.
+  - Do not create review-run artifacts.
+  - Do not commit or push.
+review_prompt_materials:
+  target_files:
+  - path: .reviewcompass/guidance/WORKFLOW_NAVIGATION.md
+    content_mode: full_text
+    content_sha256: sha256:9f925a76e648823eb4cfbb0f979c5fc298a3663c40a19e243bddb7949776095d
+  source_materials:
+  - path: .reviewcompass/guidance/API_REVIEW_PROMPT_QUALITY.md
+    content_mode: full_text
+    content_sha256: sha256:03a9b994c6b5fb4b99ebbbf169e48d76568c5b6190716bbe9e5e181844c9450d
+  - path: .reviewcompass/backlog/todos/todo-2026-06-22-blocking-unit-production-readiness.yaml
+    content_mode: full_text
+    content_sha256: sha256:423086c5a77567daa5359eca74b4e7594a585fcf69e6be987eebdfc0cb2bec8b
+postconditions:
+- id: post-write-review-target-manifest-matches
+  check_kind: review_target_manifest_matches
+  source_ref: .reviewcompass/evidence/review-runs/2026-06-22-blocking-unit-return-conditions-postwrite/review-target.md
+on_completion:
+  next_required_action: run_post_write_verification
+  allowed_followups:
+  - prompt-audit
+  - run-post-write-review
+  forbidden_actions:
+  - commit
+  - push
+  - spec-set
+generated_at: '2026-06-22T13:25:27.254854+00:00'
+criteria_id: blocking_unit_return_conditions_guidance_post_write
+unit_binding:
+  work_unit_id: unit-2026-06-22-blocking-unit-production-readiness
+  commit_unit_id: commit-unit-20260622T131353Z
+  staged_digest:
+    algorithm: commit-unit-v1
+    digest: 454945f48bbb27673abf9cad9f6167ff8412fb80d2003396575310f3a3d3a93c
