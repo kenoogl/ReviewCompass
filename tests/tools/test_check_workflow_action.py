@@ -6258,6 +6258,26 @@ class CommitUnitIsolationTests(unittest.TestCase):
       data["current_state"]["commit_unit"]["codes"],
     )
 
+  def test_next_reports_stale_commit_unit_before_normal_workflow(self):
+    """next は stale commit unit を通常 workflow より先に停止点として返す"""
+    target = "tools/check_workflow_action/blocking_unit.py"
+    self._write_and_stage(target, "print('x')\n")
+    freeze = self._freeze_commit_unit([target])
+    self.assertEqual(freeze.returncode, 0, freeze.stdout + freeze.stderr)
+    self._write_and_stage(target, "print('changed')\n")
+
+    result = run_script(["next", "--json"], cwd=self.tmpdir)
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+    data = json.loads(result.stdout)
+    self.assertEqual(data["next_action"]["kind"], "commit_unit_stale")
+    self.assertEqual(data["next_action"]["required_action"], "refresh_commit_unit")
+    self.assertIn(
+      "STALE_COMMIT_UNIT",
+      data["current_state"]["commit_unit"]["codes"],
+    )
+
   def test_commit_unit_stage_adds_only_target_files_and_records_message(self):
     """commit-unit stage は target_files だけを stage し message / rationale を固定する"""
     target = Path(self.tmpdir) / "docs" / "target.md"
