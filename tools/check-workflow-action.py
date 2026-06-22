@@ -7908,6 +7908,11 @@ def cmd_work_checklist(args):
       args.source_ref,
       args.reason,
     )
+  elif args.work_checklist_command == "show":
+    response = work_checklist.show(
+      Path.cwd(),
+      args.checklist_id,
+    )
   elif args.work_checklist_command == "add-item":
     response = work_checklist.add_item(
       Path.cwd(),
@@ -7950,6 +7955,18 @@ def cmd_work_checklist(args):
     checklist = response.get("checklist")
     if isinstance(checklist, dict):
       print(f"[CHECKLIST] {checklist.get('checklist_id')} {checklist.get('status')}")
+    progress = response.get("progress")
+    if isinstance(progress, dict):
+      print(
+        "[PROGRESS] "
+        f"done={progress.get('done')} "
+        f"active={progress.get('active')} "
+        f"pending={progress.get('pending')} "
+        f"blocked={progress.get('blocked')} "
+        f"total={progress.get('total')}"
+      )
+    for line in response.get("display_lines", []):
+      print(line)
   return 0 if response.get("verdict") == "OK" else 2
 
 
@@ -8595,6 +8612,13 @@ def main():
   wc_start.add_argument("--title", required=True, help="checklist の題名")
   wc_start.add_argument("--source-ref", required=True, help="作成根拠の参照")
   wc_start.add_argument("--reason", required=True, help="checklist を作成する理由")
+
+  wc_show = wc_sub.add_parser(
+    "show",
+    help="checklist の進捗と人間向けチェック行を表示する",
+    parents=[common_parser],
+  )
+  wc_show.add_argument("--checklist-id", required=True, help="表示する checklist ID")
 
   wc_add = wc_sub.add_parser(
     "add-item",

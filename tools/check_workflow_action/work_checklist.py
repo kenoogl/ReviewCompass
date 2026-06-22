@@ -10,6 +10,12 @@ DEFAULT_CHECKLIST_DIR = ".reviewcompass/runtime/work-units/checklists"
 DEFAULT_CHECKLIST_EVIDENCE_DIR = ".reviewcompass/evidence/work-units/checklists"
 SCHEMA_VERSION = "work-checklist-v1"
 ALLOWED_ITEM_STATUSES = {"pending", "active", "done", "blocked"}
+STATUS_MARKERS = {
+  "done": "[x]",
+  "active": "[>]",
+  "pending": "[ ]",
+  "blocked": "[!]",
+}
 
 
 def _now_iso():
@@ -78,6 +84,40 @@ def _find_item(checklist, item_id):
   return None
 
 
+def _progress(checklist):
+  progress = {
+    "total": 0,
+    "done": 0,
+    "active": 0,
+    "pending": 0,
+    "blocked": 0,
+    "active_item_ids": [],
+    "blocked_item_ids": [],
+  }
+  for item in checklist.get("items", []):
+    if not isinstance(item, dict):
+      continue
+    progress["total"] += 1
+    status = item.get("status")
+    if status in {"done", "active", "pending", "blocked"}:
+      progress[status] += 1
+    if status == "active":
+      progress["active_item_ids"].append(item.get("id"))
+    elif status == "blocked":
+      progress["blocked_item_ids"].append(item.get("id"))
+  return progress
+
+
+def _display_lines(checklist):
+  lines = []
+  for item in checklist.get("items", []):
+    if not isinstance(item, dict):
+      continue
+    marker = STATUS_MARKERS.get(item.get("status"), "[?]")
+    lines.append(f"{marker} {item.get('id')} {item.get('title')}")
+  return lines
+
+
 def start(cwd, checklist_id, unit_id, title, source_ref, reason):
   reasons = []
   if not checklist_id:
@@ -117,6 +157,21 @@ def start(cwd, checklist_id, unit_id, title, source_ref, reason):
     checklist=checklist,
     path=_relative_checklist_path(checklist_id),
   )
+
+
+def show(cwd, checklist_id):
+  checklist, reasons = _read_checklist(cwd, checklist_id)
+  if reasons:
+    return _result("DEVIATION", reasons)
+  response = _result(
+    "OK",
+    [],
+    checklist=checklist,
+    path=_relative_checklist_path(checklist_id),
+  )
+  response["progress"] = _progress(checklist)
+  response["display_lines"] = _display_lines(checklist)
+  return response
 
 
 def add_item(cwd, checklist_id, item_id, title):
