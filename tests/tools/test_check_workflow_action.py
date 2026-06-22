@@ -6278,6 +6278,31 @@ class CommitUnitIsolationTests(unittest.TestCase):
       data["current_state"]["commit_unit"]["codes"],
     )
 
+  def test_next_reports_commit_mixing_risk_before_normal_workflow(self):
+    """next は commit unit 外の staged 混入を通常 workflow より先に返す"""
+    self._write_and_stage("tools/check_workflow_action/blocking_unit.py", "print('x')\n")
+    freeze = self._freeze_commit_unit([
+      "tools/check_workflow_action/blocking_unit.py",
+    ])
+    self.assertEqual(freeze.returncode, 0, freeze.stdout + freeze.stderr)
+    self._write_and_stage("docs/notes/working/other.md", "別作業\n")
+
+    result = run_script(["next", "--json"], cwd=self.tmpdir)
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+    data = json.loads(result.stdout)
+    self.assertEqual(data["next_action"]["kind"], "commit_mixing_risk")
+    self.assertEqual(data["next_action"]["required_action"], "split_or_refresh_commit_unit")
+    self.assertIn(
+      "COMMIT_MIXING_RISK",
+      data["current_state"]["commit_unit"]["codes"],
+    )
+    self.assertEqual(
+      data["current_state"]["commit_unit"]["current_state"]["extra_staged_files"],
+      ["docs/notes/working/other.md"],
+    )
+
   def test_commit_unit_stage_adds_only_target_files_and_records_message(self):
     """commit-unit stage は target_files だけを stage し message / rationale を固定する"""
     target = Path(self.tmpdir) / "docs" / "target.md"
