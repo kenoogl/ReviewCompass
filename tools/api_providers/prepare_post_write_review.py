@@ -6,6 +6,7 @@ criteria 正本を作る。
 """
 import argparse
 import hashlib
+import json
 import re
 import sys
 from datetime import datetime, timezone
@@ -52,6 +53,44 @@ def _manifest_material_entries(entries: List[Dict[str, str]]) -> List[Dict[str, 
     }
     for entry in entries
   ]
+
+
+def _workspace_root_from_review_run_dir(run_dir: Path) -> Path:
+  """review-run dir から対応する workspace root を推定する。"""
+  for path in [run_dir, *run_dir.parents]:
+    if path.name == ".reviewcompass":
+      return path.parent
+  return Path.cwd()
+
+
+def _load_unit_binding(run_dir: Path) -> Optional[Dict[str, Any]]:
+  """現在の commit-unit record から review evidence 用 binding を返す。"""
+  workspace_root = _workspace_root_from_review_run_dir(run_dir)
+  commit_unit_path = (
+    workspace_root / ".reviewcompass" / "runtime" / "work-units" / "commit-unit.json"
+  )
+  if not commit_unit_path.is_file():
+    return None
+  try:
+    record = json.loads(commit_unit_path.read_text(encoding="utf-8"))
+  except (OSError, json.JSONDecodeError):
+    return None
+  if not isinstance(record, dict):
+    return None
+  commit_unit_id = record.get("commit_unit_id")
+  work_unit_id = record.get("work_unit_id")
+  staged_digest = record.get("staged_digest")
+  if not isinstance(commit_unit_id, str) or not commit_unit_id:
+    return None
+  if not isinstance(work_unit_id, str) or not work_unit_id:
+    return None
+  if not isinstance(staged_digest, dict):
+    return None
+  return {
+    "work_unit_id": work_unit_id,
+    "commit_unit_id": commit_unit_id,
+    "staged_digest": staged_digest,
+  }
 
 
 def _secret_hits(targets: List[str]) -> List[Dict[str, str]]:
@@ -179,6 +218,7 @@ def _prompt_manifest(
   source_material_entries: List[Dict[str, str]],
   review_target_path: Path,
   generated_at: str,
+  unit_binding: Optional[Dict[str, Any]] = None,
 ) -> Dict[str, Any]:
   source_artifacts = [
     {"path": entry["path"], "sha256": f"sha256:{entry['sha256']}"}
@@ -187,7 +227,7 @@ def _prompt_manifest(
   review_target_sha256 = f"sha256:{_sha256_file(review_target_path)}"
   source_refs = [entry["path"] for entry in source_material_entries]
   target_refs = [entry["path"] for entry in target_entries]
-  return {
+  manifest = {
     "schema_version": "effective-prompt-manifest-v1",
     "decision_point": {
       "kind": "post_write_verification",
@@ -258,6 +298,9 @@ def _prompt_manifest(
     "generated_at": generated_at,
     "criteria_id": criteria_id,
   }
+  if unit_binding is not None:
+    manifest["unit_binding"] = unit_binding
+  return manifest
 
 
 def _parse_argv(argv: Optional[List[str]]) -> argparse.Namespace:
@@ -328,6 +371,7 @@ def main(argv: Optional[List[str]] = None) -> int:
   run_dir = Path(args.review_run_dir)
   run_dir.mkdir(parents=True, exist_ok=True)
   generated_at = datetime.now(timezone.utc).isoformat()
+  unit_binding = _load_unit_binding(run_dir)
   target_entries = _file_entries(targets)
   source_material_entries = _file_entries(source_materials)
   review_target = _render_review_target(
@@ -350,6 +394,7 @@ def main(argv: Optional[List[str]] = None) -> int:
         source_material_entries=source_material_entries,
         review_target_path=review_target_path,
         generated_at=generated_at,
+        unit_binding=unit_binding,
       ),
       allow_unicode=True,
       sort_keys=False,
@@ -376,6 +421,8 @@ def main(argv: Optional[List[str]] = None) -> int:
       "prompt_manifest_path": str(prompt_manifest_path),
     },
   }
+  if unit_binding is not None:
+    metadata["unit_binding"] = unit_binding
   (run_dir / "review-target.yaml").write_text(
     yaml.safe_dump(metadata, allow_unicode=True, sort_keys=False),
     encoding="utf-8",
