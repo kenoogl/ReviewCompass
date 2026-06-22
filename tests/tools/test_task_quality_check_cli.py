@@ -308,6 +308,114 @@ class TaskQualityCheckCliTests(unittest.TestCase):
     )
     self.assertEqual(data["quality"]["ordering_warning_item_ids"], ["TQG-RT-1"])
 
+  def test_prepare_review_materials_writes_embedded_sources_and_split_questions(self):
+    self._write_todo_item()
+    self._write_checklist([
+      {
+        "id": "TQG-1",
+        "title": "task-quality-check CLI の機械監査項目を追加する",
+        "status": "pending",
+      },
+      {
+        "id": "TQG-2",
+        "title": "checklist item の粒度と順序に関する機械ヒントを出す",
+        "status": "pending",
+      },
+      {
+        "id": "TQG-3",
+        "title": "メイン LLM preanalysis の材料 bundle を生成する",
+        "status": "pending",
+      },
+      {
+        "id": "TQG-RT-1",
+        "title": "空項目・重複・TODO 対応漏れを検出する",
+        "status": "pending",
+      },
+    ])
+    output_dir = (
+      self.tmpdir
+      / ".reviewcompass/runtime/task-quality-review-materials/run"
+    )
+
+    result = run_script(
+      [
+        "task-quality-check",
+        "prepare-review-materials",
+        "--backlog-id", "todo-task-quality",
+        "--checklist-id", "checklist-task-quality",
+        "--output-dir", str(output_dir),
+        "--json",
+      ],
+      cwd=self.tmpdir,
+    )
+
+    assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+    data = json.loads(result.stdout)
+    self.assertEqual(data["verdict"], "OK")
+    materials_path = Path(data["materials_path"])
+    self.assertTrue(materials_path.is_file())
+    materials = yaml.safe_load(materials_path.read_text(encoding="utf-8"))
+    self.assertEqual(
+      materials["schema_version"],
+      "task-quality-review-materials-v1",
+    )
+    source_materials = materials["source_materials"]
+    self.assertEqual(
+      [entry["content_mode"] for entry in source_materials],
+      ["full_text", "full_text"],
+    )
+    self.assertIn("Add task quality check", source_materials[0]["content"])
+    self.assertIn("checklist-task-quality", source_materials[1]["content"])
+    self.assertEqual(materials["audit_result"]["verdict"], "OK")
+    self.assertIn("data_sources", materials["main_preanalysis"])
+    self.assertIn("observations", materials["main_preanalysis"])
+    self.assertEqual(
+      [question["id"] for question in materials["review_questions"]],
+      [
+        "granularity",
+        "ordering",
+        "upstream_connection",
+        "red_test_sufficiency",
+      ],
+    )
+    for question in materials["review_questions"]:
+      self.assertNotIn("\n", question["question"])
+      self.assertNotIn(" and ", question["id"])
+
+  def test_prepare_review_materials_fails_when_audit_has_deviation(self):
+    self._write_todo_item()
+    self._write_checklist([
+      {
+        "id": "TQG-1",
+        "title": "task-quality-check CLI の機械監査項目を追加する",
+        "status": "pending",
+      },
+    ])
+    output_dir = (
+      self.tmpdir
+      / ".reviewcompass/runtime/task-quality-review-materials/run"
+    )
+
+    result = run_script(
+      [
+        "task-quality-check",
+        "prepare-review-materials",
+        "--backlog-id", "todo-task-quality",
+        "--checklist-id", "checklist-task-quality",
+        "--output-dir", str(output_dir),
+        "--json",
+      ],
+      cwd=self.tmpdir,
+    )
+
+    assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 2, result.stdout + result.stderr)
+    data = json.loads(result.stdout)
+    self.assertEqual(data["verdict"], "DEVIATION")
+    self.assertIn("audit must be OK before preparing review materials", data["reasons"])
+    self.assertFalse((output_dir / "review-materials.yaml").exists())
+
 
 if __name__ == "__main__":
   unittest.main()
