@@ -212,6 +212,8 @@ exclude:
     reason: ReviewCompass development evidence compartment (review runs, conformance records, estimation logs).
   - path: .reviewcompass/runtime/**
     reason: Runtime artifacts compartment (precheck log, effective prompts, commit approval record).
+  - path: .reviewcompass/backlog/**
+    reason: Work planning backlog candidates are local ReviewCompass development state.
   - path: .reviewcompass/specs/_cross_feature/**
     reason: ReviewCompass internal cross-feature evidence.
   - path: docs/notes/**
