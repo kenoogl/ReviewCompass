@@ -1,6 +1,6 @@
 # 次セッション継続用メモ
 
-最終更新：2026-06-22（Codex セッション、`ac4913fa` まで commit / push 済み。`main` と `origin/main` は同期済み）。
+最終更新：2026-06-22（Codex セッション、`2f76cec5` の TODO 引き継ぎ更新まで commit / push 済み。`main` と `origin/main` は同期済み。最新 commit は必ず `git log --oneline -5` で確認する）。
 
 この TODO は入口メモであり、作業順序の正本ではない。正本は各 feature の `spec.json` と `tools/check-workflow-action.py next --json` の機械判定である。
 
@@ -19,7 +19,8 @@
 
 - `main` と `origin/main` は同期済み。
 - 作業ツリーは clean。
-- 直近 commit: `ac4913fa Ignore deleted files in push lint`
+- 直近の引き継ぎ更新 commit: `2f76cec5 Refresh TODO session handoff`
+- 直近の実装修正 commit: `ac4913fa Ignore deleted files in push lint`
 - `next --json` は `completed`。
 - すべての feature / phase / stage の `workflow_state` は完了済み。
 - `workflow-management` の Requirement 13〜16 を基点にした reopen R-0 は、requirements / design / tasks / implementation まで完了済み。
@@ -62,7 +63,7 @@
 - guidance 配置整理では、`.reviewcompass/guidance` を正本として参照更新し、旧 `docs/operations` / `docs/disciplines` の guidance 重複を削除した。
 - 旧 guidance 削除は通常の post-write 制約と衝突したため、今回限りの手動修復例外を機械的に扱う `repair-workflow-state prepare` 経路を追加した。
 - push 前 lint が削除済み deployable artifact を読もうとして止まる問題を修正し、削除ファイルは配置非依存 lint の commit 内容読み取り対象から除外した。
-- `main` を `origin/main` へ push 済み。直近 push 範囲の終端は `ac4913fa`。
+- `main` を `origin/main` へ push 済み。直近確認済みの引き継ぎ更新終端は `2f76cec5`。
 
 ## 5. 参照
 

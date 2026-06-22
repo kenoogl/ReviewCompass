@@ -1,0 +1,30 @@
+status: completed
+target_files:
+  - TODO_NEXT_SESSION.md
+target_sha256:
+  TODO_NEXT_SESSION.md: 3d241cf728f6ab7a8b162ee96a883be3b7d42b315a4f6e958f022e8e474965d6
+required_verifiers:
+  - lightweight_self_check
+completed_verifiers:
+  - lightweight_self_check
+unresolved_substantive_findings: 0
+verifications:
+  - verifier: lightweight_self_check
+    target_files:
+      - TODO_NEXT_SESSION.md
+    target_sha256:
+      TODO_NEXT_SESSION.md: 3d241cf728f6ab7a8b162ee96a883be3b7d42b315a4f6e958f022e8e474965d6
+    checks:
+      user_points_preserved: true
+      facts_inferences_policy_and_open_items_separated: true
+      useful_as_later_decision_material: true
+      does_not_over_specify_scope: true
+      remains_working_note_not_canonical_spec: true
+      api_review_intentionally_not_used: true
+notes: >
+  Lightweight self-check for the TODO_NEXT_SESSION.md handoff correction. The
+  update fixes the self-referential endpoint drift left after committing the
+  previous TODO refresh by distinguishing the handoff-update commit from the
+  implementation-repair commit and by instructing the next session to confirm
+  the latest commit with git log. It preserves the current completed workflow
+  state and does not introduce new workflow policy.
