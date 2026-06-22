@@ -3558,6 +3558,63 @@ class NextNavigationTests(unittest.TestCase):
     data = json.loads(result.stdout)
     self.assertEqual(data["next_action"]["kind"], "post_write_verification")
 
+  def test_next_rejects_manifest_when_unit_binding_mismatches_commit_unit(self):
+    """manifest の unit binding が現在の commit unit と違えば完了扱いしない"""
+    cwd = Path(self.tmpdir)
+    _init_git_repo(cwd)
+    _write_specs_for_next(cwd, {})
+    target = cwd / "docs" / "notes" / "new-policy.md"
+    target.parent.mkdir(parents=True, exist_ok=True)
+    target.write_text("検証済みの正本文書\n", encoding="utf-8")
+    commit_unit_path = cwd / ".reviewcompass" / "runtime" / "work-units" / "commit-unit.json"
+    commit_unit_path.parent.mkdir(parents=True, exist_ok=True)
+    commit_unit_path.write_text(
+      json.dumps(
+        {
+          "schema_version": "commit-unit-v1",
+          "commit_unit_id": "commit-unit-current",
+          "work_unit_id": "unit-current",
+          "staged_digest": {
+            "algorithm": "commit-unit-v1",
+            "digest": "current-digest",
+          },
+        },
+        ensure_ascii=False,
+        indent=2,
+      )
+      + "\n",
+      encoding="utf-8",
+    )
+    _write_post_write_manifest(
+      cwd,
+      "post-write-2026-06-02-001.yaml",
+      {
+        "status": "completed",
+        "target_files": ["docs/notes/new-policy.md"],
+        "target_sha256": {
+          "docs/notes/new-policy.md": _sha256_file(target),
+        },
+        "required_verifiers": ["google"],
+        "completed_verifiers": ["google"],
+        "unresolved_substantive_findings": 0,
+        "unit_binding": {
+          "work_unit_id": "unit-old",
+          "commit_unit_id": "commit-unit-old",
+          "staged_digest": {
+            "algorithm": "commit-unit-v1",
+            "digest": "old-digest",
+          },
+        },
+      },
+    )
+
+    result = run_script(["next", "--json"], cwd=cwd)
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 0, result.stderr)
+    data = json.loads(result.stdout)
+    self.assertEqual(data["next_action"]["kind"], "post_write_verification")
+
   def test_next_does_not_complete_manifest_with_empty_required_verifiers(self):
     """required_verifiers が空の manifest は完了扱いしない"""
     cwd = Path(self.tmpdir)
