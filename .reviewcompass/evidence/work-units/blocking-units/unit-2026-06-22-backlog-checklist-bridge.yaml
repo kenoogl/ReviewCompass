@@ -1,0 +1,16 @@
+unit_id: unit-2026-06-22-backlog-checklist-bridge
+kind: blocking
+parent_unit_id: main-completed
+title: Backlog TODO to checklist bridge
+reason: 独立 TODO 化した backlog TODO から runtime checklist への接続を実装するため
+status: completed
+entered_at: '2026-06-22T05:12:28.392825+00:00'
+return_conditions:
+- backlog TODO から checklist を生成できる
+- checklist 完了を backlog TODO の実行履歴へ記録できる
+- 分断検出を red test と実装で確認する
+exited_at: '2026-06-22T05:36:16.338996+00:00'
+completion_summary: backlog TODO から runtime checklist への機械導線、coverage 監査、close 後の
+  backlog 反映、summary 定型生成を実装し、関連テスト 39 件を通過
+returned_to:
+  unit_id: main-completed

@@ -1,0 +1,61 @@
+schema_version: work-checklist-v1
+checklist_id: checklist-2026-06-22-backlog-checklist-bridge
+unit_id: unit-2026-06-22-backlog-checklist-bridge
+title: Backlog TODO to checklist bridge implementation
+status: completed
+created_at: '2026-06-22T05:12:36.571475+00:00'
+provenance:
+  created_by: llm
+  source_ref: .reviewcompass/backlog/todos/todo-2026-06-22-backlog-checklist-bridge.yaml
+  reason: TODO と runtime checklist の分断を避け、作業項目を確認しながら実装するため
+items:
+- id: BCB-C1
+  title: 既存 backlog/checklist 実装を確認する
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: BCB-C2
+  title: TODO から checklist 生成の red test を作る
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: BCB-C3
+  title: checklist close の backlog 反映 red test を作る
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: BCB-C4
+  title: TODO/checklist 分断検出 red test を作る
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: BCB-C5
+  title: red test を失敗確認してコミットする
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: BCB-C6
+  title: 実装してテストを通す
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: BCB-C7
+  title: 実運用確認と TODO/checklist 状態更新を行う
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: BCB-C8
+  title: LLM以外でできる残作業を追加機械化する
+  status: done
+  checked: true
+  child_checklist_id: null
+progress:
+  total: 8
+  done: 8
+  active: 0
+  pending: 0
+  blocked: 0
+  active_item_ids: []
+  blocked_item_ids: []
+completed_at: '2026-06-22T05:36:08.042996+00:00'
+completion_summary: checklist-2026-06-22-backlog-checklist-bridge completed 8/8 items
