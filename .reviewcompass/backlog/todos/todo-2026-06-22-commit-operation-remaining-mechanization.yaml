@@ -1,0 +1,94 @@
+schema_version: reviewcompass-backlog-item-v1
+id: todo-2026-06-22-commit-operation-remaining-mechanization
+kind: todo
+title: Mechanize remaining commit operation manual steps
+status: candidate
+source_unit_id: main-completed
+created_at: '2026-06-22T18:35:00+09:00'
+index_path: .reviewcompass/backlog/index.yaml
+provenance:
+  created_by: llm
+  source_ref: conversation:user:残りで機械化できる部分は？
+  reason: >
+    commit operation wrapper により approval chain は機械化されたが、
+    file set 選択、message / rationale 作成、失敗要約、postcondition、
+    push 候補提示にはまだ LLM 手作業が残っているため。
+summary: >
+  commit 操作で残っている LLM 手作業のうち、機械処理に寄せられる部分を
+  commit unit と postcondition reporting に集約する。ユーザ承認そのものと
+  差分の意味的妥当性判断は非ゴールとし、承認後の操作組み立てと報告を
+  できるだけ定型化する。
+todos:
+  commit_unit_targeting:
+    - id: COR-1
+      title: commit unit に target_files を持たせる
+      status: pending
+      detail: LLM が都度 git add 対象を選ばず、明示 file set から機械的に stage できるようにする。
+    - id: COR-2
+      title: commit unit から staged digest を検査する
+      status: pending
+      detail: freeze 後の差分変更や allowed files 外の混入を commit 前に遮断する。
+    - id: COR-3
+      title: commit unit から git add を実行する導線を追加する
+      status: pending
+      detail: target_files が固定されている場合、stage 対象選択を LLM 判断から外す。
+  message_and_rationale:
+    - id: COR-4
+      title: checklist completion summary から commit message 候補を生成する
+      status: pending
+      detail: 完全自動確定ではなく、短い候補を機械生成して LLM の作文揺れを減らす。
+    - id: COR-5
+      title: backlog TODO / checklist / work unit から rationale 候補を生成する
+      status: pending
+      detail: rationale にユーザ指示、作業単位、完了証跡を定型的に含める。
+    - id: COR-6
+      title: message / rationale の最終入力契約を固定する
+      status: pending
+      detail: 明示引数、commit unit、または生成候補のどれを使うかを機械的に決める。
+  user_output:
+    - id: COR-7
+      title: commit 失敗時の要約を定型化する
+      status: pending
+      detail: preflight / guarded commit の結果から停止理由と次操作だけを表示し、内部手順を隠す。
+    - id: COR-8
+      title: commit 成功後の postcondition check を標準化する
+      status: pending
+      detail: clean 状態、HEAD hash、ahead count、対象 file set を機械確認して要約する。
+    - id: COR-9
+      title: push 候補を機械判定する
+      status: pending
+      detail: push preflight が OK、ahead > 0、dirty なしの場合に push 候補として提示する。
+  approval_boundary:
+    - id: COR-10
+      title: 利用者の commit 承認発話の扱いを固定する
+      status: pending
+      detail: LLM が承認文を生成せず、直近の利用者発話を source として扱う境界を追加 wrapper でも守る。
+    - id: COR-11
+      title: TTY 承認入力の上位 wrapper 化可否を検討する
+      status: pending
+      detail: Codex 実行面で安全に扱える場合だけ、手作業の write_stdin を減らす。
+  tdd:
+    - id: COR-RT-1
+      title: commit unit target_files だけが stage される red test を追加する
+      status: pending
+    - id: COR-RT-2
+      title: commit unit と staged digest の不一致を fail-closed する red test を追加する
+      status: pending
+    - id: COR-RT-3
+      title: message / rationale 候補生成の red test を追加する
+      status: pending
+    - id: COR-RT-4
+      title: commit 成功後 postcondition summary の red test を追加する
+      status: pending
+    - id: COR-RT-5
+      title: push 候補提示の red test を追加する
+      status: pending
+non_goals:
+  - 利用者承認なしで commit / push すること
+  - 差分の意味的妥当性を完全自動判断すること
+  - commit message の最終ニュアンス判断を強制的に機械化すること
+  - guarded commit や commit-preflight の安全検査を迂回すること
+notes:
+  - 優先順位は commit unit target_files 固定、postcondition check、失敗要約の順とする。
+  - approval chain の nonce / delegation 機械化は前 TODO で完了済みなので再実装しない。
+  - push は候補提示までを機械化し、実行承認はユーザ判断として残す。
