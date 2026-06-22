@@ -1,0 +1,34 @@
+run_id: 2026-06-22-blocking-unit-navigation-rules-postwrite-rerun
+phase: post_write_verification
+criteria_id: blocking_unit_interim_operation_guidance_post_write
+criteria_file: .reviewcompass/evidence/review-runs/2026-06-22-blocking-unit-navigation-rules-postwrite-rerun/review-target.md
+criteria_file_sha256: da8499c9f642226fe20e9be113262a20cafc0581865e7ec87a0f36a98a2d3031
+prompt_manifest_path: .reviewcompass/evidence/review-runs/2026-06-22-blocking-unit-navigation-rules-postwrite-rerun/prompt-manifest.yaml
+prompt_manifest_sha256: 89532a9def033cec83975d7444523e3cd2666a46adee632a37d4731c4d37e4b3
+target_files:
+- path: .reviewcompass/guidance/WORKFLOW_NAVIGATION.md
+  sha256: d3db686a2ed562a0a9d32f9f5649c4041ef7e966cc481757debe001837b82870
+  content_mode: full_text
+  content_sha256: d3db686a2ed562a0a9d32f9f5649c4041ef7e966cc481757debe001837b82870
+source_materials:
+- path: .reviewcompass/guidance/API_REVIEW_PROMPT_QUALITY.md
+  sha256: 03a9b994c6b5fb4b99ebbbf169e48d76568c5b6190716bbe9e5e181844c9450d
+  content_mode: full_text
+  content_sha256: 03a9b994c6b5fb4b99ebbbf169e48d76568c5b6190716bbe9e5e181844c9450d
+- path: .reviewcompass/backlog/todos/todo-2026-06-22-blocking-unit-production-readiness.yaml
+  sha256: 423086c5a77567daa5359eca74b4e7594a585fcf69e6be987eebdfc0cb2bec8b
+  content_mode: full_text
+  content_sha256: 423086c5a77567daa5359eca74b4e7594a585fcf69e6be987eebdfc0cb2bec8b
+sensitive_information_check:
+  status: passed
+  checked_at: '2026-06-22T12:53:18.259391+00:00'
+recommended_run_review_args:
+  criteria_file: .reviewcompass/evidence/review-runs/2026-06-22-blocking-unit-navigation-rules-postwrite-rerun/review-target.md
+  phase: post_write_verification
+  prompt_manifest_path: .reviewcompass/evidence/review-runs/2026-06-22-blocking-unit-navigation-rules-postwrite-rerun/prompt-manifest.yaml
+unit_binding:
+  work_unit_id: unit-2026-06-22-blocking-unit-production-readiness
+  commit_unit_id: commit-unit-20260622T124631Z
+  staged_digest:
+    algorithm: commit-unit-v1
+    digest: c83d29364df9e04dbd0b4dc7ccbdd9c7c07d3accb025db082daae7557cecdf68

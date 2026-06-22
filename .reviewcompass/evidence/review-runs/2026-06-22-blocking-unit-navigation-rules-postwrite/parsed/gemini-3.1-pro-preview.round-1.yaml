@@ -1,0 +1,11 @@
+role: primary
+provider: gemini-api
+model: gemini-3.1-pro-preview
+attempts: 1
+duration_seconds: 21.571
+findings:
+- severity: ERROR
+  target_location: '### `blocking_unit_required`'
+  description: manual blocking unit 開始時に明示する項目に「allowed files」の指定が含まれていない
+  rationale: todo-2026-06-22-blocking-unit-production-readiness.yaml の IO-3 にて「allowed
+    files の指定を必須にする」ことが要件として定められていますが、現在の箇条書きには反映されていません。対象ファイル群を事前に宣言しないと作業範囲の歯止めが効かなくなり、過剰な範囲拡大や親作業成果物との意図せぬ混入を招く恐れがあります。

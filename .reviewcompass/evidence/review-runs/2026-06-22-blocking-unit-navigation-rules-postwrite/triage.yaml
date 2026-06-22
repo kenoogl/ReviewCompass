@@ -1,0 +1,25 @@
+run_id: 2026-06-22-blocking-unit-navigation-rules-postwrite
+triage_status: draft
+generated_at: '2026-06-22T12:47:35.887138+00:00'
+decision_actor: null
+decision_actor_type: human
+items:
+- finding_id: 2026-06-22-blocking-unit-navigation-rules-postwrite-gemini-3.1-pro-preview-primary-001
+  run_id: 2026-06-22-blocking-unit-navigation-rules-postwrite
+  source_model: gemini-3.1-pro-preview
+  source_round: round-1
+  source_raw_path: raw/gemini-3.1-pro-preview.round-1.txt
+  source_parsed_path: parsed/gemini-3.1-pro-preview.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: '### `blocking_unit_required`'
+  plain_language_summary: manual blocking unit 開始時に明示する項目に「allowed files」の指定が含まれていない
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: todo-2026-06-22-blocking-unit-production-readiness.yaml の IO-3
+    にて「allowed files の指定を必須にする」ことが要件として定められていますが、現在の箇条書きには反映されていません。対象ファイル群を事前に宣言しないと作業範囲の歯止めが効かなくなり、過剰な範囲拡大や親作業成果物との意図せぬ混入を招く恐れがあります。
+  applied_files: []
+  superseded_by: null
