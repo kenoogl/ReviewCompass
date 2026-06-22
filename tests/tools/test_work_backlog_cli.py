@@ -518,6 +518,57 @@ class WorkBacklogCliTests(unittest.TestCase):
     data = json.loads(second_start.stdout)
     self.assertIn("no promoted todo item found", data["reasons"])
 
+  def test_checklist_close_requires_backlog_index_completion_update(self):
+    self._write_todo_item(status="promoted")
+    start = run_script(
+      [
+        "work-backlog",
+        "start-checklist",
+        "--id", "todo-bridge",
+        "--checklist-id", "checklist-bridge",
+        "--unit-id", "unit-test",
+        "--json",
+      ],
+      cwd=self.tmpdir,
+    )
+    self.assertEqual(start.returncode, 0, start.stdout + start.stderr)
+    index_path = self.tmpdir / ".reviewcompass/backlog/index.yaml"
+    index = yaml.safe_load(index_path.read_text(encoding="utf-8"))
+    index["items"] = []
+    index_path.write_text(
+      yaml.safe_dump(index, allow_unicode=True, sort_keys=False),
+      encoding="utf-8",
+    )
+    for item_id in ("P1-1", "P1-2", "BCB-3", "BCB-RT-1"):
+      result = run_script(
+        [
+          "work-checklist",
+          "set-status",
+          "--checklist-id", "checklist-bridge",
+          "--item-id", item_id,
+          "--status", "done",
+          "--json",
+        ],
+        cwd=self.tmpdir,
+      )
+      self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+
+    result = run_script(
+      [
+        "work-checklist",
+        "close",
+        "--checklist-id", "checklist-bridge",
+        "--completion-summary", "bridge checklist completed",
+        "--json",
+      ],
+      cwd=self.tmpdir,
+    )
+
+    self.assertEqual(result.returncode, 2, result.stdout + result.stderr)
+    data = json.loads(result.stdout)
+    self.assertEqual(data["verdict"], "DEVIATION")
+    self.assertIn("backlog index item not found: todo-bridge", data["reasons"])
+
   def test_audit_checklist_bridge_rejects_promoted_todo_without_runtime_or_evidence(self):
     self._write_todo_item(status="promoted")
 

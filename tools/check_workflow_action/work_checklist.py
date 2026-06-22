@@ -350,6 +350,9 @@ def _record_backlog_execution(cwd, checklist, evidence_path):
     return [f"source backlog item は mapping である必要があります: {source_path}"]
   if item.get("id") != source_id:
     return [f"source backlog item id mismatch: {source_id}"]
+  index, index_reasons = _completed_backlog_index(cwd, source_id, source_path)
+  if index_reasons:
+    return index_reasons
 
   done_item_ids = {
     checklist_item.get("id")
@@ -365,23 +368,33 @@ def _record_backlog_execution(cwd, checklist, evidence_path):
   })
   item["status"] = "completed"
   _write_yaml(backlog_path, item)
-  _mark_backlog_index_item_completed(cwd, source_id)
+  _write_yaml(Path(cwd) / DEFAULT_BACKLOG_INDEX_PATH, index)
   return []
 
 
-def _mark_backlog_index_item_completed(cwd, source_id):
+def _completed_backlog_index(cwd, source_id, source_path):
   index_path = Path(cwd) / DEFAULT_BACKLOG_INDEX_PATH
   try:
     index = yaml.safe_load(index_path.read_text(encoding="utf-8"))
-  except (OSError, UnicodeDecodeError, yaml.YAMLError):
-    return
+  except (OSError, UnicodeDecodeError, yaml.YAMLError) as exc:
+    return None, [f"backlog index を読めません: {DEFAULT_BACKLOG_INDEX_PATH}: {exc}"]
   if not isinstance(index, dict):
-    return
+    return None, ["backlog index は mapping である必要があります"]
+  if index.get("schema_version") != "reviewcompass-backlog-index-v1":
+    return None, ["backlog index schema_version は reviewcompass-backlog-index-v1 である必要があります"]
+  if not isinstance(index.get("items"), list):
+    return None, ["backlog index items は list である必要があります"]
   for entry in index.get("items", []):
-    if isinstance(entry, dict) and entry.get("id") == source_id:
-      entry["status"] = "completed"
-      _write_yaml(index_path, index)
-      return
+    if not isinstance(entry, dict) or entry.get("id") != source_id:
+      continue
+    if entry.get("path") != source_path:
+      return None, [
+        f"backlog index item path mismatch: {source_id}: "
+        f"{entry.get('path')} != {source_path}"
+      ]
+    entry["status"] = "completed"
+    return index, []
+  return None, [f"backlog index item not found: {source_id}"]
 
 
 def _mark_matching_backlog_items_done(backlog_item, done_item_ids):
