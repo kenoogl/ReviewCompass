@@ -75,3 +75,68 @@ non_goals:
 notes:
 - 目的は承認を省くことではなく、承認後の内部手順ミスと説明ノイズを減らすこと。
 - まずは TODO / backlog のような低リスク小規模 commit を対象に実運用テストする。
+implementation_plan:
+  entry_policy:
+    primary_entry: tools/commit-from-current-staged.py
+    rationale: >
+      既に staged index に束縛した approval / delegation / guarded commit を
+      1 本化する wrapper があるため、ゼロから新コマンドを作らず、この導線を
+      標準 commit operation として育てる。
+    preconditions:
+    - 利用者が commit を明示指示している
+    - commit-preflight が stage / approval 作成を許可している
+    - commit 対象 file set が明示指定または commit unit で固定されている
+  phases:
+  - id: COE-P1
+    title: existing implementation inventory
+    tasks:
+    - tools/commit-from-current-staged.py の現状機能を COE-1〜COE-12 に対応づける
+    - tools/guarded-git-commit.py と commit_approval.py の責務境界を確認する
+    - WORKFLOW_PRECHECK.md / COMMIT_OPERATION_CARD.md の現行導線を確認する
+  - id: COE-P2
+    title: red tests
+    tasks:
+    - 通常 commit 導線が commit-from-current-staged.py を使うことを固定する
+    - 古い approval / delegation があっても現在 staged 内容で作り直せることを固定する
+    - delegation に自由文を送る通常導線が存在しないことを固定する
+    - approval chain 作成後に staged 内容が変わったら fail-closed することを固定する
+    - 成功時のユーザ向け出力に nonce / delegation / invalidated を出さないことを固定する
+  - id: COE-P3
+    title: wrapper hardening
+    tasks:
+    - commit-from-current-staged.py の通常出力を短くする
+    - 内部ログと利用者向け表示を分離する
+    - stale approval / delegation の扱いを wrapper 内で完結させる
+  - id: COE-P4
+    title: preflight and commit unit integration
+    tasks:
+    - commit 指示直後に commit-preflight を read-only で通す導線を固定する
+    - DEVIATION の場合は approval record を作らず停止する
+    - commit unit から file set / staged digest / message / rationale を取得できるか検討する
+  - id: COE-P5
+    title: documentation and operation update
+    tasks:
+    - WORKFLOW_PRECHECK.md の標準導線を commit-from-current-staged.py 中心に整理する
+    - COMMIT_OPERATION_CARD.md の低レベル手順を補助扱いにする
+    - 完了した COE-* だけ status: done に更新する
+  red_tests:
+  - id: COE-RT-1
+    title: fixed instruction only
+    expected: wrapper が許可語彙だけを approval / delegation に渡し、LLM 自由文経路を使わない
+  - id: COE-RT-2
+    title: stale record recovery
+    expected: 古い approval / delegation が残っていても現在 staged digest に束縛した chain を作り直せる
+  - id: COE-RT-3
+    title: staged digest fail closed
+    expected: approval chain 作成後に staged 内容が変わった場合 commit しない
+  - id: COE-RT-4
+    title: concise user output
+    expected: 成功時の通常出力は commit precheck OK と committed hash 程度に留まり、内部状態を表示しない
+  verification:
+  - python3 -m pytest tests/tools/test_commit_from_current_staged.py -q
+  - python3 -m pytest tests/tools/test_guarded_git_commit.py -q
+  - python3 -m pytest tests/tools/test_check_workflow_action.py -k "commit_approval or commit_preflight or commit_unit" -q
+  completion_policy:
+  - Phase ごとに red test を先に commit する
+  - 実装中は red test を変更しない
+  - 実装完了後、対応する COE-* の status だけを done にする
