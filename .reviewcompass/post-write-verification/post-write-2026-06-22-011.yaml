@@ -1,0 +1,29 @@
+status: completed
+target_files:
+  - TODO_NEXT_SESSION.md
+target_sha256:
+  TODO_NEXT_SESSION.md: f2f49e1b49f3424f0ef319e3270e8b6eb58d0b61cc0172877d66f14fdf89dfeb
+required_verifiers:
+  - lightweight_self_check
+completed_verifiers:
+  - lightweight_self_check
+unresolved_substantive_findings: 0
+verifications:
+  - verifier: lightweight_self_check
+    target_files:
+      - TODO_NEXT_SESSION.md
+    target_sha256:
+      TODO_NEXT_SESSION.md: f2f49e1b49f3424f0ef319e3270e8b6eb58d0b61cc0172877d66f14fdf89dfeb
+    checks:
+      user_points_preserved: true
+      facts_inferences_policy_and_open_items_separated: true
+      useful_as_later_decision_material: true
+      does_not_over_specify_scope: true
+      remains_working_note_not_canonical_spec: true
+      api_review_intentionally_not_used: true
+notes: >
+  Lightweight self-check for removing self-referential commit endpoints from
+  TODO_NEXT_SESSION.md. The update preserves the user's correction that fixed
+  commit hashes in the handoff kept drifting after each TODO commit, and it
+  makes git status / git log the source of truth for exact endpoints while
+  retaining the stable summary of completed work.
