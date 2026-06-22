@@ -11,11 +11,21 @@ CHECKLIST_RUNTIME_DIR = ".reviewcompass/runtime/work-units/checklists"
 CHECKLIST_EVIDENCE_DIR = ".reviewcompass/evidence/work-units/checklists"
 
 
-def _result(verdict, reasons, quality=None, item=None, checklist=None, path=None):
+def _result(
+  verdict,
+  reasons,
+  quality=None,
+  item=None,
+  checklist=None,
+  path=None,
+  warnings=None,
+):
   response = {
     "verdict": verdict,
     "reasons": reasons,
   }
+  if warnings is not None:
+    response["warnings"] = warnings
   if quality is not None:
     response["quality"] = quality
   if item is not None:
@@ -78,6 +88,38 @@ def _empty_title_ids(items):
   return empty
 
 
+def _red_test_ids(backlog_item):
+  ids = []
+  for red_test in backlog_item.get("red_tests", []):
+    if isinstance(red_test, dict) and red_test.get("id"):
+      ids.append(red_test["id"])
+  return ids
+
+
+def _ordering_warning_ids(items, red_test_ids):
+  first_red_test_index = None
+  first_implementation_index = None
+  for index, item in enumerate(items):
+    if not isinstance(item, dict):
+      continue
+    item_id = item.get("id")
+    if item_id in red_test_ids:
+      if first_red_test_index is None:
+        first_red_test_index = index
+    elif item_id:
+      if first_implementation_index is None:
+        first_implementation_index = index
+  if first_red_test_index is None or first_implementation_index is None:
+    return []
+  if first_red_test_index > first_implementation_index:
+    return [
+      item.get("id")
+      for item in items
+      if isinstance(item, dict) and item.get("id") in red_test_ids
+    ]
+  return []
+
+
 def audit(cwd, backlog_id, checklist_id):
   shown = work_backlog.show(cwd, backlog_id)
   if shown["verdict"] != "OK":
@@ -109,7 +151,13 @@ def audit(cwd, backlog_id, checklist_id):
   extra = [item_id for item_id in actual_ids if item_id not in expected_ids]
   duplicates = _duplicate_ids(items)
   empty_titles = _empty_title_ids(items)
+  red_test_ids = _red_test_ids(item)
+  missing_red_tests = [
+    red_test_id for red_test_id in red_test_ids if red_test_id not in actual_ids
+  ]
+  ordering_warning_ids = _ordering_warning_ids(items, red_test_ids)
   reasons = []
+  warnings = []
 
   source_id = checklist.get("source_backlog_item_id")
   source_path = checklist.get("source_backlog_path")
@@ -121,16 +169,25 @@ def audit(cwd, backlog_id, checklist_id):
     reasons.append("duplicate item ids: " + ", ".join(duplicates))
   if empty_titles:
     reasons.append("empty item titles: " + ", ".join(empty_titles))
+  if missing_red_tests:
+    reasons.append("missing red test checklist items: " + ", ".join(missing_red_tests))
   if missing:
     reasons.append("missing backlog-derived checklist items: " + ", ".join(missing))
+  if ordering_warning_ids:
+    warnings.append(
+      "red test items appear after implementation items: "
+      + ", ".join(ordering_warning_ids)
+    )
 
   quality = {
     "expected_count": len(expected_ids),
     "actual_count": len(actual_ids),
     "missing_item_ids": missing,
+    "missing_red_test_item_ids": missing_red_tests,
     "extra_item_ids": extra,
     "duplicate_item_ids": duplicates,
     "empty_title_item_ids": empty_titles,
+    "ordering_warning_item_ids": ordering_warning_ids,
     "source_backlog_item_id": source_id,
     "source_backlog_path": source_path,
   }
@@ -141,4 +198,5 @@ def audit(cwd, backlog_id, checklist_id):
     item=item,
     checklist=checklist,
     path=path.relative_to(Path(cwd)),
+    warnings=warnings,
   )
