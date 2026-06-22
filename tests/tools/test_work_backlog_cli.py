@@ -81,6 +81,75 @@ class WorkBacklogCliTests(unittest.TestCase):
     self.assertEqual(item["provenance"]["source_ref"], "conversation:user")
     self.assertEqual(item["provenance"]["reason"], "workflow に乗せる前の計画候補")
 
+  def test_add_plan_accepts_body_file_for_concrete_plan_fields(self):
+    body_path = self.tmpdir / "plan-body.yaml"
+    body_path.write_text(
+      yaml.safe_dump(
+        {
+          "summary": "blocking unit control improvements",
+          "background": [
+            "completed state hid a pending parent resume",
+          ],
+          "problem": [
+            "return conditions were plain strings",
+          ],
+          "implementation_plan": [
+            {
+              "phase": "red-test",
+              "items": ["add preflight-start tests"],
+            },
+          ],
+          "acceptance_criteria": [
+            "exit-blocking rejects unmet structured return conditions",
+          ],
+          "non_goals": [
+            "do not solve full natural language classification",
+          ],
+        },
+        allow_unicode=True,
+        sort_keys=False,
+      ),
+      encoding="utf-8",
+    )
+
+    result = run_script(
+      [
+        "work-backlog",
+        "add-plan",
+        "--id", "plan-detailed",
+        "--title", "Detailed plan",
+        "--source-unit-id", "unit-test",
+        "--source-ref", "conversation:user",
+        "--reason", "詳細計画を backlog item に保持する",
+        "--body-file", str(body_path),
+        "--json",
+      ],
+      cwd=self.tmpdir,
+    )
+
+    assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+    item = yaml.safe_load(
+      (
+        self.tmpdir
+        / ".reviewcompass/backlog/plans/plan-detailed.yaml"
+      ).read_text(encoding="utf-8")
+    )
+    self.assertEqual(item["summary"], "blocking unit control improvements")
+    self.assertEqual(item["background"], [
+      "completed state hid a pending parent resume",
+    ])
+    self.assertEqual(item["problem"], [
+      "return conditions were plain strings",
+    ])
+    self.assertEqual(item["implementation_plan"][0]["phase"], "red-test")
+    self.assertEqual(item["acceptance_criteria"], [
+      "exit-blocking rejects unmet structured return conditions",
+    ])
+    self.assertEqual(item["non_goals"], [
+      "do not solve full natural language classification",
+    ])
+
   def test_add_issue_and_todo_create_kind_specific_item_yaml(self):
     for command, item_id, kind, directory in [
       ("add-issue", "issue-test", "issue", "issues"),
