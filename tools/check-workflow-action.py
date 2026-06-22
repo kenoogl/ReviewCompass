@@ -588,6 +588,10 @@ DEFAULT_DISCIPLINE_MAP = {
       ".reviewcompass/guidance/WORKFLOW_NAVIGATION.md#commit_stop_point",
       ".reviewcompass/guidance/discipline_approval_operation.md",
     ],
+    "commit_mixing_risk": [
+      ".reviewcompass/guidance/WORKFLOW_NAVIGATION.md#commit_stop_point",
+      ".reviewcompass/guidance/discipline_approval_operation.md",
+    ],
   },
   "by_stage": {
     "drafting": [
@@ -6520,6 +6524,48 @@ def cmd_next(args):
       cwd,
       post_write_targets_for_commit_unit,
     )
+  if (
+    commit_unit_state.get("exists")
+    and "COMMIT_MIXING_RISK" in commit_unit_codes
+    and (
+      not post_write_targets_for_commit_unit
+      or post_write_state_for_commit_unit == "completed"
+    )
+  ):
+    record = commit_unit_state.get("record")
+    if not isinstance(record, dict):
+      record = {}
+    next_action = {
+      "kind": "commit_mixing_risk",
+      "required_action": "split_or_refresh_commit_unit",
+      "target_files": record.get("target_files") or record.get("allowed_files") or [],
+      "extra_staged_files": (
+        commit_unit_state.get("current_state", {}).get("extra_staged_files") or []
+      ),
+      "path": commit_unit_state.get("path"),
+      "feature": None,
+      "phase": None,
+      "stage": None,
+      "reason": "commit unit の allowed files 外の staged file が混入しています",
+    }
+    current_state = {
+      "active_work_units": active_work_units,
+      "commit_unit": commit_unit_state,
+    }
+    reasons = commit_unit_errors
+    verdict, exit_code = "OK", 0
+    next_action = attach_required_context(cwd, next_action)
+    if args.json:
+      print(format_next_json_output(verdict, exit_code, next_action, reasons, current_state))
+    else:
+      print(format_next_human_output(verdict, exit_code, next_action, reasons, current_state))
+    action_dict = {"subcommand": "next", "args": {}}
+    log_path = args.log_path if args.log_path else DEFAULT_LOG_PATH
+    try:
+      append_log(log_path, action_dict, verdict, exit_code, reasons, current_state)
+    except OSError as e:
+      print(f"warning: ログ書き込みに失敗しました（処理は続行）: {e}", file=sys.stderr)
+    return exit_code
   if (
     commit_unit_state.get("exists")
     and "STALE_COMMIT_UNIT" in commit_unit_codes
