@@ -6258,6 +6258,54 @@ class CommitUnitIsolationTests(unittest.TestCase):
       data["current_state"]["commit_unit"]["codes"],
     )
 
+  def test_commit_preflight_blocks_commit_unit_for_different_active_work_unit(self):
+    """commit-preflight は active work unit と異なる commit unit を遮断する"""
+    target = "tools/check_workflow_action/blocking_unit.py"
+    self._write_and_stage(target, "print('x')\n")
+    freeze = self._freeze_commit_unit([target])
+    self.assertEqual(freeze.returncode, 0, freeze.stdout + freeze.stderr)
+    stack_path = (
+      Path(self.tmpdir)
+      / ".reviewcompass"
+      / "runtime"
+      / "work-units"
+      / "stack.yaml"
+    )
+    stack_path.parent.mkdir(parents=True, exist_ok=True)
+    stack_path.write_text(
+      yaml.safe_dump(
+        {
+          "schema_version": "work-unit-stack-v1",
+          "frames": [
+            {
+              "unit_id": "unit-active-current",
+              "kind": "blocking",
+              "parent_unit_id": "main-completed",
+              "title": "active",
+              "reason": "test",
+              "status": "active",
+              "return_conditions": ["done"],
+            },
+          ],
+        },
+        allow_unicode=True,
+        sort_keys=False,
+      ),
+      encoding="utf-8",
+    )
+
+    result = run_script(["commit-preflight", "--json"], cwd=self.tmpdir)
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 2, result.stdout + result.stderr)
+    data = json.loads(result.stdout)
+    self.assertEqual(data["verdict"], "DEVIATION")
+    self.assertFalse(data["allowed_to_run_guarded_commit"])
+    self.assertIn(
+      "WORK_UNIT_COMMIT_UNIT_MISMATCH",
+      data["current_state"]["commit_unit"]["codes"],
+    )
+
   def test_next_reports_stale_commit_unit_before_normal_workflow(self):
     """next は stale commit unit を通常 workflow より先に停止点として返す"""
     target = "tools/check_workflow_action/blocking_unit.py"
