@@ -584,6 +584,10 @@ DEFAULT_DISCIPLINE_MAP = {
       ".reviewcompass/guidance/WORKFLOW_NAVIGATION.md#parent_resume_pending",
       ".reviewcompass/guidance/effective-prompts/user-initiated-backlog-todo-execution.prompt.md",
     ],
+    "commit_unit_stale": [
+      ".reviewcompass/guidance/WORKFLOW_NAVIGATION.md#commit_stop_point",
+      ".reviewcompass/guidance/discipline_approval_operation.md",
+    ],
   },
   "by_stage": {
     "drafting": [
@@ -6495,6 +6499,54 @@ def cmd_next(args):
     }
     reasons = start_request_state.get("reasons", [])
     verdict, exit_code = ("DEVIATION", 2) if reasons else ("OK", 0)
+    next_action = attach_required_context(cwd, next_action)
+    if args.json:
+      print(format_next_json_output(verdict, exit_code, next_action, reasons, current_state))
+    else:
+      print(format_next_human_output(verdict, exit_code, next_action, reasons, current_state))
+    action_dict = {"subcommand": "next", "args": {}}
+    log_path = args.log_path if args.log_path else DEFAULT_LOG_PATH
+    try:
+      append_log(log_path, action_dict, verdict, exit_code, reasons, current_state)
+    except OSError as e:
+      print(f"warning: ログ書き込みに失敗しました（処理は続行）: {e}", file=sys.stderr)
+    return exit_code
+  commit_unit_state, commit_unit_errors = validate_commit_unit_record(cwd)
+  commit_unit_codes = commit_unit_state.get("codes") or []
+  post_write_targets_for_commit_unit = list_post_write_verification_targets(cwd)
+  post_write_state_for_commit_unit = None
+  if post_write_targets_for_commit_unit:
+    post_write_state_for_commit_unit, _ = evaluate_post_write_manifest_state(
+      cwd,
+      post_write_targets_for_commit_unit,
+    )
+  if (
+    commit_unit_state.get("exists")
+    and "STALE_COMMIT_UNIT" in commit_unit_codes
+    and (
+      not post_write_targets_for_commit_unit
+      or post_write_state_for_commit_unit == "completed"
+    )
+  ):
+    record = commit_unit_state.get("record")
+    if not isinstance(record, dict):
+      record = {}
+    next_action = {
+      "kind": "commit_unit_stale",
+      "required_action": "refresh_commit_unit",
+      "target_files": record.get("target_files") or record.get("allowed_files") or [],
+      "path": commit_unit_state.get("path"),
+      "feature": None,
+      "phase": None,
+      "stage": None,
+      "reason": "commit unit が現在の staged 内容と一致しません",
+    }
+    current_state = {
+      "active_work_units": active_work_units,
+      "commit_unit": commit_unit_state,
+    }
+    reasons = commit_unit_errors
+    verdict, exit_code = "OK", 0
     next_action = attach_required_context(cwd, next_action)
     if args.json:
       print(format_next_json_output(verdict, exit_code, next_action, reasons, current_state))
