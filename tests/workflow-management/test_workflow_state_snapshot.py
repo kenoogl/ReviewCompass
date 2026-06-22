@@ -21,6 +21,8 @@ MINIMUM_TOP_LEVEL = [
   "source_next_action_sha256",
   "current_work",
   "active_work_units",
+  "active_checklists",
+  "backlog_summary",
   "active_side_tracks",
   "git_tree_summary",
   "post_write_manifest_summary",
@@ -93,6 +95,141 @@ class WorkflowStateSnapshotTests(unittest.TestCase):
       snapshot = module.build_snapshot(Path(tmp))
 
       self.assertEqual(snapshot["active_work_units"], stack["frames"])
+
+  def test_workflow_snapshot_includes_active_checklist_summary(self):
+    module = self._module()
+    with tempfile.TemporaryDirectory() as tmp:
+      checklist = {
+        "schema_version": "work-checklist-v1",
+        "checklist_id": "checklist-active",
+        "unit_id": "unit-test",
+        "title": "Visible checklist",
+        "status": "active",
+        "created_at": "2026-06-22T00:00:00+00:00",
+        "provenance": {
+          "created_by": "llm",
+          "source_ref": "conversation:user",
+          "reason": "visibility test",
+        },
+        "items": [
+          {
+            "id": "C1",
+            "title": "pending item",
+            "status": "pending",
+            "child_checklist_id": None,
+          },
+          {
+            "id": "C2",
+            "title": "active item",
+            "status": "active",
+            "child_checklist_id": None,
+          },
+          {
+            "id": "C3",
+            "title": "blocked item",
+            "status": "blocked",
+            "child_checklist_id": "checklist-child",
+          },
+          {
+            "id": "C4",
+            "title": "done item",
+            "status": "done",
+            "child_checklist_id": None,
+          },
+        ],
+      }
+      completed = dict(checklist)
+      completed["checklist_id"] = "checklist-completed"
+      completed["status"] = "completed"
+
+      checklist_dir = Path(tmp) / ".reviewcompass/runtime/work-units/checklists"
+      checklist_dir.mkdir(parents=True)
+      (checklist_dir / "checklist-active.yaml").write_text(
+        yaml.safe_dump(checklist, allow_unicode=True),
+        encoding="utf-8",
+      )
+      (checklist_dir / "checklist-completed.yaml").write_text(
+        yaml.safe_dump(completed, allow_unicode=True),
+        encoding="utf-8",
+      )
+
+      snapshot = module.build_snapshot(Path(tmp))
+
+      self.assertEqual(snapshot["active_checklists"], [
+        {
+          "checklist_id": "checklist-active",
+          "unit_id": "unit-test",
+          "title": "Visible checklist",
+          "status": "active",
+          "path": ".reviewcompass/runtime/work-units/checklists/checklist-active.yaml",
+          "item_counts": {
+            "pending": 1,
+            "active": 1,
+            "blocked": 1,
+            "done": 1,
+          },
+        }
+      ])
+
+  def test_workflow_snapshot_includes_backlog_count_summary(self):
+    module = self._module()
+    with tempfile.TemporaryDirectory() as tmp:
+      index = {
+        "schema_version": "reviewcompass-backlog-index-v1",
+        "items": [
+          {
+            "id": "plan-test",
+            "kind": "plan",
+            "title": "plan",
+            "status": "candidate",
+            "path": ".reviewcompass/backlog/plans/plan-test.yaml",
+            "source_unit_id": "unit-test",
+            "created_at": "2026-06-22T00:00:00+00:00",
+          },
+          {
+            "id": "issue-test",
+            "kind": "issue",
+            "title": "issue",
+            "status": "promoted",
+            "path": ".reviewcompass/backlog/issues/issue-test.yaml",
+            "source_unit_id": "unit-test",
+            "created_at": "2026-06-22T00:00:00+00:00",
+          },
+          {
+            "id": "todo-test",
+            "kind": "todo",
+            "title": "todo",
+            "status": "rejected",
+            "path": ".reviewcompass/backlog/todos/todo-test.yaml",
+            "source_unit_id": "unit-test",
+            "created_at": "2026-06-22T00:00:00+00:00",
+          },
+        ],
+      }
+      index_path = Path(tmp) / ".reviewcompass/backlog/index.yaml"
+      index_path.parent.mkdir(parents=True)
+      index_path.write_text(
+        yaml.safe_dump(index, allow_unicode=True),
+        encoding="utf-8",
+      )
+
+      snapshot = module.build_snapshot(Path(tmp))
+
+      self.assertEqual(snapshot["backlog_summary"], {
+        "index_path": ".reviewcompass/backlog/index.yaml",
+        "exists": True,
+        "total_count": 3,
+        "by_kind": {
+          "plan": 1,
+          "issue": 1,
+          "todo": 1,
+        },
+        "by_status": {
+          "candidate": 1,
+          "promoted": 1,
+          "rejected": 1,
+        },
+      })
 
   def test_snapshot_drift_reports_pending_gate_change(self):
     module = self._module()
