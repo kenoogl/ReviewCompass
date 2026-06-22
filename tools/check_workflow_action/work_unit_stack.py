@@ -234,6 +234,27 @@ def resume_pending(cwd, path=None):
   )
 
 
+def resume_parent(cwd, path=None):
+  marker_path = _resume_pending_path(cwd, path)
+  marker, reasons = _read_resume_pending(cwd, path)
+  if marker is None and not reasons:
+    reasons.append("parent resume pending marker がありません")
+  if reasons:
+    return _result("DEVIATION", reasons, current=marker)
+  try:
+    marker_path.unlink()
+  except OSError as exc:
+    return _result(
+      "DEVIATION",
+      [f"parent resume pending marker を削除できません: {marker_path}: {exc}"],
+      current=marker,
+    )
+  response = _result("OK", [], current=None)
+  response["resumed"] = marker
+  response["path"] = str(Path(path or DEFAULT_RESUME_PENDING_PATH))
+  return response
+
+
 def preflight_start(cwd, proposed_unit_id, title, reason, path=None):
   stack_state = current(cwd, path)
   resume_state = resume_pending(cwd)

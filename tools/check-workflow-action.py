@@ -7876,6 +7876,8 @@ def cmd_work_unit(args):
       args.unit_id,
       args.completion_summary,
     )
+  elif args.work_unit_command == "resume-parent":
+    response = work_unit_stack.resume_parent(Path.cwd())
   else:
     return 2
 
@@ -8569,6 +8571,11 @@ def main():
   )
   wu_exit.add_argument("--unit-id", required=True, help="終了する blocking unit ID")
   wu_exit.add_argument("--completion-summary", required=True, help="完了内容の要約")
+  wu_sub.add_parser(
+    "resume-parent",
+    help="parent resume pending marker を消費して parent unit へ復帰する",
+    parents=[common_parser],
+  )
 
   wc = sub.add_parser(
     "work-checklist",
