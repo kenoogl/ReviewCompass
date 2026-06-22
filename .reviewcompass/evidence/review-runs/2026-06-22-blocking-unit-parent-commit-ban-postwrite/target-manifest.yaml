@@ -1,0 +1,4 @@
+run_id: 2026-06-22-blocking-unit-parent-commit-ban-postwrite
+target_files:
+- path: .reviewcompass/guidance/WORKFLOW_NAVIGATION.md
+  sha256: 864340be0009cdee9f549516864a003527c608bba2492f2effe3045f731ff14f
