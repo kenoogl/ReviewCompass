@@ -8064,6 +8064,13 @@ def cmd_task_quality_check(args):
       args.backlog_id,
       args.checklist_id,
     )
+  elif args.task_quality_check_command == "prepare-review-materials":
+    response = task_quality_check.prepare_review_materials(
+      Path.cwd(),
+      args.backlog_id,
+      args.checklist_id,
+      args.output_dir,
+    )
   else:
     return 2
 
@@ -8807,6 +8814,14 @@ def main():
   )
   tqc_audit.add_argument("--backlog-id", required=True, help="backlog todo item ID")
   tqc_audit.add_argument("--checklist-id", required=True, help="監査対象 checklist ID")
+  tqc_materials = tqc_sub.add_parser(
+    "prepare-review-materials",
+    help="task/checklist 品質レビュー用の材料 YAML を生成する",
+    parents=[common_parser],
+  )
+  tqc_materials.add_argument("--backlog-id", required=True, help="backlog todo item ID")
+  tqc_materials.add_argument("--checklist-id", required=True, help="監査対象 checklist ID")
+  tqc_materials.add_argument("--output-dir", required=True, help="review materials 出力先")
 
   pa = sub.add_parser(
     "prompt-audit",

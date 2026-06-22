@@ -47,6 +47,21 @@ def _read_yaml(path, label):
   return data, []
 
 
+def _write_yaml(path, data):
+  path.parent.mkdir(parents=True, exist_ok=True)
+  path.write_text(
+    yaml.safe_dump(data, allow_unicode=True, sort_keys=False),
+    encoding="utf-8",
+  )
+
+
+def _read_text(path, label):
+  try:
+    return path.read_text(encoding="utf-8"), []
+  except (OSError, UnicodeDecodeError) as exc:
+    return "", [f"{label} を読めません: {path}: {exc}"]
+
+
 def _find_checklist(cwd, checklist_id):
   if not checklist_id:
     return None, None, ["checklist_id が必要です"]
@@ -200,3 +215,123 @@ def audit(cwd, backlog_id, checklist_id):
     path=path.relative_to(Path(cwd)),
     warnings=warnings,
   )
+
+
+def _review_questions():
+  return [
+    {
+      "id": "granularity",
+      "question": "Are checklist items concrete, non-overlapping, and sized for execution?",
+      "expected_output": "Find missing granularity risks with item IDs and evidence.",
+    },
+    {
+      "id": "ordering",
+      "question": "Is the checklist order suitable for TDD and review-before-implementation flow?",
+      "expected_output": "Find ordering risks without treating warnings as automatic failure.",
+    },
+    {
+      "id": "upstream_connection",
+      "question": "Does the checklist preserve the source TODO intent and stated scope?",
+      "expected_output": "Find weakened, omitted, or broadened upstream intent.",
+    },
+    {
+      "id": "red_test_sufficiency",
+      "question": "Do red test items cover the task quality risks before implementation work?",
+      "expected_output": "Find missing or under-specified red test coverage.",
+    },
+  ]
+
+
+def _main_preanalysis(backlog_id, checklist_id, audit_result):
+  quality = audit_result.get("quality", {})
+  observations = [
+    (
+      f"Checklist covers {quality.get('actual_count')} actual items for "
+      f"{quality.get('expected_count')} backlog-derived items."
+    ),
+  ]
+  if quality.get("missing_item_ids"):
+    observations.append(
+      "Missing backlog-derived items: " + ", ".join(quality["missing_item_ids"])
+    )
+  if quality.get("ordering_warning_item_ids"):
+    observations.append(
+      "Ordering warnings: " + ", ".join(quality["ordering_warning_item_ids"])
+    )
+  return {
+    "role": "main_llm_preanalysis",
+    "status": "mechanically_seeded",
+    "data_sources": [
+      f"backlog:{backlog_id}",
+      f"checklist:{checklist_id}",
+      "task-quality-check audit result",
+    ],
+    "observations": observations,
+    "reviewer_instruction": (
+      "Treat this preanalysis as a hypothesis to inspect, not as an answer to copy."
+    ),
+  }
+
+
+def prepare_review_materials(cwd, backlog_id, checklist_id, output_dir):
+  audit_result = audit(cwd, backlog_id, checklist_id)
+  if audit_result.get("verdict") != "OK":
+    return _result(
+      "DEVIATION",
+      ["audit must be OK before preparing review materials"]
+      + audit_result.get("reasons", []),
+      quality=audit_result.get("quality"),
+      item=audit_result.get("item"),
+      checklist=audit_result.get("checklist"),
+      warnings=audit_result.get("warnings", []),
+    )
+
+  source_backlog_path = Path(cwd) / audit_result["checklist"]["source_backlog_path"]
+  checklist_path = Path(cwd) / audit_result["path"]
+  backlog_content, backlog_reasons = _read_text(source_backlog_path, "backlog item")
+  checklist_content, checklist_reasons = _read_text(checklist_path, "checklist")
+  reasons = backlog_reasons + checklist_reasons
+  if reasons:
+    return _result("DEVIATION", reasons)
+
+  materials = {
+    "schema_version": "task-quality-review-materials-v1",
+    "review_target": {
+      "backlog_id": backlog_id,
+      "checklist_id": checklist_id,
+    },
+    "source_materials": [
+      {
+        "id": "backlog_todo",
+        "path": str(source_backlog_path.relative_to(Path(cwd))),
+        "content_mode": "full_text",
+        "content": backlog_content,
+      },
+      {
+        "id": "runtime_checklist",
+        "path": str(checklist_path.relative_to(Path(cwd))),
+        "content_mode": "full_text",
+        "content": checklist_content,
+      },
+    ],
+    "audit_result": audit_result,
+    "main_preanalysis": _main_preanalysis(backlog_id, checklist_id, audit_result),
+    "review_questions": _review_questions(),
+    "sensitive_information_check": {
+      "status": "not_required_for_local_materialization",
+      "reason": "materials are generated locally before any API call",
+    },
+  }
+  output_path = Path(output_dir) / "review-materials.yaml"
+  _write_yaml(output_path, materials)
+  response = _result(
+    "OK",
+    [],
+    quality=audit_result.get("quality"),
+    item=audit_result.get("item"),
+    checklist=audit_result.get("checklist"),
+    warnings=audit_result.get("warnings", []),
+  )
+  response["materials_path"] = str(output_path)
+  response["materials"] = materials
+  return response
