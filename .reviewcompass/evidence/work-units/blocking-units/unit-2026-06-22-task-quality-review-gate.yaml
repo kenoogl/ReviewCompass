@@ -1,0 +1,16 @@
+unit_id: unit-2026-06-22-task-quality-review-gate
+kind: blocking
+parent_unit_id: main-completed
+title: Task quality review gate
+reason: 仕様駆動開発における要件・設計・TODO から task/checklist へ落とす品質チェック機能を実装するため
+status: completed
+entered_at: '2026-06-22T05:52:01.359605+00:00'
+return_conditions:
+- task-quality-check が構造的な checklist 品質問題を検出できる
+- review prompt materials が分割された問いと必要材料を生成できる
+- 3者レビューに接続できる保存先と判定境界を記録できる
+exited_at: '2026-06-22T06:39:52.909780+00:00'
+completion_summary: task-quality-check audit, review material generation, and review
+  result contract were implemented and verified
+returned_to:
+  unit_id: main-completed

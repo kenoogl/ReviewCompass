@@ -1,0 +1,63 @@
+schema_version: work-checklist-v1
+checklist_id: checklist-todo-2026-06-22-task-quality-review-gate
+unit_id: unit-2026-06-22-task-quality-review-gate
+title: Add task quality review gate
+status: completed
+created_at: '2026-06-22T05:52:09.654274+00:00'
+provenance:
+  created_by: llm
+  source_ref: .reviewcompass/backlog/todos/todo-2026-06-22-task-quality-review-gate.yaml
+  reason: backlog TODO から runtime checklist を機械生成する
+items:
+- id: TQG-1
+  title: task-quality-check CLI の機械監査項目を追加する
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: TQG-2
+  title: checklist item の粒度と順序に関する機械ヒントを出す
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: TQG-3
+  title: メイン LLM preanalysis の材料 bundle を生成する
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: TQG-4
+  title: 3者レビュー用 prompt materials を生成する
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: TQG-5
+  title: 3者レビュー結果の保存先と判定境界を定義する
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: TQG-RT-1
+  title: 空項目・重複・TODO 対応漏れを検出する
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: TQG-RT-2
+  title: red_tests 欠落と順序リスクを検出する
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: TQG-RT-3
+  title: review prompt materials を生成する
+  status: done
+  checked: true
+  child_checklist_id: null
+source_backlog_item_id: todo-2026-06-22-task-quality-review-gate
+source_backlog_path: .reviewcompass/backlog/todos/todo-2026-06-22-task-quality-review-gate.yaml
+progress:
+  total: 8
+  done: 8
+  active: 0
+  pending: 0
+  blocked: 0
+  active_item_ids: []
+  blocked_item_ids: []
+completed_at: '2026-06-22T06:39:41.036181+00:00'
+completion_summary: task-quality-check audit and review materials flow completed

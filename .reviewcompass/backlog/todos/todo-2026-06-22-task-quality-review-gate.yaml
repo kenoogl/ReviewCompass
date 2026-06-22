@@ -15,11 +15,10 @@ decisions:
   decision_ref: conversation:user:承認
   reason: ユーザが品質チェック機能の独立作業化と実装開始を承認した
   decided_at: '2026-06-22T16:10:00+09:00'
-summary: >
-  仕様駆動開発における requirements / design / TODO から tasks / checklist
-  へ落とす処理の品質を確認する。機械的に検出できる問題は CLI で監査し、
-  粒度、順序、実行可能性、上流意図との接続など意味判断が必要な部分は
-  メイン LLM が preanalysis を作成し、必要に応じて 3者レビューへ渡す。
+summary: '仕様駆動開発における requirements / design / TODO から tasks / checklist へ落とす処理の品質を確認する。機械的に検出できる問題は
+  CLI で監査し、 粒度、順序、実行可能性、上流意図との接続など意味判断が必要な部分は メイン LLM が preanalysis を作成し、必要に応じて 3者レビューへ渡す。
+
+  '
 scope:
 - checklist item の粒度
 - checklist item の重複
@@ -32,36 +31,39 @@ todos:
   mechanical_audit:
   - id: TQG-1
     title: task-quality-check CLI の機械監査項目を追加する
-    status: candidate
+    status: done
     detail: 空項目、重複、TODO 対応漏れ、red_tests 欠落、coverage を構造的に検出する。
   - id: TQG-2
     title: checklist item の粒度と順序に関する機械ヒントを出す
-    status: candidate
+    status: done
     detail: 長すぎる項目、曖昧な動詞、red test より前に実装項目が置かれる等を WARN として出す。
   llm_preanalysis:
   - id: TQG-3
     title: メイン LLM preanalysis の材料 bundle を生成する
-    status: candidate
+    status: done
     detail: 対象 TODO 原文、生成 checklist、coverage 結果、関連 requirements / design / tasks 参照を入力材料として固定する。
   - id: TQG-4
     title: 3者レビュー用 prompt materials を生成する
-    status: candidate
+    status: done
     detail: 問いを粒度、順序、上流接続、red test 充足に分け、複数判断を 1 prompt に詰め込まない。
   review_gate:
   - id: TQG-5
     title: 3者レビュー結果の保存先と判定境界を定義する
-    status: candidate
+    status: done
     detail: adversarial / judgment を利用できるよう、prompt、raw result、triage decision の保存先を構造化する。
 red_tests:
 - id: TQG-RT-1
   title: 空項目・重複・TODO 対応漏れを検出する
   expected: task-quality-check が checklist の構造的問題を DEVIATION として返す
+  status: done
 - id: TQG-RT-2
   title: red_tests 欠落と順序リスクを検出する
   expected: red_tests が TODO に存在するのに checklist にない場合は DEVIATION、順序リスクは WARN として返す
+  status: done
 - id: TQG-RT-3
   title: review prompt materials を生成する
   expected: prompt materials が対象 TODO 原文、生成 checklist、coverage 結果、main preanalysis、問いを分けて含む
+  status: done
 non_goals:
 - LLM がユーザの代わりに実行対象 TODO を選ぶこと
 - 3者レビューを常に必須化すること
@@ -71,3 +73,8 @@ review_prompt_policy:
 - 必要な情報は path-only にせず、必要範囲の本文を材料に入れる
 - 問いは粒度、順序、上流接続、red test 充足などに分ける
 - API 送信前に認証情報、個人情報、不要な全文ログ、外部送信不可情報を除外する
+execution_history:
+- checklist_id: checklist-todo-2026-06-22-task-quality-review-gate
+  evidence_path: .reviewcompass/evidence/work-units/checklists/checklist-todo-2026-06-22-task-quality-review-gate.yaml
+  completion_summary: task-quality-check audit and review materials flow completed
+  completed_at: '2026-06-22T06:39:41.036181+00:00'
