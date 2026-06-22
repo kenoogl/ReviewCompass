@@ -48,7 +48,7 @@ from check_workflow_action.runtime_paths import (
   resolve_commit_approval_path,
   resolve_effective_prompt_read_path,
 )
-from check_workflow_action import approval_gate, commit_approval
+from check_workflow_action import approval_gate, commit_approval, commit_unit
 from check_workflow_action.implementation_phases import check_phase_plan, load_plan
 from check_workflow_action.operation_preflight import run_preflight
 from check_workflow_action.operation_contracts import load_contracts, run_contract_check
@@ -2695,6 +2695,24 @@ def validate_workflow_state_repair_record(cwd, paths, mode):
   return state, errors
 
 
+def validate_commit_unit_record(cwd):
+  """commit unit record があれば現在の staged 内容と照合する"""
+  path = Path(cwd) / commit_unit.DEFAULT_COMMIT_UNIT_PATH
+  if not path.exists():
+    return {
+      "exists": False,
+      "verdict": "not_configured",
+      "path": commit_unit.DEFAULT_COMMIT_UNIT_PATH,
+    }, []
+  state = commit_unit.check(cwd)
+  state["exists"] = True
+  state["path"] = commit_unit.DEFAULT_COMMIT_UNIT_PATH
+  if state.get("verdict") == "DEVIATION":
+    codes = ", ".join(state.get("codes") or [])
+    return state, [f"commit unit が現在の staged 内容と一致しません: {codes}"]
+  return state, []
+
+
 def cmd_repair_workflow_state(args):
   """workflow state repair record を作成する"""
   cwd = Path.cwd()
@@ -3818,6 +3836,7 @@ def cmd_commit(args):
     staged_files,
     "staged",
   )
+  commit_unit_state, commit_unit_errors = validate_commit_unit_record(cwd)
   post_write_state, post_write_errors = validate_post_write_completion_for_targets(
     cwd,
     staged_files,
@@ -3868,6 +3887,8 @@ def cmd_commit(args):
       deviation_reasons.append(f"危険変更: {f}（commit を遮断推奨）")
   if post_write_errors:
     deviation_reasons.extend(post_write_errors)
+  if commit_unit_errors:
+    deviation_reasons.extend(commit_unit_errors)
   if deployment_lint_errors:
     deviation_reasons.extend(deployment_lint_errors)
   if document_link_lint_errors:
@@ -3931,6 +3952,7 @@ def cmd_commit(args):
     "execution_actor": args.execution_actor,
     "post_write_verification": post_write_state,
     "repair_workflow_state": repair_state,
+    "commit_unit": commit_unit_state,
     "deployment_independence_lint": deployment_lint_state,
     "document_link_lint": document_link_lint_state,
     "in_progress_session_records": in_progress_record_state,
@@ -4114,6 +4136,7 @@ def build_commit_instruction_preflight(cwd):
     changed_files,
     "changed",
   )
+  commit_unit_state, commit_unit_errors = validate_commit_unit_record(cwd)
   reasons = []
   verdict = "OK"
   allowed_to_stage = True
@@ -4151,6 +4174,13 @@ def build_commit_instruction_preflight(cwd):
       if repair_state.get("exists"):
         reasons.extend(repair_errors)
 
+  if commit_unit_errors:
+    verdict = "DEVIATION"
+    allowed_to_stage = False
+    allowed_to_prepare_approval = False
+    allowed_to_delegate_execution = False
+    reasons.extend(commit_unit_errors)
+
   approval_state, approval_errors = validate_commit_approval(cwd, staged_files)
   execution_delegation_errors = validate_commit_execution_delegation(
     cwd,
@@ -4173,6 +4203,7 @@ def build_commit_instruction_preflight(cwd):
     "approval_errors": approval_errors,
     "execution_delegation_errors": execution_delegation_errors,
     "repair_workflow_state": repair_state,
+    "commit_unit": commit_unit_state,
   }
 
   return {
@@ -7729,6 +7760,29 @@ def cmd_side_track_stack(args):
   return 2
 
 
+def cmd_commit_unit(args):
+  """commit unit の freeze / check を実行する"""
+  if args.commit_unit_command == "freeze":
+    response = commit_unit.freeze(
+      Path.cwd(),
+      args.work_unit_id,
+      args.allowed_file,
+    )
+  elif args.commit_unit_command == "check":
+    response = commit_unit.check(Path.cwd())
+  else:
+    return 2
+
+  if args.json:
+    print(json.dumps(response, ensure_ascii=False, indent=2))
+  else:
+    verdict = response.get("verdict") or response.get("status")
+    print(f"[VERDICT] {verdict}")
+    for reason in response.get("reasons", []):
+      print(f"[REASON] {reason}")
+  return 0 if response.get("verdict") == "OK" or response.get("status") == "frozen" else 2
+
+
 def cmd_prompt_audit(args):
   """prompt-audit サブコマンドのエントリポイント（Req 15）"""
   action_dict = {
@@ -8215,6 +8269,32 @@ def main():
     help="side track stack YAML のパス（省略時は既定位置）",
   )
 
+  cu = sub.add_parser(
+    "commit-unit",
+    help="commit 候補の staged 範囲を freeze / check する",
+  )
+  cu_sub = cu.add_subparsers(
+    dest="commit_unit_command",
+    required=True,
+  )
+  cu_freeze = cu_sub.add_parser(
+    "freeze",
+    help="現在の staged exact index を commit unit として固定する",
+    parents=[common_parser],
+  )
+  cu_freeze.add_argument("--work-unit-id", required=True, help="紐づける work unit ID")
+  cu_freeze.add_argument(
+    "--allowed-file",
+    action="append",
+    default=[],
+    help="この commit unit に含めてよいファイル。複数指定可",
+  )
+  cu_sub.add_parser(
+    "check",
+    help="現在の staged exact index が frozen commit unit と一致するか検査する",
+    parents=[common_parser],
+  )
+
   pa = sub.add_parser(
     "prompt-audit",
     help="effective prompt manifest を read-only で監査する（Req 15）",
@@ -8361,6 +8441,8 @@ def main():
     sys.exit(cmd_workflow_snapshot(args))
   elif args.subcommand == "side-track-stack":
     sys.exit(cmd_side_track_stack(args))
+  elif args.subcommand == "commit-unit":
+    sys.exit(cmd_commit_unit(args))
   elif args.subcommand == "prompt-audit":
     sys.exit(cmd_prompt_audit(args))
   elif args.subcommand == "implementation-phase-check":

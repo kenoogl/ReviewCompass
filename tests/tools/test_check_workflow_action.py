@@ -6056,6 +6056,116 @@ class ReopenFinalizeTests(unittest.TestCase):
     self.assertTrue(in_progress.exists())
 
 
+class CommitUnitIsolationTests(unittest.TestCase):
+  """blocking unit 中の commit 候補混線を機械検出する"""
+
+  def setUp(self):
+    self.tmpdir = tempfile.mkdtemp()
+    self.addCleanup(shutil.rmtree, self.tmpdir)
+    _init_git_repo(self.tmpdir)
+
+  def _write_and_stage(self, relative_path, text):
+    path = Path(self.tmpdir) / relative_path
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(text, encoding="utf-8")
+    subprocess.run(
+      ["git", "add", relative_path],
+      cwd=str(self.tmpdir),
+      check=True,
+      capture_output=True,
+    )
+
+  def _freeze_commit_unit(self, allowed_files):
+    args = [
+      "commit-unit",
+      "freeze",
+      "--work-unit-id", "unit-blocking-001",
+      "--json",
+    ]
+    for allowed_file in allowed_files:
+      args.extend(["--allowed-file", allowed_file])
+    result = run_script(args, cwd=self.tmpdir)
+    _assert_script_invoked(self, result)
+    return result
+
+  def test_commit_unit_freeze_records_allowed_staged_scope(self):
+    """freeze は現在の staged exact index と allowed files を record に固定する"""
+    self._write_and_stage("tools/check_workflow_action/blocking_unit.py", "print('x')\n")
+
+    result = self._freeze_commit_unit([
+      "tools/check_workflow_action/blocking_unit.py",
+    ])
+
+    self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+    data = json.loads(result.stdout)
+    self.assertEqual(data["status"], "frozen")
+    self.assertEqual(data["record"]["work_unit_id"], "unit-blocking-001")
+    self.assertEqual(
+      data["record"]["staged_files"],
+      ["tools/check_workflow_action/blocking_unit.py"],
+    )
+    self.assertEqual(
+      data["record"]["allowed_files"],
+      ["tools/check_workflow_action/blocking_unit.py"],
+    )
+
+  def test_commit_unit_check_detects_mixing_outside_allowed_files(self):
+    """freeze 後に別 unit の staged file が混ざったら COMMIT_MIXING_RISK"""
+    self._write_and_stage("tools/check_workflow_action/blocking_unit.py", "print('x')\n")
+    freeze = self._freeze_commit_unit([
+      "tools/check_workflow_action/blocking_unit.py",
+    ])
+    self.assertEqual(freeze.returncode, 0, freeze.stdout + freeze.stderr)
+    self._write_and_stage("docs/notes/working/other.md", "別作業\n")
+
+    result = run_script(["commit-unit", "check", "--json"], cwd=self.tmpdir)
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 2, result.stdout + result.stderr)
+    data = json.loads(result.stdout)
+    self.assertEqual(data["verdict"], "DEVIATION")
+    self.assertIn("COMMIT_MIXING_RISK", data["codes"])
+    self.assertEqual(data["current_state"]["extra_staged_files"], [
+      "docs/notes/working/other.md",
+    ])
+
+  def test_commit_unit_check_detects_stale_staged_digest(self):
+    """allowed file だけでも staged 内容が変わったら STALE_COMMIT_UNIT"""
+    target = "tools/check_workflow_action/blocking_unit.py"
+    self._write_and_stage(target, "print('x')\n")
+    freeze = self._freeze_commit_unit([target])
+    self.assertEqual(freeze.returncode, 0, freeze.stdout + freeze.stderr)
+    self._write_and_stage(target, "print('changed')\n")
+
+    result = run_script(["commit-unit", "check", "--json"], cwd=self.tmpdir)
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 2, result.stdout + result.stderr)
+    data = json.loads(result.stdout)
+    self.assertEqual(data["verdict"], "DEVIATION")
+    self.assertIn("STALE_COMMIT_UNIT", data["codes"])
+
+  def test_commit_preflight_blocks_stale_commit_unit(self):
+    """commit-preflight は frozen commit unit から外れた staged 内容を遮断する"""
+    target = "tools/check_workflow_action/blocking_unit.py"
+    self._write_and_stage(target, "print('x')\n")
+    freeze = self._freeze_commit_unit([target])
+    self.assertEqual(freeze.returncode, 0, freeze.stdout + freeze.stderr)
+    self._write_and_stage(target, "print('changed')\n")
+
+    result = run_script(["commit-preflight", "--json"], cwd=self.tmpdir)
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 2, result.stdout + result.stderr)
+    data = json.loads(result.stdout)
+    self.assertEqual(data["verdict"], "DEVIATION")
+    self.assertFalse(data["allowed_to_stage"])
+    self.assertIn(
+      "STALE_COMMIT_UNIT",
+      data["current_state"]["commit_unit"]["codes"],
+    )
+
+
 def _init_git_repo(tmpdir):
   """temp dir に git リポジトリを初期化し、初回コミットと .reviewcompass 構造を準備する
 
