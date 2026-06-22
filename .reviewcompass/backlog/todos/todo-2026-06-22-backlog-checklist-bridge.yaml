@@ -2,7 +2,7 @@ schema_version: reviewcompass-backlog-item-v1
 id: todo-2026-06-22-backlog-checklist-bridge
 kind: todo
 title: Mechanize backlog TODO to runtime checklist bridge
-status: candidate
+status: completed
 source_unit_id: unit-2026-06-22-blocking-unit-control-improvements
 created_at: '2026-06-22T15:05:00+09:00'
 index_path: .reviewcompass/backlog/index.yaml
