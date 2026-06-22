@@ -199,6 +199,59 @@ def test_prepare_from_next_action_blocks_non_post_write_kind(tmp_path, monkeypat
   assert not review_run_dir.exists()
 
 
+def test_prepare_requires_commit_unit_when_blocking_unit_active(tmp_path, monkeypatch):
+  """active blocking unit 中は commit unit なしで review-run 材料を作らない。"""
+  monkeypatch.chdir(tmp_path)
+  _write_guidance_files(tmp_path)
+  target = tmp_path / ".reviewcompass" / "guidance" / "WORKFLOW_NAVIGATION.md"
+  target.parent.mkdir(parents=True, exist_ok=True)
+  target.write_text(
+    "### post_write_verification\n"
+    "API review は prompt-manifest を preflight する。\n",
+    encoding="utf-8",
+  )
+  stack_path = tmp_path / ".reviewcompass" / "runtime" / "work-units" / "stack.yaml"
+  stack_path.parent.mkdir(parents=True, exist_ok=True)
+  stack_path.write_text(
+    yaml.safe_dump(
+      {
+        "schema_version": "work-unit-stack-v1",
+        "frames": [
+          {
+            "unit_id": "unit-blocking-test",
+            "kind": "blocking",
+            "parent_unit_id": "main-completed",
+            "title": "Blocking test",
+            "reason": "test",
+            "return_conditions": ["done"],
+          },
+        ],
+      },
+      allow_unicode=True,
+      sort_keys=False,
+    ),
+    encoding="utf-8",
+  )
+  next_action = tmp_path / "next.yaml"
+  _write_next_action(
+    next_action,
+    "post_write_verification",
+    [".reviewcompass/guidance/WORKFLOW_NAVIGATION.md"],
+  )
+  review_run_dir = tmp_path / ".reviewcompass" / "evidence" / "review-runs" / "auto"
+
+  exit_code = main(
+    [
+      "prepare",
+      "--next-action-file", str(next_action),
+      "--review-run-dir", str(review_run_dir),
+    ]
+  )
+
+  assert exit_code == 2
+  assert not (review_run_dir / "review-target.md").exists()
+
+
 def test_finalize_no_findings_writes_post_write_manifest(tmp_path, monkeypatch):
   """所見 0 件の review-run は承認なしで完了 manifest 生成へ接続できる。"""
   monkeypatch.chdir(tmp_path)
