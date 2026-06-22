@@ -3220,6 +3220,34 @@ class NextNavigationTests(unittest.TestCase):
     self.assertEqual(data["next_action"]["kind"], "post_write_verification")
     self.assertEqual(data["next_action"]["target_files"], ["docs/notes/new-policy.md"])
 
+  def test_next_post_write_verification_returns_canonical_effective_prompt(self):
+    """post-write-verification 地点では runtime 合成ではなく canonical prompt を返す"""
+    cwd = Path(self.tmpdir)
+    _init_git_repo(cwd)
+    _write_specs_for_next(cwd, {})
+    target = cwd / "docs" / "notes" / "new-policy.md"
+    target.parent.mkdir(parents=True, exist_ok=True)
+    target.write_text("検証対象の正本文書\n", encoding="utf-8")
+
+    result = run_script(["next", "--json"], cwd=cwd)
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 0, result.stderr)
+    data = json.loads(result.stdout)
+    action = data["next_action"]
+    self.assertEqual(action["kind"], "post_write_verification")
+    effective_prompt = action["effective_prompt"]
+    self.assertEqual(
+      effective_prompt["effective_prompt_path"],
+      ".reviewcompass/guidance/effective-prompts/"
+      "next-action-post-write-verification.prompt.md",
+    )
+    self.assertNotIn(
+      ".reviewcompass/runtime/effective-prompts",
+      effective_prompt["effective_prompt_path"],
+    )
+    self.assertTrue(effective_prompt["effective_prompt_loaded"])
+
   def test_next_routes_working_notes_to_lightweight_self_check(self):
     """docs/notes/working 配下だけなら API post-write ではなく軽量自己精査を返す"""
     cwd = Path(self.tmpdir)
