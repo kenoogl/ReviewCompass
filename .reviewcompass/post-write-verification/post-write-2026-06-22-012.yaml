@@ -1,0 +1,30 @@
+status: completed
+target_files:
+  - docs/notes/working/2026-06-22-work-checklist-backlog-mechanism-plan.md
+target_sha256:
+  docs/notes/working/2026-06-22-work-checklist-backlog-mechanism-plan.md: 71986f731f1ae102032885215a333c40f807bad8952535da57af693785e49bd6
+required_verifiers:
+  - lightweight_self_check
+completed_verifiers:
+  - lightweight_self_check
+unresolved_substantive_findings: 0
+verifications:
+  - verifier: lightweight_self_check
+    target_files:
+      - docs/notes/working/2026-06-22-work-checklist-backlog-mechanism-plan.md
+    target_sha256:
+      docs/notes/working/2026-06-22-work-checklist-backlog-mechanism-plan.md: 71986f731f1ae102032885215a333c40f807bad8952535da57af693785e49bd6
+    checks:
+      user_points_preserved: true
+      facts_inferences_policy_and_open_items_separated: true
+      useful_as_later_decision_material: true
+      does_not_over_specify_scope: true
+      remains_working_note_not_canonical_spec: true
+      api_review_intentionally_not_used: true
+notes: >
+  Lightweight self-check for the work checklist / backlog mechanism plan. The
+  note preserves the user's motivation that ad-hoc and TDD-style development
+  are useful but need a smaller checklist mechanism to prevent cognitive drift,
+  records backlog placement for pre-workflow plan and issue candidates, and
+  states that runtime, evidence, and backlog data under .reviewcompass must be
+  excluded from deployment to target applications.
