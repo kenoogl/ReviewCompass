@@ -5792,6 +5792,32 @@ def review_run_traceability_satisfied(cwd, manifest):
   return True
 
 
+def post_write_unit_binding_matches_current_commit_unit(cwd, manifest):
+  """manifest の unit_binding が現在の commit unit と一致するかを返す。
+
+  unit_binding がない旧 manifest、または現在の commit unit がない通常状態は
+  互換のため対象外として True を返す。
+  """
+  binding = manifest.get("unit_binding")
+  if binding is None:
+    return True
+  if not isinstance(binding, dict):
+    return False
+
+  current_unit, errors = commit_unit.load(cwd)
+  if errors:
+    return True
+  if not isinstance(current_unit, dict):
+    return True
+
+  expected = {
+    "work_unit_id": current_unit.get("work_unit_id"),
+    "commit_unit_id": current_unit.get("commit_unit_id"),
+    "staged_digest": current_unit.get("staged_digest"),
+  }
+  return binding == expected
+
+
 def evaluate_post_write_manifest_state(cwd, target_files):
   """対象ファイル群に対する post-write-verification manifest 状態を返す"""
   actual_hashes = {
@@ -5819,6 +5845,7 @@ def evaluate_post_write_manifest_state_for_hashes(cwd, target_files, actual_hash
       manifest.get("status") == "completed"
       and coverage_ok
       and review_run_traceability_satisfied(cwd, manifest)
+      and post_write_unit_binding_matches_current_commit_unit(cwd, manifest)
       and unresolved_substantive_count(manifest) == 0
     ):
       return "completed", manifest
