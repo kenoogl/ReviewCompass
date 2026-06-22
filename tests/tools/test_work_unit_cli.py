@@ -332,6 +332,47 @@ class WorkUnitCliTests(unittest.TestCase):
     self.assertFalse(data["start_allowed"])
     self.assertIn("unit-existing-blocking", "\n".join(data["blocking_reasons"]))
 
+  def test_next_reports_blocking_unit_required_for_start_request(self):
+    """開始要求 marker がある場合、next は blocking unit 開始を先に促す。"""
+    request_path = (
+      self.tmpdir
+      / ".reviewcompass/runtime/work-units/start-request.yaml"
+    )
+    request_path.parent.mkdir(parents=True, exist_ok=True)
+    request_path.write_text(
+      yaml.safe_dump(
+        {
+          "schema_version": "work-unit-start-request-v1",
+          "kind": "blocking_unit_required",
+          "required_action": "enter_blocking_unit",
+          "proposed_unit": {
+            "unit_id": "unit-new-work",
+            "title": "new work",
+            "reason": "user asked to start a separate task",
+            "parent_unit_id": "main-completed",
+            "return_conditions": ["new work completed"],
+          },
+        },
+        allow_unicode=True,
+        sort_keys=False,
+      ),
+      encoding="utf-8",
+    )
+
+    result = run_script(["next", "--json"], cwd=self.tmpdir)
+
+    assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+    data = json.loads(result.stdout)
+    action = data["next_action"]
+    self.assertEqual(action["kind"], "blocking_unit_required")
+    self.assertEqual(action["required_action"], "enter_blocking_unit")
+    self.assertEqual(action["unit_id"], "unit-new-work")
+    self.assertEqual(
+      data["current_state"]["work_unit_start_request"]["proposed_unit"]["unit_id"],
+      "unit-new-work",
+    )
+
 
 if __name__ == "__main__":
   unittest.main()
