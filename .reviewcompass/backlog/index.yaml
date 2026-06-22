@@ -35,3 +35,10 @@ items:
   path: .reviewcompass/backlog/todos/todo-2026-06-22-commit-operation-efficiency.yaml
   source_unit_id: unit-2026-06-22-blocking-unit-control-improvements
   created_at: '2026-06-22T14:05:00+09:00'
+- id: todo-2026-06-22-backlog-checklist-bridge
+  kind: todo
+  title: Mechanize backlog TODO to runtime checklist bridge
+  status: candidate
+  path: .reviewcompass/backlog/todos/todo-2026-06-22-backlog-checklist-bridge.yaml
+  source_unit_id: unit-2026-06-22-blocking-unit-control-improvements
+  created_at: '2026-06-22T15:05:00+09:00'

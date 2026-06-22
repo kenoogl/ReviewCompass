@@ -1,0 +1,69 @@
+schema_version: reviewcompass-backlog-item-v1
+id: todo-2026-06-22-backlog-checklist-bridge
+kind: todo
+title: Mechanize backlog TODO to runtime checklist bridge
+status: candidate
+source_unit_id: unit-2026-06-22-blocking-unit-control-improvements
+created_at: '2026-06-22T15:05:00+09:00'
+index_path: .reviewcompass/backlog/index.yaml
+provenance:
+  created_by: llm
+  source_ref: conversation:user:todosのyamlからチェックリストに繋がる流れは、まだ分断されているように思える
+  reason: backlog TODO と runtime checklist が別々に存在し、LLM が TODO を読んで手で checklist item を作る状態では、作業分岐や回収時に抜け漏れが起きるため
+summary: >
+  backlog TODO YAML を計画候補の置き場で終わらせず、実行時の runtime
+  checklist に機械的につなげる。TODO から checklist を生成し、checklist
+  完了時には evidence と backlog TODO 側の履歴へ戻すことで、計画、実行、
+  証跡の分断を減らす。
+problem_statement:
+- backlog TODO には phases / todos / red_tests などの詳細計画がある。
+- work-checklist は実行時の進捗表として存在する。
+- 現状では TODO から checklist への変換を LLM がその場で判断しており、作業者の認知に依存している。
+- この分断を放置すると、別件の計画に前提整備を混ぜるなど、作業単位の混線が起きやすい。
+required_flow:
+- work-backlog show で対象 TODO を読む
+- work-backlog start-checklist などの機械処理で runtime checklist を作成する
+- checklist item は implementation_plan.phases、todos.*、red_tests などから機械的に生成する
+- checklist に source_backlog_item_id と source_backlog_path を保存する
+- checklist close 時に evidence へ移し、backlog TODO 側にも実施 checklist / evidence path を記録する
+todos:
+  design_contract:
+  - id: BCB-1
+    title: backlog TODO と checklist の責務境界を定義する
+    status: candidate
+    detail: backlog TODO は計画候補、runtime checklist は実行中進捗、evidence checklist は完了証跡として扱う。
+  - id: BCB-2
+    title: TODO から checklist item を生成する入力規則を定義する
+    status: candidate
+    detail: implementation_plan.phases / tasks、todos.*、red_tests のどれを item 化するかを機械的に決める。
+  cli:
+  - id: BCB-3
+    title: work-backlog start-checklist 導線を追加する
+    status: candidate
+    detail: backlog item id、checklist id、unit id を受け取り、source backlink つき runtime checklist を作成する。
+  - id: BCB-4
+    title: checklist close 後の backlog 反映を追加する
+    status: candidate
+    detail: completed checklist の evidence path と completion summary を backlog TODO の実行履歴へ記録する。
+  audit:
+  - id: BCB-5
+    title: TODO と checklist の分断を検出する
+    status: candidate
+    detail: promoted または active 相当の TODO に対応する active checklist / evidence がない場合に DEVIATION を返す。
+red_tests:
+- id: BCB-RT-1
+  title: backlog TODO から checklist を生成する
+  expected: 指定 TODO の phases / tasks から runtime checklist items が作成され、source_backlog_item_id が保存される
+- id: BCB-RT-2
+  title: checklist close を backlog TODO に反映する
+  expected: checklist close 後、TODO 側に evidence path と実行完了履歴が記録される
+- id: BCB-RT-3
+  title: TODO と checklist の分断を検出する
+  expected: promoted TODO に対応する active checklist または evidence がない場合、検査が DEVIATION を返す
+non_goals:
+- backlog TODO の内容を LLM が要約して checklist 化すること
+- すべての backlog item を必ず checklist 化すること
+- workflow 本体の phase 判定を置き換えること
+notes:
+- commit operation efficiency とは独立した基盤課題として扱う。
+- 他の TODO 実施時にも使える共通導線として実装する。
