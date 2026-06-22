@@ -1,0 +1,20 @@
+unit_id: unit-2026-06-22-blocking-unit-control-improvements
+kind: blocking
+parent_unit_id: unit-post-write-prompt-mechanization-stash
+title: Improve blocking unit start and exit controls
+reason: Blocking unit judgement was missed before returning to the parent post-write
+  prompt mechanization work, so start/exit controls need tighter manual validation
+  before mechanization
+status: completed
+entered_at: '2026-06-22T02:56:56.992208+00:00'
+return_conditions:
+- work checklist created and maintained
+- blocking unit improvement red tests committed
+- blocking unit improvement implementation committed
+- completion evidence recorded
+exited_at: '2026-06-22T03:40:38.061923+00:00'
+completion_summary: 'Completed blocking unit control improvements: maintained checklist,
+  committed red tests, implemented backlog body files and blocking preflight/resume
+  handling, verified behavior, and updated deployed guidance with post-write verification.'
+returned_to:
+  unit_id: unit-post-write-prompt-mechanization-stash
