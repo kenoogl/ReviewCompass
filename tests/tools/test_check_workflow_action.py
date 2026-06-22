@@ -3614,6 +3614,10 @@ class NextNavigationTests(unittest.TestCase):
     self.assertEqual(result.returncode, 0, result.stderr)
     data = json.loads(result.stdout)
     self.assertEqual(data["next_action"]["kind"], "post_write_verification")
+    self.assertIn(
+      "EVIDENCE_UNIT_MISMATCH",
+      data["next_action"]["codes"],
+    )
 
   def test_next_does_not_complete_manifest_with_empty_required_verifiers(self):
     """required_verifiers が空の manifest は完了扱いしない"""
