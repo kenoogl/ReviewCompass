@@ -20,6 +20,7 @@ import yaml  # noqa: E402
 
 from tools.api_providers import prepare_post_write_review  # noqa: E402
 from tools.api_providers.review_triage import write_manifest  # noqa: E402
+from tools.check_workflow_action import commit_unit, work_unit_stack  # noqa: E402
 from tools.normal_output import status_line  # noqa: E402
 
 
@@ -130,6 +131,45 @@ def review_question_for_targets(_targets: List[str]) -> str:
   )
 
 
+def _active_work_unit(cwd: Path) -> Optional[Dict[str, Any]]:
+  state = work_unit_stack.current(cwd)
+  current = state.get("current")
+  if state.get("verdict") != "OK":
+    reasons = state.get("reasons") or ["work unit stack を確認できません"]
+    raise RuntimeError("; ".join(str(reason) for reason in reasons))
+  if isinstance(current, dict) and current.get("unit_id"):
+    return current
+  return None
+
+
+def _require_commit_unit_for_active_work_unit(cwd: Path, targets: List[str]) -> Optional[str]:
+  active = _active_work_unit(cwd)
+  if active is None:
+    return None
+
+  record, errors = commit_unit.load(cwd)
+  if errors:
+    return "commit unit がありません: " + "; ".join(errors)
+
+  active_unit_id = active.get("unit_id")
+  if record.get("work_unit_id") != active_unit_id:
+    return (
+      "commit unit の work_unit_id が active blocking unit と一致しません: "
+      f"{record.get('work_unit_id')} != {active_unit_id}"
+    )
+
+  target_set = set(targets)
+  record_targets = set(record.get("target_files") or [])
+  missing = sorted(target_set - record_targets)
+  if missing:
+    return (
+      "commit unit の target_files に post-write review target が含まれていません: "
+      + ", ".join(missing)
+    )
+
+  return None
+
+
 def _prepare(args: argparse.Namespace) -> int:
   next_data = _load_next_action(args.next_action_file)
   next_action = _next_action_payload(next_data)
@@ -142,6 +182,14 @@ def _prepare(args: argparse.Namespace) -> int:
   if not targets:
     sys.stderr.write("エラー：next_action target_files is empty\n")
     return 1
+  try:
+    commit_unit_error = _require_commit_unit_for_active_work_unit(Path.cwd(), targets)
+  except RuntimeError as exc:
+    sys.stderr.write(f"エラー：{exc}\n")
+    return 2
+  if commit_unit_error:
+    sys.stderr.write(f"エラー：{commit_unit_error}\n")
+    return 2
 
   absolute_targets = [str(Path(target).resolve()) for target in targets]
   missing = [target for target in absolute_targets if not Path(target).is_file()]
