@@ -34,6 +34,21 @@ class WorkUnitCliTests(unittest.TestCase):
     self.tmpdir = Path(tempfile.mkdtemp())
     self.addCleanup(shutil.rmtree, self.tmpdir)
 
+  def _enter_blocking(self, unit_id="unit-blocking-test", parent_unit_id="unit-parent-test"):
+    return run_script(
+      [
+        "work-unit",
+        "enter-blocking",
+        "--unit-id", unit_id,
+        "--parent-unit-id", parent_unit_id,
+        "--title", "mechanize declarations",
+        "--reason", "manual declarations are easy to forget",
+        "--return-condition", "implementation committed",
+        "--json",
+      ],
+      cwd=self.tmpdir,
+    )
+
   def test_enter_blocking_records_active_runtime_frame(self):
     result = run_script(
       [
@@ -191,6 +206,89 @@ class WorkUnitCliTests(unittest.TestCase):
     data = json.loads(result.stdout)
     self.assertEqual(data["verdict"], "DEVIATION")
     self.assertIn("top", "\n".join(data["reasons"]))
+
+  def test_enter_blocking_rejects_nested_blocking_without_preflight_decision(self):
+    enter = self._enter_blocking(
+      unit_id="unit-blocking-parent",
+      parent_unit_id="unit-mainline",
+    )
+    self.assertEqual(enter.returncode, 0, enter.stdout + enter.stderr)
+
+    result = run_script(
+      [
+        "work-unit",
+        "enter-blocking",
+        "--unit-id", "unit-blocking-child",
+        "--parent-unit-id", "unit-blocking-parent",
+        "--title", "nested blocking",
+        "--reason", "another interruption appeared",
+        "--return-condition", "child completed",
+        "--json",
+      ],
+      cwd=self.tmpdir,
+    )
+
+    assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 2, result.stdout + result.stderr)
+    data = json.loads(result.stdout)
+    self.assertEqual(data["verdict"], "DEVIATION")
+    self.assertIn("active blocking unit", "\n".join(data["reasons"]))
+
+  def test_exit_blocking_records_parent_resume_pending_for_next(self):
+    enter = self._enter_blocking(parent_unit_id="unit-parent-resume")
+    self.assertEqual(enter.returncode, 0, enter.stdout + enter.stderr)
+    exit_result = run_script(
+      [
+        "work-unit",
+        "exit-blocking",
+        "--unit-id", "unit-blocking-test",
+        "--completion-summary", "blocking unit complete",
+        "--json",
+      ],
+      cwd=self.tmpdir,
+    )
+    self.assertEqual(exit_result.returncode, 0, exit_result.stdout + exit_result.stderr)
+
+    marker_path = (
+      self.tmpdir
+      / ".reviewcompass/runtime/work-units/resume-pending.yaml"
+    )
+    marker = yaml.safe_load(marker_path.read_text(encoding="utf-8"))
+    self.assertEqual(marker["kind"], "parent_resume_pending")
+    self.assertEqual(marker["parent_unit_id"], "unit-parent-resume")
+
+    next_result = run_script(["next", "--json"], cwd=self.tmpdir)
+    assert_script_invoked(self, next_result)
+    self.assertEqual(next_result.returncode, 0, next_result.stdout + next_result.stderr)
+    data = json.loads(next_result.stdout)
+    self.assertEqual(data["next_action"]["kind"], "parent_resume_pending")
+    self.assertEqual(data["next_action"]["parent_unit_id"], "unit-parent-resume")
+
+  def test_preflight_start_reports_active_unit_before_new_work(self):
+    enter = self._enter_blocking(
+      unit_id="unit-existing-blocking",
+      parent_unit_id="unit-mainline",
+    )
+    self.assertEqual(enter.returncode, 0, enter.stdout + enter.stderr)
+
+    result = run_script(
+      [
+        "work-unit",
+        "preflight-start",
+        "--proposed-unit-id", "unit-new-work",
+        "--title", "new work",
+        "--reason", "user asked to switch tasks",
+        "--json",
+      ],
+      cwd=self.tmpdir,
+    )
+
+    assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+    data = json.loads(result.stdout)
+    self.assertEqual(data["verdict"], "DEVIATION")
+    self.assertFalse(data["start_allowed"])
+    self.assertIn("unit-existing-blocking", "\n".join(data["blocking_reasons"]))
 
 
 if __name__ == "__main__":
