@@ -456,6 +456,68 @@ class WorkBacklogCliTests(unittest.TestCase):
       "bridge checklist completed",
     )
 
+  def test_checklist_close_marks_source_backlog_todo_completed(self):
+    self._write_todo_item(status="promoted")
+    start = run_script(
+      [
+        "work-backlog",
+        "start-checklist",
+        "--id", "todo-bridge",
+        "--checklist-id", "checklist-bridge",
+        "--unit-id", "unit-test",
+        "--json",
+      ],
+      cwd=self.tmpdir,
+    )
+    self.assertEqual(start.returncode, 0, start.stdout + start.stderr)
+    for item_id in ("P1-1", "P1-2", "BCB-3", "BCB-RT-1"):
+      result = run_script(
+        [
+          "work-checklist",
+          "set-status",
+          "--checklist-id", "checklist-bridge",
+          "--item-id", item_id,
+          "--status", "done",
+          "--json",
+        ],
+        cwd=self.tmpdir,
+      )
+      self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+
+    result = run_script(
+      [
+        "work-checklist",
+        "close",
+        "--checklist-id", "checklist-bridge",
+        "--completion-summary", "bridge checklist completed",
+        "--json",
+      ],
+      cwd=self.tmpdir,
+    )
+
+    self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+    item = yaml.safe_load(
+      (
+        self.tmpdir
+        / ".reviewcompass/backlog/todos/todo-bridge.yaml"
+      ).read_text(encoding="utf-8")
+    )
+    index = yaml.safe_load(
+      (self.tmpdir / ".reviewcompass/backlog/index.yaml").read_text(
+        encoding="utf-8",
+      )
+    )
+    self.assertEqual(item["status"], "completed")
+    self.assertEqual(index["items"][0]["status"], "completed")
+
+    second_start = run_script(
+      ["work-backlog", "start-checklist", "--json"],
+      cwd=self.tmpdir,
+    )
+    self.assertEqual(second_start.returncode, 2, second_start.stdout)
+    data = json.loads(second_start.stdout)
+    self.assertIn("no promoted todo item found", data["reasons"])
+
   def test_audit_checklist_bridge_rejects_promoted_todo_without_runtime_or_evidence(self):
     self._write_todo_item(status="promoted")
 

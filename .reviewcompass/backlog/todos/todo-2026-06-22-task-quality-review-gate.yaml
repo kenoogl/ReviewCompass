@@ -2,7 +2,7 @@ schema_version: reviewcompass-backlog-item-v1
 id: todo-2026-06-22-task-quality-review-gate
 kind: todo
 title: Add task quality review gate
-status: promoted
+status: completed
 source_unit_id: main-completed
 created_at: '2026-06-22T16:10:00+09:00'
 index_path: .reviewcompass/backlog/index.yaml

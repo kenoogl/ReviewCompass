@@ -9,6 +9,7 @@ import yaml
 DEFAULT_CHECKLIST_DIR = ".reviewcompass/runtime/work-units/checklists"
 DEFAULT_CHECKLIST_EVIDENCE_DIR = ".reviewcompass/evidence/work-units/checklists"
 DEFAULT_BACKLOG_ROOT = ".reviewcompass/backlog"
+DEFAULT_BACKLOG_INDEX_PATH = ".reviewcompass/backlog/index.yaml"
 SCHEMA_VERSION = "work-checklist-v1"
 ALLOWED_ITEM_STATUSES = {"pending", "active", "done", "blocked"}
 STATUS_MARKERS = {
@@ -362,8 +363,25 @@ def _record_backlog_execution(cwd, checklist, evidence_path):
     "completion_summary": checklist["completion_summary"],
     "completed_at": checklist["completed_at"],
   })
+  item["status"] = "completed"
   _write_yaml(backlog_path, item)
+  _mark_backlog_index_item_completed(cwd, source_id)
   return []
+
+
+def _mark_backlog_index_item_completed(cwd, source_id):
+  index_path = Path(cwd) / DEFAULT_BACKLOG_INDEX_PATH
+  try:
+    index = yaml.safe_load(index_path.read_text(encoding="utf-8"))
+  except (OSError, UnicodeDecodeError, yaml.YAMLError):
+    return
+  if not isinstance(index, dict):
+    return
+  for entry in index.get("items", []):
+    if isinstance(entry, dict) and entry.get("id") == source_id:
+      entry["status"] = "completed"
+      _write_yaml(index_path, index)
+      return
 
 
 def _mark_matching_backlog_items_done(backlog_item, done_item_ids):
