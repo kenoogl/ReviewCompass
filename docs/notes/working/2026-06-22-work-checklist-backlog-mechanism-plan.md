@@ -58,6 +58,7 @@ Work checklist は、現在進めている work unit 内の実行リストであ
 - active item / pending item / blocked item を持つ
 - child checklist への分岐を記録する
 - close 時に未完了 item があれば fail-closed する
+- close 成功後は runtime から削除し、進行中リストに残さない
 
 ### 3.2 Checklist Evidence
 
@@ -71,9 +72,10 @@ Checklist evidence は、完了した checklist の証跡である。
 
 性質:
 
-- 完了時 snapshot
+- 完了時 snapshot の正本
 - provenance の証跡
 - 後から作業経路を説明するために保持する
+- close 成功後、完了済み checklist は runtime から evidence へ移動したものとして扱う
 - 対象アプリへの deploy には含めない
 
 ### 3.3 Backlog
@@ -152,7 +154,16 @@ items:
   - id: C1
     title: red test を作成する
     status: pending
+    checked: false
     child_checklist_id: null
+progress:
+  total: 1
+  done: 0
+  active: 0
+  pending: 1
+  blocked: 0
+  active_item_ids: []
+  blocked_item_ids: []
 ```
 
 ### 5.2 `work-backlog`
@@ -200,7 +211,9 @@ Phase 1: checklist red test
 - item status を `pending / active / done / blocked` で更新できる
 - blocked item から child checklist を作れる
 - 未完了 item がある場合 close できない
-- close 成功時に `.reviewcompass/evidence/work-units/checklists/` へ snapshot が残る
+- checklist YAML 自体に `checked` と `progress` が残り、人が直接読んでも進捗が分かる
+- close 成功時に `.reviewcompass/evidence/work-units/checklists/` へ snapshot を移動する
+- close 成功後、`.reviewcompass/runtime/work-units/checklists/` に完了済み checklist を残さない
 
 Phase 2: backlog red test
 

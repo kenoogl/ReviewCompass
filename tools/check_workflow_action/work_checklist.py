@@ -308,13 +308,14 @@ def close(cwd, checklist_id, completion_summary):
   checklist["completed_at"] = _now_iso()
   checklist["completion_summary"] = completion_summary
   evidence_path = _evidence_path(cwd, checklist_id)
+  runtime_path = _checklist_path(cwd, checklist_id)
   _normalize_checklist(checklist)
   _write_yaml(evidence_path, checklist)
-  _write_yaml(_checklist_path(cwd, checklist_id), checklist)
+  runtime_path.unlink()
   return _result(
     "OK",
     [],
     checklist=checklist,
-    path=_relative_checklist_path(checklist_id),
+    path=_relative_evidence_path(checklist_id),
     evidence_path=_relative_evidence_path(checklist_id),
   )

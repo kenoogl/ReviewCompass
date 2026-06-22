@@ -13,26 +13,40 @@ items:
   title: '整理: blocking unit 判定漏れの改善方針を確定する'
   status: done
   child_checklist_id: null
+  checked: true
 - id: C2
   title: '赤テスト: 作業開始前 preflight / parent resume pending / nested blocking を固定する'
   status: done
   child_checklist_id: null
+  checked: true
 - id: C3
   title: '実装: work-unit start preflight と resume marker の最小機械処理を追加する'
   status: done
   child_checklist_id: null
+  checked: true
 - id: C4
   title: '検証: 関連テストと workflow snapshot / next を確認する'
   status: done
   child_checklist_id: null
+  checked: true
 - id: C5
   title: '赤テスト: backlog plan が詳細計画本文を保持できることを固定する'
   status: done
   child_checklist_id: null
+  checked: true
 - id: C6
   title: '規律更新: blocking unit preflight / parent resume を guidance に反映する'
   status: done
   child_checklist_id: null
+  checked: true
 completed_at: '2026-06-22T03:40:27.748613+00:00'
 completion_summary: 'C1-C6 completed: backlog plan body support, blocking unit preflight/resume
   mechanization, verification, and guidance update were implemented and committed.'
+progress:
+  total: 6
+  done: 6
+  active: 0
+  pending: 0
+  blocked: 0
+  active_item_ids: []
+  blocked_item_ids: []

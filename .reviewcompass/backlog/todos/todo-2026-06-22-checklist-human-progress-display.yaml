@@ -10,4 +10,17 @@ provenance:
   created_by: llm
   source_ref: conversation:user:チェックリストにはチェックボックスがなく、どこまで進捗したかが構造的にわからない
   reason: 作業チェックリストは status を持つが、人間向けのチェックボックス表示と進捗サマリがなく、見通し改善という目的に弱い
-decisions: []
+decisions:
+- decided_at: '2026-06-22'
+  decision: Persist human-readable progress in checklist YAML itself
+  rationale: 表示コマンドだけでなく、人が YAML を直接開いた場合にも進捗を誤解しないようにする
+  implementation:
+  - 各 item に checked を保存する
+  - checklist top-level に progress を保存する
+  - 既存 checklist は show 時に progress / checked を補完する
+- decided_at: '2026-06-22'
+  decision: Move completed checklist from runtime to evidence on close
+  rationale: 完了済み checklist が runtime に残ると、進行中リストと証跡の境界が曖昧になり誤解を招く
+  implementation:
+  - close 成功時に .reviewcompass/evidence/work-units/checklists/ へ completed snapshot を保存する
+  - close 成功後に .reviewcompass/runtime/work-units/checklists/ の元ファイルを削除する

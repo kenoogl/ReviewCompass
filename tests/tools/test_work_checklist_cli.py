@@ -506,6 +506,11 @@ class WorkChecklistCliTests(unittest.TestCase):
 
     assert_script_invoked(self, result)
     self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+    runtime_path = (
+      self.tmpdir
+      / ".reviewcompass/runtime/work-units/checklists/checklist-test.yaml"
+    )
+    self.assertFalse(runtime_path.exists())
     evidence_path = (
       self.tmpdir
       / ".reviewcompass/evidence/work-units/checklists/checklist-test.yaml"

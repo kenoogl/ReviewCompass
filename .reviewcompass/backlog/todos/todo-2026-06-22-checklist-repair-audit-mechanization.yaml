@@ -1,0 +1,57 @@
+schema_version: reviewcompass-backlog-item-v1
+id: todo-2026-06-22-checklist-repair-audit-mechanization
+kind: todo
+title: Mechanize checklist repair and consistency audits
+status: candidate
+source_unit_id: unit-2026-06-22-blocking-unit-control-improvements
+created_at: '2026-06-22T13:10:00+09:00'
+index_path: .reviewcompass/backlog/index.yaml
+provenance:
+  created_by: llm
+  source_ref: conversation:user:機械作業化できる処理は？
+  reason: checklist 運用で LLM が手作業で行った修復・検査を後続実装候補として回収する
+tasks:
+- id: CRAM-1
+  title: completed runtime checklist audit
+  status: candidate
+  detail: .reviewcompass/runtime/work-units/checklists/ に status=completed の checklist が残っていないか検査する
+  expected_behavior:
+  - read-only audit では DEVIATION として報告する
+  - repair mode では evidence へ移動して runtime から削除する
+- id: CRAM-2
+  title: checklist normalize command
+  status: candidate
+  detail: 既存 checklist に checked / progress が欠けている場合、機械的に補完する
+  expected_behavior:
+  - item.status から item.checked を再計算する
+  - items 全体から top-level progress を再計算する
+  - dry-run と write mode を分ける
+- id: CRAM-3
+  title: runtime and evidence duplicate audit
+  status: candidate
+  detail: 同一 checklist_id が runtime と evidence の両方に存在する状態を検出する
+  expected_behavior:
+  - runtime 側が completed の場合は evidence 正本化の候補として報告する
+  - runtime 側が active の場合は二重存在の理由確認を要求する
+- id: CRAM-4
+  title: close postcondition audit
+  status: candidate
+  detail: work-checklist close 後の postcondition を機械的に検査する
+  expected_behavior:
+  - evidence ファイルが存在することを確認する
+  - runtime ファイルが存在しないことを確認する
+  - evidence に completed_at / completion_summary / checked / progress があることを確認する
+- id: CRAM-5
+  title: design and backlog reflection audit
+  status: candidate
+  detail: checklist 挙動変更時に設計メモや backlog decision への反映漏れを検出する
+  expected_behavior:
+  - まずは自動編集ではなく read-only lint として実装する
+  - 対象メモや backlog item が未指定の場合は DEVIATION として報告する
+non_goals:
+- completion_summary の本文生成を完全自動化しない
+- 作業完了とみなす判断を機械だけに委ねない
+- 設計メモ本文の自動生成・自動差し替えまでは初期対象にしない
+notes:
+- 優先順位は CRAM-1, CRAM-2, CRAM-3, CRAM-4, CRAM-5 の順とする
+- 今回 LLM が手で行った既存 completed checklist の evidence 移動を、CRAM-1/CRAM-3 の repair mode で再現可能にする
