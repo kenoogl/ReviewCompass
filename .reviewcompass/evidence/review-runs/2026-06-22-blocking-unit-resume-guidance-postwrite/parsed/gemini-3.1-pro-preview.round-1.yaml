@@ -1,0 +1,16 @@
+role: primary
+provider: gemini-api
+model: gemini-3.1-pro-preview
+attempts: 1
+duration_seconds: 46.207
+findings:
+- severity: WARN
+  target_location: 2. 判定結果の共通分岐 > parent_resume_pending
+  description: 別作業を開始する前提が明記されておらず、LLMの自律的なタスク後回しを誘発する恐れがある
+  rationale: 「新しい作業を始めず...戻る」と原則を指示した直後に、単に「別作業を始める場合は」と続いている。共通禁止事項で `parent_resume_pending`
+    を後回しにしないことが定められているにもかかわらず、LLMが自律的な判断で別の作業を優先・開始してよいと誤認する余地がある。「利用者から別作業の割り込み指示があった場合」など、それが例外的な状況であることを明示する必要がある。
+- severity: WARN
+  target_location: 2. 判定結果の共通分岐 > completed
+  description: 新規作業開始前の work-unit preflight-start 実行条件が主観的であり、チェックの省略を誘発する
+  rationale: 「直前作業の文脈から戻り先や active unit の有無が問題になる場合は」という条件はLLMの主観的判断に依存するため、LLMが「今回は問題にならないだろう」と自己正当化して
+    preflight-start をバイパスするリスクがある。新規作業（maintenance, reopen など）を開始する際は常に実行する、あるいは客観的に判定可能な条件に改めるべきである。

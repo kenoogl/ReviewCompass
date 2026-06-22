@@ -1,0 +1,28 @@
+run_id: 2026-06-22-blocking-unit-resume-guidance-postwrite
+phase: post_write_verification
+criteria_id: blocking_unit_resume_guidance_post_write
+criteria_file: .reviewcompass/evidence/review-runs/2026-06-22-blocking-unit-resume-guidance-postwrite/review-target.md
+criteria_file_sha256: 82e3096e6944fd9d0b62cd8d78844e674635f8d3b6338b3a44b2201ad8c09f1b
+prompt_manifest_path: .reviewcompass/evidence/review-runs/2026-06-22-blocking-unit-resume-guidance-postwrite/prompt-manifest.yaml
+prompt_manifest_sha256: 7b7749675a34c6863dc30336418b24017ce3cc033aa59bdee7022d2e73fc3ba7
+target_files:
+- path: .reviewcompass/guidance/WORKFLOW_NAVIGATION.md
+  sha256: a56d86b873cf7be8e3444b0e63fc41bb48e56ba8ff01658e5f5e0af6b7c2dc26
+  content_mode: full_text
+  content_sha256: a56d86b873cf7be8e3444b0e63fc41bb48e56ba8ff01658e5f5e0af6b7c2dc26
+source_materials:
+- path: .reviewcompass/guidance/API_REVIEW_PROMPT_QUALITY.md
+  sha256: 03a9b994c6b5fb4b99ebbbf169e48d76568c5b6190716bbe9e5e181844c9450d
+  content_mode: full_text
+  content_sha256: 03a9b994c6b5fb4b99ebbbf169e48d76568c5b6190716bbe9e5e181844c9450d
+- path: .reviewcompass/guidance/WORKFLOW_NAVIGATION.md
+  sha256: a56d86b873cf7be8e3444b0e63fc41bb48e56ba8ff01658e5f5e0af6b7c2dc26
+  content_mode: full_text
+  content_sha256: a56d86b873cf7be8e3444b0e63fc41bb48e56ba8ff01658e5f5e0af6b7c2dc26
+sensitive_information_check:
+  status: passed
+  checked_at: '2026-06-22T03:35:30.765410+00:00'
+recommended_run_review_args:
+  criteria_file: .reviewcompass/evidence/review-runs/2026-06-22-blocking-unit-resume-guidance-postwrite/review-target.md
+  phase: post_write_verification
+  prompt_manifest_path: .reviewcompass/evidence/review-runs/2026-06-22-blocking-unit-resume-guidance-postwrite/prompt-manifest.yaml

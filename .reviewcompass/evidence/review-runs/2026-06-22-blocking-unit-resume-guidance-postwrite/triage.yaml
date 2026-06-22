@@ -1,0 +1,44 @@
+run_id: 2026-06-22-blocking-unit-resume-guidance-postwrite
+triage_status: decided
+generated_at: '2026-06-22T03:36:25.317700+00:00'
+decision_actor: null
+decision_actor_type: human
+items:
+- finding_id: 2026-06-22-blocking-unit-resume-guidance-postwrite-gemini-3.1-pro-preview-primary-001
+  run_id: 2026-06-22-blocking-unit-resume-guidance-postwrite
+  source_model: gemini-3.1-pro-preview
+  source_round: round-1
+  source_raw_path: raw/gemini-3.1-pro-preview.round-1.txt
+  source_parsed_path: parsed/gemini-3.1-pro-preview.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: 2. 判定結果の共通分岐 > parent_resume_pending
+  plain_language_summary: 別作業を開始する前提が明記されておらず、LLMの自律的なタスク後回しを誘発する恐れがある
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-22T03:38:11.932443+00:00'
+  decision_reason: 利用者承認に基づき、parent_resume_pending 中の別作業開始は利用者から明示的な割り込み指示があった場合に限るよう
+    guidance を修正する。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-22-blocking-unit-resume-guidance-postwrite-gemini-3.1-pro-preview-primary-002
+  run_id: 2026-06-22-blocking-unit-resume-guidance-postwrite
+  source_model: gemini-3.1-pro-preview
+  source_round: round-1
+  source_raw_path: raw/gemini-3.1-pro-preview.round-1.txt
+  source_parsed_path: parsed/gemini-3.1-pro-preview.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: 2. 判定結果の共通分岐 > completed
+  plain_language_summary: 新規作業開始前の work-unit preflight-start 実行条件が主観的であり、チェックの省略を誘発する
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-22T03:38:21.458944+00:00'
+  decision_reason: 利用者承認に基づき、completed から maintenance/reopen/新規 workflow など別作業を始める前は原則
+    work-unit preflight-start を実行するよう guidance を修正する。
+  applied_files: []
+  superseded_by: null

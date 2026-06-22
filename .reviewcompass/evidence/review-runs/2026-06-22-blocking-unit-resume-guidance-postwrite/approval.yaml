@@ -1,0 +1,17 @@
+approved_action: review_run_triage
+approved_by: user
+approved_at: '2026-06-22T12:36:00+09:00'
+approval_source: 利用者発言「承認」
+review_run_id: 2026-06-22-blocking-unit-resume-guidance-postwrite
+summary_presented_to_user: true
+triage_presented_to_user: true
+approved_finding_ids:
+  - 2026-06-22-blocking-unit-resume-guidance-postwrite-gemini-3.1-pro-preview-primary-001
+  - 2026-06-22-blocking-unit-resume-guidance-postwrite-gemini-3.1-pro-preview-primary-002
+approved_final_labels:
+  2026-06-22-blocking-unit-resume-guidance-postwrite-gemini-3.1-pro-preview-primary-001: should-fix
+  2026-06-22-blocking-unit-resume-guidance-postwrite-gemini-3.1-pro-preview-primary-002: should-fix
+rationale: >
+  WARN 2件はいずれも blocking unit 完了後の parent 復帰と新規作業開始前
+  preflight の省略リスクに関わる実質指摘であるため、should-fix として
+  WORKFLOW_NAVIGATION.md へ反映する。
