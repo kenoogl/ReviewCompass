@@ -48,7 +48,15 @@ from check_workflow_action.runtime_paths import (
   resolve_commit_approval_path,
   resolve_effective_prompt_read_path,
 )
-from check_workflow_action import approval_gate, commit_approval, commit_unit, work_backlog, work_checklist, work_unit_stack
+from check_workflow_action import (
+  approval_gate,
+  commit_approval,
+  commit_unit,
+  task_quality_check,
+  work_backlog,
+  work_checklist,
+  work_unit_stack,
+)
 from check_workflow_action.implementation_phases import check_phase_plan, load_plan
 from check_workflow_action.operation_preflight import run_preflight
 from check_workflow_action.operation_contracts import load_contracts, run_contract_check
@@ -8048,6 +8056,36 @@ def cmd_work_backlog(args):
   return 0 if response.get("verdict") == "OK" else 2
 
 
+def cmd_task_quality_check(args):
+  """task/checklist への落とし込み品質を監査する"""
+  if args.task_quality_check_command == "audit":
+    response = task_quality_check.audit(
+      Path.cwd(),
+      args.backlog_id,
+      args.checklist_id,
+    )
+  else:
+    return 2
+
+  if args.json:
+    print(json.dumps(response, ensure_ascii=False, indent=2))
+  else:
+    print(f"[VERDICT] {response.get('verdict')}")
+    for reason in response.get("reasons", []):
+      print(f"[REASON] {reason}")
+    quality = response.get("quality")
+    if isinstance(quality, dict):
+      print(
+        "[QUALITY] "
+        f"expected={quality.get('expected_count')} "
+        f"actual={quality.get('actual_count')} "
+        f"missing={len(quality.get('missing_item_ids', []))} "
+        f"duplicates={len(quality.get('duplicate_item_ids', []))} "
+        f"empty_titles={len(quality.get('empty_title_item_ids', []))}"
+      )
+  return 0 if response.get("verdict") == "OK" else 2
+
+
 def cmd_prompt_audit(args):
   """prompt-audit サブコマンドのエントリポイント（Req 15）"""
   action_dict = {
@@ -8754,6 +8792,22 @@ def main():
     wb_decide.add_argument("--decision-ref", required=True, help="判断根拠の参照")
     wb_decide.add_argument("--reason", required=True, help="判断理由")
 
+  tqc = sub.add_parser(
+    "task-quality-check",
+    help="backlog TODO から task/checklist への落とし込み品質を監査する",
+  )
+  tqc_sub = tqc.add_subparsers(
+    dest="task_quality_check_command",
+    required=True,
+  )
+  tqc_audit = tqc_sub.add_parser(
+    "audit",
+    help="backlog TODO と checklist の構造的な対応を監査する",
+    parents=[common_parser],
+  )
+  tqc_audit.add_argument("--backlog-id", required=True, help="backlog todo item ID")
+  tqc_audit.add_argument("--checklist-id", required=True, help="監査対象 checklist ID")
+
   pa = sub.add_parser(
     "prompt-audit",
     help="effective prompt manifest を read-only で監査する（Req 15）",
@@ -8908,6 +8962,8 @@ def main():
     sys.exit(cmd_work_checklist(args))
   elif args.subcommand == "work-backlog":
     sys.exit(cmd_work_backlog(args))
+  elif args.subcommand == "task-quality-check":
+    sys.exit(cmd_task_quality_check(args))
   elif args.subcommand == "prompt-audit":
     sys.exit(cmd_prompt_audit(args))
   elif args.subcommand == "implementation-phase-check":
