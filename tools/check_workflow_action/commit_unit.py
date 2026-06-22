@@ -257,6 +257,32 @@ def postcondition(cwd):
   }
 
 
+def clear(cwd, path=None):
+  """commit 後に不要になった commit unit runtime marker を削除する。"""
+  record_path = _record_path(cwd, path)
+  if not record_path.exists():
+    return {
+      "verdict": "OK",
+      "status": "absent",
+      "path": str(record_path.relative_to(Path(cwd))),
+    }
+  try:
+    record_path.unlink()
+  except OSError as exc:
+    return {
+      "verdict": "DEVIATION",
+      "status": "error",
+      "codes": ["COMMIT_UNIT_CLEAR_FAILED"],
+      "reasons": [f"commit unit marker を削除できません: {exc}"],
+      "path": str(record_path.relative_to(Path(cwd))),
+    }
+  return {
+    "verdict": "OK",
+    "status": "cleared",
+    "path": str(record_path.relative_to(Path(cwd))),
+  }
+
+
 def load(cwd, path=None):
   record_path = _record_path(cwd, path)
   if not record_path.exists():

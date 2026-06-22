@@ -1,0 +1,58 @@
+schema_version: reviewcompass-backlog-item-v1
+id: todo-2026-06-22-commit-unit-post-commit-cleanup
+kind: todo
+title: Mechanize commit-unit post-commit cleanup
+status: completed
+source_unit_id: main-completed
+created_at: '2026-06-22T23:45:00+09:00'
+index_path: .reviewcompass/backlog/index.yaml
+provenance:
+  created_by: llm
+  source_ref: conversation:user:todoリストを作成し、実装
+  reason: commit 成功後に .reviewcompass/runtime/work-units/commit-unit.json が残り、次の next --json が STALE_COMMIT_UNIT になるため
+summary: >
+  commit unit は commit 前の staged index を固定する一時 runtime marker である。
+  commit 成功後は staged index が空になるため、marker を自動で片付け、
+  手動削除なしに next --json が completed へ戻るようにする。
+todos:
+  tdd:
+  - id: CUC-RT-1
+    title: commit-unit clear が runtime marker を削除する red test を追加する
+    status: done
+  - id: CUC-RT-2
+    title: guarded commit 成功後に commit-unit marker が残らない red test を追加する
+    status: done
+  implementation:
+  - id: CUC-1
+    title: commit-unit clear コマンドを追加する
+    status: done
+  - id: CUC-2
+    title: guarded commit 成功後に commit-unit clear 相当を実行する
+    status: done
+  verification:
+  - id: CUC-V1
+    title: commit-unit / guarded commit 周辺テストを通す
+    status: done
+non_goals:
+- 利用者承認なしで commit すること
+- commit 前の commit-unit 検査を弱めること
+- active blocking unit 中の parent commit 禁止を迂回すること
+implementation_result:
+  implemented_at: '2026-06-22T23:55:00+09:00'
+  summary: >
+    commit-unit clear コマンドを追加し、guarded commit 成功後に commit unit
+    runtime marker を自動削除するようにした。これにより commit 成功後に
+    STALE_COMMIT_UNIT が残る状態を手動削除なしで解消できる。
+  changed_components:
+  - tools/check_workflow_action/commit_unit.py
+  - tools/check-workflow-action.py
+  - tools/guarded-git-commit.py
+  - tests/tools/test_check_workflow_action.py
+  - tests/tools/test_guarded_git_commit.py
+  verification:
+  - command: python3 -m pytest tests/tools/test_guarded_git_commit.py -q
+    result: 13 passed
+  - command: python3 -m pytest tests/tools/test_check_workflow_action.py::CommitUnitIsolationTests -q
+    result: 12 passed
+  - command: python3 -m pytest tests/tools/test_commit_from_current_staged.py -q
+    result: 7 passed

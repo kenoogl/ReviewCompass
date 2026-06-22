@@ -20,6 +20,7 @@ from check_workflow_action.commit_approval import (
   delegate_execution,
   record,
 )
+from check_workflow_action import commit_unit
 
 DEFAULT_LAST_COMMIT_PRECHECK_PATH = ".git/reviewcompass/last-commit-precheck.json"
 SANDBOX_GIT_WRITE_DENIED = "sandbox_git_write_denied"
@@ -375,6 +376,11 @@ def main(argv=None):
 
   record_last_commit_precheck(cwd, precheck)
   if not consume_commit_approval(cwd):
+    return 2
+  cleanup = commit_unit.clear(cwd)
+  if cleanup.get("verdict") != "OK":
+    for reason in cleanup.get("reasons", []):
+      print(f"error: {reason}", file=sys.stderr)
     return 2
   print_success_summary(cwd, precheck)
   return 0

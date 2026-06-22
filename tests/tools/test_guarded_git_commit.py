@@ -20,6 +20,7 @@ from tests.tools.test_check_workflow_action import (
   _record_commit_approval,
   _stage_file,
   _write_commit_approval,
+  run_script,
 )
 
 
@@ -164,6 +165,42 @@ class GuardedGitCommitTests(unittest.TestCase):
     self.assertTrue(approval["consumed"])
     self.assertTrue(consumed_challenge["consumed"])
     self.assertTrue(delegation["consumed"])
+
+  def test_guarded_commit_clears_commit_unit_after_success(self):
+    """commit 成功後は frozen commit-unit marker を自動削除する"""
+    _stage_file(self.tmpdir, "notes.md", "# commit unit cleanup")
+    freeze = run_script(
+      [
+        "commit-unit",
+        "freeze",
+        "--work-unit-id", "main-completed",
+        "--allowed-file", "notes.md",
+        "--json",
+      ],
+      cwd=self.tmpdir,
+    )
+    self.assertEqual(freeze.returncode, 0, freeze.stdout + freeze.stderr)
+    marker = (
+      Path(self.tmpdir)
+      / ".reviewcompass"
+      / "runtime"
+      / "work-units"
+      / "commit-unit.json"
+    )
+    self.assertTrue(marker.exists())
+    _write_commit_approval(self.tmpdir, ["notes.md"])
+
+    result = run_guarded_commit(
+      [
+        "-m", "commit unit cleanup",
+        "--rationale", "利用者が LLM によるコミット実行代行を明示承認",
+      ],
+      cwd=self.tmpdir,
+    )
+
+    self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+    self.assertEqual(latest_commit_subject(self.tmpdir), "commit unit cleanup")
+    self.assertFalse(marker.exists())
 
   def test_guarded_commit_rejects_piped_line_approval(self):
     """pipe 経由の承認1行では approval record を作らず commit しない"""

@@ -8158,6 +8158,8 @@ def cmd_commit_unit(args):
     )
   elif args.commit_unit_command == "postcondition":
     response = commit_unit.postcondition(Path.cwd())
+  elif args.commit_unit_command == "clear":
+    response = commit_unit.clear(Path.cwd())
   else:
     return 2
 
@@ -8941,6 +8943,11 @@ def main():
   cu_sub.add_parser(
     "postcondition",
     help="commit 後の clean/head/ahead/push 候補を定型出力する",
+    parents=[common_parser],
+  )
+  cu_sub.add_parser(
+    "clear",
+    help="commit 後に不要になった commit unit runtime marker を削除する",
     parents=[common_parser],
   )
 

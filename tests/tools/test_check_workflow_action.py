@@ -6470,6 +6470,29 @@ class CommitUnitIsolationTests(unittest.TestCase):
     self.assertRegex(data["head_commit"], r"^[0-9a-f]{40}$")
     self.assertIn("push_candidate", data)
 
+  def test_commit_unit_clear_removes_runtime_marker(self):
+    """commit-unit clear は commit 後に不要な runtime marker を削除する"""
+    self._write_and_stage("docs/target.md", "target\n")
+    freeze = self._freeze_commit_unit(["docs/target.md"])
+    self.assertEqual(freeze.returncode, 0, freeze.stdout + freeze.stderr)
+    marker = (
+      Path(self.tmpdir)
+      / ".reviewcompass"
+      / "runtime"
+      / "work-units"
+      / "commit-unit.json"
+    )
+    self.assertTrue(marker.exists())
+
+    result = run_script(["commit-unit", "clear", "--json"], cwd=self.tmpdir)
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+    data = json.loads(result.stdout)
+    self.assertEqual(data["verdict"], "OK")
+    self.assertEqual(data["status"], "cleared")
+    self.assertFalse(marker.exists())
+
 
 def _init_git_repo(tmpdir):
   """temp dir に git リポジトリを初期化し、初回コミットと .reviewcompass 構造を準備する
