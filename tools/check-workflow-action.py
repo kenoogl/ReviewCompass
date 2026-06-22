@@ -2775,11 +2775,40 @@ def validate_commit_unit_record(cwd):
   """commit unit record があれば現在の staged 内容と照合する"""
   path = Path(cwd) / commit_unit.DEFAULT_COMMIT_UNIT_PATH
   if not path.exists():
-    return {
+    state = {
       "exists": False,
       "verdict": "not_configured",
       "path": commit_unit.DEFAULT_COMMIT_UNIT_PATH,
-    }, []
+    }
+    active_state = work_unit_stack.current(cwd)
+    active_unit = active_state.get("current")
+    active_work_unit_id = (
+      active_unit.get("unit_id") if isinstance(active_unit, dict) else None
+    )
+    try:
+      staged_files = commit_unit._git_cached_files(cwd)
+    except RuntimeError:
+      staged_files = []
+    state["current_state"] = {
+      "active_work_unit_id": active_work_unit_id,
+      "record_work_unit_id": None,
+      "staged_files": staged_files,
+    }
+    if (
+      isinstance(active_unit, dict)
+      and active_unit.get("kind") == "blocking"
+      and staged_files
+    ):
+      state["verdict"] = "DEVIATION"
+      state["codes"] = ["PARENT_COMMIT_DURING_BLOCKING_UNIT"]
+      state["reasons"] = [
+        "active blocking unit 中に commit unit なしで staged commit しようとしています: "
+        f"active={active_work_unit_id}"
+      ]
+      return state, [
+        "blocking unit 中の親作業 commit は、commit unit で active unit に束縛してください"
+      ]
+    return state, []
   state = commit_unit.check(cwd)
   state["exists"] = True
   state["path"] = commit_unit.DEFAULT_COMMIT_UNIT_PATH
