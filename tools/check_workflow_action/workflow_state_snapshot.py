@@ -155,6 +155,66 @@ def _operation_contract_summary(cwd):
   }
 
 
+def _count_by(values):
+  counts = {}
+  for value in values:
+    if not isinstance(value, str) or not value:
+      continue
+    counts[value] = counts.get(value, 0) + 1
+  return counts
+
+
+def _active_checklist_summary(cwd):
+  checklist_dir = Path(cwd) / ".reviewcompass" / "runtime" / "work-units" / "checklists"
+  summaries = []
+  for path in sorted(checklist_dir.glob("*.yaml")):
+    data = _read_yaml(path, {})
+    if not isinstance(data, dict) or data.get("status") != "active":
+      continue
+    items = data.get("items") if isinstance(data.get("items"), list) else []
+    summaries.append({
+      "checklist_id": data.get("checklist_id"),
+      "unit_id": data.get("unit_id"),
+      "title": data.get("title"),
+      "status": data.get("status"),
+      "path": str(path.relative_to(cwd)),
+      "item_counts": _count_by(
+        item.get("status")
+        for item in items
+        if isinstance(item, dict)
+      ),
+    })
+  return summaries
+
+
+def _backlog_summary(cwd):
+  index_path = Path(cwd) / ".reviewcompass" / "backlog" / "index.yaml"
+  if not index_path.exists():
+    return {
+      "index_path": ".reviewcompass/backlog/index.yaml",
+      "exists": False,
+      "total_count": 0,
+      "by_kind": {},
+      "by_status": {},
+    }
+  index = _read_yaml(index_path, {})
+  items = index.get("items") if isinstance(index, dict) else []
+  if not isinstance(items, list):
+    items = []
+  entries = [
+    item
+    for item in items
+    if isinstance(item, dict)
+  ]
+  return {
+    "index_path": ".reviewcompass/backlog/index.yaml",
+    "exists": True,
+    "total_count": len(entries),
+    "by_kind": _count_by(item.get("kind") for item in entries),
+    "by_status": _count_by(item.get("status") for item in entries),
+  }
+
+
 def _workflow_state_summary(cwd, specs):
   in_progress = _in_progress_summary(cwd)
   summary = {
@@ -187,6 +247,8 @@ def build_snapshot(cwd):
   current_work = _select_current_work(specs)
   work_unit_result = current_work_unit_stack(cwd)
   active_work_units = work_unit_result.get("stack", {}).get("frames", [])
+  active_checklists = _active_checklist_summary(cwd)
+  backlog_summary = _backlog_summary(cwd)
   side_track_result = current_side_track_stack(cwd / DEFAULT_SIDE_TRACK_STACK_PATH)
   active_side_tracks = side_track_result.get("stack", {}).get("frames", [])
   git_tree_summary = _git_tree_summary(cwd)
@@ -203,6 +265,8 @@ def build_snapshot(cwd):
     "source_next_action_sha256": _json_digest(next_action_source),
     "current_work": current_work,
     "active_work_units": active_work_units,
+    "active_checklists": active_checklists,
+    "backlog_summary": backlog_summary,
     "active_side_tracks": active_side_tracks,
     "git_tree_summary": git_tree_summary,
     "post_write_manifest_summary": _post_write_manifest_summary(cwd),

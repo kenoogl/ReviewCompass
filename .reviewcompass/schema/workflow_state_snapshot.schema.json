@@ -9,6 +9,9 @@
     "generated_at",
     "source_next_action_sha256",
     "current_work",
+    "active_work_units",
+    "active_checklists",
+    "backlog_summary",
     "active_side_tracks",
     "git_tree_summary",
     "post_write_manifest_summary",
@@ -41,6 +44,16 @@
         "inner_node",
         "active_gate"
       ]
+    },
+    "active_work_units": {
+      "type": "array"
+    },
+    "active_checklists": {
+      "type": "array"
+    },
+    "backlog_summary": {
+      "type": "object",
+      "additionalProperties": true
     },
     "active_side_tracks": {
       "type": "array"
