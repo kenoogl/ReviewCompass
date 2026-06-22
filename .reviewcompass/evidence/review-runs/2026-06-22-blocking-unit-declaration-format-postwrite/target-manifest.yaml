@@ -1,0 +1,4 @@
+run_id: 2026-06-22-blocking-unit-declaration-format-postwrite
+target_files:
+- path: .reviewcompass/guidance/WORKFLOW_NAVIGATION.md
+  sha256: 8bc438278de29ae9e12621e31a9d1165ac29672cb0e0a9ef76953680aeb5d651
