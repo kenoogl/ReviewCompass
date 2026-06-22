@@ -108,6 +108,19 @@ def _progress(checklist):
   return progress
 
 
+def _normalize_checklist(checklist):
+  for item in checklist.get("items", []):
+    if not isinstance(item, dict):
+      continue
+    item["checked"] = item.get("status") == "done"
+  checklist["progress"] = _progress(checklist)
+  return checklist
+
+
+def _write_checklist(path, checklist):
+  _write_yaml(path, _normalize_checklist(checklist))
+
+
 def _display_lines(checklist):
   lines = []
   for item in checklist.get("items", []):
@@ -150,7 +163,7 @@ def start(cwd, checklist_id, unit_id, title, source_ref, reason):
     },
     "items": [],
   }
-  _write_yaml(path, checklist)
+  _write_checklist(path, checklist)
   return _result(
     "OK",
     [],
@@ -163,13 +176,14 @@ def show(cwd, checklist_id):
   checklist, reasons = _read_checklist(cwd, checklist_id)
   if reasons:
     return _result("DEVIATION", reasons)
+  _write_checklist(_checklist_path(cwd, checklist_id), checklist)
   response = _result(
     "OK",
     [],
     checklist=checklist,
     path=_relative_checklist_path(checklist_id),
   )
-  response["progress"] = _progress(checklist)
+  response["progress"] = checklist["progress"]
   response["display_lines"] = _display_lines(checklist)
   return response
 
@@ -191,9 +205,10 @@ def add_item(cwd, checklist_id, item_id, title):
     "id": item_id,
     "title": title,
     "status": "pending",
+    "checked": False,
     "child_checklist_id": None,
   })
-  _write_yaml(_checklist_path(cwd, checklist_id), checklist)
+  _write_checklist(_checklist_path(cwd, checklist_id), checklist)
   return _result(
     "OK",
     [],
@@ -215,7 +230,7 @@ def set_status(cwd, checklist_id, item_id, status):
     return _result("DEVIATION", reasons, checklist=checklist)
 
   item["status"] = status
-  _write_yaml(_checklist_path(cwd, checklist_id), checklist)
+  _write_checklist(_checklist_path(cwd, checklist_id), checklist)
   return _result(
     "OK",
     [],
@@ -260,8 +275,8 @@ def branch(cwd, checklist_id, item_id, child_checklist_id, child_title, source_r
     },
     "items": [],
   }
-  _write_yaml(_checklist_path(cwd, checklist_id), checklist)
-  _write_yaml(child_path, child)
+  _write_checklist(_checklist_path(cwd, checklist_id), checklist)
+  _write_checklist(child_path, child)
   response = _result(
     "OK",
     [],
@@ -293,6 +308,7 @@ def close(cwd, checklist_id, completion_summary):
   checklist["completed_at"] = _now_iso()
   checklist["completion_summary"] = completion_summary
   evidence_path = _evidence_path(cwd, checklist_id)
+  _normalize_checklist(checklist)
   _write_yaml(evidence_path, checklist)
   _write_yaml(_checklist_path(cwd, checklist_id), checklist)
   return _result(

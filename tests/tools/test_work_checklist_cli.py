@@ -65,6 +65,15 @@ class WorkChecklistCliTests(unittest.TestCase):
     self.assertEqual(checklist["provenance"]["created_by"], "llm")
     self.assertEqual(checklist["provenance"]["source_ref"], "conversation:user")
     self.assertEqual(checklist["provenance"]["reason"], "作業の見通しと抜け漏れ防止")
+    self.assertEqual(checklist["progress"], {
+      "total": 0,
+      "done": 0,
+      "active": 0,
+      "pending": 0,
+      "blocked": 0,
+      "active_item_ids": [],
+      "blocked_item_ids": [],
+    })
     self.assertEqual(checklist["items"], [])
 
   def test_add_item_and_set_status_update_runtime_checklist(self):
@@ -121,9 +130,19 @@ class WorkChecklistCliTests(unittest.TestCase):
         "id": "C1",
         "title": "red test を作成する",
         "status": "active",
+        "checked": False,
         "child_checklist_id": None,
       }
     ])
+    self.assertEqual(checklist["progress"], {
+      "total": 1,
+      "done": 0,
+      "active": 1,
+      "pending": 0,
+      "blocked": 0,
+      "active_item_ids": ["C1"],
+      "blocked_item_ids": [],
+    })
 
   def test_show_reports_progress_and_checkbox_lines(self):
     run_script(
@@ -198,6 +217,22 @@ class WorkChecklistCliTests(unittest.TestCase):
       "[ ] C3 確認する",
       "[!] C4 別作業待ち",
     ])
+    checklist = yaml.safe_load(
+      (
+        self.tmpdir
+        / ".reviewcompass/runtime/work-units/checklists/checklist-test.yaml"
+      ).read_text(encoding="utf-8")
+    )
+    self.assertEqual(checklist["progress"], data["progress"])
+    self.assertEqual(
+      [(item["id"], item["checked"]) for item in checklist["items"]],
+      [
+        ("C1", True),
+        ("C2", False),
+        ("C3", False),
+        ("C4", False),
+      ],
+    )
 
   def test_show_human_output_prints_checkbox_lines(self):
     run_script(
@@ -249,6 +284,74 @@ class WorkChecklistCliTests(unittest.TestCase):
     self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
     self.assertIn("[PROGRESS] done=1 active=0 pending=0 blocked=0 total=1", result.stdout)
     self.assertIn("[x] C1 red test を作成する", result.stdout)
+
+  def test_show_backfills_human_readable_progress_into_existing_yaml(self):
+    checklist_path = (
+      self.tmpdir
+      / ".reviewcompass/runtime/work-units/checklists/checklist-legacy.yaml"
+    )
+    checklist_path.parent.mkdir(parents=True)
+    checklist_path.write_text(
+      yaml.safe_dump(
+        {
+          "schema_version": "work-checklist-v1",
+          "checklist_id": "checklist-legacy",
+          "unit_id": "unit-test",
+          "title": "Legacy checklist",
+          "status": "active",
+          "created_at": "2026-06-22T00:00:00+00:00",
+          "provenance": {
+            "created_by": "llm",
+            "source_ref": "conversation:user",
+            "reason": "古い形式の補完を確認する",
+          },
+          "items": [
+            {
+              "id": "C1",
+              "title": "完了済み項目",
+              "status": "done",
+              "child_checklist_id": None,
+            },
+            {
+              "id": "C2",
+              "title": "未完了項目",
+              "status": "pending",
+              "child_checklist_id": None,
+            },
+          ],
+        },
+        allow_unicode=True,
+        sort_keys=False,
+      ),
+      encoding="utf-8",
+    )
+
+    result = run_script(
+      [
+        "work-checklist",
+        "show",
+        "--checklist-id", "checklist-legacy",
+        "--json",
+      ],
+      cwd=self.tmpdir,
+    )
+
+    assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+    checklist = yaml.safe_load(checklist_path.read_text(encoding="utf-8"))
+    self.assertEqual(checklist["progress"], {
+      "total": 2,
+      "done": 1,
+      "active": 0,
+      "pending": 1,
+      "blocked": 0,
+      "active_item_ids": [],
+      "blocked_item_ids": [],
+    })
+    self.assertEqual(
+      [(item["id"], item["checked"]) for item in checklist["items"]],
+      [("C1", True), ("C2", False)],
+    )
 
   def test_branch_records_child_checklist_on_blocked_item(self):
     run_script(
@@ -311,6 +414,16 @@ class WorkChecklistCliTests(unittest.TestCase):
       ).read_text(encoding="utf-8")
     )
     self.assertEqual(parent["items"][0]["child_checklist_id"], "checklist-child")
+    self.assertEqual(parent["items"][0]["checked"], False)
+    self.assertEqual(parent["progress"], {
+      "total": 1,
+      "done": 0,
+      "active": 0,
+      "pending": 0,
+      "blocked": 1,
+      "active_item_ids": [],
+      "blocked_item_ids": ["C2"],
+    })
     child = yaml.safe_load(
       (
         self.tmpdir
@@ -320,6 +433,15 @@ class WorkChecklistCliTests(unittest.TestCase):
     self.assertEqual(child["unit_id"], "unit-test")
     self.assertEqual(child["parent_checklist_id"], "checklist-parent")
     self.assertEqual(child["parent_item_id"], "C2")
+    self.assertEqual(child["progress"], {
+      "total": 0,
+      "done": 0,
+      "active": 0,
+      "pending": 0,
+      "blocked": 0,
+      "active_item_ids": [],
+      "blocked_item_ids": [],
+    })
 
   def test_close_rejects_pending_items_and_writes_evidence_when_complete(self):
     run_script(
@@ -391,6 +513,16 @@ class WorkChecklistCliTests(unittest.TestCase):
     evidence = yaml.safe_load(evidence_path.read_text(encoding="utf-8"))
     self.assertEqual(evidence["status"], "completed")
     self.assertEqual(evidence["completion_summary"], "Phase 1 red tests completed")
+    self.assertEqual(evidence["progress"], {
+      "total": 1,
+      "done": 1,
+      "active": 0,
+      "pending": 0,
+      "blocked": 0,
+      "active_item_ids": [],
+      "blocked_item_ids": [],
+    })
+    self.assertEqual(evidence["items"][0]["checked"], True)
 
 
 if __name__ == "__main__":
