@@ -383,6 +383,78 @@ class TaskQualityCheckCliTests(unittest.TestCase):
       self.assertNotIn("\n", question["question"])
       self.assertNotIn(" and ", question["id"])
 
+  def test_prepare_review_materials_defines_review_result_contract(self):
+    self._write_todo_item()
+    self._write_checklist([
+      {
+        "id": "TQG-1",
+        "title": "task-quality-check CLI の機械監査項目を追加する",
+        "status": "pending",
+      },
+      {
+        "id": "TQG-2",
+        "title": "checklist item の粒度と順序に関する機械ヒントを出す",
+        "status": "pending",
+      },
+      {
+        "id": "TQG-3",
+        "title": "メイン LLM preanalysis の材料 bundle を生成する",
+        "status": "pending",
+      },
+      {
+        "id": "TQG-RT-1",
+        "title": "空項目・重複・TODO 対応漏れを検出する",
+        "status": "pending",
+      },
+    ])
+    output_dir = (
+      self.tmpdir
+      / ".reviewcompass/runtime/task-quality-review-materials/run"
+    )
+
+    result = run_script(
+      [
+        "task-quality-check",
+        "prepare-review-materials",
+        "--backlog-id", "todo-task-quality",
+        "--checklist-id", "checklist-task-quality",
+        "--output-dir", str(output_dir),
+        "--json",
+      ],
+      cwd=self.tmpdir,
+    )
+
+    assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+    data = json.loads(result.stdout)
+    materials = yaml.safe_load(Path(data["materials_path"]).read_text(encoding="utf-8"))
+    contract = materials["review_result_contract"]
+    self.assertEqual(contract["roles"], ["primary", "adversarial", "judgment"])
+    self.assertEqual(
+      contract["paths"],
+      {
+        "prompt_materials": str(output_dir / "review-materials.yaml"),
+        "review_run_dir": ".reviewcompass/evidence/task-quality-review-runs/run",
+        "prompts_dir": ".reviewcompass/evidence/task-quality-review-runs/run/prompts",
+        "raw_results_dir": ".reviewcompass/evidence/task-quality-review-runs/run/raw-results",
+        "normalized_results_dir": ".reviewcompass/evidence/task-quality-review-runs/run/normalized-results",
+        "triage_decision_path": ".reviewcompass/evidence/task-quality-review-runs/run/triage-decision.yaml",
+        "summary_path": ".reviewcompass/evidence/task-quality-review-runs/run/review-summary.yaml",
+      },
+    )
+    boundary = materials["decision_boundary"]
+    self.assertEqual(boundary["mechanical_gate"], "audit_result.verdict must be OK")
+    self.assertEqual(boundary["blocking_finding_levels"], ["critical", "major"])
+    self.assertTrue(boundary["review_output_does_not_authorize_changes"])
+    self.assertEqual(
+      boundary["accepted_when"],
+      [
+        "audit_result.verdict == OK",
+        "no unresolved critical/major findings",
+        "judgment role does not request changes",
+      ],
+    )
+
   def test_prepare_review_materials_fails_when_audit_has_deviation(self):
     self._write_todo_item()
     self._write_checklist([
