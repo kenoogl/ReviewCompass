@@ -224,6 +224,90 @@ class TaskQualityCheckCliTests(unittest.TestCase):
     self.assertEqual(data["quality"]["actual_count"], 4)
     self.assertEqual(data["quality"]["missing_item_ids"], [])
 
+  def test_audit_reports_missing_red_test_items_as_specific_deviation(self):
+    self._write_todo_item()
+    self._write_checklist([
+      {
+        "id": "TQG-1",
+        "title": "task-quality-check CLI の機械監査項目を追加する",
+        "status": "pending",
+      },
+      {
+        "id": "TQG-2",
+        "title": "checklist item の粒度と順序に関する機械ヒントを出す",
+        "status": "pending",
+      },
+      {
+        "id": "TQG-3",
+        "title": "メイン LLM preanalysis の材料 bundle を生成する",
+        "status": "pending",
+      },
+    ])
+
+    result = run_script(
+      [
+        "task-quality-check",
+        "audit",
+        "--backlog-id", "todo-task-quality",
+        "--checklist-id", "checklist-task-quality",
+        "--json",
+      ],
+      cwd=self.tmpdir,
+    )
+
+    assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 2, result.stdout + result.stderr)
+    data = json.loads(result.stdout)
+    self.assertEqual(data["verdict"], "DEVIATION")
+    self.assertIn("missing red test checklist items: TQG-RT-1", data["reasons"])
+    self.assertEqual(data["quality"]["missing_red_test_item_ids"], ["TQG-RT-1"])
+
+  def test_audit_warns_when_red_tests_are_after_implementation_items(self):
+    self._write_todo_item()
+    self._write_checklist([
+      {
+        "id": "TQG-1",
+        "title": "task-quality-check CLI の機械監査項目を追加する",
+        "status": "pending",
+      },
+      {
+        "id": "TQG-2",
+        "title": "checklist item の粒度と順序に関する機械ヒントを出す",
+        "status": "pending",
+      },
+      {
+        "id": "TQG-3",
+        "title": "メイン LLM preanalysis の材料 bundle を生成する",
+        "status": "pending",
+      },
+      {
+        "id": "TQG-RT-1",
+        "title": "空項目・重複・TODO 対応漏れを検出する",
+        "status": "pending",
+      },
+    ])
+
+    result = run_script(
+      [
+        "task-quality-check",
+        "audit",
+        "--backlog-id", "todo-task-quality",
+        "--checklist-id", "checklist-task-quality",
+        "--json",
+      ],
+      cwd=self.tmpdir,
+    )
+
+    assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+    data = json.loads(result.stdout)
+    self.assertEqual(data["verdict"], "OK")
+    self.assertIn(
+      "red test items appear after implementation items: TQG-RT-1",
+      data["warnings"],
+    )
+    self.assertEqual(data["quality"]["ordering_warning_item_ids"], ["TQG-RT-1"])
+
 
 if __name__ == "__main__":
   unittest.main()
