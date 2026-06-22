@@ -6201,6 +6201,100 @@ class CommitUnitIsolationTests(unittest.TestCase):
       data["current_state"]["commit_unit"]["codes"],
     )
 
+  def test_commit_unit_stage_adds_only_target_files_and_records_message(self):
+    """commit-unit stage は target_files だけを stage し message / rationale を固定する"""
+    target = Path(self.tmpdir) / "docs" / "target.md"
+    other = Path(self.tmpdir) / "docs" / "other.md"
+    target.parent.mkdir(parents=True, exist_ok=True)
+    target.write_text("target\n", encoding="utf-8")
+    other.write_text("other\n", encoding="utf-8")
+
+    result = run_script(
+      [
+        "commit-unit",
+        "stage",
+        "--work-unit-id", "unit-blocking-001",
+        "--target-file", "docs/target.md",
+        "--message", "Record target change",
+        "--rationale", "利用者が対象 TODO の実装を承認",
+        "--json",
+      ],
+      cwd=self.tmpdir,
+    )
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+    data = json.loads(result.stdout)
+    self.assertEqual(data["status"], "staged")
+    self.assertEqual(data["record"]["target_files"], ["docs/target.md"])
+    self.assertEqual(data["record"]["staged_files"], ["docs/target.md"])
+    self.assertEqual(data["record"]["message"], "Record target change")
+    self.assertEqual(data["record"]["rationale"], "利用者が対象 TODO の実装を承認")
+    staged = subprocess.run(
+      ["git", "diff", "--cached", "--name-only"],
+      cwd=str(self.tmpdir),
+      check=True,
+      capture_output=True,
+      text=True,
+    )
+    self.assertEqual(staged.stdout.splitlines(), ["docs/target.md"])
+
+  def test_commit_unit_suggest_builds_message_and_rationale_candidates(self):
+    """commit-unit suggest は checklist / backlog から短い候補を生成する"""
+    checklist = (
+      Path(self.tmpdir)
+      / ".reviewcompass"
+      / "evidence"
+      / "work-units"
+      / "checklists"
+      / "checklist-demo.yaml"
+    )
+    checklist.parent.mkdir(parents=True, exist_ok=True)
+    checklist.write_text(
+      "checklist_id: checklist-demo\n"
+      "source_backlog_item_id: todo-demo\n"
+      "completion_summary: commit unit target file staging を実装した\n",
+      encoding="utf-8",
+    )
+
+    result = run_script(
+      [
+        "commit-unit",
+        "suggest",
+        "--backlog-id", "todo-demo",
+        "--checklist-path", ".reviewcompass/evidence/work-units/checklists/checklist-demo.yaml",
+        "--json",
+      ],
+      cwd=self.tmpdir,
+    )
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+    data = json.loads(result.stdout)
+    self.assertEqual(data["verdict"], "OK")
+    self.assertEqual(data["message"], "Implement todo-demo")
+    self.assertIn("checklist-demo", data["rationale"])
+    self.assertIn("commit unit target file staging", data["rationale"])
+
+  def test_commit_unit_postcondition_reports_push_candidate(self):
+    """commit-unit postcondition は clean/head/ahead/push 候補を定型出力する"""
+    result = run_script(
+      [
+        "commit-unit",
+        "postcondition",
+        "--json",
+      ],
+      cwd=self.tmpdir,
+    )
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+    data = json.loads(result.stdout)
+    self.assertEqual(data["verdict"], "OK")
+    self.assertFalse(data["is_dirty"])
+    self.assertRegex(data["head_commit"], r"^[0-9a-f]{40}$")
+    self.assertIn("push_candidate", data)
+
 
 def _init_git_repo(tmpdir):
   """temp dir に git リポジトリを初期化し、初回コミットと .reviewcompass 構造を準備する
