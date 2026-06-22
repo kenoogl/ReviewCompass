@@ -15,6 +15,18 @@ KIND_DIRECTORIES = {
   "issue": "issues",
   "todo": "todos",
 }
+RESERVED_ITEM_FIELDS = {
+  "schema_version",
+  "id",
+  "kind",
+  "title",
+  "status",
+  "source_unit_id",
+  "created_at",
+  "index_path",
+  "provenance",
+  "decisions",
+}
 
 
 def _now_iso():
@@ -72,6 +84,21 @@ def _read_yaml(path, label):
   return data, []
 
 
+def _read_body_file(body_file):
+  if body_file is None:
+    return {}, []
+  data, reasons = _read_yaml(Path(body_file), "backlog body file")
+  if reasons:
+    return {}, reasons
+  reserved = sorted(RESERVED_ITEM_FIELDS.intersection(data))
+  if reserved:
+    return {}, [
+      "backlog body file は予約済み item fields を上書きできません: "
+      + ", ".join(reserved)
+    ]
+  return data, []
+
+
 def _read_index(cwd):
   path = _index_path(cwd)
   if not path.exists():
@@ -107,7 +134,7 @@ def _read_item_by_entry(cwd, entry):
   return item, []
 
 
-def _add(cwd, kind, item_id, title, source_unit_id, source_ref, reason):
+def _add(cwd, kind, item_id, title, source_unit_id, source_ref, reason, body_file=None):
   reasons = []
   if kind not in KIND_DIRECTORIES:
     reasons.append(f"invalid kind: {kind}")
@@ -121,6 +148,8 @@ def _add(cwd, kind, item_id, title, source_unit_id, source_ref, reason):
     reasons.append("source_ref が必要です")
   if not reason:
     reasons.append("reason が必要です")
+  body, body_reasons = _read_body_file(body_file)
+  reasons.extend(body_reasons)
   index, index_reasons = _read_index(cwd)
   reasons.extend(index_reasons)
   if _index_entry(index, item_id) is not None:
@@ -148,6 +177,7 @@ def _add(cwd, kind, item_id, title, source_unit_id, source_ref, reason):
     },
     "decisions": [],
   }
+  item.update(body)
   entry = {
     "id": item_id,
     "kind": kind,
@@ -163,8 +193,17 @@ def _add(cwd, kind, item_id, title, source_unit_id, source_ref, reason):
   return _result("OK", [], index=index, item=item, path=relative_path)
 
 
-def add_plan(cwd, item_id, title, source_unit_id, source_ref, reason):
-  return _add(cwd, "plan", item_id, title, source_unit_id, source_ref, reason)
+def add_plan(cwd, item_id, title, source_unit_id, source_ref, reason, body_file=None):
+  return _add(
+    cwd,
+    "plan",
+    item_id,
+    title,
+    source_unit_id,
+    source_ref,
+    reason,
+    body_file=body_file,
+  )
 
 
 def add_issue(cwd, item_id, title, source_unit_id, source_ref, reason):

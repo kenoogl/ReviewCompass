@@ -7918,6 +7918,7 @@ def cmd_work_backlog(args):
       args.source_unit_id,
       args.source_ref,
       args.reason,
+      body_file=args.body_file,
     )
   elif args.work_backlog_command == "add-issue":
     response = work_backlog.add_issue(
@@ -8603,6 +8604,11 @@ def main():
     wb_add.add_argument("--source-unit-id", required=True, help="発生元 work unit ID")
     wb_add.add_argument("--source-ref", required=True, help="発生根拠の参照")
     wb_add.add_argument("--reason", required=True, help="候補として保存する理由")
+    if command == "add-plan":
+      wb_add.add_argument(
+        "--body-file",
+        help="plan item に追加する詳細本文 YAML",
+      )
 
   wb_sub.add_parser(
     "list",
