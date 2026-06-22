@@ -34,6 +34,77 @@ class WorkBacklogCliTests(unittest.TestCase):
     self.tmpdir = Path(tempfile.mkdtemp())
     self.addCleanup(shutil.rmtree, self.tmpdir)
 
+  def _write_todo_item(self, item_id="todo-bridge", status="candidate"):
+    index_path = self.tmpdir / ".reviewcompass/backlog/index.yaml"
+    item_path = self.tmpdir / f".reviewcompass/backlog/todos/{item_id}.yaml"
+    index_path.parent.mkdir(parents=True, exist_ok=True)
+    item_path.parent.mkdir(parents=True, exist_ok=True)
+    index = {
+      "schema_version": "reviewcompass-backlog-index-v1",
+      "items": [
+        {
+          "id": item_id,
+          "kind": "todo",
+          "title": "Bridge backlog TODO to checklist",
+          "status": status,
+          "path": f".reviewcompass/backlog/todos/{item_id}.yaml",
+          "source_unit_id": "unit-test",
+          "created_at": "2026-06-22T00:00:00+00:00",
+        },
+      ],
+    }
+    item = {
+      "schema_version": "reviewcompass-backlog-item-v1",
+      "id": item_id,
+      "kind": "todo",
+      "title": "Bridge backlog TODO to checklist",
+      "status": status,
+      "source_unit_id": "unit-test",
+      "created_at": "2026-06-22T00:00:00+00:00",
+      "index_path": ".reviewcompass/backlog/index.yaml",
+      "provenance": {
+        "created_by": "llm",
+        "source_ref": "conversation:user",
+        "reason": "分断を検査する",
+      },
+      "implementation_plan": {
+        "phases": [
+          {
+            "id": "P1",
+            "title": "red tests",
+            "tasks": [
+              "TODO から checklist を生成する",
+              "close 後に backlog へ履歴を戻す",
+            ],
+          },
+        ],
+      },
+      "todos": {
+        "cli": [
+          {
+            "id": "BCB-3",
+            "title": "work-backlog start-checklist 導線を追加する",
+            "status": "candidate",
+          },
+        ],
+      },
+      "red_tests": [
+        {
+          "id": "BCB-RT-1",
+          "title": "backlog TODO から checklist を生成する",
+        },
+      ],
+    }
+    index_path.write_text(
+      yaml.safe_dump(index, allow_unicode=True, sort_keys=False),
+      encoding="utf-8",
+    )
+    item_path.write_text(
+      yaml.safe_dump(item, allow_unicode=True, sort_keys=False),
+      encoding="utf-8",
+    )
+    return item_path
+
   def test_add_plan_creates_index_and_item_yaml(self):
     result = run_script(
       [
@@ -288,6 +359,120 @@ class WorkBacklogCliTests(unittest.TestCase):
       [(item["id"], item["status"]) for item in index["items"]],
       [("plan-promote", "promoted"), ("todo-reject", "rejected")],
     )
+
+  def test_start_checklist_generates_runtime_checklist_from_backlog_todo(self):
+    self._write_todo_item()
+
+    result = run_script(
+      [
+        "work-backlog",
+        "start-checklist",
+        "--id", "todo-bridge",
+        "--checklist-id", "checklist-bridge",
+        "--unit-id", "unit-test",
+        "--json",
+      ],
+      cwd=self.tmpdir,
+    )
+
+    assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+    data = json.loads(result.stdout)
+    self.assertEqual(data["verdict"], "OK")
+    checklist_path = (
+      self.tmpdir
+      / ".reviewcompass/runtime/work-units/checklists/checklist-bridge.yaml"
+    )
+    checklist = yaml.safe_load(checklist_path.read_text(encoding="utf-8"))
+    self.assertEqual(checklist["source_backlog_item_id"], "todo-bridge")
+    self.assertEqual(
+      checklist["source_backlog_path"],
+      ".reviewcompass/backlog/todos/todo-bridge.yaml",
+    )
+    self.assertEqual(
+      [(item["id"], item["title"], item["status"]) for item in checklist["items"]],
+      [
+        ("P1-1", "TODO から checklist を生成する", "pending"),
+        ("P1-2", "close 後に backlog へ履歴を戻す", "pending"),
+        ("BCB-3", "work-backlog start-checklist 導線を追加する", "pending"),
+        ("BCB-RT-1", "backlog TODO から checklist を生成する", "pending"),
+      ],
+    )
+
+  def test_checklist_close_records_evidence_back_to_source_backlog_todo(self):
+    self._write_todo_item()
+    start = run_script(
+      [
+        "work-backlog",
+        "start-checklist",
+        "--id", "todo-bridge",
+        "--checklist-id", "checklist-bridge",
+        "--unit-id", "unit-test",
+        "--json",
+      ],
+      cwd=self.tmpdir,
+    )
+    self.assertEqual(start.returncode, 0, start.stdout + start.stderr)
+    for item_id in ("P1-1", "P1-2", "BCB-3", "BCB-RT-1"):
+      result = run_script(
+        [
+          "work-checklist",
+          "set-status",
+          "--checklist-id", "checklist-bridge",
+          "--item-id", item_id,
+          "--status", "done",
+          "--json",
+        ],
+        cwd=self.tmpdir,
+      )
+      self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+
+    result = run_script(
+      [
+        "work-checklist",
+        "close",
+        "--checklist-id", "checklist-bridge",
+        "--completion-summary", "bridge checklist completed",
+        "--json",
+      ],
+      cwd=self.tmpdir,
+    )
+
+    assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+    item = yaml.safe_load(
+      (
+        self.tmpdir
+        / ".reviewcompass/backlog/todos/todo-bridge.yaml"
+      ).read_text(encoding="utf-8")
+    )
+    self.assertEqual(item["execution_history"][-1]["checklist_id"], "checklist-bridge")
+    self.assertEqual(
+      item["execution_history"][-1]["evidence_path"],
+      ".reviewcompass/evidence/work-units/checklists/checklist-bridge.yaml",
+    )
+    self.assertEqual(
+      item["execution_history"][-1]["completion_summary"],
+      "bridge checklist completed",
+    )
+
+  def test_audit_checklist_bridge_rejects_promoted_todo_without_runtime_or_evidence(self):
+    self._write_todo_item(status="promoted")
+
+    result = run_script(
+      [
+        "work-backlog",
+        "audit-checklist-bridge",
+        "--json",
+      ],
+      cwd=self.tmpdir,
+    )
+
+    assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 2, result.stdout + result.stderr)
+    data = json.loads(result.stdout)
+    self.assertEqual(data["verdict"], "DEVIATION")
+    self.assertIn("todo-bridge", data["reasons"][0])
 
 
 if __name__ == "__main__":
