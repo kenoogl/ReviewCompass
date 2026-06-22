@@ -1,0 +1,19 @@
+unit_id: unit-2026-06-22-work-checklist-backlog-mechanism
+kind: blocking
+parent_unit_id: unit-post-write-prompt-mechanization-stash
+title: Implement work checklist and backlog workflow connection
+reason: The checklist/backlog mechanism must connect to workflow execution so ad-hoc
+  work follows the user's intended structured progression
+status: completed
+entered_at: '2026-06-22T02:05:53.040226+00:00'
+return_conditions:
+- deploy policy red tests committed
+- work checklist red tests committed
+- backlog red tests committed
+- workflow visibility connection implemented and committed
+- pushed
+exited_at: '2026-06-22T02:44:33.677084+00:00'
+completion_summary: Implemented and pushed deploy policy, work checklist CLI, work
+  backlog CLI, and workflow snapshot visibility for checklist/backlog workflow connection
+returned_to:
+  unit_id: unit-post-write-prompt-mechanization-stash
