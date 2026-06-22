@@ -318,6 +318,28 @@ def _require_target_digest(value, label):
   return value
 
 
+def approval_source_relay(cwd, source_text, target_digest=None):
+  """ユーザ発話を TTY 入力として relay した証跡を作る。"""
+  normalized = normalize_execution_delegation_instruction(source_text)
+  current = canonical_target(cwd)
+  digest = target_digest or {
+    "algorithm": CANONICAL_DIGEST_ALGORITHM,
+    "digest": current["digest"],
+  }
+  return {
+    "schema_version": 1,
+    "source_kind": "user_turn_relay",
+    "source_text_redacted": normalized,
+    "relay_from_user_turn": True,
+    "relayed_by": "llm",
+    "target_digest": digest,
+    "target_files": [
+      entry["path"]
+      for entry in current["target"]["entries"]
+    ],
+  }
+
+
 def _atomic_write_json(path, data):
   path.parent.mkdir(parents=True, exist_ok=True)
   tmp_path = path.with_name(path.name + ".tmp")
@@ -413,7 +435,7 @@ def _validate_ready_for_delegation(cwd, nonce):
   return challenge, approval
 
 
-def delegate_execution(cwd, nonce, source_text):
+def delegate_execution(cwd, nonce, source_text, approval_source=None):
   """commit 実行代行承認を commit-approval とは別レコードに保存する。"""
   normalized_instruction = normalize_execution_delegation_instruction(source_text)
   redacted, source_omission_reason, findings = _redact_source(normalized_instruction)
@@ -442,6 +464,14 @@ def delegate_execution(cwd, nonce, source_text):
 
   current = canonical_target(cwd)
   now = utc_now()
+  source_record = approval_source or approval_source_relay(
+    cwd,
+    source_text,
+    {
+      "algorithm": CANONICAL_DIGEST_ALGORITHM,
+      "digest": current["digest"],
+    },
+  )
   record_data = {
     "schema_version": 1,
     "approved_action": "commit_execution_delegation",
@@ -463,6 +493,7 @@ def delegate_execution(cwd, nonce, source_text):
     "instruction_sha256": hashlib.sha256(
       redacted.encode("utf-8")
     ).hexdigest(),
+    "approval_source": source_record,
     "attestation_type": EXECUTION_DELEGATION_ATTESTATION_TYPE,
     "guarantee_scope": EXECUTION_DELEGATION_GUARANTEE_SCOPE,
     "consumed": False,
@@ -492,7 +523,7 @@ def delegate_execution(cwd, nonce, source_text):
   }
 
 
-def record(cwd, nonce, source_text=None, no_source_text=False):
+def record(cwd, nonce, source_text=None, no_source_text=False, approval_source=None):
   """challenge nonce に対応する承認レコードを保存する。"""
   challenge = _load_json_object(challenge_path(cwd), "commit approval challenge")
   if challenge.get("nonce") != nonce:
@@ -579,6 +610,8 @@ def record(cwd, nonce, source_text=None, no_source_text=False):
     "consumed": False,
     "invalidated": False,
   }
+  if approval_source is not None:
+    approval["approval_source"] = approval_source
   if source_omission_reason is not None:
     approval["source_omission_reason"] = source_omission_reason
   if redacted_source is not None:
@@ -764,6 +797,7 @@ def validate_execution_delegation(cwd, approval):
     "expires_at",
     "explicit_instruction",
     "instruction_sha256",
+    "approval_source",
     "attestation_type",
     "guarantee_scope",
     "consumed",

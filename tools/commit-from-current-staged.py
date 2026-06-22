@@ -79,8 +79,19 @@ def _record_approval_pair(cwd, nonce, source_bytes):
     source_text = source_bytes.decode("utf-8")
   except UnicodeDecodeError as e:
     raise ValueError(f"承認文は UTF-8 である必要があります: {e}") from e
-  commit_approval.record(cwd, nonce, source_text=source_text)
-  commit_approval.delegate_execution(cwd, nonce, source_bytes)
+  approval_source = commit_approval.approval_source_relay(cwd, source_text)
+  commit_approval.record(
+    cwd,
+    nonce,
+    source_text=source_text,
+    approval_source=approval_source,
+  )
+  commit_approval.delegate_execution(
+    cwd,
+    nonce,
+    source_bytes,
+    approval_source=approval_source,
+  )
 
 
 def _run_guarded_commit(cwd, args):
