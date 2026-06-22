@@ -446,6 +446,114 @@ class WorkBacklogCliTests(unittest.TestCase):
       ],
     )
 
+  def test_start_checklist_generates_items_from_top_level_tasks(self):
+    item_path = self._write_todo_item(item_id="todo-tasks")
+    item = yaml.safe_load(item_path.read_text(encoding="utf-8"))
+    item.pop("implementation_plan")
+    item.pop("todos")
+    item.pop("red_tests")
+    item["tasks"] = [
+      {
+        "id": "T1",
+        "title": "top-level task を checklist item にする",
+        "status": "candidate",
+      },
+      {
+        "id": "T2",
+        "title": "二つ目の task も保持する",
+        "status": "candidate",
+      },
+    ]
+    item_path.write_text(
+      yaml.safe_dump(item, allow_unicode=True, sort_keys=False),
+      encoding="utf-8",
+    )
+
+    result = run_script(
+      [
+        "work-backlog",
+        "start-checklist",
+        "--id", "todo-tasks",
+        "--checklist-id", "checklist-tasks",
+        "--unit-id", "unit-test",
+        "--json",
+      ],
+      cwd=self.tmpdir,
+    )
+
+    assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+    checklist = yaml.safe_load(
+      (
+        self.tmpdir
+        / ".reviewcompass/runtime/work-units/checklists/checklist-tasks.yaml"
+      ).read_text(encoding="utf-8")
+    )
+    self.assertEqual(
+      [(item["id"], item["title"]) for item in checklist["items"]],
+      [
+        ("T1", "top-level task を checklist item にする"),
+        ("T2", "二つ目の task も保持する"),
+      ],
+    )
+
+  def test_checklist_close_marks_top_level_tasks_done(self):
+    item_path = self._write_todo_item(item_id="todo-tasks")
+    item = yaml.safe_load(item_path.read_text(encoding="utf-8"))
+    item.pop("implementation_plan")
+    item.pop("todos")
+    item.pop("red_tests")
+    item["tasks"] = [
+      {
+        "id": "T1",
+        "title": "top-level task を完了に戻す",
+        "status": "candidate",
+      },
+    ]
+    item_path.write_text(
+      yaml.safe_dump(item, allow_unicode=True, sort_keys=False),
+      encoding="utf-8",
+    )
+    start = run_script(
+      [
+        "work-backlog",
+        "start-checklist",
+        "--id", "todo-tasks",
+        "--checklist-id", "checklist-tasks",
+        "--unit-id", "unit-test",
+        "--json",
+      ],
+      cwd=self.tmpdir,
+    )
+    self.assertEqual(start.returncode, 0, start.stdout + start.stderr)
+    done = run_script(
+      [
+        "work-checklist",
+        "set-status",
+        "--checklist-id", "checklist-tasks",
+        "--item-id", "T1",
+        "--status", "done",
+        "--json",
+      ],
+      cwd=self.tmpdir,
+    )
+    self.assertEqual(done.returncode, 0, done.stdout + done.stderr)
+
+    closed = run_script(
+      [
+        "work-checklist",
+        "close",
+        "--checklist-id", "checklist-tasks",
+        "--completion-summary", "top-level tasks complete",
+        "--json",
+      ],
+      cwd=self.tmpdir,
+    )
+
+    self.assertEqual(closed.returncode, 0, closed.stdout + closed.stderr)
+    completed = yaml.safe_load(item_path.read_text(encoding="utf-8"))
+    self.assertEqual(completed["tasks"][0]["status"], "done")
+
   def test_checklist_close_records_evidence_back_to_source_backlog_todo(self):
     self._write_todo_item()
     start = run_script(

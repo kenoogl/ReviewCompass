@@ -8266,6 +8266,31 @@ def cmd_work_checklist(args):
       args.checklist_id,
       args.completion_summary,
     )
+  elif args.work_checklist_command == "audit-runtime-completed":
+    response = work_checklist.audit_runtime_completed(
+      Path.cwd(),
+      repair=args.repair,
+    )
+  elif args.work_checklist_command == "normalize":
+    response = work_checklist.normalize(
+      Path.cwd(),
+      args.checklist_id,
+      location=args.location,
+      write=args.write,
+    )
+  elif args.work_checklist_command == "audit-duplicates":
+    response = work_checklist.audit_duplicates(Path.cwd())
+  elif args.work_checklist_command == "audit-close-postcondition":
+    response = work_checklist.audit_close_postcondition(
+      Path.cwd(),
+      args.checklist_id,
+    )
+  elif args.work_checklist_command == "audit-reflection":
+    response = work_checklist.audit_reflection(
+      Path.cwd(),
+      backlog_id=args.backlog_id,
+      reference=args.reference,
+    )
   else:
     return 2
 
@@ -9075,6 +9100,56 @@ def main():
   )
   wc_close.add_argument("--checklist-id", required=True, help="完了する checklist ID")
   wc_close.add_argument("--completion-summary", default=None, help="完了内容の要約")
+
+  wc_audit_runtime = wc_sub.add_parser(
+    "audit-runtime-completed",
+    help="runtime に残った completed checklist を監査する",
+    parents=[common_parser],
+  )
+  wc_audit_runtime.add_argument(
+    "--repair",
+    action="store_true",
+    help="completed runtime checklist を evidence へ移動して runtime から削除する",
+  )
+
+  wc_normalize = wc_sub.add_parser(
+    "normalize",
+    help="checklist の checked / progress を再計算する",
+    parents=[common_parser],
+  )
+  wc_normalize.add_argument("--checklist-id", required=True, help="対象 checklist ID")
+  wc_normalize.add_argument(
+    "--location",
+    choices=["runtime", "evidence"],
+    default="runtime",
+    help="対象 checklist の配置",
+  )
+  wc_normalize.add_argument(
+    "--write",
+    action="store_true",
+    help="dry-run ではなく正規化結果を書き戻す",
+  )
+
+  wc_sub.add_parser(
+    "audit-duplicates",
+    help="runtime と evidence の checklist 重複を監査する",
+    parents=[common_parser],
+  )
+
+  wc_postcondition = wc_sub.add_parser(
+    "audit-close-postcondition",
+    help="checklist close 後の runtime/evidence postcondition を監査する",
+    parents=[common_parser],
+  )
+  wc_postcondition.add_argument("--checklist-id", required=True, help="対象 checklist ID")
+
+  wc_reflection = wc_sub.add_parser(
+    "audit-reflection",
+    help="checklist 変更の backlog / reference 反映を監査する",
+    parents=[common_parser],
+  )
+  wc_reflection.add_argument("--backlog-id", default=None, help="対象 backlog item ID")
+  wc_reflection.add_argument("--reference", default=None, help="反映先または根拠 reference")
 
   wb = sub.add_parser(
     "work-backlog",

@@ -1,0 +1,16 @@
+unit_id: unit-2026-06-23-checklist-repair-audit-mechanization
+kind: blocking
+parent_unit_id: main-completed
+title: Mechanize checklist repair and consistency audits
+reason: ユーザが .reviewcompass/backlog/todos/todo-2026-06-22-checklist-repair-audit-mechanization.yaml
+  の実装を明示したため
+status: completed
+entered_at: '2026-06-22T15:43:26.585570+00:00'
+return_conditions:
+- 指定 TODO の CRAM-1..CRAM-5 を実装・検証し、checklist close と blocking unit evidence を残す
+- 完了後に parent unit main-completed へ resume する
+exited_at: '2026-06-22T15:50:56.160928+00:00'
+completion_summary: checklist repair/audit mechanization implemented; CRAM-1..CRAM-5
+  completed and verified
+returned_to:
+  unit_id: main-completed

@@ -529,6 +529,295 @@ class WorkChecklistCliTests(unittest.TestCase):
     })
     self.assertEqual(evidence["items"][0]["checked"], True)
 
+  def test_audit_runtime_completed_reports_and_repairs_completed_runtime_checklist(self):
+    runtime_path = (
+      self.tmpdir
+      / ".reviewcompass/runtime/work-units/checklists/checklist-completed.yaml"
+    )
+    runtime_path.parent.mkdir(parents=True)
+    runtime_path.write_text(
+      yaml.safe_dump(
+        {
+          "schema_version": "work-checklist-v1",
+          "checklist_id": "checklist-completed",
+          "unit_id": "unit-test",
+          "title": "Completed checklist",
+          "status": "completed",
+          "created_at": "2026-06-22T00:00:00+00:00",
+          "completed_at": "2026-06-22T00:05:00+00:00",
+          "completion_summary": "already complete",
+          "provenance": {
+            "created_by": "llm",
+            "source_ref": "conversation:user",
+            "reason": "runtime completed audit",
+          },
+          "items": [
+            {
+              "id": "C1",
+              "title": "done",
+              "status": "done",
+              "checked": True,
+              "child_checklist_id": None,
+            },
+          ],
+        },
+        allow_unicode=True,
+        sort_keys=False,
+      ),
+      encoding="utf-8",
+    )
+
+    audit = run_script(
+      ["work-checklist", "audit-runtime-completed", "--json"],
+      cwd=self.tmpdir,
+    )
+    self.assertEqual(audit.returncode, 2, audit.stdout + audit.stderr)
+    self.assertIn("completed runtime checklist", audit.stdout)
+
+    repaired = run_script(
+      ["work-checklist", "audit-runtime-completed", "--repair", "--json"],
+      cwd=self.tmpdir,
+    )
+
+    assert_script_invoked(self, repaired)
+    self.assertEqual(repaired.returncode, 0, repaired.stdout + repaired.stderr)
+    self.assertFalse(runtime_path.exists())
+    evidence_path = (
+      self.tmpdir
+      / ".reviewcompass/evidence/work-units/checklists/checklist-completed.yaml"
+    )
+    self.assertTrue(evidence_path.exists())
+
+  def test_normalize_checklist_reports_dry_run_and_writes_when_requested(self):
+    checklist_path = (
+      self.tmpdir
+      / ".reviewcompass/runtime/work-units/checklists/checklist-legacy.yaml"
+    )
+    checklist_path.parent.mkdir(parents=True)
+    checklist_path.write_text(
+      yaml.safe_dump(
+        {
+          "schema_version": "work-checklist-v1",
+          "checklist_id": "checklist-legacy",
+          "unit_id": "unit-test",
+          "title": "Legacy checklist",
+          "status": "active",
+          "created_at": "2026-06-22T00:00:00+00:00",
+          "provenance": {
+            "created_by": "llm",
+            "source_ref": "conversation:user",
+            "reason": "normalize audit",
+          },
+          "items": [
+            {
+              "id": "C1",
+              "title": "done",
+              "status": "done",
+              "child_checklist_id": None,
+            },
+          ],
+        },
+        allow_unicode=True,
+        sort_keys=False,
+      ),
+      encoding="utf-8",
+    )
+
+    dry_run = run_script(
+      [
+        "work-checklist",
+        "normalize",
+        "--checklist-id", "checklist-legacy",
+        "--json",
+      ],
+      cwd=self.tmpdir,
+    )
+    self.assertEqual(dry_run.returncode, 0, dry_run.stdout + dry_run.stderr)
+    data = json.loads(dry_run.stdout)
+    self.assertTrue(data["changed"])
+    self.assertTrue(data["dry_run"])
+    unchanged = yaml.safe_load(checklist_path.read_text(encoding="utf-8"))
+    self.assertNotIn("progress", unchanged)
+
+    written = run_script(
+      [
+        "work-checklist",
+        "normalize",
+        "--checklist-id", "checklist-legacy",
+        "--write",
+        "--json",
+      ],
+      cwd=self.tmpdir,
+    )
+
+    assert_script_invoked(self, written)
+    self.assertEqual(written.returncode, 0, written.stdout + written.stderr)
+    normalized = yaml.safe_load(checklist_path.read_text(encoding="utf-8"))
+    self.assertEqual(normalized["progress"]["done"], 1)
+    self.assertTrue(normalized["items"][0]["checked"])
+
+  def test_audit_duplicates_reports_runtime_and_evidence_overlap(self):
+    runtime_path = (
+      self.tmpdir
+      / ".reviewcompass/runtime/work-units/checklists/checklist-dup.yaml"
+    )
+    evidence_path = (
+      self.tmpdir
+      / ".reviewcompass/evidence/work-units/checklists/checklist-dup.yaml"
+    )
+    for path, status in [(runtime_path, "active"), (evidence_path, "completed")]:
+      path.parent.mkdir(parents=True, exist_ok=True)
+      path.write_text(
+        yaml.safe_dump(
+          {
+            "schema_version": "work-checklist-v1",
+            "checklist_id": "checklist-dup",
+            "unit_id": "unit-test",
+            "title": "Duplicate checklist",
+            "status": status,
+            "created_at": "2026-06-22T00:00:00+00:00",
+            "provenance": {
+              "created_by": "llm",
+              "source_ref": "conversation:user",
+              "reason": "duplicate audit",
+            },
+            "items": [],
+          },
+          allow_unicode=True,
+          sort_keys=False,
+        ),
+        encoding="utf-8",
+      )
+
+    result = run_script(
+      ["work-checklist", "audit-duplicates", "--json"],
+      cwd=self.tmpdir,
+    )
+
+    assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 2, result.stdout + result.stderr)
+    data = json.loads(result.stdout)
+    self.assertEqual(data["duplicates"][0]["checklist_id"], "checklist-dup")
+    self.assertIn("active", data["reasons"][0])
+
+  def test_audit_close_postcondition_checks_evidence_and_runtime_state(self):
+    evidence_path = (
+      self.tmpdir
+      / ".reviewcompass/evidence/work-units/checklists/checklist-done.yaml"
+    )
+    evidence_path.parent.mkdir(parents=True)
+    evidence_path.write_text(
+      yaml.safe_dump(
+        {
+          "schema_version": "work-checklist-v1",
+          "checklist_id": "checklist-done",
+          "unit_id": "unit-test",
+          "title": "Closed checklist",
+          "status": "completed",
+          "created_at": "2026-06-22T00:00:00+00:00",
+          "completed_at": "2026-06-22T00:05:00+00:00",
+          "completion_summary": "closed",
+          "provenance": {
+            "created_by": "llm",
+            "source_ref": "conversation:user",
+            "reason": "postcondition audit",
+          },
+          "items": [
+            {
+              "id": "C1",
+              "title": "done",
+              "status": "done",
+              "checked": True,
+              "child_checklist_id": None,
+            },
+          ],
+          "progress": {
+            "total": 1,
+            "done": 1,
+            "active": 0,
+            "pending": 0,
+            "blocked": 0,
+            "active_item_ids": [],
+            "blocked_item_ids": [],
+          },
+        },
+        allow_unicode=True,
+        sort_keys=False,
+      ),
+      encoding="utf-8",
+    )
+
+    ok = run_script(
+      [
+        "work-checklist",
+        "audit-close-postcondition",
+        "--checklist-id", "checklist-done",
+        "--json",
+      ],
+      cwd=self.tmpdir,
+    )
+    self.assertEqual(ok.returncode, 0, ok.stdout + ok.stderr)
+
+    runtime_path = (
+      self.tmpdir
+      / ".reviewcompass/runtime/work-units/checklists/checklist-done.yaml"
+    )
+    runtime_path.parent.mkdir(parents=True)
+    runtime_path.write_text(evidence_path.read_text(encoding="utf-8"), encoding="utf-8")
+    failed = run_script(
+      [
+        "work-checklist",
+        "audit-close-postcondition",
+        "--checklist-id", "checklist-done",
+        "--json",
+      ],
+      cwd=self.tmpdir,
+    )
+    self.assertEqual(failed.returncode, 2, failed.stdout + failed.stderr)
+    self.assertIn("runtime checklist still exists", failed.stdout)
+
+  def test_audit_reflection_requires_backlog_item_and_reference(self):
+    missing = run_script(
+      ["work-checklist", "audit-reflection", "--json"],
+      cwd=self.tmpdir,
+    )
+    self.assertEqual(missing.returncode, 2, missing.stdout + missing.stderr)
+    self.assertIn("backlog_id が必要です", missing.stdout)
+
+    item_path = self.tmpdir / ".reviewcompass/backlog/todos/todo-reflect.yaml"
+    item_path.parent.mkdir(parents=True)
+    item_path.write_text(
+      yaml.safe_dump(
+        {
+          "schema_version": "reviewcompass-backlog-item-v1",
+          "id": "todo-reflect",
+          "kind": "todo",
+          "title": "Reflect checklist change",
+          "status": "candidate",
+        },
+        allow_unicode=True,
+        sort_keys=False,
+      ),
+      encoding="utf-8",
+    )
+    reference = self.tmpdir / "docs/notes/checklist-change.md"
+    reference.parent.mkdir(parents=True)
+    reference.write_text("checklist change reflected\n", encoding="utf-8")
+
+    ok = run_script(
+      [
+        "work-checklist",
+        "audit-reflection",
+        "--backlog-id", "todo-reflect",
+        "--reference", "docs/notes/checklist-change.md",
+        "--json",
+      ],
+      cwd=self.tmpdir,
+    )
+
+    assert_script_invoked(self, ok)
+    self.assertEqual(ok.returncode, 0, ok.stdout + ok.stderr)
+
 
 if __name__ == "__main__":
   unittest.main()

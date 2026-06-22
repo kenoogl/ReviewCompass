@@ -1,5 +1,6 @@
 """Work checklist helpers for per-unit execution lists."""
 
+from copy import deepcopy
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -64,8 +65,12 @@ def _write_yaml(path, data):
 
 def _read_checklist(cwd, checklist_id):
   path = _checklist_path(cwd, checklist_id)
+  return _read_checklist_file(path)
+
+
+def _read_checklist_file(path):
   if not path.exists():
-    return None, [f"checklist not found: {checklist_id}"]
+    return None, [f"checklist not found: {path}"]
   try:
     data = yaml.safe_load(path.read_text(encoding="utf-8"))
   except (OSError, UnicodeDecodeError, yaml.YAMLError) as exc:
@@ -77,6 +82,13 @@ def _read_checklist(cwd, checklist_id):
   if not isinstance(data.get("items"), list):
     return None, ["items は list である必要があります"]
   return data, []
+
+
+def _relative_path(cwd, path):
+  try:
+    return str(path.relative_to(Path(cwd)))
+  except ValueError:
+    return str(path)
 
 
 def _find_item(checklist, item_id):
@@ -235,6 +247,183 @@ def show(cwd, checklist_id):
   )
   response["progress"] = checklist["progress"]
   response["display_lines"] = _display_lines(checklist)
+  return response
+
+
+def _iter_checklists(cwd, directory):
+  root = Path(cwd) / directory
+  if not root.exists():
+    return []
+  return sorted(root.glob("*.yaml"))
+
+
+def audit_runtime_completed(cwd, repair=False):
+  findings = []
+  repaired = []
+  reasons = []
+  for path in _iter_checklists(cwd, DEFAULT_CHECKLIST_DIR):
+    checklist, checklist_reasons = _read_checklist_file(path)
+    if checklist_reasons:
+      reasons.extend(checklist_reasons)
+      continue
+    if checklist.get("status") != "completed":
+      continue
+    checklist_id = checklist.get("checklist_id") or path.stem
+    evidence_path = _evidence_path(cwd, checklist_id)
+    finding = {
+      "checklist_id": checklist_id,
+      "runtime_path": _relative_path(cwd, path),
+      "evidence_path": _relative_path(cwd, evidence_path),
+    }
+    findings.append(finding)
+    if repair:
+      _write_yaml(evidence_path, _normalize_checklist(checklist))
+      path.unlink()
+      repaired.append(finding)
+  if reasons:
+    return _result("DEVIATION", reasons)
+  if findings and not repair:
+    return {
+      "verdict": "DEVIATION",
+      "reasons": [
+        "completed runtime checklist found: " + finding["checklist_id"]
+        for finding in findings
+      ],
+      "findings": findings,
+    }
+  return {
+    "verdict": "OK",
+    "reasons": [],
+    "findings": findings,
+    "repaired": repaired,
+  }
+
+
+def normalize(cwd, checklist_id, location="runtime", write=False):
+  if location == "runtime":
+    path = _checklist_path(cwd, checklist_id)
+  elif location == "evidence":
+    path = _evidence_path(cwd, checklist_id)
+  else:
+    return _result("DEVIATION", [f"invalid location: {location}"])
+  checklist, reasons = _read_checklist_file(path)
+  if reasons:
+    return _result("DEVIATION", reasons)
+
+  normalized = _normalize_checklist(deepcopy(checklist))
+  changed = normalized != checklist
+  if write and changed:
+    _write_yaml(path, normalized)
+  response = _result(
+    "OK",
+    [],
+    checklist=normalized,
+    path=_relative_path(cwd, path),
+  )
+  response["changed"] = changed
+  response["dry_run"] = not write
+  return response
+
+
+def audit_duplicates(cwd):
+  runtime_by_id = {}
+  evidence_by_id = {}
+  reasons = []
+  for path in _iter_checklists(cwd, DEFAULT_CHECKLIST_DIR):
+    checklist, checklist_reasons = _read_checklist_file(path)
+    if checklist_reasons:
+      reasons.extend(checklist_reasons)
+      continue
+    runtime_by_id[checklist.get("checklist_id") or path.stem] = (path, checklist)
+  for path in _iter_checklists(cwd, DEFAULT_CHECKLIST_EVIDENCE_DIR):
+    checklist, checklist_reasons = _read_checklist_file(path)
+    if checklist_reasons:
+      reasons.extend(checklist_reasons)
+      continue
+    evidence_by_id[checklist.get("checklist_id") or path.stem] = (path, checklist)
+
+  duplicates = []
+  for checklist_id in sorted(set(runtime_by_id).intersection(evidence_by_id)):
+    runtime_path, runtime_checklist = runtime_by_id[checklist_id]
+    evidence_path, evidence_checklist = evidence_by_id[checklist_id]
+    duplicate = {
+      "checklist_id": checklist_id,
+      "runtime_path": _relative_path(cwd, runtime_path),
+      "runtime_status": runtime_checklist.get("status"),
+      "evidence_path": _relative_path(cwd, evidence_path),
+      "evidence_status": evidence_checklist.get("status"),
+    }
+    duplicates.append(duplicate)
+    if runtime_checklist.get("status") == "completed":
+      reasons.append(
+        f"completed runtime checklist duplicates evidence: {checklist_id}"
+      )
+    else:
+      reasons.append(
+        f"active runtime checklist duplicates evidence: {checklist_id}"
+      )
+  return {
+    "verdict": "DEVIATION" if reasons else "OK",
+    "reasons": reasons,
+    "duplicates": duplicates,
+  }
+
+
+def audit_close_postcondition(cwd, checklist_id):
+  runtime_path = _checklist_path(cwd, checklist_id)
+  evidence_path = _evidence_path(cwd, checklist_id)
+  reasons = []
+  if runtime_path.exists():
+    reasons.append(f"runtime checklist still exists: {_relative_path(cwd, runtime_path)}")
+  checklist, checklist_reasons = _read_checklist_file(evidence_path)
+  if checklist_reasons:
+    reasons.extend(checklist_reasons)
+    return _result("DEVIATION", reasons)
+  if checklist.get("status") != "completed":
+    reasons.append("evidence checklist status must be completed")
+  for key in ("completed_at", "completion_summary", "progress"):
+    if key not in checklist:
+      reasons.append(f"evidence checklist missing {key}")
+  for item in checklist.get("items", []):
+    if isinstance(item, dict) and "checked" not in item:
+      reasons.append(f"evidence checklist item missing checked: {item.get('id')}")
+  return _result(
+    "DEVIATION" if reasons else "OK",
+    reasons,
+    checklist=checklist,
+    evidence_path=_relative_path(cwd, evidence_path),
+  )
+
+
+def _find_backlog_item_path(cwd, backlog_id):
+  root = Path(cwd) / DEFAULT_BACKLOG_ROOT
+  for directory in ("plans", "issues", "todos"):
+    path = root / directory / f"{backlog_id}.yaml"
+    if path.exists():
+      return path
+  return None
+
+
+def audit_reflection(cwd, backlog_id=None, reference=None):
+  reasons = []
+  if not backlog_id:
+    reasons.append("backlog_id が必要です")
+  if not reference:
+    reasons.append("reference が必要です")
+  backlog_path = _find_backlog_item_path(cwd, backlog_id) if backlog_id else None
+  if backlog_id and backlog_path is None:
+    reasons.append(f"backlog item not found: {backlog_id}")
+  reference_path = Path(cwd) / reference if reference else None
+  if reference and not reference_path.exists():
+    reasons.append(f"reference not found: {reference}")
+  response = {
+    "verdict": "DEVIATION" if reasons else "OK",
+    "reasons": reasons,
+  }
+  if backlog_path is not None:
+    response["backlog_path"] = _relative_path(cwd, backlog_path)
+  if reference_path is not None:
+    response["reference"] = _relative_path(cwd, reference_path)
   return response
 
 
@@ -398,6 +587,10 @@ def _completed_backlog_index(cwd, source_id, source_path):
 
 
 def _mark_matching_backlog_items_done(backlog_item, done_item_ids):
+  for task in backlog_item.get("tasks", []):
+    if isinstance(task, dict) and task.get("id") in done_item_ids:
+      task["status"] = "done"
+
   todos = backlog_item.get("todos")
   if isinstance(todos, dict):
     for entries in todos.values():

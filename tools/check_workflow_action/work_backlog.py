@@ -259,6 +259,18 @@ def _select_single_promoted_todo(cwd):
 
 def _checklist_items_from_backlog_item(item):
   generated = []
+  for index, task in enumerate(item.get("tasks", []), start=1):
+    if isinstance(task, str):
+      generated.append({
+        "id": f"T-{index}",
+        "title": task,
+      })
+    elif isinstance(task, dict) and task.get("title"):
+      generated.append({
+        "id": task.get("id") or f"T-{index}",
+        "title": task["title"],
+      })
+
   for phase in item.get("implementation_plan", {}).get("phases", []):
     if not isinstance(phase, dict):
       continue
