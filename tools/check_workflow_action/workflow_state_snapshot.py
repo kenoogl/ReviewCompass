@@ -9,6 +9,7 @@ from pathlib import Path
 import yaml
 
 from .side_track_stack import DEFAULT_SIDE_TRACK_STACK_PATH, current as current_side_track_stack
+from .work_unit_stack import DEFAULT_WORK_UNIT_STACK_PATH, current as current_work_unit_stack
 
 
 def _json_digest(value):
@@ -184,6 +185,8 @@ def build_snapshot(cwd):
   cwd = Path(cwd)
   specs = _load_specs(cwd)
   current_work = _select_current_work(specs)
+  work_unit_result = current_work_unit_stack(cwd)
+  active_work_units = work_unit_result.get("stack", {}).get("frames", [])
   side_track_result = current_side_track_stack(cwd / DEFAULT_SIDE_TRACK_STACK_PATH)
   active_side_tracks = side_track_result.get("stack", {}).get("frames", [])
   git_tree_summary = _git_tree_summary(cwd)
@@ -199,6 +202,7 @@ def build_snapshot(cwd):
     "generated_at": datetime.now(timezone.utc).isoformat(),
     "source_next_action_sha256": _json_digest(next_action_source),
     "current_work": current_work,
+    "active_work_units": active_work_units,
     "active_side_tracks": active_side_tracks,
     "git_tree_summary": git_tree_summary,
     "post_write_manifest_summary": _post_write_manifest_summary(cwd),

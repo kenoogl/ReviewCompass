@@ -20,6 +20,7 @@ MINIMUM_TOP_LEVEL = [
   "generated_at",
   "source_next_action_sha256",
   "current_work",
+  "active_work_units",
   "active_side_tracks",
   "git_tree_summary",
   "post_write_manifest_summary",
@@ -66,6 +67,32 @@ class WorkflowStateSnapshotTests(unittest.TestCase):
     self.assertIn("operation_contract", summary)
     self.assertIn("staged_file_set_digest", snapshot["git_tree_summary"])
     self.assertIn("worktree_dirty_path_digest", snapshot["git_tree_summary"])
+
+  def test_workflow_snapshot_includes_active_work_unit_stack(self):
+    module = self._module()
+    with tempfile.TemporaryDirectory() as tmp:
+      stack = {
+        "schema_version": "work-unit-stack-v1",
+        "frames": [
+          {
+            "unit_id": "unit-blocking-test",
+            "kind": "blocking",
+            "parent_unit_id": "unit-parent-test",
+            "title": "mechanize declarations",
+            "reason": "manual declarations are easy to forget",
+            "status": "active",
+            "entered_at": "2026-06-22T00:00:00+00:00",
+            "return_conditions": ["exit command tested"],
+          },
+        ],
+      }
+      path = Path(tmp) / ".reviewcompass/runtime/work-units/stack.yaml"
+      path.parent.mkdir(parents=True)
+      path.write_text(yaml.safe_dump(stack, allow_unicode=True), encoding="utf-8")
+
+      snapshot = module.build_snapshot(Path(tmp))
+
+      self.assertEqual(snapshot["active_work_units"], stack["frames"])
 
   def test_snapshot_drift_reports_pending_gate_change(self):
     module = self._module()

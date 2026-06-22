@@ -48,7 +48,7 @@ from check_workflow_action.runtime_paths import (
   resolve_commit_approval_path,
   resolve_effective_prompt_read_path,
 )
-from check_workflow_action import approval_gate, commit_approval, commit_unit
+from check_workflow_action import approval_gate, commit_approval, commit_unit, work_unit_stack
 from check_workflow_action.implementation_phases import check_phase_plan, load_plan
 from check_workflow_action.operation_preflight import run_preflight
 from check_workflow_action.operation_contracts import load_contracts, run_contract_check
@@ -6312,6 +6312,39 @@ def cmd_next(args):
   """next サブコマンドのエントリポイント"""
   global FEATURE_ORDER
   cwd = Path.cwd()
+  active_work_unit_state = work_unit_stack.current(cwd)
+  active_work_units = active_work_unit_state.get("stack", {}).get("frames", [])
+  active_work_unit = active_work_unit_state.get("current")
+  if isinstance(active_work_unit, dict):
+    next_action = {
+      "kind": "blocking_unit_in_progress",
+      "required_action": "continue_or_exit_blocking_unit",
+      "unit_id": active_work_unit.get("unit_id"),
+      "parent_unit_id": active_work_unit.get("parent_unit_id"),
+      "title": active_work_unit.get("title"),
+      "reason": active_work_unit.get("reason"),
+      "return_conditions": active_work_unit.get("return_conditions") or [],
+      "feature": None,
+      "phase": None,
+      "stage": None,
+    }
+    current_state = {
+      "active_work_units": active_work_units,
+    }
+    reasons = []
+    verdict, exit_code = "OK", 0
+    next_action = attach_required_context(cwd, next_action)
+    if args.json:
+      print(format_next_json_output(verdict, exit_code, next_action, reasons, current_state))
+    else:
+      print(format_next_human_output(verdict, exit_code, next_action, reasons, current_state))
+    action_dict = {"subcommand": "next", "args": {}}
+    log_path = args.log_path if args.log_path else DEFAULT_LOG_PATH
+    try:
+      append_log(log_path, action_dict, verdict, exit_code, reasons, current_state)
+    except OSError as e:
+      print(f"warning: ログ書き込みに失敗しました（処理は続行）: {e}", file=sys.stderr)
+    return exit_code
   feature_resolution = resolve_feature_order(cwd)
   if feature_resolution["feature_order"] is not None:
     FEATURE_ORDER = feature_resolution["feature_order"]
@@ -7783,6 +7816,42 @@ def cmd_commit_unit(args):
   return 0 if response.get("verdict") == "OK" or response.get("status") == "frozen" else 2
 
 
+def cmd_work_unit(args):
+  """work unit の enter/current/exit を実行する"""
+  if args.work_unit_command == "enter-blocking":
+    response = work_unit_stack.enter_blocking(
+      Path.cwd(),
+      args.unit_id,
+      args.parent_unit_id,
+      args.title,
+      args.reason,
+      args.return_condition,
+    )
+  elif args.work_unit_command == "current":
+    response = work_unit_stack.current(Path.cwd())
+  elif args.work_unit_command == "exit-blocking":
+    response = work_unit_stack.exit_blocking(
+      Path.cwd(),
+      args.unit_id,
+      args.completion_summary,
+    )
+  else:
+    return 2
+
+  if args.json:
+    print(json.dumps(response, ensure_ascii=False, indent=2))
+  else:
+    print(f"[VERDICT] {response.get('verdict')}")
+    for reason in response.get("reasons", []):
+      print(f"[REASON] {reason}")
+    current = response.get("current")
+    if isinstance(current, dict):
+      print(f"[CURRENT] {current.get('unit_id')} {current.get('title')}")
+    else:
+      print("[CURRENT] none")
+  return 0 if response.get("verdict") == "OK" else 2
+
+
 def cmd_prompt_audit(args):
   """prompt-audit サブコマンドのエントリポイント（Req 15）"""
   action_dict = {
@@ -8295,6 +8364,42 @@ def main():
     parents=[common_parser],
   )
 
+  wu = sub.add_parser(
+    "work-unit",
+    help="work unit stack の blocking unit 出入りを記録する",
+  )
+  wu_sub = wu.add_subparsers(
+    dest="work_unit_command",
+    required=True,
+  )
+  wu_enter = wu_sub.add_parser(
+    "enter-blocking",
+    help="blocking unit に入る宣言を runtime stack へ記録する",
+    parents=[common_parser],
+  )
+  wu_enter.add_argument("--unit-id", required=True, help="開始する blocking unit ID")
+  wu_enter.add_argument("--parent-unit-id", required=True, help="戻り先の parent unit ID")
+  wu_enter.add_argument("--title", required=True, help="blocking unit の題名")
+  wu_enter.add_argument("--reason", required=True, help="blocking unit に入る理由")
+  wu_enter.add_argument(
+    "--return-condition",
+    action="append",
+    default=[],
+    help="戻る条件。複数指定可",
+  )
+  wu_sub.add_parser(
+    "current",
+    help="現在の work unit stack を読む",
+    parents=[common_parser],
+  )
+  wu_exit = wu_sub.add_parser(
+    "exit-blocking",
+    help="blocking unit を終了し evidence snapshot を残す",
+    parents=[common_parser],
+  )
+  wu_exit.add_argument("--unit-id", required=True, help="終了する blocking unit ID")
+  wu_exit.add_argument("--completion-summary", required=True, help="完了内容の要約")
+
   pa = sub.add_parser(
     "prompt-audit",
     help="effective prompt manifest を read-only で監査する（Req 15）",
@@ -8443,6 +8548,8 @@ def main():
     sys.exit(cmd_side_track_stack(args))
   elif args.subcommand == "commit-unit":
     sys.exit(cmd_commit_unit(args))
+  elif args.subcommand == "work-unit":
+    sys.exit(cmd_work_unit(args))
   elif args.subcommand == "prompt-audit":
     sys.exit(cmd_prompt_audit(args))
   elif args.subcommand == "implementation-phase-check":
