@@ -2783,6 +2783,30 @@ def validate_commit_unit_record(cwd):
   state = commit_unit.check(cwd)
   state["exists"] = True
   state["path"] = commit_unit.DEFAULT_COMMIT_UNIT_PATH
+  active_state = work_unit_stack.current(cwd)
+  active_unit = active_state.get("current")
+  record = state.get("record") if isinstance(state.get("record"), dict) else {}
+  record_work_unit_id = record.get("work_unit_id")
+  active_work_unit_id = (
+    active_unit.get("unit_id") if isinstance(active_unit, dict) else None
+  )
+  state.setdefault("current_state", {})
+  state["current_state"]["active_work_unit_id"] = active_work_unit_id
+  state["current_state"]["record_work_unit_id"] = record_work_unit_id
+  if (
+    active_work_unit_id
+    and record_work_unit_id
+    and active_work_unit_id != record_work_unit_id
+  ):
+    codes = state.setdefault("codes", [])
+    reasons = state.setdefault("reasons", [])
+    if "WORK_UNIT_COMMIT_UNIT_MISMATCH" not in codes:
+      codes.append("WORK_UNIT_COMMIT_UNIT_MISMATCH")
+    reasons.append(
+      "active work unit と commit unit の work_unit_id が一致しません: "
+      f"active={active_work_unit_id}, commit_unit={record_work_unit_id}"
+    )
+    state["verdict"] = "DEVIATION"
   if state.get("verdict") == "DEVIATION":
     codes = ", ".join(state.get("codes") or [])
     return state, [f"commit unit が現在の staged 内容と一致しません: {codes}"]
