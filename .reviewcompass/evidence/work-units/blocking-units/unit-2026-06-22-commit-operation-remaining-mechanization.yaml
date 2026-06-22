@@ -1,0 +1,15 @@
+unit_id: unit-2026-06-22-commit-operation-remaining-mechanization
+kind: blocking
+parent_unit_id: main-completed
+title: Commit operation remaining mechanization
+reason: ユーザ承認に基づき backlog TODO を blocking unit として実装する
+status: completed
+entered_at: '2026-06-22T09:44:22.871115+00:00'
+return_conditions:
+- todo-2026-06-22-commit-operation-remaining-mechanization の実装と検証が完了している
+- 作業差分がコミットされ、必要なら push できる状態になっている
+exited_at: '2026-06-22T09:52:16.284742+00:00'
+completion_summary: commit operation remaining mechanization TODO の実装、検証、checklist
+  evidence 化、backlog completed 反映を完了
+returned_to:
+  unit_id: main-completed

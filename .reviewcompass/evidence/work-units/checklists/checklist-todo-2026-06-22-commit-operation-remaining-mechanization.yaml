@@ -1,0 +1,104 @@
+schema_version: work-checklist-v1
+checklist_id: checklist-todo-2026-06-22-commit-operation-remaining-mechanization
+unit_id: unit-2026-06-22-commit-operation-remaining-mechanization
+title: Mechanize remaining commit operation manual steps
+status: completed
+created_at: '2026-06-22T09:44:33.429018+00:00'
+provenance:
+  created_by: llm
+  source_ref: .reviewcompass/backlog/todos/todo-2026-06-22-commit-operation-remaining-mechanization.yaml
+  reason: backlog TODO から runtime checklist を機械生成する
+items:
+- id: COR-1
+  title: commit unit に target_files を持たせる
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: COR-2
+  title: commit unit から staged digest を検査する
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: COR-3
+  title: commit unit から git add を実行する導線を追加する
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: COR-4
+  title: checklist completion summary から commit message 候補を生成する
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: COR-5
+  title: backlog TODO / checklist / work unit から rationale 候補を生成する
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: COR-6
+  title: message / rationale の最終入力契約を固定する
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: COR-7
+  title: commit 失敗時の要約を定型化する
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: COR-8
+  title: commit 成功後の postcondition check を標準化する
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: COR-9
+  title: push 候補を機械判定する
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: COR-10
+  title: 利用者の commit 承認発話の扱いを固定する
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: COR-11
+  title: TTY 承認入力の上位 wrapper 化可否を検討する
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: COR-RT-1
+  title: commit unit target_files だけが stage される red test を追加する
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: COR-RT-2
+  title: commit unit と staged digest の不一致を fail-closed する red test を追加する
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: COR-RT-3
+  title: message / rationale 候補生成の red test を追加する
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: COR-RT-4
+  title: commit 成功後 postcondition summary の red test を追加する
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: COR-RT-5
+  title: push 候補提示の red test を追加する
+  status: done
+  checked: true
+  child_checklist_id: null
+source_backlog_item_id: todo-2026-06-22-commit-operation-remaining-mechanization
+source_backlog_path: .reviewcompass/backlog/todos/todo-2026-06-22-commit-operation-remaining-mechanization.yaml
+progress:
+  total: 16
+  done: 16
+  active: 0
+  pending: 0
+  blocked: 0
+  active_item_ids: []
+  blocked_item_ids: []
+completed_at: '2026-06-22T09:52:05.954077+00:00'
+completion_summary: commit-unit stage/suggest/postcondition を追加し、target_files stage
+  固定、message/rationale 候補生成、postcondition/push 候補出力を機械化した。TTY 承認入力の上位 wrapper 化は利用者承認境界を保つため実装しない判断とした

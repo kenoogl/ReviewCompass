@@ -7891,15 +7891,31 @@ def cmd_side_track_stack(args):
 
 
 def cmd_commit_unit(args):
-  """commit unit の freeze / check を実行する"""
+  """commit unit の freeze / check / stage / suggest / postcondition を実行する"""
   if args.commit_unit_command == "freeze":
     response = commit_unit.freeze(
       Path.cwd(),
       args.work_unit_id,
       args.allowed_file,
     )
+  elif args.commit_unit_command == "stage":
+    response = commit_unit.stage(
+      Path.cwd(),
+      args.work_unit_id,
+      args.target_file,
+      args.message,
+      args.rationale,
+    )
   elif args.commit_unit_command == "check":
     response = commit_unit.check(Path.cwd())
+  elif args.commit_unit_command == "suggest":
+    response = commit_unit.suggest(
+      Path.cwd(),
+      args.backlog_id,
+      args.checklist_path,
+    )
+  elif args.commit_unit_command == "postcondition":
+    response = commit_unit.postcondition(Path.cwd())
   else:
     return 2
 
@@ -7910,7 +7926,7 @@ def cmd_commit_unit(args):
     print(f"[VERDICT] {verdict}")
     for reason in response.get("reasons", []):
       print(f"[REASON] {reason}")
-  return 0 if response.get("verdict") == "OK" or response.get("status") == "frozen" else 2
+  return 0 if response.get("verdict") == "OK" or response.get("status") in ("frozen", "staged") else 2
 
 
 def cmd_work_unit(args):
@@ -8654,9 +8670,35 @@ def main():
     default=[],
     help="この commit unit に含めてよいファイル。複数指定可",
   )
+  cu_stage = cu_sub.add_parser(
+    "stage",
+    help="target files だけを stage し commit unit として固定する",
+    parents=[common_parser],
+  )
+  cu_stage.add_argument("--work-unit-id", required=True, help="紐づける work unit ID")
+  cu_stage.add_argument(
+    "--target-file",
+    action="append",
+    default=[],
+    help="この commit unit で stage するファイル。複数指定可",
+  )
+  cu_stage.add_argument("--message", required=True, help="commit message 候補")
+  cu_stage.add_argument("--rationale", required=True, help="commit rationale 候補")
   cu_sub.add_parser(
     "check",
     help="現在の staged exact index が frozen commit unit と一致するか検査する",
+    parents=[common_parser],
+  )
+  cu_suggest = cu_sub.add_parser(
+    "suggest",
+    help="backlog/checklist から commit message / rationale 候補を生成する",
+    parents=[common_parser],
+  )
+  cu_suggest.add_argument("--backlog-id", required=True, help="候補生成元の backlog TODO ID")
+  cu_suggest.add_argument("--checklist-path", required=True, help="候補生成元の checklist path")
+  cu_sub.add_parser(
+    "postcondition",
+    help="commit 後の clean/head/ahead/push 候補を定型出力する",
     parents=[common_parser],
   )
 
