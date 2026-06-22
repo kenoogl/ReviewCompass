@@ -1,0 +1,34 @@
+run_id: 2026-06-22-blocking-unit-allowed-files-postwrite
+phase: post_write_verification
+criteria_id: blocking_unit_allowed_files_guidance_post_write
+criteria_file: .reviewcompass/evidence/review-runs/2026-06-22-blocking-unit-allowed-files-postwrite/review-target.md
+criteria_file_sha256: 106e2ad03d9d66c9065c6030efe8122a629eaf433c6085a21cde7578de48c466
+prompt_manifest_path: .reviewcompass/evidence/review-runs/2026-06-22-blocking-unit-allowed-files-postwrite/prompt-manifest.yaml
+prompt_manifest_sha256: 85269376a8025edf68834934026379371f89ffd71cecd4210e11ff132f79eaba
+target_files:
+- path: .reviewcompass/guidance/WORKFLOW_NAVIGATION.md
+  sha256: af6e51485583025c7ae8efa6351fe943c1e3e6ebb7180c68554c99595fc2ebbf
+  content_mode: full_text
+  content_sha256: af6e51485583025c7ae8efa6351fe943c1e3e6ebb7180c68554c99595fc2ebbf
+source_materials:
+- path: .reviewcompass/guidance/API_REVIEW_PROMPT_QUALITY.md
+  sha256: 03a9b994c6b5fb4b99ebbbf169e48d76568c5b6190716bbe9e5e181844c9450d
+  content_mode: full_text
+  content_sha256: 03a9b994c6b5fb4b99ebbbf169e48d76568c5b6190716bbe9e5e181844c9450d
+- path: .reviewcompass/backlog/todos/todo-2026-06-22-blocking-unit-production-readiness.yaml
+  sha256: 423086c5a77567daa5359eca74b4e7594a585fcf69e6be987eebdfc0cb2bec8b
+  content_mode: full_text
+  content_sha256: 423086c5a77567daa5359eca74b4e7594a585fcf69e6be987eebdfc0cb2bec8b
+sensitive_information_check:
+  status: passed
+  checked_at: '2026-06-22T13:12:45.763398+00:00'
+recommended_run_review_args:
+  criteria_file: .reviewcompass/evidence/review-runs/2026-06-22-blocking-unit-allowed-files-postwrite/review-target.md
+  phase: post_write_verification
+  prompt_manifest_path: .reviewcompass/evidence/review-runs/2026-06-22-blocking-unit-allowed-files-postwrite/prompt-manifest.yaml
+unit_binding:
+  work_unit_id: unit-2026-06-22-blocking-unit-production-readiness
+  commit_unit_id: commit-unit-20260622T130827Z
+  staged_digest:
+    algorithm: commit-unit-v1
+    digest: 1f9bd9d579ae12aa593ec4749479bac80ce36adeefeb5dc9d15935f8bf4c5574
