@@ -8,6 +8,7 @@ import yaml
 
 DEFAULT_CHECKLIST_DIR = ".reviewcompass/runtime/work-units/checklists"
 DEFAULT_CHECKLIST_EVIDENCE_DIR = ".reviewcompass/evidence/work-units/checklists"
+DEFAULT_BACKLOG_ROOT = ".reviewcompass/backlog"
 SCHEMA_VERSION = "work-checklist-v1"
 ALLOWED_ITEM_STATUSES = {"pending", "active", "done", "blocked"}
 STATUS_MARKERS = {
@@ -121,6 +122,16 @@ def _write_checklist(path, checklist):
   _write_yaml(path, _normalize_checklist(checklist))
 
 
+def _item_record(item_id, title):
+  return {
+    "id": item_id,
+    "title": title,
+    "status": "pending",
+    "checked": False,
+    "child_checklist_id": None,
+  }
+
+
 def _display_lines(checklist):
   lines = []
   for item in checklist.get("items", []):
@@ -132,6 +143,28 @@ def _display_lines(checklist):
 
 
 def start(cwd, checklist_id, unit_id, title, source_ref, reason):
+  return start_with_items(
+    cwd,
+    checklist_id,
+    unit_id,
+    title,
+    source_ref,
+    reason,
+    items=[],
+  )
+
+
+def start_with_items(
+  cwd,
+  checklist_id,
+  unit_id,
+  title,
+  source_ref,
+  reason,
+  items,
+  source_backlog_item_id=None,
+  source_backlog_path=None,
+):
   reasons = []
   if not checklist_id:
     reasons.append("checklist_id が必要です")
@@ -146,6 +179,14 @@ def start(cwd, checklist_id, unit_id, title, source_ref, reason):
   path = _checklist_path(cwd, checklist_id)
   if path.exists():
     reasons.append(f"checklist already exists: {checklist_id}")
+  for item in items:
+    if not isinstance(item, dict):
+      reasons.append("items は mapping の list である必要があります")
+      continue
+    if not item.get("id"):
+      reasons.append("item id が必要です")
+    if not item.get("title"):
+      reasons.append("item title が必要です")
   if reasons:
     return _result("DEVIATION", reasons)
 
@@ -161,8 +202,16 @@ def start(cwd, checklist_id, unit_id, title, source_ref, reason):
       "source_ref": source_ref,
       "reason": reason,
     },
-    "items": [],
+    "items": [
+      _item_record(item["id"], item["title"])
+      for item in items
+      if isinstance(item, dict)
+    ],
   }
+  if source_backlog_item_id is not None:
+    checklist["source_backlog_item_id"] = source_backlog_item_id
+  if source_backlog_path is not None:
+    checklist["source_backlog_path"] = source_backlog_path
   _write_checklist(path, checklist)
   return _result(
     "OK",
@@ -202,11 +251,7 @@ def add_item(cwd, checklist_id, item_id, title):
     return _result("DEVIATION", reasons, checklist=checklist)
 
   checklist["items"].append({
-    "id": item_id,
-    "title": title,
-    "status": "pending",
-    "checked": False,
-    "child_checklist_id": None,
+    **_item_record(item_id, title),
   })
   _write_checklist(_checklist_path(cwd, checklist_id), checklist)
   return _result(
@@ -288,12 +333,74 @@ def branch(cwd, checklist_id, item_id, child_checklist_id, child_title, source_r
   return response
 
 
+def _record_backlog_execution(cwd, checklist, evidence_path):
+  source_path = checklist.get("source_backlog_path")
+  source_id = checklist.get("source_backlog_item_id")
+  if not source_path or not source_id:
+    return []
+  backlog_path = Path(cwd) / source_path
+  if not str(source_path).startswith(DEFAULT_BACKLOG_ROOT + "/"):
+    return [f"source_backlog_path is outside backlog root: {source_path}"]
+  try:
+    item = yaml.safe_load(backlog_path.read_text(encoding="utf-8"))
+  except (OSError, UnicodeDecodeError, yaml.YAMLError) as exc:
+    return [f"source backlog item を読めません: {source_path}: {exc}"]
+  if not isinstance(item, dict):
+    return [f"source backlog item は mapping である必要があります: {source_path}"]
+  if item.get("id") != source_id:
+    return [f"source backlog item id mismatch: {source_id}"]
+
+  done_item_ids = {
+    checklist_item.get("id")
+    for checklist_item in checklist.get("items", [])
+    if isinstance(checklist_item, dict) and checklist_item.get("status") == "done"
+  }
+  _mark_matching_backlog_items_done(item, done_item_ids)
+  item.setdefault("execution_history", []).append({
+    "checklist_id": checklist["checklist_id"],
+    "evidence_path": str(evidence_path),
+    "completion_summary": checklist["completion_summary"],
+    "completed_at": checklist["completed_at"],
+  })
+  _write_yaml(backlog_path, item)
+  return []
+
+
+def _mark_matching_backlog_items_done(backlog_item, done_item_ids):
+  todos = backlog_item.get("todos")
+  if isinstance(todos, dict):
+    for entries in todos.values():
+      if not isinstance(entries, list):
+        continue
+      for entry in entries:
+        if isinstance(entry, dict) and entry.get("id") in done_item_ids:
+          entry["status"] = "done"
+
+  for red_test in backlog_item.get("red_tests", []):
+    if isinstance(red_test, dict) and red_test.get("id") in done_item_ids:
+      red_test["status"] = "done"
+
+  phases = backlog_item.get("implementation_plan", {}).get("phases", [])
+  for phase in phases:
+    if not isinstance(phase, dict):
+      continue
+    for task in phase.get("tasks", []):
+      if isinstance(task, dict) and task.get("id") in done_item_ids:
+        task["status"] = "done"
+
+
+def _completion_summary(checklist):
+  progress = _progress(checklist)
+  return (
+    f"{checklist['checklist_id']} completed "
+    f"{progress['done']}/{progress['total']} items"
+  )
+
+
 def close(cwd, checklist_id, completion_summary):
   checklist, reasons = _read_checklist(cwd, checklist_id)
   if reasons:
     return _result("DEVIATION", reasons)
-  if not completion_summary:
-    reasons.append("completion_summary が必要です")
   unfinished = [
     item.get("id")
     for item in checklist.get("items", [])
@@ -306,11 +413,16 @@ def close(cwd, checklist_id, completion_summary):
 
   checklist["status"] = "completed"
   checklist["completed_at"] = _now_iso()
+  if not completion_summary:
+    completion_summary = _completion_summary(checklist)
   checklist["completion_summary"] = completion_summary
   evidence_path = _evidence_path(cwd, checklist_id)
   runtime_path = _checklist_path(cwd, checklist_id)
   _normalize_checklist(checklist)
   _write_yaml(evidence_path, checklist)
+  reasons.extend(_record_backlog_execution(cwd, checklist, _relative_evidence_path(checklist_id)))
+  if reasons:
+    return _result("DEVIATION", reasons, checklist=checklist)
   runtime_path.unlink()
   return _result(
     "OK",

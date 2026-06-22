@@ -30,25 +30,25 @@ todos:
   design_contract:
   - id: BCB-1
     title: backlog TODO と checklist の責務境界を定義する
-    status: candidate
+    status: done
     detail: backlog TODO は計画候補、runtime checklist は実行中進捗、evidence checklist は完了証跡として扱う。
   - id: BCB-2
     title: TODO から checklist item を生成する入力規則を定義する
-    status: candidate
+    status: done
     detail: implementation_plan.phases / tasks、todos.*、red_tests のどれを item 化するかを機械的に決める。
   cli:
   - id: BCB-3
     title: work-backlog start-checklist 導線を追加する
-    status: candidate
+    status: done
     detail: backlog item id、checklist id、unit id を受け取り、source backlink つき runtime checklist を作成する。
   - id: BCB-4
     title: checklist close 後の backlog 反映を追加する
-    status: candidate
+    status: done
     detail: completed checklist の evidence path と completion summary を backlog TODO の実行履歴へ記録する。
   audit:
   - id: BCB-5
     title: TODO と checklist の分断を検出する
-    status: candidate
+    status: done
     detail: promoted または active 相当の TODO に対応する active checklist / evidence がない場合に DEVIATION を返す。
 red_tests:
 - id: BCB-RT-1
@@ -67,3 +67,44 @@ non_goals:
 notes:
 - commit operation efficiency とは独立した基盤課題として扱う。
 - 他の TODO 実施時にも使える共通導線として実装する。
+implementation_result:
+  implemented_at: '2026-06-22T15:30:00+09:00'
+  summary: >
+    work-backlog start-checklist で backlog TODO から runtime checklist を生成し、
+    work-checklist close 時に source backlink がある場合は backlog TODO の
+    execution_history へ evidence path と完了要約を戻す。さらに
+    work-backlog audit-checklist-bridge で promoted / active TODO と
+    checklist evidence の分断を検出する。checklist_id / unit_id は未指定時に
+    機械導出し、close 時に checklist item と一致する backlog TODO 内 item を
+    done に戻す。--id 未指定時は単一の promoted TODO を選択し、生成 checklist
+    の coverage を機械監査し、completion summary も定型生成する。
+  changed_components:
+  - tools/check-workflow-action.py
+  - tools/check_workflow_action/work_backlog.py
+  - tools/check_workflow_action/work_checklist.py
+  - tests/tools/test_work_backlog_cli.py
+  verification:
+  - command: python3 -m pytest tests/tools/test_work_backlog_cli.py -q
+    result: 15 passed
+  - command: python3 -m pytest tests/tools/test_work_checklist_cli.py -q
+    result: 7 passed
+  - command: python3 -m pytest tests/workflow-management/test_workflow_state_snapshot.py -q
+    result: 8 passed
+  - command: python3 -m pytest tests/tools/test_work_unit_cli.py -q
+    result: 9 passed
+  mechanized_non_llm_parts:
+  - --id 未指定時に単一の promoted TODO を実行対象として選択する
+  - promoted TODO が 0 件または複数件の場合は DEVIATION で停止する
+  - checklist_id を未指定時に checklist-{backlog_item_id} として導出する
+  - unit_id を未指定時に active work unit から導出し、なければ source_unit_id を使う
+  - 生成された checklist が backlog TODO の implementation_plan / todos / red_tests を coverage しているか監査する
+  - checklist close 時に source backlog TODO へ execution_history を記録する
+  - checklist close 時に checklist item id と一致する todos.* / red_tests item を done にする
+  - completion_summary 未指定時に完了件数から定型要約を生成する
+  remaining_llm_only_parts:
+  - ユーザが明示した TODO を採用するか、promoted TODO として扱うかの意味判断
+  - coverage 監査通過後、生成 checklist が作業目的に対して意味的に十分かのレビュー
+  optional_review_path:
+  - coverage 監査が OK の後、意味的十分性は 3者レビューに渡せる
+  - 3者レビュー用 prompt は、対象 TODO 原文、生成 checklist、coverage 結果、問いを分けて作成する
+  - API へ送る前に、認証情報・個人情報・不要な全文ログを含めないことを確認する

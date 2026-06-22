@@ -474,6 +474,295 @@ class WorkBacklogCliTests(unittest.TestCase):
     self.assertEqual(data["verdict"], "DEVIATION")
     self.assertIn("todo-bridge", data["reasons"][0])
 
+  def test_start_checklist_derives_ids_from_backlog_todo_and_active_unit(self):
+    self._write_todo_item()
+    stack_path = self.tmpdir / ".reviewcompass/runtime/work-units/stack.yaml"
+    stack_path.parent.mkdir(parents=True, exist_ok=True)
+    stack_path.write_text(
+      yaml.safe_dump(
+        {
+          "schema_version": "work-unit-stack-v1",
+          "frames": [
+            {
+              "unit_id": "unit-active",
+              "kind": "blocking",
+              "status": "active",
+              "title": "Active unit",
+            },
+          ],
+        },
+        allow_unicode=True,
+        sort_keys=False,
+      ),
+      encoding="utf-8",
+    )
+
+    result = run_script(
+      [
+        "work-backlog",
+        "start-checklist",
+        "--id", "todo-bridge",
+        "--json",
+      ],
+      cwd=self.tmpdir,
+    )
+
+    assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+    checklist = yaml.safe_load(
+      (
+        self.tmpdir
+        / ".reviewcompass/runtime/work-units/checklists/checklist-todo-bridge.yaml"
+      ).read_text(encoding="utf-8")
+    )
+    self.assertEqual(checklist["checklist_id"], "checklist-todo-bridge")
+    self.assertEqual(checklist["unit_id"], "unit-active")
+
+  def test_start_checklist_without_id_selects_single_promoted_todo(self):
+    self._write_todo_item(item_id="todo-promoted", status="promoted")
+
+    result = run_script(
+      [
+        "work-backlog",
+        "start-checklist",
+        "--json",
+      ],
+      cwd=self.tmpdir,
+    )
+
+    assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+    checklist = yaml.safe_load(
+      (
+        self.tmpdir
+        / ".reviewcompass/runtime/work-units/checklists/checklist-todo-promoted.yaml"
+      ).read_text(encoding="utf-8")
+    )
+    self.assertEqual(checklist["source_backlog_item_id"], "todo-promoted")
+
+  def test_start_checklist_without_id_rejects_multiple_promoted_todos(self):
+    first = self._write_todo_item(item_id="todo-one", status="promoted")
+    second = self.tmpdir / ".reviewcompass/backlog/todos/todo-two.yaml"
+    second.write_text(
+      first.read_text(encoding="utf-8")
+      .replace("todo-one", "todo-two")
+      .replace("Bridge backlog TODO to checklist", "Second promoted TODO"),
+      encoding="utf-8",
+    )
+    index = yaml.safe_load(
+      (self.tmpdir / ".reviewcompass/backlog/index.yaml").read_text(encoding="utf-8")
+    )
+    index["items"].append({
+      "id": "todo-two",
+      "kind": "todo",
+      "title": "Second promoted TODO",
+      "status": "promoted",
+      "path": ".reviewcompass/backlog/todos/todo-two.yaml",
+      "source_unit_id": "unit-test",
+      "created_at": "2026-06-22T00:00:00+00:00",
+    })
+    (self.tmpdir / ".reviewcompass/backlog/index.yaml").write_text(
+      yaml.safe_dump(index, allow_unicode=True, sort_keys=False),
+      encoding="utf-8",
+    )
+
+    result = run_script(
+      [
+        "work-backlog",
+        "start-checklist",
+        "--json",
+      ],
+      cwd=self.tmpdir,
+    )
+
+    assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 2, result.stdout + result.stderr)
+    data = json.loads(result.stdout)
+    self.assertIn("multiple promoted todo items", data["reasons"][0])
+
+  def test_checklist_close_marks_matching_backlog_todo_items_done(self):
+    self._write_todo_item()
+    start = run_script(
+      [
+        "work-backlog",
+        "start-checklist",
+        "--id", "todo-bridge",
+        "--checklist-id", "checklist-bridge",
+        "--unit-id", "unit-test",
+        "--json",
+      ],
+      cwd=self.tmpdir,
+    )
+    self.assertEqual(start.returncode, 0, start.stdout + start.stderr)
+    for item_id in ("P1-1", "P1-2", "BCB-3", "BCB-RT-1"):
+      result = run_script(
+        [
+          "work-checklist",
+          "set-status",
+          "--checklist-id", "checklist-bridge",
+          "--item-id", item_id,
+          "--status", "done",
+          "--json",
+        ],
+        cwd=self.tmpdir,
+      )
+      self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+
+    result = run_script(
+      [
+        "work-checklist",
+        "close",
+        "--checklist-id", "checklist-bridge",
+        "--completion-summary", "bridge checklist completed",
+        "--json",
+      ],
+      cwd=self.tmpdir,
+    )
+
+    self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+    item = yaml.safe_load(
+      (
+        self.tmpdir
+        / ".reviewcompass/backlog/todos/todo-bridge.yaml"
+      ).read_text(encoding="utf-8")
+    )
+    self.assertEqual(item["todos"]["cli"][0]["status"], "done")
+    self.assertEqual(item["red_tests"][0]["status"], "done")
+
+  def test_audit_checklist_coverage_rejects_missing_generated_items(self):
+    self._write_todo_item()
+    checklist_dir = self.tmpdir / ".reviewcompass/runtime/work-units/checklists"
+    checklist_dir.mkdir(parents=True, exist_ok=True)
+    (checklist_dir / "checklist-bridge.yaml").write_text(
+      yaml.safe_dump(
+        {
+          "schema_version": "work-checklist-v1",
+          "checklist_id": "checklist-bridge",
+          "unit_id": "unit-test",
+          "title": "Bridge backlog TODO to checklist",
+          "status": "active",
+          "created_at": "2026-06-22T00:00:00+00:00",
+          "source_backlog_item_id": "todo-bridge",
+          "source_backlog_path": ".reviewcompass/backlog/todos/todo-bridge.yaml",
+          "provenance": {
+            "created_by": "llm",
+            "source_ref": ".reviewcompass/backlog/todos/todo-bridge.yaml",
+            "reason": "coverage test",
+          },
+          "items": [
+            {
+              "id": "P1-1",
+              "title": "TODO から checklist を生成する",
+              "status": "pending",
+            },
+          ],
+        },
+        allow_unicode=True,
+        sort_keys=False,
+      ),
+      encoding="utf-8",
+    )
+
+    result = run_script(
+      [
+        "work-backlog",
+        "audit-checklist-coverage",
+        "--id", "todo-bridge",
+        "--checklist-id", "checklist-bridge",
+        "--json",
+      ],
+      cwd=self.tmpdir,
+    )
+
+    assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 2, result.stdout + result.stderr)
+    data = json.loads(result.stdout)
+    self.assertEqual(data["verdict"], "DEVIATION")
+    self.assertIn("missing checklist items", data["reasons"][0])
+
+  def test_audit_checklist_coverage_accepts_generated_checklist(self):
+    self._write_todo_item()
+    start = run_script(
+      [
+        "work-backlog",
+        "start-checklist",
+        "--id", "todo-bridge",
+        "--checklist-id", "checklist-bridge",
+        "--unit-id", "unit-test",
+        "--json",
+      ],
+      cwd=self.tmpdir,
+    )
+    self.assertEqual(start.returncode, 0, start.stdout + start.stderr)
+
+    result = run_script(
+      [
+        "work-backlog",
+        "audit-checklist-coverage",
+        "--id", "todo-bridge",
+        "--checklist-id", "checklist-bridge",
+        "--json",
+      ],
+      cwd=self.tmpdir,
+    )
+
+    assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+    data = json.loads(result.stdout)
+    self.assertEqual(data["coverage"]["expected_count"], 4)
+    self.assertEqual(data["coverage"]["missing_item_ids"], [])
+
+  def test_checklist_close_generates_completion_summary_when_omitted(self):
+    self._write_todo_item()
+    start = run_script(
+      [
+        "work-backlog",
+        "start-checklist",
+        "--id", "todo-bridge",
+        "--checklist-id", "checklist-bridge",
+        "--unit-id", "unit-test",
+        "--json",
+      ],
+      cwd=self.tmpdir,
+    )
+    self.assertEqual(start.returncode, 0, start.stdout + start.stderr)
+    for item_id in ("P1-1", "P1-2", "BCB-3", "BCB-RT-1"):
+      result = run_script(
+        [
+          "work-checklist",
+          "set-status",
+          "--checklist-id", "checklist-bridge",
+          "--item-id", item_id,
+          "--status", "done",
+          "--json",
+        ],
+        cwd=self.tmpdir,
+      )
+      self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+
+    result = run_script(
+      [
+        "work-checklist",
+        "close",
+        "--checklist-id", "checklist-bridge",
+        "--json",
+      ],
+      cwd=self.tmpdir,
+    )
+
+    assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+    evidence = yaml.safe_load(
+      (
+        self.tmpdir
+        / ".reviewcompass/evidence/work-units/checklists/checklist-bridge.yaml"
+      ).read_text(encoding="utf-8")
+    )
+    self.assertEqual(
+      evidence["completion_summary"],
+      "checklist-bridge completed 4/4 items",
+    )
+
 
 if __name__ == "__main__":
   unittest.main()

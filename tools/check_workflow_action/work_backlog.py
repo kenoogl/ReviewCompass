@@ -5,9 +5,13 @@ from pathlib import Path
 
 import yaml
 
+from check_workflow_action import work_checklist, work_unit_stack
+
 
 DEFAULT_BACKLOG_INDEX_PATH = ".reviewcompass/backlog/index.yaml"
 BACKLOG_ROOT = ".reviewcompass/backlog"
+CHECKLIST_RUNTIME_DIR = ".reviewcompass/runtime/work-units/checklists"
+CHECKLIST_EVIDENCE_DIR = ".reviewcompass/evidence/work-units/checklists"
 INDEX_SCHEMA_VERSION = "reviewcompass-backlog-index-v1"
 ITEM_SCHEMA_VERSION = "reviewcompass-backlog-item-v1"
 KIND_DIRECTORIES = {
@@ -230,6 +234,226 @@ def show(cwd, item_id):
   if item_reasons:
     return _result("DEVIATION", item_reasons, index=index)
   return _result("OK", [], index=index, item=item, path=entry["path"])
+
+
+def _select_single_promoted_todo(cwd):
+  index, reasons = _read_index(cwd)
+  if reasons:
+    return None, _result("DEVIATION", reasons, index=index)
+  promoted = [
+    entry
+    for entry in index.get("items", [])
+    if (
+      isinstance(entry, dict)
+      and entry.get("kind") == "todo"
+      and entry.get("status") == "promoted"
+    )
+  ]
+  if len(promoted) == 1:
+    return promoted[0]["id"], None
+  if not promoted:
+    return None, _result("DEVIATION", ["no promoted todo item found"], index=index)
+  ids = ", ".join(entry.get("id", "<unknown>") for entry in promoted)
+  return None, _result("DEVIATION", [f"multiple promoted todo items: {ids}"], index=index)
+
+
+def _checklist_items_from_backlog_item(item):
+  generated = []
+  for phase in item.get("implementation_plan", {}).get("phases", []):
+    if not isinstance(phase, dict):
+      continue
+    phase_id = phase.get("id")
+    if not phase_id:
+      continue
+    for index, task in enumerate(phase.get("tasks", []), start=1):
+      if isinstance(task, str):
+        generated.append({
+          "id": f"{phase_id}-{index}",
+          "title": task,
+        })
+      elif isinstance(task, dict) and task.get("title"):
+        generated.append({
+          "id": task.get("id") or f"{phase_id}-{index}",
+          "title": task["title"],
+        })
+
+  todos = item.get("todos", {})
+  if isinstance(todos, dict):
+    for entries in todos.values():
+      if not isinstance(entries, list):
+        continue
+      for entry in entries:
+        if isinstance(entry, dict) and entry.get("id") and entry.get("title"):
+          generated.append({
+            "id": entry["id"],
+            "title": entry["title"],
+          })
+
+  for red_test in item.get("red_tests", []):
+    if isinstance(red_test, dict) and red_test.get("id") and red_test.get("title"):
+      generated.append({
+        "id": red_test["id"],
+        "title": red_test["title"],
+      })
+  return generated
+
+
+def _default_checklist_id(item_id):
+  return f"checklist-{item_id}"
+
+
+def _active_or_source_unit_id(cwd, item):
+  current = work_unit_stack.current(cwd)
+  if current.get("verdict") == "OK" and isinstance(current.get("current"), dict):
+    unit_id = current["current"].get("unit_id")
+    if unit_id:
+      return unit_id
+  return item.get("source_unit_id")
+
+
+def start_checklist(cwd, item_id, checklist_id, unit_id):
+  if not item_id:
+    item_id, selection_result = _select_single_promoted_todo(cwd)
+    if selection_result is not None:
+      return selection_result
+  shown = show(cwd, item_id)
+  if shown["verdict"] != "OK":
+    return shown
+  item = shown["item"]
+  if item.get("kind") != "todo":
+    return _result("DEVIATION", [f"backlog item は todo である必要があります: {item_id}"])
+
+  checklist_items = _checklist_items_from_backlog_item(item)
+  if not checklist_items:
+    return _result("DEVIATION", [f"checklist item に変換できる項目がありません: {item_id}"])
+
+  if not checklist_id:
+    checklist_id = _default_checklist_id(item_id)
+  if not unit_id:
+    unit_id = _active_or_source_unit_id(cwd, item)
+
+  response = work_checklist.start_with_items(
+    cwd,
+    checklist_id,
+    unit_id,
+    item.get("title") or item_id,
+    shown["path"],
+    "backlog TODO から runtime checklist を機械生成する",
+    checklist_items,
+    source_backlog_item_id=item_id,
+    source_backlog_path=shown["path"],
+  )
+  response["index"] = shown["index"]
+  response["item"] = item
+  return response
+
+
+def _find_checklist(cwd, item_id, checklist_id=None):
+  for directory in (CHECKLIST_RUNTIME_DIR, CHECKLIST_EVIDENCE_DIR):
+    root = Path(cwd) / directory
+    if not root.exists():
+      continue
+    if checklist_id:
+      path = root / f"{checklist_id}.yaml"
+      if path.exists():
+        checklist, reasons = _read_yaml(path, "checklist")
+        if reasons:
+          return None, None, reasons
+        return checklist, path, []
+      continue
+    for path in sorted(root.glob("*.yaml")):
+      checklist, reasons = _read_yaml(path, "checklist")
+      if reasons:
+        continue
+      if checklist.get("source_backlog_item_id") == item_id:
+        return checklist, path, []
+  return None, None, [f"checklist not found for backlog item: {item_id}"]
+
+
+def audit_checklist_coverage(cwd, item_id, checklist_id=None):
+  if not item_id:
+    item_id, selection_result = _select_single_promoted_todo(cwd)
+    if selection_result is not None:
+      return selection_result
+  shown = show(cwd, item_id)
+  if shown["verdict"] != "OK":
+    return shown
+  expected = _checklist_items_from_backlog_item(shown["item"])
+  checklist, path, reasons = _find_checklist(cwd, item_id, checklist_id)
+  if reasons:
+    return _result("DEVIATION", reasons, index=shown["index"], item=shown["item"])
+
+  expected_ids = [item["id"] for item in expected]
+  actual_ids = [
+    item.get("id")
+    for item in checklist.get("items", [])
+    if isinstance(item, dict)
+  ]
+  missing = [item_id for item_id in expected_ids if item_id not in actual_ids]
+  extra = [item_id for item_id in actual_ids if item_id not in expected_ids]
+  reasons = []
+  if missing:
+    reasons.append("missing checklist items: " + ", ".join(missing))
+  response = _result(
+    "DEVIATION" if reasons else "OK",
+    reasons,
+    index=shown["index"],
+    item=shown["item"],
+    path=str(path.relative_to(Path(cwd))),
+  )
+  response["coverage"] = {
+    "expected_count": len(expected_ids),
+    "actual_count": len(actual_ids),
+    "missing_item_ids": missing,
+    "extra_item_ids": extra,
+    "semantic_review": {
+      "triad_review_applicable": True,
+      "reason": "機械的 coverage が OK の後、意味的十分性は 3者レビューで確認できる",
+    },
+  }
+  return response
+
+
+def _checklist_has_source(path, item_id):
+  checklist, reasons = _read_yaml(path, "checklist")
+  if reasons:
+    return False
+  return checklist.get("source_backlog_item_id") == item_id
+
+
+def _has_runtime_or_evidence_checklist(cwd, item_id):
+  for directory in (CHECKLIST_RUNTIME_DIR, CHECKLIST_EVIDENCE_DIR):
+    root = Path(cwd) / directory
+    if not root.exists():
+      continue
+    for path in sorted(root.glob("*.yaml")):
+      if _checklist_has_source(path, item_id):
+        return True
+  return False
+
+
+def audit_checklist_bridge(cwd):
+  index, reasons = _read_index(cwd)
+  if reasons:
+    return _result("DEVIATION", reasons, index=index)
+
+  for entry in index.get("items", []):
+    if not isinstance(entry, dict):
+      continue
+    if entry.get("kind") != "todo" or entry.get("status") not in {"promoted", "active"}:
+      continue
+    item, item_reasons = _read_item_by_entry(cwd, entry)
+    if item_reasons:
+      reasons.extend(item_reasons)
+      continue
+    if item.get("execution_history"):
+      continue
+    if not _has_runtime_or_evidence_checklist(cwd, entry["id"]):
+      reasons.append(
+        f"{entry['id']} has no active checklist or checklist evidence"
+      )
+
+  return _result("DEVIATION" if reasons else "OK", reasons, index=index)
 
 
 def _decide(cwd, item_id, decision, decision_ref, reason):

@@ -8004,6 +8004,21 @@ def cmd_work_backlog(args):
     response = work_backlog.list_items(Path.cwd())
   elif args.work_backlog_command == "show":
     response = work_backlog.show(Path.cwd(), args.id)
+  elif args.work_backlog_command == "start-checklist":
+    response = work_backlog.start_checklist(
+      Path.cwd(),
+      args.id,
+      args.checklist_id,
+      args.unit_id,
+    )
+  elif args.work_backlog_command == "audit-checklist-bridge":
+    response = work_backlog.audit_checklist_bridge(Path.cwd())
+  elif args.work_backlog_command == "audit-checklist-coverage":
+    response = work_backlog.audit_checklist_coverage(
+      Path.cwd(),
+      args.id,
+      args.checklist_id,
+    )
   elif args.work_backlog_command == "promote":
     response = work_backlog.promote(
       Path.cwd(),
@@ -8661,7 +8676,7 @@ def main():
     parents=[common_parser],
   )
   wc_close.add_argument("--checklist-id", required=True, help="完了する checklist ID")
-  wc_close.add_argument("--completion-summary", required=True, help="完了内容の要約")
+  wc_close.add_argument("--completion-summary", default=None, help="完了内容の要約")
 
   wb = sub.add_parser(
     "work-backlog",
@@ -8703,6 +8718,28 @@ def main():
     parents=[common_parser],
   )
   wb_show.add_argument("--id", required=True, help="backlog item ID")
+
+  wb_start_checklist = wb_sub.add_parser(
+    "start-checklist",
+    help="backlog TODO から runtime checklist を生成する",
+    parents=[common_parser],
+  )
+  wb_start_checklist.add_argument("--id", default=None, help="backlog todo item ID")
+  wb_start_checklist.add_argument("--checklist-id", default=None, help="作成する checklist ID")
+  wb_start_checklist.add_argument("--unit-id", default=None, help="紐づける work unit ID")
+
+  wb_sub.add_parser(
+    "audit-checklist-bridge",
+    help="backlog TODO と runtime/evidence checklist の接続を監査する",
+    parents=[common_parser],
+  )
+  wb_audit_coverage = wb_sub.add_parser(
+    "audit-checklist-coverage",
+    help="backlog TODO から生成される checklist item の coverage を監査する",
+    parents=[common_parser],
+  )
+  wb_audit_coverage.add_argument("--id", default=None, help="backlog todo item ID")
+  wb_audit_coverage.add_argument("--checklist-id", default=None, help="監査対象 checklist ID")
 
   for command, help_text in [
     ("promote", "backlog item を workflow 候補として昇格する"),
