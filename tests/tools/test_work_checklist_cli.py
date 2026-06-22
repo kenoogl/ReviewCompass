@@ -125,6 +125,131 @@ class WorkChecklistCliTests(unittest.TestCase):
       }
     ])
 
+  def test_show_reports_progress_and_checkbox_lines(self):
+    run_script(
+      [
+        "work-checklist",
+        "start",
+        "--checklist-id", "checklist-test",
+        "--unit-id", "unit-test",
+        "--title", "Progress display",
+        "--source-ref", "conversation:user",
+        "--reason", "人間が進捗を把握できる表示を確認する",
+        "--json",
+      ],
+      cwd=self.tmpdir,
+    )
+    for item_id, title, status in [
+      ("C1", "red test を作成する", "done"),
+      ("C2", "実装する", "active"),
+      ("C3", "確認する", "pending"),
+      ("C4", "別作業待ち", "blocked"),
+    ]:
+      add = run_script(
+        [
+          "work-checklist",
+          "add-item",
+          "--checklist-id", "checklist-test",
+          "--item-id", item_id,
+          "--title", title,
+          "--json",
+        ],
+        cwd=self.tmpdir,
+      )
+      self.assertEqual(add.returncode, 0, add.stdout + add.stderr)
+      set_status = run_script(
+        [
+          "work-checklist",
+          "set-status",
+          "--checklist-id", "checklist-test",
+          "--item-id", item_id,
+          "--status", status,
+          "--json",
+        ],
+        cwd=self.tmpdir,
+      )
+      self.assertEqual(set_status.returncode, 0, set_status.stdout + set_status.stderr)
+
+    result = run_script(
+      [
+        "work-checklist",
+        "show",
+        "--checklist-id", "checklist-test",
+        "--json",
+      ],
+      cwd=self.tmpdir,
+    )
+
+    assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+    data = json.loads(result.stdout)
+    self.assertEqual(data["progress"], {
+      "total": 4,
+      "done": 1,
+      "active": 1,
+      "pending": 1,
+      "blocked": 1,
+      "active_item_ids": ["C2"],
+      "blocked_item_ids": ["C4"],
+    })
+    self.assertEqual(data["display_lines"], [
+      "[x] C1 red test を作成する",
+      "[>] C2 実装する",
+      "[ ] C3 確認する",
+      "[!] C4 別作業待ち",
+    ])
+
+  def test_show_human_output_prints_checkbox_lines(self):
+    run_script(
+      [
+        "work-checklist",
+        "start",
+        "--checklist-id", "checklist-test",
+        "--unit-id", "unit-test",
+        "--title", "Progress display",
+        "--source-ref", "conversation:user",
+        "--reason", "人間向け表示を確認する",
+        "--json",
+      ],
+      cwd=self.tmpdir,
+    )
+    run_script(
+      [
+        "work-checklist",
+        "add-item",
+        "--checklist-id", "checklist-test",
+        "--item-id", "C1",
+        "--title", "red test を作成する",
+        "--json",
+      ],
+      cwd=self.tmpdir,
+    )
+    run_script(
+      [
+        "work-checklist",
+        "set-status",
+        "--checklist-id", "checklist-test",
+        "--item-id", "C1",
+        "--status", "done",
+        "--json",
+      ],
+      cwd=self.tmpdir,
+    )
+
+    result = run_script(
+      [
+        "work-checklist",
+        "show",
+        "--checklist-id", "checklist-test",
+      ],
+      cwd=self.tmpdir,
+    )
+
+    assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+    self.assertIn("[PROGRESS] done=1 active=0 pending=0 blocked=0 total=1", result.stdout)
+    self.assertIn("[x] C1 red test を作成する", result.stdout)
+
   def test_branch_records_child_checklist_on_blocked_item(self):
     run_script(
       [
