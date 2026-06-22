@@ -165,6 +165,9 @@ def test_workflow_discipline_map_catalogs_all_current_decision_points():
     },
     "operation_prompt": {
       "commit",
+      "user_initiated_backlog_todo_execution",
+      "user_initiated_task_quality_gate",
+      "user_initiated_task_quality_review_materials",
     },
   }
 
@@ -196,3 +199,24 @@ def test_post_write_policy_violation_canonical_prompt_contains_operation_boundar
   assert "run_post_write_review" in text
   assert "create_post_write_manifest" in text
   assert "next_action.kind == post_write_verification" in text
+
+
+def test_user_initiated_backlog_execution_uses_canonical_effective_prompt_artifact():
+  item = _decision_point("operation_prompt", "user_initiated_backlog_todo_execution")
+
+  assert item["canonical_effective_prompt_path"] == (
+    ".reviewcompass/guidance/effective-prompts/"
+    "user-initiated-backlog-todo-execution.prompt.md"
+  )
+
+
+def test_user_initiated_backlog_execution_prompt_contains_mechanical_boundary():
+  item = _decision_point("operation_prompt", "user_initiated_backlog_todo_execution")
+  prompt_path = ROOT / item["canonical_effective_prompt_path"]
+
+  text = prompt_path.read_text(encoding="utf-8")
+
+  assert "work-backlog start-checklist" in text
+  assert "work-backlog audit-checklist-coverage" in text
+  assert "task-quality-check audit" in text
+  assert "複数 promoted TODO" in text

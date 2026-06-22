@@ -2570,6 +2570,42 @@ class NextNavigationTests(unittest.TestCase):
       _sha256_file(prompt_path),
     )
 
+  def test_operation_prompt_user_initiated_backlog_execution_outputs_canonical_prompt(self):
+    """ユーザ指示開始の backlog 実行操作は canonical effective prompt を返す"""
+    cwd = Path(self.tmpdir)
+
+    result = run_script(
+      ["operation-prompt", "user_initiated_backlog_todo_execution", "--json"],
+      cwd=cwd,
+    )
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 0, result.stderr)
+    data = json.loads(result.stdout)
+    self.assertEqual(data["verdict"], "OK")
+    self.assertEqual(data["operation"], "user_initiated_backlog_todo_execution")
+    effective_prompt = data["effective_prompt"]
+    self.assertEqual(
+      effective_prompt["decision_point_refs"],
+      [{"group": "operation_prompt", "id": "user_initiated_backlog_todo_execution"}],
+    )
+    self.assertEqual(
+      effective_prompt["effective_prompt_path"],
+      ".reviewcompass/guidance/effective-prompts/"
+      "user-initiated-backlog-todo-execution.prompt.md",
+    )
+    self.assertNotIn(
+      ".reviewcompass/runtime/effective-prompts",
+      effective_prompt["effective_prompt_path"],
+    )
+    prompt_path = REPO_ROOT / effective_prompt["effective_prompt_path"]
+    self.assertTrue(prompt_path.is_file())
+    self.assertTrue(effective_prompt["effective_prompt_loaded"])
+    self.assertEqual(
+      effective_prompt["effective_prompt_sha256"],
+      _sha256_file(prompt_path),
+    )
+
   def test_next_triad_review_reports_target_and_review_run_inputs(self):
     """triad-review 直前に読む対象文書と review-run 成果物を抽象入力として返す"""
     cwd = Path(self.tmpdir)
