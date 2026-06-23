@@ -1,0 +1,36 @@
+process_id: maintenance
+started_at: '2026-06-23T00:00:00+09:00'
+completed_at: '2026-06-23T00:00:00+09:00'
+trigger: >
+  利用者指示により、plan-2026-06-23-guidance-relocation-and-docs-classification
+  の GRC-1 として、残存 docs/operations / docs/disciplines の
+  inventory / classification table を作成するため。
+mainline_blocked_by: none
+allowed_scope: >
+  docs/operations / docs/disciplines に残る文書の棚卸しと一次分類。
+  ファイル移動、旧 path 削除、参照更新、deploy manifest 変更は行わない。
+allowed_files:
+- stages/in-progress/maintenance-2026-06-23-guidance-relocation-inventory.yaml
+- stages/completed/maintenance-2026-06-23-guidance-relocation-inventory.yaml
+- .reviewcompass/backlog/inventories/2026-06-23-guidance-relocation-docs-classification.md
+completion_conditions:
+- 残存 docs/operations / docs/disciplines の対象ファイルが分類表に列挙される
+- 各対象ファイルに classification、current readers、expected readers、deploy inclusion、effective prompt source status、proposed destination、delete-old-path condition が記録される
+- 移動対象、残置対象、判断保留対象が表で確認できる
+- この作業ではファイル移動、旧 path 削除、参照更新、deploy manifest 変更を行わない
+- lightweight self-check と next --json の再確認を行う
+completed_changes:
+- .reviewcompass/backlog/inventories/2026-06-23-guidance-relocation-docs-classification.md を新規作成し、docs/operations 12 件、docs/disciplines 本体 17 件、archive 観測 4 件を分類した
+- 移動候補、残置候補、判断保留候補、archive 残置候補を summary に分けた
+- この作業では元文書の移動、削除、参照更新、deploy manifest 変更を行わなかった
+verification:
+- command: .venv/bin/python3 tools/document_link_lint.py --json .reviewcompass/backlog/inventories/2026-06-23-guidance-relocation-docs-classification.md stages/completed/maintenance-2026-06-23-guidance-relocation-inventory.yaml
+  result: findings=0
+- command: rg -n '^\\| `docs/' .reviewcompass/backlog/inventories/2026-06-23-guidance-relocation-docs-classification.md
+  result: operations=12, disciplines_main=17, disciplines_archive=4
+evidence:
+- .reviewcompass/backlog/inventories/2026-06-23-guidance-relocation-docs-classification.md
+return_to:
+  required_action: completed
+  state_file: none
+status: completed
