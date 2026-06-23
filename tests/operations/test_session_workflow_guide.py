@@ -4,8 +4,12 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 
 
+def guidance_path(filename):
+  return ROOT / ".reviewcompass" / "guidance" / filename
+
+
 def test_proxy_model_gate_requires_user_visible_review_run_summary():
-  text = (ROOT / "docs" / "operations" / "SESSION_WORKFLOW_GUIDE.md").read_text(encoding="utf-8")
+  text = guidance_path("SESSION_WORKFLOW_GUIDE.md").read_text(encoding="utf-8")
 
   assert "proxy_model 判断依頼前の利用者提示ゲート" in text
   assert "この提示ゲートを完了する前に proxy_model を呼び出してはいけない" in text
@@ -16,7 +20,7 @@ def test_proxy_model_gate_requires_user_visible_review_run_summary():
 
 
 def test_workflow_navigation_exposes_triad_review_proxy_gate():
-  text = (ROOT / "docs" / "operations" / "WORKFLOW_NAVIGATION.md").read_text(encoding="utf-8")
+  text = guidance_path("WORKFLOW_NAVIGATION.md").read_text(encoding="utf-8")
 
   assert "`stage` が `triad-review` の場合" in text
   assert "使用 variant と role ごとの path／provider／model" in text
@@ -26,9 +30,9 @@ def test_workflow_navigation_exposes_triad_review_proxy_gate():
 
 
 def test_reopen_drafting_is_required_before_triad_review():
-  navigation = (ROOT / "docs" / "operations" / "WORKFLOW_NAVIGATION.md").read_text(encoding="utf-8")
-  reopen = (ROOT / "docs" / "operations" / "REOPEN_PROCEDURE.md").read_text(encoding="utf-8")
-  discipline_map = (ROOT / "docs" / "operations" / "WORKFLOW_DISCIPLINE_MAP.yaml").read_text(encoding="utf-8")
+  navigation = guidance_path("WORKFLOW_NAVIGATION.md").read_text(encoding="utf-8")
+  reopen = guidance_path("REOPEN_PROCEDURE.md").read_text(encoding="utf-8")
+  discipline_map = guidance_path("WORKFLOW_DISCIPLINE_MAP.yaml").read_text(encoding="utf-8")
 
   assert "`run_reopen_drafting`" in navigation
   assert "`drafting_completed_gates`" in navigation
@@ -38,7 +42,9 @@ def test_reopen_drafting_is_required_before_triad_review():
 
 
 def test_codex_adapter_exposes_triad_review_proxy_gate():
-  text = (ROOT / "docs" / "operations" / "WORKFLOW_NAVIGATION_FOR_CODEX.md").read_text(encoding="utf-8")
+  text = (
+    ROOT / ".reviewcompass" / "guidance" / "WORKFLOW_NAVIGATION_FOR_CODEX.md"
+  ).read_text(encoding="utf-8")
 
   assert "`triad-review` の API review-run を開始する前" in text
   assert "使用 variant と role ごとの path／provider／model" in text
@@ -47,7 +53,7 @@ def test_codex_adapter_exposes_triad_review_proxy_gate():
 
 
 def test_discipline_map_surfaces_user_visible_triad_review_gate():
-  text = (ROOT / "docs" / "operations" / "WORKFLOW_DISCIPLINE_MAP.yaml").read_text(encoding="utf-8")
+  text = guidance_path("WORKFLOW_DISCIPLINE_MAP.yaml").read_text(encoding="utf-8")
 
   assert "variant/role assignments" in text
   assert "same-root finding clusters" in text
@@ -57,8 +63,8 @@ def test_discipline_map_surfaces_user_visible_triad_review_gate():
 
 
 def test_requirements_vertical_review_scope_is_not_downstream_review():
-  guide = (ROOT / "docs" / "operations" / "SESSION_WORKFLOW_GUIDE.md").read_text(encoding="utf-8")
-  discipline_map = (ROOT / "docs" / "operations" / "WORKFLOW_DISCIPLINE_MAP.yaml").read_text(encoding="utf-8")
+  guide = guidance_path("SESSION_WORKFLOW_GUIDE.md").read_text(encoding="utf-8")
+  discipline_map = guidance_path("WORKFLOW_DISCIPLINE_MAP.yaml").read_text(encoding="utf-8")
 
   assert "requirements review" in guide
   assert "上流判断材料 → requirements.md" in guide
@@ -71,8 +77,8 @@ def test_requirements_vertical_review_scope_is_not_downstream_review():
 
 
 def test_vertical_review_prompt_must_materialize_upstream_content():
-  guide = (ROOT / "docs" / "operations" / "SESSION_WORKFLOW_GUIDE.md").read_text(encoding="utf-8")
-  discipline_map = (ROOT / "docs" / "operations" / "WORKFLOW_DISCIPLINE_MAP.yaml").read_text(encoding="utf-8")
+  guide = guidance_path("SESSION_WORKFLOW_GUIDE.md").read_text(encoding="utf-8")
+  discipline_map = guidance_path("WORKFLOW_DISCIPLINE_MAP.yaml").read_text(encoding="utf-8")
 
   assert "source materials をパス名だけで列挙してはならない" in guide
   assert "上流本文または要点抽出" in guide
@@ -84,8 +90,8 @@ def test_vertical_review_prompt_must_materialize_upstream_content():
 
 
 def test_cross_feature_stage_artifacts_have_canonical_location():
-  navigation = (ROOT / "docs" / "operations" / "WORKFLOW_NAVIGATION.md").read_text(encoding="utf-8")
-  discipline_map = (ROOT / "docs" / "operations" / "WORKFLOW_DISCIPLINE_MAP.yaml").read_text(encoding="utf-8")
+  navigation = guidance_path("WORKFLOW_NAVIGATION.md").read_text(encoding="utf-8")
+  discipline_map = guidance_path("WORKFLOW_DISCIPLINE_MAP.yaml").read_text(encoding="utf-8")
 
   assert ".reviewcompass/specs/_cross_feature/reviews/" in navigation
   assert "cross_feature_stage_artifacts" in discipline_map
@@ -93,7 +99,7 @@ def test_cross_feature_stage_artifacts_have_canonical_location():
 
 
 def test_cross_feature_stage_autonomous_parallel_dependency_gate_is_canonical():
-  navigation = (ROOT / "docs" / "operations" / "WORKFLOW_NAVIGATION.md").read_text(encoding="utf-8")
+  navigation = guidance_path("WORKFLOW_NAVIGATION.md").read_text(encoding="utf-8")
 
   assert "自律・並列" in navigation
   assert "`autonomous-plan`" in navigation
@@ -104,7 +110,7 @@ def test_cross_feature_stage_autonomous_parallel_dependency_gate_is_canonical():
 
 
 def test_post_write_verification_command_uses_explicit_api_variant():
-  navigation = (ROOT / "docs" / "operations" / "WORKFLOW_NAVIGATION.md").read_text(encoding="utf-8")
+  navigation = guidance_path("WORKFLOW_NAVIGATION.md").read_text(encoding="utf-8")
 
   assert "--variant post_write_verification_google" in navigation
   post_write_section = navigation.split("### `post_write_verification`", 1)[1].split(
@@ -116,8 +122,7 @@ def test_post_write_verification_command_uses_explicit_api_variant():
 
 def test_post_write_verification_documents_canonical_api_call_procedure_without_approval_guard():
   for navigation_path in [
-    ROOT / "docs" / "operations" / "WORKFLOW_NAVIGATION.md",
-    ROOT / ".reviewcompass" / "guidance" / "WORKFLOW_NAVIGATION.md",
+    guidance_path("WORKFLOW_NAVIGATION.md"),
   ]:
     navigation = navigation_path.read_text(encoding="utf-8")
     post_write_section = navigation.split("### `post_write_verification`", 1)[1].split(
@@ -158,10 +163,12 @@ def test_post_write_verification_documents_canonical_api_call_procedure_without_
 
 
 def test_codex_commit_sandbox_external_wrapper_is_starting_condition():
-  precheck = (ROOT / "docs" / "operations" / "WORKFLOW_PRECHECK.md").read_text(encoding="utf-8")
-  details = (ROOT / "docs" / "operations" / "WORKFLOW_PRECHECK_DETAILS.md").read_text(encoding="utf-8")
-  codex = (ROOT / "docs" / "operations" / "WORKFLOW_NAVIGATION_FOR_CODEX.md").read_text(encoding="utf-8")
-  card = (ROOT / "docs" / "operations" / "COMMIT_OPERATION_CARD.md").read_text(encoding="utf-8")
+  precheck = guidance_path("WORKFLOW_PRECHECK.md").read_text(encoding="utf-8")
+  details = guidance_path("WORKFLOW_PRECHECK_DETAILS.md").read_text(encoding="utf-8")
+  codex = (
+    ROOT / ".reviewcompass" / "guidance" / "WORKFLOW_NAVIGATION_FOR_CODEX.md"
+  ).read_text(encoding="utf-8")
+  card = guidance_path("COMMIT_OPERATION_CARD.md").read_text(encoding="utf-8")
 
   for text in (precheck, details, codex, card):
     assert "commit wrapper 本体を最初から sandbox 外" in text
@@ -169,7 +176,7 @@ def test_codex_commit_sandbox_external_wrapper_is_starting_condition():
 
 
 def test_user_facing_reports_avoid_translation_style_japanese():
-  guide = (ROOT / "docs" / "operations" / "SESSION_WORKFLOW_GUIDE.md").read_text(encoding="utf-8")
+  guide = guidance_path("SESSION_WORKFLOW_GUIDE.md").read_text(encoding="utf-8")
 
   assert "翻訳調の名詞句" in guide
   assert "内部状態名や英語の道具名を見出しや主語にしない" in guide
@@ -177,15 +184,17 @@ def test_user_facing_reports_avoid_translation_style_japanese():
 
 
 def test_codex_commit_message_does_not_require_japanese_imperative_form():
-  codex = (ROOT / "docs" / "operations" / "WORKFLOW_NAVIGATION_FOR_CODEX.md").read_text(encoding="utf-8")
+  codex = (
+    ROOT / ".reviewcompass" / "guidance" / "WORKFLOW_NAVIGATION_FOR_CODEX.md"
+  ).read_text(encoding="utf-8")
 
   assert "変更の目的が伝わる短い日本語" in codex
   assert "命令形" not in codex
 
 
 def test_commit_progress_reports_hide_internal_repreparation_steps():
-  guide = (ROOT / "docs" / "operations" / "SESSION_WORKFLOW_GUIDE.md").read_text(encoding="utf-8")
-  card = (ROOT / "docs" / "operations" / "COMMIT_OPERATION_CARD.md").read_text(encoding="utf-8")
+  guide = guidance_path("SESSION_WORKFLOW_GUIDE.md").read_text(encoding="utf-8")
+  card = guidance_path("COMMIT_OPERATION_CARD.md").read_text(encoding="utf-8")
 
   for text in (guide, card):
     assert "承認内容を作り直す" in text

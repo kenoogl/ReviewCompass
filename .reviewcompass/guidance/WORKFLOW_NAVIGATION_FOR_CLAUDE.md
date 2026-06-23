@@ -46,6 +46,6 @@ Claude は `next_action.target_files` 全体を確認する。複数ファイル
 
 ## 5. Codex 固有資産の扱い
 
-Codex 用の手引き（`WORKFLOW_NAVIGATION_FOR_CODEX.md`）と `.codex/` hook は削除しない。Codex で再検証・比較実行するための adapter 資産として残す。`AGENTS.md` は Codex 専用ではなく、`CLAUDE.md` から取り込まれる共通入口の正本である。
+Codex 用の手引き（`.reviewcompass/guidance/WORKFLOW_NAVIGATION_FOR_CODEX.md`）と `.codex/` hook は削除しない。Codex で再検証・比較実行するための adapter 資産として残す。`AGENTS.md` は Codex 専用ではなく、`CLAUDE.md` から取り込まれる共通入口の正本である。
 
 Claude 作業時も、triad-review のモデル名としての `gpt-*`／`gemini-*` や、過去セッション記録内の Codex 記述は履歴・モデル識別子として扱う。

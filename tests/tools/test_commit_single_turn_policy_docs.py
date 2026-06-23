@@ -13,7 +13,7 @@ def read_doc(path):
 
 def test_codex_adapter_uses_single_turn_commit_instruction_policy():
   """Codex adapter は commit / 承認の二段階を要求しない"""
-  text = read_doc("docs/operations/WORKFLOW_NAVIGATION_FOR_CODEX.md")
+  text = read_doc(".reviewcompass/guidance/WORKFLOW_NAVIGATION_FOR_CODEX.md")
 
   assert "1 回目" not in text
   assert "2 回目" not in text

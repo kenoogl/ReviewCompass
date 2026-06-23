@@ -15,6 +15,11 @@ LEGACY_ADAPTER_GUIDANCE_PATHS = [
   "docs/operations/WORKFLOW_NAVIGATION_FOR_CODEX.md",
 ]
 
+CANONICAL_ADAPTER_GUIDANCE_PATHS = [
+  ".reviewcompass/guidance/WORKFLOW_NAVIGATION_FOR_CLAUDE.md",
+  ".reviewcompass/guidance/WORKFLOW_NAVIGATION_FOR_CODEX.md",
+]
+
 LEGACY_DEPLOY_FACING_OPERATION_GUIDANCE = {
   "docs/operations/INITIAL_DEPLOYMENT_USER_GUIDE.md",
 }
@@ -45,6 +50,15 @@ def test_adapter_entrypoints_do_not_reference_legacy_operation_guidance():
         findings.append(f"{surface} -> {legacy_path}")
 
   assert findings == []
+
+
+def test_adapter_guidance_files_exist_only_in_reviewcompass_guidance():
+  for canonical_path, legacy_path in zip(
+    CANONICAL_ADAPTER_GUIDANCE_PATHS,
+    LEGACY_ADAPTER_GUIDANCE_PATHS,
+  ):
+    assert (ROOT / canonical_path).is_file()
+    assert not (ROOT / legacy_path).exists()
 
 
 def test_deploy_manifest_does_not_include_legacy_operation_guidance():

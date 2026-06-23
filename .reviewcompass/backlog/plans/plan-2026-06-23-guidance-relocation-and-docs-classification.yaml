@@ -183,7 +183,7 @@ implementation_plan:
       - 移動前に、期待する配置違反を検出できるテストが存在する。
   - id: GRC-4
     title: Move deploy-facing and runtime-facing docs
-    status: candidate
+    status: completed
     tasks:
       - 分類済み deploy-facing / runtime-facing 文書を .reviewcompass/guidance へ移す。
       - consumer references を同じ commit または明示した移行 commit で更新する。
@@ -249,12 +249,14 @@ execution_slices:
     todo_id: todo-2026-06-23-guidance-relocation-move-docs
     todo_path: .reviewcompass/backlog/todos/todo-2026-06-23-guidance-relocation-move-docs.yaml
     checklist_id: checklist-todo-2026-06-23-guidance-relocation-move-docs
-    checklist_evidence_path: null
-    status: checklist_started
+    checklist_evidence_path: .reviewcompass/evidence/work-units/checklists/checklist-todo-2026-06-23-guidance-relocation-move-docs.yaml
+    status: completed
     note: >
-      post_write_policy_violation 修復のため、GRC-4 を検証可能な単位へ再分割中。
-      active discipline root の移動だけを第一単位として残し、adapter guidance
-      移動と consumer 更新は後続単位へ戻した。
+      GRC-4 の runtime checklist は完了し、evidence snapshot へ保存済み。
+      active discipline root は前単位で移動済み。今回の完了では Claude / Codex
+      adapter guidance を .reviewcompass/guidance へ移し、active consumer references
+      と tests を新正本へ更新した。GRC-5 の旧 path cleanup と GRC-6 の final audit は
+      別 TODO として扱う。
   - phase_id: GRC-5
     title: Delete or demote old paths
     todo_id: todo-2026-06-23-guidance-relocation-old-path-cleanup
