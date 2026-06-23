@@ -5,7 +5,7 @@ status: draft
 topic: work-checklist-backlog-mechanism-plan
 related:
   - docs/notes/working/2026-06-22-commit-push-turn-order-operation-note.md
-  - docs/notes/working/2026-06-22-postwrite-prompt-mechanization-checklist.md
+  - .reviewcompass/backlog/plans/plan-2026-06-23-postwrite-prompt-mechanization-completion.yaml
   - tools/check_workflow_action/commit_unit.py
 ---
 

@@ -93,7 +93,7 @@
 
 - `docs/notes/working/2026-06-21-guidance-file-move-active-reference-inventory.md`
 - `docs/notes/working/2026-06-21-guidance-file-move-redo-plan.md`
-- `docs/notes/working/2026-06-21-effective-prompt-freshness-audit-plan.md`
+- `.reviewcompass/backlog/plans/plan-2026-06-23-effective-prompt-freshness-audit.yaml`
 - `docs/notes/working/2026-06-21-workflow-operation-mechanization-improvement-plan.md`
 - `docs/notes/working/2026-06-22-guidance-legacy-path-mixing-risk.md`
 

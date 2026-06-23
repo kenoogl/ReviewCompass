@@ -1,0 +1,163 @@
+schema_version: reviewcompass-backlog-item-v1
+id: plan-2026-06-23-postwrite-prompt-mechanization-completion
+kind: plan
+title: Complete post-write prompt mechanization
+status: candidate
+source_unit_id: main-completed
+created_at: '2026-06-23T08:58:57+09:00'
+index_path: .reviewcompass/backlog/index.yaml
+provenance:
+  created_by: llm
+  source_ref: docs/notes/working/2026-06-22-postwrite-prompt-mechanization-checklist.md
+  reason: >
+    working note に残っていた post-write prompt 機械化の未実施項目を
+    backlog plan へ移し、後続作業候補として一元管理するため。
+summary: >
+  post-write prompt 機械化は一部完了しているが、API review prompt の
+  生成から audit、runner gate、実運用確認までを信頼して使える状態に
+  するには残作業がある。この plan は旧 working note の未完了 checklist
+  を backlog 管理へ移したものである。
+supersedes:
+  - docs/notes/working/2026-06-22-postwrite-prompt-mechanization-checklist.md
+related:
+  - docs/notes/working/2026-06-21-llm-boundary-and-postwrite-prompt-mechanization-plan.md
+  - docs/notes/working/2026-06-21-postwrite-prompt-mechanization-side-track-retroactive-record.md
+  - .reviewcompass/guidance/effective-prompts/next-action-post-write-policy-violation.prompt.md
+  - tools/api_providers/prepare_post_write_review.py
+  - tools/api_providers/post_write_review_flow.py
+  - tools/check_workflow_action/prompt_audit.py
+completed_baseline:
+  - post_write_policy_violation から API review-run を開始しない gate がある。
+  - post_write_policy_violation 用 canonical effective prompt がある。
+  - post_write_verification の review target に target 本文を含める補修がある。
+  - post_write_verification の review target に source material 本文を含める補修がある。
+  - prompt manifest に target/source の content_mode と content_sha256 を残す処理がある。
+  - post_write_review_flow.py prepare で next_action.kind != post_write_verification を止める処理がある。
+remaining_work:
+  - id: PPWM-1
+    title: Canonical effective prompts
+    status: candidate
+    tasks:
+      - post_write_verification 用 canonical effective prompt を正本として固定する。
+      - post_write_human_decision_required 用 canonical effective prompt を正本として固定する。
+      - runtime 生成物と canonical 正本の関係を明確にする。
+      - stale canonical prompt を通常 action として返さない検査を用意する。
+    acceptance:
+      - .reviewcompass/guidance/effective-prompts/ に正本が存在する。
+      - next --json または関連処理が、都度合成ではなく正本 prompt を参照する。
+      - 元文書変更時の freshness audit へ接続できる。
+  - id: PPWM-2
+    title: post_write_policy_violation inspect operation
+    status: candidate
+    tasks:
+      - dirty worktree の変更ファイルを機械分類する。
+      - guidance / tools / tests / docs notes / runtime artifacts を別 cluster に分ける。
+      - review-run / post-write manifest / commit を forbidden として出す。
+      - read-only operation としてファイルを書かないことをテストする。
+    acceptance:
+      - post_write_policy_violation 地点では、レビュー実行ではなく分類結果が出る。
+      - 次に許可される操作と禁止操作が機械出力に含まれる。
+  - id: PPWM-3
+    title: Source bundle builder
+    status: candidate
+    tasks:
+      - target 本文を full text または non-summary excerpt として出す。
+      - source material 本文を full text または non-summary excerpt として出す。
+      - path / SHA だけの bundle を拒否する。
+      - target と source material の役割を区別する。
+      - SHA と本文の一致を検査する。
+    acceptance:
+      - main LLM の要約が target 本文の代替にならない。
+      - API reviewer が、path-only ではなく実本文を読める。
+  - id: PPWM-4
+    title: Prompt builder
+    status: candidate
+    tasks:
+      - source bundle から固定構造の prompt を生成する。
+      - prompt 必須セクションを固定する。
+      - 1 prompt 1 primary judgment を守る。
+      - runner の output contract と prompt の出力要求を一致させる。
+      - variant は設定キーから解決し、手選択にしない。
+    required_sections:
+      - Review Purpose
+      - User Review Requirements
+      - Target Materials
+      - Source Materials
+      - Review Criteria
+      - Non-goals / Out of Scope
+      - Main Preanalysis
+      - Required Checks
+      - Output Contract
+      - Sensitive Information Check
+  - id: PPWM-5
+    title: Prompt audit
+    status: candidate
+    tasks:
+      - target file body がない prompt を拒否する。
+      - source material body がない prompt を拒否する。
+      - path-only source で終わる prompt を拒否する。
+      - 要約禁止の場面で summary 表記がある prompt を拒否する。
+      - 複数の独立判断を押し込んだ prompt を拒否する。
+      - output contract と runner/schema の不一致を拒否する。
+      - runner / variant / role が用途と違う prompt を拒否する。
+      - prompt source refs と生成 manifest がない prompt を拒否する。
+      - sensitive information の疑いがある prompt を拒否する。
+    acceptance:
+      - prompt audit が DEVIATION の場合、API runner へ進まない。
+      - invalid prompt を保存する場合も、有効な review result として扱わない。
+  - id: PPWM-6
+    title: Runner gate
+    status: candidate
+    tasks:
+      - next_action.kind == post_write_verification であることを gate が確認する。
+      - prompt audit が OK の場合だけ API runner を許可する。
+      - prompt audit がない場合は API runner を止める。
+      - prompt audit が DEVIATION の場合は user approval だけで上書き実行しない。
+      - post-write verification 用 variant が post-write context から解決される。
+      - CLI default への暗黙 fallback を拒否する。
+      - invalid prompt 由来の response を valid review-run として登録しない。
+    acceptance:
+      - API provider 起動前に、prompt / manifest / audit / variant / output contract が揃う。
+      - prompt quality review、proxy decision、post-write verification の runner/schema を混同しない。
+  - id: PPWM-7
+    title: Practical operation verification
+    status: candidate
+    tasks:
+      - 実際の post-write 対象ファイルで source bundle、prompt、manifest、audit result が一貫する。
+      - generated prompt に target 本文、source material、out of scope、required checks、output contract が含まれる。
+      - path / SHA only prompt が拒否される。
+      - author summary target が拒否される。
+      - 複数判断詰め込み prompt が拒否される。
+      - api_review_prompt_quality の既定 variant が claude-sonnet-4-6 / gemini-3.1-pro-preview へ解決される。
+      - post-write verification の API variant が CLI default へ暗黙 fallback しない。
+    acceptance:
+      - PPWM-1 から PPWM-7 まで通った時点で、post-write prompt 機械化を完了扱いにできる。
+recommended_order:
+  - PPWM-1
+  - PPWM-2
+  - PPWM-3
+  - PPWM-4
+  - PPWM-5
+  - PPWM-6
+  - PPWM-7
+next_smallest_unit:
+  id: PPWM-1
+  title: post_write_verification canonical effective prompt fixation
+  rationale: >
+    post_write_policy_violation 用 canonical prompt は既にある。
+    post_write_verification は API prompt 生成へ進む入口なので、ここが
+    runtime 生成や都度合成に寄ると、その後の source bundle / prompt builder /
+    prompt audit が安定しない。
+known_red_test:
+  file: tests/tools/test_check_workflow_action.py
+  test: NextNavigationTests.test_next_post_write_verification_returns_canonical_effective_prompt
+  observed_failure: >
+    post_write_verification の effective_prompt_path が、期待する
+    .reviewcompass/guidance/effective-prompts/next-action-post-write-verification.prompt.md
+    ではなく、.reviewcompass/runtime/effective-prompts/next_action_kind-post_write_verification.prompt.md
+    になっている。
+non_goals:
+  - この plan 作成時点で post-write prompt 機械化を完了扱いにしない。
+  - API review-run をこの plan 作成だけで実行しない。
+  - 旧 working note を正本として残して二重管理しない。
+decisions: []

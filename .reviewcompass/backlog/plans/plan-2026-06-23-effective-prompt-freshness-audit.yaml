@@ -1,0 +1,176 @@
+schema_version: reviewcompass-backlog-item-v1
+id: plan-2026-06-23-effective-prompt-freshness-audit
+kind: plan
+title: Implement effective prompt freshness audit
+status: candidate
+source_unit_id: main-completed
+created_at: '2026-06-23T09:05:38+09:00'
+index_path: .reviewcompass/backlog/index.yaml
+provenance:
+  created_by: llm
+  source_ref: docs/notes/working/2026-06-21-effective-prompt-freshness-audit-plan.md
+  reason: >
+    working note に残っていた effective prompt freshness audit 計画を
+    backlog plan へ移し、後続作業候補として一元管理するため。
+summary: >
+  effective prompt は複数の元文書から生成される派生物であり、元文書が
+  変われば対応する canonical / runtime effective prompt も更新される必要がある。
+  この plan は、元文書変更後に古い prompt を正しいものとして読ませないための
+  freshness audit を段階的に実装する。
+supersedes:
+  - docs/notes/working/2026-06-21-effective-prompt-freshness-audit-plan.md
+related:
+  - .reviewcompass/guidance/WORKFLOW_NAVIGATION.md
+  - .reviewcompass/guidance/WORKFLOW_DISCIPLINE_MAP.yaml
+  - tools/check_workflow_action/prompt_audit.py
+  - docs/notes/working/2026-06-21-workflow-operation-mechanization-improvement-plan.md
+background:
+  - next --json は現在地点と読むべき effective prompt を返す形に近づいている。
+  - effective prompt は固定入力として扱われるため、古い prompt が返ると LLM は古い規律や操作方針に従ってしまう。
+  - 後続の operation 機械化や post-write prompt 機械化は、この freshness audit を土台にする。
+current_gap:
+  - prompt_audit.py は source_artifacts の path と sha256 形式を確認するが、現在ファイル内容との SHA 一致までは確認していない。
+  - WORKFLOW_DISCIPLINE_MAP.yaml から現在期待される source refs と、保存済み effective prompt / manifest の source refs の一致を検査していない。
+  - Markdown effective prompt 本文が現在の元文書から再生成した期待本文と一致するかを検査していない。
+  - stale effective prompt を next --json の安全性判定へ接続していない。
+  - stale 検出後の再生成導線が明確でない。
+goals:
+  - effective prompt が現在の元文書から生成されたものか分かる。
+  - 元文書変更後に effective prompt が古いままなら検出できる。
+  - stale な effective prompt が返された状態で通常作業へ進まない。
+  - stale 検出後に、どの prompt を再生成すべきか分かる。
+  - 元文書変更と effective prompt 更新漏れを commit / CI / precheck のどこかで止められる。
+initial_scope:
+  - .reviewcompass/runtime/effective-prompts/*.prompt.md
+  - structured effective prompt manifest が存在する場合の manifest
+  - .reviewcompass/guidance/WORKFLOW_DISCIPLINE_MAP.yaml
+  - next --json が返す next_action.effective_prompt
+  - prompt_source_refs
+  - required_disciplines
+  - source file の現在 SHA
+out_of_initial_scope:
+  - レビュー用 prompt や proxy 判断 prompt の品質監査
+  - 過去 review-run に記録された凍結証跡 effective prompt の書き換え
+freshness_spec:
+  source_freshness:
+    statuses:
+      fresh: 保存済み source artifact SHA と現在のファイル内容 SHA が一致する。
+      stale_source: 保存済み source artifact SHA と現在のファイル内容 SHA が一致しない。
+      missing_source: 参照先ファイルが存在しない。
+      missing_source_sha: SHA 記録がない。
+  source_set_consistency:
+    statuses:
+      source_set_ok: 期待 source refs と保存済み source refs が一致する。
+      unexpected_source: 保存済み source refs に余分な source がある。
+      missing_expected_source: 期待 source が不足している。
+      source_order_mismatch: 順序に意味がある場合に順序が違う。
+  rendered_prompt_consistency:
+    statuses:
+      rendered_prompt_ok: 現在の元文書から再レンダリングした prompt と保存済み prompt が一致する。
+      rendered_prompt_stale: 再レンダリング結果と保存済み prompt が一致しない。
+      render_failed: 再生成できない。
+  next_integration_shape:
+    effective_prompt:
+      effective_prompt_loaded: true
+      freshness:
+        verdict: OK | WARN | DEVIATION
+        status: fresh | stale | missing | render_mismatch
+        checked_at: null
+        stale_reasons: []
+implementation_plan:
+  - id: EPFA-0
+    phase: current-state-red-tests
+    title: 現状固定テスト
+    status: candidate
+    tasks:
+      - 既存 prompt-audit の代表ケースをテストで固定する。
+      - 既存互換を壊さず freshness audit を追加できる状態にする。
+    acceptance:
+      - 既存 manifest 監査の代表ケースが green のまま残る。
+  - id: EPFA-1
+    phase: source-sha-audit
+    title: Source SHA 監査
+    status: candidate
+    tasks:
+      - source_artifacts[].sha256 と現在のファイル SHA を比較する read-only 関数を追加する。
+      - SHA 一致で OK とする。
+      - SHA 不一致で DEVIATION とする。
+      - source file 不在で DEVIATION とする。
+      - sha256: prefix なしは既存どおり DEVIATION とする。
+  - id: EPFA-2
+    phase: source-set-audit
+    title: Source set 監査
+    status: candidate
+    tasks:
+      - WORKFLOW_DISCIPLINE_MAP.yaml と decision point から期待 source refs を算出する。
+      - 保存済み source set と比較する。
+      - 期待 source 不足は DEVIATION とする。
+      - 余分な source は初期段階では WARN、固定運用後は DEVIATION とする。
+      - map にない判定点は DEVIATION とする。
+  - id: EPFA-3
+    phase: rendered-prompt-audit
+    title: Rendered prompt 監査
+    status: candidate
+    tasks:
+      - 現在の元文書から prompt を再生成する。
+      - 保存済み prompt の SHA と比較する。
+      - 同一入力なら同一 SHA になることを確認する。
+      - 元文書変更時に stale を検出する。
+      - prompt 本文だけ変更しても render mismatch を検出する。
+  - id: EPFA-4
+    phase: next-json-integration
+    title: next --json 連携
+    status: candidate
+    tasks:
+      - next --json が返す effective prompt に freshness 結果を含める。
+      - fresh なら従来どおり進める。
+      - stale なら next_action に stale reason を出す。
+      - missing source は fail-closed とする。
+  - id: EPFA-5
+    phase: regeneration-command
+    title: 再生成導線
+    status: candidate
+    tasks:
+      - stale な prompt を再生成する専用コマンドを追加する。
+      - command name は既存 operation registry との整合を見て決める。
+    candidate_commands:
+      - .venv/bin/python3 tools/check-workflow-action.py prompt-audit --refresh <decision-point>
+      - .venv/bin/python3 tools/check-workflow-action.py operation-prompt regenerate-effective-prompt --decision-point <id>
+  - id: EPFA-6
+    phase: commit-ci-connection
+    title: commit / CI 接続
+    status: candidate
+    tasks:
+      - 元文書や discipline map を変更した commit で対応 effective prompt の更新漏れを止める。
+      - 初期は WARN、固定運用後は DEVIATION に上げる。
+initial_tests:
+  - manifest の source SHA が現ファイルと一致する正常系
+  - source SHA 不一致の stale 検出
+  - source file 不在の missing 検出
+  - discipline map 上の期待 source 不足検出
+  - regenerated prompt と保存済み prompt の SHA 不一致検出
+  - next --json が stale 情報を返すケース
+  - stale 状態で通常作業へ進ませないケース
+completion_criteria:
+  - 現在の effective prompt の fresh / stale を read-only に判定できる。
+  - 元文書変更後の更新漏れを機械的に検出できる。
+  - stale の理由と対象 prompt が利用者に説明できる。
+  - 再生成すべき対象が機械的に特定できる。
+  - 後続の operation 機械化計画が、この監査結果を前提にできる。
+open_questions:
+  - Markdown prompt と structured manifest のどちらを正本にするか。
+  - 生成時刻など非決定的要素を prompt に含めるか。
+  - stale を最初から DEVIATION にするか、段階的に WARN へ置くか。
+  - next --json が stale を返した場合、通常作業を完全停止するか、再生成 action を返すか。
+  - 過去 review-run に記録された effective prompt は凍結証跡として扱うため、freshness 監査対象から除外するか。
+recommended_next_step:
+  id: EPFA-0
+  title: 現状固定テストと Source SHA 監査の red test
+  rationale: >
+    まず既存 prompt-audit の挙動を固定し、そのうえで source SHA 不一致を
+    DEVIATION とする最小単位から TDD で始める。
+non_goals:
+  - この plan 作成時点で freshness audit を実装済み扱いにしない。
+  - レビュー用 prompt / proxy 判断 prompt の品質監査まで初期対象に含めない。
+  - 旧 working note を正本として残して二重管理しない。
+decisions: []
