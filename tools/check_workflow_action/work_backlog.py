@@ -495,13 +495,178 @@ def _linked_todo_entries(cwd, index, plan_id, plan_path):
       reasons.extend(item_reasons)
       continue
     if _todo_links_plan(todo, plan_id, plan_path):
+      source_plan_slice = todo.get("source_plan_slice")
+      phase_id = None
+      if isinstance(source_plan_slice, dict):
+        phase_id = source_plan_slice.get("phase_id")
       linked.append({
         "id": entry.get("id"),
         "path": entry.get("path"),
         "status": entry.get("status"),
         "title": entry.get("title"),
+        "source_plan_slice_phase_id": phase_id,
       })
   return linked, reasons
+
+
+def _implementation_slices(plan):
+  implementation_plan = plan.get("implementation_plan")
+  entries = []
+  if isinstance(implementation_plan, list):
+    entries = implementation_plan
+  elif isinstance(implementation_plan, dict):
+    phases = implementation_plan.get("phases")
+    if isinstance(phases, list):
+      entries = phases
+
+  slices = []
+  for entry in entries:
+    if not isinstance(entry, dict):
+      continue
+    phase_id = entry.get("id") or entry.get("phase_id")
+    if not phase_id:
+      continue
+    slices.append({
+      "phase_id": phase_id,
+      "title": entry.get("title"),
+    })
+  return slices
+
+
+def _execution_slice_by_phase(plan):
+  by_phase = {}
+  for entry in plan.get("execution_slices", []):
+    if not isinstance(entry, dict):
+      continue
+    phase_id = entry.get("phase_id")
+    if phase_id:
+      by_phase[phase_id] = entry
+  return by_phase
+
+
+def _linked_todo_by_phase(linked):
+  by_phase = {}
+  unscoped = []
+  for entry in linked:
+    phase_id = entry.get("source_plan_slice_phase_id")
+    if phase_id:
+      by_phase.setdefault(phase_id, []).append(entry)
+    else:
+      unscoped.append(entry)
+  return by_phase, unscoped
+
+
+def _derive_slice_status(execution_slice, linked_todos):
+  if linked_todos:
+    if isinstance(execution_slice, dict):
+      status = execution_slice.get("status")
+      if status in {"completed", "deferred", "not_required"}:
+        return status
+    return "todo_created"
+  if isinstance(execution_slice, dict):
+    status = execution_slice.get("status")
+    if isinstance(status, str) and status:
+      return status
+  return "not_materialized"
+
+
+def _materialization_for_plan(cwd, plan, linked):
+  execution_by_phase = _execution_slice_by_phase(plan)
+  linked_by_phase, unscoped_todos = _linked_todo_by_phase(linked)
+  materialized = []
+  for index, slice_entry in enumerate(_implementation_slices(plan)):
+    phase_id = slice_entry["phase_id"]
+    execution_slice = execution_by_phase.get(phase_id, {})
+    linked_todos = linked_by_phase.get(phase_id, [])
+    if not linked_todos and index == 0 and unscoped_todos:
+      linked_todos = unscoped_todos
+    primary_todo = linked_todos[0] if linked_todos else {}
+    status = _derive_slice_status(execution_slice, linked_todos)
+    checklist_id = execution_slice.get("checklist_id")
+    if not checklist_id and primary_todo:
+      checklist, _path, _reasons = _find_checklist(cwd, primary_todo.get("id"))
+      if isinstance(checklist, dict):
+        checklist_id = checklist.get("checklist_id")
+        if status == "todo_created":
+          status = "checklist_started"
+    materialized.append({
+      "phase_id": phase_id,
+      "title": slice_entry.get("title") or execution_slice.get("title"),
+      "status": status,
+      "todo_id": execution_slice.get("todo_id") or primary_todo.get("id"),
+      "todo_path": execution_slice.get("todo_path") or primary_todo.get("path"),
+      "checklist_id": checklist_id,
+      "checklist_evidence_path": execution_slice.get("checklist_evidence_path"),
+    })
+  return materialized
+
+
+def _materialization_summary(slices):
+  by_status = {}
+  for entry in slices:
+    status = entry.get("status") or "unknown"
+    by_status[status] = by_status.get(status, 0) + 1
+  terminal = {"completed", "deferred", "not_required"}
+  return {
+    "total": len(slices),
+    "by_status": by_status,
+    "terminal_count": sum(
+      1 for entry in slices if entry.get("status") in terminal
+    ),
+    "not_materialized_count": by_status.get("not_materialized", 0),
+  }
+
+
+def _next_materialization_candidates(slices):
+  candidates = []
+  for entry in slices:
+    if entry.get("status") != "not_materialized":
+      continue
+    candidates.append({
+      "phase_id": entry.get("phase_id"),
+      "title": entry.get("title"),
+      "recommended_next_action": "add-todo",
+    })
+  return candidates
+
+
+def _quote_command_text(value):
+  if value is None:
+    return "\"\""
+  return "\"" + str(value).replace("\"", "\\\"") + "\""
+
+
+def _recommended_materialization_commands(plan, plan_id, plan_path, slices):
+  source_unit_id = plan.get("source_unit_id") or "<source-unit-id>"
+  add_todo = []
+  for candidate in _next_materialization_candidates(slices):
+    title = candidate.get("title") or candidate.get("phase_id") or "<title>"
+    phase_id = candidate.get("phase_id") or "<phase-id>"
+    add_todo.append(
+      "work-backlog add-todo --id <todo-id> "
+      f"--title {_quote_command_text(title)} "
+      f"--source-unit-id {source_unit_id} "
+      f"--source-ref {plan_path}#{phase_id} "
+      "--reason <reason> "
+      "--body-file <yaml-with-source_plan_id-source_plan_slice>"
+    )
+  start_checklist = [
+    (
+      "work-backlog start-checklist "
+      f"--id {entry['todo_id']} --mutation-boundary-confirmed"
+    )
+    for entry in slices
+    if entry.get("todo_id")
+  ]
+  return {
+    "add_todo": add_todo,
+    "start_checklist": start_checklist,
+    "body_file_requirements": [
+      f"source_plan_id: {plan_id}",
+      f"source_plan_path: {plan_path}",
+      "source_plan_slice.phase_id must match the selected implementation_plan slice",
+    ],
+  }
 
 
 def _has_runtime_or_evidence_checklist(cwd, item_id):
@@ -564,6 +729,18 @@ def plan_todo_bridge(cwd, plan_id):
   }
   response["linked_todos"] = linked
   response["linked_todo_ids"] = linked_ids
+  materialization_slices = _materialization_for_plan(cwd, plan, linked)
+  response["materialization"] = {
+    "slices": materialization_slices,
+    "summary": _materialization_summary(materialization_slices),
+    "next_candidates": _next_materialization_candidates(materialization_slices),
+  }
+  response["recommended_commands"] = _recommended_materialization_commands(
+    plan,
+    plan_id,
+    plan_path,
+    materialization_slices,
+  )
   if not linked:
     response["reasons"].append("linked backlog TODO not found")
     response["next_steps"] = [

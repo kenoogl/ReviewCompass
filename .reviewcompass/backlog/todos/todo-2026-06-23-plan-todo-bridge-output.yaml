@@ -1,0 +1,70 @@
+schema_version: reviewcompass-backlog-item-v1
+id: todo-2026-06-23-plan-todo-bridge-output
+kind: todo
+title: Strengthen plan-todo-bridge output
+status: completed
+source_unit_id: main-side-conversation
+created_at: '2026-06-23T12:05:04.554183+00:00'
+index_path: .reviewcompass/backlog/index.yaml
+provenance:
+  created_by: llm
+  source_ref: .reviewcompass/backlog/plans/plan-2026-06-23-plan-todo-checklist-materialization.yaml#PTC-2
+  reason: PTC-2 is the next not_materialized slice for mechanizing plan-wide TODO/checklist
+    coverage; materialize it as a backlog TODO before checklist execution
+decisions:
+- decision: completed
+  decision_ref: tools/check_workflow_action/work_backlog.py#plan_todo_bridge
+  reason: Implemented plan-todo-bridge materialization output for all plan slices,
+    next not_materialized candidates, and read-only recommended commands; tests/tools/test_work_backlog_cli.py
+    passes.
+  decided_at: '2026-06-23T12:08:20.980626+00:00'
+source_plan_id: plan-2026-06-23-plan-todo-checklist-materialization
+source_plan_path: .reviewcompass/backlog/plans/plan-2026-06-23-plan-todo-checklist-materialization.yaml
+source_plan_slice:
+  phase_id: PTC-2
+  title: Strengthen plan-todo-bridge output
+summary: 'plan-todo-bridge の JSON 出力を強化し、plan 内の implementation_plan 全 slice について
+
+  materialization status、リンク済み TODO/checklist、次に TODO 化すべき候補、推奨コマンドを
+
+  read-only に返す。plan の一部だけが TODO/checklist 化された状態を見落とさないための導線を作る。
+
+  '
+problem_statement:
+- 現状の plan-todo-bridge は linked TODO を把握できても、全 slice の materialization 状態を十分に返していない。
+- not_materialized slice が次に TODO 化すべき候補として機械的に表面化しない。
+- add-todo / start-checklist に進むための推奨コマンドが read-only 出力に含まれず、作業者の手組みが残る。
+implementation_plan:
+  phases:
+  - id: PTC-2
+    title: Strengthen plan-todo-bridge output
+    tasks:
+    - id: PTC-2A
+      title: Make plan-todo-bridge report every slice status, not only linked TODOs
+    - id: PTC-2B
+      title: Return next materialization candidates for not_materialized slices
+    - id: PTC-2C
+      title: Return recommended commands for add-todo and start-checklist without
+        performing mutations
+acceptance_criteria:
+- plan-todo-bridge の JSON で implementation_plan 全 slice の status が表示される。
+- PTC-2 以降の未展開 slice が next materialization candidates として返る。
+- linked TODO がある slice とない slice が区別できる。
+- add-todo と start-checklist の推奨コマンドが read-only 出力として返る。
+red_tests:
+- id: PTC-2-RT-1
+  title: Every implementation slice is reported
+  expected: plan-todo-bridge JSON includes PTC-1 through PTC-5 in materialization
+    coverage output.
+- id: PTC-2-RT-2
+  title: Next not_materialized candidates are returned
+  expected: plan-todo-bridge JSON returns PTC-2 as the first next materialization
+    candidate when PTC-1 is completed.
+- id: PTC-2-RT-3
+  title: Recommended commands are read-only
+  expected: plan-todo-bridge JSON includes add-todo and start-checklist command suggestions
+    but does not create files.
+non_goals:
+- audit-plan-todo-bridge の DEVIATION 制御を追加すること。
+- TODO/checklist を plan 全体に対して一括生成すること。
+- checklist 実行そのものを自動化すること。

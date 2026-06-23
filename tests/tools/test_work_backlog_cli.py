@@ -981,6 +981,95 @@ class WorkBacklogCliTests(unittest.TestCase):
       data["next_steps"][1],
     )
 
+  def test_plan_todo_bridge_reports_every_slice_materialization_status(self):
+    plan_path = self._write_plan_item()
+    plan = yaml.safe_load(plan_path.read_text(encoding="utf-8"))
+    plan["implementation_plan"] = [
+      {"id": "P1", "title": "Define contract"},
+      {"id": "P2", "title": "Strengthen bridge output"},
+      {"id": "P3", "title": "Add coverage audit"},
+    ]
+    plan["execution_slices"] = [
+      {
+        "phase_id": "P1",
+        "title": "Define contract",
+        "status": "completed",
+        "todo_id": "todo-p1",
+        "todo_path": ".reviewcompass/backlog/todos/todo-p1.yaml",
+        "checklist_id": "checklist-todo-p1",
+      },
+      {
+        "phase_id": "P2",
+        "title": "Strengthen bridge output",
+        "status": "not_materialized",
+        "todo_id": None,
+        "checklist_id": None,
+      },
+    ]
+    plan_path.write_text(
+      yaml.safe_dump(plan, allow_unicode=True, sort_keys=False),
+      encoding="utf-8",
+    )
+    todo_path = self._write_todo_item(item_id="todo-p1", status="completed")
+    todo = yaml.safe_load(todo_path.read_text(encoding="utf-8"))
+    todo["source_plan_id"] = "plan-bridge"
+    todo["source_plan_path"] = ".reviewcompass/backlog/plans/plan-bridge.yaml"
+    todo["source_plan_slice"] = {
+      "phase_id": "P1",
+      "title": "Define contract",
+    }
+    todo_path.write_text(
+      yaml.safe_dump(todo, allow_unicode=True, sort_keys=False),
+      encoding="utf-8",
+    )
+    index_path = self.tmpdir / ".reviewcompass/backlog/index.yaml"
+    index = yaml.safe_load(index_path.read_text(encoding="utf-8"))
+    index["items"].insert(0, {
+      "id": "plan-bridge",
+      "kind": "plan",
+      "title": "Plan to bridge into TODO",
+      "status": "candidate",
+      "path": ".reviewcompass/backlog/plans/plan-bridge.yaml",
+      "source_unit_id": "unit-test",
+      "created_at": "2026-06-23T00:00:00+00:00",
+    })
+    index_path.write_text(
+      yaml.safe_dump(index, allow_unicode=True, sort_keys=False),
+      encoding="utf-8",
+    )
+
+    result = run_script(
+      [
+        "work-backlog",
+        "plan-todo-bridge",
+        "--plan-id", "plan-bridge",
+        "--json",
+      ],
+      cwd=self.tmpdir,
+    )
+
+    assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+    data = json.loads(result.stdout)
+    slices = data["materialization"]["slices"]
+    self.assertEqual([item["phase_id"] for item in slices], ["P1", "P2", "P3"])
+    self.assertEqual(slices[0]["status"], "completed")
+    self.assertEqual(slices[0]["todo_id"], "todo-p1")
+    self.assertEqual(slices[1]["status"], "not_materialized")
+    self.assertEqual(slices[2]["status"], "not_materialized")
+    self.assertEqual(
+      data["materialization"]["next_candidates"][0]["phase_id"],
+      "P2",
+    )
+    self.assertIn(
+      "work-backlog add-todo --id <todo-id> --title \"Strengthen bridge output\"",
+      data["recommended_commands"]["add_todo"][0],
+    )
+    self.assertIn(
+      "work-backlog start-checklist --id todo-p1 --mutation-boundary-confirmed",
+      data["recommended_commands"]["start_checklist"][0],
+    )
+
   def test_start_checklist_derives_ids_from_backlog_todo_and_active_unit(self):
     self._write_todo_item()
     stack_path = self.tmpdir / ".reviewcompass/runtime/work-units/stack.yaml"
