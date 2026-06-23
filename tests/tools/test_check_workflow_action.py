@@ -3343,6 +3343,10 @@ class NextNavigationTests(unittest.TestCase):
     data = json.loads(result.stdout)
     self.assertEqual(data["next_action"]["kind"], "lightweight_self_check")
     self.assertEqual(data["next_action"]["target_files"], ["docs/notes/memo.md"])
+    effective_prompt_path = cwd / data["next_action"]["effective_prompt"]["effective_prompt_path"]
+    effective_prompt_text = effective_prompt_path.read_text(encoding="utf-8")
+    self.assertIn("`docs/notes/` 配下", effective_prompt_text)
+    self.assertNotIn("既存の `docs/notes/*.md` は", effective_prompt_text)
 
   def test_next_includes_todo_in_strict_post_write_when_mixed_with_strict_target(self):
     """TODO と strict 対象が混ざる場合は TODO も strict post-write に同梱する"""

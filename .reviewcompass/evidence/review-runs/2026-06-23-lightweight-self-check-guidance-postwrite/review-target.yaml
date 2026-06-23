@@ -1,0 +1,24 @@
+run_id: 2026-06-23-lightweight-self-check-guidance-postwrite
+phase: post_write_verification
+criteria_id: post_write_verification__lightweight_self_check_guidance
+criteria_file: .reviewcompass/evidence/review-runs/2026-06-23-lightweight-self-check-guidance-postwrite/review-target.md
+criteria_file_sha256: d2d385350e73766d7179490ba704b9b8e3323c3c83a507c1823edb013fac2fbb
+prompt_manifest_path: .reviewcompass/evidence/review-runs/2026-06-23-lightweight-self-check-guidance-postwrite/prompt-manifest.yaml
+prompt_manifest_sha256: 2b46de056e19850768fdbb60416f59afe283d8d7f52e2bad87912de8ec749b93
+target_files:
+- path: .reviewcompass/guidance/WORKFLOW_NAVIGATION.md
+  sha256: b6dbb08a526f79bad55ce753af2ed026d6b3b0d74ea55256fa2dc5bcc0281189
+  content_mode: full_text
+  content_sha256: b6dbb08a526f79bad55ce753af2ed026d6b3b0d74ea55256fa2dc5bcc0281189
+source_materials:
+- path: .reviewcompass/guidance/API_REVIEW_PROMPT_QUALITY.md
+  sha256: 03a9b994c6b5fb4b99ebbbf169e48d76568c5b6190716bbe9e5e181844c9450d
+  content_mode: full_text
+  content_sha256: 03a9b994c6b5fb4b99ebbbf169e48d76568c5b6190716bbe9e5e181844c9450d
+sensitive_information_check:
+  status: passed
+  checked_at: '2026-06-23T02:10:16.078804+00:00'
+recommended_run_review_args:
+  criteria_file: .reviewcompass/evidence/review-runs/2026-06-23-lightweight-self-check-guidance-postwrite/review-target.md
+  phase: post_write_verification
+  prompt_manifest_path: .reviewcompass/evidence/review-runs/2026-06-23-lightweight-self-check-guidance-postwrite/prompt-manifest.yaml

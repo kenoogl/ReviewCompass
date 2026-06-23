@@ -1,0 +1,4 @@
+run_id: 2026-06-23-lightweight-self-check-guidance-postwrite
+target_files:
+- path: .reviewcompass/guidance/WORKFLOW_NAVIGATION.md
+  sha256: b6dbb08a526f79bad55ce753af2ed026d6b3b0d74ea55256fa2dc5bcc0281189
