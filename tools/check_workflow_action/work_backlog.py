@@ -433,6 +433,34 @@ def _checklist_has_source(path, item_id):
   return checklist.get("source_backlog_item_id") == item_id
 
 
+def _todo_links_plan(todo, plan_id, plan_path):
+  if todo.get("source_plan_id") == plan_id:
+    return True
+  if todo.get("source_plan_path") == plan_path:
+    return True
+  if todo.get("parent_plan_id") == plan_id:
+    return True
+  provenance = todo.get("provenance") if isinstance(todo.get("provenance"), dict) else {}
+  source_ref = provenance.get("source_ref")
+  if isinstance(source_ref, str):
+    return plan_id in source_ref or plan_path in source_ref
+  return False
+
+
+def _has_linked_todo(cwd, index, plan_id, plan_path):
+  for entry in index.get("items", []):
+    if not isinstance(entry, dict):
+      continue
+    if entry.get("kind") != "todo":
+      continue
+    todo, reasons = _read_item_by_entry(cwd, entry)
+    if reasons:
+      continue
+    if _todo_links_plan(todo, plan_id, plan_path):
+      return True
+  return False
+
+
 def _has_runtime_or_evidence_checklist(cwd, item_id):
   for directory in (CHECKLIST_RUNTIME_DIR, CHECKLIST_EVIDENCE_DIR):
     root = Path(cwd) / directory
@@ -464,6 +492,35 @@ def audit_checklist_bridge(cwd):
       reasons.append(
         f"{entry['id']} has no active checklist or checklist evidence"
       )
+
+  return _result("DEVIATION" if reasons else "OK", reasons, index=index)
+
+
+def audit_plan_todo_bridge(cwd):
+  index, reasons = _read_index(cwd)
+  if reasons:
+    return _result("DEVIATION", reasons, index=index)
+
+  for entry in index.get("items", []):
+    if not isinstance(entry, dict):
+      continue
+    if entry.get("kind") != "plan" or entry.get("status") not in {"promoted", "active"}:
+      continue
+    item, item_reasons = _read_item_by_entry(cwd, entry)
+    if item_reasons:
+      reasons.extend(item_reasons)
+      continue
+    if item.get("execution_history"):
+      continue
+    plan_id = entry["id"]
+    plan_path = entry.get("path") or _relative_item_path("plan", plan_id)
+    if _has_linked_todo(cwd, index, plan_id, plan_path):
+      continue
+    if _has_runtime_or_evidence_checklist(cwd, plan_id):
+      continue
+    reasons.append(
+      f"{plan_id} has no linked TODO/checklist evidence"
+    )
 
   return _result("DEVIATION" if reasons else "OK", reasons, index=index)
 

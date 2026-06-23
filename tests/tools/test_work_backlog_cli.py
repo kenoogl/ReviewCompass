@@ -105,6 +105,61 @@ class WorkBacklogCliTests(unittest.TestCase):
     )
     return item_path
 
+  def _write_plan_item(self, item_id="plan-bridge", status="candidate"):
+    index_path = self.tmpdir / ".reviewcompass/backlog/index.yaml"
+    item_path = self.tmpdir / f".reviewcompass/backlog/plans/{item_id}.yaml"
+    index_path.parent.mkdir(parents=True, exist_ok=True)
+    item_path.parent.mkdir(parents=True, exist_ok=True)
+    index = {
+      "schema_version": "reviewcompass-backlog-index-v1",
+      "items": [
+        {
+          "id": item_id,
+          "kind": "plan",
+          "title": "Plan to bridge into TODO",
+          "status": status,
+          "path": f".reviewcompass/backlog/plans/{item_id}.yaml",
+          "source_unit_id": "unit-test",
+          "created_at": "2026-06-23T00:00:00+00:00",
+        },
+      ],
+    }
+    item = {
+      "schema_version": "reviewcompass-backlog-item-v1",
+      "id": item_id,
+      "kind": "plan",
+      "title": "Plan to bridge into TODO",
+      "status": status,
+      "source_unit_id": "unit-test",
+      "created_at": "2026-06-23T00:00:00+00:00",
+      "index_path": ".reviewcompass/backlog/index.yaml",
+      "provenance": {
+        "created_by": "llm",
+        "source_ref": "conversation:user",
+        "reason": "plan から TODO への証跡を検査する",
+      },
+      "implementation_plan": {
+        "phases": [
+          {
+            "id": "P1",
+            "title": "plan work",
+            "tasks": [
+              "plan の作業を TODO 化する",
+            ],
+          },
+        ],
+      },
+    }
+    index_path.write_text(
+      yaml.safe_dump(index, allow_unicode=True, sort_keys=False),
+      encoding="utf-8",
+    )
+    item_path.write_text(
+      yaml.safe_dump(item, allow_unicode=True, sort_keys=False),
+      encoding="utf-8",
+    )
+    return item_path
+
   def test_add_plan_creates_index_and_item_yaml(self):
     result = run_script(
       [
@@ -741,6 +796,24 @@ class WorkBacklogCliTests(unittest.TestCase):
     data = json.loads(result.stdout)
     self.assertEqual(data["verdict"], "DEVIATION")
     self.assertIn("todo-bridge", data["reasons"][0])
+
+  def test_audit_plan_todo_bridge_rejects_promoted_plan_without_todo_or_checklist(self):
+    self._write_plan_item(status="promoted")
+
+    result = run_script(
+      [
+        "work-backlog",
+        "audit-plan-todo-bridge",
+        "--json",
+      ],
+      cwd=self.tmpdir,
+    )
+
+    assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 2, result.stdout + result.stderr)
+    data = json.loads(result.stdout)
+    self.assertEqual(data["verdict"], "DEVIATION")
+    self.assertIn("plan-bridge has no linked TODO/checklist evidence", data["reasons"][0])
 
   def test_start_checklist_derives_ids_from_backlog_todo_and_active_unit(self):
     self._write_todo_item()

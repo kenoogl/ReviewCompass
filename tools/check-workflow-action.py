@@ -8375,6 +8375,8 @@ def cmd_work_backlog(args):
     )
   elif args.work_backlog_command == "audit-checklist-bridge":
     response = work_backlog.audit_checklist_bridge(Path.cwd())
+  elif args.work_backlog_command == "audit-plan-todo-bridge":
+    response = work_backlog.audit_plan_todo_bridge(Path.cwd())
   elif args.work_backlog_command == "audit-checklist-coverage":
     response = work_backlog.audit_checklist_coverage(
       Path.cwd(),
@@ -9218,6 +9220,11 @@ def main():
   wb_sub.add_parser(
     "audit-checklist-bridge",
     help="backlog TODO と runtime/evidence checklist の接続を監査する",
+    parents=[common_parser],
+  )
+  wb_sub.add_parser(
+    "audit-plan-todo-bridge",
+    help="backlog plan と TODO/checklist/evidence の接続を監査する",
     parents=[common_parser],
   )
   wb_audit_coverage = wb_sub.add_parser(
