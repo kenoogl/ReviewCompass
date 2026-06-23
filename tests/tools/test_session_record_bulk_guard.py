@@ -2,7 +2,7 @@
 
 背景：一括 backfill（--session なし）は、まだ終わっていないセッション（実行中の
 自分自身を含む）を掴むことがあり、後で取り込み直し＝差分のたまり（churn）を生む。
-going-forward 取り込みは SessionEnd フックの単一取り込み（--session）が担い、過去
+going-forward 取り込みは session-record-capture-previous-codex.py が担い、過去
 ログの一括取り込みは完了済みのため、一括スキャンは既定で無効にする。どうしても
 必要な一度きりの過去ログ取り込みは明示フラグ --historical-import で許可する。
 
@@ -74,7 +74,11 @@ class BulkBackfillGuardTests(unittest.TestCase):
                      "止まったときは層1 を書かない")
     msg = r.stdout + r.stderr
     self.assertIn("--session", msg, "単一取り込みへの案内が必要")
-    self.assertIn("フック", msg, "フックが going-forward を担う旨の案内が必要")
+    self.assertIn(
+      "session-record-capture-previous-codex.py",
+      msg,
+      "going-forward を担う CLI への案内が必要",
+    )
 
   def test_bulk_with_flag_runs(self):
     """明示フラグ --historical-import を付けたときだけ一括スキャンを実行する。"""

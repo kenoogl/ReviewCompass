@@ -77,41 +77,13 @@ Codex の hook 設定で呼び出すスクリプトを置く。
 
 **登録**：`.codex/hooks.json` の `hooks.UserPromptSubmit` セクションに登録済み。これはレビュー用プロンプト規律の注入専用であり、セッション記録の取り込みには使わない。
 
-### `session-record-capture-current-on-session-end.sh`（SessionEnd hook）
+### `session-record-capture-previous-codex.sh`（SessionStart hook）
 
-**役割**：Codex の `SessionEnd` を合図に、payload の current `session_id` と `cwd` から現セッションの rollout を 1 件だけ選び、正式な 2 層セッション記録へ取り込む。
+**役割**：新しい Codex セッション開始時に、payload の current `session_id` と `cwd` を使って、現在セッション以外の未記録 Codex rollout を 1 件だけ正式な 2 層セッション記録へ取り込む。手動 CLI は既定で最大 5 件まで連続回収できるが、hook では `--max-count 1` を指定してセッション開始時の副作用を抑える。
 
-`TODO_NEXT_SESSION.md` の更新は、セッション会話記録の取り込みトリガーにしない。`UserPromptSubmit` は発話ごと、`PostToolUse` はファイル操作ごとに呼ばれ得るため、会話記録取り込み用途では使用禁止とする。明示回収が必要な場合は、終了済み rollout を指定して `tools/session-record-backfill.py --session <jsonl> --source codex` を実行する。
+記録は生ログの丸写しではない。`$HOME/.codex/sessions/.../rollout-*.jsonl` を一次ソースにし、`tools/session-record-capture-previous-codex.py` から `tools/session-record-backfill.py --session <jsonl> --source codex` を呼び、`.reviewcompass/evidence/sessions/` の整形済み転写と `docs/sessions/` の人間向け記録を生成する。
 
-**2026-06-24 実装反映**：hook は `SessionEnd` の current `session_id` と `cwd` を使い、`$HOME/.codex/sessions` 配下から `session_meta.payload.id == session_id` かつ `cwd` が一致または配下の rollout を選ぶ。取り込みは `tools/session-record-backfill.py --session <jsonl> --source codex` が担い、`.reviewcompass/evidence/sessions/` と `docs/sessions/` へ正式記録を作る。`reason` が `clear` 以外の非空値の場合は、コンテキスト圧縮などの中間終了としてスキップする。
-
-**入力**：標準入力で Codex の SessionEnd JSON ペイロードを受け取る。
-
-```json
-{"hook_event_name":"SessionEnd","session_id":"<id>","cwd":"/path/to/repo","reason":"clear"}
-```
-
-**動作**：
-
-1. `hook_event_name` が `SessionEnd` でなければ `ignored_event` を記録して exit 0
-2. `reason` が `clear` 以外の非空値なら `non_final_session_end` を記録して exit 0
-3. `session_id` が無ければ、並行セッション誤回収を避けるため推測せず `no_current_session_id` で exit 0
-4. `cwd` が無ければ `no_cwd` で exit 0
-5. `$HOME/.codex/sessions` 配下から `session_meta.payload.id == session_id` かつ `cwd` が一致または配下の rollout を選ぶ
-6. 選べた rollout を `tools/session-record-backfill.py --session <jsonl> --source codex` へ渡す
-7. 取り込めない場合も含め常に exit 0
-
-**出力先**：既定は `.reviewcompass/evidence/sessions/` と `docs/sessions/`。テスト用に `RC_SESSION_EVIDENCE_DIR`、`RC_SESSION_DOCS_DIR` で差し替え可能。
-
-**診断ログ**：hook が呼ばれたか、どの理由で通過したかを後から確認できるよう、既定で `.reviewcompass/runtime/session-record-capture-current-on-session-end.jsonl` に JSON Lines を追記する。テスト用に `RC_SESSION_CAPTURE_HOOK_LOG` で差し替え可能。主な `event` は `ignored_event`、`non_final_session_end`、`no_current_session_id`、`no_cwd`、`no_codex_root`、`no_current_session`、`selected`、`captured`、`capture_failed`。
-
-**昇格時の current 確認**：旧下書きを手動昇格する場合、`--session-id` には正式記録へ昇格したい終了済みセッションの ID を渡す。`--current-session-id` には、昇格対象ではなく今動いている Codex セッションの ID を渡す。`selected` が無く current ID を取得できない場合は推測せず、昇格操作を行わない。
-
-**登録**：`.codex/hooks.json` の `hooks.SessionEnd` セクションに登録済み。`PostToolUse` と `UserPromptSubmit` には登録しない。クラッシュ、hook 失敗、または `session_id` が取れない場合は、終了済み rollout を指定した `tools/session-record-backfill.py --session <jsonl> --source codex` による明示回収を使う。
-
-### `session-record-promote-previous-draft.sh`（SessionStart hook）
-
-**役割**：新しい Codex セッション開始時に、現 session_id と異なる runtime 下書きを新しい順に確認し、最初に検証できた 1 件を正式 2 層記録へ昇格する。Codex 公式 hook 仕様では `SessionStart` が thread scope で利用できるため、前セッションの正式化はこの hook が担う。`Stop` は turn scope のため、セッション終了確定には使わない。
+`TODO_NEXT_SESSION.md` の更新、`PostToolUse`、`UserPromptSubmit`、`SessionEnd` は、Codex セッション会話記録の取り込みトリガーにしない。明示回収が必要な場合は、この hook と同じ CLI を手動実行する。
 
 **入力**：標準入力で Codex の SessionStart JSON ペイロードを受け取る。
 
@@ -122,18 +94,46 @@ Codex の hook 設定で呼び出すスクリプトを置く。
 **動作**：
 
 1. `hook_event_name` が `SessionStart` でなければ `ignored_event` を記録して exit 0
-2. `session_id` または `cwd` が無ければ何もせず exit 0
-3. runtime 下書きディレクトリから `codex-<session_id>.md` を探す
-4. current `session_id` と同じ下書きは除外する
-5. 残った下書きを新しい順に選ぶ。候補の hash が不一致の場合は `previous_draft_in_progress`、検証不能なら `previous_draft_unverifiable` を記録して次候補へ進む
-6. 候補の下書き frontmatter `source_sha256` と現在の元 rollout の sha256 が一致する場合だけ、`tools/session-record-promote-draft.py` に current `session_id` と出力先を渡して昇格する
-7. 昇格失敗も含め常に exit 0
+2. `session_id` が無ければ `no_current_session_id` で exit 0
+3. `cwd` が無ければ `no_cwd` で exit 0
+4. `tools/session-record-capture-previous-codex.py --current-session-id <current> --repo-path <cwd>` を呼ぶ
+5. CLI は current `session_id` を除外し、既存記録に `session_id` がある候補を飛ばし、hook では最新の未記録過去 rollout 1 件だけを正式 2 層記録へ取り込む
+6. 取り込めない場合も含め常に exit 0
 
-**診断ログ**：既定で `.reviewcompass/runtime/session-record-promote-previous-draft.jsonl` に JSON Lines を追記する。テスト用に `RC_SESSION_PROMOTE_HOOK_LOG` で差し替え可能。主な `event` は `missing_jq`、`ignored_event`、`no_current_session_id`、`no_cwd`、`no_draft_dir`、`no_promote_tool`、`no_previous_draft`、`selected`、`previous_draft_in_progress`、`previous_draft_unverifiable`、`promoted`、`promote_failed`。`missing_jq` は Codex payload の解析に必要な jq が見つからないため、安全側の no-op にしたことを表す。`previous_draft_in_progress` は、下書き作成時の `source_sha256` と現在の元 rollout の sha256 が不一致で、対象 rollout がまだ伸びている可能性があるため正式化しなかったことを表す。`previous_draft_unverifiable` は、下書きまたは rollout の hash 確認に必要な情報が不足しているため正式化しなかったことを表す。複数の終了済み下書きが溜まっている場合、この hook は新しい順に候補を確認し、検証できた最初の 1 件だけを昇格する。不一致または検証不能の候補は診断ログに残し、次回 `SessionStart` または明示 backfill の対象として残す。
+**手動実行**：
 
-**登録**：`.codex/hooks.json` の `hooks.SessionStart` セクションに matcher = `"startup|resume"` で登録済み。配置・変更後は Codex の GUI 設定画面または `/hooks` で利用者が hook を信頼する必要がある。
+```bash
+python3 tools/session-record-capture-previous-codex.py \
+  --current-session-id <current-session-id> \
+  --repo-path /path/to/repo
+```
 
-**依存**：bash、jq、Python、`tools/session-record-promote-draft.py`。jq が無い場合は Codex payload を読めないため、`missing_jq` を記録して安全側の no-op にする。導入時チェックでも jq の存在を確認する。
+確認だけなら `--list` を付ける。既定では対象 repo の全件を、日時・短縮 ID・状態（現在 / 記録済み / 未記録）の表で表示する。直近 N 件だけ見たい場合は `--recent <件数>` を付ける。機械処理用の JSONL が必要な場合は `--format jsonl` を付ける。
+
+```bash
+python3 tools/session-record-capture-previous-codex.py \
+  --current-session-id <current-session-id> \
+  --repo-path /path/to/repo \
+  --list
+
+python3 tools/session-record-capture-previous-codex.py \
+  --current-session-id <current-session-id> \
+  --repo-path /path/to/repo \
+  --list --recent 10
+
+python3 tools/session-record-capture-previous-codex.py \
+  --current-session-id <current-session-id> \
+  --repo-path /path/to/repo \
+  --list --format jsonl
+```
+
+手動実行は既定で最大 5 件まで処理する。件数を変える場合は `--max-count <件数>` を付ける。
+
+**診断ログ**：既定で `.reviewcompass/runtime/session-record-capture-previous-codex.jsonl` に JSON Lines を追記する。hook 側の主な `event` は `missing_jq`、`ignored_event`、`no_current_session_id`、`no_cwd`、`no_capture_tool`、`capture_checked`、`capture_failed`。CLI 側は `current_session_skipped`、`already_recorded`、`selected`、`captured`、`capture_failed`、`no_unrecorded_previous_session` を同じログへ追記する。
+
+**登録**：`.codex/hooks.json` の `hooks.SessionStart` セクションに matcher = `"startup|resume"` で登録済み。`.codex/hooks.json` の `hooks.SessionEnd` には Codex セッション記録 hook を登録しない。配置・変更後は Codex の GUI 設定画面または `/hooks` で利用者が hook を信頼する必要がある。
+
+**依存**：bash、jq、Python、`tools/session-record-capture-previous-codex.py`、`tools/session-record-backfill.py`。jq が無い場合は Codex payload を読めないため、`missing_jq` を記録して安全側の no-op にする。
 
 ## テスト
 

@@ -35,9 +35,10 @@ def test_build_package_copies_allowlisted_files_and_skips_excluded_files(tmp_pat
   assert "runtime/prompts/primary_detection/primary_reviewer.prompt.md" in copied_paths
   assert "tools/check-workflow-action.py" in copied_paths
   assert "tools/session-record-backfill.py" in copied_paths
+  assert "tools/session-record-capture-previous-codex.py" in copied_paths
   assert "tools/session_record_extractor/record.py" in copied_paths
   assert "learning/workflow/schemas/proposal.schema.json" in copied_paths
-  assert "templates/hooks/session-record-capture-current-on-session-end.sh.template" in copied_paths
+  assert "templates/hooks/session-record-capture-previous-codex.sh.template" in copied_paths
   assert "analysis/README.md" in copied_paths
   assert "evaluation/intake/bundle_intake.py" in copied_paths
 
@@ -47,7 +48,7 @@ def test_build_package_copies_allowlisted_files_and_skips_excluded_files(tmp_pat
   ).is_file()
   assert (output_dir / "tools/session-record-backfill.py").is_file()
   assert (
-    output_dir / "templates/hooks/session-record-capture-current-on-session-end.sh.template"
+    output_dir / "templates/hooks/session-record-capture-previous-codex.sh.template"
   ).is_file()
   assert not (output_dir / "docs/notes/2026-06-02-workflow-navigation-implementation-plan.md").exists()
   assert not (output_dir / "tools/api_providers/tests/test_run_review.py").exists()

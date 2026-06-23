@@ -77,7 +77,9 @@ include:
   - path: tools/api_providers/prompt_templates/*.md
     reason: Provider-specific API prompt templates.
   - path: tools/session-record-backfill.py
-    reason: Session record single-capture CLI used by deployed Codex session capture hook.
+    reason: Session record single-capture CLI used by session capture tools.
+  - path: tools/session-record-capture-previous-codex.py
+    reason: Codex previous-session capture CLI used manually and by SessionStart hook.
   - path: tools/session-record-extractor.py
     reason: Session record extraction CLI used by session backfill.
   - path: tools/session_record_extractor/*.py
@@ -183,7 +185,7 @@ include:
     reason: Target app multi-LLM agent entry discipline template.
   - path: templates/hooks/pre-bash-precheck.sh.template
     reason: Target app commit/push precheck hook template (placeholder substitution at setup).
-  - path: templates/hooks/session-record-capture-current-on-session-end.sh.template
+  - path: templates/hooks/session-record-capture-previous-codex.sh.template
     reason: Target app Codex previous-session capture hook template (placeholder substitution at setup).
   - path: templates/hooks/claude-settings.json.template
     reason: Claude Code hook registration template for target apps.

@@ -16,6 +16,7 @@ REQUIRED_ALLOWLIST = {
   "tools/api_providers/prepare_post_write_review.py",
   "tools/api_providers/post_write_review_flow.py",
   "tools/session-record-backfill.py",
+  "tools/session-record-capture-previous-codex.py",
   "tools/session-record-extractor.py",
   "tools/session_record_extractor/*.py",
   "tools/conformance-evaluation-check.py",
@@ -40,7 +41,7 @@ REQUIRED_ALLOWLIST = {
   "analysis/**",
   "evaluation/**",
   "templates/specs/spec.json.template",
-  "templates/hooks/session-record-capture-current-on-session-end.sh.template",
+  "templates/hooks/session-record-capture-previous-codex.sh.template",
 }
 
 LEGACY_GUIDANCE_SOURCE_INCLUDES = {

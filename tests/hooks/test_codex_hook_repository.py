@@ -13,8 +13,7 @@ CODEX_HOOK_FILES = [
   ".codex/hooks/README.md",
   ".codex/hooks/pre-bash-precheck.sh",
   ".codex/hooks/review-prompt-guide-inject.sh",
-  ".codex/hooks/session-record-capture-current-on-session-end.sh",
-  ".codex/hooks/session-record-promote-previous-draft.sh",
+  ".codex/hooks/session-record-capture-previous-codex.sh",
 ]
 
 
@@ -57,16 +56,16 @@ class CodexHookRepositoryTests(unittest.TestCase):
       "hooks.json は repo 相対の Codex hook を呼び出す必要がある",
     )
 
-  def test_codex_session_end_capture_hook_is_registered(self):
+  def test_codex_session_end_capture_hook_is_not_registered(self):
     hooks_config = json.loads((REPO_ROOT / ".codex/hooks.json").read_text())
     commands = [
       hook["command"]
       for group in hooks_config["hooks"].get("SessionEnd", [])
       for hook in group.get("hooks", [])
     ]
-    self.assertTrue(
-      any(".codex/hooks/session-record-capture-current-on-session-end.sh" in c for c in commands),
-      "Codex SessionEnd で現セッション取り込み hook を登録する必要がある",
+    self.assertFalse(
+      any("session-record-capture-current-on-session-end" in c for c in commands),
+      "Codex SessionEnd で現セッション取り込み hook を登録してはいけない",
     )
 
   def test_codex_post_tool_todo_capture_hook_is_not_registered(self):
@@ -81,7 +80,7 @@ class CodexHookRepositoryTests(unittest.TestCase):
       "TODO 更新を観測する PostToolUse でセッション記録を取り込んではいけない",
     )
 
-  def test_codex_session_start_promote_previous_draft_hook_is_registered(self):
+  def test_codex_session_start_capture_previous_codex_hook_is_registered(self):
     hooks_config = json.loads((REPO_ROOT / ".codex/hooks.json").read_text())
     commands = [
       hook["command"]
@@ -89,21 +88,21 @@ class CodexHookRepositoryTests(unittest.TestCase):
       for hook in group.get("hooks", [])
     ]
     self.assertTrue(
-      any(".codex/hooks/session-record-promote-previous-draft.sh" in c for c in commands),
-      "Codex SessionStart で前セッション下書きの正式昇格 hook を登録する必要がある",
+      any(".codex/hooks/session-record-capture-previous-codex.sh" in c for c in commands),
+      "Codex SessionStart で未記録の過去セッション回収 hook を登録する必要がある",
     )
     matchers = [
       group.get("matcher", "")
       for group in hooks_config["hooks"].get("SessionStart", [])
       for hook in group.get("hooks", [])
-      if ".codex/hooks/session-record-promote-previous-draft.sh" in hook.get("command", "")
+      if ".codex/hooks/session-record-capture-previous-codex.sh" in hook.get("command", "")
     ]
     self.assertTrue(
       any("startup" in matcher and "resume" in matcher for matcher in matchers),
-      "SessionStart hook は startup/resume の開始契機で前セッション昇格を試みる必要がある",
+      "SessionStart hook は startup/resume の開始契機で過去セッション回収を試みる必要がある",
     )
 
-  def test_codex_session_start_promote_previous_draft_hook_template_is_registered(self):
+  def test_codex_session_start_capture_previous_codex_hook_template_is_registered(self):
     hooks_config = json.loads(
       (REPO_ROOT / "templates" / "hooks" / "codex-hooks.json.template").read_text()
     )
@@ -113,14 +112,14 @@ class CodexHookRepositoryTests(unittest.TestCase):
       for hook in group.get("hooks", [])
     ]
     self.assertTrue(
-      any(".codex/hooks/session-record-promote-previous-draft.sh" in c for c in commands),
-      "Codex hook 雛形も SessionStart の前セッション昇格 hook を登録する必要がある",
+      any(".codex/hooks/session-record-capture-previous-codex.sh" in c for c in commands),
+      "Codex hook 雛形も SessionStart の過去セッション回収 hook を登録する必要がある",
     )
     matchers = [
       group.get("matcher", "")
       for group in hooks_config["hooks"].get("SessionStart", [])
       for hook in group.get("hooks", [])
-      if ".codex/hooks/session-record-promote-previous-draft.sh" in hook.get("command", "")
+      if ".codex/hooks/session-record-capture-previous-codex.sh" in hook.get("command", "")
     ]
     self.assertTrue(
       any("startup" in matcher and "resume" in matcher for matcher in matchers),

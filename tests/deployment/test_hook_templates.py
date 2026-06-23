@@ -6,11 +6,16 @@ from pathlib import Path
 REPO_ROOT = Path(__file__).resolve().parents[2]
 
 
-def test_codex_hooks_template_registers_session_capture_only_on_session_end():
+def test_codex_hooks_template_registers_previous_capture_only_on_session_start():
   template = json.loads(
     (REPO_ROOT / "templates/hooks/codex-hooks.json.template").read_text(encoding="utf-8")
   )
   hooks = template["hooks"]
+  session_start_commands = [
+    hook["command"]
+    for group in hooks.get("SessionStart", [])
+    for hook in group.get("hooks", [])
+  ]
   session_end_commands = [
     hook["command"]
     for group in hooks.get("SessionEnd", [])
@@ -28,9 +33,13 @@ def test_codex_hooks_template_registers_session_capture_only_on_session_end():
   ]
 
   assert any(
-    ".codex/hooks/session-record-capture-current-on-session-end.sh" in command
+    ".codex/hooks/session-record-capture-previous-codex.sh" in command
+    for command in session_start_commands
+  ), "SessionStart に未記録過去セッション回収 hook を登録する必要がある"
+  assert not any(
+    "session-record-capture-current-on-session-end" in command
     for command in session_end_commands
-  ), "SessionEnd に現セッション取り込み hook を登録する必要がある"
+  ), "SessionEnd に現セッション取り込み hook を登録してはいけない"
   assert not any(
     "session-record-capture-current" in command
     for command in post_tool_commands
@@ -41,20 +50,20 @@ def test_codex_hooks_template_registers_session_capture_only_on_session_end():
   ), "UserPromptSubmit は発話ごとに誤発火し得るため登録しない"
 
 
-def test_session_capture_template_is_deployable_without_local_user_paths():
+def test_session_capture_previous_template_is_deployable_without_local_user_paths():
   text = (
-    REPO_ROOT / "templates/hooks/session-record-capture-current-on-session-end.sh.template"
+    REPO_ROOT / "templates/hooks/session-record-capture-previous-codex.sh.template"
   ).read_text(encoding="utf-8")
 
   assert "{{REVIEWCOMPASS_PYTHON}}" in text
   assert "{{REVIEWCOMPASS_DIR}}" in text
   assert "/Users/keno" not in text
   assert "/Users/Daily/Development/ReviewCompass" not in text
-  assert re.search(r"tools/session-record-backfill\.py", text)
+  assert re.search(r"tools/session-record-capture-previous-codex\.py", text)
   assert ".reviewcompass/evidence/sessions" in text
-  assert ".reviewcompass/runtime/session-record-capture-current-on-session-end.jsonl" in text
+  assert ".reviewcompass/runtime/session-record-capture-previous-codex.jsonl" in text
   assert "hook_event_name" in text
   assert "ignored_event" in text
-  assert "SessionEnd" in text
+  assert "SessionStart" in text
   assert "session_id" in text
-  assert "captured" in text
+  assert "capture_checked" in text

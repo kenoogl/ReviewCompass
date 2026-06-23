@@ -173,17 +173,28 @@ API key は設定ファイルに書かず、環境変数など配布物外の方
 
 commit／push の事前検査 hook を対象アプリへ導入する。LLM が規律を読み忘れても、不可逆操作だけは機械が止める防衛線になる。初期設定の標準手順として導入し、見送る場合は利用者の明示判断として完了報告に記録する。
 
-1. 配布物の `templates/hooks/pre-bash-precheck.sh.template`、`templates/hooks/session-record-capture-current-on-session-end.sh.template`、`templates/hooks/session-record-promote-previous-draft.sh.template` のプレースホルダを**絶対パス**へ置換する。
+1. 配布物の `templates/hooks/pre-bash-precheck.sh.template`、`templates/hooks/session-record-capture-previous-codex.sh.template` のプレースホルダを**絶対パス**へ置換する。
    - `{{REVIEWCOMPASS_PYTHON}}`：依存（PyYAML 等）導入済みの Python 実行系
    - `{{REVIEWCOMPASS_DIR}}`：配布物 root
 2. 置換後のファイルを、対象アプリの `.claude/hooks/pre-bash-precheck.sh` と `.codex/hooks/pre-bash-precheck.sh` の両方へ同一内容で複製する。同名の既存ファイルがある場合は上書きせず、既存内容と置換後の内容を利用者へ提示して扱いを確認する。
-3. 置換後の `session-record-capture-current-on-session-end.sh.template` と `session-record-promote-previous-draft.sh.template` は、対象アプリの `.codex/hooks/` に配置する。同名の既存ファイルがある場合は上書きせず、既存内容と置換後の内容を利用者へ提示して扱いを確認する。
+3. 置換後の `session-record-capture-previous-codex.sh.template` は、対象アプリの `.codex/hooks/` に配置する。同名の既存ファイルがある場合は上書きせず、既存内容と置換後の内容を利用者へ提示して扱いを確認する。
 4. `templates/hooks/claude-settings.json.template` と `templates/hooks/codex-hooks.json.template` から、`.claude/settings.json` と `.codex/hooks.json` を作る。いずれも既存ファイルがある場合は上書きせず、hooks キーだけを既存へ合流させる（合流して書き込む内容を、書き込み前に利用者へ提示する）。
 5. 静的チェック：複製した hook ファイルに未置換トークン（`{{`）が残っていないこと、置換先のパスが実在すること、`jq` が利用できることを確認する。
 6. Codex 側の環境設定：Codex の非 managed command hook は、配置しただけでは実行されない。Codex の GUI 設定画面または CLI の `/hooks` で、対象アプリのプロジェクト hook が認識されていることを確認し、利用者が内容を確認したうえで信頼する。未信頼のままでは hook 一覧に出ても Active 0 / review 待ちになり、`PreToolUse` も `PostToolUse` も実行されない。hook ファイルや `.codex/hooks.json` を変更した場合は、定義 hash が変わるため再度 review / trust が必要になる。
-7. Codex の現セッション記録 hook は `SessionEnd` に登録し、payload の current `session_id` と `cwd` から現セッション rollout を選び、`tools/session-record-backfill.py --session <jsonl> --source codex` で正式 2 層記録へ取り込む。`TODO_NEXT_SESSION.md` の更新はセッション会話記録の取り込みトリガーにしない。`PostToolUse` と `UserPromptSubmit` は発話・ファイル操作ごとに誤発火し得るため使用しない。動作確認では、対象アプリの `.reviewcompass/runtime/session-record-capture-current-on-session-end.jsonl` を確認する。`selected` と `captured` があれば取り込み成功、`non_final_session_end` は中間終了のスキップ、`no_current_session_id` は current session_id 不在、`no_current_session` は rollout 未検出、`capture_failed` は取り込み失敗である。
-8. Codex の前セッション正式化 hook は `SessionStart` に matcher = `startup|resume` で登録し、現 `session_id` と異なる runtime 下書きを新しい順に確認して、検証できた最初の 1 件を正式 2 層記録へ昇格する。正式化前に下書き frontmatter `source_sha256` と現在の元 rollout の sha256 を比較し、一致した場合だけ昇格する。不一致なら `previous_draft_in_progress`、検証不能なら `previous_draft_unverifiable` を記録し、次候補へ進む。複数の終了済み下書きが溜まっている場合も、この hook が 1 回の `SessionStart` で昇格するのは 1 件だけであり、残りは次回 `SessionStart` または明示 backfill の対象とする。動作確認では、対象アプリの `.reviewcompass/runtime/session-record-promote-previous-draft.jsonl` を確認する。`selected` と `promoted` があれば正式化成功、`missing_jq` は jq 不在、`no_current_session_id` は current session_id 不在、`no_cwd` は cwd 不在、`no_draft_dir` は下書きディレクトリ不在、`no_previous_draft` は昇格対象なし、`previous_draft_in_progress` は下書き作成後に rollout が伸びた可能性があるため安全側でスキップ、`previous_draft_unverifiable` は hash 確認情報不足、`no_promote_tool` は昇格 helper 不在、`promote_failed` はその他の昇格失敗である。`Stop` は turn scope のためセッション終了 hook として使わない。
-9. TODO を更新しないセッション、クラッシュ、hook 失敗、または Codex の `session_id` が取れない場合は、自動 fallback を追加せず、終了済みの対象 rollout を指定して `tools/session-record-backfill.py --session <jsonl> --source codex` を明示実行する。
+7. Codex の過去セッション回収 hook は `SessionStart` に matcher = `startup|resume` で登録し、payload の current `session_id` と `cwd` から、現在セッション以外の未記録 Codex rollout を 1 件だけ選ぶ。選んだ rollout は `tools/session-record-capture-previous-codex.py --max-count 1` から `tools/session-record-backfill.py --session <jsonl> --source codex` を呼び、`.reviewcompass/evidence/sessions/` の整形済み転写と `docs/sessions/` の人間向け記録の 2 層へ生成する。生ログの丸写しはしない。
+8. Codex のセッション会話記録では、`TODO_NEXT_SESSION.md` の更新、`PostToolUse`、`UserPromptSubmit`、`SessionEnd` を取り込みトリガーにしない。旧 `SessionEnd` 現セッション取り込み方式と runtime 下書き昇格方式は標準 hook 登録から外す。動作確認では、対象アプリの `.reviewcompass/runtime/session-record-capture-previous-codex.jsonl` を確認する。`captured` があれば取り込み成功、`already_recorded` は既存記録あり、`current_session_skipped` は現在セッション除外、`no_unrecorded_previous_session` は未記録過去セッションなし、`capture_failed` は取り込み失敗である。
+9. 手動回収が必要な場合は、現在の `session_id` を指定して同じ CLI を実行する。手動実行は既定で最大 5 件まで処理する。確認リストだけなら `--list` を付ける。`--list` は既定で対象 repo の全件を、日時・短縮 ID・状態（現在 / 記録済み / 未記録）の表で表示し、直近 N 件だけ見たい場合は `--recent <件数>` を付ける。機械処理用の JSONL が必要な場合は `--format jsonl` を付ける。
+
+   ```bash
+   python3 tools/session-record-capture-previous-codex.py \
+     --current-session-id <current-session-id> \
+     --repo-path /path/to/repo
+
+   python3 tools/session-record-capture-previous-codex.py \
+     --current-session-id <current-session-id> \
+     --repo-path /path/to/repo \
+     --list --recent 10
+   ```
 10. 復旧手順：hook が「hook 設定不備」を理由に拒否する場合は、プレースホルダの置換値を確認して再置換する（テンプレートから作り直してよい）。Codex で hook が発火しない場合は、まず GUI 設定または `/hooks` で対象 hook が信頼済みか確認する。
 
 ## 11. 操縦 LLM 別の既定 variant

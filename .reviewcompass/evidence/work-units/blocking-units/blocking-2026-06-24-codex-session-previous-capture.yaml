@@ -1,0 +1,26 @@
+unit_id: blocking-2026-06-24-codex-session-previous-capture
+kind: blocking
+parent_unit_id: main-completed
+title: Replace Codex session capture with previous-session recording
+reason: >
+  直近の Codex session_id が会話ログとして記録されておらず、SessionEnd 依存の
+  現セッション取り込みでは未記録が残るため。
+status: completed
+entered_at: '2026-06-24T00:00:00+09:00'
+exited_at: '2026-06-24T00:00:00+09:00'
+return_conditions:
+  - current session_id を除外して未記録の過去 Codex session_id だけを記録できること
+  - 手動 CLI は既定最大 5 件、SessionStart hook は 1 件で同じ 2 層生成方式を使うこと
+  - 確認リストは全件表示を既定にし、指定時は直近 N 件に制限できること
+  - 標準 hook 登録から SessionEnd 現セッション取り込み方式を外すこと
+completion_summary: >
+  Added session-record-capture-previous-codex.py with default max-count 5,
+  registered the new SessionStart hook with max-count 1, removed SessionEnd
+  session capture from active hook config and deployment template, and updated
+  guidance/tests. Added --list for all-session status display by default and
+  --recent N for latest-N status display.
+plan_path: .reviewcompass/backlog/plans/plan-2026-06-24-codex-session-previous-capture.yaml
+verification:
+  - python3 -m unittest tests.tools.test_session_record_capture_previous_codex tests.hooks.test_codex_hook_repository tests.deployment.test_hook_templates -v
+returned_to:
+  unit_id: main-completed

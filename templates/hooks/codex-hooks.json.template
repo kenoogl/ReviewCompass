@@ -1,5 +1,5 @@
 {
-  "_comment": "対象アプリの .codex/hooks.json の雛形。pre-bash-precheck は Claude/Codex 共通、session-record-capture-current-on-session-end と session-record-promote-previous-draft は Codex 専用。",
+  "_comment": "対象アプリの .codex/hooks.json の雛形。pre-bash-precheck は Claude/Codex 共通、session-record-capture-previous-codex は Codex 専用。",
   "hooks": {
     "UserPromptSubmit": [
       {
@@ -18,18 +18,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash '.codex/hooks/session-record-promote-previous-draft.sh'",
-            "timeout": 60
-          }
-        ]
-      }
-    ],
-    "SessionEnd": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "bash '.codex/hooks/session-record-capture-current-on-session-end.sh'",
+            "command": "bash '.codex/hooks/session-record-capture-previous-codex.sh'",
             "timeout": 60
           }
         ]

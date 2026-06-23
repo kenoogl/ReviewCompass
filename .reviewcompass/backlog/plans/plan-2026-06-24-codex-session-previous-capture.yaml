@@ -1,0 +1,56 @@
+schema_version: reviewcompass-backlog-item-v1
+id: plan-2026-06-24-codex-session-previous-capture
+kind: plan
+title: Capture unrecorded previous Codex sessions without SessionEnd dependency
+status: completed
+source_unit_id: main-side-conversation
+created_at: '2026-06-24T00:00:00+09:00'
+completed_at: '2026-06-24T00:00:00+09:00'
+index_path: .reviewcompass/backlog/index.yaml
+provenance:
+  created_by: llm
+  source_ref: user-session-2026-06-24-session-id-recording-discussion
+  reason: >
+    直近 Codex session_id が会話ログとして記録されていないことを確認し、
+    SessionEnd 依存の現セッション取り込みではなく、現在 session_id を除外した
+    未記録過去セッション回収へ切り替えるため。
+summary: >
+  Codex rollout を一次ソースにし、生ログを丸写しせず、既存の 2 層生成
+  （.reviewcompass/evidence/sessions/ の整形済み転写、docs/sessions/ の
+  人間向け記録）を維持する。手動 CLI と SessionStart hook の 2 入口で、
+  current session_id を除外し、未記録の過去 session_id だけを記録する。
+  hook は 1 件、手動 CLI は既定で最大 5 件まで処理する。
+problem:
+  - SessionEnd hook が期待通り発火しない場合、直近セッションが未記録のまま残る。
+  - 現セッションを正式 2 層記録へ直接取り込むと、進行中ログを完了記録と誤読し得る。
+  - runtime 下書き昇格方式は、下書きが作られない場合に回収経路にならない。
+implementation:
+  - id: CSPC-1
+    title: Add manual previous-session capture CLI
+    status: completed
+    result: >
+      tools/session-record-capture-previous-codex.py を追加し、current session_id を除外、
+      既存記録済み session_id をスキップ、未記録過去 rollout を既定最大 5 件まで
+      session-record-backfill.py 経由で 2 層記録へ生成するようにした。確認リストは
+      --list で日時・短縮 ID・状態の全件表表示を既定にし、--recent N で直近 N 件へ
+      制限できる。機械処理用には --format jsonl を使う。
+  - id: CSPC-2
+    title: Replace Codex hook registration
+    status: completed
+    result: >
+      .codex/hooks.json と templates/hooks/codex-hooks.json.template から SessionEnd
+      現セッション取り込みを外し、SessionStart の session-record-capture-previous-codex.sh
+      へ切り替えた。
+  - id: CSPC-3
+    title: Update deployment and guidance
+    status: completed
+    result: >
+      deploy-manifest.yaml、hook README、初期設定ガイド、配布テストを新方式へ更新した。
+decisions:
+  - 現在 session_id は正式記録対象から常に除外する。
+  - 新方式でも生ログ保存ではなく 2 層生成を維持する。
+  - 標準 hook と配布テンプレートから旧 SessionEnd 現セッション取り込み方式を外す。
+  - SessionStart hook は 1 件だけ処理し、手動 CLI は既定上限 5 件で処理する。
+  - 確認リストは日時・短縮 ID・状態の全件表表示を既定とし、必要時だけ直近 N 件に絞る。
+verification:
+  - python3 -m unittest tests.tools.test_session_record_capture_previous_codex tests.hooks.test_codex_hook_repository tests.deployment.test_hook_templates -v

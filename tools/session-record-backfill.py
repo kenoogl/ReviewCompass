@@ -143,7 +143,7 @@ def main():
                       help="生成せず対象と件数だけ表示する")
   parser.add_argument("--historical-import", action="store_true",
                       help="一括スキャン（--session なし）を明示的に許可する。通常は使わない。"
-                           "going-forward は SessionEnd フックの単一取り込み（--session）が担い、"
+                           "going-forward は session-record-capture-previous-codex.py が担い、"
                            "過去ログの一括取り込みは完了済み。進行中セッションを掴み churn を生む"
                            "恐れがあるため、一度きりの過去ログ取り込み専用。")
   args = parser.parse_args()
@@ -167,9 +167,10 @@ def main():
     if not args.historical_import:
       print(
         "エラー: 一括 backfill（--session なし）は既定で無効です。\n"
-        "  これからの会話ログ取り込みは SessionEnd フックの単一取り込み（--session）が担います。\n"
+        "  これからの会話ログ取り込みは session-record-capture-previous-codex.py が担います。\n"
         "  過去ログの一括取り込みは完了済みです。\n"
-        "  終了済みセッション 1 件を回収するときは --session <jsonl> を使ってください。\n"
+        "  Codex の未記録過去セッション回収は tools/session-record-capture-previous-codex.py を使ってください。\n"
+        "  特定の終了済みセッション 1 件を直接回収するときだけ --session <jsonl> を使ってください。\n"
         "  どうしても一括が必要なときだけ --historical-import を付けてください"
         "（進行中セッションを掴み churn を生む恐れがあります）。",
         file=sys.stderr)
