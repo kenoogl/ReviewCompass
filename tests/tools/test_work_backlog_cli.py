@@ -908,6 +908,95 @@ class WorkBacklogCliTests(unittest.TestCase):
     self.assertEqual(data["verdict"], "DEVIATION")
     self.assertIn("plan-bridge has no linked TODO/checklist evidence", data["reasons"][0])
 
+  def test_audit_plan_todo_bridge_reports_candidate_partial_materialization(self):
+    plan_path = self._write_plan_item(status="candidate")
+    plan = yaml.safe_load(plan_path.read_text(encoding="utf-8"))
+    plan["implementation_plan"] = [
+      {"id": "P1", "title": "Completed slice"},
+      {"id": "P2", "title": "Missing slice"},
+    ]
+    plan["execution_slices"] = [
+      {
+        "phase_id": "P1",
+        "title": "Completed slice",
+        "status": "completed",
+        "todo_id": "todo-p1",
+        "checklist_id": "checklist-todo-p1",
+      },
+    ]
+    plan_path.write_text(
+      yaml.safe_dump(plan, allow_unicode=True, sort_keys=False),
+      encoding="utf-8",
+    )
+
+    result = run_script(
+      [
+        "work-backlog",
+        "audit-plan-todo-bridge",
+        "--json",
+      ],
+      cwd=self.tmpdir,
+    )
+
+    assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+    data = json.loads(result.stdout)
+    self.assertEqual(data["verdict"], "OK")
+    audited = data["audited_plans"][0]
+    self.assertEqual(audited["plan_id"], "plan-bridge")
+    self.assertEqual(audited["status"], "candidate")
+    self.assertEqual(
+      audited["materialization"]["summary"]["not_materialized_count"],
+      1,
+    )
+    self.assertEqual(audited["missing_execution_slice_phase_ids"], ["P2"])
+
+  def test_audit_plan_todo_bridge_rejects_promoted_partial_materialization(self):
+    plan_path = self._write_plan_item(status="promoted")
+    plan = yaml.safe_load(plan_path.read_text(encoding="utf-8"))
+    plan["implementation_plan"] = [
+      {"id": "P1", "title": "Completed slice"},
+      {"id": "P2", "title": "Missing slice"},
+    ]
+    plan["execution_slices"] = [
+      {
+        "phase_id": "P1",
+        "title": "Completed slice",
+        "status": "completed",
+        "todo_id": "todo-p1",
+        "checklist_id": "checklist-todo-p1",
+      },
+      {
+        "phase_id": "P2",
+        "title": "Missing slice",
+        "status": "not_materialized",
+        "todo_id": None,
+        "checklist_id": None,
+      },
+    ]
+    plan_path.write_text(
+      yaml.safe_dump(plan, allow_unicode=True, sort_keys=False),
+      encoding="utf-8",
+    )
+
+    result = run_script(
+      [
+        "work-backlog",
+        "audit-plan-todo-bridge",
+        "--json",
+      ],
+      cwd=self.tmpdir,
+    )
+
+    assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 2, result.stdout + result.stderr)
+    data = json.loads(result.stdout)
+    self.assertEqual(data["verdict"], "DEVIATION")
+    self.assertIn(
+      "plan-bridge has not_materialized slices: P2",
+      data["reasons"],
+    )
+
   def test_plan_todo_bridge_rejects_plan_without_linked_todo_and_suggests_creation(self):
     self._write_plan_item()
 

@@ -669,6 +669,36 @@ def _recommended_materialization_commands(plan, plan_id, plan_path, slices):
   }
 
 
+def _missing_execution_slice_phase_ids(plan):
+  execution_by_phase = _execution_slice_by_phase(plan)
+  return [
+    entry["phase_id"]
+    for entry in _implementation_slices(plan)
+    if entry["phase_id"] not in execution_by_phase
+  ]
+
+
+def _audit_materialization_record(cwd, entry, plan, index):
+  plan_id = entry["id"]
+  plan_path = entry.get("path") or _relative_item_path("plan", plan_id)
+  linked, linked_reasons = _linked_todo_entries(cwd, index, plan_id, plan_path)
+  materialization_slices = _materialization_for_plan(cwd, plan, linked)
+  missing = _missing_execution_slice_phase_ids(plan)
+  return {
+    "plan_id": plan_id,
+    "path": plan_path,
+    "status": entry.get("status"),
+    "linked_todo_ids": [item["id"] for item in linked],
+    "materialization": {
+      "slices": materialization_slices,
+      "summary": _materialization_summary(materialization_slices),
+      "next_candidates": _next_materialization_candidates(materialization_slices),
+    },
+    "missing_execution_slice_phase_ids": missing,
+    "linked_reasons": linked_reasons,
+  }
+
+
 def _has_runtime_or_evidence_checklist(cwd, item_id):
   for directory in (CHECKLIST_RUNTIME_DIR, CHECKLIST_EVIDENCE_DIR):
     root = Path(cwd) / directory
@@ -778,28 +808,45 @@ def audit_plan_todo_bridge(cwd):
   if reasons:
     return _result("DEVIATION", reasons, index=index)
 
+  audited_plans = []
   for entry in index.get("items", []):
     if not isinstance(entry, dict):
       continue
-    if entry.get("kind") != "plan" or entry.get("status") not in {"promoted", "active"}:
+    if entry.get("kind") != "plan":
       continue
     item, item_reasons = _read_item_by_entry(cwd, entry)
     if item_reasons:
       reasons.extend(item_reasons)
       continue
+    audit_record = _audit_materialization_record(cwd, entry, item, index)
+    audited_plans.append(audit_record)
+    reasons.extend(audit_record.get("linked_reasons", []))
+    if entry.get("status") not in {"promoted", "active"}:
+      continue
     if item.get("execution_history"):
       continue
-    plan_id = entry["id"]
-    plan_path = entry.get("path") or _relative_item_path("plan", plan_id)
-    if _has_linked_todo(cwd, index, plan_id, plan_path):
+    if (
+      not audit_record["linked_todo_ids"]
+      and not _has_runtime_or_evidence_checklist(cwd, entry["id"])
+    ):
+      reasons.append(
+        f"{entry['id']} has no linked TODO/checklist evidence"
+      )
+    not_materialized = [
+      slice_entry.get("phase_id")
+      for slice_entry in audit_record["materialization"]["slices"]
+      if slice_entry.get("status") == "not_materialized"
+    ]
+    if not_materialized:
+      reasons.append(
+        f"{entry['id']} has not_materialized slices: "
+        + ", ".join(not_materialized)
+      )
       continue
-    if _has_runtime_or_evidence_checklist(cwd, plan_id):
-      continue
-    reasons.append(
-      f"{plan_id} has no linked TODO/checklist evidence"
-    )
 
-  return _result("DEVIATION" if reasons else "OK", reasons, index=index)
+  response = _result("DEVIATION" if reasons else "OK", reasons, index=index)
+  response["audited_plans"] = audited_plans
+  return response
 
 
 def _decide(cwd, item_id, decision, decision_ref, reason):
