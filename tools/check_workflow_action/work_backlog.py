@@ -678,10 +678,36 @@ def _missing_execution_slice_phase_ids(plan):
   ]
 
 
+def _relative_file_exists(cwd, path):
+  if not isinstance(path, str) or not path:
+    return True
+  return (Path(cwd) / path).is_file()
+
+
+def _stale_execution_slice_link_reasons(cwd, plan_id, plan):
+  reasons = []
+  for entry in plan.get("execution_slices", []):
+    if not isinstance(entry, dict):
+      continue
+    phase_id = entry.get("phase_id") or "<unknown-phase>"
+    todo_path = entry.get("todo_path")
+    if not _relative_file_exists(cwd, todo_path):
+      reasons.append(
+        f"{plan_id} execution_slices {phase_id} todo_path missing: {todo_path}"
+      )
+    checklist_evidence_path = entry.get("checklist_evidence_path")
+    if not _relative_file_exists(cwd, checklist_evidence_path):
+      reasons.append(
+        f"{plan_id} execution_slices {phase_id} checklist_evidence_path missing: {checklist_evidence_path}"
+      )
+  return reasons
+
+
 def _audit_materialization_record(cwd, entry, plan, index):
   plan_id = entry["id"]
   plan_path = entry.get("path") or _relative_item_path("plan", plan_id)
   linked, linked_reasons = _linked_todo_entries(cwd, index, plan_id, plan_path)
+  linked_reasons.extend(_stale_execution_slice_link_reasons(cwd, plan_id, plan))
   materialization_slices = _materialization_for_plan(cwd, plan, linked)
   missing = _missing_execution_slice_phase_ids(plan)
   return {

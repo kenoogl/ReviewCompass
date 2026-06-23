@@ -1,0 +1,56 @@
+role: judgment
+provider: gemini-api
+model: gemini-3.1-pro-preview
+attempts: 1
+duration_seconds: 47.781
+decision:
+  may_proceed: false
+  reason: The checklist ordering violates TDD flow, and an implementation task is
+    missing for one of the red tests.
+  required_changes:
+  - Reorder the checklist so that PTC-RT-1 through PTC-RT-4 are executed before PTC-5A,
+    PTC-5B, and PTC-5C.
+  - Add an implementation task to the TODO and checklist to cover PTC-RT-3.
+  - Add an explicit checklist item to establish the guidance relocation plan regression
+    fixture prior to test creation.
+findings:
+- id: TQ-001
+  severity: ERROR
+  target_location: runtime_checklist.items
+  summary: Checklist order violates TDD flow
+  description: Red test items (PTC-RT-1 to PTC-RT-4) are listed after implementation
+    tasks (PTC-5A to PTC-5C).
+  evidence: 'Task-quality warning: ''red test items appear after implementation items:
+    PTC-RT-1, PTC-RT-2, PTC-RT-3, PTC-RT-4'''
+  rationale: Executing implementation items before red test items defeats the review-before-implementation
+    flow and TDD principles. Red tests must be written and verified to fail before
+    implementation begins.
+  recommendation: Reorder the checklist to place PTC-RT-1, PTC-RT-2, PTC-RT-3, and
+    PTC-RT-4 before PTC-5A, PTC-5B, and PTC-5C.
+- id: TQ-002
+  severity: ERROR
+  target_location: backlog_todo.tasks
+  summary: Missing implementation task for PTC-RT-3
+  description: There is no corresponding implementation task for red test PTC-RT-3
+    ('Work cannot silently start from an unmaterialized slice').
+  evidence: The backlog tasks list only includes PTC-5A, PTC-5B, and PTC-5C. None
+    correspond to the requirement tested by PTC-RT-3.
+  rationale: Without a planned implementation task, the test introduced in PTC-RT-3
+    will remain failing or be implemented ad-hoc, creating an untracked scope gap
+    during execution.
+  recommendation: Add a new task (e.g., PTC-5D) to implement the check that work cannot
+    silently start from an unmaterialized slice.
+- id: TQ-003
+  severity: WARN
+  target_location: runtime_checklist.items
+  summary: Missing explicit fixture creation task
+  description: The checklist lacks an explicit task to create the guidance relocation
+    plan regression fixture.
+  evidence: Acceptance criteria explicitly requires 'The guidance relocation plan
+    pattern is covered as a regression case', but checklist items only focus on adding
+    tests.
+  rationale: Relying on implicit fixture creation during test implementation risks
+    overlapping work or failing to faithfully reproduce the GRC-1..6 pattern requirement
+    as a reusable base fixture.
+  recommendation: Add a checklist item before the red tests specifically to create
+    the GRC-1..6 guidance relocation plan regression fixture.

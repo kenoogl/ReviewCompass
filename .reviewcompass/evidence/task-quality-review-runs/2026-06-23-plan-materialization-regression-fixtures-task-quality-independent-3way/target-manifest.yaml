@@ -1,0 +1,4 @@
+run_id: 2026-06-23-plan-materialization-regression-fixtures-task-quality-independent-3way
+target_files:
+- path: .reviewcompass/evidence/review-materials/2026-06-23-plan-materialization-regression-fixtures/review-materials.yaml
+  sha256: d590bb79f28c16e23bfc6675b0236f5c723d1f86e48b10e5905af611c03bdad9

@@ -1,0 +1,65 @@
+schema_version: reviewcompass-backlog-item-v1
+id: todo-2026-06-23-plan-materialization-regression-fixtures
+kind: todo
+title: Add plan materialization regression fixtures
+status: completed
+source_unit_id: main-side-conversation
+created_at: '2026-06-23T13:03:40.001805+00:00'
+index_path: .reviewcompass/backlog/index.yaml
+provenance:
+  created_by: llm
+  source_ref: .reviewcompass/backlog/plans/plan-2026-06-23-plan-todo-checklist-materialization.yaml#PTC-5
+  reason: Materialize the remaining PTC-5 slice so all plan slices have TODO/checklist
+    coverage.
+decisions: []
+source_plan_id: plan-2026-06-23-plan-todo-checklist-materialization
+source_plan_path: .reviewcompass/backlog/plans/plan-2026-06-23-plan-todo-checklist-materialization.yaml
+source_plan_slice:
+  phase_id: PTC-5
+  title: Tests and regression fixtures
+summary: 'Add regression tests and fixtures that prove plan materialization coverage
+  remains visible when only part of a plan has been expanded into TODOs and checklists.
+
+  '
+tasks:
+- id: PTC-5A
+  title: Add the GRC-1 completed and GRC-2..GRC-6 unmaterialized regression fixture
+- id: PTC-5B
+  title: Add failing regression tests for partial materialization and next candidates
+- id: PTC-5C
+  title: Add failing regression tests for stale links and unmaterialized-slice start
+    guards
+- id: PTC-5D
+  title: Implement or verify the explicit unmaterialized-slice stop condition exercised
+    by PTC-RT-3
+acceptance_criteria:
+- The guidance relocation plan pattern is covered as a regression case.
+red_tests:
+- id: PTC-RT-1
+  title: Partial plan materialization is visible
+  expected: 'A plan with GRC-1 completed and GRC-2..GRC-6 not_materialized reports
+    partial coverage, not plan completion.
+
+    '
+- id: PTC-RT-2
+  title: Next unmaterialized slice is recommended
+  expected: 'plan-todo-bridge returns GRC-2 as a next materialization candidate when
+    GRC-1 is completed.
+
+    '
+- id: PTC-RT-3
+  title: Work cannot silently start from an unmaterialized slice
+  expected: 'Invoking the user-triggered plan-to-TODO bridge for a fixture slice without
+    TODO/checklist links returns a stop reason or explicit decision requirement instead
+    of silently starting implementation work.
+
+    '
+- id: PTC-RT-4
+  title: Stale links are detected
+  expected: 'execution_slices entries pointing to missing TODO/checklist/evidence
+    paths are reported by audit.
+
+    '
+non_goals:
+- Implement unrelated workflow changes outside the PTC-5 regression coverage.
+- Rework the plan materialization contract already completed in PTC-1 through PTC-4.

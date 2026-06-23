@@ -1,0 +1,110 @@
+round_id: round-1
+purpose: task_quality_review
+invocation_timestamp: '2026-06-23T13:06:55.377398+00:00'
+target_files:
+- path: .reviewcompass/evidence/review-materials/2026-06-23-plan-materialization-regression-fixtures/review-materials.yaml
+  sha256: d590bb79f28c16e23bfc6675b0236f5c723d1f86e48b10e5905af611c03bdad9
+criteria: "# Task Quality Review Criteria: Plan Materialization Regression Fixtures\n\
+  \n## Review Task\nReview whether the backlog TODO and runtime checklist for\n`todo-2026-06-23-plan-materialization-regression-fixtures`\
+  \ /\n`checklist-todo-2026-06-23-plan-materialization-regression-fixtures`\nare safe\
+  \ to use as the execution checklist after `task-quality-check audit`\nreturned `OK`\
+  \ with a warning.\n\nTask-quality warning:\n\n- `red test items appear after implementation\
+  \ items: PTC-RT-1, PTC-RT-2, PTC-RT-3, PTC-RT-4`\n\nThe review should decide whether\
+  \ the warning is a blocking task-quality issue,\nand identify any missing checklist\
+  \ or TODO quality defects that would make\nexecution unsafe.\n\n## Prompt Construction\
+  \ Basis\n- This criteria document is generated from task-quality review materials.\n\
+  - The prompt follows the established three-review practice: material review,\n \
+  \ independent questions, explicit scope, sensitive-information check, and YAML\n\
+  \  result contract.\n- Treat main preanalysis in the materials as a hypothesis to\
+  \ inspect, not as an\n  answer to copy.\n\n## User Review Requirements\n- WARN from\
+  \ task-quality-check should be reviewed by API, not bypassed by local judgment.\n\
+  - Review the generated review materials and judge whether the TODO/checklist may\
+  \ proceed.\n- Do not authorize commit, push, file moves, or completion of the work.\n\
+  \n## Review Target\nThe target file is\n`.reviewcompass/evidence/review-materials/2026-06-23-plan-materialization-regression-fixtures/review-materials.yaml`.\n\
+  \nIt contains:\n- The backlog TODO full text.\n- The runtime checklist full text.\n\
+  - The task-quality audit result.\n- Main preanalysis generated from the audit.\n\
+  - Review questions and decision boundaries.\n\n## Required Checks\n1. Are checklist\
+  \ items concrete, non-overlapping, and sized for execution?\n   Expected output:\
+  \ Find missing granularity risks with item IDs and evidence.\n2. Is the checklist\
+  \ order suitable for TDD and review-before-implementation flow?\n   Expected output:\
+  \ Find ordering risks without treating warnings as automatic failure.\n3. Does the\
+  \ checklist preserve the source TODO intent and stated scope?\n   Expected output:\
+  \ Find weakened, omitted, or broadened upstream intent.\n4. Do red test items cover\
+  \ the task quality risks before implementation work?\n   Expected output: Find missing\
+  \ or under-specified red test coverage.\n5. Does the checklist sufficiently cover\
+  \ the plan requirement that the guidance\n   relocation plan pattern is represented\
+  \ as a regression case?\n\nAlso check whether the checklist can proceed as-is, should\
+  \ be reordered, or\nneeds additional items before execution.\n\n## Out Of Scope\n\
+  - Do not perform the TODO work itself.\n- Do not implement tests or fixtures.\n\
+  - Do not judge post-write verification, commit readiness, or push readiness.\n-\
+  \ Do not treat generated main preanalysis as authoritative.\n\n## Finding Policy\n\
+  Return findings only for substantive task-quality risks.\n\nUse these severities:\n\
+  - `ERROR`: Execution should not proceed until fixed.\n- `WARN`: Execution may proceed\
+  \ only after explicit acceptance or minor correction.\n- `INFO`: Non-blocking observation.\n\
+  \nIf there are no substantive findings, return an empty findings list and state\n\
+  that the checklist may proceed.\n\n## Output Contract\nRespond as YAML with this\
+  \ shape:\n\n```yaml\nfindings:\n  - id: TQ-001\n    severity: ERROR|WARN|INFO\n\
+  \    summary: short summary\n    evidence: specific item IDs or source text\n  \
+  \  recommendation: concrete next action\ndecision:\n  may_proceed: true|false\n\
+  \  reason: concise reason\n  required_changes:\n    - change, if any\n```\n"
+prompt_sha256: 506c397a61efef9bd2ef180dec5295e6d31b7def6ce4042aa7fbba06adf01f42
+model_results:
+- model_id: gpt-5.4
+  provider: openai-api
+  role: primary
+  treatment: primary
+  invocation_path: api
+  raw_path: raw/gpt-5.4.round-1.txt
+  raw_sha256: 4b91143b6cce06197fe98f915b1c7563811d3e28e05ff2246d821d817534a9d8
+  parsed_path: parsed/gpt-5.4.round-1.yaml
+  parsed_sha256: d718d3a60a570fa7e5025d5d2b76632538a128a8e23d4798c19b803d6ca68218
+  parse_status: parsed
+  formatted_by: parser
+  formatted_by_actor_type: orchestrator
+  formatted_by_actor: run_role.py
+  formatted_at: '2026-06-23T13:05:50.424282+00:00'
+  follow_up_action: triage
+  attempts: 1
+  duration_seconds: 10.219
+  prompt_path: prompts/gpt-5.4.round-1.prompt.md
+  prompt_sha256: bc5fe5a1dfd12a99c30863b32b57012331cfee3db0ce8bfa837f7454ff4e10cf
+- model_id: claude-sonnet-4-6
+  provider: anthropic-api
+  role: adversarial
+  treatment: adversarial
+  invocation_path: api
+  raw_path: raw/claude-sonnet-4-6.round-1.txt
+  raw_sha256: 9292fa68c16c5f5c0f206f991478e01ca968fd0abfd7f06ffe746462ad223396
+  parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  parsed_sha256: c178ded762b8289f6a26d821606c229e500296e8d7e172bb1830d2e951762b3a
+  parse_status: parsed
+  formatted_by: parser
+  formatted_by_actor_type: orchestrator
+  formatted_by_actor: run_role.py
+  formatted_at: '2026-06-23T13:06:07.569935+00:00'
+  follow_up_action: triage
+  attempts: 1
+  duration_seconds: 17.128
+  prompt_path: prompts/claude-sonnet-4-6.round-1.prompt.md
+  prompt_sha256: db62f72785a8856b63a3e2d687942c54a419c027010bee9999ed7fbc6337342c
+- model_id: gemini-3.1-pro-preview
+  provider: gemini-api
+  role: judgment
+  treatment: judgment
+  invocation_path: api
+  raw_path: raw/gemini-3.1-pro-preview.round-1.txt
+  raw_sha256: f2154ad9d628c9344be209cfeebf7a7e233766ac04f9f6d744434cb53c5d333f
+  parsed_path: parsed/gemini-3.1-pro-preview.round-1.yaml
+  parsed_sha256: 4f4c9f546d88d0af78f3bec7fea1764d5a80a9fb8ffb724e230ae35bb3efe390
+  parse_status: parsed
+  formatted_by: parser
+  formatted_by_actor_type: orchestrator
+  formatted_by_actor: run_role.py
+  formatted_at: '2026-06-23T13:06:55.377398+00:00'
+  follow_up_action: triage
+  attempts: 1
+  duration_seconds: 47.781
+  prompt_path: prompts/gemini-3.1-pro-preview.round-1.prompt.md
+  prompt_sha256: 506c397a61efef9bd2ef180dec5295e6d31b7def6ce4042aa7fbba06adf01f42
+criteria_source_path: .reviewcompass/evidence/task-quality-review-runs/2026-06-23-plan-materialization-regression-fixtures-task-quality-independent-3way/review-criteria.md
+criteria_source_sha256: 41b64577f4b97316dc4dee9389c189cf70001aaad1aea7e772ea4193c5df2ec7

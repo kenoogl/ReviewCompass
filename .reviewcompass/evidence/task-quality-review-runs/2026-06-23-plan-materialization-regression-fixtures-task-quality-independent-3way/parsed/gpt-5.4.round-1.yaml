@@ -1,0 +1,59 @@
+role: primary
+provider: openai-api
+model: gpt-5.4
+attempts: 1
+duration_seconds: 10.219
+decision:
+  may_proceed: false
+  reason: The checklist should not be used as-is because the red tests are sequenced
+    after implementation items, creating a blocking TDD/order-of-execution defect.
+  required_changes:
+  - Reorder the checklist so PTC-RT-1, PTC-RT-2, PTC-RT-3, and PTC-RT-4 appear before
+    PTC-5A, PTC-5B, and PTC-5C.
+  - Add an explicit checklist item or amend an existing item to require the guidance
+    relocation plan pattern regression case.
+  - Refine PTC-5A/5B/5C so they represent distinct execution steps after red tests,
+    rather than overlapping with the red-test expectations.
+  - Clarify PTC-RT-3 with the specific workflow entrypoint/fixture to exercise the
+    stop condition for an unmaterialized slice.
+findings:
+- severity: ERROR
+  target_location: .reviewcompass/runtime/work-units/checklists/checklist-todo-2026-06-23-plan-materialization-regression-fixtures.yaml#items[0..6]
+  description: The runtime checklist is ordered with implementation/test-addition
+    tasks (PTC-5A, PTC-5B, PTC-5C) before the red-test items (PTC-RT-1..PTC-RT-4),
+    which is not safe for TDD or review-before-implementation execution.
+  rationale: The source TODO explicitly defines PTC-RT-1..PTC-RT-4 as red tests, but
+    the checklist places them after broader task items. This allows execution to begin
+    by changing tests/fixtures under PTC-5A..PTC-5C without first establishing the
+    failing regression expectations. Because the warning directly affects execution
+    order and could bypass the intended stop/visibility checks, it is a blocking task-quality
+    defect rather than a harmless warning.
+- severity: WARN
+  target_location: .reviewcompass/backlog/todos/todo-2026-06-23-plan-materialization-regression-fixtures.yaml#acceptance_criteria[0];
+    .reviewcompass/runtime/work-units/checklists/checklist-todo-2026-06-23-plan-materialization-regression-fixtures.yaml#items
+  description: The required guidance relocation regression pattern is present only
+    as an acceptance criterion and is not represented by any explicit checklist item.
+  rationale: The TODO requires that 'The guidance relocation plan pattern is covered
+    as a regression case,' but none of PTC-5A, PTC-5B, PTC-5C or PTC-RT-1..PTC-RT-4
+    explicitly call out creating or verifying that specific fixture/case. Execution
+    could complete the listed items while missing the named regression pattern, leaving
+    a scope-preservation gap.
+- severity: WARN
+  target_location: .reviewcompass/runtime/work-units/checklists/checklist-todo-2026-06-23-plan-materialization-regression-fixtures.yaml#items[0..2]
+  description: The implementation-facing checklist items are too broad and overlap
+    with the red-test items, reducing execution safety and traceability.
+  rationale: PTC-5A/5B/5C each say 'Add tests...' while the separate red-test items
+    describe the concrete expected failing scenarios for the same areas. This creates
+    overlap between items that should instead distinguish red-phase expectation setup
+    from subsequent fixture/test materialization. In practice, an executor may not
+    know whether checking PTC-5A includes satisfying PTC-RT-1 and part of the acceptance
+    criterion, which weakens granularity and reviewability.
+- severity: WARN
+  target_location: .reviewcompass/backlog/todos/todo-2026-06-23-plan-materialization-regression-fixtures.yaml#red_tests[2]
+  description: Red test coverage for the stop condition on unmaterialized slices is
+    under-specified relative to the execution checklist.
+  rationale: PTC-RT-3 says work should return 'a stop reason or explicit decision
+    requirement,' but no checklist item clarifies which command/path is exercised
+    or how that behavior is to be captured as a regression fixture. Since this is
+    a workflow-safety risk, the current wording leaves too much ambiguity for safe
+    execution and consistent review, even if it does not by itself block all progress.

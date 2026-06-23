@@ -160,6 +160,72 @@ class WorkBacklogCliTests(unittest.TestCase):
     )
     return item_path
 
+  def _write_guidance_relocation_plan_fixture(self, status="candidate"):
+    plan_path = self._write_plan_item(
+      item_id="plan-guidance-relocation",
+      status=status,
+    )
+    plan = yaml.safe_load(plan_path.read_text(encoding="utf-8"))
+    plan["implementation_plan"] = [
+      {"id": "GRC-1", "title": "Inventory and classification only"},
+      {"id": "GRC-2", "title": "Reference and consumer audit"},
+      {"id": "GRC-3", "title": "Red tests and audit tests"},
+      {"id": "GRC-4", "title": "Move deploy-facing and runtime-facing docs"},
+      {"id": "GRC-5", "title": "Delete or demote old paths"},
+      {"id": "GRC-6", "title": "Post-write review and final audit"},
+    ]
+    plan["execution_slices"] = [
+      {
+        "phase_id": "GRC-1",
+        "title": "Inventory and classification only",
+        "status": "completed",
+        "todo_id": "todo-grc-1",
+        "todo_path": ".reviewcompass/backlog/todos/todo-grc-1.yaml",
+        "checklist_id": "checklist-todo-grc-1",
+      },
+      {
+        "phase_id": "GRC-2",
+        "title": "Reference and consumer audit",
+        "status": "not_materialized",
+        "todo_id": None,
+        "checklist_id": None,
+      },
+    ]
+    plan_path.write_text(
+      yaml.safe_dump(plan, allow_unicode=True, sort_keys=False),
+      encoding="utf-8",
+    )
+    todo_path = self._write_todo_item(item_id="todo-grc-1", status="completed")
+    todo = yaml.safe_load(todo_path.read_text(encoding="utf-8"))
+    todo["source_plan_id"] = "plan-guidance-relocation"
+    todo["source_plan_path"] = (
+      ".reviewcompass/backlog/plans/plan-guidance-relocation.yaml"
+    )
+    todo["source_plan_slice"] = {
+      "phase_id": "GRC-1",
+      "title": "Inventory and classification only",
+    }
+    todo_path.write_text(
+      yaml.safe_dump(todo, allow_unicode=True, sort_keys=False),
+      encoding="utf-8",
+    )
+    index_path = self.tmpdir / ".reviewcompass/backlog/index.yaml"
+    index = yaml.safe_load(index_path.read_text(encoding="utf-8"))
+    index["items"].insert(0, {
+      "id": "plan-guidance-relocation",
+      "kind": "plan",
+      "title": "Plan to bridge into TODO",
+      "status": status,
+      "path": ".reviewcompass/backlog/plans/plan-guidance-relocation.yaml",
+      "source_unit_id": "unit-test",
+      "created_at": "2026-06-23T00:00:00+00:00",
+    })
+    index_path.write_text(
+      yaml.safe_dump(index, allow_unicode=True, sort_keys=False),
+      encoding="utf-8",
+    )
+    return plan_path
+
   def test_add_plan_creates_index_and_item_yaml(self):
     result = run_script(
       [
@@ -997,6 +1063,50 @@ class WorkBacklogCliTests(unittest.TestCase):
       data["reasons"],
     )
 
+  def test_audit_plan_todo_bridge_rejects_stale_execution_slice_links(self):
+    plan_path = self._write_plan_item(status="promoted")
+    plan = yaml.safe_load(plan_path.read_text(encoding="utf-8"))
+    plan["implementation_plan"] = [
+      {"id": "GRC-1", "title": "Inventory and classification only"},
+    ]
+    plan["execution_slices"] = [
+      {
+        "phase_id": "GRC-1",
+        "title": "Inventory and classification only",
+        "status": "completed",
+        "todo_id": "todo-missing",
+        "todo_path": ".reviewcompass/backlog/todos/todo-missing.yaml",
+        "checklist_id": "checklist-missing",
+        "checklist_evidence_path": ".reviewcompass/evidence/work-units/checklists/checklist-missing.yaml",
+      },
+    ]
+    plan_path.write_text(
+      yaml.safe_dump(plan, allow_unicode=True, sort_keys=False),
+      encoding="utf-8",
+    )
+
+    result = run_script(
+      [
+        "work-backlog",
+        "audit-plan-todo-bridge",
+        "--json",
+      ],
+      cwd=self.tmpdir,
+    )
+
+    assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 2, result.stdout + result.stderr)
+    data = json.loads(result.stdout)
+    self.assertEqual(data["verdict"], "DEVIATION")
+    self.assertIn(
+      "plan-bridge execution_slices GRC-1 todo_path missing: .reviewcompass/backlog/todos/todo-missing.yaml",
+      data["reasons"],
+    )
+    self.assertIn(
+      "plan-bridge execution_slices GRC-1 checklist_evidence_path missing: .reviewcompass/evidence/work-units/checklists/checklist-missing.yaml",
+      data["reasons"],
+    )
+
   def test_plan_todo_bridge_rejects_plan_without_linked_todo_and_suggests_creation(self):
     self._write_plan_item()
 
@@ -1157,6 +1267,42 @@ class WorkBacklogCliTests(unittest.TestCase):
     self.assertIn(
       "work-backlog start-checklist --id todo-p1 --mutation-boundary-confirmed",
       data["recommended_commands"]["start_checklist"][0],
+    )
+
+  def test_plan_todo_bridge_covers_guidance_relocation_partial_fixture(self):
+    self._write_guidance_relocation_plan_fixture()
+
+    result = run_script(
+      [
+        "work-backlog",
+        "plan-todo-bridge",
+        "--plan-id", "plan-guidance-relocation",
+        "--json",
+      ],
+      cwd=self.tmpdir,
+    )
+
+    assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+    data = json.loads(result.stdout)
+    slices = data["materialization"]["slices"]
+    self.assertEqual([item["phase_id"] for item in slices], [
+      "GRC-1",
+      "GRC-2",
+      "GRC-3",
+      "GRC-4",
+      "GRC-5",
+      "GRC-6",
+    ])
+    self.assertEqual(slices[0]["status"], "completed")
+    self.assertEqual(slices[1]["status"], "not_materialized")
+    self.assertEqual(
+      data["materialization"]["summary"]["not_materialized_count"],
+      5,
+    )
+    self.assertEqual(
+      data["materialization"]["next_candidates"][0]["phase_id"],
+      "GRC-2",
     )
 
   def test_start_checklist_derives_ids_from_backlog_todo_and_active_unit(self):

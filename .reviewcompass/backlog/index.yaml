@@ -283,7 +283,7 @@ items:
 - id: plan-2026-06-23-plan-todo-checklist-materialization
   kind: plan
   title: Mechanize plan TODO checklist materialization coverage
-  status: candidate
+  status: completed
   path: .reviewcompass/backlog/plans/plan-2026-06-23-plan-todo-checklist-materialization.yaml
   source_unit_id: main-side-conversation
   created_at: '2026-06-23T11:37:06.836406+00:00'
@@ -315,3 +315,10 @@ items:
   path: .reviewcompass/backlog/todos/todo-2026-06-23-user-triggered-materialization-prompts.yaml
   source_unit_id: main-side-conversation
   created_at: '2026-06-23T12:18:06.849740+00:00'
+- id: todo-2026-06-23-plan-materialization-regression-fixtures
+  kind: todo
+  title: Add plan materialization regression fixtures
+  status: completed
+  path: .reviewcompass/backlog/todos/todo-2026-06-23-plan-materialization-regression-fixtures.yaml
+  source_unit_id: main-side-conversation
+  created_at: '2026-06-23T13:03:40.001805+00:00'
