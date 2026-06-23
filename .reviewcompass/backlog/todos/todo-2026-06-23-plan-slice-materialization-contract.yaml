@@ -1,0 +1,66 @@
+schema_version: reviewcompass-backlog-item-v1
+id: todo-2026-06-23-plan-slice-materialization-contract
+kind: todo
+title: Define plan slice materialization contract
+status: candidate
+source_unit_id: main-side-conversation
+created_at: '2026-06-23T11:41:49.742931+00:00'
+index_path: .reviewcompass/backlog/index.yaml
+provenance:
+  created_by: llm
+  source_ref: .reviewcompass/backlog/plans/plan-2026-06-23-plan-todo-checklist-materialization.yaml#PTC-1
+  reason: plan-wide TODO/checklist materialization coverage plan recommends PTC-1
+    as the next executable slice; materialize it as a backlog TODO before checklist
+    execution
+decisions: []
+source_plan_id: plan-2026-06-23-plan-todo-checklist-materialization
+source_plan_path: .reviewcompass/backlog/plans/plan-2026-06-23-plan-todo-checklist-materialization.yaml
+source_plan_slice:
+  phase_id: PTC-1
+  title: Define plan slice materialization contract
+summary: 'plan の implementation_plan 各 slice が TODO / checklist / evidence にどの状態で
+
+  展開されているかを表す契約を定義する。GRC-1 のような一部完了を plan 全体完了と
+
+  誤認しないため、execution_slices の schema、status、リンク規則を明確にする。
+
+  '
+problem_statement:
+- plan の一部 slice だけが TODO/checklist 化されても、plan 全体の残 slice が見えにくい。
+- execution_slices は追記できるが、schema と status の意味がまだ契約化されていない。
+- source_plan_id、source_plan_slice、checklist_id、evidence path の対応関係が実装・監査で使える形に固定されていない。
+implementation_plan:
+  phases:
+  - id: PTC-1
+    title: Define plan slice materialization contract
+    tasks:
+    - id: PTC-1A
+      title: Define execution_slices schema for plan items
+    - id: PTC-1B
+      title: Define statuses such as not_materialized, todo_created, checklist_started,
+        evidence_recorded, completed
+    - id: PTC-1C
+      title: Define how source_plan_id, source_plan_slice, checklist_id, and evidence
+        path link together
+acceptance_criteria:
+- plan の各 implementation_plan item と execution_slices が対応づけられる。
+- status の意味が not_materialized / todo_created / checklist_started / evidence_recorded
+  / completed などとして定義されている。
+- GRC-1 のような一部完了が plan 全体完了と区別できる。
+- TODO / checklist / evidence のリンク不整合を後続 audit で検出できるだけの契約がある。
+red_tests:
+- id: PTC-1-RT-1
+  title: Partial plan materialization is not plan completion
+  expected: execution_slices で一部 slice だけ completed の plan は、plan 全体 completed と扱われない。
+- id: PTC-1-RT-2
+  title: Missing slice status is visible
+  expected: implementation_plan に存在する slice が execution_slices にない場合、未定義または not_materialized
+    として扱える。
+- id: PTC-1-RT-3
+  title: Link fields are sufficient for audit
+  expected: todo_id、todo_path、checklist_id、checklist_evidence_path の有無から materialization
+    status を監査できる。
+non_goals:
+- plan-todo-bridge の出力強化実装。
+- audit-plan-todo-bridge の実装修正。
+- 既存 plan の全 slice を一括 TODO 化すること。
