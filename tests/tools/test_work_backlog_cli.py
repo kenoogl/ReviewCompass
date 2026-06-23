@@ -1107,6 +1107,223 @@ class WorkBacklogCliTests(unittest.TestCase):
       data["reasons"],
     )
 
+  def test_audit_plan_todo_bridge_rejects_active_checklist_evidence_reference(self):
+    plan_path = self._write_plan_item(status="promoted")
+    evidence_path = (
+      self.tmpdir
+      / ".reviewcompass/evidence/work-units/checklists/checklist-active.yaml"
+    )
+    evidence_path.parent.mkdir(parents=True)
+    evidence_path.write_text(
+      yaml.safe_dump(
+        {
+          "schema_version": "work-checklist-v1",
+          "checklist_id": "checklist-active",
+          "unit_id": "unit-test",
+          "title": "Active evidence",
+          "status": "active",
+          "created_at": "2026-06-24T00:00:00+00:00",
+          "provenance": {"created_by": "llm", "source_ref": "x", "reason": "x"},
+          "items": [],
+        },
+        allow_unicode=True,
+        sort_keys=False,
+      ),
+      encoding="utf-8",
+    )
+    plan = yaml.safe_load(plan_path.read_text(encoding="utf-8"))
+    plan["execution_slices"] = [
+      {
+        "phase_id": "P1",
+        "title": "plan work",
+        "status": "evidence_recorded",
+        "todo_id": None,
+        "todo_path": None,
+        "checklist_id": "checklist-active",
+        "checklist_evidence_path": ".reviewcompass/evidence/work-units/checklists/checklist-active.yaml",
+      },
+    ]
+    plan_path.write_text(
+      yaml.safe_dump(plan, allow_unicode=True, sort_keys=False),
+      encoding="utf-8",
+    )
+
+    result = run_script(
+      [
+        "work-backlog",
+        "audit-plan-todo-bridge",
+        "--json",
+      ],
+      cwd=self.tmpdir,
+    )
+
+    assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 2, result.stdout + result.stderr)
+    data = json.loads(result.stdout)
+    self.assertIn(
+      "plan-bridge execution_slices P1 checklist_evidence_path is not completed evidence: .reviewcompass/evidence/work-units/checklists/checklist-active.yaml",
+      data["reasons"],
+    )
+
+  def test_audit_checklist_bridge_rejects_todo_history_with_active_evidence(self):
+    todo_path = self._write_todo_item(status="completed")
+    evidence_path = (
+      self.tmpdir
+      / ".reviewcompass/evidence/work-units/checklists/checklist-active.yaml"
+    )
+    evidence_path.parent.mkdir(parents=True)
+    evidence_path.write_text(
+      yaml.safe_dump(
+        {
+          "schema_version": "work-checklist-v1",
+          "checklist_id": "checklist-active",
+          "unit_id": "unit-test",
+          "title": "Active evidence",
+          "status": "active",
+          "created_at": "2026-06-24T00:00:00+00:00",
+          "provenance": {"created_by": "llm", "source_ref": "x", "reason": "x"},
+          "items": [],
+        },
+        allow_unicode=True,
+        sort_keys=False,
+      ),
+      encoding="utf-8",
+    )
+    todo = yaml.safe_load(todo_path.read_text(encoding="utf-8"))
+    todo["execution_history"] = [
+      {
+        "checklist_id": "checklist-active",
+        "evidence_path": ".reviewcompass/evidence/work-units/checklists/checklist-active.yaml",
+        "completion_summary": "not actually complete",
+        "completed_at": None,
+      },
+    ]
+    todo_path.write_text(
+      yaml.safe_dump(todo, allow_unicode=True, sort_keys=False),
+      encoding="utf-8",
+    )
+
+    result = run_script(
+      [
+        "work-backlog",
+        "audit-checklist-bridge",
+        "--json",
+      ],
+      cwd=self.tmpdir,
+    )
+
+    assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 2, result.stdout + result.stderr)
+    data = json.loads(result.stdout)
+    self.assertIn(
+      "todo-bridge execution_history checklist-active evidence_path is not completed evidence: .reviewcompass/evidence/work-units/checklists/checklist-active.yaml",
+      data["reasons"],
+    )
+
+  def test_repair_active_checklist_evidence_updates_plan_and_todo_references(self):
+    plan_path = self._write_plan_item(status="candidate")
+    todo_path = self._write_todo_item(item_id="todo-from-plan", status="candidate")
+    index_path = self.tmpdir / ".reviewcompass/backlog/index.yaml"
+    index = yaml.safe_load(index_path.read_text(encoding="utf-8"))
+    index["items"].insert(0, {
+      "id": "plan-bridge",
+      "kind": "plan",
+      "title": "Plan to bridge into TODO",
+      "status": "candidate",
+      "path": ".reviewcompass/backlog/plans/plan-bridge.yaml",
+      "source_unit_id": "unit-test",
+      "created_at": "2026-06-23T00:00:00+00:00",
+    })
+    index_path.write_text(
+      yaml.safe_dump(index, allow_unicode=True, sort_keys=False),
+      encoding="utf-8",
+    )
+    evidence_path = (
+      self.tmpdir
+      / ".reviewcompass/evidence/work-units/checklists/checklist-active.yaml"
+    )
+    evidence_path.parent.mkdir(parents=True)
+    evidence_path.write_text(
+      yaml.safe_dump(
+        {
+          "schema_version": "work-checklist-v1",
+          "checklist_id": "checklist-active",
+          "unit_id": "unit-test",
+          "title": "Active evidence",
+          "status": "active",
+          "created_at": "2026-06-24T00:00:00+00:00",
+          "source_backlog_item_id": "todo-from-plan",
+          "source_backlog_path": ".reviewcompass/backlog/todos/todo-from-plan.yaml",
+          "provenance": {"created_by": "llm", "source_ref": "x", "reason": "x"},
+          "items": [{"id": "A1", "title": "active", "status": "active"}],
+        },
+        allow_unicode=True,
+        sort_keys=False,
+      ),
+      encoding="utf-8",
+    )
+    plan = yaml.safe_load(plan_path.read_text(encoding="utf-8"))
+    plan["execution_slices"] = [
+      {
+        "phase_id": "P1",
+        "title": "plan work",
+        "status": "evidence_recorded",
+        "todo_id": "todo-from-plan",
+        "todo_path": ".reviewcompass/backlog/todos/todo-from-plan.yaml",
+        "checklist_id": "checklist-active",
+        "checklist_evidence_path": ".reviewcompass/evidence/work-units/checklists/checklist-active.yaml",
+      },
+    ]
+    plan_path.write_text(
+      yaml.safe_dump(plan, allow_unicode=True, sort_keys=False),
+      encoding="utf-8",
+    )
+    todo = yaml.safe_load(todo_path.read_text(encoding="utf-8"))
+    todo["source_plan_id"] = "plan-bridge"
+    todo["source_plan_path"] = ".reviewcompass/backlog/plans/plan-bridge.yaml"
+    todo["source_plan_slice"] = {"phase_id": "P1", "title": "plan work"}
+    todo["execution_history"] = [
+      {
+        "checklist_id": "checklist-active",
+        "evidence_path": ".reviewcompass/evidence/work-units/checklists/checklist-active.yaml",
+        "completion_summary": "not actually complete",
+        "completed_at": None,
+      },
+    ]
+    todo_path.write_text(
+      yaml.safe_dump(todo, allow_unicode=True, sort_keys=False),
+      encoding="utf-8",
+    )
+
+    result = run_script(
+      [
+        "work-backlog",
+        "repair-active-checklist-evidence",
+        "--checklist-id", "checklist-active",
+        "--json",
+      ],
+      cwd=self.tmpdir,
+    )
+
+    assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+    self.assertFalse(evidence_path.exists())
+    runtime_path = (
+      self.tmpdir
+      / ".reviewcompass/runtime/work-units/checklists/checklist-active.yaml"
+    )
+    self.assertTrue(runtime_path.exists())
+    repaired_plan = yaml.safe_load(plan_path.read_text(encoding="utf-8"))
+    slice_entry = repaired_plan["execution_slices"][0]
+    self.assertEqual(slice_entry["status"], "checklist_started")
+    self.assertIsNone(slice_entry["checklist_evidence_path"])
+    repaired_todo = yaml.safe_load(todo_path.read_text(encoding="utf-8"))
+    self.assertEqual(repaired_todo["execution_history"], [])
+    self.assertEqual(
+      repaired_todo["quarantined_execution_history"][0]["evidence_path"],
+      ".reviewcompass/evidence/work-units/checklists/checklist-active.yaml",
+    )
+
   def test_plan_todo_bridge_rejects_plan_without_linked_todo_and_suggests_creation(self):
     self._write_plan_item()
 

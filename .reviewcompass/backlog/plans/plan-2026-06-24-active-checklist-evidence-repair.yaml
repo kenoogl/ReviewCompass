@@ -2,7 +2,7 @@ schema_version: reviewcompass-backlog-item-v1
 id: plan-2026-06-24-active-checklist-evidence-repair
 kind: plan
 title: Repair active checklist evidence misplacement
-status: candidate
+status: completed
 source_unit_id: main-side-conversation
 created_at: '2026-06-24T00:00:00+09:00'
 index_path: .reviewcompass/backlog/index.yaml
@@ -13,6 +13,13 @@ provenance:
     active checklist が evidence 配下に置かれ、plan/TODO/checklist の保存場所と状態の意味が
     食い違ったため、個別修復ではなく機械検査と repair を含む対応計画として backlog 化する。
 decisions: []
+completed_at: '2026-06-24T01:30:00+09:00'
+completion_summary: >
+  blocking unit blocking-2026-06-24-active-checklist-evidence-repair で実装済み。
+  evidence checklist invariant を guidance に明文化し、work-checklist audit-evidence /
+  repair-misplaced-evidence、work-backlog の plan/TODO evidence reference 監査、
+  repair-active-checklist-evidence を追加した。既存 GRC-4 状態は active checklist が
+  runtime にあり、plan/TODO が未完了 evidence を指さない状態として検証済み。
 summary: >
   GRC-4 の作業中 checklist が .reviewcompass/evidence/work-units/checklists/
   配下に置かれていた問題を修復する。通常の start-checklist / close 経路では
@@ -122,32 +129,44 @@ execution_slices:
   todo_path: null
   checklist_id: null
   checklist_evidence_path: null
-  status: not_materialized
+  status: completed
+  note: >
+    blocking unit 内で WORKFLOW_PRECHECK.md に runtime/evidence checklist invariant を明文化した。
 - phase_id: ACE-2
   title: Add evidence checklist audit
   todo_id: null
   todo_path: null
   checklist_id: null
   checklist_evidence_path: null
-  status: not_materialized
+  status: completed
+  note: >
+    work-checklist audit-evidence を実装し、active/incomplete evidence checklist を DEVIATION にする。
 - phase_id: ACE-3
   title: Validate backlog evidence references
   todo_id: null
   todo_path: null
   checklist_id: null
   checklist_evidence_path: null
-  status: not_materialized
+  status: completed
+  note: >
+    work-backlog audit-plan-todo-bridge と audit-checklist-bridge が plan/TODO の evidence path
+    参照先を completed evidence として検査する。
 - phase_id: ACE-4
   title: Add repair for misplaced active checklist
   todo_id: null
   todo_path: null
   checklist_id: null
   checklist_evidence_path: null
-  status: not_materialized
+  status: completed
+  note: >
+    work-checklist repair-misplaced-evidence と work-backlog repair-active-checklist-evidence を実装した。
 - phase_id: ACE-5
   title: Repair GRC-4 data and verify resumption
   todo_id: null
   todo_path: null
   checklist_id: null
   checklist_evidence_path: null
-  status: not_materialized
+  status: completed
+  note: >
+    実リポジトリで work-checklist audit-evidence と work-backlog audit-plan-todo-bridge を実行し、
+    GRC-4 が未完了 evidence を指さず作業中 checklist として再開可能であることを確認した。

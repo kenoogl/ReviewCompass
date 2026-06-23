@@ -54,11 +54,14 @@ red_tests:
   title: Runtime consumers no longer read relocated docs paths
   expected: runtime-facing consumers resolve .reviewcompass/guidance paths after relocation.
   status: candidate
-execution_history:
+execution_history: []
+quarantined_execution_history:
 - checklist_id: checklist-todo-2026-06-23-guidance-relocation-move-docs
   evidence_path: .reviewcompass/evidence/work-units/checklists/checklist-todo-2026-06-23-guidance-relocation-move-docs.yaml
-  completion_summary: >
-    post_write_policy_violation 修復のため、GRC-4 を小分割した。
-    active discipline root の移動だけを第一単位として残し、adapter guidance
-    移動、consumer 更新、deploy manifest 更新は未完了に戻した。
+  completion_summary: 'post_write_policy_violation 修復のため、GRC-4 を小分割した。 active discipline
+    root の移動だけを第一単位として残し、adapter guidance 移動、consumer 更新、deploy manifest 更新は未完了に戻した。
+
+    '
   completed_at: null
+  quarantined_at: '2026-06-23T16:29:42.771276+00:00'
+  quarantine_reason: evidence_path does not point to completed checklist evidence

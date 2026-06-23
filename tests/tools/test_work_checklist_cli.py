@@ -776,6 +776,117 @@ class WorkChecklistCliTests(unittest.TestCase):
     self.assertEqual(failed.returncode, 2, failed.stdout + failed.stderr)
     self.assertIn("runtime checklist still exists", failed.stdout)
 
+  def test_audit_evidence_rejects_active_or_incomplete_evidence_checklist(self):
+    evidence_path = (
+      self.tmpdir
+      / ".reviewcompass/evidence/work-units/checklists/checklist-active.yaml"
+    )
+    evidence_path.parent.mkdir(parents=True)
+    evidence_path.write_text(
+      yaml.safe_dump(
+        {
+          "schema_version": "work-checklist-v1",
+          "checklist_id": "checklist-active",
+          "unit_id": "unit-test",
+          "title": "Misplaced active checklist",
+          "status": "active",
+          "created_at": "2026-06-24T00:00:00+00:00",
+          "provenance": {
+            "created_by": "llm",
+            "source_ref": "conversation:user",
+            "reason": "misplaced evidence fixture",
+          },
+          "items": [],
+        },
+        allow_unicode=True,
+        sort_keys=False,
+      ),
+      encoding="utf-8",
+    )
+
+    result = run_script(
+      ["work-checklist", "audit-evidence", "--json"],
+      cwd=self.tmpdir,
+    )
+
+    assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 2, result.stdout + result.stderr)
+    data = json.loads(result.stdout)
+    self.assertEqual(data["verdict"], "DEVIATION")
+    self.assertEqual(data["findings"][0]["status"], "active")
+    self.assertIn("evidence checklist status must be completed", data["reasons"][0])
+    self.assertIn("evidence checklist missing completed_at", data["reasons"])
+    self.assertIn("evidence checklist missing completion_summary", data["reasons"])
+
+  def test_repair_misplaced_evidence_moves_only_non_completed_checklists(self):
+    active_path = (
+      self.tmpdir
+      / ".reviewcompass/evidence/work-units/checklists/checklist-active.yaml"
+    )
+    completed_path = (
+      self.tmpdir
+      / ".reviewcompass/evidence/work-units/checklists/checklist-completed.yaml"
+    )
+    active_path.parent.mkdir(parents=True)
+    active_path.write_text(
+      yaml.safe_dump(
+        {
+          "schema_version": "work-checklist-v1",
+          "checklist_id": "checklist-active",
+          "unit_id": "unit-test",
+          "title": "Misplaced active checklist",
+          "status": "active",
+          "created_at": "2026-06-24T00:00:00+00:00",
+          "provenance": {"created_by": "llm", "source_ref": "x", "reason": "x"},
+          "items": [{"id": "A1", "title": "active", "status": "active"}],
+        },
+        allow_unicode=True,
+        sort_keys=False,
+      ),
+      encoding="utf-8",
+    )
+    completed_path.write_text(
+      yaml.safe_dump(
+        {
+          "schema_version": "work-checklist-v1",
+          "checklist_id": "checklist-completed",
+          "unit_id": "unit-test",
+          "title": "Completed checklist",
+          "status": "completed",
+          "created_at": "2026-06-24T00:00:00+00:00",
+          "completed_at": "2026-06-24T00:05:00+00:00",
+          "completion_summary": "done",
+          "provenance": {"created_by": "llm", "source_ref": "x", "reason": "x"},
+          "items": [],
+        },
+        allow_unicode=True,
+        sort_keys=False,
+      ),
+      encoding="utf-8",
+    )
+
+    result = run_script(
+      [
+        "work-checklist",
+        "repair-misplaced-evidence",
+        "--checklist-id", "checklist-active",
+        "--json",
+      ],
+      cwd=self.tmpdir,
+    )
+
+    assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+    runtime_path = (
+      self.tmpdir
+      / ".reviewcompass/runtime/work-units/checklists/checklist-active.yaml"
+    )
+    self.assertTrue(runtime_path.exists())
+    self.assertFalse(active_path.exists())
+    self.assertTrue(completed_path.exists())
+    moved = yaml.safe_load(runtime_path.read_text(encoding="utf-8"))
+    self.assertEqual(moved["progress"]["active"], 1)
+
   def test_audit_reflection_requires_backlog_item_and_reference(self):
     missing = run_script(
       ["work-checklist", "audit-reflection", "--json"],

@@ -395,6 +395,85 @@ def audit_close_postcondition(cwd, checklist_id):
   )
 
 
+def _evidence_invariant_findings(cwd, checklist_id=None):
+  findings = []
+  reasons = []
+  for path in _iter_checklists(cwd, DEFAULT_CHECKLIST_EVIDENCE_DIR):
+    checklist, checklist_reasons = _read_checklist_file(path)
+    if checklist_reasons:
+      reasons.extend(checklist_reasons)
+      continue
+    current_id = checklist.get("checklist_id") or path.stem
+    if checklist_id and current_id != checklist_id:
+      continue
+    finding_reasons = []
+    if checklist.get("status") != "completed":
+      finding_reasons.append("evidence checklist status must be completed")
+    for key in ("completed_at", "completion_summary"):
+      if not checklist.get(key):
+        finding_reasons.append(f"evidence checklist missing {key}")
+    if finding_reasons:
+      findings.append({
+        "checklist_id": current_id,
+        "path": _relative_path(cwd, path),
+        "status": checklist.get("status"),
+        "reasons": finding_reasons,
+      })
+      reasons.extend(finding_reasons)
+  return findings, reasons
+
+
+def audit_evidence(cwd, checklist_id=None):
+  findings, reasons = _evidence_invariant_findings(cwd, checklist_id=checklist_id)
+  return {
+    "verdict": "DEVIATION" if reasons else "OK",
+    "reasons": reasons,
+    "findings": findings,
+  }
+
+
+def repair_misplaced_evidence(cwd, checklist_id=None):
+  repaired = []
+  skipped = []
+  reasons = []
+  for path in _iter_checklists(cwd, DEFAULT_CHECKLIST_EVIDENCE_DIR):
+    checklist, checklist_reasons = _read_checklist_file(path)
+    if checklist_reasons:
+      reasons.extend(checklist_reasons)
+      continue
+    current_id = checklist.get("checklist_id") or path.stem
+    if checklist_id and current_id != checklist_id:
+      continue
+    if checklist.get("status") == "completed":
+      skipped.append({
+        "checklist_id": current_id,
+        "evidence_path": _relative_path(cwd, path),
+        "reason": "completed evidence is preserved",
+      })
+      continue
+    runtime_path = _checklist_path(cwd, current_id)
+    if runtime_path.exists():
+      reasons.append(
+        "runtime checklist already exists: "
+        + _relative_path(cwd, runtime_path)
+      )
+      continue
+    _write_yaml(runtime_path, _normalize_checklist(checklist))
+    path.unlink()
+    repaired.append({
+      "checklist_id": current_id,
+      "runtime_path": _relative_path(cwd, runtime_path),
+      "evidence_path": _relative_path(cwd, path),
+      "status": checklist.get("status"),
+    })
+  return {
+    "verdict": "DEVIATION" if reasons else "OK",
+    "reasons": reasons,
+    "repaired": repaired,
+    "skipped": skipped,
+  }
+
+
 def _find_backlog_item_path(cwd, backlog_id):
   root = Path(cwd) / DEFAULT_BACKLOG_ROOT
   for directory in ("plans", "issues", "todos"):

@@ -8547,6 +8547,16 @@ def cmd_work_checklist(args):
       Path.cwd(),
       args.checklist_id,
     )
+  elif args.work_checklist_command == "audit-evidence":
+    response = work_checklist.audit_evidence(
+      Path.cwd(),
+      checklist_id=args.checklist_id,
+    )
+  elif args.work_checklist_command == "repair-misplaced-evidence":
+    response = work_checklist.repair_misplaced_evidence(
+      Path.cwd(),
+      checklist_id=args.checklist_id,
+    )
   elif args.work_checklist_command == "audit-reflection":
     response = work_checklist.audit_reflection(
       Path.cwd(),
@@ -8637,6 +8647,11 @@ def cmd_work_backlog(args):
       Path.cwd(),
       args.id,
       args.checklist_id,
+    )
+  elif args.work_backlog_command == "repair-active-checklist-evidence":
+    response = work_backlog.repair_active_checklist_evidence(
+      Path.cwd(),
+      checklist_id=args.checklist_id,
     )
   elif args.work_backlog_command == "promote":
     response = work_backlog.promote(
@@ -9431,6 +9446,20 @@ def main():
   )
   wc_postcondition.add_argument("--checklist-id", required=True, help="対象 checklist ID")
 
+  wc_audit_evidence = wc_sub.add_parser(
+    "audit-evidence",
+    help="evidence 配下の checklist が completed evidence だけか監査する",
+    parents=[common_parser],
+  )
+  wc_audit_evidence.add_argument("--checklist-id", default=None, help="対象 checklist ID")
+
+  wc_repair_evidence = wc_sub.add_parser(
+    "repair-misplaced-evidence",
+    help="evidence 配下に紛れた active checklist を runtime へ戻す",
+    parents=[common_parser],
+  )
+  wc_repair_evidence.add_argument("--checklist-id", default=None, help="対象 checklist ID")
+
   wc_reflection = wc_sub.add_parser(
     "audit-reflection",
     help="checklist 変更の backlog / reference 反映を監査する",
@@ -9517,6 +9546,13 @@ def main():
   )
   wb_audit_coverage.add_argument("--id", default=None, help="backlog todo item ID")
   wb_audit_coverage.add_argument("--checklist-id", default=None, help="監査対象 checklist ID")
+
+  wb_repair_active_evidence = wb_sub.add_parser(
+    "repair-active-checklist-evidence",
+    help="active checklist が evidence 配下にある誤配置を修復し backlog 参照を補正する",
+    parents=[common_parser],
+  )
+  wb_repair_active_evidence.add_argument("--checklist-id", default=None, help="対象 checklist ID")
 
   for command, help_text in [
     ("promote", "backlog item を workflow 候補として昇格する"),

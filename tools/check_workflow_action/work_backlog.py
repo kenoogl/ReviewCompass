@@ -684,6 +684,25 @@ def _relative_file_exists(cwd, path):
   return (Path(cwd) / path).is_file()
 
 
+def _completed_evidence_reference_reasons(cwd, label, evidence_path):
+  if not isinstance(evidence_path, str) or not evidence_path:
+    return []
+  path = Path(cwd) / evidence_path
+  if not path.is_file():
+    return [f"{label} missing: {evidence_path}"]
+  checklist, reasons = work_checklist._read_checklist_file(path)
+  if reasons:
+    return [f"{label} invalid: {evidence_path}: " + "; ".join(reasons)]
+  missing = [
+    key
+    for key in ("completed_at", "completion_summary")
+    if not checklist.get(key)
+  ]
+  if checklist.get("status") != "completed" or missing:
+    return [f"{label} is not completed evidence: {evidence_path}"]
+  return []
+
+
 def _stale_execution_slice_link_reasons(cwd, plan_id, plan):
   reasons = []
   for entry in plan.get("execution_slices", []):
@@ -699,6 +718,11 @@ def _stale_execution_slice_link_reasons(cwd, plan_id, plan):
     if not _relative_file_exists(cwd, checklist_evidence_path):
       reasons.append(
         f"{plan_id} execution_slices {phase_id} checklist_evidence_path missing: {checklist_evidence_path}"
+      )
+    else:
+      label = f"{plan_id} execution_slices {phase_id} checklist_evidence_path"
+      reasons.extend(
+        _completed_evidence_reference_reasons(cwd, label, checklist_evidence_path)
       )
   return reasons
 
@@ -744,11 +768,27 @@ def audit_checklist_bridge(cwd):
   for entry in index.get("items", []):
     if not isinstance(entry, dict):
       continue
-    if entry.get("kind") != "todo" or entry.get("status") not in {"promoted", "active"}:
+    if entry.get("kind") != "todo":
       continue
     item, item_reasons = _read_item_by_entry(cwd, entry)
     if item_reasons:
       reasons.extend(item_reasons)
+      continue
+    for history in item.get("execution_history", []) or []:
+      if not isinstance(history, dict):
+        continue
+      label = (
+        f"{entry['id']} execution_history "
+        f"{history.get('checklist_id') or '<unknown-checklist>'} evidence_path"
+      )
+      reasons.extend(
+        _completed_evidence_reference_reasons(
+          cwd,
+          label,
+          history.get("evidence_path"),
+        )
+      )
+    if entry.get("status") not in {"promoted", "active"}:
       continue
     if item.get("execution_history"):
       continue
@@ -770,6 +810,7 @@ def plan_todo_bridge(cwd, plan_id):
 
   plan_path = shown["path"]
   linked, reasons = _linked_todo_entries(cwd, shown["index"], plan_id, plan_path)
+  reasons.extend(_stale_execution_slice_link_reasons(cwd, plan_id, plan))
   linked_ids = [entry["id"] for entry in linked]
   response = _result(
     "DEVIATION" if reasons or not linked else "OK",
@@ -826,6 +867,111 @@ def plan_todo_bridge(cwd, plan_id):
     response["warnings"] = [
       "multiple linked TODOs found; choose one TODO before starting checklist"
     ]
+  return response
+
+
+def _quarantine_invalid_execution_history(cwd, item_id, item, target_paths):
+  histories = item.get("execution_history")
+  if not isinstance(histories, list):
+    return False, []
+  kept = []
+  quarantined = []
+  for history in histories:
+    if not isinstance(history, dict):
+      kept.append(history)
+      continue
+    evidence_path = history.get("evidence_path")
+    label = (
+      f"{item_id} execution_history "
+      f"{history.get('checklist_id') or '<unknown-checklist>'} evidence_path"
+    )
+    invalid = bool(_completed_evidence_reference_reasons(cwd, label, evidence_path))
+    if evidence_path in target_paths or invalid:
+      quarantined_record = dict(history)
+      quarantined_record["quarantined_at"] = _now_iso()
+      quarantined_record["quarantine_reason"] = (
+        "evidence_path does not point to completed checklist evidence"
+      )
+      quarantined.append(quarantined_record)
+    else:
+      kept.append(history)
+  if not quarantined:
+    return False, []
+  item["execution_history"] = kept
+  item.setdefault("quarantined_execution_history", []).extend(quarantined)
+  return True, quarantined
+
+
+def repair_active_checklist_evidence(cwd, checklist_id=None):
+  checklist_result = work_checklist.repair_misplaced_evidence(
+    cwd,
+    checklist_id=checklist_id,
+  )
+  if checklist_result.get("verdict") != "OK":
+    return checklist_result
+  repaired_paths = {
+    entry.get("evidence_path")
+    for entry in checklist_result.get("repaired", [])
+    if entry.get("evidence_path")
+  }
+  repaired_ids = {
+    entry.get("checklist_id")
+    for entry in checklist_result.get("repaired", [])
+    if entry.get("checklist_id")
+  }
+  index, reasons = _read_index(cwd)
+  if reasons:
+    return _result("DEVIATION", reasons, index=index)
+
+  plan_updates = []
+  todo_updates = []
+  for entry in index.get("items", []):
+    if not isinstance(entry, dict):
+      continue
+    item, item_reasons = _read_item_by_entry(cwd, entry)
+    if item_reasons:
+      reasons.extend(item_reasons)
+      continue
+    changed = False
+    if entry.get("kind") == "plan":
+      for slice_entry in item.get("execution_slices", []) or []:
+        if not isinstance(slice_entry, dict):
+          continue
+        evidence_path = slice_entry.get("checklist_evidence_path")
+        linked_checklist_id = slice_entry.get("checklist_id")
+        if evidence_path not in repaired_paths and linked_checklist_id not in repaired_ids:
+          continue
+        slice_entry["checklist_evidence_path"] = None
+        if slice_entry.get("status") in {"evidence_recorded", "completed"}:
+          slice_entry["status"] = "checklist_started"
+        changed = True
+        plan_updates.append({
+          "plan_id": entry.get("id"),
+          "phase_id": slice_entry.get("phase_id"),
+          "checklist_id": linked_checklist_id,
+        })
+    elif entry.get("kind") == "todo":
+      history_changed, quarantined = _quarantine_invalid_execution_history(
+        cwd,
+        entry.get("id"),
+        item,
+        repaired_paths,
+      )
+      if history_changed:
+        changed = True
+        todo_updates.append({
+          "todo_id": entry.get("id"),
+          "quarantined_count": len(quarantined),
+        })
+    if changed:
+      _write_yaml(Path(cwd) / entry["path"], item)
+
+  if reasons:
+    return _result("DEVIATION", reasons, index=index)
+  response = _result("OK", [], index=index)
+  response["checklist_repair"] = checklist_result
+  response["plan_updates"] = plan_updates
+  response["todo_updates"] = todo_updates
   return response
 
 

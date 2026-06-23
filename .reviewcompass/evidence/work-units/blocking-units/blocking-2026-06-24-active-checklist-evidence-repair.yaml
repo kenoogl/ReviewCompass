@@ -1,0 +1,17 @@
+unit_id: blocking-2026-06-24-active-checklist-evidence-repair
+kind: blocking
+parent_unit_id: main-completed
+title: Repair active checklist evidence misplacement
+reason: plan-2026-06-24-active-checklist-evidence-repair を本線外の修復単位として実装するため
+status: completed
+entered_at: '2026-06-23T16:23:21.128482+00:00'
+return_conditions:
+- evidence checklist invariant audit is implemented
+- plan and TODO evidence references are validated
+- misplaced active checklist repair is implemented
+- GRC-4 resumption state is verified
+exited_at: '2026-06-23T16:30:22.817997+00:00'
+completion_summary: Implemented active checklist evidence invariant, audits, repair
+  command, and repaired GRC-4 stale TODO execution_history reference
+returned_to:
+  unit_id: main-completed
