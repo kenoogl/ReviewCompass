@@ -42,7 +42,7 @@ plan を読むだけ、説明するだけ、優先順位を相談するだけの
 2. `.reviewcompass/backlog/index.yaml` と backlog TODO を確認し、同じ範囲を扱う既存 TODO があるかを見る。
 3. 対応 TODO がなければ `work-backlog add-todo` で plan 由来 TODO を作成する。
 4. 作成または選択した TODO を `work-backlog show --id <todo-id> --json` で読む。
-5. `work-backlog start-checklist --id <todo-id>` で runtime checklist を生成する。
+5. 状態変更の直前確認を済ませた場合だけ、`work-backlog start-checklist --id <todo-id> --mutation-boundary-confirmed` で runtime checklist を生成する。
 6. `work-backlog audit-checklist-coverage --id <todo-id> --checklist-id <checklist-id>` を実行する。
 7. `task-quality-check audit --backlog-id <todo-id> --checklist-id <checklist-id>` を実行する。
 8. audit が DEVIATION の場合は実作業へ進まず、TODO または checklist の修正に戻る。

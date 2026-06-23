@@ -19,7 +19,7 @@
 3. 複数 promoted TODO がある場合は停止し、ユーザに対象 TODO id を確認する。
 4. `work-backlog show --id <todo-id> --json` で対象 TODO 本文を読む。
 5. 必要なら `work-unit enter-blocking` で blocking unit を開始する。
-6. `work-backlog start-checklist --id <todo-id>` で runtime checklist を作成する。
+6. 状態変更の直前確認を済ませた場合だけ、`work-backlog start-checklist --id <todo-id> --mutation-boundary-confirmed` で runtime checklist を作成する。
 7. `work-backlog audit-checklist-coverage --id <todo-id> --checklist-id <checklist-id>` を実行する。
 8. coverage が DEVIATION の場合は実装へ進まず、TODO/checklist の修正に戻る。
 9. coverage が OK の場合だけ checklist item を active にして作業を進める。

@@ -41,6 +41,7 @@
 - `autonomous-plan-record-integration`：自律・並列実行の統合結果記録
 - `commit-from-current-staged.py`：現在の staged index に束縛した approval 作成と guarded commit を 1 コマンドで連続実行するラッパー
 - `guarded-git-commit.py`：commit 前検査つき git commit ラッパー
+- `work-backlog start-checklist`：backlog TODO から runtime checklist を作成する状態変更
 
 対象外：
 
@@ -74,6 +75,7 @@ tools/check-workflow-action.py autonomous-plan-record-integration --ledger <ledg
 tools/commit-from-current-staged.py -m "<commit message>" --rationale "<理由>"
 tools/guarded-git-commit.py -m "<commit message>" --rationale "<理由>"
 tools/guarded-git-commit.py -m "<commit message>" --rationale "<理由>" --approval-nonce <nonce> --approval-source-text-line-stdin
+tools/check-workflow-action.py work-backlog start-checklist --id <todo-id> --mutation-boundary-confirmed
 ```
 
 共通オプション：
@@ -91,6 +93,8 @@ nonce 方式の commit approval を低レベル手順として使う場合、com
 Codex の `workspace-write` sandbox では、`commit-from-current-staged.py` または `guarded-git-commit.py` が最終的に `.git/index.lock` へ書き込む段階で sandbox に拒否され得る。このため Codex から commit を実行する場合は、commit wrapper 本体を最初から sandbox 外（`require_escalated`）で実行する。これは guard を迂回する手順ではなく、承認レコード、staged 内容照合、commit gate を同じ wrapper 内で通したうえで、git index 書き込みだけを許可された実行面で行うための運用である。先に sandbox 内で失敗させてから再実行する手順を標準にしない。
 
 commit 実行時のユーザー向け報告は、guard や precheck の詳細出力をそのまま貼らず、結論だけを短く伝える。成功時は commit hash と commit message、必要なら検証コマンドだけを報告する。失敗時は停止理由を 1〜3 点に要約し、承認再作成、staged 対象の見直し、post-write 未完了など、次に必要な操作だけを示す。詳細ログは必要時に参照できる状態に留め、通常の進行報告には含めない。
+
+mutation boundary は、利用者指示の語義ではなく、次に実行する操作が状態変更かどうかで判定する。runtime checklist 作成のような小さな状態変更でも、確認済みであることを示す機械入力なしに実行してはならない。`work-backlog start-checklist` は `--mutation-boundary-confirmed` がない場合に `DEVIATION` で停止し、runtime checklist を作成しない。
 
 <a id="spec-set"></a>
 

@@ -523,10 +523,35 @@ class WorkBacklogCliTests(unittest.TestCase):
   def test_start_checklist_generates_runtime_checklist_from_backlog_todo(self):
     self._write_todo_item()
 
+    blocked = run_script(
+      [
+        "work-backlog",
+        "start-checklist",
+        "--id", "todo-bridge",
+        "--checklist-id", "checklist-bridge",
+        "--unit-id", "unit-test",
+        "--json",
+      ],
+      cwd=self.tmpdir,
+    )
+
+    assert_script_invoked(self, blocked)
+    self.assertEqual(blocked.returncode, 2, blocked.stdout + blocked.stderr)
+    blocked_data = json.loads(blocked.stdout)
+    self.assertEqual(blocked_data["verdict"], "DEVIATION")
+    self.assertIn("mutation boundary confirmation", blocked_data["reasons"][0])
+    self.assertFalse(
+      (
+        self.tmpdir
+        / ".reviewcompass/runtime/work-units/checklists/checklist-bridge.yaml"
+      ).exists()
+    )
+
     result = run_script(
       [
         "work-backlog",
         "start-checklist",
+        "--mutation-boundary-confirmed",
         "--id", "todo-bridge",
         "--checklist-id", "checklist-bridge",
         "--unit-id", "unit-test",
@@ -586,6 +611,7 @@ class WorkBacklogCliTests(unittest.TestCase):
       [
         "work-backlog",
         "start-checklist",
+        "--mutation-boundary-confirmed",
         "--id", "todo-tasks",
         "--checklist-id", "checklist-tasks",
         "--unit-id", "unit-test",
@@ -631,6 +657,7 @@ class WorkBacklogCliTests(unittest.TestCase):
       [
         "work-backlog",
         "start-checklist",
+        "--mutation-boundary-confirmed",
         "--id", "todo-tasks",
         "--checklist-id", "checklist-tasks",
         "--unit-id", "unit-test",
@@ -673,6 +700,7 @@ class WorkBacklogCliTests(unittest.TestCase):
       [
         "work-backlog",
         "start-checklist",
+        "--mutation-boundary-confirmed",
         "--id", "todo-bridge",
         "--checklist-id", "checklist-bridge",
         "--unit-id", "unit-test",
@@ -730,6 +758,7 @@ class WorkBacklogCliTests(unittest.TestCase):
       [
         "work-backlog",
         "start-checklist",
+        "--mutation-boundary-confirmed",
         "--id", "todo-bridge",
         "--checklist-id", "checklist-bridge",
         "--unit-id", "unit-test",
@@ -779,7 +808,12 @@ class WorkBacklogCliTests(unittest.TestCase):
     self.assertEqual(index["items"][0]["status"], "completed")
 
     second_start = run_script(
-      ["work-backlog", "start-checklist", "--json"],
+      [
+        "work-backlog",
+        "start-checklist",
+        "--mutation-boundary-confirmed",
+        "--json",
+      ],
       cwd=self.tmpdir,
     )
     self.assertEqual(second_start.returncode, 2, second_start.stdout)
@@ -792,6 +826,7 @@ class WorkBacklogCliTests(unittest.TestCase):
       [
         "work-backlog",
         "start-checklist",
+        "--mutation-boundary-confirmed",
         "--id", "todo-bridge",
         "--checklist-id", "checklist-bridge",
         "--unit-id", "unit-test",
@@ -938,7 +973,7 @@ class WorkBacklogCliTests(unittest.TestCase):
     self.assertEqual(data["verdict"], "OK")
     self.assertEqual(data["linked_todo_ids"], ["todo-from-plan"])
     self.assertIn(
-      "work-backlog start-checklist --id todo-from-plan",
+      "work-backlog start-checklist --id todo-from-plan --mutation-boundary-confirmed",
       data["next_steps"][0],
     )
     self.assertIn(
@@ -973,6 +1008,7 @@ class WorkBacklogCliTests(unittest.TestCase):
       [
         "work-backlog",
         "start-checklist",
+        "--mutation-boundary-confirmed",
         "--id", "todo-bridge",
         "--json",
       ],
@@ -997,6 +1033,7 @@ class WorkBacklogCliTests(unittest.TestCase):
       [
         "work-backlog",
         "start-checklist",
+        "--mutation-boundary-confirmed",
         "--json",
       ],
       cwd=self.tmpdir,
@@ -1042,6 +1079,7 @@ class WorkBacklogCliTests(unittest.TestCase):
       [
         "work-backlog",
         "start-checklist",
+        "--mutation-boundary-confirmed",
         "--json",
       ],
       cwd=self.tmpdir,
@@ -1058,6 +1096,7 @@ class WorkBacklogCliTests(unittest.TestCase):
       [
         "work-backlog",
         "start-checklist",
+        "--mutation-boundary-confirmed",
         "--id", "todo-bridge",
         "--checklist-id", "checklist-bridge",
         "--unit-id", "unit-test",
@@ -1158,6 +1197,7 @@ class WorkBacklogCliTests(unittest.TestCase):
       [
         "work-backlog",
         "start-checklist",
+        "--mutation-boundary-confirmed",
         "--id", "todo-bridge",
         "--checklist-id", "checklist-bridge",
         "--unit-id", "unit-test",
@@ -1190,6 +1230,7 @@ class WorkBacklogCliTests(unittest.TestCase):
       [
         "work-backlog",
         "start-checklist",
+        "--mutation-boundary-confirmed",
         "--id", "todo-bridge",
         "--checklist-id", "checklist-bridge",
         "--unit-id", "unit-test",

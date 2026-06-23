@@ -8373,6 +8373,7 @@ def cmd_work_backlog(args):
       args.id,
       args.checklist_id,
       args.unit_id,
+      mutation_boundary_confirmed=args.mutation_boundary_confirmed,
     )
   elif args.work_backlog_command == "audit-checklist-bridge":
     response = work_backlog.audit_checklist_bridge(Path.cwd())
@@ -9228,6 +9229,11 @@ def main():
   wb_start_checklist.add_argument("--id", default=None, help="backlog todo item ID")
   wb_start_checklist.add_argument("--checklist-id", default=None, help="作成する checklist ID")
   wb_start_checklist.add_argument("--unit-id", default=None, help="紐づける work unit ID")
+  wb_start_checklist.add_argument(
+    "--mutation-boundary-confirmed",
+    action="store_true",
+    help="runtime checklist 作成という状態変更の直前確認を済ませたことを示す",
+  )
 
   wb_sub.add_parser(
     "audit-checklist-bridge",

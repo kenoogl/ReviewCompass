@@ -332,7 +332,19 @@ def _active_or_source_unit_id(cwd, item):
   return item.get("source_unit_id")
 
 
-def start_checklist(cwd, item_id, checklist_id, unit_id):
+def start_checklist(cwd, item_id, checklist_id, unit_id, mutation_boundary_confirmed=False):
+  if not mutation_boundary_confirmed:
+    return _result(
+      "DEVIATION",
+      [
+        "mutation boundary confirmation is required before work-backlog start-checklist",
+      ],
+      item={
+        "operation_mode": "mutating",
+        "planned_mutation": "create runtime checklist from backlog TODO",
+        "required_confirmation": "--mutation-boundary-confirmed",
+      },
+    )
   if not item_id:
     item_id, selection_result = _select_single_promoted_todo(cwd)
     if selection_result is not None:
@@ -570,7 +582,10 @@ def plan_todo_bridge(cwd, plan_id):
 
   first_todo_id = linked_ids[0]
   response["next_steps"] = [
-    f"work-backlog start-checklist --id {first_todo_id}",
+    (
+      "work-backlog start-checklist "
+      f"--id {first_todo_id} --mutation-boundary-confirmed"
+    ),
     f"work-backlog audit-checklist-coverage --id {first_todo_id} --checklist-id <checklist-id>",
     f"task-quality-check audit --backlog-id {first_todo_id} --checklist-id <checklist-id>",
   ]

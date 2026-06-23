@@ -1,0 +1,110 @@
+schema_version: reviewcompass-backlog-item-v1
+id: todo-2026-06-23-trigger-operation-entry
+kind: todo
+title: Mechanize trigger to operation entry resolution
+status: candidate
+source_unit_id: main-side-conversation
+created_at: '2026-06-23T09:53:01.061941+00:00'
+index_path: .reviewcompass/backlog/index.yaml
+provenance:
+  created_by: llm
+  source_ref: conversation:user:オペレータ側のトリガー運用が不徹底だと、整備した意味がない
+  reason: commit operation card and wrapper existed, but the operator entered a manual
+    low-level path before the standard trigger-to-operation flow; record this as a
+    mechanization target before further operation hardening
+decisions: []
+summary: '利用者の短い操作語（例: コミット、push、次へ）を LLM の記憶や手順選択に委ねず、
+
+  trigger resolver から operation card / first command へ機械的に接続する。
+
+  今回の commit で、COMMIT_OPERATION_CARD と commit-from-current-staged.py は存在していたが、
+
+  入口で標準導線に乗らず手組みが混入したため、入口選択そのものを改善対象にする。
+
+  '
+problem_statement:
+- commit 操作カードと preflight/wrapper は整備済みだが、利用者発話を受けた直後の入口選択が LLM 運用に残っている。
+- 入口選択が手組みだと、後段ガードが働いても、map / operation card が実行経路にならない。
+- commit / push / next / spec-set などの短い操作語は、誤って低レベルコマンドや手動 staging へ進むリスクが高い。
+observed_incident:
+  trigger: conversation:user:コミット
+  observed_behavior: git add 対象を手で選び、guarded-git-commit.py を直接実行してから、ガード停止後に標準 wrapper
+    へ戻った。
+  expected_behavior: trigger map / operation card を入口にし、git add 前の commit-preflight
+    から開始する。
+manual_steps_to_remove:
+- id: TOE-MANUAL-1
+  title: Interpret short user operation words by memory
+  current_state: LLM が「コミット」などの発話から次に読むべき operation card / 実行コマンドを手で選んでいる。
+  desired_state: trigger resolver が operation_id、operation_card、first_command、mutation_allowed_after
+    を返す。
+- id: TOE-MANUAL-2
+  title: Choose low-level command path manually
+  current_state: LLM が guarded-git-commit.py など低レベル導線へ直接進めてしまう。
+  desired_state: 標準 wrapper がある操作は resolver が標準入口を返し、低レベル導線は fallback として明示される。
+- id: TOE-MANUAL-3
+  title: Remember preflight ordering
+  current_state: git add 前 preflight など順序制約を LLM が思い出す必要がある。
+  desired_state: resolver / operation card 出力に first_readonly_command と next_allowed_mutation
+    を含める。
+implementation_plan:
+  phases:
+  - id: TOE-1
+    title: Trigger map contract
+    tasks:
+    - id: TOE-1A
+      title: Define machine-readable mapping from short user operation words to operation
+        IDs
+    - id: TOE-1B
+      title: Include operation card path, first read-only command, and allowed mutation
+        boundary in mapping output
+    - id: TOE-1C
+      title: Classify ambiguous operation words as stop-and-ask instead of best-effort
+        execution
+  - id: TOE-2
+    title: Resolver command
+    tasks:
+    - id: TOE-2A
+      title: Add read-only trigger resolver command for commit / push / next / spec-set
+        style operations
+    - id: TOE-2B
+      title: Add tests that commit trigger resolves to COMMIT_OPERATION_CARD and commit-preflight
+        before git add
+    - id: TOE-2C
+      title: Add tests that direct low-level commit execution is not the recommended
+        first step
+  - id: TOE-3
+    title: Operator integration
+    tasks:
+    - id: TOE-3A
+      title: Update guidance so short operation requests require trigger resolver
+        before mutation
+    - id: TOE-3B
+      title: Decide whether guarded-git-commit.py should warn when invoked without
+        standard wrapper context
+acceptance_criteria:
+- A read-only trigger resolver can map "コミット" to a commit operation record before
+  any git add or approval creation.
+- The commit operation record includes COMMIT_OPERATION_CARD, commit-preflight as
+  the first command, and commit-from-current-staged.py as the standard execution wrapper.
+- Ambiguous or unsupported operation words do not proceed to mutation without an explicit
+  stop reason.
+- Tests cover the incident pattern where low-level guarded commit is chosen before
+  standard trigger resolution.
+red_tests:
+- id: TOE-RT-1
+  title: Commit trigger cannot skip operation card
+  expected: Resolving "コミット" returns commit_operation with COMMIT_OPERATION_CARD and
+    commit-preflight before git add.
+- id: TOE-RT-2
+  title: Low-level guarded commit is not first recommendation
+  expected: Resolver output recommends commit-from-current-staged.py as the standard
+    wrapper, not guarded-git-commit.py direct execution.
+- id: TOE-RT-3
+  title: Unknown trigger is non-mutating
+  expected: Unsupported short operation words return stop-and-ask / unknown_operation
+    and no mutation command.
+non_goals:
+- Implementing the resolver in this ticket creation step.
+- Changing commit guard behavior immediately.
+- Replacing human approval requirements for commit or push.
