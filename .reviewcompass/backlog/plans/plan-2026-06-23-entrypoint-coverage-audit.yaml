@@ -1,0 +1,157 @@
+schema_version: reviewcompass-backlog-item-v1
+id: plan-2026-06-23-entrypoint-coverage-audit
+kind: plan
+title: Audit workflow entrypoint coverage and mechanized action links
+status: candidate
+source_unit_id: main-completed
+created_at: '2026-06-23T12:07:54+09:00'
+index_path: .reviewcompass/backlog/index.yaml
+provenance:
+  created_by: llm
+  source_ref: conversation:2026-06-23-entrypoint-audit-discussion
+  reason: >
+    今後の開発で新しい機能やワークフロー外のユーザ指示入口が増えると、
+    next --json / effective prompt / 機械処理の接続が不安定になる可能性がある。
+    この論点を後で詳細計画化できるよう backlog plan として保存する。
+summary: >
+  ReviewCompass の安全性は、現在地取得だけでなく、各 entrypoint が decision point、
+  effective prompt、required_action、機械処理、証跡へ接続されていることに依存する。
+  新しい CLI subcommand、user-initiated backlog 実行、blocking unit、commit/push、
+  repair、proxy decision などが増えるたびに接続漏れが起こり得るため、entrypoint
+  registry と coverage audit を導入し、既存の effective prompt freshness audit と
+  組み合わせて監査する。
+related:
+  - .reviewcompass/backlog/plans/plan-2026-06-23-effective-prompt-freshness-audit.yaml
+  - .reviewcompass/backlog/plans/plan-2026-06-23-operation-registry-preflight.yaml
+  - .reviewcompass/backlog/plans/plan-2026-06-23-action-execution-spec.yaml
+  - .reviewcompass/guidance/WORKFLOW_DISCIPLINE_MAP.yaml
+  - .reviewcompass/guidance/WORKFLOW_NAVIGATION.md
+  - tools/check-workflow-action.py
+background:
+  - next --json の現在地 kind と effective prompt の接続漏れは、discipline map coverage 作業で実際に発見された。
+  - 今後は workflow map 以外にも、ユーザ指示で直接開始する操作や blocking unit / backlog / proxy / repair などの入口が増える。
+  - entrypoint が増えるたびに、人手で map、effective prompt、機械処理、証跡の接続を確認する運用では漏れが残る。
+  - freshness audit は元文書変更後の prompt stale を検出するが、入口自体が未登録または機械処理へ未接続である問題は別途検出する必要がある。
+audit_layers:
+  - id: entrypoint_coverage
+    purpose: >
+      存在する入口が registry / discipline map / decision point / effective prompt へ登録されているかを検査する。
+    examples:
+      - next_action.kind
+      - CLI subcommand
+      - user-initiated backlog execution
+      - blocking unit start / exit / resume
+      - commit / push operation
+      - repair workflow state
+      - proxy decision
+  - id: effective_prompt_freshness
+    purpose: >
+      既に接続されている effective prompt が、現在の元文書から見て古くなっていないかを検査する。
+    relation: >
+      plan-2026-06-23-effective-prompt-freshness-audit が扱う縦方向の鮮度監査。
+  - id: mechanized_action_link
+    purpose: >
+      required_action に対応する機械処理、preflight、出力 schema、evidence 保存先が存在するかを検査する。
+  - id: llm_residual_instruction
+    purpose: >
+      機械化できない LLM 判断が残る場合に、迷わず実行できる effective prompt / output contract になっているかを検査する。
+current_gap:
+  - entrypoint の正規 registry がないため、コード上の入口と discipline map の差分を網羅的に検査できない。
+  - next_action.kind 以外の user-initiated operation が effective prompt を持つべきかを一覧化できていない。
+  - required_action と実行 CLI / preflight / evidence path の対応が機械的に追えない入口が残る。
+  - effective prompt freshness audit は計画済みだが、entrypoint coverage audit とはまだ統合されていない。
+  - 新しい入口を追加したときに、coverage / freshness / mechanized action link の監査を必須化する gate がない。
+goals:
+  - 新しい entrypoint を追加するときに registry への登録漏れを検出できる。
+  - entrypoint から decision point、effective prompt、required_action、機械処理、evidence までを機械的に辿れる。
+  - freshness audit と組み合わせ、接続済み prompt が stale かどうかも同時に確認できる。
+  - 機械化できない LLM 判断が残る場合、prompt と output contract の不足を監査できる。
+  - commit / CI / preflight のどこかで entrypoint 追加時の接続漏れを止められる。
+initial_scope:
+  - next_action.kind
+  - tools/check-workflow-action.py の主要 subcommand
+  - user-initiated backlog / checklist execution
+  - blocking unit control
+  - commit / push operation
+  - proxy decision and review-run post-processing
+out_of_initial_scope:
+  - すべての CLI を一度に統合 registry 化すること
+  - 過去 review-run 証跡の再解釈
+  - effective prompt freshness audit の詳細実装そのもの
+implementation_outline:
+  - id: ECA-1
+    title: Inventory current entrypoints
+    status: candidate
+    tasks:
+      - next_action.kind、CLI subcommand、user-initiated operation を一覧化する。
+      - 入口ごとに required_action、expected effective prompt、evidence path の有無を記録する。
+    acceptance:
+      - 現在存在する主要入口を機械的に列挙できる。
+  - id: ECA-2
+    title: Define entrypoint registry schema
+    status: candidate
+    tasks:
+      - entrypoint id、kind、trigger、decision_point_ref、effective_prompt_ref、required_action、mechanized_command、evidence_contract を持つ schema を定義する。
+      - WORKFLOW_DISCIPLINE_MAP.yaml との責務境界を決める。
+    acceptance:
+      - map と registry の二重管理にならず、どちらが正本か説明できる。
+  - id: ECA-3
+    title: Add coverage audit
+    status: candidate
+    tasks:
+      - registry にある entrypoint が discipline map / effective prompt source refs を持つか検査する。
+      - code 上に存在する entrypoint が registry にない場合に WARN または DEVIATION を返す。
+    acceptance:
+      - 新しい入口の map 未登録を検出できる。
+  - id: ECA-4
+    title: Connect freshness audit
+    status: candidate
+    tasks:
+      - entrypoint coverage audit から対象 effective prompt を抽出し、freshness audit へ渡す。
+      - stale / missing / source mismatch を entrypoint 単位で報告する。
+    acceptance:
+      - 入口ごとに prompt 接続有無と鮮度をまとめて確認できる。
+  - id: ECA-5
+    title: Audit mechanized action links
+    status: candidate
+    tasks:
+      - required_action に対応する command / preflight / output schema / evidence 保存先を検査する。
+      - 機械化できない LLM 判断が残る場合、effective prompt の output contract を必須化する。
+    acceptance:
+      - entrypoint が prompt だけで終わらず、実行可能な機械処理または明示的な LLM 判断契約へ接続されている。
+  - id: ECA-6
+    title: Add commit or CI enforcement
+    status: candidate
+    tasks:
+      - entrypoint 追加・変更時に coverage audit を走らせる。
+      - 初期は WARN、運用固定後は DEVIATION に上げる。
+    acceptance:
+      - 入口追加時の接続漏れが後から会話で発覚する前に検出される。
+initial_tests:
+  - next_action.kind が discipline map にない場合の検出
+  - CLI subcommand が registry にない場合の検出
+  - registry entry に effective_prompt_ref がない場合の検出
+  - effective prompt source が存在しない場合の検出
+  - required_action に対応する mechanized command がない場合の検出
+  - stale effective prompt を entrypoint 単位で報告するケース
+open_questions:
+  - entrypoint registry を WORKFLOW_DISCIPLINE_MAP.yaml に統合するか、別ファイルに分けるか。
+  - code から entrypoint を抽出する方法を AST ベースにするか、手動 registry 正本にするか。
+  - user-initiated operation の入口をどこまで registry 対象に含めるか。
+  - freshness audit と coverage audit のどちらを先に commit gate へ接続するか。
+  - WARN から DEVIATION へ上げる基準をどう決めるか。
+recommended_next_step:
+  id: ECA-1
+  title: Inventory current entrypoints and compare them with discipline map coverage
+  rationale: >
+    まず現在の入口一覧と map / effective prompt / required_action の接続状況を棚卸しし、
+    registry schema を決める前に実際の欠落パターンを把握する。
+non_goals:
+  - この plan 作成時点で監査システムを実装済み扱いにしない。
+  - freshness audit 計画を置き換えない。
+  - 入口追加を禁止するのではなく、追加時に接続漏れを見つける仕組みにする。
+decisions:
+  - date: '2026-06-23'
+    decision: >
+      effective prompt freshness audit とは別に、entrypoint coverage audit を上位監査として
+      backlog に記録する。freshness audit は接続済み prompt の鮮度監査として関連付ける。
