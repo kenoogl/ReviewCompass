@@ -1,0 +1,98 @@
+schema_version: reviewcompass-backlog-item-v1
+id: plan-2026-06-23-deployment-tool-consolidation
+kind: plan
+title: Consolidate deploy-facing tools and shared runtime utilities
+status: candidate
+source_unit_id: main-completed
+created_at: '2026-06-23T11:21:33+09:00'
+index_path: .reviewcompass/backlog/index.yaml
+provenance:
+  created_by: llm
+  source_ref: user-discussion:2026-06-23-deployment-tool-inventory
+  reason: >
+    デプロイに利用する tool 群は独立に作られてきたため、同機能または類似機能の
+    重複が存在する可能性が高い。ただし現在すぐ着手する作業ではないため、
+    将来計画として方針を backlog に残す。
+summary: >
+  現在の deploy-manifest.yaml は initial self-test 用に多めの tool / runtime /
+  guidance を含めている。将来の外部適用や最小配布を見据え、deploy-facing tool
+  を機能単位で棚卸しし、重複を検出し、共通基盤へ段階的に寄せる。
+context:
+  current_inventory:
+    deploy_package_total_files: 290
+    deploy_tool_files: 85
+    guidance_files: 18
+    direct_deployment_tools:
+      - tools/build-deploy-package.py
+      - tools/deployment_independence_lint.py
+    major_tool_groups:
+      - tools/check-workflow-action.py
+      - tools/check_workflow_action/
+      - tools/api_providers/
+      - tools/guarded-git-commit.py
+      - tools/commit-from-current-staged.py
+      - tools/conformance_evaluation/
+      - tools/self_improvement/
+      - tools/session_record_extractor/
+  risk: >
+    CLI 共通処理、YAML / JSON I/O、repo root / runtime path 解決、git / subprocess
+    実行、API review 実行、commit 操作、backlog / checklist / work unit 状態遷移が
+    個別実装になっていると、仕様変更時に片側だけ更新される危険がある。
+remaining_work:
+  - id: DTC-1
+    title: Inventory deploy-facing tools by responsibility
+    status: candidate
+    tasks:
+      - deploy-manifest.yaml の include を展開し、配布対象 tool を一覧化する。
+      - 各 tool を deploy packaging、workflow guard、API review、commit operation、backlog/checklist/work-unit、evaluation/self-improvement、session record に分類する。
+      - 初期自己テストに必要なものと、最小外部配布に必要なものを分ける。
+    acceptance:
+      - ファイル単位ではなく機能単位で配布対象の責務が説明できる。
+      - minimal runtime profile から外せる候補が明確になる。
+  - id: DTC-2
+    title: Detect duplicated or near-duplicated responsibilities
+    status: candidate
+    tasks:
+      - argparse / output / exit code / --json の重複を調べる。
+      - YAML / JSON read-write、relative path、repo root 解決の重複を調べる。
+      - git / subprocess wrapper、commit approval、commit unit、post-commit cleanup の重複を調べる。
+      - API review runner、role runner、proxy decision、post-write review flow の重複境界を整理する。
+      - backlog、checklist、work unit の状態遷移 API の重複を整理する。
+    acceptance:
+      - 重複候補が、統合すべきもの、意図的に分離すべきもの、保留すべきものに分類される。
+  - id: DTC-3
+    title: Introduce shared utility boundaries before refactoring behavior
+    status: candidate
+    tasks:
+      - 共通 YAML / JSON I/O helper を定義する。
+      - repo root / runtime path resolver を共通化する。
+      - normal output / json output / error reporting の共通契約を作る。
+      - subprocess / git 実行 wrapper の責務境界を決める。
+    acceptance:
+      - CLI 本体は引数解析と dispatch に近づき、実処理は import 可能な関数に寄る。
+      - 共通化後も既存 CLI の入出力契約が変わらない。
+  - id: DTC-4
+    title: Separate deployment profiles
+    status: candidate
+    tasks:
+      - initial_self_test profile と minimal_runtime profile を分ける。
+      - evaluation / self-improvement / experiments / development evidence を外部配布から除外する基準を明文化する。
+      - deploy package builder が profile ごとに include / exclude を検証できるようにする。
+    acceptance:
+      - 外部 app へ入れるべき最小構成と、ReviewCompass owner 用自己テスト構成が混ざらない。
+  - id: DTC-5
+    title: Add characterization tests before consolidation
+    status: candidate
+    tasks:
+      - 主要 CLI の現在の正常系 / 異常系出力を固定する red tests を作る。
+      - deploy package verification と external app smoke を regression suite に入れる。
+      - workflow guard、commit guard、post-write review、backlog/checklist の結合点を重点的に固定する。
+    acceptance:
+      - 共通化によって workflow guard や commit guard の停止点が変化した場合に検出できる。
+non_goals:
+  - この plan 登録時点で実際の統合リファクタに着手しない。
+  - 初期自己テスト用 deploy-manifest.yaml を即座に最小配布へ変更しない。
+  - 重複に見えるコードを、責務確認なしに一括削除しない。
+decisions:
+  - まず棚卸しと characterization tests を優先し、その後に小さな共通化へ進む。
+  - tools 整理は大きな横断作業なので、実行時は独立 blocking unit として扱う。
