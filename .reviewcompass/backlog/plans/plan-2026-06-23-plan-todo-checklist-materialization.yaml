@@ -1,0 +1,138 @@
+schema_version: reviewcompass-backlog-item-v1
+id: plan-2026-06-23-plan-todo-checklist-materialization
+kind: plan
+title: Mechanize plan TODO checklist materialization coverage
+status: candidate
+source_unit_id: main-side-conversation
+created_at: '2026-06-23T11:37:06.836406+00:00'
+index_path: .reviewcompass/backlog/index.yaml
+provenance:
+  created_by: llm
+  source_ref: conversation:user:今は、plan > todo > checklistの動線はあるか
+  reason: The existing plan-to-TODO-to-checklist parts exist, but plan-wide slice
+    materialization coverage and unmaterialized-slice surfacing are weak; create a
+    plan to mechanize the full bridge.
+decisions: []
+summary: 'backlog plan の各 slice が TODO / checklist / evidence に展開済みかを機械的に追跡し、
+
+  未展開 slice を次の実行候補として可視化する。現状は plan-todo-bridge、
+
+  start-checklist、coverage audit などの部品はあるが、plan 全体の展開完了性を
+
+  強制・監査する制御が弱い。
+
+  '
+problem_statement:
+- plan から一部 slice だけを TODO 化した場合、残り slice が未展開のまま見落とされやすい。
+- linked TODO が 1 件あるだけでは、plan 全体が TODO/checklist 化済みか判断できない。
+- execution_slices は手で追記できるが、plan-todo-bridge / audit がその状態を十分に利用していない。
+- TODO/checklist/evidence の後追い接続はできるが、実作業前に plan slice から降りる強制力が弱い。
+goals:
+- plan 内の implementation_plan 各 slice について materialization status を機械的に表示する。
+- 未展開 slice を次に TODO 化すべき候補として返す。
+- plan → TODO → checklist → evidence の接続が一部完了か全体完了かを区別する。
+- 実作業開始前に、対象 slice の TODO/checklist が存在しない場合は停止または明示判断にする。
+non_goals:
+- 既存 plan の全 slice をこの計画作成時に一括 TODO 化する。
+- checklist 実行そのものを自動化する。
+- 人の判断が必要な slice 分割や優先順位決定を完全自動化する。
+implementation_plan:
+- id: PTC-1
+  title: Define plan slice materialization contract
+  tasks:
+  - id: PTC-1A
+    title: Define execution_slices schema for plan items
+  - id: PTC-1B
+    title: Define statuses such as not_materialized, todo_created, checklist_started,
+      evidence_recorded, completed
+  - id: PTC-1C
+    title: Define how source_plan_id, source_plan_slice, checklist_id, and evidence
+      path link together
+  acceptance:
+  - plan の各 implementation_plan item と execution_slices が対応づけられる。
+  - GRC-1 のような一部完了が plan 全体完了と区別できる。
+- id: PTC-2
+  title: Strengthen plan-todo-bridge output
+  tasks:
+  - id: PTC-2A
+    title: Make plan-todo-bridge report every slice status, not only linked TODOs
+  - id: PTC-2B
+    title: Return next materialization candidates for not_materialized slices
+  - id: PTC-2C
+    title: Return recommended commands for add-todo and start-checklist without performing
+      mutations
+  acceptance:
+  - plan-todo-bridge の JSON で GRC-2 以降の未展開 slice が明示される。
+  - linked TODO がある slice とない slice が区別できる。
+- id: PTC-3
+  title: Add audit for full plan materialization coverage
+  tasks:
+  - id: PTC-3A
+    title: Extend audit-plan-todo-bridge to detect missing execution_slices entries
+  - id: PTC-3B
+    title: Detect implementation_plan slice without TODO/checklist/evidence according
+      to required phase
+  - id: PTC-3C
+    title: Decide when partial materialization is OK versus when it is a DEVIATION
+  acceptance:
+  - audit can report partial materialization without falsely treating the plan as
+    complete.
+  - high-risk execution cannot proceed from an unmaterialized slice without explicit
+    decision.
+- id: PTC-4
+  title: Integrate with user-triggered execution prompts
+  tasks:
+  - id: PTC-4A
+    title: Update user-initiated plan-to-todo bridge prompt to require materialization
+      status review
+  - id: PTC-4B
+    title: Update backlog TODO execution prompt to verify checklist coverage before
+      work starts
+  - id: PTC-4C
+    title: Add trigger operation entry references so short requests do not bypass
+      the bridge
+  acceptance:
+  - A user request to continue a plan first surfaces unmaterialized slices.
+  - The operator is guided to create TODO/checklist before implementation work.
+- id: PTC-5
+  title: Tests and regression fixtures
+  tasks:
+  - id: PTC-5A
+    title: Add tests for a plan with one completed slice and remaining unmaterialized
+      slices
+  - id: PTC-5B
+    title: Add tests that plan-todo-bridge returns next TODO candidates
+  - id: PTC-5C
+    title: Add tests that audit detects stale or missing execution_slices links
+  acceptance:
+  - The guidance relocation plan pattern is covered as a regression case.
+red_tests:
+- id: PTC-RT-1
+  title: Partial plan materialization is visible
+  expected: A plan with GRC-1 completed and GRC-2..GRC-6 not_materialized reports
+    partial coverage, not plan completion.
+- id: PTC-RT-2
+  title: Next unmaterialized slice is recommended
+  expected: plan-todo-bridge returns GRC-2 as a next materialization candidate when
+    GRC-1 is completed.
+- id: PTC-RT-3
+  title: Work cannot silently start from an unmaterialized slice
+  expected: Attempting to start implementation work for a slice without TODO/checklist
+    returns a stop reason or explicit decision requirement.
+- id: PTC-RT-4
+  title: Stale links are detected
+  expected: execution_slices entries pointing to missing TODO/checklist/evidence paths
+    are reported by audit.
+risks_and_mitigations:
+- risk: execution_slices becomes another manually maintained field.
+  mitigation: derive status from TODO/checklist/evidence where possible and use stored
+    fields as links, not sole truth.
+- risk: every plan slice being forced to TODO could create too much ceremony.
+  mitigation: allow explicit deferred / not_required decisions with rationale, but
+    make them visible.
+- risk: bridge output mutates state unexpectedly.
+  mitigation: keep plan-todo-bridge and audits read-only; mutations remain add-todo
+    and start-checklist with explicit boundary confirmation.
+recommended_next_step:
+  id: PTC-1
+  title: Define plan slice materialization contract

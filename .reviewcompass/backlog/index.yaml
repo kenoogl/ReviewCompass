@@ -280,3 +280,10 @@ items:
   path: .reviewcompass/backlog/todos/todo-2026-06-23-trigger-operation-entry.yaml
   source_unit_id: main-side-conversation
   created_at: '2026-06-23T09:53:01.061941+00:00'
+- id: plan-2026-06-23-plan-todo-checklist-materialization
+  kind: plan
+  title: Mechanize plan TODO checklist materialization coverage
+  status: candidate
+  path: .reviewcompass/backlog/plans/plan-2026-06-23-plan-todo-checklist-materialization.yaml
+  source_unit_id: main-side-conversation
+  created_at: '2026-06-23T11:37:06.836406+00:00'
