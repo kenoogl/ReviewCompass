@@ -12,10 +12,12 @@ TDD 規律（AGENTS.md 入口規律）に従い、本テストはスクリプト
 import json
 import hashlib
 import importlib
+import importlib.util
 import os
 import pty
 import shutil
 import subprocess
+import sys
 import tempfile
 import tty
 import unittest
@@ -414,6 +416,20 @@ def _assert_script_invoked(testcase, result):
       marker, result.stderr,
       f"スクリプトが起動できていない（実装前の状態か）。stderr: {result.stderr}",
     )
+
+
+def _load_check_workflow_action_module():
+  """hyphenated CLI script をテスト内で import する。"""
+  tools_dir = str(REPO_ROOT / "tools")
+  if tools_dir not in sys.path:
+    sys.path.insert(0, tools_dir)
+  spec = importlib.util.spec_from_file_location(
+    "check_workflow_action_cli",
+    SCRIPT,
+  )
+  module = importlib.util.module_from_spec(spec)
+  spec.loader.exec_module(module)
+  return module
 
 
 def _write_autonomous_parallel_plan(cwd, overrides=None):
@@ -2533,6 +2549,74 @@ class NextNavigationTests(unittest.TestCase):
       "effective prompt の元資料をすべて読めません",
       data["reasons"],
     )
+
+  def test_discipline_map_covers_next_action_kinds_with_effective_prompts(self):
+    """next --json が返し得る現在地 kind は effective prompt 判定点を持つ"""
+    module = _load_check_workflow_action_module()
+    expected_kinds = [
+      "stage",
+      "cross_feature_stage",
+      "commit_stop_point",
+      "upstream_recheck",
+      "reopen_classification_required",
+      "completed",
+      "unknown",
+      "feature_definition_required",
+      "post_write_verification",
+      "lightweight_self_check",
+      "post_write_policy_violation",
+      "post_write_human_decision_required",
+      "reopen_in_progress",
+      "maintenance_in_progress",
+      "resume_in_progress",
+      "blocking_unit_in_progress",
+      "parent_resume_pending",
+      "blocking_unit_required",
+      "commit_mixing_risk",
+      "commit_unit_stale",
+    ]
+    sample_overrides = {
+      "stage": {
+        "feature": "workflow-management",
+        "phase": "tasks",
+        "stage": "triad-review",
+      },
+      "cross_feature_stage": {
+        "feature": "all_features",
+        "phase": "tasks",
+        "stage": "review-wave",
+      },
+      "reopen_in_progress": {
+        "required_action": "run_reopen_pending_gate",
+      },
+    }
+
+    missing = []
+    for kind in expected_kinds:
+      next_action = {
+        "kind": kind,
+        "feature": None,
+        "phase": None,
+        "stage": None,
+      }
+      next_action.update(sample_overrides.get(kind, {}))
+      effective_prompt = module.effective_prompt_for_next_action(
+        REPO_ROOT,
+        next_action,
+      )
+      if effective_prompt is None:
+        missing.append(kind)
+        continue
+      self.assertIn(
+        {"group": "next_action_kind", "id": kind},
+        effective_prompt["decision_point_refs"],
+      )
+      self.assertTrue(
+        effective_prompt["prompt_source_refs"],
+        f"{kind} has no prompt_source_refs",
+      )
+
+    self.assertEqual([], missing)
 
   def test_operation_prompt_commit_outputs_card_and_effective_prompt(self):
     """commit 直前の操作 prompt は共通カードのみを参照し adapter_card フィールドを持たない"""

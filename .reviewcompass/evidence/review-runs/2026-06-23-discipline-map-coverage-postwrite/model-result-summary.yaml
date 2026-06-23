@@ -1,0 +1,13 @@
+run_id: 2026-06-23-discipline-map-coverage-postwrite
+models:
+- model_id: gemini-3.1-pro-preview
+  raw_path: raw/gemini-3.1-pro-preview.round-1.txt
+  parse_status: parsed
+  triage_status: triage_pending
+  findings_count: 2
+  findings_count_by_severity:
+    ERROR: 2
+  must_fix_count: 0
+  should_fix_count: 0
+  leave_as_is_count: 0
+  human_required_count: 0

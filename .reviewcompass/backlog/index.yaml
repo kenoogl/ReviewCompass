@@ -231,3 +231,10 @@ items:
   path: .reviewcompass/backlog/plans/plan-2026-06-23-deployment-tool-consolidation.yaml
   source_unit_id: main-completed
   created_at: '2026-06-23T11:21:33+09:00'
+- id: plan-2026-06-23-postwrite-review-prompt-isolation
+  kind: plan
+  title: Separate post-write review criteria and target artifacts
+  status: candidate
+  path: .reviewcompass/backlog/plans/plan-2026-06-23-postwrite-review-prompt-isolation.yaml
+  source_unit_id: maintenance-2026-06-23-discipline-map-coverage
+  created_at: '2026-06-23T11:51:44+09:00'

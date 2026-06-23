@@ -1,0 +1,24 @@
+status: completed
+target_files:
+- .reviewcompass/guidance/WORKFLOW_DISCIPLINE_MAP.yaml
+- .reviewcompass/guidance/WORKFLOW_NAVIGATION.md
+target_sha256:
+  .reviewcompass/guidance/WORKFLOW_DISCIPLINE_MAP.yaml: 660a2f652c41e7879a842d0e73f1d644c8f434d83878dcc5875e977c269219ba
+  .reviewcompass/guidance/WORKFLOW_NAVIGATION.md: 268076aee0ddbde231009d48d8840773ff87433cd4e8653492f0004c106f76be
+required_verifiers: &id001
+- gemini-3.1-pro-preview
+completed_verifiers: *id001
+unresolved_substantive_findings: 0
+verifications:
+- verifier: gemini-3.1-pro-preview
+  target_files:
+  - .reviewcompass/guidance/WORKFLOW_DISCIPLINE_MAP.yaml
+  - .reviewcompass/guidance/WORKFLOW_NAVIGATION.md
+  target_sha256:
+    .reviewcompass/guidance/WORKFLOW_DISCIPLINE_MAP.yaml: 660a2f652c41e7879a842d0e73f1d644c8f434d83878dcc5875e977c269219ba
+    .reviewcompass/guidance/WORKFLOW_NAVIGATION.md: 268076aee0ddbde231009d48d8840773ff87433cd4e8653492f0004c106f76be
+review_run:
+  path: .reviewcompass/evidence/review-runs/2026-06-23-discipline-map-coverage-postwrite-v3
+  summary_path: .reviewcompass/evidence/review-runs/2026-06-23-discipline-map-coverage-postwrite-v3/model-result-summary.yaml
+notes: Generated template; verify target_files cover current post-write targets before
+  use.

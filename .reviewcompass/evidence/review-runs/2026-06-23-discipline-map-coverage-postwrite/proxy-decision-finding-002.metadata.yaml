@@ -1,0 +1,8 @@
+variant: proxy_model_openai_gpt_55
+provider: openai-api
+model: gpt-5.5
+prompt_path: .reviewcompass/evidence/review-runs/2026-06-23-discipline-map-coverage-postwrite/proxy-decision-prompts/finding-002.prompt.md
+raw_response_path: proxy-decision-finding-002.raw.yaml
+parsed_decisions_path: proxy-decision-finding-002.parsed.yaml
+duration_seconds: 26.894
+parse_status: parsed

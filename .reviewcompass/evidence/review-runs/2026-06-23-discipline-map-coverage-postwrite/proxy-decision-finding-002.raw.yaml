@@ -1,0 +1,12 @@
+proxy_model_id: "openai/gpt-4.1"
+decisions:
+  - finding_id: "2026-06-23-discipline-map-coverage-postwrite-gemini-3.1-pro-preview-primary-002"
+    final_label: "should-fix"
+    blocks_current_map_coverage_commit: false
+    should_fix_now: true
+    rationale: "The finding overstates the issue: the engine can reach post_write_human_decision_required from an existing matching manifest with unresolved substantive findings, so the state is not logically unreachable. However, the navigation wording is ambiguous because it does not distinguish blocked generation from current triage.yaml human_required versus escalation based on an already-existing manifest returned as next_action.manifest."
+    required_changes:
+      - "Clarify post_write_human_decision_required to say it refers to an existing matching post-write manifest reported by next_action.manifest, not to generating a new final manifest while current triage.yaml still has decision_status: human_required."
+      - "Optionally add a short cross-reference in post_write_verification that write-manifest generation is blocked for unresolved current triage decisions, while next --json may still report an existing unresolved manifest for human escalation."
+    backlog_recommendation: "none"
+    confidence: "high"

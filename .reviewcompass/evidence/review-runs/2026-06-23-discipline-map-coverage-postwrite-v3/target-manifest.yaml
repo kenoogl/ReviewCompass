@@ -1,0 +1,6 @@
+run_id: 2026-06-23-discipline-map-coverage-postwrite-v3
+target_files:
+- path: .reviewcompass/guidance/WORKFLOW_DISCIPLINE_MAP.yaml
+  sha256: 660a2f652c41e7879a842d0e73f1d644c8f434d83878dcc5875e977c269219ba
+- path: .reviewcompass/guidance/WORKFLOW_NAVIGATION.md
+  sha256: 268076aee0ddbde231009d48d8840773ff87433cd4e8653492f0004c106f76be

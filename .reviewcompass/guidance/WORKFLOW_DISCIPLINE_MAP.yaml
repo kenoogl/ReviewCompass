@@ -56,6 +56,26 @@ decision_points:
         - .reviewcompass/guidance/WORKFLOW_NAVIGATION.md#post_write_verification
         - .reviewcompass/guidance/discipline_post_write_verification.md
       effective_prompt_policy: one_effective_prompt_per_decision_point
+    - id: parent_resume_pending
+      prompt_source_refs:
+        - .reviewcompass/guidance/WORKFLOW_NAVIGATION.md#parent_resume_pending
+      effective_prompt_policy: one_effective_prompt_per_decision_point
+    - id: blocking_unit_required
+      prompt_source_refs:
+        - .reviewcompass/guidance/WORKFLOW_NAVIGATION.md#blocking_unit_required
+      effective_prompt_policy: one_effective_prompt_per_decision_point
+    - id: blocking_unit_in_progress
+      prompt_source_refs:
+        - .reviewcompass/guidance/WORKFLOW_NAVIGATION.md#blocking_unit_in_progress
+      effective_prompt_policy: one_effective_prompt_per_decision_point
+    - id: commit_mixing_risk
+      prompt_source_refs:
+        - .reviewcompass/guidance/WORKFLOW_NAVIGATION.md#commit_mixing_risk
+      effective_prompt_policy: one_effective_prompt_per_decision_point
+    - id: commit_unit_stale
+      prompt_source_refs:
+        - .reviewcompass/guidance/WORKFLOW_NAVIGATION.md#commit_unit_stale
+      effective_prompt_policy: one_effective_prompt_per_decision_point
     - id: lightweight_self_check
       prompt_source_refs:
         - .reviewcompass/guidance/WORKFLOW_NAVIGATION.md#lightweight_self_check
@@ -382,6 +402,16 @@ by_kind:
     - .reviewcompass/guidance/discipline_post_write_verification.md
   lightweight_self_check:
     - .reviewcompass/guidance/WORKFLOW_NAVIGATION.md#lightweight_self_check
+  parent_resume_pending:
+    - .reviewcompass/guidance/WORKFLOW_NAVIGATION.md#parent_resume_pending
+  blocking_unit_required:
+    - .reviewcompass/guidance/WORKFLOW_NAVIGATION.md#blocking_unit_required
+  blocking_unit_in_progress:
+    - .reviewcompass/guidance/WORKFLOW_NAVIGATION.md#blocking_unit_in_progress
+  commit_mixing_risk:
+    - .reviewcompass/guidance/WORKFLOW_NAVIGATION.md#commit_mixing_risk
+  commit_unit_stale:
+    - .reviewcompass/guidance/WORKFLOW_NAVIGATION.md#commit_unit_stale
   post_write_policy_violation:
     - .reviewcompass/guidance/WORKFLOW_NAVIGATION.md#post_write_policy_violation
     - .reviewcompass/guidance/discipline_post_write_verification.md

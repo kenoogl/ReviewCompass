@@ -1,0 +1,66 @@
+schema_version: reviewcompass-backlog-item-v1
+id: plan-2026-06-23-postwrite-review-prompt-isolation
+kind: plan
+title: Separate post-write review criteria and target artifacts
+status: candidate
+source_unit_id: maintenance-2026-06-23-discipline-map-coverage
+created_at: '2026-06-23T11:51:44+09:00'
+index_path: .reviewcompass/backlog/index.yaml
+provenance:
+  created_by: llm
+  source_ref: .reviewcompass/evidence/review-runs/2026-06-23-discipline-map-coverage-postwrite/proxy-decision-finding-001.parsed.yaml
+  reason: >
+    Post-write API review finding 001 was judged valid by proxy mode, but split out
+    from the current discipline-map coverage patch because it concerns the broader
+    post-write review prompt architecture.
+summary: >
+  Post-write review currently generates a review-target.md artifact that acts as
+  criteria wrapper while also containing target file contents. This conflicts with
+  the API review prompt discipline that requires criteria and target separation.
+  The current map coverage change should not absorb this larger redesign, but the
+  issue should be tracked as a prompt-isolation hardening plan.
+related:
+  - .reviewcompass/guidance/API_REVIEW_PROMPT_QUALITY.md
+  - .reviewcompass/guidance/WORKFLOW_NAVIGATION.md#post_write_verification
+  - .reviewcompass/backlog/plans/plan-2026-06-23-postwrite-prompt-mechanization-completion.yaml
+  - .reviewcompass/evidence/review-runs/2026-06-23-discipline-map-coverage-postwrite/proxy-decision-finding-001.parsed.yaml
+remaining_work:
+  - id: PWPI-1
+    title: Define separated post-write review artifact contract
+    status: candidate
+    tasks:
+      - Keep criteria, review question, scope, source materials, and finding policy separate from actual target bodies.
+      - Define where full target bodies are stored and how they are passed to run_review.py.
+      - Preserve content hashes and prompt-manifest traceability for both criteria/source and target artifacts.
+    acceptance:
+      - The API review prompt quality rule does not need an exception for post-write review.
+      - The target manifest used as gate evidence points to actual judged target contents.
+  - id: PWPI-2
+    title: Update prepare_post_write_review and runner inputs
+    status: candidate
+    tasks:
+      - Change prepare_post_write_review.py to generate separated criteria and target artifacts.
+      - Change run_review.py invocation guidance to pass separated criteria and target inputs.
+      - Preserve non-path-only source material and target material delivery.
+    acceptance:
+      - Existing review-run auditability remains available without criteria/target collapse.
+      - Current tests that assert target bodies are embedded in the criteria wrapper are replaced with separation-focused tests.
+  - id: PWPI-3
+    title: Migrate tests and effective prompt guidance
+    status: candidate
+    tasks:
+      - Update post-write preparation tests to assert separation, not wrapper embedding.
+      - Update WORKFLOW_NAVIGATION post-write instructions after implementation.
+      - Run prompt quality review on the revised post-write review prompt construction.
+    acceptance:
+      - A reviewer can identify criteria, source materials, target bodies, and out-of-scope material independently.
+      - Prompt audit no longer flags review-target.md as both criteria and target body carrier.
+non_goals:
+  - Do not change discipline-map next-action coverage in this plan.
+  - Do not weaken the requirement to include actual target bodies in API review materials.
+  - Do not replace post-write verification triage or manifest approval semantics.
+decisions:
+  - date: '2026-06-23'
+    decision: >
+      Proxy decision classified finding 001 as split-out: valid, not blocking the
+      current discipline-map coverage commit, and not a same-scope immediate fix.

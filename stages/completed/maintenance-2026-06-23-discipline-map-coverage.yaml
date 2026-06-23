@@ -1,0 +1,51 @@
+process_id: maintenance
+title: Discipline map coverage audit for next action effective prompts
+trigger: user_request
+status: completed
+completed_at: '2026-06-23T12:00:00+09:00'
+reason: >
+  next --json が返す現在地と effective prompt の接続を徹底するため、
+  WORKFLOW_DISCIPLINE_MAP.yaml が想定される next_action.kind を網羅しているかを検査し、
+  欠落を修正した。
+mainline_blocked_by: completed
+blocked_normal_workflow: true
+allowed_scope:
+  - workflow_navigation
+  - discipline_map
+  - effective_prompt_selection
+  - coverage_tests
+allowed_files:
+  - .reviewcompass/guidance/WORKFLOW_DISCIPLINE_MAP.yaml
+  - .reviewcompass/guidance/WORKFLOW_NAVIGATION.md
+  - tests/tools/test_check_workflow_action.py
+  - stages/in-progress/maintenance-2026-06-23-discipline-map-coverage.yaml
+  - stages/completed/maintenance-2026-06-23-discipline-map-coverage.yaml
+completion_conditions:
+  - next_action.kind coverage red test is added.
+  - Missing next_action.kind entries are covered by WORKFLOW_DISCIPLINE_MAP.yaml.
+  - Each covered next_action.kind can produce effective prompt metadata.
+  - Maintenance state is moved to stages/completed before commit.
+outcome:
+  covered_next_action_kinds:
+    - parent_resume_pending
+    - blocking_unit_required
+    - blocking_unit_in_progress
+    - commit_mixing_risk
+    - commit_unit_stale
+  added_navigation_anchors:
+    - .reviewcompass/guidance/WORKFLOW_NAVIGATION.md#commit_mixing_risk
+    - .reviewcompass/guidance/WORKFLOW_NAVIGATION.md#commit_unit_stale
+  proxy_review:
+    finding_001: split-out
+    finding_002: should-fix
+  post_write_review:
+    review_run_dir: .reviewcompass/evidence/review-runs/2026-06-23-discipline-map-coverage-postwrite-v3
+    manifest: .reviewcompass/post-write-verification/post-write-2026-06-23-005.yaml
+    findings: 0
+verification:
+  tests:
+    - .venv/bin/python3 -m unittest tests.tools.test_check_workflow_action.NextNavigationTests.test_discipline_map_covers_next_action_kinds_with_effective_prompts -v
+  checks:
+    - yaml load check for discipline map, backlog index, backlog plan, and maintenance state
+    - document_link_lint for changed guidance and backlog plan
+    - next --json returned maintenance_in_progress after post-write manifest completion

@@ -1,0 +1,4 @@
+run_id: 2026-06-23-discipline-map-coverage-postwrite
+target_files:
+- path: .reviewcompass/evidence/review-runs/2026-06-23-discipline-map-coverage-postwrite/review-target.md
+  sha256: 78a714c04399a5aedb2662cba587a3f7be6eda46ef598ecfebf544667fc62f84

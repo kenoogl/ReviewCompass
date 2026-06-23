@@ -1,0 +1,54 @@
+run_id: 2026-06-23-discipline-map-coverage-postwrite
+triage_status: draft
+generated_at: '2026-06-23T02:38:52.481479+00:00'
+decision_actor: null
+decision_actor_type: human
+items:
+- finding_id: 2026-06-23-discipline-map-coverage-postwrite-gemini-3.1-pro-preview-primary-001
+  run_id: 2026-06-23-discipline-map-coverage-postwrite
+  source_model: gemini-3.1-pro-preview
+  source_round: round-1
+  source_raw_path: raw/gemini-3.1-pro-preview.round-1.txt
+  source_parsed_path: parsed/gemini-3.1-pro-preview.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: .reviewcompass/guidance/WORKFLOW_NAVIGATION.md#post_write_verification
+  plain_language_summary: Specifying that `review-target.md` should contain `target
+    file contents` violates the strict separation of criteria and target.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: According to `API_REVIEW_PROMPT_QUALITY.md`, the review criteria
+    and target MUST be separated. Including the full target contents directly inside
+    the criteria file (`review-target.md`) undermines prompt isolation, risks framing
+    bias within the criteria wrapper, and contradicts the established rule that target
+    contents should be handled independently via `--target`.
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-23-discipline-map-coverage-postwrite-gemini-3.1-pro-preview-primary-002
+  run_id: 2026-06-23-discipline-map-coverage-postwrite
+  source_model: gemini-3.1-pro-preview
+  source_round: round-1
+  source_raw_path: raw/gemini-3.1-pro-preview.round-1.txt
+  source_parsed_path: parsed/gemini-3.1-pro-preview.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: '.reviewcompass/guidance/WORKFLOW_NAVIGATION.md#post_write_verification
+    and #post_write_human_decision_required'
+  plain_language_summary: Contradiction regarding manifest generation and human decision
+    escalation states.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: The `post_write_verification` section strictly prohibits generating
+    a manifest if `triage.yaml` contains `human_required`. However, the `post_write_human_decision_required`
+    section instructs checking `next_action.manifest` for unresolved substantive findings.
+    If the manifest is completely blocked from being generated in an unresolved state,
+    the workflow engine cannot provide `next_action.manifest`, making the intended
+    human escalation state logically unreachable.
+  applied_files: []
+  superseded_by: null

@@ -1,0 +1,19 @@
+proxy_model_id: openai/proxy
+decisions:
+- finding_id: 2026-06-23-discipline-map-coverage-postwrite-gemini-3.1-pro-preview-primary-001
+  final_label: split-out
+  blocks_current_map_coverage_commit: false
+  should_fix_now: false
+  rationale: 'The concern is substantively valid: documenting review-target.md as
+    containing target file contents while also using it as --criteria-file conflicts
+    with the criteria/target separation discipline. However, this is an existing post-write
+    review prompt architecture issue, not introduced by the current discipline-map
+    coverage change. Fixing it properly would require restructuring prepare_post_write_review.py/run_review.py
+    artifacts and tests, which is outside the narrow map-coverage scope.'
+  required_changes: []
+  backlog_recommendation: 'Create a post-write review prompt-isolation backlog item
+    to separate criteria, source materials, and target bodies: keep review-target.md
+    as criteria/scope/questions only, pass actual target bodies solely through --target
+    or a dedicated target artifact, preserve auditable manifests, and update tests
+    that currently assert target bodies are embedded in the criteria file.'
+  confidence: high

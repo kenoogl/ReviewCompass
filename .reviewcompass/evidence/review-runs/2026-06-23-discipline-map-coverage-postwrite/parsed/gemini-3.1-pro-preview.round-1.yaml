@@ -1,0 +1,26 @@
+role: primary
+provider: gemini-api
+model: gemini-3.1-pro-preview
+attempts: 1
+duration_seconds: 93.823
+findings:
+- severity: ERROR
+  target_location: .reviewcompass/guidance/WORKFLOW_NAVIGATION.md#post_write_verification
+  description: Specifying that `review-target.md` should contain `target file contents`
+    violates the strict separation of criteria and target.
+  rationale: According to `API_REVIEW_PROMPT_QUALITY.md`, the review criteria and
+    target MUST be separated. Including the full target contents directly inside the
+    criteria file (`review-target.md`) undermines prompt isolation, risks framing
+    bias within the criteria wrapper, and contradicts the established rule that target
+    contents should be handled independently via `--target`.
+- severity: ERROR
+  target_location: '.reviewcompass/guidance/WORKFLOW_NAVIGATION.md#post_write_verification
+    and #post_write_human_decision_required'
+  description: Contradiction regarding manifest generation and human decision escalation
+    states.
+  rationale: The `post_write_verification` section strictly prohibits generating a
+    manifest if `triage.yaml` contains `human_required`. However, the `post_write_human_decision_required`
+    section instructs checking `next_action.manifest` for unresolved substantive findings.
+    If the manifest is completely blocked from being generated in an unresolved state,
+    the workflow engine cannot provide `next_action.manifest`, making the intended
+    human escalation state logically unreachable.
