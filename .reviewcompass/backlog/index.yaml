@@ -322,3 +322,38 @@ items:
   path: .reviewcompass/backlog/todos/todo-2026-06-23-plan-materialization-regression-fixtures.yaml
   source_unit_id: main-side-conversation
   created_at: '2026-06-23T13:03:40.001805+00:00'
+- id: todo-2026-06-23-guidance-reference-consumer-audit
+  kind: todo
+  title: Reference and consumer audit
+  status: candidate
+  path: .reviewcompass/backlog/todos/todo-2026-06-23-guidance-reference-consumer-audit.yaml
+  source_unit_id: main-completed
+  created_at: '2026-06-23T13:25:36.271971+00:00'
+- id: todo-2026-06-23-guidance-relocation-red-tests
+  kind: todo
+  title: Red tests and audit tests
+  status: candidate
+  path: .reviewcompass/backlog/todos/todo-2026-06-23-guidance-relocation-red-tests.yaml
+  source_unit_id: main-completed
+  created_at: '2026-06-23T13:25:42.808507+00:00'
+- id: todo-2026-06-23-guidance-relocation-move-docs
+  kind: todo
+  title: Move deploy-facing and runtime-facing docs
+  status: candidate
+  path: .reviewcompass/backlog/todos/todo-2026-06-23-guidance-relocation-move-docs.yaml
+  source_unit_id: main-completed
+  created_at: '2026-06-23T13:25:50.257778+00:00'
+- id: todo-2026-06-23-guidance-relocation-old-path-cleanup
+  kind: todo
+  title: Delete or demote old paths
+  status: candidate
+  path: .reviewcompass/backlog/todos/todo-2026-06-23-guidance-relocation-old-path-cleanup.yaml
+  source_unit_id: main-completed
+  created_at: '2026-06-23T13:25:56.542199+00:00'
+- id: todo-2026-06-23-guidance-relocation-final-audit
+  kind: todo
+  title: Post-write review and final audit
+  status: candidate
+  path: .reviewcompass/backlog/todos/todo-2026-06-23-guidance-relocation-final-audit.yaml
+  source_unit_id: main-completed
+  created_at: '2026-06-23T13:26:02.570175+00:00'

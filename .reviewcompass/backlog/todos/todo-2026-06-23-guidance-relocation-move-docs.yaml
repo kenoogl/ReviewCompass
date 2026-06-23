@@ -1,0 +1,53 @@
+schema_version: reviewcompass-backlog-item-v1
+id: todo-2026-06-23-guidance-relocation-move-docs
+kind: todo
+title: Move deploy-facing and runtime-facing docs
+status: candidate
+source_unit_id: main-completed
+created_at: '2026-06-23T13:25:50.257778+00:00'
+index_path: .reviewcompass/backlog/index.yaml
+provenance:
+  created_by: llm
+  source_ref: .reviewcompass/backlog/plans/plan-2026-06-23-guidance-relocation-and-docs-classification.yaml#GRC-4
+  reason: plan GRC-4 を deploy-facing/runtime-facing docs relocation 作業として実行対象化する
+decisions: []
+source_plan_id: plan-2026-06-23-guidance-relocation-and-docs-classification
+source_plan_path: .reviewcompass/backlog/plans/plan-2026-06-23-guidance-relocation-and-docs-classification.yaml
+source_plan_slice:
+  phase_id: GRC-4
+  title: Move deploy-facing and runtime-facing docs
+summary: 'GRC-1 と GRC-2 の分類・consumer 監査、および GRC-3 の検査に基づき、 deploy-facing / runtime-facing
+  文書を .reviewcompass/guidance へ移し、 consumer references と effective prompt / discipline
+  map / operation registry の接続を更新する。
+
+  '
+implementation_plan:
+  phases:
+  - id: GRC-4
+    title: Move deploy-facing and runtime-facing docs
+    tasks:
+    - id: GRC-4A
+      title: Move classified deploy-facing and runtime-facing documents to .reviewcompass/guidance
+      status: candidate
+    - id: GRC-4B
+      title: Update consumer references in the same or explicitly staged migration
+        commit
+      status: candidate
+    - id: GRC-4C
+      title: Update effective prompt, discipline map, and operation registry links
+      status: candidate
+    - id: GRC-4D
+      title: Verify moved documents remain single-source deploy-facing guidance
+      status: candidate
+acceptance_criteria:
+- .reviewcompass/guidance が deploy-facing guidance の唯一の正本になる。
+- 旧 docs path を読む実行時 consumer が残らない。
+non_goals:
+- human-reference docs の無条件移動。
+- 旧 path の最終削除。
+- final audit の完了扱い。
+red_tests:
+- id: GRC-4-RT-1
+  title: Runtime consumers no longer read relocated docs paths
+  expected: runtime-facing consumers resolve .reviewcompass/guidance paths after relocation.
+  status: candidate

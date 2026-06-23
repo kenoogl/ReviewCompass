@@ -1,0 +1,54 @@
+schema_version: reviewcompass-backlog-item-v1
+id: todo-2026-06-23-guidance-relocation-red-tests
+kind: todo
+title: Red tests and audit tests
+status: candidate
+source_unit_id: main-completed
+created_at: '2026-06-23T13:25:42.808507+00:00'
+index_path: .reviewcompass/backlog/index.yaml
+provenance:
+  created_by: llm
+  source_ref: .reviewcompass/backlog/plans/plan-2026-06-23-guidance-relocation-and-docs-classification.yaml#GRC-3
+  reason: plan GRC-3 を red tests and audit tests 作業として実行対象化する
+decisions: []
+source_plan_id: plan-2026-06-23-guidance-relocation-and-docs-classification
+source_plan_path: .reviewcompass/backlog/plans/plan-2026-06-23-guidance-relocation-and-docs-classification.yaml
+source_plan_slice:
+  phase_id: GRC-3
+  title: Red tests and audit tests
+summary: 'guidance relocation の移動前検査を追加する。duplicate guidance、legacy docs path、 deploy
+  manifest、effective prompt source refs、adapter guidance の配置契約を red test または現状固定テストとして用意する。
+
+  '
+implementation_plan:
+  phases:
+  - id: GRC-3
+    title: Red tests and audit tests
+    tasks:
+    - id: GRC-3A
+      title: Add tests that detect duplicate guidance or legacy docs path usage
+      status: candidate
+    - id: GRC-3B
+      title: Add deploy manifest tests that require the new guidance placement
+      status: candidate
+    - id: GRC-3C
+      title: Add tests that effective prompt source refs do not point to retired docs
+        paths
+      status: candidate
+    - id: GRC-3D
+      title: Add tests that adapter guidance links to canonical .reviewcompass/guidance
+        documents
+      status: candidate
+acceptance_criteria:
+- 移動前に、期待する配置違反を検出できるテストが存在する。
+- テストは移動作業とは別 commit 単位で確認できる。
+non_goals:
+- guidance 文書の移動。
+- 旧 path 削除。
+- API post-write review の実施。
+red_tests:
+- id: GRC-3-RT-1
+  title: Legacy docs path usage is detectable before relocation
+  expected: tests fail or pin current behavior when effective prompt or deploy-facing
+    references still point at legacy docs paths.
+  status: candidate

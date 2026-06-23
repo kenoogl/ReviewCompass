@@ -1,0 +1,57 @@
+schema_version: reviewcompass-backlog-item-v1
+id: todo-2026-06-23-guidance-relocation-final-audit
+kind: todo
+title: Post-write review and final audit
+status: candidate
+source_unit_id: main-completed
+created_at: '2026-06-23T13:26:02.570175+00:00'
+index_path: .reviewcompass/backlog/index.yaml
+provenance:
+  created_by: llm
+  source_ref: .reviewcompass/backlog/plans/plan-2026-06-23-guidance-relocation-and-docs-classification.yaml#GRC-6
+  reason: plan GRC-6 を post-write review and final audit 作業として実行対象化する
+decisions: []
+source_plan_id: plan-2026-06-23-guidance-relocation-and-docs-classification
+source_plan_path: .reviewcompass/backlog/plans/plan-2026-06-23-guidance-relocation-and-docs-classification.yaml
+source_plan_slice:
+  phase_id: GRC-6
+  title: Post-write review and final audit
+summary: 'guidance relocation 完了後に、API post-write verification または lightweight self-check
+  の適用範囲を分けて実行し、next、document link lint、deployment tests、 effective prompt freshness
+  / coverage audit を確認する。
+
+  '
+implementation_plan:
+  phases:
+  - id: GRC-6
+    title: Post-write review and final audit
+    tasks:
+    - id: GRC-6A
+      title: Run API post-write verification for guidance, discipline map, or deploy
+        manifest changes
+      status: candidate
+    - id: GRC-6B
+      title: Use lightweight self-check only for human-reference docs changes
+      status: candidate
+    - id: GRC-6C
+      title: Run next, document_link_lint, deployment tests, and effective prompt
+        audits
+      status: candidate
+    - id: GRC-6D
+      title: Confirm old paths are absent from next output and post-write manifests
+        seal real targets
+      status: candidate
+acceptance_criteria:
+- 移動後に next --json が旧 path を返さない。
+- post-write manifest が実 target を正しく封印する。
+- 作業ツリー clean で push 可能になる。
+non_goals:
+- 追加の guidance relocation 実装。
+- 未解決分類判断の暗黙解決。
+- commit / push の自動実行。
+red_tests:
+- id: GRC-6-RT-1
+  title: Final audit proves relocation is sealed
+  expected: final audit commands pass and post-write verification scope matches actual
+    changed targets.
+  status: candidate

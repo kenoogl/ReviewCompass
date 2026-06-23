@@ -1,0 +1,54 @@
+schema_version: reviewcompass-backlog-item-v1
+id: todo-2026-06-23-guidance-reference-consumer-audit
+kind: todo
+title: Reference and consumer audit
+status: candidate
+source_unit_id: main-completed
+created_at: '2026-06-23T13:25:36.271971+00:00'
+index_path: .reviewcompass/backlog/index.yaml
+provenance:
+  created_by: llm
+  source_ref: .reviewcompass/backlog/plans/plan-2026-06-23-guidance-relocation-and-docs-classification.yaml#GRC-2
+  reason: plan GRC-2 を reference and consumer audit 作業として実行対象化する
+decisions: []
+source_plan_id: plan-2026-06-23-guidance-relocation-and-docs-classification
+source_plan_path: .reviewcompass/backlog/plans/plan-2026-06-23-guidance-relocation-and-docs-classification.yaml
+source_plan_slice:
+  phase_id: GRC-2
+  title: Reference and consumer audit
+summary: 'docs/operations と docs/disciplines の移動候補について、repo 内の path、 basename、anchor、template、test
+  fixture、deploy manifest 参照を監査する。 この TODO ではファイル移動や参照更新は行わず、consumer 一覧を作る。
+
+  '
+implementation_plan:
+  phases:
+  - id: GRC-2
+    title: Reference and consumer audit
+    tasks:
+    - id: GRC-2A
+      title: Search repo-wide references by path, basename, and anchor
+      status: candidate
+    - id: GRC-2B
+      title: Classify references in hooks, templates, tools, tests, deploy manifest,
+        and AGENTS or entry templates
+      status: candidate
+    - id: GRC-2C
+      title: Separate deploy-package consumers from development-repository-only consumers
+      status: candidate
+    - id: GRC-2D
+      title: Record update candidates for each relocation target without changing
+        references
+      status: candidate
+acceptance_criteria:
+- 各移動候補について、更新すべき consumer が漏れなくリストされる。
+- この段階ではファイル移動、参照更新、旧 path 削除を行わない。
+non_goals:
+- docs/operations / docs/disciplines のファイル移動。
+- consumer reference 更新。
+- deploy-manifest 変更。
+red_tests:
+- id: GRC-2-RT-1
+  title: Consumer audit covers relocation candidates before reference updates
+  expected: reference audit artifact lists path, basename, and deploy/runtime consumers
+    for each candidate before any move.
+  status: candidate

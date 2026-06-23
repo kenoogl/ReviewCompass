@@ -1,0 +1,53 @@
+schema_version: reviewcompass-backlog-item-v1
+id: todo-2026-06-23-guidance-relocation-old-path-cleanup
+kind: todo
+title: Delete or demote old paths
+status: candidate
+source_unit_id: main-completed
+created_at: '2026-06-23T13:25:56.542199+00:00'
+index_path: .reviewcompass/backlog/index.yaml
+provenance:
+  created_by: llm
+  source_ref: .reviewcompass/backlog/plans/plan-2026-06-23-guidance-relocation-and-docs-classification.yaml#GRC-5
+  reason: plan GRC-5 を old path deletion or demotion 作業として実行対象化する
+decisions: []
+source_plan_id: plan-2026-06-23-guidance-relocation-and-docs-classification
+source_plan_path: .reviewcompass/backlog/plans/plan-2026-06-23-guidance-relocation-and-docs-classification.yaml
+source_plan_slice:
+  phase_id: GRC-5
+  title: Delete or demote old paths
+summary: '移動済み旧 docs path を削除または archive / historical / notes へ明示的に降格し、 二重正本を残さない。残す場合は実行時
+  consumer から切り離し、README 等で 非正本であることを明記する。
+
+  '
+implementation_plan:
+  phases:
+  - id: GRC-5
+    title: Delete or demote old paths
+    tasks:
+    - id: GRC-5A
+      title: Delete moved legacy paths when no compatibility shim is required
+      status: candidate
+    - id: GRC-5B
+      title: Demote retained paths to archive, historical, or notes with explicit
+        non-canonical status
+      status: candidate
+    - id: GRC-5C
+      title: Ensure runtime consumers are disconnected from retained legacy paths
+      status: candidate
+    - id: GRC-5D
+      title: Verify README or index text does not present old paths as canonical
+      status: candidate
+acceptance_criteria:
+- 二重正本が残らない。
+- 旧 path 参照が link / grep / deploy lint で検出されない。
+non_goals:
+- 未分類文書の削除。
+- deploy-facing guidance の追加移動。
+- final post-write review の完了扱い。
+red_tests:
+- id: GRC-5-RT-1
+  title: Legacy paths are deleted or marked non-canonical
+  expected: old paths are either absent or explicitly demoted and disconnected from
+    runtime consumers.
+  status: candidate
