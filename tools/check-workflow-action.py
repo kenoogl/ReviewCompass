@@ -505,6 +505,19 @@ DEFAULT_DISCIPLINE_MAP = {
         "effective_prompt_policy": "one_effective_prompt_per_decision_point",
       },
       {
+        "id": "user_initiated_plan_to_todo_bridge",
+        "prompt_source_refs": [
+          ".reviewcompass/guidance/WORKFLOW_NAVIGATION.md",
+          ".reviewcompass/backlog/todos/todo-2026-06-23-plan-to-todo-checklist-evidence.yaml",
+          ".reviewcompass/backlog/plans/plan-2026-06-22-user-initiated-backlog-checklist-effective-prompt.yaml",
+        ],
+        "effective_prompt_policy": "one_effective_prompt_per_decision_point",
+        "canonical_effective_prompt_path": (
+          ".reviewcompass/guidance/effective-prompts/"
+          "user-initiated-plan-to-todo-bridge.prompt.md"
+        ),
+      },
+      {
         "id": "user_initiated_backlog_todo_execution",
         "prompt_source_refs": [
           ".reviewcompass/guidance/WORKFLOW_NAVIGATION.md",
@@ -715,6 +728,7 @@ DEFAULT_DISCIPLINE_MAP = {
 
 OPERATION_PROMPT_IDS = [
   "commit",
+  "user_initiated_plan_to_todo_bridge",
   "user_initiated_backlog_todo_execution",
   "user_initiated_task_quality_gate",
   "user_initiated_task_quality_review_materials",

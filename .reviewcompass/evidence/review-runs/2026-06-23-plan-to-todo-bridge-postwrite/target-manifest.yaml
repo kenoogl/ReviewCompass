@@ -1,0 +1,6 @@
+run_id: 2026-06-23-plan-to-todo-bridge-postwrite
+target_files:
+- path: .reviewcompass/guidance/WORKFLOW_DISCIPLINE_MAP.yaml
+  sha256: c1ab2976322c0b74d8a5d3446e61e7ac28713252f0d5ad355d344b0aec8da65a
+- path: .reviewcompass/guidance/effective-prompts/user-initiated-plan-to-todo-bridge.prompt.md
+  sha256: 44b9a73f067a9c71eb786657bdb6311f60514c01c25c8ac394fdebdbef435cb8

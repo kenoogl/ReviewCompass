@@ -228,6 +228,13 @@ decision_points:
       prompt_source_refs:
         - .reviewcompass/guidance/COMMIT_OPERATION_CARD.md#commit-operation-card
       effective_prompt_policy: one_effective_prompt_per_decision_point
+    - id: user_initiated_plan_to_todo_bridge
+      prompt_source_refs:
+        - .reviewcompass/guidance/WORKFLOW_NAVIGATION.md
+        - .reviewcompass/backlog/todos/todo-2026-06-23-plan-to-todo-checklist-evidence.yaml
+        - .reviewcompass/backlog/plans/plan-2026-06-22-user-initiated-backlog-checklist-effective-prompt.yaml
+      effective_prompt_policy: one_effective_prompt_per_decision_point
+      canonical_effective_prompt_path: .reviewcompass/guidance/effective-prompts/user-initiated-plan-to-todo-bridge.prompt.md
     - id: user_initiated_backlog_todo_execution
       prompt_source_refs:
         - .reviewcompass/guidance/WORKFLOW_NAVIGATION.md

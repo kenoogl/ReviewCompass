@@ -97,6 +97,11 @@ def test_workflow_discipline_map_catalogs_all_current_decision_points():
       "reopen_in_progress",
       "maintenance_in_progress",
       "resume_in_progress",
+      "parent_resume_pending",
+      "blocking_unit_required",
+      "blocking_unit_in_progress",
+      "commit_mixing_risk",
+      "commit_unit_stale",
       "reopen_started",
       "reopen_start_failed",
       "commit_stop_point",
@@ -165,6 +170,7 @@ def test_workflow_discipline_map_catalogs_all_current_decision_points():
     },
     "operation_prompt": {
       "commit",
+      "user_initiated_plan_to_todo_bridge",
       "user_initiated_backlog_todo_execution",
       "user_initiated_task_quality_gate",
       "user_initiated_task_quality_review_materials",
@@ -208,6 +214,29 @@ def test_user_initiated_backlog_execution_uses_canonical_effective_prompt_artifa
     ".reviewcompass/guidance/effective-prompts/"
     "user-initiated-backlog-todo-execution.prompt.md"
   )
+
+
+def test_user_initiated_plan_to_todo_bridge_uses_canonical_effective_prompt_artifact():
+  item = _decision_point("operation_prompt", "user_initiated_plan_to_todo_bridge")
+
+  assert item["canonical_effective_prompt_path"] == (
+    ".reviewcompass/guidance/effective-prompts/"
+    "user-initiated-plan-to-todo-bridge.prompt.md"
+  )
+
+
+def test_user_initiated_plan_to_todo_bridge_prompt_contains_trigger_boundary():
+  item = _decision_point("operation_prompt", "user_initiated_plan_to_todo_bridge")
+  prompt_path = ROOT / item["canonical_effective_prompt_path"]
+
+  text = prompt_path.read_text(encoding="utf-8")
+
+  assert "plan を実行単位へ変換する直前" in text
+  assert "work-backlog add-todo" in text
+  assert "work-backlog start-checklist" in text
+  assert "task-quality-check prepare-review-materials" in text
+  assert "WARN または高リスク" in text
+  assert "TODO/checklist がないまま plan から実作業へ進まない" in text
 
 
 def test_user_initiated_backlog_execution_prompt_contains_mechanical_boundary():

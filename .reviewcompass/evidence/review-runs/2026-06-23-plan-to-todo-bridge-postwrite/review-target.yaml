@@ -1,0 +1,32 @@
+run_id: 2026-06-23-plan-to-todo-bridge-postwrite
+phase: post_write_verification
+criteria_id: plan_to_todo_bridge_postwrite
+criteria_file: .reviewcompass/evidence/review-runs/2026-06-23-plan-to-todo-bridge-postwrite/review-target.md
+criteria_file_sha256: 6702d27b8b7655ae042c1bebd96c7f524c80421212a9e40103691602d0ebf3cc
+prompt_manifest_path: .reviewcompass/evidence/review-runs/2026-06-23-plan-to-todo-bridge-postwrite/prompt-manifest.yaml
+prompt_manifest_sha256: dac9728ead2c727246d3466505c1d76a34c2cc4a4ec13f47b2908689f6d50fab
+target_files:
+- path: .reviewcompass/guidance/WORKFLOW_DISCIPLINE_MAP.yaml
+  sha256: c1ab2976322c0b74d8a5d3446e61e7ac28713252f0d5ad355d344b0aec8da65a
+  content_mode: full_text
+  content_sha256: c1ab2976322c0b74d8a5d3446e61e7ac28713252f0d5ad355d344b0aec8da65a
+- path: .reviewcompass/guidance/effective-prompts/user-initiated-plan-to-todo-bridge.prompt.md
+  sha256: 44b9a73f067a9c71eb786657bdb6311f60514c01c25c8ac394fdebdbef435cb8
+  content_mode: full_text
+  content_sha256: 44b9a73f067a9c71eb786657bdb6311f60514c01c25c8ac394fdebdbef435cb8
+source_materials:
+- path: .reviewcompass/guidance/WORKFLOW_NAVIGATION.md
+  sha256: 268076aee0ddbde231009d48d8840773ff87433cd4e8653492f0004c106f76be
+  content_mode: full_text
+  content_sha256: 268076aee0ddbde231009d48d8840773ff87433cd4e8653492f0004c106f76be
+- path: .reviewcompass/backlog/todos/todo-2026-06-23-plan-to-todo-checklist-evidence.yaml
+  sha256: 6ef2ea4e573b022ec62287178c096aaca3171e4e628ef35199a9a2c3b34346ad
+  content_mode: full_text
+  content_sha256: 6ef2ea4e573b022ec62287178c096aaca3171e4e628ef35199a9a2c3b34346ad
+sensitive_information_check:
+  status: passed
+  checked_at: '2026-06-23T08:44:14.783483+00:00'
+recommended_run_review_args:
+  criteria_file: .reviewcompass/evidence/review-runs/2026-06-23-plan-to-todo-bridge-postwrite/review-target.md
+  phase: post_write_verification
+  prompt_manifest_path: .reviewcompass/evidence/review-runs/2026-06-23-plan-to-todo-bridge-postwrite/prompt-manifest.yaml
