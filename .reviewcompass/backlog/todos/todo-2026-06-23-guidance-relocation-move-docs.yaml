@@ -26,8 +26,11 @@ implementation_plan:
   - id: GRC-4
     title: Move deploy-facing and runtime-facing docs
     tasks:
-    - id: GRC-4A
-      title: Move classified deploy-facing and runtime-facing documents to .reviewcompass/guidance
+    - id: GRC-4A1
+      title: Move active discipline root documents to .reviewcompass/guidance
+      status: done
+    - id: GRC-4A2
+      title: Move adapter guidance documents to .reviewcompass/guidance
       status: candidate
     - id: GRC-4B
       title: Update consumer references in the same or explicitly staged migration
@@ -51,3 +54,11 @@ red_tests:
   title: Runtime consumers no longer read relocated docs paths
   expected: runtime-facing consumers resolve .reviewcompass/guidance paths after relocation.
   status: candidate
+execution_history:
+- checklist_id: checklist-todo-2026-06-23-guidance-relocation-move-docs
+  evidence_path: .reviewcompass/evidence/work-units/checklists/checklist-todo-2026-06-23-guidance-relocation-move-docs.yaml
+  completion_summary: >
+    post_write_policy_violation 修復のため、GRC-4 を小分割した。
+    active discipline root の移動だけを第一単位として残し、adapter guidance
+    移動、consumer 更新、deploy manifest 更新は未完了に戻した。
+  completed_at: null

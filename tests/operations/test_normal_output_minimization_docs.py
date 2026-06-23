@@ -7,7 +7,7 @@ ROOT = Path(__file__).resolve().parents[2]
 
 
 def test_normal_output_minimization_discipline_exists():
-  path = ROOT / "docs" / "disciplines" / "discipline_normal_output_minimization.md"
+  path = ROOT / ".reviewcompass" / "guidance" / "discipline_normal_output_minimization.md"
   text = path.read_text(encoding="utf-8")
 
   assert "正常系出力最小化" in text
@@ -22,12 +22,12 @@ def test_tools_readme_points_to_common_output_contract():
   text = (ROOT / "tools" / "README.md").read_text(encoding="utf-8")
 
   assert "共通 CLI 出力契約" in text
-  assert "discipline_normal_output_minimization.md" in text
+  assert ".reviewcompass/guidance/SESSION_WORKFLOW_GUIDE.md" in text
   assert "2026-06-19-normal-output-minimization-tool-inventory.yaml" in text
 
 
 def test_normal_output_minimization_inventory_is_machine_readable():
-  path = ROOT / "docs" / "notes" / "working" / (
+  path = ROOT / "docs" / "notes" / (
     "2026-06-19-normal-output-minimization-tool-inventory.yaml"
   )
   inventory = yaml.safe_load(path.read_text(encoding="utf-8"))

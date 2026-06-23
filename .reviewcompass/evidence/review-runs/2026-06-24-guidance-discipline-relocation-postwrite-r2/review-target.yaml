@@ -1,0 +1,96 @@
+run_id: 2026-06-24-guidance-discipline-relocation-postwrite-r2
+phase: post_write_verification
+criteria_id: post_write_verification__discipline_avoid_compound_bash__discipline_concise_complete_report__discipline_facts_vs_interpretation__and_13_more
+criteria_file: .reviewcompass/evidence/review-runs/2026-06-24-guidance-discipline-relocation-postwrite-r2/review-target.md
+criteria_file_sha256: 1263eb49a20c5a09b713142be743503f8902efff38b4cf021dc63abc8e6e2f8f
+prompt_manifest_path: .reviewcompass/evidence/review-runs/2026-06-24-guidance-discipline-relocation-postwrite-r2/prompt-manifest.yaml
+prompt_manifest_sha256: 1b64d3dc8e004b204a4f3ec035f2136551f99fc79662ce399156271e1b83d0bf
+target_files:
+- path: /Users/Daily/Development/ReviewCompass/.reviewcompass/guidance/discipline_avoid_compound_bash.md
+  sha256: bfb51bebf6877b22c6acc8dd05378b29274961b7bde407fb71c8c4c42869cfc7
+  content_mode: full_text
+  content_sha256: bfb51bebf6877b22c6acc8dd05378b29274961b7bde407fb71c8c4c42869cfc7
+- path: /Users/Daily/Development/ReviewCompass/.reviewcompass/guidance/discipline_concise_complete_report.md
+  sha256: 715e67d83d5c3d9badc85c8d487498e69d5cf2fa2406ca822e886a34a69e4052
+  content_mode: full_text
+  content_sha256: 715e67d83d5c3d9badc85c8d487498e69d5cf2fa2406ca822e886a34a69e4052
+- path: /Users/Daily/Development/ReviewCompass/.reviewcompass/guidance/discipline_facts_vs_interpretation.md
+  sha256: 6662bb52b63c0bf7ca2ef743760c34e7554eee85bee5530415073f2750b46449
+  content_mode: full_text
+  content_sha256: 6662bb52b63c0bf7ca2ef743760c34e7554eee85bee5530415073f2750b46449
+- path: /Users/Daily/Development/ReviewCompass/.reviewcompass/guidance/discipline_implementation_autonomy.md
+  sha256: 47bea56df8fafae0a392d5ada4e2f6b45e8e9239fda64a72d8c6ef915051c0d3
+  content_mode: full_text
+  content_sha256: 47bea56df8fafae0a392d5ada4e2f6b45e8e9239fda64a72d8c6ef915051c0d3
+- path: /Users/Daily/Development/ReviewCompass/.reviewcompass/guidance/discipline_intent_conformance_is_the_acceptance_gate.md
+  sha256: 971e44a1f5c5026a98865ffdbfd116fcd80ee86b96f7ebee9b2a34cecf8be968
+  content_mode: full_text
+  content_sha256: 971e44a1f5c5026a98865ffdbfd116fcd80ee86b96f7ebee9b2a34cecf8be968
+- path: /Users/Daily/Development/ReviewCompass/.reviewcompass/guidance/discipline_must_fix_discussion_obligation.md
+  sha256: 12c05dede38e024466377cdd8272e90bb84ab73f67b438ec11984935769bac75
+  content_mode: full_text
+  content_sha256: 12c05dede38e024466377cdd8272e90bb84ab73f67b438ec11984935769bac75
+- path: /Users/Daily/Development/ReviewCompass/.reviewcompass/guidance/discipline_no_redundant_workflow_questions.md
+  sha256: db7bdfbc8a2b4b2fcb33c869420c52ac58f06ad7fe4a79f0eab967597201f928
+  content_mode: full_text
+  content_sha256: db7bdfbc8a2b4b2fcb33c869420c52ac58f06ad7fe4a79f0eab967597201f928
+- path: /Users/Daily/Development/ReviewCompass/.reviewcompass/guidance/discipline_normal_output_minimization.md
+  sha256: e74d3098d84c52e50f0e6602a426754b52ecdbe16ffa1f6a3fcdaf6a6d71e8a6
+  content_mode: full_text
+  content_sha256: e74d3098d84c52e50f0e6602a426754b52ecdbe16ffa1f6a3fcdaf6a6d71e8a6
+- path: /Users/Daily/Development/ReviewCompass/.reviewcompass/guidance/discipline_options_presentation.md
+  sha256: bd60db3932c2261b6588b9916720cf50222c18b42996952f996fc306a284757c
+  content_mode: full_text
+  content_sha256: bd60db3932c2261b6588b9916720cf50222c18b42996952f996fc306a284757c
+- path: /Users/Daily/Development/ReviewCompass/.reviewcompass/guidance/discipline_plain_explanation_each_step.md
+  sha256: b7c02e94078eaa2aa519e1fc5b71d2ed9d81e351a55fb4bd2a96056e450a2603
+  content_mode: full_text
+  content_sha256: b7c02e94078eaa2aa519e1fc5b71d2ed9d81e351a55fb4bd2a96056e450a2603
+- path: /Users/Daily/Development/ReviewCompass/.reviewcompass/guidance/discipline_plain_japanese.md
+  sha256: 21e60fb53585e525fc4220bb738c5ad84f0bc363c0e401ebd878868422d0bd34
+  content_mode: full_text
+  content_sha256: 21e60fb53585e525fc4220bb738c5ad84f0bc363c0e401ebd878868422d0bd34
+- path: /Users/Daily/Development/ReviewCompass/.reviewcompass/guidance/discipline_pre_action_precheck.md
+  sha256: 9f14916c6df802c00bd389368ac55161c2e28fa0eec1283116de9df37f3a097f
+  content_mode: full_text
+  content_sha256: 9f14916c6df802c00bd389368ac55161c2e28fa0eec1283116de9df37f3a097f
+- path: /Users/Daily/Development/ReviewCompass/.reviewcompass/guidance/discipline_reopen_procedure_for_settled_topics.md
+  sha256: ab5766d61be4559b38bbd584c3c5bf66b9dd2746fa2eb8792f43c9990208deeb
+  content_mode: full_text
+  content_sha256: ab5766d61be4559b38bbd584c3c5bf66b9dd2746fa2eb8792f43c9990208deeb
+- path: /Users/Daily/Development/ReviewCompass/.reviewcompass/guidance/discipline_standing_directives_are_hard_constraints.md
+  sha256: 3b03b245a529af50dfbb5674ee045397572947031b6b8caa564dcc9f552d9e35
+  content_mode: full_text
+  content_sha256: 3b03b245a529af50dfbb5674ee045397572947031b6b8caa564dcc9f552d9e35
+- path: /Users/Daily/Development/ReviewCompass/.reviewcompass/guidance/discipline_workflow_precheck_invocation.md
+  sha256: f623dc363ec9b49e7b902b0fc9a99213e0d80e60cda06c94bbd1c9adb16d39a7
+  content_mode: full_text
+  content_sha256: f623dc363ec9b49e7b902b0fc9a99213e0d80e60cda06c94bbd1c9adb16d39a7
+- path: /Users/Daily/Development/ReviewCompass/docs/disciplines/README.md
+  sha256: fdb37def67da7d744846c216c0d5884f11c088152c6fa27216889df9227de801
+  content_mode: full_text
+  content_sha256: fdb37def67da7d744846c216c0d5884f11c088152c6fa27216889df9227de801
+source_materials:
+- path: /Users/Daily/Development/ReviewCompass/.reviewcompass/guidance/WORKFLOW_NAVIGATION.md
+  sha256: 268076aee0ddbde231009d48d8840773ff87433cd4e8653492f0004c106f76be
+  content_mode: full_text
+  content_sha256: 268076aee0ddbde231009d48d8840773ff87433cd4e8653492f0004c106f76be
+- path: /Users/Daily/Development/ReviewCompass/.reviewcompass/guidance/API_REVIEW_PROMPT_QUALITY.md
+  sha256: 7a4698ec32170ced27d6f7dad1910a4e5a9b64d4639c74892c37cf60cee999a8
+  content_mode: full_text
+  content_sha256: 7a4698ec32170ced27d6f7dad1910a4e5a9b64d4639c74892c37cf60cee999a8
+- path: /Users/Daily/Development/ReviewCompass/.reviewcompass/guidance/discipline_post_write_verification.md
+  sha256: b5db5b8a11c57304976fd13a03e15fd39cbc44cb7b6f206b579065b0f62a10e2
+  content_mode: full_text
+  content_sha256: b5db5b8a11c57304976fd13a03e15fd39cbc44cb7b6f206b579065b0f62a10e2
+- path: /Users/Daily/Development/ReviewCompass/.reviewcompass/specs/workflow-management/post-write-verification-spec.yaml
+  sha256: 3e72e7431ccef008e0f87ac841053aed11b88f4350a027979661ffe1c6291d81
+  content_mode: full_text
+  content_sha256: 3e72e7431ccef008e0f87ac841053aed11b88f4350a027979661ffe1c6291d81
+sensitive_information_check:
+  status: passed
+  checked_at: '2026-06-23T15:12:27.291972+00:00'
+recommended_run_review_args:
+  criteria_file: .reviewcompass/evidence/review-runs/2026-06-24-guidance-discipline-relocation-postwrite-r2/review-target.md
+  phase: post_write_verification
+  prompt_manifest_path: .reviewcompass/evidence/review-runs/2026-06-24-guidance-discipline-relocation-postwrite-r2/prompt-manifest.yaml

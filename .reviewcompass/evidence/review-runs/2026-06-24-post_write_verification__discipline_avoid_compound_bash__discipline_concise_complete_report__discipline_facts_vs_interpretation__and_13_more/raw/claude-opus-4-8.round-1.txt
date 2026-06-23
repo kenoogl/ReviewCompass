@@ -1,0 +1,13 @@
+findings:
+  - severity: WARN
+    target_location: "docs/disciplines/README.md / active 必読表 discipline_post_write_verification.md 行"
+    description: "README の post-write-verification の概要行は『起草者と異なるサブエージェント（既定 3 体、Anthropic／OpenAI／Google の独立系統）』『small=1 体でも…既定 Google gemini-3.5-flash』と具体的なモデル・体数を断定しているが、source の discipline_post_write_verification.md 本文は『大規模 3 体／小規模 1 体』の発火規模制御は述べるものの、Anthropic/OpenAI/Google の固定割り当てや既定モデル名 gemini-3.5-flash には言及していない。WORKFLOW_NAVIGATION.md は post_write_verification の API variant 既定を post_write_verification_google としており、README の固定モデル名・体数記述は source 群より強い主張になっている。"
+    rationale: "索引（README）が source 規律より具体的・断定的なモデル/体数を記すと、target/source の整合が崩れ、設定値の正本（reviewcompass.yaml／spec.yaml）と食い違ったときに索引だけ古くなる risk がある。索引は規律本文と整合する粒度に留めるのが安全。ただし discipline_post_write_verification.md 自体は今回の target に含まれず、README の記述が誤りだと断定するための source 本文も提示されていないため WARN に留める。"
+  - severity: INFO
+    target_location: ".reviewcompass/guidance/discipline_facts_vs_interpretation.md / How to apply 末尾、discipline_pre_action_precheck.md / How to apply 末尾、discipline_options_presentation.md / 統廃合元節"
+    description: "複数の規律が `memory/archive/2026-05-25-consolidation/` や `docs/disciplines/archive/2026-05-26-consolidation/` を詳細・経緯の参照先として案内している。一方 README は active 本体が `.reviewcompass/guidance/` へ移動した旨を記すが、これらの archive 参照パスの現存性は target 文書だけでは確認できない。"
+    rationale: "参照先が存在すれば問題ないが、guidance relocation 後にパスが不一致になっていると詳細を辿れず手動確認の手戻りになりうる。source 材料に archive 実体が含まれないため事実判定はできず、注意喚起の INFO に留める。post-write 停止条件・finding policy・preflight いずれも弱めないため must/should には該当しない。"
+  - severity: INFO
+    target_location: "対象規律群全体（target/source 分離・停止条件への影響確認）"
+    description: "must_fix_discussion_obligation.md と WORKFLOW_NAVIGATION.md の post_write_verification 分岐は整合しており（重要件は raw 参照・モデル別要約・三段階トリアージ・利用者承認を提示・記録してから decide/write-manifest）、prompt-manifest preflight・finding policy・manifest 生成停止条件を弱める記述は target 文書群に見当たらない。implementation_autonomy / standing_directives / intent_conformance の衝突解決も双方向で一貫している。"
+    rationale: "レビュー設問の中核（preflight・finding policy・post-write 停止条件を弱めていないこと、target/source/out-of-scope の分離）について、target 文書側に矛盾や弱体化は確認できなかった旨の記録。"

@@ -1,0 +1,58 @@
+schema_version: work-checklist-v1
+checklist_id: checklist-todo-2026-06-23-guidance-relocation-move-docs
+unit_id: maintenance-2026-06-23-guidance-relocation-move-docs
+title: Move deploy-facing and runtime-facing docs
+status: active
+created_at: '2026-06-23T13:26:21.314148+00:00'
+provenance:
+  created_by: llm
+  source_ref: .reviewcompass/backlog/todos/todo-2026-06-23-guidance-relocation-move-docs.yaml
+  reason: backlog TODO から runtime checklist を機械生成する
+items:
+- id: GRC-4A1
+  title: Move active discipline root documents to .reviewcompass/guidance
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: GRC-4A2
+  title: Move adapter guidance documents to .reviewcompass/guidance
+  status: active
+  checked: false
+  child_checklist_id: null
+- id: GRC-4B
+  title: Update consumer references in the same or explicitly staged migration commit
+  status: pending
+  checked: false
+  child_checklist_id: null
+- id: GRC-4C
+  title: Update effective prompt, discipline map, and operation registry links
+  status: pending
+  checked: false
+  child_checklist_id: null
+- id: GRC-4D
+  title: Verify moved documents remain single-source deploy-facing guidance
+  status: pending
+  checked: false
+  child_checklist_id: null
+- id: GRC-4-RT-1
+  title: Runtime consumers no longer read relocated docs paths
+  status: pending
+  checked: false
+  child_checklist_id: null
+source_backlog_item_id: todo-2026-06-23-guidance-relocation-move-docs
+source_backlog_path: .reviewcompass/backlog/todos/todo-2026-06-23-guidance-relocation-move-docs.yaml
+progress:
+  total: 6
+  done: 1
+  active: 1
+  pending: 4
+  blocked: 0
+  active_item_ids:
+  - GRC-4A2
+  blocked_item_ids: []
+completed_at: null
+completion_summary: null
+repair_note: >
+  post_write_policy_violation 修復のため、検証可能な第一単位として
+  active discipline root の移動だけを残した。adapter guidance 移動、
+  consumer 更新、deploy manifest 更新は後続単位で扱う。

@@ -1,0 +1,10 @@
+findings:
+  - severity: INFO
+    target_location: "docs/disciplines/README.md セクション「規律ファイル一覧」および「参照層（3 件）」"
+    description: "README の active 規律表と参照層表に列挙されたファイルのうち、discipline_approval_operation.md / discipline_workflow_state_truth_source.md / discipline_yaml_audit.md / discipline_llm_as_judge_prompting.md は Target Files に含まれていない。これらは本レビュー対象外の正本ファイルであり、README の参照リンク自体は WORKFLOW_NAVIGATION.md や post-write-verification 規律の運用と矛盾しない。記載内容は source materials と整合している。"
+    rationale: "README が示す配置・所有・命名規約・[[link]] 解決規則は本文中の規律群の参照と一貫しており、target/source/out-of-scope の分離も保たれている。対象外ファイルへのリンクは README の索引機能として正常であり、欠陥ではないことを確認のため記録する。"
+  - severity: INFO
+    target_location: ".reviewcompass/guidance/discipline_must_fix_discussion_obligation.md How to apply 末尾、および discipline_post_write_verification.md（source material）"
+    description: "must-fix 規律は API 経路の重要件について「会話上の義務だけを定め、review_triage.py decide / manifest 生成 / 承認レコード要件などの機械ゲートは WORKFLOW_NAVIGATION.md の post_write_verification 分岐を正本とする」と明記しており、WORKFLOW_NAVIGATION.md の manifest 生成停止条件・承認レコード必須・triage 未解決時の停止と矛盾しない。post-write verification の stop conditions を弱めていない。"
+    rationale: "本レビューの主眼である prompt-manifest preflight・finding policy・post-write verification stop conditions の不弱化を確認した。規律文書は正本の機械ゲートへ委譲しており、二重定義や緩和を生んでいない。"
+findings: []

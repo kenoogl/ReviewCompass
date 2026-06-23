@@ -1,0 +1,13 @@
+findings:
+  - severity: ERROR
+    target_location: ".reviewcompass/guidance/discipline_workflow_precheck_invocation.md"
+    description: "不可逆操作前の正本コマンドが現行 workflow navigation と不一致のままで、旧 `commit` / `push` / `spec-set` 呼び出しを指示している。"
+    rationale: "WORKFLOW_NAVIGATION.md では commit 直前は `.venv/bin/python3 tools/check-workflow-action.py commit-preflight --json`、別作業開始時は `work-unit preflight-start ... --json` など、preflight 系の現行停止点を厳格に定義している。対象文書は `python3 tools/check-workflow-action.py commit --rationale ...`、`push --rationale ...`、`spec-set ...` を正本のように記しており、現行 preflight / stop condition を弱めうる。レビュー質問の「prompt-manifest preflight, finding policy, post-write verification stop conditions を弱めない」に反するため must-fix。"
+  - severity: WARN
+    target_location: ".reviewcompass/guidance/discipline_must_fix_discussion_obligation.md"
+    description: "post-write verification の triage/manifest 手順に触れているが、適用範囲が triad-review must-fix 規律なのか API review-run 一般規律なのかが曖昧で、 target/source/out-of-scope の分離がやや崩れている。"
+    rationale: "本文前半は triad-review の must-fix 所見に限定した規律だが、末尾の箇条書きで API review-run の `ERROR`/`CRITICAL` や `review_triage.py decide` / `write-manifest` の話まで拡張している。内容自体は WORKFLOW_NAVIGATION.md と大きく矛盾しないが、 triad-review must-fix 規律の中に post-write verification の機械手順を混在させると、どの場面で効く指示かの境界が不明瞭になり、今後の prompt/criteria 作成で target と out-of-scope の分離を曖昧にするおそれがある。"
+  - severity: WARN
+    target_location: "docs/disciplines/README.md"
+    description: "README が『セッション開始時に TODO §1 起動手順で Read 対象』という旧運用を active 必読の説明として残しており、現行の `next --json` / required_disciplines ベース運用とずれている。"
+    rationale: "WORKFLOW_NAVIGATION.md は、セッション開始時に長い規律群を一括で読むのではなく、`python3 tools/check-workflow-action.py next --json` の `next_action.required_disciplines` に従い作業直前に必要ファイルだけ読むことを正本としている。README は旧配置説明文書ではあるが、active 必読表の見出しと過去履歴で旧ロード方式を現在形で案内しており、現行 preflight/navigation 契約を弱めかねないため整理した方がよい。"

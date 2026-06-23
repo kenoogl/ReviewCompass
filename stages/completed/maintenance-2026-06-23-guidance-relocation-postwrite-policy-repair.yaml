@@ -1,0 +1,66 @@
+process_id: maintenance
+title: guidance relocation post-write policy repair
+trigger: "guidance-relocation-move-docs の実作業後に next_action.kind が post_write_policy_violation となり、利用者が推奨修復案を承認した"
+started_at: "2026-06-23"
+classification: side_track_repair_plan
+control_relation: side-track
+mainline_blocked_by:
+  kind: post_write_policy_violation
+  reason: "post-write-verification pending 中に禁止された変更が含まれている"
+  target_count: 38
+  forbidden_count: 33
+current_state:
+  work_unit: todo-2026-06-23-guidance-relocation-move-docs
+  work_mode: maintenance
+  user_approved_repair_plan: true
+  allowed_operation:
+    - "post_write_policy_violation.inspect 相当の検査結果整理"
+    - "valid side-track/repair plan の記録"
+  forbidden_operation_while_blocked:
+    - "run_post_write_review"
+    - "create_post_write_manifest"
+    - "commit"
+    - "push"
+    - "post_write_verification 証跡として invalid review-run を扱うこと"
+violation_summary:
+  target_files:
+    - ".reviewcompass/guidance/WORKFLOW_NAVIGATION_FOR_CLAUDE.md"
+    - ".reviewcompass/guidance/WORKFLOW_NAVIGATION_FOR_CODEX.md"
+    - ".reviewcompass/guidance/discipline_*.md"
+    - "docs/disciplines/README.md"
+    - "docs/disciplines/discipline_*.md"
+    - "docs/operations/DEPLOYMENT.md"
+    - "docs/operations/SELF_IMPROVEMENT.md"
+    - "docs/operations/SELF_IMPROVEMENT_MACHINE_VERIFICATION.md"
+    - "docs/operations/WORKFLOW_NAVIGATION_FOR_CLAUDE.md"
+    - "docs/operations/WORKFLOW_NAVIGATION_FOR_CODEX.md"
+  forbidden_files:
+    - ".reviewcompass/guidance/WORKFLOW_NAVIGATION_FOR_CLAUDE.md"
+    - ".reviewcompass/guidance/WORKFLOW_NAVIGATION_FOR_CODEX.md"
+    - ".reviewcompass/guidance/discipline_*.md"
+    - "docs/disciplines/README.md"
+    - "docs/disciplines/discipline_*.md"
+  lightweight_self_check_targets:
+    - "docs/notes/2026-06-19-normal-output-minimization-tool-inventory.yaml"
+repair_strategy:
+  - id: freeze-current-diff
+    status: done
+    action: "現 dirty diff に追加の guidance/docs 移動編集を加えない"
+  - id: classify-diff
+    status: done
+    action: "移動本体、参照追従、管理証跡、テスト追従を分けて post-write policy 上の禁止要因を整理する"
+  - id: select-repair-path
+    status: done
+    action: "rollback/reapply により、現在の atomic move を検証可能な小単位へ分割する方針を選んだ"
+  - id: apply-selected-repair
+    status: done
+    action: "active discipline root の移動だけを第一単位として残し、adapter guidance 移動と consumer 更新は未完了へ戻した"
+  - id: recheck-next-action
+    status: done
+    action: "tools/check-workflow-action.py next --json を再実行し、kind が post_write_verification に戻ったことを確認した"
+completion_conditions:
+  - "policy violation の禁止ファイルと対象ファイルが記録されている"
+  - "post_write_policy_violation 中に禁止される操作が明示されている"
+  - "次の操作が repair 実行であり、post_write_verification ではないことが明示されている"
+current_status: completed
+return_to: "todo-2026-06-23-guidance-relocation-move-docs の post-write verification"

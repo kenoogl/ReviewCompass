@@ -1,0 +1,136 @@
+run_id: 2026-06-24-post_write_verification__discipline_avoid_compound_bash__discipline_concise_complete_report__discipline_facts_vs_interpretation__and_13_more
+triage_status: decided
+generated_at: '2026-06-23T15:08:14.229306+00:00'
+decision_actor: null
+decision_actor_type: human
+items:
+- finding_id: 2026-06-24-post_write_verification__discipline_avoid_compound_bash__discipline_concise_complete_report__discipline_facts_vs_interpretation__and_13_more-gpt-5.4-primary-001
+  run_id: 2026-06-24-post_write_verification__discipline_avoid_compound_bash__discipline_concise_complete_report__discipline_facts_vs_interpretation__and_13_more
+  source_model: gpt-5.4
+  source_round: round-1
+  source_raw_path: raw/gpt-5.4.round-1.txt
+  source_parsed_path: parsed/gpt-5.4.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: .reviewcompass/guidance/discipline_workflow_precheck_invocation.md
+  plain_language_summary: 不可逆操作前の正本コマンドが現行 workflow navigation と不一致のままで、旧 `commit`
+    / `push` / `spec-set` 呼び出しを指示している。
+  final_label: must-fix
+  decision_status: decided
+  decision_actor: user
+  decision_actor_type: agent
+  decision_at: '2026-06-23T15:11:17.350582+00:00'
+  decision_reason: 現行の workflow navigation は commit-preflight と next/required_disciplines
+    を正本としているため、旧 commit/push/spec-set 呼び出しを正本のように案内する記述は修正する。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-24-post_write_verification__discipline_avoid_compound_bash__discipline_concise_complete_report__discipline_facts_vs_interpretation__and_13_more-gpt-5.4-primary-002
+  run_id: 2026-06-24-post_write_verification__discipline_avoid_compound_bash__discipline_concise_complete_report__discipline_facts_vs_interpretation__and_13_more
+  source_model: gpt-5.4
+  source_round: round-1
+  source_raw_path: raw/gpt-5.4.round-1.txt
+  source_parsed_path: parsed/gpt-5.4.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: .reviewcompass/guidance/discipline_must_fix_discussion_obligation.md
+  plain_language_summary: post-write verification の triage/manifest 手順に触れているが、適用範囲が
+    triad-review must-fix 規律なのか API review-run 一般規律なのかが曖昧で、 target/source/out-of-scope
+    の分離がやや崩れている。
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: user
+  decision_actor_type: agent
+  decision_at: '2026-06-23T15:11:25.180942+00:00'
+  decision_reason: must-fix 会話義務と post-write 機械ゲートの境界を明確にするため、本文を会話上の義務に限定し、機械手順は
+    WORKFLOW_NAVIGATION の post_write_verification 分岐へ委譲する。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-24-post_write_verification__discipline_avoid_compound_bash__discipline_concise_complete_report__discipline_facts_vs_interpretation__and_13_more-gpt-5.4-primary-003
+  run_id: 2026-06-24-post_write_verification__discipline_avoid_compound_bash__discipline_concise_complete_report__discipline_facts_vs_interpretation__and_13_more
+  source_model: gpt-5.4
+  source_round: round-1
+  source_raw_path: raw/gpt-5.4.round-1.txt
+  source_parsed_path: parsed/gpt-5.4.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: docs/disciplines/README.md
+  plain_language_summary: README が『セッション開始時に TODO §1 起動手順で Read 対象』という旧運用を active
+    必読の説明として残しており、現行の `next --json` / required_disciplines ベース運用とずれている。
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: user
+  decision_actor_type: agent
+  decision_at: '2026-06-23T15:11:32.909922+00:00'
+  decision_reason: README の旧運用説明を現在形で残すと next --json / required_disciplines ベースの現行運用とずれるため、現行運用に合わせて見出しと履歴説明を更新する。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-24-post_write_verification__discipline_avoid_compound_bash__discipline_concise_complete_report__discipline_facts_vs_interpretation__and_13_more-claude-opus-4-8-adversarial-001
+  run_id: 2026-06-24-post_write_verification__discipline_avoid_compound_bash__discipline_concise_complete_report__discipline_facts_vs_interpretation__and_13_more
+  source_model: claude-opus-4-8
+  source_round: round-1
+  source_raw_path: raw/claude-opus-4-8.round-1.txt
+  source_parsed_path: parsed/claude-opus-4-8.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: docs/disciplines/README.md / active 必読表 discipline_post_write_verification.md
+    行
+  plain_language_summary: README の post-write-verification の概要行は『起草者と異なるサブエージェント（既定
+    3 体、Anthropic／OpenAI／Google の独立系統）』『small=1 体でも…既定 Google gemini-3.5-flash』と具体的なモデル・体数を断定しているが、source
+    の discipline_post_write_verification.md 本文は『大規模 3 体／小規模 1 体』の発火規模制御は述べるものの、Anthropic/OpenAI/Google
+    の固定割り当てや既定モデル名 gemini-3.5-flash には言及していない。WORKFLOW_NAVIGATION.md は post_write_verification
+    の API variant 既定を post_write_verification_google としており、README の固定モデル名・体数記述は source
+    群より強い主張になっている。
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: user
+  decision_actor_type: agent
+  decision_at: '2026-06-23T15:11:41.349045+00:00'
+  decision_reason: README は索引なので、post-write verification のモデル名や固定体数を断定せず、収束基準と現行 variant
+    設定へ委譲する粒度に整理する。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-24-post_write_verification__discipline_avoid_compound_bash__discipline_concise_complete_report__discipline_facts_vs_interpretation__and_13_more-claude-opus-4-8-adversarial-002
+  run_id: 2026-06-24-post_write_verification__discipline_avoid_compound_bash__discipline_concise_complete_report__discipline_facts_vs_interpretation__and_13_more
+  source_model: claude-opus-4-8
+  source_round: round-1
+  source_raw_path: raw/claude-opus-4-8.round-1.txt
+  source_parsed_path: parsed/claude-opus-4-8.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: .reviewcompass/guidance/discipline_facts_vs_interpretation.md /
+    How to apply 末尾、discipline_pre_action_precheck.md / How to apply 末尾、discipline_options_presentation.md
+    / 統廃合元節
+  plain_language_summary: 複数の規律が `memory/archive/2026-05-25-consolidation/` や `docs/disciplines/archive/2026-05-26-consolidation/`
+    を詳細・経緯の参照先として案内している。一方 README は active 本体が `.reviewcompass/guidance/` へ移動した旨を記すが、これらの
+    archive 参照パスの現存性は target 文書だけでは確認できない。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: user
+  decision_actor_type: agent
+  decision_at: '2026-06-23T15:11:49.715029+00:00'
+  decision_reason: docs/disciplines/archive/2026-05-26-consolidation と memory/archive/2026-05-25-consolidation
+    の実在を確認した。参照切れではないため追加修正しない。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-24-post_write_verification__discipline_avoid_compound_bash__discipline_concise_complete_report__discipline_facts_vs_interpretation__and_13_more-claude-opus-4-8-adversarial-003
+  run_id: 2026-06-24-post_write_verification__discipline_avoid_compound_bash__discipline_concise_complete_report__discipline_facts_vs_interpretation__and_13_more
+  source_model: claude-opus-4-8
+  source_round: round-1
+  source_raw_path: raw/claude-opus-4-8.round-1.txt
+  source_parsed_path: parsed/claude-opus-4-8.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: 対象規律群全体（target/source 分離・停止条件への影響確認）
+  plain_language_summary: must_fix_discussion_obligation.md と WORKFLOW_NAVIGATION.md
+    の post_write_verification 分岐は整合しており（重要件は raw 参照・モデル別要約・三段階トリアージ・利用者承認を提示・記録してから
+    decide/write-manifest）、prompt-manifest preflight・finding policy・manifest 生成停止条件を弱める記述は
+    target 文書群に見当たらない。implementation_autonomy / standing_directives / intent_conformance
+    の衝突解決も双方向で一貫している。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: user
+  decision_actor_type: agent
+  decision_at: '2026-06-23T15:12:00.815433+00:00'
+  decision_reason: レビュー設問の中核について、preflight・finding policy・post-write 停止条件を弱める矛盾は確認されなかったという整合確認であり、追加修正を要しない。
+  applied_files: []
+  superseded_by: null

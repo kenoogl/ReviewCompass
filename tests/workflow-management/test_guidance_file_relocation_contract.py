@@ -22,6 +22,24 @@ GUIDANCE_FILENAMES = [
   "discipline_yaml_audit.md",
 ]
 
+PENDING_DISCIPLINE_RELOCATION_FILENAMES = [
+  "discipline_avoid_compound_bash.md",
+  "discipline_concise_complete_report.md",
+  "discipline_facts_vs_interpretation.md",
+  "discipline_implementation_autonomy.md",
+  "discipline_intent_conformance_is_the_acceptance_gate.md",
+  "discipline_must_fix_discussion_obligation.md",
+  "discipline_no_redundant_workflow_questions.md",
+  "discipline_normal_output_minimization.md",
+  "discipline_options_presentation.md",
+  "discipline_plain_explanation_each_step.md",
+  "discipline_plain_japanese.md",
+  "discipline_pre_action_precheck.md",
+  "discipline_reopen_procedure_for_settled_topics.md",
+  "discipline_standing_directives_are_hard_constraints.md",
+  "discipline_workflow_precheck_invocation.md",
+]
+
 LEGACY_GUIDANCE_PATHS = [
   "docs/operations/WORKFLOW_DISCIPLINE_MAP.yaml",
   "docs/operations/WORKFLOW_NAVIGATION.md",
@@ -62,6 +80,12 @@ def test_moved_guidance_files_exist_only_in_reviewcompass_guidance(filename):
   assert (ROOT / ".reviewcompass" / "guidance" / filename).is_file()
   assert not (ROOT / "docs" / "operations" / filename).exists()
   assert not (ROOT / "docs" / "disciplines" / filename).exists()
+
+
+@pytest.mark.parametrize("filename", PENDING_DISCIPLINE_RELOCATION_FILENAMES)
+def test_pending_discipline_relocation_files_exist_in_guidance(filename):
+  assert (ROOT / ".reviewcompass" / "guidance" / filename).is_file()
+  assert (ROOT / "docs" / "disciplines" / filename).is_file()
 
 
 def test_active_surfaces_do_not_reference_moved_legacy_guidance_paths():

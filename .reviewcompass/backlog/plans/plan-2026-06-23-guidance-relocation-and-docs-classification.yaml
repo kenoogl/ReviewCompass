@@ -249,9 +249,12 @@ execution_slices:
     todo_id: todo-2026-06-23-guidance-relocation-move-docs
     todo_path: .reviewcompass/backlog/todos/todo-2026-06-23-guidance-relocation-move-docs.yaml
     checklist_id: checklist-todo-2026-06-23-guidance-relocation-move-docs
-    checklist_evidence_path: null
+    checklist_evidence_path: .reviewcompass/evidence/work-units/checklists/checklist-todo-2026-06-23-guidance-relocation-move-docs.yaml
     status: checklist_started
-    note: TODO/checklist 展開済み。runtime checklist は active、evidence は未記録。
+    note: >
+      post_write_policy_violation 修復のため、GRC-4 を検証可能な単位へ再分割中。
+      active discipline root の移動だけを第一単位として残し、adapter guidance
+      移動と consumer 更新は後続単位へ戻した。
   - phase_id: GRC-5
     title: Delete or demote old paths
     todo_id: todo-2026-06-23-guidance-relocation-old-path-cleanup

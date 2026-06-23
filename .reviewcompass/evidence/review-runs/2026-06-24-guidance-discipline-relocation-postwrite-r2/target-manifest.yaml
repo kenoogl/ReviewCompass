@@ -1,0 +1,34 @@
+run_id: 2026-06-24-guidance-discipline-relocation-postwrite-r2
+target_files:
+- path: .reviewcompass/guidance/discipline_avoid_compound_bash.md
+  sha256: bfb51bebf6877b22c6acc8dd05378b29274961b7bde407fb71c8c4c42869cfc7
+- path: .reviewcompass/guidance/discipline_concise_complete_report.md
+  sha256: 715e67d83d5c3d9badc85c8d487498e69d5cf2fa2406ca822e886a34a69e4052
+- path: .reviewcompass/guidance/discipline_facts_vs_interpretation.md
+  sha256: 6662bb52b63c0bf7ca2ef743760c34e7554eee85bee5530415073f2750b46449
+- path: .reviewcompass/guidance/discipline_implementation_autonomy.md
+  sha256: 47bea56df8fafae0a392d5ada4e2f6b45e8e9239fda64a72d8c6ef915051c0d3
+- path: .reviewcompass/guidance/discipline_intent_conformance_is_the_acceptance_gate.md
+  sha256: 971e44a1f5c5026a98865ffdbfd116fcd80ee86b96f7ebee9b2a34cecf8be968
+- path: .reviewcompass/guidance/discipline_must_fix_discussion_obligation.md
+  sha256: 12c05dede38e024466377cdd8272e90bb84ab73f67b438ec11984935769bac75
+- path: .reviewcompass/guidance/discipline_no_redundant_workflow_questions.md
+  sha256: db7bdfbc8a2b4b2fcb33c869420c52ac58f06ad7fe4a79f0eab967597201f928
+- path: .reviewcompass/guidance/discipline_normal_output_minimization.md
+  sha256: e74d3098d84c52e50f0e6602a426754b52ecdbe16ffa1f6a3fcdaf6a6d71e8a6
+- path: .reviewcompass/guidance/discipline_options_presentation.md
+  sha256: bd60db3932c2261b6588b9916720cf50222c18b42996952f996fc306a284757c
+- path: .reviewcompass/guidance/discipline_plain_explanation_each_step.md
+  sha256: b7c02e94078eaa2aa519e1fc5b71d2ed9d81e351a55fb4bd2a96056e450a2603
+- path: .reviewcompass/guidance/discipline_plain_japanese.md
+  sha256: 21e60fb53585e525fc4220bb738c5ad84f0bc363c0e401ebd878868422d0bd34
+- path: .reviewcompass/guidance/discipline_pre_action_precheck.md
+  sha256: 9f14916c6df802c00bd389368ac55161c2e28fa0eec1283116de9df37f3a097f
+- path: .reviewcompass/guidance/discipline_reopen_procedure_for_settled_topics.md
+  sha256: ab5766d61be4559b38bbd584c3c5bf66b9dd2746fa2eb8792f43c9990208deeb
+- path: .reviewcompass/guidance/discipline_standing_directives_are_hard_constraints.md
+  sha256: 3b03b245a529af50dfbb5674ee045397572947031b6b8caa564dcc9f552d9e35
+- path: .reviewcompass/guidance/discipline_workflow_precheck_invocation.md
+  sha256: f623dc363ec9b49e7b902b0fc9a99213e0d80e60cda06c94bbd1c9adb16d39a7
+- path: docs/disciplines/README.md
+  sha256: fdb37def67da7d744846c216c0d5884f11c088152c6fa27216889df9227de801

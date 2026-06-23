@@ -1,0 +1,26 @@
+approved_action: review_run_triage
+approved_by: user
+approved_at: '2026-06-24T00:00:00+09:00'
+approval_source: 利用者発言「承認」
+review_run_id: 2026-06-24-post_write_verification__discipline_avoid_compound_bash__discipline_concise_complete_report__discipline_facts_vs_interpretation__and_13_more
+summary_presented_to_user: true
+triage_presented_to_user: true
+approved_finding_ids:
+  - 2026-06-24-post_write_verification__discipline_avoid_compound_bash__discipline_concise_complete_report__discipline_facts_vs_interpretation__and_13_more-gpt-5.4-primary-001
+  - 2026-06-24-post_write_verification__discipline_avoid_compound_bash__discipline_concise_complete_report__discipline_facts_vs_interpretation__and_13_more-gpt-5.4-primary-002
+  - 2026-06-24-post_write_verification__discipline_avoid_compound_bash__discipline_concise_complete_report__discipline_facts_vs_interpretation__and_13_more-gpt-5.4-primary-003
+  - 2026-06-24-post_write_verification__discipline_avoid_compound_bash__discipline_concise_complete_report__discipline_facts_vs_interpretation__and_13_more-claude-opus-4-8-adversarial-001
+  - 2026-06-24-post_write_verification__discipline_avoid_compound_bash__discipline_concise_complete_report__discipline_facts_vs_interpretation__and_13_more-claude-opus-4-8-adversarial-002
+  - 2026-06-24-post_write_verification__discipline_avoid_compound_bash__discipline_concise_complete_report__discipline_facts_vs_interpretation__and_13_more-claude-opus-4-8-adversarial-003
+approved_final_labels:
+  2026-06-24-post_write_verification__discipline_avoid_compound_bash__discipline_concise_complete_report__discipline_facts_vs_interpretation__and_13_more-gpt-5.4-primary-001: must-fix
+  2026-06-24-post_write_verification__discipline_avoid_compound_bash__discipline_concise_complete_report__discipline_facts_vs_interpretation__and_13_more-gpt-5.4-primary-002: should-fix
+  2026-06-24-post_write_verification__discipline_avoid_compound_bash__discipline_concise_complete_report__discipline_facts_vs_interpretation__and_13_more-gpt-5.4-primary-003: should-fix
+  2026-06-24-post_write_verification__discipline_avoid_compound_bash__discipline_concise_complete_report__discipline_facts_vs_interpretation__and_13_more-claude-opus-4-8-adversarial-001: should-fix
+  2026-06-24-post_write_verification__discipline_avoid_compound_bash__discipline_concise_complete_report__discipline_facts_vs_interpretation__and_13_more-claude-opus-4-8-adversarial-002: leave-as-is
+  2026-06-24-post_write_verification__discipline_avoid_compound_bash__discipline_concise_complete_report__discipline_facts_vs_interpretation__and_13_more-claude-opus-4-8-adversarial-003: leave-as-is
+rationale: >
+  利用者に raw/model summary と triage 案を提示し、承認を受けた。
+  ERROR は現行 preflight 入口と不一致のため must-fix として修正する。
+  README と適用範囲の WARN は should-fix として本文を整理する。
+  archive 参照は実在を確認でき、整合確認 INFO は追加修正不要のため leave-as-is とする。
