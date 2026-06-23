@@ -1,6 +1,6 @@
 # 次セッション継続用メモ
 
-最終更新：2026-06-22（Codex セッション。`main` と `origin/main` は同期済み。最新 commit はこのメモに固定せず、必ず `git log --oneline -5` で確認する）。
+最終更新：2026-06-23（Codex セッション。`main` と `origin/main` は同期済み。最新 commit はこのメモに固定せず、必ず `git log --oneline -5` で確認する）。
 
 この TODO は入口メモであり、作業順序の正本ではない。正本は各 feature の `spec.json` と `tools/check-workflow-action.py next --json` の機械判定である。
 
@@ -20,13 +20,14 @@
 - `main` と `origin/main` は同期済み（起動時に `git status --short --branch` で再確認する）。
 - 作業ツリーは clean（起動時に再確認する）。
 - 最新 commit はこのメモではなく `git log --oneline -5` を正とする。
-- 直近の実装修正系列は、post-write prompt 機械化、guidance 配置整理、旧 guidance 削除、repair 例外実装、push guard 補修である。
+- 直近の実装修正系列は、post-write prompt 機械化、guidance 配置整理、旧 guidance 削除、repair 例外実装、push guard 補修、blocking unit / checklist / commit operation 機械化補修、next action effective prompt coverage 監査である。
 - `next --json` は `completed`。
 - すべての feature / phase / stage の `workflow_state` は完了済み。
 - `workflow-management` の Requirement 13〜16 を基点にした reopen R-0 は、requirements / design / tasks / implementation まで完了済み。
-- reopen R-0 完了後に発生した post-write prompt 機械化、guidance 配置整理、旧 guidance 削除、repair 例外実装、push guard 補修も commit / push 済み。
+- reopen R-0 完了後に発生した post-write prompt 機械化、guidance 配置整理、旧 guidance 削除、repair 例外実装、push guard 補修、blocking unit / checklist / commit operation 機械化補修、next action effective prompt coverage 監査も commit / push 済み。
 - `blocking unit production readiness` の blocking unit は完了し、evidence 記録、parent resume、push まで完了済み。
 - 進行中ファイルはない。
+- 直近 push 済み commit は `865cd1a8 Plan remaining guidance relocation`。起動時には必ず `git log --oneline -5` で再確認する。
 - 次の pending gate はない。
 
 ## 3. 次作業
@@ -38,6 +39,13 @@
 1. 利用者の新規指示を受ける。
 2. `next --json` が `completed` のままか確認する。
 3. 必要なら新しい workflow / reopen / maintenance として開始条件を確認する。
+
+現在の有力な次作業候補：
+
+1. `plan-2026-06-23-guidance-relocation-and-docs-classification.yaml` に基づき、残存 `docs/operations` / `docs/disciplines` の inventory / classification table を作る。ファイル移動はまだ行わない。
+2. `plan-2026-06-23-entrypoint-coverage-audit.yaml` に基づき、entrypoint coverage audit の ECA-1（現在入口の棚卸し）を始める。
+3. `plan-2026-06-23-effective-prompt-freshness-audit.yaml` に基づき、effective prompt freshness audit の EPFA-0 / EPFA-1（現状固定テストと source SHA red test）を始める。
+4. `plan-2026-06-23-postwrite-review-prompt-isolation.yaml` に基づき、post-write review の criteria / target 分離設計を詳細化する。
 
 進め方の注意：
 
@@ -70,6 +78,12 @@
 - `EVIDENCE_UNIT_MISMATCH` により、post-write manifest の `unit_binding` が現在の commit unit と一致しない場合に理由コードを返すようにした。
 - `blocking unit production readiness` の runtime checklist は全 37 項目を完了確認し、`.reviewcompass/evidence/work-units/blocking-units/unit-2026-06-22-blocking-unit-production-readiness.yaml` に完了 evidence を保存した。
 - `main` を `origin/main` へ push 済み。正確な終端 commit は `git log --oneline -5` と `git status --short --branch` を正とする。
+- deploy-facing tool の重複整理は `.reviewcompass/backlog/plans/plan-2026-06-23-deployment-tool-consolidation.yaml` に将来計画として記録した。
+- `next --json` が返し得る `next_action.kind` と effective prompt の接続を監査し、`parent_resume_pending`、`blocking_unit_required`、`blocking_unit_in_progress`、`commit_mixing_risk`、`commit_unit_stale` の map 接続漏れを補修した。
+- post-write API review で出た指摘は proxy mode で検査し、criteria / target 分離問題は `.reviewcompass/backlog/plans/plan-2026-06-23-postwrite-review-prompt-isolation.yaml` に split-out、manifest / human_required 文言は `WORKFLOW_NAVIGATION.md` に反映した。
+- 修正後の post-write verification は実 target 2ファイルを指定した v3 review-run で findings 0 を確認し、`.reviewcompass/post-write-verification/post-write-2026-06-23-005.yaml` に正しい target manifest を保存した。
+- entrypoint coverage audit の構想は `.reviewcompass/backlog/plans/plan-2026-06-23-entrypoint-coverage-audit.yaml` に記録した。
+- 残存 `docs/operations` / `docs/disciplines` の分類・移動・検査計画は `.reviewcompass/backlog/plans/plan-2026-06-23-guidance-relocation-and-docs-classification.yaml` に記録した。前回の guidance 移動失敗を踏まえ、次は inventory / classification table を先に作り、移動はまだ行わない。
 
 ## 5. 参照
 

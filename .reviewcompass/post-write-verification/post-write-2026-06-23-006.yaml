@@ -1,0 +1,20 @@
+status: completed
+target_files:
+  - TODO_NEXT_SESSION.md
+target_sha256:
+  TODO_NEXT_SESSION.md: aa13cf5c1a734a7920cab36cd26aef6d262d38ddbff8c81c5dd13b5992f04733
+required_verifiers: &verifiers
+  - lightweight_self_check
+completed_verifiers: *verifiers
+unresolved_substantive_findings: 0
+verifications:
+  - verifier: lightweight_self_check
+    target_files:
+      - TODO_NEXT_SESSION.md
+    target_sha256:
+      TODO_NEXT_SESSION.md: aa13cf5c1a734a7920cab36cd26aef6d262d38ddbff8c81c5dd13b5992f04733
+notes: >
+  TODO_NEXT_SESSION.md was updated as a session handoff note. Self-check confirmed
+  that the update records current state, next candidate work, and completed work
+  without changing canonical workflow policy or promoting notes into strict
+  post-write verification scope.
