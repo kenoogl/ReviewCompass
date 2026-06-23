@@ -179,6 +179,47 @@ class CommitFromCurrentStagedTests(unittest.TestCase):
       ["current.md", "old.md"],
     )
 
+  def test_progress_json_emits_only_minimal_commit_states(self):
+    """進捗 JSON は会話に出してよい最小状態語だけを出す"""
+    _stage_file(self.tmpdir, "current.md", "# current")
+    wrapper = load_wrapper_module()
+    original_stdin = wrapper.sys.stdin
+    original_cwd = os.getcwd()
+    stdout = io.StringIO()
+    stderr = io.StringIO()
+
+    try:
+      os.chdir(self.tmpdir)
+      wrapper.sys.stdin = TtyStdin("コミット\n")
+      with contextlib.redirect_stdout(stdout), contextlib.redirect_stderr(stderr):
+        result = wrapper.main([
+          "-m", "minimal progress commit",
+          "--rationale", "利用者が本ターンでコミットを明示指示",
+          "--progress-format", "json",
+        ])
+    finally:
+      os.chdir(original_cwd)
+      wrapper.sys.stdin = original_stdin
+
+    self.assertEqual(result, 0, stderr.getvalue())
+    events = [
+      json.loads(line)
+      for line in stdout.getvalue().splitlines()
+      if line.strip()
+    ]
+    self.assertEqual(
+      [event["event"] for event in events],
+      ["preflight_ok", "guarded_commit_running", "commit_completed"],
+    )
+    self.assertEqual(events[-1]["commit_message"], "minimal progress commit")
+    self.assertRegex(events[-1]["commit"], r"^[0-9a-f]{7,40}$")
+    combined_output = stdout.getvalue() + stderr.getvalue()
+    self.assertNotIn("commit precheck: OK", combined_output)
+    self.assertNotIn("[CURRENT STATE]", combined_output)
+    self.assertNotIn("nonce", combined_output)
+    self.assertNotIn("delegation", combined_output)
+    self.assertEqual(latest_commit_subject(self.tmpdir), "minimal progress commit")
+
   def test_commit_preflight_runs_before_reading_approval_input(self):
     """preflight が DEVIATION なら承認入力や challenge 作成に進まない"""
     _stage_file(self.tmpdir, "notes.md", "# notes")

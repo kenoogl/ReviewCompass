@@ -364,3 +364,10 @@ items:
   path: .reviewcompass/backlog/todos/todo-2026-06-23-guidance-relocation-final-audit.yaml
   source_unit_id: main-completed
   created_at: '2026-06-23T13:26:02.570175+00:00'
+- id: todo-2026-06-24-commit-minimal-progress-output
+  kind: todo
+  title: Minimize commit operation progress output
+  status: completed
+  path: .reviewcompass/backlog/todos/todo-2026-06-24-commit-minimal-progress-output.yaml
+  source_unit_id: main-completed
+  created_at: '2026-06-23T21:43:18.064596+00:00'

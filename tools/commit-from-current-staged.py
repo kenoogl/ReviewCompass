@@ -3,6 +3,7 @@
 
 import argparse
 import json
+import re
 import subprocess
 import sys
 from pathlib import Path
@@ -134,6 +135,37 @@ def _relay(result):
       sys.stderr.write(result.stderr.decode("utf-8", errors="replace"))
 
 
+def _emit_progress_event(event, **payload):
+  """会話側がそのまま扱える最小進捗イベントを 1 行 JSON で出す。"""
+  row = {"event": event}
+  row.update(payload)
+  print(json.dumps(row, ensure_ascii=False, sort_keys=True))
+
+
+def _commit_result_event_payload(result, args):
+  """guarded commit 出力から最小完了イベントに必要な情報だけを取り出す。"""
+  stdout = _decode_process_output(result.stdout)
+  stderr = _decode_process_output(result.stderr)
+  for line in stdout.splitlines():
+    match = re.match(r"^committed:\s+([0-9a-f]{7,40})(?:\s+(.*))?$", line.strip())
+    if match:
+      return {
+        "commit": match.group(1),
+        "commit_message": match.group(2) or args.message[0],
+      }
+  first_detail = next(
+    (line.strip() for line in (stderr + "\n" + stdout).splitlines() if line.strip()),
+    "",
+  )
+  payload = {
+    "exit_code": result.returncode,
+    "commit_message": args.message[0],
+  }
+  if first_detail:
+    payload["detail"] = first_detail
+  return payload
+
+
 def main(argv=None):
   """エントリポイント"""
   parser = argparse.ArgumentParser(
@@ -161,6 +193,12 @@ def main(argv=None):
     action="store_true",
     help="commit precheck と git commit の詳細出力を表示する",
   )
+  parser.add_argument(
+    "--progress-format",
+    choices=["text", "json"],
+    default="text",
+    help="commit runner の進捗出力形式。json は会話用の最小状態語だけを出す",
+  )
   args = parser.parse_args(argv)
 
   try:
@@ -169,6 +207,8 @@ def main(argv=None):
       for line in _preflight_failure_lines(preflight):
         print(line, file=sys.stderr)
       return preflight.returncode
+    if args.progress_format == "json":
+      _emit_progress_event("preflight_ok")
     source_bytes = _read_required_approval_line()
     challenge = commit_approval.prepare(Path.cwd())
     _record_approval_pair(Path.cwd(), challenge["nonce"], source_bytes)
@@ -176,11 +216,25 @@ def main(argv=None):
     print(f"error: commit-from-current-staged: {e}", file=sys.stderr)
     return 2
 
+  if args.progress_format == "json":
+    _emit_progress_event("guarded_commit_running")
   result = _run_guarded_commit(
     Path.cwd(),
     args,
   )
-  _relay(result)
+  if args.progress_format == "json":
+    if result.returncode == 0:
+      _emit_progress_event(
+        "commit_completed",
+        **_commit_result_event_payload(result, args),
+      )
+    else:
+      _emit_progress_event(
+        "commit_failed",
+        **_commit_result_event_payload(result, args),
+      )
+  else:
+    _relay(result)
   return result.returncode
 
 

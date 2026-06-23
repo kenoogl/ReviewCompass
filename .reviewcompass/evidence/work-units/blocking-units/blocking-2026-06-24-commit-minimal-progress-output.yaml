@@ -1,0 +1,15 @@
+unit_id: blocking-2026-06-24-commit-minimal-progress-output
+kind: blocking
+parent_unit_id: todo-2026-06-24-commit-minimal-progress-output
+title: Minimize commit operation progress output
+reason: commit 操作中の会話出力が必要以上に増え、最小状態語に制限する規律が機械化されていないため
+status: completed
+entered_at: '2026-06-23T21:43:24.444761+00:00'
+return_conditions:
+- commit runner が機械可読な最小進捗状態を出力でき、guidance が中間会話を状態語だけに制限することを明示し、テストで固定されていること
+exited_at: '2026-06-23T21:46:09.716410+00:00'
+completion_summary: Added commit runner --progress-format json minimal state output,
+  updated commit operation guidance, completed backlog TODO, and verified commit runner
+  tests
+returned_to:
+  unit_id: todo-2026-06-24-commit-minimal-progress-output

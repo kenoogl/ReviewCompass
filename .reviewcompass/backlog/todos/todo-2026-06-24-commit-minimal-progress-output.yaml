@@ -1,0 +1,41 @@
+schema_version: reviewcompass-backlog-item-v1
+id: todo-2026-06-24-commit-minimal-progress-output
+kind: todo
+title: Minimize commit operation progress output
+status: completed
+source_unit_id: main-completed
+created_at: '2026-06-23T21:43:18.064596+00:00'
+index_path: .reviewcompass/backlog/index.yaml
+provenance:
+  created_by: llm
+  source_ref: conversation:user:コミット処理の規律として、メッセージは最小になるようにしているが、守られたか
+  reason: commit operation should expose only minimal user-facing progress states
+    and keep detailed preflight/repair data in machine evidence instead of conversation
+    updates.
+decisions: []
+todos:
+  implementation:
+    - id: CMPO-1
+      title: Add machine-readable minimal progress mode
+      status: done
+      outcome: tools/commit-from-current-staged.py supports --progress-format json.
+    - id: CMPO-2
+      title: Fix regression coverage
+      status: done
+      outcome: tests/tools/test_commit_from_current_staged.py asserts only minimal commit states are emitted.
+    - id: CMPO-3
+      title: Update commit operation guidance
+      status: done
+      outcome: COMMIT_OPERATION_CARD and workflow precheck docs direct Codex to use JSON progress state output.
+completion:
+  completed_at: '2026-06-24T06:50:00+09:00'
+  summary: >
+    Commit runner progress can now be consumed as minimal JSON states, allowing the
+    operator to avoid conversationally replaying preflight, repair, approval, nonce,
+    and delegation details.
+execution_history:
+  - completed_at: '2026-06-24T06:46:09+09:00'
+    evidence_path: .reviewcompass/evidence/work-units/blocking-units/blocking-2026-06-24-commit-minimal-progress-output.yaml
+    summary: >
+      Implemented --progress-format json in the commit runner, added regression
+      coverage, and updated commit operation guidance to use minimal state output.

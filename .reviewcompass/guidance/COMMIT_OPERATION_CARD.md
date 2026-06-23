@@ -14,12 +14,14 @@ commit 操作カード
 2. `git add` 前に `.venv/bin/python3 tools/check-workflow-action.py commit-preflight --json` を実行する。
 3. `DEVIATION` の場合は stage / approval / guarded commit に進まず、停止理由と次に必要な操作だけを報告する。
 4. `git add` 後、staged 対象を確認する。
-5. `.venv/bin/python3 tools/commit-from-current-staged.py -m "<message>" --rationale "<理由>"` を TTY で起動する。
+5. `.venv/bin/python3 tools/commit-from-current-staged.py -m "<message>" --rationale "<理由>" --progress-format json` を TTY で起動する。
 6. wrapper が承認入力待ちになってから、直近の利用者発話で明示された commit 指示を 1 行として渡す。
 7. wrapper は approval 作成前に再度 `commit-preflight` を実行し、現在の staged 内容に束縛した approval / execution delegation を作って guarded commit する。
 8. wrapper は TTY 入力を `approval_source.source_kind: user_turn_relay` として record に保存し、承認 source が LLM 作文ではなく利用者発話 relay であることを記録する。
 9. 空 stdin、pipe、heredoc、redirect、LLM が生成した `printf` 等の承認文では実行しない。
 10. 失敗時は、承認入力経路、staged 内容、post-write / workflow 停止理由のいずれかを短く確認する。
+
+commit 操作中の会話出力は、runner の `--progress-format json` が返す状態語を上限とする。通常は `preflight_ok`、`guarded_commit_running`、`commit_completed` だけを利用者へ伝える。preflight JSON、approval errors、repair record、delegation、nonce、guarded commit の詳細出力は会話へ貼らず、必要な場合だけ証跡として参照する。停止時も詳細ログではなく、停止理由と次に必要な操作だけを短く返す。
 
 低レベル nonce 手順は、標準 wrapper が使えない場合の補助手順としてだけ使う。
 
