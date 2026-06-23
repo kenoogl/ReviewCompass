@@ -1,0 +1,50 @@
+process_id: maintenance
+started_at: '2026-06-23T00:00:00+09:00'
+completed_at: '2026-06-23T00:00:00+09:00'
+trigger: >
+  利用者指示により、plan-2026-06-23-guidance-relocation-and-docs-classification
+  の GRC-3 として、残存 docs/operations / docs/disciplines 移動前の
+  red tests / audit tests を追加するため。
+mainline_blocked_by: none
+work_class: maintenance
+control_relation: side-track
+allowed_scope: >
+  GRC-3 の失敗テストを追加し、現状で期待どおり失敗することを確認する。
+  実装修正、ファイル移動、旧 path 削除、参照更新、deploy manifest 変更は行わない。
+allowed_files:
+- stages/in-progress/maintenance-2026-06-23-guidance-relocation-red-tests.yaml
+- stages/completed/maintenance-2026-06-23-guidance-relocation-red-tests.yaml
+- tests/workflow-management/test_remaining_guidance_relocation_contract.py
+completion_conditions:
+- adapter guidance が旧 docs/operations path を使わない契約テストを追加する
+- deploy manifest が旧 docs/operations deploy-facing guidance を含まない契約テストを追加する
+- effective prompt artifacts が旧 docs/operations / docs/disciplines source path を持たない契約テストを追加する
+- active discipline root の単一正本化を促す契約テストを追加する
+- 追加テストを実行し、現状で失敗することを確認する
+- この作業ではテストを通す実装修正を行わない
+completed_changes:
+- >
+  `tests/workflow-management/test_remaining_guidance_relocation_contract.py`
+  を追加し、残存 guidance relocation の移動後契約をテスト化した。
+- >
+  adapter entrypoints、deploy manifest、effective prompt artifacts、
+  runtime discipline consumers、active discipline root consumers を検査対象にした。
+- >
+  現状で旧 path 参照が残っているため、追加テストが期待どおり失敗することを確認した。
+scope_not_changed:
+- 実装修正はしていない
+- ファイル移動はしていない
+- 旧 path 削除はしていない
+- 参照更新はしていない
+- deploy-manifest.yaml は変更していない
+verification:
+- command: >
+    .venv/bin/python3 -m pytest
+    tests/workflow-management/test_remaining_guidance_relocation_contract.py -q
+  result: expected_failed
+  details: >
+    5 tests ran: 4 failed and 1 passed. Failures identify legacy adapter guidance
+    references, legacy deploy-facing operation guidance in deploy-manifest,
+    legacy runtime discipline references, and active discipline root consumers
+    still requiring docs/disciplines/discipline_*.
+status: completed
