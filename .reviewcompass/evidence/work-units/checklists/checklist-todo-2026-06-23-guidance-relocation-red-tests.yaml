@@ -1,0 +1,56 @@
+schema_version: work-checklist-v1
+checklist_id: checklist-todo-2026-06-23-guidance-relocation-red-tests
+unit_id: maintenance-2026-06-23-guidance-relocation-red-tests
+title: Red tests and audit tests
+status: completed
+created_at: '2026-06-23T13:26:16.214678+00:00'
+provenance:
+  created_by: llm
+  source_ref: .reviewcompass/backlog/todos/todo-2026-06-23-guidance-relocation-red-tests.yaml
+  reason: backlog TODO から runtime checklist を機械生成する
+items:
+- id: GRC-3A
+  title: Add tests that detect duplicate guidance or legacy docs path usage
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: GRC-3B
+  title: Add deploy manifest tests that require the new guidance placement
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: GRC-3C
+  title: Add tests that effective prompt source refs do not point to retired docs
+    paths
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: GRC-3D
+  title: Add tests that adapter guidance links to canonical .reviewcompass/guidance
+    documents
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: GRC-3-RT-1
+  title: Legacy docs path usage is detectable before relocation
+  status: done
+  checked: true
+  child_checklist_id: null
+source_backlog_item_id: todo-2026-06-23-guidance-relocation-red-tests
+source_backlog_path: .reviewcompass/backlog/todos/todo-2026-06-23-guidance-relocation-red-tests.yaml
+progress:
+  total: 5
+  done: 5
+  active: 0
+  pending: 0
+  blocked: 0
+  active_item_ids: []
+  blocked_item_ids: []
+completed_at: '2026-06-23T00:00:00+09:00'
+completion_summary: >
+  Retroactive reconciliation: red tests / audit tests work was completed with
+  evidence tests/workflow-management/test_remaining_guidance_relocation_contract.py,
+  stages/completed/maintenance-2026-06-23-guidance-relocation-red-tests.yaml, and
+  stages/completed/maintenance-2026-06-23-guidance-relocation-red-tests-implementation.yaml;
+  this closes the backlog TODO/checklist state for GRC-3 only. GRC-4 document
+  movement and GRC-5 old path cleanup remain separate unfinished slices.

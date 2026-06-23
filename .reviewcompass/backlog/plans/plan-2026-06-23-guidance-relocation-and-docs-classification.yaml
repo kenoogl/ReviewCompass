@@ -228,17 +228,22 @@ execution_slices:
     todo_id: todo-2026-06-23-guidance-reference-consumer-audit
     todo_path: .reviewcompass/backlog/todos/todo-2026-06-23-guidance-reference-consumer-audit.yaml
     checklist_id: checklist-todo-2026-06-23-guidance-reference-consumer-audit
-    checklist_evidence_path: null
-    status: checklist_started
-    note: TODO/checklist 展開済み。runtime checklist は active、evidence は未記録。
+    checklist_evidence_path: .reviewcompass/evidence/work-units/checklists/checklist-todo-2026-06-23-guidance-reference-consumer-audit.yaml
+    status: completed
+    note: >
+      この slice は maintenance 完了証跡に基づき TODO/checklist/evidence へ後追いで接続済み。
+      plan 全体の完了ではなく、GRC-2 の reference / consumer audit のみを完了扱いとする。
   - phase_id: GRC-3
     title: Red tests and audit tests
     todo_id: todo-2026-06-23-guidance-relocation-red-tests
     todo_path: .reviewcompass/backlog/todos/todo-2026-06-23-guidance-relocation-red-tests.yaml
     checklist_id: checklist-todo-2026-06-23-guidance-relocation-red-tests
-    checklist_evidence_path: null
-    status: checklist_started
-    note: TODO/checklist 展開済み。runtime checklist は active、evidence は未記録。
+    checklist_evidence_path: .reviewcompass/evidence/work-units/checklists/checklist-todo-2026-06-23-guidance-relocation-red-tests.yaml
+    status: completed
+    note: >
+      この slice は maintenance 完了証跡に基づき TODO/checklist/evidence へ後追いで接続済み。
+      GRC-3 の red tests / audit tests と、その follow-up implementation 証跡を完了扱いにする。
+      GRC-4 の文書移動や GRC-5 の旧 path 削除は完了扱いにしない。
   - phase_id: GRC-4
     title: Move deploy-facing and runtime-facing docs
     todo_id: todo-2026-06-23-guidance-relocation-move-docs

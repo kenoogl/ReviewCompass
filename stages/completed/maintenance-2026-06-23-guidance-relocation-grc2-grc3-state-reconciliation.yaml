@@ -1,0 +1,56 @@
+process_id: maintenance
+started_at: '2026-06-23T00:00:00+09:00'
+completed_at: '2026-06-23T00:00:00+09:00'
+trigger: >
+  利用者指示により、guidance-relocation-and-docs-classification の GRC-2/GRC-3
+  について、completed stage が存在する一方で backlog TODO と runtime checklist
+  が未完了表示のまま残っている不整合を補正するため。
+mainline_blocked_by: none
+work_class: maintenance
+control_relation: side-track
+allowed_scope: >
+  GRC-2/GRC-3 の管理状態を既存の完了証跡に合わせる。GRC-4 の文書移動、
+  GRC-5 の旧 path 削除、GRC-6 の final audit は実行しない。
+allowed_files:
+- .reviewcompass/backlog/index.yaml
+- .reviewcompass/backlog/plans/plan-2026-06-23-guidance-relocation-and-docs-classification.yaml
+- .reviewcompass/backlog/todos/todo-2026-06-23-guidance-reference-consumer-audit.yaml
+- .reviewcompass/backlog/todos/todo-2026-06-23-guidance-relocation-red-tests.yaml
+- .reviewcompass/evidence/work-units/checklists/checklist-todo-2026-06-23-guidance-reference-consumer-audit.yaml
+- .reviewcompass/evidence/work-units/checklists/checklist-todo-2026-06-23-guidance-relocation-red-tests.yaml
+- .reviewcompass/runtime/work-units/checklists/checklist-todo-2026-06-23-guidance-reference-consumer-audit.yaml
+- .reviewcompass/runtime/work-units/checklists/checklist-todo-2026-06-23-guidance-relocation-red-tests.yaml
+- stages/completed/maintenance-2026-06-23-guidance-relocation-grc2-grc3-state-reconciliation.yaml
+completion_conditions:
+- GRC-2 TODO と index status が completed になる
+- GRC-3 TODO と index status が completed になる
+- GRC-2/GRC-3 の checklist evidence が completed として保存される
+- plan execution_slices の GRC-2/GRC-3 が checklist evidence path と completed status を持つ
+- GRC-4/GRC-5/GRC-6 は未実行のまま残す
+completed_changes:
+- >
+  GRC-2 の TODO、index、plan execution_slices を既存の reference / consumer audit
+  完了証跡に合わせて completed に補正した。
+- >
+  GRC-3 の TODO、index、plan execution_slices を既存の red tests / audit tests
+  完了証跡に合わせて completed に補正した。
+- >
+  GRC-2/GRC-3 の completed checklist evidence を
+  `.reviewcompass/evidence/work-units/checklists/` に追加した。
+- >
+  GRC-2/GRC-3 の stale runtime checklist を削除し、runtime active pending と
+  evidence completed が同時に残らないようにした。
+scope_not_changed:
+- GRC-4 の文書移動はしていない
+- GRC-5 の旧 path 削除はしていない
+- GRC-6 の final audit はしていない
+verification:
+- command: >
+    rg -n "GRC-2|GRC-3|status: completed|checklist_evidence_path"
+    .reviewcompass/backlog/plans/plan-2026-06-23-guidance-relocation-and-docs-classification.yaml
+    .reviewcompass/backlog/todos/todo-2026-06-23-guidance-reference-consumer-audit.yaml
+    .reviewcompass/backlog/todos/todo-2026-06-23-guidance-relocation-red-tests.yaml
+    .reviewcompass/evidence/work-units/checklists/checklist-todo-2026-06-23-guidance-reference-consumer-audit.yaml
+    .reviewcompass/evidence/work-units/checklists/checklist-todo-2026-06-23-guidance-relocation-red-tests.yaml
+  result: passed
+status: completed
