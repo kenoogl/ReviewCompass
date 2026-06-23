@@ -1,0 +1,45 @@
+process_id: maintenance
+started_at: '2026-06-23T00:00:00+09:00'
+completed_at: '2026-06-23T00:00:00+09:00'
+trigger: >
+  利用者指示により、guidance-relocation-and-docs-classification が checklist
+  まで展開済みで maintenance モード実行中であることを前提に、plan / TODO /
+  runtime checklist / completed stage の整合を確認するため。
+mainline_blocked_by: none
+work_class: maintenance
+control_relation: side-track
+allowed_scope: >
+  guidance relocation の GRC-1 から GRC-6 について、実行証跡と管理状態の
+  不一致を棚卸しする。文書移動、旧 path 削除、参照更新、テスト追加、
+  backlog status 補正は行わない。
+allowed_files:
+- .reviewcompass/backlog/inventories/2026-06-23-guidance-relocation-execution-reconciliation.md
+- stages/completed/maintenance-2026-06-23-guidance-relocation-execution-reconciliation.yaml
+completion_conditions:
+- GRC-1 から GRC-6 までの TODO/checklist 展開状態を確認する
+- completed stage がある slice と未完了 slice を分ける
+- GRC-2/GRC-3 の実行証跡と TODO/checklist 状態の不一致を明示する
+- 次に戻るべき実作業地点を記録する
+completed_changes:
+- >
+  `.reviewcompass/backlog/inventories/2026-06-23-guidance-relocation-execution-reconciliation.md`
+  を作成し、GRC-1 から GRC-6 の plan / TODO / runtime checklist /
+  completed stage の整合表を記録した。
+- >
+  GRC-2 と GRC-3 は maintenance completed stage がある一方で、backlog TODO
+  と runtime checklist が未完了表示のままであることを明示した。
+- >
+  GRC-4 以降は TODO/checklist 展開済みだが、completed stage がないため
+  未実行として扱うことを記録した。
+scope_not_changed:
+- 文書移動はしていない
+- 旧 path 削除はしていない
+- 参照更新はしていない
+- テスト追加はしていない
+- backlog TODO / runtime checklist の status 補正はしていない
+verification:
+- command: >
+    rg -n "GRC-1|GRC-2|GRC-3|GRC-4|GRC-5|GRC-6|Operational Conclusion"
+    .reviewcompass/backlog/inventories/2026-06-23-guidance-relocation-execution-reconciliation.md
+  result: passed
+status: completed
