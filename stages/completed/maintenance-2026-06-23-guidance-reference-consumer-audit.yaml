@@ -1,0 +1,51 @@
+process_id: maintenance
+started_at: '2026-06-23T00:00:00+09:00'
+completed_at: '2026-06-23T00:00:00+09:00'
+trigger: >
+  利用者指示により、plan-2026-06-23-guidance-relocation-and-docs-classification
+  の GRC-2 として、残存 docs/operations / docs/disciplines の
+  reference / consumer audit を作成するため。
+mainline_blocked_by: none
+work_class: maintenance
+control_relation: side-track
+allowed_scope: >
+  GRC-2 の参照・consumer 監査表を作成する。ファイル移動、旧 path 削除、
+  参照更新、テスト追加、deploy manifest 変更は行わない。
+allowed_files:
+- stages/in-progress/maintenance-2026-06-23-guidance-reference-consumer-audit.yaml
+- stages/completed/maintenance-2026-06-23-guidance-reference-consumer-audit.yaml
+- .reviewcompass/backlog/inventories/2026-06-23-guidance-reference-consumer-audit.md
+completion_conditions:
+- path / basename / anchor の観点で repo 内参照を監査する
+- hooks、templates、tools、tests、deploy-manifest、AGENTS / entry templates の参照を分類する
+- deploy package に含めるべき consumer と開発リポジトリ内だけの consumer を分ける
+- 各移動候補について、更新すべき consumer を表で確認できる
+- この作業ではファイル移動、旧 path 削除、参照更新、テスト追加、deploy manifest 変更を行わない
+- lightweight self-check と next --json の再確認を行う
+completed_changes:
+- >
+  `.reviewcompass/backlog/inventories/2026-06-23-guidance-reference-consumer-audit.md`
+  を作成し、残存 docs/operations / docs/disciplines 文書の参照元と
+  consumer class を整理した。
+- >
+  deploy-facing consumer、runtime/tool consumer、test/schema consumer、
+  historical reference を分け、移動候補ごとに更新が必要な参照を表にした。
+- >
+  GRC-3 でテスト化すべき対象と、移動前に判断が必要な論点を整理した。
+scope_not_changed:
+- ファイル移動はしていない
+- 旧 path 削除はしていない
+- 参照更新はしていない
+- テスト追加はしていない
+- deploy-manifest.yaml は変更していない
+verification:
+- command: >
+    .venv/bin/python3 tools/document_link_lint.py --json
+    .reviewcompass/backlog/inventories/2026-06-23-guidance-reference-consumer-audit.md
+    stages/completed/maintenance-2026-06-23-guidance-reference-consumer-audit.yaml
+  result: passed
+- command: >
+    rg -n "Active Consumer Table|Consumer Groups|Move Candidate Update Matrix|GRC-3 Test Targets|Open Decisions|CLAUDE.md:7|deploy-manifest.yaml:129|discipline_workflow_precheck_invocation|discipline_normal_output_minimization|tools/self_improvement"
+    .reviewcompass/backlog/inventories/2026-06-23-guidance-reference-consumer-audit.md
+  result: passed
+status: completed
