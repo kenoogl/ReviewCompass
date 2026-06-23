@@ -23,6 +23,51 @@ related:
   - .reviewcompass/backlog/plans/plan-2026-06-23-commit-stop-point-and-approval-ux.yaml
   - tools/check-workflow-action.py
 remaining_work:
+  - id: MWP-0
+    title: Clarify workflow mode taxonomy
+    status: candidate
+    tasks:
+      - workflow 実施区分、maintenance、side-track、blocking unit が同列概念ではないことを整理する。
+      - 最小概念セットを「現在状態」「作業区分」「制御関係」に絞る。
+      - allowed_scope / allowed_files / completion_conditions は独立概念ではなく、作業宣言の属性として扱う。
+      - 作業開始宣言の標準形を定義する。
+    acceptance:
+      - maintenance は作業区分、side-track は本線との関係、blocking unit は親作業に束縛された制御構造として区別される。
+      - 作業宣言が「現在状態 + 作業区分 + 制御関係 + 許可範囲」で表現できる。
+      - LLM が `audit` のような作業内容ラベルを workflow 上の作業区分と混同しない。
+    proposed_taxonomy:
+      current_state:
+        description: >
+          `next --json` が返す機械状態。例: completed、maintenance_in_progress、
+          blocking_unit_in_progress、post_write_verification。
+        required: true
+      work_class:
+        description: >
+          これから実施する手続きの種類。例: normal workflow、maintenance、
+          reopen、verification。`audit` はここに入れる場合でも内容ラベルであり、
+          workflow 状態名として扱わない。
+        required: true
+      control_relation:
+        description: >
+          本線や親作業との関係。例: mainline、side-track、blocking-unit、
+          parent-resume。maintenance と blocking unit を同列に置かず、必要なら
+          maintenance かつ side-track のように組み合わせて表現する。
+        required: true
+      permitted_scope:
+        description: >
+          allowed_scope、allowed_files、completion_conditions。独立した概念軸ではなく、
+          作業宣言に必須の属性として扱う。
+        required: true
+    system_reflection_candidates:
+      - `.reviewcompass/guidance/WORKFLOW_NAVIGATION.md` に用語表を追加する。
+      - `stages/in-progress/maintenance-*.yaml` に work_class / control_relation を明示フィールドとして追加するか検討する。
+      - `next --json` の `next_action` に work_class / control_relation を返すか検討する。
+      - blocking unit と maintenance の allowed files / return conditions の差を schema または guard で検査する。
+      - user-facing progress report では「作業モード」ではなく「現在状態」「作業区分」「本線との関係」を平易に出す。
+    non_goals:
+      - この項目だけで workflow 状態機械を変更しない。
+      - maintenance と blocking unit を同じ schema に統合しない。
+      - every task に過剰な宣言を義務化しない。
   - id: MWP-1
     title: Maintenance entry and classification protocol
     status: candidate

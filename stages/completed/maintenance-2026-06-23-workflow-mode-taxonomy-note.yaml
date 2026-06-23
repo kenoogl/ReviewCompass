@@ -1,0 +1,37 @@
+process_id: maintenance
+started_at: '2026-06-23T00:00:00+09:00'
+completed_at: '2026-06-23T00:00:00+09:00'
+trigger: >
+  利用者指示により、workflow 実施区分、maintenance、side-track、
+  blocking unit などの概念が体系的でない問題を backlog に記録するため。
+mainline_blocked_by: none
+allowed_scope: >
+  workflow mode / work classification / control relation の概念整理を
+  backlog plan に追記する。実装、仕様正本変更、next --json 挙動変更は行わない。
+allowed_files:
+- stages/in-progress/maintenance-2026-06-23-workflow-mode-taxonomy-note.yaml
+- stages/completed/maintenance-2026-06-23-workflow-mode-taxonomy-note.yaml
+- .reviewcompass/backlog/plans/plan-2026-06-23-maintenance-workflow-protocol.yaml
+completion_conditions:
+- maintenance / side-track / blocking unit が同列でないことを backlog に記録する
+- 最小概念セットと削るべき概念を backlog に記録する
+- 将来のシステム反映候補を backlog に記録する
+- この作業では実装、正本 guidance 変更、next --json 挙動変更を行わない
+- lightweight self-check と next --json の再確認を行う
+completed_changes:
+- .reviewcompass/backlog/plans/plan-2026-06-23-maintenance-workflow-protocol.yaml に MWP-0 を追加した
+- 現在状態、作業区分、制御関係、許可範囲の最小整理を記録した
+- maintenance / side-track / blocking unit が同列でないことを記録した
+- 将来の guidance、maintenance YAML、next --json、guard への反映候補を記録した
+- この作業では実装、正本 guidance 変更、next --json 挙動変更を行わなかった
+verification:
+- command: .venv/bin/python3 tools/document_link_lint.py --json .reviewcompass/backlog/plans/plan-2026-06-23-maintenance-workflow-protocol.yaml stages/completed/maintenance-2026-06-23-workflow-mode-taxonomy-note.yaml
+  result: findings=0
+- command: rg -n "MWP-0|workflow mode taxonomy|current_state|work_class|control_relation|permitted_scope|maintenance は作業区分|side-track|blocking unit" .reviewcompass/backlog/plans/plan-2026-06-23-maintenance-workflow-protocol.yaml
+  result: recorded
+evidence:
+- .reviewcompass/backlog/plans/plan-2026-06-23-maintenance-workflow-protocol.yaml
+return_to:
+  required_action: completed
+  state_file: none
+status: completed
