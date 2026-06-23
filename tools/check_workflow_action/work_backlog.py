@@ -461,6 +461,28 @@ def _has_linked_todo(cwd, index, plan_id, plan_path):
   return False
 
 
+def _linked_todo_entries(cwd, index, plan_id, plan_path):
+  linked = []
+  reasons = []
+  for entry in index.get("items", []):
+    if not isinstance(entry, dict):
+      continue
+    if entry.get("kind") != "todo":
+      continue
+    todo, item_reasons = _read_item_by_entry(cwd, entry)
+    if item_reasons:
+      reasons.extend(item_reasons)
+      continue
+    if _todo_links_plan(todo, plan_id, plan_path):
+      linked.append({
+        "id": entry.get("id"),
+        "path": entry.get("path"),
+        "status": entry.get("status"),
+        "title": entry.get("title"),
+      })
+  return linked, reasons
+
+
 def _has_runtime_or_evidence_checklist(cwd, item_id):
   for directory in (CHECKLIST_RUNTIME_DIR, CHECKLIST_EVIDENCE_DIR):
     root = Path(cwd) / directory
@@ -494,6 +516,60 @@ def audit_checklist_bridge(cwd):
       )
 
   return _result("DEVIATION" if reasons else "OK", reasons, index=index)
+
+
+def plan_todo_bridge(cwd, plan_id):
+  shown = show(cwd, plan_id)
+  if shown["verdict"] != "OK":
+    return shown
+  plan = shown["item"]
+  if plan.get("kind") != "plan":
+    return _result("DEVIATION", [f"backlog item は plan である必要があります: {plan_id}"])
+
+  plan_path = shown["path"]
+  linked, reasons = _linked_todo_entries(cwd, shown["index"], plan_id, plan_path)
+  linked_ids = [entry["id"] for entry in linked]
+  response = _result(
+    "DEVIATION" if reasons or not linked else "OK",
+    reasons,
+    index=shown["index"],
+    item=plan,
+    path=plan_path,
+  )
+  response["plan"] = {
+    "id": plan_id,
+    "path": plan_path,
+    "title": plan.get("title"),
+  }
+  response["linked_todos"] = linked
+  response["linked_todo_ids"] = linked_ids
+  if not linked:
+    response["reasons"].append("linked backlog TODO not found")
+    response["next_steps"] = [
+      (
+        "work-backlog add-todo --id <todo-id> --title <title> "
+        f"--source-unit-id {plan.get('source_unit_id')} "
+        f"--source-ref {plan_path} --reason <reason> "
+        "--body-file <yaml-with-source_plan_id-source_plan_path>"
+      ),
+      (
+        "body file must include source_plan_id: "
+        f"{plan_id} and source_plan_path: {plan_path}"
+      ),
+    ]
+    return response
+
+  first_todo_id = linked_ids[0]
+  response["next_steps"] = [
+    f"work-backlog start-checklist --id {first_todo_id}",
+    f"work-backlog audit-checklist-coverage --id {first_todo_id} --checklist-id <checklist-id>",
+    f"task-quality-check audit --backlog-id {first_todo_id} --checklist-id <checklist-id>",
+  ]
+  if len(linked) > 1:
+    response["warnings"] = [
+      "multiple linked TODOs found; choose one TODO before starting checklist"
+    ]
+  return response
 
 
 def audit_plan_todo_bridge(cwd):

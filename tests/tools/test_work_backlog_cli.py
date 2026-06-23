@@ -815,6 +815,79 @@ class WorkBacklogCliTests(unittest.TestCase):
     self.assertEqual(data["verdict"], "DEVIATION")
     self.assertIn("plan-bridge has no linked TODO/checklist evidence", data["reasons"][0])
 
+  def test_plan_todo_bridge_rejects_plan_without_linked_todo_and_suggests_creation(self):
+    self._write_plan_item()
+
+    result = run_script(
+      [
+        "work-backlog",
+        "plan-todo-bridge",
+        "--plan-id", "plan-bridge",
+        "--json",
+      ],
+      cwd=self.tmpdir,
+    )
+
+    assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 2, result.stdout + result.stderr)
+    data = json.loads(result.stdout)
+    self.assertEqual(data["verdict"], "DEVIATION")
+    self.assertIn("linked backlog TODO not found", data["reasons"])
+    self.assertEqual(data["plan"]["id"], "plan-bridge")
+    self.assertEqual(data["linked_todo_ids"], [])
+    self.assertIn("work-backlog add-todo", data["next_steps"][0])
+    self.assertIn("source_plan_id", data["next_steps"][0])
+
+  def test_plan_todo_bridge_accepts_linked_todo_and_suggests_checklist_audit_flow(self):
+    self._write_plan_item()
+    todo_path = self._write_todo_item(item_id="todo-from-plan")
+    todo = yaml.safe_load(todo_path.read_text(encoding="utf-8"))
+    todo["source_plan_id"] = "plan-bridge"
+    todo["source_plan_path"] = ".reviewcompass/backlog/plans/plan-bridge.yaml"
+    todo_path.write_text(
+      yaml.safe_dump(todo, allow_unicode=True, sort_keys=False),
+      encoding="utf-8",
+    )
+    index_path = self.tmpdir / ".reviewcompass/backlog/index.yaml"
+    index = yaml.safe_load(index_path.read_text(encoding="utf-8"))
+    index["items"].insert(0, {
+      "id": "plan-bridge",
+      "kind": "plan",
+      "title": "Plan to bridge into TODO",
+      "status": "candidate",
+      "path": ".reviewcompass/backlog/plans/plan-bridge.yaml",
+      "source_unit_id": "unit-test",
+      "created_at": "2026-06-23T00:00:00+00:00",
+    })
+    index_path.write_text(
+      yaml.safe_dump(index, allow_unicode=True, sort_keys=False),
+      encoding="utf-8",
+    )
+
+    result = run_script(
+      [
+        "work-backlog",
+        "plan-todo-bridge",
+        "--plan-id", "plan-bridge",
+        "--json",
+      ],
+      cwd=self.tmpdir,
+    )
+
+    assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+    data = json.loads(result.stdout)
+    self.assertEqual(data["verdict"], "OK")
+    self.assertEqual(data["linked_todo_ids"], ["todo-from-plan"])
+    self.assertIn(
+      "work-backlog start-checklist --id todo-from-plan",
+      data["next_steps"][0],
+    )
+    self.assertIn(
+      "work-backlog audit-checklist-coverage --id todo-from-plan",
+      data["next_steps"][1],
+    )
+
   def test_start_checklist_derives_ids_from_backlog_todo_and_active_unit(self):
     self._write_todo_item()
     stack_path = self.tmpdir / ".reviewcompass/runtime/work-units/stack.yaml"

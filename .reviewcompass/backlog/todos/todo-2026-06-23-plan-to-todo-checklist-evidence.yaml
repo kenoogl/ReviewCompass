@@ -2,7 +2,7 @@ schema_version: reviewcompass-backlog-item-v1
 id: todo-2026-06-23-plan-to-todo-checklist-evidence
 kind: todo
 title: Preserve plan to TODO checklist execution evidence
-status: candidate
+status: completed
 source_unit_id: main-completed
 created_at: '2026-06-23T08:25:46.734782+00:00'
 index_path: .reviewcompass/backlog/index.yaml
@@ -11,11 +11,11 @@ provenance:
   source_ref: conversation:user:証跡としては、todoリストやチェックリストがあった方がよいと思う
   reason: plan から直接作業を進めると、実行単位化した TODO と checklist の証跡が残らず、後から進め方と完了根拠を追跡しにくくなるため
 decisions: []
-summary: >
-  plan の implementation_plan を読んで直接作業へ入る運用を避け、
-  実行前に backlog TODO と runtime checklist へ落としてから進める。
-  作業完了後は completed checklist / evidence と TODO の execution_history に
-  実行証跡を残し、plan、TODO、checklist、完了証跡のつながりを追跡可能にする。
+summary: 'plan の implementation_plan を読んで直接作業へ入る運用を避け、 実行前に backlog TODO と runtime
+  checklist へ落としてから進める。 作業完了後は completed checklist / evidence と TODO の execution_history
+  に 実行証跡を残し、plan、TODO、checklist、完了証跡のつながりを追跡可能にする。
+
+  '
 problem_statement:
 - plan は方針、分解案、受け入れ条件を持つが、実行単位そのものではない。
 - plan から直接作業すると、どの部分を TODO として実行対象化したかが残りにくい。
@@ -24,48 +24,61 @@ problem_statement:
 required_flow:
 - plan の implementation_plan / acceptance_criteria / remaining work を読む。
 - 実行対象にする範囲を backlog TODO として切り出す。
-- "`work-backlog start-checklist --id <todo-id>` で runtime checklist を生成する。"
-- "`work-backlog audit-checklist-coverage --id <todo-id> --checklist-id <checklist-id>` で coverage を確認する。"
+- '`work-backlog start-checklist --id <todo-id>` で runtime checklist を生成する。'
+- '`work-backlog audit-checklist-coverage --id <todo-id> --checklist-id <checklist-id>`
+  で coverage を確認する。'
 - checklist item を進めながら作業し、完了時に checklist を close して evidence へ移す。
 - TODO 側の execution_history に checklist_id、evidence_path、completion_summary を残す。
 todos:
   design_contract:
   - id: PTC-1
     title: plan、TODO、runtime checklist、evidence の責務境界を明文化する
-    status: pending
+    status: done
     detail: plan は方針、TODO は実行単位、runtime checklist は実行中進捗、evidence は完了証跡として扱う。
   - id: PTC-2
     title: plan から作業開始する前の TODO 化ルールを定義する
-    status: pending
+    status: done
     detail: implementation_plan の phase/task、acceptance_criteria、残作業をどの単位で TODO に切るかを定義する。
   cli:
   - id: PTC-3
     title: plan 由来 TODO の作成または確認を促す導線を追加する
-    status: pending
+    status: done
     detail: plan から次作業を開始する場面で、既存 TODO の有無を確認し、なければ TODO 作成へ進ませる。
   - id: PTC-4
     title: TODO から checklist 生成と coverage audit までを標準手順に組み込む
-    status: pending
+    status: done
     detail: start-checklist と audit-checklist-coverage を実行前証跡として残す。
   audit:
   - id: PTC-5
     title: plan 直接実行の逸脱を検出または記録する
-    status: pending
-    detail: plan 由来の作業完了に対応する TODO/checklist/evidence がない場合、follow-up または deviation として残す。
+    status: done
+    detail: plan 由来の作業完了に対応する TODO/checklist/evidence がない場合、follow-up または deviation
+      として残す。
 red_tests:
 - id: PTC-RT-1
   title: plan 由来作業に TODO がない場合に検出する
   expected: plan の作業が完了扱いになる前に、対応 TODO がない状態を DEVIATION または follow-up として検出できる
+  status: done
 - id: PTC-RT-2
   title: TODO から checklist coverage を確認できる
-  expected: plan 由来 TODO に対して runtime checklist が生成され、coverage audit が OK/DEVIATION を返す
+  expected: plan 由来 TODO に対して runtime checklist が生成され、coverage audit が OK/DEVIATION
+    を返す
+  status: done
 - id: PTC-RT-3
   title: 完了後に TODO execution_history へ証跡が戻る
   expected: checklist close 後、TODO に evidence_path と completion_summary が記録される
+  status: done
 non_goals:
 - 完了済み作業に対して、実行時から存在したかのような checklist を後付けすること
 - すべての plan を即時に TODO 化すること
 - plan の内容を LLM 要約だけで実行 checklist に変換すること
 notes:
 - 既存の `work-backlog start-checklist` は TODO から checklist への導線であり、plan から TODO への導線は別課題として扱う。
-- 既に plan から直接進めた作業は、必要に応じて retrospective execution trace または deviation/follow-up note として記録する。
+- 既に plan から直接進めた作業は、必要に応じて retrospective execution trace または deviation/follow-up
+  note として記録する。
+execution_history:
+- checklist_id: checklist-todo-2026-06-23-plan-to-todo-checklist-evidence
+  evidence_path: .reviewcompass/evidence/work-units/checklists/checklist-todo-2026-06-23-plan-to-todo-checklist-evidence.yaml
+  completion_summary: 'plan-to-TODO checklist evidence bridge completed: plan bridge
+    command, checklist coverage audit, and execution history return path verified'
+  completed_at: '2026-06-23T09:07:44.138029+00:00'
