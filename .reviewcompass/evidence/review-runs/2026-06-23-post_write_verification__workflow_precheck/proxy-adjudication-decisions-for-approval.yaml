@@ -1,0 +1,16 @@
+proxy_model_id: openai/chatgpt
+decision_prompt_path: proxy-adjudication-prompt.md
+raw_response_path: proxy-adjudication-response.txt
+decisions:
+  - finding_id: 2026-06-23-post_write_verification__workflow_precheck-claude-opus-4-8-adversarial-001
+    final_label: should-fix
+    rationale: The generic exit-code/stop contract likely prevents convergence on audit-commit deviations, but explicitly tying post-commit deviations to no-push/no-convergence or corrective follow-up would improve clarity for an already-committed recovery path.
+    rejected_options:
+      must-fix: The existing generic stop-on-failure behavior appears sufficient to avoid weakening the stop condition, so this does not block convergence.
+      leave-as-is: The ambiguity is relevant to post-write verification behavior and is a valid completeness improvement.
+  - finding_id: 2026-06-23-post_write_verification__workflow_precheck-claude-opus-4-8-adversarial-002
+    final_label: should-fix
+    rationale: Section 5 should ideally mirror the Section 3 target/subcommand list so the judgment contract is easy to audit, but the start-checklist stop condition is already stated in Section 4 and safe workflow behavior is not weakened.
+    rejected_options:
+      must-fix: The missing explicit listing in Section 5 does not remove or contradict the already-stated stop condition.
+      leave-as-is: The mismatch is a real clarity/completeness issue in the judgment-contract section.

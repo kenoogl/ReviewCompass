@@ -290,7 +290,7 @@ items:
 - id: todo-2026-06-23-plan-slice-materialization-contract
   kind: todo
   title: Define plan slice materialization contract
-  status: candidate
+  status: completed
   path: .reviewcompass/backlog/todos/todo-2026-06-23-plan-slice-materialization-contract.yaml
   source_unit_id: main-side-conversation
   created_at: '2026-06-23T11:41:49.742931+00:00'

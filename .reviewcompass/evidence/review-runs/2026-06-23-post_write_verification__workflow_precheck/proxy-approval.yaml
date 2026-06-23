@@ -1,0 +1,10 @@
+approved_action: review_triage_decide
+approved_by: proxy_model
+review_run_id: 2026-06-23-post_write_verification__workflow_precheck
+summary_presented_to_user: true
+triage_presented_to_user: true
+consumed: false
+approved_finding_ids: []
+approved_final_labels: {}
+proxy_model_id: openai/chatgpt
+proxy_decisions: {}

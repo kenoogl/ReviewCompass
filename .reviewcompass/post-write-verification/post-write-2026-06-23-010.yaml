@@ -1,0 +1,32 @@
+status: completed
+target_files:
+- .reviewcompass/guidance/WORKFLOW_PRECHECK.md
+target_sha256:
+  .reviewcompass/guidance/WORKFLOW_PRECHECK.md: 60367b946c718fb6ef094feba201ac11f249cd811416c914be9ab6d5e82d7aa0
+required_verifiers: &id001
+- gpt-5.4
+- claude-opus-4-8
+- gemini-3.1-pro-preview
+completed_verifiers: *id001
+unresolved_substantive_findings: 0
+verifications:
+- verifier: gpt-5.4
+  target_files:
+  - .reviewcompass/guidance/WORKFLOW_PRECHECK.md
+  target_sha256:
+    .reviewcompass/guidance/WORKFLOW_PRECHECK.md: 60367b946c718fb6ef094feba201ac11f249cd811416c914be9ab6d5e82d7aa0
+- verifier: claude-opus-4-8
+  target_files:
+  - .reviewcompass/guidance/WORKFLOW_PRECHECK.md
+  target_sha256:
+    .reviewcompass/guidance/WORKFLOW_PRECHECK.md: 60367b946c718fb6ef094feba201ac11f249cd811416c914be9ab6d5e82d7aa0
+- verifier: gemini-3.1-pro-preview
+  target_files:
+  - .reviewcompass/guidance/WORKFLOW_PRECHECK.md
+  target_sha256:
+    .reviewcompass/guidance/WORKFLOW_PRECHECK.md: 60367b946c718fb6ef094feba201ac11f249cd811416c914be9ab6d5e82d7aa0
+review_run:
+  path: .reviewcompass/evidence/review-runs/2026-06-23-post_write_verification__workflow_precheck-r2
+  summary_path: .reviewcompass/evidence/review-runs/2026-06-23-post_write_verification__workflow_precheck-r2/model-result-summary.yaml
+notes: Generated template; verify target_files cover current post-write targets before
+  use.

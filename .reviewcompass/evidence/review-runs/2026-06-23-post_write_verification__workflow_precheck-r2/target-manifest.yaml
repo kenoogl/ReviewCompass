@@ -1,0 +1,4 @@
+run_id: 2026-06-23-post_write_verification__workflow_precheck-r2
+target_files:
+- path: .reviewcompass/guidance/WORKFLOW_PRECHECK.md
+  sha256: 60367b946c718fb6ef094feba201ac11f249cd811416c914be9ab6d5e82d7aa0

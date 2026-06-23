@@ -1,0 +1,89 @@
+schema_version: effective-prompt-manifest-v1
+decision_point:
+  kind: post_write_verification
+  required_action: run_post_write_verification
+source_artifacts:
+- path: /Users/Daily/Development/ReviewCompass/.reviewcompass/guidance/WORKFLOW_PRECHECK.md
+  sha256: sha256:27fb6a76b99a68c0cda60940abe0c9dd705a7618b75ee54b2ae7131d2219ee7a
+- path: /Users/Daily/Development/ReviewCompass/.reviewcompass/guidance/WORKFLOW_NAVIGATION.md
+  sha256: sha256:268076aee0ddbde231009d48d8840773ff87433cd4e8653492f0004c106f76be
+- path: /Users/Daily/Development/ReviewCompass/.reviewcompass/guidance/API_REVIEW_PROMPT_QUALITY.md
+  sha256: sha256:03a9b994c6b5fb4b99ebbbf169e48d76568c5b6190716bbe9e5e181844c9450d
+- path: /Users/Daily/Development/ReviewCompass/.reviewcompass/guidance/discipline_post_write_verification.md
+  sha256: sha256:b5db5b8a11c57304976fd13a03e15fd39cbc44cb7b6f206b579065b0f62a10e2
+- path: /Users/Daily/Development/ReviewCompass/.reviewcompass/specs/workflow-management/post-write-verification-spec.yaml
+  sha256: sha256:3e72e7431ccef008e0f87ac841053aed11b88f4350a027979661ffe1c6291d81
+required_disciplines:
+- .reviewcompass/guidance/WORKFLOW_NAVIGATION.md
+- .reviewcompass/guidance/API_REVIEW_PROMPT_QUALITY.md
+operation_contract:
+  operation_id: prepare_post_write_review
+  sha256: sha256:848d42b6e5df6ecb63c3288cc1dfa28765fb217c3added74476149b0bcf7f1a8
+expected_output_schema:
+  schema_ref: null
+  required_sections:
+  - findings
+prompt_length:
+  min_chars: 1
+  max_chars: 200000
+  source_ref: .reviewcompass/evidence/review-runs/2026-06-23-post_write_verification__workflow_precheck/review-target.md
+  failure_verdict: DEVIATION
+preconditions_checked:
+- id: post-write-review-target-generated
+  source: prepare_post_write_review
+  machine_checked: true
+  evidence_ref: .reviewcompass/evidence/review-runs/2026-06-23-post_write_verification__workflow_precheck/review-target.md
+language_task:
+  document_kind: post_write_verification
+  input:
+    required_files:
+    - /Users/Daily/Development/ReviewCompass/.reviewcompass/guidance/WORKFLOW_PRECHECK.md
+    state_refs: []
+    source_refs:
+    - /Users/Daily/Development/ReviewCompass/.reviewcompass/guidance/WORKFLOW_NAVIGATION.md
+    - /Users/Daily/Development/ReviewCompass/.reviewcompass/guidance/API_REVIEW_PROMPT_QUALITY.md
+    - /Users/Daily/Development/ReviewCompass/.reviewcompass/guidance/discipline_post_write_verification.md
+    - /Users/Daily/Development/ReviewCompass/.reviewcompass/specs/workflow-management/post-write-verification-spec.yaml
+  output_format:
+    kind: yaml_findings
+    required_sections:
+    - findings
+    schema_ref: null
+  constraints:
+  - Review language-level consistency only.
+  - Do not mutate workflow state.
+  - Do not create review-run artifacts.
+  - Do not commit or push.
+review_prompt_materials:
+  target_files:
+  - path: /Users/Daily/Development/ReviewCompass/.reviewcompass/guidance/WORKFLOW_PRECHECK.md
+    content_mode: full_text
+    content_sha256: sha256:27fb6a76b99a68c0cda60940abe0c9dd705a7618b75ee54b2ae7131d2219ee7a
+  source_materials:
+  - path: /Users/Daily/Development/ReviewCompass/.reviewcompass/guidance/WORKFLOW_NAVIGATION.md
+    content_mode: full_text
+    content_sha256: sha256:268076aee0ddbde231009d48d8840773ff87433cd4e8653492f0004c106f76be
+  - path: /Users/Daily/Development/ReviewCompass/.reviewcompass/guidance/API_REVIEW_PROMPT_QUALITY.md
+    content_mode: full_text
+    content_sha256: sha256:03a9b994c6b5fb4b99ebbbf169e48d76568c5b6190716bbe9e5e181844c9450d
+  - path: /Users/Daily/Development/ReviewCompass/.reviewcompass/guidance/discipline_post_write_verification.md
+    content_mode: full_text
+    content_sha256: sha256:b5db5b8a11c57304976fd13a03e15fd39cbc44cb7b6f206b579065b0f62a10e2
+  - path: /Users/Daily/Development/ReviewCompass/.reviewcompass/specs/workflow-management/post-write-verification-spec.yaml
+    content_mode: full_text
+    content_sha256: sha256:3e72e7431ccef008e0f87ac841053aed11b88f4350a027979661ffe1c6291d81
+postconditions:
+- id: post-write-review-target-manifest-matches
+  check_kind: review_target_manifest_matches
+  source_ref: .reviewcompass/evidence/review-runs/2026-06-23-post_write_verification__workflow_precheck/review-target.md
+on_completion:
+  next_required_action: run_post_write_verification
+  allowed_followups:
+  - prompt-audit
+  - run-post-write-review
+  forbidden_actions:
+  - commit
+  - push
+  - spec-set
+generated_at: '2026-06-23T11:49:15.571978+00:00'
+criteria_id: post_write_verification__workflow_precheck

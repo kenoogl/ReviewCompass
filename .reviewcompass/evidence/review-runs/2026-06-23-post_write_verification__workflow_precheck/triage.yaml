@@ -1,0 +1,53 @@
+run_id: 2026-06-23-post_write_verification__workflow_precheck
+triage_status: decided
+generated_at: '2026-06-23T11:50:27.655835+00:00'
+decision_actor: null
+decision_actor_type: human
+items:
+- finding_id: 2026-06-23-post_write_verification__workflow_precheck-claude-opus-4-8-adversarial-001
+  run_id: 2026-06-23-post_write_verification__workflow_precheck
+  source_model: claude-opus-4-8
+  source_round: round-1
+  source_raw_path: raw/claude-opus-4-8.round-1.txt
+  source_parsed_path: parsed/claude-opus-4-8.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: Section 4.4 audit-commit / Section 5 判定契約
+  plain_language_summary: Section 4.4 と Section 5 はいずれも commit 済み変更に対する post-write-verification
+    監査を audit-commit として記述しているが、commit 後の監査で逸脱が検出された場合に呼び出し側が取るべき停止・差し戻し動作（push を止める、再
+    commit する等）が本文書に明示されていない。Section 5 の終了コード契約（2 で停止）は全サブコマンド共通として読めるものの、commit 済みの変更を
+    audit して逸脱した場合の救済導線が source の post-write-verification 収束基準（未解決の本質的指摘ゼロが収束）と接続していない。
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: proxy_model
+  decision_actor_type: agent
+  decision_at: '2026-06-23T11:55:25.136484+00:00'
+  decision_reason: 'proxy_model classified this as a valid clarity improvement: the
+    generic stop contract likely preserves safety, but audit-commit should explicitly
+    say post-commit deviations stop push/convergence or require corrective follow-up.'
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-23-post_write_verification__workflow_precheck-claude-opus-4-8-adversarial-002
+  run_id: 2026-06-23-post_write_verification__workflow_precheck
+  source_model: claude-opus-4-8
+  source_round: round-1
+  source_raw_path: raw/claude-opus-4-8.round-1.txt
+  source_parsed_path: parsed/claude-opus-4-8.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: Section 3 適用範囲 / Section 5 判定契約
+  plain_language_summary: Section 3 の対象一覧には commit-approval、autonomous-plan-template、autonomous-plan-record-integration、work-backlog
+    start-checklist が含まれるが、Section 5 の主要な判定対象には commit-approval と autonomous-plan
+    のみが列挙され、autonomous-plan-template、autonomous-plan-record-integration、work-backlog
+    start-checklist の判定内容が Section 5 に明示されていない。work-backlog start-checklist の判定（--mutation-boundary-confirmed
+    なしで DEVIATION 停止）は Section 4 本文には記載されるが、Section 5 の判定契約一覧には現れない。
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: proxy_model
+  decision_actor_type: agent
+  decision_at: '2026-06-23T11:55:25.141672+00:00'
+  decision_reason: 'proxy_model classified this as a valid judgment-contract completeness
+    issue: Section 5 should mirror Section 3 targets, while existing Section 4 wording
+    already preserves the start-checklist stop condition.'
+  applied_files: []
+  superseded_by: null

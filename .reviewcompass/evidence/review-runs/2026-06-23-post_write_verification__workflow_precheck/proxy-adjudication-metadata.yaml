@@ -1,0 +1,8 @@
+variant: proxy_model_openai_gpt_55
+provider: openai-api
+model: gpt-5.5
+prompt_path: .reviewcompass/evidence/review-runs/2026-06-23-post_write_verification__workflow_precheck/proxy-adjudication-prompt.md
+raw_response_path: proxy-adjudication-response.txt
+parsed_decisions_path: proxy-adjudication-decisions.yaml
+duration_seconds: 15.661
+parse_status: parsed

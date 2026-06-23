@@ -1,0 +1,36 @@
+run_id: 2026-06-23-post_write_verification__workflow_precheck-r2
+phase: post_write_verification
+criteria_id: post_write_verification__workflow_precheck
+criteria_file: .reviewcompass/evidence/review-runs/2026-06-23-post_write_verification__workflow_precheck-r2/review-target.md
+criteria_file_sha256: 60b19ba404a679a4282699c9ad518d37c15983218483c029537eaeeeb20abdeb
+prompt_manifest_path: .reviewcompass/evidence/review-runs/2026-06-23-post_write_verification__workflow_precheck-r2/prompt-manifest.yaml
+prompt_manifest_sha256: 7e57755c2aac54a94e605794507b0487e49389f87741f8738a860deadaf86d71
+target_files:
+- path: /Users/Daily/Development/ReviewCompass/.reviewcompass/guidance/WORKFLOW_PRECHECK.md
+  sha256: 60367b946c718fb6ef094feba201ac11f249cd811416c914be9ab6d5e82d7aa0
+  content_mode: full_text
+  content_sha256: 60367b946c718fb6ef094feba201ac11f249cd811416c914be9ab6d5e82d7aa0
+source_materials:
+- path: /Users/Daily/Development/ReviewCompass/.reviewcompass/guidance/WORKFLOW_NAVIGATION.md
+  sha256: 268076aee0ddbde231009d48d8840773ff87433cd4e8653492f0004c106f76be
+  content_mode: full_text
+  content_sha256: 268076aee0ddbde231009d48d8840773ff87433cd4e8653492f0004c106f76be
+- path: /Users/Daily/Development/ReviewCompass/.reviewcompass/guidance/API_REVIEW_PROMPT_QUALITY.md
+  sha256: 03a9b994c6b5fb4b99ebbbf169e48d76568c5b6190716bbe9e5e181844c9450d
+  content_mode: full_text
+  content_sha256: 03a9b994c6b5fb4b99ebbbf169e48d76568c5b6190716bbe9e5e181844c9450d
+- path: /Users/Daily/Development/ReviewCompass/.reviewcompass/guidance/discipline_post_write_verification.md
+  sha256: b5db5b8a11c57304976fd13a03e15fd39cbc44cb7b6f206b579065b0f62a10e2
+  content_mode: full_text
+  content_sha256: b5db5b8a11c57304976fd13a03e15fd39cbc44cb7b6f206b579065b0f62a10e2
+- path: /Users/Daily/Development/ReviewCompass/.reviewcompass/specs/workflow-management/post-write-verification-spec.yaml
+  sha256: 3e72e7431ccef008e0f87ac841053aed11b88f4350a027979661ffe1c6291d81
+  content_mode: full_text
+  content_sha256: 3e72e7431ccef008e0f87ac841053aed11b88f4350a027979661ffe1c6291d81
+sensitive_information_check:
+  status: passed
+  checked_at: '2026-06-23T11:56:26.244788+00:00'
+recommended_run_review_args:
+  criteria_file: .reviewcompass/evidence/review-runs/2026-06-23-post_write_verification__workflow_precheck-r2/review-target.md
+  phase: post_write_verification
+  prompt_manifest_path: .reviewcompass/evidence/review-runs/2026-06-23-post_write_verification__workflow_precheck-r2/prompt-manifest.yaml

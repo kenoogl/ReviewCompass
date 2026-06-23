@@ -1,0 +1,9 @@
+findings:
+  - severity: WARN
+    target_location: "Section 4.4 audit-commit / Section 5 判定契約"
+    description: "Section 4.4 と Section 5 はいずれも commit 済み変更に対する post-write-verification 監査を audit-commit として記述しているが、commit 後の監査で逸脱が検出された場合に呼び出し側が取るべき停止・差し戻し動作（push を止める、再 commit する等）が本文書に明示されていない。Section 5 の終了コード契約（2 で停止）は全サブコマンド共通として読めるものの、commit 済みの変更を audit して逸脱した場合の救済導線が source の post-write-verification 収束基準（未解決の本質的指摘ゼロが収束）と接続していない。"
+    rationale: "source の discipline_post_write_verification.md と post-write-verification-spec.yaml は収束基準を未解決本質的指摘ゼロと定めるが、audit-commit が逸脱を返した後の next action が本文書に書かれていないため、commit 済みの未検証書き込みをどう差し戻すか（段階3の commit/push hook 想定）の運用が読み手の判断に委ねられ、繰り返しの手動判断を招く可能性がある。"
+  - severity: INFO
+    target_location: "Section 3 適用範囲 / Section 5 判定契約"
+    description: "Section 3 の対象一覧には commit-approval、autonomous-plan-template、autonomous-plan-record-integration、work-backlog start-checklist が含まれるが、Section 5 の主要な判定対象には commit-approval と autonomous-plan のみが列挙され、autonomous-plan-template、autonomous-plan-record-integration、work-backlog start-checklist の判定内容が Section 5 に明示されていない。work-backlog start-checklist の判定（--mutation-boundary-confirmed なしで DEVIATION 停止）は Section 4 本文には記載されるが、Section 5 の判定契約一覧には現れない。"
+    rationale: "Section 5 は判定契約として主要な判定対象を列挙する節であり、Section 3 の対象一覧との対応が不完全だと、各サブコマンドが何を検査するかを 1 箇所で把握できず、読み手が本文中を横断して確認する手間が生じる。ただし work-backlog start-checklist の停止条件自体は Section 4 本文に明記されており、安全な workflow action を弱めるものではないため INFO とする。"
