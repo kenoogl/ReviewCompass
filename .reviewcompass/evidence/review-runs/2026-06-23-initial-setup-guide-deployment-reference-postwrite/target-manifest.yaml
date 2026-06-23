@@ -1,0 +1,4 @@
+run_id: 2026-06-23-initial-setup-guide-deployment-reference-postwrite
+target_files:
+- path: .reviewcompass/guidance/INITIAL_SETUP_LLM_GUIDE.md
+  sha256: 5389ced551bb681b3e521903293cf11b284c5735c4a9d6201f4f1d44737237cc

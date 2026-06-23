@@ -1,0 +1,71 @@
+process_id: maintenance
+started_at: '2026-06-23T00:00:00+09:00'
+completed_at: '2026-06-23T00:00:00+09:00'
+trigger: >
+  利用者指示により、直前作業から分離した
+  .reviewcompass/guidance/INITIAL_SETUP_LLM_GUIDE.md の旧 deployment guide
+  配布前提を整理するため。
+mainline_blocked_by: none
+work_class: maintenance
+control_relation: side-track
+allowed_scope: >
+  INITIAL_SETUP_LLM_GUIDE.md 内の旧 docs/operations/INITIAL_DEPLOYMENT_USER_GUIDE.md
+  配布前提と壊れた相対リンクを整理する。deploy manifest、tools、templates、
+  self-improvement 実装、docs 本体移動・削除は変更しない。
+allowed_files:
+- stages/in-progress/maintenance-2026-06-23-initial-setup-guide-deployment-reference.yaml
+- stages/completed/maintenance-2026-06-23-initial-setup-guide-deployment-reference.yaml
+- .reviewcompass/guidance/INITIAL_SETUP_LLM_GUIDE.md
+- .reviewcompass/evidence/review-runs/2026-06-23-initial-setup-guide-deployment-reference-postwrite/**
+- .reviewcompass/post-write-verification/post-write-2026-06-23-007.yaml
+completion_conditions:
+- INITIAL_SETUP_LLM_GUIDE.md が docs/operations/INITIAL_DEPLOYMENT_USER_GUIDE.md を配布物前提にしない
+- document_link_lint が findings なしになる
+- next --json の結果に従う
+completed_changes:
+- >
+  `.reviewcompass/guidance/INITIAL_SETUP_LLM_GUIDE.md` 冒頭の壊れた
+  `INITIAL_DEPLOYMENT_USER_GUIDE.md` 相対リンクを外し、本文書が
+  初期設定 LLM 向け手順の正本であることを明記した。
+- >
+  パターン 3 の配布物確認項目から
+  `docs/operations/INITIAL_DEPLOYMENT_USER_GUIDE.md` の存在前提を外し、
+  `.reviewcompass/guidance/INITIAL_SETUP_LLM_GUIDE.md` の存在確認へ更新した。
+- >
+  post-write verification を `post_write_verification_google` で実施し、
+  findings 0 の manifest を作成した。
+scope_not_changed:
+- deploy-manifest.yaml は変更していない
+- tools / templates / self-improvement 実装は変更していない
+- docs/operations / docs/disciplines 本体の移動・削除はしていない
+verification:
+- command: >
+    .venv/bin/python3 tools/document_link_lint.py --json
+    .reviewcompass/guidance/INITIAL_SETUP_LLM_GUIDE.md
+    stages/completed/maintenance-2026-06-23-initial-setup-guide-deployment-reference.yaml
+  result: passed
+- command: >
+    rg -n "INITIAL_DEPLOYMENT_USER_GUIDE|docs/operations/INITIAL_DEPLOYMENT_USER_GUIDE"
+    .reviewcompass/guidance/INITIAL_SETUP_LLM_GUIDE.md deploy-manifest.yaml
+    tests/workflow-management/test_remaining_guidance_relocation_contract.py
+  result: expected_test_contract_only
+  details: >
+    Only the relocation contract test still names docs/operations/INITIAL_DEPLOYMENT_USER_GUIDE.md
+    as a forbidden legacy deploy-facing operation guidance path.
+- command: >
+    .venv/bin/python3 tools/api_providers/run_review.py
+    --variant post_write_verification_google
+    --target .reviewcompass/guidance/INITIAL_SETUP_LLM_GUIDE.md
+    --phase post_write_verification
+    --criteria-file .reviewcompass/evidence/review-runs/2026-06-23-initial-setup-guide-deployment-reference-postwrite/review-target.md
+    --prompt-manifest-path .reviewcompass/evidence/review-runs/2026-06-23-initial-setup-guide-deployment-reference-postwrite/prompt-manifest.yaml
+    --review-run-dir .reviewcompass/evidence/review-runs/2026-06-23-initial-setup-guide-deployment-reference-postwrite
+  result: passed
+  details: findings 0, parse_failed 0, verifier gemini-3.1-pro-preview
+- command: >
+    .venv/bin/python3 tools/api_providers/review_triage.py write-manifest
+    --review-run-dir .reviewcompass/evidence/review-runs/2026-06-23-initial-setup-guide-deployment-reference-postwrite
+    --out auto
+  result: passed
+  details: .reviewcompass/post-write-verification/post-write-2026-06-23-007.yaml
+status: completed

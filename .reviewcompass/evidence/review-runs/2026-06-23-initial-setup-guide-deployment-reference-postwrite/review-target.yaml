@@ -1,0 +1,24 @@
+run_id: 2026-06-23-initial-setup-guide-deployment-reference-postwrite
+phase: post_write_verification
+criteria_id: initial_setup_guide_deployment_reference_post_write
+criteria_file: .reviewcompass/evidence/review-runs/2026-06-23-initial-setup-guide-deployment-reference-postwrite/review-target.md
+criteria_file_sha256: 6c6ee75371f3ae769c3cc8d80e79eea18bf5237ec5510e3bf245465a6e28fef8
+prompt_manifest_path: .reviewcompass/evidence/review-runs/2026-06-23-initial-setup-guide-deployment-reference-postwrite/prompt-manifest.yaml
+prompt_manifest_sha256: 82cfd8ab9676039bcb256a53e8e563426b86f00bb4311a4d8b7f81cb969b196a
+target_files:
+- path: .reviewcompass/guidance/INITIAL_SETUP_LLM_GUIDE.md
+  sha256: 5389ced551bb681b3e521903293cf11b284c5735c4a9d6201f4f1d44737237cc
+  content_mode: full_text
+  content_sha256: 5389ced551bb681b3e521903293cf11b284c5735c4a9d6201f4f1d44737237cc
+source_materials:
+- path: .reviewcompass/guidance/API_REVIEW_PROMPT_QUALITY.md
+  sha256: 03a9b994c6b5fb4b99ebbbf169e48d76568c5b6190716bbe9e5e181844c9450d
+  content_mode: full_text
+  content_sha256: 03a9b994c6b5fb4b99ebbbf169e48d76568c5b6190716bbe9e5e181844c9450d
+sensitive_information_check:
+  status: passed
+  checked_at: '2026-06-23T08:14:52.242155+00:00'
+recommended_run_review_args:
+  criteria_file: .reviewcompass/evidence/review-runs/2026-06-23-initial-setup-guide-deployment-reference-postwrite/review-target.md
+  phase: post_write_verification
+  prompt_manifest_path: .reviewcompass/evidence/review-runs/2026-06-23-initial-setup-guide-deployment-reference-postwrite/prompt-manifest.yaml

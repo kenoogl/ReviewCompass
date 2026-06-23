@@ -1,0 +1,71 @@
+schema_version: effective-prompt-manifest-v1
+decision_point:
+  kind: post_write_verification
+  required_action: run_post_write_verification
+source_artifacts:
+- path: .reviewcompass/guidance/INITIAL_SETUP_LLM_GUIDE.md
+  sha256: sha256:5389ced551bb681b3e521903293cf11b284c5735c4a9d6201f4f1d44737237cc
+- path: .reviewcompass/guidance/API_REVIEW_PROMPT_QUALITY.md
+  sha256: sha256:03a9b994c6b5fb4b99ebbbf169e48d76568c5b6190716bbe9e5e181844c9450d
+required_disciplines:
+- .reviewcompass/guidance/WORKFLOW_NAVIGATION.md
+- .reviewcompass/guidance/API_REVIEW_PROMPT_QUALITY.md
+operation_contract:
+  operation_id: prepare_post_write_review
+  sha256: sha256:6c6ee75371f3ae769c3cc8d80e79eea18bf5237ec5510e3bf245465a6e28fef8
+expected_output_schema:
+  schema_ref: null
+  required_sections:
+  - findings
+prompt_length:
+  min_chars: 1
+  max_chars: 200000
+  source_ref: .reviewcompass/evidence/review-runs/2026-06-23-initial-setup-guide-deployment-reference-postwrite/review-target.md
+  failure_verdict: DEVIATION
+preconditions_checked:
+- id: post-write-review-target-generated
+  source: prepare_post_write_review
+  machine_checked: true
+  evidence_ref: .reviewcompass/evidence/review-runs/2026-06-23-initial-setup-guide-deployment-reference-postwrite/review-target.md
+language_task:
+  document_kind: post_write_verification
+  input:
+    required_files:
+    - .reviewcompass/guidance/INITIAL_SETUP_LLM_GUIDE.md
+    state_refs: []
+    source_refs:
+    - .reviewcompass/guidance/API_REVIEW_PROMPT_QUALITY.md
+  output_format:
+    kind: yaml_findings
+    required_sections:
+    - findings
+    schema_ref: null
+  constraints:
+  - Review language-level consistency only.
+  - Do not mutate workflow state.
+  - Do not create review-run artifacts.
+  - Do not commit or push.
+review_prompt_materials:
+  target_files:
+  - path: .reviewcompass/guidance/INITIAL_SETUP_LLM_GUIDE.md
+    content_mode: full_text
+    content_sha256: sha256:5389ced551bb681b3e521903293cf11b284c5735c4a9d6201f4f1d44737237cc
+  source_materials:
+  - path: .reviewcompass/guidance/API_REVIEW_PROMPT_QUALITY.md
+    content_mode: full_text
+    content_sha256: sha256:03a9b994c6b5fb4b99ebbbf169e48d76568c5b6190716bbe9e5e181844c9450d
+postconditions:
+- id: post-write-review-target-manifest-matches
+  check_kind: review_target_manifest_matches
+  source_ref: .reviewcompass/evidence/review-runs/2026-06-23-initial-setup-guide-deployment-reference-postwrite/review-target.md
+on_completion:
+  next_required_action: run_post_write_verification
+  allowed_followups:
+  - prompt-audit
+  - run-post-write-review
+  forbidden_actions:
+  - commit
+  - push
+  - spec-set
+generated_at: '2026-06-23T08:14:52.242155+00:00'
+criteria_id: initial_setup_guide_deployment_reference_post_write
