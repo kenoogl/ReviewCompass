@@ -7,7 +7,7 @@ related:
   - docs/notes/2026-06-18-integrated-design-selection-execution-layers.md
   - docs/notes/working/2026-06-18-mechanized-workflow-execution-design.md
   - docs/notes/working/2026-06-19-integrated-design-requirements-missing.md
-  - docs/notes/working/2026-06-19-proxy-model-triage-cost-issues.md
+  - .reviewcompass/backlog/plans/plan-2026-06-23-proxy-decision-mechanization.yaml
   - intent/INTENT.md
   - .reviewcompass/specs/workflow-management/requirements.md
   - .reviewcompass/specs/workflow-management/spec.json

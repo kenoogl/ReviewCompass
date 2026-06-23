@@ -1,7 +1,7 @@
 title: normal output minimization tool inventory
 created_at: "2026-06-19"
 policy_source: docs/disciplines/discipline_normal_output_minimization.md
-implementation_policy: docs/notes/working/2026-06-19-normal-output-minimization-implementation-policy.md
+implementation_policy: .reviewcompass/backlog/plans/plan-2026-06-23-normal-output-minimization-rollout.yaml
 purpose: "全 CLI / tool へ正常系出力最小化を広げるための棚卸し"
 default_contract:
   ok_human_output: minimal

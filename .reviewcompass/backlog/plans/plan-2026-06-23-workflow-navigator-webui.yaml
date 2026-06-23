@@ -1,0 +1,63 @@
+schema_version: reviewcompass-backlog-item-v1
+id: plan-2026-06-23-workflow-navigator-webui
+kind: plan
+title: Build Workflow Navigator WebUI after snapshot schema stabilization
+status: candidate
+source_unit_id: main-completed
+created_at: '2026-06-23T09:41:00+09:00'
+index_path: .reviewcompass/backlog/index.yaml
+provenance:
+  created_by: llm
+  source_ref: docs/notes/working/2026-06-05-workflow-navigator-webui-plan.md
+  reason: >
+    Navigator WebUI 構想は将来作業候補であり、working note ではなく backlog plan
+    として保持する方が、候補一覧から追跡しやすいため。
+summary: >
+  ReviewCompass Core が出力する workflow-state snapshot を読み、現在位置、
+  side track、復帰先、次 action、根拠 refs を人間が一目で把握できる
+  静的 Navigator WebUI を作る。UI は状態正本にならず、Core の snapshot
+  を可視化する層に留める。
+supersedes:
+  - docs/notes/working/2026-06-05-workflow-navigator-webui-plan.md
+related:
+  - docs/notes/working/2026-06-18-mechanized-workflow-execution-design.md
+  - .reviewcompass/schema/
+  - .reviewcompass/runtime/workflow-state-snapshot.yaml
+dependencies:
+  - workflow-state snapshot schema が安定していること。
+  - active side track / return point / git tree summary / backlog summary が snapshot に含まれること。
+  - UI が直接 workflow state を変更しない境界が定義されていること。
+remaining_work:
+  - id: WNAV-1
+    title: Snapshot schema readiness check
+    status: candidate
+    tasks:
+      - Navigator が必要とする nodes / edges / lanes / current / evidence_refs / return_to を確認する。
+      - ReviewCompass 固定の requirements -> design -> tasks -> implementation だけに依存しない schema にする。
+      - active_side_tracks と git_tree_summary の表示用 fields を確認する。
+    acceptance:
+      - UI が内部ファイルを直接解釈せず snapshot だけで初期表示できる。
+  - id: WNAV-2
+    title: Static Navigator MVP
+    status: candidate
+    tasks:
+      - 外側 workflow を上段に表示する。
+      - 現在または選択中ノードの内側 workflow を中央に表示する。
+      - 右ペインに状態、根拠、次 action、ログ refs を表示する。
+      - active side track / git tree status を表示する。
+    acceptance:
+      - completed / current / waiting / blocked / failed / side_track / deviation / unknown を区別できる。
+      - side track の spawned_from と return_to が読める。
+  - id: WNAV-3
+    title: Future interaction boundaries
+    status: candidate
+    tasks:
+      - LLM 対話ペイン、review-run 閲覧、live reload などの将来拡張を分離する。
+      - UI から状態変更しない MVP 境界を維持する。
+    acceptance:
+      - MVP に状態変更 UI が混入しない。
+non_goals:
+  - 任意 workflow engine を作らない。
+  - branch / worktree 自動分離を初期実装に含めない。
+  - snapshot schema 確定前に UI 実装へ入らない。
+decisions: []

@@ -213,26 +213,14 @@ API review-run を開始する前に、少なくとも次を確認する。
 
 これらは「APIレビュー用プロンプトを作成し、そのプロンプト自体を品質確認する仕組み」を定めるものであり、今回の v2 design review 所見を本線 gate 完了根拠として自動採用するものではない。v2 design review の C1〜C7 は、後続の本線 triage gate で利用者へ提示し、別途判断する。
 
-## 残課題：手作業運用時の runner / 停止条件ミス
+## 残課題の移設
 
-2026-06-20 の proxy_model 判断準備では、プロンプト品質レビューの考え方自体は有効だった一方、手作業運用で次の問題が発生した。
+手作業運用時の runner / 停止条件ミスに関する未実装項目は、次の backlog plan に移設した。
 
-- proxy_model 本判断には `tools/api_providers/run_proxy_decision.py` を使うべきところ、一度 `tools/api_providers/run_role.py` を使い、C1〜C7 の判断ではなくプロンプト出力契約への追加レビューを得た。
-- prompt quality judgment の `WARN` / `INFO` をどこまで修正して打ち切るかの運用基準が曖昧で、細部修正ループが長くなった。
-- proxy_model 本判断の成功条件（`decisions` list と `proxy_model_id` を持つこと）と、誤経路検出条件（`findings` が返ったら本判断ではないこと）が機械的に事前確認されていなかった。
-- C1〜C7 という複数の独立判断を 1 つの proxy_model 判断 prompt に押し込んだため、注意が発散し、出力契約や全件 traceability の調整に意識が寄りやすくなった。本来は判断項目ごとに prompt を分け、それぞれ prompt quality review を通すべきだった。
+- `.reviewcompass/backlog/plans/plan-2026-06-23-proxy-decision-mechanization.yaml`
+- `.reviewcompass/backlog/plans/plan-2026-06-23-api-review-run-hardening.yaml`
 
-これは、API レビュー用プロンプト作成の思想そのものの否定ではなく、手作業で runner 選択・停止条件・出力契約を管理している間に起こる運用ミスである。将来、次が機械処理化されれば収束する見込みがある。
-
-1. review purpose から runner を一意に選ぶ preflight（prompt quality は `run_role.py`、proxy decision は `run_proxy_decision.py`）。
-2. prompt quality review の severity 別停止基準（`CRITICAL` / `ERROR` は修正必須、`WARN` は修正または明示採用、`INFO` は原則記録のみ等）。
-3. proxy decision 実行前の出力契約 preflight（`decisions`、`proxy_model_id`、cluster / finding traceability、authority limit confirmation）。
-4. 誤経路検出（proxy decision で `findings` 形式が返った場合は本判断として扱わず停止）。
-5. 反復上限（adversarial 1 回、judgment 最大 N 回を超えたら利用者判断へ戻す）。
-6. 判断粒度 preflight（複数の独立 cluster / finding / design-policy 判断を 1 prompt にまとめず、判断項目ごとに prompt・prompt quality review・proxy decision を分ける）。
-7. 外部 API 送信基準（ReviewCompass リポジトリ内の仕様・設計・レビュー要約・証跡パスは、秘密情報・個人情報・第三者送信禁止情報を含まない限り、利用者が API review / proxy_model 判断を明示承認した場合の通常レビュー材料として扱う）。
-
-この残課題は、今回の本線 design triad-review 所見 C1〜C7 の採否判断とは別に扱う。現時点では追加実装へ広げず、機械処理化対象の運用課題として記録する。
+この比較レポートには方式比較と結論だけを残し、実装候補は backlog 側で管理する。
 
 ## 結論
 

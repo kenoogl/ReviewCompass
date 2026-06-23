@@ -36,7 +36,7 @@ def test_normal_output_minimization_inventory_is_machine_readable():
     "docs/disciplines/discipline_normal_output_minimization.md"
   )
   assert inventory["implementation_policy"] == (
-    "docs/notes/working/2026-06-19-normal-output-minimization-implementation-policy.md"
+    ".reviewcompass/backlog/plans/plan-2026-06-23-normal-output-minimization-rollout.yaml"
   )
   assert inventory["default_contract"]["ok_human_output"] == "minimal"
   assert inventory["default_contract"]["json_output"] == "complete"
@@ -52,13 +52,13 @@ def test_normal_output_minimization_inventory_is_machine_readable():
 
 
 def test_normal_output_minimization_policy_records_shared_formatter_strategy():
-  path = ROOT / "docs" / "notes" / "working" / (
-    "2026-06-19-normal-output-minimization-implementation-policy.md"
+  path = ROOT / ".reviewcompass" / "backlog" / "plans" / (
+    "plan-2026-06-23-normal-output-minimization-rollout.yaml"
   )
   text = path.read_text(encoding="utf-8")
 
   assert "共通 formatter / 出力ヘルパー" in text
-  assert "既存 CLI は優先度順に薄く接続" in text
-  assert "完全に個別対応だけで進めるべきではない" in text
+  assert "優先度の高い既存 CLI から薄く接続" in text
+  assert "個別対応だけで直すのではなく" in text
   assert "tools/api_providers/run_review.py" in text
   assert "tools/experiments/_experiment_n_model.py" in text

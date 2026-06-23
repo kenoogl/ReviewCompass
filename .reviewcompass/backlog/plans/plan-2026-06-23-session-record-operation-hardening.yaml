@@ -1,0 +1,69 @@
+schema_version: reviewcompass-backlog-item-v1
+id: plan-2026-06-23-session-record-operation-hardening
+kind: plan
+title: Harden session record draft and formalization operations
+status: candidate
+source_unit_id: main-completed
+created_at: '2026-06-23T09:36:00+09:00'
+index_path: .reviewcompass/backlog/index.yaml
+provenance:
+  created_by: llm
+  source_ref: docs/notes/working/2026-06-17-session-record-current-snapshot-gap.md
+  reason: >
+    session record の下書き保存、正式記録、コンテキスト上限時の異常系を
+    1 つの backlog plan にまとめ、旧 working note を二重管理しないため。
+summary: >
+  現セッションの下書き保存と、終了済みセッションの正式 2 層記録を
+  明確に分ける。コンテキスト上限による SessionEnd / SessionStart の割り込みで、
+  自動生成ログが push 前 clean 条件を壊す問題も同じ session-record operation
+  の hardening として扱う。
+supersedes:
+  - docs/notes/working/2026-06-17-session-record-current-snapshot-gap.md
+  - docs/notes/working/2026-06-18-context-limit-session-log-anomaly.md
+related:
+  - tools/session-record-draft.py
+  - tools/session-record-promote-draft.py
+  - tools/session-record-backfill.py
+  - templates/hooks/session-record-capture-current-on-todo.sh.template
+  - templates/hooks/session-record-promote-previous-draft.sh.template
+problem:
+  - 利用者の「今すぐ記録」が、下書き保存なのか正式記録の即時作成なのか曖昧になる。
+  - 進行中セッションを正式記録として扱う場合の provenance が未定義。
+  - コンテキスト上限時に session hook が割り込み、コミット済みログを再変更することがある。
+  - push 前 clean 条件が、自動生成 session log の外部要因を十分に扱えていない。
+remaining_work:
+  - id: SRO-1
+    title: Separate draft save and formal record operations
+    status: candidate
+    tasks:
+      - 現セッション下書き保存と終了済みセッション正式記録を別 operation として案内する。
+      - 利用者向け文言で「下書き」と「正式記録」を明確に分ける。
+      - current session を正式 2 層記録へ直接昇格しない条件を preflight に固定する。
+    acceptance:
+      - current session formalization は fail-closed になる。
+      - 下書き保存の成功報告は draft path と用途だけを示す。
+  - id: SRO-2
+    title: Define in-progress snapshot provenance if supported
+    status: candidate
+    tasks:
+      - 進行中 snapshot を許すかを決める。
+      - 許す場合は status: in_progress_snapshot などの来歴 marker を定義する。
+      - 後続更新時の merge / append / replacement ルールを定義する。
+    acceptance:
+      - snapshot が正式完了記録と誤読されない。
+      - 同じ session id の後続更新で provenance が壊れない。
+  - id: SRO-3
+    title: Handle context-limit session hook anomaly
+    status: candidate
+    tasks:
+      - SessionEnd hook がコンテキスト引き継ぎと通常終了を区別できるか検討する。
+      - 引き継ぎ時のログ書き込み抑制または遅延を検討する。
+      - push precondition で自動生成 session log をどう扱うかを決める。
+    acceptance:
+      - コンテキスト上限による中途 SessionEnd で clean tree が壊れるケースを検出できる。
+      - 対症療法を入れる場合も、利用者の作業変更と自動生成差分を混同しない。
+non_goals:
+  - 進行中セッションを無条件に正式記録へ昇格しない。
+  - push の clean 条件を一般に緩めない。
+  - session log の手動編集を前提にしない。
+decisions: []

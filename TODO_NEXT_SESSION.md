@@ -60,7 +60,7 @@
 - `workflow-management` implementation approval 完了により、全 workflow_state が `completed` になった。
 - Codex の commit 実行環境と利用者向け報告文の規律を明確化。
 - commit 中の進行報告最小化規律を追加。
-- commit 操作機械処理化に向け、失敗ケースメモを `docs/notes/working/2026-06-20-commit-operation-failure-cases.md` に追加。
+- commit 操作機械処理化の残作業は `.reviewcompass/backlog/plans/plan-2026-06-23-commit-stop-point-and-approval-ux.yaml` に移した。
 - post-write prompt 機械化では、判定点ごとの canonical effective prompt を固定し、`next --json` から読む prompt を機械的に決める方向へ補修した。
 - guidance 配置整理では、`.reviewcompass/guidance` を正本として参照更新し、旧 `docs/operations` / `docs/disciplines` の guidance 重複を削除した。
 - 旧 guidance 削除は通常の post-write 制約と衝突したため、今回限りの手動修復例外を機械的に扱う `repair-workflow-state prepare` 経路を追加した。

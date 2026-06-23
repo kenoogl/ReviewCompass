@@ -1,0 +1,81 @@
+schema_version: reviewcompass-backlog-item-v1
+id: plan-2026-06-23-proxy-decision-mechanization
+kind: plan
+title: Mechanize proxy decision execution and triage application
+status: candidate
+source_unit_id: main-completed
+created_at: '2026-06-23T09:37:00+09:00'
+index_path: .reviewcompass/backlog/index.yaml
+provenance:
+  created_by: llm
+  source_ref: docs/notes/working/2026-06-19-proxy-model-triage-cost-issues.md
+  reason: >
+    proxy_model / proxy decision の runner 選択、外部 API 承認粒度、
+    cluster-to-finding 展開を backlog plan として管理し、旧 working note
+    の実装候補を残さないため。
+summary: >
+  proxy_model は通常処理の本線ではなく、メイン LLM の判断が独断化しやすい
+  論点の逃がし先として使う。その実行では runner、variant、送信対象、
+  出力契約、raw/parsed/metadata 保存、cluster-to-finding 展開、approval scope
+  を機械的に固定する。
+supersedes:
+  - docs/notes/working/2026-06-19-proxy-model-triage-cost-issues.md
+  - docs/notes/working/2026-06-20-proxy-model-sandbox-approval-friction.md
+related:
+  - tools/api_providers/run_role.py
+  - tools/api_providers/run_review.py
+  - tools/api_providers/run_proxy_decision.py
+  - tools/experiments/_experiment_n_model.py
+  - tools/make-proxy-approval.py
+  - tools/api_providers/review_triage.py
+principles:
+  - proxy_model は利用者の逐次関与なしに raw / parsed / metadata 証跡を生成する。
+  - 不可逆操作、phase / gate 完了、commit / push は proxy_model では承認しない。
+  - 1 論点 1 prompt とし、複数の独立判断を 1 prompt に押し込まない。
+  - 外部 API 送信前に provider、model、prompt file、目的、機微情報確認を明示する。
+remaining_work:
+  - id: PDM-1
+    title: Canonical proxy decision command path
+    status: candidate
+    tasks:
+      - proxy decision 用の正式 entrypoint を operation として固定する。
+      - prompt quality review 用 runner と proxy decision 用 runner を混同した場合は停止する。
+      - provider / model / variant を設定キーから解決する。
+    acceptance:
+      - proxy decision prompt を run_role.py に誤投入して findings 形式を得る経路を拒否できる。
+      - API 起動前に runner / variant / output contract が一致する。
+  - id: PDM-2
+    title: Proxy output contract preflight
+    status: candidate
+    tasks:
+      - proxy decision の成功条件を decisions list / proxy_model_id / traceability として固定する。
+      - findings 形式が返った場合は本判断として扱わない。
+      - raw response、parsed response、metadata の保存を必須にする。
+    acceptance:
+      - 誤経路出力を valid decision record として混入させない。
+  - id: PDM-3
+    title: Cluster-to-finding expansion helper
+    status: candidate
+    tasks:
+      - cluster summary、proxy raw/parsed output、cluster-to-finding mapping を入力する。
+      - decisions-input.yaml を生成する。
+      - finding ID が重複なく 1 回だけ covered されることを検査する。
+      - review_triage.py decide の batch 適用または command list を生成する。
+    acceptance:
+      - クラスタ単位の判断を finding 単位へ手動転記しない。
+      - mapping error を適用前に検出できる。
+  - id: PDM-4
+    title: Approval scope and sandbox escalation preflight
+    status: candidate
+    tasks:
+      - review_triage_decide approval と apply-fixes approval の scope mismatch を検出する。
+      - 外部送信用承認に provider、model、prompt path、目的を含める。
+      - sandbox 拒否時に proxy_model の前提を崩す代替案へ逸れない。
+    acceptance:
+      - proxy_model 実行前の承認粒度が auto_review に読める。
+      - apply-fixes readiness を早く確認しすぎる経路を説明付きで止める。
+non_goals:
+  - proxy_model を通常所見処理の標準ルートにしない。
+  - 高リスクという理由だけで常に prompt quality review へ回さない。
+  - 利用者による手動 raw response 取得を前提にしない。
+decisions: []

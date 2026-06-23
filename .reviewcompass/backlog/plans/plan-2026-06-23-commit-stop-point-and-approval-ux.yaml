@@ -1,0 +1,70 @@
+schema_version: reviewcompass-backlog-item-v1
+id: plan-2026-06-23-commit-stop-point-and-approval-ux
+kind: plan
+title: Mechanize commit stop-point preservation and approval UX
+status: candidate
+source_unit_id: main-completed
+created_at: '2026-06-23T09:39:00+09:00'
+index_path: .reviewcompass/backlog/index.yaml
+provenance:
+  created_by: llm
+  source_ref: docs/notes/working/2026-06-20-commit-operation-failure-cases.md
+  reason: >
+    commit 操作周辺の複数 working note に残っていた未実装 UX / 停止点保持
+    / preflight 項目を 1 つの backlog plan に整理し、実装済みメモを削除するため。
+summary: >
+  commit 操作は既に guarded commit、approval digest、delegation、post-commit cleanup
+  などが大きく機械化された。一方で、利用者に見せる停止理由、直前停止点の保持、
+  commit / push 操作語の取り違え防止、承認不足時の次アクション提示には残作業がある。
+supersedes:
+  - docs/notes/working/2026-06-17-commit-approval-wording-guard-ux.md
+  - docs/notes/working/2026-06-19-commit-instruction-preflight-issues.md
+  - docs/notes/working/2026-06-20-commit-operation-failure-cases.md
+  - docs/notes/working/2026-06-22-commit-push-turn-order-operation-note.md
+related:
+  - .reviewcompass/backlog/todos/todo-2026-06-22-commit-operation-efficiency.yaml
+  - .reviewcompass/backlog/todos/todo-2026-06-22-commit-operation-remaining-mechanization.yaml
+  - .reviewcompass/backlog/todos/todo-2026-06-22-commit-unit-post-commit-cleanup.yaml
+  - tools/guarded-git-commit.py
+  - tools/check_workflow_action/commit_unit.py
+already_implemented:
+  - commit approval は staged digest に束縛される。
+  - commit execution delegation が必要。
+  - guarded commit と commit unit cleanup は実装済み。
+  - commit unit と work unit の束縛、stale / mixing 検出は実装済み。
+remaining_work:
+  - id: CSUX-1
+    title: User-facing approval failure guidance
+    status: candidate
+    tasks:
+      - stage approval / commit execution approval / push approval を別概念として表示する。
+      - guard 拒否時に不足している承認要素を列挙する。
+      - 利用者が次に返すべき短い操作語を提示する。
+    acceptance:
+      - 承認文言不足時に nonce や内部手順を長く見せない。
+      - 次に必要な操作が 1 行で分かる。
+  - id: CSUX-2
+    title: Persist pending irreversible user operation
+    status: candidate
+    tasks:
+      - 直前の完了報告の「次に必要な操作」を runtime state に保存する。
+      - 次ターン開始時に利用者発話と保存された操作語を照合する。
+      - 操作語が一致した場合、その操作以外の編集や実装へ進まない。
+    acceptance:
+      - 「プッシュ」待ちのまま本線実装へ進まない。
+      - commit / push と本線作業が同一ターンで混ざらない。
+  - id: CSUX-3
+    title: Commit preflight human summary
+    status: candidate
+    tasks:
+      - commit ができない場合、stage / approval 作成前に短い理由を返す。
+      - WARN / DEVIATION の user-facing summary を理由 1-3 点に抑える。
+      - 内部再準備として黙ってよい範囲と、再承認が必要な範囲を分ける。
+    acceptance:
+      - commit 不可のとき余分な approval / delegation record を作らない。
+      - 対象変更時は「再承認が必要」と短く示す。
+non_goals:
+  - push を自動実行しない。
+  - commit guard 自体を緩めない。
+  - 利用者承認の必要性を runtime state で代替しない。
+decisions: []

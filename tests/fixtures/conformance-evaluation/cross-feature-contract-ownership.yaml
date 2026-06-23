@@ -148,7 +148,7 @@ items:
       - .reviewcompass/guidance/WORKFLOW_NAVIGATION.md
       - .reviewcompass/guidance/WORKFLOW_DISCIPLINE_MAP.yaml
     evidence_refs:
-      - docs/notes/working/2026-06-17-working-note-verification-trigger-policy.md
+      - .reviewcompass/backlog/plans/plan-2026-06-23-working-note-self-check-hardening.yaml
       - stages/completed/maintenance-2026-06-17-lightweight-self-check-location.yaml
       - .reviewcompass/evidence/sessions/2026-06-17-codex-019ed2f7-2f40-72c1-9f8b-2e7d5312ab3a.md
       - TODO_NEXT_SESSION.md

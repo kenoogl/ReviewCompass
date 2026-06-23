@@ -1,0 +1,53 @@
+schema_version: reviewcompass-backlog-item-v1
+id: plan-2026-06-23-working-note-self-check-hardening
+kind: plan
+title: Harden lightweight self-check for working notes
+status: candidate
+source_unit_id: main-completed
+created_at: '2026-06-23T09:40:00+09:00'
+index_path: .reviewcompass/backlog/index.yaml
+provenance:
+  created_by: llm
+  source_ref: docs/notes/working/2026-06-17-working-note-verification-trigger-policy.md
+  reason: >
+    docs/notes/working の軽量自己精査は実装済みだが、manifest 記録や正本昇格時の
+    扱いに未決事項が残るため、残作業だけ backlog plan 化する。
+summary: >
+  docs/notes/working は strict post-write verification ではなく lightweight self-check
+  に回す方針が実装済みである。残作業は、軽量自己精査済みの記録方法、
+  正本へ昇格する場合の扱い、strict 対象との混在時の説明を固定することである。
+supersedes:
+  - docs/notes/working/2026-06-17-working-note-verification-trigger-policy.md
+related:
+  - .reviewcompass/guidance/WORKFLOW_NAVIGATION.md
+  - .reviewcompass/guidance/WORKFLOW_DISCIPLINE_MAP.yaml
+  - tools/check-workflow-action.py
+  - tools/api_providers/review_triage.py
+already_implemented:
+  - docs/notes/working/*.md は strict post-write target から除外される。
+  - next --json は working note 変更に lightweight_self_check を返せる。
+  - strict 対象との混在時は strict 側が優先される。
+remaining_work:
+  - id: WNSC-1
+    title: Lightweight self-check completion record
+    status: candidate
+    tasks:
+      - lightweight self-check を完了済みとして manifest に残すか決める。
+      - 記録する場合、対象ファイル SHA と self-check 観点を保存する。
+      - 記録しない場合、commit 前の扱いを明確にする。
+    acceptance:
+      - 同じ working note 変更で self-check 済みかどうかを説明できる。
+  - id: WNSC-2
+    title: Promotion to canonical document path
+    status: candidate
+    tasks:
+      - working note から正本文書へ昇格する条件を決める。
+      - 昇格時には通常の API post-write verification を要求するか決める。
+      - backlog plan へ移した場合の旧 note 削除規則を固定する。
+    acceptance:
+      - 作業中メモと正本候補が混ざらない。
+      - backlog 移設後に同じ未実装項目が working note に残らない。
+non_goals:
+  - working note へ通常 API review を毎回要求しない。
+  - front matter marker による曖昧な分類を初期条件にしない。
+decisions: []

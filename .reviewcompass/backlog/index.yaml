@@ -84,3 +84,52 @@ items:
   path: .reviewcompass/backlog/plans/plan-2026-06-23-effective-prompt-freshness-audit.yaml
   source_unit_id: main-completed
   created_at: '2026-06-23T09:05:38+09:00'
+- id: plan-2026-06-23-normal-output-minimization-rollout
+  kind: plan
+  title: Roll out normal output minimization to remaining CLI tools
+  status: candidate
+  path: .reviewcompass/backlog/plans/plan-2026-06-23-normal-output-minimization-rollout.yaml
+  source_unit_id: main-completed
+  created_at: '2026-06-23T09:35:00+09:00'
+- id: plan-2026-06-23-session-record-operation-hardening
+  kind: plan
+  title: Harden session record draft and formalization operations
+  status: candidate
+  path: .reviewcompass/backlog/plans/plan-2026-06-23-session-record-operation-hardening.yaml
+  source_unit_id: main-completed
+  created_at: '2026-06-23T09:36:00+09:00'
+- id: plan-2026-06-23-proxy-decision-mechanization
+  kind: plan
+  title: Mechanize proxy decision execution and triage application
+  status: candidate
+  path: .reviewcompass/backlog/plans/plan-2026-06-23-proxy-decision-mechanization.yaml
+  source_unit_id: main-completed
+  created_at: '2026-06-23T09:37:00+09:00'
+- id: plan-2026-06-23-api-review-run-hardening
+  kind: plan
+  title: Harden API review-run prompt and post-processing operations
+  status: candidate
+  path: .reviewcompass/backlog/plans/plan-2026-06-23-api-review-run-hardening.yaml
+  source_unit_id: main-completed
+  created_at: '2026-06-23T09:38:00+09:00'
+- id: plan-2026-06-23-commit-stop-point-and-approval-ux
+  kind: plan
+  title: Mechanize commit stop-point preservation and approval UX
+  status: candidate
+  path: .reviewcompass/backlog/plans/plan-2026-06-23-commit-stop-point-and-approval-ux.yaml
+  source_unit_id: main-completed
+  created_at: '2026-06-23T09:39:00+09:00'
+- id: plan-2026-06-23-working-note-self-check-hardening
+  kind: plan
+  title: Harden lightweight self-check for working notes
+  status: candidate
+  path: .reviewcompass/backlog/plans/plan-2026-06-23-working-note-self-check-hardening.yaml
+  source_unit_id: main-completed
+  created_at: '2026-06-23T09:40:00+09:00'
+- id: plan-2026-06-23-workflow-navigator-webui
+  kind: plan
+  title: Build Workflow Navigator WebUI after snapshot schema stabilization
+  status: candidate
+  path: .reviewcompass/backlog/plans/plan-2026-06-23-workflow-navigator-webui.yaml
+  source_unit_id: main-completed
+  created_at: '2026-06-23T09:41:00+09:00'

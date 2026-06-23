@@ -1,0 +1,74 @@
+schema_version: reviewcompass-backlog-item-v1
+id: plan-2026-06-23-normal-output-minimization-rollout
+kind: plan
+title: Roll out normal output minimization to remaining CLI tools
+status: candidate
+source_unit_id: main-completed
+created_at: '2026-06-23T09:35:00+09:00'
+index_path: .reviewcompass/backlog/index.yaml
+provenance:
+  created_by: llm
+  source_ref: docs/notes/working/2026-06-19-normal-output-minimization-implementation-policy.md
+  reason: >
+    working note に残っていた正常系出力最小化の未実装方針を backlog plan
+    として一元管理し、旧 working note の二重管理を避けるため。
+summary: >
+  正常系 human output を短く保ち、詳細は --json / --verbose / log /
+  manifest に残す方針を、残っている CLI へ段階的に広げる。全 CLI を
+  個別対応だけで直すのではなく、共通 formatter / 出力ヘルパーを作り、
+  優先度の高い既存 CLI から薄く接続する。
+supersedes:
+  - docs/notes/working/2026-06-19-normal-output-minimization-implementation-policy.md
+related:
+  - docs/disciplines/discipline_normal_output_minimization.md
+  - docs/notes/working/2026-06-19-normal-output-minimization-tool-inventory.yaml
+  - tools/README.md
+current_baseline:
+  - tools/check-workflow-action.py は OK human output の最小化を一部実装済み。
+  - tools/commit-from-current-staged.py は正常系 output の短縮を実装済み。
+  - tools/guarded-git-commit.py は成功時の既定出力を短縮済み。
+  - tools/api_providers/run_review.py / run_role.py / prepare_post_write_review.py は正常系 output を短縮済み。
+  - tools/experiments/_experiment_n_model.py は --out 指定時の 1 行 summary を実装済み。
+remaining_work:
+  - id: NOM-1
+    title: Define shared output formatter boundary
+    status: candidate
+    tasks:
+      - 共通 formatter / output helper の最小 API を決める。
+      - OK / WARN / DEVIATION / --json / --verbose の出し分けを固定する。
+      - stdout / stderr の分担を決める。
+    acceptance:
+      - 新規 CLI が同じ helper を使える。
+      - 既存 CLI が返す判定データと human output 生成を分離できる。
+  - id: NOM-2
+    title: Connect high-priority pending CLI tools
+    status: candidate
+    tasks:
+      - tools/api_providers/review_triage.py の正常系 output を監査する。
+      - tools/make-triage-decision.py の成功時 output を短縮する。
+      - tools/make-post-write-manifest.py の成功時 output を manifest path と対象数へ寄せる。
+      - tools/make-proxy-approval.py の成功時 output を approval path と digest 要約へ寄せる。
+    acceptance:
+      - 正常系 human output が短い。
+      - 異常系 human output には停止理由と次 action が残る。
+      - --json は詳細情報を保持する。
+  - id: NOM-3
+    title: Continue by inventory priority
+    status: candidate
+    tasks:
+      - docs/notes/working/2026-06-19-normal-output-minimization-tool-inventory.yaml の priority: medium を順に確認する。
+      - pending_audit の tool を enforced / partially_enforced / deferred に更新する。
+      - 正規 workflow に出ない一時 script は deferred のままにする。
+    acceptance:
+      - inventory と実装状態が一致する。
+      - 追加対応なしの tool は next_action にその旨を明示する。
+initial_tests:
+  - 正常系 human output は成功事実と成果物パスだけを含む。
+  - WARN / DEVIATION は理由 1-3 点と次 action を含む。
+  - --json は既存の詳細情報を落とさない。
+  - --verbose は必要な詳細だけを出す。
+non_goals:
+  - 一括で全 CLI を書き換えない。
+  - 異常系の診断情報を削らない。
+  - 一時実験 script を正規 CLI と同じ優先度で扱わない。
+decisions: []

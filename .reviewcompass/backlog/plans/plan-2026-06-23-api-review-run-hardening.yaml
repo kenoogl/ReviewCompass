@@ -1,0 +1,86 @@
+schema_version: reviewcompass-backlog-item-v1
+id: plan-2026-06-23-api-review-run-hardening
+kind: plan
+title: Harden API review-run prompt and post-processing operations
+status: candidate
+source_unit_id: main-completed
+created_at: '2026-06-23T09:38:00+09:00'
+index_path: .reviewcompass/backlog/index.yaml
+provenance:
+  created_by: llm
+  source_ref: docs/notes/working/2026-06-20-api-review-prompt-audit-discussion-record.md
+  reason: >
+    API review prompt 監査の議論メモに残っていた未機械化項目を、
+    post-write prompt 機械化と重複しない review-run hardening plan として
+    分離するため。
+summary: >
+  API review-run の品質は prompt 生成だけでなく、main preanalysis の現在性、
+  source cross-reference、runner / variant / output contract preflight、retry 後の
+  triage 再生成、same-root cluster 統合に依存する。この plan は review-run
+  全般の hardening を扱う。
+supersedes_sections:
+  - docs/notes/working/2026-06-20-api-review-prompt-audit-discussion-record.md#未実装未完了の事項
+  - docs/notes/working/2026-06-20-api-review-prompt-method-comparison.md#残課題手作業運用時の-runner-停止条件ミス
+related:
+  - .reviewcompass/backlog/plans/plan-2026-06-23-postwrite-prompt-mechanization-completion.yaml
+  - .reviewcompass/backlog/plans/plan-2026-06-23-proxy-decision-mechanization.yaml
+  - tools/api_providers/run_role.py
+  - tools/api_providers/run_review.py
+  - tools/api_providers/review_triage.py
+remaining_work:
+  - id: ARH-1
+    title: Preanalysis freshness and status handling
+    status: candidate
+    tasks:
+      - main preanalysis item に open / resolved / superseded / used_for_context を持たせる。
+      - stale findings を bundle に未注釈で渡さない。
+      - auditor が preanalysis の現在性を判定できる材料を入れる。
+    acceptance:
+      - 解決済み finding が reviewer を誤誘導しない。
+      - main preanalysis は仮説として扱われ、正解として扱われない。
+  - id: ARH-2
+    title: Source bundle and cross-reference generation
+    status: candidate
+    tasks:
+      - user / workflow requirements を材料に含める。
+      - source materials の本文または非要約 excerpt を埋め込む。
+      - structured summary の field ごとに source_refs を持たせる。
+      - sensitive material check を生成物に残す。
+    acceptance:
+      - path-only source で API review prompt が成立しない。
+      - 各判断材料の上流根拠が機械的に追える。
+  - id: ARH-3
+    title: Runner, variant, and output contract preflight
+    status: candidate
+    tasks:
+      - operation default variant を用途ごとに機械解決する。
+      - runner が review purpose に合っているか確認する。
+      - prompt quality / preanalysis audit / proxy decision / implementation review の output contract を分ける。
+      - parser と出力契約が一致しない場合は API 呼び出し前に止める。
+    acceptance:
+      - runner 混同と model 名取り違えを実行前に検出できる。
+  - id: ARH-4
+    title: Retry-aware triage and same-root cluster integration
+    status: candidate
+    tasks:
+      - parse failed role の retry 結果を triage に再マージする。
+      - same-root cluster の自動統合候補を作る。
+      - initial triage と retry 後 triage の差分を証跡化する。
+    acceptance:
+      - retry 後の judgment findings を手作業 summary だけで扱わない。
+      - review-run 後処理の同根整理が再現可能になる。
+  - id: ARH-5
+    title: Prompt audit convergence criteria
+    status: candidate
+    tasks:
+      - CRITICAL / ERROR がある間は修正して再レビューする基準を固定する。
+      - 構造的 WARN と逐語的 WARN / INFO を分ける。
+      - 2 回程度を既定目安とし、3 回目以降の条件を明示する。
+    acceptance:
+      - prompt audit が目的化して API コストを増やし続けない。
+      - 実 review-run を壊す欠陥が残る場合だけ追加レビューへ進む。
+non_goals:
+  - post-write verification 専用 prompt builder の詳細実装はこの plan へ混ぜない。
+  - review prompt 監査を所見ゼロまで無制限に回さない。
+  - 手作業の統合 summary を正規 triage の代替にしない。
+decisions: []
