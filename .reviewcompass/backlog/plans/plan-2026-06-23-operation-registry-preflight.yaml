@@ -1,0 +1,70 @@
+schema_version: reviewcompass-backlog-item-v1
+id: plan-2026-06-23-operation-registry-preflight
+kind: plan
+title: Build operation registry and preflight contracts
+status: candidate
+source_unit_id: main-completed
+created_at: '2026-06-23T10:10:00+09:00'
+index_path: .reviewcompass/backlog/index.yaml
+provenance:
+  created_by: llm
+  source_ref: docs/notes/2026-06-16-operation-registry-preflight-design.md
+  reason: >
+    docs/notes 直下に残っていた operation registry / preflight の設計候補を、
+    今後の作業候補として backlog plan に移設するため。
+summary: >
+  review-run、post-write、commit approval、reopen、session-record などの操作を
+  operation contract として登録し、実行前に正規 entrypoint、必須引数、生成物、
+  pending state との衝突、既存成果物との競合を機械的に確認できるようにする。
+supersedes:
+  - docs/notes/2026-06-16-operation-registry-preflight-design.md
+related:
+  - .reviewcompass/backlog/plans/plan-2026-06-23-nested-issue-stack.yaml
+  - .reviewcompass/backlog/plans/plan-2026-06-23-action-execution-spec.yaml
+  - tools/check-workflow-action.py
+  - tools/guarded-git-commit.py
+remaining_work:
+  - id: ORP-1
+    title: Operation registry schema and canonical command inventory
+    status: candidate
+    tasks:
+      - operation_id、kind、canonical_commands、required_args、outputs、serial_only、conflicting_states を定義する。
+      - commit、push、post-write manifest、review-run、reopen、session-record の正規 entrypoint を登録する。
+      - entrypoint が存在しない、または旧パスを指す場合は preflight で停止する。
+    acceptance:
+      - LLM が記憶や前例からコマンドを推測せず、registry から正規経路を解決できる。
+      - 登録済み operation の command path が存在しない場合にテストで検出できる。
+  - id: ORP-2
+    title: Creation preflight for review-run, bundle, manifest, and approval records
+    status: candidate
+    tasks:
+      - review-run dir、manifest path、bundle path、approval record の既存衝突を作成前に検査する。
+      - staged / unstaged の差分所在を判定し、空 bundle や対象ずれ bundle を拒否する。
+      - approval record、raw response、triage、manifest の target set 一致を検査する。
+    acceptance:
+      - 不要な review-run / manifest を作ってから削除する経路を通常運用から除去できる。
+      - staged / unstaged の取り違えで空 review bundle を作らない。
+  - id: ORP-3
+    title: Operation runner for serial-only workflows
+    status: candidate
+    tasks:
+      - commit approval chain のような順序依存操作を一括で直列実行する runner を検討する。
+      - 各段階で digest、nonce、TTL、成果物存在、stale 状態を確認する。
+      - serial_only operation を並列実行対象から除外する。
+    acceptance:
+      - commit approval chain で手入力順や固定文言を LLM が迷わない。
+      - stale approval や staged digest 変更を runner が途中で検出できる。
+  - id: ORP-4
+    title: Workflow mixing preflight
+    status: candidate
+    tasks:
+      - post-write pending、reopen、review-run、commit approval 中に別作業差分が混ざる前に警告または停止する。
+      - pending 完了、別 worktree、保留メモ化、blocking / side-track 承認の選択肢を返す。
+      - allowed files と実差分の差を operation preflight で表示する。
+    acceptance:
+      - 作業者が作業混線に入る前に、現在の pending unit と衝突理由を確認できる。
+non_goals:
+  - すべての helper を一度に registry 管理へ移すこと。
+  - 人間承認が必要な不可逆操作を自動承認すること。
+  - operation registry を workflow state の唯一正本にすること。
+decisions: []

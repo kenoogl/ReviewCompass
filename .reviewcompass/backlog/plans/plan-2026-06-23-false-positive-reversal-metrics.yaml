@@ -1,0 +1,44 @@
+schema_version: reviewcompass-backlog-item-v1
+id: plan-2026-06-23-false-positive-reversal-metrics
+kind: plan
+title: Record false-positive reversal metrics for triad review
+status: candidate
+source_unit_id: main-completed
+created_at: '2026-06-23T10:21:00+09:00'
+index_path: .reviewcompass/backlog/index.yaml
+provenance:
+  created_by: llm
+  source_ref: docs/notes/2026-06-05-future-development-candidates.md
+  reason: >
+    D-018 の false-positive reversal 記録を、論文評価用の独立 plan として移すため。
+summary: >
+  triad-review が誤指摘をどれだけ除去したかを、counter evidence、reversal reason、
+  reversal count として記録し、複数 LLM レビューの precision 面の貢献を測れるようにする。
+supersedes_sections:
+  - docs/notes/2026-06-05-future-development-candidates.md#D-018
+related:
+  - learning/workflow/schemas/normalized-finding.schema.json
+  - learning/workflow/schemas/dogfooding-event-ledger.schema.json
+remaining_work:
+  - id: FPR-1
+    title: Reversal fields in triage and finding records
+    status: candidate
+    tasks:
+      - counter_evidence_raised、false_positive_reversal、reversal_reason を定義する。
+      - review summary に reversal count を出す。
+      - normalized finding schema との重複・責務境界を確認する。
+    acceptance:
+      - 敵対役・判定役が誤指摘を覆した事例を機械的に集計できる。
+  - id: FPR-2
+    title: Dogfooding metrics integration
+    status: candidate
+    tasks:
+      - dogfooding metrics に false-positive reversal rate を追加する。
+      - foundation / runtime の既存反証事例を fixture として使えるか確認する。
+      - model role assignment と reversal contribution の関係を集計できるようにする。
+    acceptance:
+      - 所見数だけでなく、誤指摘除去の効果を評価できる。
+non_goals:
+  - 反証された所見を単に削除して履歴から消すこと。
+  - 多数決で false positive を決めること。
+decisions: []

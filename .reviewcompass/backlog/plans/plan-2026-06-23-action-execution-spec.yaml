@@ -1,0 +1,57 @@
+schema_version: reviewcompass-backlog-item-v1
+id: plan-2026-06-23-action-execution-spec
+kind: plan
+title: Add execution specs for side-effecting actions
+status: candidate
+source_unit_id: main-completed
+created_at: '2026-06-23T10:13:00+09:00'
+index_path: .reviewcompass/backlog/index.yaml
+provenance:
+  created_by: llm
+  source_ref: docs/notes/2026-06-11-agentic-flow-adoption-plan.md
+  reason: >
+    Agentic Flow 論文由来の「宣言と実行の分離」「実行点の明示」を、
+    ReviewCompass の review-run / workflow action 用 backlog plan として残すため。
+summary: >
+  API 呼び出し、manifest 生成、workflow state 更新、commit、push などの副作用操作について、
+  実行前に読むもの、外部呼び出し、書くもの、更新する状態、不可逆操作を機械可読に列挙する。
+supersedes:
+  - docs/notes/2026-06-11-agentic-flow-adoption-plan.md
+related:
+  - .reviewcompass/backlog/plans/plan-2026-06-23-operation-registry-preflight.yaml
+  - .reviewcompass/backlog/plans/plan-2026-06-23-api-review-run-hardening.yaml
+  - tools/api_providers/run_review.py
+  - tools/check-workflow-action.py
+remaining_work:
+  - id: AES-1
+    title: ReviewExecutionSpec for API review-runs
+    status: candidate
+    tasks:
+      - target files、phase、criteria、variant、provider、model、prompt、output paths を実行前 spec に保存する。
+      - rounds.yaml、target-manifest.yaml、model-result-summary.yaml から spec を参照できるようにする。
+      - spec と実出力の不一致を invalid execution または要確認として扱う。
+    acceptance:
+      - API review-run の実行前後で、何を読んで何を書いたかが追跡できる。
+  - id: AES-2
+    title: ActionEffectSpec for workflow actions
+    status: candidate
+    tasks:
+      - next、commit、push、reopen-start などの主要 action で効果列挙を出す。
+      - read、write、state_mutation、external_call、irreversible_action の語彙を局所定義する。
+      - effect spec 外の staged 変更を commit precheck が検出できるようにする。
+    acceptance:
+      - 副作用のある workflow action の前に、影響範囲を機械的に確認できる。
+  - id: AES-3
+    title: Phase boundary and evidence separation
+    status: candidate
+    tasks:
+      - scratch、evidence、canonical_update、approval_gate の境界を操作 spec に含める。
+      - side track と本線 workflow を phase 境界として区別する。
+      - 共通語彙化が必要になった場合だけ foundation への昇格を検討する。
+    acceptance:
+      - 一時作業、証跡、正本更新、承認 gate の混同を減らせる。
+non_goals:
+  - Agentic Flow ライブラリに依存すること。
+  - 既存 workflow-management 判定モデルを全面置換すること。
+  - Python の await 構文を ReviewCompass の workflow DSL にすること。
+decisions: []

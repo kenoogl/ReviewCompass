@@ -1,0 +1,57 @@
+schema_version: reviewcompass-backlog-item-v1
+id: plan-2026-06-23-nested-issue-stack
+kind: plan
+title: Add nested issue stack for blocker handling
+status: candidate
+source_unit_id: main-completed
+created_at: '2026-06-23T10:11:00+09:00'
+index_path: .reviewcompass/backlog/index.yaml
+provenance:
+  created_by: llm
+  source_ref: docs/notes/2026-06-16-nested-issue-handling-smell.md
+  reason: >
+    作業中に発見した別問題を、今すぐ直す blocker、後続 issue、side-track、
+    parent scope 拡張のどれとして扱うかを計画単位にするため。
+summary: >
+  主作業中に別問題が見つかり、その対応中にさらに対象が広がる場合でも、
+  parent task、relation、allowed files、return condition、depth を記録して、
+  元作業への復帰条件を失わないようにする。
+supersedes:
+  - docs/notes/2026-06-16-nested-issue-handling-smell.md
+related:
+  - .reviewcompass/backlog/plans/plan-2026-06-23-operation-registry-preflight.yaml
+  - .reviewcompass/backlog/plans/plan-2026-06-22-blocking-unit-control-improvements.yaml
+remaining_work:
+  - id: NIS-1
+    title: Nested issue stack record schema
+    status: candidate
+    tasks:
+      - parent_task、discovered_issue、relation、handling、allowed_files、return_condition、max_depth を定義する。
+      - issue_discovered / issue_classify / issue_push / issue_return / issue_abort_to_followup の操作候補を整理する。
+      - runtime または evidence に保存する場所を決める。
+    acceptance:
+      - 作業中に新しい問題を見つけた時、親子関係と戻り条件を構造化して残せる。
+  - id: NIS-2
+    title: Scope and depth preflight
+    status: candidate
+    tasks:
+      - target files の増加、review scope の増加、manifest / bundle scope の増加を検出する。
+      - nesting depth が上限を超えた場合に停止または後続化を促す。
+      - return_condition 未設定のまま child issue に入ることを拒否する。
+    acceptance:
+      - 問題対応で対象ファイルや review scope が広がった時に機械的に分かる。
+      - 深くなりすぎた作業を棚卸しへ切り替えられる。
+  - id: NIS-3
+    title: Post-write review drift detection
+    status: candidate
+    tasks:
+      - post-write verification が設計壁打ちへ変質している兆候を検出する。
+      - schema 詳細や実装設計要求に入った場合は後続 SDD 論点化を促す。
+      - document-type / review-criteria / manifest coverage preflight と接続する。
+    acceptance:
+      - post-write verification が元作業の確認範囲を越えた時、継続か後続化かを迷わない。
+non_goals:
+  - issue の意味的妥当性を完全自動判定すること。
+  - 作業中に見つかった問題をすべて即時修正すること。
+  - blocking unit / side-track の既存機能を置き換えること。
+decisions: []

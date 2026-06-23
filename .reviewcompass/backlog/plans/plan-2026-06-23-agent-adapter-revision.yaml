@@ -1,0 +1,44 @@
+schema_version: reviewcompass-backlog-item-v1
+id: plan-2026-06-23-agent-adapter-revision
+kind: plan
+title: Revise agent adapters for multiple execution environments
+status: candidate
+source_unit_id: main-completed
+created_at: '2026-06-23T10:17:00+09:00'
+index_path: .reviewcompass/backlog/index.yaml
+provenance:
+  created_by: llm
+  source_ref: docs/notes/2026-06-05-future-development-candidates.md
+  reason: >
+    D-010 の各社モデル向け作業入口 adapter 化を、未実装の規律・運用文書整理 plan として移すため。
+summary: >
+  Claude Code 固定の説明や workflow_state 直接 Read 前提を、Codex / Claude /
+  Gemini など複数社・複数環境の作業入口に対応する adapter 表現へ改める。
+supersedes_sections:
+  - docs/notes/2026-06-05-future-development-candidates.md#D-010
+related:
+  - docs/notes/2026-06-03-agent-adapter-strategy.md
+  - docs/notes/2026-06-03-discipline-adapter-revision-candidates.md
+remaining_work:
+  - id: AAR-1
+    title: Common principles and environment adapters
+    status: candidate
+    tasks:
+      - 共通原則と Claude / Codex / Gemini 固有制約を分離する。
+      - workflow_state 直接 Read ではなく next --json を入口にする方針へ揃える。
+      - review target としての model assignment と作業 agent adapter を分ける。
+    acceptance:
+      - 実行環境固有の制約が共通規律本文に混入しない。
+  - id: AAR-2
+    title: Adapter document inventory and migration
+    status: candidate
+    tasks:
+      - WORKFLOW_NAVIGATION_FOR_CLAUDE / CODEX 相当の配置を再確認する。
+      - discipline_workflow_state_truth_source、workflow_precheck_invocation、pre_action_precheck を点検する。
+      - Gemini 等の将来 adapter の置き場所を決める。
+    acceptance:
+      - 新しい agent 環境を追加しても共通正本を壊さずに入口手順を足せる。
+non_goals:
+  - 既存規律を Codex 専用へ置き換えること。
+  - model assignment の評価実験と作業 agent adapter を混同すること。
+decisions: []

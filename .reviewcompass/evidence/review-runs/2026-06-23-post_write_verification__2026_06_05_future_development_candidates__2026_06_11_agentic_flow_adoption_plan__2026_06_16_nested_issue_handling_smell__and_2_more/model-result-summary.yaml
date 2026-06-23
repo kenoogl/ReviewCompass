@@ -1,0 +1,12 @@
+run_id: 2026-06-23-post_write_verification__2026_06_05_future_development_candidates__2026_06_11_agentic_flow_adoption_plan__2026_06_16_nested_issue_handling_smell__and_2_more
+models:
+- model_id: gemini-3.1-pro-preview
+  raw_path: raw/gemini-3.1-pro-preview.round-1.txt
+  parse_status: parsed
+  triage_status: no_findings
+  findings_count: 0
+  findings_count_by_severity: {}
+  must_fix_count: 0
+  should_fix_count: 0
+  leave_as_is_count: 0
+  human_required_count: 0

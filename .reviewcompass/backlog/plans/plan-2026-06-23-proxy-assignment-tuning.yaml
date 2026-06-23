@@ -1,0 +1,46 @@
+schema_version: reviewcompass-backlog-item-v1
+id: plan-2026-06-23-proxy-assignment-tuning
+kind: plan
+title: Tune proxy assignment model selection and trigger signals
+status: candidate
+source_unit_id: main-completed
+created_at: '2026-06-23T10:18:00+09:00'
+index_path: .reviewcompass/backlog/index.yaml
+provenance:
+  created_by: llm
+  source_ref: docs/notes/2026-06-05-future-development-candidates.md
+  reason: >
+    D-011 の proxy assignment 発火条件・モデル割当チューニングを、
+    proxy decision 機械化とは別の評価・運用改善 plan として残すため。
+summary: >
+  proxy assignment の発火条件、外形指標の重み、モデル割当、膠着時の追加独立モデル呼び出しを、
+  dogfooding 結果に基づいて調整する。
+supersedes_sections:
+  - docs/notes/2026-06-05-future-development-candidates.md#D-011
+related:
+  - .reviewcompass/backlog/plans/plan-2026-06-23-proxy-decision-mechanization.yaml
+  - docs/notes/2026-05-30-section-5-12-revision-log.md
+  - docs/notes/2026-05-25-triad-review-model-allocation-experiment.md
+remaining_work:
+  - id: PAT-1
+    title: External trigger signal recording
+    status: candidate
+    tasks:
+      - 割れ、別案、僅差、質問返しなどの外形指標を decision record に保存する。
+      - 指標ごとの寄与を説明できる形で保存する。
+      - 割れを二値にするか連続値にするかを実運用データで評価する。
+    acceptance:
+      - proxy assignment 発火理由を後から再構成できる。
+  - id: PAT-2
+    title: Model role and escalation tuning
+    status: candidate
+    tasks:
+      - GPT / Claude / Gemini の役割分担を実績に基づいて再評価する。
+      - 標準裁定 3 系統への深掘りと追加独立モデル呼び出しを比較する。
+      - 費用・時間・品質の tradeoff を D-019 系の cost 記録と接続する。
+    acceptance:
+      - proxy assignment のモデル選定を固定観念でなく実績データから調整できる。
+non_goals:
+  - 自己申告 confidence を主要発火条件にすること。
+  - 高価なモデルを常時追加投入すること。
+decisions: []

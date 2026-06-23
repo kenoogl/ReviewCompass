@@ -1,0 +1,12 @@
+run_id: 2026-06-23-post_write_verification__2026_06_05_future_development_candidates__2026_06_11_agentic_flow_adoption_plan__2026_06_16_nested_issue_handling_smell__and_2_more
+target_files:
+- path: docs/notes/2026-06-05-future-development-candidates.md
+  sha256: 76ff6b6f9e2ac06cf54f0e89b4c9bb5db6a7576e559c165cb73628667e66ac89
+- path: docs/notes/2026-06-11-agentic-flow-adoption-plan.md
+  sha256: a9993076c9aba10060ce27f7d882066766b4f386e8809c135cbbf3b2ab219cdb
+- path: docs/notes/2026-06-16-nested-issue-handling-smell.md
+  sha256: d3a1460de7638d24cbdcc34981761f5f7e63d7f1f5a25fa77f4e9404be2c7ea5
+- path: docs/notes/2026-06-16-operation-registry-preflight-design.md
+  sha256: 31600062b2b185d898df35a823f676f7a55f5dcd18d48240dd6e5d3a5830577b
+- path: docs/notes/2026-06-17-maintenance-workflow-compliance-improvement-candidates.md
+  sha256: 03b5901cac6916ed3a0781dec316b18b9dd31a1f80fe1f1bf13816d1714ec761

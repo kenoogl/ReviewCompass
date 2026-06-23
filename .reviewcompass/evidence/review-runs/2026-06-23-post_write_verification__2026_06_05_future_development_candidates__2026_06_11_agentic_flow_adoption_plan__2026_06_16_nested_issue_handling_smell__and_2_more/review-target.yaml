@@ -1,0 +1,52 @@
+run_id: 2026-06-23-post_write_verification__2026_06_05_future_development_candidates__2026_06_11_agentic_flow_adoption_plan__2026_06_16_nested_issue_handling_smell__and_2_more
+phase: post_write_verification
+criteria_id: post_write_verification__2026_06_05_future_development_candidates__2026_06_11_agentic_flow_adoption_plan__2026_06_16_nested_issue_handling_smell__and_2_more
+criteria_file: .reviewcompass/evidence/review-runs/2026-06-23-post_write_verification__2026_06_05_future_development_candidates__2026_06_11_agentic_flow_adoption_plan__2026_06_16_nested_issue_handling_smell__and_2_more/review-target.md
+criteria_file_sha256: ee580b711cee1d9c4664fc9d69541c874dbedc2d39ceeb07e5dd3d4eadf2b13c
+prompt_manifest_path: .reviewcompass/evidence/review-runs/2026-06-23-post_write_verification__2026_06_05_future_development_candidates__2026_06_11_agentic_flow_adoption_plan__2026_06_16_nested_issue_handling_smell__and_2_more/prompt-manifest.yaml
+prompt_manifest_sha256: 91b29a46616071daf40eb7363f588f893037d0f871dcd74facb4090e31020169
+target_files:
+- path: /Users/Daily/Development/ReviewCompass/docs/notes/2026-06-05-future-development-candidates.md
+  sha256: 76ff6b6f9e2ac06cf54f0e89b4c9bb5db6a7576e559c165cb73628667e66ac89
+  content_mode: full_text
+  content_sha256: 76ff6b6f9e2ac06cf54f0e89b4c9bb5db6a7576e559c165cb73628667e66ac89
+- path: /Users/Daily/Development/ReviewCompass/docs/notes/2026-06-11-agentic-flow-adoption-plan.md
+  sha256: a9993076c9aba10060ce27f7d882066766b4f386e8809c135cbbf3b2ab219cdb
+  content_mode: full_text
+  content_sha256: a9993076c9aba10060ce27f7d882066766b4f386e8809c135cbbf3b2ab219cdb
+- path: /Users/Daily/Development/ReviewCompass/docs/notes/2026-06-16-nested-issue-handling-smell.md
+  sha256: d3a1460de7638d24cbdcc34981761f5f7e63d7f1f5a25fa77f4e9404be2c7ea5
+  content_mode: full_text
+  content_sha256: d3a1460de7638d24cbdcc34981761f5f7e63d7f1f5a25fa77f4e9404be2c7ea5
+- path: /Users/Daily/Development/ReviewCompass/docs/notes/2026-06-16-operation-registry-preflight-design.md
+  sha256: 31600062b2b185d898df35a823f676f7a55f5dcd18d48240dd6e5d3a5830577b
+  content_mode: full_text
+  content_sha256: 31600062b2b185d898df35a823f676f7a55f5dcd18d48240dd6e5d3a5830577b
+- path: /Users/Daily/Development/ReviewCompass/docs/notes/2026-06-17-maintenance-workflow-compliance-improvement-candidates.md
+  sha256: 03b5901cac6916ed3a0781dec316b18b9dd31a1f80fe1f1bf13816d1714ec761
+  content_mode: full_text
+  content_sha256: 03b5901cac6916ed3a0781dec316b18b9dd31a1f80fe1f1bf13816d1714ec761
+source_materials:
+- path: /Users/Daily/Development/ReviewCompass/.reviewcompass/guidance/WORKFLOW_NAVIGATION.md
+  sha256: 864340be0009cdee9f549516864a003527c608bba2492f2effe3045f731ff14f
+  content_mode: full_text
+  content_sha256: 864340be0009cdee9f549516864a003527c608bba2492f2effe3045f731ff14f
+- path: /Users/Daily/Development/ReviewCompass/.reviewcompass/guidance/API_REVIEW_PROMPT_QUALITY.md
+  sha256: 03a9b994c6b5fb4b99ebbbf169e48d76568c5b6190716bbe9e5e181844c9450d
+  content_mode: full_text
+  content_sha256: 03a9b994c6b5fb4b99ebbbf169e48d76568c5b6190716bbe9e5e181844c9450d
+- path: /Users/Daily/Development/ReviewCompass/.reviewcompass/guidance/discipline_post_write_verification.md
+  sha256: b5db5b8a11c57304976fd13a03e15fd39cbc44cb7b6f206b579065b0f62a10e2
+  content_mode: full_text
+  content_sha256: b5db5b8a11c57304976fd13a03e15fd39cbc44cb7b6f206b579065b0f62a10e2
+- path: /Users/Daily/Development/ReviewCompass/.reviewcompass/specs/workflow-management/post-write-verification-spec.yaml
+  sha256: 3e72e7431ccef008e0f87ac841053aed11b88f4350a027979661ffe1c6291d81
+  content_mode: full_text
+  content_sha256: 3e72e7431ccef008e0f87ac841053aed11b88f4350a027979661ffe1c6291d81
+sensitive_information_check:
+  status: passed
+  checked_at: '2026-06-23T01:18:32.722370+00:00'
+recommended_run_review_args:
+  criteria_file: .reviewcompass/evidence/review-runs/2026-06-23-post_write_verification__2026_06_05_future_development_candidates__2026_06_11_agentic_flow_adoption_plan__2026_06_16_nested_issue_handling_smell__and_2_more/review-target.md
+  phase: post_write_verification
+  prompt_manifest_path: .reviewcompass/evidence/review-runs/2026-06-23-post_write_verification__2026_06_05_future_development_candidates__2026_06_11_agentic_flow_adoption_plan__2026_06_16_nested_issue_handling_smell__and_2_more/prompt-manifest.yaml

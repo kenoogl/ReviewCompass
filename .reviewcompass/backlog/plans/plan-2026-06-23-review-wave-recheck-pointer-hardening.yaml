@@ -1,0 +1,56 @@
+schema_version: reviewcompass-backlog-item-v1
+id: plan-2026-06-23-review-wave-recheck-pointer-hardening
+kind: plan
+title: Harden review-wave summary, recheck clearing, and review-run pointers
+status: candidate
+source_unit_id: main-completed
+created_at: '2026-06-23T10:14:00+09:00'
+index_path: .reviewcompass/backlog/index.yaml
+provenance:
+  created_by: llm
+  source_ref: docs/notes/2026-06-05-future-development-candidates.md
+  reason: >
+    D-001、D-002、D-003 の未移設候補を、completed 後の review-wave / recheck /
+    feature-local pointer 改善 plan として抽出するため。
+summary: >
+  review-wave の横断指標を機械集計し、recheck.upstream_change_pending の解除基準を
+  証跡付きで固定し、API review-run 証跡を feature namespace から安定して辿れるようにする。
+supersedes_sections:
+  - docs/notes/2026-06-05-future-development-candidates.md#D-001
+  - docs/notes/2026-06-05-future-development-candidates.md#D-002
+  - docs/notes/2026-06-05-future-development-candidates.md#D-003
+related:
+  - docs/notes/2026-06-04-implementation-review-wave-improvements.md
+  - tools/check-workflow-action.py
+remaining_work:
+  - id: RWP-1
+    title: Review-wave summary command
+    status: candidate
+    tasks:
+      - feature coverage、triage unresolved count、draft count、human_required count、recheck state を集計する。
+      - Markdown と JSON の出力形式を用意する。
+      - cross-feature review evidence に保存できる形式を定義する。
+    acceptance:
+      - review-wave 横断確認を手動集計に依存しない。
+  - id: RWP-2
+    title: Recheck clearing criteria
+    status: candidate
+    tasks:
+      - feature-dependency.yaml と spec.json.recheck を突き合わせる。
+      - impacted phase ごとに必要な downstream evidence を定義する。
+      - recheck 解除時に根拠ファイルまたは approval record を要求する。
+    acceptance:
+      - recheck flag を安全に解除する条件が機械的に説明できる。
+  - id: RWP-3
+    title: Feature-local API review-run pointers
+    status: candidate
+    tasks:
+      - review-run pointer template に run path、purpose、triage_status、items count、decision status を含める。
+      - raw / parsed / summary / triage の存在確認を pointer から辿れるようにする。
+      - review-wave summary で pointer 欠落を検出する。
+    acceptance:
+      - docs/notes/review-runs にある証跡でも feature 側から機械的に辿れる。
+non_goals:
+  - 既存 review-run 生証跡を一括移動すること。
+  - recheck flag を証跡なしで自動解除すること。
+decisions: []

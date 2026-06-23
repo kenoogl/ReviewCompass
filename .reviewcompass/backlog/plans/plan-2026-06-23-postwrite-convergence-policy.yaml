@@ -1,0 +1,54 @@
+schema_version: reviewcompass-backlog-item-v1
+id: plan-2026-06-23-postwrite-convergence-policy
+kind: plan
+title: Revisit post-write verification convergence policy
+status: candidate
+source_unit_id: main-completed
+created_at: '2026-06-23T10:16:00+09:00'
+index_path: .reviewcompass/backlog/index.yaml
+provenance:
+  created_by: llm
+  source_ref: docs/notes/2026-06-05-future-development-candidates.md
+  reason: >
+    D-009 の post-write verification 収束基準見直しを、post-write prompt 機械化とは別の
+    運用ポリシー改善 plan として移すため。
+summary: >
+  実質的な誤りと逐語・好みレベルの指摘を文書種別ごとに切り分け、
+  post-write verification が収束しないループになることを避ける。
+supersedes_sections:
+  - docs/notes/2026-06-05-future-development-candidates.md#D-009
+related:
+  - .reviewcompass/backlog/plans/plan-2026-06-23-postwrite-prompt-mechanization-completion.yaml
+  - .reviewcompass/backlog/plans/plan-2026-06-23-api-review-run-hardening.yaml
+remaining_work:
+  - id: PWC-1
+    title: Document-type verification levels
+    status: candidate
+    tasks:
+      - discussion_note、candidate_list、plan、task_proposal、spec、contract、schema、operation、discipline を分類する。
+      - discussion_note / candidate_list では詳細設計要求を原則 leave-as-is にする。
+      - spec / contract / schema では型、必須性、列挙値、検査方法を確認対象に含める。
+    acceptance:
+      - 文書種別に応じて should-fix / leave-as-is の境界を変えられる。
+  - id: PWC-2
+    title: Literal versus substantive finding classification
+    status: candidate
+    tasks:
+      - triage に literal / substantive classification を保存する。
+      - document_type / verification_level を triage に保存する。
+      - 繰り返し指摘と多数決的収束の扱いを再評価する。
+    acceptance:
+      - 逐語的 WARN が検証ループを不必要に伸ばさない。
+  - id: PWC-3
+    title: Baseline locator for convergence tuning
+    status: candidate
+    tasks:
+      - 対象 prompt、variant、model assignment、raw response paths の baseline locator を作成する。
+      - 過去の収束困難 run を再現条件として記録する。
+      - 収束ループ回数を post-write metrics と接続する。
+    acceptance:
+      - 収束基準変更の前後比較ができる。
+non_goals:
+  - post-write verification を弱めて実質誤りを見逃すこと。
+  - 所見ゼロまで無制限に review を回すこと。
+decisions: []

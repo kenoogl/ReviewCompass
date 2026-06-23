@@ -1,0 +1,49 @@
+schema_version: reviewcompass-backlog-item-v1
+id: plan-2026-06-23-reconstruction-cleanup-followups
+kind: plan
+title: Track reconstruction cleanup and deferred backlog follow-ups
+status: candidate
+source_unit_id: main-completed
+created_at: '2026-06-23T10:22:00+09:00'
+index_path: .reviewcompass/backlog/index.yaml
+provenance:
+  created_by: llm
+  source_ref: docs/notes/2026-06-05-future-development-candidates.md
+  reason: >
+    D-022 と D-024 の再構築計画由来の整理項目を、実装済み deployability lint 等と
+    重複しない後続整理 plan として残すため。
+summary: >
+  旧素材リポジトリ由来の表現や自己適用前提の混入を監査し、フェーズ 4 後に
+  意図的にスコープ外とした宿題を completed 後の候補として再評価する。
+supersedes_sections:
+  - docs/notes/2026-06-05-future-development-candidates.md#D-022
+  - docs/notes/2026-06-05-future-development-candidates.md#D-024
+related:
+  - docs/plan/reconstruction-plan-2026-05-21.md
+  - learning/workflow/carry-forward-register/README.md
+  - learning/workflow/proposals/README.md
+  - learning/workflow/metrics/README.md
+remaining_work:
+  - id: RCF-1
+    title: Extraction and reconstruction separation audit
+    status: candidate
+    tasks:
+      - 旧プロジェクト名、旧パス、自己適用前提語彙の grep 監査を行う。
+      - 許容外部参照とローカル作業記録を区別する。
+      - 正本文書・規律・テンプレートを素材由来 / ReviewCompass 正本 / 対象アプリ側配置物に分類する。
+    acceptance:
+      - 旧素材前提が deployable artifact に混入していないか説明できる。
+  - id: RCF-2
+    title: Deferred phase-4 backlog review
+    status: candidate
+    tasks:
+      - self-improvement の prompt / policy / schema / runtime 4 層を小提案へ分割する。
+      - 多層防御の第 2 から第 5 層を再評価する。
+      - manual / subagent / runtime-mediated の 3 方式比較データを保存できるか確認する。
+      - related_candidate_ids と overlap_resolution の記録方針を決める。
+    acceptance:
+      - 再構築計画で意図的に後回しにした宿題を、忘れた課題ではなく管理された候補として扱える。
+non_goals:
+  - 旧素材リポジトリの内容を機械的に移植すること。
+  - 既に実装済みの deployment independence lint を重複実装すること。
+decisions: []

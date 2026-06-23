@@ -1,0 +1,44 @@
+schema_version: reviewcompass-backlog-item-v1
+id: plan-2026-06-23-autonomous-ledger-auditability
+kind: plan
+title: Harden autonomous and parallel execution ledger auditability
+status: candidate
+source_unit_id: main-completed
+created_at: '2026-06-23T10:15:00+09:00'
+index_path: .reviewcompass/backlog/index.yaml
+provenance:
+  created_by: llm
+  source_ref: docs/notes/2026-06-05-future-development-candidates.md
+  reason: >
+    D-007 の自律・並列実行 ledger 強化を、未実装の監査性改善として backlog plan に移すため。
+summary: >
+  自律・並列実行の計画、担当、判断根拠、raw / triage / proxy decision refs、
+  統合結果を会話ログに頼らず監査できるようにする。
+supersedes_sections:
+  - docs/notes/2026-06-05-future-development-candidates.md#D-007
+related:
+  - docs/logs/autonomous-parallel/
+  - .reviewcompass/backlog/plans/plan-2026-06-23-proxy-decision-mechanization.yaml
+remaining_work:
+  - id: ALA-1
+    title: Ledger result and decision basis fields
+    status: candidate
+    tasks:
+      - task_result、decision_basis_refs、raw_refs、triage_refs、proxy_decision_refs、integration_result を追加する。
+      - allowed_paths overlap と依存 DAG 上の並列可能性を検査する。
+      - 読取専用証跡収集と実装 diff 生成を区別する。
+    acceptance:
+      - 並列作業後に、何を根拠に統合判断したか再構成できる。
+  - id: ALA-2
+    title: Pre-integration review gate
+    status: candidate
+    tasks:
+      - 実装 diff を並列に作った場合、統合前に main session review refs を要求する。
+      - integration_result、対象 diff refs、main session review refs の欠落を検出する。
+      - ledger guard または pre-integration check のどちらで扱うか決める。
+    acceptance:
+      - 並列出力を根拠不明のまま本線へ統合しない。
+non_goals:
+  - 自律・並列実行を無制限に拡大すること。
+  - 人間承認が必要な判断を ledger 記録だけで代替すること。
+decisions: []

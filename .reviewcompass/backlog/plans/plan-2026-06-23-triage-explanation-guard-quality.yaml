@@ -1,0 +1,58 @@
+schema_version: reviewcompass-backlog-item-v1
+id: plan-2026-06-23-triage-explanation-guard-quality
+kind: plan
+title: Improve review explanations, triage importance, and guard diagnostics
+status: candidate
+source_unit_id: main-completed
+created_at: '2026-06-23T10:19:00+09:00'
+index_path: .reviewcompass/backlog/index.yaml
+provenance:
+  created_by: llm
+  source_ref: docs/notes/2026-06-05-future-development-candidates.md
+  reason: >
+    D-012、D-013、D-014 の review report / triage / guard 品質改善を
+    ひとつの中優先度 backlog plan として移すため。
+summary: >
+  review result や proxy decision を人間が判断できる説明へ変換し、
+  文脈上重要な should-fix を見落とさず、commit / push guard の複合失敗理由を
+  分かりやすく提示する。
+supersedes_sections:
+  - docs/notes/2026-06-05-future-development-candidates.md#D-012
+  - docs/notes/2026-06-05-future-development-candidates.md#D-013
+  - docs/notes/2026-06-05-future-development-candidates.md#D-014
+related:
+  - tools/api_providers/review_triage.py
+  - tools/check-workflow-action.py
+  - tools/guarded-git-commit.py
+remaining_work:
+  - id: TEG-1
+    title: Human explanation contract for review records
+    status: candidate
+    tasks:
+      - review report に human_explanation セクションを必須化する。
+      - variant、role assignment、model IDs、raw paths、triage 三分類を自動表示する。
+      - approval gate 前に提示すべき情報を machine-check する。
+    acceptance:
+      - 利用者が raw YAML を読まずに承認判断できる説明が保存される。
+  - id: TEG-2
+    title: Important should-fix signal flags
+    status: candidate
+    tasks:
+      - requires_approval、affects_auditability、affects_raw_integrity などの flag を導入する。
+      - should-fix でも特定 flag が立つ場合は利用者提示 gate を要求する。
+      - triage parser / proxy decision prompt に flag 付与を求める。
+    acceptance:
+      - severity や must-fix label だけでは見落とす重要項目を拾える。
+  - id: TEG-3
+    title: Combined commit and push guard diagnostics
+    status: candidate
+    tasks:
+      - approval failure と post-write failure など複数 reason を同時に表示する。
+      - commit precheck / push precheck の複合エラーケースをテストする。
+      - 利用者に次に直す順序が分かる出力へ整理する。
+    acceptance:
+      - 最初の失敗理由だけで止まり、次の実行で別理由が出る手戻りを減らせる。
+non_goals:
+  - should-fix をすべて must-fix 扱いすること。
+  - guard の安全遮断を UX のために弱めること。
+decisions: []

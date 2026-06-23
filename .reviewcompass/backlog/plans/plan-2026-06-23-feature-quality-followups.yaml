@@ -1,0 +1,60 @@
+schema_version: reviewcompass-backlog-item-v1
+id: plan-2026-06-23-feature-quality-followups
+kind: plan
+title: Track feature-local quality follow-ups after implementation
+status: candidate
+source_unit_id: main-completed
+created_at: '2026-06-23T10:20:00+09:00'
+index_path: .reviewcompass/backlog/index.yaml
+provenance:
+  created_by: llm
+  source_ref: docs/notes/2026-06-05-future-development-candidates.md
+  reason: >
+    D-015、D-016、D-017 の feature 個別品質改善候補を、
+    実装済み中核 workflow とは別の後続改善 plan として残すため。
+summary: >
+  analysis、conformance-evaluation、self-improvement の implementation review で残った
+  中優先度の should-fix / quality follow-up を、後続作業候補として管理する。
+supersedes_sections:
+  - docs/notes/2026-06-05-future-development-candidates.md#D-015
+  - docs/notes/2026-06-05-future-development-candidates.md#D-016
+  - docs/notes/2026-06-05-future-development-candidates.md#D-017
+related:
+  - .reviewcompass/specs/analysis/reviews/2026-06-03-implementation-review-run/triage.yaml
+  - .reviewcompass/specs/conformance-evaluation/reviews/2026-06-04-conformance-evaluation-implementation-review-run/triage.yaml
+  - .reviewcompass/specs/self-improvement/reviews/2026-06-04-self-improvement-implementation-review-run/triage.yaml
+remaining_work:
+  - id: FQF-1
+    title: Analysis downstream stability follow-ups
+    status: candidate
+    tasks:
+      - caveat register を空でも生成する。
+      - hardcoded path を structured artifact_ref へ寄せる。
+      - invalid / analysis_blocked evidence を silent drop せず exclusion report に残す。
+      - caveat_register の append-only 検査を強化する。
+    acceptance:
+      - analysis の下流 reader が空ケースや除外ケースでも安定して読める。
+  - id: FQF-2
+    title: Conformance-evaluation coverage follow-ups
+    status: candidate
+    tasks:
+      - CF-999 から CF-1000 の counter transition をテストする。
+      - --check-partitioning enabled branch の肯定確認テストを追加する。
+      - intent / tasks が自動推定対象に見える運用文書の説明ずれを直す。
+      - traceability smoke を双方向整合の実効検査へ強化する。
+    acceptance:
+      - 境界値と任意分岐の退行を見逃しにくくなる。
+  - id: FQF-3
+    title: Self-improvement vocabulary and authorization follow-ups
+    status: candidate
+    tasks:
+      - 承認語彙と対称な拒否語彙を整理する。
+      - English reject、日本語拒否表現、否定形優先ルールを整理する。
+      - autonomous ledger に authorization snapshot を保存する。
+      - ledger schema / guard で snapshot 欠落を検出する。
+    acceptance:
+      - 承認・拒否判断と自律実行時の承認根拠が監査可能になる。
+non_goals:
+  - 完了済み implementation gate を再オープンすること。
+  - 低リスクな should-fix を本線 blocker に戻すこと。
+decisions: []
