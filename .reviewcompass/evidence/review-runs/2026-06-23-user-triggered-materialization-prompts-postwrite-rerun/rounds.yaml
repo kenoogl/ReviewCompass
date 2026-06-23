@@ -1,0 +1,330 @@
+round_id: round-1
+purpose: post_write_verification
+invocation_timestamp: '2026-06-23T12:33:28.726644+00:00'
+target_files:
+- path: .reviewcompass/guidance/WORKFLOW_DISCIPLINE_MAP.yaml
+  sha256: d5190899abf4d435bd96cf9b6a08e5761eacc255bb9afe78fce15cd8575d15e5
+- path: .reviewcompass/guidance/effective-prompts/user-initiated-plan-to-todo-bridge.prompt.md
+  sha256: bb7442c9212ace679a1041e990086f809877a8a23de8353d4e16ed10e1ff33da
+- path: .reviewcompass/guidance/effective-prompts/user-initiated-backlog-todo-execution.prompt.md
+  sha256: 233206e8aa1fad12b70f1a2292f20055e5809e865a3a776af8a3a9c7f152a6e3
+- path: tests/tools/test_effective_prompt_contract.py
+  sha256: 4b16d57e53f2d84e3666ab02fa3e1a037f62b2edc5cfe8f61de26aba0f7a5ca1
+- path: .reviewcompass/backlog/plans/plan-2026-06-23-plan-todo-checklist-materialization.yaml
+  sha256: 3f8f01768ee4520046ec02a868fab18f92fc353af177b12937eef8621da881f4
+- path: .reviewcompass/backlog/todos/todo-2026-06-23-user-triggered-materialization-prompts.yaml
+  sha256: bb8aefcb2fe294b608b4bd3a06b97b29db5da1b949490b3438de591e635d3b06
+- path: tools/check-workflow-action.py
+  sha256: f31b11218f0fe7b3def4e985b123ce66bf62f56d2239a726cfbce469f5367118
+- path: tools/check_workflow_action/operation_preflight.py
+  sha256: 01d87130376ed096ca9b3d508e049f5a019c2474ef4904c14fb45819fd6cbed2
+- path: tools/check_workflow_action/work_backlog.py
+  sha256: e87a7532617e3b7732d85d630c1cf12dbcc3223c9558e9c702970826bb614c66
+- path: tools/check_workflow_action/task_quality_check.py
+  sha256: ab011331a7d326d72b6782e4fce62e3068c91a0ea5f41eb36d22e5d675b488ef
+- path: tests/tools/test_check_workflow_action.py
+  sha256: e3f2f00ef406b58e3123c782f17611e8c6cffe345bffcca7f74bd414a0928bdb
+- path: tests/tools/test_work_backlog_cli.py
+  sha256: 3922b5ea00ea17c09dd1f096fc9979bcfc2d605c12e37d8090bc12d87af6ef89
+- path: tests/tools/test_task_quality_check_cli.py
+  sha256: 28411fa2c796a426c9b42ff4e4ff8fa7e8e38758c9baaf1be39dbcb210dee77c
+- path: .reviewcompass/guidance/API_REVIEW_PROMPT_QUALITY.md
+  sha256: 7a4698ec32170ced27d6f7dad1910a4e5a9b64d4639c74892c37cf60cee999a8
+- path: .reviewcompass/guidance/discipline_llm_as_judge_prompting.md
+  sha256: 9a6cc18404b2816cfef5c23cca35c526c22c92559c141380e5b43b30d1a2727e
+criteria: '# PTC-4 Behavior-Path Post-Write Verification Criteria
+
+
+  phase: post_write_verification
+
+
+  ## Review Task
+
+
+  Review whether the PTC-4 changes actually make short user continuation requests
+  follow the plan-to-TODO/checklist materialization path before implementation work
+  starts.
+
+
+  This is a behavior-path claim review, not only a documentation consistency review.
+
+
+  ## User Review Requirements
+
+
+  The user challenged the prior post-write review because `findings: []` looked implausible.
+  The prompt had been created too narrowly: it checked updated guidance/effective
+  prompts and the discipline map, but did not include enough trigger, operation, preflight,
+  runner, or test materials to verify whether the intended behavior path is enforced.
+
+
+  This rerun must check the actual path from short user requests such as `次へ`, `進める`,
+  and `継続` through operation prompt selection, plan materialization review, TODO/checklist
+  generation, coverage audit, and task-quality audit.
+
+
+  ## Main Preanalysis
+
+
+  The claim under review is:
+
+
+  1. Short continuation requests must not bypass the plan-to-TODO bridge when the
+  next work is derived from a plan.
+
+  2. The operator-facing effective prompts must require `work-backlog plan-todo-bridge
+  --plan-id <plan-id> --json` before creating a TODO from a plan.
+
+  3. The prompts must require runtime checklist creation and coverage/quality audits
+  before marking a checklist item active or starting implementation.
+
+  4. The discipline map must connect the relevant user-initiated operations to the
+  canonical effective prompts and source materials.
+
+  5. The tests must fix enough of this behavior so future edits cannot silently remove
+  the materialization review / quality gates.
+
+
+  Important limitation to verify:
+
+
+  - If the repository has no machine trigger resolver that maps raw short utterances
+  (`次へ`, `進める`, `継続`) directly to `user_initiated_plan_to_todo_bridge`, that is a
+  finding. Guidance text alone does not prove the short request path is mechanically
+  enforced.
+
+  - If the behavior is currently operator-mediated rather than fully mechanical, the
+  review should say so plainly and classify the gap.
+
+
+  ## Review Target Bundle
+
+
+  The target files supplied to the review runner include both changed artifacts and
+  execution-path materials. Treat all supplied files as model-readable materials.
+
+
+  Changed artifacts:
+
+
+  - `.reviewcompass/guidance/WORKFLOW_DISCIPLINE_MAP.yaml`
+
+  - `.reviewcompass/guidance/effective-prompts/user-initiated-plan-to-todo-bridge.prompt.md`
+
+  - `.reviewcompass/guidance/effective-prompts/user-initiated-backlog-todo-execution.prompt.md`
+
+  - `tests/tools/test_effective_prompt_contract.py`
+
+  - `.reviewcompass/backlog/plans/plan-2026-06-23-plan-todo-checklist-materialization.yaml`
+
+  - `.reviewcompass/backlog/todos/todo-2026-06-23-user-triggered-materialization-prompts.yaml`
+
+
+  Execution-path source materials:
+
+
+  - `tools/check-workflow-action.py`
+
+  - `tools/check_workflow_action/operation_preflight.py`
+
+  - `tools/check_workflow_action/work_backlog.py`
+
+  - `tools/check_workflow_action/task_quality_check.py`
+
+  - `tests/tools/test_check_workflow_action.py`
+
+  - `tests/tools/test_work_backlog_cli.py`
+
+  - `tests/tools/test_task_quality_check_cli.py`
+
+
+  Prompt-design method used for this rerun:
+
+
+  - `.reviewcompass/guidance/API_REVIEW_PROMPT_QUALITY.md`
+
+  - `.reviewcompass/guidance/discipline_llm_as_judge_prompting.md`
+
+
+  ## Required Checks
+
+
+  ### Check 1: Short Request to Operation Path
+
+
+  Determine whether the supplied implementation and tests show a mechanical path from
+  short continuation requests (`次へ`, `進める`, `継続`) to the relevant operation prompt,
+  especially `user_initiated_plan_to_todo_bridge` when a plan has unmaterialized work.
+
+
+  Report a finding if this is only documented for the operator but not enforced or
+  tested by a trigger resolver / operation preflight / command path.
+
+
+  ### Check 2: Plan Materialization Review Before TODO Creation
+
+
+  Determine whether the canonical plan-to-TODO bridge prompt requires `work-backlog
+  plan-todo-bridge --plan-id <plan-id> --json` before `work-backlog add-todo`, and
+  whether it requires reading `materialization.summary`, `materialization.slices`,
+  and `materialization.next_candidates`.
+
+
+  Report a finding if the order is ambiguous, optional, or not test-protected.
+
+
+  ### Check 3: TODO/Checklist Coverage and Quality Before Implementation
+
+
+  Determine whether the canonical prompts require `work-backlog start-checklist`,
+  `work-backlog audit-checklist-coverage`, and `task-quality-check audit` before marking
+  a checklist item active or starting implementation work.
+
+
+  Report a finding if active implementation can start before coverage/quality is OK,
+  or if WARN/high-risk handling can bypass review materials.
+
+
+  ### Check 4: Discipline Map Wiring
+
+
+  Determine whether `.reviewcompass/guidance/WORKFLOW_DISCIPLINE_MAP.yaml` wires the
+  relevant operation prompt IDs to the canonical effective prompts and the plan materialization
+  source materials.
+
+
+  Report a finding if the map omits necessary source references or if defaults in
+  `tools/check-workflow-action.py` diverge from the canonical map in a way that could
+  affect operation prompt generation.
+
+
+  ### Check 5: Regression Tests
+
+
+  Determine whether the tests verify the behavior-path claims, not merely the presence
+  of words in documents.
+
+
+  Report a finding if tests only assert text snippets while leaving the operation
+  routing / preflight / command output path untested.
+
+
+  ### Check 6: Prompt-Design Compliance
+
+
+  Determine whether this rerun criteria and target bundle follow the revised prompt-design
+  method:
+
+
+  - main preanalysis before prompt
+
+  - behavior-path materials included
+
+  - claim-by-claim required checks
+
+  - no reliance on unexplained single-model `findings: []`
+
+
+  Report a finding if the prompt remains too confirmatory, under-scoped, or unable
+  to produce auditable rationale.
+
+
+  ## Finding Policy
+
+
+  Return findings for any gap that could let an operator or tool path bypass plan
+  materialization review, TODO/checklist creation, coverage audit, task-quality audit,
+  or WARN/high-risk review-material preparation.
+
+
+  Return findings for insufficient evidence even if the guidance text says the right
+  thing.
+
+
+  If a claim passes, include a brief pass rationale in the response summary or rationale
+  fields. Do not return bare `findings: []` with no explanation.
+
+
+  Use severity:
+
+
+  - ERROR: behavior can bypass a required gate or no mechanical/test evidence exists
+  for a core claim.
+
+  - WARN: behavior is mostly guided but weakly tested, under-specified, or operator-mediated.
+
+  - INFO: clarity or auditability improvement that does not change gate behavior.
+
+
+  ## Out of Scope
+
+
+  - Do not review unrelated workflow-management features.
+
+  - Do not propose broad architecture rewrites unless needed to address a concrete
+  finding.
+
+  - Do not approve commit or push.
+
+  '
+prompt_sha256: 988fcc78814a236f5e8dd4ba2fb450a367513430878e7e1b076ce2477169e1ce
+model_results:
+- model_id: gpt-5.4
+  provider: openai-api
+  role: primary
+  treatment: primary
+  invocation_path: api
+  raw_path: raw/gpt-5.4.round-1.txt
+  raw_sha256: 91b6cc3914602c25c25d71f5acdf9405252fd9989acd3f1b5cd895bc66531afb
+  parsed_path: parsed/gpt-5.4.round-1.yaml
+  parsed_sha256: 4faf9dd9c0b61b2d38390f3fc93ef7632b4b764d4aba912b2049ba804107f696
+  parse_status: parsed
+  formatted_by: parser
+  formatted_by_actor_type: orchestrator
+  formatted_by_actor: run_role.py
+  formatted_at: '2026-06-23T12:31:45.481288+00:00'
+  follow_up_action: triage
+  attempts: 1
+  duration_seconds: 18.369
+  prompt_path: prompts/gpt-5.4.round-1.prompt.md
+  prompt_sha256: 58dfcff61d625708e697ede4bf736b690f1c8915d385150b305b95e710d12b3e
+- model_id: claude-opus-4-8
+  provider: anthropic-api
+  role: adversarial
+  treatment: adversarial
+  invocation_path: api
+  raw_path: raw/claude-opus-4-8.round-1.txt
+  raw_sha256: e1bb53ffdd66ff37da0a467608f9776fb8485357019d4974a8c5b441e994d688
+  parsed_path: parsed/claude-opus-4-8.round-1.yaml
+  parsed_sha256: d43cf0f0f53dcc3a5715c31641da32aa3a34be1a188219524e96f8c1e2441a99
+  parse_status: parsed
+  formatted_by: parser
+  formatted_by_actor_type: orchestrator
+  formatted_by_actor: run_role.py
+  formatted_at: '2026-06-23T12:32:23.797623+00:00'
+  follow_up_action: triage
+  attempts: 1
+  duration_seconds: 38.288
+  prompt_path: prompts/claude-opus-4-8.round-1.prompt.md
+  prompt_sha256: 03b5c5868f0d363cfbf4454ea2676e24895945dfa82e7de8ac937320a201f881
+- model_id: gemini-3.1-pro-preview
+  provider: gemini-api
+  role: judgment
+  treatment: judgment
+  invocation_path: api
+  raw_path: raw/gemini-3.1-pro-preview.round-1.txt
+  raw_sha256: 2381eeccc590866c2b106ca98f34e9ceaee8f781aef8308e58d4c2e259376dc2
+  parsed_path: parsed/gemini-3.1-pro-preview.round-1.yaml
+  parsed_sha256: d9e6305c446251622f9f7545215033ed1aa773c431fd54cfe6c8ce3be300691d
+  parse_status: parsed
+  formatted_by: parser
+  formatted_by_actor_type: orchestrator
+  formatted_by_actor: run_role.py
+  formatted_at: '2026-06-23T12:33:28.726644+00:00'
+  follow_up_action: triage
+  attempts: 1
+  duration_seconds: 64.892
+  prompt_path: prompts/gemini-3.1-pro-preview.round-1.prompt.md
+  prompt_sha256: 988fcc78814a236f5e8dd4ba2fb450a367513430878e7e1b076ce2477169e1ce
+criteria_source_path: .reviewcompass/evidence/review-runs/2026-06-23-user-triggered-materialization-prompts-postwrite-rerun/behavior-path-review-criteria.md
+criteria_source_sha256: ecf50e852398c52d54b6d6c237821c421c1e9f6b0707dd0f8f684b2136342c1f

@@ -1,0 +1,6 @@
+role: adversarial
+provider: anthropic-api
+model: claude-opus-4-8
+attempts: 1
+duration_seconds: 5.662
+findings: []

@@ -265,6 +265,30 @@ def test_user_initiated_plan_to_todo_bridge_prompt_defines_todo_conversion_rules
   assert "red_tests" in text
 
 
+def test_user_initiated_plan_to_todo_bridge_prompt_requires_materialization_review():
+  item = _decision_point("operation_prompt", "user_initiated_plan_to_todo_bridge")
+  prompt_path = ROOT / item["canonical_effective_prompt_path"]
+
+  text = prompt_path.read_text(encoding="utf-8")
+
+  assert "work-backlog plan-todo-bridge --plan-id" in text
+  assert "materialization.summary" in text
+  assert "materialization.next_candidates" in text
+  assert text.index("work-backlog plan-todo-bridge --plan-id") < text.index("work-backlog add-todo")
+
+
+def test_user_initiated_plan_to_todo_bridge_prompt_names_trigger_resolution_evidence():
+  item = _decision_point("operation_prompt", "user_initiated_plan_to_todo_bridge")
+  prompt_path = ROOT / item["canonical_effective_prompt_path"]
+
+  text = prompt_path.read_text(encoding="utf-8")
+
+  assert "trigger_resolution" in text
+  assert "trigger_kind" in text
+  assert "candidate_plan_ids" in text
+  assert "multiple_unmaterialized_plan_candidates" in text
+
+
 def test_user_initiated_backlog_execution_prompt_contains_mechanical_boundary():
   item = _decision_point("operation_prompt", "user_initiated_backlog_todo_execution")
   prompt_path = ROOT / item["canonical_effective_prompt_path"]
@@ -275,3 +299,62 @@ def test_user_initiated_backlog_execution_prompt_contains_mechanical_boundary():
   assert "work-backlog audit-checklist-coverage" in text
   assert "task-quality-check audit" in text
   assert "複数 promoted TODO" in text
+
+
+def test_user_initiated_backlog_execution_prompt_requires_quality_before_work():
+  item = _decision_point("operation_prompt", "user_initiated_backlog_todo_execution")
+  prompt_path = ROOT / item["canonical_effective_prompt_path"]
+
+  text = prompt_path.read_text(encoding="utf-8")
+
+  assert text.index("work-backlog audit-checklist-coverage") < text.index("checklist item を active")
+  assert text.index("task-quality-check audit") < text.index("checklist item を active")
+  assert "coverage / quality が OK" in text
+
+
+def test_user_initiated_prompt_map_references_materialization_bridge_plan():
+  plan_item = _decision_point("operation_prompt", "user_initiated_plan_to_todo_bridge")
+  todo_item = _decision_point("operation_prompt", "user_initiated_backlog_todo_execution")
+
+  for item in [plan_item, todo_item]:
+    assert (
+      ".reviewcompass/backlog/plans/"
+      "plan-2026-06-23-plan-todo-checklist-materialization.yaml"
+    ) in item["prompt_source_refs"]
+
+
+def test_api_review_prompt_quality_requires_behavior_path_materials():
+  text = _read(".reviewcompass/guidance/API_REVIEW_PROMPT_QUALITY.md")
+
+  assert "behavior-path claim" in text
+  assert "実行経路 claim" in text
+  assert "trigger resolver" in text
+  assert "operation preflight" in text
+  assert "変更文書だけを target/source にしてはならない" in text
+
+
+def test_api_review_prompt_quality_requires_review_question_decomposition():
+  text = _read(".reviewcompass/guidance/API_REVIEW_PROMPT_QUALITY.md")
+
+  assert "review question decomposition" in text
+  assert "整合性確認だけの一括質問にしない" in text
+  assert "要求 claim ごとの required check" in text
+  assert "ショートリクエストが bridge を bypass しない" in text
+
+
+def test_api_review_prompt_quality_rejects_unexplained_single_model_zero_findings():
+  text = _read(".reviewcompass/guidance/API_REVIEW_PROMPT_QUALITY.md")
+
+  assert "single-model findings: []" in text
+  assert "根拠説明なしの 0 件" in text
+  assert "高リスクまたは実行経路 claim" in text
+  assert "3-way" in text
+
+
+def test_llm_as_judge_prompting_requires_main_preanalysis_before_prompt():
+  text = _read(".reviewcompass/guidance/discipline_llm_as_judge_prompting.md")
+
+  assert "main preanalysis" in text
+  assert "behavior-path claim" in text
+  assert "target / source / out of scope" in text
+  assert "変更された成果物だけ" in text

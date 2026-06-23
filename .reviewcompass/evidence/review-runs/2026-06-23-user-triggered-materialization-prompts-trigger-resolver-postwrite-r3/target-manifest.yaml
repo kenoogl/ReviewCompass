@@ -1,0 +1,22 @@
+run_id: 2026-06-23-user-triggered-materialization-prompts-trigger-resolver-postwrite-r3
+target_files:
+- path: tools/check-workflow-action.py
+  sha256: 3c2da5017d6bb06cb731e7b87c5ceb33778372cefdbf172753e7b55b5f6637cf
+- path: tests/tools/test_check_workflow_action.py
+  sha256: fb97ab86b3bc2ccf93f104a9a715be47f596c320c7e6a439b3d9f03ba27b378e
+- path: .reviewcompass/guidance/WORKFLOW_DISCIPLINE_MAP.yaml
+  sha256: d5190899abf4d435bd96cf9b6a08e5761eacc255bb9afe78fce15cd8575d15e5
+- path: .reviewcompass/guidance/effective-prompts/user-initiated-plan-to-todo-bridge.prompt.md
+  sha256: 88091c55c4c7180a06a96c13b07bfc1f722a18de049a97cb0af039a83f14670c
+- path: .reviewcompass/guidance/effective-prompts/user-initiated-backlog-todo-execution.prompt.md
+  sha256: 233206e8aa1fad12b70f1a2292f20055e5809e865a3a776af8a3a9c7f152a6e3
+- path: tests/tools/test_effective_prompt_contract.py
+  sha256: 2ae76c3ae2878fc69e5ef1e21005826b22403036b76f87a774881ecb999673e3
+- path: .reviewcompass/guidance/API_REVIEW_PROMPT_QUALITY.md
+  sha256: 7a4698ec32170ced27d6f7dad1910a4e5a9b64d4639c74892c37cf60cee999a8
+- path: .reviewcompass/guidance/discipline_llm_as_judge_prompting.md
+  sha256: 9a6cc18404b2816cfef5c23cca35c526c22c92559c141380e5b43b30d1a2727e
+- path: .reviewcompass/backlog/plans/plan-2026-06-23-plan-todo-checklist-materialization.yaml
+  sha256: 3f8f01768ee4520046ec02a868fab18f92fc353af177b12937eef8621da881f4
+- path: .reviewcompass/backlog/todos/todo-2026-06-23-user-triggered-materialization-prompts.yaml
+  sha256: bb8aefcb2fe294b608b4bd3a06b97b29db5da1b949490b3438de591e635d3b06

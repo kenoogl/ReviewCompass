@@ -11,6 +11,7 @@
 - ユーザが明示した backlog TODO id、または status: promoted の単一 TODO。
 - `.reviewcompass/backlog/index.yaml`
 - 対象 backlog TODO 本文。
+- 対象 TODO から生成または選択した runtime checklist。
 - 現在の work unit stack。
 
 ## Mechanical Steps
@@ -22,8 +23,9 @@
 6. 状態変更の直前確認を済ませた場合だけ、`work-backlog start-checklist --id <todo-id> --mutation-boundary-confirmed` で runtime checklist を作成する。
 7. `work-backlog audit-checklist-coverage --id <todo-id> --checklist-id <checklist-id>` を実行する。
 8. coverage が DEVIATION の場合は実装へ進まず、TODO/checklist の修正に戻る。
-9. coverage が OK の場合だけ checklist item を active にして作業を進める。
-10. 実装前に `task-quality-check audit` を実行する。
+9. `task-quality-check audit --backlog-id <todo-id> --checklist-id <checklist-id>` を実行する。
+10. quality が DEVIATION の場合は実装へ進まず、TODO/checklist の修正に戻る。
+11. coverage / quality が OK の場合だけ checklist item を active にして作業を進める。
 
 ## LLM Scope
 - ユーザの自然言語指示がどの TODO に対応するかを読む。
@@ -33,6 +35,7 @@
 ## Prohibitions
 - TODO 本文を読まずに path-only で進めない。
 - checklist item を LLM 要約だけで作らない。
+- `work-backlog audit-checklist-coverage` と `task-quality-check audit` の前に checklist item を active にしない。
 - 複数判断を 1 回の API review prompt に詰め込まない。
 - blocking unit の出入りを暗黙にしない。
 

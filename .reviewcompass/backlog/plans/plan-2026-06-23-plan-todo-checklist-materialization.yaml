@@ -134,8 +134,8 @@ risks_and_mitigations:
   mitigation: keep plan-todo-bridge and audits read-only; mutations remain add-todo
     and start-checklist with explicit boundary confirmation.
 recommended_next_step:
-  id: PTC-4
-  title: Integrate with user-triggered execution prompts
+  id: PTC-5
+  title: Tests and regression fixtures
 execution_slices:
 - phase_id: PTC-1
   title: Define plan slice materialization contract
@@ -171,10 +171,15 @@ execution_slices:
     not_materialized slices.
 - phase_id: PTC-4
   title: Integrate with user-triggered execution prompts
-  status: not_materialized
-  todo_id: null
-  checklist_id: null
-  note: TODO/checklist 未展開。
+  status: completed
+  todo_id: todo-2026-06-23-user-triggered-materialization-prompts
+  todo_path: .reviewcompass/backlog/todos/todo-2026-06-23-user-triggered-materialization-prompts.yaml
+  checklist_id: checklist-todo-2026-06-23-user-triggered-materialization-prompts
+  checklist_evidence_path: null
+  note: >
+    User-initiated plan and backlog TODO prompts now require materialization
+    status, checklist coverage, and quality audit review before implementation
+    work starts.
 - phase_id: PTC-5
   title: Tests and regression fixtures
   status: not_materialized

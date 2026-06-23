@@ -510,6 +510,7 @@ DEFAULT_DISCIPLINE_MAP = {
           ".reviewcompass/guidance/WORKFLOW_NAVIGATION.md",
           ".reviewcompass/backlog/todos/todo-2026-06-23-plan-to-todo-checklist-evidence.yaml",
           ".reviewcompass/backlog/plans/plan-2026-06-22-user-initiated-backlog-checklist-effective-prompt.yaml",
+          ".reviewcompass/backlog/plans/plan-2026-06-23-plan-todo-checklist-materialization.yaml",
         ],
         "effective_prompt_policy": "one_effective_prompt_per_decision_point",
         "canonical_effective_prompt_path": (
@@ -522,6 +523,7 @@ DEFAULT_DISCIPLINE_MAP = {
         "prompt_source_refs": [
           ".reviewcompass/guidance/WORKFLOW_NAVIGATION.md",
           ".reviewcompass/backlog/plans/plan-2026-06-22-user-initiated-backlog-checklist-effective-prompt.yaml",
+          ".reviewcompass/backlog/plans/plan-2026-06-23-plan-todo-checklist-materialization.yaml",
         ],
         "effective_prompt_policy": "one_effective_prompt_per_decision_point",
         "canonical_effective_prompt_path": (
@@ -6907,7 +6909,87 @@ def cmd_next(args):
   return exit_code
 
 
-def build_operation_prompt_payload(cwd, operation):
+SHORT_CONTINUATION_TRIGGER_TEXTS = {
+  "次へ",
+  "進める",
+  "継続",
+}
+
+
+def _normalize_trigger_text(value):
+  return re.sub(r"\s+", "", str(value or "")).strip()
+
+
+def _plan_has_unmaterialized_slice(data):
+  if not isinstance(data, dict) or data.get("kind") != "plan":
+    return False
+  for item in data.get("execution_slices") or []:
+    if not isinstance(item, dict):
+      continue
+    status = item.get("status")
+    if status in {None, "", "not_materialized"}:
+      return True
+  return False
+
+
+def _find_unmaterialized_plan_ids(cwd, plan_id=None):
+  plan_dir = Path(cwd) / ".reviewcompass" / "backlog" / "plans"
+  if not plan_dir.is_dir():
+    return []
+  plan_ids = []
+  for path in sorted(plan_dir.glob("*.yaml")):
+    try:
+      data = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
+    except (OSError, yaml.YAMLError):
+      continue
+    current_plan_id = str(data.get("id") or path.stem)
+    if plan_id is not None and current_plan_id != plan_id:
+      continue
+    if not _plan_has_unmaterialized_slice(data):
+      continue
+    plan_ids.append(current_plan_id)
+  return plan_ids
+
+
+def resolve_operation_prompt_from_trigger(cwd, trigger_text, plan_id=None):
+  normalized = _normalize_trigger_text(trigger_text)
+  if normalized not in SHORT_CONTINUATION_TRIGGER_TEXTS:
+    return None, {
+      "trigger_text": trigger_text,
+      "normalized_trigger_text": normalized,
+      "trigger_kind": "unsupported",
+      "reason": "unsupported_trigger_text",
+      "requested_plan_id": plan_id,
+      "candidate_plan_ids": [],
+    }
+
+  plan_ids = _find_unmaterialized_plan_ids(cwd, plan_id=plan_id)
+  if plan_ids:
+    reason = (
+      "multiple_unmaterialized_plan_candidates"
+      if plan_id is None and len(plan_ids) > 1
+      else "unmaterialized_plan_slice"
+    )
+    return "user_initiated_plan_to_todo_bridge", {
+      "trigger_text": trigger_text,
+      "normalized_trigger_text": normalized,
+      "trigger_kind": "short_continuation",
+      "reason": reason,
+      "requested_plan_id": plan_id,
+      "candidate_plan_ids": plan_ids,
+    }
+
+  return None, {
+    "trigger_text": trigger_text,
+    "normalized_trigger_text": normalized,
+    "trigger_kind": "short_continuation",
+    "reason": "no_unmaterialized_plan_slice",
+    "requested_plan_id": plan_id,
+    "candidate_plan_ids": [],
+  }
+
+
+def build_operation_prompt_payload(cwd, operation, trigger_resolution=None):
   """不可逆操作直前に読む prompt 情報を返す"""
   effective_prompt = effective_prompt_for_decision_point(
     cwd,
@@ -6930,6 +7012,8 @@ def build_operation_prompt_payload(cwd, operation):
       effective_prompt,
     ),
   }
+  if trigger_resolution is not None:
+    payload["trigger_resolution"] = trigger_resolution
   if operation == "commit":
     payload["required_operation_card"] = (
       ".reviewcompass/guidance/COMMIT_OPERATION_CARD.md#commit-operation-card"
@@ -6940,13 +7024,38 @@ def build_operation_prompt_payload(cwd, operation):
 def cmd_operation_prompt(args):
   """不可逆操作用 prompt selection を出力する"""
   cwd = Path.cwd()
-  payload = build_operation_prompt_payload(cwd, args.operation)
+  operation = args.operation
+  trigger_resolution = None
+  if args.trigger_text:
+    resolved_operation, trigger_resolution = resolve_operation_prompt_from_trigger(
+      cwd,
+      args.trigger_text,
+      plan_id=args.plan_id,
+    )
+    if operation is None:
+      operation = resolved_operation
+    elif resolved_operation is not None and operation != resolved_operation:
+      trigger_resolution["explicit_operation"] = operation
+      trigger_resolution["resolved_operation"] = resolved_operation
+      trigger_resolution["reason"] = "explicit_operation_overrides_trigger_resolution"
+
+  if operation is None:
+    payload = {
+      "verdict": "DEVIATION",
+      "exit_code": 2,
+      "operation": None,
+      "trigger_resolution": trigger_resolution,
+      "reasons": ["trigger_text から operation prompt を解決できません"],
+    }
+  else:
+    payload = build_operation_prompt_payload(cwd, operation, trigger_resolution)
   if payload is None:
     payload = {
       "verdict": "DEVIATION",
       "exit_code": 2,
-      "operation": args.operation,
-      "reasons": [f"未定義の operation prompt です: {args.operation}"],
+      "operation": operation,
+      "trigger_resolution": trigger_resolution,
+      "reasons": [f"未定義の operation prompt です: {operation}"],
     }
   if args.json:
     print(json.dumps(payload, ensure_ascii=False, indent=2))
@@ -8766,8 +8875,19 @@ def main():
   )
   opp.add_argument(
     "operation",
+    nargs="?",
     choices=OPERATION_PROMPT_IDS,
     help="対象操作",
+  )
+  opp.add_argument(
+    "--trigger-text",
+    default=None,
+    help="利用者発話から operation prompt を機械解決する",
+  )
+  opp.add_argument(
+    "--plan-id",
+    default=None,
+    help="trigger-text 解決時に対象 plan を明示する",
   )
 
   rs = sub.add_parser(

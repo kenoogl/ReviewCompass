@@ -1,0 +1,72 @@
+schema_version: reviewcompass-backlog-item-v1
+id: todo-2026-06-23-user-triggered-materialization-prompts
+kind: todo
+title: Integrate user-triggered materialization prompts
+status: completed
+source_unit_id: main-side-conversation
+created_at: '2026-06-23T12:18:06.849740+00:00'
+index_path: .reviewcompass/backlog/index.yaml
+provenance:
+  created_by: llm
+  source_ref: .reviewcompass/backlog/plans/plan-2026-06-23-plan-todo-checklist-materialization.yaml#PTC-4
+  reason: PTC-4 is the next not_materialized slice returned by plan-todo-bridge; materialize
+    it as a backlog TODO before prompt integration work
+decisions:
+- decision: completed
+  decision_ref: .reviewcompass/guidance/effective-prompts/user-initiated-plan-to-todo-bridge.prompt.md
+  reason: Updated user-initiated plan and backlog TODO prompts plus operation prompt
+    source references so short continuation requests surface materialization status
+    and verify checklist coverage / quality before implementation work.
+  decided_at: '2026-06-23T12:20:30.276062+00:00'
+source_plan_id: plan-2026-06-23-plan-todo-checklist-materialization
+source_plan_path: .reviewcompass/backlog/plans/plan-2026-06-23-plan-todo-checklist-materialization.yaml
+source_plan_slice:
+  phase_id: PTC-4
+  title: Integrate with user-triggered execution prompts
+summary: 'user-triggered execution prompts and trigger references must guide the operator
+  through plan materialization status before implementation work starts.
+
+  '
+problem_statement:
+- Short user requests such as "次へ" can bypass the plan-to-TODO-to-checklist bridge
+  if the prompt does not require materialization review.
+- The plan-to-TODO bridge prompt should surface unmaterialized slices before choosing
+  implementation work.
+- The backlog TODO execution prompt should verify checklist coverage before work starts.
+- Trigger operation references should point short requests toward the bridge instead
+  of direct implementation.
+implementation_plan:
+  phases:
+  - id: PTC-4
+    title: Integrate with user-triggered execution prompts
+    tasks:
+    - id: PTC-4A
+      title: Update user-initiated plan-to-todo bridge prompt to require materialization
+        status review
+    - id: PTC-4B
+      title: Update backlog TODO execution prompt to verify checklist coverage before
+        work starts
+    - id: PTC-4C
+      title: Add trigger operation entry references so short requests do not bypass
+        the bridge
+acceptance_criteria:
+- A user request to continue a plan first surfaces unmaterialized slices.
+- The operator is guided to create TODO/checklist before implementation work.
+- Prompt or trigger references point to plan-todo-bridge / audit materialization checks
+  before mutation.
+red_tests:
+- id: PTC-4-RT-1
+  title: Plan continuation prompt requires materialization status review
+  expected: A prompt or guidance test confirms plan continuation tells the operator
+    to inspect materialization status before work starts.
+- id: PTC-4-RT-2
+  title: Backlog TODO execution prompt requires checklist coverage before work
+  expected: A prompt or guidance test confirms TODO execution checks checklist coverage
+    before implementation.
+- id: PTC-4-RT-3
+  title: Short trigger references bridge instead of direct implementation
+  expected: A trigger/guidance reference for short continuation requests points to
+    the plan-to-TODO/checklist bridge.
+non_goals:
+- Implementing all PTC-5 regression fixtures.
+- Automatically mutating plan slices from prompt text alone.

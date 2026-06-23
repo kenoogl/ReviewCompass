@@ -1,0 +1,275 @@
+round_id: round-1
+purpose: post_write_verification
+invocation_timestamp: '2026-06-23T12:53:28.942302+00:00'
+target_files:
+- path: tools/check-workflow-action.py
+  sha256: 3c2da5017d6bb06cb731e7b87c5ceb33778372cefdbf172753e7b55b5f6637cf
+- path: tests/tools/test_check_workflow_action.py
+  sha256: fb97ab86b3bc2ccf93f104a9a715be47f596c320c7e6a439b3d9f03ba27b378e
+- path: .reviewcompass/guidance/WORKFLOW_DISCIPLINE_MAP.yaml
+  sha256: d5190899abf4d435bd96cf9b6a08e5761eacc255bb9afe78fce15cd8575d15e5
+- path: .reviewcompass/guidance/effective-prompts/user-initiated-plan-to-todo-bridge.prompt.md
+  sha256: 88091c55c4c7180a06a96c13b07bfc1f722a18de049a97cb0af039a83f14670c
+- path: .reviewcompass/guidance/effective-prompts/user-initiated-backlog-todo-execution.prompt.md
+  sha256: 233206e8aa1fad12b70f1a2292f20055e5809e865a3a776af8a3a9c7f152a6e3
+- path: tests/tools/test_effective_prompt_contract.py
+  sha256: 2ae76c3ae2878fc69e5ef1e21005826b22403036b76f87a774881ecb999673e3
+- path: .reviewcompass/guidance/API_REVIEW_PROMPT_QUALITY.md
+  sha256: 7a4698ec32170ced27d6f7dad1910a4e5a9b64d4639c74892c37cf60cee999a8
+- path: .reviewcompass/guidance/discipline_llm_as_judge_prompting.md
+  sha256: 9a6cc18404b2816cfef5c23cca35c526c22c92559c141380e5b43b30d1a2727e
+- path: .reviewcompass/backlog/plans/plan-2026-06-23-plan-todo-checklist-materialization.yaml
+  sha256: 3f8f01768ee4520046ec02a868fab18f92fc353af177b12937eef8621da881f4
+- path: .reviewcompass/backlog/todos/todo-2026-06-23-user-triggered-materialization-prompts.yaml
+  sha256: bb8aefcb2fe294b608b4bd3a06b97b29db5da1b949490b3438de591e635d3b06
+criteria: '# PTC-4 Trigger Resolver Post-Write Verification Criteria
+
+
+  phase: post_write_verification
+
+
+  ## Review Task
+
+
+  Review whether the latest PTC-4 follow-up changes address the accepted behavior-path
+  finding from the prior 3-way review:
+
+
+  Short user continuation requests such as `次へ`, `進める`, and `継続` must mechanically
+  resolve to the plan-to-TODO bridge operation when there is an unmaterialized plan
+  slice.
+
+
+  This review is limited to the PTC-4 trigger resolver / operation prompt selection
+  fix. Do not review unrelated `docs/notes` lightweight self-check policy test failures.
+
+
+  ## Source Finding Being Addressed
+
+
+  Prior review run:
+
+
+  `.reviewcompass/evidence/review-runs/2026-06-23-user-triggered-materialization-prompts-postwrite-rerun/`
+
+
+  Same-root accepted finding:
+
+
+  - There was no mechanical trigger resolver mapping short continuation requests (`次へ`,
+  `進める`, `継続`) to `user_initiated_plan_to_todo_bridge`.
+
+  - Routing was operator-mediated and only documented inside the effective prompt.
+
+  - Regression tests mainly checked prompt text rather than operation prompt selection
+  behavior.
+
+  - `DEFAULT_DISCIPLINE_MAP` fallback did not include the new materialization plan
+  source ref.
+
+
+  ## Changed Target Files
+
+
+  Review these target files as model-readable materials:
+
+
+  - `tools/check-workflow-action.py`
+
+  - `tests/tools/test_check_workflow_action.py`
+
+  - `.reviewcompass/guidance/WORKFLOW_DISCIPLINE_MAP.yaml`
+
+  - `.reviewcompass/guidance/effective-prompts/user-initiated-plan-to-todo-bridge.prompt.md`
+
+  - `.reviewcompass/guidance/effective-prompts/user-initiated-backlog-todo-execution.prompt.md`
+
+  - `tests/tools/test_effective_prompt_contract.py`
+
+  - `.reviewcompass/guidance/API_REVIEW_PROMPT_QUALITY.md`
+
+  - `.reviewcompass/guidance/discipline_llm_as_judge_prompting.md`
+
+  - `.reviewcompass/backlog/plans/plan-2026-06-23-plan-todo-checklist-materialization.yaml`
+
+  - `.reviewcompass/backlog/todos/todo-2026-06-23-user-triggered-materialization-prompts.yaml`
+
+
+  ## Required Checks
+
+
+  ### Check 1: Mechanical Trigger Resolver Exists
+
+
+  Verify that `operation-prompt --trigger-text <text>` can resolve short continuation
+  requests to an operation without the caller manually passing `user_initiated_plan_to_todo_bridge`.
+
+
+  Report a finding if the new behavior is still operator-mediated.
+
+
+  ### Check 2: Correct Routing Condition
+
+
+  Verify that `次へ`, `進める`, and `継続` route to `user_initiated_plan_to_todo_bridge`
+  only when an unmaterialized plan slice is found.
+
+
+  Report a finding if routing ignores materialization state, silently proceeds without
+  a plan, or chooses a direct implementation operation.
+
+
+  ### Check 3: Auditable Output
+
+
+  Verify that the JSON output includes enough `trigger_resolution` evidence to explain
+  why the operation was selected, including trigger kind, reason, and candidate plan
+  IDs.
+
+
+  Report a finding if the output is not auditable.
+
+
+  ### Check 4: Regression Tests
+
+
+  Verify that tests execute the operation prompt command path and assert the resolved
+  operation, not only prompt text snippets.
+
+
+  Report a finding if tests remain text-only for the core trigger routing claim.
+
+
+  ### Check 5: Fallback Discipline Map
+
+
+  Verify that `DEFAULT_DISCIPLINE_MAP` fallback includes the materialization plan
+  source refs for both `user_initiated_plan_to_todo_bridge` and `user_initiated_backlog_todo_execution`.
+
+
+  Report a finding if the fallback can still silently omit the new source materials
+  when the YAML map is unavailable.
+
+
+  ### Check 6: Scope Control
+
+
+  Do not treat unrelated broad test failures around `docs/notes` lightweight self-check
+  vs strict post-write verification as part of this fix unless the trigger resolver
+  change directly caused them.
+
+
+  ## Finding Policy
+
+
+  Return findings for any unresolved part of the accepted routing / fallback / test
+  coverage cluster.
+
+
+  If the accepted finding is fixed, return no findings.
+
+
+  Strict output contract:
+
+
+  - Output YAML only.
+
+  - The top-level YAML must include `findings`.
+
+  - If there are no findings, output exactly:
+
+
+  ```yaml
+
+  findings: []
+
+  ```
+
+
+  - Do not append free-form rationale outside YAML.
+
+  - If rationale is needed for a finding, put it inside that finding''s `rationale`
+  field.
+
+
+  Use severity:
+
+
+  - ERROR: short continuation requests can still bypass the bridge mechanically.
+
+  - WARN: routing exists but is weakly scoped, weakly tested, or poorly auditable.
+
+  - INFO: clarity or maintainability improvements.
+
+
+  ## Out of Scope
+
+
+  - Do not review the unrelated `docs/notes` lightweight self-check policy mismatch.
+
+  - Do not approve commit or push.
+
+  - Do not require triage decisions or approval records as part of this review.
+
+  '
+prompt_sha256: 7524d130ed67154c1bd419706e249049e193b3293b3fa1e878ee1f95d4a6dcc6
+model_results:
+- model_id: gpt-5.4
+  provider: openai-api
+  role: primary
+  treatment: primary
+  invocation_path: api
+  raw_path: raw/gpt-5.4.round-1.txt
+  raw_sha256: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+  parsed_path: parsed/gpt-5.4.round-1.yaml
+  parsed_sha256: 51b9ff16dc38ccc7edff4e335b6da75c2452e5d59188a74230bc52e86bf5739c
+  parse_status: parsed
+  formatted_by: parser
+  formatted_by_actor_type: orchestrator
+  formatted_by_actor: run_role.py
+  formatted_at: '2026-06-23T12:52:55.351003+00:00'
+  follow_up_action: triage
+  attempts: 1
+  duration_seconds: 10.156
+  prompt_path: prompts/gpt-5.4.round-1.prompt.md
+  prompt_sha256: d34416cb909e7180eb267ccf7d9dafe480f5e7df51ffe79c06e493da173a5036
+- model_id: claude-opus-4-8
+  provider: anthropic-api
+  role: adversarial
+  treatment: adversarial
+  invocation_path: api
+  raw_path: raw/claude-opus-4-8.round-1.txt
+  raw_sha256: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+  parsed_path: parsed/claude-opus-4-8.round-1.yaml
+  parsed_sha256: 35a849d8a08e105144faa0cc1d158accc657d31ad0950c1155f6809fd9d77041
+  parse_status: parsed
+  formatted_by: parser
+  formatted_by_actor_type: orchestrator
+  formatted_by_actor: run_role.py
+  formatted_at: '2026-06-23T12:53:01.032578+00:00'
+  follow_up_action: triage
+  attempts: 1
+  duration_seconds: 5.662
+  prompt_path: prompts/claude-opus-4-8.round-1.prompt.md
+  prompt_sha256: 0cbb59b2bae23ec8bf172875b510d98009939311df5ec9f6270e6efaad508c05
+- model_id: gemini-3.1-pro-preview
+  provider: gemini-api
+  role: judgment
+  treatment: judgment
+  invocation_path: api
+  raw_path: raw/gemini-3.1-pro-preview.round-1.txt
+  raw_sha256: 67f20b5f2a77ca36c12b6b153ce451a10d7c0026c9147c2eb86f0e1d33ea4fb1
+  parsed_path: parsed/gemini-3.1-pro-preview.round-1.yaml
+  parsed_sha256: 1001110c1d6fe7b5ee8b8ef5cc0716813dfbca4786c08e72a3b40ab32c8609c1
+  parse_status: parsed
+  formatted_by: parser
+  formatted_by_actor_type: orchestrator
+  formatted_by_actor: run_role.py
+  formatted_at: '2026-06-23T12:53:28.942302+00:00'
+  follow_up_action: triage
+  attempts: 1
+  duration_seconds: 27.878
+  prompt_path: prompts/gemini-3.1-pro-preview.round-1.prompt.md
+  prompt_sha256: 7524d130ed67154c1bd419706e249049e193b3293b3fa1e878ee1f95d4a6dcc6
+criteria_source_path: .reviewcompass/evidence/review-runs/2026-06-23-user-triggered-materialization-prompts-trigger-resolver-postwrite-r3-criteria.md
+criteria_source_sha256: c2eaa9bf2b5c740f1bb5c02001253b2fa2e58a07434cdbbc19266343d22340b9

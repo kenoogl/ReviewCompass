@@ -233,12 +233,14 @@ decision_points:
         - .reviewcompass/guidance/WORKFLOW_NAVIGATION.md
         - .reviewcompass/backlog/todos/todo-2026-06-23-plan-to-todo-checklist-evidence.yaml
         - .reviewcompass/backlog/plans/plan-2026-06-22-user-initiated-backlog-checklist-effective-prompt.yaml
+        - .reviewcompass/backlog/plans/plan-2026-06-23-plan-todo-checklist-materialization.yaml
       effective_prompt_policy: one_effective_prompt_per_decision_point
       canonical_effective_prompt_path: .reviewcompass/guidance/effective-prompts/user-initiated-plan-to-todo-bridge.prompt.md
     - id: user_initiated_backlog_todo_execution
       prompt_source_refs:
         - .reviewcompass/guidance/WORKFLOW_NAVIGATION.md
         - .reviewcompass/backlog/plans/plan-2026-06-22-user-initiated-backlog-checklist-effective-prompt.yaml
+        - .reviewcompass/backlog/plans/plan-2026-06-23-plan-todo-checklist-materialization.yaml
       effective_prompt_policy: one_effective_prompt_per_decision_point
       canonical_effective_prompt_path: .reviewcompass/guidance/effective-prompts/user-initiated-backlog-todo-execution.prompt.md
     - id: user_initiated_task_quality_gate

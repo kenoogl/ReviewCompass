@@ -308,3 +308,10 @@ items:
   path: .reviewcompass/backlog/todos/todo-2026-06-23-plan-materialization-audit.yaml
   source_unit_id: main-side-conversation
   created_at: '2026-06-23T12:12:06.347624+00:00'
+- id: todo-2026-06-23-user-triggered-materialization-prompts
+  kind: todo
+  title: Integrate user-triggered materialization prompts
+  status: completed
+  path: .reviewcompass/backlog/todos/todo-2026-06-23-user-triggered-materialization-prompts.yaml
+  source_unit_id: main-side-conversation
+  created_at: '2026-06-23T12:18:06.849740+00:00'

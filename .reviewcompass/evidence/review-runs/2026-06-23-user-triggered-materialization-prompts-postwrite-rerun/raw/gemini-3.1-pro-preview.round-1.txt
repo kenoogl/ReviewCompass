@@ -1,0 +1,17 @@
+findings:
+  - severity: ERROR
+    target_location: "tools/check_workflow_action/operation_preflight.py"
+    description: "No mechanical trigger resolver maps short user continuation requests ('次へ', etc.) to the user_initiated_plan_to_todo_bridge operation."
+    rationale: "The behavior is currently operator-mediated rather than mechanically enforced. While the effective prompt text instructs the LLM/operator, there is no trigger resolver or preflight intercepting short natural language utterances to guarantee they route through the plan-to-TODO bridge before implementation."
+  - severity: ERROR
+    target_location: "tools/check-workflow-action.py"
+    description: "DEFAULT_DISCIPLINE_MAP diverges from the canonical WORKFLOW_DISCIPLINE_MAP.yaml for user_initiated_plan_to_todo_bridge."
+    rationale: "The hardcoded fallback dictionary omits `.reviewcompass/backlog/plans/plan-2026-06-23-plan-todo-checklist-materialization.yaml` from its prompt_source_refs. If the YAML file fails to load, the generated operation prompt will silently omit necessary plan materialization source materials."
+  - severity: ERROR
+    target_location: "tests/tools/test_effective_prompt_contract.py"
+    description: "Regression tests only assert text snippets in documentation instead of verifying the behavior-path execution."
+    rationale: "Tests such as `test_user_initiated_plan_to_todo_bridge_prompt_contains_trigger_boundary` rely entirely on string matching (`assert '...' in text`). They do not execute operation routing, preflights, or the command output path, leaving the mechanical enforcement of the quality gates completely untested."
+  - severity: WARN
+    target_location: "tests/tools/test_effective_prompt_contract.py"
+    description: "Test for plan-todo bridge materialization review does not protect the requirement to read materialization.slices."
+    rationale: "`test_user_initiated_plan_to_todo_bridge_prompt_requires_materialization_review` asserts the presence of `materialization.summary` and `materialization.next_candidates` but omits checking for `materialization.slices`. A future edit could silently remove the slice inspection requirement without failing tests."

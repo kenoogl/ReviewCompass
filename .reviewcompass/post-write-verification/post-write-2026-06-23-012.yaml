@@ -1,0 +1,104 @@
+status: completed
+target_files:
+- tools/check-workflow-action.py
+- tests/tools/test_check_workflow_action.py
+- .reviewcompass/guidance/WORKFLOW_DISCIPLINE_MAP.yaml
+- .reviewcompass/guidance/effective-prompts/user-initiated-plan-to-todo-bridge.prompt.md
+- .reviewcompass/guidance/effective-prompts/user-initiated-backlog-todo-execution.prompt.md
+- tests/tools/test_effective_prompt_contract.py
+- .reviewcompass/guidance/API_REVIEW_PROMPT_QUALITY.md
+- .reviewcompass/guidance/discipline_llm_as_judge_prompting.md
+- .reviewcompass/backlog/plans/plan-2026-06-23-plan-todo-checklist-materialization.yaml
+- .reviewcompass/backlog/todos/todo-2026-06-23-user-triggered-materialization-prompts.yaml
+target_sha256:
+  tools/check-workflow-action.py: 3c2da5017d6bb06cb731e7b87c5ceb33778372cefdbf172753e7b55b5f6637cf
+  tests/tools/test_check_workflow_action.py: fb97ab86b3bc2ccf93f104a9a715be47f596c320c7e6a439b3d9f03ba27b378e
+  .reviewcompass/guidance/WORKFLOW_DISCIPLINE_MAP.yaml: d5190899abf4d435bd96cf9b6a08e5761eacc255bb9afe78fce15cd8575d15e5
+  .reviewcompass/guidance/effective-prompts/user-initiated-plan-to-todo-bridge.prompt.md: 88091c55c4c7180a06a96c13b07bfc1f722a18de049a97cb0af039a83f14670c
+  .reviewcompass/guidance/effective-prompts/user-initiated-backlog-todo-execution.prompt.md: 233206e8aa1fad12b70f1a2292f20055e5809e865a3a776af8a3a9c7f152a6e3
+  tests/tools/test_effective_prompt_contract.py: 2ae76c3ae2878fc69e5ef1e21005826b22403036b76f87a774881ecb999673e3
+  .reviewcompass/guidance/API_REVIEW_PROMPT_QUALITY.md: 7a4698ec32170ced27d6f7dad1910a4e5a9b64d4639c74892c37cf60cee999a8
+  .reviewcompass/guidance/discipline_llm_as_judge_prompting.md: 9a6cc18404b2816cfef5c23cca35c526c22c92559c141380e5b43b30d1a2727e
+  .reviewcompass/backlog/plans/plan-2026-06-23-plan-todo-checklist-materialization.yaml: 3f8f01768ee4520046ec02a868fab18f92fc353af177b12937eef8621da881f4
+  .reviewcompass/backlog/todos/todo-2026-06-23-user-triggered-materialization-prompts.yaml: bb8aefcb2fe294b608b4bd3a06b97b29db5da1b949490b3438de591e635d3b06
+required_verifiers: &id001
+- gpt-5.4
+- claude-opus-4-8
+- gemini-3.1-pro-preview
+completed_verifiers: *id001
+unresolved_substantive_findings: 0
+verifications:
+- verifier: gpt-5.4
+  target_files:
+  - tools/check-workflow-action.py
+  - tests/tools/test_check_workflow_action.py
+  - .reviewcompass/guidance/WORKFLOW_DISCIPLINE_MAP.yaml
+  - .reviewcompass/guidance/effective-prompts/user-initiated-plan-to-todo-bridge.prompt.md
+  - .reviewcompass/guidance/effective-prompts/user-initiated-backlog-todo-execution.prompt.md
+  - tests/tools/test_effective_prompt_contract.py
+  - .reviewcompass/guidance/API_REVIEW_PROMPT_QUALITY.md
+  - .reviewcompass/guidance/discipline_llm_as_judge_prompting.md
+  - .reviewcompass/backlog/plans/plan-2026-06-23-plan-todo-checklist-materialization.yaml
+  - .reviewcompass/backlog/todos/todo-2026-06-23-user-triggered-materialization-prompts.yaml
+  target_sha256:
+    tools/check-workflow-action.py: 3c2da5017d6bb06cb731e7b87c5ceb33778372cefdbf172753e7b55b5f6637cf
+    tests/tools/test_check_workflow_action.py: fb97ab86b3bc2ccf93f104a9a715be47f596c320c7e6a439b3d9f03ba27b378e
+    .reviewcompass/guidance/WORKFLOW_DISCIPLINE_MAP.yaml: d5190899abf4d435bd96cf9b6a08e5761eacc255bb9afe78fce15cd8575d15e5
+    .reviewcompass/guidance/effective-prompts/user-initiated-plan-to-todo-bridge.prompt.md: 88091c55c4c7180a06a96c13b07bfc1f722a18de049a97cb0af039a83f14670c
+    .reviewcompass/guidance/effective-prompts/user-initiated-backlog-todo-execution.prompt.md: 233206e8aa1fad12b70f1a2292f20055e5809e865a3a776af8a3a9c7f152a6e3
+    tests/tools/test_effective_prompt_contract.py: 2ae76c3ae2878fc69e5ef1e21005826b22403036b76f87a774881ecb999673e3
+    .reviewcompass/guidance/API_REVIEW_PROMPT_QUALITY.md: 7a4698ec32170ced27d6f7dad1910a4e5a9b64d4639c74892c37cf60cee999a8
+    .reviewcompass/guidance/discipline_llm_as_judge_prompting.md: 9a6cc18404b2816cfef5c23cca35c526c22c92559c141380e5b43b30d1a2727e
+    .reviewcompass/backlog/plans/plan-2026-06-23-plan-todo-checklist-materialization.yaml: 3f8f01768ee4520046ec02a868fab18f92fc353af177b12937eef8621da881f4
+    .reviewcompass/backlog/todos/todo-2026-06-23-user-triggered-materialization-prompts.yaml: bb8aefcb2fe294b608b4bd3a06b97b29db5da1b949490b3438de591e635d3b06
+- verifier: claude-opus-4-8
+  target_files:
+  - tools/check-workflow-action.py
+  - tests/tools/test_check_workflow_action.py
+  - .reviewcompass/guidance/WORKFLOW_DISCIPLINE_MAP.yaml
+  - .reviewcompass/guidance/effective-prompts/user-initiated-plan-to-todo-bridge.prompt.md
+  - .reviewcompass/guidance/effective-prompts/user-initiated-backlog-todo-execution.prompt.md
+  - tests/tools/test_effective_prompt_contract.py
+  - .reviewcompass/guidance/API_REVIEW_PROMPT_QUALITY.md
+  - .reviewcompass/guidance/discipline_llm_as_judge_prompting.md
+  - .reviewcompass/backlog/plans/plan-2026-06-23-plan-todo-checklist-materialization.yaml
+  - .reviewcompass/backlog/todos/todo-2026-06-23-user-triggered-materialization-prompts.yaml
+  target_sha256:
+    tools/check-workflow-action.py: 3c2da5017d6bb06cb731e7b87c5ceb33778372cefdbf172753e7b55b5f6637cf
+    tests/tools/test_check_workflow_action.py: fb97ab86b3bc2ccf93f104a9a715be47f596c320c7e6a439b3d9f03ba27b378e
+    .reviewcompass/guidance/WORKFLOW_DISCIPLINE_MAP.yaml: d5190899abf4d435bd96cf9b6a08e5761eacc255bb9afe78fce15cd8575d15e5
+    .reviewcompass/guidance/effective-prompts/user-initiated-plan-to-todo-bridge.prompt.md: 88091c55c4c7180a06a96c13b07bfc1f722a18de049a97cb0af039a83f14670c
+    .reviewcompass/guidance/effective-prompts/user-initiated-backlog-todo-execution.prompt.md: 233206e8aa1fad12b70f1a2292f20055e5809e865a3a776af8a3a9c7f152a6e3
+    tests/tools/test_effective_prompt_contract.py: 2ae76c3ae2878fc69e5ef1e21005826b22403036b76f87a774881ecb999673e3
+    .reviewcompass/guidance/API_REVIEW_PROMPT_QUALITY.md: 7a4698ec32170ced27d6f7dad1910a4e5a9b64d4639c74892c37cf60cee999a8
+    .reviewcompass/guidance/discipline_llm_as_judge_prompting.md: 9a6cc18404b2816cfef5c23cca35c526c22c92559c141380e5b43b30d1a2727e
+    .reviewcompass/backlog/plans/plan-2026-06-23-plan-todo-checklist-materialization.yaml: 3f8f01768ee4520046ec02a868fab18f92fc353af177b12937eef8621da881f4
+    .reviewcompass/backlog/todos/todo-2026-06-23-user-triggered-materialization-prompts.yaml: bb8aefcb2fe294b608b4bd3a06b97b29db5da1b949490b3438de591e635d3b06
+- verifier: gemini-3.1-pro-preview
+  target_files:
+  - tools/check-workflow-action.py
+  - tests/tools/test_check_workflow_action.py
+  - .reviewcompass/guidance/WORKFLOW_DISCIPLINE_MAP.yaml
+  - .reviewcompass/guidance/effective-prompts/user-initiated-plan-to-todo-bridge.prompt.md
+  - .reviewcompass/guidance/effective-prompts/user-initiated-backlog-todo-execution.prompt.md
+  - tests/tools/test_effective_prompt_contract.py
+  - .reviewcompass/guidance/API_REVIEW_PROMPT_QUALITY.md
+  - .reviewcompass/guidance/discipline_llm_as_judge_prompting.md
+  - .reviewcompass/backlog/plans/plan-2026-06-23-plan-todo-checklist-materialization.yaml
+  - .reviewcompass/backlog/todos/todo-2026-06-23-user-triggered-materialization-prompts.yaml
+  target_sha256:
+    tools/check-workflow-action.py: 3c2da5017d6bb06cb731e7b87c5ceb33778372cefdbf172753e7b55b5f6637cf
+    tests/tools/test_check_workflow_action.py: fb97ab86b3bc2ccf93f104a9a715be47f596c320c7e6a439b3d9f03ba27b378e
+    .reviewcompass/guidance/WORKFLOW_DISCIPLINE_MAP.yaml: d5190899abf4d435bd96cf9b6a08e5761eacc255bb9afe78fce15cd8575d15e5
+    .reviewcompass/guidance/effective-prompts/user-initiated-plan-to-todo-bridge.prompt.md: 88091c55c4c7180a06a96c13b07bfc1f722a18de049a97cb0af039a83f14670c
+    .reviewcompass/guidance/effective-prompts/user-initiated-backlog-todo-execution.prompt.md: 233206e8aa1fad12b70f1a2292f20055e5809e865a3a776af8a3a9c7f152a6e3
+    tests/tools/test_effective_prompt_contract.py: 2ae76c3ae2878fc69e5ef1e21005826b22403036b76f87a774881ecb999673e3
+    .reviewcompass/guidance/API_REVIEW_PROMPT_QUALITY.md: 7a4698ec32170ced27d6f7dad1910a4e5a9b64d4639c74892c37cf60cee999a8
+    .reviewcompass/guidance/discipline_llm_as_judge_prompting.md: 9a6cc18404b2816cfef5c23cca35c526c22c92559c141380e5b43b30d1a2727e
+    .reviewcompass/backlog/plans/plan-2026-06-23-plan-todo-checklist-materialization.yaml: 3f8f01768ee4520046ec02a868fab18f92fc353af177b12937eef8621da881f4
+    .reviewcompass/backlog/todos/todo-2026-06-23-user-triggered-materialization-prompts.yaml: bb8aefcb2fe294b608b4bd3a06b97b29db5da1b949490b3438de591e635d3b06
+review_run:
+  path: .reviewcompass/evidence/review-runs/2026-06-23-user-triggered-materialization-prompts-trigger-resolver-postwrite-r3
+  summary_path: .reviewcompass/evidence/review-runs/2026-06-23-user-triggered-materialization-prompts-trigger-resolver-postwrite-r3/model-result-summary.yaml
+notes: Generated template; verify target_files cover current post-write targets before
+  use.

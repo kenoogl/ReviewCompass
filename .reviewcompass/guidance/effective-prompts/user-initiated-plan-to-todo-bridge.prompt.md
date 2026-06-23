@@ -20,7 +20,16 @@ plan を読むだけ、説明するだけ、優先順位を相談するだけの
 - `.reviewcompass/backlog/index.yaml`
 - 対象 plan 本文。
 - 対応する既存 backlog TODO の有無。
+- `operation-prompt --trigger-text <text> --json` から入った場合は `trigger_resolution`。
+- `work-backlog plan-todo-bridge --plan-id <plan-id> --json` の出力。
 - 現在の work unit stack。
+
+## Trigger Resolution Evidence
+- `trigger_resolution.trigger_kind` が `short_continuation` の場合、短い「次へ」「進める」「継続」から bridge に入ったことを示す。
+- `trigger_resolution.reason` が `unmaterialized_plan_slice` の場合、未展開 plan slice が bridge 選択理由である。
+- `trigger_resolution.reason` が `multiple_unmaterialized_plan_candidates` の場合、複数 plan 候補があるため、`candidate_plan_ids` を利用者に示し、対象 plan を明示してから進む。
+- `trigger_resolution.candidate_plan_ids` は候補 plan の一覧であり、TODO 化する plan を一意に決めるための証跡である。
+- `trigger_resolution.requested_plan_id` がある場合は、その plan に絞って解決されたことを確認する。
 
 ## Artifact Boundaries
 - plan は方針、分解案、受け入れ条件、残作業を保持する。実行対象そのものではなく、どこを TODO 化するかを判断する上流材料である。
@@ -39,16 +48,18 @@ plan を読むだけ、説明するだけ、優先順位を相談するだけの
 
 ## Mechanical Steps
 1. 対象 plan を読み、実行しようとしている範囲を特定する。
-2. `.reviewcompass/backlog/index.yaml` と backlog TODO を確認し、同じ範囲を扱う既存 TODO があるかを見る。
-3. 対応 TODO がなければ `work-backlog add-todo` で plan 由来 TODO を作成する。
-4. 作成または選択した TODO を `work-backlog show --id <todo-id> --json` で読む。
-5. 状態変更の直前確認を済ませた場合だけ、`work-backlog start-checklist --id <todo-id> --mutation-boundary-confirmed` で runtime checklist を生成する。
-6. `work-backlog audit-checklist-coverage --id <todo-id> --checklist-id <checklist-id>` を実行する。
-7. `task-quality-check audit --backlog-id <todo-id> --checklist-id <checklist-id>` を実行する。
-8. audit が DEVIATION の場合は実作業へ進まず、TODO または checklist の修正に戻る。
-9. audit が WARN または高リスクの場合、`task-quality-check prepare-review-materials --backlog-id <todo-id> --checklist-id <checklist-id> --output-dir <dir>` で review materials を作る。
-10. review materials を作った場合、外部 API review に進むか、ローカル判断に留めるかを利用者に確認する。
-11. coverage / quality が OK で、WARN または高リスクが解消または明示判断済みの場合だけ、checklist item を active にして実作業へ進む。
+2. `work-backlog plan-todo-bridge --plan-id <plan-id> --json` を実行し、`materialization.summary`、`materialization.slices`、`materialization.next_candidates` を確認する。
+3. 未展開 slice がある場合、`materialization.next_candidates` から今回扱う phase を選び、plan 全体完了と一部完了を区別して利用者に示す。
+4. `.reviewcompass/backlog/index.yaml` と backlog TODO を確認し、同じ範囲を扱う既存 TODO があるかを見る。
+5. 対応 TODO がなければ `work-backlog add-todo` で plan 由来 TODO を作成する。
+6. 作成または選択した TODO を `work-backlog show --id <todo-id> --json` で読む。
+7. 状態変更の直前確認を済ませた場合だけ、`work-backlog start-checklist --id <todo-id> --mutation-boundary-confirmed` で runtime checklist を生成する。
+8. `work-backlog audit-checklist-coverage --id <todo-id> --checklist-id <checklist-id>` を実行する。
+9. `task-quality-check audit --backlog-id <todo-id> --checklist-id <checklist-id>` を実行する。
+10. audit が DEVIATION の場合は実作業へ進まず、TODO または checklist の修正に戻る。
+11. audit が WARN または高リスクの場合、`task-quality-check prepare-review-materials --backlog-id <todo-id> --checklist-id <checklist-id> --output-dir <dir>` で review materials を作る。
+12. review materials を作った場合、外部 API review に進むか、ローカル判断に留めるかを利用者に確認する。
+13. coverage / quality が OK で、WARN または高リスクが解消または明示判断済みの場合だけ、checklist item を active にして実作業へ進む。
 
 ## High-Risk Signals
 - plan から複数の独立作業を切り出す必要がある。
@@ -65,6 +76,7 @@ plan を読むだけ、説明するだけ、優先順位を相談するだけの
 
 ## Prohibitions
 - TODO/checklist がないまま plan から実作業へ進まない。
+- `work-backlog plan-todo-bridge` の materialization status を確認せずに、短い「次へ」「進める」から実装へ進まない。
 - plan 本文を読まずに path-only で TODO 化しない。
 - plan の広い範囲を 1 つの曖昧な TODO に押し込まない。
 - 3者レビューを常に必須化しない。

@@ -1,0 +1,17 @@
+findings:
+  - severity: ERROR
+    target_location: "tools/check-workflow-action.py (operation-prompt subcommand, OPERATION_PROMPT_IDS) and tools/check_workflow_action/operation_preflight.py"
+    description: "短いユーザ発話（次へ / 進める / 継続）を user_initiated_plan_to_todo_bridge などの operation prompt へ写像する trigger resolver が存在しない。raw utterance から operation を機械決定する経路がない。"
+    rationale: "operation-prompt サブコマンドは `operation` を必須位置引数（choices=OPERATION_PROMPT_IDS）として受け取り、呼び出し側が operation id を明示する前提である。`次へ` `進める` `継続` の文字列を operation id へ resolve する map・関数・テストは供給ファイルのどこにもない。検索可能な唯一の utterance 解釈は _is_commit_execution_delegation_instruction（commit 専用）だけで、plan/TODO 文脈ではない。したがって Check 1 の機械的トリガー経路は未実装であり、bridge への誘導は operator が手で正しい operation id を選ぶことに依存する。これは behavior-path claim 1 の核心（short request must not bypass the bridge）を機械的・テスト的に担保していない。"
+  - severity: WARN
+    target_location: ".reviewcompass/guidance/effective-prompts/user-initiated-plan-to-todo-bridge.prompt.md (Trigger Boundary / Prohibitions)"
+    description: "bridge を起動すべき短い発話の判定が prompt 内の自然言語ガイダンスのみで、operator-mediated である。プロンプトを読む前段（どの operation prompt を出すか）の機械判定がない。"
+    rationale: "Trigger Boundary は「次へ」「進める」を列挙し Prohibitions で bypass を禁止するが、これは LLM がこのプロンプトを既に選択して読んだ後の自己規律にすぎない。`operation-prompt user_initiated_plan_to_todo_bridge` を呼ぶ判断自体は operator/LLM 任せで、plan に未展開作業があるときに自動でこの operation を選ぶ preflight や next-action 分岐がない。next サブコマンドの next_action_kind に user_initiated_plan_to_todo_bridge を出す分岐は cmd_next 内に存在せず、operation_prompt グループは operation-prompt サブコマンドからのみ参照される。よって経路は現状 operator-mediated であり、テストで固定された機械強制ではない。"
+  - severity: WARN
+    target_location: "tests/tools/test_effective_prompt_contract.py and tests/tools/test_check_workflow_action.py"
+    description: "PTC-4 の behavior-path claim（短い継続要求が bridge を経由する）を固定する回帰テストがない。テストは prompt 本文の語句存在と materialization 順序のみを検証する。"
+    rationale: "test_effective_prompt_contract.py は work-backlog plan-todo-bridge が add-todo より前に現れること、start-checklist / audit / WARN 文言が含まれることを text index で検証するが、これは Check 5 が警告する「words in documents」検証である。test_check_workflow_action.py には operation-prompt commit / user_initiated_backlog_todo_execution の出力検証はあるが、user_initiated_plan_to_todo_bridge を短い utterance から到達させる経路や、未展開 plan があるとき next/preflight がこの operation を要求することを固定するテストは存在しない。plan-2026-06-23 の PTC-RT-3（unmaterialized slice からの実装開始を停止）に対応する CLI レベルの停止テストも供給テスト内に見当たらない（audit-plan-todo-bridge は promoted 状態の plan に対してのみ DEVIATION を返し、短い継続要求の bypass を止める経路ではない）。したがって将来の編集が materialization review/quality gate を静かに外しても検出されない余地が残る。"
+  - severity: INFO
+    target_location: ".reviewcompass/backlog/plans/plan-2026-06-23-plan-todo-checklist-materialization.yaml (PTC-4C acceptance) と todo-2026-06-23-user-triggered-materialization-prompts.yaml (PTC-4-RT-3)"
+    description: "PTC-4C「short requests do not bypass the bridge」の達成証跡が prompt/source 参照の追加と guidance 文言に留まり、trigger reference が機械経路であることを示していない。"
+    rationale: "PTC-4-RT-3 の expected は「a trigger/guidance reference for short continuation requests points to the bridge」であり、guidance/prompt への参照で満たせる緩い受入になっている。これは Check 4 で求める「短い発話 → operation 解決」の機械接続ではなく、acceptance 自体が operator-mediated 解釈で充足され得る。discipline map の operation_prompt エントリは canonical prompt と source materials を正しく結線しており（Check 4 の文書結線は pass）、tools/check-workflow-action.py の DEFAULT_DISCIPLINE_MAP も canonical map と整合する（commit / plan-to-todo-bridge / backlog-todo-execution の canonical_effective_prompt_path は一致）。ただし plan の materialization 上 PTC-4 は completed と記録されており、機械トリガー欠如という限界が完了扱いの中に埋もれている点を明示しておく。"

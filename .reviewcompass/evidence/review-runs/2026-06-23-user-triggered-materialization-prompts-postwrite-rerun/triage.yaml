@@ -1,0 +1,342 @@
+run_id: 2026-06-23-user-triggered-materialization-prompts-postwrite-rerun
+triage_status: draft
+generated_at: '2026-06-23T12:33:28.762725+00:00'
+decision_actor: null
+decision_actor_type: human
+items:
+- finding_id: 2026-06-23-user-triggered-materialization-prompts-postwrite-rerun-gpt-5.4-primary-001
+  run_id: 2026-06-23-user-triggered-materialization-prompts-postwrite-rerun
+  source_model: gpt-5.4
+  source_round: round-1
+  source_raw_path: raw/gpt-5.4.round-1.txt
+  source_parsed_path: parsed/gpt-5.4.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: tools/check-workflow-action.py (cmd_next / cmd_operation_prompt
+    / operation routing path), tools/check_workflow_action/operation_preflight.py,
+    tests/tools/test_check_workflow_action.py
+  plain_language_summary: 短い継続要求（「次へ」「進める」「継続」）から user_initiated_plan_to_todo_bridge
+    へ入る機械的ルーティングは実装・テストされていない。bridge への到達は effective prompt 文面上の Trigger Boundary
+    に留まり、raw utterance を operation に解決する trigger resolver や preflight 経路の証拠がない。
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: PTC-4 の中心 claim は短い継続要求が plan-to-TODO bridge を bypass しないことだが、提示実装で機械的に返せるのは
+    next_action と operation-prompt の個別取得だけで、自然言語の短い要求を user_initiated_plan_to_todo_bridge
+    に写像する処理は見当たらない。operation_preflight も operation_id を受け取るだけで utterance 解決を行わず、関連テストも
+    operation-prompt 文書内容や next --json を確認するのみで、'次へ/進める/継続' が bridge を選ぶ経路を固定していない。criteria
+    の重要 limitation に照らすと、これは guidance 依存の operator-mediated 挙動であり、mechanically enforced
+    とは言えない。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-23-user-triggered-materialization-prompts-postwrite-rerun-gpt-5.4-primary-002
+  run_id: 2026-06-23-user-triggered-materialization-prompts-postwrite-rerun
+  source_model: gpt-5.4
+  source_round: round-1
+  source_raw_path: raw/gpt-5.4.round-1.txt
+  source_parsed_path: parsed/gpt-5.4.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: .reviewcompass/guidance/effective-prompts/user-initiated-backlog-todo-execution.prompt.md,
+    tests/tools/test_effective_prompt_contract.py
+  plain_language_summary: TODO 実行 prompt は coverage/quality audit を checklist item
+    active より前に要求しているが、WARN や高リスク時の review-materials 作成・明示判断のゲートが plan bridge prompt
+    ほど明確に要求されていない。
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: plan-to-TODO bridge prompt では task-quality-check audit が WARN または高リスクの場合に
+    prepare-review-materials と利用者確認まで規定している一方、backlog TODO execution prompt は 'coverage
+    / quality が OK の場合だけ' としか書かず、WARN を OK に含めるのか、WARN でも実装開始前に追加レビューが必要なのかが曖昧である。テストも
+    DEVIATION 前提の順序しか見ておらず、WARN/high-risk handling の非バイパス性を固定していないため、implementation
+    開始前の品質ゲートとしては弱い。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-23-user-triggered-materialization-prompts-postwrite-rerun-gpt-5.4-primary-003
+  run_id: 2026-06-23-user-triggered-materialization-prompts-postwrite-rerun
+  source_model: gpt-5.4
+  source_round: round-1
+  source_raw_path: raw/gpt-5.4.round-1.txt
+  source_parsed_path: parsed/gpt-5.4.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: tools/check-workflow-action.py (DEFAULT_DISCIPLINE_MAP), .reviewcompass/guidance/WORKFLOW_DISCIPLINE_MAP.yaml
+  plain_language_summary: 実行時 fallback の DEFAULT_DISCIPLINE_MAP が canonical discipline
+    map とずれており、plan materialization source refs の追加内容を完全には反映していない。
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: WORKFLOW_DISCIPLINE_MAP.yaml では user_initiated_plan_to_todo_bridge
+    と user_initiated_backlog_todo_execution の prompt_source_refs に 2026-06-23 の plan
+    materialization plan を含めているが、tools/check-workflow-action.py 内の DEFAULT_DISCIPLINE_MAP
+    にはその追加がない。通常は YAML が読めればそちらが使われるものの、map 読み込み失敗時や外部配置時には古い fallback に戻るため、criteria
+    の『defaults in tools/check-workflow-action.py must not diverge in a way that could
+    affect prompt generation』に照らして auditability 上のギャップが残る。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-23-user-triggered-materialization-prompts-postwrite-rerun-gpt-5.4-primary-004
+  run_id: 2026-06-23-user-triggered-materialization-prompts-postwrite-rerun
+  source_model: gpt-5.4
+  source_round: round-1
+  source_raw_path: raw/gpt-5.4.round-1.txt
+  source_parsed_path: parsed/gpt-5.4.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: tests/tools/test_effective_prompt_contract.py, tests/tools/test_check_workflow_action.py
+  plain_language_summary: 回帰テストは主に prompt 文言・map 参照・CLI 出力断片を検査しており、PTC-4 が主張する end-to-end
+    behavior path の固定としては不十分である。
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: 追加テストは plan-to-TODO bridge prompt に materialization 文言があること、discipline
+    map に source refs があること、plan-todo-bridge CLI が materialization を返すことを確認しているが、短い継続要求から
+    operation prompt selection、materialization review、TODO/checklist 生成、coverage audit、task-quality
+    audit までの一連の経路を 1 つの失敗不能パスとして検証していない。特に 'short request routes to bridge instead
+    of direct implementation' を機械的に証明する trigger/preflight test がないため、将来の変更で routing
+    が消えても文書テストだけでは検出できない。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-23-user-triggered-materialization-prompts-postwrite-rerun-gpt-5.4-primary-005
+  run_id: 2026-06-23-user-triggered-materialization-prompts-postwrite-rerun
+  source_model: gpt-5.4
+  source_round: round-1
+  source_raw_path: raw/gpt-5.4.round-1.txt
+  source_parsed_path: parsed/gpt-5.4.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: .reviewcompass/guidance/effective-prompts/user-initiated-plan-to-todo-bridge.prompt.md,
+    tools/check_workflow_action/work_backlog.py, tests/tools/test_work_backlog_cli.py
+  plain_language_summary: plan materialization review の順序自体は canonical prompt と CLI
+    テストでかなり明確に固定されている。
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: prompt は work-backlog plan-todo-bridge --plan-id を add-todo より前に置き、materialization.summary
+    / slices / next_candidates の確認を要求している。test_user_initiated_plan_to_todo_bridge_prompt_requires_materialization_review
+    が順序を index 比較で固定し、work_backlog.plan_todo_bridge も全 slice 状態と next_candidates を返す。したがって
+    Check 2 の文書順序 claim 自体は概ね満たされているが、上位の short-request routing 不足が残るため無所見にはできない。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-23-user-triggered-materialization-prompts-postwrite-rerun-gpt-5.4-primary-006
+  run_id: 2026-06-23-user-triggered-materialization-prompts-postwrite-rerun
+  source_model: gpt-5.4
+  source_round: round-1
+  source_raw_path: raw/gpt-5.4.round-1.txt
+  source_parsed_path: parsed/gpt-5.4.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: .reviewcompass/guidance/API_REVIEW_PROMPT_QUALITY.md, .reviewcompass/guidance/discipline_llm_as_judge_prompting.md
+  plain_language_summary: 今回の再実行 prompt-design method 自体は、main preanalysis・behavior-path
+    materials・claim 分解・single-model zero-findings への警戒を明示しており、前回の過狭スコープ問題に対する改善は確認できる。
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: 'API_REVIEW_PROMPT_QUALITY.md には behavior-path claim、trigger resolver、operation
+    preflight、変更文書だけでは不足、review question decomposition、single-model findings: [] を完了根拠にしない旨が明記され、discipline_llm_as_judge_prompting.md
+    でも main preanalysis と behavior-path 材料要求がある。したがって Check 6 の prompt-design compliance
+    は概ね合格だが、実 repository behavior がその要求にまだ追いついていない点が上記 findings である。'
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-23-user-triggered-materialization-prompts-postwrite-rerun-claude-opus-4-8-adversarial-001
+  run_id: 2026-06-23-user-triggered-materialization-prompts-postwrite-rerun
+  source_model: claude-opus-4-8
+  source_round: round-1
+  source_raw_path: raw/claude-opus-4-8.round-1.txt
+  source_parsed_path: parsed/claude-opus-4-8.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: tools/check-workflow-action.py (operation-prompt subcommand, OPERATION_PROMPT_IDS)
+    and tools/check_workflow_action/operation_preflight.py
+  plain_language_summary: 短いユーザ発話（次へ / 進める / 継続）を user_initiated_plan_to_todo_bridge
+    などの operation prompt へ写像する trigger resolver が存在しない。raw utterance から operation
+    を機械決定する経路がない。
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: operation-prompt サブコマンドは `operation` を必須位置引数（choices=OPERATION_PROMPT_IDS）として受け取り、呼び出し側が
+    operation id を明示する前提である。`次へ` `進める` `継続` の文字列を operation id へ resolve する map・関数・テストは供給ファイルのどこにもない。検索可能な唯一の
+    utterance 解釈は _is_commit_execution_delegation_instruction（commit 専用）だけで、plan/TODO
+    文脈ではない。したがって Check 1 の機械的トリガー経路は未実装であり、bridge への誘導は operator が手で正しい operation
+    id を選ぶことに依存する。これは behavior-path claim 1 の核心（short request must not bypass the
+    bridge）を機械的・テスト的に担保していない。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-23-user-triggered-materialization-prompts-postwrite-rerun-claude-opus-4-8-adversarial-002
+  run_id: 2026-06-23-user-triggered-materialization-prompts-postwrite-rerun
+  source_model: claude-opus-4-8
+  source_round: round-1
+  source_raw_path: raw/claude-opus-4-8.round-1.txt
+  source_parsed_path: parsed/claude-opus-4-8.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: .reviewcompass/guidance/effective-prompts/user-initiated-plan-to-todo-bridge.prompt.md
+    (Trigger Boundary / Prohibitions)
+  plain_language_summary: bridge を起動すべき短い発話の判定が prompt 内の自然言語ガイダンスのみで、operator-mediated
+    である。プロンプトを読む前段（どの operation prompt を出すか）の機械判定がない。
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: Trigger Boundary は「次へ」「進める」を列挙し Prohibitions で bypass を禁止するが、これは
+    LLM がこのプロンプトを既に選択して読んだ後の自己規律にすぎない。`operation-prompt user_initiated_plan_to_todo_bridge`
+    を呼ぶ判断自体は operator/LLM 任せで、plan に未展開作業があるときに自動でこの operation を選ぶ preflight や next-action
+    分岐がない。next サブコマンドの next_action_kind に user_initiated_plan_to_todo_bridge を出す分岐は
+    cmd_next 内に存在せず、operation_prompt グループは operation-prompt サブコマンドからのみ参照される。よって経路は現状
+    operator-mediated であり、テストで固定された機械強制ではない。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-23-user-triggered-materialization-prompts-postwrite-rerun-claude-opus-4-8-adversarial-003
+  run_id: 2026-06-23-user-triggered-materialization-prompts-postwrite-rerun
+  source_model: claude-opus-4-8
+  source_round: round-1
+  source_raw_path: raw/claude-opus-4-8.round-1.txt
+  source_parsed_path: parsed/claude-opus-4-8.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: tests/tools/test_effective_prompt_contract.py and tests/tools/test_check_workflow_action.py
+  plain_language_summary: PTC-4 の behavior-path claim（短い継続要求が bridge を経由する）を固定する回帰テストがない。テストは
+    prompt 本文の語句存在と materialization 順序のみを検証する。
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: test_effective_prompt_contract.py は work-backlog plan-todo-bridge
+    が add-todo より前に現れること、start-checklist / audit / WARN 文言が含まれることを text index で検証するが、これは
+    Check 5 が警告する「words in documents」検証である。test_check_workflow_action.py には operation-prompt
+    commit / user_initiated_backlog_todo_execution の出力検証はあるが、user_initiated_plan_to_todo_bridge
+    を短い utterance から到達させる経路や、未展開 plan があるとき next/preflight がこの operation を要求することを固定するテストは存在しない。plan-2026-06-23
+    の PTC-RT-3（unmaterialized slice からの実装開始を停止）に対応する CLI レベルの停止テストも供給テスト内に見当たらない（audit-plan-todo-bridge
+    は promoted 状態の plan に対してのみ DEVIATION を返し、短い継続要求の bypass を止める経路ではない）。したがって将来の編集が
+    materialization review/quality gate を静かに外しても検出されない余地が残る。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-23-user-triggered-materialization-prompts-postwrite-rerun-claude-opus-4-8-adversarial-004
+  run_id: 2026-06-23-user-triggered-materialization-prompts-postwrite-rerun
+  source_model: claude-opus-4-8
+  source_round: round-1
+  source_raw_path: raw/claude-opus-4-8.round-1.txt
+  source_parsed_path: parsed/claude-opus-4-8.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: .reviewcompass/backlog/plans/plan-2026-06-23-plan-todo-checklist-materialization.yaml
+    (PTC-4C acceptance) と todo-2026-06-23-user-triggered-materialization-prompts.yaml
+    (PTC-4-RT-3)
+  plain_language_summary: PTC-4C「short requests do not bypass the bridge」の達成証跡が prompt/source
+    参照の追加と guidance 文言に留まり、trigger reference が機械経路であることを示していない。
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: PTC-4-RT-3 の expected は「a trigger/guidance reference for short
+    continuation requests points to the bridge」であり、guidance/prompt への参照で満たせる緩い受入になっている。これは
+    Check 4 で求める「短い発話 → operation 解決」の機械接続ではなく、acceptance 自体が operator-mediated 解釈で充足され得る。discipline
+    map の operation_prompt エントリは canonical prompt と source materials を正しく結線しており（Check
+    4 の文書結線は pass）、tools/check-workflow-action.py の DEFAULT_DISCIPLINE_MAP も canonical
+    map と整合する（commit / plan-to-todo-bridge / backlog-todo-execution の canonical_effective_prompt_path
+    は一致）。ただし plan の materialization 上 PTC-4 は completed と記録されており、機械トリガー欠如という限界が完了扱いの中に埋もれている点を明示しておく。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-23-user-triggered-materialization-prompts-postwrite-rerun-gemini-3.1-pro-preview-judgment-001
+  run_id: 2026-06-23-user-triggered-materialization-prompts-postwrite-rerun
+  source_model: gemini-3.1-pro-preview
+  source_round: round-1
+  source_raw_path: raw/gemini-3.1-pro-preview.round-1.txt
+  source_parsed_path: parsed/gemini-3.1-pro-preview.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: tools/check_workflow_action/operation_preflight.py
+  plain_language_summary: No mechanical trigger resolver maps short user continuation
+    requests ('次へ', etc.) to the user_initiated_plan_to_todo_bridge operation.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: The behavior is currently operator-mediated rather than mechanically
+    enforced. While the effective prompt text instructs the LLM/operator, there is
+    no trigger resolver or preflight intercepting short natural language utterances
+    to guarantee they route through the plan-to-TODO bridge before implementation.
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-23-user-triggered-materialization-prompts-postwrite-rerun-gemini-3.1-pro-preview-judgment-002
+  run_id: 2026-06-23-user-triggered-materialization-prompts-postwrite-rerun
+  source_model: gemini-3.1-pro-preview
+  source_round: round-1
+  source_raw_path: raw/gemini-3.1-pro-preview.round-1.txt
+  source_parsed_path: parsed/gemini-3.1-pro-preview.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: tools/check-workflow-action.py
+  plain_language_summary: DEFAULT_DISCIPLINE_MAP diverges from the canonical WORKFLOW_DISCIPLINE_MAP.yaml
+    for user_initiated_plan_to_todo_bridge.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: The hardcoded fallback dictionary omits `.reviewcompass/backlog/plans/plan-2026-06-23-plan-todo-checklist-materialization.yaml`
+    from its prompt_source_refs. If the YAML file fails to load, the generated operation
+    prompt will silently omit necessary plan materialization source materials.
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-23-user-triggered-materialization-prompts-postwrite-rerun-gemini-3.1-pro-preview-judgment-003
+  run_id: 2026-06-23-user-triggered-materialization-prompts-postwrite-rerun
+  source_model: gemini-3.1-pro-preview
+  source_round: round-1
+  source_raw_path: raw/gemini-3.1-pro-preview.round-1.txt
+  source_parsed_path: parsed/gemini-3.1-pro-preview.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: tests/tools/test_effective_prompt_contract.py
+  plain_language_summary: Regression tests only assert text snippets in documentation
+    instead of verifying the behavior-path execution.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: Tests such as `test_user_initiated_plan_to_todo_bridge_prompt_contains_trigger_boundary`
+    rely entirely on string matching (`assert '...' in text`). They do not execute
+    operation routing, preflights, or the command output path, leaving the mechanical
+    enforcement of the quality gates completely untested.
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-23-user-triggered-materialization-prompts-postwrite-rerun-gemini-3.1-pro-preview-judgment-004
+  run_id: 2026-06-23-user-triggered-materialization-prompts-postwrite-rerun
+  source_model: gemini-3.1-pro-preview
+  source_round: round-1
+  source_raw_path: raw/gemini-3.1-pro-preview.round-1.txt
+  source_parsed_path: parsed/gemini-3.1-pro-preview.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: tests/tools/test_effective_prompt_contract.py
+  plain_language_summary: Test for plan-todo bridge materialization review does not
+    protect the requirement to read materialization.slices.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: '`test_user_initiated_plan_to_todo_bridge_prompt_requires_materialization_review`
+    asserts the presence of `materialization.summary` and `materialization.next_candidates`
+    but omits checking for `materialization.slices`. A future edit could silently
+    remove the slice inspection requirement without failing tests.'
+  applied_files: []
+  superseded_by: null

@@ -1,0 +1,65 @@
+role: primary
+provider: openai-api
+model: gpt-5.4
+attempts: 1
+duration_seconds: 18.369
+findings:
+- severity: ERROR
+  target_location: tools/check-workflow-action.py (cmd_next / cmd_operation_prompt
+    / operation routing path), tools/check_workflow_action/operation_preflight.py,
+    tests/tools/test_check_workflow_action.py
+  description: 短い継続要求（「次へ」「進める」「継続」）から user_initiated_plan_to_todo_bridge へ入る機械的ルーティングは実装・テストされていない。bridge
+    への到達は effective prompt 文面上の Trigger Boundary に留まり、raw utterance を operation に解決する
+    trigger resolver や preflight 経路の証拠がない。
+  rationale: PTC-4 の中心 claim は短い継続要求が plan-to-TODO bridge を bypass しないことだが、提示実装で機械的に返せるのは
+    next_action と operation-prompt の個別取得だけで、自然言語の短い要求を user_initiated_plan_to_todo_bridge
+    に写像する処理は見当たらない。operation_preflight も operation_id を受け取るだけで utterance 解決を行わず、関連テストも
+    operation-prompt 文書内容や next --json を確認するのみで、'次へ/進める/継続' が bridge を選ぶ経路を固定していない。criteria
+    の重要 limitation に照らすと、これは guidance 依存の operator-mediated 挙動であり、mechanically enforced
+    とは言えない。
+- severity: WARN
+  target_location: .reviewcompass/guidance/effective-prompts/user-initiated-backlog-todo-execution.prompt.md,
+    tests/tools/test_effective_prompt_contract.py
+  description: TODO 実行 prompt は coverage/quality audit を checklist item active より前に要求しているが、WARN
+    や高リスク時の review-materials 作成・明示判断のゲートが plan bridge prompt ほど明確に要求されていない。
+  rationale: plan-to-TODO bridge prompt では task-quality-check audit が WARN または高リスクの場合に
+    prepare-review-materials と利用者確認まで規定している一方、backlog TODO execution prompt は 'coverage
+    / quality が OK の場合だけ' としか書かず、WARN を OK に含めるのか、WARN でも実装開始前に追加レビューが必要なのかが曖昧である。テストも
+    DEVIATION 前提の順序しか見ておらず、WARN/high-risk handling の非バイパス性を固定していないため、implementation
+    開始前の品質ゲートとしては弱い。
+- severity: WARN
+  target_location: tools/check-workflow-action.py (DEFAULT_DISCIPLINE_MAP), .reviewcompass/guidance/WORKFLOW_DISCIPLINE_MAP.yaml
+  description: 実行時 fallback の DEFAULT_DISCIPLINE_MAP が canonical discipline map とずれており、plan
+    materialization source refs の追加内容を完全には反映していない。
+  rationale: WORKFLOW_DISCIPLINE_MAP.yaml では user_initiated_plan_to_todo_bridge と
+    user_initiated_backlog_todo_execution の prompt_source_refs に 2026-06-23 の plan
+    materialization plan を含めているが、tools/check-workflow-action.py 内の DEFAULT_DISCIPLINE_MAP
+    にはその追加がない。通常は YAML が読めればそちらが使われるものの、map 読み込み失敗時や外部配置時には古い fallback に戻るため、criteria
+    の『defaults in tools/check-workflow-action.py must not diverge in a way that could
+    affect prompt generation』に照らして auditability 上のギャップが残る。
+- severity: WARN
+  target_location: tests/tools/test_effective_prompt_contract.py, tests/tools/test_check_workflow_action.py
+  description: 回帰テストは主に prompt 文言・map 参照・CLI 出力断片を検査しており、PTC-4 が主張する end-to-end behavior
+    path の固定としては不十分である。
+  rationale: 追加テストは plan-to-TODO bridge prompt に materialization 文言があること、discipline
+    map に source refs があること、plan-todo-bridge CLI が materialization を返すことを確認しているが、短い継続要求から
+    operation prompt selection、materialization review、TODO/checklist 生成、coverage audit、task-quality
+    audit までの一連の経路を 1 つの失敗不能パスとして検証していない。特に 'short request routes to bridge instead
+    of direct implementation' を機械的に証明する trigger/preflight test がないため、将来の変更で routing
+    が消えても文書テストだけでは検出できない。
+- severity: INFO
+  target_location: .reviewcompass/guidance/effective-prompts/user-initiated-plan-to-todo-bridge.prompt.md,
+    tools/check_workflow_action/work_backlog.py, tests/tools/test_work_backlog_cli.py
+  description: plan materialization review の順序自体は canonical prompt と CLI テストでかなり明確に固定されている。
+  rationale: prompt は work-backlog plan-todo-bridge --plan-id を add-todo より前に置き、materialization.summary
+    / slices / next_candidates の確認を要求している。test_user_initiated_plan_to_todo_bridge_prompt_requires_materialization_review
+    が順序を index 比較で固定し、work_backlog.plan_todo_bridge も全 slice 状態と next_candidates を返す。したがって
+    Check 2 の文書順序 claim 自体は概ね満たされているが、上位の short-request routing 不足が残るため無所見にはできない。
+- severity: INFO
+  target_location: .reviewcompass/guidance/API_REVIEW_PROMPT_QUALITY.md, .reviewcompass/guidance/discipline_llm_as_judge_prompting.md
+  description: 今回の再実行 prompt-design method 自体は、main preanalysis・behavior-path materials・claim
+    分解・single-model zero-findings への警戒を明示しており、前回の過狭スコープ問題に対する改善は確認できる。
+  rationale: 'API_REVIEW_PROMPT_QUALITY.md には behavior-path claim、trigger resolver、operation
+    preflight、変更文書だけでは不足、review question decomposition、single-model findings: [] を完了根拠にしない旨が明記され、discipline_llm_as_judge_prompting.md
+    でも main preanalysis と behavior-path 材料要求がある。したがって Check 6 の prompt-design compliance
+    は概ね合格だが、実 repository behavior がその要求にまだ追いついていない点が上記 findings である。'

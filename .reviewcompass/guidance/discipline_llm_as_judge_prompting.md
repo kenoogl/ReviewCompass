@@ -22,11 +22,22 @@ metadata:
 
 プロンプトを書く前に、まず担当のLLM自身に問題にあたらせる。
 
+ReviewCompass では、この事前検討を main preanalysis と呼ぶ。
+
 目的は2つある。
 1. 問題の理解に必要な情報（背景・前提・関連する設計）を特定する
 2. 判断のポイント（何が分かれば答えが決まるか）を認識する
 
 この段階で担当LLMが「この情報がないと判断できない」と気づいた内容は、プロンプトに含める情報として確定する。
+
+main preanalysis では、少なくとも次を分けて整理する。
+
+- 判断したい claim
+- claim ごとの target / source / out of scope
+- 必要な原文または構造化抜粋
+- 未読資料、推測、機微情報リスク
+
+特に、あるトリガーから特定の手順へ進むか、guard が bypass されないか、といった behavior-path claim を扱う場合は、変更された成果物だけを材料にしない。trigger resolver、operation preflight、runner、関連テスト、入力成果物を含め、実行経路を reviewer が追えるようにする。
 
 ### ステップ2：プロンプトを作成する
 

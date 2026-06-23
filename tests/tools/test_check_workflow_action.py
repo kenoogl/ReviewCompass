@@ -2690,6 +2690,193 @@ class NextNavigationTests(unittest.TestCase):
       _sha256_file(prompt_path),
     )
 
+  def test_operation_prompt_trigger_text_routes_short_continuation_to_plan_bridge(self):
+    """短い継続要求は未展開 plan がある場合 plan-to-TODO bridge prompt へ解決される"""
+    cwd = Path(self.tmpdir)
+    plan_dir = cwd / ".reviewcompass" / "backlog" / "plans"
+    plan_dir.mkdir(parents=True, exist_ok=True)
+    (plan_dir / "plan-2026-06-23-plan-todo-checklist-materialization.yaml").write_text(
+      yaml.safe_dump(
+        {
+          "schema_version": "reviewcompass-backlog-item-v1",
+          "id": "plan-2026-06-23-plan-todo-checklist-materialization",
+          "kind": "plan",
+          "title": "Mechanize plan TODO checklist materialization coverage",
+          "status": "candidate",
+          "implementation_plan": [
+            {"id": "PTC-5", "title": "Tests and regression fixtures"},
+          ],
+          "execution_slices": [
+            {
+              "phase_id": "PTC-5",
+              "title": "Tests and regression fixtures",
+              "status": "not_materialized",
+            },
+          ],
+        },
+        allow_unicode=True,
+        sort_keys=False,
+      ),
+      encoding="utf-8",
+    )
+
+    result = run_script(["operation-prompt", "--trigger-text", "次へ", "--json"], cwd=cwd)
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 0, result.stderr)
+    data = json.loads(result.stdout)
+    self.assertEqual(data["verdict"], "OK")
+    self.assertEqual(data["operation"], "user_initiated_plan_to_todo_bridge")
+    self.assertEqual(data["trigger_resolution"]["trigger_kind"], "short_continuation")
+    self.assertEqual(
+      data["trigger_resolution"]["reason"],
+      "unmaterialized_plan_slice",
+    )
+    self.assertIn(
+      "plan-2026-06-23-plan-todo-checklist-materialization",
+      data["trigger_resolution"]["candidate_plan_ids"],
+    )
+
+  def test_operation_prompt_trigger_text_rejects_when_all_plan_slices_materialized(self):
+    """未展開 slice がなければ短い継続要求から operation を解決しない"""
+    cwd = Path(self.tmpdir)
+    plan_dir = cwd / ".reviewcompass" / "backlog" / "plans"
+    plan_dir.mkdir(parents=True, exist_ok=True)
+    (plan_dir / "plan-done.yaml").write_text(
+      yaml.safe_dump(
+        {
+          "schema_version": "reviewcompass-backlog-item-v1",
+          "id": "plan-done",
+          "kind": "plan",
+          "title": "Done plan",
+          "status": "candidate",
+          "execution_slices": [
+            {"phase_id": "A", "status": "completed"},
+          ],
+        },
+        allow_unicode=True,
+        sort_keys=False,
+      ),
+      encoding="utf-8",
+    )
+
+    result = run_script(["operation-prompt", "--trigger-text", "次へ", "--json"], cwd=cwd)
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 2)
+    data = json.loads(result.stdout)
+    self.assertEqual(data["verdict"], "DEVIATION")
+    self.assertIsNone(data["operation"])
+    self.assertEqual(
+      data["trigger_resolution"]["reason"],
+      "no_unmaterialized_plan_slice",
+    )
+
+  def test_operation_prompt_trigger_text_reports_multiple_plan_candidates(self):
+    """複数 plan 候補がある場合は bridge へ行くが曖昧さを出力する"""
+    cwd = Path(self.tmpdir)
+    plan_dir = cwd / ".reviewcompass" / "backlog" / "plans"
+    plan_dir.mkdir(parents=True, exist_ok=True)
+    for plan_id in ["plan-one", "plan-two"]:
+      (plan_dir / f"{plan_id}.yaml").write_text(
+        yaml.safe_dump(
+          {
+            "schema_version": "reviewcompass-backlog-item-v1",
+            "id": plan_id,
+            "kind": "plan",
+            "title": plan_id,
+            "status": "candidate",
+            "execution_slices": [
+              {"phase_id": "A", "status": "not_materialized"},
+            ],
+          },
+          allow_unicode=True,
+          sort_keys=False,
+        ),
+        encoding="utf-8",
+      )
+
+    result = run_script(["operation-prompt", "--trigger-text", "進める", "--json"], cwd=cwd)
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 0, result.stderr)
+    data = json.loads(result.stdout)
+    self.assertEqual(data["operation"], "user_initiated_plan_to_todo_bridge")
+    self.assertEqual(
+      data["trigger_resolution"]["reason"],
+      "multiple_unmaterialized_plan_candidates",
+    )
+    self.assertEqual(
+      data["trigger_resolution"]["candidate_plan_ids"],
+      ["plan-one", "plan-two"],
+    )
+
+  def test_operation_prompt_trigger_text_can_scope_to_plan_id(self):
+    """plan-id 指定時は候補を現在対象 plan に絞る"""
+    cwd = Path(self.tmpdir)
+    plan_dir = cwd / ".reviewcompass" / "backlog" / "plans"
+    plan_dir.mkdir(parents=True, exist_ok=True)
+    for plan_id in ["plan-one", "plan-two"]:
+      (plan_dir / f"{plan_id}.yaml").write_text(
+        yaml.safe_dump(
+          {
+            "schema_version": "reviewcompass-backlog-item-v1",
+            "id": plan_id,
+            "kind": "plan",
+            "title": plan_id,
+            "status": "candidate",
+            "execution_slices": [
+              {"phase_id": "A", "status": "not_materialized"},
+            ],
+          },
+          allow_unicode=True,
+          sort_keys=False,
+        ),
+        encoding="utf-8",
+      )
+
+    result = run_script(
+      ["operation-prompt", "--trigger-text", "継続", "--plan-id", "plan-two", "--json"],
+      cwd=cwd,
+    )
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 0, result.stderr)
+    data = json.loads(result.stdout)
+    self.assertEqual(data["operation"], "user_initiated_plan_to_todo_bridge")
+    self.assertEqual(data["trigger_resolution"]["reason"], "unmaterialized_plan_slice")
+    self.assertEqual(data["trigger_resolution"]["candidate_plan_ids"], ["plan-two"])
+
+  def test_operation_prompt_default_map_keeps_materialization_plan_refs(self):
+    """fallback discipline map も plan materialization source refs を保持する"""
+    sys.path.insert(0, str(REPO_ROOT / "tools"))
+    try:
+      spec = importlib.util.spec_from_file_location(
+        "check_workflow_action_script",
+        SCRIPT,
+      )
+      module = importlib.util.module_from_spec(spec)
+      spec.loader.exec_module(module)
+    finally:
+      sys.path.pop(0)
+    default_points = module.DEFAULT_DISCIPLINE_MAP["decision_points"]["operation_prompt"]
+
+    refs_by_id = {
+      point["id"]: point["prompt_source_refs"]
+      for point in default_points
+      if point["id"] in {
+        "user_initiated_plan_to_todo_bridge",
+        "user_initiated_backlog_todo_execution",
+      }
+    }
+
+    for refs in refs_by_id.values():
+      self.assertIn(
+        ".reviewcompass/backlog/plans/"
+        "plan-2026-06-23-plan-todo-checklist-materialization.yaml",
+        refs,
+      )
+
   def test_next_triad_review_reports_target_and_review_run_inputs(self):
     """triad-review 直前に読む対象文書と review-run 成果物を抽象入力として返す"""
     cwd = Path(self.tmpdir)
