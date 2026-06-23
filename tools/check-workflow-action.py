@@ -78,6 +78,18 @@ DEFAULT_CARRY_FORWARD_SOURCE_PATH = (
   "learning/workflow/carry-forward-register/sources/"
   "reviewcompass-pending-cross-feature-findings.md"
 )
+COMMIT_STANDARD_RUNNER = "tools/commit-from-current-staged.py"
+COMMIT_STANDARD_SEQUENCE = [
+  "commit-preflight",
+  "TTY approval line",
+  "commit approval and execution delegation",
+  "guarded commit",
+  "postcondition summary",
+]
+COMMIT_AVOID_DIRECT_INVOCATION = [
+  "tools/guarded-git-commit.py",
+  "tools/check-workflow-action.py commit-approval prepare",
+]
 DEPLOYMENT_INDEPENDENCE_GUARD_PREFIXES = (
   "config/",
   "docs/operations/",
@@ -4239,6 +4251,130 @@ def _commit_preflight_next_action(cwd, in_progress_files):
   }
 
 
+def _limited_human_reasons(reasons, limit=3):
+  """user-facing summary に出す理由を短い件数に制限する。"""
+  return [str(reason) for reason in reasons if reason][:limit]
+
+
+def _build_commit_operation_guidance(
+  verdict,
+  staged_files,
+  approval_state,
+  approval_errors,
+  execution_delegation_errors,
+  allowed_to_prepare_approval,
+  allowed_to_delegate_execution,
+  allowed_to_run_guarded_commit,
+):
+  """commit 操作の標準入口と再承認要否を返す。"""
+  approval_exists = bool(
+    isinstance(approval_state, dict)
+    and approval_state.get("exists") is True
+  )
+  requires_approval = bool(
+    staged_files
+    and (approval_errors or execution_delegation_errors)
+  )
+  requires_reapproval = bool(approval_exists and requires_approval)
+  can_reprepare_internally = bool(
+    verdict != "DEVIATION"
+    and staged_files
+    and allowed_to_prepare_approval
+    and allowed_to_delegate_execution
+    and not allowed_to_run_guarded_commit
+  )
+  return {
+    "standard_runner": COMMIT_STANDARD_RUNNER,
+    "standard_sequence": COMMIT_STANDARD_SEQUENCE,
+    "avoid_direct_invocation": COMMIT_AVOID_DIRECT_INVOCATION,
+    "creates_approval_before_preflight": False,
+    "requires_approval": requires_approval,
+    "requires_reapproval": requires_reapproval,
+    "internal_reprepare_allowed": can_reprepare_internally,
+    "recommended_runner": (
+      COMMIT_STANDARD_RUNNER
+      if can_reprepare_internally or requires_reapproval
+      else None
+    ),
+  }
+
+
+def _build_commit_human_summary(
+  verdict,
+  reasons,
+  next_required_action,
+  commit_operation,
+):
+  """commit-preflight の利用者向け短文要約を返す。"""
+  summary_reasons = _limited_human_reasons(reasons)
+  if not summary_reasons and commit_operation.get("requires_reapproval"):
+    summary_reasons = _limited_human_reasons([
+      "現在の staged 対象に対する再承認が必要です",
+      f"標準 runner は {COMMIT_STANDARD_RUNNER} です",
+    ])
+  if not summary_reasons and commit_operation.get("requires_approval"):
+    summary_reasons = _limited_human_reasons([
+      "現在の staged 対象に対する承認が必要です",
+      f"標準 runner は {COMMIT_STANDARD_RUNNER} です",
+    ])
+  return {
+    "verdict": verdict,
+    "reasons": summary_reasons,
+    "next_required_action": next_required_action,
+  }
+
+
+def _build_commit_preflight_response(
+  verdict,
+  exit_code,
+  action,
+  reasons,
+  current_state,
+  allowed_to_stage,
+  allowed_to_prepare_approval,
+  allowed_to_delegate_execution,
+  allowed_to_run_guarded_commit,
+  next_required_action,
+):
+  """commit-preflight の共通レスポンスを組み立てる。"""
+  staged_files = current_state.get("staged_files") or []
+  approval_state = current_state.get("commit_approval") or {}
+  approval_errors = current_state.get("approval_errors") or []
+  execution_delegation_errors = (
+    current_state.get("execution_delegation_errors") or []
+  )
+  commit_operation = _build_commit_operation_guidance(
+    verdict,
+    staged_files,
+    approval_state,
+    approval_errors,
+    execution_delegation_errors,
+    allowed_to_prepare_approval,
+    allowed_to_delegate_execution,
+    allowed_to_run_guarded_commit,
+  )
+  human_summary = _build_commit_human_summary(
+    verdict,
+    reasons,
+    next_required_action,
+    commit_operation,
+  )
+  return {
+    "verdict": verdict,
+    "exit_code": exit_code,
+    "action": action,
+    "reasons": reasons,
+    "human_summary": human_summary,
+    "current_state": current_state,
+    "commit_operation": commit_operation,
+    "allowed_to_stage": allowed_to_stage,
+    "allowed_to_prepare_approval": allowed_to_prepare_approval,
+    "allowed_to_delegate_execution": allowed_to_delegate_execution,
+    "allowed_to_run_guarded_commit": allowed_to_run_guarded_commit,
+    "next_required_action": next_required_action,
+  }
+
+
 def build_commit_instruction_preflight(cwd):
   """利用者の commit 指示直後に使う read-only preflight を返す。"""
   cwd = Path(cwd)
@@ -4247,35 +4383,35 @@ def build_commit_instruction_preflight(cwd):
     "args": {},
   }
   if not (cwd / ".git").exists():
-    return {
-      "verdict": "DEVIATION",
-      "exit_code": 2,
-      "action": action,
-      "reasons": ["git リポジトリではありません"],
-      "current_state": {},
-      "allowed_to_stage": False,
-      "allowed_to_prepare_approval": False,
-      "allowed_to_delegate_execution": False,
-      "allowed_to_run_guarded_commit": False,
-      "next_required_action": None,
-    }
+    return _build_commit_preflight_response(
+      "DEVIATION",
+      2,
+      action,
+      ["git リポジトリではありません"],
+      {},
+      False,
+      False,
+      False,
+      False,
+      None,
+    )
 
   in_progress_files = list_in_progress_files(cwd)
   changed_files = list_changed_files(cwd)
   staged_files = _git_cached_files(cwd)
   if staged_files is None:
-    return {
-      "verdict": "DEVIATION",
-      "exit_code": 2,
-      "action": action,
-      "reasons": ["staged ファイル一覧を取得できません"],
-      "current_state": {"in_progress_files": in_progress_files},
-      "allowed_to_stage": False,
-      "allowed_to_prepare_approval": False,
-      "allowed_to_delegate_execution": False,
-      "allowed_to_run_guarded_commit": False,
-      "next_required_action": None,
-    }
+    return _build_commit_preflight_response(
+      "DEVIATION",
+      2,
+      action,
+      ["staged ファイル一覧を取得できません"],
+      {"in_progress_files": in_progress_files},
+      False,
+      False,
+      False,
+      False,
+      None,
+    )
 
   next_action = _commit_preflight_next_action(cwd, in_progress_files)
   next_required_action = next_action.get("required_action")
@@ -4354,18 +4490,18 @@ def build_commit_instruction_preflight(cwd):
     "commit_unit": commit_unit_state,
   }
 
-  return {
-    "verdict": verdict,
-    "exit_code": 0 if verdict == "OK" else 2,
-    "action": action,
-    "reasons": reasons,
-    "current_state": current_state,
-    "allowed_to_stage": allowed_to_stage,
-    "allowed_to_prepare_approval": allowed_to_prepare_approval,
-    "allowed_to_delegate_execution": allowed_to_delegate_execution,
-    "allowed_to_run_guarded_commit": allowed_to_run_guarded_commit,
-    "next_required_action": next_required_action,
-  }
+  return _build_commit_preflight_response(
+    verdict,
+    0 if verdict == "OK" else 2,
+    action,
+    reasons,
+    current_state,
+    allowed_to_stage,
+    allowed_to_prepare_approval,
+    allowed_to_delegate_execution,
+    allowed_to_run_guarded_commit,
+    next_required_action,
+  )
 
 
 def cmd_commit_preflight(args):
@@ -7018,6 +7154,9 @@ def build_operation_prompt_payload(cwd, operation, trigger_resolution=None):
     payload["required_operation_card"] = (
       ".reviewcompass/guidance/COMMIT_OPERATION_CARD.md#commit-operation-card"
     )
+    payload["standard_runner"] = COMMIT_STANDARD_RUNNER
+    payload["standard_sequence"] = COMMIT_STANDARD_SEQUENCE
+    payload["avoid_direct_invocation"] = COMMIT_AVOID_DIRECT_INVOCATION
   return payload
 
 

@@ -48,15 +48,21 @@ def _preflight_failure_lines(result):
       f"reason: {details.splitlines()[0]}",
     ]
 
-  reasons = data.get("reasons") if isinstance(data, dict) else None
-  next_required_action = (
-    data.get("next_required_action")
-    if isinstance(data, dict)
-    else None
-  )
+  summary = data.get("human_summary") if isinstance(data, dict) else None
+  if isinstance(summary, dict):
+    reasons = summary.get("reasons")
+    next_required_action = summary.get("next_required_action")
+  else:
+    reasons = data.get("reasons") if isinstance(data, dict) else None
+    next_required_action = (
+      data.get("next_required_action")
+      if isinstance(data, dict)
+      else None
+    )
   lines = ["commit preflight: DEVIATION"]
   if reasons:
-    lines.append(f"reason: {reasons[0]}")
+    for reason in reasons[:3]:
+      lines.append(f"reason: {reason}")
   if next_required_action:
     lines.append(f"next: {next_required_action}")
   return lines

@@ -196,6 +196,16 @@ class CommitFromCurrentStagedTests(unittest.TestCase):
           {
             "verdict": "DEVIATION",
             "reasons": ["commit より前に post-write verification を完了してください"],
+            "human_summary": {
+              "verdict": "DEVIATION",
+              "reasons": [
+                "理由1",
+                "理由2",
+                "理由3",
+                "理由4",
+              ],
+              "next_required_action": "run_post_write_verification",
+            },
             "next_required_action": "run_post_write_verification",
           },
           ensure_ascii=False,
@@ -219,6 +229,10 @@ class CommitFromCurrentStagedTests(unittest.TestCase):
     self.assertEqual(result, 2)
     self.assertEqual(stdout.getvalue(), "")
     self.assertIn("commit preflight: DEVIATION", stderr.getvalue())
+    self.assertIn("理由1", stderr.getvalue())
+    self.assertIn("理由2", stderr.getvalue())
+    self.assertIn("理由3", stderr.getvalue())
+    self.assertNotIn("理由4", stderr.getvalue())
     self.assertIn("run_post_write_verification", stderr.getvalue())
     challenge_path = (
       Path(self.tmpdir)

@@ -55,7 +55,7 @@ remaining_work:
       - commit / push と本線作業が同一ターンで混ざらない。
   - id: CSUX-3
     title: Commit preflight human summary
-    status: candidate
+    status: completed
     tasks:
       - commit ができない場合、stage / approval 作成前に短い理由を返す。
       - WARN / DEVIATION の user-facing summary を理由 1-3 点に抑える。
@@ -63,6 +63,10 @@ remaining_work:
     acceptance:
       - commit 不可のとき余分な approval / delegation record を作らない。
       - 対象変更時は「再承認が必要」と短く示す。
+    evidence_path: .reviewcompass/evidence/work-units/blocking-units/blocking-2026-06-24-commit-operation-entry-runner.yaml
+    note: >
+      commit-preflight の human_summary / commit_operation、operation-prompt commit の標準 runner、
+      commit-from-current-staged.py の短文表示で CSUX-3 全体を実装済み。
 non_goals:
   - push を自動実行しない。
   - commit guard 自体を緩めない。

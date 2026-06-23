@@ -2633,6 +2633,16 @@ class NextNavigationTests(unittest.TestCase):
       data["required_operation_card"],
       ".reviewcompass/guidance/COMMIT_OPERATION_CARD.md#commit-operation-card",
     )
+    self.assertEqual(
+      data["standard_runner"],
+      "tools/commit-from-current-staged.py",
+    )
+    self.assertIn(
+      "tools/guarded-git-commit.py",
+      data["avoid_direct_invocation"],
+    )
+    self.assertIn("commit-preflight", data["standard_sequence"])
+    self.assertIn("guarded commit", data["standard_sequence"])
     self.assertNotIn("adapter_card", data)
     self.assertEqual(
       data["effective_prompt"]["decision_point_refs"],
@@ -7196,6 +7206,53 @@ class CommitExitCodeTests(unittest.TestCase):
     self.assertFalse(data["allowed_to_delegate_execution"])
     self.assertFalse(data["allowed_to_run_guarded_commit"])
     self.assertEqual(data["next_required_action"], "run_post_write_verification")
+    self.assertEqual(data["human_summary"]["verdict"], "DEVIATION")
+    self.assertLessEqual(len(data["human_summary"]["reasons"]), 3)
+    self.assertIn(
+      "post-write verification",
+      "\n".join(data["human_summary"]["reasons"]),
+    )
+    self.assertFalse(data["commit_operation"]["creates_approval_before_preflight"])
+
+  def test_commit_preflight_reports_reapproval_for_stale_commit_approval(self):
+    """staged 対象が変わったら短く再承認が必要と示す"""
+    _stage_file(self.tmpdir, "old.md", "# old")
+    _write_commit_approval(self.tmpdir, ["old.md"])
+    _stage_file(self.tmpdir, "current.md", "# current")
+
+    result = run_script(["commit-preflight", "--json"], cwd=self.tmpdir)
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 0, result.stdout)
+    data = json.loads(result.stdout)
+    self.assertEqual(data["verdict"], "OK")
+    self.assertFalse(data["allowed_to_run_guarded_commit"])
+    self.assertTrue(data["commit_operation"]["requires_reapproval"])
+    self.assertEqual(
+      data["commit_operation"]["recommended_runner"],
+      "tools/commit-from-current-staged.py",
+    )
+    self.assertIn(
+      "再承認が必要",
+      "\n".join(data["human_summary"]["reasons"]),
+    )
+    self.assertLessEqual(len(data["human_summary"]["reasons"]), 3)
+
+  def test_commit_preflight_distinguishes_first_approval_from_reapproval(self):
+    """初回承認待ちと対象変更による再承認待ちを分ける"""
+    _stage_file(self.tmpdir, "notes.md", "# notes")
+
+    result = run_script(["commit-preflight", "--json"], cwd=self.tmpdir)
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 0, result.stdout)
+    data = json.loads(result.stdout)
+    self.assertTrue(data["commit_operation"]["requires_approval"])
+    self.assertFalse(data["commit_operation"]["requires_reapproval"])
+    self.assertIn(
+      "承認が必要",
+      "\n".join(data["human_summary"]["reasons"]),
+    )
 
   def test_repair_workflow_state_prepare_allows_post_write_exception_preflight(self):
     """利用者承認済み repair record があれば post-write pending の stage 準備へ進める"""

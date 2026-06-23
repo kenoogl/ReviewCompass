@@ -1,0 +1,21 @@
+unit_id: blocking-2026-06-24-commit-operation-entry-runner
+kind: blocking
+parent_unit_id: main-completed
+title: Commit preflight human summary and standard runner guidance
+reason: commit 指示時に低レベル guarded commit へ迷い込む手組みと、承認前停止時の説明不足を減らすため
+status: completed
+entered_at: '2026-06-23T16:05:39.959495+00:00'
+return_conditions:
+- operation-prompt commit が標準 runner を機械出力する
+- commit-preflight が user-facing human_summary を返す
+- commit 不可時に approval / delegation record 作成前で停止する
+- staged 対象変更時に再承認が必要であることを短く返す
+exited_at: '2026-06-23T16:06:02.072614+00:00'
+completion_summary: >
+  CSUX-3 を全体実装した。operation-prompt commit は標準 runner
+  tools/commit-from-current-staged.py と低レベル直叩き回避対象を返す。
+  commit-preflight は human_summary と commit_operation を返し、不可時は承認作成前に
+  最大3件の理由で停止する。staged 対象変更時は再承認が必要であることと標準 runner を返す。
+  commit-from-current-staged.py は preflight 失敗時に human_summary の最大3件だけを表示する。
+returned_to:
+  unit_id: main-completed
