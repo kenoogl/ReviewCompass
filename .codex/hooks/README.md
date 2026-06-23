@@ -77,41 +77,37 @@ Codex の hook 設定で呼び出すスクリプトを置く。
 
 **登録**：`.codex/hooks.json` の `hooks.UserPromptSubmit` セクションに登録済み。これはレビュー用プロンプト規律の注入専用であり、セッション記録の取り込みには使わない。
 
-### `session-record-capture-current-on-todo.sh`（PostToolUse hook）
+### `session-record-capture-current-on-session-end.sh`（SessionEnd hook）
 
-**役割**：`TODO_NEXT_SESSION.md` の更新を合図に、現 Codex セッションの rollout を 1 件だけ、runtime 下書きへ保存する。
+**役割**：Codex の `SessionEnd` を合図に、payload の current `session_id` と `cwd` から現セッションの rollout を 1 件だけ選び、正式な 2 層セッション記録へ取り込む。
 
-Codex の hook では `Stop` が turn scope であり、Claude の `SessionEnd` 相当としては使わない。`UserPromptSubmit` は発話ごとに呼ばれ得るため**セッション記録取り込み用途では使用禁止**とし、誤登録されても `ignored_event` を診断ログに残して終了する。Codex では、セッション継続時に `TODO_NEXT_SESSION.md` を更新する運用を合図として使い、TODO の内容 hash が前回保存時から変わった場合だけ現セッションの下書きを更新する。TODO は 1 セッション内で複数回更新され得るため、更新ごとに追記専用マージで伸びた分を反映する。
+`TODO_NEXT_SESSION.md` の更新は、セッション会話記録の取り込みトリガーにしない。`UserPromptSubmit` は発話ごと、`PostToolUse` はファイル操作ごとに呼ばれ得るため、会話記録取り込み用途では使用禁止とする。明示回収が必要な場合は、終了済み rollout を指定して `tools/session-record-backfill.py --session <jsonl> --source codex` を実行する。
 
-**2026-06-16 実装反映**：hook は現セッションを `.reviewcompass/runtime/session-record-drafts/codex-<session_id>.md` へ下書き保存し、`.reviewcompass/evidence/sessions/` と `docs/sessions/` へ直接書かない。正式な 2 層セッション記録は、次の Codex `SessionStart` で `session-record-promote-previous-draft.sh` が前セッション下書きを昇格する。手動復旧が必要な場合は `tools/session-record-promote-draft.py --session-id <id> --source codex --current-session-id <current-id>` または終了済み rollout を明示した backfill を使う。昇格 CLI は現在の `session_id` と同一のセッションを拒否する。診断ログ event は、正式記録と区別するため `drafted`／`draft_failed` を使う。
+**2026-06-24 実装反映**：hook は `SessionEnd` の current `session_id` と `cwd` を使い、`$HOME/.codex/sessions` 配下から `session_meta.payload.id == session_id` かつ `cwd` が一致または配下の rollout を選ぶ。取り込みは `tools/session-record-backfill.py --session <jsonl> --source codex` が担い、`.reviewcompass/evidence/sessions/` と `docs/sessions/` へ正式記録を作る。`reason` が `clear` 以外の非空値の場合は、コンテキスト圧縮などの中間終了としてスキップする。
 
-**入力**：標準入力で Codex の PostToolUse JSON ペイロードを受け取る。
+**入力**：標準入力で Codex の SessionEnd JSON ペイロードを受け取る。
 
 ```json
-{"hook_event_name":"PostToolUse","session_id":"<id>","cwd":"/path/to/repo","tool_input":{"file_path":"/path/to/repo/TODO_NEXT_SESSION.md"}}
+{"hook_event_name":"SessionEnd","session_id":"<id>","cwd":"/path/to/repo","reason":"clear"}
 ```
 
 **動作**：
 
-1. `hook_event_name` が `PostToolUse` でなければ `ignored_event` を記録して exit 0
-2. `cwd` が無ければ何もせず exit 0
-3. `cwd/TODO_NEXT_SESSION.md` が無ければ何もせず exit 0
-4. TODO の sha256 を、`session_id + cwd` ごとの状態ファイルに残した前回 hash と比較する
-5. 初回かつ hook payload に `TODO_NEXT_SESSION.md` が含まれない場合は baseline だけ記録し、既に dirty な TODO を誤回収しない
-6. TODO hash が変わっていなければ何も取り込まない
-7. TODO hash が変わっていても `session_id` が無ければ、並行セッション誤回収を避けるため推測せず終了する
-8. `$HOME/.codex/sessions` 配下から `session_meta.payload.id == session_id` かつ `cwd` が一致または配下の rollout を選ぶ
-9. `RC_SESSION_DRAFT_DIR`（未指定なら既定 runtime 下書き先）を `python3 tools/session-record-draft.py --session <jsonl> --source codex --draft-dir <draft-dir>` へ渡し、runtime 下書きへ保存する
-10. 保存できない場合も含め常に exit 0
+1. `hook_event_name` が `SessionEnd` でなければ `ignored_event` を記録して exit 0
+2. `reason` が `clear` 以外の非空値なら `non_final_session_end` を記録して exit 0
+3. `session_id` が無ければ、並行セッション誤回収を避けるため推測せず `no_current_session_id` で exit 0
+4. `cwd` が無ければ `no_cwd` で exit 0
+5. `$HOME/.codex/sessions` 配下から `session_meta.payload.id == session_id` かつ `cwd` が一致または配下の rollout を選ぶ
+6. 選べた rollout を `tools/session-record-backfill.py --session <jsonl> --source codex` へ渡す
+7. 取り込めない場合も含め常に exit 0
 
-**出力先**：既定は `.reviewcompass/runtime/session-record-drafts/codex-<session_id>.md`。テスト用に `RC_SESSION_DRAFT_DIR` で差し替え可能。正式な 2 層記録は終了済みセッションを対象にした昇格操作または明示 backfill で作る。
+**出力先**：既定は `.reviewcompass/evidence/sessions/` と `docs/sessions/`。テスト用に `RC_SESSION_EVIDENCE_DIR`、`RC_SESSION_DOCS_DIR` で差し替え可能。
 
-**診断ログ**：hook が呼ばれたか、どの理由で通過したかを後から確認できるよう、既定で `.reviewcompass/runtime/session-record-capture-current-on-todo.jsonl` に JSON Lines を追記する。テスト用に `RC_SESSION_HOOK_LOG` で差し替え可能。主な `event` は `ignored_event`、`baseline_recorded`、`todo_unchanged`、`todo_changed`、`no_session_id`、`no_codex_root`、`no_current_session`、`selected`、`drafted`、`draft_failed`。
-TODO hash の状態ディレクトリはテスト用に `RC_SESSION_HOOK_STATE_DIR` で差し替え可能。
+**診断ログ**：hook が呼ばれたか、どの理由で通過したかを後から確認できるよう、既定で `.reviewcompass/runtime/session-record-capture-current-on-session-end.jsonl` に JSON Lines を追記する。テスト用に `RC_SESSION_CAPTURE_HOOK_LOG` で差し替え可能。主な `event` は `ignored_event`、`non_final_session_end`、`no_current_session_id`、`no_cwd`、`no_codex_root`、`no_current_session`、`selected`、`captured`、`capture_failed`。
 
-**昇格時の current 確認**：`--session-id` には正式記録へ昇格したい終了済みセッションの ID を渡す。`--current-session-id` には、昇格対象ではなく今動いている Codex セッションの ID を渡す。通常は TODO 更新後に診断ログを見て、最新の `selected` event の `selected_session_id` を current ID として確認する。`drafted` は下書き保存成功の確認用 event として扱う。`selected` が無く current ID を取得できない場合は推測せず、昇格操作を行わない。
+**昇格時の current 確認**：旧下書きを手動昇格する場合、`--session-id` には正式記録へ昇格したい終了済みセッションの ID を渡す。`--current-session-id` には、昇格対象ではなく今動いている Codex セッションの ID を渡す。`selected` が無く current ID を取得できない場合は推測せず、昇格操作を行わない。
 
-**登録**：`.codex/hooks.json` の `hooks.PostToolUse` セクションに登録済み。`UserPromptSubmit` には登録しない。TODO を更新しないセッション、クラッシュ、hook 失敗、または `session_id` が取れない場合は、終了済み rollout を指定した `tools/session-record-backfill.py --session <jsonl> --source codex` による明示回収を使う。
+**登録**：`.codex/hooks.json` の `hooks.SessionEnd` セクションに登録済み。`PostToolUse` と `UserPromptSubmit` には登録しない。クラッシュ、hook 失敗、または `session_id` が取れない場合は、終了済み rollout を指定した `tools/session-record-backfill.py --session <jsonl> --source codex` による明示回収を使う。
 
 ### `session-record-promote-previous-draft.sh`（SessionStart hook）
 

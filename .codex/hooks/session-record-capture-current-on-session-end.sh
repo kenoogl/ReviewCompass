@@ -1,13 +1,13 @@
 #!/bin/bash
-# PostToolUse フック：TODO_NEXT_SESSION.md 更新を合図に、現 Codex セッションを
-# runtime 下書きへ保存する。
+# SessionEnd フック：current session_id と cwd から現 Codex セッション rollout を
+# 1 件だけ選び、正式な 2 層セッション記録へ取り込む。
 #
 # 設計：
-#   - UserPromptSubmit は使わない（発話ごとに誤発火し得るため）
-#   - TODO_NEXT_SESSION.md の内容 hash が前回記録時から変わった時だけ保存する
-#   - 初回に TODO 更新の痕跡が無い場合は baseline だけ記録し、既存 dirty を誤回収しない
+#   - TODO_NEXT_SESSION.md の更新はトリガーにしない
+#   - SessionEnd 以外では何もしない
+#   - reason が clear 以外の非空値なら中間終了として取り込まない
 #   - session_id が無い場合は並行セッション誤回収を避けるため推測しない
-#   - 取り込めない場合も含め常に exit 0（作業を妨げない）
+#   - 取り込めない場合も含め常に exit 0（セッション終了を妨げない）
 
 set -u
 
@@ -19,9 +19,11 @@ INPUT=$(cat)
 HOOK_EVENT_NAME=$(printf '%s' "$INPUT" | jq -r '.hook_event_name // empty')
 SESSION_ID=$(printf '%s' "$INPUT" | jq -r '.session_id // empty')
 CWD=$(printf '%s' "$INPUT" | jq -r '.cwd // empty')
-LOG_PATH="${RC_SESSION_HOOK_LOG:-$REPO_ROOT/.reviewcompass/runtime/session-record-capture-current-on-todo.jsonl}"
-STATE_DIR="${RC_SESSION_HOOK_STATE_DIR:-$REPO_ROOT/.reviewcompass/runtime/session-record-capture-current-on-todo-state}"
-DRAFT_DIR="${RC_SESSION_DRAFT_DIR:-$REPO_ROOT/.reviewcompass/runtime/session-record-drafts}"
+REASON=$(printf '%s' "$INPUT" | jq -r '.reason // empty')
+LOG_PATH="${RC_SESSION_CAPTURE_HOOK_LOG:-$REPO_ROOT/.reviewcompass/runtime/session-record-capture-current-on-session-end.jsonl}"
+EVIDENCE_DIR="${RC_SESSION_EVIDENCE_DIR:-$REPO_ROOT/.reviewcompass/evidence/sessions}"
+DOCS_DIR="${RC_SESSION_DOCS_DIR:-$REPO_ROOT/docs/sessions}"
+CODEX_ROOT="${CODEX_SESSIONS_ROOT:-$HOME/.codex/sessions}"
 
 log_event() {
   EVENT="$1"
@@ -41,7 +43,7 @@ from datetime import datetime, timezone
 
 row = {
   "timestamp": datetime.now(timezone.utc).isoformat().replace("+00:00", "Z"),
-  "hook": "codex_session_record_capture_current_on_todo",
+  "hook": "codex_session_record_capture_current_on_session_end",
   "hook_event_name": os.environ.get("HOOK_EVENT_NAME", ""),
   "event": os.environ.get("EVENT", ""),
   "session_id": os.environ.get("SESSION_ID", ""),
@@ -57,59 +59,10 @@ print(json.dumps(row, ensure_ascii=False, sort_keys=True))
 PY
 }
 
-[ "$HOOK_EVENT_NAME" != "PostToolUse" ] && { log_event "ignored_event"; exit 0; }
+[ "$HOOK_EVENT_NAME" != "SessionEnd" ] && { log_event "ignored_event"; exit 0; }
+[ -n "$REASON" ] && [ "$REASON" != "clear" ] && { log_event "non_final_session_end"; exit 0; }
+[ -z "$SESSION_ID" ] && { log_event "no_current_session_id"; exit 0; }
 [ -z "$CWD" ] && { log_event "no_cwd"; exit 0; }
-
-TODO_PATH="$CWD/TODO_NEXT_SESSION.md"
-[ ! -f "$TODO_PATH" ] && { log_event "no_todo"; exit 0; }
-
-TODO_HASH=$(
-  TODO_PATH="$TODO_PATH" python3 - <<'PY'
-import hashlib
-import os
-from pathlib import Path
-
-print(hashlib.sha256(Path(os.environ["TODO_PATH"]).read_bytes()).hexdigest())
-PY
-)
-[ -z "$TODO_HASH" ] && { log_event "no_todo_hash"; exit 0; }
-
-SESSION_KEY=$(
-  SESSION_ID="$SESSION_ID" CWD="$CWD" python3 - <<'PY'
-import hashlib
-import os
-
-payload = (os.environ.get("SESSION_ID", "") + "\n" + os.environ.get("CWD", "")).encode("utf-8")
-print(hashlib.sha256(payload).hexdigest())
-PY
-)
-mkdir -p "$STATE_DIR" 2>/dev/null || true
-STATE_FILE="$STATE_DIR/$SESSION_KEY.todo.sha256"
-
-TODO_HINT=0
-if printf '%s' "$INPUT" | grep -q 'TODO_NEXT_SESSION.md'; then
-  TODO_HINT=1
-fi
-
-if [ ! -f "$STATE_FILE" ]; then
-  if [ "$TODO_HINT" -ne 1 ]; then
-    printf '%s\n' "$TODO_HASH" >"$STATE_FILE" 2>/dev/null || true
-    log_event "baseline_recorded"
-    exit 0
-  fi
-else
-  PREV_HASH=$(cat "$STATE_FILE" 2>/dev/null || true)
-  if [ "$PREV_HASH" = "$TODO_HASH" ]; then
-    log_event "todo_unchanged"
-    exit 0
-  fi
-fi
-
-log_event "todo_changed"
-
-[ -z "$SESSION_ID" ] && { log_event "no_session_id"; exit 0; }
-
-CODEX_ROOT="${CODEX_SESSIONS_ROOT:-$HOME/.codex/sessions}"
 [ ! -d "$CODEX_ROOT" ] && { log_event "no_codex_root"; exit 0; }
 
 CURRENT_INFO=$(
@@ -119,15 +72,15 @@ import os
 from pathlib import Path
 
 root = Path(os.environ["CODEX_ROOT"])
-current_id = os.environ.get("SESSION_ID", "")
+current_id = os.environ["SESSION_ID"]
 repo = os.environ["CWD"].rstrip("/")
 
 
 def read_meta(path):
   try:
     with path.open(encoding="utf-8", errors="replace") as f:
-      for i, line in enumerate(f):
-        if i >= 5:
+      for index, line in enumerate(f):
+        if index >= 5:
           break
         line = line.strip()
         if not line:
@@ -169,13 +122,12 @@ CURRENT_SESSION_ID=$(printf '%s' "$CURRENT_INFO" | jq -r '.session_id // empty')
 log_event "selected" "$CURRENT" "$CURRENT_SESSION_ID"
 
 cd "$REPO_ROOT" || exit 0
-if python3 tools/session-record-draft.py \
+if python3 tools/session-record-backfill.py \
   --session "$CURRENT" --source codex \
-  --draft-dir "$DRAFT_DIR" >/dev/null 2>&1; then
-  printf '%s\n' "$TODO_HASH" >"$STATE_FILE" 2>/dev/null || true
-  log_event "drafted" "$CURRENT" "$CURRENT_SESSION_ID"
+  --evidence-dir "$EVIDENCE_DIR" --docs-dir "$DOCS_DIR" >/dev/null 2>&1; then
+  log_event "captured" "$CURRENT" "$CURRENT_SESSION_ID"
 else
-  log_event "draft_failed" "$CURRENT" "$CURRENT_SESSION_ID"
+  log_event "capture_failed" "$CURRENT" "$CURRENT_SESSION_ID"
 fi
 
 exit 0

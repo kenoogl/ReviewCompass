@@ -40,7 +40,7 @@ REQUIRED_ALLOWLIST = {
   "analysis/**",
   "evaluation/**",
   "templates/specs/spec.json.template",
-  "templates/hooks/session-record-capture-current-on-todo.sh.template",
+  "templates/hooks/session-record-capture-current-on-session-end.sh.template",
 }
 
 LEGACY_GUIDANCE_SOURCE_INCLUDES = {

@@ -1,0 +1,15 @@
+unit_id: blocking-2026-06-24-session-record-trigger-boundary
+kind: blocking
+parent_unit_id: main-completed
+title: Fix session record trigger boundary
+reason: セッション会話記録が TODO 更新トリガーに混入し、明示操作またはセッション境界/current session_id ベースの機械処理になっていないため
+status: completed
+entered_at: '2026-06-23T16:40:39.170707+00:00'
+return_conditions:
+- セッション会話記録の取り込みが TODO 更新トリガーでは起動せず、明示操作またはセッション境界/current session_id に基づく機械処理として検査可能になること
+exited_at: '2026-06-23T16:47:29.830364+00:00'
+completion_summary: Moved Codex session record capture from TODO/PostToolUse trigger
+  to SessionEnd current session_id/cwd based capture, updated templates, guidance,
+  deployment manifest, and tests
+returned_to:
+  unit_id: main-completed

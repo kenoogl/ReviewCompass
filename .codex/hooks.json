@@ -23,12 +23,12 @@
         ]
       }
     ],
-    "PostToolUse": [
+    "SessionEnd": [
       {
         "hooks": [
           {
             "type": "command",
-            "command": "bash '.codex/hooks/session-record-capture-current-on-todo.sh'",
+            "command": "bash '.codex/hooks/session-record-capture-current-on-session-end.sh'",
             "timeout": 60
           }
         ]

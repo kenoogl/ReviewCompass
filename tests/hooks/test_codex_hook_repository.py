@@ -13,7 +13,7 @@ CODEX_HOOK_FILES = [
   ".codex/hooks/README.md",
   ".codex/hooks/pre-bash-precheck.sh",
   ".codex/hooks/review-prompt-guide-inject.sh",
-  ".codex/hooks/session-record-capture-current-on-todo.sh",
+  ".codex/hooks/session-record-capture-current-on-session-end.sh",
   ".codex/hooks/session-record-promote-previous-draft.sh",
 ]
 
@@ -57,16 +57,28 @@ class CodexHookRepositoryTests(unittest.TestCase):
       "hooks.json は repo 相対の Codex hook を呼び出す必要がある",
     )
 
-  def test_codex_post_tool_todo_capture_hook_is_registered(self):
+  def test_codex_session_end_capture_hook_is_registered(self):
+    hooks_config = json.loads((REPO_ROOT / ".codex/hooks.json").read_text())
+    commands = [
+      hook["command"]
+      for group in hooks_config["hooks"].get("SessionEnd", [])
+      for hook in group.get("hooks", [])
+    ]
+    self.assertTrue(
+      any(".codex/hooks/session-record-capture-current-on-session-end.sh" in c for c in commands),
+      "Codex SessionEnd で現セッション取り込み hook を登録する必要がある",
+    )
+
+  def test_codex_post_tool_todo_capture_hook_is_not_registered(self):
     hooks_config = json.loads((REPO_ROOT / ".codex/hooks.json").read_text())
     commands = [
       hook["command"]
       for group in hooks_config["hooks"].get("PostToolUse", [])
       for hook in group.get("hooks", [])
     ]
-    self.assertTrue(
-      any(".codex/hooks/session-record-capture-current-on-todo.sh" in c for c in commands),
-      "Codex PostToolUse で TODO 更新後の現セッション取り込み hook を登録する必要がある",
+    self.assertFalse(
+      any("session-record-capture-current" in c for c in commands),
+      "TODO 更新を観測する PostToolUse でセッション記録を取り込んではいけない",
     )
 
   def test_codex_session_start_promote_previous_draft_hook_is_registered(self):
@@ -123,7 +135,7 @@ class CodexHookRepositoryTests(unittest.TestCase):
       for hook in group.get("hooks", [])
     ]
     self.assertFalse(
-      any(".codex/hooks/session-record-capture-current-on-todo.sh" in c for c in commands),
+      any("session-record-capture-current" in c for c in commands),
       "UserPromptSubmit は発話ごとに誤発火し得るため、現セッション取り込み hook を登録してはいけない",
     )
 

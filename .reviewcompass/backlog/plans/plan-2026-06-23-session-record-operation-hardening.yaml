@@ -24,7 +24,7 @@ related:
   - tools/session-record-draft.py
   - tools/session-record-promote-draft.py
   - tools/session-record-backfill.py
-  - templates/hooks/session-record-capture-current-on-todo.sh.template
+  - templates/hooks/session-record-capture-current-on-session-end.sh.template
   - templates/hooks/session-record-promote-previous-draft.sh.template
 problem:
   - 利用者の「今すぐ記録」が、下書き保存なのか正式記録の即時作成なのか曖昧になる。
