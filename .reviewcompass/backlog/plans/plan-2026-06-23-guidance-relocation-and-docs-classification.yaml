@@ -212,6 +212,47 @@ implementation_plan:
       - 移動後に next --json が旧 path を返さない。
       - post-write manifest が実 target を正しく封印する。
       - 作業ツリー clean で push 可能になる。
+execution_slices:
+  - phase_id: GRC-1
+    title: Inventory and classification only
+    todo_id: todo-2026-06-23-guidance-relocation-inventory
+    todo_path: .reviewcompass/backlog/todos/todo-2026-06-23-guidance-relocation-inventory.yaml
+    checklist_id: checklist-todo-2026-06-23-guidance-relocation-inventory
+    checklist_evidence_path: .reviewcompass/evidence/work-units/checklists/checklist-todo-2026-06-23-guidance-relocation-inventory.yaml
+    status: completed
+    note: >
+      この slice は TODO/checklist/evidence へ後追いで接続済み。
+      plan 全体の完了ではなく、GRC-1 の inventory / classification のみを完了扱いとする。
+  - phase_id: GRC-2
+    title: Reference and consumer audit
+    todo_id: null
+    checklist_id: null
+    status: not_materialized
+    note: TODO/checklist 未展開。
+  - phase_id: GRC-3
+    title: Red tests and audit tests
+    todo_id: null
+    checklist_id: null
+    status: not_materialized
+    note: TODO/checklist 未展開。
+  - phase_id: GRC-4
+    title: Move deploy-facing and runtime-facing docs
+    todo_id: null
+    checklist_id: null
+    status: not_materialized
+    note: TODO/checklist 未展開。
+  - phase_id: GRC-5
+    title: Delete or demote old paths
+    todo_id: null
+    checklist_id: null
+    status: not_materialized
+    note: TODO/checklist 未展開。
+  - phase_id: GRC-6
+    title: Post-write review and final audit
+    todo_id: null
+    checklist_id: null
+    status: not_materialized
+    note: TODO/checklist 未展開。
 audit_commands_candidates:
   - rg -n "docs/operations|docs/disciplines|WORKFLOW_NAVIGATION_FOR_|discipline_" .
   - .venv/bin/python3 tools/document_link_lint.py --json <changed-files>
