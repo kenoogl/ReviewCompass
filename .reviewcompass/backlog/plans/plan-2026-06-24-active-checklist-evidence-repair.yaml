@@ -1,0 +1,153 @@
+schema_version: reviewcompass-backlog-item-v1
+id: plan-2026-06-24-active-checklist-evidence-repair
+kind: plan
+title: Repair active checklist evidence misplacement
+status: candidate
+source_unit_id: main-side-conversation
+created_at: '2026-06-24T00:00:00+09:00'
+index_path: .reviewcompass/backlog/index.yaml
+provenance:
+  created_by: llm
+  source_ref: conversation:user:通常処理なら起こりえない間違いをしたのだろうが、問題点としてメモを起草
+  reason: >
+    active checklist が evidence 配下に置かれ、plan/TODO/checklist の保存場所と状態の意味が
+    食い違ったため、個別修復ではなく機械検査と repair を含む対応計画として backlog 化する。
+decisions: []
+summary: >
+  GRC-4 の作業中 checklist が .reviewcompass/evidence/work-units/checklists/
+  配下に置かれていた問題を修復する。通常の start-checklist / close 経路では
+  active checklist は runtime 配下に作成され、全 item 完了後だけ evidence 化される。
+  そのため、今回の状態は正規ルートでは起こりにくい。evidence 配下の checklist は
+  completed evidence だけであるという不変条件を機械的に検査し、必要に応じて
+  active checklist を runtime へ戻す repair を用意する。
+problem_statement:
+- active checklist が evidence 配下に存在すると、保存場所の意味と checklist の状態が食い違う。
+- plan の checklist_evidence_path が active checklist を指すと、未完了作業が完了証跡のように見える。
+- TODO の execution_history.evidence_path も、完了時まで active checklist を指してはならない。
+- 現在の監査は evidence path の存在確認に寄り、参照先が completed evidence かどうかを十分に検査していない。
+assumptions:
+- work-checklist close は未完了 item がある場合 evidence 化しない。
+- "close 成功時は status: completed と completed_at を設定し、runtime checklist を削除する。"
+- 今回の状態は post_write_policy_violation 修復時の手動または半手動更新で発生した可能性が高い。
+goals:
+- evidence 配下の checklist は completed evidence だけであることを機械的に保証する。
+- plan / TODO が evidence path を持つ場合、参照先が completed evidence であることを検査する。
+- evidence 配下に紛れた active checklist を runtime 配下へ戻す repair を提供する。
+- GRC-4 を作業中として再開可能な状態へ補正する。
+non_goals:
+- GRC-4 の adapter guidance 移設や旧 path cleanup をこの計画で完了させる。
+- evidence 配下の completed checklist を再生成する。
+- plan-to-TODO bridge 全体の再設計をこの計画だけで完了する。
+implementation_plan:
+- id: ACE-1
+  title: Define evidence checklist invariant
+  tasks:
+  - id: ACE-1A
+    title: Specify that evidence checklist status must be completed
+  - id: ACE-1B
+    title: Specify required completed_at and completion_summary fields
+  - id: ACE-1C
+    title: Specify that active checklist live state belongs under runtime
+  acceptance:
+  - evidence と runtime の保存責務がテスト可能な条件として表現されている。
+- id: ACE-2
+  title: Add evidence checklist audit
+  tasks:
+  - id: ACE-2A
+    title: Add audit for active checklist under evidence directory
+  - id: ACE-2B
+    title: Add audit for evidence checklist missing completed_at or completion_summary
+  - id: ACE-2C
+    title: Report offending checklist path and status in JSON output
+  acceptance:
+  - evidence 配下に未完了 checklist がある場合、監査は DEVIATION を返す。
+- id: ACE-3
+  title: Validate backlog evidence references
+  tasks:
+  - id: ACE-3A
+    title: Extend plan audit to validate checklist_evidence_path content, not only existence
+  - id: ACE-3B
+    title: Extend TODO execution_history audit to validate evidence_path content
+  - id: ACE-3C
+    title: Make plan-to-TODO bridge surface invalid evidence references
+  acceptance:
+  - plan / TODO の evidence path が active checklist を指す場合、監査が DEVIATION を返す。
+- id: ACE-4
+  title: Add repair for misplaced active checklist
+  tasks:
+  - id: ACE-4A
+    title: Move active checklist from evidence to runtime while preserving progress
+  - id: ACE-4B
+    title: Set plan checklist_evidence_path to null until completed evidence exists
+  - id: ACE-4C
+    title: Remove or quarantine TODO execution_history entries that point to incomplete evidence
+  acceptance:
+  - repair 後、active checklist は runtime 配下にあり、plan/TODO は未完了 evidence を指さない。
+- id: ACE-5
+  title: Repair GRC-4 data and verify resumption
+  tasks:
+  - id: ACE-5A
+    title: Apply repair to GRC-4 active checklist and plan reference
+  - id: ACE-5B
+    title: Verify plan-to-TODO bridge shows GRC-4 as checklist_started without completed evidence
+  - id: ACE-5C
+    title: Verify workflow snapshot or next state can identify the active work location
+  acceptance:
+  - GRC-4 は完了証跡として誤認されず、作業中として再開できる。
+red_tests:
+- id: ACE-RT-1
+  title: Active checklist under evidence is deviation
+  expected: "evidence 配下に status: active の checklist がある場合、監査は DEVIATION を返す。"
+- id: ACE-RT-2
+  title: Incomplete evidence fields are deviation
+  expected: evidence 配下の checklist に completed_at または completion_summary がない場合、監査は DEVIATION を返す。
+- id: ACE-RT-3
+  title: Plan evidence path must point to completed evidence
+  expected: plan の checklist_evidence_path が active checklist を指す場合、plan 監査は DEVIATION を返す。
+- id: ACE-RT-4
+  title: Repair moves active checklist back to runtime
+  expected: repair 実行時、active checklist は runtime 配下へ移され、plan の checklist_evidence_path は null になる。
+- id: ACE-RT-5
+  title: Completed evidence is preserved
+  expected: completed evidence は repair 対象にならず、内容も移動されない。
+acceptance_criteria:
+- active checklist は runtime 配下にしか存在しない。
+- evidence 配下の checklist は completed evidence だけである。
+- plan / TODO が evidence path を持つ場合、その参照先は completed evidence である。
+- GRC-4 は作業中として再開可能であり、完了証跡として誤認されない。
+execution_slices:
+- phase_id: ACE-1
+  title: Define evidence checklist invariant
+  todo_id: null
+  todo_path: null
+  checklist_id: null
+  checklist_evidence_path: null
+  status: not_materialized
+- phase_id: ACE-2
+  title: Add evidence checklist audit
+  todo_id: null
+  todo_path: null
+  checklist_id: null
+  checklist_evidence_path: null
+  status: not_materialized
+- phase_id: ACE-3
+  title: Validate backlog evidence references
+  todo_id: null
+  todo_path: null
+  checklist_id: null
+  checklist_evidence_path: null
+  status: not_materialized
+- phase_id: ACE-4
+  title: Add repair for misplaced active checklist
+  todo_id: null
+  todo_path: null
+  checklist_id: null
+  checklist_evidence_path: null
+  status: not_materialized
+- phase_id: ACE-5
+  title: Repair GRC-4 data and verify resumption
+  todo_id: null
+  todo_path: null
+  checklist_id: null
+  checklist_evidence_path: null
+  status: not_materialized

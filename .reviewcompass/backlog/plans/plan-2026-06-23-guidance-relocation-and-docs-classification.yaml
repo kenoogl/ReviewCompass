@@ -249,7 +249,7 @@ execution_slices:
     todo_id: todo-2026-06-23-guidance-relocation-move-docs
     todo_path: .reviewcompass/backlog/todos/todo-2026-06-23-guidance-relocation-move-docs.yaml
     checklist_id: checklist-todo-2026-06-23-guidance-relocation-move-docs
-    checklist_evidence_path: .reviewcompass/evidence/work-units/checklists/checklist-todo-2026-06-23-guidance-relocation-move-docs.yaml
+    checklist_evidence_path: null
     status: checklist_started
     note: >
       post_write_policy_violation 修復のため、GRC-4 を検証可能な単位へ再分割中。
