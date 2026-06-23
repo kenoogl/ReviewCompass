@@ -239,6 +239,32 @@ def test_user_initiated_plan_to_todo_bridge_prompt_contains_trigger_boundary():
   assert "TODO/checklist がないまま plan から実作業へ進まない" in text
 
 
+def test_user_initiated_plan_to_todo_bridge_prompt_defines_artifact_boundaries():
+  item = _decision_point("operation_prompt", "user_initiated_plan_to_todo_bridge")
+  prompt_path = ROOT / item["canonical_effective_prompt_path"]
+
+  text = prompt_path.read_text(encoding="utf-8")
+
+  assert "## Artifact Boundaries" in text
+  assert "plan は方針、分解案、受け入れ条件、残作業を保持する" in text
+  assert "TODO は実行対象化した最小の追跡単位" in text
+  assert "runtime checklist は実行中の進捗証跡" in text
+  assert "evidence checklist は完了後の固定証跡" in text
+
+
+def test_user_initiated_plan_to_todo_bridge_prompt_defines_todo_conversion_rules():
+  item = _decision_point("operation_prompt", "user_initiated_plan_to_todo_bridge")
+  prompt_path = ROOT / item["canonical_effective_prompt_path"]
+
+  text = prompt_path.read_text(encoding="utf-8")
+
+  assert "## TODO Conversion Rules" in text
+  assert "同時に完了判定できる範囲だけを 1 TODO にする" in text
+  assert "source_plan_id または source_plan_path" in text
+  assert "acceptance_criteria" in text
+  assert "red_tests" in text
+
+
 def test_user_initiated_backlog_execution_prompt_contains_mechanical_boundary():
   item = _decision_point("operation_prompt", "user_initiated_backlog_todo_execution")
   prompt_path = ROOT / item["canonical_effective_prompt_path"]

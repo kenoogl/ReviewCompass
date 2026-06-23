@@ -1,0 +1,20 @@
+status: completed
+target_files:
+- .reviewcompass/guidance/effective-prompts/user-initiated-plan-to-todo-bridge.prompt.md
+target_sha256:
+  .reviewcompass/guidance/effective-prompts/user-initiated-plan-to-todo-bridge.prompt.md: fcba123ccdb6d099a2d4e413504becdd4574760bb8b26ae766f18db9765d400e
+required_verifiers: &id001
+- gemini-3.1-pro-preview
+completed_verifiers: *id001
+unresolved_substantive_findings: 0
+verifications:
+- verifier: gemini-3.1-pro-preview
+  target_files:
+  - .reviewcompass/guidance/effective-prompts/user-initiated-plan-to-todo-bridge.prompt.md
+  target_sha256:
+    .reviewcompass/guidance/effective-prompts/user-initiated-plan-to-todo-bridge.prompt.md: fcba123ccdb6d099a2d4e413504becdd4574760bb8b26ae766f18db9765d400e
+review_run:
+  path: .reviewcompass/evidence/review-runs/2026-06-23-plan-to-todo-boundaries-postwrite
+  summary_path: .reviewcompass/evidence/review-runs/2026-06-23-plan-to-todo-boundaries-postwrite/model-result-summary.yaml
+notes: Generated template; verify target_files cover current post-write targets before
+  use.

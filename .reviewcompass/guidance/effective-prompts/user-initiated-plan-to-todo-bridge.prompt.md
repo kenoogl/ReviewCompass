@@ -22,6 +22,21 @@ plan を読むだけ、説明するだけ、優先順位を相談するだけの
 - 対応する既存 backlog TODO の有無。
 - 現在の work unit stack。
 
+## Artifact Boundaries
+- plan は方針、分解案、受け入れ条件、残作業を保持する。実行対象そのものではなく、どこを TODO 化するかを判断する上流材料である。
+- TODO は実行対象化した最小の追跡単位である。1 つの TODO は、同じ目的、同じ完了条件、同じ検証単位で閉じる範囲だけを扱う。
+- runtime checklist は実行中の進捗証跡である。TODO の task / implementation_plan / todos / red_tests から生成し、作業中の active / pending / done を保持する。
+- evidence checklist は完了後の固定証跡である。runtime checklist を後から作業中だったかのように補う場所ではなく、完了時点の checklist と検証結果を残す。
+- TODO の execution_history は、完了した checklist_id、evidence_path、completion_summary を TODO 正本へ戻す索引である。
+
+## TODO Conversion Rules
+- 同時に完了判定できる範囲だけを 1 TODO にする。複数の独立した成果物、検証、判断待ちを含む場合は TODO を分ける。
+- plan の一部だけを実行する場合、TODO には source_plan_id または source_plan_path と、対象 phase / task / acceptance_criteria / red_tests の対応を記録する。
+- acceptance_criteria は TODO の完了条件へ落とす。受け入れ条件に対応しない checklist item だけで実作業へ進まない。
+- red_tests は実装前の確認項目として TODO または checklist に残す。赤テストが不要な文書作業では lightweight self-check の理由を明示する。
+- 既存 TODO がある場合は、対象範囲、完了条件、検証単位が plan の実行範囲を覆るかを確認してから再利用する。
+- 対応が曖昧な場合は TODO を新規作成または分割し、曖昧なまま既存 TODO に押し込まない。
+
 ## Mechanical Steps
 1. 対象 plan を読み、実行しようとしている範囲を特定する。
 2. `.reviewcompass/backlog/index.yaml` と backlog TODO を確認し、同じ範囲を扱う既存 TODO があるかを見る。

@@ -1,0 +1,4 @@
+run_id: 2026-06-23-plan-to-todo-boundaries-postwrite
+target_files:
+- path: .reviewcompass/guidance/effective-prompts/user-initiated-plan-to-todo-bridge.prompt.md
+  sha256: fcba123ccdb6d099a2d4e413504becdd4574760bb8b26ae766f18db9765d400e

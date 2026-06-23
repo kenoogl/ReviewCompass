@@ -1,0 +1,28 @@
+run_id: 2026-06-23-plan-to-todo-boundaries-postwrite
+phase: post_write_verification
+criteria_id: plan_to_todo_boundaries_post_write
+criteria_file: .reviewcompass/evidence/review-runs/2026-06-23-plan-to-todo-boundaries-postwrite/review-target.md
+criteria_file_sha256: e0a4306a0b59b308cb40058c3b4228fb0b1b7978d8e64c5df4d5b20ed480bcc1
+prompt_manifest_path: .reviewcompass/evidence/review-runs/2026-06-23-plan-to-todo-boundaries-postwrite/prompt-manifest.yaml
+prompt_manifest_sha256: c4357c8bafb8a0e817814161f000944df1a03af794a04c11d4944d2f44cce321
+target_files:
+- path: .reviewcompass/guidance/effective-prompts/user-initiated-plan-to-todo-bridge.prompt.md
+  sha256: fcba123ccdb6d099a2d4e413504becdd4574760bb8b26ae766f18db9765d400e
+  content_mode: full_text
+  content_sha256: fcba123ccdb6d099a2d4e413504becdd4574760bb8b26ae766f18db9765d400e
+source_materials:
+- path: .reviewcompass/guidance/API_REVIEW_PROMPT_QUALITY.md
+  sha256: 03a9b994c6b5fb4b99ebbbf169e48d76568c5b6190716bbe9e5e181844c9450d
+  content_mode: full_text
+  content_sha256: 03a9b994c6b5fb4b99ebbbf169e48d76568c5b6190716bbe9e5e181844c9450d
+- path: .reviewcompass/backlog/todos/todo-2026-06-23-plan-to-todo-checklist-evidence.yaml
+  sha256: 6ef2ea4e573b022ec62287178c096aaca3171e4e628ef35199a9a2c3b34346ad
+  content_mode: full_text
+  content_sha256: 6ef2ea4e573b022ec62287178c096aaca3171e4e628ef35199a9a2c3b34346ad
+sensitive_information_check:
+  status: passed
+  checked_at: '2026-06-23T09:01:27.630680+00:00'
+recommended_run_review_args:
+  criteria_file: .reviewcompass/evidence/review-runs/2026-06-23-plan-to-todo-boundaries-postwrite/review-target.md
+  phase: post_write_verification
+  prompt_manifest_path: .reviewcompass/evidence/review-runs/2026-06-23-plan-to-todo-boundaries-postwrite/prompt-manifest.yaml
