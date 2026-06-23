@@ -29,7 +29,7 @@ allowed_files:
   - docs/disciplines/discipline_normal_output_minimization.md
   - docs/disciplines/README.md
   - tools/README.md
-  - docs/notes/working/2026-06-19-normal-output-minimization-tool-inventory.yaml
+  - docs/notes/2026-06-19-normal-output-minimization-tool-inventory.yaml
   - docs/notes/working/2026-06-19-normal-output-minimization-implementation-policy.md
   - tests/operations/test_normal_output_minimization_docs.py
   - stages/completed/maintenance-2026-06-19-normal-output-minimization-common-discipline.yaml

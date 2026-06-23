@@ -33,7 +33,7 @@ allowed_files:
   - .reviewcompass/guidance/WORKFLOW_NAVIGATION.md
   - .reviewcompass/guidance/WORKFLOW_DISCIPLINE_MAP.yaml
   - .reviewcompass/guidance/effective-prompts/
-  - docs/notes/working/2026-06-21-llm-boundary-and-postwrite-prompt-mechanization-plan.md
+  - docs/notes/2026-06-21-llm-boundary-and-postwrite-prompt-mechanization-plan.md
   - stages/in-progress/maintenance-2026-06-22-postwrite-prompt-mechanization.yaml
   - stages/completed/maintenance-2026-06-22-postwrite-prompt-mechanization.yaml
 completion_conditions:

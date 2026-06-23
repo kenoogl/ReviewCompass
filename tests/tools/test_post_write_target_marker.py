@@ -59,20 +59,20 @@ def test_marker_exempts_regardless_of_directory(tmp_path):
     "docs/notes/weird-machine-record.md", str(tmp_path)) is False
 
 
-def test_non_marker_front_matter_is_still_target(tmp_path):
+def test_note_front_matter_uses_lightweight_self_check(tmp_path):
   cwa = _load_cwa()
   d = tmp_path / "docs" / "notes"
   d.mkdir(parents=True)
   (d / "normal.md").write_text(
     "---\ntitle: 普通のノート\n---\n本文", encoding="utf-8")
   assert cwa.is_post_write_verification_target(
-    "docs/notes/normal.md", str(tmp_path)) is True
+    "docs/notes/normal.md", str(tmp_path)) is False
 
 
 def test_default_cwd_keeps_backward_compatible_signature(tmp_path):
   # cwd 省略時も従来どおり path だけで判定できる（存在しないファイルは内容判定しない）
   cwa = _load_cwa()
-  assert cwa.is_post_write_verification_target("docs/notes/nonexistent.md") is True
+  assert cwa.is_post_write_verification_target("docs/notes/nonexistent.md") is False
   assert cwa.is_post_write_verification_target("README.md") is False
 
 
@@ -105,13 +105,15 @@ def test_compliance_reports_remain_target():
     "docs/discipline-compliance-reports/options-precheck-log.md") is True
 
 
-def test_design_notes_remain_target():
+def test_design_notes_use_lightweight_self_check():
   cwa = _load_cwa()
   assert cwa.is_post_write_verification_target(
-    "docs/notes/2026-06-12-document-placement-plan.md") is True
+    "docs/notes/2026-06-12-document-placement-plan.md") is False
 
 
-def test_working_notes_are_not_strict_post_write_targets():
+def test_notes_are_not_strict_post_write_targets():
   cwa = _load_cwa()
   assert cwa.is_post_write_verification_target(
     "docs/notes/working/2026-06-17-memo.md") is False
+  assert cwa.is_post_write_verification_target(
+    "docs/notes/2026-06-17-memo.md") is False

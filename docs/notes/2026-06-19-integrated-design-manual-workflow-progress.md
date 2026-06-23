@@ -5,8 +5,8 @@ status: active
 topic: integrated-design-manual-workflow-progress
 related:
   - docs/notes/2026-06-18-integrated-design-selection-execution-layers.md
-  - docs/notes/working/2026-06-18-mechanized-workflow-execution-design.md
-  - docs/notes/working/2026-06-19-integrated-design-requirements-missing.md
+  - docs/notes/2026-06-18-mechanized-workflow-execution-design.md
+  - docs/notes/2026-06-19-integrated-design-requirements-missing.md
   - .reviewcompass/backlog/plans/plan-2026-06-23-proxy-decision-mechanization.yaml
   - intent/INTENT.md
   - .reviewcompass/specs/workflow-management/requirements.md
@@ -22,8 +22,8 @@ related:
 - `next --json` が正しい現在位置を返す保証はないため、当面は `spec.json` とこの表を照合して手動管理する。
 - 対象入力は次の3件である。
   - `docs/notes/2026-06-18-integrated-design-selection-execution-layers.md`
-  - `docs/notes/working/2026-06-18-mechanized-workflow-execution-design.md`
-  - `docs/notes/working/2026-06-19-integrated-design-requirements-missing.md`
+  - `docs/notes/2026-06-18-mechanized-workflow-execution-design.md`
+  - `docs/notes/2026-06-19-integrated-design-requirements-missing.md`
 
 ## 0. Intent Phase
 

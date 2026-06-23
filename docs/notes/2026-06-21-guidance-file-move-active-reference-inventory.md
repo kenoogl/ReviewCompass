@@ -5,7 +5,7 @@ Date: 2026-06-21
 Baseline:
 
 - HEAD after rollback: `ba066a08`
-- Migration plan: `docs/notes/working/2026-06-21-guidance-file-move-redo-plan.md`
+- Migration plan: `docs/notes/2026-06-21-guidance-file-move-redo-plan.md`
 - Previous failed attempt preserved at branch:
   `codex/failed-guidance-move-d4517c8c`
 

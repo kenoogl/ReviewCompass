@@ -121,7 +121,7 @@ reopen_step_records:
     の段階的実装順序を設計化した。次は design triad-review gate。
   evidence:
   - .reviewcompass/specs/workflow-management/design.md
-  - docs/notes/working/2026-06-19-integrated-design-manual-workflow-progress.md
+  - docs/notes/2026-06-19-integrated-design-manual-workflow-progress.md
 - from_step: 3
   completed_step: design triad-review gate 完了
   rationale: design triad-review を実施し、C1 leave-as-is、C2/C3 should-fix のトリアージ案を利用者発言「承認」に基づき確定した。

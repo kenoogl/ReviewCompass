@@ -4,9 +4,9 @@ record_type: working-note
 status: draft
 topic: llm-boundary-and-postwrite-prompt-mechanization
 related:
-  - docs/notes/working/2026-06-21-workflow-operation-mechanization-improvement-plan.md
+  - docs/notes/2026-06-21-workflow-operation-mechanization-improvement-plan.md
   - .reviewcompass/backlog/plans/plan-2026-06-23-effective-prompt-freshness-audit.yaml
-  - docs/notes/working/2026-06-20-api-review-prompt-audit-discussion-record.md
+  - docs/notes/2026-06-20-api-review-prompt-audit-discussion-record.md
   - .reviewcompass/guidance/WORKFLOW_DISCIPLINE_MAP.yaml
   - .reviewcompass/guidance/WORKFLOW_NAVIGATION.md
   - .reviewcompass/guidance/discipline_post_write_verification.md

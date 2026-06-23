@@ -4,8 +4,8 @@ record_type: working-memo
 status: active
 topic: APIレビュー用プロンプト監査の議論経緯と評価
 related:
-  - docs/notes/working/2026-06-20-api-review-prompt-quality-side-track.md
-  - docs/notes/working/2026-06-20-api-review-prompt-method-comparison.md
+  - docs/notes/2026-06-20-api-review-prompt-quality-side-track.md
+  - docs/notes/2026-06-20-api-review-prompt-method-comparison.md
   - docs/operations/API_REVIEW_PROMPT_QUALITY.md
   - docs/operations/SESSION_WORKFLOW_GUIDE.md#vertical-intent-transfer-review
   - templates/review/api_review_criteria_template.md

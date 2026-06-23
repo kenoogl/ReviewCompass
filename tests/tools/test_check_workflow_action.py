@@ -3284,12 +3284,12 @@ class NextNavigationTests(unittest.TestCase):
     )
     self.assertTrue(effective_prompt["effective_prompt_loaded"])
 
-  def test_next_routes_working_notes_to_lightweight_self_check(self):
-    """docs/notes/working 配下だけなら API post-write ではなく軽量自己精査を返す"""
+  def test_next_routes_notes_to_lightweight_self_check(self):
+    """docs/notes 配下だけなら API post-write ではなく軽量自己精査を返す"""
     cwd = Path(self.tmpdir)
     _init_git_repo(cwd)
     _write_specs_for_next(cwd, {})
-    target = cwd / "docs" / "notes" / "working" / "memo.md"
+    target = cwd / "docs" / "notes" / "memo.md"
     target.parent.mkdir(parents=True, exist_ok=True)
     target.write_text("作業中メモ\n", encoding="utf-8")
 
@@ -3300,7 +3300,7 @@ class NextNavigationTests(unittest.TestCase):
     data = json.loads(result.stdout)
     self.assertEqual(data["verdict"], "OK")
     self.assertEqual(data["next_action"]["kind"], "lightweight_self_check")
-    self.assertEqual(data["next_action"]["target_files"], ["docs/notes/working/memo.md"])
+    self.assertEqual(data["next_action"]["target_files"], ["docs/notes/memo.md"])
     self.assertEqual(
       data["next_action"]["required_action"],
       "review_working_note_without_api",
@@ -3327,8 +3327,8 @@ class NextNavigationTests(unittest.TestCase):
       "review_working_note_without_api",
     )
 
-  def test_next_keeps_regular_notes_as_post_write_targets(self):
-    """docs/notes 直下は混在配置なので従来どおり post-write 対象にする"""
+  def test_next_routes_regular_notes_to_lightweight_self_check(self):
+    """docs/notes 直下も軽量自己精査へ回す"""
     cwd = Path(self.tmpdir)
     _init_git_repo(cwd)
     _write_specs_for_next(cwd, {})
@@ -3341,7 +3341,7 @@ class NextNavigationTests(unittest.TestCase):
     _assert_script_invoked(self, result)
     self.assertEqual(result.returncode, 0, result.stderr)
     data = json.loads(result.stdout)
-    self.assertEqual(data["next_action"]["kind"], "post_write_verification")
+    self.assertEqual(data["next_action"]["kind"], "lightweight_self_check")
     self.assertEqual(data["next_action"]["target_files"], ["docs/notes/memo.md"])
 
   def test_next_includes_todo_in_strict_post_write_when_mixed_with_strict_target(self):
@@ -3366,12 +3366,12 @@ class NextNavigationTests(unittest.TestCase):
       ["TODO_NEXT_SESSION.md", "docs/operations/policy.md"],
     )
 
-  def test_next_prioritizes_strict_post_write_when_mixed_with_working_notes(self):
+  def test_next_prioritizes_strict_post_write_when_mixed_with_notes(self):
     """軽量メモと strict 対象が混ざる場合は strict post-write を優先する"""
     cwd = Path(self.tmpdir)
     _init_git_repo(cwd)
     _write_specs_for_next(cwd, {})
-    working = cwd / "docs" / "notes" / "working" / "memo.md"
+    working = cwd / "docs" / "notes" / "memo.md"
     strict = cwd / "docs" / "operations" / "policy.md"
     working.parent.mkdir(parents=True, exist_ok=True)
     strict.parent.mkdir(parents=True, exist_ok=True)
@@ -3387,7 +3387,7 @@ class NextNavigationTests(unittest.TestCase):
     self.assertEqual(data["next_action"]["target_files"], ["docs/operations/policy.md"])
     self.assertEqual(
       data["current_state"]["lightweight_self_check_targets"],
-      ["docs/notes/working/memo.md"],
+      ["docs/notes/memo.md"],
     )
 
   def test_next_post_write_verification_target_matrix(self):
@@ -3398,7 +3398,6 @@ class NextNavigationTests(unittest.TestCase):
     target_paths = [
       "TODO_NEXT_SESSION.md",
       "docs/experiments/foo.md",
-      "docs/notes/foo.md",
       "docs/operations/foo.md",
       "docs/plan/foo.md",
       "docs/reviews/2026-06-02-audit-foo.md",
@@ -3408,6 +3407,7 @@ class NextNavigationTests(unittest.TestCase):
     non_target_paths = [
       ".reviewcompass/specs/foundation/spec.json",
       "docs/archive/foo.md",
+      "docs/notes/foo.md",
       "docs/reviews/2026-06-02-impl-triad-review.md",
       "docs/reviews/audit-summary.md",
       # (い) 機械が吐く捕捉物はディレクトリ単位で対象外（走行・再実行・再生成で担保）
@@ -3433,7 +3433,7 @@ class NextNavigationTests(unittest.TestCase):
     cwd = Path(self.tmpdir)
     _init_git_repo(cwd)
     _write_specs_for_next(cwd, {})
-    for path in ["docs/logs/workflow-precheck.log", "docs/notes/foo.md"]:
+    for path in ["docs/logs/workflow-precheck.log", "docs/operations/foo.md"]:
       file_path = cwd / path
       file_path.parent.mkdir(parents=True, exist_ok=True)
       file_path.write_text(f"{path}\n", encoding="utf-8")
@@ -3444,7 +3444,7 @@ class NextNavigationTests(unittest.TestCase):
     self.assertEqual(result.returncode, 0, result.stderr)
     data = json.loads(result.stdout)
     self.assertEqual(data["next_action"]["kind"], "post_write_verification")
-    self.assertEqual(data["next_action"]["target_files"], ["docs/notes/foo.md"])
+    self.assertEqual(data["next_action"]["target_files"], ["docs/operations/foo.md"])
 
   def test_next_with_only_precheck_log_change_skips_post_write(self):
     """実行ログ単独の未コミット変更では post-write 判定にしない"""

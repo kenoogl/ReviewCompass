@@ -43,7 +43,7 @@ POST_WRITE_VERIFICATION_FILE_PREFIXES = (
   "tools/api_providers/prompt_templates/",
 )
 LIGHTWEIGHT_SELF_CHECK_DIR_PREFIXES = (
-  "docs/notes/working/",
+  "docs/notes/",
 )
 
 

@@ -14,7 +14,7 @@ allowed_scope:
   - "使用可と判定されたプロンプトによる design triad-review API run の準備"
   - "不十分だった旧 no-findings run を gate 完了根拠にしない記録"
 allowed_files:
-  - docs/notes/working/2026-06-20-api-review-prompt-quality-side-track.md
+  - docs/notes/2026-06-20-api-review-prompt-quality-side-track.md
   - stages/in-progress/maintenance-2026-06-20-api-review-prompt-quality.yaml
   - stages/completed/maintenance-2026-06-20-api-review-prompt-quality.yaml
   - .reviewcompass/specs/workflow-management/reviews/2026-06-20-workflow-management-design-vertical-redo-review-run/

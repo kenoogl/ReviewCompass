@@ -131,7 +131,7 @@ reopen_step_records:
   - .reviewcompass/specs/workflow-management/design.md
   - .reviewcompass/specs/workflow-management/tasks.md
   - docs/reviews/reopen-classification-2026-06-19-wm-requirement-13-16-vertical-redo.md
-  - docs/notes/working/2026-06-19-vertical-intent-review-audit-experiment.md
+  - docs/notes/2026-06-19-vertical-intent-review-audit-experiment.md
 - from_step: 4
   completed_step: 第4過程：reopen 完了（tasks までのやり直し完了、implementation は次工程として未完了維持）
   rationale: 全 pending gate が完了し、対象 feature の recheck をクリアしたうえで、in-progress reopen

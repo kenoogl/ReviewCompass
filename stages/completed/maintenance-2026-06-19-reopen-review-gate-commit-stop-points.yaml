@@ -15,7 +15,7 @@ allowed_files:
   - "tools/check-workflow-action.py"
   - "tests/tools/test_check_workflow_action.py"
   - "docs/operations/WORKFLOW_PRECHECK_DETAILS.md"
-  - "docs/notes/working/2026-06-19-integrated-design-manual-workflow-progress.md"
+  - "docs/notes/2026-06-19-integrated-design-manual-workflow-progress.md"
   - "TODO_NEXT_SESSION.md"
   - "stages/in-progress/reopen-procedure-2026-06-19.yaml"
   - "stages/in-progress/maintenance-2026-06-19-reopen-review-gate-commit-stop-points.yaml"

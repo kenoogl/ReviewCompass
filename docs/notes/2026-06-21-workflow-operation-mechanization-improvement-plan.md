@@ -5,7 +5,7 @@ status: draft
 topic: workflow-operation-mechanization-improvement
 related:
   - .reviewcompass/backlog/plans/plan-2026-06-23-effective-prompt-freshness-audit.yaml
-  - docs/notes/working/2026-06-18-mechanized-workflow-execution-design.md
+  - docs/notes/2026-06-18-mechanized-workflow-execution-design.md
   - docs/operations/WORKFLOW_NAVIGATION.md
   - docs/operations/WORKFLOW_DISCIPLINE_MAP.yaml
   - .reviewcompass/specs/workflow-management/requirements.md

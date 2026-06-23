@@ -6,10 +6,10 @@ completed_at: 2026-06-22 00:11:25 +0900
 completion_commit: 4a7d30c9
 topic: postwrite-prompt-mechanization-side-track-retroactive-record
 related:
-  - docs/notes/working/2026-06-21-llm-boundary-and-postwrite-prompt-mechanization-plan.md
-  - docs/notes/working/2026-06-21-guidance-file-move-redo-plan.md
-  - docs/notes/working/2026-06-20-api-review-prompt-audit-discussion-record.md
-  - docs/notes/working/2026-06-20-api-review-prompt-quality-side-track.md
+  - docs/notes/2026-06-21-llm-boundary-and-postwrite-prompt-mechanization-plan.md
+  - docs/notes/2026-06-21-guidance-file-move-redo-plan.md
+  - docs/notes/2026-06-20-api-review-prompt-audit-discussion-record.md
+  - docs/notes/2026-06-20-api-review-prompt-quality-side-track.md
   - .reviewcompass/guidance/WORKFLOW_NAVIGATION.md
   - .reviewcompass/guidance/discipline_post_write_verification.md
 ---
@@ -54,7 +54,7 @@ related:
 この side track として、すでに次を実施した。
 
 - LLM 処理を残す場所 / 残さない場所の境界を整理した。
-- `docs/notes/working/2026-06-21-llm-boundary-and-postwrite-prompt-mechanization-plan.md` を作成した。
+- `docs/notes/2026-06-21-llm-boundary-and-postwrite-prompt-mechanization-plan.md` を作成した。
 - Phase 0 の red test を追加した。
 - red test 追加 commit を作成した。
   - commit: `248a100fd26847af1124b3f24adabc5ade888aae`

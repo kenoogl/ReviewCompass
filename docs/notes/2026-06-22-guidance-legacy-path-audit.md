@@ -91,11 +91,11 @@
 
 現在手順や後続作業の判断時に再確認すべきもの:
 
-- `docs/notes/working/2026-06-21-guidance-file-move-active-reference-inventory.md`
-- `docs/notes/working/2026-06-21-guidance-file-move-redo-plan.md`
+- `docs/notes/2026-06-21-guidance-file-move-active-reference-inventory.md`
+- `docs/notes/2026-06-21-guidance-file-move-redo-plan.md`
 - `.reviewcompass/backlog/plans/plan-2026-06-23-effective-prompt-freshness-audit.yaml`
-- `docs/notes/working/2026-06-21-workflow-operation-mechanization-improvement-plan.md`
-- `docs/notes/working/2026-06-22-guidance-legacy-path-mixing-risk.md`
+- `docs/notes/2026-06-21-workflow-operation-mechanization-improvement-plan.md`
+- `docs/notes/2026-06-22-guidance-legacy-path-mixing-risk.md`
 
 これらは、旧配置問題を判断する材料として読むべきである。作業中メモ自体を安易に書き換えるのではなく、記載内容が現在手順として使われていないかを確認する。履歴証跡や raw review-run 内の旧パスは、証跡改変になるため原則として触らない。
 

@@ -130,7 +130,7 @@ items:
       - .reviewcompass/specs/workflow-management/tasks.md
       - .reviewcompass/guidance/WORKFLOW_NAVIGATION.md
     evidence_refs:
-      - docs/notes/working/2026-06-17-commit-operation-card-and-next-json-prompt-selection.md
+      - docs/notes/2026-06-17-commit-operation-card-and-next-json-prompt-selection.md
       - .reviewcompass/evidence/sessions/2026-06-17-codex-019ed2f7-2f40-72c1-9f8b-2e7d5312ab3a.md
       - TODO_NEXT_SESSION.md
     related_clusters:

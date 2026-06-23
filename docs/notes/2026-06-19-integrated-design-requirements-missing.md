@@ -5,7 +5,7 @@ status: active
 topic: 統合設計メモの要件未追記の経緯
 related:
   - docs/notes/2026-06-18-integrated-design-selection-execution-layers.md
-  - docs/notes/working/2026-06-18-mechanized-workflow-execution-design.md
+  - docs/notes/2026-06-18-mechanized-workflow-execution-design.md
   - .reviewcompass/specs/workflow-management/requirements.md
 ---
 
@@ -16,7 +16,7 @@ related:
 2026-06-18 セッション（77e272a2）にて：
 
 > 「今考えている改善案は、`docs/notes/2026-06-18-integrated-design-selection-execution-layers.md`
-> と `docs/notes/working/2026-06-18-mechanized-workflow-execution-design.md` がもとになっている。
+> と `docs/notes/2026-06-18-mechanized-workflow-execution-design.md` がもとになっている。
 > これらの要件を `intent.md` とその下位フェーズの `requirements.md` に書き込み、
 > ワークフローに従って開発していくやり方。」
 

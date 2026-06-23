@@ -1,0 +1,111 @@
+status: completed
+target_files:
+  - docs/notes/2026-06-16-next-json-unique-state-redesign.md
+  - docs/notes/2026-06-17-commit-operation-card-and-next-json-prompt-selection.md
+  - docs/notes/2026-06-18-integrated-design-selection-execution-layers.md
+  - docs/notes/2026-06-18-mechanized-workflow-execution-design.md
+  - docs/notes/2026-06-19-integrated-design-manual-workflow-progress.md
+  - docs/notes/2026-06-19-integrated-design-requirements-missing.md
+  - docs/notes/2026-06-19-normal-output-minimization-tool-inventory.yaml
+  - docs/notes/2026-06-19-vertical-intent-review-audit-experiment.md
+  - docs/notes/2026-06-20-api-review-prompt-audit-discussion-record.md
+  - docs/notes/2026-06-20-api-review-prompt-method-comparison.md
+  - docs/notes/2026-06-20-api-review-prompt-quality-side-track.md
+  - docs/notes/2026-06-20-design-review-method-improvement-effect.md
+  - docs/notes/2026-06-21-guidance-file-move-active-reference-inventory.md
+  - docs/notes/2026-06-21-guidance-file-move-redo-plan.md
+  - docs/notes/2026-06-21-llm-boundary-and-postwrite-prompt-mechanization-plan.md
+  - docs/notes/2026-06-21-postwrite-prompt-mechanization-side-track-retroactive-record.md
+  - docs/notes/2026-06-21-workflow-operation-mechanization-improvement-plan.md
+  - docs/notes/2026-06-22-guidance-legacy-cleanup-repair-plan.md
+  - docs/notes/2026-06-22-guidance-legacy-path-audit.md
+  - docs/notes/2026-06-22-guidance-legacy-path-mixing-risk.md
+  - docs/notes/2026−06−18-Quality-of-prompt.md
+target_sha256:
+  docs/notes/2026-06-16-next-json-unique-state-redesign.md: 18ad7059d00f86d36eca87a904d0db464f0598ebdf4f95d580b434cecd1dfa36
+  docs/notes/2026-06-17-commit-operation-card-and-next-json-prompt-selection.md: 4f1c5f0d0c4e14d2f46d7707472651dc51fcd62a934c1565ce9d59ea006b1ee1
+  docs/notes/2026-06-18-integrated-design-selection-execution-layers.md: ce9cd3ee2c8eeeeef7c9bfcbf9563419ad7b07858de8cde0709d45df099ddf01
+  docs/notes/2026-06-18-mechanized-workflow-execution-design.md: e38051da74d26f1237a4c690d1f2c1b678f923e9003b1549d05ee4a6431ce4bb
+  docs/notes/2026-06-19-integrated-design-manual-workflow-progress.md: da5cb409e4c2214253d3b648e7b1581de8e25c455c2937cae0da75cb9e46394b
+  docs/notes/2026-06-19-integrated-design-requirements-missing.md: f386d3c64bf45b81969d2185aa19fc8d56c4523fd6b5e8f9142b63f465df0b98
+  docs/notes/2026-06-19-normal-output-minimization-tool-inventory.yaml: a236eac451fbc34428162f853b92423e2f4f934327722e3618adf69c128ed298
+  docs/notes/2026-06-19-vertical-intent-review-audit-experiment.md: 2fc1c1c58122549f199d392d1886facf3c03b833b0b1595b68a48db8c2cf68c2
+  docs/notes/2026-06-20-api-review-prompt-audit-discussion-record.md: 3b2b1483abfe206d1534c6e84d435a7a8df266e4f66db580d73eb6a1ff61ffa7
+  docs/notes/2026-06-20-api-review-prompt-method-comparison.md: d89adbdc533b766fcb10c2311055a4391d1b4da8b9bb4045bb05764ce33988f6
+  docs/notes/2026-06-20-api-review-prompt-quality-side-track.md: 6053580f95d705ab85397a578b32d90f819916febf4db02e28f9980ccb0f5e18
+  docs/notes/2026-06-20-design-review-method-improvement-effect.md: 388cf35624cb2332b7b9aa55c5e7c49e70cb3edd3cc8e089d80c1a8a9f5ccb0e
+  docs/notes/2026-06-21-guidance-file-move-active-reference-inventory.md: 905bab668fa4a62e7fcc95342f4991f9fbf22dc887122975d18ec27bb75b15b9
+  docs/notes/2026-06-21-guidance-file-move-redo-plan.md: d4465a3e191dbe0c930105ef3dfc2de6b43d04bab1d3f01695b987c6eadfd54a
+  docs/notes/2026-06-21-llm-boundary-and-postwrite-prompt-mechanization-plan.md: 2e3aada379edb4e17337c836121d00d38bbd76d96615c58ecfcd7325867b0326
+  docs/notes/2026-06-21-postwrite-prompt-mechanization-side-track-retroactive-record.md: b667e9bb1b242115f4dc96cb66c91217ea032324b39a56103e7b51169766afd1
+  docs/notes/2026-06-21-workflow-operation-mechanization-improvement-plan.md: 37d40091cf3dfe9984b5eb4eee394e280e01c68ac709ea130831a661a4ae721b
+  docs/notes/2026-06-22-guidance-legacy-cleanup-repair-plan.md: 8ce0e8b1a2f269cb72e618b90689086237d59079d1b2796ac220c412297ed40f
+  docs/notes/2026-06-22-guidance-legacy-path-audit.md: 8b9c8d1bae3917f38e306a872e73f58521179dbdc6e669c518941437aa97c7ca
+  docs/notes/2026-06-22-guidance-legacy-path-mixing-risk.md: f6a50aa563c3bea67405d035b029c2bccd81b5fdf1a06bccefd8fca5c94502f0
+  docs/notes/2026−06−18-Quality-of-prompt.md: 048128290f2c0ea1318141ffe5301da13bc513d20fdc679815d310df47ea5f30
+required_verifiers:
+  - lightweight_self_check
+completed_verifiers:
+  - lightweight_self_check
+unresolved_substantive_findings: 0
+verifications:
+  - verifier: lightweight_self_check
+    target_files:
+      - docs/notes/2026-06-16-next-json-unique-state-redesign.md
+      - docs/notes/2026-06-17-commit-operation-card-and-next-json-prompt-selection.md
+      - docs/notes/2026-06-18-integrated-design-selection-execution-layers.md
+      - docs/notes/2026-06-18-mechanized-workflow-execution-design.md
+      - docs/notes/2026-06-19-integrated-design-manual-workflow-progress.md
+      - docs/notes/2026-06-19-integrated-design-requirements-missing.md
+      - docs/notes/2026-06-19-normal-output-minimization-tool-inventory.yaml
+      - docs/notes/2026-06-19-vertical-intent-review-audit-experiment.md
+      - docs/notes/2026-06-20-api-review-prompt-audit-discussion-record.md
+      - docs/notes/2026-06-20-api-review-prompt-method-comparison.md
+      - docs/notes/2026-06-20-api-review-prompt-quality-side-track.md
+      - docs/notes/2026-06-20-design-review-method-improvement-effect.md
+      - docs/notes/2026-06-21-guidance-file-move-active-reference-inventory.md
+      - docs/notes/2026-06-21-guidance-file-move-redo-plan.md
+      - docs/notes/2026-06-21-llm-boundary-and-postwrite-prompt-mechanization-plan.md
+      - docs/notes/2026-06-21-postwrite-prompt-mechanization-side-track-retroactive-record.md
+      - docs/notes/2026-06-21-workflow-operation-mechanization-improvement-plan.md
+      - docs/notes/2026-06-22-guidance-legacy-cleanup-repair-plan.md
+      - docs/notes/2026-06-22-guidance-legacy-path-audit.md
+      - docs/notes/2026-06-22-guidance-legacy-path-mixing-risk.md
+      - docs/notes/2026−06−18-Quality-of-prompt.md
+    target_sha256:
+      docs/notes/2026-06-16-next-json-unique-state-redesign.md: 18ad7059d00f86d36eca87a904d0db464f0598ebdf4f95d580b434cecd1dfa36
+      docs/notes/2026-06-17-commit-operation-card-and-next-json-prompt-selection.md: 4f1c5f0d0c4e14d2f46d7707472651dc51fcd62a934c1565ce9d59ea006b1ee1
+      docs/notes/2026-06-18-integrated-design-selection-execution-layers.md: ce9cd3ee2c8eeeeef7c9bfcbf9563419ad7b07858de8cde0709d45df099ddf01
+      docs/notes/2026-06-18-mechanized-workflow-execution-design.md: e38051da74d26f1237a4c690d1f2c1b678f923e9003b1549d05ee4a6431ce4bb
+      docs/notes/2026-06-19-integrated-design-manual-workflow-progress.md: da5cb409e4c2214253d3b648e7b1581de8e25c455c2937cae0da75cb9e46394b
+      docs/notes/2026-06-19-integrated-design-requirements-missing.md: f386d3c64bf45b81969d2185aa19fc8d56c4523fd6b5e8f9142b63f465df0b98
+      docs/notes/2026-06-19-normal-output-minimization-tool-inventory.yaml: a236eac451fbc34428162f853b92423e2f4f934327722e3618adf69c128ed298
+      docs/notes/2026-06-19-vertical-intent-review-audit-experiment.md: 2fc1c1c58122549f199d392d1886facf3c03b833b0b1595b68a48db8c2cf68c2
+      docs/notes/2026-06-20-api-review-prompt-audit-discussion-record.md: 3b2b1483abfe206d1534c6e84d435a7a8df266e4f66db580d73eb6a1ff61ffa7
+      docs/notes/2026-06-20-api-review-prompt-method-comparison.md: d89adbdc533b766fcb10c2311055a4391d1b4da8b9bb4045bb05764ce33988f6
+      docs/notes/2026-06-20-api-review-prompt-quality-side-track.md: 6053580f95d705ab85397a578b32d90f819916febf4db02e28f9980ccb0f5e18
+      docs/notes/2026-06-20-design-review-method-improvement-effect.md: 388cf35624cb2332b7b9aa55c5e7c49e70cb3edd3cc8e089d80c1a8a9f5ccb0e
+      docs/notes/2026-06-21-guidance-file-move-active-reference-inventory.md: 905bab668fa4a62e7fcc95342f4991f9fbf22dc887122975d18ec27bb75b15b9
+      docs/notes/2026-06-21-guidance-file-move-redo-plan.md: d4465a3e191dbe0c930105ef3dfc2de6b43d04bab1d3f01695b987c6eadfd54a
+      docs/notes/2026-06-21-llm-boundary-and-postwrite-prompt-mechanization-plan.md: 2e3aada379edb4e17337c836121d00d38bbd76d96615c58ecfcd7325867b0326
+      docs/notes/2026-06-21-postwrite-prompt-mechanization-side-track-retroactive-record.md: b667e9bb1b242115f4dc96cb66c91217ea032324b39a56103e7b51169766afd1
+      docs/notes/2026-06-21-workflow-operation-mechanization-improvement-plan.md: 37d40091cf3dfe9984b5eb4eee394e280e01c68ac709ea130831a661a4ae721b
+      docs/notes/2026-06-22-guidance-legacy-cleanup-repair-plan.md: 8ce0e8b1a2f269cb72e618b90689086237d59079d1b2796ac220c412297ed40f
+      docs/notes/2026-06-22-guidance-legacy-path-audit.md: 8b9c8d1bae3917f38e306a872e73f58521179dbdc6e669c518941437aa97c7ca
+      docs/notes/2026-06-22-guidance-legacy-path-mixing-risk.md: f6a50aa563c3bea67405d035b029c2bccd81b5fdf1a06bccefd8fca5c94502f0
+      docs/notes/2026−06−18-Quality-of-prompt.md: 048128290f2c0ea1318141ffe5301da13bc513d20fdc679815d310df47ea5f30
+    checks:
+      user_points_preserved: true
+      facts_inferences_policy_and_open_items_separated: true
+      useful_as_later_decision_material: true
+      does_not_over_specify_scope: true
+      remains_working_note_not_canonical_spec: true
+      api_review_intentionally_not_used: true
+notes: >
+  Lightweight self-check for abolishing docs/notes/working and moving its
+  remaining notes into docs/notes. The moved files remain discussion records,
+  working notes, audits, and planning history rather than canonical
+  requirements, design, task, or operation rules. This manifest also records
+  the policy adjustment that docs/notes is now treated as lightweight
+  self-check material because its role has shifted to notes and historical
+  decision context.

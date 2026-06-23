@@ -9,7 +9,7 @@ related:
   - docs/operations/API_REVIEW_PROMPT_QUALITY.md
   - templates/review/api_review_criteria_template.md
   - templates/review/api_review_prompt_quality_criteria_template.md
-  - docs/notes/working/2026-06-20-api-review-prompt-quality-side-track.md
+  - docs/notes/2026-06-20-api-review-prompt-quality-side-track.md
   - .reviewcompass/specs/workflow-management/reviews/2026-06-20-workflow-management-design-vertical-redo-review-run/
   - .reviewcompass/specs/workflow-management/reviews/2026-06-20-workflow-management-design-vertical-redo-prompt-quality-run/
   - .reviewcompass/specs/workflow-management/reviews/2026-06-20-workflow-management-design-vertical-redo-review-run-v2/

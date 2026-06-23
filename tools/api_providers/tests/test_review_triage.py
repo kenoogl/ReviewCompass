@@ -348,12 +348,12 @@ def test_is_post_write_target_excludes_structured_templates_for_separate_audit()
   assert not any(_is_post_write_target(path) for path in excluded_paths)
 
 
-def test_is_post_write_target_excludes_working_notes_for_lightweight_check():
-  """docs/notes/working は strict post-write ではなく軽量自己精査へ回す。"""
+def test_is_post_write_target_excludes_notes_for_lightweight_check():
+  """docs/notes は strict post-write ではなく軽量自己精査へ回す。"""
   assert not _is_post_write_target(
     "docs/notes/working/2026-06-17-working-note-verification-trigger-policy.md"
   )
-  assert _is_post_write_target("docs/notes/2026-06-17-regular-note.md")
+  assert not _is_post_write_target("docs/notes/2026-06-17-regular-note.md")
 
 
 def test_list_pending_outputs_plain_markdown_with_recommendation(tmp_path, capsys):
