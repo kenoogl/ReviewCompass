@@ -1,0 +1,254 @@
+schema_version: reviewcompass-backlog-item-v1
+id: plan-2026-06-23-guidance-relocation-and-docs-classification
+kind: plan
+title: Classify and relocate remaining operations and discipline documents
+status: candidate
+source_unit_id: main-completed
+created_at: '2026-06-23T12:18:28+09:00'
+index_path: .reviewcompass/backlog/index.yaml
+provenance:
+  created_by: llm
+  source_ref: conversation:2026-06-23-remaining-docs-relocation-discussion
+  reason: >
+    docs/operations と docs/disciplines に残る文書のうち、実行時・デプロイ時に
+    LLM / hooks / tools / effective prompt が読むべきものは .reviewcompass 配下へ
+    移していく必要がある。ただし前回の guidance 移動では、十分な計画と検査なしに
+    進めた結果、参照漏れ、重複、旧 path 残存、誤った修復作業が発生したため、
+    今回は移動前に詳細な分類・検査・段階移行計画を backlog へ起票する。
+summary: >
+  残存する docs/operations / docs/disciplines を一括移動せず、まず deploy-facing、
+  runtime-facing、effective-prompt-source、human-reference、historical の分類軸で監査する。
+  そのうえで .reviewcompass/guidance、.reviewcompass/specs、.reviewcompass/backlog、
+  docs/notes、archive などの配置先を決め、参照更新、post-write verification、
+  duplicate / stale path 監査、削除条件までを段階化する。
+related:
+  - .reviewcompass/backlog/plans/plan-2026-06-23-effective-prompt-freshness-audit.yaml
+  - .reviewcompass/backlog/plans/plan-2026-06-23-entrypoint-coverage-audit.yaml
+  - .reviewcompass/backlog/plans/plan-2026-06-23-operation-registry-preflight.yaml
+  - .reviewcompass/guidance/WORKFLOW_NAVIGATION.md
+  - .reviewcompass/guidance/WORKFLOW_DISCIPLINE_MAP.yaml
+  - deploy-manifest.yaml
+  - docs/operations
+  - docs/disciplines
+background:
+  previous_guidance_relocation:
+    - .reviewcompass/guidance を deploy-facing guidance の正本として追加した。
+    - hooks、templates、tools、deploy manifest の参照を .reviewcompass/guidance 側へ切り替えた。
+    - 旧 docs/operations / docs/disciplines に残っていた重複 guidance を削除した。
+    - しかし初回は計画と検査が不足し、後からリンク漏れ、旧 path 参照、削除漏れ、誤った manifest 対象などを修正することになった。
+  remaining_docs:
+    - docs/operations には feature 別の運用解説、deployment 解説、adapter 手引きが残っている。
+    - docs/disciplines には active feedback discipline に見える文書が残っている。
+    - これらは性格が混在しており、一律に移すと別の混線を起こす。
+problem_statement:
+  - LLM が読むべき実行規律が docs 側に残ると、.reviewcompass/guidance と二重正本になる。
+  - docs 側の active discipline が現在も効くなら、effective prompt / entrypoint coverage / deploy package がそれを追跡できない可能性がある。
+  - feature operation 解説のような human-reference 文書まで guidance に移すと、逆に guidance が肥大化し、実行時に読むべきものが曖昧になる。
+  - 旧 path を残したまま moving / deletion を行うと、link lint では拾えない adapter / hook / template / test fixture 参照が残る可能性がある。
+classification_axes:
+  - id: deploy_facing
+    description: デプロイ先に持ち込み、対象アプリ内の LLM / hooks / tools が読む必要がある。
+    preferred_location: .reviewcompass/guidance
+  - id: runtime_facing
+    description: 実行時の entrypoint、workflow navigation、commit / push / review-run / proxy 操作へ影響する。
+    preferred_location: .reviewcompass/guidance
+  - id: effective_prompt_source
+    description: effective prompt の source ref として使われる、または使うべき規律。
+    preferred_location: .reviewcompass/guidance
+  - id: spec_or_contract_source
+    description: 機能仕様・受入条件・機械検査の正本として扱う。
+    preferred_location: .reviewcompass/specs
+  - id: human_reference
+    description: 人間向けの背景説明、機能解説、履歴整理であり、実行時に必読ではない。
+    preferred_location: docs/operations または docs/notes
+  - id: historical
+    description: 過去の判断経緯・古い規律・退役済み文書。
+    preferred_location: docs/notes または archive
+initial_inventory_targets:
+  operations:
+    - docs/operations/ANALYSIS.md
+    - docs/operations/CONFORMANCE_EVALUATION.md
+    - docs/operations/DEPLOYMENT.md
+    - docs/operations/EVALUATION.md
+    - docs/operations/FOUNDATION.md
+    - docs/operations/INITIAL_DEPLOYMENT_USER_GUIDE.md
+    - docs/operations/RUNTIME.md
+    - docs/operations/SELF_IMPROVEMENT.md
+    - docs/operations/SELF_IMPROVEMENT_MACHINE_VERIFICATION.md
+    - docs/operations/WORKFLOW_MANAGEMENT.md
+    - docs/operations/WORKFLOW_NAVIGATION_FOR_CLAUDE.md
+    - docs/operations/WORKFLOW_NAVIGATION_FOR_CODEX.md
+  disciplines:
+    - docs/disciplines/README.md
+    - docs/disciplines/discipline_avoid_compound_bash.md
+    - docs/disciplines/discipline_concise_complete_report.md
+    - docs/disciplines/discipline_facts_vs_interpretation.md
+    - docs/disciplines/discipline_implementation_autonomy.md
+    - docs/disciplines/discipline_intent_conformance_is_the_acceptance_gate.md
+    - docs/disciplines/discipline_must_fix_discussion_obligation.md
+    - docs/disciplines/discipline_no_redundant_workflow_questions.md
+    - docs/disciplines/discipline_normal_output_minimization.md
+    - docs/disciplines/discipline_options_presentation.md
+    - docs/disciplines/discipline_plain_explanation_each_step.md
+    - docs/disciplines/discipline_plain_japanese.md
+    - docs/disciplines/discipline_pre_action_precheck.md
+    - docs/disciplines/discipline_reopen_procedure_for_settled_topics.md
+    - docs/disciplines/discipline_standing_directives_are_hard_constraints.md
+    - docs/disciplines/discipline_workflow_precheck_invocation.md
+expected_classification_hypotheses:
+  likely_move_to_guidance:
+    - docs/operations/WORKFLOW_NAVIGATION_FOR_CLAUDE.md
+    - docs/operations/WORKFLOW_NAVIGATION_FOR_CODEX.md
+    - docs/disciplines/discipline_workflow_precheck_invocation.md
+    - docs/disciplines/discipline_normal_output_minimization.md
+    - docs/disciplines/discipline_plain_japanese.md
+    - docs/disciplines/discipline_concise_complete_report.md
+    - docs/disciplines/discipline_facts_vs_interpretation.md
+    - docs/disciplines/discipline_pre_action_precheck.md
+  likely_keep_or_reclassify_as_human_reference:
+    - docs/operations/FOUNDATION.md
+    - docs/operations/RUNTIME.md
+    - docs/operations/EVALUATION.md
+    - docs/operations/ANALYSIS.md
+    - docs/operations/WORKFLOW_MANAGEMENT.md
+    - docs/operations/SELF_IMPROVEMENT.md
+    - docs/operations/CONFORMANCE_EVALUATION.md
+  requires_decision:
+    - docs/operations/DEPLOYMENT.md
+    - docs/operations/INITIAL_DEPLOYMENT_USER_GUIDE.md
+    - docs/operations/SELF_IMPROVEMENT_MACHINE_VERIFICATION.md
+    - docs/disciplines/README.md
+    - docs/disciplines/discipline_implementation_autonomy.md
+    - docs/disciplines/discipline_must_fix_discussion_obligation.md
+    - docs/disciplines/discipline_reopen_procedure_for_settled_topics.md
+    - docs/disciplines/discipline_standing_directives_are_hard_constraints.md
+controls_before_any_move:
+  - id: C-1
+    title: Create complete inventory table
+    requirement: >
+      各ファイルに classification、current readers、expected readers、deploy inclusion、
+      effective prompt source status、proposed destination、delete-old-path condition を付ける。
+  - id: C-2
+    title: Search all references before moving
+    requirement: >
+      rg で file name、relative path、anchor、template reference、test fixture reference、
+      deploy manifest reference を全件列挙する。
+  - id: C-3
+    title: Prepare contract tests before implementation
+    requirement: >
+      TDD に従い、移動前に red test または現状固定テストを作る。
+  - id: C-4
+    title: Define old-path deletion policy
+    requirement: >
+      旧 path を残すなら明示的な compatibility shim と期限を置く。原則として二重正本は残さない。
+  - id: C-5
+    title: Define post-write review scope
+    requirement: >
+      正本 guidance / deploy-facing guidance を動かす場合、API post-write verification 対象とする。
+      human-reference docs のみなら lightweight self-check とする。
+  - id: C-6
+    title: Avoid mixed commits
+    requirement: >
+      inventory / tests / migration / deletion / consumer update / cleanup を必要に応じて分割し、
+      commit unit または blocking unit を使って混線を防ぐ。
+implementation_plan:
+  - id: GRC-1
+    title: Inventory and classification only
+    status: candidate
+    tasks:
+      - docs/operations と docs/disciplines の全残存ファイルを一覧化する。
+      - classification_axes に従って一次分類する。
+      - current readers と proposed destination を記録する。
+    acceptance:
+      - 移動対象、残置対象、判断保留対象が表で確認できる。
+      - この段階ではファイル移動をしない。
+  - id: GRC-2
+    title: Reference and consumer audit
+    status: candidate
+    tasks:
+      - path / basename / anchor で repo 全体を検索する。
+      - hooks、templates、tools、tests、deploy-manifest、AGENTS / entry templates の参照を分類する。
+      - deploy package に含めるべき consumer と開発リポジトリ内だけの consumer を分ける。
+    acceptance:
+      - 各移動候補について、更新すべき consumer が漏れなくリストされる。
+  - id: GRC-3
+    title: Red tests and audit tests
+    status: candidate
+    tasks:
+      - duplicate guidance / legacy docs path を検出するテストを追加する。
+      - deploy manifest が新配置だけを含むことを検査する。
+      - effective prompt source refs が旧 docs path を指さないことを検査する。
+      - adapter guidance が .reviewcompass/guidance 正本へリンクすることを検査する。
+    acceptance:
+      - 移動前に、期待する配置違反を検出できるテストが存在する。
+  - id: GRC-4
+    title: Move deploy-facing and runtime-facing docs
+    status: candidate
+    tasks:
+      - 分類済み deploy-facing / runtime-facing 文書を .reviewcompass/guidance へ移す。
+      - consumer references を同じ commit または明示した移行 commit で更新する。
+      - effective prompt / discipline map / operation registry との接続を更新する。
+    acceptance:
+      - .reviewcompass/guidance が deploy-facing guidance の唯一の正本になる。
+      - 旧 docs path を読む実行時 consumer が残らない。
+  - id: GRC-5
+    title: Delete or demote old paths
+    status: candidate
+    tasks:
+      - 移動済み旧 path を削除する。
+      - 削除しない場合は archive / historical / notes として明示し、実行時 consumer から切り離す。
+      - README に残す場合は正本でないことを明記する。
+    acceptance:
+      - 二重正本が残らない。
+      - 旧 path 参照が link / grep / deploy lint で検出されない。
+  - id: GRC-6
+    title: Post-write review and final audit
+    status: candidate
+    tasks:
+      - guidance / discipline map / deploy manifest 変更に API post-write verification を実施する。
+      - human-reference docs のみの変更は lightweight self-check にする。
+      - next --json、document_link_lint、deployment tests、effective prompt freshness / coverage audit を実行する。
+    acceptance:
+      - 移動後に next --json が旧 path を返さない。
+      - post-write manifest が実 target を正しく封印する。
+      - 作業ツリー clean で push 可能になる。
+audit_commands_candidates:
+  - rg -n "docs/operations|docs/disciplines|WORKFLOW_NAVIGATION_FOR_|discipline_" .
+  - .venv/bin/python3 tools/document_link_lint.py --json <changed-files>
+  - .venv/bin/python3 tools/check-workflow-action.py next --json
+  - .venv/bin/python3 tools/check-workflow-action.py prompt-audit --json
+  - .venv/bin/python3 -m unittest tests.deployment.test_deploy_manifest tests.tools.test_effective_prompt_contract
+risks_and_mitigations:
+  - risk: 一括移動で参照漏れが大量発生する。
+    mitigation: inventory / reference audit / red tests を先に commit し、移動は段階化する。
+  - risk: human-reference 文書まで guidance に移して guidance が肥大化する。
+    mitigation: deploy-facing / runtime-facing / effective-prompt-source に該当しないものは docs 側または notes 側に残す。
+  - risk: 旧 path を互換用に残して二重正本になる。
+    mitigation: shim を置く場合は期限と警告を持たせ、原則は旧 path 削除。
+  - risk: post-write manifest が review-target.md など派生物だけを封印する。
+    mitigation: manifest target_files が実 target になっているか必ず確認する。
+  - risk: 移動中に別作業を混ぜる。
+    mitigation: blocking unit / commit unit を使い、allowed_files を限定する。
+open_questions:
+  - docs/disciplines の active feedback discipline を .reviewcompass/guidance に統合するか、別の .reviewcompass/discipline 風ディレクトリを作るか。
+  - feature operation 解説を docs/operations に残すか、.reviewcompass/specs/*/operations.md のように feature 配下へ寄せるか。
+  - adapter guidance for Claude / Codex を .reviewcompass/guidance に置くか、templates/entry 側へ吸収するか。
+  - historical discipline の archive 先を docs/notes、docs/archive、.reviewcompass/archive のどれにするか。
+  - deploy package から ReviewCompass 自身の作業ログ・evidence をどこまで除外するか。
+recommended_next_step:
+  id: GRC-1
+  title: Create inventory and classification table without moving files
+  rationale: >
+    前回の失敗は移動を先に進め、後から参照漏れを直した点にある。
+    今回はまず全残存ファイルの分類表を作り、移動対象と残置対象を合意してから
+    TDD と段階移行へ進む。
+non_goals:
+  - この plan 作成時点でファイル移動を実施済み扱いにしない。
+  - docs/operations / docs/disciplines を一括削除しない。
+  - human-reference 文書を無理に .reviewcompass/guidance へ移さない。
+  - 旧 path 互換を無期限に残さない。
+decisions:
+  - date: '2026-06-23'
+    decision: >
+      残存 docs/operations / docs/disciplines の整理は必要だが、前回の失敗を踏まえ、
+      まず分類・参照監査・検査計画を backlog 化し、移動は別作業として実施する。
