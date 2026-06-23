@@ -1,0 +1,51 @@
+schema_version: work-checklist-v1
+checklist_id: checklist-todo-2026-06-23-guidance-relocation-inventory
+unit_id: maintenance-2026-06-23-guidance-relocation-inventory
+title: Create guidance relocation inventory and classification table
+status: completed
+created_at: '2026-06-23T09:12:56.291657+00:00'
+provenance:
+  created_by: llm
+  source_ref: .reviewcompass/backlog/todos/todo-2026-06-23-guidance-relocation-inventory.yaml
+  reason: backlog TODO から runtime checklist を機械生成する
+items:
+- id: GRC-1A
+  title: List all remaining docs/operations and docs/disciplines files
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: GRC-1B
+  title: Classify each file using the plan classification axes
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: GRC-1C
+  title: Record current readers and proposed destination for each file
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: GRC-1D
+  title: Mark move, keep, and decision-required candidates without moving files
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: GRC-RT-1
+  title: Inventory table covers every target before any move
+  status: done
+  checked: true
+  child_checklist_id: null
+source_backlog_item_id: todo-2026-06-23-guidance-relocation-inventory
+source_backlog_path: .reviewcompass/backlog/todos/todo-2026-06-23-guidance-relocation-inventory.yaml
+progress:
+  total: 5
+  done: 5
+  active: 0
+  pending: 0
+  blocked: 0
+  active_item_ids: []
+  blocked_item_ids: []
+completed_at: '2026-06-23T10:49:11.292804+00:00'
+completion_summary: 'Retroactive reconciliation: inventory/classification work was
+  completed in commit 4d162afb with evidence .reviewcompass/backlog/inventories/2026-06-23-guidance-relocation-docs-classification.md
+  and stages/completed/maintenance-2026-06-23-guidance-relocation-inventory.yaml;
+  this closes the backlog TODO/checklist state to match existing evidence.'
