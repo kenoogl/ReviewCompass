@@ -1,0 +1,102 @@
+round_id: round-1
+purpose: task_quality_review
+invocation_timestamp: '2026-06-23T09:16:57.457362+00:00'
+target_files:
+- path: .reviewcompass/evidence/review-materials/2026-06-23-guidance-relocation-inventory-task-quality/review-materials.yaml
+  sha256: 61928504954afaab311efcfeba229fea794aea2fa30a58e099db7cdc6a7e80d4
+criteria: "# Task Quality Review Criteria: Guidance Relocation Inventory\n\n## Review\
+  \ Task\nReview whether the backlog TODO and runtime checklist for `todo-2026-06-23-guidance-relocation-inventory`\
+  \ are safe to use as the execution checklist after `task-quality-check audit` returned\
+  \ `OK` with a WARN:\n\n- `red test items appear after implementation items: GRC-RT-1`\n\
+  \nThe review should decide whether this warning is a blocking task-quality issue,\
+  \ and identify any missing checklist or TODO quality defects that would make execution\
+  \ unsafe.\n\n## User Review Requirements\n- WARN from task-quality-check should\
+  \ be reviewed by API, not bypassed by local judgment.\n- Review the generated review\
+  \ materials and judge whether the TODO/checklist may proceed.\n- Do not authorize\
+  \ commit, push, file moves, or completion of the work.\n\n## Review Target\nThe\
+  \ target file is `.reviewcompass/evidence/review-materials/2026-06-23-guidance-relocation-inventory-task-quality/review-materials.yaml`.\n\
+  \nIt contains:\n- The backlog TODO full text.\n- The runtime checklist full text.\n\
+  - The task-quality audit result.\n- Main preanalysis generated from the audit.\n\
+  - Review questions and decision boundaries.\n\n## Required Checks\n1. Determine\
+  \ whether the WARN about `GRC-RT-1` appearing after implementation items is a blocking\
+  \ issue for this specific inventory-only TODO.\n2. Check whether the checklist preserves\
+  \ the source plan slice `GRC-1` and does not broaden scope into file moves, deletion,\
+  \ or consumer reference updates.\n3. Check whether each checklist item is concrete\
+  \ enough to execute and verify.\n4. Check whether the red-test / acceptance item\
+  \ is sufficient for an inventory/classification-only task.\n5. Check whether the\
+  \ checklist can proceed as-is, should be reordered, or needs additional items before\
+  \ execution.\n\n## Out Of Scope\n- Do not classify the actual `docs/operations`\
+  \ or `docs/disciplines` files.\n- Do not propose file moves, path deletions, or\
+  \ consumer reference updates.\n- Do not judge post-write verification, commit readiness,\
+  \ or push readiness.\n- Do not treat the generated main preanalysis as authoritative;\
+  \ use it only as a hypothesis.\n\n## Finding Policy\nReturn findings only for substantive\
+  \ task-quality risks.\n\nUse these severities:\n- `ERROR`: Execution should not\
+  \ proceed until fixed.\n- `WARN`: Execution may proceed only after explicit acceptance\
+  \ or minor correction.\n- `INFO`: Non-blocking observation.\n\nIf there are no substantive\
+  \ findings, return an empty findings list and state that the checklist may proceed.\n\
+  \n## Output Contract\nRespond as YAML with this shape:\n\n```yaml\nfindings:\n \
+  \ - id: TQ-001\n    severity: ERROR|WARN|INFO\n    summary: short summary\n    evidence:\
+  \ specific item IDs or source text\n    recommendation: concrete next action\ndecision:\n\
+  \  may_proceed: true|false\n  reason: concise reason\n  required_changes:\n    -\
+  \ change, if any\n```\n"
+prompt_sha256: e09899a01e54b9e7195a81e481f750b361d617f6b614416ff4268332c10bf0f4
+model_results:
+- model_id: gpt-5.5
+  provider: openai-api
+  role: primary
+  treatment: primary
+  invocation_path: api
+  raw_path: raw/gpt-5.5.round-1.txt
+  raw_sha256: c1b229a0af319257b302163c2e838514a742031e088ebeada383875b3e7e33ec
+  parsed_path: parsed/gpt-5.5.round-1.yaml
+  parsed_sha256: 5a6739bf9a7d856323f42c2d522dc0c07a9ece021058eca20018efdbfbaab821
+  parse_status: parsed
+  formatted_by: parser
+  formatted_by_actor_type: orchestrator
+  formatted_by_actor: run_role.py
+  formatted_at: '2026-06-23T09:16:40.703632+00:00'
+  follow_up_action: triage
+  attempts: 1
+  duration_seconds: 17.582
+  prompt_path: prompts/gpt-5.5.round-1.prompt.md
+  prompt_sha256: e09899a01e54b9e7195a81e481f750b361d617f6b614416ff4268332c10bf0f4
+- model_id: gpt-5.4
+  provider: openai-api
+  role: adversarial
+  treatment: adversarial
+  invocation_path: api
+  raw_path: raw/gpt-5.4.round-1.txt
+  raw_sha256: 9b2012943483055db289fe21894d25366a04fb8590484b17a06bdb0f191c50ad
+  parsed_path: parsed/gpt-5.4.round-1.yaml
+  parsed_sha256: d45d6cbe57a841ed873dc8e2921b251bd681043fe532369e4c7591a37df4abde
+  parse_status: parsed
+  formatted_by: parser
+  formatted_by_actor_type: orchestrator
+  formatted_by_actor: run_role.py
+  formatted_at: '2026-06-23T09:16:45.583041+00:00'
+  follow_up_action: triage
+  attempts: 1
+  duration_seconds: 4.81
+  prompt_path: prompts/gpt-5.4.round-1.prompt.md
+  prompt_sha256: 5bbbc8ea6cd9a2abb4f0523ab337e30c18cae60110bf073f895923ae2a629143
+- model_id: gpt-5.5
+  provider: openai-api
+  role: judgment
+  treatment: judgment
+  invocation_path: api
+  raw_path: raw/gpt-5.5.round-1.txt
+  raw_sha256: 7fe0978ee92771f906e018ef6df613e22eb8ea2df72fdd216313c07faae6f53c
+  parsed_path: parsed/gpt-5.5.round-1.yaml
+  parsed_sha256: 7285b5d6a268a79d2b73c3787930019a1ae1faa19d6c66c19d22f53b910c05a6
+  parse_status: parsed
+  formatted_by: parser
+  formatted_by_actor_type: orchestrator
+  formatted_by_actor: run_role.py
+  formatted_at: '2026-06-23T09:16:57.457362+00:00'
+  follow_up_action: triage
+  attempts: 1
+  duration_seconds: 11.803
+  prompt_path: prompts/gpt-5.5.round-1.prompt.md
+  prompt_sha256: e09899a01e54b9e7195a81e481f750b361d617f6b614416ff4268332c10bf0f4
+criteria_source_path: .reviewcompass/evidence/task-quality-review-runs/2026-06-23-guidance-relocation-inventory-task-quality/review-criteria.md
+criteria_source_sha256: 87cd547d07e35d65ed547e1e211a103c53bf45aec2ba381df09891075c8f384f

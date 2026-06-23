@@ -173,6 +173,25 @@ def test_real_config_implementation_review_default_uses_codex_operator_api_roles
   assert variant["judgment"]["model"] == "gemini-3.1-pro-preview"
 
 
+def test_real_config_task_quality_review_default_uses_independent_api_roles():
+  """実設定の task-quality review 既定は既存の独立 3 系統 variant に固定する。"""
+  config = load_config(_PROJECT_ROOT / "config" / "api-settings.yaml")
+  variant_name = resolve_default_variant_name(config, "task_quality_review")
+  variant = resolve_variant(config, variant_name)
+
+  assert variant_name == "implementation_review_independent_3way_codex_operator"
+  assert variant["required_roles"] == ["primary", "adversarial", "judgment"]
+  assert variant["primary"]["path"] == "api"
+  assert variant["primary"]["provider"] == "openai-api"
+  assert variant["primary"]["model"] == "gpt-5.4"
+  assert variant["adversarial"]["path"] == "api"
+  assert variant["adversarial"]["provider"] == "anthropic-api"
+  assert variant["adversarial"]["model"] == "claude-sonnet-4-6"
+  assert variant["judgment"]["path"] == "api"
+  assert variant["judgment"]["provider"] == "gemini-api"
+  assert variant["judgment"]["model"] == "gemini-3.1-pro-preview"
+
+
 def test_resolve_variant_unknown_raises(yaml_path):
   """存在しない variant 名で例外"""
   config = load_config(yaml_path)

@@ -8361,6 +8361,7 @@ def cmd_work_backlog(args):
       args.source_unit_id,
       args.source_ref,
       args.reason,
+      body_file=args.body_file,
     )
   elif args.work_backlog_command == "list":
     response = work_backlog.list_items(Path.cwd())
@@ -8438,6 +8439,12 @@ def cmd_task_quality_check(args):
       args.backlog_id,
       args.checklist_id,
       args.output_dir,
+    )
+  elif args.task_quality_check_command == "prepare-review-criteria":
+    response = task_quality_check.prepare_review_criteria(
+      Path.cwd(),
+      args.materials_path,
+      args.review_run_dir,
     )
   else:
     return 2
@@ -9195,10 +9202,10 @@ def main():
     wb_add.add_argument("--source-unit-id", required=True, help="発生元 work unit ID")
     wb_add.add_argument("--source-ref", required=True, help="発生根拠の参照")
     wb_add.add_argument("--reason", required=True, help="候補として保存する理由")
-    if command == "add-plan":
+    if command in {"add-plan", "add-todo"}:
       wb_add.add_argument(
         "--body-file",
-        help="plan item に追加する詳細本文 YAML",
+        help="backlog item に追加する詳細本文 YAML",
       )
 
   wb_sub.add_parser(
@@ -9283,6 +9290,13 @@ def main():
   tqc_materials.add_argument("--backlog-id", required=True, help="backlog todo item ID")
   tqc_materials.add_argument("--checklist-id", required=True, help="監査対象 checklist ID")
   tqc_materials.add_argument("--output-dir", required=True, help="review materials 出力先")
+  tqc_criteria = tqc_sub.add_parser(
+    "prepare-review-criteria",
+    help="task/checklist 品質レビュー用の criteria を生成する",
+    parents=[common_parser],
+  )
+  tqc_criteria.add_argument("--materials-path", required=True, help="review materials YAML")
+  tqc_criteria.add_argument("--review-run-dir", required=True, help="criteria 出力先")
 
   pa = sub.add_parser(
     "prompt-audit",

@@ -1,0 +1,47 @@
+run_id: 2026-06-23-guidance-relocation-inventory-task-quality
+triage_status: decided
+generated_at: '2026-06-23T09:16:57.478647+00:00'
+decision_actor: null
+decision_actor_type: human
+items:
+- finding_id: 2026-06-23-guidance-relocation-inventory-task-quality-gpt-5.4-adversarial-001
+  run_id: 2026-06-23-guidance-relocation-inventory-task-quality
+  source_model: gpt-5.4
+  source_round: round-1
+  source_raw_path: raw/gpt-5.4.round-1.txt
+  source_parsed_path: parsed/gpt-5.4.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: audit_result.warnings / runtime_checklist.items
+  plain_language_summary: The ordering warning for GRC-RT-1 is not blocking for this
+    specific inventory-only task.
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-23T09:19:08.230739+00:00'
+  decision_reason: API review judged the ordering warning non-blocking for this inventory-only
+    TODO; no file move or destructive action is authorized by this checklist.
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-23-guidance-relocation-inventory-task-quality-gpt-5.4-adversarial-002
+  run_id: 2026-06-23-guidance-relocation-inventory-task-quality
+  source_model: gpt-5.4
+  source_round: round-1
+  source_raw_path: raw/gpt-5.4.round-1.txt
+  source_parsed_path: parsed/gpt-5.4.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: runtime_checklist.items[id=GRC-RT-1] / backlog_todo.red_tests[id=GRC-RT-1]
+  plain_language_summary: The red-test item is acceptable for this task but is under-specified
+    as an executable verification step.
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-23T09:19:13.969249+00:00'
+  decision_reason: User accepted the recommended fix; GRC-RT-1 was clarified to require
+    coverage of all target docs/operations and docs/disciplines files plus classification,
+    current readers, proposed destination, and move/keep/decision-required status.
+  applied_files: []
+  superseded_by: null

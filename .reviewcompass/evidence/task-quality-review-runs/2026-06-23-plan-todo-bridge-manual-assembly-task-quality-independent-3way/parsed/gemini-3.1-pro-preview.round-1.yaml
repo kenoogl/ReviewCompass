@@ -1,0 +1,26 @@
+role: judgment
+provider: gemini-api
+model: gemini-3.1-pro-preview
+attempts: 1
+duration_seconds: 32.287
+decision:
+  may_proceed: false
+  reason: The checklist ordering violates TDD principles by placing verification after
+    implementation.
+  required_changes:
+  - Move PTB-RT-1 and PTB-RT-2 to appear before the mechanization hooks (PTB-2) to
+    ensure the pre-work failing state can be verified.
+findings:
+- id: TQ-001
+  severity: WARN
+  summary: Red tests ordered after implementation tasks
+  target_location: checklist.items (PTB-RT-1, PTB-RT-2)
+  description: The runtime checklist places red test items at the very end of the
+    execution flow.
+  evidence: Items PTB-RT-1 and PTB-RT-2 appear as the final items in the checklist,
+    after implementation phases PTB-1, PTB-2, and PTB-3.
+  rationale: A proper TDD and review-before-implementation flow requires red tests
+    to be executed and verified as failing prior to the implementation work. Placing
+    them at the end makes it impossible to confirm the initial red state.
+  recommendation: Reorder PTB-RT-1 and PTB-RT-2 so they precede the implementation
+    tasks (e.g., placing them before PTB-2A).

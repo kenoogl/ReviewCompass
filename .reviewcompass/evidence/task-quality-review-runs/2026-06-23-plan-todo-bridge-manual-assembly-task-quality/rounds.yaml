@@ -1,0 +1,109 @@
+round_id: round-1
+purpose: task_quality_review
+invocation_timestamp: '2026-06-23T09:37:54.465311+00:00'
+target_files:
+- path: .reviewcompass/evidence/review-materials/2026-06-23-plan-todo-bridge-manual-assembly-task-quality/review-materials.yaml
+  sha256: 9fac25840d47d8c7e3f514572f225814627ed5609fcea0f8022d386f2a82a686
+criteria: "# Task Quality Review Criteria: Reduce manual assembly in plan to TODO\
+  \ bridge\n\n## Review Task\nReview whether the backlog TODO and runtime checklist\
+  \ for `todo-2026-06-23-plan-todo-bridge-manual-assembly` / `checklist-todo-2026-06-23-plan-todo-bridge-manual-assembly`\
+  \ are safe to use as the execution checklist after `task-quality-check audit` returned\
+  \ `OK`.\n\nTask-quality warnings:\n\n- `red test items appear after implementation\
+  \ items: PTB-RT-1, PTB-RT-2`\n\nThe review should decide whether any warning is\
+  \ a blocking task-quality issue, and identify missing checklist or TODO quality\
+  \ defects that would make execution unsafe.\n\n## Prompt Construction Basis\n- This\
+  \ criteria document is mechanically generated from task-quality review materials.\n\
+  - The prompt follows the established three-review practice: material review, independent\
+  \ questions, explicit scope, sensitive-information check, and YAML result contract.\n\
+  - Treat main preanalysis in the materials as a hypothesis to inspect, not as an\
+  \ answer to copy.\n\n## User Review Requirements\n- WARN from task-quality-check\
+  \ should be reviewed by API, not bypassed by local judgment.\n- Review the generated\
+  \ review materials and judge whether the TODO/checklist may proceed.\n- Do not authorize\
+  \ commit, push, file moves, or completion of the work.\n\n## Review Target\nThe\
+  \ target file is `.reviewcompass/evidence/review-materials/2026-06-23-plan-todo-bridge-manual-assembly-task-quality/review-materials.yaml`.\n\
+  \nIt contains:\n- The backlog TODO full text.\n- The runtime checklist full text.\n\
+  - The task-quality audit result.\n- Main preanalysis generated from the audit.\n\
+  - Review questions and decision boundaries.\n\n## Required Checks\n1. Are checklist\
+  \ items concrete, non-overlapping, and sized for execution? Expected output: Find\
+  \ missing granularity risks with item IDs and evidence.\n2. Is the checklist order\
+  \ suitable for TDD and review-before-implementation flow? Expected output: Find\
+  \ ordering risks without treating warnings as automatic failure.\n3. Does the checklist\
+  \ preserve the source TODO intent and stated scope? Expected output: Find weakened,\
+  \ omitted, or broadened upstream intent.\n4. Do red test items cover the task quality\
+  \ risks before implementation work? Expected output: Find missing or under-specified\
+  \ red test coverage.\n\nAlso check whether the checklist can proceed as-is, should\
+  \ be reordered, or needs additional items before execution.\n\n## Out Of Scope\n\
+  - Do not perform the TODO work itself.\n- Do not propose file moves, path deletions,\
+  \ or consumer reference updates unless the TODO explicitly scopes them.\n- Do not\
+  \ judge post-write verification, commit readiness, or push readiness.\n- Do not\
+  \ treat generated main preanalysis as authoritative.\n\n## Finding Policy\nReturn\
+  \ findings only for substantive task-quality risks.\n\nUse these severities:\n-\
+  \ `ERROR`: Execution should not proceed until fixed.\n- `WARN`: Execution may proceed\
+  \ only after explicit acceptance or minor correction.\n- `INFO`: Non-blocking observation.\n\
+  \nIf there are no substantive findings, return an empty findings list and state\
+  \ that the checklist may proceed.\n\n## Output Contract\nRespond as YAML with this\
+  \ shape:\n\n```yaml\nfindings:\n  - id: TQ-001\n    severity: ERROR|WARN|INFO\n\
+  \    summary: short summary\n    evidence: specific item IDs or source text\n  \
+  \  recommendation: concrete next action\ndecision:\n  may_proceed: true|false\n\
+  \  reason: concise reason\n  required_changes:\n    - change, if any\n```\n"
+prompt_sha256: d7a1bac6fe813de0959a35bb0c1fcc9c10392e222d62190e1c778de7b814a200
+model_results:
+- model_id: gpt-5.5
+  provider: openai-api
+  role: primary
+  treatment: primary
+  invocation_path: api
+  raw_path: raw/gpt-5.5.round-1.txt
+  raw_sha256: b200490dfaac81c1c2f2f4f8b1963c380e5b81841388ed6223de025fb5f3b1ca
+  parsed_path: parsed/gpt-5.5.round-1.yaml
+  parsed_sha256: 9866455894bc12331ff9417002700bf936f40b0c21acf595e6803de5fcb20012
+  parse_status: parsed
+  formatted_by: parser
+  formatted_by_actor_type: orchestrator
+  formatted_by_actor: run_role.py
+  formatted_at: '2026-06-23T09:36:39.716870+00:00'
+  follow_up_action: triage
+  attempts: 1
+  duration_seconds: 62.336
+  prompt_path: prompts/gpt-5.5.round-1.prompt.md
+  prompt_sha256: d7a1bac6fe813de0959a35bb0c1fcc9c10392e222d62190e1c778de7b814a200
+- model_id: gpt-5.4
+  provider: openai-api
+  role: adversarial
+  treatment: adversarial
+  invocation_path: api
+  raw_path: raw/gpt-5.4.round-1.txt
+  raw_sha256: 059231a90642af0dff668edef36366e0c880f0ed5d77cc4ee13adab84bb87ef6
+  parsed_path: parsed/gpt-5.4.round-1.yaml
+  parsed_sha256: 3387eb52d521eb19e812b7c7e3dd9eb2f4796807a2377d49cd9622eac7c21de6
+  parse_status: parsed
+  formatted_by: parser
+  formatted_by_actor_type: orchestrator
+  formatted_by_actor: run_role.py
+  formatted_at: '2026-06-23T09:36:52.208447+00:00'
+  follow_up_action: triage
+  attempts: 1
+  duration_seconds: 12.417
+  prompt_path: prompts/gpt-5.4.round-1.prompt.md
+  prompt_sha256: b4a9f3e7cb08e3b0e24ce8c385922dc64c7988ba9e032dacd82ff23426ccb1e4
+- model_id: gpt-5.5
+  provider: openai-api
+  role: judgment
+  treatment: judgment
+  invocation_path: api
+  raw_path: raw/gpt-5.5.round-1.txt
+  raw_sha256: 58f3cef3ad22c945469a8979451c4ed9996a299b658df82484aab22cfa7a82a3
+  parsed_path: parsed/gpt-5.5.round-1.yaml
+  parsed_sha256: 847854f3bd433fd9d0e89303f3e1e7a06eca85b480c47ba396f8ac829ee62bb1
+  parse_status: parsed
+  formatted_by: parser
+  formatted_by_actor_type: orchestrator
+  formatted_by_actor: run_role.py
+  formatted_at: '2026-06-23T09:37:54.465311+00:00'
+  follow_up_action: triage
+  attempts: 1
+  duration_seconds: 62.189
+  prompt_path: prompts/gpt-5.5.round-1.prompt.md
+  prompt_sha256: d7a1bac6fe813de0959a35bb0c1fcc9c10392e222d62190e1c778de7b814a200
+criteria_source_path: .reviewcompass/evidence/task-quality-review-runs/2026-06-23-plan-todo-bridge-manual-assembly-task-quality/review-criteria.md
+criteria_source_sha256: 975794f64ee478bb02556a3429be72643df5d070957be0f8571e25c7dffb6934

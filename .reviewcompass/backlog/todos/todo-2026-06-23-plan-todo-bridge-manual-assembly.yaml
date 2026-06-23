@@ -1,0 +1,102 @@
+schema_version: reviewcompass-backlog-item-v1
+id: todo-2026-06-23-plan-todo-bridge-manual-assembly
+kind: todo
+title: Reduce manual assembly in plan to TODO bridge
+status: candidate
+source_unit_id: maintenance-2026-06-23-guidance-relocation-inventory
+created_at: '2026-06-23T09:26:45.388681+00:00'
+index_path: .reviewcompass/backlog/index.yaml
+provenance:
+  created_by: llm
+  source_ref: conversation:user:LM手組み箇所を整理して、実作業前の改善対象にする
+  reason: guidance relocation inventory 実作業前に、plan-todo-bridge から TODO/checklist/review
+    へ進む流れの LLM 手組み箇所を改善対象化する
+decisions: []
+summary: 'plan-todo-bridge から TODO / checklist / task-quality review へ進む流れで、
+
+  LLM が手で組み立てている箇所を改善対象として明示する。
+
+  実作業に入る前に、どこまでを機械化し、どこを明示ゲートとして残すかを整理する。
+
+  '
+problem_statement:
+- plan-todo-bridge は plan と TODO の接続有無を確認できるが、plan slice から TODO body を生成する処理はまだ機械化されていない。
+- TODO body の task 分解、red test、acceptance criteria 反映が LLM 手組みに残っている。
+- task-quality review criteria の作成が LLM 手組みに残っている。
+- task-quality review の variant 選択が operation default または明示ゲートとして固定されていない。
+- API review 後の checklist / TODO 反映が、所見ごとの機械的な patch plan ではなく LLM 判断に寄っている。
+observed_manual_steps:
+- id: PTB-MANUAL-1
+  title: Select source plan and slice for execution
+  current_state: LLM が TODO_NEXT_SESSION と plan 一覧から対象 plan / phase を選んでいる。
+  desired_state: 候補選択理由を機械可読に記録し、複数候補時は停止または利用者確認にする。
+- id: PTB-MANUAL-2
+  title: Assemble TODO body from plan slice
+  current_state: LLM が body-file YAML を作成し、task split / red_tests / non_goals を手で組んでいる。
+  desired_state: plan slice から TODO body draft を生成する CLI、または差分確認ゲートを用意する。
+- id: PTB-MANUAL-3
+  title: Build task-quality API review criteria
+  current_state: LLM が review-criteria.md を手で作成している。
+  desired_state: task-quality review materials から criteria draft を生成し、path-only /
+    複数判断詰め込み / main preanalysis 省略を検査する。
+- id: PTB-MANUAL-4
+  title: Select task-quality API review variant
+  current_state: LLM が run_review の variant を選んでいる。
+  desired_state: config/api-settings.yaml の operation_defaults か、明示停止ゲートで variant
+    と role assignment を確定する。
+- id: PTB-MANUAL-5
+  title: Apply review findings back to TODO and checklist
+  current_state: LLM が所見を読んで TODO / runtime checklist を直接編集している。
+  desired_state: triage 決定、patch 対象、反映済み監査を対応づける記録を残す。
+implementation_plan:
+  phases:
+  - id: PTB-1
+    title: Manual assembly inventory and boundary contract
+    tasks:
+    - id: PTB-1A
+      title: Record every manual step in plan-to-TODO-to-review flow
+    - id: PTB-1B
+      title: Classify each step as mechanize, explicit gate, or acceptable LLM judgment
+    - id: PTB-1C
+      title: Define required evidence for each remaining LLM judgment
+  - id: PTB-2
+    title: Mechanization hooks
+    tasks:
+    - id: PTB-2A
+      title: Decide and record whether plan slice to TODO body draft generation is mechanized now or held as an explicit gate
+    - id: PTB-2B
+      title: Mechanize task-quality criteria draft generation and record generated criteria evidence
+    - id: PTB-2C
+      title: Configure task-quality review variant default to an existing independent three-system variant
+    - id: PTB-2D
+      title: Define review finding patchback traceability for TODO and checklist edits
+  - id: PTB-3
+    title: Pre-work gate
+    tasks:
+    - id: PTB-3A
+      title: Record whether this TODO is executed now or deferred before guidance relocation inventory work begins
+acceptance_criteria:
+- LLM 手組み箇所が一覧化され、各項目に mechanize / explicit-gate / acceptable-llm-judgment の分類がある。
+- plan slice から TODO body を作る箇所について、機械化するか明示確認ゲートにするかが決まっている。
+- task-quality review criteria と variant 選択について、機械化するか明示確認ゲートにするかが決まっている。
+- inventory 実作業を開始する前に、この TODO を先に実行するか defer するかを判断できる。
+red_tests:
+- id: PTB-RT-1
+  title: Manual TODO body assembly and mapping risks are visible before execution
+  expected: plan-todo-bridge 由来の TODO 作成前に、TODO body draft が機械生成か LLM 手組みかを証跡として確認でき、task
+    split / red_tests / acceptance criteria の反映漏れを検査できる。
+- id: PTB-RT-2
+  title: Task-quality review setup does not rely on hidden variant choice
+  expected: task-quality review 実行前に variant と role assignment が operation default
+    または明示ゲートで確認できる。
+- id: PTB-RT-3
+  title: Task-quality criteria generation rejects known prompt-quality failure modes
+  expected: generated review criteria が path-only materials、複数判断詰め込み、main preanalysis 欠落を拒否または検出できる。
+- id: PTB-RT-4
+  title: Review findings patchback has traceable decision and audit evidence
+  expected: API review 所見を TODO / checklist に戻す場合、triage decision、patch target、反映後 audit
+    の対応が記録される。
+non_goals:
+- guidance relocation inventory table の作成。
+- docs/operations / docs/disciplines のファイル移動。
+- すべての自然言語判断の完全自動化。

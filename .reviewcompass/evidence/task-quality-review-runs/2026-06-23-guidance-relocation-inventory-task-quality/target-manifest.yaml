@@ -1,0 +1,4 @@
+run_id: 2026-06-23-guidance-relocation-inventory-task-quality
+target_files:
+- path: .reviewcompass/evidence/review-materials/2026-06-23-guidance-relocation-inventory-task-quality/review-materials.yaml
+  sha256: 61928504954afaab311efcfeba229fea794aea2fa30a58e099db7cdc6a7e80d4

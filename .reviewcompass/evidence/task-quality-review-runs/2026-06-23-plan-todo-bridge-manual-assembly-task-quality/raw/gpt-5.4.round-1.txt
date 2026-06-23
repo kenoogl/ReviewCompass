@@ -1,0 +1,34 @@
+findings:
+  - severity: ERROR
+    target_location: "runtime_checklist.items[7-8] (PTB-RT-1, PTB-RT-2)"
+    description: "Red test items are placed after implementation/planning items, so the checklist does not enforce review-before-implementation or TDD-style validation of the key risks."
+    rationale: "The TODO's red_tests explicitly require proof 'before execution' and 'before task-quality review execution', but the runtime checklist orders PTB-RT-1 and PTB-RT-2 after PTB-1A..PTB-3A. This makes it possible to complete inventory, classification, evidence definition, and mechanization-hook planning before checking whether TODO body assembly visibility and variant-choice gating are actually in place. Because these red tests are the only explicit preconditions for the main manual-assembly risks, leaving them last is unsafe for execution."
+  - severity: ERROR
+    target_location: "backlog_todo.acceptance_criteria / runtime_checklist.items"
+    description: "The checklist omits an executable item for the TODO's acceptance criterion to decide whether this TODO is executed now or deferred before guidance relocation inventory work starts."
+    rationale: "Acceptance criteria require that 'inventory 実作業を開始する前に、この TODO を先に実行するか defer するかを判断できる', but the checklist only has PTB-3A 'Ensure guidance relocation inventory work does not begin until this boundary is accepted or deferred.' There is no concrete checklist step to make and record the accept/defer decision itself, nor to define the evidence that the boundary was accepted or deferred. A gate without an explicit decision step is under-specified and can be checked subjectively, making execution unsafe."
+  - severity: WARN
+    target_location: "runtime_checklist.items[3] PTB-2A; items[4] PTB-2B; items[5] PTB-2C"
+    description: "Several implementation items are too broad because each combines 'add' and 'or plan' into one checklist action."
+    rationale: "PTB-2A/PTB-2B/PTB-2C each allow materially different outcomes within one item: implement a hook/default path now, or merely document a plan. That makes completion criteria ambiguous and weakens reviewability of scope against the TODO's goal of clarifying what is mechanized versus left as an explicit gate. These are not necessarily blocking if clarified, but they are not concrete enough for a safe execution checklist as written."
+  - severity: WARN
+    target_location: "source_materials.backlog_todo.observed_manual_steps[4] PTB-MANUAL-5 / runtime_checklist.items"
+    description: "The checklist does not preserve the TODO's explicit manual step about applying API review findings back to TODO/checklist with recorded triage and audit linkage."
+    rationale: "The TODO problem statement and observed_manual_steps include PTB-MANUAL-5: 'Apply review findings back to TODO and checklist' with desired evidence of triage decision, patch target, and applied-audit traceability. None of PTB-1A..PTB-3A or the red tests explicitly mention this step or its evidence. Since the task is to inventory and bound manual assembly across the full 'plan-to-TODO-to-review' flow, omission of one of the listed manual steps weakens upstream intent and leaves a known unsafe manual area untracked."
+  - severity: WARN
+    target_location: "runtime_checklist.items[7] PTB-RT-1"
+    description: "Red test coverage is incomplete for the TODO body assembly risk because it checks visibility of manual assembly but not whether red tests and acceptance criteria are preserved from the plan slice."
+    rationale: "The problem statement says TODO body assembly still manually handles 'task 分解、red test、acceptance criteria 反映'. PTB-RT-1 only expects evidence that the TODO body draft is machine-generated or manually assembled. It does not test that body generation or gate review catches missing task split, missing red tests, or missing acceptance-criteria reflection. This leaves a substantive task-quality risk under-specified before implementation work."
+  - severity: WARN
+    target_location: "runtime_checklist.items[8] PTB-RT-2"
+    description: "Red test coverage is incomplete for task-quality review setup because it checks variant and role assignment visibility but not the criteria-draft quality checks named in the TODO."
+    rationale: "Observed manual step PTB-MANUAL-3 requires criteria-draft generation that checks 'path-only / 複数判断詰め込み / main preanalysis 省略'. PTB-RT-2 only verifies that variant and role assignment are confirmed by default or explicit gate. It does not add a pre-implementation red test that the generated review criteria itself is validated against the known failure modes. This leaves one of the identified manual-assembly risks without corresponding red-test coverage."
+decision:
+  may_proceed: false
+  reason: "The checklist is not safe to use as-is because its key red tests are sequenced after implementation/planning work and it lacks a concrete accept/defer decision step for the pre-work gate."
+  required_changes:
+    - "Reorder PTB-RT-1 and PTB-RT-2 ahead of implementation/planning items so they act as true precondition checks."
+    - "Add a concrete checklist item to make and record the accept/defer decision required before guidance relocation inventory work begins."
+    - "Clarify PTB-2A/PTB-2B/PTB-2C into concrete outcomes or split implementation versus planning paths."
+    - "Add checklist coverage for PTB-MANUAL-5 triage/patch/audit linkage."
+    - "Strengthen red tests to cover TODO body completeness (task split, red tests, acceptance criteria reflection) and criteria-draft quality checks."

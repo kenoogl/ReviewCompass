@@ -1,0 +1,299 @@
+run_id: 2026-06-23-plan-todo-bridge-manual-assembly-task-quality
+triage_status: draft
+generated_at: '2026-06-23T09:37:54.489771+00:00'
+decision_actor: null
+decision_actor_type: human
+items:
+- finding_id: 2026-06-23-plan-todo-bridge-manual-assembly-task-quality-gpt-5.5-primary-001
+  run_id: 2026-06-23-plan-todo-bridge-manual-assembly-task-quality
+  source_model: gpt-5.5
+  source_round: round-1
+  source_raw_path: raw/gpt-5.5.round-1.txt
+  source_parsed_path: parsed/gpt-5.5.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: 'runtime_checklist.items order: PTB-1A through PTB-3A before PTB-RT-1
+    and PTB-RT-2'
+  plain_language_summary: Red-test checklist items are ordered after implementation/planning
+    items, so the checklist is not safe as a red-first execution order.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: The audit warning is substantive here because PTB-RT-1 expects
+    TODO body assembly visibility before execution, and PTB-RT-2 expects variant and
+    role assignment confirmation before task-quality review execution. If the checklist
+    is followed in order, PTB-2A, PTB-2B, PTB-2C, and PTB-3A can be completed before
+    these red checks are exercised.
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-23-plan-todo-bridge-manual-assembly-task-quality-gpt-5.5-primary-002
+  run_id: 2026-06-23-plan-todo-bridge-manual-assembly-task-quality
+  source_model: gpt-5.5
+  source_round: round-1
+  source_raw_path: raw/gpt-5.5.round-1.txt
+  source_parsed_path: parsed/gpt-5.5.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: 'backlog_todo.red_tests and runtime_checklist.items: PTB-RT-1,
+    PTB-RT-2; source risk PTB-MANUAL-3'
+  plain_language_summary: Red-test coverage omits the task-quality criteria assembly
+    risk.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: The source TODO explicitly identifies PTB-MANUAL-3, where review
+    criteria are manually assembled and should be checked for path-only prompts, multiple
+    judgments being packed together, and omitted main preanalysis. The existing red
+    tests cover TODO body assembly and variant choice, but not whether task-quality
+    criteria generation/setup is visible or gated before review work.
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-23-plan-todo-bridge-manual-assembly-task-quality-gpt-5.5-primary-003
+  run_id: 2026-06-23-plan-todo-bridge-manual-assembly-task-quality
+  source_model: gpt-5.5
+  source_round: round-1
+  source_raw_path: raw/gpt-5.5.round-1.txt
+  source_parsed_path: parsed/gpt-5.5.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: 'runtime_checklist.items: PTB-2A, PTB-2B, PTB-2C'
+  plain_language_summary: Mechanization-hook items are underspecified because each
+    uses an ambiguous 'Add or plan' completion condition.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: As execution checklist items, PTB-2A, PTB-2B, and PTB-2C do not
+    state whether completion requires implementing a hook, documenting a plan, or
+    recording an explicit gate decision. This can broaden execution into unbounded
+    implementation work or allow a planning-only result without clear evidence.
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-23-plan-todo-bridge-manual-assembly-task-quality-gpt-5.4-adversarial-001
+  run_id: 2026-06-23-plan-todo-bridge-manual-assembly-task-quality
+  source_model: gpt-5.4
+  source_round: round-1
+  source_raw_path: raw/gpt-5.4.round-1.txt
+  source_parsed_path: parsed/gpt-5.4.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: runtime_checklist.items[7-8] (PTB-RT-1, PTB-RT-2)
+  plain_language_summary: Red test items are placed after implementation/planning
+    items, so the checklist does not enforce review-before-implementation or TDD-style
+    validation of the key risks.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: The TODO's red_tests explicitly require proof 'before execution'
+    and 'before task-quality review execution', but the runtime checklist orders PTB-RT-1
+    and PTB-RT-2 after PTB-1A..PTB-3A. This makes it possible to complete inventory,
+    classification, evidence definition, and mechanization-hook planning before checking
+    whether TODO body assembly visibility and variant-choice gating are actually in
+    place. Because these red tests are the only explicit preconditions for the main
+    manual-assembly risks, leaving them last is unsafe for execution.
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-23-plan-todo-bridge-manual-assembly-task-quality-gpt-5.4-adversarial-002
+  run_id: 2026-06-23-plan-todo-bridge-manual-assembly-task-quality
+  source_model: gpt-5.4
+  source_round: round-1
+  source_raw_path: raw/gpt-5.4.round-1.txt
+  source_parsed_path: parsed/gpt-5.4.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: backlog_todo.acceptance_criteria / runtime_checklist.items
+  plain_language_summary: The checklist omits an executable item for the TODO's acceptance
+    criterion to decide whether this TODO is executed now or deferred before guidance
+    relocation inventory work starts.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: Acceptance criteria require that 'inventory 実作業を開始する前に、この TODO
+    を先に実行するか defer するかを判断できる', but the checklist only has PTB-3A 'Ensure guidance
+    relocation inventory work does not begin until this boundary is accepted or deferred.'
+    There is no concrete checklist step to make and record the accept/defer decision
+    itself, nor to define the evidence that the boundary was accepted or deferred.
+    A gate without an explicit decision step is under-specified and can be checked
+    subjectively, making execution unsafe.
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-23-plan-todo-bridge-manual-assembly-task-quality-gpt-5.4-adversarial-003
+  run_id: 2026-06-23-plan-todo-bridge-manual-assembly-task-quality
+  source_model: gpt-5.4
+  source_round: round-1
+  source_raw_path: raw/gpt-5.4.round-1.txt
+  source_parsed_path: parsed/gpt-5.4.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: runtime_checklist.items[3] PTB-2A; items[4] PTB-2B; items[5] PTB-2C
+  plain_language_summary: Several implementation items are too broad because each
+    combines 'add' and 'or plan' into one checklist action.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: 'PTB-2A/PTB-2B/PTB-2C each allow materially different outcomes
+    within one item: implement a hook/default path now, or merely document a plan.
+    That makes completion criteria ambiguous and weakens reviewability of scope against
+    the TODO''s goal of clarifying what is mechanized versus left as an explicit gate.
+    These are not necessarily blocking if clarified, but they are not concrete enough
+    for a safe execution checklist as written.'
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-23-plan-todo-bridge-manual-assembly-task-quality-gpt-5.4-adversarial-004
+  run_id: 2026-06-23-plan-todo-bridge-manual-assembly-task-quality
+  source_model: gpt-5.4
+  source_round: round-1
+  source_raw_path: raw/gpt-5.4.round-1.txt
+  source_parsed_path: parsed/gpt-5.4.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: source_materials.backlog_todo.observed_manual_steps[4] PTB-MANUAL-5
+    / runtime_checklist.items
+  plain_language_summary: The checklist does not preserve the TODO's explicit manual
+    step about applying API review findings back to TODO/checklist with recorded triage
+    and audit linkage.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: 'The TODO problem statement and observed_manual_steps include PTB-MANUAL-5:
+    ''Apply review findings back to TODO and checklist'' with desired evidence of
+    triage decision, patch target, and applied-audit traceability. None of PTB-1A..PTB-3A
+    or the red tests explicitly mention this step or its evidence. Since the task
+    is to inventory and bound manual assembly across the full ''plan-to-TODO-to-review''
+    flow, omission of one of the listed manual steps weakens upstream intent and leaves
+    a known unsafe manual area untracked.'
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-23-plan-todo-bridge-manual-assembly-task-quality-gpt-5.4-adversarial-005
+  run_id: 2026-06-23-plan-todo-bridge-manual-assembly-task-quality
+  source_model: gpt-5.4
+  source_round: round-1
+  source_raw_path: raw/gpt-5.4.round-1.txt
+  source_parsed_path: parsed/gpt-5.4.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: runtime_checklist.items[7] PTB-RT-1
+  plain_language_summary: Red test coverage is incomplete for the TODO body assembly
+    risk because it checks visibility of manual assembly but not whether red tests
+    and acceptance criteria are preserved from the plan slice.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: The problem statement says TODO body assembly still manually handles
+    'task 分解、red test、acceptance criteria 反映'. PTB-RT-1 only expects evidence that
+    the TODO body draft is machine-generated or manually assembled. It does not test
+    that body generation or gate review catches missing task split, missing red tests,
+    or missing acceptance-criteria reflection. This leaves a substantive task-quality
+    risk under-specified before implementation work.
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-23-plan-todo-bridge-manual-assembly-task-quality-gpt-5.4-adversarial-006
+  run_id: 2026-06-23-plan-todo-bridge-manual-assembly-task-quality
+  source_model: gpt-5.4
+  source_round: round-1
+  source_raw_path: raw/gpt-5.4.round-1.txt
+  source_parsed_path: parsed/gpt-5.4.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: runtime_checklist.items[8] PTB-RT-2
+  plain_language_summary: Red test coverage is incomplete for task-quality review
+    setup because it checks variant and role assignment visibility but not the criteria-draft
+    quality checks named in the TODO.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: Observed manual step PTB-MANUAL-3 requires criteria-draft generation
+    that checks 'path-only / 複数判断詰め込み / main preanalysis 省略'. PTB-RT-2 only verifies
+    that variant and role assignment are confirmed by default or explicit gate. It
+    does not add a pre-implementation red test that the generated review criteria
+    itself is validated against the known failure modes. This leaves one of the identified
+    manual-assembly risks without corresponding red-test coverage.
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-23-plan-todo-bridge-manual-assembly-task-quality-gpt-5.5-judgment-001
+  run_id: 2026-06-23-plan-todo-bridge-manual-assembly-task-quality
+  source_model: gpt-5.5
+  source_round: round-1
+  source_raw_path: raw/gpt-5.5.round-1.txt
+  source_parsed_path: parsed/gpt-5.5.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: 'runtime_checklist.items order: PTB-1A through PTB-3A before PTB-RT-1
+    and PTB-RT-2'
+  plain_language_summary: Red-test checklist items are ordered after implementation/planning
+    items, so the checklist is not safe as a red-first execution order.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: The audit warning is substantive here because PTB-RT-1 expects
+    TODO body assembly visibility before execution, and PTB-RT-2 expects variant and
+    role assignment confirmation before task-quality review execution. If the checklist
+    is followed in order, PTB-2A, PTB-2B, PTB-2C, and PTB-3A can be completed before
+    these red checks are exercised.
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-23-plan-todo-bridge-manual-assembly-task-quality-gpt-5.5-judgment-002
+  run_id: 2026-06-23-plan-todo-bridge-manual-assembly-task-quality
+  source_model: gpt-5.5
+  source_round: round-1
+  source_raw_path: raw/gpt-5.5.round-1.txt
+  source_parsed_path: parsed/gpt-5.5.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: 'backlog_todo.red_tests and runtime_checklist.items: PTB-RT-1,
+    PTB-RT-2; source risk PTB-MANUAL-3'
+  plain_language_summary: Red-test coverage omits the task-quality criteria assembly
+    risk.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: The source TODO explicitly identifies PTB-MANUAL-3, where review
+    criteria are manually assembled and should be checked for path-only prompts, multiple
+    judgments being packed together, and omitted main preanalysis. The existing red
+    tests cover TODO body assembly and variant choice, but not whether task-quality
+    criteria generation/setup is visible or gated before review work.
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-23-plan-todo-bridge-manual-assembly-task-quality-gpt-5.5-judgment-003
+  run_id: 2026-06-23-plan-todo-bridge-manual-assembly-task-quality
+  source_model: gpt-5.5
+  source_round: round-1
+  source_raw_path: raw/gpt-5.5.round-1.txt
+  source_parsed_path: parsed/gpt-5.5.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: 'runtime_checklist.items: PTB-2A, PTB-2B, PTB-2C'
+  plain_language_summary: Mechanization-hook items are underspecified because each
+    uses an ambiguous 'Add or plan' completion condition.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: As execution checklist items, PTB-2A, PTB-2B, and PTB-2C do not
+    state whether completion requires implementing a hook, documenting a plan, or
+    recording an explicit gate decision. This can broaden execution into unbounded
+    implementation work or allow a planning-only result without clear evidence.
+  applied_files: []
+  superseded_by: null

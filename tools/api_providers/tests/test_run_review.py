@@ -28,6 +28,8 @@ operation_defaults:
     variant: prompt_quality_2way
   implementation_review:
     variant: implementation_review_independent_3way_codex_operator
+  task_quality_review:
+    variant: implementation_review_independent_3way_codex_operator
 default:
   primary:
     path: api
@@ -333,6 +335,53 @@ def test_run_review_uses_default_variant_for_implementation_review(
         "--target", str(target),
         "--phase", "triad-review",
         "--criteria", "implementation review",
+        "--review-run-dir", str(review_run_dir),
+        "--config", str(config_path),
+      ]
+    )
+
+  assert exit_code == 0
+  output = capsys.readouterr().out
+  assert "roles=3" in output
+  rounds = yaml.safe_load((review_run_dir / "rounds.yaml").read_text(encoding="utf-8"))
+  models = [item["model_id"] for item in rounds["model_results"]]
+  assert models == ["gpt-5.4", "claude-sonnet-4-6", "gemini-3.1-pro-preview"]
+  review_summary = (review_run_dir / "review_summary.md").read_text(encoding="utf-8")
+  assert "variant: implementation_review_independent_3way_codex_operator" in review_summary
+  assert "| primary | api | openai-api | gpt-5.4 |" in review_summary
+  assert "| adversarial | api | anthropic-api | claude-sonnet-4-6 |" in review_summary
+  assert "| judgment | api | gemini-api | gemini-3.1-pro-preview |" in review_summary
+
+
+def test_run_review_uses_default_variant_for_task_quality_review(
+  tmp_path,
+  monkeypatch,
+  capsys,
+):
+  """場面名から task-quality 既定 3 役 variant を解決する。"""
+  monkeypatch.setenv("ANTHROPIC_API_KEY", "test-key")
+  monkeypatch.setenv("OPENAI_API_KEY", "test-key")
+  monkeypatch.setenv("GEMINI_API_KEY", "test-key")
+  target = tmp_path / "review-materials.yaml"
+  target.write_text("task quality review materials\n", encoding="utf-8")
+  config_path = _make_config(tmp_path)
+  review_run_dir = tmp_path / "task-quality-review-run"
+  responses = {
+    "openai-api": "findings: []\n",
+    "anthropic-api": "findings: []\n",
+    "gemini-api": "findings: []\n",
+  }
+
+  with patch(
+    "tools.api_providers.run_review.get_provider",
+    side_effect=_make_provider_factory(responses),
+  ):
+    exit_code = main(
+      [
+        "--default-variant-for", "task_quality_review",
+        "--target", str(target),
+        "--phase", "task_quality_review",
+        "--criteria", "task quality review",
         "--review-run-dir", str(review_run_dir),
         "--config", str(config_path),
       ]

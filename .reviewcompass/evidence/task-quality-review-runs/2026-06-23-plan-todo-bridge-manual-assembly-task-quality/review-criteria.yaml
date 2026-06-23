@@ -1,0 +1,13 @@
+schema_version: task-quality-review-criteria-v1
+materials_path: .reviewcompass/evidence/review-materials/2026-06-23-plan-todo-bridge-manual-assembly-task-quality/review-materials.yaml
+materials_path_normalized: .reviewcompass/evidence/review-materials/2026-06-23-plan-todo-bridge-manual-assembly-task-quality/review-materials.yaml
+criteria_path: /Users/Daily/Development/ReviewCompass/.reviewcompass/evidence/task-quality-review-runs/2026-06-23-plan-todo-bridge-manual-assembly-task-quality/review-criteria.md
+criteria_sha256: 975794f64ee478bb02556a3429be72643df5d070957be0f8571e25c7dffb6934
+backlog_id: todo-2026-06-23-plan-todo-bridge-manual-assembly
+checklist_id: checklist-todo-2026-06-23-plan-todo-bridge-manual-assembly
+recommended_run_review_args:
+  target: .reviewcompass/evidence/review-materials/2026-06-23-plan-todo-bridge-manual-assembly-task-quality/review-materials.yaml
+  phase: task_quality_review
+  criteria_file: /Users/Daily/Development/ReviewCompass/.reviewcompass/evidence/task-quality-review-runs/2026-06-23-plan-todo-bridge-manual-assembly-task-quality/review-criteria.md
+  review_run_dir: /Users/Daily/Development/ReviewCompass/.reviewcompass/evidence/task-quality-review-runs/2026-06-23-plan-todo-bridge-manual-assembly-task-quality
+  default_variant_for: task_quality_review

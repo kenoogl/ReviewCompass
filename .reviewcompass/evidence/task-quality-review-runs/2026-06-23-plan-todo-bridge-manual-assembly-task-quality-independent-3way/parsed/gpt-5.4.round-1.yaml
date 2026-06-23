@@ -1,0 +1,45 @@
+role: primary
+provider: openai-api
+model: gpt-5.4
+attempts: 1
+duration_seconds: 7.616
+findings:
+- severity: ERROR
+  target_location: runtime_checklist.items[0..8] / ordering of PTB-RT-1 and PTB-RT-2
+  description: Red-test items are placed after implementation/planning items, so the
+    checklist does not enforce the intended pre-implementation gate.
+  rationale: The TODO's red tests explicitly require proof before execution/review
+    setup ('TODO 作成前に' and 'task-quality review 実行前に'). In the runtime checklist,
+    PTB-RT-1 and PTB-RT-2 appear only after PTB-1A..PTB-3A, allowing execution of
+    classification, evidence definition, and mechanism planning before the failure
+    conditions are checked. This breaks the requested TDD/review-before-implementation
+    flow and makes the checklist unsafe to use as-is.
+- severity: ERROR
+  target_location: backlog_todo.acceptance_criteria + runtime_checklist.items
+  description: 'The checklist omits any executable item for the TODO''s fifth observed
+    manual step: applying review findings back to TODO/checklist with recorded triage
+    and patch mapping.'
+  rationale: Observed manual step PTB-MANUAL-5 states a desired state of keeping records
+    that map triage decisions, patch targets, and applied-audit status. No checklist
+    item covers defining or planning that feedback/patch-record mechanism. This weakens
+    source TODO intent because one of the enumerated manual-assembly risks is left
+    unaddressed, yet the checklist could be marked complete without handling it.
+- severity: WARN
+  target_location: runtime_checklist.items[3] PTB-2A; items[4] PTB-2B; items[5] PTB-2C
+  description: Several implementation items are underspecified because each says 'Add
+    or plan', combining materially different outcomes into one checkable step.
+  rationale: PTB-2A/PTB-2B/PTB-2C each allow either implementing a mechanism or merely
+    planning it. Those are different scopes, evidence expectations, and completion
+    states. A single checkbox cannot reliably show whether the task produced working
+    hooks, only design notes, or a deferral decision. This increases execution ambiguity
+    and overlap with PTB-1B/PTB-1C classification work.
+- severity: WARN
+  target_location: backlog_todo.red_tests + runtime_checklist.items[7..8]
+  description: Red-test coverage is incomplete for the listed task-quality risks;
+    there is no red test for manual criteria-draft assembly or for review-findings
+    patchback traceability.
+  rationale: The problem statement names at least five manual-risk areas, including
+    hand-built task-quality review criteria and LLM-judged TODO/checklist edits after
+    review. Red tests only cover TODO body assembly visibility and variant/role selection.
+    Without a pre-implementation failure check for criteria generation and patchback
+    traceability, key manual-assembly risks can slip through before work proceeds.

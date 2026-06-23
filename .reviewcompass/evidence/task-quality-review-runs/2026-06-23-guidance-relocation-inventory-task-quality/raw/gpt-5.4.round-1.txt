@@ -1,0 +1,9 @@
+findings:
+  - severity: INFO
+    target_location: "audit_result.warnings / runtime_checklist.items"
+    description: "The ordering warning for GRC-RT-1 is not blocking for this specific inventory-only task."
+    rationale: "This TODO explicitly forbids file moves, path deletions, and consumer reference updates, so the red-test title phrase 'before any move' does not gate destructive implementation work in this checklist. The checklist remains aligned to an inventory/classification-only phase, and placing GRC-RT-1 after the inventory-building steps does not create an execution-safety risk for this narrow scope."
+  - severity: WARN
+    target_location: "runtime_checklist.items[id=GRC-RT-1] / backlog_todo.red_tests[id=GRC-RT-1]"
+    description: "The red-test item is acceptable for this task but is under-specified as an executable verification step."
+    rationale: "GRC-RT-1 states that a classification table exists with classification/current readers/proposed destination per target file, but it does not explicitly require confirming coverage of all remaining docs/operations and docs/disciplines files or inclusion of the acceptance classifications move/keep/decision-required. Because this task is inventory/classification-only, the red-test can still serve its purpose, but execution would be safer if the item were clarified or expanded to make completeness and classification outputs directly checkable."

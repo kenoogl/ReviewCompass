@@ -214,8 +214,17 @@ def add_issue(cwd, item_id, title, source_unit_id, source_ref, reason):
   return _add(cwd, "issue", item_id, title, source_unit_id, source_ref, reason)
 
 
-def add_todo(cwd, item_id, title, source_unit_id, source_ref, reason):
-  return _add(cwd, "todo", item_id, title, source_unit_id, source_ref, reason)
+def add_todo(cwd, item_id, title, source_unit_id, source_ref, reason, body_file=None):
+  return _add(
+    cwd,
+    "todo",
+    item_id,
+    title,
+    source_unit_id,
+    source_ref,
+    reason,
+    body_file=body_file,
+  )
 
 
 def list_items(cwd):

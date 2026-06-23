@@ -1,0 +1,153 @@
+run_id: 2026-06-23-plan-todo-bridge-manual-assembly-task-quality-independent-3way
+triage_status: decided
+generated_at: '2026-06-23T09:42:33.225170+00:00'
+decision_actor: null
+decision_actor_type: human
+items:
+- finding_id: 2026-06-23-plan-todo-bridge-manual-assembly-task-quality-independent-3way-gpt-5.4-primary-001
+  run_id: 2026-06-23-plan-todo-bridge-manual-assembly-task-quality-independent-3way
+  source_model: gpt-5.4
+  source_round: round-1
+  source_raw_path: raw/gpt-5.4.round-1.txt
+  source_parsed_path: parsed/gpt-5.4.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: runtime_checklist.items[0..8] / ordering of PTB-RT-1 and PTB-RT-2
+  plain_language_summary: Red-test items are placed after implementation/planning
+    items, so the checklist does not enforce the intended pre-implementation gate.
+  final_label: must-fix
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-23T09:45:19.651156+00:00'
+  decision_reason: User approved triage. Red tests were moved before implementation/planning
+    checklist items, and task-quality audit now reports no ordering warnings.
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-23-plan-todo-bridge-manual-assembly-task-quality-independent-3way-gpt-5.4-primary-002
+  run_id: 2026-06-23-plan-todo-bridge-manual-assembly-task-quality-independent-3way
+  source_model: gpt-5.4
+  source_round: round-1
+  source_raw_path: raw/gpt-5.4.round-1.txt
+  source_parsed_path: parsed/gpt-5.4.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: backlog_todo.acceptance_criteria + runtime_checklist.items
+  plain_language_summary: 'The checklist omits any executable item for the TODO''s
+    fifth observed manual step: applying review findings back to TODO/checklist with
+    recorded triage and patch mapping.'
+  final_label: must-fix
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-23T09:45:25.849319+00:00'
+  decision_reason: User approved triage. PTB-2D and PTB-RT-4 were added to require
+    review finding patchback traceability across triage decision, patch target, and
+    post-change audit evidence.
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-23-plan-todo-bridge-manual-assembly-task-quality-independent-3way-gpt-5.4-primary-003
+  run_id: 2026-06-23-plan-todo-bridge-manual-assembly-task-quality-independent-3way
+  source_model: gpt-5.4
+  source_round: round-1
+  source_raw_path: raw/gpt-5.4.round-1.txt
+  source_parsed_path: parsed/gpt-5.4.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: runtime_checklist.items[3] PTB-2A; items[4] PTB-2B; items[5] PTB-2C
+  plain_language_summary: Several implementation items are underspecified because
+    each says 'Add or plan', combining materially different outcomes into one checkable
+    step.
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-23T09:45:33.126003+00:00'
+  decision_reason: User approved triage. PTB-2A/PTB-2B/PTB-2C titles were clarified
+    to distinguish implemented mechanization, independent variant configuration, and
+    explicit gate/defer decisions.
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-23-plan-todo-bridge-manual-assembly-task-quality-independent-3way-gpt-5.4-primary-004
+  run_id: 2026-06-23-plan-todo-bridge-manual-assembly-task-quality-independent-3way
+  source_model: gpt-5.4
+  source_round: round-1
+  source_raw_path: raw/gpt-5.4.round-1.txt
+  source_parsed_path: parsed/gpt-5.4.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: backlog_todo.red_tests + runtime_checklist.items[7..8]
+  plain_language_summary: Red-test coverage is incomplete for the listed task-quality
+    risks; there is no red test for manual criteria-draft assembly or for review-findings
+    patchback traceability.
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-23T09:45:42.854386+00:00'
+  decision_reason: User approved triage. PTB-RT-3 and PTB-RT-4 were added to cover
+    criteria generation failure modes and review finding patchback traceability.
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-23-plan-todo-bridge-manual-assembly-task-quality-independent-3way-claude-sonnet-4-6-adversarial-001
+  run_id: 2026-06-23-plan-todo-bridge-manual-assembly-task-quality-independent-3way
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: checklist items PTB-RT-1, PTB-RT-2 (positions 8-9 in checklist)
+  plain_language_summary: Red test items PTB-RT-1 and PTB-RT-2 appear after all implementation
+    items (PTB-1A through PTB-3A) in the checklist ordering. In a TDD flow, red tests
+    should be verified or positioned before the implementation work they guard.
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-23T09:45:48.897159+00:00'
+  decision_reason: User approved triage. Red tests were moved to the front of the
+    runtime checklist to preserve review-before-implementation order.
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-23-plan-todo-bridge-manual-assembly-task-quality-independent-3way-claude-sonnet-4-6-adversarial-002
+  run_id: 2026-06-23-plan-todo-bridge-manual-assembly-task-quality-independent-3way
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: checklist items PTB-2A, PTB-2B, PTB-2C
+  plain_language_summary: These items use 'Add or plan' phrasing, which is ambiguous
+    about whether a concrete artifact (CLI stub, config entry, design doc) is expected
+    as done-evidence or whether a recorded decision to defer is sufficient.
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-23T09:45:56.059236+00:00'
+  decision_reason: User approved triage. The ambiguous Add or plan phrasing was replaced
+    with concrete evidence expectations or explicit gate/defer decisions.
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-23-plan-todo-bridge-manual-assembly-task-quality-independent-3way-gemini-3.1-pro-preview-judgment-001
+  run_id: 2026-06-23-plan-todo-bridge-manual-assembly-task-quality-independent-3way
+  source_model: gemini-3.1-pro-preview
+  source_round: round-1
+  source_raw_path: raw/gemini-3.1-pro-preview.round-1.txt
+  source_parsed_path: parsed/gemini-3.1-pro-preview.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: checklist.items (PTB-RT-1, PTB-RT-2)
+  plain_language_summary: The runtime checklist places red test items at the very
+    end of the execution flow.
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-23T09:46:02.634021+00:00'
+  decision_reason: User approved triage. Runtime checklist now places PTB-RT-1 through
+    PTB-RT-4 before implementation/planning items.
+  applied_files: []
+  superseded_by: null

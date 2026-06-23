@@ -1,0 +1,4 @@
+run_id: 2026-06-23-plan-todo-bridge-manual-assembly-task-quality-independent-3way
+target_files:
+- path: .reviewcompass/evidence/review-materials/2026-06-23-plan-todo-bridge-manual-assembly-task-quality/review-materials.yaml
+  sha256: 9fac25840d47d8c7e3f514572f225814627ed5609fcea0f8022d386f2a82a686

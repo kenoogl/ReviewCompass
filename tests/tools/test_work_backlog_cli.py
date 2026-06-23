@@ -314,6 +314,64 @@ class WorkBacklogCliTests(unittest.TestCase):
       ],
     )
 
+  def test_add_todo_accepts_body_file_for_plan_linkage(self):
+    body_path = self.tmpdir / "todo-body.yaml"
+    body_path.write_text(
+      yaml.safe_dump(
+        {
+          "source_plan_id": "plan-source",
+          "source_plan_path": ".reviewcompass/backlog/plans/plan-source.yaml",
+          "implementation_plan": {
+            "phases": [
+              {
+                "id": "GRC-1",
+                "title": "Inventory only",
+                "tasks": [
+                  "docs/operations と docs/disciplines を一覧化する",
+                ],
+              },
+            ],
+          },
+          "acceptance_criteria": [
+            "inventory table exists without moving files",
+          ],
+        },
+        allow_unicode=True,
+        sort_keys=False,
+      ),
+      encoding="utf-8",
+    )
+
+    result = run_script(
+      [
+        "work-backlog",
+        "add-todo",
+        "--id", "todo-from-plan",
+        "--title", "Create inventory table",
+        "--source-unit-id", "main-completed",
+        "--source-ref", ".reviewcompass/backlog/plans/plan-source.yaml",
+        "--reason", "plan の GRC-1 を実行対象化する",
+        "--body-file", str(body_path),
+        "--json",
+      ],
+      cwd=self.tmpdir,
+    )
+
+    assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+    item = yaml.safe_load(
+      (
+        self.tmpdir
+        / ".reviewcompass/backlog/todos/todo-from-plan.yaml"
+      ).read_text(encoding="utf-8")
+    )
+    self.assertEqual(item["source_plan_id"], "plan-source")
+    self.assertEqual(
+      item["source_plan_path"],
+      ".reviewcompass/backlog/plans/plan-source.yaml",
+    )
+    self.assertEqual(item["implementation_plan"]["phases"][0]["id"], "GRC-1")
+
   def test_show_and_list_read_backlog_records(self):
     add = run_script(
       [

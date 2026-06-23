@@ -1,0 +1,13 @@
+role: judgment
+provider: openai-api
+model: gpt-5.5
+attempts: 1
+duration_seconds: 11.803
+decision:
+  may_proceed: true
+  reason: 'The audit WARN is non-blocking for this inventory-only TODO: GRC-RT-1 functions
+    as an acceptance verification that the inventory table exists before any later
+    move work, while the checklist preserves GRC-1 scope and does not authorize moves,
+    deletions, or consumer reference updates.'
+  required_changes: []
+findings: []

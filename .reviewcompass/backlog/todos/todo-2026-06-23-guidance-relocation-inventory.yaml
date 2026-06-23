@@ -1,0 +1,47 @@
+schema_version: reviewcompass-backlog-item-v1
+id: todo-2026-06-23-guidance-relocation-inventory
+kind: todo
+title: Create guidance relocation inventory and classification table
+status: candidate
+source_unit_id: main-completed
+created_at: '2026-06-23T09:12:49.197484+00:00'
+index_path: .reviewcompass/backlog/index.yaml
+provenance:
+  created_by: llm
+  source_ref: .reviewcompass/backlog/plans/plan-2026-06-23-guidance-relocation-and-docs-classification.yaml
+  reason: plan GRC-1 をファイル移動なしの inventory / classification 作業として実行対象化する
+decisions: []
+source_plan_id: plan-2026-06-23-guidance-relocation-and-docs-classification
+source_plan_path: .reviewcompass/backlog/plans/plan-2026-06-23-guidance-relocation-and-docs-classification.yaml
+source_plan_slice:
+  phase_id: GRC-1
+  title: Inventory and classification only
+summary: 'Create an inventory and first-pass classification table for the remaining
+  docs/operations and docs/disciplines files. Do not move files in this TODO.
+
+  '
+implementation_plan:
+  phases:
+  - id: GRC-1
+    title: Inventory and classification only
+    tasks:
+    - id: GRC-1A
+      title: List all remaining docs/operations and docs/disciplines files
+    - id: GRC-1B
+      title: Classify each file using the plan classification axes
+    - id: GRC-1C
+      title: Record current readers and proposed destination for each file
+    - id: GRC-1D
+      title: Mark move, keep, and decision-required candidates without moving files
+acceptance_criteria:
+- 移動対象、残置対象、判断保留対象が表で確認できる。
+- この段階ではファイル移動をしない。
+non_goals:
+- docs/operations / docs/disciplines のファイル移動。
+- 旧 path 削除。
+- consumer reference 更新。
+red_tests:
+- id: GRC-RT-1
+  title: Inventory table covers every target before any move
+  expected: classification table が docs/operations と docs/disciplines の全対象ファイルを覆い、各行に classification
+    / current readers / proposed destination / move・keep・decision-required status を持つ

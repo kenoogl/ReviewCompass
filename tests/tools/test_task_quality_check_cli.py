@@ -488,6 +488,146 @@ class TaskQualityCheckCliTests(unittest.TestCase):
     self.assertIn("audit must be OK before preparing review materials", data["reasons"])
     self.assertFalse((output_dir / "review-materials.yaml").exists())
 
+  def test_prepare_review_criteria_generates_task_quality_prompt_from_materials(self):
+    self._write_todo_item()
+    self._write_checklist([
+      {
+        "id": "TQG-1",
+        "title": "task-quality-check CLI の機械監査項目を追加する",
+        "status": "pending",
+      },
+      {
+        "id": "TQG-2",
+        "title": "checklist item の粒度と順序に関する機械ヒントを出す",
+        "status": "pending",
+      },
+      {
+        "id": "TQG-3",
+        "title": "メイン LLM preanalysis の材料 bundle を生成する",
+        "status": "pending",
+      },
+      {
+        "id": "TQG-RT-1",
+        "title": "空項目・重複・TODO 対応漏れを検出する",
+        "status": "pending",
+      },
+    ])
+    materials_dir = (
+      self.tmpdir
+      / ".reviewcompass/runtime/task-quality-review-materials/run"
+    )
+    materials_result = run_script(
+      [
+        "task-quality-check",
+        "prepare-review-materials",
+        "--backlog-id", "todo-task-quality",
+        "--checklist-id", "checklist-task-quality",
+        "--output-dir", str(materials_dir),
+        "--json",
+      ],
+      cwd=self.tmpdir,
+    )
+    self.assertEqual(
+      materials_result.returncode,
+      0,
+      materials_result.stdout + materials_result.stderr,
+    )
+    materials_path = json.loads(materials_result.stdout)["materials_path"]
+    review_run_dir = (
+      self.tmpdir
+      / ".reviewcompass/evidence/task-quality-review-runs/run"
+    )
+
+    result = run_script(
+      [
+        "task-quality-check",
+        "prepare-review-criteria",
+        "--materials-path", materials_path,
+        "--review-run-dir", str(review_run_dir),
+        "--json",
+      ],
+      cwd=self.tmpdir,
+    )
+
+    assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+    data = json.loads(result.stdout)
+    self.assertEqual(data["verdict"], "OK")
+    criteria_path = Path(data["criteria_path"])
+    metadata_path = Path(data["metadata_path"])
+    self.assertTrue(criteria_path.is_file())
+    self.assertTrue(metadata_path.is_file())
+    criteria = criteria_path.read_text(encoding="utf-8")
+    self.assertIn("# Task Quality Review Criteria: Add task quality check", criteria)
+    self.assertIn("todo-task-quality", criteria)
+    self.assertIn("checklist-task-quality", criteria)
+    self.assertIn(
+      "`red test items appear after implementation items: TQG-RT-1`",
+      criteria,
+    )
+    self.assertIn("Are checklist items concrete, non-overlapping", criteria)
+    self.assertIn("Do red test items cover the task quality risks", criteria)
+    self.assertIn("Do not authorize commit, push", criteria)
+    self.assertIn("Respond as YAML", criteria)
+    metadata = yaml.safe_load(metadata_path.read_text(encoding="utf-8"))
+    self.assertEqual(metadata["schema_version"], "task-quality-review-criteria-v1")
+    self.assertEqual(metadata["materials_path"], materials_path)
+    self.assertEqual(metadata["backlog_id"], "todo-task-quality")
+    self.assertEqual(metadata["checklist_id"], "checklist-task-quality")
+    self.assertEqual(
+      metadata["recommended_run_review_args"]["default_variant_for"],
+      "task_quality_review",
+    )
+
+  def test_prepare_review_criteria_rejects_path_only_materials(self):
+    review_run_dir = (
+      self.tmpdir
+      / ".reviewcompass/evidence/task-quality-review-runs/run"
+    )
+    materials_path = self.tmpdir / "review-materials.yaml"
+    materials_path.write_text(
+      yaml.safe_dump(
+        {
+          "schema_version": "task-quality-review-materials-v1",
+          "review_target": {
+            "backlog_id": "todo-task-quality",
+            "checklist_id": "checklist-task-quality",
+          },
+          "source_materials": [
+            {
+              "id": "backlog_todo",
+              "path": ".reviewcompass/backlog/todos/todo-task-quality.yaml",
+              "content_mode": "path_only",
+            },
+          ],
+          "audit_result": {"verdict": "OK", "warnings": []},
+          "main_preanalysis": {"observations": []},
+          "review_questions": [],
+        },
+        allow_unicode=True,
+        sort_keys=False,
+      ),
+      encoding="utf-8",
+    )
+
+    result = run_script(
+      [
+        "task-quality-check",
+        "prepare-review-criteria",
+        "--materials-path", str(materials_path),
+        "--review-run-dir", str(review_run_dir),
+        "--json",
+      ],
+      cwd=self.tmpdir,
+    )
+
+    assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 2, result.stdout + result.stderr)
+    data = json.loads(result.stdout)
+    self.assertEqual(data["verdict"], "DEVIATION")
+    self.assertIn("source materials must be embedded full_text", data["reasons"])
+    self.assertFalse((review_run_dir / "review-criteria.md").exists())
+
 
 if __name__ == "__main__":
   unittest.main()

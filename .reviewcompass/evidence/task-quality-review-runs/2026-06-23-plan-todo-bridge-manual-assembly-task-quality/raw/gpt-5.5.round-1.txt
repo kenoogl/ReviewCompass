@@ -1,0 +1,20 @@
+findings:
+  - severity: ERROR
+    target_location: "runtime_checklist.items order: PTB-1A through PTB-3A before PTB-RT-1 and PTB-RT-2"
+    description: "Red-test checklist items are ordered after implementation/planning items, so the checklist is not safe as a red-first execution order."
+    rationale: "The audit warning is substantive here because PTB-RT-1 expects TODO body assembly visibility before execution, and PTB-RT-2 expects variant and role assignment confirmation before task-quality review execution. If the checklist is followed in order, PTB-2A, PTB-2B, PTB-2C, and PTB-3A can be completed before these red checks are exercised."
+  - severity: ERROR
+    target_location: "backlog_todo.red_tests and runtime_checklist.items: PTB-RT-1, PTB-RT-2; source risk PTB-MANUAL-3"
+    description: "Red-test coverage omits the task-quality criteria assembly risk."
+    rationale: "The source TODO explicitly identifies PTB-MANUAL-3, where review criteria are manually assembled and should be checked for path-only prompts, multiple judgments being packed together, and omitted main preanalysis. The existing red tests cover TODO body assembly and variant choice, but not whether task-quality criteria generation/setup is visible or gated before review work."
+  - severity: WARN
+    target_location: "runtime_checklist.items: PTB-2A, PTB-2B, PTB-2C"
+    description: "Mechanization-hook items are underspecified because each uses an ambiguous 'Add or plan' completion condition."
+    rationale: "As execution checklist items, PTB-2A, PTB-2B, and PTB-2C do not state whether completion requires implementing a hook, documenting a plan, or recording an explicit gate decision. This can broaden execution into unbounded implementation work or allow a planning-only result without clear evidence."
+decision:
+  may_proceed: false
+  reason: "The checklist preserves most source items, but it is not safe as-is because red checks are ordered after implementation work and red-test coverage is missing for task-quality criteria assembly."
+  required_changes:
+    - "Move PTB-RT-1 and PTB-RT-2 before implementation/planning items, or mark them as explicit preconditions that must be completed before PTB-1A/PTB-2A work begins."
+    - "Add a red-test checklist item covering PTB-MANUAL-3 task-quality criteria assembly visibility/gating before task-quality review execution."
+    - "Clarify PTB-2A, PTB-2B, and PTB-2C completion evidence so each item distinguishes implemented hook, planned hook, or explicit gate decision."

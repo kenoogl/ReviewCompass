@@ -1,0 +1,22 @@
+approved_action: review_triage_decide
+approved_by: user
+review_run_id: 2026-06-23-plan-todo-bridge-manual-assembly-task-quality-independent-3way
+summary_presented_to_user: true
+triage_presented_to_user: true
+approved_finding_ids:
+  - 2026-06-23-plan-todo-bridge-manual-assembly-task-quality-independent-3way-gpt-5.4-primary-001
+  - 2026-06-23-plan-todo-bridge-manual-assembly-task-quality-independent-3way-gpt-5.4-primary-002
+  - 2026-06-23-plan-todo-bridge-manual-assembly-task-quality-independent-3way-gpt-5.4-primary-003
+  - 2026-06-23-plan-todo-bridge-manual-assembly-task-quality-independent-3way-gpt-5.4-primary-004
+  - 2026-06-23-plan-todo-bridge-manual-assembly-task-quality-independent-3way-claude-sonnet-4-6-adversarial-001
+  - 2026-06-23-plan-todo-bridge-manual-assembly-task-quality-independent-3way-claude-sonnet-4-6-adversarial-002
+  - 2026-06-23-plan-todo-bridge-manual-assembly-task-quality-independent-3way-gemini-3.1-pro-preview-judgment-001
+approved_final_labels:
+  2026-06-23-plan-todo-bridge-manual-assembly-task-quality-independent-3way-gpt-5.4-primary-001: must-fix
+  2026-06-23-plan-todo-bridge-manual-assembly-task-quality-independent-3way-gpt-5.4-primary-002: must-fix
+  2026-06-23-plan-todo-bridge-manual-assembly-task-quality-independent-3way-gpt-5.4-primary-003: should-fix
+  2026-06-23-plan-todo-bridge-manual-assembly-task-quality-independent-3way-gpt-5.4-primary-004: should-fix
+  2026-06-23-plan-todo-bridge-manual-assembly-task-quality-independent-3way-claude-sonnet-4-6-adversarial-001: should-fix
+  2026-06-23-plan-todo-bridge-manual-assembly-task-quality-independent-3way-claude-sonnet-4-6-adversarial-002: should-fix
+  2026-06-23-plan-todo-bridge-manual-assembly-task-quality-independent-3way-gemini-3.1-pro-preview-judgment-001: should-fix
+consumed: false
