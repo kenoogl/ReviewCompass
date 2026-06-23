@@ -48,25 +48,25 @@ def test_t004_generates_all_five_proposal_types(tmp_path):
   proposals = [
     model.create_proposal(
       proposal_type="new_discipline",
-      target_discipline_path="docs/disciplines/discipline_new.md",
+      target_discipline_path=".reviewcompass/guidance/discipline_new.md",
       signal=BASE_SIGNAL,
       proposed_change={
         "draft_discipline": "新規規律本文",
         "relationship_notes": "既存規律 [[discipline_existing]] との関係",
-        "related_disciplines": ["docs/disciplines/discipline_existing.md"],
+        "related_disciplines": [".reviewcompass/guidance/discipline_existing.md"],
       },
       expected_effect="規律不在を解消する",
     ),
     model.create_proposal(
       proposal_type="update",
-      target_discipline_path="docs/disciplines/discipline_update.md",
+      target_discipline_path=".reviewcompass/guidance/discipline_update.md",
       signal=BASE_SIGNAL,
       proposed_change={"change_diff": "- old\n+ new"},
       expected_effect="既存規律を実体に合わせる",
     ),
     model.create_proposal(
       proposal_type="status_change",
-      target_discipline_path="docs/disciplines/discipline_status.md",
+      target_discipline_path=".reviewcompass/guidance/discipline_status.md",
       signal=BASE_SIGNAL,
       proposed_change={"from": "aspirational", "to": "enforced"},
       expected_effect="正式化判断を記録する",
@@ -74,20 +74,20 @@ def test_t004_generates_all_five_proposal_types(tmp_path):
     ),
     model.create_proposal(
       proposal_type="archive",
-      target_discipline_path="docs/disciplines/discipline_old.md",
+      target_discipline_path=".reviewcompass/guidance/discipline_old.md",
       signal=BASE_SIGNAL,
       proposed_change={"archive_readme_path": "docs/disciplines/archive/README.md"},
       expected_effect="撤廃済み規律を分離する",
     ),
     model.create_proposal(
       proposal_type="consolidation",
-      target_discipline_path="docs/disciplines/discipline_merged.md",
+      target_discipline_path=".reviewcompass/guidance/discipline_merged.md",
       signal=BASE_SIGNAL,
       proposed_change={"mapping_table": "old -> merged"},
       expected_effect="重複規律を統合する",
       source_discipline_paths=[
-        "docs/disciplines/discipline_a.md",
-        "docs/disciplines/discipline_b.md",
+        ".reviewcompass/guidance/discipline_a.md",
+        ".reviewcompass/guidance/discipline_b.md",
       ],
     ),
   ]
@@ -109,7 +109,7 @@ def test_t004_rejects_unknown_proposal_type_fail_closed(tmp_path):
   with pytest.raises(ProposalError, match="unknown_proposal_type"):
     model.create_proposal(
       proposal_type="runtime_prompt",
-      target_discipline_path="docs/disciplines/discipline_prompt.md",
+      target_discipline_path=".reviewcompass/guidance/discipline_prompt.md",
       signal=BASE_SIGNAL,
       proposed_change={},
       expected_effect="範囲外の変更",
@@ -139,7 +139,7 @@ def test_t004_requires_motivating_evidence_three_fields():
   proposal = {
     "proposal_id": "WP-001",
     "proposal_type": "update",
-    "target_discipline_path": "docs/disciplines/discipline_update.md",
+    "target_discipline_path": ".reviewcompass/guidance/discipline_update.md",
     "motivating_evidence": [{"source": "review_record", "location": "reviews/x.yaml"}],
     "proposed_change": {"change_diff": "- old\n+ new"},
     "expected_effect": "改善する",
@@ -154,7 +154,7 @@ def test_t004_accepts_exact_motivating_evidence_three_fields():
   proposal = {
     "proposal_id": "WP-001",
     "proposal_type": "update",
-    "target_discipline_path": "docs/disciplines/discipline_update.md",
+    "target_discipline_path": ".reviewcompass/guidance/discipline_update.md",
     "motivating_evidence": EVIDENCE,
     "proposed_change": {"change_diff": "- old\n+ new"},
     "expected_effect": "改善する",
@@ -195,7 +195,7 @@ def test_t004_enforces_type_specific_requirements(tmp_path):
   with pytest.raises(ProposalError, match="missing_change_diff"):
     model.create_proposal(
       proposal_type="update",
-      target_discipline_path="docs/disciplines/discipline_update.md",
+      target_discipline_path=".reviewcompass/guidance/discipline_update.md",
       signal=BASE_SIGNAL,
       proposed_change={},
       expected_effect="改善する",
@@ -203,7 +203,7 @@ def test_t004_enforces_type_specific_requirements(tmp_path):
   with pytest.raises(ProposalError, match="missing_source_discipline_paths"):
     model.create_proposal(
       proposal_type="consolidation",
-      target_discipline_path="docs/disciplines/discipline_merged.md",
+      target_discipline_path=".reviewcompass/guidance/discipline_merged.md",
       signal=BASE_SIGNAL,
       proposed_change={"mapping_table": "old -> merged"},
       expected_effect="統合する",
@@ -216,7 +216,7 @@ def test_t004_new_discipline_requires_machine_checkable_relationship(tmp_path):
   with pytest.raises(ProposalError, match="missing_related_disciplines"):
     model.create_proposal(
       proposal_type="new_discipline",
-      target_discipline_path="docs/disciplines/discipline_new.md",
+      target_discipline_path=".reviewcompass/guidance/discipline_new.md",
       signal=BASE_SIGNAL,
       proposed_change={
         "draft_discipline": "新規規律本文",
@@ -227,18 +227,18 @@ def test_t004_new_discipline_requires_machine_checkable_relationship(tmp_path):
 
   proposal = model.create_proposal(
     proposal_type="new_discipline",
-    target_discipline_path="docs/disciplines/discipline_new.md",
+    target_discipline_path=".reviewcompass/guidance/discipline_new.md",
     signal=BASE_SIGNAL,
     proposed_change={
       "draft_discipline": "新規規律本文",
       "relationship_notes": "既存規律 [[discipline_existing]] との関係",
-      "related_disciplines": ["docs/disciplines/discipline_existing.md"],
+      "related_disciplines": [".reviewcompass/guidance/discipline_existing.md"],
     },
     expected_effect="規律不在を解消する",
   )
 
   assert proposal["proposed_change"]["related_disciplines"] == [
-    "docs/disciplines/discipline_existing.md"
+    ".reviewcompass/guidance/discipline_existing.md"
   ]
 
 
@@ -261,7 +261,7 @@ def test_t004_proposal_schema_documents_owned_constraints():
     "rejected",
     "superseded",
   ]
-  assert schema["properties"]["target_discipline_path"]["pattern"] == "^docs/disciplines/discipline_.*\\.md$"
+  assert schema["properties"]["target_discipline_path"]["pattern"] == "^\\.reviewcompass/guidance/discipline_.*\\.md$"
   assert "allOf" in schema
   assert schema["required"] == [
     "proposal_id",

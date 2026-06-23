@@ -44,7 +44,7 @@ class MachineVerification:
     violations = [
       path for path in changed
       if actor_feature == "self-improvement"
-      and path.startswith("docs/disciplines/discipline_")
+      and path.startswith(".reviewcompass/guidance/discipline_")
       and path.endswith(".md")
     ]
     if violations:

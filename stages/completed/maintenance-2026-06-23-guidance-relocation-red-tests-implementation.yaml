@@ -1,0 +1,86 @@
+process_id: maintenance
+started_at: '2026-06-23T00:00:00+09:00'
+completed_at: '2026-06-23T00:00:00+09:00'
+trigger: >
+  利用者指示により、GRC-3 で追加した remaining guidance relocation red tests
+  を通す実装修正を行うため。
+mainline_blocked_by: none
+work_class: maintenance
+control_relation: side-track
+allowed_scope: >
+  旧 docs/operations / docs/disciplines の active consumer 参照を
+  .reviewcompass/guidance 側へ寄せ、追加済み red tests と関連 self-improvement
+  tests を通す。human-reference docs の移動、旧 docs 本体削除、無関係な整理は行わない。
+allowed_files:
+- stages/in-progress/maintenance-2026-06-23-guidance-relocation-red-tests-implementation.yaml
+- stages/completed/maintenance-2026-06-23-guidance-relocation-red-tests-implementation.yaml
+- CLAUDE.md
+- templates/todo/TODO_NEXT_SESSION.template.md
+- deploy-manifest.yaml
+- .claude/hooks/README.md
+- .codex/hooks/README.md
+- tools/README.md
+- learning/workflow/schemas/proposal.schema.json
+- tools/self_improvement/proposal_model.py
+- tools/self_improvement/impact_analysis.py
+- tools/self_improvement/machine_verification.py
+- tests/self-improvement/**
+- tests/workflow-management/test_remaining_guidance_relocation_contract.py
+completion_conditions:
+- GRC-3 の追加テストが通る
+- self-improvement の関連テストが通る
+- deploy manifest test が通る
+- document link lint と next --json を確認する
+- ファイル移動と旧 docs 本体削除は行わない
+completed_changes:
+- >
+  `CLAUDE.md` と `templates/todo/TODO_NEXT_SESSION.template.md` の adapter
+  参照を旧 docs/operations path から既存の入口 / workflow guidance へ寄せた。
+- >
+  `deploy-manifest.yaml` から旧 docs/operations の deploy-facing guide include を外した。
+- >
+  hook README と tools README の runtime discipline 参照を、既存の guidance
+  正本参照へ更新した。
+- >
+  self-improvement proposal / impact analysis / machine verification の active
+  discipline root を `.reviewcompass/guidance/discipline_*.md` に更新し、
+  関連テストも同じ契約へ揃えた。
+scope_not_changed:
+- docs/operations / docs/disciplines 本体の移動はしていない
+- 旧 docs 本体の削除はしていない
+- guidance 文書の post-write 対象変更はこの commit に混ぜていない
+verification:
+- command: >
+    .venv/bin/python3 -m pytest
+    tests/workflow-management/test_remaining_guidance_relocation_contract.py
+    tests/deployment/test_deploy_manifest.py
+    tests/self-improvement -q
+  result: passed
+  details: 102 passed
+- command: >
+    .venv/bin/python3 tools/document_link_lint.py --json CLAUDE.md
+    templates/todo/TODO_NEXT_SESSION.template.md deploy-manifest.yaml
+    .claude/hooks/README.md .codex/hooks/README.md tools/README.md
+    learning/workflow/schemas/proposal.schema.json
+    tools/self_improvement/proposal_model.py
+    tools/self_improvement/impact_analysis.py
+    tools/self_improvement/machine_verification.py
+    tests/self-improvement/test_t003_signal_extraction.py
+    tests/self-improvement/test_t004_proposal_model.py
+    tests/self-improvement/test_t005_verification_model.py
+    tests/self-improvement/test_t006_approval_model.py
+    tests/self-improvement/test_t007_rollback_model.py
+    tests/self-improvement/test_t009_machine_verification.py
+    tests/self-improvement/test_t010_interfaces.py
+    stages/completed/maintenance-2026-06-23-guidance-relocation-red-tests-implementation.yaml
+  result: passed
+- command: >
+    rg -n "docs/operations/WORKFLOW_NAVIGATION_FOR_|docs/operations/INITIAL_DEPLOYMENT_USER_GUIDE.md|docs/disciplines/discipline_workflow_precheck_invocation.md|docs/disciplines/discipline_normal_output_minimization.md|docs/disciplines/discipline_"
+    CLAUDE.md templates/todo/TODO_NEXT_SESSION.template.md deploy-manifest.yaml
+    .claude/hooks/README.md .codex/hooks/README.md tools/README.md
+    learning/workflow/schemas/proposal.schema.json
+    tools/self_improvement/proposal_model.py
+    tools/self_improvement/impact_analysis.py
+    tools/self_improvement/machine_verification.py
+  result: passed_no_matches
+status: completed

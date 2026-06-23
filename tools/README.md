@@ -4,7 +4,7 @@ ReviewCompass の補助スクリプトを置く場所。
 
 ## 共通 CLI 出力契約
 
-CLI / tool の正常系 human output は、[正常系出力最小化](../docs/disciplines/discipline_normal_output_minimization.md) に従い、成功事実と対象 action だけに抑える。詳細な状態、判定理由、候補一覧、監査用情報は `--json` / `--verbose` / log / manifest に残す。
+CLI / tool の正常系 human output は、`.reviewcompass/guidance/SESSION_WORKFLOW_GUIDE.md` の出力最小化規律に従い、成功事実と対象 action だけに抑える。詳細な状態、判定理由、候補一覧、監査用情報は `--json` / `--verbose` / log / manifest に残す。
 
 全 tool への適用状況と優先度は [正常系出力最小化 tool 棚卸し](../docs/notes/2026-06-19-normal-output-minimization-tool-inventory.yaml) を正本にする。
 

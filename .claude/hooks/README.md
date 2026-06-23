@@ -121,6 +121,6 @@ commit については、段階 2 の `commit` サブコマンドが承認レコ
 - 仕様：`.reviewcompass/guidance/WORKFLOW_PRECHECK.md` §12
 - 共存モデル議論：`docs/notes/2026-05-25-workflow-pre-check-and-discipline-consolidation.md`
 - 段階 2 スクリプト：`tools/check-workflow-action.py`
-- 段階 1 規律：`docs/disciplines/discipline_workflow_precheck_invocation.md`
+- 段階 1 規律：`.reviewcompass/guidance/WORKFLOW_PRECHECK.md`
 - Codex 側の登録：`.codex/hooks.json`、`.codex/hooks/README.md`
 - 計画書 §5.8 補助層 C：`docs/plan/reconstruction-plan-2026-05-21.md`

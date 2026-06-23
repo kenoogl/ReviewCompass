@@ -59,7 +59,7 @@ def test_t005_pilot_operation_preserves_time_series():
 
 
 def test_t005_impact_analysis_detects_internal_links(tmp_path):
-  discipline = tmp_path / "docs" / "disciplines" / "discipline_a.md"
+  discipline = tmp_path / ".reviewcompass" / "guidance" / "discipline_a.md"
   discipline.parent.mkdir(parents=True)
   discipline.write_text(
     "# A\n\n関連：[[discipline_b]] と [[discipline_c]]\n",
@@ -70,15 +70,15 @@ def test_t005_impact_analysis_detects_internal_links(tmp_path):
 
   assert result == [
     {
-      "path": "docs/disciplines/discipline_a.md",
+      "path": ".reviewcompass/guidance/discipline_a.md",
       "links": ["discipline_b", "discipline_c"],
     }
   ]
 
 
 def test_t005_impact_analysis_classifies_three_conflict_definitions(tmp_path):
-  discipline_a = tmp_path / "docs" / "disciplines" / "discipline_a.md"
-  discipline_b = tmp_path / "docs" / "disciplines" / "discipline_b.md"
+  discipline_a = tmp_path / ".reviewcompass" / "guidance" / "discipline_a.md"
+  discipline_b = tmp_path / ".reviewcompass" / "guidance" / "discipline_b.md"
   discipline_a.parent.mkdir(parents=True)
   discipline_a.write_text(
     "---\nname: shared-name\napplies_to: review\n---\n[[discipline_b]]\n同じ場面の規律\n",
@@ -95,8 +95,8 @@ def test_t005_impact_analysis_classifies_three_conflict_definitions(tmp_path):
     {
       "name": "shared-name",
       "paths": [
-        "docs/disciplines/discipline_a.md",
-        "docs/disciplines/discipline_b.md",
+        ".reviewcompass/guidance/discipline_a.md",
+        ".reviewcompass/guidance/discipline_b.md",
       ],
     }
   ]
@@ -104,16 +104,16 @@ def test_t005_impact_analysis_classifies_three_conflict_definitions(tmp_path):
     {
       "applies_to": "review",
       "paths": [
-        "docs/disciplines/discipline_a.md",
-        "docs/disciplines/discipline_b.md",
+        ".reviewcompass/guidance/discipline_a.md",
+        ".reviewcompass/guidance/discipline_b.md",
       ],
     }
   ]
   assert conflicts["reference_cycles"] == [
     {
       "paths": [
-        "docs/disciplines/discipline_a.md",
-        "docs/disciplines/discipline_b.md",
+        ".reviewcompass/guidance/discipline_a.md",
+        ".reviewcompass/guidance/discipline_b.md",
       ],
     }
   ]

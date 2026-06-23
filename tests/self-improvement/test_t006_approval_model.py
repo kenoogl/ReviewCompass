@@ -28,7 +28,7 @@ def _base_proposal(proposal_id="WP-001", status="pending"):
   return {
     "proposal_id": proposal_id,
     "proposal_type": "update",
-    "target_discipline_path": "docs/disciplines/discipline_update.md",
+    "target_discipline_path": ".reviewcompass/guidance/discipline_update.md",
     "motivating_evidence": [
       {
         "source": "review_record",

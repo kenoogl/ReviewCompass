@@ -34,8 +34,8 @@ WORKFLOW_DIRECTORIES = (
   "rejected-updates",
   "rollback",
 )
-TARGET_DISCIPLINE_PATTERN = re.compile(r"^docs/disciplines/discipline_.*\.md$")
-RELATED_DISCIPLINE_PATTERN = re.compile(r"^docs/disciplines/discipline_.*\.md$")
+TARGET_DISCIPLINE_PATTERN = re.compile(r"^\.reviewcompass/guidance/discipline_.*\.md$")
+RELATED_DISCIPLINE_PATTERN = re.compile(r"^\.reviewcompass/guidance/discipline_.*\.md$")
 ID_PATTERN = re.compile(r"^(?P<prefix>[A-Z]+)-(?P<number>[0-9]+)$")
 
 

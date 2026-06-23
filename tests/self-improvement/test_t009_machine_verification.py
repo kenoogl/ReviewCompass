@@ -33,7 +33,7 @@ def _proposal(**overrides):
   data = {
     "proposal_id": "WP-001",
     "proposal_type": "update",
-    "target_discipline_path": "docs/disciplines/discipline_update.md",
+    "target_discipline_path": ".reviewcompass/guidance/discipline_update.md",
     "motivating_evidence": [
       {
         "source": "review_record",
@@ -53,7 +53,7 @@ def _proposal(**overrides):
 def test_t009_mv1_detects_direct_discipline_write_fail_closed():
   result = MachineVerification().check_direct_discipline_writes(
     changed_files=[
-      "docs/disciplines/discipline_update.md",
+      ".reviewcompass/guidance/discipline_update.md",
       "learning/workflow/proposals/WP-001.yaml",
     ],
     actor_feature="self-improvement",
@@ -61,7 +61,7 @@ def test_t009_mv1_detects_direct_discipline_write_fail_closed():
 
   assert result.status == VerificationStatus.DEVIATION
   assert result.check_id == "MV-1"
-  assert "docs/disciplines/discipline_update.md" in result.reasons[0]
+  assert ".reviewcompass/guidance/discipline_update.md" in result.reasons[0]
 
 
 def test_t009_mv1_allows_non_discipline_files():
@@ -156,7 +156,7 @@ def test_t009_cli_returns_json_and_exit_two_for_deviation(tmp_path):
       "--actor-feature",
       "self-improvement",
       "--changed-file",
-      "docs/disciplines/discipline_update.md",
+      ".reviewcompass/guidance/discipline_update.md",
       "--json",
     ],
     cwd=tmp_path,

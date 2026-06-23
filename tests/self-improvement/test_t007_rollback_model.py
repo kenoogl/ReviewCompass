@@ -104,12 +104,12 @@ def test_t007_next_rb_id_scans_all_four_workflow_directories(tmp_path):
 def test_t007_symlink_recreation_plan_has_five_steps(tmp_path):
   plan = RollbackModel(tmp_path).symlink_recreation_plan(
     memory_link="memory/feedback_x.md",
-    repo_target="docs/disciplines/discipline_x.md",
+    repo_target=".reviewcompass/guidance/discipline_x.md",
   )
 
   assert [step["step"] for step in plan["steps"]] == [1, 2, 3, 4, 5]
   assert plan["memory_link"] == "memory/feedback_x.md"
-  assert plan["repo_target"] == "docs/disciplines/discipline_x.md"
+  assert plan["repo_target"] == ".reviewcompass/guidance/discipline_x.md"
   assert all(step["machine_check"] for step in plan["steps"])
 
 
@@ -144,7 +144,7 @@ def test_t007_traces_proposal_approval_and_rollback_history(tmp_path):
 
 
 def test_t007_archive_restoration_integrity_checks_and_report(tmp_path):
-  restored = tmp_path / "docs" / "disciplines" / "discipline_restored.md"
+  restored = tmp_path / ".reviewcompass" / "guidance" / "discipline_restored.md"
   restored.parent.mkdir(parents=True)
   restored.write_text(
     "---\nname: restored\nstatus: enforced\n---\n# Restored\n[[discipline_related]]\n",
@@ -155,7 +155,7 @@ def test_t007_archive_restoration_integrity_checks_and_report(tmp_path):
   archive_readme.write_text("restored rollback approved\n", encoding="utf-8")
 
   result = RollbackModel(tmp_path).check_archive_restoration_integrity(
-    restored_discipline_path="docs/disciplines/discipline_restored.md",
+    restored_discipline_path=".reviewcompass/guidance/discipline_restored.md",
     archive_readme_path="docs/disciplines/archive/README.md",
     report_date="2026-06-04",
   )

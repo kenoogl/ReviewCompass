@@ -4,4 +4,4 @@
 
 @AGENTS.md
 
-Claude 固有の作業規則は `docs/operations/WORKFLOW_NAVIGATION_FOR_CLAUDE.md` を読む。
+Claude 固有の作業規則は `AGENTS.md` と `.reviewcompass/guidance/WORKFLOW_NAVIGATION.md` に従う。

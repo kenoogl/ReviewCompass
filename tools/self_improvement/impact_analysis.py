@@ -39,7 +39,7 @@ class ImpactAnalyzer:
     }
 
   def _discipline_paths(self):
-    return sorted((self.root / "docs" / "disciplines").glob("discipline_*.md"))
+    return sorted((self.root / ".reviewcompass" / "guidance").glob("discipline_*.md"))
 
   def _relative(self, path: Path) -> str:
     return str(path.relative_to(self.root))
@@ -85,4 +85,4 @@ class ImpactAnalyzer:
 
   def _link_to_path(self, link: str) -> str:
     name = link if link.endswith(".md") else f"{link}.md"
-    return f"docs/disciplines/{name}"
+    return f".reviewcompass/guidance/{name}"

@@ -65,7 +65,7 @@ def test_t010_workflow_management_contract_and_git_mv_path(tmp_path):
     {
       "proposal_id": "WP-001",
       "status": "approved",
-      "target_discipline_path": "docs/disciplines/discipline_update.md",
+      "target_discipline_path": ".reviewcompass/guidance/discipline_update.md",
       "materialized_at": None,
       "materialization_commit_hash": None,
     },

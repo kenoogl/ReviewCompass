@@ -126,8 +126,6 @@ include:
     reason: Commit operation prompt card.
   - path: .reviewcompass/guidance/effective-prompts/next-action-post-write-policy-violation.prompt.md
     reason: Canonical effective prompt for post-write policy violation stop point.
-  - path: docs/operations/INITIAL_DEPLOYMENT_USER_GUIDE.md
-    reason: Initial owner-operated deployment guide.
   - path: .reviewcompass/guidance/INITIAL_SETUP_LLM_GUIDE.md
     reason: LLM-facing initial setup guide.
   - path: .reviewcompass/guidance/discipline_approval_operation.md

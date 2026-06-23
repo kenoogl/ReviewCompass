@@ -30,13 +30,13 @@
     },
     "target_discipline_path": {
       "type": "string",
-      "pattern": "^docs/disciplines/discipline_.*\\.md$"
+      "pattern": "^\\.reviewcompass/guidance/discipline_.*\\.md$"
     },
     "source_discipline_paths": {
       "type": "array",
       "items": {
         "type": "string",
-        "pattern": "^docs/disciplines/(archive/.*/)?discipline_.*\\.md$"
+        "pattern": "^(\\.reviewcompass/guidance|docs/disciplines/archive/.+)/discipline_.*\\.md$"
       }
     },
     "motivating_evidence": {
@@ -129,7 +129,7 @@
                 "minItems": 1,
                 "items": {
                   "type": "string",
-                  "pattern": "^docs/disciplines/discipline_.*\\.md$"
+                  "pattern": "^\\.reviewcompass/guidance/discipline_.*\\.md$"
                 }
               }
             }
