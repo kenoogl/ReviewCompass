@@ -1,0 +1,56 @@
+process_id: maintenance
+started_at: '2026-06-24T00:00:00+09:00'
+completed_at: '2026-06-24T00:00:00+09:00'
+trigger: >
+  Claude 用のセッション手動記録 CLI を追加する。Codex には
+  tools/session-record-capture-previous-codex.py という手動 CLI（一覧・状態表示・
+  選択取り込み）があるが、Claude には同等の手動 CLI が無く、フック自動記録が漏れた
+  ときや過去複数セッションをまとめて確認・記録する手段が無い。記録生成本体
+  （session-record-backfill.py --source claude）と Claude ログ発見
+  （discover_claude_sessions）は既に存在するため、その上の手動 orchestration 層だけを足す。
+mainline_blocked_by: >
+  本線ワークフローは completed。利用者指示による新規ツール追加であり、本線を進める前に
+  side track として実施する。
+allowed_scope:
+  - tools/session-record-capture-previous-claude.py の新規追加（Claude ログ発見・状態判定・一覧・取り込み）
+  - tests/tools/test_session_record_capture_previous_claude.py の新規追加（TDD テスト）
+  - .claude/hooks/README.md への手動 CLI 利用法の追記（Codex 側 README とのパリティ）
+allowed_files:
+  - tools/session-record-capture-previous-claude.py
+  - tests/tools/test_session_record_capture_previous_claude.py
+  - .claude/hooks/README.md
+  - stages/in-progress/maintenance-2026-06-24-claude-session-capture-cli.yaml
+  - stages/completed/maintenance-2026-06-24-claude-session-capture-cli.yaml
+change_classification: 局所
+classification_reason: >
+  既存ツール（Codex 版・backfill・フック）には触れず、新ツールと新テストを additive に
+  足すだけ。workflow 機構・承認・状態機械・next --json の意味は変えない。記録生成は
+  既存の source 非依存 backfill を呼ぶだけで、影響は session 記録ツール群に閉じる。
+  Claude はサブセッションを別 jsonl にしない（全 63 ファイルで sidechain 独立ログ 0 件を
+  実測確認）ため、Codex 固有のサブセッション除外は不要で、現在セッション除外
+  （ファイル名一致）で足りる。
+procedure: TDD 主導（テスト先行 → 失敗確認 → 実装 → 緑化）
+completion_conditions:
+  - tests/tools/test_session_record_capture_previous_claude.py が、現在セッション除外・未記録過去の取り込み・記録済みスキップ・--list（全件/--recent/--format jsonl）・--dry-run・--max-count・本文言及を記録済みにしない、を検証する
+  - 先にテストを実行して失敗（RED）を確認する
+  - tools/session-record-capture-previous-claude.py を実装し、テストを緑化（GREEN）する
+  - 既存テスト群（session 記録系）が緑のまま
+  - .claude/hooks/README.md に手動 CLI の利用法を追記する
+  - in-progress を stages/completed/ へ移動
+  - フック（.claude/hooks/*.sh、.claude/settings.json）は変更しない（方針1：自動記録は現状維持）
+workflow_steps:
+  - 'TDD: テスト作成 → 失敗確認 → 実装'
+  - '実装: tools/session-record-capture-previous-claude.py'
+  - '緑化確認 + 既存テスト確認'
+  - 'README 追記'
+  - 'in-progress を completed へ移動 + コミット'
+completed_steps:
+  - 'テスト 10 件を先行作成し、ツール未実装による RED（10 failed）を確認'
+  - 'backfill を fixture へ直接適用し、出力名 2026-06-24-claude-<id>.md / auto-... の前提を検証'
+  - 'tools/session-record-capture-previous-claude.py を実装（プロジェクト dir 発見・stem=session_id・状態判定・一覧・--max-count 取り込み・現在セッション除外）'
+  - 'テスト 10 件 GREEN（10 passed）'
+  - '既存テスト確認：Codex capture・hook capture-previous は緑。test_session_record_contract.py の 7 件は旧パス docs/operations/SESSION_WORKFLOW_GUIDE.md 参照による既存失敗で本変更とは無関係'
+  - '.claude/hooks/README.md に手動 CLI セクションを追記'
+  - 'フック（.claude/hooks/*.sh、.claude/settings.json）は無変更（方針1）'
+  - 'in-progress を completed へ移動'
+current_status: completed

@@ -1,0 +1,277 @@
+"""Claude の未記録過去セッション回収コマンドの単体テスト。"""
+
+import json
+import os
+import shutil
+import subprocess
+import sys
+import tempfile
+import unittest
+from pathlib import Path
+
+
+REPO_ROOT = Path(__file__).resolve().parents[2]
+CAPTURE = REPO_ROOT / "tools" / "session-record-capture-previous-claude.py"
+
+
+def _claude_fixture(path, session_id, cwd, text, mtime):
+  """Claude のプロジェクト dir 配下に <session_id>.jsonl を作る。
+
+  Claude ログは各行に type / timestamp / sessionId を持ち、user / assistant 行の
+  message.content から会話本文を取る（parse_claude_session の最小入力に合わせる）。
+  """
+  path.parent.mkdir(parents=True, exist_ok=True)
+  rows = [
+    {
+      "type": "user",
+      "timestamp": "2026-06-24T10:00:00.000Z",
+      "sessionId": session_id,
+      "cwd": cwd,
+      "message": {"role": "user", "content": text},
+    },
+    {
+      "type": "assistant",
+      "timestamp": "2026-06-24T10:00:01.000Z",
+      "sessionId": session_id,
+      "cwd": cwd,
+      "message": {
+        "role": "assistant",
+        "content": [{"type": "text", "text": "了解しました。"}],
+      },
+    },
+  ]
+  path.write_text(
+    "\n".join(json.dumps(row, ensure_ascii=False) for row in rows) + "\n",
+    encoding="utf-8",
+  )
+  os.utime(path, (mtime, mtime))
+
+
+class CapturePreviousClaudeSessionTests(unittest.TestCase):
+  def setUp(self):
+    self.tmp = Path(tempfile.mkdtemp())
+    self.addCleanup(shutil.rmtree, self.tmp)
+    self.project = self.tmp / "claude-project"
+    self.evidence = self.tmp / "evidence"
+    self.docs = self.tmp / "docs"
+    self.cwd = "/Users/Daily/Development/ReviewCompass"
+    self.current_id = "bbbbbbbb-1111-2222-3333-444444444444"
+    self.prev_id = "aaaaaaaa-1111-2222-3333-444444444444"
+    self.old_id = "99999999-1111-2222-3333-444444444444"
+
+  def _jsonl(self, session_id):
+    return self.project / f"{session_id}.jsonl"
+
+  def _run(self, extra=None):
+    cmd = [
+      sys.executable,
+      str(CAPTURE),
+      "--current-session-id",
+      self.current_id,
+      "--repo-path",
+      self.cwd,
+      "--claude-project-dir",
+      str(self.project),
+      "--evidence-dir",
+      str(self.evidence),
+      "--docs-dir",
+      str(self.docs),
+    ]
+    if extra:
+      cmd += extra
+    return subprocess.run(
+      cmd,
+      cwd=str(REPO_ROOT),
+      capture_output=True,
+      text=True,
+      errors="replace",
+      timeout=60,
+    )
+
+  def test_captures_latest_unrecorded_previous_session_as_two_layers(self):
+    """現在 session_id を除外し、最新の未記録過去セッションだけを 2 層記録する。"""
+    _claude_fixture(self._jsonl(self.old_id), self.old_id, self.cwd, "古い過去セッション", 1000)
+    _claude_fixture(self._jsonl(self.prev_id), self.prev_id, self.cwd, "未記録の前セッション", 2000)
+    _claude_fixture(self._jsonl(self.current_id), self.current_id, self.cwd, "現在セッション", 3000)
+
+    result = self._run()
+
+    self.assertEqual(result.returncode, 0, f"stdout={result.stdout}\nstderr={result.stderr}")
+    self.assertTrue(
+      (self.evidence / f"2026-06-24-claude-{self.prev_id}.md").exists(),
+      "層1 の整形済み転写を作る必要がある",
+    )
+    self.assertTrue(
+      (self.docs / f"auto-2026-06-24-claude-{self.prev_id}.md").exists(),
+      "層2 の人間向け記録を作る必要がある",
+    )
+    self.assertFalse(
+      (self.evidence / f"2026-06-24-claude-{self.current_id}.md").exists(),
+      "現在セッションは正式記録してはいけない",
+    )
+    self.assertIn("\"captured\"", result.stdout)
+    self.assertIn(self.prev_id, result.stdout)
+
+  def test_skips_already_recorded_and_captures_next_unrecorded(self):
+    """最新候補が記録済みなら、次の未記録過去セッションを回収する。"""
+    _claude_fixture(self._jsonl(self.old_id), self.old_id, self.cwd, "未記録の古いセッション", 1000)
+    _claude_fixture(self._jsonl(self.prev_id), self.prev_id, self.cwd, "記録済みの前セッション", 2000)
+    self.evidence.mkdir(parents=True, exist_ok=True)
+    self.docs.mkdir(parents=True, exist_ok=True)
+    (self.evidence / f"2026-06-24-claude-{self.prev_id}.md").write_text(
+      f"session_label: claude-2026-06-24-{self.prev_id}\n",
+      encoding="utf-8",
+    )
+    (self.docs / f"auto-2026-06-24-claude-{self.prev_id}.md").write_text(
+      f"session_label: claude-2026-06-24-{self.prev_id}\n",
+      encoding="utf-8",
+    )
+
+    result = self._run()
+
+    self.assertEqual(result.returncode, 0, f"stdout={result.stdout}\nstderr={result.stderr}")
+    self.assertTrue(
+      (self.evidence / f"2026-06-24-claude-{self.old_id}.md").exists(),
+      "記録済み候補を飛ばして次の未記録セッションを作る必要がある",
+    )
+    self.assertIn("\"already_recorded\"", result.stdout)
+    self.assertIn("\"captured\"", result.stdout)
+
+  def test_capture_ignores_mentions_in_other_record_body(self):
+    """別セッション本文の ID 言及を、対象 session_id の記録済み扱いにしない。"""
+    _claude_fixture(self._jsonl(self.prev_id), self.prev_id, self.cwd, "本文言及だけでは記録済みではない", 2000)
+    self.evidence.mkdir(parents=True, exist_ok=True)
+    self.docs.mkdir(parents=True, exist_ok=True)
+    (self.evidence / f"2026-06-24-claude-{self.old_id}.md").write_text(
+      "---\n"
+      f"session_label: claude-2026-06-24-{self.old_id}\n"
+      "layer: transcript\n"
+      "---\n"
+      f"会話本文で {self.prev_id} に言及しただけ。\n",
+      encoding="utf-8",
+    )
+    (self.docs / f"auto-2026-06-24-claude-{self.old_id}.md").write_text(
+      "---\n"
+      f"session_label: claude-2026-06-24-{self.old_id}\n"
+      "layer: record\n"
+      "---\n"
+      f"関連メモとして {self.prev_id} が登場する。\n",
+      encoding="utf-8",
+    )
+
+    result = self._run()
+
+    self.assertEqual(result.returncode, 0, f"stdout={result.stdout}\nstderr={result.stderr}")
+    self.assertTrue(
+      (self.evidence / f"2026-06-24-claude-{self.prev_id}.md").exists(),
+      "本文中の偶然の ID 含有ではなく、対象セッション自身の正式記録だけで判定する",
+    )
+    self.assertNotIn("\"already_recorded\"", result.stdout)
+    self.assertIn("\"captured\"", result.stdout)
+
+  def test_dry_run_lists_without_writing(self):
+    """dry-run は対象 session_id と記録状態を出し、ファイルは作らない。"""
+    _claude_fixture(self._jsonl(self.prev_id), self.prev_id, self.cwd, "dry-run 対象", 2000)
+
+    result = self._run(extra=["--dry-run"])
+
+    self.assertEqual(result.returncode, 0, f"stdout={result.stdout}\nstderr={result.stderr}")
+    self.assertIn("未記録", result.stdout)
+    self.assertIn(self.prev_id[:8], result.stdout)
+    self.assertFalse(self.evidence.exists() and any(self.evidence.iterdir()))
+
+  def test_list_defaults_to_all_sessions(self):
+    """確認リストは既定で対象 repo の全 session_id を表示する。"""
+    session_ids = [f"dddddddd-1111-2222-3333-44444444444{i}" for i in range(12)]
+    for index, session_id in enumerate(session_ids):
+      _claude_fixture(self._jsonl(session_id), session_id, self.cwd, f"一覧対象 {index}", 2000 + index)
+    _claude_fixture(self._jsonl(self.current_id), self.current_id, self.cwd, "現在セッション", 9999)
+
+    result = self._run(extra=["--list"])
+
+    self.assertEqual(result.returncode, 0, f"stdout={result.stdout}\nstderr={result.stderr}")
+    lines = [line for line in result.stdout.splitlines() if line.strip()]
+    self.assertEqual(len(lines), 14, f"見出し + 全件を表示する。stdout={result.stdout}")
+    self.assertIn("日時", lines[0])
+    self.assertIn("短縮ID", lines[0])
+    self.assertIn("状態", lines[0])
+    self.assertTrue(
+      any("現在" in line and self.current_id[:8] in line for line in lines[1:]),
+      f"現在セッション行が必要。stdout={result.stdout}",
+    )
+    self.assertFalse(self.evidence.exists() and any(self.evidence.iterdir()))
+
+  def test_list_recent_limits_to_latest_n_sessions(self):
+    """--recent N は直近 N 件を表示する。"""
+    for index in range(5):
+      session_id = f"eeeeeeee-1111-2222-3333-44444444444{index}"
+      _claude_fixture(self._jsonl(session_id), session_id, self.cwd, f"直近制限 {index}", 2000 + index)
+
+    result = self._run(extra=["--list", "--recent", "2"])
+
+    self.assertEqual(result.returncode, 0, f"stdout={result.stdout}\nstderr={result.stderr}")
+    lines = [line for line in result.stdout.splitlines() if line.strip()]
+    self.assertEqual(len(lines), 3, f"見出し + 2 件を表示する。stdout={result.stdout}")
+
+  def test_jsonl_format_keeps_machine_readable_list(self):
+    """--format jsonl なら機械処理用 JSONL で一覧を出す。"""
+    _claude_fixture(self._jsonl(self.prev_id), self.prev_id, self.cwd, "jsonl 対象", 2000)
+
+    result = self._run(extra=["--list", "--format", "jsonl"])
+
+    self.assertEqual(result.returncode, 0, f"stdout={result.stdout}\nstderr={result.stderr}")
+    rows = [json.loads(line) for line in result.stdout.splitlines() if line.strip()]
+    self.assertEqual(rows[0]["event"], "would_capture")
+    self.assertEqual(rows[0]["session_id"], self.prev_id)
+
+  def test_manual_capture_defaults_to_at_most_five_unrecorded_sessions(self):
+    """手動実行は未記録過去セッションを最大 5 件まで連続回収する。"""
+    session_ids = [f"aaaaaaaa-1111-2222-3333-44444444444{i}" for i in range(6)]
+    for index, session_id in enumerate(session_ids):
+      _claude_fixture(self._jsonl(session_id), session_id, self.cwd, f"未記録セッション {index}", 2000 + index)
+
+    result = self._run()
+
+    self.assertEqual(result.returncode, 0, f"stdout={result.stdout}\nstderr={result.stderr}")
+    captured = [
+      json.loads(line)["session_id"]
+      for line in result.stdout.splitlines()
+      if line.strip() and json.loads(line).get("event") == "captured"
+    ]
+    self.assertEqual(len(captured), 5, f"既定上限は 5 件。stdout={result.stdout}")
+
+  def test_max_count_limits_capture_count(self):
+    """--max-count で手動回収件数を制限できる。"""
+    for index in range(3):
+      session_id = f"cccccccc-1111-2222-3333-44444444444{index}"
+      _claude_fixture(self._jsonl(session_id), session_id, self.cwd, f"上限制御 {index}", 2000 + index)
+
+    result = self._run(extra=["--max-count", "2"])
+
+    self.assertEqual(result.returncode, 0, f"stdout={result.stdout}\nstderr={result.stderr}")
+    self.assertEqual(
+      sum(
+        1
+        for line in result.stdout.splitlines()
+        if line.strip() and json.loads(line).get("event") == "captured"
+      ),
+      2,
+      f"--max-count 2 なら 2 件だけ回収する。stdout={result.stdout}",
+    )
+
+  def test_current_session_is_excluded_from_capture(self):
+    """現在セッションだけのときは取り込まず、現在セッションの記録も作らない。"""
+    _claude_fixture(self._jsonl(self.current_id), self.current_id, self.cwd, "現在セッション本体", 3000)
+
+    result = self._run()
+
+    self.assertEqual(result.returncode, 0, f"stdout={result.stdout}\nstderr={result.stderr}")
+    self.assertFalse(
+      (self.evidence / f"2026-06-24-claude-{self.current_id}.md").exists(),
+      "現在セッションは正式記録してはいけない",
+    )
+    self.assertNotIn("\"captured\"", result.stdout)
+
+
+if __name__ == "__main__":
+  unittest.main()

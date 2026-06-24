@@ -72,6 +72,44 @@ Claude Code のフック機構（PreToolUse 等）に登録するスクリプト
 
 **登録**：`.claude/settings.json` の `hooks.SessionEnd` セクションに matcher なし（全終了理由）で登録済み。
 
+### 手動 CLI: `tools/session-record-capture-previous-claude.py`
+
+**役割**：未記録の過去 Claude セッションを手動で一覧・確認・取り込みする。上記 2 フックは自動記録（SessionStart で前セッション 1 件、SessionEnd で現セッション）を担うが、履歴確認のため複数スレッドを開いていて自動記録が漏れたとき、または過去の複数セッションをまとめて回収したいときに、この CLI を手動実行する。Codex 版 `tools/session-record-capture-previous-codex.py` の Claude 対応版で、記録生成は同じく `tools/session-record-backfill.py --source claude` へ委譲する。フックは変更しない（自動記録は現状維持）。
+
+Claude のログは `$HOME/.claude/projects/<cwd の / を - に置換>/<session_id>.jsonl` にプロジェクトごとに分かれて置かれ、ファイル名 stem がそのまま session_id になる。現在セッションはファイル名一致で除外する。Claude はサブエージェント会話を別 jsonl にせず本体 jsonl 内の sidechain 行として残すため、Codex のような派生セッション除外は不要。
+
+**取り込み（既定は最大 5 件まで連続回収）**：
+
+```bash
+python3 tools/session-record-capture-previous-claude.py \
+  --current-session-id <現在の Claude session_id> \
+  --repo-path /path/to/repo
+```
+
+**確認だけ（記録しない）**：`--list` は対象 repo の全 session_id を日時・短縮 ID・状態（現在 / 記録済み / 未記録）の表で表示する。`--recent N` で直近 N 件、`--format jsonl` で機械処理用 JSONL。`--dry-run` も同様に状態だけ表示する。
+
+```bash
+python3 tools/session-record-capture-previous-claude.py \
+  --current-session-id <現在の Claude session_id> \
+  --repo-path /path/to/repo \
+  --list
+
+python3 tools/session-record-capture-previous-claude.py \
+  --current-session-id <現在の Claude session_id> \
+  --repo-path /path/to/repo \
+  --list --recent 10
+```
+
+回収件数を変える場合は `--max-count <件数>`。出力先はテスト時に `--evidence-dir`（層1）／`--docs-dir`（層2）、プロジェクト dir は `--claude-project-dir` で差し替える。
+
+**イベント語（`--format jsonl` と取り込み時）**：`would_capture`、`current_session`／`current_session_skipped`、`already_recorded`、`selected`、`captured`、`capture_failed`、`max_count_reached`、`no_unrecorded_previous_session`。
+
+**Codex 複製はしない**：本 CLI は Claude 専用（利用する LLM ごとに自分のログを残す方針）。`pre-bash-precheck.sh` のような `.codex/` との同一性対象には含めない。
+
+**依存**：python3、tools/session-record-backfill.py、tools/session_record_extractor（`discover_claude_sessions` ほか）。
+
+**テスト**：`tests/tools/test_session_record_capture_previous_claude.py`（10 件）。
+
 ## Codex 複製との同一性
 
 フック本体 `pre-bash-precheck.sh` は `.claude/hooks/` と `.codex/hooks/` の両複製を同一内容に保つ。同一性は `tests/hooks/test_claude_hook_repository.py` の parity テストで機械検査する。本体を変更する場合は両複製へ同時に反映する。
