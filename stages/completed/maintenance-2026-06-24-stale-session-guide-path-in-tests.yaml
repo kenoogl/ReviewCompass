@@ -1,0 +1,51 @@
+process_id: maintenance
+started_at: '2026-06-24T00:00:00+09:00'
+completed_at: '2026-06-24T00:00:00+09:00'
+trigger: >
+  以前のガイダンス移設で SESSION_WORKFLOW_GUIDE.md が docs/operations/ から
+  .reviewcompass/guidance/ へ移ったが、2 つのテストが旧パス
+  docs/operations/SESSION_WORKFLOW_GUIDE.md を読みに行って FileNotFoundError で
+  失敗している。新パスへ参照を更新する。利用者指示による補修。
+mainline_blocked_by: >
+  本線ワークフローは completed。移設に追従していないテストの旧パス参照を直す補修であり、
+  side track として実施する。
+allowed_scope:
+  - tests/tools/test_session_record_contract.py の SESSION_GUIDE パスを新パスへ更新
+  - tests/tools/test_workflow_management_task_granularity.py の SESSION_GUIDE パスを新パスへ更新
+allowed_files:
+  - tests/tools/test_session_record_contract.py
+  - tests/tools/test_workflow_management_task_granularity.py
+  - stages/in-progress/maintenance-2026-06-24-stale-session-guide-path-in-tests.yaml
+  - stages/completed/maintenance-2026-06-24-stale-session-guide-path-in-tests.yaml
+change_classification: 局所
+classification_reason: >
+  テストの参照パス文字列を、移設済みの正しいパスへ直すだけの機械的補修。本番コードや
+  仕様・規律本文は変えない。移設を検証する契約テスト（test_guidance_file_relocation_contract.py）
+  や deploy manifest テストの意図的な旧パス参照には触れない。影響はテスト 2 ファイルに閉じる。
+procedure: >
+  文書相当の機械補修。旧パス FileNotFoundError で RED の 8 件のうち、パス更新で 7 件を
+  GREEN へ戻すことで検証する（テスト自体が検証器）。
+completion_conditions:
+  - test_session_record_contract.py の SESSION_GUIDE を .reviewcompass/guidance/SESSION_WORKFLOW_GUIDE.md へ更新
+  - test_workflow_management_task_granularity.py の SESSION_GUIDE を同新パスへ更新
+  - 移設検証の契約テスト・deploy manifest テストは無変更で緑のまま
+  - in-progress を stages/completed/ へ移動
+scope_carve_out:
+  - >
+    パス修正後、test_session_record_contract.py の line 91（test_proxy_review_decision_workflow_is_canonicalized）
+    のみ別原因で失敗が残る。これは旧パスではなく proxy_model 判断レコードの命名不整合
+    （approval-proxy / proxy-approval / proxy-decision-bundle、approved_by / decided_by）が
+    早期クラッシュで隠れていて顕在化したもの。本保守のスコープ外とし、proxy 命名整合の
+    follow-up（三者レビュー実施・方向決定済み）で解消する。
+workflow_steps:
+  - 'test_session_record_contract.py の旧パスを新パスへ修正'
+  - 'test_workflow_management_task_granularity.py の旧パスを新パスへ修正'
+  - 'テスト実行で挙動確認（path 起因 7 件 GREEN 化、line-91 は proxy 整合へ切り出し）'
+  - 'in-progress を completed へ移動'
+completed_steps:
+  - 'test_session_record_contract.py:6 と test_workflow_management_task_granularity.py:6 の SESSION_GUIDE を新パスへ修正'
+  - 'test_workflow_management_task_granularity.py：全 GREEN'
+  - 'test_session_record_contract.py：FileNotFoundError 解消で 7→1 失敗に改善。残る line-91 は proxy 命名不整合のためスコープ外（carve out）'
+  - '移設検証の契約テスト・deploy manifest テストは無変更で 37 件 GREEN を確認'
+  - 'in-progress を completed へ移動'
+current_status: completed

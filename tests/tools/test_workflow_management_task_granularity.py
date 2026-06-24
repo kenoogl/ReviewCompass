@@ -3,7 +3,7 @@ from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 TASKS = REPO_ROOT / ".reviewcompass" / "specs" / "workflow-management" / "tasks.md"
-SESSION_GUIDE = REPO_ROOT / "docs" / "operations" / "SESSION_WORKFLOW_GUIDE.md"
+SESSION_GUIDE = REPO_ROOT / ".reviewcompass" / "guidance" / "SESSION_WORKFLOW_GUIDE.md"
 
 
 def test_implementation_drafting_artifacts_are_not_adopted():
