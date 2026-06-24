@@ -87,6 +87,8 @@ def main():
       str(rollout),
       "--source",
       args.source,
+      "--current-session-id",
+      args.current_session_id,
       "--evidence-dir",
       args.evidence_dir,
       "--docs-dir",

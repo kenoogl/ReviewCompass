@@ -29,15 +29,49 @@ def _write_claude_fixture(path, objs):
   path.write_text(body, encoding="utf-8")
 
 
-def _run_session(session_path, evidence_dir, docs_dir, source="claude"):
-  return subprocess.run(
-    [
+def _write_codex_fixture(path, session_id, cwd, text, parent_session_id=None):
+  path.parent.mkdir(parents=True, exist_ok=True)
+  payload = {
+    "id": session_id,
+    "timestamp": "2026-06-14T10:00:00.000Z",
+    "cwd": cwd,
+  }
+  if parent_session_id:
+    payload["session_id"] = parent_session_id
+  rows = [
+    {
+      "timestamp": "2026-06-14T10:00:00.000Z",
+      "type": "session_meta",
+      "payload": payload,
+    },
+    {
+      "timestamp": "2026-06-14T10:00:01.000Z",
+      "type": "response_item",
+      "payload": {
+        "type": "message",
+        "role": "user",
+        "content": [{"type": "input_text", "text": text}],
+      },
+    },
+  ]
+  path.write_text(
+    "\n".join(json.dumps(row, ensure_ascii=False) for row in rows) + "\n",
+    encoding="utf-8",
+  )
+
+
+def _run_session(session_path, evidence_dir, docs_dir, source="claude", extra=None):
+  cmd = [
       sys.executable, str(BACKFILL),
       "--session", str(session_path),
       "--source", source,
       "--evidence-dir", str(evidence_dir),
       "--docs-dir", str(docs_dir),
-    ],
+    ]
+  if extra:
+    cmd += extra
+  return subprocess.run(
+    cmd,
     cwd=str(REPO_ROOT),
     capture_output=True,
     text=True,
@@ -112,6 +146,73 @@ class SingleSessionCaptureTests(unittest.TestCase):
     """入力が存在しなければ非ゼロで終了する。"""
     r = _run_session(self.tmp / "does-not-exist.jsonl", self.evidence, self.docs)
     self.assertNotEqual(r.returncode, 0, f"stdout={r.stdout}\nstderr={r.stderr}")
+
+  def test_codex_session_requires_current_session_id_guard(self):
+    """Codex の直接 --session 取り込みは current-session guard 無しでは拒否する。"""
+    session_id = "aaaaaaaa-1111-2222-3333-444444444444"
+    sess = self.tmp / f"rollout-2026-06-14T10-00-00-{session_id}.jsonl"
+    _write_codex_fixture(sess, session_id, "/Users/Daily/Development/ReviewCompass",
+                         "Codex direct backfill")
+
+    r = _run_session(sess, self.evidence, self.docs, source="codex")
+
+    self.assertEqual(r.returncode, 2, f"stdout={r.stdout}\nstderr={r.stderr}")
+    self.assertIn("--current-session-id", r.stderr)
+    self.assertFalse(self.evidence.exists() and any(self.evidence.iterdir()))
+
+  def test_codex_session_refuses_current_session_id(self):
+    """対象 Codex session が current-session-id と同一なら正式記録しない。"""
+    session_id = "aaaaaaaa-1111-2222-3333-444444444444"
+    sess = self.tmp / f"rollout-2026-06-14T10-00-00-{session_id}.jsonl"
+    _write_codex_fixture(sess, session_id, "/Users/Daily/Development/ReviewCompass",
+                         "current session")
+
+    r = _run_session(
+      sess, self.evidence, self.docs, source="codex",
+      extra=["--current-session-id", session_id],
+    )
+
+    self.assertEqual(r.returncode, 2, f"stdout={r.stdout}\nstderr={r.stderr}")
+    self.assertIn("current session", r.stderr)
+    self.assertFalse(self.evidence.exists() and any(self.evidence.iterdir()))
+
+  def test_codex_session_refuses_current_parent_session_id(self):
+    """派生 Codex log も parent の current-session-id に紐づくなら正式記録しない。"""
+    session_id = "aaaaaaaa-1111-2222-3333-444444444444"
+    parent_id = "bbbbbbbb-1111-2222-3333-444444444444"
+    sess = self.tmp / f"rollout-2026-06-14T10-00-00-{session_id}.jsonl"
+    _write_codex_fixture(
+      sess, session_id, "/Users/Daily/Development/ReviewCompass",
+      "guardian subagent", parent_session_id=parent_id,
+    )
+
+    r = _run_session(
+      sess, self.evidence, self.docs, source="codex",
+      extra=["--current-session-id", parent_id],
+    )
+
+    self.assertEqual(r.returncode, 2, f"stdout={r.stdout}\nstderr={r.stderr}")
+    self.assertIn("current session", r.stderr)
+    self.assertFalse(self.evidence.exists() and any(self.evidence.iterdir()))
+
+  def test_codex_session_allows_non_current_session(self):
+    """current-session-id と異なる終了済み Codex session は直接回収できる。"""
+    session_id = "aaaaaaaa-1111-2222-3333-444444444444"
+    current_id = "bbbbbbbb-1111-2222-3333-444444444444"
+    sess = self.tmp / f"rollout-2026-06-14T10-00-00-{session_id}.jsonl"
+    _write_codex_fixture(sess, session_id, "/Users/Daily/Development/ReviewCompass",
+                         "past session")
+
+    r = _run_session(
+      sess, self.evidence, self.docs, source="codex",
+      extra=["--current-session-id", current_id],
+    )
+
+    self.assertEqual(r.returncode, 0, f"stdout={r.stdout}\nstderr={r.stderr}")
+    self.assertTrue(
+      (self.evidence / f"2026-06-14-codex-{session_id}.md").exists(),
+      f"終了済み session は層1 を書く。stdout={r.stdout}",
+    )
 
 
 if __name__ == "__main__":

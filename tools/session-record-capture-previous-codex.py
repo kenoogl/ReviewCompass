@@ -166,7 +166,7 @@ def _list_rows(rows, limit):
   return latest_first if limit is None else latest_first[:max(limit, 0)]
 
 
-def _backfill(row, evidence_dir, docs_dir):
+def _backfill(row, evidence_dir, docs_dir, current_session_id):
   return subprocess.run(
     [
       sys.executable,
@@ -175,6 +175,8 @@ def _backfill(row, evidence_dir, docs_dir):
       row["rollout"],
       "--source",
       "codex",
+      "--current-session-id",
+      current_session_id,
       "--evidence-dir",
       str(evidence_dir),
       "--docs-dir",
@@ -241,7 +243,7 @@ def main():
       _emit("already_recorded", session_id=row["session_id"], rollout=row["rollout"])
       continue
     _emit("selected", session_id=row["session_id"], rollout=row["rollout"])
-    result = _backfill(row, evidence_dir, docs_dir)
+    result = _backfill(row, evidence_dir, docs_dir, args.current_session_id)
     if result.returncode != 0:
       _emit(
         "capture_failed",

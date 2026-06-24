@@ -124,6 +124,8 @@ log_event "selected" "$CURRENT" "$CURRENT_SESSION_ID"
 cd "$REPO_ROOT" || exit 0
 if python3 tools/session-record-backfill.py \
   --session "$CURRENT" --source codex \
+  --current-session-id "$CURRENT_SESSION_ID" \
+  --allow-current-session-capture \
   --evidence-dir "$EVIDENCE_DIR" --docs-dir "$DOCS_DIR" >/dev/null 2>&1; then
   log_event "captured" "$CURRENT" "$CURRENT_SESSION_ID"
 else

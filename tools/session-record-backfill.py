@@ -82,6 +82,44 @@ def _detect_source(lines):
   return "claude"
 
 
+def _codex_session_meta_ids(lines):
+  for line in lines:
+    line = line.strip()
+    if not line:
+      continue
+    try:
+      obj = json.loads(line)
+    except json.JSONDecodeError:
+      continue
+    if obj.get("type") != "session_meta":
+      continue
+    payload = obj.get("payload") or {}
+    if not isinstance(payload, dict):
+      return set()
+    ids = set()
+    for key in ("id", "session_id"):
+      value = str(payload.get(key) or "")
+      if value:
+        ids.add(value)
+    return ids
+  return set()
+
+
+def _guard_codex_direct_session(lines, current_session_id, allow_current_session_capture):
+  if allow_current_session_capture:
+    return True
+  if not current_session_id:
+    print(
+      "エラー: Codex の単一 --session 取り込みには --current-session-id が必要です",
+      file=sys.stderr,
+    )
+    return False
+  if current_session_id in _codex_session_meta_ids(lines):
+    print("エラー: current session は正式記録しません", file=sys.stderr)
+    return False
+  return True
+
+
 def _process(path, source, lines, tool_version):
   if source == "codex":
     meta, events = parse_codex_session(lines)
@@ -135,6 +173,10 @@ def main():
                            "利用時フックからの going-forward 取り込みに使う")
   parser.add_argument("--source", choices=["auto", "claude", "codex"], default="auto",
                       help="--session のソース種別（既定 auto で自動判定）")
+  parser.add_argument("--current-session-id", default="",
+                      help="Codex の直接 --session 取り込み時に除外する現在 session_id")
+  parser.add_argument("--allow-current-session-capture", action="store_true",
+                      help="SessionEnd フック専用。現在 session の正式記録を明示的に許可する")
   parser.add_argument("--evidence-dir", default=str(EVIDENCE_SESSIONS),
                       help="層1（整形済み転写）の出力先ディレクトリ")
   parser.add_argument("--docs-dir", default=str(DOCS_SESSIONS),
@@ -159,6 +201,10 @@ def main():
     with open(spath, encoding="utf-8", errors="replace") as f:
       head = f.readlines()
     source = args.source if args.source != "auto" else _detect_source(head)
+    if source == "codex" and not _guard_codex_direct_session(
+      head, args.current_session_id, args.allow_current_session_capture
+    ):
+      return 2
     targets = [(source, spath)]
     # 再現性チェックは当該セッションが置かれたディレクトリを引用元として探す
     src_dirs = [str(spath.parent)]

@@ -81,7 +81,7 @@ Codex の hook 設定で呼び出すスクリプトを置く。
 
 **役割**：新しい Codex セッション開始時に、payload の current `session_id` と `cwd` を使って、現在セッション以外の未記録 Codex rollout を 1 件だけ正式な 2 層セッション記録へ取り込む。手動 CLI は既定で最大 5 件まで連続回収できるが、hook では `--max-count 1` を指定してセッション開始時の副作用を抑える。
 
-記録は生ログの丸写しではない。`$HOME/.codex/sessions/.../rollout-*.jsonl` を一次ソースにし、`tools/session-record-capture-previous-codex.py` から `tools/session-record-backfill.py --session <jsonl> --source codex` を呼び、`.reviewcompass/evidence/sessions/` の整形済み転写と `docs/sessions/` の人間向け記録を生成する。
+記録は生ログの丸写しではない。`$HOME/.codex/sessions/.../rollout-*.jsonl` を一次ソースにし、`tools/session-record-capture-previous-codex.py` から `tools/session-record-backfill.py --session <jsonl> --source codex --current-session-id <current-id>` を呼び、`.reviewcompass/evidence/sessions/` の整形済み転写と `docs/sessions/` の人間向け記録を生成する。Codex の直接 `--session` 取り込みは `--current-session-id` を必須とし、対象が現在セッションまたはその派生ログなら拒否する。
 
 `TODO_NEXT_SESSION.md` の更新、`PostToolUse`、`UserPromptSubmit`、`SessionEnd` は、Codex セッション会話記録の取り込みトリガーにしない。明示回収が必要な場合は、この hook と同じ CLI を手動実行する。
 
