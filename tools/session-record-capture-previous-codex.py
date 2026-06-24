@@ -3,6 +3,7 @@
 
 import argparse
 import json
+import re
 import subprocess
 import sys
 from pathlib import Path
@@ -14,6 +15,9 @@ DEFAULT_REPO_PATH = "/Users/Daily/Development/ReviewCompass"
 DEFAULT_EVIDENCE_DIR = REPO_ROOT / ".reviewcompass" / "evidence" / "sessions"
 DEFAULT_DOCS_DIR = REPO_ROOT / "docs" / "sessions"
 BACKFILL = REPO_ROOT / "tools" / "session-record-backfill.py"
+SESSION_ID_RE = re.compile(
+  r"[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
+)
 
 
 def _read_meta(path):
@@ -40,25 +44,39 @@ def _repo_matches(cwd, repo_path):
   return bool(cwd and repo and (cwd == repo or cwd.startswith(repo + "/")))
 
 
-def _record_texts(evidence_dir, docs_dir):
-  texts = []
+def _record_session_ids_from_path(path):
+  session_ids = set(SESSION_ID_RE.findall(path.name))
+  try:
+    with Path(path).open(encoding="utf-8", errors="replace") as f:
+      for index, line in enumerate(f):
+        if index >= 32:
+          break
+        stripped = line.strip()
+        if stripped.startswith(("session_label:", "source_path:", "<!-- id:")):
+          session_ids.update(SESSION_ID_RE.findall(stripped))
+  except OSError:
+    pass
+  return session_ids
+
+
+def _recorded_session_ids(evidence_dir, docs_dir):
+  ids_by_layer = []
   for root in (Path(evidence_dir), Path(docs_dir)):
+    layer_ids = set()
     if not root.exists():
+      ids_by_layer.append(layer_ids)
       continue
     for path in root.rglob("*.md"):
-      try:
-        texts.append(path.name)
-        texts.append(path.read_text(encoding="utf-8", errors="replace"))
-      except OSError:
-        texts.append(path.name)
-  return "\n".join(texts)
+      layer_ids.update(_record_session_ids_from_path(path))
+    ids_by_layer.append(layer_ids)
+  return ids_by_layer[0] & ids_by_layer[1]
 
 
-def _is_recorded(session_id, record_text):
-  return bool(session_id and session_id in record_text)
+def _is_recorded(session_id, recorded_session_ids):
+  return bool(session_id and session_id in recorded_session_ids)
 
 
-def _discover(codex_root, repo_path, current_session_id, record_text):
+def _discover(codex_root, repo_path, current_session_id, recorded_session_ids):
   rows = []
   root = Path(codex_root)
   if not root.exists():
@@ -76,7 +94,7 @@ def _discover(codex_root, repo_path, current_session_id, record_text):
       continue
     if session_id == current_session_id:
       state = "current"
-    elif _is_recorded(session_id, record_text):
+    elif _is_recorded(session_id, recorded_session_ids):
       state = "recorded"
     else:
       state = "unrecorded"
@@ -201,8 +219,8 @@ def main():
 
   evidence_dir = Path(args.evidence_dir)
   docs_dir = Path(args.docs_dir)
-  record_text = _record_texts(evidence_dir, docs_dir)
-  rows = _discover(args.codex_root, args.repo_path, args.current_session_id, record_text)
+  recorded_session_ids = _recorded_session_ids(evidence_dir, docs_dir)
+  rows = _discover(args.codex_root, args.repo_path, args.current_session_id, recorded_session_ids)
 
   if args.list or args.dry_run:
     limit = args.recent if args.recent is not None else args.list_limit

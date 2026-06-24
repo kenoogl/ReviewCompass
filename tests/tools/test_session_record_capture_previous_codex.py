@@ -169,6 +169,85 @@ class CapturePreviousCodexSessionTests(unittest.TestCase):
     self.assertIn("\"already_recorded\"", result.stdout)
     self.assertIn("\"captured\"", result.stdout)
 
+  def test_list_ignores_mentions_in_other_record_body(self):
+    """別セッション本文の ID 言及を、対象 session_id の記録済み表示にしない。"""
+    _codex_fixture(
+      self._rollout(self.prev_id, "10-00-00"),
+      self.prev_id,
+      self.cwd,
+      "一覧表示対象",
+      2000,
+    )
+    self.evidence.mkdir(parents=True, exist_ok=True)
+    self.docs.mkdir(parents=True, exist_ok=True)
+    (self.evidence / f"2026-06-24-codex-{self.old_id}.md").write_text(
+      "---\n"
+      f"session_label: codex-2026-06-24-{self.old_id}\n"
+      "layer: transcript\n"
+      "---\n"
+      f"本文中に {self.prev_id} が出るだけ。\n",
+      encoding="utf-8",
+    )
+    (self.docs / f"auto-2026-06-24-codex-{self.old_id}.md").write_text(
+      "---\n"
+      f"session_label: codex-2026-06-24-{self.old_id}\n"
+      "layer: record\n"
+      "---\n"
+      f"関連メモとして {self.prev_id} に触れる。\n",
+      encoding="utf-8",
+    )
+
+    result = self._run(extra=["--list"])
+
+    self.assertEqual(result.returncode, 0, f"stdout={result.stdout}\nstderr={result.stderr}")
+    lines = [line for line in result.stdout.splitlines() if line.strip()]
+    self.assertTrue(
+      any(self.prev_id[:8] in line and "未記録" in line for line in lines),
+      f"対象 session_id 自身の正式記録がないため未記録表示が必要。stdout={result.stdout}",
+    )
+    self.assertFalse(
+      any(self.prev_id[:8] in line and "記録済み" in line for line in lines),
+      f"本文言及だけで記録済み表示してはいけない。stdout={result.stdout}",
+    )
+
+  def test_capture_ignores_mentions_in_other_record_body(self):
+    """別セッション本文の ID 言及を、対象 session_id の記録済み扱いにしない。"""
+    _codex_fixture(
+      self._rollout(self.prev_id, "10-00-00"),
+      self.prev_id,
+      self.cwd,
+      "本文言及だけでは記録済みではない",
+      2000,
+    )
+    self.evidence.mkdir(parents=True, exist_ok=True)
+    self.docs.mkdir(parents=True, exist_ok=True)
+    (self.evidence / f"2026-06-24-codex-{self.old_id}.md").write_text(
+      "---\n"
+      f"session_label: codex-2026-06-24-{self.old_id}\n"
+      "layer: transcript\n"
+      "---\n"
+      f"会話本文で {self.prev_id} に言及しただけ。\n",
+      encoding="utf-8",
+    )
+    (self.docs / f"auto-2026-06-24-codex-{self.old_id}.md").write_text(
+      "---\n"
+      f"session_label: codex-2026-06-24-{self.old_id}\n"
+      "layer: record\n"
+      "---\n"
+      f"関連メモとして {self.prev_id} が登場する。\n",
+      encoding="utf-8",
+    )
+
+    result = self._run()
+
+    self.assertEqual(result.returncode, 0, f"stdout={result.stdout}\nstderr={result.stderr}")
+    self.assertTrue(
+      (self.evidence / f"2026-06-24-codex-{self.prev_id}.md").exists(),
+      "本文中の偶然の ID 含有ではなく、対象セッション自身の正式記録だけで判定する",
+    )
+    self.assertNotIn("\"already_recorded\"", result.stdout)
+    self.assertIn("\"captured\"", result.stdout)
+
   def test_dry_run_lists_without_writing(self):
     """dry-run は対象 session_id と記録状態を出し、ファイルは作らない。"""
     _codex_fixture(
