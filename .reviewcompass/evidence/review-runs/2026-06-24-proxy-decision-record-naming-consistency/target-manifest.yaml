@@ -1,0 +1,4 @@
+run_id: 2026-06-24-proxy-decision-record-naming-consistency
+target_files:
+- path: .reviewcompass/evidence/review-runs/2026-06-24-proxy-decision-record-naming-consistency/proxy-record-consistency-brief.md
+  sha256: 9134300d32d70332b22ae0c57f2c04ecf893ea196963f8bfc048fcc1f3d2869f

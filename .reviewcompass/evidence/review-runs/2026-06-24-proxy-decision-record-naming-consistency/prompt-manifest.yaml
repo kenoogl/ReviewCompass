@@ -1,0 +1,65 @@
+schema_version: effective-prompt-manifest-v1
+decision_point:
+  kind: post_write_verification
+  required_action: run_post_write_verification
+source_artifacts:
+- path: .reviewcompass/evidence/review-runs/2026-06-24-proxy-decision-record-naming-consistency/proxy-record-consistency-brief.md
+  sha256: sha256:9134300d32d70332b22ae0c57f2c04ecf893ea196963f8bfc048fcc1f3d2869f
+required_disciplines:
+- .reviewcompass/guidance/WORKFLOW_NAVIGATION.md
+- .reviewcompass/guidance/API_REVIEW_PROMPT_QUALITY.md
+operation_contract:
+  operation_id: prepare_post_write_review
+  sha256: sha256:715b36b1e3dff7855fed4725db8625d1a186709b8de40fae6097be361bdf071a
+expected_output_schema:
+  schema_ref: null
+  required_sections:
+  - findings
+prompt_length:
+  min_chars: 1
+  max_chars: 200000
+  source_ref: .reviewcompass/evidence/review-runs/2026-06-24-proxy-decision-record-naming-consistency/review-target.md
+  failure_verdict: DEVIATION
+preconditions_checked:
+- id: post-write-review-target-generated
+  source: prepare_post_write_review
+  machine_checked: true
+  evidence_ref: .reviewcompass/evidence/review-runs/2026-06-24-proxy-decision-record-naming-consistency/review-target.md
+language_task:
+  document_kind: post_write_verification
+  input:
+    required_files:
+    - .reviewcompass/evidence/review-runs/2026-06-24-proxy-decision-record-naming-consistency/proxy-record-consistency-brief.md
+    state_refs: []
+    source_refs: []
+  output_format:
+    kind: yaml_findings
+    required_sections:
+    - findings
+    schema_ref: null
+  constraints:
+  - Review language-level consistency only.
+  - Do not mutate workflow state.
+  - Do not create review-run artifacts.
+  - Do not commit or push.
+review_prompt_materials:
+  target_files:
+  - path: .reviewcompass/evidence/review-runs/2026-06-24-proxy-decision-record-naming-consistency/proxy-record-consistency-brief.md
+    content_mode: full_text
+    content_sha256: sha256:9134300d32d70332b22ae0c57f2c04ecf893ea196963f8bfc048fcc1f3d2869f
+  source_materials: []
+postconditions:
+- id: post-write-review-target-manifest-matches
+  check_kind: review_target_manifest_matches
+  source_ref: .reviewcompass/evidence/review-runs/2026-06-24-proxy-decision-record-naming-consistency/review-target.md
+on_completion:
+  next_required_action: run_post_write_verification
+  allowed_followups:
+  - prompt-audit
+  - run-post-write-review
+  forbidden_actions:
+  - commit
+  - push
+  - spec-set
+generated_at: '2026-06-24T02:55:14.507453+00:00'
+criteria_id: proxy-decision-record-naming-consistency

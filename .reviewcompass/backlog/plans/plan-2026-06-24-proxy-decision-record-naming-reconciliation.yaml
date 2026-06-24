@@ -1,0 +1,76 @@
+schema_version: reviewcompass-backlog-item-v1
+id: plan-2026-06-24-proxy-decision-record-naming-reconciliation
+kind: plan
+title: Reconcile proxy_model decision record naming and semantics to the implemented code
+status: candidate
+source_unit_id: main-side-conversation
+created_at: '2026-06-24T00:00:00+09:00'
+index_path: .reviewcompass/backlog/index.yaml
+provenance:
+  created_by: llm
+  source_ref: .reviewcompass/evidence/review-runs/2026-06-24-proxy-decision-record-naming-consistency/decision-and-outcome.md
+  reason: >
+    proxy_model 判断レコードの命名・属性・意味づけが、実装コード（proxy-approval.yaml /
+    approved_by / 承認扱い）、設計書 design.md（proxy-decision-bundle / decided_by /
+    承認ではないと明記）、tasks.md・規律・テスト（approval-proxy）の間で三つ巴に食い違って
+    いる。三者レビューと利用者文脈の検証により方向を決定した（実装を正本とし、design.md の
+    言い回しを正確化、命名を proxy-approval.yaml に統一）。本計画はその実装を scoped follow-up
+    として記録する。ファイル移動・正本仕様変更はまだ行わない。
+summary: >
+  決定済みの方向（正本＝実装コード proxy-approval.yaml / approved_by + decision_scope）に沿って、
+  design.md の誤誘導文言の正確化、tasks.md・規律・テストの命名統一を行い、test_session_record_contract.py
+  line-91 の失敗を解消する。design.md・tasks.md は workflow-management の正本仕様であり、変更は
+  reopen 分類（意味変更かの機械判定）を通す。
+decision_basis:
+  - .reviewcompass/evidence/review-runs/2026-06-24-proxy-decision-record-naming-consistency/decision-and-outcome.md
+  - requirements.md:79（proxy はトリアージ代行、不可逆操作は非代行）
+  - tools/check_workflow_action/proxy_triage_decisions.py:137（decision_scope=human_only ブロック・実装済み）
+related:
+  - .reviewcompass/specs/workflow-management/design.md
+  - .reviewcompass/specs/workflow-management/tasks.md
+  - .reviewcompass/guidance/SESSION_WORKFLOW_GUIDE.md
+  - tests/tools/test_session_record_contract.py
+  - tools/make-proxy-approval.py
+  - tools/api_providers/review_triage.py
+decided_direction:
+  canonical: implementation_code
+  canonical_form:
+    bundle_filename: proxy-approval.yaml
+    attribute: 'approved_by: proxy_model'
+    safety_boundary: decision_scope（human_only / proxy_allowed / advisory_only）
+  rejected: >
+    三者レビューの「decision パラダイムへ寄せてコードを直す」案。自律動機と decision_scope を
+    欠いた過大評価のため不採用。ただし「design.md の言い回しが誤解を生む」は採用。
+remaining_work:
+  - id: PRR-0
+    title: design.md / tasks.md 変更の reopen 分類
+    status: candidate
+    tasks:
+      - design.md・tasks.md は正本仕様。命名統一と「承認ではない」の正確化が意味変更に当たるか機械判定する。
+      - reopen が必要なら正式手続き、不要なら局所整合として進める方針を確定する。
+  - id: PRR-1
+    title: design.md の文言正確化と命名統一
+    status: candidate
+    tasks:
+      - '「proxy decision bundle は承認 record ではない」を「proxy_allowed 範囲（所見トリアージ）は承認、human_only は不可」へ正確化。'
+      - 束ねファイル名を proxy-approval.yaml に統一（decided_by/approved_by の属性表記も実装に合わせる）。
+  - id: PRR-2
+    title: tasks.md・SESSION_WORKFLOW_GUIDE.md の命名統一
+    status: candidate
+    tasks:
+      - tasks.md:128 の approval-proxy-<日付>.yaml を proxy-approval.yaml へ。
+      - SESSION_WORKFLOW_GUIDE.md:206,235 の approval-proxy 表記を proxy-approval へ。
+  - id: PRR-3
+    title: test_session_record_contract.py line-91 の解消
+    status: candidate
+    tasks:
+      - design.md 整合後、line 90-93 の assert を正本（proxy-approval.yaml）に一致させ GREEN 化する。
+      - これは 2026-06-24 のパス修正保守でスコープ外に切り出した残件である。
+  - id: PRR-4
+    title: 歴史的成果物の扱い
+    status: candidate
+    tasks:
+      - 既存 review-run の approval-proxy-2026-06-04.yaml 等は凍結済み履歴として改名対象外でよいか確認する。
+notes:
+  - 安全機構 decision_scope は実装済みで、名前変更は安全特性を変えない（cosmetic + clarity）。
+  - 本計画着手前に next --json を確認し、design.md/tasks.md 変更の分類を先に通す。

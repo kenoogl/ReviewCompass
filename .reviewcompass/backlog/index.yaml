@@ -1,5 +1,12 @@
 schema_version: reviewcompass-backlog-index-v1
 items:
+- id: plan-2026-06-24-proxy-decision-record-naming-reconciliation
+  kind: plan
+  title: Reconcile proxy_model decision record naming and semantics to the implemented code
+  status: candidate
+  path: .reviewcompass/backlog/plans/plan-2026-06-24-proxy-decision-record-naming-reconciliation.yaml
+  source_unit_id: main-side-conversation
+  created_at: '2026-06-24T00:00:00+09:00'
 - id: plan-2026-06-24-codex-session-previous-capture
   kind: plan
   title: Capture unrecorded previous Codex sessions without SessionEnd dependency

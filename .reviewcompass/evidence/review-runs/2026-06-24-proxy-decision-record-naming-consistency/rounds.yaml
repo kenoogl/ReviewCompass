@@ -1,0 +1,139 @@
+round_id: round-1
+purpose: triad_review
+invocation_timestamp: '2026-06-24T02:56:42.902525+00:00'
+target_files:
+- path: .reviewcompass/evidence/review-runs/2026-06-24-proxy-decision-record-naming-consistency/proxy-record-consistency-brief.md
+  sha256: 9134300d32d70332b22ae0c57f2c04ecf893ea196963f8bfc048fcc1f3d2869f
+criteria: "# Post-write Review Target\n\ncriteria_id: proxy-decision-record-naming-consistency\n\
+  phase: post_write_verification\ngenerated_at: 2026-06-24T02:55:14.507453+00:00\n\
+  \n## Change Summary\n\nproxy_model 判断レコードの命名・属性・意味づけが、実装コード（proxy-approval.yaml\
+  \ / approved_by / 承認扱い）、設計書（proxy-decision-bundle / decided_by / 承認ではないと明記）、タスク・テスト・規律（approval-proxy\
+  \ / 承認扱い）の間で3つ巴に食い違っている。テスト test_session_record_contract.py が design.md に approval-proxy\
+  \ を期待する assert がこの不整合の一症状として顕在化した。\n\n## Review Question\n\nproxy_model 判断レコードの正本となる命名・属性キー・意味づけ（承認か判断か）は何か。実装を正本にするか設計書の新整理に合わせるか、どの成果物が\
+  \ stale でどう整合させるべきか。選択肢を1つ選ぶ形に限定せず、安全観点（人間承認との混同防止）を含め開いて分析してほしい。\n\n## Target Files\n\
+  \n- .reviewcompass/evidence/review-runs/2026-06-24-proxy-decision-record-naming-consistency/proxy-record-consistency-brief.md\
+  \ sha256=9134300d32d70332b22ae0c57f2c04ecf893ea196963f8bfc048fcc1f3d2869f\n\n##\
+  \ Source Materials\n\n- none\n\n## Target File Contents\n\n### .reviewcompass/evidence/review-runs/2026-06-24-proxy-decision-record-naming-consistency/proxy-record-consistency-brief.md\n\
+  \ncontent_mode: full_text\ncontent_sha256: 9134300d32d70332b22ae0c57f2c04ecf893ea196963f8bfc048fcc1f3d2869f\n\
+  \n```text\n# 検討資料：proxy_model 判断レコードの命名・意味づけ不整合\n\n## 背景\n\nReviewCompass では、外部\
+  \ API レビューで出た所見の採否を、人間ではなく別の AI モデル\n（proxy_model と呼ぶ）に委ねる運用がある。その判断結果を束ねるレコードの「ファイル名」\n\
+  「属性キー」「意味づけ（承認か否か）」が、実装コード・設計書・タスク仕様・運用規律・\nテストの間で食い違っている。本資料はその不整合を逐語抜粋で提示する。\n\
+  \n各抜粋は出典（ファイル:行）を明記する。判断に必要な範囲に絞っており、機密情報は含まない。\n\n## 不整合の要約\n\n| 観点 | (A) 実装コード\
+  \ | (B) 設計書 design.md | (C) タスク/テスト/規律 |\n|---|---|---|---|\n| 束ねファイル名 | `proxy-approval.yaml`\
+  \ | `proxy-decision-bundle-<日付>.yaml` | `approval-proxy-<日付>.yaml` |\n| 属性キー | `approved_by:\
+  \ proxy_model` | `decided_by: proxy_model` | `approved_by`（承認扱い） |\n| 意味づけ | 承認レコード\
+  \ | **承認レコードではない**（明記） | 「実装着手を許可する proxy approval record」 |\n| 実体 | 実際に書かれ検査されている\
+  \ | 文書のみ・未実装 | 旧称が残存 |\n\n3 つの異なるファイル名と 2 つの異なる属性キー、そして「承認か否か」という意味づけの差が併存している。\n\
+  \n## 逐語抜粋\n\n### (A) 実装コード — 実際に生成・検査されている形\n\n`tools/make-proxy-approval.py:2,15`\n\
+  ```\n\"\"\"proxy_model 裁定レコード（proxy-approval.yaml・decisions/*.yaml）を、正本が受け入れる …\n\
+  \  - proxy-approval.yaml（approved_action/approved_by/review_run_id/各 presented フラグ/\
+  \ …\n```\n\n`tools/make-proxy-approval.py:142,161`\n```\n\"approved_by\": \"proxy_model\"\
+  ,\n```\n\n`tools/api_providers/review_triage.py:256-257`\n```\nif decision.get(\"\
+  approved_by\") != \"proxy_model\":\n  errors.append(f\"{finding_id}: decision approved_by\
+  \ must be proxy_model\")\n```\n\n→ 実装は束ねファイルを `proxy-approval.yaml`、属性を `approved_by:\
+  \ proxy_model` として\n生成・検査する。「approval（承認）」の枠組み。\n\n### (B) 設計書 design.md — 文書上の新しい整理（未実装）\n\
+  \n`.reviewcompass/specs/workflow-management/design.md:249,252`\n```\n  proxy-decision-bundle-<日付>.yaml\n\
+  …\n`proxy-decisions/<finding-id>.decision.yaml` は最低限、`finding_id`、`decided_by: proxy_model`、\n\
+  … を持つ。`proxy-decision-bundle-<日付>.yaml` は対象 review-run、対象 finding、参照した\ndecision、summary/triage\
+  \ 提示済みフラグを束ねる。proxy decision bundle は承認 record ではなく、\nhuman-only approval、commit、push、`spec.json`\
+  \ 更新、phase / gate completion、reopen finalize を\n許可しない。\n```\n\n→ 設計書は束ねファイルを `proxy-decision-bundle-<日付>.yaml`、属性を\
+  \ `decided_by: proxy_model`\nとし、「これは承認レコードではない」と明記する。「decision（判断）」の枠組み。ただし、この\n\
+  ファイル名・属性をコードはどこにも実装していない。\n\n### (C) タスク仕様 / テスト / 運用規律 — 旧称が残存\n\n`.reviewcompass/specs/workflow-management/tasks.md:128`\n\
+  ```\n7. review-run の proxy_model 判断代行ゲートは、`approval-proxy-<日付>.yaml`、\n`proxy-decisions/<finding-id>.decision.yaml`、…\
+  \ を検査し、欠落または triage との不一致が\nあれば DEVIATION にする。…\n```\n\n`.reviewcompass/guidance/SESSION_WORKFLOW_GUIDE.md:206,235`\n\
+  ```\n4. メインセッション LLM は proxy_model の raw response を保存し、\n`proxy-decisions/<finding-id>.decision.yaml`\
+  \ と `approval-proxy-<日付>.yaml` に構造化する\n…\n- `approval-proxy-<日付>.yaml`：実装着手を許可する\
+  \ proxy approval record\n```\n\n`tests/tools/test_session_record_contract.py:90-93`（design.md\
+  \ に対する assert）\n```\nassert \"proxy decision\" in design\nassert \"approval-proxy-<日付>.yaml\"\
+  \ in design\nassert \"candidate_options\" in design\nassert \"source_raw_paths\"\
+  \ in design\n```\n\n→ タスク・規律・テストは束ねファイルを `approval-proxy-<日付>.yaml` と呼び、「実装着手を\n\
+  許可する proxy approval record（承認レコード）」として扱う。テストは design.md に\n`approval-proxy-<日付>.yaml`\
+  \ が含まれることを期待するが、design.md は (B) の新称に\n変わっているため、この assert は現状一致しない。\n\n## 補足（経緯の推測・未確証）\n\
+  \n- 歴史的 review-run 成果物では、最古（2026-06-04）が `approval-proxy-2026-06-04.yaml`、\n  以降の多くが\
+  \ `proxy-approval.yaml`。つまり実装側の束ね名は\n  `approval-proxy-<日付>.yaml` → `proxy-approval.yaml`\
+  \ と変遷した形跡がある。\n- design.md の `proxy-decision-bundle` 表記と「承認ではない」という整理は、安全上の意図\n\
+  \  （proxy の判断を人間承認と混同させない）を持つように読めるが、コード・タスク・規律へは\n  反映されていない。\n- 上記「経緯」は推測であり、確証は\
+  \ git 履歴の追加確認が必要。\n\n## 判断してほしいこと（開いた問い）\n\n次を独立に分析してほしい。**特定の選択肢（A/B/C）から1つ選ぶ形に限定しない。**\
+  \ 枠を超えた\n整理（第4の命名、属性とファイル名を分けて考える、現状維持が妥当、など）も歓迎する。\n\n1. proxy_model の判断レコードは「承認（approval\
+  \ / approved_by）」と「承認ではない判断\n   （decision / decided_by）」のどちらの意味づけが妥当か。両者の利点・リスク（特に人間承認との\n\
+  \   混同防止という安全観点）を含めて評価してほしい。\n2. その意味づけを前提にしたとき、束ねファイル名・属性キーの正本はどうあるべきか。\n3. コード・design・tasks・規律・テストのうち、どれが正本で、どれを\
+  \ stale として直すべきか。\n   実装（コードが現に生成・検査している形）を正本にするか、設計書の新しい整理に実装を\n   合わせるか、という方向性も論じてほしい。\n\
+  4. 見落としや、上の要約・抜粋に含まれない確認すべき材料があれば指摘してほしい。\n\n## 範囲\n\n- 範囲内：proxy_model 判断レコードの命名・属性・意味づけの正本化と、各成果物の整合方針。\n\
+  - 範囲外：proxy_model 運用そのものの是非、外部 API レビュー全体の設計、無関係なリファクタ。\n```\n\n\n## Scope\n\n-\
+  \ Check whether the changed target files clearly state the intended contract.\n\
+  - Check whether related instructions are mutually consistent across targets.\n-\
+  \ Check whether the documented procedure is actionable before API review, triage,\
+  \ manifest, or commit steps continue.\n\n## Out Of Scope\n\n- Do not request unrelated\
+  \ refactors or style-only rewrites.\n- Do not judge files that are not listed in\
+  \ Target Files.\n- Do not treat missing implementation work as a document defect\
+  \ unless the target text claims it already exists.\n\n## Finding Policy\n\n- Report\
+  \ must-fix findings for contradictions, missing required gates, or instructions\
+  \ that would allow an unsafe workflow action.\n- Report should-fix findings for\
+  \ ambiguity that could cause repeated manual judgment or unnecessary API review\
+  \ loops.\n- Return findings: [] when the target files are internally consistent\
+  \ for this review question.\n\n## Sensitive Information Check\n\n- status: passed\n\
+  - External API review must not proceed if this section reports potential secrets.\n"
+prompt_sha256: 12fbe31701eba893886c46b84fb088073883c8f467bc6fd11856a0122b995ddc
+model_results:
+- model_id: claude-sonnet-4-6
+  provider: anthropic-api
+  role: primary
+  treatment: primary
+  invocation_path: api
+  raw_path: raw/claude-sonnet-4-6.round-1.txt
+  raw_sha256: 617a68d684b50c5bb2ec7105d35e29e84bbb45c46f76c4f80357cb0230dd7f6e
+  parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  parsed_sha256: 5b73d7da80d46b2352f8d4bf5f7ad29f53717987f98a59e4de8cbc74178f9045
+  parse_status: parsed
+  formatted_by: parser
+  formatted_by_actor_type: orchestrator
+  formatted_by_actor: run_role.py
+  formatted_at: '2026-06-24T02:56:05.114546+00:00'
+  follow_up_action: triage
+  attempts: 1
+  duration_seconds: 44.499
+  prompt_path: prompts/claude-sonnet-4-6.round-1.prompt.md
+  prompt_sha256: 1bf44ec836588c4561d7f6dff6ae432497eddef201d430762441b3133b953035
+- model_id: gpt-5.5
+  provider: openai-api
+  role: adversarial
+  treatment: adversarial
+  invocation_path: api
+  raw_path: raw/gpt-5.5.round-1.txt
+  raw_sha256: ba2869b29f3cbb0c861422ead7b01a221975fcfed6c4c3adf4e7759787128d63
+  parsed_path: parsed/gpt-5.5.round-1.yaml
+  parsed_sha256: da75359224fa13ad63872ca108b6bdbc68615798a30e6cf5f8d84bad900e8c54
+  parse_status: parsed
+  formatted_by: parser
+  formatted_by_actor_type: orchestrator
+  formatted_by_actor: run_role.py
+  formatted_at: '2026-06-24T02:56:13.472202+00:00'
+  follow_up_action: triage
+  attempts: 1
+  duration_seconds: 8.301
+  prompt_path: prompts/gpt-5.5.round-1.prompt.md
+  prompt_sha256: 82388daf93b6253fcb3123398c5c8582c4bc22c2d59607020ff7e4d08cf34960
+- model_id: gemini-3.1-pro-preview
+  provider: gemini-api
+  role: judgment
+  treatment: judgment
+  invocation_path: api
+  raw_path: raw/gemini-3.1-pro-preview.round-1.txt
+  raw_sha256: b1f4e03d1463ab11da3fc84cac607bac2415939fb7e19b6b134a489dc9c64504
+  parsed_path: parsed/gemini-3.1-pro-preview.round-1.yaml
+  parsed_sha256: 34f6acc770d1374e17f65c930f95d219d81fa44d7e7c3e2ee18b236d90a3d55d
+  parse_status: parsed
+  formatted_by: parser
+  formatted_by_actor_type: orchestrator
+  formatted_by_actor: run_role.py
+  formatted_at: '2026-06-24T02:56:42.902525+00:00'
+  follow_up_action: triage
+  attempts: 1
+  duration_seconds: 29.355
+  prompt_path: prompts/gemini-3.1-pro-preview.round-1.prompt.md
+  prompt_sha256: 12fbe31701eba893886c46b84fb088073883c8f467bc6fd11856a0122b995ddc
+criteria_source_path: .reviewcompass/evidence/review-runs/2026-06-24-proxy-decision-record-naming-consistency/review-target.md
+criteria_source_sha256: 715b36b1e3dff7855fed4725db8625d1a186709b8de40fae6097be361bdf071a
+prompt_manifest_path: .reviewcompass/evidence/review-runs/2026-06-24-proxy-decision-record-naming-consistency/prompt-manifest.yaml
+prompt_manifest_sha256: cffefa2d059e71b5bf8a59821ecd7cf639148dd75e49bdb6fdde3a36c9df736b
+prompt_manifest_sha256_prefixed: sha256:cffefa2d059e71b5bf8a59821ecd7cf639148dd75e49bdb6fdde3a36c9df736b

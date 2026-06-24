@@ -1,0 +1,143 @@
+run_id: 2026-06-24-proxy-decision-record-naming-consistency
+triage_status: draft
+generated_at: '2026-06-24T02:56:42.932731+00:00'
+decision_actor: null
+decision_actor_type: human
+items:
+- finding_id: 2026-06-24-proxy-decision-record-naming-consistency-claude-sonnet-4-6-primary-001
+  run_id: 2026-06-24-proxy-decision-record-naming-consistency
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: CRITICAL
+  severity_normalized: CRITICAL
+  target_location: 不整合の要約テーブル および 逐語抜粋(A)(B)(C)
+  plain_language_summary: 実装コード（proxy-approval.yaml / approved_by）、設計書（proxy-decision-bundle
+    / decided_by / 承認レコードではないと明記）、タスク・規律・テスト（approval-proxy / approved_by / 承認レコードとして扱う）の三者が、ファイル名・属性キー・意味づけのすべてで相互矛盾しており、どれが正本かを本資料は確定していない。設計書(B)が『proxy
+    decision bundle は承認 record ではなく、human-only approval … を許可しない』と明記する一方、実装コード(A)と規律(C)は同レコードを『実装着手を許可する
+    proxy approval record』として扱っている。この意味づけの二重定義は、proxy_model の判断を人間承認と混同する運用誤りを誘発しうる安全上の矛盾であり、ゲートの抜け穴になる。本資料がこれを問題として提示することは適切だが、資料自体が正本候補の推奨方向を何も示さずに終わっているため、本資料を受け取ったレビュアーがどの成果物を修正すべきかを判断する手がかりがなく、不整合が放置されるリスクが高い。
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: 設計書が『承認レコードではない』と明記するレコードを、コード・規律が『承認レコード』として生成・検査・ゲート判定に用いている状態は、人間承認との混同防止という安全要件を直接毀損する。本資料の目的が『判断してほしいこと』を問うことであるとしても、問いの受け手が行動するために必要な最低限の制約条件（例：安全観点からは
+    decided_by / decision 系が優先されるべき理由、または実装優先とする場合の design.md 修正必須化）が資料に記載されていなければ、問い自体が
+    actionable でない。API レビュー・triage・ゲート完了ステップの前にこの不整合を解消する方針が確定していないと、次フェーズの実行が誤った前提の上で進む。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-24-proxy-decision-record-naming-consistency-claude-sonnet-4-6-primary-002
+  run_id: 2026-06-24-proxy-decision-record-naming-consistency
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: 判断してほしいこと 問3
+  plain_language_summary: 『コード・design・tasks・規律・テストのうち、どれが正本か』という問いが開かれたまま資料に残されており、実装を正本にする場合と設計書の新整理に合わせる場合のどちらの選択も、資料内で禁止も推奨もされていない。しかし、設計書(B)はすでに『承認ではない』と明記する形に更新済みであり、その記述を翻して実装を正本にする場合は設計書を意図的に後退させることになる。この選択肢の対称的な提示は、安全上の意図（承認との混同防止）を持つ設計書の変更が単なる名称変更として軽視されるリスクを生む。
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: 設計書が安全上の理由で『承認レコードではない』と整理した変更を、実装優先という理由で差し戻す場合、その判断は安全上のトレードオフを含む。資料がこのトレードオフを明示せず『どちらも等しく選べる』形で提示していると、問いを受けたレビュアーが安全観点を見落とすリスクがある。少なくとも『実装を正本にする場合は設計書の安全上の意図を別の手段で担保する必要がある』という条件が記載されるべきだった。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-24-proxy-decision-record-naming-consistency-claude-sonnet-4-6-primary-003
+  run_id: 2026-06-24-proxy-decision-record-naming-consistency
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: 逐語抜粋(C) tests/tools/test_session_record_contract.py:90-93
+  plain_language_summary: テストが design.md に 'approval-proxy-<日付>.yaml' が含まれることを assert
+    しているが、design.md はすでに 'proxy-decision-bundle-<日付>.yaml' に変更済みであるため、このテストは現在失敗している。本資料はこれを『症状』として観察しているが、このテスト失敗が
+    CI/CD パイプラインを通過しているかどうか、または無効化・スキップされているかどうかを確認すべき材料として挙げていない。テストが通過したまま不整合が継続している場合は、ゲートが機能していないことを意味する。
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: テストが失敗しているにもかかわらずパイプラインが通過する状態であれば、それ自体が別の不整合（テストの無効化や誤った期待値の放置）を示す。本資料の補足・見落とし指摘の観点としてこれを明記していないと、資料を受けたレビュアーがテスト失敗の実害を過小評価する。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-24-proxy-decision-record-naming-consistency-claude-sonnet-4-6-primary-004
+  run_id: 2026-06-24-proxy-decision-record-naming-consistency
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: 補足（経緯の推測・未確証）
+  plain_language_summary: 実装側のファイル名が approval-proxy-<日付>.yaml から proxy-approval.yaml
+    に変遷した形跡があると記載されているが、この変遷の理由（意図的な改名か、誤記か）が git 履歴で確認されていない。変遷が意図的であれば、design.md
+    の proxy-decision-bundle への改名と同じ方向（承認との距離を置く）の動きである可能性があり、それが確認されれば設計書(B)を正本とする判断の根拠が強まる。資料がこれを未確証のままにしているため、問いの受け手が誤った前提で分析する可能性がある。
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: 歴史的な命名変遷の方向性は正本選択の重要な文脈情報であり、確認が容易な git 履歴を参照しないまま分析を依頼することは、分析の質を下げる。見落としとして明示するか、確認作業を先行タスクとして切り出すべきだった。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-24-proxy-decision-record-naming-consistency-claude-sonnet-4-6-primary-005
+  run_id: 2026-06-24-proxy-decision-record-naming-consistency
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: 判断してほしいこと 問4
+  plain_language_summary: 『見落としや確認すべき材料』を問4として設けているが、資料本体に記載されていない確認項目として少なくとも以下が欠けている：(1)
+    proxy_model が approved_action フィールドに書き込む値の意味（承認可否の結論か、判断種別の記録か）が実装上どう定義されているか、(2)
+    review_triage.py の approved_by 検査が通過した後に人間承認ゲートが必須かどうか、(3) 既存の review-run 成果物（歴史的
+    approval-proxy-*.yaml）がリネームまたは移行対象になるかどうか。これらが資料に含まれないと、問いを受けた分析者が不完全な情報で結論を出す。
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: 承認との混同防止という安全観点を評価するためには、proxy_model の判断が人間承認ゲートを迂回できる経路があるかどうかを確認することが不可欠。その確認に必要な情報が資料に欠けている状態で分析を依頼すると、安全観点の評価が表面的にとどまる。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-24-proxy-decision-record-naming-consistency-gemini-3.1-pro-preview-judgment-001
+  run_id: 2026-06-24-proxy-decision-record-naming-consistency
+  source_model: gemini-3.1-pro-preview
+  source_round: round-1
+  source_raw_path: raw/gemini-3.1-pro-preview.round-1.txt
+  source_parsed_path: parsed/gemini-3.1-pro-preview.round-1.yaml
+  severity_original: CRITICAL
+  severity_normalized: CRITICAL
+  target_location: '## 判断してほしいこと（開いた問い）'
+  plain_language_summary: AIの判断を「approval」として扱う実装・運用は人間承認との混同リスクがあるため、設計書(B)の「decision」パラダイムを正本とし、実装(A)および規律(C)を修正すべき
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: '提起された開いた問いに対する分析と結論は以下の通りです：
+
+
+    1. **意味づけの妥当性とリスク**: proxy_model（AI）の判断を「承認（approval / approved_by）」と位置づけると、システムロジックや運用担当者が人間による絶対的な承認（human-only
+    approval）と混同する重大なセキュリティリスクが生じます。誤ってコミットやフェーズ完了を許可してしまう事態を防ぐため、設計書(B)が明記している「承認ではない判断（decision
+    / decided_by）」とする意味づけが安全観点から唯一妥当です。
+
+
+    2. **正本とすべき命名・属性キー**: 上記のリスク評価に基づき、「承認」というニュアンスを完全に排除した設計書(B)の整理、すなわちファイル名を `proxy-decision-bundle-<日付>.yaml`、属性キーを
+    `decided_by: proxy_model` と定義する形を正本とすべきです。
+
+
+    3. **成果物のstale判定と整合方針**: 安全な状態を定義している【設計書(B)を正本】とし、【実装コード(A)およびタスク・テスト・規律(C)】をstaleとして改修するアプローチをとるべきです。コードが現行で動いているとはいえ、安全でない「approval」に依存しているため、実装側（`make-proxy-approval.py`
+    のリネーム・ロジック変更や、`review_triage.py` のバリデーション変更など）とテストを設計に合わせて一斉にアップデートする必要があります。
+
+
+    4. **見落とし・追加検討すべき材料**: 要約資料には「既存の歴史的レコードに対する後方互換性・移行（マイグレーション）方針」が欠落しています。過去の
+    review-run で生成された `approval-proxy-*.yaml` や `proxy-approval.yaml` をパースし続ける必要があるのか、無視してよいのか、あるいは一括変換スクリプトを走らせるのかという、システム移行の過渡期における扱いを明確化・実装する必要があります。'
+  applied_files: []
+  superseded_by: null
