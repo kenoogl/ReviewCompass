@@ -82,7 +82,7 @@ def _detect_source(lines):
   return "claude"
 
 
-def _codex_session_meta_ids(lines):
+def _codex_current_guard_ids(lines):
   for line in lines:
     line = line.strip()
     if not line:
@@ -97,7 +97,7 @@ def _codex_session_meta_ids(lines):
     if not isinstance(payload, dict):
       return set()
     ids = set()
-    for key in ("id", "session_id"):
+    for key in ("id", "session_id", "parent_thread_id"):
       value = str(payload.get(key) or "")
       if value:
         ids.add(value)
@@ -114,7 +114,7 @@ def _guard_codex_direct_session(lines, current_session_id, allow_current_session
       file=sys.stderr,
     )
     return False
-  if current_session_id in _codex_session_meta_ids(lines):
+  if current_session_id in _codex_current_guard_ids(lines):
     print("エラー: current session は正式記録しません", file=sys.stderr)
     return False
   return True

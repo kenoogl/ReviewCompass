@@ -76,6 +76,15 @@ def _is_recorded(session_id, recorded_session_ids):
   return bool(session_id and session_id in recorded_session_ids)
 
 
+def _is_current_related(meta, current_session_id):
+  if not current_session_id:
+    return False
+  for key in ("id", "session_id", "parent_thread_id"):
+    if str(meta.get(key) or "") == current_session_id:
+      return True
+  return False
+
+
 def _discover(codex_root, repo_path, current_session_id, recorded_session_ids):
   rows = []
   root = Path(codex_root)
@@ -92,7 +101,7 @@ def _discover(codex_root, repo_path, current_session_id, recorded_session_ids):
       mtime = path.stat().st_mtime
     except OSError:
       continue
-    if session_id == current_session_id:
+    if _is_current_related(meta, current_session_id):
       state = "current"
     elif _is_recorded(session_id, recorded_session_ids):
       state = "recorded"

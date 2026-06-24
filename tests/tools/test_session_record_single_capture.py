@@ -177,7 +177,7 @@ class SingleSessionCaptureTests(unittest.TestCase):
     self.assertFalse(self.evidence.exists() and any(self.evidence.iterdir()))
 
   def test_codex_session_refuses_current_parent_session_id(self):
-    """派生 Codex log も parent の current-session-id に紐づくなら正式記録しない。"""
+    """現在 session 配下の派生 Codex log は正式記録しない。"""
     session_id = "aaaaaaaa-1111-2222-3333-444444444444"
     parent_id = "bbbbbbbb-1111-2222-3333-444444444444"
     sess = self.tmp / f"rollout-2026-06-14T10-00-00-{session_id}.jsonl"

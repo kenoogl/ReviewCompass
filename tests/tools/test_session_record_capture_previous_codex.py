@@ -14,17 +14,20 @@ REPO_ROOT = Path(__file__).resolve().parents[2]
 CAPTURE = REPO_ROOT / "tools" / "session-record-capture-previous-codex.py"
 
 
-def _codex_fixture(path, session_id, cwd, text, mtime):
+def _codex_fixture(path, session_id, cwd, text, mtime, extra_meta=None):
   path.parent.mkdir(parents=True, exist_ok=True)
+  payload = {
+    "id": session_id,
+    "timestamp": "2026-06-24T10:00:00.000Z",
+    "cwd": cwd,
+  }
+  if extra_meta:
+    payload.update(extra_meta)
   rows = [
     {
       "timestamp": "2026-06-24T10:00:00.000Z",
       "type": "session_meta",
-      "payload": {
-        "id": session_id,
-        "timestamp": "2026-06-24T10:00:00.000Z",
-        "cwd": cwd,
-      },
+      "payload": payload,
     },
     {
       "timestamp": "2026-06-24T10:00:01.000Z",
@@ -131,6 +134,61 @@ class CapturePreviousCodexSessionTests(unittest.TestCase):
     )
     self.assertIn("\"captured\"", result.stdout)
     self.assertIn(self.prev_id, result.stdout)
+
+  def test_skips_current_thread_subsession_and_captures_previous_session(self):
+    """現在 thread から派生した subagent session は正式記録せず、過去候補へ進む。"""
+    sub_id = "cccccccc-1111-2222-3333-444444444444"
+    prev_id = "dddddddd-1111-2222-3333-444444444444"
+    _codex_fixture(
+      self._rollout(prev_id, "10-00-00"),
+      prev_id,
+      self.cwd,
+      "現セッション配下ではない過去セッション",
+      2000,
+    )
+    _codex_fixture(
+      self._rollout(sub_id, "10-30-00"),
+      sub_id,
+      self.cwd,
+      "現在 thread から派生したサブセッション",
+      2500,
+      extra_meta={
+        "session_id": self.current_id,
+        "parent_thread_id": self.current_id,
+        "thread_source": "subagent",
+        "source": {"subagent": {"other": "guardian"}},
+      },
+    )
+    _codex_fixture(
+      self._rollout(self.current_id, "11-00-00"),
+      self.current_id,
+      self.cwd,
+      "現在セッション本体",
+      3000,
+    )
+
+    result = self._run()
+
+    self.assertEqual(result.returncode, 0, f"stdout={result.stdout}\nstderr={result.stderr}")
+    self.assertFalse(
+      (self.evidence / f"2026-06-24-codex-{sub_id}.md").exists(),
+      "現在 thread 派生の subagent session は正式記録してはいけない",
+    )
+    self.assertTrue(
+      (self.evidence / f"2026-06-24-codex-{prev_id}.md").exists(),
+      "現在 thread 派生候補を飛ばして、過去セッションを層1 に記録する",
+    )
+    self.assertTrue(
+      (self.docs / f"auto-2026-06-24-codex-{prev_id}.md").exists(),
+      "現在 thread 派生候補を飛ばして、過去セッションを層2 に記録する",
+    )
+    self.assertFalse(
+      (self.evidence / f"2026-06-24-codex-{self.current_id}.md").exists(),
+      "現在セッション本体は正式記録してはいけない",
+    )
+    self.assertIn("\"current_session_skipped\"", result.stdout)
+    self.assertIn("\"captured\"", result.stdout)
+    self.assertIn(prev_id, result.stdout)
 
   def test_skips_already_recorded_and_captures_next_unrecorded(self):
     """最新候補が記録済みなら、次の未記録過去セッションを回収する。"""
