@@ -1,0 +1,16 @@
+unit_id: blocking-2026-06-24-commit-approval-reprepare-output
+kind: blocking
+parent_unit_id: main-completed
+title: Hide commit approval reprepare chatter
+reason: commit 中の古い承認レコード再準備は利用者判断不要の内部処理なので、進捗メッセージに出さない規律へ直す
+status: completed
+entered_at: '2026-06-24T01:01:35.765959+00:00'
+return_conditions:
+- commit 操作カードが古い承認レコード再準備を内部処理として扱うことを明記している
+- 必要なテストまたは文書検査が通っている
+- blocking unit の完了 evidence を残して親状態へ戻れる
+exited_at: '2026-06-24T01:04:17.433488+00:00'
+completion_summary: Documented and test-fixed that stale or consumed commit approval
+  reprepare is internal when using the standard commit runner.
+returned_to:
+  unit_id: main-completed

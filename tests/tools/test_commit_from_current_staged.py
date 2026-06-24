@@ -220,6 +220,69 @@ class CommitFromCurrentStagedTests(unittest.TestCase):
     self.assertNotIn("delegation", combined_output)
     self.assertEqual(latest_commit_subject(self.tmpdir), "minimal progress commit")
 
+  def test_progress_json_hides_stale_consumed_approval_reprepare(self):
+    """古い消費済み approval の再準備は進捗 JSON に出さない"""
+    _stage_file(self.tmpdir, "old.md", "# old")
+    stale_challenge = _prepare_commit_approval(self.tmpdir)
+    stale_record = _record_commit_approval(
+      self.tmpdir,
+      stale_challenge["nonce"],
+      source_text="コミット\n",
+    )
+    self.assertEqual(stale_record.returncode, 0, stale_record.stderr)
+    approval_path = (
+      Path(self.tmpdir)
+      / ".reviewcompass"
+      / "runtime"
+      / "approvals"
+      / "commit-approval.json"
+    )
+    approval = json.loads(approval_path.read_text(encoding="utf-8"))
+    approval["consumed"] = True
+    approval["consumed_at"] = "2026-06-24T00:00:00+00:00"
+    approval_path.write_text(
+      json.dumps(approval, ensure_ascii=False, indent=2) + "\n",
+      encoding="utf-8",
+    )
+    _stage_file(self.tmpdir, "current.md", "# current")
+    wrapper = load_wrapper_module()
+    original_stdin = wrapper.sys.stdin
+    original_cwd = os.getcwd()
+    stdout = io.StringIO()
+    stderr = io.StringIO()
+
+    try:
+      os.chdir(self.tmpdir)
+      wrapper.sys.stdin = TtyStdin("コミット\n")
+      with contextlib.redirect_stdout(stdout), contextlib.redirect_stderr(stderr):
+        result = wrapper.main([
+          "-m", "hide stale approval reprepare",
+          "--rationale", "利用者が本ターンでコミットを明示指示",
+          "--progress-format", "json",
+        ])
+    finally:
+      os.chdir(original_cwd)
+      wrapper.sys.stdin = original_stdin
+
+    self.assertEqual(result, 0, stderr.getvalue())
+    events = [
+      json.loads(line)
+      for line in stdout.getvalue().splitlines()
+      if line.strip()
+    ]
+    self.assertEqual(
+      [event["event"] for event in events],
+      ["preflight_ok", "guarded_commit_running", "commit_completed"],
+    )
+    combined_output = stdout.getvalue() + stderr.getvalue()
+    self.assertNotIn("古い承認レコード", combined_output)
+    self.assertNotIn("消費済み", combined_output)
+    self.assertNotIn("承認対象外", combined_output)
+    self.assertNotIn("target_sha256", combined_output)
+    self.assertNotIn("nonce", combined_output)
+    self.assertNotIn("delegation", combined_output)
+    self.assertEqual(latest_commit_subject(self.tmpdir), "hide stale approval reprepare")
+
   def test_commit_preflight_runs_before_reading_approval_input(self):
     """preflight が DEVIATION なら承認入力や challenge 作成に進まない"""
     _stage_file(self.tmpdir, "notes.md", "# notes")

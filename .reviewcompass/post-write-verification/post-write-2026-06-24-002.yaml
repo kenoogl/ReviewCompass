@@ -1,0 +1,27 @@
+status: completed
+target_files:
+- .reviewcompass/guidance/COMMIT_OPERATION_CARD.md
+target_sha256:
+  .reviewcompass/guidance/COMMIT_OPERATION_CARD.md: 97286b9872c04e6cf40fa3c12e30711d4419684bb63963d980d49b4a23daf4ca
+required_verifiers:
+- codex-subagent-independent
+completed_verifiers:
+- codex-subagent-independent
+unresolved_substantive_findings: 0
+verifications:
+- verifier: codex-subagent-independent
+  target_files:
+  - .reviewcompass/guidance/COMMIT_OPERATION_CARD.md
+  target_sha256:
+    .reviewcompass/guidance/COMMIT_OPERATION_CARD.md: 97286b9872c04e6cf40fa3c12e30711d4419684bb63963d980d49b4a23daf4ca
+  result: no_substantive_findings
+  findings_summary:
+  - 本質的問題なし。
+  - COMMIT_OPERATION_CARD.md の追記は、古い承認レコードが消費済みまたは現在の staged 内容と不一致の場合でも、直近の利用者発話による commit 指示があり staged 対象が変わっていなければ標準 runner が approval / delegation を作り直す、という合意を反映している。
+  - 既存の TTY 承認、利用者発話なしの承認文生成禁止、staged 対象変更時は追加判断が必要、という契約と矛盾しない。
+  - 「自動処理する」「標準 runner が現在の staged 内容に束縛した approval / delegation を作り直す」と明記され、単なる運用規律ではなく runner の機械処理として読める。
+agreement_summary:
+- commit 中に古い承認レコードが消費済み、または現在の staged 内容と一致しないだけなら、直近の利用者発話で commit 指示があり staged 対象が変わっていない限り、標準 runner が内部で approval / delegation を作り直す。
+- その内部再準備は利用者向け途中報告に出してはならない。
+- 本当に追加判断が必要な場合だけ短く停止理由を出す。
+notes: Small-scale independent verification for a one-paragraph addition to COMMIT_OPERATION_CARD.

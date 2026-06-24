@@ -31,6 +31,8 @@ Codex で `--approval-source-text-line-stdin` を使う場合は、PTY で guard
 
 commit 中に承認内容を作り直す、既存 delegation を使い直す、nonce を更新する、といった内部再準備が必要になっても、それ自体を利用者に報告しない。これは承認済みの対象範囲内で、利用者判断を要しない場合に限る。コミット対象が増えた、staged 内容が変わった、または再承認が必要になった場合は内部再準備として隠さず、追加判断が必要な停止理由だけを短く報告する。利用者へ報告するのは、作業を続けられない異常、追加判断が必要な WARN / DEVIATION、または成功結果だけとする。
 
+古い承認レコードが消費済みである、または現在の staged 内容と一致しないために approval / delegation を作り直す場合も、直近の利用者発話で明示された commit 指示があり、staged 対象が変わっていなければ自動処理する。この再準備は利用者向け途中報告に出してはならない。標準 runner が現在の staged 内容に束縛した approval / delegation を作り直す。
+
 ## Claude Code
 
 Claude Code で `--approval-source-text-line-stdin` を使う場合は、TTY からの対話入力でのみ使う。直近の利用者発話で明示された commit 指示は staged 内容承認と LLM commit 実行代行承認として扱い、別の承認語の再入力を求めない。空 stdin での実行は challenge invalidation（承認無効化）を起こすため、非対話・空入力で実行しない。

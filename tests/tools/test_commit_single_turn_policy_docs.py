@@ -34,6 +34,16 @@ def test_commit_operation_card_allows_user_commit_instruction_transfer_only():
   assert "LLM が `printf` 等で承認文を生成" in text
 
 
+def test_commit_operation_card_keeps_stale_approval_reprepare_internal():
+  """古い承認レコードの再準備は利用者向け途中報告に出さない"""
+  text = read_doc(".reviewcompass/guidance/COMMIT_OPERATION_CARD.md")
+
+  assert "古い承認レコード" in text
+  assert "消費済み" in text
+  assert "現在の staged 内容と一致しない" in text
+  assert "利用者向け途中報告に出してはならない" in text
+
+
 def test_precheck_docs_describe_single_turn_commit_source():
   """precheck 文書は単発 commit 指示を approval source として説明する"""
   short = read_doc(".reviewcompass/guidance/WORKFLOW_PRECHECK.md")
