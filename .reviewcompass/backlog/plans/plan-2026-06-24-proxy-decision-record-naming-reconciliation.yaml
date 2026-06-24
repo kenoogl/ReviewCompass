@@ -41,36 +41,66 @@ decided_direction:
   rejected: >
     三者レビューの「decision パラダイムへ寄せてコードを直す」案。自律動機と decision_scope を
     欠いた過大評価のため不採用。ただし「design.md の言い回しが誤解を生む」は採用。
+investigation_findings_2026_06_24:
+  code_canonical:
+    - 'bundle: proxy-approval.yaml（日付なし・run-dir 内、make-proxy-approval.py:171）'
+    - 'decision_files: decisions/<id>.yaml、属性 approved_by: proxy_model（make-proxy-approval.py:142）'
+    - 'check: review_triage.py:256 が approved_by == proxy_model を要求'
+  critical_distinction_two_decided_by:
+    - 'proxy 裁定 file: design.md:252 は decided_by、コードは approved_by → 不整合・修正対象'
+    - 'human 判断 record / 承認ゲート: design.md:1794/1818/1820、tasks.md:423/425/431/560/571 の decided_by + decision_scope は別機構 → 触らない'
+  date_suffix: 'docs は <日付> を付すが、コードの実ファイル名は日付なし proxy-approval.yaml。reconciliation で <日付> を外す。'
 remaining_work:
   - id: PRR-0
     title: design.md / tasks.md 変更の reopen 分類
     status: candidate
+    classification_assessment: >
+      コードは無変更で、design.md/tasks.md を「既に実装済みの形」へ合わせるだけ。decision_scope
+      （安全機構）も無変更。契約・挙動は変わらず、仕様テキストの命名・言い回し修正であり、実装は
+      既に訂正後仕様へ適合済み。よって意味変更を伴う reopen ではなく局所整合（maintenance）が妥当
+      と見立てる。ただし正本仕様変更のため、編集後に next の機械判定で確認し、reopen 判定なら従う。
     tasks:
-      - design.md・tasks.md は正本仕様。命名統一と「承認ではない」の正確化が意味変更に当たるか機械判定する。
-      - reopen が必要なら正式手続き、不要なら局所整合として進める方針を確定する。
+      - 編集前に next --json を確認、編集後に design/tasks 変更の分類（upstream_recheck / reopen_classification_required）を機械判定で確認する。
   - id: PRR-1
-    title: design.md の文言正確化と命名統一
+    title: design.md の命名・属性・文言の正確化
     status: candidate
-    tasks:
-      - '「proxy decision bundle は承認 record ではない」を「proxy_allowed 範囲（所見トリアージ）は承認、human_only は不可」へ正確化。'
-      - 束ねファイル名を proxy-approval.yaml に統一（decided_by/approved_by の属性表記も実装に合わせる）。
+    edit_sites:
+      - 'design.md:249  proxy-decision-bundle-<日付>.yaml → proxy-approval.yaml'
+      - 'design.md:252 (a) 裁定 file の decided_by: proxy_model → approved_by: proxy_model'
+      - 'design.md:252 (b) proxy-decision-bundle-<日付>.yaml → proxy-approval.yaml'
+      - 'design.md:252 (c) 「proxy decision bundle は承認 record ではなく…」→「proxy approval は proxy_allowed 範囲（所見トリアージ）の承認であり、human_only（コミット・プッシュ・spec更新・フェーズ移行・reopen finalize）は許可しない」'
+    keep_unchanged:
+      - 'design.md:254 の candidate_options / source_raw_paths / 「proxy decision」（test:90/92/93 が依存）'
+      - 'decision_scope 機構（1787-1820）と人間判断 record の decided_by'
   - id: PRR-2
     title: tasks.md・SESSION_WORKFLOW_GUIDE.md の命名統一
     status: candidate
-    tasks:
-      - tasks.md:128 の approval-proxy-<日付>.yaml を proxy-approval.yaml へ。
-      - SESSION_WORKFLOW_GUIDE.md:206,235 の approval-proxy 表記を proxy-approval へ。
+    edit_sites:
+      - 'tasks.md:128  approval-proxy-<日付>.yaml → proxy-approval.yaml'
+      - 'SESSION_WORKFLOW_GUIDE.md:206  approval-proxy-<日付>.yaml → proxy-approval.yaml'
+      - 'SESSION_WORKFLOW_GUIDE.md:235  approval-proxy-<日付>.yaml → proxy-approval.yaml（「proxy approval record」は維持＝承認で正しい）'
+    keep_unchanged:
+      - 'tasks.md:423/425/431/560/571 の decided_by + decision_scope（人間判断/承認ゲート）'
   - id: PRR-3
     title: test_session_record_contract.py line-91 の解消
     status: candidate
-    tasks:
-      - design.md 整合後、line 90-93 の assert を正本（proxy-approval.yaml）に一致させ GREEN 化する。
-      - これは 2026-06-24 のパス修正保守でスコープ外に切り出した残件である。
+    edit_sites:
+      - 'test_session_record_contract.py:91  assert "approval-proxy-<日付>.yaml" in design → assert "proxy-approval.yaml" in design'
+    dependency_check:
+      - 'line 90（"proxy decision"）/ 92（candidate_options）/ 93（source_raw_paths）は design.md:254 に残るため引き続き通過'
+    note: 2026-06-24 のパス修正保守でスコープ外に切り出した残件。
   - id: PRR-4
     title: 歴史的成果物の扱い
     status: candidate
     tasks:
-      - 既存 review-run の approval-proxy-2026-06-04.yaml 等は凍結済み履歴として改名対象外でよいか確認する。
+      - 凍結済み review-run の approval-proxy-2026-06-04.yaml 等は改名対象外（履歴保全）。新規生成は既にコードが proxy-approval.yaml を出力する。
+verification:
+  - design.md/tasks.md/guidance は post-write 対象 → API レビュー（外部送信・利用者承認）を実施。
+  - 完了後 test_session_record_contract.py が全 green、next --json が旧名を返さないことを確認。
+risks:
+  - 'design.md:252 の decided_by → approved_by は、design が意図した「属性レベルで承認と区別」を外す。decision_scope が安全を担うため決定どおり進めるが、副作用として記録。'
+  - 'PRR-0 が reopen 判定になった場合は工程が重くなる（requirements→design→tasks→implementation の再確認）。'
 notes:
   - 安全機構 decision_scope は実装済みで、名前変更は安全特性を変えない（cosmetic + clarity）。
+  - 方向は前回の三者レビュー＋利用者決定で確定済み。本作業は決定の機械的反映であり、再レビューは不要。
   - 本計画着手前に next --json を確認し、design.md/tasks.md 変更の分類を先に通す。
