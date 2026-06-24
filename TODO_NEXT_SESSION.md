@@ -1,6 +1,6 @@
 # 次セッション継続用メモ
 
-最終更新：2026-06-24（Codex セッション。`main` と `origin/main` は同期済み。最新 commit はこのメモに固定せず、必ず `git log --oneline -5` で確認する）。
+最終更新：2026-06-24（Codex セッション。`main` は `origin/main` に 1 commit ahead。最新 commit はこのメモに固定せず、必ず `git log --oneline -5` で確認する）。
 
 この TODO は入口メモであり、作業順序の正本ではない。正本は各 feature の `spec.json` と `tools/check-workflow-action.py next --json` の機械判定である。
 
@@ -17,7 +17,7 @@
 
 ## 2. 現在位置
 
-- `main` と `origin/main` は同期済み（起動時に `git status --short --branch` で再確認する）。
+- `main` は `origin/main` に 1 commit ahead（起動時に `git status --short --branch` で再確認する）。
 - 作業ツリーは clean（起動時に再確認する）。
 - 最新 commit はこのメモではなく `git log --oneline -5` を正とする。
 - 直近の実装修正系列は、post-write prompt 機械化、guidance 配置整理、旧 guidance 削除、repair 例外実装、push guard 補修、blocking unit / checklist / commit operation 機械化補修、next action effective prompt coverage 監査、Codex セッション記録の状態判定・過去記録・直接 backfill guard 補修である。
@@ -25,25 +25,27 @@
 - すべての feature / phase / stage の `workflow_state` は完了済み。
 - `workflow-management` の Requirement 13〜16 を基点にした reopen R-0 は、requirements / design / tasks / implementation まで完了済み。
 - reopen R-0 完了後に発生した post-write prompt 機械化、guidance 配置整理、旧 guidance 削除、repair 例外実装、push guard 補修、blocking unit / checklist / commit operation 機械化補修、next action effective prompt coverage 監査も commit / push 済み。
+- Codex セッション記録について、現セッション本体と現セッション配下のサブセッションを記録対象から除外し、6/23 の過去セッション 2 件だけを正式記録した。commit `7e1f25db Skip current Codex subsession capture` 済み、push は未実施。
 - `blocking unit production readiness` の blocking unit は完了し、evidence 記録、parent resume、push まで完了済み。
 - 進行中ファイルはない。
-- 直近 push 済み commit は `f2593a49 Guard Codex session backfill`。起動時には必ず `git log --oneline -5` で再確認する。
+- 直近 push 済み commit は `c7ddb87e Hide commit approval reprepare chatter`。未 push の最新 commit は `7e1f25db Skip current Codex subsession capture`。起動時には必ず `git log --oneline -5` で再確認する。
 - 次の pending gate はない。
-- runtime checklist `.reviewcompass/runtime/work-units/checklists/checklist-todo-2026-06-23-plan-slice-materialization-contract.yaml` は `status: active` だが、全 6 項目は done。次に扱う場合は、実作業を増やす前に checklist / TODO / evidence の閉じ方を確認する。
+- runtime checklist `.reviewcompass/runtime/work-units/checklists/checklist-todo-2026-06-23-plan-slice-materialization-contract.yaml` の閉じ方確認は完了し、関連 checklist evidence は記録済み。
 
 ## 3. 次作業
 
-次に行う本線 workflow 作業はない。次セッションでは、まず `next --json` と `git status --short --branch` を再確認し、`completed` / clean / synced が維持されていることを確認する。
+次に行う本線 workflow 作業はない。次セッションでは、まず `next --json` と `git status --short --branch` を再確認し、`completed` / clean が維持されていることを確認する。`main` が `origin/main` に ahead の場合は、利用者指示に従って push する。
 
 新しい作業を始める場合：
 
-1. 利用者の新規指示を受ける。
-2. `next --json` が `completed` のままか確認する。
-3. 必要なら新しい workflow / reopen / maintenance として開始条件を確認する。
+1. 未 push commit が残っていれば、利用者指示に従って push する。
+2. 利用者の新規指示を受ける。
+3. `next --json` が `completed` のままか確認する。
+4. 必要なら新しい workflow / reopen / maintenance として開始条件を確認する。
 
 現在の有力な次作業候補：
 
-1. `checklist-todo-2026-06-23-plan-slice-materialization-contract.yaml` の閉じ方を確認する。全項目 done だが checklist は active のため、TODO / checklist / evidence の整合を先に取る。
+1. 未 push commit `7e1f25db Skip current Codex subsession capture` を push する。
 2. `plan-2026-06-23-guidance-relocation-and-docs-classification.yaml` に基づき、残存 `docs/operations` / `docs/disciplines` の inventory / classification table を作る。ファイル移動はまだ行わない。
 3. `todo-2026-06-22-commit-unit-post-commit-cleanup.yaml` に基づき、commit 後に残る `.reviewcompass/runtime/work-units/commit-unit.json` を手動削除せずに済む `commit-unit clear` 相当の機械処理を検討する。
 4. `plan-2026-06-23-entrypoint-coverage-audit.yaml` に基づき、entrypoint coverage audit の ECA-1（現在入口の棚卸し）を始める。
@@ -89,6 +91,9 @@
 - 残存 `docs/operations` / `docs/disciplines` の分類・移動・検査計画は `.reviewcompass/backlog/plans/plan-2026-06-23-guidance-relocation-and-docs-classification.yaml` に記録した。前回の guidance 移動失敗を踏まえ、次は inventory / classification table を先に作り、移動はまだ行わない。
 - セッション記録の状態判定を、ファイル本文中の偶然の session_id ではなく、層1・層2の記録ファイルに紐づく session_id で判定するよう補修した。
 - 現在セッションを除く過去 Codex セッションの正式記録を実行し、直接 backfill 経路には `--current-session-id` 必須化と current / parent session 拒否ガードを追加した。SessionEnd hook の現在セッション記録だけは `--allow-current-session-capture` で明示許可する。
+- Codex SessionStart hook は未許可だと実行されないことを確認した。フック許可後、手動で直近セッションを確認し、6/23 の過去セッション 2 件を正式記録した。
+- 現セッション配下のサブセッションは、ユーザが明示的に開いたものではなく内部処理で作られたものだったため、記録対象から除外するようにした。`session_meta.id` / `session_id` / `parent_thread_id` のいずれかが現在セッション ID と一致する Codex ログは `現在` 扱いで正式記録しない。
+- 6/24 の現セッション配下サブセッション 2 件は記録対象外。直近 10 件一覧では、現セッション本体と配下サブセッション 2 件が `現在`、6/23 の 2 件が `記録済み`。
 
 ## 5. 参照
 
