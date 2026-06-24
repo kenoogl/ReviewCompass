@@ -143,52 +143,56 @@ execution_slices:
   todo_id: todo-2026-06-23-plan-slice-materialization-contract
   todo_path: .reviewcompass/backlog/todos/todo-2026-06-23-plan-slice-materialization-contract.yaml
   checklist_id: checklist-todo-2026-06-23-plan-slice-materialization-contract
-  checklist_evidence_path: null
+  checklist_evidence_path: .reviewcompass/evidence/work-units/checklists/checklist-todo-2026-06-23-plan-slice-materialization-contract.yaml
   note: >
     Contract documented in .reviewcompass/guidance/WORKFLOW_PRECHECK.md#401-work-backlog-plan-materialization.
-    Runtime checklist was generated and completed in the side conversation; no evidence copy has been recorded yet.
+    Runtime checklist was closed and recorded as checklist evidence.
 - phase_id: PTC-2
   title: Strengthen plan-todo-bridge output
   status: completed
   todo_id: todo-2026-06-23-plan-todo-bridge-output
   todo_path: .reviewcompass/backlog/todos/todo-2026-06-23-plan-todo-bridge-output.yaml
   checklist_id: checklist-todo-2026-06-23-plan-todo-bridge-output
-  checklist_evidence_path: null
+  checklist_evidence_path: .reviewcompass/evidence/work-units/checklists/checklist-todo-2026-06-23-plan-todo-bridge-output.yaml
   note: >
     plan-todo-bridge now reports all implementation_plan slices, derived
     materialization status, next not_materialized candidates, and read-only
-    recommended add-todo/start-checklist commands.
+    recommended add-todo/start-checklist commands. Runtime checklist was
+    closed and recorded as checklist evidence.
 - phase_id: PTC-3
   title: Add audit for full plan materialization coverage
   status: completed
   todo_id: todo-2026-06-23-plan-materialization-audit
   todo_path: .reviewcompass/backlog/todos/todo-2026-06-23-plan-materialization-audit.yaml
   checklist_id: checklist-todo-2026-06-23-plan-materialization-audit
-  checklist_evidence_path: null
+  checklist_evidence_path: .reviewcompass/evidence/work-units/checklists/checklist-todo-2026-06-23-plan-materialization-audit.yaml
   note: >
     audit-plan-todo-bridge now reports plan materialization coverage,
     missing execution_slices entries, and promoted/active plan deviations for
-    not_materialized slices.
+    not_materialized slices. Runtime checklist was closed and recorded as
+    checklist evidence.
 - phase_id: PTC-4
   title: Integrate with user-triggered execution prompts
   status: completed
   todo_id: todo-2026-06-23-user-triggered-materialization-prompts
   todo_path: .reviewcompass/backlog/todos/todo-2026-06-23-user-triggered-materialization-prompts.yaml
   checklist_id: checklist-todo-2026-06-23-user-triggered-materialization-prompts
-  checklist_evidence_path: null
+  checklist_evidence_path: .reviewcompass/evidence/work-units/checklists/checklist-todo-2026-06-23-user-triggered-materialization-prompts.yaml
   note: >
     User-initiated plan and backlog TODO prompts now require materialization
     status, checklist coverage, and quality audit review before implementation
-    work starts.
+    work starts. Runtime checklist was closed and recorded as checklist
+    evidence.
 - phase_id: PTC-5
   title: Tests and regression fixtures
   status: completed
   todo_id: todo-2026-06-23-plan-materialization-regression-fixtures
   todo_path: .reviewcompass/backlog/todos/todo-2026-06-23-plan-materialization-regression-fixtures.yaml
   checklist_id: checklist-todo-2026-06-23-plan-materialization-regression-fixtures
-  checklist_evidence_path: null
+  checklist_evidence_path: .reviewcompass/evidence/work-units/checklists/checklist-todo-2026-06-23-plan-materialization-regression-fixtures.yaml
   note: >
     PTC-5 added guidance relocation regression fixtures, stale-link audit
     coverage, and targeted operation-prompt regression coverage. Targeted
     tests pass; broad next/post-write tests retain the known unrelated
-    docs/notes lightweight self-check failure cluster.
+    docs/notes lightweight self-check failure cluster. Runtime checklist was
+    closed and recorded as checklist evidence.

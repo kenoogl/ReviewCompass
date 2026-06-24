@@ -1,0 +1,56 @@
+schema_version: work-checklist-v1
+checklist_id: checklist-todo-2026-06-23-user-triggered-materialization-prompts
+unit_id: main-side-conversation
+title: Integrate user-triggered materialization prompts
+status: completed
+created_at: '2026-06-23T12:18:10.959318+00:00'
+provenance:
+  created_by: llm
+  source_ref: .reviewcompass/backlog/todos/todo-2026-06-23-user-triggered-materialization-prompts.yaml
+  reason: backlog TODO から runtime checklist を機械生成する
+items:
+- id: PTC-4A
+  title: Update user-initiated plan-to-todo bridge prompt to require materialization
+    status review
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: PTC-4B
+  title: Update backlog TODO execution prompt to verify checklist coverage before
+    work starts
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: PTC-4C
+  title: Add trigger operation entry references so short requests do not bypass the
+    bridge
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: PTC-4-RT-1
+  title: Plan continuation prompt requires materialization status review
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: PTC-4-RT-2
+  title: Backlog TODO execution prompt requires checklist coverage before work
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: PTC-4-RT-3
+  title: Short trigger references bridge instead of direct implementation
+  status: done
+  checked: true
+  child_checklist_id: null
+source_backlog_item_id: todo-2026-06-23-user-triggered-materialization-prompts
+source_backlog_path: .reviewcompass/backlog/todos/todo-2026-06-23-user-triggered-materialization-prompts.yaml
+progress:
+  total: 6
+  done: 6
+  active: 0
+  pending: 0
+  blocked: 0
+  active_item_ids: []
+  blocked_item_ids: []
+completed_at: '2026-06-24T00:56:36.938144+00:00'
+completion_summary: PTC-4 user-triggered materialization prompts checklist completed

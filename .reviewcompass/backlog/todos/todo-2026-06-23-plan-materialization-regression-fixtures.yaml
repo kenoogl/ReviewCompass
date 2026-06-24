@@ -24,14 +24,18 @@ summary: 'Add regression tests and fixtures that prove plan materialization cove
 tasks:
 - id: PTC-5A
   title: Add the GRC-1 completed and GRC-2..GRC-6 unmaterialized regression fixture
+  status: done
 - id: PTC-5B
   title: Add failing regression tests for partial materialization and next candidates
+  status: done
 - id: PTC-5C
   title: Add failing regression tests for stale links and unmaterialized-slice start
     guards
+  status: done
 - id: PTC-5D
   title: Implement or verify the explicit unmaterialized-slice stop condition exercised
     by PTC-RT-3
+  status: done
 acceptance_criteria:
 - The guidance relocation plan pattern is covered as a regression case.
 red_tests:
@@ -41,12 +45,14 @@ red_tests:
     partial coverage, not plan completion.
 
     '
+  status: done
 - id: PTC-RT-2
   title: Next unmaterialized slice is recommended
   expected: 'plan-todo-bridge returns GRC-2 as a next materialization candidate when
     GRC-1 is completed.
 
     '
+  status: done
 - id: PTC-RT-3
   title: Work cannot silently start from an unmaterialized slice
   expected: 'Invoking the user-triggered plan-to-TODO bridge for a fixture slice without
@@ -54,12 +60,19 @@ red_tests:
     of silently starting implementation work.
 
     '
+  status: done
 - id: PTC-RT-4
   title: Stale links are detected
   expected: 'execution_slices entries pointing to missing TODO/checklist/evidence
     paths are reported by audit.
 
     '
+  status: done
 non_goals:
 - Implement unrelated workflow changes outside the PTC-5 regression coverage.
 - Rework the plan materialization contract already completed in PTC-1 through PTC-4.
+execution_history:
+- checklist_id: checklist-todo-2026-06-23-plan-materialization-regression-fixtures
+  evidence_path: .reviewcompass/evidence/work-units/checklists/checklist-todo-2026-06-23-plan-materialization-regression-fixtures.yaml
+  completion_summary: PTC-5 plan materialization regression fixtures checklist completed
+  completed_at: '2026-06-24T00:56:44.797372+00:00'

@@ -1,0 +1,65 @@
+schema_version: work-checklist-v1
+checklist_id: checklist-todo-2026-06-23-plan-materialization-regression-fixtures
+unit_id: main-side-conversation
+title: Add plan materialization regression fixtures
+status: completed
+created_at: '2026-06-23T13:03:44.797644+00:00'
+provenance:
+  created_by: llm
+  source_ref: .reviewcompass/backlog/todos/todo-2026-06-23-plan-materialization-regression-fixtures.yaml
+  reason: backlog TODO から runtime checklist を機械生成する
+items:
+- id: PTC-RT-1
+  title: Partial plan materialization is visible
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: PTC-RT-2
+  title: Next unmaterialized slice is recommended
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: PTC-RT-3
+  title: Work cannot silently start from an unmaterialized slice
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: PTC-RT-4
+  title: Stale links are detected
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: PTC-5A
+  title: Add the GRC-1 completed and GRC-2..GRC-6 unmaterialized regression fixture
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: PTC-5B
+  title: Add failing regression tests for partial materialization and next candidates
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: PTC-5C
+  title: Add failing regression tests for stale links and unmaterialized-slice start
+    guards
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: PTC-5D
+  title: Implement or verify the explicit unmaterialized-slice stop condition exercised
+    by PTC-RT-3
+  status: done
+  checked: true
+  child_checklist_id: null
+source_backlog_item_id: todo-2026-06-23-plan-materialization-regression-fixtures
+source_backlog_path: .reviewcompass/backlog/todos/todo-2026-06-23-plan-materialization-regression-fixtures.yaml
+progress:
+  total: 8
+  done: 8
+  active: 0
+  pending: 0
+  blocked: 0
+  active_item_ids: []
+  blocked_item_ids: []
+completed_at: '2026-06-24T00:56:44.797372+00:00'
+completion_summary: PTC-5 plan materialization regression fixtures checklist completed

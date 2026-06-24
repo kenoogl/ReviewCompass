@@ -41,12 +41,15 @@ implementation_plan:
     tasks:
     - id: PTC-1A
       title: Define execution_slices schema for plan items
+      status: done
     - id: PTC-1B
       title: Define statuses such as not_materialized, todo_created, checklist_started,
         evidence_recorded, completed
+      status: done
     - id: PTC-1C
       title: Define how source_plan_id, source_plan_slice, checklist_id, and evidence
         path link together
+      status: done
 acceptance_criteria:
 - plan の各 implementation_plan item と execution_slices が対応づけられる。
 - status の意味が not_materialized / todo_created / checklist_started / evidence_recorded
@@ -57,15 +60,23 @@ red_tests:
 - id: PTC-1-RT-1
   title: Partial plan materialization is not plan completion
   expected: execution_slices で一部 slice だけ completed の plan は、plan 全体 completed と扱われない。
+  status: done
 - id: PTC-1-RT-2
   title: Missing slice status is visible
   expected: implementation_plan に存在する slice が execution_slices にない場合、未定義または not_materialized
     として扱える。
+  status: done
 - id: PTC-1-RT-3
   title: Link fields are sufficient for audit
   expected: todo_id、todo_path、checklist_id、checklist_evidence_path の有無から materialization
     status を監査できる。
+  status: done
 non_goals:
 - plan-todo-bridge の出力強化実装。
 - audit-plan-todo-bridge の実装修正。
 - 既存 plan の全 slice を一括 TODO 化すること。
+execution_history:
+- checklist_id: checklist-todo-2026-06-23-plan-slice-materialization-contract
+  evidence_path: .reviewcompass/evidence/work-units/checklists/checklist-todo-2026-06-23-plan-slice-materialization-contract.yaml
+  completion_summary: PTC-1 plan slice materialization contract checklist completed
+  completed_at: '2026-06-24T00:56:16.849833+00:00'

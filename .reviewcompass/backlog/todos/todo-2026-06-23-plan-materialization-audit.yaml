@@ -45,11 +45,14 @@ implementation_plan:
     tasks:
     - id: PTC-3A
       title: Extend audit-plan-todo-bridge to detect missing execution_slices entries
+      status: done
     - id: PTC-3B
       title: Detect implementation_plan slice without TODO/checklist/evidence according
         to required phase
+      status: done
     - id: PTC-3C
       title: Decide when partial materialization is OK versus when it is a DEVIATION
+      status: done
 acceptance_criteria:
 - audit-plan-todo-bridge の JSON が plan ごとの materialization coverage を返す。
 - implementation_plan slice に対応する execution_slices entry が欠けている場合に検出できる。
@@ -60,15 +63,23 @@ red_tests:
   title: Candidate partial materialization is visible
   expected: audit-plan-todo-bridge reports partial coverage for a candidate plan and
     returns OK.
+  status: done
 - id: PTC-3-RT-2
   title: Promoted partial materialization is a deviation
   expected: audit-plan-todo-bridge returns DEVIATION when a promoted plan has not_materialized
     slices.
+  status: done
 - id: PTC-3-RT-3
   title: Missing execution_slices entries are reported
   expected: audit-plan-todo-bridge reports implementation_plan slice IDs that are
     absent from execution_slices.
+  status: done
 non_goals:
 - plan-todo-bridge の read-only 出力形式を大きく変更すること。
 - plan 全 slice の TODO/checklist を一括生成すること。
 - user-triggered execution prompt へ統合すること。
+execution_history:
+- checklist_id: checklist-todo-2026-06-23-plan-materialization-audit
+  evidence_path: .reviewcompass/evidence/work-units/checklists/checklist-todo-2026-06-23-plan-materialization-audit.yaml
+  completion_summary: PTC-3 plan materialization audit checklist completed
+  completed_at: '2026-06-24T00:56:32.719013+00:00'
