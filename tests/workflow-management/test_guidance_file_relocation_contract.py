@@ -20,9 +20,6 @@ GUIDANCE_FILENAMES = [
   "discipline_post_write_verification.md",
   "discipline_workflow_state_truth_source.md",
   "discipline_yaml_audit.md",
-]
-
-PENDING_DISCIPLINE_RELOCATION_FILENAMES = [
   "discipline_avoid_compound_bash.md",
   "discipline_concise_complete_report.md",
   "discipline_facts_vs_interpretation.md",
@@ -55,6 +52,21 @@ LEGACY_GUIDANCE_PATHS = [
   "docs/disciplines/discipline_post_write_verification.md",
   "docs/disciplines/discipline_workflow_state_truth_source.md",
   "docs/disciplines/discipline_yaml_audit.md",
+  "docs/disciplines/discipline_avoid_compound_bash.md",
+  "docs/disciplines/discipline_concise_complete_report.md",
+  "docs/disciplines/discipline_facts_vs_interpretation.md",
+  "docs/disciplines/discipline_implementation_autonomy.md",
+  "docs/disciplines/discipline_intent_conformance_is_the_acceptance_gate.md",
+  "docs/disciplines/discipline_must_fix_discussion_obligation.md",
+  "docs/disciplines/discipline_no_redundant_workflow_questions.md",
+  "docs/disciplines/discipline_normal_output_minimization.md",
+  "docs/disciplines/discipline_options_presentation.md",
+  "docs/disciplines/discipline_plain_explanation_each_step.md",
+  "docs/disciplines/discipline_plain_japanese.md",
+  "docs/disciplines/discipline_pre_action_precheck.md",
+  "docs/disciplines/discipline_reopen_procedure_for_settled_topics.md",
+  "docs/disciplines/discipline_standing_directives_are_hard_constraints.md",
+  "docs/disciplines/discipline_workflow_precheck_invocation.md",
 ]
 
 ACTIVE_REFERENCE_SURFACES = [
@@ -80,12 +92,6 @@ def test_moved_guidance_files_exist_only_in_reviewcompass_guidance(filename):
   assert (ROOT / ".reviewcompass" / "guidance" / filename).is_file()
   assert not (ROOT / "docs" / "operations" / filename).exists()
   assert not (ROOT / "docs" / "disciplines" / filename).exists()
-
-
-@pytest.mark.parametrize("filename", PENDING_DISCIPLINE_RELOCATION_FILENAMES)
-def test_pending_discipline_relocation_files_exist_in_guidance(filename):
-  assert (ROOT / ".reviewcompass" / "guidance" / filename).is_file()
-  assert (ROOT / "docs" / "disciplines" / filename).is_file()
 
 
 def test_active_surfaces_do_not_reference_moved_legacy_guidance_paths():

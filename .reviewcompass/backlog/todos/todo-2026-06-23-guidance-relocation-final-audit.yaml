@@ -2,7 +2,7 @@ schema_version: reviewcompass-backlog-item-v1
 id: todo-2026-06-23-guidance-relocation-final-audit
 kind: todo
 title: Post-write review and final audit
-status: candidate
+status: completed
 source_unit_id: main-completed
 created_at: '2026-06-23T13:26:02.570175+00:00'
 index_path: .reviewcompass/backlog/index.yaml
@@ -29,18 +29,18 @@ implementation_plan:
     - id: GRC-6A
       title: Run API post-write verification for guidance, discipline map, or deploy
         manifest changes
-      status: candidate
+      status: done
     - id: GRC-6B
       title: Use lightweight self-check only for human-reference docs changes
-      status: candidate
+      status: done
     - id: GRC-6C
       title: Run next, document_link_lint, deployment tests, and effective prompt
         audits
-      status: candidate
+      status: done
     - id: GRC-6D
       title: Confirm old paths are absent from next output and post-write manifests
         seal real targets
-      status: candidate
+      status: done
 acceptance_criteria:
 - 移動後に next --json が旧 path を返さない。
 - post-write manifest が実 target を正しく封印する。
@@ -54,4 +54,12 @@ red_tests:
   title: Final audit proves relocation is sealed
   expected: final audit commands pass and post-write verification scope matches actual
     changed targets.
-  status: candidate
+  status: done
+execution_history:
+- checklist_id: checklist-todo-2026-06-23-guidance-relocation-final-audit
+  evidence_path: .reviewcompass/evidence/work-units/checklists/checklist-todo-2026-06-23-guidance-relocation-final-audit.yaml
+  completion_summary: 正本 guidance/discipline map/deploy manifest 本文は無変更のため API post-write
+    不要（GRC-6A）。relocation 契約テストを完了状態へ更新し47件 green、document_link_lint 0件、deployment
+    tests green（GRC-6C）。削除ファイルへの能動的参照ゼロを契約テストで確認（GRC-6D）。runtime キャッシュは commit 後 clean
+    に再生成。
+  completed_at: '2026-06-24T05:15:01.300968+00:00'

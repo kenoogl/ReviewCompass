@@ -2,7 +2,8 @@ schema_version: reviewcompass-backlog-index-v1
 items:
 - id: plan-2026-06-24-proxy-decision-record-naming-reconciliation
   kind: plan
-  title: Reconcile proxy_model decision record naming and semantics to the implemented code
+  title: Reconcile proxy_model decision record naming and semantics to the implemented
+    code
   status: candidate
   path: .reviewcompass/backlog/plans/plan-2026-06-24-proxy-decision-record-naming-reconciliation.yaml
   source_unit_id: main-side-conversation
@@ -367,14 +368,14 @@ items:
 - id: todo-2026-06-23-guidance-relocation-old-path-cleanup
   kind: todo
   title: Delete or demote old paths
-  status: candidate
+  status: completed
   path: .reviewcompass/backlog/todos/todo-2026-06-23-guidance-relocation-old-path-cleanup.yaml
   source_unit_id: main-completed
   created_at: '2026-06-23T13:25:56.542199+00:00'
 - id: todo-2026-06-23-guidance-relocation-final-audit
   kind: todo
   title: Post-write review and final audit
-  status: candidate
+  status: completed
   path: .reviewcompass/backlog/todos/todo-2026-06-23-guidance-relocation-final-audit.yaml
   source_unit_id: main-completed
   created_at: '2026-06-23T13:26:02.570175+00:00'

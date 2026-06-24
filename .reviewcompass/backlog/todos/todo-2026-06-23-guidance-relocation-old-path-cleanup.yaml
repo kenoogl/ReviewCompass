@@ -2,7 +2,7 @@ schema_version: reviewcompass-backlog-item-v1
 id: todo-2026-06-23-guidance-relocation-old-path-cleanup
 kind: todo
 title: Delete or demote old paths
-status: candidate
+status: completed
 source_unit_id: main-completed
 created_at: '2026-06-23T13:25:56.542199+00:00'
 index_path: .reviewcompass/backlog/index.yaml
@@ -27,17 +27,17 @@ implementation_plan:
     tasks:
     - id: GRC-5A
       title: Delete moved legacy paths when no compatibility shim is required
-      status: candidate
+      status: done
     - id: GRC-5B
       title: Demote retained paths to archive, historical, or notes with explicit
         non-canonical status
-      status: candidate
+      status: done
     - id: GRC-5C
       title: Ensure runtime consumers are disconnected from retained legacy paths
-      status: candidate
+      status: done
     - id: GRC-5D
       title: Verify README or index text does not present old paths as canonical
-      status: candidate
+      status: done
 acceptance_criteria:
 - 二重正本が残らない。
 - 旧 path 参照が link / grep / deploy lint で検出されない。
@@ -50,4 +50,11 @@ red_tests:
   title: Legacy paths are deleted or marked non-canonical
   expected: old paths are either absent or explicitly demoted and disconnected from
     runtime consumers.
-  status: candidate
+  status: done
+execution_history:
+- checklist_id: checklist-todo-2026-06-23-guidance-relocation-old-path-cleanup
+  evidence_path: .reviewcompass/evidence/work-units/checklists/checklist-todo-2026-06-23-guidance-relocation-old-path-cleanup.yaml
+  completion_summary: docs/disciplines の discipline_*.md 15件削除（GRC-5A）。README は既存の
+    guidance 非正本ポインタを確認（GRC-5B/D）。実行時 consumer は既に guidance 参照、stale runtime キャッシュは
+    gitignore 対象で再生成され clean（GRC-5C）。
+  completed_at: '2026-06-24T05:15:00.853069+00:00'
