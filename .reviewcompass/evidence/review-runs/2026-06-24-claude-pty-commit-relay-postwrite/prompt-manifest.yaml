@@ -1,0 +1,77 @@
+schema_version: effective-prompt-manifest-v1
+decision_point:
+  kind: post_write_verification
+  required_action: run_post_write_verification
+source_artifacts:
+- path: .reviewcompass/guidance/COMMIT_OPERATION_CARD.md
+  sha256: sha256:ff773504253f919d8190986da799a2432f948a8236cb3a241cb474362947abb2
+- path: .reviewcompass/guidance/WORKFLOW_NAVIGATION_FOR_CLAUDE.md
+  sha256: sha256:ca7db69c66890b366a66eef0bb2a495ca3617664b9c967ccb0af9ce1e23e9c80
+- path: .reviewcompass/guidance/WORKFLOW_NAVIGATION_FOR_CODEX.md
+  sha256: sha256:b10700530befec043737170238ad2132d7f50814a167ac68c73152d5174e0f66
+required_disciplines:
+- .reviewcompass/guidance/WORKFLOW_NAVIGATION.md
+- .reviewcompass/guidance/API_REVIEW_PROMPT_QUALITY.md
+operation_contract:
+  operation_id: prepare_post_write_review
+  sha256: sha256:eb0b9cf26c6c51f507b2d2a6222f31f0c0d307b34ae1e67bb4e880b81e611a92
+expected_output_schema:
+  schema_ref: null
+  required_sections:
+  - findings
+prompt_length:
+  min_chars: 1
+  max_chars: 200000
+  source_ref: .reviewcompass/evidence/review-runs/2026-06-24-claude-pty-commit-relay-postwrite/review-target.md
+  failure_verdict: DEVIATION
+preconditions_checked:
+- id: post-write-review-target-generated
+  source: prepare_post_write_review
+  machine_checked: true
+  evidence_ref: .reviewcompass/evidence/review-runs/2026-06-24-claude-pty-commit-relay-postwrite/review-target.md
+language_task:
+  document_kind: post_write_verification
+  input:
+    required_files:
+    - .reviewcompass/guidance/COMMIT_OPERATION_CARD.md
+    - .reviewcompass/guidance/WORKFLOW_NAVIGATION_FOR_CLAUDE.md
+    state_refs: []
+    source_refs:
+    - .reviewcompass/guidance/WORKFLOW_NAVIGATION_FOR_CODEX.md
+  output_format:
+    kind: yaml_findings
+    required_sections:
+    - findings
+    schema_ref: null
+  constraints:
+  - Review language-level consistency only.
+  - Do not mutate workflow state.
+  - Do not create review-run artifacts.
+  - Do not commit or push.
+review_prompt_materials:
+  target_files:
+  - path: .reviewcompass/guidance/COMMIT_OPERATION_CARD.md
+    content_mode: full_text
+    content_sha256: sha256:ff773504253f919d8190986da799a2432f948a8236cb3a241cb474362947abb2
+  - path: .reviewcompass/guidance/WORKFLOW_NAVIGATION_FOR_CLAUDE.md
+    content_mode: full_text
+    content_sha256: sha256:ca7db69c66890b366a66eef0bb2a495ca3617664b9c967ccb0af9ce1e23e9c80
+  source_materials:
+  - path: .reviewcompass/guidance/WORKFLOW_NAVIGATION_FOR_CODEX.md
+    content_mode: full_text
+    content_sha256: sha256:b10700530befec043737170238ad2132d7f50814a167ac68c73152d5174e0f66
+postconditions:
+- id: post-write-review-target-manifest-matches
+  check_kind: review_target_manifest_matches
+  source_ref: .reviewcompass/evidence/review-runs/2026-06-24-claude-pty-commit-relay-postwrite/review-target.md
+on_completion:
+  next_required_action: run_post_write_verification
+  allowed_followups:
+  - prompt-audit
+  - run-post-write-review
+  forbidden_actions:
+  - commit
+  - push
+  - spec-set
+generated_at: '2026-06-24T01:52:56.976167+00:00'
+criteria_id: claude-noninteractive-pty-commit-relay

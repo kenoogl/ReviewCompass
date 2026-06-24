@@ -1,0 +1,48 @@
+process_id: maintenance
+started_at: '2026-06-24T00:00:00+09:00'
+completed_at: '2026-06-24T00:00:00+09:00'
+trigger: >
+  Claude 非対話実行環境（harness）での commit 手順の明文化。標準 wrapper は TTY
+  入力を要求するが、Claude 用ナビと操作カードは対話 TTY を前提に書かれており、
+  対話端末を持たない非対話環境で擬似端末（PTY）relay により正規に commit gate を
+  通す手順が未記載。Codex 用ナビには PTY + write_stdin が既に明文化されている。
+mainline_blocked_by: >
+  非対話環境で標準 wrapper が TTY 不在で停止したとき、正規の代替手順（PTY relay）が
+  文書化されていないため、wrapper を迂回した手組み commit（内部関数直叩き・承認文の
+  固定文字列化）が誘発される運用リスクがある。本セッションで実際に発生した。
+allowed_scope:
+  - .reviewcompass/guidance/COMMIT_OPERATION_CARD.md の「## Claude Code」節への非対話 PTY relay 追記
+  - .reviewcompass/guidance/WORKFLOW_NAVIGATION_FOR_CLAUDE.md の commit 規則（規則5）と commit 節（§3）への非対話 PTY relay 追記
+allowed_files:
+  - .reviewcompass/guidance/COMMIT_OPERATION_CARD.md
+  - .reviewcompass/guidance/WORKFLOW_NAVIGATION_FOR_CLAUDE.md
+  - stages/in-progress/maintenance-2026-06-24-claude-pty-commit-relay.yaml
+  - stages/completed/maintenance-2026-06-24-claude-pty-commit-relay.yaml
+change_classification: 局所
+classification_reason: >
+  承認機構（--approval-source-text-line-stdin、staged 内容束縛、user_turn_relay）と
+  workflow 機構・状態機械・next --json の意味は変更しない。Codex で既に許可済みの
+  PTY relay を Claude 用文書へ展開する文書のみの変更であり、影響は guidance 2 ファイルに閉じる。
+procedure: 文書のみ（編集後に next --json の検証要求へ従い、post-write verification を実施）
+completion_conditions:
+  - 操作カードの「## Claude Code」節に、対話端末がない場合の PTY relay 手順（PTY 割当手段・利用者発話一行の流し込み・wrapper を通すこと）が記述されている
+  - Claude 用ナビの commit 節に、同じ非対話 PTY relay 手順と「wrapper を迂回した承認自作・gate 迂回の禁止」が記述されている
+  - 承認文を LLM が生成しない・利用者発話を逐語 relay する原則が、対話入力と非対話 PTY relay の両方へ等しく適用されると明記されている
+  - 既存テスト（test_commit_single_turn_policy_docs、test_session_workflow_guide）が緑のまま
+  - next --json の検証要求を満たす（post-write verification を通す）
+  - in-progress を stages/completed/ へ移動
+workflow_steps:
+  - 'COMMIT_OPERATION_CARD.md「## Claude Code」節へ非対話 PTY relay 段落を追記'
+  - 'WORKFLOW_NAVIGATION_FOR_CLAUDE.md 規則5 と §3 commit 節へ非対話 PTY relay を追記'
+  - 'next --json で検証要求を確認し、求められた検証を実施'
+  - 'in-progress を completed へ移動'
+completed_steps:
+  - 'COMMIT_OPERATION_CARD.md「## Claude Code」節へ非対話 PTY relay 段落を追記（PTY 割当手段 script/expect/pty、利用者発話一行の流し込み、wrapper 内での承認・照合・gate 通過、wrapper 迂回の禁止）'
+  - 'WORKFLOW_NAVIGATION_FOR_CLAUDE.md 規則5 と §3 commit 節へ非対話 PTY relay を追記。対話入力と PTY relay の両方に同じ原則を適用する旨を明記'
+  - '既存テスト 19 件（test_commit_single_turn_policy_docs 4 件・test_session_workflow_guide 15 件）が緑のまま'
+  - 'post-write verification: gemini-3.1-pro-preview、所見 0 件、manifest 封印'
+  - 'in-progress を completed へ移動'
+post_write_verification:
+  - .reviewcompass/post-write-verification/post-write-2026-06-24-004.yaml
+  - .reviewcompass/evidence/review-runs/2026-06-24-claude-pty-commit-relay-postwrite/review_summary.md
+current_status: completed

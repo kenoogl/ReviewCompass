@@ -35,7 +35,9 @@ commit 中に承認内容を作り直す、既存 delegation を使い直す、n
 
 ## Claude Code
 
-Claude Code で `--approval-source-text-line-stdin` を使う場合は、TTY からの対話入力でのみ使う。直近の利用者発話で明示された commit 指示は staged 内容承認と LLM commit 実行代行承認として扱い、別の承認語の再入力を求めない。空 stdin での実行は challenge invalidation（承認無効化）を起こすため、非対話・空入力で実行しない。
+Claude Code で `--approval-source-text-line-stdin` を使う場合は、TTY からの対話入力で使う。直近の利用者発話で明示された commit 指示は staged 内容承認と LLM commit 実行代行承認として扱い、別の承認語の再入力を求めない。空 stdin での実行は challenge invalidation（承認無効化）を起こすため、非対話・空入力で実行しない。
+
+対話端末を持たない非対話実行環境（harness）で commit する場合は、擬似端末（PTY：プログラムを本物の端末と錯覚させる仕組み）を割り当て、標準 wrapper の `--approval-source-text-line-stdin` へ、直近の利用者発話で明示された commit 指示の一行だけを流す。これは Codex の `write_stdin` と同じ relay であり、承認レコード作成・staged 内容照合・commit gate はすべて標準 wrapper 内で通す。PTY 割当には `script`・`expect`・Python `pty` のいずれかを使う。利用者発話なしに承認文を生成しない点、空入力で実行しない点は対話入力と同じである。wrapper を経由せず承認レコードを内部関数で自作する、固定文字列で承認文を作る、`commit-approval prepare` や `guarded-git-commit.py` を直接叩いて gate を迂回する、といった手順は禁止する。
 
 ## 禁止
 

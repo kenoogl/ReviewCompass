@@ -1,0 +1,378 @@
+prompt_id: gemini_review
+provider: gemini-api
+model_id: gemini-3.1-pro-preview
+
+# Task
+Review the target document for the requested phase and criteria.
+
+# Phase
+post_write_verification
+
+# Criteria
+# Post-write Review Target
+
+criteria_id: claude-noninteractive-pty-commit-relay
+phase: post_write_verification
+generated_at: 2026-06-24T01:52:56.976167+00:00
+
+## Change Summary
+
+Claude 非対話実行環境での commit 手順を明文化。標準 wrapper の TTY ゲートを擬似端末（PTY）relay で正規に通す手順を、操作カードの Claude Code 節と Claude 用ナビの commit 規則・commit 節へ追記。Codex で既に許可済みの PTY + write_stdin relay を Claude へ展開する文書のみの変更で、承認機構（--approval-source-text-line-stdin・staged 内容束縛・利用者発話 relay）自体は変更しない。
+
+## Review Question
+
+追記した非対話 PTY relay 手順について次を検査してほしい。(1) 承認ゲートの保証（利用者発話の逐語 relay であり LLM が承認文を生成しない、staged 内容に束縛、commit gate を wrapper 内で通す）を弱めていないか。(2) Codex 用ナビの既存 PTY relay 規定と矛盾なく一貫しているか。(3) wrapper 迂回（内部関数直叩き・固定文字列承認・guarded-git-commit.py や commit-approval prepare の直接実行）の禁止が明確か。(4) 対話入力と非対話 PTY relay の両方に同じ原則が等しく適用されると読めるか。曖昧さ・抜け穴・矛盾があれば指摘してほしい。
+
+## Target Files
+
+- .reviewcompass/guidance/COMMIT_OPERATION_CARD.md sha256=ff773504253f919d8190986da799a2432f948a8236cb3a241cb474362947abb2
+- .reviewcompass/guidance/WORKFLOW_NAVIGATION_FOR_CLAUDE.md sha256=ca7db69c66890b366a66eef0bb2a495ca3617664b9c967ccb0af9ce1e23e9c80
+
+## Source Materials
+
+### .reviewcompass/guidance/WORKFLOW_NAVIGATION_FOR_CODEX.md
+
+content_mode: full_text
+content_sha256: b10700530befec043737170238ad2132d7f50814a167ac68c73152d5174e0f66
+
+```text
+# Codex 作業用：ReviewCompass ワークフローナビゲータの使い方
+
+この文書は、Codex が ReviewCompass の開発作業を始める前に読むための adapter 手引きである。
+
+共通の `next_action` の読み方は `.reviewcompass/guidance/WORKFLOW_NAVIGATION.md` を正本とする。本書は Codex 環境に固有の制約だけを補う。
+
+## 1. 起点
+
+作業開始前、または次に何をするかを提案する前に、必ず次を実行する。
+
+```bash
+python3 tools/check-workflow-action.py next --json
+```
+
+その後、`next_action.kind` は `.reviewcompass/guidance/WORKFLOW_NAVIGATION.md` に従って読む。
+
+## 2. Codex 固有の作業規則
+
+1. `AGENTS.md` をプロジェクト内の Codex 向け入口規律として扱う。
+2. Claude memory が自動ロードされる前提を置かない。必要な規律本文は repo 内 `.reviewcompass/guidance/` を読む。
+3. repo 外 memory への書き込みを前提にしない。memory 相当の永続記録が必要な場合は、まず記録先と内容を利用者へ提示し、明示承認を得る。
+4. filesystem sandbox と approval の制約を守る。外部 API、ネットワーク通信、repo 外書き込み、破壊的操作は、許可が必要な場合に承認を得てから実行する。
+5. commit と push は利用者の運用方針に従う。「次のコミットまで自律実行」は commit 停止点まで進めて止まる指示であり、commit 実行代行は含まない。停止点到達後、利用者の単発 commit 指示（例：`コミット`）は、提示済みまたは直後に stage する対象への staged 内容承認と LLM commit 実行代行承認として扱う。最初から commit も含めて自律実行する場合は、「コミット代行も含めて自律実行」のように commit 実行代行を含むことを明示する。commit 直前は `.reviewcompass/guidance/COMMIT_OPERATION_CARD.md` を読み、共通手順は同カードに従う。Codex では `commit-preflight`、stage、nonce prepare、guarded commit を同一ターンで逐次実行し、`tools/guarded-git-commit.py --approval-nonce <nonce> --approval-source-text-line-stdin` を PTY で起動する。承認入力待ちになってから、直近の利用者発話で明示された commit 指示だけを `write_stdin` で渡す。利用者発話なしに Codex が承認文を生成してはならない。Codex の `workspace-write` sandbox では、commit wrapper 本体を最初から sandbox 外（`require_escalated`）で実行する。これは guard を迂回する手順ではなく、承認レコード、staged 内容照合、commit gate を同じ wrapper 内で通したうえで、git index 書き込みだけを許可された実行面で行うための運用である。先に sandbox 内で失敗させてから再実行する手順を標準にしない。コミットメッセージは利用者指定があればそれを使い、指定がなければ staged 差分から変更の目的が伝わる短い日本語で要約する。
+6. 通常の `next_action` と異なる side track に入るときは、作業前に `SIDE TRACK 開始: <名前>`、`本線停止理由`、`復帰条件` を利用者へ明示する。side track から抜けるときは、`SIDE TRACK 終了: <名前>`、`復帰先`、`next` の判定結果を明示する。
+7. docs/ 配下や `TODO_NEXT_SESSION.md` を書いた後は、`next` を再実行して結果を報告する。`post_write_verification` が返った場合は通常ワークフローへ戻らない。
+8. post-write-verification pending 中に、再発防止や反省を目的として規律、TODO、テンプレート、hook、スクリプトを勝手に変更しない。必要なら提案して利用者の承認を待つ。
+9. `.codex/hooks.json` と `.codex/hooks/` は Codex 側の hook 設定である。Claude Code の `.claude/` 設定とは分けて扱う。
+10. `triad-review` の API review-run を開始する前に、使用 variant と role ごとの path／provider／model を利用者へ提示する。variant や role 割当が曖昧な場合は開始しない。
+11. API review-run 完了後は、`SESSION_WORKFLOW_GUIDE.md#3.3-a-2` の利用者提示ゲートを完了するまで、proxy_model 判断依頼、実装修正、spec.json 更新、フェーズ移行へ進まない。
+
+<a id="3-commit"></a>
+
+## 3. commit
+
+commit 直前は `.reviewcompass/guidance/COMMIT_OPERATION_CARD.md` を読む。Codex では利用者の単発 commit 指示を staged 内容承認と LLM commit 実行代行承認として扱い、`tools/guarded-git-commit.py --approval-nonce <nonce> --approval-source-text-line-stdin` を PTY で起動する。承認入力待ちになってから、直近の利用者発話で明示された commit 指示だけを `write_stdin` で渡す。利用者発話なしに Codex が承認文を生成してはならない。Codex の `workspace-write` sandbox では、commit wrapper 本体を最初から sandbox 外（`require_escalated`）で実行する。これは guard を迂回する手順ではなく、承認レコード、staged 内容照合、commit gate を同じ wrapper 内で通したうえで、git index 書き込みだけを許可された実行面で行うための運用である。先に sandbox 内で失敗させてから再実行する手順を標準にしない。
+
+## 4. post-write-verification の扱い
+
+Codex は `next_action.target_files` 全体を確認する。複数ファイルがある場合でも、ファイルごとの分業を独立多重チェックとして扱わない。
+
+外部 API を使う検証は、利用者の明示承認または既に許可された既存コマンドがある場合だけ実行する。実行できない場合は、検証対象、必要な検証者数、実行しようとした手段、実行できない理由を報告して停止する。
+
+## 5. Claude 固有資産の扱い
+
+Claude 用の手引き、memory、`.claude/` hook、Claude Code session log converter は削除しない。Claude Code で再検証・比較実行するための adapter 資産として残す。
+
+Codex 作業時に修正すべきなのは、「現在の作業者が必ず Claude Code である」と読める入口記述である。triad-review のモデル名としての `claude-*` や、過去セッション記録内の Claude 記述は履歴・モデル識別子として扱う。
+```
+
+
+## Target File Contents
+
+### .reviewcompass/guidance/COMMIT_OPERATION_CARD.md
+
+content_mode: full_text
+content_sha256: ff773504253f919d8190986da799a2432f948a8236cb3a241cb474362947abb2
+
+```text
+<a id="commit-operation-card"></a>
+
+# COMMIT_OPERATION_CARD
+
+commit 操作カード
+
+最終更新: 2026-06-20
+
+このカードは commit 直前に読む短い実行手順である。仕様説明ではなく、操作事故を防ぐための実行カードとして扱う。詳細契約は `WORKFLOW_PRECHECK.md` と `WORKFLOW_PRECHECK_DETAILS.md` を参照する。
+
+## 手順
+
+1. 利用者の単発 commit 指示を commit 操作の開始条件として扱う。
+2. `git add` 前に `.venv/bin/python3 tools/check-workflow-action.py commit-preflight --json` を実行する。
+3. `DEVIATION` の場合は stage / approval / guarded commit に進まず、停止理由と次に必要な操作だけを報告する。
+4. `git add` 後、staged 対象を確認する。
+5. `.venv/bin/python3 tools/commit-from-current-staged.py -m "<message>" --rationale "<理由>" --progress-format json` を TTY で起動する。
+6. wrapper が承認入力待ちになってから、直近の利用者発話で明示された commit 指示を 1 行として渡す。
+7. wrapper は approval 作成前に再度 `commit-preflight` を実行し、現在の staged 内容に束縛した approval / execution delegation を作って guarded commit する。
+8. wrapper は TTY 入力を `approval_source.source_kind: user_turn_relay` として record に保存し、承認 source が LLM 作文ではなく利用者発話 relay であることを記録する。
+9. 空 stdin、pipe、heredoc、redirect、LLM が生成した `printf` 等の承認文では実行しない。
+10. 失敗時は、承認入力経路、staged 内容、post-write / workflow 停止理由のいずれかを短く確認する。
+
+commit 操作中の会話出力は、runner の `--progress-format json` が返す状態語を上限とする。通常は `preflight_ok`、`guarded_commit_running`、`commit_completed` だけを利用者へ伝える。preflight JSON、approval errors、repair record、delegation、nonce、guarded commit の詳細出力は会話へ貼らず、必要な場合だけ証跡として参照する。停止時も詳細ログではなく、停止理由と次に必要な操作だけを短く返す。
+
+低レベル nonce 手順は、標準 wrapper が使えない場合の補助手順としてだけ使う。
+
+## Codex
+
+Codex で `--approval-source-text-line-stdin` を使う場合は、PTY で guarded commit を起動し、入力待ちになってから、直近の利用者発話で明示された commit 指示だけを `write_stdin` で渡す。この 1 行を staged 内容承認と LLM commit 実行代行承認として扱う。利用者発話なしに Codex / Claude / LLM が承認文を生成してはならない。Codex の `workspace-write` sandbox では、commit wrapper 本体を最初から sandbox 外（`require_escalated`）で実行する。これは guard を迂回する手順ではなく、承認レコード、staged 内容照合、commit gate を同じ wrapper 内で通したうえで、git index 書き込みだけを許可された実行面で行うための運用である。先に sandbox 内で失敗させてから再実行する手順を標準にしない。
+
+commit 中に承認内容を作り直す、既存 delegation を使い直す、nonce を更新する、といった内部再準備が必要になっても、それ自体を利用者に報告しない。これは承認済みの対象範囲内で、利用者判断を要しない場合に限る。コミット対象が増えた、staged 内容が変わった、または再承認が必要になった場合は内部再準備として隠さず、追加判断が必要な停止理由だけを短く報告する。利用者へ報告するのは、作業を続けられない異常、追加判断が必要な WARN / DEVIATION、または成功結果だけとする。
+
+古い承認レコードが消費済みである、または現在の staged 内容と一致しないために approval / delegation を作り直す場合も、直近の利用者発話で明示された commit 指示があり、staged 対象が変わっていなければ自動処理する。この再準備は利用者向け途中報告に出してはならない。標準 runner が現在の staged 内容に束縛した approval / delegation を作り直す。
+
+## Claude Code
+
+Claude Code で `--approval-source-text-line-stdin` を使う場合は、TTY からの対話入力で使う。直近の利用者発話で明示された commit 指示は staged 内容承認と LLM commit 実行代行承認として扱い、別の承認語の再入力を求めない。空 stdin での実行は challenge invalidation（承認無効化）を起こすため、非対話・空入力で実行しない。
+
+対話端末を持たない非対話実行環境（harness）で commit する場合は、擬似端末（PTY：プログラムを本物の端末と錯覚させる仕組み）を割り当て、標準 wrapper の `--approval-source-text-line-stdin` へ、直近の利用者発話で明示された commit 指示の一行だけを流す。これは Codex の `write_stdin` と同じ relay であり、承認レコード作成・staged 内容照合・commit gate はすべて標準 wrapper 内で通す。PTY 割当には `script`・`expect`・Python `pty` のいずれかを使う。利用者発話なしに承認文を生成しない点、空入力で実行しない点は対話入力と同じである。wrapper を経由せず承認レコードを内部関数で自作する、固定文字列で承認文を作る、`commit-approval prepare` や `guarded-git-commit.py` を直接叩いて gate を迂回する、といった手順は禁止する。
+
+## 禁止
+
+- challenge 作成後に、承認 record や staged index を変える別コマンドを挟む。
+- `--approval-source-text-line-stdin` を stdin なし、pipe、heredoc、redirect で実行する。
+- LLM が `printf` 等で承認文を生成して commit approval / execution delegation を作る。
+- commit 実行後に結果確認なしで完了扱いにする。
+```
+
+### .reviewcompass/guidance/WORKFLOW_NAVIGATION_FOR_CLAUDE.md
+
+content_mode: full_text
+content_sha256: ca7db69c66890b366a66eef0bb2a495ca3617664b9c967ccb0af9ce1e23e9c80
+
+```text
+# Claude 作業用：ReviewCompass ワークフローナビゲータの使い方
+
+この文書は、Claude が ReviewCompass の開発作業を始める前に読むための adapter 手引きである。
+
+共通の `next_action` の読み方は `.reviewcompass/guidance/WORKFLOW_NAVIGATION.md` を正本とする。本書は Claude 環境に固有の制約だけを補う。
+
+## 1. 起点
+
+作業開始前、または次に何をするかを提案する前に、必ず次を実行する。
+
+```bash
+python3 tools/check-workflow-action.py next --json
+```
+
+その後、`next_action.kind` は `.reviewcompass/guidance/WORKFLOW_NAVIGATION.md` に従って読む。
+
+## 2. Claude 固有の作業規則
+
+1. リポジトリ直下の `CLAUDE.md` は、`AGENTS.md` を取り込むだけの入口として扱う。入口規律の正本は `AGENTS.md` であり、`CLAUDE.md` に固有の指示を書き足さない。
+2. ユーザディレクトリ配下の Claude project memory（セッション開始時に自動ロードされる記憶領域）が読み込まれても、その内容を規律の正本として扱わない。必要な規律本文は repo 内 `.reviewcompass/guidance/` を読む。
+3. Claude project memory への追加・変更・削除は原則行わない。「忘れないため」「再発防止のため」「規律違反を直すため」であっても例外ではない。恒久記録が必要な場合は、repo 内の記録先と内容を利用者へ提示し、明示承認を得てから repo 側ファイルに書く。
+4. permission 設定（`.claude/settings.json`・`.claude/settings.local.json` の allow／deny）と Claude Code の承認モードの制約を守る。外部 API、ネットワーク通信、repo 外書き込み、破壊的操作は、許可が必要な場合に承認を得てから実行する。共有する設定は `.claude/settings.json` に置き、環境固有の許可は git 非追跡の `.claude/settings.local.json` に置く。`settings.json` に環境固有の絶対パスを書かない。
+5. commit と push は利用者の運用方針に従う。「次のコミットまで自律実行」は commit 停止点まで進めて止まる指示であり、commit 実行代行は含まない。停止点到達後に利用者が「コミット」と指示した場合は、その利用者の単発 commit 指示を staged 内容承認と LLM commit 実行代行承認として扱い、同一ターンで commit 実行を代行してよい。最初から commit も含めて自律実行する場合は、「コミット代行も含めて自律実行」のように commit 実行代行を含むことを明示する。commit 直前は `.reviewcompass/guidance/COMMIT_OPERATION_CARD.md` を読み、共通手順は同カードに従う。Claude Code 側で `--approval-source-text-line-stdin` を使う場合、対話端末があれば TTY の対話入力で、対話端末がない非対話実行環境（harness）では擬似端末（PTY）relay で、直近の利用者発話で明示された commit 指示の一行だけを渡す（非対話 PTY relay の詳細は §3）。どちらの経路でも利用者発話なしに LLM が承認文を生成してはならない。コミットメッセージは利用者指定があればそれを使い、指定がなければ staged 差分の主目的を 1 行の命令形または名詞句で要約する。
+6. 通常の `next_action` と異なる side track に入るときは、作業前に `SIDE TRACK 開始: <名前>`、`本線停止理由`、`復帰条件` を利用者へ明示する。side track から抜けるときは、`SIDE TRACK 終了: <名前>`、`復帰先`、`next` の判定結果を明示する。
+7. docs/ 配下や `TODO_NEXT_SESSION.md` を書いた後は、`next` を再実行して結果を報告する。`post_write_verification` が返った場合は通常ワークフローへ戻らない。
+8. post-write-verification pending 中に、再発防止や反省を目的として規律、TODO、テンプレート、hook、スクリプトを勝手に変更しない。必要なら提案して利用者の承認を待つ。
+9. `.claude/settings.json` と `.claude/hooks/` は Claude Code 側の hook 設定である。Codex の `.codex/` 設定とは分けて扱う。フック本体 `pre-bash-precheck.sh` は `.claude/hooks/` と `.codex/hooks/` の両複製を同一内容に保ち、同一性は `tests/hooks/test_claude_hook_repository.py` で機械検査する。
+10. `triad-review` の API review-run を開始する前に、使用 variant と role ごとの path／provider／model を利用者へ提示する。variant や role 割当が曖昧な場合は開始しない。
+11. API review-run 完了後は、`SESSION_WORKFLOW_GUIDE.md#3.3-a-2` の利用者提示ゲートを完了するまで、proxy_model 判断依頼、実装修正、spec.json 更新、フェーズ移行へ進まない。
+
+<a id="3-commit"></a>
+
+## 3. commit
+
+commit 直前は `.reviewcompass/guidance/COMMIT_OPERATION_CARD.md` を読む。Claude Code 側で `--approval-source-text-line-stdin` を使う場合、対話端末があれば TTY の対話入力で、対話端末がない非対話実行環境では擬似端末（PTY）relay で承認入力を渡し、利用者発話なしに LLM が承認文を生成してはならない。共通手順は操作カードに寄せ、Claude 固有の実行面だけを本節で扱う。
+
+利用者の指示テキストが許可文言（`コミット`・`承認` など）の場合、直近の利用者発話で明示された commit 指示を承認語として使い、nonce 取得から guarded commit 実行まで同一ターンで完結させる。別途承認語の再入力を求めない。
+
+非対話実行環境（harness）で commit する場合は、`script`・`expect`・Python `pty` のいずれかで擬似端末を割り当て、標準 wrapper を起動して承認入力待ちになってから、直近の利用者発話で明示された commit 指示の一行を PTY へ流す。承認レコード作成・staged 内容照合・commit gate はすべて wrapper 内で通す。これは Codex の `write_stdin` と同じ relay であり、利用者発話を逐語で渡す。wrapper を迂回して承認レコードを内部関数で自作する、固定文字列で承認文を作る、`guarded-git-commit.py` や `commit-approval prepare` を直接叩いて gate を飛ばす、といった手順は禁止する。
+
+コミット操作中のテキスト出力は最小化する。ツール実行前後の説明文（「ステージします」「nonce を取得します」等）は省き、完了後に `<コミット番号> コミット完了。` の1行だけを出す。詳細はツール出力に委ねる。
+
+## 4. post-write-verification の扱い
+
+Claude は `next_action.target_files` 全体を確認する。複数ファイルがある場合でも、ファイルごとの分業を独立多重チェックとして扱わない。
+
+外部 API を使う検証は、利用者の明示承認または既に許可された既存コマンドがある場合だけ実行する。実行できない場合は、検証対象、必要な検証者数、実行しようとした手段、実行できない理由を報告して停止する。
+
+## 5. Codex 固有資産の扱い
+
+Codex 用の手引き（`.reviewcompass/guidance/WORKFLOW_NAVIGATION_FOR_CODEX.md`）と `.codex/` hook は削除しない。Codex で再検証・比較実行するための adapter 資産として残す。`AGENTS.md` は Codex 専用ではなく、`CLAUDE.md` から取り込まれる共通入口の正本である。
+
+Claude 作業時も、triad-review のモデル名としての `gpt-*`／`gemini-*` や、過去セッション記録内の Codex 記述は履歴・モデル識別子として扱う。
+```
+
+
+## Scope
+
+- Check whether the changed target files clearly state the intended contract.
+- Check whether related instructions are mutually consistent across targets.
+- Check whether the documented procedure is actionable before API review, triage, manifest, or commit steps continue.
+
+## Out Of Scope
+
+- Do not request unrelated refactors or style-only rewrites.
+- Do not judge files that are not listed in Target Files.
+- Do not treat missing implementation work as a document defect unless the target text claims it already exists.
+
+## Finding Policy
+
+- Report must-fix findings for contradictions, missing required gates, or instructions that would allow an unsafe workflow action.
+- Report should-fix findings for ambiguity that could cause repeated manual judgment or unnecessary API review loops.
+- Return findings: [] when the target files are internally consistent for this review question.
+
+## Sensitive Information Check
+
+- status: passed
+- External API review must not proceed if this section reports potential secrets.
+
+
+# Output contract
+Return YAML only.
+The response must include the top-level key findings.
+Additional top-level keys are allowed only when the criteria explicitly defines them.
+Do not add wrapper keys such as review, result, metadata, or summary.
+Do not wrap the YAML in Markdown code fences.
+Do not write prose before or after the YAML.
+
+Each finding must include these keys:
+- severity
+- target_location
+- description
+- rationale
+
+Use only these severity values:
+- CRITICAL
+- ERROR
+- WARN
+- INFO
+
+If there are no findings and the criteria does not define additional top-level keys, return exactly:
+
+findings: []
+
+Valid shape example:
+
+findings:
+  - severity: WARN
+    target_location: "path or section"
+    description: "Plain finding summary"
+    rationale: "Why this matters"
+
+# Prior findings
+なし
+
+# Target path
+.reviewcompass/guidance/COMMIT_OPERATION_CARD.md
+.reviewcompass/guidance/WORKFLOW_NAVIGATION_FOR_CLAUDE.md
+
+# Target document
+## .reviewcompass/guidance/COMMIT_OPERATION_CARD.md
+
+<a id="commit-operation-card"></a>
+
+# COMMIT_OPERATION_CARD
+
+commit 操作カード
+
+最終更新: 2026-06-20
+
+このカードは commit 直前に読む短い実行手順である。仕様説明ではなく、操作事故を防ぐための実行カードとして扱う。詳細契約は `WORKFLOW_PRECHECK.md` と `WORKFLOW_PRECHECK_DETAILS.md` を参照する。
+
+## 手順
+
+1. 利用者の単発 commit 指示を commit 操作の開始条件として扱う。
+2. `git add` 前に `.venv/bin/python3 tools/check-workflow-action.py commit-preflight --json` を実行する。
+3. `DEVIATION` の場合は stage / approval / guarded commit に進まず、停止理由と次に必要な操作だけを報告する。
+4. `git add` 後、staged 対象を確認する。
+5. `.venv/bin/python3 tools/commit-from-current-staged.py -m "<message>" --rationale "<理由>" --progress-format json` を TTY で起動する。
+6. wrapper が承認入力待ちになってから、直近の利用者発話で明示された commit 指示を 1 行として渡す。
+7. wrapper は approval 作成前に再度 `commit-preflight` を実行し、現在の staged 内容に束縛した approval / execution delegation を作って guarded commit する。
+8. wrapper は TTY 入力を `approval_source.source_kind: user_turn_relay` として record に保存し、承認 source が LLM 作文ではなく利用者発話 relay であることを記録する。
+9. 空 stdin、pipe、heredoc、redirect、LLM が生成した `printf` 等の承認文では実行しない。
+10. 失敗時は、承認入力経路、staged 内容、post-write / workflow 停止理由のいずれかを短く確認する。
+
+commit 操作中の会話出力は、runner の `--progress-format json` が返す状態語を上限とする。通常は `preflight_ok`、`guarded_commit_running`、`commit_completed` だけを利用者へ伝える。preflight JSON、approval errors、repair record、delegation、nonce、guarded commit の詳細出力は会話へ貼らず、必要な場合だけ証跡として参照する。停止時も詳細ログではなく、停止理由と次に必要な操作だけを短く返す。
+
+低レベル nonce 手順は、標準 wrapper が使えない場合の補助手順としてだけ使う。
+
+## Codex
+
+Codex で `--approval-source-text-line-stdin` を使う場合は、PTY で guarded commit を起動し、入力待ちになってから、直近の利用者発話で明示された commit 指示だけを `write_stdin` で渡す。この 1 行を staged 内容承認と LLM commit 実行代行承認として扱う。利用者発話なしに Codex / Claude / LLM が承認文を生成してはならない。Codex の `workspace-write` sandbox では、commit wrapper 本体を最初から sandbox 外（`require_escalated`）で実行する。これは guard を迂回する手順ではなく、承認レコード、staged 内容照合、commit gate を同じ wrapper 内で通したうえで、git index 書き込みだけを許可された実行面で行うための運用である。先に sandbox 内で失敗させてから再実行する手順を標準にしない。
+
+commit 中に承認内容を作り直す、既存 delegation を使い直す、nonce を更新する、といった内部再準備が必要になっても、それ自体を利用者に報告しない。これは承認済みの対象範囲内で、利用者判断を要しない場合に限る。コミット対象が増えた、staged 内容が変わった、または再承認が必要になった場合は内部再準備として隠さず、追加判断が必要な停止理由だけを短く報告する。利用者へ報告するのは、作業を続けられない異常、追加判断が必要な WARN / DEVIATION、または成功結果だけとする。
+
+古い承認レコードが消費済みである、または現在の staged 内容と一致しないために approval / delegation を作り直す場合も、直近の利用者発話で明示された commit 指示があり、staged 対象が変わっていなければ自動処理する。この再準備は利用者向け途中報告に出してはならない。標準 runner が現在の staged 内容に束縛した approval / delegation を作り直す。
+
+## Claude Code
+
+Claude Code で `--approval-source-text-line-stdin` を使う場合は、TTY からの対話入力で使う。直近の利用者発話で明示された commit 指示は staged 内容承認と LLM commit 実行代行承認として扱い、別の承認語の再入力を求めない。空 stdin での実行は challenge invalidation（承認無効化）を起こすため、非対話・空入力で実行しない。
+
+対話端末を持たない非対話実行環境（harness）で commit する場合は、擬似端末（PTY：プログラムを本物の端末と錯覚させる仕組み）を割り当て、標準 wrapper の `--approval-source-text-line-stdin` へ、直近の利用者発話で明示された commit 指示の一行だけを流す。これは Codex の `write_stdin` と同じ relay であり、承認レコード作成・staged 内容照合・commit gate はすべて標準 wrapper 内で通す。PTY 割当には `script`・`expect`・Python `pty` のいずれかを使う。利用者発話なしに承認文を生成しない点、空入力で実行しない点は対話入力と同じである。wrapper を経由せず承認レコードを内部関数で自作する、固定文字列で承認文を作る、`commit-approval prepare` や `guarded-git-commit.py` を直接叩いて gate を迂回する、といった手順は禁止する。
+
+## 禁止
+
+- challenge 作成後に、承認 record や staged index を変える別コマンドを挟む。
+- `--approval-source-text-line-stdin` を stdin なし、pipe、heredoc、redirect で実行する。
+- LLM が `printf` 等で承認文を生成して commit approval / execution delegation を作る。
+- commit 実行後に結果確認なしで完了扱いにする。
+
+
+## .reviewcompass/guidance/WORKFLOW_NAVIGATION_FOR_CLAUDE.md
+
+# Claude 作業用：ReviewCompass ワークフローナビゲータの使い方
+
+この文書は、Claude が ReviewCompass の開発作業を始める前に読むための adapter 手引きである。
+
+共通の `next_action` の読み方は `.reviewcompass/guidance/WORKFLOW_NAVIGATION.md` を正本とする。本書は Claude 環境に固有の制約だけを補う。
+
+## 1. 起点
+
+作業開始前、または次に何をするかを提案する前に、必ず次を実行する。
+
+```bash
+python3 tools/check-workflow-action.py next --json
+```
+
+その後、`next_action.kind` は `.reviewcompass/guidance/WORKFLOW_NAVIGATION.md` に従って読む。
+
+## 2. Claude 固有の作業規則
+
+1. リポジトリ直下の `CLAUDE.md` は、`AGENTS.md` を取り込むだけの入口として扱う。入口規律の正本は `AGENTS.md` であり、`CLAUDE.md` に固有の指示を書き足さない。
+2. ユーザディレクトリ配下の Claude project memory（セッション開始時に自動ロードされる記憶領域）が読み込まれても、その内容を規律の正本として扱わない。必要な規律本文は repo 内 `.reviewcompass/guidance/` を読む。
+3. Claude project memory への追加・変更・削除は原則行わない。「忘れないため」「再発防止のため」「規律違反を直すため」であっても例外ではない。恒久記録が必要な場合は、repo 内の記録先と内容を利用者へ提示し、明示承認を得てから repo 側ファイルに書く。
+4. permission 設定（`.claude/settings.json`・`.claude/settings.local.json` の allow／deny）と Claude Code の承認モードの制約を守る。外部 API、ネットワーク通信、repo 外書き込み、破壊的操作は、許可が必要な場合に承認を得てから実行する。共有する設定は `.claude/settings.json` に置き、環境固有の許可は git 非追跡の `.claude/settings.local.json` に置く。`settings.json` に環境固有の絶対パスを書かない。
+5. commit と push は利用者の運用方針に従う。「次のコミットまで自律実行」は commit 停止点まで進めて止まる指示であり、commit 実行代行は含まない。停止点到達後に利用者が「コミット」と指示した場合は、その利用者の単発 commit 指示を staged 内容承認と LLM commit 実行代行承認として扱い、同一ターンで commit 実行を代行してよい。最初から commit も含めて自律実行する場合は、「コミット代行も含めて自律実行」のように commit 実行代行を含むことを明示する。commit 直前は `.reviewcompass/guidance/COMMIT_OPERATION_CARD.md` を読み、共通手順は同カードに従う。Claude Code 側で `--approval-source-text-line-stdin` を使う場合、対話端末があれば TTY の対話入力で、対話端末がない非対話実行環境（harness）では擬似端末（PTY）relay で、直近の利用者発話で明示された commit 指示の一行だけを渡す（非対話 PTY relay の詳細は §3）。どちらの経路でも利用者発話なしに LLM が承認文を生成してはならない。コミットメッセージは利用者指定があればそれを使い、指定がなければ staged 差分の主目的を 1 行の命令形または名詞句で要約する。
+6. 通常の `next_action` と異なる side track に入るときは、作業前に `SIDE TRACK 開始: <名前>`、`本線停止理由`、`復帰条件` を利用者へ明示する。side track から抜けるときは、`SIDE TRACK 終了: <名前>`、`復帰先`、`next` の判定結果を明示する。
+7. docs/ 配下や `TODO_NEXT_SESSION.md` を書いた後は、`next` を再実行して結果を報告する。`post_write_verification` が返った場合は通常ワークフローへ戻らない。
+8. post-write-verification pending 中に、再発防止や反省を目的として規律、TODO、テンプレート、hook、スクリプトを勝手に変更しない。必要なら提案して利用者の承認を待つ。
+9. `.claude/settings.json` と `.claude/hooks/` は Claude Code 側の hook 設定である。Codex の `.codex/` 設定とは分けて扱う。フック本体 `pre-bash-precheck.sh` は `.claude/hooks/` と `.codex/hooks/` の両複製を同一内容に保ち、同一性は `tests/hooks/test_claude_hook_repository.py` で機械検査する。
+10. `triad-review` の API review-run を開始する前に、使用 variant と role ごとの path／provider／model を利用者へ提示する。variant や role 割当が曖昧な場合は開始しない。
+11. API review-run 完了後は、`SESSION_WORKFLOW_GUIDE.md#3.3-a-2` の利用者提示ゲートを完了するまで、proxy_model 判断依頼、実装修正、spec.json 更新、フェーズ移行へ進まない。
+
+<a id="3-commit"></a>
+
+## 3. commit
+
+commit 直前は `.reviewcompass/guidance/COMMIT_OPERATION_CARD.md` を読む。Claude Code 側で `--approval-source-text-line-stdin` を使う場合、対話端末があれば TTY の対話入力で、対話端末がない非対話実行環境では擬似端末（PTY）relay で承認入力を渡し、利用者発話なしに LLM が承認文を生成してはならない。共通手順は操作カードに寄せ、Claude 固有の実行面だけを本節で扱う。
+
+利用者の指示テキストが許可文言（`コミット`・`承認` など）の場合、直近の利用者発話で明示された commit 指示を承認語として使い、nonce 取得から guarded commit 実行まで同一ターンで完結させる。別途承認語の再入力を求めない。
+
+非対話実行環境（harness）で commit する場合は、`script`・`expect`・Python `pty` のいずれかで擬似端末を割り当て、標準 wrapper を起動して承認入力待ちになってから、直近の利用者発話で明示された commit 指示の一行を PTY へ流す。承認レコード作成・staged 内容照合・commit gate はすべて wrapper 内で通す。これは Codex の `write_stdin` と同じ relay であり、利用者発話を逐語で渡す。wrapper を迂回して承認レコードを内部関数で自作する、固定文字列で承認文を作る、`guarded-git-commit.py` や `commit-approval prepare` を直接叩いて gate を飛ばす、といった手順は禁止する。
+
+コミット操作中のテキスト出力は最小化する。ツール実行前後の説明文（「ステージします」「nonce を取得します」等）は省き、完了後に `<コミット番号> コミット完了。` の1行だけを出す。詳細はツール出力に委ねる。
+
+## 4. post-write-verification の扱い
+
+Claude は `next_action.target_files` 全体を確認する。複数ファイルがある場合でも、ファイルごとの分業を独立多重チェックとして扱わない。
+
+外部 API を使う検証は、利用者の明示承認または既に許可された既存コマンドがある場合だけ実行する。実行できない場合は、検証対象、必要な検証者数、実行しようとした手段、実行できない理由を報告して停止する。
+
+## 5. Codex 固有資産の扱い
+
+Codex 用の手引き（`.reviewcompass/guidance/WORKFLOW_NAVIGATION_FOR_CODEX.md`）と `.codex/` hook は削除しない。Codex で再検証・比較実行するための adapter 資産として残す。`AGENTS.md` は Codex 専用ではなく、`CLAUDE.md` から取り込まれる共通入口の正本である。
+
+Claude 作業時も、triad-review のモデル名としての `gpt-*`／`gemini-*` や、過去セッション記録内の Codex 記述は履歴・モデル識別子として扱う。
+

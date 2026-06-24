@@ -1,0 +1,24 @@
+status: completed
+target_files:
+- .reviewcompass/guidance/COMMIT_OPERATION_CARD.md
+- .reviewcompass/guidance/WORKFLOW_NAVIGATION_FOR_CLAUDE.md
+target_sha256:
+  .reviewcompass/guidance/COMMIT_OPERATION_CARD.md: ff773504253f919d8190986da799a2432f948a8236cb3a241cb474362947abb2
+  .reviewcompass/guidance/WORKFLOW_NAVIGATION_FOR_CLAUDE.md: ca7db69c66890b366a66eef0bb2a495ca3617664b9c967ccb0af9ce1e23e9c80
+required_verifiers: &id001
+- gemini-3.1-pro-preview
+completed_verifiers: *id001
+unresolved_substantive_findings: 0
+verifications:
+- verifier: gemini-3.1-pro-preview
+  target_files:
+  - .reviewcompass/guidance/COMMIT_OPERATION_CARD.md
+  - .reviewcompass/guidance/WORKFLOW_NAVIGATION_FOR_CLAUDE.md
+  target_sha256:
+    .reviewcompass/guidance/COMMIT_OPERATION_CARD.md: ff773504253f919d8190986da799a2432f948a8236cb3a241cb474362947abb2
+    .reviewcompass/guidance/WORKFLOW_NAVIGATION_FOR_CLAUDE.md: ca7db69c66890b366a66eef0bb2a495ca3617664b9c967ccb0af9ce1e23e9c80
+review_run:
+  path: .reviewcompass/evidence/review-runs/2026-06-24-claude-pty-commit-relay-postwrite
+  summary_path: .reviewcompass/evidence/review-runs/2026-06-24-claude-pty-commit-relay-postwrite/model-result-summary.yaml
+notes: Generated template; verify target_files cover current post-write targets before
+  use.

@@ -1,0 +1,6 @@
+run_id: 2026-06-24-claude-pty-commit-relay-postwrite
+target_files:
+- path: .reviewcompass/guidance/COMMIT_OPERATION_CARD.md
+  sha256: ff773504253f919d8190986da799a2432f948a8236cb3a241cb474362947abb2
+- path: .reviewcompass/guidance/WORKFLOW_NAVIGATION_FOR_CLAUDE.md
+  sha256: ca7db69c66890b366a66eef0bb2a495ca3617664b9c967ccb0af9ce1e23e9c80
